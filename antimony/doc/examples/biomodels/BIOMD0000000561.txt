@@ -1,0 +1,37 @@
+// Created by libAntimony v2.7.1
+model *MODEL1412110000()
+
+  // Compartments and Species:
+  compartment Brain;
+  species $Amyloid in Brain;
+
+  // Assignment Rules:
+  Amyloid := (1 - 1/(kb*(exp(ka*time) - 1) + 1))*deltamt;
+  deltamt := sigmao*V*C*gamma;
+  gamma := (C_0 - C)/C;
+
+  // Compartment initializations:
+  Brain = 1;
+
+  // Variable initializations:
+  kb = 0.001;
+  ka = 0.5;
+  sigmao = 1;
+  V = 1;
+  C = 1;
+  C_0 = 2;
+
+  // Other declarations:
+  var deltamt, gamma;
+  const Brain, kb, ka, sigmao, V, C, C_0;
+
+  // Unit definitions:
+  unit volume = dimensionless;
+  unit time_unit = dimensionless;
+  unit substance = dimensionless;
+
+  // Display Names:
+  time_unit is "time";
+  C is "C*";
+  C_0 is "C";
+end

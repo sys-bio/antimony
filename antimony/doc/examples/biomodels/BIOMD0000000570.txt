@@ -1,0 +1,314 @@
+// Created by libAntimony v2.7.1
+function Constant_flux__irreversible(v)
+  v;
+end
+
+function v_pump(S_V, k_pump, ATP, NA, Km_pump)
+  (S_V*k_pump*ATP*NA)/(1 + ATP/Km_pump);
+end
+
+function function_1(S_V, gNA, F, RT_F, Na_e, Na, Vm)
+  S_V*(gNA/F)*(RT_F*ln(Na_e/Na) - Vm);
+end
+
+function v_GLC_m(Tmax, GLC_c, Kt_GLC, GLC_i)
+  Tmax*(GLC_c/(GLC_c + Kt_GLC) - GLC_i/(GLC_i + Kt_GLC));
+end
+
+function function_2(ATP, GLC_i, Kg, KI_ATP, nH, kHK_PFK)
+  (kHK_PFK*ATP*(GLC_i/(GLC_i + Kg)))/(1 + (ATP/KI_ATP)^nH);
+end
+
+function v_PGK(kPGK, GAP, ADP, NAD, NADH)
+  kPGK*GAP*ADP*(NAD/NADH);
+end
+
+function v_LAC_m(Tmax, LAC_i, Kt_LAC, LAC_c)
+  Tmax*(LAC_i/(LAC_i + Kt_LAC) - LAC_c/(LAC_c + Kt_LAC));
+end
+
+function v_O2_m(PS_V, KO2, HbOP, O2_c, nh, O2_i)
+  PS_V*(KO2*(HbOP/O2_c - 1)^(-1/nh) - O2_i);
+end
+
+function v_O2_c(F_in, V_cap, O2_a, O2_c)
+  (2*F_in)/V_cap*(O2_a - O2_c);
+end
+
+function v_GLC_c(F_in, V_cap, GLC_a, GLC_c)
+  (2*F_in)/V_cap*(GLC_a - GLC_c);
+end
+
+function v_LAC_c(F_in, V_cap, LAC_a, LAC_c)
+  (2*F_in)/V_cap*(LAC_a - LAC_c);
+end
+
+function v_dHb_in(F_in, O2_a, O2_c)
+  F_in*2*(O2_a - O2_c);
+end
+
+function v_dHb_out(F_out, dHb, V_v)
+  (F_out*dHb)/V_v;
+end
+
+
+model *Aubert2002()
+
+  // Compartments and Species:
+  compartment compartment_1, compartment_2, compartment_3, compartment_4;
+  substanceOnly species species_1 in compartment_1, $species_2 in compartment_1;
+  substanceOnly species $species_3 in compartment_1, species_4 in compartment_1;
+  substanceOnly species species_5 in compartment_1, $species_6 in compartment_1;
+  substanceOnly species species_7 in compartment_1, species_8 in compartment_1;
+  substanceOnly species species_9 in compartment_1, species_10 in compartment_1;
+  substanceOnly species species_11 in compartment_1, $species_12 in compartment_1;
+  substanceOnly species species_13 in compartment_1, $species_14 in compartment_2;
+  substanceOnly species $species_15 in compartment_2, $species_16 in compartment_2;
+  substanceOnly species species_17 in compartment_3, species_18 in compartment_3;
+  substanceOnly species species_19 in compartment_3, dHb in compartment_3;
+
+  // Assignment Rules:
+  parameter_37 := parameter_36 + is_rising*slope_up + is_maximum*maximum + is_falling*slope_down;
+  F_out := (parameter_36*((compartment_4/Compartment_7)^2 + (compartment_4/Compartment_7)^-0.5*35*(1/Compartment_7)*parameter_37))/(1 + parameter_36*(compartment_4/Compartment_7)^-0.5*35*(1/Compartment_7));
+  species_2 := parameter_7*compartment_1;
+  species_3 := parameter_10*compartment_1;
+  parameter_10 := parameter_7/2*(-parameter_11 + (parameter_11^2 + 4*parameter_11*(parameter_12/parameter_7 - 1))^0.5);
+  species_6 := parameter_22*compartment_1;
+  parameter_22 := parameter_21 - species_7/compartment_1;
+  species_12 := (parameter_31 - species_11/compartment_1)*compartment_1;
+  dAMP_dATP := (-1 + parameter_11/2) - 1/2*(parameter_11^2 + 4*parameter_11*(parameter_12/parameter_7 - 1))^(1/2) + (parameter_11*parameter_12)/(parameter_7*(parameter_11^2 + 4*parameter_11*(parameter_12/parameter_7 - 1))^(1/2));
+  parameter_13 := parameter_12 - parameter_7 - parameter_10;
+  slope_up := ModelValue_51/ModelValue_52*time;
+  maximum := ModelValue_35*ModelValue_50;
+  slope_down := (maximum*((t_on + t_end) - time))/t_on;
+  v_Mito_H3 := V_max_Mito*(species_8/compartment_1/(Km_Mito + species_8/compartment_1))*(1/(1 + (parameter_7/(parameter_10*KI_Mito))^n_Mito))*(species_13/compartment_1/(K_O2_Mito + species_13/compartment_1));
+  rCBF := parameter_37/ModelValue_35;
+  rCMRO2 := mitochondrial_respiration/0.0192;
+  rVv := compartment_4/Compartment_7;
+  O2c_bar := 2*(species_19/compartment_3) - species_14/compartment_2;
+  ratioO2c_bar := O2c_bar/ModelValue_60;
+
+  // Rate Rules:
+  compartment_4' = parameter_37 - F_out;
+  parameter_7' = (((-2*reaction_4 + reaction_5 + reaction_6) - reaction_2 + 15*mitochondrial_respiration + reaction_9) - ATPases)*(1 - dAMP_dATP)^-1;
+
+  // Reactions:
+  reaction_4: species_4 + $species_2 => 2species_5 + $species_3; compartment_1*function_2(species_2/compartment_1, species_4/compartment_1, parameter_19, parameter_17, parameter_18, parameter_16);
+  reaction_5: species_5 + $species_6 => species_7 + species_9; compartment_1*v_PGK(parameter_20, species_5/compartment_1, species_3/compartment_1, species_6/compartment_1, species_7/compartment_1);
+  reaction_6: $species_3 + species_9 => $species_2 + species_8; parameter_23*species_3*(species_9/compartment_1);
+  reaction_2: 3species_1 + $species_2 => $species_3; compartment_1*v_pump(parameter_1, parameter_8, species_2/compartment_1, species_1/compartment_1, parameter_9);
+  mitochondrial_respiration: species_8 + species_7 + 3species_13 => $species_2; compartment_1*Constant_flux__irreversible(v_Mito_H3);
+  reaction_9: species_11 + $species_3 -> $species_12 + $species_2; compartment_1*(parameter_29*(species_11/compartment_1)*(species_3/compartment_1) - parameter_30*(species_12/compartment_1)*(species_2/compartment_1));
+  ATPases: $species_2 => ; compartment_1*Constant_flux__irreversible(ATPases_v);
+  reaction_1:  => species_1; compartment_1*function_1(parameter_1, parameter_2, parameter_3, parameter_4, parameter_6, species_1/compartment_1, parameter_5);
+  reaction_3: 100species_17 => species_4; v_GLC_m(parameter_14, species_17/compartment_3, parameter_15, species_4/compartment_1);
+  reaction_7: species_8 + species_7 -> species_10 + $species_6; compartment_1*(parameter_24*(species_8/compartment_1)*(species_7/compartment_1) - parameter_25*(species_10/compartment_1)*(species_6/compartment_1));
+  reaction_8: species_10 => 100species_18; v_LAC_m(parameter_26, species_10/compartment_1, parameter_27, species_18/compartment_3);
+  reaction_10: 100species_19 => species_13; v_O2_m(parameter_32, parameter_33, parameter_34, species_19/compartment_3, parameter_35, species_13/compartment_1);
+  reaction_11: $species_14 => species_19; v_O2_c(parameter_37, parameter_38, species_14/compartment_2, species_19/compartment_3);
+  reaction_12: $species_15 => species_17; v_GLC_c(parameter_37, parameter_38, species_15/compartment_2, species_17/compartment_3);
+  reaction_13: $species_16 => species_18; v_LAC_c(parameter_37, parameter_38, species_16/compartment_2, species_18/compartment_3);
+  Na__inflow_after_stimulation:  => species_1; compartment_1*Constant_flux__irreversible(v_stim_constant);
+  inflow_of_dHb:  => dHb; compartment_3*v_dHb_in(parameter_37, species_14/compartment_2, species_19/compartment_3);
+  outflow_of_dHb: dHb => ; compartment_3*v_dHb_out(F_out, dHb/compartment_3, compartment_4);
+
+  // Events:
+  from_increase_to_stable: at time == ModelValue_52: is_rising = 0, is_maximum = 1;
+  from_stable_to_decrease__end_of_stimulation: at time == ModelValue_53: v_stim_constant = 0, is_falling = 1, is_maximum = 0;
+  from_decrease_to_at_rest: at time == ModelValue_53 + ModelValue_52: is_falling = 0;
+
+  // Species initializations:
+  species_1 = 15/compartment_1;
+  species_4 = 1.2/compartment_1;
+  species_5 = 0.0057/compartment_1;
+  species_7 = 0.026/compartment_1;
+  species_8 = 0.16/compartment_1;
+  species_9 = 0.02/compartment_1;
+  species_10 = 1/compartment_1;
+  species_11 = 5/compartment_1;
+  species_13 = 0.0262/compartment_1;
+  species_14 = 8.34/compartment_2;
+  species_15 = 4.8/compartment_2;
+  species_16 = 0.313/compartment_2;
+  species_17 = 4.56/compartment_3;
+  species_18 = 0.35/compartment_3;
+  species_19 = 7.01/compartment_3;
+  dHb = 0.0630000000000001/compartment_3;
+
+  // Compartment initializations:
+  compartment_1 = 1;
+  compartment_2 = 1;
+  compartment_3 = 1;
+  compartment_4 = 0.0237;
+
+  // Variable initializations:
+  parameter_7 = 2.2;
+  parameter_31 = 10;
+  ModelValue_52 = t_on;
+  is_maximum = 0;
+  is_rising = 1;
+  ModelValue_53 = t_end;
+  is_falling = 0;
+  v_stim_constant = 0.23;
+  parameter_1 = 90000;
+  parameter_2 = 0.0039;
+  parameter_3 = 96500;
+  parameter_4 = 26.73;
+  parameter_5 = -70;
+  parameter_6 = 150;
+  parameter_8 = 2.9e-007;
+  parameter_9 = 0.5;
+  parameter_11 = 0.92;
+  parameter_12 = 2.212;
+  parameter_14 = 0.0476;
+  parameter_15 = 9;
+  parameter_16 = 0.12;
+  parameter_17 = 1;
+  parameter_18 = 4;
+  parameter_19 = 0.05;
+  parameter_20 = 42.6;
+  parameter_21 = 0.212;
+  parameter_23 = 86.7;
+  parameter_24 = 2000;
+  parameter_25 = 44.8;
+  parameter_26 = 0.00628;
+  parameter_27 = 0.5;
+  parameter_28 = 0.149;
+  parameter_29 = 3666;
+  parameter_30 = 20;
+  parameter_32 = 1.6;
+  parameter_33 = 0.0361;
+  parameter_34 = 8.6;
+  parameter_35 = 2.73;
+  parameter_36 = 0.012;
+  parameter_38 = 0.0055;
+  parameter_47 = 0.0192;
+  V_max_Mito = 0.05233;
+  Km_Mito = 0.05;
+  KI_Mito = 183.3;
+  n_Mito = 0.1;
+  K_O2_Mito = 0.001;
+  ModelValue_51 = maximum;
+  alpha_F_in = 0.5;
+  ModelValue_35 = parameter_36;
+  ModelValue_50 = alpha_F_in;
+  t_on = 5;
+  t_end = 360;
+  Compartment_7 = compartment_4;
+  ModelValue_60 = O2c_bar;
+  ATPases_v = 0.149;
+
+  // Other declarations:
+  var compartment_4, parameter_37, F_out, parameter_7, parameter_10, parameter_22;
+  var is_maximum, is_rising, is_falling, v_stim_constant, dAMP_dATP, parameter_13;
+  var slope_up, maximum, slope_down, v_Mito_H3, rCBF, rCMRO2, rVv, O2c_bar;
+  var ratioO2c_bar;
+  const compartment_1, compartment_2, compartment_3, parameter_31, ModelValue_52;
+  const ModelValue_53, parameter_1, parameter_2, parameter_3, parameter_4;
+  const parameter_5, parameter_6, parameter_8, parameter_9, parameter_11;
+  const parameter_12, parameter_14, parameter_15, parameter_16, parameter_17;
+  const parameter_18, parameter_19, parameter_20, parameter_21, parameter_23;
+  const parameter_24, parameter_25, parameter_26, parameter_27, parameter_28;
+  const parameter_29, parameter_30, parameter_32, parameter_33, parameter_34;
+  const parameter_35, parameter_36, parameter_38, parameter_47, V_max_Mito;
+  const Km_Mito, KI_Mito, n_Mito, K_O2_Mito, ModelValue_51, alpha_F_in, ModelValue_35;
+  const ModelValue_50, t_on, t_end, Compartment_7, ModelValue_60;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_1 is "Tissue";
+  compartment_2 is "Arteries";
+  compartment_3 is "Capillaries";
+  compartment_4 is "Venous balloon";
+  parameter_37 is "F_in";
+  species_1 is "Na+";
+  species_2 is "ATP";
+  parameter_7 is "ATP";
+  species_3 is "ADP";
+  parameter_10 is "ADP";
+  species_4 is "GLC";
+  species_5 is "GAP";
+  species_6 is "NAD+";
+  parameter_22 is "NAD+";
+  species_7 is "NADH";
+  species_8 is "PYR";
+  species_9 is "PEP";
+  species_10 is "LAC";
+  species_11 is "PCr";
+  species_12 is "Cr";
+  parameter_31 is "C";
+  species_13 is "O2";
+  species_14 is "O2";
+  species_15 is "GLC";
+  species_16 is "LAC";
+  species_17 is "GLC";
+  species_18 is "LAC";
+  species_19 is "O2";
+  from_increase_to_stable is "from increase to stable";
+  ModelValue_52 is "Initial for t_on";
+  from_stable_to_decrease__end_of_stimulation is "from stable to decrease (end of stimulation)";
+  ModelValue_53 is "Initial for t_end";
+  from_decrease_to_at_rest is "from decrease to at_rest";
+  parameter_1 is "S/V";
+  parameter_2 is "gNa";
+  parameter_3 is "F";
+  parameter_4 is "RT/F";
+  parameter_5 is "Vm";
+  parameter_6 is "Na_extracellular";
+  reaction_4 is "Hexokinase-phosphofructokinase system";
+  reaction_5 is "Phosphoglycerate kinase";
+  reaction_6 is "Pyruvate kinase";
+  reaction_2 is "Na/K - pump";
+  mitochondrial_respiration is "mitochondrial respiration";
+  reaction_9 is "Creatine Kinase";
+  dAMP_dATP is "dAMP/dATP";
+  parameter_8 is "k_pump";
+  parameter_9 is "Km_pump";
+  parameter_11 is "qAK";
+  parameter_12 is "A";
+  parameter_13 is "AMP";
+  parameter_14 is "Tmax,GLC";
+  parameter_15 is "Kt,GLC";
+  parameter_16 is "kHK-PFK";
+  parameter_17 is "KI,ATP";
+  parameter_18 is "nH";
+  parameter_19 is "Kg";
+  parameter_20 is "kPGK";
+  parameter_21 is "N";
+  parameter_23 is "kPK";
+  parameter_24 is "k+LDH";
+  parameter_25 is "k-LDH";
+  parameter_26 is "Tmax,LAC";
+  parameter_27 is "Kt,LAC";
+  parameter_28 is "vATPase";
+  parameter_29 is "k+CK";
+  parameter_30 is "k-CK";
+  parameter_32 is "PS/V";
+  parameter_33 is "KO2";
+  parameter_34 is "Hb*OP";
+  parameter_35 is "nh";
+  parameter_36 is "F0";
+  parameter_38 is "V_cap";
+  parameter_47 is "v_Mito";
+  Km_Mito is "Km,Mito";
+  KI_Mito is "KI,Mito";
+  ModelValue_51 is "Initial for maximum";
+  ModelValue_35 is "Initial for F0";
+  ModelValue_50 is "Initial for alpha_F_in";
+  Compartment_7 is "Initial for Venous balloon";
+  ModelValue_60 is "Initial for O2c_bar";
+  reaction_1 is "Sodium leak";
+  reaction_3 is "Blood-brain transport of glucose";
+  reaction_7 is "Lactate dehydrogenase";
+  reaction_8 is "Blood-brain transport of lactate";
+  reaction_10 is "Blood-brain transport of oxygen";
+  reaction_11 is "Blood flow contribution to O2 variation";
+  reaction_12 is "Blood flow contribution to GLC_c variation";
+  reaction_13 is "Blood flow contribution to LAC_c variation";
+  Na__inflow_after_stimulation is "Na+ inflow after stimulation";
+  inflow_of_dHb is "inflow of dHb";
+  outflow_of_dHb is "outflow of dHb";
+end

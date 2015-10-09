@@ -3,8 +3,9 @@ model *Novak2001_FissionYeast_CellCycle()
 
   // Compartments and Species:
   compartment cell;
-  species cdc13T in cell, preMPF in cell, ste9 in cell, slp1T in cell, slp1 in cell;
-  species IEP in cell, rum1T in cell, SK in cell, M in cell, $MPF in cell;
+  substanceOnly species cdc13T in cell, preMPF in cell, ste9 in cell, slp1T in cell;
+  substanceOnly species slp1 in cell, IEP in cell, rum1T in cell, SK in cell;
+  substanceOnly species M in cell, $MPF in cell;
 
   // Assignment Rules:
   MPF := ((cdc13T - preMPF)*(cdc13T - Trimer))/cdc13T;

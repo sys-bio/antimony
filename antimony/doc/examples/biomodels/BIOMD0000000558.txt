@@ -1,0 +1,63 @@
+// Created by libAntimony v2.7.1
+function V2_4(k, S, Sx)
+  k*S*Sx;
+end
+
+function V3(k, S, Sx)
+  k*S*Sx;
+end
+
+function V1(k1, Sx, d, S, k2)
+  k1*(1 + Sx + d*((S/k2)^4/(1 + (S/k2)^4)));
+end
+
+
+model *Cloutier2012()
+
+  // Compartments and Species:
+  compartment Neuron;
+  species ROS in Neuron, alpha_syn in Neuron;
+
+  // Assignment Rules:
+  S1 := piecewise(2.6, time > 10 && time < 150, 0);
+
+  // Reactions:
+  ROS_1:  => ROS; Neuron*V1(k1, S1, dalphasyn, alpha_syn, kalphasyn);
+  ROS_2: ROS => ; Neuron*V2_4(k2, ROS, S2_4);
+  aSyn_1:  => alpha_syn; Neuron*V3(k3, ROS, S2_4);
+  aSyn_2: alpha_syn => ; Neuron*V2_4(k4, alpha_syn, S2_4);
+
+  // Species initializations:
+  ROS = 1;
+  alpha_syn = 1;
+
+  // Compartment initializations:
+  Neuron = 1;
+
+  // Variable initializations:
+  k1 = 17280;
+  k2 = 17280;
+  k3 = 0.168;
+  k4 = 0.168;
+  dalphasyn = 15;
+  kalphasyn = 8.5;
+  S2_4 = 1;
+
+  // Other declarations:
+  var S1;
+  const Neuron, k1, k2, k3, k4, dalphasyn, kalphasyn, S2_4;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = 1e-6 mole;
+
+  // Display Names:
+  time_unit is "time";
+  alpha_syn is "alpha-syn";
+  S2_4 is "S2-4";
+  ROS_1 is "ROS 1";
+  ROS_2 is "ROS 2";
+  aSyn_1 is "aSyn 1";
+  aSyn_2 is "aSyn 2";
+end

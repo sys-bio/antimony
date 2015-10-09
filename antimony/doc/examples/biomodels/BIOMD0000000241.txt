@@ -3,7 +3,8 @@ model *Shi1993_Caffeine_pressor_tolerance()
 
   // Compartments and Species:
   compartment Gut, C, P, Tol, Eff;
-  species $X_gut in Gut, $C_p in C, $C_per in P, $C_e in Eff, $C_t in Tol;
+  species $C_p in C, $C_per in P, $C_e in Eff, $C_t in Tol;
+  substanceOnly species $X_gut in Gut;
 
   // Assignment Rules:
   E := E_0 + (S*C_e)/(1 + C_t/T_50);

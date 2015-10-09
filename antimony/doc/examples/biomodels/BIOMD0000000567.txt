@@ -1,0 +1,38 @@
+// Created by libAntimony v2.7.1
+model *MODEL1501160001()
+
+  // Compartments and Species:
+  compartment Brain;
+  species $B in Brain, $A in Brain;
+
+  // Assignment Rules:
+  B := A0 - (k1/k2 + A0)/(1 + k1/(k2*A0)*exp((k1 + k2*A0)*time));
+  A0 := k2A0/k2;
+
+  // Reactions:
+  Nucleation: $A => $B; Brain*k1*A;
+  Growth: $A + $B => 2$B; Brain*k2*A*B;
+
+  // Species initializations:
+  A = 1;
+
+  // Compartment initializations:
+  Brain = 1;
+
+  // Variable initializations:
+  k1 = 4e-005;
+  k2 = 1.57e-006;
+  k2A0 = 0.29;
+
+  // Other declarations:
+  var A0;
+  const Brain, k1, k2, k2A0;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 3600 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+end

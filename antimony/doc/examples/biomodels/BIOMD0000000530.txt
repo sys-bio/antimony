@@ -29,9 +29,9 @@ model *Model_1()
   reaction_1: species_1 + species_2 => species_4; compartment_1*reaction_1_k1*species_1*species_2;
   reaction_2: species_1 + species_3 => species_5; compartment_1*reaction_2_k1*species_1*species_3;
   reaction_3: species_1 + species_2 + species_3 => species_6; compartment_1*reaction_3_k1*species_1*species_2*species_3;
-  reaction_4:  => species_1; compartment_1*function_1(reaction_4_k_syn_mRNA);
-  reaction_5:  => species_2; compartment_1*function_2(reaction_5_k_syn_miRNA_1);
-  reaction_6:  => species_3; compartment_1*function_3(reaction_6_k_syn_miRNA_2);
+  reaction_4:  => species_1; compartment_1*function_1(reaction_4_k_syn_mRNA, species_7);
+  reaction_5:  => species_2; compartment_1*function_2(reaction_5_k_syn_miRNA_1, species_8);
+  reaction_6:  => species_3; compartment_1*function_3(reaction_6_k_syn_miRNA_2, species_9);
   reaction_7: species_1 => ; compartment_1*reaction_7_k1*species_1;
   reaction_8: species_2 => ; compartment_1*reaction_8_k1*species_2;
   reaction_9: species_3 => ; compartment_1*reaction_9_k1*species_3;
@@ -41,7 +41,7 @@ model *Model_1()
   reaction_13: species_4 => ; compartment_1*reaction_13_k1*species_4;
   reaction_14: species_5 => ; compartment_1*reaction_14_k1*species_5;
   reaction_15: species_6 => ; compartment_1*reaction_15_k1*species_6;
-  reaction_16:  => species_10; compartment_1*function_4(reaction_16_k_syn_prot);
+  reaction_16:  => species_10; compartment_1*function_4(reaction_16_k_syn_prot, species_1);
   reaction_17: species_10 => ; compartment_1*reaction_17_k1*species_10;
 
   // Species initializations:
@@ -78,13 +78,13 @@ model *Model_1()
   reaction_16_k_syn_prot = 1;
   reaction_17_k1 = 1;
 
-  //  Other declarations:
+  // Other declarations:
   const compartment_1;
 
   // Unit definitions:
   unit substance = 1e-3 mole;
 
-  //  Display Names:
+  // Display Names:
   compartment_1 is "compartment";
   species_1 is "mRNA";
   species_2 is "miRNA_1";

@@ -68,10 +68,10 @@ model *Bray1993_chemotaxis()
   regulatory_r16: Tni_W + A -> Tni_WA; cell*(regulatory_r16_k1*Tni_W*A - regulatory_r16_k2*Tni_WA);
   regulatory_r17: Tni_A + W -> Tni_WA; cell*(regulatory_r17_k1*Tni_A*W - regulatory_r17_k2*Tni_WA);
   regulatory_r18: Tni + WA -> Tni_WA; cell*(regulatory_r18_k1*Tni*WA - regulatory_r18_k2*Tni_WA);
-  motor_r1: M + Yp -> MYp; cell*function_4_motor_r1();
-  motor_r2: MYp + Yp -> MYpYp; cell*function_4_motor_r2();
-  motor_r3: MYpYp + Yp -> MYpYpYp; cell*function_4_motor_r3();
-  motor_r4: MYpYpYp + Yp -> MYpYpYpYp; cell*function_4_motor_r4();
+  motor_r1: M + Yp -> MYp; cell*function_4_motor_r1(M, MYp, Yp, cell, ka, kappa);
+  motor_r2: MYp + Yp -> MYpYp; cell*function_4_motor_r2(MYp, MYpYp, Yp, alpha, cell, ka, kappa);
+  motor_r3: MYpYp + Yp -> MYpYpYp; cell*function_4_motor_r3(MYpYp, MYpYpYp, Yp, alpha, cell, ka, kappa);
+  motor_r4: MYpYpYp + Yp -> MYpYpYpYp; cell*function_4_motor_r4(MYpYpYp, MYpYpYpYp, Yp, alpha, cell, ka, kappa);
   reaction_1: TA + $asp -> Tasp_A; cell*(reaction_1_k1*TA*asp - reaction_1_k2*Tasp_A);
   reaction_2: TW + $asp -> Tasp_W; cell*(reaction_2_k1*TW*asp - reaction_2_k2*Tasp_W);
   reaction_3: TWA + $asp -> Tasp_WA; cell*(reaction_3_k1*TWA*asp - reaction_3_k2*Tasp_WA);

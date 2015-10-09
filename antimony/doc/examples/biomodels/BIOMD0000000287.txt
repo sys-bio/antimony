@@ -3,11 +3,13 @@ model *Passos2010_DNAdamage_CellularSenescence()
 
   // Compartments and Species:
   compartment cell;
-  species Mdm2 in cell, p53 in cell, Mdm2_p53 in cell, Mdm2_mRNA in cell;
-  species p53_mRNA in cell, ATMA in cell, ATMI in cell, p21 in cell, p21_mRNA in cell;
-  species p21step1 in cell, p21step2 in cell, p53_P in cell, Mdm2_P in cell;
-  species p21_basal in cell, p38 in cell, p38_P in cell, GADD45 in cell, IR in cell;
-  species damDNA in cell, ROS in cell, basalROS in cell, $Sink in cell, $Source in cell;
+  substanceOnly species Mdm2 in cell, p53 in cell, Mdm2_p53 in cell, Mdm2_mRNA in cell;
+  substanceOnly species p53_mRNA in cell, ATMA in cell, ATMI in cell, p21 in cell;
+  substanceOnly species p21_mRNA in cell, p21step1 in cell, p21step2 in cell;
+  substanceOnly species p53_P in cell, Mdm2_P in cell, p21_basal in cell;
+  substanceOnly species p38 in cell, p38_P in cell, GADD45 in cell, IR in cell;
+  substanceOnly species damDNA in cell, ROS in cell, basalROS in cell, $Sink in cell;
+  substanceOnly species $Source in cell;
 
   // Reactions:
   p53mRNASynthesis: $Source => p53_mRNA; ksynp53mRNA*Source;

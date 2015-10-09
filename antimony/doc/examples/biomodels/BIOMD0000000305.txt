@@ -3,9 +3,10 @@ model *Kolomeisky2003_myosin()
 
   // Compartments and Species:
   compartment compartment_;
-  species S0 in compartment_, $ATP in compartment_, S1 in compartment_, $Pi_ in compartment_;
-  species $ADP in compartment_, fwd_step1 in compartment_, fwd_step2 in compartment_;
-  species back_step1 in compartment_, back_step2 in compartment_;
+  species $ATP in compartment_, $Pi_ in compartment_, $ADP in compartment_;
+  substanceOnly species S0 in compartment_, S1 in compartment_, fwd_step1 in compartment_;
+  substanceOnly species fwd_step2 in compartment_, back_step1 in compartment_;
+  substanceOnly species back_step2 in compartment_;
 
   // Assignment Rules:
   S_tot := S0 + S1;

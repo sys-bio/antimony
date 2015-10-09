@@ -8,9 +8,9 @@ model *Tyson2001_Cell_Cycle_Regulation()
 
   // Compartments and Species:
   compartment cell;
-  species CycBt in cell, $CycB in cell, CKIt in cell, Cdc20a in cell, $Trimer in cell;
-  species Cdh1 in cell, m in cell, Cdc20t in cell, IEP in cell, $Mad in cell;
-  species SK in cell;
+  substanceOnly species CycBt in cell, $CycB in cell, CKIt in cell, Cdc20a in cell;
+  substanceOnly species $Trimer in cell, Cdh1 in cell, m in cell, Cdc20t in cell;
+  substanceOnly species IEP in cell, $Mad in cell, SK in cell;
 
   // Assignment Rules:
   CycB := CycBt - (2*CycBt*CKIt)/(CycBt + CKIt + 1/Keq + ((CycBt + CKIt + 1/Keq)^2 - 4*CycBt*CKIt)^(1/2));

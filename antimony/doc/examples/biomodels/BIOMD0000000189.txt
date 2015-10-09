@@ -3,11 +3,11 @@ model *BIOMD0000000189()
 
   // Compartments and Species:
   compartment cell;
-  species Mdm2 in cell, p53 in cell, Mdm2_p53 in cell, Mdm2_mRNA in cell;
-  species ARF in cell, ARF_Mdm2 in cell, damDNA in cell, $Sink in cell, $Source in cell;
-  species p53deg in cell, p53syn in cell, mdm2deg in cell, mdm2syn in cell;
-  species Mdm2mRNAdeg in cell, Mdm2mRNAsyn in cell, totdamDNA in cell, $totp53 in cell;
-  species $totMdm2 in cell;
+  substanceOnly species Mdm2 in cell, p53 in cell, Mdm2_p53 in cell, Mdm2_mRNA in cell;
+  substanceOnly species ARF in cell, ARF_Mdm2 in cell, damDNA in cell, $Sink in cell;
+  substanceOnly species $Source in cell, p53deg in cell, p53syn in cell, mdm2deg in cell;
+  substanceOnly species mdm2syn in cell, Mdm2mRNAdeg in cell, Mdm2mRNAsyn in cell;
+  substanceOnly species totdamDNA in cell, $totp53 in cell, $totMdm2 in cell;
 
   // Assignment Rules:
   totp53 := p53 + Mdm2_p53;

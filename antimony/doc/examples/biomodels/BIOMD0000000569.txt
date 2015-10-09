@@ -1,0 +1,248 @@
+// Created by libAntimony v2.7.1
+function Ligand_Binding_1(k, R, L)
+  4*k*R*L;
+end
+
+function Ligand_Binding_2(k, R, L)
+  3*k*R*L;
+end
+
+function Ligand_Binding_3(k, R, L)
+  2*k*R*L;
+end
+
+function Ligand_Binding_4(k, R, L)
+  k*R*L;
+end
+
+function Ligand_Unbinding_1(k, R)
+  k*R;
+end
+
+function Ligand_Unbinding_2(k, R)
+  2*k*R;
+end
+
+function Ligand_Unbinding_3(k, R)
+  3*k*R;
+end
+
+function Ligand_Unbinding_4(k, R)
+  4*k*R;
+end
+
+
+model *MODEL1407160000()
+
+  // Compartments and Species:
+  compartment synapse;
+  species B0 in synapse, S0 in synapse, B1 in synapse, S1 in synapse, B2 in synapse;
+  species S2 in synapse, B3 in synapse, S3 in synapse, B4 in synapse, S4 in synapse;
+  species M0 in synapse, M1 in synapse, M2 in synapse, M3 in synapse, M4 in synapse;
+  species L0 in synapse, L1 in synapse, L2 in synapse, L3 in synapse, L4 in synapse;
+  species glu in synapse;
+
+  // Reactions:
+  B0____S0: B0 => S0; synapse*BSk0*B0;
+  S0____B0: S0 => B0; synapse*SBk0*S0;
+  B1____S1: B1 => S1; synapse*BSk1*B1;
+  S1____B1: S1 => B1; synapse*SBk1*S1;
+  B2____S2: B2 => S2; synapse*BSk2*B2;
+  S2____B2: S2 => B2; synapse*SBk2*S2;
+  B3____S3: B3 => S3; synapse*BSk3*B3;
+  S3____B3: S3 => B3; synapse*SBk3*S3;
+  B4____S4: B4 => S4; synapse*BSk4*B4;
+  S4____B4: S4 => B4; synapse*SBk4*S4;
+  S0____M0: S0 => M0; synapse*SMk0*S0;
+  M0____S0: M0 => S0; synapse*MSk0*M0;
+  S1____M1: S1 => M1; synapse*SMk1*S1;
+  M1____S1: M1 => S1; synapse*MSk1*M1;
+  S2____M2: S2 => M2; synapse*SMk2*S2;
+  M2____S2: M2 => S2; synapse*MSk2*M2;
+  S3____M3: S3 => M3; synapse*SMk3*S3;
+  M3____S3: M3 => S3; synapse*MSk3*M3;
+  S4____M4: S4 => M4; synapse*SMk4*S4;
+  M4____S4: M4 => S4; synapse*MSk4*M4;
+  M0____L0: M0 => L0; synapse*MLk0*M0;
+  L0____M0: L0 => M0; synapse*LMk0*L0;
+  M1____L1: M1 => L1; synapse*MLk1*M1;
+  L1____M1: L1 => M1; synapse*LMk1*L1;
+  M2____L2: M2 => L2; synapse*MLk2*M2;
+  L2____M2: L2 => M2; synapse*LMk2*L2;
+  M3____L3: M3 => L3; synapse*MLk3*M3;
+  L3____M3: L3 => M3; synapse*LMk3*L3;
+  M4____L4: M4 => L4; synapse*MLk4*M4;
+  L4____M4: L4 => M4; synapse*LMk4*L4;
+  B0____B1: B0 + glu => B1; synapse*Ligand_Binding_1(Bkon, B0, glu);
+  B1____B0: B1 => B0 + glu; synapse*Ligand_Unbinding_1(Bkoff, B1);
+  B1____B2: B1 + glu => B2; synapse*Ligand_Binding_2(Bkon, B1, glu);
+  B2____B1: B2 => B1 + glu; synapse*Ligand_Unbinding_2(Bkoff, B2);
+  B2____B3: B2 + glu => B3; synapse*Ligand_Binding_3(Bkon, B2, glu);
+  B3____B2: B3 => B2 + glu; synapse*Ligand_Unbinding_3(Bkoff, B3);
+  B3____B4: B3 + glu => B4; synapse*Ligand_Binding_4(Bkon, B3, glu);
+  B4____B3: B4 => B3 + glu; synapse*Ligand_Unbinding_4(Bkoff, B4);
+  S0____S1: S0 + glu => S1; synapse*Ligand_Binding_1(Skon, S0, glu);
+  S1____S0: S1 => S0 + glu; synapse*Ligand_Unbinding_1(Skoff, S1);
+  S1____S2: S1 + glu => S2; synapse*Ligand_Binding_2(Skon, S1, glu);
+  S2____S1: S2 => S1 + glu; synapse*Ligand_Unbinding_2(Skoff, S2);
+  S2____S3: S2 + glu => S3; synapse*Ligand_Binding_3(Skon, S2, glu);
+  S3____S2: S3 => S2 + glu; synapse*Ligand_Unbinding_3(Skoff, S3);
+  S3____S4: S3 + glu => S4; synapse*Ligand_Binding_4(Skon, S3, glu);
+  S4____S3: S4 => S3 + glu; synapse*Ligand_Unbinding_4(Skoff, S4);
+  M0____M1: M0 + glu => M1; synapse*Ligand_Binding_1(Mkon, M0, glu);
+  M1____M0: M1 => M0 + glu; synapse*Ligand_Unbinding_1(Mkoff, M1);
+  M1____M2: M1 + glu => M2; synapse*Ligand_Binding_2(Mkon, M1, glu);
+  M2____M1: M2 => M1 + glu; synapse*Ligand_Unbinding_2(Mkoff, M2);
+  M2____M3: M2 + glu => M3; synapse*Ligand_Binding_3(Mkon, M2, glu);
+  M3____M2: M3 => M2 + glu; synapse*Ligand_Unbinding_3(Mkoff, M3);
+  M3____M4: M3 + glu => M4; synapse*Ligand_Unbinding_4(Mkon, M3);
+  M4____M3: M4 => M3 + glu; synapse*Ligand_Unbinding_4(Mkoff, M4);
+  L0____L1: L0 + glu => L1; synapse*Ligand_Binding_1(Lkon, L0, glu);
+  L1____L0: L1 => L0 + glu; synapse*Ligand_Unbinding_1(Lkoff, L1);
+  L1____L2: L1 + glu => L2; synapse*Ligand_Binding_2(Lkon, L1, glu);
+  L2____L1: L2 => L1 + glu; synapse*Ligand_Unbinding_2(Lkoff, L2);
+  L2____L3: L2 + glu => L3; synapse*Ligand_Binding_3(Lkon, L2, glu);
+  L3____L2: L3 => L2 + glu; synapse*Ligand_Unbinding_3(Lkoff, L3);
+  L3____L4: L3 + glu => L4; synapse*Ligand_Binding_4(Lkon, L3, glu);
+  L4____L3: L4 => L3 + glu; synapse*Ligand_Unbinding_4(Lkoff, L4);
+
+  // Species initializations:
+  B0 = 8.30269391581363e-007;
+  S0 = 0;
+  B1 = 0;
+  S1 = 0;
+  B2 = 0;
+  S2 = 0;
+  B3 = 0;
+  S3 = 0;
+  B4 = 0;
+  S4 = 0;
+  M0 = 0;
+  M1 = 0;
+  M2 = 0;
+  M3 = 0;
+  M4 = 0;
+  L0 = 0;
+  L1 = 0;
+  L2 = 0;
+  L3 = 0;
+  L4 = 0;
+  glu = 0.000830269391581363;
+
+  // Compartment initializations:
+  synapse = 1e-016;
+
+  // Variable initializations:
+  Bkon = 5000000;
+  Bkoff = 4495;
+  Skon = 5000000;
+  Skoff = 270.4;
+  Mkon = 5000000;
+  Mkoff = 16.65;
+  Lkon = 5000000;
+  Lkoff = 1.149;
+  BSk0 = BSk1*BSc^p;
+  BSk1 = BSk2*BSc^p;
+  BSc = 0.0601;
+  p = 0.5;
+  SBk0 = SBk1/BSc^p;
+  SBk1 = SBk2/BSc^p;
+  BSk2 = BSk3*BSc^p;
+  SBk2 = SBk3/BSc^p;
+  BSk3 = BSk4*BSc^p;
+  SBk3 = SBk4/BSc^p;
+  BSk4 = 300000;
+  SBk4 = 860;
+  SMk0 = SMk1*SMc^p;
+  SMk1 = SMk2*SMc^p;
+  SMc = 0.0616;
+  MSk0 = MSk1/SMc^p;
+  MSk1 = MSk2/SMc^p;
+  SMk2 = SMk3*SMc^p;
+  MSk2 = MSk3/SMc^p;
+  SMk3 = SMk4*SMc^p;
+  MSk3 = MSk4/SMc^p;
+  SMk4 = 20000;
+  MSk4 = 145;
+  MLk0 = MLk1*MLc^p;
+  MLk1 = MLk2*MLc^p;
+  MLc = 0.069;
+  LMk0 = LMk1/MLc^p;
+  LMk1 = LMk2/MLc^p;
+  MLk2 = MLk3*MLc^p;
+  LMk2 = LMk3/MLc^p;
+  MLk3 = MLk4*MLc^p;
+  LMk3 = LMk4/MLc^p;
+  MLk4 = 50000;
+  LMk4 = 691;
+
+  // Other declarations:
+  const synapse, Bkon, Bkoff, Skon, Skoff, Mkon, Mkoff, Lkon, Lkoff, BSk0;
+  const BSk1, BSc, p, SBk0, SBk1, BSk2, SBk2, BSk3, SBk3, BSk4, SBk4, SMk0;
+  const SMk1, SMc, MSk0, MSk1, SMk2, MSk2, SMk3, MSk3, SMk4, MSk4, MLk0, MLk1;
+  const MLc, LMk0, LMk1, MLk2, LMk2, MLk3, LMk3, MLk4, LMk4;
+
+  // Display Names:
+  B0____S0 is "B0 -> S0";
+  S0____B0 is "S0 -> B0";
+  B1____S1 is "B1 -> S1";
+  S1____B1 is "S1 -> B1";
+  B2____S2 is "B2 -> S2";
+  S2____B2 is "S2 -> B2";
+  B3____S3 is "B3 -> S3";
+  S3____B3 is "S3 -> B3";
+  B4____S4 is "B4 -> S4";
+  S4____B4 is "S4 -> B4";
+  S0____M0 is "S0 -> M0";
+  M0____S0 is "M0 -> S0";
+  S1____M1 is "S1 -> M1";
+  M1____S1 is "M1 -> S1";
+  S2____M2 is "S2 -> M2";
+  M2____S2 is "M2 -> S2";
+  S3____M3 is "S3 -> M3 ";
+  M3____S3 is "M3 -> S3";
+  S4____M4 is "S4 -> M4";
+  M4____S4 is "M4 -> S4";
+  M0____L0 is "M0 -> L0";
+  L0____M0 is "L0 -> M0";
+  M1____L1 is "M1 -> L1";
+  L1____M1 is "L1 -> M1";
+  M2____L2 is "M2 -> L2";
+  L2____M2 is "L2 -> M2";
+  M3____L3 is "M3 -> L3";
+  L3____M3 is "L3 -> M3";
+  M4____L4 is "M4 -> L4";
+  L4____M4 is "L4 -> M4";
+  B0____B1 is "B0 -> B1";
+  B1____B0 is "B1 -> B0";
+  B1____B2 is "B1 -> B2";
+  B2____B1 is "B2 -> B1";
+  B2____B3 is "B2 -> B3";
+  B3____B2 is "B3 -> B2";
+  B3____B4 is "B3 -> B4";
+  B4____B3 is "B4 -> B3";
+  S0____S1 is "S0 -> S1";
+  S1____S0 is "S1 -> S0";
+  S1____S2 is "S1 -> S2";
+  S2____S1 is "S2 -> S1";
+  S2____S3 is "S2 -> S3";
+  S3____S2 is "S3 -> S2";
+  S3____S4 is "S3 -> S4";
+  S4____S3 is "S4 -> S3";
+  M0____M1 is "M0 -> M1";
+  M1____M0 is "M1 -> M0";
+  M1____M2 is "M1 -> M2";
+  M2____M1 is "M2 -> M1";
+  M2____M3 is "M2 -> M3";
+  M3____M2 is "M3 -> M2";
+  M3____M4 is "M3 -> M4";
+  M4____M3 is "M4 -> M3";
+  L0____L1 is "L0 -> L1 ";
+  L1____L0 is "L1 -> L0";
+  L1____L2 is "L1 -> L2";
+  L2____L1 is "L2 -> L1";
+  L2____L3 is "L2 -> L3";
+  L3____L2 is "L3 -> L2";
+  L3____L4 is "L3 -> L4";
+  L4____L3 is "L4 -> L3";
+end

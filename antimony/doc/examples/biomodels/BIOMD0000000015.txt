@@ -3,10 +3,11 @@ model *BIOMD0000000015()
 
   // Compartments and Species:
   compartment cell;
-  species PRPP in cell, IMP in cell, SAMP in cell, ATP in cell, SAM in cell;
-  species Ade in cell, XMP in cell, GTP in cell, dATP in cell, dGTP in cell;
-  species RNA in cell, DNA_ in cell, HX in cell, Xa in cell, Gua in cell;
-  species UA in cell, $R5P in cell, $Pi_ in cell;
+  substanceOnly species PRPP in cell, IMP in cell, SAMP in cell, ATP in cell;
+  substanceOnly species SAM in cell, Ade in cell, XMP in cell, GTP in cell;
+  substanceOnly species dATP in cell, dGTP in cell, RNA in cell, DNA_ in cell;
+  substanceOnly species HX in cell, Xa in cell, Gua in cell, UA in cell, $R5P in cell;
+  substanceOnly species $Pi_ in cell;
 
   // Reactions:
   ada: ATP => HX; ada_aada*ATP^ada_fada4;

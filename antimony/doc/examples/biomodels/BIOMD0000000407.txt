@@ -3,21 +3,23 @@ model *Schliemann2011_TNF_ProAntiApoptosis()
 
   // Compartments and Species:
   compartment cytoplasm, extracellular, nucleus;
-  species TNFR_E in extracellular, TNF_E in extracellular, TNF_TNFR_E in extracellular;
-  species TNFR in cytoplasm, RIP in cytoplasm, TRADD in cytoplasm, TRAF2 in cytoplasm;
-  species FADD in cytoplasm, TNF_TNFR_TRADD in cytoplasm, TNFRC1 in cytoplasm;
-  species TNFRCint1 in cytoplasm, TNFRCint2 in cytoplasm, TNFRCint3 in cytoplasm;
-  species TNFRC2 in cytoplasm, FLIP in cytoplasm, TNFRC2_FLIP in cytoplasm;
-  species TNFRC2_pCasp8 in cytoplasm, TNFRC2_FLIP_FLIP in cytoplasm, TNFRC2_pCasp8_pCasp8 in cytoplasm;
-  species TNFRC2_FLIP_pCasp8 in cytoplasm, TNFRC2_FLIP_pCasp8_RIP_TRAF2 in cytoplasm;
-  species IKK in cytoplasm, IKKa in cytoplasm, A20 in cytoplasm, NFkB in cytoplasm;
-  species IkBa in cytoplasm, IkBa_NFkB in cytoplasm, PIkBa in cytoplasm, NFkB_N in nucleus;
-  species IkBa_N in nucleus, IkBa_NFkB_N in nucleus, A20_mRNA in nucleus;
-  species IkBa_mRNA in nucleus, XIAP_mRNA in nucleus, FLIP_mRNA in nucleus;
-  species BAR in cytoplasm, XIAP in cytoplasm, pCasp8 in cytoplasm, pCasp3 in cytoplasm;
-  species pCasp6 in cytoplasm, Casp8 in cytoplasm, Casp3 in cytoplasm, Casp6 in cytoplasm;
-  species BAR_Casp8 in cytoplasm, XIAP_Casp3 in cytoplasm, PARP in cytoplasm;
-  species cPARP in cytoplasm;
+  substanceOnly species TNFR_E in extracellular, TNF_E in extracellular, TNF_TNFR_E in extracellular;
+  substanceOnly species TNFR in cytoplasm, RIP in cytoplasm, TRADD in cytoplasm;
+  substanceOnly species TRAF2 in cytoplasm, FADD in cytoplasm, TNF_TNFR_TRADD in cytoplasm;
+  substanceOnly species TNFRC1 in cytoplasm, TNFRCint1 in cytoplasm, TNFRCint2 in cytoplasm;
+  substanceOnly species TNFRCint3 in cytoplasm, TNFRC2 in cytoplasm, FLIP in cytoplasm;
+  substanceOnly species TNFRC2_FLIP in cytoplasm, TNFRC2_pCasp8 in cytoplasm;
+  substanceOnly species TNFRC2_FLIP_FLIP in cytoplasm, TNFRC2_pCasp8_pCasp8 in cytoplasm;
+  substanceOnly species TNFRC2_FLIP_pCasp8 in cytoplasm, TNFRC2_FLIP_pCasp8_RIP_TRAF2 in cytoplasm;
+  substanceOnly species IKK in cytoplasm, IKKa in cytoplasm, A20 in cytoplasm;
+  substanceOnly species NFkB in cytoplasm, IkBa in cytoplasm, IkBa_NFkB in cytoplasm;
+  substanceOnly species PIkBa in cytoplasm, NFkB_N in nucleus, IkBa_N in nucleus;
+  substanceOnly species IkBa_NFkB_N in nucleus, A20_mRNA in nucleus, IkBa_mRNA in nucleus;
+  substanceOnly species XIAP_mRNA in nucleus, FLIP_mRNA in nucleus, BAR in cytoplasm;
+  substanceOnly species XIAP in cytoplasm, pCasp8 in cytoplasm, pCasp3 in cytoplasm;
+  substanceOnly species pCasp6 in cytoplasm, Casp8 in cytoplasm, Casp3 in cytoplasm;
+  substanceOnly species Casp6 in cytoplasm, BAR_Casp8 in cytoplasm, XIAP_Casp3 in cytoplasm;
+  substanceOnly species PARP in cytoplasm, cPARP in cytoplasm;
 
   // Reactions:
   J1: TNFR => TNFR_E; J1_ka_1*TNFR;

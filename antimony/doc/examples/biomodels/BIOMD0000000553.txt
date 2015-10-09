@@ -1,0 +1,61 @@
+// Created by libAntimony v2.7.1
+function Constant_flux__irreversible(v)
+  v;
+end
+
+function Loss_of_intracellular_choline_0(k1, a, b)
+  k1*a*b;
+end
+
+function Effect_of_extracellular_ACh_0(k3, a)
+  k3*a;
+end
+
+function Decrease_in_the_extracellular_concentration_of_beta_amyloid_0(k4, b)
+  k4*b;
+end
+
+
+model *MODEL1410200000()
+
+  // Compartments and Species:
+  compartment Brain;
+  species a in Brain, b in Brain, $aRel in Brain;
+
+  // Assignment Rules:
+  aRel := a/50;
+
+  // Reactions:
+  Loss_of_intracellular_choline: a => ; Brain*Loss_of_intracellular_choline_0(k1, a, b);
+  Abeta_formation_from_APP:  => b; Brain*Constant_flux__irreversible(k2);
+  Effect_of_extracellular_ACh: b => ; Brain*Effect_of_extracellular_ACh_0(k3, a);
+  Decrease_in_the_extracellular_concentration_of_beta_amyloid: b => ; Brain*Decrease_in_the_extracellular_concentration_of_beta_amyloid_0(k4, b);
+
+  // Species initializations:
+  a = 50;
+  b = 0;
+
+  // Compartment initializations:
+  Brain = 1;
+
+  // Variable initializations:
+  k1 = 0.007;
+  k2 = 0.33;
+  k3 = 0.0042;
+  k4 = 0.01;
+
+  // Other declarations:
+  const Brain, k1, k2, k3, k4;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+  Loss_of_intracellular_choline is "Loss of intracellular choline";
+  Abeta_formation_from_APP is "Abeta formation from APP";
+  Effect_of_extracellular_ACh is "Effect of extracellular ACh";
+  Decrease_in_the_extracellular_concentration_of_beta_amyloid is "Decrease in the extracellular concentration of beta-amyloid";
+end

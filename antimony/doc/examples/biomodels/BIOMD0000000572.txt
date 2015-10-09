@@ -1,0 +1,300 @@
+// Created by libAntimony v2.7.1
+function function_4_PTS_Glc(FBP, G6P, Glucose, PEP, PYR, Pint, Vmax_PTS_Glc, kaPint_PTS_Glc, kiFBP_PTS_Glc, kmG6P_PTS_Glc, kmGlucose_PTS_Glc, kmPEP_PTS_Glc, kmPYR_PTS_Glc)
+  (Pint/(Pint + kaPint_PTS_Glc)*(kiFBP_PTS_Glc/(FBP + kiFBP_PTS_Glc))*Vmax_PTS_Glc*(Glucose/kmGlucose_PTS_Glc)*(PEP/kmPEP_PTS_Glc))/(((1 + Glucose/kmGlucose_PTS_Glc)*(1 + PEP/kmPEP_PTS_Glc) + (1 + G6P/kmG6P_PTS_Glc)*(1 + PYR/kmPYR_PTS_Glc)) - 1);
+end
+
+function function_4_ATPase(ATP, Vmax_ATPase, kmATP_ATPase, nATPase)
+  Vmax_ATPase*((ATP/kmATP_ATPase)^nATPase/((ATP/kmATP_ATPase)^nATPase + 1));
+end
+
+function function_4_P_transp(ADP, ATP, Pext, Pint, Vmax_Ptransport, kiPint_Ptransport, kmADP_Ptransport, kmATP_Ptransport, kmPext_Ptransport, kmPint_Ptransport)
+  (kiPint_Ptransport/(Pint + kiPint_Ptransport)*Vmax_Ptransport*(ATP/kmATP_Ptransport)*(Pext/kmPext_Ptransport))/(((1 + Pext/kmPext_Ptransport)*(1 + ATP/kmATP_Ptransport) + (1 + Pint/kmPint_Ptransport + (Pint/kmPint_Ptransport)^2)*(1 + ADP/kmADP_Ptransport)) - 1);
+end
+
+function function_4_PGI(F6P, G6P, Keq_PGI, Vmax_PGI, kmF6P_PGI, kmG6P_PGI)
+  (Vmax_PGI*(G6P/kmG6P_PGI) - Vmax_PGI/Keq_PGI*(F6P/kmG6P_PGI))/(1 + G6P/kmG6P_PGI + F6P/kmF6P_PGI);
+end
+
+function function_4_PFK(ADP, ATP, F6P, FBP, Vmax_PFK, kmADP_PFK, kmATP_PFK, kmF6P_PFK, kmFBP_PFK)
+  (Vmax_PFK*(F6P/kmF6P_PFK)*(ATP/kmATP_PFK))/(((1 + F6P/kmF6P_PFK)*(1 + ATP/kmATP_PFK) + (1 + FBP/kmFBP_PFK)*(1 + ADP/kmADP_PFK)) - 1);
+end
+
+function function_4_FBA(FBP, G3P, Keq_FBA, Vmax_FBA, kmFBP_FBA, kmG3P_FBA)
+  (Vmax_FBA*(FBP/kmFBP_FBA) - Vmax_FBA/Keq_FBA*(G3P^2/kmFBP_FBA))/(1 + FBP/kmFBP_FBA + G3P/kmG3P_FBA + (G3P/kmG3P_FBA)^2);
+end
+
+function function_4_GAPDH(BPG, G3P, Keq_GAPDH, NAD, NADH, Pint, Vmax_GAPDH, kmBPG_GAPDH, kmG3P_GAPDH, kmNADH_GAPDH, kmNAD_GAPDH, kmPint_GAPDH)
+  (Vmax_GAPDH*(G3P/kmG3P_GAPDH)*(NAD/kmNAD_GAPDH)*(Pint/kmPint_GAPDH) - Vmax_GAPDH/Keq_GAPDH*(BPG/kmG3P_GAPDH)*(NADH/kmNAD_GAPDH)*(1/kmPint_GAPDH))/(((1 + G3P/kmG3P_GAPDH)*(1 + Pint/kmPint_GAPDH)*(1 + NAD/kmNAD_GAPDH) + (1 + BPG/kmBPG_GAPDH)*(1 + NADH/kmNADH_GAPDH)) - 1);
+end
+
+function function_4_ENO(ADP, ATP, BPG, Keq_ENO, PEP, Vmax_ENO, kmADP_ENO, kmATP_ENO, kmBPG_ENO, kmPEP_ENO)
+  (Vmax_ENO*(BPG/kmBPG_ENO)*(ADP/kmADP_ENO) - Vmax_ENO/Keq_ENO*(PEP/kmBPG_ENO)*(ATP/kmADP_ENO))/(((1 + BPG/kmBPG_ENO)*(1 + ADP/kmADP_ENO) + (1 + PEP/kmPEP_ENO)*(1 + ATP/kmATP_ENO)) - 1);
+end
+
+function function_4_PYK(ADP, ATP, FBP, PEP, PYR, Pint, Vmax_PYK, kaFBP_PYK, kiPint_PYK, kmADP_PYK, kmATP_PYK, kmPEP_PYK, kmPYR_PYK, nPYK)
+  (FBP/(FBP + kaFBP_PYK)*(kiPint_PYK^nPYK/(Pint^nPYK + kiPint_PYK^nPYK))*Vmax_PYK*(ADP/kmADP_PYK)*(PEP/kmPEP_PYK))/(((1 + ADP/kmADP_PYK)*(1 + PEP/kmPEP_PYK) + (1 + ATP/kmATP_PYK)*(1 + PYR/kmPYR_PYK)) - 1);
+end
+
+function function_4_LDH(FBP, Lactate, NAD, NADH, PYR, Pint, Vmax_LDH, kaFBP_LDH, kiPint_LDH, kmLactate_LDH, kmNADH_LDH, kmNAD_LDH, kmPYR_LDH)
+  (FBP/(FBP + kaFBP_LDH)*(kiPint_LDH/(Pint + kiPint_LDH))*Vmax_LDH*(PYR/kmPYR_LDH)*(NADH/kmNADH_LDH))/(((1 + PYR/kmPYR_LDH)*(1 + NADH/kmNADH_LDH) + (1 + Lactate/kmLactate_LDH)*(1 + NAD/kmNAD_LDH)) - 1);
+end
+
+function function_4_PFL(AcetCoA, CoA, Formate, G3P, Keq_PFL, KmCoA_PFL, PYR, Vmax_PFL, kiG3P_PFL, kmAcetCoA_PFL, kmFormate_PFL, kmPYR_PFL)
+  (kiG3P_PFL/(G3P + kiG3P_PFL)*(Vmax_PFL*(PYR/kmPYR_PFL)*(CoA/KmCoA_PFL) - Vmax_PFL/Keq_PFL*(AcetCoA/kmPYR_PFL)*(Formate/KmCoA_PFL)))/(((1 + PYR/kmPYR_PFL)*(1 + CoA/KmCoA_PFL) + (1 + AcetCoA/kmAcetCoA_PFL)*(1 + Formate/kmFormate_PFL)) - 1);
+end
+
+function function_4_AE(ATP, AcetCoA, CoA, Ethanol, NAD, NADH, Vmax_AE, kiATP_AE, kmAcetCoA_AE, kmCoA_AE, kmEthanol_AE, kmNADH_AE, kmNAD_AE)
+  (kiATP_AE/(ATP + kiATP_AE)*Vmax_AE*(AcetCoA/kmAcetCoA_AE)*(NADH/kmNADH_AE)^2)/(((1 + NADH/kmNADH_AE + (NADH/kmNADH_AE)^2)*(1 + AcetCoA/kmAcetCoA_AE) + (1 + Ethanol/kmEthanol_AE)*(1 + CoA/kmCoA_AE)*(1 + NAD/kmNAD_AE + (NAD/kmNAD_AE)^2)) - 1);
+end
+
+function function_4_ACK(ADP, ATP, AcetCoA, Acetate, CoA, Vmax_ACK, kmADP_ACK, kmATP_ACK, kmAcetCoA_ACK, kmAcetate_ACK, kmCoA_ACK)
+  (Vmax_ACK*(AcetCoA/kmAcetCoA_ACK)*(ADP/kmADP_ACK))/(((1 + AcetCoA/kmAcetCoA_ACK)*(1 + ADP/kmADP_ACK) + (1 + Acetate/kmAcetate_ACK)*(1 + ATP/kmATP_ACK)*(1 + CoA/kmCoA_ACK)) - 1);
+end
+
+function function_4_ALS(Acetoin, Keq_ALS, PYR, Vmax_ALS, kmAcetoin_ALS, kmPYR_ALS)
+  (Vmax_ALS*(PYR/kmPYR_ALS)^2 - Vmax_ALS/Keq_ALS*(Acetoin/kmPYR_ALS))/((1 + PYR/kmPYR_ALS + (PYR/kmPYR_ALS)^2 + 1 + Acetoin/kmAcetoin_ALS) - 1);
+end
+
+function function_4_BDH(Acetoin, Butanediol, Keq_BDH, NAD, NADH, Vmax_BDH, kmAcetoin_BDH, kmButanediol_BDH, kmNADH_BDH, kmNAD_BDH)
+  (Vmax_BDH*(Acetoin/kmAcetoin_BDH)*(NADH/kmNADH_BDH) - Vmax_BDH/Keq_BDH*(Butanediol/kmAcetoin_BDH)*(NAD/kmNADH_BDH))/(((1 + Acetoin/kmAcetoin_BDH)*(1 + NADH/kmNADH_BDH) + (1 + Butanediol/kmButanediol_BDH)*(1 + NAD/kmNAD_BDH)) - 1);
+end
+
+function function_4_MPD(F6P, Keq_MPD, Mannitol1Phosphate, NAD, NADH, Vmax_MPD, kiF6P_MPD, kmF6P_MPD, kmMannitol1Phoshate_MPD, kmNADH_MPD, kmNAD_MPD)
+  (kiF6P_MPD/(F6P + kiF6P_MPD)*(Vmax_MPD*(F6P/kmF6P_MPD)*(NADH/kmNADH_MPD) - Vmax_MPD/Keq_MPD*(Mannitol1Phosphate/kmF6P_MPD)*(NAD/kmNADH_MPD)))/(((1 + F6P/kmF6P_MPD)*(1 + NADH/kmNADH_MPD) + (1 + Mannitol1Phosphate/kmMannitol1Phoshate_MPD)*(1 + NAD/kmNAD_MPD)) - 1);
+end
+
+function function_4_MP(Mannitol, Mannitol1Phosphate, Vmax_MP, kmMannitol1Phosphate_MP, kmMannitol_MP)
+  (Vmax_MP*(Mannitol1Phosphate/kmMannitol1Phosphate_MP))/((1 + Mannitol1Phosphate/kmMannitol1Phosphate_MP + 1 + Mannitol/kmMannitol_MP) - 1);
+end
+
+function function_4_PTS_Man(Mannitol1Phosphate, Mannitol_Ext, PEP, PYR, Vmax_PTS_Man, kmMannitol1Phosphate_PTS_Man, kmMannitolExt_PTS_Man, kmPEP_PTS_Man, kmPYR_PTS_Man)
+  (Vmax_PTS_Man*(Mannitol_Ext/kmMannitolExt_PTS_Man)*(PEP/kmPEP_PTS_Man))/(((1 + Mannitol_Ext/kmMannitolExt_PTS_Man)*(1 + PEP/kmPEP_PTS_Man) + (1 + Mannitol1Phosphate/kmMannitol1Phosphate_PTS_Man)*(1 + PYR/kmPYR_PTS_Man)) - 1);
+end
+
+function function_4_Acetoin_transp(Acetoin, Acetoin_Ext, Vmax_Acetoin_transp, kmAcetoin_Acetoin_transp, kmAcetoin_Ext_Acetoin_transp)
+  (Vmax_Acetoin_transp*(Acetoin/kmAcetoin_Acetoin_transp))/(1 + Acetoin/kmAcetoin_Acetoin_transp + Acetoin_Ext/kmAcetoin_Ext_Acetoin_transp);
+end
+
+function function_4_Mannitol_transp(Mannitol, Mannitol_Ext, Vmax_Mannitol_transp, kmMannitol_Ext_Mannitol_transp, kmMannitol_Mannitol_transp)
+  (Vmax_Mannitol_transp*(Mannitol/kmMannitol_Mannitol_transp))/(1 + Mannitol/kmMannitol_Mannitol_transp + Mannitol_Ext/kmMannitol_Ext_Mannitol_transp);
+end
+
+function function_4_FBPase(F6P, FBP, Pint, Vmax_FBPase, kmF6P_FBPase, kmFBP_FBPase, kmPint_FBPase)
+  (Vmax_FBPase*(FBP/kmFBP_FBPase))/(FBP/kmFBP_FBPase + (1 + F6P/kmF6P_FBPase)*(1 + Pint/kmPint_FBPase));
+end
+
+
+model *MODEL1503180000()
+
+  // Compartments and Species:
+  compartment compartment_1, compartment_2;
+  species G6P in compartment_1, ATP in compartment_1, ADP in compartment_1;
+  species Pint in compartment_1, F6P in compartment_1, FBP in compartment_1;
+  species G3P in compartment_1, BPG in compartment_1, PEP in compartment_1;
+  species NAD in compartment_1, NADH in compartment_1, PYR in compartment_1;
+  species AcetCoA in compartment_1, Acetoin in compartment_1, Mannitol in compartment_1;
+  species Mannitol1Phosphate in compartment_1, CoA in compartment_1, Pext in compartment_2;
+  species Lactate in compartment_2, Ethanol in compartment_2, Acetate in compartment_2;
+  species Butanediol in compartment_2, Glucose in compartment_2, Acetoin_Ext in compartment_2;
+  species Mannitol_Ext in compartment_2, Formate in compartment_2;
+
+  // Reactions:
+  re12: Glucose + PEP => G6P + PYR; function_4_PTS_Glc(FBP, G6P, Glucose, PEP, PYR, Pint, re12_Vmax_PTS_Glc, re12_kaPint_PTS_Glc, re12_kiFBP_PTS_Glc, re12_kmG6P_PTS_Glc, re12_kmGlucose_PTS_Glc, re12_kmPEP_PTS_Glc, re12_kmPYR_PTS_Glc);
+  re13: ATP => ADP + Pint; compartment_1*function_4_ATPase(ATP, re13_Vmax_ATPase, re13_kmATP_ATPase, re13_nATPase);
+  re14: Pext + ATP => 2Pint + ADP; function_4_P_transp(ADP, ATP, Pext, Pint, re14_Vmax_Ptransport, re14_kiPint_Ptransport, re14_kmADP_Ptransport, re14_kmATP_Ptransport, re14_kmPext_Ptransport, re14_kmPint_Ptransport);
+  re15: G6P -> F6P; compartment_1*function_4_PGI(F6P, G6P, re15_Keq_PGI, re15_Vmax_PGI, re15_kmF6P_PGI, re15_kmG6P_PGI);
+  re16: F6P + ATP => FBP + ADP; compartment_1*function_4_PFK(ADP, ATP, F6P, FBP, re16_Vmax_PFK, re16_kmADP_PFK, re16_kmATP_PFK, re16_kmF6P_PFK, re16_kmFBP_PFK);
+  re17: FBP -> 2G3P; compartment_1*function_4_FBA(FBP, G3P, re17_Keq_FBA, re17_Vmax_FBA, re17_kmFBP_FBA, re17_kmG3P_FBA);
+  re18: G3P + Pint + NAD -> BPG + NADH; compartment_1*function_4_GAPDH(BPG, G3P, re18_Keq_GAPDH, NAD, NADH, Pint, re18_Vmax_GAPDH, re18_kmBPG_GAPDH, re18_kmG3P_GAPDH, re18_kmNADH_GAPDH, re18_kmNAD_GAPDH, re18_kmPint_GAPDH);
+  re20: BPG + ADP -> PEP + ATP; compartment_1*function_4_ENO(ADP, ATP, BPG, re20_Keq_ENO, PEP, re20_Vmax_ENO, re20_kmADP_ENO, re20_kmATP_ENO, re20_kmBPG_ENO, re20_kmPEP_ENO);
+  re21: PEP + ADP => PYR + ATP; compartment_1*function_4_PYK(ADP, ATP, FBP, PEP, PYR, Pint, re21_Vmax_PYK, re21_kaFBP_PYK, re21_kiPint_PYK, re21_kmADP_PYK, re21_kmATP_PYK, re21_kmPEP_PYK, re21_kmPYR_PYK, re21_nPYK);
+  re22: PYR + NADH => Lactate + NAD; function_4_LDH(FBP, Lactate, NAD, NADH, PYR, Pint, re22_Vmax_LDH, re22_kaFBP_LDH, re22_kiPint_LDH, re22_kmLactate_LDH, re22_kmNADH_LDH, re22_kmNAD_LDH, re22_kmPYR_LDH);
+  re23: PYR + CoA -> AcetCoA + Formate; function_4_PFL(AcetCoA, CoA, Formate, G3P, re23_Keq_PFL, re23_KmCoA_PFL, PYR, re23_Vmax_PFL, re23_kiG3P_PFL, re23_kmAcetCoA_PFL, re23_kmFormate_PFL, re23_kmPYR_PFL);
+  re24: AcetCoA + 2NADH => Ethanol + 2NAD + CoA; function_4_AE(ATP, AcetCoA, CoA, Ethanol, NAD, NADH, re24_Vmax_AE, re24_kiATP_AE, re24_kmAcetCoA_AE, re24_kmCoA_AE, re24_kmEthanol_AE, re24_kmNADH_AE, re24_kmNAD_AE);
+  re25: AcetCoA + ADP => Acetate + ATP + CoA; function_4_ACK(ADP, ATP, AcetCoA, Acetate, CoA, re25_Vmax_ACK, re25_kmADP_ACK, re25_kmATP_ACK, re25_kmAcetCoA_ACK, re25_kmAcetate_ACK, re25_kmCoA_ACK);
+  re26: 2PYR -> Acetoin; compartment_1*function_4_ALS(Acetoin, re26_Keq_ALS, PYR, re26_Vmax_ALS, re26_kmAcetoin_ALS, re26_kmPYR_ALS);
+  re27: Acetoin + NADH -> Butanediol + NAD; function_4_BDH(Acetoin, Butanediol, re27_Keq_BDH, NAD, NADH, re27_Vmax_BDH, re27_kmAcetoin_BDH, re27_kmButanediol_BDH, re27_kmNADH_BDH, re27_kmNAD_BDH);
+  re28: F6P + NADH -> Mannitol1Phosphate + NAD; compartment_1*function_4_MPD(F6P, re28_Keq_MPD, Mannitol1Phosphate, NAD, NADH, re28_Vmax_MPD, re28_kiF6P_MPD, re28_kmF6P_MPD, re28_kmMannitol1Phoshate_MPD, re28_kmNADH_MPD, re28_kmNAD_MPD);
+  re29: Mannitol1Phosphate => Mannitol; compartment_1*function_4_MP(Mannitol, Mannitol1Phosphate, re29_Vmax_MP, re29_kmMannitol1Phosphate_MP, re29_kmMannitol_MP);
+  re30: Mannitol_Ext + PEP => Mannitol1Phosphate + PYR; function_4_PTS_Man(Mannitol1Phosphate, Mannitol_Ext, PEP, PYR, re30_Vmax_PTS_Man, re30_kmMannitol1Phosphate_PTS_Man, re30_kmMannitolExt_PTS_Man, re30_kmPEP_PTS_Man, re30_kmPYR_PTS_Man);
+  re31: Acetoin => Acetoin_Ext; function_4_Acetoin_transp(Acetoin, Acetoin_Ext, re31_Vmax_Acetoin_transp, re31_kmAcetoin_Acetoin_transp, re31_kmAcetoin_Ext_Acetoin_transp);
+  re32: Mannitol => Mannitol_Ext; function_4_Mannitol_transp(Mannitol, Mannitol_Ext, re32_Vmax_Mannitol_transp, re32_kmMannitol_Ext_Mannitol_transp, re32_kmMannitol_Mannitol_transp);
+  re33: FBP => F6P + Pint; compartment_1*function_4_FBPase(F6P, FBP, Pint, re33_Vmax_FBPase, re33_kmF6P_FBPase, re33_kmFBP_FBPase, re33_kmPint_FBPase);
+
+  // Species initializations:
+  G6P = 0;
+  ATP = 4.88632508879394;
+  ADP = 20.3856905308319;
+  Pint = 38.26;
+  F6P = 0;
+  FBP = 15.3;
+  G3P = 0;
+  BPG = 1.26348531244692;
+  PEP = 2.4790177588998;
+  NAD = 4.67;
+  NADH = 2.03337939283534e-006;
+  PYR = 0;
+  AcetCoA = 0;
+  Acetoin = 0;
+  Mannitol = 0;
+  Mannitol1Phosphate = 0;
+  CoA = 1;
+  Pext = 50;
+  Lactate = 0;
+  Ethanol = 0;
+  Acetate = 0;
+  Butanediol = 0;
+  Glucose = 80;
+  Acetoin_Ext = 0;
+  Mannitol_Ext = 0;
+  Formate = 0;
+
+  // Compartment initializations:
+  compartment_1 = 0.047;
+  compartment_2 = 1;
+
+  // Variable initializations:
+  re12_Vmax_PTS_Glc = 3.71082;
+  re12_kaPint_PTS_Glc = 0.070909;
+  re12_kiFBP_PTS_Glc = 1.16937;
+  re12_kmG6P_PTS_Glc = 0.284871;
+  re12_kmGlucose_PTS_Glc = 0.0485045;
+  re12_kmPEP_PTS_Glc = 0.305604;
+  re12_kmPYR_PTS_Glc = 1.95993;
+  re13_Vmax_ATPase = 3.2901;
+  re13_kmATP_ATPase = 4.34159;
+  re13_nATPase = 3;
+  re14_Vmax_Ptransport = 3.59588;
+  re14_kiPint_Ptransport = 0.561093;
+  re14_kmADP_Ptransport = 0.192278;
+  re14_kmATP_Ptransport = 0.523288;
+  re14_kmPext_Ptransport = 0.749898;
+  re14_kmPint_Ptransport = 0.30336;
+  re15_Keq_PGI = 0.43;
+  re15_Vmax_PGI = 21.681;
+  re15_kmF6P_PGI = 3.13894;
+  re15_kmG6P_PGI = 0.199409;
+  re16_Vmax_PFK = 18.3577;
+  re16_kmADP_PFK = 10.7357;
+  re16_kmATP_PFK = 0.0616607;
+  re16_kmF6P_PFK = 1.01973;
+  re16_kmFBP_PFK = 86.8048;
+  re17_Keq_FBA = 0.056;
+  re17_Vmax_FBA = 56.1311;
+  re17_kmFBP_FBA = 0.300745;
+  re17_kmG3P_FBA = 10.1058;
+  re18_Keq_GAPDH = 0.0007;
+  re18_Vmax_GAPDH = 30.0058;
+  re18_kmBPG_GAPDH = 0.0481603;
+  re18_kmG3P_GAPDH = 0.181788;
+  re18_kmNADH_GAPDH = 0.643019;
+  re18_kmNAD_GAPDH = 0.0477445;
+  re18_kmPint_GAPDH = 6.75302;
+  re20_Keq_ENO = 27.55;
+  re20_Vmax_ENO = 29.132;
+  re20_kmADP_ENO = 0.413195;
+  re20_kmATP_ENO = 0.748238;
+  re20_kmBPG_ENO = 0.0241572;
+  re20_kmPEP_ENO = 1.38899;
+  re21_Vmax_PYK = 2.22404;
+  re21_kaFBP_PYK = 0.0388651;
+  re21_kiPint_PYK = 3.70071;
+  re21_kmADP_PYK = 3.07711;
+  re21_kmATP_PYK = 29.6028;
+  re21_kmPEP_PYK = 0.330583;
+  re21_kmPYR_PYK = 96.4227;
+  re21_nPYK = 3;
+  re22_Vmax_LDH = 566.598;
+  re22_kaFBP_LDH = 0.0184011;
+  re22_kiPint_LDH = 0.0676829;
+  re22_kmLactate_LDH = 94.1203;
+  re22_kmNADH_LDH = 0.144443;
+  re22_kmNAD_LDH = 3.08447;
+  re22_kmPYR_LDH = 0.01;
+  re23_Keq_PFL = 650;
+  re23_KmCoA_PFL = 0.124066;
+  re23_Vmax_PFL = 0.00230934;
+  re23_kiG3P_PFL = 0.511288;
+  re23_kmAcetCoA_PFL = 7.34319;
+  re23_kmFormate_PFL = 54.2693;
+  re23_kmPYR_PFL = 5.77662;
+  re24_Vmax_AE = 2.11844;
+  re24_kiATP_AE = 6.28119;
+  re24_kmAcetCoA_AE = 7.38021;
+  re24_kmCoA_AE = 0.091813;
+  re24_kmEthanol_AE = 2.28106;
+  re24_kmNADH_AE = 0.43127;
+  re24_kmNAD_AE = 1.31442;
+  re25_Vmax_ACK = 3.83918;
+  re25_kmADP_ACK = 1.17242;
+  re25_kmATP_ACK = 14.1556;
+  re25_kmAcetCoA_ACK = 0.55824;
+  re25_kmAcetate_ACK = 0.552221;
+  re25_kmCoA_ACK = 0.173388;
+  re26_Keq_ALS = 900000;
+  re26_Vmax_ALS = 0.354581;
+  re26_kmAcetoin_ALS = 0.0495418;
+  re26_kmPYR_ALS = 0.262819;
+  re27_Keq_BDH = 1400;
+  re27_Vmax_BDH = 2.28578;
+  re27_kmAcetoin_BDH = 5.62373;
+  re27_kmButanediol_BDH = 1.80684;
+  re27_kmNADH_BDH = 3.54858;
+  re27_kmNAD_BDH = 1.29567;
+  re28_Keq_MPD = 200;
+  re28_Vmax_MPD = 1.32695;
+  re28_kiF6P_MPD = 22.0284;
+  re28_kmF6P_MPD = 0.321372;
+  re28_kmMannitol1Phoshate_MPD = 0.0891203;
+  re28_kmNADH_MPD = 0.0303446;
+  re28_kmNAD_MPD = 0.373149;
+  re29_Vmax_MP = 3.48563;
+  re29_kmMannitol1Phosphate_MP = 3.51571;
+  re29_kmMannitol_MP = 0.238849;
+  re30_Vmax_PTS_Man = 4.44903;
+  re30_kmMannitol1Phosphate_PTS_Man = 0.362571;
+  re30_kmMannitolExt_PTS_Man = 0.0127321;
+  re30_kmPEP_PTS_Man = 2.20816;
+  re30_kmPYR_PTS_Man = 0.344134;
+  re31_Vmax_Acetoin_transp = 1.60066;
+  re31_kmAcetoin_Acetoin_transp = 1.89255;
+  re31_kmAcetoin_Ext_Acetoin_transp = 7.05248;
+  re32_Vmax_Mannitol_transp = 1.62459;
+  re32_kmMannitol_Ext_Mannitol_transp = 0.940662;
+  re32_kmMannitol_Mannitol_transp = 0.0223502;
+  re33_Vmax_FBPase = 0.0970486;
+  re33_kmF6P_FBPase = 1.90796;
+  re33_kmFBP_FBPase = 0.412307;
+  re33_kmPint_FBPase = 0.0109675;
+
+  // Other declarations:
+  const compartment_1, compartment_2;
+
+  // Unit definitions:
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_1 is "Intracellular";
+  compartment_2 is "Extracellular";
+  re12 is "PTS_Glc";
+  re13 is "ATPase";
+  re14 is "P_transp";
+  re15 is "PGI";
+  re16 is "PFK";
+  re17 is "FBA";
+  re18 is "GAPDH";
+  re20 is "ENO";
+  re21 is "PYK";
+  re22 is "LDH";
+  re23 is "PDH";
+  re24 is "AE";
+  re25 is "AC";
+  re26 is "PA";
+  re27 is "AB";
+  re28 is "MPD";
+  re29 is "MP";
+  re30 is "PTS_Man";
+  re31 is "Acetoin_transp";
+  re32 is "Mannitol_transp";
+  re33 is "FBPase";
+end

@@ -3,16 +3,18 @@ model *MODEL1308220001()
 
   // Compartments and Species:
   compartment default, c1, c2;
-  species s1 in default, s2 in default, s3 in default, s4 in default, s5 in default;
-  species s6 in default, s7 in c1, s8 in c1, s9 in c1, s10 in c1, s11 in c1;
-  species s12 in c1, s13 in c1, s14 in c1, s15 in c1, s16 in c1, s17 in c1;
-  species s18 in c1, s27 in c1, s28 in c1, s19 in c1, s20 in c1, s21 in c1;
-  species s22 in c1, s23 in c1, s24 in c1, s25 in c1, s26 in c1, s29 in c1;
-  species s30 in c1, s31 in c1, s32 in c1, s33 in c2, s34 in c2, s35 in c2;
-  species s36 in c2, s37 in c2, s38 in c2, s39 in c2, s40 in c2, s41 in c2;
-  species s42 in c2, s43 in c2, s44 in c2, s45 in c2, s46 in c2, s47 in c2;
-  species s48 in c2, s49 in c2, s50 in c2, s51 in c2, s52 in c2, s53 in c2;
-  species s54 in c2, s55 in c2, s56 in c2, s57 in default;
+  substanceOnly species s1 in default, s2 in default, s3 in default, s4 in default;
+  substanceOnly species s5 in default, s6 in default, s7 in c1, s8 in c1;
+  substanceOnly species s9 in c1, s10 in c1, s11 in c1, s12 in c1, s13 in c1;
+  substanceOnly species s14 in c1, s15 in c1, s16 in c1, s17 in c1, s18 in c1;
+  substanceOnly species s27 in c1, s28 in c1, s19 in c1, s20 in c1, s21 in c1;
+  substanceOnly species s22 in c1, s23 in c1, s24 in c1, s25 in c1, s26 in c1;
+  substanceOnly species s29 in c1, s30 in c1, s31 in c1, s32 in c1, s33 in c2;
+  substanceOnly species s34 in c2, s35 in c2, s36 in c2, s37 in c2, s38 in c2;
+  substanceOnly species s39 in c2, s40 in c2, s41 in c2, s42 in c2, s43 in c2;
+  substanceOnly species s44 in c2, s45 in c2, s46 in c2, s47 in c2, s48 in c2;
+  substanceOnly species s49 in c2, s50 in c2, s51 in c2, s52 in c2, s53 in c2;
+  substanceOnly species s54 in c2, s55 in c2, s56 in c2, s57 in default;
 
   // Reactions:
   re1: s1 -> s7; kass_re1*s1 - kdiss_re1*s7;
@@ -572,7 +574,7 @@ model *MODEL1308220001()
   kass_re86 = 1;
   kass_re86 has per_second;
 
-  //  Other declarations:
+  // Other declarations:
   const default, c1, c2, kdiss_re1, kass_re1, kdiss_re2, kass_re2, kdiss_re3;
   const kass_re3, kdiss_re4, kass_re4, kdiss_re5, kass_re5, kdiss_re6, kass_re6;
   const kdiss_re7, kass_re7, kdiss_re8, kass_re8, kdiss_re9, kass_re9, kdiss_re10;
@@ -612,7 +614,7 @@ model *MODEL1308220001()
   unit per_second = 1 / second;
   unit substance_per_volume = 1e-3 mole / 1e-3 litre;
 
-  //  Display Names:
+  // Display Names:
   time_unit is "time";
   c1 is "Cytosol";
   c2 is "Nucleus";

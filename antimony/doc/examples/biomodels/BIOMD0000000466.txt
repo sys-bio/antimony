@@ -3,12 +3,13 @@ model *MODEL1302180005()
 
   // Compartments and Species:
   compartment default, c1, c3;
-  species s35 in c1, s37 in c1, s38 in c1, s39 in c1, s42 in c3, s43 in c1;
-  species s44 in c1, s49 in c1, s51 in c1, s91 in c1, s92 in c1, s93 in c1;
-  species s94 in c1, s95 in c1, s96 in c1, s97 in c1, s98 in c1, s99 in c1;
-  species s100 in c1, s101 in c1, s102 in c1, s103 in c1, s104 in c1, s105 in c1;
-  species s106 in c1, s107 in c3, s108 in c3, s110 in c1, s111 in c1, s112 in c1;
-  species s113 in c1, s114 in c1, s115 in c3, s119 in default;
+  substanceOnly species s35 in c1, s37 in c1, s38 in c1, s39 in c1, s42 in c3;
+  substanceOnly species s43 in c1, s44 in c1, s49 in c1, s51 in c1, s91 in c1;
+  substanceOnly species s92 in c1, s93 in c1, s94 in c1, s95 in c1, s96 in c1;
+  substanceOnly species s97 in c1, s98 in c1, s99 in c1, s100 in c1, s101 in c1;
+  substanceOnly species s102 in c1, s103 in c1, s104 in c1, s105 in c1, s106 in c1;
+  substanceOnly species s107 in c3, s108 in c3, s110 in c1, s111 in c1, s112 in c1;
+  substanceOnly species s113 in c1, s114 in c1, s115 in c3, s119 in default;
 
   // Reactions:
   re102: s95 -> s93; exp(re102_unity - (s39/re102_tf)^0.35)*re102_normal*((s39 + re102_tiny_num)/re102_unimol)^-0.65*(re102_unity - (s39/re102_tf)^0.35);

@@ -3,8 +3,9 @@ model *Chan2004_TCell_receptor_activation()
 
   // Compartments and Species:
   compartment compartment_;
-  species lck_inactive in compartment_, lck_active in compartment_, phosphatase_inactive in compartment_;
-  species phosphatase_active in compartment_, $lck_total in compartment_;
+  substanceOnly species lck_inactive in compartment_, lck_active in compartment_;
+  substanceOnly species phosphatase_inactive in compartment_, phosphatase_active in compartment_;
+  substanceOnly species $lck_total in compartment_;
 
   // Assignment Rules:
   lck_total := lck_inactive + lck_active;

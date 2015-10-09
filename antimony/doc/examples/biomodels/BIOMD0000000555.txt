@@ -1,0 +1,36 @@
+// Created by libAntimony v2.7.1
+model *MODEL1411100000()
+
+  // Compartments and Species:
+  compartment Brain;
+  species $Amyloid in Brain;
+
+  // Assignment Rules:
+  Amyloid := 1 - exp(-(time/omega)^n);
+  a := n*exp(-(n - 1)/n) - 1;
+  ka := k/e;
+  t1 := (ln(1/C) - e + 1)*(1/k);
+
+  // Compartment initializations:
+  Brain = 1;
+
+  // Variable initializations:
+  omega = 35.3;
+  n = 7.2;
+  e = 2.718;
+  k = 0.205;
+  C = 0.00069;
+
+  // Other declarations:
+  var a, ka, t1;
+  const Brain, omega, n, e, k, C;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 3600 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+  C is "C+";
+end

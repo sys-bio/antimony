@@ -1,0 +1,53 @@
+// Created by libAntimony v2.7.1
+function Constant_flux__irreversible(v)
+  v;
+end
+
+function Michaellis_Menten(substrate, Km, Vmax)
+  (Vmax*substrate)/(Km + substrate);
+end
+
+
+model *MODEL1503180001()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species V in compartment_, C in compartment_;
+
+  // Reactions:
+  Kb:  => V; compartment_*Constant_flux__irreversible(Kb_v);
+  Kv: V => 2V; compartment_*Michaellis_Menten(V, Kv_Km, Kv_Vmax);
+  Kcv: V + C => C; compartment_*Kcv_k1*V*C;
+  Kdv: V => ; compartment_*Kdv_k1*V;
+  Kc:  => C; compartment_*Constant_flux__irreversible(Kc_v);
+  Kvc: V + C => V; compartment_*Kvc_k1*V*C;
+  Kdc: C => ; compartment_*Kdc_k1*C;
+
+  // Species initializations:
+  V = 1;
+  C = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  Kb_v = 0.00134;
+  Kv_Km = 380;
+  Kv_Vmax = 0.134;
+  Kcv_k1 = 0.0295;
+  Kdv_k1 = 6.85e-005;
+  Kc_v = 0.07;
+  Kvc_k1 = 0.927;
+  Kdc_k1 = 5.01e-005;
+
+  // Other declarations:
+  const compartment_;
+
+  // Unit definitions:
+  unit substance = item;
+
+  // Display Names:
+  compartment_ is "cell";
+  Kcv is "Kvc";
+  Kvc is "Kcv";
+end
