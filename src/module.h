@@ -245,7 +245,7 @@ private:
   bool OrigRateRuleIsAlready(const Variable* var, const std::map<const Variable*, Variable>& origmap, const Formula* formula) const;
   bool OrigAssignmentRuleIsAlready(const Variable* var, const std::map<const Variable*, Variable>& origmap, const Formula* formula) const;
   bool OrigIsAlreadyCompartment(const Variable* var, const std::map<const Variable*, Variable>& origmap) const;
-  bool OrigIsAlreadyConstSpecies(const Variable* var, const std::map<const Variable*, Variable>& origmap, bool isconst) const;
+  bool OrigIsAlreadyConstSpecies(const Variable* var, const std::map<const Variable*, Variable>& origmap, bool isconst, bool substOnly) const;
   bool OrigIsAlreadyDNAStrand(const Variable* var, const std::map<const Variable*, Variable>& origmap, std::string strand) const;
   bool OrigReactionIsAlready(const Variable* var, const std::map<const Variable*, Variable>& origmap, const AntimonyReaction* rxn) const;
   bool OrigEventIsAlready(const Variable* var, const std::map<const Variable*, Variable>& origmap, const AntimonyEvent* event) const;

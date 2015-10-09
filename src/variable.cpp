@@ -35,6 +35,7 @@ Variable::Variable(const string name, const Module* module)
     m_deletedunit(false),
     m_replacedformrxn(false),
     m_const(constDEFAULT),
+    m_substOnly(false),
     m_unitVariable()
 {
   m_name.push_back(name);
@@ -1225,12 +1226,37 @@ bool Variable::SetIsConst(bool constant)
   return false;
 }
 
+bool Variable::SetSubstOnly(bool substOnly)
+{
+  if (IsPointer()) {
+    return GetSameVariable()->SetSubstOnly(substOnly);
+  }
+  switch(m_type) {
+  case varFormulaUndef:
+  case varSpeciesUndef:
+  case varUndefined:
+    //These are the only things that can be set 'substanceOnly'.
+    break;
+  default:
+    g_registry.SetError("Cannot set '" + GetNameDelimitedBy(".") + "' to be 'substanceOnly'.  Only species can be set using this directive.");
+    return true;
+  }
+  m_substOnly = substOnly;
+  return false;
+}
+
 void Variable::SetRegConst()
 {
   const_type regconst = g_registry.GetConstness();
   if (regconst != constDEFAULT) {
     m_const = regconst;
   }
+}
+
+void Variable::SetRegSpecVals()
+{
+  SetRegConst();
+  m_substOnly = g_registry.GetSubstOnly();
 }
 
 bool Variable::SetCompartment(Variable* var)

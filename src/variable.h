@@ -76,6 +76,9 @@ private:
   //Additionally, the variable might be set constant
   const_type m_const;
 
+  //Also, a species might be set hasOnlySubstanceUnits
+  bool m_substOnly;
+
   //Also, the variable might have a unit associated with it.
   std::vector<std::string> m_unitVariable;
 
@@ -125,6 +128,7 @@ public:
   void SetNamespace(const std::string& modname) {m_module = modname;};
   bool GetIsConst() const;
   const_type GetConstType() const {return m_const;};
+  bool GetSubstOnly() const {return m_substOnly;};
   bool GetIsEquivalentTo(const Variable* var) const;
   std::vector<std::pair<Variable*, size_t> > GetStrandVars() const;
   bool IsExpandedStrand() const;
@@ -148,7 +152,9 @@ public:
 
   void SetNewTopName(std::string newmodname, std::string newtopname);
   bool SetIsConst(bool constant);
+  bool SetSubstOnly(bool substonly);
   void SetRegConst();
+  void SetRegSpecVals();
 
   bool SetCompartment(Variable* var);
   void SetComponentCompartments(bool from_module);
