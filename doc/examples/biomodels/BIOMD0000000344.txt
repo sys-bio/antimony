@@ -3,23 +3,26 @@ model *Hsp70Model()
 
   // Compartments and Species:
   compartment cytosol, nucleus;
-  species NatP in cytosol, MisP in cytosol, Hsp70 in cytosol, Hsp90 in cytosol;
-  species Hsp70_dam in cytosol, Hsp90_dam in cytosol, Hsp90_Proteasome in cytosol;
-  species Hsp70_Proteasome in cytosol, Hsp70Client in cytosol, Hsp90Client in cytosol;
-  species Hsp70_Hsp70Client in cytosol, Hsp90_Hsp90Client in cytosol, Akt in cytosol;
-  species Akt_Hsp90 in cytosol, CHIP in cytosol, Akt_CHIP_Hsp90 in cytosol;
-  species Akt_Proteasome in cytosol, Hsf1 in cytosol, Hsf1_Hsp90 in cytosol;
-  species Hsp90_MisP in cytosol, Hsp70_MisP in cytosol, Hsf1_Hsf1_Hsf1 in nucleus;
-  species Hsf1_Hsf1_Hsf1_P in nucleus, Hsf1_Hsf1 in cytosol, HSEHsp70 in nucleus;
-  species HSEHsp90 in nucleus, HSEHsp70_Hsf1_Hsf1_Hsf1 in nucleus, HSEHsp70_Hsf1_Hsf1_Hsf1_P in nucleus;
-  species HSEHsp90_Hsf1_Hsf1_Hsf1 in nucleus, HSEHsp90_Hsf1_Hsf1_Hsf1_P in nucleus;
-  species Jnk in cytosol, Jnk_P in cytosol, Ppx in cytosol, Mkp1 in cytosol;
-  species Mkp1_P in cytosol, Mkp1_Proteasome in cytosol, Hsp70_Ppx in cytosol;
-  species Pkc in cytosol, p38 in cytosol, p38_P in cytosol, Proteasome in cytosol;
-  species MisP_Proteasome in cytosol, AggP in cytosol, SeqAggP in cytosol;
-  species AggP_Proteasome in cytosol, ROS in cytosol, $ATP in cytosol, $ADP in cytosol;
-  species $Source in cytosol, $Sink in cytosol, p38Death in cytosol, JNKDeath in cytosol;
-  species PIDeath in cytosol, CellDeath in cytosol;
+  substanceOnly species NatP in cytosol, MisP in cytosol, Hsp70 in cytosol;
+  substanceOnly species Hsp90 in cytosol, Hsp70_dam in cytosol, Hsp90_dam in cytosol;
+  substanceOnly species Hsp90_Proteasome in cytosol, Hsp70_Proteasome in cytosol;
+  substanceOnly species Hsp70Client in cytosol, Hsp90Client in cytosol, Hsp70_Hsp70Client in cytosol;
+  substanceOnly species Hsp90_Hsp90Client in cytosol, Akt in cytosol, Akt_Hsp90 in cytosol;
+  substanceOnly species CHIP in cytosol, Akt_CHIP_Hsp90 in cytosol, Akt_Proteasome in cytosol;
+  substanceOnly species Hsf1 in cytosol, Hsf1_Hsp90 in cytosol, Hsp90_MisP in cytosol;
+  substanceOnly species Hsp70_MisP in cytosol, Hsf1_Hsf1_Hsf1 in nucleus;
+  substanceOnly species Hsf1_Hsf1_Hsf1_P in nucleus, Hsf1_Hsf1 in cytosol;
+  substanceOnly species HSEHsp70 in nucleus, HSEHsp90 in nucleus, HSEHsp70_Hsf1_Hsf1_Hsf1 in nucleus;
+  substanceOnly species HSEHsp70_Hsf1_Hsf1_Hsf1_P in nucleus, HSEHsp90_Hsf1_Hsf1_Hsf1 in nucleus;
+  substanceOnly species HSEHsp90_Hsf1_Hsf1_Hsf1_P in nucleus, Jnk in cytosol;
+  substanceOnly species Jnk_P in cytosol, Ppx in cytosol, Mkp1 in cytosol;
+  substanceOnly species Mkp1_P in cytosol, Mkp1_Proteasome in cytosol, Hsp70_Ppx in cytosol;
+  substanceOnly species Pkc in cytosol, p38 in cytosol, p38_P in cytosol;
+  substanceOnly species Proteasome in cytosol, MisP_Proteasome in cytosol;
+  substanceOnly species AggP in cytosol, SeqAggP in cytosol, AggP_Proteasome in cytosol;
+  substanceOnly species ROS in cytosol, $ATP in cytosol, $ADP in cytosol;
+  substanceOnly species $Source in cytosol, $Sink in cytosol, p38Death in cytosol;
+  substanceOnly species JNKDeath in cytosol, PIDeath in cytosol, CellDeath in cytosol;
 
   // Assignment Rules:
   tot_Hsp90 := Hsp90 + Hsp90_dam + Hsp90_Proteasome + Hsp90_Hsp90Client + Akt_Hsp90 + Akt_CHIP_Hsp90 + Hsf1_Hsp90 + Hsp90_MisP;

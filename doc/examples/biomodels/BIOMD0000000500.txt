@@ -85,24 +85,24 @@ model *MODEL1311130001()
   parameter_1 := DNA_010 + DNA_011 + DNA_110 + DNA_111 + DNA_01B1 + DNA_1B10 + DNA_1B11 + DNA_11B1 + DNA_1B1B1;
 
   // Reactions:
-  DNA1: DNA_000 + S1 -> DNA_100; nucleus*function_4_DNA1();
-  DNA2: DNA_000 + S1 -> DNA_010; nucleus*function_4_DNA2();
-  DNA3: DNA_000 + S1 -> DNA_001; nucleus*function_4_DNA3();
-  DNA4: DNA_100 + S1 -> DNA_110; nucleus*function_4_DNA4();
-  DNA5: DNA_100 + S1 -> DNA_101; nucleus*function_4_DNA5();
-  DNA6: DNA_010 + S1 -> DNA_110; nucleus*function_4_DNA6();
-  DNA7: DNA_010 + S1 -> DNA_011; nucleus*function_4_DNA7();
-  DNA8: DNA_001 + S1 -> DNA_101; nucleus*function_4_DNA8();
-  DNA9: DNA_001 + S1 -> DNA_011; nucleus*function_4_DNA9();
-  DNA10: DNA_110 + S1 -> DNA_111; nucleus*function_4_DNA10();
-  DNA11: DNA_101 + S1 -> DNA_111; nucleus*function_4_DNA11();
-  DNA12: DNA_011 + S1 -> DNA_111; nucleus*function_4_DNA12();
-  DNA49: DNA_110 -> DNA_1B10; nucleus*function_4_DNA49();
-  DNA50: DNA_011 -> DNA_01B1; nucleus*function_4_DNA50();
-  DNA51: DNA_111 -> DNA_11B1; nucleus*function_4_DNA51();
-  DNA52: DNA_111 -> DNA_1B11; nucleus*function_4_DNA52();
-  DNA53: DNA_11B1 -> DNA_1B1B1; nucleus*function_4_DNA53();
-  DNA54: DNA_1B11 -> DNA_1B1B1; nucleus*function_4_DNA54();
+  DNA1: DNA_000 + S1 -> DNA_100; nucleus*function_4_DNA1(DNA_000, DNA_100, Koff_NG1, Kon_NG1, S1, nucleus);
+  DNA2: DNA_000 + S1 -> DNA_010; nucleus*function_4_DNA2(DNA_000, DNA_010, Koff_G1, Kon_G1, S1, nucleus);
+  DNA3: DNA_000 + S1 -> DNA_001; nucleus*function_4_DNA3(DNA_000, DNA_001, Koff_NG1, Kon_NG1, S1, nucleus);
+  DNA4: DNA_100 + S1 -> DNA_110; nucleus*function_4_DNA4(DNA_100, DNA_110, Koff_G1, Kon_G1, S1, nucleus);
+  DNA5: DNA_100 + S1 -> DNA_101; nucleus*function_4_DNA5(DNA_100, DNA_101, Koff_NG1, Kon_NG1, S1, nucleus);
+  DNA6: DNA_010 + S1 -> DNA_110; nucleus*function_4_DNA6(DNA_010, DNA_110, Koff_NG1, Kon_NG1, S1, nucleus);
+  DNA7: DNA_010 + S1 -> DNA_011; nucleus*function_4_DNA7(DNA_010, DNA_011, Koff_NG1, Kon_NG1, S1, nucleus);
+  DNA8: DNA_001 + S1 -> DNA_101; nucleus*function_4_DNA8(DNA_001, DNA_101, Koff_NG1, Kon_NG1, S1, nucleus);
+  DNA9: DNA_001 + S1 -> DNA_011; nucleus*function_4_DNA9(DNA_001, DNA_011, Koff_G1, Kon_G1, S1, nucleus);
+  DNA10: DNA_110 + S1 -> DNA_111; nucleus*function_4_DNA10(DNA_110, DNA_111, Koff_NG1, Kon_NG1, S1, nucleus);
+  DNA11: DNA_101 + S1 -> DNA_111; nucleus*function_4_DNA11(DNA_101, DNA_111, Koff_G1, Kon_G1, S1, nucleus);
+  DNA12: DNA_011 + S1 -> DNA_111; nucleus*function_4_DNA12(DNA_011, DNA_111, Koff_NG1, Kon_NG1, S1, nucleus);
+  DNA49: DNA_110 -> DNA_1B10; nucleus*function_4_DNA49(DNA_110, DNA_1B10, Koff_P1, Kon_P1, nucleus);
+  DNA50: DNA_011 -> DNA_01B1; nucleus*function_4_DNA50(DNA_011, DNA_01B1, Koff_P1, Kon_P1, nucleus);
+  DNA51: DNA_111 -> DNA_11B1; nucleus*function_4_DNA51(DNA_111, DNA_11B1, Koff_P1, Kon_P1, nucleus);
+  DNA52: DNA_111 -> DNA_1B11; nucleus*function_4_DNA52(DNA_111, DNA_1B11, Koff_P1, Kon_P1, nucleus);
+  DNA53: DNA_11B1 -> DNA_1B1B1; nucleus*function_4_DNA53(DNA_11B1, DNA_1B1B1, Koff_P1, Kon_P1, nucleus);
+  DNA54: DNA_1B11 -> DNA_1B1B1; nucleus*function_4_DNA54(DNA_1B11, DNA_1B1B1, Koff_P1, Kon_P1, nucleus);
 
   // Species initializations:
   S1 = 1e-010;
@@ -132,10 +132,10 @@ model *MODEL1311130001()
   Kon_NG1 = 20000000000;
   Koff_NG1 = 20000;
 
-  //  Other declarations:
+  // Other declarations:
   var parameter_1;
   const default, nucleus, Kon_P1, Koff_P1, Kon_G1, Koff_G1, Kon_NG1, Koff_NG1;
 
-  //  Display Names:
+  // Display Names:
   parameter_1 is "GAS_siteOccupancy";
 end

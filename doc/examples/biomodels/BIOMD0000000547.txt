@@ -36,10 +36,12 @@ model *MODEL1403280000()
 
   // Compartments and Species:
   compartment compartment_2, compartment_3, compartment_1, compartment_4;
-  species $species_6 in compartment_2, species_5 in compartment_3, species_10 in compartment_3;
-  species species_9 in compartment_3, species_1 in compartment_4, species_15 in compartment_3;
-  species species_11 in compartment_3, species_14 in compartment_3, species_4 in compartment_1;
-  species species_3 in compartment_4, species_7 in compartment_4, species_2 in compartment_4;
+  substanceOnly species $species_6 in compartment_2, species_5 in compartment_3;
+  substanceOnly species species_10 in compartment_3, species_9 in compartment_3;
+  substanceOnly species species_1 in compartment_4, species_15 in compartment_3;
+  substanceOnly species species_11 in compartment_3, species_14 in compartment_3;
+  substanceOnly species species_4 in compartment_1, species_3 in compartment_4;
+  substanceOnly species species_7 in compartment_4, species_2 in compartment_4;
 
   // Assignment Rules:
   species_6 := piecewise(parameter_5, time < parameter_7, piecewise((parameter_5 + parameter_6)*exp((parameter_8 - time)/parameter_9), time > parameter_8, parameter_5 + parameter_6*(1 - exp((parameter_7 - time)/parameter_9))))*compartment_2;
@@ -133,7 +135,7 @@ model *MODEL1403280000()
   ModelValue_22 = parameter_23;
   parameter_23 = 1;
 
-  //  Other declarations:
+  // Other declarations:
   var parameter_22, parameter_10, parameter_13, parameter_14, parameter_15;
   var parameter_16, parameter_17, parameter_12, parameter_18, parameter_2;
   var parameter_3, Asngpermil_ex;
@@ -150,7 +152,7 @@ model *MODEL1403280000()
   // Unit definitions:
   unit substance = 1e-6 mole;
 
-  //  Display Names:
+  // Display Names:
   compartment_2 is "Medium";
   compartment_3 is "Cell";
   compartment_1 is "Vac";

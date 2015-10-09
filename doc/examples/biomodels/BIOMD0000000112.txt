@@ -3,10 +3,10 @@ model *Clarke2006_Smad_signalling()
 
   // Compartments and Species:
   compartment cytoplasm, nucleus;
-  species receptor in cytoplasm, R_smad_cyt in cytoplasm, R_smad_P_cyt in cytoplasm;
-  species smad4_cyt in cytoplasm, R_smad_P_smad4_cyt in cytoplasm, R_smad_P_smad4_nuc in nucleus;
-  species R_smad_nuc in nucleus, R_smad_P_nuc in nucleus, smad4_nuc in nucleus;
-  species Pi_ in nucleus;
+  substanceOnly species receptor in cytoplasm, R_smad_cyt in cytoplasm, R_smad_P_cyt in cytoplasm;
+  substanceOnly species smad4_cyt in cytoplasm, R_smad_P_smad4_cyt in cytoplasm;
+  substanceOnly species R_smad_P_smad4_nuc in nucleus, R_smad_nuc in nucleus;
+  substanceOnly species R_smad_P_nuc in nucleus, smad4_nuc in nucleus, Pi_ in nucleus;
 
   // Assignment Rules:
   sum_R_smad_cyt := R_smad_cyt + R_smad_P_cyt + R_smad_P_smad4_cyt;

@@ -3,27 +3,31 @@ model *MODEL1305280001()
 
   // Compartments and Species:
   compartment cytoplasm, nucleus, membrane, ecm;
-  species ADAMTS4_mRNA in cytoplasm, cFos in cytoplasm, cFos_mRNA in cytoplasm;
-  species cJun in cytoplasm, cJun_mRNA in cytoplasm, DUSP16 in cytoplasm;
-  species IRAK2 in cytoplasm, IRAK2_TRAF6 in cytoplasm, IRAK2_TRAF6_PP4 in cytoplasm;
-  species JAK1 in cytoplasm, JAK1_P in cytoplasm, JNK in cytoplasm, JNK_P in cytoplasm;
-  species Matriptase in cytoplasm, MKP1 in cytoplasm, MMP1_mRNA in cytoplasm;
-  species MMP3_mRNA in cytoplasm, MMP13_mRNA in cytoplasm, p38 in cytoplasm;
-  species p38_P in cytoplasm, PP4 in cytoplasm, proMMP1 in cytoplasm, proMMP3 in cytoplasm;
-  species proMMP13 in cytoplasm, PTPRT in cytoplasm, SOCS3 in cytoplasm, SOCS3_mRNA in cytoplasm;
-  species STAT3_cyt in cytoplasm, STAT3_P_cyt in cytoplasm, TIMP1_mRNA in cytoplasm;
-  species TIMP3_mRNA in cytoplasm, TRAF6 in cytoplasm, TRAF6_PP4 in cytoplasm;
-  species ADAMTS4 in ecm, ADAMTS4_TIMP1 in ecm, ADAMTS4_TIMP3 in ecm, Aggrecan in ecm;
-  species Aggrecan_Collagen2 in ecm, AggFrag in ecm, ColFrag in ecm, Collagen2 in ecm;
-  species IL1 in ecm, MMP1 in ecm, MMP1_TIMP1 in ecm, MMP1_TIMP3 in ecm, MMP3 in ecm;
-  species MMP3_TIMP1 in ecm, MMP3_TIMP3 in ecm, MMP13 in ecm, MMP13_TIMP1 in ecm;
-  species MMP13_TIMP3 in ecm, OSM in ecm, TIMP1 in ecm, TIMP3 in ecm, IL1_IL1R in membrane;
-  species IL1_IL1Ra in membrane, IL1_IL1R_IRAK2 in membrane, IL1R in membrane;
-  species IL1Ra in membrane, OSM_OSMR in membrane, OSM_OSMRa in membrane;
-  species OSMR_SOCS3 in membrane, OSMR in membrane, OSMRa in membrane, cFos_cJun in nucleus;
-  species cFos_P in nucleus, cJun_P in nucleus, cJun_dimer in nucleus, SP1 in nucleus;
-  species SP1_TIMP1_DNA in nucleus, STAT3_nuc in nucleus, STAT3_P_nuc in nucleus;
-  species TIMP1_DNA in nucleus, $Source in cytoplasm, $Sink in cytoplasm;
+  substanceOnly species ADAMTS4_mRNA in cytoplasm, cFos in cytoplasm, cFos_mRNA in cytoplasm;
+  substanceOnly species cJun in cytoplasm, cJun_mRNA in cytoplasm, DUSP16 in cytoplasm;
+  substanceOnly species IRAK2 in cytoplasm, IRAK2_TRAF6 in cytoplasm, IRAK2_TRAF6_PP4 in cytoplasm;
+  substanceOnly species JAK1 in cytoplasm, JAK1_P in cytoplasm, JNK in cytoplasm;
+  substanceOnly species JNK_P in cytoplasm, Matriptase in cytoplasm, MKP1 in cytoplasm;
+  substanceOnly species MMP1_mRNA in cytoplasm, MMP3_mRNA in cytoplasm, MMP13_mRNA in cytoplasm;
+  substanceOnly species p38 in cytoplasm, p38_P in cytoplasm, PP4 in cytoplasm;
+  substanceOnly species proMMP1 in cytoplasm, proMMP3 in cytoplasm, proMMP13 in cytoplasm;
+  substanceOnly species PTPRT in cytoplasm, SOCS3 in cytoplasm, SOCS3_mRNA in cytoplasm;
+  substanceOnly species STAT3_cyt in cytoplasm, STAT3_P_cyt in cytoplasm;
+  substanceOnly species TIMP1_mRNA in cytoplasm, TIMP3_mRNA in cytoplasm;
+  substanceOnly species TRAF6 in cytoplasm, TRAF6_PP4 in cytoplasm, ADAMTS4 in ecm;
+  substanceOnly species ADAMTS4_TIMP1 in ecm, ADAMTS4_TIMP3 in ecm, Aggrecan in ecm;
+  substanceOnly species Aggrecan_Collagen2 in ecm, AggFrag in ecm, ColFrag in ecm;
+  substanceOnly species Collagen2 in ecm, IL1 in ecm, MMP1 in ecm, MMP1_TIMP1 in ecm;
+  substanceOnly species MMP1_TIMP3 in ecm, MMP3 in ecm, MMP3_TIMP1 in ecm;
+  substanceOnly species MMP3_TIMP3 in ecm, MMP13 in ecm, MMP13_TIMP1 in ecm;
+  substanceOnly species MMP13_TIMP3 in ecm, OSM in ecm, TIMP1 in ecm, TIMP3 in ecm;
+  substanceOnly species IL1_IL1R in membrane, IL1_IL1Ra in membrane, IL1_IL1R_IRAK2 in membrane;
+  substanceOnly species IL1R in membrane, IL1Ra in membrane, OSM_OSMR in membrane;
+  substanceOnly species OSM_OSMRa in membrane, OSMR_SOCS3 in membrane, OSMR in membrane;
+  substanceOnly species OSMRa in membrane, cFos_cJun in nucleus, cFos_P in nucleus;
+  substanceOnly species cJun_P in nucleus, cJun_dimer in nucleus, SP1 in nucleus;
+  substanceOnly species SP1_TIMP1_DNA in nucleus, STAT3_nuc in nucleus, STAT3_P_nuc in nucleus;
+  substanceOnly species TIMP1_DNA in nucleus, $Source in cytoplasm, $Sink in cytoplasm;
 
   // Reactions:
   IL1binding: IL1 + IL1R => IL1_IL1R; kbinIL1IL1R*IL1*IL1R;
@@ -261,7 +265,7 @@ model *MODEL1305280001()
   kdedimercJun = 0.01;
   kdegADAMTS4 = 5e-005;
   kdegADAMTS4mRNA = 1.4e-005;
-  kdegAggrecan = 2e-007;
+  kdegAggrecan = 3e-008;
   kdegcFos = 0.0002;
   kdegcFosmRNA = 0.003;
   kdegcJun = 0.00013;
@@ -375,7 +379,7 @@ model *MODEL1305280001()
   ksynTIMP3mRNA = 5e-007;
   ksynTIMP3mRNAStat3 = 4e-005;
 
-  //  Other declarations:
+  // Other declarations:
   const cytoplasm, nucleus, membrane, ecm, kactMMP13mmp3, kactMMP1mat, kactMMP1mmp3;
   const kactMMP3mat, kAP1activity, kbincFoscJun, kbinIL1IL1R, kbinIL1IL1Ra;
   const kbinIRAK2, kbinOSMOSMR, kbinOSMOSMRa, kbinSOCS3OSMR, kbinSP1TIMP1DNA;

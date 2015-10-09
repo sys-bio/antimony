@@ -3,12 +3,14 @@ model *Hoefnagel2002_PyruvateBranches()
 
   // Compartments and Species:
   compartment compartment_;
-  species ADP in compartment_, NAD in compartment_, ATP in compartment_, NADH in compartment_;
-  species pyruvate in compartment_, $lactate in compartment_, CoA in compartment_;
-  species $halfglucose in compartment_, AcCoA in compartment_, AcP in compartment_;
-  species $Ac in compartment_, AcO in compartment_, $EtOH in compartment_;
-  species AcLac in compartment_, AcetoinIn in compartment_, $AcetoinOut in compartment_;
-  species $Butanediol in compartment_, $O2 in compartment_, $PO4 in compartment_;
+  species $PO4 in compartment_;
+  substanceOnly species ADP in compartment_, NAD in compartment_, ATP in compartment_;
+  substanceOnly species NADH in compartment_, pyruvate in compartment_, $lactate in compartment_;
+  substanceOnly species CoA in compartment_, $halfglucose in compartment_;
+  substanceOnly species AcCoA in compartment_, AcP in compartment_, $Ac in compartment_;
+  substanceOnly species AcO in compartment_, $EtOH in compartment_, AcLac in compartment_;
+  substanceOnly species AcetoinIn in compartment_, $AcetoinOut in compartment_;
+  substanceOnly species $Butanediol in compartment_, $O2 in compartment_;
 
   // Reactions:
   R1: ADP + NAD + $halfglucose => ATP + NADH + pyruvate; (2*R1_V_1*(halfglucose/(2*R1_Kglc_1))*(NAD/R1_Knad_1)*(ADP/R1_Kadp_1))/((1 + halfglucose/(2*R1_Kglc_1) + pyruvate/R1_Kpyr_1)*(1 + NAD/R1_Knad_1 + NADH/R1_Knadh_1)*(1 + ADP/R1_Kadp_1 + ATP/R1_Katp_1));

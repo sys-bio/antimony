@@ -1,0 +1,45 @@
+// Created by libAntimony v2.7.1
+model *MODEL1409250000()
+
+  // Compartments and Species:
+  compartment compartment_1;
+  species $species_1 in compartment_1, $species_2 in compartment_1;
+
+  // Rate Rules:
+  species_1' = -species_1 + parameter_4*(species_2^2/(parameter_3^2 + species_2^2));
+  species_2' = -parameter_5*species_2 + 1/(1 + species_1^2)*(parameter_1 + parameter_2*(species_2^2/(1 + species_2^2)));
+
+  // Species initializations:
+  species_1 = 0.00577667577789773;
+  species_2 = 0.0203298264712407;
+
+  // Compartment initializations:
+  compartment_1 = 1;
+
+  // Variable initializations:
+  parameter_4 = 3.5;
+  parameter_3 = 0.5;
+  parameter_5 = 1.25;
+  parameter_1 = 0.025;
+  parameter_2 = 1;
+
+  // Other declarations:
+  const compartment_1, parameter_4, parameter_3, parameter_5, parameter_1;
+  const parameter_2;
+
+  // Unit definitions:
+  unit volume = dimensionless;
+  unit time_unit = dimensionless;
+  unit substance = dimensionless;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_1 is "Synovium";
+  species_1 is "a";
+  parameter_4 is "alpha4";
+  species_2 is "p";
+  parameter_3 is "alpha3";
+  parameter_5 is "gamma";
+  parameter_1 is "alpha1";
+  parameter_2 is "alpha2";
+end

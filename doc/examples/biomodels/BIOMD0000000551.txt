@@ -1,0 +1,56 @@
+// Created by libAntimony v2.7.1
+model *Das2010___Effect_of_a_gamma_secretase_inhibitor_on_Amyloid_beta_dynamics()
+
+  // Compartments and Species:
+  compartment CSF, Plasma;
+  species $C in CSF, $P in Plasma;
+
+  // Assignment Rules:
+  g_t := piecewise(time/tauCSF*aCSF*exp(-bCSF*tauCSF), time < tauCSF, aCSF*exp(-bCSF*time));
+  f_t := piecewise(time/tauplasma*aplasma*exp(-bplasma*tauplasma), time < tauplasma, aplasma*exp(-bplasma*time));
+
+  // Rate Rules:
+  C' = Sc/(1 + g_t/Ki) - k1*C + J;
+  P' = k1*r*C - J*r - deltap*P*l;
+  l' = epsilon*(1/(1 + alpha*f_t) - l);
+
+  // Species initializations:
+  C = 1;
+  P = 1;
+
+  // Compartment initializations:
+  CSF = 1;
+  Plasma = 1;
+
+  // Variable initializations:
+  Sc = 1.16;
+  Ki = 0.0232;
+  k1 = 1.13;
+  J = 0;
+  r = 0.43;
+  deltap = 0.55;
+  l = 1;
+  epsilon = 0.0206;
+  alpha = 0.522;
+  tauCSF = 2.06;
+  aCSF = 4.92;
+  bCSF = 0.259;
+  tauplasma = 1.66;
+  aplasma = 187;
+  bplasma = 0.089;
+
+  // Other declarations:
+  var g_t, l, f_t;
+  const CSF, Plasma, Sc, Ki, k1, J, r, deltap, epsilon, alpha, tauCSF, aCSF;
+  const bCSF, tauplasma, aplasma, bplasma;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 3600 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+  g_t is "g(t)";
+  f_t is "f(t)";
+end

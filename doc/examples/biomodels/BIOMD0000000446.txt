@@ -8,7 +8,7 @@ function Gamma(v, u, J, K)
 end
 
 function fGK(v, u, J, K)
-  piecewise(0, v == 0 && u == 0, (2*u*K)/(Gamma() + sqrt(Gamma()^2 - 4*(v - u)*u*K)));
+  piecewise(0, v == 0 && u == 0, (2*u*K)/(Gamma(v, u, J, K) + sqrt(Gamma(v, u, J, K)^2 - 4*(v - u)*u*K)));
 end
 
 
@@ -16,14 +16,15 @@ model *MODEL1302180000()
 
   // Compartments and Species:
   compartment ERlumen, cytoplasm, Golgi, mitochondria;
-  species UFPT in ERlumen, BiUFP in ERlumen, BiRE1 in ERlumen, BiATF in ERlumen;
-  species BiPER in ERlumen, IRE1A in ERlumen, PERKA in ERlumen, mXbp1u in cytoplasm;
-  species mXbp1s in cytoplasm, Xbp1s in cytoplasm, mBiPT in cytoplasm, BiPT in ERlumen;
-  species ATF6T in ERlumen, ATF6GB in Golgi, ATF6p50 in cytoplasm, mWFS1 in cytoplasm;
-  species WFS1 in ERlumen, ATF4 in cytoplasm, mCHOP in cytoplasm, CHOP in cytoplasm;
-  species mGADD34 in cytoplasm, GADD34 in cytoplasm, BCL2T in mitochondria;
-  species BAXmT in mitochondria, BH3T in cytoplasm, BAXmBCL2 in mitochondria;
-  species BH3BCL2 in mitochondria;
+  substanceOnly species UFPT in ERlumen, BiUFP in ERlumen, BiRE1 in ERlumen;
+  substanceOnly species BiATF in ERlumen, BiPER in ERlumen, IRE1A in ERlumen;
+  substanceOnly species PERKA in ERlumen, mXbp1u in cytoplasm, mXbp1s in cytoplasm;
+  substanceOnly species Xbp1s in cytoplasm, mBiPT in cytoplasm, BiPT in ERlumen;
+  substanceOnly species ATF6T in ERlumen, ATF6GB in Golgi, ATF6p50 in cytoplasm;
+  substanceOnly species mWFS1 in cytoplasm, WFS1 in ERlumen, ATF4 in cytoplasm;
+  substanceOnly species mCHOP in cytoplasm, CHOP in cytoplasm, mGADD34 in cytoplasm;
+  substanceOnly species GADD34 in cytoplasm, BCL2T in mitochondria, BAXmT in mitochondria;
+  substanceOnly species BH3T in cytoplasm, BAXmBCL2 in mitochondria, BH3BCL2 in mitochondria;
 
   // Assignment Rules:
   UFP := UFPT - BiUFP;

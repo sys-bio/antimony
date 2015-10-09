@@ -3,11 +3,12 @@ model *BIOMD0000000007()
 
   // Compartments and Species:
   compartment Cell;
-  species UbE in Cell, UbE2 in Cell, Wee1 in Cell, Cdc25 in Cell, G2K in Cell;
-  species R in Cell, G1K in Cell, IE in Cell, PG2 in Cell, G1R in Cell, G2R in Cell;
-  species PG2R in Cell, $SPF in Cell, $MPF in Cell, $IEB in Cell, $UbEB in Cell;
-  species $UbE2B in Cell, $Wee1B in Cell, $Cdc25B in Cell, $Rum1Total in Cell;
-  species $Cdc13Total in Cell, $Cig2Total in Cell;
+  substanceOnly species UbE in Cell, UbE2 in Cell, Wee1 in Cell, Cdc25 in Cell;
+  substanceOnly species G2K in Cell, R in Cell, G1K in Cell, IE in Cell, PG2 in Cell;
+  substanceOnly species G1R in Cell, G2R in Cell, PG2R in Cell, $SPF in Cell;
+  substanceOnly species $MPF in Cell, $IEB in Cell, $UbEB in Cell, $UbE2B in Cell;
+  substanceOnly species $Wee1B in Cell, $Cdc25B in Cell, $Rum1Total in Cell;
+  substanceOnly species $Cdc13Total in Cell, $Cig2Total in Cell;
 
   // Assignment Rules:
   SPF := Cig1 + alpha*G1K + MPF;

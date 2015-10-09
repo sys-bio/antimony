@@ -110,9 +110,9 @@ model *MODEL1408190003()
   reaction_3: species_3 + species_6 -> species_7; compartment_1*(parameter_5*species_3*species_6 - parameter_6*species_7);
   reaction_66: species_29 -> species_26 + species_28; c3*(parameter_49*species_29 - parameter_50*species_26*species_28);
   reaction_22: species_28 => species_11; parameter_51*species_28;
-  reaction_23:  => species_30; c3*function_1();
+  reaction_23:  => species_30; c3*function_1(parameter_52, parameter_53, species_23);
   reaction_24: species_30 => species_31; parameter_54*species_30;
-  reaction_25:  => species_19; compartment_1*function_2();
+  reaction_25:  => species_19; compartment_1*function_2(parameter_55, species_31);
   reaction_26: species_9 + species_19 -> species_15; compartment_1*(parameter_56*species_9*species_19 - parameter_57*species_15);
   reaction_27: species_31 => ; compartment_1*parameter_58*species_31;
   reaction_28: species_19 => ; compartment_1*parameter_59*species_19;
@@ -166,21 +166,21 @@ model *MODEL1408190003()
   re141: species_90 => species_84 + species_20; compartment_1*parameter_148*species_90;
   reaction_90: species_84 + species_85 -> species_91; compartment_1*(parameter_149*species_84*species_85 - parameter_150*species_91);
   reaction_91: species_87 => species_92; parameter_151*species_87;
-  re144: species_95 + species_24 -> species_94; function_4();
-  re145: species_94 => species_96 + species_24; function_5();
+  re144: species_95 + species_24 -> species_94; function_4(c2, parameter_152, parameter_153, species_24, species_94, species_95);
+  re145: species_94 => species_96 + species_24; function_5(c2, parameter_155, species_94);
   reaction_94: species_96 => species_84; parameter_154*species_96;
-  reaction_95:  => species_97; c2*function_6();
+  reaction_95:  => species_97; c2*function_6(parameter_156, parameter_157, species_92);
   reaction_96: species_97 => species_98; parameter_158*species_97;
   reaction_80: $species_79 + species_78 -> species_80; parameter_131*species_79*species_78 - parameter_132*species_80;
-  reaction_97:  => species_99; compartment_1*function_7();
+  reaction_97:  => species_99; compartment_1*function_7(parameter_159, species_98);
   reaction_98: species_99 + species_82 -> species_100; compartment_1*(parameter_160*species_99*species_82 - parameter_161*species_100);
   reaction_99: species_98 => ; compartment_1*parameter_162*species_98;
   reaction_100: species_99 => ; compartment_1*parameter_163*species_99;
   re142: species_87 + species_20 -> species_101; compartment_1*(parameter_164*species_87*species_20 - parameter_165*species_101);
   re143: species_101 => species_91 + species_20; compartment_1*parameter_166*species_101;
   reaction_103: 2species_95 -> species_92; c2*(parameter_167*species_95^2 - parameter_168*species_92);
-  re147: species_92 + species_24 -> species_102; function_8();
-  re148: species_102 => species_103 + species_24; function_9();
+  re147: species_92 + species_24 -> species_102; function_8(c2, parameter_169, parameter_170, species_102, species_24, species_92);
+  re148: species_102 => species_103 + species_24; function_9(c2, parameter_171, species_102);
   reaction_106: species_96 + species_95 -> species_103; c2*(parameter_172*species_96*species_95 - parameter_173*species_103);
   reaction_79: 2species_80 -> species_81; compartment_1*(parameter_133*species_80^2 - parameter_134*species_81);
   reaction_107: species_84 + species_100 -> species_104; compartment_1*(parameter_174*species_84*species_100 - parameter_175*species_104);
@@ -202,7 +202,7 @@ model *MODEL1408190003()
   re157: species_9 + species_84 -> s138; compartment_1*(parameter_226*species_9*species_84 - parameter_227*s138);
   re158: s138 => species_9 + species_85; compartment_1*parameter_228*s138;
   re159: species_85 + species_9 -> s139; compartment_1*(parameter_229*species_85*species_9 - parameter_230*s139);
-  re116:  => species_30; c3*function_4_reaction_n7_1();
+  re116:  => species_30; c3*function_4_reaction_n7_1(parameter_231, parameter_232, species_92);
   re115: species_12 + species_85 -> s120; compartment_1*(parameter_233*species_12*species_85 - parameter_234*s120);
   re121: species_26 + species_95 -> s122; parameter_235*species_26*species_95 - parameter_236*s122;
   re161: s135 => species_20 + species_12 + species_84; compartment_1*parameter_242*s135;
@@ -541,7 +541,7 @@ model *MODEL1408190003()
   parameter_25 = 0.2;
   parameter_26 = 0.4;
 
-  //  Other declarations:
+  // Other declarations:
   const default, compartment_1, c2, c3, parameter_1, parameter_2, parameter_3;
   const parameter_4, parameter_5, parameter_6, parameter_11, parameter_12;
   const parameter_13, parameter_14, parameter_15, parameter_16, parameter_17;
@@ -588,7 +588,7 @@ model *MODEL1408190003()
   // Unit definitions:
   unit substance = 1e-9 mole;
 
-  //  Display Names:
+  // Display Names:
   default is "Extracellular";
   compartment_1 is "Cell";
   c2 is "Nucluse1";

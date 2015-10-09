@@ -3,7 +3,7 @@ model *MODEL1312170001()
 
   // Compartments and Species:
   compartment LN_;
-  species $L in LN_;
+  substanceOnly species $L in LN_;
 
   // Rate Rules:
   L' = piecewise(mu1 + (r1 - c1)*L, time >= 0 && time <= t1, mu3 + (r3 - c3)*L, time > t1 && time <= t3, mu5 + (r5 - c5)*L, time > t3 && time <= t5, mu10 + (r10 - c10)*L, time > t5 && time <= t10);
@@ -50,7 +50,7 @@ model *MODEL1312170001()
   t10 = 10;
   t10 has day;
 
-  //  Other declarations:
+  // Other declarations:
   const LN_, mu1, r1, c1, t1, mu3, r3, c3, t3, mu5, r5, c5, t5, mu10, r10;
   const c10, t10;
 
@@ -59,6 +59,6 @@ model *MODEL1312170001()
   unit per_day = 1 / 86400e1 second;
   unit dimensionless_per_dimensionles = dimensionless / dimensionless;
 
-  //  Display Names:
+  // Display Names:
   LN_ is "Lymph node";
 end

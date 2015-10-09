@@ -1,0 +1,87 @@
+// Created by libAntimony v2.7.1
+function Constant_flux__irreversible(v)
+  v;
+end
+
+function VD(Vm, X, Kx, S, Km, Den)
+  (Vm/(1 + X/Kx)*S)/Km/Den;
+end
+
+function V1_3_4_5(Vm, S, Km1, M, Km2)
+  (Vm*S)/Km1/(1 + S/Km1 + M/Km2);
+end
+
+function V2(Vm, S, Km)
+  (Vm*S)/Km/(1 + S/Km);
+end
+
+
+model *Ortega2013()
+
+  // Compartments and Species:
+  compartment Brain;
+  species $APP in Brain, $C83 in Brain, $C99 in Brain, $AB in Brain, $X in Brain;
+  species $p3 in Brain;
+
+  // Assignment Rules:
+  den := 1 + C83/km3*((1 + X/kiu1)/(1 + X/kic)) + C99/km4*((1 + X/kiu2)/(1 + X/kic));
+
+  // Rate Rules:
+  APP' = r0 - r1 - r2;
+  C83' = (r1 + r5) - r3__D;
+  C99' = r2 - r5 - r4__D;
+  AB' = r4__D;
+  p3' = r3__D;
+
+  // Reactions:
+  r0:  => $APP; Brain*Constant_flux__irreversible(v0);
+  r1: $APP => $C83; Brain*V1_3_4_5(vm1, APP, km1, C99, km5);
+  r2: $APP => $C99; Brain*V2(vm2, APP, km2);
+  r5: $C99 => $C83; Brain*V1_3_4_5(vm5, C99, km5, APP, km1);
+  r3__D: $C83 => $p3; Brain*VD(vm3, X, kic, C83, km3, den);
+  r4__D: $C99 => $AB; Brain*VD(vm4, X, kic, C99, km4, den);
+  r3__ND: $C83 => $p3; Brain*V1_3_4_5(vm3, C83, km3, C99, km4);
+  r4__ND: $C99 => $AB; Brain*V1_3_4_5(vm4, C99, km4, C83, km3);
+
+  // Species initializations:
+  APP = 0;
+  C83 = 0;
+  C99 = 0;
+  AB = 0;
+  X = 0;
+  p3 = 0;
+
+  // Compartment initializations:
+  Brain = 1;
+
+  // Variable initializations:
+  v0 = 1;
+  km1 = 0.186;
+  vm1 = 1.1;
+  km3 = 28.8;
+  vm3 = 14.6;
+  km4 = 0.915;
+  vm4 = 1.71;
+  km5 = 0.0672;
+  vm5 = 0.0223;
+  km2 = 1.64;
+  vm2 = 0.153;
+  kic = 0.173;
+  kiu1 = 145;
+  kiu2 = 7.31;
+
+  // Other declarations:
+  var den;
+  const Brain, v0, km1, vm1, km3, vm3, km4, vm4, km5, vm5, km2, vm2, kic;
+  const kiu1, kiu2;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  r3__D is "r3 (D)";
+  r4__D is "r4 (D)";
+  r3__ND is "r3 (ND)";
+  r4__ND is "r4 (ND)";
+end

@@ -1,52 +1,67 @@
 // Created by libAntimony v2.7.1
-model *Kummer2000_CalciumSpiking()
+function Constant_flux__irreversible(v)
+  v;
+end
+
+function Henri_Michaelis_Menten__irreversible(substrate, Km, V)
+  (V*substrate)/(Km + substrate);
+end
+
+function Irr_Michaelis_Menten__enzyme__userdefined(V, E, S, Km)
+  (V*E*S)/(Km + S);
+end
+
+function linear_activation(constant, Activator)
+  constant*Activator;
+end
+
+
+model *BIOMD0000000329()
 
   // Compartments and Species:
-  compartment cytoplasm, ER;
-  species $a in cytoplasm, $b in cytoplasm, $c in cytoplasm, $d in ER;
+  compartment compartment_;
+  species a in compartment_, b in compartment_, c in compartment_;
 
-  // Rate Rules:
-  a' = (k1 + k2*a) - (k3*a*b)/(a + K4) - (k5*a*c)/(a + K6);
-  b' = k7*a - (k8*b)/(b + K9);
-  c' = ((k10*c*b*d)/(d + K11) + k12*b + k13*a) - (k14*c)/(c + K15) - (k16*c)/(c + K17);
-  d' = (-k10*c*b*d)/(d + K11) + (k16*c)/(c + K17);
+  // Reactions:
+  R1:  => a; compartment_*Constant_flux__irreversible(R1_v);
+  R2:  => a; compartment_*linear_activation(R2_constant, a);
+  R3: a => ; compartment_*Irr_Michaelis_Menten__enzyme__userdefined(R3_V, b, a, R3_Km);
+  R4: a => ; compartment_*Irr_Michaelis_Menten__enzyme__userdefined(R4_V, c, a, R4_Km);
+  R5:  => b; compartment_*linear_activation(R5_constant, a);
+  R6: b => ; compartment_*Henri_Michaelis_Menten__irreversible(b, R6_Km, R6_V);
+  R7:  => c; compartment_*linear_activation(R7_constant, a);
+  R8: c => ; compartment_*Henri_Michaelis_Menten__irreversible(c, R8_Km, R8_V);
 
   // Species initializations:
   a = 0.01;
-  b = 0.01/cytoplasm;
-  c = 0.01/cytoplasm;
-  d = 20/ER;
+  b = 0.01;
+  c = 0.01;
 
   // Compartment initializations:
-  cytoplasm = 1;
-  ER = 1;
+  compartment_ = 1e-013;
 
   // Variable initializations:
-  k1 = 0.09;
-  k2 = 1.3;
-  k3 = 0.64;
-  K4 = 0.19;
-  k5 = 4.88;
-  K6 = 1.18;
-  k7 = 2.08;
-  k8 = 32.24;
-  K9 = 29.09;
-  k10 = 5;
-  K11 = 2.67;
-  k12 = 0.7;
-  k13 = 13.58;
-  k14 = 153;
-  K15 = 0.16;
-  k16 = 4.85;
-  K17 = 0.05;
+  R1_v = 0.212;
+  R2_constant = 2.9;
+  R3_V = 1.52;
+  R3_Km = 0.19;
+  R4_V = 4.88;
+  R4_Km = 1.18;
+  R5_constant = 1.24;
+  R6_Km = 29.09;
+  R6_V = 32.24;
+  R7_constant = 13.58;
+  R8_Km = 0.16;
+  R8_V = 153;
 
   // Other declarations:
-  const cytoplasm, ER, k1, k2, k3, K4, k5, K6, k7, k8, K9, k10, K11, k12;
-  const k13, k14, K15, k16, K17;
+  const compartment_;
+
+  // Unit definitions:
+  unit substance = 1e-9 mole;
 
   // Display Names:
   a is "G-alpha";
-  b is "PLC";
-  c is "Calcium-Cyt";
-  d is "Calcium-ER";
+  b is "activePLC";
+  c is "Calcium";
 end

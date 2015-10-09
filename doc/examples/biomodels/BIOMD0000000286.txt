@@ -3,21 +3,25 @@ model *BIOMD0000000462()
 
   // Compartments and Species:
   compartment cell;
-  species Mdm2 in cell, p53 in cell, Mdm2_p53 in cell, Mdm2_mRNA in cell;
-  species p53_mRNA in cell, ATMA in cell, ATMI in cell, p53_P in cell, Mdm2_P in cell;
-  species $IR in cell, ROS in cell, basalROS in cell, damDNA in cell, E1 in cell;
-  species E2 in cell, E1_Ub in cell, E2_Ub in cell, Proteasome in cell, Ub in cell;
-  species p53DUB in cell, Mdm2DUB in cell, DUB in cell, Mdm2_p53_Ub in cell;
-  species Mdm2_p53_Ub2 in cell, Mdm2_p53_Ub3 in cell, Mdm2_p53_Ub4 in cell;
-  species Mdm2_P1_p53_Ub4 in cell, Mdm2_Ub in cell, Mdm2_Ub2 in cell, Mdm2_Ub3 in cell;
-  species Mdm2_Ub4 in cell, Mdm2_P_Ub in cell, Mdm2_P_Ub2 in cell, Mdm2_P_Ub3 in cell;
-  species Mdm2_P_Ub4 in cell, p53_Ub4_Proteasome in cell, Mdm2_Ub4_Proteasome in cell;
-  species Mdm2_P_Ub4_Proteasome in cell, GSK3b in cell, GSK3b_p53 in cell;
-  species GSK3b_p53_P in cell, Abeta in cell, AggAbeta_Proteasome in cell;
-  species AggAbeta in cell, AbetaPlaque in cell, Tau in cell, Tau_P1 in cell;
-  species Tau_P2 in cell, MT_Tau in cell, AggTau in cell, AggTau_Proteasome in cell;
-  species Proteasome_Tau in cell, PP1 in cell, NFT in cell, $ATP in cell;
-  species $ADP in cell, $AMP in cell, $Source in cell, $Sink in cell;
+  species $IR in cell;
+  substanceOnly species Mdm2 in cell, p53 in cell, Mdm2_p53 in cell, Mdm2_mRNA in cell;
+  substanceOnly species p53_mRNA in cell, ATMA in cell, ATMI in cell, p53_P in cell;
+  substanceOnly species Mdm2_P in cell, ROS in cell, basalROS in cell, damDNA in cell;
+  substanceOnly species E1 in cell, E2 in cell, E1_Ub in cell, E2_Ub in cell;
+  substanceOnly species Proteasome in cell, Ub in cell, p53DUB in cell, Mdm2DUB in cell;
+  substanceOnly species DUB in cell, Mdm2_p53_Ub in cell, Mdm2_p53_Ub2 in cell;
+  substanceOnly species Mdm2_p53_Ub3 in cell, Mdm2_p53_Ub4 in cell, Mdm2_P1_p53_Ub4 in cell;
+  substanceOnly species Mdm2_Ub in cell, Mdm2_Ub2 in cell, Mdm2_Ub3 in cell;
+  substanceOnly species Mdm2_Ub4 in cell, Mdm2_P_Ub in cell, Mdm2_P_Ub2 in cell;
+  substanceOnly species Mdm2_P_Ub3 in cell, Mdm2_P_Ub4 in cell, p53_Ub4_Proteasome in cell;
+  substanceOnly species Mdm2_Ub4_Proteasome in cell, Mdm2_P_Ub4_Proteasome in cell;
+  substanceOnly species GSK3b in cell, GSK3b_p53 in cell, GSK3b_p53_P in cell;
+  substanceOnly species Abeta in cell, AggAbeta_Proteasome in cell, AggAbeta in cell;
+  substanceOnly species AbetaPlaque in cell, Tau in cell, Tau_P1 in cell;
+  substanceOnly species Tau_P2 in cell, MT_Tau in cell, AggTau in cell, AggTau_Proteasome in cell;
+  substanceOnly species Proteasome_Tau in cell, PP1 in cell, NFT in cell;
+  substanceOnly species $ATP in cell, $ADP in cell, $AMP in cell, $Source in cell;
+  substanceOnly species $Sink in cell;
 
   // Assignment Rules:
   IR := piecewise(25, time >= 3600 && time <= 3660, 0);

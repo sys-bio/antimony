@@ -1,0 +1,134 @@
+// Created by libAntimony v2.7.1
+model *MODEL1410300001()
+
+  // Compartments and Species:
+  compartment cytosol, nucleus;
+  species ERKc in cytosol, pERKc in cytosol, ppERKc in cytosol, ERK_ppMEKc in cytosol;
+  species pERK_ppMEKc in cytosol, DUSPc in cytosol, pERK_DUSPc in cytosol;
+  species ppERK_DUSPc in cytosol, ERKn in nucleus, pERKn in nucleus, ppERKn in nucleus;
+  species pERK_DUSPn in nucleus, ppERK_DUSPn in nucleus, STYXn in nucleus;
+  species ERK_STYXn in nucleus, pERK_STYXn in nucleus, ppERK_STYXn in nucleus;
+  species duspn in nucleus, DUSPn in nucleus, $u_ppMEKc_tot in cytosol, $ppMEKc_tot in cytosol;
+  species $ERKc_obs in cytosol, $pERKc_obs in cytosol, $ppERKc_obs in cytosol;
+  species $ERK_ppMEKc_obs in cytosol;
+
+  // Assignment Rules:
+  u_ppMEKc_tot := piecewise(0, time < -1, 0, time < 0, 1, time < 120, 1);
+  ppMEKc_tot := u_ppMEKc_tot*k_ppMEKc_tot;
+  ERKc_obs := ERKc;
+  pERKc_obs := pERKc;
+  ppERKc_obs := ppERKc;
+  ERK_ppMEKc_obs := ERK_ppMEKc;
+
+  // Reactions:
+  reaction_1: ERKc -> ERK_ppMEKc; k1_ERKc*ERKc*(ppMEKc_tot*cytosol - ERK_ppMEKc*cytosol - pERK_ppMEKc)*cytosol - k2_ERKc*ERK_ppMEKc*cytosol;
+  reaction_2: ERK_ppMEKc => pERKc; k3_ERKc*ERK_ppMEKc*cytosol;
+  reaction_3: pERKc -> pERK_ppMEKc; k1_ERKc*pERKc*(ppMEKc_tot*cytosol - pERK_ppMEKc*cytosol - ERK_ppMEKc)*cytosol - k2_ERKc*pERK_ppMEKc*cytosol;
+  reaction_4: pERK_ppMEKc => ppERKc; k3_ERKc*pERK_ppMEKc*cytosol;
+  reaction_5: ERKc => ERKn; k_ERKin*ERKc*cytosol - k_ERKout*ERKn*nucleus;
+  reaction_6: pERKc => pERKn; k_pERKin*pERKc*cytosol - k_pERKout*pERKn*nucleus;
+  reaction_7: ppERKc => ppERKn; k_ppERKin*ppERKc*cytosol - k_ppERKout*ppERKn*nucleus;
+  reaction_8: ppERKc + DUSPc -> ppERK_DUSPc; ((kd1_ppERKc*ppERKc*DUSPc)/0.94*cytosol - kd2_ppERKc*ppERK_DUSPc)*cytosol;
+  reaction_9: ppERK_DUSPc => pERKc + DUSPc; kd3_ppERKc*ppERK_DUSPc*cytosol;
+  reaction_10: pERKc + DUSPc -> pERK_DUSPc; ((kd1_pERKc*pERKc*DUSPc)/0.94*cytosol - kd2_pERKc*pERK_DUSPc)*cytosol;
+  reaction_11: pERK_DUSPc => ERKc + DUSPc; kd3_pERKc*pERK_DUSPc*cytosol;
+  reaction_12: ppERKn + DUSPn -> ppERK_DUSPn; ((kd1_ppERKn*ppERKn*DUSPn)/0.22*nucleus - kd2_ppERKn*ppERK_DUSPn)*nucleus;
+  reaction_13: ppERK_DUSPn => pERKn + DUSPn; kd3_ppERKn*ppERK_DUSPn*nucleus;
+  reaction_14: pERKn + DUSPn -> pERK_DUSPn; ((kd1_pERKn*pERKn*DUSPn)/0.22*nucleus - kd2_pERKn*pERK_DUSPn)*nucleus;
+  reaction_15: pERK_DUSPn => ERKn + DUSPn; kd3_pERKn*pERK_DUSPn*nucleus;
+  reaction_16:  => duspn; (duspn_basal*(1 + (duspn_ind*ppERKn^2)/(ppERKn^2*nucleus + Kduspn^2))*0.693)/Tduspn;
+  reaction_17: duspn => ; (duspn*0.693)/Tduspn*nucleus;
+  reaction_18:  => DUSPn; ((v2*duspn)/0.22*0.693)/TDUSPn*nucleus;
+  reaction_19: DUSPn => ; (DUSPn*0.693)/TDUSPn*nucleus;
+  reaction_20: ERKn + STYXn -> ERK_STYXn; ((k1_ES*ERKn*STYXn)/0.22*nucleus - k2_ES*ERK_STYXn)*nucleus;
+  reaction_21: pERKn + STYXn -> pERK_STYXn; ((k1_pES*pERKn*STYXn)/0.22*nucleus - k2_pES*pERK_STYXn)*nucleus;
+  reaction_22: ppERKn + STYXn -> ppERK_STYXn; ((k1_ppES*ppERKn*STYXn)/0.22*nucleus - k2_ppES*ppERK_STYXn)*nucleus;
+
+  // Species initializations:
+  ERKc = 572.5;
+  pERKc = 0;
+  ppERKc = 0;
+  ERK_ppMEKc = 0;
+  pERK_ppMEKc = 0;
+  DUSPc = 100;
+  pERK_DUSPc = 0;
+  ppERK_DUSPc = 0;
+  ERKn = 1630.9;
+  pERKn = 0;
+  ppERKn = 0;
+  pERK_DUSPn = 0;
+  ppERK_DUSPn = 0;
+  STYXn = 3000;
+  ERK_STYXn = 0;
+  pERK_STYXn = 0;
+  ppERK_STYXn = 0;
+  duspn = 1;
+  DUSPn = 10;
+
+  // Compartment initializations:
+  cytosol = 0.94;
+  nucleus = 0.22;
+
+  // Variable initializations:
+  k_ppMEKc_tot = 100;
+  k_ERKin = 0.144;
+  k_ERKout = 1.08;
+  k_pERKin = 0.144;
+  k_pERKout = 1.08;
+  k_ppERKin = 0.66;
+  k_ppERKout = 0.78;
+  k1_ES = 1;
+  k2_ES = 60;
+  k1_pES = 1;
+  k2_pES = 60;
+  k1_ppES = 1;
+  k2_ppES = 60;
+  k1_ERKc = 1;
+  k2_ERKc = 350;
+  k3_ERKc = 13.2;
+  kd1_ppERKc = 1;
+  kd2_ppERKc = 60;
+  kd3_ppERKc = 0.388;
+  kd1_pERKc = 1;
+  kd2_pERKc = 160;
+  kd3_pERKc = 0.432;
+  kd1_ERKc = 0;
+  kd2_ERKc = 5160;
+  k1_ERKn = 1;
+  k2_ERKn = 350;
+  k3_ERKn = 13.2;
+  kd1_ppERKn = 1;
+  kd2_ppERKn = 60;
+  kd3_ppERKn = 38.88;
+  kd1_pERKn = 1;
+  kd2_pERKn = 160;
+  kd3_pERKn = 43.2;
+  kd1_ERKn = 0;
+  kd2_ERKn = 160;
+  actCompl = 1e-009;
+  duspn_basal = 1;
+  duspn_ind = 20;
+  Kduspn = 1000;
+  Tduspn = 10;
+  v2 = 10;
+  TDUSPn = 45;
+  scale_cytERK_tot = 1;
+  scale_nucERK_tot = 1;
+  scale_cellERK_tot = 1;
+  scale_cytppERK_tot = 1;
+  scale_nucppERK_tot = 1;
+  scale_cellppERK_tot = 0.0193861307997638;
+  scale_tDUSPn = 1;
+  scale_tERK_STYXn = 1;
+
+  // Other declarations:
+  const cytosol, nucleus, k_ppMEKc_tot, k_ERKin, k_ERKout, k_pERKin, k_pERKout;
+  const k_ppERKin, k_ppERKout, k1_ES, k2_ES, k1_pES, k2_pES, k1_ppES, k2_ppES;
+  const k1_ERKc, k2_ERKc, k3_ERKc, kd1_ppERKc, kd2_ppERKc, kd3_ppERKc, kd1_pERKc;
+  const kd2_pERKc, kd3_pERKc, kd1_ERKc, kd2_ERKc, k1_ERKn, k2_ERKn, k3_ERKn;
+  const kd1_ppERKn, kd2_ppERKn, kd3_ppERKn, kd1_pERKn, kd2_pERKn, kd3_pERKn;
+  const kd1_ERKn, kd2_ERKn, actCompl, duspn_basal, duspn_ind, Kduspn, Tduspn;
+  const v2, TDUSPn, scale_cytERK_tot, scale_nucERK_tot, scale_cellERK_tot;
+  const scale_cytppERK_tot, scale_nucppERK_tot, scale_cellppERK_tot, scale_tDUSPn;
+  const scale_tERK_STYXn;
+end

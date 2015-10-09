@@ -3,20 +3,24 @@ model *YeastWTmodel2()
 
   // Compartments and Species:
   compartment cellMembrane, nucleus;
-  species Ctelo in nucleus, Utelo in nucleus, Cdc13 in nucleus, Rad17Utelo in nucleus;
-  species Rad17 in nucleus, Rad24 in nucleus, RPA in nucleus, Mec1 in nucleus;
-  species ssDNA in nucleus, RPAssDNA in nucleus, RPAssDNA1 in nucleus, RPAssDNA2 in nucleus;
-  species Mec1RPAssDNA in nucleus, ExoXI in nucleus, ExoXA in nucleus, Exo1I in nucleus;
-  species Exo1A in nucleus, Rad9I in nucleus, Rad9A in nucleus, Rad53I in nucleus;
-  species Rad53A in nucleus, Chk1I in nucleus, Chk1A in nucleus, Dun1I in nucleus;
-  species Dun1A in nucleus, ATP in nucleus, ADP in nucleus, Rad9Kin in nucleus;
-  species recovery in nucleus, G1 in nucleus, S in nucleus, G2 in nucleus;
-  species M in nucleus, G1cyclin in nucleus, Scyclin in nucleus, G2cyclin in nucleus;
-  species Mcyclin in nucleus, G1CdkI in nucleus, G1CdkA in nucleus, SCdkI in nucleus;
-  species SCdkA in nucleus, G2CdkI in nucleus, G2CdkA in nucleus, MCdkI in nucleus;
-  species MCdkA in nucleus, G1Soff in nucleus, G1Son in nucleus, SG2off in nucleus;
-  species SG2on in nucleus, G2Moff in nucleus, G2Mon in nucleus, MG1off in nucleus;
-  species MG1on in nucleus, $sink in nucleus, budscar in cellMembrane;
+  substanceOnly species Ctelo in nucleus, Utelo in nucleus, Cdc13 in nucleus;
+  substanceOnly species Rad17Utelo in nucleus, Rad17 in nucleus, Rad24 in nucleus;
+  substanceOnly species RPA in nucleus, Mec1 in nucleus, ssDNA in nucleus;
+  substanceOnly species RPAssDNA in nucleus, RPAssDNA1 in nucleus, RPAssDNA2 in nucleus;
+  substanceOnly species Mec1RPAssDNA in nucleus, ExoXI in nucleus, ExoXA in nucleus;
+  substanceOnly species Exo1I in nucleus, Exo1A in nucleus, Rad9I in nucleus;
+  substanceOnly species Rad9A in nucleus, Rad53I in nucleus, Rad53A in nucleus;
+  substanceOnly species Chk1I in nucleus, Chk1A in nucleus, Dun1I in nucleus;
+  substanceOnly species Dun1A in nucleus, ATP in nucleus, ADP in nucleus;
+  substanceOnly species Rad9Kin in nucleus, recovery in nucleus, G1 in nucleus;
+  substanceOnly species S in nucleus, G2 in nucleus, M in nucleus, G1cyclin in nucleus;
+  substanceOnly species Scyclin in nucleus, G2cyclin in nucleus, Mcyclin in nucleus;
+  substanceOnly species G1CdkI in nucleus, G1CdkA in nucleus, SCdkI in nucleus;
+  substanceOnly species SCdkA in nucleus, G2CdkI in nucleus, G2CdkA in nucleus;
+  substanceOnly species MCdkI in nucleus, MCdkA in nucleus, G1Soff in nucleus;
+  substanceOnly species G1Son in nucleus, SG2off in nucleus, SG2on in nucleus;
+  substanceOnly species G2Moff in nucleus, G2Mon in nucleus, MG1off in nucleus;
+  substanceOnly species MG1on in nucleus, $sink in nucleus, budscar in cellMembrane;
 
   // Reactions:
   Capping: Cdc13 + Utelo => Ctelo; Capping_k1*Cdc13*Utelo*kalive;
