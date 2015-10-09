@@ -137,8 +137,8 @@ void AntimonyTab::ReplaceModelWithString(QString modelname, QString text)
     }
 
     model = model.trimmed();
-    QRegExp repeats("//Created by libAntimony v[0-9.\\-beta]+\\s*//Created by libAntimony");
-    model.replace(repeats, "//Created by libAntimony");
+    QRegExp repeats("// *Created by libAntimony v[0-9.\\-beta]+\\s*// *Created by libAntimony");
+    model.replace(repeats, "// Created by libAntimony");
     ReplaceTextWith(model);
 }
 
