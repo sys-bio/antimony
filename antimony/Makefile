@@ -1,5 +1,5 @@
 #version number
-version = 2.7
+version = 2.8
 
 #mingw:
 #mingw = i586-mingw32msvc
@@ -73,6 +73,7 @@ CPPFILES = $(src_dir)annotated.cpp \
 	$(src_dir)Antimony.cpp \
 	$(src_dir)antimony.tab.cpp \
 	$(src_dir)cellmlx.cpp \
+	$(src_dir)constraint.cpp \
 	$(src_dir)dnastrand.cpp \
 	$(src_dir)event.cpp \
 	$(src_dir)formula.cpp \
@@ -103,6 +104,7 @@ HFILES = $(src_dir)annotated.h \
 	$(src_dir)antimony_api_cpp.h \
 	$(src_dir)dnastrand.h \
 	$(src_dir)cellmlx.h \
+	$(src_dir)constraint.h \
 	$(src_dir)enums.h \
 	$(src_dir)event.h \
 	$(src_dir)formula.h \
@@ -123,6 +125,7 @@ LIBOFILES = $(src_dir)annotated.o \
 	$(src_dir)antimony_api.o \
 	$(src_dir)antimony.tab.o \
 	$(src_dir)cellmlx.o \
+	$(src_dir)constraint.o \
 	$(src_dir)dnastrand.o \
 	$(src_dir)event.o \
 	$(src_dir)formula.o \
