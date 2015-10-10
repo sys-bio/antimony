@@ -452,6 +452,18 @@ START_TEST (test_parameter_nan_txt)
 }
 END_TEST
 
+START_TEST (test_substance_only_species)
+{
+  compareFileTranslation("substance_only_species");
+}
+END_TEST
+
+START_TEST (test_substance_only_species_txt)
+{
+  compareStringTranslation("substanceOnly species S1", "substance_only_species.xml");
+}
+END_TEST
+
 
 
 
@@ -461,6 +473,9 @@ create_suite_Basic (void)
   Suite *suite = suite_create("Antimony Basic");
   TCase *tcase = tcase_create("Antimony Basic");
 
+
+  tcase_add_test( tcase, test_substance_only_species);
+  tcase_add_test( tcase, test_substance_only_species_txt);
 
   tcase_add_test( tcase, test_parameter);
   tcase_add_test( tcase, test_parameter_txt);

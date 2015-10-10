@@ -1911,12 +1911,12 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded) con
     if (var) {
       retval += "\n" + indent + "// The objective function (for FBC analysis):\n";
 
-      retval += ToStringFromVecDelimitedBy(var->GetName(), ".") + ": ";
+      retval += indent + ToStringFromVecDelimitedBy(var->GetName(), ".") + ": ";
       if (m_maximize) {
-        retval += indent + "maximize ";
+        retval += "maximize ";
       }
       else {
-        retval += indent + "minimize ";
+        retval += "minimize ";
       }
       retval += var->GetFormula()->ToDelimitedStringWithEllipses(".") + ";\n";
       //This is not what the origmap was designed for, but it works here.  Yay hacks!  Basically, if the mapped variable has the same information in it, it's not output by any other function, so since we've already output all the information in question, we put it in here mapped to itself, so nothing else thinks it needs to add any more information (which it doesn't).
