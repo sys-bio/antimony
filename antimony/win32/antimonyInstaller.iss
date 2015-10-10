@@ -1,6 +1,6 @@
-#define MinimalSetupInstaller "AntimonyPythonBindings-2.7.0-win32.exe"
+#define MinimalSetupInstaller "AntimonyPythonBindings-2.8.0-win32.exe"
 #define MyAppName "QTAntimony"
-#define MyAppVersion "2.7.0"
+#define MyAppVersion "2.8.0"
 #define MyAppSetupIconFile "..\QTAntimony_src\antimony.ico"
 
 [Setup]
@@ -609,3 +609,30 @@ Source: ..\doc\examples\biomodels\BIOMD0000000545.txt; DestDir: {app}\biomodels\
 Source: ..\doc\examples\biomodels\BIOMD0000000546.txt; DestDir: {app}\biomodels\
 Source: ..\doc\examples\biomodels\BIOMD0000000547.txt; DestDir: {app}\biomodels\
 Source: ..\doc\examples\biomodels\BIOMD0000000548.txt; DestDir: {app}\biomodels\
+Source: ..\doc\examples\biomodels\BIOMD0000000549.txt; DestDir: {app}\biomodels\
+Source: ..\doc\examples\biomodels\BIOMD0000000550.txt; DestDir: {app}\biomodels\
+Source: ..\doc\examples\biomodels\BIOMD0000000551.txt; DestDir: {app}\biomodels\
+Source: ..\doc\examples\biomodels\BIOMD0000000552.txt; DestDir: {app}\biomodels\
+Source: ..\doc\examples\biomodels\BIOMD0000000553.txt; DestDir: {app}\biomodels\
+Source: ..\doc\examples\biomodels\BIOMD0000000554.txt; DestDir: {app}\biomodels\
+Source: ..\doc\examples\biomodels\BIOMD0000000555.txt; DestDir: {app}\biomodels\
+Source: ..\doc\examples\biomodels\BIOMD0000000556.txt; DestDir: {app}\biomodels\
+Source: ..\doc\examples\biomodels\BIOMD0000000557.txt; DestDir: {app}\biomodels\
+Source: ..\doc\examples\biomodels\BIOMD0000000558.txt; DestDir: {app}\biomodels\
+Source: ..\doc\examples\biomodels\BIOMD0000000559.txt; DestDir: {app}\biomodels\
+Source: ..\doc\examples\biomodels\BIOMD0000000560.txt; DestDir: {app}\biomodels\
+Source: ..\doc\examples\biomodels\BIOMD0000000561.txt; DestDir: {app}\biomodels\
+Source: ..\doc\examples\biomodels\BIOMD0000000562.txt; DestDir: {app}\biomodels\
+Source: ..\doc\examples\biomodels\BIOMD0000000563.txt; DestDir: {app}\biomodels\
+Source: ..\doc\examples\biomodels\BIOMD0000000564.txt; DestDir: {app}\biomodels\
+Source: ..\doc\examples\biomodels\BIOMD0000000565.txt; DestDir: {app}\biomodels\
+Source: ..\doc\examples\biomodels\BIOMD0000000566.txt; DestDir: {app}\biomodels\
+Source: ..\doc\examples\biomodels\BIOMD0000000567.txt; DestDir: {app}\biomodels\
+Source: ..\doc\examples\biomodels\BIOMD0000000568.txt; DestDir: {app}\biomodels\
+Source: ..\doc\examples\biomodels\BIOMD0000000569.txt; DestDir: {app}\biomodels\
+Source: ..\doc\examples\biomodels\BIOMD0000000570.txt; DestDir: {app}\biomodels\
+Source: ..\doc\examples\biomodels\BIOMD0000000571.txt; DestDir: {app}\biomodels\
+Source: ..\doc\examples\biomodels\BIOMD0000000572.txt; DestDir: {app}\biomodels\
+Source: ..\doc\examples\biomodels\BIOMD0000000573.txt; DestDir: {app}\biomodels\
+Source: ..\doc\examples\biomodels\BIOMD0000000574.txt; DestDir: {app}\biomodels\
+Source: ..\doc\examples\biomodels\BIOMD0000000575.txt; DestDir: {app}\biomodels\
