@@ -329,6 +329,7 @@ Variable* Module::GetSBaseRef(const SBaseRef* csbr, string modname, string re_st
     //We renamed it when we translated it to Antimony
     refid = GetNewIDForLocalParameter(referenced);
   }
+  FixName(refid);
   refname.push_back(refid);
   //Now move back up the stack of submodels until we get to modname:
   const SBase* parent = referenced->getAncestorOfType(SBML_COMP_SUBMODEL, "comp");
