@@ -197,20 +197,13 @@ int Registry::OpenFile(const string& filename, bool antOnly)
     AddDirectory(dir);
   }
 
-  //Now try to read it as SBML
 #ifndef NSBML
   //Try opening as SBML:
-  SBMLDocument* document = readSBML(newname.c_str());
-  int sbmlcheck = 0;
-  if (document->getErrorLog()->getNumFailsWithSeverity(LIBSBML_SEV_ERROR) == 0) {
-    sbmlcheck = 2;
-  }
-  else if (!antOnly) {
-    sbmlcheck = CheckAndAddSBMLIfGood(document);
-  }
-  delete document;
-  if (sbmlcheck==2) {
-    return 2;
+  if (!antOnly) {
+    SBMLDocument* document = readSBML(newname.c_str());
+    if (CheckAndAddSBMLIfGood(document)==2) {
+      return 2;
+    }
   }
 #endif
 

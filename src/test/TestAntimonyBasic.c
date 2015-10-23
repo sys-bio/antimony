@@ -49,6 +49,37 @@ void compareFileTranslation(const string& base)
   delete matching;
 }
 
+void compareFileTranslationWithRenaming(const string& base)
+{
+  clearPreviousLoads();
+  // load document
+  string dir(TestDataDirectory);
+  string filename = dir + base + ".xml";
+  long ret = loadSBMLFile(filename.c_str());
+  fail_unless(ret != -1);
+  char* sbmltoa = getAntimonyString(NULL);
+  fail_unless(sbmltoa != NULL);
+  char* sbmlrt = getSBMLString(NULL);
+  fail_unless(sbmlrt != NULL);
+
+
+  filename = dir + base + ".txt";
+  ret = loadAntimonyFile(filename.c_str());
+  fail_unless(ret != -1);
+  char* matching = getAntimonyString(NULL);
+  fail_unless(string(sbmltoa) == string(matching));
+
+  //Now check the roundtripped version:
+  char* roundtrip = getSBMLString(NULL);
+  fail_unless(roundtrip != NULL);
+  fail_unless(string(roundtrip) == string(sbmlrt));
+
+  delete sbmltoa;
+  delete sbmlrt;
+  delete roundtrip;
+  delete matching;
+}
+
 void compareStringTranslation(const string& antimony, const string& sbml)
 {
   clearPreviousLoads();
@@ -464,6 +495,12 @@ START_TEST (test_substance_only_species_txt)
 }
 END_TEST
 
+START_TEST (test_fixname_in_submodel)
+{
+  compareFileTranslationWithRenaming("fixname_test");
+}
+END_TEST
+
 
 
 
@@ -474,8 +511,7 @@ create_suite_Basic (void)
   TCase *tcase = tcase_create("Antimony Basic");
 
 
-  tcase_add_test( tcase, test_substance_only_species);
-  tcase_add_test( tcase, test_substance_only_species_txt);
+  tcase_add_test( tcase, test_fixname_in_submodel);
 
   tcase_add_test( tcase, test_parameter);
   tcase_add_test( tcase, test_parameter_txt);
@@ -537,6 +573,8 @@ create_suite_Basic (void)
   tcase_add_test( tcase, test_parameter_neginf_txt);
   tcase_add_test( tcase, test_parameter_nan);
   tcase_add_test( tcase, test_parameter_nan_txt);
+  tcase_add_test( tcase, test_substance_only_species);
+  tcase_add_test( tcase, test_substance_only_species_txt);
 
   suite_add_tcase(suite, tcase);
 
