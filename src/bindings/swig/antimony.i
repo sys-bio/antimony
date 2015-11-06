@@ -5,7 +5,7 @@
  * 
  */
 
-%module(directors="1") libantimony
+%module(directors="1") antimony
 
 #pragma SWIG nowarn=473,401,844
 

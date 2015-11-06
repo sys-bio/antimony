@@ -6,6 +6,6 @@ human-writeable model definition language.  For more information,
 see http://antimony.sf.net/
 """
 
-from libantimony import *
+from antimony import *
 
 __version__ = LIBANTIMONY_VERSION_STRING
