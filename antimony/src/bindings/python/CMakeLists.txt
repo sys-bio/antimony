@@ -69,7 +69,7 @@ ADD_CUSTOM_COMMAND(
     COMMAND "${CMAKE_COMMAND}"
     ARGS    -E rename pydoc.i pydoc-doxygen.i
     COMMAND "${CMAKE_COMMAND}"
-    ARGS    -E rename libantimony.py antimony-doxygen.py
+    ARGS    -E rename antimony.py antimony-doxygen.py
     COMMAND "${CMAKE_COMMAND}"
     ARGS    -E rename pydoc-normal.i pydoc.i
     COMMAND "${SWIG_EXECUTABLE}"
@@ -116,7 +116,7 @@ endif(MSVC)
 add_library(binding_python_lib SHARED antimony_wrap.cpp)
 add_dependencies( binding_python_lib binding_python_swig) 
 
-set_target_properties (binding_python_lib PROPERTIES OUTPUT_NAME "_libantimony")
+set_target_properties (binding_python_lib PROPERTIES OUTPUT_NAME "_antimony")
 if (UNIX)
         set_target_properties (binding_python_lib PROPERTIES PREFIX "")
         set_target_properties (binding_python_lib PROPERTIES SUFFIX ".so")
@@ -137,31 +137,39 @@ if(APPLE)
   set_target_properties(binding_python_lib PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
 endif()
 
-# 
-# Determine the python installation directory
+
 #
-set(PYTHON_PACKAGE_INSTALL_DIR)
-if (UNIX OR CYGWIN) 
-  execute_process(COMMAND "${PYTHON_EXECUTABLE}" -c "import sys;import platform; sys.stdout.write(platform.python_version()[:3])"
-    OUTPUT_VARIABLE PYTHON_VERSION)
-  set(PYTHON_PACKAGE_INSTALL_DIR ${CMAKE_INSTALL_LIBDIR}/python${PYTHON_VERSION}/site-packages)
-else()
-  set(PYTHON_PACKAGE_INSTALL_DIR ${MISC_PREFIX}bindings/python)
-endif()
+# Use distutil's setup.py to install the bindings
+#
 
-INSTALL(TARGETS binding_python_lib DESTINATION ${PYTHON_PACKAGE_INSTALL_DIR}/antimony )
+set(SETUP_PY_IN "${CMAKE_CURRENT_SOURCE_DIR}/setup.py.in")
+set(SETUP_PY    "${CMAKE_CURRENT_BINARY_DIR}/setup.py")
+set(DEPS        "${CMAKE_CURRENT_SOURCE_DIR}/__init__.py")
+set(OUTPUT      "${CMAKE_CURRENT_BINARY_DIR}/build/timestamp")
 
-file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/libantimony.pth" "antimony\n")
-INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/libantimony.pth  DESTINATION ${PYTHON_PACKAGE_INSTALL_DIR})
-INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/libantimony.py  DESTINATION ${PYTHON_PACKAGE_INSTALL_DIR}/antimony )
+configure_file(${SETUP_PY_IN} ${SETUP_PY})
 
-if (NOT UNIX)
-  file(GLOB new_win_dependencies "${CMAKE_SOURCE_DIR}/win32/*.dll")
-  install(FILES ${new_win_dependencies} DESTINATION ${PYTHON_PACKAGE_INSTALL_DIR}/antimony )
-endif()
+add_custom_command(OUTPUT ${OUTPUT}
+                   COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/antimony/
+                   COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/_antimony* ${CMAKE_CURRENT_BINARY_DIR}/antimony/
+                   COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/antimony.py ${CMAKE_CURRENT_BINARY_DIR}/antimony/
+                   COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/__init__.py ${CMAKE_CURRENT_BINARY_DIR}/antimony/
+                   COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/__init__.py ${CMAKE_CURRENT_BINARY_DIR}/antimony/
+#                   COMMAND ${PYTHON_EXECUTABLE} ${SETUP_PY} build
+                   COMMAND ${CMAKE_COMMAND} -E touch ${OUTPUT}
+                   DEPENDS ${DEPS})
 
-#Install the __init.py__ file
-install(FILES ${CMAKE_SOURCE_DIR}/src/bindings/python/__init__.py DESTINATION ${PYTHON_PACKAGE_INSTALL_DIR}/antimony )
+add_custom_target(target ALL DEPENDS ${OUTPUT})
+
+
+#After the above are copied, run 'setup.py' to install them in the proper place.
+install(CODE "MESSAGE(\"Sample install message.\")")
+INSTALL(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E chdir ${CMAKE_CURRENT_BINARY_DIR} ${PYTHON_EXECUTABLE} ${SETUP_PY} install)")
+
+#file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/libantimony.pth" "antimony\n")
+#INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/libantimony.pth  DESTINATION ${PYTHON_PACKAGE_INSTALL_DIR})
+
+
 
 ####################################################################
 #
