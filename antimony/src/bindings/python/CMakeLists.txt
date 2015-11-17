@@ -7,11 +7,13 @@
 
 find_package(SWIG REQUIRED)
 include(${SWIG_USE_FILE})
-find_package(FindPythonInterp)
+#include(FindPythonLibs)
+#include(FindPythonInterp)
+find_package(PythonInterp)
 # specify that the same python library should be found 
 # as the one the selected interpreter uses
 set (Python_ADDITIONAL_VERSIONS ${PYTHON_VERSION_STRING})
-find_package(FindPythonLibs)
+find_package(PythonLibs)
 
 
 ####################################################################
@@ -148,7 +150,7 @@ endif()
 set(SETUP_PY_IN "${CMAKE_CURRENT_SOURCE_DIR}/setup.py.in")
 set(SETUP_PY    "${CMAKE_CURRENT_BINARY_DIR}/setup.py")
 set(DEPS        "${CMAKE_CURRENT_SOURCE_DIR}/__init__.py")
-set(OUTPUT      "${CMAKE_CURRENT_BINARY_DIR}/build/timestamp")
+set(OUTPUT      "${CMAKE_CURRENT_BINARY_DIR}/timestamp")
 
 configure_file(${SETUP_PY_IN} ${SETUP_PY})
 
