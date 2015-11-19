@@ -15,6 +15,7 @@ find_package(PythonInterp)
 set (Python_ADDITIONAL_VERSIONS ${PYTHON_VERSION_STRING})
 find_package(PythonLibs)
 
+SET(LIBANTIMONY_VERSION_STRING_NO_V "${LIBANTIMONY_VERSION_MAJOR}.${LIBANTIMONY_VERSION_MINOR}${LIBANTIMONY_VERSION_PATCH}${LIBANTIMONY_VERSION_RELEASE}")
 
 ####################################################################
 #
