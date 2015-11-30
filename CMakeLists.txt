@@ -54,9 +54,9 @@ option(WITH_SBML            "Generate SBML translations"      ON )
 if (WITH_SBML)
     option(WITH_STATIC_SBML     "Use the static version of the libsbml library"      OFF )
     option(WITH_COMP_SBML       "Use the hierarchical composition package API"      ON )
-    OPTION(WITH_LIBSBML_EXPAT  "Set if libsbml was compiled with a separate expat library."  OFF)
-    OPTION(WITH_LIBSBML_LIBXML "Set if libsbml was compiled with a separate libxml library." ON)
-    OPTION(WITH_LIBSBML_XERCES "Set if libsbml was compiled with a separate xerces library." OFF)
+    OPTION(WITH_LIBSBML_EXPAT   "Set if libsbml was compiled with a separate expat library."  OFF)
+    OPTION(WITH_LIBSBML_LIBXML  "Set if libsbml was compiled with a separate libxml library." ON)
+    OPTION(WITH_LIBSBML_XERCES  "Set if libsbml was compiled with a separate xerces library." OFF)
     OPTION(WITH_LIBSBML_COMPRESSION "Set if libsbml was compiled with separate zdll and bzip libraries." OFF)
 endif()
 option(WITH_CELLML          "Generate CellML translations"    ON )
@@ -65,6 +65,10 @@ option(WITH_SBW             "QTAntimony integration with SBW" OFF )
 option(WITH_SBW_TRANSLATOR  "Generate SBWTranslator"          OFF )
 option(WITH_SWIG   "Regenerate SWIG-based language bindings." ON )
 option(WITH_PYTHON       "Generate Python language bindings." OFF)
+if (WITH_PYTHON)
+  option(PYTHON_SYSTEM_INSTALL  "Install the python bindings using setup.py and distutils.  May require admin privileges."    ON )
+  option(PYTHON_LOCAL_INSTALL   "Install the python bindings in ${CMAKE_INSTALL_PREFIX}/bindings/python/.  Will probably require the use of PYTHONPATH."    OFF )
+endif()
 
 set(EXTRA_LIBS "" CACHE STRING "Libraries the other libraries depend on that are in non-standard locations" )
 #set(EXTRA_LIBS "" CACHE_STRING "")
@@ -129,7 +133,7 @@ if(WITH_SBML)
               ${CMAKE_SOURCE_DIR}/../libsbml-5/release/include/
         )
     set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${LIBSBML_LIBRARY} )
-    if(WIN32 AND NOT(WITH_STATIC_SBML))
+    if(WIN32 AND NOT WITH_STATIC_SBML)
         find_path(LIBSBML_BIN_DIR
             NAMES libsbml.dll
             PATHS /usr/bin /usr/local/bin
@@ -140,7 +144,6 @@ if(WITH_SBML)
                   ${CMAKE_SOURCE_DIR}/../libsbml-5/release/bin/
             )
         set(LIBSBML_DLL ${LIBSBML_BIN_DIR}/libsbml.dll)
-        install(FILES   ${LIBSBML_DLL} DESTINATION ${CMAKE_SOURCE_DIR}/win32)
     endif()
     INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${LIBSBML_INCLUDE_DIR})
     if (WITH_COMP_SBML)
@@ -473,9 +476,6 @@ install(FILES   ${LIBANTIMONY_HEADERS} DESTINATION include)
 
 if (NOT UNIX)
   add_definitions(-DWIN32 -DLIBSBML_EXPORTS -DLIBLAX_EXPORTS)
-  if (WITH_PYTHON)
-     INSTALL(TARGETS ${LIBANTIMONY_LIBRARY} DESTINATION bindings/python/antimony )
-  endif()
 endif(NOT UNIX)
 
 
@@ -750,6 +750,10 @@ endif()
 # Install win32 dependencies
 # 
 if (NOT UNIX)
-  file(GLOB win_dependencies "${CMAKE_SOURCE_DIR}/win32/*.dll" "${CMAKE_CURRENT_SOURCE_DIR}/win32/README.txt")
-  install(FILES ${win_dependencies} DESTINATION bin/)
+   file(GLOB win_dependencies "${CMAKE_SOURCE_DIR}/win32/*.dll" "${CMAKE_CURRENT_SOURCE_DIR}/win32/README.txt")
+   if (NOT WITH_STATIC_SBML)
+      list(APPEND win_dependencies ${LIBSBML_DLL})
+   endif()
+   install(FILES ${win_dependencies} DESTINATION bin/)
 endif()
+

@@ -165,32 +165,54 @@ add_custom_command(OUTPUT ${OUTPUT}
 add_custom_target(target ALL DEPENDS ${OUTPUT})
 
 
-#After the above are copied, run 'setup.py' to install them in the proper place.
-INSTALL(TARGETS binding_python_lib DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/antimony)
-if (NOT UNIX)
-  file(GLOB win_dependencies "${CMAKE_SOURCE_DIR}/win32/*.dll" "${CMAKE_CURRENT_SOURCE_DIR}/win32/README.txt")
-  install(FILES ${win_dependencies} DESTINATION ${CMAKE_BINARY_DIR}/src/bindings/python/antimony)
+#For installation, we can run setup.py for people automatically (on by default):
+
+if (PYTHON_SYSTEM_INSTALL)
+   INSTALL(TARGETS binding_python_lib DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/antimony)
+   if (NOT UNIX)
+      file(GLOB win_dependencies "${CMAKE_SOURCE_DIR}/win32/*.dll")
+      list(REMOVE_ITEM win_dependencies ${CMAKE_SOURCE_DIR}/win32/QtCore4.dll)
+      list(REMOVE_ITEM win_dependencies ${CMAKE_SOURCE_DIR}/win32/QtGui4.dll)
+      if (NOT WITH_STATIC_SBML)
+         list(APPEND win_dependencies ${LIBSBML_DLL})
+      endif()
+      install(FILES ${win_dependencies} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/antimony)
+   endif()
+   INSTALL(CODE "execute_process(COMMAND \"${CMAKE_COMMAND}\" -E chdir ${CMAKE_CURRENT_BINARY_DIR} ${PYTHON_EXECUTABLE} ${SETUP_PY} install)")
 endif()
-INSTALL(CODE "execute_process(COMMAND \"${CMAKE_COMMAND}\" -E chdir ${CMAKE_CURRENT_BINARY_DIR} ${PYTHON_EXECUTABLE} ${SETUP_PY} install)")
 
-#file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/libantimony.pth" "antimony\n")
-#INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/libantimony.pth  DESTINATION ${PYTHON_PACKAGE_INSTALL_DIR})
+#...and/or we can let them install python bindings in a local directory (off by default).
 
+if (PYTHON_LOCAL_INSTALL)
+   set(PYTHON_PACKAGE_INSTALL_DIR "bindings/python")
 
+   file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/libantimony.pth" "antimony\n")
+   INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/libantimony.pth  DESTINATION ${PYTHON_PACKAGE_INSTALL_DIR})
+   INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/setup.py  DESTINATION ${PYTHON_PACKAGE_INSTALL_DIR})
+   file(GLOB antimony_python_files "${CMAKE_CURRENT_BINARY_DIR}/antimony/*.*")
+   install(FILES ${antimony_python_files} DESTINATION ${PYTHON_PACKAGE_INSTALL_DIR}/antimony )
+
+endif()
+
+if (NOT PYTHON_SYSTEM_INSTALL)
+   if (NOT PYTHON_LOCAL_INSTALL)
+        message(WARNING "   Python bindings will be created, but not installed.  Install them by hand from ${CMAKE_CURRENT_BINARY_DIR},\n   or turn on PYTHON_SYSTEM_INSTALL and/or PYTHON_LOCAL_INSTALL.")
+   endif()
+endif()
 
 ####################################################################
 #
 # testing
 #
 
-if(WITH_CHECK)
-
-        # copy test files to build dir
-        file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/test.py DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-
-        # run python tests
-        add_test(NAME test_python_binding 
-                 COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/test.py
-                 -p $<TARGET_FILE_DIR:binding_python_lib> -b ${CMAKE_CURRENT_SOURCE_DIR}/test)
-
-endif()
+#if(WITH_CHECK)
+#
+#        # copy test files to build dir
+#        file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/test.py DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+#
+#        # run python tests
+#        add_test(NAME test_python_binding 
+#                 COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/test.py
+#                 -p $<TARGET_FILE_DIR:binding_python_lib> -b ${CMAKE_CURRENT_SOURCE_DIR}/test)
+#
+#endif()
