@@ -403,9 +403,11 @@ LIB_EXTERN long loadSBMLStringWithLocation(const char* model, const char* locati
   }
   long retval = CheckAndAddSBMLDoc(document);
   if (retval == -1) {
-    stringstream errorstream;
-    document->printErrors(errorstream, LIBSBML_SEV_ERROR);
-    g_registry.SetError("Unable to read SBML string due to errors encountered when parsing the file.  Error(s) from libSBML:\n\n" +  errorstream.str());
+    if (g_registry.GetError().empty()) {
+      stringstream errorstream;
+      document->printErrors(errorstream, LIBSBML_SEV_ERROR);
+      g_registry.SetError("Unable to read SBML string due to errors encountered when parsing the file.  Error(s) from libSBML:\n\n" +  errorstream.str());
+    }
   }
   delete document;
   return retval;
