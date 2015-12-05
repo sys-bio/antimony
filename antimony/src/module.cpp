@@ -2162,9 +2162,9 @@ string Module::GetJarnacConstFormulas(string modulename) const
 
 bool Module::GetNeedDefaultCompartment() const
 {
-  size_t numsp= GetNumVariablesOfType(allSpecies, false);
+  size_t numsp= GetNumVariablesOfType(allSpecies, true);
   for (size_t sp=0; sp<numsp; sp++) {
-    const Variable* species = GetNthVariableOfType(allSpecies, sp, false);
+    const Variable* species = GetNthVariableOfType(allSpecies, sp, true);
     if (species->GetCompartment() == NULL) {
       return true;
     }
