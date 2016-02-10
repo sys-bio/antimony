@@ -110,7 +110,6 @@ void compareFileFlatteningWithDifferences(const string& base)
   fail_unless(sbml2ant_ref.str() == string(sbml2ant));
 
   ret = loadSBMLString(sbmlflat);
-  free(sbmlflat);
   sbmlflat = getSBMLString(NULL);
 
   std::ifstream t2(flatfile.c_str());
@@ -118,8 +117,7 @@ void compareFileFlatteningWithDifferences(const string& base)
   sbmlflat_ref << t2.rdbuf();
   fail_unless(sbmlflat_ref.str() == string(sbmlflat));
 
-  free(sbml2ant);
-  free(sbmlflat);
+  freeAll();
 }
 
 START_TEST (test_aggregate)
