@@ -20,7 +20,7 @@ BEGIN_C_DECLS
 
 extern char *TestDataDirectory;
 
-void compareConstraintsAnt(const string& base)
+void compareConstraints(const string& base)
 {
   clearPreviousLoads();
   g_registry.SetCC("__");
@@ -37,51 +37,33 @@ void compareConstraintsAnt(const string& base)
   char* matching = writeSBMLToString(doc);
   fail_unless(string(atosbml) == string(matching));
 
-  delete doc;
-  delete atosbml;
-  delete matching;
-}
+  //And check the round-tripped Antimony:
+  char* ant_rt = getAntimonyString(NULL);
 
-void compareConstraintsSBML(const string& base)
-{
-  clearPreviousLoads();
-  g_registry.SetCC("__");
-  // load document
-  string dir(TestDataDirectory);
-
-  string filename = dir + "constraints/" + base + ".txt";
-  long ret = loadAntimonyFile(filename.c_str());
-  fail_unless(ret != -1);
-  char* matching = getAntimonyString(NULL);
-  fail_unless(matching != NULL);
-
-  string sbmlfile = dir + "constraints/" + base + ".xml";
-  ret = loadSBMLFile(sbmlfile.c_str());
-  fail_unless(ret != -1);
+  ret = loadSBMLString(matching);
+  fail_unless(ret != 1);
   char* sbml2ant = getAntimonyString(NULL);
-
-  fail_unless(string(sbml2ant) == string(matching));
-
-  //And check the round-tripped version:
-  ret = loadAntimonyString(sbml2ant);
-  fail_unless(ret != -1);
-  char* sbmlrt = getCompSBMLString(NULL);
-  string roundtrip = dir + base + ".xml";
-  SBMLDocument* doc = readSBMLFromFile(sbmlfile.c_str());
-  delete matching;
-  matching = writeSBMLToString(doc);
-
-  fail_unless(string(sbmlrt) == string(matching));
+  fail_unless(string(ant_rt) == string(sbml2ant));
 
   delete doc;
-  delete sbml2ant;
-  delete matching;
-  delete sbmlrt;
+  freeAll();
 }
 
 START_TEST (test_numeric_constraints)
 {
-  compareConstraintsAnt("numeric_constraints");
+  compareConstraints("numeric_constraints");
+}
+END_TEST
+
+START_TEST (test_numeric_constraints_neg)
+{
+  compareConstraints("numeric_constraints_neg");
+}
+END_TEST
+
+START_TEST (test_three_level_constraints)
+{
+  compareConstraints("three_level_constraints");
 }
 END_TEST
 
@@ -96,6 +78,8 @@ create_suite_Constraints(void)
   //tcase_add_test( tcase, test_);
 
   tcase_add_test( tcase, test_numeric_constraints);
+  tcase_add_test( tcase, test_numeric_constraints_neg);
+  tcase_add_test( tcase, test_three_level_constraints);
 
   suite_add_tcase(suite, tcase);
 

@@ -393,7 +393,7 @@ void AntimonyConstraint::calculateASTNode()
 
   ASTNode* rhs = parseStringToASTNode(m_formula.ToSBMLString());
   if (m_type != constNONE) {
-    if (rhs->getType() == ConstraintTypeToASTType(m_type)) {
+    if (rhs->getType() == ConstraintTypeToASTType(m_type) && rhs->getType() != AST_RELATIONAL_NEQ) {
       if (IsSetInitialValue()) {
         ASTNode* val = new ASTNode(AST_REAL);
         val->setValue(GetInitialValue());

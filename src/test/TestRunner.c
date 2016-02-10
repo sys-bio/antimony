@@ -44,6 +44,7 @@
 BEGIN_C_DECLS
 
 
+Suite *create_suite_API(void);
 Suite *create_suite_Basic(void);
 Suite *create_suite_Errors(void);
 Suite *create_suite_Hierarchy(void);
@@ -116,7 +117,8 @@ main (int argc, char* argv[])
 
   setTestDataDirectory();
 
-  SRunner *runner = srunner_create( create_suite_Basic() );
+  SRunner *runner = srunner_create( create_suite_API() );
+  //SRunner *runner = srunner_create( create_suite_Basic() );
   //SRunner *runner = srunner_create( create_suite_Errors() );
   //SRunner *runner = srunner_create( create_suite_Hierarchy() );
   //SRunner *runner = srunner_create( create_suite_Flattening() );
@@ -128,7 +130,7 @@ main (int argc, char* argv[])
   srunner_add_suite( runner, create_suite_Flattening() );
   srunner_add_suite( runner, create_suite_Distrib() );
   srunner_add_suite( runner, create_suite_FBC() );
-  //srunner_add_suite( runner, create_suite_Constraint() );
+  srunner_add_suite( runner, create_suite_Constraints() );
 
 
 #ifdef TRACE_MEMORY

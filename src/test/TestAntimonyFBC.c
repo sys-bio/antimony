@@ -38,8 +38,7 @@ void compareFBCAnt(const string& base)
   fail_unless(string(atosbml) == string(matching));
 
   delete doc;
-  delete atosbml;
-  delete matching;
+  freeAll();
 }
 
 void compareFBCSBML(const string& base)
@@ -68,15 +67,12 @@ void compareFBCSBML(const string& base)
   char* sbmlrt = getCompSBMLString(NULL);
   string roundtrip = dir + base + ".xml";
   SBMLDocument* doc = readSBMLFromFile(sbmlfile.c_str());
-  delete matching;
   matching = writeSBMLToString(doc);
 
   fail_unless(string(sbmlrt) == string(matching));
 
   delete doc;
-  delete sbml2ant;
-  delete matching;
-  delete sbmlrt;
+  freeAll();
 }
 
 void compareFBCSBMLWithDifferences(const string& base)
@@ -105,15 +101,12 @@ void compareFBCSBMLWithDifferences(const string& base)
   char* sbmlrt = getCompSBMLString(NULL);
   string roundtrip = dir + base + ".xml";
   SBMLDocument* doc = readSBMLFromFile(sbmlfile.c_str());
-  delete matching;
   matching = writeSBMLToString(doc);
 
   fail_unless(string(sbmlrt) == string(matching));
 
   delete doc;
-  delete sbml2ant;
-  delete matching;
-  delete sbmlrt;
+  freeAll();
 }
 
 START_TEST (test_simple_flux)

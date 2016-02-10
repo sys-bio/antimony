@@ -45,7 +45,6 @@ void compareFileFlattening(const string& base)
   for (unsigned int rxn=0; rxn<model->getNumReactions(); rxn++) {
     model->getReaction(rxn)->getListOfModifiers()->sort();
   }
-  delete atosbml;
   atosbml = writeSBMLToString(doc);
   delete doc;
 
@@ -63,7 +62,6 @@ void compareFileFlattening(const string& base)
   char* sbmlFlat = writeSBMLToString(doc);
   ret = loadSBMLString(sbmlFlat);
   fail_unless(ret != -1);
-  delete sbmlFlat;
   sbmlFlat = getSBMLString(NULL);
   delete doc;
   doc = readSBMLFromString(sbmlFlat);
@@ -79,15 +77,13 @@ void compareFileFlattening(const string& base)
     model->getReaction(rxn)->getListOfModifiers()->sort();
   }
   model->unsetMetaId();
-  delete sbmlFlat;
   sbmlFlat = writeSBMLToString(doc);
 
   //Compare them!
   fail_unless(string(atosbml) == string(sbmlFlat));
 
   delete doc;
-  delete atosbml;
-  delete sbmlFlat;
+  freeAll();
 }
 
 //This version of the function is used when Antimony flattening and SBML flattening are functionally 

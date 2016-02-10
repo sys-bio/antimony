@@ -295,6 +295,7 @@ bool Module::AddVariableToExportList(Variable* var)
     }
   }
   m_exportlist.push_back(var->GetName());
+  var->SetType(varFormulaUndef);
   return false;
 }
 
@@ -2162,9 +2163,9 @@ string Module::GetJarnacConstFormulas(string modulename) const
 
 bool Module::GetNeedDefaultCompartment() const
 {
-  size_t numsp= GetNumVariablesOfType(allSpecies, true);
+  size_t numsp= GetNumVariablesOfType(allSpecies, false);
   for (size_t sp=0; sp<numsp; sp++) {
-    const Variable* species = GetNthVariableOfType(allSpecies, sp, true);
+    const Variable* species = GetNthVariableOfType(allSpecies, sp, false);
     if (species->GetCompartment() == NULL) {
       return true;
     }
