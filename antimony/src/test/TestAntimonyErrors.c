@@ -27,7 +27,7 @@ START_TEST (unknown_file1)
   string error(err);
   string expected("Could not open 'nosuchfile.txt', and could not find that file in any known directory.  Please check that this file:\n	1) exists in directory that antimony is being run from or knows about\n	2) is read enabled, and\n	3) is not in use by another program.\n");
   fail_unless(error == expected);
-  delete err;
+  freeAll();
 }
 END_TEST
 
@@ -42,7 +42,7 @@ START_TEST (unknown_file2)
   string error(err);
   string expected("Unable to read SBML file 'nosuchfile.xml' due to errors encountered when parsing the file.  Error(s) from libSBML:\n\nline 1: (00002 [Error]) File unreadable.\n\n");
   fail_unless(error == expected);
-  delete err;
+  freeAll();
 }
 END_TEST
 
@@ -58,7 +58,7 @@ START_TEST (unknown_file3)
   string error(err);
   string expected("Unable to read CellML file 'nosuchfile.cellml' due to errors encountered when parsing the file.  Error(s) from the CellML API:\n\nservererror\n");
   fail_unless(error == expected);
-  delete err;
+  freeAll();
 #endif
 }
 END_TEST
@@ -74,7 +74,7 @@ START_TEST (unknown_file4)
   string error(err);
   string expected("Could not open 'nosuchfile.txt', and could not find that file in any known directory.  Please check that this file:\n	1) exists in directory that antimony is being run from or knows about\n	2) is read enabled, and\n	3) is not in use by another program.\n");
   fail_unless(error == expected);
-  delete err;
+  freeAll();
 }
 END_TEST
 
@@ -89,7 +89,7 @@ START_TEST (unknown_file5)
   string error(err);
   string expected("Could not open 'nosuchdir/nosuchfile.txt', and could not find that file in any known directory.  Please check that this file:\n	1) exists in directory that antimony is being run from or knows about\n	2) is read enabled, and\n	3) is not in use by another program.\n");
   fail_unless(error == expected);
-  delete err;
+  freeAll();
 }
 END_TEST
 
@@ -103,14 +103,12 @@ START_TEST (unknown_models)
   string error(err);
   string expected("No such module: ''.  Existing modules: '__main'");
   fail_unless(error == expected);
-  delete err;
   nomod = getAntimonyString("");
   fail_unless(nomod == NULL);
   err = getLastError();
   fail_unless(err != NULL);
   error = err;
   fail_unless(error == expected);
-  delete err;
 #ifndef NCELLML
   nomod = getCellMLString("");
   fail_unless(nomod == NULL);
@@ -118,7 +116,6 @@ START_TEST (unknown_models)
   fail_unless(err != NULL);
   error = err;
   fail_unless(error == expected);
-  delete err;
 #endif
 
   nomod = getSBMLString("nosuchmodel");
@@ -128,14 +125,12 @@ START_TEST (unknown_models)
   error = err;
   expected = "No such module: 'nosuchmodel'.  Existing modules: '__main'";
   fail_unless(error == expected);
-  delete err;
   nomod = getAntimonyString("nosuchmodel");
   fail_unless(nomod == NULL);
   err = getLastError();
   fail_unless(err != NULL);
   error = err;
   fail_unless(error == expected);
-  delete err;
 #ifndef NCELLML
   nomod = getCellMLString("nosuchmodel");
   fail_unless(nomod == NULL);
@@ -143,8 +138,8 @@ START_TEST (unknown_models)
   fail_unless(err != NULL);
   error = err;
   fail_unless(error == expected);
-  delete err;
 #endif
+  freeAll();
 }
 END_TEST
 
@@ -156,7 +151,7 @@ void testError(const string& antimony, const string& error)
   char* err = getLastError();
   fail_unless(err != NULL);
   fail_unless(error == (string)(err));
-  delete err;
+  freeAll();
 }
 
 

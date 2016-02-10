@@ -36,7 +36,6 @@ void compareFileHierarchy(const string& base)
   SBMLDocument* doc = readSBMLFromFile(sbmlfile.c_str());
   char* matching = writeSBMLToString(doc);
   fail_unless(string(atosbml) == string(matching));
-  delete atosbml;
 
   //Now compare libAntimony's flattening with libSBML's flattening
   atosbml = getSBMLString(NULL);
@@ -64,10 +63,7 @@ void compareFileHierarchy(const string& base)
   fail_unless(string(roundtrip) == string(matching));
 
   delete doc;
-  delete atosbml;
-  delete sbmlFlat;
-  delete roundtrip;
-  delete matching;
+  freeAll();
 }
 
 START_TEST (test_hierarchy)
@@ -401,6 +397,7 @@ create_suite_Hierarchy(void)
   Suite *suite = suite_create("Antimony Hierarchy");
   TCase *tcase = tcase_create("Antimony Hierarchy");
 
+  tcase_add_test( tcase, test_defaultSubSubCompartment);
   //tcase_add_test( tcase, test_replace);
   //tcase_add_test( tcase, test_replace);
 

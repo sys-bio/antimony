@@ -44,9 +44,7 @@ void compareFileTranslation(const string& base)
   fail_unless(string(roundtrip) == string(matching));
 
   delete doc;
-  delete atosbml;
-  delete roundtrip;
-  delete matching;
+  freeAll();
 }
 
 void compareFileTranslationWithRenaming(const string& base)
@@ -74,10 +72,7 @@ void compareFileTranslationWithRenaming(const string& base)
   fail_unless(roundtrip != NULL);
   fail_unless(string(roundtrip) == string(sbmlrt));
 
-  delete sbmltoa;
-  delete sbmlrt;
-  delete roundtrip;
-  delete matching;
+  freeAll();
 }
 
 void compareStringTranslation(const string& antimony, const string& sbml)
@@ -95,7 +90,7 @@ void compareStringTranslation(const string& antimony, const string& sbml)
 
   fail_unless(atosbml == matchingdoc);
   delete doc;
-  delete atosbml;
+  freeAll();
 }
 
 START_TEST (test_parameter)

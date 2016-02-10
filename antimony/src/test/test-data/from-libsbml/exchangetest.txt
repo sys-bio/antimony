@@ -8,14 +8,14 @@ model *testmod()
   Q := X/cf - 3;
 
   // Rate Rules:
-  X' = 0.2/timeconv*cf;
+  X' = (0.2/timeconv)*cf;
 
   // Reactions:
-  A___J0: A__S1 -> ; (A__k1*A__S1)/timeconv*extentconv;
+  A___J0: A__S1 -> ; (A__k1*A__S1/timeconv)*extentconv;
 
   // Events:
-  A___E0: at X/cf > 3, priority = Q: A__y = 4;
-  A___E1: at X/cf > 3, priority = R: A__y = 5;
+  A___E0: at (X/cf) > 3, priority = Q: A__y = 4;
+  A___E1: at (X/cf) > 3, priority = R: A__y = 5;
 
   // Species initializations:
   A__S1 = ;

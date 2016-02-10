@@ -12,13 +12,13 @@ model moddef1()
   t1' = time*t1 + 3;
 
   // Reactions:
-  J0:  -> s1; (s1*t3*time)/delay(t5, 2.000000e+004);
+  J0:  -> s1; s1*t3*time/delay(t5, 2.000000e+004);
 
   // Events:
   _E0: at 1/time after time > 3: t5 = time;
 
   // Constraints:
-  constraint _con0: time < t4*t5
+  constraint _con0: time < (t4*t5)
 
   // Species initializations:
   s1 = 1/C;

@@ -1101,8 +1101,11 @@ const Module* Registry::GetMainModule() const
       return &(m_modules[mod]);
     }
   }
-  //If there's no 'main' module, return the last one in the list.
+  //If there's no 'main' module, return "__main" if there's anything in it, or the last one in the list.
   if (m_modules.size() == 0) return NULL;
+  if (m_modules[0].GetNumVariablesOfType(allSymbols, true) > 0) {
+    return &(m_modules[0]);
+  }
   return &(m_modules[m_modules.size()-1]);
 }
 
@@ -1113,8 +1116,11 @@ Module* Registry::GetMainModule()
       return &(m_modules[mod]);
     }
   }
-  //If there's no 'main' module, return the last one in the list.
+  //If there's no 'main' module, return "__main" if there's anything in it, or the last one in the list.
   if (m_modules.size() == 0) return NULL;
+  if (m_modules[0].GetNumVariablesOfType(allSymbols, true) > 0) {
+    return &(m_modules[0]);
+  }
   return &(m_modules[m_modules.size()-1]);
 }
 

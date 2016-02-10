@@ -38,8 +38,7 @@ void compareDistributionsAnt(const string& base)
   fail_unless(string(atosbml) == string(matching));
 
   delete doc;
-  delete atosbml;
-  delete matching;
+  freeAll();
 }
 
 void compareDistributionsSBML(const string& base)
@@ -68,15 +67,12 @@ void compareDistributionsSBML(const string& base)
   char* sbmlrt = getCompSBMLString(NULL);
   string roundtrip = dir + base + ".xml";
   SBMLDocument* doc = readSBMLFromFile(sbmlfile.c_str());
-  delete matching;
   matching = writeSBMLToString(doc);
 
   fail_unless(string(sbmlrt) == string(matching));
 
   delete doc;
-  delete sbml2ant;
-  delete matching;
-  delete sbmlrt;
+  freeAll();
 }
 
 START_TEST (test_numeric_distributions)
