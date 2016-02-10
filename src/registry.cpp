@@ -851,8 +851,8 @@ bool Registry::NewCurrentModule(const string* name, bool ismain)
     if (ismain && m_modules[mod].GetIsMain()) {
       string warn = "Warning: changing main module for this file to be " + *name + " instead of '" + m_modules[mod].GetModuleName() + "'.";
       AddWarning(warn);
+      m_modules[mod].SetIsMain(false);
     }
-    m_modules[mod].SetIsMain(false);
   }
   //Otherwise, create a new module with that name
   m_modules.push_back(Module(localname));
