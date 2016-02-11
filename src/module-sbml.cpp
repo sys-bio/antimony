@@ -1599,7 +1599,7 @@ void Module::LoadSBML(const Model* sbml)
 const SBMLDocument* Module::GetSBML(bool comp)
 {
   const Model* mod = m_sbml.getModel();
-  if (comp && mod != NULL && mod->getId() == m_modulename) {
+  if (mod != NULL && mod->getId() == m_modulename && m_sbml.getPackageRequired("comp") == comp) {
     return &m_sbml;
   }
   CreateSBMLModel(comp);

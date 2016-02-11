@@ -734,7 +734,7 @@ LIB_EXTERN unsigned long getNumReplacedSymbolNamesBetween(const char* moduleName
   return g_registry.GetModule(moduleName)->GetSynchronizedVariablesBetween(formerSubmodName, replacementSubmodName).size();
 }
 
-LIB_EXTERN char*** getAllReplacementSymbolPairsBetween(const char* moduleName, const char* formerSubmodName, const char* replacementSubmodName, unsigned long n)
+LIB_EXTERN char*** getAllReplacementSymbolPairsBetween(const char* moduleName, const char* formerSubmodName, const char* replacementSubmodName)
 {
   if (!checkModule(moduleName)) return NULL;
   vector<pair<string, string> > replacements = g_registry.GetModule(moduleName)->GetSynchronizedVariablesBetween(formerSubmodName, replacementSubmodName);
@@ -1934,12 +1934,18 @@ LIB_EXTERN char* getCompSBMLString(const char* moduleName)
 
 LIB_EXTERN char* getSBMLInfoMessages(const char* moduleName)
 {
+  if (moduleName == NULL) {
+    return getCharStar(g_registry.GetMainModule()->GetSBMLInfo().c_str());
+  }
   if (!checkModule(moduleName)) return NULL;
   return getCharStar(g_registry.GetModule(moduleName)->GetSBMLInfo().c_str());
 }
 
 LIB_EXTERN char* getSBMLWarnings(const char* moduleName)
 {
+  if (moduleName == NULL) {
+    return getCharStar(g_registry.GetMainModule()->GetSBMLWarnings().c_str());
+  }
   if (!checkModule(moduleName)) return NULL;
   return getCharStar(g_registry.GetModule(moduleName)->GetSBMLWarnings().c_str());
 }
@@ -1967,14 +1973,15 @@ LIB_EXTERN void freeAll()
 }
 
 
-LIB_EXTERN void printAllDataFor(const char* moduleName)
+LIB_EXTERN char* printAllDataFor(const char* moduleName)
 {
   if (!checkModule(moduleName)) {
-    cout << "Couldn't find module: '" << moduleName << "'" << endl;
-    return;
+    cerr << "Couldn't find module: '" << moduleName << "'" << endl;
+    return NULL;
   }
+  stringstream ret;
 
-  cout << "All variables for module " << moduleName << ":" << endl;
+  ret << "All variables for module " << moduleName << ":" << endl;
   char **symbolnames = getSymbolNamesOfType(moduleName, allSymbols);
   char **symbolequations = getSymbolEquationsOfType(moduleName, allSymbols);
   char **symbolcompartments = getSymbolCompartmentsOfType(moduleName, allSymbols);
@@ -1983,38 +1990,38 @@ LIB_EXTERN void printAllDataFor(const char* moduleName)
   for (unsigned long var=0; var<numvars; var++) {
     return_type rtype = getTypeOfSymbol(moduleName, symbolnames[var]);
     formula_type ftype = getTypeOfEquationForSymbol(moduleName, symbolnames[var]);
-    cout << symbolnames[var] << "\tType:  " << ReturnTypeToString(rtype) << endl;
+    ret << symbolnames[var] << "\tType:  " << ReturnTypeToString(rtype) << endl;
     string compartmentname(symbolcompartments[var]);
     if (compartmentname != DEFAULTCOMP) {
-      cout << "\tIn compartment: " << compartmentname.c_str() << endl;
+      ret << "\tIn compartment: " << compartmentname.c_str() << endl;
     }
     switch(ftype) {
     case formulaINITIAL:
       if (string(symbolequations[var]) != "") {
-        cout << "\tInitialization or basic equation : " << symbolequations[var] << endl;
+        ret << "\tInitialization or basic equation : " << symbolequations[var] << endl;
       }
       break;
     case formulaASSIGNMENT:
       if (string(symbolequations[var]) != "" ) {
-        cout << "\tAssignment rule: " << symbolequations[var] << endl;
+        ret << "\tAssignment rule: " << symbolequations[var] << endl;
       }
       break;
     case formulaRATE:
       if (string(symbolequations[var]) != "") {
-        cout << "\tInitialization: " << symbolequations[var] << endl;
+        ret << "\tInitialization: " << symbolequations[var] << endl;
       }
       if (string(symbolraterules[var]) != "") {
-        cout << "\tRate rule: " << symbolraterules[var] << endl;
+        ret << "\tRate rule: " << symbolraterules[var] << endl;
       }
       break;
     case formulaKINETIC:
       if (string(symbolequations[var]) != "") {
-        cout << "\tKinetic Law: " << symbolequations[var] << endl;
+        ret << "\tKinetic Law: " << symbolequations[var] << endl;
       }
       break;
     case formulaTRIGGER:
       if (string(symbolequations[var]) != "") {
-        cout << "\tEvent Trigger: " << symbolequations[var] << endl;
+        ret << "\tEvent Trigger: " << symbolequations[var] << endl;
       }
       break;
     }
@@ -2022,42 +2029,42 @@ LIB_EXTERN void printAllDataFor(const char* moduleName)
   if (getNumDNAStrands(moduleName) > 0) {
     char ***dnanames = getDNAStrands(moduleName);
     const unsigned long *dnanums = getDNAStrandSizes(moduleName);
-    cout << endl << "DNA strands:" << endl;
+    ret << endl << "DNA strands:" << endl;
     for (unsigned long strand=0; strand<getNumDNAStrands(moduleName); strand++) {
-      cout << getNthSymbolNameOfType(moduleName, expandedStrands, strand) << ": ";
+      ret << getNthSymbolNameOfType(moduleName, expandedStrands, strand) << ": ";
       for (unsigned long element=0; element<dnanums[strand]; element++) {
         if (element != 0 || getIsNthDNAStrandOpen(moduleName, strand, true)) {
-          cout << "--";
+          ret << "--";
         }
-        cout << dnanames[strand][element];
+        ret << dnanames[strand][element];
       }
       if (getIsNthDNAStrandOpen(moduleName, strand, false)) {
-        cout << "--";
+        ret << "--";
       }
-      cout << endl;
+      ret << endl;
     }
   }
 
   if (getNumModularDNAStrands(moduleName) > getNumDNAStrands(moduleName))  {
     char ***dnanames = getModularDNAStrands(moduleName);
     const unsigned long *dnanums = getModularDNAStrandSizes(moduleName);
-    cout << endl << "Modular DNA strands:" << endl;
+    ret << endl << "Modular DNA strands:" << endl;
     for (unsigned long strand=0; strand<getNumModularDNAStrands(moduleName); strand++) {
-      cout << getNthSymbolNameOfType(moduleName, modularStrands, strand) << ": ";
+      ret << getNthSymbolNameOfType(moduleName, modularStrands, strand) << ": ";
       for (unsigned long element=0; element<dnanums[strand]; element++) {
         if (element != 0 || getIsNthModularDNAStrandOpen(moduleName, strand, true)) {
-          cout << "--";
+          ret << "--";
         }
-        cout << dnanames[strand][element];
+        ret << dnanames[strand][element];
       }
       if (getIsNthModularDNAStrandOpen(moduleName, strand, false)) {
-        cout << "--";
+        ret << "--";
       }
-      cout << endl;
+      ret << endl;
     }
   }
 
-  cout << endl << "Reactions:" << endl;
+  ret << endl << "Reactions:" << endl;
   char ***leftrxnnames = getReactantNames(moduleName);
   char ***rightrxnnames = getProductNames(moduleName);
   char **rxnnames = getReactionNames(moduleName);
@@ -2067,103 +2074,104 @@ LIB_EXTERN void printAllDataFor(const char* moduleName)
   double **rightrxnstoichs = getProductStoichiometries(moduleName);
 
   for (unsigned long rxn=0; rxn<getNumReactions(moduleName); rxn++) {
-    cout << rxnnames[rxn] << ": ";
+    ret << rxnnames[rxn] << ": ";
     for (unsigned long var=0; var<getNumReactants(moduleName,rxn); var++) {
       if (var > 0) {
-        cout << " + ";
+        ret << " + ";
       }
       if (leftrxnstoichs[rxn][var] > 1) {
         char lnum[50];
         sprintf(lnum, "%g", leftrxnstoichs[rxn][var]);
-        cout << lnum;
+        ret << lnum;
       }
-      cout << leftrxnnames[rxn][var];
+      ret << leftrxnnames[rxn][var];
     }
-    cout << " -> ";
+    ret << " -> ";
     for (unsigned long var=0; var<getNumProducts(moduleName,rxn); var++) {
       if (var > 0) {
-        cout << " + ";
+        ret << " + ";
       }
       if (rightrxnstoichs[rxn][var] > 1) {
         char rnum[50];
         sprintf(rnum, "%g", rightrxnstoichs[rxn][var]);
-        cout << rnum;
+        ret << rnum;
       }
-      cout << rightrxnnames[rxn][var];
+      ret << rightrxnnames[rxn][var];
     }
-    cout << " ; " << rxnrates[rxn];
-    cout << endl;
+    ret << " ; " << rxnrates[rxn];
+    ret << endl;
   }
 
-  cout << "Stoichiometry matrix" << endl;
+  ret << "Stoichiometry matrix" << endl;
   double** matrix = getStoichiometryMatrix(moduleName);
   char** columns  = getStoichiometryMatrixColumnLabels(moduleName);
   char** rows     = getStoichiometryMatrixRowLabels(moduleName);
-  cout << "\t";
+  ret << "\t";
   for (unsigned long col=0; col<getStoichiometryMatrixNumColumns(moduleName); col++) {
-    cout << "\t" << columns[col];
+    ret << "\t" << columns[col];
   }
-  cout << endl;
+  ret << endl;
   for (unsigned long row=0; row<getStoichiometryMatrixNumRows(moduleName); row++) {
-    cout << rows[row] << "\t";
+    ret << rows[row] << "\t";
     for (unsigned long col=0; col<getStoichiometryMatrixNumColumns(moduleName); col++) {
-      cout << "\t" << matrix[row][col];
+      ret << "\t" << matrix[row][col];
     }
-    cout << endl;
+    ret << endl;
   }
-  cout << endl;
+  ret << endl;
 
-  cout << "Reaction rates" << endl;
+  ret << "Reaction rates" << endl;
   for (unsigned long rate=0; rate<getNumReactionRates(moduleName); rate++) {
-    cout << rxnrates[rate] << endl;
+    ret << rxnrates[rate] << endl;
   }
 
   if (getNumSymbolsOfType(moduleName, allInteractions) > 0) {
-    cout << endl << "Interactions:" << endl;
+    ret << endl << "Interactions:" << endl;
     char ***leftrxnnames = getInteractorNames(moduleName);
     char ***rightrxnnames = getInteracteeNames(moduleName);
     char **rxnnames = getSymbolNamesOfType(moduleName, allInteractions);
     rd_type *rxndividers = getInteractionDividers(moduleName);  
   
     for (unsigned long rxn=0; rxn<getNumInteractions(moduleName); rxn++) {
-      cout << rxnnames[rxn] << ": ";
+      ret << rxnnames[rxn] << ": ";
       for (unsigned long var=0; var<getNumInteractors(moduleName,rxn); var++) {
         if (var > 0) {
-          cout << " + ";
+          ret << " + ";
         }
-        cout << leftrxnnames[rxn][var];
+        ret << leftrxnnames[rxn][var];
       }
-      cout << " " << RDToString(rxndividers[rxn]).c_str() << " ";
+      ret << " " << RDToString(rxndividers[rxn]).c_str() << " ";
       for (unsigned long var=0; var<getNumInteractees(moduleName,rxn); var++) {
         if (var > 0) {
           assert(false); //Should be only one 'interactee' per interaction.
-          cout << " + ";
+          ret << " + ";
         }
-        cout << rightrxnnames[rxn][var];
+        ret << rightrxnnames[rxn][var];
       }
-      cout << " ; " << endl;
+      ret << " ; " << endl;
     }
   }
   if (getNumEvents(moduleName) > 0) {
     char** eventnames = getEventNames(moduleName);
     
-    cout << endl << "Events" << endl;
+    ret << endl << "Events" << endl;
     for (unsigned long event=0; event<getNumEvents(moduleName); event++) {
-      cout << eventnames[event] << ": at ";
+      ret << eventnames[event] << ": at ";
       if (getEventHasDelay(moduleName, event)) {
-        cout << getDelayForEvent(moduleName, event) << " after ";
+        ret << getDelayForEvent(moduleName, event) << " after ";
       }
-      cout << getTriggerForEvent(moduleName, event) << ": ";
+      ret << getTriggerForEvent(moduleName, event) << ": ";
       for (unsigned long asnt=0; asnt<getNumAssignmentsForEvent(moduleName, event); asnt++) {
         if (asnt > 0) {
-          cout << ", ";
+          ret << ", ";
         }
-        cout << getNthAssignmentVariableForEvent(moduleName, event, asnt);
-        cout << "=";
-        cout << getNthAssignmentEquationForEvent(moduleName, event, asnt);
+        ret << getNthAssignmentVariableForEvent(moduleName, event, asnt);
+        ret << "=";
+        ret << getNthAssignmentEquationForEvent(moduleName, event, asnt);
       }
-      cout << endl;
+      ret << endl;
     }
   }
-  cout << endl;
+  ret << endl;
+  return getCharStar(ret.str().c_str());
 }

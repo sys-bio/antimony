@@ -1085,7 +1085,9 @@ bool Variable::SetModule(const string* modname)
   assert(m_name.size() == 1);
   Module newmod(*g_registry.GetModule(*modname), m_name[0], m_module);
   m_valModule.push_back(newmod);
-  m_type = varModule;
+  if (SetType(varModule)) {
+    return true;
+  }
   g_registry.SetCurrentImportedModule(m_name);
   g_registry.GetModule(m_module)->AddToVarMapFrom(newmod);
   return SetType(varModule);

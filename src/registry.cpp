@@ -199,12 +199,12 @@ int Registry::OpenFile(const string& filename, bool antOnly)
 
 #ifndef NSBML
   //Try opening as SBML:
-  if (!antOnly) {
+  //if (!antOnly) {
     SBMLDocument* document = readSBML(newname.c_str());
     if (CheckAndAddSBMLIfGood(document)==2) {
       return 2;
     }
-  }
+  //}
 #endif
 
   //If that failed, set up the 'input' member variable so we can parse it as Antimony.
