@@ -304,7 +304,7 @@ LIB_EXTERN char* getCellMLString(const char* moduleName);
 /**
  * An example function that will print to stdout all the information in the given module.  This function probably isn't as useful to call as it is to examine and copy for your own purposes:  it only calls functions defined here in antimony_api.h.
  */
-LIB_EXTERN void printAllDataFor(const char* moduleName);
+LIB_EXTERN char* printAllDataFor(const char* moduleName);
 /** \} */
 
 /**
@@ -450,7 +450,7 @@ LIB_EXTERN unsigned long getNumReplacedSymbolNamesBetween(const char* moduleName
  * @see getNthReplacementSymbolName
  * @see getNthReplacementSymbolPair
  */
-LIB_EXTERN char*** getAllReplacementSymbolPairsBetween(const char* moduleName, const char* formerSubmodName, const char* replacementSubmodName, unsigned long n);
+LIB_EXTERN char*** getAllReplacementSymbolPairsBetween(const char* moduleName, const char* formerSubmodName, const char* replacementSubmodName);
 
 /**
  * Returns the Nth pair of symbol names that have been synchronized with each other--the first the symbol that was replaced, and the second the symbol used as the replacement, between the given submodules, with the variable in the first submodule being the former variable name, and the variable in the second being the replacement variable name.  These replacements are created when 'is' is used, and when a module's 'interface' (the symbols listed in parentheses) is used.
@@ -973,7 +973,7 @@ LIB_EXTERN bool addDefaultInitialValues(const char* moduleName);
 
 /**
  * Sets whether bare numbers are dimensionless or undefined.
- * By default, all numbers in mathematical equations do not have units unless they are explicitly declared ("1 second" vs. "1").  If this function is called with a value of 'true', all numbers without declared units will be assumed to have the units 'dimensionless'.  If called with a value of 'false', the numbers will not have declared units (the default).
+ * By default, all numbers in mathematical equations do not have units unless they are explicitly declared ("1 second" vs. "1").  If this function is called with a value of 'true', all numbers without declared units will be assumed to have the units 'dimensionless'.  If called with a value of 'false', the numbers will not have declared units (the default).  This only affects MathML formulas in SBML; it does not set the 'units' attribute of any parameter or other SBML element.
  */
 LIB_EXTERN void setBareNumbersAreDimensionless(bool dimensionless);
 
