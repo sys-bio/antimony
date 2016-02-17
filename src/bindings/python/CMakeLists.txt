@@ -188,7 +188,7 @@ if (PYTHON_LOCAL_INSTALL)
 
    file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/libantimony.pth" "antimony\n")
    INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/libantimony.pth  DESTINATION ${PYTHON_PACKAGE_INSTALL_DIR})
-   INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/setup.py  DESTINATION ${PYTHON_PACKAGE_INSTALL_DIR})
+   INSTALL(FILES ${SETUP_PY}  DESTINATION ${PYTHON_PACKAGE_INSTALL_DIR})
    file(GLOB antimony_python_files "${CMAKE_CURRENT_BINARY_DIR}/antimony/*.*")
    install(FILES ${antimony_python_files} DESTINATION ${PYTHON_PACKAGE_INSTALL_DIR}/antimony )
 
@@ -198,6 +198,12 @@ if (NOT PYTHON_SYSTEM_INSTALL)
    if (NOT PYTHON_LOCAL_INSTALL)
         message(WARNING "   Python bindings will be created, but not installed.  Install them by hand from ${CMAKE_CURRENT_BINARY_DIR},\n   or turn on PYTHON_SYSTEM_INSTALL and/or PYTHON_LOCAL_INSTALL.")
    endif()
+endif()
+
+# copy files required to build Anaconda package
+if(WITH_CONDA_BUILDER)
+    configure_file(conda/meta.yaml.in conda/meta.yaml @ONLY)
+    install(FILES ${SETUP_PY} ${CMAKE_CURRENT_BINARY_DIR}/conda/meta.yaml conda/build.sh conda/bld.bat DESTINATION ${PYTHON_PACKAGE_INSTALL_DIR})
 endif()
 
 ####################################################################
