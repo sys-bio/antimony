@@ -191,6 +191,7 @@ if (PYTHON_LOCAL_INSTALL)
    INSTALL(FILES ${SETUP_PY}  DESTINATION ${PYTHON_PACKAGE_INSTALL_DIR})
    file(GLOB antimony_python_files "${CMAKE_CURRENT_BINARY_DIR}/antimony/*.*")
    install(FILES ${antimony_python_files} DESTINATION ${PYTHON_PACKAGE_INSTALL_DIR}/antimony )
+   INSTALL(TARGETS binding_python_lib DESTINATION ${PYTHON_PACKAGE_INSTALL_DIR}/antimony)
 
 endif()
 
