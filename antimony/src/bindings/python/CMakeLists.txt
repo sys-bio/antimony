@@ -98,6 +98,8 @@ ADD_CUSTOM_COMMAND(
             ${SWIG_DEPENDENCIES}
     COMMENT "Swig Python source") 
 
+set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/antimony_wrap.cpp PROPERTIES GENERATED TRUE)
+
 add_custom_target(binding_python_swig ALL DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/antimony_wrap.cpp)
 
 ####################################################################
@@ -150,7 +152,7 @@ endif()
 
 set(SETUP_PY_IN "${CMAKE_CURRENT_SOURCE_DIR}/setup.py.in")
 set(SETUP_PY    "${CMAKE_CURRENT_BINARY_DIR}/setup.py")
-set(DEPS        "${CMAKE_CURRENT_SOURCE_DIR}/__init__.py")
+set(DEPS        "${CMAKE_CURRENT_SOURCE_DIR}/__init__.py;${CMAKE_CURRENT_BINARY_DIR}/antimony_wrap.cpp")
 set(OUTPUT      "${CMAKE_CURRENT_BINARY_DIR}/timestamp")
 
 configure_file(${SETUP_PY_IN} ${SETUP_PY})
