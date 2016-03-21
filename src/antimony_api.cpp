@@ -9,6 +9,7 @@
 
 #ifndef NSBML
 #include <sbml/SBMLTypes.h>
+#include <sbml/xml/XMLOutputStream.h>
 #endif
 
 #ifndef NCELLML
@@ -1873,6 +1874,9 @@ int writeSBMLFileInternal(const char* filename, const char* moduleName, bool com
   if (g_registry.GetWriteNameToSBML()) {
     sbmlw.setProgramName("libAntimony");
     sbmlw.setProgramVersion(LIBANTIMONY_VERSION_STRING);
+#if LIBSBML_VERSION >= 51201
+    XMLOutputStream::setWriteTimestamp(g_registry.GetWriteTimestampToSBML());
+#endif
   }
   int sbmlret = sbmlw.writeSBML(sbmldoc, filename);
   if (sbmlret == 0) {
@@ -1909,6 +1913,9 @@ char* getSBMLStringInternal(const char* moduleName, bool comp)
   if (g_registry.GetWriteNameToSBML()) {
     sbmlw.setProgramName("libAntimony");
     sbmlw.setProgramVersion(LIBANTIMONY_VERSION_STRING);
+#if LIBSBML_VERSION >= 51201
+    XMLOutputStream::setWriteTimestamp(g_registry.GetWriteTimestampToSBML());
+#endif
   }
   char* sbmlstring = sbmlw.writeSBMLToString(sbmldoc);
   if (sbmlstring == NULL) {
@@ -1925,6 +1932,14 @@ char* getSBMLStringInternal(const char* moduleName, bool comp)
 LIB_EXTERN char* getSBMLString(const char* moduleName)
 {
   return getSBMLStringInternal(moduleName, false);
+}
+
+LIB_EXTERN void setWriteSBMLTimestamp(bool writeTimestamp)
+{
+  g_registry.SetWriteTimestampToSBML(writeTimestamp);
+#if LIBSBML_VERSION >= 51201
+  XMLOutputStream::setWriteTimestamp(writeTimestamp);
+#endif
 }
 
 LIB_EXTERN char* getCompSBMLString(const char* moduleName)

@@ -66,6 +66,7 @@ private:
   std::map<std::pair<std::string, std::string>, std::string> m_sbindex;
 
   bool m_writeNameToSBML;
+  bool m_writeTimestampToSBML;
   bool m_bareNumbersAreDimensionless;
 
 public:
@@ -202,6 +203,10 @@ public:
   //For testing, we don't want to write our name/version to SBML files so that we can more easily compare the outputs to the expected outputs.
   void SetWriteNameToSBML(bool set);
   bool GetWriteNameToSBML();
+
+  //Some people might not want to write the Timestamp to SBML files.
+  void SetWriteTimestampToSBML(bool set);
+  bool GetWriteTimestampToSBML();
 
   //Defaults
   void SetBareNumbersAreDimensionless(bool dimensionless);
