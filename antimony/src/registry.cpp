@@ -46,6 +46,7 @@ Registry::Registry()
     m_oldmodulemaps(),
     m_sbindex(),
     m_writeNameToSBML(true),
+    m_writeTimestampToSBML(false),
     m_bareNumbersAreDimensionless(false),
     input(NULL)
 {
@@ -1379,6 +1380,16 @@ void Registry::SetWriteNameToSBML(bool set)
 bool Registry::GetWriteNameToSBML()
 {
   return m_writeNameToSBML;
+}
+
+void Registry::SetWriteTimestampToSBML(bool set)
+{
+  m_writeTimestampToSBML = set;
+}
+
+bool Registry::GetWriteTimestampToSBML()
+{
+  return m_writeTimestampToSBML;
 }
 
 void Registry::SetBareNumbersAreDimensionless(bool dimensionless)

@@ -247,6 +247,7 @@ LIB_EXTERN char* getAntimonyString(const char* moduleName);
  *@see getSBMLString
  */
 LIB_EXTERN int   writeSBMLFile(const char* filename, const char* moduleName);
+
 /**
  * Returns the same output as writeSBMLFile, but to a char* array instead of to a file.  The output is 'flattened', that is, all components of sub-modules are re-named and placed in a single model.  Returns the output of libSBML's 'writeSBMLToString", which "Returns the string on success and NULL if one of the underlying parser components fail (rare)."
  * NOTE:  This function is unavailable when libAntimony is compiled with the '-NSBML' flag.
@@ -254,6 +255,14 @@ LIB_EXTERN int   writeSBMLFile(const char* filename, const char* moduleName);
  *@see writeSBMLFile
  */
 LIB_EXTERN char* getSBMLString(const char* moduleName);
+
+/**
+ * Sets whether, when writing an SBML file, the timestamp is included.
+ *
+ *@see writeSBMLFile
+ *@see getSBMLString
+ */
+LIB_EXTERN void setWriteSBMLTimestamp(bool writeTimestamp);
 
 #ifdef USE_COMP
 /**
