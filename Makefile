@@ -1,5 +1,5 @@
 #version number
-version = 2.9
+version = 2.9.0
 
 #mingw:
 #mingw = i586-mingw32msvc
