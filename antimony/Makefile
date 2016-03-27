@@ -1,5 +1,5 @@
 #version number
-version = 2.8
+version = 2.9
 
 #mingw:
 #mingw = i586-mingw32msvc
@@ -68,43 +68,43 @@ qtdialog_subdir = QTAntimony_src/qtfindreplacedialog-1.1/dialogs/
 YPPFILES = $(src_dir)antimony.ypp
 
 CPPFILES = $(src_dir)annotated.cpp \
-	$(src_dir)antimony_api.cpp \
-	$(src_dir)antimony_api_cpp.cpp \
 	$(src_dir)Antimony.cpp \
 	$(src_dir)antimony.tab.cpp \
+	$(src_dir)antimony2cellml.cpp \
+	$(src_dir)antimony2sbml.cpp \
+	$(src_dir)antimony_api.cpp \
+	$(src_dir)antimony_api_cpp.cpp \
+	$(src_dir)cellml2antimony.cpp \
 	$(src_dir)cellmlx.cpp \
 	$(src_dir)constraint.cpp \
 	$(src_dir)dnastrand.cpp \
 	$(src_dir)event.cpp \
 	$(src_dir)formula.cpp \
-	$(src_dir)module.cpp \
-	$(src_dir)module-sbml.cpp \
 	$(src_dir)module-cellml.cpp \
+	$(src_dir)module-sbml.cpp \
+	$(src_dir)module.cpp \
 	$(src_dir)reactantlist.cpp \
 	$(src_dir)reaction.cpp \
 	$(src_dir)registry.cpp \
+	$(src_dir)rehashantimony.cpp \
+	$(src_dir)sbml2antimony.cpp \
 	$(src_dir)sbmlx.cpp \
+	$(src_dir)sbtranslate.cpp \
+	$(src_dir)sbwtranslator.cpp \
 	$(src_dir)stringx.cpp \
 	$(src_dir)testantimony.cpp \
-	$(src_dir)rehashantimony.cpp \
-	$(src_dir)sbtranslate.cpp \
 	$(src_dir)typex.cpp \
-	$(src_dir)userfunction.cpp \
 	$(src_dir)unitdef.cpp \
 	$(src_dir)unitelement.cpp \
+	$(src_dir)userfunction.cpp \
 	$(src_dir)variable.cpp \
-	$(src_dir)antimony2sbml.cpp \
-	$(src_dir)antimony2cellml.cpp \
-	$(src_dir)sbml2antimony.cpp \
-	$(src_dir)cellml2antimony.cpp \
-	$(src_dir)testantimony.cpp \
 
 HFILES = $(src_dir)annotated.h \
 	$(src_dir)antimony_api.h \
 	$(src_dir)antimony_api_cpp.h \
-	$(src_dir)dnastrand.h \
 	$(src_dir)cellmlx.h \
 	$(src_dir)constraint.h \
+	$(src_dir)dnastrand.h \
 	$(src_dir)enums.h \
 	$(src_dir)event.h \
 	$(src_dir)formula.h \
@@ -114,11 +114,12 @@ HFILES = $(src_dir)annotated.h \
 	$(src_dir)reaction.h \
 	$(src_dir)registry.h \
 	$(src_dir)sbmlx.h \
+	$(src_dir)sbwtranslator.h \
 	$(src_dir)stringx.h \
 	$(src_dir)typex.h \
-	$(src_dir)userfunction.h \
 	$(src_dir)unitdef.h \
 	$(src_dir)unitelement.h \
+	$(src_dir)userfunction.h \
 	$(src_dir)variable.h
 
 LIBOFILES = $(src_dir)annotated.o \
@@ -288,8 +289,6 @@ DOCSRCFILES = \
 	$(doc_dir)Screenshot-linux.png \
 	$(doc_dir)Screenshot-macosx.png \
 	$(doc_dir)Screenshot-windows.png \
-	$(src_dir)antimony_api.h \
-	$(src_dir)enums.h \
 	LICENSE.txt \
 	README.txt
 
