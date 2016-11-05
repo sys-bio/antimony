@@ -38,7 +38,7 @@ public slots:
     void selectAll();
     void revertToTranslated();
     void revertToOriginal();
-    void addCellMLTab();
+	bool isBlank();
     void setAntimonyFont();
     void setXMLFont();
     void zoomIn();

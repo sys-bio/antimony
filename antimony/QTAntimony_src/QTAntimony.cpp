@@ -1,6 +1,7 @@
 
 #include "QTAntimony.h"
 #include "Translator.h"
+#include "resource.h"
 #include "SBWIntegration.h"
 #include "Settings.h"
 #include <QStringList>
@@ -144,6 +145,12 @@ void QTAntimony::DisplayWindow(QMainWindow* t) {
         }
         t->setGeometry(window);
     }
+	std::string file = "C:/Program Files (x86)/Antimony/antimony_ico.png";
+	QFile iconfile(file.c_str());
+	if (!iconfile.exists()) {
+		file = ":/antimony_ico.png";
+	}
+	t->setWindowIcon(QIcon(file.c_str()));
     t->show();
     m_basewindow = t;
 }

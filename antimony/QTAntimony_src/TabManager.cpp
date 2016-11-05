@@ -102,9 +102,19 @@ void TabManager::revertToOriginal()
     GetActiveEditor()->RevertToOriginal();
 }
 
-void TabManager::addCellMLTab()
+bool TabManager::isBlank()
 {
-
+  if (textbox(0)->toPlainText() != "") return false;
+  if (m_sbmltab != -1) {
+    if (count() > m_sbmltab+1) {
+      return false;
+    }
+    if (textbox(m_sbmltab)->toPlainText() != "") return false;
+  }
+  if (m_cellmltab != -1) {
+    if (textbox(m_cellmltab)->toPlainText() != "") return false;
+  }
+  return true;
 }
 
 void TabManager::setAntimonyFont()
@@ -159,46 +169,48 @@ void TabManager::sbmlTabs(bool checked)
 {
   if (checked && m_sbmltab != -1) return; //Just making sure.
   if (!checked && m_sbmltab == -1) return; //Just making sure.
-    if (checked) {
-        assert(m_sbmltab == -1);
-        //Add an SBML Tab (TranslateAntimony will add any necessary extras)
-        if (m_cellmltab == -1) m_sbmltab = 1;
-        else m_sbmltab = 2;
-        Translator* translator = static_cast<Translator*>(parent());
-        translator->AddSBMLTab();
-        TranslateAntimony();
+  if (checked) {
+    assert(m_sbmltab == -1);
+    //Add an SBML Tab (TranslateAntimony will add any necessary extras)
+    if (m_cellmltab == -1) m_sbmltab = 1;
+    else m_sbmltab = 2;
+    Translator* translator = static_cast<Translator*>(parent());
+    translator->AddSBMLTab();
+    TranslateAntimony();
+  }
+  else {
+    assert(m_sbmltab > 0);
+    while (m_sbmltab < count()) {
+      removeTab(m_sbmltab);
     }
-    else {
-        assert(m_sbmltab > 0);
-        while (m_sbmltab < count()) {
-            removeTab(m_sbmltab);
-        }
-        m_sbmltab = -1;
-    }
+    m_sbmltab = -1;
+  }
 }
 
 void TabManager::cellmlTabs(bool checked)
 {
   if (checked && m_cellmltab != -1) return; //reconfirm
   if (!checked && m_cellmltab == -1) return; //reconfirm
+  Translator* translator = static_cast<Translator*>(parent());
   if (checked) {
-        assert(m_cellmltab == -1);
-        //Add a CellML Tab
-        m_cellmltab = 1;
-        if (m_sbmltab==1) {
-            m_sbmltab = 2;
-        }
-        Translator* translator = static_cast<Translator*>(parent());
-        translator->AddCellMLTab();
-        //TranslateAntimony();
+    assert(m_cellmltab == -1);
+    //Add a CellML Tab
+    m_cellmltab = 1;
+    if (m_sbmltab==1) {
+      m_sbmltab = 2;
     }
-    else {
-        //Remove the CellML Tab
-        assert(m_cellmltab == 1);
-        removeTab(1);
-        m_cellmltab = -1;
-        m_sbmltab = 1;
-    }
+    Translator* translator = static_cast<Translator*>(parent());
+    translator->AddCellMLTab();
+    TranslateAntimony();
+  }
+  else {
+    //Remove the CellML Tab
+    assert(m_cellmltab == 1);
+    removeTab(1);
+    m_cellmltab = -1;
+    m_sbmltab = 1;
+    translator->clearCellMLTab();
+  }
 }
 
 ChangeableTextBox* TabManager::GetActiveEditor()
@@ -268,7 +280,9 @@ void TabManager::Translate(int tab)
     if (oldtab == NULL) return;
     setUpdatesEnabled(false);
     QString tabtext = oldtab->toPlainText();
-    oldtab->SetOriginal();
+    if (!tabtext.isEmpty()) {
+      oldtab->SetOriginal();
+    }
     if (tab==m_anttab) {
         TranslateAntimony(tabtext);
     }
@@ -299,6 +313,9 @@ void TabManager::SetOthersTranslated(int oldtab)
 
 void TabManager::TranslateAntimony(QString& text)
 {
+    if (text.isEmpty()) {
+      return;
+    }
     //Since this is an editor, they may have copied and pasted special characters into it, which need to be changed.
     text.replace(QChar(8230), "...");
     for (int i=0; i<text.size(); i++) {
@@ -527,6 +544,7 @@ void TabManager::SetAllSBMLLevelsAndVersions()
           << tr("Level 2 Version 3")
           << tr("Level 2 Version 4")
           << tr("Level 3 Version 1")
+          << tr("Level 3 Version 2")
     ;
   bool ok;
   SBMLTab* sbmltab = static_cast<SBMLTab*>(textbox(m_sbmltab));
@@ -552,6 +570,9 @@ void TabManager::SetAllSBMLLevelsAndVersions()
     }
     if (item == tr("Level 3 Version 1")) {
       levelversion = 5;
+    }
+    if (item == tr("Level 3 Version 2")) {
+      levelversion = 6;
     }
   }
   if (levelversion <=4 && m_flatten==false) {

@@ -181,7 +181,7 @@ public:
   void        SetCC(std::string cc) {m_cc = cc;};
   std::string GetError() {return m_error;};
   std::vector<std::string> GetWarnings() {return m_warnings;};
-  long SaveModules();
+  size_t SaveModules();
   bool RevertToModuleSet(long n);
 
   size_t GetNumUserFunctions() const {return m_userfunctions.size();};
