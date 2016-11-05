@@ -43,11 +43,11 @@ Module::Module(string name)
     m_currentexportvar(0),
     m_ismain(false),
     m_sbmllevel(3),
-    m_sbmlversion(1),
+    m_sbmlversion(2),
     m_varmap(),
 #ifndef NSBML
 #ifdef USE_COMP
-    m_sbmlnamespaces(m_sbmllevel, m_sbmlversion, "comp", 1),
+    m_sbmlnamespaces(m_sbmllevel, m_sbmlversion),
 #else
     m_sbmlnamespaces(m_sbmllevel, m_sbmlversion),
 #endif
@@ -64,6 +64,9 @@ Module::Module(string name)
     m_uniquevars()
 {
 #ifdef USE_COMP
+  m_sbmlnamespaces.addPackageNamespace("comp", 1);
+  SBMLDocument sbml(&m_sbmlnamespaces);
+  m_sbml = sbml;
   CompSBMLDocumentPlugin* compdoc = static_cast<CompSBMLDocumentPlugin*>(m_sbml.getPlugin("comp"));
   compdoc->setRequired(true);
   SBMLDocument* doctest = compdoc->getSBMLDocument();
@@ -1318,18 +1321,18 @@ bool Module::CheckUndefined(const Formula* form)
         varname.push_back(*name);
         Variable* var = GetVariable(varname);
         bool isPredefined = false;
-        if (*name == "rate" || *name == "rateOf") {
-          isPredefined = true;
-          m_rateNames.insert(*name);
-          //We need to check the 'rate'/'rateOf' variable:
-          if (var != NULL) {
-            if (var->GetType() != varUndefined) {
-              g_registry.SetError("Unable to use '" + *name + "' as a function, as it is used elsewhere as a " + VarTypeToString(var->GetType()) + ".");
-              return true;
-            }
-          }
-        }
-        else {
+        //if (*name == "rate" || *name == "rateOf") {
+        //  isPredefined = true;
+        //  m_rateNames.insert(*name);
+        //  //We need to check the 'rate'/'rateOf' variable:
+        //  if (var != NULL) {
+        //    if (var->GetType() != varUndefined) {
+        //      g_registry.SetError("Unable to use '" + *name + "' as a function, as it is used elsewhere as a " + VarTypeToString(var->GetType()) + ".");
+        //      return true;
+        //    }
+        //  }
+        //}
+        //else {
           distribution_type dtype = StringToDistributionType(*name);
           if (dtype != distUNKNOWN) {
             isPredefined = true;
@@ -1339,7 +1342,7 @@ bool Module::CheckUndefined(const Formula* form)
               return true;
             }
           }
-        }
+        //}
         if (!isPredefined) {
           g_registry.SetError("'" + *name + "' was used as a function, but no such function was defined.  Please define the function using 'function " + *name + "([arguments]) [function definition] end'.");
           return true;

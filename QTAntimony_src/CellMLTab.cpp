@@ -40,7 +40,7 @@ QString CellMLTab::GetModelName()
 QString CellMLTab::GetTabName()
 {
     QString tabname = "CellML";
-    if (!(m_modelname == "__main")) {
+    if (!m_modelname.isEmpty() && !(m_modelname == "__main")) {
         tabname += " - " + m_modelname;
     }
     if (!IsSaved()) {

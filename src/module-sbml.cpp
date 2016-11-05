@@ -8,10 +8,12 @@ void SetVarWithEvent(Variable* var, const Event* event, Module* module, vector<s
 
   //Set the trigger:
   const Trigger* sbmltrigger = event->getTrigger();
-  string triggerstring(parseASTNodeToString(sbmltrigger->getMath()));
   Formula trigger;
-  setFormulaWithString(triggerstring, &trigger, module);
-  trigger.SetAnnotation(sbmltrigger);
+  if (sbmltrigger != NULL && sbmltrigger->isSetMath()) {
+    string triggerstring(parseASTNodeToString(sbmltrigger->getMath()));
+    setFormulaWithString(triggerstring, &trigger, module);
+    trigger.SetAnnotation(sbmltrigger);
+  }
   Formula delay;
   const Delay* sbmldelay = event->getDelay();
   if (sbmldelay != NULL) {
@@ -45,10 +47,10 @@ void SetVarWithEvent(Variable* var, const Event* event, Module* module, vector<s
   if (event->isSetUseValuesFromTriggerTime()) {
     antevent.SetUseValuesFromTriggerTime(event->getUseValuesFromTriggerTime());
   }
-  if (event->getTrigger()->isSetPersistent()) {
+  if (sbmltrigger && sbmltrigger->isSetPersistent()) {
     antevent.SetPersistent(event->getTrigger()->getPersistent());
   }
-  if (event->getTrigger()->isSetInitialValue()) {
+  if (sbmltrigger && sbmltrigger->isSetInitialValue()) {
     antevent.SetInitialValue(event->getTrigger()->getInitialValue());
   }
   //All done--give it to the variable.
@@ -999,13 +1001,13 @@ void Module::LoadSBML(const Model* sbml)
         annot.find("http://en.wikipedia.org/wiki/Derivative") != string::npos )
     {
       //It's the special 'rateOf' function.  However, if the name is not 'rateOf' or 'rate', we need to change it to be one of those two.
-      if (sbmlname != "rateOf" && sbmlname != "rate") {
-        for (unsigned int e=0; e<allElements->getSize(); e++) {
-          SBase* element = static_cast<SBase*>(allElements->get(e));
-          element->renameSIdRefs(sbmlname, "rateOf");
-        }
-        sbmlname = "rateOf";
-      }
+      //if (sbmlname != "rateOf" && sbmlname != "rate") {
+      //  for (unsigned int e=0; e<allElements->getSize(); e++) {
+      //    SBase* element = static_cast<SBase*>(allElements->get(e));
+      //    element->renameSIdRefs(sbmlname, "rateOf");
+      //  }
+      //  sbmlname = "rateOf";
+      //}
       m_rateNames.insert(sbmlname);
       continue;
     }
@@ -1394,7 +1396,10 @@ void Module::LoadSBML(const Model* sbml)
     if (reaction->isSetKineticLaw()) {
       const KineticLaw* kl = reaction->getKineticLaw();
       formula.SetAnnotation(kl);
-      ASTNode astn = *kl->getMath();
+      ASTNode* astn = NULL;
+      if (kl->isSetMath()) {
+        astn = kl->getMath()->deepCopy();
+      }
       for (unsigned int localp=0; localp<kl->getNumParameters(); localp++) {
         const Parameter* localparam = kl->getParameter(localp);
         string origname = localparam->getId();
@@ -1406,8 +1411,9 @@ void Module::LoadSBML(const Model* sbml)
         Variable* localvar = AddOrFindVariable(&sbmlname);
         localvar->SetAnnotation(localparam);
         //Change the ASTNode so that old idrefs point to the new name.
-        astn.renameSIdRefs(localparam->getId(), sbmlname);
-
+        if (astn) {
+          astn->renameSIdRefs(localparam->getId(), sbmlname);
+        }
         //Set the value for the new variable:
         if (localparam->isSetValue()) {
           Formula localformula;
@@ -1418,8 +1424,10 @@ void Module::LoadSBML(const Model* sbml)
           localvar->SetUnitVariable(localparam->getUnits());
         }
       }
-      formulastring = parseASTNodeToString(&astn);
-      setFormulaWithString(formulastring, &formula, this);
+      if (astn) {
+        formulastring = parseASTNodeToString(astn);
+        setFormulaWithString(formulastring, &formula, this);
+      }
     }
     else if (reaction->getNumModifiers() > 0) {
       //If the kinetic law is empty, we can set some interactions, if there are any Modifiers.
@@ -1843,14 +1851,14 @@ void Module::CreateSBMLModel(bool comp)
   }
 
   //The 'rateOf' function:
-  for (set<string>::iterator rname=m_rateNames.begin(); rname != m_rateNames.end(); rname++) {
-    FunctionDefinition* fd = sbmlmod->createFunctionDefinition();
-    fd->setId(*rname);
-    ASTNode* math = parseStringToASTNode("lambda(x, NaN)");
-    fd->setMath(math);
-    fd->setAnnotation("<annotation> <symbols xmlns=\"http://sbml.org/annotations/symbols\" definition=\"http://en.wikipedia.org/wiki/Derivative\"/> </annotation>");
-    delete math;
-  }
+  //for (set<string>::iterator rname=m_rateNames.begin(); rname != m_rateNames.end(); rname++) {
+  //  FunctionDefinition* fd = sbmlmod->createFunctionDefinition();
+  //  fd->setId(*rname);
+  //  ASTNode* math = parseStringToASTNode("lambda(x, NaN)");
+  //  fd->setMath(math);
+  //  fd->setAnnotation("<annotation> <symbols xmlns=\"http://sbml.org/annotations/symbols\" definition=\"http://en.wikipedia.org/wiki/Derivative\"/> </annotation>");
+  //  delete math;
+  //}
 
   //Predefined distributions:
   for (set<distribution_type>::iterator dtype = m_usedDistributions.begin(); dtype != m_usedDistributions.end(); dtype++) {
@@ -2042,9 +2050,6 @@ void Module::CreateSBMLModel(bool comp)
   for (size_t rxn=0; rxn < numrxns; rxn++) {
     const Variable* rxnvar = GetNthVariableOfType(allReactions, rxn, comp);
     const AntimonyReaction* reaction = rxnvar->GetReaction();
-    if (reaction->IsEmpty()) {
-      continue; //Reactions that involve no species are illegal in SBML.
-    }
     Reaction* sbmlrxn = sbmlmod->createReaction();
     sbmlrxn->setFast(false);
     sbmlrxn->setId(rxnvar->GetNameDelimitedBy(cc));
@@ -2225,9 +2230,10 @@ void Module::CreateSBMLModel(bool comp)
   for (size_t form=0; form < numunknown; form++) {
     const Variable* formvar = GetNthVariableOfType(allUnknown, form, comp);
     vector<string> fvname = formvar->GetName();
-    if (fvname[fvname.size()-1] == "rateOf" ||
-        fvname[fvname.size()-1] == "rate" ||
-        StringToDistributionType(fvname[fvname.size()-1]) != distUNKNOWN) 
+    //if (fvname[fvname.size()-1] == "rateOf" ||
+    //    fvname[fvname.size()-1] == "rate" ||
+    //    StringToDistributionType(fvname[fvname.size()-1]) != distUNKNOWN) 
+    if (StringToDistributionType(fvname[fvname.size() - 1]) != distUNKNOWN)
     {
       continue;
     }

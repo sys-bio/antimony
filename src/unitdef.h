@@ -47,7 +47,7 @@ public:
   bool ComponentsMatch(UnitDef* unitdef);
   bool IsOnlyCanonicalKind() const;
 
-  unsigned long GetNumUnitElements() const;
+  size_t GetNumUnitElements() const;
   UnitElement* GetUnitElement(unsigned long n);
 
   std::vector<std::string> GetName() const;

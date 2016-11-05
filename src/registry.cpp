@@ -492,6 +492,9 @@ bool Registry::LoadCellML(iface::cellml_api::Model* model)
     numcomps++;
     //Each CellML 'component' becomes its own Antimony 'module'
     string cellmlname = GetModuleNameFrom(component);
+    if (cellmlname == "__main") {
+      cellmlname = "main";
+    }
     FixName(cellmlname);
     Module* mod = GetModule(cellmlname);
     if (mod == NULL) {
@@ -788,6 +791,7 @@ void Registry::SetupFunctions()
   , "pow"
   , "sqr"
   , "sqrt"
+  , "rateOf"
   , "root"
   , "sec"
   , "sech"
@@ -810,8 +814,13 @@ void Registry::SetupFunctions()
   , "minus"
   , "plus"
   , "times"
+  , "quotient"
+  , "max"
+  , "min"
+  , "rem"
+  , "implies"
   };
-  for (size_t func=0; func<66; func++) {
+  for (size_t func=0; func<72; func++) {
     m_functions.push_back(functions[func]);
   }
 }
@@ -1173,7 +1182,7 @@ void Registry::StoreVariable(Variable* var)
 const string* Registry::IsFunction(string word)
 {
   for (size_t func=0; func<m_functions.size(); func++) {
-    if (word == m_functions[func]) {
+    if (CaselessStrCmp(word, m_functions[func])) {
       return &(m_functions[func]);
     }
   }
@@ -1259,7 +1268,7 @@ string Registry::GetNthModuleName(size_t n)
   return m_modules[n].GetModuleName();
 }
 
-long Registry::SaveModules()
+size_t Registry::SaveModules()
 {
   m_oldmodules.push_back(m_modules);
   m_olduserfunctions.push_back(m_userfunctions);

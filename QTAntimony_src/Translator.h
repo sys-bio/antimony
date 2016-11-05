@@ -7,6 +7,7 @@
 
 class AntimonyTab;
 class SBMLTab;
+class CellMLTab;
 class TabManager;
 class QTAntimony;
 class FileWatcher;
@@ -23,6 +24,7 @@ private:
     //Tabs
     TabManager* m_tabmanager;
     AntimonyTab* m_antimony;
+    CellMLTab* m_cellml;
     FileWatcher* m_filewatcher;
     //Editor actions (are tied to active tab only)
     QAction* m_actionUndo;
@@ -60,6 +62,7 @@ public:
     virtual void closeEvent(QCloseEvent* event);
     virtual void dragEnterEvent(QDragEnterEvent *event);
     virtual void dropEvent(QDropEvent *event);
+    void clearCellMLTab();
 	
 public slots:
     void SetPasteAvailability();

@@ -1071,7 +1071,7 @@ void Formula::GetObjectivesFromAST(const ASTNode* astn, vector<pair<string, doub
       numobjectives = objectives.size();
       GetObjectivesFromAST(astn->getChild(0), objectives);
       //Switch the sign of anything added:
-      for (unsigned int n=numobjectives; n<objectives.size(); n++) {
+      for (size_t n=numobjectives; n<objectives.size(); n++) {
         pair<string, double> obj = objectives[n];
         obj.second = -obj.second;
         objectives[n] = obj;
@@ -1082,7 +1082,7 @@ void Formula::GetObjectivesFromAST(const ASTNode* astn, vector<pair<string, doub
       numobjectives = objectives.size();
       GetObjectivesFromAST(astn->getChild(1), objectives);
       //Switch the sign of anything added second:
-      for (unsigned int n=numobjectives; n<objectives.size(); n++) {
+      for (size_t n=numobjectives; n<objectives.size(); n++) {
         pair<string, double> obj = objectives[n];
         obj.second = -obj.second;
         objectives[n] = obj;

@@ -45,7 +45,7 @@ bool IsReal(const string& src)
   if (CaselessStrCmp(src, "-infinity")) return true;
 
   long i;
-  long end = src.size();
+  size_t end = src.size();
   bool pointfound = false;
   for (i = 0; i < end; ++i) {
     if (!isdigit(src[i])) {
@@ -195,10 +195,10 @@ void setFormulaWithString(string formulastring, Formula* formula, Module* module
         }
         continue;
       }
-      if (module->IsRateOfSymbol(word)) {
-        formula->AddText(&word);
-        continue;
-      }
+      //if (module->IsRateOfSymbol(word)) {
+      //  formula->AddText(&word);
+      //  continue;
+      //}
       if (StringToDistributionType(word) != distUNKNOWN) {
         formula->AddText(&word);
         continue;

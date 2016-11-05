@@ -143,7 +143,6 @@ bool AntimonyReaction::LeftIsEmpty() const
 
 string AntimonyReaction::ToDelimitedStringWithStrands(std::string cc, vector<pair<Variable*, size_t> > strands) const
 {
-  if (IsEmpty()) return "";
   string retval;
 
   Module* module = g_registry.GetModule(m_module);
@@ -165,7 +164,6 @@ string AntimonyReaction::ToDelimitedStringWithStrands(std::string cc, vector<pai
 
 string AntimonyReaction::ToDelimitedStringWithEllipses(std::string cc) const
 {
-  if (IsEmpty()) return "";
   string retval;
 
   Module* module = g_registry.GetModule(m_module);

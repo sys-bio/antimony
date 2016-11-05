@@ -79,6 +79,7 @@ bool SBMLTab::SetLevelAndVersion(int levelversion)
   case 3: return SetLevelAndVersion(2, 3);
   case 4: return SetLevelAndVersion(2, 4);
   case 5: return SetLevelAndVersion(3, 1);
+  case 6: return SetLevelAndVersion(3, 2);
   default:
       CopyMessageBox msgBox;
       QDataStream messagest("");
@@ -172,6 +173,9 @@ bool SBMLTab::StoreLevelAndVersion(int level, int version)
     switch(version) {
     case 1:
       m_levelversion = 5;
+      return true;
+    case 2:
+      m_levelversion = 6;
       return true;
     default:
       return false;

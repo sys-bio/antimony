@@ -44,19 +44,18 @@ using namespace SystemsBiologyWorkbench;
 #include <QFile>
 #include <QTextStream>
 #include <QCloseEvent>
+#include <QImageReader>
 
 using namespace std;
 Translator::Translator(QTAntimony* app, QString filename)
         : QMainWindow(NULL),
         m_app(app),
         m_antimony(),
+        m_cellml(NULL),
         m_filewatcher(new FileWatcher)
 {
     setAcceptDrops(true);
     QAction* actionFlattenSBML = new QAction(tr("&Flatten SBML tab(s)"), this);
-    //Set the window icon (for windows)
-    QIcon anticon("antimony.ico");
-    setWindowIcon(anticon);
     //We need to know if we should display SBML tabs, CellML tabs, or both:
     QSettings qset(ORG, APP);
     qset.sync();
@@ -221,19 +220,12 @@ Translator::Translator(QTAntimony* app, QString filename)
     connect(m_antimony, SIGNAL(IsActive(QPlainTextEdit*)), m_findDialog, SLOT(setPlainTextEdit(QPlainTextEdit*)));
     connect(m_antimony, SIGNAL(IsActive(QPlainTextEdit*)), m_findReplaceDialog, SLOT(setPlainTextEdit(QPlainTextEdit*)));
     connect(m_antimony, SIGNAL(IsActive(QPlainTextEdit*)), m_goToLineDialog, SLOT(setPlainTextEdit(QPlainTextEdit*)));
+    m_tabmanager->sbmlTabs(displaysbml);
+    m_tabmanager->cellmlTabs(displaycellml);
     if (filename != "") {
         QFile file(filename);
         QString filetext = "";
-        if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-            //error
-            if (displaycellml) {
-                AddCellMLTab();
-            }
-            if (displaysbml) {
-                AddSBMLTab();
-            }
-        }
-        else {
+        if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
             QTextStream in(&file);
             filetext = in.readAll();
             m_filewatcher->addPath(filename);
@@ -292,8 +284,7 @@ Translator::Translator(QTAntimony* app, QString filename)
                 m_tabmanager->firstsbmltextbox()->SetSavedFilename(filename);
                 m_antimony->SetTranslatedText(getAntimonyString(NULL));
                 if (displaycellml) {
-                    AddCellMLTab();
-                    m_tabmanager->TranslateSBML();
+                    AddCellMLTab(document->getIdAttribute().c_str(), getCellMLString(NULL), true);
                 }
             }
 #ifndef NCELLML
@@ -565,32 +556,41 @@ void Translator::AddSBMLTab(QString name, QString text, bool translated, int lev
 
 void Translator::AddCellMLTab(QString name, QString text, bool translated)
 {
-    CellMLTab* cellml = new CellMLTab();
-    cellml->SetModelName(name);
-    cellml->setPlainText(text);
-    if (translated) {
-        cellml->SetTranslated();
-    }
-    else {
-        cellml->SetOriginal();
-    }
-    m_tabmanager->insertTab(1, cellml, cellml->GetTabName());
-    connect(cellml, SIGNAL(ActiveUndoAvailable(bool)), m_actionUndo, SLOT(setEnabled(bool)));
-    connect(cellml, SIGNAL(ActiveRedoAvailable(bool)), m_actionRedo, SLOT(setEnabled(bool)));
-    connect(cellml, SIGNAL(ActiveCopyAvailable(bool)), m_actionCut, SLOT(setEnabled(bool)));
-    connect(cellml, SIGNAL(ActiveCopyAvailable(bool)), m_actionCopy, SLOT(setEnabled(bool)));
-    connect(cellml, SIGNAL(TranslatedAvailable(bool)), m_actionRevertToTranslated, SLOT(setEnabled(bool)));
-    connect(cellml, SIGNAL(OriginalAvailable(bool)),   m_actionRevertToOriginal, SLOT(setEnabled(bool)));
-    connect(m_tabmanager, SIGNAL(FailedAntimonyTranslation()), cellml, SLOT(SetFailedTranslation()));
-    connect(m_tabmanager, SIGNAL(FailedSBMLTranslation()), cellml, SLOT(SetFailedTranslation()));
-    connect(m_tabmanager, SIGNAL(FailedCellMLTranslation()), cellml, SLOT(SetFailedTranslation()));
-    connect(cellml, SIGNAL(StartWatching(QString)), m_filewatcher, SLOT(StartWatching(QString)));
-    connect(cellml, SIGNAL(StopWatching(QString)), m_filewatcher, SLOT(StopWatching(QString)));
-    connect(m_filewatcher, SIGNAL(fileChanged(QString)), cellml, SLOT(FileChanged(QString)));
-    connect(cellml, SIGNAL(TabNameIsNow(QString,ChangeableTextBox*)), m_tabmanager, SLOT(TabNameIs(QString,ChangeableTextBox*)));
-    connect(cellml, SIGNAL(IsActive(QPlainTextEdit*)), m_findDialog, SLOT(setPlainTextEdit(QPlainTextEdit*)));
-    connect(cellml, SIGNAL(IsActive(QPlainTextEdit*)), m_findReplaceDialog, SLOT(setPlainTextEdit(QPlainTextEdit*)));
-    connect(cellml, SIGNAL(IsActive(QPlainTextEdit*)), m_goToLineDialog, SLOT(setPlainTextEdit(QPlainTextEdit*)));
+  bool newtab = (m_cellml == NULL);
+  if (newtab) {
+    m_cellml = new CellMLTab();
+  }
+  if (!name.isEmpty()) {
+    m_cellml->SetModelName(name);
+  }
+  if (!text.isEmpty()) {
+    m_cellml->setPlainText(text);
+  }
+  if (translated) {
+    m_cellml->SetTranslated();
+  }
+  else {
+    m_cellml->SetOriginal();
+  }
+  if (newtab) {
+    m_tabmanager->insertTab(1, m_cellml, m_cellml->GetTabName());
+    connect(m_cellml, SIGNAL(ActiveUndoAvailable(bool)), m_actionUndo, SLOT(setEnabled(bool)));
+    connect(m_cellml, SIGNAL(ActiveRedoAvailable(bool)), m_actionRedo, SLOT(setEnabled(bool)));
+    connect(m_cellml, SIGNAL(ActiveCopyAvailable(bool)), m_actionCut, SLOT(setEnabled(bool)));
+    connect(m_cellml, SIGNAL(ActiveCopyAvailable(bool)), m_actionCopy, SLOT(setEnabled(bool)));
+    connect(m_cellml, SIGNAL(TranslatedAvailable(bool)), m_actionRevertToTranslated, SLOT(setEnabled(bool)));
+    connect(m_cellml, SIGNAL(OriginalAvailable(bool)),   m_actionRevertToOriginal, SLOT(setEnabled(bool)));
+    connect(m_tabmanager, SIGNAL(FailedAntimonyTranslation()), m_cellml, SLOT(SetFailedTranslation()));
+    connect(m_tabmanager, SIGNAL(FailedSBMLTranslation()), m_cellml, SLOT(SetFailedTranslation()));
+    connect(m_tabmanager, SIGNAL(FailedCellMLTranslation()), m_cellml, SLOT(SetFailedTranslation()));
+    connect(m_cellml, SIGNAL(StartWatching(QString)), m_filewatcher, SLOT(StartWatching(QString)));
+    connect(m_cellml, SIGNAL(StopWatching(QString)), m_filewatcher, SLOT(StopWatching(QString)));
+    connect(m_filewatcher, SIGNAL(fileChanged(QString)), m_cellml, SLOT(FileChanged(QString)));
+    connect(m_cellml, SIGNAL(TabNameIsNow(QString,ChangeableTextBox*)), m_tabmanager, SLOT(TabNameIs(QString,ChangeableTextBox*)));
+    connect(m_cellml, SIGNAL(IsActive(QPlainTextEdit*)), m_findDialog, SLOT(setPlainTextEdit(QPlainTextEdit*)));
+    connect(m_cellml, SIGNAL(IsActive(QPlainTextEdit*)), m_findReplaceDialog, SLOT(setPlainTextEdit(QPlainTextEdit*)));
+    connect(m_cellml, SIGNAL(IsActive(QPlainTextEdit*)), m_goToLineDialog, SLOT(setPlainTextEdit(QPlainTextEdit*)));
+  }
 }
 
 void Translator::SetSBMLTab(QString model)
@@ -605,10 +605,7 @@ void Translator::SetSBMLTab(QString model)
 
 bool Translator::IsBlank()
 {
-    if (m_tabmanager->count() != 2) return false;
-    if (m_tabmanager->textbox(0)->toPlainText() != "") return false;
-    if (m_tabmanager->textbox(1)->toPlainText() != "") return false;
-    return true;
+  return m_tabmanager->isBlank();
 }
 
 void Translator::SetPasteAvailability()
@@ -687,4 +684,10 @@ void Translator::dropEvent(QDropEvent *event)
         m_app->OpenFiles(pathList);
     }
     event->acceptProposedAction();
+}
+
+void Translator::clearCellMLTab()
+{
+  delete m_cellml;
+  m_cellml = NULL;
 }

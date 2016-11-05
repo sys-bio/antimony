@@ -347,7 +347,7 @@ bool UnitDef::IsOnlyCanonicalKind() const
 }
 
 
-unsigned long UnitDef::GetNumUnitElements() const
+size_t UnitDef::GetNumUnitElements() const
 {
   return m_components.size();
 }

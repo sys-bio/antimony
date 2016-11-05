@@ -438,8 +438,15 @@ bool FixName(string& name)
   , "infinity"  
   , "NaN"  
   , "notanumber"
+
+  , "rateOf"
+  , "quotient"
+  , "max"
+  , "min"
+  , "rem"
+  , "implies"
   };
-  for (size_t kw=0; kw<96; kw++) {
+  for (size_t kw=0; kw<102; kw++) {
     if (CaselessStrCmp(name, keywords[kw])) {
       name += "_";
       return true;

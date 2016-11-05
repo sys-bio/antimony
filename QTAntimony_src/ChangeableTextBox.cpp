@@ -76,11 +76,11 @@ void ChangeableTextBox::SetInactive()
 void ChangeableTextBox::SetTextChanged()
 {
     emit TabNameIsNow(GetTabName(), this);
-    if (toPlainText() == m_original) {
+    if (!m_original.isEmpty() && toPlainText() == m_original) {
         SetOriginal();
         return;
     }
-    if (toPlainText() == m_translated) {
+    if (!m_translated.isEmpty() && toPlainText() == m_translated) {
         SetTranslated();
         return;
     }
