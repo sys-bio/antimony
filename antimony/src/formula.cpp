@@ -42,7 +42,7 @@ void Formula::AddNum(double num)
     strnum = "NaN";
   }
 #else
-  if (isnan(num)) {
+  if (::isnan(num)) {
     strnum = "NaN";
   }
 #endif
