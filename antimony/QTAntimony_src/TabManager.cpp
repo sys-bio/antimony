@@ -543,6 +543,7 @@ void TabManager::SetAllSBMLLevelsAndVersions()
           << tr("Level 2 Version 2")
           << tr("Level 2 Version 3")
           << tr("Level 2 Version 4")
+          << tr("Level 2 Version 5")
           << tr("Level 3 Version 1")
           << tr("Level 3 Version 2")
     ;
@@ -568,11 +569,14 @@ void TabManager::SetAllSBMLLevelsAndVersions()
     if (item == tr("Level 2 Version 4")) {
       levelversion = 4;
     }
-    if (item == tr("Level 3 Version 1")) {
+    if (item == tr("Level 2 Version 5")) {
       levelversion = 5;
     }
-    if (item == tr("Level 3 Version 2")) {
+    if (item == tr("Level 3 Version 1")) {
       levelversion = 6;
+    }
+    if (item == tr("Level 3 Version 2")) {
+      levelversion = 7;
     }
   }
   if (levelversion <=4 && m_flatten==false) {
@@ -615,7 +619,9 @@ void TabManager::SetFlatten(bool flatten)
       QString modelname = sbmltab->GetModelName();
       loadAntimonyString(anttab->toPlainText().toAscii());
       SBML = getCompSBMLString(modelname.toAscii());
-      sbmltab->StoreLevelAndVersion(3, 1);
+      if (sbmltab->GetLevelAndVersionCode() < 6) {
+        sbmltab->StoreLevelAndVersion(3, 1);
+      }
     }
 #endif
     sbmltab->SetTranslatedText(SBML);
