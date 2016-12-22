@@ -283,9 +283,11 @@ Translator::Translator(QTAntimony* app, QString filename)
                 m_tabmanager->firstsbmltextbox()->SetOriginal();
                 m_tabmanager->firstsbmltextbox()->SetSavedFilename(filename);
                 m_antimony->SetTranslatedText(getAntimonyString(NULL));
+#ifndef NCELLML
                 if (displaycellml) {
                     AddCellMLTab(document->getIdAttribute().c_str(), getCellMLString(NULL), true);
                 }
+#endif
             }
 #ifndef NCELLML
             else if (loadCellMLFile(filename.toUtf8().data()) != -1) {

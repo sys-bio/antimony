@@ -13,7 +13,7 @@
 SBMLTab::SBMLTab(QWidget* parent)
         : ChangeableTextBox(parent),
         m_modelname(""),
-        m_levelversion(5)
+        m_levelversion(6)
 {
     setlocale(LC_ALL, "C");
     m_filetypes = "SBML files (*.xml *.sbml);;All files(*.*)";
@@ -78,8 +78,9 @@ bool SBMLTab::SetLevelAndVersion(int levelversion)
   case 2: return SetLevelAndVersion(2, 2);
   case 3: return SetLevelAndVersion(2, 3);
   case 4: return SetLevelAndVersion(2, 4);
-  case 5: return SetLevelAndVersion(3, 1);
-  case 6: return SetLevelAndVersion(3, 2);
+  case 5: return SetLevelAndVersion(2, 5);
+  case 6: return SetLevelAndVersion(3, 1);
+  case 7: return SetLevelAndVersion(3, 2);
   default:
       CopyMessageBox msgBox;
       QDataStream messagest("");
@@ -119,27 +120,27 @@ bool SBMLTab::SetLevelAndVersion(int level, int version)
     bool success = sbmldoc->setLevelAndVersion(level, version);
     if (success) {
       ReplaceTextWith(m_sbmlw.writeSBMLToString(sbmldoc));
+      StoreLevelAndVersion(level, version);
     }
     else {
-        //sbmldoc->getErrorLog()->clearLog();
-        //sbmldoc->checkL2v1Compatibility();
-        SBMLErrorLog* log = sbmldoc->getErrorLog();
-        std::string trueerrors = "";
-        for (unsigned int err=0; err<log->getNumErrors(); err++) {
-            const SBMLError* error = log->getError(err);
-            if(error->getSeverity() >=2) {
-                if (trueerrors != "") trueerrors += "\n";
-                trueerrors += error->getMessage();
-            }
+      //sbmldoc->getErrorLog()->clearLog();
+      //sbmldoc->checkL2v1Compatibility();
+      SBMLErrorLog* log = sbmldoc->getErrorLog();
+      std::string trueerrors = "";
+      for (unsigned int err = 0; err < log->getNumErrors(); err++) {
+        const SBMLError* error = log->getError(err);
+        if (error->getSeverity() >= 2) {
+          if (trueerrors != "") trueerrors += "\n";
+          trueerrors += error->getMessage();
         }
+      }
       CopyMessageBox msgBox;
       QString message = "Error when attempting to translate '" + GetModelName() + "' to the selected level and version.";
       msgBox.setText(message);
       msgBox.setInformativeText(trueerrors.c_str());
       msgBox.setStandardButtons(QMessageBox::Ok);
       msgBox.exec();
-  }
-
+    }
     return success;
 }
 
@@ -166,16 +167,19 @@ bool SBMLTab::StoreLevelAndVersion(int level, int version)
     case 4:
       m_levelversion = 4;
       return true;
+    case 5:
+      m_levelversion = 5;
+      return true;
     default:
       return false;
     }
   case 3:
     switch(version) {
     case 1:
-      m_levelversion = 5;
+      m_levelversion = 6;
       return true;
     case 2:
-      m_levelversion = 6;
+      m_levelversion = 7;
       return true;
     default:
       return false;
