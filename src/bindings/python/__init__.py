@@ -8,4 +8,4 @@ see http://antimony.sf.net/
 
 from .antimony import *
 
-__version__ = LIBANTIMONY_VERSION_STRING
+__version__ = LIBANTIMONY_VERSION_STRING[1:]
