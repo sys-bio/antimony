@@ -1036,7 +1036,7 @@ bool Registry::SetNewCurrentEvent(Formula* trigger, Variable* var)
       g_registry.SetError("In event trigger \"" + trigger->ToDelimitedStringWithEllipses(".") + "\":  " + SBML_getLastParseL3Error());
       return true;
     }
-    else if (!ASTform->isBoolean()) {
+    else if (!ASTform->isBoolean() && !ASTform->isFunction()) {
       g_registry.SetError("The formula \"" + trigger->ToDelimitedStringWithEllipses(".") + "\" cannot be parsed in a boolean context, and it is therefore illegal to use it as the trigger for an event.  (Perhaps try adding parentheses?)");
       delete ASTform;
       return true;
