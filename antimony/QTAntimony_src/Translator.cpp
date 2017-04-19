@@ -317,6 +317,7 @@ Translator::Translator(QTAntimony* app, QString filename)
                     QRegExp cellmlorg("www.cellml.org");
                     if (filetext.contains(cellmlorg)) {
                       iscellml = true;
+                      m_tabmanager->cellmlTabs(true);
                       AddCellMLTab("", filetext, false);
                       m_tabmanager->cellmltextbox()->SetSavedFilename(filename);
                       m_tabmanager->cellmltextbox()->SetFailedTranslation();
