@@ -107,6 +107,7 @@ string ReactantList::ToStringDelimitedBy(std::string cc) const
       char charnum[50];
       sprintf(charnum, "%g", m_components[component].first);
       retval += charnum;
+      retval += ' ';
     }
     vector<string> varname = m_components[component].second;
     Variable* var = g_registry.GetModule(m_module)->GetVariable(m_components[component].second);
