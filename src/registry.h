@@ -25,7 +25,7 @@
 
 #define MAINMODULE "__main"
 #ifndef LIBANTIMONY_VERSION_STRING //Should be created in the makefile (CMakeLists.txt)
-#define LIBANTIMONY_VERSION_STRING "v2.9.2"
+#define LIBANTIMONY_VERSION_STRING "v2.9.3"
 #endif
 
 class Registry
