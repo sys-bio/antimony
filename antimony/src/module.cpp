@@ -43,7 +43,7 @@ Module::Module(string name)
     m_currentexportvar(0),
     m_ismain(false),
     m_sbmllevel(3),
-    m_sbmlversion(2),
+    m_sbmlversion(1),
     m_varmap(),
 #ifndef NSBML
 #ifdef USE_COMP
@@ -234,7 +234,7 @@ Module& Module::operator=(const Module& src)
 Module::~Module()
 {
 }
-  
+
 Variable* Module::AddOrFindVariable(const string* name)
 {
   vector<string> fullname;
@@ -553,7 +553,7 @@ bool Module::AddObjective(Formula* formula, bool maximize)
 {
   if (formula->IsSingleVariable()) {
     const Variable* referenced = GetVariable(formula->GetVariables()[0]);
-    if (referenced != NULL && 
+    if (referenced != NULL &&
        (referenced->GetType()==varFormulaUndef || referenced->GetType()==varUndefined)
        ) {
          return AddObjective(referenced, maximize);
@@ -604,7 +604,7 @@ bool Module::DeleteFromSynchronized(Variable* deletedvar)
 {
   assert(deletedvar->GetType()==varModule);
   vector<string> delname = deletedvar->GetName();
-  
+
   vector<vector<string> >::iterator cf = m_conversionFactors.begin();
   for (vector<pair<vector<string>, vector<string> > >::iterator sync = m_synchronized.begin(); sync != m_synchronized.end();) {
     vector<pair<vector<string>, vector<string> > >::iterator nextsync = sync;
@@ -1115,7 +1115,7 @@ bool Module::Finalize()
   }
 #endif
 #endif
-  
+
   //Phase 3:  Set compartments
   for (size_t var=0; var<m_variables.size(); var++) {
     m_variables[var]->SetComponentCompartments(false);
@@ -1427,8 +1427,8 @@ const Variable* Module::GetNthVariableOfType(return_type rtype, size_t n, bool c
   return GetNthConstVariableOfType(rtype, n, comp);
 }
 
-Variable* Module::GetNthVariableOfType(return_type rtype, size_t n, bool comp) 
-{ 
+Variable* Module::GetNthVariableOfType(return_type rtype, size_t n, bool comp)
+{
   const Variable* ret = GetNthConstVariableOfType(rtype, n, comp);
   return const_cast<Variable*>(ret);
 }
@@ -1667,7 +1667,7 @@ string Module::ToString() const
       retval += m_variables[var]->GetReaction()->ToDelimitedStringWithEllipses(".");
     }
   }
-  
+
   if (m_exportlist.size() > 0) {
     retval += "\nExported variables: ";
     for (size_t var=0; var<m_exportlist.size(); var++) {
@@ -1967,7 +1967,7 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded) con
   vector<var_type> types;
   types.push_back(varSpeciesUndef);
   retval += OutputOnly(types, "Species initializations", indent, cc, origmap);
-  
+
   //Compartments:
   types.clear();
   types.push_back(varCompartment);
@@ -2044,12 +2044,12 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded) con
       break;
     case varSpeciesUndef: //already taken care of at top
     case varFormulaUndef: //
-    case varReactionUndef: 
-    case varInteraction: 
-    case varUndefined: 
-    case varModule: 
-    case varEvent: 
-    case varCompartment: 
+    case varReactionUndef:
+    case varInteraction:
+    case varUndefined:
+    case varModule:
+    case varEvent:
+    case varCompartment:
     case varStrand:
     case varUnitDefinition:
       break;
@@ -2218,7 +2218,7 @@ string Module::ListAssignmentDifferencesFrom(const Module* origmod, string mname
 #ifndef NSBML
 #include "module-sbml.cpp"
 #endif
-  
+
 
 #ifndef NCELLML
 #include "module-cellml.cpp"
@@ -2244,7 +2244,7 @@ void Module::FixNames()
 void Module::FillInOrigmap(map<const Variable*, Variable >& origmap) const
 {
   map<const Variable*, Variable >::iterator origmapiter;
-  
+
   for (size_t var=0; var<m_variables.size(); var++) {
     if (m_variables[var]->GetType() == varModule) {
       vector<string> mname = m_variables[var]->GetName();
