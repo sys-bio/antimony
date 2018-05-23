@@ -255,6 +255,9 @@ void ChangeableTextBox::DisplayError(QString error)
     CopyMessageBox msgBox;
     QString message = "Error when attempting to translate " + GetModelName() + ":";
     msgBox.setText(message);
+    if (error.size() > 2000) {
+      error.replace(2000, error.size() - 2000, "\n[...]");
+    }
     msgBox.setInformativeText(error);
     msgBox.setStandardButtons(QMessageBox::Ok);
     msgBox.exec();
@@ -326,7 +329,7 @@ QString ChangeableTextBox::GetFilename()
   return m_filename;
 }
 
-    void ChangeableTextBox::SetTranslatedText(QString text)
+void ChangeableTextBox::SetTranslatedText(QString text)
 {
     ReplaceTextWith(text);
     SetTranslated();

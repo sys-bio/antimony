@@ -620,7 +620,7 @@ void TabManager::SetFlatten(bool flatten)
       loadAntimonyString(anttab->toPlainText().toAscii());
       SBML = getCompSBMLString(modelname.toAscii());
       if (sbmltab->GetLevelAndVersionCode() < 6) {
-        sbmltab->StoreLevelAndVersion(3, 1);
+        sbmltab->StoreLevelAndVersion(3, 2);
       }
     }
 #endif

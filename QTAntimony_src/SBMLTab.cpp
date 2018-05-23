@@ -5,6 +5,7 @@
 #include "SBMLTab.h"
 #include "Settings.h"
 #include <sbml/SBMLTypes.h>
+#include <sbml/conversion/SBMLConverterTypes.h>
 
 #define DEFAULTCOMP "default_compartment" //Also defined in module.cpp and antimony_api.cpp
 
@@ -13,7 +14,7 @@
 SBMLTab::SBMLTab(QWidget* parent)
         : ChangeableTextBox(parent),
         m_modelname(""),
-        m_levelversion(6)
+        m_levelversion(7)
 {
     setlocale(LC_ALL, "C");
     m_filetypes = "SBML files (*.xml *.sbml);;All files(*.*)";
@@ -100,11 +101,15 @@ bool SBMLTab::SetLevelAndVersion(int level, int version)
     SBMLDocument* sbmldoc = readSBMLFromString(toPlainText().toUtf8());
     SBMLErrorLog* log = sbmldoc->getErrorLog();
     std::string trueerrors = "";
+    int nummsgs = 0;
     for (unsigned int err=0; err<log->getNumErrors(); err++) {
         const SBMLError* error = log->getError(err);
-        if(error->getSeverity() >=2) {
+        if (error->getSeverity() >= 2) {
+          if (nummsgs <= 7) {
             if (trueerrors != "") trueerrors += "\n";
             trueerrors += error->getMessage();
+            nummsgs++;
+          }
         }
     }
     if (trueerrors != "") {
@@ -117,6 +122,16 @@ bool SBMLTab::SetLevelAndVersion(int level, int version)
       return false;
     }
     sbmldoc->setConsistencyChecksForConversion(LIBSBML_CAT_UNITS_CONSISTENCY, false);
+    if (level < 3 || version < 2) {
+      ConversionProperties props;
+      props.addOption("sortRules", true, "sort rules");
+
+      SBMLConverter* converter = new SBMLRuleConverter();
+      converter->setProperties(&props);
+      converter->setDocument(sbmldoc);
+      int cret = converter->convert();
+
+    }
     bool success = sbmldoc->setLevelAndVersion(level, version);
     if (success) {
       ReplaceTextWith(m_sbmlw.writeSBMLToString(sbmldoc));
@@ -130,8 +145,10 @@ bool SBMLTab::SetLevelAndVersion(int level, int version)
       for (unsigned int err = 0; err < log->getNumErrors(); err++) {
         const SBMLError* error = log->getError(err);
         if (error->getSeverity() >= 2) {
-          if (trueerrors != "") trueerrors += "\n";
-          trueerrors += error->getMessage();
+          if (nummsgs <= 7) {
+            if (trueerrors != "") trueerrors += "\n";
+            trueerrors += error->getMessage();
+          }
         }
       }
       CopyMessageBox msgBox;
