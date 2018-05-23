@@ -69,7 +69,7 @@ void matchNamesToTypes(ASTNode *node)
 }
 
 
-void removeGlobalFunctionIDs(ASTNode_t* node)  
+void removeGlobalFunctionIDs(ASTNode_t* node)
 {
   if (node==NULL) return;
   unsigned int nc = node->getNumChildren();
@@ -521,7 +521,7 @@ Model* getModelFromExternalModelDefinition(const ExternalModelDefinition* cextmo
 #endif
 
 #ifdef LIBSBML_HAS_PACKAGE_DISTRIB
-void makeNormal(DrawFromDistribution* dfd)
+void makeNormal(DistribDrawFromDistribution* dfd)
 {
   DistribInput* di = dfd->createDistribInput();
   di->setId("mean");
@@ -529,11 +529,14 @@ void makeNormal(DrawFromDistribution* dfd)
   di = dfd->createDistribInput();
   di->setId("stddev");
   di->setIndex(1);
-  UncertMLNode* dist = UncertMLNode::createDistributionNode("NormalDistribution", "mean, stddev", "mean, stddev");
-  dfd->setUncertML(dist);
+  DistribNormalDistribution* normal = dfd->createDistribNormalDistribution();
+  DistribUncertValue* mean = normal->createMean();
+  mean->setVar("mean");
+  DistribUncertValue* stddev = normal->createStddev();
+  stddev->setVar("stddev");
 }
 
-void makeTruncNormal(DrawFromDistribution* dfd)
+void makeTruncNormal(DistribDrawFromDistribution* dfd)
 {
   DistribInput* di = dfd->createDistribInput();
   di->setId("mean");
@@ -547,11 +550,20 @@ void makeTruncNormal(DrawFromDistribution* dfd)
   di = dfd->createDistribInput();
   di->setId("uplimit");
   di->setIndex(3);
-  UncertMLNode* dist = UncertMLNode::createDistributionNode("NormalDistribution", "mean, stddev, truncationLowerInclusiveBound, truncationUpperInclusiveBound", "mean, stddev, lowlimit, uplimit");
-  dfd->setUncertML(dist);
+  DistribNormalDistribution* normal = dfd->createDistribNormalDistribution();
+  DistribUncertValue* mean = normal->createMean();
+  mean->setVar("mean");
+  DistribUncertValue* stddev = normal->createStddev();
+  stddev->setVar("stddev");
+  DistribUncertBound* bound = normal->createTruncationLowerBound();
+  bound->setVar("lowlimit");
+  bound->setInclusive(true);
+  bound = normal->createTruncationUpperBound();
+  bound->setVar("uplimit");
+  bound->setInclusive(true);
 }
 
-void makeUniform(DrawFromDistribution* dfd)
+void makeUniform(DistribDrawFromDistribution* dfd)
 {
   DistribInput* di = dfd->createDistribInput();
   di->setId("minimum");
@@ -559,20 +571,24 @@ void makeUniform(DrawFromDistribution* dfd)
   di = dfd->createDistribInput();
   di->setId("maximum");
   di->setIndex(1);
-  UncertMLNode* dist = UncertMLNode::createDistributionNode("UniformDistribution", "minimum, maximum", "minimum, maximum");
-  dfd->setUncertML(dist);
+  DistribUniformDistribution* uniform = dfd->createDistribUniformDistribution();
+  DistribUncertValue* min = uniform->createMinimum();
+  DistribUncertValue* max = uniform->createMaximum();
+  min->setVar("minimum");
+  max->setVar("maximum");
 }
 
-void makeExponential(DrawFromDistribution* dfd)
+void makeExponential(DistribDrawFromDistribution* dfd)
 {
   DistribInput* di = dfd->createDistribInput();
   di->setId("rate");
   di->setIndex(0);
-  UncertMLNode* dist = UncertMLNode::createDistributionNode("ExponentialDistribution", "rate", "rate");
-  dfd->setUncertML(dist);
+  DistribExponentialDistribution* exp = dfd->createDistribExponentialDistribution();
+  DistribUncertValue* rate = exp->createRate();
+  rate->setVar("rate");
 }
 
-void makeTruncExponential(DrawFromDistribution* dfd)
+void makeTruncExponential(DistribDrawFromDistribution* dfd)
 {
   DistribInput* di = dfd->createDistribInput();
   di->setId("rate");
@@ -583,11 +599,18 @@ void makeTruncExponential(DrawFromDistribution* dfd)
   di = dfd->createDistribInput();
   di->setId("uplimit");
   di->setIndex(2);
-  UncertMLNode* dist = UncertMLNode::createDistributionNode("ExponentialDistribution", "rate, truncationLowerInclusiveBound, truncationUpperInclusiveBound", "rate, lowlimit, uplimit");
-  dfd->setUncertML(dist);
+  DistribExponentialDistribution* exp = dfd->createDistribExponentialDistribution();
+  DistribUncertValue* rate = exp->createRate();
+  rate->setVar("rate");
+  DistribUncertBound* bound = exp->createTruncationLowerBound();
+  bound->setVar("lowlimit");
+  bound->setInclusive(true);
+  bound = exp->createTruncationUpperBound();
+  bound->setVar("uplimit");
+  bound->setInclusive(true);
 }
 
-void makeGamma(DrawFromDistribution* dfd)
+void makeGamma(DistribDrawFromDistribution* dfd)
 {
   DistribInput* di = dfd->createDistribInput();
   di->setId("shape");
@@ -595,11 +618,14 @@ void makeGamma(DrawFromDistribution* dfd)
   di = dfd->createDistribInput();
   di->setId("scale");
   di->setIndex(1);
-  UncertMLNode* dist = UncertMLNode::createDistributionNode("GammaDistribution", "shape, scale", "shape, scale");
-  dfd->setUncertML(dist);
+  DistribGammaDistribution* gamma = dfd->createDistribGammaDistribution();
+  DistribUncertValue* shape = gamma->createShape();
+  DistribUncertValue* scale = gamma->createScale();
+  shape->setVar("shape");
+  scale->setVar("scale");
 }
 
-void makeTruncGamma(DrawFromDistribution* dfd)
+void makeTruncGamma(DistribDrawFromDistribution* dfd)
 {
   DistribInput* di = dfd->createDistribInput();
   di->setId("shape");
@@ -613,20 +639,30 @@ void makeTruncGamma(DrawFromDistribution* dfd)
   di = dfd->createDistribInput();
   di->setId("uplimit");
   di->setIndex(3);
-  UncertMLNode* dist = UncertMLNode::createDistributionNode("GammaDistribution", "shape, scale, truncationLowerInclusiveBound, truncationUpperInclusiveBound", "shape, scale, lowlimit, uplimit");
-  dfd->setUncertML(dist);
+  DistribGammaDistribution* gamma = dfd->createDistribGammaDistribution();
+  DistribUncertValue* shape = gamma->createShape();
+  DistribUncertValue* scale = gamma->createScale();
+  shape->setVar("shape");
+  scale->setVar("scale");
+  DistribUncertBound* bound = gamma->createTruncationLowerBound();
+  bound->setVar("lowlimit");
+  bound->setInclusive(true);
+  bound = gamma->createTruncationUpperBound();
+  bound->setVar("uplimit");
+  bound->setInclusive(true);
 }
 
-void makePoisson(DrawFromDistribution* dfd)
+void makePoisson(DistribDrawFromDistribution* dfd)
 {
   DistribInput* di = dfd->createDistribInput();
   di->setId("rate");
   di->setIndex(0);
-  UncertMLNode* dist = UncertMLNode::createDistributionNode("PoissonDistribution", "rate", "rate");
-  dfd->setUncertML(dist);
+  DistribPoissonDistribution* poisson = dfd->createDistribPoissonDistribution();
+  DistribUncertValue* rate = poisson->createRate();
+  rate->setVar("rate");
 }
 
-void makeTruncPoisson(DrawFromDistribution* dfd)
+void makeTruncPoisson(DistribDrawFromDistribution* dfd)
 {
   DistribInput* di = dfd->createDistribInput();
   di->setId("rate");
@@ -637,8 +673,15 @@ void makeTruncPoisson(DrawFromDistribution* dfd)
   di = dfd->createDistribInput();
   di->setId("uplimit");
   di->setIndex(2);
-  UncertMLNode* dist = UncertMLNode::createDistributionNode("PoissonDistribution", "rate, truncationLowerInclusiveBound, truncationUpperInclusiveBound", "rate, lowlimit, uplimit");
-  dfd->setUncertML(dist);
+  DistribPoissonDistribution* poisson = dfd->createDistribPoissonDistribution();
+  DistribUncertValue* rate = poisson->createRate();
+  rate->setVar("rate");
+  DistribUncertBound* bound = poisson->createTruncationLowerBound();
+  bound->setVar("lowlimit");
+  bound->setInclusive(true);
+  bound = poisson->createTruncationUpperBound();
+  bound->setVar("uplimit");
+  bound->setInclusive(true);
 }
 
 #endif
@@ -655,7 +698,7 @@ void addDistributionToModel(Model* model, distribution_type dtype)
   fd->setId(DistributionTypeToString(dtype));
 #ifdef LIBSBML_HAS_PACKAGE_DISTRIB
   DistribFunctionDefinitionPlugin* dfdp = static_cast<DistribFunctionDefinitionPlugin*>(fd->getPlugin("distrib"));
-  DrawFromDistribution* dfd = dfdp->createDrawFromDistribution();
+  DistribDrawFromDistribution* dfd = dfdp->createDistribDrawFromDistribution();
   switch(dtype) {
   case distNORMAL:
     makeNormal(dfd);
@@ -689,283 +732,231 @@ void addDistributionToModel(Model* model, distribution_type dtype)
 }
 
 #ifdef LIBSBML_HAS_PACKAGE_DISTRIB
-bool isExactOneChildDistribution(const DrawFromDistribution* dfd, string distname, string ch1)
+distribution_type checkNormal(const DistribDistribution* distrib, const DistribDrawFromDistribution* dfd)
 {
-  if (dfd->getNumDistribInputs() != 1) return false;
-  const UncertMLNode* dist = dfd->getUncertML();
-  if (dist->getElementName() != distname) return false;
-  if (dist->getNumChildren() != 1) return false;
-  UncertMLNode* child1 = dist->getChild(0);
-  if (child1->getElementName() != ch1) return false;
-
-  if (child1->getNumChildren() != 1) return false;
-  child1 = child1->getChild(0);
-  
-  if (child1->getElementName() != "var") return false;
-  if (child1->getNumAttributes() != 1) return false;
-  const XMLAttributes atts1 = child1->getAttributes();
-  if (!atts1.hasAttribute("varId")) return false;
-
-  const DistribInput* di = dfd->getDistribInput(atts1.getValue("varId"));
-  if (di == NULL) return false;
-  if (di->getIndex() != 0) return false;
-  return true;
+  unsigned int numinputs = dfd->getNumDistribInputs();
+  if (numinputs != 2 && numinputs != 4) {
+    return distUNKNOWN;
+  }
+  const DistribNormalDistribution* normal = static_cast<const DistribNormalDistribution*>(distrib);
+  if (!normal->isSetMean()) {
+    return distUNKNOWN;
+  }
+  if (!normal->isSetStddev()) {
+    return distUNKNOWN;
+  }
+  if (normal->isSetTruncationLowerBound() != normal->isSetTruncationUpperBound()) {
+    return distUNKNOWN;
+  }
+  const DistribUncertValue* value = normal->getMean();
+  if (value->getVar() != dfd->getDistribInputByIndex(0)->getId()) {
+    return distUNKNOWN;
+  }
+  value = normal->getStddev();
+  if (value->getVar() != dfd->getDistribInputByIndex(1)->getId()) {
+    return distUNKNOWN;
+  }
+  if (!normal->isSetTruncationLowerBound()) {
+    return distNORMAL;
+  }
+  value = normal->getTruncationLowerBound();
+  if (value->getVar() != dfd->getDistribInputByIndex(2)->getId()) {
+    return distUNKNOWN;
+  }
+  value = normal->getTruncationUpperBound();
+  if (value->getVar() != dfd->getDistribInputByIndex(3)->getId()) {
+    return distUNKNOWN;
+  }
+  return distTRUNCNORMAL;
 }
 
-bool isExactTwoChildDistribution(const DrawFromDistribution* dfd, string distname, string ch1, string ch2)
+
+distribution_type checkUniform(const DistribDistribution* distrib, const DistribDrawFromDistribution* dfd)
 {
-  if (dfd->getNumDistribInputs() != 2) return false;
-  const UncertMLNode* dist = dfd->getUncertML();
-  if (dist->getElementName() != distname) return false;
-  if (dist->getNumChildren() != 2) return false;
-  UncertMLNode* child1 = dist->getChild(0);
-  UncertMLNode* child2 = dist->getChild(1);
-  if (child1->getElementName() != ch1) {
-    if (child2->getElementName() != ch1) return false;
-    child2 = dist->getChild(0);
-    child1 = dist->getChild(1);
+  unsigned int numinputs = dfd->getNumDistribInputs();
+  if (numinputs != 2) {
+    return distUNKNOWN;
   }
-  if (child2->getElementName() != ch2) return false;
-
-  if (child1->getNumChildren() != 1) return false;
-  if (child2->getNumChildren() != 1) return false;
-  child1 = child1->getChild(0);
-  child2 = child2->getChild(0);
-  
-  if (child1->getElementName() != "var") return false;
-  if (child2->getElementName() != "var") return false;
-  if (child1->getNumAttributes() != 1) return false;
-  if (child2->getNumAttributes() != 1) return false;
-  const XMLAttributes atts1 = child1->getAttributes();
-  if (!atts1.hasAttribute("varId")) return false;
-  const XMLAttributes atts2 = child2->getAttributes();
-  if (!atts2.hasAttribute("varId")) return false;
-
-  const DistribInput* di = dfd->getDistribInput(atts1.getValue("varId"));
-  if (di == NULL) return false;
-  if (di->getIndex() != 0) return false;
-  di = dfd->getDistribInput(atts2.getValue("varId"));
-  if (di == NULL) return false;
-  if (di->getIndex() != 1) return false;
-  return true;
+  const DistribUniformDistribution* uniform = static_cast<const DistribUniformDistribution*>(distrib);
+  if (!uniform->isSetMaximum()) {
+    return distUNKNOWN;
+  }
+  if (!uniform->isSetMinimum()) {
+    return distUNKNOWN;
+  }
+  const DistribUncertValue* value = uniform->getMinimum();
+  if (value->getVar() != dfd->getDistribInputByIndex(0)->getId()) {
+    return distUNKNOWN;
+  }
+  value = uniform->getMaximum();
+  if (value->getVar() != dfd->getDistribInputByIndex(1)->getId()) {
+    return distUNKNOWN;
+  }
+  return distUNIFORM;
 }
 
-bool isExactThreeChildDistribution(const DrawFromDistribution* dfd, string distname, string ch1, string ch2, string ch3)
+
+distribution_type checkExponential(const DistribDistribution* distrib, const DistribDrawFromDistribution* dfd)
 {
-  if (dfd->getNumDistribInputs() != 3) return false;
-  const UncertMLNode* dist = dfd->getUncertML();
-  if (dist->getElementName() != distname) return false;
-  if (dist->getNumChildren() != 3) return false;
-  UncertMLNode* child1 = dist->getChild(0);
-  UncertMLNode* child2 = dist->getChild(1);
-  UncertMLNode* child3 = dist->getChild(2);
-  if (child1->getElementName() != ch1) {
-    if (child2->getElementName() == ch1) {
-      child2 = dist->getChild(0);
-      child1 = dist->getChild(1);
-    }
-    else if (child3->getElementName() == ch1){
-      child3 = dist->getChild(0);
-      child1 = dist->getChild(2);
-    }
-    else return false;
+  unsigned int numinputs = dfd->getNumDistribInputs();
+  if (numinputs != 1 && numinputs != 3) {
+    return distUNKNOWN;
   }
-  if (child2->getElementName() != ch2) {
-    if (child3->getElementName() == ch2){
-      child3 = dist->getChild(1);
-      child2 = dist->getChild(2);
-    }
-    else return false;
+  const DistribExponentialDistribution* exp = static_cast<const DistribExponentialDistribution*>(distrib);
+  if (!exp->isSetRate()) {
+    return distUNKNOWN;
   }
-  if (child3->getElementName() != ch3) return false;
-
-  if (child1->getNumChildren() != 1) return false;
-  if (child2->getNumChildren() != 1) return false;
-  if (child3->getNumChildren() != 1) return false;
-  child1 = child1->getChild(0);
-  child2 = child2->getChild(0);
-  child3 = child3->getChild(0);
-  
-  if (child1->getElementName() != "var") return false;
-  if (child2->getElementName() != "var") return false;
-  if (child3->getElementName() != "var") return false;
-  if (child1->getNumAttributes() != 1) return false;
-  if (child2->getNumAttributes() != 1) return false;
-  if (child3->getNumAttributes() != 1) return false;
-  const XMLAttributes atts1 = child1->getAttributes();
-  if (!atts1.hasAttribute("varId")) return false;
-  const XMLAttributes atts2 = child2->getAttributes();
-  if (!atts2.hasAttribute("varId")) return false;
-  const XMLAttributes atts3 = child3->getAttributes();
-  if (!atts2.hasAttribute("varId")) return false;
-
-  const DistribInput* di = dfd->getDistribInput(atts1.getValue("varId"));
-  if (di == NULL) return false;
-  if (di->getIndex() != 0) return false;
-  di = dfd->getDistribInput(atts2.getValue("varId"));
-  if (di == NULL) return false;
-  if (di->getIndex() != 1) return false;
-  di = dfd->getDistribInput(atts3.getValue("varId"));
-  if (di == NULL) return false;
-  if (di->getIndex() != 2) return false;
-
-  return true;
+  if (exp->isSetTruncationLowerBound() != exp->isSetTruncationUpperBound()) {
+    return distUNKNOWN;
+  }
+  const DistribUncertValue* value = exp->getRate();
+  if (value->getVar() != dfd->getDistribInputByIndex(0)->getId()) {
+    return distUNKNOWN;
+  }
+  if (!exp->isSetTruncationLowerBound()) {
+    return distEXPONENTIAL;
+  }
+  value = exp->getTruncationLowerBound();
+  if (value->getVar() != dfd->getDistribInputByIndex(1)->getId()) {
+    return distUNKNOWN;
+  }
+  value = exp->getTruncationUpperBound();
+  if (value->getVar() != dfd->getDistribInputByIndex(2)->getId()) {
+    return distUNKNOWN;
+  }
+  return distTRUNCEXPONENTIAL;
 }
 
-bool isExactFourChildDistribution(const DrawFromDistribution* dfd, string distname, string ch1, string ch2, string ch3, string ch4)
+
+distribution_type checkGamma(const DistribDistribution* distrib, const DistribDrawFromDistribution* dfd)
 {
-  if (dfd->getNumDistribInputs() != 4) return false;
-  const UncertMLNode* dist = dfd->getUncertML();
-  if (dist->getElementName() != distname) return false;
-  if (dist->getNumChildren() != 4) return false;
-  UncertMLNode* child1 = dist->getChild(0);
-  UncertMLNode* child2 = dist->getChild(1);
-  UncertMLNode* child3 = dist->getChild(2);
-  UncertMLNode* child4 = dist->getChild(3);
-  if (child1->getElementName() != ch1) {
-    if (child2->getElementName() == ch1) {
-      child2 = dist->getChild(0);
-      child1 = dist->getChild(1);
-    }
-    else if (child3->getElementName() == ch1){
-      child3 = dist->getChild(0);
-      child1 = dist->getChild(2);
-    }
-    else if (child4->getElementName() == ch1){
-      child4 = dist->getChild(0);
-      child1 = dist->getChild(3);
-    }
-    else return false;
+  unsigned int numinputs = dfd->getNumDistribInputs();
+  if (numinputs != 2 && numinputs != 4) {
+    return distUNKNOWN;
   }
-  if (child2->getElementName() != ch2) {
-    if (child3->getElementName() == ch2){
-      child3 = dist->getChild(1);
-      child2 = dist->getChild(2);
-    }
-    else if (child4->getElementName() == ch2){
-      child4 = dist->getChild(1);
-      child2 = dist->getChild(3);
-    }
-    else return false;
+  const DistribGammaDistribution* gamma = static_cast<const DistribGammaDistribution*>(distrib);
+  if (!gamma->isSetShape()) {
+    return distUNKNOWN;
   }
-  if (child3->getElementName() != ch3) {
-    if (child4->getElementName() != ch3) return false;
-    child4 = dist->getChild(2);
-    child3 = dist->getChild(3);
+  if (!gamma->isSetScale()) {
+    return distUNKNOWN;
   }
-  if (child4->getElementName() != ch4) return false;
+  if (gamma->isSetTruncationLowerBound() != gamma->isSetTruncationUpperBound()) {
+    return distUNKNOWN;
+  }
+  const DistribUncertValue* value = gamma->getShape();
+  if (value->getVar() != dfd->getDistribInputByIndex(0)->getId()) {
+    return distUNKNOWN;
+  }
+  value = gamma->getScale();
+  if (value->getVar() != dfd->getDistribInputByIndex(1)->getId()) {
+    return distUNKNOWN;
+  }
+  if (!gamma->isSetTruncationLowerBound()) {
+    return distGAMMA;
+  }
+  value = gamma->getTruncationLowerBound();
+  if (value->getVar() != dfd->getDistribInputByIndex(2)->getId()) {
+    return distUNKNOWN;
+  }
+  value = gamma->getTruncationUpperBound();
+  if (value->getVar() != dfd->getDistribInputByIndex(3)->getId()) {
+    return distUNKNOWN;
+  }
+  return distTRUNCGAMMA;
+}
 
-  if (child1->getNumChildren() != 1) return false;
-  if (child2->getNumChildren() != 1) return false;
-  if (child3->getNumChildren() != 1) return false;
-  if (child4->getNumChildren() != 1) return false;
-  child1 = child1->getChild(0);
-  child2 = child2->getChild(0);
-  child3 = child3->getChild(0);
-  child4 = child4->getChild(0);
-  
-  if (child1->getElementName() != "var") return false;
-  if (child2->getElementName() != "var") return false;
-  if (child3->getElementName() != "var") return false;
-  if (child4->getElementName() != "var") return false;
-  if (child1->getNumAttributes() != 1) return false;
-  if (child2->getNumAttributes() != 1) return false;
-  if (child3->getNumAttributes() != 1) return false;
-  if (child4->getNumAttributes() != 1) return false;
-  const XMLAttributes atts1 = child1->getAttributes();
-  if (!atts1.hasAttribute("varId")) return false;
-  const XMLAttributes atts2 = child2->getAttributes();
-  if (!atts2.hasAttribute("varId")) return false;
-  const XMLAttributes atts3 = child3->getAttributes();
-  if (!atts2.hasAttribute("varId")) return false;
-  const XMLAttributes atts4 = child4->getAttributes();
-  if (!atts2.hasAttribute("varId")) return false;
 
-  const DistribInput* di = dfd->getDistribInput(atts1.getValue("varId"));
-  if (di == NULL) return false;
-  if (di->getIndex() != 0) return false;
-  di = dfd->getDistribInput(atts2.getValue("varId"));
-  if (di == NULL) return false;
-  if (di->getIndex() != 1) return false;
-  di = dfd->getDistribInput(atts3.getValue("varId"));
-  if (di == NULL) return false;
-  if (di->getIndex() != 2) return false;
-  di = dfd->getDistribInput(atts4.getValue("varId"));
-  if (di == NULL) return false;
-  if (di->getIndex() != 3) return false;
-
-  return true;
+distribution_type checkPoisson(const DistribDistribution* distrib, const DistribDrawFromDistribution* dfd)
+{
+  unsigned int numinputs = dfd->getNumDistribInputs();
+  if (numinputs != 1 && numinputs != 3) {
+    return distUNKNOWN;
+  }
+  const DistribPoissonDistribution* poisson = static_cast<const DistribPoissonDistribution*>(distrib);
+  if (!poisson->isSetRate()) {
+    return distUNKNOWN;
+  }
+  if (poisson->isSetTruncationLowerBound() != poisson->isSetTruncationUpperBound()) {
+    return distUNKNOWN;
+  }
+  const DistribUncertValue* value = poisson->getRate();
+  if (value->getVar() != dfd->getDistribInputByIndex(0)->getId()) {
+    return distUNKNOWN;
+  }
+  if (!poisson->isSetTruncationLowerBound()) {
+    return distPOISSON;
+  }
+  value = poisson->getTruncationLowerBound();
+  if (value->getVar() != dfd->getDistribInputByIndex(1)->getId()) {
+    return distUNKNOWN;
+  }
+  value = poisson->getTruncationUpperBound();
+  if (value->getVar() != dfd->getDistribInputByIndex(2)->getId()) {
+    return distUNKNOWN;
+  }
+  return distTRUNCPOISSON;
 }
 
 
 distribution_type GetExactTypeOf(const DistribFunctionDefinitionPlugin* dfdp)
 {
-  const DrawFromDistribution* dfd = dfdp->getDrawFromDistribution();
-  if (isExactTwoChildDistribution(dfd, "NormalDistribution", "mean", "stddev")) 
-    return distNORMAL;
-  if (isExactFourChildDistribution(dfd, "NormalDistribution", "mean", "stddev", "truncationLowerInclusiveBound", "truncationUpperInclusiveBound")) 
-    return distTRUNCNORMAL;
-  if (isExactTwoChildDistribution(dfd, "UniformDistribution", "minimum", "maximum")) 
-    return distUNIFORM;
-  if (isExactOneChildDistribution(dfd, "ExponentialDistribution", "rate")) 
-    return distEXPONENTIAL;
-  if (isExactThreeChildDistribution(dfd, "ExponentialDistribution", "rate", "truncationLowerInclusiveBound", "truncationUpperInclusiveBound")) 
-    return distTRUNCEXPONENTIAL;
-  if (isExactTwoChildDistribution(dfd, "GammaDistribution", "shape", "scale")) 
-    return distGAMMA;
-  if (isExactFourChildDistribution(dfd, "GammaDistribution", "shape", "scale", "truncationLowerInclusiveBound", "truncationUpperInclusiveBound")) 
-    return distTRUNCGAMMA;
-  if (isExactOneChildDistribution(dfd, "PoissonDistribution", "rate")) 
-    return distPOISSON;
-  if (isExactThreeChildDistribution(dfd, "PoissonDistribution", "rate", "truncationLowerInclusiveBound", "truncationUpperInclusiveBound")) 
-    return distTRUNCPOISSON;
+  if (dfdp == NULL) {
+    return distUNKNOWN;
+  }
+  const DistribDrawFromDistribution* dfd = dfdp->getDistribDrawFromDistribution();
+  if (dfd == NULL) {
+    return distUNKNOWN;
+  }
+  const DistribDistribution* distribution = dfd->getDistribution();
+  if (distribution == NULL) {
+    return distUNKNOWN;
+  }
+  switch (distribution->getTypeCode()) {
+    case SBML_DISTRIB_NORMALDISTRIBUTION:
+      return checkNormal(distribution, dfd);
+    case SBML_DISTRIB_UNIFORMDISTRIBUTION:
+      return checkUniform(distribution, dfd);
+    case SBML_DISTRIB_EXPONENTIALDISTRIBUTION:
+      return checkExponential(distribution, dfd);
+    case SBML_DISTRIB_GAMMADISTRIBUTION:
+      return checkGamma(distribution, dfd);
+    case SBML_DISTRIB_POISSONDISTRIBUTION:
+      return checkPoisson(distribution, dfd);
+    default:
+      return distUNKNOWN;
+  }
   return distUNKNOWN;
 }
 
-string GetArgumentFor(string element, const UncertMLNode* dist)
+string GetArgumentFor(const DistribUncertValue* value)
 {
-  UncertMLNode* child = NULL;
-  unsigned int n=0;
-  while (n < dist->getNumChildren() && child==NULL) {
-    child = dist->getChild(n);
-    if (child->getElementName() != element) {
-      child = NULL;
-    }
-    n++;
+  if (value == NULL) {
+    return "";
   }
-  if (child == NULL) return "";
-  if (child->getNumChildren() != 1) return "";
-  child = child->getChild(0);
-  if (child->getElementName() == "var") {
-    //It's a string reference
-    if (child->getNumAttributes() != 1) return "";
-    return child->getAttributes().getValue("varId");
+  if (value->isSetVar()) {
+    return value->getVar();
   }
-  if (child->getElementName() == "iVal" ||
-      child->getElementName() == "kVal" ||
-      child->getElementName() == "ndVal" ||
-      child->getElementName() == "nnVal" ||
-      child->getElementName() == "nnrVal" ||
-      child->getElementName() == "pVal" ||
-      child->getElementName() == "pnnVal" ||
-      child->getElementName() == "prVal" ||
-      child->getElementName() == "rVal" ||
-      child->getElementName() == "sVal"
-      ) {
-    //It's a numerical value
-    child = child->getChild(0);
-    if (child != NULL) return child->getText();
+  if (value->isSetValue()) {
+    stringstream s;
+    s << value->getValue();
+    return s.str();
   }
   return "";
 }
 
-string GetAntimonyFromNormal(const UncertMLNode* dist)
+//string GetArgumentFor(const string& arg, const DistribDistribution* value)
+//{
+//  return arg;
+//}
+//
+
+string GetAntimonyFromNormal(const DistribDistribution* dist)
 {
-  string mean = GetArgumentFor("mean", dist);
-  string stddev = GetArgumentFor("stddev", dist);
-  string variance = GetArgumentFor("variance", dist);
-  string lowlimit = GetArgumentFor("truncationLowerInclusiveBound", dist);
-  string uplimit = GetArgumentFor("truncationUpperInclusiveBound", dist);
+  const DistribNormalDistribution* normal = static_cast<const DistribNormalDistribution*>(dist);
+  string mean = GetArgumentFor(normal->getMean());
+  string stddev = GetArgumentFor(normal->getStddev());
+  string variance = GetArgumentFor(normal->getVariance());
   string function = "normal";
   //Convert variance to stddev:
   if (!variance.empty() && stddev.empty()) {
@@ -975,7 +966,9 @@ string GetAntimonyFromNormal(const UncertMLNode* dist)
   if (mean.empty() || stddev.empty()) return "";
   string arglist = "(" + mean + ", " + stddev;
   //If this is a truncated normal, adjust accordingly.
-  if (!lowlimit.empty() || !uplimit.empty()) {
+  if (normal->isSetTruncationLowerBound() || normal->isSetTruncationUpperBound()) {
+    string lowlimit = GetArgumentFor(normal->getTruncationLowerBound());
+    string uplimit = GetArgumentFor(normal->getTruncationUpperBound());
     if (lowlimit.empty()) {
       lowlimit = "-inf";
     }
@@ -988,39 +981,81 @@ string GetAntimonyFromNormal(const UncertMLNode* dist)
   return function + arglist + ")";
 }
 
-string GetAntimonyFromUniform(const UncertMLNode* dist)
+string GetAntimonyFromUniform(const DistribDistribution* dist)
 {
-  string minimum = GetArgumentFor("minimum", dist);
-  string maximum = GetArgumentFor("maximum", dist);
+  const DistribUniformDistribution* uniform= static_cast<const DistribUniformDistribution*>(dist);
+  string minimum = GetArgumentFor(uniform->getMinimum());
+  string maximum = GetArgumentFor(uniform->getMaximum());
   if (minimum.empty() || maximum.empty()) return "";
   return "uniform(" + minimum + ", " + maximum + ")";
 }
 
-string GetAntimonyFromTruncated(const UncertMLNode* dist, string function, string truncfunction, string arg1, string arg2, string min, string max)
+string GetAntimonyFromExponential(const DistribDistribution* dist)
 {
-  string first = GetArgumentFor(arg1, dist);
-  string second = GetArgumentFor(arg2, dist);
-  string lowlimit = GetArgumentFor("truncationLowerInclusiveBound", dist);
-  string uplimit = GetArgumentFor("truncationUpperInclusiveBound", dist);
-  if (first.empty()) return "";
-  string arglist = "(";
-  if (!arg1.empty()) {
-    if (first.empty()) return "";
-    arglist += first;
-  }
-  if (!arg2.empty()) {
-    if (second.empty()) return "";
-    arglist += ", " + second;
-  }
-  //If this is a truncated exponential, adjust accordingly.
-  if (!lowlimit.empty() || !uplimit.empty()) {
+  const DistribExponentialDistribution* exp = static_cast<const DistribExponentialDistribution*>(dist);
+  string rate = GetArgumentFor(exp->getRate());
+  string function = "exponential";
+  if (rate.empty()) return "";
+  string arglist = "(" + rate;
+  //If this is a truncated function, adjust accordingly.
+  if (exp->isSetTruncationLowerBound() || exp->isSetTruncationUpperBound()) {
+    string lowlimit = GetArgumentFor(exp->getTruncationLowerBound());
+    string uplimit = GetArgumentFor(exp->getTruncationUpperBound());
     if (lowlimit.empty()) {
-      lowlimit = min;
+      lowlimit = "-inf";
     }
     if (uplimit.empty()) {
-      uplimit = max;
+      uplimit = "inf";
     }
-    function = truncfunction;
+    function = "truncatedExponential";
+    arglist += ", " + lowlimit + ", " + uplimit;
+  }
+  return function + arglist + ")";
+}
+
+string GetAntimonyFromGamma(const DistribDistribution* dist)
+{
+  const DistribGammaDistribution* gamma = static_cast<const DistribGammaDistribution*>(dist);
+  string shape = GetArgumentFor(gamma->getShape());
+  if (shape.empty()) return "";
+  string scale = GetArgumentFor(gamma->getScale());
+  if (scale.empty()) return "";
+  string function = "gamma";
+  string arglist = "(" + shape + ", " + scale;
+  //If this is a truncated function, adjust accordingly.
+  if (gamma->isSetTruncationLowerBound() || gamma->isSetTruncationUpperBound()) {
+    string lowlimit = GetArgumentFor(gamma->getTruncationLowerBound());
+    string uplimit = GetArgumentFor(gamma->getTruncationUpperBound());
+    if (lowlimit.empty()) {
+      lowlimit = "-inf";
+    }
+    if (uplimit.empty()) {
+      uplimit = "inf";
+    }
+    function = "truncatedGamma";
+    arglist += ", " + lowlimit + ", " + uplimit;
+  }
+  return function + arglist + ")";
+}
+
+string GetAntimonyFromPoisson(const DistribDistribution* dist)
+{
+  const DistribPoissonDistribution* poisson = static_cast<const DistribPoissonDistribution*>(dist);
+  string rate = GetArgumentFor(poisson->getRate());
+  string function = "poisson";
+  if (rate.empty()) return "";
+  string arglist = "(" + rate;
+  //If this is a truncated function, adjust accordingly.
+  if (poisson->isSetTruncationLowerBound() || poisson->isSetTruncationUpperBound()) {
+    string lowlimit = GetArgumentFor(poisson->getTruncationLowerBound());
+    string uplimit = GetArgumentFor(poisson->getTruncationUpperBound());
+    if (lowlimit.empty()) {
+      lowlimit = "-inf";
+    }
+    if (uplimit.empty()) {
+      uplimit = "inf";
+    }
+    function = "truncatedPoisson";
     arglist += ", " + lowlimit + ", " + uplimit;
   }
   return function + arglist + ")";
@@ -1028,39 +1063,40 @@ string GetAntimonyFromTruncated(const UncertMLNode* dist, string function, strin
 
 ASTNode* GetAntimonyFormOf(const DistribFunctionDefinitionPlugin* dfdp)
 {
-  const DrawFromDistribution* dfd = dfdp->getDrawFromDistribution();
+  const DistribDrawFromDistribution* dfd = dfdp->getDistribDrawFromDistribution();
   if (dfd==NULL) return NULL;
-  const UncertMLNode* dist = dfd->getUncertML();
+  const DistribDistribution* dist = dfd->getDistribution();
   if (dist==NULL) return NULL;
   string antimony = "lambda(";
   for (unsigned long di=0; di<dfd->getNumDistribInputs(); di++) {
-    const DistribInput* distinp = dfd->getListOfDistribInputs()->getByIndex(di);
+    const DistribInput* distinp = dfd->getListOfDistribInputs()->get(di);
     if (distinp == NULL) return NULL;
     antimony += distinp->getId() + ", ";
   }
-  string elname = dist->getElementName();
-  if (elname == "NormalDistribution") {
-    string distrib = GetAntimonyFromNormal(dist);
+  string distrib = "";
+  switch (dist->getTypeCode()) {
+  case SBML_DISTRIB_NORMALDISTRIBUTION:
+    distrib = GetAntimonyFromNormal(dist);
     if (distrib.empty()) return NULL;
     antimony += distrib;
-  }
-  else if (elname == "UniformDistribution") {
-    string distrib = GetAntimonyFromUniform(dist);
+    break;
+  case SBML_DISTRIB_UNIFORMDISTRIBUTION:
+    distrib = GetAntimonyFromUniform(dist);
     if (distrib.empty()) return NULL;
     antimony += distrib;
-  }
-  else if (elname == "ExponentialDistribution") {
-    string distrib = GetAntimonyFromTruncated(dist, "exponential", "truncatedExponential", "rate", "", "0", "inf");
+    break;
+  case SBML_DISTRIB_EXPONENTIALDISTRIBUTION:
+    distrib = GetAntimonyFromExponential(dist);
     if (distrib.empty()) return NULL;
     antimony += distrib;
-  }
-  else if (elname == "GammaDistribution") {
-    string distrib = GetAntimonyFromTruncated(dist, "gamma", "truncatedGamma", "shape", "scale", "0", "inf");
+    break;
+  case SBML_DISTRIB_GAMMADISTRIBUTION:
+    distrib = GetAntimonyFromGamma(dist);
     if (distrib.empty()) return NULL;
     antimony += distrib;
-  }
-  else if (elname == "PoissonDistribution") {
-    string distrib = GetAntimonyFromTruncated(dist, "poisson", "truncatedPoisson", "rate", "", "0", "inf");
+    break;
+  case SBML_DISTRIB_POISSONDISTRIBUTION:
+    distrib = GetAntimonyFromPoisson(dist);
     if (distrib.empty()) return NULL;
     antimony += distrib;
   }
@@ -1109,6 +1145,9 @@ void removeBooleanErrors(SBMLDocument* doc)
   log->removeAll(10212);
   log->removeAll(10213);
   log->removeAll(10217);
+  log->removeAll(21202);
+  log->removeAll(21001);
+  log->removeAll(98006);
 #else
   log->remove(10209);
   log->remove(10210);
@@ -1116,6 +1155,9 @@ void removeBooleanErrors(SBMLDocument* doc)
   log->remove(10212);
   log->remove(10213);
   log->remove(10217);
+  log->remove(21202);
+  log->remove(21001);
+  log->remove(98006);
 #endif
   if (log->contains(1090105) && log->getNumFailsWithSeverity(LIBSBML_SEV_ERROR)==1) {
     log->remove(1090105);

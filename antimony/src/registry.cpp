@@ -1096,7 +1096,7 @@ Module* Registry::GetModule(string modulename)
   //In case we missed adding it to the hash:
   for (size_t mod=0; mod<m_modules.size(); mod++) {
     if (modulename == m_modules[mod].GetModuleName()) {
-      assert(false);
+      //assert(false);
       m_modulemap.insert(make_pair(modulename, mod));
       return &(m_modules[mod]);
     }
