@@ -49,8 +49,10 @@ void compareFileHierarchy(const string& base)
   int result = converter->convert();
   // fail if conversion was not valid
   fail_unless(result == LIBSBML_OPERATION_SUCCESS);
+  elideMetaIds(doc);
   char* sbmlFlat = writeSBMLToString(doc);
-  fail_unless(string(atosbml) == string(sbmlFlat));
+  string atosbml_nometa = elideMetaIdsFromSBMLstring(string(atosbml));
+  fail_unless(atosbml_nometa == string(sbmlFlat));
 
   ret = loadSBMLString(matching);
   fail_unless(ret != -1);

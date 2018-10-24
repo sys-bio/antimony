@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sbml xmlns="http://www.sbml.org/sbml/level3/version1/core" xmlns:comp="http://www.sbml.org/sbml/level3/version1/comp/version1" level="3" version="1" comp:required="true">
-  <model id="bar1" name="bar1">
+  <model metaid="bar1" id="bar1">
     <listOfCompartments>
       <compartment sboTerm="SBO:0000410" id="default_compartment" spatialDimensions="3" size="1" constant="true">
         <comp:listOfReplacedElements>
@@ -18,21 +18,21 @@
     </comp:listOfSubmodels>
   </model>
   <comp:listOfModelDefinitions>
-    <comp:modelDefinition id="foo" name="foo">
+    <comp:modelDefinition metaid="foo" id="foo">
       <listOfCompartments>
         <compartment sboTerm="SBO:0000410" id="default_compartment" spatialDimensions="3" size="1" constant="true"/>
       </listOfCompartments>
       <listOfSpecies>
-        <species id="S2" compartment="default_compartment" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-        <species id="S1" compartment="default_compartment" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+        <species metaid="foo.S2" id="S2" compartment="default_compartment" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+        <species metaid="foo.S1" id="S1" compartment="default_compartment" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
       </listOfSpecies>
       <listOfReactions>
-        <reaction id="J1" reversible="true" fast="false">
+        <reaction metaid="foo.J1" id="J1" reversible="true" fast="false">
           <listOfReactants>
             <speciesReference species="S1" stoichiometry="1" constant="true"/>
           </listOfReactants>
           <listOfModifiers>
-            <modifierSpeciesReference metaid="foo__J1__modifier__S2" sboTerm="SBO:0000459" name="_J0" species="S2"/>
+            <modifierSpeciesReference metaid="foo__J1__modifier__S2" sboTerm="SBO:0000019" name="_J0" species="S2"/>
           </listOfModifiers>
         </reaction>
       </listOfReactions>

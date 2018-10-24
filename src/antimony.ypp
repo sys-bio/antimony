@@ -60,6 +60,8 @@
   char character;
   const string* word;
   double num;
+  int integer;
+  bool is_integer;
   rd_type reactionDivider;
   Formula* formula;
   Formula* spacedformula;
@@ -74,6 +76,7 @@
   bool maybemain;
   bool maxormin;
   constraint_type inequality;
+  std::vector<std::string>* stringlist;
 }
 
 %type <character>       mathThing "mathematical symbol"
@@ -85,17 +88,27 @@
 %type <variable>        variable variablein varmaybein varmaybeis maybein unitdef
 %type <maybemain>       maybemain
 %type <maxormin>        maxormin
+%type <stringlist>      stringlist
 
 %left '&' '|' /* Boolean functions and, or */
 %left '-' '+'
 %left '*' '/' '%'
 %right '^'    /* exponentiation        */
 
+// dot takes prec over $, e.g. in $mymodel.species, mymodel.species is reduced first and then turned into a boundary species (e.g. in comp)
+%precedence '$'
+%precedence '.'
+
 %token YYEOF 0 "end of file"
+%token EOL "end of line"
 %token  <num> NUM "number"
 %token  <word> AFTER "'after'"
 %token  <word> ANTWORD "element name"
 %token  <word> AT "'@' or 'at'"
+%token  <word> BECOMESREV "->"
+%token  <word> BECOMESINH "-|"
+%token  <word> BECOMESMOD "-("
+%token  <word> BECOMESMOD2 "-o"
 %token  <word> BECOMESIRREV "=>"
 %token  <word> COMPARTMENT "'compartment'"
 %token  <word> CONSTANT "name of a pre-defined constant"
@@ -139,20 +152,40 @@ input:          /* empty */
         |       input module { /*cout << endl << $2->ToString() << endl << endl;*/ }
         |       input modulepart {}
         |       input function {}
-        |       input error {YYABORT;} 
-        |       input ERROR {YYABORT;} 
+        |       input modulename {}
+        |       input functionname {}
+        |       input modulecvterm {}
+        |       input functioncvterm {}
+        |       input toplevel_sbo {}
+        |       input error {YYABORT;}
+        |       input ERROR {YYABORT;}
         ;
 
 import:         IMPORT TEXTSTRING { if (g_registry.OpenFile(*($2))==0) YYABORT;}
         ;
 
-module:         MODULE maybemain ANTWORD {g_registry.NewCurrentModule($3, $2);} '(' variableexportlist ')' modulebody END
+        // causes too much trouble
+        // JKM set module name in declaration
+// module:         MODULE maybemain ANTWORD IS TEXTSTRING {g_registry.NewCurrentModule($3, $5, $2);} '(' variableexportlist ')' lineend modulebody END
+//                 {
+//                   $$ = g_registry.CurrentModule();
+//                   if ($$->Finalize()) YYABORT;
+//                   g_registry.RevertToPreviousModule();
+//                 }
+//         // JKM set module name in declaration
+//         |       MODULE maybemain ANTWORD IS TEXTSTRING {g_registry.NewCurrentModule($3, $5, $2);} lineend modulebody END
+//                 {
+//                   $$ = g_registry.CurrentModule();
+//                   if ($$->Finalize()) YYABORT;
+//                   g_registry.RevertToPreviousModule();
+//                 }
+module:         MODULE maybemain ANTWORD {g_registry.NewCurrentModule($3, NULL, $2);} '(' variableexportlist ')' modulebody END
                 {
                   $$ = g_registry.CurrentModule();
                   if ($$->Finalize()) YYABORT;
                   g_registry.RevertToPreviousModule();
                 }
-        |       MODULE maybemain ANTWORD {g_registry.NewCurrentModule($3, $2);} modulebody END
+        |       MODULE maybemain ANTWORD {g_registry.NewCurrentModule($3, NULL, $2);} modulebody END
                 {
                   $$ = g_registry.CurrentModule();
                   if ($$->Finalize()) YYABORT;
@@ -228,6 +261,7 @@ modulepart:     reaction lineend {}
         |       event lineend {}
         |       unitinit lineend {}
         |       deletion lineend {}
+        |       cvterm lineend {}
         |       variablein {}
         |       constraint lineend {}
         |       objective lineend {}
@@ -260,10 +294,11 @@ reactantList:   /* empty */ {$$ = g_registry.NewBlankReactantList(); }
         ;
 
 reactionDivider:
-                '-' '>' {$$ = rdBecomes;}
-        |       '-' '|' {$$ = rdInhibits;}
-        |       '-' '(' {$$ = rdInfluences;}
-        |       '-' ANTWORD {if (*$2 != "o") {g_registry.SetError("'-" + *$2 + "' is not a valid set of characters to demark reactions.  Try '->' for reactions, and '-|', '-o', and '-(' for interactions."); YYABORT;} $$ = rdActivates;}
+                BECOMESREV {$$ = rdBecomes;}
+        |       BECOMESINH {$$ = rdInhibits;}
+        |       BECOMESMOD {$$ = rdInfluences;}
+        |       BECOMESMOD2 {$$ = rdInfluences;}
+//         |       '-' ANTWORD {if (*$2 != "o") {g_registry.SetError("'-" + *$2 + "' is not a valid set of characters to demark reactions.  Try '->' for reactions, and '-|', '-o', and '-(' for interactions."); YYABORT;} $$ = rdActivates;}
         |       BECOMESIRREV {$$ = rdBecomesIrreversibly;}
         |       '<' BECOMESIRREV {$$ = rdBecomes;}
         ;
@@ -307,6 +342,7 @@ mathThing:      '+' {$$ = '+';}
 
 lineend:        ';' {}
         |       '\n' {}
+        |       EOL {}
         ;
 
 assignment:     varmaybein ':' maxormin formula {if (g_registry.CurrentModule()->AddObjective($1, $4, $3)) YYABORT;}
@@ -492,6 +528,47 @@ objective:      maxormin formula              {if (g_registry.CurrentModule()->A
 maxormin:       MAXIMIZEWORD {$$ = true;}
         |       MINIMIZEWORD {$$ = false;}
         ;
+
+stringlist:     TEXTSTRING { $$ = new std::vector<std::string>(); $$->push_back(*($1)); } // need to free $1?
+        |       stringlist ',' TEXTSTRING { $$ = $1; $$->push_back(*$3); } // need to free $3?
+        |       stringlist ',' '\n' TEXTSTRING { $$ = $1; $$->push_back(*$4); } // eat newlines
+
+// JKM cvterm accepts multiple URIs in the stringlist
+cvterm:         variable ANTWORD stringlist {if (g_registry.CurrentModule()->ProcessCVTerm($1,$2,$3)) YYABORT;}
+
+// JKM setting an SBO term for a module (outside the body of the module)
+toplevel_sbo:     MODNAME '.' ANTWORD '=' NUM
+                  { Module* module = g_registry.GetModule(*$1);
+                    if (module && $3 && *($3) == "sboTerm") {
+                      module->SetSBOTerm($5);
+                    }
+                  }
+// JKM setting an SBO term for a function (outside the body of the function)
+        |         FUNCTION '.' ANTWORD '=' NUM
+                  { Module* function = g_registry.GetModule(*$1);
+                    if (function && $3 && *($3) == "sboTerm") {
+                      function->SetSBOTerm($5);
+                    }
+                  }
+
+// JKM for naming modules and functions (display names)
+modulename:     MODNAME IS TEXTSTRING lineend
+                { Module* module = g_registry.GetModule(*$1);
+                  if (module && $3) {
+                    module->SetDisplayName(*$3);
+                  }
+                }
+functionname:   FUNCTION IS TEXTSTRING lineend
+                { Module* function = g_registry.GetModule(*$1);
+                  if (function && $3) {
+                    function->SetDisplayName(*$3);
+                  }
+                }
+
+// JKM for parsing cv terms for modules and functions
+modulecvterm:   MODNAME ANTWORD stringlist lineend {if (g_registry.ProcessGlobalCVTerm($1,$2,$3)) YYABORT;}
+functioncvterm: FUNCTION ANTWORD stringlist lineend {if (g_registry.ProcessGlobalCVTerm($1,$2,$3)) YYABORT;}
+
 %%
 
 
@@ -505,10 +582,8 @@ void antimony_yyerror(char const *s)
 int antimony_yylex(void)
 {
   char cc = 0;
-  g_registry.input->get(cc);
-
-  //If we're done with the file:
-  if (g_registry.input->eof()) {
+  if (g_registry.GetEOFFlag()) {
+    g_registry.ClearEOFFlag();
     if (g_registry.SwitchToPreviousFile()) {
       if (g_registry.CurrentModule()->Finalize()) {
         return ERROR;
@@ -520,6 +595,14 @@ int antimony_yylex(void)
       antimony_yylloc_last_line = antimony_yylloc_last_lines.back();
       antimony_yylloc_last_lines.pop_back();
       return antimony_yylex();
+    }
+  }
+  else {
+    g_registry.input->get(cc);
+    //If we're done with the file, add a newline
+    if (g_registry.input->eof()) {
+      g_registry.SetEOFFlag();
+      return EOL;
     }
   }
   if (!g_registry.input->good()) {
@@ -645,6 +728,21 @@ int antimony_yylex(void)
     if (CaselessStrCmp(word, "minimize")) {
       return MINIMIZEWORD;
     }
+    if (CaselessStrCmp(word, "sbo") && (g_registry.input->peek() == ':')) {
+      // try to parse an SBO term
+      g_registry.input->get();
+      cc = g_registry.input->peek();
+      if (cc > 0 && cc < 256 && (isdigit(cc))) {
+        *g_registry.input >> antimony_yylval.integer;
+        if (g_registry.input->fail()) {
+          g_registry.SetError("Unable to parse SBO term.");
+          return ERROR;
+        }
+        antimony_yylval.num = antimony_yylval.integer;
+        antimony_yylval.is_integer = true;
+      }
+      return NUM;
+    }
     
     if (g_registry.IsFunction(word) != NULL) {
       antimony_yylval.word = g_registry.IsFunction(word);
@@ -677,7 +775,11 @@ int antimony_yylex(void)
       int numint;
       *g_registry.input >> numint;
       antimony_yylval.num = numint;
+      antimony_yylval.integer = numint;
+      antimony_yylval.is_integer = true;
       if (g_registry.input->peek() == '.') {
+        antimony_yylval.integer = 0;
+        antimony_yylval.is_integer = false;
         g_registry.input->get();
         *g_registry.input >> numint;
         double fraction = numint;
@@ -705,7 +807,7 @@ int antimony_yylex(void)
     return NUM;
   }
 
-  //Parse reaction dividers and dashes
+  //Parse '->' and dashes
   if (cc == '-') {
     g_registry.input->get(cc);
     if (cc == '-') {
@@ -714,6 +816,14 @@ int antimony_yylex(void)
       }
       g_registry.input->unget();
       return DASHES;
+    } else if (cc == '>') {
+      return BECOMESREV;
+    } else if (cc == '|') {
+      return BECOMESINH;
+    } else if (cc == '(') {
+      return BECOMESMOD;
+    } else if (cc == 'o') {
+      return BECOMESMOD2;
     }
     g_registry.input->unget();
     cc = '-';

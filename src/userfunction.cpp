@@ -73,7 +73,7 @@ string UserFunction::ToSBMLString() const
   return lambda;
 }
 
-string UserFunction::GetAntimony() const
+string UserFunction::GetAntimony(bool enableAnnotations) const
 {
   string func = "function " + m_modulename + "(";
   for (size_t expv = 0; expv<m_exportlist.size(); expv++) {
@@ -83,6 +83,20 @@ string UserFunction::GetAntimony() const
     }
   }
   func += ")\n  " + m_formula.ToDelimitedStringWithEllipses(".") + ";\nend\n";
+
+  if (enableAnnotations) {
+    // SBO terms
+    string sboterm = CreateSBOTermsAntimonySyntax(m_modulename,"");
+    if (sboterm.size()>0)
+      func += "\n"+sboterm;
+
+    // CV terms
+    string cvterms = CreateCVTermsAntimonySyntax(m_modulename, "");
+    if (cvterms.size()) {
+      func += "\n" + cvterms;
+    }
+  }
+
   return func;
 }
 
@@ -110,35 +124,55 @@ bool UserFunction::ChangeTimeToRef()
   return false; //'time' not in function at all.
 }
 
-set<distribution_type> UserFunction::GetUsedDistributionTypes()
+bool UserFunction::UsesDistrib()
 {
-  set<distribution_type> ret;
   if (m_formula.ContainsName("normal")) {
-    ret.insert(distNORMAL);
+    return true;
   }
   if (m_formula.ContainsName("truncatedNormal")) {
-    ret.insert(distTRUNCNORMAL);
+    return true;
   }
   if (m_formula.ContainsName("uniform")) {
-    ret.insert(distUNIFORM);
+    return true;
   }
   if (m_formula.ContainsName("exponential")) {
-    ret.insert(distEXPONENTIAL);
+    return true;
   }
   if (m_formula.ContainsName("truncatedExponential")) {
-    ret.insert(distTRUNCEXPONENTIAL);
+    return true;
   }
   if (m_formula.ContainsName("gamma")) {
-    ret.insert(distGAMMA);
+    return true;
   }
   if (m_formula.ContainsName("truncatedGamma")) {
-    ret.insert(distTRUNCGAMMA);
+    return true;
   }
   if (m_formula.ContainsName("poisson")) {
-    ret.insert(distPOISSON);
+    return true;
   }
   if (m_formula.ContainsName("truncatedPoisson")) {
-    ret.insert(distTRUNCPOISSON);
+    return true;
   }
-  return ret;
+  if (m_formula.ContainsName("bernoulli")) {
+    return true;
+  }
+  if (m_formula.ContainsName("binomial")) {
+    return true;
+  }
+  if (m_formula.ContainsName("cauchy")) {
+    return true;
+  }
+  if (m_formula.ContainsName("chisquare")) {
+    return true;
+  }
+  if (m_formula.ContainsName("laplace")) {
+    return true;
+  }
+  if (m_formula.ContainsName("lognormal")) {
+    return true;
+  }
+  if (m_formula.ContainsName("rayleigh")) {
+    return true;
+  }
+  return false;
 }

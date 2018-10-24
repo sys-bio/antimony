@@ -23,11 +23,11 @@
 
 class Module;
 class UnitDef;
+class SboTermWrapper;
 
 class Variable : public Annotated
 {
 private:
-  Variable(); //Undefined
   //Variable(const Variable& src); //Accept the default (?)
   //Variable& operator=(const Variable& src); //Undefined
 
@@ -57,15 +57,20 @@ private:
 protected:
   std::set<std::pair<std::vector<std::string>, deletion_type> > m_deletions;
   friend class Module;
+
+  //This tells us what kind of variable we're dealing with.
+  var_type m_type;
+
+  Variable() : m_valUnitDef("nounit", "nomodule") {}
+
+  // Subclass which is used as a wrapper for setting SBO terms
+  SboTermWrapper* m_sboTermWrapper;
 private:
   //If we've set the compartment we're in, this tells us where we are.
   std::vector<std::string> m_compartment;
   std::vector<std::string> m_supercompartment;
   var_type m_supercomptype;
   std::set<std::vector<std::string> > m_strands;
-
-  //This tells us what kind of variable we're dealing with.
-  var_type m_type;
 
   //When we are a deleted variable, it makes a difference to SBML whether or not we used to be a unit
   bool m_deletedunit;
@@ -90,7 +95,8 @@ private:
 
 public:
   Variable(const std::string name, const Module* module);
-  ~Variable() {};
+  Variable(const Variable& other);
+  ~Variable();
 
 
   bool IsPointer() const {return m_sameVariable.size() != 0;};
@@ -164,6 +170,11 @@ public:
   bool SetDisplayName(std::string name);
   bool SetUnitDef(UnitDef* unitdef);
   bool SetUnit(Variable* var);
+  /// Takes care of edge cases with built-in units in submodules
+  std::string GetNameOrBuiltin(std::string cc) const;
+  // JKM: kind of a hack right now
+  /// Returns true if is an SBML built-in unit, false otherwise
+  bool IsBuiltin() const;
 
   void AddDeletion(Variable* var, deletion_type deltype);
   void AddDeletion(std::vector<std::string> varname, deletion_type deltype);
@@ -207,6 +218,23 @@ public:
   iface::cellml_api::CellMLVariable* GetCellMLVariable() {m_cellmlvariable->add_ref(); return m_cellmlvariable;};
   void SetCellMLVariable(iface::cellml_api::CellMLVariable* cmlvar) {m_cellmlvariable = cmlvar;};
 #endif
+};
+
+// A proxy class returned by the parser for setting SBO terms
+class SboTermWrapper : public Variable
+{
+protected:
+  Annotated* m_parent;
+public:
+  SboTermWrapper(Annotated* parent)
+    : Variable(), m_parent(parent)
+      {
+        m_sboTermWrapper = NULL;
+        m_type = varSboTermWrapper;
+      }
+  ~SboTermWrapper() {}
+
+  Annotated* GetParent() { return m_parent; }
 };
 
 

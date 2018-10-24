@@ -36,9 +36,49 @@ Variable::Variable(const string name, const Module* module)
     m_replacedformrxn(false),
     m_const(constDEFAULT),
     m_substOnly(false),
-    m_unitVariable()
+    m_unitVariable(),
+    m_sboTermWrapper(NULL)
 {
   m_name.push_back(name);
+}
+
+Variable::Variable(const Variable& other)
+    : m_name(other.m_name),
+    m_module(other.m_module),
+    m_displayname(other.m_displayname),
+    m_sameVariable(other.m_sameVariable),
+    m_valFormula(other.m_valFormula),
+    m_valReaction(other.m_valReaction),
+    m_valModule(other.m_valModule),
+    m_valEvent(other.m_valEvent),
+    m_valStrand(other.m_valStrand),
+    m_valUnitDef(other.m_valUnitDef),
+    m_valConstraint(other.m_valConstraint),
+    m_valRateRule(other.m_valRateRule),
+    m_formulatype(other.m_formulatype), m_extentConversionFactor(other.m_extentConversionFactor),
+    m_timeConversionFactor(other.m_timeConversionFactor),
+    m_deletions(other.m_deletions),
+    m_type(other.m_type),
+    m_sboTermWrapper(NULL),
+    m_compartment(other.m_compartment),
+    m_supercompartment(other.m_supercompartment),
+    m_supercomptype(other.m_supercomptype),
+    m_strands(other.m_strands),
+    m_deletedunit(other.m_deletedunit),
+    m_replacedformrxn(other.m_replacedformrxn),
+    m_const(other.m_const),
+    m_substOnly(other.m_substOnly),
+    m_unitVariable(other.m_unitVariable)
+#ifndef NCELLML
+  , m_cellmlvariable(other.m_cellmlvariable),
+  m_canonvar(other.m_canonvar)
+#endif
+    {}
+
+Variable::~Variable()
+{
+  if (m_sboTermWrapper)
+    delete m_sboTermWrapper;
 }
 
 const vector<string>& Variable::GetName() const
@@ -397,6 +437,11 @@ AntimonyConstraint* Variable::GetConstraint()
 
 Variable* Variable::GetSubVariable(const string* name)
 {
+  if (name && *name == "sboTerm") {
+    if (!m_sboTermWrapper)
+      m_sboTermWrapper = new SboTermWrapper(this);
+    return m_sboTermWrapper;
+  }
   if (IsPointer()) {
     return GetSameVariable()->GetSubVariable(name);
   }
@@ -826,6 +871,13 @@ bool Variable::SetType(var_type newtype)
 
 bool Variable::SetFormula(Formula* formula, bool isObjective)
 {
+  if (m_type == varSboTermWrapper) {
+    if (!formula->IsDouble())
+      g_registry.SetError("Expected sboTerm to be set to a number or SBO:NUMBER");
+    SboTermWrapper* wrapper = (SboTermWrapper*)this;
+    wrapper->GetParent()->SetSBOTerm(formula->GetDouble());
+    return false;
+  }
   if (IsPointer()) {
     return GetSameVariable()->SetFormula(formula);
   }
@@ -1408,6 +1460,24 @@ bool Variable::SetUnit(Variable* var)
   if (var->SetType(varUnitDefinition)) return true;
   m_unitVariable = var->GetName();
   return false; //success
+}
+
+string Variable::GetNameOrBuiltin(std::string cc) const
+{
+  if (IsBuiltin())
+    return GetName().back();
+  else
+    return GetNameDelimitedBy(cc);
+}
+
+bool Variable::IsBuiltin() const
+{
+  string u = GetName().back();
+  // JKM doing this for now since we can't discriminate built-in units
+  if (u == "litre" || u == "mole" || u == "second")
+    return true;
+  else
+    return false;
 }
 
 bool Variable::SetExtentConversionFactor(Variable* var)

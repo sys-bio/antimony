@@ -13,6 +13,7 @@
 
 #include "stringx.h"
 #include "variable.h"
+#include <sbml/conversion/SBMLConverterRegistry.h>
 
 extern int antimony_yylloc_first_line;
 extern int antimony_yylloc_last_line;
@@ -48,6 +49,7 @@ Registry::Registry()
     m_writeNameToSBML(true),
     m_writeTimestampToSBML(false),
     m_bareNumbersAreDimensionless(false),
+    m_eof(false),
     input(NULL)
 {
   string main = MAINMODULE;
@@ -369,12 +371,14 @@ bool Registry::file_exists (const string& filename)
 #ifndef NSBML
 int Registry::CheckAndAddSBMLIfGood(SBMLDocument* document)
 {
+  //First convert any distrib function definitions from annotation to distrib-style MathML.
+  ConvertDistribAnnotation(document);
   document->setConsistencyChecks(LIBSBML_CAT_UNITS_CONSISTENCY, false);
   document->checkConsistency();
   removeBooleanErrors(document);
   SBMLErrorLog* log = document->getErrorLog();
   if (log->getNumFailsWithSeverity(2) == 0 && log->getNumFailsWithSeverity(3) == 0) {
-    //It's a valid SBML file.
+    //It's a valid SBML file. 
     const Model* sbml = document->getModel();
     LoadSubmodelsFrom(sbml);
     string sbmlname = getNameFromSBMLObject(sbml, "file");
@@ -727,6 +731,21 @@ void Registry::CreateLocalVariablesForSubmodelInterfaceIfNeeded()
 }
 
 
+void Registry::SetEOFFlag() {
+  m_eof=true;
+}
+
+
+void Registry::ClearEOFFlag() {
+  m_eof=false;
+}
+
+
+bool Registry::GetEOFFlag() const {
+  return m_eof;
+}
+
+
 bool Registry::SwitchToPreviousFile()
 {
   if (!input) return true;
@@ -819,8 +838,24 @@ void Registry::SetupFunctions()
   , "min"
   , "rem"
   , "implies"
+  , "normal"
+  , "truncatedNormal"
+  , "uniform"
+  , "exponential"
+  , "truncatedExponential"
+  , "gamma"
+  , "truncatedGamma"
+  , "poisson"
+  , "truncatedPoisson"
+  , "bernoulli"
+  , "binomial"
+  , "cauchy"
+  , "chisquare"
+  , "laplace"
+  , "lognormal"
+  , "rayleigh"
   };
-  for (size_t func=0; func<72; func++) {
+  for (size_t func=0; func<88; func++) {
     m_functions.push_back(functions[func]);
   }
 }
@@ -845,7 +880,7 @@ void Registry::SetupConstants()
   }
 }
 
-bool Registry::NewCurrentModule(const string* name, bool ismain)
+bool Registry::NewCurrentModule(const string* name, const string* displayname, bool ismain)
 {
   string localname(*name);
   m_currentModules.push_back(localname);
@@ -867,6 +902,8 @@ bool Registry::NewCurrentModule(const string* name, bool ismain)
   //Otherwise, create a new module with that name
   m_modules.push_back(Module(localname));
   m_modules[m_modules.size()-1].SetIsMain(ismain);
+  if (displayname)
+    m_modules[m_modules.size()-1].SetDisplayName(*displayname);
   m_modulemap.insert(make_pair(*name, m_modules.size()-1));
   return false;
 }
@@ -937,6 +974,10 @@ bool Registry::AddNumberToCurrentImportList(double val)
 
 Variable* Registry::AddVariableToCurrent(const string* name)
 {
+  if (name && *name == "sboTerm") {
+    // JKM setting the sboTerm for the enclosing module or function
+    return CurrentModule()->GetSBOTermWrapper();
+  }
   if (m_isfunction) {
     return m_userfunctions.back().AddOrFindVariable(name);
   }
@@ -1204,17 +1245,17 @@ const string* Registry::IsConstant(string word)
   return NULL;
 }
 
-string Registry::GetAntimony() const
+string Registry::GetAntimony(bool enableAnnotations) const
 {
   string retval;
   for (size_t uf=0; uf<m_userfunctions.size(); uf++) {
-    retval += m_userfunctions[uf].GetAntimony() + "\n";
+    retval += m_userfunctions[uf].GetAntimony(enableAnnotations) + "\n";
   }
   set<const Module*> mods;
   for (size_t mod=0; mod<m_modules.size(); mod++) {
     if ((mods.insert(&m_modules[mod])).second) {
       //New module; add it.
-      retval += m_modules[mod].GetAntimony(mods, true);
+      retval += m_modules[mod].GetAntimony(mods, true, enableAnnotations);
       if (mod <m_modules.size()-1) {
         retval += "\n";
       }
@@ -1223,12 +1264,12 @@ string Registry::GetAntimony() const
   return retval;
 }
 
-string Registry::GetAntimony(string modulename) const
+string Registry::GetAntimony(string modulename, bool enableAnnotations) const
 {
   const Module* amod = GetModule(modulename);
   if (amod == NULL) return "";
   set<const Module*> nomods;
-  return amod->GetAntimony(nomods, false);
+  return amod->GetAntimony(nomods, false, enableAnnotations);
 }
 
 string Registry::GetJarnac(string modulename) const
@@ -1347,6 +1388,45 @@ void Registry::FixTimeInFunctions()
   }
 }
 
+bool Registry::ProcessGlobalCVTerm(const string* name, const string* qual, vector<string>* resources)
+{
+  if (name && qual && resources) {
+    Module* module = GetModule(*name);
+    if (!module) {
+      stringstream ss;
+      ss << "Cannot find module for \"" << *name << "\"";
+      SetError(ss.str());
+      return true;
+    }
+    // get element for name
+    // qual can be a model or biology qualifier
+    // is/identity is used by both - give priority to biology
+    // to eliminate guesswork explicitly use one of:
+    //   var_name model_entity_is     "resource"
+    //   var_name biologcal_entity_is "resource"
+    BiolQualifierType_t bq = module->DecodeBiolQualifier(*qual);
+    if (bq != BQB_UNKNOWN) {
+      module->AppendBiolQualifiers(bq, *resources);
+    } else {
+      // try a model qualifier
+      ModelQualifierType_t mq = module->DecodeModelQualifier(*qual);
+      if (mq != BQM_UNKNOWN) {
+        module->AppendModelQualifiers(mq, *resources);
+      } else {
+        stringstream ss;
+        ss << "Unrecognized qualifier \"" << *qual << "\"";
+        g_registry.SetError(ss.str());
+        return false;
+      }
+    }
+    delete resources;
+    return false;
+  } else {
+    SetError("Global CV qualifier encountered but not enough arguments - pass qualifier and at least one resource");
+    return true;
+  }
+}
+
 void Registry::FreeAll()
 {
   for (size_t i=0; i<m_charstars.size(); i++) {
@@ -1409,4 +1489,19 @@ void Registry::SetBareNumbersAreDimensionless(bool dimensionless)
 bool Registry::GetBareNumbersAreDimensionless()
 {
   return m_bareNumbersAreDimensionless;
+}
+
+int Registry::ConvertDistribAnnotation(SBMLDocument * document)
+{
+#ifdef LIBSBML_HAS_PACKAGE_DISTRIB
+  ConversionProperties props;
+  props.addOption("convert distrib annotations");
+
+  SBMLConverter* converter = SBMLConverterRegistry::getInstance().getConverterFor(props);
+  // load document
+  converter->setDocument(document);
+  return converter->convert();
+#else
+  return 0;
+#endif
 }

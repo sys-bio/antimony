@@ -1,4 +1,4 @@
-// Created by libAntimony v2.9.0
+// Created by libAntimony v2.10.0
 model moddef1()
 
   // Compartments and Species:
@@ -12,7 +12,7 @@ model moddef1()
   t1' = time*t1 + 3;
 
   // Reactions:
-  J0:  -> s1; s1*t3*time/delay(t5, 2.000000e+004);
+  J0:  -> s1; s1*t3*time/delay(t5, 2e4);
 
   // Events:
   _E0: at 1/time after time > 3: t5 = time;
@@ -54,3 +54,5 @@ model *doc0()
   // Other declarations:
   const timeconv, extentconv;
 end
+
+doc0 is "doc0"

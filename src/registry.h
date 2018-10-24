@@ -68,6 +68,7 @@ private:
   bool m_writeNameToSBML;
   bool m_writeTimestampToSBML;
   bool m_bareNumbersAreDimensionless;
+  bool m_eof;
 
 public:
   Registry();
@@ -101,6 +102,9 @@ public:
   std::map<std::string, std::string> m_cellmlnames;
 #endif
   void   CreateLocalVariablesForSubmodelInterfaceIfNeeded();
+  void   SetEOFFlag(); // adds a newline to the end of the file
+  void   ClearEOFFlag();
+  bool   GetEOFFlag() const; // returns the status of the eof flag
   bool   SwitchToPreviousFile();
   size_t GetNumFiles() {return m_oldmodules.size();};
   void   SetupFunctions();
@@ -111,7 +115,7 @@ public:
   bool   file_exists (const std::string& filename);
 
   //Modules
-  bool NewCurrentModule(const std::string* name, bool ismain=false);
+  bool NewCurrentModule(const std::string* name, const std::string* displayname=NULL, bool ismain=false);
   Module* CurrentModule();
   void RevertToPreviousModule();
 
@@ -169,8 +173,8 @@ public:
   const std::string* IsFunction(std::string word);
   const std::string* IsConstant(std::string word);
 
-  std::string GetAntimony() const;
-  std::string GetAntimony(std::string modulename) const;
+  std::string GetAntimony(bool enableAnnotations=true) const;
+  std::string GetAntimony(std::string modulename, bool enableAnnotations=true) const;
   std::string GetJarnac(std::string modulename) const;
 
   bool FinalizeModules();
@@ -189,6 +193,9 @@ public:
   UserFunction* GetNthUserFunction(size_t n);
   UserFunction* GetUserFunction(std::string name);
   void FixTimeInFunctions();
+
+  // CV terms
+  bool ProcessGlobalCVTerm(const std::string* name, const std::string* qual, std::vector<std::string>* resources);
 
   //Keeping track of malloc'd stuff so we can free it ourselves if need be.
   std::vector<char*>    m_charstars;
@@ -211,6 +218,8 @@ public:
   //Defaults
   void SetBareNumbersAreDimensionless(bool dimensionless);
   bool GetBareNumbersAreDimensionless();
+
+  int  ConvertDistribAnnotation(SBMLDocument* document);
 };
 
 extern Registry g_registry;

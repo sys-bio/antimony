@@ -473,6 +473,16 @@ UnitDef* UnitDef::GetCanonical(set<string> usednames) const
   return ret;
 }
 
+bool UnitDef::IsBuiltin() const
+{
+  string u = GetName().back();
+  // JKM doing this for now since we can't discriminate built-in units
+  if (u == "litre" || u == "mole" || u == "second")
+    return true;
+  else
+    return false;
+}
+
 #ifndef NSBML
 UnitDefinition* UnitDef::AddToSBML(Model* sbmlmod, string id, string name)
 {

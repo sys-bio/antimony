@@ -56,6 +56,10 @@ public:
   void Invert();
   UnitDef* GetCanonical() const;
   UnitDef* GetCanonical(std::set<std::string> usednames) const;
+
+  /// Returns true if is an SBML built-in unit, false otherwise
+  bool IsBuiltin() const;
+
 #ifndef NSBML
   UnitDef* GetUnitDefFromASTNode(ASTNode* astn);
   UnitDefinition* AddToSBML(Model* sbmlmod, std::string id, std::string name);

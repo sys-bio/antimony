@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created by libAntimony version v2.8.0 on 2015-10-22 11:45 with libSBML version 5.11.9. -->
+<sbml xmlns="http://www.sbml.org/sbml/level3/version1/core" xmlns:comp="http://www.sbml.org/sbml/level3/version1/comp/version1" level="3" version="1" comp:required="true">
+  <model metaid="bar" id="bar" name="bar">
+    <listOfCompartments>
+      <compartment id="e1" spatialDimensions="3" constant="false">
+        <comp:listOfReplacedElements>
+          <comp:replacedElement comp:portRef="ext" comp:submodelRef="A"/>
+        </comp:listOfReplacedElements>
+      </compartment>
+    </listOfCompartments>
+    <comp:listOfSubmodels>
+      <comp:submodel comp:id="A" comp:modelRef="foo"/>
+    </comp:listOfSubmodels>
+  </model>
+  <comp:listOfModelDefinitions>
+    <comp:modelDefinition id="foo" name="foo">
+      <listOfCompartments>
+        <compartment id="ext" spatialDimensions="3" constant="false"/>
+      </listOfCompartments>
+      <listOfInitialAssignments>
+        <initialAssignment symbol="ext">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <plus/>
+              <cn type="integer"> 5 </cn>
+              <cn type="integer"> 2 </cn>
+            </apply>
+          </math>
+        </initialAssignment>
+      </listOfInitialAssignments>
+      <listOfRules>
+        <rateRule variable="ext">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 6 </cn>
+          </math>
+        </rateRule>
+      </listOfRules>
+      <comp:listOfPorts>
+        <comp:port comp:idRef="ext" comp:id="ext"/>
+      </comp:listOfPorts>
+    </comp:modelDefinition>
+  </comp:listOfModelDefinitions>
+</sbml>

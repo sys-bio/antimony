@@ -18,6 +18,8 @@ std::string ToThinString(std::wstring in);
 std::string Trim(std::string in);
 std::string AndsAndOrs(std::string& in);
 std::string StripMsgXML(std::string& in);
+// removes the \r in \r\n
+std::string NormalizeLineEndings(std::string in);
 
 bool IsReal(const std::string& src);
 double GetReal(const std::string& src);
@@ -29,5 +31,10 @@ void FixName(std::map<std::vector<std::string>, Variable*>& varmap);
 void FixUnitName(std::string& name);
 
 bool CaselessStrCmp(const std::string& lhs, const std::string& rhs);
+
+// JKM escapes double quotes for use with gitdiffit
+std::string escapeDoubleQuotes(std::string s);
+// JKM performs a git diff of the two strings (used in debugging, not in production code)
+void gitdiffit(const std::string& before, const std::string& after);
 
 #endif //STRINGX_h
