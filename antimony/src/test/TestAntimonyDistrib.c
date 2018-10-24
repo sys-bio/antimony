@@ -78,7 +78,15 @@ void compareDistributionsSBML(const string& base)
 START_TEST (test_numeric_distributions)
 {
   compareDistributionsAnt("numeric_distributions");
-  compareDistributionsSBML("numeric_distributions");
+  compareDistributionsSBML("numeric_distributions_rev");
+}
+END_TEST
+
+
+START_TEST (test_numeric_distributions_extended)
+{
+  compareDistributionsAnt("numeric_distributions_extended");
+  compareDistributionsSBML("numeric_distributions_extended");
 }
 END_TEST
 
@@ -93,6 +101,7 @@ create_suite_Distrib(void)
   //tcase_add_test( tcase, test_);
 
   tcase_add_test( tcase, test_numeric_distributions);
+  tcase_add_test( tcase, test_numeric_distributions_extended);
 
   suite_add_tcase(suite, tcase);
 

@@ -17,10 +17,10 @@ public:
   bool SetFormula(const Formula& formula);
   Formula GetFormula() const {return m_formula;};
   std::string ToSBMLString() const;
-  std::string GetAntimony() const;
+  std::string GetAntimony(bool enableAnnotations = true) const;
   void FixNames();
   bool ChangeTimeToRef();
-  std::set<distribution_type> GetUsedDistributionTypes();
+  bool UsesDistrib();
 
 };
 

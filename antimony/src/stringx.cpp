@@ -5,6 +5,7 @@
 #include "typex.h"
 #include "registry.h"
 #include <limits>
+#include <stdlib.h>
 
 using namespace std;
 extern bool CaselessStrCmp(const string& lhs, const string& rhs);
@@ -148,6 +149,15 @@ string StripMsgXML(string& in)
   return out;
 }
 
+string NormalizeLineEndings(string in) {
+  string out;
+  for(int i=0; i<in.size(); ++i) {
+    if (in[i] != '\r')
+      out.push_back(in[i]);
+  }
+  return out;
+}
+
 
 void setFormulaWithString(string formulastring, Formula* formula, Module* module)
 {
@@ -199,10 +209,10 @@ void setFormulaWithString(string formulastring, Formula* formula, Module* module
       //  formula->AddText(&word);
       //  continue;
       //}
-      if (StringToDistributionType(word) != distUNKNOWN) {
-        formula->AddText(&word);
-        continue;
-      }
+      //if (StringToDistributionType(word) != distUNKNOWN) {
+      //  formula->AddText(&word);
+      //  continue;
+      //}
       if (g_registry.IsModuleName(word)) {
         FixName(word);
       }
@@ -295,4 +305,23 @@ void FixUnitName(string& name)
   if (CaselessStrCmp(name, "time")) {
     name = "time_unit";
   }
+}
+
+string escapeDoubleQuotes(string s)
+{
+  string::size_type n=0;
+  while((n=s.find("\"",n)) < string::npos) {
+    s.insert(n, "\\");
+    n+=2;
+  }
+  return s;
+}
+
+void gitdiffit(const std::string& before, const std::string& after)
+{
+  system(("git -c color.ui=always diff $(echo \"" +
+    escapeDoubleQuotes(before) +
+    "\" | git hash-object -w --stdin) $(echo \"" +
+    escapeDoubleQuotes(after) +
+    "\" | git hash-object -w --stdin) --color-words | tail -n +6").c_str());
 }

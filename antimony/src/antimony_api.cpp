@@ -1756,17 +1756,17 @@ LIB_EXTERN char* getCompartmentForSymbol(const char* moduleName, const char* sym
   return getCharStar(retval.c_str());
 }
 
-LIB_EXTERN int writeAntimonyFile(const char* filename, const char* moduleName)
+LIB_EXTERN int writeAntimonyFile(const char* filename, const char* moduleName, bool enableAnnotations)
 {
   string oldlocale = setlocale(LC_ALL, NULL);
   setlocale(LC_ALL, "C");
   string antimony;
   if (moduleName != NULL) {
     if (!checkModule(moduleName)) return 0;
-    antimony = g_registry.GetAntimony(moduleName);
+    antimony = g_registry.GetAntimony(moduleName, enableAnnotations);
   }
   else {
-    antimony = g_registry.GetAntimony();
+    antimony = g_registry.GetAntimony(enableAnnotations);
   }
   ofstream afile(filename);
   if (!afile.good()) {
@@ -1797,17 +1797,17 @@ LIB_EXTERN int writeAntimonyFile(const char* filename, const char* moduleName)
   return 1;
 }
 
-LIB_EXTERN char* getAntimonyString(const char* moduleName)
+LIB_EXTERN char* getAntimonyString(const char* moduleName, bool enableAnnotations)
 {
   string oldlocale = setlocale(LC_ALL, NULL);
   setlocale(LC_ALL, "C");
   string antimony;
   if (moduleName != NULL) {
     if (!checkModule(moduleName)) return 0;
-    antimony = g_registry.GetAntimony(moduleName);
+    antimony = g_registry.GetAntimony(moduleName, enableAnnotations);
   }
   else {
-    antimony = g_registry.GetAntimony();
+    antimony = g_registry.GetAntimony(enableAnnotations);
   }
   setlocale(LC_ALL, oldlocale.c_str());
   while (antimony.size()>1 && antimony[0] == '\n') {

@@ -44,17 +44,21 @@ private:
   std::vector<std::vector<std::string> > m_conversionFactors;
   std::vector<std::string> m_returnvalue;
   std::set<std::string> m_rateNames;
-  std::set<distribution_type> m_usedDistributions;
+  bool m_usedDistributions;
   std::vector<std::string> m_objective;
   bool m_maximize;
 
   size_t m_currentexportvar;
   bool m_ismain;
+  std::string m_displayname;
   int m_sbmllevel;
   int m_sbmlversion;
 
   //Caching for speed:
   std::map<std::vector<std::string>, Variable*> m_varmap;
+
+  // wrapper for the SBO annotation
+  SboTermWrapper* m_sboTerm;
 
 #ifndef NSBML
   SBMLNamespaces m_sbmlnamespaces;
@@ -98,6 +102,9 @@ public:
   void AddTimeToUserFunction(std::string function);
   void CreateLocalVariablesForSubmodelInterfaceIfNeeded();
   void SetIsMain(bool ismain) {m_ismain=ismain;};
+  void SetDisplayName(const std::string& displayname) {m_displayname=displayname;}
+  const std::string& GetDisplayName() const {return m_displayname;}
+  bool HasDisplayName() const {return m_displayname != "";}
   bool AddDeletion(Variable* deletedvar);
   bool AddConstraint(double val, Formula* formula, constraint_type ctype);
   bool AddConstraint(const std::string* str, Formula* formula, constraint_type ctype);
@@ -113,6 +120,7 @@ public:
   bool AddUnitVariables(UnitDef* unitdef);
   void AddDefaultVariables();
   void AddDefaultInitialValues();
+  bool ProcessCVTerm(Annotated* a, const std::string* qual, std::vector<std::string>* resources);
 
   Variable* GetVariable(const std::vector<std::string>& name);
   Variable* GetDefaultVariable(const std::vector<std::string>& name);
@@ -142,7 +150,7 @@ public:
   std::string ToString() const;
   std::string OutputOnly(std::vector<var_type> types, std::string name, std::string indent, std::string cc, std::map<const Variable*, Variable > origmap) const;
   std::string ListIn80Cols(std::string type, std::vector<std::string> names, std::string indent) const;
-  std::string GetAntimony(std::set<const Module*>& usedmods, bool funcsincluded) const;
+  std::string GetAntimony(std::set<const Module*>& usedmods, bool funcsincluded, bool enableAnnotations = true) const;
   std::string GetJarnacReactions() const;
   std::string GetJarnacVarFormulas() const;
   std::string GetJarnacConstFormulas(std::string modulename) const;
@@ -173,7 +181,7 @@ public:
   bool  SynchronizeRates(Model* sbmlmod, const Variable* var, const std::vector<const Variable*>& synchronized, const std::map<const Variable*, Variable>& syncmap);
 #endif //USE_COMP
   void TranslateRulesAndAssignmentsTo(const SBase* obj, Variable* var);
-  void  LoadSBML(const SBMLDocument* sbmldoc);
+  //void  LoadSBML(const SBMLDocument* sbmldoc);
   void  LoadSBML(const Model* sbml);
   const SBMLDocument* GetSBML(bool comp);
   void  CreateSBMLModel(bool comp);
@@ -238,6 +246,8 @@ public:
   void ConvertTime(Variable* tcf);
   void ConvertExtent(Variable* xcf);
   void UndoTimeExtentConversions(Variable* tcf, Variable* xcf);
+
+  Variable* GetSBOTermWrapper() { return m_sboTerm; }
 
 private:
   void FillInOrigmap(std::map<const Variable*, Variable >& origmap) const;

@@ -201,9 +201,36 @@ const string pythonToCBooleans(const string& formula)
   return newform;
 }
 
+const string truncatedDistribToSBML(const string& formula)
+{
+  string newform = formula;
+  size_t foundd = newform.find("truncatedNormal");
+  while (foundd != string::npos) {
+    newform.replace(foundd, 10, "n");
+    foundd = newform.find("truncatedNormal");
+  }
+  foundd = newform.find("truncatedPoisson");
+  while (foundd != string::npos) {
+    newform.replace(foundd, 10, "p");
+    foundd = newform.find("truncatedPoisson");
+  }
+  foundd = newform.find("truncatedExponential");
+  while (foundd != string::npos) {
+    newform.replace(foundd, 10, "e");
+    foundd = newform.find("truncatedExponential");
+  }
+  foundd = newform.find("truncatedGamma");
+  while (foundd != string::npos) {
+    newform.replace(foundd, 10, "g");
+    foundd = newform.find("truncatedGamma");
+  }
+  return newform;
+}
+
 ASTNode* parseStringToASTNode(const string& formula)
 {
-  const string newform = pythonToCBooleans(formula);
+  string newform = pythonToCBooleans(formula);
+  newform = truncatedDistribToSBML(newform);
   L3ParserSettings l3ps;
   l3ps.setParseCollapseMinus(true);
   l3ps.setParseLog(L3P_PARSE_LOG_AS_LN);
@@ -276,6 +303,21 @@ void GetFunctionNames(ASTNode* astn, set<string>& names)
     GetFunctionNames(astn->getChild(c), names);
   }
   return;
+}
+
+bool UsesDistrib(ASTNode* astn)
+{
+  if (astn==NULL) return false;
+  ASTNodeType_t type = astn->getType();
+  if (type >= AST_DISTRIB_FUNCTION_NORMAL && type <= AST_DISTRIB_FUNCTION_RAYLEIGH) {
+    return true;
+  }
+  for (unsigned int c=0; c<astn->getNumChildren(); c++) {
+    if (UsesDistrib(astn->getChild(c))) {
+      return true;
+    }
+  }
+  return false;
 }
 
 double GetValueFrom(const ASTNode* astn)
@@ -445,8 +487,25 @@ bool FixName(string& name)
   , "min"
   , "rem"
   , "implies"
+
+  , "normal"
+  , "truncatedNormal"
+  , "uniform"
+  , "exponential"
+  , "truncatedExponential"
+  , "gamma"
+  , "truncatedGamma"
+  , "poisson"
+  , "truncatedPoisson"
+  , "bernoulli"
+  , "binomial"
+  , "cauchy"
+  , "chisquare"
+  , "laplace"
+  , "lognormal"
+  , "rayleigh"
   };
-  for (size_t kw=0; kw<102; kw++) {
+  for (size_t kw=0; kw<119; kw++) {
     if (CaselessStrCmp(name, keywords[kw])) {
       name += "_";
       return true;
@@ -520,621 +579,6 @@ Model* getModelFromExternalModelDefinition(const ExternalModelDefinition* cextmo
 
 #endif
 
-#ifdef LIBSBML_HAS_PACKAGE_DISTRIB
-void makeNormal(DistribDrawFromDistribution* dfd)
-{
-  DistribInput* di = dfd->createDistribInput();
-  di->setId("mean");
-  di->setIndex(0);
-  di = dfd->createDistribInput();
-  di->setId("stddev");
-  di->setIndex(1);
-  DistribNormalDistribution* normal = dfd->createDistribNormalDistribution();
-  DistribUncertValue* mean = normal->createMean();
-  mean->setVar("mean");
-  DistribUncertValue* stddev = normal->createStddev();
-  stddev->setVar("stddev");
-}
-
-void makeTruncNormal(DistribDrawFromDistribution* dfd)
-{
-  DistribInput* di = dfd->createDistribInput();
-  di->setId("mean");
-  di->setIndex(0);
-  di = dfd->createDistribInput();
-  di->setId("stddev");
-  di->setIndex(1);
-  di = dfd->createDistribInput();
-  di->setId("lowlimit");
-  di->setIndex(2);
-  di = dfd->createDistribInput();
-  di->setId("uplimit");
-  di->setIndex(3);
-  DistribNormalDistribution* normal = dfd->createDistribNormalDistribution();
-  DistribUncertValue* mean = normal->createMean();
-  mean->setVar("mean");
-  DistribUncertValue* stddev = normal->createStddev();
-  stddev->setVar("stddev");
-  DistribUncertBound* bound = normal->createTruncationLowerBound();
-  bound->setVar("lowlimit");
-  bound->setInclusive(true);
-  bound = normal->createTruncationUpperBound();
-  bound->setVar("uplimit");
-  bound->setInclusive(true);
-}
-
-void makeUniform(DistribDrawFromDistribution* dfd)
-{
-  DistribInput* di = dfd->createDistribInput();
-  di->setId("minimum");
-  di->setIndex(0);
-  di = dfd->createDistribInput();
-  di->setId("maximum");
-  di->setIndex(1);
-  DistribUniformDistribution* uniform = dfd->createDistribUniformDistribution();
-  DistribUncertValue* min = uniform->createMinimum();
-  DistribUncertValue* max = uniform->createMaximum();
-  min->setVar("minimum");
-  max->setVar("maximum");
-}
-
-void makeExponential(DistribDrawFromDistribution* dfd)
-{
-  DistribInput* di = dfd->createDistribInput();
-  di->setId("rate");
-  di->setIndex(0);
-  DistribExponentialDistribution* exp = dfd->createDistribExponentialDistribution();
-  DistribUncertValue* rate = exp->createRate();
-  rate->setVar("rate");
-}
-
-void makeTruncExponential(DistribDrawFromDistribution* dfd)
-{
-  DistribInput* di = dfd->createDistribInput();
-  di->setId("rate");
-  di->setIndex(0);
-  di = dfd->createDistribInput();
-  di->setId("lowlimit");
-  di->setIndex(1);
-  di = dfd->createDistribInput();
-  di->setId("uplimit");
-  di->setIndex(2);
-  DistribExponentialDistribution* exp = dfd->createDistribExponentialDistribution();
-  DistribUncertValue* rate = exp->createRate();
-  rate->setVar("rate");
-  DistribUncertBound* bound = exp->createTruncationLowerBound();
-  bound->setVar("lowlimit");
-  bound->setInclusive(true);
-  bound = exp->createTruncationUpperBound();
-  bound->setVar("uplimit");
-  bound->setInclusive(true);
-}
-
-void makeGamma(DistribDrawFromDistribution* dfd)
-{
-  DistribInput* di = dfd->createDistribInput();
-  di->setId("shape");
-  di->setIndex(0);
-  di = dfd->createDistribInput();
-  di->setId("scale");
-  di->setIndex(1);
-  DistribGammaDistribution* gamma = dfd->createDistribGammaDistribution();
-  DistribUncertValue* shape = gamma->createShape();
-  DistribUncertValue* scale = gamma->createScale();
-  shape->setVar("shape");
-  scale->setVar("scale");
-}
-
-void makeTruncGamma(DistribDrawFromDistribution* dfd)
-{
-  DistribInput* di = dfd->createDistribInput();
-  di->setId("shape");
-  di->setIndex(0);
-  di = dfd->createDistribInput();
-  di->setId("scale");
-  di->setIndex(1);
-  di = dfd->createDistribInput();
-  di->setId("lowlimit");
-  di->setIndex(2);
-  di = dfd->createDistribInput();
-  di->setId("uplimit");
-  di->setIndex(3);
-  DistribGammaDistribution* gamma = dfd->createDistribGammaDistribution();
-  DistribUncertValue* shape = gamma->createShape();
-  DistribUncertValue* scale = gamma->createScale();
-  shape->setVar("shape");
-  scale->setVar("scale");
-  DistribUncertBound* bound = gamma->createTruncationLowerBound();
-  bound->setVar("lowlimit");
-  bound->setInclusive(true);
-  bound = gamma->createTruncationUpperBound();
-  bound->setVar("uplimit");
-  bound->setInclusive(true);
-}
-
-void makePoisson(DistribDrawFromDistribution* dfd)
-{
-  DistribInput* di = dfd->createDistribInput();
-  di->setId("rate");
-  di->setIndex(0);
-  DistribPoissonDistribution* poisson = dfd->createDistribPoissonDistribution();
-  DistribUncertValue* rate = poisson->createRate();
-  rate->setVar("rate");
-}
-
-void makeTruncPoisson(DistribDrawFromDistribution* dfd)
-{
-  DistribInput* di = dfd->createDistribInput();
-  di->setId("rate");
-  di->setIndex(0);
-  di = dfd->createDistribInput();
-  di->setId("lowlimit");
-  di->setIndex(1);
-  di = dfd->createDistribInput();
-  di->setId("uplimit");
-  di->setIndex(2);
-  DistribPoissonDistribution* poisson = dfd->createDistribPoissonDistribution();
-  DistribUncertValue* rate = poisson->createRate();
-  rate->setVar("rate");
-  DistribUncertBound* bound = poisson->createTruncationLowerBound();
-  bound->setVar("lowlimit");
-  bound->setInclusive(true);
-  bound = poisson->createTruncationUpperBound();
-  bound->setVar("uplimit");
-  bound->setInclusive(true);
-}
-
-#endif
-
-void addDistributionToModel(Model* model, distribution_type dtype)
-{
-  FunctionDefinition* fd = model->createFunctionDefinition();
-  string function = "lambda(" + GetArgumentStringForDistribution(dtype) + " NaN)";
-  ASTNode* math = parseStringToASTNode(function.c_str());
-  fd->setMath(math);
-  delete math;
-  string annotation = "<annotation> <distribution xmlns=\"http://sbml.org/annotations/distribution\" definition=\"" + GetWikipediaURIForDistribution(dtype) + "\"/> </annotation>";
-  fd->setAnnotation(annotation.c_str());
-  fd->setId(DistributionTypeToString(dtype));
-#ifdef LIBSBML_HAS_PACKAGE_DISTRIB
-  DistribFunctionDefinitionPlugin* dfdp = static_cast<DistribFunctionDefinitionPlugin*>(fd->getPlugin("distrib"));
-  DistribDrawFromDistribution* dfd = dfdp->createDistribDrawFromDistribution();
-  switch(dtype) {
-  case distNORMAL:
-    makeNormal(dfd);
-    break;
-  case distTRUNCNORMAL:
-    makeTruncNormal(dfd);
-    break;
-  case distUNIFORM:
-    makeUniform(dfd);
-    break;
-  case distEXPONENTIAL:
-    makeExponential(dfd);
-    break;
-  case distTRUNCEXPONENTIAL:
-    makeTruncExponential(dfd);
-    break;
-  case distGAMMA:
-    makeGamma(dfd);
-    break;
-  case distTRUNCGAMMA:
-    makeTruncGamma(dfd);
-    break;
-  case distPOISSON:
-    makePoisson(dfd);
-    break;
-  case distTRUNCPOISSON:
-    makeTruncPoisson(dfd);
-    break;
-  }
-#endif
-}
-
-#ifdef LIBSBML_HAS_PACKAGE_DISTRIB
-distribution_type checkNormal(const DistribDistribution* distrib, const DistribDrawFromDistribution* dfd)
-{
-  unsigned int numinputs = dfd->getNumDistribInputs();
-  if (numinputs != 2 && numinputs != 4) {
-    return distUNKNOWN;
-  }
-  const DistribNormalDistribution* normal = static_cast<const DistribNormalDistribution*>(distrib);
-  if (!normal->isSetMean()) {
-    return distUNKNOWN;
-  }
-  if (!normal->isSetStddev()) {
-    return distUNKNOWN;
-  }
-  if (normal->isSetTruncationLowerBound() != normal->isSetTruncationUpperBound()) {
-    return distUNKNOWN;
-  }
-  const DistribUncertValue* value = normal->getMean();
-  if (value->getVar() != dfd->getDistribInputByIndex(0)->getId()) {
-    return distUNKNOWN;
-  }
-  value = normal->getStddev();
-  if (value->getVar() != dfd->getDistribInputByIndex(1)->getId()) {
-    return distUNKNOWN;
-  }
-  if (!normal->isSetTruncationLowerBound()) {
-    return distNORMAL;
-  }
-  value = normal->getTruncationLowerBound();
-  if (value->getVar() != dfd->getDistribInputByIndex(2)->getId()) {
-    return distUNKNOWN;
-  }
-  value = normal->getTruncationUpperBound();
-  if (value->getVar() != dfd->getDistribInputByIndex(3)->getId()) {
-    return distUNKNOWN;
-  }
-  return distTRUNCNORMAL;
-}
-
-
-distribution_type checkUniform(const DistribDistribution* distrib, const DistribDrawFromDistribution* dfd)
-{
-  unsigned int numinputs = dfd->getNumDistribInputs();
-  if (numinputs != 2) {
-    return distUNKNOWN;
-  }
-  const DistribUniformDistribution* uniform = static_cast<const DistribUniformDistribution*>(distrib);
-  if (!uniform->isSetMaximum()) {
-    return distUNKNOWN;
-  }
-  if (!uniform->isSetMinimum()) {
-    return distUNKNOWN;
-  }
-  const DistribUncertValue* value = uniform->getMinimum();
-  if (value->getVar() != dfd->getDistribInputByIndex(0)->getId()) {
-    return distUNKNOWN;
-  }
-  value = uniform->getMaximum();
-  if (value->getVar() != dfd->getDistribInputByIndex(1)->getId()) {
-    return distUNKNOWN;
-  }
-  return distUNIFORM;
-}
-
-
-distribution_type checkExponential(const DistribDistribution* distrib, const DistribDrawFromDistribution* dfd)
-{
-  unsigned int numinputs = dfd->getNumDistribInputs();
-  if (numinputs != 1 && numinputs != 3) {
-    return distUNKNOWN;
-  }
-  const DistribExponentialDistribution* exp = static_cast<const DistribExponentialDistribution*>(distrib);
-  if (!exp->isSetRate()) {
-    return distUNKNOWN;
-  }
-  if (exp->isSetTruncationLowerBound() != exp->isSetTruncationUpperBound()) {
-    return distUNKNOWN;
-  }
-  const DistribUncertValue* value = exp->getRate();
-  if (value->getVar() != dfd->getDistribInputByIndex(0)->getId()) {
-    return distUNKNOWN;
-  }
-  if (!exp->isSetTruncationLowerBound()) {
-    return distEXPONENTIAL;
-  }
-  value = exp->getTruncationLowerBound();
-  if (value->getVar() != dfd->getDistribInputByIndex(1)->getId()) {
-    return distUNKNOWN;
-  }
-  value = exp->getTruncationUpperBound();
-  if (value->getVar() != dfd->getDistribInputByIndex(2)->getId()) {
-    return distUNKNOWN;
-  }
-  return distTRUNCEXPONENTIAL;
-}
-
-
-distribution_type checkGamma(const DistribDistribution* distrib, const DistribDrawFromDistribution* dfd)
-{
-  unsigned int numinputs = dfd->getNumDistribInputs();
-  if (numinputs != 2 && numinputs != 4) {
-    return distUNKNOWN;
-  }
-  const DistribGammaDistribution* gamma = static_cast<const DistribGammaDistribution*>(distrib);
-  if (!gamma->isSetShape()) {
-    return distUNKNOWN;
-  }
-  if (!gamma->isSetScale()) {
-    return distUNKNOWN;
-  }
-  if (gamma->isSetTruncationLowerBound() != gamma->isSetTruncationUpperBound()) {
-    return distUNKNOWN;
-  }
-  const DistribUncertValue* value = gamma->getShape();
-  if (value->getVar() != dfd->getDistribInputByIndex(0)->getId()) {
-    return distUNKNOWN;
-  }
-  value = gamma->getScale();
-  if (value->getVar() != dfd->getDistribInputByIndex(1)->getId()) {
-    return distUNKNOWN;
-  }
-  if (!gamma->isSetTruncationLowerBound()) {
-    return distGAMMA;
-  }
-  value = gamma->getTruncationLowerBound();
-  if (value->getVar() != dfd->getDistribInputByIndex(2)->getId()) {
-    return distUNKNOWN;
-  }
-  value = gamma->getTruncationUpperBound();
-  if (value->getVar() != dfd->getDistribInputByIndex(3)->getId()) {
-    return distUNKNOWN;
-  }
-  return distTRUNCGAMMA;
-}
-
-
-distribution_type checkPoisson(const DistribDistribution* distrib, const DistribDrawFromDistribution* dfd)
-{
-  unsigned int numinputs = dfd->getNumDistribInputs();
-  if (numinputs != 1 && numinputs != 3) {
-    return distUNKNOWN;
-  }
-  const DistribPoissonDistribution* poisson = static_cast<const DistribPoissonDistribution*>(distrib);
-  if (!poisson->isSetRate()) {
-    return distUNKNOWN;
-  }
-  if (poisson->isSetTruncationLowerBound() != poisson->isSetTruncationUpperBound()) {
-    return distUNKNOWN;
-  }
-  const DistribUncertValue* value = poisson->getRate();
-  if (value->getVar() != dfd->getDistribInputByIndex(0)->getId()) {
-    return distUNKNOWN;
-  }
-  if (!poisson->isSetTruncationLowerBound()) {
-    return distPOISSON;
-  }
-  value = poisson->getTruncationLowerBound();
-  if (value->getVar() != dfd->getDistribInputByIndex(1)->getId()) {
-    return distUNKNOWN;
-  }
-  value = poisson->getTruncationUpperBound();
-  if (value->getVar() != dfd->getDistribInputByIndex(2)->getId()) {
-    return distUNKNOWN;
-  }
-  return distTRUNCPOISSON;
-}
-
-
-distribution_type GetExactTypeOf(const DistribFunctionDefinitionPlugin* dfdp)
-{
-  if (dfdp == NULL) {
-    return distUNKNOWN;
-  }
-  const DistribDrawFromDistribution* dfd = dfdp->getDistribDrawFromDistribution();
-  if (dfd == NULL) {
-    return distUNKNOWN;
-  }
-  const DistribDistribution* distribution = dfd->getDistribution();
-  if (distribution == NULL) {
-    return distUNKNOWN;
-  }
-  switch (distribution->getTypeCode()) {
-    case SBML_DISTRIB_NORMALDISTRIBUTION:
-      return checkNormal(distribution, dfd);
-    case SBML_DISTRIB_UNIFORMDISTRIBUTION:
-      return checkUniform(distribution, dfd);
-    case SBML_DISTRIB_EXPONENTIALDISTRIBUTION:
-      return checkExponential(distribution, dfd);
-    case SBML_DISTRIB_GAMMADISTRIBUTION:
-      return checkGamma(distribution, dfd);
-    case SBML_DISTRIB_POISSONDISTRIBUTION:
-      return checkPoisson(distribution, dfd);
-    default:
-      return distUNKNOWN;
-  }
-  return distUNKNOWN;
-}
-
-string GetArgumentFor(const DistribUncertValue* value)
-{
-  if (value == NULL) {
-    return "";
-  }
-  if (value->isSetVar()) {
-    return value->getVar();
-  }
-  if (value->isSetValue()) {
-    stringstream s;
-    s << value->getValue();
-    return s.str();
-  }
-  return "";
-}
-
-//string GetArgumentFor(const string& arg, const DistribDistribution* value)
-//{
-//  return arg;
-//}
-//
-
-string GetAntimonyFromNormal(const DistribDistribution* dist)
-{
-  const DistribNormalDistribution* normal = static_cast<const DistribNormalDistribution*>(dist);
-  string mean = GetArgumentFor(normal->getMean());
-  string stddev = GetArgumentFor(normal->getStddev());
-  string variance = GetArgumentFor(normal->getVariance());
-  string function = "normal";
-  //Convert variance to stddev:
-  if (!variance.empty() && stddev.empty()) {
-    stddev = "sqrt(" + variance + ")";
-    variance = "";
-  }
-  if (mean.empty() || stddev.empty()) return "";
-  string arglist = "(" + mean + ", " + stddev;
-  //If this is a truncated normal, adjust accordingly.
-  if (normal->isSetTruncationLowerBound() || normal->isSetTruncationUpperBound()) {
-    string lowlimit = GetArgumentFor(normal->getTruncationLowerBound());
-    string uplimit = GetArgumentFor(normal->getTruncationUpperBound());
-    if (lowlimit.empty()) {
-      lowlimit = "-inf";
-    }
-    if (uplimit.empty()) {
-      uplimit = "inf";
-    }
-    function = "truncatedNormal";
-    arglist += ", " + lowlimit + ", " + uplimit;
-  }
-  return function + arglist + ")";
-}
-
-string GetAntimonyFromUniform(const DistribDistribution* dist)
-{
-  const DistribUniformDistribution* uniform= static_cast<const DistribUniformDistribution*>(dist);
-  string minimum = GetArgumentFor(uniform->getMinimum());
-  string maximum = GetArgumentFor(uniform->getMaximum());
-  if (minimum.empty() || maximum.empty()) return "";
-  return "uniform(" + minimum + ", " + maximum + ")";
-}
-
-string GetAntimonyFromExponential(const DistribDistribution* dist)
-{
-  const DistribExponentialDistribution* exp = static_cast<const DistribExponentialDistribution*>(dist);
-  string rate = GetArgumentFor(exp->getRate());
-  string function = "exponential";
-  if (rate.empty()) return "";
-  string arglist = "(" + rate;
-  //If this is a truncated function, adjust accordingly.
-  if (exp->isSetTruncationLowerBound() || exp->isSetTruncationUpperBound()) {
-    string lowlimit = GetArgumentFor(exp->getTruncationLowerBound());
-    string uplimit = GetArgumentFor(exp->getTruncationUpperBound());
-    if (lowlimit.empty()) {
-      lowlimit = "-inf";
-    }
-    if (uplimit.empty()) {
-      uplimit = "inf";
-    }
-    function = "truncatedExponential";
-    arglist += ", " + lowlimit + ", " + uplimit;
-  }
-  return function + arglist + ")";
-}
-
-string GetAntimonyFromGamma(const DistribDistribution* dist)
-{
-  const DistribGammaDistribution* gamma = static_cast<const DistribGammaDistribution*>(dist);
-  string shape = GetArgumentFor(gamma->getShape());
-  if (shape.empty()) return "";
-  string scale = GetArgumentFor(gamma->getScale());
-  if (scale.empty()) return "";
-  string function = "gamma";
-  string arglist = "(" + shape + ", " + scale;
-  //If this is a truncated function, adjust accordingly.
-  if (gamma->isSetTruncationLowerBound() || gamma->isSetTruncationUpperBound()) {
-    string lowlimit = GetArgumentFor(gamma->getTruncationLowerBound());
-    string uplimit = GetArgumentFor(gamma->getTruncationUpperBound());
-    if (lowlimit.empty()) {
-      lowlimit = "-inf";
-    }
-    if (uplimit.empty()) {
-      uplimit = "inf";
-    }
-    function = "truncatedGamma";
-    arglist += ", " + lowlimit + ", " + uplimit;
-  }
-  return function + arglist + ")";
-}
-
-string GetAntimonyFromPoisson(const DistribDistribution* dist)
-{
-  const DistribPoissonDistribution* poisson = static_cast<const DistribPoissonDistribution*>(dist);
-  string rate = GetArgumentFor(poisson->getRate());
-  string function = "poisson";
-  if (rate.empty()) return "";
-  string arglist = "(" + rate;
-  //If this is a truncated function, adjust accordingly.
-  if (poisson->isSetTruncationLowerBound() || poisson->isSetTruncationUpperBound()) {
-    string lowlimit = GetArgumentFor(poisson->getTruncationLowerBound());
-    string uplimit = GetArgumentFor(poisson->getTruncationUpperBound());
-    if (lowlimit.empty()) {
-      lowlimit = "-inf";
-    }
-    if (uplimit.empty()) {
-      uplimit = "inf";
-    }
-    function = "truncatedPoisson";
-    arglist += ", " + lowlimit + ", " + uplimit;
-  }
-  return function + arglist + ")";
-}
-
-ASTNode* GetAntimonyFormOf(const DistribFunctionDefinitionPlugin* dfdp)
-{
-  const DistribDrawFromDistribution* dfd = dfdp->getDistribDrawFromDistribution();
-  if (dfd==NULL) return NULL;
-  const DistribDistribution* dist = dfd->getDistribution();
-  if (dist==NULL) return NULL;
-  string antimony = "lambda(";
-  for (unsigned long di=0; di<dfd->getNumDistribInputs(); di++) {
-    const DistribInput* distinp = dfd->getListOfDistribInputs()->get(di);
-    if (distinp == NULL) return NULL;
-    antimony += distinp->getId() + ", ";
-  }
-  string distrib = "";
-  switch (dist->getTypeCode()) {
-  case SBML_DISTRIB_NORMALDISTRIBUTION:
-    distrib = GetAntimonyFromNormal(dist);
-    if (distrib.empty()) return NULL;
-    antimony += distrib;
-    break;
-  case SBML_DISTRIB_UNIFORMDISTRIBUTION:
-    distrib = GetAntimonyFromUniform(dist);
-    if (distrib.empty()) return NULL;
-    antimony += distrib;
-    break;
-  case SBML_DISTRIB_EXPONENTIALDISTRIBUTION:
-    distrib = GetAntimonyFromExponential(dist);
-    if (distrib.empty()) return NULL;
-    antimony += distrib;
-    break;
-  case SBML_DISTRIB_GAMMADISTRIBUTION:
-    distrib = GetAntimonyFromGamma(dist);
-    if (distrib.empty()) return NULL;
-    antimony += distrib;
-    break;
-  case SBML_DISTRIB_POISSONDISTRIBUTION:
-    distrib = GetAntimonyFromPoisson(dist);
-    if (distrib.empty()) return NULL;
-    antimony += distrib;
-  }
-  return parseStringToASTNode(antimony + ")");
-}
-#endif
-distribution_type GetDistributionFromAnnotation(const std::string& annot, unsigned int numargs)
-{
- if (annot.find("http://sbml.org/annotations/distribution") != string::npos) {
-   //It might be a distribution we know about!
-   if (annot.find(GetURIForDistribution(distNORMAL)) != string::npos ) {
-     if (numargs == 2) return distNORMAL;
-     if (numargs == 4) return distTRUNCNORMAL;
-     return distUNKNOWN;
-   }
-   if (annot.find(GetURIForDistribution(distUNIFORM)) != string::npos ) {
-     if (numargs == 2) return distUNIFORM;
-     return distUNKNOWN;
-   }
-   if (annot.find(GetURIForDistribution(distEXPONENTIAL)) != string::npos ) {
-     if (numargs == 1) return distEXPONENTIAL;
-     if (numargs == 3) return distTRUNCEXPONENTIAL;
-     return distUNKNOWN;
-   }
-   if (annot.find(GetURIForDistribution(distGAMMA)) != string::npos ) {
-     if (numargs == 2) return distGAMMA;
-     if (numargs == 4) return distTRUNCGAMMA;
-     return distUNKNOWN;
-   }
-   if (annot.find(GetURIForDistribution(distPOISSON)) != string::npos ) {
-     if (numargs == 1) return distPOISSON;
-     if (numargs == 3) return distTRUNCPOISSON;
-     return distUNKNOWN;
-   }
- }
- return distUNKNOWN;
-}
-
 void removeBooleanErrors(SBMLDocument* doc)
 {
   SBMLErrorLog* log = doc->getErrorLog();
@@ -1165,6 +609,49 @@ void removeBooleanErrors(SBMLDocument* doc)
   if (log->contains(1090106) && log->getNumFailsWithSeverity(LIBSBML_SEV_WARNING)==1) {
     log->remove(1090106);
   }
+}
+
+void elideMetaIds(SBMLDocument* doc)
+{
+  List* elts = doc->getAllElements();
+  for(unsigned int k=0; k<elts->getSize(); ++k) {
+    ((SBase*)elts->get(k))->unsetMetaId();
+  }
+}
+
+std::string elideMetaIdsFromSBMLstring(std::string sbml)
+{
+  SBMLReader reader;
+  SBMLDocument* d = reader.readSBMLFromString(sbml);
+  if (d->getNumErrors()) {
+    g_registry.SetError("elideMetaIdsFromSBMLstring: Could not read sbml from string");
+    return sbml;
+  }
+  elideMetaIds(d);
+  SBMLWriter writer;
+  return writer.writeSBMLToString(d);
+}
+
+constraint_type getConstraintTypeFrom(ASTNodeType_t asttype)
+{
+  switch(asttype) {
+  case AST_RELATIONAL_LEQ:
+    return constLEQ;
+  case AST_RELATIONAL_GEQ:
+    return constGEQ;
+  case AST_RELATIONAL_LT:
+    return constLT;
+  case AST_RELATIONAL_GT:
+    return constGT;
+  case AST_RELATIONAL_EQ:
+    return constEQ;
+  case AST_RELATIONAL_NEQ:
+    return constNEQ;
+  default:
+    return constNONE;
+  }
+  assert(false); //uncaught type
+  return constNONE;
 }
 
 #ifdef LIBSBML_HAS_PACKAGE_FBC
@@ -1224,28 +711,6 @@ constraint_type getConstraintTypeFrom(FluxBoundOperation_t fbtype)
   case FLUXBOUND_OPERATION_EQUAL:
     return constEQ;
   case FLUXBOUND_OPERATION_UNKNOWN:
-    return constNONE;
-  }
-  assert(false); //uncaught type
-  return constNONE;
-}
-
-constraint_type getConstraintTypeFrom(ASTNodeType_t asttype)
-{
-  switch(asttype) {
-  case AST_RELATIONAL_LEQ:
-    return constLEQ;
-  case AST_RELATIONAL_GEQ:
-    return constGEQ;
-  case AST_RELATIONAL_LT:
-    return constLT;
-  case AST_RELATIONAL_GT:
-    return constGT;
-  case AST_RELATIONAL_EQ:
-    return constEQ;
-  case AST_RELATIONAL_NEQ:
-    return constNEQ;
-  default:
     return constNONE;
   }
   assert(false); //uncaught type

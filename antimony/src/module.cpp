@@ -37,7 +37,7 @@ Module::Module(string name)
     m_conversionFactors(),
     m_returnvalue(),
     m_rateNames(),
-    m_usedDistributions(),
+    m_usedDistributions(false),
     m_objective(),
     m_maximize(true),
     m_currentexportvar(0),
@@ -61,7 +61,8 @@ Module::Module(string name)
     m_cellmlcomponent(NULL),
     m_childrenadded(false),
 #endif
-    m_uniquevars()
+    m_uniquevars(),
+    m_sboTerm(new SboTermWrapper(this))
 {
 #ifdef USE_COMP
   m_sbmlnamespaces.addPackageNamespace("comp", 1);
@@ -115,7 +116,8 @@ Module::Module(const Module& src, string newtopname, string modulename)
     m_cellmlcomponent(NULL),
     m_childrenadded(src.m_childrenadded),
 #endif
-    m_uniquevars()
+    m_uniquevars(),
+    m_sboTerm(new SboTermWrapper(this))
 {
   SetNewTopName(modulename, newtopname);
   /*
@@ -169,7 +171,8 @@ Module::Module(const Module& src)
     m_cellmlcomponent(src.m_cellmlcomponent),
     m_childrenadded(src.m_childrenadded),
 #endif
-    m_uniquevars(src.m_uniquevars)
+    m_uniquevars(src.m_uniquevars),
+    m_sboTerm(new SboTermWrapper(this))
 {
 #ifdef USE_COMP
   CompSBMLDocumentPlugin* compdoc = static_cast<CompSBMLDocumentPlugin*>(m_sbml.getPlugin("comp"));
@@ -227,12 +230,17 @@ Module& Module::operator=(const Module& src)
   m_childrenadded = src.m_childrenadded;
 #endif
   m_uniquevars = src.m_uniquevars;
+  if (m_sboTerm)
+    delete m_sboTerm;
+  m_sboTerm = new SboTermWrapper(this);
   return *this;
 }
 
 
 Module::~Module()
 {
+  if (m_sboTerm)
+    delete m_sboTerm;
 }
 
 Variable* Module::AddOrFindVariable(const string* name)
@@ -766,17 +774,49 @@ void Module::AddDefaultInitialValues()
       }
       break;
     case varUndefined:
-      if (StringToDistributionType(m_variables[var]->GetName()[m_variables[var]->GetName().size()-1]) == distUNKNOWN) {
-        m_variables[var]->SetFormula(&one);
-      }
+      //if (StringToDistributionType(m_variables[var]->GetName()[m_variables[var]->GetName().size()-1]) == distUNKNOWN) {
+      m_variables[var]->SetFormula(&one);
+      //}
     case varDNA:
     case varInteraction:
     case varEvent:
     case varStrand:
     case varUnitDefinition:
     case varDeleted:
+    case varSboTermWrapper:
       break;
     }
+  }
+}
+
+bool Module::ProcessCVTerm(Annotated* a, const string* qual, vector<string>* resources)
+{
+  if (qual && resources) {
+    // qual can be a model or biology qualifier
+    // is/identity is used by both - give priority to biology
+    // to eliminate guesswork explicitly use one of:
+    //   var_name model_entity_is     "resource"
+    //   var_name biologcal_entity_is "resource"
+    BiolQualifierType_t bq = DecodeBiolQualifier(*qual);
+    if (bq != BQB_UNKNOWN) {
+      a->AppendBiolQualifiers(bq, *resources);
+    } else {
+      // try a model qualifier
+      ModelQualifierType_t mq = DecodeModelQualifier(*qual);
+      if (mq != BQM_UNKNOWN) {
+        a->AppendModelQualifiers(mq, *resources);
+      } else {
+        stringstream ss;
+        ss << "Unrecognized qualifier \"" << *qual << "\"";
+        g_registry.SetError(ss.str());
+        return false;
+      }
+    }
+    delete resources;
+    return false;
+  } else {
+    g_registry.SetError("CV qualifier encountered but not enough arguments - pass qualifier and at least one resource");
+    return true;
   }
 }
 
@@ -1091,29 +1131,13 @@ bool Module::Finalize()
     }
   }
   //Now check if the functions themselves use distributions
-  for (size_t uf=0; uf<g_registry.GetNumUserFunctions(); uf++) {
-    set<distribution_type> functypes = g_registry.GetNthUserFunction(uf)->GetUsedDistributionTypes();
-    m_usedDistributions.insert(functypes.begin(), functypes.end());
-  }
-
-#ifdef LIBSBML_HAS_PACKAGE_DISTRIB
-  if (m_usedDistributions.size() > 0) {
-    m_sbmlnamespaces.addPackageNamespace("distrib", 1);
-    for (set<distribution_type>::iterator dist=m_usedDistributions.begin(); dist != m_usedDistributions.end(); dist++) {
-      vector<string> distname;
-      distname.push_back(DistributionTypeToString(*dist));
-      for (size_t v=0; v<m_variables.size(); ) {
-        Variable * var = m_variables[v];
-        if (var->GetName() == distname && var->GetType()==varUndefined) {
-          m_variables.erase(m_variables.begin()+v);
-        }
-        else {
-          v++;
-        }
-      }
+  for (size_t uf = 0; uf < g_registry.GetNumUserFunctions(); uf++) {
+    if (g_registry.GetNthUserFunction(uf)->UsesDistrib()) {
+      m_usedDistributions = true;
+      break;
     }
   }
-#endif
+
 #endif
 
   //Phase 3:  Set compartments
@@ -1169,8 +1193,7 @@ bool Module::Finalize()
           }
         }
         //Also, we need to know if the submodel used any distributions or FBC
-        m_usedDistributions.insert(submod->m_usedDistributions.begin(), submod->m_usedDistributions.end());
-        if (m_usedDistributions.size() > 0) {
+        if (m_usedDistributions) {
           m_sbmlnamespaces.addPackageNamespace("distrib", 1);
         }
         if (submod->m_hasFBC) {
@@ -1229,10 +1252,12 @@ bool Module::Finalize()
     Variable* variable = m_uniquevars[var];
     if (variable->GetType() == varConstraint) {
       variable->GetConstraint()->calculateASTNode();
+#ifdef LIBSBML_HAS_PACKAGE_FBC
       if (variable->GetConstraint()->calculateFluxBounds()) {
         m_hasFBC = true;
         m_sbmlnamespaces.addPackageNamespace("fbc", 1);
       }
+#endif
     }
   }
 
@@ -1311,6 +1336,9 @@ bool Module::CheckUndefined(const Formula* form)
   if (form) {
     string formstr = form->ToSBMLString();
     ASTNode* root = parseStringToASTNode(formstr);
+    if (UsesDistrib(root)) {
+      m_usedDistributions = true;
+    }
     set<string> allfns;
     GetFunctionNames(root, allfns);
     delete root;
@@ -1320,7 +1348,7 @@ bool Module::CheckUndefined(const Formula* form)
         vector<string> varname;
         varname.push_back(*name);
         Variable* var = GetVariable(varname);
-        bool isPredefined = false;
+        //bool isPredefined = false;
         //if (*name == "rate" || *name == "rateOf") {
         //  isPredefined = true;
         //  m_rateNames.insert(*name);
@@ -1333,20 +1361,11 @@ bool Module::CheckUndefined(const Formula* form)
         //  }
         //}
         //else {
-          distribution_type dtype = StringToDistributionType(*name);
-          if (dtype != distUNKNOWN) {
-            isPredefined = true;
-            m_usedDistributions.insert(dtype);
-            if (var != NULL && var->GetType() != varUndefined) {
-              g_registry.SetError("Unable to use '" + *name + "' as a function, as it is used elsewhere as a " + VarTypeToString(var->GetType()) + ".");
-              return true;
-            }
-          }
         //}
-        if (!isPredefined) {
-          g_registry.SetError("'" + *name + "' was used as a function, but no such function was defined.  Please define the function using 'function " + *name + "([arguments]) [function definition] end'.");
-          return true;
-        }
+        //if (!isPredefined) {
+        g_registry.SetError("'" + *name + "' was used as a function, but no such function was defined.  Please define the function using 'function " + *name + "([arguments]) [function definition] end'.");
+        return true;
+        //}
       }
     }
   }
@@ -1547,6 +1566,7 @@ bool Module::AreEquivalent(return_type rtype, var_type vtype) const
   case varStrand:
   case varUnitDefinition:
   case varDeleted:
+  case varSboTermWrapper:
     break;
   }
   assert(false); //uncaught return type
@@ -1690,7 +1710,7 @@ string Module::ToString() const
   return retval;
 }
 
-string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded) const
+string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, bool enableAnnotations) const
 {
   assert(m_uniquevars.size() > 0 || m_variables.size() == 0); //The api usually calls Finalize--it didn't!
   string retval;
@@ -2052,6 +2072,7 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded) con
     case varCompartment:
     case varStrand:
     case varUnitDefinition:
+    case varSboTermWrapper:
       break;
     }
   }
@@ -2106,10 +2127,50 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded) con
     retval += indent + m_uniquevars[var]->GetNameDelimitedBy(cc) + " is \"" + m_uniquevars[var]->GetDisplayName() + "\";\n";
   }
 
+  if (enableAnnotations) {
+    // SBO terms
+    bool anysboterm = false;
+    for (size_t var=0; var<m_uniquevars.size(); var++) {
+      string sboterms = m_uniquevars[var]->CreateSBOTermsAntimonySyntax(m_uniquevars[var]->GetNameDelimitedBy(cc),indent);
+      if (anysboterm == false && sboterms.size()>0) {
+        retval += "\n" + indent + "// SBO terms:\n";
+        anysboterm = true;
+      }
+      retval += sboterms;
+    }
+
+    // CV terms
+    bool anycvterm = false;
+    for (size_t var=0; var<m_uniquevars.size(); var++) {
+      string cvterms = m_uniquevars[var]->CreateCVTermsAntimonySyntax(m_uniquevars[var]->GetNameDelimitedBy(cc),indent);
+      if (anycvterm == false && cvterms.size()>0) {
+        retval += "\n" + indent + "// CV terms:\n";
+        anycvterm = true;
+      }
+      retval += cvterms;
+    }
+  }
+
   //end model definition
   if (m_modulename != MAINMODULE) {
     retval += "end\n";
+    if (HasDisplayName()) {
+      retval += "\n" + m_modulename + " is \"" + GetDisplayName() + "\"\n";
+    }
   }
+
+  if (enableAnnotations) {
+    // SBO terms for model
+    string sboterm = CreateSBOTermsAntimonySyntax(m_modulename,"");
+    if (sboterm.size()>0)
+      retval += "\n"+sboterm;
+
+    // CV terms for model
+    string cvterms = CreateCVTermsAntimonySyntax(m_modulename,"");
+    if (cvterms.size()>0)
+      retval += "\n"+cvterms;
+  }
+
   return retval;
 }
 
@@ -2560,6 +2621,7 @@ void Module::Convert(Variable* conv, Variable* cf, string modulename)
       break;
     case varStrand:
     case varDeleted:
+    case varSboTermWrapper:
       break;
     }
   }
@@ -2596,6 +2658,7 @@ void Module::ConvertTime(Variable* tcf)
     case varUnitDefinition:
     case varStrand:
     case varDeleted:
+    case varSboTermWrapper:
       break;
     }
   }
@@ -2626,6 +2689,7 @@ void Module::ConvertExtent(Variable* xcf)
     case varUnitDefinition:
     case varStrand:
     case varDeleted:
+    case varSboTermWrapper:
       break;
     }
   }
@@ -2660,6 +2724,7 @@ void Module::UndoTimeExtentConversions(Variable* tcf, Variable* xcf)
     case varUnitDefinition:
     case varStrand:
     case varDeleted:
+    case varSboTermWrapper:
       break;
     }
   }

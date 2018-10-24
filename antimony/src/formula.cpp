@@ -661,8 +661,7 @@ vector<vector<string> > Formula::GetVariables() const
 {
   vector<vector<string> > vars;
   for (size_t comp=0; comp<m_components.size(); comp++) {
-    if (m_components[comp].second.size() > 0 &&
-        StringToDistributionType(m_components[comp].second[m_components[comp].second.size()-1]) == distUNKNOWN) {
+    if (m_components[comp].second.size() > 0) {
       vars.push_back(m_components[comp].second);
     }
   }

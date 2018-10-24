@@ -34,8 +34,9 @@ void compareFBCAnt(const string& base)
 
   string sbmlfile = dir + "fbc/" + base + ".xml";
   SBMLDocument* doc = readSBMLFromFile(sbmlfile.c_str());
+  elideMetaIds(doc);
   char* matching = writeSBMLToString(doc);
-  fail_unless(string(atosbml) == string(matching));
+  fail_unless(elideMetaIdsFromSBMLstring(string(atosbml)) == string(matching));
 
   delete doc;
   freeAll();
@@ -67,9 +68,10 @@ void compareFBCSBML(const string& base)
   char* sbmlrt = getCompSBMLString(NULL);
   string roundtrip = dir + base + ".xml";
   SBMLDocument* doc = readSBMLFromFile(sbmlfile.c_str());
+  elideMetaIds(doc);
   matching = writeSBMLToString(doc);
 
-  fail_unless(string(sbmlrt) == string(matching));
+  fail_unless(elideMetaIdsFromSBMLstring(string(sbmlrt)) == string(matching));
 
   delete doc;
   freeAll();
@@ -101,9 +103,10 @@ void compareFBCSBMLWithDifferences(const string& base)
   char* sbmlrt = getCompSBMLString(NULL);
   string roundtrip = dir + base + ".xml";
   SBMLDocument* doc = readSBMLFromFile(sbmlfile.c_str());
+  elideMetaIds(doc);
   matching = writeSBMLToString(doc);
 
-  fail_unless(string(sbmlrt) == string(matching));
+  fail_unless(elideMetaIdsFromSBMLstring(string(sbmlrt)) == string(matching));
 
   delete doc;
   freeAll();

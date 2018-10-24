@@ -50,7 +50,8 @@ enum var_type {varSpeciesUndef = 0,
                varStrand,
                varUnitDefinition,
                varDeleted,
-               varConstraint};
+               varConstraint,
+               varSboTermWrapper};
 /**
  * return_types are used in the API when requesting information about different symbols.  Each return_type refers to a different group of symbols, and are overlapping--i.e. a single symbol can be included in 'allGenes' and 'allReactions'. 
   * - allSymbols:        Every symbol of every type in Antimony
@@ -129,22 +130,6 @@ enum deletion_type {delFull = 0,
                     delKineticLaw,
                     delModifier,
                     delInteraction};
-
-/**
- * distribution_type values are used to determine which distribution defined in UncertML is being used.
- */
-enum distribution_type {
-    distUNKNOWN = 0
-  , distNORMAL
-  , distTRUNCNORMAL
-  , distUNIFORM
-  , distEXPONENTIAL
-  , distTRUNCEXPONENTIAL
-  , distGAMMA
-  , distTRUNCGAMMA
-  , distPOISSON
-  , distTRUNCPOISSON
-};
 
 /**
  * constraint_type values are used to determine what kind (and whether) of a simple constraint is being defined.

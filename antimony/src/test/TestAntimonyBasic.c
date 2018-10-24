@@ -7,6 +7,7 @@
 #include "libutil.h"
 #include "antimony_api.h"
 #include "sbml/SBMLTypes.h"
+#include "stringx.h"
 
 #include <string>
 #include <check.h>

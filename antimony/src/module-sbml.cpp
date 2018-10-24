@@ -157,6 +157,7 @@ void  SetSBaseReference(SBaseRef* sbr, SBase* target, Model* targetmodel, string
       metaid = baseid + SizeTToString(num);
       num++;
     }
+//     std::cerr << "set sbase reference meta id " << metaid << "\n";
     target->setMetaId(metaid);
   }
   sbr->setMetaIdRef(metaid);
@@ -227,6 +228,7 @@ void Module::FindOrCreateLocalVersionOf(const Variable* var, Model* sbmlmod)
   case varEvent:
   case varStrand:
   case varDeleted:
+  case varSboTermWrapper:
     assert(false); //Unhandled type
     break;
   }
@@ -760,6 +762,11 @@ void SynchronizeLocalAndGlobal(const vector<string>& paramname, const vector<str
 
 void Module::LoadSBML(const Model* sbml)
 {
+  if(sbml->isSetName())
+    SetDisplayName(sbml->getName());
+  PopulateCVTerms((SBase*)sbml);
+  if (sbml->isSetSBOTerm())
+    SetSBOTerm(sbml->getSBOTerm());
   SetAnnotation(sbml);
 #ifdef USE_COMP
   //Load submodels
@@ -1012,50 +1019,6 @@ void Module::LoadSBML(const Model* sbml)
       continue;
     }
     FunctionDefinition newfunction(3,1);
-#ifdef LIBSBML_HAS_PACKAGE_DISTRIB
-    const DistribFunctionDefinitionPlugin* dfdp = static_cast<const DistribFunctionDefinitionPlugin*>(function->getPlugin("distrib"));
-    if (dfdp != NULL) {
-      string exactMatch = DistributionTypeToString(GetExactTypeOf(dfdp));
-      if (sbmlname == exactMatch) continue;
-      else if (exactMatch != "Unknown") {
-        for (unsigned int e=0; e<allElements->getSize(); e++) {
-          SBase* element = static_cast<SBase*>(allElements->get(e));
-          element->renameSIdRefs(sbmlname, exactMatch);
-        }
-        sbmlname = exactMatch;
-        continue;
-      }
-      ASTNode* antdist = GetAntimonyFormOf(dfdp);
-      if (antdist != NULL) {
-        newfunction.setMath(antdist);
-        if (StringToDistributionType(sbmlname) != distUNKNOWN) {
-          for (unsigned int e=0; e<allElements->getSize(); e++) {
-            SBase* element = static_cast<SBase*>(allElements->get(e));
-            element->renameSIdRefs(sbmlname, sbmlname + "_");
-          }
-          sbmlname += "_";
-        }
-        newfunction.setId(sbmlname);
-        function = &newfunction;
-        delete antdist;
-      }
-    }
-#endif
-    if (!newfunction.isSetId()) {
-      distribution_type annotdist = GetDistributionFromAnnotation(annot, function->getNumArguments());
-      if (annotdist != distUNKNOWN) {
-        //It's annotated as one of the distribution functions
-        string newname = DistributionTypeToString(annotdist);
-        if (newname != sbmlname) {
-          //Rename the function to the Antimony standard
-          for (unsigned int e=0; e<allElements->getSize(); e++) {
-            SBase* element = static_cast<SBase*>(allElements->get(e));
-            element->renameSIdRefs(sbmlname, newname);
-          }
-        }
-        continue;
-      }
-    }
       
     UserFunction* uf = g_registry.GetUserFunction(sbmlname);
     bool duplicate = false;
@@ -1076,6 +1039,9 @@ void Module::LoadSBML(const Model* sbml)
     }
     g_registry.NewUserFunction(&sbmlname);
     uf = g_registry.GetUserFunction(sbmlname);
+    uf->PopulateCVTerms((SBase*)function);
+    if (function->isSetSBOTerm())
+      uf->SetSBOTerm(function->getSBOTerm());
     uf->SetAnnotation(function);
     for (unsigned int arg=0; arg<function->getNumArguments(); arg++) {
       string argument(parseASTNodeToString(function->getArgument(arg)));
@@ -1177,6 +1143,9 @@ void Module::LoadSBML(const Model* sbml)
       // Later versions of antimony now set the SBO terms to 410, so we might not need this code very long.
     }
     Variable* var = AddOrFindVariable(&sbmlname);
+    var->PopulateCVTerms((SBase*)compartment);
+    if (compartment->isSetSBOTerm())
+      var->SetSBOTerm(compartment->getSBOTerm());
     var->SetAnnotation(compartment);
     if (compartment->isSetName()) {
       var->SetDisplayName(compartment->getName());
@@ -1205,6 +1174,9 @@ void Module::LoadSBML(const Model* sbml)
       var->SetDisplayName(species->getName());
     }
     var->SetType(varSpeciesUndef);
+    var->PopulateCVTerms((SBase*)species);
+    if (species->isSetSBOTerm())
+      var->SetSBOTerm(species->getSBOTerm());
     var->SetAnnotation(species);
     var->SetSubstOnly(species->getHasOnlySubstanceUnits());
 
@@ -1308,6 +1280,9 @@ void Module::LoadSBML(const Model* sbml)
     const Parameter* parameter = sbml->getParameter(param);
     sbmlname = getNameFromSBMLObject(parameter, "_P");
     Variable* var = AddOrFindVariable(&sbmlname);
+    var->PopulateCVTerms((SBase*)parameter);
+    if (parameter->isSetSBOTerm())
+      var->SetSBOTerm(parameter->getSBOTerm());
     var->SetAnnotation(parameter);
     if (parameter->isSetName()) {
       var->SetDisplayName(parameter->getName());
@@ -1334,6 +1309,9 @@ void Module::LoadSBML(const Model* sbml)
     const Reaction* reaction = sbml->getReaction(rxn);
     sbmlname = getNameFromSBMLObject(reaction, "_J");
     Variable* var = AddOrFindVariable(&sbmlname);
+    var->PopulateCVTerms((SBase*)reaction);
+    if (reaction->isSetSBOTerm())
+      var->SetSBOTerm(reaction->getSBOTerm());
     var->SetAnnotation(reaction);
     if (reaction->isSetName()) {
       var->SetDisplayName(reaction->getName());
@@ -1636,8 +1614,19 @@ void Module::CreateSBMLModel(bool comp)
     m_sbml = newdoc;
   }
 
+  size_t numsubmods = GetNumVariablesOfType(subModules, true);
 #ifdef LIBSBML_HAS_PACKAGE_DISTRIB
-  if (m_usedDistributions.size() > 0) {
+  for (size_t sm = 0; sm < numsubmods; sm++) {
+    Variable* submod = GetNthVariableOfType(subModules, sm, true);
+    Module* module = submod->GetModule();
+    if (module->m_usedDistributions) {
+      m_usedDistributions = true;
+    }
+  }
+  if (m_usedDistributions) {
+    DistribExtension de;
+    string uri = de.getURI(m_sbml.getLevel(), m_sbml.getVersion(), 1);
+    m_sbml.enablePackage(uri, "distrib", true);
     m_sbml.setPackageRequired("distrib", true);
   }
 #endif
@@ -1647,9 +1636,20 @@ void Module::CreateSBMLModel(bool comp)
   }
 #endif
   Model* sbmlmod = m_sbml.createModel();
+
   sbmlmod->setId(m_modulename);
-  sbmlmod->setName(m_modulename);
-  TransferAnnotationTo(sbmlmod);
+  sbmlmod->setName(GetDisplayName());
+  sbmlmod->setMetaId(GetModuleName());
+  if (HasCVTerms()) {
+    BuildCVTerms(sbmlmod);
+  } else {
+    TransferAnnotationTo(sbmlmod);
+  }
+
+  if (GetSBOTerm()) {
+    sbmlmod->setSBOTerm(GetSBOTerm());
+  }
+
   string cc = g_registry.GetCC();
   map<const Variable*, Variable > syncmap;
   if (comp) {
@@ -1660,7 +1660,6 @@ void Module::CreateSBMLModel(bool comp)
 #ifdef USE_COMP
   CompSBMLDocumentPlugin* compdoc = static_cast<CompSBMLDocumentPlugin*>(m_sbml.getPlugin("comp"));
   CompModelPlugin* mplugin = static_cast<CompModelPlugin*>(sbmlmod->getPlugin("comp"));
-  size_t numsubmods = GetNumVariablesOfType(subModules, true);
 
   //Set of referenced variables, so that we can create replacedBy's to them if they are actually submodel variables.
   //Submodels!
@@ -1842,6 +1841,13 @@ void Module::CreateSBMLModel(bool comp)
     assert(userfunction != NULL);
     FunctionDefinition* fd = sbmlmod->createFunctionDefinition();
     fd->setId(userfunction->GetModuleName());
+    fd->setMetaId(GetModuleName()+"."+userfunction->GetModuleName());
+    if (userfunction->HasCVTerms()) {
+      userfunction->BuildCVTerms(fd);
+    }
+    if (userfunction->GetSBOTerm()) {
+      fd->setSBOTerm(userfunction->GetSBOTerm());
+    }
     ASTNode* math = parseStringToASTNode(userfunction->ToSBMLString());
     fd->setMath(math);
     if (userfunction->HasAnnotation()) {
@@ -1860,10 +1866,6 @@ void Module::CreateSBMLModel(bool comp)
   //  delete math;
   //}
 
-  //Predefined distributions:
-  for (set<distribution_type>::iterator dtype = m_usedDistributions.begin(); dtype != m_usedDistributions.end(); dtype++) {
-    addDistributionToModel(sbmlmod, *dtype);
-  }
 
   //Species
   size_t numspecies = GetNumVariablesOfType(allSpecies, comp);
@@ -1877,6 +1879,17 @@ void Module::CreateSBMLModel(bool comp)
     if (species->GetDisplayName() != "") {
       sbmlspecies->setName(species->GetDisplayName());
     }
+
+    // JKM set the meta id to module_name.species_id; this should be globally unique
+    sbmlspecies->setMetaId(GetModuleName()+"."+species->GetNameDelimitedBy(cc));
+    if (species->HasCVTerms()) {
+      // convert the stored list of CV terms to an annotation node
+      species->BuildCVTerms(sbmlspecies);
+    }
+    if (species->GetSBOTerm()) {
+      sbmlspecies->setSBOTerm(species->GetSBOTerm());
+    }
+
     sbmlspecies->setConstant(false); //There's no need to try to distinguish between const and var for species.
     if (species->GetIsConst()) {
       sbmlspecies->setBoundaryCondition(true);
@@ -1939,31 +1952,35 @@ void Module::CreateSBMLModel(bool comp)
   for (size_t ud=0; ud<numunits; ud++) {
     Variable* unit = GetNthVariableOfType(allUnits, ud, comp);
     UnitDef* unitdef = unit->GetUnitDef();
-    UnitDefinition* sbmlunitdef = unitdef->AddToSBML(sbmlmod, unit->GetNameDelimitedBy(cc), unit->GetDisplayName());
-    if (sbmlunitdef != NULL && unit->HasAnnotation()) {
-      unit->TransferAnnotationTo(sbmlunitdef);
-    }
-    vector<string> name = unit->GetName();
-    assert(!name.empty());
-    string unitname = unit->GetNameDelimitedBy(cc);
-    string finalname = name[name.size()-1];
-    if (finalname=="substance") {
-      sbmlmod->setSubstanceUnits(unitname);
-    }
-    if (finalname=="volume") {
-      sbmlmod->setVolumeUnits(unitname);
-    }
-    if (finalname=="area") {
-      sbmlmod->setAreaUnits(unitname);
-    }
-    if (finalname=="length") {
-      sbmlmod->setLengthUnits(unitname);
-    }
-    if (finalname=="time_unit") {
-      sbmlmod->setTimeUnits(unitname);
-    }
-    if (finalname=="extent") {
-      sbmlmod->setExtentUnits(unitname);
+    if (!unit->IsBuiltin()) {
+      UnitDefinition* sbmlunitdef = unitdef->AddToSBML(sbmlmod, unit->GetNameDelimitedBy(cc), unit->GetDisplayName());
+      if (sbmlunitdef != NULL && unit->HasAnnotation()) {
+        unit->TransferAnnotationTo(sbmlunitdef);
+      }
+      vector<string> name = unit->GetName();
+      assert(!name.empty());
+      string unitname = unit->GetNameDelimitedBy(cc);
+      if (unit->IsBuiltin())
+        unitname = unit->GetName().back();
+      string finalname = name[name.size()-1];
+      if (finalname=="substance") {
+        sbmlmod->setSubstanceUnits(unitname);
+      }
+      if (finalname=="volume") {
+        sbmlmod->setVolumeUnits(unitname);
+      }
+      if (finalname=="area") {
+        sbmlmod->setAreaUnits(unitname);
+      }
+      if (finalname=="length") {
+        sbmlmod->setLengthUnits(unitname);
+      }
+      if (finalname=="time_unit") {
+        sbmlmod->setTimeUnits(unitname);
+      }
+      if (finalname=="extent") {
+        sbmlmod->setExtentUnits(unitname);
+      }
     }
   }
 
@@ -1998,6 +2015,13 @@ void Module::CreateSBMLModel(bool comp)
     const Variable* compartment = GetNthVariableOfType(allCompartments, cmpt, comp);
     Compartment* sbmlcomp = sbmlmod->createCompartment();
     sbmlcomp->setId(compartment->GetNameDelimitedBy(cc));
+    sbmlcomp->setMetaId(GetModuleName()+"."+compartment->GetNameDelimitedBy(cc));
+    if (compartment->HasCVTerms()) {
+      compartment->BuildCVTerms(sbmlcomp);
+    }
+    if (compartment->GetSBOTerm()) {
+      sbmlcomp->setSBOTerm(compartment->GetSBOTerm());
+    }
     if (compartment->GetDisplayName() != "") {
       sbmlcomp->setName(compartment->GetDisplayName());
     }
@@ -2013,7 +2037,7 @@ void Module::CreateSBMLModel(bool comp)
     }
     Variable* unitvar = compartment->GetUnitVariable();
     if (unitvar != NULL) {
-      sbmlcomp->setUnits(unitvar->GetNameDelimitedBy(cc));
+      sbmlcomp->setUnits(unitvar->GetNameOrBuiltin(cc));
     }
     SetAssignmentFor(sbmlmod, compartment, syncmap, comp, referencedVars);
     sbmlcomp->setSpatialDimensions(dim);
@@ -2026,6 +2050,13 @@ void Module::CreateSBMLModel(bool comp)
     const Formula*  formula = formvar->GetFormula();
     Parameter* param = sbmlmod->createParameter();
     param->setId(formvar->GetNameDelimitedBy(cc));
+    param->setMetaId(GetModuleName()+"."+formvar->GetNameDelimitedBy(cc));
+    if (formvar->HasCVTerms()) {
+      formvar->BuildCVTerms(param);
+    }
+    if (formvar->GetSBOTerm()) {
+      param->setSBOTerm(formvar->GetSBOTerm());
+    }
     if (formvar->GetDisplayName() != "") {
       param->setName(formvar->GetDisplayName());
     }
@@ -2035,7 +2066,7 @@ void Module::CreateSBMLModel(bool comp)
     }
     Variable* unitvar = formvar->GetUnitVariable();
     if (unitvar != NULL) {
-      param->setUnits(unitvar->GetNameDelimitedBy(cc));
+      param->setUnits(unitvar->GetNameOrBuiltin(cc));
     }
     SetAssignmentFor(sbmlmod, formvar, syncmap, comp, referencedVars);
     formula_type ftype = formvar->GetFormulaType();
@@ -2053,6 +2084,13 @@ void Module::CreateSBMLModel(bool comp)
     Reaction* sbmlrxn = sbmlmod->createReaction();
     sbmlrxn->setFast(false);
     sbmlrxn->setId(rxnvar->GetNameDelimitedBy(cc));
+    sbmlrxn->setMetaId(GetModuleName()+"."+rxnvar->GetNameDelimitedBy(cc));
+    if (rxnvar->HasCVTerms()) {
+      rxnvar->BuildCVTerms(sbmlrxn);
+    }
+    if (rxnvar->GetSBOTerm()) {
+      sbmlrxn->setSBOTerm(rxnvar->GetSBOTerm());
+    }
     if (rxnvar->GetDisplayName() != "") {
       sbmlrxn->setName(rxnvar->GetDisplayName());
     }
@@ -2210,14 +2248,14 @@ void Module::CreateSBMLModel(bool comp)
     const AntimonyConstraint* antconstraint = convar->GetConstraint();
     const Formula*  formula = convar->GetFormula();
     Constraint* constraint = sbmlmod->createConstraint();
-    constraint->setMetaId(convar->GetNameDelimitedBy(cc));
+    constraint->setMetaId(convar->GetNamespace() + "_" + convar->GetNameDelimitedBy(cc));
 
     if (convar->GetDisplayName() != "") {
 #if LIBSBML_VERSION >= 51103
       constraint->setMessage(convar->GetDisplayName(), true); // <- have to update libsbml for this to work.
 #endif
     }
-    constraint->setMetaId(convar->GetNameDelimitedBy(cc));
+    constraint->setMetaId(convar->GetNamespace() + "_" + convar->GetNameDelimitedBy(cc));
     constraint->setMath(antconstraint->getASTNode());
 #ifdef LIBSBML_HAS_PACKAGE_FBC
     //We need to check to see if the constraint can be translated to an FBC constraint.
@@ -2233,10 +2271,10 @@ void Module::CreateSBMLModel(bool comp)
     //if (fvname[fvname.size()-1] == "rateOf" ||
     //    fvname[fvname.size()-1] == "rate" ||
     //    StringToDistributionType(fvname[fvname.size()-1]) != distUNKNOWN) 
-    if (StringToDistributionType(fvname[fvname.size() - 1]) != distUNKNOWN)
-    {
-      continue;
-    }
+    //if (StringToDistributionType(fvname[fvname.size() - 1]) != distUNKNOWN)
+    //{
+    //  continue;
+    //}
     Parameter* param = sbmlmod->createParameter();
     param->setId(formvar->GetNameDelimitedBy(cc));
     if (formvar->GetDisplayName() != "") {
@@ -2245,7 +2283,7 @@ void Module::CreateSBMLModel(bool comp)
     param->setConstant(formvar->GetIsConst());
     Variable* unitvar = formvar->GetUnitVariable();
     if (unitvar != NULL) {
-      param->setUnits(unitvar->GetNameDelimitedBy(cc));
+      param->setUnits(unitvar->GetNameOrBuiltin(cc));
     }
   }
 
@@ -2483,6 +2521,7 @@ void CreateImpliedDeletion(Submodel* submodel, SBase* sbase, SBMLDocument& sbml,
         break;
       }
     }
+//     std::cerr << "implied deletion meta id " << metaid << "\n";
     sbase->setMetaId(metaid);
     SBaseRef* subsbr = new SBaseRef();
     subsbr->setMetaIdRef(metaid);

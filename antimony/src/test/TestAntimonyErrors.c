@@ -157,7 +157,7 @@ void testError(const string& antimony, const string& error)
 
 START_TEST (no_end)
 {
-  testError("model foo\n  a=3\n", "Error in model string, line 2:  syntax error, unexpected end of file, expecting '-' or '+' or => or '<'");
+  testError("model foo\n  a=3\n", "Error in model string, line 2:  syntax error, unexpected end of file");
 }
 END_TEST
 
