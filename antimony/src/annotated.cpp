@@ -34,7 +34,7 @@ bool Annotated::HasAnnotation() const
   return m_annotation.getNumChildren()>0;
 }
 
-ModelQualifierType_t Annotated::DecodeModelQualifier(const string& qual) const
+ModelQualifierType_t Annotated::DecodeModelQualifier(const string& qual)
 {
   if(qual == "is" || qual == "identity" || qual == "model_entity_is")
     return BQM_IS;
@@ -50,7 +50,7 @@ ModelQualifierType_t Annotated::DecodeModelQualifier(const string& qual) const
     return BQM_UNKNOWN;
 }
 
-string Annotated::EncodeModelQualifier(ModelQualifierType_t q) const
+string Annotated::EncodeModelQualifier(ModelQualifierType_t q)
 {
   switch(q) {
     case BQM_IS:
@@ -69,7 +69,7 @@ string Annotated::EncodeModelQualifier(ModelQualifierType_t q) const
   }
 }
 
-BiolQualifierType_t Annotated::DecodeBiolQualifier(const string& qual) const
+BiolQualifierType_t Annotated::DecodeBiolQualifier(const string& qual)
 {
   if(qual == "is" || qual == "identity" || qual == "biological_entity_is")
     return BQB_IS;
@@ -101,7 +101,7 @@ BiolQualifierType_t Annotated::DecodeBiolQualifier(const string& qual) const
     return BQB_UNKNOWN;
 }
 
-string Annotated::EncodeBiolQualifier(BiolQualifierType_t q) const
+string Annotated::EncodeBiolQualifier(BiolQualifierType_t q)
 {
   switch (q) {
     case BQB_IS:
@@ -136,14 +136,22 @@ string Annotated::EncodeBiolQualifier(BiolQualifierType_t q) const
   }
 }
 
+bool Annotated::isBiomodelsQual(const std::string& s)
+{
+  if (DecodeModelQualifier(s) == BQM_UNKNOWN && DecodeBiolQualifier(s) == BQB_UNKNOWN)
+    return false;
+  else
+    return true;
+}
+
 void Annotated::AppendModelQualifiers(const ModelQualifierType_t qual, const std::vector<std::string>& resources)
 {
-  m_model_quals.push_back(std::make_pair(qual,resources));
+  m_model_quals[qual].insert(m_model_quals[qual].end(),resources.begin(),resources.end());
 }
 
 void Annotated::AppendBiolQualifiers(const BiolQualifierType_t qual, const std::vector<std::string>& resources)
 {
-  m_biol_quals.push_back(std::make_pair(qual,resources));
+  m_biol_quals[qual].insert(m_biol_quals[qual].end(),resources.begin(),resources.end());
 }
 
 bool Annotated::HasCVTerms() const

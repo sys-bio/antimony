@@ -920,6 +920,21 @@ void Registry::RevertToPreviousModule()
   assert(m_currentModules.size() > 0);
 }
 
+bool Registry::IsRegisteredPrefix(const std::string& prefix) const
+{
+  return m_prefixes.find(prefix) != m_prefixes.end();
+}
+
+string Registry::GetUriForPrefix(const std::string& prefix) const
+{
+  return m_prefixes.find(prefix)->second;
+}
+
+void Registry::SetPrefix(const std::string& prefix, const std::string& uri)
+{
+  m_prefixes[prefix] = uri;
+}
+
 bool Registry::AddVariableToCurrentExportList(Variable* export_var)
 {
   if (m_isfunction) {

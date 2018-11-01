@@ -65,6 +65,9 @@ private:
 
   std::map<std::pair<std::string, std::string>, std::string> m_sbindex;
 
+  // maps a prefix to a full uri
+  std::map<std::string,std::string> m_prefixes;
+
   bool m_writeNameToSBML;
   bool m_writeTimestampToSBML;
   bool m_bareNumbersAreDimensionless;
@@ -118,6 +121,11 @@ public:
   bool NewCurrentModule(const std::string* name, const std::string* displayname=NULL, bool ismain=false);
   Module* CurrentModule();
   void RevertToPreviousModule();
+
+  //RDF prefixes
+  bool IsRegisteredPrefix(const std::string& prefix) const;
+  std::string GetUriForPrefix(const std::string& prefix) const;
+  void SetPrefix(const std::string& prefix, const std::string& uri);
 
   //Functions
   void NewUserFunction(const std::string* name);
