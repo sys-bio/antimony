@@ -31,6 +31,8 @@ void FixName(std::map<std::vector<std::string>, Variable*>& varmap);
 void FixUnitName(std::string& name);
 
 bool CaselessStrCmp(const std::string& lhs, const std::string& rhs);
+// returns true if the string is numeric, false otherwise
+bool IsNumeric(const std::string& s);
 
 // JKM escapes double quotes for use with gitdiffit
 std::string escapeDoubleQuotes(std::string s);

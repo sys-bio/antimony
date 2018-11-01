@@ -287,6 +287,15 @@ bool CaselessStrCmp(const string& lhs, const string& rhs)
 
 } /* CaselessStrCmp */
 
+bool IsNumeric(const string& s)
+{
+  for (string::const_iterator i(s.begin()); i!=s.end(); ++i) {
+    if (!isdigit(*i))
+      return false;
+  }
+  return true;
+}
+
 void FixUnitName(string& name)
 {
   if (name.size()>2 && name[name.size()-1]=='s' && name[name.size()-2]!='_' 
