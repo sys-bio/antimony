@@ -118,7 +118,7 @@ string Annotated::EncodeModelQualifier(ModelQualifierType_t q)
 {
   switch(q) {
     case BQM_IS:
-      return "is";
+      return "bqm:is";
     case BQM_IS_DESCRIBED_BY:
       return "description";
     case BQM_IS_DERIVED_FROM:
@@ -298,7 +298,7 @@ string Annotated::CreateCVTermsAntimonySyntax(const string& elt_id, const string
       // align each subsequent uri with the first one
       if (j!=i->second.begin())
         term += ",\n"+subindent;
-      term += "\""+*j+"\"";
+      term += "<"+*j+">";
     }
     result += term+"\n";
   }
@@ -310,8 +310,8 @@ string Annotated::CreateCVTermsAntimonySyntax(const string& elt_id, const string
     for(vector<string>::const_iterator j(i->second.begin()); j!=i->second.end(); ++j) {
       // align each subsequent uri with the first one
       if (j!=i->second.begin())
-        term += ",\n"+subindent;
-      term += "\""+*j+"\"";
+        term += "\n"+subindent;
+      term += "<"+*j+">";
     }
     result += term+"\n";
   }
