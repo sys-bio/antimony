@@ -3366,11 +3366,16 @@ string eat_whitespace_and_comments()
   while ((is_whitespace(cc) || cc == '/' || cc == '#')&& !g_registry.input->eof()) {
     result += cc;
     if (cc == '/') {
-      g_registry.input->get(cc);
-      if (cc == '/')
+      if (g_registry.input->peek() == '/') {
         result += consume_rest_of_line();
+        g_registry.input->get(cc);
+      } else {
+        g_registry.input->unget();
+        return result;
+      }
     } else if (cc == '#') {
       result += consume_rest_of_line();
+      g_registry.input->get(cc);
     } else
       g_registry.input->get(cc);
   }
@@ -3490,10 +3495,10 @@ public:
 // returns zero if it matches a predicate, non-zero otherwise (and puts back everything it read in the latter)
 PredicateResult try_parse_predicate()
 {
-  cerr << "    try_parse_predicate\n";
+//   cerr << "    try_parse_predicate\n";
   char cc = 0;
   g_registry.input->get(cc);
-  cerr << "    cc " << cc << "\n";
+//   cerr << "    cc " << cc << "\n";
 //   cerr << "      " << cc << "\n";
   // first check if it's a built-in predicate (the biomodels quals) or prefixed predicate
   if (cc > 0 && (isalpha(cc) || cc == '_')) {
@@ -3502,7 +3507,7 @@ PredicateResult try_parse_predicate()
       first_word += cc;
       g_registry.input->get(cc);
     }
-    cerr << "    pred " << first_word << "\n";
+//     cerr << "    pred " << first_word << "\n";
 
     // is a prefixed uri?
     if (cc != ':') {
@@ -3629,9 +3634,9 @@ pair<int,string> make_builtin_prefixed_ontology_uri(const string& prefix, const 
 
 ObjectResult try_parse_object()
 {
-  cerr << "      try_parse_object\n";
+//   cerr << "      try_parse_object\n";
   char cc = 0;
-  string ws = eat_whitespace_and_comments();
+  string ws = eat_whitespace();
   g_registry.input->get(cc);
   // first check if it's a built-in predicate (the biomodels quals) or prefixed predicate
   if (cc > 0 && (isalpha(cc) || cc == '_')) {
@@ -3643,8 +3648,33 @@ ObjectResult try_parse_object()
 
     // is a prefixed uri?
     if (cc != ':' || g_registry.input->eof()) {
-      putback_string(first_word+":");
-      return ObjectResult(2);
+      // not a prefixed uri
+      // is it a module, function, or variable name?
+      Module* module = g_registry.GetModule(first_word);
+      Module* current_module = g_registry.CurrentModule();
+      Variable* var=NULL;
+      if (current_module) {
+        vector<string> fullname;
+        fullname.push_back(first_word);
+        var = current_module->GetVariable(fullname);
+      }
+      UserFunction* f = g_registry.GetUserFunction(first_word);
+
+      stringstream ss;
+      if (var) {
+        ss << "#" << var->GetName().at(0);
+        return ObjectResult(0, ws+first_word+eat_whitespace_and_comments(), ss.str());
+      } else if (f) {
+        ss << "#" << f->GetModuleName();
+        return ObjectResult(0, ws+first_word+eat_whitespace_and_comments(), ss.str());
+      } else if (module) {
+        ss << "#" << module->GetModuleName();
+        return ObjectResult(0, ws+first_word+eat_whitespace_and_comments(), ss.str());
+      }
+      else {
+        putback_string(first_word+":");
+        return ObjectResult(2);
+      }
     }
 
     // check the prefixed uri
@@ -3665,6 +3695,7 @@ ObjectResult try_parse_object()
       comma = true;
     } else
       g_registry.input->unget();
+    extra += eat_whitespace_and_comments();
 
     pair<int,string> uri_result = make_builtin_prefixed_ontology_uri(first_word,second_word);
     if (!uri_result.first) {
@@ -3691,9 +3722,10 @@ ObjectResult try_parse_object()
         comma = true;
       } else
         g_registry.input->unget();
+      extra += eat_whitespace_and_comments();
 
       // it is an absolute uri
-      return ObjectResult(0,"<"+uri+">",uri).combine(comma ? try_parse_object() : ObjectResult(11));
+      return ObjectResult(0,"<"+uri+">"+extra,uri).combine(comma ? try_parse_object() : ObjectResult(11));
     }
     else {
       // it's not an absolute uri
@@ -3745,7 +3777,7 @@ public:
   string toString() const {
     stringstream ss;
     for (TermMap::const_iterator i(m_terms_for.begin()); i!=m_terms_for.end(); ++i) {
-      ss << "  " << i->first << ": ";
+      ss << "  " << i->first << " ";
       for (vector<string>::const_iterator j(i->second.begin()); j!=i->second.end(); ++j) {
         if (j != i->second.begin())
           ss << ", ";
@@ -3765,7 +3797,7 @@ public:
 // parse multiple predicates if encountered
 PredicatePart try_parse_predicate_part()
 {
-  cerr << "  try_parse_predicate_part\n";
+//   cerr << "  try_parse_predicate_part\n";
   string ws1 = eat_whitespace();
 
   // check to see if the next token is a predicate (biomodels qual or prefixed uri)
@@ -3790,17 +3822,22 @@ PredicatePart try_parse_predicate_part()
 // returns zero if it matches an annotation, non-zero otherwise (and puts back everything it read in the latter)
 int try_parse_annotation(char cc)
 {
-  cerr << "try_parse_annotation\n";
+//   cerr << "try_parse_annotation\n";
 
   // annotation should start with a variable name
   if (cc > 0 && (isalpha(cc) || cc == '_')) {
     string word;
-    while (cc > 0 && (isalpha(cc) || isdigit(cc) || cc == '_') && !g_registry.input->eof()) {
+    while (cc > 0 && (isalpha(cc) || isdigit(cc) || cc == '_') && !g_registry.input->eof() && !g_registry.input->bad() && !g_registry.input->fail()) {
       word += cc;
+      //cerr << cc << "\n";
+      //cerr << word.size() << std::endl;
       g_registry.input->get(cc);
     }
+    //cerr << "advanced\n";
+    if (g_registry.input->eof())
+      return 1;
     g_registry.input->unget();
-    cerr << "  " << word << "\n";
+    //cerr << "  " << word << "\n";
 
     // determine the type of entity
     Module* module = g_registry.GetModule(word);
@@ -3830,7 +3867,7 @@ int try_parse_annotation(char cc)
       }
 
       int num_newlines = count_newlines_in(word+predicate_part.getParsedText());
-      cerr << num_newlines << " new lines\n";
+//       cerr << num_newlines << " new lines\n";
       antimony_yylloc_last_line += num_newlines;
 
       return 0;
@@ -3847,6 +3884,9 @@ int try_parse_annotation(char cc)
 int antimony_yylex(void)
 {
   char cc = 0;
+  if (g_registry.input->bad() || g_registry.input->fail()) {
+    return ERROR;
+  }
   if (g_registry.GetEOFFlag()) {
     g_registry.ClearEOFFlag();
     if (g_registry.SwitchToPreviousFile()) {
@@ -3908,11 +3948,35 @@ int antimony_yylex(void)
   while (!parsed_annot) {
     char next = g_registry.input->peek();
     parsed_annot = try_parse_annotation(cc);
+    if (g_registry.input->eof()) {
+      return 0;
+    }
+    if (g_registry.GetEOFFlag() || g_registry.input->eof() || g_registry.input->bad() || g_registry.input->fail()) {
+      g_registry.ClearEOFFlag();
+      if (g_registry.SwitchToPreviousFile()) {
+        if (g_registry.CurrentModule()->Finalize()) {
+          std::cerr << "failed to finalize module\n";
+          return ERROR;
+        }
+        return 0;
+      }
+      else {
+        antimony_yylloc_first_line = antimony_yylloc_last_lines.back();
+        antimony_yylloc_last_line = antimony_yylloc_last_lines.back();
+        antimony_yylloc_last_lines.pop_back();
+        std::cerr << "eof return\n";
+        return antimony_yylex();
+      }
+    }
+    if (g_registry.input->bad() || g_registry.input->fail()) {
+      std::cerr << "just bad\n";
+      return ERROR;
+    }
     // if success, try again until no more annotations left
     if (!parsed_annot) {
       g_registry.input->get(cc);
     }
-    cerr << "  ->" << cc << (char)g_registry.input->peek() << "\n";
+//     cerr << "  ->" << cc << (char)g_registry.input->peek() << "\n";
     if ((next != g_registry.input->peek()) && parsed_annot) {
       cerr << "next was " << next << " vs. " << (char)g_registry.input->peek() <<
       "(" << g_registry.input->peek() << ")" <<
@@ -4027,7 +4091,7 @@ int antimony_yylex(void)
       }
       return NUM;
     }
-    
+
     if (g_registry.IsFunction(word) != NULL) {
       antimony_yylval.word = g_registry.IsFunction(word);
       return FUNCTION;

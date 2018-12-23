@@ -54,7 +54,7 @@ string Annotated::EncodeModelQualifier(ModelQualifierType_t q)
 {
   switch(q) {
     case BQM_IS:
-      return "model_entity_is";
+      return "is";
     case BQM_IS_DESCRIBED_BY:
       return "description";
     case BQM_IS_DERIVED_FROM:
@@ -105,13 +105,13 @@ string Annotated::EncodeBiolQualifier(BiolQualifierType_t q)
 {
   switch (q) {
     case BQB_IS:
-      return "identity";
+      return "is";
     case BQB_HAS_PART:
       return "part";
     case BQB_IS_PART_OF:
       return "parthood";
     case BQB_IS_VERSION_OF:
-      return "hypernym";
+      return "isVersionOf";
     case BQB_HAS_VERSION:
       return "version";
     case BQB_IS_HOMOLOG_TO:
@@ -127,7 +127,7 @@ string Annotated::EncodeBiolQualifier(BiolQualifierType_t q)
     case BQB_HAS_PROPERTY:
       return "property";
     case BQB_IS_PROPERTY_OF:
-      return "propertyBearer";
+      return "isPropertyOf";
     case BQB_HAS_TAXON:
       return "taxon";
     case BQB_UNKNOWN:
