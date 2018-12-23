@@ -23,6 +23,9 @@ std::vector<std::string> ResourcesToVector(const CVTerm* t) const;
 
 int m_sboTerm;
 
+static bool ModelQualifierURIMatches  (const std::string& uri, const std::string& qual1, const std::string& qual2);
+static bool BiologyQualifierURIMatches(const std::string& uri, const std::string& qual1, const std::string& qual2);
+
 public:
   Annotated() : m_sboTerm(0) {};
   ~Annotated() {};
@@ -40,6 +43,8 @@ public:
   static std::string EncodeModelQualifier(ModelQualifierType_t q);
   // converts a string into BiolQualifierType_t
   static BiolQualifierType_t  DecodeBiolQualifier(const std::string& qual);
+  static ModelQualifierType_t DecodeModelQualifierURI(const std::string& uri);
+  static BiolQualifierType_t DecodeBiologyQualifierURI(const std::string& uri);
   // vice-versa
   static std::string EncodeBiolQualifier(BiolQualifierType_t q);
   // returns true if the string corresponds to a biomodels qualifier
