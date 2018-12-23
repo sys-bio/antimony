@@ -50,6 +50,70 @@ ModelQualifierType_t Annotated::DecodeModelQualifier(const string& qual)
     return BQM_UNKNOWN;
 }
 
+bool Annotated::ModelQualifierURIMatches(const string& uri, const string& qual1, const string& qual2)
+{
+  string base_uri_http  = "http://biomodels.net/model-qualifiers/";
+  string base_uri_https = "https://biomodels.net/model-qualifiers/";
+  return uri == base_uri_http +qual1 || uri == base_uri_http +qual2 ||
+         uri == base_uri_https+qual1 || uri == base_uri_https+qual2;
+}
+
+ModelQualifierType_t Annotated::DecodeModelQualifierURI(const string& uri)
+{
+  if(ModelQualifierURIMatches(uri, "is", "identity"))
+    return BQM_IS;
+  else if(ModelQualifierURIMatches(uri, "isDescribedBy", "description"))
+    return BQM_IS_DESCRIBED_BY;
+  else if(ModelQualifierURIMatches(uri, "isDerivedFrom", "origin"))
+    return BQM_IS_DERIVED_FROM;
+  else if(ModelQualifierURIMatches(uri, "isInstanceOf", "class"))
+    return BQM_IS_INSTANCE_OF;
+  else if(ModelQualifierURIMatches(uri, "hasInstance", "instance"))
+    return BQM_HAS_INSTANCE;
+  else
+    return BQM_UNKNOWN;
+}
+
+bool Annotated::BiologyQualifierURIMatches(const string& uri, const string& qual1, const string& qual2)
+{
+  string base_uri_http  = "http://biomodels.net/biology-qualifiers/";
+  string base_uri_https = "https://biomodels.net/biology-qualifiers/";
+  return uri == base_uri_http +qual1 || uri == base_uri_http +qual2 ||
+         uri == base_uri_https+qual1 || uri == base_uri_https+qual2;
+}
+
+BiolQualifierType_t Annotated::DecodeBiologyQualifierURI(const string& uri)
+{
+  if(BiologyQualifierURIMatches(uri, "is", "identity"))
+    return BQB_IS;
+  else if(BiologyQualifierURIMatches(uri, "hasPart", "part"))
+    return BQB_HAS_PART;
+  else if(BiologyQualifierURIMatches(uri, "isPartOf", "parthood"))
+    return BQB_IS_PART_OF;
+  else if(BiologyQualifierURIMatches(uri, "isVersionOf", "hypernym"))
+    return BQB_IS_VERSION_OF;
+  else if(BiologyQualifierURIMatches(uri, "hasVersion", "version"))
+    return BQB_HAS_VERSION;
+  else if(BiologyQualifierURIMatches(uri, "isHomologTo", "homolog"))
+    return BQB_IS_HOMOLOG_TO;
+  else if(BiologyQualifierURIMatches(uri, "isDescribedBy", "description"))
+    return BQB_IS_DESCRIBED_BY;
+  else if(BiologyQualifierURIMatches(uri, "isEncodedBy", "encoder"))
+    return BQB_IS_ENCODED_BY;
+  else if(BiologyQualifierURIMatches(uri, "encodes", "encodement"))
+    return BQB_ENCODES;
+  else if(BiologyQualifierURIMatches(uri, "occursIn", "container"))
+    return BQB_OCCURS_IN;
+  else if(BiologyQualifierURIMatches(uri, "hasProperty", "property"))
+    return BQB_HAS_PROPERTY;
+  else if(BiologyQualifierURIMatches(uri, "isPropertyOf", "propertyBearer"))
+    return BQB_IS_PROPERTY_OF;
+  else if(BiologyQualifierURIMatches(uri, "hasTaxon", "taxon"))
+    return BQB_HAS_TAXON;
+  else
+    return BQB_UNKNOWN;
+}
+
 string Annotated::EncodeModelQualifier(ModelQualifierType_t q)
 {
   switch(q) {

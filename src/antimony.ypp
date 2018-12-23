@@ -1064,6 +1064,18 @@ public:
     return ss.str();
   }
 
+  // add cv terms if possible to any annotatable object
+  void AddCVTerms(Annotated* a) {
+    for (TermMap::const_iterator i(m_terms_for.begin()); i!=m_terms_for.end(); ++i) {
+      ModelQualifierType_t mq = Annotated::DecodeModelQualifierURI  (i->first);
+      if (mq != BQM_UNKNOWN)
+        a->AppendModelQualifiers(mq, i->second);
+      BiolQualifierType_t bq  = Annotated::DecodeBiologyQualifierURI(i->first);
+      if (bq != BQB_UNKNOWN)
+        a->AppendBiolQualifiers(bq, i->second);
+    }
+  }
+
   int m_e;
   string m_parsed;
   // contains all the objects for a given predicate
@@ -1136,10 +1148,13 @@ int try_parse_annotation(char cc)
       }
       if (f) {
         cerr << "function " << f->GetModuleName() << "\n" << predicate_part.toString();
+        predicate_part.AddCVTerms(f);
       } else if (var) {
         cerr << "variable " << var->GetName().at(0) << "\n" << predicate_part.toString();
+        predicate_part.AddCVTerms(var);
       } else if (module) {
         cerr << "module " << module->GetModuleName() << "\n" << predicate_part.toString();
+        predicate_part.AddCVTerms(module);
       }
 
       int num_newlines = count_newlines_in(word+predicate_part.getParsedText());
@@ -1231,7 +1246,6 @@ int antimony_yylex(void)
       g_registry.ClearEOFFlag();
       if (g_registry.SwitchToPreviousFile()) {
         if (g_registry.CurrentModule()->Finalize()) {
-          std::cerr << "failed to finalize module\n";
           return ERROR;
         }
         return 0;
@@ -1240,12 +1254,10 @@ int antimony_yylex(void)
         antimony_yylloc_first_line = antimony_yylloc_last_lines.back();
         antimony_yylloc_last_line = antimony_yylloc_last_lines.back();
         antimony_yylloc_last_lines.pop_back();
-        std::cerr << "eof return\n";
         return antimony_yylex();
       }
     }
     if (g_registry.input->bad() || g_registry.input->fail()) {
-      std::cerr << "just bad\n";
       return ERROR;
     }
     // if success, try again until no more annotations left
