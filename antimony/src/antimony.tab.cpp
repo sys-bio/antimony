@@ -3634,10 +3634,10 @@ pair<int,string> make_builtin_prefixed_ontology_uri(const string& prefix, const 
 
 ObjectResult try_parse_object()
 {
-//   cerr << "      try_parse_object\n";
   char cc = 0;
   string ws = eat_whitespace();
   g_registry.input->get(cc);
+  cerr << "      try_parse_object " << cc << "\n";
   // first check if it's a built-in predicate (the biomodels quals) or prefixed predicate
   if (cc > 0 && (isalpha(cc) || cc == '_')) {
     string first_word;
@@ -3734,7 +3734,10 @@ ObjectResult try_parse_object()
       putback_string("<"+uri);
       return ObjectResult(4);
     }
-  } else return ObjectResult(5);
+  } else {
+    g_registry.input->unget();
+    return ObjectResult(5);
+  }
 }
 
 class PredicatePart
@@ -3824,6 +3827,8 @@ PredicatePart try_parse_predicate_part()
   // try to parse the object: an ontology term or model entity (in composite annotations)
   ObjectResult object_result = try_parse_object();
   if (object_result.getErrorCode()) {
+    cerr << "  try_parse_object failed " << object_result.getErrorCode() << "\n";
+    cerr << (char)g_registry.input->peek() << "\n";
     putback_string(ws1+predicate_result.getParsedText()+ws2);
     return PredicatePart(2);
   }
@@ -3834,7 +3839,7 @@ PredicatePart try_parse_predicate_part()
 // returns zero if it matches an annotation, non-zero otherwise (and puts back everything it read in the latter)
 int try_parse_annotation(char cc)
 {
-//   cerr << "try_parse_annotation\n";
+  cerr << "try_parse_annotation\n";
 
   // annotation should start with a variable name
   if (cc > 0 && (isalpha(cc) || cc == '_')) {
@@ -3849,7 +3854,7 @@ int try_parse_annotation(char cc)
     if (g_registry.input->eof())
       return 1;
     g_registry.input->unget();
-    //cerr << "  " << word << "\n";
+    cerr << "  " << word << "\n";
 
     // determine the type of entity
     Module* module = g_registry.GetModule(word);
@@ -3963,6 +3968,10 @@ int antimony_yylex(void)
   while (!parsed_annot) {
     char next = g_registry.input->peek();
     parsed_annot = try_parse_annotation(cc);
+    cerr << "  try_parse_annotation result " << parsed_annot << "\n";
+    cerr << "  peek " << g_registry.input->peek() << "\n";
+    cerr << "  next " << next << "\n";
+    cerr << "  eof " << g_registry.input->eof() << "\n";
     if (g_registry.input->eof()) {
       return 0;
     }
