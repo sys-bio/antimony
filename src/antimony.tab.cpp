@@ -3637,7 +3637,7 @@ ObjectResult try_parse_object()
   char cc = 0;
   string ws = eat_whitespace();
   g_registry.input->get(cc);
-  cerr << "      try_parse_object " << cc << "\n";
+  // cerr << "      try_parse_object " << cc << "\n";
   // first check if it's a built-in predicate (the biomodels quals) or prefixed predicate
   if (cc > 0 && (isalpha(cc) || cc == '_')) {
     string first_word;
@@ -3827,8 +3827,6 @@ PredicatePart try_parse_predicate_part()
   // try to parse the object: an ontology term or model entity (in composite annotations)
   ObjectResult object_result = try_parse_object();
   if (object_result.getErrorCode()) {
-    cerr << "  try_parse_object failed " << object_result.getErrorCode() << "\n";
-    cerr << (char)g_registry.input->peek() << "\n";
     putback_string(ws1+predicate_result.getParsedText()+ws2);
     return PredicatePart(2);
   }
@@ -3839,22 +3837,16 @@ PredicatePart try_parse_predicate_part()
 // returns zero if it matches an annotation, non-zero otherwise (and puts back everything it read in the latter)
 int try_parse_annotation(char cc)
 {
-  cerr << "try_parse_annotation\n";
-
   // annotation should start with a variable name
   if (cc > 0 && (isalpha(cc) || cc == '_')) {
     string word;
     while (cc > 0 && (isalpha(cc) || isdigit(cc) || cc == '_') && !g_registry.input->eof() && !g_registry.input->bad() && !g_registry.input->fail()) {
       word += cc;
-      //cerr << cc << "\n";
-      //cerr << word.size() << std::endl;
       g_registry.input->get(cc);
     }
-    //cerr << "advanced\n";
     if (g_registry.input->eof())
       return 1;
     g_registry.input->unget();
-    cerr << "  " << word << "\n";
 
     // determine the type of entity
     Module* module = g_registry.GetModule(word);
@@ -3887,7 +3879,6 @@ int try_parse_annotation(char cc)
       }
 
       int num_newlines = count_newlines_in(word+predicate_part.getParsedText());
-//       cerr << num_newlines << " new lines\n";
       antimony_yylloc_last_line += num_newlines;
 
       return 0;
@@ -3963,15 +3954,10 @@ int antimony_yylex(void)
  }
 
   // try to parse annotations (does not change state if not found)
-//   cerr << "before: " << (char)g_registry.input->peek() << "\n";
   int parsed_annot = 0;
   while (!parsed_annot) {
     char next = g_registry.input->peek();
     parsed_annot = try_parse_annotation(cc);
-    cerr << "  try_parse_annotation result " << parsed_annot << "\n";
-    cerr << "  peek " << g_registry.input->peek() << "\n";
-    cerr << "  next " << next << "\n";
-    cerr << "  eof " << g_registry.input->eof() << "\n";
     if (g_registry.input->eof()) {
       return 0;
     }
