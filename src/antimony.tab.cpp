@@ -3495,11 +3495,8 @@ public:
 // returns zero if it matches a predicate, non-zero otherwise (and puts back everything it read in the latter)
 PredicateResult try_parse_predicate()
 {
-//   cerr << "    try_parse_predicate\n";
   char cc = 0;
   g_registry.input->get(cc);
-//   cerr << "    cc " << cc << "\n";
-//   cerr << "      " << cc << "\n";
   // first check if it's a built-in predicate (the biomodels quals) or prefixed predicate
   if (cc > 0 && (isalpha(cc) || cc == '_')) {
     string first_word;
@@ -3507,7 +3504,6 @@ PredicateResult try_parse_predicate()
       first_word += cc;
       g_registry.input->get(cc);
     }
-//     cerr << "    pred " << first_word << "\n";
 
     // is a prefixed uri?
     if (cc != ':') {
@@ -3637,7 +3633,6 @@ ObjectResult try_parse_object()
   char cc = 0;
   string ws = eat_whitespace();
   g_registry.input->get(cc);
-  // cerr << "      try_parse_object " << cc << "\n";
   // first check if it's a built-in predicate (the biomodels quals) or prefixed predicate
   if (cc > 0 && (isalpha(cc) || cc == '_')) {
     string first_word;
@@ -3812,7 +3807,6 @@ public:
 // parse multiple predicates if encountered
 PredicatePart try_parse_predicate_part()
 {
-//   cerr << "  try_parse_predicate_part\n";
   string ws1 = eat_whitespace();
 
   // check to see if the next token is a predicate (biomodels qual or prefixed uri)
@@ -3868,13 +3862,13 @@ int try_parse_annotation(char cc)
         return 2;
       }
       if (f) {
-        cerr << "function " << f->GetModuleName() << "\n" << predicate_part.toString();
+        /*cerr << "function " << f->GetModuleName() << "\n" << predicate_part.toString();*/
         predicate_part.AddCVTerms(f);
       } else if (var) {
-        cerr << "variable " << var->GetName().at(0) << "\n" << predicate_part.toString();
+        /*cerr << "variable " << var->GetName().at(0) << "\n" << predicate_part.toString();*/
         predicate_part.AddCVTerms(var);
       } else if (module) {
-        cerr << "module " << module->GetModuleName() << "\n" << predicate_part.toString();
+        /*cerr << "module " << module->GetModuleName() << "\n" << predicate_part.toString();*/
         predicate_part.AddCVTerms(module);
       }
 
@@ -3983,7 +3977,6 @@ int antimony_yylex(void)
     if (!parsed_annot) {
       g_registry.input->get(cc);
     }
-//     cerr << "  ->" << cc << (char)g_registry.input->peek() << "\n";
     if ((next != g_registry.input->peek()) && parsed_annot) {
       cerr << "next was " << next << " vs. " << (char)g_registry.input->peek() <<
       "(" << g_registry.input->peek() << ")" <<
