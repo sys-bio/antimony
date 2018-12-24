@@ -310,7 +310,7 @@ string Annotated::CreateCVTermsAntimonySyntax(const string& elt_id, const string
     for(vector<string>::const_iterator j(i->second.begin()); j!=i->second.end(); ++j) {
       // align each subsequent uri with the first one
       if (j!=i->second.begin())
-        term += "\n"+subindent;
+        term += ",\n"+subindent;
       term += "<"+*j+">";
     }
     result += term+"\n";
