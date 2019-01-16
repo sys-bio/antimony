@@ -619,6 +619,7 @@ void elideMetaIds(SBMLDocument* doc)
   for(unsigned int k=0; k<elts->getSize(); ++k) {
     ((SBase*)elts->get(k))->unsetMetaId();
   }
+  delete elts;
 }
 
 std::string elideMetaIdsFromSBMLstring(std::string sbml)
