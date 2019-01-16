@@ -236,7 +236,9 @@ ASTNode* parseStringToASTNode(const string& formula)
   l3ps.setParseLog(L3P_PARSE_LOG_AS_LN);
   ASTNode* rootnode = SBML_parseL3FormulaWithSettings(newform.c_str(), &l3ps);
   if (rootnode == NULL) {
-    g_registry.SetError(SBML_getLastParseL3Error());
+    char* l3err = SBML_getLastParseL3Error();
+    g_registry.SetError(l3err);
+    free(l3err);
     return NULL;
   }
   if (formula.find("time") != string::npos ||
