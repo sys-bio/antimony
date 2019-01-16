@@ -892,9 +892,7 @@ bool Variable::SetFormula(Formula* formula, bool isObjective)
       g_registry.SetError("In the formula \"" + formula->ToDelimitedStringWithEllipses(".") + "\":  " + errstring);
       return true;
     }
-    else {
-      delete ASTform;
-    }
+    delete ASTform;
   }
 #endif
   if (formula->ContainsVar(this)) {
@@ -973,6 +971,7 @@ bool Variable::SetFormula(Formula* formula, bool isObjective)
       m_valFormula.Clear();
       m_valFormula.AddNum(val);
     }
+    delete root;
   }
 #endif
   return false;

@@ -972,6 +972,7 @@ void Formula::AddFluxObjective(Model* sbmlmod, bool maximize, const Variable* va
   vector<pair<string, double> > objectives;
   ASTNode* astn = parseStringToASTNode(ToSBMLString());
   GetObjectivesFromAST(astn, objectives);
+  delete astn;
   if (objectives.size() == 0) return;
   FbcModelPlugin* fmp = static_cast<FbcModelPlugin*>(sbmlmod->getPlugin("fbc"));
   Objective* objective = fmp->createObjective();
@@ -1010,6 +1011,7 @@ bool Formula::IsValidObjectiveFunction() const
   //Now check the form of the formula.
   ASTNode* astn = parseStringToASTNode(ToSBMLString());
   if (!IsValidObjectiveFunction(astn)) return false;
+  delete astn;
 
 #endif
   return true;

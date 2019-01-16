@@ -52,9 +52,7 @@ bool AntimonyEvent::SetTrigger(const Formula& form)
       delete ASTform;
       return true;
     }
-    else {
-      delete ASTform;
-    }
+    delete ASTform;
   }
 #endif
   m_trigger = form;
@@ -76,9 +74,7 @@ bool AntimonyEvent::SetPriority(const Formula& priority)
       delete ASTpriority;
       return true;
     }
-    else {
-      delete ASTpriority;
-    }
+    delete ASTpriority;
   }
 #endif
   m_priority = priority;

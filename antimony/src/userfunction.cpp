@@ -24,9 +24,7 @@ bool UserFunction::SetFormula(const Formula& formula)
       g_registry.SetError("The formula \"" + formula.ToDelimitedStringWithEllipses(".") + "\" seems to be incorrect, and cannot be parsed into an Abstract Syntax Tree (AST).");
       return true;
     }
-    else {
-      delete ASTform;
-    }
+    delete ASTform;
   }
 #endif
   m_formula = formula;
