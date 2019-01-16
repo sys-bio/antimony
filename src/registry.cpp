@@ -1517,7 +1517,9 @@ int Registry::ConvertDistribAnnotation(SBMLDocument * document)
   SBMLConverter* converter = SBMLConverterRegistry::getInstance().getConverterFor(props);
   // load document
   converter->setDocument(document);
-  return converter->convert();
+  int ret = converter->convert();
+  delete converter;
+  return ret;
 #else
   return 0;
 #endif
