@@ -205,8 +205,10 @@ int Registry::OpenFile(const string& filename, bool antOnly)
   //if (!antOnly) {
     SBMLDocument* document = readSBML(newname.c_str());
     if (CheckAndAddSBMLIfGood(document)==2) {
+      delete document;
       return 2;
     }
+    delete document;
   //}
 #endif
 
