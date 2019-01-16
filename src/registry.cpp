@@ -1099,9 +1099,7 @@ bool Registry::SetNewCurrentEvent(Formula* trigger, Variable* var)
       delete ASTform;
       return true;
     }
-    else {
-      delete ASTform;
-    }
+    delete ASTform;
   }
 #endif
   Formula delay;

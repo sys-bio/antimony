@@ -152,6 +152,7 @@ bool UnitDef::SetFromFormula(Formula* formula)
 #ifndef NSBML
   ASTNode* astn = parseStringToASTNode(formula->ToSBMLString());
   UnitDef* ud = GetUnitDefFromASTNode(astn);
+  delete astn;
   if (ud==NULL) {
     g_registry.SetError("Unable to set a unit definition using the formula '" + formula->ToDelimitedStringWithEllipses(".") + "'.  Only multiplication, division, and raising a value to a numerical power are allowed, and no 'bare' dimensions are allowed (use 'dimensionless' explicitly).");
     return true;
