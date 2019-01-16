@@ -1089,7 +1089,9 @@ bool Registry::SetNewCurrentEvent(Formula* trigger, Variable* var)
   if (formstring.size() > 0) {
     ASTNode_t* ASTform = parseStringToASTNode(formstring);
     if (ASTform == NULL) {
-      g_registry.SetError("In event trigger \"" + trigger->ToDelimitedStringWithEllipses(".") + "\":  " + SBML_getLastParseL3Error());
+      char* l3err = SBML_getLastParseL3Error();
+      g_registry.SetError("In event trigger \"" + trigger->ToDelimitedStringWithEllipses(".") + "\":  " + l3err);
+      free(l3err);
       return true;
     }
     else if (!ASTform->isBoolean() && !ASTform->isFunction()) {
