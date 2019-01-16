@@ -885,7 +885,9 @@ bool Variable::SetFormula(Formula* formula, bool isObjective)
   string formstring = formula->ToSBMLString(GetStrandVars());
   if (formstring.size() > 0) {
     ASTNode_t* ASTform = parseStringToASTNode(formstring);
-    string errstring = SBML_getLastParseL3Error();
+    char* err = SBML_getLastParseL3Error();
+    string errstring(err);
+    free(err);
     if (ASTform == NULL && !errstring.empty()) {
       g_registry.SetError("In the formula \"" + formula->ToDelimitedStringWithEllipses(".") + "\":  " + errstring);
       return true;
@@ -986,7 +988,9 @@ bool Variable::SetAssignmentRule(Formula* formula)
   if (formstring.size() > 0) {
     ASTNode_t* ASTform = parseStringToASTNode(formstring);
     if (ASTform == NULL) {
-      g_registry.SetError("In the formula \"" + formstring + "\" for '" + GetNameDelimitedBy(".") + "':  " + SBML_getLastParseL3Error());
+      char* l3err = SBML_getLastParseL3Error();
+      g_registry.SetError("In the formula \"" + formstring + "\" for '" + GetNameDelimitedBy(".") + "':  " + l3err);
+      free(l3err);
       return true;
     }
     else {
@@ -1044,7 +1048,9 @@ bool Variable::SetRateRule(Formula* formula)
   if (formstring.size() > 0) {
     ASTNode_t* ASTform = parseStringToASTNode(formstring);
     if (ASTform == NULL) {
-      g_registry.SetError("In the formula \"" + formula->ToDelimitedStringWithEllipses(".") + "\" for '" + GetNameDelimitedBy(".") + "':  " + SBML_getLastParseL3Error());
+      char* l3err = SBML_getLastParseL3Error();
+      g_registry.SetError("In the formula \"" + formula->ToDelimitedStringWithEllipses(".") + "\" for '" + GetNameDelimitedBy(".") + "':  " + l3err);
+      free(l3err);
       return true;
     }
     else {
@@ -1088,7 +1094,9 @@ bool Variable::SetReaction(AntimonyReaction* rxn)
   if (formstring.size() > 0) {
     ASTNode_t* ASTform = parseStringToASTNode(formstring);
     if (ASTform == NULL) {
-      g_registry.SetError("In the reaction rate \"" + rxn->GetFormula()->ToDelimitedStringWithEllipses(".") + "\":  " + SBML_getLastParseL3Error());
+      char* l3err = SBML_getLastParseL3Error();
+      g_registry.SetError("In the reaction rate \"" + rxn->GetFormula()->ToDelimitedStringWithEllipses(".") + "\":  " + l3err);
+      free(l3err);
       return true;
     }
     else {
