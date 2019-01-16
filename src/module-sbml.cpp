@@ -528,6 +528,7 @@ void FixPortReferencesIn(Model* sbmlmod)
       break;
     }
   }
+  delete elements;
   for (size_t s=0; s<sBaseRefs.size(); s++) {
     SBaseRef* sbr = sBaseRefs[s];
     sbr->saveReferencedElement();
@@ -1003,7 +1004,7 @@ void Module::LoadSBML(const Model* sbml)
     const FunctionDefinition* function = sbml->getFunctionDefinition(func);
     sbmlname = getNameFromSBMLObject(function, "_F");
     string annot = function->getAnnotationString();
-    List* allElements = const_cast<Model*>(sbml)->getAllElements();
+    //List* allElements = const_cast<Model*>(sbml)->getAllElements();
     if (annot.find("http://sbml.org/annotations/symbols") != string::npos &&
         annot.find("http://en.wikipedia.org/wiki/Derivative") != string::npos )
     {
