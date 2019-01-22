@@ -33,7 +33,6 @@
 #include <set>
 #include <stdio.h>
 #include <string>
-#include <utility>
 #ifndef NSBML
 #include <sbml/SBMLTypes.h>
 #endif
@@ -78,7 +77,6 @@
   bool maxormin;
   constraint_type inequality;
   std::vector<std::string>* stringlist;
-  std::vector<std::string>* urilist;
 }
 
 %type <character>       mathThing "mathematical symbol"
@@ -86,7 +84,7 @@
 %type <module>          module
 %type <reactantList>    reactantList
 %type <reactionDivider> reactionDivider
-%type <inequality>      inequality
+%type <inequality>      inequality    
 %type <variable>        variable variablein varmaybein varmaybeis maybein unitdef
 %type <maybemain>       maybemain
 %type <maxormin>        maxormin
@@ -194,7 +192,7 @@ module:         MODULE maybemain ANTWORD {g_registry.NewCurrentModule($3, NULL, 
                   g_registry.RevertToPreviousModule();
                 }
         |       MODULE MODNAME {g_registry.SetError("module '" + *($2) + "' already defined."); YYABORT;}
-        |       MODULE FUNCTION {g_registry.SetError("Cannot define '" + *($2) + "' as a module because it is already a defined function."); YYABORT;}
+        |       MODULE FUNCTION {g_registry.SetError("Cannot define '" + *($2) + "' as a module because it is already a defined function."); YYABORT;} 
         ;
 
 maybemain:      /* empty */ {$$ = false;}
@@ -203,7 +201,7 @@ maybemain:      /* empty */ {$$ = false;}
 
 function:       FUNCTIONWORD ANTWORD {g_registry.NewUserFunction($2);} '(' variableexportlist ')' spacedformula END {if (g_registry.SetUserFunction($7)) YYABORT;}
         |       FUNCTIONWORD MODNAME {g_registry.SetError("Cannot use '" + *($2) +"' as a function name because it is already the name of a module."); YYABORT;}
-        |       FUNCTIONWORD FUNCTION {g_registry.SetError("Cannot define '" + *($2) + "' as a new function because it is already a defined function."); YYABORT;}
+        |       FUNCTIONWORD FUNCTION {g_registry.SetError("Cannot define '" + *($2) + "' as a new function because it is already a defined function."); YYABORT;} 
         ;
 
 spacedformula:  formula {$$ = $1;}
@@ -447,7 +445,7 @@ varconstinit:   VARWORD varmaybeis {g_registry.SetConstness(constVAR); $2->SetRe
 unitinit:       UNITWORD variable '=' formula {if ($2->SetType(varUnitDefinition)) YYABORT;
                                                if ($4->MakeAllVariablesUnits()) YYABORT;
                                                if ($2->GetUnitDef()->SetFromFormula($4)) YYABORT;}
-        |       UNITWORD variable {if ($2->SetType(varUnitDefinition)) YYABORT;}
+        |       UNITWORD variable {if ($2->SetType(varUnitDefinition)) YYABORT;} 
         ;
 
 dnadef:         dnastrand {if (g_registry.SaveWorkingStrand()) YYABORT;}
@@ -535,10 +533,6 @@ stringlist:     TEXTSTRING { $$ = new std::vector<std::string>(); $$->push_back(
         |       stringlist ',' TEXTSTRING { $$ = $1; $$->push_back(*$3); } // need to free $3?
         |       stringlist ',' '\n' TEXTSTRING { $$ = $1; $$->push_back(*$4); } // eat newlines
 
-// urilist:        URI { $$ = new std::vector<std::string>(); $$->push_back(*($1)); } // need to free $1?
-//         |       urilist ',' URI { $$ = $1; $$->push_back(*$3); } // need to free $3?
-//         |       urilist ',' '\n' URI { $$ = $1; $$->push_back(*$4); } // eat newlines
-
 // JKM cvterm accepts multiple URIs in the stringlist
 cvterm:         variable ANTWORD stringlist {if (g_registry.CurrentModule()->ProcessCVTerm($1,$2,$3)) YYABORT;}
 
@@ -585,589 +579,9 @@ void antimony_yyerror(char const *s)
   }
 }
 
-void putback_string(const string& s)
-{
-  for(unsigned int i=s.size(); i>0; --i)
-    g_registry.input->putback(s.at(i-1));
-}
-
-bool is_whitespace(const char cc)
-{
-  if (cc == '\r' || cc == '\n' || cc == ' ' || cc == '\t')
-    return true;
-  else
-    return false;
-}
-
-string eat_whitespace()
-{
-  char cc = 0;
-  g_registry.input->get(cc);
-  string result;
-  while (is_whitespace(cc) && !g_registry.input->eof()) {
-    result += cc;
-    g_registry.input->get(cc);
-  }
-  g_registry.input->unget();
-  return result;
-}
-
-// consumes everything up to and including the eol (win and unix supported)
-string consume_rest_of_line()
-{
-  char cc = 0;
-  string result;
-  while (!g_registry.input->eof()) {
-    g_registry.input->get(cc);
-    if (cc == '\r') {
-      g_registry.input->get(cc);
-      if (cc != '\n') {
-        g_registry.input->unget();
-      }
-      cc = '\n';
-    }
-    result += cc;
-    if (cc == '\n') {
-      return result;
-    }
-  }
-  return result;
-}
-
-string eat_whitespace_and_comments()
-{
-  char cc = 0;
-  g_registry.input->get(cc);
-  string result;
-  while ((is_whitespace(cc) || cc == '/' || cc == '#')&& !g_registry.input->eof()) {
-    result += cc;
-    if (cc == '/') {
-      if (g_registry.input->peek() == '/') {
-        result += consume_rest_of_line();
-        g_registry.input->get(cc);
-      } else {
-        g_registry.input->unget();
-        return result;
-      }
-    } else if (cc == '#') {
-      result += consume_rest_of_line();
-      g_registry.input->get(cc);
-    } else
-      g_registry.input->get(cc);
-  }
-  g_registry.input->unget();
-  return result;
-}
-
-int count_newlines_in(const string& s)
-{
-  int result=0;
-  for(string::const_iterator i(s.begin()); i!=s.end(); ++i) {
-    if (*i == '\r' || *i == '\n')
-      ++result;
-  }
-  return result;
-}
-
-bool is_word_char(const char cc)
-{
-  if (cc > 0 && (isalpha(cc) || isdigit(cc) || cc == '_'))
-    return true;
-  else
-    return false;
-}
-
-// bool is_numeric_char(const char cc)
-// {
-//   if (cc > 0 && '0' <= cc && cc <= '9')
-//     return true;
-//   else
-//     return false;
-// }
-
-// bool is_word_or_numeric_char(const char cc)
-// {
-//   if (is_word_char(cc) || is_numeric_char(cc))
-//     return true;
-//   else
-//     return false;
-// }
-
-// check if it is a valid predicate (e.g.
-bool is_valid_prefixed_predicate(const string& prefix, const string& uri)
-{
-  bool uri_is_numeric = IsNumeric(uri);
-  if (CaselessStrCmp(prefix, "bqb")) {
-    if (Annotated::isBiomodelsQual(uri))
-      return true;
-    else
-      return false;
-  } else if (CaselessStrCmp(prefix, "bqm")) {
-    if (Annotated::isBiomodelsQual(uri))
-      return true;
-    else
-      return false;
-  } else if (g_registry.IsRegisteredPrefix(prefix))
-    // if the prefix is defined it's okay
-    return true;
-  else
-    return false;
-}
-
-string make_biomodels_qual_full_uri(const string& predicate)
-{
-  stringstream ss;
-  if (Annotated::DecodeBiolQualifier(predicate) != BQB_UNKNOWN) {
-    ss << "https://biomodels.net/biology-qualifiers/" << Annotated::EncodeBiolQualifier(Annotated::DecodeBiolQualifier(predicate));
-    return ss.str();
-  } else if (Annotated::DecodeModelQualifier(predicate) != BQM_UNKNOWN) {
-    ss << "http://biomodels.net/model-qualifiers/" << Annotated::EncodeModelQualifier(Annotated::DecodeModelQualifier(predicate));
-    return ss.str();
-  } else
-    return "";
-}
-
-pair<int,string> make_builtin_prefixed_predicate_uri(const string& prefix, const string& predicate)
-{
-  stringstream ss;
-  if (CaselessStrCmp(prefix, "bqb") && Annotated::DecodeModelQualifier(predicate) != BQM_UNKNOWN) {
-    ss << "http://biomodels.net/model-qualifiers/" << Annotated::EncodeModelQualifier(Annotated::DecodeModelQualifier(predicate));
-    return make_pair(0,ss.str());
-  } else if (CaselessStrCmp(prefix, "bqm") && Annotated::DecodeBiolQualifier(predicate) != BQB_UNKNOWN) {
-    ss << "https://biomodels.net/biology-qualifiers/" << Annotated::EncodeBiolQualifier(Annotated::DecodeBiolQualifier(predicate));
-    return make_pair(0,ss.str());
-  } else
-    return make_pair(1,"");
-}
-
-class PredicateResult
-{
-public:
-  // error condition
-  PredicateResult(int e)
-    : m_e(e) {}
-
-  // success condition
-  PredicateResult(int e, string parsed, string predicate)
-    : m_e(e), m_parsed(parsed), m_predicate(predicate) {}
-
-  int getErrorCode() const {
-    return m_e;
-  }
-
-  const string& getParsedText() const {
-    return m_parsed;
-  }
-
-  const string& getPredicateAbsoluteURI() const {
-    return m_predicate;
-  }
-
-  int m_e;
-  string m_parsed;
-  string m_predicate;
-};
-
-// returns zero if it matches a predicate, non-zero otherwise (and puts back everything it read in the latter)
-PredicateResult try_parse_predicate()
-{
-  char cc = 0;
-  g_registry.input->get(cc);
-  // first check if it's a built-in predicate (the biomodels quals) or prefixed predicate
-  if (cc > 0 && (isalpha(cc) || cc == '_')) {
-    string first_word;
-    while (is_word_char(cc) && !g_registry.input->eof()) {
-      first_word += cc;
-      g_registry.input->get(cc);
-    }
-
-    // is a prefixed uri?
-    if (cc != ':') {
-      g_registry.input->unget();
-      // is a built-in biomodels qual?
-      if (Annotated::isBiomodelsQual(first_word)) {
-        string uri = make_biomodels_qual_full_uri(first_word);
-        if (uri == "") {
-          putback_string(first_word);
-          return PredicateResult(1);
-        }
-        return PredicateResult(0, first_word, uri);
-      } else {
-        putback_string(first_word);
-        return PredicateResult(2);
-      }
-    }
-
-    // check the prefixed uri
-    string second_word;
-    g_registry.input->get(cc);
-    while (is_word_char(cc) && !g_registry.input->eof()) {
-      second_word += cc;
-      g_registry.input->get(cc);
-    }
-    g_registry.input->unget();
-
-    pair<int,string> prefixed_result = make_builtin_prefixed_predicate_uri(first_word, second_word);
-    if (!prefixed_result.first) {
-      return PredicateResult(0, first_word+":"+second_word, prefixed_result.second);
-    } else {
-      putback_string(first_word+":"+second_word);
-      return PredicateResult(3);
-    }
-  } else if (cc == '<') {
-    // it could be an absolute uri
-    string uri;
-    while (!is_whitespace(cc) && cc != '>' && !g_registry.input->eof()) {
-      uri += cc;
-      g_registry.input->get(cc);
-    }
-    if (cc == '>')
-      // it is an absolute uri
-      return PredicateResult(0,"<"+uri+">",uri);
-    else {
-      // it's not an absolute uri
-      // we don't know what it is so put everything back
-      g_registry.input->unget();
-      putback_string("<"+uri);
-      return PredicateResult(4);
-    }
-  } else {
-    g_registry.input->unget();
-    return PredicateResult(5);
-  }
-}
-
-class ObjectResult
-{
-public:
-  // error condition
-  ObjectResult(int e)
-    : m_e(e) {}
-
-  ObjectResult(int e, string parsed, string uri)
-    : m_e(e), m_parsed(parsed) {
-      m_uris.push_back(uri);
-    }
-
-  ObjectResult(int e, string parsed, const vector<string> uris)
-    : m_e(e), m_parsed(parsed), m_uris(uris) {}
-
-  ObjectResult combine(const ObjectResult& other) const {
-    if (other.m_e)
-      // error in second operand, don't combine it
-      return *this;
-    else {
-      vector<string> uris(m_uris);
-      uris.insert(uris.end(), other.m_uris.begin(), other.m_uris.end());
-      return ObjectResult(m_e, m_parsed+other.m_parsed, uris);
-    }
-  }
-
-  int getErrorCode() const {
-    return m_e;
-  }
-
-  const string& getParsedText() const {
-    return m_parsed;
-  }
-
-  const vector<string>& geAbsoluteURIs() const {
-    return m_uris;
-  }
-
-  int m_e;
-  string m_parsed;
-  vector<string> m_uris;
-};
-
-
-// check if it is a valid ontology term uri
-pair<int,string> make_builtin_prefixed_ontology_uri(const string& prefix, const string& term)
-{
-  bool term_is_numeric = IsNumeric(term);
-  stringstream ss;
-  if (CaselessStrCmp(prefix, "ChEBI") && term_is_numeric) {
-    ss << "https://identifiers.org/chebi/CHEBI:" << term;
-    return make_pair(0,ss.str());
-  } else if (CaselessStrCmp(prefix, "GO") && term_is_numeric) {
-    ss << "https://identifiers.org/obo.go/GO:" << term;
-    return make_pair(0,ss.str());
-  } else if (CaselessStrCmp(prefix, "FMA") && term_is_numeric) {
-    ss << "https://identifiers.org/fma/FMA:" << term;
-    return make_pair(0,ss.str());
-  } else if (CaselessStrCmp(prefix, "OPB") && term_is_numeric) {
-    ss << "https://identifiers.org/opb/OPB_" << term;
-    return make_pair(0,ss.str());
-  } else if (g_registry.IsRegisteredPrefix(prefix) && term_is_numeric) {
-    return make_pair(0,g_registry.GetUriForPrefix(prefix));
-  } else
-    return make_pair(1,"");
-}
-
-ObjectResult try_parse_object()
-{
-  char cc = 0;
-  string ws = eat_whitespace();
-  g_registry.input->get(cc);
-  // first check if it's a built-in predicate (the biomodels quals) or prefixed predicate
-  if (cc > 0 && (isalpha(cc) || cc == '_')) {
-    string first_word;
-    while (is_word_char(cc) && !g_registry.input->eof()) {
-      first_word += cc;
-      g_registry.input->get(cc);
-    }
-
-    // is a prefixed uri?
-    if (cc != ':' || g_registry.input->eof()) {
-      // not a prefixed uri
-      // is it a module, function, or variable name?
-      Module* module = g_registry.GetModule(first_word);
-      Module* current_module = g_registry.CurrentModule();
-      Variable* var=NULL;
-      if (current_module) {
-        vector<string> fullname;
-        fullname.push_back(first_word);
-        var = current_module->GetVariable(fullname);
-      }
-      UserFunction* f = g_registry.GetUserFunction(first_word);
-
-      stringstream ss;
-      if (var) {
-        ss << "#" << var->GetName().at(0);
-        return ObjectResult(0, ws+first_word+eat_whitespace_and_comments(), ss.str());
-      } else if (f) {
-        ss << "#" << f->GetModuleName();
-        return ObjectResult(0, ws+first_word+eat_whitespace_and_comments(), ss.str());
-      } else if (module) {
-        ss << "#" << module->GetModuleName();
-        return ObjectResult(0, ws+first_word+eat_whitespace_and_comments(), ss.str());
-      }
-      else {
-        putback_string(first_word+":");
-        return ObjectResult(2);
-      }
-    }
-
-    // check the prefixed uri
-    string second_word;
-    g_registry.input->get(cc);
-    while (is_word_char(cc) && !g_registry.input->eof()) {
-      second_word += cc;
-      g_registry.input->get(cc);
-    }
-    g_registry.input->unget();
-
-    // look for a comma
-    string extra = eat_whitespace();
-    g_registry.input->get(cc);
-    bool comma = false;
-    if (cc == ',') {
-      extra += ",";
-      comma = true;
-    } else
-      g_registry.input->unget();
-    extra += eat_whitespace_and_comments();
-
-    pair<int,string> uri_result = make_builtin_prefixed_ontology_uri(first_word,second_word);
-    if (!uri_result.first) {
-      return ObjectResult(0,ws+first_word+":"+second_word+extra,uri_result.second).combine(comma ? try_parse_object() : ObjectResult(10));
-    } else {
-      putback_string(first_word+":"+second_word+extra);
-      return ObjectResult(3);
-    }
-  } else if (cc == '<') {
-    // it could be an absolute uri
-    g_registry.input->get(cc);
-    string uri;
-    while (!is_whitespace(cc) && cc != '>' && !g_registry.input->eof()) {
-      uri += cc;
-      g_registry.input->get(cc);
-    }
-    if (cc == '>' && !g_registry.input->eof()) {
-      // look for a comma
-      string extra = eat_whitespace();
-      g_registry.input->get(cc);
-      bool comma = false;
-      if (cc == ',') {
-        extra += ",";
-        comma = true;
-      } else
-        g_registry.input->unget();
-      extra += eat_whitespace_and_comments();
-
-      // it is an absolute uri
-      return ObjectResult(0,"<"+uri+">"+extra,uri).combine(comma ? try_parse_object() : ObjectResult(11));
-    }
-    else {
-      // it's not an absolute uri
-      // we don't know what it is so put everything back
-      g_registry.input->unget();
-      putback_string("<"+uri);
-      return ObjectResult(4);
-    }
-  } else {
-    g_registry.input->unget();
-    return ObjectResult(5);
-  }
-}
-
-class PredicatePart
-{
-public:
-  typedef map< string,vector<string> > TermMap;
-
-  // error condition
-  PredicatePart(int e)
-  : m_e(e) {}
-
-  PredicatePart(int e, const string& ws1, const string ws2, const PredicateResult& predicate, const ObjectResult& object)
-  : m_e(e), m_parsed(ws1+predicate.getParsedText()+ws2+object.getParsedText()) {
-    string p = predicate.getPredicateAbsoluteURI();
-    m_terms_for[p].insert(m_terms_for[p].end(), object.geAbsoluteURIs().begin(), object.geAbsoluteURIs().end());
-  }
-
-  PredicatePart combine(const PredicatePart& other) const {
-    if (other.m_e)
-      // error in second operand, don't combine it
-      return *this;
-    else {
-      PredicatePart new_part(*this);
-      new_part.m_parsed += other.m_parsed;
-      // merge the maps
-      for(TermMap::const_iterator p(other.m_terms_for.begin()); p!=other.m_terms_for.end(); ++p)
-        new_part.m_terms_for[p->first].insert(new_part.m_terms_for[p->first].end(), p->second.begin(), p->second.end());
-      return new_part;
-    }
-  }
-
-  int getErrorCode() const {
-    return m_e;
-  }
-
-  const string& getParsedText() const {
-    return m_parsed;
-  }
-
-  string toString() const {
-    stringstream ss;
-    for (TermMap::const_iterator i(m_terms_for.begin()); i!=m_terms_for.end(); ++i) {
-      ss << "  " << i->first << " ";
-      for (vector<string>::const_iterator j(i->second.begin()); j!=i->second.end(); ++j) {
-        if (j != i->second.begin())
-          ss << ", ";
-        ss << *j;
-      }
-      ss << "\n";
-    }
-    return ss.str();
-  }
-
-  // add cv terms if possible to any annotatable object
-  void AddCVTerms(Annotated* a) {
-    for (TermMap::const_iterator i(m_terms_for.begin()); i!=m_terms_for.end(); ++i) {
-      ModelQualifierType_t mq = Annotated::DecodeModelQualifierURI  (i->first);
-      if (mq != BQM_UNKNOWN)
-        a->AppendModelQualifiers(mq, i->second);
-      BiolQualifierType_t bq  = Annotated::DecodeBiologyQualifierURI(i->first);
-      if (bq != BQB_UNKNOWN)
-        a->AppendBiolQualifiers(bq, i->second);
-    }
-  }
-
-  int m_e;
-  string m_parsed;
-  // contains all the objects for a given predicate
-  TermMap m_terms_for;
-};
-
-// parse multiple predicates if encountered
-PredicatePart try_parse_predicate_part()
-{
-  string ws1 = eat_whitespace();
-
-  // check to see if the next token is a predicate (biomodels qual or prefixed uri)
-  PredicateResult predicate_result = try_parse_predicate();
-  if (predicate_result.getErrorCode()) {
-    putback_string(ws1);
-    return PredicatePart(1);
-  }
-
-  string ws2 = eat_whitespace();
-
-  // try to parse the object: an ontology term or model entity (in composite annotations)
-  ObjectResult object_result = try_parse_object();
-  if (object_result.getErrorCode()) {
-    putback_string(ws1+predicate_result.getParsedText()+ws2);
-    return PredicatePart(2);
-  }
-
-  return PredicatePart(0, ws1, ws2, predicate_result, object_result).combine(try_parse_predicate_part());
-}
-
-// returns zero if it matches an annotation, non-zero otherwise (and puts back everything it read in the latter)
-int try_parse_annotation(char cc)
-{
-  // annotation should start with a variable name
-  if (cc > 0 && (isalpha(cc) || cc == '_')) {
-    string word;
-    while (cc > 0 && (isalpha(cc) || isdigit(cc) || cc == '_') && !g_registry.input->eof() && !g_registry.input->bad() && !g_registry.input->fail()) {
-      word += cc;
-      g_registry.input->get(cc);
-    }
-    if (g_registry.input->eof())
-      return 1;
-    g_registry.input->unget();
-
-    // determine the type of entity
-    Module* module = g_registry.GetModule(word);
-    Module* current_module = g_registry.CurrentModule();
-    Variable* var=NULL;
-    if (current_module) {
-      vector<string> fullname;
-      fullname.push_back(word);
-      var = current_module->GetVariable(fullname);
-    }
-    UserFunction* f = g_registry.GetUserFunction(word);
-    if (module || var || f) {
-      PredicatePart predicate_part = try_parse_predicate_part();
-
-      if(predicate_part.getErrorCode()) {
-        putback_string(word+predicate_part.getParsedText());
-        // read the first char again since that's the state we started with
-        g_registry.input->get(cc);
-        return 2;
-      }
-      if (f) {
-        /*cerr << "function " << f->GetModuleName() << "\n" << predicate_part.toString();*/
-        predicate_part.AddCVTerms(f);
-      } else if (var) {
-        /*cerr << "variable " << var->GetName().at(0) << "\n" << predicate_part.toString();*/
-        predicate_part.AddCVTerms(var);
-      } else if (module) {
-        /*cerr << "module " << module->GetModuleName() << "\n" << predicate_part.toString();*/
-        predicate_part.AddCVTerms(module);
-      }
-
-      int num_newlines = count_newlines_in(word+predicate_part.getParsedText());
-      antimony_yylloc_last_line += num_newlines;
-
-      return 0;
-    } else {
-      putback_string(word);
-      // read the first char again since that's the state we started with
-      g_registry.input->get(cc);
-      return 3;
-    }
-  } else
-    return 4;
-}
-
 int antimony_yylex(void)
 {
   char cc = 0;
-  if (g_registry.input->bad() || g_registry.input->fail()) {
-    return ERROR;
-  }
   if (g_registry.GetEOFFlag()) {
     g_registry.ClearEOFFlag();
     if (g_registry.SwitchToPreviousFile()) {
@@ -1223,48 +637,10 @@ int antimony_yylex(void)
     }
  }
 
-  // try to parse annotations (does not change state if not found)
-  int parsed_annot = 0;
-  while (!parsed_annot) {
-    char next = g_registry.input->peek();
-    parsed_annot = try_parse_annotation(cc);
-    if (g_registry.input->eof()) {
-      return 0;
-    }
-    if (g_registry.GetEOFFlag() || g_registry.input->eof() || g_registry.input->bad() || g_registry.input->fail()) {
-      g_registry.ClearEOFFlag();
-      if (g_registry.SwitchToPreviousFile()) {
-        if (g_registry.CurrentModule()->Finalize()) {
-          return ERROR;
-        }
-        return 0;
-      }
-      else {
-        antimony_yylloc_first_line = antimony_yylloc_last_lines.back();
-        antimony_yylloc_last_line = antimony_yylloc_last_lines.back();
-        antimony_yylloc_last_lines.pop_back();
-        return antimony_yylex();
-      }
-    }
-    if (g_registry.input->bad() || g_registry.input->fail()) {
-      return ERROR;
-    }
-    // if success, try again until no more annotations left
-    if (!parsed_annot) {
-      g_registry.input->get(cc);
-    }
-    if ((next != g_registry.input->peek()) && parsed_annot) {
-      cerr << "next was " << next << " vs. " << (char)g_registry.input->peek() <<
-      "(" << g_registry.input->peek() << ")" <<
-      "\n";
-      assert(false);
-    }
-  }
-
   // Parse words
   if (cc > 0 && cc < 256 && (isalpha(cc) || cc == '_')) {
     string word;
-    while (cc > 0 && (isalpha(cc) || isdigit(cc) || cc == '_') && !g_registry.input->eof()) {
+    while (cc > 0 && cc < 256 && (isalpha(cc) || isdigit(cc) || cc == '_') && !g_registry.input->eof()) {
       word += cc;
       g_registry.input->get(cc);
     }
@@ -1367,7 +743,7 @@ int antimony_yylex(void)
       }
       return NUM;
     }
-
+    
     if (g_registry.IsFunction(word) != NULL) {
       antimony_yylval.word = g_registry.IsFunction(word);
       return FUNCTION;
@@ -1539,28 +915,6 @@ int antimony_yylex(void)
       return TEXTSTRING;
     }
   }
-
-//   //Parse uris
-//   if (cc == '<') {
-//     static string uristring;
-//     long ccount = 0;
-//     g_registry.input->get(cc);
-//     while (cc != '>' && cc != '\r' && cc != '\n' && !g_registry.input->eof()) {
-//       uristring += cc;
-//       ccount++;
-//       g_registry.input->get(cc);
-//     }
-//     if (cc == '\r' || cc == '\n' || g_registry.input->eof()) {
-//       for (; ccount > 0; ccount--) {
-//         g_registry.input->unget();
-//       }
-//       cc = '>';
-//     }
-//     else {
-//       antimony_yylval.word = &uristring;
-//       return URI;
-//     }
-//   }
 
   //Parse '@'
   if (cc == '@') {

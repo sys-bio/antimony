@@ -34,7 +34,7 @@ bool Annotated::HasAnnotation() const
   return m_annotation.getNumChildren()>0;
 }
 
-ModelQualifierType_t Annotated::DecodeModelQualifier(const string& qual)
+ModelQualifierType_t Annotated::DecodeModelQualifier(const string& qual) const
 {
   if(qual == "is" || qual == "identity" || qual == "model_entity_is")
     return BQM_IS;
@@ -50,75 +50,11 @@ ModelQualifierType_t Annotated::DecodeModelQualifier(const string& qual)
     return BQM_UNKNOWN;
 }
 
-bool Annotated::ModelQualifierURIMatches(const string& uri, const string& qual1, const string& qual2)
-{
-  string base_uri_http  = "http://biomodels.net/model-qualifiers/";
-  string base_uri_https = "https://biomodels.net/model-qualifiers/";
-  return uri == base_uri_http +qual1 || uri == base_uri_http +qual2 ||
-         uri == base_uri_https+qual1 || uri == base_uri_https+qual2;
-}
-
-ModelQualifierType_t Annotated::DecodeModelQualifierURI(const string& uri)
-{
-  if(ModelQualifierURIMatches(uri, "is", "identity"))
-    return BQM_IS;
-  else if(ModelQualifierURIMatches(uri, "isDescribedBy", "description"))
-    return BQM_IS_DESCRIBED_BY;
-  else if(ModelQualifierURIMatches(uri, "isDerivedFrom", "origin"))
-    return BQM_IS_DERIVED_FROM;
-  else if(ModelQualifierURIMatches(uri, "isInstanceOf", "class"))
-    return BQM_IS_INSTANCE_OF;
-  else if(ModelQualifierURIMatches(uri, "hasInstance", "instance"))
-    return BQM_HAS_INSTANCE;
-  else
-    return BQM_UNKNOWN;
-}
-
-bool Annotated::BiologyQualifierURIMatches(const string& uri, const string& qual1, const string& qual2)
-{
-  string base_uri_http  = "http://biomodels.net/biology-qualifiers/";
-  string base_uri_https = "https://biomodels.net/biology-qualifiers/";
-  return uri == base_uri_http +qual1 || uri == base_uri_http +qual2 ||
-         uri == base_uri_https+qual1 || uri == base_uri_https+qual2;
-}
-
-BiolQualifierType_t Annotated::DecodeBiologyQualifierURI(const string& uri)
-{
-  if(BiologyQualifierURIMatches(uri, "is", "identity"))
-    return BQB_IS;
-  else if(BiologyQualifierURIMatches(uri, "hasPart", "part"))
-    return BQB_HAS_PART;
-  else if(BiologyQualifierURIMatches(uri, "isPartOf", "parthood"))
-    return BQB_IS_PART_OF;
-  else if(BiologyQualifierURIMatches(uri, "isVersionOf", "hypernym"))
-    return BQB_IS_VERSION_OF;
-  else if(BiologyQualifierURIMatches(uri, "hasVersion", "version"))
-    return BQB_HAS_VERSION;
-  else if(BiologyQualifierURIMatches(uri, "isHomologTo", "homolog"))
-    return BQB_IS_HOMOLOG_TO;
-  else if(BiologyQualifierURIMatches(uri, "isDescribedBy", "description"))
-    return BQB_IS_DESCRIBED_BY;
-  else if(BiologyQualifierURIMatches(uri, "isEncodedBy", "encoder"))
-    return BQB_IS_ENCODED_BY;
-  else if(BiologyQualifierURIMatches(uri, "encodes", "encodement"))
-    return BQB_ENCODES;
-  else if(BiologyQualifierURIMatches(uri, "occursIn", "container"))
-    return BQB_OCCURS_IN;
-  else if(BiologyQualifierURIMatches(uri, "hasProperty", "property"))
-    return BQB_HAS_PROPERTY;
-  else if(BiologyQualifierURIMatches(uri, "isPropertyOf", "propertyBearer"))
-    return BQB_IS_PROPERTY_OF;
-  else if(BiologyQualifierURIMatches(uri, "hasTaxon", "taxon"))
-    return BQB_HAS_TAXON;
-  else
-    return BQB_UNKNOWN;
-}
-
-string Annotated::EncodeModelQualifier(ModelQualifierType_t q)
+string Annotated::EncodeModelQualifier(ModelQualifierType_t q) const
 {
   switch(q) {
     case BQM_IS:
-      return "bqm:is";
+      return "model_entity_is";
     case BQM_IS_DESCRIBED_BY:
       return "description";
     case BQM_IS_DERIVED_FROM:
@@ -133,7 +69,7 @@ string Annotated::EncodeModelQualifier(ModelQualifierType_t q)
   }
 }
 
-BiolQualifierType_t Annotated::DecodeBiolQualifier(const string& qual)
+BiolQualifierType_t Annotated::DecodeBiolQualifier(const string& qual) const
 {
   if(qual == "is" || qual == "identity" || qual == "biological_entity_is")
     return BQB_IS;
@@ -165,17 +101,17 @@ BiolQualifierType_t Annotated::DecodeBiolQualifier(const string& qual)
     return BQB_UNKNOWN;
 }
 
-string Annotated::EncodeBiolQualifier(BiolQualifierType_t q)
+string Annotated::EncodeBiolQualifier(BiolQualifierType_t q) const
 {
   switch (q) {
     case BQB_IS:
-      return "is";
+      return "identity";
     case BQB_HAS_PART:
       return "part";
     case BQB_IS_PART_OF:
       return "parthood";
     case BQB_IS_VERSION_OF:
-      return "isVersionOf";
+      return "hypernym";
     case BQB_HAS_VERSION:
       return "version";
     case BQB_IS_HOMOLOG_TO:
@@ -191,7 +127,7 @@ string Annotated::EncodeBiolQualifier(BiolQualifierType_t q)
     case BQB_HAS_PROPERTY:
       return "property";
     case BQB_IS_PROPERTY_OF:
-      return "isPropertyOf";
+      return "propertyBearer";
     case BQB_HAS_TAXON:
       return "taxon";
     case BQB_UNKNOWN:
@@ -200,22 +136,14 @@ string Annotated::EncodeBiolQualifier(BiolQualifierType_t q)
   }
 }
 
-bool Annotated::isBiomodelsQual(const std::string& s)
-{
-  if (DecodeModelQualifier(s) == BQM_UNKNOWN && DecodeBiolQualifier(s) == BQB_UNKNOWN)
-    return false;
-  else
-    return true;
-}
-
 void Annotated::AppendModelQualifiers(const ModelQualifierType_t qual, const std::vector<std::string>& resources)
 {
-  m_model_quals[qual].insert(m_model_quals[qual].end(),resources.begin(),resources.end());
+  m_model_quals.push_back(std::make_pair(qual,resources));
 }
 
 void Annotated::AppendBiolQualifiers(const BiolQualifierType_t qual, const std::vector<std::string>& resources)
 {
-  m_biol_quals[qual].insert(m_biol_quals[qual].end(),resources.begin(),resources.end());
+  m_biol_quals.push_back(std::make_pair(qual,resources));
 }
 
 bool Annotated::HasCVTerms() const
@@ -298,7 +226,7 @@ string Annotated::CreateCVTermsAntimonySyntax(const string& elt_id, const string
       // align each subsequent uri with the first one
       if (j!=i->second.begin())
         term += ",\n"+subindent;
-      term += "<"+*j+">";
+      term += "\""+*j+"\"";
     }
     result += term+"\n";
   }
@@ -311,7 +239,7 @@ string Annotated::CreateCVTermsAntimonySyntax(const string& elt_id, const string
       // align each subsequent uri with the first one
       if (j!=i->second.begin())
         term += ",\n"+subindent;
-      term += "<"+*j+">";
+      term += "\""+*j+"\"";
     }
     result += term+"\n";
   }
