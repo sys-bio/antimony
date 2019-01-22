@@ -13,18 +13,15 @@ private:
 
 // keep a list of biomodels quals so we can extend it as we read the input
 // use the list to build an annotation node when writing
-typedef std::map< ModelQualifierType_t, std::vector<std::string> > ModelQualsType;
+typedef std::vector< std::pair<ModelQualifierType_t, std::vector<std::string> > > ModelQualsType;
 ModelQualsType m_model_quals;
-typedef std::map< BiolQualifierType_t,  std::vector<std::string> > BiolQualsType;
+typedef std::vector< std::pair<BiolQualifierType_t,  std::vector<std::string> > > BiolQualsType;
 BiolQualsType m_biol_quals;
 
 // convert the URIs in resources to a vector of strings
 std::vector<std::string> ResourcesToVector(const CVTerm* t) const;
 
 int m_sboTerm;
-
-static bool ModelQualifierURIMatches  (const std::string& uri, const std::string& qual1, const std::string& qual2);
-static bool BiologyQualifierURIMatches(const std::string& uri, const std::string& qual1, const std::string& qual2);
 
 public:
   Annotated() : m_sboTerm(0) {};
@@ -38,17 +35,13 @@ public:
 
   // * CV terms *
   // converts a string into ModelQualifierType_t
-  static ModelQualifierType_t DecodeModelQualifier(const std::string& qual);
+  ModelQualifierType_t DecodeModelQualifier(const std::string& qual) const;
   // vice-versa
-  static std::string EncodeModelQualifier(ModelQualifierType_t q);
+  std::string EncodeModelQualifier(ModelQualifierType_t q) const;
   // converts a string into BiolQualifierType_t
-  static BiolQualifierType_t  DecodeBiolQualifier(const std::string& qual);
-  static ModelQualifierType_t DecodeModelQualifierURI(const std::string& uri);
-  static BiolQualifierType_t DecodeBiologyQualifierURI(const std::string& uri);
+  BiolQualifierType_t  DecodeBiolQualifier(const std::string& qual) const;
   // vice-versa
-  static std::string EncodeBiolQualifier(BiolQualifierType_t q);
-  // returns true if the string corresponds to a biomodels qualifier
-  static bool isBiomodelsQual(const std::string& s);
+  std::string EncodeBiolQualifier(BiolQualifierType_t q) const;
   // appends a model qualifier to the end of the cv list
   void AppendModelQualifiers(const ModelQualifierType_t qual, const std::vector<std::string>& resources);
   // appends a biological qualifier to the end of the cv list

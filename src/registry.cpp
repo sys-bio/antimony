@@ -541,7 +541,7 @@ bool Registry::LoadCellML(iface::cellml_api::Model* model)
   string modname(makeUTF8(wmodname));
   FixName(modname);
   modname += "__" MAINMODULE;
-  while (NewCurrentModule(&modname, &modname, true)) {
+  while (NewCurrentModule(&modname, true)) {
     //Failure - duplicated name
     modname += "_";
   }
@@ -920,21 +920,6 @@ void Registry::RevertToPreviousModule()
 {
   m_currentModules.pop_back();
   assert(m_currentModules.size() > 0);
-}
-
-bool Registry::IsRegisteredPrefix(const std::string& prefix) const
-{
-  return m_prefixes.find(prefix) != m_prefixes.end();
-}
-
-string Registry::GetUriForPrefix(const std::string& prefix) const
-{
-  return m_prefixes.find(prefix)->second;
-}
-
-void Registry::SetPrefix(const std::string& prefix, const std::string& uri)
-{
-  m_prefixes[prefix] = uri;
 }
 
 bool Registry::AddVariableToCurrentExportList(Variable* export_var)
