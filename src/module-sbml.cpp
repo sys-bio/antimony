@@ -455,7 +455,7 @@ void Module::ReturnSubmodelsFromDocument(SBMLDocument* sbml)
 {
   CompSBMLDocumentPlugin* compdoc = static_cast<CompSBMLDocumentPlugin*>(sbml->getPlugin("comp"));
 
-  for (size_t md=0; md<compdoc->getNumModelDefinitions(); md++) {
+  for (unsigned int md=0; md<compdoc->getNumModelDefinitions(); md++) {
     ModelDefinition* modeldef = compdoc->getModelDefinition(md);
     string id = modeldef->getId();
     Module* module = g_registry.GetModule(id);
