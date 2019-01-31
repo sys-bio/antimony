@@ -478,7 +478,7 @@ bool UnitDef::IsBuiltin() const
 {
   string u = GetName().back();
   // JKM doing this for now since we can't discriminate built-in units
-  if (u == "litre" || u == "mole" || u == "second")
+  if (u == "litre" || u == "mole" || u == "second" || u == "item" || u == "meter")
     return true;
   else
     return false;

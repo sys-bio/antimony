@@ -39,7 +39,7 @@ private:
   std::vector<std::string> m_variablename;
 
   std::vector<Variable*> m_variables;
-  std::vector<Variable*> m_defaultVariables;
+  std::vector<Variable> m_defaultVariables;
   std::vector<std::pair<std::vector<std::string>, std::vector<std::string> > > m_synchronized;
   std::vector<std::vector<std::string> > m_conversionFactors;
   std::vector<std::string> m_returnvalue;
