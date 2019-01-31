@@ -1066,7 +1066,8 @@ void Module::LoadSBML(const Model* sbml)
     if (unitdefinition->isSetName()) {
       var->SetDisplayName(unitdefinition->getName());
     }
-    var->SetUnitDef(&GetUnitDefFrom(unitdefinition, m_modulename));
+    UnitDef unitdef = GetUnitDefFrom(unitdefinition, m_modulename);
+    var->SetUnitDef(&unitdef);
   }
 
   //Model-wide units:
