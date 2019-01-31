@@ -1066,8 +1066,7 @@ void Module::LoadSBML(const Model* sbml)
     if (unitdefinition->isSetName()) {
       var->SetDisplayName(unitdefinition->getName());
     }
-    UnitDef* unitdef = new UnitDef(GetUnitDefFrom(unitdefinition, m_modulename));
-    var->SetUnitDef(unitdef);
+    var->SetUnitDef(&GetUnitDefFrom(unitdefinition, m_modulename));
   }
 
   //Model-wide units:
@@ -1077,8 +1076,8 @@ void Module::LoadSBML(const Model* sbml)
     unitname = "length";
     if (lunits != unitname) {
       Variable* var = AddOrFindVariable(&unitname);
-      UnitDef* unitdef = new UnitDef(lunits, m_modulename);
-      var->SetUnitDef(unitdef);
+      UnitDef unitdef = UnitDef(lunits, m_modulename);
+      var->SetUnitDef(&unitdef);
     }
   }
   if (sbml->isSetAreaUnits()) {
@@ -1086,8 +1085,8 @@ void Module::LoadSBML(const Model* sbml)
     unitname = "area";
     if (aunits != unitname) {
       Variable* var = AddOrFindVariable(&unitname);
-      UnitDef* unitdef = new UnitDef(aunits, m_modulename);
-      var->SetUnitDef(unitdef);
+      UnitDef unitdef = UnitDef(aunits, m_modulename);
+      var->SetUnitDef(&unitdef);
     }
   }
   if (sbml->isSetVolumeUnits()) {
@@ -1095,8 +1094,8 @@ void Module::LoadSBML(const Model* sbml)
     unitname = "volume";
     if (vunits != unitname) {
       Variable* var = AddOrFindVariable(&unitname);
-      UnitDef* unitdef = new UnitDef(vunits, m_modulename);
-      var->SetUnitDef(unitdef);
+      UnitDef unitdef = UnitDef(vunits, m_modulename);
+      var->SetUnitDef(&unitdef);
     }
   }
   if (sbml->isSetSubstanceUnits()) {
@@ -1104,8 +1103,8 @@ void Module::LoadSBML(const Model* sbml)
     unitname = "substance";
     if (sunits != unitname) {
       Variable* var = AddOrFindVariable(&unitname);
-      UnitDef* unitdef = new UnitDef(sunits, m_modulename);
-      var->SetUnitDef(unitdef);
+      UnitDef unitdef = UnitDef(sunits, m_modulename);
+      var->SetUnitDef(&unitdef);
     }
   }
   if (sbml->isSetExtentUnits()) {
@@ -1113,8 +1112,8 @@ void Module::LoadSBML(const Model* sbml)
     unitname = "extent";
     if (xunits != unitname) {
       Variable* var = AddOrFindVariable(&unitname);
-      UnitDef* unitdef = new UnitDef(xunits, m_modulename);
-      var->SetUnitDef(unitdef);
+      UnitDef unitdef = UnitDef(xunits, m_modulename);
+      var->SetUnitDef(&unitdef);
     }
   }
   if (sbml->isSetTimeUnits()) {
@@ -1122,8 +1121,8 @@ void Module::LoadSBML(const Model* sbml)
     unitname = "time_unit";
     if (tunits != unitname) {
       Variable* var = AddOrFindVariable(&unitname);
-      UnitDef* unitdef = new UnitDef(tunits, m_modulename);
-      var->SetUnitDef(unitdef);
+      UnitDef unitdef = UnitDef(tunits, m_modulename);
+      var->SetUnitDef(&unitdef);
     }
   }
  
