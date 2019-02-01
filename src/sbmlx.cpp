@@ -632,7 +632,9 @@ std::string elideMetaIdsFromSBMLstring(std::string sbml)
   }
   elideMetaIds(d);
   SBMLWriter writer;
-  return writer.writeSBMLToString(d);
+  string ret = writer.writeSBMLToStdString(d);
+  delete d;
+  return ret;
 }
 
 constraint_type getConstraintTypeFrom(ASTNodeType_t asttype)
