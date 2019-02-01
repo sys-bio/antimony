@@ -160,6 +160,7 @@ bool SBMLTab::SetLevelAndVersion(int level, int version)
       msgBox.setStandardButtons(QMessageBox::Ok);
       msgBox.exec();
     }
+    delete sbmldoc;
     return success;
 }
 
