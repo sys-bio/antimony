@@ -134,7 +134,9 @@ bool SBMLTab::SetLevelAndVersion(int level, int version)
     }
     bool success = sbmldoc->setLevelAndVersion(level, version);
     if (success) {
-      ReplaceTextWith(m_sbmlw.writeSBMLToString(sbmldoc));
+      char* sbmlchar = m_sbmlw.writeSBMLToString(sbmldoc);
+      ReplaceTextWith(sbmlchar);
+      free(sbmlchar);
       StoreLevelAndVersion(level, version);
     }
     else {
