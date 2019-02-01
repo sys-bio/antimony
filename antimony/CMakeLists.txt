@@ -349,8 +349,13 @@ set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${EXTRA_LIBS} )
 #
 
 if(WITH_CHECK)
+
     # we do use tests, that require 2.8.4
     cmake_minimum_required(VERSION 2.8.4)
+
+    # set test timeout to 3000 as the normal time limit is not sufficient
+    # for the comp tests
+    SET(DART_TESTING_TIMEOUT "3000" CACHE STRING "" FORCE)
 
     enable_testing()
 
@@ -367,13 +372,25 @@ if(WITH_CHECK)
               )
 
     if(NOT EXISTS "${LIBCHECK_INCLUDE_DIR}/check.h")
-        message(FATAL_ERROR "The 'check' include directory appears to be invalid. It should contain the file check.h, but it does not.")
+        message(FATAL_ERROR "The include directory specified for the 'check' library appears to be invalid. It should contain the file check.h, but it does not.")
     endif()
 
     if(${CMAKE_GENERATOR} MATCHES "Visual Studio 6" OR ${CMAKE_GENERATOR} MATCHES "Visual Studio 7")
         message(WARNING "Libcheck is not compatible with Visual Studio 2003 (or earlier versions).")
     endif()
 
+  if (UNIX)
+      # setup valgrind
+      set(CMAKE_MEMORYCHECK_COMMAND valgrind)
+      set(CMAKE_MEMORYCHECK_COMMAND_OPTIONS
+         "--error-exitcode=1 --trace-children=yes --leak-check=full --show-reachable=yes --leak-resolution=high --track-origins=yes --error-limit=no ")
+
+      set(MEMCHECK_COMMAND
+         "${CMAKE_MEMORYCHECK_COMMAND} ${CMAKE_MEMORYCHECK_COMMAND_OPTIONS}")
+      separate_arguments(MEMCHECK_COMMAND)
+  endif()
+
+    include(CTest)
 
 endif(WITH_CHECK)
 
