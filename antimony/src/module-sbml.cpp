@@ -1406,6 +1406,7 @@ void Module::LoadSBML(const Model* sbml)
       if (astn) {
         formulastring = parseASTNodeToString(astn);
         setFormulaWithString(formulastring, &formula, this);
+        delete astn;
       }
     }
     else if (reaction->getNumModifiers() > 0) {
