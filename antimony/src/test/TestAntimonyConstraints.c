@@ -34,13 +34,13 @@ void compareConstraints(const string& base)
 
   string sbmlfile = dir + "constraints/" + base + ".xml";
   SBMLDocument* doc = readSBMLFromFile(sbmlfile.c_str());
-  char* matching = writeSBMLToString(doc);
+  string matching = writeSBMLToStdString(doc);
   fail_unless(string(atosbml) == string(matching));
 
   //And check the round-tripped Antimony:
   char* ant_rt = getAntimonyString(NULL);
 
-  ret = loadSBMLString(matching);
+  ret = loadSBMLString(matching.c_str());
   fail_unless(ret != 1);
   char* sbml2ant = getAntimonyString(NULL);
   fail_unless(string(ant_rt) == string(sbml2ant));
