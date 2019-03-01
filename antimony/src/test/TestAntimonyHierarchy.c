@@ -65,6 +65,7 @@ void compareFileHierarchy(const string& base)
   fail_unless(string(roundtrip) == string(matching));
 
   delete doc;
+  delete converter;
   freeAll();
 }
 

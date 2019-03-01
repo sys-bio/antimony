@@ -46,7 +46,7 @@ void compareFileFlattening(const string& base)
   for (unsigned int rxn=0; rxn<model->getNumReactions(); rxn++) {
     model->getReaction(rxn)->getListOfModifiers()->sort();
   }
-  atosbml = writeSBMLToString(doc);
+  string atosbml_libs = writeSBMLToStdString(doc);
   delete doc;
 
   //Get the SBML-flattened version
@@ -60,12 +60,12 @@ void compareFileFlattening(const string& base)
   converter->setDocument(doc);
   int result = converter->convert();
   fail_unless(result == LIBSBML_OPERATION_SUCCESS);
-  char* sbmlFlat = writeSBMLToString(doc);
-  ret = loadSBMLString(sbmlFlat);
+  string sbmlFlat = writeSBMLToStdString(doc);
+  ret = loadSBMLString(sbmlFlat.c_str());
   fail_unless(ret != -1);
-  sbmlFlat = getSBMLString(NULL);
+  char* newSbmlFlat = getSBMLString(NULL);
   delete doc;
-  doc = readSBMLFromString(sbmlFlat);
+  doc = readSBMLFromString(newSbmlFlat);
   model = doc->getModel();
   fail_unless(model != NULL);
   model->setName(model->getId()); //Because Antimony does this.
@@ -82,11 +82,11 @@ void compareFileFlattening(const string& base)
   if (base == "dropports" || base == "test3") {
     // can't get these to use the supplied metaid
     elideMetaIds(doc);
-    sbmlFlat = writeSBMLToString(doc);
-    fail_unless(elideMetaIdsFromSBMLstring(string(atosbml)) == string(sbmlFlat));
+    sbmlFlat = writeSBMLToStdString(doc);
+    fail_unless(elideMetaIdsFromSBMLstring(atosbml_libs) == sbmlFlat);
   } else {
-    sbmlFlat = writeSBMLToString(doc);
-    fail_unless(string(atosbml) == string(sbmlFlat));
+    sbmlFlat = writeSBMLToStdString(doc);
+    fail_unless(atosbml_libs == sbmlFlat);
   }
 
   delete doc;
