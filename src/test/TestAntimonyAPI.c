@@ -172,6 +172,8 @@ START_TEST (test_getStrings)
   fail_unless(string(sbml) == "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sbml xmlns=\"http://www.sbml.org/sbml/level3/version1/core\" xmlns:comp=\"http://www.sbml.org/sbml/level3/version1/comp/version1\" level=\"3\" version=\"1\" comp:required=\"true\">\n  <model metaid=\"__main\" id=\"__main\">\n    <listOfParameters>\n      <parameter metaid=\"__main.a\" id=\"a\" value=\"3\" constant=\"true\"/>\n    </listOfParameters>\n  </model>\n</sbml>\n");
   sbml = getSBMLString(NULL);
   fail_unless(string(sbml) == "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sbml xmlns=\"http://www.sbml.org/sbml/level3/version1/core\" level=\"3\" version=\"1\">\n  <model metaid=\"__main\" id=\"__main\">\n    <listOfParameters>\n      <parameter metaid=\"__main.a\" id=\"a\" value=\"3\" constant=\"true\"/>\n    </listOfParameters>\n  </model>\n</sbml>\n");
+
+  freeAll();
 }
 END_TEST
 

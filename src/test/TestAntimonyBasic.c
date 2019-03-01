@@ -31,11 +31,11 @@ void compareFileTranslation(const string& base)
 
   string sbmlfile = dir + base + ".xml";
   SBMLDocument* doc = readSBMLFromFile(sbmlfile.c_str());
-  char* matching = writeSBMLToString(doc);
-  fail_unless(string(atosbml) == string(matching));
+  string matching = writeSBMLToStdString(doc);
+  fail_unless(string(atosbml) == matching);
 
   //Now check the roundtripped version:
-  ret = loadSBMLString(matching);
+  ret = loadSBMLString(matching.c_str());
   char* roundtrip = getAntimonyString(NULL);
   fail_unless(roundtrip != NULL);
   string rtfilename = dir + base + "_rt.txt";
@@ -87,9 +87,9 @@ void compareStringTranslation(const string& antimony, const string& sbml)
   string dir(TestDataDirectory);
   string sbmlfile = dir + sbml;
   SBMLDocument* doc = readSBMLFromFile(sbmlfile.c_str());
-  string matchingdoc = writeSBMLToString(doc);
+  string matchingdoc = writeSBMLToStdString(doc);
 
-  fail_unless(atosbml == matchingdoc);
+  fail_unless(string(atosbml) == matchingdoc);
   delete doc;
   freeAll();
 }
