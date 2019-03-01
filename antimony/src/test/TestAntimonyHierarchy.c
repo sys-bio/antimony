@@ -34,8 +34,8 @@ void compareFileHierarchy(const string& base)
 
   string sbmlfile = dir + base + ".xml";
   SBMLDocument* doc = readSBMLFromFile(sbmlfile.c_str());
-  char* matching = writeSBMLToString(doc);
-  fail_unless(string(atosbml) == string(matching));
+  string matching = writeSBMLToStdString(doc);
+  fail_unless(string(atosbml) == matching);
 
   //Now compare libAntimony's flattening with libSBML's flattening
   atosbml = getSBMLString(NULL);
@@ -54,7 +54,7 @@ void compareFileHierarchy(const string& base)
   string atosbml_nometa = elideMetaIdsFromSBMLstring(string(atosbml));
   fail_unless(atosbml_nometa == sbmlFlat);
 
-  ret = loadSBMLString(matching);
+  ret = loadSBMLString(matching.c_str());
   fail_unless(ret != -1);
   char* roundtrip = getAntimonyString(NULL);
   fail_unless(roundtrip != NULL);
