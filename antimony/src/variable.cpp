@@ -1451,13 +1451,13 @@ bool Variable::SetDisplayName(string name)
 }
 
 //Sets this variable to be a unit definition.
-bool Variable::SetUnitDef(UnitDef* unitdef)
+bool Variable::SetUnitDef(const UnitDef* unitdef)
 {
   if (SetType(varUnitDefinition)) return true;
-  unitdef->SetName(m_name);
   m_valUnitDef = *unitdef;
+  m_valUnitDef.SetName(m_name);
   Module* mod = g_registry.GetModule(m_module);
-  if (mod != NULL && mod->AddUnitVariables(unitdef)) return true;
+  if (mod != NULL && mod->AddUnitVariables(&m_valUnitDef)) return true;
   return false; //success
 }
 

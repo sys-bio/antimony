@@ -142,7 +142,7 @@
 %token  <word> VARWORD "'var'"
 //                      %token  <word> DELETEWORD "'delete'"
 
-%name-prefix="antimony_yy"
+%name-prefix "antimony_yy"
 %debug
 %error-verbose
 %% /* The grammar: */
@@ -499,9 +499,9 @@ unitdef:        formula {
                       if ($$==NULL) YYABORT;
                     }
                     else {
-                      UnitDef* ud = new UnitDef("", g_registry.CurrentModule()->GetModuleName());
+                      UnitDef ud("", g_registry.CurrentModule()->GetModuleName());
                       if ($1->MakeAllVariablesUnits()) YYABORT;
-                      if (ud->SetFromFormula($1)) YYABORT;
+                      if (ud.SetFromFormula($1)) YYABORT;
                       $$ = g_registry.CurrentModule()->AddOrFindUnitDef(ud);
                     }
                 }

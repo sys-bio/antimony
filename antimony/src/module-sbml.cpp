@@ -1215,7 +1215,7 @@ void Module::LoadSBML(const Model* sbml)
       FixUnitName(unitname);
       Variable* spunits = AddOrFindVariable(&unitname);
       spunits->SetType(varUnitDefinition);
-      UnitDef* ud = new UnitDef(*spunits->GetUnitDef());
+      UnitDef ud(*spunits->GetUnitDef());
       UnitDef* compud = NULL;
       if (compartment==NULL) {
         string volume = "volume";
@@ -1234,8 +1234,8 @@ void Module::LoadSBML(const Model* sbml)
         }
         compud = compunits->GetUnitDef();
       }
-      ud->DivideUnitDef(compud);
-      ud->Reduce();
+      ud.DivideUnitDef(compud);
+      ud.Reduce();
       Variable* concentrationUnits = AddOrFindUnitDef(ud);
       var->SetUnitVariable(concentrationUnits);
     }
@@ -1924,7 +1924,7 @@ void Module::CreateSBMLModel(bool comp)
     }
     if (unitvar != NULL) {
       //We need to convert concentration to substance.
-      UnitDef* ud = new UnitDef(*unitvar->GetUnitDef());
+      UnitDef ud(*unitvar->GetUnitDef());
       UnitDef volume("liter", m_modulename);
       if (compartment != NULL) {
         Variable* compunit = compartment->GetUnitVariable();
@@ -1937,12 +1937,12 @@ void Module::CreateSBMLModel(bool comp)
           }
           assert(compunit != NULL); //'volume' should always exist at least as a default unit.
         }
-        ud->MultiplyUnitDef(compunit->GetUnitDef());
+        ud.MultiplyUnitDef(compunit->GetUnitDef());
       }
       else {
-        ud->MultiplyUnitDef(&volume);
+        ud.MultiplyUnitDef(&volume);
       }
-      ud->Reduce();
+      ud.Reduce();
       Variable* newunit = AddOrFindUnitDef(ud);
       sbmlspecies->setSubstanceUnits(newunit->GetNameDelimitedBy(cc));
     }
