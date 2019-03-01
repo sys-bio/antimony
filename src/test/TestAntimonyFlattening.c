@@ -89,6 +89,7 @@ void compareFileFlattening(const string& base)
     fail_unless(atosbml_libs == sbmlFlat);
   }
 
+  delete converter;
   delete doc;
   freeAll();
 }
