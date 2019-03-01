@@ -372,7 +372,9 @@ if(WITH_CHECK)
               )
 
     if(NOT EXISTS "${LIBCHECK_INCLUDE_DIR}/check.h")
-        message(FATAL_ERROR "The include directory specified for the 'check' library appears to be invalid. It should contain the file check.h, but it does not.")
+        message(FATAL_ERROR
+"The include directory specified for the 'check' library appears to be
+invalid. It should contain the file check.h, but it does not.")
     endif()
 
     if(${CMAKE_GENERATOR} MATCHES "Visual Studio 6" OR ${CMAKE_GENERATOR} MATCHES "Visual Studio 7")
@@ -388,7 +390,76 @@ if(WITH_CHECK)
       set(MEMCHECK_COMMAND
          "${CMAKE_MEMORYCHECK_COMMAND} ${CMAKE_MEMORYCHECK_COMMAND_OPTIONS}")
       separate_arguments(MEMCHECK_COMMAND)
-  endif()
+
+      # check that check compiles/links - needs cmake 3+
+
+      if(${CMAKE_VERSION} VERSION_GREATER 3.0.0)
+        set(CHECK_CHECK_CODE
+        "
+        #include <check.h>
+        
+        START_TEST (sanity_check)
+        {
+            fail_unless(5 == 5, \"this should succeed\");
+            fail_unless(6 == 5, \"this should fail\");
+        }
+        END_TEST
+        
+        int 
+        main(void)
+        {
+            Suite *s1 = suite_create(\"Core\");
+            TCase *tc1_1 = tcase_create(\"Core\");
+            SRunner *sr = srunner_create(s1);
+            int nf;
+        
+            suite_add_tcase(s1, tc1_1);
+            tcase_add_test(tc1_1, sanity_check);
+        
+            srunner_run_all(sr, CK_ENV);
+            nf = srunner_ntests_failed(sr);
+            srunner_free(sr);
+            ;
+            return nf == 0 ? 0 : 1;
+        }
+        " 
+        )
+
+        set(CMAKE_REQUIRED_LIBRARIES_CACHE ${CMAKE_REQUIRED_LIBRARIES})
+        unset(CHECK_CHECK_TEST CACHE)
+        unset(CHECK_CHECK_TEST2 CACHE)
+
+        set(CHECK_CHECK_TEST)
+        set(CMAKE_REQUIRED_LIBRARIES "-lcheck -lm ${EXTRA_LIBS}")
+        CHECK_C_SOURCE_COMPILES("${CHECK_CHECK_CODE}" CHECK_CHECK_TEST)
+
+        if (NOT CHECK_CHECK_TEST)
+            set(CHECK_CHECK_TEST2)
+            set(CMAKE_REQUIRED_LIBRARIES "-lcheck -lm -pthread -lrt -lsubunit ${EXTRA_LIBS}")
+            CHECK_C_SOURCE_COMPILES("${CHECK_CHECK_CODE}" CHECK_CHECK_TEST2)
+            
+            if (CHECK_CHECK_TEST2)
+                set(CHECK_TMP_LIBS "-pthread -lrt -lsubunit ${EXTRA_LIBS}")
+                string(STRIP "${CHECK_TMP_LIBS}" CHECK_TMP_LIBS)
+                set(EXTRA_LIBS "${CHECK_TMP_LIBS}" CACHE STRING
+                "List of additional libraries to link against.  Separate multiple
+                names using semicolons." FORCE)                
+                unset(CHECK_TMP_LIBS)
+                message(STATUS "Check requires the following EXTRA_LIBS : ${EXTRA_LIBS}")
+            else ()
+                message(WARNING
+"Check cannot compile tests, please specify the correct EXTRA_LIBS for your operating system.")            
+            endif (CHECK_CHECK_TEST2)
+            unset(CHECK_CHECK_TEST2 CACHE)
+
+        endif (NOT CHECK_CHECK_TEST)
+
+        unset(CHECK_CHECK_TEST CACHE)
+        set(CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_FLAGS_CACHE})
+
+      endif(${CMAKE_VERSION} VERSION_GREATER 3.0.0)
+
+  endif(UNIX)
 
     include(CTest)
 
