@@ -34,7 +34,7 @@ void compareDistributionsAnt(const string& base)
 
   string sbmlfile = dir + "distributions/" + base + ".xml";
   SBMLDocument* doc = readSBMLFromFile(sbmlfile.c_str());
-  string matching = writeSBMLToString(doc);
+  string matching = writeSBMLToStdString(doc);
   fail_unless(string(atosbml) == matching);
 
   delete doc;
