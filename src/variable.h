@@ -168,7 +168,7 @@ public:
   bool SetDNAStrand(DNAStrand& strand);
   bool SetIsInStrand(Variable* var);
   bool SetDisplayName(std::string name);
-  bool SetUnitDef(UnitDef* unitdef);
+  bool SetUnitDef(const UnitDef* unitdef);
   bool SetUnit(Variable* var);
   /// Takes care of edge cases with built-in units in submodules
   std::string GetNameOrBuiltin(std::string cc) const;

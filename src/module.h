@@ -116,8 +116,8 @@ public:
   bool AddObjective(const Variable* var, bool maximize);
   bool DeleteFromSynchronized(Variable* deletedvar);
   void ClearReferencesTo(Variable* deletedvar, std::set<std::pair<std::vector<std::string>, deletion_type> >* ret);
-  Variable* AddOrFindUnitDef(UnitDef* unitdef);
-  bool AddUnitVariables(UnitDef* unitdef);
+  Variable* AddOrFindUnitDef(const UnitDef& unitdef);
+  bool AddUnitVariables(const UnitDef* unitdef);
   void AddDefaultVariables();
   void AddDefaultInitialValues();
   bool ProcessCVTerm(Annotated* a, const std::string* qual, std::vector<std::string>* resources);
