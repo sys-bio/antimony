@@ -36,7 +36,7 @@ void compareFBCAnt(const string& base)
   SBMLDocument* doc = readSBMLFromFile(sbmlfile.c_str());
   elideMetaIds(doc);
   string matching = writeSBMLToStdString(doc);
-  fail_unless(elideMetaIdsFromSBMLstring(string(atosbml)) == matching);
+  fail_unless(elideMetaIdsFromSBMLstring(atosbml) == matching);
 
   delete doc;
   freeAll();
@@ -71,7 +71,7 @@ void compareFBCSBML(const string& base)
   elideMetaIds(doc);
   string sbmlmatch = writeSBMLToStdString(doc);
 
-  fail_unless(elideMetaIdsFromSBMLstring(string(sbmlrt)) == sbmlmatch);
+  fail_unless(elideMetaIdsFromSBMLstring(sbmlrt) == sbmlmatch);
 
   delete doc;
   freeAll();
@@ -106,7 +106,7 @@ void compareFBCSBMLWithDifferences(const string& base)
   elideMetaIds(doc);
   string sbmlmatch = writeSBMLToStdString(doc);
 
-  fail_unless(elideMetaIdsFromSBMLstring(string(sbmlrt)) == sbmlmatch);
+  fail_unless(elideMetaIdsFromSBMLstring(sbmlrt) == sbmlmatch);
 
   delete doc;
   freeAll();
