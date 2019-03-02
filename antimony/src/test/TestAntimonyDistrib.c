@@ -34,8 +34,9 @@ void compareDistributionsAnt(const string& base)
 
   string sbmlfile = dir + "distributions/" + base + ".xml";
   SBMLDocument* doc = readSBMLFromFile(sbmlfile.c_str());
+  elideMetaIds(doc);
   string matching = writeSBMLToStdString(doc);
-  fail_unless(string(atosbml) == matching);
+  fail_unless(elideMetaIdsFromSBMLstring(atosbml) == matching);
 
   delete doc;
   freeAll();
@@ -67,9 +68,10 @@ void compareDistributionsSBML(const string& base)
   char* sbmlrt = getCompSBMLString(NULL);
   string roundtrip = dir + base + ".xml";
   SBMLDocument* doc = readSBMLFromFile(sbmlfile.c_str());
+  elideMetaIds(doc);
   string sbmlmatch = writeSBMLToStdString(doc);
 
-  fail_unless(elideMetaIdsFromSBMLstring(string(sbmlrt)) == sbmlmatch);
+  fail_unless(elideMetaIdsFromSBMLstring(sbmlrt) == sbmlmatch);
 
   delete doc;
   freeAll();
