@@ -270,7 +270,7 @@ modulepart:     reaction lineend {}
 
 reaction:       varmaybein ':' reactantList reactionDivider reactantList ';' formula maybein
                 {
-                  Variable* var = g_registry.AddNewReactionToCurrent($4, $7, $1);
+                  Variable* var = g_registry.AddNewReactionToCurrent($4, $7, $1, 0);
                   if (var == NULL) YYABORT;
                   if ($8 != NULL) {
                     if ($1->SetCompartment($8)) YYABORT;
@@ -278,16 +278,55 @@ reaction:       varmaybein ':' reactantList reactionDivider reactantList ';' for
                 }
         |       reactantList reactionDivider reactantList ';' formula maybein
                 {
-                  Variable* var = g_registry.AddNewReactionToCurrent($2, $5);
+                  Variable* var = g_registry.AddNewReactionToCurrent($2, $5, 0);
                   if (var == NULL) YYABORT;
                   if ($6 != NULL) {
                     if (var->SetCompartment($6)) YYABORT;
                   }
                 }
+        |       reactantList reactionDivider ';' formula maybein
+                {
+                  Variable* var = g_registry.AddNewReactionToCurrent($2, $4, 1);
+                  if (var == NULL) YYABORT;
+                  if ($5 != NULL) {
+                    if (var->SetCompartment($5)) YYABORT;
+                  }
+                }
+        |       varmaybein ':' reactantList reactionDivider ';' formula maybein
+                {
+                  Variable* var = g_registry.AddNewReactionToCurrent($4, $6, $1, 1);
+                  if (var == NULL) YYABORT;
+                  if ($7 != NULL) {
+                    if ($1->SetCompartment($7)) YYABORT;
+                  }
+                }
+        |       reactionDivider reactantList ';' formula maybein
+                {
+                  Variable* var = g_registry.AddNewReactionToCurrent($1, $4, 2);
+                  if (var == NULL) YYABORT;
+                  if ($5 != NULL) {
+                    if (var->SetCompartment($5)) YYABORT;
+                  }
+                }
+        |       varmaybein ':' reactionDivider reactantList ';' formula maybein
+                {
+                  Variable* var = g_registry.AddNewReactionToCurrent($3, $6, $1, 2);
+                  if (var == NULL) YYABORT;
+                  if ($7 != NULL) {
+                    if ($1->SetCompartment($7)) YYABORT;
+                  }
+                }
+//        |       reactionDivider reactantList ';' formula maybein
+//                {
+//                  Variable* var = g_registry.AddNewReactionToCurrent($1, $4);
+//                  if (var == NULL) YYABORT;
+//                  if ($5 != NULL) {
+//                    if (var->SetCompartment($5)) YYABORT;
+//                  }
+//                }
         ;
 
-reactantList:   /* empty */ {$$ = g_registry.NewBlankReactantList(); }
-        |       variable {$$ = g_registry.NewBlankReactantList(); $$->AddReactant($1); }
+reactantList:   variable {$$ = g_registry.NewBlankReactantList(); $$->AddReactant($1); }
         |       NUM variable {$$ = g_registry.NewBlankReactantList(); $$->AddReactant($2, $1); }
         |       reactantList '+' variable {$$ = $1; $1->AddReactant($3); }
         |       reactantList '+' NUM variable {$$ = $1; $1->AddReactant($4, $3); }

@@ -314,15 +314,15 @@ bool Module::AddVariableToExportList(Variable* var)
   return false;
 }
 
-Variable* Module::AddNewReaction(ReactantList* left, rd_type divider, ReactantList* right, Formula* formula)
+Variable* Module::AddNewReaction(const ReactantList& left, rd_type divider, const ReactantList& right, Formula* formula)
 {
   Variable* newrxn = AddNewNumberedVariable("_J");
   return AddNewReaction(left, divider, right, formula, newrxn);
 }
 
-Variable* Module::AddNewReaction(ReactantList* left, rd_type divider, ReactantList* right, Formula* formula, Variable* var)
+Variable* Module::AddNewReaction(const ReactantList& left, rd_type divider, const ReactantList& right, Formula* formula, Variable* var)
 {
-  AntimonyReaction newrxn(*left, divider, *right, *formula, var);
+  AntimonyReaction newrxn(left, divider, right, *formula, var);
   if (formula->ContainsVar(var)) {
     g_registry.SetError("The definition of reaction '" + var->GetNameDelimitedBy(".") + "' contains a reference to itself directly or indirectly in its reaction rate (" + formula->ToDelimitedStringWithEllipses(".") + ").");
     return NULL;

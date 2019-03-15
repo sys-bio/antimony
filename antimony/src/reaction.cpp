@@ -11,7 +11,7 @@
 
 using namespace std;
 
-AntimonyReaction::AntimonyReaction(ReactantList left, rd_type divider, ReactantList right, Formula formula, Variable* var)
+AntimonyReaction::AntimonyReaction(const ReactantList& left, rd_type divider, const ReactantList& right, Formula formula, Variable* var)
   : m_empty(false),
     m_left(left),
     m_right(right),

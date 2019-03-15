@@ -986,16 +986,46 @@ Variable* Registry::AddVariableToCurrent(const string* name)
   return CurrentModule()->AddOrFindVariable(name);
 }
 
-Variable* Registry::AddNewReactionToCurrent(rd_type divider, Formula* formula)
+Variable* Registry::AddNewReactionToCurrent(rd_type divider, Formula* formula, int type)
 {
-  Variable* retval = CurrentModule()->AddNewReaction(&(m_currentReactantLists[0]), divider, &(m_currentReactantLists[1]), formula);
+  ReactantList blank;
+  Variable* retval = NULL;
+  if (type == 0)
+  {
+    retval = CurrentModule()->AddNewReaction(m_currentReactantLists[0], divider, m_currentReactantLists[1], formula);
+  }
+  else if (type == 1)
+  {
+    retval = CurrentModule()->AddNewReaction(m_currentReactantLists[0], divider, blank, formula);
+  }
+  else if (type == 2)
+  {
+    retval = CurrentModule()->AddNewReaction(blank, divider, m_currentReactantLists[0], formula);
+  }
   m_currentReactantLists.clear();
   return retval;
 }
 
-Variable* Registry::AddNewReactionToCurrent(rd_type divider, Formula* formula, Variable* var)
+Variable* Registry::AddNewReactionToCurrent(rd_type divider, Formula* formula, Variable* var, int type)
 {
-  Variable* retval = CurrentModule()->AddNewReaction(&(m_currentReactantLists[0]), divider, &(m_currentReactantLists[1]), formula, var);
+  ReactantList blank;
+  Variable* retval = NULL;
+  if (type == 0)
+  {
+    retval = CurrentModule()->AddNewReaction( m_currentReactantLists[0], divider,  m_currentReactantLists[1], formula, var);
+  }
+  else if (type == 1)
+  {
+    retval = CurrentModule()->AddNewReaction( m_currentReactantLists[0], divider,  blank, formula, var);
+  }
+  else if (type == 2)
+  {
+    retval = CurrentModule()->AddNewReaction( blank, divider,  m_currentReactantLists[0], formula, var);
+  }
+  else
+  {
+    assert(false); //Should only be three options.
+  }
   m_currentReactantLists.clear();
   return retval;
 }
