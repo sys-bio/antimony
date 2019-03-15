@@ -1431,7 +1431,7 @@ void Module::LoadSBML(const Model* sbml)
         }
         Variable* interaction = AddOrFindVariable(&sbmlname);
         Formula blankform;
-        AddNewReaction(&left, itype, &right, &blankform, interaction);
+        AddNewReaction(left, itype, right, &blankform, interaction);
       }
     }
     rd_type rxntype = rdBecomes;
@@ -1439,7 +1439,7 @@ void Module::LoadSBML(const Model* sbml)
       rxntype = rdBecomesIrreversibly;
     }
     //Put reactants, products, and the formula together:
-    Variable* arxn = AddNewReaction(&reactants, rxntype, &products, &formula, var);
+    Variable* arxn = AddNewReaction(reactants, rxntype, products, &formula, var);
       if (reaction->isSetCompartment()) {
         if (defaultcompartments.find(reaction->getCompartment()) == defaultcompartments.end()) {
           Variable* compartment = AddOrFindVariable(&(reaction->getCompartment()));

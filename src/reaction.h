@@ -27,7 +27,7 @@ private:
   Formula m_formula;
 
 public:
-  AntimonyReaction(ReactantList left, rd_type divider, ReactantList right, Formula formula, Variable* var);
+  AntimonyReaction(const ReactantList& left, rd_type divider, const ReactantList& right, Formula formula, Variable* var);
   AntimonyReaction(); //Make a blank one, but don't use it.
   ~AntimonyReaction() {};
 

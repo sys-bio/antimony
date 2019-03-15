@@ -92,8 +92,8 @@ public:
   Variable* AddNewNumberedVariable(const std::string name);
   void StoreVariable(Variable* var);
   bool AddVariableToExportList(Variable* var);
-  Variable* AddNewReaction(ReactantList* left, rd_type divider, ReactantList* right, Formula* formula);
-  Variable* AddNewReaction(ReactantList* left, rd_type divider, ReactantList* right, Formula* formula, Variable* var);
+  Variable* AddNewReaction(const ReactantList& left, rd_type divider, const ReactantList& right, Formula* formula);
+  Variable* AddNewReaction(const ReactantList& left, rd_type divider, const ReactantList& right, Formula* formula, Variable* var);
   bool SetFormula(Formula* formula);
   void SetNewTopName(std::string newmodname, std::string newtopname);
   bool SetModule(const std::string* modname);

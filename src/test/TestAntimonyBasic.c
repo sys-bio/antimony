@@ -497,6 +497,30 @@ START_TEST (test_fixname_in_submodel)
 }
 END_TEST
 
+START_TEST (test_right_half_reaction)
+{
+  compareFileTranslation("rxn_right");
+}
+END_TEST
+
+START_TEST (test_right_half_reaction_txt)
+{
+  compareStringTranslation("-> S1;", "rxn_right.xml");
+}
+END_TEST
+
+START_TEST (test_right_half_reaction_mod)
+{
+  compareFileTranslation("rxn_right_mod");
+}
+END_TEST
+
+START_TEST (test_right_half_reaction_mod_txt)
+{
+  compareStringTranslation("module foo()\n -> S1;\n  end", "rxn_right_mod.xml");
+}
+END_TEST
+
 
 
 
@@ -571,6 +595,10 @@ create_suite_Basic (void)
   tcase_add_test( tcase, test_parameter_nan_txt);
   tcase_add_test( tcase, test_substance_only_species);
   tcase_add_test( tcase, test_substance_only_species_txt);
+  tcase_add_test( tcase, test_right_half_reaction);
+  tcase_add_test( tcase, test_right_half_reaction_txt);
+  tcase_add_test( tcase, test_right_half_reaction_mod);
+  tcase_add_test( tcase, test_right_half_reaction_mod_txt);
 
   suite_add_tcase(suite, tcase);
 

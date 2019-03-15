@@ -130,8 +130,8 @@ public:
   bool AddVariableToCurrentImportList(Variable* import_var);
   bool AddNumberToCurrentImportList(double val);
   Variable* AddVariableToCurrent(const std::string* name);
-  Variable* AddNewReactionToCurrent(rd_type divider, Formula* formula);
-  Variable* AddNewReactionToCurrent(rd_type divider, Formula* formula, Variable* var);
+  Variable* AddNewReactionToCurrent(rd_type divider, Formula* formula, int type);
+  Variable* AddNewReactionToCurrent(rd_type divider, Formula* formula, Variable* var, int type);
   ReactantList* NewBlankReactantList();
   Formula* NewBlankFormula();
   void SetCurrentImportedModule(std::vector<std::string> imod) {m_currentImportedModule = imod;}
