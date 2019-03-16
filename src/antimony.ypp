@@ -125,10 +125,13 @@
 %token  <word> FUNCTION "name of an existing function"
 %token  <word> FUNCTIONWORD "'function'"
 %token  <word> GENE "'gene'"
+%token  <word> GEQ ">="
+%token  <word> NEQ "!="
 %token  <word> HASWORD "'has'"
 %token  <word> IMPORT "'import'"
 %token  <word> INWORD "'in'"
 %token  <word> IS "'is'"
+%token  <word> LEQ "<="
 %token  <word> MAXIMIZEWORD "'maximize'"
 %token  <word> MINIMIZEWORD "'minimize'"
 %token  <word> MODNAME "name of an existing module"
@@ -337,9 +340,8 @@ reactionDivider:
         |       BECOMESINH {$$ = rdInhibits;}
         |       BECOMESMOD {$$ = rdInfluences;}
         |       BECOMESMOD2 {$$ = rdInfluences;}
-//         |       '-' ANTWORD {if (*$2 != "o") {g_registry.SetError("'-" + *$2 + "' is not a valid set of characters to demark reactions.  Try '->' for reactions, and '-|', '-o', and '-(' for interactions."); YYABORT;} $$ = rdActivates;}
         |       BECOMESIRREV {$$ = rdBecomesIrreversibly;}
-        |       '<' BECOMESIRREV {$$ = rdBecomes;}
+//         |       '-' ANTWORD {if (*$2 != "o") {g_registry.SetError("'-" + *$2 + "' is not a valid set of characters to demark reactions.  Try '->' for reactions, and '-|', '-o', and '-(' for interactions."); YYABORT;} $$ = rdActivates;}
         ;
 
 formula:        /* empty */ {$$ = g_registry.NewBlankFormula(); }
@@ -350,10 +352,8 @@ formula:        /* empty */ {$$ = g_registry.NewBlankFormula(); }
         |       formula FUNCTION {$$ = $1; $1->AddText($2); }
         |       formula '(' commaformula ')' {$$ = $1; $3->AddParentheses(); $$->AddFormula($3); }
         |       formula mathThing {$$ = $1; $1->AddMathThing($2); }
-        |       formula '<' '=' {$$ = $1; $1->AddMathThing('<'); $1->AddMathThing('='); }
-        |       formula '>' '=' {$$ = $1; $1->AddMathThing('>'); $1->AddMathThing('='); }
+        |       formula inequality {$$ = $1; $1->AddInequality($2); }
         |       formula '=' '=' {$$ = $1; $1->AddMathThing('='); $1->AddMathThing('='); }
-        |       formula '!' '=' {$$ = $1; $1->AddMathThing('!'); $1->AddMathThing('='); }
         |       formula '&' '&' {$$ = $1; $1->AddMathThing('&'); $1->AddMathThing('&'); }
         |       formula '|' '|' {$$ = $1; $1->AddMathThing('|'); $1->AddMathThing('|'); }
         |       formula '{' unitdef '}'
@@ -373,10 +373,15 @@ mathThing:      '+' {$$ = '+';}
         |       '*' {$$ = '*';}
         |       '/' {$$ = '/';}
         |       '^' {$$ = '^';}
-        |       '>' {$$ = '>';}
-        |       '<' {$$ = '<';}
         |       '!' {$$ = '!';}
         |       '%' {$$ = '%';}
+        ;
+
+inequality:     '<' {$$ = constLT;}
+        |       LEQ {$$ = constLEQ;}
+        |       '>' {$$ = constGT;}
+        |       GEQ {$$ = constGEQ;}
+        |       NEQ {$$ = constNEQ;}
         ;
 
 lineend:        ';' {}
@@ -552,13 +557,6 @@ constraint:     NUM inequality formula {if (g_registry.CurrentModule()->AddConst
         |       ANTWORD inequality formula {if (g_registry.CurrentModule()->AddConstraint($1, $3, $2)) YYABORT;}
         |       CONSTRAINTWORD ':' formula {if (g_registry.CurrentModule()->AddConstraint($3)) YYABORT;}
         |       CONSTRAINTWORD variable ':' formula {if (g_registry.CurrentModule()->AddConstraint($2, $4)) YYABORT;}
-        ;
-
-inequality:     '<' {$$ = constLT;}
-        |       '<' '=' {$$ = constLEQ;}
-        |       '>' {$$ = constGT;}
-        |       '>' '=' {$$ = constGEQ;}
-        |       '!' '=' {$$ = constNEQ;}
         ;
 
 objective:      maxormin formula              {if (g_registry.CurrentModule()->AddObjective($2, $1)) YYABORT;}
@@ -878,6 +876,47 @@ int antimony_yylex(void)
     g_registry.input->unget();
     cc = '=';
     return cc;
+  }
+
+  //Parse LEQ ('<=') and BECOMESREV ('<==>')
+  if (cc == '<') {
+    g_registry.input->get(cc);
+    if (cc == '=') {
+      g_registry.input->get(cc);
+      if (cc == '=') {
+        g_registry.input->get(cc);
+        if (cc == '>') {
+          return BECOMESREV;
+        }
+        else {
+          g_registry.input->unget();
+        }
+      }
+      g_registry.input->unget();
+      return LEQ;
+    }
+    g_registry.input->unget();
+    cc = '<';
+  }
+
+  //Parse GEQ >=
+  if (cc == '>') {
+    g_registry.input->get(cc);
+    if (cc == '=') {
+      return GEQ;
+    }
+    g_registry.input->unget();
+    cc = '>';
+  }
+
+  //Parse NEQ !=
+  if (cc == '!') {
+    g_registry.input->get(cc);
+    if (cc == '=') {
+      return NEQ;
+    }
+    g_registry.input->unget();
+    cc = '!';
   }
 
   //Skip comments:

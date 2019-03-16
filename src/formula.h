@@ -34,6 +34,7 @@ public:
   void AddVariable(const Variable* var);
   void AddNum(double num);
   void AddMathThing(char maththing);
+  void AddInequality(constraint_type ineq);
   void AddText(const std::string* function);
   void AddFormula(const Formula* form2);
   void AddEllipses();
