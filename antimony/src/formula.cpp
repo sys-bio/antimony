@@ -78,6 +78,37 @@ void Formula::AddMathThing(char maththing)
   m_components.push_back(newvar);
 }
 
+void Formula::AddInequality(constraint_type ineq)
+{
+  switch (ineq)
+  {
+  case constNONE:
+    break;
+  case constGT:
+    AddMathThing('>');
+    break;
+  case constLT:
+    AddMathThing('<');
+    break;
+  case constEQ:
+    AddMathThing('=');
+    AddMathThing('=');
+    break;
+  case constGEQ:
+    AddMathThing('>');
+    AddMathThing('=');
+    break;
+  case constLEQ:
+    AddMathThing('<');
+    AddMathThing('=');
+    break;
+  case constNEQ:
+    AddMathThing('!');
+    AddMathThing('=');
+    break;
+  }
+}
+
 void Formula::AddFormula(const Formula* form2)
 {
   m_components.insert(m_components.end(), form2->m_components.begin(), form2->m_components.end());
