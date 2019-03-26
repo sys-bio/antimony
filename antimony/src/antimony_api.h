@@ -61,7 +61,7 @@
 #define ANTIMONY_API_H
 
 #ifndef LIBANTIMONY_VERSION_STRING //Should be defined in the makefile (from CMakeLists.txt)
-#define LIBANTIMONY_VERSION_STRING "v2.9.4"
+#define LIBANTIMONY_VERSION_STRING "v2.11.0"
 #endif
 
 #include "libutil.h"
