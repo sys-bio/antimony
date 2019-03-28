@@ -541,7 +541,7 @@ bool Registry::LoadCellML(iface::cellml_api::Model* model)
   string modname(makeUTF8(wmodname));
   FixName(modname);
   modname += "__" MAINMODULE;
-  while (NewCurrentModule(&modname, true)) {
+  while (NewCurrentModule(&modname, &modname, true)) {
     //Failure - duplicated name
     modname += "_";
   }
