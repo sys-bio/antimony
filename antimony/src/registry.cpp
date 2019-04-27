@@ -1439,21 +1439,24 @@ bool Registry::ProcessGlobalCVTerm(const string* name, const string* qual, vecto
     BiolQualifierType_t bq = module->DecodeBiolQualifier(*qual);
     if (bq != BQB_UNKNOWN) {
       module->AppendBiolQualifiers(bq, *resources);
-    } else {
+    } 
+    else {
       // try a model qualifier
       ModelQualifierType_t mq = module->DecodeModelQualifier(*qual);
       if (mq != BQM_UNKNOWN) {
         module->AppendModelQualifiers(mq, *resources);
-      } else {
+      }
+      else {
         stringstream ss;
         ss << "Unrecognized qualifier \"" << *qual << "\"";
         g_registry.SetError(ss.str());
-        return false;
+        return true;
       }
     }
     delete resources;
     return false;
-  } else {
+  } 
+  else {
     SetError("Global CV qualifier encountered but not enough arguments - pass qualifier and at least one resource");
     return true;
   }

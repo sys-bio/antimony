@@ -102,7 +102,7 @@ public:
   void AddTimeToUserFunction(std::string function);
   void CreateLocalVariablesForSubmodelInterfaceIfNeeded();
   void SetIsMain(bool ismain) {m_ismain=ismain;};
-  void SetDisplayName(const std::string& displayname) {m_displayname=displayname;}
+  void SetDisplayName(const std::string& displayname);
   const std::string& GetDisplayName() const {return m_displayname;}
   bool HasDisplayName() const {return m_displayname != "";}
   bool AddDeletion(Variable* deletedvar);
