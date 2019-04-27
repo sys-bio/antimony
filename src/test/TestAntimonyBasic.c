@@ -521,6 +521,18 @@ START_TEST (test_right_half_reaction_mod_txt)
 }
 END_TEST
 
+START_TEST (test_module_name)
+{
+  compareFileTranslation("module_name");
+}
+END_TEST
+
+START_TEST (test_module_name_txt)
+{
+  compareStringTranslation("module foo()\n a=3;\n  end\nfoo is \"foo!\"", "module_name.xml");
+}
+END_TEST
+
 
 
 
@@ -599,6 +611,8 @@ create_suite_Basic (void)
   tcase_add_test( tcase, test_right_half_reaction_txt);
   tcase_add_test( tcase, test_right_half_reaction_mod);
   tcase_add_test( tcase, test_right_half_reaction_mod_txt);
+  tcase_add_test( tcase, test_module_name);
+  tcase_add_test( tcase, test_module_name_txt);
 
   suite_add_tcase(suite, tcase);
 

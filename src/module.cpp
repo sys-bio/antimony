@@ -443,6 +443,15 @@ void Module::CreateLocalVariablesForSubmodelInterfaceIfNeeded()
   }
 }
 
+void Module::SetDisplayName(const std::string& displayname) 
+{
+  m_displayname=displayname;
+  Model* model = m_sbml.getModel();
+  if (model) {
+    model->setName(displayname);
+  }
+}
+
 bool Module::AddDeletion(Variable* deletedvar)
 {
   deletedvar = deletedvar->GetSameVariable();
@@ -809,7 +818,7 @@ bool Module::ProcessCVTerm(Annotated* a, const string* qual, vector<string>* res
         stringstream ss;
         ss << "Unrecognized qualifier \"" << *qual << "\"";
         g_registry.SetError(ss.str());
-        return false;
+        return true;
       }
     }
     delete resources;

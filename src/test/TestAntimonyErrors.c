@@ -180,6 +180,24 @@ START_TEST (no_ar_and_rr2)
 }
 END_TEST
 
+START_TEST (unknown_cvterm)
+{
+  testError("a=3; a foo \"BQB_incorrect\"", "Error in model string, line 1:  Unrecognized qualifier \"foo\"");
+}
+END_TEST
+
+START_TEST (unknown_cvterm_mod)
+{
+  testError("model foo() a=3; end; foo bar \"BQB_incorrect\"", "Error in model string, line 1:  Unrecognized qualifier \"bar\"");
+}
+END_TEST
+
+START_TEST (unknown_cvterm_func)
+{
+  testError("function foo(x) x+3; end; foo bar \"BQB_incorrect\"", "Error in model string, line 1:  Unrecognized qualifier \"bar\"");
+}
+END_TEST
+
 /*
 START_TEST (no_replace_ar_with_ia)
 {
@@ -204,6 +222,9 @@ create_suite_Errors (void)
   tcase_add_test( tcase, no_replace_ar_with_ia);
   tcase_add_test( tcase, no_ar_and_rr1);
   tcase_add_test( tcase, no_ar_and_rr2);
+  tcase_add_test( tcase, unknown_cvterm);
+  tcase_add_test( tcase, unknown_cvterm_mod);
+  tcase_add_test( tcase, unknown_cvterm_func);
 
   suite_add_tcase(suite, tcase);
 
