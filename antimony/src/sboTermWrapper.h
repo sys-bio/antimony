@@ -14,6 +14,7 @@ public:
   ~SboTermWrapper();
 
   virtual bool SetFormula(Formula* formula, bool isObjective=false);
+  virtual bool SetType(var_type newtype);
   Annotated* GetParent();
 };
 

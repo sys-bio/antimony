@@ -34,7 +34,14 @@ bool SboTermWrapper::SetFormula(Formula* formula, bool isObjective)
   return false;
 }
 
-
+bool SboTermWrapper::SetType(var_type newtype)
+{
+  Variable* varparent = dynamic_cast<Variable*> (m_parent);
+  if (varparent) {
+    return varparent->SetType(newtype);
+  }
+  return true;
+}
 
 Annotated* SboTermWrapper::GetParent() 
 { 

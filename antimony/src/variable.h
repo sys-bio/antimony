@@ -147,7 +147,7 @@ public:
   bool SetUnitVariable(std::string);
   bool SetUnitVariable(Variable* unitvar);
 
-  bool SetType(var_type newtype);
+  virtual bool SetType(var_type newtype);
   virtual bool SetFormula(Formula* formula, bool isObjective=false);
   bool SetAssignmentRule(Formula* formula);
   bool SetRateRule(Formula* formula);
