@@ -11,6 +11,7 @@
 #include "registry.h"
 #include "stringx.h"
 #include "sbmlx.h"
+#include "sboTermWrapper.h"
 #include "typex.h"
 #include "unitdef.h"
 #ifndef NCELLML

@@ -3077,7 +3077,7 @@ yyreduce:
   case 214:
 #line 578 "antimony.ypp" /* yacc.c:1646  */
     { Module* module = g_registry.GetModule(*(yyvsp[-4].word));
-                    if (module && (yyvsp[-2].word) && *((yyvsp[-2].word)) == "sboTerm") {
+                    if (module && (yyvsp[-2].word) && CaselessStrCmp(*((yyvsp[-2].word)), "sboTerm")) {
                       module->SetSBOTerm((yyvsp[0].num));
                     }
                   }
@@ -3087,7 +3087,7 @@ yyreduce:
   case 215:
 #line 585 "antimony.ypp" /* yacc.c:1646  */
     { Module* function = g_registry.GetModule(*(yyvsp[-4].word));
-                    if (function && (yyvsp[-2].word) && *((yyvsp[-2].word)) == "sboTerm") {
+                    if (function && (yyvsp[-2].word) &&  CaselessStrCmp(*((yyvsp[-2].word)), "sboTerm")) {
                       function->SetSBOTerm((yyvsp[0].num));
                     }
                   }

@@ -24,6 +24,7 @@ enum tree_direction {td_UP, td_DOWN, td_SIDEWAYS};
 #include "antimony_api.h"
 #include "variable.h"
 #include "reaction.h"
+#include "sboTermWrapper.h"
 
 class ReactionList;
 

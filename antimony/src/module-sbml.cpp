@@ -2287,6 +2287,12 @@ void Module::CreateSBMLModel(bool comp)
     if (unitvar != NULL) {
       param->setUnits(unitvar->GetNameOrBuiltin(cc));
     }
+    if (formvar->HasCVTerms()) {
+      formvar->BuildCVTerms(param);
+    }
+    if (formvar->GetSBOTerm()) {
+      param->setSBOTerm(formvar->GetSBOTerm());
+    }
   }
 
   //The objective function (if present)

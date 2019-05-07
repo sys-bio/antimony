@@ -4,6 +4,7 @@
 #include "variable.h"
 #include "registry.h"
 #include "sbmlx.h"
+#include "sboTermWrapper.h"
 #include "stringx.h"
 #include "typex.h"
 #include "unitdef.h"
@@ -437,19 +438,18 @@ AntimonyConstraint* Variable::GetConstraint()
 
 Variable* Variable::GetSubVariable(const string* name)
 {
-  if (name && *name == "sboTerm") {
+  if (IsPointer()) {
+    return GetSameVariable()->GetSubVariable(name);
+  }
+  if (m_type == varModule) {
+    return m_valModule[0].GetSubVariable(name);
+  }
+  if (name && CaselessStrCmp(*name, "sboTerm")) {
     if (!m_sboTermWrapper)
       m_sboTermWrapper = new SboTermWrapper(this);
     return m_sboTermWrapper;
   }
-  if (IsPointer()) {
-    return GetSameVariable()->GetSubVariable(name);
-  }
-  if (m_type != varModule) {
-    return NULL;
-  }
-  assert(m_valModule.size() == 1);
-  return m_valModule[0].GetSubVariable(name);
+  return NULL;
 }
 
 Variable* Variable::GetSameVariable()
@@ -871,13 +871,6 @@ bool Variable::SetType(var_type newtype)
 
 bool Variable::SetFormula(Formula* formula, bool isObjective)
 {
-  if (m_type == varSboTermWrapper) {
-    if (!formula->IsDouble())
-      g_registry.SetError("Expected sboTerm to be set to a number or SBO:NUMBER");
-    SboTermWrapper* wrapper = (SboTermWrapper*)this;
-    wrapper->GetParent()->SetSBOTerm(formula->GetDouble());
-    return false;
-  }
   if (IsPointer()) {
     return GetSameVariable()->SetFormula(formula);
   }
