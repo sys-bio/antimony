@@ -781,6 +781,9 @@ void Module::LoadSBML(const Model* sbml)
       if (submodel->isSetName()) {
         var->SetDisplayName(submodel->getName());
       }
+      if (submodel->isSetSBOTerm()) {
+        var->SetSBOTerm(submodel->getSBOTerm());
+      }
       string refname = submodel->getModelRef();
       if (g_registry.GetModule(refname)==NULL) {
         g_registry.LoadModelFrom(refname, sbml->getSBMLDocument());
@@ -1674,6 +1677,9 @@ void Module::CreateSBMLModel(bool comp)
       sbmlsubmod->setId(submod->GetNameDelimitedBy(cc));
       sbmlsubmod->setName(submod->GetDisplayName());
       sbmlsubmod->setModelRef(module->GetModuleName());
+      if (submod->GetSBOTerm() != 0) {
+        sbmlsubmod->setSBOTerm(submod->GetSBOTerm());
+      }
       submod->TransferAnnotationTo(sbmlsubmod);
       Variable* conv = submod->GetTimeConversionFactor();
       if (conv != NULL) {

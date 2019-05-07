@@ -29,7 +29,8 @@ using namespace std;
 #define DEFAULTCOMP "default_compartment" //Also defined in antimony_api.cpp
 
 Module::Module(string name)
-  : m_modulename(name),
+  : Annotated(),
+    m_modulename(name),
     m_exportlist(),
     m_variablename(),
     m_variables(),
@@ -62,8 +63,7 @@ Module::Module(string name)
     m_cellmlcomponent(NULL),
     m_childrenadded(false),
 #endif
-    m_uniquevars(),
-    m_sboTerm(new SboTermWrapper(this))
+    m_uniquevars()
 {
 #ifdef USE_COMP
   m_sbmlnamespaces.addPackageNamespace("comp", 1);
@@ -88,7 +88,8 @@ Module::Module(string name)
 }
 
 Module::Module(const Module& src, string newtopname, string modulename)
-  : m_modulename(src.m_modulename),
+  : Annotated(src),
+    m_modulename(src.m_modulename),
     m_exportlist(src.m_exportlist),
     m_variablename(src.m_variablename),
     m_variables(src.m_variables),
@@ -118,8 +119,7 @@ Module::Module(const Module& src, string newtopname, string modulename)
     m_cellmlcomponent(NULL),
     m_childrenadded(src.m_childrenadded),
 #endif
-    m_uniquevars(),
-    m_sboTerm(new SboTermWrapper(this))
+    m_uniquevars()
 {
   SetNewTopName(modulename, newtopname);
   /*
@@ -144,7 +144,8 @@ Module::Module(const Module& src, string newtopname, string modulename)
 }
 
 Module::Module(const Module& src)
-  : m_modulename(src.m_modulename),
+  : Annotated(src),
+    m_modulename(src.m_modulename),
     m_exportlist(src.m_exportlist),
     m_variablename(src.m_variablename),
     m_variables(src.m_variables),
@@ -174,8 +175,7 @@ Module::Module(const Module& src)
     m_cellmlcomponent(src.m_cellmlcomponent),
     m_childrenadded(src.m_childrenadded),
 #endif
-    m_uniquevars(src.m_uniquevars),
-    m_sboTerm(new SboTermWrapper(this))
+    m_uniquevars(src.m_uniquevars)
 {
 #ifdef USE_COMP
   CompSBMLDocumentPlugin* compdoc = static_cast<CompSBMLDocumentPlugin*>(m_sbml.getPlugin("comp"));
@@ -234,17 +234,19 @@ Module& Module::operator=(const Module& src)
   m_childrenadded = src.m_childrenadded;
 #endif
   m_uniquevars = src.m_uniquevars;
-  if (m_sboTerm)
-    delete m_sboTerm;
-  m_sboTerm = new SboTermWrapper(this);
+//  if (m_sboTerm)
+//    delete m_sboTerm;
+  m_annotation = src.m_annotation;
+  m_metaid = src.m_metaid;
+  m_model_quals = src.m_model_quals;
+  m_biol_quals = src.m_biol_quals;
+  m_sboTerm = src.m_sboTerm;
   return *this;
 }
 
 
 Module::~Module()
 {
-  if (m_sboTerm)
-    delete m_sboTerm;
 }
 
 Variable* Module::AddOrFindVariable(const string* name)
@@ -2737,5 +2739,15 @@ void Module::UndoTimeExtentConversions(Variable* tcf, Variable* xcf)
     case varSboTermWrapper:
       break;
     }
+  }
+}
+
+void Module::SetSBOTerm(int sboTerm)
+{
+  m_sboTerm = sboTerm;
+  Model* model = m_sbml.getModel();
+  if (model != NULL)
+  {
+    model->setSBOTerm(sboTerm);
   }
 }

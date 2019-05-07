@@ -976,10 +976,10 @@ bool Registry::AddNumberToCurrentImportList(double val)
 
 Variable* Registry::AddVariableToCurrent(const string* name)
 {
-  if (name && *name == "sboTerm") {
-    // JKM setting the sboTerm for the enclosing module or function
-    return CurrentModule()->GetSBOTermWrapper();
-  }
+  //if (name && *name == "sboTerm") {
+  //  // JKM setting the sboTerm for the enclosing module or function
+  //  return CurrentModule()->GetSBOTermWrapper();
+  //}
   if (m_isfunction) {
     return m_userfunctions.back().AddOrFindVariable(name);
   }

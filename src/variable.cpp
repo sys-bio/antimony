@@ -442,7 +442,8 @@ Variable* Variable::GetSubVariable(const string* name)
     return GetSameVariable()->GetSubVariable(name);
   }
   if (m_type == varModule) {
-    return m_valModule[0].GetSubVariable(name);
+    Variable* var = m_valModule[0].GetSubVariable(name);
+    if (var != NULL) return var;
   }
   if (name && CaselessStrCmp(*name, "sboTerm")) {
     if (!m_sboTermWrapper)

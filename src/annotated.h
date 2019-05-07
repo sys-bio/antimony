@@ -5,7 +5,7 @@
 
 class Annotated
 {
-private:
+protected:
 #ifndef NSBML
   XMLNode m_annotation;
   std::string m_metaid;
@@ -28,7 +28,7 @@ public:
   ~Annotated() {};
 
 #ifndef NSBML
-  bool TransferAnnotationTo(SBase* sbmlobj) const;
+  virtual bool TransferAnnotationTo(SBase* sbmlobj) const;
   void SetAnnotation(const SBase* sbmlobj);
   void ClearAnnotation();
   bool HasAnnotation() const;
@@ -57,7 +57,7 @@ public:
   std::string CreateCVTermsAntimonySyntax(const std::string& elt_id, const std::string& indent) const;
 
   // * SBO terms *
-  void SetSBOTerm(int sboTerm);
+  virtual void SetSBOTerm(int sboTerm);
   int GetSBOTerm() const;
   std::string CreateSBOTermsAntimonySyntax(const std::string& elt_id, const std::string& indent) const;
 #endif

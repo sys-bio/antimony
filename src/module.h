@@ -58,9 +58,6 @@ private:
   //Caching for speed:
   std::map<std::vector<std::string>, Variable*> m_varmap;
 
-  // wrapper for the SBO annotation
-  SboTermWrapper* m_sboTerm;
-
 #ifndef NSBML
   SBMLNamespaces m_sbmlnamespaces;
   SBMLDocument m_sbml;
@@ -157,6 +154,7 @@ public:
   std::string GetJarnacConstFormulas(std::string modulename) const;
 
   bool GetNeedDefaultCompartment() const;
+  virtual void SetSBOTerm(int sboTerm);
 
 
   //Output for the API
@@ -248,7 +246,7 @@ public:
   void ConvertExtent(Variable* xcf);
   void UndoTimeExtentConversions(Variable* tcf, Variable* xcf);
 
-  Variable* GetSBOTermWrapper() { return m_sboTerm; }
+//  Variable* GetSBOTermWrapper() { return m_sboTerm; }
 
 private:
   void FillInOrigmap(std::map<const Variable*, Variable >& origmap) const;
