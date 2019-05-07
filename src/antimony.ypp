@@ -576,14 +576,14 @@ cvterm:         variable ANTWORD stringlist {if (g_registry.CurrentModule()->Pro
 // JKM setting an SBO term for a module (outside the body of the module)
 toplevel_sbo:     MODNAME '.' ANTWORD '=' NUM
                   { Module* module = g_registry.GetModule(*$1);
-                    if (module && $3 && *($3) == "sboTerm") {
+                    if (module && $3 && CaselessStrCmp(*($3), "sboTerm")) {
                       module->SetSBOTerm($5);
                     }
                   }
 // JKM setting an SBO term for a function (outside the body of the function)
         |         FUNCTION '.' ANTWORD '=' NUM
                   { Module* function = g_registry.GetModule(*$1);
-                    if (function && $3 && *($3) == "sboTerm") {
+                    if (function && $3 &&  CaselessStrCmp(*($3), "sboTerm")) {
                       function->SetSBOTerm($5);
                     }
                   }

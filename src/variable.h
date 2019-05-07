@@ -148,7 +148,7 @@ public:
   bool SetUnitVariable(Variable* unitvar);
 
   bool SetType(var_type newtype);
-  bool SetFormula(Formula* formula, bool isObjective=false);
+  virtual bool SetFormula(Formula* formula, bool isObjective=false);
   bool SetAssignmentRule(Formula* formula);
   bool SetRateRule(Formula* formula);
   bool SetReaction(AntimonyReaction* rxn);
@@ -219,23 +219,5 @@ public:
   void SetCellMLVariable(iface::cellml_api::CellMLVariable* cmlvar) {m_cellmlvariable = cmlvar;};
 #endif
 };
-
-// A proxy class returned by the parser for setting SBO terms
-class SboTermWrapper : public Variable
-{
-protected:
-  Annotated* m_parent;
-public:
-  SboTermWrapper(Annotated* parent)
-    : Variable(), m_parent(parent)
-      {
-        m_sboTermWrapper = NULL;
-        m_type = varSboTermWrapper;
-      }
-  ~SboTermWrapper() {}
-
-  Annotated* GetParent() { return m_parent; }
-};
-
 
 #endif //VARIABLE_H
