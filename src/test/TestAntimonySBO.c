@@ -94,6 +94,18 @@ START_TEST (test_SBO_module)
 }
 END_TEST
 
+START_TEST (test_SBO_function_txt)
+{
+  compareStringTranslation("function foo(); 3; end; foo.sboTerm = 8", "SBO_function.xml");
+}
+END_TEST
+
+START_TEST (test_SBO_function)
+{
+  compareFileTranslation("SBO_function");
+}
+END_TEST
+
 START_TEST (test_SBO_localvar_txt)
 {
   compareStringTranslation("model foo(); sboTerm = 5; end", "SBO_localvar.xml");
@@ -145,6 +157,8 @@ create_suite_SBO (void)
   tcase_add_test( tcase, test_SBO_compartment);
   tcase_add_test( tcase, test_SBO_module_txt);
   tcase_add_test( tcase, test_SBO_module);
+  tcase_add_test( tcase, test_SBO_function_txt);
+  tcase_add_test( tcase, test_SBO_function);
   tcase_add_test( tcase, test_SBO_localvar_txt);
   tcase_add_test( tcase, test_SBO_localvar);
   tcase_add_test( tcase, test_SBO_submodel_txt);
