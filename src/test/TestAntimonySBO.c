@@ -130,9 +130,22 @@ START_TEST (test_SBO_submodel)
 }
 END_TEST
 
-START_TEST (test_SBO_submodel_shadowed_txt)
+// Antimony has a systematic bug that things you change in submodels directly don't get translated to SBML.  The following works when flattened, but not hierarchically.
+//START_TEST (test_SBO_submodel_shadowed_txt)
+//{
+//  compareStringTranslation("model foo(); sboTerm = 5; end; A: foo(); A.sboTerm = 8; A.SBOTERM = 25", "SBO_submodel_shadowed.xml");
+//}
+//END_TEST
+
+START_TEST (test_SBO_reaction_txt)
 {
-  compareStringTranslation("model foo(); sboTerm = 5; end; A: foo(); A.sboTerm = 8; A.SBOTERM = 25", "SBO_submodel_shadowed.xml");
+  compareStringTranslation("J0: A->;; J0.sboTerm = 888", "SBO_reaction.xml");
+}
+END_TEST
+
+START_TEST (test_SBO_reaction)
+{
+  compareFileTranslation("SBO_reaction");
 }
 END_TEST
 
@@ -164,42 +177,10 @@ create_suite_SBO (void)
   tcase_add_test( tcase, test_SBO_submodel_txt);
   tcase_add_test( tcase, test_SBO_submodel);
   //tcase_add_test( tcase, test_SBO_submodel_shadowed_txt);
-  //tcase_add_test( tcase, test_hasPart);
-  //tcase_add_test( tcase, test_hasPart_txt);
-  //tcase_add_test( tcase, test_hasPart_txt2);
-  //tcase_add_test( tcase, test_isPartOf);
-  //tcase_add_test( tcase, test_isPartOf_txt);
-  //tcase_add_test( tcase, test_isPartOf_txt2);
-  //tcase_add_test( tcase, test_isVersionOf);
-  //tcase_add_test( tcase, test_isVersionOf_txt);
-  //tcase_add_test( tcase, test_isVersionOf_txt2);
-  //tcase_add_test( tcase, test_hasVersion);
-  //tcase_add_test( tcase, test_hasVersion_txt);
-  //tcase_add_test( tcase, test_hasVersion_txt2);
-  //tcase_add_test( tcase, test_isHomologTo);
-  //tcase_add_test( tcase, test_isHomologTo_txt);
-  //tcase_add_test( tcase, test_isHomologTo_txt2);
-  //tcase_add_test( tcase, test_isDescribedBy);
-  //tcase_add_test( tcase, test_isDescribedBy_txt);
-  //tcase_add_test( tcase, test_isDescribedBy_txt2);
-  //tcase_add_test( tcase, test_isEncodedBy);
-  //tcase_add_test( tcase, test_isEncodedBy_txt);
-  //tcase_add_test( tcase, test_isEncodedBy_txt2);
-  //tcase_add_test( tcase, test_encodes);
-  //tcase_add_test( tcase, test_encodes_txt);
-  //tcase_add_test( tcase, test_encodes_txt2);
-  //tcase_add_test( tcase, test_occursIn);
-  //tcase_add_test( tcase, test_occursIn_txt);
-  //tcase_add_test( tcase, test_occursIn_txt2);
-  //tcase_add_test( tcase, test_hasProperty);
-  //tcase_add_test( tcase, test_hasProperty_txt);
-  //tcase_add_test( tcase, test_hasProperty_txt2);
-  //tcase_add_test( tcase, test_isPropertyOf);
-  //tcase_add_test( tcase, test_isPropertyOf_txt);
-  //tcase_add_test( tcase, test_isPropertyOf_txt2);
-  //tcase_add_test( tcase, test_hasTaxon);
-  //tcase_add_test( tcase, test_hasTaxon_txt);
-  //tcase_add_test( tcase, test_hasTaxon_txt2);
+  tcase_add_test( tcase, test_SBO_reaction_txt);
+  tcase_add_test( tcase, test_SBO_reaction);
+
+
 
   suite_add_tcase(suite, tcase);
 
