@@ -27,9 +27,11 @@ public:
   Annotated() : m_sboTerm(0) {};
   ~Annotated() {};
 
+  virtual void Synchronize(Annotated* clone);
+
 #ifndef NSBML
-  virtual bool TransferAnnotationTo(SBase* sbmlobj) const;
-  void SetAnnotation(const SBase* sbmlobj);
+  virtual bool TransferAnnotationTo(SBase* sbmlobj, std::string metaid) const;
+  void ReadAnnotationFrom(const SBase* sbmlobj);
   void ClearAnnotation();
   bool HasAnnotation() const;
 

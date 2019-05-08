@@ -44,7 +44,8 @@ Variable::Variable(const string name, const Module* module)
 }
 
 Variable::Variable(const Variable& other)
-    : m_name(other.m_name),
+  : Annotated(other),
+    m_name(other.m_name),
     m_module(other.m_module),
     m_displayname(other.m_displayname),
     m_sameVariable(other.m_sameVariable),
@@ -1888,6 +1889,9 @@ bool Variable::Synchronize(Variable* clone, const Variable* conversionFactor)
   
   m_sameVariable = clone->GetName();
 
+  //Synchronize the annotations
+  Annotated::Synchronize(clone);
+
   //And save this pair in the module as having been syncronized
   g_registry.GetModule(m_module)->AddSynchronizedPair(this, clone, conversionFactor);
 
@@ -2012,7 +2016,7 @@ void Variable::SetWithRule(const Rule* rule)
   string formulastring(parseASTNodeToString(rule->getMath()));
   setFormulaWithString(formulastring, &formula, g_registry.GetModule(m_module));
   formula.SetNewTopNameWith(rule, m_module);
-  formula.SetAnnotation(rule);
+  formula.ReadAnnotationFrom(rule);
   if (IsSpecies(GetType())) {
     //Any species in any rule must be 'const' (in Antimony), because this means it's a 'boundary species'
     SetIsConst(true);
@@ -2031,6 +2035,14 @@ void Variable::SetWithRule(const Rule* rule)
   else {
     assert(false); //Algebraic rules should be caught in calling function
   }
+}
+
+bool Variable::TransferAnnotationTo(SBase * sbmlobj, std::string metaid) const
+{
+  if (IsPointer()) {
+    return GetSameVariable()->TransferAnnotationTo(sbmlobj, metaid);
+  }
+  return Annotated::TransferAnnotationTo(sbmlobj, metaid);
 }
 
 #endif

@@ -149,6 +149,18 @@ START_TEST (test_SBO_reaction)
 }
 END_TEST
 
+START_TEST (test_SBO_event_txt)
+{
+  compareStringTranslation("E0: at(time>3): b=4; E0.sboTerm=901", "SBO_event.xml");
+}
+END_TEST
+
+START_TEST (test_SBO_event)
+{
+  compareFileTranslation("SBO_event");
+}
+END_TEST
+
 
 
 
@@ -179,6 +191,8 @@ create_suite_SBO (void)
   //tcase_add_test( tcase, test_SBO_submodel_shadowed_txt);
   tcase_add_test( tcase, test_SBO_reaction_txt);
   tcase_add_test( tcase, test_SBO_reaction);
+  tcase_add_test( tcase, test_SBO_event_txt);
+  tcase_add_test( tcase, test_SBO_event);
 
 
 

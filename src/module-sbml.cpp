@@ -12,14 +12,14 @@ void SetVarWithEvent(Variable* var, const Event* event, Module* module, vector<s
   if (sbmltrigger != NULL && sbmltrigger->isSetMath()) {
     string triggerstring(parseASTNodeToString(sbmltrigger->getMath()));
     setFormulaWithString(triggerstring, &trigger, module);
-    trigger.SetAnnotation(sbmltrigger);
+    trigger.ReadAnnotationFrom(sbmltrigger);
   }
   Formula delay;
   const Delay* sbmldelay = event->getDelay();
   if (sbmldelay != NULL) {
     string delaystring(parseASTNodeToString(sbmldelay->getMath()));
     setFormulaWithString(delaystring, &delay, module);
-    delay.SetAnnotation(sbmldelay);
+    delay.ReadAnnotationFrom(sbmldelay);
   }
 
   //Set the priority:
@@ -29,7 +29,7 @@ void SetVarWithEvent(Variable* var, const Event* event, Module* module, vector<s
     if (sbmlpriority != NULL) {
       string prioritystring(parseASTNodeToString(sbmlpriority->getMath()));
       setFormulaWithString(prioritystring, &priority, module);
-      priority.SetAnnotation(sbmlpriority);
+      priority.ReadAnnotationFrom(sbmlpriority);
     }
   }
 
@@ -68,7 +68,7 @@ void SetVarWithEvent(Variable* var, const Event* event, Module* module, vector<s
     assert(asntvar != NULL);
     Formula*  asntform = g_registry.NewBlankFormula();
     setFormulaWithString(parseASTNodeToString(assignment->getMath()), asntform, module);
-    asntform->SetAnnotation(assignment);
+    asntform->ReadAnnotationFrom(assignment);
     for (size_t n=submodname.size(); n>0; n--) {
       string name = submodname[n-1];
       asntform->SetNewTopName(modname, name);
@@ -670,7 +670,7 @@ void Module::TranslateRulesAndAssignmentsTo(const SBase* obj, Variable* var)
       string formulastring(parseASTNodeToString(ia->getMath()));
       setFormulaWithString(formulastring, &formula, this);
       formula.SetNewTopNameWith(ia, GetModuleName());
-      formula.SetAnnotation(ia);
+      formula.ReadAnnotationFrom(ia);
       var->SetFormula(&formula);
     }
   }
@@ -766,9 +766,7 @@ void Module::LoadSBML(const Model* sbml)
   if(sbml->isSetName())
     SetDisplayName(sbml->getName());
   PopulateCVTerms((SBase*)sbml);
-  if (sbml->isSetSBOTerm())
-    SetSBOTerm(sbml->getSBOTerm());
-  SetAnnotation(sbml);
+  ReadAnnotationFrom(sbml);
 #ifdef USE_COMP
   //Load submodels
   const CompModelPlugin* mplugin = static_cast<const CompModelPlugin*>(sbml->getPlugin("comp"));
@@ -781,9 +779,7 @@ void Module::LoadSBML(const Model* sbml)
       if (submodel->isSetName()) {
         var->SetDisplayName(submodel->getName());
       }
-      if (submodel->isSetSBOTerm()) {
-        var->SetSBOTerm(submodel->getSBOTerm());
-      }
+      var->ReadAnnotationFrom(submodel);
       string refname = submodel->getModelRef();
       if (g_registry.GetModule(refname)==NULL) {
         g_registry.LoadModelFrom(refname, sbml->getSBMLDocument());
@@ -791,7 +787,7 @@ void Module::LoadSBML(const Model* sbml)
       if (var->SetModule(&refname)) {
         g_registry.AddWarning("Unable to find submodel " + refname + ".");
       }
-      var->SetAnnotation(submodel);
+      var->ReadAnnotationFrom(submodel);
       for (unsigned int d=0; d<submodel->getNumDeletions(); d++) {
         Deletion* deletion = const_cast<Deletion*>(submodel->getDeletion(d));
         string delname = deletion->getId();
@@ -855,7 +851,7 @@ void Module::LoadSBML(const Model* sbml)
               break;
             }
             AddDeletion(deletedvar);
-            deletedvar->SetAnnotation(deletion);
+            deletedvar->ReadAnnotationFrom(deletion);
             if (target->getTypeCode() == SBML_UNIT_DEFINITION) {
               deletedvar->SetIsDeletedUnit(true);
             }
@@ -966,7 +962,7 @@ void Module::LoadSBML(const Model* sbml)
               if (deletedvar != NULL) {
                 if (deletedvar->GetType() == varInteraction) {
                   AddDeletion(deletedvar);
-                  deletedvar->SetAnnotation(deletion);
+                  deletedvar->ReadAnnotationFrom(deletion);
                   break;
                 }
                 if (deletedvar->GetType() == varDeleted) break;
@@ -1036,17 +1032,13 @@ void Module::LoadSBML(const Model* sbml)
       }
     }
     if (duplicate) {
-      if (!uf->HasAnnotation()) {
-        uf->SetAnnotation(function);
-      }
+      uf->ReadAnnotationFrom(function);
       continue;
     }
     g_registry.NewUserFunction(&sbmlname);
     uf = g_registry.GetUserFunction(sbmlname);
     uf->PopulateCVTerms((SBase*)function);
-    if (function->isSetSBOTerm())
-      uf->SetSBOTerm(function->getSBOTerm());
-    uf->SetAnnotation(function);
+    uf->ReadAnnotationFrom(function);
     for (unsigned int arg=0; arg<function->getNumArguments(); arg++) {
       string argument(parseASTNodeToString(function->getArgument(arg)));
       Variable* expvar = g_registry.AddVariableToCurrent(&argument);
@@ -1065,7 +1057,7 @@ void Module::LoadSBML(const Model* sbml)
     sbmlname = getNameFromSBMLObject(unitdefinition, "_UD");
     FixUnitName(sbmlname);
     Variable* var = AddOrFindVariable(&sbmlname);
-    var->SetAnnotation(unitdefinition);
+    var->ReadAnnotationFrom(unitdefinition);
     if (unitdefinition->isSetName()) {
       var->SetDisplayName(unitdefinition->getName());
     }
@@ -1148,9 +1140,7 @@ void Module::LoadSBML(const Model* sbml)
     }
     Variable* var = AddOrFindVariable(&sbmlname);
     var->PopulateCVTerms((SBase*)compartment);
-    if (compartment->isSetSBOTerm())
-      var->SetSBOTerm(compartment->getSBOTerm());
-    var->SetAnnotation(compartment);
+    var->ReadAnnotationFrom(compartment);
     if (compartment->isSetName()) {
       var->SetDisplayName(compartment->getName());
     }
@@ -1179,9 +1169,7 @@ void Module::LoadSBML(const Model* sbml)
     }
     var->SetType(varSpeciesUndef);
     var->PopulateCVTerms((SBase*)species);
-    if (species->isSetSBOTerm())
-      var->SetSBOTerm(species->getSBOTerm());
-    var->SetAnnotation(species);
+    var->ReadAnnotationFrom(species);
     var->SetSubstOnly(species->getHasOnlySubstanceUnits());
 
     //Setting the formula
@@ -1256,7 +1244,7 @@ void Module::LoadSBML(const Model* sbml)
     Variable* var = AddOrFindVariable(&sbmlname);
     vector<string> nosub;
     SetVarWithEvent(var, event, this, nosub);
-    var->SetAnnotation(event);
+    var->ReadAnnotationFrom(event);
   }
 
   //Constraints:
@@ -1265,7 +1253,7 @@ void Module::LoadSBML(const Model* sbml)
     const Constraint* constraint = sbml->getConstraint(c);
     sbmlname = getNameFromSBMLObject(constraint, "_con");
     Variable* var = AddOrFindVariable(&sbmlname);
-    var->SetAnnotation(constraint);
+    var->ReadAnnotationFrom(constraint);
     if (constraint->isSetMessage()) {
       string msg = constraint->getMessageString();
       msg = StripMsgXML(msg);
@@ -1285,9 +1273,7 @@ void Module::LoadSBML(const Model* sbml)
     sbmlname = getNameFromSBMLObject(parameter, "_P");
     Variable* var = AddOrFindVariable(&sbmlname);
     var->PopulateCVTerms((SBase*)parameter);
-    if (parameter->isSetSBOTerm())
-      var->SetSBOTerm(parameter->getSBOTerm());
-    var->SetAnnotation(parameter);
+    var->ReadAnnotationFrom(parameter);
     if (parameter->isSetName()) {
       var->SetDisplayName(parameter->getName());
     }
@@ -1314,9 +1300,7 @@ void Module::LoadSBML(const Model* sbml)
     sbmlname = getNameFromSBMLObject(reaction, "_J");
     Variable* var = AddOrFindVariable(&sbmlname);
     var->PopulateCVTerms((SBase*)reaction);
-    if (reaction->isSetSBOTerm())
-      var->SetSBOTerm(reaction->getSBOTerm());
-    var->SetAnnotation(reaction);
+    var->ReadAnnotationFrom(reaction);
     if (reaction->isSetName()) {
       var->SetDisplayName(reaction->getName());
     }
@@ -1377,7 +1361,7 @@ void Module::LoadSBML(const Model* sbml)
     Formula formula;
     if (reaction->isSetKineticLaw()) {
       const KineticLaw* kl = reaction->getKineticLaw();
-      formula.SetAnnotation(kl);
+      formula.ReadAnnotationFrom(kl);
       ASTNode* astn = NULL;
       if (kl->isSetMath()) {
         astn = kl->getMath()->deepCopy();
@@ -1391,7 +1375,7 @@ void Module::LoadSBML(const Model* sbml)
         sbmlname = GetNewIDForLocalParameter(localparam);
         fullname.push_back(sbmlname);
         Variable* localvar = AddOrFindVariable(&sbmlname);
-        localvar->SetAnnotation(localparam);
+        localvar->ReadAnnotationFrom(localparam);
         //Change the ASTNode so that old idrefs point to the new name.
         if (astn) {
           astn->renameSIdRefs(localparam->getId(), sbmlname);
@@ -1469,7 +1453,7 @@ void Module::LoadSBML(const Model* sbml)
       if (!haveAlready) {
         sbmlname = getNameFromSBMLObject(fluxbound, "_con");
         Variable* var = AddOrFindVariable(&sbmlname);
-        var->SetAnnotation(fluxbound);
+        var->ReadAnnotationFrom(fluxbound);
         if (fluxbound->isSetName()) {
           var->SetDisplayName(fluxbound->getName());
         }
@@ -1482,7 +1466,7 @@ void Module::LoadSBML(const Model* sbml)
     if (objective != NULL) {
       sbmlname = getNameFromSBMLObject(objective, "_objective");
       Variable* varobj = AddOrFindVariable(&sbmlname);
-      varobj->SetAnnotation(objective);
+      varobj->ReadAnnotationFrom(objective);
       if (objective->isSetName()) {
         varobj->SetDisplayName(objective->getName());
       }
@@ -1645,15 +1629,7 @@ void Module::CreateSBMLModel(bool comp)
   sbmlmod->setId(m_modulename);
   sbmlmod->setName(GetDisplayName());
   sbmlmod->setMetaId(GetModuleName());
-  if (HasCVTerms()) {
-    BuildCVTerms(sbmlmod);
-  } else {
-    TransferAnnotationTo(sbmlmod);
-  }
-
-  if (GetSBOTerm()) {
-    sbmlmod->setSBOTerm(GetSBOTerm());
-  }
+  TransferAnnotationTo(sbmlmod, GetModuleName());
 
   string cc = g_registry.GetCC();
   map<const Variable*, Variable > syncmap;
@@ -1680,7 +1656,7 @@ void Module::CreateSBMLModel(bool comp)
       if (submod->GetSBOTerm() != 0) {
         sbmlsubmod->setSBOTerm(submod->GetSBOTerm());
       }
-      submod->TransferAnnotationTo(sbmlsubmod);
+      submod->TransferAnnotationTo(sbmlsubmod, GetModuleName()+"."+submod->GetNameDelimitedBy(cc));
       Variable* conv = submod->GetTimeConversionFactor();
       if (conv != NULL) {
         sbmlsubmod->setTimeConversionFactor(conv->GetNameDelimitedBy(cc));
@@ -1729,7 +1705,7 @@ void Module::CreateSBMLModel(bool comp)
           sbr->unsetIdRef();
           sbr->setUnitRef(delname[delname.size()-1]);
         }
-        deletedvar->TransferAnnotationTo(deletion);
+        //deletedvar->TransferAnnotationTo(deletion);
         //Find the actual bit we're deleting:
         SBase* referenced = deletion->getReferencedElement();
         assert(referenced != NULL);
@@ -1849,18 +1825,9 @@ void Module::CreateSBMLModel(bool comp)
     assert(userfunction != NULL);
     FunctionDefinition* fd = sbmlmod->createFunctionDefinition();
     fd->setId(userfunction->GetModuleName());
-    fd->setMetaId(GetModuleName()+"."+userfunction->GetModuleName());
-    if (userfunction->HasCVTerms()) {
-      userfunction->BuildCVTerms(fd);
-    }
-    if (userfunction->GetSBOTerm()) {
-      fd->setSBOTerm(userfunction->GetSBOTerm());
-    }
+    userfunction->TransferAnnotationTo(fd, GetModuleName()+"."+userfunction->GetModuleName());
     ASTNode* math = parseStringToASTNode(userfunction->ToSBMLString());
     fd->setMath(math);
-    if (userfunction->HasAnnotation()) {
-      userfunction->TransferAnnotationTo(fd);
-    }
     delete math;
   }
 
@@ -1880,23 +1847,13 @@ void Module::CreateSBMLModel(bool comp)
   for (size_t spec=0; spec < numspecies; spec++) {
     Variable* species = GetNthVariableOfType(allSpecies, spec, comp);
     Species* sbmlspecies = sbmlmod->createSpecies();
-    if (species->HasAnnotation()) {
-      species->TransferAnnotationTo(sbmlspecies);
-    }
     sbmlspecies->setId(species->GetNameDelimitedBy(cc));
     if (species->GetDisplayName() != "") {
       sbmlspecies->setName(species->GetDisplayName());
     }
 
     // JKM set the meta id to module_name.species_id; this should be globally unique
-    sbmlspecies->setMetaId(GetModuleName()+"."+species->GetNameDelimitedBy(cc));
-    if (species->HasCVTerms()) {
-      // convert the stored list of CV terms to an annotation node
-      species->BuildCVTerms(sbmlspecies);
-    }
-    if (species->GetSBOTerm()) {
-      sbmlspecies->setSBOTerm(species->GetSBOTerm());
-    }
+    species->TransferAnnotationTo(sbmlspecies, GetModuleName()+"."+species->GetNameDelimitedBy(cc));
 
     sbmlspecies->setConstant(false); //There's no need to try to distinguish between const and var for species.
     if (species->GetIsConst()) {
@@ -1962,8 +1919,8 @@ void Module::CreateSBMLModel(bool comp)
     UnitDef* unitdef = unit->GetUnitDef();
     if (!unit->IsBuiltin()) {
       UnitDefinition* sbmlunitdef = unitdef->AddToSBML(sbmlmod, unit->GetNameDelimitedBy(cc), unit->GetDisplayName());
-      if (sbmlunitdef != NULL && unit->HasAnnotation()) {
-        unit->TransferAnnotationTo(sbmlunitdef);
+      if (sbmlunitdef != NULL) {
+        unit->TransferAnnotationTo(sbmlunitdef, GetModuleName()+"."+unit->GetNameDelimitedBy(cc));
       }
       vector<string> name = unit->GetName();
       assert(!name.empty());
@@ -2023,13 +1980,7 @@ void Module::CreateSBMLModel(bool comp)
     const Variable* compartment = GetNthVariableOfType(allCompartments, cmpt, comp);
     Compartment* sbmlcomp = sbmlmod->createCompartment();
     sbmlcomp->setId(compartment->GetNameDelimitedBy(cc));
-    sbmlcomp->setMetaId(GetModuleName()+"."+compartment->GetNameDelimitedBy(cc));
-    if (compartment->HasCVTerms()) {
-      compartment->BuildCVTerms(sbmlcomp);
-    }
-    if (compartment->GetSBOTerm()) {
-      sbmlcomp->setSBOTerm(compartment->GetSBOTerm());
-    }
+    compartment->TransferAnnotationTo(sbmlcomp, GetModuleName()+"."+compartment->GetNameDelimitedBy(cc));
     if (compartment->GetDisplayName() != "") {
       sbmlcomp->setName(compartment->GetDisplayName());
     }
@@ -2058,13 +2009,7 @@ void Module::CreateSBMLModel(bool comp)
     const Formula*  formula = formvar->GetFormula();
     Parameter* param = sbmlmod->createParameter();
     param->setId(formvar->GetNameDelimitedBy(cc));
-    param->setMetaId(GetModuleName()+"."+formvar->GetNameDelimitedBy(cc));
-    if (formvar->HasCVTerms()) {
-      formvar->BuildCVTerms(param);
-    }
-    if (formvar->GetSBOTerm()) {
-      param->setSBOTerm(formvar->GetSBOTerm());
-    }
+    formvar->TransferAnnotationTo(param, GetModuleName()+"."+formvar->GetNameDelimitedBy(cc));
     if (formvar->GetDisplayName() != "") {
       param->setName(formvar->GetDisplayName());
     }
@@ -2092,13 +2037,7 @@ void Module::CreateSBMLModel(bool comp)
     Reaction* sbmlrxn = sbmlmod->createReaction();
     sbmlrxn->setFast(false);
     sbmlrxn->setId(rxnvar->GetNameDelimitedBy(cc));
-    sbmlrxn->setMetaId(GetModuleName()+"."+rxnvar->GetNameDelimitedBy(cc));
-    if (rxnvar->HasCVTerms()) {
-      rxnvar->BuildCVTerms(sbmlrxn);
-    }
-    if (rxnvar->GetSBOTerm()) {
-      sbmlrxn->setSBOTerm(rxnvar->GetSBOTerm());
-    }
+    rxnvar->TransferAnnotationTo(sbmlrxn, GetModuleName()+"."+rxnvar->GetNameDelimitedBy(cc));
     if (rxnvar->GetDisplayName() != "") {
       sbmlrxn->setName(rxnvar->GetDisplayName());
     }
@@ -2175,6 +2114,7 @@ void Module::CreateSBMLModel(bool comp)
     if (eventvar->GetDisplayName() != "") {
       sbmlevent->setName(eventvar->GetDisplayName());
     }
+    eventvar->TransferAnnotationTo(sbmlevent, GetModuleName()+"."+eventvar->GetNameDelimitedBy(cc));
     Trigger* trig = sbmlevent->createTrigger();
     ASTNode* ASTtrig = parseStringToASTNode(event->GetTrigger()->ToSBMLString());
     if (ASTtrig==NULL) {
@@ -2256,14 +2196,13 @@ void Module::CreateSBMLModel(bool comp)
     const AntimonyConstraint* antconstraint = convar->GetConstraint();
     const Formula*  formula = convar->GetFormula();
     Constraint* constraint = sbmlmod->createConstraint();
-    constraint->setMetaId(convar->GetNamespace() + "_" + convar->GetNameDelimitedBy(cc));
 
     if (convar->GetDisplayName() != "") {
 #if LIBSBML_VERSION >= 51103
       constraint->setMessage(convar->GetDisplayName(), true); // <- have to update libsbml for this to work.
 #endif
     }
-    constraint->setMetaId(convar->GetNamespace() + "_" + convar->GetNameDelimitedBy(cc));
+    convar->TransferAnnotationTo(constraint, GetModuleName() + "." + convar->GetNameDelimitedBy(cc));
     constraint->setMath(antconstraint->getASTNode());
 #ifdef LIBSBML_HAS_PACKAGE_FBC
     //We need to check to see if the constraint can be translated to an FBC constraint.
@@ -2285,6 +2224,7 @@ void Module::CreateSBMLModel(bool comp)
     //}
     Parameter* param = sbmlmod->createParameter();
     param->setId(formvar->GetNameDelimitedBy(cc));
+    formvar->TransferAnnotationTo(param, GetModuleName()+"."+formvar->GetNameDelimitedBy(cc));
     if (formvar->GetDisplayName() != "") {
       param->setName(formvar->GetDisplayName());
     }
@@ -2292,12 +2232,6 @@ void Module::CreateSBMLModel(bool comp)
     Variable* unitvar = formvar->GetUnitVariable();
     if (unitvar != NULL) {
       param->setUnits(unitvar->GetNameOrBuiltin(cc));
-    }
-    if (formvar->HasCVTerms()) {
-      formvar->BuildCVTerms(param);
-    }
-    if (formvar->GetSBOTerm()) {
-      param->setSBOTerm(formvar->GetSBOTerm());
     }
   }
 
@@ -2391,6 +2325,11 @@ void Module::CreateSBMLModel(bool comp)
         }
         else {
           sbr->setIdRef(name1[svn]);
+        }
+        //Need to create a metaid on the parent if the child has one:
+        SBase* referenced = re->getReferencedElement();
+        if (referenced && referenced->isSetMetaId() && !sbmlvar1->isSetMetaId()) {
+          sbmlvar1->setMetaId(GetModuleName() + "." + name2[0]);
         }
       }
       else {
