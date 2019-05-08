@@ -521,6 +521,7 @@ file(GLOB LIBANTIMONY_SOURCES
     ${ANTIMONY_SRC_DIR}reaction.cpp
     ${ANTIMONY_SRC_DIR}registry.cpp
     ${ANTIMONY_SRC_DIR}sbmlx.cpp
+    ${ANTIMONY_SRC_DIR}sboTermWrapper.cpp
     ${ANTIMONY_SRC_DIR}stringx.cpp
     ${ANTIMONY_SRC_DIR}typex.cpp
     ${ANTIMONY_SRC_DIR}unitdef.cpp
@@ -557,6 +558,7 @@ file(GLOB LIBANTIMONY_HEADERS
         ${ANTIMONY_SRC_DIR}reaction.h
         ${ANTIMONY_SRC_DIR}registry.h
         ${ANTIMONY_SRC_DIR}sbmlx.h
+        ${ANTIMONY_SRC_DIR}sboTermWrapper.h
         ${ANTIMONY_SRC_DIR}stringx.h
         ${ANTIMONY_SRC_DIR}typex.h
         ${ANTIMONY_SRC_DIR}unitdef.h
