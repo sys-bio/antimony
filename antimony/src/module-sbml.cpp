@@ -2328,7 +2328,7 @@ void Module::CreateSBMLModel(bool comp)
         }
         //Need to create a metaid on the parent if the child has one:
         SBase* referenced = re->getReferencedElement();
-        if (referenced && referenced->isSetMetaId() && !sbmlvar1->isSetMetaId()) {
+        if (referenced && referenced->isSetMetaId()) {
           sbmlvar1->setMetaId(GetModuleName() + "." + name2[0]);
         }
       }
