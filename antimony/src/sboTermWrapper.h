@@ -3,19 +3,19 @@
 
 #include "variable.h"
 
-class Annotated;
+class Variable;
 // A proxy class returned by the parser for setting SBO terms
 class SboTermWrapper : public Variable
 {
 protected:
-  Annotated* m_parent;
+  Variable* m_parent;
 public:
-  SboTermWrapper(Annotated* parent);
+  SboTermWrapper(Variable* parent);
   ~SboTermWrapper();
 
   virtual bool SetFormula(Formula* formula, bool isObjective=false);
   virtual bool SetType(var_type newtype);
-  Annotated* GetParent();
+  Variable* GetParent();
 };
 
 

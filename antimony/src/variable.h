@@ -193,10 +193,11 @@ public:
   bool DeleteFromSubmodel(Variable* deletedvar);
   std::set<std::pair<std::vector<std::string>, deletion_type> > ClearReferencesTo(Variable* deletedvar);
 
-  bool Synchronize(Variable* clone, const Variable* conversionFactor);
+  virtual bool Synchronize(Variable* clone, const Variable* conversionFactor);
 #ifndef NSBML
   //bool Synchronize(Variable* clone, SBase* foo);
   void SetWithRule(const Rule* rule);
+  virtual bool TransferAnnotationTo(SBase* sbmlobj, std::string metaid) const;
 #endif
 
   bool IncludesSelf();

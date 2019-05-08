@@ -79,7 +79,7 @@ void compareFileFlattening(const string& base)
   }
 
   //Compare them!
-  if (base == "dropports" || base == "test3") {
+  if (base=="test41" || base=="replace_rule") {
     // can't get these to use the supplied metaid
     elideMetaIds(doc);
     sbmlFlat = writeSBMLToStdString(doc);

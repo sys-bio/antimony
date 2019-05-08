@@ -2,22 +2,65 @@
 
 using namespace std;
 #ifndef NSBML
-bool Annotated::TransferAnnotationTo(SBase* sbmlobj) const
+void Annotated::Synchronize(Annotated * clone)
 {
-  /*
-  if (HasAnnotation()) {
-    sbmlobj->setMetaId(m_metaid);
-    return sbmlobj->setAnnotation(&m_annotation);
+  if (!clone->m_metaid.empty()) {
+    m_metaid = clone->m_metaid;
   }
-  */
+  else {
+    clone->m_metaid = m_metaid;
+  }
+  if (!clone->m_model_quals.empty()) {
+    m_model_quals = clone->m_model_quals;
+  }
+  else {
+    clone->m_model_quals = m_model_quals;
+  }
+
+  if (!clone->m_biol_quals.empty()) {
+    m_biol_quals = clone->m_biol_quals;
+  }
+  else {
+    clone->m_biol_quals = m_biol_quals;
+  }
+
+  if (clone->m_sboTerm != 0) {
+    m_sboTerm = clone->m_sboTerm;
+  }
+  else {
+    clone->m_sboTerm = m_sboTerm;
+  }
+
+}
+
+bool Annotated::TransferAnnotationTo(SBase* sbmlobj, string metaid) const
+{
+  if (m_sboTerm != 0) {
+    sbmlobj->setSBOTerm(m_sboTerm);
+  }
+  if (!m_metaid.empty() || HasCVTerms()) {
+    if (!m_metaid.empty()) {
+      sbmlobj->setMetaId(m_metaid);
+    }
+    else {
+      sbmlobj->setMetaId(metaid);
+    }
+  }
+  if (HasCVTerms()) {
+    // convert the stored list of CV terms to an annotation node
+    BuildCVTerms(sbmlobj);
+  }
   return true;
 }
 
-void Annotated::SetAnnotation(const SBase* sbmlobj)
+void Annotated::ReadAnnotationFrom(const SBase* sbmlobj)
 {
   m_metaid = sbmlobj->getMetaId();
   if (sbmlobj->isSetAnnotation()) {
     m_annotation = *(const_cast<SBase*>(sbmlobj)->getAnnotation());
+  }
+  if (sbmlobj->isSetSBOTerm()) {
+    m_sboTerm = sbmlobj->getSBOTerm();
   }
 }
 

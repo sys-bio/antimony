@@ -4,7 +4,7 @@
 
 using namespace std;
 
-SboTermWrapper::SboTermWrapper(Annotated* parent)
+SboTermWrapper::SboTermWrapper(Variable* parent)
   : Variable()
   , m_parent(parent)
 {
@@ -36,14 +36,10 @@ bool SboTermWrapper::SetFormula(Formula* formula, bool isObjective)
 
 bool SboTermWrapper::SetType(var_type newtype)
 {
-  Variable* varparent = dynamic_cast<Variable*> (m_parent);
-  if (varparent) {
-    return varparent->SetType(newtype);
-  }
-  return true;
+  return m_parent->SetType(newtype);
 }
 
-Annotated* SboTermWrapper::GetParent() 
+Variable* SboTermWrapper::GetParent() 
 { 
   return m_parent; 
 }
