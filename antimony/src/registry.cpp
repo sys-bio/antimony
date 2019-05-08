@@ -1457,6 +1457,7 @@ bool Registry::ProcessGlobalCVTerm(const string* name, const string* qual, vecto
     return false;
   } 
   else {
+    delete resources;
     SetError("Global CV qualifier encountered but not enough arguments - pass qualifier and at least one resource");
     return true;
   }

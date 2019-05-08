@@ -828,6 +828,7 @@ bool Module::ProcessCVTerm(Annotated* a, const string* qual, vector<string>* res
     return false;
   } else {
     g_registry.SetError("CV qualifier encountered but not enough arguments - pass qualifier and at least one resource");
+    delete resources;
     return true;
   }
 }
