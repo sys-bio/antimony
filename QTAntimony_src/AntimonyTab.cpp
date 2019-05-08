@@ -113,6 +113,12 @@ void AntimonyTab::ReplaceModelWithString(QString modelname, QString text)
     text = text.trimmed();
     QString model = toPlainText();
     if (modelname != "__main") {
+        QString modulename = modelname + " is \".*\"";
+        QRegExp modnamepattern(modulename, Qt::CaseInsensitive);
+        modnamepattern.setMinimal(true);
+        if (model.contains(modnamepattern)) {
+            model.remove(modnamepattern);
+        }
         QString pattern = "(model|module)\\s*[*]?\\s*" + modelname + ".*end";
         QRegExp text_to_find(pattern, Qt::CaseInsensitive);
         text_to_find.setMinimal(true);
