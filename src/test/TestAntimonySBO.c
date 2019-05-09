@@ -58,30 +58,6 @@ START_TEST (test_SBO_param2)
 }
 END_TEST
 
-START_TEST (test_SBO_species_txt)
-{
-  compareStringTranslation("species a.sboTerm = 25", "SBO_species.xml");
-}
-END_TEST
-
-START_TEST (test_SBO_species)
-{
-  compareFileTranslation("SBO_species");
-}
-END_TEST
-
-START_TEST (test_SBO_compartment_txt)
-{
-  compareStringTranslation("compartment a.sboTerm = 25", "SBO_compartment.xml");
-}
-END_TEST
-
-START_TEST (test_SBO_compartment)
-{
-  compareFileTranslation("SBO_compartment");
-}
-END_TEST
-
 START_TEST (test_SBO_module_txt)
 {
   compareStringTranslation("model foo(); end; foo.sboTerm = 8", "SBO_module.xml");
@@ -181,10 +157,6 @@ create_suite_SBO (void)
   tcase_add_test( tcase, test_SBO_param2_txt1);
   tcase_add_test( tcase, test_SBO_param2_txt2);
   tcase_add_test( tcase, test_SBO_param2);
-  tcase_add_test( tcase, test_SBO_species_txt);
-  tcase_add_test( tcase, test_SBO_species);
-  tcase_add_test( tcase, test_SBO_compartment_txt);
-  tcase_add_test( tcase, test_SBO_compartment);
   tcase_add_test( tcase, test_SBO_module_txt);
   tcase_add_test( tcase, test_SBO_module);
   tcase_add_test( tcase, test_SBO_function_txt);

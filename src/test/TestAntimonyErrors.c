@@ -240,6 +240,18 @@ START_TEST (no_sboterm_synchronization2)
 }
 END_TEST
 
+START_TEST (test_SBO_species_txt)
+{
+  testError("species a.sboTerm = 25", "Error in model string, line 1:  Unable to use the symbol 'a.sboTerm' in any context other than setting it to be an SBO value (i.e. 'a.sboTerm = 327' or 'a.sboTerm = SBO:0000327.");
+}
+END_TEST
+
+START_TEST (test_SBO_compartment_txt)
+{
+  testError("compartment a.sboTerm = 25", "Error in model string, line 1:  Unable to use the symbol 'a.sboTerm' in any context other than setting it to be an SBO value (i.e. 'a.sboTerm = 327' or 'a.sboTerm = SBO:0000327.");
+}
+END_TEST
+
 /*
 START_TEST (no_replace_ar_with_ia)
 {
@@ -276,6 +288,8 @@ create_suite_Errors (void)
 
   tcase_add_test( tcase, no_sboterm_synchronization1);
   tcase_add_test( tcase, no_sboterm_synchronization2);
+  tcase_add_test( tcase, test_SBO_species_txt);
+  tcase_add_test( tcase, test_SBO_compartment_txt);
 
   suite_add_tcase(suite, tcase);
 

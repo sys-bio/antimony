@@ -2168,25 +2168,25 @@ yyreduce:
 
   case 67:
 #line 332 "antimony.ypp" /* yacc.c:1646  */
-    {(yyval.reactantList) = g_registry.NewBlankReactantList(); (yyval.reactantList)->AddReactant((yyvsp[0].variable)); }
+    {(yyval.reactantList) = g_registry.NewBlankReactantList(); if((yyval.reactantList)->AddReactant((yyvsp[0].variable))) YYABORT; }
 #line 2173 "antimony.tab.cpp" /* yacc.c:1646  */
     break;
 
   case 68:
 #line 333 "antimony.ypp" /* yacc.c:1646  */
-    {(yyval.reactantList) = g_registry.NewBlankReactantList(); (yyval.reactantList)->AddReactant((yyvsp[0].variable), (yyvsp[-1].num)); }
+    {(yyval.reactantList) = g_registry.NewBlankReactantList(); if((yyval.reactantList)->AddReactant((yyvsp[0].variable), (yyvsp[-1].num))) YYABORT; }
 #line 2179 "antimony.tab.cpp" /* yacc.c:1646  */
     break;
 
   case 69:
 #line 334 "antimony.ypp" /* yacc.c:1646  */
-    {(yyval.reactantList) = (yyvsp[-2].reactantList); (yyvsp[-2].reactantList)->AddReactant((yyvsp[0].variable)); }
+    {(yyval.reactantList) = (yyvsp[-2].reactantList); if((yyvsp[-2].reactantList)->AddReactant((yyvsp[0].variable))) YYABORT; }
 #line 2185 "antimony.tab.cpp" /* yacc.c:1646  */
     break;
 
   case 70:
 #line 335 "antimony.ypp" /* yacc.c:1646  */
-    {(yyval.reactantList) = (yyvsp[-3].reactantList); (yyvsp[-3].reactantList)->AddReactant((yyvsp[0].variable), (yyvsp[-1].num)); }
+    {(yyval.reactantList) = (yyvsp[-3].reactantList); if((yyvsp[-3].reactantList)->AddReactant((yyvsp[0].variable), (yyvsp[-1].num))) YYABORT; }
 #line 2191 "antimony.tab.cpp" /* yacc.c:1646  */
     break;
 
