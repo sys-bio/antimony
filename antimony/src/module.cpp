@@ -821,6 +821,7 @@ bool Module::ProcessCVTerm(Annotated* a, const string* qual, vector<string>* res
         stringstream ss;
         ss << "Unrecognized qualifier \"" << *qual << "\"";
         g_registry.SetError(ss.str());
+        delete resources;
         return true;
       }
     }

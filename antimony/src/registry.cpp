@@ -1428,6 +1428,7 @@ bool Registry::ProcessGlobalCVTerm(const string* name, const string* qual, vecto
       stringstream ss;
       ss << "Cannot find module for \"" << *name << "\"";
       SetError(ss.str());
+      delete resources;
       return true;
     }
     // get element for name
@@ -1450,6 +1451,7 @@ bool Registry::ProcessGlobalCVTerm(const string* name, const string* qual, vecto
         stringstream ss;
         ss << "Unrecognized qualifier \"" << *qual << "\"";
         g_registry.SetError(ss.str());
+        delete resources;
         return true;
       }
     }
@@ -1457,8 +1459,8 @@ bool Registry::ProcessGlobalCVTerm(const string* name, const string* qual, vecto
     return false;
   } 
   else {
-    delete resources;
     SetError("Global CV qualifier encountered but not enough arguments - pass qualifier and at least one resource");
+    delete resources;
     return true;
   }
 }
