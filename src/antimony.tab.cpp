@@ -2234,7 +2234,7 @@ yyreduce:
 
   case 78:
 #line 349 "antimony.ypp" /* yacc.c:1646  */
-    {(yyval.formula) = (yyvsp[-1].formula); (yyvsp[-1].formula)->AddVariable((yyvsp[0].variable)); }
+    {(yyval.formula) = (yyvsp[-1].formula); if((yyvsp[-1].formula)->AddVariable((yyvsp[0].variable))) YYABORT; }
 #line 2239 "antimony.tab.cpp" /* yacc.c:1646  */
     break;
 

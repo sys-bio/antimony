@@ -139,6 +139,7 @@ formula_type Variable::GetFormulaType() const
   case varUnitDefinition:
   case varDeleted:
   case varConstraint:
+  case varSboTermWrapper:
     return formulaINITIAL; //For lack of any other default.
   }
   assert(false); //uncaught variable type;
@@ -173,6 +174,9 @@ const Formula* Variable::GetFormula() const
     return &(g_registry.m_blankform);
   case varConstraint:
     return m_valConstraint.GetFormula();
+  case varSboTermWrapper:
+    assert(false); //Should have been caught in 'IsPointer'
+    return NULL;
   }
   assert(false); //Uncaught variable type
   g_registry.SetError("Programming error:  uncaught variable type.  Must rewrite to fix.");
@@ -207,6 +211,9 @@ Formula* Variable::GetFormula()
     return &(g_registry.m_blankform);
   case varConstraint:
     return m_valConstraint.GetFormula();
+  case varSboTermWrapper:
+    assert(false); //Should have been caught in 'IsPointer'
+    return NULL;
   }
   assert(false); //Uncaught variable type
   g_registry.SetError("Programming error:  uncaught variable type.  Must rewrite to fix.");
@@ -242,6 +249,7 @@ const Formula* Variable::GetInitialAssignment() const
   case varStrand:
   case varDeleted:
   case varConstraint:
+  case varSboTermWrapper:
     return &(g_registry.m_blankform);
   }
   assert(false); //uncaught type
@@ -278,6 +286,7 @@ const Formula* Variable::GetAssignmentRuleOrKineticLaw() const
   case varUnitDefinition:
   case varDeleted:
   case varConstraint:
+  case varSboTermWrapper:
     return &(g_registry.m_blankform);
   }
   assert(false); //uncaught type
@@ -314,6 +323,7 @@ Formula* Variable::GetAssignmentRuleOrKineticLaw()
   case varUnitDefinition:
   case varDeleted:
   case varConstraint:
+  case varSboTermWrapper:
     return &(g_registry.m_blankform);
   }
   assert(false); //uncaught type
@@ -543,6 +553,7 @@ bool Variable::GetIsConst() const
   case varUnitDefinition:
   case varDeleted:
   case varConstraint:
+  case varSboTermWrapper:
     return true;
   }
   switch(m_const) {
@@ -652,6 +663,11 @@ bool Variable::SetType(var_type newtype)
 {
   if (newtype == varUndefined) return false;
   if (newtype == m_type) return false;
+  if (IsPointer()) {
+    if (GetSameVariable()->SetType(newtype)) return true;
+    m_type = GetSameVariable()->GetType();
+    return false;
+  }
   if (newtype == varDeleted) {
     //You can delete any type of variable.
     if (m_type == varUnitDefinition) {
@@ -664,11 +680,6 @@ bool Variable::SetType(var_type newtype)
     m_valReaction.Clear();
     m_valUnitDef.ClearComponents();
     m_valConstraint.Clear();
-    return false;
-  }
-  if (IsPointer()) {
-    if (GetSameVariable()->SetType(newtype)) return true;
-    m_type = GetSameVariable()->GetType();
     return false;
   }
   if (IsDNA(newtype) && !m_valReaction.LeftIsEmpty()) {
@@ -730,6 +741,7 @@ bool Variable::SetType(var_type newtype)
     case varStrand:
     case varUnitDefinition:
     case varConstraint:
+    case varSboTermWrapper:
       g_registry.SetError(error); return true;
     }
   case varFormulaUndef:
@@ -758,6 +770,7 @@ bool Variable::SetType(var_type newtype)
       return false;
     case varModule:
     case varStrand:
+    case varSboTermWrapper:
       g_registry.SetError(error); return true;
     case varUndefined:
       return false;
@@ -784,6 +797,7 @@ bool Variable::SetType(var_type newtype)
     case varStrand:
     case varUnitDefinition:
     case varConstraint:
+    case varSboTermWrapper:
       g_registry.SetError(error); return true;
     }
   case varFormulaOperator:
@@ -804,6 +818,7 @@ bool Variable::SetType(var_type newtype)
     case varStrand:
     case varUnitDefinition:
     case varConstraint:
+    case varSboTermWrapper:
       g_registry.SetError(error); return true;
     }
   case varReactionGene:
@@ -824,6 +839,7 @@ bool Variable::SetType(var_type newtype)
     case varStrand:
     case varUnitDefinition:
     case varConstraint:
+    case varSboTermWrapper:
       g_registry.SetError(error); return true;
     }
   case varReactionUndef:
@@ -846,6 +862,7 @@ bool Variable::SetType(var_type newtype)
     case varStrand:
     case varUnitDefinition:
     case varConstraint:
+    case varSboTermWrapper:
       g_registry.SetError(error); return true;
     }
   case varInteraction:
@@ -863,6 +880,7 @@ bool Variable::SetType(var_type newtype)
   case varDeleted:
     g_registry.SetError("Unable to set the type of variable '" + GetNameDelimitedBy(".") + "' to " + VarTypeToString(newtype) + " because it has already been deleted from the containing model.");
   case varConstraint:
+  case varSboTermWrapper:
     g_registry.SetError(error); return true; //the already-identical cases handled above.
     return true;
   }
@@ -952,6 +970,9 @@ bool Variable::SetFormula(Formula* formula, bool isObjective)
   case varConstraint:
     m_valConstraint.Clear();
     m_valConstraint.SetFormula(formula, false);
+    break;
+  case varSboTermWrapper:
+    assert(false); //Should be handled by overridden function.
     break;
   }
 #ifndef NSBML
@@ -1272,6 +1293,9 @@ bool Variable::SetIsConst(bool constant)
   case varDeleted:
     g_registry.SetError(error + ", as the variable was already deleted.");
     break;
+  case varSboTermWrapper:
+    assert(false); //Should be handled by 'same variable' to parent
+    break;
   }
   if (constant) {
     m_const = constCONST;
@@ -1345,6 +1369,7 @@ bool Variable::SetSuperCompartment(Variable* var, var_type supertype)
   case varUndefined:
   case varUnitDefinition:
   case varDeleted:
+  case varSboTermWrapper:
     assert(false); // Those things don't have components
     return false;
   case varStrand:
@@ -1389,6 +1414,7 @@ void Variable::SetComponentCompartments(bool frommodule)
   case varUndefined:
   case varUnitDefinition:
   case varDeleted:
+  case varSboTermWrapper:
     return; //No components to set
   case varReactionUndef:
   case varReactionGene:
@@ -1597,6 +1623,7 @@ bool Variable::DeleteFromSubmodel(Variable* deletedvar)
   case varStrand:
   case varUnitDefinition:
   case varDeleted:
+  case varSboTermWrapper:
     //These types can't have rules to them.
     break;
   }
@@ -2033,6 +2060,33 @@ std::string Variable::CreateSBOTermsAntimonySyntax(const std::string & elt_id, c
     if (var != NULL) {}
   }
   return Annotated::CreateSBOTermsAntimonySyntax(elt_id, indent, sboStr);
+}
+
+bool Variable::AllowedInFormulas() const
+{
+  switch (m_type) {
+  case varSpeciesUndef:
+  case varFormulaUndef:
+  case varDNA:
+  case varFormulaOperator:
+  case varReactionGene:
+  case varReactionUndef:
+  case varUndefined:
+  case varCompartment:
+  case varUnitDefinition:
+    return true;
+
+  case varInteraction:
+  case varModule:
+  case varEvent:
+  case varStrand:
+  case varDeleted:
+  case varSboTermWrapper:
+    return false;
+
+  }
+  assert(false); //Uncaught type
+  return false;
 }
 
 #ifndef NSBML

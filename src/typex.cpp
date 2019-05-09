@@ -25,6 +25,7 @@ bool IsReaction(const var_type vtype)
   case varUnitDefinition:
   case varDeleted:
   case varConstraint:
+  case varSboTermWrapper:
     return false;
   }
   assert(false); //uncaught vtype
@@ -65,6 +66,7 @@ bool IsSpecies(const var_type vtype)
   case varUnitDefinition:
   case varDeleted:
   case varConstraint:
+  case varSboTermWrapper:
     return false;
   }
   assert(false); //uncaught vtype
@@ -90,6 +92,7 @@ bool IsDNA(const var_type vtype)
   case varUnitDefinition:
   case varDeleted:
   case varConstraint:
+  case varSboTermWrapper:
     return false;
   }
   assert(false); //uncaught vtype
@@ -115,6 +118,7 @@ bool CanHaveRateRule(const var_type vtype)
   case varUnitDefinition:
   case varDeleted:
   case varConstraint:
+  case varSboTermWrapper:
     return false;
   }
   assert(false); //uncaught type
@@ -140,6 +144,7 @@ bool CanHaveAssignmentRule(const var_type vtype)
   case varUnitDefinition:
   case varDeleted:
   case varConstraint:
+  case varSboTermWrapper:
     return false;
   }
   assert(false); //uncaught type
@@ -165,6 +170,7 @@ bool HasOrIsFormula(const var_type vtype)
   case varStrand:
   case varUndefined:
   case varDeleted:
+  case varSboTermWrapper:
     return false;
   }
   assert(false); //uncaught vtype
@@ -217,6 +223,8 @@ string VarTypeToString(const var_type vtype)
     return "Undefined";
   case varConstraint:
     return "Constraint";
+  case varSboTermWrapper:
+    return "SBO Term";
   }
   assert(false);
   return "";
@@ -252,6 +260,7 @@ string VarTypeToAntimony(const var_type vtype)
   case varStrand:
   case varModule:
   case varUndefined:
+  case varSboTermWrapper:
     assert(false);
     return "undefinable_type";
     break;

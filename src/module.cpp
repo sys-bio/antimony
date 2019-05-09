@@ -1259,8 +1259,9 @@ bool Module::Finalize()
     vector<string> convmodel = toconvert;
     convmodel.pop_back();
     if (convmodel.empty()) {
-      assert(false);
-      return true;
+      //assert(false);
+      //return true;
+      continue;
     }
     Variable* conversionFactor = GetVariable(m_conversionFactors[cf]);
     if (conversionFactor==NULL) continue;

@@ -16,6 +16,21 @@ SboTermWrapper::~SboTermWrapper()
 {
 }
 
+bool SboTermWrapper::IsPointer() const
+{
+  return true;
+}
+
+Variable * SboTermWrapper::GetSameVariable()
+{
+  return m_parent;
+}
+
+const Variable * SboTermWrapper::GetSameVariable() const
+{
+  return m_parent;
+}
+
 bool SboTermWrapper::SetFormula(Formula* formula, bool isObjective)
 {
   if (!formula->IsDouble()) {
@@ -43,3 +58,10 @@ Variable* SboTermWrapper::GetParent()
 { 
   return m_parent; 
 }
+
+string SboTermWrapper::GetNameDelimitedBy(string cc) const
+{
+  string base = m_parent->GetNameDelimitedBy(cc);
+  return base + cc + "sboTerm";
+}
+
