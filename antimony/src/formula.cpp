@@ -22,12 +22,17 @@
 using namespace std;
 extern bool CaselessStrCmp(const string& lhs, const string& rhs);
 
-void Formula::AddVariable(const Variable* var)
+bool Formula::AddVariable(const Variable* var)
 {
+  if (!var->AllowedInFormulas()) {
+    g_registry.SetError("Unable to use the variable '" + var->GetNameDelimitedBy(".") + "', or any other variable of type '" + VarTypeToString(var->GetType()) + "', inside a mathematical expression.");
+    return true;
+  }
   pair<string, vector<string> > newvar;
   newvar = make_pair(var->GetNamespace(), var->GetName());
   m_components.push_back(newvar);
   m_module = var->GetNamespace();
+  return false;
 }
 
 void Formula::AddNum(double num)

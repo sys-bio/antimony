@@ -99,10 +99,10 @@ public:
   ~Variable();
 
 
-  bool IsPointer() const {return m_sameVariable.size() != 0;};
+  virtual bool IsPointer() const {return m_sameVariable.size() != 0;};
   const std::vector<std::string>& GetName() const;
   std::vector<std::string> GetPointerName() const {return m_sameVariable;};
-  std::string GetNameDelimitedBy(std::string cc) const;
+  virtual std::string GetNameDelimitedBy(std::string cc) const;
   var_type GetType() const;
   bool HasFormula() const {return (!m_valFormula.IsEmpty());};
   formula_type GetFormulaType() const;
@@ -125,8 +125,8 @@ public:
   const AntimonyConstraint* GetConstraint() const;
 
   Variable* GetSubVariable(const std::string* name);
-  Variable* GetSameVariable();
-  const Variable* GetSameVariable() const;
+  virtual Variable* GetSameVariable();
+  virtual const Variable* GetSameVariable() const;
   const DNAStrand* GetDNAStrand() const;
   Variable* GetCompartment() const;
   bool GetIsSetCompartment() const {return (m_compartment.size() != 0);};
@@ -212,6 +212,8 @@ public:
 
   bool IsReplacedFormRxn() const {return m_replacedformrxn;};
   virtual std::string CreateSBOTermsAntimonySyntax(const std::string& elt_id, const std::string& indent, std::string sboStr) const;
+
+  bool AllowedInFormulas() const;
 
 
 #ifndef NCELLML

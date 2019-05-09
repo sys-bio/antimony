@@ -346,7 +346,7 @@ reactionDivider:
 
 formula:        /* empty */ {$$ = g_registry.NewBlankFormula(); }
         |       formula ELLIPSES {$$ = $1; $1->AddEllipses();}
-        |       formula variable {$$ = $1; $1->AddVariable($2); }
+        |       formula variable {$$ = $1; if($1->AddVariable($2)) YYABORT; }
         |       formula NUM  {$$ = $1; $1->AddNum($2); }
         |       formula CONSTANT  {$$ = $1; $1->AddText($2); }
         |       formula FUNCTION {$$ = $1; $1->AddText($2); }

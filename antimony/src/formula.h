@@ -31,7 +31,7 @@ public:
   Formula() {};
   ~Formula() {};
 
-  void AddVariable(const Variable* var);
+  bool AddVariable(const Variable* var);
   void AddNum(double num);
   void AddMathThing(char maththing);
   void AddInequality(constraint_type ineq);

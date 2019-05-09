@@ -198,6 +198,36 @@ START_TEST (unknown_cvterm_func)
 }
 END_TEST
 
+START_TEST (no_sboterm_in_functions)
+{
+  testError("a = b.sboTerm", "Error in model string, line 1:  Unable to use the variable 'b.sboTerm', or any other variable of type 'SBO Term', inside a mathematical expression.");
+}
+END_TEST
+
+START_TEST (no_interaction_in_functions)
+{
+  testError("Int1: a -| J0;; a = Int1", "Error in model string, line 1:  Unable to use the variable 'Int1', or any other variable of type 'Interaction', inside a mathematical expression.");
+}
+END_TEST
+
+START_TEST (no_submod_in_functions)
+{
+  testError("model foo();end;A: foo();b = A", "Error in model string, line 1:  Unable to use the variable 'A', or any other variable of type 'Module', inside a mathematical expression.");
+}
+END_TEST
+
+START_TEST (no_event_in_functions)
+{
+  testError("E0: at(time>3): b=3;b = E0", "Error in model string, line 1:  Unable to use the variable 'E0', or any other variable of type 'Event', inside a mathematical expression.");
+}
+END_TEST
+
+START_TEST (no_deletions_in_functions)
+{
+  testError("model foo();  a=3;end;A: foo();delete A.a;x = A.a", "Error in model string, line 1:  Unable to use the variable 'A.a', or any other variable of type 'Deleted element', inside a mathematical expression.");
+}
+END_TEST
+
 /*
 START_TEST (no_replace_ar_with_ia)
 {
@@ -225,6 +255,12 @@ create_suite_Errors (void)
   tcase_add_test( tcase, unknown_cvterm);
   tcase_add_test( tcase, unknown_cvterm_mod);
   tcase_add_test( tcase, unknown_cvterm_func);
+
+  tcase_add_test( tcase, no_sboterm_in_functions);
+  tcase_add_test( tcase, no_interaction_in_functions);
+  tcase_add_test( tcase, no_submod_in_functions);
+  tcase_add_test( tcase, no_event_in_functions);
+  tcase_add_test( tcase, no_deletions_in_functions);
 
   suite_add_tcase(suite, tcase);
 
