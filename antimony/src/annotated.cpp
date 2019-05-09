@@ -299,13 +299,14 @@ int Annotated::GetSBOTerm() const
   return m_sboTerm;
 }
 
-string Annotated::CreateSBOTermsAntimonySyntax(const string& elt_id, const string& indent) const
+string Annotated::CreateSBOTermsAntimonySyntax(const string& elt_id, const string& indent, string sboStr) const
 {
   if (GetSBOTerm()) {
     stringstream ss;
     ss << GetSBOTerm();
-    return indent+elt_id+"."+"sboTerm = "+ss.str()+"\n";
-  } else {
+    return indent + elt_id + "." + sboStr + " = " + ss.str() + "\n";
+  } 
+  else {
     return "";
   }
 }

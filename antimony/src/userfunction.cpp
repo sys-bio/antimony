@@ -84,7 +84,7 @@ string UserFunction::GetAntimony(bool enableAnnotations) const
 
   if (enableAnnotations) {
     // SBO terms
-    string sboterm = CreateSBOTermsAntimonySyntax(m_modulename,"");
+    string sboterm = CreateSBOTermsAntimonySyntax(m_modulename,"", "sboTerm");
     if (sboterm.size()>0)
       func += "\n"+sboterm;
 

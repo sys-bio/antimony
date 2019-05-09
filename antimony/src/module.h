@@ -126,6 +126,7 @@ public:
   const Variable* GetVariable(const std::vector<std::string>& name) const;
   const Variable* GetVariableFromSymbol(std::string varname) const;
   Variable* GetSubVariable(const std::string* name);
+  const Variable* GetSubVariable(const std::string* name) const;
   const Formula* GetFormula() const;
   Formula* GetFormula();
   Variable* GetNextExportVariable();

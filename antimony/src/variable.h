@@ -211,6 +211,7 @@ public:
   Variable* GetParentVariable();
 
   bool IsReplacedFormRxn() const {return m_replacedformrxn;};
+  virtual std::string CreateSBOTermsAntimonySyntax(const std::string& elt_id, const std::string& indent, std::string sboStr) const;
 
 
 #ifndef NCELLML

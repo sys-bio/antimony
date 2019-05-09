@@ -927,6 +927,18 @@ Variable* Module::GetSubVariable(const string* name)
   return NULL;
 }
 
+const Variable* Module::GetSubVariable(const string* name) const
+{
+  vector<string> subvarname = m_variablename;
+  subvarname.push_back(*name);
+  for (size_t var=0; var<m_variables.size(); var++) {
+    if (m_variables[var]->GetName() == subvarname) {
+      return m_variables[var];
+    }
+  }
+  return NULL;
+}
+
 const Formula* Module::GetFormula() const
 {
   const Variable* retvar = GetVariable(m_returnvalue);
@@ -2144,7 +2156,7 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
     // SBO terms
     bool anysboterm = false;
     for (size_t var=0; var<m_uniquevars.size(); var++) {
-      string sboterms = m_uniquevars[var]->CreateSBOTermsAntimonySyntax(m_uniquevars[var]->GetNameDelimitedBy(cc),indent);
+      string sboterms = m_uniquevars[var]->CreateSBOTermsAntimonySyntax(m_uniquevars[var]->GetNameDelimitedBy(cc),indent, "sboTerm");
       if (anysboterm == false && sboterms.size()>0) {
         retval += "\n" + indent + "// SBO terms:\n";
         anysboterm = true;
@@ -2174,7 +2186,7 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
 
   if (enableAnnotations) {
     // SBO terms for model
-    string sboterm = CreateSBOTermsAntimonySyntax(m_modulename,"");
+    string sboterm = CreateSBOTermsAntimonySyntax(m_modulename,"", "sboTerm");
     if (sboterm.size()>0)
       retval += "\n"+sboterm;
 
