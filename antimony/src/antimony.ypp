@@ -329,10 +329,10 @@ reaction:       varmaybein ':' reactantList reactionDivider reactantList ';' for
 //                }
         ;
 
-reactantList:   variable {$$ = g_registry.NewBlankReactantList(); $$->AddReactant($1); }
-        |       NUM variable {$$ = g_registry.NewBlankReactantList(); $$->AddReactant($2, $1); }
-        |       reactantList '+' variable {$$ = $1; $1->AddReactant($3); }
-        |       reactantList '+' NUM variable {$$ = $1; $1->AddReactant($4, $3); }
+reactantList:   variable {$$ = g_registry.NewBlankReactantList(); if($$->AddReactant($1)) YYABORT; }
+        |       NUM variable {$$ = g_registry.NewBlankReactantList(); if($$->AddReactant($2, $1)) YYABORT; }
+        |       reactantList '+' variable {$$ = $1; if($1->AddReactant($3)) YYABORT; }
+        |       reactantList '+' NUM variable {$$ = $1; if($1->AddReactant($4, $3)) YYABORT; }
         ;
 
 reactionDivider:

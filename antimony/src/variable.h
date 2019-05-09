@@ -27,7 +27,7 @@ class SboTermWrapper;
 
 class Variable : public Annotated
 {
-private:
+protected:
   //Variable(const Variable& src); //Accept the default (?)
   //Variable& operator=(const Variable& src); //Undefined
 
@@ -54,7 +54,6 @@ private:
   //If the variable is a submodule, it can have conversion factors and deletions.
   std::vector<std::string> m_extentConversionFactor;
   std::vector<std::string> m_timeConversionFactor;
-protected:
   std::set<std::pair<std::vector<std::string>, deletion_type> > m_deletions;
   friend class Module;
 
@@ -65,7 +64,6 @@ protected:
 
   // Subclass which is used as a wrapper for setting SBO terms
   SboTermWrapper* m_sboTermWrapper;
-private:
   //If we've set the compartment we're in, this tells us where we are.
   std::vector<std::string> m_compartment;
   std::vector<std::string> m_supercompartment;
@@ -99,12 +97,12 @@ public:
   ~Variable();
 
 
-  virtual bool IsPointer() const {return m_sameVariable.size() != 0;};
+  virtual bool IsPointer() const;
   const std::vector<std::string>& GetName() const;
-  std::vector<std::string> GetPointerName() const {return m_sameVariable;};
+  std::vector<std::string> GetPointerName() const;
   virtual std::string GetNameDelimitedBy(std::string cc) const;
   var_type GetType() const;
-  bool HasFormula() const {return (!m_valFormula.IsEmpty());};
+  bool HasFormula() const;
   formula_type GetFormulaType() const;
   const Formula* GetFormula() const;
   Formula* GetFormula();
@@ -129,19 +127,19 @@ public:
   virtual const Variable* GetSameVariable() const;
   const DNAStrand* GetDNAStrand() const;
   Variable* GetCompartment() const;
-  bool GetIsSetCompartment() const {return (m_compartment.size() != 0);};
-  std::string GetNamespace() const {return m_module;};
-  void SetNamespace(const std::string& modname) {m_module = modname;};
+  bool GetIsSetCompartment() const;
+  std::string GetNamespace() const;
+  void SetNamespace(const std::string& modname);
   bool GetIsConst() const;
-  const_type GetConstType() const {return m_const;};
-  bool GetSubstOnly() const {return m_substOnly;};
+  const_type GetConstType() const;
+  bool GetSubstOnly() const;
   bool GetIsEquivalentTo(const Variable* var) const;
   std::vector<std::pair<Variable*, size_t> > GetStrandVars() const;
   bool IsExpandedStrand() const;
   std::string GetFormulaForNthEntryInStrand(std::string cc, size_t n);
   std::string GetDisplayName() const;
-  bool IsDeletedUnit() const {return m_deletedunit;}
-  void SetIsDeletedUnit(bool del) {m_deletedunit = del;}
+  bool IsDeletedUnit() const;
+  void SetIsDeletedUnit(bool del);
 
   Variable* GetUnitVariable() const;
   bool SetUnitVariable(std::string);
@@ -205,12 +203,12 @@ public:
   bool AnyCompartmentLoops(std::vector<const Variable*> lowercomps) const;
   std::string ToString() const;
   void FixNames();
-  void ClearSameName() {m_sameVariable.clear();};
+  void ClearSameName();
   bool StillMatchesOriginal(formula_type ftype) const;
   const Variable* GetOriginal() const;
   Variable* GetParentVariable();
 
-  bool IsReplacedFormRxn() const {return m_replacedformrxn;};
+  bool IsReplacedFormRxn() const;
   virtual std::string CreateSBOTermsAntimonySyntax(const std::string& elt_id, const std::string& indent, std::string sboStr) const;
 
   bool AllowedInFormulas() const;

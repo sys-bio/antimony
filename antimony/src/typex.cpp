@@ -151,6 +151,32 @@ bool CanHaveAssignmentRule(const var_type vtype)
   return false;
 }
 
+bool CanBeInReaction(const var_type vtype)
+{
+  switch(vtype) {
+  case varFormulaUndef:
+  case varFormulaOperator:
+  case varDNA:
+  case varSpeciesUndef:
+  case varUndefined:
+  case varReactionUndef:
+  case varReactionGene:
+  case varInteraction:
+    return true;
+  case varCompartment:
+  case varModule:
+  case varEvent:
+  case varStrand:
+  case varUnitDefinition:
+  case varDeleted:
+  case varConstraint:
+  case varSboTermWrapper:
+    return false;
+  }
+  assert(false); //uncaught type
+  return false;
+}
+
 bool HasOrIsFormula(const var_type vtype)
 {
   switch(vtype) {

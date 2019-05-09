@@ -10,12 +10,18 @@
 
 using namespace std;
 
-void ReactantList::AddReactant(Variable* var, double stoichiometry)
+bool ReactantList::AddReactant(Variable* var, double stoichiometry)
 {
+  var_type vartype = var->GetType();
+  if (!CanBeInReaction(vartype)) {
+    g_registry.SetError("The variable '" + var->GetNameDelimitedBy(".") + "' cannot be used in a reaction or interaction, as it is the wrong type ('" + VarTypeToString(var->GetType()) + "').");
+    return true;
+  }
+  //if (var->SetType(varSpeciesUndef)) //<-might actually be a formula for -o things
   m_components.push_back(make_pair(stoichiometry, var->GetName()));
   m_module = var->GetNamespace();
-  //var->SetType(varSpeciesUndef); //<-might actually be a formula for -o things
   //cout << "New version: " << ToString() << endl;
+  return false;
 }
 
 void ReactantList::SetNewTopName(string newmodname, string newtopname)

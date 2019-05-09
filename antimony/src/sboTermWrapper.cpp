@@ -10,6 +10,7 @@ SboTermWrapper::SboTermWrapper(Variable* parent)
 {
   m_sboTermWrapper = NULL;
   m_type = varSboTermWrapper;
+  SetNamespace(parent->GetNamespace());
 }
 
 SboTermWrapper::~SboTermWrapper() 
@@ -51,7 +52,11 @@ bool SboTermWrapper::SetFormula(Formula* formula, bool isObjective)
 
 bool SboTermWrapper::SetType(var_type newtype)
 {
-  return m_parent->SetType(newtype);
+  if (newtype == m_type) {
+    return false;
+  }
+  g_registry.SetError("Unable to use the symbol '" + GetNameDelimitedBy(".") + "' in any context other than setting it to be an SBO value (i.e. '" + GetNameDelimitedBy(".") + " = 327' or '" + GetNameDelimitedBy(".") + " = SBO:0000327.");
+  return true;
 }
 
 Variable* SboTermWrapper::GetParent() 

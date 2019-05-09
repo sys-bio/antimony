@@ -83,9 +83,19 @@ Variable::~Variable()
     delete m_sboTermWrapper;
 }
 
+bool Variable::IsPointer() const 
+{
+  return m_sameVariable.size() != 0;
+}
+
 const vector<string>& Variable::GetName() const
 {
   return m_name;
+}
+
+vector<string> Variable::GetPointerName() const 
+{
+  return m_sameVariable;
 }
 
 string Variable::GetNameDelimitedBy(string cc) const
@@ -110,6 +120,11 @@ var_type Variable::GetType() const
 {
   //LS NOTE:  don't get the type of the equivalent variable--that can lead to infinite loops.
   return m_type;
+}
+
+bool Variable::HasFormula() const 
+{
+  return (!m_valFormula.IsEmpty());
 }
 
 formula_type Variable::GetFormulaType() const
@@ -512,6 +527,21 @@ Variable* Variable::GetCompartment() const
   return g_registry.GetModule(m_module)->GetVariable(m_supercompartment);
 }
 
+bool Variable::GetIsSetCompartment() const 
+{
+  return (m_compartment.size() != 0);
+}
+
+string Variable::GetNamespace() const 
+{
+  return m_module;
+}
+
+void Variable::SetNamespace(const string& modname) 
+{
+  m_module = modname;
+}
+
 bool Variable::GetIsConst() const
 {
   if (IsPointer()) {
@@ -567,6 +597,16 @@ bool Variable::GetIsConst() const
   }
   assert(false); //uncaught const type
   return false;
+}
+
+const_type Variable::GetConstType() const 
+{
+  return m_const;
+}
+
+bool Variable::GetSubstOnly() const 
+{
+  return m_substOnly;
 }
 
 bool Variable::GetIsEquivalentTo(const Variable* var) const
@@ -637,6 +677,16 @@ string Variable::GetDisplayName() const
     return GetSameVariable()->GetDisplayName();
   }
   return m_displayname;
+}
+
+bool Variable::IsDeletedUnit() const 
+{
+  return m_deletedunit;
+}
+
+void Variable::SetIsDeletedUnit(bool del) 
+{
+  m_deletedunit = del;
 }
 
 Variable* Variable::GetUnitVariable() const
@@ -1127,6 +1177,10 @@ bool Variable::SetReaction(AntimonyReaction* rxn)
   if (IsInteraction(rxn->GetType())) {
     if (SetType(varInteraction) || rxn->GetRight()->SetComponentTypesTo(varFormulaUndef)) {
       g_registry.AddErrorPrefix(err);
+      return true;
+    }
+    if (rxn->GetRight()->GetNthReactant(0) == NULL) {
+      g_registry.SetError(err + "Cannot set this to be an interaction without something to interact with.");
       return true;
     }
   }
@@ -2002,6 +2056,11 @@ void Variable::FixNames()
   m_valStrand.FixNames();
 }
 
+void Variable::ClearSameName() 
+{
+  m_sameVariable.clear();
+}
+
 bool Variable::StillMatchesOriginal(formula_type ftype) const
 {
   const Formula* formnow = GetFormula();
@@ -2037,6 +2096,11 @@ Variable* Variable::GetParentVariable()
     return NULL;
   }
   return g_registry.GetModule(m_module)->GetVariable(parentname);  
+}
+
+bool Variable::IsReplacedFormRxn() const 
+{
+  return m_replacedformrxn;
 }
 
 std::string Variable::CreateSBOTermsAntimonySyntax(const std::string & elt_id, const std::string & indent, std::string sboStr) const

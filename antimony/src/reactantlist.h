@@ -22,7 +22,7 @@ public:
   ReactantList() {};
   ~ReactantList() {};
 
-  void AddReactant(Variable* var, double stoichiometry=1);
+  bool AddReactant(Variable* var, double stoichiometry=1);
   void SetNewTopName(std::string newmodname, std::string newtopname);
   void SetComponentCompartments(Variable* var, var_type supertype);
   bool SetComponentTypesTo(var_type vtype);
