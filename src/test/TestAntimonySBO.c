@@ -130,12 +130,17 @@ START_TEST (test_SBO_submodel)
 }
 END_TEST
 
-// Antimony has a systematic bug that things you change in submodels directly don't get translated to SBML.  The following works when flattened, but not hierarchically.
-//START_TEST (test_SBO_submodel_shadowed_txt)
-//{
-//  compareStringTranslation("model foo(); sboTerm = 5; end; A: foo(); A.sboTerm = 8; A.SBOTERM = 25", "SBO_submodel_shadowed.xml");
-//}
-//END_TEST
+START_TEST (test_SBO_submodel_shadowed_txt)
+{
+  compareStringTranslation("model foo();  sboTerm=1;end;A: foo();A.sboTerm is b;A.sboTerm = 3;A.SBOTERM = 27;foo.sboTerm = 83", "SBO_submodel_shadowed.xml");
+}
+END_TEST
+
+START_TEST (test_SBO_submodel_shadowed)
+{
+  compareFileTranslation("SBO_submodel_shadowed");
+}
+END_TEST
 
 START_TEST (test_SBO_reaction_txt)
 {
@@ -188,7 +193,8 @@ create_suite_SBO (void)
   tcase_add_test( tcase, test_SBO_localvar);
   tcase_add_test( tcase, test_SBO_submodel_txt);
   tcase_add_test( tcase, test_SBO_submodel);
-  //tcase_add_test( tcase, test_SBO_submodel_shadowed_txt);
+  tcase_add_test( tcase, test_SBO_submodel_shadowed_txt);
+  tcase_add_test( tcase, test_SBO_submodel_shadowed);
   tcase_add_test( tcase, test_SBO_reaction_txt);
   tcase_add_test( tcase, test_SBO_reaction);
   tcase_add_test( tcase, test_SBO_event_txt);

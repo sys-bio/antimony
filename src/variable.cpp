@@ -2009,6 +2009,32 @@ Variable* Variable::GetParentVariable()
   return g_registry.GetModule(m_module)->GetVariable(parentname);  
 }
 
+std::string Variable::CreateSBOTermsAntimonySyntax(const std::string & elt_id, const std::string & indent, std::string sboStr) const
+{
+  if (m_type == varModule) {
+    const Variable* var = m_valModule[0].GetSubVariable(&sboStr);
+    if (var != NULL) {
+      vector<string> othernames;
+      othernames.push_back("SBOTerm");
+      othernames.push_back("SBOterm");
+      othernames.push_back("SBOTERM");
+      othernames.push_back("sboterm");
+      for (size_t on = 0; on < othernames.size(); on++) {
+        var = m_valModule[0].GetSubVariable(&othernames[on]);
+        if (var == NULL) {
+          sboStr = othernames[on];
+          break;
+        }
+      }
+    }
+    if (var != NULL) {
+      return "";
+    }
+    if (var != NULL) {}
+  }
+  return Annotated::CreateSBOTermsAntimonySyntax(elt_id, indent, sboStr);
+}
+
 #ifndef NSBML
 void Variable::SetWithRule(const Rule* rule)
 {

@@ -61,7 +61,7 @@ public:
   // * SBO terms *
   virtual void SetSBOTerm(int sboTerm);
   int GetSBOTerm() const;
-  std::string CreateSBOTermsAntimonySyntax(const std::string& elt_id, const std::string& indent) const;
+  virtual std::string CreateSBOTermsAntimonySyntax(const std::string& elt_id, const std::string& indent, std::string ) const;
 #endif
 
 };
