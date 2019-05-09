@@ -228,6 +228,18 @@ START_TEST (no_deletions_in_functions)
 }
 END_TEST
 
+START_TEST (no_sboterm_synchronization1)
+{
+  testError("a is b.sboTerm", "Error in model string, line 1:  Unable to synchronize two symbols when one of them ('b.sboTerm') is an SBO term.");
+}
+END_TEST
+
+START_TEST (no_sboterm_synchronization2)
+{
+  testError("b.sboTerm is a", "Error in model string, line 1:  Unable to synchronize two symbols when one of them ('b.sboTerm') is an SBO term.");
+}
+END_TEST
+
 /*
 START_TEST (no_replace_ar_with_ia)
 {
@@ -261,6 +273,9 @@ create_suite_Errors (void)
   tcase_add_test( tcase, no_submod_in_functions);
   tcase_add_test( tcase, no_event_in_functions);
   tcase_add_test( tcase, no_deletions_in_functions);
+
+  tcase_add_test( tcase, no_sboterm_synchronization1);
+  tcase_add_test( tcase, no_sboterm_synchronization2);
 
   suite_add_tcase(suite, tcase);
 

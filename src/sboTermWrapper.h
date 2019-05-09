@@ -20,6 +20,7 @@ public:
   virtual bool SetType(var_type newtype);
   Variable* GetParent();
   virtual std::string GetNameDelimitedBy(std::string cc) const;
+  virtual bool Synchronize(Variable* clone, const Variable* conversionFactor);
 };
 
 
