@@ -1733,6 +1733,9 @@ set<pair<vector<string>, deletion_type> > Variable::ClearReferencesTo(Variable* 
 //Set this variable to be a shell pointing to the clone, transferring any data we may already have.
 bool Variable::Synchronize(Variable* clone, const Variable* conversionFactor)
 {
+  if (clone->GetType() == varSboTermWrapper) {
+    return clone->Synchronize(this, conversionFactor); //Which will give an error.
+  }
   if (IsPointer()) {
     if(GetSameVariable()->Synchronize(clone, conversionFactor)) return true;
     m_type = clone->GetType();

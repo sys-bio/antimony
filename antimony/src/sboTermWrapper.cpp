@@ -65,3 +65,8 @@ string SboTermWrapper::GetNameDelimitedBy(string cc) const
   return base + cc + "sboTerm";
 }
 
+bool SboTermWrapper::Synchronize(Variable* clone, const Variable* conversionFactor)
+{
+  g_registry.SetError("Unable to synchronize two symbols when one of them ('" + GetNameDelimitedBy(".") + "') is an SBO term.");
+  return true;
+}
