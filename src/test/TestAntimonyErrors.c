@@ -242,13 +242,25 @@ END_TEST
 
 START_TEST (test_SBO_species_txt)
 {
-  testError("species a.sboTerm = 25", "Error in model string, line 1:  Unable to use the symbol 'a.sboTerm' in any context other than setting it to be an SBO value (i.e. 'a.sboTerm = 327' or 'a.sboTerm = SBO:0000327.");
+  testError("species a.sboTerm = 25", "Error in model string, line 1:  Unable to use the symbol 'a.sboTerm' in any context other than setting the value of an SBO term (i.e. 'a.sboTerm = 327' or 'a.sboTerm = SBO:0000327'.");
 }
 END_TEST
 
 START_TEST (test_SBO_compartment_txt)
 {
-  testError("compartment a.sboTerm = 25", "Error in model string, line 1:  Unable to use the symbol 'a.sboTerm' in any context other than setting it to be an SBO value (i.e. 'a.sboTerm = 327' or 'a.sboTerm = SBO:0000327.");
+  testError("compartment a.sboTerm = 25", "Error in model string, line 1:  Unable to use the symbol 'a.sboTerm' in any context other than setting the value of an SBO term (i.e. 'a.sboTerm = 327' or 'a.sboTerm = SBO:0000327'.");
+}
+END_TEST
+
+START_TEST (test_SBO_in_txt)
+{
+  testError("b in a.sboTerm", "Error in model string, line 1:  Unable to use the symbol 'a.sboTerm' in any context other than setting the value of an SBO term (i.e. 'a.sboTerm = 327' or 'a.sboTerm = SBO:0000327'.");
+}
+END_TEST
+
+START_TEST (empty_interaction)
+{
+  testError("a-|;", "Error in model string, line 1:  When defining reaction '_J0':  Cannot create an interaction with a target of nothing.");
 }
 END_TEST
 
@@ -290,6 +302,9 @@ create_suite_Errors (void)
   tcase_add_test( tcase, no_sboterm_synchronization2);
   tcase_add_test( tcase, test_SBO_species_txt);
   tcase_add_test( tcase, test_SBO_compartment_txt);
+  tcase_add_test( tcase, test_SBO_in_txt);
+
+  tcase_add_test( tcase, empty_interaction);
 
   suite_add_tcase(suite, tcase);
 

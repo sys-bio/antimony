@@ -1180,7 +1180,7 @@ bool Variable::SetReaction(AntimonyReaction* rxn)
       return true;
     }
     if (rxn->GetRight()->GetNthReactant(0) == NULL) {
-      g_registry.SetError(err + "Cannot set this to be an interaction without something to interact with.");
+      g_registry.SetError(err + "Cannot create an interaction with a target of nothing.");
       return true;
     }
   }

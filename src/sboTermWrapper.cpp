@@ -55,7 +55,7 @@ bool SboTermWrapper::SetType(var_type newtype)
   if (newtype == m_type) {
     return false;
   }
-  g_registry.SetError("Unable to use the symbol '" + GetNameDelimitedBy(".") + "' in any context other than setting it to be an SBO value (i.e. '" + GetNameDelimitedBy(".") + " = 327' or '" + GetNameDelimitedBy(".") + " = SBO:0000327.");
+  g_registry.SetError("Unable to use the symbol '" + GetNameDelimitedBy(".") + "' in any context other than setting the value of an SBO term (i.e. '" + GetNameDelimitedBy(".") + " = 327' or '" + GetNameDelimitedBy(".") + " = SBO:0000327'.");
   return true;
 }
 
