@@ -264,6 +264,12 @@ START_TEST (empty_interaction)
 }
 END_TEST
 
+START_TEST (no_module_subelements)
+{
+  testError("module foo();end;foo.x = 3", "Error in model string, line 1:  Invalid syntax 'foo.x'. The only thing that can be set on 'foo' this way is 'sboTerm'.");
+}
+END_TEST
+
 /*
 START_TEST (no_replace_ar_with_ia)
 {
@@ -305,6 +311,7 @@ create_suite_Errors (void)
   tcase_add_test( tcase, test_SBO_in_txt);
 
   tcase_add_test( tcase, empty_interaction);
+  tcase_add_test( tcase, no_module_subelements);
 
   suite_add_tcase(suite, tcase);
 
