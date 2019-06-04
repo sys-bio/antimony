@@ -590,6 +590,10 @@ toplevel_sbo:     MODNAME '.' ANTWORD '=' NUM
                     if (function && $3 &&  CaselessStrCmp(*($3), "sboTerm")) {
                       function->SetSBOTerm($5);
                     }
+                    else {
+                      g_registry.SetError("Invalid syntax '" + *($1) + "." + *($3) + "'. The only thing that can be set on '" + *($1) + "' this way is 'sboTerm'.");
+                      YYABORT;
+                    }
                   }
 
 // JKM for naming modules and functions (display names)
