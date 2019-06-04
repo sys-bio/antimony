@@ -533,6 +533,18 @@ START_TEST (test_module_name_txt)
 }
 END_TEST
 
+START_TEST (test_function_name)
+{
+  compareFileTranslation("function_name");
+}
+END_TEST
+
+START_TEST (test_function_name_txt)
+{
+  compareStringTranslation("function foo()\n 3;\n  end\nfoo is \"foo!\"", "function_name.xml");
+}
+END_TEST
+
 
 
 
@@ -613,6 +625,8 @@ create_suite_Basic (void)
   tcase_add_test( tcase, test_right_half_reaction_mod_txt);
   tcase_add_test( tcase, test_module_name);
   tcase_add_test( tcase, test_module_name_txt);
+  tcase_add_test( tcase, test_function_name);
+  tcase_add_test( tcase, test_function_name_txt);
 
   suite_add_tcase(suite, tcase);
 
