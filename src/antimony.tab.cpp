@@ -549,7 +549,7 @@ static const yytype_uint16 yyrline[] =
      507,   510,   510,   511,   511,   512,   512,   513,   513,   516,
      517,   520,   521,   528,   529,   530,   531,   532,   535,   536,
      539,   554,   555,   556,   557,   558,   559,   562,   565,   566,
-     569,   570,   571,   574,   577,   584,   592,   598,   606,   607
+     569,   570,   571,   574,   577,   588,   596,   602,   610,   611
 };
 #endif
 
@@ -3080,54 +3080,58 @@ yyreduce:
                     if (module && (yyvsp[-2].word) && CaselessStrCmp(*((yyvsp[-2].word)), "sboTerm")) {
                       module->SetSBOTerm((yyvsp[0].num));
                     }
+                    else {
+                      g_registry.SetError("Invalid syntax '" + *((yyvsp[-4].word)) + "." + *((yyvsp[-2].word)) + "'. The only thing that can be set on '" + *((yyvsp[-4].word)) + "' this way is 'sboTerm'.");
+                      YYABORT;
+                    }
                   }
-#line 3085 "antimony.tab.cpp" /* yacc.c:1646  */
+#line 3089 "antimony.tab.cpp" /* yacc.c:1646  */
     break;
 
   case 215:
-#line 585 "antimony.ypp" /* yacc.c:1646  */
+#line 589 "antimony.ypp" /* yacc.c:1646  */
     { Module* function = g_registry.GetModule(*(yyvsp[-4].word));
                     if (function && (yyvsp[-2].word) &&  CaselessStrCmp(*((yyvsp[-2].word)), "sboTerm")) {
                       function->SetSBOTerm((yyvsp[0].num));
                     }
                   }
-#line 3095 "antimony.tab.cpp" /* yacc.c:1646  */
+#line 3099 "antimony.tab.cpp" /* yacc.c:1646  */
     break;
 
   case 216:
-#line 593 "antimony.ypp" /* yacc.c:1646  */
+#line 597 "antimony.ypp" /* yacc.c:1646  */
     { Module* module = g_registry.GetModule(*(yyvsp[-3].word));
                   if (module && (yyvsp[-1].word)) {
                     module->SetDisplayName(*(yyvsp[-1].word));
                   }
                 }
-#line 3105 "antimony.tab.cpp" /* yacc.c:1646  */
+#line 3109 "antimony.tab.cpp" /* yacc.c:1646  */
     break;
 
   case 217:
-#line 599 "antimony.ypp" /* yacc.c:1646  */
+#line 603 "antimony.ypp" /* yacc.c:1646  */
     { Module* function = g_registry.GetModule(*(yyvsp[-3].word));
                   if (function && (yyvsp[-1].word)) {
                     function->SetDisplayName(*(yyvsp[-1].word));
                   }
                 }
-#line 3115 "antimony.tab.cpp" /* yacc.c:1646  */
+#line 3119 "antimony.tab.cpp" /* yacc.c:1646  */
     break;
 
   case 218:
-#line 606 "antimony.ypp" /* yacc.c:1646  */
+#line 610 "antimony.ypp" /* yacc.c:1646  */
     {if (g_registry.ProcessGlobalCVTerm((yyvsp[-3].word),(yyvsp[-2].word),(yyvsp[-1].stringlist))) YYABORT;}
-#line 3121 "antimony.tab.cpp" /* yacc.c:1646  */
+#line 3125 "antimony.tab.cpp" /* yacc.c:1646  */
     break;
 
   case 219:
-#line 607 "antimony.ypp" /* yacc.c:1646  */
+#line 611 "antimony.ypp" /* yacc.c:1646  */
     {if (g_registry.ProcessGlobalCVTerm((yyvsp[-3].word),(yyvsp[-2].word),(yyvsp[-1].stringlist))) YYABORT;}
-#line 3127 "antimony.tab.cpp" /* yacc.c:1646  */
+#line 3131 "antimony.tab.cpp" /* yacc.c:1646  */
     break;
 
 
-#line 3131 "antimony.tab.cpp" /* yacc.c:1646  */
+#line 3135 "antimony.tab.cpp" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -3355,7 +3359,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 609 "antimony.ypp" /* yacc.c:1906  */
+#line 613 "antimony.ypp" /* yacc.c:1906  */
 
 
 

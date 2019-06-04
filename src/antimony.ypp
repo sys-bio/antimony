@@ -579,6 +579,10 @@ toplevel_sbo:     MODNAME '.' ANTWORD '=' NUM
                     if (module && $3 && CaselessStrCmp(*($3), "sboTerm")) {
                       module->SetSBOTerm($5);
                     }
+                    else {
+                      g_registry.SetError("Invalid syntax '" + *($1) + "." + *($3) + "'. The only thing that can be set on '" + *($1) + "' this way is 'sboTerm'.");
+                      YYABORT;
+                    }
                   }
 // JKM setting an SBO term for a function (outside the body of the function)
         |         FUNCTION '.' ANTWORD '=' NUM
