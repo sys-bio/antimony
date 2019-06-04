@@ -94,6 +94,9 @@ string UserFunction::GetAntimony(bool enableAnnotations) const
       func += "\n" + cvterms;
     }
   }
+  if (HasDisplayName()) {
+    func += "\n" + m_modulename + " is \"" + GetDisplayName() + "\"\n";
+  }
 
   return func;
 }

@@ -598,17 +598,9 @@ toplevel_sbo:     MODNAME '.' ANTWORD '=' NUM
 
 // JKM for naming modules and functions (display names)
 modulename:     MODNAME IS TEXTSTRING lineend
-                { Module* module = g_registry.GetModule(*$1);
-                  if (module && $3) {
-                    module->SetDisplayName(*$3);
-                  }
-                }
+                { g_registry.GetModule(*$1)->SetDisplayName(*$3); }
 functionname:   FUNCTION IS TEXTSTRING lineend
-                { Module* function = g_registry.GetModule(*$1);
-                  if (function && $3) {
-                    function->SetDisplayName(*$3);
-                  }
-                }
+                { g_registry.GetModule(*$1)->SetDisplayName(*$3); }
 
 // JKM for parsing cv terms for modules and functions
 modulecvterm:   MODNAME ANTWORD stringlist lineend {if (g_registry.ProcessGlobalCVTerm($1,$2,$3)) YYABORT;}

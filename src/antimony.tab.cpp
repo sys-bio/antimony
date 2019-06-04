@@ -549,7 +549,7 @@ static const yytype_uint16 yyrline[] =
      507,   510,   510,   511,   511,   512,   512,   513,   513,   516,
      517,   520,   521,   528,   529,   530,   531,   532,   535,   536,
      539,   554,   555,   556,   557,   558,   559,   562,   565,   566,
-     569,   570,   571,   574,   577,   588,   600,   606,   614,   615
+     569,   570,   571,   574,   577,   588,   600,   602,   606,   607
 };
 #endif
 
@@ -3104,38 +3104,30 @@ yyreduce:
 
   case 216:
 #line 601 "antimony.ypp" /* yacc.c:1646  */
-    { Module* module = g_registry.GetModule(*(yyvsp[-3].word));
-                  if (module && (yyvsp[-1].word)) {
-                    module->SetDisplayName(*(yyvsp[-1].word));
-                  }
-                }
-#line 3113 "antimony.tab.cpp" /* yacc.c:1646  */
+    { g_registry.GetModule(*(yyvsp[-3].word))->SetDisplayName(*(yyvsp[-1].word)); }
+#line 3109 "antimony.tab.cpp" /* yacc.c:1646  */
     break;
 
   case 217:
-#line 607 "antimony.ypp" /* yacc.c:1646  */
-    { Module* function = g_registry.GetModule(*(yyvsp[-3].word));
-                  if (function && (yyvsp[-1].word)) {
-                    function->SetDisplayName(*(yyvsp[-1].word));
-                  }
-                }
-#line 3123 "antimony.tab.cpp" /* yacc.c:1646  */
+#line 603 "antimony.ypp" /* yacc.c:1646  */
+    { g_registry.GetModule(*(yyvsp[-3].word))->SetDisplayName(*(yyvsp[-1].word)); }
+#line 3115 "antimony.tab.cpp" /* yacc.c:1646  */
     break;
 
   case 218:
-#line 614 "antimony.ypp" /* yacc.c:1646  */
+#line 606 "antimony.ypp" /* yacc.c:1646  */
     {if (g_registry.ProcessGlobalCVTerm((yyvsp[-3].word),(yyvsp[-2].word),(yyvsp[-1].stringlist))) YYABORT;}
-#line 3129 "antimony.tab.cpp" /* yacc.c:1646  */
+#line 3121 "antimony.tab.cpp" /* yacc.c:1646  */
     break;
 
   case 219:
-#line 615 "antimony.ypp" /* yacc.c:1646  */
+#line 607 "antimony.ypp" /* yacc.c:1646  */
     {if (g_registry.ProcessGlobalCVTerm((yyvsp[-3].word),(yyvsp[-2].word),(yyvsp[-1].stringlist))) YYABORT;}
-#line 3135 "antimony.tab.cpp" /* yacc.c:1646  */
+#line 3127 "antimony.tab.cpp" /* yacc.c:1646  */
     break;
 
 
-#line 3139 "antimony.tab.cpp" /* yacc.c:1646  */
+#line 3131 "antimony.tab.cpp" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -3363,7 +3355,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 617 "antimony.ypp" /* yacc.c:1906  */
+#line 609 "antimony.ypp" /* yacc.c:1906  */
 
 
 

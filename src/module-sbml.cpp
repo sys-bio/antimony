@@ -1018,8 +1018,7 @@ void Module::LoadSBML(const Model* sbml)
       m_rateNames.insert(sbmlname);
       continue;
     }
-    FunctionDefinition newfunction(3,1);
-      
+    
     UserFunction* uf = g_registry.GetUserFunction(sbmlname);
     bool duplicate = false;
     while (uf != NULL && !duplicate) {
@@ -1033,12 +1032,14 @@ void Module::LoadSBML(const Model* sbml)
     }
     if (duplicate) {
       uf->ReadAnnotationFrom(function);
+      uf->SetDisplayName(function->getName());
       continue;
     }
     g_registry.NewUserFunction(&sbmlname);
     uf = g_registry.GetUserFunction(sbmlname);
     uf->PopulateCVTerms((SBase*)function);
     uf->ReadAnnotationFrom(function);
+    uf->SetDisplayName(function->getName());
     for (unsigned int arg=0; arg<function->getNumArguments(); arg++) {
       string argument(parseASTNodeToString(function->getArgument(arg)));
       Variable* expvar = g_registry.AddVariableToCurrent(&argument);
@@ -1825,6 +1826,7 @@ void Module::CreateSBMLModel(bool comp)
     assert(userfunction != NULL);
     FunctionDefinition* fd = sbmlmod->createFunctionDefinition();
     fd->setId(userfunction->GetModuleName());
+    fd->setName(userfunction->GetDisplayName());
     userfunction->TransferAnnotationTo(fd, GetModuleName()+"."+userfunction->GetModuleName());
     ASTNode* math = parseStringToASTNode(userfunction->ToSBMLString());
     fd->setMath(math);
