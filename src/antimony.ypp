@@ -84,7 +84,7 @@
 %type <module>          module
 %type <reactantList>    reactantList
 %type <reactionDivider> reactionDivider
-%type <inequality>      inequality    
+%type <inequality>      inequality
 %type <variable>        variable variablein varmaybein varmaybeis maybein unitdef
 %type <maybemain>       maybemain
 %type <maxormin>        maxormin
@@ -107,7 +107,6 @@
 %token  <word> AT "'@' or 'at'"
 %token  <word> BECOMESREV "->"
 %token  <word> BECOMESINH "-|"
-%token  <word> BECOMESMOD "-("
 %token  <word> BECOMESMOD2 "-o"
 %token  <word> BECOMESIRREV "=>"
 %token  <word> COMPARTMENT "'compartment'"
@@ -195,7 +194,7 @@ module:         MODULE maybemain ANTWORD {g_registry.NewCurrentModule($3, NULL, 
                   g_registry.RevertToPreviousModule();
                 }
         |       MODULE MODNAME {g_registry.SetError("module '" + *($2) + "' already defined."); YYABORT;}
-        |       MODULE FUNCTION {g_registry.SetError("Cannot define '" + *($2) + "' as a module because it is already a defined function."); YYABORT;} 
+        |       MODULE FUNCTION {g_registry.SetError("Cannot define '" + *($2) + "' as a module because it is already a defined function."); YYABORT;}
         ;
 
 maybemain:      /* empty */ {$$ = false;}
@@ -204,7 +203,7 @@ maybemain:      /* empty */ {$$ = false;}
 
 function:       FUNCTIONWORD ANTWORD {g_registry.NewUserFunction($2);} '(' variableexportlist ')' spacedformula END {if (g_registry.SetUserFunction($7)) YYABORT;}
         |       FUNCTIONWORD MODNAME {g_registry.SetError("Cannot use '" + *($2) +"' as a function name because it is already the name of a module."); YYABORT;}
-        |       FUNCTIONWORD FUNCTION {g_registry.SetError("Cannot define '" + *($2) + "' as a new function because it is already a defined function."); YYABORT;} 
+        |       FUNCTIONWORD FUNCTION {g_registry.SetError("Cannot define '" + *($2) + "' as a new function because it is already a defined function."); YYABORT;}
         ;
 
 spacedformula:  formula {$$ = $1;}
@@ -338,7 +337,7 @@ reactantList:   variable {$$ = g_registry.NewBlankReactantList(); if($$->AddReac
 reactionDivider:
                 BECOMESREV {$$ = rdBecomes;}
         |       BECOMESINH {$$ = rdInhibits;}
-        |       BECOMESMOD {$$ = rdInfluences;}
+        |       '-' '(' {$$ = rdInfluences;}
         |       BECOMESMOD2 {$$ = rdInfluences;}
         |       BECOMESIRREV {$$ = rdBecomesIrreversibly;}
 //         |       '-' ANTWORD {if (*$2 != "o") {g_registry.SetError("'-" + *$2 + "' is not a valid set of characters to demark reactions.  Try '->' for reactions, and '-|', '-o', and '-(' for interactions."); YYABORT;} $$ = rdActivates;}
@@ -489,7 +488,7 @@ varconstinit:   VARWORD varmaybeis {g_registry.SetConstness(constVAR); $2->SetRe
 unitinit:       UNITWORD variable '=' formula {if ($2->SetType(varUnitDefinition)) YYABORT;
                                                if ($4->MakeAllVariablesUnits()) YYABORT;
                                                if ($2->GetUnitDef()->SetFromFormula($4)) YYABORT;}
-        |       UNITWORD variable {if ($2->SetType(varUnitDefinition)) YYABORT;} 
+        |       UNITWORD variable {if ($2->SetType(varUnitDefinition)) YYABORT;}
         ;
 
 dnadef:         dnastrand {if (g_registry.SaveWorkingStrand()) YYABORT;}
@@ -780,7 +779,7 @@ int antimony_yylex(void)
       }
       return NUM;
     }
-    
+
     if (g_registry.IsFunction(word) != NULL) {
       antimony_yylval.word = g_registry.IsFunction(word);
       return FUNCTION;
@@ -857,8 +856,6 @@ int antimony_yylex(void)
       return BECOMESREV;
     } else if (cc == '|') {
       return BECOMESINH;
-    } else if (cc == '(') {
-      return BECOMESMOD;
     } else if (cc == 'o') {
       return BECOMESMOD2;
     }
