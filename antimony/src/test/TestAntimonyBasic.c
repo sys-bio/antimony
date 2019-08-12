@@ -545,6 +545,25 @@ START_TEST (test_function_name_txt)
 }
 END_TEST
 
+START_TEST (test_empty_cvterm_txt)
+{
+  compareStringTranslation("a hasPart \"\"", "empty_cvterm.xml");
+}
+END_TEST
+
+START_TEST (test_negparen)
+{
+  compareFileTranslation("negparen");
+}
+END_TEST
+
+START_TEST (test_negparen_txt)
+{
+  compareStringTranslation("a=-(x+2)", "negparen.xml");
+}
+END_TEST
+
+
 
 
 
@@ -627,6 +646,9 @@ create_suite_Basic (void)
   tcase_add_test( tcase, test_module_name_txt);
   tcase_add_test( tcase, test_function_name);
   tcase_add_test( tcase, test_function_name_txt);
+  tcase_add_test( tcase, test_empty_cvterm_txt);
+  tcase_add_test( tcase, test_negparen);
+  tcase_add_test( tcase, test_negparen_txt);
 
   suite_add_tcase(suite, tcase);
 
