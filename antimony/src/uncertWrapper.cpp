@@ -12,7 +12,7 @@ UncertWrapper::UncertWrapper(Variable* parent, uncert_type type)
   , m_parent(parent)
   , m_uncert_type(type)
 {
-  m_module = parent->GetModule()->GetModuleName();
+  m_module = parent->GetNamespace();
   m_displayname = "";
   m_formulatype = formulaINITIAL;
   m_supercomptype = varUndefined;
