@@ -61,18 +61,21 @@ bool UncertWrapper::SetFormula(Formula* formula, bool isObjective)
     ASTNode* astn = parseStringToASTNode(formula->ToSBMLString());
     if (astn->getType() != AST_LINEAR_ALGEBRA_VECTOR || astn->getNumChildren() != 2) {
       g_registry.SetError("Unable to set the value of '" + GetNameDelimitedBy(".") + "' to be '" + formula->ToDelimitedStringWithEllipses(".") + "':  an uncertainty parameter of type " + UncertTypeToString(m_uncert_type) + " must be a vector of length two, marked with curly brackets (i.e. '{3, 8}').");
+      delete astn;
       return true;
     }
     for (unsigned int c = 0; c < 2; c++) {
       ASTNodeType_t ctype = astn->getChild(c)->getType();
       if (ctype != AST_NAME && !astn->getChild(c)->isNumber()) {
         g_registry.SetError("Unable to set the value of '" + GetNameDelimitedBy(".") + "' to be '" + formula->ToDelimitedStringWithEllipses(".") + "':  an uncertainty parameter of type " + UncertTypeToString(m_uncert_type) + " must be a vector of length two, and each element of the vector may only be a value or a single variable (i.e. '{x, 5.4}' or '{p, q}').");
+        delete astn;
         return true;
       }
     }
     if (astn->getChild(0)->isSetUnits() && astn->getChild(1)->isSetUnits()) {
       if (astn->getChild(0)->getUnits() != astn->getChild(1)->getUnits()) {
         g_registry.SetError("Unable to set the value of '" + GetNameDelimitedBy(".") + "' to be '" + formula->ToDelimitedStringWithEllipses(".") + "':  the units of both elements in the vector must be the same.");
+        delete astn;
         return true;
       }
     }
