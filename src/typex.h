@@ -3,7 +3,7 @@
 
 #include "enums.h"
 #include <string>
-#include <sbml\packages\distrib\extension\DistribExtension.h>
+#include <sbml/packages/distrib/extension/DistribExtension.h>
 bool IsReaction(const var_type vtype);
 bool IsInteraction(const rd_type rdtype);
 bool IsSpecies(const var_type vtype);

@@ -2,8 +2,8 @@
 #include "module.h"
 #include "registry.h"
 #include "stringx.h"
-#include "sbml\packages\distrib\sbml\Uncertainty.h"
-#include "sbml\packages\distrib\extension\DistribSBasePlugin.h"
+#include <sbml/packages/distrib/sbml/Uncertainty.h>
+#include <sbml/packages/distrib/extension/DistribSBasePlugin.h>
 
 using namespace std;
 
