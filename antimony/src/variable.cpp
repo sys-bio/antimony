@@ -9,7 +9,7 @@
 #include "typex.h"
 #include "unitdef.h"
 #include "uncertWrapper.h"
-#include "sbml\packages\distrib\extension\DistribSBasePlugin.h"
+#include <sbml/packages/distrib/extension/DistribSBasePlugin.h>
 
 using namespace std;
 

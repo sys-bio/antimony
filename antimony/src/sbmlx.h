@@ -43,7 +43,7 @@ std::string elideMetaIdsFromSBMLstring(std::string sbml);
 
 constraint_type getConstraintTypeFrom(ASTNodeType_t asttype);
 #ifdef LIBSBML_HAS_PACKAGE_FBC
-#include "sbml/packages/fbc/common/FbcExtensionTypes.h"
+#include <sbml/packages/fbc/common/FbcExtensionTypes.h>
 FluxBoundOperation_t getFBOperationFrom(constraint_type ctype);
 FluxBoundOperation_t getReverseFBOperationFrom(constraint_type ctype);
 FluxBoundOperation_t getFBOperationFrom(ASTNodeType_t asttype);
