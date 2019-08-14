@@ -146,6 +146,30 @@ bool AntimonyEvent::IsEmpty() const
   return false;
 }
 
+bool AntimonyEvent::CheckFormulas() const
+{
+  if (m_trigger.ContainsCurlyBrackets()) {
+    g_registry.SetError("Curly brackets detected in the event trigger: '" + m_trigger.ToDelimitedStringWithEllipses(".") + "': vectors are not supported in the current version of Antimony apart from their use in setting certain uncertainty parameters.");
+    return true;
+  }
+  if (m_delay.ContainsCurlyBrackets()) {
+    g_registry.SetError("Curly brackets detected in the event delay: '" + m_trigger.ToDelimitedStringWithEllipses(".") + "': vectors are not supported in the current version of Antimony apart from their use in setting certain uncertainty parameters.");
+    return true;
+  }
+  if (m_priority.ContainsCurlyBrackets()) {
+    g_registry.SetError("Curly brackets detected in the event priority: '" + m_trigger.ToDelimitedStringWithEllipses(".") + "': vectors are not supported in the current version of Antimony apart from their use in setting certain uncertainty parameters.");
+    return true;
+  }
+  for (size_t fr = 0; fr < m_formresults.size(); fr++) {
+    if (m_formresults[fr].ContainsCurlyBrackets()) {
+      g_registry.SetError("Curly brackets detected in the event assignment: '" + m_formresults[fr].ToDelimitedStringWithEllipses(".") + "': vectors are not supported in the current version of Antimony apart from their use in setting certain uncertainty parameters.");
+      return true;
+    }
+
+  }
+  return false;
+}
+
 void AntimonyEvent::Convert(Variable* converted, Variable* cf)
 {
   m_trigger.Convert(converted, cf);

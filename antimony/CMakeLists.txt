@@ -514,6 +514,7 @@ file(GLOB LIBANTIMONY_SOURCES
     ${ANTIMONY_SRC_DIR}cellmlx.cpp
     ${ANTIMONY_SRC_DIR}constraint.cpp
     ${ANTIMONY_SRC_DIR}dnastrand.cpp
+    ${ANTIMONY_SRC_DIR}uncertWrapper.cpp
     ${ANTIMONY_SRC_DIR}event.cpp
     ${ANTIMONY_SRC_DIR}formula.cpp
     ${ANTIMONY_SRC_DIR}module.cpp
@@ -549,6 +550,7 @@ file(GLOB LIBANTIMONY_HEADERS
         ${ANTIMONY_SRC_DIR}cellmlx.h
         ${ANTIMONY_SRC_DIR}constraint.h
         ${ANTIMONY_SRC_DIR}dnastrand.h
+        ${ANTIMONY_SRC_DIR}uncertWrapper.h
         ${ANTIMONY_SRC_DIR}enums.h
         ${ANTIMONY_SRC_DIR}event.h
         ${ANTIMONY_SRC_DIR}formula.h
@@ -582,7 +584,7 @@ endif(NOT UNIX)
 
 
 ##### Build the static library #####
-add_library (${LIBANTIMONY_LIBRARY}-static STATIC ${LIBANTIMONY_SOURCES} )
+add_library (${LIBANTIMONY_LIBRARY}-static STATIC ${LIBANTIMONY_SOURCES} ${LIBANTIMONY_HEADERS} ${LIBANTIMONY_TRANSLATORS})
 
 if (WIN32 AND NOT CYGWIN)
     # don't decorate static library

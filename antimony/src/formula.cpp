@@ -141,6 +141,18 @@ void Formula::AddParentheses()
   m_components.push_back(newvar);
 }
 
+void Formula::AddCurlyBrackets()
+{
+  vector<string> novar;
+  pair<string, vector<string> > newvar;
+  string math = "{";
+  newvar = make_pair(math, novar);
+  m_components.insert(m_components.begin(), newvar);
+  math = "}";
+  newvar = make_pair(math, novar);
+  m_components.push_back(newvar);
+}
+
 void Formula::AddConversionFactor(const Variable* cf)
 {
   if (IsEmpty()) return;
@@ -414,6 +426,18 @@ bool Formula::ContainsName(const string& name) const
     }
     else if (m_components[comp].second[m_components[comp].second.size()-1] == name) {
       return true;
+    }
+  }
+  return false;
+}
+
+bool Formula::ContainsCurlyBrackets() const
+{
+  for (size_t comp=0; comp<m_components.size(); comp++) {
+    if (m_components[comp].second.size() == 0) {
+      if (m_components[comp].first == "{") {
+        return true;
+      }
     }
   }
   return false;

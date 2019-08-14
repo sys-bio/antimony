@@ -229,6 +229,7 @@ void Module::FindOrCreateLocalVersionOf(const Variable* var, Model* sbmlmod)
   case varStrand:
   case varDeleted:
   case varSboTermWrapper:
+  case varUncertWrapper:
     assert(false); //Unhandled type
     break;
   }
@@ -763,6 +764,9 @@ void SynchronizeLocalAndGlobal(const vector<string>& paramname, const vector<str
 
 void Module::LoadSBML(const Model* sbml)
 {
+  if (sbml == NULL) {
+    return;
+  }
   if(sbml->isSetName())
     SetDisplayName(sbml->getName());
   PopulateCVTerms((SBase*)sbml);

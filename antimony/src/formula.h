@@ -39,6 +39,7 @@ public:
   void AddFormula(const Formula* form2);
   void AddEllipses();
   void AddParentheses();
+  void AddCurlyBrackets();
   void AddConversionFactor(const Variable* cf);
   void AddInvTimeConversionFactor(const Variable* tcf);
 
@@ -60,6 +61,7 @@ public:
   bool ContainsDeletedVar() const;
   bool ContainsFunction(const std::string& function) const;
   bool ContainsName(const std::string& name) const;
+  bool ContainsCurlyBrackets() const;
 
   void Clear();
 

@@ -51,7 +51,8 @@ enum var_type {varSpeciesUndef = 0,
                varUnitDefinition,
                varDeleted,
                varConstraint,
-               varSboTermWrapper};
+               varSboTermWrapper,
+               varUncertWrapper};
 /**
  * return_types are used in the API when requesting information about different symbols.  Each return_type refers to a different group of symbols, and are overlapping--i.e. a single symbol can be included in 'allGenes' and 'allReactions'. 
   * - allSymbols:        Every symbol of every type in Antimony
@@ -142,6 +143,45 @@ enum constraint_type {
   , constGEQ
   , constLEQ
   , constNEQ
+};
+
+/**
+ * uncert_types are the different types of uncertainty measurements.
+ * - unCoefficientOfVariation:
+ * - unKurtosis:
+ * - unMean:
+ * - unMedian:
+ * - unMode:
+ * - unSampleSize:
+ * - unSkewness:
+ * - unStandardDeviation:
+ * - unStandardError:
+ * - unVariance:
+ * - unConfidenceInterval:
+ * - unCredibleInterval:
+ * - unInterquartileRange:
+ * - unRange:
+ * - unDistribution:
+ * - unExternalParameter:
+ */
+enum uncert_type { 
+  unCoefficientOfVariation = 0, 
+  unKurtosis, 
+  unMean, 
+  unMedian, 
+  unMode, 
+  unSampleSize, 
+  unSkewness, 
+  unStandardDeviation, 
+  unStandardError, 
+  unVariance, 
+  unConfidenceInterval, 
+  unCredibleInterval, 
+  unInterquartileRange, 
+  unRange, 
+  unDistribution, 
+  unExternalParameter,
+  unUnknown
 };
 
 #endif // ENUMS_H

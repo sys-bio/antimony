@@ -54,6 +54,7 @@ Suite *create_suite_FBC(void);
 Suite *create_suite_Constraints(void);
 Suite *create_suite_CVTerms(void);
 Suite *create_suite_SBO(void);
+Suite *create_suite_Uncert(void);
 
 //Suite *create_suite_FlatteningFailures(void);
 /**
@@ -136,8 +137,9 @@ main (int argc, char* argv[])
   srunner_add_suite( runner, create_suite_Distrib() );
   srunner_add_suite( runner, create_suite_FBC() );
   srunner_add_suite( runner, create_suite_Constraints() );
-  srunner_add_suite( runner, create_suite_SBO() );
   srunner_add_suite( runner, create_suite_CVTerms() );
+  srunner_add_suite( runner, create_suite_SBO() );
+  srunner_add_suite( runner, create_suite_Uncert() );
 
 
 #ifdef TRACE_MEMORY
