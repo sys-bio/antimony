@@ -12,6 +12,14 @@ UncertWrapper::UncertWrapper(Variable* parent, uncert_type type)
   , m_parent(parent)
   , m_uncert_type(type)
 {
+  m_module = parent->GetModule()->GetModuleName();
+  m_displayname = "";
+  m_formulatype = formulaINITIAL;
+  m_supercomptype = varUndefined;
+  m_deletedunit = false;
+  m_replacedformrxn = false;
+  m_const = constDEFAULT;
+  m_substOnly = false;
   m_sboTermWrapper = NULL;
   m_type = varUncertWrapper;
   SetNamespace(parent->GetNamespace());
