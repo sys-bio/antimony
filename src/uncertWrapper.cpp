@@ -76,6 +76,7 @@ bool UncertWrapper::SetFormula(Formula* formula, bool isObjective)
         return true;
       }
     }
+    delete astn;
 #endif
     return false;
   }

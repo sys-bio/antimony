@@ -2317,7 +2317,7 @@ void Variable::ReadAnnotationFrom(const SBase * sbmlobj)
       Module* module = g_registry.GetModule(m_module);
       char* l3str = SBML_formulaToL3String(up->getMath());
       setFormulaWithString(l3str, &(uwrapper->m_valFormula), module);
-      delete l3str;
+      free(l3str);
     }
     else {
       const UncertSpan* uspan = NULL;
