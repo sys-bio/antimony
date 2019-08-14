@@ -1,37 +1,8 @@
 #include "annotated.h"
+#include "registry.h"
 
 using namespace std;
 #ifndef NSBML
-void Annotated::Synchronize(Annotated * clone)
-{
-  if (!clone->m_metaid.empty()) {
-    m_metaid = clone->m_metaid;
-  }
-  else {
-    clone->m_metaid = m_metaid;
-  }
-  if (!clone->m_model_quals.empty()) {
-    m_model_quals = clone->m_model_quals;
-  }
-  else {
-    clone->m_model_quals = m_model_quals;
-  }
-
-  if (!clone->m_biol_quals.empty()) {
-    m_biol_quals = clone->m_biol_quals;
-  }
-  else {
-    clone->m_biol_quals = m_biol_quals;
-  }
-
-  if (clone->m_sboTerm != 0) {
-    m_sboTerm = clone->m_sboTerm;
-  }
-  else {
-    clone->m_sboTerm = m_sboTerm;
-  }
-
-}
 
 bool Annotated::TransferAnnotationTo(SBase* sbmlobj, string metaid) const
 {
@@ -48,9 +19,11 @@ bool Annotated::TransferAnnotationTo(SBase* sbmlobj, string metaid) const
   }
   if (HasCVTerms()) {
     // convert the stored list of CV terms to an annotation node
-    BuildCVTerms(sbmlobj);
+    if (BuildCVTerms(sbmlobj)) {
+      return true;
+    }
   }
-  return true;
+  return false;
 }
 
 void Annotated::ReadAnnotationFrom(const SBase* sbmlobj)
@@ -181,12 +154,30 @@ string Annotated::EncodeBiolQualifier(BiolQualifierType_t q) const
 
 void Annotated::AppendModelQualifiers(const ModelQualifierType_t qual, const std::vector<std::string>& resources)
 {
-  m_model_quals.push_back(std::make_pair(qual,resources));
+  vector<string> addme;
+  for (size_t r = 0; r < resources.size(); r++) {
+    if (!resources[r].empty()) {
+      addme.push_back(resources[r]);
+    }
+  }
+  if (addme.empty()) {
+    return;
+  }
+  m_model_quals.push_back(std::make_pair(qual,addme));
 }
 
 void Annotated::AppendBiolQualifiers(const BiolQualifierType_t qual, const std::vector<std::string>& resources)
 {
-  m_biol_quals.push_back(std::make_pair(qual,resources));
+  vector<string> addme;
+  for (size_t r = 0; r < resources.size(); r++) {
+    if (!resources[r].empty()) {
+      addme.push_back(resources[r]);
+    }
+  }
+  if (addme.empty()) {
+    return;
+  }
+  m_biol_quals.push_back(std::make_pair(qual,addme));
 }
 
 bool Annotated::HasCVTerms() const
@@ -220,7 +211,7 @@ void Annotated::PopulateCVTerms(SBase* sbmlobj)
   }
 }
 
-void Annotated::BuildCVTerms(SBase* sbmlobj) const
+bool Annotated::BuildCVTerms(SBase* sbmlobj) const
 {
   // add the model quals then the biol quals as cv terms
   for(ModelQualsType::const_iterator i(m_model_quals.begin()); i!=m_model_quals.end(); ++i)
@@ -234,8 +225,11 @@ void Annotated::BuildCVTerms(SBase* sbmlobj) const
       {
         cv->addResource(*j);
       }
-      if (sbmlobj->addCVTerm(cv) != LIBSBML_OPERATION_SUCCESS)
-        throw std::runtime_error("Could not add CV term to SBML object");
+      if (sbmlobj->addCVTerm(cv) != LIBSBML_OPERATION_SUCCESS) {
+        g_registry.SetError("Could not add CV term to SBML object");
+        delete cv;
+        return true;
+      }
       delete cv;
     }
   }
@@ -250,11 +244,15 @@ void Annotated::BuildCVTerms(SBase* sbmlobj) const
       {
         cv->addResource(*j);
       }
-      if (sbmlobj->addCVTerm(cv) != LIBSBML_OPERATION_SUCCESS)
-        throw std::runtime_error("Could not add CV term to SBML object");
+      if (sbmlobj->addCVTerm(cv) != LIBSBML_OPERATION_SUCCESS) {
+        g_registry.SetError("Could not add CV term to SBML object");
+        delete cv;
+        return true;
+      }
       delete cv;
     }
   }
+  return false;
 }
 
 string Annotated::CreateCVTermsAntimonySyntax(const string& elt_id, const string& indent) const
@@ -287,6 +285,51 @@ string Annotated::CreateCVTermsAntimonySyntax(const string& elt_id, const string
     result += term+"\n";
   }
   return result;
+}
+
+bool Annotated::Synchronize(Variable * clone, const Variable * conversionFactor)
+{
+  if (m_sboTerm != 0) {
+    if (clone->m_sboTerm == 0) {
+      clone->m_sboTerm = m_sboTerm;
+    }
+  }
+
+  if (!m_metaid.empty()) {
+    if (clone->m_metaid.empty()) {
+      clone->m_metaid == m_metaid;
+    }
+  }
+
+  for (vector<pair<ModelQualifierType_t, vector<string> > >::iterator mq = m_model_quals.begin(); mq != m_model_quals.end(); mq++) {
+    ModelQualifierType_t mqtype = mq->first;
+    bool no_match = true;
+    for (vector<pair<ModelQualifierType_t, vector<string> > >::iterator cmq = clone->m_model_quals.begin(); cmq != clone->m_model_quals.end(); cmq++) {
+      if (cmq->first == mqtype) {
+        no_match = false;
+        break;
+      }
+    }
+    if (no_match) {
+      clone->m_model_quals.push_back(*mq);
+    }
+  }
+  m_model_quals.clear();
+  for (vector<pair<BiolQualifierType_t, vector<string> > >::iterator bq = m_biol_quals.begin(); bq != m_biol_quals.end(); bq++) {
+    BiolQualifierType_t bqtype = bq->first;
+    bool no_match = true;
+    for (vector<pair<BiolQualifierType_t, vector<string> > >::iterator cbq = clone->m_biol_quals.begin(); cbq != clone->m_biol_quals.end(); cbq++) {
+      if (cbq->first == bqtype) {
+        no_match = false;
+        break;
+      }
+    }
+    if (no_match) {
+      clone->m_biol_quals.push_back(*bq);
+    }
+  }
+  m_biol_quals.clear();
+  return false;
 }
 
 void Annotated::SetSBOTerm(int sboTerm)

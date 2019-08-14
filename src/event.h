@@ -49,6 +49,7 @@ public:
   bool GetPersistent() const {return m_persistent;};
   bool GetInitialValue() const {return m_initialValue;};
   bool IsEmpty() const;
+  bool CheckFormulas() const;
 
   bool Matches(const AntimonyEvent* newevent) const;
   void Convert(Variable* converted, Variable* cf);

@@ -24,6 +24,7 @@
 class Module;
 class UnitDef;
 class SboTermWrapper;
+class UncertWrapper;
 
 class Variable : public Annotated
 {
@@ -64,6 +65,7 @@ protected:
 
   // Subclass which is used as a wrapper for setting SBO terms
   SboTermWrapper* m_sboTermWrapper;
+  std::vector<UncertWrapper*> m_uncertWrappers;
   //If we've set the compartment we're in, this tells us where we are.
   std::vector<std::string> m_compartment;
   std::vector<std::string> m_supercompartment;
@@ -196,6 +198,8 @@ public:
   //bool Synchronize(Variable* clone, SBase* foo);
   void SetWithRule(const Rule* rule);
   virtual bool TransferAnnotationTo(SBase* sbmlobj, std::string metaid) const;
+  void ReadAnnotationFrom(const SBase* sbmlobj);
+  virtual size_t GetNumUncertWrappers() const;
 #endif
 
   bool IncludesSelf();
@@ -207,9 +211,11 @@ public:
   bool StillMatchesOriginal(formula_type ftype) const;
   const Variable* GetOriginal() const;
   Variable* GetParentVariable();
+  UncertWrapper* AddOrGetUncertWrapper(uncert_type type);
 
   bool IsReplacedFormRxn() const;
   virtual std::string CreateSBOTermsAntimonySyntax(const std::string& elt_id, const std::string& indent, std::string sboStr) const;
+  virtual std::string CreateUncertParamsAntimonySyntax(const std::string& indent) const;
 
   bool AllowedInFormulas() const;
 

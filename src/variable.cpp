@@ -8,6 +8,8 @@
 #include "stringx.h"
 #include "typex.h"
 #include "unitdef.h"
+#include "uncertWrapper.h"
+#include "sbml\packages\distrib\extension\DistribSBasePlugin.h"
 
 using namespace std;
 
@@ -81,6 +83,9 @@ Variable::~Variable()
 {
   if (m_sboTermWrapper)
     delete m_sboTermWrapper;
+  for (size_t uw = 0; uw < m_uncertWrappers.size(); uw++) {
+    delete m_uncertWrappers[uw];
+  }
 }
 
 bool Variable::IsPointer() const 
@@ -155,6 +160,7 @@ formula_type Variable::GetFormulaType() const
   case varDeleted:
   case varConstraint:
   case varSboTermWrapper:
+  case varUncertWrapper:
     return formulaINITIAL; //For lack of any other default.
   }
   assert(false); //uncaught variable type;
@@ -174,6 +180,7 @@ const Formula* Variable::GetFormula() const
   case varUndefined:
   case varDNA:
   case varUnitDefinition:
+  case varUncertWrapper:
     return &(m_valFormula);
   case varReactionUndef:
   case varReactionGene:
@@ -211,6 +218,7 @@ Formula* Variable::GetFormula()
   case varCompartment:
   case varUndefined:
   case varUnitDefinition:
+  case varUncertWrapper:
     return &(m_valFormula);
   case varReactionUndef:
   case varReactionGene:
@@ -254,6 +262,7 @@ const Formula* Variable::GetInitialAssignment() const
   case varModule:
     return m_valModule[0].GetFormula();
   case varUnitDefinition:
+  case varUncertWrapper:
     return &(m_valFormula);
   case varFormulaOperator:
   case varDNA:
@@ -302,6 +311,7 @@ const Formula* Variable::GetAssignmentRuleOrKineticLaw() const
   case varDeleted:
   case varConstraint:
   case varSboTermWrapper:
+  case varUncertWrapper:
     return &(g_registry.m_blankform);
   }
   assert(false); //uncaught type
@@ -339,6 +349,7 @@ Formula* Variable::GetAssignmentRuleOrKineticLaw()
   case varDeleted:
   case varConstraint:
   case varSboTermWrapper:
+  case varUncertWrapper:
     return &(g_registry.m_blankform);
   }
   assert(false); //uncaught type
@@ -476,6 +487,10 @@ Variable* Variable::GetSubVariable(const string* name)
       m_sboTermWrapper = new SboTermWrapper(this);
     return m_sboTermWrapper;
   }
+  uncert_type utype = UncertStringToType(*name);
+  if (name && utype != unUnknown) {
+    return AddOrGetUncertWrapper(utype);
+  }
   return NULL;
 }
 
@@ -584,6 +599,7 @@ bool Variable::GetIsConst() const
   case varDeleted:
   case varConstraint:
   case varSboTermWrapper:
+  case varUncertWrapper:
     return true;
   }
   switch(m_const) {
@@ -792,6 +808,7 @@ bool Variable::SetType(var_type newtype)
     case varUnitDefinition:
     case varConstraint:
     case varSboTermWrapper:
+    case varUncertWrapper:
       g_registry.SetError(error); return true;
     }
   case varFormulaUndef:
@@ -821,6 +838,7 @@ bool Variable::SetType(var_type newtype)
     case varModule:
     case varStrand:
     case varSboTermWrapper:
+    case varUncertWrapper:
       g_registry.SetError(error); return true;
     case varUndefined:
       return false;
@@ -848,6 +866,7 @@ bool Variable::SetType(var_type newtype)
     case varUnitDefinition:
     case varConstraint:
     case varSboTermWrapper:
+    case varUncertWrapper:
       g_registry.SetError(error); return true;
     }
   case varFormulaOperator:
@@ -869,6 +888,7 @@ bool Variable::SetType(var_type newtype)
     case varUnitDefinition:
     case varConstraint:
     case varSboTermWrapper:
+    case varUncertWrapper:
       g_registry.SetError(error); return true;
     }
   case varReactionGene:
@@ -890,6 +910,7 @@ bool Variable::SetType(var_type newtype)
     case varUnitDefinition:
     case varConstraint:
     case varSboTermWrapper:
+    case varUncertWrapper:
       g_registry.SetError(error); return true;
     }
   case varReactionUndef:
@@ -913,6 +934,7 @@ bool Variable::SetType(var_type newtype)
     case varUnitDefinition:
     case varConstraint:
     case varSboTermWrapper:
+    case varUncertWrapper:
       g_registry.SetError(error); return true;
     }
   case varInteraction:
@@ -931,6 +953,7 @@ bool Variable::SetType(var_type newtype)
     g_registry.SetError("Unable to set the type of variable '" + GetNameDelimitedBy(".") + "' to " + VarTypeToString(newtype) + " because it has already been deleted from the containing model.");
   case varConstraint:
   case varSboTermWrapper:
+  case varUncertWrapper:
     g_registry.SetError(error); return true; //the already-identical cases handled above.
     return true;
   }
@@ -960,6 +983,11 @@ bool Variable::SetFormula(Formula* formula, bool isObjective)
 #endif
   if (formula->ContainsVar(this)) {
     g_registry.SetError("Loop detected:  " + GetNameDelimitedBy(".") + "'s definition (" + formula->ToDelimitedStringWithEllipses(".") + ") either includes itself directly (i.e. 's5 = 6 + s5') or by proxy (i.e. 's5 = 8*d3' and 'd3 = 9*s5').");
+    return true;
+  }
+
+  if (m_type != varUncertWrapper && formula->ContainsCurlyBrackets()) {
+    g_registry.SetError("Curly brackets detected in formula: '" + formula->ToDelimitedStringWithEllipses(".") + "': vectors are not supported in the current version of Antimony apart from their use in setting certain uncertainty parameters.");
     return true;
   }
   bool isdeletion = false;
@@ -995,6 +1023,7 @@ bool Variable::SetFormula(Formula* formula, bool isObjective)
   case varFormulaUndef:
   case varCompartment:
   case varSpeciesUndef:
+  case varUncertWrapper:
     if (m_formulatype == formulaASSIGNMENT) {
       g_registry.SetError("Cannot set '" + GetNameDelimitedBy(".") + "' to have the initial value '" + formula->ToDelimitedStringWithEllipses(".") + "' because it already has an assignment rule, which applies at all times, including time=0.");
       return true;
@@ -1154,6 +1183,10 @@ bool Variable::SetReaction(AntimonyReaction* rxn)
   if (IsPointer()) {
     return GetSameVariable()->SetReaction(rxn);
   }
+  if (rxn->GetFormula()->ContainsCurlyBrackets()) {
+    g_registry.SetError("Curly brackets detected in the reaction rate: '" + rxn->GetFormula()->ToDelimitedStringWithEllipses(".") + "': vectors are not supported in the current version of Antimony apart from their use in setting certain uncertainty parameters.");
+    return true;
+  }
 #ifndef NSBML
   string formstring = rxn->GetFormula()->ToSBMLString(GetStrandVars());
   if (formstring.size() > 0) {
@@ -1227,6 +1260,9 @@ bool Variable::SetEvent(const AntimonyEvent* event)
   if (IsPointer()) {
     return GetSameVariable()->SetEvent(event);
   }
+  if (event->CheckFormulas()) {
+    return true;
+  }
   m_valEvent = *event;
   return SetType(varEvent);
 }
@@ -1235,6 +1271,10 @@ bool Variable::SetConstraint(const AntimonyConstraint* constraint)
 {
   if (IsPointer()) {
     return GetSameVariable()->SetConstraint(constraint);
+  }
+  if (constraint->GetFormula()->ContainsCurlyBrackets()) {
+    g_registry.SetError("Curly brackets detected in the constraint: '" + constraint->GetFormula()->ToDelimitedStringWithEllipses(".") + "': vectors are not supported in the current version of Antimony apart from their use in setting certain uncertainty parameters.");
+    return NULL;
   }
   m_valConstraint = *constraint;
   return SetType(varConstraint);
@@ -1344,6 +1384,12 @@ bool Variable::SetIsConst(bool constant)
       return true;
     }
     break;
+  case varUncertWrapper:
+    if (!constant) {
+      g_registry.SetError(error + ", as 'constantness' is undefined for uncertainty parameters.");
+      return true;
+    }
+    break;
   case varDeleted:
     g_registry.SetError(error + ", as the variable was already deleted.");
     break;
@@ -1424,6 +1470,7 @@ bool Variable::SetSuperCompartment(Variable* var, var_type supertype)
   case varUnitDefinition:
   case varDeleted:
   case varSboTermWrapper:
+  case varUncertWrapper:
     assert(false); // Those things don't have components
     return false;
   case varStrand:
@@ -1469,6 +1516,7 @@ void Variable::SetComponentCompartments(bool frommodule)
   case varUnitDefinition:
   case varDeleted:
   case varSboTermWrapper:
+  case varUncertWrapper:
     return; //No components to set
   case varReactionUndef:
   case varReactionGene:
@@ -1544,7 +1592,7 @@ bool Variable::SetUnit(Variable* var)
   return false; //success
 }
 
-string Variable::GetNameOrBuiltin(std::string cc) const
+string Variable::GetNameOrBuiltin(string cc) const
 {
   if (IsBuiltin())
     return GetName().back();
@@ -1678,6 +1726,7 @@ bool Variable::DeleteFromSubmodel(Variable* deletedvar)
   case varUnitDefinition:
   case varDeleted:
   case varSboTermWrapper:
+  case varUncertWrapper:
     //These types can't have rules to them.
     break;
   }
@@ -1787,7 +1836,7 @@ set<pair<vector<string>, deletion_type> > Variable::ClearReferencesTo(Variable* 
 //Set this variable to be a shell pointing to the clone, transferring any data we may already have.
 bool Variable::Synchronize(Variable* clone, const Variable* conversionFactor)
 {
-  if (clone->GetType() == varSboTermWrapper) {
+  if (clone->GetType() == varSboTermWrapper || clone->GetType() == varUncertWrapper) {
     return clone->Synchronize(this, conversionFactor); //Which will give an error.
   }
   if (IsPointer()) {
@@ -1965,6 +2014,29 @@ bool Variable::Synchronize(Variable* clone, const Variable* conversionFactor)
   }
   m_supercompartment.clear();
 
+  //Synchronize the SBO term and annotations.
+  if (Annotated::Synchronize(clone, conversionFactor)) {
+    return true;
+  }
+
+  //Synchronize the uncertainty parameters
+  for (size_t uw = 0; uw < m_uncertWrappers.size(); uw++) {
+    UncertWrapper* wrapper = m_uncertWrappers[uw];
+    uncert_type wtype = wrapper->GetUncertType();
+    bool no_same = true;
+    for (size_t cuw = 0; cuw < clone->m_uncertWrappers.size(); cuw++) {
+      if (clone->m_uncertWrappers[cuw]->GetUncertType() == wtype) {
+        no_same = false;
+        break;
+      }
+    }
+    if (no_same) {
+      //Move the pointer to the clone; clear the local pointer.
+      clone->m_uncertWrappers.push_back(wrapper);
+      m_uncertWrappers[uw] = NULL;
+    }
+  }
+
   //We always synchronize the data above first, but where we store it can change based on which version is the top-level.
   if (clone->m_name.size() > 1 && m_name.size() == 1) {
     //When synchronizing a local variable to a submodule's variable, always have the local trump the submodule.
@@ -1972,9 +2044,6 @@ bool Variable::Synchronize(Variable* clone, const Variable* conversionFactor)
   }
   
   m_sameVariable = clone->GetName();
-
-  //Synchronize the annotations
-  Annotated::Synchronize(clone);
 
   //And save this pair in the module as having been syncronized
   g_registry.GetModule(m_module)->AddSynchronizedPair(this, clone, conversionFactor);
@@ -2098,12 +2167,24 @@ Variable* Variable::GetParentVariable()
   return g_registry.GetModule(m_module)->GetVariable(parentname);  
 }
 
+UncertWrapper * Variable::AddOrGetUncertWrapper(uncert_type type)
+{
+  for (size_t uw = 0; uw < m_uncertWrappers.size(); uw++) {
+    if (m_uncertWrappers[uw]->GetUncertType() == type) {
+      return m_uncertWrappers[uw];
+    }
+  }
+  UncertWrapper* uncertWrapper = new UncertWrapper(this, type);
+  m_uncertWrappers.push_back(uncertWrapper);
+  return uncertWrapper;
+}
+
 bool Variable::IsReplacedFormRxn() const 
 {
   return m_replacedformrxn;
 }
 
-std::string Variable::CreateSBOTermsAntimonySyntax(const std::string & elt_id, const std::string & indent, std::string sboStr) const
+string Variable::CreateSBOTermsAntimonySyntax(const string & elt_id, const string & indent, string sboStr) const
 {
   if (m_type == varModule) {
     const Variable* var = m_valModule[0].GetSubVariable(&sboStr);
@@ -2124,9 +2205,17 @@ std::string Variable::CreateSBOTermsAntimonySyntax(const std::string & elt_id, c
     if (var != NULL) {
       return "";
     }
-    if (var != NULL) {}
   }
   return Annotated::CreateSBOTermsAntimonySyntax(elt_id, indent, sboStr);
+}
+
+string Variable::CreateUncertParamsAntimonySyntax(const string & indent) const
+{
+  string retval = "";
+  for (size_t uw=0; uw<m_uncertWrappers.size(); uw++) {
+    retval += m_uncertWrappers[uw]->CreateUncertParamsAntimonySyntax(indent);
+  }
+  return retval;
 }
 
 bool Variable::AllowedInFormulas() const
@@ -2149,6 +2238,7 @@ bool Variable::AllowedInFormulas() const
   case varStrand:
   case varDeleted:
   case varSboTermWrapper:
+  case varUncertWrapper:
     return false;
 
   }
@@ -2184,12 +2274,88 @@ void Variable::SetWithRule(const Rule* rule)
   }
 }
 
-bool Variable::TransferAnnotationTo(SBase * sbmlobj, std::string metaid) const
+bool Variable::TransferAnnotationTo(SBase * sbmlobj, string metaid) const
 {
   if (IsPointer()) {
     return GetSameVariable()->TransferAnnotationTo(sbmlobj, metaid);
   }
+  for (size_t uw = 0; uw < m_uncertWrappers.size(); uw++) {
+    if (m_uncertWrappers[uw]->TransferAnnotationTo(sbmlobj, metaid)) {
+      return true;
+    }
+  }
   return Annotated::TransferAnnotationTo(sbmlobj, metaid);
+}
+
+void Variable::ReadAnnotationFrom(const SBase * sbmlobj)
+{
+  Annotated::ReadAnnotationFrom(sbmlobj);
+  const DistribSBasePlugin* dsbp = static_cast<const DistribSBasePlugin*>(sbmlobj->getPlugin("distrib"));
+  if (dsbp == NULL || dsbp->getNumUncertainties() == 0) {
+    return;
+  }
+  const Uncertainty* uncertainty = dsbp->getUncertainty(0);
+  for (unsigned long u = 0; u < uncertainty->getNumUncertParameters(); u++) {
+    const UncertParameter* up = uncertainty->getUncertParameter(u);
+    uncert_type uptype = SBMLToUncertType(up->getType());
+    UncertWrapper* uwrapper = AddOrGetUncertWrapper(uptype);
+    if (up->isSetDefinitionURL()) {
+      uwrapper->SetDisplayName(up->getDefinitionURL());
+    }
+    else if (up->isSetName()) {
+      uwrapper->SetDisplayName(up->getName());
+    }
+    Formula form();
+    if (up->isSetValue()) {
+      uwrapper->m_valFormula.AddNum(up->getValue());
+    }
+    else if (up->isSetVar()) {
+      Variable* var = g_registry.GetModule(m_module)->AddOrFindVariable(&(up->getVar()));
+      uwrapper->m_valFormula.AddVariable(var);
+    }
+    else if (up->isSetMath()) {
+      Module* module = g_registry.GetModule(m_module);
+      char* l3str = SBML_formulaToL3String(up->getMath());
+      setFormulaWithString(l3str, &(uwrapper->m_valFormula), module);
+      delete l3str;
+    }
+    else {
+      const UncertSpan* uspan = NULL;
+      switch (uptype) {
+      case unConfidenceInterval:
+      case unCredibleInterval:
+      case unInterquartileRange:
+      case unRange:
+      case unExternalParameter:
+        uspan = static_cast<const UncertSpan*>(up);
+        uwrapper->m_valFormula.AddMathThing('{');
+        if (uspan->isSetValueLower()) {
+          uwrapper->m_valFormula.AddNum(uspan->getValueLower());
+        }
+        else if (uspan->isSetVarLower()) {
+          Variable* var = g_registry.GetModule(m_module)->AddOrFindVariable(&(uspan->getVarLower()));
+          uwrapper->m_valFormula.AddVariable(var);
+        }
+        uwrapper->m_valFormula.AddMathThing(',');
+        if (uspan->isSetValueUpper()) {
+          uwrapper->m_valFormula.AddNum(uspan->getValueUpper());
+        }
+        else if (uspan->isSetVarUpper()) {
+          Variable* var = g_registry.GetModule(m_module)->AddOrFindVariable(&(uspan->getVarUpper()));
+          uwrapper->m_valFormula.AddVariable(var);
+        }
+        uwrapper->m_valFormula.AddMathThing('}');
+        break;
+      default:
+        break;
+      }
+    }
+  }
+}
+
+size_t Variable::GetNumUncertWrappers() const
+{
+  return m_uncertWrappers.size();
 }
 
 #endif

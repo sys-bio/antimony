@@ -27,7 +27,7 @@ public:
   Annotated() : m_sboTerm(0) {};
   ~Annotated() {};
 
-  virtual void Synchronize(Annotated* clone);
+  virtual bool Synchronize(Variable * clone, const Variable * conversionFactor);
 
 #ifndef NSBML
   virtual bool TransferAnnotationTo(SBase* sbmlobj, std::string metaid) const;
@@ -54,7 +54,7 @@ public:
   void PopulateCVTerms(SBase* sbmlobj);
   // build an annotation node from the list of BioModels qualifiers in m_bq_annotations
   // adds CV terms to SBML object
-  void BuildCVTerms(SBase* sbmlobj) const;
+  bool BuildCVTerms(SBase* sbmlobj) const;
   // writes out the Antimony syntax for the CV terms stored in this object
   std::string CreateCVTermsAntimonySyntax(const std::string& elt_id, const std::string& indent) const;
 

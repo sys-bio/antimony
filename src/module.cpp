@@ -325,11 +325,11 @@ Variable* Module::AddNewReaction(const ReactantList& left, rd_type divider, cons
 
 Variable* Module::AddNewReaction(const ReactantList& left, rd_type divider, const ReactantList& right, Formula* formula, Variable* var)
 {
-  AntimonyReaction newrxn(left, divider, right, *formula, var);
   if (formula->ContainsVar(var)) {
     g_registry.SetError("The definition of reaction '" + var->GetNameDelimitedBy(".") + "' contains a reference to itself directly or indirectly in its reaction rate (" + formula->ToDelimitedStringWithEllipses(".") + ").");
     return NULL;
   }
+  AntimonyReaction newrxn(left, divider, right, *formula, var);
   if (var->SetReaction(&newrxn)) return NULL;
   return var;
 }
@@ -796,6 +796,7 @@ void Module::AddDefaultInitialValues()
     case varUnitDefinition:
     case varDeleted:
     case varSboTermWrapper:
+    case varUncertWrapper:
       break;
     }
   }
@@ -1161,6 +1162,12 @@ bool Module::Finalize()
     if (g_registry.GetNthUserFunction(uf)->UsesDistrib()) {
       m_usedDistributions = true;
       break;
+    }
+  }
+  //Or if any variable has uncertainties
+  for (size_t var = 0; var < m_variables.size(); var++) {
+    if (m_variables[var]->GetNumUncertWrappers() > 0) {
+      m_usedDistributions = true;
     }
   }
 
@@ -1594,6 +1601,7 @@ bool Module::AreEquivalent(return_type rtype, var_type vtype) const
   case varUnitDefinition:
   case varDeleted:
   case varSboTermWrapper:
+  case varUncertWrapper:
     break;
   }
   assert(false); //uncaught return type
@@ -2100,6 +2108,7 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
     case varStrand:
     case varUnitDefinition:
     case varSboTermWrapper:
+    case varUncertWrapper:
       break;
     }
   }
@@ -2176,6 +2185,17 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
       }
       retval += cvterms;
     }
+  }
+
+  // Uncertainty parameters
+  bool anyuncert = false;
+  for (size_t var=0; var<m_uniquevars.size(); var++) {
+    string uncerts = m_uniquevars[var]->CreateUncertParamsAntimonySyntax(indent);
+    if (anyuncert == false && !uncerts.empty()) {
+      retval += "\n" + indent + "// Uncertainty parameters:\n";
+      anyuncert = true;
+    }
+    retval += uncerts;
   }
 
   //end model definition
@@ -2649,6 +2669,7 @@ void Module::Convert(Variable* conv, Variable* cf, string modulename)
     case varStrand:
     case varDeleted:
     case varSboTermWrapper:
+    case varUncertWrapper:
       break;
     }
   }
@@ -2686,6 +2707,7 @@ void Module::ConvertTime(Variable* tcf)
     case varStrand:
     case varDeleted:
     case varSboTermWrapper:
+    case varUncertWrapper:
       break;
     }
   }
@@ -2717,6 +2739,7 @@ void Module::ConvertExtent(Variable* xcf)
     case varStrand:
     case varDeleted:
     case varSboTermWrapper:
+    case varUncertWrapper:
       break;
     }
   }
@@ -2752,6 +2775,7 @@ void Module::UndoTimeExtentConversions(Variable* tcf, Variable* xcf)
     case varStrand:
     case varDeleted:
     case varSboTermWrapper:
+    case varUncertWrapper:
       break;
     }
   }

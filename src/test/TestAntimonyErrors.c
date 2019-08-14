@@ -276,6 +276,60 @@ START_TEST (no_function_subelements)
 }
 END_TEST
 
+START_TEST (no_vectors1)
+{
+  testError("a = {3, 4}", "Error in model string, line 1:  Curly brackets detected in formula: '{3, 4}': vectors are not supported in the current version of Antimony apart from their use in setting certain uncertainty parameters.");
+}
+END_TEST
+
+START_TEST (no_vectors2)
+{
+  testError("A -> B; {3, 4}", "Error in model string, line 1:  Curly brackets detected in the reaction rate: '{3, 4}': vectors are not supported in the current version of Antimony apart from their use in setting certain uncertainty parameters.");
+}
+END_TEST
+
+START_TEST (no_vectors3)
+{
+  testError("at time>{3, 4}: a=3", "Error in model string, line 1:  Curly brackets detected in the event trigger: 'time > {3, 4}': vectors are not supported in the current version of Antimony apart from their use in setting certain uncertainty parameters.");
+}
+END_TEST
+
+START_TEST (no_uncertval_vectors)
+{
+  testError("a.mean = {3, 4}", "Error in model string, line 1:  Unable to set the value of 'a.mean' to be '{3, 4}':  this uncertainty parameter must only be a single value or a single variable.");
+}
+END_TEST
+
+START_TEST (wrong_uncertspan_vector1)
+{
+  testError("a.confidenceInterval = 5", "Error in model string, line 1:  Unable to set the value of 'a.confidenceInterval' to be '5':  an uncertainty parameter of type confidenceInterval must be a vector of length two, marked with curly brackets (i.e. '{3, 8}').");
+}
+END_TEST
+
+START_TEST (wrong_uncertspan_vector2)
+{
+  testError("a.range = {5, 2, 4}", "Error in model string, line 1:  Unable to set the value of 'a.range' to be '{5, 2, 4}':  an uncertainty parameter of type range must be a vector of length two, marked with curly brackets (i.e. '{3, 8}').");
+}
+END_TEST
+
+START_TEST (wrong_uncertspan_units)
+{
+  testError("a.range = {5 moles, 2 seconds}", "Error in model string, line 1:  Unable to set the value of 'a.range' to be '{5 mole, 2 second}':  the units of both elements in the vector must be the same.");
+}
+END_TEST
+
+START_TEST (uncertval_must_be_single1)
+{
+  testError("a.mean = 3+4", "Error in model string, line 1:  Unable to set the value of 'a.mean' to be '3 + 4':  this uncertainty parameter must only be a single value or a single variable.");
+}
+END_TEST
+
+START_TEST (uncertval_must_be_single2)
+{
+  testError("a.mean = plus()", "Error in model string, line 1:  Unable to set the value of 'a.mean' to be 'plus()':  this uncertainty parameter must only be a single value or a single variable.");
+}
+END_TEST
+
 /*
 START_TEST (no_replace_ar_with_ia)
 {
@@ -319,6 +373,16 @@ create_suite_Errors (void)
   tcase_add_test( tcase, empty_interaction);
   tcase_add_test( tcase, no_module_subelements);
   tcase_add_test( tcase, no_function_subelements);
+
+  tcase_add_test( tcase, no_vectors1);
+  tcase_add_test( tcase, no_vectors2);
+  tcase_add_test( tcase, no_vectors3);
+  tcase_add_test( tcase, no_uncertval_vectors);
+  tcase_add_test( tcase, wrong_uncertspan_vector1);
+  tcase_add_test( tcase, wrong_uncertspan_vector2);
+  tcase_add_test( tcase, wrong_uncertspan_units);
+  tcase_add_test( tcase, uncertval_must_be_single1);
+  tcase_add_test( tcase, uncertval_must_be_single2);
 
   suite_add_tcase(suite, tcase);
 

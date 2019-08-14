@@ -2,6 +2,7 @@
 
 #include "enums.h"
 #include "typex.h"
+#include "stringx.h"
 
 using namespace std;
 extern bool CaselessStrCmp(const string& lhs, const string& rhs);
@@ -26,6 +27,7 @@ bool IsReaction(const var_type vtype)
   case varDeleted:
   case varConstraint:
   case varSboTermWrapper:
+  case varUncertWrapper:
     return false;
   }
   assert(false); //uncaught vtype
@@ -67,6 +69,7 @@ bool IsSpecies(const var_type vtype)
   case varDeleted:
   case varConstraint:
   case varSboTermWrapper:
+  case varUncertWrapper:
     return false;
   }
   assert(false); //uncaught vtype
@@ -93,6 +96,7 @@ bool IsDNA(const var_type vtype)
   case varDeleted:
   case varConstraint:
   case varSboTermWrapper:
+  case varUncertWrapper:
     return false;
   }
   assert(false); //uncaught vtype
@@ -119,6 +123,7 @@ bool CanHaveRateRule(const var_type vtype)
   case varDeleted:
   case varConstraint:
   case varSboTermWrapper:
+  case varUncertWrapper:
     return false;
   }
   assert(false); //uncaught type
@@ -145,6 +150,7 @@ bool CanHaveAssignmentRule(const var_type vtype)
   case varDeleted:
   case varConstraint:
   case varSboTermWrapper:
+  case varUncertWrapper:
     return false;
   }
   assert(false); //uncaught type
@@ -171,6 +177,7 @@ bool CanBeInReaction(const var_type vtype)
   case varDeleted:
   case varConstraint:
   case varSboTermWrapper:
+  case varUncertWrapper:
     return false;
   }
   assert(false); //uncaught type
@@ -197,9 +204,38 @@ bool HasOrIsFormula(const var_type vtype)
   case varUndefined:
   case varDeleted:
   case varSboTermWrapper:
+  case varUncertWrapper:
     return false;
   }
   assert(false); //uncaught vtype
+  return false;
+}
+
+bool IsSpan(const uncert_type utype)
+{
+  switch (utype) {
+  case unCoefficientOfVariation:
+  case unKurtosis:
+  case unMean:
+  case unMedian:
+  case unMode:
+  case unSampleSize:
+  case unSkewness:
+  case unStandardDeviation:
+  case unStandardError:
+  case unVariance:
+  case unDistribution:
+  case unExternalParameter:
+  case unUnknown:
+    return false;
+  case unConfidenceInterval:
+  case unCredibleInterval:
+  case unInterquartileRange:
+  case unRange:
+    return true;
+  }
+  assert(false);
+  return DISTRIB_UNCERTTYPE_INVALID;
   return false;
 }
 
@@ -251,6 +287,8 @@ string VarTypeToString(const var_type vtype)
     return "Constraint";
   case varSboTermWrapper:
     return "SBO Term";
+  case varUncertWrapper:
+    return "Uncertainty parameter";
   }
   assert(false);
   return "";
@@ -287,6 +325,7 @@ string VarTypeToAntimony(const var_type vtype)
   case varModule:
   case varUndefined:
   case varSboTermWrapper:
+  case varUncertWrapper:
     assert(false);
     return "undefinable_type";
     break;
@@ -369,4 +408,184 @@ string FormulaTypeToString(const formula_type ftype)
   }
   assert(false); //uncaught type
   return "uncaught type";
+}
+
+string UncertTypeToString(const uncert_type utype)
+{
+  switch(utype) {
+  case unCoefficientOfVariation:
+    return "coefficientOfVariation";
+  case unKurtosis:
+    return "kurtosis";
+  case unMean:
+    return "mean";
+  case unMedian:
+    return "median";
+  case unMode:
+    return "mode";
+  case unSampleSize:
+    return "sampleSize";
+  case unSkewness:
+    return "skewness";
+  case unStandardDeviation:
+    return "standardDeviation";
+  case unStandardError:
+    return "standardError";
+  case unVariance:
+    return "variance";
+  case unConfidenceInterval:
+    return "confidenceInterval";
+  case unCredibleInterval:
+    return "credibleInterval";
+  case unInterquartileRange:
+    return "interquartileRange";
+  case unRange:
+    return "range";
+  case unDistribution:
+    return "distribution";
+  case unExternalParameter:
+    return "externalParameter";
+  }
+  assert(false); //uncaught type
+  return "uncaught type";
+}
+
+uncert_type UncertStringToType(const string& uncert)
+{
+  if (CaselessStrCmp(uncert, "coefficientOfVariation")) {
+    return unCoefficientOfVariation;
+  }
+  if (CaselessStrCmp(uncert, "kurtosis")) {
+    return unKurtosis;
+  }
+  if (CaselessStrCmp(uncert, "mean")) {
+    return unMean;
+  }
+  if (CaselessStrCmp(uncert, "median")) {
+    return unMedian;
+  }
+  if (CaselessStrCmp(uncert, "mode")) {
+    return unMode;
+  }
+  if (CaselessStrCmp(uncert, "sampleSize")) {
+    return unSampleSize;
+  }
+  if (CaselessStrCmp(uncert, "skewness")) {
+    return unSkewness;
+  }
+  if (CaselessStrCmp(uncert, "standardDeviation")) {
+    return unStandardDeviation;
+  }
+  if (CaselessStrCmp(uncert, "stdev")) {
+    return unStandardDeviation;
+  }
+  if (CaselessStrCmp(uncert, "standardError")) {
+    return unStandardError;
+  }
+  if (CaselessStrCmp(uncert, "variance")) {
+    return unVariance;
+  }
+  if (CaselessStrCmp(uncert, "confidenceInterval")) {
+    return unConfidenceInterval;
+  }
+  if (CaselessStrCmp(uncert, "credibleInterval")) {
+    return unCredibleInterval;
+  }
+  if (CaselessStrCmp(uncert, "interquartileRange")) {
+    return unInterquartileRange;
+  }
+  if (CaselessStrCmp(uncert, "range")) {
+    return unRange;
+  }
+  if (CaselessStrCmp(uncert, "distribution")) {
+    return unDistribution;
+  }
+  if (CaselessStrCmp(uncert, "externalParameter")) {
+    return unExternalParameter;
+  }
+  return unUnknown;
+}
+
+UncertType_t UncertTypeToSBML(const uncert_type utype)
+{
+  switch (utype) {
+  case unDistribution:
+    return DISTRIB_UNCERTTYPE_DISTRIBUTION;
+  case unExternalParameter:
+      return DISTRIB_UNCERTTYPE_EXTERNALPARAMETER;
+  case unCoefficientOfVariation:
+      return DISTRIB_UNCERTTYPE_COEFFIENTOFVARIATION;
+  case unKurtosis:
+      return DISTRIB_UNCERTTYPE_KURTOSIS;
+  case unMean:
+    return DISTRIB_UNCERTTYPE_MEAN;
+  case unMedian:
+    return DISTRIB_UNCERTTYPE_MEDIAN;
+  case unMode:
+    return DISTRIB_UNCERTTYPE_MODE;
+  case unSampleSize:
+    return DISTRIB_UNCERTTYPE_SAMPLESIZE;
+  case unSkewness:
+    return DISTRIB_UNCERTTYPE_SKEWNESS;
+  case unStandardDeviation:
+    return DISTRIB_UNCERTTYPE_STANDARDDEVIATION;
+  case unStandardError:
+    return DISTRIB_UNCERTTYPE_STANDARDERROR;
+  case unVariance:
+    return DISTRIB_UNCERTTYPE_VARIANCE;
+  case unConfidenceInterval:
+    return DISTRIB_UNCERTTYPE_CONFIDENCEINTERVAL;
+  case unCredibleInterval:
+    return DISTRIB_UNCERTTYPE_CREDIBLEINTERVAL;
+  case unInterquartileRange:
+    return DISTRIB_UNCERTTYPE_INTERQUARTILERANGE;
+  case unRange:
+    return DISTRIB_UNCERTTYPE_RANGE;
+  case unUnknown:
+    return DISTRIB_UNCERTTYPE_INVALID;
+  }
+  assert(false);
+  return DISTRIB_UNCERTTYPE_INVALID;
+}
+
+uncert_type SBMLToUncertType(const UncertType_t utype)
+{
+  switch (utype) {
+  case DISTRIB_UNCERTTYPE_DISTRIBUTION:
+    return unDistribution;
+  case DISTRIB_UNCERTTYPE_EXTERNALPARAMETER:
+    return unExternalParameter;
+  case DISTRIB_UNCERTTYPE_COEFFIENTOFVARIATION:
+    return unCoefficientOfVariation;
+  case DISTRIB_UNCERTTYPE_KURTOSIS:
+    return unKurtosis;
+  case DISTRIB_UNCERTTYPE_MEAN:
+    return unMean;
+  case DISTRIB_UNCERTTYPE_MEDIAN:
+    return unMedian;
+  case DISTRIB_UNCERTTYPE_MODE:
+    return unMode;
+  case DISTRIB_UNCERTTYPE_SAMPLESIZE:
+    return unSampleSize;
+  case DISTRIB_UNCERTTYPE_SKEWNESS:
+    return unSkewness;
+  case DISTRIB_UNCERTTYPE_STANDARDDEVIATION:
+    return unStandardDeviation;
+  case DISTRIB_UNCERTTYPE_STANDARDERROR:
+    return unStandardError;
+  case DISTRIB_UNCERTTYPE_VARIANCE:
+    return unVariance;
+  case DISTRIB_UNCERTTYPE_CONFIDENCEINTERVAL:
+    return unConfidenceInterval;
+  case DISTRIB_UNCERTTYPE_CREDIBLEINTERVAL:
+    return unCredibleInterval;
+  case DISTRIB_UNCERTTYPE_INTERQUARTILERANGE:
+    return unInterquartileRange;
+  case DISTRIB_UNCERTTYPE_RANGE:
+    return unRange;
+  case DISTRIB_UNCERTTYPE_INVALID:
+    return unUnknown;
+  }
+  assert(false);
+  return unUnknown;
 }

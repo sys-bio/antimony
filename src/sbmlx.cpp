@@ -22,6 +22,9 @@ extern bool CaselessStrCmp(const string& lhs, const string& rhs);
 
 string getNameFromSBMLObject(const SBase* sbml, string basename)
 {
+  if (sbml == NULL) {
+    return "";
+  }
   string name = sbml->getId();
   if (name == "") {
     name = sbml->getName();
