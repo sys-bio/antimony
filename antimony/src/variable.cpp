@@ -2305,7 +2305,6 @@ void Variable::ReadAnnotationFrom(const SBase * sbmlobj)
     else if (up->isSetName()) {
       uwrapper->SetDisplayName(up->getName());
     }
-    Formula form();
     if (up->isSetValue()) {
       uwrapper->m_valFormula.AddNum(up->getValue());
     }

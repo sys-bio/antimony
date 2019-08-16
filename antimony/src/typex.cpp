@@ -235,7 +235,6 @@ bool IsSpan(const uncert_type utype)
     return true;
   }
   assert(false);
-  return DISTRIB_UNCERTTYPE_INVALID;
   return false;
 }
 
