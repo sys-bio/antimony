@@ -163,7 +163,16 @@ bool UncertWrapper::TransferAnnotationTo(SBase * sbmlobj, std::string metaid) co
   }
 
   //Get the uncertainty parameter, ensuring there's only one of any one type.
+#if LIBSBML_VERSION <= 51800
+  UncertParameter* uparam = NULL;
+  for (size_t up = 0; up < uncert->getNumUncertParameters(); up++) {
+    if (uncert->getUncertParameter(up)->getType() == sbmltype) {
+      uparam = uncert->getUncertParameter(up);
+    }
+  }
+#else
   UncertParameter* uparam = uncert->getUncertParameterByType(sbmltype);
+#endif
   UncertSpan* uspan = NULL;
   if (uparam == NULL) {
     switch (sbmltype) {
