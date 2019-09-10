@@ -4,6 +4,7 @@
 #include "CopyMessageBox.h"
 #include "SBMLTab.h"
 #include "Settings.h"
+#include "sbmlx.h"
 #include <sbml/SBMLTypes.h>
 #include <sbml/conversion/SBMLConverterTypes.h>
 
@@ -99,6 +100,7 @@ bool SBMLTab::SetLevelAndVersion(int level, int version)
 {
     if (toPlainText().toUtf8() == "") return true;
     SBMLDocument* sbmldoc = readSBMLFromString(toPlainText().toUtf8());
+    removeBooleanErrors(sbmldoc);
     SBMLErrorLog* log = sbmldoc->getErrorLog();
     std::string trueerrors = "";
     int nummsgs = 0;
@@ -132,7 +134,8 @@ bool SBMLTab::SetLevelAndVersion(int level, int version)
       int cret = converter->convert();
 
     }
-    bool success = sbmldoc->setLevelAndVersion(level, version);
+    bool success = sbmldoc->setLevelAndVersion(level, version, false);
+    removeBooleanErrors(sbmldoc);
     if (success) {
       char* sbmlchar = m_sbmlw.writeSBMLToString(sbmldoc);
       ReplaceTextWith(sbmlchar);
