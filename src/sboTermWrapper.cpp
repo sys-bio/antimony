@@ -46,7 +46,7 @@ bool SboTermWrapper::SetFormula(Formula* formula, bool isObjective)
     return true;
   }
 
-  m_parent->SetSBOTerm(val);
+  m_parent->SetSBOTerm(static_cast<int>(round(val)));
   return false;
 }
 

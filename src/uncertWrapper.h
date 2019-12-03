@@ -4,7 +4,9 @@
 #include "variable.h"
 
 class Variable;
+#ifdef LIBSBML_HAS_PACKAGE_DISTRIB
 class Uncertainty;
+#endif
 // A proxy class returned by the parser for setting SBO terms
 class UncertWrapper : public Variable
 {
@@ -26,7 +28,9 @@ public:
   virtual std::string GetNameDelimitedBy(std::string cc) const;
   virtual bool Synchronize(Variable* clone, const Variable* conversionFactor);
   virtual std::string CreateUncertParamsAntimonySyntax(const std::string& indent) const;
+#ifdef LIBSBML_HAS_PACKAGE_DISTRIB
   virtual Uncertainty * GetOrCreateUncertainty(SBase * sbmlobj) const;
+#endif
   virtual bool TransferAnnotationTo(SBase* sbmlobj, std::string metaid) const;
   void ReadAnnotationFrom(const SBase* sbmlobj);
 };

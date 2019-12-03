@@ -2,8 +2,10 @@
 #include "module.h"
 #include "registry.h"
 #include "stringx.h"
+#ifdef LIBSBML_HAS_PACKAGE_DISTRIB
 #include <sbml/packages/distrib/sbml/Uncertainty.h>
 #include <sbml/packages/distrib/extension/DistribSBasePlugin.h>
+#endif
 
 using namespace std;
 
@@ -140,6 +142,7 @@ string UncertWrapper::CreateUncertParamsAntimonySyntax(const string & indent) co
   return ret;
 }
 
+#ifdef LIBSBML_HAS_PACKAGE_DISTRIB
 Uncertainty* UncertWrapper::GetOrCreateUncertainty(SBase* sbmlobj) const
 {
   DistribSBasePlugin* dsbp = static_cast<DistribSBasePlugin*>(sbmlobj->getPlugin("distrib"));
@@ -152,10 +155,12 @@ Uncertainty* UncertWrapper::GetOrCreateUncertainty(SBase* sbmlobj) const
   }
   return dsbp->getUncertainty(0);
 }
+#endif
 
 
 bool UncertWrapper::TransferAnnotationTo(SBase * sbmlobj, std::string metaid) const
 {
+#ifdef LIBSBML_HAS_PACKAGE_DISTRIB
   Uncertainty* uncert = GetOrCreateUncertainty(sbmlobj);
   UncertType_t sbmltype = UncertTypeToSBML(m_uncert_type);
   if (sbmltype == DISTRIB_UNCERTTYPE_INVALID) {
@@ -337,6 +342,7 @@ bool UncertWrapper::TransferAnnotationTo(SBase * sbmlobj, std::string metaid) co
       delete astn;
     }
   }
+#endif
   return false;
 }
 

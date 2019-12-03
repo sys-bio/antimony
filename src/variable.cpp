@@ -9,7 +9,9 @@
 #include "typex.h"
 #include "unitdef.h"
 #include "uncertWrapper.h"
+#ifdef LIBSBML_HAS_PACKAGE_DISTRIB
 #include <sbml/packages/distrib/extension/DistribSBasePlugin.h>
+#endif
 
 using namespace std;
 
@@ -2290,6 +2292,7 @@ bool Variable::TransferAnnotationTo(SBase * sbmlobj, string metaid) const
 void Variable::ReadAnnotationFrom(const SBase * sbmlobj)
 {
   Annotated::ReadAnnotationFrom(sbmlobj);
+#ifdef LIBSBML_HAS_PACKAGE_DISTRIB
   const DistribSBasePlugin* dsbp = static_cast<const DistribSBasePlugin*>(sbmlobj->getPlugin("distrib"));
   if (dsbp == NULL || dsbp->getNumUncertainties() == 0) {
     return;
@@ -2350,6 +2353,7 @@ void Variable::ReadAnnotationFrom(const SBase * sbmlobj)
       }
     }
   }
+#endif
 }
 
 size_t Variable::GetNumUncertWrappers() const
