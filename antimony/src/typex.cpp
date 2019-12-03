@@ -505,6 +505,7 @@ uncert_type UncertStringToType(const string& uncert)
   return unUnknown;
 }
 
+#ifdef LIBSBML_HAS_PACKAGE_DISTRIB
 UncertType_t UncertTypeToSBML(const uncert_type utype)
 {
   switch (utype) {
@@ -588,3 +589,4 @@ uncert_type SBMLToUncertType(const UncertType_t utype)
   assert(false);
   return unUnknown;
 }
+#endif
