@@ -492,12 +492,12 @@ void FixPortReferencesIn(Model* sbmlmod)
 {
   CompModelPlugin* cmp = static_cast<CompModelPlugin*>(sbmlmod->getPlugin("comp"));
   for (size_t sm=0; sm<cmp->getNumSubmodels(); sm++) {
-    Submodel* submod = cmp->getSubmodel(sm);
+    Submodel* submod = cmp->getSubmodel(static_cast<unsigned int>(sm));
     submod->clearInstantiation();
     set<SBase*> referents;
     set<Deletion*> extradels;
     for (size_t d=0; d<submod->getNumDeletions(); d++) {
-      Deletion* deletion = submod->getDeletion(d);
+      Deletion* deletion = submod->getDeletion(static_cast<unsigned int>(d));
       deletion->saveReferencedElement();
       SBase* referent = deletion->getReferencedElement();
       if (referent == NULL) {
@@ -2429,7 +2429,7 @@ void CreateImpliedDeletion(Submodel* submodel, SBase* sbase, SBMLDocument& sbml,
 {
   //First check if there already is a deletion
   for (size_t d=0; d<submodel->getNumDeletions(); d++) {
-    Deletion* del=submodel->getDeletion(d);
+    Deletion* del=submodel->getDeletion(static_cast<unsigned int>(d));
     if (del->getReferencedElement() == sbase) return;
   }
   vector<string> submodname = GetSubmodNameFor(sbase);

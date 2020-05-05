@@ -242,7 +242,7 @@ Translator::Translator(QTAntimony* app, QString filename)
 #endif //NCELLML
                 if (displaysbml) {
                     for (size_t mod=1; mod<getNumModules(); mod++) {
-                        char* modname = getNthModuleName(mod);
+                        char* modname = getNthModuleName(static_cast<unsigned long>(mod));
 #ifdef USE_COMP
                         if (flattensbml) {
                           AddSBMLTab(modname, getSBMLString(modname), true);
