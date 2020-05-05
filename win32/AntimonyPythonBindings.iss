@@ -2,14 +2,14 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "AntimonyPythonBindings"
-#define MyAppVersion "2.9.0"
+#define MyAppVersion "2.12.0"
 #define MyAppPublisher "University of Washington, Seattle, WA, USA"
 #define MyAppURL "http://antimony.sourceforge.net/"
-#define MyAppSetupIconFile "..\install-vs2010-release\bin\antimony.ico"
+#define MyAppSetupIconFile "..\install-release\bin\antimony.ico"
 #define ThisInstallerPostfix "win32"
  
 #define Py "Python"
-#define PyVer "2.8"
+#define PyVer "3.7"
 #define AppDir "antimony"
 
 ;Used for downloader
@@ -50,8 +50,8 @@ SolidCompression=yes
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Files]
-Source: ..\install-vs2010-release\bindings\python\antimony\*; DestDir: {app}; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: ..\install-vs2010-release\bindings\python\libantimony.pth; DestDir: {app}\..\; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: ..\install-release\bindings\python\antimony\*; DestDir: {app}; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: ..\install-release\bindings\python\libantimony.pth; DestDir: {app}\..\; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "..\LICENSE.TXT"; DestDir: "{app}"; Flags: ignoreversion
 
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files

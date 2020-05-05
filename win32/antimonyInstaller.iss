@@ -1,6 +1,6 @@
-#define MinimalSetupInstaller "AntimonyPythonBindings-2.9.0-win32.exe"
+#define MinimalSetupInstaller "AntimonyPythonBindings-2.12.0-win32.exe"
 #define MyAppName "QTAntimony"
-#define MyAppVersion "2.9.0"
+#define MyAppVersion "2.12.0"
 #define MyAppSetupIconFile "..\QTAntimony_src\antimony.ico"
 
 [Setup]
@@ -28,32 +28,21 @@ Filename: {app}\QTAntimony.exe; WorkingDir: {userdocs}; Flags: postinstall unche
 Name: {app}\biomodels
 [Files]
 Source: "{#MinimalSetupInstaller}"; DestDir: "{tmp}"; Flags: ignoreversion onlyifdoesntexist
-Source: ..\install-vs2010-release\bindings\*; DestDir: {app}; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: ..\install-vs2010-release\bin\QTAntimony.exe; DestDir: {app}
-Source: ..\install-vs2010-release\bin\QtCore4.dll; DestDir: {app}
-Source: ..\install-vs2010-release\bin\QtGui4.dll; DestDir: {app}
-Source: ..\install-vs2010-release\bin\README.txt; DestDir: {app}
-Source: ..\install-vs2010-release\bin\annotools.dll; DestDir: {app}
-Source: ..\install-vs2010-release\bin\antimony.ico; DestDir: {app}
-Source: ..\install-vs2010-release\bin\antimony_ico.png; DestDir: {app}
-Source: ..\install-vs2010-release\bin\antimony2cellml.exe; DestDir: {app}
-Source: ..\install-vs2010-release\bin\antimony2sbml.exe; DestDir: {app}
-Source: ..\install-vs2010-release\bin\celeds.dll; DestDir: {app}
-Source: ..\install-vs2010-release\bin\cellml.dll; DestDir: {app}
-Source: ..\install-vs2010-release\bin\cellml2antimony.exe; DestDir: {app}
-Source: ..\install-vs2010-release\bin\cevas.dll; DestDir: {app}
-Source: ..\install-vs2010-release\bin\cuses.dll; DestDir: {app}
-Source: ..\install-vs2010-release\bin\libxml2.dll; DestDir: {app}
-Source: ..\install-vs2010-release\bin\malaes.dll; DestDir: {app}
-Source: ..\install-vs2010-release\bin\msvcp100.dll; DestDir: {app}
-Source: ..\install-vs2010-release\bin\msvcr100.dll; DestDir: {app}
-Source: ..\install-vs2010-release\bin\rehashantimony.exe; DestDir: {app}
-Source: ..\install-vs2010-release\bin\sbml2antimony.exe; DestDir: {app}
-Source: ..\install-vs2010-release\bin\sbtranslate.exe; DestDir: {app}
-Source: ..\install-vs2010-release\bin\telicems.dll; DestDir: {app}
-Source: ..\install-vs2010-release\bin\testantimony.exe; DestDir: {app}
-Source: ..\install-vs2010-release\lib\libantimony.dll; DestDir: {app}
-Source: ..\install-vs2010-release\lib\libantimony.lib; DestDir: {app}
+Source: ..\install-release\bindings\*; DestDir: {app}; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: ..\install-release\bin\QTAntimony.exe; DestDir: {app}
+Source: ..\install-release\bin\QtCore4.dll; DestDir: {app}
+Source: ..\install-release\bin\QtGui4.dll; DestDir: {app}
+Source: ..\install-release\bin\README.txt; DestDir: {app}
+Source: ..\install-release\bin\antimony.ico; DestDir: {app}
+Source: ..\install-release\bin\antimony_ico.png; DestDir: {app}
+Source: ..\install-release\bin\antimony2sbml.exe; DestDir: {app}
+Source: ..\install-release\bin\libxml2.dll; DestDir: {app}
+Source: ..\install-release\bin\rehashantimony.exe; DestDir: {app}
+Source: ..\install-release\bin\sbml2antimony.exe; DestDir: {app}
+Source: ..\install-release\bin\sbtranslate.exe; DestDir: {app}
+Source: ..\install-release\bin\testantimony.exe; DestDir: {app}
+Source: ..\install-release\lib\libantimony.dll; DestDir: {app}
+Source: ..\install-release\lib\libantimony.lib; DestDir: {app}
 Source: ..\doc\examples\ex_antimony_output.txt; DestDir: {app}
 Source: ..\doc\examples\ex_sbml_input.xml; DestDir: {app}
 Source: ..\doc\examples\ex_sbml_output___main_sbml.xml; DestDir: {app}
