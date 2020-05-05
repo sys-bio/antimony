@@ -45,7 +45,7 @@ LIB_EXTERN vector<string> getSymbolNamesInInterfaceOfAsVector(const char* module
   vector<string> names;
   if (!checkModule(moduleName)) return names;
   Module* mod = g_registry.GetModule(moduleName);
-  unsigned long intnum = mod->GetNumExportVariables();
+  unsigned long intnum = static_cast<unsigned long>(mod->GetNumExportVariables());
   for (unsigned long var=0; var<intnum; var++) {
     names.push_back(getNthSymbolNameInInterfaceOf(moduleName, var));
   }
@@ -108,7 +108,7 @@ LIB_EXTERN vector<string> getSymbolNamesOfTypeAsVector(const char* moduleName, r
   for (unsigned long n=0; n<vnum; n++) {
     const Variable* var = g_registry.GetModule(moduleName)->GetNthVariableOfType(rtype, n, false);
     if (var==NULL) {
-      unsigned long numvars = g_registry.GetModule(moduleName)->GetNumVariablesOfType(rtype, false);
+      unsigned long numvars = static_cast<unsigned long>(g_registry.GetModule(moduleName)->GetNumVariablesOfType(rtype, false));
       reportVariableTypeIndexProblem(n, rtype, numvars, moduleName);
       names.clear();
       return names;
@@ -126,7 +126,7 @@ LIB_EXTERN vector<string> getSymbolDisplayNamesOfTypeAsVector(const char* module
   for (unsigned long n=0; n<vnum; n++) {
     const Variable* var = g_registry.GetModule(moduleName)->GetNthVariableOfType(rtype, n, false);
     if (var==NULL) {
-      unsigned long numvars = g_registry.GetModule(moduleName)->GetNumVariablesOfType(rtype, false);
+      unsigned long numvars = static_cast<unsigned long>(g_registry.GetModule(moduleName)->GetNumVariablesOfType(rtype, false));
       reportVariableTypeIndexProblem(n, rtype, numvars, moduleName);
       names.clear();
       return names;
@@ -144,7 +144,7 @@ LIB_EXTERN vector<string> getSymbolEquationsOfTypeAsVector(const char* moduleNam
   for (unsigned long n=0; n<vnum; n++) {
     const Variable* var = g_registry.GetModule(moduleName)->GetNthVariableOfType(rtype, n, false);
     if (var==NULL) {
-      unsigned long numvars = g_registry.GetModule(moduleName)->GetNumVariablesOfType(rtype, false);
+      unsigned long numvars = static_cast<unsigned long>(g_registry.GetModule(moduleName)->GetNumVariablesOfType(rtype, false));
       reportVariableTypeIndexProblem(n, rtype, numvars, moduleName);
       equations.clear();
       return equations;
@@ -162,7 +162,7 @@ LIB_EXTERN vector<string> getSymbolInitialAssignmentsOfTypeAsVector(const char* 
   for (unsigned long n=0; n<vnum; n++) {
     const Variable* var = g_registry.GetModule(moduleName)->GetNthVariableOfType(rtype, n, false);
     if (var==NULL) {
-      unsigned long numvars = g_registry.GetModule(moduleName)->GetNumVariablesOfType(rtype, false);
+      unsigned long numvars = static_cast<unsigned long>(g_registry.GetModule(moduleName)->GetNumVariablesOfType(rtype, false));
       reportVariableTypeIndexProblem(n, rtype, numvars, moduleName);
       equations.clear();
       return equations;
@@ -180,7 +180,7 @@ LIB_EXTERN vector<string> getSymbolAssignmentRulesOfTypeAsVector(const char* mod
   for (unsigned long n=0; n<vnum; n++) {
     const Variable* var = g_registry.GetModule(moduleName)->GetNthVariableOfType(rtype, n, false);
     if (var==NULL) {
-      unsigned long numvars = g_registry.GetModule(moduleName)->GetNumVariablesOfType(rtype, false);
+      unsigned long numvars = static_cast<unsigned long>(g_registry.GetModule(moduleName)->GetNumVariablesOfType(rtype, false));
       reportVariableTypeIndexProblem(n, rtype, numvars, moduleName);
       equations.clear();
       return equations;
@@ -198,7 +198,7 @@ LIB_EXTERN vector<string> getSymbolRateRulesOfTypeAsVector(const char* moduleNam
   for (unsigned long n=0; n<vnum; n++) {
     const Variable* var = g_registry.GetModule(moduleName)->GetNthVariableOfType(rtype, n, false);
     if (var==NULL) {
-      unsigned long numvars = g_registry.GetModule(moduleName)->GetNumVariablesOfType(rtype, false);
+      unsigned long numvars = static_cast<unsigned long>(g_registry.GetModule(moduleName)->GetNumVariablesOfType(rtype, false));
       reportVariableTypeIndexProblem(n, rtype, numvars, moduleName);
       equations.clear();
       return equations;
@@ -216,7 +216,7 @@ LIB_EXTERN vector<string> getSymbolCompartmentsOfTypeAsVector(const char* module
   for (unsigned long n=0; n<vnum; n++) {
     const Variable* var = g_registry.GetModule(moduleName)->GetNthVariableOfType(rtype, n, false);
     if (var==NULL) {
-      unsigned long numvars = g_registry.GetModule(moduleName)->GetNumVariablesOfType(rtype, false);
+      unsigned long numvars = static_cast<unsigned long>(g_registry.GetModule(moduleName)->GetNumVariablesOfType(rtype, false));
       reportVariableTypeIndexProblem(n, rtype, numvars, moduleName);
       compartments.clear();
       return compartments;
@@ -257,7 +257,7 @@ string getNthRxnorIntMthReactantOrProductNameAsString(const char* moduleName, un
     names = rxn->GetReaction()->GetRight()->ToStringVecDelimitedBy(g_registry.GetCC());
   }
   if (m >= names.size()) {
-    reportReactionSubIndexProblem(m, names.size(), n, moduleName, reaction, reactant);
+    reportReactionSubIndexProblem(m, static_cast<unsigned long>(names.size()), n, moduleName, reaction, reactant);
     return NULL;
   }
   return names[m];
@@ -435,7 +435,7 @@ LIB_EXTERN vector<rd_type> getInteractionDividersAsVector(const char* moduleName
 {
   vector<rd_type> typelist;
   if (!checkModule(moduleName)) return typelist;
-  unsigned long numints = g_registry.GetModule(moduleName)->GetNumVariablesOfType(allInteractions, false);
+  unsigned long numints = static_cast<unsigned long>(g_registry.GetModule(moduleName)->GetNumVariablesOfType(allInteractions, false));
   for (unsigned long i=0; i<numints; i++) {
     typelist.push_back(getNthInteractionDivider(moduleName, i));
   }
@@ -453,7 +453,7 @@ LIB_EXTERN vector<unsigned long> getDNAStrandSizesAsVector(const char* moduleNam
   if (!checkModule(moduleName)) return retval;
   unsigned long numDNA = getNumDNAStrands(moduleName);
   for (unsigned long strand=0; strand<numDNA; strand++) {
-    retval.push_back(g_registry.GetModule(moduleName)->GetNthVariableOfType(expandedStrands, strand, false)->GetDNAStrand()->ToExpandedStringVecDelimitedBy(g_registry.GetCC()).size());
+    retval.push_back(static_cast<unsigned long>(g_registry.GetModule(moduleName)->GetNthVariableOfType(expandedStrands, strand, false)->GetDNAStrand()->ToExpandedStringVecDelimitedBy(g_registry.GetCC()).size()));
   }
   return retval;
 }
@@ -502,7 +502,7 @@ LIB_EXTERN vector<unsigned long> getModularDNAStrandSizesAsVector(const char* mo
   if (!checkModule(moduleName)) return retval;
   unsigned long numModularDNA = getNumModularDNAStrands(moduleName);
   for (unsigned long strand=0; strand<numModularDNA; strand++) {
-    retval.push_back(g_registry.GetModule(moduleName)->GetNthVariableOfType(modularStrands, strand, false)->GetDNAStrand()->ToModularStringVecDelimitedBy(g_registry.GetCC()).size());
+    retval.push_back(static_cast<unsigned long>(g_registry.GetModule(moduleName)->GetNthVariableOfType(modularStrands, strand, false)->GetDNAStrand()->ToModularStringVecDelimitedBy(g_registry.GetCC()).size()));
   }
   return retval;
 }

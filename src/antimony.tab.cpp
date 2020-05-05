@@ -3071,7 +3071,7 @@ yyreduce:
 #line 578 "antimony.ypp" /* yacc.c:1646  */
     { Module* module = g_registry.GetModule(*(yyvsp[-4].word));
                     if (module && (yyvsp[-2].word) && CaselessStrCmp(*((yyvsp[-2].word)), "sboTerm")) {
-                      module->SetSBOTerm((yyvsp[0].num));
+                      module->SetSBOTerm(lround((yyvsp[0].num)));
                     }
                     else {
                       g_registry.SetError("Invalid syntax '" + *((yyvsp[-4].word)) + "." + *((yyvsp[-2].word)) + "'. The only thing that can be set on '" + *((yyvsp[-4].word)) + "' this way is 'sboTerm'.");
@@ -3085,7 +3085,7 @@ yyreduce:
 #line 589 "antimony.ypp" /* yacc.c:1646  */
     { Module* function = g_registry.GetModule(*(yyvsp[-4].word));
                     if (function && (yyvsp[-2].word) &&  CaselessStrCmp(*((yyvsp[-2].word)), "sboTerm")) {
-                      function->SetSBOTerm((yyvsp[0].num));
+                      function->SetSBOTerm(lround((yyvsp[0].num)));
                     }
                     else {
                       g_registry.SetError("Invalid syntax '" + *((yyvsp[-4].word)) + "." + *((yyvsp[-2].word)) + "'. The only thing that can be set on '" + *((yyvsp[-4].word)) + "' this way is 'sboTerm'.");

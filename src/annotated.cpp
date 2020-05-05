@@ -297,7 +297,7 @@ bool Annotated::Synchronize(Variable * clone, const Variable * conversionFactor)
 
   if (!m_metaid.empty()) {
     if (clone->m_metaid.empty()) {
-      clone->m_metaid == m_metaid;
+      clone->m_metaid = m_metaid;
     }
   }
 
