@@ -28,6 +28,7 @@ START_TEST (unknown_file1)
   string expected("Could not open 'nosuchfile.txt', and could not find that file in any known directory.  Please check that this file:\n	1) exists in directory that antimony is being run from or knows about\n	2) is read enabled, and\n	3) is not in use by another program.\n");
   fail_unless(error == expected);
   freeAll();
+  clearPreviousLoads();
 }
 END_TEST
 
@@ -43,6 +44,7 @@ START_TEST (unknown_file2)
   string expected("Unable to read SBML file 'nosuchfile.xml' due to errors encountered when parsing the file.  Error(s) from libSBML:\n\nline 1: (00002 [Error]) File unreadable.\n\n");
   fail_unless(error == expected);
   freeAll();
+  clearPreviousLoads();
 }
 END_TEST
 
@@ -59,6 +61,7 @@ START_TEST (unknown_file3)
   string expected("Unable to read CellML file 'nosuchfile.cellml' due to errors encountered when parsing the file.  Error(s) from the CellML API:\n\nservererror\n");
   fail_unless(error == expected);
   freeAll();
+  clearPreviousLoads();
 #endif
 }
 END_TEST
@@ -75,6 +78,7 @@ START_TEST (unknown_file4)
   string expected("Could not open 'nosuchfile.txt', and could not find that file in any known directory.  Please check that this file:\n	1) exists in directory that antimony is being run from or knows about\n	2) is read enabled, and\n	3) is not in use by another program.\n");
   fail_unless(error == expected);
   freeAll();
+  clearPreviousLoads();
 }
 END_TEST
 
@@ -90,6 +94,7 @@ START_TEST (unknown_file5)
   string expected("Could not open 'nosuchdir/nosuchfile.txt', and could not find that file in any known directory.  Please check that this file:\n	1) exists in directory that antimony is being run from or knows about\n	2) is read enabled, and\n	3) is not in use by another program.\n");
   fail_unless(error == expected);
   freeAll();
+  clearPreviousLoads();
 }
 END_TEST
 
@@ -140,6 +145,7 @@ START_TEST (unknown_models)
   fail_unless(error == expected);
 #endif
   freeAll();
+  clearPreviousLoads();
 }
 END_TEST
 
@@ -152,6 +158,7 @@ void testError(const string& antimony, const string& error)
   fail_unless(err != NULL);
   fail_unless(error == (string)(err));
   freeAll();
+  clearPreviousLoads();
 }
 
 

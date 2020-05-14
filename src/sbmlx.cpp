@@ -237,6 +237,7 @@ ASTNode* parseStringToASTNode(const string& formula)
   L3ParserSettings l3ps;
   l3ps.setParseCollapseMinus(true);
   l3ps.setParseLog(L3P_PARSE_LOG_AS_LN);
+  l3ps.setParsePackageMath(EM_ARRAYS, true);
   ASTNode* rootnode = SBML_parseL3FormulaWithSettings(newform.c_str(), &l3ps);
   if (rootnode == NULL) {
     char* l3err = SBML_getLastParseL3Error();
