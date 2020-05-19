@@ -23,15 +23,16 @@ set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/antimony.py PROPERTIES G
 ####################################################################
 #For installation, we can run setup.py for people automatically (on by default):
 
+file(GLOB win_dependencies "${CMAKE_SOURCE_DIR}/win32/*.dll")
+list(REMOVE_ITEM win_dependencies ${CMAKE_SOURCE_DIR}/win32/QtCore4.dll)
+list(REMOVE_ITEM win_dependencies ${CMAKE_SOURCE_DIR}/win32/QtGui4.dll)
+if (NOT WITH_STATIC_SBML)
+    list(APPEND win_dependencies ${LIBSBML_DLL})
+endif()
+
 if (PYTHON_SYSTEM_INSTALL)
    INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/antimony.py DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/antimony)
    if (NOT UNIX)
-      file(GLOB win_dependencies "${CMAKE_SOURCE_DIR}/win32/*.dll")
-      list(REMOVE_ITEM win_dependencies ${CMAKE_SOURCE_DIR}/win32/QtCore4.dll)
-      list(REMOVE_ITEM win_dependencies ${CMAKE_SOURCE_DIR}/win32/QtGui4.dll)
-      if (NOT WITH_STATIC_SBML)
-         list(APPEND win_dependencies ${LIBSBML_DLL})
-      endif()
       install(FILES ${win_dependencies} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/antimony)
    endif()
    INSTALL(CODE "execute_process(COMMAND \"${CMAKE_COMMAND}\" -E chdir ${CMAKE_CURRENT_BINARY_DIR} ${PYTHON_EXECUTABLE} ${SETUP_PY} install)")
@@ -48,6 +49,8 @@ if (PYTHON_LOCAL_INSTALL)
    file(GLOB antimony_python_files "${CMAKE_CURRENT_BINARY_DIR}/antimony/*.*")
    install(FILES ${antimony_python_files} DESTINATION ${PYTHON_PACKAGE_INSTALL_DIR}/antimony )
    INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/antimony.py DESTINATION ${PYTHON_PACKAGE_INSTALL_DIR}/antimony)
+   INSTALL(FILES ${win_dependencies} DESTINATION ${PYTHON_PACKAGE_INSTALL_DIR}/antimony )
+   INSTALL(TARGETS ${LIBANTIMONY_LIBRARY} DESTINATION ${PYTHON_PACKAGE_INSTALL_DIR}/antimony)
 
 endif()
 
