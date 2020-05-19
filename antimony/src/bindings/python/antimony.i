@@ -1,2 +1,0 @@
-%include "../swig/antimony.i"
-

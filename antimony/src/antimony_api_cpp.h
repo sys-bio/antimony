@@ -166,7 +166,7 @@ LIB_EXTERN std::vector<std::vector<std::string> > getReactantNamesAsVector(const
 /**
  * Returns an array of all the reactant names for the given reaction.  The length of the array can be obtained with 'getNumReactants'.  If no such reaction is present, NULL is returned and an error is set.
  */
-LIB_EXTERN std::vector<std::string>  getNthReactionReactantNamesAsVector(const char* modulename, unsigned long rxn);
+LIB_EXTERN std::vector<std::string>  getNthReactionReactantNamesAsVector(const char* moduleName, unsigned long rxn);
 
 /**
  * Returns all the product names for all reactions in the given module.  The dimensions of the included arrays can be found with 'getNumReactions' and 'getNumProducts' (the array is not 'square'--each sub array may have a different length).
@@ -176,7 +176,7 @@ LIB_EXTERN std::vector<std::vector<std::string> > getProductNamesAsVector(const 
 /**
  * Returns an array of all the product names for the given reaction.  The length of the array can be obtained with 'getNumProducts'.  If no such reaction is present, NULL is returned and an error is set.
  */
-LIB_EXTERN std::vector<std::string>  getNthReactionProductNamesAsVector(const char* modulename, unsigned long rxn);
+LIB_EXTERN std::vector<std::string>  getNthReactionProductNamesAsVector(const char* moduleName, unsigned long rxn);
 
 /**
  * Returns a two-dimensional array of the stoichiometries for all reactants in all reactions in the given module.
@@ -202,7 +202,7 @@ LIB_EXTERN std::vector<std::vector<std::string> > getInteractorNamesAsVector(con
 /**
  * Returns an array of all the interactor names for the given interaction.  The length of the array can be obtained with 'getNumInteractors'.  If no such interaction is present, NULL is returned and an error is set.
  */
-LIB_EXTERN std::vector<std::string>  getNthInteractionInteractorNamesAsVector(const char* modulename, unsigned long rxn);
+LIB_EXTERN std::vector<std::string>  getNthInteractionInteractorNamesAsVector(const char* moduleName, unsigned long rxn);
 
 /**
  * Returns all the interactee names for all interactions in the given module.  The dimensions of the included arrays can be found with 'getNumInteractions' and 'getNumInteractees' (the array is not 'square'--each sub array may have a different length).
@@ -212,7 +212,7 @@ LIB_EXTERN std::vector<std::vector<std::string> > getInteracteeNamesAsVector(con
 /**
  * Returns an array of all the interactee names for the given interaction.  The length of the array can be obtained with 'getNumInteractees'.  If no such interaction is present, NULL is returned and an error is set.
  */
-LIB_EXTERN std::vector<std::string>  getNthInteractionInteracteeNamesAsVector(const char* modulename, unsigned long rxn);
+LIB_EXTERN std::vector<std::string>  getNthInteractionInteracteeNamesAsVector(const char* moduleName, unsigned long rxn);
 
 /**
  * Returns an array of all the interaction dividers in the given module.  The length of the array can be obtained with 'getNumInteractions'.
