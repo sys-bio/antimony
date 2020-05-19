@@ -685,6 +685,32 @@ END_TEST
 
  
   
+START_TEST (test_rxns)
+{
+    string mod =
+        "s1 = 1\n"
+        "s2 = 2\n"
+        "s3 = 3\n"
+        "s4 = 4\n"
+        "k1 = 0.5\n"
+        "k2 = 0.3\n"
+        "k3 = 0.1\n"
+        "k4 = 0.05\n"
+        "->s1; k1 / s1\n"
+        "s1->s2;k2* s1 / s2\n"
+        "s2->s3;k3* s2 / s3\n"
+        "s3->s4;k4* s3 / s4\n";
+  int ret = loadString("a=3+2");
+  fail_unless(ret != -1);
+  fail_unless(getNumReactions(NULL) == 4);
+
+
+  freeAll();
+}
+END_TEST
+
+ 
+  
   //LIB_EXTERN void setBareNumbersAreDimensionless(bool dimensionless);
 
 
@@ -731,6 +757,7 @@ create_suite_API (void)
   tcase_add_test( tcase, test_event_modifications);
   tcase_add_test( tcase, test_addDefaults);
   tcase_add_test( tcase, test_dimensionless);
+  tcase_add_test( tcase, test_rxns);
 
   suite_add_tcase(suite, tcase);
 

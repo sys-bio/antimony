@@ -108,7 +108,7 @@ begin
     end
   else 
     begin
-    Result := 'C:\Python27\Lib\site-packages\{#AppDir}';
+    Result := 'C:\Program Files\Python37\Lib\site-packages\{#AppDir}';
     end;
 
 end;
