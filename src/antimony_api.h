@@ -648,12 +648,12 @@ LIB_EXTERN char*** getReactantNames(const char* moduleName);
 /**
  * Returns an array of all the reactant names for the given reaction.  The length of the array can be obtained with 'getNumReactants'.  If no such reaction is present, NULL is returned and an error is set.
  */
-LIB_EXTERN char**  getNthReactionReactantNames(const char* modulename, unsigned long rxn);
+LIB_EXTERN char**  getNthReactionReactantNames(const char* moduleName, unsigned long rxn);
 
 /**
  * Returns the mth reactant name of the nth reaction.  If no such reaction is present, NULL is returned and an error is set.
  */
-LIB_EXTERN char*  getNthReactionMthReactantName(const char* modulename, unsigned long rxn, unsigned long reactant);
+LIB_EXTERN char*  getNthReactionMthReactantName(const char* moduleName, unsigned long rxn, unsigned long reactant);
 
 /**
  * Returns all the product names for all reactions in the given module.  The dimensions of the included arrays can be found with 'getNumReactions' and 'getNumProducts' (the array is not 'square'--each sub array may have a different length).
@@ -663,12 +663,12 @@ LIB_EXTERN char*** getProductNames(const char* moduleName);
 /**
  * Returns an array of all the product names for the given reaction.  The length of the array can be obtained with 'getNumProducts'.  If no such reaction is present, NULL is returned and an error is set.
  */
-LIB_EXTERN char**  getNthReactionProductNames(const char* modulename, unsigned long rxn);
+LIB_EXTERN char**  getNthReactionProductNames(const char* moduleName, unsigned long rxn);
 
 /**
  * Returns the mth product name of the given reaction.  If no such reaction or product is present, NULL is returned and an error is set.
  */
-LIB_EXTERN char*  getNthReactionMthProductName(const char* modulename, unsigned long rxn, unsigned long product);
+LIB_EXTERN char*  getNthReactionMthProductName(const char* moduleName, unsigned long rxn, unsigned long product);
 
 /**
  * Returns a two-dimensional array of the stoichiometries for all reactants in all reactions in the given module.
@@ -731,12 +731,12 @@ LIB_EXTERN char*** getInteractorNames(const char* moduleName);
 /**
  * Returns an array of all the interactor names for the given interaction.  The length of the array can be obtained with 'getNumInteractors'.  If no such interaction is present, NULL is returned and an error is set.
  */
-LIB_EXTERN char**  getNthInteractionInteractorNames(const char* modulename, unsigned long rxn);
+LIB_EXTERN char**  getNthInteractionInteractorNames(const char* moduleName, unsigned long rxn);
 
 /**
  * Returns the Mth interactor names for the given interaction.  If no such interactor or interaction is present, NULL is returned and an error is set.
  */
-LIB_EXTERN char*  getNthInteractionMthInteractorName(const char* modulename, unsigned long interaction, unsigned long interactor);
+LIB_EXTERN char*  getNthInteractionMthInteractorName(const char* moduleName, unsigned long interaction, unsigned long interactor);
 
 /**
  * Returns all the interactee names for all interactions in the given module.  The dimensions of the included arrays can be found with 'getNumInteractions' and 'getNumInteractees' (the array is not 'square'--each sub array may have a different length).
@@ -746,12 +746,12 @@ LIB_EXTERN char*** getInteracteeNames(const char* moduleName);
 /**
  * Returns an array of all the interactee names for the given interaction.  The length of the array can be obtained with 'getNumInteractees'.  If no such interaction is present, NULL is returned and an error is set.
  */
-LIB_EXTERN char**  getNthInteractionInteracteeNames(const char* modulename, unsigned long rxn);
+LIB_EXTERN char**  getNthInteractionInteracteeNames(const char* moduleName, unsigned long rxn);
 
 /**
  * Returns the Mth interactee name for the given interaction.  If no such interactee or interaction is present, NULL is returned and an error is set.
  */
-LIB_EXTERN char*  getNthInteractionMthInteracteeName(const char* modulename, unsigned long interaction, unsigned long interactee);
+LIB_EXTERN char*  getNthInteractionMthInteracteeName(const char* moduleName, unsigned long interaction, unsigned long interactee);
 
 /**
  * Returns an array of all the interaction dividers in the given module.  The length of the array can be obtained with 'getNumInteractions'.
