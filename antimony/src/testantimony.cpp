@@ -28,7 +28,7 @@ int main(int argc, char** argv)
     }
   }
   for (size_t file=0; file<getNumFiles(); file++) {
-    revertTo(file+1);
+    revertTo(static_cast<long>(file)+1);
     size_t nummods = getNumModules();
     char** modnames = getModuleNames();
     string filename(argv[file+1]);

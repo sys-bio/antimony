@@ -12,13 +12,26 @@ set (Python_ADDITIONAL_VERSIONS ${PYTHON_VERSION_STRING})
 
 SET(LIBANTIMONY_VERSION_STRING_NO_V "${LIBANTIMONY_VERSION_MAJOR}.${LIBANTIMONY_VERSION_MINOR}${LIBANTIMONY_VERSION_PATCH}${LIBANTIMONY_VERSION_RELEASE}")
 
+SET(PYTHON_CTYPES_FILE "${CMAKE_CURRENT_BINARY_DIR}/antimony.py")
+
+#Create the 'antimony.py' ctypes-based library from 'createAntimonyLib.py'.
 ADD_CUSTOM_COMMAND(
-    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/antimony.py
-    COMMAND "${PYTHON_EXECUTABLE}"
-    ARGS    "${CMAKE_CURRENT_SOURCE_DIR}/createAntimonyLib.py"
+    OUTPUT   ${PYTHON_CTYPES_FILE}
+    COMMAND "${PYTHON_EXECUTABLE} "
+    ARGS    "${CMAKE_SOURCE_DIR}/src/bindings/python/createAntimonyLib.py" "${CMAKE_SOURCE_DIR}/src/"
     COMMENT "Convert header file to ctypes Python bindings.")
 
+ADD_CUSTOM_TARGET(python_ctypes_lib DEPENDS ${PYTHON_CTYPES_FILE})
+
 set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/antimony.py PROPERTIES GENERATED TRUE)
+
+#Create setup.py from setup.py.in
+set(SETUP_PY_IN "${CMAKE_CURRENT_SOURCE_DIR}/setup.py.in")
+set(SETUP_PY    "${CMAKE_CURRENT_BINARY_DIR}/setup.py")
+
+configure_file(${SETUP_PY_IN} ${SETUP_PY})
+
+
 
 ####################################################################
 #For installation, we can run setup.py for people automatically (on by default):
@@ -30,27 +43,37 @@ if (NOT WITH_STATIC_SBML)
     list(APPEND win_dependencies ${LIBSBML_DLL})
 endif()
 
+#Create the 'libantimony.pth' file (which lets users 'import libantimony').
+file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/libantimony.pth" "antimony\n")
+
+#All the files that need to be installed in the python library directory.
+file (GLOB antimony_python_files
+    ${CMAKE_SOURCE_DIR}/src/bindings/python/__init__.py
+    ${CMAKE_CURRENT_BINARY_DIR}/antimony.py
+    ${CMAKE_CURRENT_BINARY_DIR}/libantimony.pth
+    ${CPACK_PACKAGE_DESCRIPTION_FILE}
+    ${CPACK_RESOURCE_FILE_LICENSE}
+    ${win_dependencies}
+)
+
+
 if (PYTHON_SYSTEM_INSTALL)
-   INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/antimony.py DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/antimony)
-   if (NOT UNIX)
-      install(FILES ${win_dependencies} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/antimony)
-   endif()
+   #Copy all the files into a local 'antimony' directory.
+   INSTALL(FILES ${antimony_python_files} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/antimony)
+   install(TARGETS ${LIBANTIMONY_LIBRARY} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/antimony)
+
+   #Now run 'python setup.py install' with that directory as the target.
    INSTALL(CODE "execute_process(COMMAND \"${CMAKE_COMMAND}\" -E chdir ${CMAKE_CURRENT_BINARY_DIR} ${PYTHON_EXECUTABLE} ${SETUP_PY} install)")
 endif()
 
-#...and/or we can let them install python bindings in a local directory (off by default).
+#...and/or we instead copy antimony_python_files into the install directory, along with setup.py, and let the user run that directly.
 
+set(PYTHON_PACKAGE_INSTALL_DIR "bindings/python")
 if (PYTHON_LOCAL_INSTALL)
-   set(PYTHON_PACKAGE_INSTALL_DIR "bindings/python")
 
-   file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/libantimony.pth" "antimony\n")
-   INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/libantimony.pth  DESTINATION ${PYTHON_PACKAGE_INSTALL_DIR})
+   INSTALL(FILES ${antimony_python_files}  DESTINATION ${PYTHON_PACKAGE_INSTALL_DIR}/antimony)
+   install(TARGETS ${LIBANTIMONY_LIBRARY}  DESTINATION ${PYTHON_PACKAGE_INSTALL_DIR}/antimony)
    INSTALL(FILES ${SETUP_PY}  DESTINATION ${PYTHON_PACKAGE_INSTALL_DIR})
-   file(GLOB antimony_python_files "${CMAKE_CURRENT_BINARY_DIR}/antimony/*.*")
-   install(FILES ${antimony_python_files} DESTINATION ${PYTHON_PACKAGE_INSTALL_DIR}/antimony )
-   INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/antimony.py DESTINATION ${PYTHON_PACKAGE_INSTALL_DIR}/antimony)
-   INSTALL(FILES ${win_dependencies} DESTINATION ${PYTHON_PACKAGE_INSTALL_DIR}/antimony )
-   INSTALL(TARGETS ${LIBANTIMONY_LIBRARY} DESTINATION ${PYTHON_PACKAGE_INSTALL_DIR}/antimony)
 
 endif()
 
