@@ -69,7 +69,7 @@ if (WITH_SBML)
     OPTION(WITH_LIBSBML_XERCES  "Set if libsbml was compiled with a separate xerces library." OFF)
     OPTION(WITH_LIBSBML_COMPRESSION "Set if libsbml was compiled with separate zdll and bzip libraries." OFF)
 endif()
-option(WITH_CELLML          "Generate CellML translations"    ON )
+option(WITH_CELLML          "Generate CellML translations"    OFF )
 option(WITH_QTANTIMONY      "Generate QTAntimony"             ON )
 option(WITH_SBW             "QTAntimony integration with SBW" OFF )
 option(WITH_SBW_TRANSLATOR  "Generate SBWTranslator"          OFF )
@@ -263,6 +263,16 @@ if(WITH_LIBSBML_LIBXML)
         )
     set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${LIBXML_LIBRARY} )
 
+    #The libxml library requires the libz library, too.
+    find_library(ZDLL_LIBRARY
+        NAMES zdll.lib zdll.so zdll.dylib zdll z
+	PATHS /usr/lib /usr/local/lib
+              ${CMAKE_SOURCE_DIR}
+              ${CMAKE_SOURCE_DIR}/dependencies/lib
+              ${LIBSBML_INCLUDE_DIR}/../lib
+        )
+    set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${ZDLL_LIBRARY} )
+
     if(WIN32)
       find_library(ICONV_LIBRARY
           NAMES iconv.lib iconv.so iconv.dylib iconv libiconv.lib libiconv.so libiconv.dylib libiconv
@@ -271,7 +281,7 @@ if(WITH_LIBSBML_LIBXML)
                 ${CMAKE_SOURCE_DIR}/dependencies/lib
                 ${LIBSBML_INCLUDE_DIR}/../lib
           )
-      set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${ICONV_LIBRARY} )
+      set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${ICONV_LIBRARY})
     endif()
 endif()
 
@@ -350,8 +360,8 @@ if(WITH_PYTHON)
     message(STATUS "  Using Python                  = ${PYTHON_EXECUTABLE}")
 endif()
 
-
-set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${EXTRA_LIBS} )
+#message(STATUS "libantimony libs: ${LIBANTIMONY_LIBS}")
+set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${EXTRA_LIBS})
 
 ###############################################################################
 ## Enable support for testing ... can be invoked by running ctest

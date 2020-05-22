@@ -77,7 +77,7 @@ int main(int argc, char** argv)
     cerr << instructions << endl;
 #ifdef WIN32
     cerr << endl << "(Press any key to exit.)" << endl;
-    getch();
+    _getch();
 #endif
     return 1;
   }
@@ -273,7 +273,7 @@ int main(int argc, char** argv)
         if (lastslash != string::npos) {
           subdir = subdir.substr(0, lastslash+1);
 #ifdef WIN32
-          if (mkdir(subdir.c_str()) == -1  && errno != EEXIST) {
+          if (_mkdir(subdir.c_str()) == -1  && errno != EEXIST) {
 #else
           if (mkdir(subdir.c_str(), 0777) == -1 && errno != EEXIST) {  // Create the directory
 #endif

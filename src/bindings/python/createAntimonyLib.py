@@ -6,9 +6,19 @@ Created on Mon May 11 10:47:08 2020
 """
 
 from ctypes import c_long, c_char_p, c_ulong, c_bool, c_int, c_double, POINTER
+import sys
 
-headerfiles = ["C:/Users/Lucian/Desktop/antimony/src/antimony_api.h"]#, "C:/Users/Lucian/Desktop/antimony/src/antimony_api_cpp.h"]
-libfile = open("antimony/antimony.py", "w")
+srcdir = "C:/Users/Lucian/Desktop/antimony/src/"
+if len(sys.argv)>2:
+    print("Unable to process arguments:  there should be a single argument that is the directory where the source code lives.")
+    assert(False)
+
+if len(sys.argv)==2:
+    srcdir = sys.argv[1] + "/"
+
+headerfiles = ["antimony_api.h"]#, "antimony_api_cpp.h"]
+
+libfile = open("antimony.py", "w")
 alib = "__antLib"
 iblock = "   "
 
@@ -115,7 +125,7 @@ def readHeaderFiles(headerfile):
    for file in headerfiles:
       doxygen = False
       comment = "";
-      for line in open(file, "r"):
+      for line in open(srcdir + file, "r"):
          line = line.strip()
          if line[0:2] == "//":
             continue
@@ -177,16 +187,38 @@ Created May 2020
 
 ##@Module antimonyPython
 #This module allows access to the antimony.dll from python
-import sys
 import os
 from ctypes import c_long, c_char_p, c_ulong, c_bool, c_double, POINTER, cdll
+import inspect
+import platform
 
-print ("Library properly loaded.")
+# Ctypes will only load the dll properly if the working directory is the same as 
+# the directory where the dll is (at least on Windows).
+__thisfile = inspect.getframeinfo(inspect.currentframe()).filename
+__libdir = os.path.dirname(os.path.abspath(__thisfile))
+#print(__thisfile)
+#print(__libdir)
 
-pydir = os.path.dirname(sys.executable)
-sharedLib = os.path.join(pydir + "/Lib/site-packages/antimony/", 'libantimony.dll')
-#sharedLib = os.path.join("C:/Users/Lucian/AppData/Roaming/Python/Python37/site-packages/antimony", 'libantimony.dll')
-__antLib = cdll.LoadLibrary(sharedLib)
+__oldir = os.getcwd()
+os.chdir(__libdir)
+
+__osname = platform.system()
+if __osname == "Windows":
+   __sharedLib = os.path.join(__libdir, 'libantimony.dll')
+elif __osname == "Linux":
+   __sharedLib = os.path.join(__libdir, "libantimony.so")
+elif __osname == "Darwin":
+   __sharedLib = os.path.join(__libdir, "libantimony.dylib")
+
+if not os.path.isfile(__sharedLib):
+    print('Unable to find shared library file', __sharedLib, "Exiting.")
+    exit()
+else:
+    pass
+    #print(__sharedLib, 'found.')
+__antLib = cdll.LoadLibrary(__sharedLib)
+
+os.chdir(__oldir)
 
 """
    oldtext = """
@@ -374,3 +406,4 @@ writeDefs(libfile, defs)
 writeFunctions(libfile, functions)
 
 libfile.close()
+print("Successfully created antimony.py.")

@@ -72,7 +72,7 @@ int main(int argc, char** argv)
 #ifdef WIN32
   if (retval == 1) {
     cout << "(Press any key to exit.)" << endl;
-    getch();
+    _getch();
   }
 #endif
   return retval;
