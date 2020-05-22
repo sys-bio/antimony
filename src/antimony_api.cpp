@@ -49,7 +49,7 @@ string makeUTF8(const wstring& aStr)
 //Useful functions for later routines:
 char* getCharStar(const char* orig)
 {
-  char* ret = _strdup(orig);
+  char* ret = strdup(orig);
   if (ret == NULL) {
     g_registry.SetError("Out of memory error.");
     return NULL;
