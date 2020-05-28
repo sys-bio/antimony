@@ -188,7 +188,7 @@ Created May 2020
 ##@Module antimonyPython
 #This module allows access to the antimony.dll from python
 import os
-from ctypes import c_long, c_char_p, c_ulong, c_bool, c_double, POINTER, cdll
+from ctypes import c_long, c_int, c_char_p, c_ulong, c_bool, c_double, POINTER, cdll
 import inspect
 import platform
 

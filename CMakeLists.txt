@@ -592,6 +592,17 @@ if (NOT UNIX)
   add_definitions(-DWIN32 -DLIBSBML_EXPORTS -DLIBLAX_EXPORTS)
 endif(NOT UNIX)
 
+# Can't put this in bindings/python/CMakeLists pre-CMake 3.13.
+if (PYTHON_SYSTEM_INSTALL)
+   install(TARGETS ${LIBANTIMONY_LIBRARY} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/antimony/)
+endif()
+
+#set(PYTHON_PACKAGE_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/bindings/python")
+set(PYTHON_PACKAGE_INSTALL_DIR "bindings/python")
+if (PYTHON_LOCAL_INSTALL)
+   install(TARGETS ${LIBANTIMONY_LIBRARY}  DESTINATION ${PYTHON_PACKAGE_INSTALL_DIR}/antimony)
+endif()
+
 
 ##### Build the static library #####
 add_library (${LIBANTIMONY_LIBRARY}-static STATIC ${LIBANTIMONY_SOURCES} ${LIBANTIMONY_HEADERS} ${LIBANTIMONY_TRANSLATORS})
