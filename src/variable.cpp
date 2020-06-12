@@ -1276,7 +1276,7 @@ bool Variable::SetConstraint(const AntimonyConstraint* constraint)
   }
   if (constraint->GetFormula()->ContainsCurlyBrackets()) {
     g_registry.SetError("Curly brackets detected in the constraint: '" + constraint->GetFormula()->ToDelimitedStringWithEllipses(".") + "': vectors are not supported in the current version of Antimony apart from their use in setting certain uncertainty parameters.");
-    return NULL;
+    return true;
   }
   m_valConstraint = *constraint;
   return SetType(varConstraint);
@@ -1392,6 +1392,12 @@ bool Variable::SetIsConst(bool constant)
       return true;
     }
     break;
+  case varConstraint:
+    if (!constant) {
+      g_registry.SetError(error + ", as 'constantness' is undefined for constraints.");
+      return true;
+    }
+    break;
   case varDeleted:
     g_registry.SetError(error + ", as the variable was already deleted.");
     break;
@@ -1473,6 +1479,7 @@ bool Variable::SetSuperCompartment(Variable* var, var_type supertype)
   case varDeleted:
   case varSboTermWrapper:
   case varUncertWrapper:
+  case varConstraint:
     assert(false); // Those things don't have components
     return false;
   case varStrand:
@@ -1519,6 +1526,7 @@ void Variable::SetComponentCompartments(bool frommodule)
   case varDeleted:
   case varSboTermWrapper:
   case varUncertWrapper:
+  case varConstraint:
     return; //No components to set
   case varReactionUndef:
   case varReactionGene:
@@ -1729,6 +1737,7 @@ bool Variable::DeleteFromSubmodel(Variable* deletedvar)
   case varDeleted:
   case varSboTermWrapper:
   case varUncertWrapper:
+  case varConstraint:
     //These types can't have rules to them.
     break;
   }
@@ -2241,6 +2250,7 @@ bool Variable::AllowedInFormulas() const
   case varDeleted:
   case varSboTermWrapper:
   case varUncertWrapper:
+  case varConstraint:
     return false;
 
   }

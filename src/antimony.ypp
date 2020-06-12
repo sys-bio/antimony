@@ -675,9 +675,9 @@ int antimony_yylex(void)
  }
 
   // Parse words
-  if (cc > 0 && cc < 256 && (isalpha(cc) || cc == '_')) {
+  if (cc > 0 && (isalpha(cc) || cc == '_')) {
     string word;
-    while (cc > 0 && cc < 256 && (isalpha(cc) || isdigit(cc) || cc == '_') && !g_registry.input->eof()) {
+    while (cc > 0 && (isalpha(cc) || isdigit(cc) || cc == '_') && !g_registry.input->eof()) {
       word += cc;
       g_registry.input->get(cc);
     }
@@ -769,7 +769,7 @@ int antimony_yylex(void)
       // try to parse an SBO term
       g_registry.input->get();
       cc = g_registry.input->peek();
-      if (cc > 0 && cc < 256 && (isdigit(cc))) {
+      if (cc > 0 && (isdigit(cc))) {
         *g_registry.input >> antimony_yylval.integer;
         if (g_registry.input->fail()) {
           g_registry.SetError("Unable to parse SBO term.");
@@ -799,7 +799,7 @@ int antimony_yylex(void)
   }
 
   // Parse numbers
-  if (cc > 0 && cc < 256 && (isdigit(cc) || (cc=='.' && isdigit(g_registry.input->peek())))) {
+  if (cc > 0 && (isdigit(cc) || (cc=='.' && isdigit(g_registry.input->peek())))) {
     double number;
     g_registry.input->unget();
     streampos numbegin = g_registry.input->tellg();

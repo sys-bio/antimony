@@ -1165,6 +1165,9 @@ void Formula::GetObjectivesFromAST(const ASTNode* astn, vector<pair<string, doub
   case AST_RATIONAL:
     objectives.push_back(make_pair(astn->getUnits(), GetValueFrom(astn)));
     return;
+  default:
+      assert(false); //Impossible??
+      return;
   }
 }
 

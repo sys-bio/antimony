@@ -184,6 +184,9 @@ void AntimonyConstraint::SetWithASTNode(const ASTNode* constnode)
     case AST_RELATIONAL_NEQ:
       SetType(constNEQ);
       break;
+    default:
+        assert(false); //Should be impossible, given above switch statement.
+        break;
     }
     break;
   case AST_LOGICAL_AND:

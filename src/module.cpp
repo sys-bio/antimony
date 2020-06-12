@@ -518,19 +518,30 @@ bool Module::AddConstraint(const std::string* str, Formula* formula, constraint_
     case constLEQ:
       newform.AddMathThing('<');
       newform.AddMathThing('=');
+      break;
     case constGEQ:
       newform.AddMathThing('>');
       newform.AddMathThing('=');
+      break;
     case constNEQ:
       newform.AddMathThing('!');
       newform.AddMathThing('=');
+      break;
     case constLT:
       newform.AddMathThing('<');
+      break;
     case constGT:
       newform.AddMathThing('>');
+      break;
     case constEQ:
       newform.AddMathThing('=');
       newform.AddMathThing('=');
+      break;
+    case constNONE:
+      assert(false);
+      newform.AddMathThing('?');
+      newform.AddMathThing('?');
+      break;
     }
     newform.AddFormula(formula);
     newcon->m_valConstraint.SetFormula(&newform, true);
@@ -797,6 +808,7 @@ void Module::AddDefaultInitialValues()
     case varDeleted:
     case varSboTermWrapper:
     case varUncertWrapper:
+    case varConstraint:
       break;
     }
   }
@@ -1602,6 +1614,7 @@ bool Module::AreEquivalent(return_type rtype, var_type vtype) const
   case varDeleted:
   case varSboTermWrapper:
   case varUncertWrapper:
+  case varConstraint:
     break;
   }
   assert(false); //uncaught return type
@@ -2109,6 +2122,7 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
     case varUnitDefinition:
     case varSboTermWrapper:
     case varUncertWrapper:
+    case varConstraint:
       break;
     }
   }
@@ -2638,6 +2652,7 @@ void Module::Convert(Variable* conv, Variable* cf, string modulename)
     case varReactionUndef:
     case varReactionGene:
     case varInteraction:
+    case varConstraint:
       form = subvar->GetFormula();
       origform = *origsubvar->GetFormula();
       for (size_t vn=m_variablename.size() - origsubvar->GetName().size() + 1; vn > 0; vn--) {
@@ -2691,6 +2706,7 @@ void Module::ConvertTime(Variable* tcf)
     case varCompartment:
     case varUndefined:
     case varInteraction:
+    case varConstraint:
       subvar->GetFormula()->ConvertTime(tcf);
       if (subvar->GetFormulaType() == formulaRATE) {
         subvar->GetRateRule()->AddInvTimeConversionFactor(tcf);
@@ -2740,6 +2756,7 @@ void Module::ConvertExtent(Variable* xcf)
     case varDeleted:
     case varSboTermWrapper:
     case varUncertWrapper:
+    case varConstraint:
       break;
     }
   }
@@ -2760,6 +2777,7 @@ void Module::UndoTimeExtentConversions(Variable* tcf, Variable* xcf)
     case varCompartment:
     case varUndefined:
     case varInteraction:
+    case varConstraint:
       subvar->GetFormula()->UnConvertTimeExtent(tcf, xcf);
       if (subvar->GetFormulaType() == formulaRATE) {
         subvar->GetRateRule()->UnConvertTimeExtent(tcf, xcf);
