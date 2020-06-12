@@ -687,6 +687,7 @@ END_TEST
   
 START_TEST (test_rxns)
 {
+    clearPreviousLoads();
     string mod =
         "s1 = 1\n"
         "s2 = 2\n"
@@ -700,9 +701,9 @@ START_TEST (test_rxns)
         "s1->s2;k2* s1 / s2\n"
         "s2->s3;k3* s2 / s3\n"
         "s3->s4;k4* s3 / s4\n";
-  int ret = loadString("a=3+2");
+  int ret = loadString(mod.c_str());
   fail_unless(ret != -1);
-  fail_unless(getNumReactions(NULL) == 4);
+  fail_unless(getNumReactions("__main") == 4);
 
 
   freeAll();

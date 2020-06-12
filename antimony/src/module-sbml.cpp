@@ -230,6 +230,7 @@ void Module::FindOrCreateLocalVersionOf(const Variable* var, Model* sbmlmod)
   case varDeleted:
   case varSboTermWrapper:
   case varUncertWrapper:
+  case varConstraint:
     assert(false); //Unhandled type
     break;
   }
@@ -1816,6 +1817,9 @@ void Module::CreateSBMLModel(bool comp)
           }
           metaid = parentId + "__" + ar->getVariable() + "__assignmentRule";
           SetSBaseReference(sbr, ar, parentModel, metaid);
+          break;
+        case delInteraction:
+          //Don't need to do anything.  I think.
           break;
         }
       }

@@ -1722,6 +1722,8 @@ LIB_EXTERN return_type getTypeOfSymbol(const char* moduleName, const char* symbo
     return allUnits;
   case varDeleted:
     return allDeleted;
+  case varConstraint:
+      return allConstraints;
   }
   assert(false); //uncaught var_type
   g_registry.SetError("Coding error:  Didn't include a return type for variable type " + VarTypeToString(vtype) + " in getTypeOfSymbol; antimony_api.cpp.  Email the author to fix.");

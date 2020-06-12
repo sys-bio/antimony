@@ -444,6 +444,8 @@ string UncertTypeToString(const uncert_type utype)
     return "distribution";
   case unExternalParameter:
     return "externalParameter";
+  case unUnknown:
+    return "unknown";
   }
   assert(false); //uncaught type
   return "uncaught type";
