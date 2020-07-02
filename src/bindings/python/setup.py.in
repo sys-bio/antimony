@@ -1,6 +1,12 @@
 #!/usr/bin/env python
 
-from distutils.core import setup
+from setuptools import setup, Distribution
+
+class BinaryDistribution(Distribution):
+    """Distribution which always forces a binary package with platform name"""
+    def has_ext_modules(foo):
+        return True
+
 
 setup(name='antimony',
       version='${LIBANTIMONY_VERSION_STRING_NO_V}',
@@ -9,8 +15,10 @@ setup(name='antimony',
       author_email='lpsmith@uw.edu',
       url='http://antimony.sf.net/',
       packages=['antimony'],
-      package_data={'antimony': ['*.py', '*.dll', '*.dylib', '*.so', '*.so.*']},
+      package_data={'antimony': ['*.py', '*.dll', '*.dylib', '*.so', '*.so.*' '*.txt']},
       license = "MIT",
       long_description=open('antimony/README.txt', "r").read(),
+#      install_requires=['ctypes'], #ctypes is built in.
+      distclass=BinaryDistribution,
      )
 
