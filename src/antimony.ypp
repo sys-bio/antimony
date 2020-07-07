@@ -1008,5 +1008,13 @@ int antimony_yylex(void)
   if (cc == '\n') {
     ++antimony_yylloc_last_line;
   }
+  if ((cc<32 && cc != 9 && cc != 10 && cc != 13) || cc > 126) {
+    stringstream err;
+    err << "Unparseable content in line " << antimony_yylloc_last_line;
+    err << ": unknown character '" << cc << "' (an integer value of ";
+    err << (int) cc << ".)";
+    g_registry.SetError(err.str());
+    return ERROR;
+  }
   return cc;
 }

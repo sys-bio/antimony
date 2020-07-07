@@ -99,6 +99,28 @@ START_TEST (unknown_file5)
 END_TEST
 
 
+START_TEST(non_ascii)
+{
+    string dir(TestDataDirectory);
+    string filename = dir + "non_ascii.txt";
+    long ret = loadFile(filename.c_str());
+    fail_unless(ret == -1);
+    char* err = getLastError();
+    fail_unless(err != NULL);
+    freeAll();
+    clearPreviousLoads();
+
+    ret = loadString("â€\na = 3");
+    fail_unless(ret == -1);
+    err = getLastError();
+    fail_unless(err != NULL);
+    freeAll();
+    clearPreviousLoads();
+
+}
+END_TEST
+
+
 START_TEST (unknown_models)
 {
   char* nomod = getSBMLString("");
@@ -356,6 +378,7 @@ create_suite_Errors (void)
   tcase_add_test( tcase, unknown_file3);
   tcase_add_test( tcase, unknown_file4);
   tcase_add_test( tcase, unknown_file5);
+  tcase_add_test( tcase, non_ascii);
   tcase_add_test( tcase, unknown_models);
   tcase_add_test( tcase, no_end);
   tcase_add_test( tcase, no_replace_ar_with_ia);
