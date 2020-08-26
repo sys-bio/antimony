@@ -1,8 +1,14 @@
-# Antimony
+Antimony Reference
+==================
 
-## A human-readable, human-writable, model definition language
+Different authoring tools have different ways of allowing the user to
+build models, and these approaches have individual advantages and
+disadvantages. In Antimony, the main approach to building models is to
+use a human-readable, text-based definition language, designed to
+interconvert between the SBML standard and a shorthand form that allows
+editing without the structure and overhead of working with XML directly.
+This guide will show you the intricacies of working with Antimony.
 
-#### v2.12, August, 2019, by Lucian Smith
 
 ## Table of contents
   - [Background](#background)
@@ -290,6 +296,24 @@ Reactions can be defined with a wide variety of rate laws
       n = 4
     end
 
+### Defining parameters, species, and compartments.
+
+By default, any named element in an Antimony model is translated as
+an SBML 'parameter'.  If it is used in a reaction, it is translated
+as a species.  If one element is 'in' a second element, the second
+element becomes a compartment.
+
+However, it is possible to define any element as a species or 
+compartment directly when they do not appear in those contexts:
+
+    p = 3
+    species s = 4
+    compartment c = 5
+If, for example, a species is changing due to a rate rule and does
+not appear in a reaction, you must declare it to be a species:
+
+    species S1 = 1.3
+    S1' = 0.4
 ### Boundary Species
 
 Boundary species are those species which are unaffected by the model.

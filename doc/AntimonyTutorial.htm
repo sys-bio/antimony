@@ -1,6 +1,5 @@
-<h1 id="antimony">Antimony</h1>
-<h2 id="a-human-readable-human-writable-model-definition-language">A human-readable, human-writable, model definition language</h2>
-<h4 id="v2.12-august-2019-by-lucian-smith">v2.12, August, 2019, by Lucian Smith</h4>
+<h1 id="antimony-reference">Antimony Reference</h1>
+<p>Different authoring tools have different ways of allowing the user to build models, and these approaches have individual advantages and disadvantages. In Antimony, the main approach to building models is to use a human-readable, text-based definition language, designed to interconvert between the SBML standard and a shorthand form that allows editing without the structure and overhead of working with XML directly. This guide will show you the intricacies of working with Antimony.</p>
 <h2 id="table-of-contents">Table of contents</h2>
 <ul>
 <li><a href="#background">Background</a></li>
@@ -176,6 +175,15 @@ S4 -&gt; ; k5*S4</code></pre>
   Km = 1E-3
   n = 4
 end</code></pre>
+<h3 id="defining-parameters-species-and-compartments.">Defining parameters, species, and compartments.</h3>
+<p>By default, any named element in an Antimony model is translated as an SBML ‘parameter’. If it is used in a reaction, it is translated as a species. If one element is ‘in’ a second element, the second element becomes a compartment.</p>
+<p>However, it is possible to define any element as a species or compartment directly when they do not appear in those contexts:</p>
+<pre><code>p = 3
+species s = 4
+compartment c = 5</code></pre>
+<p>If, for example, a species is changing due to a rate rule and does not appear in a reaction, you must declare it to be a species:</p>
+<pre><code>species S1 = 1.3
+S1&#39; = 0.4</code></pre>
 <h3 id="boundary-species">Boundary Species</h3>
 <p>Boundary species are those species which are unaffected by the model. Usually this means they are fixed. There are two ways to declare boundary species.</p>
 <ol type="1">
