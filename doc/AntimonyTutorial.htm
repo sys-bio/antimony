@@ -10,6 +10,7 @@
 <li><a href="#comments">Comments</a></li>
 <li><a href="#reactions">Reactions</a></li>
 <li><a href="#rate-laws-and-initializing-values">Rate Laws and Initializing Values</a></li>
+<li><a href="#defining-parameters-species-and-compartments">Defining parameters, species, and compartments</a></li>
 <li><a href="#boundary-species">Boundary Species</a></li>
 <li><a href="#compartments">Compartments</a></li>
 <li><a href="#assignments">Assignments</a>
@@ -48,7 +49,6 @@
 <li><a href="#assignment-rules">Assignment Rules</a></li>
 <li><a href="#rate-rules">Rate Rules</a></li>
 <li><a href="#display-names">Display Names</a></li>
-<li><a href="#comments">Comments</a></li>
 <li><a href="#units">Units</a></li>
 <li><a href="#dna-strands">DNA Strands</a></li>
 <li><a href="#interactions">Interactions</a></li>
@@ -735,14 +735,6 @@ E2: at ((x&gt;5) &amp;&amp; (q&gt;7)), priority=0: y=5: x=r+6;</code></pre>
 <p>When some tools visualize models, they make a distinction between the ‘id’ of an element, which must be unique to the model and which must conform to certain naming conventions, and the ‘name’ of an element, which does not have to be unique and which has much less stringent naming requirements. In Antimony, it is the id of elements which is used everywhere. However, you may also set the ‘display name’ of an element by using the ‘is’ keyword and putting the name in quotes:</p>
 <pre><code>A.k1 is &quot;reaction rate k1&quot;;
 S34  is &quot;Ethyl Alcohol&quot;;</code></pre>
-<h3 id="comments-1">Comments</h3>
-<p>Comments in Antimony can be made on one line with <code>//[comments]</code>, or on multiple lines with <code>/* [comments] */</code>. You may also use python-style comments with <code>#[comments]</code>.</p>
-<pre><code>/* The following initializations were
-   taken from the literature */
-X=3; //Taken from Galdziki, et al.
-Y=4; //Taken from Rutherford, et al.
-Z=5; # A python comment.</code></pre>
-<p>Comments are not translated to SBML or CellML, and will be lost if round-tripped through those languages.</p>
 <h3 id="units">Units</h3>
 <p>While units do not affect the mathematics of SBML or Antimony models, you can define them in Antimony for annotation purposes by using the <code>unit</code> keyword:</p>
 <pre><code>unit substance = 1e-6 mole;

@@ -18,6 +18,7 @@ This guide will show you the intricacies of working with Antimony.
     - [Comments](#comments)
     - [Reactions](#reactions)
     - [Rate Laws and Initializing Values](#rate-laws-and-initializing-values)
+    - [Defining parameters, species, and compartments](#defining-parameters-species-and-compartments)
     - [Boundary Species](#boundary-species)
     - [Compartments](#compartments)
     - [Assignments](#assignments)
@@ -46,7 +47,6 @@ This guide will show you the intricacies of working with Antimony.
     - [Assignment Rules](#assignment-rules)
     - [Rate Rules](#rate-rules)
     - [Display Names](#display-names)
-    - [Comments](#comments)
     - [Units](#units)
     - [DNA Strands](#dna-strands)
     - [Interactions](#interactions)
@@ -1372,21 +1372,6 @@ by using the 'is' keyword and putting the name in quotes:
 
     A.k1 is "reaction rate k1";
     S34  is "Ethyl Alcohol";
-
-### Comments
-
-Comments in Antimony can be made on one line with `//[comments]`, or on
-multiple lines with `/* [comments] */`. You may also use python-style
-comments with `#[comments]`.
-
-    /* The following initializations were
-       taken from the literature */
-    X=3; //Taken from Galdziki, et al.
-    Y=4; //Taken from Rutherford, et al.
-    Z=5; # A python comment.
-
-Comments are not translated to SBML or CellML, and will be lost if
-round-tripped through those languages.
 
 ### Units
 
