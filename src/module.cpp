@@ -63,7 +63,8 @@ Module::Module(string name)
     m_cellmlcomponent(NULL),
     m_childrenadded(false),
 #endif
-    m_uniquevars()
+    m_uniquevars(),
+    m_explicitDefaultCompartment(false)
 {
 #ifdef USE_COMP
   m_sbmlnamespaces.addPackageNamespace("comp", 1);
@@ -119,7 +120,8 @@ Module::Module(const Module& src, string newtopname, string modulename)
     m_cellmlcomponent(NULL),
     m_childrenadded(src.m_childrenadded),
 #endif
-    m_uniquevars()
+    m_uniquevars(),
+    m_explicitDefaultCompartment(src.m_explicitDefaultCompartment)
 {
   SetNewTopName(modulename, newtopname);
   /*
@@ -175,7 +177,8 @@ Module::Module(const Module& src)
     m_cellmlcomponent(src.m_cellmlcomponent),
     m_childrenadded(src.m_childrenadded),
 #endif
-    m_uniquevars(src.m_uniquevars)
+    m_uniquevars(src.m_uniquevars),
+    m_explicitDefaultCompartment(src.m_explicitDefaultCompartment)
 {
 #ifdef USE_COMP
   CompSBMLDocumentPlugin* compdoc = static_cast<CompSBMLDocumentPlugin*>(m_sbml.getPlugin("comp"));
@@ -241,6 +244,7 @@ Module& Module::operator=(const Module& src)
   m_model_quals = src.m_model_quals;
   m_biol_quals = src.m_biol_quals;
   m_sboTerm = src.m_sboTerm;
+  m_explicitDefaultCompartment = src.m_explicitDefaultCompartment;
   return *this;
 }
 
@@ -269,6 +273,16 @@ Variable* Module::AddOrFindVariable(const string* name)
   if (foundvar == NULL) {
     //Didn't find one--need to create a new one.
     Variable* newvar = new Variable(*name, this);
+    if (*name == DEFAULTCOMP) {
+        //The default compartment is being used explicitly in the model.
+        newvar->SetType(varCompartment);
+        Formula form;
+        form.AddNum(1);
+        newvar->SetFormula(&form);
+        newvar->SetSBOTerm(410);
+        newvar->SetIsConst(true);
+        m_explicitDefaultCompartment = true;
+    }
     m_variables.push_back(newvar);
     StoreVariable(newvar);
     foundvar = newvar;
@@ -2288,6 +2302,9 @@ string Module::GetJarnacConstFormulas(string modulename) const
 
 bool Module::GetNeedDefaultCompartment() const
 {
+  if (m_explicitDefaultCompartment) {
+      return false;
+  }
   size_t numsp= GetNumVariablesOfType(allSpecies, false);
   for (size_t sp=0; sp<numsp; sp++) {
     const Variable* species = GetNthVariableOfType(allSpecies, sp, false);

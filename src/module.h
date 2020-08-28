@@ -55,6 +55,8 @@ private:
   int m_sbmllevel;
   int m_sbmlversion;
 
+  bool m_explicitDefaultCompartment;
+
   //Caching for speed:
   std::map<std::vector<std::string>, Variable*> m_varmap;
 
@@ -276,6 +278,8 @@ private:
   void FixNames(Model* model);
   void FixConstants(const std::string& name, Model* model);
   void FixFunctions(const std::string& name, Model* model);
+  void FixUnitNames(Model* model);
+  void UpdateRateOf(Model* model);
 #endif
 #endif
 };

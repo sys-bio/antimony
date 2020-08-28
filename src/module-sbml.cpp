@@ -1,3 +1,4 @@
+#include "module.h"
 #ifndef NSBML
 void SetVarWithEvent(Variable* var, const Event* event, Module* module, vector<string> submodname)
 {
@@ -768,6 +769,9 @@ void Module::LoadSBML(Model* sbml)
   if (sbml == NULL) {
     return;
   }
+  //Some models use an old 'rateOf' function, which we can update to the l3v2 version.
+  UpdateRateOf(sbml);
+
   //Some SBML-OK names are not OK in Antimony
   FixNames(sbml);
   if(sbml->isSetName())
@@ -2836,6 +2840,8 @@ void Module::FixNames(Model* model)
         FixConstants(constants[c], model);
         FixFunctions(constants[c], model);
     }
+
+    FixUnitNames(model);
 }
 
 void Module::FixConstants(const string& name, Model* model)
@@ -2873,6 +2879,81 @@ void Module::FixFunctions(const string& name, Model* model)
     }
     else {
 
+    }
+}
+
+void Module::FixUnitNames(Model* model)
+{
+    for (unsigned int un = 0; un < model->getNumUnitDefinitions(); un++) {
+        UnitDefinition* ud = model->getUnitDefinition(un);
+        if (!ud->isSetId()) {
+            continue;
+        }
+        string unitid = ud->getId();
+        bool shadowed_unit_name = false;
+        SBase* shadow = model->getListOfCompartments()->getElementBySId(unitid);
+        if (shadow == NULL) {
+            shadow = model->getListOfConstraints()->getElementBySId(unitid);
+        }
+        if (shadow == NULL) {
+            shadow = model->getListOfEvents()->getElementBySId(unitid);
+        }
+        if (shadow == NULL) {
+            shadow = model->getListOfFunctionDefinitions()->getElementBySId(unitid);
+        }
+        if (shadow == NULL) {
+            shadow = model->getListOfParameters()->getElementBySId(unitid);
+        }
+        if (shadow == NULL) {
+            shadow = model->getListOfReactions()->getElementBySId(unitid);
+        }
+        if (shadow == NULL) {
+            shadow = model->getListOfSpecies()->getElementBySId(unitid);
+        }
+        if (shadow != NULL) {
+            //It was shadowed:  rename the unit.
+            string newunitid = unitid + "_unit";
+            ud->setId(newunitid);
+            List* elements = model->getAllElements();
+            for (unsigned int el = 0; el < elements->getSize(); el++) {
+                SBase* element = static_cast<SBase*>(elements->get(el));
+                element->renameUnitSIdRefs(unitid, newunitid);
+            }
+        }
+    }
+}
+
+void changeRateOf(ASTNode* astn)
+{
+    if (astn == NULL) {
+        return;
+    }
+    if (astn->getType() == AST_FUNCTION && astn->getName() == "rateOf") {
+        astn->setType(AST_FUNCTION_RATE_OF);
+    }
+    for (unsigned int c = 0; c < astn->getNumChildren(); c++) {
+        changeRateOf(astn->getChild(c));
+    }
+}
+
+void Module::UpdateRateOf(Model* model)
+{
+    FunctionDefinition* rateOf = NULL;
+    for (unsigned int fd = 0; fd < model->getNumFunctionDefinitions(); fd++) {
+        FunctionDefinition* function = model->getFunctionDefinition(fd);
+        if (function->getId() == "rateOf" && function->getNumArguments() == 1) {
+            rateOf = function;
+        }
+    }
+    if (rateOf != NULL) {
+        model->getSBMLDocument()->setLevelAndVersion(3, 2, false);
+        model->removeFunctionDefinition("rateOf");
+        List* elements = model->getAllElements();
+        for (unsigned int el = 0; el < elements->getSize(); el++) {
+            SBase* element = static_cast<SBase*>(elements->get(el));
+            ASTNode* astn = const_cast<ASTNode*>(element->getMath());
+            changeRateOf(astn);
+        }
     }
 }
 

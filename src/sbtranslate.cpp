@@ -19,7 +19,7 @@
 #endif
 
 using namespace std;
-bool CaselessStrCmp(bool caseless, const string& lhs, const string& rhs);
+bool CaselessStrCmp(const string& lhs, const string& rhs);
 enum file_type {FT_ANTIMONY, FT_SBML, FT_CELLML, FT_UNKNOWN};
 file_type GetFileType(string filename);
 
@@ -91,10 +91,10 @@ int main(int argc, char** argv)
       }
       else {
         string outfmt = argv[arg];
-        if (CaselessStrCmp(false, outfmt, "antimony")) {
+        if (CaselessStrCmp(outfmt, "antimony")) {
           outputantimony = true;
         }
-        else if (CaselessStrCmp(false, outfmt, "cellml")) {
+        else if (CaselessStrCmp(outfmt, "cellml")) {
 #ifndef NCELLML
           outputcellml = true;
 #else
@@ -102,7 +102,7 @@ int main(int argc, char** argv)
           retval = 1;
 #endif
         }
-        else if (CaselessStrCmp(false, outfmt, "sbml")) {
+        else if (CaselessStrCmp(outfmt, "sbml")) {
 #ifndef SBML
           outputsbml = true;
 #else
@@ -110,7 +110,7 @@ int main(int argc, char** argv)
           retval = 1;
 #endif
         }
-        else if (CaselessStrCmp(false, outfmt, "sbml-comp")) {
+        else if (CaselessStrCmp(outfmt, "sbml-comp")) {
 #ifdef USE_COMP
           outputcompsbml = true;
 #else
@@ -118,7 +118,7 @@ int main(int argc, char** argv)
           retval = 1;
 #endif
         }
-        else if (CaselessStrCmp(false, outfmt, "allsbml")) {
+        else if (CaselessStrCmp(outfmt, "allsbml")) {
 #ifndef SBML
           outputallsbml = true;
 #else
@@ -132,7 +132,7 @@ int main(int argc, char** argv)
         }
       }
     }
-    else if (CaselessStrCmp(false, sarg, "-outfile")) {
+    else if (CaselessStrCmp(sarg, "-outfile")) {
       arg++;
       if (arg>=argc) {
         cerr << "You must provide a filename for the '-outfile' flag.  Use '-h' for more options." << endl;
@@ -142,7 +142,7 @@ int main(int argc, char** argv)
         outfilename = argv[arg];
       }
     }
-    else if (CaselessStrCmp(false, sarg, "-d")) {
+    else if (CaselessStrCmp(sarg, "-d")) {
       arg++;
       if (arg>=argc) {
         cerr << "You must provide a filename for the '-outfile' flag.  Use '-h' for more options." << endl;
@@ -152,7 +152,7 @@ int main(int argc, char** argv)
         addDirectory(argv[arg]);
       }
     }
-    else if (CaselessStrCmp(false, sarg, "-prefix")) {
+    else if (CaselessStrCmp(sarg, "-prefix")) {
       arg++;
       if (arg>=argc) {
         cerr << "You must provide an prefix for the '-prefix' flag.  Use '-h' for more options." << endl;
@@ -162,20 +162,20 @@ int main(int argc, char** argv)
         prefix = argv[arg];
       }
     }
-    else if (CaselessStrCmp(false, sarg, "-stdin")) {
+    else if (CaselessStrCmp(sarg, "-stdin")) {
       readstdin = true;
     }
-    else if (CaselessStrCmp(false, sarg, "-stdout")) {
+    else if (CaselessStrCmp(sarg, "-stdout")) {
       writestdout = true;
     }
-    else if (CaselessStrCmp(false, sarg, "-dirsort")) {
+    else if (CaselessStrCmp(sarg, "-dirsort")) {
       dirsort = true;
     }
-    else if (CaselessStrCmp(false, sarg, "-h") || CaselessStrCmp(false, sarg, "--help")) {
+    else if (CaselessStrCmp(sarg, "-h") || CaselessStrCmp(sarg, "--help")) {
       cout << instructions << endl;
       retval = 1;
     }
-    else if (CaselessStrCmp(false, sarg, "-c")) {
+    else if (CaselessStrCmp(sarg, "-c")) {
       pause = false;
     }
     else {
@@ -441,7 +441,7 @@ int main(int argc, char** argv)
   return retval;
 }
 
-bool CaselessStrCmp(false, const string& lhs, const string& rhs)
+bool CaselessStrCmp(const string& lhs, const string& rhs)
 {
 
   if (lhs.size() != rhs.size()) return false;
