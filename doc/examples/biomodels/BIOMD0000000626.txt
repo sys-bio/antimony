@@ -1,0 +1,132 @@
+// Created by libAntimony v2.13.0
+function ODE_pIme1_1_1__1(Ime1, Rim11, dpime_1, pIme1, pime_1)
+  pime_1*Ime1*Rim11 - dpime_1*pIme1;
+end
+
+ODE_pIme1_1_1__1 is "ODE pIme1_1_1 [1]"
+
+function ODE_pUme6_1_1__1(Rim11, pUme6, pume_6, uume_6)
+  (1 - pUme6)*pume_6*Rim11 - uume_6*pUme6;
+end
+
+ODE_pUme6_1_1__1 is "ODE pUme6_1_1 [1]"
+
+function ODE_Ime2_1_1_1__1(Ime2, c_2, c_3, dime_2, pIme1, pUme6, sime_2, sprimeime_2)
+  sime_2*pUme6*pIme1 + sprimeime_2*Ime2^5/(c_2^5 + Ime2^5) - dime_2*Ime2/(c_3 + Ime2);
+end
+
+ODE_Ime2_1_1_1__1 is "ODE Ime2_1_1_1 [1]"
+
+function ODE_pSok2_1_1__1(Ime1, csok_2, pSok2, psok_2, usok_2)
+  (csok_2/(csok_2 + Ime1))*(1 - pSok2)*psok_2 - usok_2*pSok2;
+end
+
+ODE_pSok2_1_1__1 is "ODE pSok2_1_1 [1]"
+
+function ODE_Ime1_1_1__1(Ime1, Ime2, Rim11, c_1, cime_1, dime_1, dprimeime_1, pSok2, pime_1, sime_1)
+  (cime_1/(cime_1 + pSok2))*sime_1 - (pime_1*Ime1*Rim11 + dime_1*Ime1 + dprimeime_1*Ime2*(Ime1/(c_1 + Ime1)));
+end
+
+ODE_Ime1_1_1__1 is "ODE Ime1_1_1 [1]"
+
+function ODE_Rim11_1_1(Rim11, prim_11, urim_11)
+  urim_11*(1 - Rim11) - prim_11*Rim11;
+end
+
+ODE_Rim11_1_1 is "ODE Rim11_1_1"
+
+
+model *Ray2013___Meiotic_initiation_in_S__cerevisiae()
+
+  // Compartments and Species:
+  compartment V;
+  species Rim11 in V, pUme6 in V, pSok2 in V, Ime1 in V, pIme1 in V, Ime2 in V;
+
+  // Reactions:
+  rim11_1:  -> Rim11; V*ODE_Rim11_1_1(Rim11, rim11_1_prim_11, rim11_1_urim_11);
+  pume6_1:  -> pUme6; V*ODE_pUme6_1_1__1(Rim11, pUme6, pume6_1_pume_6, pume6_1_uume_6);
+  sok2_1:  -> pSok2; V*ODE_pSok2_1_1__1(Ime1, sok2_1_csok_2, pSok2, sok2_1_psok_2, sok2_1_usok_2);
+  ime1_1:  => Ime1; V*ODE_Ime1_1_1__1(Ime1, Ime2, Rim11, ime1_1_c_1, ime1_1_cime_1, ime1_1_dime_1, ime1_1_dprimeime_1, pSok2, ime1_1_pime_1, ime1_1_sime_1);
+  pime1_1:  => pIme1; V*ODE_pIme1_1_1__1(Ime1, Rim11, pime1_1_dpime_1, pIme1, pime1_1_pime_1);
+  ime2_1:  -> Ime2; V*ODE_Ime2_1_1_1__1(Ime2, ime2_1_c_2, ime2_1_c_3, ime2_1_dime_2, pIme1, pUme6, ime2_1_sime_2, ime2_1_sprimeime_2);
+
+  // Species initializations:
+  Rim11 = 0;
+  pUme6 = 0;
+  pSok2 = 0.999999999999971;
+  Ime1 = 0;
+  pIme1 = 0;
+  Ime2 = 0;
+
+  // Compartment initializations:
+  V = 1;
+
+  // Variable initializations:
+  rim11_1_prim_11 = 0.01;
+  rim11_1_urim_11 = 0.1;
+  pume6_1_pume_6 = 0.3;
+  pume6_1_uume_6 = 0.01;
+  sok2_1_csok_2 = 0.05;
+  sok2_1_psok_2 = 0.7;
+  sok2_1_usok_2 = 1;
+  ime1_1_c_1 = 0.01;
+  ime1_1_cime_1 = 0.01;
+  ime1_1_dime_1 = 1;
+  ime1_1_dprimeime_1 = 1;
+  ime1_1_pime_1 = 2;
+  ime1_1_sime_1 = 10;
+  pime1_1_dpime_1 = 1;
+  pime1_1_pime_1 = 2;
+  ime2_1_c_2 = 1.4;
+  ime2_1_c_3 = 2;
+  ime2_1_dime_2 = 8;
+  ime2_1_sime_2 = 10;
+  ime2_1_sprimeime_2 = 3;
+
+  // Other declarations:
+  const V;
+
+  // Unit definitions:
+  unit time_unit = 3600 second;
+
+  // Display Names:
+  time_unit is "time";
+  V is "Cell";
+  rim11_1 is "Rim11 Dephosphorylation";
+  pume6_1 is "Ume6 Phosphorylation";
+  sok2_1 is "Production of Phosphorylated Sok2";
+  ime1_1 is "Ime1 Protein Production";
+  pime1_1 is "Phosphorylation of Ime1";
+  ime2_1 is "Ime2 Protein Production";
+
+  // SBO terms:
+  V.sboTerm = 290
+  rim11_1.sboTerm = 330
+  pume6_1.sboTerm = 216
+  sok2_1.sboTerm = 216
+  ime1_1.sboTerm = 393
+  pime1_1.sboTerm = 216
+  ime2_1.sboTerm = 393
+
+  // CV terms:
+  V identity "http://identifiers.org/fma/FMA:68646"
+  V hypernym "http://identifiers.org/go/GO:0005623"
+  Rim11 hypernym "http://identifiers.org/uniprot/P38615"
+  pUme6 hypernym "http://identifiers.org/uniprot/P39001"
+  pSok2 hypernym "http://identifiers.org/uniprot/P53438"
+  Ime1 hypernym "http://identifiers.org/uniprot/P21190"
+  pIme1 hypernym "http://identifiers.org/uniprot/P21190"
+  Ime2 hypernym "http://identifiers.org/uniprot/P32581"
+  rim11_1 identity "http://identifiers.org/go/GO:0006470"
+end
+
+Ray2013___Meiotic_initiation_in_S__cerevisiae is "Ray2013 - Meiotic initiation in S. cerevisiae"
+
+Ray2013___Meiotic_initiation_in_S__cerevisiae model_entity_is "http://identifiers.org/biomodels.db/MODEL1303060000"
+Ray2013___Meiotic_initiation_in_S__cerevisiae model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000626"
+Ray2013___Meiotic_initiation_in_S__cerevisiae description "http://identifiers.org/pubmed/23631506"
+Ray2013___Meiotic_initiation_in_S__cerevisiae hypernym "http://identifiers.org/go/GO:0040020",
+                                                       "http://identifiers.org/go/GO:0051321"
+Ray2013___Meiotic_initiation_in_S__cerevisiae taxon "http://identifiers.org/taxonomy/4932"
+Ray2013___Meiotic_initiation_in_S__cerevisiae description "http://identifiers.org/eco/ECO:0000362"
+Ray2013___Meiotic_initiation_in_S__cerevisiae property "http://identifiers.org/mamo/MAMO_0000046"

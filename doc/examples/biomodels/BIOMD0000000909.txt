@@ -1,0 +1,139 @@
+// Created by libAntimony v2.13.0
+function Function_for_presence_of_normal_cell(r2, N, b2)
+  r2*N*(1 - b2*N);
+end
+
+Function_for_presence_of_normal_cell is "Function for presence of normal cell"
+
+function Function_for_Tumor_cells_removed_by_immune_system(c2, I, T, c3, N, a2, u)
+  c2*I*T + c3*T*N + a2*(1 - exp(-u))*T;
+end
+
+Function_for_Tumor_cells_removed_by_immune_system is "Function for Tumor cells removed by immune system"
+
+function Function_for_initiation_of_immune_response_against_cancer(s, p, I, T, alpha)
+  s + p*I*T/(alpha + T);
+end
+
+Function_for_initiation_of_immune_response_against_cancer is "Function for initiation of immune response against cancer"
+
+function Function_for_normal_cells_attacked_and_removed(c4, T, N, a3, u)
+  c4*T*N + a3*(1 - exp(-u))*N;
+end
+
+Function_for_normal_cells_attacked_and_removed is "Function for normal cells attacked and removed"
+
+function Function_for_induction_of_tumor_cell(r1, T, b1)
+  r1*T*(1 - b1*T);
+end
+
+Function_for_induction_of_tumor_cell is "Function for induction of tumor cell"
+
+function Function_for_increase_in_the_chemotherapeutic_drug_at_tumor_site(v)
+  v;
+end
+
+Function_for_increase_in_the_chemotherapeutic_drug_at_tumor_site is "Function for increase in the chemotherapeutic drug at tumor site"
+
+function Function_for_decrease_in_chemotherapeutic_drug_at_tumor_site(d2, u)
+  d2*u;
+end
+
+Function_for_decrease_in_chemotherapeutic_drug_at_tumor_site is "Function for decrease in chemotherapeutic drug at tumor site"
+
+function Function_for_removal_of_immune_response_components(c1, I, T, d1, a1, u)
+  c1*I*T + d1*I + a1*(1 - exp(-u))*I;
+end
+
+Function_for_removal_of_immune_response_components is "Function for removal of immune response components"
+
+
+model *ddePillis2003___The_dynamics_of_an_optimally_controlled_tumor_model__A_case_study()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species N in compartment_, T in compartment_, I in compartment_, u in compartment_;
+
+  // Reactions:
+  Presence_of_Normal_Cell:  => N; compartment_*Function_for_presence_of_normal_cell(r2, N, b2);
+  Normal_cells_attacked_and_removed: N => ; compartment_*Function_for_normal_cells_attacked_and_removed(c4, T, N, a3, u);
+  Induction_of_tumor_cell:  => T; compartment_*Function_for_induction_of_tumor_cell(r1, T, b1);
+  Tumor_cells_removed_by_immune_system: T => ; compartment_*Function_for_Tumor_cells_removed_by_immune_system(c2, I, T, c3, N, a2, u);
+  Initiation_immune_response_against_tumor:  => I; compartment_*Function_for_initiation_of_immune_response_against_cancer(s, p, I, T, alpha);
+  Removal_of_immune_response_components: I => ; compartment_*Function_for_removal_of_immune_response_components(c1, I, T, d1, a1, u);
+  Increase_in_amount_of_drug_at_tumor_site:  => u; compartment_*Function_for_increase_in_the_chemotherapeutic_drug_at_tumor_site(v);
+  Decrease_of_chemotherapeutic_drug_at_tumor_site: u => ; compartment_*Function_for_decrease_in_chemotherapeutic_drug_at_tumor_site(d2, u);
+
+  // Species initializations:
+  N = 1;
+  T = 0.25;
+  I = 0.15;
+  u = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  a1 = 0.2;
+  a2 = 0.3;
+  a3 = 0.1;
+  b1 = 1;
+  b2 = 1;
+  alpha = 0.3;
+  c1 = 1;
+  c2 = 0.5;
+  c3 = 1;
+  c4 = 1;
+  d1 = 0.2;
+  d2 = 1;
+  r1 = 1.5;
+  r2 = 1;
+  s = 0.33;
+  p = 0.01;
+  v = 0;
+
+  // Other declarations:
+  const compartment_, a1, a2, a3, b1, b2, alpha, c1, c2, c3, c4, d1, d2, r1;
+  const r2, s, p, v;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  Presence_of_Normal_Cell is "Presence of Normal Cell";
+  Normal_cells_attacked_and_removed is "Normal cells attacked and removed";
+  Induction_of_tumor_cell is "Induction of tumor cell";
+  Tumor_cells_removed_by_immune_system is "Tumor cells removed by immune system";
+  Initiation_immune_response_against_tumor is "Initiation immune response against tumor";
+  Removal_of_immune_response_components is "Removal of immune response components";
+  Increase_in_amount_of_drug_at_tumor_site is "Increase in amount of drug at tumor site";
+  Decrease_of_chemotherapeutic_drug_at_tumor_site is "Decrease of chemotherapeutic drug at tumor site";
+
+  // CV terms:
+  T instance "http://identifiers.org/ncit/C12922"
+  I instance "http://identifiers.org/ncit/C12735"
+  u instance "http://identifiers.org/ncit/C2252"
+  Presence_of_Normal_Cell instance "http://identifiers.org/ncit/C12508"
+  Normal_cells_attacked_and_removed instance "http://identifiers.org/ncit/C12508"
+  Induction_of_tumor_cell instance "http://identifiers.org/go/GO:0002355"
+  Tumor_cells_removed_by_immune_system instance "http://identifiers.org/go/GO:0002347"
+  Initiation_immune_response_against_tumor hypernym "http://identifiers.org/go/GO:0031294"
+  Removal_of_immune_response_components instance "http://identifiers.org/go/GO:0002347"
+  Increase_in_amount_of_drug_at_tumor_site instance "http://identifiers.org/go/GO:0008144"
+  Decrease_of_chemotherapeutic_drug_at_tumor_site instance "http://identifiers.org/go/GO:0008144"
+end
+
+ddePillis2003___The_dynamics_of_an_optimally_controlled_tumor_model__A_case_study is "dePillis2003 - The dynamics of an optimally controlled tumor model: A case study"
+
+ddePillis2003___The_dynamics_of_an_optimally_controlled_tumor_model__A_case_study instance "http://identifiers.org/mamo/MAMO_0000046",
+                                                                                           "http://identifiers.org/taxonomy/9606",
+                                                                                           "http://identifiers.org/ncit/C48686"
+ddePillis2003___The_dynamics_of_an_optimally_controlled_tumor_model__A_case_study description "http://identifiers.org/ncit/C48686",
+                                                                                              "http://identifiers.org/doi/10.1016/S0895-7177(03)00133-X"
+ddePillis2003___The_dynamics_of_an_optimally_controlled_tumor_model__A_case_study origin "http://identifiers.org/doi/10.1007/bf02460644"
+ddePillis2003___The_dynamics_of_an_optimally_controlled_tumor_model__A_case_study model_entity_is "http://identifiers.org/biomodels.db/MODEL2001080003",
+                                                                                                  "http://identifiers.org/biomodels.db/BIOMD0000000909"
+ddePillis2003___The_dynamics_of_an_optimally_controlled_tumor_model__A_case_study taxon "http://identifiers.org/taxonomy/9606"
+ddePillis2003___The_dynamics_of_an_optimally_controlled_tumor_model__A_case_study property "http://identifiers.org/mamo/MAMO_0000046"

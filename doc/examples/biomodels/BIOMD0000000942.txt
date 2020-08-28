@@ -1,0 +1,196 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function Function_modifier_substrate(k, modifier, substrate)
+  k*modifier*substrate;
+end
+
+Function_modifier_substrate is "Function modifier substrate"
+
+function Function_Michaelis_Menten_Rate_Law(k, E, S1, S2, Km)
+  k*E*(S1 - S2)/(Km + S1 - S2);
+end
+
+Function_Michaelis_Menten_Rate_Law is "Function Michaelis Menten Rate Law"
+
+function Function_Michaelis_Menten_Rate_Law_v2(k, E, S, Km)
+  k*E*S/(Km + S);
+end
+
+Function_Michaelis_Menten_Rate_Law_v2 is "Function Michaelis Menten Rate Law v2"
+
+
+model *Sible2007___Mitotic_cell_cycle_mecanism_in_Xenopus_Laevis()
+
+  // Compartments and Species:
+  compartment nuclear;
+  species $Cdc25 in nuclear, $Cdc25_total in nuclear, Cdc25_phosphorylated in nuclear;
+  species Cyclin_Cdk1_MPF in nuclear, Cyclin_Cdk1_preMPF in nuclear, $Wee1 in nuclear;
+  species $Wee1_total in nuclear, Wee1_phosphorylated in nuclear, Cyclin in nuclear;
+  species $Cdk1 in nuclear, $Cdk1_total in nuclear, $IE in nuclear, $IE_total in nuclear;
+  species IE_phosphorylated in nuclear, APC_active in nuclear, $APC_total in nuclear;
+  species $ppase in nuclear, $Cyclin_total in nuclear;
+
+  // Assignment Rules:
+  Cdc25 := Cdc25_total - Cdc25_phosphorylated;
+  Wee1 := Wee1_total - Wee1_phosphorylated;
+  Cdk1 := Cdk1_total;
+  IE := IE_total - IE_phosphorylated;
+  Cyclin_total := Cyclin_Cdk1_MPF + Cyclin_Cdk1_preMPF + Cyclin;
+  k25 := v25*(Cdc25_total - Cdc25_phosphorylated) + v25_*Cdc25_phosphorylated;
+  kwee := vwee*Wee1_phosphorylated + vwee_*(Wee1_total - Wee1_phosphorylated);
+  k2 := v2*(APC_total - APC_active) + v2_*APC_active;
+
+  // Reactions:
+  R1_Dephosphorylation: Cdc25_phosphorylated => ; nuclear*Function_Michaelis_Menten_Rate_Law_v2(kb, ppase, Cdc25_phosphorylated, KKb);
+  R2_Phosphorylation:  => Cdc25_phosphorylated; nuclear*Function_Michaelis_Menten_Rate_Law(ka, Cyclin_Cdk1_MPF, Cdc25_total, Cdc25_phosphorylated, KKa);
+  R3_Dephosphorylation: Cyclin_Cdk1_preMPF => Cyclin_Cdk1_MPF; nuclear*k25*Cyclin_Cdk1_preMPF;
+  R4_Phosphorylation: Cyclin_Cdk1_MPF => Cyclin_Cdk1_preMPF; nuclear*kwee*Cyclin_Cdk1_MPF;
+  R5_Dephosphorylation: Wee1_phosphorylated => ; nuclear*Function_Michaelis_Menten_Rate_Law_v2(kf, ppase, Wee1_phosphorylated, KKf);
+  R6_Phosphorylation:  => Wee1_phosphorylated; nuclear*Function_Michaelis_Menten_Rate_Law(ke, Cyclin_Cdk1_MPF, Wee1_total, Wee1_phosphorylated, KKe);
+  R7_Protein_Complex__Formation_by_binding: Cyclin => Cyclin_Cdk1_MPF; nuclear*Function_modifier_substrate(k3, Cdk1, Cyclin);
+  R8_Synthesis:  => Cyclin; nuclear*Constant_flux__irreversible(k1);
+  R9_Dephosphorylation: IE_phosphorylated => ; nuclear*Function_Michaelis_Menten_Rate_Law_v2(kh, ppase, IE_phosphorylated, KKh);
+  R10_Phosphorylation:  => IE_phosphorylated; nuclear*Function_Michaelis_Menten_Rate_Law(kg, Cyclin_Cdk1_MPF, IE_total, IE_phosphorylated, KKg);
+  R11_Inactivation: APC_active => ; nuclear*Function_Michaelis_Menten_Rate_Law_v2(kd, ppase, APC_active, KKd);
+  R12_Activation:  => APC_active; nuclear*Function_Michaelis_Menten_Rate_Law(kc, IE_phosphorylated, APC_total, APC_active, KKc);
+  R13_Degradation: Cyclin_Cdk1_MPF => ; nuclear*k2*Cyclin_Cdk1_MPF;
+  R14_Degradation: Cyclin => ; nuclear*k2*Cyclin;
+  R15_Degradation: Cyclin_Cdk1_preMPF => ; nuclear*k2*Cyclin_Cdk1_preMPF;
+
+  // Species initializations:
+  Cdc25_total = 1;
+  Cdc25_phosphorylated = 0;
+  Cyclin_Cdk1_MPF = 0;
+  Cyclin_Cdk1_preMPF = 0;
+  Wee1_total = 1;
+  Wee1_phosphorylated = 0;
+  Cyclin = 0;
+  Cdk1_total = 100;
+  IE_total = 1;
+  IE_phosphorylated = 1;
+  APC_active = 1;
+  APC_total = 1;
+  ppase = 1;
+
+  // Compartment initializations:
+  nuclear = 1;
+
+  // Variable initializations:
+  k1 = 1;
+  v2 = 0.005;
+  v2_ = 0.25;
+  k3 = 0.005;
+  v25 = 0.017;
+  v25_ = 0.17;
+  vwee = 0.01;
+  vwee_ = 1;
+  ka = 0.02;
+  KKa = 0.1;
+  kb = 0.1;
+  KKb = 1;
+  kc = 0.13;
+  KKc = 0.01;
+  kd = 0.13;
+  KKd = 1;
+  ke = 0.02;
+  KKe = 0.1;
+  kf = 0.1;
+  KKf = 1;
+  kg = 0.02;
+  KKg = 0.01;
+  kh = 0.15;
+  KKh = 0.01;
+
+  // Other declarations:
+  var k25, kwee, k2;
+  const nuclear, k1, v2, v2_, k3, v25, v25_, vwee, vwee_, ka, KKa, kb, KKb;
+  const kc, KKc, kd, KKd, ke, KKe, kf, KKf, kg, KKg, kh, KKh;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 60 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+  v2 is "v2_";
+  v2_ is "v2__";
+  v25 is "v25_";
+  v25_ is "v25__";
+  vwee is "vwee_";
+  vwee_ is "vwee__";
+  R1_Dephosphorylation is "R1 Dephosphorylation";
+  R2_Phosphorylation is "R2 Phosphorylation";
+  R3_Dephosphorylation is "R3 Dephosphorylation";
+  R4_Phosphorylation is "R4 Phosphorylation";
+  R5_Dephosphorylation is "R5 Dephosphorylation";
+  R6_Phosphorylation is "R6 Phosphorylation";
+  R7_Protein_Complex__Formation_by_binding is "R7 Protein Complex  Formation by binding";
+  R8_Synthesis is "R8 Synthesis";
+  R9_Dephosphorylation is "R9 Dephosphorylation";
+  R10_Phosphorylation is "R10 Phosphorylation";
+  R11_Inactivation is "R11 Inactivation";
+  R12_Activation is "R12 Activation";
+  R13_Degradation is "R13 Degradation";
+  R14_Degradation is "R14 Degradation";
+  R15_Degradation is "R15 Degradation";
+
+  // SBO terms:
+  R7_Protein_Complex__Formation_by_binding.sboTerm = 526
+  R12_Activation.sboTerm = 656
+  R13_Degradation.sboTerm = 179
+  R14_Degradation.sboTerm = 179
+  R15_Degradation.sboTerm = 179
+
+  // CV terms:
+  nuclear identity "http://identifiers.org/ncit/C13361"
+  Cdc25 hypernym "http://identifiers.org/uniprot/P30309"
+  Cdc25_total hypernym "http://identifiers.org/uniprot/P30309"
+  Cdc25_phosphorylated hypernym "http://identifiers.org/uniprot/P30309"
+  Cdc25_phosphorylated property "http://identifiers.org/pato/PATO:0002220"
+  Cyclin_Cdk1_MPF part "http://identifiers.org/uniprot/P13350"
+  Cyclin_Cdk1_MPF part "http://identifiers.org/uniprot/P35567"
+  Cyclin_Cdk1_preMPF part "http://identifiers.org/uniprot/P13350"
+  Cyclin_Cdk1_preMPF part "http://identifiers.org/uniprot/P35567"
+  Cyclin_Cdk1_preMPF property "http://identifiers.org/pato/PATO:0002220"
+  Wee1 hypernym "http://identifiers.org/uniprot/Q8QGV2"
+  Wee1_total hypernym "http://identifiers.org/uniprot/Q8QGV2"
+  Wee1_phosphorylated hypernym "http://identifiers.org/uniprot/Q8QGV2"
+  Wee1_phosphorylated property "http://identifiers.org/pato/PATO:0002220"
+  Cyclin hypernym "http://identifiers.org/uniprot/P13350"
+  Cdk1 hypernym "http://identifiers.org/uniprot/P35567"
+  Cdk1_total hypernym "http://identifiers.org/uniprot/P35567"
+  IE_phosphorylated property "http://identifiers.org/pato/PATO:0002220"
+  APC_active identity "http://identifiers.org/uniprot/P70039"
+  APC_active property "http://identifiers.org/pato/PATO:0002354"
+  APC_total hypernym "http://identifiers.org/uniprot/P70039"
+  Cyclin_total hypernym "http://identifiers.org/uniprot/P13350"
+  R1_Dephosphorylation identity "http://identifiers.org/go/GO:0006470"
+  R2_Phosphorylation hypernym "http://identifiers.org/go/GO:0006468"
+  R3_Dephosphorylation identity "http://identifiers.org/go/GO:0006470"
+  R4_Phosphorylation hypernym "http://identifiers.org/go/GO:0006468"
+  R5_Dephosphorylation identity "http://identifiers.org/go/GO:0006470"
+  R6_Phosphorylation hypernym "http://identifiers.org/go/GO:0006468"
+  R7_Protein_Complex__Formation_by_binding identity "http://identifiers.org/sbo/SBO:0000526"
+  R8_Synthesis identity "http://identifiers.org/ncit/C61408"
+  R9_Dephosphorylation identity "http://identifiers.org/go/GO:0006470"
+  R10_Phosphorylation identity "http://identifiers.org/go/GO:0006468"
+  R12_Activation identity "http://identifiers.org/sbo/SBO:0000656"
+  R13_Degradation identity "http://identifiers.org/sbo/SBO:0000179"
+  R14_Degradation identity "http://identifiers.org/sbo/SBO:0000179"
+  R15_Degradation identity "http://identifiers.org/sbo/SBO:0000179"
+end
+
+Sible2007___Mitotic_cell_cycle_mecanism_in_Xenopus_Laevis is "Sible2007 - Mitotic cell cycle mecanism in Xenopus Laevis"
+
+Sible2007___Mitotic_cell_cycle_mecanism_in_Xenopus_Laevis model_entity_is "http://identifiers.org/biomodels.db/MODEL1809060005",
+                                                                          "http://identifiers.org/biomodels.db/BIOMD0000000942"
+Sible2007___Mitotic_cell_cycle_mecanism_in_Xenopus_Laevis part "http://identifiers.org/go/GO:0051726"
+Sible2007___Mitotic_cell_cycle_mecanism_in_Xenopus_Laevis taxon "http://identifiers.org/taxonomy/8355"
+Sible2007___Mitotic_cell_cycle_mecanism_in_Xenopus_Laevis description "http://identifiers.org/pubmed/17189866"
+Sible2007___Mitotic_cell_cycle_mecanism_in_Xenopus_Laevis property "http://identifiers.org/mamo/MAMO_0000046"

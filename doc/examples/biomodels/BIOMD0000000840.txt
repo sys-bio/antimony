@@ -1,0 +1,100 @@
+// Created by libAntimony v2.13.0
+function Function_for_Vicodin_Use_Transition_Abuse_Relapse_Nonlinear(gamma_3, A, T)
+  gamma_3*A*T;
+end
+
+Function_for_Vicodin_Use_Transition_Abuse_Relapse_Nonlinear is "Function_for_Vicodin_Use_Transition_Abuse_Relapse_Nonlinear"
+
+function Function_for_New_Vicodin_Prescriptions(lambda, rho, A)
+  lambda/(1 + rho*A);
+end
+
+Function_for_New_Vicodin_Prescriptions is "Function_for_New_Vicodin_Prescriptions"
+
+
+model *Caldwell2019___The_Vicodin_abuse_problem()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species M in compartment_, C1 in compartment_, C2 in compartment_, A in compartment_;
+  species T in compartment_;
+
+  // Reactions:
+  New_Vicodin_Prescriptions:  => M; compartment_*Function_for_New_Vicodin_Prescriptions(lambda, rho, A);
+  Vicodin_Use_Transition_Acute_Chronic: M => C1; compartment_*alpha_1*M;
+  Vicodin_Use_Transition_Cessation: M => ; compartment_*alpha_2*M;
+  Vicodin_Use_Transition_Chronic_Abuse: C2 => A; compartment_*delta*C2;
+  Vicodin_Use_Transition_Chronic_Exit: C1 => ; compartment_*beta*C1;
+  Vicodin_Use_Transition_Chronic: C1 => C2; compartment_*delta*C1;
+  Vicodin_Use_Transition_Chronic2_Exit: C2 => ; compartment_*beta*C2;
+  Vicodin_Use_Transition_Abuse_Treatment_Exit: A => T; compartment_*epsilon*A;
+  Vicodin_Use_Transition_Abuse_Relapse_Linear: T => A; compartment_*gamma_1*T;
+  Vicodin_Use_Transition_Abuse_Relapse_Nonlinear: T => A; compartment_*Function_for_Vicodin_Use_Transition_Abuse_Relapse_Nonlinear(gamma_3, A, T);
+  Vicodin_Use_Transition_Treatment_Succesful: T => ; compartment_*gamma_2*T;
+
+  // Species initializations:
+  M = 37600000;
+  C1 = 5640000;
+  C2 = 3760000;
+  A = 2000000;
+  T = 700000;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  lambda = 3000000;
+  rho = 1e-06;
+  alpha_1 = 0.22;
+  alpha_2 = 0.45;
+  beta = 0.14;
+  delta = 0.05;
+  epsilon = 0.03;
+  gamma_1 = 0.24;
+  gamma_2 = 0.293;
+  gamma_3 = 8e-10;
+
+  // Other declarations:
+  const compartment_, lambda, rho, alpha_1, alpha_2, beta, delta, epsilon;
+  const gamma_1, gamma_2, gamma_3;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = item;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+
+  // CV terms:
+  compartment_ hypernym "http://identifiers.org/ncit/C17005"
+  M property "http://identifiers.org/ncit/C14140"
+  C1 property "http://identifiers.org/ncit/C14141"
+  C2 property "http://identifiers.org/ncit/C14141"
+  A property "http://identifiers.org/ncit/C16522"
+  T property "http://identifiers.org/efo/0000727"
+  New_Vicodin_Prescriptions identity "http://identifiers.org/ncit/C28180"
+  Vicodin_Use_Transition_Acute_Chronic property "http://identifiers.org/ncit/C14141"
+  Vicodin_Use_Transition_Cessation property "http://identifiers.org/ncit/C61497"
+  Vicodin_Use_Transition_Chronic_Abuse property "http://identifiers.org/ncit/C16522"
+  Vicodin_Use_Transition_Chronic_Exit property "http://identifiers.org/ncit/C61497"
+  Vicodin_Use_Transition_Chronic property "http://identifiers.org/ncit/C14141"
+  Vicodin_Use_Transition_Chronic2_Exit property "http://identifiers.org/ncit/C61497"
+  Vicodin_Use_Transition_Abuse_Treatment_Exit property "http://identifiers.org/ncit/C3479"
+  Vicodin_Use_Transition_Abuse_Treatment_Exit property "http://identifiers.org/ncit/C61497"
+  Vicodin_Use_Transition_Abuse_Treatment_Exit property "http://identifiers.org/ncit/C70742"
+  Vicodin_Use_Transition_Abuse_Relapse_Linear hypernym "http://identifiers.org/efo/0004952"
+  Vicodin_Use_Transition_Abuse_Relapse_Nonlinear hypernym "http://identifiers.org/efo/0004952"
+  Vicodin_Use_Transition_Treatment_Succesful property "http://identifiers.org/ncit/C25362"
+  Vicodin_Use_Transition_Treatment_Succesful property "http://identifiers.org/efo/0000727"
+end
+
+Caldwell2019___The_Vicodin_abuse_problem is "Caldwell2019 - The Vicodin abuse problem"
+
+Caldwell2019___The_Vicodin_abuse_problem description "http://identifiers.org/pubmed/31513802"
+Caldwell2019___The_Vicodin_abuse_problem model_entity_is "http://identifiers.org/biomodels.db/MODEL1910290002",
+                                                         "http://identifiers.org/biomodels.db/BIOMD0000000840"
+Caldwell2019___The_Vicodin_abuse_problem property "http://identifiers.org/ncit/C16522"
+Caldwell2019___The_Vicodin_abuse_problem property "http://identifiers.org/mamo/MAMO_0000046"
+Caldwell2019___The_Vicodin_abuse_problem property "http://identifiers.org/chebi/CHEBI:5779"

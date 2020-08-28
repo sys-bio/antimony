@@ -1,0 +1,200 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function ir(ati, T, I)
+  ati*T*I;
+end
+
+ir is "ir"
+
+function _1mod(d, mod, sub)
+  d*mod*sub;
+end
+
+_1mod is "1mod"
+
+function tg(at_, B, T, kt)
+  at_*B*T*(1 - T/kt);
+end
+
+tg is "tg"
+
+function ig(as, v, I, B)
+  as*(v + I)*B;
+end
+
+ig is "ig"
+
+function gcb(do, as, v, I, B)
+  (do + as*(v + I))*B;
+end
+
+gcb is "gcb"
+
+
+model *Sturrock2015__glioma_growth()
+
+  // Compartments and Species:
+  compartment tme;
+  species T in tme, B in tme, I in tme, S in tme;
+
+  // Assignment Rules:
+  F := piecewise(oo*sin(6*pi*time), omin < (oo*sin(6*pi*time)), omin);
+  F2 := piecewise(oo*sin(6*pi*time)*c, omin < (oo*sin(6*pi*time)*c), omin);
+  c := piecewise(piecewise(2, time < 4745, 1), 1095 < time, 1);
+
+  // Reactions:
+  tumor_growth:  => T; tme*tg(at_, B, T, kt);
+  tumor_death: T => ; tme*dt*T;
+  tumor_immune: T => ; tme*_1mod(dti, I, T);
+  glucose_b_s: B => S; tme*ao*B;
+  glioma_consumption: B => ; tme*_1mod(dto, T, B);
+  glucose_consumption_b: B => ; tme*gcb(do, as, v, I, B);
+  immune_growth:  => I; tme*ig(as, v, I, B);
+  immune_recruitment:  => I; tme*ir(ati, T, I);
+  immune_cell_death: I => ; tme*di*I;
+  glioma_response: I => ; tme*_1mod(dtt, T, I);
+  glucose_intake:  => S; tme*Constant_flux__irreversible(F);
+  glucose_consumption_s: S => ; tme*do*S;
+  glucose_s_b: S => B; tme*ao*S;
+
+  // Species initializations:
+  T = 0.14;
+  T has substance_per_volume;
+  B = 0.000392;
+  B has substance_per_volume;
+  I = 0.000284;
+  I has substance_per_volume;
+  S = 0.000439;
+  S has substance_per_volume;
+
+  // Compartment initializations:
+  tme = 1;
+  tme has volume;
+
+  // Variable initializations:
+  at_ = 1.575;
+  at_ has unit_0;
+  kt = 2;
+  kt has unit_1;
+  dti = 0.072;
+  dti has unit_0;
+  ati = 0.0003;
+  ati has unit_0;
+  dt = 0.0001;
+  dt has unit_0;
+  di = 0.01;
+  di has unit_0;
+  as = 0.7;
+  as has unit_0;
+  v = 0.7;
+  v has unit_1;
+  dto = 1;
+  dto has unit_0;
+  ao = 20;
+  ao has unit_0;
+  omin = 0.0008;
+  omin has unit_1;
+  oo = 0.0016;
+  oo has unit_1;
+  do = 0.01;
+  do has unit_0;
+  dtt = 0.72;
+  dtt has unit_0;
+  F has unit_0;
+  F2 has unit_0;
+  c has unit_1;
+
+  // Other declarations:
+  var F, F2, c;
+  const tme, at_, kt, dti, ati, dt, di, as, v, dto, ao, omin, oo, do, dtt;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = time_unit;
+  unit substance = 1e-3 mole;
+  unit unit_0 = 1 / 86400e-1 second;
+  unit unit_1 = 1 / dimensionless^-0;
+  unit extent = substance;
+  unit substance_per_volume = 1e-3 mole / 1e-3 litre;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1/d";
+  unit_1 is "1";
+  at_ is "at";
+  tumor_growth is "tumor growth";
+  tumor_death is "tumor death";
+  tumor_immune is "tumor immune";
+  glucose_b_s is "glucose b-s";
+  glioma_consumption is "glioma consumption";
+  glucose_consumption_b is "glucose consumption-b";
+  immune_growth is "immune growth";
+  immune_recruitment is "immune recruitment";
+  immune_cell_death is "immune cell death";
+  glioma_response is "glioma response";
+  glucose_intake is "glucose intake";
+  glucose_consumption_s is "glucose consumption-s";
+  glucose_s_b is "glucose s-b";
+
+  // CV terms:
+  tme hypernym "http://identifiers.org/ncit/C94498"
+  T hypernym "http://identifiers.org/bto/BTO:0000526"
+  B hypernym "http://identifiers.org/chebi/CHEBI:17234"
+  I hypernym "http://identifiers.org/cl/CL:0000738"
+  S hypernym "http://identifiers.org/chebi/CHEBI:17234"
+  at_ hypernym "http://identifiers.org/sbo/SBO:0000610"
+  kt hypernym "http://identifiers.org/sbo/SBO:0000661"
+  dti hypernym "http://identifiers.org/ncit/C25636"
+  ati hypernym "http://identifiers.org/sbo/SBO:0000610"
+  dt hypernym "http://identifiers.org/ncit/C25636"
+  di hypernym "http://identifiers.org/ncit/C25636"
+  as hypernym "http://identifiers.org/sbo/SBO:0000610"
+  v hypernym "http://identifiers.org/sbo/SBO:0000610"
+  dto hypernym "http://identifiers.org/ncit/C25636"
+  ao hypernym "http://identifiers.org/ncit/C25636"
+  omin hypernym "http://identifiers.org/ncit/C25636"
+  oo hypernym "http://identifiers.org/ncit/C25636"
+  do hypernym "http://identifiers.org/ncit/C25636"
+  dtt hypernym "http://identifiers.org/ncit/C25636"
+  F hypernym "http://identifiers.org/ncit/C25636"
+  F2 hypernym "http://identifiers.org/ncit/C25636"
+  c hypernym "http://identifiers.org/ncit/C48922"
+  tumor_growth hypernym "http://identifiers.org/go/GO:0008283"
+  tumor_growth hypernym "http://identifiers.org/sbo/SBO:0000393"
+  tumor_death hypernym "http://identifiers.org/sbo/SBO:0000179"
+  tumor_death hypernym "http://identifiers.org/go/GO:0008219"
+  tumor_immune hypernym "http://identifiers.org/go/GO:0008219"
+  tumor_immune hypernym "http://identifiers.org/sbo/SBO:0000179"
+  glioma_consumption hypernym "http://identifiers.org/go/GO:0046323"
+  glioma_consumption hypernym "http://identifiers.org/sbo/SBO:0000394"
+  glucose_consumption_b hypernym "http://identifiers.org/sbo/SBO:0000394"
+  glucose_consumption_b hypernym "http://identifiers.org/go/GO:0046323"
+  immune_growth hypernym "http://identifiers.org/go/GO:0008283"
+  immune_growth hypernym "http://identifiers.org/sbo/SBO:0000393"
+  immune_recruitment hypernym "http://identifiers.org/sbo/SBO:0000393"
+  immune_recruitment hypernym "http://identifiers.org/go/GO:0008283"
+  immune_cell_death hypernym "http://identifiers.org/go/GO:0008219"
+  immune_cell_death hypernym "http://identifiers.org/sbo/SBO:0000179"
+  glioma_response hypernym "http://identifiers.org/sbo/SBO:0000179"
+  glioma_response hypernym "http://identifiers.org/go/GO:0008219"
+  glucose_intake hypernym "http://identifiers.org/sbo/SBO:0000393"
+  glucose_consumption_s hypernym "http://identifiers.org/go/GO:0046323"
+  glucose_consumption_s hypernym "http://identifiers.org/sbo/SBO:0000394"
+end
+
+Sturrock2015__glioma_growth is "Sturrock2015 - glioma growth"
+
+Sturrock2015__glioma_growth description "http://identifiers.org/pubmed/26073722"
+Sturrock2015__glioma_growth model_entity_is "http://identifiers.org/biomodels.db/MODEL1908200001",
+                                            "http://identifiers.org/biomodels.db/BIOMD0000000801"
+Sturrock2015__glioma_growth property "http://identifiers.org/efo/0005543"
+Sturrock2015__glioma_growth property "http://identifiers.org/mamo/MAMO_0000046"
+Sturrock2015__glioma_growth property "http://identifiers.org/go/GO:0002418"
+Sturrock2015__glioma_growth taxon "http://identifiers.org/taxonomy/9606"

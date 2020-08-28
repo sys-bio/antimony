@@ -1,0 +1,121 @@
+// Created by libAntimony v2.13.0
+function Rate_Law_for_R_Vm(v_maQao, v_mv, Qv, Vm, tau_m)
+  (v_maQao + v_mv*Qv - Vm)/(tau_m/3600);
+end
+
+Rate_Law_for_R_Vm is "Rate Law for R_Vm"
+
+function Rate_Law_for_R_Vv(v_vm, Qm, D, Vv, tau_v)
+  (v_vm*Qm + D - Vv)/(tau_v/3600);
+end
+
+Rate_Law_for_R_Vv is "Rate Law for R_Vv"
+
+function Rate_Law_for_R_H(mu, Qm, H, chi)
+  (mu*Qm - H)/chi;
+end
+
+Rate_Law_for_R_H is "Rate Law for R_H"
+
+
+model *Phillips2007_AscendingArousalSystem_SleepWakeDynamics()
+
+  // Compartments and Species:
+  compartment COMpartment;
+  species Monoaminergic__MA__voltage in COMpartment, Ventrolateral_preopticarea__VLPO__voltage in COMpartment;
+  species Somnogen_level_H in COMpartment;
+
+  // Assignment Rules:
+  Qv := Qmax/(1 + exp(-(Ventrolateral_preopticarea__VLPO__voltage - theta)/sigma));
+  Qa := Qmax/(1 + exp(-(Va - theta)/sigma));
+  Va := Vao;
+  Qm := Qmax/(1 + exp(-(Monoaminergic__MA__voltage - theta)/sigma));
+  D := v_vc*C + v_vh*Somnogen_level_H;
+  C := c0 + cos(omega*time);
+  omega := 2*pi/24;
+
+  // Reactions:
+  Reaction_for_Monoaminergic__MA__voltage:  => Monoaminergic__MA__voltage; COMpartment*Rate_Law_for_R_Vm(v_maQao, v_mv, Qv, Monoaminergic__MA__voltage, tau_m);
+  Reaction_for_Ventrolateral_preopticarea__VLPO__voltage:  => Ventrolateral_preopticarea__VLPO__voltage; COMpartment*Rate_Law_for_R_Vv(v_vm, Qm, D, Ventrolateral_preopticarea__VLPO__voltage, tau_v);
+  Reaction_for_homeostatic_sleep:  => Somnogen_level_H; COMpartment*Rate_Law_for_R_H(mu, Qm, Somnogen_level_H, chi);
+
+  // Species initializations:
+  Monoaminergic__MA__voltage = 1;
+  Monoaminergic__MA__voltage has substance_per_volume;
+  Ventrolateral_preopticarea__VLPO__voltage = -10;
+  Ventrolateral_preopticarea__VLPO__voltage has substance_per_volume;
+  Somnogen_level_H = 10;
+  Somnogen_level_H has substance_per_volume;
+
+  // Compartment initializations:
+  COMpartment = 1;
+  COMpartment has volume;
+
+  // Variable initializations:
+  Qmax = 100;
+  theta = 10;
+  sigma = 3;
+  tau_v = 10;
+  v_vm = -1.9;
+  Vao = 1;
+  tau_m = 10;
+  v_mv = -1.9;
+  v_maQao = 1;
+  chi = 10.8;
+  mu = 3.6;
+  v_vc = -6.3;
+  v_vh = 0.19;
+  c0 = 1;
+
+  // Other declarations:
+  var Qv, Qa, Va, Qm, D, C, omega;
+  const COMpartment, Qmax, theta, sigma, tau_v, v_vm, Vao, tau_m, v_mv, v_maQao;
+  const chi, mu, v_vc, v_vh, c0;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = litre;
+  unit time_unit = time_unit;
+  unit substance = mole;
+  unit extent = substance;
+  unit substance_per_volume = mole / litre;
+
+  // Display Names:
+  time_unit is "time";
+  Monoaminergic__MA__voltage is "Monoaminergic (MA) voltage";
+  Ventrolateral_preopticarea__VLPO__voltage is "Ventrolateral preopticarea (VLPO) voltage";
+  Somnogen_level_H is "Somnogen level H";
+  Reaction_for_Monoaminergic__MA__voltage is "Reaction for Monoaminergic (MA) voltage";
+  Reaction_for_Ventrolateral_preopticarea__VLPO__voltage is "Reaction for Ventrolateral preopticarea (VLPO) voltage";
+  Reaction_for_homeostatic_sleep is "Reaction for homeostatic sleep";
+
+  // CV terms:
+  Monoaminergic__MA__voltage property "http://identifiers.org/ncit/C70813"
+  Monoaminergic__MA__voltage property "http://identifiers.org/omit/OMIT_0026787"
+  Monoaminergic__MA__voltage property "http://identifiers.org/ncit/C73238"
+  Monoaminergic__MA__voltage property "http://identifiers.org/ncit/C62025"
+  Monoaminergic__MA__voltage property "http://identifiers.org/ncit/C43382"
+  Monoaminergic__MA__voltage property "http://identifiers.org/ncit/C2321"
+  Ventrolateral_preopticarea__VLPO__voltage container "http://identifiers.org/omit/OMIT_0027571"
+  Ventrolateral_preopticarea__VLPO__voltage property "http://identifiers.org/omit/OMIT_0026787"
+  Ventrolateral_preopticarea__VLPO__voltage property "http://identifiers.org/ncit/C43382"
+  Ventrolateral_preopticarea__VLPO__voltage property "http://identifiers.org/ncit/C70813"
+  Somnogen_level_H property "http://identifiers.org/ncit/C207"
+  Reaction_for_Monoaminergic__MA__voltage property "http://identifiers.org/ncit/C2321"
+  Reaction_for_Monoaminergic__MA__voltage property "http://identifiers.org/ncit/C62025"
+  Reaction_for_Monoaminergic__MA__voltage property "http://identifiers.org/ncit/C73238"
+  Reaction_for_homeostatic_sleep property "http://identifiers.org/ncit/C207"
+end
+
+Phillips2007_AscendingArousalSystem_SleepWakeDynamics is "Phillips2007_AscendingArousalSystem_SleepWakeDynamics"
+
+Phillips2007_AscendingArousalSystem_SleepWakeDynamics model_entity_is "http://identifiers.org/biomodels.db/MODEL1006230025",
+                                                                      "http://identifiers.org/biomodels.db/BIOMD0000000917"
+Phillips2007_AscendingArousalSystem_SleepWakeDynamics identity "http://identifiers.org/biomodels.db/MODEL1006230025"
+Phillips2007_AscendingArousalSystem_SleepWakeDynamics hypernym "http://identifiers.org/go/GO:0022410"
+Phillips2007_AscendingArousalSystem_SleepWakeDynamics container "http://identifiers.org/bto/BTO:0000146"
+Phillips2007_AscendingArousalSystem_SleepWakeDynamics taxon "http://identifiers.org/taxonomy/9606"
+Phillips2007_AscendingArousalSystem_SleepWakeDynamics description "http://identifiers.org/pubmed/17440218"
+Phillips2007_AscendingArousalSystem_SleepWakeDynamics property "http://identifiers.org/ncit/C99553",
+                                                               "http://identifiers.org/mamo/MAMO_0000046"

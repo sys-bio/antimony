@@ -1,0 +1,162 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function R6_Rate(subs, k1, k2, prod)
+  subs*(k1*subs + k2*prod);
+end
+
+R6_Rate is "R6_Rate"
+
+function R12_Rate(subs, k1, mod1, k2, mod2, k3, mod3)
+  subs*(k1*mod1 + k2*mod2 + k3*mod3);
+end
+
+R12_Rate is "R12_Rate"
+
+function MM_mod(kc, mod, subs, Km)
+  kc*mod*subs/(Km + subs);
+end
+
+MM_mod is "MM_mod"
+
+function Mod_MA1(k, mod, subs)
+  k*mod*subs;
+end
+
+Mod_MA1 is "Mod_MA1"
+
+
+model *MODEL1611160000()
+
+  // Compartments and Species:
+  species Bmi1, Bmi1ubd, R1B, R1Bubd, $USP7tot, Z, Zub, R1Buba, R1Bub, H2A;
+  species H2Auba;
+
+  // Reactions:
+  R1: Bmi1 => Bmi1ubd; compartment_*R1_k1*Bmi1;
+  R2: Bmi1ubd => Bmi1; compartment_*R2_k1*Bmi1ubd;
+  R3: R1B => R1Bubd; compartment_*R3_k1*R1B;
+  R4: R1Bubd => R1B; compartment_*Mod_MA1(R4_k, USP7tot, R1Bubd);
+  R5: Bmi1 + R1B -> Z; compartment_*(R5_k1*Bmi1*R1B - R5_k2*Z);
+  R6: Z => Zub; compartment_*R6_Rate(Z, R6_k1, R6_k2, Zub);
+  R7: Zub => Z; compartment_*MM_mod(R7_kc, USP7tot, Zub, R7_Km);
+  R8: Zub -> R1Buba + Bmi1; compartment_*(R8_k1*Zub - R8_k2*R1Buba*Bmi1);
+  R9: R1B => R1Bub; compartment_*R6_Rate(R1B, R9_k1, R9_k2, R1Bub);
+  R10: R1Bub => R1B; compartment_*Mod_MA1(R10_k, USP7tot, R1Bub);
+  R11: R1Buba => R1B; compartment_*Mod_MA1(R11_k, USP7tot, R1Buba);
+  R12: H2A => H2Auba; compartment_*R12_Rate(H2A, R12_k1, R1Bub, R12_k2, Zub, R12_k3, R1Buba);
+  R13: H2Auba => H2A; compartment_*R13_k1*H2Auba;
+  R1Bprod:  => R1B; compartment_*Constant_flux__irreversible(R1Bprod_v);
+  R1Bdeg: R1Bubd => ; compartment_*R1Bdeg_k1*R1Bubd;
+  Bmi1prod:  => Bmi1; compartment_*Constant_flux__irreversible(Bmi1prod_v);
+  Bmi1deg: Bmi1ubd => ; compartment_*Bmi1deg_k1*Bmi1ubd;
+
+  // Species initializations:
+  Bmi1 = 1.1;
+  Bmi1ubd = 1.08;
+  R1B = 0.1;
+  R1Bubd = 0.12;
+  USP7tot = 1;
+  Z = 0.2;
+  Zub = 0.12;
+  R1Buba = 0.44;
+  R1Bub = 0.02;
+  H2A = 0.1;
+  H2Auba = 0;
+
+  // Variable initializations:
+  R1_k1 = 0.002;
+  compartment_ = ;
+  R2_k1 = 0.002;
+  R3_k1 = 0.01;
+  R4_k = 0.001;
+  R5_k1 = 2;
+  R5_k2 = 0.2;
+  R6_k1 = 0.02;
+  R6_k2 = 0.2;
+  R7_kc = 0.005;
+  R7_Km = 0.0025;
+  R8_k1 = 0.012;
+  R8_k2 = 2e-05;
+  R9_k1 = 0.2;
+  R9_k2 = 0.2;
+  R10_k = 0.0075;
+  R11_k = 0.005;
+  R12_k1 = 0.002;
+  R12_k2 = 2;
+  R12_k3 = 0.2;
+  R13_k1 = 0.01;
+  R1Bprod_v = 7.5e-06;
+  R1Bdeg_k1 = 3e-05;
+  Bmi1prod_v = 7.5e-06;
+  Bmi1deg_k1 = 3e-05;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // SBO terms:
+  Bmi1.sboTerm = 252
+  Bmi1ubd.sboTerm = 252
+  R1B.sboTerm = 252
+  R1Bubd.sboTerm = 252
+  USP7tot.sboTerm = 252
+  Z.sboTerm = 252
+  Zub.sboTerm = 252
+  R1Buba.sboTerm = 252
+  R1Bub.sboTerm = 252
+  H2A.sboTerm = 252
+  H2Auba.sboTerm = 252
+  R1_k1.sboTerm = 41
+  R2_k1.sboTerm = 41
+  R3_k1.sboTerm = 41
+  R4_k.sboTerm = 41
+  R5_k1.sboTerm = 42
+  R5_k2.sboTerm = 42
+  R6_k1.sboTerm = 1
+  R6_k2.sboTerm = 1
+  R7_kc.sboTerm = 29
+  R7_Km.sboTerm = 29
+  R8_k1.sboTerm = 42
+  R8_k2.sboTerm = 42
+  R9_k1.sboTerm = 1
+  R9_k2.sboTerm = 1
+  R10_k.sboTerm = 41
+  R11_k.sboTerm = 41
+  R12_k1.sboTerm = 1
+  R12_k2.sboTerm = 1
+  R12_k3.sboTerm = 1
+  R13_k1.sboTerm = 41
+  R1Bprod_v.sboTerm = 1
+  R1Bdeg_k1.sboTerm = 1
+  Bmi1prod_v.sboTerm = 1
+  Bmi1deg_k1.sboTerm = 1
+
+  // CV terms:
+  Bmi1 hypernym "http://identifiers.org/uniprot/P35226"
+  Bmi1ubd hypernym "http://identifiers.org/uniprot/P35226"
+  R1B hypernym "http://identifiers.org/uniprot/Q06587"
+  R1Bubd hypernym "http://identifiers.org/uniprot/Q06587"
+  USP7tot hypernym "http://identifiers.org/uniprot/Q93009"
+  Z part "http://identifiers.org/uniprot/P35226"
+  Z part "http://identifiers.org/uniprot/Q06587"
+  Zub part "http://identifiers.org/uniprot/Q06587"
+  Zub part "http://identifiers.org/uniprot/P35226"
+  R1Buba hypernym "http://identifiers.org/uniprot/Q06587"
+  R1Bub hypernym "http://identifiers.org/uniprot/Q06587"
+  H2A hypernym "http://identifiers.org/uniprot/P16104"
+  H2Auba hypernym "http://identifiers.org/uniprot/P16104"
+end
+
+MODEL1611160000 is "NguyenLK2011 - Ubiquitination dynamics in Ring1B/Bmi1 system"
+
+MODEL1611160000 model_entity_is "http://identifiers.org/biomodels.db/MODEL1611160000"
+MODEL1611160000 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000622"
+MODEL1611160000 description "http://identifiers.org/pubmed/22194680"
+MODEL1611160000 hypernym "http://identifiers.org/go/GO:0030163",
+                         "http://identifiers.org/go/GO:0016567"
+MODEL1611160000 taxon "http://identifiers.org/taxonomy/131567"

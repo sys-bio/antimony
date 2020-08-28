@@ -1,0 +1,160 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function function_for_modified_reactions(k, modifier, substrate)
+  k*modifier*substrate;
+end
+
+function_for_modified_reactions is "function for modified reactions"
+
+
+model *Chen2006___Nitric_Oxide_Release_from_Endothelial_Cells()
+
+  // Compartments and Species:
+  compartment Endothelium;
+  species $Arg in Endothelium, Fe3__enos in Endothelium, Fe3__Arg in Endothelium;
+  species Fe2 in Endothelium, Fe2__Arg in Endothelium, Fe3__NO in Endothelium;
+  species NO in Endothelium, Fe2__NO in Endothelium, Fe3__NOHA in Endothelium;
+  species NOHA in Endothelium, Fe2__NOHA in Endothelium, $O2 in Endothelium;
+  species Fe3__O2__Arg in Endothelium, Fe3__O2__NOHA in Endothelium, Citrulline in Endothelium;
+
+  // Reactions:
+  Fe3__Arg_synthesis: $Arg + Fe3__enos -> Fe3__Arg; Endothelium*(k1*Arg*Fe3__enos - k1_prime*Fe3__Arg);
+  Fe2__Arg_synthesis_dissociation: $Arg + Fe2 -> Fe2__Arg; Endothelium*(k4*Arg*Fe2 - k4_prime*Fe2__Arg);
+  Arginine_synthesis:  => $Arg; Endothelium*Constant_flux__irreversible(S);
+  Fe2__formation: Fe3__enos => Fe2; Endothelium*k2*Fe3__enos;
+  Fe3__and_NO_formation: Fe3__NO => Fe3__enos + NO; Endothelium*k14*Fe3__NO;
+  Fe3__formation: Fe2__NO => Fe3__enos; Endothelium*function_for_modified_reactions(k13, O2, Fe2__NO);
+  Fe3__NOHA_formation_degradation: Fe3__NOHA -> Fe3__enos + NOHA; Endothelium*(k8*Fe3__NOHA - k8_prime*Fe3__enos*NOHA);
+  Fe2__Arg_formation: Fe3__Arg => Fe2__Arg; Endothelium*k3*Fe3__Arg;
+  Fe2__NOHA_formation: Fe2__NOHA -> Fe2 + NOHA; Endothelium*(k9*Fe2__NOHA - k9_prime*Fe2*NOHA);
+  Fe3__O2_Arg_formation_with_Oxygen_activation: Fe2__Arg => Fe3__O2__Arg; Endothelium*function_for_modified_reactions(k5, O2, Fe2__Arg);
+  Fe3__O2_Arg_degradation: Fe3__O2__Arg => Fe2__Arg; Endothelium*k5_prime*Fe3__O2__Arg;
+  Fe3__NOHA_synthesis: Fe3__O2__Arg => Fe3__NOHA; Endothelium*k6*Fe3__O2__Arg;
+  Fe2__NOHA_synthesis: Fe3__NOHA => Fe2__NOHA; Endothelium*k7*Fe3__NOHA;
+  Fe3__O2__NOHA_synthesis_with_Oxygen_activation: Fe2__NOHA => Fe3__O2__NOHA; Endothelium*function_for_modified_reactions(k10, O2, Fe2__NOHA);
+  Fe3__NO_and_Citrulline_synthesis: Fe3__O2__NOHA => Fe3__NO + Citrulline; Endothelium*k11*Fe3__O2__NOHA;
+  Fe2__NO_synthesis: Fe3__NO => Fe2__NO; Endothelium*k12*Fe3__NO;
+  Fe3__O2__NOHA_degradation: Fe3__O2__NOHA => Fe2__NOHA; Endothelium*k10_prime*Fe3__O2__NOHA;
+
+  // Species initializations:
+  Arg = 100;
+  Fe3__enos = 0.015;
+  Fe3__Arg = 0;
+  Fe2 = 0;
+  Fe2__Arg = 0;
+  Fe3__NO = 0;
+  NO = 0;
+  Fe2__NO = 0;
+  Fe3__NOHA = 0;
+  NOHA = 0;
+  Fe2__NOHA = 0;
+  O2 = 150;
+  Fe3__O2__Arg = 0;
+  Fe3__O2__NOHA = 0;
+  Citrulline = 0;
+
+  // Compartment initializations:
+  Endothelium = 1;
+
+  // Variable initializations:
+  k1 = 0.1;
+  k1_prime = 0.1;
+  k4 = 1.89;
+  k4_prime = 11.4;
+  S = 0;
+  k2 = 0.91;
+  k14 = 53.9;
+  k13 = 0.033;
+  k8 = 0.1;
+  k8_prime = 0.1;
+  k3 = 0.91;
+  k9 = 11.4;
+  k9_prime = 1.89;
+  k5 = 2.58;
+  k5_prime = 98;
+  k6 = 12.6;
+  k7 = 0.91;
+  k10 = 3.33;
+  k10_prime = 89.9;
+  k11 = 29.4;
+  k12 = 0.91;
+
+  // Other declarations:
+  const Endothelium, k1, k1_prime, k4, k4_prime, S, k2, k14, k13, k8, k8_prime;
+  const k3, k9, k9_prime, k5, k5_prime, k6, k7, k10, k10_prime, k11, k12;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-6 mole;
+
+  // Display Names:
+  Fe3__enos is "Fe3+(enos)";
+  Fe3__Arg is "Fe3+_Arg";
+  Fe2 is "Fe2+";
+  Fe2__Arg is "Fe2+_Arg";
+  Fe3__NO is "Fe3+_NO";
+  Fe2__NO is "Fe2+_NO";
+  Fe3__NOHA is "Fe3+_NOHA";
+  Fe2__NOHA is "Fe2+_NOHA";
+  Fe3__O2__Arg is "Fe3+_O2-_Arg";
+  Fe3__O2__NOHA is "Fe3+_O2-_NOHA";
+  Fe3__Arg_synthesis is "Fe3+_Arg synthesis";
+  Fe2__Arg_synthesis_dissociation is "Fe2+_Arg synthesis/dissociation";
+  Arginine_synthesis is "Arginine synthesis";
+  Fe2__formation is "Fe2+ formation";
+  Fe3__and_NO_formation is "Fe3+ and NO formation";
+  Fe3__formation is "Fe3+ formation";
+  Fe3__NOHA_formation_degradation is "Fe3+_NOHA formation/degradation";
+  Fe2__Arg_formation is "Fe2+_Arg formation";
+  Fe2__NOHA_formation is "Fe2+_NOHA formation";
+  Fe3__O2_Arg_formation_with_Oxygen_activation is "Fe3+_O2-Arg formation with Oxygen activation";
+  Fe3__O2_Arg_degradation is "Fe3+_O2-Arg degradation";
+  Fe3__NOHA_synthesis is "Fe3+_NOHA synthesis";
+  Fe2__NOHA_synthesis is "Fe2+_NOHA synthesis";
+  Fe3__O2__NOHA_synthesis_with_Oxygen_activation is "Fe3+_O2-_NOHA synthesis with Oxygen activation";
+  Fe3__NO_and_Citrulline_synthesis is "Fe3+_NO and Citrulline synthesis";
+  Fe2__NO_synthesis is "Fe2+_NO synthesis";
+  Fe3__O2__NOHA_degradation is "Fe3+_O2-_NOHA degradation";
+
+  // CV terms:
+  Endothelium hypernym "http://identifiers.org/bto/BTO:0001854"
+  Arg hypernym "http://identifiers.org/chebi/CHEBI:29016"
+  Fe3__enos hypernym "http://identifiers.org/chebi/CHEBI:29034"
+  Fe3__Arg part "http://identifiers.org/chebi/CHEBI:29034"
+  Fe3__Arg part "http://identifiers.org/chebi/CHEBI:29016"
+  Fe2 hypernym "http://identifiers.org/chebi/CHEBI:29033"
+  Fe2__Arg part "http://identifiers.org/chebi/CHEBI:29016"
+  Fe2__Arg part "http://identifiers.org/chebi/CHEBI:29033"
+  Fe3__NO part "http://identifiers.org/chebi/CHEBI:29034"
+  Fe3__NO part "http://identifiers.org/chebi/CHEBI:16480"
+  NO part "http://identifiers.org/chebi/CHEBI:16480"
+  Fe2__NO part "http://identifiers.org/chebi/CHEBI:29033"
+  Fe2__NO part "http://identifiers.org/chebi/CHEBI:16480"
+  Fe3__NOHA part "http://identifiers.org/chebi/CHEBI:29034"
+  Fe3__NOHA part "http://identifiers.org/chebi/CHEBI:47830"
+  NOHA hypernym "http://identifiers.org/chebi/CHEBI:47830"
+  Fe2__NOHA part "http://identifiers.org/chebi/CHEBI:29033"
+  Fe2__NOHA part "http://identifiers.org/chebi/CHEBI:47830"
+  O2 hypernym "http://identifiers.org/chebi/CHEBI:15379"
+  Fe3__O2__Arg part "http://identifiers.org/chebi/CHEBI:15379"
+  Fe3__O2__Arg part "http://identifiers.org/chebi/CHEBI:29016"
+  Fe3__O2__Arg part "http://identifiers.org/chebi/CHEBI:29034"
+  Fe3__O2__NOHA part "http://identifiers.org/chebi/CHEBI:15379"
+  Fe3__O2__NOHA part "http://identifiers.org/chebi/CHEBI:29034"
+  Fe3__O2__NOHA part "http://identifiers.org/chebi/CHEBI:47830"
+  Citrulline hypernym "http://identifiers.org/chebi/CHEBI:18211"
+end
+
+Chen2006___Nitric_Oxide_Release_from_Endothelial_Cells is "Chen2006 - Nitric Oxide Release from Endothelial Cells"
+
+Chen2006___Nitric_Oxide_Release_from_Endothelial_Cells model_entity_is "http://identifiers.org/biomodels.db/MODEL1006230005"
+Chen2006___Nitric_Oxide_Release_from_Endothelial_Cells description "http://identifiers.org/pubmed/16864000"
+Chen2006___Nitric_Oxide_Release_from_Endothelial_Cells model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000676"
+Chen2006___Nitric_Oxide_Release_from_Endothelial_Cells hypernym "http://identifiers.org/go/GO:0006809"
+Chen2006___Nitric_Oxide_Release_from_Endothelial_Cells container "http://identifiers.org/bto/BTO:0001854"
+Chen2006___Nitric_Oxide_Release_from_Endothelial_Cells description "http://identifiers.org/pubmed/16864000"

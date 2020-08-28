@@ -1,0 +1,297 @@
+// Created by libAntimony v2.13.0
+function M_source_0(sm)
+  sm;
+end
+
+M_source_0 is "M source"
+
+function M_growth_0(rm, M, km)
+  rm*(1 - M/km)*M;
+end
+
+M_growth_0 is "M growth"
+
+function M_decay_0(M, dm)
+  M*dm;
+end
+
+M_decay_0 is "M decay"
+
+function M_breakup_0(M, anm, N, bnm, acm, Tc, bcm, acnm, amm, bmm, arm, Tr, brm, dm)
+  M*(anm*N/(bnm + N) + acm*Tc/(bcm + Tc) + acnm*N*Tc/((bnm + N)*(bcm + Tc)))*(1 - amm*M/(bmm + M) - arm*Tr/(brm + Tr))*dm;
+end
+
+M_breakup_0 is "M breakup"
+
+function Tc_growth_0(rc, Tc, kc)
+  rc*(1 - Tc/kc)*Tc;
+end
+
+Tc_growth_0 is "Tc growth"
+
+function Tc_stimulation_0(rc, Tc, kc, amc, M, bmc, anc, N, bnc)
+  rc*(1 - Tc/kc)*(amc*M/(bmc + M) + anc*N/(bnc + N))*Tc;
+end
+
+Tc_stimulation_0 is "Tc stimulation"
+
+function Tc_death_0(dc, Tc)
+  dc*Tc;
+end
+
+Tc_death_0 is "Tc death"
+
+function N_source_0(sn)
+  sn;
+end
+
+N_source_0 is "N source"
+
+function N_growth_0(rn, N, kn)
+  rn*(1 - N/kn)*N;
+end
+
+N_growth_0 is "N growth"
+
+function N_stimulation_0(rn, N, kn, acn, Tc, bcn)
+  (rn*(1 - N/kn)*acn*Tc/(bcn + Tc))*N;
+end
+
+N_stimulation_0 is "N stimulation"
+
+function N_death_0(dn, N)
+  dn*N;
+end
+
+N_death_0 is "N death"
+
+function Tr_growth_0(rr, Tr, kr)
+  rr*(1 - Tr/kr)*Tr;
+end
+
+Tr_growth_0 is "Tr growth"
+
+function Tr_stimulation_0(rr, Tr, kr, amr, M, bmr)
+  (rr*(1 - Tr/kr)*amr*M/(bmr + M))*Tr;
+end
+
+Tr_stimulation_0 is "Tr stimulation"
+
+function Tr_death_0(dr, Tr)
+  dr*Tr;
+end
+
+Tr_death_0 is "Tr death"
+
+
+model *Gallaher2018___Tumor_Immune_dynamics_in_multiple_myeloma()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species M in compartment_, Tc in compartment_, N in compartment_, Tr in compartment_;
+
+  // Reactions:
+  M_breakup: M => ; compartment_*M_breakup_0(M, anm, N, bnm, acm, Tc, bcm, acnm, amm, bmm, arm, Tr, brm, dm);
+  M_decay: M => ; compartment_*M_decay_0(M, dm);
+  M_source:  => M; compartment_*M_source_0(sm);
+  M_growth:  => M; compartment_*M_growth_0(rm, M, km);
+  Tc_growth:  => Tc; compartment_*Tc_growth_0(rc, Tc, kc);
+  Tc_death: Tc => ; compartment_*Tc_death_0(dc, Tc);
+  Tc_stimulation:  => Tc; compartment_*Tc_stimulation_0(rc, Tc, kc, amc, N, bmc, anc, M, bnc);
+  N_source:  => N; compartment_*N_source_0(sn);
+  N_growth:  => N; compartment_*N_growth_0(rn, N, kn);
+  N_stimulation:  => N; compartment_*N_stimulation_0(rn, N, kn, acn, Tc, bcn);
+  N_death: N => ; compartment_*N_death_0(dn, N);
+  Tr_death: Tr => ; compartment_*Tr_death_0(dr, Tr);
+  Tr_growth:  => Tr; compartment_*Tr_growth_0(rr, Tr, kr);
+  Tr_stimulation:  => Tr; compartment_*Tr_stimulation_0(rr, Tr, kr, amr, M, bmr);
+
+  // Species initializations:
+  M = 4;
+  M has substance_per_volume;
+  Tc = 464;
+  Tc has substance_per_volume;
+  N = 227;
+  N has substance_per_volume;
+  Tr = 42;
+  Tr has substance_per_volume;
+
+  // Compartment initializations:
+  compartment_ = 1;
+  compartment_ has volume;
+
+  // Variable initializations:
+  sm = 0.001;
+  sm has unit_0;
+  rm = 0.0175;
+  rm has unit_0;
+  km = 10;
+  km has unit_1;
+  dm = 0.002;
+  dm has unit_0;
+  anm = 5;
+  anm has unit_1;
+  bnm = 150;
+  bnm has unit_1;
+  acm = 5;
+  acm has unit_1;
+  bcm = 375;
+  bcm has unit_1;
+  acnm = 8;
+  acnm has unit_1;
+  amm = 0.5;
+  amm has unit_1;
+  bmm = 3;
+  bmm has unit_1;
+  arm = 0.5;
+  arm has unit_1;
+  brm = 25;
+  brm has unit_1;
+  rc = 0.013;
+  rc has unit_0;
+  kc = 800;
+  kc has unit_1;
+  dc = 0.02;
+  dc has unit_0;
+  amc = 5;
+  amc has unit_1;
+  bmc = 3;
+  bmc has unit_1;
+  anc = 1;
+  anc has unit_1;
+  bnc = 150;
+  bnc has unit_1;
+  sn = 0.03;
+  sn has unit_0;
+  rn = 0.04;
+  rn has unit_0;
+  kn = 450;
+  kn has unit_1;
+  dn = 0.025;
+  dn has unit_0;
+  acn = 1;
+  acn has unit_1;
+  bcn = 375;
+  bcn has unit_1;
+  rr = 0.0831;
+  rr has unit_0;
+  kr = 80;
+  kr has unit_1;
+  dr = 0.0757;
+  dr has unit_0;
+  amr = 2;
+  amr has unit_1;
+  bmr = 3;
+  bmr has unit_1;
+
+  // Other declarations:
+  const compartment_, sm, rm, km, dm, anm, bnm, acm, bcm, acnm, amm, bmm;
+  const arm, brm, rc, kc, dc, amc, bmc, anc, bnc, sn, rn, kn, dn, acn, bcn;
+  const rr, kr, dr, amr, bmr;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = time_unit;
+  unit substance = 1e-3 mole;
+  unit unit_0 = 1 / 86400e-1 second;
+  unit unit_1 = 1 / dimensionless^-0;
+  unit extent = substance;
+  unit substance_per_volume = 1e-3 mole / 1e-3 litre;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1/d";
+  unit_1 is "1";
+  compartment_ is "compartment";
+  M_breakup is "M breakup";
+  M_decay is "M decay";
+  M_source is "M source";
+  M_growth is "M growth";
+  Tc_growth is "Tc growth";
+  Tc_death is "Tc death";
+  Tc_stimulation is "Tc stimulation";
+  N_source is "N source";
+  N_growth is "N growth";
+  N_stimulation is "N stimulation";
+  N_death is "N death";
+  Tr_death is "Tr death";
+  Tr_growth is "Tr growth";
+  Tr_stimulation is "Tr stimulation";
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/ncit/C94498"
+  M identity "http://identifiers.org/ncit/C17788"
+  Tc identity "http://identifiers.org/ncit/C39687"
+  Tc identity "http://identifiers.org/cl/CL:0000794"
+  N identity "http://identifiers.org/ncit/C12536"
+  N identity "http://identifiers.org/cl/CL:0000824"
+  Tr identity "http://identifiers.org/cl/CL:0000815"
+  Tr identity "http://identifiers.org/ncit/C78829"
+  sm hypernym "http://identifiers.org/sbo/SBO:0000610"
+  rm hypernym "http://identifiers.org/sbo/SBO:0000610"
+  km hypernym "http://identifiers.org/sbo/SBO:0000661"
+  anm hypernym "http://identifiers.org/ncit/C60693"
+  bnm hypernym "http://identifiers.org/ncit/C48228"
+  acm hypernym "http://identifiers.org/ncit/C60693"
+  bcm hypernym "http://identifiers.org/ncit/C48228"
+  acnm hypernym "http://identifiers.org/ncit/C60693"
+  amm hypernym "http://identifiers.org/ncit/C60693"
+  bmm hypernym "http://identifiers.org/ncit/C48228"
+  arm hypernym "http://identifiers.org/ncit/C60693"
+  brm hypernym "http://identifiers.org/ncit/C48228"
+  rc hypernym "http://identifiers.org/sbo/SBO:0000610"
+  kc hypernym "http://identifiers.org/sbo/SBO:0000661"
+  amc hypernym "http://identifiers.org/ncit/C60693"
+  bmc hypernym "http://identifiers.org/ncit/C48228"
+  anc hypernym "http://identifiers.org/ncit/C60693"
+  bnc hypernym "http://identifiers.org/ncit/C48228"
+  sn hypernym "http://identifiers.org/sbo/SBO:0000610"
+  rn hypernym "http://identifiers.org/sbo/SBO:0000610"
+  kn hypernym "http://identifiers.org/sbo/SBO:0000661"
+  acn hypernym "http://identifiers.org/ncit/C60693"
+  bcn hypernym "http://identifiers.org/ncit/C48228"
+  rr hypernym "http://identifiers.org/sbo/SBO:0000610"
+  kr hypernym "http://identifiers.org/sbo/SBO:0000661"
+  amr hypernym "http://identifiers.org/ncit/C60693"
+  bmr hypernym "http://identifiers.org/ncit/C48228"
+  M_breakup hypernym "http://identifiers.org/ncit/C18104"
+  M_breakup hypernym "http://identifiers.org/sbo/SBO:0000179"
+  M_decay hypernym "http://identifiers.org/sbo/SBO:0000179"
+  M_decay hypernym "http://identifiers.org/ncit/C18104"
+  M_source hypernym "http://identifiers.org/sbo/SBO:0000393"
+  M_source hypernym "http://identifiers.org/ncit/C18103"
+  M_growth hypernym "http://identifiers.org/ncit/C18103"
+  M_growth hypernym "http://identifiers.org/sbo/SBO:0000393"
+  Tc_growth hypernym "http://identifiers.org/go/GO:0035742"
+  Tc_growth hypernym "http://identifiers.org/sbo/SBO:0000393"
+  Tc_death hypernym "http://identifiers.org/go/GO:0008219"
+  Tc_death hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Tc_stimulation hypernym "http://identifiers.org/go/GO:0035742"
+  Tc_stimulation hypernym "http://identifiers.org/sbo/SBO:0000393"
+  N_source hypernym "http://identifiers.org/go/GO:0002324"
+  N_source hypernym "http://identifiers.org/sbo/SBO:0000393"
+  N_growth hypernym "http://identifiers.org/go/GO:0002324"
+  N_growth hypernym "http://identifiers.org/sbo/SBO:0000393"
+  N_stimulation hypernym "http://identifiers.org/go/GO:0002324"
+  N_stimulation hypernym "http://identifiers.org/sbo/SBO:0000393"
+  N_death hypernym "http://identifiers.org/go/GO:0008219"
+  N_death hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Tr_death hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Tr_death hypernym "http://identifiers.org/go/GO:0008219"
+  Tr_growth hypernym "http://identifiers.org/sbo/GO:0002311"
+  Tr_growth hypernym "http://identifiers.org/go/SBO:0000393"
+  Tr_stimulation hypernym "http://identifiers.org/sbo/SBO:0000393"
+  Tr_stimulation hypernym "http://identifiers.org/go/GO:0002311"
+end
+
+Gallaher2018___Tumor_Immune_dynamics_in_multiple_myeloma is "Gallaher2018 - Tumor–Immune dynamics in multiple myeloma"
+
+Gallaher2018___Tumor_Immune_dynamics_in_multiple_myeloma model_entity_is "http://identifiers.org/biomodels.db/MODEL1907050001",
+                                                                         "http://identifiers.org/biomodels.db/BIOMD0000000743"
+Gallaher2018___Tumor_Immune_dynamics_in_multiple_myeloma description "http://identifiers.org/pubmed/30172689"
+Gallaher2018___Tumor_Immune_dynamics_in_multiple_myeloma hypernym "http://identifiers.org/go/GO:0002418"
+Gallaher2018___Tumor_Immune_dynamics_in_multiple_myeloma property "http://identifiers.org/efo/0001378"
+Gallaher2018___Tumor_Immune_dynamics_in_multiple_myeloma property "http://identifiers.org/mamo/MAMO_0000046"
+Gallaher2018___Tumor_Immune_dynamics_in_multiple_myeloma taxon "http://identifiers.org/taxonomy/9606"

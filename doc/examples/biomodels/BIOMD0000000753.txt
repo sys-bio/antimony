@@ -1,0 +1,135 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function stimulation(p, T, E, g)
+  p*T*E/(g + T);
+end
+
+stimulation is "stimulation"
+
+function t_d(a, b, T)
+  a*b*T*T;
+end
+
+t_d is "t-d"
+
+function growth(a, T)
+  a*T;
+end
+
+growth is "growth"
+
+function interaction(k, sub, mod)
+  k*sub*mod;
+end
+
+interaction is "interaction"
+
+
+model *Figueredo2013_1___immunointeraction_base_model()
+
+  // Compartments and Species:
+  compartment tumor_microenvironment;
+  species T in tumor_microenvironment, E in tumor_microenvironment;
+
+  // Reactions:
+  tumor_growth:  => T; tumor_microenvironment*growth(a, T);
+  tumor_death: T => ; tumor_microenvironment*t_d(a, b, T);
+  tumor_killing: T => ; tumor_microenvironment*interaction(n, T, E);
+  immune_stimulation:  => E; tumor_microenvironment*stimulation(p, T, E, g);
+  immune_exhaustion: E => ; tumor_microenvironment*interaction(m, E, T);
+  immune_death: E => ; tumor_microenvironment*d*E;
+  immune_source:  => E; tumor_microenvironment*Constant_flux__irreversible(s);
+
+  // Species initializations:
+  T = 50;
+  T has substance_per_volume;
+  E = 5;
+  E has substance_per_volume;
+
+  // Compartment initializations:
+  tumor_microenvironment = 1;
+  tumor_microenvironment has volume;
+
+  // Variable initializations:
+  a = 1.636;
+  a has unit_0;
+  b = 0.004;
+  b has unit_0;
+  n = 1;
+  n has unit_0;
+  p = 1.131;
+  p has unit_0;
+  g = 20.19;
+  g has unit_0;
+  m = 0.00311;
+  m has unit_0;
+  d = 2;
+  d has unit_0;
+  s = 0.318;
+  s has unit_0;
+
+  // Other declarations:
+  const tumor_microenvironment, a, b, n, p, g, m, d, s;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = time_unit;
+  unit substance = 1e-3 mole;
+  unit unit_0 = 1 / dimensionless^-0;
+  unit extent = substance;
+  unit substance_per_volume = 1e-3 mole / 1e-3 litre;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1";
+  tumor_microenvironment is "tumor microenvironment";
+  tumor_growth is "tumor growth";
+  tumor_death is "tumor death";
+  tumor_killing is "tumor killing";
+  immune_stimulation is "immune stimulation";
+  immune_exhaustion is "immune exhaustion";
+  immune_death is "immune death";
+  immune_source is "immune source";
+
+  // CV terms:
+  tumor_microenvironment hypernym "http://identifiers.org/ncit/C94498"
+  T hypernym "http://identifiers.org/cl/CL:0001064"
+  E hypernym "http://identifiers.org/ncit/C28241"
+  a hypernym "http://identifiers.org/sbo/SBO:0000610"
+  b hypernym "http://identifiers.org/ncit/C53346"
+  p hypernym "http://identifiers.org/sbo/SBO:0000610"
+  g hypernym "http://identifiers.org/sbo/SBO:0000193"
+  m hypernym "http://identifiers.org/ncit/C53346"
+  d hypernym "http://identifiers.org/ncit/C53346"
+  s hypernym "http://identifiers.org/sbo/SBO:0000610"
+  tumor_growth hypernym "http://identifiers.org/go/GO:0008283"
+  tumor_growth hypernym "http://identifiers.org/sbo/SBO:0000393"
+  tumor_death hypernym "http://identifiers.org/go/GO:0008219"
+  tumor_death hypernym "http://identifiers.org/sbo/SBO:0000179"
+  tumor_killing hypernym "http://identifiers.org/go/GO:0002419"
+  tumor_killing hypernym "http://identifiers.org/sbo/SBO:0000179"
+  immune_stimulation hypernym "http://identifiers.org/sbo/SBO:0000393"
+  immune_stimulation hypernym "http://identifiers.org/go/GO:0008283"
+  immune_exhaustion hypernym "http://identifiers.org/go/GO:0008219"
+  immune_exhaustion hypernym "http://identifiers.org/sbo/SBO:0000179"
+  immune_death hypernym "http://identifiers.org/sbo/SBO:0000179"
+  immune_death hypernym "http://identifiers.org/go/GO:0008219"
+  immune_source hypernym "http://identifiers.org/sbo/SBO:0000393"
+  immune_source hypernym "http://identifiers.org/go/GO:0008283"
+end
+
+Figueredo2013_1___immunointeraction_base_model is "Figueredo2013/1 - immunointeraction base model"
+
+Figueredo2013_1___immunointeraction_base_model description "http://identifiers.org/pubmed/23734575"
+Figueredo2013_1___immunointeraction_base_model model_entity_is "http://identifiers.org/biomodels.db/MODEL1907180001",
+                                                               "http://identifiers.org/biomodels.db/BIOMD0000000753"
+Figueredo2013_1___immunointeraction_base_model hypernym "http://identifiers.org/go/GO:0002418"
+Figueredo2013_1___immunointeraction_base_model property "http://identifiers.org/mamo/MAMO_0000046"
+Figueredo2013_1___immunointeraction_base_model taxon "http://identifiers.org/taxonomy/9606"

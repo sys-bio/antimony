@@ -1,0 +1,284 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function Function_for_CD8_T_Cell_Death_Medicine(K_L, delta_L, M, L)
+  K_L*(1 - exp(-1*delta_L*M))*L;
+end
+
+Function_for_CD8_T_Cell_Death_Medicine is "Function_for_CD8_T_Cell_Death_Medicine"
+
+function Function_for_Lymphocyte_Synthesis_Turnover_Bone_Marrow(beta, alphabeta, C)
+  beta*(alphabeta - C);
+end
+
+Function_for_Lymphocyte_Synthesis_Turnover_Bone_Marrow is "Function_for_Lymphocyte_Synthesis_Turnover_Bone_Marrow"
+
+function Function_for_CD8_T_Cell_Stimulation_IL_2(p_I, L, I, g_I)
+  p_I*L*I/(g_I + I);
+end
+
+Function_for_CD8_T_Cell_Stimulation_IL_2 is "Function_for_CD8_T_Cell_Stimulation_IL-2"
+
+function Function_for_IL_2_Production_Activated_CD8(omega, L, I, zeta)
+  omega*L*I/(zeta + I);
+end
+
+Function_for_IL_2_Production_Activated_CD8 is "Function_for_IL-2_Production_Activated_CD8"
+
+function Function_for_NK_Production_and_Turnover(f, ef, C, N)
+  f*(ef*C - N);
+end
+
+Function_for_NK_Production_and_Turnover is "Function_for_NK_Production_and_Turnover"
+
+function Function_for_CD8_T_Cell_Stimulation_NK(r_1, N, T)
+  r_1*N*T;
+end
+
+Function_for_CD8_T_Cell_Stimulation_NK is "Function_for_CD8_T_Cell_Stimulation_NK"
+
+function Function_for_CD8_Breakdown_Stimulation_IL_2(u, L, C, I, kappa)
+  u*L^2*C*I/(kappa + I);
+end
+
+Function_for_CD8_Breakdown_Stimulation_IL_2 is "Function_for_CD8_Breakdown_Stimulation_IL-2"
+
+function Function_for_NK_Death_Medicine(M, K_N, delta_N, N)
+  K_N*(1 - exp(-1*delta_N*M))*N;
+end
+
+Function_for_NK_Death_Medicine is "Function_for_NK_Death_Medicine"
+
+function Function_for_Logistic_Tumour_Growth(a, T, b)
+  a*T*(1 - b*T);
+end
+
+Function_for_Logistic_Tumour_Growth is "Function_for_Logistic_Tumour_Growth"
+
+function Function_for_CD8_T_Cell_Turnover(phi, m, L, I)
+  phi*m*L/(phi + I);
+end
+
+Function_for_CD8_T_Cell_Turnover is "Function_for_CD8_T_Cell_Turnover"
+
+function Function_for_NK_Induced_Tumour_Death(c, N, T)
+  c*N*T;
+end
+
+Function_for_NK_Induced_Tumour_Death is "Function_for_NK-Induced_Tumour_Death"
+
+function Function_for_CD8_T_Cell_Stimulation_Tumour_Debris(j, T, L, k)
+  j*T*L/(k + T);
+end
+
+Function_for_CD8_T_Cell_Stimulation_Tumour_Debris is "Function_for_CD8_T_Cell_Stimulation_Tumour_Debris"
+
+function Function_for_NK_Stimulation_IL_2(p_N, N, I, g_N)
+  p_N*N*I/(g_N + I);
+end
+
+Function_for_NK_Stimulation_IL_2 is "Function_for_NK_Stimulation_IL-2"
+
+function Function_for_Lymphocyte_Death_Medicine(K_C, delta_C, M, C)
+  K_C*(1 - exp(-1*delta_C*M))*C;
+end
+
+Function_for_Lymphocyte_Death_Medicine is "Function_for_Lymphocyte_Death_Medicine"
+
+function Function_for_IL_2_Production_Naive(phi, C)
+  phi*C;
+end
+
+Function_for_IL_2_Production_Naive is "Function_for_IL-2_Production_Naive"
+
+function Function_for_Chemotherapy_Induced_Tumour_Death(K_T, delta_T, M, T)
+  K_T*(1 - exp(-1*delta_T*M))*T;
+end
+
+Function_for_Chemotherapy_Induced_Tumour_Death is "Function_for_Chemotherapy-Induced_Tumour_Death"
+
+function Function_for_NK_Death_Tumour_Killing(p, N, T)
+  p*N*T;
+end
+
+Function_for_NK_Death_Tumour_Killing is "Function_for_NK_Death_Tumour_Killing"
+
+function Function_for_CD8_T_Cell_Death_Tumour_Killing(q, L, T)
+  q*L*T;
+end
+
+Function_for_CD8_T_Cell_Death_Tumour_Killing is "Function_for_CD8_T_Cell_Death_Tumour_Killing"
+
+
+model *dePillis2009___Mathematical_model_creation_for_cancer_chemo_immunotherapy()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species T_Tumour_Cells in compartment_, N_Natural_Killer_Cells in compartment_;
+  species L_CD8_T_Cells in compartment_, C_Lymphocytes in compartment_, M_Chemotherapy_Drug in compartment_;
+  species I_IL_2 in compartment_;
+
+  // Assignment Rules:
+  D := ModelValue_34_0*((L_CD8_T_Cells/T_Tumour_Cells)^ModelValue_35_0/(ModelValue_36_0 + (L_CD8_T_Cells/T_Tumour_Cells)^ModelValue_35_0));
+
+  // Reactions:
+  Logistic_Tumour_Growth:  => T_Tumour_Cells; compartment_*Function_for_Logistic_Tumour_Growth(a, T_Tumour_Cells, b);
+  NK_Induced_Tumour_Death: T_Tumour_Cells => ; compartment_*Function_for_NK_Induced_Tumour_Death(c, N_Natural_Killer_Cells, T_Tumour_Cells);
+  CD8_T_Cell_Induced_Tumour_Death: T_Tumour_Cells => ; compartment_*D*T_Tumour_Cells;
+  Chemotherapy_Induced_Tumour_Death: T_Tumour_Cells => ; compartment_*Function_for_Chemotherapy_Induced_Tumour_Death(K_T, delta_T, M_Chemotherapy_Drug, T_Tumour_Cells);
+  NK_Death_Tumour_Killing: N_Natural_Killer_Cells => ; compartment_*Function_for_NK_Death_Tumour_Killing(p, N_Natural_Killer_Cells, T_Tumour_Cells);
+  NK_Stimulation_IL_2:  => N_Natural_Killer_Cells; compartment_*Function_for_NK_Stimulation_IL_2(p_N, N_Natural_Killer_Cells, I_IL_2, g_N);
+  NK_Death_Medicine: N_Natural_Killer_Cells => ; compartment_*Function_for_NK_Death_Medicine(M_Chemotherapy_Drug, K_N, delta_N, N_Natural_Killer_Cells);
+  CD8_T_Cell_Turnover: L_CD8_T_Cells => ; compartment_*Function_for_CD8_T_Cell_Turnover(phi, m, L_CD8_T_Cells, I_IL_2);
+  CD8_T_Cell_Death_Tumour_Killing: L_CD8_T_Cells => ; compartment_*Function_for_CD8_T_Cell_Death_Tumour_Killing(q, L_CD8_T_Cells, T_Tumour_Cells);
+  CD8_T_Cell_Stimulation_NK:  => L_CD8_T_Cells; compartment_*Function_for_CD8_T_Cell_Stimulation_NK(r_1, N_Natural_Killer_Cells, T_Tumour_Cells);
+  CD8_T_Cell_Activation:  => L_CD8_T_Cells; compartment_*Function_for_CD8_T_Cell_Stimulation_NK(r_2, C_Lymphocytes, T_Tumour_Cells);
+  CD8_Breakdown_Stimulation_IL_2: L_CD8_T_Cells => ; compartment_*Function_for_CD8_Breakdown_Stimulation_IL_2(u, L_CD8_T_Cells, C_Lymphocytes, I_IL_2, kappa);
+  CD8_T_Cell_Stimulation_Tumour_Debris:  => L_CD8_T_Cells; compartment_*Function_for_CD8_T_Cell_Stimulation_Tumour_Debris(j, T_Tumour_Cells, L_CD8_T_Cells, k);
+  CD8_T_Cell_Death_Medicine: L_CD8_T_Cells => ; compartment_*Function_for_CD8_T_Cell_Death_Medicine(K_L, delta_L, M_Chemotherapy_Drug, L_CD8_T_Cells);
+  Lymphocyte_Synthesis_Turnover_Bone_Marrow:  => C_Lymphocytes; compartment_*Function_for_Lymphocyte_Synthesis_Turnover_Bone_Marrow(beta, alphabeta, C_Lymphocytes);
+  Lymphocyte_Death_Medicine: C_Lymphocytes => ; compartment_*Function_for_Lymphocyte_Death_Medicine(K_C, delta_C, M_Chemotherapy_Drug, C_Lymphocytes);
+  Medicine_Excretion: M_Chemotherapy_Drug => ; compartment_*gamma_*M_Chemotherapy_Drug;
+  IL_2_Turnover: I_IL_2 => ; compartment_*mu_I*I_IL_2;
+  IL_2_Production_Naive:  => I_IL_2; compartment_*Function_for_IL_2_Production_Naive(phi, C_Lymphocytes);
+  IL_2_Production_Activated_CD8:  => I_IL_2; compartment_*Function_for_IL_2_Production_Activated_CD8(omega, L_CD8_T_Cells, I_IL_2, zeta);
+  Medicine_Injection:  => M_Chemotherapy_Drug; compartment_*Constant_flux__irreversible(v_M);
+  NK_Production_and_Turnover:  => N_Natural_Killer_Cells; compartment_*Function_for_NK_Production_and_Turnover(f, ef, C_Lymphocytes, N_Natural_Killer_Cells);
+  CD8_T_Cell_Stimulation_IL_2:  => L_CD8_T_Cells; compartment_*Function_for_CD8_T_Cell_Stimulation_IL_2(p_I, L_CD8_T_Cells, I_IL_2, g_I);
+  IL_2_Injection:  => I_IL_2; compartment_*Constant_flux__irreversible(v_I);
+  CD8_T_Cell_Activated_Injection:  => L_CD8_T_Cells; compartment_*Constant_flux__irreversible(v_L);
+
+  // Species initializations:
+  T_Tumour_Cells = 10000000;
+  N_Natural_Killer_Cells = 250000000;
+  L_CD8_T_Cells = 526800;
+  C_Lymphocytes = 2250000000;
+  M_Chemotherapy_Drug = 0;
+  I_IL_2 = 1073;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  a = 0.431;
+  b = 1.02e-09;
+  c = 2.9077e-13;
+  K_T = 0.9;
+  delta_T = 1.8328;
+  ef = 0.111;
+  f = 0.0125;
+  p = 2.794e-13;
+  p_N = 0.068;
+  g_N = 250360;
+  K_N = 0.0675;
+  delta_N = 1.8328;
+  m = 0.009;
+  theta = 0.0025036;
+  q = 3.422e-10;
+  r_1 = 2.9077e-11;
+  r_2 = 5.8467e-13;
+  p_I = 2.971;
+  g_I = 2503.6;
+  u = 4.417e-14;
+  kappa = 2503.6;
+  j = 0.01245;
+  k = 20190000;
+  K_L = 0.0486;
+  delta_L = 1.8328;
+  alphabeta = 2250000000;
+  beta = 0.0063;
+  K_C = 0.034;
+  delta_C = 1.8328;
+  gamma_ = 0.5199;
+  mu_I = 11.7427;
+  omega = 0.07874;
+  phi = 2.38405e-07;
+  zeta = 2503.6;
+  d = 0;
+  l = 0;
+  s = 0;
+  ModelValue_34_0 = d;
+  ModelValue_35_0 = l;
+  ModelValue_36_0 = s;
+  v_M = 0;
+  v_I = 0;
+  v_L = 0;
+
+  // Other declarations:
+  var D;
+  const compartment_, a, b, c, K_T, delta_T, ef, f, p, p_N, g_N, K_N, delta_N;
+  const m, theta, q, r_1, r_2, p_I, g_I, u, kappa, j, k, K_L, delta_L, alphabeta;
+  const beta, K_C, delta_C, gamma_, mu_I, omega, phi, zeta, d, l, s, ModelValue_34_0;
+  const ModelValue_35_0, ModelValue_36_0, v_M, v_I, v_L;
+
+  // Unit definitions:
+  unit time_unit = 86400 second;
+  unit substance = item;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+  I_IL_2 is "I_IL-2";
+  gamma_ is "gamma";
+  ModelValue_34_0 is "Initial for d";
+  ModelValue_35_0 is "Initial for l";
+  ModelValue_36_0 is "Initial for s";
+  NK_Induced_Tumour_Death is "NK-Induced_Tumour_Death";
+  CD8_T_Cell_Induced_Tumour_Death is "CD8_T_Cell-Induced_Tumour_Death";
+  Chemotherapy_Induced_Tumour_Death is "Chemotherapy-Induced_Tumour_Death";
+  NK_Stimulation_IL_2 is "NK_Stimulation_IL-2";
+  CD8_Breakdown_Stimulation_IL_2 is "CD8_Breakdown_Stimulation_IL-2";
+  IL_2_Turnover is "IL-2_Turnover";
+  IL_2_Production_Naive is "IL-2_Production_Naive";
+  IL_2_Production_Activated_CD8 is "IL-2_Production_Activated_CD8";
+  CD8_T_Cell_Stimulation_IL_2 is "CD8_T_Cell_Stimulation_IL-2";
+  IL_2_Injection is "IL-2_Injection";
+
+  // CV terms:
+  compartment_ hypernym "http://identifiers.org/ncit/C94498"
+  T_Tumour_Cells hypernym "http://identifiers.org/ncit/C12922"
+  N_Natural_Killer_Cells identity "http://identifiers.org/cl/CL:0000623"
+  L_CD8_T_Cells hypernym "http://identifiers.org/ncit/C12542"
+  C_Lymphocytes hypernym "http://identifiers.org/cl/CL:0000542"
+  M_Chemotherapy_Drug identity "http://identifiers.org/chebi/CHEBI:28748"
+  I_IL_2 identity "http://identifiers.org/uniprot/Q0GK43"
+  Logistic_Tumour_Growth hypernym "http://identifiers.org/ncit/C18081"
+  NK_Induced_Tumour_Death hypernym "http://identifiers.org/go/GO:0042267"
+  CD8_T_Cell_Induced_Tumour_Death hypernym "http://identifiers.org/go/GO:0008219"
+  Chemotherapy_Induced_Tumour_Death hypernym "http://identifiers.org/go/GO:0008219"
+  NK_Death_Tumour_Killing hypernym "http://identifiers.org/go/GO:0008219"
+  NK_Stimulation_IL_2 hypernym "http://identifiers.org/go/GO:0032819"
+  NK_Death_Medicine hypernym "http://identifiers.org/go/GO:0008219"
+  CD8_T_Cell_Turnover hypernym "http://identifiers.org/go/GO:0042098"
+  CD8_T_Cell_Death_Tumour_Killing hypernym "http://identifiers.org/go/GO:0008219"
+  CD8_T_Cell_Stimulation_NK hypernym "http://identifiers.org/go/GO:0031294"
+  CD8_T_Cell_Activation hypernym "http://identifiers.org/go/GO:0036037"
+  CD8_Breakdown_Stimulation_IL_2 hypernym "http://identifiers.org/go/GO:0008219"
+  CD8_T_Cell_Stimulation_Tumour_Debris hypernym "http://identifiers.org/go/GO:0043378"
+  CD8_T_Cell_Death_Medicine hypernym "http://identifiers.org/go/GO:0008219"
+  Lymphocyte_Synthesis_Turnover_Bone_Marrow hypernym "http://identifiers.org/ncit/C18081"
+  Lymphocyte_Death_Medicine hypernym "http://identifiers.org/go/GO:0008219"
+  Medicine_Excretion hypernym "http://identifiers.org/go/GO:0007588"
+  IL_2_Turnover hypernym "http://identifiers.org/go/GO:0030163"
+  IL_2_Production_Naive hypernym "http://identifiers.org/go/GO:0006412"
+  IL_2_Production_Activated_CD8 hypernym "http://identifiers.org/go/GO:0006412"
+  Medicine_Injection hypernym "http://identifiers.org/ncit/C149592"
+  NK_Production_and_Turnover part "http://identifiers.org/ncit/NCIT:C18081"
+  NK_Production_and_Turnover part "http://identifiers.org/go/GO:0008219"
+  CD8_T_Cell_Stimulation_IL_2 hypernym "http://identifiers.org/go/GO:0031294"
+  IL_2_Injection hypernym "http://identifiers.org/ncit/C149592"
+  CD8_T_Cell_Activated_Injection hypernym "http://identifiers.org/ncit/C149592"
+end
+
+dePillis2009___Mathematical_model_creation_for_cancer_chemo_immunotherapy is "dePillis2009 - Mathematical model creation for cancer chemo-immunotherapy"
+
+dePillis2009___Mathematical_model_creation_for_cancer_chemo_immunotherapy description "http://identifiers.org/doi/10.1080/17486700802216301"
+dePillis2009___Mathematical_model_creation_for_cancer_chemo_immunotherapy model_entity_is "http://identifiers.org/biomodels.db/MODEL1908050002",
+                                                                                          "http://identifiers.org/biomodels.db/BIOMD0000000779"
+dePillis2009___Mathematical_model_creation_for_cancer_chemo_immunotherapy property "http://identifiers.org/mamo/MAMO_0000046"
+dePillis2009___Mathematical_model_creation_for_cancer_chemo_immunotherapy property "http://identifiers.org/ncit/C15543"
+dePillis2009___Mathematical_model_creation_for_cancer_chemo_immunotherapy property "http://identifiers.org/ncit/C15632"

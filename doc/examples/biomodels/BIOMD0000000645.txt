@@ -1,0 +1,163 @@
+// Created by libAntimony v2.13.0
+model *Switching_behaviour_of_PP2A_inhibition_by_ARPP_16___mutual_inhibitions_and_PKA_inhibits_MAST3_and_dominant_negative_effect()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species $A46 in compartment_, $M in compartment_, $A88 in compartment_;
+  species $Complex in compartment_, $PKA in compartment_, $BB in compartment_;
+
+  // Assignment Rules:
+  Complex := (BB - sqrt(BB^2 - 4*A46*ModelValue_1))/2;
+  BB := A46 + ModelValue_1 + kmpp2a;
+  kmpp2a := (ModelValue_5 + ModelValue_6)*(1 + v*A88/ModelValue_0)/ModelValue_4;
+  A46bar := A46/ModelValue_0;
+
+  // Rate Rules:
+  A46' = ModelValue_8*M*(ARPPtot - A46)/(ModelValue_9 + ModelValue_25*A88/ModelValue_0 + ModelValue_29*(ModelValue_2 - M)/ModelValue_2 + (ARPPtot - A46)) - ModelValue_6*Complex;
+  M' = ModelValue_33*(ModelValue_2 - M) - ModelValue_17*A88*M - kpka*PKA*M;
+  A88' = ModelValue_10*PKA*(ARPPtot - A88)/(ModelValue_11 + ModelValue_28*A46/ModelValue_0 + ARPPtot - A88) - ModelValue_12*ModelValue_13*A88/(ModelValue_14 + A88);
+  PKA' = ModelValue_18*(ModelValue_3 - PKA)*ModelValue_22^ModelValue_19/(ModelValue_20^ModelValue_19 + ModelValue_22^ModelValue_19) - ModelValue_21*A46*PKA;
+
+  // Species initializations:
+  A46 = 9.80000000000001;
+  A46 has substance_per_volume;
+  M = 0;
+  M has substance_per_volume;
+  A88 = ARPPtot - A46;
+  A88 has substance_per_volume;
+  Complex has substance_per_volume;
+  PKA = 0;
+  PKA has substance_per_volume;
+  BB has substance_per_volume;
+
+  // Compartment initializations:
+  compartment_ = 1;
+  compartment_ has volume;
+
+  // Variable initializations:
+  ModelValue_8 = kcatmast;
+  ARPPtot = 10;
+  ModelValue_9 = kmmast;
+  ModelValue_25 = a;
+  ModelValue_0 = ARPPtot;
+  ModelValue_29 = r;
+  ModelValue_2 = MASTtot;
+  ModelValue_6 = kcatpp2a;
+  ModelValue_10 = kcatpka;
+  ModelValue_11 = kmpka;
+  ModelValue_28 = b;
+  ModelValue_12 = kcatpp1;
+  ModelValue_13 = pp1;
+  ModelValue_14 = kmpp1;
+  ModelValue_33 = kppx;
+  ModelValue_17 = k88;
+  kpka = 0.097;
+  ModelValue_18 = kcamp;
+  ModelValue_3 = PKActot;
+  ModelValue_22 = cAMP;
+  ModelValue_19 = n;
+  ModelValue_20 = KA;
+  ModelValue_21 = k46;
+  ModelValue_1 = PP2Atot;
+  PP2Atot = 2;
+  MASTtot = 2.7;
+  PKActot = 12;
+  kass = 3.3;
+  kdiss = 0.0033;
+  kcatpp2a = 0.05;
+  ModelValue_5 = kdiss;
+  v = 100;
+  ModelValue_4 = kass;
+  kcatmast = 0.0988;
+  kmmast = 0.09;
+  kcatpka = 0.935;
+  kmpka = 1.6;
+  kcatpp1 = 0.5;
+  pp1 = 5;
+  kmpp1 = 1;
+  k88 = 0.01865;
+  kcamp = 0.7;
+  n = 2;
+  KA = 10;
+  k46 = 0.02335;
+  cAMP = 0;
+  a = 0.37526;
+  b = 2.36;
+  r = 1.2;
+  kppx = 0.05;
+
+  // Other declarations:
+  var kmpp2a, A46bar;
+  const compartment_, ModelValue_8, ARPPtot, ModelValue_9, ModelValue_25;
+  const ModelValue_0, ModelValue_29, ModelValue_2, ModelValue_6, ModelValue_10;
+  const ModelValue_11, ModelValue_28, ModelValue_12, ModelValue_13, ModelValue_14;
+  const ModelValue_33, ModelValue_17, kpka, ModelValue_18, ModelValue_3, ModelValue_22;
+  const ModelValue_19, ModelValue_20, ModelValue_21, ModelValue_1, PP2Atot;
+  const MASTtot, PKActot, kass, kdiss, kcatpp2a, ModelValue_5, v, ModelValue_4;
+  const kcatmast, kmmast, kcatpka, kmpka, kcatpp1, pp1, kmpp1, k88, kcamp;
+  const n, KA, k46, cAMP, a, b, r, kppx;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = litre;
+  unit time_unit = time_unit;
+  unit substance = 1e-6 mole;
+  unit extent = substance;
+  unit substance_per_volume = 1e-6 mole / litre;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+  ModelValue_8 is "Initial for kcatmast";
+  ModelValue_9 is "Initial for kmmast";
+  ModelValue_25 is "Initial for a";
+  ModelValue_0 is "Initial for ARPPtot";
+  ModelValue_29 is "Initial for r";
+  ModelValue_2 is "Initial for MASTtot";
+  ModelValue_6 is "Initial for kcatpp2a";
+  ModelValue_10 is "Initial for kcatpka";
+  ModelValue_11 is "Initial for kmpka";
+  ModelValue_28 is "Initial for b";
+  ModelValue_12 is "Initial for kcatpp1";
+  ModelValue_13 is "Initial for pp1";
+  ModelValue_14 is "Initial for kmpp1";
+  ModelValue_33 is "Initial for kppx";
+  ModelValue_17 is "Initial for k88";
+  ModelValue_18 is "Initial for kcamp";
+  ModelValue_3 is "Initial for PKActot";
+  ModelValue_22 is "Initial for cAMP";
+  ModelValue_19 is "Initial for n";
+  ModelValue_20 is "Initial for KA";
+  ModelValue_21 is "Initial for k46";
+  ModelValue_1 is "Initial for PP2Atot";
+  ModelValue_5 is "Initial for kdiss";
+  ModelValue_4 is "Initial for kass";
+
+  // SBO terms:
+  compartment_.sboTerm = 290
+
+  // CV terms:
+  A46 hypernym "urn:miriam:pr:PR_P56212-2"
+  M hypernym "http://identifiers.org/uniprot/Q3U214"
+  A88 hypernym "urn:miriam:pr:PR_P56212-2"
+  Complex hypernym "http://identifiers.org/go/GO:0000159"
+  PKA hypernym "http://identifiers.org/uniprot/P05132"
+  BB part "urn:miriam:pr:PR_P56212-2"
+  kcatpp2a description "http://identifiers.org/pubmed/25683003"
+  kcatmast description "http://identifiers.org/pubmed/28613156"
+  kcatpka description "http://identifiers.org/pubmed/28613156"
+  kmpka description "http://identifiers.org/pubmed/28613156"
+  kcamp description "http://identifiers.org/pubmed/14625280"
+  n description "http://identifiers.org/pubmed/14625280"
+  KA description "http://identifiers.org/pubmed/14625280"
+end
+
+Switching_behaviour_of_PP2A_inhibition_by_ARPP_16___mutual_inhibitions_and_PKA_inhibits_MAST3_and_dominant_negative_effect is "Musante2017 - Switching behaviour of PP2A inhibition by ARPP-16 - mutual inhibitions and PKA inhibits MAST3 and dominant negative effect"
+
+Switching_behaviour_of_PP2A_inhibition_by_ARPP_16___mutual_inhibitions_and_PKA_inhibits_MAST3_and_dominant_negative_effect model_entity_is "http://identifiers.org/biomodels.db/MODEL1707020002"
+Switching_behaviour_of_PP2A_inhibition_by_ARPP_16___mutual_inhibitions_and_PKA_inhibits_MAST3_and_dominant_negative_effect model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000645"
+Switching_behaviour_of_PP2A_inhibition_by_ARPP_16___mutual_inhibitions_and_PKA_inhibits_MAST3_and_dominant_negative_effect description "http://identifiers.org/pubmed/28613156"
+Switching_behaviour_of_PP2A_inhibition_by_ARPP_16___mutual_inhibitions_and_PKA_inhibits_MAST3_and_dominant_negative_effect origin "http://identifiers.org/bto/BTO:0002181"
+Switching_behaviour_of_PP2A_inhibition_by_ARPP_16___mutual_inhibitions_and_PKA_inhibits_MAST3_and_dominant_negative_effect property "http://identifiers.org/mamo/MAMO_0000046"
+Switching_behaviour_of_PP2A_inhibition_by_ARPP_16___mutual_inhibitions_and_PKA_inhibits_MAST3_and_dominant_negative_effect taxon "http://identifiers.org/taxonomy/10095"

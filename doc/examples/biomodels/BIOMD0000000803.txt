@@ -1,0 +1,88 @@
+// Created by libAntimony v2.13.0
+model *Park2019___IL7_receptor_signaling_in_T_cells()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species IL7Ra in compartment_, IL15Rbeta in compartment_, gamma_c in compartment_;
+  species IL7Ru in compartment_, IL15Ru in compartment_, IL7Rb in compartment_;
+  species IL15Rb in compartment_, IL7 in compartment_, IL15 in compartment_;
+
+  // Assignment Rules:
+  f_7 := IL7Rb/(IL7Rb + IL15Rb);
+
+  // Reactions:
+  IL7Ru_Formation: IL7Ra + gamma_c => IL7Ru; compartment_*k_f_1*IL7Ra*gamma_c;
+  IL7Ru_Dissociation: IL7Ru => IL7Ra + gamma_c; compartment_*k_r_1*IL7Ru;
+  IL15Ru_Formation: IL15Rbeta + gamma_c => IL15Ru; compartment_*k_f_2*IL15Rbeta*gamma_c;
+  IL15Ru_Dissociation: IL15Ru => IL15Rbeta + gamma_c; compartment_*k_r_2*IL15Ru;
+  IL7Rb_Formation: IL7 + IL7Ru => IL7Rb; compartment_*k_f_3*IL7*IL7Ru;
+  IL7Rb_Dissociation: IL7Rb => IL7 + IL7Ru; compartment_*k_r_3*IL7Rb;
+  IL15Rb_Formation: IL15 + IL15Ru => IL15Rb; compartment_*k_f_4*IL15*IL15Ru;
+  IL15Rb_Dissociation: IL15Rb => IL15 + IL15Ru; compartment_*k_r_4*IL15Rb;
+
+  // Species initializations:
+  IL7Ra = 1000;
+  IL15Rbeta = 1000;
+  gamma_c = 100000;
+  IL7Ru = 0;
+  IL15Ru = 0;
+  IL7Rb = 0;
+  IL15Rb = 0;
+  IL7 = 6022.14;
+  IL15 = 602.214;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  rho = 100000;
+  k_f_1 = 0.000166054;
+  k_r_1 = 0.1;
+  k_f_2 = 0.000166054;
+  k_r_2 = 0.1;
+  k_f_3 = 0.000166054;
+  k_r_3 = 0.1;
+  k_f_4 = 1.66054e-05;
+  k_r_4 = 0.1;
+
+  // Other declarations:
+  var f_7;
+  const compartment_, rho, k_f_1, k_r_1, k_f_2, k_r_2, k_f_3, k_r_3, k_f_4;
+  const k_r_4;
+
+  // Unit definitions:
+  unit time_unit = 3600 second;
+  unit substance = 1e-9 mole;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/cl/CL:0000084"
+  IL7Ra identity "http://identifiers.org/ncit/C26278"
+  IL15Rbeta identity "http://identifiers.org/ncit/C26267"
+  gamma_c hypernym "http://identifiers.org/pr/PR:P31785"
+  IL7Ru identity "http://identifiers.org/orphanet/159734"
+  IL15Ru identity "http://identifiers.org/ncit/C128303"
+  IL7Rb hypernym "http://identifiers.org/go/GO:1905540"
+  IL15Rb identity "http://identifiers.org/go/GO:1905543"
+  IL7 identity "http://identifiers.org/ncit/C20510"
+  IL15 identity "http://identifiers.org/ncit/C20517"
+  IL7Ru_Formation hypernym "http://identifiers.org/go/GO:0032403"
+  IL7Ru_Dissociation hypernym "http://identifiers.org/sbo/SBO:0000180"
+  IL15Ru_Formation hypernym "http://identifiers.org/go/GO:0032403"
+  IL15Ru_Dissociation hypernym "http://identifiers.org/sbo/SBO:0000180"
+  IL7Rb_Formation identity "http://identifiers.org/go/GO:0005139"
+  IL7Rb_Dissociation hypernym "http://identifiers.org/sbo/SBO:0000180"
+  IL15Rb_Formation identity "http://identifiers.org/go/GO:0016170"
+  IL15Rb_Dissociation hypernym "http://identifiers.org/sbo/SBO:0000180"
+end
+
+Park2019___IL7_receptor_signaling_in_T_cells is "Park2019 - IL7 receptor signaling in T cells"
+
+Park2019___IL7_receptor_signaling_in_T_cells description "http://identifiers.org/doi/10.1002/wsbm.1447"
+Park2019___IL7_receptor_signaling_in_T_cells model_entity_is "http://identifiers.org/biomodels.db/MODEL1908210001",
+                                                             "http://identifiers.org/biomodels.db/BIOMD0000000803"
+Park2019___IL7_receptor_signaling_in_T_cells property "http://identifiers.org/go/GO:0043029"
+Park2019___IL7_receptor_signaling_in_T_cells property "http://identifiers.org/mamo/MAMO_0000046"

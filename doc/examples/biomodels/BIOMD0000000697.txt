@@ -1,0 +1,295 @@
+// Created by libAntimony v2.13.0
+function function_removed_from_oscillatory_system_1(Cdk2_CycE, kon, phi)
+  kon*phi*Cdk2_CycE;
+end
+
+function_removed_from_oscillatory_system_1 is "function removed from oscillatory system_1"
+
+function function_removed_from_oscillatory_system_2(PCdk2_CycE, kon, phi)
+  kon*phi*PCdk2_CycE;
+end
+
+function_removed_from_oscillatory_system_2 is "function removed from oscillatory system_2"
+
+function Function_for_degradation_of_Xic_Cyc_Cdk_1(Deg_a, Xic_PCdk2_CycErem, kedeg)
+  kedeg*Xic_PCdk2_CycErem*Deg_a;
+end
+
+Function_for_degradation_of_Xic_Cyc_Cdk_1 is "Function for degradation of Xic_Cyc_Cdk_1"
+
+function Function_for_degradation_of_Xic_Cyc_Cdk_2(Deg_a, Xic_Cdk2_CycErem, kedeg)
+  kedeg*Xic_Cdk2_CycErem*Deg_a;
+end
+
+Function_for_degradation_of_Xic_Cyc_Cdk_2 is "Function for degradation of Xic_Cyc_Cdk_2"
+
+function function_Hill_Cdk2_CycE_removal_1(Heav, kdact)
+  kdact*Heav;
+end
+
+function_Hill_Cdk2_CycE_removal_1 is "function Hill_Cdk2_CycE_removal_1"
+
+function Function_phosphorylation_with_Wee1_1(Wee1_a, Xic_Cdk2_CycE, kwee)
+  kwee*Wee1_a*Xic_Cdk2_CycE;
+end
+
+Function_phosphorylation_with_Wee1_1 is "Function phosphorylation with Wee1_1"
+
+function Function_phosphorylation_with_Wee1_2(Cdk2_CycE, Wee1_a, kwee)
+  kwee*Wee1_a*Cdk2_CycE;
+end
+
+Function_phosphorylation_with_Wee1_2 is "Function phosphorylation with Wee1_2"
+
+function Function_for_Kin_a_1(Cdk2_CycE, Jiact, Jiinact, Kin_a, kiact, kiinact)
+  kiact*(1 - Kin_a)/(Jiact + 1 - Kin_a) - kiinact*Cdk2_CycE*Kin_a/(Jiinact + Kin_a);
+end
+
+Function_for_Kin_a_1 is "Function for Kin_a_1"
+
+function Function_for_degradation_of_Xic_Cyc_Cdk_3(Cdk2_CycErem, Deg_a, kedeg)
+  kedeg*Cdk2_CycErem*Deg_a;
+end
+
+Function_for_degradation_of_Xic_Cyc_Cdk_3 is "Function for degradation of Xic_Cyc_Cdk_3"
+
+function Function_for_degradation_of_Xic_Cyc_Cdk_4(Deg_a, PCdk2_CycErem, kedeg)
+  kedeg*PCdk2_CycErem*Deg_a;
+end
+
+Function_for_degradation_of_Xic_Cyc_Cdk_4 is "Function for degradation of Xic_Cyc_Cdk_4"
+
+function function_removed_from_oscillatory_system_3(Xic_PCdk2_CycE, kon, phi)
+  kon*phi*Xic_PCdk2_CycE;
+end
+
+function_removed_from_oscillatory_system_3 is "function removed from oscillatory system_3"
+
+function function_removed_from_oscillatory_system_4(Xic_Cdk2_CycE, kon, phi)
+  kon*phi*Xic_Cdk2_CycE;
+end
+
+function_removed_from_oscillatory_system_4 is "function removed from oscillatory system_4"
+
+function Function_for_Wee1_a_1(Jwact, Jwinact, Kin_a, Wee1_a, Wee1_total, kwact, kwinact)
+  kwact*(Wee1_total - Wee1_a)/(Jwact + Wee1_total - Wee1_a) - kwinact*Kin_a*Wee1_a/(Jwinact + Wee1_a);
+end
+
+Function_for_Wee1_a_1 is "Function for Wee1_a_1"
+
+
+model *Cell_Cyle_Model()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species PCdk2_CycE in compartment_, Cdk2_CycE in compartment_, Wee1_a in compartment_;
+  species $Wee1_total in compartment_, Cdk2_CycErem in compartment_, PCdk2_CycErem in compartment_;
+  species Deg_a in compartment_, Xic in compartment_, Xic_Cdk2_CycE in compartment_;
+  species Xic_PCdk2_CycE in compartment_, Xic_Cdk2_CycErem in compartment_;
+  species Xic_PCdk2_CycErem in compartment_, Xicrem in compartment_, $Cyc_total in compartment_;
+  species $Xic_total in compartment_, Kin_a in compartment_;
+
+  // Assignment Rules:
+  Cyc_total := Xic_PCdk2_CycE + Xic_Cdk2_CycE + Xic_PCdk2_CycErem + Xic_Cdk2_CycErem + PCdk2_CycErem + Cdk2_CycErem + Cdk2_CycE + PCdk2_CycE;
+  Xic_total := (Xic + Xic_PCdk2_CycE + Xic_Cdk2_CycE + Xic_PCdk2_CycErem + Xic_Cdk2_CycErem + Xicrem)/3;
+  Heav := piecewise(0, x < 0, 1);
+  x := Cdk2_CycErem - theta;
+  phi := (epsilon + pool^n)/(L^n + pool^n);
+  pool := Cdk2_CycErem + PCdk2_CycErem + Xic_Cdk2_CycErem + Xic_PCdk2_CycErem;
+
+  // Reactions:
+  Xic_Cdk2_CycE_association: Xic + Cdk2_CycE => Xic_Cdk2_CycE; compartment_*kassoc*Xic*Cdk2_CycE;
+  Xic_Cdk2_CycErem_association: Xic + Cdk2_CycErem => Xic_Cdk2_CycErem; compartment_*kassoc*Xic*Cdk2_CycErem;
+  Xic_Cdk2_CycE_dissociation: Xic_Cdk2_CycE => Xic + Cdk2_CycE; compartment_*kdissoc*Xic_Cdk2_CycE;
+  Xic_Cdk2_CycErem_dissociation: Xic_Cdk2_CycErem => Xic + Cdk2_CycErem; compartment_*kdissoc*Xic_Cdk2_CycErem;
+  Cdk2_CycErem_to_not_rem: Cdk2_CycErem => Cdk2_CycE; compartment_*koff*Cdk2_CycErem;
+  PCdk2_CycE_to_not_rem: PCdk2_CycErem => PCdk2_CycE; compartment_*koff*PCdk2_CycErem;
+  Cdk2_CycE_to_rem: Cdk2_CycE => Cdk2_CycErem; compartment_*function_removed_from_oscillatory_system_1(Cdk2_CycE, kon, phi);
+  PCdk2_CycE_to_rem: PCdk2_CycE => PCdk2_CycErem; compartment_*function_removed_from_oscillatory_system_2(PCdk2_CycE, kon, phi);
+  X_degadation: Xic_Cdk2_CycErem => Cdk2_CycErem; compartment_*kxdeg*Xic_Cdk2_CycErem;
+  X_degradation_phosphorylated_complex: Xic_PCdk2_CycErem => PCdk2_CycErem; compartment_*kxdeg*Xic_PCdk2_CycErem;
+  Degradation_XicPCdk2_CycErem: Xic_PCdk2_CycErem => Xicrem; compartment_*Function_for_degradation_of_Xic_Cyc_Cdk_1(Deg_a, Xic_PCdk2_CycErem, kedeg);
+  Degradation_XicCdk2_CycErem: Xic_Cdk2_CycErem => Xicrem; compartment_*Function_for_degradation_of_Xic_Cyc_Cdk_2(Deg_a, Xic_Cdk2_CycErem, kedeg);
+  Dephos_Xic_PCdk2_CycE: Xic_PCdk2_CycE => Xic_Cdk2_CycE; compartment_*k25A*Xic_PCdk2_CycE;
+  Dephos_PCdk2_CycE: PCdk2_CycE => Cdk2_CycE; compartment_*k25A*PCdk2_CycE;
+  Degradation_increase:  => Deg_a; compartment_*function_Hill_Cdk2_CycE_removal_1(Heav, kdact);
+  Phos_Xic_PCdk2_CycE: Xic_Cdk2_CycE => Xic_PCdk2_CycE; compartment_*Function_phosphorylation_with_Wee1_1(Wee1_a, Xic_Cdk2_CycE, kwee);
+  Phos_PCdk2_CycE: Cdk2_CycE => PCdk2_CycE; compartment_*Function_phosphorylation_with_Wee1_2(Cdk2_CycE, Wee1_a, kwee);
+  Kinase__regulation: Cdk2_CycE => Kin_a + Cdk2_CycE; compartment_*Function_for_Kin_a_1(Cdk2_CycE, Jiact, Jiinact, Kin_a, kiact, kiinact);
+  Xic_PCdk2_CycE_association: Xic + PCdk2_CycE => Xic_PCdk2_CycE; compartment_*kassoc*Xic*PCdk2_CycE;
+  Xic_PCdk2_CycErem_association: Xic + PCdk2_CycErem => Xic_PCdk2_CycErem; compartment_*kassoc*Xic*PCdk2_CycErem;
+  Xic_PCdk2_CycE_dissociation: Xic_PCdk2_CycE => Xic + PCdk2_CycE; compartment_*kdissoc*Xic_PCdk2_CycE;
+  Xic_PCdk2_CycErem_dissociation: Xic_PCdk2_CycErem => Xic + PCdk2_CycErem; compartment_*kdissoc*Xic_PCdk2_CycErem;
+  Degradation_Cdk2_CycErem: Cdk2_CycErem => ; compartment_*Function_for_degradation_of_Xic_Cyc_Cdk_3(Cdk2_CycErem, Deg_a, kedeg);
+  Degradation_PCdk2_CycErem: PCdk2_CycErem => ; compartment_*Function_for_degradation_of_Xic_Cyc_Cdk_4(Deg_a, PCdk2_CycErem, kedeg);
+  Xicrem_degradation: Xicrem => ; compartment_*kxdeg*Xicrem;
+  Xic_PCdk2_CycErem_to_not_rem: Xic_PCdk2_CycErem => Xic_PCdk2_CycE; compartment_*koff*Xic_PCdk2_CycErem;
+  Xic_Cdk2_CycErem_to_not_rem: Xic_Cdk2_CycErem => Xic_Cdk2_CycE; compartment_*koff*Xic_Cdk2_CycErem;
+  Xic_PCdk2_CycE_to_rem: Xic_PCdk2_CycE => Xic_PCdk2_CycErem; compartment_*function_removed_from_oscillatory_system_3(Xic_PCdk2_CycE, kon, phi);
+  Xic_Cdk2_CycE_to_rem: Xic_Cdk2_CycE => Xic_Cdk2_CycErem; compartment_*function_removed_from_oscillatory_system_4(Xic_Cdk2_CycE, kon, phi);
+  Wee1_regulation:  => Wee1_a; compartment_*Function_for_Wee1_a_1(Jwact, Jwinact, Kin_a, Wee1_a, Wee1_total, kwact, kwinact);
+
+  // Species initializations:
+  PCdk2_CycE = 0.94;
+  Cdk2_CycE = 0.0599999999999999;
+  Wee1_a = 1.02;
+  Wee1_total = 7.99999999999998;
+  Cdk2_CycErem = 0;
+  PCdk2_CycErem = 0;
+  Deg_a = 0;
+  Xic = 2.99999999999998;
+  Xic_Cdk2_CycE = 0;
+  Xic_PCdk2_CycE = 0;
+  Xic_Cdk2_CycErem = 0;
+  Xic_PCdk2_CycErem = 0;
+  Xicrem = 0;
+  Kin_a = 0.6;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  Jwact = 0.01;
+  Jwinact = 0.01;
+  Jwinact has unit_0;
+  kwact = 0.75;
+  kwact has unit_1;
+  kwinact = 1.5;
+  kwinact has unit_1;
+  Jiact = 0.01;
+  Jiinact = 0.01;
+  kiact = 0.15;
+  kiact has unit_1;
+  kiinact = 0.6;
+  kiinact has unit_1;
+  Heav has unit_0;
+  kdact = 0.023;
+  kdact has unit_1;
+  theta = 0.3;
+  kwee = 1.5;
+  kwee has unit_1;
+  k25A = 0.1;
+  k25A has unit_1;
+  kon = 0.02;
+  kon has unit_1;
+  koff = 0.0001;
+  koff has unit_1;
+  kassoc = 0.1;
+  kassoc has unit_1;
+  kdissoc = 0.001;
+  kdissoc has unit_1;
+  kedeg = 0.017;
+  kedeg has unit_1;
+  kxdeg = 0.01;
+  kxdeg has unit_1;
+  phi has unit_0;
+  epsilon = 0.001;
+  pool has unit_0;
+  n = 4;
+  L = 0.4;
+
+  // Other declarations:
+  var Heav, x, phi, pool;
+  const compartment_, Jwact, Jwinact, kwact, kwinact, Jiact, Jiinact, kiact;
+  const kiinact, kdact, theta, kwee, k25A, kon, koff, kassoc, kdissoc, kedeg;
+  const kxdeg, epsilon, n, L;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 60 second;
+  unit substance = 1e-3 mole;
+  unit unit_0 = 1 / dimensionless^-0;
+  unit unit_1 = 1 / second;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1";
+  unit_1 is "1/s";
+  compartment_ is "embryo";
+  Deg_a is "Deg_CycE";
+  Kinase__regulation is "Kinase _regulation";
+  Xicrem_degradation is "Xicrem degradation";
+
+  // CV terms:
+  compartment_ hypernym "http://identifiers.org/bto/BTO:0000379"
+  PCdk2_CycE part "http://identifiers.org/uniprot/P50756"
+  PCdk2_CycE hypernym "http://identifiers.org/go/GO:0097134"
+  PCdk2_CycE part "http://identifiers.org/uniprot/P23437"
+  Cdk2_CycE part "http://identifiers.org/uniprot/P50756"
+  Cdk2_CycE hypernym "http://identifiers.org/go/GO:0097134"
+  Cdk2_CycE part "http://identifiers.org/uniprot/P23437"
+  Wee1_a version "http://identifiers.org/uniprot/Q8QGV2"
+  Wee1_a property "urn:miriam:pato:PATO_0002354"
+  Wee1_total version "http://identifiers.org/uniprot/Q8QGV2"
+  Cdk2_CycErem part "http://identifiers.org/uniprot/P23437"
+  Cdk2_CycErem hypernym "http://identifiers.org/go/GO:0097134"
+  Cdk2_CycErem property "http://identifiers.org/pato/PATO:0002355"
+  Cdk2_CycErem part "http://identifiers.org/uniprot/P50756"
+  PCdk2_CycErem part "http://identifiers.org/uniprot/P50756"
+  PCdk2_CycErem hypernym "http://identifiers.org/go/GO:0097134"
+  PCdk2_CycErem property "http://identifiers.org/pato/PATO:0002355"
+  PCdk2_CycErem part "http://identifiers.org/uniprot/P23437"
+  PCdk2_CycErem property "http://identifiers.org/pato/PATO:0002220"
+  Deg_a hypernym "http://identifiers.org/uniprot/P50756"
+  Deg_a property "http://identifiers.org/ncit/C18104"
+  Xic homolog "http://identifiers.org/ncbiprotein/NP_001108275.1"
+  Xic_Cdk2_CycE part "http://identifiers.org/uniprot/P50756"
+  Xic_Cdk2_CycE hypernym "http://identifiers.org/go/GO:0032991"
+  Xic_Cdk2_CycE part "http://identifiers.org/uniprot/P23437"
+  Xic_Cdk2_CycE part "http://identifiers.org/ncbiprotein/NP_001108275.1"
+  Xic_PCdk2_CycE part "http://identifiers.org/uniprot/P50756"
+  Xic_PCdk2_CycE hypernym "http://identifiers.org/go/GO:0032991"
+  Xic_PCdk2_CycE property "http://identifiers.org/pato/PATO:0002220"
+  Xic_PCdk2_CycE part "http://identifiers.org/uniprot/P23437"
+  Xic_PCdk2_CycE part "http://identifiers.org/ncbiprotein/NP_001108275.1"
+  Xic_Cdk2_CycErem part "http://identifiers.org/ncbiprotein/NP_001108275.1"
+  Xic_Cdk2_CycErem hypernym "http://identifiers.org/go/GO:0032991"
+  Xic_Cdk2_CycErem property "http://identifiers.org/pato/PATO:0002355"
+  Xic_Cdk2_CycErem part "http://identifiers.org/uniprot/P23437"
+  Xic_Cdk2_CycErem part "http://identifiers.org/uniprot/P50756"
+  Xic_PCdk2_CycErem part "http://identifiers.org/uniprot/P23437"
+  Xic_PCdk2_CycErem hypernym "http://identifiers.org/go/GO:0032991"
+  Xic_PCdk2_CycErem property "http://identifiers.org/pato/PATO:0002220"
+  Xic_PCdk2_CycErem part "http://identifiers.org/uniprot/P50756"
+  Xic_PCdk2_CycErem property "http://identifiers.org/pato/PATO:0002355"
+  Xic_PCdk2_CycErem part "http://identifiers.org/ncbiprotein/NP_001108275.1"
+  Xicrem homolog "http://identifiers.org/ncbiprotein/NP_001108275.1"
+  Xicrem property "http://identifiers.org/pato/PATO:0002355"
+  Cyc_total hypernym "http://identifiers.org/uniprot/P50756"
+  Xic_total homolog "http://identifiers.org/ncbiprotein/NP_001108275.1"
+  Kin_a hypernym "http://identifiers.org/ncit/C28597"
+  Xic_Cdk2_CycE_association hypernym "urn:miriam:sbo:SBO%3A0000526"
+  Xic_Cdk2_CycErem_association hypernym "urn:miriam:sbo:SBO%3A0000526"
+  Xic_Cdk2_CycE_dissociation hypernym "urn:miriam:sbo:SBO%3A0000180"
+  Xic_Cdk2_CycErem_dissociation hypernym "urn:miriam:sbo:SBO%3A0000180"
+  Cdk2_CycErem_to_not_rem hypernym "urn:miriam:sbo:SBO%3A0000656"
+  PCdk2_CycE_to_not_rem hypernym "urn:miriam:sbo:SBO%3A0000656"
+  X_degadation hypernym "urn:miriam:sbo:SBO%3A0000179"
+  X_degradation_phosphorylated_complex hypernym "urn:miriam:sbo:SBO%3A0000179"
+  Degradation_XicPCdk2_CycErem hypernym "urn:miriam:sbo:SBO%3A0000179"
+  Degradation_XicCdk2_CycErem hypernym "urn:miriam:sbo:SBO%3A0000179"
+  Dephos_Xic_PCdk2_CycE hypernym "urn:miriam:sbo:SBO%3A0000330"
+  Dephos_PCdk2_CycE hypernym "urn:miriam:sbo:SBO%3A0000330"
+  Phos_Xic_PCdk2_CycE hypernym "urn:miriam:sbo:SBO%3A0000216"
+  Phos_PCdk2_CycE hypernym "urn:miriam:sbo:SBO%3A0000216"
+  Xic_PCdk2_CycE_association hypernym "urn:miriam:sbo:SBO%3A0000526"
+  Xic_PCdk2_CycErem_association hypernym "urn:miriam:sbo:SBO%3A0000526"
+  Xic_PCdk2_CycE_dissociation hypernym "urn:miriam:sbo:SBO%3A0000180"
+  Xic_PCdk2_CycErem_dissociation hypernym "urn:miriam:sbo:SBO%3A0000180"
+  Degradation_Cdk2_CycErem hypernym "urn:miriam:sbo:SBO%3A0000179"
+  Degradation_PCdk2_CycErem hypernym "urn:miriam:sbo:SBO%3A0000179"
+  Xicrem_degradation hypernym "urn:miriam:sbo:SBO%3A0000179"
+  Xic_PCdk2_CycErem_to_not_rem hypernym "urn:miriam:sbo:SBO%3A0000656"
+  Xic_Cdk2_CycErem_to_not_rem hypernym "urn:miriam:sbo:SBO%3A0000656"
+  Wee1_regulation hypernym "http://identifiers.org/go/GO:0065007"
+end
+
+Cell_Cyle_Model is "Ciliberto2003 - CyclinE / Cdk2 timer in the cell cycle of Xenopus laevis embryo"
+
+Cell_Cyle_Model model_entity_is "http://identifiers.org/biomodels.db/MODEL0913242281"
+Cell_Cyle_Model model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000697"
+Cell_Cyle_Model description "http://identifiers.org/pubmed/12914904"
+Cell_Cyle_Model part "http://identifiers.org/go/GO:0051726"
+Cell_Cyle_Model container "http://identifiers.org/bto/BTO:0000379"
+Cell_Cyle_Model property "http://identifiers.org/mamo/MAMO_0000046"
+Cell_Cyle_Model taxon "http://identifiers.org/ncit/C61089"

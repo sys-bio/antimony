@@ -1,0 +1,117 @@
+// Created by libAntimony v2.13.0
+function Function_for_removal_of_the_tumor(a, T, g2, V, E)
+  (a*T/(g2*V + T))*E;
+end
+
+Function_for_removal_of_the_tumor is "Function for removal of the tumor"
+
+function Function_for_induction_of_tumor(r, T, b, V)
+  r*T*(1 - (b/V)*T);
+end
+
+Function_for_induction_of_tumor is "Function for induction of tumor"
+
+function Function_for_deactivation_of_interleukin_2(mu3, I)
+  mu3*I;
+end
+
+Function_for_deactivation_of_interleukin_2 is "Function for deactivation of interleukin 2"
+
+function Function_for_activation_of_interleukin_2(p2, V, T, E, g3, s2)
+  (p2/V)*(T*E/(g3*V + T)) + s2;
+end
+
+Function_for_activation_of_interleukin_2 is "Function for activation of interleukin 2"
+
+function Function_for_activation_and_transfer_of_effector_cells_to_the_tumor_site(p1, I, g1, E, c, T, V, s1)
+  (p1*I/(g1*I))*E + c*T + V*s1;
+end
+
+Function_for_activation_and_transfer_of_effector_cells_to_the_tumor_site is "Function for activation and transfer of effector cells to the tumor site"
+
+function Function_for_deactivation_and_removal_of_effector_cells_from_the_site_of_tumor(mu2, E)
+  mu2*E;
+end
+
+Function_for_deactivation_and_removal_of_effector_cells_from_the_site_of_tumor is "Function for deactivation and removal of effector cells from the site of tumor"
+
+
+model *Caravagna2010___Tumour_suppression_by_immune_system()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species T in compartment_, E in compartment_, I in compartment_;
+
+  // Reactions:
+  Induction_of_tumor:  => T; compartment_*Function_for_induction_of_tumor(r2, T, b, V);
+  Removal_of_tumor_from_the_system_by_the_action_of_immune_response: T => ; compartment_*Function_for_removal_of_the_tumor(a, T, g2, V, E);
+  Activation_and_transfer_of_effector_cells_to_the_action_site:  => E; compartment_*Function_for_activation_and_transfer_of_effector_cells_to_the_tumor_site(p1, I, g1, E, c, T, V, s1);
+  Deactivation_and_removal_of_effector_cells_from_the_site_of_tumor: E => ; compartment_*Function_for_deactivation_and_removal_of_effector_cells_from_the_site_of_tumor(mu2, E);
+  Activation_of_interleukin_2:  => I; compartment_*Function_for_activation_of_interleukin_2(p2, V, T, E, g3, s2);
+  Deactivation_of_interleukin2: I => ; compartment_*Function_for_deactivation_of_interleukin_2(mu3, I);
+
+  // Species initializations:
+  T = 1;
+  E = 1;
+  I = 1;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  r2 = 0.18;
+  b = 1e-09;
+  a = 1;
+  g2 = 100000;
+  p1 = 0.1245;
+  g1 = 20000000;
+  mu2 = 0.03;
+  c = 0.02;
+  p2 = 5;
+  g3 = 1000;
+  mu3 = 10;
+  V = 3.2;
+  s1 = 0;
+  s2 = 0;
+
+  // Other declarations:
+  const compartment_, r2, b, a, g2, p1, g1, mu2, c, p2, g3, mu3, V, s1, s2;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+  Induction_of_tumor is "Induction of tumor";
+  Removal_of_tumor_from_the_system_by_the_action_of_immune_response is "Removal of tumor from the system by the action of immune response";
+  Activation_and_transfer_of_effector_cells_to_the_action_site is "Activation and transfer of effector cells to the action site";
+  Deactivation_and_removal_of_effector_cells_from_the_site_of_tumor is "Deactivation and removal of effector cells from the site of tumor";
+  Activation_of_interleukin_2 is "Activation of interleukin 2";
+  Deactivation_of_interleukin2 is "Deactivation of interleukin2";
+
+  // CV terms:
+  T hypernym "http://identifiers.org/efo/0000616"
+  E property "http://identifiers.org/ncit/C132890"
+  I property "http://identifiers.org/uniprot/P60568"
+  Induction_of_tumor hypernym "http://identifiers.org/go/GO:0002355"
+  Removal_of_tumor_from_the_system_by_the_action_of_immune_response hypernym "http://identifiers.org/go/"
+  Activation_and_transfer_of_effector_cells_to_the_action_site hypernym "http://identifiers.org/go/GO:0002418"
+  Deactivation_and_removal_of_effector_cells_from_the_site_of_tumor hypernym "http://identifiers.org/go/GO:0002837"
+  Activation_of_interleukin_2 hypernym "http://identifiers.org/go/GO:0070970"
+  Deactivation_of_interleukin2 hypernym "http://identifiers.org/go/GO:0070970"
+end
+
+Caravagna2010___Tumour_suppression_by_immune_system is "Caravagna2010 - Tumour suppression by immune system"
+
+Caravagna2010___Tumour_suppression_by_immune_system origin "http://identifiers.org/mamo/MAMO_0000046",
+                                                           "http://identifiers.org/taxonomy/9606",
+                                                           "http://identifiers.org/biomodels.db/BIOMD0000000732"
+Caravagna2010___Tumour_suppression_by_immune_system description "http://identifiers.org/biomodels.db/BIOMD0000000732",
+                                                                "http://identifiers.org/pubmed/20580640"
+Caravagna2010___Tumour_suppression_by_immune_system model_entity_is "http://identifiers.org/biomodels.db/MODEL2001200001",
+                                                                    "http://identifiers.org/biomodels.db/BIOMD0000000912"
+Caravagna2010___Tumour_suppression_by_immune_system taxon "http://identifiers.org/taxonomy/9606"
+Caravagna2010___Tumour_suppression_by_immune_system property "http://identifiers.org/mamo/MAMO_0000046"

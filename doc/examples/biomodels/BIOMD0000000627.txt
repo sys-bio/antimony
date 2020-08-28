@@ -1,0 +1,1059 @@
+// Created by libAntimony v2.13.0
+function vdHb_in(F_in, O2_a, O2_c)
+  F_in*(O2_a - (2*O2_c - O2_a));
+end
+
+vdHb_in is "vdHb_in [1]"
+
+function vdHb_out(F_out, dHb, V_v)
+  F_out*dHb/V_v;
+end
+
+vdHb_out is "vdHb_out"
+
+function vATPase(VmaxATPase, ATP, Km_ATP)
+  VmaxATPase*(ATP/(ATP + Km_ATP));
+end
+
+vATPase is "vATPase"
+
+function vPK(k_PK, PEP, ADP)
+  k_PK*PEP*ADP;
+end
+
+vPK is "vPK"
+
+function vPGK(k_PGK, GAP, ADP, NAD, NADH)
+  k_PGK*GAP*ADP*(NAD/NADH);
+end
+
+vPGK is "vPGK"
+
+function vPFK(k_PFK, ATP, K_I_ATP, nH, F6P, K_m_F6P)
+  k_PFK*ATP*(1 + (ATP/K_I_ATP)^nH)^-1*(F6P/(F6P + K_m_F6P));
+end
+
+vPFK is "vPFK"
+
+function facilitated_transport__inkl__Volume(Vmax, S, K, P, Volume)
+  Vmax*(S/(S + K) - P/(P + K))*Volume;
+end
+
+facilitated_transport__inkl__Volume is "facilitated transport (inkl. Volume) "
+
+function vGLU_eg__inkl__Volumes(Vmax_GLU, GLU_e, K_m_GLU, Volume)
+  Vmax_GLU*(GLU_e/(GLU_e + K_m_GLU))*Volume;
+end
+
+vGLU_eg__inkl__Volumes is "vGLU_eg (inkl. Volumes)"
+
+function vGLU_gn__inkl__Volume(Vmax_GLU, GLU_g, K_m_GLU, ATP_g, K_m_ATP, Volume)
+  Vmax_GLU*(GLU_g/(GLU_g + K_m_GLU))*(ATP_g/(ATP_g + K_m_ATP))*Volume;
+end
+
+vGLU_gn__inkl__Volume is "vGLU_gn (inkl. Volume)"
+
+function vGLU_ne__inkl__Volume(vSTIM, ratio_Na_GLU, GLU_n, Km_GLU, Volume)
+  vSTIM*ratio_Na_GLU*(GLU_n/(GLU_n + Km_GLU))*Volume;
+end
+
+vGLU_ne__inkl__Volume is "vGLU_ne (inkl. Volume)"
+
+function vStim__with_volume(vstim, Volume)
+  vstim*Volume;
+end
+
+vStim__with_volume is "vStim (with volume)"
+
+function modular_rate_law_for_two_substrates__two_products(Vmax, K_S1, K_S2, S1, S2, P1, P2, Keq, K_P1, K_P2)
+  Vmax*(1/(K_S1*K_S2))*((S1*S2 - P1*P2/Keq)/((1 + S1/K_S1)*(1 + S2/K_S2) + (1 + P1/K_P1)*(1 + P2/K_P2) - 1));
+end
+
+modular_rate_law_for_two_substrates__two_products is "modular rate law for two substrates, two products"
+
+function modular_rate_law_for_one_substrate__one_product(Vmax, K_S1, S1, P1, Keq, K_P1)
+  Vmax*(1/K_S1)*((S1 - P1/Keq)/(1 + S1/K_S1 + 1 + P1/K_P1 - 1));
+end
+
+modular_rate_law_for_one_substrate__one_product is "modular rate law for one substrate, one product"
+
+function Blood_flow_contribution_inkl__volume(F_in, V_c, Volume, Substrate, Product)
+  (2*F_in/V_c)*(Substrate - Product)*Volume;
+end
+
+Blood_flow_contribution_inkl__volume is "Blood flow contribution inkl. volume"
+
+function O2_transport_function_inkl__volume(PScap, Volume, KO2, HbOP, O2_source, nh, O2_destination, Volume1)
+  (PScap/Volume)*(KO2*(HbOP/O2_source - 1)^(-1/nh) - O2_destination)*Volume1;
+end
+
+O2_transport_function_inkl__volume is "O2 transport function inkl. volume"
+
+function vLEAK_Na_inkl__Volume(Sm, gNA, Volume, F, RT, Na_e, Na, Vm, Volume1)
+  (Sm*gNA/(Volume*F))*((RT/F)*ln(Na_e/Na) - Vm)*Volume1;
+end
+
+vLEAK_Na_inkl__Volume is "vLEAK_Na inkl. Volume"
+
+function vPUMP_volume_dependent(Sm, Volume, k_pump, ATP, Na, Km_pump)
+  (Sm/Volume)*k_pump*ATP*Na*(1 + ATP/Km_pump)^-1;
+end
+
+vPUMP_volume_dependent is "vPUMP volume dependent"
+
+function vHK__HS(k_HK, ATP, G6P, K_I_G6P)
+  k_HK*ATP*(1 + G6P/K_I_G6P)^-1;
+end
+
+vHK__HS is "vHK (HS)"
+
+function facilitated_transport__inkl__Volume____scaled(Vmax, sf, S, K, P, Volume)
+  Vmax*sf*(S/(S + K) - P/(P + K))*Volume;
+end
+
+facilitated_transport__inkl__Volume____scaled is "facilitated transport (inkl. Volume)  (scaled)"
+
+function vMITO2__inkl__Volumes(v_max_mito, PYR, K_m_PYR, ADP, K_m_ADP, O2, K_m_O2, alpha, ATP, beta, Volume)
+  v_max_mito*(PYR/(PYR + K_m_PYR))*(ADP/(ADP + K_m_ADP))*(O2/(O2 + K_m_O2))*(1 - 1/(1 + exp(-alpha*(ATP/ADP - beta))))*Volume;
+end
+
+vMITO2__inkl__Volumes is "vMITO2 (inkl. Volumes)"
+
+
+model *Brain_Energy_Metabolism_with_PPP()
+
+  // Compartments and Species:
+  compartment compartment_1, compartment_2, compartment_3, compartment_4;
+  compartment venous_balloon, artery;
+  substanceOnly species species_23 in compartment_1, species_24 in compartment_1;
+  substanceOnly species species_25 in compartment_1, species_26 in compartment_1;
+  substanceOnly species dHb in compartment_1, species_1 in compartment_2;
+  substanceOnly species species_2 in compartment_2, species_3 in compartment_2;
+  substanceOnly species species_7 in compartment_2, species_9 in compartment_2;
+  substanceOnly species species_11 in compartment_2, species_12 in compartment_2;
+  substanceOnly species species_15 in compartment_2, species_18 in compartment_2;
+  substanceOnly species species_16 in compartment_2, species_21 in compartment_2;
+  substanceOnly species Na__neurons in compartment_2, GLU_neurons in compartment_2;
+  substanceOnly species ADP_neurons in compartment_2, AMP_neurons in compartment_2;
+  substanceOnly species Cr_neurons in compartment_2, NAD_neurons in compartment_2;
+  substanceOnly species G6L_neurons in compartment_2, P6G_neurons in compartment_2;
+  substanceOnly species Ru5P_neurons in compartment_2, X5P_neurons in compartment_2;
+  substanceOnly species R5P_neurons in compartment_2, S7P_neurons in compartment_2;
+  substanceOnly species E4P_neurons in compartment_2, NADPH_neurons in compartment_2;
+  substanceOnly species NADP_neurons in compartment_2, species_4 in compartment_3;
+  substanceOnly species species_5 in compartment_3, species_6 in compartment_3;
+  substanceOnly species species_8 in compartment_3, species_10 in compartment_3;
+  substanceOnly species species_13 in compartment_3, species_14 in compartment_3;
+  substanceOnly species species_17 in compartment_3, species_19 in compartment_3;
+  substanceOnly species species_20 in compartment_3, species_22 in compartment_3;
+  substanceOnly species Na__astrocytes in compartment_3, GLU_astrocytes in compartment_3;
+  substanceOnly species ADP_astrocytes in compartment_3, AMP_astrocytes in compartment_3;
+  substanceOnly species Cr_astrocytes in compartment_3, NAD_astrocytes in compartment_3;
+  substanceOnly species G6L_astrocytes in compartment_3, P6G_astrocytes in compartment_3;
+  substanceOnly species Ru5P_astrocytes in compartment_3, X5P_astrocytes in compartment_3;
+  substanceOnly species R5P_astrocytes in compartment_3, S7P_astrocytes in compartment_3;
+  substanceOnly species E4P_astrocytes in compartment_3, NADP_astrocytes in compartment_3;
+  substanceOnly species NADPH_astrocytes in compartment_3, species_27 in compartment_4;
+  substanceOnly species species_28 in compartment_4, GLU_extracellular_space in compartment_4;
+  substanceOnly species $Na__extracellular_space in compartment_4, $O2_artery in artery;
+  substanceOnly species $CO2_artery in artery, $GLC_artery in artery, $LAC_artery in artery;
+
+  // Assignment Rules:
+  F_in := F_0*f_CBF_dyn;
+  F_out := F_0*(((venous_balloon/Compartment_9)^(1/0.5) + (venous_balloon/Compartment_9)^(-1/2)*(tau_v/Compartment_9)*F_in)/(1 + F_0*(venous_balloon/Compartment_9)^(-1/2)*(tau_v/Compartment_9)));
+  parameter_9 := ModelValue_6 - species_11/compartment_2;
+  parameter_10 := ModelValue_7 - species_13/compartment_3;
+  parameter_20 := ModelValue_16 - species_21/compartment_2;
+  parameter_21 := ModelValue_16 - species_22/compartment_3;
+  f_CBF_dyn := 1 + delta_F*(1/(1 + exp(-4.59186*(time - (t_0 + t_1 - 3)))) - 1/(1 + exp(-4.59186*(time - (t_0 + t_1 + t_end + 3)))));
+  is_stimulated := piecewise(0, (time <= 200) || (time >= (t_0 + t_end)), 1);
+  v_stim := is_stimulated*stimulus;
+  stimulus := ModelValue_43 + vn_2_tp*((time - t_0)/t_stim_tp)*exp(-(time - t_0)/t_stim_tp);
+  BOLD_signal := Compartment_9*7*(1 - dHb/compartment_1/Metabolite_9) + 2*((1 - dHb/compartment_1/Metabolite_9)/(venous_balloon/Compartment_9)) + (2*ModelValue_54 - 0.2)*(1 - venous_balloon/Compartment_9);
+  E0 := 1 - (2*Metabolite_1 - Metabolite_123)/(O2_artery/artery);
+  Vmax_ce_GLC__wrt_capillaries___Aubert := ModelValue_83*(compartment_4/compartment_1);
+  Vmax_eg_GLC__wrt_astrocytes___Aubert_ := Vmax_eg_GLC__Aubert_*(compartment_3/compartment_4);
+  Vmax_en_GLC__wrt_neurons___Aubert := ModelValue_86*(compartment_2/compartment_4);
+  Vmax_cg_GLC__wrt_capillaries___Aubert := ModelValue_84*(compartment_3/compartment_1);
+  Vmax_ec_LAC__wrt_extracellular_space___Aubert := 0.00783*_sf;
+  Vmax_gc_LAC__wrt_astrocytes___Aubert := 0.0058*_sf;
+  Vmax_ge_LAC__wrt_astrocytes___Aubert := 0.076*_sf;
+  Vmax_ne_LAC__wrt_neurons___Aubert := 0.29*_sf;
+  PS_cap_astrocytes__wrt_capillaries___Aubert := 0.414*0.25*(compartment_3/compartment_1);
+  PS_cap_neuron__wrt_capillaries___Aubert := _PScap*0.45*(compartment_2/compartment_1);
+
+  // Rate Rules:
+  venous_balloon' = F_in - F_out;
+
+  // Reactions:
+  reaction_2: species_5 + species_4 => species_6 + ADP_astrocytes; compartment_3*vHK__HS(reaction_2_k_HK, species_5/compartment_3, species_6/compartment_3, reaction_2_K_I_G6P);
+  reaction_5: species_7 + species_3 => 2 species_9 + ADP_neurons; compartment_2*vPFK(reaction_5_k_PFK, species_3/compartment_2, parameter_5, parameter_6, species_7/compartment_2, reaction_5_K_m_F6P);
+  reaction_6: species_8 + species_5 => 2 species_10 + ADP_astrocytes; compartment_3*vPFK(reaction_6_k_PFK, species_5/compartment_3, parameter_5, parameter_6, species_8/compartment_3, reaction_6_K_m_F6P);
+  reaction_7: species_9 + ADP_neurons + NAD_neurons => species_11 + species_12 + species_3; compartment_2*vPGK(reaction_7_k_PGK, species_9/compartment_2, ADP_neurons/compartment_2, NAD_neurons/compartment_2, species_11/compartment_2);
+  reaction_8: species_10 + ADP_astrocytes + NAD_astrocytes => species_13 + species_14 + species_5; compartment_3*vPGK(reaction_8_k_PGK, species_10/compartment_3, ADP_astrocytes/compartment_3, NAD_astrocytes/compartment_3, species_13/compartment_3);
+  reaction_9: species_12 + ADP_neurons => species_3 + species_15; compartment_2*vPK(reaction_9_k_PK, species_12/compartment_2, ADP_neurons/compartment_2);
+  reaction_10: species_14 + ADP_astrocytes => species_5 + species_17; compartment_3*vPK(reaction_10_k_PK, species_14/compartment_3, ADP_astrocytes/compartment_3);
+  reaction_13: species_15 + 3 species_16 + species_11 + 15 ADP_neurons => 15 species_3 + 3 species_24 + NAD_neurons; vMITO2__inkl__Volumes(reaction_13_v_max_mito, species_15/compartment_2, parameter_18, ADP_neurons/compartment_2, parameter_16, species_16/compartment_2, parameter_17, reaction_13_alpha, species_3/compartment_2, reaction_13_beta, compartment_2);
+  reaction_14: species_17 + 15 ADP_astrocytes + 3 species_20 + species_13 => 15 species_5 + 3 species_24 + NAD_astrocytes; vMITO2__inkl__Volumes(reaction_14_v_max_mito, species_17/compartment_3, parameter_18, ADP_astrocytes/compartment_3, parameter_16, species_20/compartment_3, parameter_17, reaction_14_alpha, species_5/compartment_3, reaction_14_beta, compartment_3);
+  reaction_17: species_27 => species_1; facilitated_transport__inkl__Volume____scaled(Vmax_en_GLC__wrt_neurons___Aubert, _sf, species_27/compartment_4, K_T_GLC_en__Aubert, species_1/compartment_2, compartment_4);
+  reaction_18: species_27 => species_4; facilitated_transport__inkl__Volume____scaled(Vmax_eg_GLC__wrt_astrocytes___Aubert_, _sf, species_27/compartment_4, K_T_GLC_eg__Aubert, species_4/compartment_3, compartment_4);
+  reaction_19: species_25 => species_27; facilitated_transport__inkl__Volume____scaled(Vmax_ce_GLC__wrt_capillaries___Aubert, _sf, species_25/compartment_1, K_T_GLC_ce__Aubert, species_27/compartment_4, compartment_1);
+  reaction_20: species_25 => species_4; facilitated_transport__inkl__Volume____scaled(Vmax_cg_GLC__wrt_capillaries___Aubert, _sf, species_25/compartment_1, K_T_GLC_cg__Aubert, species_4/compartment_3, compartment_1);
+  reaction_21: species_28 => species_26; facilitated_transport__inkl__Volume(Vmax_ec_LAC__wrt_extracellular_space___Aubert, species_28/compartment_4, K_T_LAC_ec__Aubert, species_26/compartment_1, compartment_4);
+  reaction_22: species_28 => species_18; facilitated_transport__inkl__Volume(Vmax_ne_LAC__wrt_neurons___Aubert, species_28/compartment_4, K_T_LAC_ne__Aubert, species_18/compartment_2, compartment_4);
+  reaction_23: species_19 => species_28; facilitated_transport__inkl__Volume(Vmax_ge_LAC__wrt_astrocytes___Aubert, species_19/compartment_3, K_T_LAC_ge__Aubert, species_28/compartment_4, compartment_3);
+  reaction_24: species_19 => species_26; facilitated_transport__inkl__Volume(Vmax_gc_LAC__wrt_astrocytes___Aubert, species_19/compartment_3, K_T_LAC_gc__Aubert, species_26/compartment_1, compartment_3);
+  O2_exchange_capillary_neurons: species_23 => species_16; O2_transport_function_inkl__volume(PS_cap_neuron__wrt_capillaries___Aubert, compartment_2, K_O2__Aubert, Hb_OP, species_23/compartment_1, nh_O2__Aubert, species_16/compartment_2, compartment_1);
+  O2_exchange_capillary_astrocytes: species_23 => species_20; O2_transport_function_inkl__volume(O2_exchange_capillary_astrocytes_PScap, compartment_3, K_O2__Aubert, Hb_OP, species_23/compartment_1, nh_O2__Aubert, species_20/compartment_3, compartment_1);
+  Blood_flow_contribution_to_capillary_O2: $O2_artery => species_23; Blood_flow_contribution_inkl__volume(F_in, compartment_1, artery, O2_artery/artery, species_23/compartment_1);
+  Blood_flow_contribution_to_capillary_GLC: $GLC_artery => species_25; Blood_flow_contribution_inkl__volume(F_in, compartment_1, artery, GLC_artery/artery, species_25/compartment_1);
+  Blood_flow_contribution_to_capillary_LAC: species_26 => $LAC_artery; Blood_flow_contribution_inkl__volume(F_in, compartment_1, compartment_1, species_26/compartment_1, LAC_artery/artery);
+  Flow_of_CO2_between_capillary_and_vessel__artery_: species_24 => $CO2_artery; Blood_flow_contribution_inkl__volume(F_in, compartment_1, compartment_1, species_24/compartment_1, CO2_artery/artery);
+  vPUMP_neurons: species_3 + 3 Na__neurons => ADP_neurons; compartment_2*vPUMP_volume_dependent(Sm_n, compartment_2, k_pump, species_3/compartment_2, Na__neurons/compartment_2, K_m_Na_pump);
+  vPUMP_astrocytes: species_5 + 3 Na__astrocytes => ADP_astrocytes; compartment_3*vPUMP_volume_dependent(Sm_g, compartment_3, k_pump, species_5/compartment_3, Na__astrocytes/compartment_3, K_m_Na_pump);
+  vLEAK_Na_neurons: $Na__extracellular_space => Na__neurons; vLEAK_Na_inkl__Volume(Sm_n, g_Na_neurons, compartment_2, F, RT, Na__extracellular_space/compartment_4, Na__neurons/compartment_2, Vm, compartment_2);
+  vLEAK_Na_astrocytes: $Na__extracellular_space => Na__astrocytes; vLEAK_Na_inkl__Volume(Sm_g, vLEAK_Na_astrocytes_gNA, compartment_3, F, RT, Na__extracellular_space/compartment_4, Na__astrocytes/compartment_3, Vm, compartment_3);
+  vSTIM: $Na__extracellular_space => Na__neurons; vStim__with_volume(v_stim, compartment_2);
+  vGLU_ne: GLU_neurons => GLU_extracellular_space; vGLU_ne__inkl__Volume(v_stim, R_Na_GLU, GLU_neurons/compartment_2, K_m_GLU, compartment_2);
+  vGLU_eg: GLU_extracellular_space => GLU_astrocytes + Na__astrocytes; vGLU_eg__inkl__Volumes(Vmax_eg_GLU__wrt_extracellular_space, GLU_extracellular_space/compartment_4, K_m_GLU, compartment_4);
+  vGLU_gn: GLU_astrocytes + species_5 => GLU_neurons + ADP_astrocytes; vGLU_gn__inkl__Volume(V_gn_max_GLU, GLU_astrocytes/compartment_3, K_m_GLU, species_5/compartment_3, parameter_14, compartment_3);
+  inflow_of_dHb:  => dHb; compartment_1*vdHb_in(F_in, O2_artery/artery, species_23/compartment_1);
+  outflow_of_dHb: dHb => ; compartment_1*vdHb_out(F_out, dHb/compartment_1, venous_balloon);
+  ATPase_neurons: species_3 => ADP_neurons; compartment_2*vATPase(ATPase_neurons_VmaxATPase, species_3/compartment_2, K_m_ATP_ATPase);
+  ATPase_astrocytes: species_5 => ADP_astrocytes; compartment_3*vATPase(ATPase_astrocytes_VmaxATPase, species_5/compartment_3, K_m_ATP_ATPase);
+  AK_neurons: 2 ADP_neurons -> species_3 + AMP_neurons; compartment_2*(AK_neurons_k1*(ADP_neurons/compartment_2)^2 - AK_neurons_k2*(species_3/compartment_2)*(AMP_neurons/compartment_2));
+  AK_astrocytes: 2 ADP_astrocytes -> species_5 + AMP_astrocytes; compartment_3*(AK_astrocytes_k1*(ADP_astrocytes/compartment_3)^2 - AK_astrocytes_k2*(species_5/compartment_3)*(AMP_astrocytes/compartment_3));
+  CK_astrocytes_forward__R01881: ADP_astrocytes + species_22 -> species_5 + Cr_astrocytes; compartment_3*(CK_astrocytes_forward__R01881_k1*(ADP_astrocytes/compartment_3)*(species_22/compartment_3) - CK_astrocytes_forward__R01881_k2*(species_5/compartment_3)*(Cr_astrocytes/compartment_3));
+  CK_neurons_forward__R01881: species_21 + ADP_neurons -> species_3 + Cr_neurons; compartment_2*(CK_neurons_forward__R01881_k1*(species_21/compartment_2)*(ADP_neurons/compartment_2) - CK_neurons_forward__R01881_k2*(species_3/compartment_2)*(Cr_neurons/compartment_2));
+  LDH_astrocytes_forward__R00703: species_17 + species_13 -> species_19 + NAD_astrocytes; compartment_3*(LDH_astrocytes_forward__R00703_k1*(species_17/compartment_3)*(species_13/compartment_3) - LDH_astrocytes_forward__R00703_k2*(species_19/compartment_3)*(NAD_astrocytes/compartment_3));
+  LDH_neurons_forward__R00703: species_15 + species_11 -> species_18 + NAD_neurons; compartment_2*(LDH_neurons_forward__R00703_k1*(species_15/compartment_2)*(species_11/compartment_2) - LDH_neurons_forward__R00703_k2*(species_18/compartment_2)*(NAD_neurons/compartment_2));
+  ZWF_astrocytes__R02736: species_6 + NADP_astrocytes => G6L_astrocytes + NADPH_astrocytes; compartment_3*modular_rate_law_for_two_substrates__two_products(ZWF_astrocytes__R02736_Vmax, ZWF_astrocytes__R02736_K_S1, ZWF_astrocytes__R02736_K_S2, species_6/compartment_3, NADP_astrocytes/compartment_3, G6L_astrocytes/compartment_3, NADPH_astrocytes/compartment_3, ZWF_astrocytes__R02736_Keq, ZWF_astrocytes__R02736_K_P1, ZWF_astrocytes__R02736_K_P2);
+  ZWF_neurons__R02736: species_2 + NADP_neurons => G6L_neurons + NADPH_neurons; compartment_2*modular_rate_law_for_two_substrates__two_products(ZWF_neurons__R02736_Vmax, ZWF_neurons__R02736_K_S1, ZWF_neurons__R02736_K_S2, species_2/compartment_2, NADP_neurons/compartment_2, G6L_neurons/compartment_2, NADPH_neurons/compartment_2, ZWF_neurons__R02736_Keq, ZWF_neurons__R02736_K_P1, ZWF_neurons__R02736_K_P2);
+  SOL_neurons__R02035: G6L_neurons => P6G_neurons; compartment_2*modular_rate_law_for_one_substrate__one_product(SOL_neurons__R02035_Vmax, SOL_neurons__R02035_K_S1, G6L_neurons/compartment_2, P6G_neurons/compartment_2, SOL_neurons__R02035_Keq, SOL_neurons__R02035_K_P1);
+  SOL_astrocytes__R02035: G6L_astrocytes => P6G_astrocytes; compartment_3*modular_rate_law_for_one_substrate__one_product(SOL_astrocytes__R02035_Vmax, SOL_astrocytes__R02035_K_S1, G6L_astrocytes/compartment_3, P6G_astrocytes/compartment_3, SOL_astrocytes__R02035_Keq, SOL_astrocytes__R02035_K_P1);
+  GND_neurons___R01528: P6G_neurons + NADP_neurons -> Ru5P_neurons + NADPH_neurons; compartment_2*modular_rate_law_for_two_substrates__two_products(GND_neurons___R01528_Vmax, GND_neurons___R01528_K_S1, GND_neurons___R01528_K_S2, P6G_neurons/compartment_2, NADP_neurons/compartment_2, Ru5P_neurons/compartment_2, NADPH_neurons/compartment_2, GND_neurons___R01528_Keq, GND_neurons___R01528_K_P1, GND_neurons___R01528_K_P2);
+  GND_astrocytes__R01528: P6G_astrocytes + NADP_astrocytes => Ru5P_astrocytes + NADPH_astrocytes; compartment_3*modular_rate_law_for_two_substrates__two_products(GND_astrocytes__R01528_Vmax, GND_astrocytes__R01528_K_S1, GND_astrocytes__R01528_K_S2, P6G_astrocytes/compartment_3, NADP_astrocytes/compartment_3, Ru5P_astrocytes/compartment_3, NADPH_astrocytes/compartment_3, GND_astrocytes__R01528_Keq, GND_astrocytes__R01528_K_P1, GND_astrocytes__R01528_K_P2);
+  RPE_neurons__R01529: Ru5P_neurons -> X5P_neurons; compartment_2*modular_rate_law_for_one_substrate__one_product(RPE_neurons__R01529_Vmax, RPE_neurons__R01529_K_S1, Ru5P_neurons/compartment_2, X5P_neurons/compartment_2, RPE_neurons__R01529_Keq, RPE_neurons__R01529_K_P1);
+  RPE_astrocytes__R01529: Ru5P_astrocytes -> X5P_astrocytes; compartment_3*modular_rate_law_for_one_substrate__one_product(RPE_astrocytes__R01529_Vmax, RPE_astrocytes__R01529_K_S1, Ru5P_astrocytes/compartment_3, X5P_astrocytes/compartment_3, RPE_astrocytes__R01529_Keq, RPE_astrocytes__R01529_K_P1);
+  RKI_astrocytes__R01056: Ru5P_astrocytes -> R5P_astrocytes; compartment_3*modular_rate_law_for_one_substrate__one_product(RKI_astrocytes__R01056_Vmax, RKI_astrocytes__R01056_K_S1, Ru5P_astrocytes/compartment_3, R5P_astrocytes/compartment_3, RKI_astrocytes__R01056_Keq, RKI_astrocytes__R01056_K_P1);
+  RKI_neurons__R01056: Ru5P_neurons -> R5P_neurons; compartment_2*modular_rate_law_for_one_substrate__one_product(RKI_neurons__R01056_Vmax, RKI_neurons__R01056_K_S1, Ru5P_neurons/compartment_2, R5P_neurons/compartment_2, RKI_neurons__R01056_Keq, RKI_neurons__R01056_K_P1);
+  TKL_1_astrocytes__R01641: X5P_astrocytes + R5P_astrocytes => species_10 + S7P_astrocytes; compartment_3*modular_rate_law_for_two_substrates__two_products(TKL_1_astrocytes__R01641_Vmax, TKL_1_astrocytes__R01641_K_S1, TKL_1_astrocytes__R01641_K_S2, X5P_astrocytes/compartment_3, R5P_astrocytes/compartment_3, species_10/compartment_3, S7P_astrocytes/compartment_3, TKL_1_astrocytes__R01641_Keq, TKL_1_astrocytes__R01641_K_P1, TKL_1_astrocytes__R01641_K_P2);
+  TKL_1_neurons__R01641: X5P_neurons + R5P_neurons => species_9 + S7P_neurons; compartment_2*modular_rate_law_for_two_substrates__two_products(TKL_1_neurons__R01641_Vmax, TKL_1_neurons__R01641_K_S1, TKL_1_neurons__R01641_K_S2, X5P_neurons/compartment_2, R5P_neurons/compartment_2, species_9/compartment_2, S7P_neurons/compartment_2, TKL_1_neurons__R01641_Keq, TKL_1_neurons__R01641_K_P1, TKL_1_neurons__R01641_K_P2);
+  TAL_astrocytes__R01827: species_10 + S7P_astrocytes -> species_8 + E4P_astrocytes; compartment_3*modular_rate_law_for_two_substrates__two_products(TAL_astrocytes__R01827_Vmax, TAL_astrocytes__R01827_K_S1, TAL_astrocytes__R01827_K_S2, species_10/compartment_3, S7P_astrocytes/compartment_3, species_8/compartment_3, E4P_astrocytes/compartment_3, TAL_astrocytes__R01827_Keq, TAL_astrocytes__R01827_K_P1, TAL_astrocytes__R01827_K_P2);
+  TAL_neurons__R01827: species_9 + S7P_neurons -> species_7 + E4P_neurons; compartment_2*modular_rate_law_for_two_substrates__two_products(TAL_neurons__R01827_Vmax, TAL_neurons__R01827_K_S1, TAL_neurons__R01827_K_S2, species_9/compartment_2, S7P_neurons/compartment_2, species_7/compartment_2, E4P_neurons/compartment_2, TAL_neurons__R01827_Keq, TAL_neurons__R01827_K_P1, TAL_neurons__R01827_K_P2);
+  TKL_2_astrocytes__R01830: species_8 + species_10 => X5P_astrocytes + E4P_astrocytes; compartment_3*modular_rate_law_for_two_substrates__two_products(TKL_2_astrocytes__R01830_Vmax, TKL_2_astrocytes__R01830_K_S1, TKL_2_astrocytes__R01830_K_S2, species_8/compartment_3, species_10/compartment_3, X5P_astrocytes/compartment_3, E4P_astrocytes/compartment_3, TKL_2_astrocytes__R01830_Keq, TKL_2_astrocytes__R01830_K_P1, TKL_2_astrocytes__R01830_K_P2);
+  TKL_2_neurons__R01830: species_7 + species_9 => X5P_neurons + E4P_neurons; compartment_2*modular_rate_law_for_two_substrates__two_products(TKL_2_neurons__R01830_Vmax, TKL_2_neurons__R01830_K_S1, TKL_2_neurons__R01830_K_S2, species_7/compartment_2, species_9/compartment_2, X5P_neurons/compartment_2, E4P_neurons/compartment_2, TKL_2_neurons__R01830_Keq, TKL_2_neurons__R01830_K_P1, TKL_2_neurons__R01830_K_P2);
+  NADPH_oxidase_neurons__R07172: NADPH_neurons => NADP_neurons; NADPH_oxidase_neurons__R07172_k1*NADPH_neurons;
+  NADPH_oxidase_astrocytes__R07172: NADPH_astrocytes => NADP_astrocytes; NADPH_oxidase_astrocytes__R07172_k1*NADPH_astrocytes;
+  R5P_sink_astrocytes__n_a_: R5P_astrocytes => ; NULL*R5P_astrocytes;
+  R5P_sink_neurons__n_a_: R5P_neurons => ; R5P_sink_neurons__n_a__k1*R5P_neurons;
+  PGI_astrocytes__R02740___HS: species_6 -> species_8; compartment_3*(PGI_astrocytes__R02740___HS_k1*(species_6/compartment_3) - PGI_astrocytes__R02740___HS_k2*(species_8/compartment_3));
+  HK_neurons__R01786___HeinrichSchuster: species_3 + species_1 => species_2 + ADP_neurons; compartment_2*vHK__HS(HK_neurons__R01786___HeinrichSchuster_k_HK, species_3/compartment_2, species_2/compartment_2, HK_neurons__R01786___HeinrichSchuster_K_I_G6P);
+  PGI_neurons__R02740___HS: species_2 -> species_7; compartment_2*(PGI_neurons__R02740___HS_k1*(species_2/compartment_2) - PGI_neurons__R02740___HS_k2*(species_7/compartment_2));
+
+  // Species initializations:
+  species_23 = 0.040323291746644/compartment_1;
+  species_24 = 0.0121467082533562/compartment_1;
+  species_25 = 0.0253903826849856/compartment_1;
+  species_26 = 0.00188912996259375/compartment_1;
+  dHb = 0.000262913971209081/compartment_1;
+  species_1 = 0.513125204430911/compartment_2;
+  species_2 = 0.0506867341754652/compartment_2;
+  species_3 = 1.01756735100076/compartment_2;
+  species_7 = 0.0207718119329183/compartment_2;
+  species_9 = 0.000484856903277021/compartment_2;
+  species_11 = 0.00736369051750214/compartment_2;
+  species_12 = 0.00137130155845014/compartment_2;
+  species_15 = 0.05894677979576/compartment_2;
+  species_18 = 0.631465311475557/compartment_2;
+  species_16 = 0.0134379352275963/compartment_2;
+  species_21 = 0.648285185366582/compartment_2;
+  Na__neurons = 6.98905574867159/compartment_2;
+  GLU_neurons = 1.35000000000001/compartment_2;
+  ADP_neurons = 0.0502819665719672/compartment_2;
+  AMP_neurons = (parameter_11 - ADP_neurons/compartment_2 - species_3/compartment_2)*compartment_2;
+  Cr_neurons = (parameter_19 - species_21/compartment_2)*compartment_2;
+  NAD_neurons = (parameter_7 - species_11/compartment_2)*compartment_2;
+  G6L_neurons = 1.35054620762897e-06/compartment_2;
+  P6G_neurons = 0.00129746785673949/compartment_2;
+  Ru5P_neurons = 0.000303470299804797/compartment_2;
+  X5P_neurons = 0.00930686571830458/compartment_2;
+  R5P_neurons = 1.21527766162824e-05/compartment_2;
+  S7P_neurons = 0.519857938505835/compartment_2;
+  E4P_neurons = 0.00293045545188872/compartment_2;
+  NADPH_neurons = 0.13105170046902/compartment_2;
+  NADP_neurons = 9.96586007623714e-10/compartment_2;
+  species_4 = 0.28506553827656/compartment_3;
+  species_5 = 0.453875749582273/compartment_3;
+  species_6 = 0.0170326696107673/compartment_3;
+  species_8 = 0.00698016362763041/compartment_3;
+  species_10 = 0.000551039449892962/compartment_3;
+  species_13 = 0.014484722086168/compartment_3;
+  species_14 = 0.000231197219260613/compartment_3;
+  species_17 = 0.0391626309395164/compartment_3;
+  species_19 = 0.341202758724066/compartment_3;
+  species_20 = 0.0114703177351059/compartment_3;
+  species_22 = 0.0943080249454476/compartment_3;
+  Na__astrocytes = 4.00737645868716/compartment_3;
+  GLU_astrocytes = 0;
+  ADP_astrocytes = 0.111239857216292/compartment_3;
+  AMP_astrocytes = (parameter_11 - ADP_astrocytes/compartment_3 - species_5/compartment_3)*compartment_3;
+  Cr_astrocytes = (parameter_19 - species_22/compartment_3)*compartment_3;
+  NAD_astrocytes = (parameter_8 - species_13/compartment_3)*compartment_3;
+  G6L_astrocytes = 7.49440003798258e-07/compartment_3;
+  P6G_astrocytes = 0.000450905835212361/compartment_3;
+  Ru5P_astrocytes = 0.000168586812670336/compartment_3;
+  X5P_astrocytes = 0.00517018155675064/compartment_3;
+  R5P_astrocytes = 6.5024908937442e-06/compartment_3;
+  S7P_astrocytes = 0.0691726529321511/compartment_3;
+  E4P_astrocytes = 0.00142484578792443/compartment_3;
+  NADP_astrocytes = 6.89248119909569e-10/compartment_3;
+  NADPH_astrocytes = 0.0728065001051474/compartment_3;
+  species_27 = 0.228060016230605/compartment_4;
+  species_28 = 0.269553776630414/compartment_4;
+  GLU_extracellular_space = 0;
+  Na__extracellular_space = 30/compartment_4;
+  O2_artery = 0.0458700000000001/artery;
+  CO2_artery = 0.00660000000000004/artery;
+  GLC_artery = 0.0264000000000002/artery;
+  LAC_artery = 0.0017215/artery;
+
+  // Compartment initializations:
+  compartment_1 = 0.0055;
+  compartment_2 = 0.45;
+  compartment_3 = 0.25;
+  compartment_4 = 0.2;
+  venous_balloon = 0.0237;
+  artery = 0.0055;
+
+  // Variable initializations:
+  parameter_11 = 2.379;
+  parameter_19 = 5;
+  parameter_7 = 0.22;
+  parameter_8 = 0.22;
+  parameter_1 = 0.105;
+  parameter_2 = 0.5;
+  parameter_3 = 0.06;
+  parameter_4 = 0.18;
+  parameter_5 = 1;
+  parameter_6 = 4;
+  ModelValue_6 = parameter_7;
+  ModelValue_7 = parameter_8;
+  parameter_12 = 0.92;
+  parameter_14 = 0.01532;
+  parameter_16 = 0.00107;
+  parameter_17 = 0.0029658;
+  parameter_18 = 0.0632;
+  ModelValue_16 = parameter_19;
+  parameter_25 = 0.04889;
+  parameter_26 = 0.035657;
+  parameter_43 = 0.0325;
+  F_0 = 0.012;
+  delta_F = 0.42;
+  t_0 = 200;
+  t_end = 40;
+  t_1 = 2;
+  Compartment_9 = venous_balloon;
+  tau_v = 35;
+  Hb_OP = 8.6;
+  Sm_g = 10500;
+  Sm_n = 40500;
+  k_pump = 3.17e-07;
+  K_m_Na_pump = 0.4243;
+  K_m_G6P_GLYS = 0.5;
+  delta_GLY = 62;
+  K_m_GLY = 1;
+  g_Na_neurons = 0.0039;
+  g_Na_astrocytes = 0.00325;
+  Vm = -70;
+  RT = 2577340;
+  F = 96500;
+  vn_1_tp = 0.041;
+  vn_2_tp = 1.44;
+  t_stim_tp = 2;
+  R_Na_GLU = 0.075;
+  V_eg_max_GLU = 0.0208;
+  K_m_GLU = 0.05;
+  V_gn_max_GLU = 0.3;
+  delta_HK = 0.6;
+  Metabolite_9 = dHb;
+  ModelValue_54 = E0;
+  Metabolite_1 = species_23;
+  Metabolite_123 = O2_artery;
+  K_m_ATP_ATPase = 0.001;
+  NULL = 0;
+  Vmax_ne_LAC__wrt_extracellular_space = 0.44505;
+  PS_cap_astrocytes__wrt_capillaries = 11.16181818;
+  PS_cap_neuron__wrt_capillaries = 18.01636363;
+  Vmax_eg_GLU__wrt_extracellular_space = 0.026;
+  K_T_GLC_ce__Aubert = 9;
+  ModelValue_83 = Vmax_ce_GLC__Aubert;
+  Vmax_eg_GLC__Aubert_ = 1020;
+  K_T_GLC_eg__Aubert = 9;
+  K_T_GLC_en__Aubert = 9;
+  ModelValue_86 = Vmax_en_GLC___Aubert;
+  K_T_GLC_cg__Aubert = 9;
+  ModelValue_84 = Vmax_cg_GLC___Aubert;
+  _sf = 0.75;
+  K_T_LAC_ne__Aubert = 0.5;
+  K_T_LAC_ge__Aubert = 0.5;
+  K_T_LAC_gc__Aubert = 0.5;
+  K_T_LAC_ec__Aubert = 0.5;
+  _PScap = 1.1;
+  K_O2__Aubert = 0.0361;
+  nh_O2__Aubert = 2.73;
+  Vmax_f_PGI__Cloutier = 0.5;
+  Vmax_r_PGI__Cloutier = 0.45;
+  Vmax_ce_GLC__Aubert = 0.118;
+  Vmax_cg_GLC___Aubert = 0.0093;
+  Vmax_en_GLC___Aubert = 5230;
+  ModelValue_43 = vn_1_tp;
+  reaction_2_k_HK = 0.01;
+  reaction_2_K_I_G6P = 0.02;
+  reaction_5_k_PFK = 0.44;
+  reaction_5_K_m_F6P = 0.18;
+  reaction_6_k_PFK = 0.2;
+  reaction_6_K_m_F6P = 0.18;
+  reaction_7_k_PGK = 10;
+  reaction_8_k_PGK = 3;
+  reaction_9_k_PK = 44;
+  reaction_10_k_PK = 20;
+  reaction_13_v_max_mito = 0.1;
+  reaction_13_alpha = 5;
+  reaction_13_beta = 20;
+  reaction_14_v_max_mito = 0.01;
+  reaction_14_alpha = 5;
+  reaction_14_beta = 20;
+  O2_exchange_capillary_astrocytes_PScap = 10;
+  vLEAK_Na_astrocytes_gNA = 0.0039;
+  ATPase_neurons_VmaxATPase = 0.07;
+  ATPase_astrocytes_VmaxATPase = 0.035;
+  AK_neurons_k1 = 1000;
+  AK_neurons_k2 = 920;
+  AK_astrocytes_k1 = 1000;
+  AK_astrocytes_k2 = 920;
+  CK_astrocytes_forward__R01881_k1 = 0.5;
+  CK_astrocytes_forward__R01881_k2 = 0.01;
+  CK_neurons_forward__R01881_k1 = 0.5;
+  CK_neurons_forward__R01881_k2 = 0.01;
+  LDH_astrocytes_forward__R00703_k1 = 780;
+  LDH_astrocytes_forward__R00703_k2 = 32;
+  LDH_neurons_forward__R00703_k1 = 2000;
+  LDH_neurons_forward__R00703_k2 = 15;
+  ZWF_astrocytes__R02736_Vmax = 0.29057;
+  ZWF_astrocytes__R02736_K_S1 = 6.91392e-05;
+  ZWF_astrocytes__R02736_K_S2 = 1.31616e-05;
+  ZWF_astrocytes__R02736_Keq = 22906.4;
+  ZWF_astrocytes__R02736_K_P1 = 0.0180932;
+  ZWF_astrocytes__R02736_K_P2 = 0.00050314;
+  ZWF_neurons__R02736_Vmax = 0.586458;
+  ZWF_neurons__R02736_K_S1 = 6.91392e-05;
+  ZWF_neurons__R02736_K_S2 = 1.31616e-05;
+  ZWF_neurons__R02736_Keq = 22906.4;
+  ZWF_neurons__R02736_K_P1 = 0.0180932;
+  ZWF_neurons__R02736_K_P2 = 0.00050314;
+  SOL_neurons__R02035_Vmax = 0.372782;
+  SOL_neurons__R02035_K_S1 = 0.0180932;
+  SOL_neurons__R02035_Keq = 531174;
+  SOL_neurons__R02035_K_P1 = 2.28618;
+  SOL_astrocytes__R02035_Vmax = 0.184701;
+  SOL_astrocytes__R02035_K_S1 = 0.0180932;
+  SOL_astrocytes__R02035_Keq = 531174;
+  SOL_astrocytes__R02035_K_P1 = 2.28618;
+  GND_neurons___R01528_Vmax = 2.65764;
+  GND_neurons___R01528_K_S1 = 3.23421e-05;
+  GND_neurons___R01528_K_S2 = 3.11043e-06;
+  GND_neurons___R01528_Keq = 40852000;
+  GND_neurons___R01528_K_P1 = 0.0537179;
+  GND_neurons___R01528_K_P2 = 0.00050314;
+  GND_astrocytes__R01528_Vmax = 1.31677;
+  GND_astrocytes__R01528_K_S1 = 3.23421e-05;
+  GND_astrocytes__R01528_K_S2 = 3.11043e-06;
+  GND_astrocytes__R01528_Keq = 40852000;
+  GND_astrocytes__R01528_K_P1 = 0.00050314;
+  GND_astrocytes__R01528_K_P2 = 0.0537179;
+  RPE_neurons__R01529_Vmax = 0.0156605;
+  RPE_neurons__R01529_K_S1 = 0.0537179;
+  RPE_neurons__R01529_Keq = 39.2574;
+  RPE_neurons__R01529_K_P1 = 0.603002;
+  RPE_astrocytes__R01529_Vmax = 0.00775925;
+  RPE_astrocytes__R01529_K_S1 = 0.0537179;
+  RPE_astrocytes__R01529_Keq = 39.2574;
+  RPE_astrocytes__R01529_K_P1 = 0.603002;
+  RKI_astrocytes__R01056_Vmax = 0.000821984;
+  RKI_astrocytes__R01056_K_S1 = 0.0537179;
+  RKI_astrocytes__R01056_Keq = 35.4534;
+  RKI_astrocytes__R01056_K_P1 = 0.778461;
+  RKI_neurons__R01056_Vmax = 0.00165901;
+  RKI_neurons__R01056_K_S1 = 0.0537179;
+  RKI_neurons__R01056_Keq = 35.4534;
+  RKI_neurons__R01056_K_P1 = 0.778461;
+  TKL_1_astrocytes__R01641_Vmax = 0.000244278;
+  TKL_1_astrocytes__R01641_K_S1 = 0.000173625;
+  TKL_1_astrocytes__R01641_K_S2 = 0.000585387;
+  TKL_1_astrocytes__R01641_Keq = 1652870;
+  TKL_1_astrocytes__R01641_K_P1 = 0.168333;
+  TKL_1_astrocytes__R01641_K_P2 = 0.192807;
+  TKL_1_neurons__R01641_Vmax = 0.000493027;
+  TKL_1_neurons__R01641_K_S1 = 0.000173625;
+  TKL_1_neurons__R01641_K_S2 = 0.000585387;
+  TKL_1_neurons__R01641_Keq = 1652870;
+  TKL_1_neurons__R01641_K_P1 = 0.168333;
+  TKL_1_neurons__R01641_K_P2 = 0.192807;
+  TAL_astrocytes__R01827_Vmax = 0.0080394;
+  TAL_astrocytes__R01827_K_S1 = 0.168333;
+  TAL_astrocytes__R01827_K_S2 = 0.192807;
+  TAL_astrocytes__R01827_Keq = 0.323922;
+  TAL_astrocytes__R01827_K_P1 = 0.0799745;
+  TAL_astrocytes__R01827_K_P2 = 0.109681;
+  TAL_neurons__R01827_Vmax = 0.0162259;
+  TAL_neurons__R01827_K_S1 = 0.168333;
+  TAL_neurons__R01827_K_S2 = 0.192807;
+  TAL_neurons__R01827_Keq = 0.323922;
+  TAL_neurons__R01827_K_P1 = 0.0799745;
+  TAL_neurons__R01827_K_P2 = 0.109681;
+  TKL_2_astrocytes__R01830_Vmax = 0.000137124;
+  TKL_2_astrocytes__R01830_K_S1 = 0.0799745;
+  TKL_2_astrocytes__R01830_K_S2 = 0.168333;
+  TKL_2_astrocytes__R01830_Keq = 0.0777764;
+  TKL_2_astrocytes__R01830_K_P1 = 0.603002;
+  TKL_2_astrocytes__R01830_K_P2 = 0.109681;
+  TKL_2_neurons__R01830_Vmax = 0.000276758;
+  TKL_2_neurons__R01830_K_S1 = 0.0799745;
+  TKL_2_neurons__R01830_K_S2 = 0.168333;
+  TKL_2_neurons__R01830_Keq = 0.0777764;
+  TKL_2_neurons__R01830_K_P1 = 0.603002;
+  TKL_2_neurons__R01830_K_P2 = 0.109681;
+  NADPH_oxidase_neurons__R07172_k1 = 0.000423283;
+  NADPH_oxidase_astrocytes__R07172_k1 = 0.000209722;
+  R5P_sink_neurons__n_a__k1 = 0;
+  PGI_astrocytes__R02740___HS_k1 = 931.69;
+  PGI_astrocytes__R02740___HS_k2 = 2273.32;
+  HK_neurons__R01786___HeinrichSchuster_k_HK = 0.022;
+  HK_neurons__R01786___HeinrichSchuster_K_I_G6P = 0.02;
+  PGI_neurons__R02740___HS_k1 = 931.69;
+  PGI_neurons__R02740___HS_k2 = 2273.32;
+
+  // Other declarations:
+  var venous_balloon, F_in, F_out, parameter_9, parameter_10, parameter_20;
+  var parameter_21, f_CBF_dyn, is_stimulated, v_stim, stimulus, BOLD_signal;
+  var E0, Vmax_ce_GLC__wrt_capillaries___Aubert, Vmax_eg_GLC__wrt_astrocytes___Aubert_;
+  var Vmax_en_GLC__wrt_neurons___Aubert, Vmax_cg_GLC__wrt_capillaries___Aubert;
+  var Vmax_ec_LAC__wrt_extracellular_space___Aubert, Vmax_gc_LAC__wrt_astrocytes___Aubert;
+  var Vmax_ge_LAC__wrt_astrocytes___Aubert, Vmax_ne_LAC__wrt_neurons___Aubert;
+  var PS_cap_astrocytes__wrt_capillaries___Aubert, PS_cap_neuron__wrt_capillaries___Aubert;
+  const compartment_1, compartment_2, compartment_3, compartment_4, artery;
+  const parameter_11, parameter_19, parameter_7, parameter_8, parameter_1;
+  const parameter_2, parameter_3, parameter_4, parameter_5, parameter_6, ModelValue_6;
+  const ModelValue_7, parameter_12, parameter_14, parameter_16, parameter_17;
+  const parameter_18, ModelValue_16, parameter_25, parameter_26, parameter_43;
+  const F_0, delta_F, t_0, t_end, t_1, Compartment_9, tau_v, Hb_OP, Sm_g;
+  const Sm_n, k_pump, K_m_Na_pump, K_m_G6P_GLYS, delta_GLY, K_m_GLY, g_Na_neurons;
+  const g_Na_astrocytes, Vm, RT, F, vn_1_tp, vn_2_tp, t_stim_tp, R_Na_GLU;
+  const V_eg_max_GLU, K_m_GLU, V_gn_max_GLU, delta_HK, Metabolite_9, ModelValue_54;
+  const Metabolite_1, Metabolite_123, K_m_ATP_ATPase, NULL, Vmax_ne_LAC__wrt_extracellular_space;
+  const PS_cap_astrocytes__wrt_capillaries, PS_cap_neuron__wrt_capillaries;
+  const Vmax_eg_GLU__wrt_extracellular_space, K_T_GLC_ce__Aubert, ModelValue_83;
+  const Vmax_eg_GLC__Aubert_, K_T_GLC_eg__Aubert, K_T_GLC_en__Aubert, ModelValue_86;
+  const K_T_GLC_cg__Aubert, ModelValue_84, _sf, K_T_LAC_ne__Aubert, K_T_LAC_ge__Aubert;
+  const K_T_LAC_gc__Aubert, K_T_LAC_ec__Aubert, _PScap, K_O2__Aubert, nh_O2__Aubert;
+  const Vmax_f_PGI__Cloutier, Vmax_r_PGI__Cloutier, Vmax_ce_GLC__Aubert, Vmax_cg_GLC___Aubert;
+  const Vmax_en_GLC___Aubert, ModelValue_43;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_1 is "capillary";
+  compartment_2 is "neurons";
+  compartment_3 is "astrocytes";
+  compartment_4 is "extracellular_space";
+  venous_balloon is "venous balloon";
+  species_23 is "O2";
+  species_24 is "CO2";
+  species_25 is "GLC";
+  species_26 is "LAC";
+  species_1 is "GLC";
+  species_2 is "G6P";
+  species_3 is "ATP";
+  species_7 is "F6P";
+  species_9 is "GAP";
+  species_11 is "NADH";
+  species_12 is "PEP";
+  species_15 is "PYR";
+  species_18 is "LAC";
+  species_16 is "O2";
+  species_21 is "PCr";
+  Na__neurons is "Na+";
+  GLU_neurons is "GLU";
+  ADP_neurons is "ADP";
+  AMP_neurons is "AMP";
+  parameter_11 is "ANP";
+  Cr_neurons is "Cr";
+  parameter_19 is "PCr_total";
+  NAD_neurons is "NAD";
+  parameter_7 is "NADH_total_neurons";
+  G6L_neurons is "G6L";
+  P6G_neurons is "P6G";
+  Ru5P_neurons is "Ru5P";
+  X5P_neurons is "X5P";
+  R5P_neurons is "R5P";
+  S7P_neurons is "S7P";
+  E4P_neurons is "E4P";
+  NADPH_neurons is "NADPH";
+  NADP_neurons is "NADP";
+  species_4 is "GLC";
+  species_5 is "ATP";
+  species_6 is "G6P";
+  species_8 is "F6P";
+  species_10 is "GAP";
+  species_13 is "NADH";
+  species_14 is "PEP";
+  species_17 is "PYR";
+  species_19 is "LAC";
+  species_20 is "O2";
+  species_22 is "PCr";
+  Na__astrocytes is "Na+";
+  GLU_astrocytes is "GLU";
+  ADP_astrocytes is "ADP";
+  AMP_astrocytes is "AMP";
+  Cr_astrocytes is "Cr";
+  NAD_astrocytes is "NAD";
+  parameter_8 is "NADH_total_astrocytes";
+  G6L_astrocytes is "G6L";
+  P6G_astrocytes is "P6G";
+  Ru5P_astrocytes is "Ru5P";
+  X5P_astrocytes is "X5P";
+  R5P_astrocytes is "R5P";
+  S7P_astrocytes is "S7P";
+  E4P_astrocytes is "E4P";
+  NADP_astrocytes is "NADP";
+  NADPH_astrocytes is "NADPH";
+  species_27 is "GLC";
+  species_28 is "LAC";
+  GLU_extracellular_space is "GLU";
+  Na__extracellular_space is "Na+";
+  O2_artery is "O2";
+  CO2_artery is "CO2";
+  GLC_artery is "GLC";
+  LAC_artery is "LAC";
+  parameter_1 is "K_m_GLC";
+  parameter_2 is "K_m_G6P";
+  parameter_3 is "K_m_F6P_PGI";
+  parameter_4 is "K_m_F6P_PFK";
+  parameter_5 is "K_I_ATP";
+  parameter_6 is "nH";
+  parameter_9 is "NAD_neurons";
+  ModelValue_6 is "Initial for NADH_total_neurons";
+  parameter_10 is "NAD_astrocytes";
+  ModelValue_7 is "Initial for NADH_total_astrocytes";
+  parameter_12 is "q_AK";
+  parameter_14 is "K_m_ATP";
+  parameter_16 is "K_m_ADP";
+  parameter_17 is "K_m_O2";
+  parameter_18 is "K_m_PYR";
+  parameter_20 is "Cr_neurons";
+  ModelValue_16 is "Initial for PCr_total";
+  parameter_21 is "Cr_astrocytes";
+  parameter_25 is "Vmax_ATPase_neurons";
+  parameter_26 is "Vmax_ATPase_astrocytes";
+  parameter_43 is "Vmax_ec_LAC (wrt extracellular space)";
+  Compartment_9 is "Initial for venous balloon";
+  Hb_OP is "Hb.OP";
+  K_m_Na_pump is "K_m,Na-pump";
+  vn_1_tp is "vn_1";
+  vn_2_tp is "vn_2";
+  BOLD_signal is "BOLD signal";
+  Metabolite_9 is "Initial for dHb";
+  ModelValue_54 is "Initial for E0";
+  Metabolite_1 is "Initial for O2";
+  Metabolite_123 is "Initial for O2";
+  K_m_ATP_ATPase is "K_m_ATP(ATPase)";
+  Vmax_ne_LAC__wrt_extracellular_space is "Vmax_ne_LAC (wrt extracellular space)";
+  PS_cap_astrocytes__wrt_capillaries is "PS_cap_astrocytes (wrt capillaries)";
+  PS_cap_neuron__wrt_capillaries is "PS_cap_neuron (wrt capillaries)";
+  Vmax_eg_GLU__wrt_extracellular_space is "Vmax_eg_GLU (wrt extracellular space)";
+  K_T_GLC_ce__Aubert is "K_T_GLC_ce (Aubert)";
+  Vmax_ce_GLC__wrt_capillaries___Aubert is "Vmax_ce_GLC (wrt capillaries) (Aubert)";
+  ModelValue_83 is "Initial for Vmax_ce_GLC (Aubert)";
+  Vmax_eg_GLC__wrt_astrocytes___Aubert_ is "Vmax_eg_GLC (wrt astrocytes) (Aubert) ";
+  Vmax_eg_GLC__Aubert_ is "Vmax_eg_GLC (Aubert) ";
+  K_T_GLC_eg__Aubert is "K_T_GLC_eg (Aubert)";
+  K_T_GLC_en__Aubert is "K_T_GLC_en (Aubert)";
+  Vmax_en_GLC__wrt_neurons___Aubert is "Vmax_en_GLC (wrt neurons) (Aubert)";
+  ModelValue_86 is "Initial for Vmax_en_GLC  (Aubert)";
+  K_T_GLC_cg__Aubert is "K_T_GLC_cg (Aubert)";
+  Vmax_cg_GLC__wrt_capillaries___Aubert is "Vmax_cg_GLC (wrt capillaries) (Aubert)";
+  ModelValue_84 is "Initial for Vmax_cg_GLC  (Aubert)";
+  Vmax_ec_LAC__wrt_extracellular_space___Aubert is "Vmax_ec_LAC (wrt extracellular space) (Aubert)";
+  _sf is "sf";
+  Vmax_gc_LAC__wrt_astrocytes___Aubert is "Vmax_gc_LAC (wrt astrocytes) (Aubert)";
+  Vmax_ge_LAC__wrt_astrocytes___Aubert is "Vmax_ge_LAC (wrt astrocytes) (Aubert)";
+  Vmax_ne_LAC__wrt_neurons___Aubert is "Vmax_ne_LAC (wrt neurons) (Aubert)";
+  K_T_LAC_ne__Aubert is "K_T_LAC_ne (Aubert)";
+  K_T_LAC_ge__Aubert is "K_T_LAC_ge (Aubert)";
+  K_T_LAC_gc__Aubert is "K_T_LAC_gc (Aubert)";
+  K_T_LAC_ec__Aubert is "K_T_LAC_ec (Aubert)";
+  PS_cap_astrocytes__wrt_capillaries___Aubert is "PS_cap_astrocytes (wrt capillaries) (Aubert)";
+  PS_cap_neuron__wrt_capillaries___Aubert is "PS_cap_neuron (wrt capillaries) (Aubert)";
+  K_O2__Aubert is "K_O2 (Aubert)";
+  nh_O2__Aubert is "nh_O2 (Aubert)";
+  Vmax_f_PGI__Cloutier is "Vmax_f_PGI (Cloutier)";
+  Vmax_r_PGI__Cloutier is "Vmax_r_PGI (Cloutier)";
+  Vmax_ce_GLC__Aubert is "Vmax_ce_GLC (Aubert)";
+  Vmax_cg_GLC___Aubert is "Vmax_cg_GLC  (Aubert)";
+  Vmax_en_GLC___Aubert is "Vmax_en_GLC  (Aubert)";
+  ModelValue_43 is "Initial for vn_1";
+  reaction_2 is "HK_astrocytes (R01786)  (HeinrichSchuster)";
+  reaction_5 is "PFK_neurons (R04779, R01070, R01015)";
+  reaction_6 is "PFK_astrocytes (R04779, R01070, R01015)";
+  reaction_7 is "PGK_neurons (R01061, R01512, R01518, R00658)";
+  reaction_8 is "PGK_astrocytes (R01061, R01512, R01518, R00658)";
+  reaction_9 is "PK_neurons (R00200)";
+  reaction_10 is "PK_astrocytes (R00200)";
+  reaction_13 is "mitochondrial_respiration_neurons (n.a.)";
+  reaction_14 is "mitochondrial_respiration_astrocytes (n.a.)";
+  reaction_17 is "GLC_exchange_extracellular_space_neurons (Aubert)";
+  reaction_18 is "GLC_exchange_extracellular_space_astrocytes (Aubert)";
+  reaction_19 is "GLC_exchange_capillary_ec (Aubert)";
+  reaction_20 is "GLC_exchange_capillary_astrocytes (Aubert)";
+  reaction_21 is "LAC_exchange_ec_capillary";
+  reaction_22 is "LAC_exchange_neurons_ec";
+  reaction_23 is "LAC_exchange_astrocytes_ec";
+  reaction_24 is "LAC_exchange_astrocytes_capillary";
+  Blood_flow_contribution_to_capillary_O2 is "O2_exchange_artery_capillary";
+  Blood_flow_contribution_to_capillary_GLC is "GLC_exchange_artery_capillary";
+  Blood_flow_contribution_to_capillary_LAC is "LAC_exchange_capillary_artery";
+  Flow_of_CO2_between_capillary_and_vessel__artery_ is "CO2_exchange_capillary_artery";
+  vPUMP_neurons is "Na+_exchange_neurons_extracellular_space (n.a.)";
+  vPUMP_astrocytes is "Na+_exchange_astrocytes_extracellular_space (n.a.)";
+  vLEAK_Na_neurons is "LEAK_Na_neurons (n.a.)";
+  vLEAK_Na_astrocytes is "LEAK_Na_astrocytes (n.a)";
+  vSTIM is "Na+_exchange_extracellular_space_neurons  (stimulation)";
+  vGLU_ne is "GLU_exchange_neurons_extracellular_space";
+  vGLU_eg is "GLU_exchange_extracellular_space_astrocytes";
+  vGLU_gn is "GLU_exchange_astrocytes_neurons";
+  inflow_of_dHb is "inflow of dHb";
+  outflow_of_dHb is "outflow of dHb";
+  ATPase_neurons is "ATPase_neurons (n.a.)";
+  ATPase_astrocytes is "ATPase_astrocytes (n.a.)";
+  AK_neurons is "AK_neurons (R00127)";
+  AK_astrocytes is "AK_astrocytes (R00127)";
+  CK_astrocytes_forward__R01881 is "CK_astrocytes (R01881)";
+  CK_neurons_forward__R01881 is "CK_neurons (R01881)";
+  LDH_astrocytes_forward__R00703 is "LDH_astrocytes (R00703)";
+  LDH_neurons_forward__R00703 is "LDH_neurons (R00703)";
+  ZWF_astrocytes__R02736 is "ZWF_astrocytes (R02736)";
+  ZWF_neurons__R02736 is "ZWF_neurons (R02736)";
+  SOL_neurons__R02035 is "SOL_neurons (R02035)";
+  SOL_astrocytes__R02035 is "SOL_astrocytes (R02035)";
+  GND_neurons___R01528 is "GND_neurons  (R01528)";
+  GND_astrocytes__R01528 is "GND_astrocytes (R01528)";
+  RPE_neurons__R01529 is "RPE_neurons (R01529)";
+  RPE_astrocytes__R01529 is "RPE_astrocytes (R01529)";
+  RKI_astrocytes__R01056 is "RKI_astrocytes (R01056)";
+  RKI_neurons__R01056 is "RKI_neurons (R01056)";
+  TKL_1_astrocytes__R01641 is "TKL-1_astrocytes (R01641)";
+  TKL_1_neurons__R01641 is "TKL-1_neurons (R01641)";
+  TAL_astrocytes__R01827 is "TAL_astrocytes (R01827)";
+  TAL_neurons__R01827 is "TAL_neurons (R01827)";
+  TKL_2_astrocytes__R01830 is "TKL-2_astrocytes (R01830)";
+  TKL_2_neurons__R01830 is "TKL-2_neurons (R01830)";
+  NADPH_oxidase_neurons__R07172 is "NADPH oxidase neurons (R07172)";
+  NADPH_oxidase_astrocytes__R07172 is "NADPH oxidase astrocytes (R07172)";
+  R5P_sink_astrocytes__n_a_ is "R5P sink_astrocytes (n.a.)";
+  R5P_sink_neurons__n_a_ is "R5P sink_neurons (n.a.)";
+  PGI_astrocytes__R02740___HS is "PGI_astrocytes (R02740) (HS)";
+  HK_neurons__R01786___HeinrichSchuster is "HK_neurons (R01786) (HeinrichSchuster)";
+  PGI_neurons__R02740___HS is "PGI_neurons (R02740) (HS)";
+
+  // SBO terms:
+  compartment_1.sboTerm = 290
+  compartment_2.sboTerm = 290
+  compartment_3.sboTerm = 290
+  compartment_4.sboTerm = 290
+  venous_balloon.sboTerm = 290
+  artery.sboTerm = 290
+  reaction_2.sboTerm = 176
+  reaction_5.sboTerm = 395
+  reaction_6.sboTerm = 395
+  reaction_7.sboTerm = 395
+  reaction_8.sboTerm = 395
+  reaction_9.sboTerm = 176
+  reaction_10.sboTerm = 176
+  reaction_13.sboTerm = 395
+  reaction_14.sboTerm = 395
+  reaction_17.sboTerm = 185
+  reaction_18.sboTerm = 185
+  reaction_19.sboTerm = 185
+  reaction_20.sboTerm = 185
+  reaction_21.sboTerm = 185
+  reaction_22.sboTerm = 185
+  reaction_23.sboTerm = 185
+  reaction_24.sboTerm = 185
+  O2_exchange_capillary_neurons.sboTerm = 185
+  O2_exchange_capillary_astrocytes.sboTerm = 185
+  Blood_flow_contribution_to_capillary_O2.sboTerm = 185
+  Blood_flow_contribution_to_capillary_GLC.sboTerm = 185
+  Blood_flow_contribution_to_capillary_LAC.sboTerm = 185
+  Flow_of_CO2_between_capillary_and_vessel__artery_.sboTerm = 185
+  vPUMP_neurons.sboTerm = 185
+  vPUMP_astrocytes.sboTerm = 185
+  vLEAK_Na_neurons.sboTerm = 185
+  vLEAK_Na_astrocytes.sboTerm = 185
+  vSTIM.sboTerm = 185
+  vGLU_ne.sboTerm = 185
+  vGLU_eg.sboTerm = 185
+  vGLU_gn.sboTerm = 185
+  inflow_of_dHb.sboTerm = 631
+  outflow_of_dHb.sboTerm = 631
+  ATPase_neurons.sboTerm = 631
+  ATPase_astrocytes.sboTerm = 631
+  LDH_astrocytes_forward__R00703.sboTerm = 176
+  LDH_neurons_forward__R00703.sboTerm = 176
+  ZWF_astrocytes__R02736.sboTerm = 176
+  ZWF_neurons__R02736.sboTerm = 176
+  SOL_neurons__R02035.sboTerm = 176
+  SOL_astrocytes__R02035.sboTerm = 176
+  GND_neurons___R01528.sboTerm = 176
+  GND_astrocytes__R01528.sboTerm = 176
+  RPE_neurons__R01529.sboTerm = 176
+  RPE_astrocytes__R01529.sboTerm = 176
+  RKI_astrocytes__R01056.sboTerm = 176
+  RKI_neurons__R01056.sboTerm = 176
+  TKL_1_astrocytes__R01641.sboTerm = 176
+  TKL_1_neurons__R01641.sboTerm = 176
+  TAL_astrocytes__R01827.sboTerm = 176
+  TAL_neurons__R01827.sboTerm = 176
+  TKL_2_astrocytes__R01830.sboTerm = 176
+  TKL_2_neurons__R01830.sboTerm = 176
+  NADPH_oxidase_neurons__R07172.sboTerm = 631
+  NADPH_oxidase_astrocytes__R07172.sboTerm = 631
+  R5P_sink_astrocytes__n_a_.sboTerm = 631
+  R5P_sink_neurons__n_a_.sboTerm = 631
+  HK_neurons__R01786___HeinrichSchuster.sboTerm = 176
+
+  // CV terms:
+  compartment_1 model_entity_is "http://identifiers.org/bto/BTO:0002045"
+  compartment_1 identity "http://identifiers.org/sbo/SBO:0000290"
+  compartment_2 model_entity_is "http://identifiers.org/bto/BTO:0000938"
+  compartment_2 identity "http://identifiers.org/sbo/SBO:0000290"
+  compartment_3 model_entity_is "http://identifiers.org/bto/BTO:0000938"
+  compartment_3 identity "http://identifiers.org/sbo/SBO:0000290"
+  compartment_4 identity "http://identifiers.org/sbo/SBO:0000290"
+  compartment_4 identity "http://identifiers.org/go/GO:0005615"
+  venous_balloon model_entity_is "http://identifiers.org/fma/FMA:50723"
+  venous_balloon identity "http://identifiers.org/sbo/SBO:0000290"
+  artery model_entity_is "http://identifiers.org/fma/FMA:50720"
+  artery identity "http://identifiers.org/sbo/SBO:0000290"
+  species_23 identity "http://identifiers.org/chebi/CHEBI:15379"
+  species_24 identity "http://identifiers.org/chebi/CHEBI:16526"
+  species_25 identity "http://identifiers.org/chebi/CHEBI:17634"
+  species_26 identity "http://identifiers.org/chebi/CHEBI:422"
+  dHb identity "http://identifiers.org/chebi/CHEBI:5656"
+  species_1 identity "http://identifiers.org/chebi/CHEBI:17634"
+  species_2 identity "http://identifiers.org/chebi/CHEBI:48928"
+  species_3 identity "http://identifiers.org/chebi/CHEBI:15422"
+  species_7 identity "http://identifiers.org/chebi/CHEBI:78697"
+  species_9 identity "http://identifiers.org/chebi/CHEBI:48928"
+  species_11 identity "http://identifiers.org/chebi/CHEBI:16908"
+  species_12 identity "http://identifiers.org/chebi/CHEBI:18021"
+  species_15 identity "http://identifiers.org/chebi/CHEBI:32816"
+  species_18 identity "http://identifiers.org/chebi/CHEBI:422"
+  species_16 identity "http://identifiers.org/chebi/CHEBI:15379"
+  species_21 identity "http://identifiers.org/chebi/CHEBI:17287"
+  Na__neurons identity "http://identifiers.org/chebi/CHEBI:29101"
+  GLU_neurons identity "http://identifiers.org/chebi/CHEBI:16015"
+  ADP_neurons identity "http://identifiers.org/chebi/CHEBI:16761"
+  AMP_neurons identity "http://identifiers.org/chebi/CHEBI:16027"
+  Cr_neurons identity "http://identifiers.org/chebi/CHEBI:16919"
+  NAD_neurons identity "http://identifiers.org/chebi/CHEBI:13389"
+  G6L_neurons identity "http://identifiers.org/chebi/CHEBI:16938"
+  P6G_neurons identity "http://identifiers.org/chebi/CHEBI:16938"
+  Ru5P_neurons identity "http://identifiers.org/chebi/CHEBI:37455"
+  X5P_neurons identity "http://identifiers.org/chebi/CHEBI:27354"
+  R5P_neurons identity "http://identifiers.org/chebi/CHEBI:37455"
+  S7P_neurons identity "http://identifiers.org/chebi/CHEBI:15721"
+  E4P_neurons identity "http://identifiers.org/chebi/CHEBI:48153"
+  NADPH_neurons identity "http://identifiers.org/chebi/CHEBI:16474"
+  NADP_neurons identity "http://identifiers.org/chebi/CHEBI:25523"
+  species_4 identity "http://identifiers.org/chebi/CHEBI:17634"
+  species_5 identity "http://identifiers.org/chebi/CHEBI:15422"
+  species_6 identity "http://identifiers.org/chebi/CHEBI:48928"
+  species_8 identity "http://identifiers.org/chebi/CHEBI:78697"
+  species_10 identity "http://identifiers.org/chebi/CHEBI:48928"
+  species_13 identity "http://identifiers.org/chebi/CHEBI:16908"
+  species_14 identity "http://identifiers.org/chebi/CHEBI:18021"
+  species_17 identity "http://identifiers.org/chebi/CHEBI:32816"
+  species_19 identity "http://identifiers.org/chebi/CHEBI:422"
+  species_20 identity "http://identifiers.org/chebi/CHEBI:15379"
+  species_22 identity "http://identifiers.org/chebi/CHEBI:17287"
+  Na__astrocytes identity "http://identifiers.org/chebi/CHEBI:29101"
+  GLU_astrocytes identity "http://identifiers.org/chebi/CHEBI:16015"
+  ADP_astrocytes identity "http://identifiers.org/chebi/CHEBI:16761"
+  AMP_astrocytes identity "http://identifiers.org/chebi/CHEBI:16027"
+  Cr_astrocytes identity "http://identifiers.org/chebi/CHEBI:16919"
+  NAD_astrocytes identity "http://identifiers.org/chebi/CHEBI:13389"
+  G6L_astrocytes identity "http://identifiers.org/chebi/CHEBI:16938"
+  P6G_astrocytes identity "http://identifiers.org/chebi/CHEBI:16938"
+  Ru5P_astrocytes identity "http://identifiers.org/chebi/CHEBI:37455"
+  X5P_astrocytes identity "http://identifiers.org/chebi/CHEBI:27354"
+  R5P_astrocytes identity "http://identifiers.org/chebi/CHEBI:37455"
+  S7P_astrocytes identity "http://identifiers.org/chebi/CHEBI:15721"
+  E4P_astrocytes identity "http://identifiers.org/chebi/CHEBI:48153"
+  NADP_astrocytes identity "http://identifiers.org/chebi/CHEBI:25523"
+  NADPH_astrocytes identity "http://identifiers.org/chebi/CHEBI:16474"
+  species_27 identity "http://identifiers.org/chebi/CHEBI:17634"
+  species_28 identity "http://identifiers.org/chebi/CHEBI:422"
+  GLU_extracellular_space identity "http://identifiers.org/chebi/CHEBI:16015"
+  Na__extracellular_space identity "http://identifiers.org/chebi/CHEBI:29101"
+  O2_artery identity "http://identifiers.org/chebi/CHEBI:15379"
+  CO2_artery identity "http://identifiers.org/chebi/CHEBI:16526"
+  GLC_artery identity "http://identifiers.org/chebi/CHEBI:17634"
+  LAC_artery identity "http://identifiers.org/chebi/CHEBI:422"
+  parameter_6 identity "http://identifiers.org/sbo/0000190"
+  reaction_2 identity "http://identifiers.org/sbo/SBO:0000176"
+  reaction_2 description "http://identifiers.org/isbn/978-1-4612-8492-5"
+  reaction_2 identity "http://identifiers.org/kegg.reaction/R01786"
+  reaction_5 identity "http://identifiers.org/sbo/SBO:0000395"
+  reaction_5 part "http://identifiers.org/kegg.reaction/R01015"
+  reaction_5 part "http://identifiers.org/kegg.reaction/R04779"
+  reaction_5 part "http://identifiers.org/kegg.reaction/R01070"
+  reaction_6 identity "http://identifiers.org/sbo/SBO:0000395"
+  reaction_6 part "http://identifiers.org/kegg.reaction/R01070"
+  reaction_6 part "http://identifiers.org/kegg.reaction/R04779"
+  reaction_6 part "http://identifiers.org/kegg.reaction/R01015"
+  reaction_7 identity "http://identifiers.org/sbo/SBO:0000395"
+  reaction_7 part "http://identifiers.org/kegg.reaction/R01518"
+  reaction_7 part "http://identifiers.org/kegg.reaction/R00658"
+  reaction_7 part "http://identifiers.org/kegg.reaction/R01512"
+  reaction_7 part "http://identifiers.org/kegg.reaction/R01061"
+  reaction_8 identity "http://identifiers.org/sbo/SBO:0000395"
+  reaction_8 part "http://identifiers.org/kegg.reaction/R01512"
+  reaction_8 part "http://identifiers.org/kegg.reaction/R01518"
+  reaction_8 part "http://identifiers.org/kegg.reaction/R00658"
+  reaction_8 part "http://identifiers.org/kegg.reaction/R01061"
+  reaction_9 identity "http://identifiers.org/sbo/SBO:0000176"
+  reaction_9 identity "http://identifiers.org/kegg.reaction/R00200"
+  reaction_10 identity "http://identifiers.org/sbo/SBO:0000176"
+  reaction_10 identity "http://identifiers.org/kegg.reaction/R00200"
+  reaction_13 identity "http://identifiers.org/sbo/SBO:0000395"
+  reaction_13 identity "http://identifiers.org/go/GO:0009060"
+  reaction_14 identity "http://identifiers.org/sbo/SBO:0000395"
+  reaction_14 identity "http://identifiers.org/go/GO:0009060"
+  reaction_17 identity "http://identifiers.org/sbo/SBO:0000185"
+  reaction_17 identity "http://identifiers.org/go/GO:0015758"
+  reaction_18 identity "http://identifiers.org/sbo/SBO:0000185"
+  reaction_18 identity "http://identifiers.org/go/GO:0015758"
+  reaction_19 identity "http://identifiers.org/sbo/SBO:0000185"
+  reaction_19 identity "http://identifiers.org/go/GO:0015758"
+  reaction_20 identity "http://identifiers.org/sbo/SBO:0000185"
+  reaction_20 identity "http://identifiers.org/go/GO:0015758"
+  reaction_21 identity "http://identifiers.org/sbo/SBO:0000185"
+  reaction_21 identity "http://identifiers.org/go/GO:0015727"
+  reaction_22 identity "http://identifiers.org/sbo/SBO:0000185"
+  reaction_22 identity "http://identifiers.org/go/GO:0015727"
+  reaction_23 identity "http://identifiers.org/sbo/SBO:0000185"
+  reaction_23 identity "http://identifiers.org/go/GO:0015727"
+  reaction_24 identity "http://identifiers.org/sbo/SBO:0000185"
+  reaction_24 identity "http://identifiers.org/go/GO:0015727"
+  O2_exchange_capillary_neurons identity "http://identifiers.org/sbo/SBO:0000185"
+  O2_exchange_capillary_neurons identity "http://identifiers.org/go/GO:0015671"
+  O2_exchange_capillary_astrocytes identity "http://identifiers.org/sbo/SBO:0000185"
+  O2_exchange_capillary_astrocytes identity "http://identifiers.org/go/GO:0015671"
+  Blood_flow_contribution_to_capillary_O2 identity "http://identifiers.org/sbo/SBO:0000185"
+  Blood_flow_contribution_to_capillary_O2 identity "http://identifiers.org/go/GO:0015671"
+  Blood_flow_contribution_to_capillary_GLC identity "http://identifiers.org/sbo/SBO:0000185"
+  Blood_flow_contribution_to_capillary_GLC identity "http://identifiers.org/go/GO:0015758"
+  Blood_flow_contribution_to_capillary_LAC identity "http://identifiers.org/sbo/SBO:0000185"
+  Blood_flow_contribution_to_capillary_LAC identity "http://identifiers.org/go/GO:0015727"
+  Flow_of_CO2_between_capillary_and_vessel__artery_ identity "http://identifiers.org/sbo/SBO:0000185"
+  Flow_of_CO2_between_capillary_and_vessel__artery_ identity "http://identifiers.org/go/GO:0006810"
+  vPUMP_neurons identity "http://identifiers.org/sbo/SBO:0000185"
+  vPUMP_neurons identity "http://identifiers.org/go/GO:0036376"
+  vPUMP_astrocytes identity "http://identifiers.org/sbo/SBO:0000185"
+  vPUMP_astrocytes identity "http://identifiers.org/go/GO:0036376"
+  vLEAK_Na_neurons identity "http://identifiers.org/sbo/SBO:0000185"
+  vLEAK_Na_neurons identity "http://identifiers.org/go/GO:1990118"
+  vLEAK_Na_astrocytes identity "http://identifiers.org/sbo/SBO:0000185"
+  vLEAK_Na_astrocytes identity "http://identifiers.org/go/GO:1990118"
+  vSTIM identity "http://identifiers.org/sbo/SBO:0000185"
+  vSTIM identity "http://identifiers.org/go/GO:1990118"
+  vGLU_ne identity "http://identifiers.org/sbo/SBO:0000185"
+  vGLU_ne identity "http://identifiers.org/go/GO:0015813"
+  vGLU_eg identity "http://identifiers.org/sbo/SBO:0000185"
+  vGLU_eg identity "http://identifiers.org/go/GO:0015813"
+  vGLU_gn identity "http://identifiers.org/sbo/SBO:0000185"
+  vGLU_gn identity "http://identifiers.org/go/GO:0015813"
+  inflow_of_dHb identity "http://identifiers.org/sbo/SBO:0000631"
+  outflow_of_dHb identity "http://identifiers.org/sbo/SBO:0000631"
+  ATPase_neurons identity "http://identifiers.org/sbo/SBO:0000631"
+  ATPase_astrocytes identity "http://identifiers.org/sbo/SBO:0000631"
+  AK_neurons identity "http://identifiers.org/kegg.reaction/R00127"
+  AK_astrocytes identity "http://identifiers.org/kegg.reaction/R00127"
+  CK_astrocytes_forward__R01881 identity "http://identifiers.org/kegg.reaction/R01881"
+  CK_neurons_forward__R01881 identity "http://identifiers.org/kegg.reaction/R01881"
+  LDH_astrocytes_forward__R00703 identity "http://identifiers.org/sbo/SBO:0000176"
+  LDH_astrocytes_forward__R00703 identity "http://identifiers.org/kegg.reaction/R00703"
+  LDH_neurons_forward__R00703 identity "http://identifiers.org/sbo/SBO:0000176"
+  LDH_neurons_forward__R00703 identity "http://identifiers.org/kegg.reaction/R00703"
+  ZWF_astrocytes__R02736 identity "http://identifiers.org/sbo/SBO:0000176"
+  ZWF_astrocytes__R02736 identity "http://identifiers.org/kegg.reaction/R02736"
+  ZWF_neurons__R02736 identity "http://identifiers.org/sbo/SBO:0000176"
+  ZWF_neurons__R02736 identity "http://identifiers.org/kegg.reaction/R02736"
+  SOL_neurons__R02035 identity "http://identifiers.org/sbo/SBO:0000176"
+  SOL_neurons__R02035 identity "http://identifiers.org/kegg.reaction/R02035"
+  SOL_astrocytes__R02035 identity "http://identifiers.org/sbo/SBO:0000176"
+  SOL_astrocytes__R02035 identity "http://identifiers.org/kegg.reaction/R02035"
+  GND_neurons___R01528 identity "http://identifiers.org/sbo/SBO:0000176"
+  GND_neurons___R01528 identity "http://identifiers.org/kegg.reaction/R01528"
+  GND_astrocytes__R01528 identity "http://identifiers.org/sbo/SBO:0000176"
+  GND_astrocytes__R01528 identity "http://identifiers.org/kegg.reaction/R01528"
+  RPE_neurons__R01529 identity "http://identifiers.org/sbo/SBO:0000176"
+  RPE_neurons__R01529 identity "http://identifiers.org/kegg.reaction/R01528"
+  RPE_astrocytes__R01529 identity "http://identifiers.org/sbo/SBO:0000176"
+  RPE_astrocytes__R01529 identity "http://identifiers.org/kegg.reaction/R01528"
+  RKI_astrocytes__R01056 identity "http://identifiers.org/sbo/SBO:0000176"
+  RKI_astrocytes__R01056 identity "http://identifiers.org/kegg.reaction/R01056"
+  RKI_neurons__R01056 identity "http://identifiers.org/sbo/SBO:0000176"
+  RKI_neurons__R01056 identity "http://identifiers.org/kegg.reaction/R01056"
+  TKL_1_astrocytes__R01641 identity "http://identifiers.org/sbo/SBO:0000176"
+  TKL_1_astrocytes__R01641 identity "http://identifiers.org/kegg.reaction/R01641"
+  TKL_1_neurons__R01641 identity "http://identifiers.org/sbo/SBO:0000176"
+  TKL_1_neurons__R01641 identity "http://identifiers.org/kegg.reaction/R01641"
+  TAL_astrocytes__R01827 identity "http://identifiers.org/sbo/SBO:0000176"
+  TAL_astrocytes__R01827 identity "http://identifiers.org/kegg.reaction/R01827"
+  TAL_neurons__R01827 identity "http://identifiers.org/sbo/SBO:0000176"
+  TAL_neurons__R01827 identity "http://identifiers.org/kegg.reaction/R01827"
+  TKL_2_astrocytes__R01830 identity "http://identifiers.org/sbo/SBO:0000176"
+  TKL_2_astrocytes__R01830 identity "http://identifiers.org/kegg.reaction/R01830"
+  TKL_2_neurons__R01830 identity "http://identifiers.org/sbo/SBO:0000176"
+  TKL_2_neurons__R01830 identity "http://identifiers.org/kegg.reaction/R01830"
+  NADPH_oxidase_neurons__R07172 identity "http://identifiers.org/sbo/SBO:0000631"
+  NADPH_oxidase_astrocytes__R07172 identity "http://identifiers.org/sbo/SBO:0000631"
+  R5P_sink_astrocytes__n_a_ identity "http://identifiers.org/sbo/SBO:0000631"
+  R5P_sink_neurons__n_a_ identity "http://identifiers.org/sbo/SBO:0000631"
+  PGI_astrocytes__R02740___HS identity "http://identifiers.org/kegg.reaction/R02740"
+  HK_neurons__R01786___HeinrichSchuster identity "http://identifiers.org/sbo/SBO:0000176"
+  HK_neurons__R01786___HeinrichSchuster identity "http://identifiers.org/kegg.reaction/R01786"
+  HK_neurons__R01786___HeinrichSchuster description "http://identifiers.org/isbn/978-1-4612-8492-5"
+  PGI_neurons__R02740___HS identity "http://identifiers.org/kegg.reaction/R02740"
+end
+
+Brain_Energy_Metabolism_with_PPP is "Winter2017 - Brain Energy Metabolism with PPP"
+
+Brain_Energy_Metabolism_with_PPP model_entity_is "http://identifiers.org/biomodels.db/MODEL1603240000"
+Brain_Energy_Metabolism_with_PPP model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000627"
+Brain_Energy_Metabolism_with_PPP description "http://identifiers.org/doi/10.1177/0271678X17693024"
+Brain_Energy_Metabolism_with_PPP origin "http://identifiers.org/biomodels.db/MODEL1411210000",
+                                        "http://identifiers.org/biomodels.db/BIOMD0000000554",
+                                        "http://identifiers.org/doi/10.1007/978-1-4613-1161-4"
+Brain_Energy_Metabolism_with_PPP property "http://identifiers.org/doid/DOID:10652"
+Brain_Energy_Metabolism_with_PPP part "http://identifiers.org/go/GO:0006098",
+                                      "http://identifiers.org/go/GO:0006096",
+                                      "http://identifiers.org/go/GO:0006099",
+                                      "http://identifiers.org/go/GO:0006119"
+Brain_Energy_Metabolism_with_PPP taxon "http://identifiers.org/taxonomy/9606"
+Brain_Energy_Metabolism_with_PPP container "http://identifiers.org/bto/BTO:0000142"
+Brain_Energy_Metabolism_with_PPP property "http://identifiers.org/mamo/MAMO_0000046"

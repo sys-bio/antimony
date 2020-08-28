@@ -1,0 +1,187 @@
+// Created by libAntimony v2.13.0
+function Rate_Law_for_Susceptible_to_Infected(S, alpha, I, beta, D, gamma_, A, delta, R)
+  S*(alpha*I + beta*D + gamma_*A + delta*R);
+end
+
+Rate_Law_for_Susceptible_to_Infected is "Rate Law for Susceptible_to_Infected"
+
+
+model *Giordano2020___SIDARTHE_model_of_COVID_19_spread_in_Italy()
+
+  // Compartments and Species:
+  compartment Italy;
+  species Susceptible in Italy, Infected in Italy, Diagnosed in Italy, Ailing in Italy;
+  species Recognized in Italy, Threatened in Italy, Healed in Italy, Extinct in Italy;
+
+  // Reactions:
+  Susceptible_to_Infected: Susceptible => Infected; Italy*Rate_Law_for_Susceptible_to_Infected(Susceptible, alpha, Infected, beta, Diagnosed, gamma_, Ailing, delta, Recognized);
+  Infected_to_Diagnosed: Infected => Diagnosed; Italy*epsilon*Infected;
+  Infected_to_Ailing: Infected => Ailing; Italy*zeta*Infected;
+  Infected_to_Healed: Infected => Healed; Italy*lambda*Infected;
+  Diagnosed_to_Recognized: Diagnosed => Recognized; Italy*eta*Diagnosed;
+  Diagnosed_to_Healed: Diagnosed => Healed; Italy*rho*Diagnosed;
+  Ailing_to_Recognised: Ailing => Recognized; Italy*theta*Ailing;
+  Ailing_to_Healed: Ailing => Healed; Italy*kappa*Ailing;
+  Ailing_to_Threatened: Ailing => Threatened; Italy*mu*Ailing;
+  Recognised_to_Threatened: Recognized => Threatened; Italy*nu*Recognized;
+  Recognised_to_Healed: Recognized => Healed; Italy*xi*Recognized;
+  Threatened_to_Extinct: Threatened => Extinct; Italy*tau*Threatened;
+  Threatened_to_Healed: Threatened => Healed; Italy*sigma*Threatened;
+
+  // Events:
+  Day_4: at 0 after time > 4: delta = 0.0057, gamma_ = 0.285, beta = 0.0057, alpha = 0.422;
+  Day_12: at 0 after time > 12: epsilon = 0.143;
+  Day_22: at 0 after time > 22: eta = 0.034, zeta = 0.034, sigma = 0.017, xi = 0.017, kappa = 0.017, rho = 0.017, lambda = 0.08, nu = 0.015, mu = 0.008, delta = 0.005, gamma_ = 0.2, beta = 0.005, alpha = 0.36;
+  Day_28: at 0 after time > 28: gamma_ = 0.11, alpha = 0.21;
+  Day_38: at 0 after time > 38: kappa = 0.02, eta = 0.025, epsilon = 0.2, zeta = 0.025, sigma = 0.01, xi = 0.02, rho = 0.02;
+  Day_50: at 0 after time > 50: epsilon = 0.2*ModelValue_20 + 0.4*ModelValue_18 + 0.6*ModelValue_19, alpha = 0.209*ModelValue_21 + 0.252*ModelValue_16 + 0.105*ModelValue_17 + 0.42*ModelValue_19;
+
+  // Species initializations:
+  Susceptible = 0.9999963;
+  Infected = 3.33333333e-06;
+  Diagnosed = 3.33333333e-07;
+  Ailing = 1.66666666e-08;
+  Recognized = 3.33333333e-08;
+  Threatened = 0;
+  Healed = 0;
+  Extinct = 0;
+
+  // Compartment initializations:
+  Italy = 1;
+
+  // Variable initializations:
+  alpha = 0.57;
+  alpha has unit_0;
+  beta = 0.011;
+  beta has unit_0;
+  gamma_ = 0.456;
+  gamma_ has unit_0;
+  delta = 0.011;
+  delta has unit_0;
+  epsilon = 0.171;
+  epsilon has unit_1;
+  mu = 0.017;
+  mu has unit_1;
+  nu = 0.027;
+  nu has unit_1;
+  lambda = 0.034;
+  lambda has unit_1;
+  rho = 0.034;
+  rho has unit_1;
+  kappa = 0.017;
+  kappa has unit_1;
+  xi = 0.017;
+  xi has unit_1;
+  sigma = 0.017;
+  sigma has unit_1;
+  zeta = 0.125;
+  zeta has unit_1;
+  eta = 0.125;
+  eta has unit_1;
+  ModelValue_21 = alpha_modifier;
+  ModelValue_16 = Event_trigger_Fig3b;
+  ModelValue_17 = Event_trigger_Fig3d;
+  ModelValue_19 = Event_trigger_Fig4d;
+  ModelValue_20 = epsilon_modifier;
+  ModelValue_18 = Event_trigger_Fig4b;
+  theta = 0.371;
+  theta has unit_1;
+  tau = 0.01;
+  tau has unit_1;
+  Event_trigger_Fig3b = 0;
+  Event_trigger_Fig3b has unit_2;
+  Event_trigger_Fig3d = 0;
+  Event_trigger_Fig3d has unit_2;
+  Event_trigger_Fig4b = 0;
+  Event_trigger_Fig4b has unit_2;
+  Event_trigger_Fig4d = 1;
+  Event_trigger_Fig4d has unit_2;
+  epsilon_modifier = 0;
+  epsilon_modifier has unit_2;
+  alpha_modifier = 0;
+  alpha_modifier has unit_2;
+
+  // Other declarations:
+  var alpha, beta, gamma_, delta, epsilon, mu, nu, lambda, rho, kappa, xi;
+  var sigma, zeta, eta;
+  const Italy, ModelValue_21, ModelValue_16, ModelValue_17, ModelValue_19;
+  const ModelValue_20, ModelValue_18, theta, tau, Event_trigger_Fig3b, Event_trigger_Fig3d;
+  const Event_trigger_Fig4b, Event_trigger_Fig4d, epsilon_modifier, alpha_modifier;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = item;
+  unit unit_0 = 1 / (86400e-1 second * item);
+  unit unit_1 = 1 / 86400e-1 second;
+  unit unit_2 = 1 / dimensionless^-0;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1/(#*d)";
+  unit_1 is "1/d";
+  unit_2 is "dimensionless";
+  gamma_ is "gamma";
+  ModelValue_21 is "Initial for alpha_modifier";
+  ModelValue_16 is "Initial for Event_trigger_Fig3b";
+  ModelValue_17 is "Initial for Event_trigger_Fig3d";
+  ModelValue_19 is "Initial for Event_trigger_Fig4d";
+  ModelValue_20 is "Initial for epsilon_modifier";
+  ModelValue_18 is "Initial for Event_trigger_Fig4b";
+
+  // CV terms:
+  Italy hypernym "http://identifiers.org/ncit/C16761"
+  Susceptible hypernym "http://identifiers.org/ido/0000514"
+  Susceptible property "http://identifiers.org/ido/0000468"
+  Susceptible property "http://identifiers.org/ido/0000659"
+  Infected hypernym "http://identifiers.org/ido/0000569"
+  Infected hypernym "http://identifiers.org/ido/0000511"
+  Infected property "http://identifiers.org/ncit/C113725"
+  Diagnosed hypernym "http://identifiers.org/ido/0000511"
+  Diagnosed property "http://identifiers.org/ncit/C15220"
+  Diagnosed property "http://identifiers.org/ncit/C3833"
+  Ailing hypernym "http://identifiers.org/ido/0000573"
+  Ailing hypernym "http://identifiers.org/ido/0000511"
+  Ailing property "http://identifiers.org/ncit/C113725"
+  Recognized hypernym "http://identifiers.org/ido/0000511"
+  Recognized hypernym "http://identifiers.org/ido/0000573"
+  Recognized property "http://identifiers.org/ncit/C25587"
+  Threatened hypernym "http://identifiers.org/ido/0000573"
+  Threatened property "http://identifiers.org/ncit/C15220"
+  Threatened property "http://identifiers.org/ncit/C25467"
+  Healed property "http://identifiers.org/ido/0000621"
+  Extinct identity "http://identifiers.org/ncit/C28554"
+  Susceptible_to_Infected hypernym "http://identifiers.org/doid/DOID:0080600"
+  Susceptible_to_Infected hypernym "http://identifiers.org/ncit/C171133"
+  Infected_to_Diagnosed hypernym "http://identifiers.org/doid/DOID:0080600"
+  Infected_to_Diagnosed hypernym "http://identifiers.org/ncit/C15220"
+  Infected_to_Ailing hypernym "http://identifiers.org/doid/DOID:0080600"
+  Infected_to_Ailing hypernym "http://identifiers.org/ncit/C168447"
+  Infected_to_Healed hypernym "http://identifiers.org/ncit/C25746"
+  Diagnosed_to_Recognized hypernym "http://identifiers.org/doid/DOID:0080600"
+  Diagnosed_to_Recognized hypernym "http://identifiers.org/ncit/C168447"
+  Diagnosed_to_Recognized hypernym "http://identifiers.org/ncit/C15220"
+  Diagnosed_to_Healed hypernym "http://identifiers.org/ncit/C25746"
+  Ailing_to_Recognised hypernym "http://identifiers.org/doid/DOID:0080600"
+  Ailing_to_Recognised hypernym "http://identifiers.org/ncit/C15220"
+  Ailing_to_Healed hypernym "http://identifiers.org/ncit/C25746"
+  Ailing_to_Threatened hypernym "http://identifiers.org/doid/DOID:0080600"
+  Ailing_to_Threatened hypernym "http://identifiers.org/meddra/10049438"
+  Recognised_to_Threatened hypernym "http://identifiers.org/doid/DOID:0080600"
+  Recognised_to_Threatened hypernym "http://identifiers.org/meddra/10049438"
+  Recognised_to_Healed hypernym "http://identifiers.org/ncit/C25746"
+  Threatened_to_Extinct hypernym "http://identifiers.org/ncit/C28554"
+  Threatened_to_Extinct hypernym "http://identifiers.org/doid/DOID:0080600"
+  Threatened_to_Healed hypernym "http://identifiers.org/ncit/C25746"
+end
+
+Giordano2020___SIDARTHE_model_of_COVID_19_spread_in_Italy is "Giordano2020 - SIDARTHE model of COVID-19 spread in Italy"
+
+Giordano2020___SIDARTHE_model_of_COVID_19_spread_in_Italy description "http://identifiers.org/pubmed/32322102"
+Giordano2020___SIDARTHE_model_of_COVID_19_spread_in_Italy model_entity_is "http://identifiers.org/biomodels.db/MODEL2007280002",
+                                                                          "http://identifiers.org/biomodels.db/BIOMD0000000955"
+Giordano2020___SIDARTHE_model_of_COVID_19_spread_in_Italy taxon "http://identifiers.org/taxonomy/2697049"
+Giordano2020___SIDARTHE_model_of_COVID_19_spread_in_Italy taxon "http://identifiers.org/taxonomy/9606"
+Giordano2020___SIDARTHE_model_of_COVID_19_spread_in_Italy property "http://identifiers.org/doid/DOID:0080600",
+                                                                   "http://identifiers.org/ido/0000503",
+                                                                   "http://identifiers.org/mamo/MAMO_0000046"

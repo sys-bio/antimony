@@ -1,0 +1,119 @@
+// Created by libAntimony v2.13.0
+function Function_for_Transition_to_resistance(epsilon, alpha, u, S)
+  (epsilon + alpha*u)*S;
+end
+
+Function_for_Transition_to_resistance is "Function for Transition to resistance"
+
+function Function_for_growth_of_resistant_tumor(p_r, S, R)
+  p_r*(1 - (S + R))*R;
+end
+
+Function_for_growth_of_resistant_tumor is "Function for growth of resistant tumor"
+
+function Function_for_drug_induced_death(d, u, S)
+  d*u*S;
+end
+
+Function_for_drug_induced_death is "Function for drug-induced death"
+
+function Function_for_growth_of_sensitive_tumor(S, R)
+  (1 - (S + R))*S;
+end
+
+Function_for_growth_of_sensitive_tumor is "Function for growth of sensitive tumor"
+
+
+model *New_Model()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species Resistant_tumor_R in compartment_, Sensitive_tumor_S in compartment_;
+  species $Tumor_Volume_V in compartment_;
+
+  // Assignment Rules:
+  Tumor_Volume_V := Resistant_tumor_R + Sensitive_tumor_S;
+
+  // Reactions:
+  Transition_to_resistance: Sensitive_tumor_S => Resistant_tumor_R; compartment_*Function_for_Transition_to_resistance(epsilon, alpha, u, Sensitive_tumor_S);
+  growth_of_sensitive_tumor:  => Sensitive_tumor_S; compartment_*Function_for_growth_of_sensitive_tumor(Sensitive_tumor_S, Resistant_tumor_R);
+  growth_of_resistant_tumor:  => Resistant_tumor_R; compartment_*Function_for_growth_of_resistant_tumor(p_r, Sensitive_tumor_S, Resistant_tumor_R);
+  drug_induced_death: Sensitive_tumor_S => ; compartment_*Function_for_drug_induced_death(d, u, Sensitive_tumor_S);
+
+  // Events:
+  treatment: at (Tumor_Volume_V > V_d) && (u == 0), t0=false: u = u + u_on;
+
+  // Species initializations:
+  Resistant_tumor_R = 0;
+  Resistant_tumor_R has substance_per_volume;
+  Sensitive_tumor_S = S_0;
+  Sensitive_tumor_S has substance_per_volume;
+  Tumor_Volume_V has substance_per_volume;
+
+  // Compartment initializations:
+  compartment_ = 1;
+  compartment_ has volume;
+
+  // Variable initializations:
+  S_0 = 0.01;
+  V_d = 0.1;
+  u = 0;
+  u_on = 1.5;
+  R_0 = 0;
+  V_c = 0.9;
+  epsilon = 1e-06;
+  d = 1;
+  p_r = 0.2;
+  delta_ton = 1;
+  delta_toff = 3;
+  alpha = 0.01;
+
+  // Other declarations:
+  var u;
+  const compartment_, S_0, V_d, u_on, R_0, V_c, epsilon, d, p_r, delta_ton;
+  const delta_toff, alpha;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = time_unit;
+  unit substance = 1e-3 mole;
+  unit extent = substance;
+  unit substance_per_volume = 1e-3 mole / 1e-3 litre;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+  Resistant_tumor_R is "Resistant tumor R";
+  Sensitive_tumor_S is "Sensitive tumor S";
+  Tumor_Volume_V is "Tumor Volume V";
+  Transition_to_resistance is "Transition to resistance";
+  growth_of_sensitive_tumor is "growth of sensitive tumor";
+  growth_of_resistant_tumor is "growth of resistant tumor";
+  drug_induced_death is "drug-induced death";
+
+  // CV terms:
+  compartment_ hypernym "http://identifiers.org/ncit/C13413"
+  Resistant_tumor_R hypernym "http://identifiers.org/pato/PATO:0001178"
+  Resistant_tumor_R hypernym "http://identifiers.org/efo/0000311"
+  Sensitive_tumor_S hypernym "http://identifiers.org/efo/0000311"
+  Sensitive_tumor_S propertyBearer "http://identifiers.org/pato/0000516"
+  Tumor_Volume_V hypernym "http://identifiers.org/efo/0000311"
+  Tumor_Volume_V hypernym "http://identifiers.org/efo/0004134"
+  Tumor_Volume_V hypernym "http://identifiers.org/ncit/C120284"
+  Transition_to_resistance hypernym "http://identifiers.org/sbo/SBO:0000181"
+  growth_of_sensitive_tumor hypernym "http://identifiers.org/go/GO:0040007"
+  growth_of_resistant_tumor hypernym "http://identifiers.org/go/GO:0040007"
+  drug_induced_death hypernym "http://identifiers.org/go/GO:0008219"
+end
+
+New_Model is "Greene2019 - Differentiate Spontaneous and Induced Evolution to Drug Resistance During Cancer Treatment"
+
+New_Model model_entity_is "http://identifiers.org/biomodels.db/MODEL1909260002",
+                          "http://identifiers.org/biomodels.db/BIOMD0000000825"
+New_Model property "http://identifiers.org/mamo/MAMO_0000046"
+New_Model property "http://identifiers.org/efo/0000311"
+New_Model property "http://identifiers.org/ncit/C16523"
+New_Model property "http://identifiers.org/ncit/C16096"
+New_Model description "http://identifiers.org/pubmed/30969799"

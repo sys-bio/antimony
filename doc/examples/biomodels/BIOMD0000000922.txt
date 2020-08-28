@@ -1,0 +1,85 @@
+// Created by libAntimony v2.13.0
+function Rate_Law_for_reaction_for_E_1(Ar, Me, Population_of_Eggs, Te, ep)
+  Ar*ep - Population_of_Eggs*(Te + Me);
+end
+
+Rate_Law_for_reaction_for_E_1 is "Rate Law for reaction for E_1"
+
+function Rate_Law_for_reaction_for_L_1(K0, Ml, Population_of_Eggs, Population_of_Larvae, Te, Tl)
+  Population_of_Eggs*Te - Population_of_Larvae*(Tl + Ml) - K0*Population_of_Larvae^2;
+end
+
+Rate_Law_for_reaction_for_L_1 is "Rate Law for reaction for L_1"
+
+function Rate_Law_for_reaction_for_P_1(Mp, Population_of_Larvae, Population_of_Pupae, Tl, Tp)
+  Population_of_Larvae*Tl - Population_of_Pupae*(Tp + Mp);
+end
+
+Rate_Law_for_reaction_for_P_1 is "Rate Law for reaction for P_1"
+
+
+model *Turner2015_Human_Mosquito_ELP_Model()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species Population_of_Eggs in compartment_, Population_of_Larvae in compartment_;
+  species Population_of_Pupae in compartment_;
+
+  // Reactions:
+  reaction_for_E:  => Population_of_Eggs; compartment_*Rate_Law_for_reaction_for_E_1(Ar, Me, Population_of_Eggs, Te, ep);
+  reaction_for_L:  => Population_of_Larvae; compartment_*Rate_Law_for_reaction_for_L_1(K0, Ml, Population_of_Eggs, Population_of_Larvae, Te, Tl);
+  reaction_for_P:  => Population_of_Pupae; compartment_*Rate_Law_for_reaction_for_P_1(Mp, Population_of_Larvae, Population_of_Pupae, Tl, Tp);
+
+  // Species initializations:
+  Population_of_Eggs = 10000;
+  Population_of_Larvae = 5000;
+  Population_of_Pupae = 3000;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  Ar = 20;
+  ep = 30;
+  Te = 0.361;
+  Me = 0.05;
+  K0 = 0.0002;
+  Tl = 0.134;
+  Tp = 0.342;
+  Mp = 0.0025;
+  Ml = 0.0501;
+
+  // Other declarations:
+  const compartment_, Ar, ep, Te, Me, K0, Tl, Tp, Mp, Ml;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  Population_of_Eggs is "Population of Eggs";
+  Population_of_Larvae is "Population of Larvae";
+  Population_of_Pupae is "Population of Pupae";
+  reaction_for_E is "reaction for E";
+  reaction_for_L is "reaction for L";
+  reaction_for_P is "reaction for P";
+
+  // CV terms:
+  Population_of_Eggs property "http://purl.obolibrary.org/obo/MIRO_30000049"
+  Population_of_Larvae property "http://purl.obolibrary.org/obo/MIRO_30000028"
+  Population_of_Pupae property "http://purl.obolibrary.org/obo/MIRO_30000050"
+end
+
+Turner2015_Human_Mosquito_ELP_Model is "Turner2015-Human/Mosquito ELP Model"
+
+Turner2015_Human_Mosquito_ELP_Model model_entity_is "http://identifiers.org/biomodels.db/MODEL2003130001",
+                                                    "http://identifiers.org/biomodels.db/BIOMD0000000922"
+Turner2015_Human_Mosquito_ELP_Model part "http://identifiers.org/efo/0001068"
+Turner2015_Human_Mosquito_ELP_Model taxon "http://identifiers.org/taxonomy/53533"
+Turner2015_Human_Mosquito_ELP_Model description "http://identifiers.org/doi/10.1109/SECON.2015.7132968"
+Turner2015_Human_Mosquito_ELP_Model property "http://identifiers.org/ncit/C17214",
+                                             "http://identifiers.org/ncit/C70833",
+                                             "http://identifiers.org/omit/0009103",
+                                             "http://identifiers.org/ncit/C34797",
+                                             "http://identifiers.org/mamo/MAMO_0000046"

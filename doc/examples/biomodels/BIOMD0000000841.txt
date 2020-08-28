@@ -1,0 +1,105 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function Function_for_miRNA_Activation_Transcription_Factor(beta_FM, gamma_FM, P, n)
+  beta_FM/((gamma_FM/P)^n + 1);
+end
+
+Function_for_miRNA_Activation_Transcription_Factor is "Function_for_miRNA_Activation_Transcription_Factor"
+
+function Function_for_TF_Protein_Translation(k_P, F)
+  k_P*F;
+end
+
+Function_for_TF_Protein_Translation is "Function_for_TF_Protein_Translation"
+
+
+model *Dhawan2019___Endogenous_miRNA_sponges_mediate_the_generation_of_oscillatory_dynamics_for_a_non_coding_RNA_network()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species C in compartment_, M in compartment_, F in compartment_, P in compartment_;
+
+  // Reactions:
+  Sponge_Production_Basal:  => C; compartment_*Constant_flux__irreversible(alpha_C);
+  miRNA_Production_Basal:  => M; compartment_*Constant_flux__irreversible(alpha_M);
+  TF_mRNA_Production_Basal:  => F; compartment_*Constant_flux__irreversible(alpha_F);
+  Sponge_Degradation: C => ; compartment_*delta_C*C;
+  miRNA_Degradation: M => ; compartment_*delta_M*M;
+  TF_mRNA_Degradation: F => ; compartment_*delta_F*F;
+  Sponge_Inhibition_miRNA: M + C => ; compartment_*k_CM*M*C;
+  TF_mRNA_Inhibition_miRNA: M + F => ; compartment_*k_MF*M*F;
+  miRNA_Activation_Transcription_Factor:  => M; compartment_*Function_for_miRNA_Activation_Transcription_Factor(beta_FM, gamma_FM, delay(P, tau1), n);
+  TF_Protein_Degradation: P => ; compartment_*delta_P*P;
+  TF_Protein_Translation:  => P; compartment_*Function_for_TF_Protein_Translation(k_P, delay(F, tau2));
+
+  // Species initializations:
+  C = 0;
+  M = 0;
+  F = 0;
+  P = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  alpha_C = 1;
+  delta_C = 0.01;
+  alpha_F = 1;
+  delta_F = 0.1;
+  alpha_M = 1;
+  delta_M = 1;
+  k_P = 10;
+  delta_P = 0.1;
+  k_CM = 10;
+  k_MF = 0.1;
+  beta_FM = 200;
+  gamma_FM = 100;
+  n = 8;
+  tau1 = 0.5;
+  tau2 = 0.5;
+
+  // Other declarations:
+  const compartment_, alpha_C, delta_C, alpha_F, delta_F, alpha_M, delta_M;
+  const k_P, delta_P, k_CM, k_MF, beta_FM, gamma_FM, n, tau1, tau2;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 60 second;
+  unit substance = item;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/cl/CL:0000000"
+  C hypernym "http://identifiers.org/ncit/C25966"
+  M identity "http://identifiers.org/ncit/C25966"
+  F identity "http://identifiers.org/ncit/C813"
+  P identity "http://identifiers.org/ncit/C17207"
+  Sponge_Production_Basal hypernym "http://identifiers.org/ncit/C17208"
+  miRNA_Production_Basal identity "http://identifiers.org/ncit/C17208"
+  TF_mRNA_Production_Basal identity "http://identifiers.org/ncit/C17208"
+  Sponge_Degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+  miRNA_Degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+  TF_mRNA_Degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Sponge_Inhibition_miRNA hypernym "http://identifiers.org/ncit/C42791"
+  TF_mRNA_Inhibition_miRNA hypernym "http://identifiers.org/ncit/C42791"
+  miRNA_Activation_Transcription_Factor hypernym "http://identifiers.org/ncit/C17208"
+  TF_Protein_Degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+  TF_Protein_Translation identity "http://identifiers.org/go/GO:0006412"
+end
+
+Dhawan2019___Endogenous_miRNA_sponges_mediate_the_generation_of_oscillatory_dynamics_for_a_non_coding_RNA_network is "Dhawan2019 - Endogenous miRNA sponges mediate the generation of oscillatory dynamics for a non-coding RNA network"
+
+Dhawan2019___Endogenous_miRNA_sponges_mediate_the_generation_of_oscillatory_dynamics_for_a_non_coding_RNA_network model_entity_is "http://identifiers.org/biomodels.db/MODEL1911010001",
+                                                                                                                                  "http://identifiers.org/biomodels.db/BIOMD0000000841"
+Dhawan2019___Endogenous_miRNA_sponges_mediate_the_generation_of_oscillatory_dynamics_for_a_non_coding_RNA_network property "http://identifiers.org/ncit/C25966"
+Dhawan2019___Endogenous_miRNA_sponges_mediate_the_generation_of_oscillatory_dynamics_for_a_non_coding_RNA_network property "http://identifiers.org/mamo/MAMO_0000089"
+Dhawan2019___Endogenous_miRNA_sponges_mediate_the_generation_of_oscillatory_dynamics_for_a_non_coding_RNA_network property "http://identifiers.org/biomodels.teddy/TEDDY_0000006"
+Dhawan2019___Endogenous_miRNA_sponges_mediate_the_generation_of_oscillatory_dynamics_for_a_non_coding_RNA_network description "http://identifiers.org/pubmed/30385313"

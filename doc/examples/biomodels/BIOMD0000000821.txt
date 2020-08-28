@@ -1,0 +1,145 @@
+// Created by libAntimony v2.13.0
+function Function_for_tumor_growth(lambda_1, x_1, x_2, a)
+  lambda_1*x_1*ln(x_1/x_2)*a;
+end
+
+Function_for_tumor_growth is "Function for tumor growth"
+
+function Function_for_drug_kill(e, x_2, x_3, a)
+  e*x_2*x_3*a;
+end
+
+Function_for_drug_kill is "Function for drug kill"
+
+function Function_for_inhibition_effect(d, x_2, x_1, a)
+  d*x_2*x_1^(2/3)*a;
+end
+
+Function_for_inhibition_effect is "Function for inhibition effect"
+
+function Function_for_endothelial_loss(lambda_2, x_2, a)
+  lambda_2*x_2*a;
+end
+
+Function_for_endothelial_loss is "Function for endothelial loss"
+
+function Function_for_stimulatory_effect(b, x_1, a)
+  b*x_1*a;
+end
+
+Function_for_stimulatory_effect is "Function for stimulatory effect"
+
+function Function_for_inhibitor_clearance(lambda_3, x_3, a)
+  lambda_3*x_3*a;
+end
+
+Function_for_inhibitor_clearance is "Function for inhibitor clearance"
+
+function Function_for_administrated_inhibitor_rate(u)
+  u;
+end
+
+Function_for_administrated_inhibitor_rate is "Function for administrated inhibitor rate"
+
+
+model *New_Model()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species tumor_volume_x_1 in compartment_, endothelial_volume_x_2 in compartment_;
+  species concentration_of_administrated_inhibitor_x_3 in compartment_;
+
+  // Reactions:
+  tumor_growth: tumor_volume_x_1 => ; compartment_*Function_for_tumor_growth(lambda_1, tumor_volume_x_1, endothelial_volume_x_2, a);
+  endothelial_loss: endothelial_volume_x_2 => ; compartment_*Function_for_endothelial_loss(lambda_2, endothelial_volume_x_2, a);
+  stimulatory_effect:  => endothelial_volume_x_2; compartment_*Function_for_stimulatory_effect(b, tumor_volume_x_1, a);
+  inhibition_effect: endothelial_volume_x_2 => ; compartment_*Function_for_inhibition_effect(d, endothelial_volume_x_2, tumor_volume_x_1, a);
+  drug_kill: endothelial_volume_x_2 => ; compartment_*Function_for_drug_kill(e, endothelial_volume_x_2, concentration_of_administrated_inhibitor_x_3, a);
+  inhibitor_clearance: concentration_of_administrated_inhibitor_x_3 => ; compartment_*Function_for_inhibitor_clearance(lambda_3, concentration_of_administrated_inhibitor_x_3, a);
+  administrated_inhibitor:  => concentration_of_administrated_inhibitor_x_3; compartment_*Function_for_administrated_inhibitor_rate(u);
+
+  // Species initializations:
+  tumor_volume_x_1 = 1;
+  endothelial_volume_x_2 = 1;
+  concentration_of_administrated_inhibitor_x_3 = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  lambda_1 = 0.192;
+  lambda_1 has unit_0;
+  lambda_2 = 0;
+  lambda_2 has unit_0;
+  lambda_3 = 1.3;
+  lambda_3 has unit_0;
+  b = 5.85;
+  b has unit_0;
+  d = 0.00873;
+  d has unit_1;
+  e = 0.66;
+  e has unit_2;
+  u = 0;
+  u has unit_3;
+  a = 1;
+
+  // Other declarations:
+  const compartment_, lambda_1, lambda_2, lambda_3, b, d, e, u, a;
+
+  // Unit definitions:
+  unit length = 1e-3 metre;
+  unit area = (1e-3 metre)^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = 1e-3 mole;
+  unit unit_0 = 1 / 86400e-1 second;
+  unit unit_1 = 1 / ((1e-3 metre)^2 * 86400e-1 second);
+  unit unit_2 = 86400e5 second;
+  unit unit_3 = 1 / 86400e5 second;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1/d";
+  unit_1 is "1/(mm^2*day)";
+  unit_2 is "kg/mg*d";
+  unit_3 is "mg/kg/d";
+  compartment_ is "compartment";
+  tumor_volume_x_1 is "tumor volume x_1";
+  endothelial_volume_x_2 is "endothelial volume x_2";
+  concentration_of_administrated_inhibitor_x_3 is "concentration of administrated inhibitor x_3";
+  tumor_growth is "tumor growth";
+  endothelial_loss is "endothelial loss";
+  stimulatory_effect is "stimulatory effect";
+  inhibition_effect is "inhibition effect";
+  drug_kill is "drug kill";
+  inhibitor_clearance is "inhibitor clearance";
+  administrated_inhibitor is "administrated inhibitor";
+
+  // CV terms:
+  compartment_ property "http://identifiers.org/ncit/C13413"
+  tumor_volume_x_1 hypernym "http://identifiers.org/ncit/C94515"
+  endothelial_volume_x_2 hypernym "http://identifiers.org/ncit/C12481"
+  concentration_of_administrated_inhibitor_x_3 hypernym "http://identifiers.org/ncit/C41185"
+  concentration_of_administrated_inhibitor_x_3 hypernym "http://identifiers.org/ncit/C154898"
+  lambda_1 hypernym "http://identifiers.org/sbo/SBO:0000610"
+  lambda_2 hypernym "http://identifiers.org/sbo/SBO:0000356"
+  lambda_3 hypernym "http://identifiers.org/sbo/SBO:0000356"
+  tumor_growth hypernym "http://identifiers.org/go/GO:0040007"
+  endothelial_loss hypernym "http://identifiers.org/sbo/SBO:0000179"
+  stimulatory_effect hypernym "http://identifiers.org/sbo/SBO:0000170"
+  inhibition_effect hypernym "http://identifiers.org/sbo/SBO:0000169"
+  drug_kill hypernym "http://identifiers.org/sbo/SBO:0000179"
+  inhibitor_clearance hypernym "http://identifiers.org/sbo/SBO:0000179"
+  administrated_inhibitor hypernym "http://identifiers.org/go/GO:0035737"
+end
+
+New_Model is "Yazdjer2019 - reinforcement learning-based control of tumor growth under anti-angiogenic therapy"
+
+New_Model model_entity_is "http://identifiers.org/biomodels.db/MODEL1909240003",
+                          "http://identifiers.org/biomodels.db/BIOMD0000000821"
+New_Model property "http://identifiers.org/go/GO:0001525"
+New_Model property "http://identifiers.org/efo/0000311"
+New_Model property "http://identifiers.org/mamo/MAMO_0000046"
+New_Model property "http://identifiers.org/ncit/C25409"
+New_Model property "http://identifiers.org/ncit/C19361"
+New_Model description "http://identifiers.org/pubmed/31046990"

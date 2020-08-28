@@ -1,0 +1,158 @@
+// Created by libAntimony v2.13.0
+function Function_for_Formation_of_tumor_cell(alpha, T)
+  alpha*T;
+end
+
+Function_for_Formation_of_tumor_cell is "Function for Formation of tumor cell"
+
+function Function_for_removal_of_T_helper_cell_from_the_system(mu_10, Th)
+  mu_10*Th;
+end
+
+Function_for_removal_of_T_helper_cell_from_the_system is "Function for removal of T helper cell from the system"
+
+function Function_for_removal_of_tumor_cell_from_the_system(alpha_0, T, alpha_1, Tc, delta_2, A)
+  alpha_0*T*T + alpha_1*T*Tc + delta_2*T*A;
+end
+
+Function_for_removal_of_tumor_cell_from_the_system is "Function for removal of tumor cell from the system"
+
+function Function_for_formation_of_B_cell(mu_3, T, gamma_1, B, gamma_2, Th)
+  mu_3*T + gamma_1*T*B + gamma_2*Th*B;
+end
+
+Function_for_formation_of_B_cell is "Function for formation of B cell"
+
+function Function_for_formation_of_T_helper_cell(mu_1, T, mu_11, Th)
+  mu_1*T + mu_11*T*Th;
+end
+
+Function_for_formation_of_T_helper_cell is "Function for formation of T helper cell"
+
+function Function_for_removal_of_cytotoxic_T_cell(mu_20, Tc)
+  mu_20*Tc;
+end
+
+Function_for_removal_of_cytotoxic_T_cell is "Function for removal of cytotoxic T cell"
+
+function Function_for_formation_of_cytotoxic_T_cell_in_the_system(mu_2, T, bela_1, Tc, beta_2, Th)
+  mu_2*T + bela_1*T*Tc + beta_2*Th*Tc;
+end
+
+Function_for_formation_of_cytotoxic_T_cell_in_the_system is "Function for formation of cytotoxic T cell in the system"
+
+function Function_for_removal_of_B_cell_from_the_system(mu_30, B)
+  mu_30*B;
+end
+
+Function_for_removal_of_B_cell_from_the_system is "Function for removal of B cell from the system"
+
+function Function_for_introduction_of_antibody_against_cancer(mu_4, B)
+  mu_4*B;
+end
+
+Function_for_introduction_of_antibody_against_cancer is "Function for introduction of antibody against cancer"
+
+function Function_for_removal_of_antibody_from_the_system(mu_40, A, delta_1, T)
+  mu_40*A + delta_1*T*A;
+end
+
+Function_for_removal_of_antibody_from_the_system is "Function for removal of antibody from the system"
+
+
+model *New_Model()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species T in compartment_, Th in compartment_, Tc in compartment_, B in compartment_;
+  species A in compartment_;
+
+  // Reactions:
+  Formation_of_tumor_cell:  => T; compartment_*Function_for_Formation_of_tumor_cell(alpha, T);
+  Removal_of_tumor_cell_from_the_system: T => ; compartment_*Function_for_removal_of_tumor_cell_from_the_system(alpha_0, T, alpha_1, Tc, delta_2, A);
+  Formation_of_T_helper_cell:  => Th; compartment_*Function_for_formation_of_T_helper_cell(mu_1, T, mu_11, Th);
+  Removal_of_T_helper_cell_from_the_system: Th => ; compartment_*Function_for_removal_of_T_helper_cell_from_the_system(mu_10, Th);
+  formation_of_cytotoxic_T_cell:  => Tc; compartment_*Function_for_formation_of_cytotoxic_T_cell_in_the_system(mu_2, T, beta_1, Tc, beta_2, Th);
+  Removal_of_cytotoxic_T_cell: Tc => ; compartment_*Function_for_removal_of_cytotoxic_T_cell(mu_20, Tc);
+  Formation_of_B_cell:  => B; compartment_*Function_for_formation_of_B_cell(mu_3, T, gamma_1, B, gamma_2, Th);
+  Removal_of_B_cell_from_the_system: B => ; compartment_*Function_for_removal_of_B_cell_from_the_system(mu_30, B);
+  introduction_of_antibody_against_cancer:  => A; compartment_*Function_for_introduction_of_antibody_against_cancer(mu_4, B);
+  Removal_of_antibody_from_the_system: A => ; compartment_*Function_for_removal_of_antibody_from_the_system(mu_40, A, delta_1, T);
+
+  // Species initializations:
+  T = 9;
+  Th = 7;
+  Tc = 1;
+  B = 1;
+  A = 1;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  alpha = 0.18;
+  alpha_0 = 4.6;
+  alpha_1 = 0.101;
+  delta_2 = 0.008;
+  mu_1 = 1.5;
+  mu_10 = 0.2;
+  mu_11 = 0.3;
+  mu_2 = 1.4;
+  mu_20 = 0.0412;
+  beta_1 = 0.3;
+  beta_2 = 0.05;
+  mu_3 = 0.45;
+  mu_30 = 0.03;
+  gamma_1 = 0.4;
+  gamma_2 = 0.3;
+  mu_4 = 0.35;
+  mu_40 = 0.3;
+  delta_1 = 0.5;
+
+  // Other declarations:
+  const compartment_, alpha, alpha_0, alpha_1, delta_2, mu_1, mu_10, mu_11;
+  const mu_2, mu_20, beta_1, beta_2, mu_3, mu_30, gamma_1, gamma_2, mu_4;
+  const mu_40, delta_1;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  Formation_of_tumor_cell is "Formation of tumor cell";
+  Removal_of_tumor_cell_from_the_system is "Removal of tumor cell from the system";
+  Formation_of_T_helper_cell is "Formation of T helper cell";
+  Removal_of_T_helper_cell_from_the_system is "Removal of T helper cell from the system";
+  formation_of_cytotoxic_T_cell is "formation of cytotoxic T cell";
+  Removal_of_cytotoxic_T_cell is "Removal of cytotoxic T cell";
+  Formation_of_B_cell is "Formation of B cell";
+  Removal_of_B_cell_from_the_system is "Removal of B cell from the system";
+  introduction_of_antibody_against_cancer is "introduction of antibody against cancer";
+  Removal_of_antibody_from_the_system is "Removal of antibody from the system";
+
+  // CV terms:
+  T instance "http://identifiers.org/ncit/C12476"
+  Th instance "http://identifiers.org/bto/BTO:0002417"
+  B instance "http://identifiers.org/ncit/C12474"
+  A instance "http://identifiers.org/ncit/C16295"
+  Formation_of_tumor_cell instance "http://identifiers.org/ncit/C25513"
+  Removal_of_tumor_cell_from_the_system instance "http://identifiers.org/ncit/C64914"
+  Formation_of_T_helper_cell instance "http://identifiers.org/ncit/C25513"
+  Removal_of_T_helper_cell_from_the_system instance "http://identifiers.org/ncit/C64914"
+  formation_of_cytotoxic_T_cell instance "http://identifiers.org/ncit/C25513"
+  Removal_of_cytotoxic_T_cell instance "http://identifiers.org/ncit/C64914"
+  Formation_of_B_cell instance "http://identifiers.org/ncit/C25513"
+  Removal_of_B_cell_from_the_system instance "http://identifiers.org/ncit/C64914"
+  introduction_of_antibody_against_cancer instance "http://identifiers.org/ncit/C25513"
+  Removal_of_antibody_from_the_system instance "http://identifiers.org/ncit/C64914"
+end
+
+New_Model is "Dubey2008 - Modeling the interaction between avascular cancerous cells and acquired immune response"
+
+New_Model model_entity_is "http://identifiers.org/biomodels.db/MODEL1912100002",
+                          "http://identifiers.org/biomodels.db/BIOMD0000000886"
+New_Model property "http://identifiers.org/mamo/MAMO_0000046"
+New_Model property "http://identifiers.org/go/GO:0006955"
+New_Model taxon "http://identifiers.org/taxonomy/9606"
+New_Model description "http://identifiers.org/doi/10.1142/S0218339008002605"

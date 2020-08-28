@@ -1,0 +1,363 @@
+// Created by libAntimony v2.13.0
+model *Mitrophanov2015___Simulating_extended_Hockin_Blood_Coagulation_Model_under_varied_pH()
+
+  // Compartments and Species:
+  compartment compartment_1;
+  species TF in compartment_1, TF_VII in compartment_1, VII in compartment_1;
+  species TF_VIIa in compartment_1, VIIa in compartment_1, Xa in compartment_1;
+  species IIa in compartment_1, TF_VIIa_X in compartment_1, X in compartment_1;
+  species TF_VIIa_Xa in compartment_1, IX in compartment_1, TF_VIIa_IX in compartment_1;
+  species IXa in compartment_1, II in compartment_1, VIII in compartment_1;
+  species VIIIa in compartment_1, IXa_VIIIa in compartment_1, IXa_VIIIa_X in compartment_1;
+  species VIIIa1_L in compartment_1, VIIIa2 in compartment_1, V in compartment_1;
+  species Va in compartment_1, Xa_Va in compartment_1, Xa_Va_II in compartment_1;
+  species mIIa in compartment_1, TFPI in compartment_1, Xa_TFPI in compartment_1;
+  species TF_VIIa_Xa_TFPI in compartment_1, ATIII in compartment_1, Xa_ATIII in compartment_1;
+  species mIIa_ATIII in compartment_1, IXa_ATIII in compartment_1, IIa_ATIII in compartment_1;
+  species TF_VIIa_ATIII in compartment_1;
+
+  // Assignment Rules:
+  IIa_plus_1_2mIIa := IIa + 1.2*mIIa;
+  minutes := time/60;
+  k05 := f_pH*k5;
+  k06 := f_pH*k6;
+  k07 := f_pH*k7;
+  k10_0 := f_pH*k10;
+  k15_0 := f_pH*k15;
+  k16_0 := f_pH*k16;
+  k17_0 := f_pH*k17;
+  k22_0 := f_pH*k22;
+  k26_0 := f_pH*k26;
+  k31_0 := f_pH*k31;
+  k32_0 := f_pH*k32;
+  k43_0 := f_pH*k43;
+  k44_0 := f_pH*k44;
+  TAT := IIa_ATIII + 0*mIIa_ATIII;
+
+  // Reactions:
+  R1: TF + VII -> TF_VII; compartment_1*(k2*TF*VII - k1*TF_VII);
+  R2: TF + VIIa -> TF_VIIa; compartment_1*(k4*TF*VIIa - k3*TF_VIIa);
+  R3: TF_VIIa + VII => TF_VIIa + VIIa; compartment_1*k05*TF_VIIa*VII;
+  R4: Xa + VII => Xa + VIIa; compartment_1*k06*Xa*VII;
+  R5: IIa + VII => IIa + VIIa; compartment_1*k07*IIa*VII;
+  R6: TF_VIIa + X -> TF_VIIa_X; compartment_1*(k9*TF_VIIa*X - k8*TF_VIIa_X);
+  R7: TF_VIIa + Xa -> TF_VIIa_Xa; compartment_1*(k12*TF_VIIa*Xa - k11*TF_VIIa_Xa);
+  R8: TF_VIIa + IX -> TF_VIIa_IX; compartment_1*(k14*TF_VIIa*IX - k13*TF_VIIa_IX);
+  R9: Xa + II => Xa + IIa; compartment_1*k16_0*Xa*II;
+  R10: IIa + VIII => IIa + VIIIa; compartment_1*k17_0*IIa*VIII;
+  R11: IXa + VIIIa -> IXa_VIIIa; compartment_1*(k19*IXa*VIIIa - k18*IXa_VIIIa);
+  R12: IXa_VIIIa + X -> IXa_VIIIa_X; compartment_1*(k21*IXa_VIIIa*X - k20*IXa_VIIIa_X);
+  R13: VIIIa -> VIIIa1_L + VIIIa2; compartment_1*(k24*VIIIa - k23*VIIIa1_L*VIIIa2);
+  R14: IXa_VIIIa_X => VIIIa1_L + VIIIa2 + X + IXa; compartment_1*k25*IXa_VIIIa_X;
+  R15: IXa_VIIIa => VIIIa1_L + VIIIa2 + IXa; compartment_1*k25*IXa_VIIIa;
+  R16: IIa + V => IIa + Va; compartment_1*k26_0*IIa*V;
+  R17: Xa + Va -> Xa_Va; compartment_1*(k28*Xa*Va - k27*Xa_Va);
+  R18: Xa_Va + II -> Xa_Va_II; compartment_1*(k30*Xa_Va*II - k29*Xa_Va_II);
+  R19: mIIa + Xa_Va => IIa + Xa_Va; compartment_1*k32_0*mIIa*Xa_Va;
+  R20: Xa + TFPI -> Xa_TFPI; compartment_1*(k34*Xa*TFPI - k33*Xa_TFPI);
+  R21: TF_VIIa_Xa + TFPI -> TF_VIIa_Xa_TFPI; compartment_1*(k36*TF_VIIa_Xa*TFPI - k35*TF_VIIa_Xa_TFPI);
+  R22: TF_VIIa + Xa_TFPI => TF_VIIa_Xa_TFPI; compartment_1*k37*TF_VIIa*Xa_TFPI;
+  R23: Xa + ATIII => Xa_ATIII; compartment_1*k38*Xa*ATIII;
+  R24: mIIa + ATIII => mIIa_ATIII; compartment_1*k39*mIIa*ATIII;
+  R25: IXa + ATIII => IXa_ATIII; compartment_1*k40*IXa*ATIII;
+  R26: IIa + ATIII => IIa_ATIII; compartment_1*k41*IIa*ATIII;
+  R27: TF_VIIa + ATIII => TF_VIIa_ATIII; compartment_1*k42*TF_VIIa*ATIII;
+  R6b: TF_VIIa_X => TF_VIIa_Xa; compartment_1*k10_0*TF_VIIa_X;
+  R8b: TF_VIIa_IX => TF_VIIa + IXa; compartment_1*k15_0*TF_VIIa_IX;
+  R12b: IXa_VIIIa_X => IXa_VIIIa + Xa; compartment_1*k22_0*IXa_VIIIa_X;
+  R18b: Xa_Va_II => Xa_Va + mIIa; compartment_1*k31_0*Xa_Va_II;
+  R28: IXa + X => IXa + Xa; compartment_1*k43_0*IXa*X;
+  R29: mIIa + V => mIIa + Va; compartment_1*k44_0*mIIa*V;
+
+  // Species initializations:
+  TF = 5e-12;
+  TF_VII = 0;
+  VII = 1e-08;
+  TF_VIIa = 0;
+  VIIa = 1e-10;
+  Xa = 0;
+  IIa = 0;
+  TF_VIIa_X = 0;
+  X = 1.6e-07;
+  TF_VIIa_Xa = 0;
+  IX = 9e-08;
+  TF_VIIa_IX = 0;
+  IXa = 0;
+  II = 1.4e-06;
+  VIII = 7e-10;
+  VIIIa = 0;
+  IXa_VIIIa = 0;
+  IXa_VIIIa_X = 0;
+  VIIIa1_L = 0;
+  VIIIa2 = 0;
+  V = 2e-08;
+  Va = 0;
+  Xa_Va = 0;
+  Xa_Va_II = 0;
+  mIIa = 0;
+  TFPI = 2.5e-09;
+  Xa_TFPI = 0;
+  TF_VIIa_Xa_TFPI = 0;
+  ATIII = 3.4e-06;
+  Xa_ATIII = 0;
+  mIIa_ATIII = 0;
+  IXa_ATIII = 0;
+  IIa_ATIII = 0;
+  TF_VIIa_ATIII = 0;
+
+  // Compartment initializations:
+  compartment_1 = 1;
+
+  // Variable initializations:
+  k1 = 0.0031;
+  k2 = 3200000;
+  k3 = 0.0031;
+  k4 = 23000000;
+  k5 = 440000;
+  k6 = 13000000;
+  k7 = 23000;
+  k8 = 1.05;
+  k9 = 25000000;
+  k10 = 6;
+  k11 = 19;
+  k12 = 22000000;
+  k13 = 2.4;
+  k14 = 10000000;
+  k15 = 1.8;
+  k16 = 7500;
+  k17 = 20000000;
+  k18 = 0.005;
+  k19 = 10000000;
+  k20 = 0.001;
+  k21 = 100000000;
+  k22 = 8.2;
+  k23 = 22000;
+  k24 = 0.006;
+  k25 = 0.001;
+  k26 = 20000000;
+  k27 = 0.2;
+  k28 = 400000000;
+  k29 = 103;
+  k30 = 100000000;
+  k31 = 63.5;
+  k32 = 230000000;
+  k33 = 0.00036;
+  k34 = 900000;
+  k35 = 0.00011;
+  k36 = 320000000;
+  k37 = 50000000;
+  k38 = 4200;
+  k39 = 7100;
+  k40 = 490;
+  k41 = 7100;
+  k42 = 230;
+  k43 = 5700;
+  k44 = 3000000;
+  f_pH = 1;
+
+  // Other declarations:
+  var IIa_plus_1_2mIIa, minutes, k05, k06, k07, k10_0, k15_0, k16_0, k17_0;
+  var k22_0, k26_0, k31_0, k32_0, k43_0, k44_0, TAT;
+  const compartment_1, k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11, k12;
+  const k13, k14, k15, k16, k17, k18, k19, k20, k21, k22, k23, k24, k25, k26;
+  const k27, k28, k29, k30, k31, k32, k33, k34, k35, k36, k37, k38, k39, k40;
+  const k41, k42, k43, k44, f_pH;
+
+  // Display Names:
+  k1 is "k01";
+  k2 is "k02";
+  k3 is "k03";
+  k4 is "k04";
+  k5 is "k05";
+  k6 is "k06";
+  k7 is "k07";
+  k8 is "k08";
+  k9 is "k09";
+  IIa_plus_1_2mIIa is "IIa+1.2mIIa";
+  k05 is "k05*";
+  f_pH is "f(pH)";
+  k06 is "k06*";
+  k07 is "k07*";
+  k10_0 is "k10*";
+  k15_0 is "k15*";
+  k16_0 is "k16*";
+  k17_0 is "k17*";
+  k22_0 is "k22*";
+  k26_0 is "k26*";
+  k31_0 is "k31*";
+  k32_0 is "k32*";
+  k43_0 is "k43*";
+  k44_0 is "k44*";
+  R1 is "R01";
+  R2 is "R02";
+  R3 is "R03";
+  R4 is "R04";
+  R5 is "R05";
+  R6 is "R06";
+  R7 is "R07";
+  R8 is "R08";
+  R9 is "R09";
+  R6b is "R06b";
+  R8b is "R08b";
+
+  // SBO terms:
+  k1.sboTerm = 38
+  k2.sboTerm = 36
+  k3.sboTerm = 38
+  k4.sboTerm = 36
+  k5.sboTerm = 36
+  k6.sboTerm = 36
+  k7.sboTerm = 36
+  k8.sboTerm = 38
+  k9.sboTerm = 36
+  k10.sboTerm = 35
+  k11.sboTerm = 38
+  k12.sboTerm = 36
+  k13.sboTerm = 38
+  k14.sboTerm = 36
+  k15.sboTerm = 35
+  k16.sboTerm = 36
+  k17.sboTerm = 36
+  k18.sboTerm = 38
+  k19.sboTerm = 36
+  k20.sboTerm = 38
+  k21.sboTerm = 36
+  k22.sboTerm = 35
+  k23.sboTerm = 39
+  k24.sboTerm = 35
+  k25.sboTerm = 35
+  k26.sboTerm = 36
+  k27.sboTerm = 38
+  k28.sboTerm = 36
+  k29.sboTerm = 38
+  k30.sboTerm = 36
+  k31.sboTerm = 35
+  k32.sboTerm = 36
+  k33.sboTerm = 38
+  k34.sboTerm = 36
+  k35.sboTerm = 38
+  k36.sboTerm = 36
+  k37.sboTerm = 36
+  k38.sboTerm = 36
+  k39.sboTerm = 36
+  k40.sboTerm = 36
+  k41.sboTerm = 36
+  k42.sboTerm = 36
+  k43.sboTerm = 36
+  k44.sboTerm = 36
+
+  // CV terms:
+  TF identity "http://identifiers.org/uniprot/P13726"
+  TF_VII part "http://identifiers.org/uniprot/P08709"
+  TF_VII part "http://identifiers.org/uniprot/P13726"
+  VII identity "http://identifiers.org/uniprot/P08709"
+  TF_VIIa part "http://identifiers.org/uniprot/P13726"
+  TF_VIIa part "http://identifiers.org/uniprot/P08709"
+  VIIa hypernym "http://identifiers.org/uniprot/P08709"
+  Xa hypernym "http://identifiers.org/uniprot/P00742"
+  IIa hypernym "http://identifiers.org/uniprot/P00734"
+  TF_VIIa_X part "http://identifiers.org/uniprot/P00742"
+  TF_VIIa_X part "http://identifiers.org/uniprot/P08709"
+  TF_VIIa_X part "http://identifiers.org/uniprot/P13726"
+  X identity "http://identifiers.org/uniprot/P00742"
+  TF_VIIa_Xa part "http://identifiers.org/uniprot/P00742"
+  TF_VIIa_Xa part "http://identifiers.org/uniprot/P08709"
+  TF_VIIa_Xa part "http://identifiers.org/uniprot/P13726"
+  IX identity "http://identifiers.org/uniprot/P00740"
+  TF_VIIa_IX part "http://identifiers.org/uniprot/P00740"
+  TF_VIIa_IX part "http://identifiers.org/uniprot/P13726"
+  TF_VIIa_IX part "http://identifiers.org/uniprot/P08709"
+  IXa hypernym "http://identifiers.org/uniprot/P00740"
+  II identity "http://identifiers.org/uniprot/P00734"
+  VIII identity "http://identifiers.org/uniprot/P00451"
+  VIIIa hypernym "http://identifiers.org/uniprot/P00451"
+  IXa_VIIIa part "http://identifiers.org/uniprot/P00451"
+  IXa_VIIIa part "http://identifiers.org/uniprot/P00740"
+  IXa_VIIIa_X part "http://identifiers.org/uniprot/P00740"
+  IXa_VIIIa_X part "http://identifiers.org/uniprot/P00742"
+  IXa_VIIIa_X part "http://identifiers.org/uniprot/P00451"
+  VIIIa1_L parthood "http://identifiers.org/uniprot/P00451"
+  VIIIa2 parthood "http://identifiers.org/uniprot/P00451"
+  V identity "http://identifiers.org/uniprot/P12259"
+  Va hypernym "http://identifiers.org/uniprot/P12259"
+  Xa_Va part "http://identifiers.org/uniprot/P00742"
+  Xa_Va part "http://identifiers.org/uniprot/P12259"
+  Xa_Va_II part "http://identifiers.org/uniprot/P12259"
+  Xa_Va_II part "http://identifiers.org/uniprot/P00742"
+  Xa_Va_II part "http://identifiers.org/uniprot/P00734"
+  mIIa hypernym "http://identifiers.org/uniprot/P00734"
+  TFPI identity "http://identifiers.org/uniprot/P10646"
+  Xa_TFPI part "http://identifiers.org/uniprot/P00742"
+  Xa_TFPI part "http://identifiers.org/uniprot/P10646"
+  TF_VIIa_Xa_TFPI part "http://identifiers.org/uniprot/P13726"
+  TF_VIIa_Xa_TFPI part "http://identifiers.org/uniprot/P00742"
+  TF_VIIa_Xa_TFPI part "http://identifiers.org/uniprot/P08709"
+  TF_VIIa_Xa_TFPI part "http://identifiers.org/uniprot/P10646"
+  ATIII identity "http://identifiers.org/uniprot/P01008"
+  Xa_ATIII part "http://identifiers.org/uniprot/P01008"
+  Xa_ATIII part "http://identifiers.org/uniprot/P00742"
+  mIIa_ATIII part "http://identifiers.org/uniprot/P00734"
+  mIIa_ATIII part "http://identifiers.org/uniprot/P01008"
+  IXa_ATIII part "http://identifiers.org/uniprot/P00740"
+  IXa_ATIII part "http://identifiers.org/uniprot/P01008"
+  IIa_ATIII part "http://identifiers.org/uniprot/P00734"
+  IIa_ATIII part "http://identifiers.org/uniprot/P01008"
+  TF_VIIa_ATIII part "http://identifiers.org/uniprot/P08709"
+  TF_VIIa_ATIII part "http://identifiers.org/uniprot/P01008"
+  TF_VIIa_ATIII part "http://identifiers.org/uniprot/P13726"
+  k1 model_entity_is "http://identifiers.org/sbo/SBO:0000038"
+  k2 model_entity_is "http://identifiers.org/sbo/SBO:0000036"
+  k3 model_entity_is "http://identifiers.org/sbo/SBO:0000038"
+  k4 model_entity_is "http://identifiers.org/sbo/SBO:0000036"
+  k5 model_entity_is "http://identifiers.org/sbo/SBO:0000036"
+  k6 model_entity_is "http://identifiers.org/sbo/SBO:0000036"
+  k7 model_entity_is "http://identifiers.org/sbo/SBO:0000036"
+  k8 model_entity_is "http://identifiers.org/sbo/SBO:0000038"
+  k9 model_entity_is "http://identifiers.org/sbo/SBO:0000036"
+  k10 model_entity_is "http://identifiers.org/sbo/SBO:0000035"
+  k11 model_entity_is "http://identifiers.org/sbo/SBO:0000038"
+  k12 model_entity_is "http://identifiers.org/sbo/SBO:0000036"
+  k13 model_entity_is "http://identifiers.org/sbo/SBO:0000038"
+  k14 model_entity_is "http://identifiers.org/sbo/SBO:0000036"
+  k15 model_entity_is "http://identifiers.org/sbo/SBO:0000035"
+  k16 model_entity_is "http://identifiers.org/sbo/SBO:0000036"
+  k17 model_entity_is "http://identifiers.org/sbo/SBO:0000036"
+  k18 model_entity_is "http://identifiers.org/sbo/SBO:0000038"
+  k19 model_entity_is "http://identifiers.org/sbo/SBO:0000036"
+  k20 model_entity_is "http://identifiers.org/sbo/SBO:0000038"
+  k21 model_entity_is "http://identifiers.org/sbo/SBO:0000036"
+  k22 model_entity_is "http://identifiers.org/sbo/SBO:0000035"
+  k23 model_entity_is "http://identifiers.org/sbo/SBO:0000039"
+  k24 model_entity_is "http://identifiers.org/sbo/SBO:0000035"
+  k25 model_entity_is "http://identifiers.org/sbo/SBO:0000035"
+  k26 model_entity_is "http://identifiers.org/sbo/SBO:0000036"
+  k27 model_entity_is "http://identifiers.org/sbo/SBO:0000038"
+  k28 model_entity_is "http://identifiers.org/sbo/SBO:0000036"
+  k29 model_entity_is "http://identifiers.org/sbo/SBO:0000038"
+  k30 model_entity_is "http://identifiers.org/sbo/SBO:0000036"
+  k31 model_entity_is "http://identifiers.org/sbo/SBO:0000035"
+  k32 model_entity_is "http://identifiers.org/sbo/SBO:0000036"
+  k33 model_entity_is "http://identifiers.org/sbo/SBO:0000038"
+  k34 model_entity_is "http://identifiers.org/sbo/SBO:0000036"
+  k35 model_entity_is "http://identifiers.org/sbo/SBO:0000038"
+  k36 model_entity_is "http://identifiers.org/sbo/SBO:0000036"
+  k37 model_entity_is "http://identifiers.org/sbo/SBO:0000036"
+  k38 model_entity_is "http://identifiers.org/sbo/SBO:0000036"
+  k39 model_entity_is "http://identifiers.org/sbo/SBO:0000036"
+  k40 model_entity_is "http://identifiers.org/sbo/SBO:0000036"
+  k41 model_entity_is "http://identifiers.org/sbo/SBO:0000036"
+  k42 model_entity_is "http://identifiers.org/sbo/SBO:0000036"
+  k43 identity "http://identifiers.org/sbo/SBO:0000036"
+  k44 identity "http://identifiers.org/sbo/SBO:0000036"
+end
+
+Mitrophanov2015___Simulating_extended_Hockin_Blood_Coagulation_Model_under_varied_pH is "Mitrophanov2015 - Simulating extended Hockin Blood Coagulation Model under varied pH"
+
+Mitrophanov2015___Simulating_extended_Hockin_Blood_Coagulation_Model_under_varied_pH model_entity_is "http://identifiers.org/biomodels.db/MODEL1806270001",
+                                                                                                     "http://identifiers.org/biomodels.db/BIOMD0000000951"
+Mitrophanov2015___Simulating_extended_Hockin_Blood_Coagulation_Model_under_varied_pH hypernym "http://identifiers.org/biomodels.db/BIOMD0000000362"
+Mitrophanov2015___Simulating_extended_Hockin_Blood_Coagulation_Model_under_varied_pH hypernym "http://identifiers.org/go/GO:0007596"
+Mitrophanov2015___Simulating_extended_Hockin_Blood_Coagulation_Model_under_varied_pH container "http://identifiers.org/bto/BTO:0000131"
+Mitrophanov2015___Simulating_extended_Hockin_Blood_Coagulation_Model_under_varied_pH property "http://identifiers.org/efo/1000014"
+Mitrophanov2015___Simulating_extended_Hockin_Blood_Coagulation_Model_under_varied_pH taxon "http://identifiers.org/taxonomy/9606"
+Mitrophanov2015___Simulating_extended_Hockin_Blood_Coagulation_Model_under_varied_pH description "http://identifiers.org/pubmed/25839182"

@@ -1,0 +1,75 @@
+// Created by libAntimony v2.13.0
+model *New_Model()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species $p100t in compartment_, p100 in compartment_, p52 in compartment_;
+  species NIK in compartment_, p100_NIK in compartment_;
+
+  // Assignment Rules:
+  p52_uM := p52/1000;
+
+  // Reactions:
+  p100_mRNA_Expressions: $p100t => p100; compartment_*p100_mRNA_Expressions_k1*p100t;
+  p100_processing: p100_NIK => p52 + NIK; compartment_*p100_processing_k1*p100_NIK;
+  p52_degradation: p52 => ; compartment_*p52_degradation_k1*p52;
+  p100_degradation: p100 => ; compartment_*p100_degradation_k1*p100;
+  p100_NIK_binding: p100 + NIK -> p100_NIK; compartment_*(p100_NIK_binding_k1*p100*NIK - p100_NIK_binding_k2*p100_NIK);
+
+  // Species initializations:
+  p100t = 2.5;
+  p100 = 0;
+  p52 = 0;
+  NIK = 10;
+  p100_NIK = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  p100_mRNA_Expressions_k1 = 0.2;
+  p100_processing_k1 = 0.05;
+  p52_degradation_k1 = 0.00038;
+  p100_degradation_k1 = 0.00038;
+  p100_NIK_binding_k1 = 0.005;
+  p100_NIK_binding_k2 = 0.00024;
+
+  // Other declarations:
+  var p52_uM;
+  const compartment_;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-9 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  p100_NIK is "p100:NIK";
+  p100_mRNA_Expressions is "p100 mRNA Expressions";
+  p100_processing is "p100 processing";
+  p52_degradation is "p52 degradation";
+  p100_degradation is "p100 degradation";
+  p100_NIK_binding is "p100 NIK binding";
+
+  // CV terms:
+  p100t identity "http://identifiers.org/ensembl/ENSG00000077150"
+  p100 identity "http://identifiers.org/uniprot/Q00653"
+  p52 identity "http://identifiers.org/uniprot/Q00653"
+  NIK identity "http://identifiers.org/uniprot/Q99558"
+  p100_NIK part "http://identifiers.org/uniprot/Q99558"
+  p100_NIK part "http://identifiers.org/uniprot/Q00653"
+  p100_mRNA_Expressions property "http://identifiers.org/ncit/C18888"
+  p100_processing property "http://identifiers.org/go/GO:0006397"
+  p52_degradation property "http://identifiers.org/ncit/C61559"
+  p100_degradation property "http://identifiers.org/ncit/C61559"
+  p100_NIK_binding property "http://identifiers.org/go/GO:0003729"
+end
+
+New_Model is "Simon2019 - NIK-dependent p100 processing into p52, Mass Action, SBML 2v4"
+
+New_Model description "http://identifiers.org/pubmed/31048505"
+New_Model model_entity_is "http://identifiers.org/biomodels.db/MODEL1903280002",
+                          "http://identifiers.org/biomodels.db/BIOMD0000000868"
+New_Model identity "http://identifiers.org/biomodels.db/MODEL1903280002"
+New_Model property "http://identifiers.org/taxonomy/9606"
+New_Model property "http://identifiers.org/ncit/C39163"

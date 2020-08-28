@@ -1,0 +1,215 @@
+// Created by libAntimony v2.13.0
+function growth(a, T)
+  a*T;
+end
+
+growth is "growth"
+
+function il2p(p3, E, T, g4, alpha, S)
+  p3*E*T/((g4 + T)*(1 + alpha*S));
+end
+
+il2p is "il2p"
+
+function kill(aa, E, T, g2)
+  aa*E*T/(g2 + T);
+end
+
+kill is "kill"
+
+function td(a, T, k)
+  a*T^2/k;
+end
+
+td is "td"
+
+function ist(c, T, gamma_, S)
+  c*T/(1 + gamma_*S);
+end
+
+ist is "ist"
+
+function isil2(p1, E, I, g1, q1, S, q2)
+  (p1*E*I/(g1 + I))*(p1 - q1*S/(q2 + S));
+end
+
+isil2 is "isil2"
+
+function tgfbp(p4, T, theta)
+  p4*T^2/(theta^2 + T^2);
+end
+
+tgfbp is "tgfbp"
+
+function ts(p2, S, T, g3)
+  p2*S*T/(g3 + S);
+end
+
+ts is "ts"
+
+
+model *Figueredo2013_3___immunointeraction_full_model()
+
+  // Compartments and Species:
+  compartment tumor_microenvironment;
+  species T in tumor_microenvironment, E in tumor_microenvironment, I in tumor_microenvironment;
+  species S in tumor_microenvironment;
+
+  // Reactions:
+  tumor_growth:  => T; tumor_microenvironment*growth(a, T);
+  tumor_death: T => ; tumor_microenvironment*td(a, T, k);
+  tumor_killing: T => ; tumor_microenvironment*kill(aa, E, T, g2);
+  immune_death: E => ; tumor_microenvironment*u1*E;
+  immune_stimulation_tumor:  => E; tumor_microenvironment*ist(c, T, gamma_, S);
+  immune_stimulation_IL2:  => E; tumor_microenvironment*isil2(p1, E, I, g1, q1, S, q2);
+  IL2_loss: I => ; tumor_microenvironment*u2*I;
+  IL2_production:  => I; tumor_microenvironment*il2p(p3, E, T, g4, alpha, S);
+  tumor_stimulation:  => T; tumor_microenvironment*ts(p2, S, T, g3);
+  tgfb_production:  => S; tumor_microenvironment*tgfbp(p4, T, theta);
+  tgfb_loss: S => ; tumor_microenvironment*u3*S;
+
+  // Species initializations:
+  T = 1;
+  T has substance_per_volume;
+  E = 1;
+  E has substance_per_volume;
+  I = 10;
+  I has substance_per_volume;
+  S = 0;
+  S has substance_per_volume;
+
+  // Compartment initializations:
+  tumor_microenvironment = 1;
+  tumor_microenvironment has volume;
+
+  // Variable initializations:
+  a = 0.18;
+  a has unit_0;
+  c = 0.035;
+  c has unit_0;
+  aa = 1;
+  aa has unit_0;
+  g2 = 100000;
+  g2 has unit_0;
+  u2 = 10;
+  u2 has unit_0;
+  p1 = 0.1245;
+  p1 has unit_0;
+  g1 = 20000000;
+  g1 has unit_0;
+  p2 = 0.27;
+  p2 has unit_0;
+  g3 = 20000000;
+  g3 has unit_0;
+  u3 = 10;
+  u3 has unit_0;
+  alpha = 0.001;
+  alpha has unit_0;
+  g4 = 1000;
+  g4 has unit_0;
+  gamma_ = 10;
+  gamma_ has unit_0;
+  u1 = 0.03;
+  u1 has unit_0;
+  p3 = 5;
+  p3 has unit_0;
+  p4 = 2.84;
+  p4 has unit_0;
+  q1 = 10;
+  q1 has unit_0;
+  q2 = 0.1121;
+  q2 has unit_0;
+  theta = 1000000;
+  theta has unit_0;
+  k = 10000000000;
+  k has unit_0;
+
+  // Other declarations:
+  const tumor_microenvironment, a, c, aa, g2, u2, p1, g1, p2, g3, u3, alpha;
+  const g4, gamma_, u1, p3, p4, q1, q2, theta, k;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = time_unit;
+  unit substance = 1e-3 mole;
+  unit unit_0 = 1 / dimensionless^-0;
+  unit extent = substance;
+  unit substance_per_volume = 1e-3 mole / 1e-3 litre;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1";
+  tumor_microenvironment is "tumor microenvironment";
+  gamma_ is "gamma";
+  tumor_growth is "tumor growth";
+  tumor_death is "tumor death";
+  tumor_killing is "tumor killing";
+  immune_death is "immune death";
+  immune_stimulation_tumor is "immune stimulation-tumor";
+  immune_stimulation_IL2 is "immune stimulation-IL2";
+  IL2_loss is "IL2 loss";
+  IL2_production is "IL2 production";
+  tumor_stimulation is "tumor stimulation";
+  tgfb_production is "tgfb production";
+  tgfb_loss is "tgfb loss";
+
+  // CV terms:
+  tumor_microenvironment hypernym "http://identifiers.org/ncit/C94498"
+  T hypernym "http://identifiers.org/cl/CL:0001064"
+  E hypernym "http://identifiers.org/ncit/C28241"
+  I hypernym "http://identifiers.org/uniprot/P60568"
+  S hypernym "http://identifiers.org/uniprot/P01137"
+  a hypernym "http://identifiers.org/sbo/SBO:0000610"
+  c hypernym "http://identifiers.org/sbo/SBO:0000610"
+  aa hypernym "http://identifiers.org/ncit/C53346"
+  g2 hypernym "http://identifiers.org/sbo/SBO:0000281"
+  u2 hypernym "http://identifiers.org/ncit/C25636"
+  p1 hypernym "http://identifiers.org/sbo/SBO:0000610"
+  g1 hypernym "http://identifiers.org/sbo/SBO:0000281"
+  p2 hypernym "http://identifiers.org/ncit/C25636"
+  g3 hypernym "http://identifiers.org/sbo/SBO:0000281"
+  u3 hypernym "http://identifiers.org/ncit/C25636"
+  alpha hypernym "http://identifiers.org/ncit/C25201"
+  g4 hypernym "http://identifiers.org/sbo/SBO:0000281"
+  gamma_ hypernym "http://identifiers.org/ncit/C25201"
+  u1 hypernym "http://identifiers.org/ncit/C53346"
+  p3 hypernym "http://identifiers.org/ncit/C25636"
+  p4 hypernym "http://identifiers.org/ncit/C25636"
+  q1 hypernym "http://identifiers.org/ncit/C25636"
+  q2 hypernym "http://identifiers.org/sbo/SBO:0000281"
+  theta hypernym "http://identifiers.org/sbo/SBO:0000281"
+  k hypernym "http://identifiers.org/sbo/SBO:0000661"
+  tumor_growth hypernym "http://identifiers.org/sbo/SBO:0000393"
+  tumor_growth hypernym "http://identifiers.org/go/GO:0008283"
+  tumor_death hypernym "http://identifiers.org/sbo/SBO:0000179"
+  tumor_death hypernym "http://identifiers.org/go/GO:0008219"
+  tumor_killing hypernym "http://identifiers.org/go/GO:0002419"
+  tumor_killing hypernym "http://identifiers.org/sbo/SBO:0000179"
+  immune_death hypernym "http://identifiers.org/go/GO:0008219"
+  immune_death hypernym "http://identifiers.org/sbo/SBO:0000179"
+  immune_stimulation_tumor hypernym "http://identifiers.org/go/GO:0008283"
+  immune_stimulation_tumor hypernym "http://identifiers.org/sbo/SBO:0000393"
+  immune_stimulation_IL2 hypernym "http://identifiers.org/sbo/SBO:0000393"
+  immune_stimulation_IL2 hypernym "http://identifiers.org/go/GO:0008283"
+  IL2_loss hypernym "http://identifiers.org/ncit/C75947"
+  IL2_loss hypernym "http://identifiers.org/sbo/SBO:0000179"
+  IL2_production hypernym "http://identifiers.org/sbo/SBO:0000393"
+  IL2_production hypernym "http://identifiers.org/go/GO:0001816"
+  tumor_stimulation hypernym "http://identifiers.org/go/GO:0008283"
+  tumor_stimulation hypernym "http://identifiers.org/sbo/SBO:0000393"
+  tgfb_production hypernym "http://identifiers.org/sbo/SBO:0000393"
+  tgfb_production hypernym "http://identifiers.org/go/GO:0001816"
+  tgfb_loss hypernym "http://identifiers.org/sbo/SBO:0000179"
+  tgfb_loss hypernym "http://identifiers.org/ncit/C75947"
+end
+
+Figueredo2013_3___immunointeraction_full_model is "Figueredo2013/3 - immunointeraction full model"
+
+Figueredo2013_3___immunointeraction_full_model description "http://identifiers.org/pubmed/23734575"
+Figueredo2013_3___immunointeraction_full_model model_entity_is "http://identifiers.org/biomodels.db/MODEL1907220001",
+                                                               "http://identifiers.org/biomodels.db/BIOMD0000000756"
+Figueredo2013_3___immunointeraction_full_model hypernym "http://identifiers.org/go/GO:0002418"
+Figueredo2013_3___immunointeraction_full_model property "http://identifiers.org/mamo/MAMO_0000046"
+Figueredo2013_3___immunointeraction_full_model taxon "http://identifiers.org/taxonomy/9606"

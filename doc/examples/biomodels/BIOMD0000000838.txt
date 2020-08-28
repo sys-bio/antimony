@@ -1,0 +1,92 @@
+// Created by libAntimony v2.13.0
+function Function_for_Tumor_Death_CD8(nu_mel, T, M, g)
+  nu_mel*T*M/(M + g);
+end
+
+Function_for_Tumor_Death_CD8 is "Function_for_Tumor_Death_CD8"
+
+function Function_for_Tumor_Growth(gamma_mel, M)
+  gamma_mel*M;
+end
+
+Function_for_Tumor_Growth is "Function_for_Tumor_Growth"
+
+function Function_for_APC_Activation(alpha_A, M, b)
+  alpha_A*M/(M + b);
+end
+
+Function_for_APC_Activation is "Function_for_APC_Activation"
+
+function Function_for_Activation_CD8(alpha_E, A)
+  alpha_E*A;
+end
+
+Function_for_Activation_CD8 is "Function_for_Activation_CD8"
+
+
+model *Tsur2019___Response_of_patients_with_melanoma_to_immune_checkpoint_blockade()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species A in compartment_, M in compartment_, T in compartment_;
+
+  // Reactions:
+  APC_Activation:  => A; compartment_*Function_for_APC_Activation(alpha_A, M, b);
+  APC_Death: A => ; compartment_*mu_a*A;
+  Activation_CD8:  => T; compartment_*Function_for_Activation_CD8(alpha_e, A);
+  CD8_Death: T => ; compartment_*mu_e*T;
+  Tumor_Growth:  => M; compartment_*Function_for_Tumor_Growth(gamma_mel, M);
+  Tumor_Death_CD8: M => ; compartment_*Function_for_Tumor_Death_CD8(nu_mel, T, M, g);
+
+  // Species initializations:
+  A = alpha_A/mu_a/(M/(M + b));
+  M = 1000000;
+  T = (alpha_e/mu_e)*A;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  alpha_A = 2986;
+  mu_a = 0.231;
+  b = 92330;
+  alpha_e = 831.8;
+  mu_e = 0.1777;
+  gamma_mel = 0.04496;
+  nu_mel = 0.1245;
+  g = 60100000;
+
+  // Other declarations:
+  const compartment_, alpha_A, mu_a, b, alpha_e, mu_e, gamma_mel, nu_mel;
+  const g;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = item;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/ncit/C94498"
+  A identity "http://identifiers.org/ncit/C12621"
+  M identity "http://identifiers.org/ncit/C36873"
+  T identity "http://identifiers.org/ncit/C12542"
+  APC_Activation hypernym "http://identifiers.org/ncit/C64382"
+  APC_Death identity "http://identifiers.org/go/GO:0008219"
+  Activation_CD8 identity "http://identifiers.org/go/GO:0036037"
+  CD8_Death identity "http://identifiers.org/go/GO:0008219"
+  Tumor_Growth identity "http://identifiers.org/ncit/C36294"
+  Tumor_Death_CD8 identity "http://identifiers.org/go/GO:0002419"
+end
+
+Tsur2019___Response_of_patients_with_melanoma_to_immune_checkpoint_blockade is "Tsur2019 - Response of patients with melanoma to immune checkpoint blockade"
+
+Tsur2019___Response_of_patients_with_melanoma_to_immune_checkpoint_blockade description "http://identifiers.org/pubmed/31580835"
+Tsur2019___Response_of_patients_with_melanoma_to_immune_checkpoint_blockade model_entity_is "http://identifiers.org/biomodels.db/MODEL1910250002",
+                                                                                            "http://identifiers.org/biomodels.db/BIOMD0000000838"
+Tsur2019___Response_of_patients_with_melanoma_to_immune_checkpoint_blockade property "http://identifiers.org/efo/0000756"
+Tsur2019___Response_of_patients_with_melanoma_to_immune_checkpoint_blockade property "http://identifiers.org/ncit/C141144"
+Tsur2019___Response_of_patients_with_melanoma_to_immune_checkpoint_blockade property "http://identifiers.org/mamo/MAMO_0000046"

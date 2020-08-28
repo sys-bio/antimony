@@ -1,0 +1,848 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible_0(v)
+  v;
+end
+
+Constant_flux__irreversible_0 is "Constant flux (irreversible)"
+
+function function_for_v1_1(EGF, EGFR, EGF_EGFR, k1, kd1)
+  k1*EGF*EGFR - kd1*EGF_EGFR;
+end
+
+function_for_v1_1 is "function for v1_1"
+
+
+model *Hornberg2005_MAPKsignalling()
+
+  // Compartments and Species:
+  compartment Compartment;
+  species EGF in Compartment, EGFR in Compartment, EGF_EGFR in Compartment;
+  species _EGF_EGFR_2 in Compartment, _EGF_EGFR__2 in Compartment, EGFRi in Compartment;
+  species _EGF_EGFR__2_GAP_Grb2_Prot in Compartment, _EGF_EGFRi__2 in Compartment;
+  species Proti in Compartment, EGF_EGFRi in Compartment, _EGF_EGFRi_2 in Compartment;
+  species Prot in Compartment, EGFideg in Compartment, GAP in Compartment;
+  species _EGF_EGFR__2_GAP in Compartment, EGFi in Compartment, _EGF_EGFRi__2_GAP in Compartment;
+  species _EGF_EGFRi__2_GAP_Grb2 in Compartment, _EGF_EGFRi__2_GAP_Grb2_Sos in Compartment;
+  species _EGF_EGFRi__2_GAP_Grb2_Sos_Ras_GDP in Compartment, _EGF_EGFRi__2_GAP_Grb2_Sos_Ras_GTP in Compartment;
+  species Grb2 in Compartment, _EGF_EGFR__2_GAP_Grb2 in Compartment, Sos in Compartment;
+  species _EGF_EGFR__2_GAP_Grb2_Sos in Compartment, Ras_GDP in Compartment;
+  species _EGF_EGFR__2_GAP_Grb2_Sos_Ras_GDP in Compartment, Ras_GTP in Compartment;
+  species _EGF_EGFR__2_GAP_Grb2_Sos_Ras_GTP in Compartment, Grb2_Sos in Compartment;
+  species Shc in Compartment, _EGF_EGFR__2_GAP_SHC in Compartment, _EGF_EGFR__2_GAP_SHC_0 in Compartment;
+  species _EGF_EGFR__2_GAP_SHC__Grb2 in Compartment, _EGF_EGFR__2_GAP_SHC__Grb2_Sos in Compartment;
+  species _EGF_EGFR__2_GAP_SHC__Grb2_Sos_Ras_GDP in Compartment, _EGF_EGFR__2_GAP_SHC__Grb2_Sos_Ras_GTP in Compartment;
+  species Shc__Grb2_Sos in Compartment, Shc__Grb2 in Compartment, Shc_0 in Compartment;
+  species Raf in Compartment, Raf_Ras_GTP in Compartment, Ras_GTP_ in Compartment;
+  species Phosphatase1 in Compartment, Raf_0 in Compartment, Raf__phosphatase1 in Compartment;
+  species MEK in Compartment, MEK_Raf in Compartment, MEK_P in Compartment;
+  species MEK_P_Raf in Compartment, MEK_PP in Compartment, MEK_PP_phosphatase2 in Compartment;
+  species phosphatse2 in Compartment, MEK_P_phosphatase2 in Compartment, ERK in Compartment;
+  species ERK_MEK_PP in Compartment, ERK_P in Compartment, ERK_P_MEKPP in Compartment;
+  species ERK_PP in Compartment, phosphatase3 in Compartment, ERK_PP_phosphatase3 in Compartment;
+  species ERK_P_phosphatase3 in Compartment, _EGF_EGFRi__2_GAP_SHC in Compartment;
+  species _EGF_EGFRi__2_GAP_SHC_0 in Compartment, _EGF_EGFRi__2_GAP_SHC__Grb2 in Compartment;
+  species _EGF_EGFRi__2_GAP_SHC__Grb2_Sos in Compartment, _EGF_EGFRi__2_GAP_SHC__Grb2_Sos_Ras_GDP in Compartment;
+  species _EGF_EGFRi__2_GAP_SHC__Grb2_Sos_Ras_GTP in Compartment, Ras_GTPi in Compartment;
+  species Raf_Ras_GTPi in Compartment, Ras_GTPi_0 in Compartment, Rafi in Compartment;
+  species Rafi__phosphatase1 in Compartment, MEK_Rafi in Compartment, MEKi_P in Compartment;
+  species MEK_P_Rafi in Compartment, MEKi_PP in Compartment, MEKi_PP_phosphatase2 in Compartment;
+  species MEKi_P_phosphatase2 in Compartment, ERKi_P in Compartment, ERKi_P_MEKi_PP in Compartment;
+  species ERKi_PP in Compartment, ERKi_PP_phosphatase3 in Compartment, ERKi_P_phosphatase3 in Compartment;
+  species EGFRidag in Compartment, _EGF_EGFRi___2deg in Compartment, _EGF_EGFR__2_GAP_Grb2_Sos_Prot in Compartment;
+  species _EGF_EGFR__2_GAP_Grb2_Sos_Ras_GDP_Prot in Compartment, _EGF_EGFR__2_GAP_Grb2_Sos_Ras_GTP_Prot in Compartment;
+  species _EGF_EGFR__2_GAP_Grb2_Sos_ERK_PP in Compartment, _EGF_EGFRi__2_GAP_Grb2_Sos_ERKi_PP in Compartment;
+  species _EGF_EGFR__2_GAP_SHC__Grb2_Sos_ERK_PP in Compartment, _EGF_EGFRi__2_GAP_SHC__Grb2_Sos_ERKi_PP in Compartment;
+  species _EGF_EGFR__2_GAP_Grb2_Sos_deg in Compartment, _EGF_EGFRi__2_GAP_Grb2_Sos_deg in Compartment;
+  species Sos_ERK_PP in Compartment, Sos_ERKi_PP in Compartment, Sosi in Compartment;
+  species ERKi_MEKi_PP_0 in Compartment, _EGF_EGFR__2_GAP_SHC__Grb2_Prot_0 in Compartment;
+  species _EGF_EGFR__2_GAP_SHC__Grb2_Sos_Prot_0 in Compartment, _EGF_EGFR__2_GAP_SHC__Grb2_Sos_Ras_GDP_Prot_0 in Compartment;
+  species _EGF_EGFR__2_GAP_SHC__Grb2_Sos_Ras_GTP_Prot_0 in Compartment;
+
+  // Reactions:
+  v1: EGFR -> EGF_EGFR; Compartment*function_for_v1_1(EGF, EGFR, EGF_EGFR, k1, kd1);
+  v2: 2 EGF_EGFR -> _EGF_EGFR_2; Compartment*(k2*EGF_EGFR^2 - kd2*_EGF_EGFR_2);
+  v3: _EGF_EGFR_2 -> _EGF_EGFR__2; Compartment*(k3*_EGF_EGFR_2 - kd3*_EGF_EGFR__2);
+  v4: _EGF_EGFR__2_GAP_Grb2 + Prot -> _EGF_EGFR__2_GAP_Grb2_Prot; Compartment*(k4*_EGF_EGFR__2_GAP_Grb2*Prot - kd4*_EGF_EGFR__2_GAP_Grb2_Prot);
+  v5: _EGF_EGFR__2_GAP_Grb2_Prot => _EGF_EGFRi__2_GAP_Grb2 + Proti; Compartment*kd5*_EGF_EGFR__2_GAP_Grb2_Prot;
+  v6: EGFR -> EGFRi; Compartment*(k6*EGFR - kd6*EGFRi);
+  v7: _EGF_EGFR__2 -> _EGF_EGFRi__2; Compartment*(k6*_EGF_EGFR__2 - kd6*_EGF_EGFRi__2);
+  v8: _EGF_EGFR__2 + GAP -> _EGF_EGFR__2_GAP; Compartment*(k8*_EGF_EGFR__2*GAP - kd8*_EGF_EGFR__2_GAP);
+  v9: _EGF_EGFR__2_GAP_Grb2 => _EGF_EGFRi__2_GAP_Grb2; Compartment*k6*_EGF_EGFR__2_GAP_Grb2;
+  v10: EGFRi + EGFi -> EGF_EGFRi; Compartment*(k10b*EGFRi*EGFi - kd10*EGF_EGFRi);
+  v11: 2 EGF_EGFRi -> _EGF_EGFRi_2; Compartment*(k2*EGF_EGFRi^2 - kd2*_EGF_EGFRi_2);
+  v12: _EGF_EGFRi_2 -> _EGF_EGFRi__2; Compartment*(k3*_EGF_EGFRi_2 - kd3*_EGF_EGFRi__2);
+  v13:  => EGFR; Compartment*Constant_flux__irreversible_0(k13);
+  v14: _EGF_EGFRi__2 + GAP -> _EGF_EGFRi__2_GAP; Compartment*(k8*_EGF_EGFRi__2*GAP - kd8*_EGF_EGFRi__2_GAP);
+  v15: Proti => Prot; Compartment*k15*Proti;
+  v16: Grb2 + _EGF_EGFR__2_GAP -> _EGF_EGFR__2_GAP_Grb2; Compartment*(k16*Grb2*_EGF_EGFR__2_GAP - kd63*_EGF_EGFR__2_GAP_Grb2);
+  v17: Sos + _EGF_EGFR__2_GAP_Grb2 -> _EGF_EGFR__2_GAP_Grb2_Sos; Compartment*(k17*Sos*_EGF_EGFR__2_GAP_Grb2 - kd17*_EGF_EGFR__2_GAP_Grb2_Sos);
+  v18: Ras_GDP + _EGF_EGFR__2_GAP_Grb2_Sos -> _EGF_EGFR__2_GAP_Grb2_Sos_Ras_GDP; Compartment*(k18*Ras_GDP*_EGF_EGFR__2_GAP_Grb2_Sos - kd18*_EGF_EGFR__2_GAP_Grb2_Sos_Ras_GDP);
+  v19: Ras_GTP + _EGF_EGFR__2_GAP_Grb2_Sos -> _EGF_EGFR__2_GAP_Grb2_Sos_Ras_GDP; Compartment*(k19*Ras_GTP*_EGF_EGFR__2_GAP_Grb2_Sos - kd19*_EGF_EGFR__2_GAP_Grb2_Sos_Ras_GDP);
+  v20: _EGF_EGFR__2_GAP_Grb2_Sos + Ras_GTP_ -> _EGF_EGFR__2_GAP_Grb2_Sos_Ras_GTP; Compartment*(k20*_EGF_EGFR__2_GAP_Grb2_Sos*Ras_GTP_ - kd20*_EGF_EGFR__2_GAP_Grb2_Sos_Ras_GTP);
+  v21: _EGF_EGFR__2_GAP_Grb2_Sos + Ras_GDP -> _EGF_EGFR__2_GAP_Grb2_Sos_Ras_GTP; Compartment*(k21*_EGF_EGFR__2_GAP_Grb2_Sos*Ras_GDP - kd21*_EGF_EGFR__2_GAP_Grb2_Sos_Ras_GTP);
+  v22: Shc + _EGF_EGFR__2_GAP -> _EGF_EGFR__2_GAP_SHC; Compartment*(k22*Shc*_EGF_EGFR__2_GAP - kd22*_EGF_EGFR__2_GAP_SHC);
+  v23: _EGF_EGFR__2_GAP_SHC -> _EGF_EGFR__2_GAP_SHC_0; Compartment*(k23*_EGF_EGFR__2_GAP_SHC - kd23*_EGF_EGFR__2_GAP_SHC_0);
+  v24: Grb2 + _EGF_EGFR__2_GAP_SHC_0 -> _EGF_EGFR__2_GAP_SHC__Grb2; Compartment*(k16*Grb2*_EGF_EGFR__2_GAP_SHC_0 - kd24*_EGF_EGFR__2_GAP_SHC__Grb2);
+  v25: Sos + _EGF_EGFR__2_GAP_SHC__Grb2 -> _EGF_EGFR__2_GAP_SHC__Grb2_Sos; Compartment*(k25*Sos*_EGF_EGFR__2_GAP_SHC__Grb2 - kd25*_EGF_EGFR__2_GAP_SHC__Grb2_Sos);
+  v26: Ras_GDP + _EGF_EGFR__2_GAP_SHC__Grb2_Sos -> _EGF_EGFR__2_GAP_SHC__Grb2_Sos_Ras_GDP; Compartment*(k18*Ras_GDP*_EGF_EGFR__2_GAP_SHC__Grb2_Sos - kd18*_EGF_EGFR__2_GAP_SHC__Grb2_Sos_Ras_GDP);
+  v27: _EGF_EGFR__2_GAP_SHC__Grb2_Sos + Ras_GTP -> _EGF_EGFR__2_GAP_SHC__Grb2_Sos_Ras_GDP; Compartment*(k19*_EGF_EGFR__2_GAP_SHC__Grb2_Sos*Ras_GTP - kd19*_EGF_EGFR__2_GAP_SHC__Grb2_Sos_Ras_GDP);
+  v28: Ras_GTP + Raf -> Raf_Ras_GTP; Compartment*(k28*Ras_GTP*Raf - kd28*Raf_Ras_GTP);
+  v29: Ras_GTP_ + Raf_0 -> Raf_Ras_GTP; Compartment*(k29*Ras_GTP_*Raf_0 - kd29*Raf_Ras_GTP);
+  v30: _EGF_EGFR__2_GAP_SHC__Grb2_Sos + Ras_GTP_ -> _EGF_EGFR__2_GAP_SHC__Grb2_Sos_Ras_GTP; Compartment*(k20*_EGF_EGFR__2_GAP_SHC__Grb2_Sos*Ras_GTP_ - kd20*_EGF_EGFR__2_GAP_SHC__Grb2_Sos_Ras_GTP);
+  v31: _EGF_EGFR__2_GAP_SHC__Grb2_Sos + Ras_GDP -> _EGF_EGFR__2_GAP_SHC__Grb2_Sos_Ras_GTP; Compartment*(k21*_EGF_EGFR__2_GAP_SHC__Grb2_Sos*Ras_GDP - kd21*_EGF_EGFR__2_GAP_SHC__Grb2_Sos_Ras_GTP);
+  v32: Shc__Grb2_Sos + _EGF_EGFR__2_GAP -> _EGF_EGFR__2_GAP_SHC__Grb2_Sos; Compartment*(k32*Shc__Grb2_Sos*_EGF_EGFR__2_GAP - kd32*_EGF_EGFR__2_GAP_SHC__Grb2_Sos);
+  v33: Shc_0 + Grb2_Sos -> Shc__Grb2_Sos; Compartment*(k33*Shc_0*Grb2_Sos - kd33*Shc__Grb2_Sos);
+  v34: _EGF_EGFR__2_GAP + Grb2_Sos -> _EGF_EGFR__2_GAP_Grb2_Sos; Compartment*(k34*_EGF_EGFR__2_GAP*Grb2_Sos - kd34*_EGF_EGFR__2_GAP_Grb2_Sos);
+  v35: Sos + Grb2 -> Grb2_Sos; Compartment*(k35*Sos*Grb2 - kd35*Grb2_Sos);
+  v36: Shc_0 -> Shc; Compartment*(k36*Shc_0 - kd36*Shc);
+  v37: _EGF_EGFR__2_GAP + Shc_0 -> _EGF_EGFR__2_GAP_SHC_0; Compartment*(k37*_EGF_EGFR__2_GAP*Shc_0 - kd37*_EGF_EGFR__2_GAP_SHC_0);
+  v38: Grb2 + Shc_0 -> Shc__Grb2; Compartment*(k16*Grb2*Shc_0 - kd24*Shc__Grb2);
+  v39: _EGF_EGFR__2_GAP + Shc__Grb2 -> _EGF_EGFR__2_GAP_SHC__Grb2; Compartment*(k37*_EGF_EGFR__2_GAP*Shc__Grb2 - kd37*_EGF_EGFR__2_GAP_SHC__Grb2);
+  v40: Sos + Shc__Grb2 -> Shc__Grb2_Sos; Compartment*(k40*Sos*Shc__Grb2 - kd40*Shc__Grb2_Sos);
+  v41: Grb2_Sos + _EGF_EGFR__2_GAP_SHC_0 -> _EGF_EGFR__2_GAP_SHC__Grb2_Sos; Compartment*(k41*Grb2_Sos*_EGF_EGFR__2_GAP_SHC_0 - kd41*_EGF_EGFR__2_GAP_SHC__Grb2_Sos);
+  v42: Phosphatase1 + Raf_0 -> Raf__phosphatase1; Compartment*(k42*Phosphatase1*Raf_0 - kd42*Raf__phosphatase1);
+  v43: Raf__phosphatase1 => Raf + Phosphatase1; Compartment*kd43*Raf__phosphatase1;
+  v44: MEK + Raf_0 -> MEK_Raf; Compartment*(k44*MEK*Raf_0 - kd52*MEK_Raf);
+  v45: MEK_Raf => MEK_P + Raf_0; Compartment*kd45*MEK_Raf;
+  v46: MEK_P + Raf_0 -> MEK_P_Raf; Compartment*(k44*MEK_P*Raf_0 - kd52*MEK_P_Raf);
+  v47: MEK_P_Raf => MEK_PP + Raf_0; Compartment*kd47*MEK_P_Raf;
+  v48: MEK_PP + phosphatse2 -> MEK_PP_phosphatase2; Compartment*(k48*MEK_PP*phosphatse2 - kd48*MEK_PP_phosphatase2);
+  v49: MEK_PP_phosphatase2 => MEK_P + phosphatse2; Compartment*kd49*MEK_PP_phosphatase2;
+  v50: phosphatse2 + MEK_P -> MEK_P_phosphatase2; Compartment*(k50*phosphatse2*MEK_P - kd50*MEK_P_phosphatase2);
+  v51: MEK_P_phosphatase2 => MEK + phosphatse2; Compartment*kd49*MEK_P_phosphatase2;
+  v52: ERK + MEK_PP -> ERK_MEK_PP; Compartment*(k52*ERK*MEK_PP - kd44*ERK_MEK_PP);
+  v53: ERK_MEK_PP => MEK_PP + ERK_P; Compartment*kd53*ERK_MEK_PP;
+  v54: MEK_PP + ERK_P -> ERK_P_MEKPP; Compartment*(k52*MEK_PP*ERK_P - kd44*ERK_P_MEKPP);
+  v55: ERK_P_MEKPP => ERK_PP + MEK_PP; Compartment*kd55*ERK_P_MEKPP;
+  v56: ERK_PP + phosphatase3 -> ERK_PP_phosphatase3; Compartment*(k56*ERK_PP*phosphatase3 - kd56*ERK_PP_phosphatase3);
+  v57: ERK_PP_phosphatase3 => ERK_P + phosphatase3; Compartment*kd57*ERK_PP_phosphatase3;
+  v58: phosphatase3 + ERK_P -> ERK_P_phosphatase3; Compartment*(k58*phosphatase3*ERK_P - kd58*ERK_P_phosphatase3);
+  v59: ERK_P_phosphatase3 => ERK + phosphatase3; Compartment*kd57*ERK_P_phosphatase3;
+  v60: EGFRi => EGFRidag; Compartment*k60*EGFRi;
+  v61: EGFi => EGFideg; Compartment*k61*EGFi;
+  v62: _EGF_EGFRi__2 => _EGF_EGFRi___2deg; Compartment*k60*_EGF_EGFRi__2;
+  v63: _EGF_EGFRi__2_GAP + Grb2 -> _EGF_EGFRi__2_GAP_Grb2; Compartment*(k16*_EGF_EGFRi__2_GAP*Grb2 - kd63*_EGF_EGFRi__2_GAP_Grb2);
+  v64: Sos + _EGF_EGFRi__2_GAP_Grb2 -> _EGF_EGFRi__2_GAP_Grb2_Sos; Compartment*(k17*Sos*_EGF_EGFRi__2_GAP_Grb2 - kd17*_EGF_EGFRi__2_GAP_Grb2_Sos);
+  v65: Ras_GDP + _EGF_EGFRi__2_GAP_Grb2_Sos -> _EGF_EGFRi__2_GAP_Grb2_Sos_Ras_GDP; Compartment*(k18*Ras_GDP*_EGF_EGFRi__2_GAP_Grb2_Sos - kd18*_EGF_EGFRi__2_GAP_Grb2_Sos_Ras_GDP);
+  v66: Ras_GTPi + _EGF_EGFRi__2_GAP_Grb2_Sos -> _EGF_EGFRi__2_GAP_Grb2_Sos_Ras_GDP; Compartment*(k19*Ras_GTPi*_EGF_EGFRi__2_GAP_Grb2_Sos - kd19*_EGF_EGFRi__2_GAP_Grb2_Sos_Ras_GDP);
+  v67: Ras_GTPi_0 + _EGF_EGFRi__2_GAP_Grb2_Sos -> _EGF_EGFRi__2_GAP_Grb2_Sos_Ras_GTP; Compartment*(k20*Ras_GTPi_0*_EGF_EGFRi__2_GAP_Grb2_Sos - kd20*_EGF_EGFRi__2_GAP_Grb2_Sos_Ras_GTP);
+  v68: _EGF_EGFRi__2_GAP_Grb2_Sos + Ras_GDP -> _EGF_EGFRi__2_GAP_Grb2_Sos_Ras_GTP; Compartment*(k21*_EGF_EGFRi__2_GAP_Grb2_Sos*Ras_GDP - kd21*_EGF_EGFRi__2_GAP_Grb2_Sos_Ras_GTP);
+  v69: Shc + _EGF_EGFRi__2_GAP -> _EGF_EGFRi__2_GAP_SHC; Compartment*(k22*Shc*_EGF_EGFRi__2_GAP - kd22*_EGF_EGFRi__2_GAP_SHC);
+  v70: _EGF_EGFRi__2_GAP_SHC -> _EGF_EGFRi__2_GAP_SHC_0; Compartment*(k23*_EGF_EGFRi__2_GAP_SHC - kd23*_EGF_EGFRi__2_GAP_SHC_0);
+  v71: Grb2 + _EGF_EGFRi__2_GAP_SHC_0 -> _EGF_EGFRi__2_GAP_SHC__Grb2; Compartment*(k16*Grb2*_EGF_EGFRi__2_GAP_SHC_0 - kd24*_EGF_EGFRi__2_GAP_SHC__Grb2);
+  v72: Sos + _EGF_EGFRi__2_GAP_SHC__Grb2 -> _EGF_EGFRi__2_GAP_SHC__Grb2_Sos; Compartment*(k25*Sos*_EGF_EGFRi__2_GAP_SHC__Grb2 - kd25*_EGF_EGFRi__2_GAP_SHC__Grb2_Sos);
+  v73: Ras_GDP + _EGF_EGFRi__2_GAP_SHC__Grb2_Sos -> _EGF_EGFRi__2_GAP_SHC__Grb2_Sos_Ras_GDP; Compartment*(k18*Ras_GDP*_EGF_EGFRi__2_GAP_SHC__Grb2_Sos - kd18*_EGF_EGFRi__2_GAP_SHC__Grb2_Sos_Ras_GDP);
+  v74: _EGF_EGFRi__2_GAP_SHC__Grb2_Sos + Ras_GTPi -> _EGF_EGFRi__2_GAP_SHC__Grb2_Sos_Ras_GDP; Compartment*(k19*_EGF_EGFRi__2_GAP_SHC__Grb2_Sos*Ras_GTPi - kd19*_EGF_EGFRi__2_GAP_SHC__Grb2_Sos_Ras_GDP);
+  v75: Ras_GTPi + Raf -> Raf_Ras_GTPi; Compartment*(k28*Ras_GTPi*Raf - kd28*Raf_Ras_GTPi);
+  v76: Ras_GTPi_0 + Rafi -> Raf_Ras_GTPi; Compartment*(k29*Ras_GTPi_0*Rafi - kd29*Raf_Ras_GTPi);
+  v77: Ras_GTPi_0 + _EGF_EGFRi__2_GAP_SHC__Grb2_Sos -> _EGF_EGFRi__2_GAP_SHC__Grb2_Sos_Ras_GTP; Compartment*(k20*Ras_GTPi_0*_EGF_EGFRi__2_GAP_SHC__Grb2_Sos - kd20*_EGF_EGFRi__2_GAP_SHC__Grb2_Sos_Ras_GTP);
+  v78: _EGF_EGFRi__2_GAP_SHC__Grb2_Sos + Ras_GDP -> _EGF_EGFRi__2_GAP_SHC__Grb2_Sos_Ras_GTP; Compartment*(k21*_EGF_EGFRi__2_GAP_SHC__Grb2_Sos*Ras_GDP - kd21*_EGF_EGFRi__2_GAP_SHC__Grb2_Sos_Ras_GTP);
+  v79: _EGF_EGFRi__2_GAP + Shc__Grb2_Sos -> _EGF_EGFRi__2_GAP_SHC__Grb2_Sos; Compartment*(k32*_EGF_EGFRi__2_GAP*Shc__Grb2_Sos - kd32*_EGF_EGFRi__2_GAP_SHC__Grb2_Sos);
+  v80: _EGF_EGFRi__2_GAP + Grb2_Sos -> _EGF_EGFRi__2_GAP_Grb2_Sos; Compartment*(k34*_EGF_EGFRi__2_GAP*Grb2_Sos - kd34*_EGF_EGFRi__2_GAP_Grb2_Sos);
+  v81: _EGF_EGFRi__2_GAP + Shc_0 -> _EGF_EGFRi__2_GAP_SHC_0; Compartment*(k37*_EGF_EGFRi__2_GAP*Shc_0 - kd37*_EGF_EGFRi__2_GAP_SHC_0);
+  v82: _EGF_EGFRi__2_GAP + Shc__Grb2 -> _EGF_EGFRi__2_GAP_SHC__Grb2; Compartment*(k37*_EGF_EGFRi__2_GAP*Shc__Grb2 - kd37*_EGF_EGFRi__2_GAP_SHC__Grb2);
+  v83: Grb2_Sos + _EGF_EGFRi__2_GAP_SHC_0 -> _EGF_EGFRi__2_GAP_SHC__Grb2_Sos; Compartment*(k41*Grb2_Sos*_EGF_EGFRi__2_GAP_SHC_0 - kd41*_EGF_EGFRi__2_GAP_SHC__Grb2_Sos);
+  v84: Phosphatase1 + Rafi -> Rafi__phosphatase1; Compartment*(k42*Phosphatase1*Rafi - kd42*Rafi__phosphatase1);
+  v85: Rafi__phosphatase1 => Raf + Phosphatase1; Compartment*kd43*Rafi__phosphatase1;
+  v86: MEK + Rafi -> MEK_Rafi; Compartment*(k44*MEK*Rafi - kd52*MEK_Rafi);
+  v87: MEK_Rafi => MEKi_P + Rafi; Compartment*kd45*MEK_Rafi;
+  v88: Rafi + MEKi_P -> MEK_P_Rafi; Compartment*(k44*Rafi*MEKi_P - kd52*MEK_P_Rafi);
+  v89: MEK_P_Rafi => Rafi + MEKi_PP; Compartment*kd47*MEK_P_Rafi;
+  v90: MEKi_PP + phosphatse2 -> MEKi_PP_phosphatase2; Compartment*(k48*MEKi_PP*phosphatse2 - kd48*MEKi_PP_phosphatase2);
+  v91: MEKi_PP_phosphatase2 => MEKi_P + phosphatse2; Compartment*kd49*MEKi_PP_phosphatase2;
+  v92: phosphatse2 + MEKi_P -> MEKi_P_phosphatase2; Compartment*(k50*phosphatse2*MEKi_P - kd50*MEKi_P_phosphatase2);
+  v93: MEKi_P_phosphatase2 => MEK + phosphatse2; Compartment*kd49*MEKi_P_phosphatase2;
+  v94: ERK + MEKi_PP -> ERKi_MEKi_PP_0; Compartment*(k52*ERK*MEKi_PP - kd44*ERKi_MEKi_PP_0);
+  v95: ERKi_MEKi_PP_0 => ERKi_P + MEKi_PP; Compartment*kd53*ERKi_MEKi_PP_0;
+  v96: MEKi_PP + ERKi_P -> ERKi_P_MEKi_PP; Compartment*(k52*MEKi_PP*ERKi_P - kd44*ERKi_P_MEKi_PP);
+  v97: ERKi_P_MEKi_PP => ERKi_PP + MEKi_PP; Compartment*kd55*ERKi_P_MEKi_PP;
+  v98: ERKi_PP + phosphatase3 -> ERKi_PP_phosphatase3; Compartment*(k56*ERKi_PP*phosphatase3 - kd56*ERKi_PP_phosphatase3);
+  v99: ERKi_PP_phosphatase3 => ERKi_P + phosphatase3; Compartment*kd57*ERKi_PP_phosphatase3;
+  v100: phosphatase3 + ERKi_P -> ERKi_P_phosphatase3; Compartment*(k58*phosphatase3*ERKi_P - kd58*ERKi_P_phosphatase3);
+  v101: ERKi_P_phosphatase3 => ERK + phosphatase3; Compartment*kd57*ERKi_P_phosphatase3;
+  v102: _EGF_EGFR__2_GAP => _EGF_EGFRi__2_GAP; Compartment*k6*_EGF_EGFR__2_GAP;
+  v103: _EGF_EGFR__2_GAP_SHC => _EGF_EGFRi__2_GAP_SHC; Compartment*k6*_EGF_EGFR__2_GAP_SHC;
+  v104: _EGF_EGFR__2_GAP_SHC_0 => _EGF_EGFRi__2_GAP_SHC_0; Compartment*k6*_EGF_EGFR__2_GAP_SHC_0;
+  v105: _EGF_EGFR__2_GAP_Grb2_Sos => _EGF_EGFRi__2_GAP_Grb2_Sos; Compartment*k6*_EGF_EGFR__2_GAP_Grb2_Sos;
+  v106: _EGF_EGFR__2_GAP_Grb2_Sos + Prot -> _EGF_EGFR__2_GAP_Grb2_Sos_Prot; Compartment*(k4*_EGF_EGFR__2_GAP_Grb2_Sos*Prot - kd4*_EGF_EGFR__2_GAP_Grb2_Sos_Prot);
+  v107: _EGF_EGFR__2_GAP_Grb2_Sos_Prot => Proti + _EGF_EGFRi__2_GAP_Grb2_Sos; Compartment*kd5*_EGF_EGFR__2_GAP_Grb2_Sos_Prot;
+  v108: _EGF_EGFR__2_GAP_Grb2_Sos_Ras_GDP => _EGF_EGFRi__2_GAP_Grb2_Sos_Ras_GDP; Compartment*k6*_EGF_EGFR__2_GAP_Grb2_Sos_Ras_GDP;
+  v109: _EGF_EGFR__2_GAP_Grb2_Sos_Ras_GDP + Prot -> _EGF_EGFR__2_GAP_Grb2_Sos_Ras_GDP_Prot; Compartment*(k4*_EGF_EGFR__2_GAP_Grb2_Sos_Ras_GDP*Prot - kd4*_EGF_EGFR__2_GAP_Grb2_Sos_Ras_GDP_Prot);
+  v110: _EGF_EGFR__2_GAP_Grb2_Sos_Ras_GDP_Prot => Proti + _EGF_EGFRi__2_GAP_Grb2_Sos_Ras_GDP; Compartment*kd5*_EGF_EGFR__2_GAP_Grb2_Sos_Ras_GDP_Prot;
+  v111: _EGF_EGFR__2_GAP_Grb2_Sos_Ras_GTP => _EGF_EGFRi__2_GAP_Grb2_Sos_Ras_GTP; Compartment*k6*_EGF_EGFR__2_GAP_Grb2_Sos_Ras_GTP;
+  v112: _EGF_EGFR__2_GAP_Grb2_Sos_Ras_GTP + Prot -> _EGF_EGFR__2_GAP_Grb2_Sos_Ras_GTP_Prot; Compartment*(k4*_EGF_EGFR__2_GAP_Grb2_Sos_Ras_GTP*Prot - kd4*_EGF_EGFR__2_GAP_Grb2_Sos_Ras_GTP_Prot);
+  v113: _EGF_EGFR__2_GAP_Grb2_Sos_Ras_GTP_Prot => Proti + _EGF_EGFRi__2_GAP_Grb2_Sos_Ras_GTP; Compartment*kd5*_EGF_EGFR__2_GAP_Grb2_Sos_Ras_GTP_Prot;
+  v114: _EGF_EGFR__2_GAP_SHC__Grb2 => _EGF_EGFRi__2_GAP_SHC__Grb2; Compartment*k6*_EGF_EGFR__2_GAP_SHC__Grb2;
+  v115: _EGF_EGFR__2_GAP_SHC__Grb2 + Prot -> _EGF_EGFR__2_GAP_SHC__Grb2_Prot_0; Compartment*(k4*_EGF_EGFR__2_GAP_SHC__Grb2*Prot - kd4*_EGF_EGFR__2_GAP_SHC__Grb2_Prot_0);
+  v116: _EGF_EGFR__2_GAP_SHC__Grb2_Prot_0 => Proti + _EGF_EGFRi__2_GAP_SHC__Grb2; Compartment*kd5*_EGF_EGFR__2_GAP_SHC__Grb2_Prot_0;
+  v117: _EGF_EGFR__2_GAP_SHC__Grb2_Sos => _EGF_EGFRi__2_GAP_SHC__Grb2_Sos; Compartment*k6*_EGF_EGFR__2_GAP_SHC__Grb2_Sos;
+  v118: _EGF_EGFR__2_GAP_SHC__Grb2_Sos + Prot -> _EGF_EGFR__2_GAP_SHC__Grb2_Sos_Prot_0; Compartment*(k4*_EGF_EGFR__2_GAP_SHC__Grb2_Sos*Prot - kd4*_EGF_EGFR__2_GAP_SHC__Grb2_Sos_Prot_0);
+  v119: _EGF_EGFR__2_GAP_SHC__Grb2_Sos_Prot_0 => Proti + _EGF_EGFRi__2_GAP_SHC__Grb2_Sos; Compartment*kd5*_EGF_EGFR__2_GAP_SHC__Grb2_Sos_Prot_0;
+  v120: _EGF_EGFR__2_GAP_SHC__Grb2_Sos_Ras_GDP => _EGF_EGFRi__2_GAP_SHC__Grb2_Sos_Ras_GDP; Compartment*k6*_EGF_EGFR__2_GAP_SHC__Grb2_Sos_Ras_GDP;
+  v121: _EGF_EGFR__2_GAP_SHC__Grb2_Sos_Ras_GDP + Prot -> _EGF_EGFR__2_GAP_SHC__Grb2_Sos_Ras_GDP_Prot_0; Compartment*(k4*_EGF_EGFR__2_GAP_SHC__Grb2_Sos_Ras_GDP*Prot - kd4*_EGF_EGFR__2_GAP_SHC__Grb2_Sos_Ras_GDP_Prot_0);
+  v122: _EGF_EGFR__2_GAP_SHC__Grb2_Sos_Ras_GDP_Prot_0 => Proti + _EGF_EGFRi__2_GAP_SHC__Grb2_Sos_Ras_GDP; Compartment*kd5*_EGF_EGFR__2_GAP_SHC__Grb2_Sos_Ras_GDP_Prot_0;
+  v123: _EGF_EGFR__2_GAP_SHC__Grb2_Sos_Ras_GTP => _EGF_EGFRi__2_GAP_SHC__Grb2_Sos_Ras_GTP; Compartment*k6*_EGF_EGFR__2_GAP_SHC__Grb2_Sos_Ras_GTP;
+  v124: _EGF_EGFR__2_GAP_SHC__Grb2_Sos_Ras_GTP + Prot -> _EGF_EGFR__2_GAP_SHC__Grb2_Sos_Ras_GTP_Prot_0; Compartment*(k4*_EGF_EGFR__2_GAP_SHC__Grb2_Sos_Ras_GTP*Prot - kd4*_EGF_EGFR__2_GAP_SHC__Grb2_Sos_Ras_GTP_Prot_0);
+  v125: _EGF_EGFR__2_GAP_SHC__Grb2_Sos_Ras_GTP_Prot_0 => _EGF_EGFRi__2_GAP_SHC__Grb2_Sos_Ras_GTP + Proti; Compartment*kd5*_EGF_EGFR__2_GAP_SHC__Grb2_Sos_Ras_GTP_Prot_0;
+  v126: ERK_PP + _EGF_EGFR__2_GAP_Grb2_Sos -> _EGF_EGFR__2_GAP_Grb2_Sos_ERK_PP; Compartment*(k126*ERK_PP*_EGF_EGFR__2_GAP_Grb2_Sos - kd126*_EGF_EGFR__2_GAP_Grb2_Sos_ERK_PP);
+  v127: ERKi_PP + _EGF_EGFRi__2_GAP_Grb2_Sos -> _EGF_EGFRi__2_GAP_Grb2_Sos_ERKi_PP; Compartment*(k126*ERKi_PP*_EGF_EGFRi__2_GAP_Grb2_Sos - kd126*_EGF_EGFRi__2_GAP_Grb2_Sos_ERKi_PP);
+  v128: ERK_PP + _EGF_EGFR__2_GAP_SHC__Grb2_Sos -> _EGF_EGFR__2_GAP_SHC__Grb2_Sos_ERK_PP; Compartment*(k126*ERK_PP*_EGF_EGFR__2_GAP_SHC__Grb2_Sos - kd126*_EGF_EGFR__2_GAP_SHC__Grb2_Sos_ERK_PP);
+  v129: ERKi_PP + _EGF_EGFRi__2_GAP_SHC__Grb2_Sos -> _EGF_EGFRi__2_GAP_SHC__Grb2_Sos_ERKi_PP; Compartment*(k126*ERKi_PP*_EGF_EGFRi__2_GAP_SHC__Grb2_Sos - kd126*_EGF_EGFRi__2_GAP_SHC__Grb2_Sos_ERKi_PP);
+  v130: ERK_PP + Sos -> Sos_ERK_PP; Compartment*(k126*ERK_PP*Sos - kd126*Sos_ERK_PP);
+  v131: ERKi_PP + Sos -> Sos_ERKi_PP; Compartment*(k126*ERKi_PP*Sos - kd126*Sos_ERKi_PP);
+  v132: _EGF_EGFRi__2_GAP => _EGF_EGFRi___2deg; Compartment*k60*_EGF_EGFRi__2_GAP;
+  v133: _EGF_EGFRi__2_GAP_Grb2 => _EGF_EGFRi___2deg; Compartment*k60*_EGF_EGFRi__2_GAP_Grb2;
+  v134: _EGF_EGFRi__2_GAP_Grb2_Sos => _EGF_EGFRi___2deg; Compartment*k60*_EGF_EGFRi__2_GAP_Grb2_Sos;
+  v135: _EGF_EGFRi__2_GAP_Grb2_Sos_Ras_GDP => _EGF_EGFRi___2deg; Compartment*k60*_EGF_EGFRi__2_GAP_Grb2_Sos_Ras_GDP;
+  v136: _EGF_EGFRi__2_GAP_Grb2_Sos_Ras_GTP => _EGF_EGFRi___2deg; Compartment*k60*_EGF_EGFRi__2_GAP_Grb2_Sos_Ras_GTP;
+  v137: _EGF_EGFRi__2_GAP_SHC => _EGF_EGFRi___2deg; Compartment*k60*_EGF_EGFRi__2_GAP_SHC;
+  v138: _EGF_EGFRi__2_GAP_SHC_0 => _EGF_EGFRi___2deg; Compartment*k60*_EGF_EGFRi__2_GAP_SHC_0;
+  v139: _EGF_EGFRi__2_GAP_SHC__Grb2 => _EGF_EGFRi___2deg; Compartment*k60*_EGF_EGFRi__2_GAP_SHC__Grb2;
+  v140: _EGF_EGFRi__2_GAP_SHC__Grb2_Sos => _EGF_EGFRi___2deg; Compartment*k60*_EGF_EGFRi__2_GAP_SHC__Grb2_Sos;
+  v141: _EGF_EGFRi__2_GAP_SHC__Grb2_Sos_Ras_GDP => _EGF_EGFRi___2deg; Compartment*k60*_EGF_EGFRi__2_GAP_SHC__Grb2_Sos_Ras_GDP;
+  v142: _EGF_EGFRi__2_GAP_SHC__Grb2_Sos_Ras_GTP => _EGF_EGFRi___2deg; Compartment*k60*_EGF_EGFRi__2_GAP_SHC__Grb2_Sos_Ras_GTP;
+  v143: ERK_PP + _EGF_EGFR__2_GAP_Grb2_Sos_deg -> _EGF_EGFR__2_GAP_Grb2_Sos_ERK_PP; Compartment*(k127*ERK_PP*_EGF_EGFR__2_GAP_Grb2_Sos_deg - kd127*_EGF_EGFR__2_GAP_Grb2_Sos_ERK_PP);
+  v144: ERK_PP + _EGF_EGFR__2_GAP_Grb2_Sos_deg -> _EGF_EGFR__2_GAP_SHC__Grb2_Sos_ERK_PP; Compartment*(k127*ERK_PP*_EGF_EGFR__2_GAP_Grb2_Sos_deg - kd127*_EGF_EGFR__2_GAP_SHC__Grb2_Sos_ERK_PP);
+  v145: ERK_PP + Sosi -> Sos_ERK_PP; Compartment*(k127*ERK_PP*Sosi - kd127*Sos_ERK_PP);
+  v146: ERKi_PP + _EGF_EGFRi__2_GAP_Grb2_Sos_deg -> _EGF_EGFRi__2_GAP_Grb2_Sos_ERKi_PP; Compartment*(k127*ERKi_PP*_EGF_EGFRi__2_GAP_Grb2_Sos_deg - kd127*_EGF_EGFRi__2_GAP_Grb2_Sos_ERKi_PP);
+  v147: ERKi_PP + _EGF_EGFRi__2_GAP_Grb2_Sos_deg -> _EGF_EGFRi__2_GAP_SHC__Grb2_Sos_ERKi_PP; Compartment*(k127*ERKi_PP*_EGF_EGFRi__2_GAP_Grb2_Sos_deg - kd127*_EGF_EGFRi__2_GAP_SHC__Grb2_Sos_ERKi_PP);
+  v148: ERKi_PP + Sosi -> Sos_ERKi_PP; Compartment*(k127*ERKi_PP*Sosi - kd127*Sos_ERKi_PP);
+
+  // Species initializations:
+  EGF = 4.99999999999939e-08;
+  EGFR = 49999.9999999991;
+  EGF_EGFR = 0;
+  _EGF_EGFR_2 = 0;
+  _EGF_EGFR__2 = 0;
+  EGFRi = 0;
+  _EGF_EGFR__2_GAP_Grb2_Prot = 0;
+  _EGF_EGFRi__2 = 0;
+  Proti = 0;
+  EGF_EGFRi = 0;
+  _EGF_EGFRi_2 = 0;
+  Prot = 80999.9999999976;
+  EGFideg = 0;
+  GAP = 11999.9999999997;
+  _EGF_EGFR__2_GAP = 0;
+  EGFi = 0;
+  _EGF_EGFRi__2_GAP = 0;
+  _EGF_EGFRi__2_GAP_Grb2 = 0;
+  _EGF_EGFRi__2_GAP_Grb2_Sos = 0;
+  _EGF_EGFRi__2_GAP_Grb2_Sos_Ras_GDP = 0;
+  _EGF_EGFRi__2_GAP_Grb2_Sos_Ras_GTP = 0;
+  Grb2 = 10999.9999999996;
+  _EGF_EGFR__2_GAP_Grb2 = 0;
+  Sos = 26299.9999999984;
+  _EGF_EGFR__2_GAP_Grb2_Sos = 0;
+  Ras_GDP = 71999.9999999998;
+  _EGF_EGFR__2_GAP_Grb2_Sos_Ras_GDP = 0;
+  Ras_GTP = 0;
+  _EGF_EGFR__2_GAP_Grb2_Sos_Ras_GTP = 0;
+  Grb2_Sos = 40000;
+  Shc = 100999.999999999;
+  _EGF_EGFR__2_GAP_SHC = 0;
+  _EGF_EGFR__2_GAP_SHC_0 = 0;
+  _EGF_EGFR__2_GAP_SHC__Grb2 = 0;
+  _EGF_EGFR__2_GAP_SHC__Grb2_Sos = 0;
+  _EGF_EGFR__2_GAP_SHC__Grb2_Sos_Ras_GDP = 0;
+  _EGF_EGFR__2_GAP_SHC__Grb2_Sos_Ras_GTP = 0;
+  Shc__Grb2_Sos = 0;
+  Shc__Grb2 = 0;
+  Shc_0 = 0;
+  Raf = 40000;
+  Raf_Ras_GTP = 0;
+  Ras_GTP_ = 0;
+  Phosphatase1 = 40000;
+  Raf_0 = 0;
+  Raf__phosphatase1 = 0;
+  MEK = 20999999.9999994;
+  MEK_Raf = 0;
+  MEK_P = 0;
+  MEK_P_Raf = 0;
+  MEK_PP = 0;
+  MEK_PP_phosphatase2 = 0;
+  phosphatse2 = 40000;
+  MEK_P_phosphatase2 = 0;
+  ERK = 22099999.9999994;
+  ERK_MEK_PP = 0;
+  ERK_P = 0;
+  ERK_P_MEKPP = 0;
+  ERK_PP = 0;
+  phosphatase3 = 9999999.99999974;
+  ERK_PP_phosphatase3 = 0;
+  ERK_P_phosphatase3 = 0;
+  _EGF_EGFRi__2_GAP_SHC = 0;
+  _EGF_EGFRi__2_GAP_SHC_0 = 0;
+  _EGF_EGFRi__2_GAP_SHC__Grb2 = 0;
+  _EGF_EGFRi__2_GAP_SHC__Grb2_Sos = 0;
+  _EGF_EGFRi__2_GAP_SHC__Grb2_Sos_Ras_GDP = 0;
+  _EGF_EGFRi__2_GAP_SHC__Grb2_Sos_Ras_GTP = 0;
+  Ras_GTPi = 0;
+  Raf_Ras_GTPi = 0;
+  Ras_GTPi_0 = 0;
+  Rafi = 0;
+  Rafi__phosphatase1 = 0;
+  MEK_Rafi = 0;
+  MEKi_P = 0;
+  MEK_P_Rafi = 0;
+  MEKi_PP = 0;
+  MEKi_PP_phosphatase2 = 0;
+  MEKi_P_phosphatase2 = 0;
+  ERKi_P = 0;
+  ERKi_P_MEKi_PP = 0;
+  ERKi_PP = 0;
+  ERKi_PP_phosphatase3 = 0;
+  ERKi_P_phosphatase3 = 0;
+  EGFRidag = 0;
+  _EGF_EGFRi___2deg = 0;
+  _EGF_EGFR__2_GAP_Grb2_Sos_Prot = 0;
+  _EGF_EGFR__2_GAP_Grb2_Sos_Ras_GDP_Prot = 0;
+  _EGF_EGFR__2_GAP_Grb2_Sos_Ras_GTP_Prot = 0;
+  _EGF_EGFR__2_GAP_Grb2_Sos_ERK_PP = 0;
+  _EGF_EGFRi__2_GAP_Grb2_Sos_ERKi_PP = 0;
+  _EGF_EGFR__2_GAP_SHC__Grb2_Sos_ERK_PP = 0;
+  _EGF_EGFRi__2_GAP_SHC__Grb2_Sos_ERKi_PP = 0;
+  _EGF_EGFR__2_GAP_Grb2_Sos_deg = 0;
+  _EGF_EGFRi__2_GAP_Grb2_Sos_deg = 0;
+  Sos_ERK_PP = 0;
+  Sos_ERKi_PP = 0;
+  Sosi = 0;
+  ERKi_MEKi_PP_0 = 0.99999999999997;
+  _EGF_EGFR__2_GAP_SHC__Grb2_Prot_0 = 0.999999999999972;
+  _EGF_EGFR__2_GAP_SHC__Grb2_Sos_Prot_0 = 0.999999999999972;
+  _EGF_EGFR__2_GAP_SHC__Grb2_Sos_Ras_GDP_Prot_0 = 0.999999999999972;
+  _EGF_EGFR__2_GAP_SHC__Grb2_Sos_Ras_GTP_Prot_0 = 0.999999999999973;
+
+  // Compartment initializations:
+  Compartment = 1;
+
+  // Variable initializations:
+  k1 = 30000000;
+  kd1 = 0.00384;
+  k2 = 1.66e-05;
+  kd2 = 0.1;
+  k3 = 1;
+  kd3 = 0.01;
+  k4 = 1.73e-07;
+  kd4 = 0.00166;
+  kd5 = 0.0146;
+  k6 = 0.0005;
+  kd6 = 0.005;
+  k8 = 1.66e-06;
+  kd8 = 0.2;
+  k10b = 0.0543;
+  kd10 = 0.011;
+  k13 = 2.17;
+  k15 = 10000;
+  k16 = 1.66e-05;
+  k17 = 1.66e-05;
+  kd17 = 0.06;
+  k18 = 2.5e-05;
+  kd18 = 1.3;
+  k19 = 1.66e-07;
+  kd19 = 0.5;
+  k20 = 3.5e-06;
+  kd20 = 0.4;
+  k21 = 3.66e-07;
+  kd21 = 0.023;
+  k22 = 3.5e-05;
+  kd22 = 0.1;
+  k23 = 6;
+  kd23 = 0.06;
+  kd24 = 0.55;
+  k25 = 1.66e-05;
+  kd25 = 0.0214;
+  k28 = 1.66e-06;
+  kd28 = 0.0053;
+  k29 = 1.17e-06;
+  kd29 = 1;
+  k32 = 4e-07;
+  kd32 = 0.1;
+  k33 = 3.5e-05;
+  kd33 = 0.2;
+  k34 = 7.5e-06;
+  kd34 = 0.03;
+  k35 = 7.5e-06;
+  kd35 = 0.0015;
+  k36 = 0.005;
+  kd36 = 0;
+  k37 = 1.5e-06;
+  kd37 = 0.3;
+  k40 = 5e-05;
+  kd40 = 0.064;
+  k41 = 5e-05;
+  kd41 = 0.0429;
+  k42 = 0.000118;
+  kd42 = 0.2;
+  kd43 = 1;
+  k44 = 1.95e-05;
+  kd44 = 0.0183;
+  kd45 = 3.5;
+  kd47 = 2.9;
+  k48 = 2.38e-05;
+  kd48 = 0.8;
+  kd49 = 0.0568;
+  k50 = 4.5e-07;
+  kd50 = 0.5;
+  k52 = 8.91e-05;
+  kd52 = 0.033;
+  kd53 = 16;
+  kd55 = 5.7;
+  k56 = 2.35e-05;
+  kd56 = 0.6;
+  kd57 = 0.246;
+  k58 = 8.33e-06;
+  kd58 = 0.5;
+  k60 = 0.0055;
+  k61 = 0.00067;
+  kd63 = 0.275;
+  k126 = 1.66e-07;
+  kd126 = 2;
+  k127 = 0;
+  kd127 = 0.0001;
+
+  // Other declarations:
+  const Compartment, k1, kd1, k2, kd2, k3, kd3, k4, kd4, kd5, k6, kd6, k8;
+  const kd8, k10b, kd10, k13, k15, k16, k17, kd17, k18, kd18, k19, kd19, k20;
+  const kd20, k21, kd21, k22, kd22, k23, kd23, kd24, k25, kd25, k28, kd28;
+  const k29, kd29, k32, kd32, k33, kd33, k34, kd34, k35, kd35, k36, kd36;
+  const k37, kd37, k40, kd40, k41, kd41, k42, kd42, kd43, k44, kd44, kd45;
+  const kd47, k48, kd48, kd49, k50, kd50, k52, kd52, kd53, kd55, k56, kd56;
+  const kd57, k58, kd58, k60, k61, kd63, k126, kd126, k127, kd127;
+
+  // Display Names:
+  _EGF_EGFR_2 is "(EGF_EGFR)2";
+  _EGF_EGFR__2 is "(EGF_EGFR*)2";
+  _EGF_EGFR__2_GAP_Grb2_Prot is "(EGF_EGFR*)2_GAP_Grb2_Prot";
+  _EGF_EGFRi__2 is "(EGF-EGFRi*)2";
+  _EGF_EGFRi_2 is "(EGF-EGFRi)2";
+  _EGF_EGFR__2_GAP is "(EGF_EGFR*)2_GAP";
+  _EGF_EGFRi__2_GAP is "(EGF_EGFRi*)2_GAP";
+  _EGF_EGFRi__2_GAP_Grb2 is "(EGF_EGFRi*)2_GAP_Grb2";
+  _EGF_EGFRi__2_GAP_Grb2_Sos is "(EGF_EGFRi*)2_GAP_Grb2_Sos";
+  _EGF_EGFRi__2_GAP_Grb2_Sos_Ras_GDP is "(EGF_EGFRi*)2_GAP_Grb2_Sos_Ras_GDP";
+  _EGF_EGFRi__2_GAP_Grb2_Sos_Ras_GTP is "(EGF_EGFRi*)2_GAP_Grb2_Sos_Ras_GTP";
+  _EGF_EGFR__2_GAP_Grb2 is "(EGF_EGFR*)2_GAP_Grb2";
+  _EGF_EGFR__2_GAP_Grb2_Sos is "(EGF_EGFR*)2_GAP_Grb2_Sos";
+  _EGF_EGFR__2_GAP_Grb2_Sos_Ras_GDP is "(EGF_EGFR*)2_GAP_Grb2_Sos_Ras_GDP";
+  _EGF_EGFR__2_GAP_Grb2_Sos_Ras_GTP is "(EGF_EGFR*)2_GAP_Grb2_Sos_Ras_GTP";
+  _EGF_EGFR__2_GAP_SHC is "(EGF_EGFR*)2_GAP_SHC";
+  _EGF_EGFR__2_GAP_SHC_0 is "(EGF_EGFR*)2_GAP_SHC*";
+  _EGF_EGFR__2_GAP_SHC__Grb2 is "(EGF_EGFR*)2_GAP_SHC*_Grb2";
+  _EGF_EGFR__2_GAP_SHC__Grb2_Sos is "(EGF_EGFR*)2_GAP_SHC*_Grb2_Sos";
+  _EGF_EGFR__2_GAP_SHC__Grb2_Sos_Ras_GDP is "(EGF_EGFR*)2_GAP_SHC*_Grb2_Sos_Ras_GDP";
+  _EGF_EGFR__2_GAP_SHC__Grb2_Sos_Ras_GTP is "(EGF_EGFR*)2_GAP_SHC*_Grb2_Sos_Ras_GTP";
+  Shc__Grb2_Sos is "Shc*_Grb2_Sos";
+  Shc__Grb2 is "Shc*_Grb2";
+  Shc_0 is "Shc*";
+  Ras_GTP_ is "Ras_GTP*";
+  Raf_0 is "Raf*";
+  Raf__phosphatase1 is "Raf*_phosphatase1";
+  MEK_Raf is "MEK_Raf*";
+  MEK_P_Raf is "MEK_P_Raf*";
+  _EGF_EGFRi__2_GAP_SHC is "(EGF_EGFRi*)2_GAP_SHC";
+  _EGF_EGFRi__2_GAP_SHC_0 is "(EGF_EGFRi*)2_GAP_SHC*";
+  _EGF_EGFRi__2_GAP_SHC__Grb2 is "(EGF_EGFRi*)2_GAP_SHC*_Grb2";
+  _EGF_EGFRi__2_GAP_SHC__Grb2_Sos is "(EGF_EGFRi*)2_GAP_SHC*_Grb2_Sos";
+  _EGF_EGFRi__2_GAP_SHC__Grb2_Sos_Ras_GDP is "(EGF_EGFRi*)2_GAP_SHC*_Grb2_Sos_Ras_GDP";
+  _EGF_EGFRi__2_GAP_SHC__Grb2_Sos_Ras_GTP is "(EGF_EGFRi*)2_GAP_SHC*_Grb2_Sos_Ras_GTP";
+  Ras_GTPi_0 is "Ras_GTPi*";
+  Rafi is "Rafi*";
+  Rafi__phosphatase1 is "Rafi*_phosphatase1";
+  MEK_Rafi is "MEK_Rafi*";
+  MEK_P_Rafi is "MEK_P_Rafi*";
+  _EGF_EGFRi___2deg is "(EGF_EGFRi*)*2deg";
+  _EGF_EGFR__2_GAP_Grb2_Sos_Prot is "(EGF_EGFR*)2_GAP_Grb2_Sos_Prot";
+  _EGF_EGFR__2_GAP_Grb2_Sos_Ras_GDP_Prot is "(EGF_EGFR*)2_GAP_Grb2_Sos_Ras_GDP_Prot";
+  _EGF_EGFR__2_GAP_Grb2_Sos_Ras_GTP_Prot is "(EGF_EGFR*)2_GAP_Grb2_Sos_Ras_GTP_Prot";
+  _EGF_EGFR__2_GAP_Grb2_Sos_ERK_PP is "(EGF_EGFR*)2_GAP_Grb2_Sos_ERK_PP";
+  _EGF_EGFRi__2_GAP_Grb2_Sos_ERKi_PP is "(EGF_EGFRi*)2_GAP_Grb2_Sos_ERKi_PP";
+  _EGF_EGFR__2_GAP_SHC__Grb2_Sos_ERK_PP is "(EGF_EGFR*)2_GAP_SHC*_Grb2_Sos_ERK_PP";
+  _EGF_EGFRi__2_GAP_SHC__Grb2_Sos_ERKi_PP is "(EGF_EGFRi*)2_GAP_SHC*_Grb2_Sos_ERKi_PP";
+  _EGF_EGFR__2_GAP_Grb2_Sos_deg is "(EGF_EGFR*)2_GAP_Grb2_Sos deg";
+  _EGF_EGFRi__2_GAP_Grb2_Sos_deg is "(EGF_EGFRi*)2_GAP_Grb2_Sos deg";
+  ERKi_MEKi_PP_0 is "ERKi_MEKi_PP";
+  _EGF_EGFR__2_GAP_SHC__Grb2_Prot_0 is "(EGF_EGFR*)2_GAP_SHC*_Grb2_Prot";
+  _EGF_EGFR__2_GAP_SHC__Grb2_Sos_Prot_0 is "(EGF_EGFR*)2_GAP_SHC*_Grb2_Sos_Prot";
+  _EGF_EGFR__2_GAP_SHC__Grb2_Sos_Ras_GDP_Prot_0 is "(EGF_EGFR*)2_GAP_SHC*_Grb2_Sos_Ras_GDP_Prot";
+  _EGF_EGFR__2_GAP_SHC__Grb2_Sos_Ras_GTP_Prot_0 is "(EGF_EGFR*)2_GAP_SHC*_Grb2_Sos_Ras_GTP_Prot";
+
+  // CV terms:
+  EGF hypernym "http://identifiers.org/uniprot/P01133"
+  EGFR hypernym "http://identifiers.org/uniprot/P00533"
+  EGF_EGFR part "http://identifiers.org/uniprot/P00533"
+  EGF_EGFR part "http://identifiers.org/uniprot/P01133"
+  _EGF_EGFR_2 part "http://identifiers.org/uniprot/P01133"
+  _EGF_EGFR_2 part "http://identifiers.org/uniprot/P00533"
+  _EGF_EGFR__2 part "http://identifiers.org/uniprot/P01133"
+  _EGF_EGFR__2 part "http://identifiers.org/uniprot/P00533"
+  EGFRi hypernym "http://identifiers.org/uniprot/P00533"
+  _EGF_EGFR__2_GAP_Grb2_Prot hypernym "http://identifiers.org/go/GO:0070436"
+  _EGF_EGFRi__2 part "http://identifiers.org/uniprot/P01133"
+  _EGF_EGFRi__2 part "http://identifiers.org/uniprot/P00533"
+  Proti hypernym "http://identifiers.org/uniprot/P24394"
+  EGF_EGFRi part "http://identifiers.org/uniprot/P00533"
+  EGF_EGFRi part "http://identifiers.org/uniprot/P01133"
+  _EGF_EGFRi_2 part "http://identifiers.org/uniprot/P00533"
+  _EGF_EGFRi_2 part "http://identifiers.org/uniprot/P01133"
+  Prot hypernym "http://identifiers.org/uniprot/P24394"
+  EGFideg hypernym "http://identifiers.org/uniprot/P01133"
+  GAP hypernym "http://identifiers.org/uniprot/P20936"
+  _EGF_EGFR__2_GAP part "http://identifiers.org/uniprot/P01133"
+  _EGF_EGFR__2_GAP part "http://identifiers.org/uniprot/P00533"
+  _EGF_EGFR__2_GAP part "http://identifiers.org/uniprot/P20936"
+  EGFi hypernym "http://identifiers.org/uniprot/P01133"
+  _EGF_EGFRi__2_GAP part "http://identifiers.org/uniprot/P01133"
+  _EGF_EGFRi__2_GAP part "http://identifiers.org/uniprot/P00533"
+  _EGF_EGFRi__2_GAP part "http://identifiers.org/uniprot/P20936"
+  _EGF_EGFRi__2_GAP_Grb2 hypernym "http://identifiers.org/go/GO:0070436"
+  _EGF_EGFRi__2_GAP_Grb2_Sos hypernym "http://identifiers.org/go/GO:0070620"
+  _EGF_EGFRi__2_GAP_Grb2_Sos_Ras_GDP part "http://identifiers.org/uniprot/P60953"
+  _EGF_EGFRi__2_GAP_Grb2_Sos_Ras_GDP part "http://identifiers.org/go/GO:0070620"
+  _EGF_EGFRi__2_GAP_Grb2_Sos_Ras_GDP part "http://identifiers.org/uniprot/P01116"
+  _EGF_EGFRi__2_GAP_Grb2_Sos_Ras_GTP part "http://identifiers.org/go/GO:0070620"
+  _EGF_EGFRi__2_GAP_Grb2_Sos_Ras_GTP part "http://identifiers.org/uniprot/P60953"
+  _EGF_EGFRi__2_GAP_Grb2_Sos_Ras_GTP part "http://identifiers.org/uniprot/P01116"
+  Grb2 hypernym "http://identifiers.org/uniprot/P62993"
+  _EGF_EGFR__2_GAP_Grb2 hypernym "http://identifiers.org/go/GO:0070436"
+  Sos hypernym "http://identifiers.org/uniprot/Q07889"
+  _EGF_EGFR__2_GAP_Grb2_Sos hypernym "http://identifiers.org/go/GO:0070620"
+  Ras_GDP part "http://identifiers.org/uniprot/P01116"
+  Ras_GDP part "http://identifiers.org/uniprot/P60953"
+  _EGF_EGFR__2_GAP_Grb2_Sos_Ras_GDP part "http://identifiers.org/uniprot/P01116"
+  _EGF_EGFR__2_GAP_Grb2_Sos_Ras_GDP part "http://identifiers.org/go/GO:0070620"
+  _EGF_EGFR__2_GAP_Grb2_Sos_Ras_GDP part "http://identifiers.org/uniprot/P60953"
+  Ras_GTP part "http://identifiers.org/uniprot/P01116"
+  Ras_GTP part "http://identifiers.org/uniprot/P60953"
+  _EGF_EGFR__2_GAP_Grb2_Sos_Ras_GTP part "http://identifiers.org/uniprot/P01116"
+  _EGF_EGFR__2_GAP_Grb2_Sos_Ras_GTP part "http://identifiers.org/go/G0:0070620"
+  _EGF_EGFR__2_GAP_Grb2_Sos_Ras_GTP part "http://identifiers.org/uniprot/P60953"
+  Grb2_Sos part "http://identifiers.org/uniprot/P62993"
+  Grb2_Sos part "http://identifiers.org/uniprot/Q07889"
+  Shc hypernym "http://identifiers.org/uniprot/P29353"
+  _EGF_EGFR__2_GAP_SHC hypernym "http://identifiers.org/go/GO:0070435"
+  _EGF_EGFR__2_GAP_SHC_0 hypernym "http://identifiers.org/go/GO:0070435"
+  _EGF_EGFR__2_GAP_SHC__Grb2 part "http://identifiers.org/go/GO:0070435"
+  _EGF_EGFR__2_GAP_SHC__Grb2 part "http://identifiers.org/uniprot/P62993"
+  _EGF_EGFR__2_GAP_SHC__Grb2_Sos part "http://identifiers.org/go/GO:0070621"
+  _EGF_EGFR__2_GAP_SHC__Grb2_Sos_Ras_GDP part "http://identifiers.org/go/GO:0070621"
+  _EGF_EGFR__2_GAP_SHC__Grb2_Sos_Ras_GDP part "http://identifiers.org/uniprot/P01116"
+  _EGF_EGFR__2_GAP_SHC__Grb2_Sos_Ras_GDP part "http://identifiers.org/uniprot/P60953"
+  _EGF_EGFR__2_GAP_SHC__Grb2_Sos_Ras_GTP part "http://identifiers.org/go/GO:0070621"
+  _EGF_EGFR__2_GAP_SHC__Grb2_Sos_Ras_GTP part "http://identifiers.org/uniprot/P60953"
+  _EGF_EGFR__2_GAP_SHC__Grb2_Sos_Ras_GTP part "http://identifiers.org/uniprot/P01116"
+  Shc__Grb2_Sos part "http://identifiers.org/uniprot/P62993"
+  Shc__Grb2_Sos part "http://identifiers.org/uniprot/Q07889"
+  Shc__Grb2_Sos part "http://identifiers.org/uniprot/P29353"
+  Shc__Grb2 part "http://identifiers.org/uniprot/P62993"
+  Shc__Grb2 part "http://identifiers.org/uniprot/P29353"
+  Shc_0 hypernym "http://identifiers.org/uniprot/P29353"
+  Raf hypernym "http://identifiers.org/uniprot/P04049"
+  Raf_Ras_GTP part "http://identifiers.org/uniprot/P04049"
+  Raf_Ras_GTP part "http://identifiers.org/uniprot/P60953"
+  Raf_Ras_GTP part "http://identifiers.org/uniprot/P01116"
+  Ras_GTP_ part "http://identifiers.org/uniprot/P01116"
+  Ras_GTP_ part "http://identifiers.org/uniprot/P60953"
+  Phosphatase1 hypernym "http://identifiers.org/uniprot/P51452"
+  Raf_0 hypernym "http://identifiers.org/uniprot/P04049"
+  Raf__phosphatase1 part "http://identifiers.org/uniprot/P51452"
+  Raf__phosphatase1 part "http://identifiers.org/uniprot/P04049"
+  MEK hypernym "http://identifiers.org/uniprot/Q02750"
+  MEK_Raf part "http://identifiers.org/uniprot/P04049"
+  MEK_Raf part "http://identifiers.org/uniprot/Q02750"
+  MEK_P part "http://identifiers.org/uniprot/Q02750"
+  MEK_P part "http://identifiers.org/kegg.compound/C00562"
+  MEK_P_Raf part "http://identifiers.org/uniprot/P04049"
+  MEK_P_Raf part "http://identifiers.org/uniprot/Q02750"
+  MEK_P_Raf part "http://identifiers.org/kegg.compound/C00562"
+  MEK_PP part "http://identifiers.org/uniprot/Q02750"
+  MEK_PP part "http://identifiers.org/kegg.compound/C00562"
+  MEK_PP_phosphatase2 part "http://identifiers.org/uniprot/Q02750"
+  MEK_PP_phosphatase2 part "http://identifiers.org/uniprot/P51452"
+  MEK_PP_phosphatase2 part "http://identifiers.org/kegg.compound/C00562"
+  phosphatse2 hypernym "http://identifiers.org/uniprot/P51452"
+  MEK_P_phosphatase2 part "http://identifiers.org/kegg.compound/C00562"
+  MEK_P_phosphatase2 part "http://identifiers.org/uniprot/Q02750"
+  MEK_P_phosphatase2 part "http://identifiers.org/uniprot/P51452"
+  ERK hypernym "http://identifiers.org/uniprot/P28482"
+  ERK_MEK_PP part "http://identifiers.org/uniprot/P28482"
+  ERK_MEK_PP part "http://identifiers.org/uniprot/Q02750"
+  ERK_MEK_PP part "http://identifiers.org/kegg.compound/C00562"
+  ERK_P part "http://identifiers.org/kegg.compound/C00562"
+  ERK_P part "http://identifiers.org/uniprot/P28482"
+  ERK_P_MEKPP part "http://identifiers.org/uniprot/Q02750"
+  ERK_P_MEKPP part "http://identifiers.org/uniprot/P28482"
+  ERK_P_MEKPP part "http://identifiers.org/kegg.compound/C00562"
+  ERK_PP part "http://identifiers.org/kegg.compound/C00562"
+  ERK_PP part "http://identifiers.org/uniprot/P28482"
+  phosphatase3 hypernym "http://identifiers.org/uniprot/P51452"
+  ERK_PP_phosphatase3 part "http://identifiers.org/kegg.compound/C00562"
+  ERK_PP_phosphatase3 part "http://identifiers.org/uniprot/P28482"
+  ERK_PP_phosphatase3 part "http://identifiers.org/uniprot/P51452"
+  ERK_P_phosphatase3 part "http://identifiers.org/kegg.compound/C00562"
+  ERK_P_phosphatase3 part "http://identifiers.org/uniprot/P51452"
+  ERK_P_phosphatase3 part "http://identifiers.org/uniprot/P28482"
+  _EGF_EGFRi__2_GAP_SHC hypernym "http://identifiers.org/go/GO:0070435"
+  _EGF_EGFRi__2_GAP_SHC_0 hypernym "http://identifiers.org/go/GO:0070435"
+  _EGF_EGFRi__2_GAP_SHC__Grb2 part "http://identifiers.org/uniprot/P62993"
+  _EGF_EGFRi__2_GAP_SHC__Grb2 part "http://identifiers.org/go/GO:0070435"
+  _EGF_EGFRi__2_GAP_SHC__Grb2_Sos part "http://identifiers.org/go/GO:0070621"
+  _EGF_EGFRi__2_GAP_SHC__Grb2_Sos_Ras_GDP part "http://identifiers.org/uniprot/P01116"
+  _EGF_EGFRi__2_GAP_SHC__Grb2_Sos_Ras_GDP part "http://identifiers.org/uniprot/P60953"
+  _EGF_EGFRi__2_GAP_SHC__Grb2_Sos_Ras_GDP part "http://identifiers.org/go/GO:0070621"
+  _EGF_EGFRi__2_GAP_SHC__Grb2_Sos_Ras_GTP part "http://identifiers.org/uniprot/P60953"
+  _EGF_EGFRi__2_GAP_SHC__Grb2_Sos_Ras_GTP part "http://identifiers.org/uniprot/P01116"
+  _EGF_EGFRi__2_GAP_SHC__Grb2_Sos_Ras_GTP part "http://identifiers.org/go/GO:0070621"
+  Ras_GTPi part "http://identifiers.org/uniprot/P01116"
+  Ras_GTPi part "http://identifiers.org/uniprot/P60953"
+  Raf_Ras_GTPi part "http://identifiers.org/uniprot/P60953"
+  Raf_Ras_GTPi part "http://identifiers.org/uniprot/P01116"
+  Raf_Ras_GTPi part "http://identifiers.org/uniprot/P04049"
+  Ras_GTPi_0 part "http://identifiers.org/uniprot/P01116"
+  Ras_GTPi_0 part "http://identifiers.org/uniprot/P60953"
+  Rafi hypernym "http://identifiers.org/uniprot/P04049"
+  Rafi__phosphatase1 part "http://identifiers.org/uniprot/P04049"
+  Rafi__phosphatase1 part "http://identifiers.org/uniprot/P51452"
+  MEK_Rafi part "http://identifiers.org/uniprot/P04049"
+  MEK_Rafi part "http://identifiers.org/uniprot/Q02750"
+  MEKi_P part "http://identifiers.org/uniprot/Q02750"
+  MEKi_P part "http://identifiers.org/kegg.compound/C00562"
+  MEK_P_Rafi part "http://identifiers.org/uniprot/Q02750"
+  MEK_P_Rafi part "http://identifiers.org/kegg.compound/C00562"
+  MEK_P_Rafi part "http://identifiers.org/uniprot/P04049"
+  MEKi_PP part "http://identifiers.org/kegg.compound/C00562"
+  MEKi_PP part "http://identifiers.org/uniprot/Q02750"
+  MEKi_PP_phosphatase2 part "http://identifiers.org/uniprot/P51452"
+  MEKi_PP_phosphatase2 part "http://identifiers.org/kegg.compound/C00562"
+  MEKi_PP_phosphatase2 part "http://identifiers.org/uniprot/Q02750"
+  MEKi_P_phosphatase2 part "http://identifiers.org/uniprot/P51452"
+  MEKi_P_phosphatase2 part "http://identifiers.org/kegg.compound/C00562"
+  MEKi_P_phosphatase2 part "http://identifiers.org/uniprot/Q02750"
+  ERKi_P part "http://identifiers.org/uniprot/P28482"
+  ERKi_P part "http://identifiers.org/kegg.compound/C00562"
+  ERKi_P_MEKi_PP part "http://identifiers.org/uniprot/P28482"
+  ERKi_P_MEKi_PP part "http://identifiers.org/uniprot/Q02750"
+  ERKi_P_MEKi_PP part "http://identifiers.org/kegg.compound/C00562"
+  ERKi_PP part "http://identifiers.org/kegg.compound/C00562"
+  ERKi_PP part "http://identifiers.org/uniprot/P28482"
+  ERKi_PP_phosphatase3 part "http://identifiers.org/uniprot/P51452"
+  ERKi_PP_phosphatase3 part "http://identifiers.org/kegg.compound/C00562"
+  ERKi_PP_phosphatase3 part "http://identifiers.org/uniprot/P28482"
+  ERKi_P_phosphatase3 part "http://identifiers.org/uniprot/P28482"
+  ERKi_P_phosphatase3 part "http://identifiers.org/uniprot/P51452"
+  ERKi_P_phosphatase3 part "http://identifiers.org/kegg.compound/C00562"
+  EGFRidag hypernym "http://identifiers.org/uniprot/P00533"
+  _EGF_EGFRi___2deg part "http://identifiers.org/uniprot/P00533"
+  _EGF_EGFRi___2deg part "http://identifiers.org/uniprot/P01133"
+  _EGF_EGFR__2_GAP_Grb2_Sos_Prot part "http://identifiers.org/go/G0:0070620"
+  _EGF_EGFR__2_GAP_Grb2_Sos_Prot part "http://identifiers.org/uniprot/P24394"
+  _EGF_EGFR__2_GAP_Grb2_Sos_Ras_GDP_Prot part "http://identifiers.org/go/G0:0070620"
+  _EGF_EGFR__2_GAP_Grb2_Sos_Ras_GDP_Prot part "http://identifiers.org/uniprot/P01116"
+  _EGF_EGFR__2_GAP_Grb2_Sos_Ras_GDP_Prot part "http://identifiers.org/uniprot/P60953"
+  _EGF_EGFR__2_GAP_Grb2_Sos_Ras_GDP_Prot part "http://identifiers.org/uniprot/P24394"
+  _EGF_EGFR__2_GAP_Grb2_Sos_Ras_GTP_Prot part "http://identifiers.org/uniprot/P60953"
+  _EGF_EGFR__2_GAP_Grb2_Sos_Ras_GTP_Prot part "http://identifiers.org/uniprot/P01116"
+  _EGF_EGFR__2_GAP_Grb2_Sos_Ras_GTP_Prot part "http://identifiers.org/uniprot/P24394"
+  _EGF_EGFR__2_GAP_Grb2_Sos_Ras_GTP_Prot part "http://identifiers.org/go/G0:0070620"
+  _EGF_EGFR__2_GAP_Grb2_Sos_ERK_PP part "http://identifiers.org/uniprot/P28482"
+  _EGF_EGFR__2_GAP_Grb2_Sos_ERK_PP part "http://identifiers.org/kegg.compound/C00562"
+  _EGF_EGFR__2_GAP_Grb2_Sos_ERK_PP part "http://identifiers.org/go/GO:0070620"
+  _EGF_EGFRi__2_GAP_Grb2_Sos_ERKi_PP part "http://identifiers.org/kegg.compound/C00562"
+  _EGF_EGFRi__2_GAP_Grb2_Sos_ERKi_PP part "http://identifiers.org/go/GO:0070620"
+  _EGF_EGFRi__2_GAP_Grb2_Sos_ERKi_PP part "http://identifiers.org/uniprot/P28482"
+  _EGF_EGFR__2_GAP_SHC__Grb2_Sos_ERK_PP part "http://identifiers.org/go/GO:0070621"
+  _EGF_EGFR__2_GAP_SHC__Grb2_Sos_ERK_PP part "http://identifiers.org/uniprot/P28482"
+  _EGF_EGFR__2_GAP_SHC__Grb2_Sos_ERK_PP part "http://identifiers.org/kegg.compound/C00562"
+  _EGF_EGFRi__2_GAP_SHC__Grb2_Sos_ERKi_PP part "http://identifiers.org/go/GO:0070621"
+  _EGF_EGFRi__2_GAP_SHC__Grb2_Sos_ERKi_PP part "http://identifiers.org/uniprot/P28482"
+  _EGF_EGFRi__2_GAP_SHC__Grb2_Sos_ERKi_PP part "http://identifiers.org/kegg.compound/C00562"
+  _EGF_EGFR__2_GAP_Grb2_Sos_deg hypernym "http://identifiers.org/go/GO:0070620"
+  _EGF_EGFRi__2_GAP_Grb2_Sos_deg hypernym "http://identifiers.org/go/GO:0070620"
+  Sos_ERK_PP part "http://identifiers.org/uniprot/P28482"
+  Sos_ERK_PP part "http://identifiers.org/kegg.compound/C00562"
+  Sos_ERK_PP part "http://identifiers.org/uniprot/Q07889"
+  Sos_ERKi_PP part "http://identifiers.org/uniprot/Q07889"
+  Sos_ERKi_PP part "http://identifiers.org/uniprot/P28482"
+  Sos_ERKi_PP part "http://identifiers.org/kegg.compound/C00562"
+  Sosi hypernym "http://identifiers.org/uniprot/Q07889"
+  ERKi_MEKi_PP_0 part "http://identifiers.org/uniprot/Q02750"
+  ERKi_MEKi_PP_0 part "http://identifiers.org/uniprot/P28482"
+  ERKi_MEKi_PP_0 part "http://identifiers.org/kegg.compound/C00562"
+  _EGF_EGFR__2_GAP_SHC__Grb2_Prot_0 part "http://identifiers.org/uniprot/P24394"
+  _EGF_EGFR__2_GAP_SHC__Grb2_Prot_0 part "http://identifiers.org/go/GO:0070435"
+  _EGF_EGFR__2_GAP_SHC__Grb2_Prot_0 part "http://identifiers.org/uniprot/P62993"
+  _EGF_EGFR__2_GAP_SHC__Grb2_Sos_Prot_0 part "http://identifiers.org/uniprot/P24394"
+  _EGF_EGFR__2_GAP_SHC__Grb2_Sos_Prot_0 part "http://identifiers.org/go/GO:0070621"
+  _EGF_EGFR__2_GAP_SHC__Grb2_Sos_Ras_GDP_Prot_0 part "http://identifiers.org/uniprot/P60953"
+  _EGF_EGFR__2_GAP_SHC__Grb2_Sos_Ras_GDP_Prot_0 part "http://identifiers.org/uniprot/P01116"
+  _EGF_EGFR__2_GAP_SHC__Grb2_Sos_Ras_GDP_Prot_0 part "http://identifiers.org/go/GO:0070621"
+  _EGF_EGFR__2_GAP_SHC__Grb2_Sos_Ras_GDP_Prot_0 part "http://identifiers.org/uniprot/P24394"
+  _EGF_EGFR__2_GAP_SHC__Grb2_Sos_Ras_GTP_Prot_0 part "http://identifiers.org/go/GO:0070621"
+  _EGF_EGFR__2_GAP_SHC__Grb2_Sos_Ras_GTP_Prot_0 part "http://identifiers.org/uniprot/P24394"
+  _EGF_EGFR__2_GAP_SHC__Grb2_Sos_Ras_GTP_Prot_0 part "http://identifiers.org/uniprot/P01116"
+  _EGF_EGFR__2_GAP_SHC__Grb2_Sos_Ras_GTP_Prot_0 part "http://identifiers.org/uniprot/P60953"
+  v1 hypernym "http://identifiers.org/go/GO:0005515"
+  v2 hypernym "http://identifiers.org/go/GO:0046983"
+  v4 hypernym "http://identifiers.org/go/GO:0006897"
+  v5 hypernym "http://identifiers.org/go/GO:0006897"
+  v6 hypernym "http://identifiers.org/go/GO:0006897"
+  v7 hypernym "http://identifiers.org/go/GO:0006897"
+  v8 hypernym "http://identifiers.org/go/GO:0043087"
+  v9 hypernym "http://identifiers.org/go/GO:0043087"
+  v10 hypernym "http://identifiers.org/go/GO:0005515"
+  v11 hypernym "http://identifiers.org/go/GO:0046983"
+  v13 hypernym "http://identifiers.org/go/GO:0045727"
+  v14 hypernym "http://identifiers.org/go/GO:0043087"
+  v15 hypernym "http://identifiers.org/go/GO:0006897"
+  v16 hypernym "http://identifiers.org/go/GO:0045184"
+  v17 hypernym "http://identifiers.org/go/GO:0045184"
+  v18 hypernym "http://identifiers.org/go/GO:0090630"
+  v19 hypernym "http://identifiers.org/go/GO:0090630"
+  v20 hypernym "http://identifiers.org/go/GO:0043087"
+  v21 hypernym "http://identifiers.org/go/GO:0043087"
+  v22 hypernym "http://identifiers.org/go/GO:0045184"
+  v23 hypernym "http://identifiers.org/go/GO:0045184"
+  v24 hypernym "http://identifiers.org/go/GO:0045184"
+  v25 hypernym "http://identifiers.org/go/GO:0045184"
+  v26 hypernym "http://identifiers.org/go/GO:0090630"
+  v27 hypernym "http://identifiers.org/go/GO:0090630"
+  v28 hypernym "http://identifiers.org/go/GO:0000185"
+  v29 hypernym "http://identifiers.org/go/GO:0000185"
+  v30 hypernym "http://identifiers.org/go/GO:0043087"
+  v31 hypernym "http://identifiers.org/go/GO:0043087"
+  v32 hypernym "http://identifiers.org/go/GO:0045184"
+  v33 hypernym "http://identifiers.org/go/"
+  v34 hypernym "http://identifiers.org/go/GO:0045184"
+  v35 hypernym "http://identifiers.org/go/GO:0045184"
+  v36 hypernym "http://identifiers.org/go/GO:0045184"
+  v37 hypernym "http://identifiers.org/go/GO:0045184"
+  v38 hypernym "http://identifiers.org/go/GO:0045184"
+  v39 hypernym "http://identifiers.org/go/GO:0045184"
+  v40 hypernym "http://identifiers.org/go/GO:0045184"
+  v41 hypernym "http://identifiers.org/go/GO:0045184"
+  v42 hypernym "http://identifiers.org/go/GO:0016311"
+  v43 hypernym "http://identifiers.org/go/GO:0016311"
+  v44 hypernym "http://identifiers.org/go/GO:0016310"
+  v45 hypernym "http://identifiers.org/go/GO:0016310"
+  v46 hypernym "http://identifiers.org/go/GO:0016310"
+  v47 hypernym "http://identifiers.org/go/GO:0016310"
+  v48 hypernym "http://identifiers.org/go/GO:0016311"
+  v49 hypernym "http://identifiers.org/go/GO:0016311"
+  v50 hypernym "http://identifiers.org/go/GO:0016311"
+  v51 hypernym "http://identifiers.org/go/GO:0016311"
+  v52 hypernym "http://identifiers.org/go/GO:0016310"
+  v53 identity "http://identifiers.org/ec-code/2.7.12.2"
+  v53 hypernym "http://identifiers.org/go/GO:0004708"
+  v53 hypernym "http://identifiers.org/go/GO:0000187"
+  v54 hypernym "http://identifiers.org/go/GO:0016310"
+  v55 identity "http://identifiers.org/ec-code/2.7.12.2"
+  v55 hypernym "http://identifiers.org/go/GO:0000187"
+  v55 hypernym "http://identifiers.org/go/GO:0004708"
+  v56 hypernym "http://identifiers.org/go/GO:0016311"
+  v57 hypernym "http://identifiers.org/go/GO:0016311"
+  v58 hypernym "http://identifiers.org/go/GO:0016311"
+  v59 hypernym "http://identifiers.org/go/GO:0016311"
+  v60 hypernym "http://identifiers.org/go/GO:0030163"
+  v61 hypernym "http://identifiers.org/go/GO:0030163"
+  v62 hypernym "http://identifiers.org/go/GO:0030163"
+  v63 hypernym "http://identifiers.org/go/GO:0045184"
+  v64 hypernym "http://identifiers.org/go/GO:0045184"
+  v65 hypernym "http://identifiers.org/go/GO:0090630"
+  v66 hypernym "http://identifiers.org/go/GO:0090630"
+  v67 hypernym "http://identifiers.org/go/GO:0043087"
+  v68 hypernym "http://identifiers.org/go/GO:0043087"
+  v69 hypernym "http://identifiers.org/go/GO:0045184"
+  v70 hypernym "http://identifiers.org/go/GO:0045184"
+  v71 hypernym "http://identifiers.org/go/GO:0045184"
+  v72 hypernym "http://identifiers.org/go/GO:0045184"
+  v73 hypernym "http://identifiers.org/go/GO:0090630"
+  v74 hypernym "http://identifiers.org/go/GO:0090630"
+  v75 hypernym "http://identifiers.org/go/GO:0000185"
+  v76 hypernym "http://identifiers.org/go/GO:0000185"
+  v77 hypernym "http://identifiers.org/go/GO:0043087"
+  v78 hypernym "http://identifiers.org/go/GO:0043087"
+  v79 hypernym "http://identifiers.org/go/GO:0045184"
+  v80 hypernym "http://identifiers.org/go/GO:0045184"
+  v81 hypernym "http://identifiers.org/go/GO:0045184"
+  v82 hypernym "http://identifiers.org/go/GO:0045184"
+  v83 hypernym "http://identifiers.org/go/GO:0045184"
+  v84 hypernym "http://identifiers.org/go/GO:0016311"
+  v85 hypernym "http://identifiers.org/go/GO:0016311"
+  v86 hypernym "http://identifiers.org/go/GO:0016310"
+  v87 identity "http://identifiers.org/ec-code/2.7.11.1"
+  v87 hypernym "http://identifiers.org/go/GO:0004709"
+  v87 hypernym "http://identifiers.org/go/GO:0000186"
+  v88 hypernym "http://identifiers.org/go/GO:0016310"
+  v89 hypernym "http://identifiers.org/go/GO:0016310"
+  v90 hypernym "http://identifiers.org/go/GO:0016311"
+  v91 hypernym "http://identifiers.org/go/GO:0016311"
+  v92 hypernym "http://identifiers.org/go/GO:0016311"
+  v93 hypernym "http://identifiers.org/go/GO:0016311"
+  v94 hypernym "http://identifiers.org/go/GO:0016310"
+  v95 hypernym "http://identifiers.org/go/GO:0016310"
+  v96 hypernym "http://identifiers.org/go/GO:0016310"
+  v97 hypernym "http://identifiers.org/go/GO:0016310"
+  v98 hypernym "http://identifiers.org/go/GO:0016311"
+  v99 hypernym "http://identifiers.org/go/GO:0016311"
+  v100 hypernym "http://identifiers.org/go/GO:0016311"
+  v101 hypernym "http://identifiers.org/go/GO:0016311"
+  v102 hypernym "http://identifiers.org/go/GO:0006897"
+  v103 hypernym "http://identifiers.org/go/GO:0006897"
+  v104 hypernym "http://identifiers.org/go/GO:0006897"
+  v105 hypernym "http://identifiers.org/go/GO:0006897"
+  v106 hypernym "http://identifiers.org/go/GO:0006897"
+  v107 hypernym "http://identifiers.org/go/GO:0006897"
+  v108 hypernym "http://identifiers.org/go/GO:0006897"
+  v109 hypernym "http://identifiers.org/go/GO:0006897"
+  v110 hypernym "http://identifiers.org/go/GO:0006897"
+  v111 hypernym "http://identifiers.org/go/GO:0006897"
+  v112 hypernym "http://identifiers.org/go/GO:0006897"
+  v113 hypernym "http://identifiers.org/go/GO:0006897"
+  v114 hypernym "http://identifiers.org/go/GO:0006897"
+  v115 hypernym "http://identifiers.org/go/GO:0006897"
+  v116 hypernym "http://identifiers.org/go/GO:0006897"
+  v117 hypernym "http://identifiers.org/go/GO:0006897"
+  v118 hypernym "http://identifiers.org/go/GO:0006897"
+  v119 hypernym "http://identifiers.org/go/GO:0006897"
+  v120 hypernym "http://identifiers.org/go/GO:0006897"
+  v121 hypernym "http://identifiers.org/go/GO:0006897"
+  v122 hypernym "http://identifiers.org/go/GO:0006897"
+  v123 hypernym "http://identifiers.org/go/GO:0006897"
+  v124 hypernym "http://identifiers.org/go/GO:0006897"
+  v125 hypernym "http://identifiers.org/go/GO:0006897"
+  v126 hypernym "http://identifiers.org/go/GO:0005515"
+  v127 hypernym "http://identifiers.org/go/GO:0005515"
+  v128 hypernym "http://identifiers.org/go/GO:0005515"
+  v129 hypernym "http://identifiers.org/go/GO:0005515"
+  v130 hypernym "http://identifiers.org/go/GO:0005515"
+  v131 hypernym "http://identifiers.org/go/GO:0005515"
+  v132 hypernym "http://identifiers.org/go/GO:0030163"
+  v133 hypernym "http://identifiers.org/go/GO:0030163"
+  v134 hypernym "http://identifiers.org/go/GO:0030163"
+  v135 hypernym "http://identifiers.org/go/GO:0030163"
+  v136 hypernym "http://identifiers.org/go/GO:0030163"
+  v137 hypernym "http://identifiers.org/go/GO:0030163"
+  v138 hypernym "http://identifiers.org/go/GO:0030163"
+  v139 hypernym "http://identifiers.org/go/GO:0030163"
+  v140 hypernym "http://identifiers.org/go/GO:0030163"
+  v141 hypernym "http://identifiers.org/go/GO:0030163"
+  v142 hypernym "http://identifiers.org/go/GO:0030163"
+  v143 hypernym "http://identifiers.org/go/GO:0030163"
+  v143 hypernym "http://identifiers.org/go/GO:0043624"
+  v144 hypernym "http://identifiers.org/go/GO:0030163"
+  v144 hypernym "http://identifiers.org/go/GO:0045727"
+  v145 hypernym "http://identifiers.org/go/GO:0043624"
+  v146 hypernym "http://identifiers.org/go/GO:0043624"
+  v146 hypernym "http://identifiers.org/go/GO:0030163"
+  v147 hypernym "http://identifiers.org/go/GO:0043624"
+  v147 hypernym "http://identifiers.org/go/GO:0030163"
+  v148 hypernym "http://identifiers.org/go/GO:0043624"
+end
+
+Hornberg2005_MAPKsignalling is "Hornberg2005 - MAPKsignalling"
+
+Hornberg2005_MAPKsignalling model_entity_is "http://identifiers.org/biomodels.db/MODEL0848279215"
+Hornberg2005_MAPKsignalling description "http://identifiers.org/pubmed/16007170"
+Hornberg2005_MAPKsignalling model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000667"
+Hornberg2005_MAPKsignalling hypernym "http://identifiers.org/go/GO:0043408"
+Hornberg2005_MAPKsignalling description "http://identifiers.org/pubmed/16007170"

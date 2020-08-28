@@ -1,0 +1,123 @@
+// Created by libAntimony v2.13.0
+model *MODEL1509230011()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species $X1 in compartment_, APAP in compartment_, NAPQI in compartment_;
+  species GSH in compartment_, NAPQIGSH in compartment_, APAPconj_Glu in compartment_;
+  species APAPconj_Sul in compartment_;
+
+  // Reactions:
+  J0: APAP => NAPQI; Vmax_2E1_APAP*APAP/(Km_2E1_APAP + APAP);
+  J1: GSH + NAPQI => NAPQIGSH; kNapqiGsh*NAPQI*GSH*compartment_*compartment_;
+  J2: $X1 => GSH; kGsh*(GSHmax - GSH)*compartment_;
+  J3: APAP => APAPconj_Glu; Vmax_PhaseIIEnzGlu_APAP*APAP/(Km_PhaseIIEnzGlu_APAP + APAP);
+  J4: APAP => APAPconj_Sul; Vmax_PhaseIIEnzSul_APAP*APAP/(Km_PhaseIIEnzSul_APAP + APAP);
+
+  // Species initializations:
+  X1 = 0;
+  X1 has millimolar;
+  APAP = 0.1;
+  APAP has millimolar;
+  NAPQI = 0;
+  NAPQI has millimolar;
+  GSH = 10;
+  GSH has millimolar;
+  NAPQIGSH = 0;
+  NAPQIGSH has millimolar;
+  APAPconj_Glu = 0;
+  APAPconj_Glu has millimolar;
+  APAPconj_Sul = 0;
+  APAPconj_Sul has millimolar;
+
+  // Compartment initializations:
+  compartment_ = 1;
+  compartment_ has litre;
+
+  // Variable initializations:
+  Vmax_2E1_APAP = 2e-05;
+  Vmax_2E1_APAP has flux;
+  Km_2E1_APAP = 1.29;
+  Km_2E1_APAP has millimolar;
+  kNapqiGsh = 0.1;
+  kNapqiGsh has second_order_rate_constant;
+  kGsh = 0.0001;
+  kGsh has first_order_rate_constant;
+  GSHmax = 10;
+  GSHmax has millimolar;
+  Vmax_PhaseIIEnzGlu_APAP = 0.001;
+  Vmax_PhaseIIEnzGlu_APAP has flux;
+  Km_PhaseIIEnzGlu_APAP = 1;
+  Km_PhaseIIEnzGlu_APAP has millimolar;
+  Vmax_PhaseIIEnzSul_APAP = 0.000175;
+  Vmax_PhaseIIEnzSul_APAP has flux;
+  Km_PhaseIIEnzSul_APAP = 0.2;
+  Km_PhaseIIEnzSul_APAP has millimolar;
+
+  // Other declarations:
+  const compartment_, Vmax_2E1_APAP, Km_2E1_APAP, kNapqiGsh, kGsh, GSHmax;
+  const Vmax_PhaseIIEnzGlu_APAP, Km_PhaseIIEnzGlu_APAP, Vmax_PhaseIIEnzSul_APAP;
+  const Km_PhaseIIEnzSul_APAP;
+
+  // Unit definitions:
+  unit substance = 1e-3 mole;
+  unit time_unit = second;
+  unit first_order_rate_constant = 1 / second;
+  unit second_order_rate_constant = 1 / (1e-3 mole * second);
+  unit flux = 1e-3 mole / second;
+  unit millimolar = 1e-3 mole / litre;
+
+  // Display Names:
+  substance is "millimole";
+  time_unit is "second";
+  compartment_ is "Hepatocyte";
+
+  // SBO terms:
+  Vmax_2E1_APAP.sboTerm = 186
+  Km_2E1_APAP.sboTerm = 27
+  kNapqiGsh.sboTerm = 17
+  kGsh.sboTerm = 22
+  Vmax_PhaseIIEnzGlu_APAP.sboTerm = 186
+  Km_PhaseIIEnzGlu_APAP.sboTerm = 27
+  Vmax_PhaseIIEnzSul_APAP.sboTerm = 186
+  Km_PhaseIIEnzSul_APAP.sboTerm = 27
+  J0.sboTerm = 201
+  J1.sboTerm = 210
+  J2.sboTerm = 176
+  J3.sboTerm = 210
+  J4.sboTerm = 210
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/obo.FMA/FMA:68646"
+  compartment_ identity "http://identifiers.org/obo.FMA/FMA:14515"
+  compartment_ identity "http://identifiers.org/bto/BTO:0000575"
+  APAP identity "http://identifiers.org/chebi/CHEBI:46195"
+  NAPQI identity "http://identifiers.org/chebi/CHEBI:29132"
+  GSH identity "http://identifiers.org/chebi/CHEBI:16856"
+  NAPQIGSH identity "http://identifiers.org/chebi/CHEBI:32639"
+  APAPconj_Glu identity "http://identifiers.org/chebi/CHEBI:32636"
+  APAPconj_Sul identity "http://identifiers.org/chebi/CHEBI:32635"
+  J0 description "http://identifiers.org/pubmed/19219744"
+  J0 identity "http://identifiers.org/go/GO:0044237"
+  J0 parthood "http://identifiers.org/go/GO:0045333"
+  J0 description "http://identifiers.org/pubmed/6424115"
+  J0 identity "http://identifiers.org/go/GO:0071704"
+  J0 identity "http://identifiers.org/pw/PW:0000375"
+  J0 identity "urn:miriam:sbo:SBO%3A0000199"
+  J1 identity "urn:miriam:sbo:SBO%3A0000053"
+  J2 identity "http://identifiers.org/go/GO:0004363"
+  J3 identity "http://identifiers.org/go/GO:0052697"
+  J3 identity "urn:miriam:sbo:SBO%3A0000199"
+  J4 identity "http://identifiers.org/go/GO:0051923"
+  J4 identity "urn:miriam:sbo:SBO%3A0000029"
+  J4 identity "urn:miriam:sbo:SBO%3A0000199"
+end
+
+MODEL1509230011 is "Sluka2016 - Acetaminophen metabolism"
+
+MODEL1509230011 model_entity_is "http://identifiers.org/biomodels.db/MODEL1509230011"
+MODEL1509230011 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000624"
+MODEL1509230011 description "http://identifiers.org/pubmed/27636091"
+MODEL1509230011 taxon "http://identifiers.org/taxonomy/9606"
+MODEL1509230011 hypernym "http://identifiers.org/go/GO:0042739"
+MODEL1509230011 property "http://identifiers.org/efo/0004228"

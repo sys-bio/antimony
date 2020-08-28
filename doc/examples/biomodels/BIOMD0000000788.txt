@@ -1,0 +1,228 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function Function_for_Disassociation_RC_AB_3_1(RC_AB, k_off_3)
+  k_off_3*RC_AB;
+end
+
+Function_for_Disassociation_RC_AB_3_1 is "Function for Disassociation_RC_AB_3_1"
+
+function Function_for_C_Peripheral_Distribution_1(AP, V, k_21)
+  k_21*(AP/V);
+end
+
+Function_for_C_Peripheral_Distribution_1 is "Function for C Peripheral Distribution_1"
+
+function Function_for_Distribution_AP_Central_1(C_free, V, k_12)
+  k_12*C_free*V;
+end
+
+Function_for_Distribution_AP_Central_1 is "Function for Distribution_AP_Central_1"
+
+function Function_for_Internalisation_RC_A_1(RC_A, k_int_A, k_off_1)
+  (k_off_1 + k_int_A)*RC_A;
+end
+
+Function_for_Internalisation_RC_A_1 is "Function for Internalisation_RC_A_1"
+
+function Function_for_Disassociation_RC_AB_4_1(RC_AB, k_off_4)
+  k_off_4*RC_AB;
+end
+
+Function_for_Disassociation_RC_AB_4_1 is "Function for Disassociation_RC_AB_4_1"
+
+function Function_for_Disassociation_RC_A_1_1(RC_B, k_off_2)
+  k_off_2*RC_B;
+end
+
+Function_for_Disassociation_RC_A_1_1 is "Function for Disassociation_RC_A_1_1"
+
+function Function_for_Internalisation_RC_B_1(RC_B, k_int_B, k_off_2)
+  (k_off_2 + k_int_B)*RC_B;
+end
+
+Function_for_Internalisation_RC_B_1 is "Function for Internalisation_RC_B_1"
+
+function Function_for_Internalisation_RC_AB_1(RC_AB, k_int_AB, k_off_3, k_off_4)
+  (k_off_3 + k_off_4 + k_int_AB)*RC_AB;
+end
+
+Function_for_Internalisation_RC_AB_1 is "Function for Internalisation_RC_AB_1"
+
+function Function_for_Distribution_AP_Central_2(AD, V, k_a)
+  k_a*AD*V;
+end
+
+Function_for_Distribution_AP_Central_2 is "Function for Distribution_AP_Central_2"
+
+function Function_for_Disassociation_RC_A_1(RC_A, k_off_1)
+  k_off_1*RC_A;
+end
+
+Function_for_Disassociation_RC_A_1 is "Function for Disassociation_RC_A_1"
+
+
+model *Schropp2019___Target_Mediated_Drug_Disposition_Model_for_Bispecific_Antibodies()
+
+  // Compartments and Species:
+  compartment Central, Peripheral;
+  species C_free in Central, R_A in Central, R_B in Central, RC_A in Central;
+  species RC_B in Central, RC_AB in Central, AP in Peripheral, AD in Peripheral;
+
+  // Reactions:
+  Binding_C_R_A: C_free + R_A => RC_A; Central*k_on_1*C_free*R_A;
+  Binding_C_R_B: C_free + R_B => RC_B; Central*k_on_2*C_free*R_B;
+  Binding_RC_A_R_B: RC_A + R_B => RC_AB; Central*k_on_3*RC_A*R_B;
+  Binding_RC_B_R_A: RC_B + R_A => RC_AB; Central*k_on_4*RC_B*R_A;
+  Disassociation_RC_A:  => C_free + R_A; Central*Function_for_Disassociation_RC_A_1(RC_A, k_off_1);
+  Disassociation_RC_B:  => C_free + R_B; Central*Function_for_Disassociation_RC_A_1_1(RC_B, k_off_2);
+  Disassociation_RC_AB_3:  => RC_B + R_B; Central*Function_for_Disassociation_RC_AB_3_1(RC_AB, k_off_3);
+  Disassociation_RC_AB_4:  => RC_A + R_A; Central*Function_for_Disassociation_RC_AB_4_1(RC_AB, k_off_4);
+  Elimination_C: C_free => ; Central*k_el*C_free;
+  Distribution_C_Central: C_free => ; Central*k_12*C_free;
+  Distribution_C_Peripheral:  => C_free; Function_for_C_Peripheral_Distribution_1(AP, V, k_21);
+  Distribution_AP_Central:  => AP; Function_for_Distribution_AP_Central_1(C_free, V, k_12);
+  Distribution_AP_Peripheral: AP => ; Peripheral*k_21*AP;
+  Association_AD: AD => ; Peripheral*k_a*AD;
+  Association_AD_C:  => C_free; Function_for_Distribution_AP_Central_2(AD, V, k_a);
+  Synthesis_R_A:  => R_A; Central*Constant_flux__irreversible(k_syn_A);
+  Synthesis_R_B:  => R_B; Central*Constant_flux__irreversible(k_syn_B);
+  Degradation_R_A: R_A => ; Central*k_deg_A*R_A;
+  Degradation_R_B: R_B => ; Central*k_deg_B*R_B;
+  Internalisation_RC_A: RC_A => ; Central*Function_for_Internalisation_RC_A_1(RC_A, k_int_A, k_off_1);
+  Internalisation_RC_B: RC_B => ; Central*Function_for_Internalisation_RC_B_1(RC_B, k_int_B, k_off_2);
+  Internalisation_RC_AB: RC_AB => ; Central*Function_for_Internalisation_RC_AB_1(RC_AB, k_int_AB, k_off_3, k_off_4);
+
+  // Species initializations:
+  C_free = 50;
+  R_A = 10;
+  R_B = 100;
+  RC_A = 0;
+  RC_B = 0;
+  RC_AB = 0;
+  AP = 0;
+  AD = 0;
+
+  // Compartment initializations:
+  Central = 1;
+  Peripheral = 1;
+
+  // Variable initializations:
+  V = 3;
+  V has unit_0;
+  k_a = 0.2;
+  k_a has unit_1;
+  F = 0.75;
+  k_el = 0.1;
+  k_el has unit_1;
+  k_12 = 0.1;
+  k_12 has unit_1;
+  k_21 = 0.03;
+  k_21 has unit_1;
+  k_on_1 = 10;
+  k_on_1 has unit_2;
+  k_off_1 = 0.01;
+  k_off_1 has unit_1;
+  k_on_2 = 1;
+  k_on_2 has unit_2;
+  k_off_2 = 0.01;
+  k_off_2 has unit_1;
+  k_syn_A = 1;
+  k_syn_A has unit_2;
+  k_deg_A = 0.1;
+  k_deg_A has unit_1;
+  k_syn_B = 10;
+  k_syn_B has unit_2;
+  k_deg_B = 0.1;
+  k_deg_B has unit_1;
+  k_int_A = 0.05;
+  k_int_A has unit_1;
+  k_int_B = 0.05;
+  k_int_B has unit_1;
+  k_int_AB = 0.1;
+  k_int_AB has unit_1;
+  k_off_3 = 0.01;
+  k_off_3 has unit_1;
+  k_off_4 = 0.01;
+  k_off_4 has unit_1;
+  k_on_3 = 1;
+  k_on_3 has unit_2;
+  k_on_4 = 10;
+  k_on_4 has unit_2;
+
+  // Other declarations:
+  const Central, Peripheral, V, k_a, F, k_el, k_12, k_21, k_on_1, k_off_1;
+  const k_on_2, k_off_2, k_syn_A, k_deg_A, k_syn_B, k_deg_B, k_int_A, k_int_B;
+  const k_int_AB, k_off_3, k_off_4, k_on_3, k_on_4;
+
+  // Unit definitions:
+  unit time_unit = 86400 second;
+  unit substance = 1e-9 mole;
+  unit unit_0 = litre;
+  unit unit_1 = 1 / 1e-3 second;
+  unit unit_2 = 1e-3 litre / (mole * second);
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "l";
+  unit_1 is "1/ms";
+  unit_2 is "ml/(mol*s)";
+
+  // CV terms:
+  Central hypernym "http://identifiers.org/bto/BTO:0000131"
+  Central hypernym "http://identifiers.org/uberon/UBERON:0000479"
+  Peripheral hypernym "http://identifiers.org/uberon/UBERON:0000479"
+  C_free hypernym "http://identifiers.org/ncit/C28227"
+  R_A hypernym "http://identifiers.org/ncit/C18106"
+  R_B hypernym "http://identifiers.org/ncit/C18106"
+  RC_A part "http://identifiers.org/ncit/C18106"
+  RC_A part "http://identifiers.org/ncit/C28227"
+  RC_A hypernym "http://identifiers.org/sbo/SBO:0000296"
+  RC_B part "http://identifiers.org/ncit/C18106"
+  RC_B part "http://identifiers.org/ncit/C28227"
+  RC_B hypernym "http://identifiers.org/sbo/SBO:0000296"
+  RC_AB part "http://identifiers.org/ncit/C18106"
+  RC_AB part "http://identifiers.org/ncit/C28227"
+  RC_AB hypernym "http://identifiers.org/sbo/SBO:0000296"
+  AP hypernym "http://identifiers.org/ncit/C1454"
+  AP hypernym "http://identifiers.org/ncit/C28227"
+  AP container "http://identifiers.org/bto/BTO:0000553"
+  AD hypernym "http://identifiers.org/ncit/C1454"
+  AD hypernym "http://identifiers.org/ncit/C28227"
+  AD container "http://identifiers.org/ncit/C38299"
+  Binding_C_R_A hypernym "http://identifiers.org/ncit/C40536"
+  Binding_C_R_B hypernym "http://identifiers.org/ncit/C40536"
+  Binding_RC_A_R_B hypernym "http://identifiers.org/ncit/C40536"
+  Binding_RC_B_R_A hypernym "http://identifiers.org/ncit/C40536"
+  Disassociation_RC_A hypernym "http://identifiers.org/sbo/SBO:0000180"
+  Disassociation_RC_B hypernym "http://identifiers.org/sbo/SBO:0000180"
+  Disassociation_RC_AB_3 hypernym "http://identifiers.org/sbo/SBO:0000180"
+  Disassociation_RC_AB_4 hypernym "http://identifiers.org/sbo/SBO:0000180"
+  Elimination_C hypernym "http://identifiers.org/go/GO:0007588"
+  Distribution_C_Central hypernym "http://identifiers.org/go/GO:0008015"
+  Distribution_C_Peripheral hypernym "http://identifiers.org/go/GO:0008015"
+  Distribution_AP_Central hypernym "http://identifiers.org/go/GO:0008015"
+  Distribution_AP_Peripheral hypernym "http://identifiers.org/go/GO:0008015"
+  Association_AD hypernym "http://identifiers.org/psimi/MI:0914"
+  Association_AD_C hypernym "http://identifiers.org/psimi/MI:0914"
+  Synthesis_R_A hypernym "http://identifiers.org/go/GO:0006412"
+  Synthesis_R_B hypernym "http://identifiers.org/go/GO:0006412"
+  Degradation_R_A hypernym "http://identifiers.org/ncit/C61559"
+  Degradation_R_B hypernym "http://identifiers.org/ncit/C61559"
+  Internalisation_RC_A hypernym "http://identifiers.org/go/GO:0031623"
+  Internalisation_RC_B hypernym "http://identifiers.org/go/GO:0031623"
+  Internalisation_RC_AB hypernym "http://identifiers.org/go/GO:0031623"
+end
+
+Schropp2019___Target_Mediated_Drug_Disposition_Model_for_Bispecific_Antibodies is "Schropp2019 - Target-Mediated Drug Disposition Model for Bispecific Antibodies"
+
+Schropp2019___Target_Mediated_Drug_Disposition_Model_for_Bispecific_Antibodies description "http://identifiers.org/pubmed/30480383"
+Schropp2019___Target_Mediated_Drug_Disposition_Model_for_Bispecific_Antibodies model_entity_is "http://identifiers.org/biomodels.db/MODEL1907240003",
+                                                                                               "http://identifiers.org/biomodels.db/BIOMD0000000788"
+Schropp2019___Target_Mediated_Drug_Disposition_Model_for_Bispecific_Antibodies hypernym "http://identifiers.org/ncit/C1454"
+Schropp2019___Target_Mediated_Drug_Disposition_Model_for_Bispecific_Antibodies property "http://identifiers.org/mamo/MAMO_0000046"
+Schropp2019___Target_Mediated_Drug_Disposition_Model_for_Bispecific_Antibodies taxon "http://identifiers.org/taxonomy/9606"

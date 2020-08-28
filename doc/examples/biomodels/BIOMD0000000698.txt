@@ -1,0 +1,159 @@
+// Created by libAntimony v2.13.0
+function function_for_V_MATI(V_max_mati, K_m_mati, MET, AdoMet, K_i_meti)
+  V_max_mati/(1 + (K_m_mati/MET)*(1 + AdoMet/K_i_meti));
+end
+
+function_for_V_MATI is "function for V_MATI"
+
+function function_for_V_MATIII(V_max_matiii, Met, K_m1_MATIII, K_m2_MATIII)
+  V_max_matiii/(1 + K_m1_MATIII*K_m2_MATIII/(Met^2 + Met*K_m2_MATIII));
+end
+
+function_for_V_MATIII is "function for V_MATIII"
+
+function function_for_V_GMNT(V_max_GMNT, K_m_GMNT, AdoMet, AdoHcy, K_i_GMNT)
+  (V_max_GMNT/(1 + (K_m_GMNT/AdoMet)^2.3))*(1/(1 + AdoHcy/K_i_GMNT));
+end
+
+function_for_V_GMNT is "function for V_GMNT"
+
+function function_for_V_METH(V_max_METH, AdoMet, K_m2_METH_A, K_m1_METH)
+  V_max_METH/(1 + K_m1_METH/AdoMet + K_m2_METH_A + K_m2_METH_A*K_m1_METH/AdoMet);
+end
+
+function_for_V_METH is "function for V_METH"
+
+function function_for_V_MS(V_max_MS, mTHF, Hcy, K_d_MS, K_m_Hcy_MS, K_m_mTHF_MS)
+  V_max_MS*mTHF*Hcy/(K_d_MS*K_m_Hcy_MS + K_m_Hcy_MS*mTHF + K_m_mTHF_MS*Hcy + mTHF*Hcy);
+end
+
+function_for_V_MS is "function for V_MS"
+
+function function_for_V_CBS(beta1, AdoMet, AdoHcy, beta2, Hcy)
+  (beta1*(AdoMet + AdoHcy) - beta2)*Hcy;
+end
+
+function_for_V_CBS is "function for V_CBS"
+
+function function_for_V_BHMT(AdoMet, AdoHcy, V_max_bhmt, Hcy, K_m_BHMT)
+  (0.7 - 0.025*(AdoMet + AdoHcy - 150))*(V_max_bhmt*Hcy/(K_m_BHMT + Hcy));
+end
+
+function_for_V_BHMT is "function for V_BHMT"
+
+function function_for_V_AH(alpha1, AdoHcy, alpha2, Hcy)
+  alpha1*(AdoHcy - alpha2*Hcy);
+end
+
+function_for_V_AH is "function for V_AH"
+
+
+model *Reed2004___Methionine_Cycle()
+
+  // Compartments and Species:
+  compartment Compartment;
+  species $Metin in Compartment, Methionine in Compartment, AdoMet in Compartment;
+  species AdoHcy in Compartment, Homocysteine in Compartment, $_5mTHF in Compartment;
+  species Cystathionine in Compartment;
+
+  // Assignment Rules:
+  Metin := piecewise(200, (time < 2) || (time >= 8), piecewise(300, (time >= 2) && (time < 5), piecewise(100, (time >= 5) && (time < 8), 200)));
+  K_m1_MATIII := 20000/(1 + 5.7*(AdoMet/(AdoMet + 600))^2);
+  K_m1_METH := 1*(1 + AdoHcy/4);
+
+  // Reactions:
+  V_MAT_I: Methionine => AdoMet; Compartment*function_for_V_MATI(V_max_MATI, K_m_MATI, Methionine, AdoMet, K_i_MATI);
+  V_MAT_III: Methionine => AdoMet; Compartment*function_for_V_MATIII(V_max_MATIII, Methionine, K_m1_MATIII, K_m2_MATIII);
+  V_METH: AdoMet => AdoHcy; Compartment*function_for_V_METH(V_max_METH, AdoMet, K_m2_METH_A, K_m1_METH);
+  V_GNMT: AdoMet => AdoHcy; Compartment*function_for_V_GMNT(V_max_GNMT, K_m_GNMT, AdoMet, AdoHcy, K_i_GNMT);
+  V_AH: AdoHcy -> Homocysteine; Compartment*function_for_V_AH(alpha_1, AdoHcy, alpha_2, Homocysteine);
+  V_MS: Homocysteine + $_5mTHF => Methionine; Compartment*function_for_V_MS(V_max_MS, _5mTHF, Homocysteine, K_d_MS, K_m_Hcy_MS, K_m_5mTHF_MS);
+  V_BHMT: Homocysteine => Methionine; Compartment*function_for_V_BHMT(AdoMet, AdoHcy, V_max_BHMT, Homocysteine, K_m_BHMT);
+  V_CBS: Homocysteine => Cystathionine; Compartment*function_for_V_CBS(beta_1, AdoMet, AdoHcy, beta_2, Homocysteine);
+  METIN: $Metin => Methionine; Compartment*METIN_k1*Metin;
+
+  // Species initializations:
+  Methionine = 53.5;
+  AdoMet = 137.6;
+  AdoHcy = 13.2;
+  Homocysteine = 0.88;
+  _5mTHF = 5.2;
+  Cystathionine = 0;
+
+  // Compartment initializations:
+  Compartment = 1;
+
+  // Variable initializations:
+  V_max_MATI = 561;
+  K_m_MATI = 41;
+  K_i_MATI = 50;
+  V_max_MATIII = 22870;
+  K_m2_MATIII = 21.1;
+  V_max_GNMT = 10600;
+  K_m_GNMT = 4500;
+  K_i_GNMT = 20;
+  V_max_METH = 4521;
+  K_m2_METH_A = 10;
+  alpha_1 = 100;
+  alpha_2 = 10;
+  beta_1 = 1.7;
+  beta_2 = 30;
+  V_max_MS = 500;
+  K_m_Hcy_MS = 0.1;
+  K_m_5mTHF_MS = 25;
+  K_d_MS = 1;
+  V_max_BHMT = 2500;
+  K_m_BHMT = 12;
+  METIN_k1 = 1;
+
+  // Other declarations:
+  var K_m1_MATIII, K_m1_METH;
+  const Compartment, V_max_MATI, K_m_MATI, K_i_MATI, V_max_MATIII, K_m2_MATIII;
+  const V_max_GNMT, K_m_GNMT, K_i_GNMT, V_max_METH, K_m2_METH_A, alpha_1;
+  const alpha_2, beta_1, beta_2, V_max_MS, K_m_Hcy_MS, K_m_5mTHF_MS, K_d_MS;
+  const V_max_BHMT, K_m_BHMT;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 3600 second;
+  unit substance = 1e-6 mole;
+
+  // Display Names:
+  time_unit is "time";
+  _5mTHF is "5mTHF";
+  V_MAT_I is "V_MAT-I";
+  V_MAT_III is "V_MAT-III";
+
+  // CV terms:
+  Methionine hypernym "http://identifiers.org/kegg.compound/C00073"
+  Methionine hypernym "http://identifiers.org/chebi/CHEBI:16811"
+  AdoMet hypernym "http://identifiers.org/kegg.compound/C00019"
+  AdoMet hypernym "http://identifiers.org/chebi/CHEBI:33442"
+  AdoHcy hypernym "http://identifiers.org/ncit/C103149"
+  AdoHcy hypernym "http://identifiers.org/kegg.compound/C00021"
+  Homocysteine hypernym "http://identifiers.org/kegg.compound/C00155"
+  Homocysteine hypernym "http://identifiers.org/chebi/CHEBI:17230"
+  _5mTHF hypernym "http://identifiers.org/chebi/CHEBI:67016"
+  Cystathionine hypernym "http://identifiers.org/kegg.compound/Cystathionine"
+  Cystathionine hypernym "http://identifiers.org/chebi/CHEBI:17755"
+  V_MAT_I encoder "http://identifiers.org/ec-code/2.5.1.6"
+  V_MAT_III encoder "http://identifiers.org/ec-code/2.5.1.6"
+  V_METH encoder "http://identifiers.org/kegg.orthology/K06219"
+  V_GNMT encoder "http://identifiers.org/kegg.orthology/K00552"
+  V_GNMT encoder "http://identifiers.org/ec-code/2.1.1.20"
+  V_AH encoder "http://identifiers.org/ec-code/3.3.1.1"
+  V_MS encoder "http://identifiers.org/ec-code/2.1.1.13"
+  V_BHMT encoder "http://identifiers.org/ec-code/2.1.1.5"
+  V_BHMT encoder "http://identifiers.org/kegg.orthology/K00544"
+  V_CBS encoder "http://identifiers.org/kegg.orthology/K01697"
+  V_CBS encoder "http://identifiers.org/ec-code/4.2.1.22"
+end
+
+Reed2004___Methionine_Cycle is "Reed2004 - Methionine Cycle"
+
+Reed2004___Methionine_Cycle model_entity_is "http://identifiers.org/biomodels.db/MODEL1006230091"
+Reed2004___Methionine_Cycle description "http://identifiers.org/pubmed/14637052"
+Reed2004___Methionine_Cycle model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000698"
+Reed2004___Methionine_Cycle hypernym "http://identifiers.org/go/GO:0033528"
+Reed2004___Methionine_Cycle taxon "http://identifiers.org/taxonomy/9606"
+Reed2004___Methionine_Cycle description "http://identifiers.org/pubmed/14637052"

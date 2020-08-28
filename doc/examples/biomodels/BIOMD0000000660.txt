@@ -1,0 +1,327 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function rDsRc(Dna, Rc)
+  piecewise(0, Dna < 1, piecewise(1*Rc, Dna > 1, 0.5*Rc));
+end
+
+rDsRc is "Function for Dissassembly of RC"
+
+function rDeP21_1(Cdt2, Cy, P21, Skp2, aRc, kDeP21, kDeP21Cy, kDeP21aRc)
+  (kDeP21 + kDeP21Cy*Skp2*Cy + kDeP21aRc*Cdt2*aRc)*P21;
+end
+
+rDeP21_1 is "Function for Degradation of p21"
+
+function rDeCy_1(Cy, Skp2, kDeCy, kDeCyCy)
+  (kDeCy + kDeCyCy*Skp2*Cy)*Cy;
+end
+
+rDeCy_1 is "Function for Degradation of cyclins"
+
+function rDeCy_2(Cy, CyP21, Skp2, kDeCy, kDeCyCy)
+  (kDeCy + kDeCyCy*Skp2*Cy)*CyP21;
+end
+
+rDeCy_2 is "Function for Degradation of cyclin in CDK2:Cyclin:p21 complexes"
+
+function rDeP21_2(Cdt2, Cy, CyP21, Skp2, aRc, kDeP21, kDeP21Cy, kDeP21aRc)
+  (kDeP21 + kDeP21Cy*Skp2*Cy + kDeP21aRc*Cdt2*aRc)*CyP21;
+end
+
+rDeP21_2 is "Function for Degradation of p21 in CDK2:Cyclin:p21 complexes"
+
+function rDeP21_3(Cdt2, Cy, Skp2, aRc, iPcna, kDeP21, kDeP21Cy, kDeP21aRc)
+  (kDeP21 + kDeP21Cy*Skp2*Cy + kDeP21aRc*Cdt2*aRc)*iPcna;
+end
+
+rDeP21_3 is "Function for Degradation of p21 in PCNA:p21 complexes"
+
+function rPhRc_1(Cy, Rc, jCy, kPhRc, n)
+  (kPhRc*Cy^n/(jCy^n + Cy^n))*Rc;
+end
+
+rPhRc_1 is "Function for Phosphorylation/priming of replication complexes"
+
+function rDeP21_4(Cdt2, Cy, Skp2, aRc, iRc, kDeP21, kDeP21Cy, kDeP21aRc)
+  (kDeP21 + kDeP21Cy*Skp2*Cy + kDeP21aRc*Cdt2*aRc)*iRc;
+end
+
+rDeP21_4 is "Function for Degradation of p21 in inactive replication complexes"
+
+function rDsRc_1(Dna, pRc)
+  piecewise(0, Dna < 1, piecewise(1*pRc, Dna > 1, 0.5*pRc));
+end
+
+rDsRc_1 is "Function for Dissassembly of pRC"
+
+function rDsRc_2(Dna, aRc)
+  piecewise(0, Dna < 1, piecewise(1*aRc, Dna > 1, 0.5*aRc));
+end
+
+rDsRc_2 is "Function for Dissassembly of aRC"
+
+function rDsRc_3(Dna, iRc)
+  piecewise(0, Dna < 1, piecewise(1*iRc, Dna > 1, 0.5*iRc));
+end
+
+rDsRc_3 is "Function for Dissassembly of iRC"
+
+function rDeP53_1(Dam, P53, jP53, kDeP53)
+  (kDeP53/(jP53 + Dam))*P53;
+end
+
+rDeP53_1 is "Function for Degradation of p53"
+
+function rReDam_1(Dam, P53, jDam, kReDam, kReDamP53)
+  (kReDam + kReDamP53*P53/(jDam + Dam))*Dam;
+end
+
+rReDam_1 is "Function for Repair of DNA damage"
+
+
+model *Barr2017___Dynamics_of_p21_in_hTert_RPE1_cells()
+
+  // Compartments and Species:
+  compartment Cell;
+  species MrnaP21 in Cell, MrnaCy in Cell, MrnaP53 in Cell, P21 in Cell, Cy in Cell;
+  species CyP21 in Cell, aPcna in Cell, Rc in Cell, pRc in Cell, aRc in Cell;
+  species iRc in Cell, Dna in Cell, Dam in Cell, P53 in Cell, $Skp2 in Cell;
+  species $Cdt2 in Cell, iPcna in Cell, $tP21 in Cell, $tCy in Cell, $tPcna in Cell;
+
+  // Assignment Rules:
+  tP21 := P21 + CyP21 + iPcna + iRc;
+  tCy := Cy + CyP21;
+  tPcna := aPcna + iPcna + aRc + iRc;
+
+  // Reactions:
+  Synthesis_of_p21_mRNAs:  => MrnaP21; Cell*Constant_flux__irreversible(kSyMrna);
+  Synthesis_of_p21_mRNAs_by_p53: P53 => MrnaP21 + P53; Cell*kSyMrnaP53*P53;
+  Synthesis_of_cyclin_mRNAs:  => MrnaCy; Cell*Constant_flux__irreversible(kSyMrna);
+  Synthesis_of_p53_mRNAs:  => MrnaP53; Cell*Constant_flux__irreversible(kSyMrna);
+  Degradation_of_p21_mRNAs: MrnaP21 => ; Cell*kDeMrna*MrnaP21;
+  Degradation_of_cyclin_mRNAs: MrnaCy => ; Cell*kDeMrna*MrnaCy;
+  Degradation_of_p53_mRNAs: MrnaP53 => ; Cell*kDeMrna*MrnaP53;
+  Synthesis_of_p21: MrnaP21 => MrnaP21 + P21; Cell*kSyP21*MrnaP21;
+  Degradation_of_p21: P21 => ; Cell*rDeP21_1(Cdt2, Cy, P21, Skp2, aRc, kDeP21, kDeP21Cy, kDeP21aRc);
+  Synthesis_of_cyclins: MrnaCy => MrnaCy + Cy; Cell*kSyCy*MrnaCy;
+  Degradation_of_cyclins: Cy => ; Cell*rDeCy_1(Cy, Skp2, kDeCy, kDeCyCy);
+  Association_and_dissociation_of_CDK2_Cyclin_and_p21: Cy + P21 -> CyP21; Cell*(kAsCyP21*Cy*P21 - kDsCyP21*CyP21);
+  Degradation_of_cyclin_in_CDK2_Cyclin_p21_complexes: CyP21 => P21; Cell*rDeCy_2(Cy, CyP21, Skp2, kDeCy, kDeCyCy);
+  Degradation_of_p21_in_CDK2_Cyclin_p21_complexes: CyP21 => Cy; Cell*rDeP21_2(Cdt2, Cy, CyP21, Skp2, aRc, kDeP21, kDeP21Cy, kDeP21aRc);
+  Import_of_active_PCNA:  => aPcna; Cell*Constant_flux__irreversible(kImPc);
+  Export_of_active_PCNA: aPcna => ; Cell*kExPc*aPcna;
+  Export_of_inactive_PCNA: iPcna => P21; Cell*kExPc*iPcna;
+  Association_and_dissociation_of_PCNA_and_p21: aPcna + P21 -> iPcna; Cell*(kAsPcP21*aPcna*P21 - kDsPcP21*iPcna);
+  Degradation_of_p21_in_PCNA_p21_complexes: iPcna => aPcna; Cell*rDeP21_3(Cdt2, Cy, Skp2, aRc, iPcna, kDeP21, kDeP21Cy, kDeP21aRc);
+  Phosphorylation_priming_of_replication_complexes: Rc => pRc; Cell*rPhRc_1(Cy, Rc, jCy, kPhRc, n);
+  Dephosphorylation_of_replication_complexes: pRc => Rc; Cell*kDpRc*pRc;
+  Association_and_dissociation_of_active_PCNA_and_replication_complexes: aPcna + pRc -> aRc; Cell*(kAsRcPc*aPcna*pRc - kDsRcPc*aRc);
+  Association_and_dissociation_of_inactive_PCNA_and_replication_complexes: iPcna + pRc -> iRc; Cell*(kAsRcPc*iPcna*pRc - kDsRcPc*iRc);
+  Association_and_dissociation_of_p21_and_replication_complexes: aRc + P21 -> iRc; Cell*(kAsPcP21*aRc*P21 - kDsPcP21*iRc);
+  Degradation_of_p21_in_inactive_replication_complexes: iRc => aRc; Cell*rDeP21_4(Cdt2, Cy, Skp2, aRc, iRc, kDeP21, kDeP21Cy, kDeP21aRc);
+  Synthesis_of_DNA: aRc => aRc + Dna; Cell*kSyDna*aRc;
+  Dissassembly_of_RC: Rc => ; Cell*rDsRc(Dna, Rc);
+  Dissassembly_of_pRC: pRc => ; Cell*rDsRc_1(Dna, pRc);
+  Dissassembly_of_aRC: aRc => aPcna; Cell*rDsRc_2(Dna, aRc);
+  Dissassembly_of_iRC: iRc => iPcna; Cell*rDsRc_3(Dna, iRc);
+  Synthesis_of_p53: MrnaP53 => MrnaP53 + P53; Cell*kSyP53*MrnaP53;
+  Degradation_of_p53: P53 => ; Cell*rDeP53_1(Dam, P53, jP53, kDeP53);
+  Induction_of_DNA_damage:  => Dam; Cell*Constant_flux__irreversible(kGeDam);
+  Induction_of_DNA_damage_by_replication: aRc => aRc + Dam; Cell*kGeDamArc*aRc;
+  Repair_of_DNA_damage: Dam => ; Cell*rReDam_1(Dam, P53, jDam, kReDam, kReDamP53);
+
+  // Species initializations:
+  MrnaP21 = 1;
+  MrnaCy = 1;
+  MrnaP53 = 1;
+  P21 = 0.72;
+  Cy = 0.4;
+  CyP21 = 0;
+  aPcna = 0.5;
+  Rc = 1;
+  pRc = 0;
+  aRc = 0;
+  iRc = 0;
+  Dna = 0;
+  Dam = 0;
+  P53 = 0;
+  Skp2 = 1;
+  Cdt2 = 1;
+  iPcna = 0;
+
+  // Compartment initializations:
+  Cell = 1;
+
+  // Variable initializations:
+  kSyMrna = 0.02;
+  kSyMrnaP53 = 0.08;
+  kDeMrna = 0.02;
+  kSyP21 = 0.0018;
+  kDeP21 = 0.0025;
+  kDeP21Cy = 0.007;
+  kDeP21aRc = 1;
+  kSyCy = 0.005;
+  kAsCyP21 = 1;
+  kDsCyP21 = 0.05;
+  kDeCy = 0.002;
+  kDeCyCy = 0.0002;
+  kImPc = 0.003;
+  kExPc = 0.006;
+  kPhRc = 0.1;
+  kDpRc = 0.01;
+  jCy = 1.8;
+  n = 6;
+  kAsRcPc = 0.01;
+  kDsRcPc = 0.001;
+  kAsPcP21 = 100;
+  kDsPcP21 = 0.01;
+  kSyDna = 0.007;
+  kSyP53 = 0.05;
+  kDeP53 = 0.05;
+  jP53 = 0.01;
+  kGeDam = 0.001;
+  kGeDamArc = 0.005;
+  kReDam = 0.001;
+  kReDamP53 = 0.005;
+  jDam = 0.5;
+
+  // Other declarations:
+  const Cell, kSyMrna, kSyMrnaP53, kDeMrna, kSyP21, kDeP21, kDeP21Cy, kDeP21aRc;
+  const kSyCy, kAsCyP21, kDsCyP21, kDeCy, kDeCyCy, kImPc, kExPc, kPhRc, kDpRc;
+  const jCy, n, kAsRcPc, kDsRcPc, kAsPcP21, kDsPcP21, kSyDna, kSyP53, kDeP53;
+  const jP53, kGeDam, kGeDamArc, kReDam, kReDamP53, jDam;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 60 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+  Synthesis_of_p21_mRNAs is "Synthesis of p21 mRNAs";
+  Synthesis_of_p21_mRNAs_by_p53 is "Synthesis of p21 mRNAs by p53";
+  Synthesis_of_cyclin_mRNAs is "Synthesis of cyclin mRNAs";
+  Synthesis_of_p53_mRNAs is "Synthesis of p53 mRNAs";
+  Degradation_of_p21_mRNAs is "Degradation of p21 mRNAs";
+  Degradation_of_cyclin_mRNAs is "Degradation of cyclin mRNAs";
+  Degradation_of_p53_mRNAs is "Degradation of p53 mRNAs";
+  Synthesis_of_p21 is "Synthesis of p21";
+  Degradation_of_p21 is "Degradation of p21";
+  Synthesis_of_cyclins is "Synthesis of cyclins";
+  Degradation_of_cyclins is "Degradation of cyclins";
+  Association_and_dissociation_of_CDK2_Cyclin_and_p21 is "Association and dissociation of CDK2:Cyclin and p21";
+  Degradation_of_cyclin_in_CDK2_Cyclin_p21_complexes is "Degradation of cyclin in CDK2:Cyclin:p21 complexes";
+  Degradation_of_p21_in_CDK2_Cyclin_p21_complexes is "Degradation of p21 in CDK2:Cyclin:p21 complexes";
+  Import_of_active_PCNA is "Import of active PCNA";
+  Export_of_active_PCNA is "Export of active PCNA";
+  Export_of_inactive_PCNA is "Export of inactive PCNA";
+  Association_and_dissociation_of_PCNA_and_p21 is "Association and dissociation of PCNA and p21";
+  Degradation_of_p21_in_PCNA_p21_complexes is "Degradation of p21 in PCNA:p21 complexes";
+  Phosphorylation_priming_of_replication_complexes is "Phosphorylation/priming of replication complexes";
+  Dephosphorylation_of_replication_complexes is "Dephosphorylation of replication complexes";
+  Association_and_dissociation_of_active_PCNA_and_replication_complexes is "Association and dissociation of active PCNA and replication complexes";
+  Association_and_dissociation_of_inactive_PCNA_and_replication_complexes is "Association and dissociation of inactive PCNA and replication complexes";
+  Association_and_dissociation_of_p21_and_replication_complexes is "Association and dissociation of p21 and replication complexes";
+  Degradation_of_p21_in_inactive_replication_complexes is "Degradation of p21 in inactive replication complexes";
+  Synthesis_of_DNA is "Synthesis of DNA";
+  Dissassembly_of_RC is "Dissassembly of RC";
+  Dissassembly_of_pRC is "Dissassembly of pRC";
+  Dissassembly_of_aRC is "Dissassembly of aRC";
+  Dissassembly_of_iRC is "Dissassembly of iRC";
+  Synthesis_of_p53 is "Synthesis of p53";
+  Degradation_of_p53 is "Degradation of p53";
+  Induction_of_DNA_damage is "Induction of DNA damage";
+  Induction_of_DNA_damage_by_replication is "Induction of DNA damage by replication";
+  Repair_of_DNA_damage is "Repair of DNA damage";
+
+  // CV terms:
+  Cell hypernym "http://identifiers.org/bto/BTO:0004790"
+  MrnaP21 encodement "http://identifiers.org/uniprot/P38936"
+  MrnaP21 hypernym "http://identifiers.org/chebi/CHEBI:33699"
+  MrnaCy encodement "http://identifiers.org/uniprot/P24864"
+  MrnaCy hypernym "http://identifiers.org/chebi/CHEBI:33699"
+  MrnaCy encodement "http://identifiers.org/uniprot/P78396"
+  MrnaP53 hypernym "http://identifiers.org/chebi/CHEBI:33699"
+  MrnaP53 encodement "http://identifiers.org/uniprot/P04637"
+  P21 hypernym "http://identifiers.org/uniprot/P38936"
+  Cy hypernym "http://identifiers.org/uniprot/P24864",
+              "http://identifiers.org/uniprot/P78396"
+  CyP21 part "http://identifiers.org/uniprot/P24864",
+             "http://identifiers.org/uniprot/P38936"
+  CyP21 part "http://identifiers.org/uniprot/P38936",
+             "http://identifiers.org/uniprot/P78396"
+  aPcna hypernym "http://identifiers.org/uniprot/P12004"
+  Rc hypernym "http://identifiers.org/go/GO:0036387"
+  pRc hypernym "http://identifiers.org/go/GO:0036387"
+  aRc property "http://identifiers.org/pato/PATO:0002354"
+  aRc hypernym "http://identifiers.org/go/GO:0036387"
+  iRc property "http://identifiers.org/pato/PATO:0002355"
+  iRc hypernym "http://identifiers.org/go/GO:0036387"
+  Dna hypernym "http://identifiers.org/chebi/CHEBI:16991"
+  Dam hypernym "urn:miriam:ncit:NCIT_C16507"
+  P53 hypernym "http://identifiers.org/uniprot/P04637"
+  Skp2 hypernym "http://identifiers.org/uniprot/Q13309"
+  Cdt2 hypernym "http://identifiers.org/uniprot/Q9NZJ0"
+  iPcna part "http://identifiers.org/uniprot/P38936",
+             "http://identifiers.org/uniprot/P12004"
+  tP21 hypernym "http://identifiers.org/uniprot/P38936"
+  tCy part "http://identifiers.org/uniprot/P78396",
+           "http://identifiers.org/uniprot/P24941"
+  tCy part "http://identifiers.org/uniprot/P24864",
+           "http://identifiers.org/uniprot/P24941"
+  tPcna hypernym "http://identifiers.org/uniprot/P12004"
+  Synthesis_of_p21_mRNAs hypernym "http://identifiers.org/go/GO:0009299"
+  Synthesis_of_p21_mRNAs_by_p53 hypernym "http://identifiers.org/go/GO:0009299"
+  Synthesis_of_cyclin_mRNAs hypernym "http://identifiers.org/go/GO:0009299"
+  Synthesis_of_p53_mRNAs hypernym "http://identifiers.org/go/GO:0009299"
+  Degradation_of_p21_mRNAs hypernym "http://identifiers.org/go/GO:0006402"
+  Degradation_of_cyclin_mRNAs hypernym "http://identifiers.org/go/GO:0006402"
+  Degradation_of_p53_mRNAs hypernym "http://identifiers.org/go/GO:0006402"
+  Synthesis_of_p21 hypernym "http://identifiers.org/go/GO:0045727"
+  Degradation_of_p21 hypernym "http://identifiers.org/go/GO:0030163"
+  Synthesis_of_cyclins hypernym "http://identifiers.org/go/GO:0045727"
+  Degradation_of_cyclins hypernym "http://identifiers.org/go/GO:0030163"
+  Association_and_dissociation_of_CDK2_Cyclin_and_p21 property "http://identifiers.org/go/GO:0006461"
+  Association_and_dissociation_of_CDK2_Cyclin_and_p21 property "http://identifiers.org/go/GO:0043241"
+  Degradation_of_cyclin_in_CDK2_Cyclin_p21_complexes hypernym "http://identifiers.org/go/GO:0030163"
+  Degradation_of_p21_in_CDK2_Cyclin_p21_complexes hypernym "http://identifiers.org/go/GO:0030163"
+  Import_of_active_PCNA hypernym "http://identifiers.org/go/GO:0006606"
+  Export_of_active_PCNA hypernym "http://identifiers.org/go/GO:0006611"
+  Export_of_inactive_PCNA hypernym "http://identifiers.org/go/GO:0006611"
+  Association_and_dissociation_of_PCNA_and_p21 property "http://identifiers.org/go/GO:0043241"
+  Association_and_dissociation_of_PCNA_and_p21 property "http://identifiers.org/go/GO:0006461"
+  Degradation_of_p21_in_PCNA_p21_complexes hypernym "http://identifiers.org/go/GO:0030163"
+  Phosphorylation_priming_of_replication_complexes hypernym "http://identifiers.org/go/GO:0016310"
+  Dephosphorylation_of_replication_complexes hypernym "http://identifiers.org/go/GO:0016311"
+  Association_and_dissociation_of_active_PCNA_and_replication_complexes property "http://identifiers.org/go/GO:0006461"
+  Association_and_dissociation_of_active_PCNA_and_replication_complexes property "http://identifiers.org/go/GO:0043241"
+  Association_and_dissociation_of_inactive_PCNA_and_replication_complexes property "http://identifiers.org/go/GO:0043241"
+  Association_and_dissociation_of_inactive_PCNA_and_replication_complexes property "http://identifiers.org/go/GO:0006461"
+  Association_and_dissociation_of_p21_and_replication_complexes property "http://identifiers.org/go/GO:0006461"
+  Association_and_dissociation_of_p21_and_replication_complexes property "http://identifiers.org/go/GO:0043241"
+  Degradation_of_p21_in_inactive_replication_complexes hypernym "http://identifiers.org/go/GO:0030163"
+  Synthesis_of_DNA hypernym "http://identifiers.org/go/GO:0000731"
+  Dissassembly_of_RC hypernym "http://identifiers.org/go/GO:0043241"
+  Dissassembly_of_pRC hypernym "http://identifiers.org/go/GO:0043241"
+  Dissassembly_of_aRC hypernym "http://identifiers.org/go/GO:0043241"
+  Dissassembly_of_iRC hypernym "http://identifiers.org/go/GO:0043241"
+  Synthesis_of_p53 hypernym "http://identifiers.org/go/GO:0045727"
+  Degradation_of_p53 hypernym "http://identifiers.org/go/GO:0030163"
+  Induction_of_DNA_damage hypernym "urn:miriam:omit:OMIT_0005506"
+  Induction_of_DNA_damage_by_replication hypernym "urn:miriam:omit:OMIT_0005506"
+  Repair_of_DNA_damage hypernym "urn:miriam:omit:OMIT_0005517"
+end
+
+Barr2017___Dynamics_of_p21_in_hTert_RPE1_cells is "Barr2017 - Dynamics of p21 in hTert-RPE1 cells"
+
+Barr2017___Dynamics_of_p21_in_hTert_RPE1_cells model_entity_is "http://identifiers.org/biomodels.db/MODEL1607210001"
+Barr2017___Dynamics_of_p21_in_hTert_RPE1_cells model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000660"
+Barr2017___Dynamics_of_p21_in_hTert_RPE1_cells description "http://identifiers.org/pubmed/28317845"
+Barr2017___Dynamics_of_p21_in_hTert_RPE1_cells description "http://identifiers.org/pubmed/28317845"
+Barr2017___Dynamics_of_p21_in_hTert_RPE1_cells property "http://identifiers.org/pw/PW:0001360"
+Barr2017___Dynamics_of_p21_in_hTert_RPE1_cells taxon "http://identifiers.org/taxonomy/9606"

@@ -1,0 +1,90 @@
+// Created by libAntimony v2.13.0
+function Function_for_Normal_Cells_Growth(x, a, b, y, z, epsilon, g)
+  (a/(1 + b*(x + y + z)))*((x + y + epsilon)/(x + y + epsilon + g*z))*x;
+end
+
+Function_for_Normal_Cells_Growth is "Function_for_Normal_Cells_Growth"
+
+function Function_for_Leukemic_Cells_Growth(A, B, x, y, z, epsilon, G)
+  (A/(1 + B*(x + y + z)))*((x + y + epsilon)/(x + y + epsilon + G*z))*y;
+end
+
+Function_for_Leukemic_Cells_Growth is "Function_for_Leukemic_Cells_Growth"
+
+function Function_for_Donor_Cells_Growth(a, b, x, y, z, h, epsilon)
+  (a/(1 + b*(x + y + z)))*(1 - h*(x + y)/(z + epsilon + h*(x + y)))*z;
+end
+
+Function_for_Donor_Cells_Growth is "Function_for_Donor_Cells_Growth"
+
+
+model *Precup2012___Mathematical_modeling_of_cell_dynamics_after_allogeneic_bone_marrow_transplantation()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species x in compartment_, y in compartment_, z in compartment_;
+
+  // Reactions:
+  Normal_Cells_Growth:  => x; compartment_*Function_for_Normal_Cells_Growth(x, a, b, y, z, epsilon, g);
+  Normal_Cells_Removal: x => ; compartment_*c*x;
+  Leukemic_Cells_Growth:  => y; compartment_*Function_for_Leukemic_Cells_Growth(A, B, x, y, z, epsilon, G);
+  Leukemic_Cells_Removal: y => ; compartment_*C*y;
+  Donor_Cells_Growth:  => z; compartment_*Function_for_Donor_Cells_Growth(a, b, x, y, z, h, epsilon);
+  Donor_Cells_Removal: z => ; compartment_*c*z;
+
+  // Species initializations:
+  x = 200000000;
+  y = 100000000;
+  z = 400000000;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  a = 0.23;
+  A = 0.45;
+  b = 2.2e-08;
+  B = 2.2e-08;
+  c = 0.01;
+  C = 0.01;
+  epsilon = 1;
+  g = 2;
+  G = 2;
+  h = 2;
+
+  // Other declarations:
+  const compartment_, a, A, b, B, c, C, epsilon, g, G, h;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = item;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/bto/BTO:0000141"
+  x hypernym "http://identifiers.org/bto/BTO:0000725"
+  x container "http://identifiers.org/bto/BTO:0000141"
+  y identity "http://identifiers.org/bto/BTO:0004178"
+  y container "http://identifiers.org/bto/BTO:0000141"
+  z hypernym "http://identifiers.org/bto/BTO:0000725"
+  z container "http://identifiers.org/bto/BTO:0000141"
+  Normal_Cells_Growth identity "http://identifiers.org/go/GO:0071425"
+  Normal_Cells_Removal hypernym "http://identifiers.org/go/GO:0035701"
+  Leukemic_Cells_Growth hypernym "http://identifiers.org/go/GO:0071425"
+  Leukemic_Cells_Removal hypernym "http://identifiers.org/go/GO:0035701"
+  Donor_Cells_Growth hypernym "http://identifiers.org/go/GO:0071425"
+  Donor_Cells_Removal hypernym "http://identifiers.org/go/GO:0035701"
+end
+
+Precup2012___Mathematical_modeling_of_cell_dynamics_after_allogeneic_bone_marrow_transplantation is "Precup2012 - Mathematical modeling of cell dynamics after allogeneic bone marrow transplantation"
+
+Precup2012___Mathematical_modeling_of_cell_dynamics_after_allogeneic_bone_marrow_transplantation description "http://identifiers.org/doi/10.1142/S1793524511001684"
+Precup2012___Mathematical_modeling_of_cell_dynamics_after_allogeneic_bone_marrow_transplantation model_entity_is "http://identifiers.org/biomodels.db/MODEL1908190003",
+                                                                                                                 "http://identifiers.org/biomodels.db/BIOMD0000000800"
+Precup2012___Mathematical_modeling_of_cell_dynamics_after_allogeneic_bone_marrow_transplantation property "http://identifiers.org/ncit/NCIT:C46089"
+Precup2012___Mathematical_modeling_of_cell_dynamics_after_allogeneic_bone_marrow_transplantation property "http://identifiers.org/ncit/C3161"
+Precup2012___Mathematical_modeling_of_cell_dynamics_after_allogeneic_bone_marrow_transplantation property "http://identifiers.org/mamo/MAMO_0000046"

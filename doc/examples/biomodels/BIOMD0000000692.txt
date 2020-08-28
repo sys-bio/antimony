@@ -1,0 +1,121 @@
+// Created by libAntimony v2.13.0
+function Function_for_GTP_hydrolysis_sbo_2_sbc(Pi, RasGDP_NF1, RasGDP_minus_NF1_Pi, geometry, kb, kf)
+  (kf*RasGDP_minus_NF1_Pi - kb*Pi*RasGDP_NF1)/geometry;
+end
+
+Function_for_GTP_hydrolysis_sbo_2_sbc is "Function for GTP_hydrolysis_sbo_2_sbc_"
+
+function Function_for_NF1_binding(NF1, RasGTP, RasGTP_minus_NF1, geometry, kb, kf)
+  (kf*RasGTP*NF1 - kb*RasGTP_minus_NF1)/geometry;
+end
+
+Function_for_NF1_binding is "Function for NF1_binding"
+
+function Function_for_Ras_activation(RasGTP_minus_NF1, RasGTP_minus_NF1_star_, geometry, kb, kf)
+  (kf*RasGTP_minus_NF1 - kb*RasGTP_minus_NF1_star_)/geometry;
+end
+
+Function_for_Ras_activation is "Function for Ras_activation"
+
+function Function_for_GAP_dissociation(NF1, RasGDP, RasGDP_NF1, geometry, kb, kf)
+  (kf*RasGDP_NF1 - kb*RasGDP*NF1)/geometry;
+end
+
+Function_for_GAP_dissociation is "Function for GAP_dissociation"
+
+function Function_for_GTP_hydrolysis_sbo_1_sbc(RasGDP_minus_NF1_Pi, RasGTP_minus_NF1_star_, geometry, kb, kf)
+  (kf*RasGTP_minus_NF1_star_ - kb*RasGDP_minus_NF1_Pi)/geometry;
+end
+
+Function_for_GTP_hydrolysis_sbo_1_sbc is "Function for GTP_hydrolysis_sbo_1_sbc_"
+
+
+model *Phillips2003___The_Mechanism_of_Ras_GTPase_Activation_by_Neurofibromin()
+
+  // Compartments and Species:
+  compartment geometry;
+  species Pi in geometry, RasGTP in geometry, RasGTP_minus_NF1 in geometry;
+  species RasGTP_minus_NF1_star_ in geometry, RasGDP_minus_NF1_Pi in geometry;
+  species RasGDP_NF1 in geometry, RasGDP in geometry, NF1 in geometry;
+
+  // Assignment Rules:
+  Pi_curve := 100*(Pi - 1)/1;
+  hplc_curve := RasGTP*100/1;
+
+  // Reactions:
+  GTP_hydrolysis_sbo_1_sbc_: RasGTP_minus_NF1_star_ -> RasGDP_minus_NF1_Pi; geometry*Function_for_GTP_hydrolysis_sbo_1_sbc(RasGDP_minus_NF1_Pi, RasGTP_minus_NF1_star_, geometry, GTP_hydrolysis_sbo_1_sbc__kb, GTP_hydrolysis_sbo_1_sbc__kf);
+  GTP_hydrolysis_sbo_2_sbc_: RasGDP_minus_NF1_Pi -> Pi + RasGDP_NF1; geometry*Function_for_GTP_hydrolysis_sbo_2_sbc(Pi, RasGDP_NF1, RasGDP_minus_NF1_Pi, geometry, GTP_hydrolysis_sbo_2_sbc__kb, GTP_hydrolysis_sbo_2_sbc__kf);
+  Ras_activation: RasGTP_minus_NF1 -> RasGTP_minus_NF1_star_; geometry*Function_for_Ras_activation(RasGTP_minus_NF1, RasGTP_minus_NF1_star_, geometry, Ras_activation_kb, Ras_activation_kf);
+  GAP_dissociation: RasGDP_NF1 -> RasGDP + NF1; geometry*Function_for_GAP_dissociation(NF1, RasGDP, RasGDP_NF1, geometry, GAP_dissociation_kb, GAP_dissociation_kf);
+  NF1_binding: RasGTP + NF1 -> RasGTP_minus_NF1; geometry*Function_for_NF1_binding(NF1, RasGTP, RasGTP_minus_NF1, geometry, NF1_binding_kb, NF1_binding_kf);
+
+  // Species initializations:
+  Pi = 1;
+  RasGTP = 1;
+  RasGTP_minus_NF1 = 0;
+  RasGTP_minus_NF1_star_ = 0;
+  RasGDP_minus_NF1_Pi = 0;
+  RasGDP_NF1 = 0;
+  RasGDP = 0;
+  NF1 = 9.99936338171632;
+
+  // Compartment initializations:
+  geometry = 5.236e-13;
+
+  // Variable initializations:
+  GTP_hydrolysis_sbo_1_sbc__kb = 1.15192e-13;
+  GTP_hydrolysis_sbo_1_sbc__kf = 1.02102e-11;
+  GTP_hydrolysis_sbo_2_sbc__kb = 5.65482e-17;
+  GTP_hydrolysis_sbo_2_sbc__kf = 2.0944e-11;
+  Ras_activation_kb = 2.8798e-12;
+  Ras_activation_kf = 2.18865e-10;
+  GAP_dissociation_kb = 6.28318e-13;
+  GAP_dissociation_kf = 2.43474e-11;
+  NF1_binding_kb = 3.3301e-12;
+  NF1_binding_kf = 6.28318e-13;
+
+  // Other declarations:
+  var Pi_curve, hplc_curve;
+  const geometry;
+
+  // Unit definitions:
+  unit substance = 1e-6 mole;
+
+  // Display Names:
+  geometry is "E. coli";
+
+  // CV terms:
+  Pi hypernym "http://identifiers.org/chebi/CHEBI:24838"
+  RasGTP part "http://identifiers.org/kegg.compound/C00044"
+  RasGTP hypernym "http://identifiers.org/ncbigene/43873"
+  RasGTP_minus_NF1 part "http://identifiers.org/kegg.orthology/K08052"
+  RasGTP_minus_NF1 part "http://identifiers.org/kegg.compound/C00044"
+  RasGTP_minus_NF1 hypernym "http://identifiers.org/ncbigene/43873"
+  RasGTP_minus_NF1_star_ part "http://identifiers.org/kegg.orthology/K08052"
+  RasGTP_minus_NF1_star_ part "http://identifiers.org/kegg.compound/C00044"
+  RasGTP_minus_NF1_star_ hypernym "http://identifiers.org/ncbigene/43873"
+  RasGDP_minus_NF1_Pi part "http://identifiers.org/kegg.compound/C00035"
+  RasGDP_minus_NF1_Pi part "http://identifiers.org/chebi/CHEBI:24838"
+  RasGDP_minus_NF1_Pi part "http://identifiers.org/kegg.orthology/K08052"
+  RasGDP_minus_NF1_Pi hypernym "http://identifiers.org/ncbigene/43873"
+  RasGDP_NF1 part "http://identifiers.org/kegg.orthology/K08052"
+  RasGDP_NF1 part "http://identifiers.org/kegg.compound/C00035"
+  RasGDP_NF1 hypernym "http://identifiers.org/ncbigene/43873"
+  RasGDP part "http://identifiers.org/kegg.compound/C00035"
+  RasGDP hypernym "http://identifiers.org/ncbigene/43873"
+  NF1 hypernym "http://identifiers.org/kegg.orthology/K08052"
+  GTP_hydrolysis_sbo_1_sbc_ hypernym "http://identifiers.org/sbo/SBO:0000376"
+  GTP_hydrolysis_sbo_2_sbc_ hypernym "http://identifiers.org/sbo/SBO:0000376"
+  GAP_dissociation hypernym "http://identifiers.org/sbo/SBO:0000180"
+end
+
+Phillips2003___The_Mechanism_of_Ras_GTPase_Activation_by_Neurofibromin is "Phillips2003 - The Mechanism of Ras GTPase Activation by Neurofibromin"
+
+Phillips2003___The_Mechanism_of_Ras_GTPase_Activation_by_Neurofibromin model_entity_is "http://identifiers.org/biomodels.db/MODEL4968912141"
+Phillips2003___The_Mechanism_of_Ras_GTPase_Activation_by_Neurofibromin description "http://identifiers.org/pubmed/12667087"
+Phillips2003___The_Mechanism_of_Ras_GTPase_Activation_by_Neurofibromin model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000692"
+Phillips2003___The_Mechanism_of_Ras_GTPase_Activation_by_Neurofibromin part "http://identifiers.org/kegg.orthology/K08052"
+Phillips2003___The_Mechanism_of_Ras_GTPase_Activation_by_Neurofibromin parthood "http://identifiers.org/kegg.pathway/ko04014"
+Phillips2003___The_Mechanism_of_Ras_GTPase_Activation_by_Neurofibromin hypernym "http://identifiers.org/go/GO:1904475"
+Phillips2003___The_Mechanism_of_Ras_GTPase_Activation_by_Neurofibromin taxon "http://identifiers.org/taxonomy/562"
+Phillips2003___The_Mechanism_of_Ras_GTPase_Activation_by_Neurofibromin description "http://identifiers.org/pubmed/12667087"

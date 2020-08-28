@@ -1,0 +1,229 @@
+// Created by libAntimony v2.13.0
+model *MODEL1607270000()
+
+  // Compartments and Species:
+  compartment C1;
+  species $M in C1, $N in C1, $A7 in C1, $A8 in C1, $A9 in C1, $A10 in C1;
+  species $A11 in C1, $A12 in C1, $A13 in C1, $A14 in C1, $A15 in C1, $A16 in C1;
+  species $A17 in C1, $A18 in C1, $A19 in C1, $A20 in C1, $A21 in C1, $A22 in C1;
+  species $A23 in C1, $A24 in C1, $A25 in C1, $A26 in C1, $A27 in C1, $A28 in C1;
+  species $A29 in C1, $A30 in C1, $A31 in C1, $A32 in C1, $A33 in C1, $A34 in C1;
+  species $A35 in C1, $A36 in C1, $A37 in C1, $A38 in C1, $A39 in C1, $A40 in C1;
+  species $A41 in C1, $A42 in C1, $A43 in C1, $A44 in C1, $A45 in C1, $A46 in C1;
+  species $A47 in C1, $A48 in C1, $A49 in C1, $A50 in C1, $A51 in C1, $A52 in C1;
+  species $A53 in C1, $A54 in C1, $soluble_obs in C1, $insoluble_obs in C1;
+
+  // Assignment Rules:
+  I_net := P - a_T;
+  soluble_obs := soluble;
+  soluble := M + N*n_n + 7*A7 + 8*A8 + 9*A9 + 10*A10 + 11*A11 + 12*A12 + 13*A13 + 14*A14;
+  insoluble_obs := insoluble;
+  insoluble := A15*15 + A16*16 + 17*A17 + 18*A18 + 19*A19 + 20*A20 + 21*A21 + 22*A22 + 23*A23 + 24*A24 + 25*A25 + 26*A26 + 27*A27 + 28*A28 + 29*A29 + 30*A30 + 31*A31 + 32*A32 + 33*A33 + 34*A34 + 35*A35 + 36*A36 + 37*A37 + 38*A38 + 39*A39 + 40*A40 + 41*A41 + 42*A42 + 43*A43 + 44*A44 + 45*A45 + 46*A46 + 47*A47 + 48*A48 + 49*A49 + 50*A50 + 51*A51 + 52*A52 + 53*A53 + 54*A54;
+  blocking := A15 + A16 + A17 + A18 + A19 + A20 + A21 + A22 + A23 + A24 + A25 + A26 + A27 + A28 + A29 + A30 + A31 + A32 + A33 + A34 + A35 + A36 + A37 + A38 + A39 + A40 + A41 + A42 + A43 + A44 + A45 + A46 + A47 + A48 + A49 + A50 + A51 + A52 + A53 + A54;
+  R_T := c_T*M;
+  a_T := R_T*(s_T^e_T/(s_T^e_T + blocking^e_T));
+
+  // Rate Rules:
+  M' = I_net - k_n*n_n*M^n_n - k_sol*N*M - k_sol*A7*M - k_sol*A8*M - k_sol*A9*M - k_sol*A10*M - k_sol*A11*M - k_sol*A12*M - k_sol*A13*M - k_insol*A14*M - k_insol*A15*M - k_insol*A16*M - k_insol*A17*M - k_insol*A18*M - k_insol*A19*M - k_insol*A20*M - k_insol*A21*M - k_insol*A22*M - k_insol*A23*M - k_insol*A24*M - k_insol*A25*M - k_insol*A26*M - k_insol*A27*M - k_insol*A28*M - k_insol*A29*M - k_insol*A30*M - k_insol*A31*M - k_insol*A32*M - k_insol*A33*M - k_insol*A34*M - k_insol*A35*M - k_insol*A36*M - k_insol*A37*M - k_insol*A38*M - k_insol*A39*M - k_insol*A40*M - k_insol*A41*M - k_insol*A42*M - k_insol*A43*M - k_insol*A44*M - k_insol*A45*M - k_insol*A46*M - k_insol*A47*M - k_insol*A48*M - k_insol*A49*M - k_insol*A50*M - k_insol*A51*M - k_insol*A52*M - k_insol*A53*M;
+  N' = k_n*M^n_n - k_sol*N*M;
+  A7' = k_sol*N*M - k_sol*A7*M;
+  A8' = k_sol*A7*M - k_sol*A8*M;
+  A9' = k_sol*A8*M - k_sol*A9*M;
+  A10' = k_sol*A9*M - k_sol*A10*M;
+  A11' = k_sol*A10*M - k_sol*A11*M;
+  A12' = k_sol*A11*M - k_sol*A12*M;
+  A13' = k_sol*A12*M - k_sol*A13*M;
+  A14' = k_sol*A13*M - k_insol*A14*M;
+  A15' = k_insol*A14*M - k_insol*A15*M;
+  A16' = k_insol*A15*M - k_insol*A16*M;
+  A17' = k_insol*A16*M - k_insol*A17*M;
+  A18' = k_insol*A17*M - k_insol*A18*M;
+  A19' = k_insol*A18*M - k_insol*A19*M;
+  A20' = k_insol*A19*M - k_insol*A20*M;
+  A21' = k_insol*A20*M - k_insol*A21*M;
+  A22' = k_insol*A21*M - k_insol*A22*M;
+  A23' = k_insol*A22*M - k_insol*A23*M;
+  A24' = k_insol*A23*M - k_insol*A24*M;
+  A25' = k_insol*A24*M - k_insol*A25*M;
+  A26' = k_insol*A25*M - k_insol*A26*M;
+  A27' = k_insol*A26*M - k_insol*A27*M;
+  A28' = k_insol*A27*M - k_insol*A28*M;
+  A29' = k_insol*A28*M - k_insol*A29*M;
+  A30' = k_insol*A29*M - k_insol*A30*M;
+  A31' = k_insol*A30*M - k_insol*A31*M;
+  A32' = k_insol*A31*M - k_insol*A32*M;
+  A33' = k_insol*A32*M - k_insol*A33*M;
+  A34' = k_insol*A33*M - k_insol*A34*M;
+  A35' = k_insol*A34*M - k_insol*A35*M;
+  A36' = k_insol*A35*M - k_insol*A36*M;
+  A37' = k_insol*A36*M - k_insol*A37*M;
+  A38' = k_insol*A37*M - k_insol*A38*M;
+  A39' = k_insol*A38*M - k_insol*A39*M;
+  A40' = k_insol*A39*M - k_insol*A40*M;
+  A41' = k_insol*A40*M - k_insol*A41*M;
+  A42' = k_insol*A41*M - k_insol*A42*M;
+  A43' = k_insol*A42*M - k_insol*A43*M;
+  A44' = k_insol*A43*M - k_insol*A44*M;
+  A45' = k_insol*A44*M - k_insol*A45*M;
+  A46' = k_insol*A45*M - k_insol*A46*M;
+  A47' = k_insol*A46*M - k_insol*A47*M;
+  A48' = k_insol*A47*M - k_insol*A48*M;
+  A49' = k_insol*A48*M - k_insol*A49*M;
+  A50' = k_insol*A49*M - k_insol*A50*M;
+  A51' = k_insol*A50*M - k_insol*A51*M;
+  A52' = k_insol*A51*M - k_insol*A52*M;
+  A53' = k_insol*A52*M - k_insol*A53*M;
+  A54' = k_insol*A53*M;
+
+  // Species initializations:
+  M = 1.04389999999997;
+  N = 0;
+  A7 = 0;
+  A8 = 0;
+  A9 = 0;
+  A10 = 0;
+  A11 = 0;
+  A12 = 0;
+  A13 = 0;
+  A14 = 0;
+  A15 = 0;
+  A16 = 0;
+  A17 = 0;
+  A18 = 0;
+  A19 = 0;
+  A20 = 0;
+  A21 = 0;
+  A22 = 0;
+  A23 = 0;
+  A24 = 0;
+  A25 = 0;
+  A26 = 0;
+  A27 = 0;
+  A28 = 0;
+  A29 = 0;
+  A30 = 0;
+  A31 = 0;
+  A32 = 0;
+  A33 = 0;
+  A34 = 0;
+  A35 = 0;
+  A36 = 0;
+  A37 = 0;
+  A38 = 0;
+  A39 = 0;
+  A40 = 0;
+  A41 = 0;
+  A42 = 0;
+  A43 = 0;
+  A44 = 0;
+  A45 = 0;
+  A46 = 0;
+  A47 = 0;
+  A48 = 0;
+  A49 = 0;
+  A50 = 0;
+  A51 = 0;
+  A52 = 0;
+  A53 = 0;
+  A54 = 0;
+
+  // Compartment initializations:
+  C1 = 1;
+
+  // Variable initializations:
+  k_n = 0.34508;
+  n_n = 6;
+  k_sol = 0.34237;
+  k_insol = 0.3586;
+  P = 91.239;
+  c_T = 82.418999999;
+  s_T = 17.744;
+  e_T = 7.8115;
+
+  // Other declarations:
+  var I_net, soluble, insoluble, blocking, R_T, a_T;
+  const C1, k_n, n_n, k_sol, k_insol, P, c_T, s_T, e_T;
+
+  // Display Names:
+  C1 is "Brain";
+
+  // SBO terms:
+  C1.sboTerm = 290
+  k_n.sboTerm = 341
+  n_n.sboTerm = 481
+  k_sol.sboTerm = 36
+  N.sboTerm = 543
+  A7.sboTerm = 543
+  A8.sboTerm = 543
+  A9.sboTerm = 543
+  A10.sboTerm = 543
+  A11.sboTerm = 543
+  A12.sboTerm = 543
+  A13.sboTerm = 543
+  k_insol.sboTerm = 36
+  A14.sboTerm = 543
+  A15.sboTerm = 543
+  A16.sboTerm = 543
+  A17.sboTerm = 543
+  A18.sboTerm = 543
+  A19.sboTerm = 543
+  A20.sboTerm = 543
+  A21.sboTerm = 543
+  A22.sboTerm = 543
+  A23.sboTerm = 543
+  A24.sboTerm = 543
+  A25.sboTerm = 543
+  A26.sboTerm = 543
+  A27.sboTerm = 543
+  A28.sboTerm = 543
+  A29.sboTerm = 543
+  A30.sboTerm = 543
+  A31.sboTerm = 543
+  A32.sboTerm = 543
+  A33.sboTerm = 543
+  A34.sboTerm = 543
+  A35.sboTerm = 543
+  A36.sboTerm = 543
+  A37.sboTerm = 543
+  A38.sboTerm = 543
+  A39.sboTerm = 543
+  A40.sboTerm = 543
+  A41.sboTerm = 543
+  A42.sboTerm = 543
+  A43.sboTerm = 543
+  A44.sboTerm = 543
+  A45.sboTerm = 543
+  A46.sboTerm = 543
+  A47.sboTerm = 543
+  A48.sboTerm = 543
+  A49.sboTerm = 543
+  A50.sboTerm = 543
+  A51.sboTerm = 543
+  A52.sboTerm = 543
+  A53.sboTerm = 543
+  A54.sboTerm = 543
+  soluble_obs.sboTerm = 406
+  soluble.sboTerm = 406
+  insoluble_obs.sboTerm = 406
+  insoluble.sboTerm = 406
+
+  // CV terms:
+  C1 identity "http://identifiers.org/bto/BTO:0000142"
+  M hypernym "http://identifiers.org/chebi/CHEBI:64645"
+  k_n identity "urn:miriam:sbo:SBO%3A0000341"
+  n_n identity "urn:miriam:sbo:SBO%3A0000481"
+  k_sol identity "urn:miriam:sbo:SBO%3A0000036"
+  k_insol identity "urn:miriam:sbo:SBO%3A0000036"
+  soluble identity "urn:miriam:sbo:SBO%3A0000406"
+  insoluble identity "urn:miriam:sbo:SBO%3A0000406"
+end
+
+MODEL1607270000 is "Krohn2011 - Cerebral amyloid-β proteostasis regulated by membrane transport protein ABCC1"
+
+MODEL1607270000 model_entity_is "http://identifiers.org/biomodels.db/MODEL1607270000"
+MODEL1607270000 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000618"
+MODEL1607270000 description "http://identifiers.org/pubmed/21881209"
+MODEL1607270000 hypernym "http://identifiers.org/go/GO:1990000"
+MODEL1607270000 hypernym "http://identifiers.org/go/GO:0006810"
+MODEL1607270000 hypernym "urn:miriam:sbo:SBO%3A0000293"
+MODEL1607270000 property "http://identifiers.org/doid/DOID:10652"

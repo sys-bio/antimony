@@ -1,0 +1,907 @@
+// Created by libAntimony v2.13.0
+model *BIOMD0000000633()
+
+  // Compartments and Species:
+  compartment ext_, cyto, er, mito;
+  species glc_ext in ext_, lac_ext in ext_, glc in cyto, glc6p in cyto, glc1p in cyto;
+  species udpglc in cyto, glyglc in cyto, fru6p in cyto, fru16bp in cyto;
+  species fru26bp in cyto, gap in cyto, dhap in cyto, bpg13 in cyto, pg3 in cyto;
+  species pg2 in cyto, pep in cyto, pyr in cyto, oa in cyto, lac in cyto;
+  species mal in cyto, cit in cyto, h in cyto, co2_mito in mito, oa_mito in mito;
+  species pep_mito in mito, pyr_mito in mito, mal_mito in mito, p_mito in mito;
+  species h_mito in mito, glc_er in er, glc6p_er in er, atp in cyto, adp in cyto;
+  species amp in cyto, utp in cyto, udp in cyto, gtp in cyto, gdp in cyto;
+  species pp in cyto, p in cyto, p_er in cyto, co2 in cyto, nad in cyto, nadh in cyto;
+  species atp_mito in mito, adp_mito in mito, gtp_mito in mito, gdp_mito in mito;
+  species nadh_mito in mito, nad_mito in mito;
+
+  // Assignment Rules:
+  ins := ins0*(glc_ext^n_ins/(glc_ext^n_ins + km_glc_ext_ins^n_ins));
+  glucagon := glucagon0*(ONE - glc_ext^n_glucagon/(glc_ext^n_glucagon + km_glc_ext_glucagon^n_glucagon)) + glucagonb;
+  gamma_ := O5*(ONE + (glucagon^n_glucagon_gamma/(glucagon^n_glucagon_gamma + km_glucagon_gamma^n_glucagon_gamma) - ins^n_ins_gamma/(ins^n_ins_gamma + km_ins_gamma^n_ins_gamma)));
+  gamma_fbp1 := gamma_;
+  gamma_gp := gamma_;
+  gamma_gs := gamma_;
+  gamma_pfk2 := gamma_;
+  gamma_fbp2 := gamma_;
+  gamma_pk := gamma_;
+  v_ALD := vmax_ald*((fru16bp - gap*dhap/keq_ald)/(ONE + fru16bp/km_fru16bp_ald + (ONE + gap/km_gap_ald)*(ONE + dhap/km_dhap_ald) - ONE));
+  v_EN := vmax_en*((pg2 - pep/keq_en)/(ONE + pg2/km_pg2_en + pep/km_pep_en));
+  v_fbp1_native := fru16bp/(fru16bp + km_fru16bp_fbp1_native)/((ONE + (fru26bp/ki_fru26bp_fbp1)^n_fbp1)*(ONE + (amp/ki_amp_fbp1)^n_amp_fbp1));
+  v_fbp1_phospho := fru16bp/(fru16bp + km_fru16bp_fbp1_phospho)/((ONE + (fru26bp/ki_fru26bp_fbp1)^n_fbp1)*(ONE + (amp/ki_amp_fbp1)^n_amp_fbp1));
+  v_FBP1 := vmax_fbp1*((ONE - gamma_fbp1)*v_fbp1_native + gamma_fbp1*v_fbp1_phospho);
+  v_GAPDH := vmax_gapdh*((nad*gap*p - bpg13*(nadh/keq_gapdh))/((ONE + nad/km_nad_gapdh)*(ONE + gap/km_gap_gapdh)*(ONE + p/km_p_gapdh) + (ONE + nadh/km_nadh_gapdh)*(ONE + bpg13/km_bpg13_gapdh) - ONE));
+  vmax_gk := v0_gk*(glc^n2_gk/(glc^n2_gk + ka_glc_gk^n2_gk))*(ONE - f_gk*(fru6p/(fru6p + ki_fru6p_gk)));
+  v_GK := vmax_gk*(atp/(atp + km_atp_gk))*(glc^n_gk/(glc^n_gk + km_glc_gk^n_gk));
+  v_GLUT2 := vmax_glut2*((glc_ext - glc)/(ONE + glc_ext/km_glc_ext_glut2 + glc/km_glc_glut2));
+  v_GLCT_ER := vmax_glct_er*((glc - glc_er)/(ONE + glc/km_glc_glct_er + glc_er/km_glc_er_glct));
+  vmax_gp := v0_gp*(glyglc/store);
+  vmax_gp_native := amp/(amp + ka_amp_gp_native)/(km_glyglc_gp_native*km_p_gp_native);
+  km_glc1p_gp_native := k0_glc1p_gp*(ONE - amp/(amp + ka_amp_glc1p_gp));
+  vmax_gp_phospho := amp/(amp + ka_amp_gp_phospho)/(km_glyglc_gp_phospho*km_p_gp_phospho);
+  v_gp_native := vmax_gp_native*((glyglc*p - glc1p/keq_gp)/((ONE + glyglc/km_glyglc_gp_native)*(ONE + p/km_p_gp_native) + ONE + glc1p/km_glc1p_gp_native - ONE));
+  v_gp_phospho := vmax_gp_phospho*((glyglc*p - glc1p/keq_gp)/((ONE + glyglc/km_glyglc_gp_phospho)*(ONE + p/km_p_gp_phospho) + ONE + glc1p/km_glc1p_gp_phospho - ONE));
+  v_GP := vmax_gp*((ONE - gamma_gp)*v_gp_native + gamma_gp*v_gp_phospho);
+  v_G6P_ER := vmax_g6p_er*(glc6p_er/(glc6p_er + km_glc6p_er_g6p_er));
+  v_GPI := vmax_gpi*((glc6p - fru6p/keq_gpi)/(ONE + glc6p/km_glc6p_gpi + fru6p/km_fru6p_gpi));
+  v_G1PI := vmax_g1pi*((glc1p - glc6p/keq_g1pi)/(ONE + glc6p/km_glc6p_g1pi + glc1p/km_glc1p_g1pi));
+  v_G6PT_ER := vmax_g6pt_er*((glc6p - glc6p_er)/(ONE + glc6p/km_glc6p_g6pt_er + glc6p_er/km_glc6p_er_g6pt_er));
+  vmax_gs := v0_gs*((store - glyglc)/((store - glyglc) + store*O1));
+  km_udpglc_gs_native := kb_udpglc_gs_native + k0_udpglc_gs_native*(ONE - glc6p/(glc6p + ka_glc6p_gs_native));
+  km_udpglc_gs_phospho := kb_udpglc_gs_phospho + k0_udpglc_gs_phospho*(ONE - glc6p/(glc6p + ka_glc6p_gs_phospho));
+  v_gs_native := udpglc/(udpglc + km_udpglc_gs_native);
+  v_gs_phospho := udpglc/(udpglc + km_udpglc_gs_phospho);
+  v_GS := vmax_gs*((ONE - gamma_gs)*v_gs_native + gamma_gs*v_gs_phospho);
+  v_LACT := vmax_lact*((lac_ext - lac)/(ONE + lac/km_lac_lact + lac_ext/km_lac_ext_lact));
+  v_LDH := vmax_ldh*((pyr*nadh - lac*(nad/keq_ldh))/((ONE + nadh/km_nadh_ldh)*(ONE + pyr/km_pyr_ldh) + (ONE + nad/km_nad_ldh)*(ONE + lac/km_lac_ldh) - ONE));
+  v_MALT := vmax_malt*((mal_mito*p - mal*p_mito)/((ONE + mal_mito/km_mal_mito_malt)*(ONE + p/km_p_malt) + (ONE + mal/km_mal_malt)*(ONE + p_mito/km_p_mito_malt) - ONE));
+  v_MDH := vmax_mdh*((mal*nad - oa*(nadh/keq_mdh))/((ONE + mal/km_mal_mdh)*(ONE + nad/km_nad_mdh) + (ONE + nadh/km_nadh_mdh)*(ONE + oa/km_oa_mdh) - ONE));
+  v_MDH_mito := vmax_mdh_mito*((mal_mito*nad_mito - oa_mito*(nadh_mito/keq_mdh_mito))/((ONE + mal_mito/km_mal_mito_mdh_mito)*(ONE + nad_mito/km_nad_mito_mdh_mito) + (ONE + nadh_mito/km_nadh_mito_mdh_mito)*(ONE + oa_mito/km_oa_mito_mdh_mito) - ONE));
+  v_NDK_GTP := vmax_ndk_gtp*((atp*gdp - gtp*(adp/keq_ndk))/((ONE + atp/km_atp_ndk)*(ONE + gdp/km_gdp_ndk) + (ONE + adp/km_adp_ndk)*(ONE + gtp/km_gtp_ndk) - ONE));
+  v_NDK_UTP := vmax_ndk_utp*((atp*udp - utp*(adp/keq_ndk))/((ONE + atp/km_atp_ndk)*(ONE + udp/km_udp_ndk) + (ONE + adp/km_adp_ndk)*(ONE + utp/km_utp_ndk) - ONE));
+  v_NDK_GTP_mito := vmax_ndk_gtp_mito*((atp_mito*gdp_mito - gtp_mito*(adp_mito/keq_ndk))/((ONE + atp_mito/km_atp_mito_ndk)*(ONE + gdp_mito/km_gdp_mito_ndk) + (ONE + adp_mito/km_adp_mito_ndk)*(ONE + gtp_mito/km_gtp_mito_ndk) - ONE));
+  v_PC := vmax_PC*((atp_mito*pyr_mito*co2_mito - oa_mito*adp_mito*(p_mito/keq_pc))/((atp_mito + km_atp_mito_pc)*(pyr_mito + km_pyr_mito_pc)*(co2_mito + km_co2_mito_pc)));
+  v_PEPCK := vmax_pepck*((oa*gtp - pep*gdp*(co2/keq_pepck))/((ONE + oa/km_oa_pepck)*(ONE + gtp/km_gtp_pepck) + (ONE + pep/km_pep_pepck)*(ONE + gdp/km_gdp_pepck)*(ONE + co2/km_co2_pepck) - ONE));
+  v_PEPCK_mito := vmax_pepck_mito*((oa_mito*gtp_mito - pep_mito*gdp_mito*(co2_mito/keq_pepck_mito))/((ONE + oa_mito/km_oa_mito_pepck_mito)*(ONE + gtp_mito/km_gtp_mito_pepck_mito) + (ONE + pep_mito/km_pep_mito_pepck_mito)*(ONE + gdp_mito/km_gdp_mito_pepck_mito)*(ONE + co2_mito/km_co2_mito_pepck_mito) - ONE));
+  keq_pept := exp(M1*(Vmm*F/(R*T)));
+  v_PEPT := vmax_pept*((pep_mito - pep/keq_pept)/(ONE + pep/km_pep_pept + pep_mito/km_pep_mito_pept));
+  km_atp_pfk1 := k0_atp_pfk1_km_atp*(fru26bp/(fru26bp + ka_fru26bp_pfk1_km_atp));
+  ki_atp_pfk1 := ki0_atp_pfk1*(ONE + f_fru26bp_pfk1_ki_atp*(fru26bp/(fru26bp + ka_fru26bp_pfk1_ki_atp)));
+  km_fru6p_pfk1 := k0_fru6p_pfk1_km_fru6p*(ONE + atp/ki_atp_pfk1_km_fru6p)*(ONE + cit/ki_cit_pfk1_km_fru6p)*(ONE - f_amp_pfk1_km_fru6p*(amp^n_amp_pfk1_km_fru6p/(amp^n_amp_pfk1_km_fru6p + ka_amp_pfk1_km_fru6p^n_amp_pfk1_km_fru6p)))*(ONE - f_p_pfk1_km_fru6p*(p/(p + ka_p_pfk1_km_fru6p)))*(ONE - f_fru26bp_pfk1_km_fru6p*(fru26bp^n_fru26bp_pfk1_km_fru6p/(fru26bp^n_fru26bp_pfk1_km_fru6p + ka_fru26bp_pfk1_km_fru6p^n_fru26bp_pfk1_km_fru6p)));
+  n_fru6p_pfk1 := (n0_pfk1_n_fru6p + atp^n_atp_pfk1_n_fru6p/(atp^n_atp_pfk1_n_fru6p + ki_atp_pfk1_n_fru6p^n_atp_pfk1_n_fru6p))*(ONE - f_amp_pfk1_n_fru6p*(amp^n_amp_pfk1_n_fru6p/(amp^n_amp_pfk1_n_fru6p + ka_amp_pfk1_n_fru6p^n_amp_pfk1_n_fru6p)))*(ONE + f_cit_pfk1_n_fru6p*(cit^n_cit_pfk1_n_fru6p/(cit^n_cit_pfk1_n_fru6p + ki_cit_pfk1_n_fru6p^n_cit_pfk1_n_fru6p)))*(ONE - f_p_pfk1_n_fru6p*(p^n_p_pfk1_n_fru6p/(p^n_p_pfk1_n_fru6p + ka_p_pfk1_n_fru6p^n_p_pfk1_n_fru6p)))*(ONE - f_fru26bp_pfk1_n_fru6p*(fru26bp^n_fru26bp_pfk1_n_fru6p/(fru26bp^n_fru26bp_pfk1_n_fru6p + ka_fru26bp_pfk1_n_fru6p^n_fru26bp_pfk1_n_fru6p)));
+  v_PFK1 := vmax_pfk1*(atp/(atp + km_atp_pfk1))*(ONE - atp^ni_pfk1/(atp^ni_pfk1 + ki_atp_pfk1^ni_pfk1))*(fru6p^n_fru6p_pfk1/(fru6p^n_fru6p_pfk1 + km_fru6p_pfk1^n_fru6p_pfk1));
+  v_pfk2_native := (fru6p^n_fru6p_pfk2_native/(fru6p^n_fru6p_pfk2_native + km_fru6p_pfk2_native^n_fru6p_pfk2_native))*(atp/(atp + km_atp_pfk2_native))*(ONE - n0_pfk2*(pep/(pep + ki_pep_pfk2)));
+  v_pfk2_phospho := (fru6p^n_fru6p_pfk2_phospho/(fru6p^n_fru6p_pfk2_phospho + km_fru6p_pfk2_phospho^n_fru6p_pfk2_phospho))*(atp/(atp + km_atp_pfk2_phospho))*(ONE - n0_pfk2*(pep/(pep + ki_pep_pfk2)));
+  v_PFK2 := vmax_pfk2*((ONE - gamma_pfk2)*v_pfk2_native + gamma_pfk2*v_pfk2_phospho);
+  v_fbp2_native := fru26bp/(fru26bp + km_fru26bp_fbp2_native)/(ONE + fru6p/ki_fru6p_fbp2_native);
+  v_fbp2_phospho := f_fbp2_phospho*(fru26bp/(fru26bp + km_fru26bp_fbp2_phospho)/(ONE + fru6p/ki_fru6p_fbp2_phospho));
+  v_FBP2 := vmax_fbp2*((ONE - gamma_fbp2)*v_fbp2_native + gamma_fbp2*v_fbp2_phospho);
+  v_PGK := vmax_pgk*((adp*bpg13 - atp*(pg3/keq_pgk))/((ONE + adp/km_adp_pgk)*(ONE + bpg13/km_bpg13_pgk) + (ONE + atp/km_atp_pgk)*(ONE + pg3/km_pg3_pgk) - ONE));
+  v_PGM := vmax_pgm*((pg3 - pg2/keq_pgm)/(ONE + pg3/km_pg3_pgm + pg2/km_pg2_pgm));
+  v_pk_native := (pep/(pep + km_pep_pk_native*(ONE + atp/ki_atp_pk_native)*(ONE - fru16bp/(fru16bp + ka_fru16bp_pk_native))))*(adp/(adp + km_adp_pk_native));
+  v_pk_phospho := (pep^n_pk_phospho/(pep^n_pk_phospho + (km_pep_pk_phospho*(ONE + atp/ki_atp_pk_phospho)*(ONE - fru16bp/(fru16bp + ka_fru16bp_pk_phospho)))^n_pk_phospho))*(adp/(adp + km_adp_pk_phospho));
+  v_PK := vmax_pk*((ONE - gamma_pk)*v_pk_native + gamma_pk*v_pk_phospho);
+  v_PyrMalT := vmax_pyrmalt*((mal_mito*pyr - mal*pyr_mito)/((ONE + mal_mito/km_mal_mito_pyrmalt)*(ONE + pyr/km_pyr_pyrmalt) + (ONE + mal/km_mal_pyrmalt)*(ONE + pyr_mito/km_pyr_mito_pyrmalt) - ONE));
+  v_PyrT := vmax_pyrt*((pyr*h - pyr_mito*h_mito)/(ONE + pyr/km_pyr_pyrt + pyr_mito/km_pyr_mito_pyrt));
+  v_TPI := vmax_tpi*((dhap - gap/keq_tpi)/(ONE + dhap/km_dhap_tpi + gap/km_gap_tpi));
+  v_UGT := vmax_ugt*((utp*glc1p - udpglc*(pp/keq_ugt))/((ONE + utp/km_utp_ugt)*(ONE + glc1p/km_glc1p_ugt) + (ONE + udpglc/km_udpglc_ugt)*(ONE + pp/km_pp_ugt) - ONE));
+
+  // Reactions:
+  ALD: fru16bp -> gap + dhap; v_ALD;
+  EN: pg2 -> pep; v_EN;
+  FBP1: fru16bp -> fru6p; v_FBP1;
+  GAPDH: gap -> bpg13; v_GAPDH;
+  GK: glc -> glc6p; v_GK;
+  GLCT_ER: glc -> glc_er; v_GLCT_ER;
+  GLUT2:  -> glc; v_GLUT2;
+  GP: glyglc -> glc1p; v_GP;
+  G6P_ER: glc6p_er -> glc_er; v_G6P_ER;
+  GPI: glc6p -> fru6p; v_GPI;
+  G1PI: glc1p -> glc6p; v_G1PI;
+  G6PT_ER: glc6p -> glc6p_er; v_G6PT_ER;
+  GS: udpglc -> glyglc + udp; v_GS;
+  LACT:  -> lac; v_LACT;
+  LDH: pyr -> lac; v_LDH;
+  MALT: 6 mal_mito -> mal; v_MALT;
+  MDH: mal -> oa; v_MDH;
+  MDH_mito: mal_mito -> oa_mito; v_MDH_mito;
+  NDK_GTP: gdp -> gtp; v_NDK_GTP;
+  NDK_UTP: udp -> utp; v_NDK_UTP;
+  NDK_GTP_mito: gdp_mito -> gtp_mito; v_NDK_GTP_mito;
+  PC: pyr_mito -> oa_mito; v_PC;
+  PEPCK: oa + gtp -> pep + gdp; v_PEPCK;
+  PEPCK_mito: oa_mito + gtp_mito -> pep_mito + gdp_mito; v_PEPCK_mito;
+  PEPT: 6 pep_mito -> pep; v_PEPT;
+  PFK1: fru6p -> fru16bp; v_PFK1;
+  PFK2: fru6p -> fru26bp; v_PFK2;
+  FBP2: fru26bp -> fru6p; v_FBP2;
+  PGK: bpg13 -> pg3; v_PGK;
+  PGM: pg3 -> pg2; v_PGM;
+  PK: pep -> pyr; v_PK;
+  PyrMalT: 6 mal_mito + pyr -> 6 pyr_mito + mal; v_PyrMalT;
+  PyrT: pyr -> 6 pyr_mito; v_PyrT;
+  TPI: dhap -> gap; v_TPI;
+  UGT: utp + glc1p -> udpglc; v_UGT;
+
+  // Species initializations:
+  glc_ext = 4;
+  lac_ext = 1;
+  glc = 4.92256221964406;
+  glc6p = 0.189929897759633;
+  glc1p = 0.0117240677629403;
+  udpglc = 0.34072421289254;
+  glyglc = 17.6332590346802;
+  fru6p = 0.0569790458002266;
+  fru16bp = 0.000808171827419162;
+  fru26bp = 0.000540214088345945;
+  gap = 0.00190705466540883;
+  dhap = 0.0419590925497022;
+  bpg13 = 0.00108805669971103;
+  pg3 = 0.306393473858216;
+  pg2 = 0.029376172923967;
+  pep = 0.0499395072312233;
+  pyr = 0.0852149179429942;
+  oa = 0.0243963256092358;
+  lac = 0.678771756200856;
+  mal = 0.719656614702017;
+  cit = 0.75;
+  h = 0.0001;
+  co2_mito = 5;
+  oa_mito = 0.000464731194122211;
+  pep_mito = 0.000111191930877581;
+  pyr_mito = 0.132228238255726;
+  mal_mito = 1.30359361718805;
+  p_mito = 8;
+  h_mito = 6e-05;
+  glc_er = 4.92256224638738;
+  glc6p_er = 0.189929893608775;
+  atp = 3.25;
+  adp = 0.5;
+  amp = 0.16;
+  utp = 0.744701216226319;
+  udp = 0.114570584540414;
+  gtp = 0.693339386314472;
+  gdp = 0.106667613680444;
+  pp = 0.008;
+  p = 5;
+  p_er = 5;
+  co2 = 5;
+  nad = 1.13;
+  nadh = 0.001;
+  atp_mito = 17.5;
+  adp_mito = 7.5;
+  gtp_mito = 0.559995709478379;
+  gdp_mito = 0.240004290518223;
+  nadh_mito = 0.004;
+  nad_mito = 0.046;
+
+  // Compartment initializations:
+  ext_ = 1;
+  cyto = 1;
+  er = 1;
+  mito = 1;
+
+  // Variable initializations:
+  Vmm = -0.155;
+  Vmm has V;
+  ONE = 1;
+  ONE has dimensionless;
+  O5 = 0.5;
+  O5 has dimensionless;
+  M1 = -1;
+  M1 has dimensionless;
+  O1 = 0.1;
+  O1 has dimensionless;
+  F = 96490;
+  F has J_per_V_per_mol;
+  R = 8.3;
+  R has J_per_K_per_mol;
+  T = 293;
+  T has K;
+  vmax_ald = 778000000;
+  vmax_ald has per_h;
+  keq_ald = 0.099;
+  keq_ald has mM;
+  km_fru16bp_ald = 0.004;
+  km_fru16bp_ald has mM;
+  km_gap_ald = 0.48;
+  km_gap_ald has mM;
+  km_dhap_ald = 0.38;
+  km_dhap_ald has mM;
+  vmax_en = 19400000000;
+  vmax_en has per_h;
+  keq_en = 1.7;
+  keq_en has dimensionless;
+  km_pg2_en = 0.14;
+  km_pg2_en has mM;
+  km_pep_en = 0.31;
+  km_pep_en has mM;
+  vmax_fbp1 = 29200;
+  vmax_fbp1 has mM_per_h;
+  km_fru16bp_fbp1_native = 0.0029;
+  km_fru16bp_fbp1_native has mM;
+  ki_fru26bp_fbp1 = 0.00113;
+  ki_fru26bp_fbp1 has mM;
+  n_fbp1 = 1.26;
+  n_fbp1 has dimensionless;
+  ki_amp_fbp1 = 0.023;
+  ki_amp_fbp1 has mM;
+  n_amp_fbp1 = 2.43;
+  n_amp_fbp1 has dimensionless;
+  km_fru16bp_fbp1_phospho = 0.0019;
+  km_fru16bp_fbp1_phospho has mM;
+  vmax_gapdh = 292000000;
+  vmax_gapdh has per_h_per_mMmM;
+  keq_gapdh = 0.0001;
+  keq_gapdh has per_mM;
+  km_nad_gapdh = 0.01;
+  km_nad_gapdh has mM;
+  km_gap_gapdh = 0.035;
+  km_p_gapdh = 3.8;
+  km_p_gapdh has mM;
+  km_nadh_gapdh = 0.006;
+  km_nadh_gapdh has mM;
+  km_bpg13_gapdh = 0.01;
+  km_bpg13_gapdh has mM;
+  v0_gk = 10500;
+  v0_gk has mM_per_h;
+  n_gk = 1.5;
+  n_gk has dimensionless;
+  ka_glc_gk = 15.9;
+  ka_glc_gk has mM;
+  f_gk = 0.75;
+  f_gk has dimensionless;
+  ki_fru6p_gk = 0.005;
+  ki_fru6p_gk has mM;
+  n2_gk = 3.7;
+  n2_gk has dimensionless;
+  km_glc_gk = 9;
+  km_glc_gk has mM;
+  km_atp_gk = 0.55;
+  km_atp_gk has mM;
+  vmax_glct_er = 19400000000;
+  vmax_glct_er has per_h;
+  km_glc_glct_er = 1.37;
+  km_glc_glct_er has mM;
+  km_glc_er_glct = 1.22;
+  km_glc_er_glct has mM;
+  vmax_glut2 = 90.9;
+  vmax_glut2 has per_h;
+  km_glc_ext_glut2 = 17.3;
+  km_glc_ext_glut2 has mM;
+  km_glc_glut2 = 17.3;
+  km_glc_glut2 has mM;
+  v0_gp = 129;
+  v0_gp has mM_per_h;
+  store = 300;
+  store has mM;
+  keq_gp = 0.21;
+  keq_gp has per_mM;
+  km_glyglc_gp_native = 2.5;
+  km_glyglc_gp_native has mM;
+  km_p_gp_native = 500;
+  km_p_gp_native has mM;
+  ka_amp_gp_native = 0.36;
+  ka_amp_gp_native has mM;
+  ka_amp_glc1p_gp = 0.5;
+  ka_amp_glc1p_gp has mM;
+  k0_glc1p_gp = 250;
+  k0_glc1p_gp has mM;
+  km_glyglc_gp_phospho = 1.8;
+  km_glyglc_gp_phospho has mM;
+  km_p_gp_phospho = 2.1;
+  km_p_gp_phospho has mM;
+  km_glc1p_gp_phospho = 0.7;
+  km_glc1p_gp_phospho has mM;
+  ka_amp_gp_phospho = 0.017;
+  ka_amp_gp_phospho has mM;
+  vmax_g6p_er = 457;
+  vmax_g6p_er has mM_per_h;
+  km_glc6p_er_g6p_er = 1.84;
+  km_glc6p_er_g6p_er has mM;
+  vmax_gpi = 1070000000;
+  vmax_gpi has per_h;
+  keq_gpi = 0.3;
+  keq_gpi has dimensionless;
+  km_glc6p_gpi = 0.055;
+  km_glc6p_gpi has mM;
+  km_fru6p_gpi = 0.12;
+  km_fru6p_gpi has mM;
+  vmax_g1pi = 77800000;
+  vmax_g1pi has per_h;
+  keq_g1pi = 16.2;
+  keq_g1pi has dimensionless;
+  km_glc6p_g1pi = 0.045;
+  km_glc6p_g1pi has mM;
+  km_glc1p_g1pi = 0.67;
+  km_glc1p_g1pi has mM;
+  vmax_g6pt_er = 19400000000;
+  vmax_g6pt_er has per_h;
+  km_glc6p_g6pt_er = 1.12;
+  km_glc6p_g6pt_er has mM;
+  km_glc6p_er_g6pt_er = 1.12;
+  km_glc6p_er_g6pt_er has mM;
+  v0_gs = 116;
+  v0_gs has mM_per_h;
+  kb_udpglc_gs_native = 0.2;
+  kb_udpglc_gs_native has mM;
+  k0_udpglc_gs_native = 1.4;
+  k0_udpglc_gs_native has mM;
+  ka_glc6p_gs_native = 0.007;
+  ka_glc6p_gs_native has mM;
+  kb_udpglc_gs_phospho = 0.3;
+  kb_udpglc_gs_phospho has mM;
+  k0_udpglc_gs_phospho = 32;
+  k0_udpglc_gs_phospho has mM;
+  ka_glc6p_gs_phospho = 0.09;
+  ka_glc6p_gs_phospho has mM;
+  vmax_lact = 583;
+  vmax_lact has per_h;
+  km_lac_lact = 2.42;
+  km_lac_lact has mM;
+  km_lac_ext_lact = 2.42;
+  km_lac_ext_lact has mM;
+  vmax_ldh = 156000000000;
+  vmax_ldh has per_h_per_mM;
+  keq_ldh = 9000;
+  keq_ldh has dimensionless;
+  km_lac_ldh = 36;
+  km_lac_ldh has mM;
+  km_nad_ldh = 0.11;
+  km_nad_ldh has mM;
+  km_pyr_ldh = 0.15;
+  km_pyr_ldh has mM;
+  km_nadh_ldh = 0.015;
+  km_nadh_ldh has mM;
+  km_p_mito_malt = 1.41;
+  km_p_mito_malt has mM;
+  km_mal_malt = 0.49;
+  km_mal_malt has mM;
+  km_p_malt = 1.41;
+  km_p_malt has mM;
+  km_mal_mito_malt = 0.49;
+  km_mal_mito_malt has mM;
+  vmax_malt = 1940;
+  vmax_malt has per_h_per_mM;
+  km_oa_mdh = 0.088;
+  km_oa_mdh has mM;
+  km_nadh_mdh = 0.026;
+  km_nadh_mdh has mM;
+  km_nad_mdh = 0.114;
+  km_nad_mdh has mM;
+  km_mal_mdh = 1.1;
+  km_mal_mdh has mM;
+  keq_mdh = 3e-05;
+  keq_mdh has dimensionless;
+  vmax_mdh = 1940000000;
+  vmax_mdh has per_h_per_mM;
+  km_oa_mito_mdh_mito = 0.017;
+  km_oa_mito_mdh_mito has mM;
+  km_nadh_mito_mdh_mito = 0.044;
+  km_nadh_mito_mdh_mito has mM;
+  km_nad_mito_mdh_mito = 0.06;
+  km_nad_mito_mdh_mito has mM;
+  km_mal_mito_mdh_mito = 0.33;
+  km_mal_mito_mdh_mito has mM;
+  keq_mdh_mito = 3.1e-05;
+  keq_mdh_mito has dimensionless;
+  vmax_mdh_mito = 697000000000;
+  vmax_mdh_mito has per_h_per_mM;
+  vmax_ndk_gtp = 194000000000;
+  vmax_ndk_gtp has per_h_per_mM;
+  keq_ndk = 1;
+  keq_ndk has dimensionless;
+  km_atp_ndk = 1.33;
+  km_atp_ndk has mM;
+  km_gdp_ndk = 0.031;
+  km_gdp_ndk has mM;
+  km_adp_ndk = 0.042;
+  km_adp_ndk has mM;
+  km_gtp_ndk = 0.15;
+  km_gtp_ndk has mM;
+  vmax_ndk_utp = 19400000;
+  vmax_ndk_utp has per_h_per_mM;
+  km_udp_ndk = 0.19;
+  km_udp_ndk has mM;
+  km_utp_ndk = 16;
+  km_utp_ndk has mM;
+  vmax_ndk_gtp_mito = 19400000;
+  vmax_ndk_gtp_mito has per_h_per_mM;
+  km_atp_mito_ndk = 1.66;
+  km_atp_mito_ndk has mM;
+  km_gdp_mito_ndk = 0.036;
+  km_gdp_mito_ndk has mM;
+  km_adp_mito_ndk = 0.073;
+  km_adp_mito_ndk has mM;
+  km_gtp_mito_ndk = 0.15;
+  km_gtp_mito_ndk has mM;
+  vmax_PC = 3590;
+  vmax_PC has mM_per_h;
+  keq_pc = 6.55;
+  keq_pc has dimensionless;
+  km_atp_mito_pc = 0.14;
+  km_atp_mito_pc has mM;
+  km_pyr_mito_pc = 0.33;
+  km_pyr_mito_pc has mM;
+  km_co2_mito_pc = 4.2;
+  km_co2_mito_pc has mM;
+  vmax_pepck = 1000000;
+  vmax_pepck has per_h_per_mM;
+  keq_pepck = 110;
+  keq_pepck has mM;
+  km_oa_pepck = 0.024;
+  km_oa_pepck has mM;
+  km_gtp_pepck = 0.021;
+  km_gtp_pepck has mM;
+  km_pep_pepck = 0.4;
+  km_pep_pepck has mM;
+  km_gdp_pepck = 0.02;
+  km_gdp_pepck has mM;
+  km_co2_pepck = 1.194;
+  km_co2_pepck has mM;
+  vmax_pepck_mito = 1410000;
+  vmax_pepck_mito has per_h_per_mM;
+  keq_pepck_mito = 160;
+  keq_pepck_mito has mM;
+  km_oa_mito_pepck_mito = 0.0085;
+  km_oa_mito_pepck_mito has mM;
+  km_gtp_mito_pepck_mito = 0.022;
+  km_gtp_mito_pepck_mito has mM;
+  km_pep_mito_pepck_mito = 0.4;
+  km_pep_mito_pepck_mito has mM;
+  km_gdp_mito_pepck_mito = 0.02;
+  km_gdp_mito_pepck_mito has mM;
+  km_co2_mito_pepck_mito = 1.06;
+  km_co2_mito_pepck_mito has mM;
+  vmax_pept = 194000;
+  vmax_pept has per_h;
+  km_pep_pept = 0.1;
+  km_pep_pept has mM;
+  km_pep_mito_pept = 0.1;
+  km_pep_mito_pept has mM;
+  vmax_pfk1 = 76800;
+  vmax_pfk1 has mM_per_h;
+  ni_pfk1 = 4;
+  ni_pfk1 has dimensionless;
+  ka_fru26bp_pfk1_km_atp = 0.0027;
+  ka_fru26bp_pfk1_km_atp has mM;
+  k0_atp_pfk1_km_atp = 0.2;
+  k0_atp_pfk1_km_atp has mM;
+  ki0_atp_pfk1 = 0.7;
+  ki0_atp_pfk1 has mM;
+  f_fru26bp_pfk1_ki_atp = 9;
+  f_fru26bp_pfk1_ki_atp has dimensionless;
+  ka_fru26bp_pfk1_ki_atp = 0.54;
+  ka_fru26bp_pfk1_ki_atp has mM;
+  k0_fru6p_pfk1_km_fru6p = 1.14;
+  k0_fru6p_pfk1_km_fru6p has mM;
+  ki_atp_pfk1_km_fru6p = 0.6;
+  ki_atp_pfk1_km_fru6p has mM;
+  ki_cit_pfk1_km_fru6p = 3.27;
+  ki_cit_pfk1_km_fru6p has mM;
+  f_amp_pfk1_km_fru6p = 0.77;
+  f_amp_pfk1_km_fru6p has dimensionless;
+  n_amp_pfk1_km_fru6p = 1.84;
+  n_amp_pfk1_km_fru6p has dimensionless;
+  ka_amp_pfk1_km_fru6p = 0.1;
+  ka_amp_pfk1_km_fru6p has mM;
+  f_p_pfk1_km_fru6p = 0.85;
+  f_p_pfk1_km_fru6p has dimensionless;
+  ka_p_pfk1_km_fru6p = 0.69;
+  ka_p_pfk1_km_fru6p has mM;
+  f_fru26bp_pfk1_km_fru6p = 0.92;
+  f_fru26bp_pfk1_km_fru6p has dimensionless;
+  n_fru26bp_pfk1_km_fru6p = 1.2;
+  n_fru26bp_pfk1_km_fru6p has dimensionless;
+  ka_fru26bp_pfk1_km_fru6p = 0.0045;
+  ka_fru26bp_pfk1_km_fru6p has mM;
+  n0_pfk1_n_fru6p = 3.67;
+  n0_pfk1_n_fru6p has dimensionless;
+  n_atp_pfk1_n_fru6p = 1.59;
+  n_atp_pfk1_n_fru6p has dimensionless;
+  ki_atp_pfk1_n_fru6p = 0.13;
+  ki_atp_pfk1_n_fru6p has mM;
+  f_amp_pfk1_n_fru6p = 0.4;
+  f_amp_pfk1_n_fru6p has dimensionless;
+  n_amp_pfk1_n_fru6p = 2.22;
+  n_amp_pfk1_n_fru6p has dimensionless;
+  ka_amp_pfk1_n_fru6p = 0.086;
+  ka_amp_pfk1_n_fru6p has mM;
+  f_cit_pfk1_n_fru6p = 0.1;
+  f_cit_pfk1_n_fru6p has dimensionless;
+  n_cit_pfk1_n_fru6p = 4;
+  n_cit_pfk1_n_fru6p has dimensionless;
+  ki_cit_pfk1_n_fru6p = 0.18;
+  ki_cit_pfk1_n_fru6p has mM;
+  f_p_pfk1_n_fru6p = 0.28;
+  f_p_pfk1_n_fru6p has dimensionless;
+  n_p_pfk1_n_fru6p = 4;
+  n_p_pfk1_n_fru6p has dimensionless;
+  ka_p_pfk1_n_fru6p = 0.53;
+  ka_p_pfk1_n_fru6p has mM;
+  f_fru26bp_pfk1_n_fru6p = 0.37;
+  f_fru26bp_pfk1_n_fru6p has dimensionless;
+  n_fru26bp_pfk1_n_fru6p = 4;
+  n_fru26bp_pfk1_n_fru6p has dimensionless;
+  ka_fru26bp_pfk1_n_fru6p = 0.0021;
+  ka_fru26bp_pfk1_n_fru6p has mM;
+  vmax_pfk2 = 151;
+  vmax_pfk2 has mM_per_h;
+  n_fru6p_pfk2_native = 1.3;
+  n_fru6p_pfk2_native has dimensionless;
+  km_fru6p_pfk2_native = 0.015;
+  km_fru6p_pfk2_native has mM;
+  km_atp_pfk2_native = 0.25;
+  km_atp_pfk2_native has mM;
+  n0_pfk2 = 0.85;
+  n0_pfk2 has dimensionless;
+  ki_pep_pfk2 = 0.25;
+  ki_pep_pfk2 has mM;
+  n_fru6p_pfk2_phospho = 2;
+  n_fru6p_pfk2_phospho has dimensionless;
+  km_fru6p_pfk2_phospho = 0.05;
+  km_fru6p_pfk2_phospho has mM;
+  km_atp_pfk2_phospho = 0.5;
+  km_atp_pfk2_phospho has mM;
+  vmax_fbp2 = 549;
+  vmax_fbp2 has mM_per_h;
+  km_fru26bp_fbp2_native = 0.01;
+  km_fru26bp_fbp2_native has mM;
+  ki_fru6p_fbp2_native = 0.0035;
+  ki_fru6p_fbp2_native has mM;
+  f_fbp2_phospho = 1;
+  f_fbp2_phospho has dimensionless;
+  km_fru26bp_fbp2_phospho = 0.0005;
+  km_fru26bp_fbp2_phospho has mM;
+  ki_fru6p_fbp2_phospho = 0.01;
+  ki_fru6p_fbp2_phospho has mM;
+  vmax_pgk = 19400000000;
+  vmax_pgk has per_h_per_mM;
+  keq_pgk = 1830;
+  keq_pgk has dimensionless;
+  km_adp_pgk = 0.35;
+  km_adp_pgk has mM;
+  km_bpg13_pgk = 0.0022;
+  km_bpg13_pgk has mM;
+  km_atp_pgk = 0.24;
+  km_atp_pgk has mM;
+  km_pg3_pgk = 1.65;
+  km_pg3_pgk has mM;
+  vmax_pgm = 19400000000;
+  vmax_pgm has per_h;
+  keq_pgm = 0.096;
+  keq_pgm has dimensionless;
+  km_pg3_pgm = 0.52;
+  km_pg3_pgm has mM;
+  km_pg2_pgm = 0.24;
+  km_pg2_pgm has mM;
+  vmax_pk = 12800;
+  vmax_pk has mM_per_h;
+  km_pep_pk_native = 0.13;
+  km_pep_pk_native has mM;
+  ki_atp_pk_native = 1;
+  ki_atp_pk_native has mM;
+  ka_fru16bp_pk_native = 0.0078;
+  ka_fru16bp_pk_native has mM;
+  km_adp_pk_native = 0.25;
+  km_adp_pk_native has mM;
+  km_pep_pk_phospho = 5.8;
+  km_pep_pk_phospho has mM;
+  ki_atp_pk_phospho = 0.32;
+  ki_atp_pk_phospho has mM;
+  ka_fru16bp_pk_phospho = 0.0095;
+  ka_fru16bp_pk_phospho has mM;
+  km_adp_pk_phospho = 0.33;
+  km_adp_pk_phospho has mM;
+  n_pk_phospho = 2.9;
+  n_pk_phospho has dimensionless;
+  vmax_pyrmalt = 19400;
+  vmax_pyrmalt has per_h_per_mM;
+  km_mal_mito_pyrmalt = 0.7;
+  km_mal_mito_pyrmalt has mM;
+  km_pyr_pyrmalt = 0.84;
+  km_pyr_pyrmalt has mM;
+  km_mal_pyrmalt = 0.7;
+  km_mal_pyrmalt has mM;
+  km_pyr_mito_pyrmalt = 0.84;
+  km_pyr_mito_pyrmalt has mM;
+  vmax_pyrt = 194000000;
+  vmax_pyrt has per_h_per_mM;
+  km_pyr_pyrt = 0.15;
+  km_pyr_pyrt has mM;
+  km_pyr_mito_pyrt = 0.15;
+  km_pyr_mito_pyrt has mM;
+  vmax_tpi = 194000000;
+  vmax_tpi has per_h;
+  keq_tpi = 0.04545;
+  keq_tpi has dimensionless;
+  km_dhap_tpi = 0.59;
+  km_dhap_tpi has mM;
+  km_gap_tpi = 0.415;
+  km_gap_tpi has mM;
+  vmax_ugt = 7780000000;
+  vmax_ugt has per_h_per_mM;
+  keq_ugt = 0.3122;
+  keq_ugt has dimensionless;
+  km_utp_ugt = 0.2;
+  km_utp_ugt has mM;
+  km_glc1p_ugt = 0.055;
+  km_glc1p_ugt has mM;
+  km_udpglc_ugt = 0.06;
+  km_udpglc_ugt has mM;
+  km_pp_ugt = 0.084;
+  km_pp_ugt has mM;
+  ins0 = 3.1e-06;
+  ins0 has mM;
+  n_ins = 5.7;
+  n_ins has dimensionless;
+  km_glc_ext_ins = 7.7;
+  km_glc_ext_ins has mM;
+  glucagon0 = 5.06e-07;
+  glucagon0 has mM;
+  n_glucagon = 5.65;
+  n_glucagon has dimensionless;
+  km_glc_ext_glucagon = 4.7;
+  km_glc_ext_glucagon has mM;
+  glucagonb = 4e-08;
+  glucagonb has mM;
+  n_ins_gamma = 1.75;
+  n_ins_gamma has dimensionless;
+  km_ins_gamma = 7e-07;
+  km_ins_gamma has mM;
+  n_glucagon_gamma = 3.6;
+  n_glucagon_gamma has dimensionless;
+  km_glucagon_gamma = 8e-08;
+  km_glucagon_gamma has mM;
+  ins has mM;
+  glucagon has mM;
+  gamma_ has dimensionless;
+  gamma_fbp1 has dimensionless;
+  gamma_gp has dimensionless;
+  gamma_gs has dimensionless;
+  gamma_pfk2 has dimensionless;
+  gamma_fbp2 has dimensionless;
+  gamma_pk has dimensionless;
+  v_ALD has mM_per_h;
+  v_EN has mM_per_h;
+  v_fbp1_native has dimensionless;
+  v_fbp1_phospho has dimensionless;
+  v_FBP1 has mM_per_h;
+  v_GAPDH has mM_per_h;
+  vmax_gk has mM_per_h;
+  v_GK has dimensionless;
+  v_GLUT2 has mM_per_h;
+  v_GLCT_ER has mM_per_h;
+  vmax_gp has mM_per_h;
+  vmax_gp_native has per_mMmM;
+  km_glc1p_gp_native has mM;
+  vmax_gp_phospho has per_mMmM;
+  v_gp_native has dimensionless;
+  v_gp_phospho has dimensionless;
+  v_GP has mM_per_h;
+  v_G6P_ER has mM_per_h;
+  v_GPI has mM_per_h;
+  v_G1PI has mM_per_h;
+  v_G6PT_ER has mM_per_h;
+  vmax_gs has mM_per_h;
+  km_udpglc_gs_native has mM;
+  km_udpglc_gs_phospho has mM;
+  v_gs_native has dimensionless;
+  v_gs_phospho has dimensionless;
+  v_GS has mM_per_h;
+  v_LACT has mM_per_h;
+  v_LDH has mM_per_h;
+  v_MALT has mM_per_h;
+  v_MDH has mM_per_h;
+  v_MDH_mito has mM_per_h;
+  v_NDK_GTP has mM_per_h;
+  v_NDK_UTP has mM_per_h;
+  v_NDK_GTP_mito has mM_per_h;
+  v_PC has mM_per_h;
+  v_PEPCK has mM_per_h;
+  v_PEPCK_mito has mM_per_h;
+  keq_pept has dimensionless;
+  v_PEPT has mM_per_h;
+  km_atp_pfk1 has mM;
+  ki_atp_pfk1 has mM;
+  km_fru6p_pfk1 has mM;
+  n_fru6p_pfk1 has dimensionless;
+  v_PFK1 has mM_per_h;
+  v_pfk2_native has mM_per_h;
+  v_pfk2_phospho has mM_per_h;
+  v_PFK2 has mM_per_h;
+  v_fbp2_native has mM_per_h;
+  v_fbp2_phospho has mM_per_h;
+  v_FBP2 has mM_per_h;
+  v_PGK has mM_per_h;
+  v_PGM has mM_per_h;
+  v_pk_native has dimensionless;
+  v_pk_phospho has dimensionless;
+  v_PK has mM_per_h;
+  v_PyrMalT has mM_per_h;
+  v_PyrT has mM_per_h;
+  v_TPI has mM_per_h;
+  v_UGT has mM_per_h;
+
+  // Other declarations:
+  var ins, glucagon, gamma_, gamma_fbp1, gamma_gp, gamma_gs, gamma_pfk2, gamma_fbp2;
+  var gamma_pk, v_ALD, v_EN, v_fbp1_native, v_fbp1_phospho, v_FBP1, v_GAPDH;
+  var vmax_gk, v_GK, v_GLUT2, v_GLCT_ER, vmax_gp, vmax_gp_native, km_glc1p_gp_native;
+  var vmax_gp_phospho, v_gp_native, v_gp_phospho, v_GP, v_G6P_ER, v_GPI, v_G1PI;
+  var v_G6PT_ER, vmax_gs, km_udpglc_gs_native, km_udpglc_gs_phospho, v_gs_native;
+  var v_gs_phospho, v_GS, v_LACT, v_LDH, v_MALT, v_MDH, v_MDH_mito, v_NDK_GTP;
+  var v_NDK_UTP, v_NDK_GTP_mito, v_PC, v_PEPCK, v_PEPCK_mito, keq_pept, v_PEPT;
+  var km_atp_pfk1, ki_atp_pfk1, km_fru6p_pfk1, n_fru6p_pfk1, v_PFK1, v_pfk2_native;
+  var v_pfk2_phospho, v_PFK2, v_fbp2_native, v_fbp2_phospho, v_FBP2, v_PGK;
+  var v_PGM, v_pk_native, v_pk_phospho, v_PK, v_PyrMalT, v_PyrT, v_TPI, v_UGT;
+  const ext_, cyto, er, mito, Vmm, ONE, O5, M1, O1, F, R, T, vmax_ald, keq_ald;
+  const km_fru16bp_ald, km_gap_ald, km_dhap_ald, vmax_en, keq_en, km_pg2_en;
+  const km_pep_en, vmax_fbp1, km_fru16bp_fbp1_native, ki_fru26bp_fbp1, n_fbp1;
+  const ki_amp_fbp1, n_amp_fbp1, km_fru16bp_fbp1_phospho, vmax_gapdh, keq_gapdh;
+  const km_nad_gapdh, km_gap_gapdh, km_p_gapdh, km_nadh_gapdh, km_bpg13_gapdh;
+  const v0_gk, n_gk, ka_glc_gk, f_gk, ki_fru6p_gk, n2_gk, km_glc_gk, km_atp_gk;
+  const vmax_glct_er, km_glc_glct_er, km_glc_er_glct, vmax_glut2, km_glc_ext_glut2;
+  const km_glc_glut2, v0_gp, store, keq_gp, km_glyglc_gp_native, km_p_gp_native;
+  const ka_amp_gp_native, ka_amp_glc1p_gp, k0_glc1p_gp, km_glyglc_gp_phospho;
+  const km_p_gp_phospho, km_glc1p_gp_phospho, ka_amp_gp_phospho, vmax_g6p_er;
+  const km_glc6p_er_g6p_er, vmax_gpi, keq_gpi, km_glc6p_gpi, km_fru6p_gpi;
+  const vmax_g1pi, keq_g1pi, km_glc6p_g1pi, km_glc1p_g1pi, vmax_g6pt_er, km_glc6p_g6pt_er;
+  const km_glc6p_er_g6pt_er, v0_gs, kb_udpglc_gs_native, k0_udpglc_gs_native;
+  const ka_glc6p_gs_native, kb_udpglc_gs_phospho, k0_udpglc_gs_phospho, ka_glc6p_gs_phospho;
+  const vmax_lact, km_lac_lact, km_lac_ext_lact, vmax_ldh, keq_ldh, km_lac_ldh;
+  const km_nad_ldh, km_pyr_ldh, km_nadh_ldh, km_p_mito_malt, km_mal_malt;
+  const km_p_malt, km_mal_mito_malt, vmax_malt, km_oa_mdh, km_nadh_mdh, km_nad_mdh;
+  const km_mal_mdh, keq_mdh, vmax_mdh, km_oa_mito_mdh_mito, km_nadh_mito_mdh_mito;
+  const km_nad_mito_mdh_mito, km_mal_mito_mdh_mito, keq_mdh_mito, vmax_mdh_mito;
+  const vmax_ndk_gtp, keq_ndk, km_atp_ndk, km_gdp_ndk, km_adp_ndk, km_gtp_ndk;
+  const vmax_ndk_utp, km_udp_ndk, km_utp_ndk, vmax_ndk_gtp_mito, km_atp_mito_ndk;
+  const km_gdp_mito_ndk, km_adp_mito_ndk, km_gtp_mito_ndk, vmax_PC, keq_pc;
+  const km_atp_mito_pc, km_pyr_mito_pc, km_co2_mito_pc, vmax_pepck, keq_pepck;
+  const km_oa_pepck, km_gtp_pepck, km_pep_pepck, km_gdp_pepck, km_co2_pepck;
+  const vmax_pepck_mito, keq_pepck_mito, km_oa_mito_pepck_mito, km_gtp_mito_pepck_mito;
+  const km_pep_mito_pepck_mito, km_gdp_mito_pepck_mito, km_co2_mito_pepck_mito;
+  const vmax_pept, km_pep_pept, km_pep_mito_pept, vmax_pfk1, ni_pfk1, ka_fru26bp_pfk1_km_atp;
+  const k0_atp_pfk1_km_atp, ki0_atp_pfk1, f_fru26bp_pfk1_ki_atp, ka_fru26bp_pfk1_ki_atp;
+  const k0_fru6p_pfk1_km_fru6p, ki_atp_pfk1_km_fru6p, ki_cit_pfk1_km_fru6p;
+  const f_amp_pfk1_km_fru6p, n_amp_pfk1_km_fru6p, ka_amp_pfk1_km_fru6p, f_p_pfk1_km_fru6p;
+  const ka_p_pfk1_km_fru6p, f_fru26bp_pfk1_km_fru6p, n_fru26bp_pfk1_km_fru6p;
+  const ka_fru26bp_pfk1_km_fru6p, n0_pfk1_n_fru6p, n_atp_pfk1_n_fru6p, ki_atp_pfk1_n_fru6p;
+  const f_amp_pfk1_n_fru6p, n_amp_pfk1_n_fru6p, ka_amp_pfk1_n_fru6p, f_cit_pfk1_n_fru6p;
+  const n_cit_pfk1_n_fru6p, ki_cit_pfk1_n_fru6p, f_p_pfk1_n_fru6p, n_p_pfk1_n_fru6p;
+  const ka_p_pfk1_n_fru6p, f_fru26bp_pfk1_n_fru6p, n_fru26bp_pfk1_n_fru6p;
+  const ka_fru26bp_pfk1_n_fru6p, vmax_pfk2, n_fru6p_pfk2_native, km_fru6p_pfk2_native;
+  const km_atp_pfk2_native, n0_pfk2, ki_pep_pfk2, n_fru6p_pfk2_phospho, km_fru6p_pfk2_phospho;
+  const km_atp_pfk2_phospho, vmax_fbp2, km_fru26bp_fbp2_native, ki_fru6p_fbp2_native;
+  const f_fbp2_phospho, km_fru26bp_fbp2_phospho, ki_fru6p_fbp2_phospho, vmax_pgk;
+  const keq_pgk, km_adp_pgk, km_bpg13_pgk, km_atp_pgk, km_pg3_pgk, vmax_pgm;
+  const keq_pgm, km_pg3_pgm, km_pg2_pgm, vmax_pk, km_pep_pk_native, ki_atp_pk_native;
+  const ka_fru16bp_pk_native, km_adp_pk_native, km_pep_pk_phospho, ki_atp_pk_phospho;
+  const ka_fru16bp_pk_phospho, km_adp_pk_phospho, n_pk_phospho, vmax_pyrmalt;
+  const km_mal_mito_pyrmalt, km_pyr_pyrmalt, km_mal_pyrmalt, km_pyr_mito_pyrmalt;
+  const vmax_pyrt, km_pyr_pyrt, km_pyr_mito_pyrt, vmax_tpi, keq_tpi, km_dhap_tpi;
+  const km_gap_tpi, vmax_ugt, keq_ugt, km_utp_ugt, km_glc1p_ugt, km_udpglc_ugt;
+  const km_pp_ugt, ins0, n_ins, km_glc_ext_ins, glucagon0, n_glucagon, km_glc_ext_glucagon;
+  const glucagonb, n_ins_gamma, km_ins_gamma, n_glucagon_gamma, km_glucagon_gamma;
+
+  // Unit definitions:
+  unit mM = mole / metre^3;
+  unit V = volt;
+  unit K = kelvin;
+  unit J_per_V_per_mol = joule / (volt * mole);
+  unit J_per_K_per_mol = joule / (kelvin * mole);
+  unit per_h = 1 / 3600 second;
+  unit mM_per_h = mole / (metre^3 * 3600 second);
+  unit per_h_per_mMmM = metre^6 / (3600 second * mole^2);
+  unit per_h_per_mM = metre^3 / (3600 second * mole);
+  unit per_mM = metre^3 / mole;
+  unit per_mMmM = metre^6 / mole^2;
+
+  // CV terms:
+  ext_ property "http://identifiers.org/go/GO:0005576"
+  cyto property "http://identifiers.org/go/GO:0005829"
+  er property "http://identifiers.org/go/GO:0005783"
+  mito property "http://identifiers.org/go/GO:0005739"
+  glc_ext model_entity_is "http://identifiers.org/chebi/CHEBI:17234"
+  glc_ext identity "urn:miriam:ChEBI:CHEBI:17234"
+  lac_ext model_entity_is "http://identifiers.org/chebi/CHEBI:24996"
+  lac_ext identity "urn:miriam:ChEBI:CHEBI:24996"
+  glc model_entity_is "http://identifiers.org/chebi/CHEBI:17234"
+  glc identity "urn:miriam:ChEBI:CHEBI:17234"
+  glc6p identity "http://identifiers.org/kegg.compound/C00092"
+  glc1p identity "http://identifiers.org/kegg.compound/C00103"
+  udpglc identity "http://identifiers.org/kegg.compound/C00029"
+  glyglc identity "http://identifiers.org/kegg.compound/C00369"
+  fru6p identity "http://identifiers.org/kegg.compound/C00085"
+  fru16bp identity "http://identifiers.org/kegg.compound/C00354"
+  fru26bp identity "http://identifiers.org/kegg.compound/C00665"
+  gap identity "http://identifiers.org/kegg.compound/C00118"
+  dhap identity "http://identifiers.org/kegg.compound/C00111"
+  bpg13 model_entity_is "http://identifiers.org/chebi/CHEBI:89363"
+  bpg13 identity "urn:miriam:ChEBI:CHEBI:89363"
+  pg3 identity "http://identifiers.org/kegg.compound/C00197"
+  pg2 identity "http://identifiers.org/kegg.compound/C00631"
+  pep identity "http://identifiers.org/kegg.compound/C00074"
+  pyr identity "http://identifiers.org/kegg.compound/C00022"
+  oa identity "http://identifiers.org/kegg.compound/C00036"
+  lac model_entity_is "http://identifiers.org/chebi/CHEBI:24996"
+  lac identity "urn:miriam:ChEBI:CHEBI:24996"
+  mal identity "http://identifiers.org/kegg.compound/C00149"
+  cit identity "http://identifiers.org/kegg.compound/C00158"
+  h identity "http://identifiers.org/kegg.compound/C00080"
+  co2_mito identity "http://identifiers.org/kegg.compound/C00011"
+  oa_mito identity "http://identifiers.org/kegg.compound/C00036"
+  pep_mito identity "http://identifiers.org/kegg.compound/C00074"
+  pyr_mito identity "http://identifiers.org/kegg.compound/C00022"
+  mal_mito identity "http://identifiers.org/kegg.compound/C00149"
+  p_mito identity "http://identifiers.org/kegg.compound/C00009"
+  h_mito identity "http://identifiers.org/kegg.compound/C00080"
+  glc_er model_entity_is "http://identifiers.org/chebi/CHEBI:17234"
+  glc_er identity "urn:miriam:ChEBI:CHEBI:17234"
+  glc6p_er identity "http://identifiers.org/kegg.compound/C00092"
+  atp identity "http://identifiers.org/kegg.compound/C00002"
+  adp identity "http://identifiers.org/kegg.compound/C00008"
+  amp identity "http://identifiers.org/kegg.compound/C00020"
+  utp identity "http://identifiers.org/kegg.compound/C00075"
+  udp identity "http://identifiers.org/kegg.compound/C00015"
+  gtp identity "http://identifiers.org/kegg.compound/C00044"
+  gdp identity "http://identifiers.org/kegg.compound/C00035"
+  pp identity "http://identifiers.org/kegg.compound/C00013"
+  p identity "http://identifiers.org/kegg.compound/C00009"
+  p_er identity "http://identifiers.org/kegg.compound/C00009"
+  co2 identity "http://identifiers.org/kegg.compound/C00011"
+  nad identity "http://identifiers.org/kegg.compound/C00003"
+  nadh identity "http://identifiers.org/kegg.compound/C00004"
+  atp_mito identity "http://identifiers.org/kegg.compound/C00002"
+  adp_mito identity "http://identifiers.org/kegg.compound/C00008"
+  gtp_mito identity "http://identifiers.org/kegg.compound/C00044"
+  gdp_mito identity "http://identifiers.org/kegg.compound/C00035"
+  nadh_mito identity "http://identifiers.org/kegg.compound/C00004"
+  nad_mito identity "http://identifiers.org/kegg.compound/C00003"
+  ALD hypernym "http://identifiers.org/kegg.reaction/R01068"
+  EN hypernym "http://identifiers.org/kegg.reaction/R00658"
+  FBP1 identity "http://identifiers.org/kegg.reaction/R00762"
+  GAPDH hypernym "http://identifiers.org/kegg.reaction/R01061"
+  GK hypernym "http://identifiers.org/kegg.reaction/R00299"
+  GLCT_ER hypernym "http://identifiers.org/go/GO:1904659"
+  GLUT2 hypernym "http://identifiers.org/go/GO:1904659"
+  GP hypernym "http://identifiers.org/kegg.reaction/R02111"
+  G6P_ER hypernym "http://identifiers.org/kegg.reaction/R00303"
+  GPI hypernym "http://identifiers.org/kegg.reaction/R00771"
+  G1PI hypernym "http://identifiers.org/kegg.reaction/R08639"
+  G6PT_ER hypernym "http://identifiers.org/go/GO:0015152"
+  GS hypernym "http://identifiers.org/kegg.reaction/R00292"
+  LACT hypernym "http://identifiers.org/go/GO:0035873"
+  LDH hypernym "http://identifiers.org/kegg.reaction/R00703"
+  MALT hypernym "http://identifiers.org/go/GO:0071423"
+  MDH hypernym "http://identifiers.org/kegg.reaction/R00342"
+  MDH_mito hypernym "http://identifiers.org/kegg.reaction/R00342"
+  NDK_GTP hypernym "http://identifiers.org/kegg.reaction/R00330"
+  NDK_UTP hypernym "http://identifiers.org/kegg.reaction/R00156"
+  NDK_GTP_mito hypernym "http://identifiers.org/kegg.reaction/R00330"
+  PC hypernym "http://identifiers.org/kegg.reaction/R00344"
+  PEPCK hypernym "http://identifiers.org/kegg.reaction/R00431"
+  PEPCK_mito hypernym "http://identifiers.org/kegg.reaction/R00431"
+  PEPT identity "http://identifiers.org/go/GO:0089722"
+  PFK1 hypernym "http://identifiers.org/kegg.reaction/R00756"
+  PFK2 hypernym "http://identifiers.org/kegg.reaction/R02732"
+  FBP2 identity "http://identifiers.org/kegg.reaction/R00763"
+  PGK identity "http://identifiers.org/kegg.reaction/R01512"
+  PGM identity "http://identifiers.org/kegg.reaction/R01518"
+  PK identity "http://identifiers.org/kegg.reaction/R00200"
+  PyrMalT part "http://identifiers.org/go/GO:1902361",
+               "http://identifiers.org/go/GO:0071423"
+  PyrT hypernym "http://identifiers.org/go/GO:1901475"
+  TPI identity "http://identifiers.org/kegg.reaction/R01015"
+  UGT hypernym "http://identifiers.org/kegg.reaction/R00289"
+end
+
+BIOMD0000000633 is "Bulik2016 - Regulation of hepatic glucose metabolism"
+
+BIOMD0000000633 model_entity_is "http://identifiers.org/biomodels.db/MODEL1603030000"
+BIOMD0000000633 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000633"
+BIOMD0000000633 description "http://identifiers.org/pubmed/26935066"
+BIOMD0000000633 property "http://identifiers.org/go/GO:0055085",
+                         "http://identifiers.org/go/GO:0006468",
+                         "http://identifiers.org/go/GO:0010906",
+                         "http://identifiers.org/mamo/MAMO_0000009"
+BIOMD0000000633 taxon "http://identifiers.org/taxonomy/10116"

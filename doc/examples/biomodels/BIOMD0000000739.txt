@@ -1,0 +1,206 @@
+// Created by libAntimony v2.13.0
+model *Bravo2012___Modelling_blood_coagulation_factor_Va_inactivation_by_APC()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species APC in compartment_, APC_Va in compartment_, Va in compartment_;
+  species Va_i_506 in compartment_, Va_i_306 in compartment_, APC_Va_i_506 in compartment_;
+  species APC_Va_i_306 in compartment_, Va_i_306_506 in compartment_, Va_1_306_Va_LC in compartment_;
+  species Va_307_506 in compartment_, Va_507_679_709 in compartment_, APC_Va_1_306_Va_LC in compartment_;
+  species Xa in compartment_, Xa_Va in compartment_, Xa_Va_i_506 in compartment_;
+  species Xa_Va_i_306_506 in compartment_, Xa_Va_i_306 in compartment_, Va_307_679_709 in compartment_;
+  species PT in compartment_, Va_PT in compartment_, Xa_Va_PT in compartment_;
+  species Xa_Va_i_506_PT in compartment_, Xa_Va_i_306_PT in compartment_;
+  species Xa_Va_i_306_506_PT in compartment_;
+
+  // Assignment Rules:
+  time_minutes := time/60;
+  Curve_Va_Xa := Xa_Va/Metabolite_13;
+  Curve_Va := Va/Metabolite_2;
+  Curve_va_i_506 := Va_i_506/param_for_curve_va_i_506_normalise;
+  param_for_curve_va_i_506_normalise := piecewise(5.9e-9, Metabolite_19 < 3e-7, piecewise(1.08e-7, Metabolite_19 < 6e-7, 2.01e-7));
+
+  // Reactions:
+  R01: APC + Va -> APC_Va; compartment_*(R01_kon*APC*Va - R01_koff*APC_Va);
+  R02: APC_Va => APC + Va_i_506; compartment_*R02_kcat*APC_Va;
+  R03: APC_Va => APC + Va_i_306; compartment_*R03_kcat*APC_Va;
+  R04: APC + Va_i_506 -> APC_Va_i_506; compartment_*(R04_kon*APC*Va_i_506 - R04_koff*APC_Va_i_506);
+  R05: APC + Va_i_306 -> APC_Va_i_306; compartment_*(R05_kon*APC*Va_i_306 - R05_koff*APC_Va_i_306);
+  R06: APC_Va_i_506 => APC + Va_i_306_506; compartment_*R06_kcat*APC_Va_i_506;
+  R07: APC_Va_i_306 => APC + Va_i_306_506; compartment_*R07_kcat*APC_Va_i_306;
+  R08: Va_i_306 => Va_1_306_Va_LC + Va_307_679_709; compartment_*R08_kdis*Va_i_306;
+  R09: Va_i_306_506 => Va_1_306_Va_LC + Va_307_506 + Va_507_679_709; compartment_*R09_kdis*Va_i_306_506;
+  R10: APC + Va_1_306_Va_LC -> APC_Va_1_306_Va_LC; compartment_*(R10_kon*APC*Va_1_306_Va_LC - R10_koff*APC_Va_1_306_Va_LC);
+  R11: Xa + Va -> Xa_Va; compartment_*(R11_kon*Xa*Va - R11_koff*Xa_Va);
+  R12: Xa + Va_i_506 -> Xa_Va_i_506; compartment_*(R12_kon*Xa*Va_i_506 - R12_koff*Xa_Va_i_506);
+  R13: Xa + Va_i_306 -> Xa_Va_i_306; compartment_*(R13_kon*Xa*Va_i_306 - R13_koff*Xa_Va_i_306);
+  R14: Xa + Va_i_306_506 -> Xa_Va_i_306_506; compartment_*(R14_kon*Xa*Va_i_306_506 - R14_koff*Xa_Va_i_306_506);
+  R15: Xa_Va_i_306 => Xa + Va_1_306_Va_LC + Va_307_679_709; compartment_*R15_kdis*Xa_Va_i_306;
+  R16: Xa_Va_i_306_506 => Xa + Va_1_306_Va_LC + Va_307_506 + Va_507_679_709; compartment_*R16_kdis*Xa_Va_i_306_506;
+  R17: Va + PT -> Va_PT; compartment_*(R17_kon*Va*PT - R17_koff*Va_PT);
+  R19: Xa_Va + PT -> Xa_Va_PT; compartment_*(R19_kon*Xa_Va*PT - R19_koff*Xa_Va_PT);
+  R20: Xa_Va_i_506 + PT -> Xa_Va_i_506_PT; compartment_*(R20_kon*Xa_Va_i_506*PT - R20_koff*Xa_Va_i_506_PT);
+  R21: Xa_Va_i_306 + PT -> Xa_Va_i_306_PT; compartment_*(R21_kon*Xa_Va_i_306*PT - R21_koff*Xa_Va_i_306_PT);
+  R22: Xa_Va_i_306_506 + PT -> Xa_Va_i_306_506_PT; compartment_*(R22_kon*Xa_Va_i_306_506*PT - R22_kon*Xa_Va_i_306_506_PT);
+  R23: Xa_Va_i_306_PT => Xa + Va_1_306_Va_LC + Va_307_679_709 + PT; compartment_*R23_dis*Xa_Va_i_306_PT;
+  R24: Xa_Va_i_306_506_PT => Xa + PT + Va_1_306_Va_LC + Va_307_506 + Va_507_679_709; compartment_*R24_dis*Xa_Va_i_306_506_PT;
+
+  // Species initializations:
+  APC = 2e-09;
+  APC_Va = 0;
+  Va = 2e-08;
+  Va_i_506 = 0;
+  Va_i_306 = 0;
+  APC_Va_i_506 = 0;
+  APC_Va_i_306 = 0;
+  Va_i_306_506 = 0;
+  Va_1_306_Va_LC = 0;
+  Va_307_506 = 0;
+  Va_507_679_709 = 0;
+  APC_Va_1_306_Va_LC = 0;
+  Xa = 0;
+  Xa_Va = 0;
+  Xa_Va_i_506 = 0;
+  Xa_Va_i_306_506 = 0;
+  Xa_Va_i_306 = 0;
+  Va_307_679_709 = 0;
+  PT = 0;
+  Va_PT = 0;
+  Xa_Va_PT = 0;
+  Xa_Va_i_506_PT = 0;
+  Xa_Va_i_306_PT = 0;
+  Xa_Va_i_306_506_PT = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  R01_koff = 0.7;
+  R01_kon = 100000000;
+  R02_kcat = 1;
+  R03_kcat = 0.192;
+  R04_koff = 0.7;
+  R04_kon = 100000000;
+  R05_koff = 0.7;
+  R05_kon = 100000000;
+  R06_kcat = 0.192;
+  R07_kcat = 1;
+  R08_kdis = 0.028;
+  R09_kdis = 0.028;
+  R10_koff = 0.7;
+  R10_kon = 100000000;
+  R11_koff = 0.075;
+  R11_kon = 150000000;
+  R12_koff = 0.15;
+  R12_kon = 150000000;
+  R13_koff = 0.15;
+  R13_kon = 150000000;
+  R14_koff = 0.15;
+  R14_kon = 150000000;
+  R15_kdis = 0.0035;
+  R16_kdis = 0.0035;
+  R17_koff = 70;
+  R17_kon = 100000000;
+  R19_koff = 103;
+  R19_kon = 100000000;
+  R20_koff = 103;
+  R20_kon = 100000000;
+  R21_koff = 103;
+  R21_kon = 100000000;
+  R22_koff = 103;
+  R22_kon = 100000000;
+  R23_dis = 0.0035;
+  R24_dis = 0.0035;
+  Metabolite_13 = Xa_Va;
+  Metabolite_2 = Va;
+  Metabolite_19 = Va_PT;
+
+  // Other declarations:
+  var time_minutes, Curve_Va_Xa, Curve_Va, Curve_va_i_506, param_for_curve_va_i_506_normalise;
+  const compartment_, R01_koff, R01_kon, R02_kcat, R03_kcat, R04_koff, R04_kon;
+  const R05_koff, R05_kon, R06_kcat, R07_kcat, R08_kdis, R09_kdis, R10_koff;
+  const R10_kon, R11_koff, R11_kon, R12_koff, R12_kon, R13_koff, R13_kon;
+  const R14_koff, R14_kon, R15_kdis, R16_kdis, R17_koff, R17_kon, R19_koff;
+  const R19_kon, R20_koff, R20_kon, R21_koff, R21_kon, R22_koff, R22_kon;
+  const R23_dis, R24_dis, Metabolite_13, Metabolite_2, Metabolite_19;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+
+  // Display Names:
+  compartment_ is "compartment";
+  APC_Va is "APC:Va";
+  APC_Va_i_506 is "APC:Va_i_506";
+  APC_Va_i_306 is "APC:Va_i_306";
+  Va_i_306_506 is "Va_i_306/506";
+  Va_1_306_Va_LC is "Va_1-306:Va_LC";
+  Va_307_506 is "Va_307-506";
+  Va_507_679_709 is "Va_507-679/709";
+  APC_Va_1_306_Va_LC is "APC:Va_1-306:Va_LC";
+  Xa_Va is "Xa:Va";
+  Xa_Va_i_506 is "Xa:Va_i_506";
+  Xa_Va_i_306_506 is "Xa:Va_i_306/506";
+  Xa_Va_i_306 is "Xa:Va_i_306";
+  Va_307_679_709 is "Va_307-679/709";
+  Va_PT is "Va:PT";
+  Xa_Va_PT is "Xa:Va:PT";
+  Xa_Va_i_506_PT is "Xa:Va_i_506:PT";
+  Xa_Va_i_306_PT is "Xa:Va_i_306:PT";
+  Xa_Va_i_306_506_PT is "Xa:Va_i_306/506:PT";
+  Curve_Va_Xa is "Curve_Va:Xa";
+  Metabolite_13 is "Initial for Xa:Va";
+  Metabolite_2 is "Initial for Va";
+  Metabolite_19 is "Initial for Va:PT";
+
+  // CV terms:
+  APC identity "http://identifiers.org/ncit/C102826"
+  APC_Va part "http://identifiers.org/ncit/C91335"
+  APC_Va part "http://identifiers.org/ncit/C102826"
+  Va identity "http://identifiers.org/ncit/C91335"
+  Va_i_506 version "http://identifiers.org/ncit/C91335"
+  Va_i_306 origin "http://identifiers.org/ncit/C91335"
+  APC_Va_i_506 part "http://identifiers.org/ncit/C102826"
+  APC_Va_i_506 part "http://identifiers.org/ncit/C91335"
+  APC_Va_i_306 part "http://identifiers.org/ncit/C102826"
+  APC_Va_i_306 part "http://identifiers.org/ncit/C91335"
+  Va_i_306_506 version "http://identifiers.org/ncit/C91335"
+  Va_1_306_Va_LC origin "http://identifiers.org/ncit/C91335"
+  Va_307_506 origin "http://identifiers.org/ncit/C91335"
+  Va_507_679_709 origin "http://identifiers.org/ncit/C91335"
+  APC_Va_1_306_Va_LC part "http://identifiers.org/ncit/C102826"
+  APC_Va_1_306_Va_LC part "http://identifiers.org/ncit/C91335"
+  Xa identity "http://identifiers.org/ncit/C98727"
+  Xa_Va part "http://identifiers.org/ncit/C91335"
+  Xa_Va part "http://identifiers.org/ncit/C98727"
+  Xa_Va_i_506 part "http://identifiers.org/ncit/C98727"
+  Xa_Va_i_506 part "http://identifiers.org/ncit/C91335"
+  Xa_Va_i_306_506 part "http://identifiers.org/ncit/C98727"
+  Xa_Va_i_306_506 part "http://identifiers.org/ncit/C91335"
+  Xa_Va_i_306 part "http://identifiers.org/ncit/C91335"
+  Xa_Va_i_306 part "http://identifiers.org/ncit/C98727"
+  Va_307_679_709 taxon "http://identifiers.org/ncit/C91335"
+  PT identity "http://identifiers.org/ncit/C82273"
+  Va_PT part "http://identifiers.org/ncit/C82273"
+  Va_PT part "http://identifiers.org/ncit/C91335"
+  Xa_Va_PT part "http://identifiers.org/ncit/C91335"
+  Xa_Va_PT part "http://identifiers.org/ncit/C98727"
+  Xa_Va_PT part "http://identifiers.org/ncit/C82273"
+  Xa_Va_i_506_PT part "http://identifiers.org/ncit/C98727"
+  Xa_Va_i_506_PT part "http://identifiers.org/ncit/C82273"
+  Xa_Va_i_506_PT part "http://identifiers.org/ncit/C91335"
+  Xa_Va_i_306_PT part "http://identifiers.org/ncit/C82273"
+  Xa_Va_i_306_PT part "http://identifiers.org/ncit/C98727"
+  Xa_Va_i_306_PT part "http://identifiers.org/ncit/C91335"
+  Xa_Va_i_306_506_PT part "http://identifiers.org/ncit/C98727"
+  Xa_Va_i_306_506_PT part "http://identifiers.org/ncit/C91335"
+  Xa_Va_i_306_506_PT part "http://identifiers.org/ncit/C82273"
+end
+
+Bravo2012___Modelling_blood_coagulation_factor_Va_inactivation_by_APC is "Bravo2012 - Modelling blood coagulation factor Va inactivation by APC"
+
+Bravo2012___Modelling_blood_coagulation_factor_Va_inactivation_by_APC description "http://identifiers.org/pubmed/22607732"
+Bravo2012___Modelling_blood_coagulation_factor_Va_inactivation_by_APC model_entity_is "http://identifiers.org/biomodels.db/MODEL1807020001",
+                                                                                      "http://identifiers.org/biomodels.db/BIOMD0000000739"
+Bravo2012___Modelling_blood_coagulation_factor_Va_inactivation_by_APC hypernym "http://identifiers.org/go/GO:0007596"
+Bravo2012___Modelling_blood_coagulation_factor_Va_inactivation_by_APC property "http://identifiers.org/mamo/MAMO_0000046"
+Bravo2012___Modelling_blood_coagulation_factor_Va_inactivation_by_APC taxon "http://identifiers.org/taxonomy/9606"

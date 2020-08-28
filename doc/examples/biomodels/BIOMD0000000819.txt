@@ -1,0 +1,416 @@
+// Created by libAntimony v2.13.0
+function Function_for_S_self_renewal(alpha_S, P_S, S)
+  alpha_S*P_S*S;
+end
+
+Function_for_S_self_renewal is "Function for S self-renewal"
+
+function Function_for_S_death(delta_S, S, gamma_S, phi_S)
+  delta_S*S/(1 + gamma_S*phi_S);
+end
+
+Function_for_S_death is "Function for S death"
+
+function Function_for_amplified_S_differentiation(A_in, alpha_S, P_S, S)
+  A_in*alpha_S*(1 - P_S)*S;
+end
+
+Function_for_amplified_S_differentiation is "Function for amplified S differentiation"
+
+function Function_for_Progenitor_Cell_E_differentiation(alpha_E, E)
+  alpha_E*E;
+end
+
+Function_for_Progenitor_Cell_E_differentiation is "Function for Progenitor Cell E differentiation"
+
+function Function_for_Progenitor_Cell_E_death(delta_E, E, gamma_E, phi_E)
+  delta_E*E/(1 + gamma_E*phi_E);
+end
+
+Function_for_Progenitor_Cell_E_death is "Function for Progenitor Cell E death"
+
+function Function_for_Progenitor_Cell_E_differentiation_form_D(A_out, alpha_E, E)
+  A_out*alpha_E*E;
+end
+
+Function_for_Progenitor_Cell_E_differentiation_form_D is "Function for Progenitor Cell E differentiation form D"
+
+function Function_for_Differentiated_cell_D_death(delta_D, D, gamma_D, phi_D)
+  delta_D*D/(1 + gamma_D*phi_D);
+end
+
+Function_for_Differentiated_cell_D_death is "Function for Differentiated cell D death"
+
+function Function_for_IL6_binding_to_stem_cells(k_f, L, R_S)
+  k_f*L*R_S;
+end
+
+Function_for_IL6_binding_to_stem_cells is "Function for IL6 binding to stem cells"
+
+function Function_for_IL6_dissociation_from_stem_cells(K_r, C_S)
+  K_r*C_S;
+end
+
+Function_for_IL6_dissociation_from_stem_cells is "Function for IL6 dissociation from stem cells"
+
+function Function_for_IL6_binding_to_progenitor_cells(K_f, L, R_E)
+  K_f*L*R_E;
+end
+
+Function_for_IL6_binding_to_progenitor_cells is "Function for IL6 binding to progenitor cells"
+
+function Function_for_IL6_dissociation_from_progenitor_cells(K_r, C_E)
+  K_r*C_E;
+end
+
+Function_for_IL6_dissociation_from_progenitor_cells is "Function for IL6 dissociation from progenitor cells"
+
+function Function_for_IL6_binding_to_differentiated_cells(K_f, L, R_D)
+  K_f*L*R_D;
+end
+
+Function_for_IL6_binding_to_differentiated_cells is "Function for IL6 binding to differentiated cells"
+
+function Function_for_IL6_dissociation_from_differentiated_cells(C_D, K_r)
+  K_r*C_D;
+end
+
+Function_for_IL6_dissociation_from_differentiated_cells is "Function for IL6 dissociation from differentiated cells"
+
+function Function_for_IL6_natural_decay(lambda_L, L)
+  lambda_L*L;
+end
+
+Function_for_IL6_natural_decay is "Function for IL6 natural decay"
+
+function Function_for_IL6_Production_by_tumor_cells(rho, S, E, D)
+  rho*(S + E + D);
+end
+
+Function_for_IL6_Production_by_tumor_cells is "Function for IL6 Production by tumor cells"
+
+function Function_for_recycling_of_Receptor_S(K_p, C_S)
+  K_p*C_S;
+end
+
+Function_for_recycling_of_Receptor_S is "Function for recycling of Receptor_S"
+
+function Function_for_recycling_of_Receptor_E(K_P, C_E)
+  K_P*C_E;
+end
+
+Function_for_recycling_of_Receptor_E is "Function for recycling of Receptor_E"
+
+function Function_for_recycling_of_Receptor_D(K_p, C_D)
+  K_p*C_D;
+end
+
+Function_for_recycling_of_Receptor_D is "Function for recycling of Receptor_D"
+
+function Function_for_Generation_of_new_R_S_via_cell_proliferation(R_Ts, P_phiS)
+  R_Ts*P_phiS;
+end
+
+Function_for_Generation_of_new_R_S_via_cell_proliferation is "Function for Generation of new R_S via cell proliferation"
+
+function Function_for_Generation_of_new_R_E_via_cell_proliferation(R_Te, P_etaE)
+  R_Te*P_etaE;
+end
+
+Function_for_Generation_of_new_R_E_via_cell_proliferation is "Function for Generation of new R_E via cell proliferation"
+
+function Function_for_Generation_of_new_R_D_via_cell_proliferation(R_Td, P_DD)
+  R_Td*P_DD;
+end
+
+Function_for_Generation_of_new_R_D_via_cell_proliferation is "Function for Generation of new R_D via cell proliferation"
+
+function Function_for_Loss_of_RS_via_cell_death(R_S, R_Ts, D_phiS, C_S)
+  R_S*R_Ts*D_phiS/(R_S + C_S);
+end
+
+Function_for_Loss_of_RS_via_cell_death is "Function for Loss of RS via cell death"
+
+function Function_for_Loss_of_RE_via_cell_death(R_E, R_Te, D_etaE, C_E)
+  R_E*R_Te*D_etaE/(R_E + C_E);
+end
+
+Function_for_Loss_of_RE_via_cell_death is "Function for Loss of RE via cell death"
+
+function Function_for_Loss_of_RD_via_cell_death(R_D, R_Td, D_DD, C_D)
+  R_D*R_Td*D_DD/(R_D + C_D);
+end
+
+Function_for_Loss_of_RD_via_cell_death is "Function for Loss of RD via cell death"
+
+function Function_for_Loss_of_C_S_via_cell_death(C_S, R_Ts, D_phiS, R_S)
+  C_S*R_Ts*D_phiS/(R_S + C_S);
+end
+
+Function_for_Loss_of_C_S_via_cell_death is "Function for Loss of C_S via cell death"
+
+function Function_for_Loss_of_C_E_via_cell_death(C_E, R_Te, D_etaE, R_E)
+  C_E*R_Te*D_etaE/(R_E + C_E);
+end
+
+Function_for_Loss_of_C_E_via_cell_death is "Function for Loss of C_E via cell death"
+
+function Function_for_Loss_of_C_D_via_cell_death(C_D, R_Td, D_DD, R_D)
+  C_D*R_Td*D_DD/(R_D + C_D);
+end
+
+Function_for_Loss_of_C_D_via_cell_death is "Function for Loss of C_D via cell death"
+
+
+model *New_Model()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species Cancer_Stem_Cell_S in compartment_, IL_6__Cell_bound_IL_6R_complex_on_S in compartment_;
+  species Progenitor_tumor_cell_E in compartment_, Differentiated_tumor_cell_D in compartment_;
+  species IL_6__Cell_bound_IL_6R_complex_on_E in compartment_, IL_6__Cell_bound_IL_6R_complex_on_D in compartment_;
+  species IL_6__L in compartment_, IL_6R_on_S in compartment_, IL_6R_on_E in compartment_;
+  species IL_6R_on_D in compartment_, $tumor in compartment_;
+
+  // Assignment Rules:
+  tumor := Cancer_Stem_Cell_S + Differentiated_tumor_cell_D + Progenitor_tumor_cell_E;
+  phi_S := IL_6__Cell_bound_IL_6R_complex_on_S/(R_Ts*Cancer_Stem_Cell_S);
+  delta_S := 1.5*alpha_S*Pstar_Smin;
+  alpha_E := ln(2)/1.04;
+  R_Te := R_Ts/8;
+  R_Td := R_Ts/8;
+  phi_E := IL_6__Cell_bound_IL_6R_complex_on_E/(R_Te*Progenitor_tumor_cell_E);
+  phi_D := IL_6__Cell_bound_IL_6R_complex_on_D/(R_Td*Differentiated_tumor_cell_D);
+  P_Smin := myu*(P_Smax - Pstar_Smin)*phi_S + Pstar_Smin;
+  P_S := (P_Smax - P_Smin)*P_Ns^n/(P_Ns^n + Cancer_Stem_Cell_S^n) + P_Smin;
+  P_phiS := alpha_S*P_S*Cancer_Stem_Cell_S;
+  P_etaE := A_in*alpha_S*(1 - P_S)*Cancer_Stem_Cell_S - alpha_E*Progenitor_tumor_cell_E;
+  P_DD := A_out*alpha_E*Progenitor_tumor_cell_E;
+  D_phiS := delta_S*Cancer_Stem_Cell_S/(1 + gamma_S*phi_S);
+  D_etaE := delta_E*Progenitor_tumor_cell_E/(1 + gamma_E*phi_E);
+  D_DD := delta_D*Differentiated_tumor_cell_D/(1 + gamma_D*phi_D);
+
+  // Reactions:
+  Cancer_Stem_cell_S_self_renewal:  => Cancer_Stem_Cell_S; compartment_*Function_for_S_self_renewal(alpha_S, P_S, Cancer_Stem_Cell_S);
+  Cancer_Stem_Cell_S_death: Cancer_Stem_Cell_S => ; compartment_*Function_for_S_death(delta_S, Cancer_Stem_Cell_S, gamma_S, phi_S);
+  Amplified_Stem_Cell_differentiation:  => Progenitor_tumor_cell_E; compartment_*Function_for_amplified_S_differentiation(A_in, alpha_S, P_S, Cancer_Stem_Cell_S);
+  Progenitor_Cell_E_differentiation: Progenitor_tumor_cell_E => ; compartment_*Function_for_Progenitor_Cell_E_differentiation(alpha_E, Progenitor_tumor_cell_E);
+  Progenitor_Cell_E_death: Progenitor_tumor_cell_E => ; compartment_*Function_for_Progenitor_Cell_E_death(delta_E, Progenitor_tumor_cell_E, gamma_E, phi_E);
+  Progenitor_Cell_differentiation_form_D:  => Differentiated_tumor_cell_D; compartment_*Function_for_Progenitor_Cell_E_differentiation_form_D(A_out, alpha_E, Progenitor_tumor_cell_E);
+  Differentiated_Cell_D_death: Differentiated_tumor_cell_D => ; compartment_*Function_for_Differentiated_cell_D_death(delta_D, Differentiated_tumor_cell_D, gamma_D, phi_D);
+  IL6_binding_to_stem_cells: IL_6__L + IL_6R_on_S => ; compartment_*Function_for_IL6_binding_to_stem_cells(K_f, IL_6__L, IL_6R_on_S);
+  IL6_dissociation_from_stem_cells: IL_6__Cell_bound_IL_6R_complex_on_S => IL_6__L + IL_6R_on_S; compartment_*Function_for_IL6_dissociation_from_stem_cells(K_r, IL_6__Cell_bound_IL_6R_complex_on_S);
+  IL6_binding_to_progenitor_cells: IL_6__L + IL_6R_on_E => ; compartment_*Function_for_IL6_binding_to_progenitor_cells(K_f, IL_6__L, IL_6R_on_E);
+  IL6_dissociation_from_progenitor_cells: IL_6__Cell_bound_IL_6R_complex_on_E => IL_6__L + IL_6R_on_E; compartment_*Function_for_IL6_dissociation_from_progenitor_cells(K_r, IL_6__Cell_bound_IL_6R_complex_on_E);
+  IL6_binding_to_differentiated_cells: IL_6__L + IL_6R_on_D => ; compartment_*Function_for_IL6_binding_to_differentiated_cells(K_f, IL_6__L, IL_6R_on_D);
+  IL6_dissociation_from_differentiated_cells: IL_6__Cell_bound_IL_6R_complex_on_D => IL_6__L + IL_6R_on_D; compartment_*Function_for_IL6_dissociation_from_differentiated_cells(IL_6__Cell_bound_IL_6R_complex_on_D, K_r);
+  IL6_natural_decay: IL_6__L => ; compartment_*Function_for_IL6_natural_decay(lambda, IL_6__L);
+  IL6_Production_by_tumor_cells:  => IL_6__L; compartment_*Function_for_IL6_Production_by_tumor_cells(rho, Cancer_Stem_Cell_S, Progenitor_tumor_cell_E, Differentiated_tumor_cell_D);
+  Recycling_of_Receptors_S: IL_6__Cell_bound_IL_6R_complex_on_S => IL_6R_on_S; compartment_*Function_for_recycling_of_Receptor_S(K_p, IL_6__Cell_bound_IL_6R_complex_on_S);
+  Recycling_of_Receptors_E: IL_6__Cell_bound_IL_6R_complex_on_E => IL_6R_on_E; compartment_*Function_for_recycling_of_Receptor_E(K_p, IL_6__Cell_bound_IL_6R_complex_on_E);
+  Recycling_of_Receptors_D: IL_6__Cell_bound_IL_6R_complex_on_D => IL_6R_on_D; compartment_*Function_for_recycling_of_Receptor_D(K_p, IL_6__Cell_bound_IL_6R_complex_on_D);
+  Generation_of_new_R_S_via_cell_proliferation:  => IL_6R_on_S; compartment_*Function_for_Generation_of_new_R_S_via_cell_proliferation(R_Ts, P_phiS);
+  Generation_of_new_R_E_via_cell_proliferation:  => IL_6R_on_E; compartment_*Function_for_Generation_of_new_R_E_via_cell_proliferation(R_Te, P_etaE);
+  Generation_of_new_R_D_via_cell_proliferation:  => IL_6R_on_D; compartment_*Function_for_Generation_of_new_R_D_via_cell_proliferation(R_Td, P_DD);
+  Loss_of_Receptors_S__via_cell_death: IL_6R_on_S => ; compartment_*Function_for_Loss_of_RS_via_cell_death(IL_6R_on_S, R_Ts, D_phiS, IL_6__Cell_bound_IL_6R_complex_on_S);
+  Loss_of_Receptors_E_via_cell_death: IL_6R_on_E => ; compartment_*Function_for_Loss_of_RE_via_cell_death(IL_6R_on_E, R_Te, D_etaE, IL_6__Cell_bound_IL_6R_complex_on_E);
+  Loss_of_Receptors_D_via_cell_death: IL_6R_on_D => ; compartment_*Function_for_Loss_of_RD_via_cell_death(IL_6R_on_D, R_Td, D_DD, IL_6__Cell_bound_IL_6R_complex_on_D);
+  Loss_of_C_S_via_cell_death: IL_6__Cell_bound_IL_6R_complex_on_S => ; compartment_*Function_for_Loss_of_C_S_via_cell_death(IL_6__Cell_bound_IL_6R_complex_on_S, R_Ts, D_phiS, IL_6R_on_S);
+  Loss_of_C_E_via_cell_death: IL_6__Cell_bound_IL_6R_complex_on_E => ; compartment_*Function_for_Loss_of_C_E_via_cell_death(IL_6__Cell_bound_IL_6R_complex_on_E, R_Te, D_etaE, IL_6R_on_E);
+  Loss_of_C_D_via_cell_death: IL_6__Cell_bound_IL_6R_complex_on_D => ; compartment_*Function_for_Loss_of_C_D_via_cell_death(IL_6__Cell_bound_IL_6R_complex_on_D, R_Td, D_DD, IL_6R_on_D);
+  IL6_binding_to_R_S:  => IL_6__Cell_bound_IL_6R_complex_on_S; compartment_*Function_for_IL6_binding_to_stem_cells(K_f, IL_6__L, IL_6R_on_S);
+  IL6_binding_to_R_E:  => IL_6__Cell_bound_IL_6R_complex_on_E; compartment_*Function_for_IL6_binding_to_progenitor_cells(K_f, IL_6__L, IL_6R_on_E);
+  IL6_binding_to_R_D:  => IL_6__Cell_bound_IL_6R_complex_on_D; compartment_*Function_for_IL6_binding_to_differentiated_cells(K_f, IL_6__L, IL_6R_on_D);
+
+  // Species initializations:
+  Cancer_Stem_Cell_S = 1000;
+  IL_6__Cell_bound_IL_6R_complex_on_S = 0;
+  Progenitor_tumor_cell_E = 0.01;
+  Differentiated_tumor_cell_D = 0.01;
+  IL_6__Cell_bound_IL_6R_complex_on_E = 0;
+  IL_6__Cell_bound_IL_6R_complex_on_D = 0;
+  IL_6__L = 0;
+  IL_6R_on_S = 1;
+  IL_6R_on_E = 1;
+  IL_6R_on_D = 1;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  alpha_S = 0.6;
+  alpha_S has unit_0;
+  R_Ts = 1.66e-06;
+  R_Ts has unit_1;
+  delta_S has unit_0;
+  Pstar_Smin = 0.014;
+  gamma_S = 2.38;
+  A_in = 2;
+  A_out = 2;
+  alpha_E has unit_0;
+  P_Smax = 0.9;
+  delta_D = 0.0612;
+  delta_D has unit_0;
+  delta_E = 0.0612;
+  delta_E has unit_0;
+  n = 2.6;
+  myu = 0.04;
+  P_Ns = 728455;
+  gamma_E = 2.38;
+  gamma_D = 2.38;
+  K_f = 2.35;
+  K_f has unit_2;
+  K_r = 2.24;
+  K_r has unit_0;
+  lambda = 0.4152;
+  lambda has unit_0;
+  rho = 7e-07;
+  rho has unit_3;
+  K_p = 24.95;
+  K_p has unit_0;
+
+  // Other declarations:
+  var phi_S, delta_S, alpha_E, R_Te, R_Td, phi_E, phi_D, P_Smin, P_S, P_phiS;
+  var P_etaE, P_DD, D_phiS, D_etaE, D_DD;
+  const compartment_, alpha_S, R_Ts, Pstar_Smin, gamma_S, A_in, A_out, P_Smax;
+  const delta_D, delta_E, n, myu, P_Ns, gamma_E, gamma_D, K_f, K_r, lambda;
+  const rho, K_p;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = 1e-15 mole;
+  unit unit_0 = 1 / 86400e-1 second;
+  unit unit_1 = 1e-15 mole;
+  unit unit_2 = 1 / (1e-15 mole * 86400e-1 second);
+  unit unit_3 = 1e-15 mole / 86400e-1 second;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1/d";
+  unit_1 is "fmol";
+  unit_2 is "1/(fmol*d)";
+  unit_3 is "fmol/d";
+  compartment_ is "compartment";
+  Cancer_Stem_Cell_S is "Cancer Stem Cell S";
+  IL_6__Cell_bound_IL_6R_complex_on_S is "IL-6, Cell bound IL-6R complex on S";
+  Progenitor_tumor_cell_E is "Progenitor tumor cell E";
+  Differentiated_tumor_cell_D is "Differentiated tumor cell D";
+  IL_6__Cell_bound_IL_6R_complex_on_E is "IL-6, Cell bound IL-6R complex on E";
+  IL_6__Cell_bound_IL_6R_complex_on_D is "IL-6, Cell bound IL-6R complex on D";
+  IL_6__L is "IL-6 (L)";
+  IL_6R_on_S is "IL-6R on S";
+  IL_6R_on_E is "IL-6R on E";
+  IL_6R_on_D is "IL-6R on D";
+  Cancer_Stem_cell_S_self_renewal is "Cancer Stem cell S self-renewal";
+  Cancer_Stem_Cell_S_death is "Cancer Stem Cell S death";
+  Amplified_Stem_Cell_differentiation is "Amplified Stem Cell differentiation";
+  Progenitor_Cell_E_differentiation is "Progenitor Cell E differentiation";
+  Progenitor_Cell_E_death is "Progenitor Cell E death";
+  Progenitor_Cell_differentiation_form_D is "Progenitor Cell differentiation form D";
+  Differentiated_Cell_D_death is "Differentiated Cell D death";
+  IL6_binding_to_stem_cells is "IL6 binding to stem cells";
+  IL6_dissociation_from_stem_cells is "IL6 dissociation from stem cells";
+  IL6_binding_to_progenitor_cells is "IL6 binding to progenitor cells";
+  IL6_dissociation_from_progenitor_cells is "IL6 dissociation from progenitor cells";
+  IL6_binding_to_differentiated_cells is "IL6 binding to differentiated cells";
+  IL6_dissociation_from_differentiated_cells is "IL6 dissociation from differentiated cells";
+  IL6_natural_decay is "IL6 natural decay";
+  IL6_Production_by_tumor_cells is "IL6 Production by tumor cells";
+  Recycling_of_Receptors_S is "Recycling of Receptors_S";
+  Recycling_of_Receptors_E is "Recycling of Receptors_E";
+  Recycling_of_Receptors_D is "Recycling of Receptors_D";
+  Generation_of_new_R_S_via_cell_proliferation is "Generation of new R_S via cell proliferation";
+  Generation_of_new_R_E_via_cell_proliferation is "Generation of new R_E via cell proliferation";
+  Generation_of_new_R_D_via_cell_proliferation is "Generation of new R_D via cell proliferation";
+  Loss_of_Receptors_S__via_cell_death is "Loss of Receptors_S  via cell death";
+  Loss_of_Receptors_E_via_cell_death is "Loss of Receptors_E via cell death";
+  Loss_of_Receptors_D_via_cell_death is "Loss of Receptors_D via cell death";
+  Loss_of_C_S_via_cell_death is "Loss of C_S via cell death";
+  Loss_of_C_E_via_cell_death is "Loss of C_E via cell death";
+  Loss_of_C_D_via_cell_death is "Loss of C_D via cell death";
+  IL6_binding_to_R_S is "IL6 binding to R_S";
+  IL6_binding_to_R_E is "IL6 binding to R_E";
+  IL6_binding_to_R_D is "IL6 binding to R_D";
+
+  // CV terms:
+  compartment_ hypernym "http://identifiers.org/ncit/C13413"
+  Cancer_Stem_Cell_S hypernym "http://identifiers.org/ncit/C34447"
+  Cancer_Stem_Cell_S hypernym "http://identifiers.org/efo/0000181"
+  Cancer_Stem_Cell_S hypernym "http://identifiers.org/ncit/C68706"
+  IL_6__Cell_bound_IL_6R_complex_on_S hypernym "http://identifiers.org/ncit/C18106"
+  IL_6__Cell_bound_IL_6R_complex_on_S hypernym "http://identifiers.org/uniprot/P05231"
+  IL_6__Cell_bound_IL_6R_complex_on_S hypernym "http://identifiers.org/ncit/C20451"
+  IL_6__Cell_bound_IL_6R_complex_on_S container "http://identifiers.org/ncit/C68706"
+  Progenitor_tumor_cell_E hypernym "http://identifiers.org/efo/0000181"
+  Progenitor_tumor_cell_E hypernym "http://identifiers.org/ncit/C34447"
+  Progenitor_tumor_cell_E hypernym "http://identifiers.org/ncit/C42609"
+  Differentiated_tumor_cell_D hypernym "http://identifiers.org/efo/0000181"
+  Differentiated_tumor_cell_D hypernym "http://identifiers.org/ncit/C34447"
+  Differentiated_tumor_cell_D hypernym "http://identifiers.org/uniprot/P05231"
+  Differentiated_tumor_cell_D hypernym "http://identifiers.org/efo/0002954"
+  IL_6__Cell_bound_IL_6R_complex_on_E hypernym "http://identifiers.org/ncit/C20451"
+  IL_6__Cell_bound_IL_6R_complex_on_E hypernym "http://identifiers.org/ncit/C18106"
+  IL_6__Cell_bound_IL_6R_complex_on_E hypernym "http://identifiers.org/uniprot/P05231"
+  IL_6__Cell_bound_IL_6R_complex_on_E container "http://identifiers.org/ncit/C42609"
+  IL_6__Cell_bound_IL_6R_complex_on_D hypernym "http://identifiers.org/ncit/C20451"
+  IL_6__Cell_bound_IL_6R_complex_on_D hypernym "http://identifiers.org/uniprot/P05231"
+  IL_6__Cell_bound_IL_6R_complex_on_D hypernym "http://identifiers.org/ncit/C18106"
+  IL_6__Cell_bound_IL_6R_complex_on_D container "http://identifiers.org/efo/0002954"
+  IL_6__L hypernym "http://identifiers.org/ncit/C20451"
+  IL_6R_on_S hypernym "http://identifiers.org/ncit/C18106"
+  IL_6R_on_S hypernym "http://identifiers.org/uniprot/P08887"
+  IL_6R_on_S hypernym "http://identifiers.org/ncit/C20451"
+  IL_6R_on_S container "http://identifiers.org/ncit/C68706"
+  IL_6R_on_E hypernym "http://identifiers.org/ncit/C20451"
+  IL_6R_on_E hypernym "http://identifiers.org/ncit/C18106"
+  IL_6R_on_E hypernym "http://identifiers.org/uniprot/P08887"
+  IL_6R_on_E container "http://identifiers.org/ncit/C42609"
+  IL_6R_on_D hypernym "http://identifiers.org/ncit/C20451"
+  IL_6R_on_D hypernym "http://identifiers.org/ncit/C18106"
+  IL_6R_on_D hypernym "http://identifiers.org/uniprot/P08887"
+  IL_6R_on_D container "http://identifiers.org/efo/0002954"
+  Cancer_Stem_cell_S_self_renewal hypernym "http://identifiers.org/go/GO:0017145"
+  Cancer_Stem_Cell_S_death hypernym "http://identifiers.org/go/GO:0008219"
+  Amplified_Stem_Cell_differentiation hypernym "http://identifiers.org/go/GO:0048863"
+  Progenitor_Cell_E_differentiation hypernym "http://identifiers.org/go/GO:0048863"
+  Progenitor_Cell_E_death hypernym "http://identifiers.org/go/GO:0008219"
+  Progenitor_Cell_differentiation_form_D hypernym "http://identifiers.org/sbo/SBO:0000393"
+  Progenitor_Cell_differentiation_form_D hypernym "http://identifiers.org/go/GO:0048863"
+  Differentiated_Cell_D_death hypernym "http://identifiers.org/go/GO:0008219"
+  IL6_binding_to_stem_cells hypernym "http://identifiers.org/go/GO:0019981"
+  IL6_dissociation_from_stem_cells hypernym "http://identifiers.org/sbo/SBO:0000180"
+  IL6_binding_to_progenitor_cells hypernym "http://identifiers.org/go/GO:0019981"
+  IL6_dissociation_from_progenitor_cells hypernym "http://identifiers.org/sbo/SBO:0000180"
+  IL6_binding_to_differentiated_cells hypernym "http://identifiers.org/go/GO:0019981"
+  IL6_dissociation_from_differentiated_cells hypernym "http://identifiers.org/sbo/SBO:0000180"
+  IL6_natural_decay hypernym "http://identifiers.org/sbo/SBO:0000179"
+  IL6_Production_by_tumor_cells hypernym "http://identifiers.org/sbo/SBO:0000393"
+  Recycling_of_Receptors_S hypernym "http://identifiers.org/go/GO:0007049"
+  Recycling_of_Receptors_E hypernym "http://identifiers.org/go/GO:0007049"
+  Recycling_of_Receptors_D hypernym "http://identifiers.org/go/GO:0007049"
+  Generation_of_new_R_S_via_cell_proliferation hypernym "http://identifiers.org/sbo/SBO:0000393"
+  Generation_of_new_R_E_via_cell_proliferation hypernym "http://identifiers.org/sbo/SBO:0000393"
+  Generation_of_new_R_D_via_cell_proliferation hypernym "http://identifiers.org/sbo/SBO:0000393"
+  Loss_of_Receptors_S__via_cell_death hypernym "http://identifiers.org/go/GO:0008219"
+  Loss_of_Receptors_E_via_cell_death hypernym "http://identifiers.org/go/GO:0008219"
+  Loss_of_Receptors_D_via_cell_death propertyBearer "http://identifiers.org/go/GO:0008219"
+  Loss_of_C_S_via_cell_death hypernym "http://identifiers.org/go/GO:0008219"
+  Loss_of_C_E_via_cell_death hypernym "http://identifiers.org/go/GO:0008219"
+  Loss_of_C_D_via_cell_death hypernym "http://identifiers.org/go/GO:0008219"
+  IL6_binding_to_R_S hypernym "http://identifiers.org/go/GO:0005138"
+  IL6_binding_to_R_E hypernym "http://identifiers.org/go/GO:0005138"
+  IL6_binding_to_R_D hypernym "http://identifiers.org/go/GO:0005138"
+end
+
+New_Model is "Nazari2018 - IL6 mediated stem cell driven tumor growth and targeted treatment"
+
+New_Model model_entity_is "http://identifiers.org/biomodels.db/MODEL1909230001",
+                          "http://identifiers.org/biomodels.db/BIOMD0000000819"
+New_Model property "http://identifiers.org/efo/0000311"
+New_Model property "http://identifiers.org/efo/0000181"
+New_Model property "http://identifiers.org/ncit/C34447"
+New_Model property "http://identifiers.org/mamo/MAMO_0000046"
+New_Model property "http://identifiers.org/ncit/C20451"
+New_Model property "http://identifiers.org/ncit/C68706"
+New_Model description "http://identifiers.org/pubmed/29351275"

@@ -1,0 +1,193 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function Function_for_reaction_1(a_p, p_0, T_L, t, a_M, M, r1)
+  (a_p*p_0*exp(-a_p*T_L*t) + a_M*M)*(T_L + r1*M);
+end
+
+Function_for_reaction_1 is "Function for reaction 1"
+
+function Function_for_reaction_4(alpha, b1, T, b2)
+  alpha*(b1*T^2/(b2 + T^4));
+end
+
+Function_for_reaction_4 is "Function for reaction 4"
+
+function Function_for_reaction_5(beta, r2, M, k1)
+  beta*r2*M*(1 - M/k1);
+end
+
+Function_for_reaction_5 is "Function for reaction 5"
+
+function Function_for_reaction_7(rho, C, M)
+  rho*C*M;
+end
+
+Function_for_reaction_7 is "Function for reaction 7"
+
+function Function_for_reaction_9(r3, M)
+  r3*M;
+end
+
+Function_for_reaction_9 is "Function for reaction 9"
+
+function Function_for_reaction_11(gamma_, V, L)
+  gamma_*V*L;
+end
+
+Function_for_reaction_11 is "Function for reaction 11"
+
+function Function_for_reaction_12(c1, V, c2, c3, c4, T, L)
+  (c1 + V/(c2 + c3*V))*(1/(1 + c4*T))*L;
+end
+
+Function_for_reaction_12 is "Function for reaction 12"
+
+function Function_for_reaction_13(s_L, b3, V, b4, f)
+  (s_L + b3*V^2/(b4 + V^4))*f;
+end
+
+Function_for_reaction_13 is "Function for reaction 13"
+
+function Function_for_reaction_14(M, L, C, k2)
+  ((M + L + C)/k2)*L;
+end
+
+Function_for_reaction_14 is "Function for reaction 14"
+
+function Function_for_reaction_15(sigma, delta1, delta2, V, L)
+  sigma*(delta1 + delta2*V)*L;
+end
+
+Function_for_reaction_15 is "Function for reaction 15"
+
+
+model *New_Model()
+
+  // Compartments and Species:
+  compartment Body;
+  species Active_TGF_beta in Body, Macrophages in Body, VEGF in Body, LECs in Body;
+  species Capillaries in Body;
+
+  // Assignment Rules:
+  f := piecewise(1 - Capillaries/C, Capillaries < C, 0);
+  sigma := piecewise(0, (LECs + Capillaries) < L, 1);
+
+  // Reactions:
+  Activation_of_TGF_beta_by_enzymes_and_Macrophages:  => Active_TGF_beta; Body*Function_for_reaction_1(a_p, p_0, T_L, time, a_M, Macrophages, r1);
+  Decay_of_TGF_beta: Active_TGF_beta => ; Body*d1*Active_TGF_beta;
+  Flux_of_macrophages_from_source:  => Macrophages; Body*Constant_flux__irreversible(s_M);
+  Chemotaxis_by_TGF_beta:  => Macrophages; Body*Function_for_reaction_4(alpha, b1, Active_TGF_beta, b2);
+  Logistic_growth_of_Macrophages:  => Macrophages; Body*Function_for_reaction_5(beta, r2, Macrophages, k1);
+  Removal_of_Macrophages: Macrophages => ; Body*d2*Macrophages;
+  Differentiation_of_Macrophages: Macrophages => ; Body*Function_for_reaction_7(rho, Capillaries, Macrophages);
+  Flux_of_VEGF_from_source:  => VEGF; Body*Constant_flux__irreversible(S_V);
+  Production_of_VEGF_by_macrophages:  => VEGF; Body*Function_for_reaction_9(r3, Macrophages);
+  Decay_of_VEGF: VEGF => ; Body*d3*VEGF;
+  VEGF_used_by_LECs: VEGF => ; Body*Function_for_reaction_11(gamma_, VEGF, LECs);
+  Growth_of_LECs_upregulated_by_VEGF_and_downregulated_by_TGF_beta:  => LECs; Body*Function_for_reaction_12(c1, VEGF, c2, c3, c4, Active_TGF_beta, LECs);
+  Inflow_and_chemotaxis_of_LECs_by_VEGF:  => LECs; Body*Function_for_reaction_13(S_L, b3, VEGF, b4, f);
+  Crowding_effect_and_apoptosis_of_LECs: LECs => ; Body*Function_for_reaction_14(Macrophages, LECs, Capillaries, k2);
+  Transdifferentiation_of_LECs_into_the_capillaries: LECs => Capillaries; Body*Function_for_reaction_15(sigma, delta1, delta2, VEGF, LECs);
+
+  // Species initializations:
+  Active_TGF_beta = 30;
+  Macrophages = 1875;
+  VEGF = 0.5;
+  LECs = 0;
+  Capillaries = 0;
+
+  // Compartment initializations:
+  Body = 1;
+
+  // Variable initializations:
+  a_p = 0.029;
+  p_0 = 250000;
+  a_M = 0.45;
+  T_L = 18;
+  r1 = 3e-05;
+  d1 = 500;
+  s_M = 542;
+  alpha = 0.5;
+  b1 = 800000000;
+  b2 = 8100000000;
+  beta = 0.005;
+  r2 = 1.22;
+  k1 = 600000;
+  d2 = 0.2;
+  rho = 1e-05;
+  S_V = 1.9;
+  r3 = 0.0019;
+  d3 = 11;
+  gamma_ = 0.0014;
+  c1 = 0.42;
+  c2 = 42;
+  c3 = 4.1;
+  c4 = 0.24;
+  S_L = 500;
+  b3 = 10000000;
+  b4 = 8100000000;
+  C = 10000;
+  k2 = 471000;
+  L = 10000;
+  delta1 = 0.05;
+  delta2 = 0.001;
+
+  // Other declarations:
+  var f, sigma;
+  const Body, a_p, p_0, a_M, T_L, r1, d1, s_M, alpha, b1, b2, beta, r2, k1;
+  const d2, rho, S_V, r3, d3, gamma_, c1, c2, c3, c4, S_L, b3, b4, C, k2;
+  const L, delta1, delta2;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+  Active_TGF_beta is "Active TGF-beta";
+  gamma_ is "gamma";
+  C is "C*";
+  L is "L*";
+  Activation_of_TGF_beta_by_enzymes_and_Macrophages is "Activation of TGF-beta by enzymes and Macrophages";
+  Decay_of_TGF_beta is "Decay of TGF-beta";
+  Flux_of_macrophages_from_source is "Flux of macrophages from source";
+  Chemotaxis_by_TGF_beta is "Chemotaxis by TGF-beta";
+  Logistic_growth_of_Macrophages is "Logistic growth of Macrophages";
+  Removal_of_Macrophages is "Removal of Macrophages";
+  Differentiation_of_Macrophages is "Differentiation of Macrophages";
+  Flux_of_VEGF_from_source is "Flux of VEGF from source";
+  Production_of_VEGF_by_macrophages is "Production of VEGF by macrophages";
+  Decay_of_VEGF is "Decay of VEGF";
+  VEGF_used_by_LECs is "VEGF used by LECs";
+  Growth_of_LECs_upregulated_by_VEGF_and_downregulated_by_TGF_beta is "Growth of LECs upregulated by VEGF and downregulated by TGF-beta";
+  Inflow_and_chemotaxis_of_LECs_by_VEGF is "Inflow and chemotaxis of LECs by VEGF";
+  Crowding_effect_and_apoptosis_of_LECs is "Crowding effect and apoptosis of LECs";
+  Transdifferentiation_of_LECs_into_the_capillaries is "Transdifferentiation of LECs into the capillaries";
+
+  // CV terms:
+  Body taxon "http://identifiers.org/taxonomy/10090"
+  Body taxon "http://identifiers.org/taxonomy/10116"
+  Active_TGF_beta hypernym "http://identifiers.org/pr/PR:000000182"
+  Macrophages hypernym "http://identifiers.org/cl/CL:0000863"
+  VEGF hypernym "http://identifiers.org/uniprot/P49767"
+  LECs hypernym "http://identifiers.org/bto/BTO:0004167"
+  Capillaries hypernym "http://identifiers.org/omit/0003535"
+end
+
+New_Model is "Bianchi2015 -Model for lymphangiogenesis in normal and diabetic wounds"
+
+New_Model model_entity_is "http://identifiers.org/biomodels.db/MODEL1811210001",
+                          "http://identifiers.org/biomodels.db/BIOMD0000000722"
+New_Model container "http://identifiers.org/go/GO:0001946"
+New_Model property "http://identifiers.org/mamo/MAMO_0000046"
+New_Model property "http://identifiers.org/omit/0015769"
+New_Model property "http://identifiers.org/go/GO:0042060"
+New_Model taxon "http://identifiers.org/taxonomy/10116"
+New_Model taxon "http://identifiers.org/taxonomy/10090"
+New_Model description "http://identifiers.org/pubmed/26254217"

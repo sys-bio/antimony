@@ -1,0 +1,376 @@
+// Created by libAntimony v2.13.0
+function equation_for_Tumor_Growth_1(P, Tumorcells, gamma_, gamma1, m)
+  Tumorcells/((1/gamma1)^P + (Tumorcells^(1 - m)/gamma_)^P)^(1/P);
+end
+
+equation_for_Tumor_Growth_1 is "equation for Tumor Growth_1"
+
+function equation_for_Tumor_Kill_1(S1, TGFb, Tx, func_CD8_ETC, func_TRegs, k2, k3, r0)
+  (r0*Tx/(1 + k2*(Tx/func_CD8_ETC)))*(1/((1 + k3*(func_TRegs/func_CD8_ETC))*(1 + TGFb/S1)));
+end
+
+equation_for_Tumor_Kill_1 is "equation for Tumor Kill_1"
+
+function equation_for_unlicensed_DC_production_1(I1, IL10, R1, Tx, alpha, func_TRegs)
+  alpha*Tx/((1 + IL10/I1)*(1 + func_TRegs/R1));
+end
+
+equation_for_unlicensed_DC_production_1 is "equation for unlicensed DC production_1"
+
+function equation_for_Dendritic_cell_licensing_1(Mh, lambda, ul_DC)
+  lambda*ul_DC/(1 + ul_DC/Mh);
+end
+
+equation_for_Dendritic_cell_licensing_1 is "equation for Dendritic cell licensing_1"
+
+function equation_for_IL2_production_1(I2, IL10, S4, TGFb, pc, sl_CD4_HTC)
+  pc*sl_CD4_HTC/((1 + TGFb/S4)*(1 + IL10/I2));
+end
+
+equation_for_IL2_production_1 is "equation for IL2 production_1"
+
+function equation_for_IL2_Degradation_1(IL2, tc)
+  IL2/tc;
+end
+
+equation_for_IL2_Degradation_1 is "equation for IL2 Degradation_1"
+
+function equation_for_TGF_beta_Production_1(Tx, func_TRegs, p1, p2)
+  p1*func_TRegs + p2*Tx;
+end
+
+equation_for_TGF_beta_Production_1 is "equation for TGF beta Production_1"
+
+function equation_for_TGF_beta_Degradation_1(TGFb, ts)
+  TGFb/ts;
+end
+
+equation_for_TGF_beta_Degradation_1 is "equation for TGF beta Degradation_1"
+
+function equation_for_IL10_production_1(Tx, func_TRegs, p3, p4)
+  p3*func_TRegs + p4*Tx;
+end
+
+equation_for_IL10_production_1 is "equation for IL10 production_1"
+
+function equation_for_IL10_degradation_1(IL10, t1)
+  IL10/t1;
+end
+
+equation_for_IL10_degradation_1 is "equation for IL10 degradation_1"
+
+function equation_for_short_lived_CD8_production_1(M, Me, alpha1, k4, l_DC)
+  alpha1*Me/(1 + k4*(M/l_DC));
+end
+
+equation_for_short_lived_CD8_production_1 is "equation for short lived CD8 production_1"
+
+function equation_for_fully_functional_CD8_production_1(C1, IL2, S2, TGFb, alpha2, sl_CD8_ETC)
+  alpha2*sl_CD8_ETC*IL2/((1 + TGFb/S2)*(C1 + IL2));
+end
+
+equation_for_fully_functional_CD8_production_1 is "equation for fully functional CD8 production_1"
+
+function equation_for_short_lived_CD4_HTC_production_1(M, Mh, alpha3, k4, l_DC, ul_DC)
+  alpha3*Mh/(1 + k4*(M/(ul_DC + l_DC)));
+end
+
+equation_for_short_lived_CD4_HTC_production_1 is "equation for short lived CD4 HTC production_1"
+
+function equation_for_fully_functional_CD4_HTC_1(C1, IL2, S2, TGFb, alpha4, sl_CD4_HTC)
+  alpha4*sl_CD4_HTC*IL2/((1 + TGFb/S2)*(C1 + IL2));
+end
+
+equation_for_fully_functional_CD4_HTC_1 is "equation for fully functional CD4 HTC_1"
+
+function equation_for_short_lived_TReg_production_1(M, Mr, alpha5, k4, l_DC)
+  alpha5*Mr/(1 + k4*(M/l_DC));
+end
+
+equation_for_short_lived_TReg_production_1 is "equation for short lived TReg production_1"
+
+function equation_for_fully_functional_TRegs_production_by_CD4_HTC_1(S3, TGFb, alpha7, func_CD4_HTC)
+  alpha7*func_CD4_HTC*TGFb/(S3 + TGFb);
+end
+
+equation_for_fully_functional_TRegs_production_by_CD4_HTC_1 is "equation for fully functional TRegs production by CD4 HTC_1"
+
+function equation_for_fully_functional_TRegs_production_by_sl_TRegs_1(C1, IL2, alpha6, sl_TRegs)
+  alpha6*sl_TRegs*IL2/(C1 + IL2);
+end
+
+equation_for_fully_functional_TRegs_production_by_sl_TRegs_1 is "equation for fully functional TRegs production by sl_TRegs_1"
+
+
+model *Robertson_Tessi_M__2012()
+
+  // Compartments and Species:
+  compartment MISC;
+  species $Pool in MISC, Tumorcells in MISC, $Sink in MISC, sl_CD8_ETC in MISC;
+  species func_CD8_ETC in MISC, sl_CD4_HTC in MISC, func_CD4_HTC in MISC;
+  species sl_TRegs in MISC, ul_DC in MISC, l_DC in MISC, func_TRegs in MISC;
+  species IL2 in MISC, TGFb in MISC, IL10 in MISC, M in MISC, Mh in MISC;
+  species Me in MISC, Mr in MISC;
+
+  // Assignment Rules:
+  gamma1 := gamma_*T1^(m - 1);
+  Tx := Tumorcells/(1 + (Tumorcells^(1 - n)/k1)^P)^(1/P);
+  log_Tumor := ln(Tumorcells);
+  log_effector := ln(func_CD8_ETC);
+  log_Treg := ln(func_TRegs);
+  Treg_origin_fraction_CD4 := func_TRegs_Production_from_CD4/(func_TRegs_Production_from_CD4 + func_TRegs_Production_from_sl_TRegs);
+  Treg_origin_fraction_Treg := func_TRegs_Production_from_sl_TRegs/(func_TRegs_Production_from_CD4 + func_TRegs_Production_from_sl_TRegs);
+
+  // Reactions:
+  func_TRegs_Production_from_CD4: func_CD4_HTC => func_TRegs; MISC*equation_for_fully_functional_TRegs_production_by_CD4_HTC_1(S3, TGFb, alpha7, func_CD4_HTC);
+  func_TRegs_Production_from_sl_TRegs: $Pool => func_TRegs; MISC*equation_for_fully_functional_TRegs_production_by_sl_TRegs_1(C1, IL2, alpha6, sl_TRegs);
+  Tumor_Growth: $Pool => Tumorcells; MISC*equation_for_Tumor_Growth_1(P, Tumorcells, gamma_, gamma1, m);
+  Tumor_Cell_Killing: Tumorcells => $Sink; MISC*equation_for_Tumor_Kill_1(S1, TGFb, Tx, func_CD8_ETC, func_TRegs, k2, k3, r0);
+  ul_DC_Production: $Pool => ul_DC; MISC*equation_for_unlicensed_DC_production_1(I1, IL10, R1, Tx, alpha, func_TRegs);
+  Dendritic_Cell_Licensing: ul_DC => l_DC; MISC*equation_for_Dendritic_cell_licensing_1(Mh, lambda, ul_DC);
+  sl_TRegs_Degradation: sl_TRegs => $Sink; MISC*deltaA*sl_TRegs;
+  IL2_Production: $Pool => IL2; MISC*equation_for_IL2_production_1(I2, IL10, S4, TGFb, pc, sl_CD4_HTC);
+  IL2_Degradation: IL2 => $Sink; MISC*equation_for_IL2_Degradation_1(IL2, tc);
+  TGFb_Production: $Pool => TGFb; MISC*equation_for_TGF_beta_Production_1(Tx, func_TRegs, p1, p2);
+  TGFb_Degradation: TGFb => $Sink; MISC*equation_for_TGF_beta_Degradation_1(TGFb, ts);
+  IL10_Production: $Pool => IL10; MISC*equation_for_IL10_production_1(Tx, func_TRegs, p3, p4);
+  IL10_Degradation: IL10 => $Sink; MISC*equation_for_IL10_degradation_1(IL10, t1);
+  ul_DC_Degradation: ul_DC => $Sink; MISC*deltaU*ul_DC;
+  l_DC_Degradation: l_DC => $Sink; MISC*deltaD*l_DC;
+  sl_CD8_ETC_Production: $Pool => sl_CD8_ETC; MISC*equation_for_short_lived_CD8_production_1(M, Me, alpha1, k4, l_DC);
+  sl_CD8_ETC_Degradation: sl_CD8_ETC => $Sink; MISC*deltaA*sl_CD8_ETC;
+  func_CD8_ETC_Production: $Pool => func_CD8_ETC; MISC*equation_for_fully_functional_CD8_production_1(C1, IL2, S2, TGFb, alpha2, sl_CD8_ETC);
+  func_CD8_ETC_Degradation: func_CD8_ETC => $Sink; MISC*deltaE*func_CD8_ETC;
+  sl_CD4_HTC_Production: $Pool => sl_CD4_HTC; MISC*equation_for_short_lived_CD4_HTC_production_1(M, Mh, alpha3, k4, l_DC, ul_DC);
+  sl_CD4_HTC_Degradation: sl_CD4_HTC => $Sink; MISC*deltaA*sl_CD4_HTC;
+  func_CD4_HTC_Production: $Pool => func_CD4_HTC; MISC*equation_for_fully_functional_CD4_HTC_1(C1, IL2, S2, TGFb, alpha4, sl_CD4_HTC);
+  sl_TRegs_Production: $Pool => sl_TRegs; MISC*equation_for_short_lived_TReg_production_1(M, Mr, alpha5, k4, l_DC);
+  func_CD4_HTC_Degradation: func_CD4_HTC => $Sink; MISC*deltaH*func_CD4_HTC;
+  func_TRegs_Degradation: func_TRegs => $Sink; MISC*deltaR*func_TRegs;
+
+  // Species initializations:
+  Pool = 1;
+  Tumorcells = 1;
+  Sink = 1;
+  sl_CD8_ETC = 0;
+  func_CD8_ETC = 1e-05;
+  sl_CD4_HTC = 0;
+  func_CD4_HTC = 0;
+  sl_TRegs = 0;
+  ul_DC = 0;
+  l_DC = 1e-05;
+  func_TRegs = 0;
+  IL2 = 0;
+  TGFb = 0;
+  IL10 = 0;
+  M = 10000000;
+  Mh = 6000000;
+  Me = 3000000;
+  Mr = 1000000;
+
+  // Compartment initializations:
+  MISC = 1;
+
+  // Variable initializations:
+  gamma_ = 333;
+  gamma_ has unit_0;
+  m = 0.5;
+  m has unit_1;
+  T1 = 1000000;
+  n = 0.6666;
+  n has unit_1;
+  k1 = 100;
+  k1 has unit_1;
+  P = 3;
+  P has unit_1;
+  deltaU = 0.14;
+  deltaU has unit_0;
+  deltaD = 0.5;
+  deltaD has unit_0;
+  deltaA = 0.2;
+  deltaA has unit_0;
+  deltaE = 1;
+  deltaE has unit_0;
+  deltaH = 0.1;
+  deltaH has unit_0;
+  deltaR = 0.1;
+  deltaR has unit_0;
+  k2 = 1.2;
+  k2 has unit_1;
+  alpha = 6.31e-05;
+  alpha has unit_0;
+  r0 = 0.9;
+  r0 has unit_0;
+  k3 = 11;
+  k3 has unit_1;
+  S1 = 3.5;
+  S1 has unit_2;
+  alpha1 = 23;
+  alpha1 has unit_0;
+  k4 = 0.33;
+  k4 has unit_1;
+  lambda = 0.5;
+  lambda has unit_0;
+  I1 = 0.4;
+  I1 has unit_2;
+  alpha6 = 2.1;
+  alpha6 has unit_0;
+  alpha7 = 0.022;
+  alpha7 has unit_0;
+  C1 = 0.3;
+  C1 has unit_2;
+  S2 = 2.9;
+  S2 has unit_2;
+  S3 = 1.7;
+  S3 has unit_2;
+  pc = 1.7e-05;
+  p1 = 1.8e-08;
+  p2 = 1.1e-07;
+  R1 = 20000000;
+  alpha2 = 16;
+  alpha2 has unit_0;
+  alpha3 = 9.9;
+  alpha3 has unit_0;
+  alpha4 = 1.9;
+  alpha4 has unit_0;
+  alpha5 = 5.1;
+  alpha5 has unit_0;
+  p3 = 1.4e-08;
+  p4 = 1.3e-10;
+  S4 = 0.9;
+  S4 has unit_2;
+  tc = 0.08;
+  tc has unit_3;
+  ts = 0.07;
+  ts has unit_3;
+  t1 = 0.05;
+  t1 has unit_3;
+  I2 = 0.75;
+  I2 has unit_2;
+
+  // Other declarations:
+  var gamma1, Tx, log_Tumor, log_effector, log_Treg, Treg_origin_fraction_CD4;
+  var Treg_origin_fraction_Treg;
+  const MISC, gamma_, m, T1, n, k1, P, deltaU, deltaD, deltaA, deltaE, deltaH;
+  const deltaR, k2, alpha, r0, k3, S1, alpha1, k4, lambda, I1, alpha6, alpha7;
+  const C1, S2, S3, pc, p1, p2, R1, alpha2, alpha3, alpha4, alpha5, p3, p4;
+  const S4, tc, ts, t1, I2;
+
+  // Unit definitions:
+  unit time_unit = 86400 second;
+  unit substance = 1e-3 mole;
+  unit unit_0 = 1 / 1e-3 second;
+  unit unit_1 = 1 / dimensionless^-0;
+  unit unit_2 = 1e-12 gram / litre;
+  unit unit_3 = 1e3 second;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1/ms";
+  unit_1 is "1";
+  unit_2 is "pg/l";
+  unit_3 is "ks";
+  MISC is "TumorMicroenv";
+  Pool is "Source";
+  sl_CD8_ETC is "shortlived_CD8_ETC";
+  sl_CD4_HTC is "shortlived_CD4_HTC";
+  sl_TRegs is "shortlived_TRegs";
+  ul_DC is "unlicensed_DC";
+  l_DC is "licensed_DC";
+  M is "MemTcell";
+  Mh is "MemHelperTcells";
+  Me is "MemEffectorCells";
+  Mr is "RegMemTcell";
+  gamma_ is "gamma";
+  log_Tumor is "log Tumor";
+  log_effector is "log effector";
+  log_Treg is "log Treg";
+  func_TRegs_Production_from_CD4 is "func_TRegs Production from CD4";
+  func_TRegs_Production_from_sl_TRegs is "func_TRegs Production from sl_TRegs";
+  ul_DC_Production is "unlicensed_DC Production";
+  Dendritic_Cell_Licensing is "Dendritic Cell Licensing";
+  sl_TRegs_Degradation is "shortlived_TRegs Degradation";
+  IL2_Production is "IL2 Production";
+  IL2_Degradation is "IL2 Degradation";
+  TGFb_Production is "TGFb Production";
+  TGFb_Degradation is "TGFb Degradation";
+  IL10_Production is "IL10 Production";
+  IL10_Degradation is "IL10 Degradation";
+  ul_DC_Degradation is "unlicensed_DC Degradation";
+  l_DC_Degradation is "licensed_DC Degradation";
+  sl_CD8_ETC_Production is "shortlived_CD8_ETC Production";
+  sl_CD8_ETC_Degradation is "shortlived_CD8_ETC Degradation";
+  func_CD8_ETC_Production is "func_CD8 ETC Production";
+  func_CD8_ETC_Degradation is "func_CD8 ETC Degradation";
+  sl_CD4_HTC_Production is "shortlived_CD4_HTC Production";
+  sl_CD4_HTC_Degradation is "shortlived_CD4_HTC Degradation";
+  func_CD4_HTC_Production is "func_CD4 HTC Production";
+  sl_TRegs_Production is "shortlived_TRegs Production";
+  func_CD4_HTC_Degradation is "func_CD4_HTC Degradation";
+  func_TRegs_Degradation is "func_TRegs Degradation";
+
+  // CV terms:
+  MISC hypernym "http://identifiers.org/ncit/C94498"
+  Pool hypernym "http://identifiers.org/sbo/SBO:0000291"
+  Tumorcells hypernym "http://identifiers.org/efo/EFO:0000616"
+  Sink hypernym "http://identifiers.org/sbo/SBO:0000291"
+  sl_CD8_ETC hypernym "http://identifiers.org/bto/BTO:0000289"
+  func_CD8_ETC hypernym "http://identifiers.org/bto/BTO:0000289"
+  sl_CD4_HTC hypernym "http://identifiers.org/bto/BTO:0002417"
+  func_CD4_HTC hypernym "http://identifiers.org/bto/BTO:0002417"
+  sl_TRegs hypernym "http://identifiers.org/bto/BTO:0004520"
+  ul_DC hypernym "http://identifiers.org/bto/BTO:0002042"
+  l_DC hypernym "http://identifiers.org/bto/BTO:0002042"
+  func_TRegs hypernym "http://identifiers.org/bto/BTO:0004520"
+  IL2 identity "http://identifiers.org/uniprot/P60568"
+  TGFb hypernym "http://identifiers.org/uniprot/P01137"
+  IL10 identity "http://identifiers.org/uniprot/P22301"
+  M hypernym "http://identifiers.org/ncit/C104082"
+  Mh hypernym "http://identifiers.org/ncit/C12538"
+  Me hypernym "http://identifiers.org/ncit/C126419"
+  Mr hypernym "http://identifiers.org/ncit/C104082"
+  func_TRegs_Production_from_CD4 homolog "http://identifiers.org/sbo/SBO:0000393"
+  func_TRegs_Production_from_sl_TRegs homolog "http://identifiers.org/sbo/SBO:0000393"
+  Tumor_Growth property "http://identifiers.org/sbo/SBO:0000610"
+  Tumor_Cell_Killing property "http://identifiers.org/go.ref/GO:0001906"
+  ul_DC_Production property "http://identifiers.org/sbo/SBO:0000393"
+  Dendritic_Cell_Licensing class "http://identifiers.org/sbo/SBO:0000656"
+  sl_TRegs_Degradation property "http://identifiers.org/sbo/SBO:0000179"
+  IL2_Production property "http://identifiers.org/sbo/SBO:0000393"
+  IL2_Degradation property "http://identifiers.org/sbo/SBO:0000179"
+  TGFb_Production property "http://identifiers.org/sbo/SBO:0000393"
+  TGFb_Degradation property "http://identifiers.org/sbo/SBO:0000179"
+  IL10_Production property "http://identifiers.org/sbo/SBO:0000393"
+  IL10_Degradation property "http://identifiers.org/sbo/SBO:0000179"
+  ul_DC_Degradation property "http://identifiers.org/sbo/SBO:0000179"
+  l_DC_Degradation property "http://identifiers.org/sbo/SBO:0000179"
+  sl_CD8_ETC_Production property "http://identifiers.org/sbo/SBO:0000393"
+  sl_CD8_ETC_Degradation property "http://identifiers.org/sbo/SBO:0000179"
+  func_CD8_ETC_Production property "http://identifiers.org/sbo/SBO:0000393"
+  func_CD8_ETC_Degradation property "http://identifiers.org/sbo/SBO:0000179"
+  sl_CD4_HTC_Production property "http://identifiers.org/sbo/SBO:0000393"
+  sl_CD4_HTC_Degradation property "http://identifiers.org/sbo/SBO:0000179"
+  func_CD4_HTC_Production property "http://identifiers.org/sbo/SBO:0000393"
+  sl_TRegs_Production property "http://identifiers.org/sbo/SBO:0000393"
+  func_CD4_HTC_Degradation property "http://identifiers.org/sbo/SBO:0000179"
+  func_TRegs_Degradation property "http://identifiers.org/sbo/SBO:0000179"
+end
+
+Robertson_Tessi_M__2012 is "Robertson-Tessi M 2012 A model of tumor Immune interaction"
+
+Robertson_Tessi_M__2012 model_entity_is "http://identifiers.org/biomodels.db/MODEL1901250001",
+                                        "http://identifiers.org/biomodels.db/BIOMD0000000731"
+Robertson_Tessi_M__2012 part "http://identifiers.org/ncit/C153548"
+Robertson_Tessi_M__2012 property "http://identifiers.org/ncit/C15262"
+Robertson_Tessi_M__2012 property "http://identifiers.org/go/GO:0002419"
+Robertson_Tessi_M__2012 property "http://identifiers.org/ncit/C20453"
+Robertson_Tessi_M__2012 property "http://identifiers.org/go/GO:0071604"
+Robertson_Tessi_M__2012 property "http://identifiers.org/ncit/C12583"
+Robertson_Tessi_M__2012 property "http://identifiers.org/bto/BTO:0004520"
+Robertson_Tessi_M__2012 property "http://identifiers.org/ncit/C126419"
+Robertson_Tessi_M__2012 property "http://identifiers.org/bto/BTO:0002417"
+Robertson_Tessi_M__2012 property "http://identifiers.org/ncit/C12537"
+Robertson_Tessi_M__2012 property "http://identifiers.org/go/GO:0002424"
+Robertson_Tessi_M__2012 propertyBearer "http://identifiers.org/mamo/MAMO_0000046"
+Robertson_Tessi_M__2012 taxon "http://identifiers.org/taxonomy/9606"
+Robertson_Tessi_M__2012 description "http://identifiers.org/pubmed/22051568"

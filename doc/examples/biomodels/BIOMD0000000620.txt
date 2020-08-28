@@ -1,0 +1,213 @@
+// Created by libAntimony v2.13.0
+model *MODEL1604270002()
+
+  // Compartments and Species:
+  species IL1b, IL1Ra, Anakinra, Proinsulin, Insulin, TigB, B, f, Anakinrasc;
+  species Glucose, $a1c1, $rbc1, $a1c2, $rbc2, $a1c3, $rbc3, $a1c4, $rbc4;
+  species $a1c5, $rbc5, $a1c6, $rbc6, $a1c7, $rbc7, $a1c8, $rbc8, $a1c9, $rbc9;
+  species $a1c10, $rbc10, $a1c11, $rbc11, $a1c12, $rbc12, $hba1c;
+
+  // Assignment Rules:
+  hba1c := 100*(a1c1 + a1c2 + a1c3 + a1c4 + a1c5 + a1c6 + a1c7 + a1c8 + a1c9 + a1c10 + a1c11 + a1c12)/(a1c1 + a1c2 + a1c3 + a1c4 + a1c5 + a1c6 + a1c7 + a1c8 + a1c9 + a1c10 + a1c11 + a1c12 + rbc1 + rbc2 + rbc3 + rbc4 + rbc5 + rbc6 + rbc7 + rbc8 + rbc9 + rbc10 + rbc11 + rbc12);
+  apoptosis := ka*(1 + vha*IL1R^xha/(kmha^xha + IL1R^xha) - vla*IL1R^xla/(kmla^xla + IL1R^xla));
+  IL1R := IL1b/(IL1b + km*(1 + (IL1Ra + Anakinra)/ki));
+  replication := kr*((1 - vhr*IL1R^xhr/(kmhr^xhr + IL1R^xhr)) + vlr*IL1R^xlr/(kmlr^xlr + IL1R^xlr));
+  PI_I := Proinsulin/Insulin;
+
+  // Rate Rules:
+  a1c1' = Kglucose*Glucose^lambda*rbc1 - Ktr*a1c1;
+  rbc1' = Kin - Ktr*rbc1 - Kglucose*Glucose^lambda*rbc1;
+  a1c2' = Kglucose*Glucose^lambda*rbc2 + Ktr*a1c1 - Ktr*a1c2;
+  rbc2' = Ktr*rbc1 - Ktr*rbc2 - Kglucose*Glucose^lambda*rbc2;
+  a1c3' = Kglucose*Glucose^lambda*rbc3 + Ktr*a1c2 - Ktr*a1c3;
+  rbc3' = Ktr*rbc2 - Ktr*rbc3 - Kglucose*Glucose^lambda*rbc3;
+  a1c4' = Kglucose*Glucose^lambda*rbc4 + Ktr*a1c3 - Ktr*a1c4;
+  rbc4' = Ktr*rbc3 - Ktr*rbc4 - Kglucose*Glucose^lambda*rbc4;
+  a1c5' = Kglucose*Glucose^lambda*rbc5 + Ktr*a1c4 - Ktr*a1c5;
+  rbc5' = Ktr*rbc4 - Ktr*rbc5 - Kglucose*Glucose^lambda*rbc5;
+  a1c6' = Kglucose*Glucose^lambda*rbc6 + Ktr*a1c5 - Ktr*a1c6;
+  rbc6' = Ktr*rbc5 - Ktr*rbc6 - Kglucose*Glucose^lambda*rbc6;
+  a1c7' = Kglucose*Glucose^lambda*rbc7 + Ktr*a1c6 - Ktr*a1c7;
+  rbc7' = Ktr*rbc6 - Ktr*rbc7 - Kglucose*Glucose^lambda*rbc7;
+  a1c8' = Kglucose*Glucose^lambda*rbc8 + Ktr*a1c7 - Ktr*a1c8;
+  rbc8' = Ktr*rbc7 - Ktr*rbc8 - Kglucose*Glucose^lambda*rbc8;
+  a1c9' = Kglucose*Glucose^lambda*rbc9 + Ktr*a1c8 - Ktr*a1c9;
+  rbc9' = Ktr*rbc8 - Ktr*rbc9 - Kglucose*Glucose^lambda*rbc9;
+  a1c10' = Kglucose*Glucose^lambda*rbc10 + Ktr*a1c9 - Ktr*a1c10;
+  rbc10' = Ktr*rbc9 - Ktr*rbc10 - Kglucose*Glucose^lambda*rbc10;
+  a1c11' = Kglucose*Glucose^lambda*rbc11 + Ktr*a1c10 - Ktr*a1c11;
+  rbc11' = Ktr*rbc10 - Ktr*rbc11 - Kglucose*Glucose^lambda*rbc11;
+  a1c12' = Kglucose*Glucose^lambda*rbc12 + Ktr*a1c11 - Ktr*a1c12;
+  rbc12' = Ktr*rbc11 - Ktr*rbc12 - Kglucose*Glucose^lambda*rbc12;
+
+  // Reactions:
+  TigB_up:  => TigB; taus*ks*(1 - vs*IL1R/(kms + IL1R));
+  TigB_down: TigB => ; taus*TigB;
+  Bcell_replication:  => B; replication*B;
+  Bcell_apoptosis: B => ; apoptosis*B;
+  proinsulin_sec_up:  => f; tauf*kf*(1 + vfg*Glucose^xfg/(kmfg^xfg + Glucose^xfg))*(1 + vf*IL1R/(kmf + IL1R));
+  proinsulin_sec_down: f => ; tauf*f;
+  IL1b_treatment:  => IL1b; piecewise((1 - placebo_on)*k1*il1bH, time < 91, (1 - placebo_on)*k2*(il1b0 + kplacebo*time));
+  IL1b_degradation: IL1b => ; piecewise((1 - placebo_on)*k1*IL1b, time < 91, (1 - placebo_on)*k2*IL1b);
+  IL1b_placebo:  => IL1b; placebo_on*kplacebo;
+  AnakinraSC_elimination: Anakinrasc => ; kab*Anakinrasc;
+  Anakinra_absorption:  => Anakinra; kab*Anakinrasc/Vp;
+  Anakinra_elimination: Anakinra => ; (CL/Vp)*Anakinra;
+  Glucose_production:  => Glucose; Tgl;
+  Basal_glucose_uptake: Glucose => ; Kxg*Glucose;
+  Insulin_dependent_glucose_uptake: Glucose => ; Kxgi*Insulin*Glucose;
+  Proinsulin_dependent_glucose_uptake: Glucose => ; 0.1*Kxgi*Proinsulin*Glucose;
+  Glucose_dependent_insulin_secretion:  => Insulin; ((Glucose/Gh)^vh/(1 + (Glucose/Gh)^vh))*TigB*B;
+  Insulin_elimination: Insulin => ; Kxi*Insulin;
+  Glucose_dependent_proinsulin_secretion:  => Proinsulin; (f*(Glucose/Gh)^vh/(1 + (Glucose/Gh)^vh))*TigB*B;
+  Proinsulin_elimination: Proinsulin => ; 0.1*Kxi*Proinsulin;
+
+  // Events:
+  Anakinra_Administration_event: at 0 after (time == Anakinra_dose_counter) && (Anakinra_dose_counter < 91): Anakinra_dose_counter = Anakinra_dose_counter + 1, Anakinrasc = Anakinrasc + 100000*Ana_on;
+
+  // Species initializations:
+  IL1b = 5;
+  IL1Ra = 40;
+  Anakinra = 0;
+  Proinsulin = 43;
+  Insulin = 100;
+  TigB = 0.1865;
+  B = 40;
+  f = 0.0427776;
+  Anakinrasc = 0;
+  Glucose = 10.8;
+  a1c1 = 0.122997;
+  rbc1 = 8.627;
+  a1c2 = 0.244266;
+  rbc2 = 8.50573;
+  a1c3 = 0.363829;
+  rbc3 = 8.38617;
+  a1c4 = 0.481712;
+  rbc4 = 8.26829;
+  a1c5 = 0.597938;
+  rbc5 = 8.15206;
+  a1c6 = 0.71253;
+  rbc6 = 8.03747;
+  a1c7 = 0.825512;
+  rbc7 = 7.92449;
+  a1c8 = 0.936905;
+  rbc8 = 7.8131;
+  a1c9 = 1.04673;
+  rbc9 = 7.70327;
+  a1c10 = 1.15502;
+  rbc10 = 7.59498;
+  a1c11 = 1.26178;
+  rbc11 = 7.48822;
+  a1c12 = 1.36704;
+  rbc12 = 7.38296;
+
+  // Variable initializations:
+  Kglucose = 0.000292;
+  lambda = 0.743;
+  Ktr = 0.12;
+  Kin = 1.05;
+  Anakinra_dose_counter = 0.5;
+  Ana_on = 1;
+  Kxg = 1.6e-05;
+  Kxi = 0.05;
+  Gh = 9;
+  vh = 4;
+  vs = 0.7;
+  kms = 0.021;
+  taus = 0.5;
+  kmf = 0.021;
+  tauf = 0.5;
+  vfg = 4;
+  xfg = 4;
+  kmfg = 9;
+  vf = 0.4;
+  vlr = 1.8;
+  kmlr = 0.0011;
+  xlr = 3;
+  vhr = 2.7;
+  kmhr = 0.018;
+  xhr = 0.5;
+  vla = 0.65;
+  kmla = 0.00018;
+  xla = 3;
+  vha = 4.6;
+  kmha = 0.155;
+  xha = 0.6666666667;
+  km = 8.5;
+  ki = 1.7;
+  ka = 0.000552022;
+  kr = 0.000376393;
+  kf = 0.00957754;
+  ks = 0.291008;
+  Tgl = 0.025405;
+  Kxgi = 2.24e-05;
+  il1bH = 0.05;
+  il1b0 = 5;
+  kplacebo = 0.00137;
+  k1 = 0.2;
+  k2 = 0.0025;
+  kab = 3.94;
+  CL = 432;
+  Vp = 48;
+  placebo_on = 0;
+
+  // Other declarations:
+  var Anakinra_dose_counter, il1b0, apoptosis, IL1R, replication, PI_I;
+  const Kglucose, lambda, Ktr, Kin, Ana_on, Kxg, Kxi, Gh, vh, vs, kms, taus;
+  const kmf, tauf, vfg, xfg, kmfg, vf, vlr, kmlr, xlr, vhr, kmhr, xhr, vla;
+  const kmla, xla, vha, kmha, xha, km, ki, ka, kr, kf, ks, Tgl, Kxgi, il1bH;
+  const kplacebo, k1, k2, kab, CL, Vp, placebo_on;
+
+  // Unit definitions:
+  unit volume = litre;
+  unit substance = mole;
+  unit time_unit = 8.64e4 second;
+
+  // CV terms:
+  IL1b hypernym "http://identifiers.org/uniprot/P01584"
+  IL1Ra hypernym "http://identifiers.org/uniprot/P18510"
+  Anakinra homolog "http://identifiers.org/uniprot/P18510"
+  Anakinra property "http://identifiers.org/chebi/CHEBI:52217"
+  Proinsulin hypernym "http://identifiers.org/uniprot/P01308"
+  Insulin hypernym "http://identifiers.org/uniprot/P01308"
+  TigB hypernym "http://identifiers.org/go/GO:0030073"
+  B hypernym "http://identifiers.org/bto/BTO:0000783"
+  f parthood "http://identifiers.org/go/GO:0030073"
+  Anakinrasc hypernym "http://identifiers.org/uniprot/P18510"
+  Glucose hypernym "http://identifiers.org/chebi/CHEBI:17234"
+  a1c1 parthood "urn:miriam:efo:EFO%3A0004541"
+  rbc1 hypernym "http://identifiers.org/cl/CL:0000232"
+  a1c2 parthood "urn:miriam:efo:EFO%3A0004541"
+  rbc2 hypernym "http://identifiers.org/cl/CL:0000232"
+  a1c3 parthood "urn:miriam:efo:EFO%3A0004541"
+  rbc3 hypernym "http://identifiers.org/cl/CL:0000232"
+  a1c4 parthood "urn:miriam:efo:EFO%3A0004541"
+  rbc4 hypernym "http://identifiers.org/cl/CL:0000232"
+  a1c5 parthood "urn:miriam:efo:EFO%3A0004541"
+  rbc5 hypernym "http://identifiers.org/cl/CL:0000232"
+  a1c6 parthood "urn:miriam:efo:EFO%3A0004541"
+  rbc6 hypernym "http://identifiers.org/cl/CL:0000232"
+  a1c7 parthood "urn:miriam:efo:EFO%3A0004541"
+  rbc7 hypernym "http://identifiers.org/cl/CL:0000232"
+  a1c8 parthood "urn:miriam:efo:EFO%3A0004541"
+  rbc8 hypernym "http://identifiers.org/cl/CL:0000232"
+  a1c9 parthood "urn:miriam:efo:EFO%3A0004541"
+  rbc9 hypernym "http://identifiers.org/cl/CL:0000232"
+  a1c10 parthood "urn:miriam:efo:EFO%3A0004541"
+  rbc10 hypernym "http://identifiers.org/cl/CL:0000232"
+  a1c11 parthood "urn:miriam:efo:EFO%3A0004541"
+  rbc11 hypernym "http://identifiers.org/cl/CL:0000232"
+  a1c12 parthood "urn:miriam:efo:EFO%3A0004541"
+  rbc12 hypernym "http://identifiers.org/cl/CL:0000232"
+  hba1c hypernym "urn:miriam:efo:EFO%3A0004541"
+end
+
+MODEL1604270002 is "Palmer2014 - Effect of IL-1β-Blocking therapies in T2DM - Disease Condition"
+
+MODEL1604270002 model_entity_is "http://identifiers.org/biomodels.db/MODEL1604270002"
+MODEL1604270002 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000620"
+MODEL1604270002 description "http://identifiers.org/pubmed/24918743"
+MODEL1604270002 origin "http://identifiers.org/biomodels.db/MODEL1112110003"
+MODEL1604270002 property "http://identifiers.org/doid/DOID:9352"
+MODEL1604270002 taxon "http://identifiers.org/taxonomy/9606"
+MODEL1604270002 hypernym "http://identifiers.org/go/GO:0050702"

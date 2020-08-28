@@ -1,0 +1,146 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function Function_for_Reaction_1(k_pg, P, p_inf)
+  k_pg*P*(1 - P/p_inf);
+end
+
+Function_for_Reaction_1 is "Function for Reaction 1 [1]"
+
+function Function_for_Reaction_2(k_pm, s_m, P, mu_m, k_mp)
+  k_pm*s_m*P/(mu_m + k_mp*P);
+end
+
+Function_for_Reaction_2 is "Function for Reaction 2"
+
+function Function_for_Reaction_3(f_Nstar, P, k_pn)
+  k_pn*f_Nstar*P;
+end
+
+Function_for_Reaction_3 is "Function for Reaction 3"
+
+function Function_for_Reaction_4(s_nr, R, mu_nr)
+  s_nr*R/(mu_nr + R);
+end
+
+Function_for_Reaction_4 is "Function for Reaction 4"
+
+function Function_for_Reaction_6(k_dn, f_s_f_Nstar)
+  k_dn*f_s_f_Nstar;
+end
+
+Function_for_Reaction_6 is "Function for Reaction 6"
+
+function Function_for_Reaction_9(k_cn, f_Nstar_k_cnd_D)
+  k_cn*f_Nstar_k_cnd_D/(1 + f_Nstar_k_cnd_D);
+end
+
+Function_for_Reaction_9 is "Function for Reaction 9"
+
+
+model *Reynolds2006___Reduced_model_of_the_acute_inflammatory_response()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species P in compartment_, Nstar in compartment_, D in compartment_, C_A in compartment_;
+
+  // Assignment Rules:
+  f_Nstar := Nstar/(1 + (C_A/c_inf)^2);
+  f_s_f_Nstar := f_Nstar^6/(x_dn^6 + f_Nstar^6);
+  R := (k_nn*Nstar + k_np*P + k_nd*D)/(1 + (C_A/c_inf)^2);
+  f_Nstar__k_cnd_D := (Nstar + k_cnd*D)/(1 + (C_A/c_inf)^2);
+
+  // Reactions:
+  reaction_1:  => P; compartment_*Function_for_Reaction_1(k_pg, P, p_inf);
+  reaction_2: P => ; compartment_*Function_for_Reaction_2(k_pm, s_m, P, mu_m, k_mp);
+  reaction_3: P => ; compartment_*Function_for_Reaction_3(f_Nstar, P, k_pn);
+  reaction_4:  => Nstar; compartment_*Function_for_Reaction_4(s_nr, R, mu_nr);
+  reaction_5: Nstar => ; compartment_*mu_n*Nstar;
+  reaction_6:  => D; compartment_*Function_for_Reaction_6(k_dn, f_s_f_Nstar);
+  reaction_7: D => ; compartment_*mu_d*D;
+  reaction_8:  => C_A; compartment_*Constant_flux__irreversible(s_c);
+  reaction_9:  => C_A; compartment_*Function_for_Reaction_9(k_cn, f_Nstar__k_cnd_D);
+  reaction_10: C_A => ; compartment_*mu_c*C_A;
+
+  // Species initializations:
+  P = 1;
+  Nstar = 0;
+  D = 0;
+  C_A = 0.125;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  k_pm = 0.6;
+  k_mp = 0.01;
+  s_m = 0.005;
+  mu_m = 0.002;
+  k_pg = 0.3;
+  p_inf = 20;
+  k_pn = 1.8;
+  k_np = 0.1;
+  k_nn = 0.01;
+  s_nr = 0.08;
+  mu_nr = 0.12;
+  mu_n = 0.05;
+  k_nd = 0.02;
+  k_dn = 0.35;
+  x_dn = 0.06;
+  mu_d = 0.02;
+  c_inf = 0.28;
+  s_c = 0.0125;
+  k_cn = 0.04;
+  k_cnd = 48;
+  mu_c = 0.1;
+
+  // Other declarations:
+  var f_Nstar, f_s_f_Nstar, R, f_Nstar__k_cnd_D;
+  const compartment_, k_pm, k_mp, s_m, mu_m, k_pg, p_inf, k_pn, k_np, k_nn;
+  const s_nr, mu_nr, mu_n, k_nd, k_dn, x_dn, mu_d, c_inf, s_c, k_cn, k_cnd;
+  const mu_c;
+
+  // Unit definitions:
+  unit time_unit = 3600 second;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "Human body";
+  P is "Pathogen (P)";
+  Nstar is "Activated Phagocytes (Nstar)";
+  D is "Tissue Damage (D)";
+  C_A is "Anti-inflammatory mediators (C_A)";
+  f_Nstar__k_cnd_D is "f_Nstar_ k_cnd_D";
+  reaction_1 is "Production of Pathogen";
+  reaction_2 is "Degradation of pathogen by non-specific local response";
+  reaction_3 is "Degradation of pathogen by activated phagocytes";
+  reaction_4 is "Recruitment of Activated Phagocytes from the source";
+  reaction_5 is "Death of activated phagocytes";
+  reaction_6 is "Tissue damage produced by activated phagocytes";
+  reaction_7 is "Removal of damaged tissue";
+  reaction_8 is "Recruitment of Anti-inflammatory mediators from the source";
+  reaction_9 is "Production of anti-inflammatory mediators";
+  reaction_10 is "Removal of anti-inflammatory mediators";
+
+  // CV terms:
+  compartment_ taxon "http://identifiers.org/taxonomy/9606"
+  P hypernym "http://identifiers.org/efo/EFO:0000643"
+  Nstar hypernym "http://identifiers.org/bto/BTO:0001044"
+  D hypernym "http://identifiers.org/ncit/C50773"
+  C_A hypernym "http://identifiers.org/chebi/CHEBI:67079"
+  C_A property "http://identifiers.org/ncit/C28347"
+end
+
+Reynolds2006___Reduced_model_of_the_acute_inflammatory_response is "Reynolds2006 - Reduced model of the acute inflammatory response"
+
+Reynolds2006___Reduced_model_of_the_acute_inflammatory_response model_entity_is "http://identifiers.org/biomodels.db/MODEL1808280003",
+                                                                                "http://identifiers.org/biomodels.db/BIOMD0000000714"
+Reynolds2006___Reduced_model_of_the_acute_inflammatory_response property "http://identifiers.org/go/GO:0006955"
+Reynolds2006___Reduced_model_of_the_acute_inflammatory_response property "http://identifiers.org/mamo/MAMO_0000046"
+Reynolds2006___Reduced_model_of_the_acute_inflammatory_response property "http://identifiers.org/go/GO:0002526"
+Reynolds2006___Reduced_model_of_the_acute_inflammatory_response taxon "http://identifiers.org/taxonomy/9606"
+Reynolds2006___Reduced_model_of_the_acute_inflammatory_response description "http://identifiers.org/pubmed/16584750"

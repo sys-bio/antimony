@@ -1,0 +1,2437 @@
+// Created by libAntimony v2.13.0
+function MAX(a, b)
+  piecewise(a, a >= b, b);
+end
+
+function function_1(v)
+  v;
+end
+
+function_1 is "Constant flux (irreversible)"
+
+function Function_for_Ca_pump(Ca, km, vmax)
+  vmax*(Ca/(Ca + km));
+end
+
+Function_for_Ca_pump is "Function for Ca_pump"
+
+
+model *MODEL1703070000()
+
+  // Compartments and Species:
+  compartment Spine;
+  species CamR in Spine, CamT in Spine, Ca in Spine, CaMKII in Spine, PP2B in Spine;
+  species D in Spine, PKA in Spine, PP1a in Spine, CBPfast in Spine, CBPmedia in Spine;
+  species CBPslow in Spine, CBPvslow in Spine, CBPfastCa in Spine, CBPmediaCa in Spine;
+  species CBPslowCa in Spine, CBPvslowCa in Spine, CamR_Ca1_A in Spine, CamR_Ca1_B in Spine;
+  species CamR_Ca1_C in Spine, CamR_Ca1_D in Spine, CamR_Ca2_AB in Spine;
+  species CamR_Ca2_AC in Spine, CamR_Ca2_AD in Spine, CamR_Ca2_BC in Spine;
+  species CamR_Ca2_BD in Spine, CamR_Ca2_CD in Spine, CamR_Ca3_ABC in Spine;
+  species CamR_Ca3_ABD in Spine, CamR_Ca3_ACD in Spine, CamR_Ca3_BCD in Spine;
+  species CamR_Ca4_ABCD in Spine, CamT_Ca1_A in Spine, CamT_Ca1_B in Spine;
+  species CamT_Ca1_C in Spine, CamT_Ca1_D in Spine, CamT_Ca2_AB in Spine;
+  species CamT_Ca2_AC in Spine, CamT_Ca2_AD in Spine, CamT_Ca2_BC in Spine;
+  species CamT_Ca2_BD in Spine, CamT_Ca2_CD in Spine, CamT_Ca3_ABC in Spine;
+  species CamT_Ca3_ABD in Spine, CamT_Ca3_ACD in Spine, CamT_Ca3_BCD in Spine;
+  species CamT_Ca4_ABCD in Spine, CamR_CaMKII in Spine, CamR_Ca1_A_CaMKII in Spine;
+  species CamR_Ca1_B_CaMKII in Spine, CamR_Ca1_C_CaMKII in Spine, CamR_Ca1_D_CaMKII in Spine;
+  species CamR_Ca2_AB_CaMKII in Spine, CamR_Ca2_AC_CaMKII in Spine, CamR_Ca2_AD_CaMKII in Spine;
+  species CamR_Ca2_BC_CaMKII in Spine, CamR_Ca2_BD_CaMKII in Spine, CamR_Ca2_CD_CaMKII in Spine;
+  species CamR_Ca3_ABC_CaMKII in Spine, CamR_Ca3_ABD_CaMKII in Spine, CamR_Ca3_ACD_CaMKII in Spine;
+  species CamR_Ca3_BCD_CaMKII in Spine, CamR_Ca4_ABCD_CaMKII in Spine, CamR_PP2B in Spine;
+  species CamR_Ca1_A_PP2B in Spine, CamR_Ca1_B_PP2B in Spine, CamR_Ca1_C_PP2B in Spine;
+  species CamR_Ca1_D_PP2B in Spine, CamR_Ca2_AB_PP2B in Spine, CamR_Ca2_AC_PP2B in Spine;
+  species CamR_Ca2_AD_PP2B in Spine, CamR_Ca2_BC_PP2B in Spine, CamR_Ca2_BD_PP2B in Spine;
+  species CamR_Ca2_CD_PP2B in Spine, CamR_Ca3_ABC_PP2B in Spine, CamR_Ca3_ABD_PP2B in Spine;
+  species CamR_Ca3_ACD_PP2B in Spine, CamR_Ca3_BCD_PP2B in Spine, CamR_Ca4_ABCD_PP2B in Spine;
+  species CaMKIIp in Spine, CamR_CaMKIIp in Spine, CamR_Ca1_A_CaMKIIp in Spine;
+  species CamR_Ca1_B_CaMKIIp in Spine, CamR_Ca1_C_CaMKIIp in Spine, CamR_Ca1_D_CaMKIIp in Spine;
+  species CamR_Ca2_AB_CaMKIIp in Spine, CamR_Ca2_AC_CaMKIIp in Spine, CamR_Ca2_AD_CaMKIIp in Spine;
+  species CamR_Ca2_BC_CaMKIIp in Spine, CamR_Ca2_BD_CaMKIIp in Spine, CamR_Ca2_CD_CaMKIIp in Spine;
+  species CamR_Ca3_ABC_CaMKIIp in Spine, CamR_Ca3_ABD_CaMKIIp in Spine, CamR_Ca3_ACD_CaMKIIp in Spine;
+  species CamR_Ca3_BCD_CaMKIIp in Spine, CamR_Ca4_ABCD_CaMKIIp in Spine, Dp in Spine;
+  species D_PKA in Spine, Dp_CamR_PP2B in Spine, Dp_CamR_Ca1_A_PP2B in Spine;
+  species Dp_CamR_Ca1_B_PP2B in Spine, Dp_CamR_Ca1_C_PP2B in Spine, Dp_CamR_Ca1_D_PP2B in Spine;
+  species Dp_CamR_Ca2_AB_PP2B in Spine, Dp_CamR_Ca2_AC_PP2B in Spine, Dp_CamR_Ca2_AD_PP2B in Spine;
+  species Dp_CamR_Ca2_BC_PP2B in Spine, Dp_CamR_Ca2_BD_PP2B in Spine, Dp_CamR_Ca2_CD_PP2B in Spine;
+  species Dp_CamR_Ca3_ABC_PP2B in Spine, Dp_CamR_Ca3_ABD_PP2B in Spine, Dp_CamR_Ca3_ACD_PP2B in Spine;
+  species Dp_CamR_Ca3_BCD_PP2B in Spine, Dp_CamR_Ca4_ABCD_PP2B in Spine, PP1a_Dp in Spine;
+  species CaMKIIp_PP1a in Spine, CamR_CaMKIIp_PP1a in Spine, CamR_Ca1_A_CaMKIIp_PP1a in Spine;
+  species CamR_Ca1_B_CaMKIIp_PP1a in Spine, CamR_Ca1_C_CaMKIIp_PP1a in Spine;
+  species CamR_Ca1_D_CaMKIIp_PP1a in Spine, CamR_Ca2_AB_CaMKIIp_PP1a in Spine;
+  species CamR_Ca2_AC_CaMKIIp_PP1a in Spine, CamR_Ca2_AD_CaMKIIp_PP1a in Spine;
+  species CamR_Ca2_BC_CaMKIIp_PP1a in Spine, CamR_Ca2_BD_CaMKIIp_PP1a in Spine;
+  species CamR_Ca2_CD_CaMKIIp_PP1a in Spine, CamR_Ca3_ABC_CaMKIIp_PP1a in Spine;
+  species CamR_Ca3_ABD_CaMKIIp_PP1a in Spine, CamR_Ca3_ACD_CaMKIIp_PP1a in Spine;
+  species CamR_Ca3_BCD_CaMKIIp_PP1a in Spine, CamR_Ca4_ABCD_CaMKIIp_PP1a in Spine;
+  species PP2Bi in Spine, PP2Bi_Ca1 in Spine, PP2Bi_Ca2 in Spine, PP2Bi_Ca3 in Spine;
+
+  // Assignment Rules:
+  parameter_8 := piecewise(0.00717*0.008*parameter_5, (1/parameter_5) < 0.008, 0.00717);
+  parameter_9 := piecewise(1/parameter_5, (1/parameter_5) < 0.008, 0.008);
+  Cam_Ca0_total_0 := CamR + CamT + CamR_CaMKIIp + CamR_CaMKII + CamR_PP2B + Dp_CamR_PP2B + CamR_CaMKIIp_PP1a;
+  Cam_Ca0_total_ratio := Cam_Ca0_total_0/Cam_total;
+  Cam_Ca1_total := Free_Cam_Ca1_total + CaMKII_CamR_Ca1_total + Dp_0_PP2B_CamR_Ca1;
+  Free_Cam_Ca1_total := Free_CamR_Ca1_total + Free_CamT_Ca1_total;
+  CaMKII_CamR_Ca1_total := CamR_Ca1_A_CaMKII + CamR_Ca1_B_CaMKII + CamR_Ca1_C_CaMKII + CamR_Ca1_D_CaMKII + CamR_Ca1_A_CaMKIIp + CamR_Ca1_B_CaMKIIp + CamR_Ca1_C_CaMKIIp + CamR_Ca1_D_CaMKIIp + CamR_Ca1_A_CaMKIIp_PP1a + CamR_Ca1_B_CaMKIIp_PP1a + CamR_Ca1_C_CaMKIIp_PP1a + CamR_Ca1_D_CaMKIIp_PP1a;
+  Dp_0_PP2B_CamR_Ca1 := CamR_Ca1_A_PP2B + CamR_Ca1_B_PP2B + CamR_Ca1_C_PP2B + CamR_Ca1_D_PP2B + Dp_CamR_Ca1_A_PP2B + Dp_CamR_Ca1_B_PP2B + Dp_CamR_Ca1_C_PP2B + Dp_CamR_Ca1_D_PP2B;
+  Cam_Ca1_total_ratio := Cam_Ca1_total/Cam_total;
+  Cam_Ca2_total := Free_Cam_Ca2_total + CaMKII_CamR_Ca2_total + Dp_0_PP2B_CamR_Ca2;
+  Free_Cam_Ca2_total := Free_CamR_Ca2_total + Free_CamT_Ca2_total;
+  CaMKII_CamR_Ca2_total := CamR_Ca2_AB_CaMKII + CamR_Ca2_AC_CaMKII + CamR_Ca2_AD_CaMKII + CamR_Ca2_BC_CaMKII + CamR_Ca2_BD_CaMKII + CamR_Ca2_CD_CaMKII + CamR_Ca2_AB_CaMKIIp + CamR_Ca2_AC_CaMKIIp + CamR_Ca2_AD_CaMKIIp + CamR_Ca2_BC_CaMKIIp + CamR_Ca2_BD_CaMKIIp + CamR_Ca2_CD_CaMKIIp + CamR_Ca2_AB_CaMKIIp_PP1a + CamR_Ca2_AC_CaMKIIp_PP1a + CamR_Ca2_AD_CaMKIIp_PP1a + CamR_Ca2_BC_CaMKIIp_PP1a + CamR_Ca2_BD_CaMKIIp_PP1a + CamR_Ca2_CD_CaMKIIp_PP1a;
+  Dp_0_PP2B_CamR_Ca2 := CamR_Ca2_AB_PP2B + CamR_Ca2_AC_PP2B + CamR_Ca2_AD_PP2B + CamR_Ca2_BC_PP2B + CamR_Ca2_BD_PP2B + CamR_Ca2_CD_PP2B + Dp_CamR_Ca2_AB_PP2B + Dp_CamR_Ca2_AC_PP2B + Dp_CamR_Ca2_AD_PP2B + Dp_CamR_Ca2_BC_PP2B + Dp_CamR_Ca2_BD_PP2B + Dp_CamR_Ca2_CD_PP2B;
+  Cam_Ca2_total_ratio := Cam_Ca2_total/Cam_total;
+  Cam_Ca3_total := Free_CamR_Ca3_total + Dp_0_PP2B_CamR_Ca3 + CaMKII_CamR_Ca3_total;
+  Free_CamR_Ca3_total := CamR_Ca3_ABC + CamR_Ca3_ABD + CamR_Ca3_ACD + CamR_Ca3_BCD;
+  Dp_0_PP2B_CamR_Ca3 := CamR_Ca3_ABC_PP2B + CamR_Ca3_ABD_PP2B + CamR_Ca3_ACD_PP2B + CamR_Ca3_BCD_PP2B + Dp_CamR_Ca3_ABC_PP2B + Dp_CamR_Ca3_ABD_PP2B + Dp_CamR_Ca3_ACD_PP2B + Dp_CamR_Ca3_BCD_PP2B;
+  CaMKII_CamR_Ca3_total := CamR_Ca3_ABC_CaMKII + CamR_Ca3_ABD_CaMKII + CamR_Ca3_ACD_CaMKII + CamR_Ca3_BCD_CaMKII + CamR_Ca3_ABC_CaMKIIp + CamR_Ca3_ABD_CaMKIIp + CamR_Ca3_ACD_CaMKIIp + CamR_Ca3_BCD_CaMKIIp + CamR_Ca3_ABC_CaMKIIp_PP1a + CamR_Ca3_ABD_CaMKIIp_PP1a + CamR_Ca3_ACD_CaMKIIp_PP1a + CamR_Ca3_BCD_CaMKIIp_PP1a;
+  Cam_Ca3_total_ratio := Cam_Ca3_total/Cam_total;
+  Cam_Ca4_total := CamR_Ca4_ABCD + CamT_Ca4_ABCD + CamR_Ca4_ABCD_CaMKII + CamR_Ca4_ABCD_PP2B + CamR_Ca4_ABCD_CaMKIIp + Dp_CamR_Ca4_ABCD_PP2B + CamR_Ca4_ABCD_CaMKIIp_PP1a;
+  Cam_Ca4_total_ratio := Cam_Ca4_total/Cam_total;
+  CamCaMKII_bar := CaMKII_bound_total/Cam_total;
+  CaMKII_bound_total := CamR_CaMKII + CaMKII_CamR_Ca1_total + CaMKII_CamR_Ca2_total + CaMKII_CamR_Ca3_total + CamR_Ca4_ABCD_CaMKII + CamR_CaMKIIp + CamR_CaMKIIp_PP1a + CamR_Ca4_ABCD_CaMKIIp + CamR_Ca4_ABCD_CaMKIIp_PP1a;
+  CaMKII_active_ratio := CaMKII_active_total/CaMKII_total;
+  CaMKII_active_total := CamR_CaMKII + CamR_Ca1_A_CaMKII + CamR_Ca1_B_CaMKII + CamR_Ca1_C_CaMKII + CamR_Ca1_D_CaMKII + CamR_Ca1_A_CaMKIIp + CamR_Ca1_B_CaMKIIp + CamR_Ca1_C_CaMKIIp + CamR_Ca1_D_CaMKIIp + CamR_Ca1_A_CaMKIIp_PP1a + CamR_Ca1_B_CaMKIIp_PP1a + CamR_Ca1_C_CaMKIIp_PP1a + CamR_Ca1_D_CaMKIIp_PP1a + CamR_Ca2_AB_CaMKII + CamR_Ca2_AC_CaMKII + CamR_Ca2_AD_CaMKII + CamR_Ca2_BC_CaMKII + CamR_Ca2_BD_CaMKII + CamR_Ca2_CD_CaMKII + CamR_Ca2_AB_CaMKIIp + CamR_Ca2_AC_CaMKIIp + CamR_Ca2_AD_CaMKIIp + CamR_Ca2_BC_CaMKIIp + CamR_Ca2_BD_CaMKIIp + CamR_Ca2_CD_CaMKIIp + CamR_Ca2_AB_CaMKIIp_PP1a + CamR_Ca2_AC_CaMKIIp_PP1a + CamR_Ca2_AD_CaMKIIp_PP1a + CamR_Ca2_BC_CaMKIIp_PP1a + CamR_Ca2_BD_CaMKIIp_PP1a + CamR_Ca2_CD_CaMKIIp_PP1a + CamR_Ca3_ABC_CaMKII + CamR_Ca3_ABD_CaMKII + CamR_Ca3_ACD_CaMKII + CamR_Ca3_BCD_CaMKII + CamR_Ca3_ABC_CaMKIIp + CamR_Ca3_ABD_CaMKIIp + CamR_Ca3_ACD_CaMKIIp + CamR_Ca3_BCD_CaMKIIp + CamR_Ca3_ABC_CaMKIIp_PP1a + CamR_Ca3_ABD_CaMKIIp_PP1a + CamR_Ca3_ACD_CaMKIIp_PP1a + CamR_Ca3_BCD_CaMKIIp_PP1a + CamR_Ca4_ABCD_CaMKII + CamR_CaMKIIp + CamR_CaMKIIp_PP1a + CamR_Ca4_ABCD_CaMKIIp + CamR_Ca4_ABCD_CaMKIIp_PP1a + CaMKIIp + CaMKIIp_PP1a;
+  CaMKII_total := CamR_CaMKII + CamR_Ca1_A_CaMKII + CamR_Ca1_B_CaMKII + CamR_Ca1_C_CaMKII + CamR_Ca1_D_CaMKII + CamR_Ca1_A_CaMKIIp + CamR_Ca1_B_CaMKIIp + CamR_Ca1_C_CaMKIIp + CamR_Ca1_D_CaMKIIp + CamR_Ca1_A_CaMKIIp_PP1a + CamR_Ca1_B_CaMKIIp_PP1a + CamR_Ca1_C_CaMKIIp_PP1a + CamR_Ca1_D_CaMKIIp_PP1a + CamR_Ca2_AB_CaMKII + CamR_Ca2_AC_CaMKII + CamR_Ca2_AD_CaMKII + CamR_Ca2_BC_CaMKII + CamR_Ca2_BD_CaMKII + CamR_Ca2_CD_CaMKII + CamR_Ca2_AB_CaMKIIp + CamR_Ca2_AC_CaMKIIp + CamR_Ca2_AD_CaMKIIp + CamR_Ca2_BC_CaMKIIp + CamR_Ca2_BD_CaMKIIp + CamR_Ca2_CD_CaMKIIp + CamR_Ca2_AB_CaMKIIp_PP1a + CamR_Ca2_AC_CaMKIIp_PP1a + CamR_Ca2_AD_CaMKIIp_PP1a + CamR_Ca2_BC_CaMKIIp_PP1a + CamR_Ca2_BD_CaMKIIp_PP1a + CamR_Ca2_CD_CaMKIIp_PP1a + CamR_Ca3_ABC_CaMKII + CamR_Ca3_ABD_CaMKII + CamR_Ca3_ACD_CaMKII + CamR_Ca3_BCD_CaMKII + CamR_Ca3_ABC_CaMKIIp + CamR_Ca3_ABD_CaMKIIp + CamR_Ca3_ACD_CaMKIIp + CamR_Ca3_BCD_CaMKIIp + CamR_Ca3_ABC_CaMKIIp_PP1a + CamR_Ca3_ABD_CaMKIIp_PP1a + CamR_Ca3_ACD_CaMKIIp_PP1a + CamR_Ca3_BCD_CaMKIIp_PP1a + CamR_Ca4_ABCD_CaMKII + CamR_CaMKIIp + CamR_CaMKIIp_PP1a + CamR_Ca4_ABCD_CaMKIIp + CamR_Ca4_ABCD_CaMKIIp_PP1a + CaMKII + CaMKIIp + CaMKIIp_PP1a;
+  CaMKIIp_bar := CaMKIIp_total/CaMKII_total;
+  CaMKIIp_total := CaMKIIp + CaMKIIp_PP1a + CamR_CaMKIIp + CamR_CaMKIIp_PP1a + CamR_Ca1_A_CaMKIIp + CamR_Ca1_B_CaMKIIp + CamR_Ca1_C_CaMKIIp + CamR_Ca1_D_CaMKIIp + CamR_Ca1_A_CaMKIIp_PP1a + CamR_Ca1_B_CaMKIIp_PP1a + CamR_Ca1_C_CaMKIIp_PP1a + CamR_Ca1_D_CaMKIIp_PP1a + CamR_Ca2_AB_CaMKIIp + CamR_Ca2_AC_CaMKIIp + CamR_Ca2_AD_CaMKIIp + CamR_Ca2_BC_CaMKIIp + CamR_Ca2_BD_CaMKIIp + CamR_Ca2_CD_CaMKIIp + CamR_Ca2_AB_CaMKIIp_PP1a + CamR_Ca2_AC_CaMKIIp_PP1a + CamR_Ca2_AD_CaMKIIp_PP1a + CamR_Ca2_BC_CaMKIIp_PP1a + CamR_Ca2_BD_CaMKIIp_PP1a + CamR_Ca2_CD_CaMKIIp_PP1a + CamR_Ca3_ABC_CaMKIIp + CamR_Ca3_ABD_CaMKIIp + CamR_Ca3_ACD_CaMKIIp + CamR_Ca3_BCD_CaMKIIp + CamR_Ca3_ABC_CaMKIIp_PP1a + CamR_Ca3_ABD_CaMKIIp_PP1a + CamR_Ca3_ACD_CaMKIIp_PP1a + CamR_Ca3_BCD_CaMKIIp_PP1a + CamR_Ca4_ABCD_CaMKIIp + CamR_Ca4_ABCD_CaMKIIp_PP1a;
+  CamPP2B_bar := PP2B_bound_total/Cam_total;
+  PP2B_bound_total := CamR_PP2B + Dp_0_PP2B_CamR_Ca1 + Dp_0_PP2B_CamR_Ca2 + Dp_0_PP2B_CamR_Ca3 + CamR_Ca4_ABCD_PP2B + Dp_CamR_PP2B + Dp_CamR_Ca4_ABCD_PP2B;
+  CamR_Ca0_ratio := CamR_Ca0_total/Cam_total;
+  CamR_Ca0_total := CamR + CamR_CaMKII + CamR_PP2B + CamR_CaMKIIp + Dp_CamR_PP2B + CamR_CaMKIIp_PP1a;
+  CamR_Ca2_ratio := CamR_Ca2_total/Cam_total;
+  CamR_Ca2_total := Free_CamR_Ca2_total + CaMKII_CamR_Ca2_total + Dp_0_PP2B_CamR_Ca2;
+  Free_CamR_Ca2_total := CamR_Ca2_AB + CamR_Ca2_AC + CamR_Ca2_AD + CamR_Ca2_BC + CamR_Ca2_BD + CamR_Ca2_CD;
+  CamR_Ca3_ratio := CamR_Ca3_total/Cam_total;
+  CamR_Ca3_total := Free_CamR_Ca3_total + Dp_0_PP2B_CamR_Ca3 + CaMKII_CamR_Ca3_total;
+  CamR_Ca4_ratio := CamR_Ca4_total/Cam_total;
+  CamR_Ca4_total := CamR_Ca4_ABCD + CamR_Ca4_ABCD_CaMKII + CamR_Ca4_ABCD_PP2B + CamR_Ca4_ABCD_CaMKIIp + Dp_CamR_Ca4_ABCD_PP2B + CamR_Ca4_ABCD_CaMKIIp_PP1a;
+  CamR_unbound := CamR + CamR_Ca1_A + CamR_Ca1_B + CamR_Ca1_C + CamR_Ca1_D + CamR_Ca2_AB + CamR_Ca2_AC + CamR_Ca2_AD + CamR_Ca2_BC + CamR_Ca2_BD + CamR_Ca2_CD + CamR_Ca3_ABC + CamR_Ca3_ABD + CamR_Ca3_ACD + CamR_Ca3_BCD + CamR_Ca4_ABCD;
+  CBP_fast_bar := CBPfastCa/CBP_fast_total;
+  CBP_fast_total := Metabolite_8;
+  CBP_media_bar := CBPmediaCa/CBP_media_total;
+  CBP_media_total := Metabolite_9;
+  CBP_slow_bar := CBPslowCa/CBP_slow_total;
+  CBP_slow_total := Metabolite_10;
+  CBP_vslow_bar := CBPvslowCa/CBP_vslow_total;
+  CBP_vslow_total := Metabolite_11;
+  Dp_bar := Dp_total/D_total;
+  Dp_total := Dp + PP1a_Dp + Dp_CamR_PP2B + Dp_CamR_Ca1_A_PP2B + Dp_CamR_Ca1_B_PP2B + Dp_CamR_Ca1_C_PP2B + Dp_CamR_Ca1_D_PP2B + Dp_CamR_Ca2_AB_PP2B + Dp_CamR_Ca2_AC_PP2B + Dp_CamR_Ca2_AD_PP2B + Dp_CamR_Ca2_BC_PP2B + Dp_CamR_Ca2_BD_PP2B + Dp_CamR_Ca2_CD_PP2B + Dp_CamR_Ca3_ABC_PP2B + Dp_CamR_Ca3_ABD_PP2B + Dp_CamR_Ca3_ACD_PP2B + Dp_CamR_Ca3_BCD_PP2B + Dp_CamR_Ca4_ABCD_PP2B;
+  D_total := D + PP1a_Dp + Dp + D_PKA + Dp_CamR_PP2B + Dp_CamR_Ca1_A_PP2B + Dp_CamR_Ca1_B_PP2B + Dp_CamR_Ca1_C_PP2B + Dp_CamR_Ca1_D_PP2B + Dp_CamR_Ca2_AB_PP2B + Dp_CamR_Ca2_AC_PP2B + Dp_CamR_Ca2_AD_PP2B + Dp_CamR_Ca2_BC_PP2B + Dp_CamR_Ca2_BD_PP2B + Dp_CamR_Ca2_CD_PP2B + Dp_CamR_Ca3_ABC_PP2B + Dp_CamR_Ca3_ABD_PP2B + Dp_CamR_Ca3_ACD_PP2B + Dp_CamR_Ca3_BCD_PP2B + Dp_CamR_Ca4_ABCD_PP2B;
+  Epsilon := CamR/(CamR + CamT);
+  Free_Cam_Ca0_total := CamR + CamT;
+  Free_CamR_Ca1_total := CamR_Ca1_A + CamR_Ca1_B + CamR_Ca1_C + CamR_Ca1_D;
+  Free_CamT_Ca1_total := CamT_Ca1_A + CamT_Ca1_B + CamT_Ca1_C + CamT_Ca1_D;
+  Free_CamT_Ca2_total := CamT_Ca2_AB + CamT_Ca2_AC + CamT_Ca2_AD + CamT_Ca2_BC + CamT_Ca2_BD + CamT_Ca2_CD;
+  Free_Cam_Ca3_total := Free_CamR_Ca3_total + Free_CamT_Ca3_total;
+  Free_CamT_Ca3_total := CamT_Ca3_ABC + CamT_Ca3_ABD + CamT_Ca3_ACD + CamT_Ca3_BCD;
+  Free_Cam_Ca4_total := CamR_Ca4_ABCD + CamT_Ca4_ABCD;
+  moles_bound_Ca_per_moles_Cam := (4*Cam_Ca4_total + 3*Cam_Ca3_total + 2*Cam_Ca2_total + Cam_Ca1_total)/Cam_total;
+  PKA_bar := PKA_inmodel/PKA_total;
+  PKA_inmodel := PKA + D_PKA;
+  PP1a_bar := PP1a_total/PP1_total;
+  PP1a_total := PP1a + CaMKIIp_PP1a + CamR_CaMKIIp_PP1a + CamR_Ca1_A_CaMKIIp_PP1a + CamR_Ca1_B_CaMKIIp_PP1a + CamR_Ca1_C_CaMKIIp_PP1a + CamR_Ca1_D_CaMKIIp_PP1a + CamR_Ca2_AB_CaMKIIp_PP1a + CamR_Ca2_AC_CaMKIIp_PP1a + CamR_Ca2_AD_CaMKIIp_PP1a + CamR_Ca2_BC_CaMKIIp_PP1a + CamR_Ca2_BD_CaMKIIp_PP1a + CamR_Ca2_CD_CaMKIIp_PP1a + CamR_Ca3_ABC_CaMKIIp_PP1a + CamR_Ca3_ABD_CaMKIIp_PP1a + CamR_Ca3_ACD_CaMKIIp_PP1a + CamR_Ca3_BCD_CaMKIIp_PP1a + CamR_Ca4_ABCD_CaMKIIp_PP1a;
+  PP1_total := PP1a + PP1a_Dp + CaMKIIp_PP1a + CamR_CaMKIIp_PP1a + CamR_Ca1_A_CaMKIIp_PP1a + CamR_Ca1_B_CaMKIIp_PP1a + CamR_Ca1_C_CaMKIIp_PP1a + CamR_Ca1_D_CaMKIIp_PP1a + CamR_Ca2_AB_CaMKIIp_PP1a + CamR_Ca2_AC_CaMKIIp_PP1a + CamR_Ca2_AD_CaMKIIp_PP1a + CamR_Ca2_BC_CaMKIIp_PP1a + CamR_Ca2_BD_CaMKIIp_PP1a + CamR_Ca2_CD_CaMKIIp_PP1a + CamR_Ca3_ABC_CaMKIIp_PP1a + CamR_Ca3_ABD_CaMKIIp_PP1a + CamR_Ca3_ACD_CaMKIIp_PP1a + CamR_Ca3_BCD_CaMKIIp_PP1a + CamR_Ca4_ABCD_CaMKIIp_PP1a;
+  PP2B_bar := PP2B_bound_total/PP2B_total;
+  PP2B_total := PP2B + PP2Bi_Ca1 + PP2Bi + PP2Bi_Ca2 + PP2Bi_Ca3 + PP2B_bound_total;
+  CamR_ratio := CamR_total/(CamR_total + CamT_total);
+  CamR_total := CamR_unbound + CaMKII_bound_total + PP2B_bound_total;
+  CamT_total := CamT + CamT_Ca1_A + CamT_Ca1_B + CamT_Ca1_C + CamT_Ca1_D + CamT_Ca2_AB + CamT_Ca2_AC + CamT_Ca2_AD + CamT_Ca2_BC + CamT_Ca2_BD + CamT_Ca2_CD + CamT_Ca3_ABC + CamT_Ca3_ABD + CamT_Ca3_ACD + CamT_Ca3_BCD + CamT_Ca4_ABCD;
+  y_bar := moles_bound_Ca_per_moles_Cam/4;
+  y_bar_div_1_minus_ybar := y_bar/(1 - y_bar);
+  CamR_Ca1_ratio := CamR_Ca1_total/Cam_total;
+  CamR_Ca1_total := Free_CamR_Ca1_total + CaMKII_CamR_Ca1_total + Dp_0_PP2B_CamR_Ca1;
+  K_CamT_Ca_A_off := K_CamR_Ca_A_off/C_A_B_C_D;
+  K_CamR_Ca_A_off := parameter_10*K_Cam_Ca_on;
+  K_CamT_Ca_B_off := K_CamR_Ca_B_off/C_A_B_C_D;
+  K_CamR_Ca_B_off := parameter_11*K_Cam_Ca_on;
+  K_CamT_Ca_C_off := K_CamR_Ca_C_off/C_A_B_C_D;
+  K_CamR_Ca_C_off := parameter_12*K_Cam_Ca_on;
+  K_CamT_Ca_D_off := K_CamR_Ca_D_off/C_A_B_C_D;
+  K_CamR_Ca_D_off := parameter_13*K_Cam_Ca_on;
+  K_CamR_T := K_CamT_R*parameter_14;
+  K_CamR_to_T_Ca2 := C_A_B_C_D*K_CamR_T;
+  K_CamT_to_R_Ca2 := K_CamT_R/C_A_B_C_D;
+  K_CamR_to_T_Ca1 := K_CamR_T*C_A_B_C_D^(1/2);
+  K_CamT_to_R_Ca1 := K_CamT_R/C_A_B_C_D^(1/2);
+  K_CamR_to_T_Ca3 := K_CamR_T*C_A_B_C_D^(3/2);
+  K_CamT_to_R_Ca3 := K_CamT_R/C_A_B_C_D^(3/2);
+  K_CamR_to_T_Ca4 := K_CamR_T*C_A_B_C_D^2;
+  K_CamT_to_R_Ca4 := K_CamT_R/C_A_B_C_D^2;
+  PKA_initial := Metabolite_6;
+  K_CaMKII_autoPhosphorylation := MAX((-0.929*CaMKII_active_ratio^5 + 3.128*CaMKII_active_ratio^4 - 4.249*CaMKII_active_ratio^3) + 2.998*CaMKII_active_ratio^2 + 0.05152*CaMKII_active_ratio - 0.001008, 0)*k_for_CaMKII_autophosphorylation;
+  PP2B_non_i := PP2B_total - PP2Bi_Ca1 - PP2Bi_Ca2 - PP2Bi_Ca3 - PP2Bi;
+
+  // Reactions:
+  Ca_pump: Ca => ; Spine*Function_for_Ca_pump(Ca, Ca_pump_km, Ca_pump_vmax);
+  Ca_leak:  => Ca; Spine*function_1(Ca_leak_v);
+  CBPslow_Ca_on: CBPslow + Ca => CBPslowCa; Spine*K_CBPslow_Ca_on*CBPslow*Ca;
+  CBPslow_Ca_off: CBPslowCa => CBPslow + Ca; Spine*K_CBPslow_Ca_off*CBPslowCa;
+  CBPvslow_Ca_on: CBPvslow + Ca => CBPvslowCa; Spine*K_CBPvslow_Ca_on*CBPvslow*Ca;
+  CBPvslow_Ca_off: CBPvslowCa => CBPvslow + Ca; Spine*K_CBPvslow_Ca_off*CBPvslowCa;
+  reaction_0: CamR + Ca => CamR_Ca1_A; Spine*K_Cam_Ca_on*CamR*Ca;
+  reaction_1: CamR + Ca => CamR_Ca1_B; Spine*K_Cam_Ca_on*CamR*Ca;
+  reaction_2: CamR + Ca => CamR_Ca1_C; Spine*K_Cam_Ca_on*CamR*Ca;
+  reaction_3: CamR + Ca => CamR_Ca1_D; Spine*K_Cam_Ca_on*CamR*Ca;
+  reaction_4: CamR_Ca1_A => CamR + Ca; Spine*K_CamR_Ca_A_off*CamR_Ca1_A;
+  reaction_5: CamR_Ca1_B => CamR + Ca; Spine*K_CamR_Ca_B_off*CamR_Ca1_B;
+  reaction_6: CamR_Ca1_C => CamR + Ca; Spine*K_CamR_Ca_C_off*CamR_Ca1_C;
+  reaction_7: CamR_Ca1_D => CamR + Ca; Spine*K_CamR_Ca_D_off*CamR_Ca1_D;
+  reaction_8: CamR_Ca1_A + Ca => CamR_Ca2_AB; Spine*K_Cam_Ca_on*CamR_Ca1_A*Ca;
+  reaction_9: CamR_Ca1_A + Ca => CamR_Ca2_AC; Spine*K_Cam_Ca_on*CamR_Ca1_A*Ca;
+  reaction_10: CamR_Ca1_A + Ca => CamR_Ca2_AD; Spine*K_Cam_Ca_on*CamR_Ca1_A*Ca;
+  reaction_11: CamR_Ca1_B + Ca => CamR_Ca2_AB; Spine*K_Cam_Ca_on*CamR_Ca1_B*Ca;
+  reaction_12: CamR_Ca1_B + Ca => CamR_Ca2_BC; Spine*K_Cam_Ca_on*CamR_Ca1_B*Ca;
+  reaction_13: CamR_Ca1_B + Ca => CamR_Ca2_BD; Spine*K_Cam_Ca_on*CamR_Ca1_B*Ca;
+  reaction_14: CamR_Ca1_C + Ca => CamR_Ca2_AC; Spine*K_Cam_Ca_on*CamR_Ca1_C*Ca;
+  reaction_15: CamR_Ca1_C + Ca => CamR_Ca2_BC; Spine*K_Cam_Ca_on*CamR_Ca1_C*Ca;
+  reaction_16: CamR_Ca1_C + Ca => CamR_Ca2_CD; Spine*K_Cam_Ca_on*CamR_Ca1_C*Ca;
+  reaction_17: CamR_Ca1_D + Ca => CamR_Ca2_AD; Spine*K_Cam_Ca_on*CamR_Ca1_D*Ca;
+  reaction_18: CamR_Ca1_D + Ca => CamR_Ca2_BD; Spine*K_Cam_Ca_on*CamR_Ca1_D*Ca;
+  reaction_19: CamR_Ca1_D + Ca => CamR_Ca2_CD; Spine*K_Cam_Ca_on*CamR_Ca1_D*Ca;
+  reaction_20: CamR_Ca2_AB => CamR_Ca1_A + Ca; Spine*K_CamR_Ca_B_off*CamR_Ca2_AB;
+  reaction_21: CamR_Ca2_AC => CamR_Ca1_A + Ca; Spine*K_CamR_Ca_C_off*CamR_Ca2_AC;
+  reaction_22: CamR_Ca2_AD => CamR_Ca1_A + Ca; Spine*K_CamR_Ca_D_off*CamR_Ca2_AD;
+  reaction_23: CamR_Ca2_AB => CamR_Ca1_B + Ca; Spine*K_CamR_Ca_A_off*CamR_Ca2_AB;
+  reaction_24: CamR_Ca2_BC => CamR_Ca1_B + Ca; Spine*K_CamR_Ca_C_off*CamR_Ca2_BC;
+  reaction_25: CamR_Ca2_BD => CamR_Ca1_B + Ca; Spine*K_CamR_Ca_D_off*CamR_Ca2_BD;
+  reaction_26: CamR_Ca2_AC => CamR_Ca1_C + Ca; Spine*K_CamR_Ca_A_off*CamR_Ca2_AC;
+  reaction_27: CamR_Ca2_BC => CamR_Ca1_C + Ca; Spine*K_CamR_Ca_B_off*CamR_Ca2_BC;
+  reaction_28: CamR_Ca2_CD => CamR_Ca1_C + Ca; Spine*K_CamR_Ca_D_off*CamR_Ca2_CD;
+  reaction_29: CamR_Ca2_AD => CamR_Ca1_D + Ca; Spine*K_CamR_Ca_A_off*CamR_Ca2_AD;
+  reaction_30: CamR_Ca2_BD => CamR_Ca1_D + Ca; Spine*K_CamR_Ca_B_off*CamR_Ca2_BD;
+  reaction_31: CamR_Ca2_CD => CamR_Ca1_D + Ca; Spine*K_CamR_Ca_C_off*CamR_Ca2_CD;
+  reaction_32: CamR_Ca2_AB + Ca => CamR_Ca3_ABC; Spine*K_Cam_Ca_on*CamR_Ca2_AB*Ca;
+  reaction_33: CamR_Ca2_AB + Ca => CamR_Ca3_ABD; Spine*K_Cam_Ca_on*CamR_Ca2_AB*Ca;
+  reaction_34: CamR_Ca2_AC + Ca => CamR_Ca3_ABC; Spine*K_Cam_Ca_on*CamR_Ca2_AC*Ca;
+  reaction_35: CamR_Ca2_AC + Ca => CamR_Ca3_ACD; Spine*K_Cam_Ca_on*CamR_Ca2_AC*Ca;
+  reaction_36: CamR_Ca2_AD + Ca => CamR_Ca3_ABD; Spine*K_Cam_Ca_on*CamR_Ca2_AD*Ca;
+  reaction_37: CamR_Ca2_AD + Ca => CamR_Ca3_ACD; Spine*K_Cam_Ca_on*CamR_Ca2_AD*Ca;
+  reaction_38: CamR_Ca2_BC + Ca => CamR_Ca3_ABC; Spine*K_Cam_Ca_on*CamR_Ca2_BC*Ca;
+  reaction_39: CamR_Ca2_BC + Ca => CamR_Ca3_BCD; Spine*K_Cam_Ca_on*CamR_Ca2_BC*Ca;
+  reaction_40: CamR_Ca2_BD + Ca => CamR_Ca3_ABD; Spine*K_Cam_Ca_on*CamR_Ca2_BD*Ca;
+  reaction_41: CamR_Ca2_BD + Ca => CamR_Ca3_BCD; Spine*K_Cam_Ca_on*CamR_Ca2_BD*Ca;
+  reaction_42: CamR_Ca2_CD + Ca => CamR_Ca3_ACD; Spine*K_Cam_Ca_on*CamR_Ca2_CD*Ca;
+  reaction_43: CamR_Ca2_CD + Ca => CamR_Ca3_BCD; Spine*K_Cam_Ca_on*CamR_Ca2_CD*Ca;
+  reaction_44: CamR_Ca3_ABC => CamR_Ca2_BC + Ca; Spine*K_CamR_Ca_A_off*CamR_Ca3_ABC;
+  reaction_45: CamR_Ca3_ABC => CamR_Ca2_AC + Ca; Spine*K_CamR_Ca_B_off*CamR_Ca3_ABC;
+  reaction_46: CamR_Ca3_ABC => CamR_Ca2_AB + Ca; Spine*K_CamR_Ca_C_off*CamR_Ca3_ABC;
+  reaction_47: CamR_Ca3_ABD => CamR_Ca2_BD + Ca; Spine*K_CamR_Ca_A_off*CamR_Ca3_ABD;
+  reaction_48: CamR_Ca3_ABD => CamR_Ca2_AD + Ca; Spine*K_CamR_Ca_B_off*CamR_Ca3_ABD;
+  reaction_49: CamR_Ca3_ABD => CamR_Ca2_AB + Ca; Spine*K_CamR_Ca_D_off*CamR_Ca3_ABD;
+  reaction_50: CamR_Ca3_ACD => CamR_Ca2_CD + Ca; Spine*K_CamR_Ca_A_off*CamR_Ca3_ACD;
+  reaction_51: CamR_Ca3_ACD => CamR_Ca2_AD + Ca; Spine*K_CamR_Ca_C_off*CamR_Ca3_ACD;
+  reaction_52: CamR_Ca3_ACD => CamR_Ca2_AC + Ca; Spine*K_CamR_Ca_D_off*CamR_Ca3_ACD;
+  reaction_53: CamR_Ca3_BCD => CamR_Ca2_CD + Ca; Spine*K_CamR_Ca_B_off*CamR_Ca3_BCD;
+  reaction_54: CamR_Ca3_BCD => CamR_Ca2_BD + Ca; Spine*K_CamR_Ca_C_off*CamR_Ca3_BCD;
+  reaction_55: CamR_Ca3_BCD => CamR_Ca2_BC + Ca; Spine*K_CamR_Ca_D_off*CamR_Ca3_BCD;
+  reaction_56: CamR_Ca3_ABC + Ca => CamR_Ca4_ABCD; Spine*K_Cam_Ca_on*CamR_Ca3_ABC*Ca;
+  reaction_57: CamR_Ca3_ABD + Ca => CamR_Ca4_ABCD; Spine*K_Cam_Ca_on*CamR_Ca3_ABD*Ca;
+  reaction_58: CamR_Ca3_ACD + Ca => CamR_Ca4_ABCD; Spine*K_Cam_Ca_on*CamR_Ca3_ACD*Ca;
+  reaction_59: CamR_Ca3_BCD + Ca => CamR_Ca4_ABCD; Spine*K_Cam_Ca_on*CamR_Ca3_BCD*Ca;
+  reaction_60: CamR_Ca4_ABCD => CamR_Ca3_ABC + Ca; Spine*K_CamR_Ca_D_off*CamR_Ca4_ABCD;
+  reaction_61: CamR_Ca4_ABCD => CamR_Ca3_ABD + Ca; Spine*K_CamR_Ca_C_off*CamR_Ca4_ABCD;
+  reaction_62: CamR_Ca4_ABCD => CamR_Ca3_ACD + Ca; Spine*K_CamR_Ca_B_off*CamR_Ca4_ABCD;
+  reaction_63: CamR_Ca4_ABCD => CamR_Ca3_BCD + Ca; Spine*K_CamR_Ca_A_off*CamR_Ca4_ABCD;
+  reaction_64: CamT + Ca => CamT_Ca1_A; Spine*K_Cam_Ca_on*CamT*Ca;
+  reaction_65: CamT + Ca => CamT_Ca1_B; Spine*K_Cam_Ca_on*CamT*Ca;
+  reaction_66: CamT + Ca => CamT_Ca1_C; Spine*K_Cam_Ca_on*CamT*Ca;
+  reaction_67: CamT + Ca => CamT_Ca1_D; Spine*K_Cam_Ca_on*CamT*Ca;
+  reaction_68: CamT_Ca1_A => CamT + Ca; Spine*K_CamT_Ca_A_off*CamT_Ca1_A;
+  reaction_69: CamT_Ca1_B => CamT + Ca; Spine*K_CamT_Ca_B_off*CamT_Ca1_B;
+  reaction_70: CamT_Ca1_C => CamT + Ca; Spine*K_CamT_Ca_C_off*CamT_Ca1_C;
+  reaction_71: CamT_Ca1_D => CamT + Ca; Spine*K_CamT_Ca_D_off*CamT_Ca1_D;
+  reaction_72: CamT_Ca1_A + Ca => CamT_Ca2_AB; Spine*K_Cam_Ca_on*CamT_Ca1_A*Ca;
+  reaction_73: CamT_Ca1_A + Ca => CamT_Ca2_AC; Spine*K_Cam_Ca_on*CamT_Ca1_A*Ca;
+  reaction_74: CamT_Ca1_A + Ca => CamT_Ca2_AD; Spine*K_Cam_Ca_on*CamT_Ca1_A*Ca;
+  reaction_75: CamT_Ca1_B + Ca => CamT_Ca2_AB; Spine*K_Cam_Ca_on*CamT_Ca1_B*Ca;
+  reaction_76: CamT_Ca1_B + Ca => CamT_Ca2_BC; Spine*K_Cam_Ca_on*CamT_Ca1_B*Ca;
+  reaction_77: CamT_Ca1_B + Ca => CamT_Ca2_BD; Spine*K_Cam_Ca_on*CamT_Ca1_B*Ca;
+  reaction_78: CamT_Ca1_C + Ca => CamT_Ca2_AC; Spine*K_Cam_Ca_on*CamT_Ca1_C*Ca;
+  reaction_79: CamT_Ca1_C + Ca => CamT_Ca2_BC; Spine*K_Cam_Ca_on*CamT_Ca1_C*Ca;
+  reaction_80: CamT_Ca1_C + Ca => CamT_Ca2_CD; Spine*K_Cam_Ca_on*CamT_Ca1_C*Ca;
+  reaction_81: CamT_Ca1_D + Ca => CamT_Ca2_AD; Spine*K_Cam_Ca_on*CamT_Ca1_D*Ca;
+  reaction_82: CamT_Ca1_D + Ca => CamT_Ca2_BD; Spine*K_Cam_Ca_on*CamT_Ca1_D*Ca;
+  reaction_83: CamT_Ca1_D + Ca => CamT_Ca2_CD; Spine*K_Cam_Ca_on*CamT_Ca1_D*Ca;
+  reaction_84: CamT_Ca2_AB => CamT_Ca1_B + Ca; Spine*K_CamT_Ca_A_off*CamT_Ca2_AB;
+  reaction_85: CamT_Ca2_AB => CamT_Ca1_A + Ca; Spine*K_CamT_Ca_B_off*CamT_Ca2_AB;
+  reaction_86: CamT_Ca2_AC => CamT_Ca1_C + Ca; Spine*K_CamT_Ca_A_off*CamT_Ca2_AC;
+  reaction_87: CamT_Ca2_AC => CamT_Ca1_A + Ca; Spine*K_CamT_Ca_C_off*CamT_Ca2_AC;
+  reaction_88: CamT_Ca2_AD => CamT_Ca1_D + Ca; Spine*K_CamT_Ca_A_off*CamT_Ca2_AD;
+  reaction_89: CamT_Ca2_AD => CamT_Ca1_A + Ca; Spine*K_CamT_Ca_D_off*CamT_Ca2_AD;
+  reaction_90: CamT_Ca2_BC => CamT_Ca1_C + Ca; Spine*K_CamT_Ca_B_off*CamT_Ca2_BC;
+  reaction_91: CamT_Ca2_BC => CamT_Ca1_B + Ca; Spine*K_CamT_Ca_C_off*CamT_Ca2_BC;
+  reaction_92: CamT_Ca2_BD => CamT_Ca1_D + Ca; Spine*K_CamT_Ca_B_off*CamT_Ca2_BD;
+  reaction_93: CamT_Ca2_BD => CamT_Ca1_B + Ca; Spine*K_CamT_Ca_D_off*CamT_Ca2_BD;
+  reaction_94: CamT_Ca2_CD => CamT_Ca1_D + Ca; Spine*K_CamT_Ca_C_off*CamT_Ca2_CD;
+  reaction_95: CamT_Ca2_CD => CamT_Ca1_C + Ca; Spine*K_CamT_Ca_D_off*CamT_Ca2_CD;
+  reaction_96: CamT_Ca2_AB + Ca => CamT_Ca3_ABC; Spine*K_Cam_Ca_on*CamT_Ca2_AB*Ca;
+  reaction_97: CamT_Ca2_AB + Ca => CamT_Ca3_ABD; Spine*K_Cam_Ca_on*CamT_Ca2_AB*Ca;
+  reaction_98: CamT_Ca2_AC + Ca => CamT_Ca3_ABC; Spine*K_Cam_Ca_on*CamT_Ca2_AC*Ca;
+  reaction_99: CamT_Ca2_AC + Ca => CamT_Ca3_ACD; Spine*K_Cam_Ca_on*CamT_Ca2_AC*Ca;
+  reaction_100: CamT_Ca2_AD + Ca => CamT_Ca3_ABD; Spine*K_Cam_Ca_on*CamT_Ca2_AD*Ca;
+  reaction_101: CamT_Ca2_AD + Ca => CamT_Ca3_ACD; Spine*K_Cam_Ca_on*CamT_Ca2_AD*Ca;
+  reaction_102: CamT_Ca2_BC + Ca => CamT_Ca3_ABC; Spine*K_Cam_Ca_on*CamT_Ca2_BC*Ca;
+  reaction_103: CamT_Ca2_BC + Ca => CamT_Ca3_BCD; Spine*K_Cam_Ca_on*CamT_Ca2_BC*Ca;
+  reaction_104: CamT_Ca2_BD + Ca => CamT_Ca3_ABD; Spine*K_Cam_Ca_on*CamT_Ca2_BD*Ca;
+  reaction_105: CamT_Ca2_BD + Ca => CamT_Ca3_BCD; Spine*K_Cam_Ca_on*CamT_Ca2_BD*Ca;
+  reaction_106: CamT_Ca2_CD + Ca => CamT_Ca3_ACD; Spine*K_Cam_Ca_on*CamT_Ca2_CD*Ca;
+  reaction_107: CamT_Ca2_CD + Ca => CamT_Ca3_BCD; Spine*K_Cam_Ca_on*CamT_Ca2_CD*Ca;
+  reaction_108: CamT_Ca3_ABC => CamT_Ca2_AC + Ca; Spine*K_CamT_Ca_B_off*CamT_Ca3_ABC;
+  reaction_109: CamT_Ca3_ABC => CamT_Ca2_BC + Ca; Spine*K_CamT_Ca_A_off*CamT_Ca3_ABC;
+  reaction_110: CamT_Ca3_ABD => CamT_Ca2_AB + Ca; Spine*K_CamT_Ca_D_off*CamT_Ca3_ABD;
+  reaction_111: CamT_Ca3_ABD => CamT_Ca2_AD + Ca; Spine*K_CamT_Ca_B_off*CamT_Ca3_ABD;
+  reaction_112: CamT_Ca3_ABD => CamT_Ca2_BD + Ca; Spine*K_CamT_Ca_A_off*CamT_Ca3_ABD;
+  reaction_113: CamT_Ca3_ACD => CamT_Ca2_AC + Ca; Spine*K_CamT_Ca_D_off*CamT_Ca3_ACD;
+  reaction_114: CamT_Ca3_ACD => CamT_Ca2_AD + Ca; Spine*K_CamT_Ca_C_off*CamT_Ca3_ACD;
+  reaction_115: CamT_Ca3_ACD => CamT_Ca2_CD + Ca; Spine*K_CamT_Ca_A_off*CamT_Ca3_ACD;
+  reaction_116: CamT_Ca3_BCD => CamT_Ca2_BC + Ca; Spine*K_CamT_Ca_D_off*CamT_Ca3_BCD;
+  reaction_117: CamT_Ca3_BCD => CamT_Ca2_BD + Ca; Spine*K_CamT_Ca_C_off*CamT_Ca3_BCD;
+  reaction_118: CamT_Ca3_BCD => CamT_Ca2_CD + Ca; Spine*K_CamT_Ca_B_off*CamT_Ca3_BCD;
+  reaction_119: CamT_Ca3_ABC + Ca => CamT_Ca4_ABCD; Spine*K_Cam_Ca_on*CamT_Ca3_ABC*Ca;
+  reaction_120: CamT_Ca3_ABD + Ca => CamT_Ca4_ABCD; Spine*K_Cam_Ca_on*CamT_Ca3_ABD*Ca;
+  reaction_121: CamT_Ca3_ACD + Ca => CamT_Ca4_ABCD; Spine*K_Cam_Ca_on*CamT_Ca3_ACD*Ca;
+  reaction_122: CamT_Ca3_BCD + Ca => CamT_Ca4_ABCD; Spine*K_Cam_Ca_on*CamT_Ca3_BCD*Ca;
+  reaction_123: CamT_Ca4_ABCD => CamT_Ca3_ABC + Ca; Spine*K_CamT_Ca_D_off*CamT_Ca4_ABCD;
+  reaction_124: CamT_Ca4_ABCD => CamT_Ca3_ABD + Ca; Spine*K_CamT_Ca_C_off*CamT_Ca4_ABCD;
+  reaction_125: CamT_Ca4_ABCD => CamT_Ca3_ACD + Ca; Spine*K_CamT_Ca_B_off*CamT_Ca4_ABCD;
+  reaction_126: CamT_Ca4_ABCD => CamT_Ca3_BCD + Ca; Spine*K_CamT_Ca_A_off*CamT_Ca4_ABCD;
+  reaction_127: CamR => CamT; Spine*K_CamR_T*CamR;
+  reaction_128: CamT => CamR; Spine*K_CamT_R*CamT;
+  reaction_129: CamR_Ca1_A => CamT_Ca1_A; Spine*K_CamR_to_T_Ca1*CamR_Ca1_A;
+  reaction_130: CamR_Ca1_B => CamT_Ca1_B; Spine*K_CamR_to_T_Ca1*CamR_Ca1_B;
+  reaction_131: CamR_Ca1_C => CamT_Ca1_C; Spine*K_CamR_to_T_Ca1*CamR_Ca1_C;
+  reaction_132: CamR_Ca1_D => CamT_Ca1_D; Spine*K_CamR_to_T_Ca1*CamR_Ca1_D;
+  reaction_133: CamT_Ca1_A => CamR_Ca1_A; Spine*K_CamT_to_R_Ca1*CamT_Ca1_A;
+  reaction_134: CamT_Ca1_B => CamR_Ca1_B; Spine*K_CamT_to_R_Ca1*CamT_Ca1_B;
+  reaction_135: CamT_Ca1_C => CamR_Ca1_C; Spine*K_CamT_to_R_Ca1*CamT_Ca1_C;
+  reaction_136: CamT_Ca1_D => CamR_Ca1_D; Spine*K_CamT_to_R_Ca1*CamT_Ca1_D;
+  reaction_137: CamR_Ca2_AB => CamT_Ca2_AB; Spine*K_CamR_to_T_Ca2*CamR_Ca2_AB;
+  reaction_138: CamR_Ca2_AC => CamT_Ca2_AC; Spine*K_CamR_to_T_Ca2*CamR_Ca2_AC;
+  reaction_139: CamR_Ca2_AD => CamT_Ca2_AD; Spine*K_CamR_to_T_Ca2*CamR_Ca2_AD;
+  reaction_140: CamR_Ca2_BC => CamT_Ca2_BC; Spine*K_CamR_to_T_Ca2*CamR_Ca2_BC;
+  reaction_141: CamR_Ca2_BD => CamT_Ca2_BD; Spine*K_CamR_to_T_Ca2*CamR_Ca2_BD;
+  reaction_142: CamR_Ca2_CD => CamT_Ca2_CD; Spine*K_CamR_to_T_Ca2*CamR_Ca2_CD;
+  reaction_143: CamT_Ca2_AB => CamR_Ca2_AB; Spine*K_CamT_to_R_Ca2*CamT_Ca2_AB;
+  reaction_144: CamT_Ca2_AC => CamR_Ca2_AC; Spine*K_CamT_to_R_Ca2*CamT_Ca2_AC;
+  reaction_145: CamT_Ca2_AD => CamR_Ca2_AD; Spine*K_CamT_to_R_Ca2*CamT_Ca2_AD;
+  reaction_146: CamT_Ca2_BC => CamR_Ca2_BC; Spine*K_CamT_to_R_Ca2*CamT_Ca2_BC;
+  reaction_147: CamT_Ca2_BD => CamR_Ca2_BD; Spine*K_CamT_to_R_Ca2*CamT_Ca2_BD;
+  reaction_148: CamT_Ca2_CD => CamR_Ca2_CD; Spine*K_CamT_to_R_Ca2*CamT_Ca2_CD;
+  reaction_149: CamR_Ca3_ABC => CamT_Ca3_ABC; Spine*K_CamR_to_T_Ca3*CamR_Ca3_ABC;
+  reaction_150: CamR_Ca3_ABD => CamT_Ca3_ABD; Spine*K_CamR_to_T_Ca3*CamR_Ca3_ABD;
+  reaction_151: CamR_Ca3_ACD => CamT_Ca3_ACD; Spine*K_CamR_to_T_Ca3*CamR_Ca3_ACD;
+  reaction_152: CamR_Ca3_BCD => CamT_Ca3_BCD; Spine*K_CamR_to_T_Ca3*CamR_Ca3_BCD;
+  reaction_153: CamT_Ca3_ABC => CamR_Ca3_ABC; Spine*K_CamT_to_R_Ca3*CamT_Ca3_ABC;
+  reaction_154: CamT_Ca3_ABD => CamR_Ca3_ABD; Spine*K_CamT_to_R_Ca3*CamT_Ca3_ABD;
+  reaction_155: CamT_Ca3_ACD => CamR_Ca3_ACD; Spine*K_CamT_to_R_Ca3*CamT_Ca3_ACD;
+  reaction_156: CamT_Ca3_BCD => CamR_Ca3_BCD; Spine*K_CamT_to_R_Ca3*CamT_Ca3_BCD;
+  reaction_157: CamR_Ca4_ABCD => CamT_Ca4_ABCD; Spine*K_CamR_to_T_Ca4*CamR_Ca4_ABCD;
+  reaction_158: CamT_Ca4_ABCD => CamR_Ca4_ABCD; Spine*K_CamT_to_R_Ca4*CamT_Ca4_ABCD;
+  reaction_159: CamR + CaMKII => CamR_CaMKII; Spine*K_CamR_CaMKII_p_on*CamR*CaMKII;
+  reaction_160: CamR_Ca1_A + CaMKII => CamR_Ca1_A_CaMKII; Spine*K_CamR_CaMKII_p_on*CamR_Ca1_A*CaMKII;
+  reaction_161: CamR_Ca1_B + CaMKII => CamR_Ca1_B_CaMKII; Spine*K_CamR_CaMKII_p_on*CamR_Ca1_B*CaMKII;
+  reaction_162: CamR_Ca1_C + CaMKII => CamR_Ca1_C_CaMKII; Spine*K_CamR_CaMKII_p_on*CamR_Ca1_C*CaMKII;
+  reaction_163: CamR_Ca1_D + CaMKII => CamR_Ca1_D_CaMKII; Spine*K_CamR_CaMKII_p_on*CamR_Ca1_D*CaMKII;
+  reaction_164: CamR_Ca2_AB + CaMKII => CamR_Ca2_AB_CaMKII; Spine*K_CamR_CaMKII_p_on*CamR_Ca2_AB*CaMKII;
+  reaction_165: CamR_Ca2_AC + CaMKII => CamR_Ca2_AC_CaMKII; Spine*K_CamR_CaMKII_p_on*CamR_Ca2_AC*CaMKII;
+  reaction_166: CamR_Ca2_AD + CaMKII => CamR_Ca2_AD_CaMKII; Spine*K_CamR_CaMKII_p_on*CamR_Ca2_AD*CaMKII;
+  reaction_167: CamR_Ca2_BC + CaMKII => CamR_Ca2_BC_CaMKII; Spine*K_CamR_CaMKII_p_on*CamR_Ca2_BC*CaMKII;
+  reaction_168: CamR_Ca2_BD + CaMKII => CamR_Ca2_BD_CaMKII; Spine*K_CamR_CaMKII_p_on*CamR_Ca2_BD*CaMKII;
+  reaction_169: CamR_Ca2_CD + CaMKII => CamR_Ca2_CD_CaMKII; Spine*K_CamR_CaMKII_p_on*CamR_Ca2_CD*CaMKII;
+  reaction_170: CamR_Ca3_ABC + CaMKII => CamR_Ca3_ABC_CaMKII; Spine*K_CamR_CaMKII_p_on*CamR_Ca3_ABC*CaMKII;
+  reaction_171: CamR_Ca3_ABD + CaMKII => CamR_Ca3_ABD_CaMKII; Spine*K_CamR_CaMKII_p_on*CamR_Ca3_ABD*CaMKII;
+  reaction_172: CamR_Ca3_ACD + CaMKII => CamR_Ca3_ACD_CaMKII; Spine*K_CamR_CaMKII_p_on*CamR_Ca3_ACD*CaMKII;
+  reaction_173: CamR_Ca3_BCD + CaMKII => CamR_Ca3_BCD_CaMKII; Spine*K_CamR_CaMKII_p_on*CamR_Ca3_BCD*CaMKII;
+  reaction_174: CamR_Ca4_ABCD + CaMKII => CamR_Ca4_ABCD_CaMKII; Spine*K_CamR_CaMKII_p_on*CamR_Ca4_ABCD*CaMKII;
+  reaction_175: CamR_CaMKII => CamR + CaMKII; Spine*K_CamR_CaMKII_off*CamR_CaMKII;
+  reaction_176: CamR_Ca1_A_CaMKII => CamR_Ca1_A + CaMKII; Spine*K_CamR_CaMKII_off*CamR_Ca1_A_CaMKII;
+  reaction_177: CamR_Ca1_B_CaMKII => CamR_Ca1_B + CaMKII; Spine*K_CamR_CaMKII_off*CamR_Ca1_B_CaMKII;
+  reaction_178: CamR_Ca1_C_CaMKII => CamR_Ca1_C + CaMKII; Spine*K_CamR_CaMKII_off*CamR_Ca1_C_CaMKII;
+  reaction_179: CamR_Ca1_D_CaMKII => CamR_Ca1_D + CaMKII; Spine*K_CamR_CaMKII_off*CamR_Ca1_D_CaMKII;
+  reaction_180: CamR_Ca2_AB_CaMKII => CamR_Ca2_AB + CaMKII; Spine*K_CamR_CaMKII_off*CamR_Ca2_AB_CaMKII;
+  reaction_181: CamR_Ca2_AC_CaMKII => CamR_Ca2_AC + CaMKII; Spine*K_CamR_CaMKII_off*CamR_Ca2_AC_CaMKII;
+  reaction_182: CamR_Ca2_AD_CaMKII => CamR_Ca2_AD + CaMKII; Spine*K_CamR_CaMKII_off*CamR_Ca2_AD_CaMKII;
+  reaction_183: CamR_Ca2_BC_CaMKII => CamR_Ca2_BC + CaMKII; Spine*K_CamR_CaMKII_off*CamR_Ca2_BC_CaMKII;
+  reaction_184: CamR_Ca2_BD_CaMKII => CamR_Ca2_BD + CaMKII; Spine*K_CamR_CaMKII_off*CamR_Ca2_BD_CaMKII;
+  reaction_185: CamR_Ca2_CD_CaMKII => CamR_Ca2_CD + CaMKII; Spine*K_CamR_CaMKII_off*CamR_Ca2_CD_CaMKII;
+  reaction_186: CamR_Ca3_ABC_CaMKII => CamR_Ca3_ABC + CaMKII; Spine*K_CamR_CaMKII_off*CamR_Ca3_ABC_CaMKII;
+  reaction_187: CamR_Ca3_ABD_CaMKII => CamR_Ca3_ABD + CaMKII; Spine*K_CamR_CaMKII_off*CamR_Ca3_ABD_CaMKII;
+  reaction_188: CamR_Ca3_ACD_CaMKII => CamR_Ca3_ACD + CaMKII; Spine*K_CamR_CaMKII_off*CamR_Ca3_ACD_CaMKII;
+  reaction_189: CamR_Ca3_BCD_CaMKII => CamR_Ca3_BCD + CaMKII; Spine*K_CamR_CaMKII_off*CamR_Ca3_BCD_CaMKII;
+  reaction_190: CamR_Ca4_ABCD_CaMKII => CamR_Ca4_ABCD + CaMKII; Spine*K_CamR_CaMKII_off*CamR_Ca4_ABCD_CaMKII;
+  reaction_191: CamR + PP2B => CamR_PP2B; Spine*K_CamR_PP2B_on*CamR*PP2B;
+  reaction_192: CamR_Ca1_A + PP2B => CamR_Ca1_A_PP2B; Spine*K_CamR_PP2B_on*CamR_Ca1_A*PP2B;
+  reaction_193: CamR_Ca1_B + PP2B => CamR_Ca1_B_PP2B; Spine*K_CamR_PP2B_on*CamR_Ca1_B*PP2B;
+  reaction_194: CamR_Ca1_C + PP2B => CamR_Ca1_C_PP2B; Spine*K_CamR_PP2B_on*CamR_Ca1_C*PP2B;
+  reaction_195: CamR_Ca1_D + PP2B => CamR_Ca1_D_PP2B; Spine*K_CamR_PP2B_on*CamR_Ca1_D*PP2B;
+  reaction_196: CamR_Ca2_AB + PP2B => CamR_Ca2_AB_PP2B; Spine*K_CamR_PP2B_on*CamR_Ca2_AB*PP2B;
+  reaction_198: CamR_Ca2_AD + PP2B => CamR_Ca2_AD_PP2B; Spine*K_CamR_PP2B_on*CamR_Ca2_AD*PP2B;
+  reaction_199: CamR_Ca2_BC + PP2B => CamR_Ca2_BC_PP2B; Spine*K_CamR_PP2B_on*CamR_Ca2_BC*PP2B;
+  reaction_200: CamR_Ca2_BD + PP2B => CamR_Ca2_BD_PP2B; Spine*K_CamR_PP2B_on*CamR_Ca2_BD*PP2B;
+  reaction_201: CamR_Ca2_CD + PP2B => CamR_Ca2_CD_PP2B; Spine*K_CamR_PP2B_on*CamR_Ca2_CD*PP2B;
+  reaction_202: CamR_Ca3_ABC + PP2B => CamR_Ca3_ABC_PP2B; Spine*K_CamR_PP2B_on*CamR_Ca3_ABC*PP2B;
+  reaction_203: CamR_Ca3_ABD + PP2B => CamR_Ca3_ABD_PP2B; Spine*K_CamR_PP2B_on*CamR_Ca3_ABD*PP2B;
+  reaction_204: CamR_Ca3_ACD + PP2B => CamR_Ca3_ACD_PP2B; Spine*K_CamR_PP2B_on*CamR_Ca3_ACD*PP2B;
+  reaction_205: CamR_Ca3_BCD + PP2B => CamR_Ca3_BCD_PP2B; Spine*K_CamR_PP2B_on*CamR_Ca3_BCD*PP2B;
+  reaction_206: CamR_Ca4_ABCD + PP2B => CamR_Ca4_ABCD_PP2B; Spine*K_CamR_PP2B_on*CamR_Ca4_ABCD*PP2B;
+  reaction_207: CamR_PP2B => CamR + PP2B; Spine*K_CamR_PP2B_off*CamR_PP2B;
+  reaction_208: CamR_Ca1_A_PP2B => CamR_Ca1_A + PP2B; Spine*K_CamR_PP2B_off*CamR_Ca1_A_PP2B;
+  reaction_209: CamR_Ca1_B_PP2B => CamR_Ca1_B + PP2B; Spine*K_CamR_PP2B_off*CamR_Ca1_B_PP2B;
+  reaction_210: CamR_Ca1_C_PP2B => CamR_Ca1_C + PP2B; Spine*K_CamR_PP2B_off*CamR_Ca1_C_PP2B;
+  reaction_211: CamR_Ca1_D_PP2B => CamR_Ca1_D + PP2B; Spine*K_CamR_PP2B_off*CamR_Ca1_D_PP2B;
+  reaction_212: CamR_Ca2_AB_PP2B => CamR_Ca2_AB + PP2B; Spine*K_CamR_PP2B_off*CamR_Ca2_AB_PP2B;
+  reaction_213: CamR_Ca2_AC_PP2B => CamR_Ca2_AC + PP2B; Spine*K_CamR_PP2B_off*CamR_Ca2_AC_PP2B;
+  reaction_214: CamR_Ca2_AD_PP2B => CamR_Ca2_AD + PP2B; Spine*K_CamR_PP2B_off*CamR_Ca2_AD_PP2B;
+  reaction_215: CamR_Ca2_BC_PP2B => CamR_Ca2_BC + PP2B; Spine*K_CamR_PP2B_off*CamR_Ca2_BC_PP2B;
+  reaction_216: CamR_Ca2_BD_PP2B => CamR_Ca2_BD + PP2B; Spine*K_CamR_PP2B_off*CamR_Ca2_BD_PP2B;
+  reaction_217: CamR_Ca2_CD_PP2B => CamR_Ca2_CD + PP2B; Spine*K_CamR_PP2B_off*CamR_Ca2_CD_PP2B;
+  reaction_218: CamR_Ca3_ABC_PP2B => CamR_Ca3_ABC + PP2B; Spine*K_CamR_PP2B_off*CamR_Ca3_ABC_PP2B;
+  reaction_219: CamR_Ca3_ABD_PP2B => CamR_Ca3_ABD + PP2B; Spine*K_CamR_PP2B_off*CamR_Ca3_ABD_PP2B;
+  reaction_220: CamR_Ca3_ACD_PP2B => CamR_Ca3_ACD + PP2B; Spine*K_CamR_PP2B_off*CamR_Ca3_ACD_PP2B;
+  reaction_221: CamR_Ca3_BCD_PP2B => CamR_Ca3_BCD + PP2B; Spine*K_CamR_PP2B_off*CamR_Ca3_BCD_PP2B;
+  reaction_222: CamR_Ca4_ABCD_PP2B => CamR_Ca4_ABCD + PP2B; Spine*K_CamR_PP2B_off*CamR_Ca4_ABCD_PP2B;
+  reaction_223: CamR_CaMKII + Ca => CamR_Ca1_A_CaMKII; Spine*K_Cam_Ca_on*CamR_CaMKII*Ca;
+  reaction_224: CamR_CaMKII + Ca => CamR_Ca1_B_CaMKII; Spine*K_Cam_Ca_on*CamR_CaMKII*Ca;
+  reaction_225: CamR_CaMKII + Ca => CamR_Ca1_C_CaMKII; Spine*K_Cam_Ca_on*CamR_CaMKII*Ca;
+  reaction_226: CamR_CaMKII + Ca => CamR_Ca1_D_CaMKII; Spine*K_Cam_Ca_on*CamR_CaMKII*Ca;
+  reaction_227: CamR_Ca1_A_CaMKII => CamR_CaMKII + Ca; Spine*K_CamR_Ca_A_off*CamR_Ca1_A_CaMKII;
+  reaction_228: CamR_Ca1_C_CaMKII => CamR_CaMKII + Ca; Spine*K_CamR_Ca_C_off*CamR_Ca1_C_CaMKII;
+  reaction_229: CamR_Ca1_D_CaMKII => CamR_CaMKII + Ca; Spine*K_CamR_Ca_D_off*CamR_Ca1_D_CaMKII;
+  reaction_230: CamR_Ca1_A_CaMKII + Ca => CamR_Ca2_AB_CaMKII; Spine*K_Cam_Ca_on*CamR_Ca1_A_CaMKII*Ca;
+  reaction_231: CamR_Ca1_A_CaMKII + Ca => CamR_Ca2_AC_CaMKII; Spine*K_Cam_Ca_on*CamR_Ca1_A_CaMKII*Ca;
+  reaction_232: CamR_Ca1_A_CaMKII + Ca => CamR_Ca2_AD_CaMKII; Spine*K_Cam_Ca_on*CamR_Ca1_A_CaMKII*Ca;
+  reaction_233: CamR_Ca1_B_CaMKII + Ca => CamR_Ca2_AB_CaMKII; Spine*K_Cam_Ca_on*CamR_Ca1_B_CaMKII*Ca;
+  reaction_234: CamR_Ca1_B_CaMKII + Ca => CamR_Ca2_BC_CaMKII; Spine*K_Cam_Ca_on*CamR_Ca1_B_CaMKII*Ca;
+  reaction_235: CamR_Ca1_B_CaMKII + Ca => CamR_Ca2_BD_CaMKII; Spine*K_Cam_Ca_on*CamR_Ca1_B_CaMKII*Ca;
+  reaction_236: CamR_Ca1_C_CaMKII + Ca => CamR_Ca2_AC_CaMKII; Spine*K_Cam_Ca_on*CamR_Ca1_C_CaMKII*Ca;
+  reaction_237: CamR_Ca1_C_CaMKII + Ca => CamR_Ca2_BC_CaMKII; Spine*K_Cam_Ca_on*CamR_Ca1_C_CaMKII*Ca;
+  reaction_238: CamR_Ca1_C_CaMKII + Ca => CamR_Ca2_CD_CaMKII; Spine*K_Cam_Ca_on*CamR_Ca1_C_CaMKII*Ca;
+  reaction_239: CamR_Ca1_D_CaMKII + Ca => CamR_Ca2_AD_CaMKII; Spine*K_Cam_Ca_on*CamR_Ca1_D_CaMKII*Ca;
+  reaction_240: CamR_Ca1_D_CaMKII + Ca => CamR_Ca2_BD_CaMKII; Spine*K_Cam_Ca_on*CamR_Ca1_D_CaMKII*Ca;
+  reaction_241: CamR_Ca1_D_CaMKII + Ca => CamR_Ca2_CD_CaMKII; Spine*K_Cam_Ca_on*CamR_Ca1_D_CaMKII*Ca;
+  reaction_242: CamR_Ca2_AB_CaMKII => CamR_Ca1_B_CaMKII + Ca; Spine*K_CamR_Ca_A_off*CamR_Ca2_AB_CaMKII;
+  reaction_243: CamR_Ca2_AB_CaMKII => CamR_Ca1_A_CaMKII + Ca; Spine*K_CamR_Ca_B_off*CamR_Ca2_AB_CaMKII;
+  reaction_244: CamR_Ca2_AC_CaMKII => CamR_Ca1_C_CaMKII + Ca; Spine*K_CamR_Ca_A_off*CamR_Ca2_AC_CaMKII;
+  reaction_245: CamR_Ca2_AC_CaMKII => CamR_Ca1_A_CaMKII + Ca; Spine*K_CamR_Ca_C_off*CamR_Ca2_AC_CaMKII;
+  reaction_246: CamR_Ca2_AD_CaMKII => CamR_Ca1_D_CaMKII + Ca; Spine*K_CamR_Ca_A_off*CamR_Ca2_AD_CaMKII;
+  reaction_247: CamR_Ca2_AD_CaMKII => CamR_Ca1_A_CaMKII + Ca; Spine*K_CamR_Ca_D_off*CamR_Ca2_AD_CaMKII;
+  reaction_248: CamR_Ca2_BC_CaMKII => CamR_Ca1_C_CaMKII + Ca; Spine*K_CamR_Ca_B_off*CamR_Ca2_BC_CaMKII;
+  reaction_249: CamR_Ca2_BC_CaMKII => CamR_Ca1_B_CaMKII + Ca; Spine*K_CamR_Ca_C_off*CamR_Ca2_BC_CaMKII;
+  reaction_250: CamR_Ca2_BD_CaMKII => CamR_Ca1_D_CaMKII + Ca; Spine*K_CamR_Ca_B_off*CamR_Ca2_BD_CaMKII;
+  reaction_251: CamR_Ca2_BD_CaMKII => CamR_Ca1_B_CaMKII + Ca; Spine*K_CamR_Ca_D_off*CamR_Ca2_BD_CaMKII;
+  reaction_252: CamR_Ca2_CD_CaMKII => CamR_Ca1_D_CaMKII + Ca; Spine*K_CamR_Ca_C_off*CamR_Ca2_CD_CaMKII;
+  reaction_253: CamR_Ca2_CD_CaMKII => CamR_Ca1_C_CaMKII + Ca; Spine*K_CamR_Ca_D_off*CamR_Ca2_CD_CaMKII;
+  reaction_254: CamR_Ca2_AB_CaMKII + Ca => CamR_Ca3_ABC_CaMKII; Spine*K_Cam_Ca_on*CamR_Ca2_AB_CaMKII*Ca;
+  reaction_255: CamR_Ca2_AB_CaMKII + Ca => CamR_Ca3_ABD_CaMKII; Spine*K_Cam_Ca_on*CamR_Ca2_AB_CaMKII*Ca;
+  reaction_256: CamR_Ca2_AC_CaMKII + Ca => CamR_Ca3_ABC_CaMKII; Spine*K_Cam_Ca_on*CamR_Ca2_AC_CaMKII*Ca;
+  reaction_257: CamR_Ca2_AC_CaMKII + Ca => CamR_Ca3_ACD_CaMKII; Spine*K_Cam_Ca_on*CamR_Ca2_AC_CaMKII*Ca;
+  reaction_258: CamR_Ca2_AD_CaMKII + Ca => CamR_Ca3_ABD_CaMKII; Spine*K_Cam_Ca_on*CamR_Ca2_AD_CaMKII*Ca;
+  reaction_259: CamR_Ca2_AD_CaMKII + Ca => CamR_Ca3_ACD_CaMKII; Spine*K_Cam_Ca_on*CamR_Ca2_AD_CaMKII*Ca;
+  reaction_260: CamR_Ca2_BC_CaMKII + Ca => CamR_Ca3_ABC_CaMKII; Spine*K_Cam_Ca_on*CamR_Ca2_BC_CaMKII*Ca;
+  reaction_261: CamR_Ca2_BC_CaMKII + Ca => CamR_Ca3_BCD_CaMKII; Spine*K_Cam_Ca_on*CamR_Ca2_BC_CaMKII*Ca;
+  reaction_262: CamR_Ca2_BD_CaMKII + Ca => CamR_Ca3_ABD_CaMKII; Spine*K_Cam_Ca_on*CamR_Ca2_BD_CaMKII*Ca;
+  reaction_263: CamR_Ca2_BD_CaMKII + Ca => CamR_Ca3_BCD_CaMKII; Spine*K_Cam_Ca_on*CamR_Ca2_BD_CaMKII*Ca;
+  reaction_264: CamR_Ca2_CD_CaMKII + Ca => CamR_Ca3_ACD_CaMKII; Spine*K_Cam_Ca_on*CamR_Ca2_CD_CaMKII*Ca;
+  reaction_265: CamR_Ca2_CD_CaMKII + Ca => CamR_Ca3_BCD_CaMKII; Spine*K_Cam_Ca_on*CamR_Ca2_CD_CaMKII*Ca;
+  reaction_266: CamR_Ca3_ABC_CaMKII => CamR_Ca2_AB_CaMKII + Ca; Spine*K_CamR_Ca_C_off*CamR_Ca3_ABC_CaMKII;
+  reaction_267: CamR_Ca3_ABC_CaMKII => CamR_Ca2_AC_CaMKII + Ca; Spine*K_CamR_Ca_B_off*CamR_Ca3_ABC_CaMKII;
+  reaction_268: CamR_Ca3_ABC_CaMKII => CamR_Ca2_BC_CaMKII + Ca; Spine*K_CamR_Ca_A_off*CamR_Ca3_ABC_CaMKII;
+  reaction_269: CamR_Ca3_ABD_CaMKII => CamR_Ca2_AB_CaMKII + Ca; Spine*K_CamR_Ca_D_off*CamR_Ca3_ABD_CaMKII;
+  reaction_270: CamR_Ca3_ABD_CaMKII => CamR_Ca2_AD_CaMKII + Ca; Spine*K_CamR_Ca_B_off*CamR_Ca3_ABD_CaMKII;
+  reaction_271: CamR_Ca3_ABD_CaMKII => CamR_Ca2_BD_CaMKII + Ca; Spine*K_CamR_Ca_A_off*CamR_Ca3_ABD_CaMKII;
+  reaction_272: CamR_Ca3_ACD_CaMKII => CamR_Ca2_AC_CaMKII + Ca; Spine*K_CamR_Ca_D_off*CamR_Ca3_ACD_CaMKII;
+  reaction_273: CamR_Ca3_ACD_CaMKII => CamR_Ca2_AD_CaMKII + Ca; Spine*K_CamR_Ca_C_off*CamR_Ca3_ACD_CaMKII;
+  reaction_274: CamR_Ca3_ACD_CaMKII => CamR_Ca2_CD_CaMKII + Ca; Spine*K_CamR_Ca_A_off*CamR_Ca3_ACD_CaMKII;
+  reaction_275: CamR_Ca3_BCD_CaMKII => CamR_Ca2_BC_CaMKII + Ca; Spine*K_CamR_Ca_D_off*CamR_Ca3_BCD_CaMKII;
+  reaction_276: CamR_Ca3_BCD_CaMKII => CamR_Ca2_BD_CaMKII + Ca; Spine*K_CamR_Ca_C_off*CamR_Ca3_BCD_CaMKII;
+  reaction_277: CamR_Ca3_BCD_CaMKII => CamR_Ca2_CD_CaMKII + Ca; Spine*K_CamR_Ca_B_off*CamR_Ca3_BCD_CaMKII;
+  reaction_278: CamR_Ca3_BCD_CaMKII + Ca => CamR_Ca4_ABCD_CaMKII; Spine*K_Cam_Ca_on*CamR_Ca3_BCD_CaMKII*Ca;
+  reaction_279: CamR_Ca3_ACD_CaMKII + Ca => CamR_Ca4_ABCD_CaMKII; Spine*K_Cam_Ca_on*CamR_Ca3_ACD_CaMKII*Ca;
+  reaction_280: CamR_Ca3_ABD_CaMKII + Ca => CamR_Ca4_ABCD_CaMKII; Spine*K_Cam_Ca_on*CamR_Ca3_ABD_CaMKII*Ca;
+  reaction_281: CamR_Ca3_ABC_CaMKII + Ca => CamR_Ca4_ABCD_CaMKII; Spine*K_Cam_Ca_on*CamR_Ca3_ABC_CaMKII*Ca;
+  reaction_282: CamR_Ca4_ABCD_CaMKII => CamR_Ca3_BCD_CaMKII + Ca; Spine*K_CamR_Ca_A_off*CamR_Ca4_ABCD_CaMKII;
+  reaction_283: CamR_Ca4_ABCD_CaMKII => CamR_Ca3_ACD_CaMKII + Ca; Spine*K_CamR_Ca_B_off*CamR_Ca4_ABCD_CaMKII;
+  reaction_284: CamR_Ca4_ABCD_CaMKII => CamR_Ca3_ABD_CaMKII + Ca; Spine*K_CamR_Ca_C_off*CamR_Ca4_ABCD_CaMKII;
+  reaction_285: CamR_Ca4_ABCD_CaMKII => CamR_Ca3_ABC_CaMKII + Ca; Spine*K_CamR_Ca_D_off*CamR_Ca4_ABCD_CaMKII;
+  reaction_286: CamR_PP2B + Ca => CamR_Ca1_A_PP2B; Spine*K_Cam_Ca_on*CamR_PP2B*Ca;
+  reaction_287: CamR_PP2B + Ca => CamR_Ca1_B_PP2B; Spine*K_Cam_Ca_on*CamR_PP2B*Ca;
+  reaction_288: CamR_PP2B + Ca => CamR_Ca1_C_PP2B; Spine*K_Cam_Ca_on*CamR_PP2B*Ca;
+  reaction_289: CamR_PP2B + Ca => CamR_Ca1_D_PP2B; Spine*K_Cam_Ca_on*CamR_PP2B*Ca;
+  reaction_290: CamR_Ca1_A_PP2B => CamR_PP2B + Ca; Spine*K_CamR_Ca_A_off*CamR_Ca1_A_PP2B;
+  reaction_291: CamR_Ca1_B_PP2B => CamR_PP2B + Ca; Spine*K_CamR_Ca_B_off*CamR_Ca1_B_PP2B;
+  reaction_292: CamR_Ca1_C_PP2B => CamR_PP2B + Ca; Spine*K_CamR_Ca_C_off*CamR_Ca1_C_PP2B;
+  reaction_293: CamR_Ca1_D_PP2B => CamR_PP2B + Ca; Spine*K_CamR_Ca_D_off*CamR_Ca1_D_PP2B;
+  reaction_294: CamR_Ca1_A_PP2B + Ca => CamR_Ca2_AB_PP2B; Spine*K_Cam_Ca_on*CamR_Ca1_A_PP2B*Ca;
+  reaction_295: CamR_Ca1_A_PP2B + Ca => CamR_Ca2_AC_PP2B; Spine*K_Cam_Ca_on*CamR_Ca1_A_PP2B*Ca;
+  reaction_296: CamR_Ca1_A_PP2B + Ca => CamR_Ca2_AD_PP2B; Spine*K_Cam_Ca_on*CamR_Ca1_A_PP2B*Ca;
+  reaction_297: CamR_Ca1_B_PP2B + Ca => CamR_Ca2_AB_PP2B; Spine*K_Cam_Ca_on*CamR_Ca1_B_PP2B*Ca;
+  reaction_298: CamR_Ca1_B_PP2B + Ca => CamR_Ca2_BC_PP2B; Spine*K_Cam_Ca_on*CamR_Ca1_B_PP2B*Ca;
+  reaction_299: CamR_Ca1_B_PP2B + Ca => CamR_Ca2_BD_PP2B; Spine*K_Cam_Ca_on*CamR_Ca1_B_PP2B*Ca;
+  reaction_300: CamR_Ca1_C_PP2B + Ca => CamR_Ca2_AC_PP2B; Spine*K_Cam_Ca_on*CamR_Ca1_C_PP2B*Ca;
+  reaction_301: CamR_Ca1_C_PP2B + Ca => CamR_Ca2_BC_PP2B; Spine*K_Cam_Ca_on*CamR_Ca1_C_PP2B*Ca;
+  reaction_302: CamR_Ca1_C_PP2B + Ca => CamR_Ca2_CD_PP2B; Spine*K_Cam_Ca_on*CamR_Ca1_C_PP2B*Ca;
+  reaction_303: CamR_Ca1_D_PP2B + Ca => CamR_Ca2_AD_PP2B; Spine*K_Cam_Ca_on*CamR_Ca1_D_PP2B*Ca;
+  reaction_304: CamR_Ca1_D_PP2B + Ca => CamR_Ca2_BD_PP2B; Spine*K_Cam_Ca_on*CamR_Ca1_D_PP2B*Ca;
+  reaction_305: CamR_Ca1_D_PP2B + Ca => CamR_Ca2_CD_PP2B; Spine*K_Cam_Ca_on*CamR_Ca1_D_PP2B*Ca;
+  reaction_306: CamR_Ca2_AB_PP2B => CamR_Ca1_B_PP2B + Ca; Spine*K_CamR_Ca_A_off*CamR_Ca2_AB_PP2B;
+  reaction_307: CamR_Ca2_AB_PP2B => CamR_Ca1_A_PP2B + Ca; Spine*K_CamR_Ca_B_off*CamR_Ca2_AB_PP2B;
+  reaction_308: CamR_Ca2_AC_PP2B => CamR_Ca1_C_PP2B + Ca; Spine*K_CamR_Ca_A_off*CamR_Ca2_AC_PP2B;
+  reaction_309: CamR_Ca2_AC_PP2B => CamR_Ca1_A_PP2B + Ca; Spine*K_CamR_Ca_C_off*CamR_Ca2_AC_PP2B;
+  reaction_310: CamR_Ca2_AD_PP2B => CamR_Ca1_D_PP2B + Ca; Spine*K_CamR_Ca_A_off*CamR_Ca2_AD_PP2B;
+  reaction_311: CamR_Ca2_AD_PP2B => CamR_Ca1_A_PP2B + Ca; Spine*K_CamR_Ca_D_off*CamR_Ca2_AD_PP2B;
+  reaction_312: CamR_Ca2_BC_PP2B => CamR_Ca1_C_PP2B + Ca; Spine*K_CamR_Ca_B_off*CamR_Ca2_BC_PP2B;
+  reaction_313: CamR_Ca2_BC_PP2B => CamR_Ca1_B_PP2B + Ca; Spine*K_CamR_Ca_C_off*CamR_Ca2_BC_PP2B;
+  reaction_314: CamR_Ca2_BD_PP2B => CamR_Ca1_D_PP2B + Ca; Spine*K_CamR_Ca_B_off*CamR_Ca2_BD_PP2B;
+  reaction_315: CamR_Ca2_BD_PP2B => CamR_Ca1_B_PP2B + Ca; Spine*K_CamR_Ca_D_off*CamR_Ca2_BD_PP2B;
+  reaction_316: CamR_Ca2_CD_PP2B => CamR_Ca1_D_PP2B + Ca; Spine*K_CamR_Ca_C_off*CamR_Ca2_CD_PP2B;
+  reaction_317: CamR_Ca2_CD_PP2B => CamR_Ca1_C_PP2B + Ca; Spine*K_CamR_Ca_D_off*CamR_Ca2_CD_PP2B;
+  reaction_318: CamR_Ca2_AB_PP2B + Ca => CamR_Ca3_ABC_PP2B; Spine*K_Cam_Ca_on*CamR_Ca2_AB_PP2B*Ca;
+  reaction_319: CamR_Ca2_AB_PP2B + Ca => CamR_Ca3_ABD_PP2B; Spine*K_Cam_Ca_on*CamR_Ca2_AB_PP2B*Ca;
+  reaction_320: CamR_Ca2_AC_PP2B + Ca => CamR_Ca3_ABC_PP2B; Spine*K_Cam_Ca_on*CamR_Ca2_AC_PP2B*Ca;
+  reaction_321: CamR_Ca2_AC_PP2B + Ca => CamR_Ca3_ACD_PP2B; Spine*K_Cam_Ca_on*CamR_Ca2_AC_PP2B*Ca;
+  reaction_322: CamR_Ca2_AD_PP2B + Ca => CamR_Ca3_ABD_PP2B; Spine*K_Cam_Ca_on*CamR_Ca2_AD_PP2B*Ca;
+  reaction_323: CamR_Ca2_AD_PP2B + Ca => CamR_Ca3_ACD_PP2B; Spine*K_Cam_Ca_on*CamR_Ca2_AD_PP2B*Ca;
+  reaction_324: CamR_Ca2_BC_PP2B + Ca => CamR_Ca3_ABC_PP2B; Spine*K_Cam_Ca_on*CamR_Ca2_BC_PP2B*Ca;
+  reaction_325: CamR_Ca2_BC_PP2B + Ca => CamR_Ca3_BCD_PP2B; Spine*K_Cam_Ca_on*CamR_Ca2_BC_PP2B*Ca;
+  reaction_326: CamR_Ca2_BD_PP2B + Ca => CamR_Ca3_ABD_PP2B; Spine*K_Cam_Ca_on*CamR_Ca2_BD_PP2B*Ca;
+  reaction_327: CamR_Ca2_BD_PP2B + Ca => CamR_Ca3_BCD_PP2B; Spine*K_Cam_Ca_on*CamR_Ca2_BD_PP2B*Ca;
+  reaction_328: CamR_Ca2_CD_PP2B + Ca => CamR_Ca3_ACD_PP2B; Spine*K_Cam_Ca_on*CamR_Ca2_CD_PP2B*Ca;
+  reaction_329: CamR_Ca2_CD_PP2B + Ca => CamR_Ca3_BCD_PP2B; Spine*K_Cam_Ca_on*CamR_Ca2_CD_PP2B*Ca;
+  reaction_330: CamR_Ca3_ABC_PP2B => CamR_Ca2_BC_PP2B + Ca; Spine*K_CamR_Ca_A_off*CamR_Ca3_ABC_PP2B;
+  reaction_331: CamR_Ca3_ABC_PP2B => CamR_Ca2_AC_PP2B + Ca; Spine*K_CamR_Ca_B_off*CamR_Ca3_ABC_PP2B;
+  reaction_332: CamR_Ca3_ABC_PP2B => CamR_Ca2_AB_PP2B + Ca; Spine*K_CamR_Ca_C_off*CamR_Ca3_ABC_PP2B;
+  reaction_333: CamR_Ca3_ABD_PP2B => CamR_Ca2_BD_PP2B + Ca; Spine*K_CamR_Ca_A_off*CamR_Ca3_ABD_PP2B;
+  reaction_334: CamR_Ca3_ABD_PP2B => CamR_Ca2_AD_PP2B + Ca; Spine*K_CamR_Ca_B_off*CamR_Ca3_ABD_PP2B;
+  reaction_335: CamR_Ca3_ABD_PP2B => CamR_Ca2_AB_PP2B + Ca; Spine*K_CamR_Ca_D_off*CamR_Ca3_ABD_PP2B;
+  reaction_336: CamR_Ca3_ACD_PP2B => CamR_Ca2_CD_PP2B + Ca; Spine*K_CamR_Ca_A_off*CamR_Ca3_ACD_PP2B;
+  reaction_337: CamR_Ca3_ACD_PP2B => CamR_Ca2_AD_PP2B + Ca; Spine*K_CamR_Ca_C_off*CamR_Ca3_ACD_PP2B;
+  reaction_338: CamR_Ca3_ACD_PP2B => CamR_Ca2_AC_PP2B + Ca; Spine*K_CamR_Ca_D_off*CamR_Ca3_ACD_PP2B;
+  reaction_339: CamR_Ca3_BCD_PP2B => CamR_Ca2_CD_PP2B + Ca; Spine*K_CamR_Ca_B_off*CamR_Ca3_BCD_PP2B;
+  reaction_340: CamR_Ca3_BCD_PP2B => CamR_Ca2_BD_PP2B + Ca; Spine*K_CamR_Ca_C_off*CamR_Ca3_BCD_PP2B;
+  reaction_341: CamR_Ca3_BCD_PP2B => CamR_Ca2_BC_PP2B + Ca; Spine*K_CamR_Ca_D_off*CamR_Ca3_BCD_PP2B;
+  reaction_342: CamR_Ca3_ABC_PP2B + Ca => CamR_Ca4_ABCD_PP2B; Spine*K_Cam_Ca_on*CamR_Ca3_ABC_PP2B*Ca;
+  reaction_343: CamR_Ca3_ABD_PP2B + Ca => CamR_Ca4_ABCD_PP2B; Spine*K_Cam_Ca_on*CamR_Ca3_ABD_PP2B*Ca;
+  reaction_344: CamR_Ca3_ACD_PP2B + Ca => CamR_Ca4_ABCD_PP2B; Spine*K_Cam_Ca_on*CamR_Ca3_ACD_PP2B*Ca;
+  reaction_345: CamR_Ca3_BCD_PP2B + Ca => CamR_Ca4_ABCD_PP2B; Spine*K_Cam_Ca_on*CamR_Ca3_BCD_PP2B*Ca;
+  reaction_346: CamR_Ca4_ABCD_PP2B => CamR_Ca3_BCD_PP2B + Ca; Spine*K_CamR_Ca_A_off*CamR_Ca4_ABCD_PP2B;
+  reaction_347: CamR_Ca4_ABCD_PP2B => CamR_Ca3_ACD_PP2B + Ca; Spine*K_CamR_Ca_B_off*CamR_Ca4_ABCD_PP2B;
+  reaction_348: CamR_Ca4_ABCD_PP2B => CamR_Ca3_ABD_PP2B + Ca; Spine*K_CamR_Ca_C_off*CamR_Ca4_ABCD_PP2B;
+  reaction_349: CamR_Ca4_ABCD_PP2B => CamR_Ca3_ABC_PP2B + Ca; Spine*K_CamR_Ca_D_off*CamR_Ca4_ABCD_PP2B;
+  reaction_350: CamR_Ca1_B_CaMKII => CamR_CaMKII + Ca; Spine*K_CamR_Ca_B_off*CamR_Ca1_B_CaMKII;
+  reaction_351: CamT_Ca3_ABC => CamT_Ca2_AB + Ca; Spine*K_CamT_Ca_C_off*CamT_Ca3_ABC;
+  reaction_352: CamR_CaMKII => CamR_CaMKIIp; Spine*K_CaMKII_autoPhosphorylation*CamR_CaMKII;
+  reaction_353: CamR_Ca1_A_CaMKII => CamR_Ca1_A_CaMKIIp; Spine*K_CaMKII_autoPhosphorylation*CamR_Ca1_A_CaMKII;
+  reaction_354: CamR_Ca1_B_CaMKII => CamR_Ca1_B_CaMKIIp; Spine*K_CaMKII_autoPhosphorylation*CamR_Ca1_B_CaMKII;
+  reaction_355: CamR_Ca1_C_CaMKII => CamR_Ca1_C_CaMKIIp; Spine*K_CaMKII_autoPhosphorylation*CamR_Ca1_C_CaMKII;
+  reaction_356: CamR_Ca1_D_CaMKII => CamR_Ca1_D_CaMKIIp; Spine*K_CaMKII_autoPhosphorylation*CamR_Ca1_D_CaMKII;
+  reaction_357: CamR_Ca2_AB_CaMKII => CamR_Ca2_AB_CaMKIIp; Spine*K_CaMKII_autoPhosphorylation*CamR_Ca2_AB_CaMKII;
+  reaction_358: CamR_Ca2_AC_CaMKII => CamR_Ca2_AC_CaMKIIp; Spine*K_CaMKII_autoPhosphorylation*CamR_Ca2_AC_CaMKII;
+  reaction_359: CamR_Ca2_AD_CaMKII => CamR_Ca2_AD_CaMKIIp; Spine*K_CaMKII_autoPhosphorylation*CamR_Ca2_AD_CaMKII;
+  reaction_360: CamR_Ca2_BC_CaMKII => CamR_Ca2_BC_CaMKIIp; Spine*K_CaMKII_autoPhosphorylation*CamR_Ca2_BC_CaMKII;
+  reaction_361: CamR_Ca2_BD_CaMKII => CamR_Ca2_BD_CaMKIIp; Spine*K_CaMKII_autoPhosphorylation*CamR_Ca2_BD_CaMKII;
+  reaction_362: CamR_Ca2_CD_CaMKII => CamR_Ca2_CD_CaMKIIp; Spine*K_CaMKII_autoPhosphorylation*CamR_Ca2_CD_CaMKII;
+  reaction_363: CamR_Ca3_ABC_CaMKII => CamR_Ca3_ABC_CaMKIIp; Spine*K_CaMKII_autoPhosphorylation*CamR_Ca3_ABC_CaMKII;
+  reaction_364: CamR_Ca3_ABD_CaMKII => CamR_Ca3_ABD_CaMKIIp; Spine*K_CaMKII_autoPhosphorylation*CamR_Ca3_ABD_CaMKII;
+  reaction_365: CamR_Ca3_ACD_CaMKII => CamR_Ca3_ACD_CaMKIIp; Spine*K_CaMKII_autoPhosphorylation*CamR_Ca3_ACD_CaMKII;
+  reaction_366: CamR_Ca3_BCD_CaMKII => CamR_Ca3_BCD_CaMKIIp; Spine*K_CaMKII_autoPhosphorylation*CamR_Ca3_BCD_CaMKII;
+  reaction_367: CamR_Ca4_ABCD_CaMKII => CamR_Ca4_ABCD_CaMKIIp; Spine*K_CaMKII_autoPhosphorylation*CamR_Ca4_ABCD_CaMKII;
+  reaction_368: CamR + CaMKIIp => CamR_CaMKIIp; Spine*K_CamR_CaMKII_p_on*CamR*CaMKIIp;
+  reaction_369: CamR_CaMKIIp => CamR + CaMKIIp; Spine*K_CamR_CaMKIIp_off*CamR_CaMKIIp;
+  reaction_370: CamR_Ca1_A + CaMKIIp => CamR_Ca1_A_CaMKIIp; Spine*K_CamR_CaMKII_p_on*CamR_Ca1_A*CaMKIIp;
+  reaction_371: CamR_Ca1_A_CaMKIIp => CamR_Ca1_A + CaMKIIp; Spine*K_CamR_CaMKIIp_off*CamR_Ca1_A_CaMKIIp;
+  reaction_372: CamR_Ca1_B + CaMKIIp => CamR_Ca1_B_CaMKIIp; Spine*K_CamR_CaMKII_p_on*CamR_Ca1_B*CaMKIIp;
+  reaction_373: CamR_Ca1_B_CaMKIIp => CamR_Ca1_B + CaMKIIp; Spine*K_CamR_CaMKIIp_off*CamR_Ca1_B_CaMKIIp;
+  reaction_374: CamR_Ca1_C + CaMKIIp => CamR_Ca1_C_CaMKIIp; Spine*K_CamR_CaMKII_p_on*CamR_Ca1_C*CaMKIIp;
+  reaction_375: CamR_Ca1_C_CaMKIIp => CamR_Ca1_C + CaMKIIp; Spine*K_CamR_CaMKIIp_off*CamR_Ca1_C_CaMKIIp;
+  reaction_376: CamR_Ca1_D + CaMKIIp => CamR_Ca1_D_CaMKIIp; Spine*K_CamR_CaMKII_p_on*CamR_Ca1_D*CaMKIIp;
+  reaction_377: CamR_Ca1_D_CaMKIIp => CamR_Ca1_D + CaMKIIp; Spine*K_CamR_CaMKIIp_off*CamR_Ca1_D_CaMKIIp;
+  reaction_378: CamR_Ca2_AB + CaMKIIp => CamR_Ca2_AB_CaMKIIp; Spine*K_CamR_CaMKII_p_on*CamR_Ca2_AB*CaMKIIp;
+  reaction_379: CamR_Ca2_AB_CaMKIIp => CamR_Ca2_AB + CaMKIIp; Spine*K_CamR_CaMKIIp_off*CamR_Ca2_AB_CaMKIIp;
+  reaction_380: CamR_Ca2_AC + CaMKIIp => CamR_Ca2_AC_CaMKIIp; Spine*K_CamR_CaMKII_p_on*CamR_Ca2_AC*CaMKIIp;
+  reaction_381: CamR_Ca2_AC_CaMKIIp => CamR_Ca2_AC + CaMKIIp; Spine*K_CamR_CaMKIIp_off*CamR_Ca2_AC_CaMKIIp;
+  reaction_382: CamR_Ca2_AD + CaMKIIp => CamR_Ca2_AD_CaMKIIp; Spine*K_CamR_CaMKII_p_on*CamR_Ca2_AD*CaMKIIp;
+  reaction_383: CamR_Ca2_AD_CaMKIIp => CamR_Ca2_AD + CaMKIIp; Spine*K_CamR_CaMKIIp_off*CamR_Ca2_AD_CaMKIIp;
+  reaction_384: CamR_Ca2_BC + CaMKIIp => CamR_Ca2_BC_CaMKIIp; Spine*K_CamR_CaMKII_p_on*CamR_Ca2_BC*CaMKIIp;
+  reaction_385: CamR_Ca2_BC_CaMKIIp => CamR_Ca2_BC + CaMKIIp; Spine*K_CamR_CaMKIIp_off*CamR_Ca2_BC_CaMKIIp;
+  reaction_386: CamR_Ca2_BD + CaMKIIp => CamR_Ca2_BD_CaMKIIp; Spine*K_CamR_CaMKII_p_on*CamR_Ca2_BD*CaMKIIp;
+  reaction_387: CamR_Ca2_BD_CaMKIIp => CamR_Ca2_BD + CaMKIIp; Spine*K_CamR_CaMKIIp_off*CamR_Ca2_BD_CaMKIIp;
+  reaction_388: CamR_Ca2_CD + CaMKIIp => CamR_Ca2_CD_CaMKIIp; Spine*K_CamR_CaMKII_p_on*CamR_Ca2_CD*CaMKIIp;
+  reaction_389: CamR_Ca2_CD_CaMKIIp => CamR_Ca2_CD + CaMKIIp; Spine*K_CamR_CaMKIIp_off*CamR_Ca2_CD_CaMKIIp;
+  reaction_390: CamR_Ca3_ABC + CaMKIIp => CamR_Ca3_ABC_CaMKIIp; Spine*K_CamR_CaMKII_p_on*CamR_Ca3_ABC*CaMKIIp;
+  reaction_391: CamR_Ca3_ABC_CaMKIIp => CamR_Ca3_ABC + CaMKIIp; Spine*K_CamR_CaMKIIp_off*CamR_Ca3_ABC_CaMKIIp;
+  reaction_392: CamR_Ca3_ABD + CaMKIIp => CamR_Ca3_ABD_CaMKIIp; Spine*K_CamR_CaMKII_p_on*CamR_Ca3_ABD*CaMKIIp;
+  reaction_393: CamR_Ca3_ABD_CaMKIIp => CamR_Ca3_ABD + CaMKIIp; Spine*K_CamR_CaMKIIp_off*CamR_Ca3_ABD_CaMKIIp;
+  reaction_394: CamR_Ca3_ACD + CaMKIIp => CamR_Ca3_ACD_CaMKIIp; Spine*K_CamR_CaMKII_p_on*CamR_Ca3_ACD*CaMKIIp;
+  reaction_395: CamR_Ca3_ACD_CaMKIIp => CamR_Ca3_ACD + CaMKIIp; Spine*K_CamR_CaMKIIp_off*CamR_Ca3_ACD_CaMKIIp;
+  reaction_396: CamR_Ca3_BCD + CaMKIIp => CamR_Ca3_BCD_CaMKIIp; Spine*K_CamR_CaMKII_p_on*CamR_Ca3_BCD*CaMKIIp;
+  reaction_397: CamR_Ca3_BCD_CaMKIIp => CamR_Ca3_BCD + CaMKIIp; Spine*K_CamR_CaMKIIp_off*CamR_Ca3_BCD_CaMKIIp;
+  reaction_398: CamR_Ca4_ABCD + CaMKIIp => CamR_Ca4_ABCD_CaMKIIp; Spine*K_CamR_CaMKII_p_on*CamR_Ca4_ABCD*CaMKIIp;
+  reaction_399: CamR_Ca4_ABCD_CaMKIIp => CamR_Ca4_ABCD + CaMKIIp; Spine*K_CamR_CaMKIIp_off*CamR_Ca4_ABCD_CaMKIIp;
+  reaction_504: CamR_CaMKIIp + Ca => CamR_Ca1_A_CaMKIIp; Spine*K_Cam_Ca_on*CamR_CaMKIIp*Ca;
+  reaction_505: CamR_CaMKIIp + Ca => CamR_Ca1_B_CaMKIIp; Spine*K_Cam_Ca_on*CamR_CaMKIIp*Ca;
+  reaction_506: CamR_CaMKIIp + Ca => CamR_Ca1_C_CaMKIIp; Spine*K_Cam_Ca_on*CamR_CaMKIIp*Ca;
+  reaction_507: CamR_CaMKIIp + Ca => CamR_Ca1_D_CaMKIIp; Spine*K_Cam_Ca_on*CamR_CaMKIIp*Ca;
+  reaction_508: CamR_Ca1_A_CaMKIIp => CamR_CaMKIIp + Ca; Spine*K_CamR_Ca_A_off*CamR_Ca1_A_CaMKIIp;
+  reaction_567: CamR_Ca1_B_CaMKIIp => CamR_CaMKIIp + Ca; Spine*K_CamR_Ca_B_off*CamR_Ca1_B_CaMKIIp;
+  reaction_509: CamR_Ca1_C_CaMKIIp => CamR_CaMKIIp + Ca; Spine*K_CamR_Ca_C_off*CamR_Ca1_C_CaMKIIp;
+  reaction_510: CamR_Ca1_D_CaMKIIp => CamR_CaMKIIp + Ca; Spine*K_CamR_Ca_D_off*CamR_Ca1_D_CaMKIIp;
+  reaction_511: CamR_Ca1_A_CaMKIIp + Ca => CamR_Ca2_AB_CaMKIIp; Spine*K_Cam_Ca_on*CamR_Ca1_A_CaMKIIp*Ca;
+  reaction_512: CamR_Ca1_A_CaMKIIp + Ca => CamR_Ca2_AC_CaMKIIp; Spine*K_Cam_Ca_on*CamR_Ca1_A_CaMKIIp*Ca;
+  reaction_513: CamR_Ca1_A_CaMKIIp + Ca => CamR_Ca2_AD_CaMKIIp; Spine*K_Cam_Ca_on*CamR_Ca1_A_CaMKIIp*Ca;
+  reaction_514: CamR_Ca1_B_CaMKIIp + Ca => CamR_Ca2_AB_CaMKIIp; Spine*K_Cam_Ca_on*CamR_Ca1_B_CaMKIIp*Ca;
+  reaction_515: CamR_Ca1_B_CaMKIIp + Ca => CamR_Ca2_BC_CaMKIIp; Spine*K_Cam_Ca_on*CamR_Ca1_B_CaMKIIp*Ca;
+  reaction_516: CamR_Ca1_B_CaMKIIp + Ca => CamR_Ca2_BD_CaMKIIp; Spine*K_Cam_Ca_on*CamR_Ca1_B_CaMKIIp*Ca;
+  reaction_517: CamR_Ca1_C_CaMKIIp + Ca => CamR_Ca2_AC_CaMKIIp; Spine*K_Cam_Ca_on*CamR_Ca1_C_CaMKIIp*Ca;
+  reaction_518: CamR_Ca1_C_CaMKIIp + Ca => CamR_Ca2_BC_CaMKIIp; Spine*K_Cam_Ca_on*CamR_Ca1_C_CaMKIIp*Ca;
+  reaction_519: CamR_Ca1_C_CaMKIIp + Ca => CamR_Ca2_CD_CaMKIIp; Spine*K_Cam_Ca_on*CamR_Ca1_C_CaMKIIp*Ca;
+  reaction_520: CamR_Ca1_D_CaMKIIp + Ca => CamR_Ca2_AD_CaMKIIp; Spine*K_Cam_Ca_on*CamR_Ca1_D_CaMKIIp*Ca;
+  reaction_521: CamR_Ca1_D_CaMKIIp + Ca => CamR_Ca2_BD_CaMKIIp; Spine*K_Cam_Ca_on*CamR_Ca1_D_CaMKIIp*Ca;
+  reaction_522: CamR_Ca1_D_CaMKIIp + Ca => CamR_Ca2_CD_CaMKIIp; Spine*K_Cam_Ca_on*CamR_Ca1_D_CaMKIIp*Ca;
+  reaction_523: CamR_Ca2_AB_CaMKIIp => CamR_Ca1_B_CaMKIIp + Ca; Spine*K_CamR_Ca_A_off*CamR_Ca2_AB_CaMKIIp;
+  reaction_524: CamR_Ca2_AB_CaMKIIp => CamR_Ca1_A_CaMKIIp + Ca; Spine*K_CamR_Ca_B_off*CamR_Ca2_AB_CaMKIIp;
+  reaction_525: CamR_Ca2_AC_CaMKIIp => CamR_Ca1_C_CaMKIIp + Ca; Spine*K_CamR_Ca_A_off*CamR_Ca2_AC_CaMKIIp;
+  reaction_526: CamR_Ca2_AC_CaMKIIp => CamR_Ca1_A_CaMKIIp + Ca; Spine*K_CamR_Ca_C_off*CamR_Ca2_AC_CaMKIIp;
+  reaction_527: CamR_Ca2_AD_CaMKIIp => CamR_Ca1_D_CaMKIIp + Ca; Spine*K_CamR_Ca_A_off*CamR_Ca2_AD_CaMKIIp;
+  reaction_528: CamR_Ca2_AD_CaMKIIp => CamR_Ca1_A_CaMKIIp + Ca; Spine*K_CamR_Ca_D_off*CamR_Ca2_AD_CaMKIIp;
+  reaction_529: CamR_Ca2_BC_CaMKIIp => CamR_Ca1_C_CaMKIIp + Ca; Spine*K_CamR_Ca_B_off*CamR_Ca2_BC_CaMKIIp;
+  reaction_530: CamR_Ca2_BC_CaMKIIp => CamR_Ca1_B_CaMKIIp + Ca; Spine*K_CamR_Ca_C_off*CamR_Ca2_BC_CaMKIIp;
+  reaction_531: CamR_Ca2_BD_CaMKIIp => CamR_Ca1_D_CaMKIIp + Ca; Spine*K_CamR_Ca_B_off*CamR_Ca2_BD_CaMKIIp;
+  reaction_532: CamR_Ca2_BD_CaMKIIp => CamR_Ca1_B_CaMKIIp + Ca; Spine*K_CamR_Ca_D_off*CamR_Ca2_BD_CaMKIIp;
+  reaction_533: CamR_Ca2_CD_CaMKIIp => CamR_Ca1_D_CaMKIIp + Ca; Spine*K_CamR_Ca_C_off*CamR_Ca2_CD_CaMKIIp;
+  reaction_534: CamR_Ca2_CD_CaMKIIp => CamR_Ca1_C_CaMKIIp + Ca; Spine*K_CamR_Ca_D_off*CamR_Ca2_CD_CaMKIIp;
+  reaction_535: CamR_Ca2_AB_CaMKIIp + Ca => CamR_Ca3_ABC_CaMKIIp; Spine*K_Cam_Ca_on*CamR_Ca2_AB_CaMKIIp*Ca;
+  reaction_536: CamR_Ca2_AB_CaMKIIp + Ca => CamR_Ca3_ABD_CaMKIIp; Spine*K_Cam_Ca_on*CamR_Ca2_AB_CaMKIIp*Ca;
+  reaction_537: CamR_Ca2_AC_CaMKIIp + Ca => CamR_Ca3_ABC_CaMKIIp; Spine*K_Cam_Ca_on*CamR_Ca2_AC_CaMKIIp*Ca;
+  reaction_538: CamR_Ca2_AC_CaMKIIp + Ca => CamR_Ca3_ACD_CaMKIIp; Spine*K_Cam_Ca_on*CamR_Ca2_AC_CaMKIIp*Ca;
+  reaction_539: CamR_Ca2_AD_CaMKIIp + Ca => CamR_Ca3_ABD_CaMKIIp; Spine*K_Cam_Ca_on*CamR_Ca2_AD_CaMKIIp*Ca;
+  reaction_540: CamR_Ca2_AD_CaMKIIp + Ca => CamR_Ca3_ACD_CaMKIIp; Spine*K_Cam_Ca_on*CamR_Ca2_AD_CaMKIIp*Ca;
+  reaction_541: CamR_Ca2_BC_CaMKIIp + Ca => CamR_Ca3_ABC_CaMKIIp; Spine*K_Cam_Ca_on*CamR_Ca2_BC_CaMKIIp*Ca;
+  reaction_542: CamR_Ca2_BC_CaMKIIp + Ca => CamR_Ca3_BCD_CaMKIIp; Spine*K_Cam_Ca_on*CamR_Ca2_BC_CaMKIIp*Ca;
+  reaction_543: CamR_Ca2_BD_CaMKIIp + Ca => CamR_Ca3_ABD_CaMKIIp; Spine*K_Cam_Ca_on*CamR_Ca2_BD_CaMKIIp*Ca;
+  reaction_544: CamR_Ca2_BD_CaMKIIp + Ca => CamR_Ca3_BCD_CaMKIIp; Spine*K_Cam_Ca_on*CamR_Ca2_BD_CaMKIIp*Ca;
+  reaction_545: CamR_Ca2_CD_CaMKIIp + Ca => CamR_Ca3_ACD_CaMKIIp; Spine*K_Cam_Ca_on*CamR_Ca2_CD_CaMKIIp*Ca;
+  reaction_546: CamR_Ca2_CD_CaMKIIp + Ca => CamR_Ca3_BCD_CaMKIIp; Spine*K_Cam_Ca_on*CamR_Ca2_CD_CaMKIIp*Ca;
+  reaction_547: CamR_Ca3_ABC_CaMKIIp => CamR_Ca2_AB_CaMKIIp + Ca; Spine*K_CamR_Ca_C_off*CamR_Ca3_ABC_CaMKIIp;
+  reaction_548: CamR_Ca3_ABC_CaMKIIp => CamR_Ca2_AC_CaMKIIp + Ca; Spine*K_CamR_Ca_B_off*CamR_Ca3_ABC_CaMKIIp;
+  reaction_549: CamR_Ca3_ABC_CaMKIIp => CamR_Ca2_BC_CaMKIIp + Ca; Spine*K_CamR_Ca_A_off*CamR_Ca3_ABC_CaMKIIp;
+  reaction_550: CamR_Ca3_ABD_CaMKIIp => CamR_Ca2_AB_CaMKIIp + Ca; Spine*K_CamR_Ca_D_off*CamR_Ca3_ABD_CaMKIIp;
+  reaction_551: CamR_Ca3_ABD_CaMKIIp => CamR_Ca2_AD_CaMKIIp + Ca; Spine*K_CamR_Ca_B_off*CamR_Ca3_ABD_CaMKIIp;
+  reaction_552: CamR_Ca3_ABD_CaMKIIp => CamR_Ca2_BD_CaMKIIp + Ca; Spine*K_CamR_Ca_A_off*CamR_Ca3_ABD_CaMKIIp;
+  reaction_553: CamR_Ca3_ACD_CaMKIIp => CamR_Ca2_AC_CaMKIIp + Ca; Spine*K_CamR_Ca_D_off*CamR_Ca3_ACD_CaMKIIp;
+  reaction_554: CamR_Ca3_ACD_CaMKIIp => CamR_Ca2_AD_CaMKIIp + Ca; Spine*K_CamR_Ca_C_off*CamR_Ca3_ACD_CaMKIIp;
+  reaction_555: CamR_Ca3_ACD_CaMKIIp => CamR_Ca2_CD_CaMKIIp + Ca; Spine*K_CamR_Ca_A_off*CamR_Ca3_ACD_CaMKIIp;
+  reaction_556: CamR_Ca3_BCD_CaMKIIp => CamR_Ca2_BC_CaMKIIp + Ca; Spine*K_CamR_Ca_D_off*CamR_Ca3_BCD_CaMKIIp;
+  reaction_557: CamR_Ca3_BCD_CaMKIIp => CamR_Ca2_BD_CaMKIIp + Ca; Spine*K_CamR_Ca_C_off*CamR_Ca3_BCD_CaMKIIp;
+  reaction_558: CamR_Ca3_BCD_CaMKIIp => CamR_Ca2_CD_CaMKIIp + Ca; Spine*K_CamR_Ca_B_off*CamR_Ca3_BCD_CaMKIIp;
+  reaction_559: CamR_Ca3_BCD_CaMKIIp + Ca => CamR_Ca4_ABCD_CaMKIIp; Spine*K_Cam_Ca_on*CamR_Ca3_BCD_CaMKIIp*Ca;
+  reaction_560: CamR_Ca3_ACD_CaMKIIp + Ca => CamR_Ca4_ABCD_CaMKIIp; Spine*K_Cam_Ca_on*CamR_Ca3_ACD_CaMKIIp*Ca;
+  reaction_561: CamR_Ca3_ABD_CaMKIIp + Ca => CamR_Ca4_ABCD_CaMKIIp; Spine*K_Cam_Ca_on*CamR_Ca3_ABD_CaMKIIp*Ca;
+  reaction_562: CamR_Ca3_ABC_CaMKIIp + Ca => CamR_Ca4_ABCD_CaMKIIp; Spine*K_Cam_Ca_on*CamR_Ca3_ABC_CaMKIIp*Ca;
+  reaction_563: CamR_Ca4_ABCD_CaMKIIp => CamR_Ca3_BCD_CaMKIIp + Ca; Spine*K_CamR_Ca_A_off*CamR_Ca4_ABCD_CaMKIIp;
+  reaction_564: CamR_Ca4_ABCD_CaMKIIp => CamR_Ca3_ACD_CaMKIIp + Ca; Spine*K_CamR_Ca_B_off*CamR_Ca4_ABCD_CaMKIIp;
+  reaction_565: CamR_Ca4_ABCD_CaMKIIp => CamR_Ca3_ABD_CaMKIIp + Ca; Spine*K_CamR_Ca_C_off*CamR_Ca4_ABCD_CaMKIIp;
+  reaction_566: CamR_Ca4_ABCD_CaMKIIp => CamR_Ca3_ABC_CaMKIIp + Ca; Spine*K_CamR_Ca_D_off*CamR_Ca4_ABCD_CaMKIIp;
+  reaction_400: D + PKA => D_PKA; Spine*K_D_PKA_on*D*PKA;
+  reaction_401: D_PKA => D + PKA; Spine*K_D_PKA_off*D_PKA;
+  reaction_402: D_PKA => Dp + PKA; Spine*K_D_PKA_off_p*D_PKA;
+  reaction_403: Dp + CamR_PP2B => Dp_CamR_PP2B; Spine*K_CamR_PP2B_Dp_on*Dp*CamR_PP2B;
+  reaction_404: Dp_CamR_PP2B => Dp + CamR_PP2B; Spine*K_CamR_PP2B_Dp_off*Dp_CamR_PP2B;
+  reaction_405: Dp_CamR_PP2B => D + CamR_PP2B; Spine*K_CamR_PP2B_D_off*Dp_CamR_PP2B;
+  reaction_406: Dp + CamR_Ca1_A_PP2B => Dp_CamR_Ca1_A_PP2B; Spine*K_CamR_PP2B_Dp_on*Dp*CamR_Ca1_A_PP2B;
+  reaction_407: Dp_CamR_Ca1_A_PP2B => Dp + CamR_Ca1_A_PP2B; Spine*K_CamR_PP2B_Dp_off*Dp_CamR_Ca1_A_PP2B;
+  reaction_408: Dp_CamR_Ca1_A_PP2B => D + CamR_Ca1_A_PP2B; Spine*K_CamR_PP2B_D_off*Dp_CamR_Ca1_A_PP2B;
+  reaction_409: Dp + CamR_Ca1_B_PP2B => Dp_CamR_Ca1_B_PP2B; Spine*K_CamR_PP2B_Dp_on*Dp*CamR_Ca1_B_PP2B;
+  reaction_410: Dp_CamR_Ca1_B_PP2B => Dp + CamR_Ca1_B_PP2B; Spine*K_CamR_PP2B_Dp_off*Dp_CamR_Ca1_B_PP2B;
+  reaction_411: Dp_CamR_Ca1_B_PP2B => D + CamR_Ca1_B_PP2B; Spine*K_CamR_PP2B_D_off*Dp_CamR_Ca1_B_PP2B;
+  reaction_412: Dp + CamR_Ca1_C_PP2B => Dp_CamR_Ca1_C_PP2B; Spine*K_CamR_PP2B_Dp_on*Dp*CamR_Ca1_C_PP2B;
+  reaction_413: Dp_CamR_Ca1_C_PP2B => Dp + CamR_Ca1_C_PP2B; Spine*K_CamR_PP2B_Dp_off*Dp_CamR_Ca1_C_PP2B;
+  reaction_414: Dp_CamR_Ca1_C_PP2B => D + CamR_Ca1_C_PP2B; Spine*K_CamR_PP2B_D_off*Dp_CamR_Ca1_C_PP2B;
+  reaction_415: Dp + CamR_Ca1_D_PP2B => Dp_CamR_Ca1_D_PP2B; Spine*K_CamR_PP2B_Dp_on*Dp*CamR_Ca1_D_PP2B;
+  reaction_416: Dp_CamR_Ca1_D_PP2B => Dp + CamR_Ca1_D_PP2B; Spine*K_CamR_PP2B_Dp_off*Dp_CamR_Ca1_D_PP2B;
+  reaction_417: Dp_CamR_Ca1_D_PP2B => D + CamR_Ca1_D_PP2B; Spine*K_CamR_PP2B_D_off*Dp_CamR_Ca1_D_PP2B;
+  reaction_418: Dp + CamR_Ca2_AB_PP2B => Dp_CamR_Ca2_AB_PP2B; Spine*K_CamR_PP2B_Dp_on*Dp*CamR_Ca2_AB_PP2B;
+  reaction_419: Dp_CamR_Ca2_AB_PP2B => Dp + CamR_Ca2_AB_PP2B; Spine*K_CamR_PP2B_Dp_off*Dp_CamR_Ca2_AB_PP2B;
+  reaction_420: Dp_CamR_Ca2_AB_PP2B => D + CamR_Ca2_AB_PP2B; Spine*K_CamR_PP2B_D_off*Dp_CamR_Ca2_AB_PP2B;
+  reaction_421: Dp + CamR_Ca2_AC_PP2B => Dp_CamR_Ca2_AC_PP2B; Spine*K_CamR_PP2B_Dp_on*Dp*CamR_Ca2_AC_PP2B;
+  reaction_422: Dp_CamR_Ca2_AC_PP2B => Dp + CamR_Ca2_AC_PP2B; Spine*K_CamR_PP2B_Dp_off*Dp_CamR_Ca2_AC_PP2B;
+  reaction_423: Dp_CamR_Ca2_AC_PP2B => D + CamR_Ca2_AC_PP2B; Spine*K_CamR_PP2B_D_off*Dp_CamR_Ca2_AC_PP2B;
+  reaction_424: Dp + CamR_Ca2_AD_PP2B => Dp_CamR_Ca2_AD_PP2B; Spine*K_CamR_PP2B_Dp_on*Dp*CamR_Ca2_AD_PP2B;
+  reaction_425: Dp_CamR_Ca2_AD_PP2B => Dp + CamR_Ca2_AD_PP2B; Spine*K_CamR_PP2B_Dp_off*Dp_CamR_Ca2_AD_PP2B;
+  reaction_426: Dp_CamR_Ca2_AD_PP2B => D + CamR_Ca2_AD_PP2B; Spine*K_CamR_PP2B_D_off*Dp_CamR_Ca2_AD_PP2B;
+  reaction_427: Dp + CamR_Ca2_BC_PP2B => Dp_CamR_Ca2_BC_PP2B; Spine*K_CamR_PP2B_Dp_on*Dp*CamR_Ca2_BC_PP2B;
+  reaction_428: Dp_CamR_Ca2_BC_PP2B => Dp + CamR_Ca2_BC_PP2B; Spine*K_CamR_PP2B_Dp_off*Dp_CamR_Ca2_BC_PP2B;
+  reaction_429: Dp_CamR_Ca2_BC_PP2B => D + CamR_Ca2_BC_PP2B; Spine*K_CamR_PP2B_D_off*Dp_CamR_Ca2_BC_PP2B;
+  reaction_430: Dp + CamR_Ca2_BD_PP2B => Dp_CamR_Ca2_BD_PP2B; Spine*K_CamR_PP2B_Dp_on*Dp*CamR_Ca2_BD_PP2B;
+  reaction_431: Dp_CamR_Ca2_BD_PP2B => Dp + CamR_Ca2_BD_PP2B; Spine*K_CamR_PP2B_Dp_off*Dp_CamR_Ca2_BD_PP2B;
+  reaction_432: Dp_CamR_Ca2_BD_PP2B => D + CamR_Ca2_BD_PP2B; Spine*K_CamR_PP2B_D_off*Dp_CamR_Ca2_BD_PP2B;
+  reaction_433: Dp + CamR_Ca2_CD_PP2B => Dp_CamR_Ca2_CD_PP2B; Spine*K_CamR_PP2B_Dp_on*Dp*CamR_Ca2_CD_PP2B;
+  reaction_434: Dp_CamR_Ca2_CD_PP2B => Dp + CamR_Ca2_CD_PP2B; Spine*K_CamR_PP2B_Dp_off*Dp_CamR_Ca2_CD_PP2B;
+  reaction_435: Dp_CamR_Ca2_CD_PP2B => D + CamR_Ca2_CD_PP2B; Spine*K_CamR_PP2B_D_off*Dp_CamR_Ca2_CD_PP2B;
+  reaction_436: Dp + CamR_Ca3_ABC_PP2B => Dp_CamR_Ca3_ABC_PP2B; Spine*K_CamR_PP2B_Dp_on*Dp*CamR_Ca3_ABC_PP2B;
+  reaction_437: Dp_CamR_Ca3_ABC_PP2B => Dp + CamR_Ca3_ABC_PP2B; Spine*K_CamR_PP2B_Dp_off*Dp_CamR_Ca3_ABC_PP2B;
+  reaction_438: Dp_CamR_Ca3_ABC_PP2B => D + CamR_Ca3_ABC_PP2B; Spine*K_CamR_PP2B_D_off*Dp_CamR_Ca3_ABC_PP2B;
+  reaction_439: Dp + CamR_Ca3_ABD_PP2B => Dp_CamR_Ca3_ABD_PP2B; Spine*K_CamR_PP2B_Dp_on*Dp*CamR_Ca3_ABD_PP2B;
+  reaction_440: Dp_CamR_Ca3_ABD_PP2B => Dp + CamR_Ca3_ABD_PP2B; Spine*K_CamR_PP2B_Dp_off*Dp_CamR_Ca3_ABD_PP2B;
+  reaction_441: Dp_CamR_Ca3_ABD_PP2B => D + CamR_Ca3_ABD_PP2B; Spine*K_CamR_PP2B_D_off*Dp_CamR_Ca3_ABD_PP2B;
+  reaction_442: Dp + CamR_Ca3_ACD_PP2B => Dp_CamR_Ca3_ACD_PP2B; Spine*K_CamR_PP2B_Dp_on*Dp*CamR_Ca3_ACD_PP2B;
+  reaction_443: Dp_CamR_Ca3_ACD_PP2B => Dp + CamR_Ca3_ACD_PP2B; Spine*K_CamR_PP2B_Dp_off*Dp_CamR_Ca3_ACD_PP2B;
+  reaction_444: Dp_CamR_Ca3_ACD_PP2B => D + CamR_Ca3_ACD_PP2B; Spine*K_CamR_PP2B_D_off*Dp_CamR_Ca3_ACD_PP2B;
+  reaction_445: Dp + CamR_Ca3_BCD_PP2B => Dp_CamR_Ca3_BCD_PP2B; Spine*K_CamR_PP2B_Dp_on*Dp*CamR_Ca3_BCD_PP2B;
+  reaction_446: Dp_CamR_Ca3_BCD_PP2B => Dp + CamR_Ca3_BCD_PP2B; Spine*K_CamR_PP2B_Dp_off*Dp_CamR_Ca3_BCD_PP2B;
+  reaction_447: Dp_CamR_Ca3_BCD_PP2B => D + CamR_Ca3_BCD_PP2B; Spine*K_CamR_PP2B_D_off*Dp_CamR_Ca3_BCD_PP2B;
+  reaction_448: Dp + CamR_Ca4_ABCD_PP2B => Dp_CamR_Ca4_ABCD_PP2B; Spine*K_CamR_PP2B_Dp_on*Dp*CamR_Ca4_ABCD_PP2B;
+  reaction_449: Dp_CamR_Ca4_ABCD_PP2B => Dp + CamR_Ca4_ABCD_PP2B; Spine*K_CamR_PP2B_Dp_off*Dp_CamR_Ca4_ABCD_PP2B;
+  reaction_450: Dp_CamR_Ca4_ABCD_PP2B => D + CamR_Ca4_ABCD_PP2B; Spine*K_CamR_PP2B_D_off*Dp_CamR_Ca4_ABCD_PP2B;
+  reaction_451: PP1a + Dp => PP1a_Dp; Spine*K_PP1a_Dp_on*PP1a*Dp;
+  reaction_452: PP1a_Dp => PP1a + Dp; Spine*K_PP1a_Dp_off*PP1a_Dp;
+  reaction_453: CaMKIIp + PP1a => CaMKIIp_PP1a; Spine*K_CamMKIIp_PP1a_on*CaMKIIp*PP1a;
+  reaction_454: CaMKIIp_PP1a => CaMKIIp + PP1a; Spine*K_CamMKIIp_PP1a_off*CaMKIIp_PP1a;
+  reaction_455: CaMKIIp_PP1a => CaMKII + PP1a; Spine*K_CamMKIIp_PP1a_p_off*CaMKIIp_PP1a;
+  reaction_456: CamR_CaMKIIp + PP1a => CamR_CaMKIIp_PP1a; Spine*K_CamMKIIp_PP1a_on*CamR_CaMKIIp*PP1a;
+  reaction_457: CamR_CaMKIIp_PP1a => CamR_CaMKIIp + PP1a; Spine*K_CamMKIIp_PP1a_off*CamR_CaMKIIp_PP1a;
+  reaction_458: CamR_CaMKIIp_PP1a => CamR_CaMKII + PP1a; Spine*K_CamMKIIp_PP1a_p_off*CamR_CaMKIIp_PP1a;
+  reaction_459: CamR_Ca1_A_CaMKIIp + PP1a => CamR_Ca1_A_CaMKIIp_PP1a; Spine*K_CamMKIIp_PP1a_on*CamR_Ca1_A_CaMKIIp*PP1a;
+  reaction_460: CamR_Ca1_A_CaMKIIp_PP1a => CamR_Ca1_A_CaMKIIp + PP1a; Spine*K_CamMKIIp_PP1a_off*CamR_Ca1_A_CaMKIIp_PP1a;
+  reaction_461: CamR_Ca1_A_CaMKIIp_PP1a => CamR_Ca1_A_CaMKII + PP1a; Spine*K_CamMKIIp_PP1a_p_off*CamR_Ca1_A_CaMKIIp_PP1a;
+  reaction_462: CamR_Ca1_B_CaMKIIp + PP1a => CamR_Ca1_B_CaMKIIp_PP1a; Spine*K_CamMKIIp_PP1a_on*CamR_Ca1_B_CaMKIIp*PP1a;
+  reaction_463: CamR_Ca1_B_CaMKIIp_PP1a => CamR_Ca1_B_CaMKIIp + PP1a; Spine*K_CamMKIIp_PP1a_off*CamR_Ca1_B_CaMKIIp_PP1a;
+  reaction_464: CamR_Ca1_B_CaMKIIp_PP1a => CamR_Ca1_B_CaMKII + PP1a; Spine*K_CamMKIIp_PP1a_p_off*CamR_Ca1_B_CaMKIIp_PP1a;
+  reaction_465: CamR_Ca1_C_CaMKIIp + PP1a => CamR_Ca1_C_CaMKIIp_PP1a; Spine*K_CamMKIIp_PP1a_on*CamR_Ca1_C_CaMKIIp*PP1a;
+  reaction_466: CamR_Ca1_C_CaMKIIp_PP1a => CamR_Ca1_C_CaMKIIp + PP1a; Spine*K_CamMKIIp_PP1a_off*CamR_Ca1_C_CaMKIIp_PP1a;
+  reaction_467: CamR_Ca1_C_CaMKIIp_PP1a => CamR_Ca1_C_CaMKII + PP1a; Spine*K_CamMKIIp_PP1a_p_off*CamR_Ca1_C_CaMKIIp_PP1a;
+  reaction_468: CamR_Ca1_D_CaMKIIp + PP1a => CamR_Ca1_D_CaMKIIp_PP1a; Spine*K_CamMKIIp_PP1a_on*CamR_Ca1_D_CaMKIIp*PP1a;
+  reaction_469: CamR_Ca1_D_CaMKIIp_PP1a => CamR_Ca1_D_CaMKIIp + PP1a; Spine*K_CamMKIIp_PP1a_off*CamR_Ca1_D_CaMKIIp_PP1a;
+  reaction_470: CamR_Ca1_D_CaMKIIp_PP1a => CamR_Ca1_D_CaMKII + PP1a; Spine*K_CamMKIIp_PP1a_p_off*CamR_Ca1_D_CaMKIIp_PP1a;
+  reaction_471: CamR_Ca2_AB_CaMKIIp + PP1a => CamR_Ca2_AB_CaMKIIp_PP1a; Spine*K_CamMKIIp_PP1a_on*CamR_Ca2_AB_CaMKIIp*PP1a;
+  reaction_472: CamR_Ca2_AB_CaMKIIp_PP1a => CamR_Ca2_AB_CaMKIIp + PP1a; Spine*K_CamMKIIp_PP1a_off*CamR_Ca2_AB_CaMKIIp_PP1a;
+  reaction_473: CamR_Ca2_AB_CaMKIIp_PP1a => CamR_Ca2_AB_CaMKII + PP1a; Spine*K_CamMKIIp_PP1a_p_off*CamR_Ca2_AB_CaMKIIp_PP1a;
+  reaction_474: CamR_Ca2_AC_CaMKIIp + PP1a => CamR_Ca2_AC_CaMKIIp_PP1a; Spine*K_CamMKIIp_PP1a_on*CamR_Ca2_AC_CaMKIIp*PP1a;
+  reaction_475: CamR_Ca2_AC_CaMKIIp_PP1a => CamR_Ca2_AC_CaMKIIp + PP1a; Spine*K_CamMKIIp_PP1a_off*CamR_Ca2_AC_CaMKIIp_PP1a;
+  reaction_476: CamR_Ca2_AC_CaMKIIp_PP1a => CamR_Ca2_AC_CaMKII + PP1a; Spine*K_CamMKIIp_PP1a_p_off*CamR_Ca2_AC_CaMKIIp_PP1a;
+  reaction_477: CamR_Ca2_AD_CaMKIIp + PP1a => CamR_Ca2_AD_CaMKIIp_PP1a; Spine*K_CamMKIIp_PP1a_on*CamR_Ca2_AD_CaMKIIp*PP1a;
+  reaction_478: CamR_Ca2_AD_CaMKIIp_PP1a => CamR_Ca2_AD_CaMKIIp + PP1a; Spine*K_CamMKIIp_PP1a_off*CamR_Ca2_AD_CaMKIIp_PP1a;
+  reaction_479: CamR_Ca2_AD_CaMKIIp_PP1a => CamR_Ca2_AD_CaMKII + PP1a; Spine*K_CamMKIIp_PP1a_p_off*CamR_Ca2_AD_CaMKIIp_PP1a;
+  reaction_480: CamR_Ca2_BC_CaMKIIp + PP1a => CamR_Ca2_BC_CaMKIIp_PP1a; Spine*K_CamMKIIp_PP1a_on*CamR_Ca2_BC_CaMKIIp*PP1a;
+  reaction_481: CamR_Ca2_BC_CaMKIIp_PP1a => CamR_Ca2_BC_CaMKIIp + PP1a; Spine*K_CamMKIIp_PP1a_off*CamR_Ca2_BC_CaMKIIp_PP1a;
+  reaction_482: CamR_Ca2_BC_CaMKIIp_PP1a => CamR_Ca2_BC_CaMKII + PP1a; Spine*K_CamMKIIp_PP1a_p_off*CamR_Ca2_BC_CaMKIIp_PP1a;
+  reaction_483: CamR_Ca2_BD_CaMKIIp + PP1a => CamR_Ca2_BD_CaMKIIp_PP1a; Spine*K_CamMKIIp_PP1a_on*CamR_Ca2_BD_CaMKIIp*PP1a;
+  reaction_484: CamR_Ca2_BD_CaMKIIp_PP1a => CamR_Ca2_BD_CaMKIIp + PP1a; Spine*K_CamMKIIp_PP1a_off*CamR_Ca2_BD_CaMKIIp_PP1a;
+  reaction_485: CamR_Ca2_BD_CaMKIIp_PP1a => CamR_Ca2_BD_CaMKII + PP1a; Spine*K_CamMKIIp_PP1a_p_off*CamR_Ca2_BD_CaMKIIp_PP1a;
+  reaction_486: CamR_Ca2_CD_CaMKIIp + PP1a => CamR_Ca2_CD_CaMKIIp_PP1a; Spine*K_CamMKIIp_PP1a_on*CamR_Ca2_CD_CaMKIIp*PP1a;
+  reaction_487: CamR_Ca2_CD_CaMKIIp_PP1a => CamR_Ca2_CD_CaMKIIp + PP1a; Spine*K_CamMKIIp_PP1a_off*CamR_Ca2_CD_CaMKIIp_PP1a;
+  reaction_488: CamR_Ca2_CD_CaMKIIp_PP1a => CamR_Ca2_CD_CaMKII + PP1a; Spine*K_CamMKIIp_PP1a_p_off*CamR_Ca2_CD_CaMKIIp_PP1a;
+  reaction_489: CamR_Ca3_ABC_CaMKIIp + PP1a => CamR_Ca3_ABC_CaMKIIp_PP1a; Spine*K_CamMKIIp_PP1a_on*CamR_Ca3_ABC_CaMKIIp*PP1a;
+  reaction_490: CamR_Ca3_ABC_CaMKIIp_PP1a => CamR_Ca3_ABC_CaMKIIp + PP1a; Spine*K_CamMKIIp_PP1a_off*CamR_Ca3_ABC_CaMKIIp_PP1a;
+  reaction_491: CamR_Ca3_ABC_CaMKIIp_PP1a => CamR_Ca3_ABC_CaMKII + PP1a; Spine*K_CamMKIIp_PP1a_p_off*CamR_Ca3_ABC_CaMKIIp_PP1a;
+  reaction_492: CamR_Ca3_ABD_CaMKIIp + PP1a => CamR_Ca3_ABD_CaMKIIp_PP1a; Spine*K_CamMKIIp_PP1a_on*CamR_Ca3_ABD_CaMKIIp*PP1a;
+  reaction_493: CamR_Ca3_ABD_CaMKIIp_PP1a => CamR_Ca3_ABD_CaMKIIp + PP1a; Spine*K_CamMKIIp_PP1a_off*CamR_Ca3_ABD_CaMKIIp_PP1a;
+  reaction_494: CamR_Ca3_ABD_CaMKIIp_PP1a => CamR_Ca3_ABD_CaMKII + PP1a; Spine*K_CamMKIIp_PP1a_p_off*CamR_Ca3_ABD_CaMKIIp_PP1a;
+  reaction_495: CamR_Ca3_ACD_CaMKIIp + PP1a => CamR_Ca3_ACD_CaMKIIp_PP1a; Spine*K_CamMKIIp_PP1a_on*CamR_Ca3_ACD_CaMKIIp*PP1a;
+  reaction_496: CamR_Ca3_ACD_CaMKIIp_PP1a => CamR_Ca3_ACD_CaMKIIp + PP1a; Spine*K_CamMKIIp_PP1a_off*CamR_Ca3_ACD_CaMKIIp_PP1a;
+  reaction_497: CamR_Ca3_ACD_CaMKIIp_PP1a => CamR_Ca3_ACD_CaMKII + PP1a; Spine*K_CamMKIIp_PP1a_p_off*CamR_Ca3_ACD_CaMKIIp_PP1a;
+  reaction_498: CamR_Ca3_BCD_CaMKIIp + PP1a => CamR_Ca3_BCD_CaMKIIp_PP1a; Spine*K_CamMKIIp_PP1a_on*CamR_Ca3_BCD_CaMKIIp*PP1a;
+  reaction_499: CamR_Ca3_BCD_CaMKIIp_PP1a => CamR_Ca3_BCD_CaMKIIp + PP1a; Spine*K_CamMKIIp_PP1a_off*CamR_Ca3_BCD_CaMKIIp_PP1a;
+  reaction_500: CamR_Ca3_BCD_CaMKIIp_PP1a => CamR_Ca3_BCD_CaMKII + PP1a; Spine*K_CamMKIIp_PP1a_p_off*CamR_Ca3_BCD_CaMKIIp_PP1a;
+  reaction_501: CamR_Ca4_ABCD_CaMKIIp + PP1a => CamR_Ca4_ABCD_CaMKIIp_PP1a; Spine*K_CamMKIIp_PP1a_on*CamR_Ca4_ABCD_CaMKIIp*PP1a;
+  reaction_502: CamR_Ca4_ABCD_CaMKIIp_PP1a => CamR_Ca4_ABCD_CaMKIIp + PP1a; Spine*K_CamMKIIp_PP1a_off*CamR_Ca4_ABCD_CaMKIIp_PP1a;
+  reaction_503: CamR_Ca4_ABCD_CaMKIIp_PP1a => CamR_Ca4_ABCD_CaMKII + PP1a; Spine*K_CamMKIIp_PP1a_p_off*CamR_Ca4_ABCD_CaMKIIp_PP1a;
+  PP2B_binding_to_CamR_Ca2_AC: CamR_Ca2_AC + PP2B => CamR_Ca2_AC_PP2B; Spine*K_CamR_PP2B_on*CamR_Ca2_AC*PP2B;
+  Ca_binding_to_CBP_fast: CBPfast + Ca => CBPfastCa; Spine*K_CBP_fast_on*CBPfast*Ca;
+  Ca_dissociating_from_CBP_fast_Ca: CBPfastCa => CBPfast + Ca; Spine*K_CBP_fast_off*CBPfastCa;
+  Ca_binding_to_CBP_media: CBPmedia + Ca => CBPmediaCa; Spine*K_CBP_media_on*CBPmedia*Ca;
+  Ca_dissociating_from_CBP_media_Ca: CBPmediaCa => CBPmedia + Ca; Spine*K_CBP_media_off*CBPmediaCa;
+  Ca_binding_to_PP2Bi: PP2Bi + Ca => PP2Bi_Ca1; Spine*K_PP2Bi_Ca_on*PP2Bi*Ca;
+  Ca_binding_to_PP2Bi_Ca1: PP2Bi_Ca1 + Ca => PP2Bi_Ca2; Spine*K_PP2Bi_Ca_on*PP2Bi_Ca1*Ca;
+  Ca_binding_to_PP2Bi_Ca2: PP2Bi_Ca2 + Ca => PP2Bi_Ca3; Spine*K_PP2Bi_Ca_on*PP2Bi_Ca2*Ca;
+  Ca_binding_to_PP2Bi_Ca3: PP2Bi_Ca3 + Ca => PP2B; Spine*K_PP2Bi_Ca_on*PP2Bi_Ca3*Ca;
+  Ca_dissociating_from_PP2Bi_Ca2: PP2Bi_Ca2 => PP2Bi_Ca1 + Ca; Spine*K_PP2Bi_Ca2_Ca_off*PP2Bi_Ca2;
+  Ca_dissociating_from_PP2Bi_Ca3: PP2Bi_Ca3 => PP2Bi_Ca2 + Ca; Spine*K_PP2Bi_Ca3_Ca_off*PP2Bi_Ca3;
+  Ca_dissociating_from_PP2B: PP2B => PP2Bi_Ca3 + Ca; Spine*K_PP2B_Ca_off*PP2B;
+  Ca_dissociating_from_PP2Bi_Ca1: PP2Bi_Ca1 => PP2Bi + Ca; Spine*K_PP2Bi_Ca1_Ca_off*PP2Bi_Ca1;
+  reaction_197:  => Ca; Spine*function_1(parameter_1);
+
+  // Events:
+  event_1: at parameter_6 == 1: parameter_7 = time, parameter_1 = parameter_8;
+  event_2: at (parameter_6 == 1) && (time == (parameter_7 + parameter_9)): parameter_7 = 0, parameter_6 = 0, parameter_1 = 0;
+  event_3: at (time == ModelValue_128) || ((time == (ModelValue_128 + parameter_3/ModelValue_131)) && (time < (ModelValue_128 + ModelValue_130/ModelValue_131))): parameter_3 = parameter_3 + 1, parameter_6 = 1;
+
+  // Species initializations:
+  CamR = 1.45e-09;
+  CamT = 3e-05;
+  Ca = 1e-08;
+  CaMKII = 7e-05;
+  PP2B = 0;
+  D = 3e-06;
+  PKA = 1.2e-08;
+  PP1a = 2e-06;
+  CBPfast = 8e-05;
+  CBPmedia = 8e-05;
+  CBPslow = 2e-05;
+  CBPvslow = 2e-05;
+  CBPfastCa = 0;
+  CBPmediaCa = 0;
+  CBPslowCa = 0;
+  CBPvslowCa = 0;
+  CamR_Ca1_A = 0;
+  CamR_Ca1_B = 0;
+  CamR_Ca1_C = 0;
+  CamR_Ca1_D = 0;
+  CamR_Ca2_AB = 0;
+  CamR_Ca2_AC = 0;
+  CamR_Ca2_AD = 0;
+  CamR_Ca2_BC = 0;
+  CamR_Ca2_BD = 0;
+  CamR_Ca2_CD = 0;
+  CamR_Ca3_ABC = 0;
+  CamR_Ca3_ABD = 0;
+  CamR_Ca3_ACD = 0;
+  CamR_Ca3_BCD = 0;
+  CamR_Ca4_ABCD = 0;
+  CamT_Ca1_A = 0;
+  CamT_Ca1_B = 0;
+  CamT_Ca1_C = 0;
+  CamT_Ca1_D = 0;
+  CamT_Ca2_AB = 0;
+  CamT_Ca2_AC = 0;
+  CamT_Ca2_AD = 0;
+  CamT_Ca2_BC = 0;
+  CamT_Ca2_BD = 0;
+  CamT_Ca2_CD = 0;
+  CamT_Ca3_ABC = 0;
+  CamT_Ca3_ABD = 0;
+  CamT_Ca3_ACD = 0;
+  CamT_Ca3_BCD = 0;
+  CamT_Ca4_ABCD = 0;
+  CamR_CaMKII = 0;
+  CamR_Ca1_A_CaMKII = 0;
+  CamR_Ca1_B_CaMKII = 0;
+  CamR_Ca1_C_CaMKII = 0;
+  CamR_Ca1_D_CaMKII = 0;
+  CamR_Ca2_AB_CaMKII = 0;
+  CamR_Ca2_AC_CaMKII = 0;
+  CamR_Ca2_AD_CaMKII = 0;
+  CamR_Ca2_BC_CaMKII = 0;
+  CamR_Ca2_BD_CaMKII = 0;
+  CamR_Ca2_CD_CaMKII = 0;
+  CamR_Ca3_ABC_CaMKII = 0;
+  CamR_Ca3_ABD_CaMKII = 0;
+  CamR_Ca3_ACD_CaMKII = 0;
+  CamR_Ca3_BCD_CaMKII = 0;
+  CamR_Ca4_ABCD_CaMKII = 0;
+  CamR_PP2B = 0;
+  CamR_Ca1_A_PP2B = 0;
+  CamR_Ca1_B_PP2B = 0;
+  CamR_Ca1_C_PP2B = 0;
+  CamR_Ca1_D_PP2B = 0;
+  CamR_Ca2_AB_PP2B = 0;
+  CamR_Ca2_AC_PP2B = 0;
+  CamR_Ca2_AD_PP2B = 0;
+  CamR_Ca2_BC_PP2B = 0;
+  CamR_Ca2_BD_PP2B = 0;
+  CamR_Ca2_CD_PP2B = 0;
+  CamR_Ca3_ABC_PP2B = 0;
+  CamR_Ca3_ABD_PP2B = 0;
+  CamR_Ca3_ACD_PP2B = 0;
+  CamR_Ca3_BCD_PP2B = 0;
+  CamR_Ca4_ABCD_PP2B = 0;
+  CaMKIIp = 0;
+  CamR_CaMKIIp = 0;
+  CamR_Ca1_A_CaMKIIp = 0;
+  CamR_Ca1_B_CaMKIIp = 0;
+  CamR_Ca1_C_CaMKIIp = 0;
+  CamR_Ca1_D_CaMKIIp = 0;
+  CamR_Ca2_AB_CaMKIIp = 0;
+  CamR_Ca2_AC_CaMKIIp = 0;
+  CamR_Ca2_AD_CaMKIIp = 0;
+  CamR_Ca2_BC_CaMKIIp = 0;
+  CamR_Ca2_BD_CaMKIIp = 0;
+  CamR_Ca2_CD_CaMKIIp = 0;
+  CamR_Ca3_ABC_CaMKIIp = 0;
+  CamR_Ca3_ABD_CaMKIIp = 0;
+  CamR_Ca3_ACD_CaMKIIp = 0;
+  CamR_Ca3_BCD_CaMKIIp = 0;
+  CamR_Ca4_ABCD_CaMKIIp = 0;
+  Dp = 0;
+  D_PKA = 0;
+  Dp_CamR_PP2B = 0;
+  Dp_CamR_Ca1_A_PP2B = 0;
+  Dp_CamR_Ca1_B_PP2B = 0;
+  Dp_CamR_Ca1_C_PP2B = 0;
+  Dp_CamR_Ca1_D_PP2B = 0;
+  Dp_CamR_Ca2_AB_PP2B = 0;
+  Dp_CamR_Ca2_AC_PP2B = 0;
+  Dp_CamR_Ca2_AD_PP2B = 0;
+  Dp_CamR_Ca2_BC_PP2B = 0;
+  Dp_CamR_Ca2_BD_PP2B = 0;
+  Dp_CamR_Ca2_CD_PP2B = 0;
+  Dp_CamR_Ca3_ABC_PP2B = 0;
+  Dp_CamR_Ca3_ABD_PP2B = 0;
+  Dp_CamR_Ca3_ACD_PP2B = 0;
+  Dp_CamR_Ca3_BCD_PP2B = 0;
+  Dp_CamR_Ca4_ABCD_PP2B = 0;
+  PP1a_Dp = 0;
+  CaMKIIp_PP1a = 0;
+  CamR_CaMKIIp_PP1a = 0;
+  CamR_Ca1_A_CaMKIIp_PP1a = 0;
+  CamR_Ca1_B_CaMKIIp_PP1a = 0;
+  CamR_Ca1_C_CaMKIIp_PP1a = 0;
+  CamR_Ca1_D_CaMKIIp_PP1a = 0;
+  CamR_Ca2_AB_CaMKIIp_PP1a = 0;
+  CamR_Ca2_AC_CaMKIIp_PP1a = 0;
+  CamR_Ca2_AD_CaMKIIp_PP1a = 0;
+  CamR_Ca2_BC_CaMKIIp_PP1a = 0;
+  CamR_Ca2_BD_CaMKIIp_PP1a = 0;
+  CamR_Ca2_CD_CaMKIIp_PP1a = 0;
+  CamR_Ca3_ABC_CaMKIIp_PP1a = 0;
+  CamR_Ca3_ABD_CaMKIIp_PP1a = 0;
+  CamR_Ca3_ACD_CaMKIIp_PP1a = 0;
+  CamR_Ca3_BCD_CaMKIIp_PP1a = 0;
+  CamR_Ca4_ABCD_CaMKIIp_PP1a = 0;
+  PP2Bi = 6e-06;
+  PP2Bi_Ca1 = 0;
+  PP2Bi_Ca2 = 0;
+  PP2Bi_Ca3 = 0;
+
+  // Compartment initializations:
+  Spine = 1e-15;
+
+  // Variable initializations:
+  parameter_6 = 0;
+  parameter_1 = 0;
+  parameter_7 = 0;
+  ModelValue_128 = parameter_2;
+  parameter_3 = 0;
+  ModelValue_131 = parameter_5;
+  ModelValue_130 = parameter_4;
+  Cam_total = 3.000145e-05;
+  Metabolite_8 = CBPfast;
+  Metabolite_9 = CBPmedia;
+  Metabolite_10 = CBPslow;
+  Metabolite_11 = CBPvslow;
+  PKA_total = 1.2e-06;
+  K_CBPslow_Ca_off = 10;
+  K_CamR_CaMKII_p_on = 3200000;
+  K_D_PKA_off_p = 2.7;
+  K_CamMKIIp_PP1a_on = 3000000;
+  K_CamMKIIp_PP1a_off = 0.5;
+  K_CamMKIIp_PP1a_p_off = 2;
+  K_CBPslow_Ca_on = 10000000;
+  K_CBPvslow_Ca_off = 1;
+  K_CBPvslow_Ca_on = 1000000;
+  K_Cam_Ca_on = 1400000;
+  C_A_B_C_D = 0.00396;
+  K_CamT_R = 48.379294;
+  parameter_14 = 20670;
+  K_CamR_CaMKII_off = 0.343;
+  K_CamR_PP2B_on = 46000000;
+  K_CamR_PP2B_off = 0.4;
+  parameter_12 = 1.74e-05;
+  parameter_13 = 1.45e-08;
+  parameter_10 = 8.32e-06;
+  parameter_11 = 1.66e-08;
+  K_CamR_CaMKIIp_off = 0.001;
+  K_D_PKA_on = 5600000;
+  K_D_PKA_off = 10.8;
+  K_CamR_PP2B_Dp_on = 4100000;
+  K_CamR_PP2B_Dp_off = 6.4;
+  K_CamR_PP2B_D_off = 0.2;
+  K_PP1a_Dp_on = 4000000;
+  K_PP1a_Dp_off = 0.4;
+  K_CBP_fast_on = 1000000000;
+  K_CBP_fast_off = 1000;
+  K_CBP_media_on = 100000000;
+  K_CBP_media_off = 100;
+  K_PP2Bi_Ca_on = 20000000;
+  K_PP2Bi_Ca1_Ca_off = 0.0092;
+  K_PP2Bi_Ca2_Ca_off = 0.0312;
+  K_PP2Bi_Ca3_Ca_off = 0.352;
+  K_PP2B_Ca_off = 0.9;
+  Metabolite_6 = PKA;
+  k_for_CaMKII_autophosphorylation = 6.3;
+  parameter_2 = 300;
+  parameter_4 = 100;
+  parameter_5 = 52.8;
+  Ca_pump_km = 1e-06;
+  Ca_pump_vmax = 0.004;
+  Ca_leak_v = 4e-05;
+
+  // Other declarations:
+  var parameter_6, parameter_1, parameter_8, parameter_7, parameter_9, parameter_3;
+  var Cam_Ca0_total_0, Cam_Ca0_total_ratio, Cam_Ca1_total, Free_Cam_Ca1_total;
+  var CaMKII_CamR_Ca1_total, Dp_0_PP2B_CamR_Ca1, Cam_Ca1_total_ratio, Cam_Ca2_total;
+  var Free_Cam_Ca2_total, CaMKII_CamR_Ca2_total, Dp_0_PP2B_CamR_Ca2, Cam_Ca2_total_ratio;
+  var Cam_Ca3_total, Free_CamR_Ca3_total, Dp_0_PP2B_CamR_Ca3, CaMKII_CamR_Ca3_total;
+  var Cam_Ca3_total_ratio, Cam_Ca4_total, Cam_Ca4_total_ratio, CamCaMKII_bar;
+  var CaMKII_bound_total, CaMKII_active_ratio, CaMKII_active_total, CaMKII_total;
+  var CaMKIIp_bar, CaMKIIp_total, CamPP2B_bar, PP2B_bound_total, CamR_Ca0_ratio;
+  var CamR_Ca0_total, CamR_Ca2_ratio, CamR_Ca2_total, Free_CamR_Ca2_total;
+  var CamR_Ca3_ratio, CamR_Ca3_total, CamR_Ca4_ratio, CamR_Ca4_total, CamR_unbound;
+  var CBP_fast_bar, CBP_fast_total, CBP_media_bar, CBP_media_total, CBP_slow_bar;
+  var CBP_slow_total, CBP_vslow_bar, CBP_vslow_total, Dp_bar, Dp_total, D_total;
+  var Epsilon, Free_Cam_Ca0_total, Free_CamR_Ca1_total, Free_CamT_Ca1_total;
+  var Free_CamT_Ca2_total, Free_Cam_Ca3_total, Free_CamT_Ca3_total, Free_Cam_Ca4_total;
+  var moles_bound_Ca_per_moles_Cam, PKA_bar, PKA_inmodel, PP1a_bar, PP1a_total;
+  var PP1_total, PP2B_bar, PP2B_total, CamR_ratio, CamR_total, CamT_total;
+  var y_bar, y_bar_div_1_minus_ybar, CamR_Ca1_ratio, CamR_Ca1_total, K_CamT_Ca_A_off;
+  var K_CamR_Ca_A_off, K_CamT_Ca_B_off, K_CamR_Ca_B_off, K_CamT_Ca_C_off;
+  var K_CamR_Ca_C_off, K_CamT_Ca_D_off, K_CamR_Ca_D_off, K_CamR_T, K_CamR_to_T_Ca2;
+  var K_CamT_to_R_Ca2, K_CamR_to_T_Ca1, K_CamT_to_R_Ca1, K_CamR_to_T_Ca3;
+  var K_CamT_to_R_Ca3, K_CamR_to_T_Ca4, K_CamT_to_R_Ca4, PKA_initial, K_CaMKII_autoPhosphorylation;
+  var PP2B_non_i;
+  const Spine, ModelValue_128, ModelValue_131, ModelValue_130, Cam_total;
+  const Metabolite_8, Metabolite_9, Metabolite_10, Metabolite_11, PKA_total;
+  const K_CBPslow_Ca_off, K_CamR_CaMKII_p_on, K_D_PKA_off_p, K_CamMKIIp_PP1a_on;
+  const K_CamMKIIp_PP1a_off, K_CamMKIIp_PP1a_p_off, K_CBPslow_Ca_on, K_CBPvslow_Ca_off;
+  const K_CBPvslow_Ca_on, K_Cam_Ca_on, C_A_B_C_D, K_CamT_R, parameter_14;
+  const K_CamR_CaMKII_off, K_CamR_PP2B_on, K_CamR_PP2B_off, parameter_12;
+  const parameter_13, parameter_10, parameter_11, K_CamR_CaMKIIp_off, K_D_PKA_on;
+  const K_D_PKA_off, K_CamR_PP2B_Dp_on, K_CamR_PP2B_Dp_off, K_CamR_PP2B_D_off;
+  const K_PP1a_Dp_on, K_PP1a_Dp_off, K_CBP_fast_on, K_CBP_fast_off, K_CBP_media_on;
+  const K_CBP_media_off, K_PP2Bi_Ca_on, K_PP2Bi_Ca1_Ca_off, K_PP2Bi_Ca2_Ca_off;
+  const K_PP2Bi_Ca3_Ca_off, K_PP2B_Ca_off, Metabolite_6, k_for_CaMKII_autophosphorylation;
+  const parameter_2, parameter_4, parameter_5;
+
+  // Display Names:
+  CBPfast is "CBP_fast";
+  CBPmedia is "CBP_media";
+  CBPslow is "CBP_slow";
+  CBPvslow is "CBP_vslow";
+  CBPfastCa is "CBP_fast_Ca";
+  CBPmediaCa is "CBP_media_Ca";
+  CBPslowCa is "CBP_slow_Ca";
+  CBPvslowCa is "CBP_vslow_Ca";
+  event_1 is "Ca spike on";
+  parameter_6 is "spikeOn";
+  parameter_1 is "k_Ca_in";
+  parameter_8 is "spikeInput";
+  parameter_7 is "startTime";
+  event_2 is "Ca spike off";
+  parameter_9 is "spikeInputDuration";
+  event_3 is "Ca_spikes";
+  ModelValue_128 is "Initial for equilibriumTime";
+  parameter_3 is "spikeCounter";
+  ModelValue_131 is "Initial for spikeFrequency";
+  ModelValue_130 is "Initial for spikeNumber";
+  Cam_Ca0_total_0 is "Cam_Ca0_total";
+  Dp_0_PP2B_CamR_Ca1 is "Dp_boundOrnot_PP2B_CamR_Ca1";
+  Dp_0_PP2B_CamR_Ca2 is "Dp_boundOrnot_PP2B_CamR_Ca2";
+  Dp_0_PP2B_CamR_Ca3 is "Dp_boundOrnot_PP2B_CamR_Ca3";
+  Metabolite_8 is "Initial for CBP_fast";
+  Metabolite_9 is "Initial for CBP_media";
+  Metabolite_10 is "Initial for CBP_slow";
+  Metabolite_11 is "Initial for CBP_vslow";
+  K_CBPslow_Ca_off is "koff_CBPslow_Ca";
+  K_CamR_CaMKII_p_on is "kon_CamR_CaMKII";
+  K_D_PKA_off_p is "kcat_D_PKA";
+  K_CamMKIIp_PP1a_on is "kon_CamMKIIp_PP1a";
+  K_CamMKIIp_PP1a_off is "koff_CamMKIIp_PP1a";
+  K_CamMKIIp_PP1a_p_off is "kcat_CaMKIIp_PP1a";
+  K_CBPslow_Ca_on is "kon_CBPslow_Ca";
+  K_CBPvslow_Ca_off is "koff_CBPvslow_Ca";
+  K_CBPvslow_Ca_on is "kon_CBPvslow_Ca";
+  K_Cam_Ca_on is "kon_Cam_Ca";
+  K_CamT_Ca_A_off is "koff_CamT_Ca_A";
+  K_CamR_Ca_A_off is "koff_CamR_Ca_A";
+  C_A_B_C_D is "C_ABCD";
+  K_CamT_Ca_B_off is "koff_CamT_Ca_B";
+  K_CamR_Ca_B_off is "koff_CamR_Ca_B";
+  K_CamT_Ca_C_off is "koff_CamT_Ca_C";
+  K_CamR_Ca_C_off is "koff_CamR_Ca_C";
+  K_CamT_Ca_D_off is "koff_CamT_Ca_D";
+  K_CamR_Ca_D_off is "koff_CamR_Ca_D";
+  K_CamR_T is "k_CamR_T";
+  K_CamT_R is "k_CamT_R";
+  parameter_14 is "L";
+  K_CamR_CaMKII_off is "koff_CamR_CaMKII";
+  K_CamR_PP2B_on is "kon_CamR_PP2B";
+  K_CamR_PP2B_off is "koff_CamR_PP2B";
+  parameter_12 is "KRC";
+  parameter_13 is "KRD";
+  parameter_10 is "KRA";
+  parameter_11 is "KRB";
+  K_CamR_CaMKIIp_off is "koff_CamR_CaMKIIp";
+  K_D_PKA_on is "kon_D_PKA";
+  K_D_PKA_off is "koff_D_PKA";
+  K_CamR_PP2B_Dp_on is "kon_CamR_PP2B_Dp";
+  K_CamR_PP2B_Dp_off is "koff_CamR_PP2B_Dp";
+  K_CamR_PP2B_D_off is "kcat_CamR_PP2B_Dp";
+  K_PP1a_Dp_on is "kon_PP1a_Dp";
+  K_PP1a_Dp_off is "koff_PP1a_Dp";
+  K_CBP_fast_on is "kon_CBPfast_Ca";
+  K_CBP_fast_off is "koff_CBPfast_Ca";
+  K_CBP_media_on is "kon_CBPmedia_Ca";
+  K_CBP_media_off is "koff_CBPmedia_Ca";
+  K_PP2Bi_Ca_on is "kon_PP2Bi_Ca";
+  K_PP2Bi_Ca1_Ca_off is "koff_PP2Bi_Ca";
+  K_PP2Bi_Ca2_Ca_off is "koff_PP2Bi_Ca1_Ca";
+  K_PP2Bi_Ca3_Ca_off is "koff_PP2Bi_Ca2_Ca";
+  K_PP2B_Ca_off is "koff_PP2Bi_Ca3_Ca";
+  K_CamR_to_T_Ca2 is "k_CamR_to_T_Ca2";
+  K_CamT_to_R_Ca2 is "k_CamT_to_R_Ca2";
+  K_CamR_to_T_Ca1 is "k_CamR_to_T_Ca1";
+  K_CamT_to_R_Ca1 is "k_CamT_to_R_Ca1";
+  K_CamR_to_T_Ca3 is "k_CamR_to_T_Ca3";
+  K_CamT_to_R_Ca3 is "k_CamT_to_R_Ca3";
+  K_CamR_to_T_Ca4 is "k_CamR_to_T_Ca4";
+  K_CamT_to_R_Ca4 is "k_CamT_to_R_Ca4";
+  Metabolite_6 is "Initial for PKA";
+  K_CaMKII_autoPhosphorylation is "k_CaMKII_autoPhosphorylation";
+  k_for_CaMKII_autophosphorylation is "kmax_CaMKII_autophosphorylation";
+  parameter_2 is "equilibriumTime";
+  parameter_4 is "spikeNumber";
+  parameter_5 is "spikeFrequency";
+  CBPslow_Ca_on is "Ca binding to CBPslow";
+  CBPslow_Ca_off is "Ca dissociating from CBPslow_Ca";
+  CBPvslow_Ca_on is "Ca binding to CBPvslow";
+  CBPvslow_Ca_off is "Ca dissociating from CBPvslow_Ca";
+  reaction_0 is "Ca binding to CamR site A";
+  reaction_1 is "Ca binding to CamR site B";
+  reaction_2 is "Ca binding to CamR site C";
+  reaction_3 is "Ca binding to CamR site D ";
+  reaction_4 is "Ca dissociating from CamR_Ca1_A site A ";
+  reaction_5 is "Ca dissociating from CamR_Ca1_B site B ";
+  reaction_6 is "Ca dissociating from CamR_Ca1_C site C ";
+  reaction_7 is "Ca dissociating from CamR_Ca1_D site D ";
+  reaction_8 is "Ca binding to CamR_Ca1_A site B ";
+  reaction_9 is "Ca binding to CamR_Ca1_A site C ";
+  reaction_10 is "Ca binding to CamR_Ca1_A site D";
+  reaction_11 is "Ca binding to CamR_Ca1_B site A ";
+  reaction_12 is "Ca binding to CamR_Ca1_B site C ";
+  reaction_13 is "Ca binding to CamR_Ca1_B site D ";
+  reaction_14 is "Ca binding to CamR_Ca1_C site A ";
+  reaction_15 is "Ca binding to CamR_Ca1_C site B ";
+  reaction_16 is "Ca binding to CamR_Ca1_C site D ";
+  reaction_17 is "Ca binding to CamR_Ca1_D site A ";
+  reaction_18 is "Ca binding to CamR_Ca1_D site B ";
+  reaction_19 is "Ca binding to CamR_Ca1_D site C ";
+  reaction_20 is "Ca dissociating from CamR_Ca2_AB site B ";
+  reaction_21 is "Ca dissociating from CamR_Ca2_AC site C ";
+  reaction_22 is "Ca dissociating from CamR_Ca2_AD site D ";
+  reaction_23 is "Ca dissociating from CamR_Ca2_AB site A ";
+  reaction_24 is "Ca dissociating from CamR_Ca2_BC site C ";
+  reaction_25 is "Ca dissociating from CamR_Ca2_BD site D ";
+  reaction_26 is "Ca dissociating from CamR_Ca2_AC site A ";
+  reaction_27 is "Ca dissociating from CamR_Ca2_BC site B ";
+  reaction_28 is "Ca dissociating from CamR_Ca2_CD site D ";
+  reaction_29 is "Ca dissociating from CamR_Ca2_AD site A ";
+  reaction_30 is "Ca dissociating from CamR_Ca2_BD site B ";
+  reaction_31 is "Ca dissociating from CamR_Ca2_CD site C ";
+  reaction_32 is "Ca binding to CamR_Ca2_AB site C ";
+  reaction_33 is "Ca binding to CamR_Ca2_AB site D ";
+  reaction_34 is "Ca binding to CamR_Ca2_AC site B ";
+  reaction_35 is "Ca binding to CamR_Ca2_AC site D ";
+  reaction_36 is "Ca binding to CamR_Ca2_AD site B ";
+  reaction_37 is "Ca binding to CamR_Ca2_AD site C ";
+  reaction_38 is "Ca binding to CamR_Ca2_BC site A ";
+  reaction_39 is "Ca binding to CamR_Ca2_BC site D ";
+  reaction_40 is "Ca binding to CamR_Ca2_BD site A ";
+  reaction_41 is "Ca binding to CamR_Ca2_BD site C ";
+  reaction_42 is "Ca binding to CamR_Ca2_CD site A ";
+  reaction_43 is "Ca binding to CamR_Ca2_CD site B ";
+  reaction_44 is "Ca dissociating from CamR_Ca3_ABC site A ";
+  reaction_45 is "Ca dissociating from CamR_Ca3_ABC site B ";
+  reaction_46 is "Ca dissociating from CamR_Ca3_ABC site C ";
+  reaction_47 is "Ca dissociating from CamR_Ca3_ABD site A ";
+  reaction_48 is "Ca dissociating from CamR_Ca3_ABD site B ";
+  reaction_49 is "Ca dissociating from CamR_Ca3_ABD site D ";
+  reaction_50 is "Ca dissociating from CamR_Ca3_ACD site A ";
+  reaction_51 is "Ca dissociating from CamR_Ca3_ACD site C ";
+  reaction_52 is "Ca dissociating from CamR_Ca3_ACD site D ";
+  reaction_53 is "Ca dissociating from CamR_Ca3_BCD site B ";
+  reaction_54 is "Ca dissociating from CamR_Ca3_BCD site C ";
+  reaction_55 is "Ca dissociating from CamR_Ca3_BCD site D ";
+  reaction_56 is "Ca binding to CamR_Ca3_ABC site D ";
+  reaction_57 is "Ca binding to CamR_Ca3_ABD site C ";
+  reaction_58 is "Ca binding to CamR_Ca3_ACD site B ";
+  reaction_59 is "Ca binding to CamR_Ca3_BCD site A ";
+  reaction_60 is "Ca dissociating from CamR_Ca4_ABCD site D ";
+  reaction_61 is "Ca dissociating from CamR_Ca4_ABCD site C ";
+  reaction_62 is "Ca dissociating from CamR_Ca4_ABCD site B ";
+  reaction_63 is "Ca dissociating from CamR_Ca4_ABCD site A ";
+  reaction_64 is "Ca binding to camT site A ";
+  reaction_65 is "Ca binding to camT site B ";
+  reaction_66 is "Ca binding to camT site C ";
+  reaction_67 is "Ca binding to camT site D ";
+  reaction_68 is "Ca dissociating from camT_ca1_A site A ";
+  reaction_69 is "Ca dissociating from camT_ca1_B site B ";
+  reaction_70 is "Ca dissociating from camT_ca1_C site C ";
+  reaction_71 is "Ca dissociating from camT_ca1_D site D ";
+  reaction_72 is "Ca binding to camT_ca1_A site B";
+  reaction_73 is "Ca binding to camT_ca1_A site C ";
+  reaction_74 is "Ca binding to camT_ca1_A site D ";
+  reaction_75 is "Ca binding to camT_ca1_B site A ";
+  reaction_76 is "Ca binding to camT_ca1_B site C ";
+  reaction_77 is "Ca binding to camT_ca1_B site D ";
+  reaction_78 is "Ca binding to camT_ca1_C site A ";
+  reaction_79 is "Ca binding to camT_ca1_C site B ";
+  reaction_80 is "Ca binding to CamT_ca1_C site D ";
+  reaction_81 is "Ca binding to CamT_ca1_D site A ";
+  reaction_82 is "Ca binding to CamT_ca1_D site B ";
+  reaction_83 is "Ca binding to CamT_ca1_D site C ";
+  reaction_84 is "Ca dissociating from CamT_ca2_AB site A ";
+  reaction_85 is "Ca dissociating from CamT_ca2_AB site B ";
+  reaction_86 is "Ca dissociating from CamT_ca2_AC site A ";
+  reaction_87 is "Ca dissociating from CamT_ca2_AC site C ";
+  reaction_88 is "Ca dissociating from CamT_ca2_AD site A ";
+  reaction_89 is "Ca dissociating from CamT_ca2_AD site D ";
+  reaction_90 is "Ca dissociating from CamT_ca2_BC site B ";
+  reaction_91 is "Ca dissociating from CamT_ca2_BC site C ";
+  reaction_92 is "Ca dissociating from CamT_ca2_BD site B ";
+  reaction_93 is "Ca dissociating from CamT_ca2_BD site D ";
+  reaction_94 is "Ca dissociating from CamT_ca2_CD site C ";
+  reaction_95 is "Ca dissociating from CamT_ca2_CD site D ";
+  reaction_96 is "Ca binding to CamT_ca2_AB site C ";
+  reaction_97 is "Ca binding to CamT_ca2_AB site D ";
+  reaction_98 is "Ca binding to CamT_ca2_AC site B ";
+  reaction_99 is "Ca binding to CamT_ca2_AC site D ";
+  reaction_100 is "Ca binding to CamT_Ca2_AD site B ";
+  reaction_101 is "Ca binding to CamT_Ca2_AD site C ";
+  reaction_102 is "Ca binding to CamT_Ca2_BC site A ";
+  reaction_103 is "Ca binding to CamT_Ca2_BC site D ";
+  reaction_104 is "Ca binding to CamT_Ca2_BD site A ";
+  reaction_105 is "Ca binding to CamT_Ca2_BD site C ";
+  reaction_106 is "Ca binding to CamT_Ca2_CD site A ";
+  reaction_107 is "Ca binding to CamT_Ca2_CD site B ";
+  reaction_108 is "Ca dissociating from CamT_Ca3_ABC site B ";
+  reaction_109 is "Ca dissociating from CamT_Ca3_ABC site A ";
+  reaction_110 is "Ca dissociating from CamT_Ca3_ABD site D ";
+  reaction_111 is "Ca dissociating from CamT_Ca3_ABD site B ";
+  reaction_112 is "Ca dissociating from CamT_Ca3_ABD site A ";
+  reaction_113 is "Ca dissociating from CamT_Ca3_ACD site D ";
+  reaction_114 is "Ca dissociating from CamT_Ca3_ACD site C ";
+  reaction_115 is "Ca dissociating from CamT_Ca3_ACD site A ";
+  reaction_116 is "Ca dissociating from CamT_Ca3_BCD site D ";
+  reaction_117 is "Ca dissociating from CamT_Ca3_BCD site C ";
+  reaction_118 is "Ca dissociating from CamT_Ca3_BCD site B ";
+  reaction_119 is "Ca binding to CamT_Ca3_ABC site D ";
+  reaction_120 is "Ca binding to CamT_Ca3_ABD site C ";
+  reaction_121 is "Ca binding to CamT_Ca3_ACD site B ";
+  reaction_122 is "Ca binding to CamT_Ca3_BCD site A ";
+  reaction_123 is "Ca dissociating from CamT_Ca4_ABCD site D ";
+  reaction_124 is "Ca dissociating from CamT_Ca4_ABCD site C ";
+  reaction_125 is "Ca dissociating from CamT_Ca4_ABCD site B ";
+  reaction_126 is "Ca dissociating from CamT_Ca4_ABCD site A ";
+  reaction_127 is "Transition CamR to CamT ";
+  reaction_128 is "Transition CamT to CamR ";
+  reaction_129 is "Transition CamR_Ca1_A to CamT_Ca1_A ";
+  reaction_130 is "Transition CamR_Ca1_B to CamT_Ca1_B ";
+  reaction_131 is "Transition CamR_Ca1_C to CamT_Ca1_C ";
+  reaction_132 is "Transition CamR_Ca1_D to CamT_Ca1_D ";
+  reaction_133 is "Transition CamT_Ca1_A to CamR_Ca1_A ";
+  reaction_134 is "Transition CamT_Ca1_B to CamR_Ca1_B ";
+  reaction_135 is "Transition CamT_Ca1_C to CamR_Ca1_C ";
+  reaction_136 is "Transition CamT_Ca1_D to CamR_Ca1_D ";
+  reaction_137 is "Transition CamR_Ca2_AB to CamT_Ca2_AB ";
+  reaction_138 is "Transition CamR_Ca2_AC to CamT_Ca2_AC ";
+  reaction_139 is "Transition CamR_Ca2_AD to CamT_Ca2_AD ";
+  reaction_140 is "Transition CamR_Ca2_BC to CamT_Ca2_BC ";
+  reaction_141 is "Transition CamR_Ca2_BD to CamT_Ca2_BD ";
+  reaction_142 is "Transition CamR_Ca2_CD to CamT_Ca2_CD ";
+  reaction_143 is "Transition CamT_Ca2_AB to CamR_Ca2_AB ";
+  reaction_144 is "Transition CamT_Ca2_AC to CamR_Ca2_AC ";
+  reaction_145 is "Transition CamT_Ca2_AD to CamR_Ca2_AD ";
+  reaction_146 is "Transition CamT_Ca2_BC to CamR_Ca2_BC ";
+  reaction_147 is "Transition CamT_Ca2_BD to CamR_Ca2_BD ";
+  reaction_148 is "Transition CamT_Ca2_CD to CamR_Ca2_CD ";
+  reaction_149 is "Transition CamR_Ca3_ABC to CamT_Ca3_ABC ";
+  reaction_150 is "Transition CamR_Ca3_ABD to CamT_Ca3_ABD ";
+  reaction_151 is "Transition CamR_Ca3_ACD to CamT_Ca3_ACD ";
+  reaction_152 is "Transition CamR_Ca3_BCD to CamT_Ca3_BCD ";
+  reaction_153 is "Transition CamT_Ca3_ABC to CamR_Ca3_ABC ";
+  reaction_154 is "Transition CamT_Ca3_ABD to CamR_Ca3_ABD ";
+  reaction_155 is "Transition CamT_Ca3_ACD to CamR_Ca3_ACD ";
+  reaction_156 is "Transition CamT_Ca3_BCD to CamR_Ca3_BCD ";
+  reaction_157 is "Transition CamR_Ca4_ABCD to CamT_Ca4_ABCD ";
+  reaction_158 is "Transition CamT_Ca4_ABCD to CamR_Ca4_ABCD ";
+  reaction_159 is "CamKII binding to CamR ";
+  reaction_160 is "CamKII binding to CamR_Ca1_A ";
+  reaction_161 is "CamKII binding to CamR_Ca1_B ";
+  reaction_162 is "CamKII binding to CamR_Ca1_C ";
+  reaction_163 is "CamKII binding to CamR_Ca1_D ";
+  reaction_164 is "CamKII binding to CamR_Ca2_AB ";
+  reaction_165 is "CamKII binding to CamR_Ca2_AC ";
+  reaction_166 is "CamKII binding to CamR_Ca2_AD ";
+  reaction_167 is "CamKII binding to CamR_Ca2_BC ";
+  reaction_168 is "CamKII binding to CamR_Ca2_BD ";
+  reaction_169 is "CamKII binding to CamR_Ca2_CD ";
+  reaction_170 is "CamKII binding to CamR_Ca3_ABC ";
+  reaction_171 is "CamKII binding to CamR_Ca3_ABD ";
+  reaction_172 is "CamKII binding to CamR_Ca3_ACD ";
+  reaction_173 is "CamKII binding to CamR_Ca3_BCD ";
+  reaction_174 is "CamKII binding to CamR_Ca4_ABCD ";
+  reaction_175 is "CamKII dissociating from CamR ";
+  reaction_176 is "CamKII dissociating from CamR_Ca1_A ";
+  reaction_177 is "CamKII dissociating from CamR_Ca1_B ";
+  reaction_178 is "CamKII dissociating from CamR_Ca1_C ";
+  reaction_179 is "CamKII dissociating from CamR_Ca1_D ";
+  reaction_180 is "CamKII dissociating from CamR_Ca2_AB ";
+  reaction_181 is "CamKII dissociating from CamR_Ca2_AC ";
+  reaction_182 is "CamKII dissociating from CamR_Ca2_AD ";
+  reaction_183 is "CamKII dissociating from CamR_Ca2_BC ";
+  reaction_184 is "CamKII dissociating from CamR_Ca2_BD ";
+  reaction_185 is "CamKII dissociating from CamR_Ca2_CD ";
+  reaction_186 is "CamKII dissociating from CamR_Ca3_ABC ";
+  reaction_187 is "CamKII dissociating from CamR_Ca3_ABD ";
+  reaction_188 is "CamKII dissociating from CamR_Ca3_ACD ";
+  reaction_189 is "CamKII dissociating from CamR_Ca3_BCD ";
+  reaction_190 is "CamKII dissociating from CamR_Ca4_ABCD ";
+  reaction_191 is "PP2B binding to CamR ";
+  reaction_192 is "PP2B binding to CamR_Ca1_A ";
+  reaction_193 is "PP2B binding to CamR_Ca1_B ";
+  reaction_194 is "PP2B binding to CamR_Ca1_C ";
+  reaction_195 is "PP2B binding to CamR_Ca1_D ";
+  reaction_196 is "PP2B binding to CamR_Ca2_AB ";
+  reaction_198 is "PP2B binding to CamR_Ca2_AD";
+  reaction_199 is "PP2B binding to CamR_Ca2_BC";
+  reaction_200 is "PP2B binding to CamR_Ca2_BD";
+  reaction_201 is "PP2B binding to CamR_Ca2_CD";
+  reaction_202 is "PP2B binding to CamR_Ca3_ABC";
+  reaction_203 is "PP2B binding to CamR_Ca3_ABD";
+  reaction_204 is "PP2B binding to CamR_Ca3_ACD ";
+  reaction_205 is "PP2B binding to CamR_Ca3_BCD ";
+  reaction_206 is "PP2B binding to CamR_Ca4_ABCD ";
+  reaction_207 is "PP2B dissociating from CamR ";
+  reaction_208 is "PP2B dissociating from CamR_Ca1_A ";
+  reaction_209 is "PP2B dissociating from CamR_Ca1_B";
+  reaction_210 is "PP2B dissociating from CamR_Ca1_C ";
+  reaction_211 is "PP2B dissociating from CamR_Ca1_D ";
+  reaction_212 is "PP2B dissociating from CamR_Ca2_AB";
+  reaction_213 is "PP2B dissociating from CamR_Ca2_AC ";
+  reaction_214 is "PP2B dissociating from CamR_Ca2_AD ";
+  reaction_215 is "PP2B dissociating from CamR_Ca2_BC ";
+  reaction_216 is "PP2B dissociating from CamR_Ca2_BD ";
+  reaction_217 is "PP2B dissociating from CamR_Ca2_CD ";
+  reaction_218 is "PP2B dissociating from CamR_Ca3_ABC ";
+  reaction_219 is "PP2B dissociating from CamR_Ca3_ABD ";
+  reaction_220 is "PP2B dissociating from CamR_Ca3_ACD ";
+  reaction_221 is "PP2B dissociating from CamR_Ca3_BCD ";
+  reaction_222 is "PP2B dissociating from CamR_Ca4_ABCD ";
+  reaction_223 is "Ca binding to CamR_CamKII site A ";
+  reaction_224 is "Ca binding to CamR_CamKII site B ";
+  reaction_225 is "Ca binding to CamR_CamKII site C ";
+  reaction_226 is "Ca binding to CamR_CamKII site D ";
+  reaction_227 is "Ca dissociating from CamR_Ca1_CamKII site A ";
+  reaction_228 is "Ca dissociating from CamR_Ca1_CamKII site C ";
+  reaction_229 is "Ca dissociating from CamR_Ca1_CamKII site D ";
+  reaction_230 is "Ca binding to CamR_Ca1_A_CamKII site B ";
+  reaction_231 is "Ca binding to CamR_Ca1_A_CamKII site C ";
+  reaction_232 is "Ca binding to CamR_Ca1_A_CamKII site D ";
+  reaction_233 is "Ca binding to CamR_Ca1_B_CamKII site A ";
+  reaction_234 is "Ca binding to CamR_Ca1_B_CamKII site C ";
+  reaction_235 is "Ca binding to CamR_Ca1_B_CamKII site D ";
+  reaction_236 is "Ca binding to CamR_Ca1_C_CamKII site A ";
+  reaction_237 is "Ca binding to CamR_Ca1_C_CamKII site B ";
+  reaction_238 is "Ca binding to CamR_Ca1_C_CamKII site D ";
+  reaction_239 is "Ca binding to CamR_Ca1_D_CamKII site A ";
+  reaction_240 is "Ca binding to CamR_Ca1_D_CamKII site B ";
+  reaction_241 is "Ca binding to CamR_Ca1_D_CamKII site C ";
+  reaction_242 is "Ca dissociating from CamR_Ca2_AB_CamKII site A ";
+  reaction_243 is "Ca dissociating from CamR_Ca2_AB_CamKII site B ";
+  reaction_244 is "Ca dissociating from CamR_Ca2_AC_CamKII site A ";
+  reaction_245 is "Ca dissociating from CamR_Ca2_AC_CamKII site C ";
+  reaction_246 is "Ca dissociating from CamR_Ca2_AD_CamKII site A ";
+  reaction_247 is "Ca dissociating from CamR_Ca2_AD_CamKII site D ";
+  reaction_248 is "Ca dissociating from CamR_Ca2_BC_CamKII site B ";
+  reaction_249 is "Ca dissociating from CamR_Ca2_BC_CamKII site C ";
+  reaction_250 is "Ca dissociating from CamR_Ca2_BD_CamKII site B ";
+  reaction_251 is "Ca dissociating from CamR_Ca2_BD_CamKII site D ";
+  reaction_252 is "Ca dissociating from CamR_Ca2_CD_CamKII site C ";
+  reaction_253 is "Ca dissociating from CamR_Ca2_CD_CamKII site D ";
+  reaction_254 is "Ca binding to CamR_Ca2_AB_CamKII site C ";
+  reaction_255 is "Ca binding to CamR_Ca2_AB_CamKII site D ";
+  reaction_256 is "Ca binding to CamR_Ca2_AC_CamKII site B ";
+  reaction_257 is "Ca binding to CamR_Ca2_AC_CamKII site D ";
+  reaction_258 is "Ca binding to CamR_Ca2_AD_CamKII site B ";
+  reaction_259 is "Ca binding to CamR_Ca2_AD_CamKII site C ";
+  reaction_260 is "Ca binding to CamR_Ca2_BC_CamKII site A ";
+  reaction_261 is "Ca binding to CamR_Ca2_BC_CamKII site D ";
+  reaction_262 is "Ca binding to CamR_Ca2_BD_CamKII site A ";
+  reaction_263 is "Ca binding to CamR_Ca2_BD_CamKII site C ";
+  reaction_264 is "Ca binding to CamR_Ca2_CD_CamKII site A ";
+  reaction_265 is "Ca binding to CamR_Ca2_CD_CamKII site B ";
+  reaction_266 is "Ca dissociating from CamR_Ca3_ABC_CamKII site C ";
+  reaction_267 is "Ca dissociating from CamR_Ca3_ABC_CamKII site B ";
+  reaction_268 is "Ca dissociating from CamR_Ca3_ABC_CamKII site A ";
+  reaction_269 is "Ca dissociating from CamR_Ca3_ABD_CamKII site D ";
+  reaction_270 is "Ca dissociating from CamR_Ca3_ABD_CamKII site B ";
+  reaction_271 is "Ca dissociating from CamR_Ca3_ABD_CamKII site A ";
+  reaction_272 is "Ca dissociating from CamR_Ca3_ACD_CamKII site D ";
+  reaction_273 is "Ca dissociating from CamR_Ca3_ACD_CamKII site C ";
+  reaction_274 is "Ca dissociating from CamR_Ca3_ACD_CamKII site A ";
+  reaction_275 is "Ca dissociating from CamR_Ca3_BCD_CamKII site D ";
+  reaction_276 is "Ca dissociating from CamR_Ca3_BCD_CamKII site C ";
+  reaction_277 is "Ca dissociating from CamR_Ca3_BCD_CamKII site B ";
+  reaction_278 is "Ca binding to CamR_Ca3_BCD_CamKII site A ";
+  reaction_279 is "Ca binding to CamR_Ca3_ACD_CamKII site B ";
+  reaction_280 is "Ca binding to CamR_Ca3_ABD_CamKII site C ";
+  reaction_281 is "Ca binding to CamR_Ca3_ABC_CamKII site D ";
+  reaction_282 is "Ca dissociating from CamR_Ca4_ABCD_CamKII site A ";
+  reaction_283 is "Ca dissociating from CamR_Ca4_ABCD_CamKII site B ";
+  reaction_284 is "Ca dissociating from CamR_Ca4_ABCD_CamKII site C ";
+  reaction_285 is "Ca dissociating from CamR_Ca4_ABCD_CamKII site D ";
+  reaction_286 is "Ca binding to CamR_PP2B site A ";
+  reaction_287 is "Ca binding to CamR_PP2B site B ";
+  reaction_288 is "Ca binding to CamR_PP2B site C ";
+  reaction_289 is "Ca binding to CamR_PP2B site D ";
+  reaction_290 is "Ca dissociating from CamR_Ca1_A_PP2B site A ";
+  reaction_291 is "Ca dissociating from CamR_Ca1_B_PP2B site B ";
+  reaction_292 is "Ca dissociating from CamR_Ca1_C_PP2B site C ";
+  reaction_293 is "Ca dissociating from CamR_Ca1_D_PP2B site D ";
+  reaction_294 is "Ca binding to CamR_Ca1_A_PP2B site B ";
+  reaction_295 is "Ca binding to CamR_Ca1_A_PP2B site C ";
+  reaction_296 is "Ca binding to CamR_Ca1_A_PP2B site D ";
+  reaction_297 is "Ca binding to CamR_Ca1_B_PP2B site A ";
+  reaction_298 is "Ca binding to CamR_Ca1_B_PP2B site C ";
+  reaction_299 is "Ca binding to CamR_Ca1_B_PP2B site D ";
+  reaction_300 is "Ca binding to CamR_Ca1_C_PP2B site A ";
+  reaction_301 is "Ca binding to CamR_Ca1_C_PP2B site B ";
+  reaction_302 is "Ca binding to CamR_Ca1_C_PP2B site D ";
+  reaction_303 is "Ca binding to CamR_Ca1_D_PP2B site A ";
+  reaction_304 is "Ca binding to CamR_Ca1_D_PP2B site B ";
+  reaction_305 is "Ca binding to CamR_Ca1_D_PP2B site C ";
+  reaction_306 is "Ca dissociating from CamR_Ca2_AB_PP2B site A ";
+  reaction_307 is "Ca dissociating from CamR_Ca2_AB_PP2B site B ";
+  reaction_308 is "Ca dissociating from CamR_Ca2_AC_PP2B site A ";
+  reaction_309 is "Ca dissociating from CamR_Ca2_AC_PP2B site C ";
+  reaction_310 is "Ca dissociating from CamR_Ca2_AD_PP2B site A ";
+  reaction_311 is "Ca dissociating from CamR_Ca2_AD_PP2B site D ";
+  reaction_312 is "Ca dissociating from CamR_Ca2_BC_PP2B site B ";
+  reaction_313 is "Ca dissociating from CamR_Ca2_BC_PP2B site C ";
+  reaction_314 is "Ca dissociating from CamR_Ca2_BD_PP2B site B ";
+  reaction_315 is "Ca dissociating from CamR_Ca2_BD_PP2B site D ";
+  reaction_316 is "Ca dissociating from CamR_Ca2_CD_PP2B site C ";
+  reaction_317 is "Ca dissociating from CamR_Ca2_CD_PP2B site D ";
+  reaction_318 is "Ca binding to CamR_Ca2_AB_PP2B site C ";
+  reaction_319 is "Ca binding to CamR_Ca2_AB_PP2B site D ";
+  reaction_320 is "Ca binding to CamR_Ca2_AC_PP2B site B ";
+  reaction_321 is "Ca binding to CamR_Ca2_AC_PP2B site D ";
+  reaction_322 is "Ca binding to CamR_Ca2_AD_PP2B site B ";
+  reaction_323 is "Ca binding to CamR_Ca2_AD_PP2B site C ";
+  reaction_324 is "Ca binding to CamR_Ca2_BC_PP2B site A ";
+  reaction_325 is "Ca binding to CamR_Ca2_BC_PP2B site D ";
+  reaction_326 is "Ca binding to CamR_Ca2_BD_PP2B site A ";
+  reaction_327 is "Ca binding to CamR_Ca2_BD_PP2B site C ";
+  reaction_328 is "Ca binding to CamR_Ca2_CD_PP2B site A ";
+  reaction_329 is "Ca binding to CamR_Ca2_CD_PP2B site B ";
+  reaction_330 is "Ca dissociating from CamR_Ca3_ABC_PP2B site A ";
+  reaction_331 is "Ca dissociating from CamR_Ca3_ABC_PP2B site B ";
+  reaction_332 is "Ca dissociating from CamR_Ca3_ABC_PP2B site C ";
+  reaction_333 is "Ca dissociating from CamR_Ca3_ABD_PP2B site A ";
+  reaction_334 is "Ca dissociating from CamR_Ca3_ABD_PP2B site B ";
+  reaction_335 is "Ca dissociating from CamR_Ca3_ABD_PP2B site D ";
+  reaction_336 is "Ca dissociating from CamR_Ca3_ACD_PP2B site A ";
+  reaction_337 is "Ca dissociating from CamR_Ca3_ACD_PP2B site C ";
+  reaction_338 is "Ca dissociating from CamR_Ca3_ACD_PP2B site D ";
+  reaction_339 is "Ca dissociating from CamR_Ca3_BCD_PP2B site B ";
+  reaction_340 is "Ca dissociating from CamR_Ca3_BCD_PP2B site C ";
+  reaction_341 is "Ca dissociating from CamR_Ca3_BCD_PP2B site D ";
+  reaction_342 is "Ca binding to CamR_Ca3_ABC_PP2B site D ";
+  reaction_343 is "Ca binding to CamR_Ca3_ABD_PP2B site C ";
+  reaction_344 is "Ca binding to CamR_Ca3_ACD_PP2B site B ";
+  reaction_345 is "Ca binding to CamR_Ca3_BCD_PP2B site A ";
+  reaction_346 is "Ca dissociating from CamR_Ca4_ABCD_PP2B site A ";
+  reaction_347 is "Ca dissociating from CamR_Ca4_ABCD_PP2B site B ";
+  reaction_348 is "Ca dissociating from CamR_Ca4_ABCD_PP2B site C ";
+  reaction_349 is "Ca dissociating from CamR_Ca4_ABCD_PP2B site D ";
+  reaction_350 is "Ca dissociating from CamR_Ca1_CamKII site B ";
+  reaction_351 is "Ca dissociating from CamT_Ca3_ABC site C ";
+  reaction_352 is "CamR_CaMKII Phosphorylation ";
+  reaction_353 is "CamR_Ca1_A_CaMKII phosphorylation   ";
+  reaction_354 is "CamR_Ca1_B_CaMKII Phosphorylation  ";
+  reaction_355 is "CamR_Ca1_C_CaMKII phosphorylation   ";
+  reaction_356 is "CamR_Ca1_D_CaMKII phosphorylation   ";
+  reaction_357 is "CamR_Ca2_AB_CaMKII phosphorylation   ";
+  reaction_358 is "CamR_Ca2_AC_CaMKII phosphorylation   ";
+  reaction_359 is "CamR_Ca2_AD_CaMKII phosphorylation   ";
+  reaction_360 is "CamR_Ca2_BC_CaMKII phosphorylation   ";
+  reaction_361 is "CamR_Ca2_BD_CaMKII phosphorylation   ";
+  reaction_362 is "CamR_Ca2_CD_CaMKII phosphorylation   ";
+  reaction_363 is "CamR_Ca3_ABC_CaMKII phosphorylation   ";
+  reaction_364 is "CamR_Ca3_ABD_CaMKII phosphorylation   ";
+  reaction_365 is "CamR_Ca3_ACD_CaMKII phosphorylation   ";
+  reaction_366 is "CamR_Ca3_BCD_CaMKII phosphorylation   ";
+  reaction_367 is "CamR_Ca4_ABCD_CaMKII phosphorylation   ";
+  reaction_368 is "CaMKIIp binding to CamR ";
+  reaction_369 is "CaMKIIp dissociating from CamR_CaMKIIp ";
+  reaction_370 is "CaMKIIp binding to CamR_Ca1_A ";
+  reaction_371 is "CaMKIIp dissociating from CamR_Ca1_A_CaMKIIp ";
+  reaction_372 is "CaMKIIp binding to CamR_Ca1_B ";
+  reaction_373 is "CaMKIIp dissociating from CamR_Ca1_B_CaMKIIp ";
+  reaction_374 is "CaMKIIp binding to CamR_Ca1_C ";
+  reaction_375 is "CaMKIIp dissociating from CamR_Ca1_C_CaMKIIp ";
+  reaction_376 is "CaMKIIp binding to CamR_Ca1_D ";
+  reaction_377 is "CaMKIIp dissociating from CamR_Ca1_D_CaMKIIp ";
+  reaction_378 is "CaMKIIp binding to CamR_Ca2_AB ";
+  reaction_379 is "CaMKIIp dissociating from CamR_Ca2_AB_CaMKIIp ";
+  reaction_380 is "CaMKIIp binding to CamR_Ca2_AC ";
+  reaction_381 is "CaMKIIp dissociating from CamR_Ca2_AC_CaMKIIp ";
+  reaction_382 is "CaMKIIp binding to CamR_Ca2_AD ";
+  reaction_383 is "CaMKIIp dissociating from CamR_Ca2_AD_CaMKIIp ";
+  reaction_384 is "CaMKIIp binding to CamR_Ca2_BC ";
+  reaction_385 is "CaMKIIp dissociating from CamR_Ca2_BC_CaMKIIp ";
+  reaction_386 is "CaMKIIp binding to CamR_Ca2_BD ";
+  reaction_387 is "CaMKIIp dissociating from CamR_Ca2_BD_CaMKIIp ";
+  reaction_388 is "CaMKIIp binding to CamR_Ca2_CD ";
+  reaction_389 is "CaMKIIp dissociating from CamR_Ca2_CD_CaMKIIp ";
+  reaction_390 is "CaMKIIp binding to CamR_Ca3_ABC ";
+  reaction_391 is "CaMKIIp dissociating from CamR_Ca3_ABC_CaMKIIp ";
+  reaction_392 is "CaMKIIp binding to CamR_Ca3_ABD ";
+  reaction_393 is "CaMKIIp dissociating from CamR_Ca3_ABD_CaMKIIp ";
+  reaction_394 is "CaMKIIp binding to CamR_Ca3_ACD ";
+  reaction_395 is "CaMKIIp dissociating from CamR_Ca3_ACD_CaMKIIp ";
+  reaction_396 is "CaMKIIp binding to CamR_Ca3_BCD ";
+  reaction_397 is "CaMKIIp dissociating from CamR_Ca3_BCD_CaMKIIp ";
+  reaction_398 is "CaMKIIp binding to CamR_Ca4_ABCD ";
+  reaction_399 is "CaMKIIp dissociating from CamR_Ca4_ABCD_CaMKIIp ";
+  reaction_504 is "Ca binding to CamR_CaMKIIp site A ";
+  reaction_505 is "Ca binding to CamR_CaMKIIp site B ";
+  reaction_506 is "Ca binding to CamR_CaMKIIp site C ";
+  reaction_507 is "Ca binding to CamR_CaMKIIp site D ";
+  reaction_508 is "Ca dissociating from CamR_Ca1_A_CaMKIIp site A ";
+  reaction_567 is "Ca dissociating from CamR_Ca1_B_CaMKIIp site B ";
+  reaction_509 is "Ca dissociating from CamR_Ca1_C_CaMKIIp site C ";
+  reaction_510 is "Ca dissociating from CamR_Ca1_D_CaMKIIp site D ";
+  reaction_511 is "Ca binding to CamR_Ca1_A_CaMKIIp site B ";
+  reaction_512 is "Ca binding to CamR_Ca1_A_CaMKIIp site C ";
+  reaction_513 is "Ca binding to CamR_Ca1_A_CaMKIIp site D ";
+  reaction_514 is "Ca binding to CamR_Ca1_B_CaMKIIp site A ";
+  reaction_515 is "Ca binding to CamR_Ca1_B_CaMKIIp site C ";
+  reaction_516 is "Ca binding to CamR_Ca1_B_CaMKIIp site D ";
+  reaction_517 is "Ca binding to CamR_Ca1_C_CaMKIIp site A ";
+  reaction_518 is "Ca binding to CamR_Ca1_C_CaMKIIp site B ";
+  reaction_519 is "Ca binding to CamR_Ca1_C_CaMKIIp site D ";
+  reaction_520 is "Ca binding to CamR_Ca1_D_CaMKIIp site A ";
+  reaction_521 is "Ca binding to CamR_Ca1_D_CaMKIIp site B ";
+  reaction_522 is "Ca binding to CamR_Ca1_D_CaMKIIp site C ";
+  reaction_523 is "Ca dissociating from CamR_Ca2_AB_CaMKIIp site A ";
+  reaction_524 is "Ca dissociating from CamR_Ca2_AB_CaMKIIp site B ";
+  reaction_525 is "Ca dissociating from CamR_Ca2_AC_CaMKIIp site A ";
+  reaction_526 is "Ca dissociating from CamR_Ca2_AC_CaMKIIp site C ";
+  reaction_527 is "Ca dissociating from CamR_Ca2_AD_CaMKIIp site A ";
+  reaction_528 is "Ca dissociating from CamR_Ca2_AD_CaMKIIp site D ";
+  reaction_529 is "Ca dissociating from CamR_Ca2_BC_CaMKIIp site B ";
+  reaction_530 is "Ca dissociating from CamR_Ca2_BC_CaMKIIp site C ";
+  reaction_531 is "Ca dissociating from CamR_Ca2_BD_CaMKIIp site B ";
+  reaction_532 is "Ca dissociating from CamR_Ca2_BD_CaMKIIp site D ";
+  reaction_533 is "Ca dissociating from CamR_Ca2_CD_CaMKIIp site C ";
+  reaction_534 is "Ca dissociating from CamR_Ca2_CD_CaMKIIp site D ";
+  reaction_535 is "Ca binding to CamR_Ca2_AB_CaMKIIp site C ";
+  reaction_536 is "Ca binding to CamR_Ca2_AB_CaMKIIp site D ";
+  reaction_537 is "Ca binding to CamR_Ca2_AC_CaMKIIp site B ";
+  reaction_538 is "Ca binding to CamR_Ca2_AC_CaMKIIp site D ";
+  reaction_539 is "Ca binding to CamR_Ca2_AD_CaMKIIp site B ";
+  reaction_540 is "Ca binding to CamR_Ca2_AD_CaMKIIp site C ";
+  reaction_541 is "Ca binding to CamR_Ca2_BC_CaMKIIp site A ";
+  reaction_542 is "Ca binding to CamR_Ca2_BC_CaMKIIp site D ";
+  reaction_543 is "Ca binding to CamR_Ca2_BD_CaMKIIp site A ";
+  reaction_544 is "Ca binding to CamR_Ca2_BD_CaMKIIp site C ";
+  reaction_545 is "Ca binding to CamR_Ca2_CD_CaMKIIp site A ";
+  reaction_546 is "Ca binding to CamR_Ca2_CD_CaMKIIp site B ";
+  reaction_547 is "Ca dissociating from CamR_Ca3_ABC_CaMKIIp site C ";
+  reaction_548 is "Ca dissociating from CamR_Ca3_ABC_CaMKIIp site B ";
+  reaction_549 is "Ca dissociating from CamR_Ca3_ABC_CaMKIIp site A ";
+  reaction_550 is "Ca dissociating from CamR_Ca3_ABD_CaMKIIp site D ";
+  reaction_551 is "Ca dissociating from CamR_Ca3_ABD_CaMKIIp site B ";
+  reaction_552 is "Ca dissociating from CamR_Ca3_ABD_CaMKIIp site A ";
+  reaction_553 is "Ca dissociating from CamR_Ca3_ACD_CaMKIIp site D ";
+  reaction_554 is "Ca dissociating from CamR_Ca3_ACD_CaMKIIp site C ";
+  reaction_555 is "Ca dissociating from CamR_Ca3_ACD_CaMKIIp site A ";
+  reaction_556 is "Ca dissociating from CamR_Ca3_BCD_CaMKIIp site D ";
+  reaction_557 is "Ca dissociating from CamR_Ca3_BCD_CaMKIIp site C ";
+  reaction_558 is "Ca dissociating from CamR_Ca3_BCD_CaMKIIp site B ";
+  reaction_559 is "Ca binding to CamR_Ca3_BCD_CaMKIIp site A ";
+  reaction_560 is "Ca binding to CamR_Ca3_ACD_CaMKIIp site B ";
+  reaction_561 is "Ca binding to CamR_Ca3_ABD_CaMKIIp site C ";
+  reaction_562 is "Ca binding to CamR_Ca3_ABC_CaMKIIp site D ";
+  reaction_563 is "Ca dissociating from CamR_Ca4_ABCD_CaMKIIp site A ";
+  reaction_564 is "Ca dissociating from CamR_Ca4_ABCD_CaMKIIp site B ";
+  reaction_565 is "Ca dissociating from CamR_Ca4_ABCD_CaMKIIp site C ";
+  reaction_566 is "Ca dissociating from CamR_Ca4_ABCD_CaMKIIp site D ";
+  reaction_400 is "D binding to PKA ";
+  reaction_401 is "D dissociating from D_PKA  ";
+  reaction_402 is "Dp dissociating from D_PKA ";
+  reaction_403 is "Dp binding to CamR_PP2B ";
+  reaction_404 is "Dp dissociating from Dp_CamR_PP2B ";
+  reaction_405 is "D dissociating from Dp_CamR_PP2B ";
+  reaction_406 is "Dp binding to CamR_Ca1_A_PP2B ";
+  reaction_407 is "Dp dissociating from Dp_CamR_Ca1_A_PP2B ";
+  reaction_408 is "D dissociating from Dp_CamR_Ca1_A_PP2B ";
+  reaction_409 is "Dp binding to CamR_Ca1_B_PP2B ";
+  reaction_410 is "Dp dissociating from Dp_CamR_Ca1_B_PP2B ";
+  reaction_411 is "D dissociating from Dp_CamR_Ca1_B_PP2B ";
+  reaction_412 is "Dp binding to CamR_Ca1_C_PP2B ";
+  reaction_413 is "Dp dissociating from Dp_CamR_Ca1_C_PP2B ";
+  reaction_414 is "D dissociating from Dp_CamR_Ca1_C_PP2B ";
+  reaction_415 is "Dp binding to CamR_Ca1_D_PP2B";
+  reaction_416 is "Dp dissociating from Dp_CamR_Ca1_D_PP2B ";
+  reaction_417 is "D dissociating from Dp_CamR_Ca1_D_PP2B ";
+  reaction_418 is "Dp binding to CamR_Ca2_AB_PP2B ";
+  reaction_419 is "Dp dissociating from Dp_CamR_Ca2_AB_PP2B ";
+  reaction_420 is "D dissociating from Dp_CamR_Ca2_AB_PP2B ";
+  reaction_421 is "Dp binding to CamR_Ca2_AC_PP2B ";
+  reaction_422 is "Dp dissociating from Dp_CamR_Ca2_AC_PP2B ";
+  reaction_423 is "D dissociating from Dp_CamR_Ca2_AC_PP2B ";
+  reaction_424 is "Dp binding to CamR_Ca2_AD_PP2B ";
+  reaction_425 is "Dp dissociating from Dp_CamR_Ca2_AD_PP2B ";
+  reaction_426 is "D dissociating from Dp_CamR_Ca2_AD_PP2B ";
+  reaction_427 is "Dp binding to CamR_Ca2_BC_PP2B ";
+  reaction_428 is "Dp dissociating from Dp_CamR_Ca2_BC_PP2B ";
+  reaction_429 is "D dissociating from Dp_CamR_Ca2_BC_PP2B ";
+  reaction_430 is "Dp binding to CamR_Ca2_BD_PP2B ";
+  reaction_431 is "Dp dissociating from Dp_CamR_Ca2_BD_PP2B ";
+  reaction_432 is "D dissociating from Dp_CamR_Ca2_BD_PP2B ";
+  reaction_433 is "Dp binding to CamR_Ca2_CD_PP2B ";
+  reaction_434 is "Dp dissociating from Dp_CamR_Ca2_CD_PP2B ";
+  reaction_435 is "D dissociating from Dp_CamR_Ca2_CD_PP2B ";
+  reaction_436 is "Dp binding to CamR_Ca3_ABC_PP2B ";
+  reaction_437 is "Dp dissociating from Dp_CamR_Ca3_ABC_PP2B ";
+  reaction_438 is "D dissociating from Dp_CamR_Ca3_ABC_PP2B ";
+  reaction_439 is "Dp binding to CamR_Ca3_ABD_PP2B ";
+  reaction_440 is "Dp dissociating from Dp_CamR_Ca3_ABD_PP2B ";
+  reaction_441 is "D dissociating from Dp_CamR_Ca3_ABD_PP2B ";
+  reaction_442 is "Dp binding to CamR_Ca3_ACD_PP2B ";
+  reaction_443 is "Dp dissociating from Dp_CamR_Ca3_ACD_PP2B ";
+  reaction_444 is "D dissociating from Dp_CamR_Ca3_ACD_PP2B ";
+  reaction_445 is "Dp binding to CamR_Ca3_BCD_PP2B ";
+  reaction_446 is "Dp dissociating from Dp_CamR_Ca3_BCD_PP2B ";
+  reaction_447 is "D dissociating from Dp_CamR_Ca3_BCD_PP2B ";
+  reaction_448 is "Dp binding to CamR_Ca4_ABCD_PP2B ";
+  reaction_449 is "Dp dissociating from Dp_CamR_Ca4_ABCD_PP2B ";
+  reaction_450 is "D dissociating from Dp_CamR_Ca4_ABCD_PP2B ";
+  reaction_451 is "Dp binding to PP1a ";
+  reaction_452 is "Dp dissociating from PP1a ";
+  reaction_453 is "CaMKIIp binding to PP1a ";
+  reaction_454 is "CaMKIIp dissociating from CaMKIIp_PP1a ";
+  reaction_455 is "CaMKII dissociating from CaMKIIp_PP1a ";
+  reaction_456 is "CamR_CaMKIIp binding to PP1a ";
+  reaction_457 is "CamR_CaMKIIp dissociating from CamR_CaMKIIp_PP1a ";
+  reaction_458 is "CamR_CaMKIIp_PP1a dephosphorylation";
+  reaction_459 is "CamR_Ca1_A_CaMKIIp binding to PP1a ";
+  reaction_460 is "CamR_Ca1_A_CaMKIIp dissociating from CamR_Ca1_A_CaMKIIp_PP1a ";
+  reaction_461 is "CamR_Ca1_A_CaMKIIp_PP1a dephosphorylation ";
+  reaction_462 is "CamR_Ca1_B_CaMKIIp binding to PP1a ";
+  reaction_463 is "CamR_Ca1_B_CaMKIIp dissociating from CamR_Ca1_B_CaMKIIp_PP1a ";
+  reaction_464 is "CamR_Ca1_B_CaMKIIp_PP1a dephosphorylation ";
+  reaction_465 is "CamR_Ca1_C_CaMKIIp binding to PP1a ";
+  reaction_466 is "CamR_Ca1_C_CaMKIIp dissociating from CamR_Ca1_C_CaMKIIp_PP1a ";
+  reaction_467 is "CamR_Ca1_C_CaMKIIp_PP1a dephosphorylation";
+  reaction_468 is "CamR_Ca1_D_CaMKIIp binding to PP1a ";
+  reaction_469 is "CamR_Ca1_D_CaMKIIp dissociating from CamR_Ca1_D_CaMKIIp_PP1a ";
+  reaction_470 is "CamR_Ca1_D_CaMKIIp_PP1a dephosphorylation";
+  reaction_471 is "CamR_Ca2_AB_CaMKIIp binding to PP1a ";
+  reaction_472 is "CamR_Ca2_AB_CaMKIIp dissociating from CamR_Ca2_AB_CaMKIIp_PP1a ";
+  reaction_473 is "CamR_Ca2_AB_CaMKIIp_PP1a dephosphorylation";
+  reaction_474 is "CamR_Ca2_AC_CaMKIIp binding to PP1a ";
+  reaction_475 is "CamR_Ca2_AC_CaMKIIp dissociating from CamR_Ca2_AC_CaMKIIp_PP1a ";
+  reaction_476 is "CamR_Ca2_AC_CaMKIIp_PP1a dephosphorylation";
+  reaction_477 is "CamR_Ca2_AD_CaMKIIp binding to PP1a ";
+  reaction_478 is "CamR_Ca2_AD_CaMKIIp dissociating from CamR_Ca2_AD_CaMKIIp_PP1a ";
+  reaction_479 is "CamR_Ca2_AD_CaMKIIp_PP1a dephosphorylation";
+  reaction_480 is "CamR_Ca2_BC_CaMKIIp binding to PP1a ";
+  reaction_481 is "CamR_Ca2_BC_CaMKIIp dissociating from CamR_Ca2_BC_CaMKIIp_PP1a ";
+  reaction_482 is "CamR_Ca2_BC_CaMKIIp_PP1a dephosphorylation";
+  reaction_483 is "CamR_Ca2_BD_CaMKIIp binding to PP1a ";
+  reaction_484 is "CamR_Ca2_BD_CaMKIIp dissociating from CamR_Ca2_BD_CaMKIIp_PP1a ";
+  reaction_485 is "CamR_Ca2_BD_CaMKIIp_PP1a dephosphorylation";
+  reaction_486 is "CamR_Ca2_CD_CaMKIIp binding to PP1a ";
+  reaction_487 is "CamR_Ca2_CD_CaMKIIp dissociating from CamR_Ca2_CD_CaMKIIp_PP1a ";
+  reaction_488 is "CamR_Ca2_CD_CaMKIIp_PP1a dephosphorylation";
+  reaction_489 is "CamR_Ca3_ABC_CaMKIIp binding to PP1a ";
+  reaction_490 is "CamR_Ca3_ABC_CaMKIIp dissociating from CamR_Ca3_ABC_CaMKIIp_PP1a ";
+  reaction_491 is "CamR_Ca3_ABC_CaMKIIp_PP1a dephosphorylation";
+  reaction_492 is "CamR_Ca3_ABD_CaMKIIp binding to PP1a ";
+  reaction_493 is "CamR_Ca3_ABD_CaMKIIp dissociating from CamR_Ca3_ABD_CaMKIIp_PP1a ";
+  reaction_494 is "CamR_Ca3_ABD_CaMKIIp_PP1a dephosphorylation";
+  reaction_495 is "CamR_Ca3_ACD_CaMKIIp binding to PP1a ";
+  reaction_496 is "CamR_Ca3_ACD_CaMKIIp dissociating from CamR_Ca3_ACD_CaMKIIp_PP1a ";
+  reaction_497 is "CamR_Ca3_ACD_CaMKIIp_PP1a dephosphorylation";
+  reaction_498 is "CamR_Ca3_BCD_CaMKIIp binding to PP1a ";
+  reaction_499 is "CamR_Ca3_BCD_CaMKIIp dissociating from CamR_Ca3_BCD_CaMKIIp_PP1a ";
+  reaction_500 is "CamR_Ca3_BCD_CaMKIIp_PP1a dephosphorylation";
+  reaction_501 is "CamR_Ca4_ABCD_CaMKIIp binding to PP1a ";
+  reaction_502 is "CamR_Ca4_ABCD_CaMKIIp dissociating from CamR_Ca4_ABCD_CaMKIIp_PP1a ";
+  reaction_503 is "CamR_Ca4_ABCD_CaMKIIp_PP1a dephosphorylation";
+  PP2B_binding_to_CamR_Ca2_AC is "PP2B binding to CamR_Ca2_AC";
+  Ca_binding_to_CBP_fast is "Ca binding to CBP_fast";
+  Ca_dissociating_from_CBP_fast_Ca is "Ca dissociating from CBP_fast_Ca";
+  Ca_binding_to_CBP_media is "Ca binding to CBP_media";
+  Ca_dissociating_from_CBP_media_Ca is "Ca dissociating from CBP_media_Ca";
+  Ca_binding_to_PP2Bi is "Ca binding to PP2Bi";
+  Ca_binding_to_PP2Bi_Ca1 is "Ca binding to PP2Bi_Ca1";
+  Ca_binding_to_PP2Bi_Ca2 is "Ca binding to PP2Bi_Ca2";
+  Ca_binding_to_PP2Bi_Ca3 is "Ca binding to PP2Bi_Ca3";
+  Ca_dissociating_from_PP2Bi_Ca2 is "Ca dissociating from PP2Bi_Ca2";
+  Ca_dissociating_from_PP2Bi_Ca3 is "Ca dissociating from PP2Bi_Ca3";
+  Ca_dissociating_from_PP2B is "Ca dissociating from PP2B";
+  Ca_dissociating_from_PP2Bi_Ca1 is "Ca dissociating from PP2Bi_Ca1";
+  reaction_197 is "Ca_in";
+
+  // CV terms:
+  Spine description "http://identifiers.org/pubmed/11826272"
+  Spine identity "urn:miriam:sbo:SBO%3A0000290",
+                 "http://identifiers.org/fma/FMA:67488"
+  Spine hypernym "http://identifiers.org/go/GO:0043197"
+  CamR hypernym "http://identifiers.org/uniprot/P62158"
+  CamT hypernym "http://identifiers.org/uniprot/P62158"
+  Ca identity "http://identifiers.org/chebi/CHEBI:29108"
+  CaMKII hypernym "http://identifiers.org/uniprot/Q9UQM7"
+  PP2B hypernym "urn:miriam:reactome:R-HSA-140202"
+  PP2B part "http://identifiers.org/uniprot/Q08209",
+            "http://identifiers.org/uniprot/P16298",
+            "http://identifiers.org/uniprot/P48454"
+  D hypernym "http://identifiers.org/uniprot/Q9UD71"
+  PKA part "http://identifiers.org/uniprot/P17612"
+  PP1a hypernym "http://identifiers.org/uniprot/P49593"
+  CBPfast property "http://identifiers.org/go/GO:0048306"
+  CBPmedia property "http://identifiers.org/go/GO:0048306"
+  CBPslow property "http://identifiers.org/go/GO:0048306"
+  CBPvslow property "http://identifiers.org/go/GO:0048306"
+  CBPfastCa part "http://identifiers.org/chebi/CHEBI:29108"
+  CBPfastCa property "http://identifiers.org/go/GO:0048306"
+  CBPmediaCa part "http://identifiers.org/chebi/CHEBI:29108"
+  CBPmediaCa property "http://identifiers.org/go/GO:0048306"
+  CBPslowCa part "http://identifiers.org/chebi/CHEBI:29108"
+  CBPslowCa property "http://identifiers.org/go/GO:0048306"
+  CBPvslowCa part "http://identifiers.org/chebi/CHEBI:29108"
+  CBPvslowCa property "http://identifiers.org/go/GO:0048306"
+  CamR_Ca1_A part "http://identifiers.org/chebi/CHEBI:29108",
+                  "http://identifiers.org/uniprot/P62158"
+  CamR_Ca2_AB part "http://identifiers.org/chebi/CHEBI:29108",
+                   "http://identifiers.org/uniprot/P62158"
+  CamR_Ca3_ABC part "http://identifiers.org/chebi/CHEBI:29108",
+                    "http://identifiers.org/uniprot/P62158"
+  CamR_Ca4_ABCD part "http://identifiers.org/chebi/CHEBI:29108",
+                     "http://identifiers.org/uniprot/P62158"
+  CamT_Ca1_A part "http://identifiers.org/chebi/CHEBI:29108",
+                  "http://identifiers.org/uniprot/P62158"
+  CamT_Ca2_AB part "http://identifiers.org/chebi/CHEBI:29108",
+                   "http://identifiers.org/uniprot/P62158"
+  CamT_Ca2_AD part "http://identifiers.org/chebi/CHEBI:29108",
+                   "http://identifiers.org/uniprot/P62158"
+  CamT_Ca3_ABC part "http://identifiers.org/chebi/CHEBI:29108",
+                    "http://identifiers.org/uniprot/P62158"
+  CamT_Ca4_ABCD part "http://identifiers.org/chebi/CHEBI:29108",
+                     "http://identifiers.org/uniprot/P62158"
+  CamR_CaMKII part "http://identifiers.org/chebi/CHEBI:29108",
+                   "http://identifiers.org/uniprot/Q9UQM7"
+  CamR_Ca1_A_CaMKII part "http://identifiers.org/chebi/CHEBI:29108",
+                         "http://identifiers.org/uniprot/Q9UQM7",
+                         "http://identifiers.org/uniprot/P62158"
+  CamR_Ca1_B_CaMKII part "http://identifiers.org/chebi/CHEBI:29108",
+                         "http://identifiers.org/uniprot/Q9UQM7",
+                         "http://identifiers.org/uniprot/P62158"
+  CamR_Ca2_AB_CaMKII part "http://identifiers.org/chebi/CHEBI:29108",
+                          "http://identifiers.org/uniprot/Q9UQM7",
+                          "http://identifiers.org/uniprot/P62158"
+  CamR_Ca3_ABC_CaMKII part "http://identifiers.org/chebi/CHEBI:29108",
+                           "http://identifiers.org/uniprot/Q9UQM7",
+                           "http://identifiers.org/uniprot/P62158"
+  CamR_Ca4_ABCD_CaMKII part "http://identifiers.org/chebi/CHEBI:29108",
+                            "http://identifiers.org/uniprot/Q9UQM7",
+                            "http://identifiers.org/uniprot/P62158"
+  CamR_PP2B part "http://identifiers.org/uniprot/P62158",
+                 "urn:miriam:reactome:R-HSA-140202"
+  CamR_Ca1_A_PP2B part "http://identifiers.org/chebi/CHEBI:29108",
+                       "http://identifiers.org/uniprot/P62158",
+                       "urn:miriam:reactome:R-HSA-140202"
+  CamR_Ca2_AB_PP2B part "http://identifiers.org/chebi/CHEBI:29108",
+                        "http://identifiers.org/uniprot/P62158",
+                        "urn:miriam:reactome:R-HSA-140202"
+  CamR_Ca3_ABC_PP2B part "http://identifiers.org/chebi/CHEBI:29108",
+                         "http://identifiers.org/uniprot/P62158",
+                         "urn:miriam:reactome:R-HSA-140202"
+  CamR_Ca4_ABCD_PP2B part "http://identifiers.org/chebi/CHEBI:29108",
+                          "http://identifiers.org/uniprot/P62158",
+                          "urn:miriam:reactome:R-HSA-140202"
+  CaMKIIp property "urn:miriam:kegg:C00562"
+  CaMKIIp hypernym "http://identifiers.org/uniprot/Q9UQM7"
+  CamR_CaMKIIp property "urn:miriam:kegg:C00562"
+  CamR_CaMKIIp part "http://identifiers.org/uniprot/Q9UQM7",
+                    "http://identifiers.org/uniprot/P62158"
+  CamR_Ca1_A_CaMKIIp property "urn:miriam:kegg:C00562"
+  CamR_Ca1_A_CaMKIIp part "http://identifiers.org/chebi/CHEBI:29108",
+                          "http://identifiers.org/uniprot/Q9UQM7",
+                          "http://identifiers.org/uniprot/P62158"
+  CamR_Ca2_AB_CaMKIIp property "urn:miriam:kegg:C00562"
+  CamR_Ca2_AB_CaMKIIp part "http://identifiers.org/chebi/CHEBI:29108",
+                           "http://identifiers.org/uniprot/Q9UQM7",
+                           "http://identifiers.org/uniprot/P62158"
+  CamR_Ca4_ABCD_CaMKIIp property "urn:miriam:kegg:C00562"
+  CamR_Ca4_ABCD_CaMKIIp part "http://identifiers.org/chebi/CHEBI:29108",
+                             "http://identifiers.org/uniprot/Q9UQM7",
+                             "http://identifiers.org/uniprot/P62158"
+  Dp property "urn:miriam:kegg:C00562"
+  Dp hypernym "http://identifiers.org/uniprot/Q9UD71"
+  D_PKA part "http://identifiers.org/uniprot/P17612",
+             "http://identifiers.org/uniprot/Q9UD71"
+  Dp_CamR_PP2B property "urn:miriam:kegg:C00562"
+  Dp_CamR_PP2B part "http://identifiers.org/uniprot/Q9UD71",
+                    "http://identifiers.org/uniprot/P62158",
+                    "urn:miriam:reactome:R-HSA-140202"
+  Dp_CamR_Ca1_A_PP2B property "urn:miriam:kegg:C00562"
+  Dp_CamR_Ca1_A_PP2B part "http://identifiers.org/chebi/CHEBI:29108",
+                          "http://identifiers.org/uniprot/Q9UD71"
+  Dp_CamR_Ca1_A_PP2B hypernym "http://identifiers.org/uniprot/P62158",
+                              "urn:miriam:reactome:R-HSA-140202"
+  Dp_CamR_Ca2_AB_PP2B property "urn:miriam:kegg:C00562"
+  Dp_CamR_Ca2_AB_PP2B part "http://identifiers.org/chebi/CHEBI:29108",
+                           "http://identifiers.org/uniprot/Q9UD71"
+  Dp_CamR_Ca2_AB_PP2B hypernym "http://identifiers.org/uniprot/P62158",
+                               "urn:miriam:reactome:R-HSA-140202"
+  Dp_CamR_Ca3_ABC_PP2B property "urn:miriam:kegg:C00562"
+  Dp_CamR_Ca3_ABC_PP2B part "http://identifiers.org/chebi/CHEBI:29108",
+                            "http://identifiers.org/uniprot/Q9UD71"
+  Dp_CamR_Ca3_ABC_PP2B hypernym "http://identifiers.org/uniprot/P62158",
+                                "urn:miriam:reactome:R-HSA-140202"
+  Dp_CamR_Ca4_ABCD_PP2B property "urn:miriam:kegg:C00562"
+  Dp_CamR_Ca4_ABCD_PP2B part "http://identifiers.org/chebi/CHEBI:29108",
+                             "http://identifiers.org/uniprot/Q9UD71",
+                             "http://identifiers.org/uniprot/P62158",
+                             "urn:miriam:reactome:R-HSA-140202"
+  PP1a_Dp property "urn:miriam:kegg:C00562"
+  PP1a_Dp part "http://identifiers.org/uniprot/Q9UD71",
+               "http://identifiers.org/uniprot/P49593"
+  CaMKIIp_PP1a property "urn:miriam:kegg:C00562"
+  CaMKIIp_PP1a part "http://identifiers.org/chebi/CHEBI:29108",
+                    "http://identifiers.org/uniprot/Q9UQM7",
+                    "http://identifiers.org/uniprot/P49593"
+  CamR_CaMKIIp_PP1a property "urn:miriam:kegg:C00562"
+  CamR_CaMKIIp_PP1a part "http://identifiers.org/uniprot/Q9UQM7",
+                         "http://identifiers.org/uniprot/P62158",
+                         "http://identifiers.org/uniprot/P49593"
+  CamR_Ca1_A_CaMKIIp_PP1a property "urn:miriam:kegg:C00562"
+  CamR_Ca1_A_CaMKIIp_PP1a part "http://identifiers.org/chebi/CHEBI:29108",
+                               "http://identifiers.org/uniprot/Q9UQM7",
+                               "http://identifiers.org/uniprot/P62158",
+                               "http://identifiers.org/uniprot/P49593"
+  CamR_Ca2_AB_CaMKIIp_PP1a property "urn:miriam:kegg:C00562"
+  CamR_Ca2_AB_CaMKIIp_PP1a part "http://identifiers.org/chebi/CHEBI:29108",
+                                "http://identifiers.org/uniprot/Q9UQM7",
+                                "http://identifiers.org/uniprot/P62158",
+                                "http://identifiers.org/uniprot/P49593"
+  CamR_Ca3_ABC_CaMKIIp_PP1a property "urn:miriam:kegg:C00562"
+  CamR_Ca3_ABC_CaMKIIp_PP1a part "http://identifiers.org/chebi/CHEBI:29108",
+                                 "http://identifiers.org/uniprot/Q9UQM7",
+                                 "http://identifiers.org/uniprot/P62158",
+                                 "http://identifiers.org/uniprot/P49593"
+  CamR_Ca4_ABCD_CaMKIIp_PP1a property "urn:miriam:kegg:C00562"
+  CamR_Ca4_ABCD_CaMKIIp_PP1a part "http://identifiers.org/chebi/CHEBI:29108",
+                                  "http://identifiers.org/uniprot/Q9UQM7",
+                                  "http://identifiers.org/uniprot/P62158",
+                                  "http://identifiers.org/uniprot/P49593"
+  PP2Bi part "http://identifiers.org/uniprot/Q08209",
+             "http://identifiers.org/uniprot/P16298",
+             "http://identifiers.org/uniprot/P48454",
+             "urn:miriam:reactome:R-HSA-140202"
+  PP2Bi_Ca1 part "http://identifiers.org/chebi/CHEBI:29108",
+                 "urn:miriam:reactome:R-HSA-140202"
+  CaMKII_total description "http://identifiers.org/pubmed/14657186"
+  D_total description "http://identifiers.org/doi/doi:10.1038/343369a0"
+  PKA_total description "http://identifiers.org/pubmed/7682336"
+  PP1_total description "http://identifiers.org/pubmed/6301829"
+  PP2B_total description "http://identifiers.org/pubmed/3542117"
+  CamR_total description "http://identifiers.org/pubmed/18669651"
+  CamT_total description "http://identifiers.org/pubmed/7174634"
+  Ca_pump hypernym "urn:miriam:sbo:SBO%3A0000179"
+  Ca_leak hypernym "urn:miriam:sbo:SBO%3A0000393"
+  CBPslow_Ca_on hypernym "urn:miriam:sbo:SBO%3A0000177"
+  CBPslow_Ca_off hypernym "urn:miriam:sbo:SBO%3A0000180"
+  CBPvslow_Ca_on hypernym "urn:miriam:sbo:SBO%3A0000177"
+  CBPvslow_Ca_off hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_0 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_1 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_2 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_3 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_4 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_5 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_6 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_7 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_8 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_9 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_10 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_11 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_12 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_13 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_14 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_15 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_16 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_17 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_18 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_19 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_20 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_21 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_22 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_23 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_24 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_25 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_26 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_27 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_28 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_29 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_30 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_31 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_32 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_33 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_34 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_35 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_36 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_37 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_38 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_39 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_40 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_41 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_42 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_43 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_44 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_45 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_46 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_47 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_48 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_49 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_50 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_51 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_52 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_53 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_54 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_55 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_56 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_57 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_58 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_59 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_60 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_61 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_62 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_63 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_64 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_65 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_66 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_67 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_68 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_69 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_70 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_71 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_72 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_73 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_74 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_75 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_76 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_77 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_78 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_79 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_80 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_81 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_82 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_83 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_84 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_85 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_86 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_87 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_88 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_89 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_90 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_91 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_92 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_93 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_94 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_95 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_96 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_97 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_98 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_99 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_100 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_101 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_102 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_103 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_104 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_105 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_106 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_107 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_108 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_109 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_110 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_111 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_112 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_113 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_114 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_115 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_116 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_117 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_118 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_119 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_120 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_121 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_122 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_123 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_124 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_125 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_126 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_127 hypernym "urn:miriam:sbo:SBO%3A0000181"
+  reaction_128 hypernym "urn:miriam:sbo:SBO%3A0000182"
+  reaction_129 hypernym "urn:miriam:sbo:SBO%3A0000183"
+  reaction_130 hypernym "urn:miriam:sbo:SBO%3A0000184"
+  reaction_131 hypernym "urn:miriam:sbo:SBO%3A0000185"
+  reaction_132 hypernym "urn:miriam:sbo:SBO%3A0000186"
+  reaction_133 hypernym "urn:miriam:sbo:SBO%3A0000187"
+  reaction_134 hypernym "urn:miriam:sbo:SBO%3A0000188"
+  reaction_135 hypernym "urn:miriam:sbo:SBO%3A0000189"
+  reaction_136 hypernym "urn:miriam:sbo:SBO%3A0000190"
+  reaction_137 hypernym "urn:miriam:sbo:SBO%3A0000191"
+  reaction_138 hypernym "urn:miriam:sbo:SBO%3A0000192"
+  reaction_139 hypernym "urn:miriam:sbo:SBO%3A0000193"
+  reaction_140 hypernym "urn:miriam:sbo:SBO%3A0000194"
+  reaction_141 hypernym "urn:miriam:sbo:SBO%3A0000195"
+  reaction_142 hypernym "urn:miriam:sbo:SBO%3A0000196"
+  reaction_143 hypernym "urn:miriam:sbo:SBO%3A0000197"
+  reaction_144 hypernym "urn:miriam:sbo:SBO%3A0000198"
+  reaction_145 hypernym "urn:miriam:sbo:SBO%3A0000199"
+  reaction_146 hypernym "urn:miriam:sbo:SBO%3A0000200"
+  reaction_147 hypernym "urn:miriam:sbo:SBO%3A0000201"
+  reaction_148 hypernym "urn:miriam:sbo:SBO%3A0000202"
+  reaction_149 hypernym "urn:miriam:sbo:SBO%3A0000203"
+  reaction_150 hypernym "urn:miriam:sbo:SBO%3A0000204"
+  reaction_151 hypernym "urn:miriam:sbo:SBO%3A0000205"
+  reaction_152 hypernym "urn:miriam:sbo:SBO%3A0000206"
+  reaction_153 hypernym "urn:miriam:sbo:SBO%3A0000207"
+  reaction_154 hypernym "urn:miriam:sbo:SBO%3A0000208"
+  reaction_155 hypernym "urn:miriam:sbo:SBO%3A0000209"
+  reaction_156 hypernym "urn:miriam:sbo:SBO%3A0000210"
+  reaction_157 hypernym "urn:miriam:sbo:SBO%3A0000211"
+  reaction_158 hypernym "urn:miriam:sbo:SBO%3A0000212"
+  reaction_159 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_160 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_161 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_162 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_163 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_164 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_165 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_166 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_167 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_168 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_169 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_170 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_171 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_172 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_173 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_174 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_175 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_176 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_177 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_178 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_179 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_180 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_181 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_182 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_183 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_184 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_185 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_186 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_187 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_188 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_189 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_190 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_191 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_192 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_193 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_194 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_195 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_196 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_198 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_199 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_200 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_201 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_202 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_203 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_204 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_205 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_206 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_207 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_208 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_209 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_210 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_211 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_212 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_213 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_214 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_215 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_216 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_217 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_218 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_219 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_220 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_221 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_222 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_223 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_224 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_225 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_226 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_227 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_228 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_229 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_230 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_231 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_232 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_233 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_234 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_235 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_236 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_237 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_238 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_239 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_240 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_241 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_242 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_243 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_244 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_245 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_246 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_247 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_248 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_249 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_250 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_251 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_252 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_253 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_254 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_255 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_256 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_257 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_258 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_259 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_260 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_261 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_262 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_263 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_264 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_265 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_266 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_267 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_268 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_269 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_270 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_271 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_272 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_273 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_274 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_275 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_276 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_277 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_278 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_279 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_280 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_281 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_282 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_283 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_284 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_285 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_286 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_287 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_288 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_289 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_290 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_291 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_292 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_293 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_294 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_295 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_296 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_297 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_298 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_299 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_300 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_301 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_302 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_303 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_304 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_305 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_306 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_307 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_308 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_309 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_310 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_311 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_312 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_313 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_314 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_315 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_316 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_317 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_318 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_319 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_320 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_321 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_322 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_323 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_324 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_325 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_326 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_327 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_328 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_329 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_330 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_331 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_332 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_333 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_334 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_335 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_336 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_337 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_338 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_339 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_340 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_341 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_342 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_343 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_344 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_345 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_346 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_347 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_348 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_349 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_350 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_351 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_352 hypernym "urn:miriam:sbo:SBO%3A0000216"
+  reaction_353 hypernym "urn:miriam:sbo:SBO%3A0000216"
+  reaction_354 hypernym "urn:miriam:sbo:SBO%3A0000216"
+  reaction_355 hypernym "urn:miriam:sbo:SBO%3A0000216"
+  reaction_356 hypernym "urn:miriam:sbo:SBO%3A0000216"
+  reaction_357 hypernym "urn:miriam:sbo:SBO%3A0000216"
+  reaction_358 hypernym "urn:miriam:sbo:SBO%3A0000216"
+  reaction_359 hypernym "urn:miriam:sbo:SBO%3A0000216"
+  reaction_360 hypernym "urn:miriam:sbo:SBO%3A0000216"
+  reaction_361 hypernym "urn:miriam:sbo:SBO%3A0000216"
+  reaction_362 hypernym "urn:miriam:sbo:SBO%3A0000216"
+  reaction_363 hypernym "urn:miriam:sbo:SBO%3A0000216"
+  reaction_364 hypernym "urn:miriam:sbo:SBO%3A0000216"
+  reaction_365 hypernym "urn:miriam:sbo:SBO%3A0000216"
+  reaction_366 hypernym "urn:miriam:sbo:SBO%3A0000216"
+  reaction_367 hypernym "urn:miriam:sbo:SBO%3A0000216"
+  reaction_368 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_369 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_370 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_371 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_372 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_373 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_374 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_375 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_376 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_377 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_378 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_379 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_380 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_381 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_382 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_383 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_384 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_385 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_386 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_387 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_388 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_389 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_390 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_391 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_392 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_393 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_394 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_395 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_396 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_397 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_398 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_399 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_504 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_505 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_506 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_507 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_508 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_567 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_509 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_510 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_511 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_512 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_513 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_514 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_515 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_516 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_517 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_518 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_519 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_520 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_521 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_522 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_523 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_524 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_525 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_526 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_527 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_528 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_529 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_530 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_531 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_532 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_533 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_534 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_535 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_536 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_537 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_538 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_539 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_540 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_541 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_542 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_543 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_544 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_545 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_546 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_547 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_548 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_549 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_550 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_551 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_552 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_553 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_554 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_555 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_556 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_557 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_558 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_559 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_560 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_561 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_562 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_563 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_564 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_565 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_566 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_400 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_401 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_402 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_403 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_404 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_405 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_406 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_407 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_408 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_409 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_410 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_411 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_412 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_413 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_414 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_415 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_416 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_417 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_418 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_419 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_420 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_421 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_422 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_423 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_424 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_425 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_426 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_427 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_428 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_429 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_430 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_431 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_432 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_433 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_434 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_435 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_436 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_437 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_438 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_439 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_440 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_441 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_442 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_443 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_444 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_445 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_446 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_447 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_448 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_449 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_450 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_451 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_452 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_453 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_454 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_455 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_456 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_457 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_458 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_459 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_460 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_461 hypernym "urn:miriam:sbo:SBO%3A0000330"
+  reaction_462 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_463 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_464 hypernym "urn:miriam:sbo:SBO%3A0000330"
+  reaction_465 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_466 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_467 hypernym "urn:miriam:sbo:SBO%3A0000330"
+  reaction_468 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_469 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_470 hypernym "urn:miriam:sbo:SBO%3A0000330"
+  reaction_471 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_472 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_473 hypernym "urn:miriam:sbo:SBO%3A0000330"
+  reaction_474 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_475 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_476 hypernym "urn:miriam:sbo:SBO%3A0000330"
+  reaction_477 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_478 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_479 hypernym "urn:miriam:sbo:SBO%3A0000330"
+  reaction_480 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_481 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_482 hypernym "urn:miriam:sbo:SBO%3A0000330"
+  reaction_483 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_484 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_485 hypernym "urn:miriam:sbo:SBO%3A0000330"
+  reaction_486 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_487 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_488 hypernym "urn:miriam:sbo:SBO%3A0000330"
+  reaction_489 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_490 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_491 hypernym "urn:miriam:sbo:SBO%3A0000330"
+  reaction_492 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_493 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_494 hypernym "urn:miriam:sbo:SBO%3A0000330"
+  reaction_495 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_496 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_497 hypernym "urn:miriam:sbo:SBO%3A0000330"
+  reaction_498 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_499 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_500 hypernym "urn:miriam:sbo:SBO%3A0000330"
+  reaction_501 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  reaction_502 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_503 hypernym "urn:miriam:sbo:SBO%3A0000330"
+  PP2B_binding_to_CamR_Ca2_AC hypernym "urn:miriam:sbo:SBO%3A0000177"
+  Ca_binding_to_CBP_fast hypernym "urn:miriam:sbo:SBO%3A0000177"
+  Ca_dissociating_from_CBP_fast_Ca hypernym "urn:miriam:sbo:SBO%3A0000180"
+  Ca_binding_to_CBP_media hypernym "urn:miriam:sbo:SBO%3A0000177"
+  Ca_dissociating_from_CBP_media_Ca hypernym "urn:miriam:sbo:SBO%3A0000180"
+  Ca_binding_to_PP2Bi hypernym "urn:miriam:sbo:SBO%3A0000177"
+  Ca_binding_to_PP2Bi_Ca1 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  Ca_binding_to_PP2Bi_Ca2 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  Ca_binding_to_PP2Bi_Ca3 hypernym "urn:miriam:sbo:SBO%3A0000177"
+  Ca_dissociating_from_PP2Bi_Ca2 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  Ca_dissociating_from_PP2Bi_Ca3 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  Ca_dissociating_from_PP2B hypernym "urn:miriam:sbo:SBO%3A0000180"
+  Ca_dissociating_from_PP2Bi_Ca1 hypernym "urn:miriam:sbo:SBO%3A0000180"
+  reaction_197 hypernym "urn:miriam:sbo:SBO%3A0000393"
+end
+
+MODEL1703070000 is "Li2012 Calcium mediated synaptic plasticity"
+
+MODEL1703070000 model_entity_is "http://identifiers.org/biomodels.db/MODEL1703070000"
+MODEL1703070000 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000628"
+MODEL1703070000 description "http://identifiers.org/pubmed/22962589"
+MODEL1703070000 origin "http://identifiers.org/biomodels.db/BIOMD0000000183"
+MODEL1703070000 parthood "http://identifiers.org/kegg.pathway/ko04720",
+                         "http://identifiers.org/reactome/REACT_9053.2"
+MODEL1703070000 taxon "http://identifiers.org/taxonomy/40674"
+MODEL1703070000 property "http://identifiers.org/go/GO:1900271",
+                         "http://identifiers.org/go/GO:1900452",
+                         "http://identifiers.org/go/GO:0048167",
+                         "http://identifiers.org/mamo/MAMO_0000046"

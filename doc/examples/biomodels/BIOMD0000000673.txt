@@ -1,0 +1,96 @@
+// Created by libAntimony v2.13.0
+model *Lockwood2006___AlzheimersDisease_PBPK_model()
+
+  // Compartments and Species:
+  compartment Compartment;
+
+  // Assignment Rules:
+  PD_CeP := ADAS_COG_P;
+  ADAS_COG_P := (Beta_P*Keq_P/(Keq_P - Kel_P))*(exp(-1*Kel_P*MODEL_TIME) - exp(-1*Keq_P*MODEL_TIME));
+  PD_CeA := piecewise(Model_Inactive, MODEL_TYPE == 0, piecewise(Model_active_Linear, MODEL_TYPE == 1, piecewise(Model_active_Hyperbolic, MODEL_TYPE == 2, piecewise(Model_active_Sigmoidal, MODEL_TYPE == 3, piecewise(Model_active_U_Shaped, MODEL_TYPE == 4, 0)))));
+  Model_Inactive := 0*CeA;
+  Model_active_Linear := Beta_A*CeA;
+  Model_active_Hyperbolic := Emax*CeA/(ECeA_50 + CeA);
+  Model_active_Sigmoidal := Emax*CeA^n/(ECeA_50^n + CeA^n);
+  Model_active_U_Shaped := Emax*(CeA_U^n/(ECea_U50^n + CeA_U^n) - ICea_U^n/(ICea_U50^n + ICea_U^n));
+  S := S0 + alpha*MODEL_TIME + PD_CeP + PD_CeA + epsilon;
+  Keq_P := ln(2)/t_half_eq;
+  Kel_P := ln(2)/t_half_el;
+  Emax := piecewise(-4, MODEL_TYPE == 2, piecewise(-3, MODEL_TYPE == 3, piecewise(-6, MODEL_TYPE == 4, 0)));
+  n := piecewise(4, MODEL_TYPE == 3, piecewise(3, MODEL_TYPE == 4, 0));
+  CeA_U := piecewise(piecewise(0*CeA, ANT_AGONIST_COMBINATION == 0, piecewise(0*CeA, ANT_AGONIST_COMBINATION == 2, 0)), MODEL_TYPE == 4, 0);
+  ICea_U := piecewise(piecewise(0*CeA, ANT_AGONIST_COMBINATION == 1, piecewise(0*CeA, ANT_AGONIST_COMBINATION == 2, 0)), MODEL_TYPE == 4, 0);
+
+  // Compartment initializations:
+  Compartment = 1;
+
+  // Variable initializations:
+  S0 = 30;
+  alpha = 0.0164;
+  MODEL_TIME = 1;
+  MODEL_TYPE = 3;
+  epsilon = 0;
+  Beta_P = -3;
+  t_half_eq = 6;
+  t_half_el = 7;
+  Beta_A = -0.047;
+  CeA = 25;
+  ECeA_50 = 21;
+  ANT_AGONIST_COMBINATION = 0;
+  ECea_U50 = 18;
+  ICea_U50 = 38;
+
+  // Other declarations:
+  var PD_CeP, ADAS_COG_P, PD_CeA, Model_Inactive, Model_active_Linear, Model_active_Hyperbolic;
+  var Model_active_Sigmoidal, Model_active_U_Shaped, S, Keq_P, Kel_P, Emax;
+  var n, CeA_U, ICea_U;
+  const Compartment, S0, alpha, MODEL_TIME, MODEL_TYPE, epsilon, Beta_P, t_half_eq;
+  const t_half_el, Beta_A, CeA, ECeA_50, ANT_AGONIST_COMBINATION, ECea_U50;
+  const ICea_U50;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // CV terms:
+  S0 hypernym "http://identifiers.org/ncit/C25213"
+  alpha encodement "http://identifiers.org/ncit/C17747"
+  PD_CeP hypernym "http://identifiers.org/efo/0001674"
+  ADAS_COG_P hypernym "http://identifiers.org/efo/0001674"
+  PD_CeA encodement "http://identifiers.org/go/GO:0042493"
+  Model_Inactive encodement "http://identifiers.org/go/GO:0042493"
+  MODEL_TYPE encodement "http://identifiers.org/sbo/SBO:0000004"
+  Model_active_Linear encodement "http://identifiers.org/go/GO:0042493"
+  Model_active_Hyperbolic encodement "http://identifiers.org/go/GO:0042493"
+  Model_active_Sigmoidal encodement "http://identifiers.org/go/GO:0042493"
+  Model_active_U_Shaped encodement "http://identifiers.org/go/GO:0042493"
+  epsilon hypernym "http://identifiers.org/ncit/C43369"
+  S hypernym "http://identifiers.org/ncit/C100278"
+  Beta_P encodement "http://identifiers.org/efo/0001674"
+  Keq_P hypernym "http://identifiers.org/sbo/SBO:0000331"
+  t_half_eq hypernym "http://identifiers.org/sbo/SBO:0000331"
+  Kel_P encodement "http://identifiers.org/sbo/SBO:0000331"
+  t_half_el hypernym "http://identifiers.org/sbo/SBO:0000331"
+  Beta_A encodement "http://identifiers.org/ncit/C48470"
+  CeA hypernym "http://identifiers.org/chebi/CHEBI:38325"
+  ECeA_50 hypernym "http://identifiers.org/obi/OBI:0001180"
+  Emax hypernym "http://identifiers.org/sbo/SBO:0000186"
+  n hypernym "http://identifiers.org/ncit/C48923"
+  CeA_U hypernym "http://identifiers.org/chebi/CHEBI:38325"
+  CeA_U property "http://identifiers.org/chebi/CHEBI:48705"
+  ANT_AGONIST_COMBINATION hypernym "http://identifiers.org/ncit/C45969"
+  ICea_U hypernym "http://identifiers.org/chebi/CHEBI:38325"
+  ICea_U property "http://identifiers.org/chebi/CHEBI:48706"
+  ECea_U50 hypernym "http://identifiers.org/obi/OBI:0001180"
+  ICea_U50 hypernym "http://identifiers.org/obi/OBI:0001180"
+end
+
+Lockwood2006___AlzheimersDisease_PBPK_model is "Lockwood2006 - Alzheimer's Disease PBPK model"
+
+Lockwood2006___AlzheimersDisease_PBPK_model model_entity_is "http://identifiers.org/biomodels.db/MODEL1006230054"
+Lockwood2006___AlzheimersDisease_PBPK_model description "http://identifiers.org/pubmed/16906456"
+Lockwood2006___AlzheimersDisease_PBPK_model model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000673"
+Lockwood2006___AlzheimersDisease_PBPK_model part "http://identifiers.org/chebi/CHEBI:38325"
+Lockwood2006___AlzheimersDisease_PBPK_model hypernym "http://identifiers.org/mamo/MAMO_0000020"
+Lockwood2006___AlzheimersDisease_PBPK_model container "http://identifiers.org/hp/HP:0002511"
+Lockwood2006___AlzheimersDisease_PBPK_model description "http://identifiers.org/doi/10.1007/s11095-006-9048-8"

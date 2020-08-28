@@ -1,0 +1,120 @@
+// Created by libAntimony v2.13.0
+function generic_modifier_function_2_1(r, v, x)
+  r*v*x;
+end
+
+generic_modifier_function_2_1 is "generic modifier function 2_1"
+
+function function_for_x_degrad_2_1(k, r, v, x, y)
+  r*x*v*(x + y)/k;
+end
+
+function_for_x_degrad_2_1 is "function for x degrad 2_1"
+
+function generic_modifier_function_1(Beta, v, x)
+  Beta*v*x;
+end
+
+generic_modifier_function_1 is "generic modifier function_1"
+
+function generic_modifier_function_2_2(r, v, y)
+  r*v*y;
+end
+
+generic_modifier_function_2_2 is "generic modifier function 2_2"
+
+function function_for_y_degrad_2_1(k, r, v, x, y)
+  r*y*v*(x + y)/k;
+end
+
+function_for_y_degrad_2_1 is "function for y degrad 2_1"
+
+function generic_function_3_1(eta, y)
+  eta*y;
+end
+
+generic_function_3_1 is "generic function 3_1"
+
+
+model *New_Model()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species x in compartment_, y in compartment_, v in compartment_;
+
+  // Reactions:
+  reaction_:  => x; compartment_*generic_modifier_function_2_1(r, v, x);
+  reaction_1: x => ; compartment_*function_for_x_degrad_2_1(k, r, v, x, y);
+  reaction_2: x => ; compartment_*d*x;
+  reaction_3: x => y; compartment_*generic_modifier_function_1(Beta, v, x);
+  reaction_4:  => y; compartment_*generic_modifier_function_2_2(r, v, y);
+  reaction_5: y => ; compartment_*function_for_y_degrad_2_1(k, r, v, x, y);
+  reaction_6: y => ; compartment_*a*y;
+  reaction_7:  => v; compartment_*generic_function_3_1(eta, y);
+  reaction_8: v => ; compartment_*u*v;
+
+  // Species initializations:
+  x = 0.1;
+  y = 0;
+  v = 1;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  r = 1;
+  k = 10;
+  d = 0.1;
+  Beta = 0.2;
+  a = 0.2;
+  eta = 1;
+  u = 0.5;
+
+  // Other declarations:
+  const compartment_, r, k, d, Beta, a, eta, u;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  x is "x_Tcell_infected";
+  y is "y_Tcell_uninfected";
+  v is "v_free_virus";
+  reaction_ is "Uninfected Tcell proliferation";
+  reaction_1 is "Reduction in x-proliferation due to carry capacity";
+  reaction_2 is "Uninfected T cell death";
+  reaction_3 is "Tcell Infection 1";
+  reaction_4 is "Tcell Infection 2";
+  reaction_5 is "Reduction in y-proliferation due to carry capacity";
+  reaction_6 is "Infected T cell death";
+  reaction_7 is "HIV proliferation";
+  reaction_8 is "HIV degradation";
+
+  // CV terms:
+  x part "http://identifiers.org/ncit/C14219"
+  x hypernym "http://identifiers.org/bto/BTO:0000152"
+  x hypernym "http://identifiers.org/bto/BTO:0000782"
+  y hypernym "http://identifiers.org/bto/BTO:0000782"
+  v hypernym "http://identifiers.org/ncit/C14219"
+  reaction_ hypernym "http://identifiers.org/ncit/C18081"
+  reaction_1 hypernym "http://identifiers.org/ncit/C25443"
+  reaction_2 hypernym "http://identifiers.org/go/GO:0008219"
+  reaction_3 hypernym "http://identifiers.org/ncit/C3439"
+  reaction_4 hypernym "http://identifiers.org/ncit/C3439"
+  reaction_6 hypernym "http://identifiers.org/go/GO:0008219"
+  reaction_7 hypernym "http://identifiers.org/ncit/C18081"
+  reaction_8 hypernym "http://identifiers.org/sbo/SBO:0000179"
+end
+
+New_Model is "Wodarz2007 - HIV/CD4 T-cell interaction"
+
+New_Model model_entity_is "http://identifiers.org/biomodels.db/MODEL0911270008"
+New_Model model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000663"
+New_Model description "http://identifiers.org/pubmed/17379260"
+New_Model hypernym "http://identifiers.org/efo/0000764"
+New_Model hypernym "http://identifiers.org/go/GO:0046718"
+New_Model container "http://identifiers.org/bto/BTO:0000782"
+New_Model taxon "http://identifiers.org/taxonomy/9606"
+New_Model taxon "http://identifiers.org/taxonomy/11676"

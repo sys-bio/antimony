@@ -1,0 +1,157 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible_0(v)
+  v;
+end
+
+Constant_flux__irreversible_0 is "Constant flux (irreversible)"
+
+function Function_for_reaction_2_0(parameter_13, parameter_8, species_2, species_3)
+  parameter_8*species_2^parameter_13*species_3;
+end
+
+Function_for_reaction_2_0 is "Function for reaction_2"
+
+
+model *Venkatraman2011___PLS_UPA_behaviour_in_the_presence_of_substrate_competition_1_1_1()
+
+  // Compartments and Species:
+  compartment compartment_1;
+  species species_1 in compartment_1, species_2 in compartment_1, species_3 in compartment_1;
+  species species_4 in compartment_1, $species_5 in compartment_1, $species_6 in compartment_1;
+
+  // Reactions:
+  reaction_1: species_3 + species_1 => species_2 + species_3; compartment_1*reaction_1_k1*species_3*species_1;
+  reaction_2: species_2 + species_3 => species_4 + species_2; compartment_1*Function_for_reaction_2_0(parameter_13, reaction_2_parameter_8, species_2, species_3);
+  reaction_3: species_4 + species_1 => species_2 + species_4; compartment_1*reaction_3_k1*species_4*species_1;
+  reaction_4: species_3 => ; compartment_1*parameter_1*species_3;
+  reaction_5: species_1 => ; compartment_1*parameter_2*species_1;
+  reaction_6: species_2 => ; compartment_1*parameter_1*species_2;
+  reaction_7: species_4 => ; compartment_1*parameter_1*species_4;
+  reaction_8: species_2 + $species_5 -> $species_6; compartment_1*(reaction_8_k1*species_2*species_5 - reaction_8_k2*species_6);
+  reaction_9: $species_6 => species_2; compartment_1*reaction_9_k1*species_6;
+  reaction_10: $species_5 => ; compartment_1*parameter_2*species_5;
+  reaction_11: $species_6 => ; compartment_1*parameter_2*species_6;
+  reaction_12:  => species_3; compartment_1*Constant_flux__irreversible_0(reaction_12_v);
+  reaction_13:  => species_1; compartment_1*Constant_flux__irreversible_0(reaction_13_v);
+  reaction_14:  => $species_5; compartment_1*Constant_flux__irreversible_0(reaction_14_v);
+
+  // Species initializations:
+  species_1 = 0.01;
+  species_2 = 0;
+  species_3 = 0.002;
+  species_4 = 0;
+  species_5 = 0;
+  species_6 = 0;
+
+  // Compartment initializations:
+  compartment_1 = 1;
+
+  // Variable initializations:
+  parameter_1 = 0.084;
+  parameter_2 = 0.032;
+  parameter_13 = 2;
+  reaction_1_k1 = 0.035;
+  reaction_2_parameter_8 = 40;
+  reaction_3_k1 = 0.9;
+  reaction_8_k1 = 0;
+  reaction_8_k2 = 0.016;
+  reaction_9_k1 = 0.02;
+  reaction_12_v = 0.0032;
+  reaction_13_v = 0.01;
+  reaction_14_v = 0.01;
+
+  // Other declarations:
+  const compartment_1, parameter_1, parameter_2, parameter_13;
+
+  // Unit definitions:
+  unit substance = 1e-6 mole;
+
+  // Display Names:
+  compartment_1 is "extra cellular matrix";
+  species_1 is "plasminogen";
+  species_2 is "plasmin";
+  species_3 is "single intact chain urokinase-type plasminogen activator";
+  species_4 is "two-chain urokinase-type plasminogen activator";
+  species_5 is "x";
+  species_6 is "x-plasmin";
+  parameter_1 is "degradation constant 1";
+  parameter_2 is "degradation constant 2";
+  parameter_13 is "hill cooperativity";
+  reaction_1 is "cleavage of plasminogen";
+  reaction_2 is "activation of urokinase-type plasminogen activator";
+  reaction_3 is "activation of plasmin";
+  reaction_4 is "degradation of single intact chain urokinase-type plasminogen activator";
+  reaction_5 is "degradation of plasminogen";
+  reaction_6 is "degradation of plasmin";
+  reaction_7 is "degradation of two-chain urokinase type plasminogen activator";
+  reaction_8 is "reversible plasmin bonding x";
+  reaction_9 is "catalytic reaction of x-plasmin";
+  reaction_10 is "degradation of x";
+  reaction_11 is "degradation of x-plasmin";
+  reaction_12 is "synthesis of single intact chain urokinase-type plasminogen activator";
+  reaction_13 is "synthesis of plasminogen";
+  reaction_14 is "synthesis of x";
+
+  // SBO terms:
+  compartment_1.sboTerm = 290
+  parameter_13.sboTerm = 190
+  reaction_1.sboTerm = 178
+  reaction_2.sboTerm = 178
+  reaction_3.sboTerm = 178
+  reaction_4.sboTerm = 179
+  reaction_5.sboTerm = 179
+  reaction_6.sboTerm = 179
+  reaction_7.sboTerm = 179
+  reaction_8.sboTerm = 526
+  reaction_9.sboTerm = 180
+  reaction_10.sboTerm = 179
+  reaction_11.sboTerm = 179
+  reaction_12.sboTerm = 393
+  reaction_13.sboTerm = 393
+  reaction_14.sboTerm = 393
+
+  // CV terms:
+  compartment_1 hypernym "http://identifiers.org/go/GO:0005576"
+  species_1 hypernym "http://identifiers.org/uniprot/P00747"
+  species_2 hypernym "http://identifiers.org/uniprot/P00747"
+  species_3 hypernym "http://identifiers.org/uniprot/P00749"
+  species_4 hypernym "http://identifiers.org/uniprot/P00749"
+  species_5 hypernym "http://identifiers.org/pubchem.compound/10370340"
+  species_6 part "http://identifiers.org/uniprot/P00747",
+                 "http://identifiers.org/pubchem.compound/10370340"
+  parameter_1 description "http://identifiers.org/pubmed/16339882",
+                          "http://identifiers.org/pubmed/15208304"
+  parameter_2 description "http://identifiers.org/pubmed/1906642",
+                          "http://identifiers.org/pubmed/6193754"
+  reaction_1 description "http://identifiers.org/pubmed/3667621"
+  reaction_2 description "http://identifiers.org/pubmed/3667621"
+  reaction_3 description "http://identifiers.org/pubmed/3667621"
+  reaction_4 description "http://identifiers.org/pubmed/15208304",
+                         "http://identifiers.org/pubmed/16339882"
+  reaction_5 description "http://identifiers.org/pubmed/1906642",
+                         "http://identifiers.org/pubmed/6193754"
+  reaction_6 description "http://identifiers.org/pubmed/15208304",
+                         "http://identifiers.org/pubmed/16339882"
+  reaction_7 description "http://identifiers.org/pubmed/15208304",
+                         "http://identifiers.org/pubmed/16339882"
+  reaction_8 description "http://identifiers.org/pubmed/16690877"
+  reaction_10 description "http://identifiers.org/pubmed/1906642",
+                          "http://identifiers.org/pubmed/6193754"
+  reaction_11 description "http://identifiers.org/pubmed/6193754",
+                          "http://identifiers.org/pubmed/1906642"
+  reaction_12 description "http://identifiers.org/pubmed/16339882",
+                          "http://identifiers.org/doi/10.1371/journal.pcbi.0020120"
+  reaction_13 description "http://identifiers.org/pubmed/16339882",
+                          "http://identifiers.org/doi/10.1371/journal.pcbi.0020120"
+end
+
+Venkatraman2011___PLS_UPA_behaviour_in_the_presence_of_substrate_competition_1_1_1 is "Venkatraman2011 - PLS-UPA behaviour in the presence of substrate competition_1_1_1_1"
+
+Venkatraman2011___PLS_UPA_behaviour_in_the_presence_of_substrate_competition_1_1_1 model_entity_is "http://identifiers.org/biomodels.db/MODEL1303130001"
+Venkatraman2011___PLS_UPA_behaviour_in_the_presence_of_substrate_competition_1_1_1 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000630"
+Venkatraman2011___PLS_UPA_behaviour_in_the_presence_of_substrate_competition_1_1_1 description "http://identifiers.org/pubmed/22004735"
+Venkatraman2011___PLS_UPA_behaviour_in_the_presence_of_substrate_competition_1_1_1 taxon "http://identifiers.org/taxonomy/131567"
+Venkatraman2011___PLS_UPA_behaviour_in_the_presence_of_substrate_competition_1_1_1 property "http://identifiers.org/go/GO:0031639",
+                                                                                            "http://identifiers.org/go/GO:0007596",
+                                                                                            "http://identifiers.org/mamo/MAMO_0000046"
+Venkatraman2011___PLS_UPA_behaviour_in_the_presence_of_substrate_competition_1_1_1 container "urn:miriam:bao:BAO%3A0000366"

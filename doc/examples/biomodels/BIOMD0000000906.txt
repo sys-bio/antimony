@@ -1,0 +1,110 @@
+// Created by libAntimony v2.13.0
+function Function_for_betterment_of_the_relative_characteristics_of_the_damaged_part_of_the_organ(alpha, P)
+  alpha*P;
+end
+
+Function_for_betterment_of_the_relative_characteristics_of_the_damaged_part_of_the_organ is "Function for betterment of the relative characteristics of the damaged part of the organ"
+
+function Function_for_increase_in_the_amount_of_pathogenic_micro_organism(beta, P)
+  beta*P;
+end
+
+Function_for_increase_in_the_amount_of_pathogenic_micro_organism is "Function for increase in the amount of pathogenic micro-organism"
+
+function Function_for_decrease_in_the_amount_of_pathogenic_micro_organism(gamma_, I, P, beta0)
+  gamma_*I*P + beta0*P*P;
+end
+
+Function_for_decrease_in_the_amount_of_pathogenic_micro_organism is "Function for decrease in the amount of pathogenic micro-organism"
+
+function Function_for_increase_in_the_immune_response(mu, b, I, P)
+  mu + b*I*P;
+end
+
+Function_for_increase_in_the_immune_response is "Function for increase in the immune response"
+
+function Function_for_decrease_in_the_relative_characteeristics_of_damaged_part_of_the_organ(alpha0, M)
+  alpha0*M;
+end
+
+Function_for_decrease_in_the_relative_characteeristics_of_damaged_part_of_the_organ is "Function for decrease in the relative characteeristics of damaged part of the organ"
+
+function Function_for_reduction_of_immune_response(a, I, n, gamma_, P)
+  a*I + n*gamma_*I*P;
+end
+
+Function_for_reduction_of_immune_response is "Function for reduction of immune response"
+
+
+model *Dubey2007___A_mathematical_model_for_the_effect_of_toxicant_on_the_immune_system__without_toxicant_effect__Model1()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species P in compartment_, I in compartment_, M in compartment_;
+
+  // Reactions:
+  increase_in_the_amount_of_pathogenic_micro_organism:  => P; compartment_*Function_for_increase_in_the_amount_of_pathogenic_micro_organism(beta, P);
+  Decrease_in_the_amount_of_pathogenic_micro_organism: P => ; compartment_*Function_for_decrease_in_the_amount_of_pathogenic_micro_organism(gamma_, I, P, beta0);
+  Increase_of_appropriate_immune_response_with_respect_to_pathogen:  => I; compartment_*Function_for_increase_in_the_immune_response(mu, b, I, P);
+  Reduction_of_immune_response: I => ; compartment_*Function_for_reduction_of_immune_response(a, I, n, gamma_, P);
+  betterment_of_relative_characteristics_of_the_damaged_part_of_the_organ:  => M; compartment_*Function_for_betterment_of_the_relative_characteristics_of_the_damaged_part_of_the_organ(alpha, P);
+  removal_of_relative_characteristics_of_the_damaged_part_of_the_organ: M => ; compartment_*Function_for_decrease_in_the_relative_characteeristics_of_damaged_part_of_the_organ(alpha0, M);
+
+  // Species initializations:
+  P = 1;
+  I = 1;
+  M = 1;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  beta = 0.9;
+  gamma_ = 0.05;
+  beta0 = 0.2;
+  mu = 0.04;
+  a = 0.8;
+  b = 0.3;
+  n = 0.1;
+  alpha = 2.4;
+  alpha0 = 0.1;
+
+  // Other declarations:
+  const compartment_, beta, gamma_, beta0, mu, a, b, n, alpha, alpha0;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  gamma_ is "gamma";
+  increase_in_the_amount_of_pathogenic_micro_organism is "increase in the amount of pathogenic micro-organism";
+  Decrease_in_the_amount_of_pathogenic_micro_organism is "Decrease in the amount of pathogenic micro-organism";
+  Increase_of_appropriate_immune_response_with_respect_to_pathogen is "Increase of appropriate immune response with respect to pathogen";
+  Reduction_of_immune_response is "Reduction of immune response";
+  betterment_of_relative_characteristics_of_the_damaged_part_of_the_organ is "betterment of relative characteristics of the damaged part of the organ";
+  removal_of_relative_characteristics_of_the_damaged_part_of_the_organ is "removal of relative characteristics of the damaged part of the organ";
+
+  // CV terms:
+  P instance "http://identifiers.org/ncit/C14329"
+  I instance "http://identifiers.org/bto/BTO:0005810"
+  increase_in_the_amount_of_pathogenic_micro_organism instance "http://identifiers.org/ncit/C25533"
+  Decrease_in_the_amount_of_pathogenic_micro_organism instance "http://identifiers.org/ncit/"
+  Increase_of_appropriate_immune_response_with_respect_to_pathogen instance "http://identifiers.org/ncit/C25533"
+  Reduction_of_immune_response instance "http://identifiers.org/ncit/C157203"
+  betterment_of_relative_characteristics_of_the_damaged_part_of_the_organ instance "http://identifiers.org/ncit/C25533"
+  removal_of_relative_characteristics_of_the_damaged_part_of_the_organ instance "http://identifiers.org/ncit/C157203"
+end
+
+Dubey2007___A_mathematical_model_for_the_effect_of_toxicant_on_the_immune_system__without_toxicant_effect__Model1 is "Dubey2007 - A mathematical model for the effect of toxicant on the immune system (without toxicant effect) Model1"
+
+Dubey2007___A_mathematical_model_for_the_effect_of_toxicant_on_the_immune_system__without_toxicant_effect__Model1 instance "http://identifiers.org/mamo/MAMO_0000046",
+                                                                                                                           "http://identifiers.org/taxonomy/9606",
+                                                                                                                           "http://identifiers.org/bto/BTO:0005810"
+Dubey2007___A_mathematical_model_for_the_effect_of_toxicant_on_the_immune_system__without_toxicant_effect__Model1 description "http://identifiers.org/bto/BTO:0005810",
+                                                                                                                              "http://identifiers.org/doi/10.1142/S0218339007002301"
+Dubey2007___A_mathematical_model_for_the_effect_of_toxicant_on_the_immune_system__without_toxicant_effect__Model1 model_entity_is "http://identifiers.org/biomodels.db/MODEL1912190002",
+                                                                                                                                  "http://identifiers.org/biomodels.db/BIOMD0000000906"
+Dubey2007___A_mathematical_model_for_the_effect_of_toxicant_on_the_immune_system__without_toxicant_effect__Model1 property "http://identifiers.org/mamo/MAMO_0000046"
+Dubey2007___A_mathematical_model_for_the_effect_of_toxicant_on_the_immune_system__without_toxicant_effect__Model1 taxon "http://identifiers.org/taxonomy/9606"

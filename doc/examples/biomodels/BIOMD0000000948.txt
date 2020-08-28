@@ -1,0 +1,91 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function modifier_function(modifier, drug)
+  modifier*drug;
+end
+
+modifier_function is "modifier function"
+
+
+model *Landberg2009___Alkylresorcinol_Dose_Response()
+
+  // Compartments and Species:
+  compartment compartment_, A1, A2, Central;
+  species AR_A1 in A1, AR_A2 in A2, AR_Central in Central, AR_Dose in compartment_;
+  species $F1 in compartment_, $F2 in compartment_;
+
+  // Assignment Rules:
+  F1 := piecewise(0, time < Lag_time_1, piecewise(0.1, (time >= Lag_time_1) && (time < Lag_time_2), 0.052));
+  F2 := piecewise(0, time < Lag_time_2, 0.048);
+
+  // Reactions:
+  reaction_: AR_Dose => AR_A1; modifier_function(F1, AR_Dose);
+  reaction_1: AR_Dose => AR_A2; modifier_function(F2, AR_Dose);
+  reaction_2: AR_A1 => AR_Central; k_a_1*AR_A1;
+  reaction_3: AR_A2 => AR_Central; k_a_2*AR_A2;
+  reaction_4:  => AR_Central; Central*Constant_flux__irreversible(base);
+  reaction_5: AR_Central => ; Central*CL_V*AR_Central;
+
+  // Species initializations:
+  AR_A1 = 0;
+  AR_A2 = 0;
+  AR_Central = 0.01;
+  AR_Dose = 485;
+
+  // Compartment initializations:
+  compartment_ = 1;
+  A1 = 1;
+  A2 = 1;
+  Central = 1;
+
+  // Variable initializations:
+  Lag_time_1 = 0.9;
+  Lag_time_2 = 4.7;
+  k_a_1 = 0.3;
+  k_a_2 = 1.8;
+  base = 0.32;
+  CL_V = 20;
+
+  // Other declarations:
+  const compartment_, A1, A2, Central, Lag_time_1, Lag_time_2, k_a_1, k_a_2;
+  const base, CL_V;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 3600 second;
+  unit substance = 1e-9 mole;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+  AR_A1 is "AR";
+  AR_A2 is "AR";
+  AR_Central is "AR";
+  CL_V is "CL/V";
+  reaction_ is "reaction";
+
+  // CV terms:
+  AR_A1 hypernym "http://identifiers.org/kegg.compound/C01751"
+  AR_A1 hypernym "http://identifiers.org/chebi/CHEBI:52679"
+  AR_A2 hypernym "http://identifiers.org/chebi/CHEBI:52679"
+  AR_A2 hypernym "http://identifiers.org/kegg.compound/C01751"
+  AR_Central hypernym "http://identifiers.org/kegg.compound/C01751"
+  AR_Central hypernym "http://identifiers.org/chebi/CHEBI:52679"
+  AR_Dose hypernym "http://identifiers.org/chebi/CHEBI:52679"
+  AR_Dose hypernym "http://identifiers.org/kegg.compound/C01751"
+end
+
+Landberg2009___Alkylresorcinol_Dose_Response is "Landberg2009 - Alkylresorcinol Dose Response"
+
+Landberg2009___Alkylresorcinol_Dose_Response model_entity_is "http://identifiers.org/biomodels.db/MODEL1803050001",
+                                                             "http://identifiers.org/biomodels.db/BIOMD0000000948"
+Landberg2009___Alkylresorcinol_Dose_Response part "http://identifiers.org/kegg.compound/C01751"
+Landberg2009___Alkylresorcinol_Dose_Response part "http://identifiers.org/chebi/CHEBI:52679"
+Landberg2009___Alkylresorcinol_Dose_Response identity "http://identifiers.org/efo/0001757"
+Landberg2009___Alkylresorcinol_Dose_Response description "http://identifiers.org/pubmed/19056600"
+Landberg2009___Alkylresorcinol_Dose_Response property "http://identifiers.org/mamo/MAMO_0000046"

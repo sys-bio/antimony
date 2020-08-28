@@ -1,0 +1,120 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function Function_for_APC_dephosphorylation_1(Anaphase_promoting_complex_Phosphorylated, K_1APC, V_1APC)
+  V_1APC*Anaphase_promoting_complex_Phosphorylated/(K_1APC + Anaphase_promoting_complex_Phosphorylated);
+end
+
+Function_for_APC_dephosphorylation_1 is "Function for APC dephosphorylation_1"
+
+function Function_for_APC_phosphorylation_1(Anaphase_promoting_complex, Cdk, K_2APC, k_2APC)
+  k_2APC*Cdk*Anaphase_promoting_complex/(K_2APC + Anaphase_promoting_complex);
+end
+
+Function_for_APC_phosphorylation_1 is "Function for APC phosphorylation_1"
+
+function Function_degradation_by_modifier_1(Anaphase_promoting_complex_Phosphorylated, Cdk, K_dcdk, K_dsec, Securin, k_dcdk)
+  k_dcdk*Anaphase_promoting_complex_Phosphorylated*Cdk/(K_dcdk*(1 + Securin/K_dsec) + Cdk);
+end
+
+Function_degradation_by_modifier_1 is "Function degradation by modifier_1"
+
+function Function_for_Securin_degradation_mediated_by_APC_P_1(Anaphase_promoting_complex_Phosphorylated, Cdk, K_dcdk, K_dsec, Securin, k_dsec)
+  k_dsec*Anaphase_promoting_complex_Phosphorylated*Securin/(K_dsec*(1 + Cdk/K_dcdk) + Securin);
+end
+
+Function_for_Securin_degradation_mediated_by_APC_P_1 is "Function for Securin degradation mediated by APC_P_1"
+
+
+model *Gerard2013___Model_3___Embryonic_type_eukaryotic_Cell_Cycle_regulation_based_on_negative_feedback_between_Cdk_cyclin_and_APC_and_competitive_inhibition_between_Cdk_cyclin_and_securin_for_polyubiquitylation_1()
+
+  // Compartments and Species:
+  compartment nuclear;
+  species Cdk in nuclear, Anaphase_promoting_complex_Phosphorylated in nuclear;
+  species Securin in nuclear, $Anaphase_promoting_complex in nuclear, $Anaphase_promoting_complex_total in nuclear;
+
+  // Assignment Rules:
+  Anaphase_promoting_complex := Anaphase_promoting_complex_total - Anaphase_promoting_complex_Phosphorylated;
+
+  // Reactions:
+  Synthesis_Cdk:  => Cdk; nuclear*Constant_flux__irreversible(V_scdk);
+  Degradation_Cdk: Cdk => ; nuclear*k_d1cdk*Cdk;
+  Degradation_Cdk_mediated_by_APC_P: Cdk => ; nuclear*Function_degradation_by_modifier_1(Anaphase_promoting_complex_Phosphorylated, Cdk, K_dcdk, K_dsec, Securin, k_dcdk);
+  Phosphorylation_of_APC:  => Anaphase_promoting_complex_Phosphorylated; nuclear*Function_for_APC_phosphorylation_1(Anaphase_promoting_complex, Cdk, K_2APC, k_2APC);
+  Dephosphorylation_of_APC: Anaphase_promoting_complex_Phosphorylated => ; nuclear*Function_for_APC_dephosphorylation_1(Anaphase_promoting_complex_Phosphorylated, K_1APC, V_1APC);
+  Synthesis_of_Securin:  => Securin; nuclear*Constant_flux__irreversible(V_ssec);
+  Degradation_of_Sec: Securin => ; nuclear*k_d1sec*Securin;
+  Degradation_of_Sec_mediated_by_APC_P: Securin => ; nuclear*Function_for_Securin_degradation_mediated_by_APC_P_1(Anaphase_promoting_complex_Phosphorylated, Cdk, K_dcdk, K_dsec, Securin, k_dsec);
+
+  // Species initializations:
+  Cdk = 0.3;
+  Anaphase_promoting_complex_Phosphorylated = 0;
+  Securin = 0.35;
+  Anaphase_promoting_complex_total = 1;
+
+  // Compartment initializations:
+  nuclear = 1;
+
+  // Variable initializations:
+  V_scdk = 0.06;
+  k_d1cdk = 0.01;
+  k_dcdk = 0.35;
+  K_dcdk = 0.01;
+  K_dsec = 0.001;
+  k_2APC = 0.3;
+  K_2APC = 0.01;
+  V_1APC = 0.15;
+  K_1APC = 0.01;
+  V_ssec = 0.1;
+  k_d1sec = 0.01;
+  k_dsec = 0.4;
+
+  // Other declarations:
+  const nuclear, V_scdk, k_d1cdk, k_dcdk, K_dcdk, K_dsec, k_2APC, K_2APC;
+  const V_1APC, K_1APC, V_ssec, k_d1sec, k_dsec;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  Synthesis_Cdk is "Synthesis Cdk";
+  Degradation_Cdk is "Degradation Cdk";
+  Degradation_Cdk_mediated_by_APC_P is "Degradation Cdk mediated by APC_P";
+  Phosphorylation_of_APC is "Phosphorylation of APC";
+  Dephosphorylation_of_APC is "Dephosphorylation of APC";
+  Synthesis_of_Securin is "Synthesis of Securin";
+  Degradation_of_Sec is "Degradation of Sec";
+  Degradation_of_Sec_mediated_by_APC_P is "Degradation of Sec mediated by APC_P";
+
+  // CV terms:
+  nuclear identity "http://identifiers.org/ncit/C13361"
+  Cdk homolog "http://identifiers.org/uniprot/P11440"
+  Anaphase_promoting_complex_Phosphorylated hypernym "http://identifiers.org/go/GO:0005680"
+  Anaphase_promoting_complex_Phosphorylated property "http://identifiers.org/pato/PATO:0002220"
+  Securin homolog "http://identifiers.org/uniprot/Q9CQJ7"
+  Anaphase_promoting_complex hypernym "http://identifiers.org/go/GO:0005680"
+  Anaphase_promoting_complex_total hypernym "http://identifiers.org/go/GO:0005680"
+  Synthesis_Cdk hypernym "http://identifiers.org/ncit/C61408"
+  Degradation_Cdk hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Degradation_Cdk_mediated_by_APC_P hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Phosphorylation_of_APC hypernym "http://identifiers.org/go/GO:0016310"
+  Dephosphorylation_of_APC hypernym "http://identifiers.org/go/GO:0016311"
+  Synthesis_of_Securin hypernym "http://identifiers.org/ncit/C61408"
+  Degradation_of_Sec hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Degradation_of_Sec_mediated_by_APC_P hypernym "http://identifiers.org/sbo/SBO:0000179"
+end
+
+Gerard2013___Model_3___Embryonic_type_eukaryotic_Cell_Cycle_regulation_based_on_negative_feedback_between_Cdk_cyclin_and_APC_and_competitive_inhibition_between_Cdk_cyclin_and_securin_for_polyubiquitylation_1 is "Gerard2013 - Model 3 - Embryonic-type eukaryotic Cell Cycle regulation based on negative feedback between Cdk/cyclin and APC and competitive inhibition between Cdk/cyclin and securin for polyubiquitylation_1"
+
+Gerard2013___Model_3___Embryonic_type_eukaryotic_Cell_Cycle_regulation_based_on_negative_feedback_between_Cdk_cyclin_and_APC_and_competitive_inhibition_between_Cdk_cyclin_and_securin_for_polyubiquitylation_1 model_entity_is "http://identifiers.org/biomodels.db/MODEL1809050001",
+                                                                                                                                                                                                                                "http://identifiers.org/biomodels.db/BIOMD0000000938"
+Gerard2013___Model_3___Embryonic_type_eukaryotic_Cell_Cycle_regulation_based_on_negative_feedback_between_Cdk_cyclin_and_APC_and_competitive_inhibition_between_Cdk_cyclin_and_securin_for_polyubiquitylation_1 part "http://identifiers.org/go/GO:0051726"
+Gerard2013___Model_3___Embryonic_type_eukaryotic_Cell_Cycle_regulation_based_on_negative_feedback_between_Cdk_cyclin_and_APC_and_competitive_inhibition_between_Cdk_cyclin_and_securin_for_polyubiquitylation_1 taxon "http://identifiers.org/taxonomy/10090"
+Gerard2013___Model_3___Embryonic_type_eukaryotic_Cell_Cycle_regulation_based_on_negative_feedback_between_Cdk_cyclin_and_APC_and_competitive_inhibition_between_Cdk_cyclin_and_securin_for_polyubiquitylation_1 description "http://identifiers.org/doi/10.1016/j.bpj.2013.02.012"
+Gerard2013___Model_3___Embryonic_type_eukaryotic_Cell_Cycle_regulation_based_on_negative_feedback_between_Cdk_cyclin_and_APC_and_competitive_inhibition_between_Cdk_cyclin_and_securin_for_polyubiquitylation_1 description "http://identifiers.org/pubmed/23528096"
+Gerard2013___Model_3___Embryonic_type_eukaryotic_Cell_Cycle_regulation_based_on_negative_feedback_between_Cdk_cyclin_and_APC_and_competitive_inhibition_between_Cdk_cyclin_and_securin_for_polyubiquitylation_1 property "http://identifiers.org/mamo/MAMO_0000046"

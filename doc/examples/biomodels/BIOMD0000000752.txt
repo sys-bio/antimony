@@ -1,0 +1,124 @@
+// Created by libAntimony v2.13.0
+function growth_immune(y, I, Ie, u, C, R)
+  y*I*(1 - I/(Ie + u*(C + 0.001*R)*I));
+end
+
+growth_immune is "growth immune"
+
+function killing(a0, C, I)
+  a0*C*I;
+end
+
+killing is "killing"
+
+function logistic_growth(K, k, mod, pro)
+  k*pro*(1 - (pro + mod)/K);
+end
+
+logistic_growth is "logistic growth"
+
+
+model *Wilkie2013r___immune_induced_cancer_dormancy_and_immune_evasion_resistance()
+
+  // Compartments and Species:
+  compartment tumor_microenvironment;
+  species C in tumor_microenvironment, I in tumor_microenvironment, R in tumor_microenvironment;
+
+  // Assignment Rules:
+  b0 := a0*f;
+
+  // Reactions:
+  immune_growth:  => I; tumor_microenvironment*growth_immune(y, I, Ie, u, C, R);
+  cancer_logistic_growth:  => C; tumor_microenvironment*logistic_growth(K, a, R, C);
+  cancer_killing: C => ; tumor_microenvironment*killing(a0, C, I);
+  resistant_logistic_growth:  => R; tumor_microenvironment*logistic_growth(K, b, C, R);
+  resistant_killing: R => ; tumor_microenvironment*killing(b0, R, I);
+
+  // Species initializations:
+  C = 9000;
+  C has substance_per_volume;
+  I = 100;
+  I has substance_per_volume;
+  R = 1000;
+  R has substance_per_volume;
+
+  // Compartment initializations:
+  tumor_microenvironment = 1;
+  tumor_microenvironment has volume;
+
+  // Variable initializations:
+  a = 0.2;
+  a has unit_0;
+  K = 10000000000;
+  K has unit_0;
+  a0 = 0.0001;
+  a0 has unit_0;
+  y = 0.2;
+  y has unit_0;
+  Ie = 100;
+  Ie has unit_0;
+  u = 0.001;
+  u has unit_0;
+  b = 0.2;
+  b has unit_0;
+  b0 has unit_0;
+  f = 1;
+  f has unit_0;
+
+  // Other declarations:
+  var b0;
+  const tumor_microenvironment, a, K, a0, y, Ie, u, b, f;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = time_unit;
+  unit substance = 1e-3 mole;
+  unit unit_0 = 1 / dimensionless^-0;
+  unit extent = substance;
+  unit substance_per_volume = 1e-3 mole / 1e-3 litre;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1";
+  tumor_microenvironment is "tumor microenvironment";
+  immune_growth is "immune growth";
+  cancer_logistic_growth is "cancer logistic growth";
+  cancer_killing is "cancer killing";
+  resistant_logistic_growth is "resistant logistic growth";
+  resistant_killing is "resistant killing";
+
+  // CV terms:
+  tumor_microenvironment hypernym "http://identifiers.org/ncit/C94498"
+  C hypernym "http://identifiers.org/cl/CL:0001064"
+  I hypernym "http://identifiers.org/ncit/C28241"
+  R hypernym "http://identifiers.org/cl/CL:0001064"
+  a hypernym "http://identifiers.org/sbo/SBO:0000610"
+  K hypernym "http://identifiers.org/sbo/SBO:0000661"
+  a0 hypernym "http://identifiers.org/ncit/C25201"
+  y hypernym "http://identifiers.org/sbo/SBO:0000610"
+  Ie hypernym "http://identifiers.org/sbo/SBO:0000193"
+  u hypernym "http://identifiers.org/ncit/C64638"
+  b hypernym "http://identifiers.org/sbo/SBO:0000610"
+  b0 hypernym "http://identifiers.org/ncit/C25201"
+  f hypernym "http://identifiers.org/ncit/C44256"
+  immune_growth hypernym "http://identifiers.org/sbo/SBO:0000393"
+  cancer_logistic_growth hypernym "http://identifiers.org/sbo/SBO:0000393"
+  cancer_logistic_growth hypernym "http://identifiers.org/go/GO:0008283"
+  cancer_killing hypernym "http://identifiers.org/go/GO:0002419"
+  cancer_killing hypernym "http://identifiers.org/sbo/SBO:0000179"
+  resistant_logistic_growth hypernym "http://identifiers.org/sbo/SBO:0000393"
+  resistant_logistic_growth hypernym "http://identifiers.org/go/GO:0008283"
+  resistant_killing hypernym "http://identifiers.org/go/GO:0002419"
+  resistant_killing hypernym "http://identifiers.org/sbo/SBO:0000179"
+end
+
+Wilkie2013r___immune_induced_cancer_dormancy_and_immune_evasion_resistance is "Wilkie2013r - immune-induced cancer dormancy and immune evasion-resistance"
+
+Wilkie2013r___immune_induced_cancer_dormancy_and_immune_evasion_resistance description "http://identifiers.org/pubmed/24511375"
+Wilkie2013r___immune_induced_cancer_dormancy_and_immune_evasion_resistance model_entity_is "http://identifiers.org/biomodels.db/MODEL1907170001",
+                                                                                           "http://identifiers.org/biomodels.db/BIOMD0000000752"
+Wilkie2013r___immune_induced_cancer_dormancy_and_immune_evasion_resistance hypernym "http://identifiers.org/go/GO:0002418"
+Wilkie2013r___immune_induced_cancer_dormancy_and_immune_evasion_resistance property "http://identifiers.org/mamo/MAMO_0000046"
+Wilkie2013r___immune_induced_cancer_dormancy_and_immune_evasion_resistance taxon "http://identifiers.org/taxonomy/9606"

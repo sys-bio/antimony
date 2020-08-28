@@ -1,0 +1,540 @@
+// Created by libAntimony v2.13.0
+function Rate_Law_for_reaction_CycDT_decay(kdcycd, CycDT)
+  kdcycd*CycDT;
+end
+
+Rate_Law_for_reaction_CycDT_decay is "Rate Law for reaction CycDT decay"
+
+function Rate_Law_for_reaction_E2FT_decay(kde2f, kde2fa, CycA, E2FT)
+  (kde2f + kde2fa*CycA)*E2FT;
+end
+
+Rate_Law_for_reaction_E2FT_decay is "Rate Law for reaction E2FT decay"
+
+function Rate_Law_for_reaction_Comp2_decay(kdise2f, comp2, kdprbp, JdpRb, kprbp, CycE, CycA, JpRbp, kde2f, kde2fa)
+  kdise2f*comp2 + kdprbp*(comp2/(JdpRb + comp2)) + kprbp*(CycE + CycA)*(comp2/(JpRbp + comp2)) + (kde2f + kde2fa*CycA)*comp2;
+end
+
+Rate_Law_for_reaction_Comp2_decay is "Rate Law for reaction Comp2 decay"
+
+function Rate_Law_for_reaction_CycET_decay(kdcyce, kdcycea, CycA, CycET)
+  (kdcyce + kdcycea*CycA)*CycET;
+end
+
+Rate_Law_for_reaction_CycET_decay is "Rate Law for reaction CycET decay"
+
+function Rate_Law_for_reaction_CycAT_decay(kdcyca, kdcycac, Cdh1, CycAT)
+  (kdcyca + kdcycac*Cdh1)*CycAT;
+end
+
+Rate_Law_for_reaction_CycAT_decay is "Rate Law for reaction CycAT decay"
+
+function Rate_Law_for_reaction_for_Myc_production(ksm, S)
+  ksm*S;
+end
+
+Rate_Law_for_reaction_for_Myc_production is "Rate Law for reaction for Myc production"
+
+function Rate_Law_for_reaction_for_CycET_production(kscyceb, kscycem, Myc, kscyce, E2F, khcyce)
+  kscyceb + kscycem*Myc + kscyce*(E2F/(khcyce + E2F));
+end
+
+Rate_Law_for_reaction_for_CycET_production is "Rate Law for reaction for CycET production"
+
+function Rate_Law_for_reaction_for_CycDT_production(kscycdm, Myc, kscycds, S)
+  kscycdm*Myc + kscycds*S;
+end
+
+Rate_Law_for_reaction_for_CycDT_production is "Rate Law for reaction for CycDT production"
+
+function Rate_Law_for_reaction_for_CycAT_production(kscyca, E2F, khcyca)
+  kscyca*(E2F/(khcyca + E2F));
+end
+
+Rate_Law_for_reaction_for_CycAT_production is "Rate Law for reaction for CycAT production"
+
+function Rate_Law_for_reaction_for_Myc_decay(kdm, myc)
+  kdm*myc;
+end
+
+Rate_Law_for_reaction_for_Myc_decay is "Rate Law for reaction for Myc decay"
+
+function Rate_Law_for_reaction_for_E2FT_production(kse2fb, kse2fm, Myc, kse2f, E2F, khe2f)
+  kse2fb + kse2fm*Myc + kse2f*(E2F/(khe2f + E2F));
+end
+
+Rate_Law_for_reaction_for_E2FT_production is "Rate Law for reaction for E2FT production"
+
+function Rate_Law_for_reaction_Comp1_production(kase2f, E2F, Rb, kdprbp, comp2, JdpRb)
+  kase2f*E2F*Rb + kdprbp*(comp2/(JdpRb + comp2));
+end
+
+Rate_Law_for_reaction_Comp1_production is "Rate Law for reaction Comp1 production"
+
+function Rate_Law_for_reaction_Comp1_decay(kdise2f, comp1, kprb, CycD, JpRb, kpprb, CycE, CycA, JpRbp, kde2f, kde2fa)
+  kdise2f*comp1 + kprb*CycD*(comp1/(JpRb + comp1)) + kpprb*(CycE + CycA)*(comp1/(JpRbp + comp1)) + (kde2f + kde2fa*CycA)*comp1;
+end
+
+Rate_Law_for_reaction_Comp1_decay is "Rate Law for reaction Comp1 decay"
+
+function Rate_Law_for_reaction_for_Comp2_production(kase2f, E2F, Rbp, kprb, CycD, comp1, JpRb)
+  kase2f*E2F*Rbp + kprb*CycD*(comp1/(JpRb + comp1));
+end
+
+Rate_Law_for_reaction_for_Comp2_production is "Rate Law for reaction for Comp2 production"
+
+function Rate_Law_for_reaction_for_CkiT_production(kscki)
+  kscki;
+end
+
+Rate_Law_for_reaction_for_CkiT_production is "Rate Law for reaction for CkiT production"
+
+function Rate_Law_for_reaction_for_EmiC_decay(kdiscdh1, kdemi, kdemi1c, Cdh1, EmiC)
+  (kdiscdh1 + kdemi + kdemi1c*Cdh1)*EmiC;
+end
+
+Rate_Law_for_reaction_for_EmiC_decay is "Rate Law for reaction for EmiC decay"
+
+function Rate_Law_for_reaction_for_UbI_decay(kdubl, kdublc, Cdh1, Ubl)
+  (kdubl + kdublc*Cdh1)*Ubl;
+end
+
+Rate_Law_for_reaction_for_UbI_decay is "Rate Law for reaction for UbI decay"
+
+function Rate_Law_for_reaction_for_CycACki_production(kascki, CycA, CkiT, CycECki, CycDCki, CycACki)
+  kascki*CycA*(CkiT - CycECki - CycDCki - CycACki);
+end
+
+Rate_Law_for_reaction_for_CycACki_production is "Rate Law for reaction for CycACki production"
+
+function Rate_Law_for_reaction_for_Rbpp_production(kprbp, CycE, CycA, Rbp, Jprbp, Comp2, kpprb, Rb, Jpprb, Comp1)
+  kprbp*(CycE + CycA)*(Rbp/(Jprbp + Rbp)) + kprbp*(CycE + CycA)*(Comp2/(Jprbp + Comp2)) + kpprb*(CycE + CycA)*(Rb/(Jpprb + Rb)) + kpprb*(CycE + CycA)*(Comp1/(Jpprb + Comp1));
+end
+
+Rate_Law_for_reaction_for_Rbpp_production is "Rate Law for reaction for Rbpp production"
+
+function Rate_Law_for_reaction_for_Rbpp_decay(kdprbpp, Rbpp, Jdprb)
+  kdprbpp*(Rbpp/(Jdprb + Rbpp));
+end
+
+Rate_Law_for_reaction_for_Rbpp_decay is "Rate Law for reaction for Rbpp decay"
+
+function Rate_Law_for_reaction_for_CycACki_decay(kdiscki, kdcyca, kdcycac, Cdh1, kdcki, kdckic, CycE, CycA, UbI, CycACki)
+  (kdiscki + kdcyca + kdcycac*Cdh1 + kdcki + kdckic*(CycE + CycA)*UbI)*CycACki;
+end
+
+Rate_Law_for_reaction_for_CycACki_decay is "Rate Law for reaction for CycACki decay"
+
+function Rate_Law_for_reaction_for_Cdh1dp_production(kacdh1, Cdh1T, Cdh1dp, Jdpcdh1)
+  kacdh1*((Cdh1T - Cdh1dp)/(Jdpcdh1 + (Cdh1T - Cdh1dp)));
+end
+
+Rate_Law_for_reaction_for_Cdh1dp_production is "Rate Law for reaction for Cdh1dp production"
+
+function Rate_Law_for_reaction_for_Cdh1dp_decay(kicdh1e, CycE, kicdh1a, CycA, Cdh1dp, Jpcdh1)
+  (kicdh1e*CycE + kicdh1a*CycA)*(Cdh1dp/(Jpcdh1 + Cdh1dp));
+end
+
+Rate_Law_for_reaction_for_Cdh1dp_decay is "Rate Law for reaction for Cdh1dp decay"
+
+function Rate_Law_for_reaction_for_Emi1T_production(ksemi1, E2F, khemi1)
+  ksemi1*(E2F/(khemi1 + E2F));
+end
+
+Rate_Law_for_reaction_for_Emi1T_production is "Rate Law for reaction for Emi1T production"
+
+function Rate_Law_for_reactionfor_Rbp_production(kprb, CycD, Rb, JpRb, kdise2f, comp2, kde2f, kde2fa, CycA)
+  kprb*CycD*(Rb/(JpRb + Rb)) + kdise2f*comp2 + (kde2f + kde2fa*CycA)*comp2;
+end
+
+Rate_Law_for_reactionfor_Rbp_production is "Rate Law for reactionfor Rbp production"
+
+function Rate_Law_for_reaction_for_Rbp_decay(kase2f, E2F, Rbp, kdprbp, JpRbp, kprbp, CycE, CycA, JpRb)
+  kase2f*E2F*Rbp + kdprbp*(Rbp/(JpRb + Rbp)) + kprbp*(CycE + CycA)*(Rbp/(JpRbp + Rbp));
+end
+
+Rate_Law_for_reaction_for_Rbp_decay is "Rate Law for reaction for Rbp decay"
+
+function Rate_Law_for_reaction_for_CycECki_decay(kdiscki, kdcyce, kcdycea, CycA, kdcki, kdckic, CycE, UbI, CycECki)
+  (kdiscki + kdcyce + kcdycea*CycA + kdcki + kdckic*(CycE + CycA)*UbI)*CycECki;
+end
+
+Rate_Law_for_reaction_for_CycECki_decay is "Rate Law for reaction for CycECki decay"
+
+function Rate_Law_for_reaction_for_Emi1T_decay(kdemi1, kdemi1c, Cdh1, Emi1T)
+  (kdemi1 + kdemi1c*Cdh1)*Emi1T;
+end
+
+Rate_Law_for_reaction_for_Emi1T_decay is "Rate Law for reaction for Emi1T decay"
+
+function Rate_Law_for_reaction_for_EmiC_production(Cdh1T, EmiC, kascdh1, Emi1T)
+  kascdh1*(Cdh1T - EmiC)*(Emi1T - EmiC);
+end
+
+Rate_Law_for_reaction_for_EmiC_production is "Rate Law for reaction for EmiC production"
+
+function Rate_Law_for_reaction_for_CycECki_production(kascki, CycD, CkiT, CycECki, CycDCki, CycACki)
+  kascki*CycD*(CkiT - CycECki - CycDCki - CycACki);
+end
+
+Rate_Law_for_reaction_for_CycECki_production is "Rate Law for reaction for CycECki production"
+
+function Rate_Law_for_reaction_for_CkiT_decay(kdcki, kdckic, CycE, CycA, Ubl, CkiT)
+  (kdcki + kdckic*(CycE + CycA)*Ubl)*CkiT;
+end
+
+Rate_Law_for_reaction_for_CkiT_decay is "Rate Law for reaction for CkiT decay"
+
+function Rate_Law_for_reaction_for_CycDCki_production(kascki, CycD, CkiT, CycECki, CycDCki, CycACki)
+  kascki*CycD*(CkiT - CycECki - CycDCki - CycACki);
+end
+
+Rate_Law_for_reaction_for_CycDCki_production is "Rate Law for reaction for CycDCki production"
+
+function Rate_Law_for_reaction_for_Cdh1_production(kacdh1, Cdh1T, EmiC, Cdh1, Jdpcdh1, Cdh1dp, kdiscdh1, kdemi, kdemi1c)
+  kacdh1*((Cdh1T - EmiC - Cdh1)/(Jdpcdh1 + (Cdh1T - Cdh1dp))) + (kdiscdh1 + kdemi + kdemi1c*Cdh1)*(Cdh1dp - Cdh1);
+end
+
+Rate_Law_for_reaction_for_Cdh1_production is "Rate Law for reaction for Cdh1 production"
+
+function Rate_Law_for_reaction_for_UbI_production(ksubl)
+  ksubl;
+end
+
+Rate_Law_for_reaction_for_UbI_production is "Rate Law for reaction for UbI production"
+
+function Rate_Law_for_reaction_for_CycDCki_decay(kdiscki, kdcycd, kdcki, kdckic, CycE, CycA, UbI, CycDCki)
+  (kdiscki + kdcycd + kdcki + kdckic*(CycE + CycA)*UbI)*CycDCki;
+end
+
+Rate_Law_for_reaction_for_CycDCki_decay is "Rate Law for reaction for CycDCki decay"
+
+function Rate_Law_for_reaction_for_Cdh1_decay(kicdh1e, CycE, kicdh1a, CycA, Cdh1, Jpcdh1, Cdh1dp, kascdh1, Emi1T, EmiC)
+  (kicdh1e*CycE + kicdh1a*CycA)*(Cdh1/(Jpcdh1 + Cdh1dp)) + kascdh1*Cdh1*(Emi1T - EmiC);
+end
+
+Rate_Law_for_reaction_for_Cdh1_decay is "Rate Law for reaction for Cdh1 decay"
+
+
+model *Pandey2018_reversible_transition_between_quiescence_and_proliferation()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species Myc in compartment_, CycDT in compartment_, CycET in compartment_;
+  species CycAT in compartment_, E2FT in compartment_, Comp1 in compartment_;
+  species Comp2 in compartment_, Rbp in compartment_, CkiT in compartment_;
+  species CycECki in compartment_, CycDCki in compartment_, CycACki in compartment_;
+  species Cdh1dp in compartment_, Emi1T in compartment_, EmiC in compartment_;
+  species Cdh1 in compartment_, UbI in compartment_, $E2F in compartment_;
+  species $Rb in compartment_, Rbpp in compartment_, $CycE in compartment_;
+  species $CycD in compartment_, $CycA in compartment_, $Cdh1p in compartment_;
+  species $Cdh1T in compartment_;
+
+  // Assignment Rules:
+  E2F := E2FT - Comp1 - Comp2;
+  Rb := RbT - Rbp - Rbpp - Comp1 - Comp2;
+  CycE := CycET - CycECki;
+  CycD := CycDT - CycDCki;
+  CycA := CycAT - CycACki;
+  Cdh1p := Cdh1T - Cdh1 - EmiC;
+
+  // Reactions:
+  reaction_for_Myc_production:  => Myc; compartment_*Rate_Law_for_reaction_for_Myc_production(Ksm, S);
+  reaction_for_Myc_decay: Myc => ; compartment_*Rate_Law_for_reaction_for_Myc_decay(Kdm, Myc);
+  reaction_for_CycDT_production:  => CycDT; compartment_*Rate_Law_for_reaction_for_CycDT_production(Kscycdm, Myc, Kscycds, S);
+  reaction_CycDT_decay: CycDT => ; compartment_*Rate_Law_for_reaction_CycDT_decay(Kdcycd, CycDT);
+  reaction_for_CycET_production:  => CycET; compartment_*Rate_Law_for_reaction_for_CycET_production(Kscyceb, Kscycem, Myc, Kscyce, E2F, Khcyce);
+  reaction_CycET_decay: CycET => ; compartment_*Rate_Law_for_reaction_CycET_decay(Kdcyce, Kdcycea, CycA, CycET);
+  reaction_for_CycAT_production:  => CycAT; compartment_*Rate_Law_for_reaction_for_CycAT_production(Kscyca, E2F, Khcyca);
+  reaction_CycAT_decay: CycAT => ; compartment_*Rate_Law_for_reaction_CycAT_decay(Kdcyca, Kdcycac, Cdh1, CycAT);
+  reaction_for_E2FT_production:  => E2FT; compartment_*Rate_Law_for_reaction_for_E2FT_production(Kse2fb, Kse2fm, Myc, Kse2f, E2F, Khe2f);
+  reaction_E2FT_decay: E2FT => ; compartment_*Rate_Law_for_reaction_E2FT_decay(Kde2f, Kde2fa, CycA, E2FT);
+  reaction_Comp1_production:  => Comp1; compartment_*Rate_Law_for_reaction_Comp1_production(Kase2f, E2F, Rb, Kdprbp, Comp2, JdpRb);
+  reaction_Comp1_decay: Comp1 => ; compartment_*Rate_Law_for_reaction_Comp1_decay(Kdise2f, Comp1, Kprb, CycD, JpRb, Kppeb, CycE, CycA, JppRb, Kde2f, Kde2fa);
+  reaction_for_Comp2_production:  => Comp2; compartment_*Rate_Law_for_reaction_for_Comp2_production(Kase2f, E2F, Rbp, Kprb, CycD, Comp1, JpRb);
+  reaction_Comp2_decay: Comp2 => ; compartment_*Rate_Law_for_reaction_Comp2_decay(Kdise2f, Comp2, Kdprbp, JdpRb, Kprbp, CycE, CycA, JpRbp, Kde2f, Kde2fa);
+  reactionfor_Rbp_production:  => Rbp; compartment_*Rate_Law_for_reactionfor_Rbp_production(Kprb, CycD, Rb, JpRb, Kdise2f, Comp2, Kde2f, Kde2fa, CycA);
+  reaction_for_Rbp_decay: Rbp => ; compartment_*Rate_Law_for_reaction_for_Rbp_decay(Kase2f, E2F, Rbp, Kdprbp, JpRbp, Kprbp, CycE, CycA, JpRb);
+  reaction_for_CkiT_production:  => CkiT; compartment_*Rate_Law_for_reaction_for_CkiT_production(Kscki);
+  reaction_for_CkiT_decay: CkiT => ; compartment_*Rate_Law_for_reaction_for_CkiT_decay(Kdcki, Kdckic, CycE, CycA, UbI, CkiT);
+  reaction_for_CycECki_production:  => CycECki; compartment_*Rate_Law_for_reaction_for_CycECki_production(Kascki, CycE, CkiT, CycECki, CycDCki, CycACki);
+  reaction_for_CycECki_decay: CycECki => ; compartment_*Rate_Law_for_reaction_for_CycECki_decay(Kdiscki, Kdcyce, Kdcycea, CycA, Kdcki, Kdckic, CycE, UbI, CycECki);
+  reaction_for_CycDCki_production:  => CycDCki; compartment_*Rate_Law_for_reaction_for_CycDCki_production(Kascki, CycD, CkiT, CycECki, CycDCki, CycACki);
+  reaction_for_CycDCki_decay: CycDCki => ; compartment_*Rate_Law_for_reaction_for_CycDCki_decay(Kdiscki, Kdcycd, Kdcki, Kdckic, CycE, CycA, UbI, CycDCki);
+  reaction_for_CycACki_production:  => CycACki; compartment_*Rate_Law_for_reaction_for_CycACki_production(Kascki, CycA, CkiT, CycECki, CycDCki, CycACki);
+  reaction_for_CycACki_decay: CycACki => ; compartment_*Rate_Law_for_reaction_for_CycACki_decay(Kdiscki, Kdcyca, Kdcycac, Cdh1, Kdcki, Kdckic, CycE, CycA, UbI, CycACki);
+  reaction_for_Cdh1dp_production:  => Cdh1dp; compartment_*Rate_Law_for_reaction_for_Cdh1dp_production(Kacdh1, Cdh1T, Cdh1dp, JdpCdh1);
+  reaction_for_Cdh1dp_decay: Cdh1dp => ; compartment_*Rate_Law_for_reaction_for_Cdh1dp_decay(Kicdh1e, CycE, Kicdh1a, CycA, Cdh1dp, JpCdh1);
+  reaction_for_Emi1T_production:  => Emi1T; compartment_*Rate_Law_for_reaction_for_Emi1T_production(Ksemi1, E2F, Khemi1);
+  reaction_for_Emi1T_decay: Emi1T => ; compartment_*Rate_Law_for_reaction_for_Emi1T_decay(Kdemi1, Kdemi1c, Cdh1, Emi1T);
+  reaction_for_EmiC_production:  => EmiC; compartment_*Rate_Law_for_reaction_for_EmiC_production(Cdh1T, EmiC, Kascdh1, Emi1T);
+  reaction_for_EmiC_decay: EmiC => ; compartment_*Rate_Law_for_reaction_for_EmiC_decay(Kdiscdh1, Kdemi1, Kdemi1c, Cdh1, EmiC);
+  reaction_for_Cdh1_production:  => Cdh1; compartment_*Rate_Law_for_reaction_for_Cdh1_production(Kacdh1, Cdh1T, EmiC, Cdh1, JdpCdh1, Cdh1dp, Kdiscdh1, Kdemi1, Kdemi1c);
+  reaction_for_Cdh1_decay: Cdh1 => ; compartment_*Rate_Law_for_reaction_for_Cdh1_decay(Kicdh1e, CycE, Kicdh1a, CycA, Cdh1, JpCdh1, Cdh1dp, Kascdh1, Emi1T, EmiC);
+  reaction_for_UbI_production:  => UbI; compartment_*Rate_Law_for_reaction_for_UbI_production(Ksub1);
+  reaction_for_UbI_decay: UbI => ; compartment_*Rate_Law_for_reaction_for_UbI_decay(Kdub1, Kdub1c, Cdh1, UbI);
+  reaction_for_Rbpp_production:  => Rbpp; compartment_*Rate_Law_for_reaction_for_Rbpp_production(Kprbp, CycE, CycA, Rbp, JpRbp, Comp2, Kppeb, Rb, JppRb, Comp1);
+  reaction_for_Rbpp_decay: Rbpp => ; compartment_*Rate_Law_for_reaction_for_Rbpp_decay(Kdprbpp, Rbpp, JdpRb);
+
+  // Species initializations:
+  Myc = 0;
+  Myc has substance_per_volume;
+  CycDT = 0;
+  CycDT has substance_per_volume;
+  CycET = 0.119;
+  CycET has substance_per_volume;
+  CycAT = 0;
+  CycAT has substance_per_volume;
+  E2FT = 0.106;
+  E2FT has substance_per_volume;
+  Comp1 = 0.105;
+  Comp1 has substance_per_volume;
+  Comp2 = 0;
+  Comp2 has substance_per_volume;
+  Rbp = 0;
+  Rbp has substance_per_volume;
+  CkiT = 0.2;
+  CkiT has substance_per_volume;
+  CycECki = 0.115;
+  CycECki has substance_per_volume;
+  CycDCki = 0;
+  CycDCki has substance_per_volume;
+  CycACki = 0;
+  CycACki has substance_per_volume;
+  Cdh1dp = 1;
+  Cdh1dp has substance_per_volume;
+  Emi1T = 0.002;
+  Emi1T has substance_per_volume;
+  EmiC = 0.002;
+  EmiC has substance_per_volume;
+  Cdh1 = 0.998;
+  Cdh1 has substance_per_volume;
+  UbI = 0.02;
+  UbI has substance_per_volume;
+  E2F has substance_per_volume;
+  Rb has substance_per_volume;
+  Rbpp = 0.001;
+  Rbpp has substance_per_volume;
+  CycE has substance_per_volume;
+  CycD has substance_per_volume;
+  CycA has substance_per_volume;
+  Cdh1p has substance_per_volume;
+  Cdh1T = 1;
+  Cdh1T has substance_per_volume;
+
+  // Compartment initializations:
+  compartment_ = 1;
+  compartment_ has volume;
+
+  // Variable initializations:
+  RbT = 1;
+  S = 1;
+  Ksm = 0.1;
+  Kdm = 0.1;
+  Kscycdm = 0.004;
+  Kscycds = 0.004;
+  Kdcycd = 0.008;
+  Kscyceb = 0.0001;
+  Kscycem = 0;
+  Kscyce = 0.004;
+  Kdcyce = 0.001;
+  Kdcycea = 0.01;
+  Khcyce = 0.25;
+  Kscyca = 0.008;
+  Kdcyca = 0.004;
+  Kdcycac = 0.5;
+  Khcyca = 0.1;
+  Kse2fm = 0;
+  Kse2f = 0.004;
+  Kde2f = 0.003;
+  Kde2fa = 0.01;
+  Khe2f = 0.25;
+  Kase2f = 100;
+  Kdise2f = 1;
+  Kprb = 5;
+  Kdprbp = 1;
+  Kppeb = 0.5;
+  Kdprbpp = 0.1;
+  Kprbp = 2;
+  JpRb = 0.01;
+  JpRbp = 0.05;
+  JdpRb = 0.05;
+  JppRb = 0.5;
+  Kscki = 0.04;
+  Kdcki = 0.2;
+  Kascki = 100;
+  Kdiscki = 0.1;
+  Ksub1 = 0.004;
+  Kdub1 = 0.002;
+  Kdub1c = 0.2;
+  Ksemi1 = 0.45;
+  Kdemi1 = 0.2;
+  Kdemi1c = 2;
+  Khemi1 = 0.1;
+  Kascdh1 = 100;
+  Kdiscdh1 = 0.1;
+  Kacdh1 = 0.1;
+  Kicdh1e = 0.14;
+  Kicdh1a = 0.2;
+  JdpCdh1 = 0.02;
+  JpCdh1 = 0.25;
+  Kse2fb = 0.0003;
+  Kdckic = 1;
+
+  // Other declarations:
+  const compartment_, RbT, S, Ksm, Kdm, Kscycdm, Kscycds, Kdcycd, Kscyceb;
+  const Kscycem, Kscyce, Kdcyce, Kdcycea, Khcyce, Kscyca, Kdcyca, Kdcycac;
+  const Khcyca, Kse2fm, Kse2f, Kde2f, Kde2fa, Khe2f, Kase2f, Kdise2f, Kprb;
+  const Kdprbp, Kppeb, Kdprbpp, Kprbp, JpRb, JpRbp, JdpRb, JppRb, Kscki, Kdcki;
+  const Kascki, Kdiscki, Ksub1, Kdub1, Kdub1c, Ksemi1, Kdemi1, Kdemi1c, Khemi1;
+  const Kascdh1, Kdiscdh1, Kacdh1, Kicdh1e, Kicdh1a, JdpCdh1, JpCdh1, Kse2fb;
+  const Kdckic;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = time_unit;
+  unit substance = 1e-3 mole;
+  unit extent = substance;
+  unit substance_per_volume = 1e-3 mole / 1e-3 litre;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+  reaction_for_Myc_production is "reaction for Myc production";
+  reaction_for_Myc_decay is "reaction for Myc decay";
+  reaction_for_CycDT_production is "reaction for CycDT production";
+  reaction_CycDT_decay is "reaction CycDT decay";
+  reaction_for_CycET_production is "reaction for CycET production";
+  reaction_CycET_decay is "reaction CycET decay";
+  reaction_for_CycAT_production is "reaction for CycAT production";
+  reaction_CycAT_decay is "reaction CycAT decay";
+  reaction_for_E2FT_production is "reaction for E2FT production";
+  reaction_E2FT_decay is "reaction E2FT decay";
+  reaction_Comp1_production is "reaction Comp1 production";
+  reaction_Comp1_decay is "reaction Comp1 decay";
+  reaction_for_Comp2_production is "reaction for Comp2 production";
+  reaction_Comp2_decay is "reaction Comp2 decay";
+  reactionfor_Rbp_production is "reactionfor Rbp production";
+  reaction_for_Rbp_decay is "reaction for Rbp decay";
+  reaction_for_CkiT_production is "reaction for CkiT production";
+  reaction_for_CkiT_decay is "reaction for CkiT decay";
+  reaction_for_CycECki_production is "reaction for CycECki production";
+  reaction_for_CycECki_decay is "reaction for CycECki decay";
+  reaction_for_CycDCki_production is "reaction for CycDCki production";
+  reaction_for_CycDCki_decay is "reaction for CycDCki decay";
+  reaction_for_CycACki_production is "reaction for CycACki production";
+  reaction_for_CycACki_decay is "reaction for CycACki decay";
+  reaction_for_Cdh1dp_production is "reaction for Cdh1dp production";
+  reaction_for_Cdh1dp_decay is "reaction for Cdh1dp decay";
+  reaction_for_Emi1T_production is "reaction for Emi1T production";
+  reaction_for_Emi1T_decay is "reaction for Emi1T decay";
+  reaction_for_EmiC_production is "reaction for EmiC production";
+  reaction_for_EmiC_decay is "reaction for EmiC decay";
+  reaction_for_Cdh1_production is "reaction for Cdh1 production";
+  reaction_for_Cdh1_decay is "reaction for Cdh1 decay";
+  reaction_for_UbI_production is "reaction for UbI production";
+  reaction_for_UbI_decay is "reaction for UbI decay";
+  reaction_for_Rbpp_production is "reaction for Rbpp production";
+  reaction_for_Rbpp_decay is "reaction for Rbpp decay";
+
+  // CV terms:
+  Myc property "http://identifiers.org/uniprot/P01106"
+  CycDT property "http://identifiers.org/uniprot/P24385"
+  CycDT property "http://identifiers.org/ncit/C25304"
+  CycET property "http://identifiers.org/ncit/C25304"
+  CycET property "http://identifiers.org/uniprot/P24864"
+  CycAT property "http://identifiers.org/ncit/C25304"
+  CycAT property "http://identifiers.org/uniprot/P20248"
+  E2FT property "http://identifiers.org/ncit/C25304"
+  E2FT property "http://identifiers.org/uniprot/PR:000050007"
+  Comp1 property "http://identifiers.org/go/GO:0035189"
+  Comp2 property "http://identifiers.org/pato/PATO:0002220"
+  Comp2 property "http://identifiers.org/go/GO:0035189"
+  Rbp property "http://identifiers.org/ncit/C44044"
+  Rbp property "http://identifiers.org/uniprot/P06400"
+  Rbp property "http://identifiers.org/pato/PATO:0002262"
+  CkiT property "http://identifiers.org/ncit/C2185"
+  CkiT property "http://identifiers.org/ncit/C25304"
+  CycECki property "http://identifiers.org/ncit/C2185"
+  CycECki property "http://identifiers.org/uniprot/P24864"
+  CycDCki property "http://identifiers.org/uniprot/P24385"
+  CycDCki property "http://identifiers.org/ncit/C2185"
+  CycACki property "http://identifiers.org/ncit/C2185"
+  CycACki property "http://identifiers.org/uniprot/P20248"
+  Cdh1dp property "http://identifiers.org/ncit/C25304"
+  Cdh1dp property "http://identifiers.org/pato/PATO:0002263"
+  Cdh1dp property "http://identifiers.org/uniprot/Q9UM11"
+  Emi1T property "http://identifiers.org/ncit/C25304"
+  Emi1T property "http://identifiers.org/uniprot/Q9UKT4"
+  EmiC property "http://identifiers.org/ncit/C47881"
+  EmiC property "http://identifiers.org/uniprot/Q9UKT4"
+  EmiC property "http://identifiers.org/uniprot/Q9UM11"
+  EmiC property "http://identifiers.org/pato/PATO:0002220"
+  EmiC property "http://identifiers.org/pato/PATO:0002263"
+  Cdh1 property "http://identifiers.org/omit/0006811"
+  Cdh1 property "http://identifiers.org/uniprot/Q9UM11"
+  Cdh1 property "http://identifiers.org/pato/PATO:0002263"
+  UbI property "http://identifiers.org/ncit/C16796"
+  UbI property "http://identifiers.org/ncit/C17227"
+  E2F property "http://identifiers.org/pr/PR:000050007"
+  Rb property "http://identifiers.org/uniprot/P06400"
+  Rbpp property "http://identifiers.org/ncit/C17648"
+  Rbpp property "http://identifiers.org/pato/PATO:0002262"
+  Rbpp property "http://identifiers.org/uniprot/P06400"
+  CycE property "http://identifiers.org/uniprot/P24864"
+  CycD property "http://identifiers.org/uniprot/P24385"
+  CycA property "http://identifiers.org/uniprot/P20248"
+  Cdh1p property "http://identifiers.org/uniprot/Q9UM11"
+  Cdh1p property "http://identifiers.org/pato/PATO:0002220"
+  Cdh1p property "http://identifiers.org/omit/0006811"
+  Cdh1T property "http://identifiers.org/ncit/C25304"
+  Cdh1T property "http://identifiers.org/uniprot/Q9UM11"
+  reaction_for_Myc_production property "http://identifiers.org/sbo/SBO:0000393"
+  reaction_for_Myc_decay property "http://identifiers.org/ncit/C75947"
+  reaction_for_CycDT_production property "http://identifiers.org/sbo/SBO:0000393"
+  reaction_CycDT_decay property "http://identifiers.org/ncit/C75947"
+  reaction_for_CycET_production property "http://identifiers.org/sbo/SBO:0000393"
+  reaction_CycET_decay property "http://identifiers.org/ncit/C75947"
+  reaction_for_CycAT_production property "http://identifiers.org/sbo/SBO:0000393"
+  reaction_CycAT_decay property "http://identifiers.org/ncit/C75947"
+  reaction_for_E2FT_production property "http://identifiers.org/sbo/SBO:0000393"
+  reaction_E2FT_decay property "http://identifiers.org/ncit/C75947"
+  reaction_Comp1_production property "http://identifiers.org/sbo/SBO:0000393"
+  reaction_Comp1_decay property "http://identifiers.org/ncit/C75947"
+  reaction_for_Comp2_production property "http://identifiers.org/sbo/SBO:0000393"
+  reaction_Comp2_decay property "http://identifiers.org/ncit/C75947"
+  reactionfor_Rbp_production property "http://identifiers.org/sbo/SBO:0000393"
+  reaction_for_Rbp_decay property "http://identifiers.org/ncit/C75947"
+  reaction_for_CkiT_production property "http://identifiers.org/sbo/SBO:0000393"
+  reaction_for_CkiT_decay property "http://identifiers.org/ncit/C75947"
+  reaction_for_CycECki_production property "http://identifiers.org/sbo/SBO:0000393"
+  reaction_for_CycECki_decay property "http://identifiers.org/ncit/C75947"
+  reaction_for_CycDCki_production property "http://identifiers.org/sbo/SBO:0000393"
+  reaction_for_CycDCki_decay property "http://identifiers.org/ncit/C75947"
+  reaction_for_CycACki_production property "http://identifiers.org/sbo/SBO:0000393"
+  reaction_for_CycACki_decay property "http://identifiers.org/ncit/C75947"
+  reaction_for_Cdh1dp_production property "http://identifiers.org/sbo/SBO:0000393"
+  reaction_for_Cdh1dp_decay property "http://identifiers.org/ncit/C75947"
+  reaction_for_Emi1T_production property "http://identifiers.org/sbo/SBO:0000393"
+  reaction_for_Emi1T_decay property "http://identifiers.org/ncit/C75947"
+  reaction_for_EmiC_production property "http://identifiers.org/sbo/SBO:0000393"
+  reaction_for_EmiC_decay property "http://identifiers.org/ncit/C75947"
+  reaction_for_Cdh1_production property "http://identifiers.org/sbo/SBO:0000393"
+  reaction_for_Cdh1_decay property "http://identifiers.org/ncit/C75947"
+  reaction_for_UbI_production property "http://identifiers.org/sbo/SBO:0000393"
+  reaction_for_UbI_decay property "http://identifiers.org/ncit/C75947"
+  reaction_for_Rbpp_production property "http://identifiers.org/sbo/SBO:0000393"
+  reaction_for_Rbpp_decay property "http://identifiers.org/ncit/C75947"
+end
+
+Pandey2018_reversible_transition_between_quiescence_and_proliferation is "Pandey2018-reversible transition between quiescence and proliferation"
+
+Pandey2018_reversible_transition_between_quiescence_and_proliferation model_entity_is "http://identifiers.org/biomodels.db/MODEL2006220001",
+                                                                                      "http://identifiers.org/biomodels.db/BIOMD0000000954"
+Pandey2018_reversible_transition_between_quiescence_and_proliferation taxon "http://identifiers.org/taxonomy/9606"
+Pandey2018_reversible_transition_between_quiescence_and_proliferation description "http://identifiers.org/pubmed/29856829"
+Pandey2018_reversible_transition_between_quiescence_and_proliferation property "http://identifiers.org/go/GO:0007049",
+                                                                               "http://identifiers.org/go/GO:0044838",
+                                                                               "http://identifiers.org/mamo/MAMO_0000046"

@@ -1,0 +1,94 @@
+// Created by libAntimony v2.13.0
+model *Chitnis2012___Model_Rift_Valley_Fever_transmission_between_cattle_and_mosquitoes__Model_1()
+
+  // Compartments and Species:
+  compartment Cattle, Vector;
+  species $S_h in Cattle, $A_h in Cattle, $I_h in Cattle, $R_h in Cattle;
+  species $S_v in Vector, $I_v in Vector, $E_v in Vector;
+
+  // Assignment Rules:
+  u_h := piecewise(1/2190, Season_Dummy_Variable == 0, 1/2190);
+  C0 := piecewise(1000, Season_Dummy_Variable == 0, 1000);
+  lambda_h := (sigma_v*N_v*sigma_h/(sigma_v*N_v + sigma_h*N_h))*beta_hv*(I_v/N_v);
+  theta_h := piecewise(0.4, Season_Dummy_Variable == 0, 0.4);
+  gamma_tilde_h := piecewise(1/4, Season_Dummy_Variable == 0, 1/4);
+  gamma_h := piecewise(1/4, Season_Dummy_Variable == 0, 1/4);
+  delta_h := piecewise(0.1, Season_Dummy_Variable == 0, 0.1);
+  N_v := S_v + E_v + I_v;
+  psi_v := piecewise(0.1, Season_Dummy_Variable == 0, 0.1);
+  u_v := piecewise(1/20, Season_Dummy_Variable == 0, 1/14);
+  M0 := piecewise(20000, Season_Dummy_Variable == 0, 4000);
+  lambda_v := (sigma_v*sigma_h*N_h/(sigma_v*N_v + sigma_h*N_h))*(beta_vh*(I_h/N_h) + beta_tilde_vh*(A_h/N_h));
+  v_v := piecewise(1/14, Season_Dummy_Variable == 0, 1/14);
+  sigma_v := piecewise(0.33, Season_Dummy_Variable == 0, 0.25);
+  sigma_h := piecewise(19, Season_Dummy_Variable == 0, 19);
+  beta_hv := piecewise(0.21, Season_Dummy_Variable == 0, 0.21);
+  beta_vh := piecewise(0.7, Season_Dummy_Variable == 0, 0.7);
+  beta_tilde_vh := piecewise(0.3, Season_Dummy_Variable == 0, 0.3);
+  gamma_e := piecewise(0.2, Season_Dummy_Variable == 0, 0.1);
+  N_h := S_h + I_h + A_h + R_h;
+  Total_Infected_Cattle := A_h + I_h;
+
+  // Rate Rules:
+  S_h' = u_h*C0 - lambda_h*S_h - u_h*S_h;
+  A_h' = theta_h*lambda_h*S_h - (u_h + gamma_tilde_h)*A_h;
+  I_h' = (1 - theta_h)*lambda_h*S_h - (u_h + gamma_h + delta_h)*I_h;
+  R_h' = gamma_h*I_h + gamma_tilde_h*A_h - u_h*R_h;
+  S_v' = ((N_v - psi_v*I_v)/N_v)*u_v*M0 - lambda_v*S_v - u_v*S_v;
+  I_v' = (psi_v*I_v/N_v)*u_v*M0 + v_v*E_v - u_v*I_v;
+  E_v' = lambda_v*S_v - (u_v + v_v)*E_v;
+
+  // Species initializations:
+  S_h = piecewise(1000, Season_Dummy_Variable == 0, 1000);
+  A_h = 0;
+  I_h = 0;
+  R_h = 0;
+  S_v = piecewise(19999, Season_Dummy_Variable == 0, 3999);
+  I_v = 1;
+  E_v = 0;
+
+  // Compartment initializations:
+  Cattle = 1;
+  Vector = 1;
+
+  // Variable initializations:
+  Season_Dummy_Variable = 0;
+
+  // Other declarations:
+  var u_h, C0, lambda_h, theta_h, gamma_tilde_h, gamma_h, delta_h, N_v, psi_v;
+  var u_v, M0, lambda_v, v_v, sigma_v, sigma_h, beta_hv, beta_vh, beta_tilde_vh;
+  var gamma_e, N_h, Total_Infected_Cattle;
+  const Cattle, Vector, Season_Dummy_Variable;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // CV terms:
+  Cattle property "http://identifiers.org/omit/0003748"
+  Vector property "http://identifiers.org/omit/0004757"
+  S_h property "http://identifiers.org/ncit/C66819"
+  S_h property "http://identifiers.org/omit/0003748"
+  A_h property "http://identifiers.org/ncit/C3833"
+  A_h property "http://identifiers.org/ncit/C128320"
+  I_h property "http://identifiers.org/omit/0003748"
+  I_h property "http://identifiers.org/ido/0000460"
+  R_h property "http://identifiers.org/omit/0003748"
+  R_h property "http://identifiers.org/ncit/C49498"
+  S_v property "http://identifiers.org/ncit/C66819"
+  S_v property "http://identifiers.org/omit/0004757"
+  I_v property "http://identifiers.org/ido/0000460"
+  I_v property "http://identifiers.org/omit/0004757"
+  E_v property "http://identifiers.org/omit/0003748"
+  E_v property "http://identifiers.org/pato/PATO:0002425"
+end
+
+Chitnis2012___Model_Rift_Valley_Fever_transmission_between_cattle_and_mosquitoes__Model_1 is "Chitnis2012 - Model Rift Valley Fever transmission between cattle and mosquitoes (Model 1)"
+
+Chitnis2012___Model_Rift_Valley_Fever_transmission_between_cattle_and_mosquitoes__Model_1 description "http://identifiers.org/pubmed/23098257"
+Chitnis2012___Model_Rift_Valley_Fever_transmission_between_cattle_and_mosquitoes__Model_1 model_entity_is "http://identifiers.org/biomodels.db/MODEL1805230002",
+                                                                                                          "http://identifiers.org/biomodels.db/BIOMD0000000950"
+Chitnis2012___Model_Rift_Valley_Fever_transmission_between_cattle_and_mosquitoes__Model_1 hypernym "http://identifiers.org/ncit/C17214"
+Chitnis2012___Model_Rift_Valley_Fever_transmission_between_cattle_and_mosquitoes__Model_1 container "http://identifiers.org/omit/0003748"
+Chitnis2012___Model_Rift_Valley_Fever_transmission_between_cattle_and_mosquitoes__Model_1 property "http://identifiers.org/ncit/C128419",
+                                                                                                   "http://identifiers.org/mamo/MAMO_0000046"

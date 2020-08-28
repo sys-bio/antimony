@@ -1,0 +1,128 @@
+// Created by libAntimony v2.13.0
+function equation_for_Tumor_Growth(r2, b, Tumor)
+  r2*(1 - b*Tumor)*Tumor;
+end
+
+equation_for_Tumor_Growth is "equation for Tumor Growth"
+
+function equation_for_Tumor_Killing(a, E, T, g2)
+  a*E*T/(g2 + T);
+end
+
+equation_for_Tumor_Killing is "equation for Tumor Killing"
+
+function equation_for_immune_cell_activation(s1, c, T, p1, E, IL, g1_IL)
+  s1 + c*T + p1*E*IL/g1_IL;
+end
+
+equation_for_immune_cell_activation is "equation for immune cell activation"
+
+function Euuation_for_IL2_Production(s2, p2, E, T, g3)
+  s2 + p2*E*T/(g3 + T);
+end
+
+Euuation_for_IL2_Production is "Euuation for IL2 Production"
+
+
+model *Kirschner1998_Immunotherapy_Tumour()
+
+  // Compartments and Species:
+  compartment COMpartment;
+  species $Source in COMpartment, Tumor in COMpartment, $Sink in COMpartment;
+  species IL2 in COMpartment, Immune_cells in COMpartment;
+
+  // Reactions:
+  Tumor_growth: $Source => Tumor; COMpartment*equation_for_Tumor_Growth(r2, b, Tumor);
+  Tumor_Killing: Tumor => $Sink; COMpartment*equation_for_Tumor_Killing(a, Immune_cells, Tumor, g2);
+  Immune_cell_Activation: $Source => Immune_cells; COMpartment*equation_for_immune_cell_activation(s1, c, Tumor, p1, Immune_cells, IL2, g1);
+  Immune_cell_Utilization: Immune_cells => $Sink; COMpartment*mu2*Immune_cells;
+  IL2_Synthesis: $Source => IL2; COMpartment*Euuation_for_IL2_Production(s2, p2, Immune_cells, Tumor, g3);
+  IL2_Degradation: IL2 => $Sink; COMpartment*mu3*IL2;
+
+  // Species initializations:
+  Source = 0;
+  Tumor = 1;
+  Sink = 0;
+  IL2 = 0;
+  Immune_cells = 0;
+
+  // Compartment initializations:
+  COMpartment = 1;
+
+  // Variable initializations:
+  tau = 1;
+  tau has unit_0;
+  mu2 = 0.03;
+  mu2 has unit_0;
+  c = 0.035;
+  c has unit_0;
+  p1 = 0.1245;
+  p1 has unit_0;
+  g1 = 20000000;
+  g1 has unit_1;
+  s1 = 0;
+  s1 has unit_0;
+  r2 = 0.18;
+  r2 has unit_0;
+  a = 1;
+  a has unit_0;
+  b = 1e-09;
+  b has unit_1;
+  g2 = 100000;
+  g2 has unit_1;
+  mu3 = 10;
+  mu3 has unit_0;
+  p2 = 5;
+  p2 has unit_0;
+  g3 = 1000;
+  g3 has unit_1;
+  s2 = 0;
+  s2 has unit_0;
+
+  // Other declarations:
+  const COMpartment, tau, mu2, c, p1, g1, s1, r2, a, b, g2, mu3, p2, g3, s2;
+
+  // Unit definitions:
+  unit time_unit = 86400 second;
+  unit unit_0 = 1 / 86400e-1 second;
+  unit unit_1 = litre;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1/d";
+  unit_1 is "l";
+  COMpartment is "Microenvr";
+  Tumor_Killing is "Tumor Killing";
+  Immune_cell_Activation is "Immune cell Activation";
+  Immune_cell_Utilization is "Immune cell Utilization";
+  IL2_Synthesis is "IL2 Synthesis";
+  IL2_Degradation is "IL2 Degradation";
+
+  // CV terms:
+  COMpartment hypernym "http://identifiers.org/ncit/C94498"
+  Source hypernym "http://identifiers.org/sbo/SBO:0000291"
+  Tumor hypernym "http://identifiers.org/efo/EFO:0000616"
+  Sink hypernym "http://identifiers.org/sbo/SBO:0000291"
+  IL2 identity "http://identifiers.org/uniprot/P60568"
+  Immune_cells part "http://identifiers.org/bto/BTO:0000801"
+  Immune_cells part "http://identifiers.org/bto/BTO:0000914"
+  Immune_cells part "http://identifiers.org/bto/BTO:0000289"
+  Immune_cells hypernym "http://identifiers.org/ncit/C132890"
+  Tumor_growth property "http://identifiers.org/sbo/SBO:0000610"
+  Tumor_Killing property "http://identifiers.org/go.ref/GO:0001906"
+  Immune_cell_Activation property "http://identifiers.org/sbo/SBO:0000656"
+  Immune_cell_Utilization property "http://identifiers.org/sbo/SBO:0000394"
+  IL2_Synthesis property "http://identifiers.org/sbo/SBO:0000393"
+  IL2_Degradation property "http://identifiers.org/sbo/SBO:0000179"
+end
+
+Kirschner1998_Immunotherapy_Tumour is "Kirschner1998_Immunotherapy_Tumour"
+
+Kirschner1998_Immunotherapy_Tumour model_entity_is "http://identifiers.org/biomodels.db/MODEL1006230038",
+                                                   "http://identifiers.org/biomodels.db/BIOMD0000000732"
+Kirschner1998_Immunotherapy_Tumour part "http://identifiers.org/ncit/C153548"
+Kirschner1998_Immunotherapy_Tumour identity "http://identifiers.org/biomodels.db/MODEL1006230038"
+Kirschner1998_Immunotherapy_Tumour hypernym "http://identifiers.org/go/GO:0002347"
+Kirschner1998_Immunotherapy_Tumour property "http://identifiers.org/mamo/MAMO_0000046"
+Kirschner1998_Immunotherapy_Tumour taxon "http://identifiers.org/taxonomy/9606"
+Kirschner1998_Immunotherapy_Tumour description "http://identifiers.org/pubmed/9785481"

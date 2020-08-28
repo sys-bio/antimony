@@ -1,0 +1,117 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function Function_for_Tumor_Elimination(p, k, T_C, N)
+  p*k*T_C*N;
+end
+
+Function_for_Tumor_Elimination is "Function_for_Tumor_Elimination"
+
+function Function_for_T_Cytotoxic_Infiltration_Active(T_C, T_H)
+  T_C*T_H;
+end
+
+Function_for_T_Cytotoxic_Infiltration_Active is "Function_for_T_Cytotoxic_Infiltration_Active"
+
+function Function_for_T_Cytotoxic_Death(T_C)
+  T_C;
+end
+
+Function_for_T_Cytotoxic_Death is "Function_for_T_Cytotoxic_Death"
+
+function Function_for_T_Cytotoxic_Tumor_Infiltrate_Elimination(p, k, T_C, N)
+  (1 - p)*k*T_C*N;
+end
+
+Function_for_T_Cytotoxic_Tumor_Infiltrate_Elimination is "Function_for_T_Cytotoxic_Tumor_Infiltrate_Elimination"
+
+function Function_for_Tumor_Growth(gamma_, N)
+  gamma_*(1 - N)*N;
+end
+
+Function_for_Tumor_Growth is "Function_for_Tumor_Growth"
+
+function Function_for_T_Helper_Infiltration_Active(alpha, Ntilde, T_H, N)
+  alpha*N*T_H/(Ntilde^2 + N^2);
+end
+
+Function_for_T_Helper_Infiltration_Active is "Function_for_T_Helper_Infiltration_Active"
+
+
+model *L2V4_Model_of_Dritschel2018___A_mathematical_model_of_cytotoxic_and_helper_T_cell_interactions_in_a_tumour_microenvironment()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species N_Tumour in compartment_, T_H in compartment_, T_C in compartment_;
+
+  // Reactions:
+  Tumor_Growth:  => N_Tumour; compartment_*Function_for_Tumor_Growth(gamma_, N_Tumour);
+  Tumor_Elimination: N_Tumour => ; compartment_*Function_for_Tumor_Elimination(p, k, T_C, N_Tumour);
+  T_Helper_Infiltration_Passive:  => T_H; compartment_*Constant_flux__irreversible(sigma_H);
+  T_Cytotoxic_Infiltration_Passive:  => T_C; compartment_*Constant_flux__irreversible(sigma_C);
+  T_Cytotoxic_Infiltration_Active:  => T_C; compartment_*Function_for_T_Cytotoxic_Infiltration_Active(T_C, T_H);
+  T_Helper_Infiltration_Active:  => T_H; compartment_*Function_for_T_Helper_Infiltration_Active(alpha, Ntilde, T_H, N_Tumour);
+  T_Cytotoxic_Death: T_C => ; compartment_*Function_for_T_Cytotoxic_Death(T_C);
+  T_Cytotoxic_Tumor_Infiltrate_Elimination: T_C => ; compartment_*Function_for_T_Cytotoxic_Tumor_Infiltrate_Elimination(p, k, T_C, N_Tumour);
+  T_Helper_Death: T_H => ; compartment_*delta_H*T_H;
+
+  // Species initializations:
+  N_Tumour = 0.01;
+  T_H = 0.6;
+  T_C = 4.5;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  gamma_ = 10;
+  p = 0.5;
+  k = 4.15;
+  sigma_H = 0.5;
+  alpha = 0.19;
+  Ntilde = 0.04;
+  delta_H = 1;
+  sigma_C = 2;
+
+  // Other declarations:
+  const compartment_, gamma_, p, k, sigma_H, alpha, Ntilde, delta_H, sigma_C;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+  gamma_ is "gamma";
+
+  // CV terms:
+  compartment_ hypernym "http://identifiers.org/ncit/C94498"
+  N_Tumour hypernym "http://identifiers.org/ncit/C12922"
+  T_H hypernym "http://identifiers.org/cl/CL:0000912"
+  T_C hypernym "http://identifiers.org/cl/CL:0000910"
+  Tumor_Growth hypernym "http://identifiers.org/ncit/C18081"
+  Tumor_Elimination hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Tumor_Elimination hypernym "http://identifiers.org/ncit/C18246"
+  T_Helper_Infiltration_Passive hypernym "http://identifiers.org/go/GO:0035684"
+  T_Cytotoxic_Infiltration_Passive hypernym "http://identifiers.org/go/GO:0072683"
+  T_Cytotoxic_Infiltration_Active hypernym "http://identifiers.org/go/GO:0072683"
+  T_Helper_Infiltration_Active hypernym "http://identifiers.org/go/GO:0035684"
+  T_Cytotoxic_Death hypernym "http://identifiers.org/go/GO:0008219"
+  T_Cytotoxic_Tumor_Infiltrate_Elimination hypernym "http://identifiers.org/go/GO:0008219"
+  T_Helper_Death hypernym "http://identifiers.org/go/GO:0008219"
+end
+
+L2V4_Model_of_Dritschel2018___A_mathematical_model_of_cytotoxic_and_helper_T_cell_interactions_in_a_tumour_microenvironment is "Dritschel2018 - A mathematical model of cytotoxic and helper T cell interactions in a tumour microenvironment"
+
+L2V4_Model_of_Dritschel2018___A_mathematical_model_of_cytotoxic_and_helper_T_cell_interactions_in_a_tumour_microenvironment description "http://identifiers.org/doi/10.1080/23737867.2018.1465863"
+L2V4_Model_of_Dritschel2018___A_mathematical_model_of_cytotoxic_and_helper_T_cell_interactions_in_a_tumour_microenvironment origin "http://identifiers.org/pubmed/8186756"
+L2V4_Model_of_Dritschel2018___A_mathematical_model_of_cytotoxic_and_helper_T_cell_interactions_in_a_tumour_microenvironment model_entity_is "http://identifiers.org/biomodels.db/MODEL1907230003",
+                                                                                                                                            "http://identifiers.org/biomodels.db/BIOMD0000000763"
+L2V4_Model_of_Dritschel2018___A_mathematical_model_of_cytotoxic_and_helper_T_cell_interactions_in_a_tumour_microenvironment hypernym "http://identifiers.org/mamo/MAMO_0000046"
+L2V4_Model_of_Dritschel2018___A_mathematical_model_of_cytotoxic_and_helper_T_cell_interactions_in_a_tumour_microenvironment hypernym "http://identifiers.org/go/GO:0002424"

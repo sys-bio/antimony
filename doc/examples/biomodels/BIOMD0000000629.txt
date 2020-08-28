@@ -1,0 +1,81 @@
+// Created by libAntimony v2.13.0
+model *Haffez2017_RAR_interaction_with_synthetic_analogues()
+
+  // Compartments and Species:
+  compartment RAR_retinoids;
+  species L in RAR_retinoids, LR in RAR_retinoids, R in RAR_retinoids, CA in RAR_retinoids;
+  species LRCA in RAR_retinoids;
+
+  // Reactions:
+  LR_complx: L + R -> LR; RAR_retinoids*(LR_complx_k1*L*R - LR_complx_k2*LR);
+  LRCA_complx: LR + CA -> LRCA; RAR_retinoids*(LRCA_complx_k1*LR*CA - LRCA_complx_k2*LRCA);
+
+  // Species initializations:
+  L = 0.0005;
+  LR = 0;
+  R = 0.0035;
+  CA = 30;
+  LRCA = 0;
+
+  // Compartment initializations:
+  RAR_retinoids = 1;
+
+  // Variable initializations:
+  LR_complx_k1 = 0.6;
+  LR_complx_k2 = 0.1;
+  LRCA_complx_k1 = 0.014;
+  LRCA_complx_k2 = 0.2;
+
+  // Other declarations:
+  const RAR_retinoids;
+
+  // Unit definitions:
+  unit time_unit = 60 second;
+  unit substance = 1e-6 mole;
+
+  // Display Names:
+  time_unit is "time";
+  RAR_retinoids is "Cell";
+  L is "Ligand";
+  LR is "Ligand-Receptor";
+  R is "Receptor";
+  CA is "CoActivator";
+  LRCA is "Ligand-Receptor-CoActivator";
+  LR_complx is "Ligand-Receptor complex formation";
+  LRCA_complx is "Ligand-Receptor-CoActivator complex formation";
+
+  // SBO terms:
+  RAR_retinoids.sboTerm = 290
+  L.sboTerm = 280
+  LR.sboTerm = 296
+  R.sboTerm = 244
+  CA.sboTerm = 459
+  LRCA.sboTerm = 296
+  LR_complx.sboTerm = 526
+  LR_complx_k1.sboTerm = 341
+  LR_complx_k2.sboTerm = 338
+  LRCA_complx.sboTerm = 296
+  LRCA_complx_k1.sboTerm = 341
+  LRCA_complx_k2.sboTerm = 338
+
+  // CV terms:
+  RAR_retinoids property "http://identifiers.org/go/GO:0005623"
+  L identity "http://identifiers.org/chebi/CHEBI:15367"
+  LR part "http://identifiers.org/chebi/CHEBI:15367",
+          "http://identifiers.org/uniprot/P10276"
+  R hypernym "http://identifiers.org/uniprot/P10276"
+  CA version "http://identifiers.org/chebi/CHEBI:42492",
+             "http://identifiers.org/chebi/CHEBI:16670"
+  LRCA part "http://identifiers.org/chebi/CHEBI:15367",
+            "http://identifiers.org/uniprot/P10276"
+  LR_complx hypernym "http://identifiers.org/go/GO:0016922"
+  LRCA_complx part "http://identifiers.org/go/GO:0016922"
+end
+
+Haffez2017_RAR_interaction_with_synthetic_analogues is "Haffez2017 - RAR interaction with synthetic analogues"
+
+Haffez2017_RAR_interaction_with_synthetic_analogues model_entity_is "http://identifiers.org/biomodels.db/MODEL1702240000"
+Haffez2017_RAR_interaction_with_synthetic_analogues model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000629"
+Haffez2017_RAR_interaction_with_synthetic_analogues description "http://identifiers.org/doi/10.1039/C6MD00680A"
+Haffez2017_RAR_interaction_with_synthetic_analogues parthood "http://identifiers.org/go/GO:0048384"
+Haffez2017_RAR_interaction_with_synthetic_analogues taxon "http://identifiers.org/taxonomy/131567"

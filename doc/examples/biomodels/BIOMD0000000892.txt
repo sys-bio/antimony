@@ -1,0 +1,126 @@
+// Created by libAntimony v2.13.0
+function Function_for_formation_of_target_cells(s, r, T, k)
+  s + r*T*(1 - (T + 1)/k);
+end
+
+Function_for_formation_of_target_cells is "Function for formation of target cells"
+
+function Function_for_removal_of_target_cell(d1, T, c, n1, alpha, V1)
+  d1*T + (1 - c*n1)*alpha*V1*T;
+end
+
+Function_for_removal_of_target_cell is "Function for removal of target cell"
+
+function Function_for_formation_of_infected_cell(c, n1, alpha, V1, T)
+  (1 - c*n1)*alpha*V1*T;
+end
+
+Function_for_formation_of_infected_cell is "Function for formation of infected cell"
+
+function Function_for_removal_of_infected_cell(d2, I)
+  d2*I;
+end
+
+Function_for_removal_of_infected_cell is "Function for removal of infected cell"
+
+function Function_for_formation_of_infected_virion(nr, n1, beta, I)
+  (1 - (nr + n1)/2)*beta*I;
+end
+
+Function_for_formation_of_infected_virion is "Function for formation of infected virion"
+
+function Function_for_removal_of_infected_virion(d3, VI)
+  d3*VI;
+end
+
+Function_for_removal_of_infected_virion is "Function for removal of infected virion"
+
+function Function_for_formation_of_noninfected_virion(nr, n1, beta, I)
+  ((nr + n1)/2)*beta*I;
+end
+
+Function_for_formation_of_noninfected_virion is "Function for formation of noninfected virion"
+
+function Function_for_removal_of_noninfected_virion(d3, VNI)
+  d3*VNI;
+end
+
+Function_for_removal_of_noninfected_virion is "Function for removal of noninfected virion"
+
+
+model *Sandip2013___Modeling_the_dynamics_of_hepatitis_C_virus_with_combined_antiviral_drug_therapy__interferon_and_ribavirin()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species T in compartment_, I in compartment_, VI in compartment_, VNI in compartment_;
+
+  // Reactions:
+  Formation_of_target_cells:  => T; compartment_*Function_for_formation_of_target_cells(s, r, T, k);
+  Removal_of_target_cell: T => ; compartment_*Function_for_removal_of_target_cell(d1, T, c, n1, alpha, VI);
+  Formation_infected_cell:  => I; compartment_*Function_for_formation_of_infected_cell(c, n1, alpha, VI, T);
+  Removal_of_infected_cell: I => ; compartment_*Function_for_removal_of_infected_cell(d2, I);
+  Formation_of_infected_virion:  => VI; compartment_*Function_for_formation_of_infected_virion(nr, n1, beta, I);
+  Removal_of_infected_virion: VI => ; compartment_*Function_for_removal_of_infected_virion(d3, VI);
+  Formation_of_non_infected_virion:  => VNI; compartment_*Function_for_formation_of_noninfected_virion(nr, n1, beta, I);
+  Removal_of_non_infected_virion: VNI => ; compartment_*Function_for_removal_of_noninfected_virion(d3, VNI);
+
+  // Species initializations:
+  T = 1000000;
+  I = 1000000;
+  VI = 10000000;
+  VNI = 1000000;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  s = 1;
+  r = 1.99;
+  k = 36000000;
+  d1 = 0.01;
+  alpha = 2.25e-07;
+  d2 = 1;
+  beta = 2.9;
+  d3 = 6;
+  nr = 0;
+  c = 0.5;
+  n1 = 0.8;
+
+  // Other declarations:
+  const compartment_, s, r, k, d1, alpha, d2, beta, d3, nr, c, n1;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  Formation_of_target_cells is "Formation of target cells";
+  Removal_of_target_cell is "Removal of target cell";
+  Formation_infected_cell is "Formation infected cell";
+  Removal_of_infected_cell is "Removal of infected cell";
+  Formation_of_infected_virion is "Formation of infected virion";
+  Removal_of_infected_virion is "Removal of infected virion";
+  Formation_of_non_infected_virion is "Formation of non infected virion";
+  Removal_of_non_infected_virion is "Removal of non infected virion";
+
+  // CV terms:
+  T instance "http://identifiers.org/ncit/C12922"
+  I property "http://identifiers.org/bto/BTO:0000575"
+  Formation_of_target_cells property "http://identifiers.org/ncit/C25513"
+  Removal_of_target_cell instance "http://identifiers.org/ncit/C64914"
+  Formation_infected_cell property "http://identifiers.org/ncit/C25513"
+  Removal_of_infected_cell instance "http://identifiers.org/ncit/C64914"
+  Formation_of_infected_virion property "http://identifiers.org/ncit/C25513"
+  Removal_of_infected_virion instance "http://identifiers.org/ncit/C64914"
+  Formation_of_non_infected_virion property "http://identifiers.org/ncit/C25513"
+  Removal_of_non_infected_virion instance "http://identifiers.org/ncit/C64914"
+end
+
+Sandip2013___Modeling_the_dynamics_of_hepatitis_C_virus_with_combined_antiviral_drug_therapy__interferon_and_ribavirin is "Sandip2013 - Modeling the dynamics of hepatitis C virus with combined antiviral drug therapy: interferon and ribavirin."
+
+Sandip2013___Modeling_the_dynamics_of_hepatitis_C_virus_with_combined_antiviral_drug_therapy__interferon_and_ribavirin description "http://identifiers.org/pubmed/23891586"
+Sandip2013___Modeling_the_dynamics_of_hepatitis_C_virus_with_combined_antiviral_drug_therapy__interferon_and_ribavirin model_entity_is "http://identifiers.org/biomodels.db/MODEL1912130002",
+                                                                                                                                       "http://identifiers.org/biomodels.db/BIOMD0000000892"
+Sandip2013___Modeling_the_dynamics_of_hepatitis_C_virus_with_combined_antiviral_drug_therapy__interferon_and_ribavirin property "http://identifiers.org/mamo/MAMO_0000046"
+Sandip2013___Modeling_the_dynamics_of_hepatitis_C_virus_with_combined_antiviral_drug_therapy__interferon_and_ribavirin taxon "http://identifiers.org/taxonomy/9606"

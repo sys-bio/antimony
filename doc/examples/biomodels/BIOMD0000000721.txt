@@ -1,0 +1,160 @@
+// Created by libAntimony v2.13.0
+function Function_for_reaction_1(alpha, sub, g, S, K_S)
+  alpha*sub^g*(1 - S/K_S);
+end
+
+Function_for_reaction_1 is "Function for reaction 1"
+
+function Function_for_reaction_2(alpha, S, g, K_S, g2)
+  alpha*S^g*(1 - S/K_S)*g2;
+end
+
+Function_for_reaction_2 is "Function for reaction 2"
+
+function Function_for_reaction_3(alpha, pro, g, S, K_S)
+  alpha*pro^g*(1 - S/K_S);
+end
+
+Function_for_reaction_3 is "Function for reaction 3"
+
+function Function_for_reaction_4(beta1, P, f12, C, f14)
+  beta1*P^f12*C^f14;
+end
+
+Function_for_reaction_4 is "Function for reaction 4"
+
+function Function_for_reaction_6_and_8(beta, sub, f)
+  beta*sub^f;
+end
+
+Function_for_reaction_6_and_8 is "Function for reaction 6 and 8"
+
+function Function_for_reaction_7(alpha, S, g41, P, g42, epsilon, B, g43, K_S, g44)
+  alpha*S^g41*P^g42*(epsilon + B)^g43*(1 - S/K_S)^g44;
+end
+
+Function_for_reaction_7 is "Function for reaction 7"
+
+function Function_for_reaction_9(k1, C)
+  k1*C;
+end
+
+Function_for_reaction_9 is "Function for reaction 9"
+
+function Function_for_reaction_10(k2, B)
+  k2*B;
+end
+
+Function_for_reaction_10 is "Function for reaction 10"
+
+
+model *New_Model()
+
+  // Compartments and Species:
+  compartment Bone;
+  species Osteocytes__S in Bone, Pre_Osteoblasts__P in Bone, Osteoblasts__B in Bone;
+  species Osteoclasts__C in Bone, Bone_volume__z in Bone;
+
+  // Reactions:
+  Differentiation_of_Osteoblast_to_Osteocytes: Osteoblasts__B => Osteocytes__S; Bone*Function_for_reaction_1(alpha_1, Osteoblasts__B, g_31, Osteocytes__S, K_S);
+  Differentiation_of_MSC_cells_to_Pre_Osteoblast_cells:  => Pre_Osteoblasts__P; Bone*Function_for_reaction_2(alpha_2, Osteocytes__S, g_21, K_S, g_22);
+  Proliferation_of_pre_osteoblasts:  => Pre_Osteoblasts__P; Bone*Function_for_reaction_3(alpha_3, Pre_Osteoblasts__P, g_32, Osteocytes__S, K_S);
+  Differentiation_of_Pre_Osteoblast_to_mature_osteoblast: Pre_Osteoblasts__P => Osteoblasts__B; Bone*Function_for_reaction_4(beta_1, Pre_Osteoblasts__P, f_12, Osteoclasts__C, f_14);
+  Apoptosis_of_pre_osteoblast: Pre_Osteoblasts__P => ; Bone*delta*Pre_Osteoblasts__P;
+  Apoptosis_of_osteoblasts: Osteoblasts__B => ; Bone*Function_for_reaction_6_and_8(beta_2, Osteoblasts__B, f_23);
+  Differentiation_of_pre_osteoclast_to_osteoclasts:  => Osteoclasts__C; Bone*Function_for_reaction_7(alpha_4, Osteocytes__S, g_41, Pre_Osteoblasts__P, g_42, epsilon, Osteoblasts__B, g_43, K_S, g_44);
+  Apoptosis_of_osteoclasts: Osteoclasts__C => ; Bone*Function_for_reaction_6_and_8(beta_3, Osteoclasts__C, f_34);
+  Resorption_of_bone: Bone_volume__z => ; Bone*Function_for_reaction_9(k1, Osteoclasts__C);
+  Formation_of_bone:  => Bone_volume__z; Bone*Function_for_reaction_10(k2, Osteoblasts__B);
+
+  // Species initializations:
+  Osteocytes__S = K_S - rho;
+  Pre_Osteoblasts__P = 0;
+  Osteoblasts__B = 0;
+  Osteoclasts__C = 0;
+  Bone_volume__z = 100;
+
+  // Compartment initializations:
+  Bone = 1;
+
+  // Variable initializations:
+  K_S = 200;
+  rho = 20;
+  alpha_1 = 0.5;
+  alpha_2 = 0.1;
+  alpha_3 = 0.1;
+  beta_1 = 0.1;
+  delta = 0.1;
+  beta_2 = 0.1;
+  alpha_4 = 0.1;
+  k1 = 0.7;
+  k2 = 0.015445;
+  g_31 = 1;
+  g_21 = 2;
+  g_22 = 1;
+  g_32 = 1;
+  g_41 = 1;
+  g_42 = 1;
+  g_43 = -1;
+  g_44 = 1;
+  f_12 = 1;
+  f_14 = 1;
+  f_23 = 1;
+  f_34 = 1;
+  epsilon = 1;
+  beta_3 = 0.1;
+
+  // Other declarations:
+  const Bone, K_S, rho, alpha_1, alpha_2, alpha_3, beta_1, delta, beta_2;
+  const alpha_4, k1, k2, g_31, g_21, g_22, g_32, g_41, g_42, g_43, g_44, f_12;
+  const f_14, f_23, f_34, epsilon, beta_3;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+  Osteocytes__S is "Osteocytes (S)";
+  Pre_Osteoblasts__P is "Pre-Osteoblasts (P)";
+  Osteoblasts__B is "Osteoblasts (B)";
+  Osteoclasts__C is "Osteoclasts (C)";
+  Bone_volume__z is "Bone volume (z)";
+  Differentiation_of_Osteoblast_to_Osteocytes is "Differentiation of Osteoblast to Osteocytes";
+  Differentiation_of_MSC_cells_to_Pre_Osteoblast_cells is "Differentiation of MSC cells to Pre-Osteoblast cells";
+  Proliferation_of_pre_osteoblasts is "Proliferation of pre-osteoblasts";
+  Differentiation_of_Pre_Osteoblast_to_mature_osteoblast is "Differentiation of Pre-Osteoblast to mature osteoblast";
+  Apoptosis_of_pre_osteoblast is "Apoptosis of pre-osteoblast";
+  Apoptosis_of_osteoblasts is "Apoptosis of osteoblasts";
+  Differentiation_of_pre_osteoclast_to_osteoclasts is "Differentiation of pre-osteoclast to osteoclasts";
+  Apoptosis_of_osteoclasts is "Apoptosis of osteoclasts";
+  Resorption_of_bone is "Resorption of bone";
+  Formation_of_bone is "Formation of bone";
+
+  // CV terms:
+  Bone property "http://identifiers.org/bto/BTO:0000140"
+  Osteocytes__S identity "http://identifiers.org/bto/BTO:0002038"
+  Pre_Osteoblasts__P hypernym "http://identifiers.org/bto/BTO:0001593"
+  Osteoblasts__B identity "http://identifiers.org/bto/BTO:0001593"
+  Osteoclasts__C identity "http://identifiers.org/bto/BTO:0000968"
+  Differentiation_of_Osteoblast_to_Osteocytes hypernym "http://identifiers.org/omit/0003784"
+  Differentiation_of_MSC_cells_to_Pre_Osteoblast_cells hypernym "http://identifiers.org/omit/0003784"
+  Proliferation_of_pre_osteoblasts hypernym "http://identifiers.org/go/GO:0033687"
+  Differentiation_of_Pre_Osteoblast_to_mature_osteoblast hypernym "http://identifiers.org/omit/0003784"
+  Apoptosis_of_pre_osteoblast hypernym "http://identifiers.org/ncit/C17557"
+  Apoptosis_of_osteoblasts hypernym "http://identifiers.org/ncit/C17557"
+  Differentiation_of_pre_osteoclast_to_osteoclasts hypernym "http://identifiers.org/omit/0003784"
+  Apoptosis_of_osteoclasts hypernym "http://identifiers.org/ncit/C17557"
+  Resorption_of_bone hypernym "http://identifiers.org/omit/0003220"
+  Formation_of_bone hypernym "http://identifiers.org/ncit/C53954"
+end
+
+New_Model is "Graham2013 - Role of osteocytes in targeted bone remodeling"
+
+New_Model model_entity_is "http://identifiers.org/biomodels.db/MODEL1811150001",
+                          "http://identifiers.org/biomodels.db/BIOMD0000000721"
+New_Model property "http://identifiers.org/mamo/MAMO_0000046"
+New_Model property "http://identifiers.org/go/GO:0046849"
+New_Model taxon "http://identifiers.org/taxonomy/9606"
+New_Model description "http://identifiers.org/pubmed/23717504"

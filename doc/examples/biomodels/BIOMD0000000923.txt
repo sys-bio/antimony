@@ -1,0 +1,115 @@
+// Created by libAntimony v2.13.0
+function MAX(a, b)
+  piecewise(a, a >= b, b);
+end
+
+function Rate_Law_for_reaction_for_O_b(alpha2, O_c, g12, f12, B, s, O_b, g22, f22, beta2)
+  alpha2*O_c^(g12*(1 + f12*(B/s)))*O_b^(g22 - f22*(B/s)) - beta2*O_b;
+end
+
+Rate_Law_for_reaction_for_O_b is "Rate Law for reaction for O_b"
+
+function Rate_Law_for_reaction_for_O_c(alpha1, O_c, g11, f11, B, s, O_b, g21, f21, beta1)
+  alpha1*O_c^(g11*(1 + f11*(B/s)))*O_b^(g21*(1 + f21*(B/s))) - beta1*O_c;
+end
+
+Rate_Law_for_reaction_for_O_c is "Rate Law for reaction for O_c"
+
+function Rate_Law_for_reaction_fo_z(K1, O_c, O_cbar, k2, O_b, O_bbar)
+  -K1*MAX(O_c - O_cbar, 0) + k2*MAX(O_b - O_bbar, 0);
+end
+
+Rate_Law_for_reaction_fo_z is "Rate Law for reaction fo z"
+
+function Rate_Law_for_reaction_for_B(gamma_B, V, B, s)
+  (gamma_B - V)*B*log10(s/B);
+end
+
+Rate_Law_for_reaction_for_B is "Rate Law for reaction for B"
+
+
+model *Li_2012_Modelling_osteomyelitis_Control_Model()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species Bone_Density__z in compartment_, Osteoblasts__O_b in compartment_;
+  species Osteoclasts__O_c in compartment_, B in compartment_;
+
+  // Reactions:
+  reaction_fo_z:  => Bone_Density__z; compartment_*Rate_Law_for_reaction_fo_z(k1, Osteoclasts__O_c, O_cbar, k2, Osteoblasts__O_b, O_bbar);
+  reaction_for_O_b:  => Osteoblasts__O_b; compartment_*Rate_Law_for_reaction_for_O_b(alpha2, Osteoclasts__O_c, g12, f12, B, s, Osteoblasts__O_b, g22, f22, beta2);
+  reaction_for_O_c:  => Osteoclasts__O_c; compartment_*Rate_Law_for_reaction_for_O_c(alpha1, Osteoclasts__O_c, g11, f11, B, s, Osteoblasts__O_b, g21, f21, beta1);
+  reaction_for_B:  => B; compartment_*Rate_Law_for_reaction_for_B(gamma_B, V, B, s);
+
+  // Species initializations:
+  Bone_Density__z = 100;
+  Osteoblasts__O_b = 316;
+  Osteoclasts__O_c = 15;
+  B = 1;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  alpha1 = 3;
+  alpha2 = 4;
+  beta1 = 0.2;
+  beta2 = 0.02;
+  g11 = 1.1;
+  g12 = 1;
+  g22 = 0;
+  g21 = -0.5;
+  k1 = 0.0748;
+  k2 = 0.0006395;
+  g_ageing = 2;
+  g_por = 0.1;
+  gamma_B = 0.005;
+  s = 100;
+  V = 0.007;
+  t_treat = 200;
+  f11 = 0.005;
+  f12 = 0;
+  f22 = 0.2;
+  f21 = 0.005;
+  O_cbar = 1.78;
+  O_bbar = 177.91;
+
+  // Other declarations:
+  const compartment_, alpha1, alpha2, beta1, beta2, g11, g12, g22, g21, k1;
+  const k2, g_ageing, g_por, gamma_B, s, V, t_treat, f11, f12, f22, f21, O_cbar;
+  const O_bbar;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+  Bone_Density__z is "Bone Density (z)";
+  Osteoblasts__O_b is "Osteoblasts (O_b)";
+  Osteoclasts__O_c is "Osteoclasts (O_c)";
+  reaction_fo_z is "reaction fo z";
+  reaction_for_O_b is "reaction for O_b";
+  reaction_for_O_c is "reaction for O_c";
+  reaction_for_B is "reaction for B";
+
+  // CV terms:
+  Bone_Density__z property "http://identifiers.org/omit/0016250"
+  Osteoblasts__O_b property "http://identifiers.org/omit/0011012"
+  Osteoclasts__O_c property "http://identifiers.org/omit/0011016"
+  B property "http://identifiers.org/ncit/C50921"
+  reaction_for_B property "http://identifiers.org/ncit/C122576"
+end
+
+Li_2012_Modelling_osteomyelitis_Control_Model is "Liò2012_Modelling osteomyelitis_Control Model"
+
+Li_2012_Modelling_osteomyelitis_Control_Model origin "http://identifiers.org/pubmed/14499354"
+Li_2012_Modelling_osteomyelitis_Control_Model description "http://identifiers.org/pubmed/23095605"
+Li_2012_Modelling_osteomyelitis_Control_Model model_entity_is "http://identifiers.org/biomodels.db/MODEL2003170001",
+                                                              "http://identifiers.org/biomodels.db/BIOMD0000000923"
+Li_2012_Modelling_osteomyelitis_Control_Model container "http://identifiers.org/bto/BTO:0000140"
+Li_2012_Modelling_osteomyelitis_Control_Model taxon "http://identifiers.org/taxonomy/9606"
+Li_2012_Modelling_osteomyelitis_Control_Model property "http://identifiers.org/ncit/C27577",
+                                                       "http://identifiers.org/mamo/MAMO_0000046"

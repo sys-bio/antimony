@@ -1,0 +1,756 @@
+// Created by libAntimony v2.13.0
+function Function_for_Growth_of_S(gamma_S, p_1, p_2, S)
+  gamma_S*(1 - p_1 - p_2)*S;
+end
+
+Function_for_Growth_of_S is "Function for Growth of S"
+
+function Function_for_natural_death_of_S(delta_S, S)
+  delta_S*S;
+end
+
+Function_for_natural_death_of_S is "Function for natural death of S"
+
+function Function_for_mutation_of_S(gamma_S, m_S, p_1, p2, S)
+  gamma_S*m_S*(1 - p_1/2 - p2)*S;
+end
+
+Function_for_mutation_of_S is "Function for mutation of S"
+
+function Function_for_asymmetric_differentiation_of_S(gamma_S, p_1, S)
+  gamma_S*p_1*S;
+end
+
+Function_for_asymmetric_differentiation_of_S is "Function for asymmetric differentiation of S"
+
+function Function_for_symmetric_differentiation_of_S(p_2, gamma_S, S)
+  p_2*gamma_S*S;
+end
+
+Function_for_symmetric_differentiation_of_S is "Function for symmetric differentiation of S"
+
+function Function_for_growth_of_SR(gamma_S, p_1, p_2, S_R)
+  gamma_S*(1 - p_1 - p_2)*S_R;
+end
+
+Function_for_growth_of_SR is "Function for growth of SR"
+
+function Function_for_natural_death_of_SR(delta_S, S_R)
+  delta_S*S_R;
+end
+
+Function_for_natural_death_of_SR is "Function for natural death of SR"
+
+function Function_for_asymmetric_differentiation_of_SR(p_1, gamma_S, S_R)
+  p_1*gamma_S*S_R;
+end
+
+Function_for_asymmetric_differentiation_of_SR is "Function for asymmetric differentiation of SR"
+
+function Function_for_symmetric_differentiation_of_SR(p_2, gamma_S, S_R)
+  p_2*gamma_S*S_R;
+end
+
+Function_for_symmetric_differentiation_of_SR is "Function for symmetric differentiation of SR"
+
+function Function_for_Gompertzian_growth_of_C(gamma_C, m_C, K_tumor, C, r_1)
+  gamma_C*(1 - m_C)*ln(0.5*K_tumor/(C + r_1));
+end
+
+Function_for_Gompertzian_growth_of_C is "Function for Gompertzian growth of C"
+
+function Function_for_natural_death_of_C(delta_C, C)
+  delta_C*C;
+end
+
+Function_for_natural_death_of_C is "Function for natural death of C"
+
+function Function_of_mutation_of_C(m_C, gamma_C, C)
+  m_C*gamma_C*C;
+end
+
+Function_of_mutation_of_C is "Function of mutation of C"
+
+function Function_of_Gompertzian_growth_of_CR(gamma_C, C_R, K_tumor, r_2)
+  gamma_C*C_R*ln(0.5*K_tumor/(C_R + r_2));
+end
+
+Function_of_Gompertzian_growth_of_CR is "Function of Gompertzian growth of CR"
+
+function Function_of_natural_death_of_CR(delta_CR, C_R)
+  delta_CR*C_R;
+end
+
+Function_of_natural_death_of_CR is "Function of natural death of CR"
+
+function Function_of_activation_of_M1(gamma_M1, M_1, C, C_R, lambda_M1)
+  gamma_M1*M_1*(C + C_R)/(M_1 + lambda_M1);
+end
+
+Function_of_activation_of_M1 is "Function of activation of M1"
+
+function Function_of_activation_of_M2(gamma_M2, M_2, C, C_R, lambda_M2)
+  gamma_M2*M_2*(C + C_R)/(M_2 + lambda_M2);
+end
+
+Function_of_activation_of_M2 is "Function of activation of M2"
+
+function Function_of_activation_of_T_H1(lambda_TH1, T_H1, M_1, gamma_TH1)
+  gamma_TH1*T_H1*M_1/(lambda_TH1 + T_H1);
+end
+
+Function_of_activation_of_T_H1 is "Function of activation of T_H1"
+
+function Function_of_activation_of_T_H2(lambda_TH2, T_H2, M_2, gamma_TH2)
+  gamma_TH2*T_H2*M_2/(lambda_TH2 + T_H2);
+end
+
+Function_of_activation_of_T_H2 is "Function of activation of T_H2"
+
+function Function_of_natural_death_of_M1(delta_M1, M_1)
+  delta_M1*M_1;
+end
+
+Function_of_natural_death_of_M1 is "Function of natural death of M1"
+
+function Function_of_natural_death_of_M2(delta_M2, M_2)
+  delta_M2*M_2;
+end
+
+Function_of_natural_death_of_M2 is "Function of natural death of M2"
+
+function Function_of_natural_death_of_T_H1(delta_TH1, T_H1)
+  delta_TH1*T_H1;
+end
+
+Function_of_natural_death_of_T_H1 is "Function of natural death of T_H1"
+
+function Function_of_natural_death_of_T_H2(delta_TH2, T_H2)
+  delta_TH2*T_H2;
+end
+
+Function_of_natural_death_of_T_H2 is "Function of natural death of T_H2"
+
+function Function_of_Activation_of_T_C_Cancer(gamma_Tc, T_C, C, C_R, lambda_Tc1)
+  gamma_Tc*T_C*(C + C_R)/(T_C + lambda_Tc1);
+end
+
+Function_of_Activation_of_T_C_Cancer is "Function of Activation of T_C;Cancer"
+
+function Function_of_Acitvation_of_T_C__T_H1(gamma_Tc, T_C, T_H1, lambda_Tc4)
+  gamma_Tc*T_C*T_H1/(T_C + lambda_Tc4);
+end
+
+Function_of_Acitvation_of_T_C__T_H1 is "Function of Acitvation of T_C; T_H1"
+
+function Function_of_Elimination_of_T_C_by_T_reg(myu_TcTreg, T_C, T_reg, lambda_Tc3)
+  myu_TcTreg*T_C*T_reg/(lambda_Tc3 + T_reg);
+end
+
+Function_of_Elimination_of_T_C_by_T_reg is "Function of Elimination of T_C by T_reg"
+
+function Function_of_inhibition_of_T_C(myu_TcS, T_C, S, S_R, lambda_Tc2)
+  myu_TcS*T_C*(S + S_R)/(T_C + lambda_Tc2);
+end
+
+Function_of_inhibition_of_T_C is "Function of inhibition of T_C"
+
+function Function_of_natural_death_of_T_C(delta_Tc, T_C)
+  delta_Tc*T_C;
+end
+
+Function_of_natural_death_of_T_C is "Function of natural death of T_C"
+
+function Function_of_Activation_of_T_reg(gamma_Treg, T_reg, M_2, lambda_Treg2)
+  gamma_Treg*T_reg*M_2/(T_reg + lambda_Treg2);
+end
+
+Function_of_Activation_of_T_reg is "Function of Activation of T_reg"
+
+function Function_of_natural_death_of_T_reg(delta_Treg, T_reg)
+  delta_Treg*T_reg;
+end
+
+Function_of_natural_death_of_T_reg is "Function of natural death of T_reg"
+
+function Function_of_Production_of_IL2(beta_ThiCK3, T_H1)
+  beta_ThiCK3*T_H1;
+end
+
+Function_of_Production_of_IL2 is "Function of Production of IL2"
+
+function Function_of_Degradation_of_IL2(delta_Ck3, IL2)
+  delta_Ck3*IL2;
+end
+
+Function_of_Degradation_of_IL2 is "Function of Degradation of IL2"
+
+function Function_of_Positive_Feedback_from_IL2_to_TH1(myu_Th1Ck3, IL2, T_H1, k9)
+  myu_Th1Ck3*IL2*T_H1/(IL2 + k9);
+end
+
+Function_of_Positive_Feedback_from_IL2_to_TH1 is "Function of Positive Feedback from IL2 to TH1"
+
+function Function_of_Production_of_IFN_gamma__T_C(beta_Tc, T_C)
+  beta_Tc*T_C;
+end
+
+Function_of_Production_of_IFN_gamma__T_C is "Function of Production of IFN_gamma; T_C"
+
+function Function_of_Production_of_IFN_gamma__T_H1(beta_Th1CK2, T_H1)
+  beta_Th1CK2*T_H1;
+end
+
+Function_of_Production_of_IFN_gamma__T_H1 is "Function of Production of IFN_gamma; T_H1"
+
+function Function_of_Degradation_of_IFN_gamma(delta_Ck2, IFN_gamma)
+  delta_Ck2*IFN_gamma;
+end
+
+Function_of_Degradation_of_IFN_gamma is "Function of Degradation of IFN_gamma"
+
+function Function_of_Activation_of_M1__IFN_gamma(myu_M1Ck2, M_1, IFN_gamma, k7)
+  myu_M1Ck2*M_1*IFN_gamma/(IFN_gamma + k7);
+end
+
+Function_of_Activation_of_M1__IFN_gamma is "Function of Activation of M1; IFN_gamma"
+
+function Function_of_Negative_feedback_on_C__IFN_gamma(myu_C2, C, IFN_gamma, k4)
+  myu_C2*C*IFN_gamma/(IFN_gamma + k4);
+end
+
+Function_of_Negative_feedback_on_C__IFN_gamma is "Function of Negative feedback on C; IFN_gamma"
+
+function Function_of_Negative_feedback_on_CR__IFN_gamma(myu_C2, C_R, IFN_gamma, k6)
+  myu_C2*C_R*IFN_gamma/(IFN_gamma + k6);
+end
+
+Function_of_Negative_feedback_on_CR__IFN_gamma is "Function of Negative feedback on CR; IFN_gamma"
+
+function Function_of_Negative_feedback_on_S__IFN_gamma(myu_S, S, IFN_gamma, k1)
+  myu_S*S*IFN_gamma/(IFN_gamma + k1);
+end
+
+Function_of_Negative_feedback_on_S__IFN_gamma is "Function of Negative feedback on S; IFN_gamma"
+
+function Function_of_Negative_feedback_on_SR__IFN_gamma(myu_SR, S_R, IFN_gamma, k2)
+  myu_SR*S_R*IFN_gamma/(IFN_gamma + k2);
+end
+
+Function_of_Negative_feedback_on_SR__IFN_gamma is "Function of Negative feedback on SR; IFN_gamma"
+
+function Function_of_Production_of_IL10__M2(beta_M2, M_2)
+  beta_M2*M_2;
+end
+
+Function_of_Production_of_IL10__M2 is "Function of Production of IL10; M2"
+
+function Function_of_Production_of_IL10__Treg(beta_Treg, T_reg)
+  beta_Treg*T_reg;
+end
+
+Function_of_Production_of_IL10__Treg is "Function of Production of IL10; Treg"
+
+function Function_of_Production_of_IL10__T_H2(beta_Th2, T_H2)
+  beta_Th2*T_H2;
+end
+
+Function_of_Production_of_IL10__T_H2 is "Function of Production of IL10; T_H2"
+
+function Function_of_Degradation_of_IL10(delta_Ck1, IL10)
+  delta_Ck1*IL10;
+end
+
+Function_of_Degradation_of_IL10 is "Function of Degradation of IL10"
+
+function Function_of_Proliferation_on_C__IL10(myu_C1, C, IL10, k3)
+  myu_C1*C*IL10/(IL10 + k3);
+end
+
+Function_of_Proliferation_on_C__IL10 is "Function of Proliferation on C; IL10"
+
+function Function_of_Proliferation_CR__IL10(myu_C1, C_R, IL10, k5)
+  myu_C1*C_R*IL10/(IL10 + k5);
+end
+
+Function_of_Proliferation_CR__IL10 is "Function of Proliferation CR; IL10"
+
+function Function_of_Positive_feedback_on_M2__IL10(myu_M2Ck1, M2, IL10, k10)
+  myu_M2Ck1*M2*IL10/(IL10 + k10);
+end
+
+Function_of_Positive_feedback_on_M2__IL10 is "Function of Positive feedback on M2; IL10"
+
+function Function_of_Positive_feedback_on_Treg__IL10(IL10, myu_TregCk1, T_reg, k11)
+  myu_TregCk1*IL10*T_reg/(T_reg + k11);
+end
+
+Function_of_Positive_feedback_on_Treg__IL10 is "Function of Positive feedback on Treg; IL10"
+
+function Function_for_inhibition_on_T_H1__IL10(myu_Th1Ck1, IL10, T_H1, k8)
+  myu_Th1Ck1*IL10*T_H1/(IL10 + k8);
+end
+
+Function_for_inhibition_on_T_H1__IL10 is "Function for inhibition on T_H1; IL10"
+
+function Function_of_Elimination_of_Cancer_Stem_Cells_S(tck, S, T_C, ktc1)
+  tck*S*T_C/(ktc1 + T_C);
+end
+
+Function_of_Elimination_of_Cancer_Stem_Cells_S is "Function of Elimination of Cancer Stem Cells S"
+
+function Function_of_Elimination_of_Cancer_Cells_C(tck, C, T_C, ktc3)
+  tck*C*T_C/(ktc3 + T_C);
+end
+
+Function_of_Elimination_of_Cancer_Cells_C is "Function of Elimination of Cancer Cells C"
+
+function Function_of_Elimination_of_Resistant_Cancer_Cells_CR(tck, C_R, T_C, ktc4)
+  tck*C_R*T_C/(ktc4 + T_C);
+end
+
+Function_of_Elimination_of_Resistant_Cancer_Cells_CR is "Function of Elimination of Resistant Cancer Cells CR"
+
+function Function_of_Elimination_of_Resistant_Stem_Cells_SR(tck, S_R, T_C, ktc2)
+  tck*S_R*T_C/(ktc2 + T_C);
+end
+
+Function_of_Elimination_of_Resistant_Stem_Cells_SR is "Function of Elimination of Resistant Stem Cells SR"
+
+
+model *New_Model()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species Cancer_Stem_Cells_S in compartment_, Cancer_Cells_C in compartment_;
+  species Resistant_Stem_Cells_S_R in compartment_, Resistant_Cancer_Cells_C_R in compartment_;
+  species M1_Tumor_Associated_Macrophages in compartment_, M2_Tumor_Associated_Macrophages in compartment_;
+  species Type_I_T_helper_Cell_T_H1 in compartment_, Type_II_T_helper_cells_T_H2 in compartment_;
+  species Cytotoxic_T_Cells_T_C in compartment_, Regulatory_T_Cells_T_reg in compartment_;
+  species Interferon_gamma in compartment_, Cytokine_IL10 in compartment_;
+  species Cytokine_IL2 in compartment_, $_100000_SR in compartment_;
+
+  // Assignment Rules:
+  _100000_SR := 100000*Resistant_Stem_Cells_S_R;
+
+  // Reactions:
+  growth_of_Cancer_Stem_Cells_S:  => Cancer_Stem_Cells_S; compartment_*Function_for_Growth_of_S(gamma_S, p_1, p_2, Cancer_Stem_Cells_S);
+  natural_death_of_Cancer_Stem_Cells_S: Cancer_Stem_Cells_S => ; compartment_*Function_for_natural_death_of_S(delta_S, Cancer_Stem_Cells_S);
+  mutation_of_Cancer_Stem_Cells_S: Cancer_Stem_Cells_S => Resistant_Stem_Cells_S_R; compartment_*Function_for_mutation_of_S(gamma_S, m_S, p_1, p_2, Cancer_Stem_Cells_S);
+  asymmetric_differentiation_of_Cancer_Stem_Cells_S: Cancer_Stem_Cells_S => Cancer_Stem_Cells_S + Cancer_Cells_C; compartment_*Function_for_asymmetric_differentiation_of_S(gamma_S, p_1, Cancer_Stem_Cells_S);
+  symmetric_differentiation_of_Cancer_Stem_Cells_S: Cancer_Stem_Cells_S => Cancer_Cells_C; compartment_*Function_for_symmetric_differentiation_of_S(p_2, gamma_S, Cancer_Stem_Cells_S);
+  growth_of_Resistant_Stem_Cells_SR:  => Resistant_Stem_Cells_S_R; compartment_*Function_for_growth_of_SR(gamma_S, p_1, p_2, Resistant_Stem_Cells_S_R);
+  natural_death_of_Resistant_Stem_Cells_SR: Resistant_Stem_Cells_S_R => ; compartment_*Function_for_natural_death_of_SR(delta_S, Resistant_Stem_Cells_S_R);
+  asymmetric_differentiation_of_Resistant_Stem_Cells_SR: Resistant_Stem_Cells_S_R => Resistant_Stem_Cells_S_R + Resistant_Cancer_Cells_C_R; compartment_*Function_for_asymmetric_differentiation_of_SR(p_1, gamma_S, Resistant_Stem_Cells_S_R);
+  symmetric_differentiation_of_Resistant_Stem_Cells_SR: Resistant_Stem_Cells_S_R => Resistant_Cancer_Cells_C_R; compartment_*Function_for_symmetric_differentiation_of_SR(p_2, gamma_S, Resistant_Stem_Cells_S_R);
+  Gompertzian_growth_of_Cancer_Cells_C:  => Cancer_Cells_C; compartment_*Function_for_Gompertzian_growth_of_C(gamma_C, m_C, K_tumor, Cancer_Cells_C, r_1);
+  natural_death_of_Cancer_Cells_C: Cancer_Cells_C => ; compartment_*Function_for_natural_death_of_C(delta_C, Cancer_Cells_C);
+  mutation_of_Cancer_Cells_C: Cancer_Cells_C => Resistant_Cancer_Cells_C_R; compartment_*Function_of_mutation_of_C(m_C, gamma_C, Cancer_Cells_C);
+  Gompertzian_growth_of_Resistant_Cancer_Cells_CR:  => Resistant_Cancer_Cells_C_R; compartment_*Function_of_Gompertzian_growth_of_CR(gamma_C, Resistant_Cancer_Cells_C_R, K_tumor, r_2);
+  natural_death_of_Resistant_Cancer_Cells_CR: Resistant_Cancer_Cells_C_R => ; compartment_*Function_of_natural_death_of_CR(delta_CR, Resistant_Cancer_Cells_C_R);
+  Activation_of_M1:  => M1_Tumor_Associated_Macrophages; compartment_*Function_of_activation_of_M1(gamma_M1, M1_Tumor_Associated_Macrophages, Cancer_Cells_C, Resistant_Cancer_Cells_C_R, lambda_M1);
+  Activation_of_M2:  => M2_Tumor_Associated_Macrophages; compartment_*Function_of_activation_of_M2(gamma_M2, M2_Tumor_Associated_Macrophages, Cancer_Cells_C, Resistant_Cancer_Cells_C_R, lambda_M2);
+  natural_death_of_M1: M1_Tumor_Associated_Macrophages => ; compartment_*Function_of_natural_death_of_M1(delta_M1, M1_Tumor_Associated_Macrophages);
+  natural_death_of_M2: M2_Tumor_Associated_Macrophages => ; compartment_*Function_of_natural_death_of_M2(delta_M2, M2_Tumor_Associated_Macrophages);
+  Activation_of_T_H1:  => Type_I_T_helper_Cell_T_H1; compartment_*Function_of_activation_of_T_H1(lambda_Th1, Type_I_T_helper_Cell_T_H1, M1_Tumor_Associated_Macrophages, gamma_Th1);
+  Activation_of_T_H2:  => Type_II_T_helper_cells_T_H2; compartment_*Function_of_activation_of_T_H2(lambda_Th2, Type_II_T_helper_cells_T_H2, M2_Tumor_Associated_Macrophages, gamma_Th2);
+  natural_death_of_T_H1: Type_I_T_helper_Cell_T_H1 => ; compartment_*Function_of_natural_death_of_T_H1(delta_Th1, Type_I_T_helper_Cell_T_H1);
+  natural_death_of_T_H2: Type_II_T_helper_cells_T_H2 => ; compartment_*Function_of_natural_death_of_T_H2(delta_Th2, Type_II_T_helper_cells_T_H2);
+  Activation_of_T_C__Cancer:  => Cytotoxic_T_Cells_T_C; compartment_*Function_of_Activation_of_T_C_Cancer(gamma_Tc, Cytotoxic_T_Cells_T_C, Cancer_Cells_C, Resistant_Cancer_Cells_C_R, lambda_Tc1);
+  Activation_of_T_C__T_H1:  => Cytotoxic_T_Cells_T_C; compartment_*Function_of_Acitvation_of_T_C__T_H1(gamma_Tc, Cytotoxic_T_Cells_T_C, Type_I_T_helper_Cell_T_H1, lambda_Tc4);
+  Inhibition_of_T_C: Cytotoxic_T_Cells_T_C => ; compartment_*Function_of_inhibition_of_T_C(myu_TcS, Cytotoxic_T_Cells_T_C, Cancer_Stem_Cells_S, Resistant_Stem_Cells_S_R, lambda_Tc2);
+  natural_death_of_T_C: Cytotoxic_T_Cells_T_C => ; compartment_*Function_of_natural_death_of_T_C(delta_Tc, Cytotoxic_T_Cells_T_C);
+  Elimination_of_T_C_by_T_reg: Cytotoxic_T_Cells_T_C => ; compartment_*Function_of_Elimination_of_T_C_by_T_reg(myu_TcTreg, Cytotoxic_T_Cells_T_C, Regulatory_T_Cells_T_reg, lambda_Tc3);
+  Activation_of_T_reg:  => Regulatory_T_Cells_T_reg; compartment_*Function_of_Activation_of_T_reg(gamma_Treg, Regulatory_T_Cells_T_reg, M2_Tumor_Associated_Macrophages, lambda_Treg2);
+  natural_death_of_T_reg: Regulatory_T_Cells_T_reg => ; compartment_*Function_of_natural_death_of_T_reg(delta_Treg, Regulatory_T_Cells_T_reg);
+  Production_of_IL2__T_H1:  => Cytokine_IL2; compartment_*Function_of_Production_of_IL2(beta_Th1CK3, Type_I_T_helper_Cell_T_H1);
+  Degradation_of_IL2: Cytokine_IL2 => ; compartment_*Function_of_Degradation_of_IL2(delta_Ck3, Cytokine_IL2);
+  Positive_feedback_from_IL2_to_T_H1:  => Type_I_T_helper_Cell_T_H1; compartment_*Function_of_Positive_Feedback_from_IL2_to_TH1(myu_Th1Ck3, Cytokine_IL2, Type_I_T_helper_Cell_T_H1, k9);
+  Production_of_IFN_gamma__T_H1:  => Interferon_gamma; compartment_*Function_of_Production_of_IFN_gamma__T_H1(beta_Th1CK2, Type_I_T_helper_Cell_T_H1);
+  Production_of_IFN_gamma__T_C:  => Interferon_gamma; compartment_*Function_of_Production_of_IFN_gamma__T_C(beta_Tc, Cytotoxic_T_Cells_T_C);
+  Degradation_of_IFN_gamma: Interferon_gamma => ; compartment_*Function_of_Degradation_of_IFN_gamma(delta_Ck2, Interferon_gamma);
+  Activation_of_M1__IFN_gamma:  => M1_Tumor_Associated_Macrophages; compartment_*Function_of_Activation_of_M1__IFN_gamma(myu_M1Ck2, M1_Tumor_Associated_Macrophages, Interferon_gamma, k7);
+  Negative_feedback_on_S__IFN_gamma: Cancer_Stem_Cells_S => ; compartment_*Function_of_Negative_feedback_on_S__IFN_gamma(myu_S, Cancer_Stem_Cells_S, Interferon_gamma, k1);
+  Negative_feedback_on_SR__IFN_gamma: Resistant_Stem_Cells_S_R => ; compartment_*Function_of_Negative_feedback_on_SR__IFN_gamma(myu_SR, Resistant_Stem_Cells_S_R, Interferon_gamma, k2);
+  Negative_feedback_on_C__IFN_gamma: Cancer_Cells_C => ; compartment_*Function_of_Negative_feedback_on_C__IFN_gamma(myu_C2, Cancer_Cells_C, Interferon_gamma, k4);
+  Negative_feedback_on_CR__IFN_gamma: Resistant_Cancer_Cells_C_R => ; compartment_*Function_of_Negative_feedback_on_CR__IFN_gamma(myu_C2, Resistant_Cancer_Cells_C_R, Interferon_gamma, k6);
+  Production_of_IL10__M2:  => Cytokine_IL10; compartment_*Function_of_Production_of_IL10__M2(beta_M2, M2_Tumor_Associated_Macrophages);
+  Production_of_IL10__Treg:  => Cytokine_IL10; compartment_*Function_of_Production_of_IL10__Treg(beta_Treg, Regulatory_T_Cells_T_reg);
+  Production_of_IL10__T_H2:  => Cytokine_IL10; compartment_*Function_of_Production_of_IL10__T_H2(beta_Th2, Type_II_T_helper_cells_T_H2);
+  Degradation_of_IL10: Cytokine_IL10 => ; compartment_*Function_of_Degradation_of_IL10(delta_Ck1, Cytokine_IL10);
+  Positive_feedback_on_Treg__IL10:  => Regulatory_T_Cells_T_reg; compartment_*Function_of_Positive_feedback_on_Treg__IL10(Cytokine_IL10, myu_TregCk1, Regulatory_T_Cells_T_reg, k11);
+  Inhibition_on_T_H1__IL10: Type_I_T_helper_Cell_T_H1 => ; compartment_*Function_for_inhibition_on_T_H1__IL10(myu_Th1Ck1, Cytokine_IL10, Type_I_T_helper_Cell_T_H1, k8);
+  Positive_feedback_on_M2__IL10:  => M2_Tumor_Associated_Macrophages; compartment_*Function_of_Positive_feedback_on_M2__IL10(myu_M2Ck1, M2_Tumor_Associated_Macrophages, Cytokine_IL10, k10);
+  Proliferation_on_Cancer_Cells_C__IL10:  => Cancer_Cells_C; compartment_*Function_of_Proliferation_on_C__IL10(myu_C1, Cancer_Cells_C, Cytokine_IL10, k3);
+  Proliferation_on_Resistant_Cancer_Cells_CR__IL10:  => Resistant_Cancer_Cells_C_R; compartment_*Function_of_Proliferation_CR__IL10(myu_C1, Resistant_Cancer_Cells_C_R, Cytokine_IL10, k5);
+  Elimination_of_Cancer_Stem_Cells_S: Cancer_Stem_Cells_S => ; compartment_*Function_of_Elimination_of_Cancer_Stem_Cells_S(tck, Cancer_Stem_Cells_S, Cytotoxic_T_Cells_T_C, ktc1);
+  Elimination_of_Resistant_Stem_Cells_SR: Resistant_Stem_Cells_S_R => ; compartment_*Function_of_Elimination_of_Resistant_Stem_Cells_SR(tck, Resistant_Stem_Cells_S_R, Cytotoxic_T_Cells_T_C, ktc2);
+  Elimination_of_Cancer_Cells_C: Cancer_Cells_C => ; compartment_*Function_of_Elimination_of_Cancer_Cells_C(tck, Cancer_Cells_C, Cytotoxic_T_Cells_T_C, ktc3);
+  Elimination_of_Resistant_Cancer_Cells_CR: Resistant_Cancer_Cells_C_R => ; compartment_*Function_of_Elimination_of_Resistant_Cancer_Cells_CR(tck, Resistant_Cancer_Cells_C_R, Cytotoxic_T_Cells_T_C, ktc4);
+
+  // Species initializations:
+  Cancer_Stem_Cells_S = 1;
+  Cancer_Cells_C = 0;
+  Resistant_Stem_Cells_S_R = 0;
+  Resistant_Cancer_Cells_C_R = 0;
+  M1_Tumor_Associated_Macrophages = 85000;
+  M2_Tumor_Associated_Macrophages = 15000;
+  Type_I_T_helper_Cell_T_H1 = 71000;
+  Type_II_T_helper_cells_T_H2 = 12000;
+  Cytotoxic_T_Cells_T_C = 56000;
+  Regulatory_T_Cells_T_reg = 8000;
+  Interferon_gamma = 0.12;
+  Cytokine_IL10 = 0.0085;
+  Cytokine_IL2 = 0.0094;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  gamma_C = 0.1282;
+  gamma_C has unit_0;
+  gamma_CR = 0.1282;
+  gamma_CR has unit_0;
+  gamma_M1 = 0.7;
+  gamma_M1 has unit_0;
+  gamma_M2 = 0.01;
+  gamma_M2 has unit_0;
+  gamma_S = 0.15;
+  gamma_S has unit_0;
+  gamma_Th1 = 2;
+  gamma_Th1 has unit_0;
+  gamma_Th2 = 2;
+  gamma_Th2 has unit_1;
+  gamma_Tc = 1;
+  gamma_Tc has unit_0;
+  gamma_Treg = 0.3;
+  gamma_Treg has unit_0;
+  delta_C = 0.8055;
+  delta_C has unit_0;
+  delta_CR = 5.37e-05;
+  delta_CR has unit_0;
+  delta_M1 = 1.02;
+  delta_M1 has unit_0;
+  delta_M2 = 0.05;
+  delta_M2 has unit_0;
+  delta_S = 2e-07;
+  delta_S has unit_0;
+  delta_Tc = 5.2939;
+  delta_Tc has unit_0;
+  delta_Th1 = 2;
+  delta_Th1 has unit_0;
+  delta_Th2 = 2;
+  delta_Th2 has unit_0;
+  delta_Treg = 1;
+  delta_Treg has unit_0;
+  m_C = 0.01;
+  m_S = 4e-07;
+  p_1 = 0.2;
+  p_2 = 0.05;
+  r_1 = 0.0001;
+  r_2 = 1e-05;
+  K_tumor = 20000000000;
+  lambda_M1 = 100000000;
+  lambda_M1 has unit_2;
+  lambda_M2 = 1000000;
+  lambda_M2 has unit_2;
+  lambda_Th1 = 100000;
+  lambda_Th1 has unit_2;
+  lambda_Th2 = 100000;
+  lambda_Th2 has unit_2;
+  lambda_Tc1 = 100000;
+  lambda_Tc1 has unit_2;
+  lambda_Tc2 = 500000;
+  lambda_Tc2 has unit_2;
+  lambda_Tc3 = 50000000000;
+  lambda_Tc3 has unit_2;
+  lambda_Tc4 = 100000;
+  lambda_Tc4 has unit_2;
+  lambda_Treg2 = 10000000;
+  lambda_Treg2 has unit_2;
+  myu_TcS = 1e-10;
+  myu_TcS has unit_0;
+  myu_TcTreg = 1.5e-05;
+  myu_TcTreg has unit_0;
+  myu_Th1Ck3 = 0.1245;
+  myu_Th1Ck3 has unit_0;
+  k9 = 0.001;
+  k9 has unit_2;
+  beta_Th1CK3 = 1e-08;
+  beta_Th1CK3 has unit_0;
+  delta_Ck3 = 8.664339;
+  delta_Ck3 has unit_0;
+  myu_S = 0.17;
+  myu_S has unit_0;
+  myu_SR = 0.18;
+  myu_SR has unit_0;
+  myu_C2 = 0.9;
+  myu_C2 has unit_0;
+  myu_M1Ck2 = 0.01;
+  myu_M1Ck2 has unit_0;
+  beta_Th1CK2 = 1e-07;
+  beta_Th1CK2 has unit_0;
+  beta_Tc = 1e-08;
+  beta_Tc has unit_0;
+  delta_Ck2 = 6.1212;
+  delta_Ck2 has unit_0;
+  k1 = 10;
+  k1 has unit_2;
+  k2 = 10;
+  k2 has unit_2;
+  k3 = 2.0531;
+  k3 has unit_2;
+  k4 = 3.02;
+  k4 has unit_2;
+  k5 = 6.7979;
+  k5 has unit_2;
+  k6 = 6.9937;
+  k6 has unit_2;
+  k7 = 0.2;
+  k7 has unit_2;
+  k8 = 0.01;
+  k8 has unit_2;
+  k10 = 0.01;
+  k10 has unit_2;
+  k11 = 0.001;
+  k11 has unit_2;
+  beta_M2 = 1e-15;
+  beta_M2 has unit_0;
+  beta_Treg = 1e-10;
+  beta_Treg has unit_0;
+  beta_Th2 = 1e-09;
+  beta_Th2 has unit_0;
+  delta_Ck1 = 19.757;
+  delta_Ck1 has unit_0;
+  myu_TregCk1 = 1e-07;
+  myu_TregCk1 has unit_0;
+  myu_Th1Ck1 = 1e-09;
+  myu_Th1Ck1 has unit_0;
+  myu_M2Ck1 = 0.01;
+  myu_M2Ck1 has unit_0;
+  myu_C1 = 0.75;
+  myu_C1 has unit_0;
+  ktc1 = 1000000000;
+  ktc1 has unit_2;
+  ktc2 = 100000000;
+  ktc2 has unit_2;
+  ktc3 = 1000000000;
+  ktc3 has unit_2;
+  ktc4 = 1000000000;
+  ktc4 has unit_2;
+  tck = 0.1;
+  tck has unit_0;
+
+  // Other declarations:
+  const compartment_, gamma_C, gamma_CR, gamma_M1, gamma_M2, gamma_S, gamma_Th1;
+  const gamma_Th2, gamma_Tc, gamma_Treg, delta_C, delta_CR, delta_M1, delta_M2;
+  const delta_S, delta_Tc, delta_Th1, delta_Th2, delta_Treg, m_C, m_S, p_1;
+  const p_2, r_1, r_2, K_tumor, lambda_M1, lambda_M2, lambda_Th1, lambda_Th2;
+  const lambda_Tc1, lambda_Tc2, lambda_Tc3, lambda_Tc4, lambda_Treg2, myu_TcS;
+  const myu_TcTreg, myu_Th1Ck3, k9, beta_Th1CK3, delta_Ck3, myu_S, myu_SR;
+  const myu_C2, myu_M1Ck2, beta_Th1CK2, beta_Tc, delta_Ck2, k1, k2, k3, k4;
+  const k5, k6, k7, k8, k10, k11, beta_M2, beta_Treg, beta_Th2, delta_Ck1;
+  const myu_TregCk1, myu_Th1Ck1, myu_M2Ck1, myu_C1, ktc1, ktc2, ktc3, ktc4;
+  const tck;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = 1e-3 mole;
+  unit unit_0 = 1 / 86400e-1 second;
+  unit unit_1 = 1 / 43200e-1 second;
+  unit unit_2 = 1 / 1e-3 litre;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1/d";
+  unit_1 is "2/d";
+  unit_2 is "1/ml";
+  compartment_ is "compartment";
+  Cancer_Stem_Cells_S is "Cancer Stem Cells S";
+  Cancer_Cells_C is "Cancer Cells C";
+  Resistant_Stem_Cells_S_R is "Resistant Stem Cells S_R";
+  Resistant_Cancer_Cells_C_R is "Resistant Cancer Cells C_R";
+  M1_Tumor_Associated_Macrophages is "M1-Tumor Associated Macrophages";
+  M2_Tumor_Associated_Macrophages is "M2-Tumor Associated Macrophages";
+  Type_I_T_helper_Cell_T_H1 is "Type I T-helper Cell T_H1";
+  Type_II_T_helper_cells_T_H2 is "Type II T-helper cells T_H2";
+  Cytotoxic_T_Cells_T_C is "Cytotoxic T-Cells T_C";
+  Regulatory_T_Cells_T_reg is "Regulatory T-Cells T_reg";
+  Cytokine_IL10 is "Cytokine IL10";
+  Cytokine_IL2 is "Cytokine IL2";
+  _100000_SR is "100000*SR";
+  growth_of_Cancer_Stem_Cells_S is "growth of Cancer Stem Cells S";
+  natural_death_of_Cancer_Stem_Cells_S is "natural death of Cancer Stem Cells S";
+  mutation_of_Cancer_Stem_Cells_S is "mutation of Cancer Stem Cells S";
+  asymmetric_differentiation_of_Cancer_Stem_Cells_S is "asymmetric differentiation of Cancer Stem Cells S";
+  symmetric_differentiation_of_Cancer_Stem_Cells_S is "symmetric differentiation of Cancer Stem Cells S";
+  growth_of_Resistant_Stem_Cells_SR is "growth of Resistant Stem Cells SR";
+  natural_death_of_Resistant_Stem_Cells_SR is "natural death of Resistant Stem Cells SR";
+  asymmetric_differentiation_of_Resistant_Stem_Cells_SR is "asymmetric differentiation of Resistant Stem Cells SR";
+  symmetric_differentiation_of_Resistant_Stem_Cells_SR is "symmetric differentiation of Resistant Stem Cells SR";
+  Gompertzian_growth_of_Cancer_Cells_C is "Gompertzian growth of Cancer Cells C";
+  natural_death_of_Cancer_Cells_C is "natural death of Cancer Cells C";
+  mutation_of_Cancer_Cells_C is "mutation of Cancer Cells C";
+  Gompertzian_growth_of_Resistant_Cancer_Cells_CR is "Gompertzian growth of Resistant Cancer Cells CR";
+  natural_death_of_Resistant_Cancer_Cells_CR is "natural death of Resistant Cancer Cells CR";
+  Activation_of_M1 is "Activation of M1";
+  Activation_of_M2 is "Activation of M2";
+  natural_death_of_M1 is "natural death of M1";
+  natural_death_of_M2 is "natural death of M2";
+  Activation_of_T_H1 is "Activation of T_H1";
+  Activation_of_T_H2 is "Activation of T_H2";
+  natural_death_of_T_H1 is "natural death of T_H1";
+  natural_death_of_T_H2 is "natural death of T_H2";
+  Activation_of_T_C__Cancer is "Activation of T_C; Cancer";
+  Activation_of_T_C__T_H1 is "Activation of T_C; T_H1";
+  Inhibition_of_T_C is "Inhibition of T_C";
+  natural_death_of_T_C is "natural death of T_C";
+  Elimination_of_T_C_by_T_reg is "Elimination of T_C by T_reg";
+  Activation_of_T_reg is "Activation of T_reg";
+  natural_death_of_T_reg is "natural death of T_reg";
+  Production_of_IL2__T_H1 is "Production of IL2; T_H1";
+  Degradation_of_IL2 is "Degradation of IL2";
+  Positive_feedback_from_IL2_to_T_H1 is "Positive feedback from IL2 to T_H1";
+  Production_of_IFN_gamma__T_H1 is "Production of IFN_gamma; T_H1";
+  Production_of_IFN_gamma__T_C is "Production of IFN_gamma; T_C";
+  Degradation_of_IFN_gamma is "Degradation of IFN_gamma";
+  Activation_of_M1__IFN_gamma is "Activation of M1; IFN_gamma";
+  Negative_feedback_on_S__IFN_gamma is "Negative feedback on S; IFN_gamma";
+  Negative_feedback_on_SR__IFN_gamma is "Negative feedback on SR; IFN_gamma";
+  Negative_feedback_on_C__IFN_gamma is "Negative feedback on C; IFN_gamma";
+  Negative_feedback_on_CR__IFN_gamma is "Negative feedback on CR; IFN_gamma";
+  Production_of_IL10__M2 is "Production of IL10; M2";
+  Production_of_IL10__Treg is "Production of IL10; Treg";
+  Production_of_IL10__T_H2 is "Production of IL10; T_H2";
+  Degradation_of_IL10 is "Degradation of IL10";
+  Positive_feedback_on_Treg__IL10 is "Positive feedback on Treg; IL10";
+  Inhibition_on_T_H1__IL10 is "Inhibition on T_H1; IL10";
+  Positive_feedback_on_M2__IL10 is "Positive feedback on M2; IL10";
+  Proliferation_on_Cancer_Cells_C__IL10 is "Proliferation on Cancer Cells C; IL10";
+  Proliferation_on_Resistant_Cancer_Cells_CR__IL10 is "Proliferation on Resistant Cancer Cells CR; IL10";
+  Elimination_of_Cancer_Stem_Cells_S is "Elimination of Cancer Stem Cells S";
+  Elimination_of_Resistant_Stem_Cells_SR is "Elimination of Resistant Stem Cells SR";
+  Elimination_of_Cancer_Cells_C is "Elimination of Cancer Cells C";
+  Elimination_of_Resistant_Cancer_Cells_CR is "Elimination of Resistant Cancer Cells CR";
+
+  // CV terms:
+  compartment_ hypernym "http://identifiers.org/ncit/C13413"
+  Cancer_Stem_Cells_S hypernym "http://identifiers.org/ncit/C68706"
+  Cancer_Cells_C hypernym "http://identifiers.org/ncit/C12917"
+  Resistant_Stem_Cells_S_R hypernym "http://identifiers.org/ncit/C102626"
+  Resistant_Stem_Cells_S_R hypernym "http://identifiers.org/ncit/C68706"
+  Resistant_Cancer_Cells_C_R hypernym "http://identifiers.org/ncit/C12917"
+  Resistant_Cancer_Cells_C_R hypernym "http://identifiers.org/ncit/C102626"
+  M1_Tumor_Associated_Macrophages hypernym "http://identifiers.org/ncit/C116387"
+  M1_Tumor_Associated_Macrophages hypernym "http://identifiers.org/ncit/C156004"
+  M2_Tumor_Associated_Macrophages hypernym "http://identifiers.org/ncit/C123783"
+  M2_Tumor_Associated_Macrophages hypernym "http://identifiers.org/ncit/C116387"
+  Type_I_T_helper_Cell_T_H1 hypernym "http://identifiers.org/fma/FMA:84382"
+  Type_I_T_helper_Cell_T_H1 propertyBearer "http://identifiers.org/go/GO:0045063"
+  Type_II_T_helper_cells_T_H2 parthood "http://identifiers.org/go/GO:0045064"
+  Type_II_T_helper_cells_T_H2 hypernym "http://identifiers.org/fma/FMA:84385"
+  Cytotoxic_T_Cells_T_C hypernym "http://identifiers.org/ncit/C104174"
+  Regulatory_T_Cells_T_reg hypernym "http://identifiers.org/ncit/C104174"
+  Interferon_gamma hypernym "http://identifiers.org/ncit/C20496"
+  Interferon_gamma hypernym "http://identifiers.org/ncit/C20464"
+  Cytokine_IL10 hypernym "http://identifiers.org/ncit/C20464"
+  Cytokine_IL10 hypernym "http://identifiers.org/ncit/C20512"
+  Cytokine_IL2 hypernym "http://identifiers.org/ncit/C20464"
+  Cytokine_IL2 hypernym "http://identifiers.org/ncit/C20507"
+  gamma_C hypernym "http://identifiers.org/efo/0004804"
+  gamma_CR hypernym "http://identifiers.org/efo/0004804"
+  gamma_M1 hypernym "http://identifiers.org/efo/0004804"
+  gamma_M2 hypernym "http://identifiers.org/efo/0004804"
+  gamma_S hypernym "http://identifiers.org/efo/0004804"
+  gamma_Th1 propertyBearer "http://identifiers.org/efo/0004804"
+  gamma_Th2 hypernym "http://identifiers.org/efo/0004804"
+  gamma_Tc hypernym "http://identifiers.org/efo/0004804"
+  gamma_Treg hypernym "http://identifiers.org/efo/0004804"
+  delta_M1 hypernym "http://identifiers.org/ncit/C53346"
+  delta_M2 hypernym "http://identifiers.org/ncit/C53346"
+  delta_S hypernym "http://identifiers.org/ncit/C53346"
+  delta_Tc hypernym "http://identifiers.org/ncit/C53346"
+  delta_Th1 hypernym "http://identifiers.org/ncit/C53346"
+  delta_Th2 hypernym "http://identifiers.org/ncit/C53346"
+  delta_Treg hypernym "http://identifiers.org/ncit/C53346"
+  growth_of_Cancer_Stem_Cells_S hypernym "http://identifiers.org/go/GO:0040007"
+  natural_death_of_Cancer_Stem_Cells_S hypernym "http://identifiers.org/sbo/SBO:0000179"
+  mutation_of_Cancer_Stem_Cells_S hypernym "http://identifiers.org/sbo/SBO:0000343"
+  asymmetric_differentiation_of_Cancer_Stem_Cells_S hypernym "http://identifiers.org/go/GO:0098722"
+  symmetric_differentiation_of_Cancer_Stem_Cells_S hypernym "http://identifiers.org/go/GO:0098724"
+  growth_of_Resistant_Stem_Cells_SR hypernym "http://identifiers.org/go/GO:0040007"
+  natural_death_of_Resistant_Stem_Cells_SR hypernym "http://identifiers.org/sbo/SBO:0000179"
+  asymmetric_differentiation_of_Resistant_Stem_Cells_SR hypernym "http://identifiers.org/go/GO:0098722"
+  symmetric_differentiation_of_Resistant_Stem_Cells_SR hypernym "http://identifiers.org/go/GO:0098724"
+  Gompertzian_growth_of_Cancer_Cells_C hypernym "http://identifiers.org/go/GO:0040007"
+  natural_death_of_Cancer_Cells_C hypernym "http://identifiers.org/sbo/SBO:0000179"
+  mutation_of_Cancer_Cells_C hypernym "http://identifiers.org/sbo/SBO:0000343"
+  Gompertzian_growth_of_Resistant_Cancer_Cells_CR hypernym "http://identifiers.org/go/GO:0040007"
+  natural_death_of_Resistant_Cancer_Cells_CR hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Activation_of_M1 hypernym "http://identifiers.org/go/GO:0042116"
+  Activation_of_M2 hypernym "http://identifiers.org/go/GO:0042116"
+  natural_death_of_M1 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  natural_death_of_M2 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Activation_of_T_H1 hypernym "http://identifiers.org/go/GO:0042110"
+  Activation_of_T_H1 hypernym "http://identifiers.org/go/GO:0035711"
+  Activation_of_T_H1 hypernym "http://identifiers.org/go/GO:0045063"
+  Activation_of_T_H2 hypernym "http://identifiers.org/go/GO:0045064"
+  Activation_of_T_H2 hypernym "http://identifiers.org/go/GO:0035712"
+  Activation_of_T_H2 hypernym "http://identifiers.org/go/GO:2000569"
+  natural_death_of_T_H1 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  natural_death_of_T_H2 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Activation_of_T_C__Cancer hypernym "http://identifiers.org/go/GO:0042110"
+  Activation_of_T_C__T_H1 hypernym "http://identifiers.org/go/GO:0042110"
+  Inhibition_of_T_C hypernym "http://identifiers.org/sbo/SBO:0000169"
+  natural_death_of_T_C hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Elimination_of_T_C_by_T_reg hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Activation_of_T_reg hypernym "http://identifiers.org/go/GO:0042110"
+  natural_death_of_T_reg hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Production_of_IL2__T_H1 hypernym "http://identifiers.org/go/GO:0032623"
+  Production_of_IL2__T_H1 hypernym "http://identifiers.org/go/GO:0032663"
+  Degradation_of_IL2 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Positive_feedback_from_IL2_to_T_H1 hypernym "http://identifiers.org/go/GO:0052131"
+  Production_of_IFN_gamma__T_H1 hypernym "http://identifiers.org/go/GO:0032649"
+  Production_of_IFN_gamma__T_H1 hypernym "http://identifiers.org/go/GO:0032609"
+  Production_of_IFN_gamma__T_C hypernym "http://identifiers.org/go/GO:0032649"
+  Production_of_IFN_gamma__T_C hypernym "http://identifiers.org/go/GO:0032609"
+  Degradation_of_IFN_gamma hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Activation_of_M1__IFN_gamma hypernym "http://identifiers.org/go/GO:0042116"
+  Activation_of_M1__IFN_gamma hypernym "http://identifiers.org/go/GO:0034341"
+  Negative_feedback_on_S__IFN_gamma hypernym "http://identifiers.org/go/GO:0050919"
+  Negative_feedback_on_S__IFN_gamma hypernym "http://identifiers.org/go/GO:0034341"
+  Negative_feedback_on_SR__IFN_gamma hypernym "http://identifiers.org/go/GO:0050919"
+  Negative_feedback_on_SR__IFN_gamma hypernym "http://identifiers.org/go/GO:0034341"
+  Negative_feedback_on_C__IFN_gamma hypernym "http://identifiers.org/go/GO:0034341"
+  Negative_feedback_on_C__IFN_gamma hypernym "http://identifiers.org/go/GO:0050919"
+  Negative_feedback_on_CR__IFN_gamma hypernym "http://identifiers.org/go/GO:0050919"
+  Negative_feedback_on_CR__IFN_gamma hypernym "http://identifiers.org/go/GO:0034341"
+  Production_of_IL10__M2 hypernym "http://identifiers.org/go/GO:0035745"
+  Production_of_IL10__M2 hypernym "http://identifiers.org/go/GO:0032613"
+  Production_of_IL10__Treg hypernym "http://identifiers.org/go/GO:0032613"
+  Production_of_IL10__T_H2 hypernym "http://identifiers.org/go/GO:0032613"
+  Degradation_of_IL10 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Positive_feedback_on_Treg__IL10 hypernym "http://identifiers.org/go/GO:0052131"
+  Inhibition_on_T_H1__IL10 hypernym "http://identifiers.org/sbo/SBO:0000169"
+  Positive_feedback_on_M2__IL10 hypernym "http://identifiers.org/go/GO:0052131"
+  Proliferation_on_Cancer_Cells_C__IL10 hypernym "http://identifiers.org/go/GO:0040007"
+  Proliferation_on_Resistant_Cancer_Cells_CR__IL10 hypernym "http://identifiers.org/go/GO:0040007"
+  Elimination_of_Cancer_Stem_Cells_S hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Elimination_of_Resistant_Stem_Cells_SR hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Elimination_of_Cancer_Cells_C hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Elimination_of_Resistant_Cancer_Cells_CR hypernym "http://identifiers.org/sbo/SBO:0000179"
+end
+
+New_Model is "Ganguli2018-immuno regulatory mechanisms in tumor microenvironment"
+
+New_Model model_entity_is "http://identifiers.org/biomodels.db/MODEL1909110001",
+                          "http://identifiers.org/biomodels.db/BIOMD0000000810"
+New_Model property "http://identifiers.org/go/GO:0002837"
+New_Model property "http://identifiers.org/doid/DOID:162"
+New_Model property "http://identifiers.org/ncit/C15262"
+New_Model property "http://identifiers.org/mamo/MAMO_0000046"
+New_Model property "http://identifiers.org/efo/0000311"
+New_Model propertyBearer "http://identifiers.org/ncit/C19045"
+New_Model taxon "http://identifiers.org/doid/DOID:1612"
+New_Model description "http://identifiers.org/pubmed/30183728"

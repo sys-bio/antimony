@@ -1,0 +1,72 @@
+// Created by libAntimony v2.13.0
+model *Brown1997___Plasma_Melatonin_Levels()
+
+  // Compartments and Species:
+  compartment COMpartment;
+
+  // Assignment Rules:
+  beta_I := ln(2)/tau_I;
+  A := piecewise(A_max*((1 - exp(-lamda*(time - t_on)))/(1 - exp(-lamda*(t_off - t_on)))), (time < t_off) && (time >= t_on), piecewise(A_max*exp(-alpha*(time - t_off)), time >= t_off, 0));
+  beta_C := ln(2)/tau_C;
+  lamda := ln(2)/tau_lamda;
+  alpha := ln(2)/tau_alpha;
+
+  // Rate Rules:
+  H1' = -(beta_I*H1) + A;
+  H2' = beta_I*H1 - beta_C*H2;
+
+  // Compartment initializations:
+  COMpartment = 1;
+
+  // Variable initializations:
+  H1 = 0.05;
+  H2 = 1;
+  A_max = 6.51;
+  t_on = 1316;
+  t_off = 1794;
+  tau_I = 2.82;
+  tau_C = 23.67;
+  tau_alpha = 25.92;
+  tau_lamda = 24.04;
+
+  // Other declarations:
+  var H1, beta_I, A, H2, beta_C, lamda, alpha;
+  const COMpartment, A_max, t_on, t_off, tau_I, tau_C, tau_alpha, tau_lamda;
+
+  // Unit definitions:
+  unit time_unit = 60 second;
+
+  // Display Names:
+  time_unit is "time";
+
+  // CV terms:
+  H1 hypernym "http://identifiers.org/chebi/CHEBI:16796"
+  H1 container "http://identifiers.org/bto/BTO:0001067"
+  beta_I encodement "http://identifiers.org/ncit/C94916"
+  A encodement "http://identifiers.org/go/GO:0008080"
+  A propertyBearer "http://identifiers.org/uniprot/Q16613"
+  H2 hypernym "http://identifiers.org/chebi/CHEBI:16796"
+  H2 container "http://identifiers.org/bto/BTO:0000131"
+  beta_C encodement "http://identifiers.org/ncit/C70914"
+  A_max encodement "http://identifiers.org/go/GO:0051338"
+  A_max hypernym "http://identifiers.org/sbo/SBO:0000186"
+  lamda encodement "http://identifiers.org/go/GO:0051338"
+  t_on encodement "http://identifiers.org/go/GO:0051347"
+  t_off encodement "http://identifiers.org/go/GO:0051348"
+  alpha encodement "http://identifiers.org/go/GO:0051338"
+  tau_I encodement "http://identifiers.org/sbo/SBO:0000331"
+  tau_C encodement "http://identifiers.org/sbo/SBO:0000331"
+  tau_alpha encodement "http://identifiers.org/sbo/SBO:0000331"
+  tau_lamda encodement "http://identifiers.org/sbo/SBO:0000331"
+end
+
+Brown1997___Plasma_Melatonin_Levels is "Brown1997 - Plasma Melatonin Levels"
+
+Brown1997___Plasma_Melatonin_Levels model_entity_is "http://identifiers.org/biomodels.db/MODEL1006230019"
+Brown1997___Plasma_Melatonin_Levels model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000672"
+Brown1997___Plasma_Melatonin_Levels part "http://identifiers.org/ncit/C2267"
+Brown1997___Plasma_Melatonin_Levels part "http://identifiers.org/chebi/CHEBI:16796"
+Brown1997___Plasma_Melatonin_Levels hypernym "http://identifiers.org/go/GO:0030186"
+Brown1997___Plasma_Melatonin_Levels property "http://identifiers.org/go/GO:0007623"
+Brown1997___Plasma_Melatonin_Levels taxon "http://identifiers.org/taxonomy/9606"
+Brown1997___Plasma_Melatonin_Levels description "http://identifiers.org/pubmed/9124558"

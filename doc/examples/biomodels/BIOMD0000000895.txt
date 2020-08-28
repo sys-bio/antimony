@@ -1,0 +1,279 @@
+// Created by libAntimony v2.13.0
+function Function_for_Si_Proliferation(pSi, Si, N, Mi)
+  pSi*Si*(1 - Si/(Si + N*Mi));
+end
+
+Function_for_Si_Proliferation is "Function_for_Si_Proliferation"
+
+function Function_for_Mi_Lysis_Si(lMi, CD4, CD8, Mi, cCD4CD8)
+  lMi*(CD4 + CD8/Mi)/(CD4 + CD8/Mi + cCD4CD8);
+end
+
+Function_for_Mi_Lysis_Si is "Function_for_Mi_Lysis_Si"
+
+function Function_for_CD8_Growth_Boost(gbCD8, CD8, cc1CD8, k2CD8)
+  gbCD8*CD8*(1 - CD8/cc1CD8)*(CD8/(CD8 + k2CD8));
+end
+
+Function_for_CD8_Growth_Boost is "Function_for_CD8_Growth_Boost"
+
+function Function_for_Mi_Lysis(lMi, CD4, CD8, Mi, cCD4CD8, apop, Si, N)
+  (1 - apop*Si/(Si + N + Mi))*lMi*(CD4 + CD8/Mi)/(CD4 + CD8/Mi + cCD4CD8);
+end
+
+Function_for_Mi_Lysis is "Function_for_Mi_Lysis"
+
+function Function_for_Mr_Infection_Si(iMr, Mr, Se, cSeMr)
+  iMr*Mr*Se/(Se + cSeMr);
+end
+
+Function_for_Mr_Infection_Si is "Function_for_Mr_Infection_Si"
+
+function Function_for_CD4_Interaction_Naive_Se(CD4n, CD4, Se, ndCD4, kSedCD4)
+  CD4n*CD4*Se^ndCD4/(Se^ndCD4 + kSedCD4^ndCD4);
+end
+
+Function_for_CD4_Interaction_Naive_Se is "Function_for_CD4_Interaction_Naive_Se"
+
+function Function_for_CD8_Competition(compCD8, CD8, Se, w1, CD4, ncompcd8, kcompCD4)
+  compCD8*CD8*(Se/(Se + w1))*(CD4^ncompcd8/(CD4^ncompcd8 + kcompCD4^ncompcd8));
+end
+
+Function_for_CD8_Competition is "Function_for_CD8_Competition"
+
+function Function_for_Mi_Bursting(bMi, Mi, Si, mMi, N)
+  bMi*Mi*Si^mMi/(Si^mMi + (N*Mi)^mMi);
+end
+
+Function_for_Mi_Bursting is "Function_for_Mi_Bursting"
+
+function Function_for_CD4_Recruitment(CD4rec, vrecCD4, Se, kmrecCD4)
+  CD4rec*vrecCD4*Se/(Se + kmrecCD4);
+end
+
+Function_for_CD4_Recruitment is "Function_for_CD4_Recruitment"
+
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function Function_for_Mr_Recruitment(Mrrec, vrecMr, Se, kmrecMr)
+  Mrrec*vrecMr*Se/(Se + kmrecMr);
+end
+
+Function_for_Mr_Recruitment is "Function_for_Mr_Recruitment"
+
+function Function_for_Mr_Infection(iMr, Mr, Se, cSeMri)
+  iMr*Mr*Se/(Se + cSeMri);
+end
+
+Function_for_Mr_Infection is "Function_for_Mr_Infection"
+
+function Function_for_Mr_Growth_Boost(Mr, ccMr, p1, gbMr)
+  gbMr*Mr*(1 - Mr/(ccMr - ccMr*p1));
+end
+
+Function_for_Mr_Growth_Boost is "Function_for_Mr_Growth_Boost"
+
+function Function_for_Mr_Activation(aMr, Mr, Se, cSeMr)
+  aMr*Mr*Se/(Se + cSeMr);
+end
+
+Function_for_Mr_Activation is "Function_for_Mr_Activation"
+
+function Function_for_CD4_Growth_Boost(gbCD4, CD4, cc1CD4, ngbCD4, k2CD4)
+  gbCD4*CD4*(1 - CD4/cc1CD4)*(CD4^ngbCD4/(CD4^ngbCD4 + k2CD4^ngbCD4));
+end
+
+Function_for_CD4_Growth_Boost is "Function_for_CD4_Growth_Boost"
+
+function Function_for_Se_Proliferation(pSe, Se, ccSe)
+  pSe*Se*(1 - Se/ccSe);
+end
+
+Function_for_Se_Proliferation is "Function_for_Se_Proliferation"
+
+function Function_for_Ma_Deactivation(daMa, Ma, CD4, cdaMA)
+  daMa*Ma*CD4/(CD4 + cdaMA);
+end
+
+Function_for_Ma_Deactivation is "Function_for_Ma_Deactivation"
+
+
+model *Schokker2013___A_mathematical_model_representing_cellular_immune_development_and_response_to_Salmonella_of_chicken_intestinal_tissue()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species CD4 in compartment_, CD8 in compartment_, Mr in compartment_, Ma in compartment_;
+  species Mi in compartment_, Se in compartment_, Si in compartment_, CD4rec in compartment_;
+  species Mrrec in compartment_;
+
+  // Reactions:
+  Mr_Source:  => Mr; compartment_*Constant_flux__irreversible(sMr);
+  Mr_Growth_Boost:  => Mr; compartment_*Function_for_Mr_Growth_Boost(Mr, ccMr, p1, gbMr);
+  Mr_Recruitment: Mrrec => Mr; compartment_*Function_for_Mr_Recruitment(Mrrec, vrecMr, Se, kmrecMr);
+  Ma_Deactivation: Ma => Mr; compartment_*Function_for_Ma_Deactivation(daMa, Ma, CD4, cdaMa);
+  Mr_Infection: Mr + Se => Mi; compartment_*Function_for_Mr_Infection(iMr, Mr, Se, cSeMri);
+  Mr_Activation: Mr => Ma; compartment_*Function_for_Mr_Activation(aMr, Mr, Se, cSeMr);
+  Se_Killing_Mr: Mr + Se => ; compartment_*kSeMr*Mr*Se;
+  Mr_Death: Mr => ; compartment_*drMr*Mr;
+  CD4_Source:  => CD4; compartment_*Constant_flux__irreversible(sCD4);
+  CD4_Growth_Boost:  => CD4; compartment_*Function_for_CD4_Growth_Boost(gbCD4, CD4, cc1CD4, ngbCD4, k2CD4);
+  CD4_Recruitment: CD4rec => CD4; compartment_*Function_for_CD4_Recruitment(CD4rec, vrecCD4, Se, kmrecCD4);
+  Se_Killing_CD4: CD4 + Se => ; compartment_*kSeCD4*CD4*Se;
+  CD4_Interaction_Naive_Se: CD4 => ; compartment_*Function_for_CD4_Interaction_Naive_Se(CD4n, CD4, Se, ndCD4, kSedCD4);
+  CD4_Death: CD4 => ; compartment_*drCD4*CD4;
+  CD8_Source:  => CD8; compartment_*Constant_flux__irreversible(sCD8);
+  CD8_Growth_Boost:  => CD8; compartment_*Function_for_CD8_Growth_Boost(gbCD8, CD8, cc1CD8, k2CD8);
+  CD8_Competition: CD8 => ; compartment_*Function_for_CD8_Competition(compCD8, CD8, Se, w1, CD4, ncompCD4, kcompCD4);
+  CD8_Death: CD8 => ; compartment_*drCD8*CD8;
+  Ma_Death: Ma => ; compartment_*drMa*Ma;
+  Se_Killing_Ma: Ma + Se => ; compartment_*kSeMa*Ma*Se;
+  Mi_Bursting: Si + Mi => Se; compartment_*Function_for_Mi_Bursting(bMi, Mi, Si, mMi, N);
+  Mi_Lysis: Mi => ; compartment_*Function_for_Mi_Lysis(lMi, CD4, CD8, Mi, cCD4CD8, apop, Si, N);
+  Mi_Death: Mi => ; compartment_*drMi*Mi;
+  Se_Proliferation:  => Se; compartment_*Function_for_Se_Proliferation(pSe, Se, ccSe);
+  Se_Death: Se => ; compartment_*drSe*Se;
+  Si_Death: Si => ; compartment_*drSi*Si;
+  Si_Proliferation:  => Si; compartment_*Function_for_Si_Proliferation(pSi, Si, N, Mi);
+  Mr_Infection_Si:  => Si; compartment_*Function_for_Mr_Infection_Si(iMr, Mr, Si, cSeMr);
+  Mi_Lysis_Si: Si => ; compartment_*Function_for_Mi_Lysis_Si(lMi, CD4, CD8, Mi, cCD4CD8);
+
+  // Species initializations:
+  CD4 = 9000000;
+  CD8 = 7000000;
+  Mr = 9000000;
+  Ma = 0;
+  Mi = 100;
+  Se = 200;
+  Si = 100;
+  CD4rec = 27000000;
+  Mrrec = 20000000;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  sMr = 300000;
+  drMr = 0.011;
+  aMr = 100;
+  cSeMr = 1;
+  iMr = 0.1;
+  cSeMri = 600000;
+  kSeMr = 5e-08;
+  gbMr = 1.2;
+  ccMr = 25000000;
+  p1 = 0.65;
+  vrecMr = 1;
+  kmrecMr = 1000;
+  drMa = 0.08;
+  kSeMa = 2.6e-07;
+  daMa = 40;
+  cdaMa = 30000000;
+  N = 30;
+  bMi = 0.4;
+  mMi = 2;
+  lMi = 0.8;
+  cCD4CD8 = 10;
+  apop = 0.7;
+  drMi = 0.011;
+  sCD4 = 490000;
+  drCD4 = 0.016;
+  gbCD4 = 0.19;
+  cc1CD4 = 82000000;
+  ngbCD4 = 2;
+  k2CD4 = 8700000;
+  kmrecCD4 = 1;
+  vrecCD4 = 100;
+  CD4n = 0.4;
+  ndCD4 = 8;
+  kSedCD4 = 4200;
+  kSeCD4 = 1e-09;
+  drCD8 = 0.001;
+  sCD8 = 430000;
+  gbCD8 = 1.44;
+  cc1CD8 = 13000000;
+  k2CD8 = 47000000;
+  ncompCD4 = 0.5;
+  kcompCD4 = 34000000;
+  compCD8 = 0.85;
+  w1 = 1e-25;
+  drSe = 27.8;
+  pSe = 35;
+  ccSe = 500000;
+  drSi = 0.05;
+  pSi = 4.1;
+
+  // Other declarations:
+  const compartment_, sMr, drMr, aMr, cSeMr, iMr, cSeMri, kSeMr, gbMr, ccMr;
+  const p1, vrecMr, kmrecMr, drMa, kSeMa, daMa, cdaMa, N, bMi, mMi, lMi, cCD4CD8;
+  const apop, drMi, sCD4, drCD4, gbCD4, cc1CD4, ngbCD4, k2CD4, kmrecCD4, vrecCD4;
+  const CD4n, ndCD4, kSedCD4, kSeCD4, drCD8, sCD8, gbCD8, cc1CD8, k2CD8, ncompCD4;
+  const kcompCD4, compCD8, w1, drSe, pSe, ccSe, drSi, pSi;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = item;
+  unit time_unit = 86400 second;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+
+  // CV terms:
+  compartment_ container "http://identifiers.org/ncit/C34082"
+  CD4 identity "http://identifiers.org/cl/CL:0000492"
+  CD8 identity "http://identifiers.org/ncit/C12542"
+  Mr identity "http://identifiers.org/cl/CL:0000864"
+  Ma identity "http://identifiers.org/cl/CL:0000863"
+  Mi identity "http://identifiers.org/ncit/C12558"
+  Mi hypernym "http://identifiers.org/bto/BTO:0000152"
+  Se identity "http://identifiers.org/ncit/C76380"
+  Se container "http://identifiers.org/go/GO:0005576"
+  Si identity "http://identifiers.org/ncit/C76380"
+  Si property "http://identifiers.org/ncit/C28217"
+  CD4rec hypernym "http://identifiers.org/cl/CL:0000492"
+  Mrrec hypernym "http://identifiers.org/ncit/C12558"
+  Mr_Source hypernym "http://identifiers.org/go/GO:0045123"
+  Mr_Growth_Boost hypernym "http://identifiers.org/ncit/C18081"
+  Mr_Recruitment hypernym "http://identifiers.org/go/GO:0045123"
+  Ma_Deactivation hypernym "http://identifiers.org/ncit/C40846"
+  Mr_Infection hypernym "http://identifiers.org/ncit/C2890"
+  Mr_Activation identity "http://identifiers.org/go/GO:0042116"
+  Se_Killing_Mr hypernym "http://identifiers.org/go/GO:0001906"
+  Mr_Death hypernym "http://identifiers.org/go/GO:0008219"
+  CD4_Source hypernym "http://identifiers.org/go/GO:0045123"
+  CD4_Growth_Boost hypernym "http://identifiers.org/ncit/C18081"
+  CD4_Recruitment hypernym "http://identifiers.org/go/GO:0045123"
+  Se_Killing_CD4 hypernym "http://identifiers.org/go/GO:0001906"
+  CD4_Interaction_Naive_Se part "http://identifiers.org/ncit/C97350"
+  CD4_Death hypernym "http://identifiers.org/go/GO:0008219"
+  CD8_Source hypernym "http://identifiers.org/go/GO:0045123"
+  CD8_Growth_Boost hypernym "http://identifiers.org/ncit/C18081"
+  CD8_Competition hypernym "http://identifiers.org/go/GO:0035212"
+  CD8_Death hypernym "http://identifiers.org/go/GO:0008219"
+  Ma_Death hypernym "http://identifiers.org/go/GO:0008219"
+  Se_Killing_Ma hypernym "http://identifiers.org/go/GO:0001906"
+  Mi_Bursting hypernym "http://identifiers.org/ncit/C129692"
+  Mi_Lysis hypernym "http://identifiers.org/ncit/C129692"
+  Mi_Death hypernym "http://identifiers.org/go/GO:0008219"
+  Se_Proliferation identity "http://identifiers.org/ncit/C18081"
+  Se_Death hypernym "http://identifiers.org/go/GO:0008219"
+  Si_Death hypernym "http://identifiers.org/go/GO:0008219"
+  Si_Proliferation identity "http://identifiers.org/ncit/C18081"
+  Mr_Infection_Si hypernym "http://identifiers.org/ncit/C2890"
+  Mi_Lysis_Si hypernym "http://identifiers.org/ncit/C129692"
+end
+
+Schokker2013___A_mathematical_model_representing_cellular_immune_development_and_response_to_Salmonella_of_chicken_intestinal_tissue is "Schokker2013 - A mathematical model representing cellular immune development and response to Salmonella of chicken intestinal tissue"
+
+Schokker2013___A_mathematical_model_representing_cellular_immune_development_and_response_to_Salmonella_of_chicken_intestinal_tissue description "http://identifiers.org/pubmed/23603730"
+Schokker2013___A_mathematical_model_representing_cellular_immune_development_and_response_to_Salmonella_of_chicken_intestinal_tissue model_entity_is "http://identifiers.org/biomodels.db/MODEL1912160004",
+                                                                                                                                                     "http://identifiers.org/biomodels.db/BIOMD0000000895"
+Schokker2013___A_mathematical_model_representing_cellular_immune_development_and_response_to_Salmonella_of_chicken_intestinal_tissue property "http://identifiers.org/ncit/C17930"
+Schokker2013___A_mathematical_model_representing_cellular_immune_development_and_response_to_Salmonella_of_chicken_intestinal_tissue property "http://identifiers.org/mamo/MAMO_0000046"
+Schokker2013___A_mathematical_model_representing_cellular_immune_development_and_response_to_Salmonella_of_chicken_intestinal_tissue property "http://identifiers.org/ncit/C34082"
+Schokker2013___A_mathematical_model_representing_cellular_immune_development_and_response_to_Salmonella_of_chicken_intestinal_tissue property "http://identifiers.org/ncit/C157974"
+Schokker2013___A_mathematical_model_representing_cellular_immune_development_and_response_to_Salmonella_of_chicken_intestinal_tissue taxon "http://identifiers.org/taxonomy/9031"

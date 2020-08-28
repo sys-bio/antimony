@@ -1,0 +1,401 @@
+// Created by libAntimony v2.13.0
+function Function_for_R_16(Hbarr1RP1, compartmentOne, k15)
+  k15*Hbarr1RP1/compartmentOne;
+end
+
+Function_for_R_16 is "Function for R_16"
+
+function Function_for_R_21(HRbarr2, compartmentOne, k23)
+  k23*HRbarr2/compartmentOne;
+end
+
+Function_for_R_21 is "Function for R_21"
+
+function Function_for_R_18(GRK56, HR, compartmentOne, k18)
+  k18*GRK56*HR/compartmentOne;
+end
+
+Function_for_R_18 is "Function for R_18"
+
+function Function_for_R_24(ERK, HRbarr2, compartmentOne, k21)
+  k21*ERK*HRbarr2/compartmentOne;
+end
+
+Function_for_R_24 is "Function for R_24"
+
+function Function_for_R_22(HRP2, barr2, compartmentOne, k20)
+  k20*barr2*HRP2/compartmentOne;
+end
+
+Function_for_R_22 is "Function for R_22"
+
+function Function_for_R_19(HRP2, compartmentOne, k17)
+  k17*HRP2/compartmentOne;
+end
+
+Function_for_R_19 is "Function for R_19"
+
+function Function_for_R_20(HR, barr2, compartmentOne, k19)
+  k19*barr2*HR/compartmentOne;
+end
+
+Function_for_R_20 is "Function for R_20"
+
+function Function_for_R_23(Hbarr2RP2, compartmentOne, k24)
+  k24*Hbarr2RP2/compartmentOne;
+end
+
+Function_for_R_23 is "Function for R_23"
+
+function Function_for_R_17(Hbarr2RP1, compartmentOne, k16)
+  k16*Hbarr2RP1/compartmentOne;
+end
+
+Function_for_R_17 is "Function for R_17"
+
+function Function_for_R_26(bpERK, compartmentOne, k25)
+  k25*bpERK/compartmentOne;
+end
+
+Function_for_R_26 is "Function for R_26"
+
+function Function_for_R_25(ERK, Hbarr2RP2, compartmentOne, k22)
+  k22*ERK*Hbarr2RP2/compartmentOne;
+end
+
+Function_for_R_25 is "Function for R_25"
+
+function Function_for_R_2(G, HRP1, compartmentOne, k1)
+  k1*G*HRP1/compartmentOne;
+end
+
+Function_for_R_2 is "Function for R_2"
+
+function Function_for_R_5(DAG, PKC, compartmentOne, k4)
+  k4*DAG*PKC/compartmentOne;
+end
+
+Function_for_R_5 is "Function for R_5"
+
+function Function_for_R_1(G, compartmentOne, k0)
+  k0*G/compartmentOne;
+end
+
+Function_for_R_1 is "Function for R_1"
+
+function Function_for_R_4(G_a, PIP2, compartmentOne, k3)
+  k3*G_a*PIP2/compartmentOne;
+end
+
+Function_for_R_4 is "Function for R_4"
+
+function Function_for_R_6(ERK, PKC_a, compartmentOne, k5)
+  k5*ERK*PKC_a/compartmentOne;
+end
+
+Function_for_R_6 is "Function for R_6"
+
+function Function_for_R_3(G, HR, compartmentOne, k2)
+  k2*G*HR/compartmentOne;
+end
+
+Function_for_R_3 is "Function for R_3"
+
+function Function_for_R_10(GpERK, compartmentOne, k9)
+  k9*GpERK/compartmentOne;
+end
+
+Function_for_R_10 is "Function for R_10"
+
+function Function_for_R_11(GRK23, HR, compartmentOne, k10)
+  k10*GRK23*HR/compartmentOne;
+end
+
+Function_for_R_11 is "Function for R_11"
+
+function Function_for_R_12(HRP1, barr1, compartmentOne, k11)
+  k11*barr1*HRP1/compartmentOne;
+end
+
+Function_for_R_12 is "Function for R_12"
+
+function Function_for_R_13(Hbarr1RP1, compartmentOne, k13)
+  k13*Hbarr1RP1/compartmentOne;
+end
+
+Function_for_R_13 is "Function for R_13"
+
+function Function_for_R_14(HRP1, barr2, compartmentOne, k12)
+  k12*barr2*HRP1/compartmentOne;
+end
+
+Function_for_R_14 is "Function for R_14"
+
+function Function_for_R_7(G_a, compartmentOne, k6)
+  k6*G_a/compartmentOne;
+end
+
+Function_for_R_7 is "Function for R_7"
+
+function Function_for_R_8(DAG, compartmentOne, k7)
+  k7*DAG/compartmentOne;
+end
+
+Function_for_R_8 is "Function for R_8"
+
+function Function_for_R_9(PKC_a, compartmentOne, k8)
+  k8*PKC_a/compartmentOne;
+end
+
+Function_for_R_9 is "Function for R_9"
+
+function Function_for_R_15(Hbarr2RP1, compartmentOne, k14)
+  k14*Hbarr2RP1/compartmentOne;
+end
+
+Function_for_R_15 is "Function for R_15"
+
+
+model *Heitzler2012_GPCRsignalling()
+
+  // Compartments and Species:
+  compartment compartmentOne;
+  species HR in compartmentOne, G in compartmentOne, ERK in compartmentOne;
+  species PIP2 in compartmentOne, DAG in compartmentOne, PKC in compartmentOne;
+  species PKC_a in compartmentOne, GpERK in compartmentOne, bpERK in compartmentOne;
+  species barr1 in compartmentOne, barr2 in compartmentOne, G_a in compartmentOne;
+  species HRP1 in compartmentOne, Hbarr1RP1 in compartmentOne, Hbarr2RP1 in compartmentOne;
+  species HRP2 in compartmentOne, HRbarr2 in compartmentOne, Hbarr2RP2 in compartmentOne;
+  species GRK2_3 in compartmentOne, GRK5_6 in compartmentOne, $pERK in compartmentOne;
+
+  // Assignment Rules:
+  pERK := GpERK + bpERK;
+
+  // Reactions:
+  R_1: G => G_a; compartmentOne*Function_for_R_1(G, compartmentOne, k0);
+  R_2: G + HRP1 => G_a + HRP1; compartmentOne*Function_for_R_2(G, HRP1, compartmentOne, k1);
+  R_3: G + HR => G_a + HR; compartmentOne*Function_for_R_3(G, HR, compartmentOne, k2);
+  R_4: G_a + PIP2 => DAG + G_a; compartmentOne*Function_for_R_4(G_a, PIP2, compartmentOne, k3);
+  R_5: DAG + PKC => DAG + PKC_a; compartmentOne*Function_for_R_5(DAG, PKC, compartmentOne, k4);
+  R_6: ERK + PKC_a => GpERK + PKC_a; compartmentOne*Function_for_R_6(ERK, PKC_a, compartmentOne, k5);
+  R_7: G_a => G; compartmentOne*Function_for_R_7(G_a, compartmentOne, k6);
+  R_8: DAG => PIP2; compartmentOne*Function_for_R_8(DAG, compartmentOne, k7);
+  R_9: PKC_a => PKC; compartmentOne*Function_for_R_9(PKC_a, compartmentOne, k8);
+  R_10: GpERK => ERK; compartmentOne*Function_for_R_10(GpERK, compartmentOne, k9);
+  R_11: HR => HRP1; compartmentOne*Function_for_R_11(GRK23, HR, compartmentOne, k10);
+  R_12: barr1 + HRP1 => Hbarr1RP1; compartmentOne*Function_for_R_12(HRP1, barr1, compartmentOne, k11);
+  R_13: Hbarr1RP1 => barr1 + HRP1; compartmentOne*Function_for_R_13(Hbarr1RP1, compartmentOne, k13);
+  R_14: barr2 + HRP1 => Hbarr2RP1; compartmentOne*Function_for_R_14(HRP1, barr2, compartmentOne, k12);
+  R_15: Hbarr2RP1 => barr2 + HRP1; compartmentOne*Function_for_R_15(Hbarr2RP1, compartmentOne, k14);
+  R_16: Hbarr1RP1 => barr1 + HR; compartmentOne*Function_for_R_16(Hbarr1RP1, compartmentOne, k15);
+  R_17: Hbarr2RP1 => barr2 + HR; compartmentOne*Function_for_R_17(Hbarr2RP1, compartmentOne, k16);
+  R_18: HR => HRP2; compartmentOne*Function_for_R_18(GRK56, HR, compartmentOne, k18);
+  R_19: HRP2 => HR; compartmentOne*Function_for_R_19(HRP2, compartmentOne, k17);
+  R_20: barr2 + HR => HRbarr2; compartmentOne*Function_for_R_20(HR, barr2, compartmentOne, k19);
+  R_21: HRbarr2 => barr2 + HR; compartmentOne*Function_for_R_21(HRbarr2, compartmentOne, k23);
+  R_22: barr2 + HRP2 => Hbarr2RP2; compartmentOne*Function_for_R_22(HRP2, barr2, compartmentOne, k20);
+  R_23: Hbarr2RP2 => barr2 + HRP2; compartmentOne*Function_for_R_23(Hbarr2RP2, compartmentOne, k24);
+  R_24: ERK + HRbarr2 => bpERK + HRbarr2; compartmentOne*Function_for_R_24(ERK, HRbarr2, compartmentOne, k21);
+  R_25: ERK + Hbarr2RP2 => bpERK + Hbarr2RP2; compartmentOne*Function_for_R_25(ERK, Hbarr2RP2, compartmentOne, k22);
+  R_26: bpERK => ERK; compartmentOne*Function_for_R_26(bpERK, compartmentOne, k25);
+
+  // Species initializations:
+  HR = 0.08;
+  G = 56.99;
+  ERK = 4.243;
+  PIP2 = 0.997;
+  DAG = 0.009;
+  PKC = 8.842;
+  PKC_a = 0.002;
+  GpERK = 0.015;
+  bpERK = 0.015;
+  barr1 = 0.858;
+  barr2 = 0.483;
+  G_a = 0;
+  HRP1 = 0;
+  Hbarr1RP1 = 0;
+  Hbarr2RP1 = 0;
+  HRP2 = 0;
+  HRbarr2 = 0;
+  Hbarr2RP2 = 0;
+  GRK2_3 = 0.89944;
+  GRK5_6 = 1.518;
+
+  // Compartment initializations:
+  compartmentOne = 1;
+
+  // Variable initializations:
+  k0 = 0.000311;
+  k1 = 0.0178;
+  k2 = 7.6;
+  k3 = 4.63;
+  k4 = 0.0787;
+  k5 = 2.65;
+  k6 = 5.0985;
+  k7 = 0.461;
+  k8 = 1.77;
+  k9 = 3.04;
+  k10 = 2.27;
+  k11 = 2.61;
+  k12 = 2.59;
+  k13 = 0.00619;
+  k14 = 0.0311;
+  k15 = 6.54e-05;
+  k16 = 0.0723;
+  k17 = 0.0665;
+  k18 = 0.59;
+  k19 = 0.205;
+  k20 = 1.04;
+  k21 = 0.00042;
+  k22 = 14.44;
+  k23 = 1.05;
+  k24 = 0.347;
+  k25 = 0.762;
+  GRK23 = 0.899447579;
+  GRK56 = 1.5180818;
+  GRK23_si = 0.478865092;
+  GRK56_si = 0.00103512491;
+  P0_Ro = 0.00173556731;
+  P0_a_Ro = 2.09075206e-05;
+  barr2_0_si = 0.000112306963;
+  nDAG = 4.11974423;
+  nPKC = 7.20901786;
+
+  // Other declarations:
+  const compartmentOne, k0, k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11;
+  const k12, k13, k14, k15, k16, k17, k18, k19, k20, k21, k22, k23, k24, k25;
+  const GRK23, GRK56, GRK23_si, GRK56_si, P0_Ro, P0_a_Ro, barr2_0_si, nDAG;
+  const nPKC;
+
+  // Display Names:
+  compartmentOne is "Cell";
+  G is "Gp";
+  GpERK is "Gp_pERK";
+  bpERK is "b_pERK";
+  barr1 is "b-arrestin1";
+  barr2 is "b-arrestin2";
+  G_a is "Gp_a";
+  HRP1 is "HR-P1";
+  Hbarr1RP1 is "HR-P1-b-arrestin1";
+  Hbarr2RP1 is "HR-P1-b-arrestin2";
+  HRP2 is "HR-P2";
+  HRbarr2 is "HR_b-arrestin2";
+  Hbarr2RP2 is "HR-P2-b-arrestin2";
+  GRK2_3 is "GRK2/3";
+  GRK5_6 is "GRK5/6";
+  R_1 is "Cons_Gp_activation";
+  R_2 is "Gp activation HR-P1";
+  R_3 is "Gp activation HR";
+  R_4 is "DAG production";
+  R_5 is "PKC activation DAG";
+  R_6 is "ERk phosphorylation PKC";
+  R_7 is "Gp_a deactivation";
+  R_8 is "DAG catalysis";
+  R_9 is "PKC_a deactivation";
+  R_10 is "G_pERK_dephosphorylation";
+  R_11 is "HR phosphorylation GRK23";
+  R_12 is "b-arrestin1 HR-P1 binding";
+  R_13 is "HR-P1-b-arrestin1 dissociation";
+  R_14 is "b-arrestin2 HR-P1 binding";
+  R_15 is "HR-P1-b-arrestin2 dissociation";
+  R_16 is "HR-P1-b-arrestin1 dissociation 2";
+  R_17 is "HR-P1-b-arrestin2 dissociation 2";
+  R_18 is "HR phosphorylation GRK56";
+  R_19 is "HR-P2 dephosphorylation";
+  R_20 is "b-arrestin2 HR binding";
+  R_21 is "HR_b-arrestin2 dissociation";
+  R_22 is "b-arrestin2 HR-P2 binding";
+  R_23 is "HR-P2-b-arrestin2 dissociation";
+  R_24 is "ERK phosphorylation 1";
+  R_25 is "ERK phosphorylation 2";
+  R_26 is "b_pERK dephosphorylation";
+
+  // CV terms:
+  compartmentOne property "http://identifiers.org/bto/BTO:0002733"
+  HR part "http://identifiers.org/uniprot/P01019"
+  HR part "http://identifiers.org/uniprot/P30556"
+  G hypernym "http://identifiers.org/uniprot/P63092"
+  ERK hypernym "http://identifiers.org/uniprot/P27361"
+  PIP2 identity "http://identifiers.org/chebi/CHEBI:83417"
+  DAG hypernym "http://identifiers.org/chebi/CHEBI:17962"
+  PKC hypernym "http://identifiers.org/uniprot/P17252"
+  PKC_a hypernym "http://identifiers.org/uniprot/P17252"
+  PKC_a property "http://identifiers.org/pato/PATO:0002354"
+  GpERK hypernym "http://identifiers.org/uniprot/P27361"
+  GpERK property "http://identifiers.org/pato/PATO:0002220"
+  bpERK hypernym "http://identifiers.org/uniprot/P27361"
+  bpERK property "http://identifiers.org/pato/PATO:0002220"
+  barr1 identity "http://identifiers.org/uniprot/P49407"
+  barr2 version "http://identifiers.org/uniprot/P32121"
+  G_a hypernym "http://identifiers.org/uniprot/P63092"
+  G_a property "http://identifiers.org/pato/PATO:0002354"
+  HRP1 part "http://identifiers.org/uniprot/P30556"
+  HRP1 part "http://identifiers.org/uniprot/P01019"
+  HRP1 property "http://identifiers.org/pato/PATO:0002220"
+  Hbarr1RP1 part "http://identifiers.org/uniprot/P30556"
+  Hbarr1RP1 part "http://identifiers.org/uniprot/P49407"
+  Hbarr1RP1 part "http://identifiers.org/uniprot/P01019"
+  Hbarr1RP1 property "http://identifiers.org/pato/PATO:0002220"
+  Hbarr2RP1 part "http://identifiers.org/uniprot/P01019"
+  Hbarr2RP1 part "http://identifiers.org/uniprot/P30556"
+  Hbarr2RP1 part "http://identifiers.org/uniprot/P32121"
+  Hbarr2RP1 property "http://identifiers.org/pato/PATO:0002220"
+  HRP2 part "http://identifiers.org/uniprot/P01019"
+  HRP2 part "http://identifiers.org/uniprot/P30556"
+  HRP2 property "http://identifiers.org/pato/PATO:0002220"
+  HRbarr2 part "http://identifiers.org/uniprot.isoform/P01019"
+  HRbarr2 part "http://identifiers.org/uniprot/P30556"
+  HRbarr2 part "http://identifiers.org/uniprot/P32121"
+  Hbarr2RP2 part "http://identifiers.org/uniprot/P30556"
+  Hbarr2RP2 part "http://identifiers.org/uniprot/P01019"
+  Hbarr2RP2 part "http://identifiers.org/uniprot/P32121"
+  Hbarr2RP2 property "http://identifiers.org/pato/PATO:0002220"
+  GRK2_3 property "http://identifiers.org/uniprot/P25098"
+  GRK2_3 property "http://identifiers.org/uniprot/P35626"
+  GRK5_6 property "http://identifiers.org/uniprot/P34947"
+  GRK5_6 property "http://identifiers.org/uniprot/P43250"
+  pERK hypernym "http://identifiers.org/uniprot/P27361"
+  pERK property "http://identifiers.org/pato/PATO:0002220"
+  R_1 property "http://identifiers.org/sbo/SBO:0000656"
+  R_2 property "http://identifiers.org/sbo/SBO:0000656"
+  R_3 property "http://identifiers.org/sbo/SBO:0000656"
+  R_4 property "http://identifiers.org/sbo/SBO:0000393"
+  R_5 property "http://identifiers.org/sbo/SBO:0000656"
+  R_6 property "http://identifiers.org/sbo/SBO:0000216"
+  R_7 property "http://identifiers.org/go/GO:0005085"
+  R_8 property "http://identifiers.org/sbo/SBO:0000172"
+  R_9 hypernym "http://identifiers.org/go/GO:0042313"
+  R_10 property "http://identifiers.org/sbo/SBO:0000216"
+  R_11 property "http://identifiers.org/sbo/SBO:0000216"
+  R_12 property "http://identifiers.org/go/GO:0005515"
+  R_13 property "http://identifiers.org/sbo/SBO:0000180"
+  R_14 property "http://identifiers.org/go/GO:0005515"
+  R_15 property "http://identifiers.org/sbo/SBO:0000180"
+  R_16 part "http://identifiers.org/sbo/SBO:0000180"
+  R_17 property "http://identifiers.org/sbo/SBO:0000180"
+  R_18 property "http://identifiers.org/sbo/SBO:0000216"
+  R_19 part "http://identifiers.org/go/GO:0016311"
+  R_20 property "http://identifiers.org/go/GO:0005515"
+  R_21 property "http://identifiers.org/sbo/SBO:0000180"
+  R_22 part "http://identifiers.org/go/GO:0005515"
+  R_23 property "http://identifiers.org/sbo/SBO:0000180"
+  R_24 property "http://identifiers.org/sbo/SBO:0000216"
+  R_25 property "http://identifiers.org/sbo/SBO:0000216"
+  R_26 property "http://identifiers.org/go/GO:0016311"
+end
+
+Heitzler2012_GPCRsignalling is "Heitzler2012 - GPCR signalling"
+
+Heitzler2012_GPCRsignalling class "http://identifiers.org/biomodels.db/MODEL1012080000",
+                                  "http://identifiers.org/bto/BTO:0000671",
+                                  "http://identifiers.org/taxonomy/9606",
+                                  "http://identifiers.org/go/GO:0007178"
+Heitzler2012_GPCRsignalling class "http://identifiers.org/go/GO:0038166"
+Heitzler2012_GPCRsignalling description "http://identifiers.org/go/GO:0007178",
+                                        "http://identifiers.org/go/GO:0038166",
+                                        "http://identifiers.org/pubmed/22735336"
+Heitzler2012_GPCRsignalling model_entity_is "http://identifiers.org/biomodels.db/MODEL1012080000",
+                                            "http://identifiers.org/biomodels.db/BIOMD0000000842"
+Heitzler2012_GPCRsignalling identity "http://identifiers.org/biomodels.db/MODEL1012080000"
+Heitzler2012_GPCRsignalling container "http://identifiers.org/bto/BTO:0000671"
+Heitzler2012_GPCRsignalling taxon "http://identifiers.org/taxonomy/9606"

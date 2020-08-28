@@ -1,0 +1,159 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function function_for_cdk1a_degradation_by_apc_2(APC_C_active, Cyclin_B1_Cdk1_complex_phosphorylated, k_dest)
+  k_dest*APC_C_active*Cyclin_B1_Cdk1_complex_phosphorylated;
+end
+
+function_for_cdk1a_degradation_by_apc_2 is "function for cdk1a degradation by apc_2"
+
+function function_for_apc_activation_1(APC_C_active, APC_C_total, Plx1_active, ec50_apc, k_apc_on, n_apc)
+  (k_apc_on/(1 + (ec50_apc/Plx1_active)^n_apc))*(APC_C_total - APC_C_active);
+end
+
+function_for_apc_activation_1 is "function for apc activation_1"
+
+function function_for_cdk1a_degradation_by_apc_1(APC_C_active, Cyclin_B1_Cdk1_complex_unphosphorylated, k_dest)
+  k_dest*APC_C_active*Cyclin_B1_Cdk1_complex_unphosphorylated;
+end
+
+function_for_cdk1a_degradation_by_apc_1 is "function for cdk1a degradation by apc_1"
+
+function function_for_plx1_activation_1(Cyclin_B1_Cdk1_complex_phosphorylated, Plx1_active, Plx1_total, ec50_plx, k_plxon, n_plx)
+  (k_plxon/(1 + (ec50_plx/Cyclin_B1_Cdk1_complex_phosphorylated)^n_plx))*(Plx1_total - Plx1_active);
+end
+
+function_for_plx1_activation_1 is "function for plx1 activation_1"
+
+function function_for_cdk_inactivation_1(Cyclin_B1_Cdk1_complex_phosphorylated, ec50_wee1, k_cdk1_off, n_wee1, p, r)
+  r^(1/2)*k_cdk1_off*(1 + p/((Cyclin_B1_Cdk1_complex_phosphorylated/ec50_wee1)^n_wee1 + 1))*Cyclin_B1_Cdk1_complex_phosphorylated;
+end
+
+function_for_cdk_inactivation_1 is "function for cdk inactivation_1"
+
+function function_for_cdk1_activation_1(Cyclin_B1_Cdk1_complex_phosphorylated, Cyclin_B1_Cdk1_complex_unphosphorylated, ec50_cdc25, k_cdk1_on, n_cdc25, p, r)
+  (1/r^(1/2))*k_cdk1_on*(1 + p/(1 + (ec50_cdc25/Cyclin_B1_Cdk1_complex_phosphorylated)^n_cdc25))*Cyclin_B1_Cdk1_complex_unphosphorylated;
+end
+
+function_for_cdk1_activation_1 is "function for cdk1 activation_1"
+
+
+model *Tsai2014___Cell_cycle_duration_control_by_oscillatory_Dynamics__in_Early_Xenopus_laevis_Embryos()
+
+  // Compartments and Species:
+  compartment nuclear;
+  species Cyclin_B1_Cdk1_complex_phosphorylated in nuclear, Cyclin_B1_Cdk1_complex_unphosphorylated in nuclear;
+  species Plx1_active in nuclear, APC_C_active in nuclear, $Plx1_total in nuclear;
+  species APC_C_total in nuclear, $Cyclin_B1_Cdk1_complex_total in nuclear;
+
+  // Assignment Rules:
+  Cyclin_B1_Cdk1_complex_total := Cyclin_B1_Cdk1_complex_unphosphorylated + Cyclin_B1_Cdk1_complex_phosphorylated;
+  r := 1/(2*(1 + 3/(1 + exp((70 - time)/tau)))^2);
+
+  // Reactions:
+  Cyclin_B1_Cdk1_phosphorylated_synthesis:  => Cyclin_B1_Cdk1_complex_phosphorylated; nuclear*Constant_flux__irreversible(k_synth);
+  Cyclin_B1_Cdk1_unphosphorylated_degradation: Cyclin_B1_Cdk1_complex_unphosphorylated => ; nuclear*function_for_cdk1a_degradation_by_apc_1(APC_C_active, Cyclin_B1_Cdk1_complex_unphosphorylated, k_dest);
+  Cyclin_B1_Cdk1_phosphorylated_degradation: Cyclin_B1_Cdk1_complex_phosphorylated => ; nuclear*function_for_cdk1a_degradation_by_apc_2(APC_C_active, Cyclin_B1_Cdk1_complex_phosphorylated, k_dest);
+  Cyclin_B1_Cdk1_phosphorylated_dephosphorylation: Cyclin_B1_Cdk1_complex_phosphorylated => Cyclin_B1_Cdk1_complex_unphosphorylated; nuclear*function_for_cdk_inactivation_1(Cyclin_B1_Cdk1_complex_phosphorylated, ec50_wee1, k_cdk1_off, n_wee1, p, r);
+  Cyclin_B1_Cdk1_phosphorylated_phosphorylation: Cyclin_B1_Cdk1_complex_unphosphorylated => Cyclin_B1_Cdk1_complex_phosphorylated; nuclear*function_for_cdk1_activation_1(Cyclin_B1_Cdk1_complex_phosphorylated, Cyclin_B1_Cdk1_complex_unphosphorylated, ec50_cdc25, k_cdk1_on, n_cdc25, p, r);
+  Plx1_activation_by_active_Cdk1:  => Plx1_active; nuclear*function_for_plx1_activation_1(Cyclin_B1_Cdk1_complex_phosphorylated, Plx1_active, Plx1_total, ec50_plx, k_plxon, n_plx);
+  Plx1_inactivation_after_Cdk1_inactivated: Plx1_active => ; nuclear*k_plx_off*Plx1_active;
+  Activation_of_APC_CCdc20_by_active_Plx1:  => APC_C_active; nuclear*function_for_apc_activation_1(APC_C_active, APC_C_total, Plx1_active, ec50_apc, k_apc_on, n_apc);
+  inactivation_of_APC_CCdc20_after_Plx1_is_inactivated: APC_C_active => ; nuclear*k_apc_off*APC_C_active;
+
+  // Species initializations:
+  Cyclin_B1_Cdk1_complex_phosphorylated = 60;
+  Cyclin_B1_Cdk1_complex_unphosphorylated = 0;
+  Plx1_active = 0;
+  APC_C_active = 1;
+  Plx1_total = 1;
+  APC_C_total = 1;
+
+  // Compartment initializations:
+  nuclear = 1;
+
+  // Variable initializations:
+  k_synth = 1.5;
+  k_dest = 0.4;
+  ec50_cdc25 = 30;
+  n_cdc25 = 11;
+  ec50_wee1 = 35;
+  n_wee1 = 3.5;
+  k_cdk1_on = 0.0354;
+  k_cdk1_off = 0.0354;
+  p = 5;
+  ec50_plx = 60;
+  ec50_apc = 0.5;
+  n_apc = 4;
+  n_plx = 5;
+  k_plxon = 1.5;
+  k_plx_off = 0.125;
+  k_apc_on = 1.5;
+  k_apc_off = 0.15;
+  tau = 4;
+
+  // Other declarations:
+  var r;
+  const nuclear, k_synth, k_dest, ec50_cdc25, n_cdc25, ec50_wee1, n_wee1;
+  const k_cdk1_on, k_cdk1_off, p, ec50_plx, ec50_apc, n_apc, n_plx, k_plxon;
+  const k_plx_off, k_apc_on, k_apc_off, tau;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  Cyclin_B1_Cdk1_complex_phosphorylated is "Cyclin B1 Cdk1 complex phosphorylated";
+  Cyclin_B1_Cdk1_complex_unphosphorylated is "Cyclin B1 Cdk1 complex unphosphorylated";
+  APC_C_active is "APC/C active";
+  APC_C_total is "APC/C total";
+  Cyclin_B1_Cdk1_complex_total is "Cyclin B1 Cdk1 complex total";
+  Cyclin_B1_Cdk1_phosphorylated_synthesis is "Cyclin B1 Cdk1 phosphorylated synthesis";
+  Cyclin_B1_Cdk1_unphosphorylated_degradation is "Cyclin B1 Cdk1 unphosphorylated degradation";
+  Cyclin_B1_Cdk1_phosphorylated_degradation is "Cyclin B1 Cdk1 phosphorylated degradation";
+  Cyclin_B1_Cdk1_phosphorylated_dephosphorylation is "Cyclin B1 Cdk1 phosphorylated dephosphorylation";
+  Cyclin_B1_Cdk1_phosphorylated_phosphorylation is "Cyclin B1 Cdk1 phosphorylated phosphorylation";
+  Plx1_activation_by_active_Cdk1 is "Plx1 activation by active Cdk1";
+  Plx1_inactivation_after_Cdk1_inactivated is "Plx1 inactivation after Cdk1 inactivated";
+  Activation_of_APC_CCdc20_by_active_Plx1 is "Activation of APC/CCdc20 by active Plx1";
+  inactivation_of_APC_CCdc20_after_Plx1_is_inactivated is "inactivation of APC/CCdc20 after Plx1 is inactivated";
+
+  // CV terms:
+  nuclear hypernym "http://identifiers.org/ncit/C13361"
+  Cyclin_B1_Cdk1_complex_phosphorylated part "http://identifiers.org/uniprot/P13350"
+  Cyclin_B1_Cdk1_complex_phosphorylated part "http://identifiers.org/uniprot/P35567"
+  Cyclin_B1_Cdk1_complex_phosphorylated identity "http://identifiers.org/go/GO:0032991"
+  Cyclin_B1_Cdk1_complex_unphosphorylated part "http://identifiers.org/uniprot/P13350"
+  Cyclin_B1_Cdk1_complex_unphosphorylated part "http://identifiers.org/uniprot/P35567"
+  Cyclin_B1_Cdk1_complex_unphosphorylated identity "http://identifiers.org/go/GO:0032991"
+  Plx1_active hypernym "http://identifiers.org/uniprot/P70032"
+  Plx1_active property "http://identifiers.org/pato/PATO:0002354"
+  APC_C_active part "http://identifiers.org/uniprot/Q6GQ63"
+  APC_C_active property "http://identifiers.org/pato/PATO:0002354"
+  Plx1_total hypernym "http://identifiers.org/uniprot/P70032"
+  APC_C_total part "http://identifiers.org/uniprot/Q6GQ63"
+  Cyclin_B1_Cdk1_complex_total part "http://identifiers.org/uniprot/P35567"
+  Cyclin_B1_Cdk1_complex_total part "http://identifiers.org/uniprot/P13350"
+  Cyclin_B1_Cdk1_complex_total identity "http://identifiers.org/go/GO:0032991"
+  Cyclin_B1_Cdk1_phosphorylated_synthesis hypernym "http://identifiers.org/ncit/C61408"
+  Cyclin_B1_Cdk1_unphosphorylated_degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Cyclin_B1_Cdk1_phosphorylated_degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Cyclin_B1_Cdk1_phosphorylated_dephosphorylation hypernym "http://identifiers.org/go/GO:0016311"
+  Cyclin_B1_Cdk1_phosphorylated_phosphorylation hypernym "http://identifiers.org/go/GO:0016310"
+  Plx1_activation_by_active_Cdk1 hypernym "http://identifiers.org/sbo/SBO:0000656"
+  Activation_of_APC_CCdc20_by_active_Plx1 hypernym "http://identifiers.org/sbo/SBO:0000656"
+end
+
+Tsai2014___Cell_cycle_duration_control_by_oscillatory_Dynamics__in_Early_Xenopus_laevis_Embryos is "Tsai2014 - Cell cycle duration control by oscillatory Dynamics  in Early Xenopus laevis Embryos"
+
+Tsai2014___Cell_cycle_duration_control_by_oscillatory_Dynamics__in_Early_Xenopus_laevis_Embryos model_entity_is "http://identifiers.org/biomodels.db/MODEL1809060006",
+                                                                                                                "http://identifiers.org/biomodels.db/BIOMD0000000719"
+Tsai2014___Cell_cycle_duration_control_by_oscillatory_Dynamics__in_Early_Xenopus_laevis_Embryos part "http://identifiers.org/go/GO:0051726"
+Tsai2014___Cell_cycle_duration_control_by_oscillatory_Dynamics__in_Early_Xenopus_laevis_Embryos property "http://identifiers.org/mamo/MAMO_0000046"
+Tsai2014___Cell_cycle_duration_control_by_oscillatory_Dynamics__in_Early_Xenopus_laevis_Embryos taxon "http://identifiers.org/taxonomy/8355"
+Tsai2014___Cell_cycle_duration_control_by_oscillatory_Dynamics__in_Early_Xenopus_laevis_Embryos description "http://identifiers.org/doi/10.1371/journal.pbio.1001788"
+Tsai2014___Cell_cycle_duration_control_by_oscillatory_Dynamics__in_Early_Xenopus_laevis_Embryos description "http://identifiers.org/pubmed/24523664"

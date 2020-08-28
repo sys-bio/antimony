@@ -1,0 +1,169 @@
+// Created by libAntimony v2.13.0
+model *Zhu2015___combined_gemcitabine_and_birinapant_in_pancreatic_cancer_cells___basic_PD_model()
+
+  // Compartments and Species:
+  compartment Pancreas;
+  species $Ra in Pancreas, $Inh_g in Pancreas, $Inh_b in Pancreas, Sti_g4 in Pancreas;
+  species Sti_b4 in Pancreas, $Rd in Pancreas, $Sti_g in Pancreas, $Sti_b in Pancreas;
+  species Sti_g1 in Pancreas, Sti_g2 in Pancreas, Sti_g3 in Pancreas, Sti_b1 in Pancreas;
+  species Sti_b2 in Pancreas, Sti_b3 in Pancreas;
+
+  // Assignment Rules:
+  Inh_g := Imax_g*C_g^Hi_g/((Psi_i*IC50_g)^Hi_g + C_g^Hi_g);
+  Inh_b := Imax_b*C_b^Hi_b/((Psi_i*IC50_b)^Hi_b + C_b^Hi_b);
+  Sti_g := Smax_g*C_g^Hs_g/((Psi_s*SC50_g)^Hs_g + C_g^Hs_g);
+  Sti_b := Smax_b*C_b^Hs_b/((Psi_s*SC50_b)^Hs_b + C_b^Hs_b);
+
+  // Rate Rules:
+  Ra' = (1 - Inh_g)*(1 - Inh_b)*ModelValue_3*Ra*(1 - Ra/ModelValue_2) - (1 + Sti_g4)*(1 + Sti_b4)*ModelValue_4*Ra;
+  Rd' = (1 + Sti_g4)*(1 + Sti_b4)*ModelValue_4*Ra - ModelValue_4*Rd;
+
+  // Reactions:
+  g_death_stimulus_delay_1: $Sti_g => Sti_g1; Pancreas*ktau_g*Sti_g;
+  g_death_stimulus_delay_2: Sti_g1 => Sti_g2; Pancreas*ktau_g*Sti_g1;
+  g_death_stimulus_delay_3: Sti_g2 => Sti_g3; Pancreas*ktau_g*Sti_g2;
+  g_death_stimulus_delay_4: Sti_g3 => Sti_g4; Pancreas*ktau_g*Sti_g3;
+  g_death_stimulus_delay_4_degradation: Sti_g4 => ; Pancreas*ktau_g*Sti_g4;
+  b_death_stimulus_delay_1: $Sti_b => Sti_b1; Pancreas*ktau_b*Sti_b;
+  b_death_stimulus_delay_2: Sti_b1 => Sti_b2; Pancreas*ktau_b*Sti_b1;
+  b_death_stimulus_delay_3: Sti_b2 => Sti_b3; Pancreas*ktau_b*Sti_b2;
+  b_death_stimulus_delay_4: Sti_b3 => Sti_b4; Pancreas*ktau_b*Sti_b3;
+  b_death_stimulus_delay_4_degradation: Sti_b4 => ; Pancreas*ktau_b*Sti_b4;
+
+  // Species initializations:
+  Ra = Ra_0;
+  Sti_g4 = 0;
+  Sti_b4 = 0;
+  Rd = Rd_0;
+  Sti_g1 = 0;
+  Sti_g2 = 0;
+  Sti_g3 = 0;
+  Sti_b1 = 0;
+  Sti_b2 = 0;
+  Sti_b3 = 0;
+
+  // Compartment initializations:
+  Pancreas = 1;
+
+  // Variable initializations:
+  Ra_0 = 307000;
+  ModelValue_3 = kg;
+  ModelValue_2 = Rss;
+  ModelValue_4 = kd;
+  Rd_0 = 1940;
+  Imax_g = 0.991;
+  C_g = 0;
+  Hi_g = 3.57;
+  Psi_i = piecewise(0.583, (C_b! = 0) && (C_g! = 0), 1);
+  IC50_g = 20.8;
+  Imax_b = 0.375;
+  C_b = 0;
+  Hi_b = 1.06;
+  IC50_b = 145;
+  Smax_g = 4.09;
+  Hs_g = 5;
+  Psi_s = piecewise(0.582, (C_b! = 0) && (C_g! = 0), 1);
+  SC50_g = 14;
+  Smax_b = 17.5;
+  Hs_b = 0.984;
+  SC50_b = 168;
+  Rss = 5490000;
+  kg = 0.0209;
+  kd = 0.000385;
+  ktau_g = 0.086;
+  ktau_b = 0.611;
+
+  // Other declarations:
+  const Pancreas, Ra_0, ModelValue_3, ModelValue_2, ModelValue_4, Rd_0, Imax_g;
+  const C_g, Hi_g, Psi_i, IC50_g, Imax_b, C_b, Hi_b, IC50_b, Smax_g, Hs_g;
+  const Psi_s, SC50_g, Smax_b, Hs_b, SC50_b, Rss, kg, kd, ktau_g, ktau_b;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  ModelValue_3 is "Initial for kg";
+  ModelValue_2 is "Initial for Rss";
+  ModelValue_4 is "Initial for kd";
+  g_death_stimulus_delay_1 is "g_death_stimulus delay 1";
+  g_death_stimulus_delay_2 is "g_death_stimulus delay 2";
+  g_death_stimulus_delay_3 is "g_death_stimulus delay 3";
+  g_death_stimulus_delay_4 is "g_death_stimulus delay 4";
+  g_death_stimulus_delay_4_degradation is "g_death_stimulus delay 4 degradation";
+  b_death_stimulus_delay_1 is "b_death_stimulus delay 1";
+  b_death_stimulus_delay_2 is "b_death_stimulus delay 2";
+  b_death_stimulus_delay_3 is "b_death_stimulus delay 3";
+  b_death_stimulus_delay_4 is "b_death_stimulus delay 4";
+  b_death_stimulus_delay_4_degradation is "b_death_stimulus delay 4 degradation";
+
+  // CV terms:
+  Pancreas hypernym "http://identifiers.org/bto/BTO:0000988"
+  Ra hypernym "http://identifiers.org/bto/BTO:0000304"
+  Ra property "http://identifiers.org/ncit/C17597"
+  Ra_0 hypernym "http://identifiers.org/ncit/C85644"
+  Inh_g class "http://identifiers.org/ncit/C15632",
+              "http://identifiers.org/ncit/C29895"
+  Inh_g hypernym "http://identifiers.org/ncit/C15632"
+  Inh_b class "http://identifiers.org/ncit/C15632",
+              "http://identifiers.org/ncit/C29895"
+  Inh_b hypernym "http://identifiers.org/ncit/C15632"
+  Sti_g4 property "http://identifiers.org/sbo/SBO:0000225"
+  Sti_b4 property "http://identifiers.org/sbo/SBO:0000225"
+  Rd hypernym "http://identifiers.org/bto/BTO:0000304"
+  Rd property "http://identifiers.org/ncit/C124524"
+  Rd property "http://identifiers.org/go/GO:0008219"
+  Rd_0 hypernym "http://identifiers.org/ncit/C85644"
+  Imax_g hypernym "http://identifiers.org/sbo/SBO:0000186"
+  C_g hypernym "http://identifiers.org/kegg.drug/D02368"
+  C_g hypernym "http://identifiers.org/chebi/CHEBI:175901"
+  C_g hypernym "http://identifiers.org/ncit/C66876"
+  Hi_g identity "http://identifiers.org/ncit/C48923"
+  Psi_i encodement "http://identifiers.org/ncit/C54708"
+  IC50_g identity "http://identifiers.org/obi/OBI:0001191"
+  Imax_b hypernym "http://identifiers.org/sbo/SBO:0000186"
+  C_b hypernym "http://identifiers.org/ncit/C88295"
+  C_b hypernym "http://identifiers.org/kegg.drug/D10417"
+  Hi_b identity "http://identifiers.org/ncit/C48923"
+  IC50_b identity "http://identifiers.org/obi/OBI:0001191"
+  Sti_g class "http://identifiers.org/ncit/C15632",
+              "http://identifiers.org/ncit/C40715"
+  Sti_g hypernym "http://identifiers.org/ncit/C15632"
+  Smax_g hypernym "http://identifiers.org/sbo/SBO:0000186"
+  Hs_g identity "http://identifiers.org/ncit/C48923"
+  Psi_s encodement "http://identifiers.org/ncit/C54708"
+  SC50_g identity "http://identifiers.org/obi/OBI:0001180"
+  Sti_b class "http://identifiers.org/ncit/C15632",
+              "http://identifiers.org/ncit/C40715"
+  Sti_b hypernym "http://identifiers.org/ncit/C15632"
+  Smax_b hypernym "http://identifiers.org/sbo/SBO:0000186"
+  Hs_b identity "http://identifiers.org/ncit/C48923"
+  SC50_b identity "http://identifiers.org/obi/OBI:0001180"
+  Sti_g1 property "http://identifiers.org/sbo/SBO:0000225"
+  Sti_g2 property "http://identifiers.org/sbo/SBO:0000225"
+  Sti_g3 property "http://identifiers.org/sbo/SBO:0000225"
+  Sti_b1 property "http://identifiers.org/sbo/SBO:0000225"
+  Sti_b2 property "http://identifiers.org/sbo/SBO:0000225"
+  Sti_b3 property "http://identifiers.org/sbo/SBO:0000225"
+  Rss hypernym "http://identifiers.org/ncit/C25443"
+  kg encodement "http://identifiers.org/go/GO:0016049"
+  kd encodement "http://identifiers.org/go/GO:0008219"
+  ktau_g encodement "http://identifiers.org/sbo/SBO:0000225"
+  ktau_b encodement "http://identifiers.org/sbo/SBO:0000225"
+end
+
+Zhu2015___combined_gemcitabine_and_birinapant_in_pancreatic_cancer_cells___basic_PD_model is "Zhu2015 - Combined gemcitabine and birinapant in pancreatic cancer cells - basic PD model"
+
+Zhu2015___combined_gemcitabine_and_birinapant_in_pancreatic_cancer_cells___basic_PD_model model_entity_is "http://identifiers.org/biomodels.db/MODEL1604270000"
+Zhu2015___combined_gemcitabine_and_birinapant_in_pancreatic_cancer_cells___basic_PD_model class "http://identifiers.org/kegg.drug/D02368",
+                                                                                                "http://identifiers.org/kegg.drug/D10417",
+                                                                                                "http://identifiers.org/biomodels.db/MODEL1604270000",
+                                                                                                "http://identifiers.org/bto/BTO:0000988",
+                                                                                                "http://identifiers.org/ncit/C191"
+Zhu2015___combined_gemcitabine_and_birinapant_in_pancreatic_cancer_cells___basic_PD_model description "http://identifiers.org/pubmed/26252969"
+Zhu2015___combined_gemcitabine_and_birinapant_in_pancreatic_cancer_cells___basic_PD_model model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000668"
+Zhu2015___combined_gemcitabine_and_birinapant_in_pancreatic_cancer_cells___basic_PD_model part "http://identifiers.org/kegg.drug/D02368"
+Zhu2015___combined_gemcitabine_and_birinapant_in_pancreatic_cancer_cells___basic_PD_model part "http://identifiers.org/kegg.drug/D10417"
+Zhu2015___combined_gemcitabine_and_birinapant_in_pancreatic_cancer_cells___basic_PD_model container "http://identifiers.org/bto/BTO:0000988"
+Zhu2015___combined_gemcitabine_and_birinapant_in_pancreatic_cancer_cells___basic_PD_model description "http://identifiers.org/ncit/C191",
+                                                                                                      "http://identifiers.org/pubmed/26252969"

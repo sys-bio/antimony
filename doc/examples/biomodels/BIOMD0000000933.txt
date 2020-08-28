@@ -1,0 +1,92 @@
+// Created by libAntimony v2.13.0
+function Rate_Law_for_reaction_for_Cyclin__C(X, C)
+  (1/4)*(1 - X - C);
+end
+
+Rate_Law_for_reaction_for_Cyclin__C is "Rate Law for reaction for Cyclin (C)"
+
+function Rate_Law_for_reaction_for__active_cdc2_kinase__M(M, C, epislon)
+  (6*C/(1 + 2*C))*((1 - M)/(epislon + 1 - M)) - (3/2)*(M/(epislon + M));
+end
+
+Rate_Law_for_reaction_for__active_cdc2_kinase__M is "Rate Law for reaction for  active cdc2 kinase (M)"
+
+function Rate_Law_for_reaction_for_active_cyclin_protease__X(X, M, epislon)
+  M*((1 - X)/(epislon + 1 - X)) - (7/10)*(X/(epislon + X));
+end
+
+Rate_Law_for_reaction_for_active_cyclin_protease__X is "Rate Law for reaction for active cyclin protease (X)"
+
+
+model *Kosiuk2015_Geometric_analysis_of_the_Goldbeter_minimal_model_for_the_embryonic_cell_cycle()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species C in compartment_, M in compartment_, X in compartment_;
+
+  // Assignment Rules:
+  V1C := VM1*C/(Kc + C);
+  V3M := VM3*M;
+
+  // Reactions:
+  Production_of_Cyclin:  => C; compartment_*Rate_Law_for_reaction_for_Cyclin__C(X, C);
+  Cdc2_kinase_activation:  => M; compartment_*Rate_Law_for_reaction_for__active_cdc2_kinase__M(M, C, epislon);
+  activation_of_cyclin_protease:  => X; compartment_*Rate_Law_for_reaction_for_active_cyclin_protease__X(X, M, epislon);
+
+  // Species initializations:
+  C = 0.3;
+  M = 0;
+  X = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  kd = 0.25;
+  vi = 0.25;
+  Kc = 0.5;
+  Kd = 0;
+  VM1 = 3;
+  V2 = 1.5;
+  VM3 = 1;
+  V4 = 0.7;
+  vd = 0.25;
+  kj = 0.001;
+  j = 1;
+  epislon = 0.001;
+
+  // Other declarations:
+  var V1C, V3M;
+  const compartment_, kd, vi, Kc, Kd, VM1, V2, VM3, V4, vd, kj, j, epislon;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  Production_of_Cyclin is "Production of Cyclin";
+  Cdc2_kinase_activation is "Cdc2 kinase activation";
+  activation_of_cyclin_protease is "activation of cyclin protease";
+
+  // CV terms:
+  C property "http://identifiers.org/ncit/C17349"
+  M property "http://identifiers.org/omit/0016746"
+  X property "http://identifiers.org/bao/0000652"
+  Production_of_Cyclin property "http://identifiers.org/ncit/C61408"
+  Cdc2_kinase_activation property "http://identifiers.org/go/GO:0072376"
+  activation_of_cyclin_protease property "http://identifiers.org/go/GO:0072376"
+end
+
+Kosiuk2015_Geometric_analysis_of_the_Goldbeter_minimal_model_for_the_embryonic_cell_cycle is "Kosiuk2015-Geometric analysis of the Goldbeter minimal model for the embryonic cell cycle"
+
+Kosiuk2015_Geometric_analysis_of_the_Goldbeter_minimal_model_for_the_embryonic_cell_cycle origin "urn:miriam:unknown:https://www.ncbi.nlm.nih.gov/pubmed/1833774"
+Kosiuk2015_Geometric_analysis_of_the_Goldbeter_minimal_model_for_the_embryonic_cell_cycle description "http://identifiers.org/pubmed/26100376"
+Kosiuk2015_Geometric_analysis_of_the_Goldbeter_minimal_model_for_the_embryonic_cell_cycle model_entity_is "http://identifiers.org/biomodels.db/MODEL2004240001",
+                                                                                                          "http://identifiers.org/biomodels.db/BIOMD0000000933"
+Kosiuk2015_Geometric_analysis_of_the_Goldbeter_minimal_model_for_the_embryonic_cell_cycle container "http://identifiers.org/bto/BTO:0000379"
+Kosiuk2015_Geometric_analysis_of_the_Goldbeter_minimal_model_for_the_embryonic_cell_cycle taxon "http://identifiers.org/taxonomy/42452"
+Kosiuk2015_Geometric_analysis_of_the_Goldbeter_minimal_model_for_the_embryonic_cell_cycle property "http://identifiers.org/ncit/C20626",
+                                                                                                   "http://identifiers.org/ncit/C16864",
+                                                                                                   "http://identifiers.org/go/GO:0007049",
+                                                                                                   "http://identifiers.org/mamo/MAMO_0000046"

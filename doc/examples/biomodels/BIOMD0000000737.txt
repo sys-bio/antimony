@@ -1,0 +1,188 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function mass_action__dif_compartments__explicit_volume___1(k, VolCompart, Substrate)
+  k*Substrate*VolCompart;
+end
+
+mass_action__dif_compartments__explicit_volume___1 is "mass action (dif compartments, explicit volume) [1]"
+
+function non_competitive_inhibition(v, volume, substrate, Km, noncompet_inhib, Ki)
+  v* volume*substrate/((Km + substrate)*(1 + noncompet_inhib/Ki));
+end
+
+non_competitive_inhibition is "non-competitive inhibition"
+
+
+model *Mouse_Iron_Distribution___Deficient_iron_diet()
+
+  // Compartments and Species:
+  compartment Duodenum, RBC, Spleen, Liver, Plasma, RestOfBody, BoneMarrow;
+  species FeDuo in Duodenum, FeRBC in RBC, FeSpleen in Spleen, FeLiver in Liver;
+  species Tf in Plasma, Hepcidin in Plasma, Fe2Tf in Plasma, Fe1Tf in Plasma;
+  species NTBI in Plasma, FeRest in RestOfBody, $FeOutside in RestOfBody;
+  species FeBM in BoneMarrow;
+
+  // Assignment Rules:
+  Total_Fe__particle := FeDuo*Avogadro*Duodenum + FeLiver*Avogadro*Liver + FeSpleen*Avogadro*Spleen + FeRBC*Avogadro*RBC + FeRest*Avogadro*RestOfBody + 2*Fe2Tf*Avogadro*Plasma + Fe1Tf*Avogadro*Plasma + NTBI*Avogadro*Plasma + FeBM*Avogadro*BoneMarrow;
+  Total_Fe__conc := (FeDuo*Avogadro*Duodenum + FeLiver*Avogadro*Liver + FeSpleen*Avogadro*Spleen + FeRBC*Avogadro*RBC + FeRest*Avogadro*RestOfBody + 2*Fe2Tf*Avogadro*Plasma + Fe1Tf*Avogadro*Plasma + NTBI*Avogadro*Plasma + FeBM*Avogadro*BoneMarrow)/(ModelValue_28*(Duodenum + Liver + Plasma + RBC + RestOfBody + Spleen));
+  FePlasma__particle := 2*Fe2Tf*Avogadro*Plasma + Fe1Tf*Avogadro*Plasma + NTBI*Avogadro*Plasma;
+  Total_Fe__g := Total_Fe__particle*55.845/ModelValue_28;
+  Total_Tf__particle := Tf*Avogadro*Plasma + Fe1Tf*Avogadro*Plasma + Fe2Tf*Avogadro*Plasma;
+  Total_Tf__conc := Total_Tf__particle/(ModelValue_28*Plasma);
+  Total_Tf__mg_ml := Total_Tf__conc*80;
+  FePlasma_conc := FePlasma__particle/(Plasma*ModelValue_28);
+  TfSaturation := 100*(2*Fe2Tf*Avogadro*Plasma + Fe1Tf*Avogadro*Plasma)/(2*(Tf*Avogadro*Plasma + Fe2Tf*Avogadro*Plasma + Fe1Tf*Avogadro*Plasma));
+
+  // Reactions:
+  Diet:  => FeDuo; Duodenum*Constant_flux__irreversible(vDiet);
+  HepcidinSynthesis:  => Hepcidin; Plasma*Constant_flux__irreversible(HepcidinSynthesis_v);
+  HepcidinDecay: Hepcidin => ; Plasma*HepcidinDecay_k1*Hepcidin;
+  Duo_NTBI: FeDuo => NTBI; non_competitive_inhibition(VDuoNTBI, Duodenum, FeDuo, Km, Hepcidin, Ki);
+  Fe2Tf_BM: Fe2Tf => 2 FeBM + Tf; mass_action__dif_compartments__explicit_volume___1(kInBM, Plasma, Fe2Tf);
+  RBC_Spleen: FeRBC => FeSpleen; mass_action__dif_compartments__explicit_volume___1(vRBCSpleen, RBC, FeRBC);
+  Spleen_NTBI: FeSpleen => NTBI; non_competitive_inhibition(VSpleenNTBI, Spleen, FeSpleen, Km, Hepcidin, Ki);
+  Liver_NTBI: FeLiver => NTBI; non_competitive_inhibition(VLiverNTBI, Liver, FeLiver, Km, Hepcidin, Ki);
+  NTBI_Fe1Tf: NTBI + Tf => Fe1Tf; Plasma*kNTBI_Fe1Tf*NTBI*Tf;
+  DuoLoss: FeDuo => $FeOutside; mass_action__dif_compartments__explicit_volume___1(kDuoLoss, Duodenum, FeDuo);
+  Fe2Tf_Liver: Fe2Tf => 2 FeLiver + Tf; mass_action__dif_compartments__explicit_volume___1(kInLiver, Plasma, Fe2Tf);
+  Fe2Tf_Rest: Fe2Tf => 2 FeRest + Tf; mass_action__dif_compartments__explicit_volume___1(kInRest, Plasma, Fe2Tf);
+  RestLoss: FeRest => $FeOutside; RestOfBody*kRestLoss*FeRest;
+  Fe2Tf_Duo: Fe2Tf => 2 FeDuo + Tf; mass_action__dif_compartments__explicit_volume___1(kInDuo, Plasma, Fe2Tf);
+  Rest_NTBI: FeRest => NTBI; non_competitive_inhibition(VRestNTBI, RestOfBody, FeRest, Km, Hepcidin, Ki);
+  Fe1Tf_Fe2Tf: Fe1Tf + NTBI => Fe2Tf; Plasma*kFe1Tf_Fe2Tf*Fe1Tf*NTBI;
+  Fe1Tf_Liver: Fe1Tf => FeLiver + Tf; mass_action__dif_compartments__explicit_volume___1(kInLiver, Plasma, Fe1Tf);
+  Fe1Tf_BM: Fe1Tf => FeBM + Tf; mass_action__dif_compartments__explicit_volume___1(kInBM, Plasma, Fe1Tf);
+  Fe1Tf_Rest: Fe1Tf => FeRest + Tf; mass_action__dif_compartments__explicit_volume___1(kInRest, Plasma, Fe1Tf);
+  Fe1Tf_Duo: Fe1Tf => FeDuo + Tf; mass_action__dif_compartments__explicit_volume___1(kInDuo, Plasma, Fe1Tf);
+  BM_RBC: FeBM => FeRBC; mass_action__dif_compartments__explicit_volume___1(kInRBC, BoneMarrow, FeBM);
+  BM_Spleen: FeBM => FeSpleen; mass_action__dif_compartments__explicit_volume___1(kBMSpleen, BoneMarrow, FeBM);
+
+  // Species initializations:
+  FeDuo = 0.0117590568706314;
+  FeRBC = 0.0379799887571665;
+  FeSpleen = 0.00394239990123767;
+  FeLiver = 0.00200010981212238;
+  Tf = 1.5821833083706e-05;
+  Hepcidin = 2.30017456622937e-08;
+  Fe2Tf = 1.35248196757048e-05;
+  Fe1Tf = 9.35334724058915e-06;
+  NTBI = 3.3311210465159e-08;
+  FeRest = 0.000286841656341217;
+  FeOutside = 0;
+  FeBM = 0.00303783614844319;
+
+  // Compartment initializations:
+  Duodenum = 3.84615e-05;
+  RBC = 0.00079;
+  Spleen = 6.73077e-05;
+  Liver = 0.001161905;
+  Plasma = 0.0013;
+  RestOfBody = 0.019694766;
+  BoneMarrow = 0.000214286;
+
+  // Variable initializations:
+  kNTBI_Fe1Tf = 1084322005;
+  kInDuo = 0.0689984226081531;
+  kInLiver = 2.97790545667672;
+  kInRBC = 1.08447580176706;
+  kInRest = 6.16356235352873;
+  Km = 0.0159421218669513;
+  Ki = 1e-09;
+  kFe1Tf_Fe2Tf = 1084322005;
+  VDuoNTBI = 0.200241893786814;
+  VLiverNTBI = 0.0261147638001175;
+  VSpleenNTBI = 1.342204923;
+  VRestNTBI = 0.0109451335200198;
+  kDuoLoss = 0.0270113302698216;
+  vRBCSpleen = 0.0235286;
+  kRestLoss = 0.023533240736163;
+  Avogadro = 6.02214179e+23;
+  ModelValue_28 = Avogadro;
+  kInBM = 15.7690636138556;
+  kBMSpleen = 0.061902954378781;
+  vDiet = 0;
+  quantity_to_number_factor = 6.02214179e+23;
+  HepcidinSynthesis_v = 8.54927e-09;
+  HepcidinDecay_k1 = 0.75616;
+
+  // Other declarations:
+  var Total_Fe__particle, Total_Fe__conc, FePlasma__particle, Total_Fe__g;
+  var Total_Tf__particle, Total_Tf__conc, Total_Tf__mg_ml, FePlasma_conc;
+  var TfSaturation;
+  const Duodenum, RBC, Spleen, Liver, Plasma, RestOfBody, BoneMarrow, kNTBI_Fe1Tf;
+  const kInDuo, kInLiver, kInRBC, kInRest, Km, Ki, kFe1Tf_Fe2Tf, VDuoNTBI;
+  const VLiverNTBI, VSpleenNTBI, VRestNTBI, kDuoLoss, vRBCSpleen, kRestLoss;
+  const Avogadro, ModelValue_28, kInBM, kBMSpleen, vDiet, quantity_to_number_factor;
+
+  // Unit definitions:
+  unit time_unit = 86400 second;
+
+  // Display Names:
+  time_unit is "time";
+  Total_Fe__particle is "Total_Fe (particle)";
+  Total_Fe__conc is "Total_Fe (conc)";
+  ModelValue_28 is "Initial for Avogadro";
+  FePlasma__particle is "FePlasma (particle)";
+  Total_Fe__g is "Total_Fe (g)";
+  Total_Tf__particle is "Total_Tf (particle)";
+  Total_Tf__conc is "Total_Tf (conc)";
+  Total_Tf__mg_ml is "Total_Tf (mg/ml)";
+  FePlasma_conc is "FePlasma(conc)";
+  quantity_to_number_factor is "quantity to number factor";
+
+  // CV terms:
+  Duodenum identity "http://identifiers.org/bto/BTO:0000365"
+  RBC identity "http://identifiers.org/bto/BTO:0000424"
+  Spleen identity "http://identifiers.org/bto/BTO:0001281"
+  Liver identity "http://identifiers.org/bto/BTO:0000759"
+  Plasma identity "http://identifiers.org/bto/BTO:0000131"
+  BoneMarrow identity "http://identifiers.org/bto/BTO:0000141"
+  FeDuo hypernym "http://identifiers.org/chebi/CHEBI:24875"
+  FeRBC hypernym "http://identifiers.org/chebi/CHEBI:24875"
+  FeSpleen hypernym "http://identifiers.org/chebi/CHEBI:24875"
+  FeLiver hypernym "http://identifiers.org/chebi/CHEBI:24875"
+  Tf identity "http://identifiers.org/uniprot/Q921I1"
+  Hepcidin identity "http://identifiers.org/uniprot/Q9EQ21"
+  Fe2Tf part "http://identifiers.org/uniprot/Q921I1"
+  Fe2Tf part "http://identifiers.org/chebi/CHEBI:29034"
+  Fe1Tf part "http://identifiers.org/chebi/CHEBI:29034"
+  Fe1Tf part "http://identifiers.org/uniprot/Q921I1"
+  NTBI hypernym "http://identifiers.org/chebi/CHEBI:24875"
+  FeRest hypernym "http://identifiers.org/chebi/CHEBI:24875"
+  FeOutside hypernym "http://identifiers.org/chebi/CHEBI:24875"
+  FeBM hypernym "http://identifiers.org/chebi/CHEBI:24875"
+  Diet propertyBearer "http://identifiers.org/ncit/C15222"
+  HepcidinSynthesis propertyBearer "http://identifiers.org/ncit/C61408"
+  HepcidinDecay propertyBearer "http://identifiers.org/ncit/C75947"
+  Duo_NTBI hypernym "http://identifiers.org/go/GO:0006826"
+  Fe2Tf_BM hypernym "http://identifiers.org/go/GO:0006826"
+  RBC_Spleen hypernym "http://identifiers.org/go/GO:0006826"
+  Liver_NTBI identity "urn:miriam:unknown:"
+  NTBI_Fe1Tf identity "http://identifiers.org/go/GO:0005488"
+  DuoLoss hypernym "http://identifiers.org/ncit/C25559"
+  Fe2Tf_Liver hypernym "http://identifiers.org/go/GO:0006826"
+  Fe2Tf_Rest hypernym "http://identifiers.org/go/GO:0006826"
+  RestLoss hypernym "http://identifiers.org/ncit/C25559"
+  Fe2Tf_Duo hypernym "http://identifiers.org/go/GO:0006826"
+  Rest_NTBI identity "urn:miriam:unknown:"
+  Fe1Tf_Fe2Tf identity "http://identifiers.org/go/GO:0005488"
+  Fe1Tf_Liver hypernym "http://identifiers.org/go/GO:0006826"
+  Fe1Tf_BM hypernym "http://identifiers.org/go/GO:0006826"
+  Fe1Tf_Rest hypernym "http://identifiers.org/go/GO:0006826"
+  Fe1Tf_Duo hypernym "http://identifiers.org/go/GO:0006826"
+  BM_RBC hypernym "http://identifiers.org/go/GO:0006826"
+  BM_Spleen hypernym "http://identifiers.org/go/GO:0006826"
+end
+
+Mouse_Iron_Distribution___Deficient_iron_diet is "Mouse Iron Distribution - Deficient iron diet (No Tracer)"
+
+Mouse_Iron_Distribution___Deficient_iron_diet model_entity_is "http://identifiers.org/biomodels.db/MODEL1605030004",
+                                                              "http://identifiers.org/biomodels.db/BIOMD0000000737"
+Mouse_Iron_Distribution___Deficient_iron_diet identity "http://identifiers.org/go/GO:0055072"
+Mouse_Iron_Distribution___Deficient_iron_diet property "http://identifiers.org/mamo/MAMO_0000046"
+Mouse_Iron_Distribution___Deficient_iron_diet taxon "http://identifiers.org/taxonomy/10090"

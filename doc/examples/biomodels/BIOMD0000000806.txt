@@ -1,0 +1,354 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function function_for_uninfected_tumour_cell_logistic_growth_1(K, UnInfected_Tumour_Cells_Xu, r)
+  r*UnInfected_Tumour_Cells_Xu*(1 - UnInfected_Tumour_Cells_Xu/K);
+end
+
+function_for_uninfected_tumour_cell_logistic_growth_1 is "function for uninfected tumour cell logistic growth_1"
+
+function function_for_uninfected_tumour_cell_infection_1(UnInfected_Tumour_Cells_Xu, Virus_Xv, d_v, v_h_u)
+  d_v*Virus_Xv*UnInfected_Tumour_Cells_Xu/(v_h_u + UnInfected_Tumour_Cells_Xu);
+end
+
+function_for_uninfected_tumour_cell_infection_1 is "function for uninfected tumour cell infection_1"
+
+function function_for_uninfected_tumour_cell_elimination_1_1(Effector_Cytotoxic_CD8_TCells__Xe, UnInfected_Tumour_Cells_Xu, d_u, h_e)
+  d_u*UnInfected_Tumour_Cells_Xu*Effector_Cytotoxic_CD8_TCells__Xe/(h_e + Effector_Cytotoxic_CD8_TCells__Xe);
+end
+
+function_for_uninfected_tumour_cell_elimination_1_1 is "function for uninfected tumour cell elimination 1_1"
+
+function function_for_uninfected_tumour_cell_elimination_2_1(M1_Macrophage_Xm1, M2_Macrophage_Xm2, UnInfected_Tumour_Cells_Xu, d_m1, h_m)
+  d_m1*UnInfected_Tumour_Cells_Xu*M1_Macrophage_Xm1/(h_m + M2_Macrophage_Xm2);
+end
+
+function_for_uninfected_tumour_cell_elimination_2_1 is "function for uninfected tumour cell elimination 2_1"
+
+function function_for_uninfected_tumour_cell_growth_M2_1(M2_Macrophage_Xm2, UnInfected_Tumour_Cells_Xu, d_m2, h_m)
+  d_m2*UnInfected_Tumour_Cells_Xu*M2_Macrophage_Xm2/(h_m + M2_Macrophage_Xm2);
+end
+
+function_for_uninfected_tumour_cell_growth_M2_1 is "function for uninfected tumour cell growth;M2_1"
+
+function function_for_virus_growth_1(Infected_Tumour_Cells_Xi, b, delta_i)
+  delta_i*b*Infected_Tumour_Cells_Xi;
+end
+
+function_for_virus_growth_1 is "function for virus growth_1"
+
+function function_for_infected_tumour_cell_elimination_1_1(Effector_Cytotoxic_CD8_TCells__Xe, Infected_Tumour_Cells_Xi, h_e, v_d_u)
+  v_d_u*Infected_Tumour_Cells_Xi*Effector_Cytotoxic_CD8_TCells__Xe/(h_e + Effector_Cytotoxic_CD8_TCells__Xe);
+end
+
+function_for_infected_tumour_cell_elimination_1_1 is "function for infected tumour cell elimination 1_1"
+
+function function_for_infected_tumour_cell_elimination_2_1(Infected_Tumour_Cells_Xi, M1_Macrophage_Xm1, M2_Macrophage_Xm2, h_m, v_d_m1)
+  v_d_m1*Infected_Tumour_Cells_Xi*M1_Macrophage_Xm1/(h_m + M2_Macrophage_Xm2);
+end
+
+function_for_infected_tumour_cell_elimination_2_1 is "function for infected tumour cell elimination 2_1"
+
+function function_for_virus_clearance_1_1(M1_Macrophage_Xm1, M2_Macrophage_Xm2, Virus_Xv, h_m, v_d_m1)
+  v_d_m1*Virus_Xv*M1_Macrophage_Xm1/(h_m + M2_Macrophage_Xm2);
+end
+
+function_for_virus_clearance_1_1 is "function for virus clearance 1_1"
+
+function function_for_virus_clearance_2_1(Effector_Cytotoxic_CD8_TCells__Xe, Virus_Xv, h_e, v_d_u)
+  v_d_u*Virus_Xv*Effector_Cytotoxic_CD8_TCells__Xe/(h_e + Effector_Cytotoxic_CD8_TCells__Xe);
+end
+
+function_for_virus_clearance_2_1 is "function for virus clearance 2_1"
+
+function function_for_M1_activation_1_1(Infected_Tumour_Cells_Xi, Virus_Xv, v_a_1)
+  v_a_1*(Infected_Tumour_Cells_Xi + Virus_Xv);
+end
+
+function_for_M1_activation_1_1 is "function for M1 activation 1_1"
+
+function function_for_M1_activation_2_1(UnInfected_Tumour_Cells_Xu, u_a_1)
+  u_a_1*UnInfected_Tumour_Cells_Xu;
+end
+
+function_for_M1_activation_2_1 is "function for M1 activation 2_1"
+
+function function_for_M1_recruitment_1(M, M1_Macrophage_Xm1, M2_Macrophage_Xm2, p_m1)
+  p_m1*M1_Macrophage_Xm1*(1 - (M1_Macrophage_Xm1 + M2_Macrophage_Xm2)/M);
+end
+
+function_for_M1_recruitment_1 is "function for M1 recruitment_1"
+
+function function_for_M1_to_M2_repolarisation_1(M1_Macrophage_Xm1, UnInfected_Tumour_Cells_Xu, h_u, o_r_m1, u_r_m1)
+  M1_Macrophage_Xm1*(o_r_m1 + u_r_m1*UnInfected_Tumour_Cells_Xu/(h_u + UnInfected_Tumour_Cells_Xu));
+end
+
+function_for_M1_to_M2_repolarisation_1 is "function for M1 to M2 repolarisation_1"
+
+function function_for_M2_to_M1_repolarisation_1(M2_Macrophage_Xm2, Virus_Xv, h_v, o_r_m2, v_r_m2)
+  M2_Macrophage_Xm2*(o_r_m2 + v_r_m2*Virus_Xv/(h_v + Virus_Xv));
+end
+
+function_for_M2_to_M1_repolarisation_1 is "function for M2 to M1 repolarisation_1"
+
+function function_for_M2_activation_1(UnInfected_Tumour_Cells_Xu, u_a_2)
+  u_a_2*UnInfected_Tumour_Cells_Xu;
+end
+
+function_for_M2_activation_1 is "function for M2 activation_1"
+
+function function_for_M2_growth_1(M, M1_Macrophage_Xm1, M2_Macrophage_Xm2, p_m2)
+  p_m2*M2_Macrophage_Xm2*(1 - (M1_Macrophage_Xm1 + M2_Macrophage_Xm2)/M);
+end
+
+function_for_M2_growth_1 is "function for M2 growth_1"
+
+function function_for_T_cells_activation_1(M1_Macrophage_Xm1, M2_Macrophage_Xm2, h_m, p_e)
+  p_e*M1_Macrophage_Xm1/(h_m + M2_Macrophage_Xm2);
+end
+
+function_for_T_cells_activation_1 is "function for T cells activation_1"
+
+function function_for_T_cells_inactivation_1(Effector_Cytotoxic_CD8_TCells__Xe, UnInfected_Tumour_Cells_Xu, d_t)
+  d_t*UnInfected_Tumour_Cells_Xu*Effector_Cytotoxic_CD8_TCells__Xe;
+end
+
+function_for_T_cells_inactivation_1 is "function for T cells inactivation_1"
+
+
+model *Eftimie2019()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species UnInfected_Tumour_Cells_Xu in compartment_, Infected_Tumour_Cells_Xi in compartment_;
+  species Virus_Xv in compartment_, Effector_Cytotoxic_CD8_TCells__Xe in compartment_;
+  species M1_Macrophage_Xm1 in compartment_, M2_Macrophage_Xm2 in compartment_;
+
+  // Reactions:
+  Uninfected_tumour_cell_logistic_growth:  => UnInfected_Tumour_Cells_Xu; compartment_*function_for_uninfected_tumour_cell_logistic_growth_1(K, UnInfected_Tumour_Cells_Xu, r);
+  Uninfected_tumour_cell_infection: UnInfected_Tumour_Cells_Xu => Infected_Tumour_Cells_Xi; compartment_*function_for_uninfected_tumour_cell_infection_1(UnInfected_Tumour_Cells_Xu, Virus_Xv, d_v, v_h_u);
+  Uninfected_tumour_cell_elimination_1: UnInfected_Tumour_Cells_Xu => ; compartment_*function_for_uninfected_tumour_cell_elimination_1_1(Effector_Cytotoxic_CD8_TCells__Xe, UnInfected_Tumour_Cells_Xu, d_u, h_e);
+  Uninfected_tumour_cell_elimination_2: UnInfected_Tumour_Cells_Xu => ; compartment_*function_for_uninfected_tumour_cell_elimination_2_1(M1_Macrophage_Xm1, M2_Macrophage_Xm2, UnInfected_Tumour_Cells_Xu, d_m1, h_m);
+  Uninfected_tumour_cell_growth_M2:  => UnInfected_Tumour_Cells_Xu; compartment_*function_for_uninfected_tumour_cell_growth_M2_1(M2_Macrophage_Xm2, UnInfected_Tumour_Cells_Xu, d_m2, h_m);
+  Infected_tumour_cell_death: Infected_Tumour_Cells_Xi => ; compartment_*delta_i*Infected_Tumour_Cells_Xi;
+  virus_growth:  => Virus_Xv; compartment_*function_for_virus_growth_1(Infected_Tumour_Cells_Xi, b, delta_i);
+  Infected_tumour_cell_elimination_1: Infected_Tumour_Cells_Xi => ; compartment_*function_for_infected_tumour_cell_elimination_1_1(Effector_Cytotoxic_CD8_TCells__Xe, Infected_Tumour_Cells_Xi, h_e, v_d_u);
+  Infected_tumour_cell_elimination_2: Infected_Tumour_Cells_Xi => ; compartment_*function_for_infected_tumour_cell_elimination_2_1(Infected_Tumour_Cells_Xi, M1_Macrophage_Xm1, M2_Macrophage_Xm2, h_m, v_d_m1);
+  virus_injection:  => Virus_Xv; compartment_*Constant_flux__irreversible(H);
+  virus_death: Virus_Xv => ; compartment_*omega*Virus_Xv;
+  virus_clearance_1: Virus_Xv => ; compartment_*function_for_virus_clearance_1_1(M1_Macrophage_Xm1, M2_Macrophage_Xm2, Virus_Xv, h_m, v_d_m1);
+  virus_clearance_2: Virus_Xv => ; compartment_*function_for_virus_clearance_2_1(Effector_Cytotoxic_CD8_TCells__Xe, Virus_Xv, h_e, v_d_u);
+  M1_activation_1:  => M1_Macrophage_Xm1; compartment_*function_for_M1_activation_1_1(Infected_Tumour_Cells_Xi, Virus_Xv, v_a_1);
+  M1_activation_2:  => M1_Macrophage_Xm1; compartment_*function_for_M1_activation_2_1(UnInfected_Tumour_Cells_Xu, u_a_1);
+  M1_recruitment:  => M1_Macrophage_Xm1; compartment_*function_for_M1_recruitment_1(M, M1_Macrophage_Xm1, M2_Macrophage_Xm2, p_m1);
+  M1_to_M2_repolarisation: M1_Macrophage_Xm1 => M2_Macrophage_Xm2; compartment_*function_for_M1_to_M2_repolarisation_1(M1_Macrophage_Xm1, UnInfected_Tumour_Cells_Xu, h_u, o_r_m1, u_r_m1);
+  M2_to_M1_repolarisation: M2_Macrophage_Xm2 => M1_Macrophage_Xm1; compartment_*function_for_M2_to_M1_repolarisation_1(M2_Macrophage_Xm2, Virus_Xv, h_v, o_r_m2, v_r_m2);
+  M1_death: M1_Macrophage_Xm1 => ; compartment_*d_em1*M1_Macrophage_Xm1;
+  M2_activation:  => M2_Macrophage_Xm2; compartment_*function_for_M2_activation_1(UnInfected_Tumour_Cells_Xu, u_a_2);
+  M2_growth:  => M2_Macrophage_Xm2; compartment_*function_for_M2_growth_1(M, M1_Macrophage_Xm1, M2_Macrophage_Xm2, p_m2);
+  M2_death: M2_Macrophage_Xm2 => ; compartment_*d_em2*M2_Macrophage_Xm2;
+  T_cells_activation:  => Effector_Cytotoxic_CD8_TCells__Xe; compartment_*function_for_T_cells_activation_1(M1_Macrophage_Xm1, M2_Macrophage_Xm2, h_m, p_e);
+  T_cells_death: Effector_Cytotoxic_CD8_TCells__Xe => ; compartment_*d_ee*Effector_Cytotoxic_CD8_TCells__Xe;
+  T_cells_inactivation: Effector_Cytotoxic_CD8_TCells__Xe => ; compartment_*function_for_T_cells_inactivation_1(Effector_Cytotoxic_CD8_TCells__Xe, UnInfected_Tumour_Cells_Xu, d_t);
+
+  // Events:
+  Heaviside_function_at_10: at time >= 10, t0=false, fromTrigger=false: H = H + 2*10^7;
+  Heaviside_function_at_11: at time >= 11, t0=false, fromTrigger=false: H = H - 2*10^7;
+  Heaviside_function_at_13: at time >= 13, t0=false, fromTrigger=false: H = H + 2*10^7;
+  Heaviside_function_at_14: at time >= 14, t0=false, fromTrigger=false: H = H - 2*10^7;
+  dm1_at_11: at time >= 11, t0=false, fromTrigger=false: d_m1 = d_m1 + 0.28;
+  du_at_15: at time >= 15, t0=false, fromTrigger=false: d_u = d_u + 0.41;
+
+  // Species initializations:
+  UnInfected_Tumour_Cells_Xu = 500000;
+  UnInfected_Tumour_Cells_Xu has substance_per_volume;
+  Infected_Tumour_Cells_Xi = 0;
+  Infected_Tumour_Cells_Xi has substance_per_volume;
+  Virus_Xv = 0;
+  Virus_Xv has substance_per_volume;
+  Effector_Cytotoxic_CD8_TCells__Xe = 0;
+  Effector_Cytotoxic_CD8_TCells__Xe has substance_per_volume;
+  M1_Macrophage_Xm1 = 0;
+  M1_Macrophage_Xm1 has substance_per_volume;
+  M2_Macrophage_Xm2 = 0;
+  M2_Macrophage_Xm2 has substance_per_volume;
+
+  // Compartment initializations:
+  compartment_ = 1;
+  compartment_ has volume;
+
+  // Variable initializations:
+  H = 0;
+  d_m1 = 0.01;
+  d_u = 0.44;
+  r = 0.924;
+  r has unit_0;
+  K = 3300000000;
+  K has unit_1;
+  d_v = 0.011;
+  v_h_u = 100000;
+  h_e = 1;
+  h_m = 1000;
+  d_m2 = 0.4;
+  delta_i = 0.475;
+  delta_i has unit_0;
+  b = 2500;
+  v_d_u = 4.4;
+  v_d_u has unit_0;
+  v_d_m1 = 1.5;
+  v_d_m1 has unit_0;
+  omega = 2;
+  omega has unit_0;
+  d_em1 = 0.2;
+  v_a_1 = 1e-06;
+  v_a_1 has unit_0;
+  u_a_1 = 3e-06;
+  u_a_1 has unit_0;
+  p_m1 = 0.22;
+  p_m1 has unit_0;
+  M = 100000000;
+  o_r_m1 = 0.001;
+  o_r_m1 has unit_0;
+  o_r_m2 = 0.001;
+  o_r_m2 has unit_0;
+  u_r_m1 = 4;
+  u_r_m1 has unit_0;
+  v_r_m2 = 0.5;
+  v_r_m2 has unit_0;
+  p_m2 = 0.22;
+  p_m2 has unit_0;
+  h_u = 5000000000;
+  h_v = 0.105636;
+  d_em2 = 0.2;
+  d_em2 has unit_0;
+  u_a_2 = 4e-08;
+  u_a_2 has unit_0;
+  d_ee = 0.4;
+  d_ee has unit_0;
+  p_e = 2070;
+  p_e has unit_0;
+  d_t = 1e-10;
+  d_t has unit_0;
+
+  // Other declarations:
+  var H, d_m1, d_u;
+  const compartment_, r, K, d_v, v_h_u, h_e, h_m, d_m2, delta_i, b, v_d_u;
+  const v_d_m1, omega, d_em1, v_a_1, u_a_1, p_m1, M, o_r_m1, o_r_m2, u_r_m1;
+  const v_r_m2, p_m2, h_u, h_v, d_em2, u_a_2, d_ee, p_e, d_t;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = time_unit;
+  unit substance = 1e-3 mole;
+  unit unit_0 = 1 / 1e-3 second;
+  unit unit_1 = 1 / dimensionless^-0;
+  unit extent = substance;
+  unit substance_per_volume = 1e-3 mole / 1e-3 litre;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1/ms";
+  unit_1 is "1";
+  compartment_ is "compartment";
+  UnInfected_Tumour_Cells_Xu is "UnInfected_Tumour_Cells(Xu)";
+  Infected_Tumour_Cells_Xi is "Infected_Tumour_Cells(Xi)";
+  Virus_Xv is "Virus(Xv)";
+  Effector_Cytotoxic_CD8_TCells__Xe is "Effector_Cytotoxic_CD8_TCells (Xe)";
+  M1_Macrophage_Xm1 is "M1_Macrophage(Xm1)";
+  M2_Macrophage_Xm2 is "M2_Macrophage(Xm2)";
+  Heaviside_function_at_10 is "Heaviside function at 10";
+  Heaviside_function_at_11 is "Heaviside function at 11";
+  Heaviside_function_at_13 is "Heaviside function at 13";
+  Heaviside_function_at_14 is "Heaviside function at 14";
+  dm1_at_11 is "dm1 at 11";
+  du_at_15 is "du at 15";
+  Uninfected_tumour_cell_logistic_growth is "Uninfected tumour cell logistic growth";
+  Uninfected_tumour_cell_infection is "Uninfected tumour cell infection";
+  Uninfected_tumour_cell_elimination_1 is "Uninfected tumour cell elimination 1";
+  Uninfected_tumour_cell_elimination_2 is "Uninfected tumour cell elimination 2";
+  Uninfected_tumour_cell_growth_M2 is "Uninfected tumour cell growth;M2";
+  Infected_tumour_cell_death is "Infected tumour cell death";
+  virus_growth is "virus growth";
+  Infected_tumour_cell_elimination_1 is "Infected tumour cell elimination 1";
+  Infected_tumour_cell_elimination_2 is "Infected tumour cell elimination 2";
+  virus_injection is "virus injection";
+  virus_death is "virus death";
+  virus_clearance_1 is "virus clearance 1";
+  virus_clearance_2 is "virus clearance 2";
+  M1_activation_1 is "M1 activation 1";
+  M1_activation_2 is "M1 activation 2";
+  M1_recruitment is "M1 recruitment";
+  M1_to_M2_repolarisation is "M1 to M2 repolarisation";
+  M2_to_M1_repolarisation is "M2 to M1 repolarisation";
+  M1_death is "M1 death";
+  M2_activation is "M2 activation";
+  M2_growth is "M2 growth";
+  M2_death is "M2 death";
+  T_cells_activation is "T cells activation";
+  T_cells_death is "T cells death";
+  T_cells_inactivation is "T cells inactivation";
+
+  // CV terms:
+  compartment_ hypernym "http://identifiers.org/ncit/C14424"
+  compartment_ hypernym "http://identifiers.org/ncit/C13413"
+  UnInfected_Tumour_Cells_Xu hypernym "http://identifiers.org/efo/0000311"
+  UnInfected_Tumour_Cells_Xu hypernym "http://identifiers.org/bto/BTO:0002014"
+  Infected_Tumour_Cells_Xi hypernym "http://identifiers.org/bto/BTO:0002014"
+  Infected_Tumour_Cells_Xi hypernym "http://identifiers.org/efo/EFO:0000311"
+  Infected_Tumour_Cells_Xi hypernym "http://identifiers.org/bto/BTO:0000152"
+  Virus_Xv hypernym "http://identifiers.org/taxonomy/11276"
+  Effector_Cytotoxic_CD8_TCells__Xe hypernym "http://identifiers.org/cl/CL:0000794"
+  M1_Macrophage_Xm1 hypernym "http://identifiers.org/ncit/C156004"
+  M2_Macrophage_Xm2 hypernym "http://identifiers.org/ncit/C123783"
+  K hypernym "http://identifiers.org/ncit/C25443"
+  omega hypernym "http://identifiers.org/sbo/SBO:0000356"
+  d_em1 hypernym "http://identifiers.org/sbo/SBO:0000356"
+  M hypernym "http://identifiers.org/ncit/C25443"
+  d_em2 hypernym "http://identifiers.org/sbo/SBO:0000356"
+  d_ee hypernym "http://identifiers.org/sbo/SBO:0000356"
+  Uninfected_tumour_cell_logistic_growth hypernym "http://identifiers.org/go/GO:0040007"
+  Uninfected_tumour_cell_infection hypernym "http://identifiers.org/go/GO:0019089"
+  Uninfected_tumour_cell_elimination_1 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Uninfected_tumour_cell_elimination_2 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Uninfected_tumour_cell_growth_M2 hypernym "http://identifiers.org/go/GO:0040007"
+  Infected_tumour_cell_death hypernym "http://identifiers.org/sbo/SBO:0000179"
+  virus_growth hypernym "http://identifiers.org/go/GO:0040007"
+  Infected_tumour_cell_elimination_1 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Infected_tumour_cell_elimination_2 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  virus_injection hypernym "http://identifiers.org/go/GO:0035737"
+  virus_death hypernym "http://identifiers.org/sbo/SBO:0000179"
+  virus_clearance_1 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  virus_clearance_2 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  M1_activation_1 hypernym "http://identifiers.org/sbo/SBO:0000393"
+  M1_activation_2 hypernym "http://identifiers.org/sbo/SBO:0000393"
+  M1_recruitment hypernym "http://identifiers.org/go/GO:1905517"
+  M1_to_M2_repolarisation propertyBearer "http://identifiers.org/go/GO:0048246"
+  M2_to_M1_repolarisation propertyBearer "http://identifiers.org/go/GO:0048246"
+  M1_death hypernym "http://identifiers.org/sbo/SBO:0000179"
+  M2_activation hypernym "http://identifiers.org/go/GO:0042116"
+  M2_growth hypernym "http://identifiers.org/go/GO:0040007"
+  M2_death hypernym "http://identifiers.org/sbo/SBO:0000179"
+  T_cells_activation hypernym "http://identifiers.org/sbo/SBO:0000393"
+  T_cells_death hypernym "http://identifiers.org/sbo/SBO:0000179"
+  T_cells_inactivation hypernym "http://identifiers.org/go/GO:0002870"
+end
+
+Eftimie2019 is "Eftimie2019-Macrophages Plasticity"
+
+Eftimie2019 model_entity_is "http://identifiers.org/biomodels.db/MODEL1909050001",
+                            "http://identifiers.org/biomodels.db/BIOMD0000000806"
+Eftimie2019 property "http://identifiers.org/doid/DOID:4159"
+Eftimie2019 property "http://identifiers.org/efo/0000311"
+Eftimie2019 property "http://identifiers.org/go/GO:0002837"
+Eftimie2019 property "http://identifiers.org/mamo/MAMO_0000046"
+Eftimie2019 property "http://identifiers.org/doid/DOID:162"
+Eftimie2019 property "http://identifiers.org/ncit/C62713"
+Eftimie2019 taxon "http://identifiers.org/taxonomy/10090"
+Eftimie2019 taxon "http://identifiers.org/taxonomy/11276"
+Eftimie2019 description "http://identifiers.org/pubmed/31410657"

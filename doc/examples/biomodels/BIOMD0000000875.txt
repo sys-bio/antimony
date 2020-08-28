@@ -1,0 +1,124 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function Function_for_T_cell_infection_1(T, V_I, k)
+  k*V_I*T;
+end
+
+Function_for_T_cell_infection_1 is "Function for T-cell infection_1"
+
+function Function_for_release_of_infectious_virions_on_lysis_1(N, T_i, delta, np)
+  (1 - np)*N*delta*T_i;
+end
+
+Function_for_release_of_infectious_virions_on_lysis_1 is "Function for release of infectious virions on lysis_1"
+
+function Function_for_clearance_of_infectious_virions(V_I, c)
+  c*V_I;
+end
+
+Function_for_clearance_of_infectious_virions is "Function for clearance of infectious virions"
+
+function Function_for_release_of_non_infectious_virions_on_lysis(N, T_i, delta, np)
+  np*N*delta*T_i;
+end
+
+Function_for_release_of_non_infectious_virions_on_lysis is "Function for release of non infectious virions on lysis"
+
+
+model *Nelson2000_HIV_1_general_model_1()
+
+  // Compartments and Species:
+  compartment plasma;
+  species T in plasma, T_i in plasma, V_I in plasma, V_NI in plasma;
+
+  // Assignment Rules:
+  HIV := V_I + V_NI;
+
+  // Reactions:
+  T_cell_source:  => T; plasma*Constant_flux__irreversible(lambda);
+  T_cell_loss: T => ; plasma*delta1*T;
+  infection: T => T_i; plasma*Function_for_T_cell_infection_1(T, V_I, k);
+  T_i_lysis: T_i => ; plasma*delta*T_i;
+  T_lysis_infect:  => V_I; plasma*Function_for_release_of_infectious_virions_on_lysis_1(N, T_i, delta, np);
+  T_lysis_noninf:  => V_NI; plasma*Function_for_release_of_non_infectious_virions_on_lysis(N, T_i, delta, np);
+  V_I_clearance: V_I -> ; plasma*Function_for_clearance_of_infectious_virions(V_I, c);
+  V_NI_clearance: V_NI => ; plasma*c*V_NI;
+
+  // Species initializations:
+  T = 180000;
+  T_i = 1675;
+  V_I = 134000;
+  V_NI = 0;
+
+  // Compartment initializations:
+  plasma = 1;
+
+  // Variable initializations:
+  k = 3.43e-08;
+  k has unit_0;
+  delta = 0.5;
+  delta has unit_1;
+  N = 480;
+  N has unit_2;
+  c = 3;
+  c has unit_1;
+  np = 0.5;
+  np has unit_2;
+  HIV has unit_3;
+  lambda = 10;
+  lambda has unit_4;
+  delta1 = 0.03;
+  delta1 has unit_1;
+
+  // Other declarations:
+  var HIV;
+  const plasma, k, delta, N, c, np, lambda, delta1;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = item;
+  unit unit_0 = litre / (second * item);
+  unit unit_1 = 1 / 1e-3 second;
+  unit unit_2 = 1 / dimensionless^-0;
+  unit unit_3 = item / 1e3 litre;
+  unit unit_4 = item / (litre * second);
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "l/(s*#)";
+  unit_1 is "1/ms";
+  unit_2 is "1";
+  unit_3 is "#/kl";
+  unit_4 is "#/(l*s)";
+  T_i is "T*";
+  T_cell_source is "creation of T-cells";
+  T_cell_loss is "loss of uninfected T-cell";
+  infection is "T-cell infection";
+  T_i_lysis is "infected T-cell lysis";
+  T_lysis_infect is "release of infectious virions on lysis";
+  T_lysis_noninf is "release of non infectious virions on lysis";
+  V_I_clearance is "clearance of infectious virions";
+  V_NI_clearance is "non-infect. virion clearance";
+
+  // CV terms:
+  T instance "http://identifiers.org/efo/0001460"
+  T_i property "http://identifiers.org/bto/BTO:0000152"
+  V_I property "http://identifiers.org/ncit/C14283"
+end
+
+Nelson2000_HIV_1_general_model_1 is "Nelson2000- HIV-1 general model 1"
+
+Nelson2000_HIV_1_general_model_1 description "http://identifiers.org/pubmed/10701304"
+Nelson2000_HIV_1_general_model_1 model_entity_is "http://identifiers.org/biomodels.db/MODEL8268650277",
+                                                 "http://identifiers.org/biomodels.db/BIOMD0000000875"
+Nelson2000_HIV_1_general_model_1 identity "http://identifiers.org/biomodels.db/MODEL8268650277"
+Nelson2000_HIV_1_general_model_1 hypernym "http://identifiers.org/doid/DOID:526"
+Nelson2000_HIV_1_general_model_1 hypernym "http://identifiers.org/go/GO:0042493"
+Nelson2000_HIV_1_general_model_1 property "http://identifiers.org/mamo/MAMO:0000046"
+Nelson2000_HIV_1_general_model_1 taxon "http://identifiers.org/taxonomy/9606"

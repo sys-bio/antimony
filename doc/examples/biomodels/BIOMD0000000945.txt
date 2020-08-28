@@ -1,0 +1,106 @@
+// Created by libAntimony v2.13.0
+model *Evans2004___Cell_based_mathematical_model_of_topotecan()
+
+  // Compartments and Species:
+  compartment human_lymphoma_cells;
+  species $L_m in human_lymphoma_cells, $H_m in human_lymphoma_cells, $L_c in human_lymphoma_cells;
+  species $H_c in human_lymphoma_cells, $L_n in human_lymphoma_cells;
+
+  // Assignment Rules:
+  v_1 := (V_m/(V_c*400000))*0.001;
+  v_2 := V_n/V_c;
+
+  // Rate Rules:
+  L_m' = -(k_0_m + k_i)*L_m + k_c_m*H_m + k_e*v_1*L_c;
+  H_m' = k_0_m*L_m - k_c_m*H_m;
+  L_c' = ((k_i*v_1*L_m - (k_e + k_o_c)*L_c) + k_c_c*H_c - k_b*(B_T - L_n)*L_c) + v_2*k_d*L_n;
+  H_c' = k_o_c*L_c - k_c_c*H_c;
+  L_n' = k_b*v_2*(B_T - L_n)*L_c - k_d*L_n;
+
+  // Species initializations:
+  L_m = D;
+  H_m = 0;
+  L_c = 0;
+  H_c = 0;
+  L_n = 0;
+
+  // Compartment initializations:
+  human_lymphoma_cells = 1;
+
+  // Variable initializations:
+  D = 10;
+  k_0_m = 0.0289;
+  k_i = 0.000309;
+  k_c_m = 0.000106;
+  k_e = 1.014;
+  k_o_c = 0.026553;
+  k_c_c = 0.18637;
+  k_b = 0.00085341;
+  B_T = 28.9;
+  k_d = 4.4489;
+  V_m = 2000000000000;
+  V_c = 829;
+  V_n = 326;
+
+  // Other declarations:
+  var v_1, v_2;
+  const human_lymphoma_cells, D, k_0_m, k_i, k_c_m, k_e, k_o_c, k_c_c, k_b;
+  const B_T, k_d, V_m, V_c, V_n;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 60 second;
+  unit substance = 1e-6 mole;
+
+  // Display Names:
+  time_unit is "time";
+  human_lymphoma_cells is "human lymphoma cells";
+  k_0_m is "k_0,m";
+  k_c_m is "k_c,m";
+  k_o_c is "k_o,c";
+  k_c_c is "k_c,c";
+
+  // CV terms:
+  human_lymphoma_cells hypernym "http://identifiers.org/bto/BTO:0000785"
+  human_lymphoma_cells hypernym "http://identifiers.org/efo/0006492"
+  L_m part "http://identifiers.org/chebi/CHEBI:25000"
+  L_m hypernym "http://identifiers.org/kegg.compound/C11158"
+  L_m container "http://identifiers.org/go/GO:0005576"
+  L_m property "http://identifiers.org/chebi/CHEBI:35610"
+  D hypernym "http://identifiers.org/efo/EFO:0000428"
+  k_i encodement "http://identifiers.org/sbo/SBO:0000587"
+  H_m part "http://identifiers.org/chebi/CHEBI:35868"
+  H_m hypernym "http://identifiers.org/kegg.compound/C11158"
+  H_m container "http://identifiers.org/go/GO:0005576"
+  H_m property "http://identifiers.org/pato/PATO:0002355"
+  k_e encodement "http://identifiers.org/go/GO:0015562"
+  L_c part "http://identifiers.org/chebi/CHEBI:25000"
+  L_c hypernym "http://identifiers.org/kegg.compound/C11158"
+  L_c container "http://identifiers.org/go/GO:0005622"
+  L_c property "http://identifiers.org/chebi/CHEBI:35610"
+  H_c part "http://identifiers.org/chebi/CHEBI:35868"
+  H_c hypernym "http://identifiers.org/kegg.compound/C11158"
+  H_c container "http://identifiers.org/go/GO:0005622"
+  H_c property "http://identifiers.org/pato/PATO:0002355"
+  k_b encodement "http://identifiers.org/go/GO:0005488"
+  B_T hypernym "http://identifiers.org/sbo/SBO:0000189"
+  L_n part "http://identifiers.org/chebi/CHEBI:16991"
+  L_n part "http://identifiers.org/chebi/CHEBI:25000"
+  L_n hypernym "http://identifiers.org/kegg.compound/C11158"
+  L_n container "http://identifiers.org/go/GO:0005634"
+  L_n property "http://identifiers.org/chebi/CHEBI:35610"
+  L_n property "http://identifiers.org/go/GO:0065004"
+  k_d hypernym "http://identifiers.org/sbo/SBO:0000338"
+end
+
+Evans2004___Cell_based_mathematical_model_of_topotecan is "Evans2004 - Cell based mathematical model of topotecan"
+
+Evans2004___Cell_based_mathematical_model_of_topotecan model_entity_is "http://identifiers.org/biomodels.db/MODEL1805170002",
+                                                                       "http://identifiers.org/biomodels.db/BIOMD0000000945"
+Evans2004___Cell_based_mathematical_model_of_topotecan part "http://identifiers.org/chebi/CHEBI:63632"
+Evans2004___Cell_based_mathematical_model_of_topotecan part "http://identifiers.org/chebi/CHEBI:70727"
+Evans2004___Cell_based_mathematical_model_of_topotecan hypernym "http://identifiers.org/pw/PW:0002367"
+Evans2004___Cell_based_mathematical_model_of_topotecan container "http://identifiers.org/efo/0006492"
+Evans2004___Cell_based_mathematical_model_of_topotecan taxon "http://identifiers.org/taxonomy/9606"
+Evans2004___Cell_based_mathematical_model_of_topotecan description "http://identifiers.org/pubmed/15094319"
+Evans2004___Cell_based_mathematical_model_of_topotecan property "http://identifiers.org/mamo/MAMO_0000046"

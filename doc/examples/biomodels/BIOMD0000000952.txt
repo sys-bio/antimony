@@ -1,0 +1,270 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function function_for_cdk1a_degradation_by_apc_2(APC_C_active, Cyclin_B1_Cdk1_complex_phosphorylated, k_dest)
+  k_dest*APC_C_active*Cyclin_B1_Cdk1_complex_phosphorylated;
+end
+
+function_for_cdk1a_degradation_by_apc_2 is "function for cdk1a degradation by apc_2"
+
+function function_for_cdk1a_degradation_by_apc_1(APC_C_active, Cyclin_B1_Cdk1_complex_unphosphorylated, k_dest)
+  k_dest*APC_C_active*Cyclin_B1_Cdk1_complex_unphosphorylated;
+end
+
+function_for_cdk1a_degradation_by_apc_1 is "function for cdk1a degradation by apc_1"
+
+function function_for_plx1_activation_1(Cyclin_B1_Cdk1_complex_phosphorylated, Plx1_active, Plx1_total, ec50_plx, k_plxon, n_plx)
+  (k_plxon/(1 + (ec50_plx/Cyclin_B1_Cdk1_complex_phosphorylated)^n_plx))*(Plx1_total - Plx1_active);
+end
+
+function_for_plx1_activation_1 is "function for plx1 activation_1"
+
+function Rate_Law_for_reaction_for_S(Kcdk_off, SCdk1, K_cdk_on, S, Cdk1a, Kcatpp2, SPPP2A)
+  (Kcdk_off*SCdk1 - K_cdk_on*S*Cdk1a) + Kcatpp2*SPPP2A;
+end
+
+Rate_Law_for_reaction_for_S is "Rate Law for reaction for S"
+
+function function_for_cdk1_activation_1(Cyclin_B1_Cdk1_complex_phosphorylated, Cyclin_B1_Cdk1_complex_unphosphorylated, ec50_cdc25, k_cdk1_on, n_cdc25, p, r)
+  (1/r^(1/2))*k_cdk1_on*(1 + p/(1 + (ec50_cdc25/Cyclin_B1_Cdk1_complex_phosphorylated)^n_cdc25))*Cyclin_B1_Cdk1_complex_unphosphorylated;
+end
+
+function_for_cdk1_activation_1 is "function for cdk1 activation_1"
+
+function Rate_Law_for_reaction_for_SCdk1(Kcdkon, S, Cdk1a, Kcatcdk, Kcdkoff, SCdk1)
+  Kcdkon*S*Cdk1a - (Kcatcdk + Kcdkoff)*SCdk1;
+end
+
+Rate_Law_for_reaction_for_SCdk1 is "Rate Law for reaction for SCdk1"
+
+function Rate_Law_for_reaction_for_SPPP2A(Kcatpp2, Kpp2off, SPPP2A, Kpp2on, SP, PP2A)
+  -(Kcatpp2 + Kpp2off)*SPPP2A + Kpp2on*SP*PP2A;
+end
+
+Rate_Law_for_reaction_for_SPPP2A is "Rate Law for reaction for SPPP2A"
+
+function function_for_cdk_inactivation_1(Cyclin_B1_Cdk1_complex_phosphorylated, ec50_wee1, k_cdk1_off, n_wee1, p, r)
+  r^(1/2)*k_cdk1_off*(1 + p/((Cyclin_B1_Cdk1_complex_phosphorylated/ec50_wee1)^n_wee1 + 1))*Cyclin_B1_Cdk1_complex_phosphorylated;
+end
+
+function_for_cdk_inactivation_1 is "function for cdk inactivation_1"
+
+function function_for_apc_activation_1(APC_C_active, APC_C_total, Plx1_active, ec50_apc, k_apc_on, n_apc)
+  (k_apc_on/(1 + (ec50_apc/Plx1_active)^n_apc))*(APC_C_total - APC_C_active);
+end
+
+function_for_apc_activation_1 is "function for apc activation_1"
+
+function Rate_Law_for_reaction_for_heat_flow(SPPP2A, Vembryo, delta_Hdephos, Kcat_pp2, Kcatpp2, Kpp2off, Kpp2on, SP, PP2A)
+  (-(Kcatpp2 + Kpp2off)*SPPP2A + Kpp2on*SP*PP2A)*Vembryo*delta_Hdephos*Kcat_pp2;
+end
+
+Rate_Law_for_reaction_for_heat_flow is "Rate Law for reaction for heat flow"
+
+function Rate_Law_for_reaction_for_SP(Kcatcdk, SCdk1, Kpp2on, SP, PP2A, Kpp2off, SPPP2A)
+  (Kcatcdk*SCdk1 - Kpp2on*SP*PP2A) + Kpp2off*SPPP2A;
+end
+
+Rate_Law_for_reaction_for_SP is "Rate Law for reaction for SP"
+
+function Rate_Law_for_reaction_for_PP2A(Kpp2off, SPPP2A, Kcatpp2, Kpp2on, SP, PP2A)
+  Kpp2off*SPPP2A + Kcatpp2*SPPP2A - Kpp2on*SP*PP2A;
+end
+
+Rate_Law_for_reaction_for_PP2A is "Rate Law for reaction for PP2A"
+
+
+model *Rodenfels2019___Heat_Oscillations_Driven_by_the_Embryonic_Cell_Cycle_Reveal_the_Energetic_Costs_of_Signaling()
+
+  // Compartments and Species:
+  compartment nuclear, Embryo;
+  species Cyclin_B1_Cdk1_complex_phosphorylated in nuclear, Cyclin_B1_Cdk1_complex_unphosphorylated in nuclear;
+  species Plx1_active in nuclear, APC_C_active in nuclear, $Plx1_total in nuclear;
+  species APC_C_total in nuclear, $Cyclin_B1_Cdk1_complex_total in nuclear;
+  species SCdk1 in nuclear, S in nuclear, SP in nuclear, PP2A in nuclear;
+  species SPPP2A in nuclear, $Stotal in nuclear, $cdk1a in nuclear, Q in nuclear;
+
+  // Assignment Rules:
+  Cyclin_B1_Cdk1_complex_total := Cyclin_B1_Cdk1_complex_unphosphorylated + Cyclin_B1_Cdk1_complex_phosphorylated;
+  cdk1a := Cyclin_B1_Cdk1_complex_phosphorylated;
+
+  // Rate Rules:
+  Stotal' = rateOf(S) + rateOf(SP) + rateOf(SCdk1) + rateOf(SPPP2A);
+
+  // Reactions:
+  Cyclin_B1_Cdk1_phosphorylated_synthesis:  => Cyclin_B1_Cdk1_complex_phosphorylated; nuclear*Constant_flux__irreversible(k_synth);
+  Cyclin_B1_Cdk1_unphosphorylated_degradation: Cyclin_B1_Cdk1_complex_unphosphorylated => ; nuclear*function_for_cdk1a_degradation_by_apc_1(APC_C_active, Cyclin_B1_Cdk1_complex_unphosphorylated, k_dest);
+  Cyclin_B1_Cdk1_phosphorylated_degradation: Cyclin_B1_Cdk1_complex_phosphorylated => ; nuclear*function_for_cdk1a_degradation_by_apc_2(APC_C_active, Cyclin_B1_Cdk1_complex_phosphorylated, k_dest);
+  Cyclin_B1_Cdk1_phosphorylated_dephosphorylation: Cyclin_B1_Cdk1_complex_phosphorylated => Cyclin_B1_Cdk1_complex_unphosphorylated; nuclear*function_for_cdk_inactivation_1(Cyclin_B1_Cdk1_complex_phosphorylated, ec50_wee1, k_cdk1_off, n_wee1, p, r);
+  Cyclin_B1_Cdk1_phosphorylated_phosphorylation: Cyclin_B1_Cdk1_complex_unphosphorylated => Cyclin_B1_Cdk1_complex_phosphorylated; nuclear*function_for_cdk1_activation_1(Cyclin_B1_Cdk1_complex_phosphorylated, Cyclin_B1_Cdk1_complex_unphosphorylated, ec50_cdc25, k_cdk1_on, n_cdc25, p, r);
+  Plx1_activation_by_active_Cdk1:  => Plx1_active; nuclear*function_for_plx1_activation_1(Cyclin_B1_Cdk1_complex_phosphorylated, Plx1_active, Plx1_total, ec50_plx, k_plxon, n_plx);
+  Plx1_inactivation_after_Cdk1_inactivated: Plx1_active => ; nuclear*k_plx_off*Plx1_active;
+  Activation_of_APC_CCdc20_by_active_Plx1:  => APC_C_active; nuclear*function_for_apc_activation_1(APC_C_active, APC_C_total, Plx1_active, ec50_apc, k_apc_on, n_apc);
+  inactivation_of_APC_CCdc20_after_Plx1_is_inactivated: APC_C_active => ; nuclear*k_apc_off*APC_C_active;
+  reaction_for_SCdk1:  => SCdk1; nuclear*Rate_Law_for_reaction_for_SCdk1(Kcdk_on, S, cdk1a, Kcatcdk1, Kcdk_off, SCdk1);
+  reaction_for_S:  => S; nuclear*Rate_Law_for_reaction_for_S(Kcdk_off, SCdk1, Kcdk_on, S, cdk1a, Kcatpp2, SPPP2A);
+  reaction_for_SP:  => SP; nuclear*Rate_Law_for_reaction_for_SP(Kcatcdk1, SCdk1, Kpp2_on, SP, PP2A, Kpp2_off, SPPP2A);
+  reaction_for_PP2A:  => PP2A; nuclear*Rate_Law_for_reaction_for_PP2A(Kpp2_off, SPPP2A, Kcatpp2, Kpp2_on, SP, PP2A);
+  reaction_for_SPPP2A:  => SPPP2A; nuclear*Rate_Law_for_reaction_for_SPPP2A(Kcatpp2, Kpp2_off, SPPP2A, Kpp2_on, SP, PP2A);
+  reaction_for_heat_flow:  => Q; nuclear*Rate_Law_for_reaction_for_heat_flow(SPPP2A, Embryo, delta_Hdesphos, Kcatpp2, Kcatpp2, Kpp2_off, Kpp2_on, SP, PP2A);
+
+  // Species initializations:
+  Cyclin_B1_Cdk1_complex_phosphorylated = 60;
+  Cyclin_B1_Cdk1_complex_phosphorylated has substance_per_volume;
+  Cyclin_B1_Cdk1_complex_unphosphorylated = 0;
+  Cyclin_B1_Cdk1_complex_unphosphorylated has substance_per_volume;
+  Plx1_active = 0;
+  Plx1_active has substance_per_volume;
+  APC_C_active = 0;
+  APC_C_active has substance_per_volume;
+  Plx1_total = 1;
+  Plx1_total has substance_per_volume;
+  APC_C_total = 1;
+  APC_C_total has substance_per_volume;
+  Cyclin_B1_Cdk1_complex_total has substance_per_volume;
+  SCdk1 = 0;
+  SCdk1 has substance_per_volume;
+  S = 60;
+  S has substance_per_volume;
+  SP = 0;
+  SP has substance_per_volume;
+  PP2A = 60;
+  PP2A has substance_per_volume;
+  SPPP2A = 0;
+  SPPP2A has substance_per_volume;
+  Stotal = 60;
+  Stotal has substance_per_volume;
+  cdk1a has substance_per_volume;
+  Q = 0;
+  Q has substance_per_volume;
+
+  // Compartment initializations:
+  nuclear = 1;
+  nuclear has volume;
+  Embryo = 6e-10;
+  Embryo has volume;
+
+  // Variable initializations:
+  k_synth = 2.85;
+  k_dest = 0.76;
+  ec50_cdc25 = 30;
+  n_cdc25 = 11;
+  ec50_wee1 = 35;
+  n_wee1 = 3.5;
+  k_cdk1_on = 0.06726;
+  k_cdk1_off = 0.06726;
+  p = 5;
+  ec50_plx = 60;
+  ec50_apc = 0.5;
+  n_apc = 4;
+  n_plx = 5;
+  k_plxon = 2.85;
+  k_plx_off = 0.2375;
+  k_apc_on = 1.5;
+  k_apc_off = 0.15;
+  r = 0.03125;
+  tau = 4;
+  Kcdk_on = 10;
+  Kcdk_off = 1;
+  Kcatcdk1 = 180;
+  Kpp2_on = 100;
+  Kpp2_off = 0.01;
+  Kcatpp2 = 1800;
+  delta_Hdesphos = 40000;
+
+  // Other declarations:
+  const nuclear, Embryo, k_synth, k_dest, ec50_cdc25, n_cdc25, ec50_wee1;
+  const n_wee1, k_cdk1_on, k_cdk1_off, p, ec50_plx, ec50_apc, n_apc, n_plx;
+  const k_plxon, k_plx_off, k_apc_on, k_apc_off, r, tau, Kcdk_on, Kcdk_off;
+  const Kcatcdk1, Kpp2_on, Kpp2_off, Kcatpp2, delta_Hdesphos;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+  unit area = metre^2;
+  unit length = metre;
+  unit extent = substance;
+  unit time_unit = second;
+  unit substance_per_volume = 1e-3 mole / 1e-3 litre;
+
+  // Display Names:
+  nuclear is "Nuclear";
+  Cyclin_B1_Cdk1_complex_phosphorylated is "Cyclin B1 Cdk1 complex phosphorylated( Active)";
+  Cyclin_B1_Cdk1_complex_unphosphorylated is "Cyclin B1 Cdk1 complex unphosphorylated";
+  APC_C_active is "APC/C active";
+  APC_C_total is "APC/C total";
+  Cyclin_B1_Cdk1_complex_total is "Cyclin B1 Cdk1 complex total";
+  SCdk1 is "Substrate/Cdk1 complex";
+  S is "Substrate";
+  SP is "Phosphorylated Substrate(SP)";
+  SPPP2A is "Phosphorylated Substrate Phosphatase Complex(SP-PP2A)";
+  Q is "Heat(Q)";
+  Cyclin_B1_Cdk1_phosphorylated_synthesis is "Cyclin B1 Cdk1 phosphorylated synthesis";
+  Cyclin_B1_Cdk1_unphosphorylated_degradation is "Cyclin B1 Cdk1 unphosphorylated degradation";
+  Cyclin_B1_Cdk1_phosphorylated_degradation is "Cyclin B1 Cdk1 phosphorylated degradation";
+  Cyclin_B1_Cdk1_phosphorylated_dephosphorylation is "Cyclin B1 Cdk1 phosphorylated dephosphorylation";
+  Cyclin_B1_Cdk1_phosphorylated_phosphorylation is "Cyclin B1 Cdk1 phosphorylated phosphorylation";
+  Plx1_activation_by_active_Cdk1 is "Plx1 activation by active Cdk1";
+  Plx1_inactivation_after_Cdk1_inactivated is "Plx1 inactivation after Cdk1 inactivated";
+  Activation_of_APC_CCdc20_by_active_Plx1 is "Activation of APC/CCdc20 by active Plx1";
+  inactivation_of_APC_CCdc20_after_Plx1_is_inactivated is "inactivation of APC/CCdc20 after Plx1 is inactivated";
+  reaction_for_SCdk1 is "reaction for SCdk1";
+  reaction_for_S is "reaction for S";
+  reaction_for_SP is "reaction for SP";
+  reaction_for_PP2A is "reaction for PP2A";
+  reaction_for_SPPP2A is "reaction for SPPP2A";
+  reaction_for_heat_flow is "reaction for heat flow";
+
+  // CV terms:
+  nuclear hypernym "http://identifiers.org/ncit/C13361"
+  Cyclin_B1_Cdk1_complex_phosphorylated part "http://identifiers.org/uniprot/Q7ZU21"
+  Cyclin_B1_Cdk1_complex_phosphorylated part "http://identifiers.org/uniprot/Q7T3L7"
+  Cyclin_B1_Cdk1_complex_phosphorylated part "http://identifiers.org/pato/PATO:0002354"
+  Cyclin_B1_Cdk1_complex_phosphorylated identity "http://identifiers.org/go/GO:0032991"
+  Cyclin_B1_Cdk1_complex_unphosphorylated part "http://identifiers.org/uniprot/Q7T3L7"
+  Cyclin_B1_Cdk1_complex_unphosphorylated part "http://identifiers.org/uniprot/Q7ZU21"
+  Cyclin_B1_Cdk1_complex_unphosphorylated identity "http://identifiers.org/go/GO:0032991"
+  Plx1_active hypernym "http://identifiers.org/uniprot/Q4KMI8"
+  Plx1_active property "http://identifiers.org/pato/PATO:0002354"
+  APC_C_active part "http://identifiers.org/uniprot/Q561X1"
+  APC_C_active property "http://identifiers.org/pato/PATO:0002354"
+  Plx1_total hypernym "http://identifiers.org/uniprot/Q4KMI8"
+  APC_C_total part "http://identifiers.org/uniprot/Q561X1"
+  Cyclin_B1_Cdk1_complex_total part "http://identifiers.org/uniprot/Q7ZU21"
+  Cyclin_B1_Cdk1_complex_total part "http://identifiers.org/uniprot/Q7T3L7"
+  Cyclin_B1_Cdk1_complex_total identity "http://identifiers.org/go/GO:0032991"
+  SCdk1 part "http://identifiers.org/uniprot/Q7T3L7"
+  SCdk1 part "http://identifiers.org/ncit/C120264"
+  SCdk1 identity "http://identifiers.org/go/GO:0032991"
+  S part "http://identifiers.org/ncit/C120264"
+  SP part "http://identifiers.org/pato/PATO:0002220"
+  SP part "http://identifiers.org/ncit/C120264"
+  PP2A part "http://identifiers.org/uniprot/Q6NY64"
+  PP2A identity "http://identifiers.org/go/GO:0032991"
+  SPPP2A identity "http://identifiers.org/go/GO:0032991"
+  Stotal part "http://identifiers.org/ncit/C120264"
+  Q identity "http://identifiers.org/go/GO:0031649"
+  Cyclin_B1_Cdk1_phosphorylated_synthesis hypernym "http://identifiers.org/ncit/C61408"
+  Cyclin_B1_Cdk1_unphosphorylated_degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Cyclin_B1_Cdk1_phosphorylated_degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Cyclin_B1_Cdk1_phosphorylated_dephosphorylation hypernym "http://identifiers.org/go/GO:0016311"
+  Cyclin_B1_Cdk1_phosphorylated_phosphorylation hypernym "http://identifiers.org/go/GO:0016310"
+  Plx1_activation_by_active_Cdk1 hypernym "http://identifiers.org/sbo/SBO:0000656"
+  Activation_of_APC_CCdc20_by_active_Plx1 hypernym "http://identifiers.org/sbo/SBO:0000656"
+end
+
+Rodenfels2019___Heat_Oscillations_Driven_by_the_Embryonic_Cell_Cycle_Reveal_the_Energetic_Costs_of_Signaling is "Rodenfels2019 - Heat Oscillations Driven by the Embryonic Cell Cycle Reveal the Energetic Costs of Signaling"
+
+Rodenfels2019___Heat_Oscillations_Driven_by_the_Embryonic_Cell_Cycle_Reveal_the_Energetic_Costs_of_Signaling origin "urn:miriam:unknown:https://www.ncbi.nlm.nih.gov/pubmed/24523664"
+Rodenfels2019___Heat_Oscillations_Driven_by_the_Embryonic_Cell_Cycle_Reveal_the_Energetic_Costs_of_Signaling description "http://identifiers.org/pubmed/30713074"
+Rodenfels2019___Heat_Oscillations_Driven_by_the_Embryonic_Cell_Cycle_Reveal_the_Energetic_Costs_of_Signaling model_entity_is "http://identifiers.org/biomodels.db/MODEL2004170001",
+                                                                                                                             "http://identifiers.org/biomodels.db/BIOMD0000000952"
+Rodenfels2019___Heat_Oscillations_Driven_by_the_Embryonic_Cell_Cycle_Reveal_the_Energetic_Costs_of_Signaling part "http://identifiers.org/go/GO:0051726"
+Rodenfels2019___Heat_Oscillations_Driven_by_the_Embryonic_Cell_Cycle_Reveal_the_Energetic_Costs_of_Signaling identity "http://identifiers.org/biomodels.db/MODEL2004170001"
+Rodenfels2019___Heat_Oscillations_Driven_by_the_Embryonic_Cell_Cycle_Reveal_the_Energetic_Costs_of_Signaling taxon "http://identifiers.org/taxonomy/7955"
+Rodenfels2019___Heat_Oscillations_Driven_by_the_Embryonic_Cell_Cycle_Reveal_the_Energetic_Costs_of_Signaling property "urn:miriam:unknown:http://purl.obolibrary.org/obo/CHMO_0002076",
+                                                                                                                      "http://identifiers.org/mamo/MAMO_0000046"

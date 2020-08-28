@@ -1,0 +1,206 @@
+// Created by libAntimony v2.13.0
+function Function_for_LP_Synthesis_ED(kf5, PP, ED)
+  kf5*PP^2*ED;
+end
+
+Function_for_LP_Synthesis_ED is "Function_for_LP_Synthesis_ED"
+
+function Function_for_EP2_Synthesis_EP1(kf3, STAB, EP1)
+  kf3*STAB*EP1;
+end
+
+Function_for_EP2_Synthesis_EP1 is "Function_for_EP2_Synthesis_EP1"
+
+function Function_for_EP1_Synthesis_STIM_BAS_bas(kf1bas, STIM, BAS)
+  kf1bas*(1 - STIM)*BAS;
+end
+
+Function_for_EP1_Synthesis_STIM_BAS_bas is "Function_for_EP1_Synthesis_STIM_BAS_bas"
+
+function Function_for_EP1_Synthesis_STIM_BAS(kf1, STIM, BAS)
+  kf1*STIM*BAS;
+end
+
+Function_for_EP1_Synthesis_STIM_BAS is "Function_for_EP1_Synthesis_STIM_BAS"
+
+function Function_for_ED_Synthesis_EP1_UPS(kf2, UPS, LAC, EP1)
+  kf2*UPS*(1 - LAC)*EP1;
+end
+
+Function_for_ED_Synthesis_EP1_UPS is "Function_for_ED_Synthesis_EP1_UPS"
+
+function Function_for_BAS_Synthesis_EP2(kb2, EP2, NP)
+  kb2*EP2*NP;
+end
+
+Function_for_BAS_Synthesis_EP2 is "Function_for_BAS_Synthesis_EP2"
+
+function Function_for_ED_Synthesis_EP2(kf4, UPS, LAC, EP2)
+  kf4*UPS*(1 - LAC)*EP2;
+end
+
+Function_for_ED_Synthesis_EP2 is "Function_for_ED_Synthesis_EP2"
+
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function Function_for_NP_Degradation_UPS(kdeg2, UPS, NP, LAC)
+  kdeg2*UPS*NP*(1 - LAC);
+end
+
+Function_for_NP_Degradation_UPS is "Function_for_NP_Degradation_UPS"
+
+function Function_for_PP_Synthesis(PSI, ksyn1, STIM, ksyn1bas)
+  (1 - PSI)*(ksyn1*STIM + ksyn1bas);
+end
+
+Function_for_PP_Synthesis is "Function_for_PP_Synthesis"
+
+function Function_for_STAB_Synthesis_STIM(ksyn3, STIM)
+  ksyn3*STIM;
+end
+
+Function_for_STAB_Synthesis_STIM is "Function_for_STAB_Synthesis_STIM"
+
+function Function_for_NP_Synthesis(PSI, ksyn2, STIM, ksyn2bas)
+  (1 - PSI)*(ksyn2*STIM + ksyn2bas);
+end
+
+Function_for_NP_Synthesis is "Function_for_NP_Synthesis"
+
+function Function_for_UPS_Activation(kact, STIM)
+  kact*STIM;
+end
+
+Function_for_UPS_Activation is "Function_for_UPS_Activation"
+
+
+model *Smolen2018___Paradoxical_LTP_maintenance_with_inhibition_of_protein_synthesis_and_the_proteasome()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species PP in compartment_, NP in compartment_, STAB in compartment_, UPS in compartment_;
+  species EP1 in compartment_, EP2 in compartment_, ED in compartment_, LP in compartment_;
+  species BAS in compartment_;
+
+  // Assignment Rules:
+  kf1bas := piecewise(0, time <= ModelValue_27, ModelValue_28);
+  STIM := piecewise(1, time <= ModelValue_27, 0);
+  W := BAS + 5*EP1 + 8*EP2 + 4*ED + 8*LP;
+
+  // Reactions:
+  PP_Synthesis:  => PP; compartment_*Function_for_PP_Synthesis(PSI, ksyn1, STIM, ksyn1bas);
+  PP_Degradation: PP => ; compartment_*kdeg1*PP;
+  NP_Synthesis:  => NP; compartment_*Function_for_NP_Synthesis(PSI, ksyn2, STIM, ksyn2bas);
+  NP_Degradation_UPS: NP => ; compartment_*Function_for_NP_Degradation_UPS(kdeg2, UPS, NP, LAC);
+  NP_Degradation: NP => ; compartment_*kdeg2bas*NP;
+  STAB_Synthesis_STIM:  => STAB; compartment_*Function_for_STAB_Synthesis_STIM(ksyn3, STIM);
+  STAB_Synthesis_Basal:  => STAB; compartment_*Constant_flux__irreversible(ksyn3bas);
+  STAB_Degradation: STAB => ; compartment_*kdeg3*STAB;
+  EP1_Synthesis_STIM_BAS: BAS => EP1; compartment_*Function_for_EP1_Synthesis_STIM_BAS(kf1, STIM, BAS);
+  EP1_Synthesis_STIM_BAS_bas: BAS => EP1; compartment_*Function_for_EP1_Synthesis_STIM_BAS_bas(kf1bas, STIM, BAS);
+  ED_Synthesis_EP1_UPS: EP1 => ED; compartment_*Function_for_ED_Synthesis_EP1_UPS(kf2, UPS, LAC, EP1);
+  BAS_Synthesis_EP1: EP1 => BAS; compartment_*kb1*EP1;
+  EP2_Synthesis_EP1: EP1 => EP2; compartment_*Function_for_EP2_Synthesis_EP1(kf3, STAB, EP1);
+  ED_Synthesis_EP2: EP2 => ED; compartment_*Function_for_ED_Synthesis_EP2(kf4, UPS, LAC, EP2);
+  BAS_Synthesis_EP2: EP2 => BAS; compartment_*Function_for_BAS_Synthesis_EP2(kb2, EP2, NP);
+  BAS_Synthesis_ED: ED => BAS; compartment_*kb3*ED;
+  LP_Synthesis_ED: ED => LP; compartment_*Function_for_LP_Synthesis_ED(kf5, PP, ED);
+  BAS_Synthesis_LP: LP => BAS; compartment_*kb4*LP;
+  UPS_Activation:  => UPS; compartment_*Function_for_UPS_Activation(kact, STIM);
+  UPS_Activation_Basal:  => UPS; compartment_*Constant_flux__irreversible(kactbas);
+  UPS_Deactivation: UPS => ; compartment_*kdeact*UPS;
+
+  // Species initializations:
+  PP = 0.01;
+  NP = 0.01;
+  STAB = 0.01;
+  UPS = 0.001;
+  EP1 = 0.18;
+  EP2 = 0.14;
+  ED = 0.01;
+  LP = 0.01;
+  BAS = 0.96;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  ksyn1 = 1;
+  ksyn1bas = 0.0035;
+  kdeg1 = 0.005;
+  ksyn2 = 2;
+  ksyn2bas = 0.0014;
+  kdeg2 = 0.01;
+  kdeg2bas = 0.002;
+  ksyn3 = 1;
+  ksyn3bas = 0.008;
+  kdeg3 = 0.02;
+  kact = 0.2;
+  kactbas = 0.00214;
+  kdeact = 0.0143;
+  kf1 = 0.1;
+  ModelValue_27 = tstimdur;
+  ModelValue_28 = kf1bas_value;
+  kf2 = 0.02;
+  kb1 = 0.005;
+  kf3 = 0.01;
+  kf4 = 0.02;
+  kb2 = 0.0007;
+  kb3 = 0.02;
+  kf5 = 0.0005;
+  kb4 = 0.001;
+  PSI = 0;
+  LAC = 0;
+  tstimdur = 20;
+  kf1bas_value = 0.001;
+
+  // Other declarations:
+  var kf1bas, STIM, W;
+  const compartment_, ksyn1, ksyn1bas, kdeg1, ksyn2, ksyn2bas, kdeg2, kdeg2bas;
+  const ksyn3, ksyn3bas, kdeg3, kact, kactbas, kdeact, kf1, ModelValue_27;
+  const ModelValue_28, kf2, kb1, kf3, kf4, kb2, kb3, kf5, kb4, PSI, LAC, tstimdur;
+  const kf1bas_value;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 60 second;
+  unit substance = item;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+  ModelValue_27 is "Initial for tstimdur";
+  ModelValue_28 is "Initial for kf1bas_value";
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/go/GO:1990021"
+  PP identity "http://identifiers.org/ncit/C17021"
+  PP property "http://identifiers.org/sbo/SBO:0000459"
+  NP identity "http://identifiers.org/ncit/C17021"
+  NP property "http://identifiers.org/ncit/C154898"
+  STAB instance "http://identifiers.org/pr/PR:000009238"
+  UPS identity "http://identifiers.org/pw/PW:0000144"
+  EP1 identity "http://identifiers.org/ncit/C13281"
+  EP1 property "http://identifiers.org/ncit/C61589"
+  EP2 identity "http://identifiers.org/ncit/C13281"
+  EP2 property "http://identifiers.org/ncit/C61589"
+  ED identity "http://identifiers.org/ncit/C13281"
+  ED property "http://identifiers.org/ncit/C61589"
+  LP identity "http://identifiers.org/ncit/C13281"
+  LP property "http://identifiers.org/ncit/C25322"
+  BAS identity "http://identifiers.org/ncit/C13281"
+  BAS property "http://identifiers.org/ncit/C90067"
+end
+
+Smolen2018___Paradoxical_LTP_maintenance_with_inhibition_of_protein_synthesis_and_the_proteasome is "Smolen2018 - Paradoxical LTP maintenance with inhibition of protein synthesis and the proteasome"
+
+Smolen2018___Paradoxical_LTP_maintenance_with_inhibition_of_protein_synthesis_and_the_proteasome description "http://identifiers.org/pubmed/30138630"
+Smolen2018___Paradoxical_LTP_maintenance_with_inhibition_of_protein_synthesis_and_the_proteasome model_entity_is "http://identifiers.org/biomodels.db/MODEL1911120006",
+                                                                                                                 "http://identifiers.org/biomodels.db/BIOMD0000000853"
+Smolen2018___Paradoxical_LTP_maintenance_with_inhibition_of_protein_synthesis_and_the_proteasome property "http://identifiers.org/mamo/MAMO_0000046"
+Smolen2018___Paradoxical_LTP_maintenance_with_inhibition_of_protein_synthesis_and_the_proteasome property "http://identifiers.org/pw/PW:0000060"
+Smolen2018___Paradoxical_LTP_maintenance_with_inhibition_of_protein_synthesis_and_the_proteasome property "http://identifiers.org/ncit/C13314"

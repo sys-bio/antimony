@@ -1,0 +1,426 @@
+// Created by libAntimony v2.13.0
+function STAT3(STAT3tot, pSTAT3, STAT3uStattic)
+  STAT3tot - pSTAT3 - STAT3uStattic;
+end
+
+STAT3 is "STAT3"
+
+function Function_for_v16(Km16, cMET, kc16, kdeg16, pCbl, rootCompartment)
+  (kdeg16 + kc16*pCbl*rootCompartment)*cMET*rootCompartment/(Km16 + cMET*rootCompartment)/rootCompartment;
+end
+
+Function_for_v16 is "Function for v16"
+
+function PYK2tot(PYK2, pPYK2)
+  PYK2 + pPYK2;
+end
+
+PYK2tot is "PYK2tot"
+
+function Stattic(Stattictot, STAT3uStattic)
+  Stattictot - STAT3uStattic;
+end
+
+Stattic is "Stattic"
+
+function Function_for_v9(EMD, Ki9, Km9, PYK2, kc9a, kc9b, pEGFR, pcMET, rootCompartment)
+  (kc9a*pEGFR*rootCompartment + kc9b*pcMET*rootCompartment/(1 + EMD/Ki9))*PYK2*rootCompartment/(Km9 + PYK2*rootCompartment)/rootCompartment;
+end
+
+Function_for_v9 is "Function for v9"
+
+function Function_for_v5(Km5, Vmax5, Vs5, pSTAT3, rootCompartment)
+  (Vs5 + Vmax5*pSTAT3*rootCompartment/(Km5 + pSTAT3*rootCompartment))/rootCompartment;
+end
+
+Function_for_v5 is "Function for v5"
+
+function Function_for_v22(Km22, Vmax22, aPTP, rootCompartment)
+  Vmax22*aPTP*rootCompartment/(Km22 + aPTP*rootCompartment)/rootCompartment;
+end
+
+Function_for_v22 is "Function for v22"
+
+function Function_for_v7(Km7, PYK2m, Vmax7, rootCompartment)
+  Vmax7*PYK2m*rootCompartment/(Km7 + PYK2m*rootCompartment)/rootCompartment;
+end
+
+Function_for_v7 is "Function for v7"
+
+function PTP(PTPtot, aPTP)
+  PTPtot - aPTP;
+end
+
+PTP is "PTP"
+
+function Function_for_v12(Km12, Vmax12, aPTP, kc12, pSTAT3, rootCompartment)
+  (Vmax12 + kc12*aPTP*rootCompartment)*pSTAT3*rootCompartment/(Km12 + pSTAT3*rootCompartment)/rootCompartment;
+end
+
+Function_for_v12 is "Function for v12"
+
+function Function_for_v10(Km10, Vmax10, aPTP, kc10, pPYK2, rootCompartment)
+  (Vmax10 + kc10*aPTP*rootCompartment)*pPYK2*rootCompartment/(Km10 + pPYK2*rootCompartment)/rootCompartment;
+end
+
+Function_for_v10 is "Function for v10"
+
+function Function_for_v13(Km13, Vmax13, Vs13, pSTAT3, rootCompartment)
+  (Vs13 + Vmax13*pSTAT3*rootCompartment/(Km13 + pSTAT3*rootCompartment))/rootCompartment;
+end
+
+Function_for_v13 is "Function for v13"
+
+function Function_for_v21(Km21, PTPtot, aPTP, kc21, pEGFR, rootCompartment)
+  kc21*pEGFR*rootCompartment*PTP(PTPtot, aPTP*rootCompartment)/(Km21 + PTP(PTPtot, aPTP*rootCompartment))/rootCompartment;
+end
+
+Function_for_v21 is "Function for v21"
+
+function Function_for_v11(Ki3b, Km11, PF396, STAT3tot, STAT3uStattic, kc11, pPYK2, pSTAT3, rootCompartment)
+  kc11*(pPYK2*rootCompartment/(1 + PF396/Ki3b))*STAT3(STAT3tot, pSTAT3*rootCompartment, STAT3uStattic*rootCompartment)/(Km11 + STAT3(STAT3tot, pSTAT3*rootCompartment, STAT3uStattic*rootCompartment))/rootCompartment;
+end
+
+Function_for_v11 is "Function for v11"
+
+function Function_for_v25(STAT3tot, STAT3uStattic, Stattictot, ka25, kd25, pSTAT3, rootCompartment)
+  (ka25*STAT3(STAT3tot, pSTAT3*rootCompartment, STAT3uStattic*rootCompartment)*Stattic(Stattictot, STAT3uStattic*rootCompartment) - kd25*STAT3uStattic*rootCompartment)/rootCompartment;
+end
+
+Function_for_v25 is "Function for v25"
+
+function Function_for_v18(Km18, Vmax18, pcMET, rootCompartment)
+  Vmax18*pcMET*rootCompartment/(Km18 + pcMET*rootCompartment)/rootCompartment;
+end
+
+Function_for_v18 is "Function for v18"
+
+function Function_for_v14(cMETm, kdeg14, rootCompartment)
+  kdeg14*cMETm*rootCompartment/rootCompartment;
+end
+
+Function_for_v14 is "Function for v14"
+
+function Function_for_v8(PYK2, kdeg8, rootCompartment)
+  kdeg8*PYK2*rootCompartment/rootCompartment;
+end
+
+Function_for_v8 is "Function for v8"
+
+function Function_for_v20(Km20, Vmax20, aPTP, kc20, pCbl, rootCompartment)
+  (Vmax20 + kc20*aPTP*rootCompartment)*pCbl*rootCompartment/(Km20 + pCbl*rootCompartment)/rootCompartment;
+end
+
+Function_for_v20 is "Function for v20"
+
+function Function_for_v24(Km24, Vmax24, pERK, rootCompartment)
+  Vmax24*pERK*rootCompartment/(Km24 + pERK*rootCompartment)/rootCompartment;
+end
+
+Function_for_v24 is "Function for v24"
+
+function Cbl(Cbltot, pCbl)
+  Cbltot - pCbl;
+end
+
+Cbl is "Cbl"
+
+function Function_for_v17(HGF, Km17, cMET, caHGF, kc17, rootCompartment)
+  (kc17*HGF + caHGF)*cMET*rootCompartment/(Km17 + cMET*rootCompartment)/rootCompartment;
+end
+
+Function_for_v17 is "Function for v17"
+
+function Function_for_v2(Km2, Vmax2, aPTP, kc2, pEGFR, rootCompartment)
+  (Vmax2 + kc2*aPTP*rootCompartment)*pEGFR*rootCompartment/(Km2 + pEGFR*rootCompartment)/rootCompartment;
+end
+
+Function_for_v2 is "Function for v2"
+
+function Function_for_v4(EGFRub, Km4, Vmax4, rootCompartment)
+  Vmax4*EGFRub*rootCompartment/(Km4 + EGFRub*rootCompartment)/rootCompartment;
+end
+
+Function_for_v4 is "Function for v4"
+
+function ERK(ERKtot, pERK)
+  ERKtot - pERK;
+end
+
+ERK is "ERK"
+
+function Function_for_v6(PYK2m, kdeg6, rootCompartment)
+  kdeg6*PYK2m*rootCompartment/rootCompartment;
+end
+
+Function_for_v6 is "Function for v6"
+
+function EGFR(EGFRtot, pEGFR, EGFRub)
+  EGFRtot - pEGFR - EGFRub;
+end
+
+EGFR is "EGFR"
+
+function Function_for_v15(Km15, Vmax15, cMETm, rootCompartment)
+  Vmax15*cMETm*rootCompartment/(Km15 + cMETm*rootCompartment)/rootCompartment;
+end
+
+Function_for_v15 is "Function for v15"
+
+function Function_for_v3(EGFRtot, EGFRub, Ki3a, Ki3b, Km3, PF396, PYK2, Vmax3, kc3, pCbl, pEGFR, pPYK2, rootCompartment)
+  ((Vmax3 + kc3*pCbl*rootCompartment)*EGFR(EGFRtot, pEGFR*rootCompartment, EGFRub*rootCompartment)/(Km3 + EGFR(EGFRtot, pEGFR*rootCompartment, EGFRub*rootCompartment)))*Ki3a/(Ki3a + PYK2tot(PYK2*rootCompartment, pPYK2*rootCompartment)/(1 + PF396/Ki3b))/rootCompartment;
+end
+
+Function_for_v3 is "Function for v3"
+
+function Function_for_v1(EGF, EGFRtot, EGFRub, Gefitinib, Ki1, Km1, caEGF, kc1, pEGFR, rootCompartment)
+  kc1*(EGF/(1 + Gefitinib/Ki1) + caEGF)*EGFR(EGFRtot, pEGFR*rootCompartment, EGFRub*rootCompartment)/(Km1 + EGFR(EGFRtot, pEGFR*rootCompartment, EGFRub*rootCompartment))/rootCompartment;
+end
+
+Function_for_v1 is "Function for v1"
+
+function Function_for_v23(EMD, ERKtot, Ki23, Km23, kc23a, kc23b, pEGFR, pERK, pcMET, rootCompartment)
+  (kc23a*pcMET*rootCompartment/(1 + EMD/Ki23) + kc23b*pEGFR*rootCompartment)*ERK(ERKtot, pERK*rootCompartment)/(Km23 + ERK(ERKtot, pERK*rootCompartment))/rootCompartment;
+end
+
+Function_for_v23 is "Function for v23"
+
+function Function_for_v19(Cbltot, Km19, kc19, pCbl, pEGFR, rootCompartment)
+  kc19*pEGFR*rootCompartment*Cbl(Cbltot, pCbl*rootCompartment)/(Km19 + Cbl(Cbltot, pCbl*rootCompartment))/rootCompartment;
+end
+
+Function_for_v19 is "Function for v19"
+
+
+model *Shin_2018_EGFR_PYK2_c_Met_interaction_network_model()
+
+  // Compartments and Species:
+  compartment rootCompartment;
+  species pEGFR in rootCompartment, EGFRub in rootCompartment, PYK2m in rootCompartment;
+  species PYK2 in rootCompartment, pPYK2 in rootCompartment, pSTAT3 in rootCompartment;
+  species cMETm in rootCompartment, cMET in rootCompartment, pcMET in rootCompartment;
+  species pCbl in rootCompartment, aPTP in rootCompartment, pERK in rootCompartment;
+  species STAT3uStattic in rootCompartment;
+
+  // Assignment Rules:
+  pSTAT3_norm := pSTAT3/ModelValue_77;
+  pERK_norm := pERK/ModelValue_78;
+  c_Met_norm := cMET/ModelValue_79;
+  PYK2_norm := PYK2/ModelValue_80;
+
+  // Reactions:
+  v1:  => pEGFR; rootCompartment*Function_for_v1(EGF, EGFRtot, EGFRub, Gefitinib, Ki1, Km1, caEGF, kc1, pEGFR, rootCompartment);
+  v2: pEGFR => ; rootCompartment*Function_for_v2(Km2, Vmax2, aPTP, kc2, pEGFR, rootCompartment);
+  v3:  => EGFRub; rootCompartment*Function_for_v3(EGFRtot, EGFRub, Ki3a, Ki3b, Km3, PF396, PYK2, Vmax3, kc3, pCbl, pEGFR, pPYK2, rootCompartment);
+  v4: EGFRub => ; rootCompartment*Function_for_v4(EGFRub, Km4, Vmax4, rootCompartment);
+  v5:  => PYK2m; rootCompartment*Function_for_v5(Km5, Vmax5, Vs5, pSTAT3, rootCompartment);
+  v6: PYK2m => ; rootCompartment*Function_for_v6(PYK2m, kdeg6, rootCompartment);
+  v7:  => PYK2; rootCompartment*Function_for_v7(Km7, PYK2m, Vmax7, rootCompartment);
+  v8: PYK2 => ; rootCompartment*Function_for_v8(PYK2, kdeg8, rootCompartment);
+  v9: PYK2 => pPYK2; rootCompartment*Function_for_v9(EMD, Ki9, Km9, PYK2, kc9a, kc9b, pEGFR, pcMET, rootCompartment);
+  v10: pPYK2 => PYK2; rootCompartment*Function_for_v10(Km10, Vmax10, aPTP, kc10, pPYK2, rootCompartment);
+  v11:  => pSTAT3; rootCompartment*Function_for_v11(Ki3b, Km11, PF396, STAT3tot, STAT3uStattic, kc11, pPYK2, pSTAT3, rootCompartment);
+  v12: pSTAT3 => ; rootCompartment*Function_for_v12(Km12, Vmax12, aPTP, kc12, pSTAT3, rootCompartment);
+  v13:  => cMETm; rootCompartment*Function_for_v13(Km13, Vmax13, Vs13, pSTAT3, rootCompartment);
+  v14: cMETm => ; rootCompartment*Function_for_v14(cMETm, kdeg14, rootCompartment);
+  v15:  => cMET; rootCompartment*Function_for_v15(Km15, Vmax15, cMETm, rootCompartment);
+  v16: cMET => ; rootCompartment*Function_for_v16(Km16, cMET, kc16, kdeg16, pCbl, rootCompartment);
+  v17: cMET => pcMET; rootCompartment*Function_for_v17(HGF, Km17, cMET, caHGF, kc17, rootCompartment);
+  v18: pcMET => cMET; rootCompartment*Function_for_v18(Km18, Vmax18, pcMET, rootCompartment);
+  v19:  => pCbl; rootCompartment*Function_for_v19(Cbltot, Km19, kc19, pCbl, pEGFR, rootCompartment);
+  v20: pCbl => ; rootCompartment*Function_for_v20(Km20, Vmax20, aPTP, kc20, pCbl, rootCompartment);
+  v21:  => aPTP; rootCompartment*Function_for_v21(Km21, PTPtot, aPTP, kc21, pEGFR, rootCompartment);
+  v22: aPTP => ; rootCompartment*Function_for_v22(Km22, Vmax22, aPTP, rootCompartment);
+  v23:  => pERK; rootCompartment*Function_for_v23(EMD, ERKtot, Ki23, Km23, kc23a, kc23b, pEGFR, pERK, pcMET, rootCompartment);
+  v24: pERK => ; rootCompartment*Function_for_v24(Km24, Vmax24, pERK, rootCompartment);
+  v25:  => STAT3uStattic; rootCompartment*Function_for_v25(STAT3tot, STAT3uStattic, Stattictot, ka25, kd25, pSTAT3, rootCompartment);
+
+  // Species initializations:
+  pEGFR = 0.109014;
+  EGFRub = 6.93991;
+  PYK2m = 0.6219;
+  PYK2 = 9.29922;
+  pPYK2 = 2.51016;
+  pSTAT3 = 1.17843;
+  cMETm = 0.0228566;
+  cMET = 4.67164;
+  pcMET = 0.502111;
+  pCbl = 10.4757;
+  aPTP = 0.49418;
+  pERK = 0.669043;
+  STAT3uStattic = 0;
+
+  // Compartment initializations:
+  rootCompartment = 1;
+
+  // Variable initializations:
+  EGF = 10;
+  HGF = 0;
+  caSTAT3 = 0;
+  kc1 = 413.048;
+  Km1 = 248.886;
+  kc2 = 1406.05;
+  Km2 = 3.80189;
+  Vmax3 = 0.000103753;
+  Km3 = 2.2856;
+  Ki3a = 0.0835603;
+  Vmax4 = 11.1173;
+  kc3 = 10.7895;
+  Km4 = 90.7821;
+  Vs5 = 26.5461;
+  Vmax5 = 34.0408;
+  Km5 = 4.74242;
+  kdeg6 = 53.5797;
+  Vmax7 = 3.34965;
+  Km7 = 3.33426;
+  kc9a = 0.463447;
+  kc9b = 0.988553;
+  Km9 = 34.914;
+  Vmax10 = 0.530884;
+  Km10 = 9.14113;
+  kdeg8 = 0.0566239;
+  kc11 = 0.321366;
+  Km11 = 20.6063;
+  kc12 = 0.000289734;
+  Km12 = 11.5878;
+  Vs13 = 0.0937562;
+  Vmax13 = 0.354813;
+  Km13 = 38.7258;
+  kdeg14 = 4.56037;
+  Vmax15 = 91.4113;
+  Km15 = 6.45654;
+  kc17 = 0.000810961;
+  Km17 = 9.81748;
+  Vmax18 = 0.0606736;
+  Km18 = 9.95405;
+  kdeg16 = 24.4906;
+  kc16 = 1.1749;
+  Km16 = 528.445;
+  kc19 = 52.723;
+  Km19 = 13.3045;
+  kc20 = 35.6451;
+  Km20 = 24.322;
+  kc21 = 0.00397192;
+  Km21 = 52.723;
+  Vmax22 = 0.034914;
+  Km22 = 46.4515;
+  Vmax2 = 112.202;
+  Vmax12 = 7.63836;
+  Vmax20 = 0.0483059;
+  kc23a = 7030720000;
+  kc23b = 843335000;
+  Km23 = 2.83139;
+  Vmax24 = 4395420000;
+  Km24 = 0.156675;
+  kc10 = 0.00610942;
+  Ki9 = 1.65577;
+  Ki23 = 13.4896;
+  ka25 = 127.35;
+  kd25 = 11.749;
+  kalEMD1 = 9311.08;
+  caEGF = 0.0891251;
+  caHGF = 0.0090365;
+  EGFRtot = 398.107;
+  STAT3tot = 144.212;
+  Cbltot = 174.985;
+  PTPtot = 296.483;
+  ERKtot = 166.725;
+  Ki1 = 1;
+  Ki3b = 1;
+  Gefitinib = 0;
+  EMD = 0;
+  PF396 = 0;
+  Stattictot = 0;
+  pSTAT3_max = 128;
+  pERK_max = 163.6;
+  c_Met_max = 16.7;
+  PYK2_max = 14.58;
+  ModelValue_77 = pSTAT3_max;
+  ModelValue_78 = pERK_max;
+  ModelValue_79 = c_Met_max;
+  ModelValue_80 = PYK2_max;
+
+  // Other declarations:
+  var pSTAT3_norm, pERK_norm, c_Met_norm, PYK2_norm;
+  const rootCompartment, EGF, HGF, caSTAT3, kc1, Km1, kc2, Km2, Vmax3, Km3;
+  const Ki3a, Vmax4, kc3, Km4, Vs5, Vmax5, Km5, kdeg6, Vmax7, Km7, kc9a, kc9b;
+  const Km9, Vmax10, Km10, kdeg8, kc11, Km11, kc12, Km12, Vs13, Vmax13, Km13;
+  const kdeg14, Vmax15, Km15, kc17, Km17, Vmax18, Km18, kdeg16, kc16, Km16;
+  const kc19, Km19, kc20, Km20, kc21, Km21, Vmax22, Km22, Vmax2, Vmax12, Vmax20;
+  const kc23a, kc23b, Km23, Vmax24, Km24, kc10, Ki9, Ki23, ka25, kd25, kalEMD1;
+  const caEGF, caHGF, EGFRtot, STAT3tot, Cbltot, PTPtot, ERKtot, Ki1, Ki3b;
+  const Gefitinib, EMD, PF396, Stattictot, pSTAT3_max, pERK_max, c_Met_max;
+  const PYK2_max, ModelValue_77, ModelValue_78, ModelValue_79, ModelValue_80;
+
+  // Unit definitions:
+  unit time_unit = 60 second;
+  unit substance = 1e-9 mole;
+
+  // Display Names:
+  time_unit is "time";
+  ModelValue_77 is "Initial for pSTAT3_max";
+  ModelValue_78 is "Initial for pERK_max";
+  c_Met_norm is "c-Met_norm";
+  ModelValue_79 is "Initial for c_Met_max";
+  ModelValue_80 is "Initial for PYK2_max";
+
+  // SBO terms:
+  v7.sboTerm = 184
+  v15.sboTerm = 184
+
+  // CV terms:
+  rootCompartment hypernym "http://identifiers.org/cl/CL:0000000"
+  pEGFR hypernym "http://identifiers.org/pr/PR:000006933"
+  EGFRub hypernym "http://identifiers.org/pr/PR:000006933"
+  EGFRub property "http://identifiers.org/pato/PATO:0002216"
+  PYK2m property "http://identifiers.org/ncit/C17020"
+  PYK2m property "http://identifiers.org/chebi/CHEBI:33699"
+  PYK2 hypernym "http://identifiers.org/ncit/C17020"
+  pPYK2 hypernym "http://identifiers.org/ncit/C17020"
+  pSTAT3 hypernym "http://identifiers.org/pr/PR:000002089"
+  cMETm property "http://identifiers.org/pr/PR:P08581"
+  cMETm property "http://identifiers.org/chebi/CHEBI:33699"
+  cMET hypernym "http://identifiers.org/pr/PR:P08581"
+  pcMET hypernym "http://identifiers.org/pr/PR:P08581"
+  pCbl hypernym "http://identifiers.org/ncit/C18547"
+  aPTP hypernym "http://identifiers.org/ncit/C17444"
+  pERK hypernym "http://identifiers.org/pr/PR:000000019"
+  STAT3uStattic property "http://identifiers.org/pr/PR:000002089"
+  STAT3uStattic property "http://identifiers.org/chebi/CHEBI:86989"
+  v1 hypernym "http://identifiers.org/ncit/C18496"
+  v2 hypernym "http://identifiers.org/ncit/C21018"
+  v3 hypernym "http://identifiers.org/sbo/SBO:0000224"
+  v4 hypernym "http://identifiers.org/go/GO:0016579"
+  v5 hypernym "http://identifiers.org/sbo/SBO:0000183"
+  v6 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  v7 identity "http://identifiers.org/sbo/SBO:0000184"
+  v8 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  v9 hypernym "http://identifiers.org/ncit/C18496"
+  v10 hypernym "http://identifiers.org/ncit/C21018"
+  v11 hypernym "http://identifiers.org/ncit/C18496"
+  v12 hypernym "http://identifiers.org/ncit/C21018"
+  v13 hypernym "http://identifiers.org/sbo/SBO:0000183"
+  v14 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  v15 identity "http://identifiers.org/sbo/SBO:0000184"
+  v16 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  v17 hypernym "http://identifiers.org/ncit/C18496"
+  v18 hypernym "http://identifiers.org/ncit/C21018"
+  v19 hypernym "http://identifiers.org/ncit/C18496"
+  v20 hypernym "http://identifiers.org/ncit/C21018"
+  v21 hypernym "http://identifiers.org/ncit/C64382"
+  v21 hypernym "http://identifiers.org/ncit/C16983"
+  v22 hypernym "http://identifiers.org/ncit/C21018"
+  v23 hypernym "http://identifiers.org/ncit/C18496"
+  v24 hypernym "http://identifiers.org/ncit/C21018"
+  v25 part "http://identifiers.org/chebi/CHEBI:86989"
+  v25 hypernym "http://identifiers.org/go/GO:0008144"
+end
+
+Shin_2018_EGFR_PYK2_c_Met_interaction_network_model is "Shin_2018_EGFR-PYK2-c-Met interaction network_model"
+
+Shin_2018_EGFR_PYK2_c_Met_interaction_network_model description "http://identifiers.org/pubmed/29920512"
+Shin_2018_EGFR_PYK2_c_Met_interaction_network_model model_entity_is "http://identifiers.org/biomodels.db/MODEL1909270001",
+                                                                    "http://identifiers.org/biomodels.db/BIOMD0000000826"
+Shin_2018_EGFR_PYK2_c_Met_interaction_network_model property "http://identifiers.org/mamo/MAMO_0000046"
+Shin_2018_EGFR_PYK2_c_Met_interaction_network_model property "http://identifiers.org/ncit/C71732"
+Shin_2018_EGFR_PYK2_c_Met_interaction_network_model taxon "http://identifiers.org/taxonomy/9606"

@@ -1,0 +1,258 @@
+// Created by libAntimony v2.13.0
+function Function_for_Absorption_of_rapamycin(_K_abs_Rapam, Rapamycin_Dose)
+  _K_abs_Rapam*Rapamycin_Dose;
+end
+
+Function_for_Absorption_of_rapamycin is "Function for Absorption of rapamycin"
+
+function Function_for_Elimination_of_rapamycin(_K_el_Rapam, _Cytosolic_Rapamycin)
+  _K_el_Rapam*_Cytosolic_Rapamycin;
+end
+
+Function_for_Elimination_of_rapamycin is "Function for Elimination of rapamycin"
+
+function Function_for_Synthesis_of_mTOR(_K_syn_mTOR)
+  _K_syn_mTOR;
+end
+
+Function_for_Synthesis_of_mTOR is "Function for Synthesis of mTOR"
+
+function Function_for_Degradation_of_mTOR(_K_deg_mTOR, mTOR)
+  _K_deg_mTOR*mTOR;
+end
+
+Function_for_Degradation_of_mTOR is "Function for Degradation of mTOR"
+
+function Function_for_Synthesis_of_Raptor(_K_syn_Raptor)
+  _K_syn_Raptor;
+end
+
+Function_for_Synthesis_of_Raptor is "Function for Synthesis of Raptor"
+
+function Function_for_Degradation_of_Raptor(_K_deg_Raptor, Raptor)
+  _K_deg_Raptor*Raptor;
+end
+
+Function_for_Degradation_of_Raptor is "Function for Degradation of Raptor"
+
+function Function_for_Synthesis_of_Rictor(_K_syn_Rictor)
+  _K_syn_Rictor;
+end
+
+Function_for_Synthesis_of_Rictor is "Function for Synthesis of Rictor"
+
+function Function_for_Degradation_of_Rictor(_K_deg_Rictor, Rictor)
+  _K_deg_Rictor*Rictor;
+end
+
+Function_for_Degradation_of_Rictor is "Function for Degradation of Rictor"
+
+function Function_for_mTORC1_formation_and_dissociation(_k_form_C1, mTOR, Raptor, _k_diss_C1, mTORC1)
+  _k_form_C1*mTOR*Raptor - _k_diss_C1*mTORC1;
+end
+
+Function_for_mTORC1_formation_and_dissociation is "Function for mTORC1 formation and dissociation"
+
+function Function_for_mTORC2_formation_and_dissociation(_k_form_C2, mTOR, Rictor, _k_diss_C2, mTORC2)
+  _k_form_C2*mTOR*Rictor - _k_diss_C2*mTORC2;
+end
+
+Function_for_mTORC2_formation_and_dissociation is "Function for mTORC2 formation and dissociation"
+
+function Function_for_mTOR___Rapamycin_association_sequestration_and_dissociation(_k_form_mTOR_Rapam, mTOR, _Cytosolic_Rapamycin, _k_diss_mTOR_Rapam, _mTOR_Rapamycin)
+  _k_form_mTOR_Rapam*mTOR*_Cytosolic_Rapamycin - _k_diss_mTOR_Rapam*_mTOR_Rapamycin;
+end
+
+Function_for_mTOR___Rapamycin_association_sequestration_and_dissociation is "Function for mTOR - Rapamycin association/sequestration and dissociation"
+
+function Function_for_mTORC1___Rapamycin_association_sequestration_and_dissociation(_k_form_C1_Rapam, mTORC1, _Cytosolic_Rapamycin, _k_diss_C1_Rapam, _mTORC1_Rapamycin)
+  _k_form_C1_Rapam*mTORC1*_Cytosolic_Rapamycin - _k_diss_C1_Rapam*_mTORC1_Rapamycin;
+end
+
+Function_for_mTORC1___Rapamycin_association_sequestration_and_dissociation is "Function for mTORC1 - Rapamycin association/sequestration and dissociation"
+
+function Function_for_Releasing_Raptor_from_mTORC1___rapamycin_complex(_k_forward_Raptor_release, _mTORC1_Rapamycin, _k_reverse_Raptor_release, _mTOR_Rapamycin, Raptor)
+  _k_forward_Raptor_release*_mTORC1_Rapamycin - _k_reverse_Raptor_release*_mTOR_Rapamycin*Raptor;
+end
+
+Function_for_Releasing_Raptor_from_mTORC1___rapamycin_complex is "Function for Releasing Raptor from mTORC1 - rapamycin complex"
+
+
+model *New_Model()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species Cytosolic_Rapamycin in compartment_, mTOR in compartment_, Raptor in compartment_;
+  species Rictor in compartment_, mTORC1 in compartment_, mTORC2 in compartment_;
+  species mTOR_Rapamycin in compartment_, mTORC1_Rapamycin in compartment_;
+
+  // Reactions:
+  Absorption_of_Rapamycin:  => Cytosolic_Rapamycin; compartment_*Function_for_Absorption_of_rapamycin(K_abs_Rapam, Rapamycin_Dose);
+  Elimination_of_rapamycin: Cytosolic_Rapamycin => ; compartment_*Function_for_Elimination_of_rapamycin(K_el_Rapam, Cytosolic_Rapamycin);
+  Synthesis_of_mTOR:  => mTOR; compartment_*Function_for_Synthesis_of_mTOR(K_syn_mTOR);
+  Degradation_of_mTOR: mTOR => ; compartment_*Function_for_Degradation_of_mTOR(K_deg_mTOR, mTOR);
+  Synthesis_of_Raptor:  => Raptor; compartment_*Function_for_Synthesis_of_Raptor(K_syn_Raptor);
+  Degradation_of_Raptor: Raptor => ; compartment_*Function_for_Degradation_of_Raptor(K_deg_Raptor, Raptor);
+  Synthesis_of_Rictor:  => Rictor; compartment_*Function_for_Synthesis_of_Rictor(K_syn_Rictor);
+  Degradation_of_Rictor: Rictor => ; compartment_*Function_for_Degradation_of_Rictor(K_deg_Rictor, Rictor);
+  mTORC1_formation_and_dissociation: mTOR + Raptor -> mTORC1; compartment_*Function_for_mTORC1_formation_and_dissociation(k_form_C1, mTOR, Raptor, k_diss_C1, mTORC1);
+  mTORC2_formation_and_dissociation: mTOR + Rictor -> mTORC2; compartment_*Function_for_mTORC2_formation_and_dissociation(k_form_C2, mTOR, Rictor, k_diss_C2, mTORC2);
+  mTOR___Rapamycin_association_sequestration_and_dissociation: mTOR + Cytosolic_Rapamycin -> mTOR_Rapamycin; compartment_*Function_for_mTOR___Rapamycin_association_sequestration_and_dissociation(k_form_mTOR_Rapam, mTOR, Cytosolic_Rapamycin, k_diss_mTOR_Rapam, mTOR_Rapamycin);
+  mTORC1___Rapamycin_association_sequestration_and_dissociation: mTORC1 + Cytosolic_Rapamycin -> mTORC1_Rapamycin; compartment_*Function_for_mTORC1___Rapamycin_association_sequestration_and_dissociation(k_form_C1_Rapam, mTORC1, Cytosolic_Rapamycin, k_diss_C1_Rapam, mTORC1_Rapamycin);
+  Releasing_Raptor_from_mTORC1___rapamycin_complex: mTORC1_Rapamycin -> mTOR_Rapamycin + Raptor; compartment_*Function_for_Releasing_Raptor_from_mTORC1___rapamycin_complex(k_forward_Raptor_release, mTORC1_Rapamycin, k_reverse_Raptor_release, mTOR_Rapamycin, Raptor);
+
+  // Events:
+  dose: at (time >= 240) && ((time%24) == 0): Rapamycin_Dose = Rapamycin_Dose + 8e-20;
+
+  // Species initializations:
+  Cytosolic_Rapamycin = 0;
+  mTOR = 3.756228e-07;
+  Raptor = 3.201594e-07;
+  Rictor = 8.834274e-08;
+  mTORC1 = 0;
+  mTORC2 = 0;
+  mTOR_Rapamycin = 0;
+  mTORC1_Rapamycin = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  Rapamycin_Dose = 0;
+  K_abs_Rapam = 2.77;
+  K_abs_Rapam has unit_0;
+  K_el_Rapam = 0.0718632;
+  K_el_Rapam has unit_0;
+  K_syn_mTOR = 1.6e-27;
+  K_syn_mTOR has unit_1;
+  K_deg_mTOR = 1e-08;
+  K_deg_mTOR has unit_2;
+  K_syn_Raptor = 2.15e-27;
+  K_syn_Raptor has unit_1;
+  K_deg_Raptor = 1e-08;
+  K_deg_Raptor has unit_2;
+  K_syn_Rictor = 5.9e-28;
+  K_syn_Rictor has unit_1;
+  K_deg_Rictor = 1e-08;
+  K_deg_Rictor has unit_2;
+  k_form_C1 = 16666666;
+  k_form_C1 has unit_3;
+  k_diss_C1 = 0.08333;
+  k_diss_C1 has unit_2;
+  k_form_C2 = 16666666;
+  k_form_C2 has unit_3;
+  k_diss_C2 = 0.08333;
+  k_diss_C2 has unit_2;
+  k_form_mTOR_Rapam = 1920000;
+  k_form_mTOR_Rapam has unit_3;
+  k_diss_mTOR_Rapam = 0.022;
+  k_diss_mTOR_Rapam has unit_2;
+  k_form_C1_Rapam = 1920000;
+  k_form_C1_Rapam has unit_3;
+  k_diss_C1_Rapam = 0.022;
+  k_diss_C1_Rapam has unit_2;
+  k_forward_Raptor_release = 0.01;
+  k_forward_Raptor_release has unit_2;
+  k_reverse_Raptor_release = 1e-05;
+  k_reverse_Raptor_release has unit_3;
+
+  // Other declarations:
+  var Rapamycin_Dose;
+  const compartment_, K_abs_Rapam, K_el_Rapam, K_syn_mTOR, K_deg_mTOR, K_syn_Raptor;
+  const K_deg_Raptor, K_syn_Rictor, K_deg_Rictor, k_form_C1, k_diss_C1, k_form_C2;
+  const k_diss_C2, k_form_mTOR_Rapam, k_diss_mTOR_Rapam, k_form_C1_Rapam;
+  const k_diss_C1_Rapam, k_forward_Raptor_release, k_reverse_Raptor_release;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit unit_0 = 1 / 3600e2 second;
+  unit unit_1 = mole / second;
+  unit unit_2 = 1 / second;
+  unit unit_3 = 1 / (mole * second);
+
+  // Display Names:
+  unit_0 is "1/h";
+  unit_1 is "mol/s";
+  unit_2 is "1/s";
+  unit_3 is "1/(mol*s)";
+  compartment_ is "compartment";
+  Cytosolic_Rapamycin is "Cytosolic Rapamycin";
+  mTOR_Rapamycin is "mTOR:Rapamycin";
+  mTORC1_Rapamycin is "mTORC1:Rapamycin";
+  K_abs_Rapam is "K_abs@Rapam";
+  K_el_Rapam is "K_el@Rapam";
+  K_syn_mTOR is "K_syn@mTOR";
+  K_deg_mTOR is "K_deg@mTOR";
+  K_syn_Raptor is "K_syn@Raptor";
+  K_deg_Raptor is "K_deg@Raptor";
+  K_syn_Rictor is "K_syn@Rictor";
+  K_deg_Rictor is "K_deg@Rictor";
+  k_form_C1 is "k_form@C1";
+  k_diss_C1 is "k_diss@C1";
+  k_form_C2 is "k_form@C2";
+  k_diss_C2 is "k_diss@C2";
+  k_form_mTOR_Rapam is "k_form@mTOR:Rapam";
+  k_diss_mTOR_Rapam is "k_diss@mTOR:Rapam";
+  k_form_C1_Rapam is "k_form@C1:Rapam";
+  k_diss_C1_Rapam is "k_diss@C1:Rapam";
+  k_forward_Raptor_release is "k_forward@Raptor release";
+  k_reverse_Raptor_release is "k_reverse@Raptor release";
+  Absorption_of_Rapamycin is "Absorption of Rapamycin";
+  Elimination_of_rapamycin is "Elimination of rapamycin";
+  Synthesis_of_mTOR is "Synthesis of mTOR";
+  Degradation_of_mTOR is "Degradation of mTOR";
+  Synthesis_of_Raptor is "Synthesis of Raptor";
+  Degradation_of_Raptor is "Degradation of Raptor";
+  Synthesis_of_Rictor is "Synthesis of Rictor";
+  Degradation_of_Rictor is "Degradation of Rictor";
+  mTORC1_formation_and_dissociation is "mTORC1 formation and dissociation";
+  mTORC2_formation_and_dissociation is "mTORC2 formation and dissociation";
+  mTOR___Rapamycin_association_sequestration_and_dissociation is "mTOR - Rapamycin association/sequestration and dissociation";
+  mTORC1___Rapamycin_association_sequestration_and_dissociation is "mTORC1 - Rapamycin association/sequestration and dissociation";
+  Releasing_Raptor_from_mTORC1___rapamycin_complex is "Releasing Raptor from mTORC1 - rapamycin complex";
+
+  // CV terms:
+  compartment_ hypernym "http://identifiers.org/ncit/C13413"
+  Cytosolic_Rapamycin hypernym "http://identifiers.org/chebi/CHEBI:9168"
+  Cytosolic_Rapamycin hypernym "http://identifiers.org/ncit/C61554"
+  mTOR hypernym "http://identifiers.org/orphanet/431220"
+  mTOR hypernym "http://identifiers.org/ncit/C2201"
+  Raptor hypernym "http://identifiers.org/ncit/C104769"
+  Rictor hypernym "http://identifiers.org/ncit/C104740"
+  mTORC1 hypernym "http://identifiers.org/ncit/C96314"
+  mTORC2 hypernym "http://identifiers.org/ncit/C96315"
+  mTOR_Rapamycin parthood "http://identifiers.org/chebi/CHEBI:9168"
+  mTOR_Rapamycin parthood "http://identifiers.org/ncit/C2201"
+  mTOR_Rapamycin hypernym "http://identifiers.org/orphanet/431220"
+  mTORC1_Rapamycin parthood "http://identifiers.org/chebi/CHEBI:9168"
+  mTORC1_Rapamycin parthood "http://identifiers.org/ncit/C96314"
+  Absorption_of_Rapamycin hypernym "http://identifiers.org/go/GO:0035737"
+  Elimination_of_rapamycin hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Synthesis_of_mTOR propertyBearer "http://identifiers.org/sbo/SBO:0000393"
+  Degradation_of_mTOR hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Synthesis_of_Raptor hypernym "http://identifiers.org/sbo/SBO:0000393"
+  Degradation_of_Raptor hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Synthesis_of_Rictor hypernym "http://identifiers.org/sbo/SBO:0000393"
+  Degradation_of_Rictor hypernym "http://identifiers.org/sbo/SBO:0000179"
+  mTORC1_formation_and_dissociation hypernym "http://identifiers.org/sbo/SBO:0000393"
+  mTORC1_formation_and_dissociation hypernym "http://identifiers.org/sbo/SBO:0000180"
+  mTORC2_formation_and_dissociation hypernym "http://identifiers.org/sbo/SBO:0000393"
+  mTORC2_formation_and_dissociation hypernym "http://identifiers.org/sbo/SBO:0000180"
+  mTOR___Rapamycin_association_sequestration_and_dissociation hypernym "http://identifiers.org/sbo/SBO:0000180"
+  mTOR___Rapamycin_association_sequestration_and_dissociation hypernym "http://identifiers.org/go/GO:0072752"
+  mTOR___Rapamycin_association_sequestration_and_dissociation propertyBearer "http://identifiers.org/sbo/SBO:0000337"
+  mTORC1___Rapamycin_association_sequestration_and_dissociation hypernym "http://identifiers.org/sbo/SBO:0000180"
+  mTORC1___Rapamycin_association_sequestration_and_dissociation hypernym "http://identifiers.org/go/GO:0072752"
+  mTORC1___Rapamycin_association_sequestration_and_dissociation propertyBearer "http://identifiers.org/sbo/SBO:0000337"
+  Releasing_Raptor_from_mTORC1___rapamycin_complex hypernym "http://identifiers.org/sbo/SBO:0000393"
+end
+
+New_Model is "Dorvash2019 - Dynamic modeling of signal transduction by mTOR complexes in cancer"
+
+New_Model model_entity_is "http://identifiers.org/biomodels.db/MODEL1909250002",
+                          "http://identifiers.org/biomodels.db/BIOMD0000000822"
+New_Model property "http://identifiers.org/mamo/MAMO_0000046"
+New_Model property "http://identifiers.org/ncit/C2201"
+New_Model property "http://identifiers.org/efo/0000311"
+New_Model property "http://identifiers.org/ncit/C43382"
+New_Model description "http://identifiers.org/pubmed/31493485"

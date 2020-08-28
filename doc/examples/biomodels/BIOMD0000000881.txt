@@ -1,0 +1,145 @@
+// Created by libAntimony v2.13.0
+function Function_for_IL_10_Production_DC(p_I, a_I, b_I, G)
+  p_I*(a_I + (1 - a_I)*b_I/(G + b_I));
+end
+
+Function_for_IL_10_Production_DC is "Function_for_IL-10_Production_DC"
+
+function Function_for_Th2_Recruitment(c_2, L, d_1, r_T, b_2, G)
+  (c_2 + (1 - c_2)*d_1/(L + d_1))*r_T*b_2/(b_2 + G);
+end
+
+Function_for_Th2_Recruitment is "Function_for_Th2_Recruitment"
+
+function Function_for_IFN_gamma_Production_Th2(q_G, T_1, a_G, b_G, I, e_G, L, f_G)
+  q_G*T_1*(a_G + (1 - a_G)*b_G/(I + b_G))*(1 + e_G*L/(L + f_G));
+end
+
+Function_for_IFN_gamma_Production_Th2 is "Function_for_IFN-gamma_Production_Th2"
+
+function Function_for_Th1_Recruitment(r_T, b_1, I, c_1, L, d_1)
+  (1 + c_1*L/(L + d_1))*r_T*b_1/(b_1 + I);
+end
+
+Function_for_Th1_Recruitment is "Function_for_Th1_Recruitment"
+
+function Function_for_IFN_gamma_Production_NK_CTL(p_G, c_G, L, d_G)
+  p_G*(1 + c_G*L/(L + d_G));
+end
+
+Function_for_IFN_gamma_Production_NK_CTL is "Function_for_IFN-gamma_Production_NK_CTL"
+
+function Function_for_IL_10_Production_Th1(q_I, T_2)
+  q_I*T_2;
+end
+
+Function_for_IL_10_Production_Th1 is "Function_for_IL-10_Production_Th1"
+
+
+model *Kogan2013___A_mathematical_model_for_the_immunotherapeutic_control_of_the_TH1_TH2_imbalance_in_melanoma()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species T_1 in compartment_, T_2 in compartment_, G in compartment_, I in compartment_;
+
+  // Assignment Rules:
+  T_1_e5 := T_1/100000;
+  T_2_e5 := T_2/100000;
+
+  // Reactions:
+  Th1_Recruitment:  => T_1; compartment_*Function_for_Th1_Recruitment(r_T, b_1, I, c_1, L, d_1);
+  Th1_Elimination: T_1 => ; compartment_*mu_T*T_1;
+  Th2_Recruitment:  => T_2; compartment_*Function_for_Th2_Recruitment(c_2, L, d_1, r_T, b_2, G);
+  Th2_Elimination: T_2 => ; compartment_*mu_T*T_2;
+  IFN_gamma_Production_NK_CTL:  => G; compartment_*Function_for_IFN_gamma_Production_NK_CTL(p_G, c_G, L, d_G);
+  IFN_gamma_Production_Th2:  => G; compartment_*Function_for_IFN_gamma_Production_Th2(q_G, T_1, a_G, b_G, I, e_G, L, f_G);
+  IFN_gamma_Elimination: G => ; compartment_*mu_G*G;
+  IL_10_Production_DC:  => I; compartment_*Function_for_IL_10_Production_DC(p_I, a_I, b_I, G);
+  IL_10_Production_Th1:  => I; compartment_*Function_for_IL_10_Production_Th1(q_I, T_2);
+  IL_10_Elimination: I => ; compartment_*mu_I*I;
+
+  // Species initializations:
+  T_1 = 500000;
+  T_2 = 1000000;
+  G = 1;
+  I = 1;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  mu_T = 0.001;
+  r_T = 1000;
+  a_1 = 0;
+  b_1 = 0.35;
+  a_2 = 0;
+  b_2 = 0.18;
+  mu_G = 0.6;
+  q_G = 1e-07;
+  p_G = 0.016;
+  a_G = 0.59;
+  b_G = 0.13;
+  mu_I = 0.36;
+  q_I = 1e-07;
+  p_I = 0.5;
+  a_I = 0.12;
+  b_I = 0.025;
+  c_1 = 30;
+  d_1 = 0.8;
+  d_2 = 0.8;
+  c_2 = 0.1;
+  c_G = 12;
+  d_G = 0.05;
+  e_G = 5.4;
+  f_G = 0.22;
+  L = 0;
+
+  // Other declarations:
+  var T_1_e5, T_2_e5;
+  const compartment_, mu_T, r_T, a_1, b_1, a_2, b_2, mu_G, q_G, p_G, a_G;
+  const b_G, mu_I, q_I, p_I, a_I, b_I, c_1, d_1, d_2, c_2, c_G, d_G, e_G;
+  const f_G, L;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 3600 second;
+  unit substance = item;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+  IFN_gamma_Production_NK_CTL is "IFN-gamma_Production_NK_CTL";
+  IFN_gamma_Production_Th2 is "IFN-gamma_Production_Th2";
+  IFN_gamma_Elimination is "IFN-gamma_Elimination";
+  IL_10_Production_DC is "IL-10_Production_DC";
+  IL_10_Production_Th1 is "IL-10_Production_Th1";
+  IL_10_Elimination is "IL-10_Elimination";
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/ncit/C94498"
+  T_1 identity "http://identifiers.org/cl/CL:0000545"
+  T_2 identity "http://identifiers.org/cl/CL:0000546"
+  G identity "http://identifiers.org/ncit/C20496"
+  I identity "http://identifiers.org/ncit/C20512"
+  Th1_Recruitment identity "http://identifiers.org/go/GO:0035687"
+  Th1_Elimination hypernym "http://identifiers.org/go/GO:0008219"
+  Th2_Recruitment hypernym "http://identifiers.org/go/GO:0035684"
+  Th2_Elimination hypernym "http://identifiers.org/go/GO:0008219"
+  IFN_gamma_Production_NK_CTL identity "http://identifiers.org/go/GO:0072643"
+  IFN_gamma_Production_Th2 identity "http://identifiers.org/go/GO:0072643"
+  IFN_gamma_Elimination hypernym "http://identifiers.org/sbo/SBO:0000179"
+  IL_10_Production_DC identity "http://identifiers.org/go/GO:0072608"
+  IL_10_Production_Th1 identity "http://identifiers.org/go/GO:0072608"
+  IL_10_Elimination hypernym "http://identifiers.org/sbo/SBO:0000179"
+end
+
+Kogan2013___A_mathematical_model_for_the_immunotherapeutic_control_of_the_TH1_TH2_imbalance_in_melanoma is "Kogan2013 - A mathematical model for the immunotherapeutic control of the TH1 TH2 imbalance in melanoma"
+
+Kogan2013___A_mathematical_model_for_the_immunotherapeutic_control_of_the_TH1_TH2_imbalance_in_melanoma description "http://identifiers.org/doi/10.3934/dcdsb.2013.18.1017"
+Kogan2013___A_mathematical_model_for_the_immunotherapeutic_control_of_the_TH1_TH2_imbalance_in_melanoma model_entity_is "http://identifiers.org/biomodels.db/MODEL1912020001",
+                                                                                                                        "http://identifiers.org/biomodels.db/BIOMD0000000881"
+Kogan2013___A_mathematical_model_for_the_immunotherapeutic_control_of_the_TH1_TH2_imbalance_in_melanoma property "http://identifiers.org/mamo/MAMO_0000046"
+Kogan2013___A_mathematical_model_for_the_immunotherapeutic_control_of_the_TH1_TH2_imbalance_in_melanoma property "http://identifiers.org/ncit/C18670"
+Kogan2013___A_mathematical_model_for_the_immunotherapeutic_control_of_the_TH1_TH2_imbalance_in_melanoma property "http://identifiers.org/ncit/C20496"
+Kogan2013___A_mathematical_model_for_the_immunotherapeutic_control_of_the_TH1_TH2_imbalance_in_melanoma property "http://identifiers.org/ncit/C20514"
+Kogan2013___A_mathematical_model_for_the_immunotherapeutic_control_of_the_TH1_TH2_imbalance_in_melanoma property "http://identifiers.org/ncit/C20512"

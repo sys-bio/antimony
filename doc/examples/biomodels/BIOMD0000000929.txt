@@ -1,0 +1,252 @@
+// Created by libAntimony v2.13.0
+function Function_for_reaction_8(c_t, T, C)
+  c_t*T*C;
+end
+
+Function_for_reaction_8 is "Function for reaction 8"
+
+function Function_for_reaction_3(d_c, T, C, l, s)
+  d_c*((T/C)^l/(s + (T/C)^l))*C;
+end
+
+Function_for_reaction_3 is "Function for reaction 3"
+
+function Function_for_reaction_4(a_p, P, b_p)
+  a_p*P*(1 - b_p*P);
+end
+
+Function_for_reaction_4 is "Function for reaction 4"
+
+function Function_for_reaction_9(d_t, T)
+  d_t*T^2;
+end
+
+Function_for_reaction_9 is "Function for reaction 9"
+
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function Function_for_reaction_1(a_c, C, b_c)
+  a_c*C*(1 - b_c*C);
+end
+
+Function_for_reaction_1 is "Function for reaction 1"
+
+function Function_for_reaction_2(c_c, N, C)
+  c_c*N*C;
+end
+
+Function_for_reaction_2 is "Function for reaction 2"
+
+function Function_for_reaction_10(e_t, N, C)
+  e_t*N*C;
+end
+
+Function_for_reaction_10 is "Function for reaction 10"
+
+function Function_for_reaction_11_16_21(H, tau1_alpha1, p, prod, g)
+  p*H*prod/(g*tau1_alpha1 + H);
+end
+
+Function_for_reaction_11_16_21 is "Function for reaction 11,16,21"
+
+function Function_for_reaction_12_17_22(f, alpha2_tau2, T, beta2_tau2, N, gamma2_tau2, H, prod, h)
+  f*(alpha2_tau2*T + beta2_tau2*N + gamma2_tau2*H)*prod/(h + alpha2_tau2*T + beta2_tau2*N + gamma2_tau2*H);
+end
+
+Function_for_reaction_12_17_22 is "Function for reaction 12,17,22"
+
+function Function_for_reaction_20(c_h, H)
+  c_h*H^2;
+end
+
+Function_for_reaction_20 is "Function for reaction 20"
+
+function Function_for_reaction_23(mu_c, P, C, b_C)
+  mu_c*P*C*(1 - b_C*C);
+end
+
+Function_for_reaction_23 is "Function for reaction 23"
+
+function Function_for_reaction_24(f_p, C, mu_p, P, b_p)
+  (f_p*C/(mu_p + C))*P*(1 - b_p*P);
+end
+
+Function_for_reaction_24 is "Function for reaction 24"
+
+
+model *Li2016___Model_for_pancreatic_cancer_patients_receiving_immunotherapy()
+
+  // Compartments and Species:
+  compartment Pancreas;
+  species Pancreatic_cancer_cells__C in Pancreas, Pancreatic_stellate_cells__P in Pancreas;
+  species CD8__T_cells__T in Pancreas, NK_cells__N in Pancreas, helper_T_cells__H in Pancreas;
+
+  // Assignment Rules:
+  mu_c := 0.1*a_c*b_p;
+  l := 2/3;
+  a_p := 0.1*a_c;
+
+  // Reactions:
+  Logistic_growth_of_cancer_cells:  => Pancreatic_cancer_cells__C; Pancreas*Function_for_reaction_1(a_c, Pancreatic_cancer_cells__C, b_c);
+  Interaction_between_cancer_cells_and_NK_cells: Pancreatic_cancer_cells__C => ; Pancreas*Function_for_reaction_2(c_c, NK_cells__N, Pancreatic_cancer_cells__C);
+  Lysis_of_cancer_cells_by_CD8__T_cells: Pancreatic_cancer_cells__C => ; Pancreas*Function_for_reaction_3(d_c, CD8__T_cells__T, Pancreatic_cancer_cells__C, l, s);
+  Basal_growth_of_stellate_cells:  => Pancreatic_stellate_cells__P; Pancreas*Function_for_reaction_4(a_p, Pancreatic_stellate_cells__P, b_p);
+  Death_of_stellate_cells: Pancreatic_stellate_cells__P => ; Pancreas*lambda_p*Pancreatic_stellate_cells__P;
+  Production_of_CD8__T_cells:  => CD8__T_cells__T; Pancreas*Constant_flux__irreversible(a_t);
+  Death_of_CD8__T_cells: CD8__T_cells__T => ; Pancreas*b_t*CD8__T_cells__T;
+  Inactivation_of_CD8__T_cells_by_cancer_cells: CD8__T_cells__T => ; Pancreas*Function_for_reaction_8(c_t, CD8__T_cells__T, Pancreatic_cancer_cells__C);
+  Self__regulation_of_CD8__T_cells: CD8__T_cells__T => ; Pancreas*Function_for_reaction_9(d_t, CD8__T_cells__T);
+  Recruitment_of_CD8__cells_by_debris_from_cancer_cells_lysed:  => CD8__T_cells__T; Pancreas*Function_for_reaction_10(e_t, NK_cells__N, Pancreatic_cancer_cells__C);
+  Proliferation_of_CD8__T_cells_by_IL_2:  => CD8__T_cells__T; Pancreas*Function_for_reaction_11_16_21(helper_T_cells__H, tau1_alpha1, p_t, CD8__T_cells__T, g_t);
+  Proliferation_of_CD8__T_cells_by_IFN_gamma:  => CD8__T_cells__T; Pancreas*Function_for_reaction_12_17_22(f_t, alpha2_tau2, CD8__T_cells__T, beta2_tau2, NK_cells__N, gamma2_tau2, helper_T_cells__H, CD8__T_cells__T, h_t);
+  Production_of_NK_cells:  => NK_cells__N; Pancreas*Constant_flux__irreversible(a_n);
+  Death_of_NK_cells: NK_cells__N => ; Pancreas*b_n*NK_cells__N;
+  Inactivation_of_NK_cells_after_interaction_with_cancer_cells: NK_cells__N => ; Pancreas*Function_for_reaction_2(c_n, Pancreatic_cancer_cells__C, NK_cells__N);
+  Proliferation_of_NK_cells_by_IL_2:  => NK_cells__N; Pancreas*Function_for_reaction_11_16_21(helper_T_cells__H, tau1_alpha1, p_n, NK_cells__N, g_n);
+  Proliferation_of_NK_cells_by_IFN_gamma:  => NK_cells__N; Pancreas*Function_for_reaction_12_17_22(f_n, alpha2_tau2, CD8__T_cells__T, beta2_tau2, NK_cells__N, gamma2_tau2, helper_T_cells__H, NK_cells__N, h_n);
+  Production_of_helper_T_cells:  => helper_T_cells__H; Pancreas*Constant_flux__irreversible(a_h);
+  Death_of_helper_T_cells: helper_T_cells__H => ; Pancreas*b_h*helper_T_cells__H;
+  Inactivation_of_helper_T_cells: helper_T_cells__H => ; Pancreas*Function_for_reaction_20(c_h, helper_T_cells__H);
+  Proliferation_of_helper_T_cells_by_IL_2:  => helper_T_cells__H; Pancreas*Function_for_reaction_11_16_21(helper_T_cells__H, tau1_alpha1, p_h, helper_T_cells__H, g_h);
+  Proliferation_of_helper_T_cells_by_IFN_gamma:  => helper_T_cells__H; Pancreas*Function_for_reaction_12_17_22(f_h, alpha2_tau2, CD8__T_cells__T, beta2_tau2, NK_cells__N, gamma2_tau2, helper_T_cells__H, helper_T_cells__H, h_h);
+  Stellate_cells_promotes_cancer_growth_through_cytokines:  => Pancreatic_cancer_cells__C; Pancreas*Function_for_reaction_23(mu_c, Pancreatic_stellate_cells__P, Pancreatic_cancer_cells__C, b_c);
+  TGF_beta__induced_growth_of_stellate_cells:  => Pancreatic_stellate_cells__P; Pancreas*Function_for_reaction_24(f_p, Pancreatic_cancer_cells__C, mu_p, Pancreatic_stellate_cells__P, b_p);
+
+  // Species initializations:
+  Pancreatic_cancer_cells__C = 1000000000;
+  Pancreatic_stellate_cells__P = 5600000;
+  CD8__T_cells__T = 700000000;
+  NK_cells__N = 352800000;
+  helper_T_cells__H = 1881600000;
+
+  // Compartment initializations:
+  Pancreas = 1;
+
+  // Variable initializations:
+  a_c = 0.0195;
+  b_c = 1.02e-11;
+  c_c = 1.5e-11;
+  d_c = 0.005;
+  b_p = 1.7857e-09;
+  s = 0.3;
+  f_p = 0.125;
+  mu_p = 56000000;
+  lambda_p = 0.015;
+  a_t = 3500;
+  b_t = 0.02;
+  c_t = 3.42e-12;
+  d_t = 3e-10;
+  e_t = 5e-12;
+  p_t = 0.125;
+  g_t = 0.3;
+  f_t = 0.125;
+  h_t = 0.3;
+  a_n = 130000;
+  b_n = 0.015;
+  c_n = 1e-13;
+  p_n = 0.125;
+  g_n = 0.3;
+  f_n = 0.125;
+  h_n = 0.3;
+  a_h = 9600;
+  b_h = 0.0012;
+  c_h = 5e-11;
+  p_h = 0.125;
+  g_h = 0.3;
+  f_h = 0.125;
+  h_h = 0.3;
+  tau1_alpha1 = 224830000000;
+  alpha2_tau2 = 4.4691e-13;
+  beta2_tau2 = 4.4691e-13;
+  gamma2_tau2 = 4.4691e-13;
+
+  // Other declarations:
+  var mu_c, l, a_p;
+  const Pancreas, a_c, b_c, c_c, d_c, b_p, s, f_p, mu_p, lambda_p, a_t, b_t;
+  const c_t, d_t, e_t, p_t, g_t, f_t, h_t, a_n, b_n, c_n, p_n, g_n, f_n, h_n;
+  const a_h, b_h, c_h, p_h, g_h, f_h, h_h, tau1_alpha1, alpha2_tau2, beta2_tau2;
+  const gamma2_tau2;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+  Pancreatic_cancer_cells__C is "Pancreatic cancer cells (C)";
+  Pancreatic_stellate_cells__P is "Pancreatic stellate cells (P)";
+  CD8__T_cells__T is "CD8+ T cells (T)";
+  NK_cells__N is "NK cells (N)";
+  helper_T_cells__H is "helper T cells (H)";
+  Logistic_growth_of_cancer_cells is "Logistic growth of cancer cells";
+  Interaction_between_cancer_cells_and_NK_cells is "Interaction between cancer cells and NK cells";
+  Lysis_of_cancer_cells_by_CD8__T_cells is "Lysis of cancer cells by CD8+ T cells";
+  Basal_growth_of_stellate_cells is "Basal growth of stellate cells";
+  Death_of_stellate_cells is "Death of stellate cells";
+  Production_of_CD8__T_cells is "Production of CD8+ T cells";
+  Death_of_CD8__T_cells is "Death of CD8+ T cells";
+  Inactivation_of_CD8__T_cells_by_cancer_cells is "Inactivation of CD8+ T cells by cancer cells";
+  Self__regulation_of_CD8__T_cells is "Self- regulation of CD8+ T cells";
+  Recruitment_of_CD8__cells_by_debris_from_cancer_cells_lysed is "Recruitment of CD8+ cells by debris from cancer cells lysed";
+  Proliferation_of_CD8__T_cells_by_IL_2 is "Proliferation of CD8+ T cells by IL-2";
+  Proliferation_of_CD8__T_cells_by_IFN_gamma is "Proliferation of CD8+ T cells by IFN-gamma";
+  Production_of_NK_cells is "Production of NK cells";
+  Death_of_NK_cells is "Death of NK cells";
+  Inactivation_of_NK_cells_after_interaction_with_cancer_cells is "Inactivation of NK cells after interaction with cancer cells";
+  Proliferation_of_NK_cells_by_IL_2 is "Proliferation of NK cells by IL-2";
+  Proliferation_of_NK_cells_by_IFN_gamma is "Proliferation of NK cells by IFN-gamma";
+  Production_of_helper_T_cells is "Production of helper T cells";
+  Death_of_helper_T_cells is "Death of helper T cells";
+  Inactivation_of_helper_T_cells is "Inactivation of helper T cells";
+  Proliferation_of_helper_T_cells_by_IL_2 is "Proliferation of helper T cells by IL-2";
+  Proliferation_of_helper_T_cells_by_IFN_gamma is "Proliferation of helper T cells by IFN-gamma";
+  Stellate_cells_promotes_cancer_growth_through_cytokines is "Stellate cells promotes cancer growth through cytokines";
+  TGF_beta__induced_growth_of_stellate_cells is "TGF-beta  induced growth of stellate cells";
+
+  // CV terms:
+  Pancreas identity "http://identifiers.org/ncit/C12393"
+  Pancreatic_cancer_cells__C hypernym "http://identifiers.org/bto/BTO:0000584"
+  Pancreatic_stellate_cells__P hypernym "http://identifiers.org/ncit/C107531"
+  CD8__T_cells__T hypernym "http://identifiers.org/efo/0004219"
+  NK_cells__N hypernym "http://identifiers.org/ncit/C12536"
+  Logistic_growth_of_cancer_cells property "http://identifiers.org/go/GO:0016049"
+  Interaction_between_cancer_cells_and_NK_cells property "http://identifiers.org/go/GO:0002418"
+  Lysis_of_cancer_cells_by_CD8__T_cells hypernym "http://identifiers.org/obi/OBI:0302894"
+  Basal_growth_of_stellate_cells property "http://identifiers.org/go/GO:0016049"
+  Death_of_stellate_cells hypernym "http://identifiers.org/go/GO:0008219"
+  Production_of_CD8__T_cells property "http://identifiers.org/sbo/SBO:0000393"
+  Death_of_CD8__T_cells hypernym "http://identifiers.org/go/GO:0008219"
+  Inactivation_of_CD8__T_cells_by_cancer_cells hypernym "http://identifiers.org/sbo/SBO:0000665"
+  Self__regulation_of_CD8__T_cells hypernym "http://identifiers.org/go/GO:0065007"
+  Recruitment_of_CD8__cells_by_debris_from_cancer_cells_lysed property "http://identifiers.org/ncit/C78343"
+  Proliferation_of_CD8__T_cells_by_IL_2 hypernym "http://identifiers.org/ncit/C18081"
+  Proliferation_of_CD8__T_cells_by_IFN_gamma hypernym "http://identifiers.org/ncit/C18081"
+  Production_of_NK_cells property "http://identifiers.org/sbo/SBO:0000393"
+  Death_of_NK_cells hypernym "http://identifiers.org/go/GO:0008219"
+  Inactivation_of_NK_cells_after_interaction_with_cancer_cells hypernym "http://identifiers.org/sbo/SBO:0000665"
+  Proliferation_of_NK_cells_by_IL_2 hypernym "http://identifiers.org/ncit/C18081"
+  Proliferation_of_NK_cells_by_IFN_gamma hypernym "http://identifiers.org/ncit/C18081"
+  Production_of_helper_T_cells property "http://identifiers.org/sbo/SBO:0000393"
+  Death_of_helper_T_cells hypernym "http://identifiers.org/go/GO:0008219"
+  Inactivation_of_helper_T_cells hypernym "http://identifiers.org/sbo/SBO:0000665"
+  Proliferation_of_helper_T_cells_by_IL_2 hypernym "http://identifiers.org/ncit/C18081"
+  Proliferation_of_helper_T_cells_by_IFN_gamma hypernym "http://identifiers.org/ncit/C18081"
+  Stellate_cells_promotes_cancer_growth_through_cytokines property "http://identifiers.org/go/GO:0016049"
+  TGF_beta__induced_growth_of_stellate_cells property "http://identifiers.org/go/GO:0016049"
+end
+
+Li2016___Model_for_pancreatic_cancer_patients_receiving_immunotherapy is "Li2016 - Model for pancreatic cancer patients receiving immunotherapy"
+
+Li2016___Model_for_pancreatic_cancer_patients_receiving_immunotherapy description "http://identifiers.org/pubmed/27338302"
+Li2016___Model_for_pancreatic_cancer_patients_receiving_immunotherapy model_entity_is "http://identifiers.org/biomodels.db/MODEL2004060001",
+                                                                                      "http://identifiers.org/biomodels.db/BIOMD0000000929"
+Li2016___Model_for_pancreatic_cancer_patients_receiving_immunotherapy taxon "http://identifiers.org/taxonomy/9606"
+Li2016___Model_for_pancreatic_cancer_patients_receiving_immunotherapy property "http://identifiers.org/doid/DOID:1793",
+                                                                               "http://identifiers.org/doid/DOID:162",
+                                                                               "http://identifiers.org/ncit/C15438",
+                                                                               "http://identifiers.org/mamo/MAMO_0000046"

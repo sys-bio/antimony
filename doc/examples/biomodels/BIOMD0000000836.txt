@@ -1,0 +1,49 @@
+// Created by libAntimony v2.13.0
+model *Radosavljevic2009_BioterroristAttack_PanicProtection_1()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species $S in compartment_, $P in compartment_;
+
+  // Rate Rules:
+  S' = (alpha*(1 - S/C) - beta*P)*S;
+  P' = (-gamma_ + delta*S)*P;
+
+  // Species initializations:
+  S = 0.1;
+  P = 0.1;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  alpha = 6;
+  C = 10;
+  beta = 2.8;
+  gamma_ = 0;
+  delta = 1;
+
+  // Other declarations:
+  const compartment_, alpha, C, beta, gamma_, delta;
+
+  // Unit definitions:
+  unit time_unit = 86400 second;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+  S is "panic_intensity";
+  C is "whole_population";
+  P is "protection+prevention_intensity";
+  gamma_ is "gamma";
+end
+
+Radosavljevic2009_BioterroristAttack_PanicProtection_1 is "Radosavljevic2009_BioterroristAttack_PanicProtection_1"
+
+Radosavljevic2009_BioterroristAttack_PanicProtection_1 description "http://identifiers.org/pubmed/19423234"
+Radosavljevic2009_BioterroristAttack_PanicProtection_1 model_entity_is "http://identifiers.org/biomodels.db/MODEL1203070000",
+                                                                       "http://identifiers.org/biomodels.db/BIOMD0000000836"
+Radosavljevic2009_BioterroristAttack_PanicProtection_1 hypernym "http://identifiers.org/go/GO:0042596"
+Radosavljevic2009_BioterroristAttack_PanicProtection_1 hypernym "http://identifiers.org/efo/0004262"
+Radosavljevic2009_BioterroristAttack_PanicProtection_1 property "http://identifiers.org/biomodels.db/MODEL1203070000"
+Radosavljevic2009_BioterroristAttack_PanicProtection_1 taxon "http://identifiers.org/taxonomy/9606"

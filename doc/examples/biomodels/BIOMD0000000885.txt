@@ -1,0 +1,133 @@
+// Created by libAntimony v2.13.0
+function Function_for_removal_of_plasma_cell_from_the_system(mu_1, P)
+  mu_1*P;
+end
+
+Function_for_removal_of_plasma_cell_from_the_system is "Function for removal of plasma cell from the system"
+
+function Function_for_production_of_plasma_cell(b, u, B)
+  b*(1 - u)*B;
+end
+
+Function_for_production_of_plasma_cell is "Function for production of plasma cell"
+
+function Function_for_formation_of_B_cell(a, u, B, k_1)
+  a*u*B*(1 - B/k_1);
+end
+
+Function_for_formation_of_B_cell is "Function for formation of B cell"
+
+function Function_for_Removal_of_B_cell(b, u, B)
+  b*(1 - u)*B;
+end
+
+Function_for_Removal_of_B_cell is "Function for Removal of B cell"
+
+function Function_for_Production_of_antibody_against_tumor(r_1, B, r_2, P)
+  r_1*B + r_2*P;
+end
+
+Function_for_Production_of_antibody_against_tumor is "Function for Production of antibody against tumor"
+
+function Function_for_removal_of_antibody_from_the_system(mu_2, A)
+  mu_2*A;
+end
+
+Function_for_removal_of_antibody_from_the_system is "Function for removal of antibody from the system"
+
+function Function_of_removal_of_tumor_cell(beta_1, A, T)
+  beta_1*A*T;
+end
+
+Function_of_removal_of_tumor_cell is "Function of removal of tumor cell"
+
+function Function_for_formation_of_tumor_cell(r, T, k_2)
+  r*T*(1 - T/k_2);
+end
+
+Function_for_formation_of_tumor_cell is "Function for formation of tumor cell"
+
+
+model *Sumana2018___Mathematical_modeling_of_cancer_immune_system__considering_the_role_of_antibodies()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species B in compartment_, P in compartment_, A in compartment_, T in compartment_;
+
+  // Reactions:
+  B_cell_formation:  => B; compartment_*Function_for_formation_of_B_cell(a, u, B, k_1);
+  Removal_of_B_cell: B => ; compartment_*Function_for_Removal_of_B_cell(b, u, B);
+  Production_of_plasma_cell:  => P; compartment_*Function_for_production_of_plasma_cell(b, u, B);
+  Removal_of_plasma_cell_from_system: P => ; compartment_*Function_for_removal_of_plasma_cell_from_the_system(mu_1, P);
+  Production_of_antibody_against_tumor:  => A; compartment_*Function_for_Production_of_antibody_against_tumor(r_1, B, r_2, P);
+  Removal_of_antibody_from_the_system: A => ; compartment_*Function_for_removal_of_antibody_from_the_system(mu_2, A);
+  Formation_of_tumor_cell:  => T; compartment_*Function_for_formation_of_tumor_cell(r, T, k_2);
+  Removal_of_tumor_cell_by_immune_cell: T => ; compartment_*Function_of_removal_of_tumor_cell(beta_1, A, T);
+
+  // Species initializations:
+  B = 90000;
+  P = 1000000;
+  A = 150000000;
+  T = 100000000;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  a = 0.1;
+  b = 0.01;
+  mu_1 = 0.01;
+  k_1 = 1000000;
+  u = 0.1;
+  r_1 = 100;
+  r_2 = 1000;
+  mu_2 = 6.884;
+  r = 0.431;
+  k_2 = 980000000;
+  beta_1 = 30218000;
+
+  // Other declarations:
+  const compartment_, a, b, mu_1, k_1, u, r_1, r_2, mu_2, r, k_2, beta_1;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+  B_cell_formation is "B cell formation";
+  Removal_of_B_cell is "Removal of B cell";
+  Production_of_plasma_cell is "Production of plasma cell";
+  Removal_of_plasma_cell_from_system is "Removal of plasma cell from system";
+  Production_of_antibody_against_tumor is "Production of antibody against tumor";
+  Removal_of_antibody_from_the_system is "Removal of antibody from the system";
+  Formation_of_tumor_cell is "Formation of tumor cell";
+  Removal_of_tumor_cell_by_immune_cell is "Removal of tumor cell by immune cell";
+
+  // CV terms:
+  P instance "http://identifiers.org/ncit/C13356"
+  T instance "http://identifiers.org/taxonomy/6754"
+  B_cell_formation instance "http://identifiers.org/ncit/C25513"
+  Removal_of_B_cell instance "http://identifiers.org/ncit/C64914"
+  Production_of_plasma_cell instance "http://identifiers.org/ncit/C25513"
+  Removal_of_plasma_cell_from_system instance "http://identifiers.org/ncit/C64914"
+  Production_of_antibody_against_tumor instance "http://identifiers.org/ncit/C25513"
+  Removal_of_antibody_from_the_system instance "http://identifiers.org/ncit/C64914"
+  Removal_of_tumor_cell_by_immune_cell instance "http://identifiers.org/ncit/C64914"
+end
+
+Sumana2018___Mathematical_modeling_of_cancer_immune_system__considering_the_role_of_antibodies is "Sumana2018 - Mathematical modeling of cancer-immune system, considering the role of antibodies."
+
+Sumana2018___Mathematical_modeling_of_cancer_immune_system__considering_the_role_of_antibodies instance "http://identifiers.org/ncit/C15438",
+                                                                                                        "http://identifiers.org/ncit/C16295",
+                                                                                                        "http://identifiers.org/taxonomy/9606",
+                                                                                                        "http://identifiers.org/ncit/C19691"
+Sumana2018___Mathematical_modeling_of_cancer_immune_system__considering_the_role_of_antibodies description "http://identifiers.org/ncit/C19691",
+                                                                                                           "http://identifiers.org/pubmed/29572780"
+Sumana2018___Mathematical_modeling_of_cancer_immune_system__considering_the_role_of_antibodies model_entity_is "http://identifiers.org/biomodels.db/MODEL1912090004",
+                                                                                                               "http://identifiers.org/biomodels.db/BIOMD0000000885"
+Sumana2018___Mathematical_modeling_of_cancer_immune_system__considering_the_role_of_antibodies property "http://identifiers.org/ncit/C15438"
+Sumana2018___Mathematical_modeling_of_cancer_immune_system__considering_the_role_of_antibodies property "http://identifiers.org/ncit/C16295"
+Sumana2018___Mathematical_modeling_of_cancer_immune_system__considering_the_role_of_antibodies taxon "http://identifiers.org/taxonomy/9606"

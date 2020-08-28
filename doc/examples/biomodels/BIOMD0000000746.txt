@@ -1,0 +1,190 @@
+// Created by libAntimony v2.13.0
+function effector_activation(a, modifier, E, P, k)
+  a*modifier*E/(P + k);
+end
+
+effector_activation is "effector activation"
+
+function effector_depletion_by_cancer_0(alpha2, E, C)
+  alpha2*E*C;
+end
+
+effector_depletion_by_cancer_0 is "effector depletion by cancer"
+
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function BCG_degradation(alpha3, E, B)
+  alpha3*E*B;
+end
+
+BCG_degradation is "BCG degradation"
+
+function cancer_killing_0(alpha1, E, C, P, k)
+  alpha1*E*C/(P + k);
+end
+
+cancer_killing_0 is "cancer killing"
+
+function cancer_growth_0(r, C)
+  r*C;
+end
+
+cancer_growth_0 is "cancer growth"
+
+
+model *Saad2017___immune_checkpoint_and_BCG_in_superficial_bladder_cancer()
+
+  // Compartments and Species:
+  compartment bladder_cancer_tme;
+  species C in bladder_cancer_tme, E in bladder_cancer_tme, B in bladder_cancer_tme;
+  species P in bladder_cancer_tme;
+
+  // Reactions:
+  cancer_growth:  => C; bladder_cancer_tme*cancer_growth_0(r, C);
+  cancer_killing: C => ; bladder_cancer_tme*cancer_killing_0(alpha1, E, C, P, k);
+  effector_activation_by_cancer:  => E; bladder_cancer_tme*effector_activation(a1, C, E, P, k);
+  effector_activation_by_BCG:  => E; bladder_cancer_tme*effector_activation(a2, B, E, P, k);
+  effector_depletion_by_cancer: E => ; bladder_cancer_tme*effector_depletion_by_cancer_0(alpha2, E, C);
+  effector_death: E => ; bladder_cancer_tme*u1*E;
+  BCG_source__therapy:  => B; bladder_cancer_tme*Constant_flux__irreversible(b);
+  BCG_death: B => ; bladder_cancer_tme*u2*B;
+  BCG_killing_by_effector: B => ; bladder_cancer_tme*BCG_degradation(alpha3, E, B);
+  checkpoint_source:  => P; bladder_cancer_tme*Constant_flux__irreversible(delta);
+  checkpoint_decay: P => ; bladder_cancer_tme*u3*P;
+
+  // Species initializations:
+  C = 100000;
+  C has substance_per_volume;
+  E = 0;
+  E has substance_per_volume;
+  B = 0;
+  B has substance_per_volume;
+  P = 0;
+  P has substance_per_volume;
+
+  // Compartment initializations:
+  bladder_cancer_tme = 1;
+  bladder_cancer_tme has volume;
+
+  // Variable initializations:
+  r = 0.0033;
+  r has unit_0;
+  alpha1 = 1.1e-07;
+  alpha1 has unit_0;
+  k = 2000;
+  k has unit_1;
+  a1 = 0.25;
+  a1 has unit_0;
+  a2 = 0.052;
+  a2 has unit_0;
+  delta = 151932;
+  delta has unit_0;
+  alpha2 = 3.45e-10;
+  alpha2 has unit_0;
+  u1 = 0.041;
+  u1 has unit_0;
+  u2 = 0.1;
+  u2 has unit_0;
+  b = 650000;
+  b has unit_0;
+  alpha3 = 1.25e-07;
+  alpha3 has unit_0;
+  u3 = 166.32;
+  u3 has unit_0;
+
+  // Other declarations:
+  const bladder_cancer_tme, r, alpha1, k, a1, a2, delta, alpha2, u1, u2, b;
+  const alpha3, u3;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = time_unit;
+  unit substance = 1e-3 mole;
+  unit unit_0 = 1 / 86400e-1 second;
+  unit unit_1 = 1 / dimensionless^-0;
+  unit extent = substance;
+  unit substance_per_volume = 1e-3 mole / 1e-3 litre;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1/d";
+  unit_1 is "1";
+  bladder_cancer_tme is "bladder cancer tme";
+  cancer_growth is "cancer growth";
+  cancer_killing is "cancer killing";
+  effector_activation_by_cancer is "effector activation by cancer";
+  effector_activation_by_BCG is "effector activation by BCG";
+  effector_depletion_by_cancer is "effector depletion by cancer";
+  effector_death is "effector death";
+  BCG_source__therapy is "BCG source (therapy)";
+  BCG_death is "BCG death";
+  BCG_killing_by_effector is "BCG killing by effector";
+  checkpoint_source is "checkpoint source";
+  checkpoint_decay is "checkpoint decay";
+
+  // CV terms:
+  bladder_cancer_tme hypernym "http://identifiers.org/ncit/C2901"
+  bladder_cancer_tme hypernym "http://identifiers.org/ncit/C94498"
+  C hypernym "http://identifiers.org/bto/0000362"
+  C hypernym "http://identifiers.org/cl/CL:0001064"
+  E hypernym "http://identifiers.org/ncit/C28241"
+  B identity "http://identifiers.org/ncit/C85546"
+  P version "http://identifiers.org/uniprot/P01137"
+  P version "http://identifiers.org/uniprot/P16410"
+  P version "http://identifiers.org/uniprot/Q15116"
+  r hypernym "http://identifiers.org/sbo/SBO:0000610"
+  alpha1 hypernym "http://identifiers.org/ncit/C94967"
+  k hypernym "http://identifiers.org/sbo/SBO:0000261"
+  a1 hypernym "http://identifiers.org/sbo/SBO:0000610"
+  a2 hypernym "http://identifiers.org/sbo/SBO:0000610"
+  delta hypernym "http://identifiers.org/sbo/SBO:0000610"
+  alpha2 hypernym "http://identifiers.org/ncit/C94967"
+  u1 hypernym "http://identifiers.org/ncit/C94967"
+  u2 hypernym "http://identifiers.org/ncit/C94967"
+  b hypernym "http://identifiers.org/ncit/C41185"
+  alpha3 hypernym "http://identifiers.org/ncit/C94967"
+  u3 hypernym "http://identifiers.org/ncit/C94967"
+  cancer_growth hypernym "http://identifiers.org/sbo/SBO:0000393"
+  cancer_growth hypernym "http://identifiers.org/go/GO:0008283"
+  cancer_killing hypernym "http://identifiers.org/sbo/SBO:0000179"
+  cancer_killing hypernym "http://identifiers.org/go/GO:0001909"
+  cancer_killing hypernym "http://identifiers.org/go/GO:0008219"
+  effector_activation_by_cancer hypernym "http://identifiers.org/go/GO:0070661"
+  effector_activation_by_cancer hypernym "http://identifiers.org/go/GO:0008283"
+  effector_activation_by_cancer hypernym "http://identifiers.org/sbo/SBO:0000393"
+  effector_activation_by_BCG hypernym "http://identifiers.org/go/GO:0070661"
+  effector_activation_by_BCG hypernym "http://identifiers.org/go/GO:0008283"
+  effector_activation_by_BCG hypernym "http://identifiers.org/sbo/SBO:0000393"
+  effector_depletion_by_cancer hypernym "http://identifiers.org/sbo/SBO:0000179"
+  effector_depletion_by_cancer hypernym "http://identifiers.org/go/GO:0008219"
+  effector_death hypernym "http://identifiers.org/sbo/SBO:0000179"
+  effector_death hypernym "http://identifiers.org/go/GO:0008219"
+  BCG_source__therapy hypernym "http://identifiers.org/sbo/SBO:0000393"
+  BCG_source__therapy hypernym "http://identifiers.org/go/GO:0008283"
+  BCG_death hypernym "http://identifiers.org/go/GO:0008219"
+  BCG_death hypernym "http://identifiers.org/sbo/SBO:0000179"
+  BCG_killing_by_effector hypernym "http://identifiers.org/go/GO:0001909"
+  BCG_killing_by_effector hypernym "http://identifiers.org/go/GO:0008219"
+  BCG_killing_by_effector hypernym "http://identifiers.org/sbo/SBO:0000179"
+  checkpoint_source hypernym "http://identifiers.org/ncit/C18103"
+  checkpoint_source hypernym "http://identifiers.org/sbo/SBO:0000393"
+  checkpoint_decay hypernym "http://identifiers.org/sbo/SBO:0000179"
+  checkpoint_decay hypernym "http://identifiers.org/ncit/C18104"
+end
+
+Saad2017___immune_checkpoint_and_BCG_in_superficial_bladder_cancer is "Saad2017 - immune checkpoint and BCG in superficial bladder cancer"
+
+Saad2017___immune_checkpoint_and_BCG_in_superficial_bladder_cancer description "http://identifiers.org/pubmed/29312460"
+Saad2017___immune_checkpoint_and_BCG_in_superficial_bladder_cancer model_entity_is "http://identifiers.org/biomodels.db/MODEL1907100001",
+                                                                                   "http://identifiers.org/biomodels.db/BIOMD0000000746"
+Saad2017___immune_checkpoint_and_BCG_in_superficial_bladder_cancer hypernym "http://identifiers.org/go/GO:0002418"
+Saad2017___immune_checkpoint_and_BCG_in_superficial_bladder_cancer container "http://identifiers.org/bto/BTO:0001418"
+Saad2017___immune_checkpoint_and_BCG_in_superficial_bladder_cancer property "http://identifiers.org/efo/0000292"
+Saad2017___immune_checkpoint_and_BCG_in_superficial_bladder_cancer property "http://identifiers.org/mamo/MAMO_0000046"
+Saad2017___immune_checkpoint_and_BCG_in_superficial_bladder_cancer taxon "http://identifiers.org/taxonomy/9606"

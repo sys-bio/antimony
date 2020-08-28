@@ -1,0 +1,156 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function growth(r, mod, pro, u)
+  r*u*mod*pro;
+end
+
+growth is "growth"
+
+function decrease(u, sub, mod)
+  u*sub*mod;
+end
+
+decrease is "decrease"
+
+function death(d, e, sub)
+  (d + e)*sub;
+end
+
+death is "death"
+
+
+model *Wang2016_1___oncolytic_efficacy_of_M1_virus_SNTM_model()
+
+  // Compartments and Species:
+  compartment tme;
+  species S in tme, N in tme, T in tme, M in tme;
+
+  // Assignment Rules:
+  Q1 := a*r1*u1/(d*(d + e1));
+  Q2 := a*r2*u2/(d*(d + e2));
+  B0 := d*(d + e1)*(d + e2)*(d + e3)*(Q2 - Q1)/(r1*u1*u3*a);
+
+  // Reactions:
+  nutrient_supply:  => S; tme*Constant_flux__irreversible(a);
+  nutrient_decay: S => ; tme*d*S;
+  nutrient_consumption_N: S => ; tme*decrease(u1, S, N);
+  nutrient_consumption_T: S => ; tme*decrease(u2, S, T);
+  normal_cell_growth:  => N; tme*growth(r1, S, N, u1);
+  normal_cell_death: N => ; tme*death(d, e1, N);
+  tumor_growth:  => T; tme*growth(r2, S, T, u2);
+  tumor_death: T => ; tme*death(d, e2, T);
+  tumor_killing: T => ; tme*decrease(u3, T, M);
+  virus_therapy:  => M; tme*Constant_flux__irreversible(b);
+  virus_burst:  => M; tme*growth(r3, T, M, u3);
+  virus_clearance: M => ; tme*death(d, e3, M);
+
+  // Species initializations:
+  S = 0.1;
+  S has substance_per_volume;
+  N = 0.2;
+  N has substance_per_volume;
+  T = 0.1;
+  T has substance_per_volume;
+  M = 0;
+  M has substance_per_volume;
+
+  // Compartment initializations:
+  tme = 1;
+  tme has volume;
+
+  // Variable initializations:
+  a = 0.02;
+  a has unit_0;
+  d = 0.02;
+  d has unit_0;
+  u1 = 0.2;
+  u1 has unit_0;
+  u2 = 0.4;
+  u2 has unit_0;
+  r1 = 0.8;
+  r1 has unit_0;
+  e1 = 0.01;
+  e1 has unit_0;
+  r2 = 0.8;
+  r2 has unit_0;
+  e2 = 0.04;
+  e2 has unit_0;
+  u3 = 0.1;
+  u3 has unit_0;
+  b = 0.001;
+  b has unit_0;
+  r3 = 0.5;
+  r3 has unit_0;
+  e3 = 0.01;
+  e3 has unit_0;
+  Q1 has unit_0;
+  Q2 has unit_0;
+  B0 has unit_0;
+
+  // Other declarations:
+  var Q1, Q2, B0;
+  const tme, a, d, u1, u2, r1, e1, r2, e2, u3, b, r3, e3;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = time_unit;
+  unit substance = 1e-3 mole;
+  unit unit_0 = 1 / dimensionless^-0;
+  unit extent = substance;
+  unit substance_per_volume = 1e-3 mole / 1e-3 litre;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1";
+  nutrient_supply is "nutrient supply";
+  nutrient_decay is "nutrient decay";
+  nutrient_consumption_N is "nutrient consumption N";
+  nutrient_consumption_T is "nutrient consumption T";
+  normal_cell_growth is "normal cell growth";
+  normal_cell_death is "normal cell death";
+  tumor_growth is "tumor growth";
+  tumor_death is "tumor death";
+  tumor_killing is "tumor killing";
+  virus_therapy is "virus therapy";
+  virus_burst is "virus burst";
+  virus_clearance is "virus clearance";
+
+  // CV terms:
+  tme hypernym "http://identifiers.org/ncit/C94498"
+  S hypernym "http://identifiers.org/ncit/C1814"
+  N hypernym "http://identifiers.org/cl/CL:0000000"
+  T hypernym "http://identifiers.org/cl/CL:0001064"
+  M hypernym "http://identifiers.org/ncit/C717"
+  a hypernym "http://identifiers.org/ncit/C25636"
+  d hypernym "http://identifiers.org/ncit/C25636"
+  u1 hypernym "http://identifiers.org/sbo/SBO:0000610"
+  u2 hypernym "http://identifiers.org/sbo/SBO:0000610"
+  r1 hypernym "http://identifiers.org/ncit/C84380"
+  e1 hypernym "http://identifiers.org/ncit/C25636"
+  r2 hypernym "http://identifiers.org/ncit/C84380"
+  e2 propertyBearer "http://identifiers.org/ncit/C25636"
+  u3 hypernym "http://identifiers.org/sbo/SBO:0000610"
+  b hypernym "http://identifiers.org/ncit/C25636"
+  r3 hypernym "http://identifiers.org/ncit/C84380"
+  e3 hypernym "http://identifiers.org/ncit/C25636"
+  Q1 hypernym "http://identifiers.org/ncit/C84380"
+  Q2 hypernym "http://identifiers.org/ncit/C84380"
+  B0 hypernym "http://identifiers.org/ncit/C25488"
+end
+
+Wang2016_1___oncolytic_efficacy_of_M1_virus_SNTM_model is "Wang2016/1 - oncolytic efficacy of M1 virus-SNTM model"
+
+Wang2016_1___oncolytic_efficacy_of_M1_virus_SNTM_model description "http://identifiers.org/pubmed/26976483"
+Wang2016_1___oncolytic_efficacy_of_M1_virus_SNTM_model model_entity_is "http://identifiers.org/biomodels.db/MODEL1908060001",
+                                                                       "http://identifiers.org/biomodels.db/BIOMD0000000780"
+Wang2016_1___oncolytic_efficacy_of_M1_virus_SNTM_model property "http://identifiers.org/mamo/MAMO_0000046"
+Wang2016_1___oncolytic_efficacy_of_M1_virus_SNTM_model property "http://identifiers.org/go/GO:0002418"
+Wang2016_1___oncolytic_efficacy_of_M1_virus_SNTM_model property "http://identifiers.org/ncit/C62713"
+Wang2016_1___oncolytic_efficacy_of_M1_virus_SNTM_model taxon "http://identifiers.org/taxonomy/9606"

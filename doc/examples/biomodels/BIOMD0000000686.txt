@@ -1,0 +1,99 @@
+// Created by libAntimony v2.13.0
+model *Wodarz2007_CTL_inflation_Model_A()
+
+  // Compartments and Species:
+  compartment COMpartment;
+
+  // Assignment Rules:
+  R0 := (lambda*eta/(d*a1*(a0 + eta)))*(beta + gamma_*phi/(phi + d));
+
+  // Rate Rules:
+  x' = lambda - (d*x + beta*x*v + gamma_*x*v);
+  v' = k*y1 - u*v;
+  y0' = (beta*x*v - (a0*y0 + eta*y0)) + phi*L;
+  L' = gamma_*x*v - (phi*L + d*L);
+  y1' = eta*y0 - a1*y1;
+
+  // Compartment initializations:
+  COMpartment = 1;
+
+  // Variable initializations:
+  x = 1;
+  x has unit_0;
+  lambda = 10;
+  lambda has unit_1;
+  d = 0.1;
+  d has unit_1;
+  beta = 0.1;
+  beta has unit_1;
+  v = 1;
+  v has unit_0;
+  gamma_ = 0.5;
+  gamma_ has unit_1;
+  y0 = 0;
+  y0 has unit_0;
+  a0 = 0.1;
+  a0 has unit_1;
+  eta = 0.01;
+  eta has unit_1;
+  phi = 0.1;
+  phi has unit_1;
+  L = 0;
+  L has unit_0;
+  y1 = 0;
+  y1 has unit_0;
+  a1 = 0.2;
+  a1 has unit_1;
+  k = 1;
+  k has unit_1;
+  u = 1;
+  u has unit_1;
+  R0 has unit_0;
+
+  // Other declarations:
+  var x, v, y0, L, y1, R0;
+  const COMpartment, lambda, d, beta, gamma_, a0, eta, phi, a1, k, u;
+
+  // Unit definitions:
+  unit time_unit = 3600 second;
+  unit unit_0 = 1 / dimensionless^-0;
+  unit unit_1 = 1 / 0.277778e-3 second;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1";
+  unit_1 is "1/(0.277778*ms)";
+  COMpartment is "Mouse";
+  gamma_ is "gamma";
+
+  // CV terms:
+  x hypernym "http://identifiers.org/go/GO:0005623"
+  x hypernym "http://identifiers.org/cl/CL:0000000"
+  x property "http://identifiers.org/ncit/C16505"
+  lambda encodement "http://identifiers.org/go/GO:0008283"
+  d encodement "http://identifiers.org/go/GO:0008219"
+  beta encodement "http://identifiers.org/efo/0001062"
+  v hypernym "http://identifiers.org/go/GO:0019012"
+  v hypernym "http://identifiers.org/efo/0001062"
+  gamma_ encodement "http://identifiers.org/efo/0001062"
+  y0 part "http://identifiers.org/efo/0001062"
+  y0 hypernym "http://identifiers.org/bto/BTO:0000152"
+  a0 encodement "http://identifiers.org/go/GO:0008219"
+  L part "http://identifiers.org/efo/0001062"
+  L hypernym "http://identifiers.org/bto/BTO:0000152"
+  y1 part "http://identifiers.org/efo/0001062"
+  y1 hypernym "http://identifiers.org/bto/BTO:0000152"
+  a1 encodement "http://identifiers.org/go/GO:0008219"
+  k encodement "http://identifiers.org/sbo/SBO:0000393"
+  u encodement "http://identifiers.org/sbo/SBO:0000179"
+end
+
+Wodarz2007_CTL_inflation_Model_A is "Wodarz2007 - Basic Model of Cytomegalovirus Infection"
+
+Wodarz2007_CTL_inflation_Model_A model_entity_is "http://identifiers.org/biomodels.db/MODEL1006230086"
+Wodarz2007_CTL_inflation_Model_A description "http://identifiers.org/pubmed/17251133"
+Wodarz2007_CTL_inflation_Model_A model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000686"
+Wodarz2007_CTL_inflation_Model_A hypernym "http://identifiers.org/go/GO:0009615"
+Wodarz2007_CTL_inflation_Model_A container "http://identifiers.org/bto/BTO:0000289"
+Wodarz2007_CTL_inflation_Model_A taxon "http://identifiers.org/taxonomy/10088"
+Wodarz2007_CTL_inflation_Model_A description "http://identifiers.org/pubmed/17251133"

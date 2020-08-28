@@ -1,0 +1,87 @@
+// Created by libAntimony v2.13.0
+function Function_for_Virus_Lytic_Release_From_Infected(beta, eta, I)
+  beta*eta*I;
+end
+
+Function_for_Virus_Lytic_Release_From_Infected is "Function_for_Virus_Lytic_Release_From_Infected"
+
+function Function_for_Susceptible_Logistic_Growth(r, S, N, K)
+  r*S*(1 - N/K);
+end
+
+Function_for_Susceptible_Logistic_Growth is "Function_for_Susceptible_Logistic_Growth"
+
+
+model *Gulbudak2019___Heterogeneous_viral_strategies_promote_coexistence_in_virus_microbe_systems()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species S in compartment_, I in compartment_, V_L in compartment_;
+
+  // Assignment Rules:
+  d := 1/24;
+  phi := 0.55*10^-9.5;
+  N := S + I;
+
+  // Reactions:
+  Susceptible_Logistic_Growth:  => S; compartment_*Function_for_Susceptible_Logistic_Growth(r, S, N, K);
+  Susceptible_Absorption_Virus: S + V_L => I; compartment_*phi*S*V_L;
+  Susceptible_Death: S => ; compartment_*d*S;
+  Infected_Death: I => ; compartment_*d*I;
+  Infected_Lysis: I => ; compartment_*eta*I;
+  Virus_Lytic_Release_From_Infected:  => V_L; compartment_*Function_for_Virus_Lytic_Release_From_Infected(beta, eta, I);
+  Virus_Lytic_Decay: V_L => ; compartment_*mu*V_L;
+
+  // Species initializations:
+  S = 830000000;
+  I = 0;
+  V_L = 33200000;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  r = 0.339;
+  K = 894700000;
+  beta = 20;
+  eta = 1.5;
+  mu = 0.0866;
+  r_tilde = 0.2;
+  phi_tilde = 2e-11;
+  alpha = 0.1;
+  d_tilde = 0.05;
+
+  // Other declarations:
+  var d, phi, N;
+  const compartment_, r, K, beta, eta, mu, r_tilde, phi_tilde, alpha, d_tilde;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 3600 second;
+  unit substance = item;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+
+  // CV terms:
+  compartment_ hypernym "http://identifiers.org/ncit/C16551"
+  S version "http://identifiers.org/ncit/C14187"
+  I hypernym "http://identifiers.org/bto/BTO:0000152"
+  V_L identity "http://identifiers.org/ncit/C14368"
+  Susceptible_Logistic_Growth identity "http://identifiers.org/ncit/C18081"
+  Susceptible_Absorption_Virus identity "http://identifiers.org/go/GO:0046718"
+  Susceptible_Death identity "http://identifiers.org/go/GO:0008219"
+  Infected_Death identity "http://identifiers.org/go/GO:0008219"
+  Infected_Lysis identity "http://identifiers.org/go/GO:0044659"
+  Virus_Lytic_Release_From_Infected identity "http://identifiers.org/go/GO:0019076"
+  Virus_Lytic_Decay hypernym "http://identifiers.org/sbo/SBO:0000179"
+end
+
+Gulbudak2019___Heterogeneous_viral_strategies_promote_coexistence_in_virus_microbe_systems is "Gulbudak2019 - Heterogeneous viral strategies promote coexistence in virus-microbe systems"
+
+Gulbudak2019___Heterogeneous_viral_strategies_promote_coexistence_in_virus_microbe_systems description "http://identifiers.org/pubmed/30389532"
+Gulbudak2019___Heterogeneous_viral_strategies_promote_coexistence_in_virus_microbe_systems model_entity_is "http://identifiers.org/biomodels.db/MODEL1911100003",
+                                                                                                           "http://identifiers.org/biomodels.db/BIOMD0000000845"
+Gulbudak2019___Heterogeneous_viral_strategies_promote_coexistence_in_virus_microbe_systems property "http://identifiers.org/mamo/MAMO_0000046"
+Gulbudak2019___Heterogeneous_viral_strategies_promote_coexistence_in_virus_microbe_systems property "http://identifiers.org/go/GO:0019089"

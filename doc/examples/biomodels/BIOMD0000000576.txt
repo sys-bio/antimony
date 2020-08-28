@@ -1,0 +1,327 @@
+// Created by libAntimony v2.13.0
+function mRNA(S_RNA, Activator, Ka)
+  Ka*S_RNA*Activator;
+end
+
+mRNA is "mRNA"
+
+function ptotein(Ka, S_PROT, Activator)
+  Ka*S_PROT*Activator;
+end
+
+ptotein is "ptotein"
+
+function LigandDegrOld(Act, Vm, S1, Kms1, S2, Kms2, S3, Kms3)
+  Act*(Vm*S1/Kms1/(1 + S1/Kms1 + S2/Kms2 + S3/Kms3));
+end
+
+LigandDegrOld is "LigandDegrOld"
+
+
+model *MODEL1506290000()
+
+  // Compartments and Species:
+  compartment default, blood;
+  species $s28 in default, $s36 in default, s46 in default, s32 in default;
+  species s42 in default, $s30 in default, s40 in default, s33 in default;
+  species s39 in default, s114 in default, s155 in default, s172 in default;
+  species s173 in default, s185 in default, s84 in default, s165 in default;
+  species s109 in default, s87 in default, s119 in default, s183 in default;
+  species s178 in default, $s10 in default, $Cortisone in default, TAT_PROT in default;
+  species Ligand2 in default, PXRprot_Ligand2 in default, CYPgene_PXRprot_Ligand2 in default;
+  species DEX in default, GRprot_DEX in default, PXRprot_DEX in default, $DEX_degr in default;
+  species CYPgene_PXRprot_DEX in default, PXRgene_GRprot_DEX in default, GRgene_GRprot_DEX in default;
+  species TATgene_GRprot_DEX in default, s2 in blood, $DEXout in blood, CBG in blood;
+  species CBG_CortOUT in blood, Alb in blood, Alb_CortOUT in blood, $CortAdded in blood;
+
+  // Assignment Rules:
+  GRprotein := s39 + s84 + s109 + s87 + s183 + GRprot_DEX + PXRgene_GRprot_DEX + GRgene_GRprot_DEX + TATgene_GRprot_DEX;
+  PXRprotein := s42 + s165 + s119 + PXRprot_Ligand2 + CYPgene_PXRprot_Ligand2 + PXRprot_DEX + CYPgene_PXRprot_DEX;
+
+  // Reactions:
+  re1: $s28 => s173; default*mRNA(s28, s155, re1_Ka);
+  re2: s173 => $s30; default*re2_k1*s173;
+  re3: $s36 => s172; default*ptotein(re3_Ka, s36, s173);
+  re4: s172 => $s30; default*re4_k1*s172;
+  re5: $s28 => s32; default*mRNA(s28, s46, re5_Ka);
+  re6: s32 => $s30; default*re6_k1*s32;
+  re7: $s36 => s42; default*ptotein(re7_Ka, s36, s32);
+  re8: s42 => $s30; default*re8_k1*s42;
+  re9: $s28 => s33; default*mRNA(s28, s40, re9_Ka);
+  re10: s33 => $s30; default*re10_k1*s33;
+  re11: $s36 => s39; default*ptotein(re11_Ka, s36, s33);
+  re12: s39 => $s30; default*re12_k1*s39;
+  re13: $s28 => s185; default*mRNA(s28, s178, re13_Ka);
+  re14: s185 => $s30; default*re14_k1*s185;
+  re15: s114 + s39 -> s87; default*(re15_k1*s114*s39 - re15_k2*s87);
+  re16: s87 => s114 + $s30; default*re16_k1*s87;
+  re17: s42 + s114 -> s119; default*(re17_k1*s42*s114 - re17_k2*s119);
+  re18: s119 => s114 + $s30; default*re18_k1*s119;
+  re19: s114 => $s10; default*LigandDegrOld(s172, re19_Vm, s114, re19_Kms1, Ligand2, re19_Kms2, DEX, re19_Kms3);
+  re20: s155 + s119 -> s165; default*(GeneProteinBinding_diff_limited*s155*s119 - cypGene_PXRprotein*s165);
+  re21: $s28 => s173; default*mRNA(s28, s165, cypMrna_synt);
+  re22: s46 + s87 -> s109; default*(GeneProteinBinding_diff_limited*s46*s87 - PXRGene_GRprotein*s109);
+  re23: $s28 => s32; default*mRNA(s28, s109, pxrMrna_synt);
+  re24: s40 + s87 -> s84; default*(GeneProteinBinding_diff_limited*s40*s87 - GRGene_GRprotein*s84);
+  re25: $s28 => s33; default*mRNA(s28, s84, grMrna_synt);
+  re26: s178 + s87 -> s183; default*(GeneProteinBinding_diff_limited*s178*s87 - TATGene_GRprotein*s183);
+  re27: $s28 => s185; default*mRNA(s28, s183, tatMrna_synt);
+  re42: $Cortisone -> s114; default*(re42_k1*Cortisone - re42_k2*s114);
+  re44: TAT_PROT => $s30; default*re44_k1*TAT_PROT;
+  re43: $s36 => TAT_PROT; default*ptotein(re43_Ka, s36, s185);
+  cortisolTransport: s2 -> s114; cortisolTransport_k1*s2 - cortisolTransport_k2*s114;
+  L2_PXR_binding: s42 + Ligand2 -> PXRprot_Ligand2; default*(L2_PXR_binding_k1*s42*Ligand2 - L2_PXR_binding_k2*PXRprot_Ligand2);
+  L2_PXR_deg: PXRprot_Ligand2 => Ligand2 + $s30; default*L2_PXR_deg_k1*PXRprot_Ligand2;
+  CYPmRNA_synt_PXR_L2: $s28 => s173; default*mRNA(s28, CYPgene_PXRprot_Ligand2, cypMrna_synt);
+  CYPmRNA_PXR_L2_binding: s155 + PXRprot_Ligand2 -> CYPgene_PXRprot_Ligand2; default*(GeneProteinBinding_diff_limited*s155*PXRprot_Ligand2 - cypGene_PXRprotein*CYPgene_PXRprot_Ligand2);
+  re28: s39 + DEX -> GRprot_DEX; default*(re28_k1*s39*DEX - re28_k2*GRprot_DEX);
+  re29: GRprot_DEX => $s30 + DEX; default*re29_k1*GRprot_DEX;
+  re30: s42 + DEX -> PXRprot_DEX; default*(re30_k1*s42*DEX - re30_k2*PXRprot_DEX);
+  re31: PXRprot_DEX => DEX + $s30; default*re31_k1*PXRprot_DEX;
+  re32: DEX => $DEX_degr; default*LigandDegrOld(s172, re32_Vm, DEX, re32_Kms1, Ligand2, re32_Kms2, s114, re32_Kms3);
+  re33: s155 + PXRprot_DEX -> CYPgene_PXRprot_DEX; default*(GeneProteinBinding_diff_limited*s155*PXRprot_DEX - cypGene_PXRprotein*CYPgene_PXRprot_DEX);
+  re34: $s28 => s173; default*mRNA(s28, CYPgene_PXRprot_DEX, cypMrna_synt);
+  re35: GRprot_DEX + s46 -> PXRgene_GRprot_DEX; default*(GeneProteinBinding_diff_limited*GRprot_DEX*s46 - PXRGene_GRprotein*PXRgene_GRprot_DEX);
+  re36: $s28 => s32; default*mRNA(s28, PXRgene_GRprot_DEX, pxrMrna_synt);
+  re37: GRprot_DEX + s40 -> GRgene_GRprot_DEX; default*(GeneProteinBinding_diff_limited*GRprot_DEX*s40 - GRGene_GRprotein*GRgene_GRprot_DEX);
+  re38: $s28 => s33; default*mRNA(s28, GRgene_GRprot_DEX, grMrna_synt);
+  re39: GRprot_DEX + s178 -> TATgene_GRprot_DEX; default*(GeneProteinBinding_diff_limited*GRprot_DEX*s178 - TATGene_GRprotein*TATgene_GRprot_DEX);
+  re40: $s28 => s185; default*mRNA(s28, TATgene_GRprot_DEX, tatMrna_synt);
+  re41: $DEXout -> DEX; re41_k1*DEXout - re41_k2*DEX;
+  Cortisol_CBG: s2 + CBG -> CBG_CortOUT; blood*(Cortisol_CBG_k1*s2*CBG - Cortisol_CBG_k2*CBG_CortOUT);
+  Cort_Alb: Alb + s2 -> Alb_CortOUT; blood*(Cort_Alb_k1*Alb*s2 - Cort_Alb_k2*Alb_CortOUT);
+  cort_distribution: $CortAdded => s2; blood*cort_distribution_k1*CortAdded;
+
+  // Species initializations:
+  s28 = 1.00000029723653;
+  s36 = 1.00000029723653;
+  s46 = 0.780000231844494;
+  s32 = 0.00700000208065571;
+  s42 = 99.9000296939294;
+  s30 = 0;
+  s40 = 0.500000148618265;
+  s33 = 0.000800000237789224;
+  s39 = 47.2400140414537;
+  s114 = 1.14000033884965;
+  s155 = 0.829760246634984;
+  s172 = 104.000030912599;
+  s173 = 0.0750000222927398;
+  s185 = 0.100000029723653;
+  s84 = 0.330000098088055;
+  s165 = 0.000240000071336767;
+  s109 = 0.0500000148618265;
+  s87 = 32.3600096185741;
+  s119 = 0.0100000029723653;
+  s183 = 0.0200000059447306;
+  s178 = 0.81000024076159;
+  s10 = 0;
+  Cortisone = 24.0000071336767;
+  TAT_PROT = 0.46202810387596;
+  Ligand2 = 100.000029723653;
+  PXRprot_Ligand2 = 0.00100000029723653;
+  CYPgene_PXRprot_Ligand2 = 2.40000071336767e-05;
+  DEX = 0;
+  GRprot_DEX = 0;
+  PXRprot_DEX = 0;
+  DEX_degr = 0;
+  CYPgene_PXRprot_DEX = 0;
+  PXRgene_GRprot_DEX = 0;
+  GRgene_GRprot_DEX = 0;
+  TATgene_GRprot_DEX = 0;
+  s2 = 0;
+  DEXout = 0;
+  CBG = 550.000163480092;
+  CBG_CortOUT = 0;
+  Alb = 60000.0178341918;
+  Alb_CortOUT = 0;
+  CortAdded = 0;
+
+  // Compartment initializations:
+  default = 1;
+  blood = 5;
+
+  // Variable initializations:
+  GeneProteinBinding_diff_limited = 60;
+  cypGene_PXRprotein = 1;
+  cypMrna_synt = 0.05;
+  PXRGene_GRprotein = 200;
+  TATGene_GRprotein = 300;
+  GRGene_GRprotein = 60;
+  grMrna_synt = 1.2e-06;
+  tatMrna_synt = 0.005;
+  pxrMrna_synt = 0.00011;
+  re1_Ka = 0.00321;
+  re2_k1 = 0.04;
+  re3_Ka = 2.5;
+  re4_k1 = 0.0015;
+  re5_Ka = 5.52e-05;
+  re6_k1 = 0.006;
+  re7_Ka = 10;
+  re8_k1 = 0.003;
+  re9_Ka = 3.2e-06;
+  re10_k1 = 0.003;
+  re11_Ka = 19.98;
+  re12_k1 = 0.001;
+  re13_Ka = 0.000855;
+  re14_k1 = 0.064;
+  re15_k1 = 60;
+  re15_k2 = 600;
+  re16_k1 = 0.001;
+  re17_k1 = 60;
+  re17_k2 = 600000;
+  re18_k1 = 0.0015;
+  re19_Vm = 0.083;
+  re19_Kms1 = 15000;
+  re19_Kms2 = 15000;
+  re19_Kms3 = 23000;
+  re42_k1 = 0.016;
+  re42_k2 = 0.016;
+  re44_k1 = 0.012;
+  re43_Ka = 0.5;
+  cortisolTransport_k1 = 1000;
+  cortisolTransport_k2 = 1000;
+  L2_PXR_binding_k1 = 60;
+  L2_PXR_binding_k2 = 600000;
+  L2_PXR_deg_k1 = 0.0015;
+  re28_k1 = 60;
+  re28_k2 = 60;
+  re29_k1 = 0.001;
+  re30_k1 = 60;
+  re30_k2 = 60000;
+  re31_k1 = 0.0015;
+  re32_Vm = 0.00425;
+  re32_Kms1 = 23000;
+  re32_Kms2 = 15000;
+  re32_Kms3 = 15000;
+  re41_k1 = 100;
+  re41_k2 = 100;
+  Cortisol_CBG_k1 = 60;
+  Cortisol_CBG_k2 = 270;
+  Cort_Alb_k1 = 60;
+  Cort_Alb_k2 = 900000;
+  cort_distribution_k1 = 1000;
+
+  // Other declarations:
+  var GRprotein, PXRprotein;
+  const default, blood, GeneProteinBinding_diff_limited, cypGene_PXRprotein;
+  const cypMrna_synt, PXRGene_GRprotein, TATGene_GRprotein, GRGene_GRprotein;
+  const grMrna_synt, tatMrna_synt, pxrMrna_synt;
+
+  // Unit definitions:
+  unit time_unit = 60 second;
+  unit substance = 1e-9 mole;
+
+  // Display Names:
+  time_unit is "time";
+  s28 is "S_RNA";
+  s36 is "S_PROT";
+  s46 is "PXR_GENE";
+  s32 is "PXR_RNA";
+  s42 is "PXR_PROT";
+  s30 is "P";
+  s40 is "GR_GENE";
+  s33 is "GR_RNA";
+  s39 is "GR_PROT";
+  s114 is "Cort";
+  s155 is "CYP_GENE";
+  s172 is "CYP_PROT";
+  s173 is "CYP_RNA";
+  s185 is "TAT_RNA";
+  s84 is "GRgene_GRprot_Cort";
+  s165 is "CYPgene_PXRprot_Cort";
+  s109 is "PXRgene_GRprot_Cort";
+  s87 is "GRprot_Cort";
+  s119 is "PXRprot_Cort";
+  s183 is "TATgene_GRprot_Cort";
+  s178 is "TAT_GENE";
+  s10 is "Cort_degr";
+  s2 is "CortOUT";
+
+  // CV terms:
+  default identity "http://identifiers.org/go/GO:0005623"
+  blood model_entity_is "http://identifiers.org/bto/BTO:0000089"
+  s28 model_entity_is "http://identifiers.org/chebi/CHEBI:33699"
+  s36 identity "http://identifiers.org/chebi/CHEBI:16541"
+  s46 encodement "http://identifiers.org/uniprot/O75469"
+  s46 hypernym "http://identifiers.org/ensembl/ENSG00000144852"
+  s32 encodement "http://identifiers.org/uniprot/O75469"
+  s32 hypernym "http://identifiers.org/ensembl/ENST00000337940"
+  s42 hypernym "http://identifiers.org/uniprot/O75469"
+  s30 identity "http://identifiers.org/biomodels.sbo/SBO:0000291"
+  s40 hypernym "http://identifiers.org/ensembl/ENSG00000113580"
+  s40 encodement "http://identifiers.org/uniprot/P04150"
+  s33 hypernym "http://identifiers.org/ensembl/ENST00000343796"
+  s33 encodement "http://identifiers.org/uniprot/P04150"
+  s39 hypernym "http://identifiers.org/uniprot/P04150"
+  s114 hypernym "http://identifiers.org/chebi/CHEBI:17650"
+  s155 encodement "http://identifiers.org/uniprot/P08684"
+  s155 hypernym "http://identifiers.org/ensembl/ENSG00000160868"
+  s172 hypernym "http://identifiers.org/uniprot/P08684"
+  s173 encodement "http://identifiers.org/uniprot/P08684"
+  s173 hypernym "http://identifiers.org/ensembl/ENST00000336411"
+  s185 hypernym "http://identifiers.org/ensembl/ENST00000355962"
+  s185 encodement "http://identifiers.org/uniprot/P17735"
+  s84 part "http://identifiers.org/chebi/CHEBI:17650",
+           "http://identifiers.org/ensembl/ENSG00000113580",
+           "http://identifiers.org/uniprot/P04150"
+  s165 part "http://identifiers.org/chebi/CHEBI:17650",
+            "http://identifiers.org/ensembl/ENSG00000160868",
+            "http://identifiers.org/uniprot/O75469"
+  s109 part "http://identifiers.org/chebi/CHEBI:17650",
+            "http://identifiers.org/ensembl/ENSG00000144852",
+            "http://identifiers.org/uniprot/P04150"
+  s87 part "http://identifiers.org/chebi/CHEBI:17650",
+           "http://identifiers.org/uniprot/P04150"
+  s119 part "http://identifiers.org/chebi/CHEBI:17650",
+            "http://identifiers.org/uniprot/O75469"
+  s183 part "http://identifiers.org/chebi/CHEBI:17650",
+            "http://identifiers.org/ensembl/ENSG00000198650",
+            "http://identifiers.org/uniprot/P04150"
+  s178 encodement "http://identifiers.org/uniprot/P17735"
+  s178 hypernym "http://identifiers.org/ensembl/ENSG00000198650"
+  s10 identity "http://identifiers.org/biomodels.sbo/SBO:0000291"
+  Cortisone hypernym "http://identifiers.org/chebi/CHEBI:16962"
+  TAT_PROT hypernym "http://identifiers.org/uniprot/P17735"
+  Ligand2 model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000280"
+  PXRprot_Ligand2 part "http://identifiers.org/uniprot/O75469",
+                       "http://identifiers.org/biomodels.sbo/SBO:0000280"
+  CYPgene_PXRprot_Ligand2 part "http://identifiers.org/ensembl/ENSG00000160868",
+                               "http://identifiers.org/uniprot/O75469",
+                               "http://identifiers.org/biomodels.sbo/SBO:0000280"
+  DEX hypernym "http://identifiers.org/chebi/CHEBI:41879"
+  GRprot_DEX part "http://identifiers.org/chebi/CHEBI:41879",
+                  "http://identifiers.org/uniprot/P04150"
+  PXRprot_DEX part "http://identifiers.org/chebi/CHEBI:41879",
+                   "http://identifiers.org/uniprot/O75469"
+  DEX_degr identity "http://identifiers.org/biomodels.sbo/SBO:0000291"
+  CYPgene_PXRprot_DEX part "http://identifiers.org/chebi/CHEBI:41879",
+                           "http://identifiers.org/ensembl/ENSG00000160868",
+                           "http://identifiers.org/uniprot/O75469"
+  PXRgene_GRprot_DEX part "http://identifiers.org/chebi/CHEBI:41879",
+                          "http://identifiers.org/ensembl/ENSG00000144852",
+                          "http://identifiers.org/uniprot/P04150"
+  GRgene_GRprot_DEX part "http://identifiers.org/chebi/CHEBI:41879",
+                         "http://identifiers.org/ensembl/ENSG00000113580",
+                         "http://identifiers.org/uniprot/P04150"
+  TATgene_GRprot_DEX part "http://identifiers.org/chebi/CHEBI:41879",
+                          "http://identifiers.org/ensembl/ENSG00000198650",
+                          "http://identifiers.org/uniprot/P04150"
+  s2 hypernym "http://identifiers.org/chebi/CHEBI:17650"
+  DEXout hypernym "http://identifiers.org/chebi/CHEBI:41879"
+  CBG hypernym "http://identifiers.org/uniprot/P08185"
+  CBG_CortOUT part "http://identifiers.org/chebi/CHEBI:17650",
+                   "http://identifiers.org/uniprot/P08185"
+  Alb hypernym "http://identifiers.org/uniprot/P02768"
+  Alb_CortOUT part "http://identifiers.org/chebi/CHEBI:17650",
+                   "http://identifiers.org/uniprot/P02768"
+  CortAdded hypernym "http://identifiers.org/chebi/CHEBI:17650"
+end
+
+MODEL1506290000 is "Kolodkin2013 - Nuclear receptor-mediated cortisol signalling network"
+
+MODEL1506290000 model_entity_is "http://identifiers.org/biomodels.db/MODEL1506290000"
+MODEL1506290000 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000576"
+MODEL1506290000 description "http://identifiers.org/pubmed/23653204"
+MODEL1506290000 taxon "http://identifiers.org/taxonomy/9606"
+MODEL1506290000 container "http://identifiers.org/bto/BTO:0000575"
+MODEL1506290000 hypernym "http://identifiers.org/go/GO:0051414"

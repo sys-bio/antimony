@@ -1,0 +1,263 @@
+// Created by libAntimony v2.13.0
+function Function_for_r2(K_asp, K_m2, K_utp, asp, compartment_, cp, utp, vmax2)
+  vmax2*cp*asp/((1 + utp/K_utp)*(K_m2 + cp)*(K_asp + asp))/compartment_;
+end
+
+Function_for_r2 is "Function for r2"
+
+function Function_for_r1(K_atp, K_bc, K_q, K_utp, atp, bc, compartment_, glu, utp, vmax1)
+  vmax1*bc*glu*atp/((1 + utp/K_utp)*(K_atp + atp)*(K_bc + bc)*(K_q + glu))/compartment_;
+end
+
+Function_for_r1 is "Function for r1"
+
+function Function_for_r3(K_m3, ca, compartment_, vmax3)
+  vmax3*ca/(K_m3 + ca)/compartment_;
+end
+
+Function_for_r3 is "Function for r3"
+
+function Function_for_r4(K_m4, compartment_, dho, vmax4)
+  vmax4*dho/(K_m4 + dho)/compartment_;
+end
+
+Function_for_r4 is "Function for r4"
+
+function Function_for_r5(K_m5, compartment_, oro, prpp, vmax5)
+  vmax5*oro*prpp/(K_m5 + oro*prpp)/compartment_;
+end
+
+Function_for_r5 is "Function for r5"
+
+function Function_for_r6(K_m6, compartment_, omp, vmax6)
+  vmax6*omp/(K_m6 + omp)/compartment_;
+end
+
+Function_for_r6 is "Function for r6"
+
+function Function_for_r10(K_m10, compartment_, ump, vmax10)
+  vmax10*ump/(K_m10 + ump)/compartment_;
+end
+
+Function_for_r10 is "Function for r10"
+
+function Function_for_r7(K_m7, compartment_, udp, vmax7)
+  vmax7*udp/(K_m7 + udp)/compartment_;
+end
+
+Function_for_r7 is "Function for r7"
+
+function Function_for_utp_degradation(K_Mp, compartment_, g_pyr, utp)
+  g_pyr*utp/(K_Mp + utp)/compartment_;
+end
+
+Function_for_utp_degradation is "Function for utp_degradation"
+
+function Function_for_r8(K_m8, compartment_, utp, vmax8)
+  vmax8*utp/(K_m8 + utp)/compartment_;
+end
+
+Function_for_r8 is "Function for r8"
+
+function Function_for_ctp_degradation(K_Mp, compartment_, ctp, g_pyr)
+  g_pyr*ctp/(K_Mp + ctp)/compartment_;
+end
+
+Function_for_ctp_degradation is "Function for ctp_degradation"
+
+function Function_for_cp_dilution(compartment_, cp, d)
+  d*cp/compartment_;
+end
+
+Function_for_cp_dilution is "Function for cp_dilution"
+
+function Function_for_ca_dilution(ca, compartment_, d)
+  d*ca/compartment_;
+end
+
+Function_for_ca_dilution is "Function for ca_dilution"
+
+function Function_for_dho_dilution(compartment_, d, dho)
+  d*dho/compartment_;
+end
+
+Function_for_dho_dilution is "Function for dho_dilution"
+
+function Function_for_oro_dilution(compartment_, d, oro)
+  d*oro/compartment_;
+end
+
+Function_for_oro_dilution is "Function for oro_dilution"
+
+function Function_for_omp_dilution(compartment_, d, omp)
+  d*omp/compartment_;
+end
+
+Function_for_omp_dilution is "Function for omp_dilution"
+
+function Function_for_ump_dilution(compartment_, d, ump)
+  d*ump/compartment_;
+end
+
+Function_for_ump_dilution is "Function for ump_dilution"
+
+function Function_for_udp_dilution(compartment_, d, udp)
+  d*udp/compartment_;
+end
+
+Function_for_udp_dilution is "Function for udp_dilution"
+
+function Function_for_utp_dilution(compartment_, d, utp)
+  d*utp/compartment_;
+end
+
+Function_for_utp_dilution is "Function for utp_dilution"
+
+function Function_for_ctp_dilution(compartment_, ctp, d)
+  d*ctp/compartment_;
+end
+
+Function_for_ctp_dilution is "Function for ctp_dilution"
+
+
+model *MODEL1512160000()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species cp in compartment_, ca in compartment_, dho in compartment_, oro in compartment_;
+  species omp in compartment_, ump in compartment_, udp in compartment_, utp in compartment_;
+  species ctp in compartment_;
+
+  // Reactions:
+  r1:  -> cp; compartment_*Function_for_r1(K_atp, K_bc, K_q, K_utp, atp, bc, compartment_, glu, utp, vmax1);
+  r2: cp -> ca; compartment_*Function_for_r2(K_asp, K_m2, K_utp, asp, compartment_, cp, utp, vmax2);
+  r3: ca -> dho; compartment_*Function_for_r3(K_m3, ca, compartment_, vmax3);
+  r4: dho -> oro; compartment_*Function_for_r4(K_m4, compartment_, dho, vmax4);
+  r5: oro -> omp; compartment_*Function_for_r5(K_m5, compartment_, oro, prpp, vmax5);
+  r6: omp -> ump; compartment_*Function_for_r6(K_m6, compartment_, omp, vmax6);
+  r10: ump -> udp; compartment_*Function_for_r10(K_m10, compartment_, ump, vmax10);
+  r7: udp -> utp; compartment_*Function_for_r7(K_m7, compartment_, udp, vmax7);
+  utp_degradation: utp -> ; compartment_*Function_for_utp_degradation(K_Mp, compartment_, g_pyr, utp);
+  r8: utp -> ctp; compartment_*Function_for_r8(K_m8, compartment_, utp, vmax8);
+  ctp_degradation: ctp -> ; compartment_*Function_for_ctp_degradation(K_Mp, compartment_, ctp, g_pyr);
+  cp_dilution: cp -> ; compartment_*Function_for_cp_dilution(compartment_, cp, d);
+  ca_dilution: ca -> ; compartment_*Function_for_ca_dilution(ca, compartment_, d);
+  dho_dilution: dho -> ; compartment_*Function_for_dho_dilution(compartment_, d, dho);
+  oro_dilution: oro -> ; compartment_*Function_for_oro_dilution(compartment_, d, oro);
+  omp_dilution: omp -> ; compartment_*Function_for_omp_dilution(compartment_, d, omp);
+  ump_dilution: ump -> ; compartment_*Function_for_ump_dilution(compartment_, d, ump);
+  udp_dilution: udp -> ; compartment_*Function_for_udp_dilution(compartment_, d, udp);
+  utp_dilution: utp -> ; compartment_*Function_for_utp_dilution(compartment_, d, utp);
+  ctp_dilution: ctp -> ; compartment_*Function_for_ctp_dilution(compartment_, ctp, d);
+
+  // Species initializations:
+  cp = 0.00037;
+  ca = 0.00037;
+  dho = 0.00037;
+  oro = 0.00037;
+  omp = 0.00037;
+  ump = 0.00037;
+  udp = 0.002886;
+  utp = 0.00666;
+  ctp = 0.00037;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  vmax1 = 3.61602627459517;
+  bc = 1.52264278250403;
+  glu = 0.54620785996429;
+  K_utp = 1.413855257896;
+  K_q = 0.05784981576165;
+  K_bc = 2.3716657188714;
+  vmax2 = 2.44590712912244;
+  asp = 0.0972544685826559;
+  atp = 0.150650172583633;
+  K_atp = 1.28940553329954;
+  K_m2 = 2.00489353757245;
+  vmax3 = 28.6613123782585;
+  K_m3 = 1.27179181717468;
+  vmax4 = 91.7802875108298;
+  K_m4 = 0.0160033122150611;
+  vmax5 = 5227.49670547203;
+  K_m5 = 0.0195216150005324;
+  prpp = 0.181644900226225;
+  vmax6 = 34.9720846528477;
+  K_m6 = 20.3406449182435;
+  vmax10 = 6.55543523218919;
+  K_m10 = 0.0267841313759584;
+  vmax7 = 5.83104141997666;
+  K_m7 = 0.166382738667754;
+  g_pyr = 0.198306450999093;
+  K_Mp = 5.48714446027226;
+  vmax8 = 0.162943604164789;
+  K_m8 = 0.00435621076587497;
+  K_asp = 0.168308889432487;
+  d = 0.1;
+
+  // Other declarations:
+  const compartment_, vmax1, bc, glu, K_utp, K_q, K_bc, vmax2, asp, atp, K_atp;
+  const K_m2, vmax3, K_m3, vmax4, K_m4, vmax5, K_m5, prpp, vmax6, K_m6, vmax10;
+  const K_m10, vmax7, K_m7, g_pyr, K_Mp, vmax8, K_m8, K_asp, d;
+
+  // Unit definitions:
+  unit time_unit = 3600 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+  bc is "[bc]";
+  glu is "[glu]";
+  asp is "[asp]";
+  atp is "[atp]";
+  prpp is "[prpp]";
+
+  // CV terms:
+  cp identity "http://identifiers.org/kegg.compound/C00169",
+              "http://identifiers.org/chebi/CHEBI:17672"
+  ca identity "http://identifiers.org/kegg.compound/C00438",
+              "http://identifiers.org/chebi/CHEBI:15859"
+  dho identity "http://identifiers.org/kegg.compound/C00337",
+               "http://identifiers.org/chebi/CHEBI:17025"
+  oro identity "http://identifiers.org/kegg.compound/C00295",
+               "http://identifiers.org/chebi/CHEBI:16742"
+  omp identity "http://identifiers.org/kegg.compound/C01103",
+               "http://identifiers.org/chebi/CHEBI:15842"
+  ump identity "http://identifiers.org/kegg.compound/C00105",
+               "http://identifiers.org/chebi/CHEBI:16695"
+  udp identity "http://identifiers.org/kegg.compound/C00015",
+               "http://identifiers.org/chebi/CHEBI:17659"
+  utp identity "http://identifiers.org/kegg.compound/C00075",
+               "http://identifiers.org/chebi/CHEBI:15713"
+  ctp identity "http://identifiers.org/kegg.compound/C00063",
+               "http://identifiers.org/chebi/CHEBI:17677"
+  r1 identity "http://identifiers.org/uniprot/P07259"
+  r1 identity "http://identifiers.org/kegg.reaction/R00575"
+  r2 identity "http://identifiers.org/kegg.reaction/R01397"
+  r2 identity "http://identifiers.org/uniprot/P07259"
+  r3 identity "http://identifiers.org/kegg.reaction/R01993"
+  r3 identity "http://identifiers.org/uniprot/P20051"
+  r4 identity "http://identifiers.org/kegg.reaction/R01866"
+  r4 identity "http://identifiers.org/uniprot/P28272"
+  r5 identity "http://identifiers.org/uniprot/P13298"
+  r5 identity "http://identifiers.org/kegg.reaction/R01870"
+  r5 homolog "http://identifiers.org/uniprot/P30402"
+  r6 identity "http://identifiers.org/uniprot/P03962"
+  r6 identity "http://identifiers.org/kegg.reaction/R00965"
+  r10 version "http://identifiers.org/kegg.reaction/R00158"
+  r10 identity "http://identifiers.org/uniprot/P15700"
+  r7 identity "http://identifiers.org/uniprot/P36010"
+  r7 identity "http://identifiers.org/kegg.reaction/R00156"
+  r8 identity "http://identifiers.org/kegg.reaction/R00573"
+  r8 identity "http://identifiers.org/uniprot/P28274"
+end
+
+MODEL1512160000 is "Hermansen2015 - denovo biosynthesis of pyrimidines in yeast"
+
+MODEL1512160000 model_entity_is "http://identifiers.org/biomodels.db/MODEL1512160000"
+MODEL1512160000 description "http://identifiers.org/pubmed/26511837"
+MODEL1512160000 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000590"
+MODEL1512160000 encodement "http://identifiers.org/kegg.pathway/rn00240"
+MODEL1512160000 description "http://identifiers.org/doi/doi:10.1186/s12862-015-0515-x"

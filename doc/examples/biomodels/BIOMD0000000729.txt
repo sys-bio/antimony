@@ -1,0 +1,123 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function function_for_decay(k1, S, k2)
+  k1*S/(k2 + S);
+end
+
+function_for_decay is "function for decay"
+
+function function_for_synthesis(k1, P, k2)
+  k1*(1 - P)/(k2 + 1 - P);
+end
+
+function_for_synthesis is "function for synthesis"
+
+function function_for_C_decay(k1, M, S, k2)
+  k1*M*S/(k2 + S);
+end
+
+function_for_C_decay is "function for C decay"
+
+
+model *Goldbeter1996___Cyclin_Cdc2_kinase_Oscillations()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species C in compartment_, M in compartment_, X in compartment_;
+
+  // Assignment Rules:
+  V1 := (C/(Kc + C))*VM1;
+  V3 := M*VM3;
+
+  // Reactions:
+  Cyclin_synthesis:  => C; compartment_*Constant_flux__irreversible(vi);
+  Cyclin_degradation: C => ; compartment_*function_for_C_decay(vd, X, C, Kd);
+  Cyclin_decay: C => ; compartment_*kd*C;
+  Cdc2_kinase_activation:  => M; compartment_*function_for_synthesis(V1, M, K1);
+  Cdc2_kinase_inactivation: M => ; compartment_*function_for_decay(V2, M, K2);
+  X_activation:  => X; compartment_*function_for_synthesis(V3, X, K3);
+  X_inactivation: X => ; compartment_*function_for_decay(V4, X, K4);
+
+  // Species initializations:
+  C = 0;
+  M = 0;
+  X = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  Kc = 0.5;
+  VM1 = 3;
+  VM3 = 1;
+  V2 = 1.5;
+  V4 = 0.5;
+  vi = 0.05;
+  vd = 0.25;
+  Kd = 0.02;
+  K1 = 0.01;
+  K2 = 0.01;
+  K3 = 0.01;
+  K4 = 0.01;
+  kd = 0.01;
+
+  // Other declarations:
+  var V1, V3;
+  const compartment_, Kc, VM1, VM3, V2, V4, vi, vd, Kd, K1, K2, K3, K4, kd;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 60 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+  Cyclin_synthesis is "Cyclin synthesis";
+  Cyclin_degradation is "Cyclin degradation";
+  Cyclin_decay is "Cyclin decay";
+  Cdc2_kinase_activation is "Cdc2 kinase activation";
+  Cdc2_kinase_inactivation is "Cdc2 kinase inactivation";
+  X_activation is "X activation";
+  X_inactivation is "X inactivation";
+
+  // CV terms:
+  C hypernym "http://identifiers.org/uniprot/C94967"
+  C property "http://identifiers.org/ncit/C17349"
+  M property "http://identifiers.org/ncit/C28597"
+  X property "http://identifiers.org/ncit/C16981"
+  V1 property "http://identifiers.org/ncit/C25636"
+  Kc property "http://identifiers.org/ncit/C64638"
+  VM1 property "http://identifiers.org/ncit/C25636"
+  V3 property "http://identifiers.org/ncit/C25636"
+  VM3 property "http://identifiers.org/icd/C25636"
+  V2 property "http://identifiers.org/ncit/C25636"
+  V4 instance "http://identifiers.org/ncit/C25636"
+  vi property "http://identifiers.org/ncit/C25636"
+  vd property "http://identifiers.org/ncit/C25636"
+  Kd property "http://identifiers.org/ncit/C64638"
+  K1 property "http://identifiers.org/ncit/C64638"
+  K2 property "http://identifiers.org/ncit/C64638"
+  K3 property "http://identifiers.org/ncit/C64638"
+  K4 property "http://identifiers.org/ncit/C64638"
+  kd property "http://identifiers.org/ncit/C94967"
+  Cyclin_synthesis property "http://identifiers.org/ncit/C61408"
+  Cyclin_degradation property "http://identifiers.org/ncit/C61559"
+  Cyclin_decay property "http://identifiers.org/ncit/C75947"
+  Cdc2_kinase_activation property "http://identifiers.org/ncit/C64382"
+  X_activation property "http://identifiers.org/ncit/C64382"
+end
+
+Goldbeter1996___Cyclin_Cdc2_kinase_Oscillations is "Goldbeter1996 - Cyclin Cdc2 kinase Oscillations"
+
+Goldbeter1996___Cyclin_Cdc2_kinase_Oscillations description "http://identifiers.org/pubmed/8631387"
+Goldbeter1996___Cyclin_Cdc2_kinase_Oscillations model_entity_is "http://identifiers.org/biomodels.db/MODEL1812120005",
+                                                                "http://identifiers.org/biomodels.db/BIOMD0000000729"
+Goldbeter1996___Cyclin_Cdc2_kinase_Oscillations property "http://identifiers.org/mamo/MAMO_0000046"
+Goldbeter1996___Cyclin_Cdc2_kinase_Oscillations property "http://identifiers.org/go/GO:0000278"
+Goldbeter1996___Cyclin_Cdc2_kinase_Oscillations taxon "http://identifiers.org/taxonomy/2759"

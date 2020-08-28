@@ -1,0 +1,336 @@
+// Created by libAntimony v2.13.0
+function Rate_Law_for_b_syn_1(A4, A4_star, A6, A6_star, Ip, Ip_star, KA4, KA6, KX, Kb4, Kb6, Kth4, Kth6, alphaA4, alphaA6, alphaI, alphaX, b_star, betaI, kdb, nA, nA4, nA6, x, x_star)
+  kdb*((1 + alphaI*(Ip - Ip_star))/(1 + betaI*(Ip - Ip_star)))*b_star + alphaA6*(1 + Kb6*A4)*((A6 - A6_star)^nA6/((A6 - A6_star)^nA6 + KA6^nA6*(1 + Kth6*A4^nA))) + alphaA4*(1 + Kb4*A6)*((A4 - A4_star)^nA4/((A4 - A4_star)^nA4 + KA4^nA4*(1 + Kth4*A6)^nA4)) + alphaX*((x - x_star)/((x - x_star) + KX));
+end
+
+Rate_Law_for_b_syn_1 is "Rate Law for b syn_1"
+
+function Rate_Law_for_b_degr_1(Ip, Ip_star, alphaI, b, betaI, kdb)
+  kdb*((1 + alphaI*(Ip - Ip_star))/(1 + betaI*(Ip - Ip_star)))*b;
+end
+
+Rate_Law_for_b_degr_1 is "Rate Law for b degr_1"
+
+function Rate_Law_for_A6_syn_1(A6, A6_star, A6tot_norm, B, KBA6, U, U_star, kcl, kdA6)
+  kdA6*A6_star + kcl*(U - U_star)*((A6tot_norm - A6)/(1 + B/KBA6));
+end
+
+Rate_Law_for_A6_syn_1 is "Rate Law for A6 syn_1"
+
+function Rate_Law_for_U_degr_1(B, Ip, Ip_star, KII, U, delta)
+  delta*(U/(1 + KII*(Ip - Ip_star)))*B;
+end
+
+Rate_Law_for_U_degr_1 is "Rate Law for U degr_1"
+
+function Rate_Law_for_A4_syn_1(A4_star, Ep, U, U_star, gamma_, kdA4)
+  kdA4*A4_star + gamma_*(U - U_star)*Ep;
+end
+
+Rate_Law_for_A4_syn_1 is "Rate Law for A4 syn_1"
+
+function Rate_Law_for_c_syn_1(A4, A4_star, A6, KA4c, Kc4, Kth4c, c_star, kdc, muA4, n)
+  kdc*c_star + muA4*(1 + Kc4*A6)*((A4 - A4_star)^n/((A4 - A4_star)^n + KA4c^n*(1 + Kth4c*A6)^n));
+end
+
+Rate_Law_for_c_syn_1 is "Rate Law for c syn_1"
+
+function Rate_Law_for_C_syn_1(C_star, Ep, Ep_star, c, c_star, kdC, ktC)
+  (kdC*C_star/c_star + ktC*(Ep - Ep_star))*c;
+end
+
+Rate_Law_for_C_syn_1 is "Rate Law for C syn_1"
+
+function Rate_Law_for_g_syn_1(A4, A4_star, C, C_star, KA4g, KC, Kth4g, etaC, g_star, kdg)
+  kdg*g_star + etaC*(((A4 - A4_star) + KA4g*(A4 - A4_star)*(C - C_star))/((A4 - A4_star) + Kth4g*(A4 - A4_star)*(C - C_star) + KC));
+end
+
+Rate_Law_for_g_syn_1 is "Rate Law for g syn_1"
+
+function Rate_Law_for_G_syn_1(Ep, Ep_star, G_star, g, g_star, kdG, ktG)
+  (kdG*G_star/g_star + ktG*(Ep - Ep_star))*g;
+end
+
+Rate_Law_for_G_syn_1 is "Rate Law for G syn_1"
+
+function Rate_Law_for_Ep_degr_1(Ep, G, G_star, Kdeph, kdeph1, kdeph2)
+  (kdeph1 + kdeph2*(G - G_star))*(Ep/(Kdeph + Ep));
+end
+
+Rate_Law_for_Ep_degr_1 is "Rate Law for Ep degr_1"
+
+function Rate_Law_for_U_syn_1(Ep, Ip, Ip_star, KE, KUI, KUU, Stress, U, ksU, n)
+  (ksU/(1 + KUI*(Ip - Ip_star)) + Stress)/(1 + Ep/KE + (U/KUU)^n);
+end
+
+Rate_Law_for_U_syn_1 is "Rate Law for U syn_1"
+
+function Rate_Law_for_Btot_syn_1(Btot_star, b, b_star, kdB)
+  (kdB*Btot_star/b_star)*b;
+end
+
+Rate_Law_for_Btot_syn_1 is "Rate Law for Btot syn_1"
+
+function Rate_Law_for_Ep_syn_1(Ep, Etot_norm, Kph, Pp, kph)
+  kph*((Etot_norm - Ep)*Pp/(Kph + (Etot_norm - Ep)));
+end
+
+Rate_Law_for_Ep_syn_1 is "Rate Law for Ep syn_1"
+
+function Rate_Law_for_x_syn_1(Ip, Kx, ksp, x, xtot_norm)
+  ksp*Ip*((xtot_norm - x)/(Kx + xtot_norm - x));
+end
+
+Rate_Law_for_x_syn_1 is "Rate Law for x syn_1"
+
+
+model *Diedrichs2018___A_data_entrained_computational_model_for_testing_the_regulatory_logic_of_the_vertebrate_unfolded_protein_response()
+
+  // Compartments and Species:
+  compartment ER;
+  species U in ER, A6 in ER, b in ER, Btot in ER, A4 in ER, c in ER, C in ER;
+  species g in ER, G in ER, Ep in ER, x in ER;
+
+  // Assignment Rules:
+  B := Btot/(1 + U/KBU);
+  CHOP_BiP_ratio := C/Btot;
+  KUP := (1/f - 1)*(U_star/(1 + (Btot_star/KBP)*(1/(1 + U_star/KBU))));
+  KUI := (1/fi - 1)*(U_star/(1 + (Btot_star/KBI)*(1/(1 + U_star/KBU))));
+  Pp := KOperk*(1/f)*(U/(KUP + (KUP/KBP)*B + U));
+  Ip := KOire1*(1/fi)*(U/(KUI + (KUI/KBI)*B + U));
+
+  // Reactions:
+  Btot_degr: Btot => ; ER*kdB*Btot;
+  b_syn:  => b; ER*Rate_Law_for_b_syn_1(A4, A4_star, A6, A6_star, Ip, Ip_star, b_syn_KA4, b_syn_KA6, b_syn_KX, b_syn_Kb4, b_syn_Kb6, b_syn_Kth4, b_syn_Kth6, b_syn_alphaA4, b_syn_alphaA6, alphaI, b_syn_alphaX, b_star, betaI, kdb, b_syn_nA, b_syn_nA4, b_syn_nA6, x, x_star);
+  b_degr: b => ; ER*Rate_Law_for_b_degr_1(Ip, Ip_star, alphaI, b, betaI, kdb);
+  A6_degr: A6 => ; ER*kdA6*A6;
+  A6_syn:  => A6; ER*Rate_Law_for_A6_syn_1(A6, A6_star, A6tot_norm, B, KBA6, U, U_star, A6_syn_kcl, kdA6);
+  U_degr: U => ; ER*Rate_Law_for_U_degr_1(B, Ip, Ip_star, U_degr_KII, U, U_degr_delta);
+  A4_syn:  => A4; ER*Rate_Law_for_A4_syn_1(A4_star, Ep, U, U_star, A4_syn_gamma, kdA4);
+  A4_degr: A4 => ; ER*kdA4*A4;
+  c_syn:  => c; ER*Rate_Law_for_c_syn_1(A4, A4_star, A6, c_syn_KA4c, c_syn_Kc4, c_syn_Kth4c, c_star, kdc, c_syn_muA4, c_syn_n);
+  c_degr: c => ; ER*kdc*c;
+  C_syn:  => C; ER*Rate_Law_for_C_syn_1(C_star, Ep, Ep_star, c, c_star, kdC, C_syn_ktC);
+  C_degr: C => ; ER*kdC*C;
+  g_syn:  => g; ER*Rate_Law_for_g_syn_1(A4, A4_star, C, C_star, g_syn_KA4g, g_syn_KC, g_syn_Kth4g, g_syn_etaC, g_star, kdg);
+  g_degr: g => ; ER*kdg*g;
+  G_syn:  => G; ER*Rate_Law_for_G_syn_1(Ep, Ep_star, G_star, g, g_star, kdG, G_syn_ktG);
+  G_degr: G => ; ER*kdG*G;
+  Ep_degr: Ep => ; ER*Rate_Law_for_Ep_degr_1(Ep, G, G_star, Ep_degr_Kdeph, Ep_degr_kdeph1, Ep_degr_kdeph2);
+  U_syn:  => U; ER*Rate_Law_for_U_syn_1(Ep, Ip, Ip_star, U_syn_KE, U_syn_KUI, U_syn_KUU, Stress, U, U_syn_ksU, U_syn_n);
+  Btot_syn:  => Btot; ER*Rate_Law_for_Btot_syn_1(Btot_star, b, b_star, kdB);
+  Ep_syn:  => Ep; ER*Rate_Law_for_Ep_syn_1(Ep, Etot_norm, Ep_syn_Kph, Pp, Ep_syn_kph);
+  x_degr: x => ; ER*kdx*x;
+  x_syn:  => x; ER*Rate_Law_for_x_syn_1(Ip, x_syn_Kx, x_syn_ksp, x, xtot_norm);
+
+  // Species initializations:
+  U = U_star;
+  A6 = A6_star;
+  b = b_star;
+  Btot = Btot_star;
+  A4 = A4_star;
+  c = c_star;
+  C = C_star;
+  g = g_star;
+  G = G_star;
+  Ep = Ep_star;
+  x = x_star;
+
+  // Compartment initializations:
+  ER = 1;
+
+  // Variable initializations:
+  U_star = 1;
+  U_star has unit_0;
+  A6_star = 1;
+  A6_star has unit_0;
+  b_star = 1;
+  b_star has unit_0;
+  Btot_star = 1;
+  Btot_star has unit_0;
+  A4_star = 1;
+  A4_star has unit_0;
+  c_star = 1;
+  c_star has unit_0;
+  C_star = 1;
+  C_star has unit_0;
+  g_star = 1;
+  g_star has unit_0;
+  G_star = 1;
+  G_star has unit_0;
+  Ep_star = 1;
+  Ep_star has unit_0;
+  x_star = 1;
+  x_star has unit_0;
+  B has unit_0;
+  KBU = 0.8;
+  KBU has unit_0;
+  KBP = 0.01;
+  KBP has unit_0;
+  KBA6 = 1.6e-05;
+  KBA6 has unit_0;
+  A6tot_norm = 15;
+  A6tot_norm has unit_0;
+  CHOP_BiP_ratio has unit_0;
+  kdB = 0.0002514;
+  kdB has unit_1;
+  kdb = 0.001284;
+  kdb has unit_1;
+  kdA4 = 0.00384;
+  kdA4 has unit_1;
+  kdA6 = 0.00384;
+  kdA6 has unit_1;
+  kdc = 0.00393;
+  kdc has unit_1;
+  kdC = 0.005478;
+  kdC has unit_1;
+  kdg = 0.003468;
+  kdg has unit_1;
+  kdG = 0.003852;
+  kdG has unit_1;
+  Stress = 2;
+  Stress has unit_1;
+  Etot_norm = 20;
+  Etot_norm has unit_0;
+  f = 0.02;
+  f has unit_0;
+  xtot_norm = 16;
+  xtot_norm has unit_0;
+  kdx = 0.006546;
+  kdx has unit_1;
+  KUP has unit_0;
+  KBI = 0.01;
+  KBI has unit_0;
+  KUI has unit_0;
+  fi = 0.01;
+  fi has unit_0;
+  Pp has unit_0;
+  KOperk = 1;
+  KOperk has unit_0;
+  Ip has unit_0;
+  KOire1 = 1;
+  KOire1 has unit_0;
+  alphaI = 0.2;
+  alphaI has unit_0;
+  Ip_star = 1;
+  Ip_star has unit_0;
+  betaI = 0.1;
+  betaI has unit_0;
+  b_syn_KA4 = 3;
+  b_syn_KA6 = 3;
+  b_syn_KX = 8;
+  b_syn_Kb4 = 0.5;
+  b_syn_Kb6 = 0.56;
+  b_syn_Kth4 = 0.167;
+  b_syn_Kth6 = 1e-05;
+  b_syn_alphaA4 = 0.007;
+  b_syn_alphaA6 = 0.012;
+  b_syn_alphaX = 0.002;
+  b_syn_nA = 7;
+  b_syn_nA4 = 2;
+  b_syn_nA6 = 2;
+  A6_syn_kcl = 4;
+  U_degr_KII = 0.01;
+  U_degr_delta = 1.5;
+  A4_syn_gamma = 0.001;
+  c_syn_KA4c = 2;
+  c_syn_Kc4 = 0.56;
+  c_syn_Kth4c = 0.25;
+  c_syn_muA4 = 0.1;
+  c_syn_n = 2;
+  C_syn_ktC = 0.0001;
+  g_syn_KA4g = 0.75;
+  g_syn_KC = 5;
+  g_syn_Kth4g = 0.1;
+  g_syn_etaC = 0.012;
+  G_syn_ktG = 0.0015;
+  Ep_degr_Kdeph = 7;
+  Ep_degr_kdeph1 = 0.03;
+  Ep_degr_kdeph2 = 0.08;
+  U_syn_KE = 3;
+  U_syn_KUI = 0.01;
+  U_syn_KUU = 6;
+  U_syn_ksU = 0.89;
+  U_syn_n = 4;
+  Ep_syn_Kph = 14;
+  Ep_syn_kph = 0.00651;
+  x_syn_Kx = 3;
+  x_syn_ksp = 0.00785;
+
+  // Other declarations:
+  var B, CHOP_BiP_ratio, KUP, KUI, Pp, Ip;
+  const ER, U_star, A6_star, b_star, Btot_star, A4_star, c_star, C_star, g_star;
+  const G_star, Ep_star, x_star, KBU, KBP, KBA6, A6tot_norm, kdB, kdb, kdA4;
+  const kdA6, kdc, kdC, kdg, kdG, Stress, Etot_norm, f, xtot_norm, kdx, KBI;
+  const fi, KOperk, KOire1, alphaI, Ip_star, betaI;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 60 second;
+  unit substance = item;
+  unit unit_0 = 1 / dimensionless^-0;
+  unit unit_1 = 1 / 16.6667 second;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1";
+  unit_1 is "1/(16.6667*s)";
+  CHOP_BiP_ratio is "CHOP/BiP ratio";
+  Btot_degr is "Btot degr";
+  b_syn is "b syn";
+  b_degr is "b degr";
+  A6_degr is "A6 degr";
+  A6_syn is "A6 syn";
+  U_degr is "U degr";
+  A4_syn is "A4 syn";
+  A4_degr is "A4 degr";
+  c_syn is "c syn";
+  c_degr is "c degr";
+  C_syn is "C syn";
+  C_degr is "C degr";
+  g_syn is "g syn";
+  g_degr is "g degr";
+  G_syn is "G syn";
+  G_degr is "G degr";
+  Ep_degr is "Ep degr";
+  U_syn is "U syn";
+  Btot_syn is "Btot syn";
+  Ep_syn is "Ep syn";
+  x_degr is "x degr";
+  x_syn is "x syn";
+
+  // CV terms:
+  ER hypernym "http://identifiers.org/go/GO:0005783"
+  U hypernym "http://identifiers.org/reactome/R-HSA-381130"
+  A6 hypernym "http://identifiers.org/uniprot/P18850"
+  A6 hypernym "http://identifiers.org/uniprot/Q99941"
+  b encodement "http://identifiers.org/ncit/C21160"
+  b hypernym "http://identifiers.org/so/SO:0000234"
+  Btot hypernym "http://identifiers.org/ncit/C21160"
+  A4 hypernym "http://identifiers.org/uniprot/P18848"
+  c encodement "http://identifiers.org/uniprot/P35638"
+  c hypernym "http://identifiers.org/so/SO:0000234"
+  C hypernym "http://identifiers.org/uniprot/P35638"
+  g encodement "http://identifiers.org/uniprot/O75807"
+  g hypernym "http://identifiers.org/so/SO:0000234"
+  G hypernym "http://identifiers.org/uniprot/O75807"
+  Ep hypernym "http://identifiers.org/uniprot/P05198"
+  Ep property "http://identifiers.org/go/GO:0016310"
+  x hypernym "http://identifiers.org/uniprot/P17861"
+  B hypernym "http://identifiers.org/uniprot/C21160"
+  Pp hypernym "http://identifiers.org/uniprot/Q9NZJ5"
+  Pp property "http://identifiers.org/go/GO:0016310"
+  Ip hypernym "http://identifiers.org/uniprot/O75460"
+  Ip property "http://identifiers.org/go/GO:0016310"
+end
+
+Diedrichs2018___A_data_entrained_computational_model_for_testing_the_regulatory_logic_of_the_vertebrate_unfolded_protein_response is "Diedrichs2018 - A data-entrained computational model for testing the regulatory logic of the vertebrate unfolded protein response"
+
+Diedrichs2018___A_data_entrained_computational_model_for_testing_the_regulatory_logic_of_the_vertebrate_unfolded_protein_response model_entity_is "http://identifiers.org/biomodels.db/MODEL1803300000"
+Diedrichs2018___A_data_entrained_computational_model_for_testing_the_regulatory_logic_of_the_vertebrate_unfolded_protein_response description "http://identifiers.org/pubmed/29668363"
+Diedrichs2018___A_data_entrained_computational_model_for_testing_the_regulatory_logic_of_the_vertebrate_unfolded_protein_response model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000703"
+Diedrichs2018___A_data_entrained_computational_model_for_testing_the_regulatory_logic_of_the_vertebrate_unfolded_protein_response part "http://identifiers.org/reactome/R-HSA-381130"
+Diedrichs2018___A_data_entrained_computational_model_for_testing_the_regulatory_logic_of_the_vertebrate_unfolded_protein_response hypernym "http://identifiers.org/go/GO:0006986"
+Diedrichs2018___A_data_entrained_computational_model_for_testing_the_regulatory_logic_of_the_vertebrate_unfolded_protein_response hypernym "http://identifiers.org/reactome/R-HSA-381119"
+Diedrichs2018___A_data_entrained_computational_model_for_testing_the_regulatory_logic_of_the_vertebrate_unfolded_protein_response container "http://identifiers.org/go/GO:0005783"
+Diedrichs2018___A_data_entrained_computational_model_for_testing_the_regulatory_logic_of_the_vertebrate_unfolded_protein_response description "http://identifiers.org/pubmed/29668363"

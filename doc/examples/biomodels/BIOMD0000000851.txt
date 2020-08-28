@@ -1,0 +1,105 @@
+// Created by libAntimony v2.13.0
+function Function_for_Susceptible_Individual_Transmission(beta, I, S)
+  beta*I*S;
+end
+
+Function_for_Susceptible_Individual_Transmission is "Function_for_Susceptible_Individual_Transmission"
+
+function Function_for_Vaccinated_Population_Growth(r, V_e, A)
+  r*(1 - V_e/A);
+end
+
+Function_for_Vaccinated_Population_Growth is "Function_for_Vaccinated_Population_Growth"
+
+function Function_for_Vaccinated_Population_Infection(k, I, V)
+  k*I*V;
+end
+
+Function_for_Vaccinated_Population_Infection is "Function_for_Vaccinated_Population_Infection"
+
+
+model *Ho2019___Mathematical_models_of_transmission_dynamics_and_vaccine_strategies_in_Hong_Kong_during_the_2017_2018_winter_influenza_season__Simple()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species S in compartment_, V in compartment_, V_e in compartment_, I in compartment_;
+  species R in compartment_;
+
+  // Assignment Rules:
+  k := ModelValue_3*(1 - ModelValue_5);
+  fraction_S := S/fraction_total;
+  fraction_total := I + R + S + V + V_e;
+  fraction_V := V/fraction_total;
+  fraction_I := I/fraction_total;
+  fraction_R := R/fraction_total;
+
+  // Reactions:
+  Susceptible_Individual_Transmission: S => I; compartment_*Function_for_Susceptible_Individual_Transmission(beta, I, S);
+  Vaccinated_Population_Growth: S => V + V_e; compartment_*Function_for_Vaccinated_Population_Growth(r, V_e, A);
+  Vaccinated_Population_Infection: V => I; compartment_*Function_for_Vaccinated_Population_Infection(k, I, V);
+  Infected_Recovery: I => R; compartment_*gamma_*I;
+
+  // Species initializations:
+  S = 0.9424;
+  V = 0.0565;
+  V_e = 0.0565;
+  I = 0.0012;
+  R = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  alpha = 127;
+  r = 0.0155;
+  A = 0.1155;
+  beta = 2.7516;
+  gamma_ = 2.1272;
+  w = 0.45;
+  ModelValue_3 = beta;
+  ModelValue_5 = w;
+  T = 3.29;
+  R_0 = 1.2935;
+  R_0_x = 1.2607;
+
+  // Other declarations:
+  var k, fraction_S, fraction_total, fraction_V, fraction_I, fraction_R;
+  const compartment_, alpha, r, A, beta, gamma_, w, ModelValue_3, ModelValue_5;
+  const T, R_0, R_0_x;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = item;
+
+  // Display Names:
+  compartment_ is "compartment";
+  gamma_ is "gamma";
+  ModelValue_3 is "Initial for beta";
+  ModelValue_5 is "Initial for w";
+
+  // CV terms:
+  S identity "http://identifiers.org/ncit/C17005"
+  S property "http://identifiers.org/ncit/C16505"
+  V identity "http://identifiers.org/ncit/C17005"
+  V property "http://identifiers.org/ncit/C28385"
+  V_e identity "http://identifiers.org/ncit/C17005"
+  V_e property "http://identifiers.org/ncit/C49287"
+  V_e property "http://identifiers.org/ncit/C28385"
+  I identity "http://identifiers.org/ncit/C17005"
+  I property "http://identifiers.org/efo/0001669"
+  R identity "http://identifiers.org/ncit/C17005"
+  R property "http://identifiers.org/efo/0009785"
+  Susceptible_Individual_Transmission hypernym "http://identifiers.org/ncit/C3439"
+  Vaccinated_Population_Growth hypernym "http://identifiers.org/ncit/C15346"
+  Vaccinated_Population_Infection hypernym "http://identifiers.org/ncit/C3439"
+  Infected_Recovery hypernym "http://identifiers.org/ncit/C25746"
+end
+
+Ho2019___Mathematical_models_of_transmission_dynamics_and_vaccine_strategies_in_Hong_Kong_during_the_2017_2018_winter_influenza_season__Simple is "Ho2019 - Mathematical models of transmission dynamics and vaccine strategies in Hong Kong during the 2017-2018 winter influenza season (Simple)"
+
+Ho2019___Mathematical_models_of_transmission_dynamics_and_vaccine_strategies_in_Hong_Kong_during_the_2017_2018_winter_influenza_season__Simple description "http://identifiers.org/pubmed/31128142"
+Ho2019___Mathematical_models_of_transmission_dynamics_and_vaccine_strategies_in_Hong_Kong_during_the_2017_2018_winter_influenza_season__Simple model_entity_is "http://identifiers.org/biomodels.db/MODEL1911120003",
+                                                                                                                                                               "http://identifiers.org/biomodels.db/BIOMD0000000851"
+Ho2019___Mathematical_models_of_transmission_dynamics_and_vaccine_strategies_in_Hong_Kong_during_the_2017_2018_winter_influenza_season__Simple property "http://identifiers.org/ncit/C71292"
+Ho2019___Mathematical_models_of_transmission_dynamics_and_vaccine_strategies_in_Hong_Kong_during_the_2017_2018_winter_influenza_season__Simple property "http://identifiers.org/ncit/C53482"
+Ho2019___Mathematical_models_of_transmission_dynamics_and_vaccine_strategies_in_Hong_Kong_during_the_2017_2018_winter_influenza_season__Simple property "http://identifiers.org/mamo/MAMO_0000046"

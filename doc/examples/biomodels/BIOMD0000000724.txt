@@ -1,0 +1,374 @@
+// Created by libAntimony v2.13.0
+function SMM_Enzyme_based(kcat, Enzyme, Substrate, Km)
+  kcat*Enzyme*Substrate/(Km + Substrate);
+end
+
+SMM_Enzyme_based is "SMM Enzyme based"
+
+function Equation_for_PD1_activation(kcat, Enzyme, Substrate, Km, X1, X2, Y1, k)
+  (kcat*Enzyme*Substrate/(Km + Substrate))*(1 - (X1 + X2)/(Y1*k));
+end
+
+Equation_for_PD1_activation is "Equation for PD1 activation"
+
+function Equation_for_Enzymatic_Dephosphorylation(ka, Enzyme, Substrate)
+  ka*Enzyme*Substrate;
+end
+
+Equation_for_Enzymatic_Dephosphorylation is "Equation for Enzymatic Dephosphorylation"
+
+
+model *_30356330_Theinmozhi_PDL1_TCR_regulation()
+
+  // Compartments and Species:
+  compartment Cell;
+  species LCKi in Cell, LCKyi in Cell, LCKya in Cell, LCKyiya in Cell, LCKpi in Cell;
+  species $LCKt in Cell, $LCKactive in Cell, PD1 in Cell, PD1p1 in Cell, PD1p2 in Cell;
+  species CP1 in Cell, SHP2 in Cell, CP2 in Cell, $CPactive in Cell, CD28a in Cell;
+  species CD28i in Cell, PI3K in Cell, PI3Kb in Cell, $CD28t in Cell, CD3a in Cell;
+  species CD3i in Cell, ZAP70a1 in Cell, ZAP70i in Cell, ZAP70 in Cell, ZAP70a2 in Cell;
+  species $PI3Kt in Cell, $ZAP70t in Cell, LATa in Cell, LATi in Cell, $LATt in Cell;
+  species GADSa in Cell, SLP76i in Cell, SLP76a in Cell, GADS in Cell, SLP76 in Cell;
+  species $GADSt in Cell, $SLP76t in Cell, $CD3t in Cell, $LCKinactive in Cell;
+
+  // Assignment Rules:
+  LCKt := LCKi + LCKya + LCKyi + LCKyiya + LCKpi;
+  LCKactive := LCKya + LCKyiya;
+  CPactive := CP1 + CP2;
+  CD28t := CD28i + CD28a + PI3Kb;
+  PI3Kt := PI3K + PI3Kb;
+  ZAP70t := ZAP70 + ZAP70i + ZAP70a1 + ZAP70a2;
+  LATt := LATi + LATa + GADSa + SLP76i + SLP76a;
+  GADSt := GADS + GADSa + SLP76i + SLP76a;
+  SLP76t := SLP76 + SLP76a + SLP76i;
+  CD3t := CD3i + CD3a + ZAP70i + ZAP70a1 + ZAP70a2;
+  LCKinactive := LCKi + LCKyi + LCKpi;
+  Kdpa_yiya := 2.4e-5*ModelValue_0;
+  Kdpi_yi := 2.4e-5*ModelValue_0;
+  Kdpi_yiya := 1.2e-5*ModelValue_0;
+  Kdpa_ya := 6e-6*ModelValue_0;
+  Kdpa_pi := 1.2e-7*ModelValue_0;
+  perc_SHP2_bound := (CPactive/(SHP2 + CPactive))*100;
+  CD3z_phosphorylated := CD3a + ZAP70i + ZAP70a1 + ZAP70a2;
+  CD28_phosphorylated := PI3Kb + CD28a;
+  perc_SHP2_free := (SHP2/(SHP2 + CPactive))*100;
+  perc_PI3K_free := (PI3K/(PI3Kb + PI3K))*100;
+  perc_ZAP70_free := (ZAP70/(ZAP70 + ZAP70i + ZAP70a1 + ZAP70a2))*100;
+  ZAP70_phos_Y315 := ZAP70a2 + ZAP70a2;
+  ZAP70_phos_Y93 := ZAP70a2;
+  LCK_phos_Y505 := LCKyi + LCKyiya + LCKpi;
+  LCK_phos_Y394 := LCKya + LCKyiya + LCKpi;
+  LAT_phosphorylated := LATa + GADSa + SLP76i + SLP76a;
+  perc_LCK_active := (LCKactive/(LCKi + LCKpi + LCKya + LCKyi + LCKyiya))*100;
+  perc_LCK_inactive := (LCKinactive/(LCKi + LCKpi + LCKya + LCKyi + LCKyiya))*100;
+
+  // Reactions:
+  LCK_P_LCKyi_inh: LCKi => LCKyi; Cell*Kpi_i*LCKi;
+  LCK_P_LCKya_act: LCKi => LCKya; Cell*Kpa_i*LCKi;
+  LCKya_P_LCKyiya_act: LCKya => LCKyiya; Cell*Kpi_ya*LCKya;
+  LCKyi_P_LCKpi_inh: LCKyi => LCKpi; Cell*Kpa_yi*LCKyi;
+  LCKyiya_DP_LCKyi: LCKyiya => LCKyi; Cell*Equation_for_Enzymatic_Dephosphorylation(Kdpi_yiya, CPactive, LCKyiya);
+  LCKya_DP_LCKi: LCKya => LCKi; Cell*Equation_for_Enzymatic_Dephosphorylation(Kdpa_ya, CPactive, LCKya);
+  LCKyi_DP_LCKi: LCKyi => LCKi; Cell*Equation_for_Enzymatic_Dephosphorylation(Kdpi_yi, CPactive, LCKyi);
+  LCKyiya_DP_LCKya: LCKyiya => LCKya; Cell*Equation_for_Enzymatic_Dephosphorylation(Kdpi_yiya, CPactive, LCKyiya);
+  LCKpi_DP_LCKyi: LCKpi => LCKyi; Cell*Equation_for_Enzymatic_Dephosphorylation(Kdpa_pi, CPactive, LCKpi);
+  PD1_P_PD1p1_act: PD1 => PD1p1; Cell*Equation_for_PD1_activation(Kp_pd1, LCKactive, PD1, KMp_pd1, PD1p1, PD1p2, LCKt, k);
+  PD1p1_P_PD1p2_act: PD1p1 => PD1p2; Cell*SMM_Enzyme_based(Kp_pd1, LCKactive, PD1p1, KMp_pd1);
+  PD1p1_Bd_SHP2: PD1p1 + SHP2 -> CP1; Cell*(Ka_shp*PD1p1*SHP2 - Kd1_shp*CP1);
+  PD1p2_Bd_SHP2: PD1p2 + SHP2 -> CP2; Cell*(Ka_shp*PD1p2*SHP2 - Kd1_shp*CP2);
+  CP2_Diss_SHP2_PD1p1: CP2 => SHP2 + PD1p1; Cell*Kd2_shp*CP2;
+  CP2_DP_CP1: CP2 => CP1; Cell*Kdp_cp2*CP2;
+  CP1_Diss_PD1_SHP2: CP1 => SHP2 + PD1; Cell*Kd2_shp*CP1;
+  CD28i_P_CD28a: CD28i => CD28a; Cell*SMM_Enzyme_based(Kp_cd28, LCKactive, CD28i, KMp_cd28);
+  CD28a_DP_CD28i: CD28a => CD28i; Cell*SMM_Enzyme_based(Kdp_cd28, CPactive, CD28a, KMdp_cd28);
+  CD28a_Bd_PI3K: CD28a + PI3K -> PI3Kb; Cell*(Ka_pi3k*CD28a*PI3K - Kd_pi3k*PI3Kb);
+  CD3i_P_CD3a: CD3i => CD3a; Cell*SMM_Enzyme_based(Kp_cd3, LCKactive, CD3i, KMp_cd3);
+  CD3a_DP_CD3i: CD3a => CD3i; Cell*SMM_Enzyme_based(Kdp_cd3, CPactive, CD3a, KMdp_cd3);
+  CD3a_Bd_ZAP70: CD3a + ZAP70 -> ZAP70i; Cell*(Ka_zap*CD3a*ZAP70 - Kd_zap*ZAP70i);
+  ZAP70i_P_ZAP70a1: ZAP70i => ZAP70a1; Cell*Equation_for_Enzymatic_Dephosphorylation(Kp1_zap, LCKactive, ZAP70i);
+  ZAP70a1_P_ZAP70a2: ZAP70a1 => ZAP70a2; Cell*Equation_for_Enzymatic_Dephosphorylation(Kp2_zap, LCKactive, ZAP70a1);
+  LATi_P_LATa: LATi => LATa; Cell*Equation_for_Enzymatic_Dephosphorylation(Kp_lat, ZAP70a2, LATi);
+  LATa_Bd_GADS: LATa + GADS -> GADSa; Cell*(Ka_gads*LATa*GADS - Kd_gads*GADSa);
+  GADSa_Bd_SLP76: GADSa + SLP76 -> SLP76i; Cell*(Ka_slp*GADSa*SLP76 - Kd_slp*SLP76i);
+  SLP76i_P_SLC76a: SLP76i => SLP76a; Cell*Equation_for_Enzymatic_Dephosphorylation(Kp_slp, ZAP70a2, SLP76i);
+
+  // Species initializations:
+  LCKi = 25;
+  LCKyi = 25;
+  LCKya = 25;
+  LCKyiya = 25;
+  LCKpi = 0;
+  PD1 = 500;
+  PD1p1 = 0;
+  PD1p2 = 0;
+  CP1 = 0;
+  SHP2 = 300;
+  CP2 = 0;
+  CD28a = 0;
+  CD28i = 250;
+  PI3K = 500;
+  PI3Kb = 0;
+  CD3a = 0;
+  CD3i = 50;
+  ZAP70a1 = 0;
+  ZAP70i = 0;
+  ZAP70 = 300;
+  ZAP70a2 = 0;
+  LATa = 0;
+  LATi = 300;
+  GADSa = 0;
+  SLP76i = 0;
+  SLP76a = 0;
+  GADS = 300;
+  SLP76 = 300;
+
+  // Compartment initializations:
+  Cell = 1;
+  Kdpa_yiya has unit_0;
+
+  // Variable initializations:
+  ModelValue_0 = LCK_switch;
+  Kdpi_yi has unit_0;
+  Kdpi_yiya has unit_0;
+  Kdpa_ya has unit_0;
+  Kdpa_pi has unit_0;
+  Kpi_i = 6e-07;
+  Kpi_i has unit_1;
+  Kpi_ya = 6e-05;
+  Kpi_ya has unit_1;
+  Kpa_i = 1e-06;
+  Kpa_i has unit_1;
+  Kpa_yi = 0.00075;
+  Kpa_yi has unit_1;
+  k = 41;
+  Kp_pd1 = 7.5;
+  Kp_pd1 has unit_1;
+  KMp_pd1 = 1000;
+  KMp_pd1 has unit_2;
+  Ka_shp = 0.0065;
+  Ka_shp has unit_0;
+  Kd1_shp = 10;
+  Kd1_shp has unit_1;
+  Kd2_shp = 1;
+  Kd2_shp has unit_1;
+  Kdp_cp2 = 5e-08;
+  Kdp_cp2 has unit_1;
+  Kp_cd28 = 1;
+  Kp_cd28 has unit_1;
+  KMp_cd28 = 1000;
+  KMp_cd28 has unit_2;
+  Kdp_cd28 = 5;
+  Kdp_cd28 has unit_1;
+  KMdp_cd28 = 500;
+  KMdp_cd28 has unit_2;
+  Ka_pi3k = 1.4e-06;
+  Ka_pi3k has unit_0;
+  Kd_pi3k = 0.0009;
+  Kd_pi3k has unit_1;
+  Kp_cd3 = 3.29;
+  Kp_cd3 has unit_1;
+  KMp_cd3 = 80;
+  KMp_cd3 has unit_2;
+  Kdp_cd3 = 5;
+  Kdp_cd3 has unit_1;
+  KMdp_cd3 = 150;
+  KMdp_cd3 has unit_2;
+  Ka_zap = 7e-05;
+  Ka_zap has unit_0;
+  Kd_zap = 0.001;
+  Kd_zap has unit_1;
+  Kp1_zap = 2e-06;
+  Kp1_zap has unit_0;
+  Kp2_zap = 3e-05;
+  Kp2_zap has unit_0;
+  Kp_lat = 0.001;
+  Kp_lat has unit_0;
+  Ka_gads = 0.0005;
+  Ka_gads has unit_0;
+  Kd_gads = 1.5;
+  Kd_gads has unit_1;
+  Ka_slp = 0.015;
+  Ka_slp has unit_0;
+  Kd_slp = 0.12;
+  Kd_slp has unit_1;
+  Kp_slp = 0.003;
+  Kp_slp has unit_0;
+  perc_SHP2_bound has unit_2;
+  LCK_switch = 0;
+
+  // Other declarations:
+  var Kdpa_yiya, Kdpi_yi, Kdpi_yiya, Kdpa_ya, Kdpa_pi, perc_SHP2_bound, CD3z_phosphorylated;
+  var CD28_phosphorylated, perc_SHP2_free, perc_PI3K_free, perc_ZAP70_free;
+  var ZAP70_phos_Y315, ZAP70_phos_Y93, LCK_phos_Y505, LCK_phos_Y394, LAT_phosphorylated;
+  var perc_LCK_active, perc_LCK_inactive;
+  const Cell, ModelValue_0, Kpi_i, Kpi_ya, Kpa_i, Kpa_yi, k, Kp_pd1, KMp_pd1;
+  const Ka_shp, Kd1_shp, Kd2_shp, Kdp_cp2, Kp_cd28, KMp_cd28, Kdp_cd28, KMdp_cd28;
+  const Ka_pi3k, Kd_pi3k, Kp_cd3, KMp_cd3, Kdp_cd3, KMdp_cd3, Ka_zap, Kd_zap;
+  const Kp1_zap, Kp2_zap, Kp_lat, Ka_gads, Kd_gads, Ka_slp, Kd_slp, Kp_slp;
+  const LCK_switch;
+
+  // Unit definitions:
+  unit substance = 1e-9 mole;
+  unit unit_0 = litre / (1e-9 mole * second);
+  unit unit_1 = 1 / second;
+  unit unit_2 = 1e-9 mole / litre;
+
+  // Display Names:
+  unit_0 is "l/(nmol*s)";
+  unit_1 is "1/s";
+  unit_2 is "nmol/l";
+  Kdpa_yiya is "Kdpa,yiya";
+  ModelValue_0 is "Initial for LCK_switch";
+  Kdpi_yi is "Kdpi,yi";
+  Kdpi_yiya is "Kdpi,yiya";
+  Kdpa_ya is "Kdpa,ya";
+  Kdpa_pi is "Kdpa,pi";
+  Kpi_i is "Kpi,i";
+  Kpi_ya is "Kpi,ya";
+  Kpa_i is "Kpa,i";
+  Kpa_yi is "Kpa,yi";
+  Kp_pd1 is "Kp,pd1";
+  KMp_pd1 is "KMp,pd1";
+  Ka_shp is "Ka,shp";
+  Kd1_shp is "Kd1,shp";
+  Kd2_shp is "Kd2,shp";
+  Kdp_cp2 is "Kdp,cp2";
+  Kp_cd28 is "Kp,cd28";
+  KMp_cd28 is "KMp,cd28";
+  Kdp_cd28 is "Kdp,cd28";
+  KMdp_cd28 is "KMdp,cd28";
+  Ka_pi3k is "Ka,pi3k";
+  Kd_pi3k is "Kd,pi3k";
+  Kp_cd3 is "Kp,cd3";
+  KMp_cd3 is "KMp,cd3";
+  Kdp_cd3 is "Kdp,cd3";
+  KMdp_cd3 is "KMdp,cd3";
+  Ka_zap is "Ka,zap";
+  Kd_zap is "Kd,zap";
+  Kp1_zap is "Kp1,zap";
+  Kp2_zap is "Kp2,zap";
+  Kp_lat is "Kp,lat";
+  Ka_gads is "Ka,gads";
+  Kd_gads is "Kd,gads";
+  Ka_slp is "Ka,slp";
+  Kd_slp is "Kd,slp";
+  Kp_slp is "Kp,slp";
+
+  // CV terms:
+  Cell hypernym "http://identifiers.org/ncit/NCIT:C28699"
+  Cell hypernym "http://identifiers.org/ncit/NCIT:C12546"
+  Cell description "http://identifiers.org/pubmed/30356330"
+  LCKi hypernym "http://identifiers.org/uniprot/P06239"
+  LCKi property "http://identifiers.org/pato/0002355"
+  LCKyi hypernym "http://identifiers.org/uniprot/P06239"
+  LCKyi property "http://identifiers.org/pato/0002355"
+  LCKya hypernym "http://identifiers.org/uniprot/P06239"
+  LCKya property "http://identifiers.org/pato/0002220"
+  LCKyiya hypernym "http://identifiers.org/uniprot/P06239"
+  LCKyiya property "http://identifiers.org/pato/0002220"
+  LCKpi hypernym "http://identifiers.org/uniprot/P06239"
+  LCKpi property "http://identifiers.org/pato/0002220"
+  LCKt hypernym "http://identifiers.org/uniprot/P06239"
+  LCKactive hypernym "http://identifiers.org/uniprot/P06239"
+  LCKactive property "http://identifiers.org/pato/0002220"
+  PD1 hypernym "http://identifiers.org/uniprot/Q9NZQ7"
+  PD1 property "http://identifiers.org/pato/0002355"
+  PD1p1 hypernym "http://identifiers.org/uniprot/Q9NZQ7"
+  PD1p1 property "http://identifiers.org/pato/0002220"
+  PD1p2 hypernym "http://identifiers.org/uniprot/Q9NZQ7"
+  PD1p2 property "http://identifiers.org/pato/0002220"
+  CP1 part "http://identifiers.org/uniprot/Q06124"
+  CP1 part "http://identifiers.org/uniprot/Q9NZQ7"
+  CP1 property "http://identifiers.org/pato/0002220"
+  SHP2 hypernym "http://identifiers.org/uniprot/Q06124"
+  CP2 part "http://identifiers.org/uniprot/Q9NZQ7"
+  CP2 part "http://identifiers.org/uniprot/Q06124"
+  CP2 property "http://identifiers.org/pato/0002220"
+  CPactive part "http://identifiers.org/uniprot/Q06124"
+  CPactive part "http://identifiers.org/uniprot/Q9NZQ7"
+  CPactive property "http://identifiers.org/pato/0002220"
+  CD28a hypernym "http://identifiers.org/uniprot/P10747"
+  CD28a property "http://identifiers.org/pato/0002220"
+  CD28i hypernym "http://identifiers.org/uniprot/P10747"
+  CD28i property "http://identifiers.org/pato/0002355"
+  PI3K version "http://identifiers.org/uniprot/P27986"
+  PI3K version "http://identifiers.org/uniprot/P42336"
+  PI3Kb version "http://identifiers.org/uniprot/P27986"
+  PI3Kb version "http://identifiers.org/uniprot/P42336"
+  PI3Kb property "http://identifiers.org/pato/0002220"
+  CD28t hypernym "http://identifiers.org/uniprot/P10747"
+  CD3a hypernym "http://identifiers.org/uniprot/P20963"
+  CD3a property "http://identifiers.org/pato/0002220"
+  CD3i hypernym "http://identifiers.org/uniprot/P20963"
+  CD3i property "http://identifiers.org/pato/0002355"
+  ZAP70a1 hypernym "http://identifiers.org/uniprot/P43403"
+  ZAP70a1 property "http://identifiers.org/pato/0002220"
+  ZAP70i part "http://identifiers.org/uniprot/P20963"
+  ZAP70i hypernym "http://identifiers.org/uniprot/P43403"
+  ZAP70i property "http://identifiers.org/pato/0002355"
+  ZAP70 hypernym "http://identifiers.org/uniprot/P43403"
+  ZAP70a2 hypernym "http://identifiers.org/uniprot/P43403"
+  ZAP70a2 property "http://identifiers.org/pato/0002220"
+  PI3Kt version "http://identifiers.org/uniprot/P27986"
+  PI3Kt version "http://identifiers.org/uniprot/P42336"
+  ZAP70t hypernym "http://identifiers.org/uniprot/P43403"
+  LATa hypernym "http://identifiers.org/uniprot/O43561"
+  LATa property "http://identifiers.org/pato/0002220"
+  LATi hypernym "http://identifiers.org/uniprot/O43561"
+  LATi property "http://identifiers.org/pato/0002355"
+  LATt hypernym "http://identifiers.org/uniprot/O43561"
+  GADSa part "http://identifiers.org/uniprot/O43561"
+  GADSa part "http://identifiers.org/uniprot/P62993"
+  GADSa part "http://identifiers.org/uniprot/Q13588"
+  SLP76i hypernym "http://identifiers.org/uniprot/Q13094"
+  SLP76a hypernym "http://identifiers.org/uniprot/Q13094"
+  GADS version "http://identifiers.org/uniprot/P62993"
+  GADS version "http://identifiers.org/uniprot/Q13588"
+  SLP76 hypernym "http://identifiers.org/uniprot/Q13094"
+  GADSt version "http://identifiers.org/uniprot/Q13588"
+  GADSt version "http://identifiers.org/uniprot/P62993"
+  SLP76t hypernym "http://identifiers.org/uniprot/Q13094"
+  CD3t hypernym "http://identifiers.org/uniprot/P20963"
+  LCKinactive hypernym "http://identifiers.org/uniprot/P06239"
+  LCKinactive property "http://identifiers.org/pato/0002355"
+  LCK_P_LCKyi_inh identity "http://identifiers.org/sbo/0000216"
+  LCK_P_LCKya_act identity "http://identifiers.org/sbo/0000216"
+  LCKya_P_LCKyiya_act identity "http://identifiers.org/sbo/0000216"
+  LCKyi_P_LCKpi_inh identity "http://identifiers.org/sbo/0000216"
+  LCKyiya_DP_LCKyi identity "http://identifiers.org/sbo/0000330"
+  LCKya_DP_LCKi identity "http://identifiers.org/sbo/0000330"
+  LCKyi_DP_LCKi identity "http://identifiers.org/sbo/0000330"
+  LCKyiya_DP_LCKya identity "http://identifiers.org/sbo/0000330"
+  LCKpi_DP_LCKyi identity "http://identifiers.org/sbo/0000330"
+  PD1_P_PD1p1_act identity "http://identifiers.org/sbo/0000216"
+  PD1p1_P_PD1p2_act identity "http://identifiers.org/sbo/0000216"
+  PD1p1_Bd_SHP2 identity "http://identifiers.org/sbo/0000117"
+  PD1p2_Bd_SHP2 identity "http://identifiers.org/sbo/0000117"
+  CP2_Diss_SHP2_PD1p1 identity "http://identifiers.org/sbo/0000180"
+  CP2_DP_CP1 identity "http://identifiers.org/sbo/0000330"
+  CP1_Diss_PD1_SHP2 identity "http://identifiers.org/sbo/0000180"
+  CD28i_P_CD28a identity "http://identifiers.org/sbo/0000216"
+  CD28a_DP_CD28i identity "http://identifiers.org/sbo/0000330"
+  CD28a_Bd_PI3K identity "http://identifiers.org/sbo/0000117"
+  CD3i_P_CD3a identity "http://identifiers.org/sbo/0000216"
+  CD3a_DP_CD3i identity "http://identifiers.org/sbo/0000330"
+  CD3a_Bd_ZAP70 identity "http://identifiers.org/sbo/0000117"
+  ZAP70i_P_ZAP70a1 identity "http://identifiers.org/sbo/0000216"
+  ZAP70a1_P_ZAP70a2 identity "http://identifiers.org/sbo/0000216"
+  LATi_P_LATa identity "http://identifiers.org/sbo/0000216"
+  LATa_Bd_GADS identity "http://identifiers.org/sbo/0000117"
+  GADSa_Bd_SLP76 identity "http://identifiers.org/sbo/0000117"
+  SLP76i_P_SLC76a identity "http://identifiers.org/sbo/0000216"
+end
+
+_30356330_Theinmozhi_PDL1_TCR_regulation is "Theinmozhi2018 - Mechanism of PD1 inhibiting TCR signaling in Tumor immune regulation"
+
+_30356330_Theinmozhi_PDL1_TCR_regulation model_entity_is "http://identifiers.org/biomodels.db/MODEL1812040008",
+                                                         "http://identifiers.org/biomodels.db/BIOMD0000000724"
+_30356330_Theinmozhi_PDL1_TCR_regulation container "http://identifiers.org/bto/0000782"
+_30356330_Theinmozhi_PDL1_TCR_regulation property "http://identifiers.org/go/GO:0002840"
+_30356330_Theinmozhi_PDL1_TCR_regulation property "http://identifiers.org/go/GO:0002418"
+_30356330_Theinmozhi_PDL1_TCR_regulation property "http://identifiers.org/go/GO:0050852"
+_30356330_Theinmozhi_PDL1_TCR_regulation propertyBearer "http://identifiers.org/mamo/MAMO:0000046"
+_30356330_Theinmozhi_PDL1_TCR_regulation taxon "http://identifiers.org/taxonomy/9606"
+_30356330_Theinmozhi_PDL1_TCR_regulation description "http://identifiers.org/pubmed/30356330"

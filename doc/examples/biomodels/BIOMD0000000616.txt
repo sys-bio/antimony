@@ -1,0 +1,140 @@
+// Created by libAntimony v2.13.0
+function Function_for_R2(ModelValue_4, default_compartment, n)
+  ModelValue_4*n/default_compartment;
+end
+
+Function_for_R2 is "Function for R2"
+
+function Function_for_R1(c, default_compartment)
+  c/default_compartment;
+end
+
+Function_for_R1 is "Function for R1"
+
+function Function_for_R6(c, default_compartment)
+  c/default_compartment;
+end
+
+Function_for_R6 is "Function for R6"
+
+function Function_for_R8(Dunster2014_Model1_WBC_Interactions, ModelValue_10, ModelValue_11, ModelValue_8, default_compartment)
+  ModelValue_8*piecewise(sin(Dunster2014_Model1_WBC_Interactions)^2, Dunster2014_Model1_WBC_Interactions < (ModelValue_10*pi), 0)*piecewise(1, Dunster2014_Model1_WBC_Interactions < ModelValue_11, 0)/default_compartment;
+end
+
+Function_for_R8 is "Function for R8"
+
+function Function_for_R5(ModelValue_6, a, default_compartment, m)
+  ModelValue_6*m*a/default_compartment;
+end
+
+Function_for_R5 is "Function for R5"
+
+function Function_for_R10(c, default_compartment)
+  c/default_compartment;
+end
+
+Function_for_R10 is "Function for R10"
+
+function Function_for_R3(ModelValue_4, default_compartment, n)
+  ModelValue_4*n/default_compartment;
+end
+
+Function_for_R3 is "Function for R3"
+
+function Function_for_R4(ModelValue_5, a, default_compartment)
+  ModelValue_5*a/default_compartment;
+end
+
+Function_for_R4 is "Function for R4"
+
+function Function_for_R9(ModelValue_5, ModelValue_9, a, default_compartment)
+  ModelValue_5*(a^2/(ModelValue_9^2 + a^2))/default_compartment;
+end
+
+Function_for_R9 is "Function for R9"
+
+function Function_for_R7(ModelValue_7, default_compartment, m)
+  ModelValue_7*m/default_compartment;
+end
+
+Function_for_R7 is "Function for R7"
+
+
+model *MODEL1608160000()
+
+  // Compartments and Species:
+  compartment default_compartment;
+  species n, c, a, m;
+
+  // Reactions:
+  R1:  -> n; default_compartment*Function_for_R1(c, default_compartment);
+  R2: n -> ; default_compartment*Function_for_R2(vt, default_compartment, n);
+  R3:  -> a; default_compartment*Function_for_R3(vt, default_compartment, n);
+  R4: a -> ; default_compartment*Function_for_R4(Gat, a, default_compartment);
+  R5: a -> ; default_compartment*Function_for_R5(Tt, a, default_compartment, m);
+  R6:  -> m; default_compartment*Function_for_R6(c, default_compartment);
+  R7: m -> ; default_compartment*Function_for_R7(Gmt, default_compartment, m);
+  R8:  -> c; default_compartment*Function_for_R8(time, A, t1, alt, default_compartment);
+  R9:  -> c; default_compartment*Function_for_R9(Gat, Bat, a, default_compartment);
+  R10: c -> ; default_compartment*Function_for_R10(c, default_compartment);
+
+  // Species initializations:
+  n = 0;
+  n has mole_per_volume;
+  c = 0;
+  c has mole_per_volume;
+  a = 0;
+  a has mole_per_volume;
+  m = 0;
+  m has mole_per_volume;
+
+  // Compartment initializations:
+  default_compartment = 1;
+
+  // Variable initializations:
+  vt = 0.1;
+  Gat = 1;
+  Tt = 0.001;
+  Gmt = 0.01;
+  alt = 0.05;
+  Bat = 0.1;
+  A = 1;
+  t1 = 10;
+
+  // Other declarations:
+  const vt, Gat, Tt, Gmt, alt, Bat, A, t1, default_compartment;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = litre;
+  unit time_unit = time_unit;
+  unit substance = mole;
+  unit extent = substance;
+  unit mole_per_volume = mole / litre;
+
+  // Display Names:
+  time_unit is "time";
+
+  // SBO terms:
+  n.sboTerm = 410
+  c.sboTerm = 410
+  a.sboTerm = 410
+  m.sboTerm = 410
+  default_compartment.sboTerm = 410
+
+  // CV terms:
+  n hypernym "http://identifiers.org/bto/BTO:0000130"
+  c hypernym "http://identifiers.org/uniprot/P10145"
+  a hypernym "http://identifiers.org/bto/BTO:0000130"
+  m hypernym "http://identifiers.org/bto/BTO:0000801"
+end
+
+MODEL1608160000 is "Dunster2014 - WBC Interactions (Model1)"
+
+MODEL1608160000 model_entity_is "http://identifiers.org/biomodels.db/MODEL1608160000"
+MODEL1608160000 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000616"
+MODEL1608160000 description "http://identifiers.org/pubmed/25053556"
+MODEL1608160000 hypernym "http://identifiers.org/go/GO:0006954"
+MODEL1608160000 taxon "http://identifiers.org/taxonomy/9606"
+MODEL1608160000 property "urn:miriam:doid:DOID%3A+2914"

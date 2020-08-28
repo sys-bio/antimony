@@ -1,0 +1,188 @@
+// Created by libAntimony v2.13.0
+function RUNIFORM(a, b)
+  (a + b)/2;
+end
+
+
+model *ASC_GSH_pathway()
+
+  // Compartments and Species:
+  compartment c;
+  species $NADPH in c, $NADPplus in c, $GSH in c, $O2neg in c, $DHA in c;
+  species $GSSG in c, $ASC in c, $MDA in c, $CoI in c, $CoII in c, $H2O2 in c;
+  species $APX in c, $APXi in c;
+
+  // Assignment Rules:
+  vGR := kcatGR*GR*NADPH*GSSG/(KMNADPH*GSSG + KMGSSG*NADPH + NADPH*GSSG);
+  kN := kN_cte*F12;
+  F12 := c12*F1;
+  vMDAR := kcatMDAR*MDAR*NADPH*MDA/(KMNADPH2*MDA + KMMDA*NADPH + NADPH*MDA);
+  vDHAR := kcatDHAR*DHAR*DHA*GSH/(K + KMDHA*GSH + KMGSH*DHA + DHA*GSH);
+  F13 := c13*F1;
+  vSOD := kSOD*SOD*O2neg;
+  F11 := c11*F1;
+  c12 := 2*k12*NADPplus/(k11 + 2*k12*NADPplus + k13*MDA);
+  F1 := piecewise(ai + ai*sin(2*pi*(time - i*24)/(b + incr*i) + c_0), (time >= (i*24)) && (time <= (i*24 + b + incr*i)), 0);
+  c13 := k13*MDA/(k11 + 2*k12*NADPplus + k13*MDA);
+  ai := piecewise(a0, i == 0, piecewise(a1, i == 1, piecewise(a2, i == 2, piecewise(a3, i == 3, piecewise(a4, i == 4, piecewise(a5, i == 5, piecewise(a6, i == 6, piecewise(a7, i == 7, piecewise(a8, i == 8, piecewise(a9, i == 9, piecewise(a10, i == 10, piecewise(a11, i == 11, piecewise(a12, i == 12, piecewise(a13, i == 13, piecewise(a14, i == 14, a15)))))))))))))));
+  i := floor(time/24);
+  c11 := k11/(k11 + 2*k12*NADPplus + k13*MDA);
+  FN := kN*NADPH;
+  vAPX := k2APX*CoI*ASC + k3APX*CoII*ASC;
+
+  // Rate Rules:
+  NADPH' = (-vGR - kN*NADPH) + F12*0.5 - vMDAR;
+  NADPplus' = (vGR + kN*NADPH - F12*0.5) + vMDAR;
+  GSH' = 2*(vGR - vDHAR - k4*O2neg*GSH - k3*DHA*GSH);
+  O2neg' = -2*vSOD + F11 - 2*k2*O2neg^2 - k6*O2neg*ASC - k4*O2neg*GSH;
+  DHA' = -vDHAR + k1*MDA^2 - k3*DHA*GSH;
+  GSSG' = -vGR + vDHAR + k4*O2neg*GSH + k3*DHA*GSH;
+  ASC' = (vDHAR + k1*MDA^2 + k3*DHA*GSH + F13 - k2APX*ASC*CoI - k3APX*ASC*CoII - k6*O2neg*ASC - 2*k5*H2O2*ASC) + 2*vMDAR;
+  MDA' = (k2APX*ASC*CoI + k3APX*ASC*CoII - 2*k1*MDA^2) + k6*O2neg*ASC + 2*k5*H2O2*ASC - F13 - 2*vMDAR;
+  CoI' = k1APX*H2O2*APX - k2APX*ASC*CoI - k4APX*H2O2*CoI;
+  CoII' = k2APX*ASC*CoI - k3APX*ASC*CoII;
+  H2O2' = (vSOD - k1APX*H2O2*APX - k4APX*H2O2*CoI) + k2*O2neg^2 + k6*O2neg*ASC + k4*O2neg*GSH - k5*H2O2*ASC;
+  APX' = -k1APX*H2O2*APX + k3APX*ASC*CoII + k5APX*(Metabolite_17 - APX - CoI - CoII);
+  APXi' = k4APX*H2O2*CoI;
+
+  // Species initializations:
+  NADPH = 110.000032696018;
+  NADPplus = 40.0000118894612;
+  GSH = 4000;
+  O2neg = 0;
+  DHA = 0;
+  GSSG = 0;
+  ASC = 10000;
+  MDA = 0;
+  CoI = 0;
+  CoII = 0;
+  H2O2 = 0;
+  APX = 40;
+  APXi = 0;
+
+  // Compartment initializations:
+  c = 1;
+
+  // Variable initializations:
+  k4 = 2520;
+  k3 = 0.01;
+  k1 = 1800;
+  k2APX = 180000;
+  k3APX = 7560;
+  k6 = 720;
+  k5 = 0.0072;
+  k1APX = 43200;
+  k4APX = 2520;
+  k2 = 720;
+  k5APX = 1;
+  Metabolite_17 = APX;
+  kcatGR = 2142000;
+  GR = 1.4;
+  KMNADPH = 3;
+  KMGSSG = 200;
+  kcatDHAR = 511200;
+  DHAR = 1.7;
+  K = 500;
+  KMDHA = 70;
+  KMGSH = 2500;
+  kSOD = 720000;
+  SOD = 50;
+  k12 = 2200;
+  kN_cte = 0.005;
+  k13 = 15000;
+  b = 11;
+  incr = 0.25;
+  c_0 = 4.712389;
+  k11 = 30000;
+  a1 = RUNIFORM(min_, max_);
+  min_ = 3500000;
+  max_ = 4500000;
+  a2 = RUNIFORM(min_, max_);
+  a3 = RUNIFORM(min_, max_);
+  a4 = RUNIFORM(min_, max_);
+  a5 = RUNIFORM(min_, max_);
+  a6 = RUNIFORM(min_, max_);
+  a7 = RUNIFORM(min_, max_);
+  a8 = RUNIFORM(min_, max_);
+  a9 = RUNIFORM(min_, max_);
+  a10 = RUNIFORM(min_, max_);
+  a11 = RUNIFORM(min_, max_);
+  a12 = RUNIFORM(min_, max_);
+  a13 = RUNIFORM(min_, max_);
+  a14 = RUNIFORM(min_, max_);
+  a0 = RUNIFORM(min_, max_);
+  a15 = RUNIFORM(min_, max_);
+  MDAR = 0;
+  kcatMDAR = 1080000;
+  KMNADPH2 = 23;
+  KMMDA = 1.4;
+
+  // Other declarations:
+  var vGR, kN, F12, vMDAR, vDHAR, F13, vSOD, F11, c12, F1, c13, ai, i, c11;
+  var FN, vAPX;
+  const c, k4, k3, k1, k2APX, k3APX, k6, k5, k1APX, k4APX, k2, k5APX, Metabolite_17;
+  const kcatGR, GR, KMNADPH, KMGSSG, kcatDHAR, DHAR, K, KMDHA, KMGSH, kSOD;
+  const SOD, k12, kN_cte, k13, b, incr, c_0, k11, a1, min_, max_, a2, a3;
+  const a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a0, a15, MDAR, kcatMDAR;
+  const KMNADPH2, KMMDA;
+
+  // Unit definitions:
+  unit time_unit = 3600 second;
+  unit substance = 1e-6 mole;
+
+  // Display Names:
+  time_unit is "time";
+  Metabolite_17 is "Initial for APX";
+  KMNADPH is "KM-GR_NADPH";
+  KMGSSG is "KM_GR_GSSG";
+  KMDHA is "KM_DHAR_DHA";
+  KMGSH is "KM_DHAR_GSH";
+  c_0 is "c";
+  min_ is "min";
+  max_ is "max";
+  KMNADPH2 is "KM-MDAR_NADPH";
+  KMMDA is "KM_MDAR_MDA";
+
+  // SBO terms:
+  c.sboTerm = 290
+  NADPH.sboTerm = 299
+  NADPplus.sboTerm = 299
+  GSH.sboTerm = 299
+  O2neg.sboTerm = 247
+  DHA.sboTerm = 299
+  GSSG.sboTerm = 299
+  ASC.sboTerm = 299
+  MDA.sboTerm = 299
+  CoI.sboTerm = 14
+  CoII.sboTerm = 14
+  H2O2.sboTerm = 247
+  APX.sboTerm = 14
+  APXi.sboTerm = 14
+
+  // CV terms:
+  c hypernym "http://identifiers.org/go/GO:0005623"
+  NADPH hypernym "http://identifiers.org/chebi/CHEBI:16474"
+  NADPplus hypernym "http://identifiers.org/chebi/CHEBI:18009"
+  GSH model_entity_is "http://identifiers.org/chebi/CHEBI:16856"
+  O2neg hypernym "http://identifiers.org/chebi/CHEBI:29356"
+  DHA hypernym "http://identifiers.org/chebi/CHEBI:17242"
+  GSSG hypernym "http://identifiers.org/chebi/CHEBI:16856",
+                "http://identifiers.org/pato/PATO:0002223"
+  ASC hypernym "http://identifiers.org/chebi/CHEBI:22651"
+  MDA hypernym "http://identifiers.org/chebi/CHEBI:16504"
+  CoI hypernym "http://identifiers.org/chebi/CHEBI:63248"
+  CoII hypernym "http://identifiers.org/chebi/CHEBI:63248"
+  H2O2 model_entity_is "http://identifiers.org/chebi/CHEBI:16240"
+  APX property "http://identifiers.org/ec-code/1.11.1.11"
+  APXi property "http://identifiers.org/ec-code/1.11.1.11",
+                "http://identifiers.org/pato/PATO:0002355"
+end
+
+ASC_GSH_pathway is "Valero2016 - Ascorbate-Glutathione cycle in chloroplasts under light/dark conditions"
+
+ASC_GSH_pathway model_entity_is "http://identifiers.org/biomodels.db/MODEL1503250002"
+ASC_GSH_pathway model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000589"
+ASC_GSH_pathway description "http://identifiers.org/pubmed/26797294"
+ASC_GSH_pathway taxon "http://identifiers.org/taxonomy/3193"
+ASC_GSH_pathway hypernym "http://identifiers.org/go/GO:0009628",
+                         "http://identifiers.org/go/GO:0033355"

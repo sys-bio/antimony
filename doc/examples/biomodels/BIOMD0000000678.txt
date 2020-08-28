@@ -1,0 +1,97 @@
+// Created by libAntimony v2.13.0
+function function_for_modified_reaction_1(NFAT_phosphorylated, k1, stimulus)
+  k1*stimulus*NFAT_phosphorylated;
+end
+
+function_for_modified_reaction_1 is "function for modified reaction_1"
+
+function function_for_modified_reaction_0(k1, stimulus, substrate)
+  k1*stimulus*substrate;
+end
+
+function_for_modified_reaction_0 is "function for modified reaction"
+
+
+model *Tomida2003___NFAT_functions_Calcium_Oscillation()
+
+  // Compartments and Species:
+  compartment Jurkat_cell;
+  species NFAT_phosphorylated in Jurkat_cell, NFAT_dephosphorylated in Jurkat_cell;
+  species $NFAT_transported in Jurkat_cell, $stimulus in Jurkat_cell;
+
+  // Assignment Rules:
+  NFAT_transported := 1 - NFAT_phosphorylated - NFAT_dephosphorylated;
+  stimulus := piecewise(1, (time - floor(time/ModelValue_13)*ModelValue_13) < ModelValue_17, 0);
+  dNFAT := 100*NFAT_dephosphorylated;
+  pNFAT := 100*NFAT_phosphorylated;
+  tNFAT := 100*NFAT_transported;
+
+  // Reactions:
+  Dephosphorylation: NFAT_phosphorylated => NFAT_dephosphorylated; Jurkat_cell*function_for_modified_reaction_1(NFAT_phosphorylated, k1, stimulus);
+  Phosphorylation: NFAT_dephosphorylated => NFAT_phosphorylated; Jurkat_cell*k2*NFAT_dephosphorylated;
+  Translocation: NFAT_dephosphorylated => $NFAT_transported; Jurkat_cell*k3*NFAT_dephosphorylated;
+  Nuclear_export: $NFAT_transported => NFAT_phosphorylated; Jurkat_cell*k4*NFAT_transported;
+
+  // Species initializations:
+  NFAT_phosphorylated = 1;
+  NFAT_dephosphorylated = 0;
+
+  // Compartment initializations:
+  Jurkat_cell = 1;
+
+  // Variable initializations:
+  ModelValue_13 = stim_frequency;
+  ModelValue_17 = stim_duration;
+  k1 = 0.359;
+  k2 = 0.147;
+  k3 = 0.06;
+  k4 = 0.035;
+  stim_frequency = 3;
+  stim_duration = 1;
+
+  // Other declarations:
+  var dNFAT, pNFAT, tNFAT;
+  const Jurkat_cell, ModelValue_13, ModelValue_17, k1, k2, k3, k4, stim_frequency;
+  const stim_duration;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  Jurkat_cell is "Jurkat cell";
+  ModelValue_13 is "Initial for stim_frequency";
+  ModelValue_17 is "Initial for stim_duration";
+  dNFAT is "dNFAT%";
+  pNFAT is "pNFAT%";
+  tNFAT is "tNFAT%";
+
+  // CV terms:
+  Jurkat_cell hypernym "http://identifiers.org/bto/BTO:0000661"
+  NFAT_phosphorylated hypernym "http://identifiers.org/pr/PR:000003112"
+  NFAT_phosphorylated hypernym "http://identifiers.org/uniprot/Q12968"
+  NFAT_dephosphorylated hypernym "http://identifiers.org/pr/PR:000003112"
+  NFAT_dephosphorylated hypernym "http://identifiers.org/uniprot/Q12968"
+  NFAT_transported hypernym "http://identifiers.org/uniprot/Q12968"
+  NFAT_transported container "http://identifiers.org/go/GO:0005634"
+  NFAT_transported hypernym "http://identifiers.org/pr/PR:000003112"
+  stimulus hypernym "http://identifiers.org/ncit/C41210"
+  Dephosphorylation encoder "http://identifiers.org/ncit/C17275"
+  Dephosphorylation hypernym "urn:miriam:sbo:SBO%3A0000330"
+  Dephosphorylation encoder "http://identifiers.org/chebi/CHEBI:53439"
+  Dephosphorylation hypernym "http://identifiers.org/go/GO:0016311"
+  Phosphorylation hypernym "http://identifiers.org/go/GO:0016310"
+  Translocation hypernym "http://identifiers.org/go/GO:0051531"
+  Nuclear_export hypernym "http://identifiers.org/go/GO:0051168"
+end
+
+Tomida2003___NFAT_functions_Calcium_Oscillation is "Tomida2003 - Calcium Oscillatory-induced translocation of nuclear factor of activated T cells"
+
+Tomida2003___NFAT_functions_Calcium_Oscillation model_entity_is "http://identifiers.org/biomodels.db/MODEL0912160005"
+Tomida2003___NFAT_functions_Calcium_Oscillation model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000678"
+Tomida2003___NFAT_functions_Calcium_Oscillation description "http://identifiers.org/pubmed/12881417"
+Tomida2003___NFAT_functions_Calcium_Oscillation model_entity_is "http://identifiers.org/biomodels.db/MODEL0912160005"
+Tomida2003___NFAT_functions_Calcium_Oscillation hypernym "http://identifiers.org/go/GO:0033173"
+Tomida2003___NFAT_functions_Calcium_Oscillation container "http://identifiers.org/bto/BTO:0000661"
+Tomida2003___NFAT_functions_Calcium_Oscillation taxon "http://identifiers.org/taxonomy/9606"
+Tomida2003___NFAT_functions_Calcium_Oscillation description "http://identifiers.org/pubmed/12881417"

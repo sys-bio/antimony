@@ -1,0 +1,123 @@
+// Created by libAntimony v2.13.0
+function Function_for_Reaction_1(s, I)
+  s*I;
+end
+
+Function_for_Reaction_1 is "Function for Reaction_1"
+
+function Function_for_Reaction_2(T, I, r_T_Tmax)
+  r_T_Tmax*T/(T + I);
+end
+
+Function_for_Reaction_2 is "Function for Reaction_2"
+
+function Function_for_Reaction_3(r_T_d, T)
+  r_T_d*T;
+end
+
+Function_for_Reaction_3 is "Function for Reaction_3"
+
+function Function_for_Reaction_5(R, r_T_Tmax, I, T)
+  (1/(1 + R))*(r_T_Tmax*I/(T + I));
+end
+
+Function_for_Reaction_5 is "Function for Reaction_5"
+
+function Function_for_Reaction_6(R, r_T_d, I)
+  (1/(1 + R))*r_T_d*I;
+end
+
+Function_for_Reaction_6 is "Function for Reaction_6"
+
+function Function_for_Reaction_7(D, r_T_d, I)
+  D*r_T_d*I;
+end
+
+Function_for_Reaction_7 is "Function for Reaction_7"
+
+function Function_for_Reaction_8(pstar, I)
+  pstar*I;
+end
+
+Function_for_Reaction_8 is "Function for Reaction_8"
+
+
+model *New_Model()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species T in compartment_, I in compartment_, V in compartment_;
+
+  // Reactions:
+  Reaction_1:  => T; compartment_*Function_for_Reaction_1(s, I);
+  Reaction_2:  => T; compartment_*Function_for_Reaction_2(T, I, r_T_Tmax);
+  Reaction_3: T => ; compartment_*Function_for_Reaction_3(r_T_d, T);
+  Reaction_4: T + V => I; compartment_*beta*T*V;
+  Reaction_5:  => I; compartment_*Function_for_Reaction_5(R, r_T_Tmax, I, T);
+  Reaction_6: I => ; compartment_*Function_for_Reaction_6(R, r_T_d, I);
+  Reaction_7: I => ; compartment_*Function_for_Reaction_7(D, r_T_d, I);
+  Reaction_8:  => V; compartment_*Function_for_Reaction_8(pstar, I);
+  Reaction_9: V => ; compartment_*c*V;
+
+  // Species initializations:
+  T = 3.3246;
+  I = 417520;
+  V = 4450000;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  s = 0.1178;
+  r_T_Tmax = 10645;
+  r_T_d = 0.0019927;
+  R = 30.078;
+  D = 58.954;
+  beta = 8.3376e-09;
+  pstar = 203.96;
+  c = 17.908;
+
+  // Other declarations:
+  const compartment_, s, r_T_Tmax, r_T_d, R, D, beta, pstar, c;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "Liver";
+  T is "Healthy Hepatocytes (T)";
+  I is "Infected Hepatocytes (I)";
+  V is "Viral Load (V)";
+  beta is "beta*";
+  Reaction_1 is "Proliferation of hepatocytes from liver stem cells";
+  Reaction_2 is "Proliferation of hepatocytes through cell division";
+  Reaction_3 is "Death of healthy hepatocytes";
+  Reaction_4 is "Infection of healthy hepatocytes";
+  Reaction_5 is "Proliferation of infected hepatocytes";
+  Reaction_6 is "Death of infected hepatocytes (1st term)";
+  Reaction_7 is "Death of Infected Hepatocytes (2nd term)";
+  Reaction_8 is "Release of the virus";
+  Reaction_9 is "Degradation of the virus";
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/bto/BTO:0000759"
+  T hypernym "http://identifiers.org/bto/BTO:0000575"
+  I identity "http://identifiers.org/bto/BTO:0000152"
+  I hypernym "http://identifiers.org/bto/BTO:0000575"
+  V taxon "http://identifiers.org/taxonomy/11103"
+  Reaction_4 hypernym "http://identifiers.org/ncit/c128320"
+  Reaction_8 hypernym "http://identifiers.org/go/GO:0019076"
+end
+
+New_Model is "Aston2018 - Dynamics of Hepatitis C Infection"
+
+New_Model model_entity_is "http://identifiers.org/biomodels.db/MODEL1808280002",
+                          "http://identifiers.org/biomodels.db/BIOMD0000000713"
+New_Model identity "http://identifiers.org/biomodels.db/MODEL1808280002"
+New_Model property "http://identifiers.org/mamo/MAMO_0000046"
+New_Model property "http://identifiers.org/efo/0003047"
+New_Model taxon "http://identifiers.org/taxonomy/11103"
+New_Model taxon "http://identifiers.org/taxonomy/9606"
+New_Model description "http://identifiers.org/pubmed/29652855"

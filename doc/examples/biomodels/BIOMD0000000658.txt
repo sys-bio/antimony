@@ -1,0 +1,203 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function function_for_v1(k1, x1, W)
+  k1*x1*W;
+end
+
+function_for_v1 is "function for v1"
+
+function function_for_v3(k3, x2, x4)
+  k3*x2*x4;
+end
+
+function_for_v3 is "function for v3"
+
+
+model *Lee2003___Roles_of_APC_and_Axin_in_Wnt_Pathway__without_regulatory_loop()
+
+  // Compartments and Species:
+  compartment Cytoplasm, Nucleus;
+  species Dsh_i in Cytoplasm, Dsh_a in Cytoplasm, APC__axin__GSK3 in Cytoplasm;
+  species APC_axin_GSK3 in Cytoplasm, GSK3 in Cytoplasm, APC_axin in Cytoplasm;
+  species APC in Cytoplasm, B_catenin_APC__axin__GSK3 in Cytoplasm, B_catenin__APC__axin__GSK3 in Cytoplasm;
+  species B_catenin in Cytoplasm, B_catenin_0 in Nucleus, Axin in Cytoplasm;
+  species TCF in Nucleus, B_catenin_TCF in Nucleus, B_catenin_APC in Cytoplasm;
+  species $W in Cytoplasm;
+
+  // Assignment Rules:
+  W := piecewise(0, time < t0, exp(-1*lambda*(time - t0)));
+  k_7 := k7*K_7;
+  k_8 := k8*K_8;
+  k_16 := k16*K_16;
+  k_17 := k17*K_17;
+  Total_B_Catenin := B_catenin_APC__axin__GSK3 + B_catenin__APC__axin__GSK3 + B_catenin + B_catenin_0 + B_catenin_TCF + B_catenin_APC;
+  Total_Axin := APC__axin__GSK3 + APC_axin_GSK3 + APC_axin + B_catenin_APC__axin__GSK3 + B_catenin__APC__axin__GSK3 + Axin;
+
+  // Reactions:
+  v1: Dsh_i => Dsh_a; Cytoplasm*function_for_v1(k1, Dsh_i, W);
+  v2: Dsh_a => Dsh_i; Cytoplasm*k2*Dsh_a;
+  v3: APC_axin_GSK3 => GSK3 + APC_axin; Cytoplasm*function_for_v3(k3, Dsh_a, APC_axin_GSK3);
+  v4: APC_axin_GSK3 => APC__axin__GSK3; Cytoplasm*k4*APC_axin_GSK3;
+  v5: APC__axin__GSK3 => APC_axin_GSK3; Cytoplasm*k5*APC__axin__GSK3;
+  v6: GSK3 + APC_axin -> APC_axin_GSK3; Cytoplasm*(k6*GSK3*APC_axin - k_6*APC_axin_GSK3);
+  v7: APC + Axin -> APC_axin; Cytoplasm*(k7*APC*Axin - k_7*APC_axin);
+  v8: APC__axin__GSK3 + B_catenin_0 -> B_catenin_APC__axin__GSK3; k8*APC__axin__GSK3*B_catenin_0 - k_8*B_catenin_APC__axin__GSK3;
+  v9: B_catenin_APC__axin__GSK3 => B_catenin__APC__axin__GSK3; Cytoplasm*k9*B_catenin_APC__axin__GSK3;
+  v10: B_catenin__APC__axin__GSK3 => B_catenin + APC__axin__GSK3; Cytoplasm*k10*B_catenin__APC__axin__GSK3;
+  v11: B_catenin => ; Cytoplasm*k11*B_catenin;
+  v12:  => B_catenin_0; Nucleus*Constant_flux__irreversible(k12);
+  v13: B_catenin_0 => ; Nucleus*k13*B_catenin_0;
+  v14:  => Axin; Cytoplasm*Constant_flux__irreversible(k14);
+  v15: Axin => ; Cytoplasm*k15*Axin;
+  v16: B_catenin_0 + TCF -> B_catenin_TCF; Nucleus*(k16*B_catenin_0*TCF - k_16*B_catenin_TCF);
+  v17: APC + B_catenin_0 -> B_catenin_APC; k17*APC*B_catenin_0 - k_17*B_catenin_APC;
+
+  // Species initializations:
+  Dsh_i = Dsh0 - Dsh_a;
+  Dsh_a = 0;
+  APC__axin__GSK3 = 0.00966;
+  APC_axin_GSK3 = 0.00483;
+  GSK3 = 50;
+  APC_axin = 0.00098065;
+  APC = 98;
+  B_catenin_APC__axin__GSK3 = 0.00202;
+  B_catenin__APC__axin__GSK3 = 0.00202;
+  B_catenin = 1;
+  B_catenin_0 = 25.1;
+  Axin = 0.000493;
+  TCF = 8.17;
+  B_catenin_TCF = 6.83;
+  B_catenin_APC = 2.05;
+
+  // Compartment initializations:
+  Cytoplasm = 1;
+  Nucleus = 1;
+
+  // Variable initializations:
+  Dsh0 = 100;
+  t0 = 40;
+  lambda = 0.05;
+  k1 = 0.182;
+  k2 = 0.0182;
+  k3 = 0.05;
+  k4 = 0.267;
+  k5 = 0.133;
+  k6 = 0.0909;
+  k_6 = 0.909;
+  k7 = 500;
+  K_7 = 50;
+  k8 = 500;
+  K_8 = 120;
+  k9 = 206;
+  k10 = 206;
+  k11 = 0.417;
+  k12 = 0.423;
+  k13 = 0.000257;
+  k14 = 8.22e-05;
+  k15 = 0.167;
+  k16 = 500;
+  K_16 = 30;
+  k17 = 500;
+  K_17 = 1200;
+
+  // Other declarations:
+  var k_7, k_8, k_16, k_17, Total_B_Catenin, Total_Axin;
+  const Cytoplasm, Nucleus, Dsh0, t0, lambda, k1, k2, k3, k4, k5, k6, k_6;
+  const k7, K_7, k8, K_8, k9, k10, k11, k12, k13, k14, k15, k16, K_16, k17;
+  const K_17;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 60 second;
+  unit substance = 1e-6 mole;
+
+  // Display Names:
+  time_unit is "time";
+  APC__axin__GSK3 is "APC*/axin*/GSK3";
+  APC_axin_GSK3 is "APC/axin/GSK3";
+  APC_axin is "APC/axin";
+  B_catenin_APC__axin__GSK3 is "B_catenin/APC*/axin*/GSK3";
+  B_catenin__APC__axin__GSK3 is "B_catenin*/APC*/axin*/GSK3";
+  B_catenin is "B_catenin*";
+  B_catenin_0 is "B_catenin";
+  B_catenin_TCF is "B_catenin/TCF";
+  B_catenin_APC is "B_catenin/APC";
+
+  // SBO terms:
+  lambda.sboTerm = 356
+  K_7.sboTerm = 282
+  K_8.sboTerm = 282
+  K_16.sboTerm = 282
+  K_17.sboTerm = 282
+
+  // CV terms:
+  Cytoplasm identity "http://identifiers.org/fma/FMA:66835"
+  Nucleus hypernym "http://identifiers.org/go/GO:0005634"
+  Dsh_i homolog "http://identifiers.org/uniprot/P51142"
+  Dsh_a homolog "http://identifiers.org/uniprot/P51142"
+  APC__axin__GSK3 part "http://identifiers.org/uniprot/Q9YGY0"
+  APC__axin__GSK3 part "http://identifiers.org/uniprot/P70039"
+  APC__axin__GSK3 part "http://identifiers.org/uniprot/Q91757"
+  APC_axin_GSK3 part "http://identifiers.org/uniprot/Q9YGY0"
+  APC_axin_GSK3 part "http://identifiers.org/uniprot/Q91757"
+  APC_axin_GSK3 part "http://identifiers.org/uniprot/P70039"
+  GSK3 hypernym "http://identifiers.org/uniprot/Q91757"
+  APC_axin part "http://identifiers.org/uniprot/Q9YGY0"
+  APC_axin part "http://identifiers.org/uniprot/P70039"
+  APC hypernym "http://identifiers.org/uniprot/P70039"
+  B_catenin_APC__axin__GSK3 part "http://identifiers.org/uniprot/P70039"
+  B_catenin_APC__axin__GSK3 part "http://identifiers.org/uniprot/P26233"
+  B_catenin_APC__axin__GSK3 part "http://identifiers.org/uniprot/Q9YGY0"
+  B_catenin_APC__axin__GSK3 part "http://identifiers.org/uniprot/Q91757"
+  B_catenin__APC__axin__GSK3 part "http://identifiers.org/uniprot/Q9YGY0"
+  B_catenin__APC__axin__GSK3 part "http://identifiers.org/uniprot/P26233"
+  B_catenin__APC__axin__GSK3 part "http://identifiers.org/uniprot/P70039"
+  B_catenin__APC__axin__GSK3 part "http://identifiers.org/uniprot/Q91757"
+  B_catenin hypernym "http://identifiers.org/uniprot/P26233"
+  B_catenin_0 hypernym "http://identifiers.org/uniprot/P26233"
+  Axin hypernym "http://identifiers.org/uniprot/Q9YGY0"
+  TCF identity "http://identifiers.org/chebi/CHEBI:30956"
+  B_catenin_TCF part "http://identifiers.org/chebi/CHEBI:30956"
+  B_catenin_TCF part "http://identifiers.org/uniprot/P26233"
+  B_catenin_APC part "http://identifiers.org/uniprot/P26233"
+  B_catenin_APC part "http://identifiers.org/uniprot/P70039"
+  W hypernym "http://identifiers.org/sbo/SBO:0000170"
+  lambda identity "http://identifiers.org/sbo/SBO:0000356"
+  K_7 identity "http://identifiers.org/sbo/SBO:0000282"
+  K_8 identity "http://identifiers.org/sbo/SBO:0000282"
+  K_16 identity "http://identifiers.org/sbo/SBO:0000282"
+  K_17 identity "http://identifiers.org/sbo/SBO:0000282"
+  v1 hypernym "http://identifiers.org/sbo/SBO:0000656"
+  v4 hypernym "http://identifiers.org/go/GO:0016310"
+  v5 hypernym "http://identifiers.org/go/GO:0016311"
+  v6 hypernym "http://identifiers.org/sbo/SBO:0000180"
+  v6 hypernym "http://identifiers.org/obi/OBI:0001588"
+  v7 hypernym "http://identifiers.org/obi/OBI:0001588"
+  v7 hypernym "http://identifiers.org/sbo/SBO:0000180"
+  v8 hypernym "http://identifiers.org/sbo/SBO:0000180"
+  v8 hypernym "http://identifiers.org/obi/OBI:0001588"
+  v9 hypernym "http://identifiers.org/go/GO:0016310"
+  v11 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  v12 hypernym "http://identifiers.org/obi/OBI:0600040"
+  v13 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  v14 hypernym "http://identifiers.org/obi/OBI:0600040"
+  v15 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  v16 hypernym "http://identifiers.org/sbo/SBO:0000180"
+  v16 hypernym "http://identifiers.org/obi/OBI:0001588"
+  v17 hypernym "http://identifiers.org/sbo/SBO:0000180"
+  v17 hypernym "http://identifiers.org/obi/OBI:0001588"
+end
+
+Lee2003___Roles_of_APC_and_Axin_in_Wnt_Pathway__without_regulatory_loop is "Lee2003 - Roles of APC and Axin in Wnt Pathway (without regulatory loop)"
+
+Lee2003___Roles_of_APC_and_Axin_in_Wnt_Pathway__without_regulatory_loop model_entity_is "http://identifiers.org/biomodels.db/MODEL1708310000"
+Lee2003___Roles_of_APC_and_Axin_in_Wnt_Pathway__without_regulatory_loop model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000658"
+Lee2003___Roles_of_APC_and_Axin_in_Wnt_Pathway__without_regulatory_loop property "http://identifiers.org/mamo/MAMO_0000046"
+Lee2003___Roles_of_APC_and_Axin_in_Wnt_Pathway__without_regulatory_loop property "http://identifiers.org/kegg.pathway/xla04310"
+Lee2003___Roles_of_APC_and_Axin_in_Wnt_Pathway__without_regulatory_loop taxon "http://identifiers.org/taxonomy/262014"
+Lee2003___Roles_of_APC_and_Axin_in_Wnt_Pathway__without_regulatory_loop description "http://identifiers.org/pubmed/14551908"

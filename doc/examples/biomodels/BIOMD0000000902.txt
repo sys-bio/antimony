@@ -1,0 +1,96 @@
+// Created by libAntimony v2.13.0
+function Function_for_Length_of_Eclipse_Phase(b, n, tau, x, y)
+  b*exp(-n*tau)*x*y;
+end
+
+Function_for_Length_of_Eclipse_Phase is "Function_for_Length_of_Eclipse_Phase"
+
+function Function_for_Stimulation(c, y, z)
+  c*y*z;
+end
+
+Function_for_Stimulation is "Function_for_Stimulation"
+
+function Function_for_Immune_Kill(p, y, z)
+  p*y*z;
+end
+
+Function_for_Immune_Kill is "Function_for_Immune_Kill"
+
+function Function_for_Uninfected_Cells_Proliferation(r, x, y, k)
+  r*x*(1 - (x + y)/k);
+end
+
+Function_for_Uninfected_Cells_Proliferation is "Function_for_Uninfected_Cells_Proliferation"
+
+
+model *Wang2019_-_A_mathematical_model_of_oncolytic_virotherapy_with_time_delay()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species x in compartment_, I in compartment_, y in compartment_, z in compartment_;
+
+  // Reactions:
+  Uninfected_Cells_Proliferation:  => x; compartment_*Function_for_Uninfected_Cells_Proliferation(r, x, y, k);
+  Uninfected_Cells_Infection: x + y => I; compartment_*b*x*y;
+  Length_of_Eclipse_Phase: I => y; compartment_*Function_for_Length_of_Eclipse_Phase(b, n, tau, x, y);
+  Cytotoxicity: y => ; compartment_*a*y;
+  Immune_Kill: y => ; compartment_*Function_for_Immune_Kill(p, y, z);
+  Stimulation:  => z; compartment_*Function_for_Stimulation(c, y, z);
+  Clearance: z => ; compartment_*d*z;
+
+  // Species initializations:
+  x = 200;
+  I = 0;
+  y = 800;
+  z = 100;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  r = 0.206;
+  k = 2139;
+  b = 0.000448;
+  tau = 0;
+  a = 1;
+  p = 0.01;
+  c = 0.02;
+  d = 0.5;
+  n = 0.01;
+
+  // Other declarations:
+  const compartment_, r, k, b, tau, a, p, c, d, n;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+
+  // CV terms:
+  compartment_ hypernym "http://identifiers.org/ncit/C94498"
+  x hypernym "http://identifiers.org/cl/CL:0000000"
+  I hypernym "http://identifiers.org/go/GO:0098689"
+  y hypernym "http://identifiers.org/bto/BTO:0000152"
+  z hypernym "http://identifiers.org/cl/CL:0000910"
+  Uninfected_Cells_Proliferation hypernym "http://identifiers.org/ncit/C18081"
+  Uninfected_Cells_Infection hypernym "http://identifiers.org/ncit/C3439"
+  Length_of_Eclipse_Phase hypernym "http://identifiers.org/go/GO:0098689"
+  Cytotoxicity hypernym "http://identifiers.org/ncit/C27988"
+  Immune_Kill hypernym "http://identifiers.org/go/GO:0001906"
+  Stimulation hypernym "http://identifiers.org/ncit/C39042"
+  Clearance hypernym "http://identifiers.org/go/GO:0008219"
+end
+
+Wang2019_-_A_mathematical_model_of_oncolytic_virotherapy_with_time_delay is "Wang2019 - A mathematical model of oncolytic virotherapy with time delay"
+
+Wang2019_-_A_mathematical_model_of_oncolytic_virotherapy_with_time_delay description "http://identifiers.org/pubmed/31137188"
+Wang2019_-_A_mathematical_model_of_oncolytic_virotherapy_with_time_delay origin "http://identifiers.org/pubmed/11309314"
+Wang2019_-_A_mathematical_model_of_oncolytic_virotherapy_with_time_delay model_entity_is "http://identifiers.org/biomodels.db/MODEL1912180004",
+                                                                                         "http://identifiers.org/biomodels.db/BIOMD0000000902"
+Wang2019_-_A_mathematical_model_of_oncolytic_virotherapy_with_time_delay property "http://identifiers.org/ncit/C62713"
+Wang2019_-_A_mathematical_model_of_oncolytic_virotherapy_with_time_delay property "http://identifiers.org/mamo/MAMO_0000089"

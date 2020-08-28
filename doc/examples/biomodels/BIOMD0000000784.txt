@@ -1,0 +1,130 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function Function_for_Healthy_Cells_Competition_Tumor(a_21, x, y)
+  a_21*x*y;
+end
+
+Function_for_Healthy_Cells_Competition_Tumor is "Function_for_Healthy_Cells_Competition_Tumor"
+
+function Function_for_Effector_Competition_Tumor(a_31, x, z)
+  a_31*x*z;
+end
+
+Function_for_Effector_Competition_Tumor is "Function_for_Effector_Competition_Tumor"
+
+function Function_for_Tumor_Competition_Healthy_Cells(a_12, y, x)
+  a_12*y*x;
+end
+
+Function_for_Tumor_Competition_Healthy_Cells is "Function_for_Tumor_Competition_Healthy_Cells"
+
+function Function_for_Tumor_Growth(x)
+  x*(1 - x);
+end
+
+Function_for_Tumor_Growth is "Function_for_Tumor_Growth"
+
+function Function_for_Helper_Cells_Production(r_2, y)
+  r_2*y*(1 - y);
+end
+
+Function_for_Helper_Cells_Production is "Function_for_Helper_Cells_Production"
+
+function Function_for_Effector_Recruitment(g, D_x_z, x, h)
+  g*D_x_z^2*x^2/(h + D_x_z^2*x^2);
+end
+
+Function_for_Effector_Recruitment is "Function_for_Effector_Recruitment"
+
+
+model *L_pez2014___A_Validated_Mathematical_Model_of_Tumor_Growth_Including_Tumor_Host_Interaction_and_Cell_Mediated_Immune_Response()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species x_Tumor_Cells in compartment_, y_Healthy_Cells in compartment_;
+  species z_Effector_Cells in compartment_;
+
+  // Assignment Rules:
+  D_x_z := ModelValue_1*z_Effector_Cells^ModelValue_2/(h_x + z_Effector_Cells^ModelValue_2);
+  h_x := ModelValue_3*x_Tumor_Cells^ModelValue_2;
+
+  // Reactions:
+  Tumor_Growth:  => x_Tumor_Cells; compartment_*Function_for_Tumor_Growth(x_Tumor_Cells);
+  Tumor_Competition_Healthy_Cells: x_Tumor_Cells => ; compartment_*Function_for_Tumor_Competition_Healthy_Cells(a_12, y_Healthy_Cells, x_Tumor_Cells);
+  Tumor_Killing: x_Tumor_Cells => ; compartment_*D_x_z*x_Tumor_Cells;
+  Healthy_Cells_Production:  => y_Healthy_Cells; compartment_*Function_for_Helper_Cells_Production(r_2, y_Healthy_Cells);
+  Healthy_Cells_Competition_Tumor: y_Healthy_Cells => ; compartment_*Function_for_Healthy_Cells_Competition_Tumor(a_21, x_Tumor_Cells, y_Healthy_Cells);
+  Effector_Production_Constant:  => z_Effector_Cells; compartment_*Constant_flux__irreversible(Effector_Production_Constant_v);
+  Effector_Death: z_Effector_Cells => ; compartment_*d_3*z_Effector_Cells;
+  Effector_Recruitment:  => z_Effector_Cells; compartment_*Function_for_Effector_Recruitment(g, D_x_z, x_Tumor_Cells, h);
+  Effector_Competition_Tumor: z_Effector_Cells => ; compartment_*Function_for_Effector_Competition_Tumor(a_31, x_Tumor_Cells, z_Effector_Cells);
+
+  // Species initializations:
+  x_Tumor_Cells = 0.1;
+  y_Healthy_Cells = 0.9;
+  z_Effector_Cells = 0.2;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  a_12 = 0.195;
+  d = 5;
+  lambda = 0.21;
+  s = 11.5;
+  r_2 = 0.35;
+  a_21 = 0.954;
+  d_3 = 0.112;
+  g = 0.29;
+  h = 7.95e-11;
+  a_31 = 5.25;
+  ModelValue_1 = d;
+  ModelValue_2 = lambda;
+  ModelValue_3 = s;
+  Effector_Production_Constant_v = 1;
+
+  // Other declarations:
+  var D_x_z, h_x;
+  const compartment_, a_12, d, lambda, s, r_2, a_21, d_3, g, h, a_31, ModelValue_1;
+  const ModelValue_2, ModelValue_3;
+
+  // Unit definitions:
+  unit time_unit = 86400 second;
+  unit substance = item;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+  ModelValue_1 is "Initial for d";
+  ModelValue_2 is "Initial for lambda";
+  ModelValue_3 is "Initial for s";
+
+  // CV terms:
+  compartment_ hypernym "http://identifiers.org/ncit/C94498"
+  x_Tumor_Cells identity "http://identifiers.org/cl/CL:0001063"
+  y_Healthy_Cells hypernym "http://identifiers.org/cl/CL:0000000"
+  z_Effector_Cells identity "http://identifiers.org/cl/CL:0000911"
+  Tumor_Growth hypernym "http://identifiers.org/ncit/C18081"
+  Tumor_Competition_Healthy_Cells hypernym "http://identifiers.org/ncit/C20751"
+  Tumor_Killing hypernym "http://identifiers.org/go/GO:0008219"
+  Healthy_Cells_Production hypernym "http://identifiers.org/ncit/C18081"
+  Healthy_Cells_Competition_Tumor hypernym "http://identifiers.org/ncit/C20751"
+  Effector_Production_Constant hypernym "http://identifiers.org/ncit/C18081"
+  Effector_Death hypernym "http://identifiers.org/go/GO:0008219"
+  Effector_Recruitment hypernym "http://identifiers.org/go/GO:0072683"
+  Effector_Competition_Tumor hypernym "http://identifiers.org/ncit/C20751"
+end
+
+L_pez2014___A_Validated_Mathematical_Model_of_Tumor_Growth_Including_Tumor_Host_Interaction_and_Cell_Mediated_Immune_Response is "Lopez2014 - A Validated Mathematical Model of Tumor Growth Including Tumor-Host Interaction and Cell-Mediated Immune Response"
+
+L_pez2014___A_Validated_Mathematical_Model_of_Tumor_Growth_Including_Tumor_Host_Interaction_and_Cell_Mediated_Immune_Response description "http://identifiers.org/pubmed/25348062"
+L_pez2014___A_Validated_Mathematical_Model_of_Tumor_Growth_Including_Tumor_Host_Interaction_and_Cell_Mediated_Immune_Response model_entity_is "http://identifiers.org/biomodels.db/MODEL1908090001",
+                                                                                                                                              "http://identifiers.org/biomodels.db/BIOMD0000000784"
+L_pez2014___A_Validated_Mathematical_Model_of_Tumor_Growth_Including_Tumor_Host_Interaction_and_Cell_Mediated_Immune_Response property "http://identifiers.org/go/GO:0002286"
+L_pez2014___A_Validated_Mathematical_Model_of_Tumor_Growth_Including_Tumor_Host_Interaction_and_Cell_Mediated_Immune_Response property "http://identifiers.org/mamo/MAMO_0000046"
+L_pez2014___A_Validated_Mathematical_Model_of_Tumor_Growth_Including_Tumor_Host_Interaction_and_Cell_Mediated_Immune_Response taxon "http://identifiers.org/taxonomy/10090"

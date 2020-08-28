@@ -1,0 +1,203 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function Function_for_v11_3(gamma_bp, BMAL1, PERCRY)
+  gamma_bp*BMAL1*PERCRY;
+end
+
+Function_for_v11_3 is "Function_for_v11.3"
+
+function Function_for_v4_2(gamma_b_p, BMAL1, PERCRY)
+  gamma_b_p*BMAL1*PERCRY;
+end
+
+Function_for_v4_2 is "Function_for_v4.2"
+
+function Function_for_v8_1(R_box)
+  2*R_box;
+end
+
+Function_for_v8_1 is "Function_for_v8.1"
+
+
+model *Almeida2019___Transcription_based_circadian_mechanism_controls_the_duration_of_molecular_clock_states_in_response_to_signaling_inputs()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species BMAL1 in compartment_, ROR in compartment_, REV in compartment_;
+  species DBP in compartment_, E4BP4 in compartment_, CRY in compartment_;
+  species PER in compartment_, PERCRY in compartment_;
+
+  // Assignment Rules:
+  E_box := ModelValue_3*BMAL1/(BMAL1 + ModelValue_4 + ModelValue_5*BMAL1*CRY);
+  R_box := ModelValue_0*(ROR/(ROR + ModelValue_1))*(ModelValue_2^2/(ModelValue_2^2 + REV^2));
+  D_box := ModelValue_6*(DBP/(DBP + k_D))*(ModelValue_8/(ModelValue_8 + E4BP4));
+
+  // Reactions:
+  v4_1:  => BMAL1; compartment_*Constant_flux__irreversible(R_box);
+  v4_2: BMAL1 => ; compartment_*Function_for_v4_2(gamma_bp, BMAL1, PERCRY);
+  v5_1:  => ROR; compartment_*Constant_flux__irreversible(E_box);
+  v5_2:  => ROR; compartment_*Constant_flux__irreversible(R_box);
+  v5_3: ROR => ; compartment_*gamma_ror*ROR;
+  v8_1:  => E4BP4 + CRY; compartment_*Function_for_v8_1(R_box);
+  v6_1:  => REV; compartment_*Function_for_v8_1(E_box);
+  v6_2:  => REV; compartment_*Constant_flux__irreversible(D_box);
+  v6_3: REV => ; compartment_*gamma_rev*REV;
+  v7_1:  => DBP; compartment_*Constant_flux__irreversible(E_box);
+  v7_2: DBP => ; compartment_*gamma_db*DBP;
+  v8_2: E4BP4 => ; compartment_*gamma_E4*E4BP4;
+  v9_1:  => CRY; compartment_*Constant_flux__irreversible(E_box);
+  v9_3: PER + CRY => PERCRY; compartment_*gamma_pc*PER*CRY;
+  v9_4: PERCRY => PER + CRY; compartment_*gamma_cp*PERCRY;
+  v9_5: CRY => ; compartment_*gamma_c*CRY;
+  v10_1:  => PER; compartment_*Constant_flux__irreversible(E_box);
+  v10_2:  => PER; compartment_*Constant_flux__irreversible(D_box);
+  v10_5: PER => ; compartment_*gamma_p*PER;
+  v11_3: PERCRY => ; compartment_*Function_for_v11_3(gamma_bp, BMAL1, PERCRY);
+
+  // Species initializations:
+  BMAL1 = 1;
+  ROR = 1;
+  REV = 110;
+  DBP = 1;
+  E4BP4 = 80;
+  CRY = 1;
+  PER = 25;
+  PERCRY = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  V_R = 44.4;
+  k_R = 3.54;
+  k_R_r = 80.1;
+  V_E = 30.3;
+  k_E = 214;
+  k_E_r = 1.24;
+  V_D = 202;
+  k_D = 5.32;
+  k_D_r = 94.7;
+  gamma_ror = 2.55;
+  gamma_rev = 0.241;
+  gamma_p = 0.844;
+  gamma_c = 2.34;
+  gamma_db = 0.156;
+  gamma_E4 = 0.295;
+  gamma_pc = 0.191;
+  gamma_cp = 0.141;
+  gamma_bp = 2.58;
+  ModelValue_3 = V_E;
+  ModelValue_4 = k_E;
+  ModelValue_5 = k_E_r;
+  ModelValue_0 = V_R;
+  ModelValue_1 = k_R;
+  ModelValue_2 = k_R_r;
+  ModelValue_6 = V_D;
+  ModelValue_8 = k_D_r;
+
+  // Other declarations:
+  var E_box, R_box, D_box;
+  const compartment_, V_R, k_R, k_R_r, V_E, k_E, k_E_r, V_D, k_D, k_D_r, gamma_ror;
+  const gamma_rev, gamma_p, gamma_c, gamma_db, gamma_E4, gamma_pc, gamma_cp;
+  const gamma_bp, ModelValue_3, ModelValue_4, ModelValue_5, ModelValue_0;
+  const ModelValue_1, ModelValue_2, ModelValue_6, ModelValue_8;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 3600 second;
+  unit substance = item;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+  ModelValue_3 is "Initial for V_E";
+  ModelValue_4 is "Initial for k_E";
+  ModelValue_5 is "Initial for k_E_r";
+  ModelValue_0 is "Initial for V_R";
+  ModelValue_1 is "Initial for k_R";
+  ModelValue_2 is "Initial for k_R_r";
+  ModelValue_6 is "Initial for V_D";
+  ModelValue_8 is "Initial for k_D_r";
+  v4_1 is "v4.1";
+  v4_2 is "v4.2";
+  v5_1 is "v5.1";
+  v5_2 is "v5.2";
+  v5_3 is "v5.3";
+  v8_1 is "v8.1";
+  v6_1 is "v6.1";
+  v6_2 is "v6.2";
+  v6_3 is "v6.3";
+  v7_1 is "v7.1";
+  v7_2 is "v7.2";
+  v8_2 is "v8.2";
+  v9_1 is "v9.1";
+  v9_3 is "v9.3";
+  v9_4 is "v9.4";
+  v9_5 is "v9.5";
+  v10_1 is "v10.1";
+  v10_2 is "v10.2";
+  v10_5 is "v10.5";
+  v11_3 is "v11.3";
+
+  // SBO terms:
+  v5_3.sboTerm = 179
+  v8_1.sboTerm = 184
+  v6_1.sboTerm = 184
+  v6_2.sboTerm = 184
+  v6_3.sboTerm = 179
+  v7_1.sboTerm = 184
+  v7_2.sboTerm = 179
+  v8_2.sboTerm = 179
+  v9_1.sboTerm = 184
+  v9_3.sboTerm = 526
+  v9_4.sboTerm = 180
+  v9_5.sboTerm = 179
+  v10_1.sboTerm = 184
+  v10_2.sboTerm = 184
+  v10_5.sboTerm = 179
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/cl/CL:0000000"
+  BMAL1 identity "http://identifiers.org/uniprot/O00327"
+  ROR version "http://identifiers.org/ncit/C29881"
+  REV identity "http://identifiers.org/uniprot/P20393"
+  DBP identity "http://identifiers.org/uniprot/Q10586"
+  E4BP4 identity "http://identifiers.org/pr/PR:000011176"
+  CRY identity "http://identifiers.org/pr/PR:000050151"
+  PER version "http://identifiers.org/pr/PR:000012548"
+  PERCRY part "http://identifiers.org/pr/PR:000012548"
+  PERCRY part "http://identifiers.org/pr/PR:000050151"
+  v4_1 identity "http://identifiers.org/go/GO:0006412"
+  v4_2 identity "http://identifiers.org/go/GO:0051168"
+  v5_1 identity "http://identifiers.org/go/GO:0006412"
+  v5_2 identity "http://identifiers.org/go/GO:0006412"
+  v5_3 identity "http://identifiers.org/sbo/SBO:0000179"
+  v8_1 identity "http://identifiers.org/sbo/SBO:0000184"
+  v6_1 identity "http://identifiers.org/sbo/SBO:0000184"
+  v6_2 identity "http://identifiers.org/sbo/SBO:0000184"
+  v6_3 identity "http://identifiers.org/sbo/SBO:0000179"
+  v7_1 identity "http://identifiers.org/sbo/SBO:0000184"
+  v7_2 identity "http://identifiers.org/sbo/SBO:0000179"
+  v8_2 identity "http://identifiers.org/sbo/SBO:0000179"
+  v9_1 identity "http://identifiers.org/sbo/SBO:0000184"
+  v9_3 identity "http://identifiers.org/sbo/SBO:0000526"
+  v9_4 identity "http://identifiers.org/sbo/SBO:0000180"
+  v9_5 identity "http://identifiers.org/sbo/SBO:0000179"
+  v10_1 identity "http://identifiers.org/sbo/SBO:0000184"
+  v10_2 identity "http://identifiers.org/sbo/SBO:0000184"
+  v10_5 identity "http://identifiers.org/sbo/SBO:0000179"
+  v11_3 identity "http://identifiers.org/go/GO:0051168"
+end
+
+Almeida2019___Transcription_based_circadian_mechanism_controls_the_duration_of_molecular_clock_states_in_response_to_signaling_inputs is "Almeida2019 - Transcription-based circadian mechanism controls the duration of molecular clock states in response to signaling inputs"
+
+Almeida2019___Transcription_based_circadian_mechanism_controls_the_duration_of_molecular_clock_states_in_response_to_signaling_inputs description "http://identifiers.org/pubmed/31539528"
+Almeida2019___Transcription_based_circadian_mechanism_controls_the_duration_of_molecular_clock_states_in_response_to_signaling_inputs model_entity_is "http://identifiers.org/biomodels.db/MODEL1910290001",
+                                                                                                                                                      "http://identifiers.org/biomodels.db/BIOMD0000000839"
+Almeida2019___Transcription_based_circadian_mechanism_controls_the_duration_of_molecular_clock_states_in_response_to_signaling_inputs property "http://identifiers.org/mamo/MAMO_0000046"
+Almeida2019___Transcription_based_circadian_mechanism_controls_the_duration_of_molecular_clock_states_in_response_to_signaling_inputs property "http://identifiers.org/go/GO:0007623"

@@ -1,0 +1,139 @@
+// Created by libAntimony v2.13.0
+function Function_for_miR_degradation(cell, kdegMiR, miR)
+  kdegMiR*miR*cell/cell;
+end
+
+Function_for_miR_degradation is "Function for miR_degradation"
+
+function Function_for_miR_gene_TF2_release(cell, krelTF2miRgene, miR_gene_TF2)
+  krelTF2miRgene*miR_gene_TF2*cell/cell;
+end
+
+Function_for_miR_gene_TF2_release is "Function for miR_gene_TF2_release"
+
+function Function_for_miR_gene_TF2_binding(TF2, cell, kbinTF2miRgene, miR_gene)
+  kbinTF2miRgene*miR_gene*cell*TF2*cell/cell;
+end
+
+Function_for_miR_gene_TF2_binding is "Function for miR_gene_TF2_binding"
+
+function Function_for_miR_gene_TF1_release(cell, krelTF1miRgene, miR_gene_TF1)
+  krelTF1miRgene*miR_gene_TF1*cell/cell;
+end
+
+Function_for_miR_gene_TF1_release is "Function for miR_gene_TF1_release"
+
+function Function_for_miR_gene_TF1_binding(TF1, cell, kbinTF1miRgene, miR_gene)
+  kbinTF1miRgene*miR_gene*cell*TF1*cell/cell;
+end
+
+Function_for_miR_gene_TF1_binding is "Function for miR_gene_TF1_binding"
+
+function Function_for_TF1_transcription(Signal, cell, ksynTF1mRNA)
+  ksynTF1mRNA*Signal*cell/cell;
+end
+
+Function_for_TF1_transcription is "Function for TF1_transcription"
+
+function Function_for_TF1_mRNA_degradation(TF1_mRNA, cell, kdegTF1mRNA)
+  kdegTF1mRNA*TF1_mRNA*cell/cell;
+end
+
+Function_for_TF1_mRNA_degradation is "Function for TF1_mRNA_degradation"
+
+function Function_for_TF1_mRNA_degradation_via_miR(TF1_mRNA, cell, kdegTF1mRNAbyMiR, miR)
+  kdegTF1mRNAbyMiR*TF1_mRNA*cell*miR*cell/cell;
+end
+
+Function_for_TF1_mRNA_degradation_via_miR is "Function for TF1_mRNA_degradation_via_miR"
+
+function Function_for_TF1_translation(TF1_mRNA, cell, ksynTF1)
+  ksynTF1*TF1_mRNA*cell/cell;
+end
+
+Function_for_TF1_translation is "Function for TF1_translation"
+
+function Function_for_TF1_degradation(TF1, cell, kdegTF1)
+  kdegTF1*TF1*cell/cell;
+end
+
+Function_for_TF1_degradation is "Function for TF1_degradation"
+
+function Function_for_miR_synthesis_2(cell, ksynMiR, miR_gene_TF2)
+  ksynMiR*miR_gene_TF2*cell/cell;
+end
+
+Function_for_miR_synthesis_2 is "Function for miR_synthesis_2"
+
+
+model *MODEL1610100000()
+
+  // Compartments and Species:
+  compartment cell;
+  species miR in cell, miR_gene in cell, miR_gene_TF1 in cell, miR_gene_TF2 in cell;
+  species Signal in cell, TF1 in cell, TF1_mRNA in cell, TF2 in cell, $Sink in cell;
+
+  // Reactions:
+  miR_gene_TF1_binding: miR_gene + TF1 => miR_gene_TF1; cell*Function_for_miR_gene_TF1_binding(TF1, cell, kbinTF1miRgene, miR_gene);
+  miR_gene_TF1_release: miR_gene_TF1 => miR_gene + TF1; cell*Function_for_miR_gene_TF1_release(cell, krelTF1miRgene, miR_gene_TF1);
+  miR_gene_TF2_binding: miR_gene + TF2 => miR_gene_TF2; cell*Function_for_miR_gene_TF2_binding(TF2, cell, kbinTF2miRgene, miR_gene);
+  miR_gene_TF2_release: miR_gene_TF2 => miR_gene + TF2; cell*Function_for_miR_gene_TF2_release(cell, krelTF2miRgene, miR_gene_TF2);
+  miR_synthesis: miR_gene_TF2 => miR_gene_TF2 + miR; cell*Function_for_miR_synthesis_2(cell, ksynMiR, miR_gene_TF2);
+  miR_degradation: miR => $Sink; cell*Function_for_miR_degradation(cell, kdegMiR, miR);
+  TF1_transcription: Signal => Signal + TF1_mRNA; cell*Function_for_TF1_transcription(Signal, cell, ksynTF1mRNA);
+  TF1_mRNA_degradation: TF1_mRNA => $Sink; cell*Function_for_TF1_mRNA_degradation(TF1_mRNA, cell, kdegTF1mRNA);
+  TF1_mRNA_degradation_via_miR: TF1_mRNA + miR => miR; cell*Function_for_TF1_mRNA_degradation_via_miR(TF1_mRNA, cell, kdegTF1mRNAbyMiR, miR);
+  TF1_translation: TF1_mRNA => TF1_mRNA + TF1; cell*Function_for_TF1_translation(TF1_mRNA, cell, ksynTF1);
+  TF1_degradation: TF1 => $Sink; cell*Function_for_TF1_degradation(TF1, cell, kdegTF1);
+
+  // Events:
+  ActivateSignal: at 0 after time > 3600: Signal = 100/cell;
+  DeactivateSignal: at 0 after time > 7200: Signal = 0/cell;
+
+  // Species initializations:
+  miR = 1000/cell;
+  miR_gene = 2/cell;
+  miR_gene_TF1 = 0;
+  miR_gene_TF2 = 0;
+  Signal = 0;
+  TF1 = 0;
+  TF1_mRNA = 0;
+  TF2 = 1000/cell;
+  Sink = 0;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  kbinTF1miRgene = 0.002;
+  kbinTF2miRgene = 0.0001;
+  kdegMiR = 0.0004;
+  kdegTF1 = 1e-05;
+  kdegTF1mRNA = 0.0001;
+  kdegTF1mRNAbyMiR = 1e-06;
+  krelTF1miRgene = 0.001;
+  krelTF2miRgene = 0.001;
+  ksynMiR = 0.2;
+  ksynTF1 = 0.0003;
+  ksynTF1mRNA = 0.01;
+
+  // Other declarations:
+  const cell, kbinTF1miRgene, kbinTF2miRgene, kdegMiR, kdegTF1, kdegTF1mRNA;
+  const kdegTF1mRNAbyMiR, krelTF1miRgene, krelTF2miRgene, ksynMiR, ksynTF1;
+  const ksynTF1mRNA;
+
+  // Unit definitions:
+  unit substance = item;
+end
+
+MODEL1610100000 is "Proctor2017- Role of microRNAs in osteoarthritis (Positive Feedback By Micro RNA)"
+
+MODEL1610100000 instance "http://identifiers.org/biomodels.db/MODEL1610100000",
+                         "http://identifiers.org/taxonomy/9606",
+                         "http://identifiers.org/ncit/C25966"
+MODEL1610100000 description "http://identifiers.org/ncit/C25966",
+                            "http://identifiers.org/pubmed/29095952"
+MODEL1610100000 model_entity_is "http://identifiers.org/biomodels.db/MODEL1610100000",
+                                "http://identifiers.org/biomodels.db/BIOMD0000000862"
+MODEL1610100000 identity "http://identifiers.org/biomodels.db/MODEL1610100000"
+MODEL1610100000 property "http://identifiers.org/taxonomy/9606"

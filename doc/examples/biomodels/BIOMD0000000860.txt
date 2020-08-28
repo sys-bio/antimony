@@ -1,0 +1,100 @@
+// Created by libAntimony v2.13.0
+function Function_for_miR_synthesis(TF1, cell, ksynMiR)
+  ksynMiR*TF1*cell/cell;
+end
+
+Function_for_miR_synthesis is "Function for miR_synthesis"
+
+function Function_for_miR_degradation(cell, kdegMiR, miR)
+  kdegMiR*miR*cell/cell;
+end
+
+Function_for_miR_degradation is "Function for miR_degradation"
+
+function Function_for_TF1target_transcription(TF1, cell, ksynTF1targetmRNA)
+  ksynTF1targetmRNA*TF1*cell/cell;
+end
+
+Function_for_TF1target_transcription is "Function for TF1target_transcription"
+
+function Function_for_TF1target_mRNA_degradation(TF1target_mRNA, cell, kdegTF1targetmRNA)
+  kdegTF1targetmRNA*TF1target_mRNA*cell/cell;
+end
+
+Function_for_TF1target_mRNA_degradation is "Function for TF1target_mRNA_degradation"
+
+function Function_for_TF1target_mRNA_degradation_via_MiR(TF1target_mRNA, cell, kdegTF1targetmRNAbyMiR, miR)
+  kdegTF1targetmRNAbyMiR*TF1target_mRNA*cell*miR*cell/cell;
+end
+
+Function_for_TF1target_mRNA_degradation_via_MiR is "Function for TF1target_mRNA_degradation_via_MiR"
+
+
+model *MODEL1610100004()
+
+  // Compartments and Species:
+  compartment cell;
+  species miR in cell, TF1 in cell, TF1target_mRNA in cell, $Sink in cell;
+
+  // Reactions:
+  miR_synthesis: TF1 => TF1 + miR; cell*Function_for_miR_synthesis(TF1, cell, ksynMiR);
+  miR_degradation: miR => $Sink; cell*Function_for_miR_degradation(cell, kdegMiR, miR);
+  TF1target_transcription: TF1 => TF1 + TF1target_mRNA; cell*Function_for_TF1target_transcription(TF1, cell, ksynTF1targetmRNA);
+  TF1target_mRNA_degradation: TF1target_mRNA => $Sink; cell*Function_for_TF1target_mRNA_degradation(TF1target_mRNA, cell, kdegTF1targetmRNA);
+  TF1target_mRNA_degradation_via_MiR: TF1target_mRNA + miR => $Sink + miR; cell*Function_for_TF1target_mRNA_degradation_via_MiR(TF1target_mRNA, cell, kdegTF1targetmRNAbyMiR, miR);
+
+  // Events:
+  ActivateSignal: at 0 after time > 3600: TF1 = 500/cell;
+
+  // Species initializations:
+  miR = 0;
+  TF1 = 0;
+  TF1target_mRNA = 0;
+  Sink = 0;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  kdegMiR = 0.0004;
+  kdegMiR has unit_0;
+  kdegTF1targetmRNA = 0.001;
+  kdegTF1targetmRNA has unit_0;
+  kdegTF1targetmRNAbyMiR = 5e-05;
+  kdegTF1targetmRNAbyMiR has unit_1;
+  ksynTF1targetmRNA = 0.004;
+  ksynTF1targetmRNA has unit_0;
+  ksynMiR = 0.0002;
+  ksynMiR has unit_0;
+
+  // Other declarations:
+  const cell, kdegMiR, kdegTF1targetmRNA, kdegTF1targetmRNAbyMiR, ksynTF1targetmRNA;
+  const ksynMiR;
+
+  // Unit definitions:
+  unit substance = item;
+  unit unit_0 = 1 / second;
+  unit unit_1 = 1 / (mole * second);
+
+  // Display Names:
+  unit_0 is "1/s";
+  unit_1 is "1/ (mol *s)";
+
+  // CV terms:
+  miR instance "http://identifiers.org/ncit/C25966"
+  TF1 instance "http://identifiers.org/ncit/C17207"
+end
+
+MODEL1610100004 is "Proctor2017- Role of microRNAs in osteoarthritis (Positive Feedforward Incoherent By MicroRNA)_1"
+
+MODEL1610100004 class "http://identifiers.org/taxonomy/9606",
+                      "http://identifiers.org/biomodels.db/MODEL1610100004",
+                      "http://identifiers.org/ncit/C25966",
+                      "http://identifiers.org/mamo/MAMO_0000046"
+MODEL1610100004 description "http://identifiers.org/mamo/MAMO_0000046",
+                            "http://identifiers.org/pubmed/29095952"
+MODEL1610100004 model_entity_is "http://identifiers.org/biomodels.db/MODEL1610100004",
+                                "http://identifiers.org/biomodels.db/BIOMD0000000860"
+MODEL1610100004 property "http://identifiers.org/taxonomy/9606"
+MODEL1610100004 property "http://identifiers.org/biomodels.db/MODEL1610100004"
+MODEL1610100004 property "http://identifiers.org/ncit/C25966"

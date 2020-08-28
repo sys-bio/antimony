@@ -1,0 +1,71 @@
+// Created by libAntimony v2.13.0
+function Function_for_Conversion_Uninfected_to_Infected(U, V, I)
+  U*V/(U + I);
+end
+
+Function_for_Conversion_Uninfected_to_Infected is "Function_for_Conversion_Uninfected_to_Infected"
+
+function Function_for_Tumor_Growth(m, K, U)
+  m*ln(K/U)*U;
+end
+
+Function_for_Tumor_Growth is "Function_for_Tumor_Growth"
+
+
+model *Jenner2019___Oncolytic_virotherapy_for_tumours_following_a_Gompertz_growth_law()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species U in compartment_, I in compartment_, V in compartment_;
+
+  // Reactions:
+  Tumor_Growth:  => U; compartment_*Function_for_Tumor_Growth(m, K, U);
+  Conversion_Uninfected_to_Infected: U => I; compartment_*Function_for_Conversion_Uninfected_to_Infected(U, V, I);
+  Tumor_Cell_Death: I => V; compartment_*xi*I;
+  Viral_Decay: V => ; compartment_*gamma_*V;
+
+  // Species initializations:
+  U = 75;
+  I = 100;
+  V = 10;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  m = 0.1;
+  K = 100;
+  xi = 0.01;
+  gamma_ = 0.1;
+
+  // Other declarations:
+  const compartment_, m, K, xi, gamma_;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = item;
+
+  // Display Names:
+  compartment_ is "compartment";
+  gamma_ is "gamma";
+
+  // CV terms:
+  U identity "http://identifiers.org/cl/CL:0001063"
+  U property "http://identifiers.org/efo/0001460"
+  I identity "http://identifiers.org/cl/CL:0001063"
+  I property "http://identifiers.org/bto/BTO:0000152"
+  V identity "http://identifiers.org/ncit/C717"
+  Tumor_Growth identity "http://identifiers.org/ncit/C36294"
+  Conversion_Uninfected_to_Infected hypernym "http://identifiers.org/ncit/C3439"
+  Tumor_Cell_Death identity "http://identifiers.org/go/GO:0008219"
+  Tumor_Cell_Death property "http://identifiers.org/go/GO:0044659"
+  Viral_Decay hypernym "http://identifiers.org/sbo/SBO:0000179"
+end
+
+Jenner2019___Oncolytic_virotherapy_for_tumours_following_a_Gompertz_growth_law is "Jenner2019 - Oncolytic virotherapy for tumours following a Gompertz growth law"
+
+Jenner2019___Oncolytic_virotherapy_for_tumours_following_a_Gompertz_growth_law description "http://identifiers.org/pubmed/31400344"
+Jenner2019___Oncolytic_virotherapy_for_tumours_following_a_Gompertz_growth_law model_entity_is "http://identifiers.org/biomodels.db/MODEL1911120002",
+                                                                                               "http://identifiers.org/biomodels.db/BIOMD0000000850"
+Jenner2019___Oncolytic_virotherapy_for_tumours_following_a_Gompertz_growth_law property "http://identifiers.org/ncit/C62713"
+Jenner2019___Oncolytic_virotherapy_for_tumours_following_a_Gompertz_growth_law property "http://identifiers.org/mamo/MAMO_0000046"

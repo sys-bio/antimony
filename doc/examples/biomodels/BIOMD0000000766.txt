@@ -1,0 +1,191 @@
+// Created by libAntimony v2.13.0
+function inf_(dv, V, U, hu)
+  dv*V*U/(hu + U);
+end
+
+inf_ is "inf"
+
+function tg(r, U, I, K)
+  r*U*(1 - (U + I)/K);
+end
+
+tg is "tg"
+
+function exh(dt, U, E)
+  dt*U*E;
+end
+
+exh is "exh"
+
+function kill(du, x, E, he)
+  du*x*E/(he + E);
+end
+
+kill is "kill"
+
+function burst(d, b, I)
+  d*b*I;
+end
+
+burst is "burst"
+
+function mg(pm, V, M, m, hv)
+  pm*V*M*(1 - M/m)/(hv + V);
+end
+
+mg is "mg"
+
+function eg(pe, M, U, V, hv)
+  pe*M*(U + V)/(U + V + hv);
+end
+
+eg is "eg"
+
+
+model *Macnamara2015_1___virotherapy_full_model()
+
+  // Compartments and Species:
+  compartment tme;
+  species U in tme, I in tme, M in tme, E in tme, V in tme;
+
+  // Reactions:
+  tumor_growth:  => U; tme*tg(r, U, I, K);
+  tumor_infection: U => I; tme*inf_(dv, V, U, hu);
+  tumor_killing: U => ; tme*kill(du, U, E, he);
+  infected_tumor_death: I => ; tme*delta*I;
+  infected_tumor_killing: I => ; tme*kill(du, I, E, he);
+  memory_cell_growth:  => M; tme*mg(pm, V, M, m, hv);
+  effector_growth:  => E; tme*eg(pe, M, U, V, hv);
+  effector_death: E => ; tme*de*E;
+  effector_exhaustion: E => ; tme*exh(dt, U, E);
+  virus_burst:  => V; tme*burst(delta, b, I);
+  virus_clearance: V => ; tme*w*V;
+
+  // Species initializations:
+  U = 1000000;
+  U has substance_per_volume;
+  I = 0;
+  I has substance_per_volume;
+  M = 1;
+  M has substance_per_volume;
+  E = 0;
+  E has substance_per_volume;
+  V = 1;
+  V has substance_per_volume;
+
+  // Compartment initializations:
+  tme = 1;
+  tme has volume;
+
+  // Variable initializations:
+  r = 0.927;
+  r has unit_0;
+  K = 181820000;
+  K has unit_1;
+  dv = 0.0038;
+  dv has unit_0;
+  du = 2;
+  du has unit_0;
+  hu = 1;
+  hu has unit_1;
+  he = 1000;
+  he has unit_1;
+  hv = 10000;
+  hv has unit_1;
+  delta = 1;
+  delta has unit_0;
+  pm = 2.5;
+  pm has unit_0;
+  m = 10000;
+  m has unit_1;
+  pe = 0.4;
+  pe has unit_0;
+  de = 0.1;
+  de has unit_0;
+  dt = 5e-09;
+  dt has unit_0;
+  w = 2.042;
+  w has unit_0;
+  b = 1000;
+  b has unit_1;
+
+  // Other declarations:
+  const tme, r, K, dv, du, hu, he, hv, delta, pm, m, pe, de, dt, w, b;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = time_unit;
+  unit substance = 1e-3 mole;
+  unit unit_0 = 1 / 86400e-1 second;
+  unit unit_1 = 1 / dimensionless^-0;
+  unit extent = substance;
+  unit substance_per_volume = 1e-3 mole / 1e-3 litre;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1/d";
+  unit_1 is "1";
+  tumor_growth is "tumor growth";
+  tumor_infection is "tumor infection";
+  tumor_killing is "tumor killing";
+  infected_tumor_death is "infected tumor death";
+  infected_tumor_killing is "infected tumor killing";
+  memory_cell_growth is "memory cell growth";
+  effector_growth is "effector growth";
+  effector_death is "effector death";
+  effector_exhaustion is "effector exhaustion";
+  virus_burst is "virus burst";
+  virus_clearance is "virus clearance";
+
+  // CV terms:
+  tme hypernym "http://identifiers.org/ncit/C94498"
+  U hypernym "http://identifiers.org/cl/CL:0001064"
+  I hypernym "http://identifiers.org/cl/CL:0001064"
+  M hypernym "http://identifiers.org/ncit/C122731"
+  E hypernym "http://identifiers.org/ncit/C28241"
+  V hypernym "http://identifiers.org/ncit/C717"
+  r hypernym "http://identifiers.org/sbo/SBO:0000610"
+  K hypernym "http://identifiers.org/sbo/SBO:0000661"
+  dv hypernym "http://identifiers.org/ncit/C25636"
+  du hypernym "http://identifiers.org/ncit/C25636"
+  hu hypernym "http://identifiers.org/sbo/SBO:0000281"
+  he hypernym "http://identifiers.org/sbo/SBO:0000281"
+  hv hypernym "http://identifiers.org/sbo/SBO:0000281"
+  delta hypernym "http://identifiers.org/ncit/C25636"
+  pm hypernym "http://identifiers.org/sbo/SBO:0000610"
+  m hypernym "http://identifiers.org/sbo/SBO:0000661"
+  pe hypernym "http://identifiers.org/sbo/SBO:0000610"
+  de hypernym "http://identifiers.org/ncit/C25636"
+  dt hypernym "http://identifiers.org/ncit/C25636"
+  w hypernym "http://identifiers.org/ncit/C25636"
+  b hypernym "http://identifiers.org/ncit/C84380"
+  tumor_growth hypernym "http://identifiers.org/sbo/SBO:0000393"
+  tumor_growth hypernym "http://identifiers.org/go/GO:0008283"
+  tumor_killing hypernym "http://identifiers.org/go/GO:0002419"
+  tumor_killing hypernym "http://identifiers.org/sbo/SBO:0000179"
+  infected_tumor_death hypernym "http://identifiers.org/sbo/SBO:0000179"
+  infected_tumor_death hypernym "http://identifiers.org/go/GO:0008219"
+  infected_tumor_killing hypernym "http://identifiers.org/go/GO:0002419"
+  infected_tumor_killing hypernym "http://identifiers.org/sbo/SBO:0000179"
+  memory_cell_growth hypernym "http://identifiers.org/sbo/SBO:0000393"
+  memory_cell_growth hypernym "http://identifiers.org/go/GO:0008283"
+  effector_growth hypernym "http://identifiers.org/sbo/SBO:0000393"
+  effector_growth hypernym "http://identifiers.org/go/GO:0008283"
+  effector_death hypernym "http://identifiers.org/go/GO:0008219"
+  effector_death hypernym "http://identifiers.org/sbo/SBO:0000179"
+  effector_exhaustion hypernym "http://identifiers.org/go/GO:0008219"
+  effector_exhaustion hypernym "http://identifiers.org/sbo/SBO:0000179"
+  virus_burst hypernym "http://identifiers.org/sbo/SBO:0000393"
+  virus_clearance hypernym "http://identifiers.org/sbo/SBO:0000179"
+end
+
+Macnamara2015_1___virotherapy_full_model is "Macnamara2015/1 - virotherapy full model"
+
+Macnamara2015_1___virotherapy_full_model description "http://identifiers.org/pubmed/25882747"
+Macnamara2015_1___virotherapy_full_model model_entity_is "http://identifiers.org/biomodels.db/MODEL1907290002",
+                                                         "http://identifiers.org/biomodels.db/BIOMD0000000766"
+Macnamara2015_1___virotherapy_full_model property "http://identifiers.org/ncit/C62713"
+Macnamara2015_1___virotherapy_full_model property "http://identifiers.org/mamo/MAMO_0000046"
+Macnamara2015_1___virotherapy_full_model taxon "http://identifiers.org/taxonomy/9606"

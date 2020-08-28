@@ -1,0 +1,136 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function Function_for_Cancer_Death_Immune(c_1, N, I)
+  c_1*N*I;
+end
+
+Function_for_Cancer_Death_Immune is "Function_for_Cancer_Death_Immune"
+
+function Function_for_Immune_Death_Cancer(c_2, N, I)
+  c_2*N*I;
+end
+
+Function_for_Immune_Death_Cancer is "Function_for_Immune_Death_Cancer"
+
+function Function_for_Immune_Growth_Cancer_Stimulation(rho, N, I, gamma_)
+  rho*N*I/(gamma_ + N);
+end
+
+Function_for_Immune_Growth_Cancer_Stimulation is "Function_for_Immune_Growth_Cancer_Stimulation"
+
+function Function_for_Immune_Death_Chemotherapy(delta, I, Q, b)
+  delta*I*Q/(b + Q);
+end
+
+Function_for_Immune_Death_Chemotherapy is "Function_for_Immune_Death_Chemotherapy"
+
+function Function_for_Cancer_Growth(r, N, k)
+  r*N*(1 - N/k);
+end
+
+Function_for_Cancer_Growth is "Function_for_Cancer_Growth"
+
+function Function_for_Cancer_Death_Chemotherapy(mu, N, Q, a)
+  mu*N*Q/(a + Q);
+end
+
+Function_for_Cancer_Death_Chemotherapy is "Function_for_Cancer_Death_Chemotherapy"
+
+
+model *Rodrigues2019___A_mathematical_model_for_chemoimmunotherapy_of_chronic_lymphocytic_leukemia()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species N in compartment_, I in compartment_, Q in compartment_;
+
+  // Assignment Rules:
+  Chemotherapy_Input := piecewise(Infusion_Rate, time <= Infusion_Duration, piecewise(Infusion_Rate, (time >= 21) && (time <= (21 + Infusion_Duration)), piecewise(Infusion_Rate, (time >= 42) && (time <= (42 + Infusion_Duration)), piecewise(Infusion_Rate, (time >= 63) && (time <= (63 + Infusion_Duration)), piecewise(Infusion_Rate, (time >= 84) && (time <= (84 + Infusion_Duration)), piecewise(Infusion_Rate, (time >= 105) && (time <= (105 + Infusion_Duration)), piecewise(Infusion_Rate, (time >= 126) && (time <= (126 + Infusion_Duration)), 0)))))));
+  Infusion_Rate := Infusion_Dose/Infusion_Duration;
+  Infusion_Duration := 1/8;
+
+  // Reactions:
+  Cancer_Growth:  => N; compartment_*Function_for_Cancer_Growth(r, N, k);
+  Cancer_Death_Immune: N => ; compartment_*Function_for_Cancer_Death_Immune(c_1, N, I);
+  Cancer_Death_Chemotherapy: N => ; compartment_*Function_for_Cancer_Death_Chemotherapy(mu, N, Q, a);
+  Immune_Growth_Constant:  => I; compartment_*Constant_flux__irreversible(s_0);
+  Immune_Death_Natural: I => ; compartment_*d*I;
+  Immune_Growth_Cancer_Stimulation:  => I; compartment_*Function_for_Immune_Growth_Cancer_Stimulation(rho, N, I, gamma_);
+  Immune_Death_Cancer: I => ; compartment_*Function_for_Immune_Death_Cancer(c_2, N, I);
+  Immune_Death_Chemotherapy: I => ; compartment_*Function_for_Immune_Death_Chemotherapy(delta, I, Q, b);
+  Chemotherapy_Decay: Q => ; compartment_*lambda*Q;
+  Immune_Immunotherapy:  => I; compartment_*Constant_flux__irreversible(Immunotherapy_Input);
+  Chemotherapy:  => Q; compartment_*Constant_flux__irreversible(Chemotherapy_Input);
+
+  // Species initializations:
+  N = 20000000000;
+  I = 50000000;
+  Q = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  r = 0.01;
+  k = 1000000000000;
+  c_1 = 5e-11;
+  c_2 = 1e-13;
+  s_0 = 700000;
+  d = 0.001;
+  rho = 1e-12;
+  gamma_ = 100;
+  mu = 8;
+  delta = 10000;
+  a = 2000;
+  b = 5000000;
+  lambda = 4.16;
+  Immunotherapy_Input = 0;
+  Infusion_Dose = 1080;
+
+  // Other declarations:
+  var Chemotherapy_Input, Infusion_Rate, Infusion_Duration;
+  const compartment_, r, k, c_1, c_2, s_0, d, rho, gamma_, mu, delta, a, b;
+  const lambda, Immunotherapy_Input, Infusion_Dose;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = item;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+  gamma_ is "gamma";
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/ncit/C94498"
+  N identity "http://identifiers.org/ncit/C25553"
+  I hypernym "http://identifiers.org/ncit/C12535"
+  Q identity "http://identifiers.org/chebi/CHEBI:4027"
+  Cancer_Growth identity "http://identifiers.org/ncit/C36294"
+  Cancer_Death_Immune hypernym "http://identifiers.org/go/GO:0001913"
+  Cancer_Death_Chemotherapy hypernym "http://identifiers.org/go/GO:0008219"
+  Immune_Growth_Constant hypernym "http://identifiers.org/ncit/C18081"
+  Immune_Death_Natural hypernym "http://identifiers.org/go/GO:0008219"
+  Immune_Growth_Cancer_Stimulation propertyBearer "http://identifiers.org/go/GO:0006955"
+  Immune_Death_Cancer hypernym "http://identifiers.org/go/GO:0001906"
+  Immune_Death_Chemotherapy hypernym "http://identifiers.org/go/GO:0008219"
+  Chemotherapy_Decay hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Immune_Immunotherapy identity "http://identifiers.org/ncit/C15262"
+  Chemotherapy identity "http://identifiers.org/ncit/C15632"
+end
+
+Rodrigues2019___A_mathematical_model_for_chemoimmunotherapy_of_chronic_lymphocytic_leukemia is "Rodrigues2019 - A mathematical model for chemoimmunotherapy of chronic lymphocytic leukemia"
+
+Rodrigues2019___A_mathematical_model_for_chemoimmunotherapy_of_chronic_lymphocytic_leukemia description "http://identifiers.org/doi/10.1016/j.amc.2018.12.008"
+Rodrigues2019___A_mathematical_model_for_chemoimmunotherapy_of_chronic_lymphocytic_leukemia model_entity_is "http://identifiers.org/biomodels.db/MODEL1911280001",
+                                                                                                            "http://identifiers.org/biomodels.db/BIOMD0000000879"
+Rodrigues2019___A_mathematical_model_for_chemoimmunotherapy_of_chronic_lymphocytic_leukemia property "http://identifiers.org/mamo/MAMO_0000046"
+Rodrigues2019___A_mathematical_model_for_chemoimmunotherapy_of_chronic_lymphocytic_leukemia property "http://identifiers.org/ncit/C15262"
+Rodrigues2019___A_mathematical_model_for_chemoimmunotherapy_of_chronic_lymphocytic_leukemia property "http://identifiers.org/ncit/C3163"
+Rodrigues2019___A_mathematical_model_for_chemoimmunotherapy_of_chronic_lymphocytic_leukemia property "http://identifiers.org/ncit/C15632"
+Rodrigues2019___A_mathematical_model_for_chemoimmunotherapy_of_chronic_lymphocytic_leukemia taxon "http://identifiers.org/taxonomy/9606"

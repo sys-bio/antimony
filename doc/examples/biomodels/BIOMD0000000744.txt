@@ -1,0 +1,289 @@
+// Created by libAntimony v2.13.0
+function PCC_growth_0(r1, x, b1)
+  r1*x*(1 - x*b1);
+end
+
+PCC_growth_0 is "PCC growth"
+
+function PCC_death_0(delta1, x, z, m1, w)
+  delta1*x*z/(m1 + w);
+end
+
+PCC_death_0 is "PCC death"
+
+function PCC_activation_by_PSC_0(beta1, y, x, b1)
+  beta1*y*x*(1 - x*b1);
+end
+
+PCC_activation_by_PSC_0 is "PCC activation by PSC"
+
+function PSC_growth_0(r2, y, b2)
+  r2*y*(1 - b2*y);
+end
+
+PSC_growth_0 is "PSC growth"
+
+function PSC_activation_by_tp_cytokine_0(beta2, w, k2, y, b2)
+  (beta2*w/(k2 + w))*y*(1 - b2*y);
+end
+
+PSC_activation_by_tp_cytokine_0 is "PSC activation by tp cytokine"
+
+function PSC_death_0(u2, y)
+  u2*y;
+end
+
+PSC_death_0 is "PSC death"
+
+function effector_production_0(beta3, z, v, k3, m3, w)
+  beta3*z*v/((k3 + v)*(m3 + w));
+end
+
+effector_production_0 is "effector production"
+
+function effector_death_0(u3, z)
+  u3*z;
+end
+
+effector_death_0 is "effector death"
+
+function effector_prolif_0(r3)
+  r3;
+end
+
+effector_prolif_0 is "effector prolif."
+
+function tp_production(beta4, x, z, k4)
+  beta4*x*z/(k4 + x);
+end
+
+tp_production is "tp production"
+
+function tp_decay_0(u4, w)
+  u4*w;
+end
+
+tp_decay_0 is "tp decay"
+
+function tp_by_PSC(r4, x, y, m4, v)
+  r4*x*y/(m4 + v);
+end
+
+tp_by_PSC is "tp by PSC"
+
+function ts_production_0(beta5, x, z, k5)
+  beta5*x*z/(k5 + x);
+end
+
+ts_production_0 is "ts production"
+
+function ts_decay_0(u5, v)
+  u5*v;
+end
+
+ts_decay_0 is "ts decay"
+
+
+model *Hu2019___Pancreatic_cancer_dynamics()
+
+  // Compartments and Species:
+  compartment Pancreatic_tumor;
+  species x in Pancreatic_tumor, y in Pancreatic_tumor, z in Pancreatic_tumor;
+  species w in Pancreatic_tumor, v in Pancreatic_tumor;
+
+  // Reactions:
+  PCC_growth:  => x; Pancreatic_tumor*PCC_growth_0(r1, x, b1);
+  PCC_activation_by_PSC:  => x; Pancreatic_tumor*PCC_activation_by_PSC_0(beta1, y, x, b1);
+  PCC_death: x => ; Pancreatic_tumor*PCC_death_0(delta1, x, z, m1, w);
+  PSC_growth:  => y; Pancreatic_tumor*PSC_growth_0(r2, y, b2);
+  PSC_activation_by_tp_cytokine:  => y; Pancreatic_tumor*PSC_activation_by_tp_cytokine_0(beta2, w, k2, y, b2);
+  PSC_death: y => ; Pancreatic_tumor*PSC_death_0(u2, y);
+  effector_production:  => z; Pancreatic_tumor*effector_production_0(beta3, z, v, k3, m3, w);
+  effector_prolif:  => z; Pancreatic_tumor*effector_prolif_0(r3);
+  effector_death: z => ; Pancreatic_tumor*effector_death_0(u3, z);
+  tp_cytokine_production:  => w; Pancreatic_tumor*tp_production(beta4, x, z, k4);
+  tp_decay: w => ; Pancreatic_tumor*tp_decay_0(u4, w);
+  tp_stimulation_by_PSC:  => w; Pancreatic_tumor*tp_by_PSC(r4, x, y, m4, v);
+  ts_production:  => v; Pancreatic_tumor*ts_production_0(beta5, x, z, k5);
+  ts_decay: v => ; Pancreatic_tumor*ts_decay_0(u5, v);
+
+  // Species initializations:
+  x = 1000000000;
+  x has substance_per_volume;
+  y = 5600000;
+  y has substance_per_volume;
+  z = 190000000;
+  z has substance_per_volume;
+  w = 50000;
+  w has substance_per_volume;
+  v = 9.4;
+  v has substance_per_volume;
+
+  // Compartment initializations:
+  Pancreatic_tumor = 1;
+  Pancreatic_tumor has volume;
+
+  // Variable initializations:
+  r1 = 0.0195;
+  r1 has unit_0;
+  b1 = 1.02e-11;
+  b1 has unit_1;
+  beta1 = 3.482115e-12;
+  beta1 has unit_0;
+  m1 = 100000000;
+  m1 has unit_1;
+  delta1 = 0.96;
+  delta1 has unit_0;
+  r2 = 0.00195;
+  r2 has unit_0;
+  beta2 = 0.125;
+  beta2 has unit_0;
+  k2 = 56000000000;
+  k2 has unit_1;
+  b2 = 1.7857e-09;
+  b2 has unit_1;
+  u2 = 0.015;
+  u2 has unit_0;
+  beta3 = 124.5;
+  beta3 has unit_0;
+  k3 = 20000000000;
+  k3 has unit_1;
+  m3 = 1000000;
+  m3 has unit_1;
+  r3 = 3500;
+  r3 has unit_0;
+  u3 = 0.02;
+  u3 has unit_0;
+  beta4 = 5.85;
+  beta4 has unit_0;
+  k4 = 1000000;
+  k4 has unit_1;
+  u4 = 0.034;
+  u4 has unit_0;
+  r4 = 12500;
+  r4 has unit_0;
+  m4 = 89000000000;
+  m4 has unit_1;
+  beta5 = 7.3;
+  beta5 has unit_0;
+  k5 = 1000000;
+  k5 has unit_1;
+  u5 = 0.034;
+  u5 has unit_0;
+
+  // Other declarations:
+  const Pancreatic_tumor, r1, b1, beta1, m1, delta1, r2, beta2, k2, b2, u2;
+  const beta3, k3, m3, r3, u3, beta4, k4, u4, r4, m4, beta5, k5, u5;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = time_unit;
+  unit substance = 1e-3 mole;
+  unit unit_0 = 1 / 86400e-1 second;
+  unit unit_1 = 1 / dimensionless^-0;
+  unit extent = substance;
+  unit substance_per_volume = 1e-3 mole / 1e-3 litre;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1/d";
+  unit_1 is "1";
+  Pancreatic_tumor is "Pancreatic tumor";
+  PCC_growth is "PCC growth";
+  PCC_activation_by_PSC is "PCC activation by PSC";
+  PCC_death is "PCC death";
+  PSC_growth is "PSC growth";
+  PSC_activation_by_tp_cytokine is "PSC activation by tp cytokine";
+  PSC_death is "PSC death";
+  effector_production is "effector production";
+  effector_prolif is "effector prolif.";
+  effector_death is "effector death";
+  tp_cytokine_production is "tp cytokine production";
+  tp_decay is "tp decay";
+  tp_stimulation_by_PSC is "tp stimulation by PSC";
+  ts_production is "ts production";
+  ts_decay is "ts decay";
+
+  // CV terms:
+  Pancreatic_tumor hypernym "http://identifiers.org/bto/BTO:0000988"
+  Pancreatic_tumor hypernym "http://identifiers.org/ncit/C94498"
+  x hypernym "http://identifiers.org/ncit/C12917"
+  x hypernym "http://identifiers.org/cl/CL:0001064"
+  y identity "http://identifiers.org/ncit/C107531"
+  y identity "http://identifiers.org/cl/CL:0002410"
+  z version "http://identifiers.org/ncit/C12536"
+  z version "http://identifiers.org/ncit/C12542"
+  w hypernym "http://identifiers.org/ncit/C20464"
+  v hypernym "http://identifiers.org/ncit/C20464"
+  r1 hypernym "http://identifiers.org/sbo/SBO:0000610"
+  b1 origin "http://identifiers.org/sbo/SBO:0000661"
+  beta1 hypernym "http://identifiers.org/ncit/C94967"
+  m1 hypernym "http://identifiers.org/sbo/SBO:0000193"
+  delta1 hypernym "http://identifiers.org/ncit/C94967"
+  delta1 propertyBearer "http://identifiers.org/go/GO:0001909"
+  r2 hypernym "http://identifiers.org/sbo/SBO:0000610"
+  beta2 hypernym "http://identifiers.org/ncit/C94967"
+  k2 hypernym "http://identifiers.org/sbo/SBO:0000193"
+  b2 origin "http://identifiers.org/sbo/SBO:0000661"
+  u2 hypernym "http://identifiers.org/ncit/C94967"
+  u2 propertyBearer "http://identifiers.org/go/GO:0008219"
+  beta3 hypernym "http://identifiers.org/ncit/C94967"
+  k3 hypernym "http://identifiers.org/sbo/SBO:0000193"
+  m3 hypernym "http://identifiers.org/sbo/SBO:0000193"
+  r3 hypernym "http://identifiers.org/sbo/SBO:0000610"
+  u3 hypernym "http://identifiers.org/go/GO:0008219"
+  u3 hypernym "http://identifiers.org/ncit/C94967"
+  beta4 hypernym "http://identifiers.org/ncit/C94967"
+  beta4 propertyBearer "http://identifiers.org/go/GO:0001816"
+  k4 hypernym "http://identifiers.org/sbo/SBO:0000193"
+  u4 hypernym "http://identifiers.org/ncit/C94967"
+  u4 propertyBearer "http://identifiers.org/ncit/C40678"
+  r4 hypernym "http://identifiers.org/sbo/GO:0001816"
+  m4 hypernym "http://identifiers.org/sbo/SBO:0000193"
+  beta5 hypernym "http://identifiers.org/ncit/C94967"
+  beta5 propertyBearer "http://identifiers.org/go/GO:0001816"
+  k5 hypernym "http://identifiers.org/sbo/SBO:0000193"
+  u5 hypernym "http://identifiers.org/ncit/C94967"
+  u5 propertyBearer "http://identifiers.org/ncit/C40678"
+  PCC_growth hypernym "http://identifiers.org/sbo/SBO:0000393"
+  PCC_growth hypernym "http://identifiers.org/go/GO:0008283"
+  PCC_activation_by_PSC hypernym "http://identifiers.org/sbo/SBO:0000393"
+  PCC_activation_by_PSC hypernym "http://identifiers.org/go/GO:0008283"
+  PCC_death hypernym "http://identifiers.org/go/GO:0008219"
+  PCC_death hypernym "http://identifiers.org/sbo/SBO:0000179"
+  PSC_growth hypernym "http://identifiers.org/go/GO:0008283"
+  PSC_growth hypernym "http://identifiers.org/sbo/SBO:0000393"
+  PSC_activation_by_tp_cytokine hypernym "http://identifiers.org/sbo/SBO:0000393"
+  PSC_activation_by_tp_cytokine hypernym "http://identifiers.org/go/GO:0008283"
+  PSC_death hypernym "http://identifiers.org/go/GO:0008219"
+  PSC_death hypernym "http://identifiers.org/sbo/SBO:0000179"
+  effector_production hypernym "http://identifiers.org/go/GO:0046651"
+  effector_production hypernym "http://identifiers.org/sbo/SBO:0000393"
+  effector_prolif hypernym "http://identifiers.org/sbo/SBO:0000393"
+  effector_prolif hypernym "http://identifiers.org/go/GO:0046651"
+  effector_death hypernym "http://identifiers.org/go/GO:0008219"
+  effector_death hypernym "http://identifiers.org/sbo/SBO:0000179"
+  tp_cytokine_production hypernym "http://identifiers.org/sbo/SBO:0000393"
+  tp_cytokine_production hypernym "http://identifiers.org/go/GO:0001816"
+  tp_decay hypernym "http://identifiers.org/ncit/C40678"
+  tp_decay hypernym "http://identifiers.org/sbo/SBO:0000179"
+  tp_stimulation_by_PSC hypernym "http://identifiers.org/sbo/SBO:0000393"
+  tp_stimulation_by_PSC hypernym "http://identifiers.org/go/GO:0001816"
+  ts_production hypernym "http://identifiers.org/sbo/SBO:0000393"
+  ts_production hypernym "http://identifiers.org/go/GO:0001816"
+  ts_decay hypernym "http://identifiers.org/sbo/SBO:0000179"
+  ts_decay hypernym "http://identifiers.org/ncit/C40678"
+end
+
+Hu2019___Pancreatic_cancer_dynamics is "Hu2019 - Pancreatic cancer dynamics"
+
+Hu2019___Pancreatic_cancer_dynamics model_entity_is "http://identifiers.org/biomodels.db/MODEL1907050003",
+                                                    "http://identifiers.org/biomodels.db/BIOMD0000000744"
+Hu2019___Pancreatic_cancer_dynamics description "http://identifiers.org/pubmed/30843136"
+Hu2019___Pancreatic_cancer_dynamics hypernym "http://identifiers.org/go/GO:0002418"
+Hu2019___Pancreatic_cancer_dynamics container "http://identifiers.org/bto/BTO:0000988"
+Hu2019___Pancreatic_cancer_dynamics property "http://identifiers.org/efo/0002618"
+Hu2019___Pancreatic_cancer_dynamics property "http://identifiers.org/mamo/MAMO_0000046"
+Hu2019___Pancreatic_cancer_dynamics taxon "http://identifiers.org/taxonomy/9606"

@@ -1,0 +1,169 @@
+// Created by libAntimony v2.13.0
+function human_birth_rate(Psi_h, N_h)
+  Psi_h*N_h;
+end
+
+human_birth_rate is "human birth rate"
+
+function Mosquito_birth_rate(Psi_v, N_v)
+  Psi_v*N_v;
+end
+
+Mosquito_birth_rate is "Mosquito birth rate"
+
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+
+model *Chitnis2008___Mathematical_model_of_malaria_transmission()
+
+  // Compartments and Species:
+  compartment Human, Mosquito;
+  species Susceptible_Human in Human, Exposed_Human in Human, Infected_Human in Human;
+  species Recovered in Human, Susceptible_Mosquito in Mosquito, Exposed_Mosquito in Mosquito;
+  species Infected_Mosquito in Mosquito;
+
+  // Assignment Rules:
+  Capital_lambda_h := piecewise(0.041, Baseline_dummy_variable == 0, 0.033);
+  Psi_h := piecewise(5.5e-5, Baseline_dummy_variable == 0, 0.00011);
+  Psi_v := piecewise(0.13, Baseline_dummy_variable == 0, 0.13);
+  sigma_v := piecewise(0.33, Baseline_dummy_variable == 0, 0.5);
+  sigma_h := piecewise(4.3, Baseline_dummy_variable == 0, 19);
+  Beta_hv := piecewise(0.022, Baseline_dummy_variable == 0, 0.022);
+  Beta_vh := piecewise(0.24, Baseline_dummy_variable == 0, 0.48);
+  Beta_tilde_vh := piecewise(0.024, Baseline_dummy_variable == 0, 0.048);
+  v_h := piecewise(0.1, Baseline_dummy_variable == 0, 0.1);
+  v_v := piecewise(0.083, Baseline_dummy_variable == 0, 0.091);
+  gamma_h := piecewise(0.0035, Baseline_dummy_variable == 0, 0.0035);
+  delta_h := piecewise(1.8e-5, Baseline_dummy_variable == 0, 9e-5);
+  rho_h := piecewise(0.0027, Baseline_dummy_variable == 0, 0.00055);
+  u_1h := piecewise(8.8e-6, Baseline_dummy_variable == 0, 1.6e-5);
+  u_2h := piecewise(2e-7, Baseline_dummy_variable == 0, 3e-7);
+  u_1v := piecewise(0.033, Baseline_dummy_variable == 0, 0.033);
+  u_2v := piecewise(4e-5, Baseline_dummy_variable == 0, 2e-5);
+  N_h := Susceptible_Human + Exposed_Human + Infected_Human + Recovered;
+  N_v := Susceptible_Mosquito + Exposed_Mosquito + Infected_Mosquito;
+  f_h := u_1h + u_2h*N_h;
+  f_v := u_1v + u_2v*N_v;
+  lambda_h := (sigma_v*N_v*sigma_h/(sigma_v*N_v + sigma_h*N_h))*Beta_hv*(Infected_Mosquito/N_v);
+  lambda_v := (sigma_v*sigma_h*N_h/(sigma_v*N_v + sigma_h*N_h))*(Beta_vh*(Infected_Human/N_h) + Beta_tilde_vh*(Recovered/N_h));
+
+  // Reactions:
+  Human_Immigration:  => Susceptible_Human; Human*Constant_flux__irreversible(Capital_lambda_h);
+  Human_Birth:  => Susceptible_Human; Human*human_birth_rate(Psi_h, N_h);
+  Human_Loss_of_Immunity: Recovered => Susceptible_Human; Human*rho_h*Recovered;
+  Human_Infection: Susceptible_Human => Exposed_Human; Human*lambda_h*Susceptible_Human;
+  Human_Susceptible_natural_death: Susceptible_Human => ; Human*f_h*Susceptible_Human;
+  Human_disease_progression: Exposed_Human => Infected_Human; Human*v_h*Exposed_Human;
+  Human_Exposed_natural_death: Exposed_Human => ; Human*f_h*Exposed_Human;
+  Human_Recovery: Infected_Human => Recovered; Human*gamma_h*Infected_Human;
+  Human_disease_induced_death: Infected_Human => ; Human*delta_h*Infected_Human;
+  Human_Infectious_natural_death: Infected_Human => ; Human*f_h*Infected_Human;
+  Human_Recovered_natural_death: Recovered => ; Human*f_h*Recovered;
+  Mosquito_birth:  => Susceptible_Mosquito; Mosquito*Mosquito_birth_rate(Psi_v, N_v);
+  Mosquito_infection: Susceptible_Mosquito => Exposed_Mosquito; Mosquito*lambda_v*Susceptible_Mosquito;
+  Mosquito_Susceptible_death: Susceptible_Mosquito => ; Mosquito*f_v*Susceptible_Mosquito;
+  Mosquito_disease_progression: Exposed_Mosquito => Infected_Mosquito; Mosquito*v_v*Exposed_Mosquito;
+  Mosquito_Exposed_death: Exposed_Mosquito => ; Mosquito*f_v*Exposed_Mosquito;
+  Mosquito_Infected_death: Infected_Mosquito => ; Mosquito*f_v*Infected_Mosquito;
+
+  // Species initializations:
+  Susceptible_Human = piecewise(600, Baseline_dummy_variable == 0, 500);
+  Exposed_Human = piecewise(20, Baseline_dummy_variable == 0, 10);
+  Infected_Human = piecewise(3, Baseline_dummy_variable == 0, 30);
+  Recovered = 0;
+  Susceptible_Mosquito = piecewise(2400, Baseline_dummy_variable == 0, 4000);
+  Exposed_Mosquito = piecewise(30, Baseline_dummy_variable == 0, 100);
+  Infected_Mosquito = piecewise(5, Baseline_dummy_variable == 0, 50);
+
+  // Compartment initializations:
+  Human = 1;
+  Mosquito = 1;
+
+  // Variable initializations:
+  Baseline_dummy_variable = 0;
+
+  // Other declarations:
+  var Capital_lambda_h, Psi_h, Psi_v, sigma_v, sigma_h, Beta_hv, Beta_vh;
+  var Beta_tilde_vh, v_h, v_v, gamma_h, delta_h, rho_h, u_1h, u_2h, u_1v;
+  var u_2v, N_h, N_v, f_h, f_v, lambda_h, lambda_v;
+  const Human, Mosquito, Baseline_dummy_variable;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  Susceptible_Human is "Susceptible";
+  Exposed_Human is "Exposed";
+  Infected_Human is "Infected";
+  Susceptible_Mosquito is "Susceptible";
+  Exposed_Mosquito is "Exposed";
+  Infected_Mosquito is "Infected";
+  Human_Immigration is "Human Immigration";
+  Human_Birth is "Human Birth";
+  Human_Loss_of_Immunity is "Human Loss of Immunity";
+  Human_Infection is "Human Infection";
+  Human_Susceptible_natural_death is "Human Susceptible natural death";
+  Human_disease_progression is "Human disease progression";
+  Human_Exposed_natural_death is "Human Exposed natural death";
+  Human_Recovery is "Human Recovery";
+  Human_disease_induced_death is "Human disease-induced death";
+  Human_Infectious_natural_death is "Human Infectious natural death";
+  Human_Recovered_natural_death is "Human Recovered natural death";
+  Mosquito_birth is "Mosquito birth";
+  Mosquito_infection is "Mosquito infection";
+  Mosquito_Susceptible_death is "Mosquito Susceptible death";
+  Mosquito_disease_progression is "Mosquito disease progression";
+  Mosquito_Exposed_death is "Mosquito Exposed death";
+  Mosquito_Infected_death is "Mosquito Infected death";
+
+  // CV terms:
+  Human property "http://identifiers.org/taxonomy/9606"
+  Human property "http://identifiers.org/ncit/C48694"
+  Mosquito property "http://identifiers.org/ncit/C14198"
+  Susceptible_Human property "http://identifiers.org/omit/0005461"
+  Exposed_Human property "http://identifiers.org/ncit/C156623"
+  Exposed_Human property "http://identifiers.org/taxonomy/9606"
+  Infected_Human property "http://identifiers.org/ncit/C128320"
+  Infected_Human property "http://identifiers.org/taxonomy/9606"
+  Recovered property "http://identifiers.org/ncit/C25746"
+  Susceptible_Mosquito property "http://identifiers.org/omit/0005461"
+  Exposed_Mosquito property "http://identifiers.org/ncit/C17214"
+  Exposed_Mosquito property "http://identifiers.org/ncim/C123547"
+  Infected_Mosquito property "http://identifiers.org/ncit/C128320"
+  Infected_Mosquito property "http://identifiers.org/ncit/C123547"
+  Human_Immigration property "http://identifiers.org/ncit/C85498"
+  Human_Birth property "http://identifiers.org/ncit/C25155"
+  Human_Loss_of_Immunity property "http://identifiers.org/ncit/C25559"
+  Human_Loss_of_Immunity property "http://identifiers.org/ncit/C16710"
+  Human_Infection property "http://identifiers.org/ncit/C128320"
+  Human_Susceptible_natural_death part "http://identifiers.org/omit/0017353"
+  Human_disease_progression property "http://identifiers.org/omit/0018647"
+  Human_Exposed_natural_death property "http://identifiers.org/omit/0017353"
+  Human_Recovery property "http://identifiers.org/ncit/C25746"
+  Human_disease_induced_death property "http://identifiers.org/omit/0017353"
+  Human_Infectious_natural_death property "http://identifiers.org/omit/0017353"
+  Human_Recovered_natural_death property "http://identifiers.org/omit/0017353"
+  Mosquito_birth property "http://identifiers.org/ncit/C25155"
+  Mosquito_infection property "http://identifiers.org/ncit/C128320"
+  Mosquito_Susceptible_death property "http://identifiers.org/omit/0017353"
+  Mosquito_disease_progression property "http://identifiers.org/ncit/C17747"
+  Mosquito_Exposed_death property "http://identifiers.org/omit/0017353"
+  Mosquito_Infected_death property "http://identifiers.org/omit/0017353"
+end
+
+Chitnis2008___Mathematical_model_of_malaria_transmission is "Chitnis2008 - Mathematical model of malaria transmission"
+
+Chitnis2008___Mathematical_model_of_malaria_transmission description "http://identifiers.org/pubmed/18293044"
+Chitnis2008___Mathematical_model_of_malaria_transmission model_entity_is "http://identifiers.org/biomodels.db/MODEL1805220002",
+                                                                         "http://identifiers.org/biomodels.db/BIOMD0000000949"
+Chitnis2008___Mathematical_model_of_malaria_transmission part "http://identifiers.org/efo/0001068"
+Chitnis2008___Mathematical_model_of_malaria_transmission hypernym "http://identifiers.org/ncit/C17214"
+Chitnis2008___Mathematical_model_of_malaria_transmission taxon "http://identifiers.org/taxonomy/9606"
+Chitnis2008___Mathematical_model_of_malaria_transmission property "http://identifiers.org/ncit/C34797",
+                                                                  "http://identifiers.org/ncit/C71292",
+                                                                  "http://identifiers.org/mamo/MAMO_0000046"

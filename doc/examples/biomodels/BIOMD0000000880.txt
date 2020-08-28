@@ -1,0 +1,144 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function Function_for_CD4_Growth(a_3, H, b_3)
+  a_3*H*(1 - b_3*H);
+end
+
+Function_for_CD4_Growth is "Function_for_CD4_Growth"
+
+function Function_for_CD4_Inactivation(beta_3, H, L)
+  beta_3*H*L;
+end
+
+Function_for_CD4_Inactivation is "Function_for_CD4_Inactivation"
+
+function Function_for_CD8_Inactivation(alpha_2, T, L)
+  alpha_2*T*L;
+end
+
+Function_for_CD8_Inactivation is "Function_for_CD8_Inactivation"
+
+function Function_for_DC_Inactivation(beta_2, D, L)
+  beta_2*D*L;
+end
+
+Function_for_DC_Inactivation is "Function_for_DC_Inactivation"
+
+function Function_for_CD8_Activation(beta_1, D, H, L)
+  beta_1*(D + H)*L;
+end
+
+Function_for_CD8_Activation is "Function_for_CD8_Activation"
+
+function Function_for_Tumor_Growth(a_1, T, b_1)
+  a_1*T*(1 - b_1*T);
+end
+
+Function_for_Tumor_Growth is "Function_for_Tumor_Growth"
+
+function Function_for_DC_Growth(a_2, D, b_2)
+  a_2*D*(1 - b_2*D);
+end
+
+Function_for_DC_Growth is "Function_for_DC_Growth"
+
+function Function_for_Tumor_Death_CD8(alpha_1, T, L)
+  alpha_1*T*L;
+end
+
+Function_for_Tumor_Death_CD8 is "Function_for_Tumor_Death_CD8"
+
+
+model *Trisilowati2018___Optimal_control_of_tumor_immune_system_interaction_with_treatment()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species T_Tumor_Cells in compartment_, L_CD8_T_Cells in compartment_, D_Dendritic_Cells in compartment_;
+  species H_CD4_T_Cells in compartment_;
+
+  // Reactions:
+  Tumor_Growth:  => T_Tumor_Cells; compartment_*Function_for_Tumor_Growth(a_1, T_Tumor_Cells, b_1__1);
+  Tumor_Death_CD8: T_Tumor_Cells => ; compartment_*Function_for_Tumor_Death_CD8(alpha_1, T_Tumor_Cells, L_CD8_T_Cells);
+  Tumor_Death_Chemotherapy: T_Tumor_Cells => ; compartment_*u_1*T_Tumor_Cells;
+  CD8_Activation:  => L_CD8_T_Cells; compartment_*Function_for_CD8_Activation(beta_1, D_Dendritic_Cells, H_CD4_T_Cells, L_CD8_T_Cells);
+  CD8_Inactivation: L_CD8_T_Cells => ; compartment_*Function_for_CD8_Inactivation(alpha_2, T_Tumor_Cells, L_CD8_T_Cells);
+  CD8_Death: L_CD8_T_Cells => ; compartment_*e*L_CD8_T_Cells;
+  DC_Growth:  => D_Dendritic_Cells; compartment_*Function_for_DC_Growth(a_2, D_Dendritic_Cells, b_2__1);
+  DC_Inactivation: D_Dendritic_Cells => ; compartment_*Function_for_DC_Inactivation(beta_2, D_Dendritic_Cells, L_CD8_T_Cells);
+  DC_Immunotherapy:  => D_Dendritic_Cells; compartment_*Constant_flux__irreversible(u_2);
+  CD4_Growth:  => H_CD4_T_Cells; compartment_*Function_for_CD4_Growth(a_3, H_CD4_T_Cells, b_3__1);
+  CD4_Inactivation: H_CD4_T_Cells => ; compartment_*Function_for_CD4_Inactivation(beta_3, H_CD4_T_Cells, L_CD8_T_Cells);
+
+  // Species initializations:
+  T_Tumor_Cells = 1000000;
+  L_CD8_T_Cells = 10;
+  D_Dendritic_Cells = 10;
+  H_CD4_T_Cells = 5;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  a_1 = 0.431;
+  a_2 = 0.234;
+  a_3 = 0.017;
+  b_1__1 = 1.02e-09;
+  b_2__1 = 1.25e-05;
+  b_3__1 = 0.0005;
+  e = 1.04e-08;
+  alpha_1 = 4.2e-08;
+  alpha_2 = 8e-10;
+  beta_1 = 2e-05;
+  beta_2 = 2e-05;
+  beta_3 = 2e-05;
+  u_1 = 0;
+  u_2 = 0;
+
+  // Other declarations:
+  const compartment_, a_1, a_2, a_3, b_1__1, b_2__1, b_3__1, e, alpha_1, alpha_2;
+  const beta_1, beta_2, beta_3, u_1, u_2;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = item;
+
+  // Display Names:
+  compartment_ is "compartment";
+  b_1__1 is "b_1_-1";
+  b_2__1 is "b_2_-1";
+  b_3__1 is "b_3_-1";
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/ncit/C94498"
+  T_Tumor_Cells identity "http://identifiers.org/cl/CL:0001063"
+  L_CD8_T_Cells identity "http://identifiers.org/cco/CL:0000910"
+  D_Dendritic_Cells identity "http://identifiers.org/cl/CL:0000451"
+  H_CD4_T_Cells identity "http://identifiers.org/cl/CL:0000912"
+  Tumor_Growth hypernym "http://identifiers.org/ncit/C36294"
+  Tumor_Death_CD8 identity "http://identifiers.org/go/GO:0002419"
+  Tumor_Death_Chemotherapy hypernym "http://identifiers.org/go/GO:0008219"
+  Tumor_Death_Chemotherapy property "http://identifiers.org/ncit/C15632"
+  CD8_Activation hypernym "http://identifiers.org/go/GO:0046649"
+  CD8_Inactivation identity "http://identifiers.org/ncit/C40846"
+  CD8_Death identity "http://identifiers.org/go/GO:0008219"
+  DC_Growth hypernym "http://identifiers.org/ncit/C18081"
+  DC_Inactivation identity "http://identifiers.org/ncit/C40846"
+  DC_Immunotherapy identity "http://identifiers.org/ncit/C28976"
+  CD4_Growth hypernym "http://identifiers.org/ncit/C18081"
+  CD4_Inactivation identity "http://identifiers.org/ncit/C40846"
+end
+
+Trisilowati2018___Optimal_control_of_tumor_immune_system_interaction_with_treatment is "Trisilowati2018 - Optimal control of tumor-immune system interaction with treatment"
+
+Trisilowati2018___Optimal_control_of_tumor_immune_system_interaction_with_treatment description "http://identifiers.org/doi/10.1063/1.5062816"
+Trisilowati2018___Optimal_control_of_tumor_immune_system_interaction_with_treatment model_entity_is "http://identifiers.org/biomodels.db/MODEL1911280003",
+                                                                                                    "http://identifiers.org/biomodels.db/BIOMD0000000880"
+Trisilowati2018___Optimal_control_of_tumor_immune_system_interaction_with_treatment property "http://identifiers.org/ncit/C9305"
+Trisilowati2018___Optimal_control_of_tumor_immune_system_interaction_with_treatment property "http://identifiers.org/mamo/MAMO_0000046"
+Trisilowati2018___Optimal_control_of_tumor_immune_system_interaction_with_treatment property "http://identifiers.org/go/GO:0006955"
+Trisilowati2018___Optimal_control_of_tumor_immune_system_interaction_with_treatment taxon "http://identifiers.org/taxonomy/9606"

@@ -1,0 +1,138 @@
+// Created by libAntimony v2.13.0
+function Rate_Law_for_Susceptible_to_Infected(Ro, I, S, gamma_)
+  gamma_*Ro*I*S;
+end
+
+Rate_Law_for_Susceptible_to_Infected is "Rate Law for Susceptible_to_Infected"
+
+
+model *Bertozzi2020___SIR_model_of_scenarios_of_COVID_19_spread_in_CA()
+
+  // Compartments and Species:
+  compartment USA___CA__NY;
+  species Infected in USA___CA__NY, Recovered in USA___CA__NY, Susceptible in USA___CA__NY;
+
+  // Assignment Rules:
+  Io := ModelValue_5*ModelValue_3 + ModelValue_6*ModelValue_10;
+  Pop := ModelValue_5*ModelValue_0 + ModelValue_6*ModelValue_7;
+  Time := ModelValue_2*time;
+  Ro := ModelValue_5*Ro_CA + ModelValue_6*Ro_NY;
+  gamma_ := ModelValue_5*ModelValue_2 + ModelValue_6*ModelValue_9;
+
+  // Reactions:
+  Susceptible_to_Infected: Susceptible => Infected; USA___CA__NY*Rate_Law_for_Susceptible_to_Infected(Ro, Infected, Susceptible, gamma_);
+  Infected_to_Recovered: Infected => Recovered; USA___CA__NY*gamma_*Infected;
+
+  // Events:
+  Lockdown_start: at 0 after (ModelValue_14 == 1) && (time > (ModelValue_5*ModelValue_15 + ModelValue_6*ModelValue_17)): Ro_NY = Ro_NY/2, Ro_CA = Ro_CA/2;
+  Lockdown_end: at 0 after (ModelValue_14 == 1) && (time > (ModelValue_5*ModelValue_16 + ModelValue_6*ModelValue_18)): Ro_NY = ModelValue_8, Ro_CA = ModelValue_1;
+  Peak_time_record_start: at 0 after rateOf(Infected) < 1e-12: Peak_Time = time;
+
+  // Species initializations:
+  Infected = Io/Pop;
+  Infected has substance_per_volume;
+  Recovered = 0;
+  Recovered has substance_per_volume;
+  Susceptible = (Pop - Infected)/Pop;
+  Susceptible has substance_per_volume;
+
+  // Compartment initializations:
+  USA___CA__NY = 1;
+  USA___CA__NY has volume;
+
+  // Variable initializations:
+  ModelValue_14 = Trigger_Lockdown;
+  ModelValue_5 = Trigger_CA;
+  ModelValue_15 = Lockdown_CA_start;
+  ModelValue_6 = Trigger_NY;
+  ModelValue_17 = Lockdown_NY_start;
+  Ro_CA = 2.7;
+  Ro_NY = 4.1;
+  ModelValue_16 = Lockdown_CA_end;
+  ModelValue_18 = Lockdown_NY_end;
+  ModelValue_1 = Ro_CA;
+  ModelValue_8 = Ro_NY;
+  Peak_Time = 0;
+  Pop_CA = 39560000;
+  gamma_CA = 0.14;
+  Io_CA = 5;
+  ModelValue_2 = gamma_CA;
+  Trigger_CA = 1;
+  Trigger_NY = 0;
+  Pop_NY = 19540000;
+  gamma_NY = 0.1;
+  Io_NY = 29;
+  ModelValue_0 = Pop_CA;
+  ModelValue_7 = Pop_NY;
+  ModelValue_9 = gamma_NY;
+  Trigger_Lockdown = 0;
+  Lockdown_CA_start = 27;
+  Lockdown_CA_end = 66;
+  Lockdown_NY_start = 30;
+  Lockdown_NY_end = 67;
+  ModelValue_3 = Io_CA;
+  ModelValue_10 = Io_NY;
+
+  // Other declarations:
+  var Io, Pop, Ro_CA, Ro_NY, Peak_Time, Time, Ro, gamma_;
+  const USA___CA__NY, ModelValue_14, ModelValue_5, ModelValue_15, ModelValue_6;
+  const ModelValue_17, ModelValue_16, ModelValue_18, ModelValue_1, ModelValue_8;
+  const Pop_CA, gamma_CA, Io_CA, ModelValue_2, Trigger_CA, Trigger_NY, Pop_NY;
+  const gamma_NY, Io_NY, ModelValue_0, ModelValue_7, ModelValue_9, Trigger_Lockdown;
+  const Lockdown_CA_start, Lockdown_CA_end, Lockdown_NY_start, Lockdown_NY_end;
+  const ModelValue_3, ModelValue_10;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = litre;
+  unit time_unit = time_unit;
+  unit substance = item;
+  unit extent = substance;
+  unit substance_per_volume = item / litre;
+
+  // Display Names:
+  time_unit is "time";
+  USA___CA__NY is "USA - CA, NY";
+  ModelValue_14 is "Initial for Trigger_Lockdown";
+  ModelValue_5 is "Initial for Trigger_CA";
+  ModelValue_15 is "Initial for Lockdown_CA_start";
+  ModelValue_6 is "Initial for Trigger_NY";
+  ModelValue_17 is "Initial for Lockdown_NY_start";
+  ModelValue_16 is "Initial for Lockdown_CA_end";
+  ModelValue_18 is "Initial for Lockdown_NY_end";
+  ModelValue_1 is "Initial for Ro_CA";
+  ModelValue_8 is "Initial for Ro_NY";
+  ModelValue_2 is "Initial for gamma_CA";
+  ModelValue_0 is "Initial for Pop_CA";
+  ModelValue_7 is "Initial for Pop_NY";
+  gamma_ is "gamma";
+  ModelValue_9 is "Initial for gamma_NY";
+  ModelValue_3 is "Initial for Io_CA";
+  ModelValue_10 is "Initial for Io_NY";
+
+  // CV terms:
+  USA___CA__NY hypernym "http://identifiers.org/ncit/C43509"
+  USA___CA__NY hypernym "http://identifiers.org/ncit/C43468"
+  Infected hypernym "http://identifiers.org/ncit/C171133"
+  Infected hypernym "http://identifiers.org/ido/0000511"
+  Recovered hypernym "http://identifiers.org/ncit/C171133"
+  Recovered property "http://identifiers.org/ido/0000621"
+  Susceptible hypernym "http://identifiers.org/ido/0000514"
+  Susceptible hypernym "http://identifiers.org/ncit/C171133"
+  Susceptible_to_Infected hypernym "http://identifiers.org/ncit/C128320"
+  Susceptible_to_Infected hypernym "http://identifiers.org/ncit/C171133"
+  Infected_to_Recovered hypernym "http://identifiers.org/ncit/C25746"
+  Infected_to_Recovered hypernym "http://identifiers.org/ncit/C171133"
+end
+
+Bertozzi2020___SIR_model_of_scenarios_of_COVID_19_spread_in_CA is "Bertozzi2020 - SIR model of scenarios of COVID-19 spread in CA and NY"
+
+Bertozzi2020___SIR_model_of_scenarios_of_COVID_19_spread_in_CA description "http://identifiers.org/pubmed/32616574"
+Bertozzi2020___SIR_model_of_scenarios_of_COVID_19_spread_in_CA model_entity_is "http://identifiers.org/biomodels.db/MODEL2008070001",
+                                                                               "http://identifiers.org/biomodels.db/BIOMD0000000956"
+Bertozzi2020___SIR_model_of_scenarios_of_COVID_19_spread_in_CA taxon "http://identifiers.org/taxonomy/2697049",
+                                                                     "http://identifiers.org/taxonomy/9606"
+Bertozzi2020___SIR_model_of_scenarios_of_COVID_19_spread_in_CA property "http://identifiers.org/doid/DOID:0080600",
+                                                                        "http://identifiers.org/ido/0000503",
+                                                                        "http://identifiers.org/mamo/MAMO_0000046"

@@ -1,0 +1,235 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function Vdcyce(kdcyce, kdcycee, CycE, Inhibitor, kdcycea, CycA, Sub)
+  (kdcyce + kdcycee*CycE/(1 + Inhibitor) + kdcycea*CycA/(1 + Inhibitor))*Sub;
+end
+
+Vdcyce is "Vdcyce"
+
+function Vdcyca(kdcyca, kdcycac1, Cdh1, Sub)
+  (kdcyca + kdcycac1*Cdh1)*Sub;
+end
+
+Vdcyca is "Vdcyca"
+
+function Vdp27(kd27e, CycE, Inhibitor, kd27a, CycA, Skp2, kd27, Sub)
+  ((kd27e*CycE/(1 + Inhibitor) + kd27a*CycA/(1 + Inhibitor))*Skp2 + kd27)*Sub;
+end
+
+Vdp27 is "Vdp27"
+
+function Vdskp2(kdskp2, kdskp2c1, Cdh1, Sub)
+  (kdskp2 + kdskp2c1*Cdh1)*Sub;
+end
+
+Vdskp2 is "Vdskp2"
+
+function Vicdh1(kicdh1e, CycE, Inhibitor, kicdh1a, CycA, Sub)
+  (kicdh1e*CycE/(1 + Inhibitor) + kicdh1a*CycA/(1 + Inhibitor))*Sub;
+end
+
+Vicdh1 is "Vicdh1"
+
+
+model *MODEL1708240001()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species CycE in compartment_, CycA in compartment_, CycEp27 in compartment_;
+  species CycAp27 in compartment_, Skp2 in compartment_, Cdh1p in compartment_;
+  species Emi1 in compartment_, p27 in compartment_, Cdh1 in compartment_;
+  species $CycET in compartment_, $CycAT in compartment_, $p27T in compartment_;
+  species Emi1Cdh1 in compartment_, Emi1Cdh1p in compartment_, $EmiC in compartment_;
+  species $Emi1T in compartment_, $Cdh1dp in compartment_, $Cdh1T in compartment_;
+
+  // Assignment Rules:
+  CycET := CycE + CycEp27;
+  CycAT := CycA + CycAp27;
+  p27T := p27 + CycEp27 + CycAp27;
+  EmiC := Emi1Cdh1 + Emi1Cdh1p;
+  Emi1T := Emi1 + Emi1Cdh1 + Emi1Cdh1p;
+  Cdh1dp := Cdh1 + Emi1Cdh1;
+  Cdh1T := Cdh1 + Cdh1p + Emi1Cdh1 + Emi1Cdh1p;
+
+  // Reactions:
+  CycE_Synthesis:  => CycE; compartment_*Constant_flux__irreversible(kscyce);
+  CycE_degradation: CycE => ; compartment_*Vdcyce(kdcyce, kdcycee, CycE, Inhibitor, kdcycea, CycA, CycE);
+  CycA_synthesis:  => CycA; compartment_*Constant_flux__irreversible(kscyca);
+  CycA_degradation: CycA => ; compartment_*Vdcyca(kdcyca, kdcycac1, Cdh1, CycA);
+  p27_Synthesis:  => p27; compartment_*Constant_flux__irreversible(ks27);
+  p27_degradation: p27 => ; compartment_*Vdp27(kd27e, CycE, Inhibitor, kd27a, CycA, Skp2, kd27, p27);
+  CycE_p27_Binding: CycE + p27 -> CycEp27; compartment_*(kasse*CycE*p27 - kdise*CycEp27);
+  CycA_p27_Binding: CycA + p27 -> CycAp27; compartment_*(kassa*CycA*p27 - kdisa*CycAp27);
+  CycA_degradation_from_CycA_p27_complexes: CycAp27 => p27; compartment_*Vdcyca(kdcyca, kdcycac1, Cdh1, CycAp27);
+  p27_degradation_from_CycA_p27_complexes: CycAp27 => CycA; compartment_*Vdp27(kd27e, CycE, Inhibitor, kd27a, CycA, Skp2, kd27, CycAp27);
+  CycE_degradation_from_CycE_p27_complexes: CycEp27 => p27; compartment_*Vdcyce(kdcyce, kdcycee, CycE, Inhibitor, kdcycea, CycA, CycEp27);
+  p27_degradation_from_CycE_p27_complexes: CycEp27 => CycE; compartment_*Vdp27(kd27e, CycE, Inhibitor, kd27a, CycA, Skp2, kd27, CycEp27);
+  Skp2_synthesis:  => Skp2; compartment_*Constant_flux__irreversible(ksskp2);
+  Skp2_degradation: Skp2 => ; compartment_*Vdskp2(kdskp2, kdskp2c1, Cdh1, Skp2);
+  Cdh1_phosphorylation: Cdh1 => Cdh1p; compartment_*Vicdh1(kicdh1e, CycE, Inhibitor, kicdh1a, CycA, Cdh1);
+  Cdh1_dephosphorylation: Cdh1p => Cdh1; compartment_*kacdh1*Cdh1p;
+  Cdh1_Emi1_binding: Cdh1 + Emi1 -> Emi1Cdh1; compartment_*(kasec*Cdh1*Emi1 - kdiec*Emi1Cdh1);
+  Emi1_degradation_from_Cdh1_Emi1_complexes: Emi1Cdh1 => Cdh1; compartment_*kdemi1*Emi1Cdh1;
+  Emi1_synthesis:  => Emi1; compartment_*Constant_flux__irreversible(ksemi1);
+  Cdh1p_Emi1_binding: Cdh1p + Emi1 -> Emi1Cdh1p; compartment_*(kasec*Cdh1p*Emi1 - kdiec*Emi1Cdh1p);
+  Cdh1_Emi1_phosphorylation: Emi1Cdh1 => Emi1Cdh1p; compartment_*Vicdh1(kicdh1e, CycE, Inhibitor, kicdh1a, CycA, Emi1Cdh1);
+  Cdh1p_Emi1_dephosphorylation: Emi1Cdh1p => Emi1Cdh1; compartment_*kacdh1*Emi1Cdh1p;
+  Emi1_degradation_from_Cdh1p_Emi1_complexes: Emi1Cdh1p => Cdh1p; compartment_*kdemi1*Emi1Cdh1p;
+  Emi1_degradation: Emi1 => ; compartment_*kdemi1*Emi1;
+
+  // Species initializations:
+  CycE = 0;
+  CycA = 0;
+  CycEp27 = 0;
+  CycAp27 = 0;
+  Skp2 = 0;
+  Cdh1p = 0;
+  Emi1 = 0;
+  p27 = 0;
+  Cdh1 = 1;
+  Emi1Cdh1 = 0;
+  Emi1Cdh1p = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  kscyce = 0.003;
+  kdcyce = 0.001;
+  kdcycee = 0.0001;
+  kdcycea = 0.03;
+  kasse = 1;
+  kdise = 0.02;
+  kscyca = 0.0025;
+  kdcyca = 0.002;
+  kdcycac1 = 0.4;
+  kassa = 1;
+  kdisa = 0.02;
+  ks27 = 0.008;
+  kd27 = 0.004;
+  kd27e = 2;
+  kd27a = 2;
+  ksemi1 = 0.003;
+  kdemi1 = 0.001;
+  kacdh1 = 0.02;
+  kicdh1e = 0.07;
+  kicdh1a = 0.2;
+  kasec = 2;
+  kdiec = 0.02;
+  ksskp2 = 0.004;
+  kdskp2 = 0.002;
+  kdskp2c1 = 0.2;
+  Inhibitor = 0;
+
+  // Other declarations:
+  const compartment_, kscyce, kdcyce, kdcycee, kdcycea, kasse, kdise, kscyca;
+  const kdcyca, kdcycac1, kassa, kdisa, ks27, kd27, kd27e, kd27a, ksemi1;
+  const kdemi1, kacdh1, kicdh1e, kicdh1a, kasec, kdiec, ksskp2, kdskp2, kdskp2c1;
+  const Inhibitor;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 60 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+  CycE_Synthesis is "CycE Synthesis";
+  CycE_degradation is "CycE degradation";
+  CycA_synthesis is "CycA synthesis";
+  CycA_degradation is "CycA degradation";
+  p27_Synthesis is "p27 Synthesis";
+  p27_degradation is "p27 degradation";
+  CycE_p27_Binding is "CycE-p27 Binding";
+  CycA_p27_Binding is "CycA-p27 Binding";
+  CycA_degradation_from_CycA_p27_complexes is "CycA degradation from CycA:p27 complexes";
+  p27_degradation_from_CycA_p27_complexes is "p27 degradation from CycA:p27 complexes";
+  CycE_degradation_from_CycE_p27_complexes is "CycE degradation from CycE:p27 complexes";
+  p27_degradation_from_CycE_p27_complexes is "p27 degradation from CycE:p27 complexes";
+  Skp2_synthesis is "Skp2 synthesis";
+  Skp2_degradation is "Skp2 degradation";
+  Cdh1_phosphorylation is "Cdh1 phosphorylation";
+  Cdh1_dephosphorylation is "Cdh1 dephosphorylation";
+  Cdh1_Emi1_binding is "Cdh1-Emi1 binding";
+  Emi1_degradation_from_Cdh1_Emi1_complexes is "Emi1 degradation from Cdh1:Emi1 complexes";
+  Emi1_synthesis is "Emi1 synthesis";
+  Cdh1p_Emi1_binding is "Cdh1p-Emi1 binding";
+  Cdh1_Emi1_phosphorylation is "Cdh1:Emi1 phosphorylation";
+  Cdh1p_Emi1_dephosphorylation is "Cdh1p:Emi1 dephosphorylation";
+  Emi1_degradation_from_Cdh1p_Emi1_complexes is "Emi1 degradation from Cdh1p:Emi1 complexes";
+  Emi1_degradation is "Emi1 degradation";
+
+  // SBO terms:
+  CycE_Synthesis.sboTerm = 393
+  CycA_synthesis.sboTerm = 393
+  p27_Synthesis.sboTerm = 393
+  Skp2_synthesis.sboTerm = 393
+  Emi1_synthesis.sboTerm = 393
+
+  // CV terms:
+  compartment_ hypernym "http://identifiers.org/bto/BTO:0000567"
+  CycE hypernym "http://identifiers.org/pr/PR:000044430"
+  CycA hypernym "http://identifiers.org/pr/PR:000041205"
+  CycEp27 part "http://identifiers.org/pr/PR:000044430"
+  CycAp27 part "urn:miriam:omit:OMIT%3A0024493"
+  CycAp27 part "http://identifiers.org/pr/PR:000041205"
+  Skp2 hypernym "http://identifiers.org/uniprot/Q13309"
+  Cdh1p hypernym "http://identifiers.org/ncbigene/12550"
+  Cdh1p hypernym "http://identifiers.org/kegg.compound/C00562"
+  Emi1 hypernym "http://identifiers.org/ncbigene/852125"
+  p27 hypernym "urn:miriam:omit:OMIT%3A0024493"
+  Cdh1 hypernym "http://identifiers.org/ncbigene/12550"
+  CycET hypernym "http://identifiers.org/pr/PR:000044430"
+  CycAT hypernym "http://identifiers.org/pr/PR:000041205"
+  p27T hypernym "urn:miriam:omit:OMIT%3A0024493"
+  Emi1Cdh1 part "http://identifiers.org/ncbigene/12550"
+  Emi1Cdh1 part "http://identifiers.org/ncbigene/852125"
+  Emi1Cdh1p part "http://identifiers.org/ncbigene/12550"
+  Emi1Cdh1p part "http://identifiers.org/kegg.compound/C00562"
+  Emi1Cdh1p part "http://identifiers.org/ncbigene/852125"
+  EmiC part "http://identifiers.org/ncbigene/12550"
+  EmiC part "http://identifiers.org/ncbigene/852125"
+  Emi1T hypernym "http://identifiers.org/ncbigene/852125"
+  Cdh1dp hypernym "http://identifiers.org/ncbigene/12550"
+  Cdh1T hypernym "http://identifiers.org/ncbigene/12550"
+  CycE_degradation property "http://identifiers.org/go/GO:0030163"
+  CycA_degradation property "http://identifiers.org/go/GO:0030163"
+  p27_degradation property "http://identifiers.org/go/GO:0030163"
+  CycE_p27_Binding property "http://identifiers.org/go/GO:0043241"
+  CycE_p27_Binding property "http://identifiers.org/go/GO:0006461"
+  CycA_p27_Binding property "http://identifiers.org/go/GO:0043241"
+  CycA_p27_Binding property "http://identifiers.org/go/GO:0006461"
+  CycA_degradation_from_CycA_p27_complexes hypernym "http://identifiers.org/go/GO:0030163"
+  p27_degradation_from_CycA_p27_complexes hypernym "http://identifiers.org/go/GO:0030163"
+  CycE_degradation_from_CycE_p27_complexes property "http://identifiers.org/go/GO:0030163"
+  p27_degradation_from_CycE_p27_complexes property "http://identifiers.org/go/GO:0030163"
+  Skp2_degradation hypernym "http://identifiers.org/go/GO:0030163"
+  Cdh1_phosphorylation hypernym "http://identifiers.org/go/GO:0016310"
+  Cdh1_dephosphorylation hypernym "http://identifiers.org/go/GO:0016311"
+  Cdh1_Emi1_binding property "http://identifiers.org/go/GO:0043241"
+  Cdh1_Emi1_binding property "http://identifiers.org/go/GO:0006461"
+  Emi1_degradation_from_Cdh1_Emi1_complexes hypernym "http://identifiers.org/go/GO:0030163"
+  Cdh1p_Emi1_binding property "http://identifiers.org/go/GO:0043241"
+  Cdh1p_Emi1_binding property "http://identifiers.org/go/GO:0006461"
+  Cdh1_Emi1_phosphorylation hypernym "http://identifiers.org/go/GO:0016310"
+  Cdh1p_Emi1_dephosphorylation hypernym "http://identifiers.org/go/GO:0016311"
+  Emi1_degradation_from_Cdh1p_Emi1_complexes hypernym "http://identifiers.org/go/GO:0030163"
+  Emi1_degradation hypernym "http://identifiers.org/go/GO:0030163"
+end
+
+MODEL1708240001 is "Barr2016 - All-or-nothing G1/S transition"
+
+MODEL1708240001 model_entity_is "http://identifiers.org/biomodels.db/MODEL1708240001"
+MODEL1708240001 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000646"
+MODEL1708240001 description "http://identifiers.org/pubmed/27136687"
+MODEL1708240001 taxon "http://identifiers.org/taxonomy/9606"
+MODEL1708240001 property "http://identifiers.org/go/GO:1901987",
+                         "http://identifiers.org/go/GO:0007049",
+                         "http://identifiers.org/doid/DOID:162"
+MODEL1708240001 hypernym "http://identifiers.org/pw/PW:0001553"

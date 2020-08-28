@@ -1,0 +1,103 @@
+// Created by libAntimony v2.13.0
+function Henri_Michaelis_Menten__irreversible(substrate, Km, V)
+  V*substrate/(Km + substrate);
+end
+
+Henri_Michaelis_Menten__irreversible is "Henri-Michaelis-Menten (irreversible)"
+
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+
+model *MODEL1602280001()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species H2_HMPt in compartment_, $ATP in compartment_, H2_HMPterinPP in compartment_;
+  species $AMP in compartment_, p_ABA in compartment_, $PPi in compartment_;
+  species H2_Pteroate in compartment_, $L_Glutamate in compartment_, $Phosphate in compartment_;
+  species $ADP in compartment_, DHF in compartment_, $L_serine in compartment_;
+  species $Glycine in compartment_, $NADP in compartment_, $NADPH in compartment_;
+  species THF in compartment_, CH2_THF in compartment_;
+
+  // Reactions:
+  FolK: $ATP + H2_HMPt => $AMP + H2_HMPterinPP; compartment_*FolK_k1*ATP*H2_HMPt;
+  FolP: p_ABA + H2_HMPterinPP => $PPi + H2_Pteroate; compartment_*FolP_k1*p_ABA*H2_HMPterinPP;
+  FolC: $L_Glutamate + $ATP + H2_Pteroate => DHF + $ADP + $Phosphate; compartment_*FolC_k1*L_Glutamate*ATP*H2_Pteroate;
+  GlyA: THF + $L_serine -> CH2_THF + $Glycine; compartment_*(GlyA_k1*THF*L_serine - GlyA_k2*CH2_THF*Glycine);
+  FolA: DHF + $NADPH => $NADP + THF; compartment_*FolA_k1*DHF*NADPH;
+  PanB: CH2_THF => H2_HMPt + p_ABA; compartment_*PanB_k1*CH2_THF;
+  p_ABA_production:  => p_ABA; compartment_*Constant_flux__irreversible(p_ABA_production_v);
+  H2_HMPt_production:  => H2_HMPt; compartment_*Constant_flux__irreversible(H2_HMPt_production_v);
+  THF_drain: THF => ; compartment_*Henri_Michaelis_Menten__irreversible(THF, THF_drain_Km, THF_drain_V);
+  CH2_THF_drain: CH2_THF => ; compartment_*Henri_Michaelis_Menten__irreversible(CH2_THF, CH2_THF_drain_Km, CH2_THF_drain_V);
+
+  // Species initializations:
+  H2_HMPt = 3.315e-06;
+  ATP = 0.0096;
+  H2_HMPterinPP = 1e-05;
+  AMP = 0.00028;
+  p_ABA = 1e-05;
+  PPi = 0.0005;
+  H2_Pteroate = 1e-05;
+  L_Glutamate = 0.000846;
+  Phosphate = 0.01;
+  ADP = 0.00056;
+  DHF = 1e-05;
+  L_serine = 6.8e-05;
+  Glycine = 0.000277;
+  NADP = 9.4e-07;
+  NADPH = 9.4e-07;
+  THF = 0.000169;
+  CH2_THF = 8.47e-05;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  FolK_k1 = 15.8;
+  FolP_k1 = 4000;
+  FolC_k1 = 6184;
+  GlyA_k1 = 4080;
+  GlyA_k2 = 2000;
+  FolA_k1 = 31170;
+  PanB_k1 = 0.004;
+  p_ABA_production_v = 1.66e-07;
+  H2_HMPt_production_v = 1.66e-07;
+  THF_drain_Km = 0.0001571;
+  THF_drain_V = 1.243e-07;
+  CH2_THF_drain_Km = 5.921e-05;
+  CH2_THF_drain_V = 1.726e-07;
+
+  // Other declarations:
+  const compartment_;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  H2_HMPt is "H2-HMPt";
+  H2_HMPterinPP is "H2-HMPterinPP";
+  p_ABA is "p-ABA";
+  H2_Pteroate is "H2-Pteroate";
+  L_Glutamate is "L-Glutamate";
+  L_serine is "L-serine";
+  CH2_THF is "CH2-THF";
+  p_ABA_production is "p-ABA_production";
+  H2_HMPt_production is "H2-HMPt_production";
+  CH2_THF_drain is "CH2-THF_drain";
+end
+
+MODEL1602280001 is "Thiaville2016 - Wild type folate pathway model with proposed PanB reaction"
+
+MODEL1602280001 model_entity_is "http://identifiers.org/biomodels.db/MODEL1602280001"
+MODEL1602280001 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000639"
+MODEL1602280001 description "http://identifiers.org/pubmed/27065985"
+MODEL1602280001 taxon "http://identifiers.org/taxonomy/562"
+MODEL1602280001 property "http://identifiers.org/go/GO:0046656",
+                         "http://identifiers.org/mamo/MAMO_0000046"

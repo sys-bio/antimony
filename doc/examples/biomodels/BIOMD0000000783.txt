@@ -1,0 +1,109 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function Function_for_Tumor_Growth(alpha, x, beta)
+  alpha*x*(1 - beta*x);
+end
+
+Function_for_Tumor_Growth is "Function_for_Tumor_Growth"
+
+function Function_for_Tumor_Killing_ECs(x, y)
+  x*y;
+end
+
+Function_for_Tumor_Killing_ECs is "Function_for_Tumor_Killing_ECs"
+
+function Function_for_EC_Stimulation_Tumor_Debris(omega_1, x, y)
+  omega_1*x*y;
+end
+
+Function_for_EC_Stimulation_Tumor_Debris is "Function_for_EC_Stimulation_Tumor_Debris"
+
+function Function_for_EC_Activation_HTC(rho, y, z)
+  rho*y*z;
+end
+
+Function_for_EC_Activation_HTC is "Function_for_EC_Activation_HTC"
+
+function Function_for_HTC_Stimulation_Tumor_Antigens(omega_2, x, z)
+  omega_2*x*z;
+end
+
+Function_for_HTC_Stimulation_Tumor_Antigens is "Function_for_HTC_Stimulation_Tumor_Antigens"
+
+
+model *Dong2014___Mathematical_modeling_on_helper_t_cells_in_a_tumor_immune_system()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species x_Tumor_Cells in compartment_, y_Effector_Cells in compartment_;
+  species z_Helper_T_Cells in compartment_;
+
+  // Reactions:
+  Tumor_Growth:  => x_Tumor_Cells; compartment_*Function_for_Tumor_Growth(alpha, x_Tumor_Cells, beta);
+  Tumor_Killing_ECs: x_Tumor_Cells => ; compartment_*Function_for_Tumor_Killing_ECs(x_Tumor_Cells, y_Effector_Cells);
+  EC_Stimulation_Tumor_Debris:  => y_Effector_Cells; compartment_*Function_for_EC_Stimulation_Tumor_Debris(omega_1, x_Tumor_Cells, y_Effector_Cells);
+  EC_Natural_Death: y_Effector_Cells => ; compartment_*delta_1*y_Effector_Cells;
+  EC_Activation_HTC:  => y_Effector_Cells; compartment_*Function_for_EC_Activation_HTC(rho, y_Effector_Cells, z_Helper_T_Cells);
+  HTC_Production:  => z_Helper_T_Cells; compartment_*Constant_flux__irreversible(sigma_2);
+  HTC_Stimulation_Tumor_Antigens:  => z_Helper_T_Cells; compartment_*Function_for_HTC_Stimulation_Tumor_Antigens(omega_2, x_Tumor_Cells, z_Helper_T_Cells);
+  HTC_Natural_Death: z_Helper_T_Cells => ; compartment_*delta_2*z_Helper_T_Cells;
+
+  // Species initializations:
+  x_Tumor_Cells = 1;
+  y_Effector_Cells = 1;
+  z_Helper_T_Cells = 1;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  alpha = 1.636;
+  beta = 0.002;
+  delta_1 = 0.3743;
+  omega_1 = 0.04;
+  sigma_2 = 0.38;
+  delta_2 = 0.055;
+  rho = 0.01;
+  omega_2 = 0.002;
+
+  // Other declarations:
+  const compartment_, alpha, beta, delta_1, omega_1, sigma_2, delta_2, rho;
+  const omega_2;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = item;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+
+  // CV terms:
+  compartment_ hypernym "http://identifiers.org/ncit/C94498"
+  x_Tumor_Cells identity "http://identifiers.org/cl/CL:0001063"
+  y_Effector_Cells hypernym "http://identifiers.org/ncit/C28241"
+  z_Helper_T_Cells identity "http://identifiers.org/cl/CL:0000912"
+  Tumor_Growth hypernym "http://identifiers.org/ncit/C18081"
+  Tumor_Killing_ECs hypernym "http://identifiers.org/go/GO:0008219"
+  EC_Stimulation_Tumor_Debris hypernym "http://identifiers.org/go/GO:0042110"
+  EC_Natural_Death hypernym "http://identifiers.org/go/GO:0008219"
+  EC_Activation_HTC hypernym "http://identifiers.org/go/GO:0042110"
+  HTC_Production hypernym "http://identifiers.org/ncit/C18081"
+  HTC_Stimulation_Tumor_Antigens hypernym "http://identifiers.org/go/GO:0042110"
+  HTC_Natural_Death hypernym "http://identifiers.org/go/GO:0008219"
+end
+
+Dong2014___Mathematical_modeling_on_helper_t_cells_in_a_tumor_immune_system is "Dong2014 - Mathematical modeling on helper t cells in a tumor immune system"
+
+Dong2014___Mathematical_modeling_on_helper_t_cells_in_a_tumor_immune_system description "http://identifiers.org/doi/10.3934/dcdsb.2014.19.55"
+Dong2014___Mathematical_modeling_on_helper_t_cells_in_a_tumor_immune_system origin "http://identifiers.org/pubmed/8186756"
+Dong2014___Mathematical_modeling_on_helper_t_cells_in_a_tumor_immune_system model_entity_is "http://identifiers.org/biomodels.db/MODEL1908080001",
+                                                                                            "http://identifiers.org/biomodels.db/BIOMD0000000783"
+Dong2014___Mathematical_modeling_on_helper_t_cells_in_a_tumor_immune_system property "http://identifiers.org/ncit/C15351"
+Dong2014___Mathematical_modeling_on_helper_t_cells_in_a_tumor_immune_system property "http://identifiers.org/mamo/MAMO_0000046"

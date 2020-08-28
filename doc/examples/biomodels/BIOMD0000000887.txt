@@ -1,0 +1,114 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function Function_for_Mitotic_Transmission(r, y)
+  r*y;
+end
+
+Function_for_Mitotic_Transmission is "Function_for_Mitotic_Transmission"
+
+function Function_for_Infectious_Transmission(beta, x, y)
+  beta*x*y;
+end
+
+Function_for_Infectious_Transmission is "Function_for_Infectious_Transmission"
+
+function Function_for_CTL_Proliferation(nu, y)
+  nu*y;
+end
+
+Function_for_CTL_Proliferation is "Function_for_CTL_Proliferation"
+
+function Function_for_CD4AI_Lysis_CTL(gamma_, y, z)
+  gamma_*y*z;
+end
+
+Function_for_CD4AI_Lysis_CTL is "Function_for_CD4AI_Lysis_CTL"
+
+
+model *Lim2014___HTLV_I_infection_A_dynamic_struggle_between_viral_persistence_and_host_immunity()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species x in compartment_, u in compartment_, y in compartment_, z in compartment_;
+
+  // Reactions:
+  CD4_Production:  => x; compartment_*Constant_flux__irreversible(lambda);
+  Infectious_Transmission: x => u; compartment_*Function_for_Infectious_Transmission(beta, x, y);
+  CD4_Natural_Death: x => ; compartment_*mu_1*x;
+  Mitotic_Transmission:  => u; compartment_*Function_for_Mitotic_Transmission(r, y);
+  CD4LI_Spontaneous_Activation: u => y; compartment_*tau*u;
+  CD4LI_Natural_Death: u => ; compartment_*mu_2*u;
+  CD4AI_Lysis_CTL: y => ; compartment_*Function_for_CD4AI_Lysis_CTL(gamma_, y, z);
+  CD4AI_Natural_Death: y => ; compartment_*mu_3*y;
+  CTL_Proliferation:  => z; compartment_*Function_for_CTL_Proliferation(nu, y);
+  CTL_Natural_Death: z => ; compartment_*mu_4*z;
+
+  // Species initializations:
+  x = 850;
+  u = 0.1;
+  y = 0.5;
+  z = 0.1;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  lambda = 10;
+  beta = 0.001;
+  r = 0.011;
+  tau = 0.003;
+  gamma_ = 0.029;
+  nu = 0.036;
+  mu_1 = 0.012;
+  mu_2 = 0.03;
+  mu_3 = 0.03;
+  mu_4 = 0.03;
+
+  // Other declarations:
+  const compartment_, lambda, beta, r, tau, gamma_, nu, mu_1, mu_2, mu_3;
+  const mu_4;
+
+  // Unit definitions:
+  unit time_unit = 86400 second;
+  unit substance = item;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+  gamma_ is "gamma";
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/ncit/C13356"
+  x identity "http://identifiers.org/cl/CL:0000492"
+  x property "http://identifiers.org/bto/BTO:0000152"
+  u identity "http://identifiers.org/cl/CL:0000492"
+  y identity "http://identifiers.org/cl/CL:0000492"
+  y property "http://identifiers.org/bto/BTO:0000152"
+  z identity "http://identifiers.org/cl/CL:0000910"
+  CD4_Production hypernym "http://identifiers.org/ncit/C18081"
+  Infectious_Transmission hypernym "http://identifiers.org/go/GO:0019089"
+  CD4_Natural_Death identity "http://identifiers.org/go/GO:0008219"
+  Mitotic_Transmission hypernym "http://identifiers.org/ncit/C16864"
+  Mitotic_Transmission property "http://identifiers.org/go/GO:0019089"
+  CD4LI_Spontaneous_Activation hypernym "http://identifiers.org/go/GO:0042110"
+  CD4LI_Natural_Death identity "http://identifiers.org/go/GO:0008219"
+  CD4AI_Lysis_CTL hypernym "http://identifiers.org/go/GO:0001913"
+  CD4AI_Natural_Death identity "http://identifiers.org/go/GO:0008219"
+  CTL_Proliferation identity "http://identifiers.org/ncit/C18081"
+  CTL_Natural_Death identity "http://identifiers.org/go/GO:0008219"
+end
+
+Lim2014___HTLV_I_infection_A_dynamic_struggle_between_viral_persistence_and_host_immunity is "Lim2014 - HTLV-I infection A dynamic struggle between viral persistence and host immunity"
+
+Lim2014___HTLV_I_infection_A_dynamic_struggle_between_viral_persistence_and_host_immunity description "http://identifiers.org/pubmed/24583256"
+Lim2014___HTLV_I_infection_A_dynamic_struggle_between_viral_persistence_and_host_immunity model_entity_is "http://identifiers.org/biomodels.db/MODEL1912100003",
+                                                                                                          "http://identifiers.org/biomodels.db/BIOMD0000000887"
+Lim2014___HTLV_I_infection_A_dynamic_struggle_between_viral_persistence_and_host_immunity property "http://identifiers.org/ncit/C14223"
+Lim2014___HTLV_I_infection_A_dynamic_struggle_between_viral_persistence_and_host_immunity property "http://identifiers.org/ncit/C17930"
+Lim2014___HTLV_I_infection_A_dynamic_struggle_between_viral_persistence_and_host_immunity property "http://identifiers.org/mamo/MAMO_0000046"
+Lim2014___HTLV_I_infection_A_dynamic_struggle_between_viral_persistence_and_host_immunity taxon "http://identifiers.org/taxonomy/9606"

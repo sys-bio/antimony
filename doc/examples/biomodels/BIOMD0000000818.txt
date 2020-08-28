@@ -1,0 +1,166 @@
+// Created by libAntimony v2.13.0
+function Henri_Michaelis_Menten__irreversible(substrate, Km, V)
+  V*substrate/(Km + substrate);
+end
+
+Henri_Michaelis_Menten__irreversible is "Henri-Michaelis-Menten (irreversible)"
+
+function facilitated_synthesis(k, A)
+  k*A;
+end
+
+facilitated_synthesis is "facilitated synthesis"
+
+function Facilitated_function(kcat, A, B, Km)
+  kcat*A*B/(Km + B);
+end
+
+Facilitated_function is "Facilitated function"
+
+
+model *Lee2008___ERK_and_PI3K_signal_integration_by_Myc()
+
+  // Compartments and Species:
+  compartment Cell;
+  species Myc in Cell, AKT in Cell, AKTp in Cell, PI3K in Cell, GSK3B in Cell;
+  species GSK3Bp in Cell, ERK in Cell, Myc_ser62 in Cell, Myc_thr58 in Cell;
+  species GF in Cell, $Myc_total in Cell;
+
+  // Assignment Rules:
+  Myc_total := Myc + Myc_ser62 + Myc_thr58;
+
+  // Reactions:
+  Myc_synthesis:  => Myc; Cell*facilitated_synthesis(kM, GF);
+  AKT_phosphorylation: AKT => AKTp; Cell*Facilitated_function(k_ap, PI3K, AKT, K_AP);
+  AKTp_dephosphorylation: AKTp => AKT; Cell*Henri_Michaelis_Menten__irreversible(AKTp, K_AD, k_AD);
+  GSK3B_phosphorylation: GSK3B => GSK3Bp; Cell*Facilitated_function(k_GP, AKTp, GSK3B, K_GP);
+  GSK3Bp_dephosphorylation: GSK3Bp => GSK3B; Cell*Henri_Michaelis_Menten__irreversible(GSK3Bp, K_GD, k_GD);
+  Myc_ser62_phosphorylation: Myc => Myc_ser62; Cell*Facilitated_function(k_MS, ERK, Myc, K_MS);
+  Myc_thr58_phosphorylation: Myc_ser62 => Myc_thr58; Cell*Facilitated_function(k_MT, GSK3B, Myc_ser62, K_MT);
+  Myc_degradation: Myc => ; Cell*dM*Myc;
+  Myc_ser62_degradation: Myc_ser62 => ; Cell*dMS*Myc_ser62;
+  Myc_thr58_degradation: Myc_thr58 => ; Cell*dMT*Myc_thr58;
+
+  // Events:
+  erk: at time >= 1: ERK = 0.1;
+  pi3k: at time >= 1: PI3K = 0.1;
+  pi3k1: at time >= 4: PI3K = 1;
+  pi3k2: at time >= 6: PI3K = 0.1;
+
+  // Species initializations:
+  Myc = 0;
+  AKT = 0.6;
+  AKTp = 0;
+  PI3K = 1;
+  GSK3B = 0.6;
+  GSK3Bp = 0;
+  ERK = 1;
+  Myc_ser62 = 0;
+  Myc_thr58 = 0;
+  GF = 1;
+
+  // Compartment initializations:
+  Cell = 1;
+
+  // Variable initializations:
+  kM = 1;
+  kM has unit_0;
+  ERKmax = 1;
+  ERKmax has unit_0;
+  K_GP = 0.01;
+  K_GP has unit_1;
+  k_GD = 72;
+  k_GD has unit_2;
+  K_GD = 0.01;
+  K_GD has unit_1;
+  k_MS = 2.3;
+  k_MS has unit_0;
+  K_MT = 0.01;
+  K_MT has unit_1;
+  dM = 2.08;
+  dM has unit_0;
+  dMS = 0.35;
+  dMS has unit_0;
+  dMT = 2.08;
+  dMT has unit_0;
+  PI3Kmax_ = 1;
+  PI3Kmax_ has unit_0;
+  k_ap = 360;
+  k_ap has unit_0;
+  K_AP = 0.01;
+  K_AP has unit_1;
+  k_AD = 72;
+  k_AD has unit_2;
+  K_AD = 0.01;
+  K_AD has unit_1;
+  k_GP = 360;
+  k_GP has unit_0;
+  K_MS = 0.01;
+  K_MS has unit_1;
+  k_MT = 0.4;
+  k_MT has unit_0;
+
+  // Other declarations:
+  const Cell, kM, ERKmax, K_GP, k_GD, K_GD, k_MS, K_MT, dM, dMS, dMT, PI3Kmax_;
+  const k_ap, K_AP, k_AD, K_AD, k_GP, K_MS, k_MT;
+
+  // Unit definitions:
+  unit time_unit = 3600 second;
+  unit substance = 1e-9 mole;
+  unit unit_0 = 1 / 3600e2 second;
+  unit unit_1 = 1e-9 mole / litre;
+  unit unit_2 = 1e-9 mole / (litre * 3600e2 second);
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1/h";
+  unit_1 is "nmol/l";
+  unit_2 is "nmol/(h*l)";
+  ERKmax is "ERKmax*";
+  k_MS is "k_MS*";
+  PI3Kmax_ is "PI3Kmax**";
+  AKT_phosphorylation is "AKT phosphorylation";
+  AKTp_dephosphorylation is "AKTp dephosphorylation";
+  GSK3B_phosphorylation is "GSK3B phosphorylation";
+  GSK3Bp_dephosphorylation is "GSK3Bp dephosphorylation";
+  Myc_ser62_phosphorylation is "Myc_ser62 phosphorylation";
+  Myc_thr58_phosphorylation is "Myc_thr58 phosphorylation";
+  Myc_degradation is "Myc degradation";
+  Myc_ser62_degradation is "Myc_ser62 degradation";
+  Myc_thr58_degradation is "Myc_thr58 degradation";
+
+  // CV terms:
+  Cell hypernym "http://identifiers.org/go/GO:0005623"
+  Myc hypernym "http://identifiers.org/uniprot/P01106"
+  AKT hypernym "http://identifiers.org/uniprot/P31749"
+  AKTp hypernym "http://identifiers.org/uniprot/P31749"
+  PI3K hypernym "http://identifiers.org/uniprot/P27986"
+  GSK3B hypernym "http://identifiers.org/uniprot/P49841"
+  GSK3Bp hypernym "http://identifiers.org/uniprot/P49841"
+  ERK hypernym "http://identifiers.org/uniprot/P27361"
+  Myc_ser62 propertyBearer "http://identifiers.org/uniprot/P01106"
+  Myc_thr58 propertyBearer "http://identifiers.org/uniprot/P01106"
+  GF identity "http://identifiers.org/ncit/NCIT:C20424"
+  Myc_total propertyBearer "http://identifiers.org/uniprot/P01106"
+  Myc_synthesis class "http://identifiers.org/ncit/C18103"
+  AKT_phosphorylation class "http://identifiers.org/go/GO:0006468"
+  AKTp_dephosphorylation class "http://identifiers.org/go/GO:006470"
+  GSK3B_phosphorylation class "http://identifiers.org/go/GO:0006468"
+  GSK3Bp_dephosphorylation class "http://identifiers.org/go/GO:006470"
+  Myc_ser62_phosphorylation class "http://identifiers.org/go/GO:0006468"
+  Myc_thr58_phosphorylation class "http://identifiers.org/go/GO:0006468"
+  Myc_degradation class "http://identifiers.org/go/GO:0030163"
+  Myc_ser62_degradation class "http://identifiers.org/go/GO:0030163"
+  Myc_thr58_degradation class "http://identifiers.org/go/GO:0030163"
+end
+
+Lee2008___ERK_and_PI3K_signal_integration_by_Myc is "Lee2008 - ERK and PI3K signal integration by Myc"
+
+Lee2008___ERK_and_PI3K_signal_integration_by_Myc description "http://identifiers.org/pubmed/18463697"
+Lee2008___ERK_and_PI3K_signal_integration_by_Myc model_entity_is "http://identifiers.org/biomodels.db/MODEL1909170004",
+                                                                 "http://identifiers.org/biomodels.db/BIOMD0000000818"
+Lee2008___ERK_and_PI3K_signal_integration_by_Myc container "http://identifiers.org/bto/BTO:0004254"
+Lee2008___ERK_and_PI3K_signal_integration_by_Myc property "http://identifiers.org/pw/PW:0000168"
+Lee2008___ERK_and_PI3K_signal_integration_by_Myc property "http://identifiers.org/go/GO:0031647"
+Lee2008___ERK_and_PI3K_signal_integration_by_Myc property "http://identifiers.org/mamo/MAMO_0000046"
+Lee2008___ERK_and_PI3K_signal_integration_by_Myc taxon "http://identifiers.org/taxonomy/40674"

@@ -1,0 +1,167 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function Function_for_F_gamma_CTL_Production(a_gamma_C, C)
+  a_gamma_C*C;
+end
+
+Function_for_F_gamma_CTL_Production is "Function_for_F_gamma_CTL_Production"
+
+function Function_for_F_beta_Tumor_Production(a_B_T, T)
+  a_B_T*T;
+end
+
+Function_for_F_beta_Tumor_Production is "Function_for_F_beta_Tumor_Production"
+
+function Function_for_CTL_Recruitment(a_C_M2, M2, T, e_C_M2, a_C_beta, e_C_beta, F_beta)
+  (a_C_M2*M2*T/(M2*T + e_C_M2))*(a_C_beta + e_C_beta*(1 - a_C_beta)/(F_beta + e_C_beta));
+end
+
+Function_for_CTL_Recruitment is "Function_for_CTL_Recruitment"
+
+function Function_for_Tumor_Elimination_CTL(a_T, M1, e_T, C, T, h_T, a_T_beta, e_T_beta, F_beta)
+  (a_T*M1/(M1 + e_T))*(C*T/(h_T + T))*(a_T_beta + e_T_beta*(1 - a_T_beta)/(F_beta + e_T_beta));
+end
+
+Function_for_Tumor_Elimination_CTL is "Function_for_Tumor_Elimination_CTL"
+
+function Function_for_Tumor_Growth(r, T, K)
+  r*T*(1 - T/K);
+end
+
+Function_for_Tumor_Growth is "Function_for_Tumor_Growth"
+
+
+model *Kronik2008___Improving_alloreactive_CTL_immunotherapy_for_malignant_gliomas_using_a_simulation_model_of_their_interactive_dynamics()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species T in compartment_, C in compartment_, F_beta in compartment_, F_gamma in compartment_;
+  species M1 in compartment_, M2 in compartment_;
+
+  // Assignment Rules:
+  S := S_1 + S_2 + S_3 + S_4 + S_5;
+  S_1 := piecewise(S_dose/ModelValue_30, (((time%120) >= 0) && ((time%120) <= ModelValue_30)) && (time < 360), 0);
+  S_2 := piecewise(ModelValue_28/ModelValue_30, ((((time%120) >= 0) && ((time%120) <= ModelValue_30)) && (time > 1440)) && (time < 1800), 0);
+  S_3 := piecewise(ModelValue_28/ModelValue_30, ((((time%120) >= 0) && ((time%120) <= ModelValue_30)) && (time > 2880)) && (time < 3240), 0);
+  S_4 := piecewise(ModelValue_28/ModelValue_30, ((((time%120) >= 0) && ((time%120) <= ModelValue_30)) && (time > 4320)) && (time < 4680), 0);
+  S_5 := piecewise(ModelValue_28/ModelValue_30, ((((time%120) >= 0) && ((time%120) <= ModelValue_30)) && (time > 5760)) && (time < 6120), 0);
+  T_e9 := T/100000000;
+  C_e7 := C/10000000;
+
+  // Reactions:
+  Tumor_Growth:  => T; compartment_*Function_for_Tumor_Growth(r, T, K);
+  Tumor_Elimination_CTL: T => ; compartment_*Function_for_Tumor_Elimination_CTL(a_T, M1, e_T, C, T, h_T, a_T_beta, e_T_beta, F_beta);
+  CTL_Recruitment:  => C; compartment_*Function_for_CTL_Recruitment(a_C_M2, M2, T, e_C_M2, a_C_beta, e_C_beta, F_beta);
+  CTL_Death: C => ; compartment_*mu_C*C;
+  CTL_Infusion:  => C; compartment_*Constant_flux__irreversible(S);
+  F_beta_Basal_Production:  => F_beta; compartment_*Constant_flux__irreversible(g_beta);
+  F_beta_Tumor_Production:  => F_beta; compartment_*Function_for_F_beta_Tumor_Production(a_T_beta, T);
+  F_beta_Degradation: F_beta => ; compartment_*mu_beta*F_beta;
+  F_gamma_CTL_Production:  => F_gamma; compartment_*Function_for_F_gamma_CTL_Production(a_gamma_C, C);
+  F_gamma_Degradation: F_gamma => ; compartment_*mu_gamma*F_gamma;
+  M1_Receptor_Expression_Basal:  => M1; compartment_*Constant_flux__irreversible(g_M1);
+  M1_Expression_Stimulated:  => M1; compartment_*Constant_flux__irreversible(M1_Expression_Stimulated_v);
+  M1_Degradation: M1 => ; compartment_*mu_M1*M1;
+  M2_Production:  => M2; compartment_*Constant_flux__irreversible(M2_Production_v);
+  M2_Degradation: M2 => ; compartment_*mu_M2*M2;
+
+  // Species initializations:
+  T = 10000000000;
+  C = 2000000;
+  F_beta = 0;
+  F_gamma = 0;
+  M1 = 0;
+  M2 = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  r = 0.00035;
+  K = 100000000000;
+  a_T = 0.12;
+  e_T = 50;
+  a_T_beta = 0.69;
+  e_T_beta = 10000;
+  h_T = 500000000;
+  a_C_M2 = 4.8e-11;
+  e_C_M2 = 100000000000000;
+  a_C_beta = 0.8;
+  e_C_beta = 10000;
+  mu_C = 0.007;
+  g_beta = 63945;
+  a_beta_T = 5.75e-06;
+  mu_beta = 7;
+  a_gamma_C = 0.000102;
+  mu_gamma = 0.102;
+  g_M1 = 1.44;
+  a_M1_gamma = 2.88;
+  e_M1_gamma = 338000;
+  mu_M1 = 0.0144;
+  a_M2_gamma = 8660;
+  e_M2_gamma = 1420;
+  a_M2_beta = 0.012;
+  e_M2_beta = 100000;
+  mu_M2 = 0.0144;
+  S_dose = 300000000;
+  S_interval = 10;
+  ModelValue_28 = S_dose;
+  ModelValue_30 = S_interval;
+  M1_Expression_Stimulated_v = 0.1;
+  M2_Production_v = 0.1;
+
+  // Other declarations:
+  var S, S_1, S_2, S_3, S_4, S_5, T_e9, C_e7;
+  const compartment_, r, K, a_T, e_T, a_T_beta, e_T_beta, h_T, a_C_M2, e_C_M2;
+  const a_C_beta, e_C_beta, mu_C, g_beta, a_beta_T, mu_beta, a_gamma_C, mu_gamma;
+  const g_M1, a_M1_gamma, e_M1_gamma, mu_M1, a_M2_gamma, e_M2_gamma, a_M2_beta;
+  const e_M2_beta, mu_M2, S_dose, S_interval, ModelValue_28, ModelValue_30;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 3600 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+  ModelValue_28 is "Initial for S_dose";
+  ModelValue_30 is "Initial for S_interval";
+
+  // CV terms:
+  compartment_ hypernym "http://identifiers.org/ncit/C94498"
+  T identity "http://identifiers.org/cl/CL:0001063"
+  C identity "http://identifiers.org/cl/CL:0000910"
+  F_beta hypernym "http://identifiers.org/ncit/C20455"
+  F_gamma identity "http://identifiers.org/uniprot/Q14609"
+  M1 hypernym "http://identifiers.org/go/GO:0042612"
+  M2 hypernym "http://identifiers.org/go/GO:0042613"
+  Tumor_Growth hypernym "http://identifiers.org/ncit/C18081"
+  Tumor_Elimination_CTL hypernym "http://identifiers.org/go/GO:0002419"
+  CTL_Recruitment hypernym "http://identifiers.org/go/GO:0035698"
+  CTL_Death hypernym "http://identifiers.org/go/GO:0008219"
+  CTL_Infusion hypernym "http://identifiers.org/ncit/C15351"
+  F_beta_Basal_Production hypernym "http://identifiers.org/ncit/C80450"
+  F_beta_Tumor_Production hypernym "http://identifiers.org/ncit/C36662"
+  F_beta_Degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+  F_gamma_CTL_Production hypernym "http://identifiers.org/go/GO:0032609"
+  F_gamma_Degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+  M1_Receptor_Expression_Basal hypernym "http://identifiers.org/ncit/C80450"
+  M1_Expression_Stimulated hypernym "http://identifiers.org/ncit/C80450"
+  M1_Degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+  M2_Production hypernym "http://identifiers.org/ncit/C80450"
+  M2_Degradation hypernym "http://identifiers.org/sbo/degradation"
+end
+
+Kronik2008___Improving_alloreactive_CTL_immunotherapy_for_malignant_gliomas_using_a_simulation_model_of_their_interactive_dynamics is "Kronik2008 - Improving alloreactive CTL immunotherapy for malignant gliomas using a simulation model of their interactive dynamics"
+
+Kronik2008___Improving_alloreactive_CTL_immunotherapy_for_malignant_gliomas_using_a_simulation_model_of_their_interactive_dynamics description "http://identifiers.org/pubmed/17823798"
+Kronik2008___Improving_alloreactive_CTL_immunotherapy_for_malignant_gliomas_using_a_simulation_model_of_their_interactive_dynamics model_entity_is "http://identifiers.org/biomodels.db/MODEL1909090001",
+                                                                                                                                                   "http://identifiers.org/biomodels.db/BIOMD0000000808"
+Kronik2008___Improving_alloreactive_CTL_immunotherapy_for_malignant_gliomas_using_a_simulation_model_of_their_interactive_dynamics property "http://identifiers.org/ncit/C15351"
+Kronik2008___Improving_alloreactive_CTL_immunotherapy_for_malignant_gliomas_using_a_simulation_model_of_their_interactive_dynamics property "http://identifiers.org/mamo/MAMO_0000046"

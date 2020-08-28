@@ -1,0 +1,173 @@
+// Created by libAntimony v2.13.0
+function Function_for_removal_of_stem_cell_from_the_system(gamma1, I, C)
+  gamma1*I*C;
+end
+
+Function_for_removal_of_stem_cell_from_the_system is "Function for removal of stem cell from the system"
+
+function Function_for_formation_of_Stem_cell(k1, C, M1, p1, E, a1)
+  k1*C*(1 - C/M1) + p1*C*E/(a1 + C);
+end
+
+Function_for_formation_of_Stem_cell is "Function for formation of Stem cell"
+
+function Function_for_increase_in_healthy_cell_in_the_system(q, H, M3)
+  q*H*(1 - H/M3);
+end
+
+Function_for_increase_in_healthy_cell_in_the_system is "Function for increase in healthy cell in the system"
+
+function Function_for_decrease_in_healthy_cell(delta, H, T, p3, E, a3)
+  delta*H*T + p3*H*E/(a3 + H);
+end
+
+Function_for_decrease_in_healthy_cell is "Function for decrease in healthy cell"
+
+function Function_for_induction_of_tumor_cell(k2, C, M1, T, M2, p2, E, a2)
+  k2*C*(C/M1)*(1 - T/M2) + p2*T*E/(a2 + T);
+end
+
+Function_for_induction_of_tumor_cell is "Function for induction of tumor cell"
+
+function Function_for_removal_of_tumor_cell(n1, T, gamma2, I)
+  n1*T + gamma2*I*T;
+end
+
+Function_for_removal_of_tumor_cell is "Function for removal of tumor cell"
+
+function Function_for_increase_in_excess_strogen(tau)
+  tau;
+end
+
+Function_for_increase_in_excess_strogen is "Function for increase in excess strogen"
+
+function Function_for_decrease_in_strogen_content(mu, d1, C, a1, d2, T, a2, d3, H, a3, E)
+  (mu + d1*C/(a1 + C) + d2*T/(a2 + T) + d3*H/(a3 + H))*E;
+end
+
+Function_for_decrease_in_strogen_content is "Function for decrease in strogen content"
+
+function Function_for_increase_in_tumor_cell_against_cancer(s, p, I, T, w)
+  s + p*I*T/(w + T);
+end
+
+Function_for_increase_in_tumor_cell_against_cancer is "Function for increase in tumor cell against cancer"
+
+function Function_for_decrease_in_immune_cell(gamma3, I, T, n2, u, E, v)
+  gamma3*I*T + n2*I + u*I*E/(v + E);
+end
+
+Function_for_decrease_in_immune_cell is "Function for decrease in immune cell"
+
+
+model *Solis_perez2019___A_fractional_mathematical_model_of_breast_cancer_competition_model()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species C in compartment_, T in compartment_, H in compartment_, I in compartment_;
+  species E in compartment_;
+
+  // Reactions:
+  Formation_of_Stem_cell:  => C; compartment_*Function_for_formation_of_Stem_cell(k1, C, M1, p1, E, a1);
+  Removal_of_stem_cell_from_the_system: C => ; compartment_*Function_for_removal_of_stem_cell_from_the_system(gamma1, I, C);
+  Induction_of_tumor_cell:  => T; compartment_*Function_for_induction_of_tumor_cell(k2, C, M1, T, M2, p2, E, a2);
+  Removal_of_tumor_cell_y_immune_cell_and_other_immune_response: T => ; compartment_*Function_for_removal_of_tumor_cell(n1, T, gamma2, I);
+  Increase_in_the_healthy_cell_in_the_system:  => H; compartment_*Function_for_increase_in_healthy_cell_in_the_system(q, H, M3);
+  Decrase_of_healthy_cell_due_to_cancer: H => ; compartment_*Function_for_decrease_in_healthy_cell(delta, H, T, p3, E, a3);
+  Increase_in_immune_cell_against_tumor:  => I; compartment_*Function_for_increase_in_tumor_cell_against_cancer(s, p, I, T, w);
+  Decrease_in_the_density_of_immune_cell_that_provide_immune_response: I => ; compartment_*Function_for_decrease_in_immune_cell(gamma3, I, T, n2, u, E, v);
+  Increase_in_Excess_strogen:  => E; compartment_*Function_for_increase_in_excess_strogen(tau);
+  Decrease_in_strogen_content: E => ; compartment_*Function_for_decrease_in_strogen_content(mu, d1, C, a1, d2, T, a2, d3, H, a3, E);
+
+  // Species initializations:
+  C = 737100;
+  T = 7616700;
+  H = 25000000;
+  I = 0;
+  E = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  k1 = 0.75;
+  k2 = 0.514;
+  q = 0.7;
+  M1 = 2270000;
+  M2 = 22700000;
+  M3 = 25000000;
+  gamma1 = 3e-07;
+  gamma2 = 3e-06;
+  gamma3 = 1e-07;
+  p1 = 600;
+  p2 = 0;
+  p3 = 100;
+  a1 = 1135000;
+  a2 = 11350000;
+  a3 = 1250000;
+  n1 = 0.01;
+  n2 = 0.29;
+  delta = 6e-08;
+  s = 13000;
+  p = 0.2;
+  w = 300000;
+  u = 0.2;
+  v = 400;
+  tau = 2700;
+  d1 = 0.01;
+  d2 = 0.01;
+  d3 = 0.01;
+  mu = 0.97;
+
+  // Other declarations:
+  const compartment_, k1, k2, q, M1, M2, M3, gamma1, gamma2, gamma3, p1, p2;
+  const p3, a1, a2, a3, n1, n2, delta, s, p, w, u, v, tau, d1, d2, d3, mu;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+  Formation_of_Stem_cell is "Formation of Stem cell";
+  Removal_of_stem_cell_from_the_system is "Removal of stem cell from the system";
+  Induction_of_tumor_cell is "Induction of tumor cell";
+  Removal_of_tumor_cell_y_immune_cell_and_other_immune_response is "Removal of tumor cell y immune cell and other immune response";
+  Increase_in_the_healthy_cell_in_the_system is "Increase in the healthy cell in the system";
+  Decrase_of_healthy_cell_due_to_cancer is "Decrase of healthy cell due to cancer";
+  Increase_in_immune_cell_against_tumor is "Increase in immune cell against tumor";
+  Decrease_in_the_density_of_immune_cell_that_provide_immune_response is "Decrease in the density of immune cell that provide immune response";
+  Increase_in_Excess_strogen is "Increase in Excess strogen";
+  Decrease_in_strogen_content is "Decrease in strogen content";
+
+  // CV terms:
+  C instance "http://identifiers.org/bto/BTO:0006293"
+  T instance "http://identifiers.org/ncit/C12922"
+  H property "http://identifiers.org/ncit/C115935"
+  I instance "http://identifiers.org/ncit/C132890"
+  Formation_of_Stem_cell instance "http://identifiers.org/ncit/C25513"
+  Removal_of_stem_cell_from_the_system instance "http://identifiers.org/ncit/C64914"
+  Induction_of_tumor_cell instance "http://identifiers.org/ncit/C25533"
+  Removal_of_tumor_cell_y_immune_cell_and_other_immune_response instance "http://identifiers.org/ncit/"
+  Increase_in_the_healthy_cell_in_the_system instance "http://identifiers.org/ncit/C25533"
+  Decrase_of_healthy_cell_due_to_cancer instance "http://identifiers.org/ncit/C25640"
+  Increase_in_immune_cell_against_tumor instance "http://identifiers.org/ncit/C25533"
+  Decrease_in_the_density_of_immune_cell_that_provide_immune_response instance "http://identifiers.org/ncit/C25640"
+  Increase_in_Excess_strogen instance "http://identifiers.org/ncit/C25533"
+  Decrease_in_strogen_content instance "http://identifiers.org/ncit/C25640"
+end
+
+Solis_perez2019___A_fractional_mathematical_model_of_breast_cancer_competition_model is "Solis-perez2019 - A fractional mathematical model of breast cancer competition model"
+
+Solis_perez2019___A_fractional_mathematical_model_of_breast_cancer_competition_model instance "http://identifiers.org/mamo/MAMO_0000046",
+                                                                                              "http://identifiers.org/taxonomy/9606",
+                                                                                              "http://identifiers.org/ncit/C4872"
+Solis_perez2019___A_fractional_mathematical_model_of_breast_cancer_competition_model description "http://identifiers.org/ncit/C4872",
+                                                                                                 "http://identifiers.org/doi/10.1016/j.chaos.2019.06.027"
+Solis_perez2019___A_fractional_mathematical_model_of_breast_cancer_competition_model origin "http://identifiers.org/doi/10.1007/s12591-017-0346-x"
+Solis_perez2019___A_fractional_mathematical_model_of_breast_cancer_competition_model model_entity_is "http://identifiers.org/biomodels.db/MODEL1912180005",
+                                                                                                     "http://identifiers.org/biomodels.db/BIOMD0000000903"
+Solis_perez2019___A_fractional_mathematical_model_of_breast_cancer_competition_model property "http://identifiers.org/mamo/MAMO_0000046"
+Solis_perez2019___A_fractional_mathematical_model_of_breast_cancer_competition_model taxon "http://identifiers.org/taxonomy/9606"
