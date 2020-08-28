@@ -30,7 +30,7 @@ void FixName(std::vector<std::vector<std::string> >& allnames);
 void FixName(std::map<std::vector<std::string>, Variable*>& varmap);
 void FixUnitName(std::string& name);
 
-bool CaselessStrCmp(const std::string& lhs, const std::string& rhs);
+bool CaselessStrCmp(bool caseless, const std::string& lhs, const std::string& rhs);
 
 // JKM escapes double quotes for use with gitdiffit
 std::string escapeDoubleQuotes(std::string s);

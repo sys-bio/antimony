@@ -182,7 +182,7 @@ public:
 #endif //USE_COMP
   void TranslateRulesAndAssignmentsTo(const SBase* obj, Variable* var);
   //void  LoadSBML(const SBMLDocument* sbmldoc);
-  void  LoadSBML(const Model* sbml);
+  void  LoadSBML(Model* sbml);
   const SBMLDocument* GetSBML(bool comp);
   void  CreateSBMLModel(bool comp);
   void  SetAssignmentFor(Model* sbmlmod, const Variable* var, const std::map<const Variable*, Variable>& syncmap, bool comp, std::set<std::pair<std::string, const Variable*> > referencedVars);
@@ -273,6 +273,9 @@ private:
   Variable* GetSBaseRef(const SBaseRef* sbr, std::string modname, std::string re_string, const SBase* orig);
   InitialAssignment* FindInitialAssignment(Model* md, std::vector<std::string> syncname);
   Rule* FindRule(Model* md, std::vector<std::string> syncname);
+  void FixNames(Model* model);
+  void FixConstants(const std::string& name, Model* model);
+  void FixFunctions(const std::string& name, Model* model);
 #endif
 #endif
 };

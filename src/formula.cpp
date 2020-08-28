@@ -20,7 +20,7 @@
 #endif
 
 using namespace std;
-extern bool CaselessStrCmp(const string& lhs, const string& rhs);
+extern bool CaselessStrCmp(bool caseless, const string& lhs, const string& rhs);
 
 bool Formula::AddVariable(const Variable* var)
 {
@@ -237,8 +237,8 @@ bool Formula::IsBoolean() const
 {
   if (m_components.size() == 1) {
     if (m_components[0].second.size() == 0) {
-      if (CaselessStrCmp(m_components[0].first, "true") ||
-          CaselessStrCmp(m_components[0].first, "false")) {
+      if (CaselessStrCmp(false, m_components[0].first, "true") ||
+          CaselessStrCmp(false, m_components[0].first, "false")) {
         return true;
       }
     }
@@ -251,7 +251,7 @@ bool Formula::GetBoolean() const
   assert(IsBoolean());
   if (m_components.size() == 1) {
     if (m_components[0].second.size() == 0) {
-      if (CaselessStrCmp(m_components[0].first, "true")) {
+      if (CaselessStrCmp(false, m_components[0].first, "true")) {
         return true;
       }
     }

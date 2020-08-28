@@ -2513,16 +2513,16 @@ yyreduce:
 
   case 125:
 #line 418 "antimony.ypp" /* yacc.c:1646  */
-    {if (CaselessStrCmp(*(yyvsp[-2].word), "extentconv")) {g_registry.GetCurrentSubmodel()->SetExtentConversionFactor((yyvsp[0].variable));}
-                else if (CaselessStrCmp(*(yyvsp[-2].word), "timeconv")) {if (g_registry.GetCurrentSubmodel()->SetTimeConversionFactor((yyvsp[0].variable))) YYABORT;}
+    {if (CaselessStrCmp(false, *(yyvsp[-2].word), "extentconv")) {g_registry.GetCurrentSubmodel()->SetExtentConversionFactor((yyvsp[0].variable));}
+                else if (CaselessStrCmp(false, *(yyvsp[-2].word), "timeconv")) {if (g_registry.GetCurrentSubmodel()->SetTimeConversionFactor((yyvsp[0].variable))) YYABORT;}
                 else { g_registry.SetError("Illegal term '" + *(yyvsp[-2].word) + "' in submodel declaration.  You may use the terms 'extentconv' and 'timeconv' to set the extent and time conversion factors for this submodel, respectively."); YYABORT;}}
 #line 2520 "antimony.tab.cpp" /* yacc.c:1646  */
     break;
 
   case 126:
 #line 422 "antimony.ypp" /* yacc.c:1646  */
-    {if (CaselessStrCmp(*(yyvsp[-2].word), "extentconv")) {g_registry.GetCurrentSubmodel()->SetExtentConversionFactor((yyvsp[0].num));}
-                else if (CaselessStrCmp(*(yyvsp[-2].word), "timeconv")) {if (g_registry.GetCurrentSubmodel()->SetTimeConversionFactor((yyvsp[0].num))) YYABORT;}
+    {if (CaselessStrCmp(false, *(yyvsp[-2].word), "extentconv")) {g_registry.GetCurrentSubmodel()->SetExtentConversionFactor((yyvsp[0].num));}
+                else if (CaselessStrCmp(false, *(yyvsp[-2].word), "timeconv")) {if (g_registry.GetCurrentSubmodel()->SetTimeConversionFactor((yyvsp[0].num))) YYABORT;}
                 else { g_registry.SetError("Illegal term '" + *(yyvsp[-2].word) + "' in submodel declaration.  You may use the terms 'extentconv' and 'timeconv' to set the extent and time conversion factors for this submodel, respectively."); YYABORT;}}
 #line 2528 "antimony.tab.cpp" /* yacc.c:1646  */
     break;
@@ -2921,10 +2921,10 @@ yyreduce:
 
   case 192:
 #line 521 "antimony.ypp" /* yacc.c:1646  */
-    {if (CaselessStrCmp(*(yyvsp[-2].word), "priority")) {g_registry.GetCurrentEvent()->SetPriority(*(yyvsp[0].formula));}
-                else if (CaselessStrCmp(*(yyvsp[-2].word), "t0")) {if (g_registry.GetCurrentEvent()->SetInitialValue(*(yyvsp[0].formula))) YYABORT;}
-                else if (CaselessStrCmp(*(yyvsp[-2].word), "fromTrigger")) {if (g_registry.GetCurrentEvent()->SetUseValuesFromTriggerTime(*(yyvsp[0].formula))) YYABORT;}
-                else if (CaselessStrCmp(*(yyvsp[-2].word), "persistent")) {if (g_registry.GetCurrentEvent()->SetPersistent(*(yyvsp[0].formula))) YYABORT;}
+    {if (CaselessStrCmp(false, *(yyvsp[-2].word), "priority")) {g_registry.GetCurrentEvent()->SetPriority(*(yyvsp[0].formula));}
+                else if (CaselessStrCmp(false, *(yyvsp[-2].word), "t0")) {if (g_registry.GetCurrentEvent()->SetInitialValue(*(yyvsp[0].formula))) YYABORT;}
+                else if (CaselessStrCmp(false, *(yyvsp[-2].word), "fromTrigger")) {if (g_registry.GetCurrentEvent()->SetUseValuesFromTriggerTime(*(yyvsp[0].formula))) YYABORT;}
+                else if (CaselessStrCmp(false, *(yyvsp[-2].word), "persistent")) {if (g_registry.GetCurrentEvent()->SetPersistent(*(yyvsp[0].formula))) YYABORT;}
                 else { g_registry.SetError("Illegal term '" + *(yyvsp[-2].word) + "' in event defintion.  You may use the terms 'priority', 't0', 'fromTrigger', and 'persistent' here to set those properties of an event."); YYABORT;}}
 #line 2930 "antimony.tab.cpp" /* yacc.c:1646  */
     break;
@@ -3070,7 +3070,7 @@ yyreduce:
   case 214:
 #line 578 "antimony.ypp" /* yacc.c:1646  */
     { Module* module = g_registry.GetModule(*(yyvsp[-4].word));
-                    if (module && (yyvsp[-2].word) && CaselessStrCmp(*((yyvsp[-2].word)), "sboTerm")) {
+                    if (module && (yyvsp[-2].word) && CaselessStrCmp(true, *((yyvsp[-2].word)), "sboTerm")) {
                       module->SetSBOTerm(lround((yyvsp[0].num)));
                     }
                     else {
@@ -3084,7 +3084,7 @@ yyreduce:
   case 215:
 #line 589 "antimony.ypp" /* yacc.c:1646  */
     { Module* function = g_registry.GetModule(*(yyvsp[-4].word));
-                    if (function && (yyvsp[-2].word) &&  CaselessStrCmp(*((yyvsp[-2].word)), "sboTerm")) {
+                    if (function && (yyvsp[-2].word) &&  CaselessStrCmp(true, *((yyvsp[-2].word)), "sboTerm")) {
                       function->SetSBOTerm(lround((yyvsp[0].num)));
                     }
                     else {
@@ -3427,88 +3427,88 @@ int antimony_yylex(void)
     if (!g_registry.input->eof()) {
       g_registry.input->unget();
     }
-    if (CaselessStrCmp(word, "module")) {
+    if (CaselessStrCmp(false, word, "module")) {
       return MODULE;
     }
-    if (CaselessStrCmp(word, "model")) {
+    if (CaselessStrCmp(false, word, "model")) {
       return MODULE;
     }
-    if (CaselessStrCmp(word, "end")) {
+    if (CaselessStrCmp(false, word, "end")) {
       return END;
     }
-    if (CaselessStrCmp(word, "species")) {
+    if (CaselessStrCmp(false, word, "species")) {
       return SPECIES;
     }
-    if (CaselessStrCmp(word, "formula")) {
+    if (CaselessStrCmp(false, word, "formula")) {
       return FORMULA;
     }
-    if (CaselessStrCmp(word, "reaction")) {
+    if (CaselessStrCmp(false, word, "reaction")) {
       return REACTION;
     }
-    if (CaselessStrCmp(word, "DNA")) {
+    if (CaselessStrCmp(false, word, "DNA")) {
       return DNA;
     }
-    if (CaselessStrCmp(word, "gene")) {
+    if (CaselessStrCmp(false, word, "gene")) {
       return GENE;
     }
-    if (CaselessStrCmp(word, "operator")) {
+    if (CaselessStrCmp(false, word, "operator")) {
       return OPERATOR;
     }
-    if (CaselessStrCmp(word, "compartment")) {
+    if (CaselessStrCmp(false, word, "compartment")) {
       return COMPARTMENT;
     }
-    if (CaselessStrCmp(word, "has")) {
+    if (CaselessStrCmp(false, word, "has")) {
       return HASWORD;
     }
-    if (CaselessStrCmp(word, "in")) {
+    if (CaselessStrCmp(false, word, "in")) {
       return INWORD;
     }
-    if (CaselessStrCmp(word, "is")) {
+    if (CaselessStrCmp(false, word, "is")) {
       return IS;
     }
-    if (CaselessStrCmp(word, "var")) {
+    if (CaselessStrCmp(false, word, "var")) {
       return VARWORD;
     }
-    if (CaselessStrCmp(word, "const")) {
+    if (CaselessStrCmp(false, word, "const")) {
       return CONSTWORD;
     }
-    if (CaselessStrCmp(word, "substanceOnly")) {
+    if (CaselessStrCmp(false, word, "substanceOnly")) {
       return SUBSTONLY;
     }
-    if (CaselessStrCmp(word, "ext")) {
+    if (CaselessStrCmp(false, word, "ext")) {
       return CONSTWORD;
     }
-    if (CaselessStrCmp(word, "import")) {
+    if (CaselessStrCmp(false, word, "import")) {
       return IMPORT;
     }
-    if (CaselessStrCmp(word, "event")) {
+    if (CaselessStrCmp(false, word, "event")) {
       return EVENT;
     }
-    if (CaselessStrCmp(word, "at")) {
+    if (CaselessStrCmp(false, word, "at")) {
       return AT;
     }
-    if (CaselessStrCmp(word, "after")) {
+    if (CaselessStrCmp(false, word, "after")) {
       return AFTER;
     }
-    if (CaselessStrCmp(word, "function")) {
+    if (CaselessStrCmp(false, word, "function")) {
       return FUNCTIONWORD;
     }
-    if (CaselessStrCmp(word, "unit")) {
+    if (CaselessStrCmp(false, word, "unit")) {
       return UNITWORD;
     }
-    if (CaselessStrCmp(word, "delete")) {
+    if (CaselessStrCmp(false, word, "delete")) {
       return DELETEWORD;
     }
-    if (CaselessStrCmp(word, "constraint")) {
+    if (CaselessStrCmp(false, word, "constraint")) {
       return CONSTRAINTWORD;
     }
-    if (CaselessStrCmp(word, "maximize")) {
+    if (CaselessStrCmp(false, word, "maximize")) {
       return MAXIMIZEWORD;
     }
-    if (CaselessStrCmp(word, "minimize")) {
+    if (CaselessStrCmp(false, word, "minimize")) {
       return MINIMIZEWORD;
     }
-    if (CaselessStrCmp(word, "sbo") && (g_registry.input->peek() == ':')) {
+    if (CaselessStrCmp(true, word, "sbo") && (g_registry.input->peek() == ':')) {
       // try to parse an SBO term
       g_registry.input->get();
       cc = g_registry.input->peek();

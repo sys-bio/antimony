@@ -20,7 +20,7 @@ START_TEST (test_getAntimonyString)
 {
   loadString("a=3");
   char* model = getAntimonyString(NULL);
-  fail_unless(string(model) == "// Created by libAntimony v2.12.0\n// Variable initializations:\na = 3;\n");
+  fail_unless(string(model) == "// Created by libAntimony v2.13.0\n// Variable initializations:\na = 3;\n");
 
   freeAll();
 }
@@ -30,7 +30,7 @@ START_TEST (test_whatIsMainModel1)
 {
   loadString("a=3\nmodel foo()\nb=10\nend");
   char* model = getAntimonyString(NULL);
-  fail_unless(string(model) == "// Created by libAntimony v2.12.0\n// Variable initializations:\na = 3;\n\nmodel foo()\n\n  // Variable initializations:\n  b = 10;\nend\n");
+  fail_unless(string(model) == "// Created by libAntimony v2.13.0\n// Variable initializations:\na = 3;\n\nmodel foo()\n\n  // Variable initializations:\n  b = 10;\nend\n");
   char* mainname = getMainModuleName();
   fail_unless(string(mainname) == "__main");
 
@@ -44,7 +44,7 @@ START_TEST (test_whatIsMainModel2)
 {
   loadString("a=3\nmodel *foo()\nb=10\nend");
   char* model = getAntimonyString(NULL);
-  fail_unless(string(model) == "// Created by libAntimony v2.12.0\n// Variable initializations:\na = 3;\n\nmodel *foo()\n\n  // Variable initializations:\n  b = 10;\nend\n");
+  fail_unless(string(model) == "// Created by libAntimony v2.13.0\n// Variable initializations:\na = 3;\n\nmodel *foo()\n\n  // Variable initializations:\n  b = 10;\nend\n");
   char* mainname = getMainModuleName();
   fail_unless(string(mainname) == "foo");
 
@@ -58,7 +58,7 @@ START_TEST (test_whatIsMainModel3)
 {
   loadString("model foo()\nb=10\nend\na=3");
   char* model = getAntimonyString(NULL);
-  fail_unless(string(model) == "// Created by libAntimony v2.12.0\n// Variable initializations:\na = 3;\n\nmodel foo()\n\n  // Variable initializations:\n  b = 10;\nend\n");
+  fail_unless(string(model) == "// Created by libAntimony v2.13.0\n// Variable initializations:\na = 3;\n\nmodel foo()\n\n  // Variable initializations:\n  b = 10;\nend\n");
   char* mainname = getMainModuleName();
   fail_unless(string(mainname) == "__main");
 
@@ -72,7 +72,7 @@ START_TEST (test_whatIsMainModel4)
 {
   loadString("model foo()\nb=10\nend");
   char* model = getAntimonyString(NULL);
-  fail_unless(string(model) == "// Created by libAntimony v2.12.0\nmodel foo()\n\n  // Variable initializations:\n  b = 10;\nend\n");
+  fail_unless(string(model) == "// Created by libAntimony v2.13.0\nmodel foo()\n\n  // Variable initializations:\n  b = 10;\nend\n");
   char* mainname = getMainModuleName();
   fail_unless(string(mainname) == "foo");
 
@@ -86,7 +86,7 @@ START_TEST (test_whatIsMainModel5)
 {
   loadString("model foo()\nb=10\nend\nmodel bar()\nc=10\nend");
   char* model = getAntimonyString(NULL);
-  fail_unless(string(model) == "// Created by libAntimony v2.12.0\nmodel foo()\n\n  // Variable initializations:\n  b = 10;\nend\n\nmodel bar()\n\n  // Variable initializations:\n  c = 10;\nend\n");
+  fail_unless(string(model) == "// Created by libAntimony v2.13.0\nmodel foo()\n\n  // Variable initializations:\n  b = 10;\nend\n\nmodel bar()\n\n  // Variable initializations:\n  c = 10;\nend\n");
   char* mainname = getMainModuleName();
   fail_unless(string(mainname) == "bar");
 
@@ -100,7 +100,7 @@ START_TEST (test_whatIsMainModel6)
 {
   loadString("model *foo()\nb=10\nend\nmodel bar()\nc=10\nend");
   char* model = getAntimonyString(NULL);
-  fail_unless(string(model) == "// Created by libAntimony v2.12.0\nmodel *foo()\n\n  // Variable initializations:\n  b = 10;\nend\n\nmodel bar()\n\n  // Variable initializations:\n  c = 10;\nend\n");
+  fail_unless(string(model) == "// Created by libAntimony v2.13.0\nmodel *foo()\n\n  // Variable initializations:\n  b = 10;\nend\n\nmodel bar()\n\n  // Variable initializations:\n  c = 10;\nend\n");
   char* mainname = getMainModuleName();
   fail_unless(string(mainname) == "foo");
 
@@ -117,7 +117,7 @@ START_TEST (test_loadFile)
 
   loadFile(filename.c_str());
   char* model = getAntimonyString(NULL);
-  fail_unless(string(model) == "// Created by libAntimony v2.12.0\n// Variable initializations:\na = 3;\n");
+  fail_unless(string(model) == "// Created by libAntimony v2.13.0\n// Variable initializations:\na = 3;\n");
 
   freeAll();
   clearPreviousLoads();
@@ -131,7 +131,7 @@ START_TEST (test_loadAntimonyFile)
 
   loadAntimonyFile(filename.c_str());
   char* model = getAntimonyString(NULL);
-  fail_unless(string(model) == "// Created by libAntimony v2.12.0\n// Variable initializations:\na = 3;\n");
+  fail_unless(string(model) == "// Created by libAntimony v2.13.0\n// Variable initializations:\na = 3;\n");
 
   freeAll();
   clearPreviousLoads();
@@ -175,7 +175,7 @@ START_TEST (test_getStrings)
 
   loadFile(filename.c_str());
   char* model = getAntimonyString(NULL);
-  fail_unless(string(model) == "// Created by libAntimony v2.12.0\n// Variable initializations:\na = 3;\n");
+  fail_unless(string(model) == "// Created by libAntimony v2.13.0\n// Variable initializations:\na = 3;\n");
   char* sbml = getSBMLString(NULL);
   fail_unless(string(sbml) == "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sbml xmlns=\"http://www.sbml.org/sbml/level3/version1/core\" level=\"3\" version=\"1\">\n  <model metaid=\"__main\" id=\"__main\">\n    <listOfParameters>\n      <parameter id=\"a\" value=\"3\" constant=\"true\"/>\n    </listOfParameters>\n  </model>\n</sbml>\n");
   sbml = getCompSBMLString(NULL);
@@ -207,7 +207,7 @@ START_TEST (test_loadAntimonyString)
 {
   loadAntimonyString("a=3");
   char* model = getAntimonyString(NULL);
-  fail_unless(string(model) == "// Created by libAntimony v2.12.0\n// Variable initializations:\na = 3;\n");
+  fail_unless(string(model) == "// Created by libAntimony v2.13.0\n// Variable initializations:\na = 3;\n");
 
   freeAll();
   clearPreviousLoads();
@@ -246,7 +246,7 @@ START_TEST (test_loadSBMLFile)
 
   loadSBMLFile(filename.c_str());
   char* model = getAntimonyString(NULL);
-  fail_unless(string(model) == "// Created by libAntimony v2.12.0\n// Variable initializations:\na = 3;\n\n// Other declarations:\nconst a;\n");
+  fail_unless(string(model) == "// Created by libAntimony v2.13.0\n// Variable initializations:\na = 3;\n\n// Other declarations:\nconst a;\n");
 
   freeAll();
 }
@@ -286,7 +286,7 @@ START_TEST (test_loadSBMLString)
 {
   long ret = loadSBMLString("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sbml xmlns=\"http://www.sbml.org/sbml/level3/version1/core\" level=\"3\" version=\"1\">\n  <model id=\"__main\" name=\"__main\">\n    <listOfParameters>\n      <parameter id=\"a\" value=\"3\" constant=\"true\"/>\n    </listOfParameters>\n  </model>\n</sbml>\n");
   char* model = getAntimonyString(NULL);
-  fail_unless(string(model) == "// Created by libAntimony v2.12.0\n// Variable initializations:\na = 3;\n\n// Other declarations:\nconst a;\n");
+  fail_unless(string(model) == "// Created by libAntimony v2.13.0\n// Variable initializations:\na = 3;\n\n// Other declarations:\nconst a;\n");
 
   freeAll();
 }
@@ -353,15 +353,15 @@ START_TEST (test_previousLoads)
   fail_unless(getNumFiles() == 2);
 
   char* model = getAntimonyString(NULL);
-  fail_unless(string(model) == "// Created by libAntimony v2.12.0\n// Variable initializations:\nb = 3;\n");
+  fail_unless(string(model) == "// Created by libAntimony v2.13.0\n// Variable initializations:\nb = 3;\n");
 
   revertTo(1);
   model = getAntimonyString(NULL);
-  fail_unless(string(model) == "// Created by libAntimony v2.12.0\n// Variable initializations:\na = 3;\n");
+  fail_unless(string(model) == "// Created by libAntimony v2.13.0\n// Variable initializations:\na = 3;\n");
 
   revertTo(2);
   model = getAntimonyString(NULL);
-  fail_unless(string(model) == "// Created by libAntimony v2.12.0\n// Variable initializations:\nb = 3;\n");
+  fail_unless(string(model) == "// Created by libAntimony v2.13.0\n// Variable initializations:\nb = 3;\n");
 
   clearPreviousLoads();
   freeAll();
@@ -374,7 +374,7 @@ START_TEST (test_directories)
   int ret = loadFile("parameter.txt");
   fail_unless(ret != -1);
   char* model = getAntimonyString(NULL);
-  fail_unless(string(model) == "// Created by libAntimony v2.12.0\n// Variable initializations:\na = 3;\n");
+  fail_unless(string(model) == "// Created by libAntimony v2.13.0\n// Variable initializations:\na = 3;\n");
 
   clearDirectories();
   ret = loadFile("parameter.txt");
@@ -648,19 +648,19 @@ START_TEST (test_addDefaults)
   fail_unless(ret != -1);
 
   char* model = getAntimonyString(NULL);
-  fail_unless(string(model) == "// Created by libAntimony v2.12.0\nmodel foo(a)\n\n  // Compartments and Species:\n  compartment C1;\n  species x in C1;\n\n  // Reactions:\n  _J0: x -> ; ;\n\n  // Species initializations:\n  x = ;\n\n  // Compartment initializations:\n  C1 = ;\n\n  // Variable initializations:\n  a = ;\n  z = ;\n\n  // Other declarations:\n  const z;\nend\n");
+  fail_unless(string(model) == "// Created by libAntimony v2.13.0\nmodel foo(a)\n\n  // Compartments and Species:\n  compartment C1;\n  species x in C1;\n\n  // Reactions:\n  _J0: x -> ; ;\n\n  // Species initializations:\n  x = ;\n\n  // Compartment initializations:\n  C1 = ;\n\n  // Variable initializations:\n  a = ;\n  z = ;\n\n  // Other declarations:\n  const z;\nend\n");
   fail_unless(addDefaultInitialValues(NULL) == false);
   model = getAntimonyString(NULL);
-  fail_unless(string(model) == "// Created by libAntimony v2.12.0\nmodel foo(a)\n\n  // Compartments and Species:\n  compartment C1;\n  species x in C1;\n\n  // Reactions:\n  _J0: x -> ; 0;\n\n  // Species initializations:\n  x = 0;\n\n  // Compartment initializations:\n  C1 = 1;\n\n  // Variable initializations:\n  a = 1;\n  z = 1;\n\n  // Other declarations:\n  const z;\nend\n");
+  fail_unless(string(model) == "// Created by libAntimony v2.13.0\nmodel foo(a)\n\n  // Compartments and Species:\n  compartment C1;\n  species x in C1;\n\n  // Reactions:\n  _J0: x -> ; 0;\n\n  // Species initializations:\n  x = 0;\n\n  // Compartment initializations:\n  C1 = 1;\n\n  // Variable initializations:\n  a = 1;\n  z = 1;\n\n  // Other declarations:\n  const z;\nend\n");
 
   ret = loadString("model foo(a)\nend\nA: foo(x)");
   fail_unless(ret != -1);
 
   model = getAntimonyString(NULL);
-  fail_unless(string(model) == "// Created by libAntimony v2.12.0\nmodel foo(a)\n\n  // Variable initializations:\n  a = ;\nend\n\n\n// Sub-modules, and any changes to those submodules:\nA: foo(x);\n\n");
+  fail_unless(string(model) == "// Created by libAntimony v2.13.0\nmodel foo(a)\n\n  // Variable initializations:\n  a = ;\nend\n\n\n// Sub-modules, and any changes to those submodules:\nA: foo(x);\n\n");
   fail_unless(addDefaultInitialValues(NULL) == false);
   model = getAntimonyString(NULL);
-  fail_unless(string(model) == "// Created by libAntimony v2.12.0\nmodel foo(a)\n\n  // Variable initializations:\n  a = ;\nend\n\n\n// Sub-modules, and any changes to those submodules:\nA: foo(x);\n\n// Variable initializations:\nx = 1;\n\n");
+  fail_unless(string(model) == "// Created by libAntimony v2.13.0\nmodel foo(a)\n\n  // Variable initializations:\n  a = ;\nend\n\n\n// Sub-modules, and any changes to those submodules:\nA: foo(x);\n\n// Variable initializations:\nx = 1;\n\n");
 
 
 

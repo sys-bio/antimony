@@ -92,8 +92,8 @@ public:
   int    OpenString(std::string model);
 #ifndef NSBML
   int    CheckAndAddSBMLIfGood(SBMLDocument* document);
-  void   LoadSubmodelsFrom(const Model* model);
-  bool   LoadModelFrom(std::string modelname, const SBMLDocument* document);
+  void   LoadSubmodelsFrom(Model* model);
+  bool   LoadModelFrom(std::string modelname, SBMLDocument* document);
 #endif
 #ifndef NCELLML
   bool   LoadCellML(iface::cellml_api::Model* model);

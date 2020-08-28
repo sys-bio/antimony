@@ -5,7 +5,7 @@
 #include "stringx.h"
 
 using namespace std;
-extern bool CaselessStrCmp(const string& lhs, const string& rhs);
+extern bool CaselessStrCmp(bool caseless, const string& lhs, const string& rhs);
 
 bool IsReaction(const var_type vtype)
 {
@@ -453,55 +453,55 @@ string UncertTypeToString(const uncert_type utype)
 
 uncert_type UncertStringToType(const string& uncert)
 {
-  if (CaselessStrCmp(uncert, "coefficientOfVariation")) {
+  if (CaselessStrCmp(false, uncert, "coefficientOfVariation")) {
     return unCoefficientOfVariation;
   }
-  if (CaselessStrCmp(uncert, "kurtosis")) {
+  if (CaselessStrCmp(false, uncert, "kurtosis")) {
     return unKurtosis;
   }
-  if (CaselessStrCmp(uncert, "mean")) {
+  if (CaselessStrCmp(false, uncert, "mean")) {
     return unMean;
   }
-  if (CaselessStrCmp(uncert, "median")) {
+  if (CaselessStrCmp(false, uncert, "median")) {
     return unMedian;
   }
-  if (CaselessStrCmp(uncert, "mode")) {
+  if (CaselessStrCmp(false, uncert, "mode")) {
     return unMode;
   }
-  if (CaselessStrCmp(uncert, "sampleSize")) {
+  if (CaselessStrCmp(false, uncert, "sampleSize")) {
     return unSampleSize;
   }
-  if (CaselessStrCmp(uncert, "skewness")) {
+  if (CaselessStrCmp(false, uncert, "skewness")) {
     return unSkewness;
   }
-  if (CaselessStrCmp(uncert, "standardDeviation")) {
+  if (CaselessStrCmp(false, uncert, "standardDeviation")) {
     return unStandardDeviation;
   }
-  if (CaselessStrCmp(uncert, "stdev")) {
+  if (CaselessStrCmp(false, uncert, "stdev")) {
     return unStandardDeviation;
   }
-  if (CaselessStrCmp(uncert, "standardError")) {
+  if (CaselessStrCmp(false, uncert, "standardError")) {
     return unStandardError;
   }
-  if (CaselessStrCmp(uncert, "variance")) {
+  if (CaselessStrCmp(false, uncert, "variance")) {
     return unVariance;
   }
-  if (CaselessStrCmp(uncert, "confidenceInterval")) {
+  if (CaselessStrCmp(false, uncert, "confidenceInterval")) {
     return unConfidenceInterval;
   }
-  if (CaselessStrCmp(uncert, "credibleInterval")) {
+  if (CaselessStrCmp(false, uncert, "credibleInterval")) {
     return unCredibleInterval;
   }
-  if (CaselessStrCmp(uncert, "interquartileRange")) {
+  if (CaselessStrCmp(false, uncert, "interquartileRange")) {
     return unInterquartileRange;
   }
-  if (CaselessStrCmp(uncert, "range")) {
+  if (CaselessStrCmp(false, uncert, "range")) {
     return unRange;
   }
-  if (CaselessStrCmp(uncert, "distribution")) {
+  if (CaselessStrCmp(false, uncert, "distribution")) {
     return unDistribution;
   }
-  if (CaselessStrCmp(uncert, "externalParameter")) {
+  if (CaselessStrCmp(false, uncert, "externalParameter")) {
     return unExternalParameter;
   }
   return unUnknown;

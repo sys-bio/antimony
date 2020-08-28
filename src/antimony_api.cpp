@@ -301,11 +301,11 @@ LIB_EXTERN long loadAntimonyFile(const char* filename)
 }
 
 #ifndef NSBML
-void LoadSBML(const SBMLDocument* doc)
+void LoadSBML(SBMLDocument* doc)
 {
 #ifdef USE_COMP
   string mainsbmlname = getNameFromSBMLObject(doc->getModel(), "doc");
-  const CompSBMLDocumentPlugin* compdoc = static_cast<const CompSBMLDocumentPlugin*>(doc->getPlugin("comp"));
+  CompSBMLDocumentPlugin* compdoc = static_cast<CompSBMLDocumentPlugin*>(doc->getPlugin("comp"));
   if (compdoc!=NULL) {
     int numext = compdoc->getNumExternalModelDefinitions();
     for (int emd=0; emd<numext; emd++) {
@@ -326,7 +326,7 @@ void LoadSBML(const SBMLDocument* doc)
     }
     int nummodels = compdoc->getNumModelDefinitions();
     for (int md=0; md<nummodels; md++) {
-      const ModelDefinition* modeldef = compdoc->getModelDefinition(md);
+      ModelDefinition* modeldef = compdoc->getModelDefinition(md);
       g_registry.LoadSubmodelsFrom(modeldef);
       string sbmlname = getNameFromSBMLObject(modeldef, "model");
       if (g_registry.GetModule(sbmlname)==NULL) {

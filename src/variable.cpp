@@ -484,7 +484,7 @@ Variable* Variable::GetSubVariable(const string* name)
     Variable* var = m_valModule[0].GetSubVariable(name);
     if (var != NULL) return var;
   }
-  if (name && CaselessStrCmp(*name, "sboTerm")) {
+  if (name && CaselessStrCmp(true, *name, "sboTerm")) {
     if (!m_sboTermWrapper)
       m_sboTermWrapper = new SboTermWrapper(this);
     return m_sboTermWrapper;

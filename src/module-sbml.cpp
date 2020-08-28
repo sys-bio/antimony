@@ -763,11 +763,13 @@ void SynchronizeLocalAndGlobal(const vector<string>& paramname, const vector<str
   targetvar->Synchronize(localvar, NULL);
 }
 
-void Module::LoadSBML(const Model* sbml)
+void Module::LoadSBML(Model* sbml)
 {
   if (sbml == NULL) {
     return;
   }
+  //Some SBML-OK names are not OK in Antimony
+  FixNames(sbml);
   if(sbml->isSetName())
     SetDisplayName(sbml->getName());
   PopulateCVTerms((SBase*)sbml);
@@ -1573,8 +1575,6 @@ void Module::LoadSBML(const Model* sbml)
 
   //Finally, fix the fact that 'time' used to be OK in functions (l2v1), but is no longer (l2v2).
   g_registry.FixTimeInFunctions();
-  //And that some SBML-OK names are not OK in Antimony
-  FixNames();
 }
 
 const SBMLDocument* Module::GetSBML(bool comp)
@@ -2679,5 +2679,201 @@ bool Module::SynchronizeRates(Model* sbmlmod, const Variable* var, const vector<
   return ret;
 }
 #endif //USE_COMP
+
+void Module::FixNames(Model* model)
+{
+    const char* keywords[] = {
+    "DNA",
+    "at",
+    "compartment",
+    "const",
+    "delete",
+    "end",
+    "event",
+    "ext",
+    "formula",
+    "function",
+    "gene",
+    "has",
+    "import",
+    "in",
+    "is",
+    "model",
+    "module",
+    "operator",
+    "reaction",
+    "species",
+    "var"
+    };
+
+    const char* functions[] = {
+    "abs"
+    , "acos"
+    , "arccos"
+    , "acosh"
+    , "arccosh"
+    , "acot"
+    , "arccot"
+    , "acoth"
+    , "arccoth"
+    , "acsc"
+    , "arccsc"
+    , "acsch"
+    , "arccsch"
+    , "asec"
+    , "arcsec"
+    , "asech"
+    , "arcsech"
+    , "asin"
+    , "arcsin"
+    , "arcsinh"
+    , "atan"
+    , "arctan"
+    , "atanh"
+    , "arctanh"
+    , "ceil"
+    , "ceiling"
+    , "cos"
+    , "cosh"
+    , "cot"
+    , "coth"
+    , "csc"
+    , "csch"
+    , "delay"
+    , "exp"
+    , "factorial"
+    , "floor"
+    , "log"
+    , "ln"
+    , "log10"
+    , "piecewise"
+    , "power"
+    , "pow"
+    , "sqr"
+    , "sqrt"
+    , "root"
+    , "sec"
+    , "sech"
+    , "sin"
+    , "sinh"
+    , "tan"
+    , "tanh"
+    , "and"
+    , "not"
+    , "or"
+    , "xor"
+    , "eq"
+    , "equals"
+    , "geq"
+    , "gt"
+    , "leq"
+    , "lt"
+    , "neq"
+    , "divide"
+    , "minus"
+    , "plus"
+    , "times"
+
+    , "rateOf"
+    , "quotient"
+    , "max"
+    , "min"
+    , "rem"
+    , "implies"
+
+    , "normal"
+    , "truncatedNormal"
+    , "uniform"
+    , "exponential"
+    , "truncatedExponential"
+    , "gamma"
+    , "truncatedGamma"
+    , "poisson"
+    , "truncatedPoisson"
+    , "bernoulli"
+    , "binomial"
+    , "cauchy"
+    , "chisquare"
+    , "laplace"
+    , "lognormal"
+    , "rayleigh"
+    };
+
+    const char* constants[] = {
+    "true"
+    , "True"
+    , "TRUE"
+    , "false"
+    , "False"
+    , "FALSE"
+    , "pi"
+    , "exponentiale"
+    , "exponentialE"
+    , "avogadro"
+    , "time"
+    , "inf"
+    , "INF"
+    , "infinity"
+    , "NaN"
+    , "nan"
+    , "NAN"
+    , "notanumber"
+    };
+
+    //At some point, it would be nice to allow keywords that are functions as 
+    // variable names, and visa versa.  But today is not that day.
+    for (size_t kw = 0; kw < 21; kw++) {
+        FixConstants(keywords[kw], model);
+        FixFunctions(keywords[kw], model);
+    }
+
+    for (size_t fn = 0; fn < 88; fn++) {
+        FixConstants(functions[fn], model);
+        FixFunctions(functions[fn], model);
+    }
+
+    for (size_t c = 0; c < 18; c++) {
+        FixConstants(constants[c], model);
+        FixFunctions(constants[c], model);
+    }
+}
+
+void Module::FixConstants(const string& name, Model* model)
+{
+    SBase* obj = model->getElementBySId(name);
+    if (obj != NULL && obj->getTypeCode() != SBML_FUNCTION_DEFINITION) {
+        string newname = name + "_";
+        obj->setId(newname);
+        List* elements = model->getAllElements();
+        for (unsigned int el = 0; el < elements->getSize(); el++) {
+            SBase* element = static_cast<SBase*>(elements->get(el));
+            element->renameSIdRefs(name, newname);
+        }
+    }
+}
+
+void Module::FixFunctions(const string& name, Model* model)
+{
+    SBase* obj = model->getElementBySId(name);
+    if (obj != NULL && obj->getTypeCode() == SBML_FUNCTION_DEFINITION) {
+        string newname = name + "_";
+        obj->setId(newname);
+        model->renameSIdRefs(name, newname);
+        List* elements = model->getAllElements();
+        for (unsigned int el = 0; el < elements->getSize(); el++) {
+            SBase* element = static_cast<SBase*>(elements->get(el));
+            element->renameSIdRefs(name, newname);
+        }
+        for (unsigned int fd = 0; fd < model->getNumFunctionDefinitions(); fd++) {
+            ASTNode* astn = const_cast<ASTNode*>(model->getFunctionDefinition(fd)->getMath());
+            if (astn) {
+                astn->renameSIdRefs(name, newname);
+            }
+        }
+    }
+    else {
+
+    }
+}
 
 #endif //NSBML

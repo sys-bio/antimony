@@ -8,7 +8,7 @@
 #include "typex.h"
 
 using namespace std;
-extern bool CaselessStrCmp(const string& lhs, const string& rhs);
+extern bool CaselessStrCmp(bool caseless, const string& lhs, const string& rhs);
 
 #ifndef NSBML
 #include "sbmlx.h"
@@ -133,6 +133,16 @@ void matchTypesToNames(ASTNode_t* node)
     if (string(node->getName()) == "delay") {
       node->setType(AST_FUNCTION_DELAY);
     }
+    if (string(node->getName()) == "True" || string(node->getName()) == "TRUE") {
+        node->setType(AST_CONSTANT_TRUE);
+    }
+    if (string(node->getName()) == "False" || string(node->getName()) == "FALSE") {
+        node->setType(AST_CONSTANT_FALSE);
+    }
+    if (string(node->getName()) == "NAN" || string(node->getName()) == "nan") {
+        node->setType(AST_REAL);
+        node->setValue(numeric_limits<double>::quiet_NaN());
+    }
   }
   for (unsigned int c = 0; c < node->getNumChildren() ; c++) {
     matchTypesToNames(node->getChild(c));
@@ -238,6 +248,7 @@ ASTNode* parseStringToASTNode(const string& formula)
   l3ps.setParseCollapseMinus(true);
   l3ps.setParseLog(L3P_PARSE_LOG_AS_LN);
   l3ps.setParsePackageMath(EM_ARRAYS, true);
+  l3ps.setComparisonCaseSensitivity(L3P_COMPARE_BUILTINS_CASE_SENSITIVE);
   ASTNode* rootnode = SBML_parseL3FormulaWithSettings(newform.c_str(), &l3ps);
   if (rootnode == NULL) {
     char* l3err = SBML_getLastParseL3Error();
@@ -245,11 +256,7 @@ ASTNode* parseStringToASTNode(const string& formula)
     free(l3err);
     return NULL;
   }
-  if (formula.find("time") != string::npos ||
-      formula.find("avogadro") != string::npos ||
-      formula.find("delay") != string::npos) {
-    matchTypesToNames(rootnode);
-  }
+  matchTypesToNames(rootnode);
   expandGlobalFunctionIDs(rootnode);
   if (g_registry.GetBareNumbersAreDimensionless()) {
     makeUnitlessNumbersDimensionless(rootnode);
@@ -476,15 +483,22 @@ bool FixName(string& name)
   , "plus"
   , "times"
 
-  , "true"  
-  , "false"  
-  , "pi"  
+  , "true"
+  , "false"
+  , "True"
+  , "False"
+  , "TRUE"
+  , "FALSE"
+  , "pi"
   , "exponentiale" 
   , "avogadro"  
   , "time"
   , "inf"  
-  , "infinity"  
-  , "NaN"  
+  , "INF"
+  , "infinity"
+  , "NaN"
+  , "NAN"
+  , "nan"
   , "notanumber"
 
   , "rateOf"
@@ -511,8 +525,8 @@ bool FixName(string& name)
   , "lognormal"
   , "rayleigh"
   };
-  for (size_t kw=0; kw<119; kw++) {
-    if (CaselessStrCmp(name, keywords[kw])) {
+  for (size_t kw=0; kw<126; kw++) {
+    if (CaselessStrCmp(false, name, keywords[kw])) {
       name += "_";
       return true;
     }
