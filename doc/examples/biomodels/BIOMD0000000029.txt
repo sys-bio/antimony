@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *model_0000001()
 
   // Compartments and Species:
@@ -7,13 +7,13 @@ model *model_0000001()
   species $MKP3 in cell;
 
   // Reactions:
-  v1: M => MpY; cell*((kcat1*MEK*M)/Km1/(1 + M*((Km1 + Km3)/(Km1*Km3)) + MpY/Km2 + MpT/Km4));
-  v2: MpY => Mpp; cell*((kcat2*MEK*MpY)/Km2/(1 + M*((Km1 + Km3)/(Km1*Km3)) + MpY/Km2 + MpT/Km4));
-  v3: M => MpT; cell*((kcat3*MEK*M)/Km3/(1 + M*((Km1 + Km3)/(Km1*Km3)) + MpY/Km2 + MpT/Km4));
-  v4: MpT => Mpp; cell*((kcat4*MEK*MpT)/Km4/(1 + M*((Km1 + Km3)/(Km1*Km3)) + MpY/Km2 + MpT/Km4));
-  v5: Mpp => MpT; cell*((kcat5*MKP3*Mpp)/Km5/(1 + Mpp/Km5 + MpT/Km6 + MpY/Km7 + M/Km8));
-  v6: MpT => M; cell*((kcat6*MKP3*MpT)/Km6/(1 + Mpp/Km5 + MpT/Km6 + MpY/Km7 + M/Km8));
-  v7: MpY => M; cell*((kcat7*MKP3*MpY)/Km7/(1 + Mpp/Km5 + MpT/Km6 + MpY/Km7 + M/Km8));
+  v1: M => MpY; cell*(kcat1*MEK*M/Km1/(1 + M*((Km1 + Km3)/(Km1*Km3)) + MpY/Km2 + MpT/Km4));
+  v2: MpY => Mpp; cell*(kcat2*MEK*MpY/Km2/(1 + M*((Km1 + Km3)/(Km1*Km3)) + MpY/Km2 + MpT/Km4));
+  v3: M => MpT; cell*(kcat3*MEK*M/Km3/(1 + M*((Km1 + Km3)/(Km1*Km3)) + MpY/Km2 + MpT/Km4));
+  v4: MpT => Mpp; cell*(kcat4*MEK*MpT/Km4/(1 + M*((Km1 + Km3)/(Km1*Km3)) + MpY/Km2 + MpT/Km4));
+  v5: Mpp => MpT; cell*(kcat5*MKP3*Mpp/Km5/(1 + Mpp/Km5 + MpT/Km6 + MpY/Km7 + M/Km8));
+  v6: MpT => M; cell*(kcat6*MKP3*MpT/Km6/(1 + Mpp/Km5 + MpT/Km6 + MpY/Km7 + M/Km8));
+  v7: MpY => M; cell*(kcat7*MKP3*MpY/Km7/(1 + Mpp/Km5 + MpT/Km6 + MpY/Km7 + M/Km8));
 
   // Species initializations:
   M = 800;
@@ -63,4 +63,50 @@ model *model_0000001()
   v5 is "dephosphorylation of ERK-PP on Tyr";
   v6 is "dephosphorylation of ERK-PT";
   v7 is "dephosphorylation of ERK-PY";
+
+  // CV terms:
+  cell identity "http://identifiers.org/obo.go/GO:0005623"
+  M hypernym "http://identifiers.org/uniprot/P26696"
+  MpY hypernym "http://identifiers.org/uniprot/P26696"
+  MpT hypernym "http://identifiers.org/uniprot/P26696"
+  Mpp hypernym "http://identifiers.org/uniprot/P26696"
+  MEK identity "http://identifiers.org/uniprot/Q05116"
+  MKP3 identity "http://identifiers.org/uniprot/Q90W58"
+  v1 hypernym "http://identifiers.org/ec-code/2.7.12.2",
+              "http://identifiers.org/obo.go/GO:0018108",
+              "http://identifiers.org/obo.go/GO:0004708"
+  v1 homolog "http://identifiers.org/reactome/REACT_2247",
+             "http://identifiers.org/reactome/REACT_136"
+  v2 homolog "http://identifiers.org/reactome/REACT_2247",
+             "http://identifiers.org/reactome/REACT_136"
+  v2 hypernym "http://identifiers.org/ec-code/2.7.12.2",
+              "http://identifiers.org/obo.go/GO:0018107",
+              "http://identifiers.org/obo.go/GO:0000187",
+              "http://identifiers.org/obo.go/GO:0004708"
+  v3 hypernym "http://identifiers.org/ec-code/2.7.12.2",
+              "http://identifiers.org/obo.go/GO:0018107",
+              "http://identifiers.org/obo.go/GO:0004708"
+  v3 homolog "http://identifiers.org/reactome/REACT_2247",
+             "http://identifiers.org/reactome/REACT_136"
+  v4 homolog "http://identifiers.org/reactome/REACT_2247",
+             "http://identifiers.org/reactome/REACT_136"
+  v4 hypernym "http://identifiers.org/ec-code/2.7.12.2",
+              "http://identifiers.org/obo.go/GO:0004708",
+              "http://identifiers.org/obo.go/GO:0000187",
+              "http://identifiers.org/obo.go/GO:0018108"
+  v5 hypernym "http://identifiers.org/ec-code/3.1.3.16",
+              "http://identifiers.org/obo.go/GO:0000188",
+              "http://identifiers.org/obo.go/GO:0006470"
+  v6 hypernym "http://identifiers.org/ec-code/3.1.3.16",
+              "http://identifiers.org/obo.go/GO:0006470"
+  v7 hypernym "http://identifiers.org/ec-code/3.1.3.16",
+              "http://identifiers.org/obo.go/GO:0006470"
 end
+
+model_0000001 is "Markevich2004_MAPK_phosphoRandomMM"
+
+model_0000001 model_entity_is "http://identifiers.org/biomodels.db/MODEL6618620128"
+model_0000001 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000029"
+model_0000001 description "http://identifiers.org/pubmed/14744999"
+model_0000001 hypernym "http://identifiers.org/obo.go/GO:0000165"
+model_0000001 taxon "http://identifiers.org/taxonomy/8355"

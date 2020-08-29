@@ -1,55 +1,81 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 function function_13(v)
   v;
 end
+
+function_13 is "Constant flux (irreversible)"
 
 function function_1(Vf, r1, A1, n1, A2, n2, A3, n3)
   Vf*r1*(n1*A1 + n2*A2 + n3*A3);
 end
 
+function_1 is "1 reactant, 3 activators, KVW"
+
 function function_3(substrate, a1, k1)
   substrate*a1*k1;
 end
+
+function_3 is "1sub 1 activator 1 parameter"
 
 function function_8(substrate, k1, a1, k2, a2)
   substrate*(k1*a1 + k2*a2);
 end
 
+function_8 is "1sub 2 activators 2 parameters"
+
 function function_10(c, k, A, n, kA, B, kB, C, kC)
   c + k*(A^n/(A^n + kA^n) + B^n/(B^n + kB^n) + C^n/(C^n + kC^n));
 end
+
+function_10 is "Constant Flux, 3 activators"
 
 function function_7(k, A, n, kA, c)
   c + k*(A^n/(A^n + kA^n));
 end
 
+function_7 is "Constant Flux, 1 activator"
+
 function function_2(k, substrate, A, n, kA, B, kB, C, kC, D, kD, E, kE)
   k*substrate*(A^n/(A^n + kA^n) + B^n/(B^n + kB^n) + C^n/(C^n + kC^n) + D^n/(D^n + kD^n) + E^n/(E^n + kE^n));
 end
+
+function_2 is "1 sub 5 activators"
 
 function function_4(k, substrate, A, n, kA, B, kB, C, kC)
   k*substrate*(A^n/(A^n + kA^n) + B^n/(B^n + kB^n) + C^n/(C^n + kC^n));
 end
 
+function_4 is "1 sub 3 activators"
+
 function function_11(k, substrate, A, n, kA, B, kB)
   k*substrate*(A^n/(A^n + kA^n) + B^n/(B^n + kB^n));
 end
 
+function_11 is "1 sub 2 activators"
+
 function function_5(k, sub, c)
-  (k*sub)/(c + sub);
+  k*sub/(c + sub);
 end
+
+function_5 is "bact repo"
 
 function function_12(V, s, k, P)
   V*(s - k*P);
 end
 
+function_12 is "iDC_Ep replenishment"
+
 function function_9(substrate, k, k1, a1, k2, a2)
   substrate*k*(k1*a1 + k2*a2);
 end
 
+function_9 is "1 sub  2 act 2 params 1 const"
+
 function function_6(substrate, k1, a1, k2, a2, k3, a3)
   substrate*(k1*a1 + k2*a2 + k3*a3);
 end
+
+function_6 is "1 sub 3 activators 3 parameters"
 
 
 model *MODEL1307130000()
@@ -75,7 +101,7 @@ model *MODEL1307130000()
   species_9 := 0.01*(s31 + s30 + s33 + (s28 + s29)/parameter_70);
   parameter_2 := 1 - parameter_1;
   parameter_5 := 1 - ModelValue_3;
-  parameter_11 := 1.000000e-006 - ModelValue_10;
+  parameter_11 := 1e-6 - ModelValue_10;
   parameter_15 := parameter_13*0.4*parameter_14;
   parameter_16 := parameter_13*parameter_14*0.6;
   parameter_17 := parameter_49*(1/(1 + parameter_51*s33));
@@ -119,7 +145,7 @@ model *MODEL1307130000()
   parameter_100 := parameter_48*parameter_98;
   parameter_84 := parameter_18*(parameter_22*(s19 + s9)*s17 + s17*species_18*parameter_99);
   parameter_99 := parameter_48*parameter_97;
-  parameter_96 := 1.000000e-006 - parameter_95;
+  parameter_96 := 1e-6 - parameter_95;
   parameter_98 := 1 - parameter_97;
 
   // Reactions:
@@ -155,9 +181,9 @@ model *MODEL1307130000()
   re49: s15 => s29; parameter_16*s15;
   reaction_1: s3 => s2; c4*parameter_21*s3;
   reaction_2: species_5 => s2; c4*parameter_21*species_5;
-  reaction_3: s6 => 2s6; c2*function_5(parameter_20, s6, parameter_93);
+  reaction_3: s6 => 2 s6; c2*function_5(parameter_20, s6, parameter_93);
   reaction_4: s6 => ; c2*parameter_19*s6;
-  reaction_5: s1 => 2s1; c1*function_5(parameter_20, s1, parameter_93);
+  reaction_5: s1 => 2 s1; c1*function_5(parameter_20, s1, parameter_93);
   reaction_6: s1 => ; c1*parameter_19*s1;
   reaction_10: s17 => s13; c2*function_6(s17, parameter_23, s19, parameter_23, s9, parameter_100, species_18);
   reaction_11: s17 => s16; c2*function_6(s17, parameter_22, s19, parameter_22, s9, parameter_99, species_18);
@@ -200,7 +226,7 @@ model *MODEL1307130000()
   reaction_45: s28 => species_12; reaction_45_k1*s28;
   reaction_46: species_12 => species_13; c1*reaction_46_k1*species_12;
   reaction_47: species_13 => ; c1*reaction_47_k1*species_13;
-  reaction_48: species_13 => 2species_13; c1*reaction_48_k1*species_13;
+  reaction_48: species_13 => 2 species_13; c1*reaction_48_k1*species_13;
   reaction_49: species_12 => ; c1*reaction_49_k1*species_12;
   reaction_50: s28 => species_14; reaction_50_k1*s28;
   reaction_51: species_14 => species_15; c1*reaction_51_k1*species_14;
@@ -260,18 +286,18 @@ model *MODEL1307130000()
   c3 = 1;
 
   // Variable initializations:
-  parameter_6 = 1e-006;
+  parameter_6 = 1e-06;
   parameter_70 = 10;
   parameter_1 = 0.5;
   parameter_3 = 1;
   parameter_4 = 0.3;
   ModelValue_3 = parameter_4;
-  parameter_7 = 1e-006;
+  parameter_7 = 1e-06;
   parameter_8 = 0.5;
   parameter_9 = 1;
-  parameter_10 = 1e-006;
+  parameter_10 = 1e-06;
   ModelValue_10 = parameter_12;
-  parameter_12 = 3e-007;
+  parameter_12 = 3e-07;
   parameter_13 = 0.143;
   parameter_14 = 0.1;
   parameter_49 = 512;
@@ -281,8 +307,8 @@ model *MODEL1307130000()
   parameter_19 = 1;
   parameter_20 = 2;
   parameter_21 = 1;
-  parameter_48 = 1e-006;
-  parameter_53 = 1e-006;
+  parameter_48 = 1e-06;
+  parameter_53 = 1e-06;
   parameter_31 = 1000;
   parameter_32 = 0.0001;
   parameter_33 = 100;
@@ -293,10 +319,10 @@ model *MODEL1307130000()
   parameter_39 = 1;
   parameter_40 = 1000;
   parameter_41 = 1000;
-  parameter_42 = 1e-006;
+  parameter_42 = 1e-06;
   parameter_44 = 1;
   parameter_45 = 1;
-  parameter_47 = 1e-006;
+  parameter_47 = 1e-06;
   parameter_107 = 0.62677;
   parameter_61 = 1;
   parameter_62 = 0.0218776162394955;
@@ -317,7 +343,7 @@ model *MODEL1307130000()
   parameter_92 = 100000;
   parameter_93 = 0.001;
   parameter_94 = 0.0714;
-  parameter_95 = 3e-007;
+  parameter_95 = 3e-07;
   parameter_97 = 0.3;
   parameter_105 = 0;
   parameter_106 = 1;
@@ -614,4 +640,81 @@ model *MODEL1307130000()
   reaction_56 is "nTreg_LP deg";
   reaction_57 is "nTreg deg";
   reaction_58 is "Th17 to Treg";
+
+  // SBO terms:
+  c1.sboTerm = 290
+  c2.sboTerm = 290
+  c4.sboTerm = 290
+  c3.sboTerm = 290
+
+  // CV terms:
+  c1 hypernym "http://identifiers.org/fma/FMA:62950"
+  c2 hypernym "http://identifiers.org/bto/BTO:0002330"
+  c4 hypernym "http://identifiers.org/bto/BTO:0000416"
+  c3 identity "http://identifiers.org/fma/FMA:12796"
+  s1 identity "http://identifiers.org/taxonomy/210"
+  species_7 hypernym "http://identifiers.org/efo/0000428"
+  species_10 hypernym "http://identifiers.org/chebi/CHEBI:73623",
+                      "http://identifiers.org/taxonomy/2"
+  species_11 hypernym "http://identifiers.org/efo/0000428"
+  species_12 hypernym "http://identifiers.org/cl/CL:0000545"
+  species_13 hypernym "http://identifiers.org/cl/CL:0000545"
+  species_13 container "http://identifiers.org/bto/BTO:0002330"
+  species_14 hypernym "http://identifiers.org/cl/CL:0000899"
+  species_15 container "http://identifiers.org/bto/BTO:0002330"
+  species_15 hypernym "http://identifiers.org/cl/CL:0000899"
+  species_16 hypernym "http://identifiers.org/cl/CL:0000792"
+  species_17 hypernym "http://identifiers.org/cl/CL:0000792"
+  species_17 container "http://identifiers.org/bto/BTO:0002330"
+  s9 hypernym "http://identifiers.org/cl/CL:0000451"
+  s13 hypernym "http://identifiers.org/cl/CL:0000545"
+  s15 hypernym "http://identifiers.org/cl/CL:0000792"
+  s15 property "http://identifiers.org/pato/PATO:0002355"
+  s16 hypernym "http://identifiers.org/cl/CL:0000899"
+  s19 hypernym "http://identifiers.org/cl/CL:0000863"
+  s21 hypernym "http://identifiers.org/cl/CL:0000890"
+  s22 hypernym "http://identifiers.org/cl/CL:0000235",
+               "http://identifiers.org/pato/PATO:0002100"
+  s25 hypernym "http://identifiers.org/cl/CL:0000451"
+  s17 hypernym "http://identifiers.org/fma/FMA:85358"
+  s6 identity "http://identifiers.org/taxonomy/210"
+  species_1 hypernym "http://identifiers.org/cl/CL:0000451"
+  species_1 property "http://identifiers.org/pato/PATO:0002355"
+  species_2 hypernym "http://identifiers.org/cl/CL:0000451"
+  s4 hypernym "http://identifiers.org/cl/CL:0000451"
+  s4 property "http://identifiers.org/pato/PATO:0002355"
+  species_3 hypernym "http://identifiers.org/cl/CL:0000235"
+  species_4 hypernym "http://identifiers.org/fma/FMA:85358"
+  species_18 hypernym "http://identifiers.org/chebi/CHEBI:73623",
+                      "http://identifiers.org/taxonomy/2",
+                      "http://identifiers.org/cl/CL:0000451"
+  species_19 hypernym "http://identifiers.org/taxonomy/562"
+  s2 hypernym "http://identifiers.org/cl/CL:0000066"
+  s3 hypernym "http://identifiers.org/cl/CL:0000066"
+  species_5 hypernym "http://identifiers.org/cl/CL:0000066"
+  species_5 property "http://identifiers.org/pato/PATO:0001167"
+  s26 hypernym "http://identifiers.org/cl/CL:0000451"
+  s27 hypernym "http://identifiers.org/cl/CL:0000451"
+  s28 hypernym "http://identifiers.org/fma/FMA:85358"
+  s29 hypernym "http://identifiers.org/fma/FMA:85358"
+  s30 hypernym "http://identifiers.org/cl/CL:0000899"
+  s31 hypernym "http://identifiers.org/cl/CL:0000545"
+  s33 property "http://identifiers.org/pato/PATO:0002355"
+  species_6 hypernym "http://identifiers.org/cl/CL:0000451"
+  species_8 hypernym "http://identifiers.org/fma/FMA:85358"
+  species_9 hypernym "http://identifiers.org/fma/FMA:85358"
+  species_20 part "http://identifiers.org/chebi/CHEBI:73623",
+                  "http://identifiers.org/taxonomy/2",
+                  "http://identifiers.org/cl/CL:0000451"
 end
+
+MODEL1307130000 is "Carbo2013 - Mucosal Immune Response during H.pylori Infection"
+
+MODEL1307130000 model_entity_is "http://identifiers.org/biomodels.db/MODEL1307130000"
+MODEL1307130000 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000480"
+MODEL1307130000 description "http://identifiers.org/doi/10.1371/journal.pone.0073365"
+MODEL1307130000 hypernym "http://identifiers.org/go/GO:0002456",
+                         "http://identifiers.org/go/GO:0050829"
+MODEL1307130000 taxon "http://identifiers.org/taxonomy/10090"
+MODEL1307130000 property "http://identifiers.org/mamo/MAMO_0000046"
+MODEL1307130000 hypernym "http://identifiers.org/doid/DOID:104"

@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Model_1()
 
   // Compartments and Species:
@@ -6,11 +6,11 @@ model *Model_1()
   species $ARGex in extracellular, ORN in cytosol, ARGin in cytosol;
 
   // Reactions:
-  Arginase: ARGin => ORN; cytosol*((Arginase_Vmaxarg*ARGin)/(Arginase_Kmarg*(1 + ORN/Arginase_Kioarg) + ARGin));
-  Arginine_transport: $ARGex => ARGin; extracellular*(ARGex/(Arginine_transport_Kmhat + ARGex)*(Arginine_transport_Vmaxhat/(1 + ORN/Arginine_transport_Kiornhat + ARGin/Arginine_transport_Kmhat)) + ARGex/(Arginine_transport_Kmlat + ARGex)*(Arginine_transport_Vmaxlat/(1 + ORN/Arginine_transport_Kiornhat + ARGin/Arginine_transport_Kmlat)));
-  Ornithine_efflux: ORN => ; cytosol*(Ornithine_efflux_Vmaxefflhat/(1 + ARGex/Ornithine_efflux_Kmhat)*(ORN/(Ornithine_efflux_Kiornhat*(1 + ARGin/Ornithine_efflux_Kmhat) + ORN)) + Ornithine_efflux_Vmaxeffllat/(1 + ARGex/Ornithine_efflux_Kmlat)*(ORN/(Ornithine_efflux_Kmeffllat*(1 + ARGin/Ornithine_efflux_Kmlat) + ORN)));
-  NOS: ARGin => ; cytosol*((NOS_Vmaxnos1*ARGin)/(NOS_Kmnos1 + ARGin));
-  ODC: ORN => ; cytosol*((ODC_Vmaxodc*ORN)/(ODC_Kmodc + ORN));
+  Arginase: ARGin => ORN; cytosol*(Arginase_Vmaxarg*ARGin/(Arginase_Kmarg*(1 + ORN/Arginase_Kioarg) + ARGin));
+  Arginine_transport: $ARGex => ARGin; extracellular*((ARGex/(Arginine_transport_Kmhat + ARGex))*(Arginine_transport_Vmaxhat/(1 + ORN/Arginine_transport_Kiornhat + ARGin/Arginine_transport_Kmhat)) + (ARGex/(Arginine_transport_Kmlat + ARGex))*(Arginine_transport_Vmaxlat/(1 + ORN/Arginine_transport_Kiornhat + ARGin/Arginine_transport_Kmlat)));
+  Ornithine_efflux: ORN => ; cytosol*((Ornithine_efflux_Vmaxefflhat/(1 + ARGex/Ornithine_efflux_Kmhat))*(ORN/(Ornithine_efflux_Kiornhat*(1 + ARGin/Ornithine_efflux_Kmhat) + ORN)) + (Ornithine_efflux_Vmaxeffllat/(1 + ARGex/Ornithine_efflux_Kmlat))*(ORN/(Ornithine_efflux_Kmeffllat*(1 + ARGin/Ornithine_efflux_Kmlat) + ORN)));
+  NOS: ARGin => ; cytosol*(NOS_Vmaxnos1*ARGin/(NOS_Kmnos1 + ARGin));
+  ODC: ORN => ; cytosol*(ODC_Vmaxodc*ORN/(ODC_Kmodc + ORN));
 
   // Species initializations:
   ARGex = 330;
@@ -76,4 +76,68 @@ model *Model_1()
   Ornithine_efflux is "Ornithine efflux";
   NOS is "Nitric oxide synthase";
   ODC is "Ornithine decarboxylase";
+
+  // SBO terms:
+  extracellular.sboTerm = 290
+  cytosol.sboTerm = 290
+  ARGex.sboTerm = 247
+  ORN.sboTerm = 247
+  ARGin.sboTerm = 247
+  Arginase.sboTerm = 211
+  Arginase_Vmaxarg.sboTerm = 324
+  Arginase_Kmarg.sboTerm = 322
+  Arginase_Kioarg.sboTerm = 261
+  Arginine_transport.sboTerm = 185
+  Arginine_transport_Kmhat.sboTerm = 322
+  Arginine_transport_Vmaxhat.sboTerm = 324
+  Arginine_transport_Kmlat.sboTerm = 322
+  Arginine_transport_Vmaxlat.sboTerm = 324
+  Arginine_transport_Kiornhat.sboTerm = 261
+  Ornithine_efflux.sboTerm = 185
+  Ornithine_efflux_Kmhat.sboTerm = 261
+  Ornithine_efflux_Kmlat.sboTerm = 261
+  Ornithine_efflux_Vmaxefflhat.sboTerm = 324
+  Ornithine_efflux_Vmaxeffllat.sboTerm = 324
+  Ornithine_efflux_Kmeffllat.sboTerm = 322
+  Ornithine_efflux_Kiornhat.sboTerm = 261
+  NOS.sboTerm = 211
+  NOS_Vmaxnos1.sboTerm = 324
+  ODC.sboTerm = 211
+  ODC_Vmaxodc.sboTerm = 324
+  ODC_Kmodc.sboTerm = 322
+
+  // CV terms:
+  extracellular identity "http://identifiers.org/go/GO:0005615"
+  cytosol identity "http://identifiers.org/go/GO:0005829"
+  ARGex identity "http://identifiers.org/chebi/CHEBI:16467",
+                 "http://identifiers.org/kegg.compound/C00062"
+  ORN identity "http://identifiers.org/chebi/CHEBI:15729",
+               "http://identifiers.org/kegg.compound/C00077"
+  ARGin identity "http://identifiers.org/chebi/CHEBI:16467",
+                 "http://identifiers.org/kegg.compound/C00062"
+  Arginase hypernym "http://identifiers.org/ec-code/3.5.3.1",
+                    "http://identifiers.org/kegg.reaction/R00551",
+                    "http://identifiers.org/reactome/REACT_394.2",
+                    "http://identifiers.org/go/GO:0004053"
+  Arginine_transport identity "http://identifiers.org/go/GO:0015326"
+  Ornithine_efflux identity "http://identifiers.org/go/GO:0015326"
+  NOS hypernym "http://identifiers.org/ec-code/1.14.13.39",
+               "http://identifiers.org/kegg.reaction/R00557",
+               "http://identifiers.org/reactome/REACT_12443.1",
+               "http://identifiers.org/go/GO:0004517"
+  ODC hypernym "http://identifiers.org/ec-code/4.1.1.17",
+               "http://identifiers.org/kegg.reaction/R00670",
+               "http://identifiers.org/reactome/REACT_1211.3",
+               "http://identifiers.org/go/GO:0004586"
 end
+
+Model_1 is "Montañez2008_Arginine_catabolism"
+
+Model_1 model_entity_is "http://identifiers.org/biomodels.db/MODEL7416883636"
+Model_1 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000191"
+Model_1 description "http://identifiers.org/pubmed/17520329"
+Model_1 taxon "http://identifiers.org/taxonomy/40674"
+Model_1 parthood "http://identifiers.org/kegg.pathway/map00330",
+                 "http://identifiers.org/go/GO:0006527"
+Model_1 version "http://identifiers.org/go/GO:0006591",
+                "http://identifiers.org/go/GO:0006809"

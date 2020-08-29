@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Model_1()
 
   // Compartments and Species:
@@ -15,16 +15,16 @@ model *Model_1()
   Reaction_6: G_GTP => G_GDP; cell*Reaction_6_k6*G_GTP;
 
   // Species initializations:
-  D = 3.1e-005;
+  D = 3.1e-05;
   DR = 0;
   DRG_GDP = 0;
-  G_GDP = 1e-006;
+  G_GDP = 1e-06;
   DRG = 0;
   GDP = 0;
   DRG_GTP = 0;
-  GTP = 1e-005;
+  GTP = 1e-05;
   G_GTP = 0;
-  R = 1e-010;
+  R = 1e-10;
 
   // Compartment initializations:
   cell = 1;
@@ -51,4 +51,73 @@ model *Model_1()
   Reaction_4 is "GTP binding with DRG";
   Reaction_5 is "G protein activation";
   Reaction_6 is "Hydrolysis of GTP to GDP";
+
+  // CV terms:
+  cell hypernym "http://identifiers.org/go/GO:0005623"
+  D identity "http://identifiers.org/chebi/CHEBI:35569"
+  DR part "http://identifiers.org/chebi/CHEBI:35569",
+          "http://identifiers.org/uniprot/P08913"
+  DR part "http://identifiers.org/chebi/CHEBI:35569",
+          "http://identifiers.org/uniprot/P18089"
+  DR part "http://identifiers.org/chebi/CHEBI:35569",
+          "http://identifiers.org/uniprot/P18825"
+  DRG_GDP part "http://identifiers.org/chebi/CHEBI:35569",
+               "http://identifiers.org/chebi/CHEBI:17552",
+               "http://identifiers.org/uniprot/P08913",
+               "http://identifiers.org/go/GO:0005834"
+  DRG_GDP part "http://identifiers.org/chebi/CHEBI:35569",
+               "http://identifiers.org/chebi/CHEBI:17552",
+               "http://identifiers.org/uniprot/P18089",
+               "http://identifiers.org/go/GO:0005834"
+  DRG_GDP part "http://identifiers.org/chebi/CHEBI:35569",
+               "http://identifiers.org/chebi/CHEBI:17552",
+               "http://identifiers.org/uniprot/P18825",
+               "http://identifiers.org/go/GO:0005834"
+  G_GDP part "http://identifiers.org/chebi/CHEBI:17552",
+             "http://identifiers.org/go/GO:0005834"
+  DRG part "http://identifiers.org/chebi/CHEBI:35569",
+           "http://identifiers.org/uniprot/P08913",
+           "http://identifiers.org/go/GO:0005834"
+  DRG part "http://identifiers.org/chebi/CHEBI:35569",
+           "http://identifiers.org/uniprot/P18089",
+           "http://identifiers.org/go/GO:0005834"
+  DRG part "http://identifiers.org/chebi/CHEBI:35569",
+           "http://identifiers.org/uniprot/P18825",
+           "http://identifiers.org/go/GO:0005834"
+  GDP identity "http://identifiers.org/chebi/CHEBI:17552"
+  DRG_GTP part "http://identifiers.org/chebi/CHEBI:35569",
+               "http://identifiers.org/chebi/CHEBI:15996",
+               "http://identifiers.org/uniprot/P08913",
+               "http://identifiers.org/go/GO:0005834"
+  DRG_GTP part "http://identifiers.org/chebi/CHEBI:35569",
+               "http://identifiers.org/chebi/CHEBI:15996",
+               "http://identifiers.org/uniprot/P18089",
+               "http://identifiers.org/go/GO:0005834"
+  DRG_GTP part "http://identifiers.org/chebi/CHEBI:35569",
+               "http://identifiers.org/chebi/CHEBI:15996",
+               "http://identifiers.org/uniprot/P18825",
+               "http://identifiers.org/go/GO:0005834"
+  GTP identity "http://identifiers.org/chebi/CHEBI:15996"
+  G_GTP part "http://identifiers.org/chebi/CHEBI:15996",
+             "http://identifiers.org/go/GO:0005834"
+  R version "http://identifiers.org/uniprot/P08913",
+            "http://identifiers.org/uniprot/P18089",
+            "http://identifiers.org/uniprot/P18825"
+  Reaction_1 hypernym "http://identifiers.org/go/GO:0031690"
+  Reaction_2 hypernym "http://identifiers.org/go/GO:0001664"
+  Reaction_3 hypernym "http://identifiers.org/go/GO:0043241"
+  Reaction_4 hypernym "http://identifiers.org/go/GO:0005525",
+                      "http://identifiers.org/go/GO:0032403"
+  Reaction_5 hypernym "http://identifiers.org/go/GO:0043241"
+  Reaction_6 hypernym "http://identifiers.org/go/GO:0003924"
 end
+
+Model_1 is "Thomsen1989_AdenylateCyclase"
+
+Model_1 model_entity_is "http://identifiers.org/biomodels.db/MODEL1173806337"
+Model_1 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000080"
+Model_1 description "http://identifiers.org/pubmed/2574993"
+Model_1 origin "http://identifiers.org/biomodels.db/BIOMD0000000082"
+Model_1 hypernym "http://identifiers.org/go/GO:0031684",
+                 "http://identifiers.org/go/GO:0007194"
+Model_1 taxon "http://identifiers.org/taxonomy/9606"

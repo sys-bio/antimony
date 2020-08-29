@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *goldbeter2007()
 
   // Compartments and Species:
@@ -16,7 +16,7 @@ model *goldbeter2007()
   RA_synthesis:  => RA; PSM*vs1;
   RA_decay: RA => ; PSM*kd5*RA;
   RA_deg_by_Cyp26: RA => ; PSM*kd1*RA*C;
-  M_C_transcription:  => M_C; PSM*(V0 + (Vsc*F^n)/(Ka^n + F^n));
+  M_C_transcription:  => M_C; PSM*(V0 + Vsc*F^n/(Ka^n + F^n));
   M_C_decay: M_C => ; PSM*kd3*M_C;
   C_translation:  => C; PSM*ks2*M_C;
   C_decay: C => ; PSM*kd2*C;
@@ -103,4 +103,87 @@ model *goldbeter2007()
   C is "CYP26";
   F is "FGF";
   M_F is "FGF_mRNA";
+
+  // SBO terms:
+  PSM.sboTerm = 290
+  RA.sboTerm = 247
+  M_C.sboTerm = 250
+  C.sboTerm = 252
+  F.sboTerm = 252
+  M_F.sboTerm = 250
+  M_0.sboTerm = 196
+  x.sboTerm = 466
+  L.sboTerm = 466
+  vs1.sboTerm = 46
+  ks1.sboTerm = 35
+  RALDH2_0.sboTerm = 505
+  kd5.sboTerm = 356
+  kd1.sboTerm = 36
+  V0.sboTerm = 485
+  Vsc.sboTerm = 186
+  n.sboTerm = 190
+  Ka.sboTerm = 363
+  kd3.sboTerm = 356
+  ks2.sboTerm = 35
+  kd2.sboTerm = 356
+  ks3.sboTerm = 35
+  Ki.sboTerm = 261
+  m.sboTerm = 190
+  kd4.sboTerm = 356
+  rho.sboTerm = 256
+  alpha2.sboTerm = 256
+  alpha1.sboTerm = 256
+  Kr2.sboTerm = 282
+  Kr1.sboTerm = 282
+  RA_synthesis.sboTerm = 205
+  RA_decay.sboTerm = 179
+  RA_deg_by_Cyp26.sboTerm = 179
+  M_C_transcription.sboTerm = 183
+  M_C_decay.sboTerm = 179
+  C_translation.sboTerm = 184
+  C_decay.sboTerm = 179
+  FGF_synthesis.sboTerm = 184
+  FGF_decay.sboTerm = 179
+
+  // CV terms:
+  PSM hypernym "http://identifiers.org/fma/FMA:69072"
+  RA identity "http://identifiers.org/chebi/CHEBI:26536"
+  M_C encodement "http://identifiers.org/interpro/IPR001128"
+  M_C hypernym "http://identifiers.org/kegg.compound/C02339"
+  M_C identity "http://identifiers.org/chebi/CHEBI:33699"
+  C property "http://identifiers.org/go/GO:0008401"
+  C homolog "http://identifiers.org/kegg.orthology/K12665",
+            "http://identifiers.org/kegg.orthology/K12664",
+            "http://identifiers.org/kegg.orthology/K07437"
+  C homolog "http://identifiers.org/uniprot/Q9NR63",
+            "http://identifiers.org/uniprot/Q6V0L0",
+            "http://identifiers.org/uniprot/O43174"
+  C hypernym "http://identifiers.org/interpro/IPR001128"
+  F property "http://identifiers.org/go/GO:0005111",
+             "http://identifiers.org/go/GO:0005105"
+  F property "http://identifiers.org/go/GO:0008083"
+  F homolog "http://identifiers.org/uniprot/P55075"
+  F hypernym "http://identifiers.org/interpro/IPR002348"
+  M_F hypernym "http://identifiers.org/chebi/CHEBI:33699"
+  RA_synthesis hypernym "http://identifiers.org/go/GO:0002138"
+  RA_decay hypernym "http://identifiers.org/go/GO:0034653"
+  RA_deg_by_Cyp26 hypernym "http://identifiers.org/go/GO:0034653"
+  RA_deg_by_Cyp26 hypernym "http://identifiers.org/reactome/REACT_13550.1",
+                           "http://identifiers.org/reactome/REACT_13572.1"
+  M_C_transcription hypernym "http://identifiers.org/go/GO:0009299"
+  M_C_decay hypernym "http://identifiers.org/go/GO:0006402"
+  C_translation hypernym "http://identifiers.org/go/GO:0006412"
+  C_decay hypernym "http://identifiers.org/go/GO:0030163"
+  FGF_synthesis hypernym "http://identifiers.org/go/GO:0006412"
+  FGF_decay hypernym "http://identifiers.org/go/GO:0030163"
 end
+
+goldbeter2007 is "Goldbeter2007_Somitogenesis_Switch"
+
+goldbeter2007 model_entity_is "http://identifiers.org/biomodels.db/MODEL1011170000"
+goldbeter2007 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000275"
+goldbeter2007 description "http://identifiers.org/pubmed/17497689"
+goldbeter2007 taxon "http://identifiers.org/taxonomy/7742"
+goldbeter2007 version "http://identifiers.org/go/GO:0032526",
+                      "http://identifiers.org/go/GO:0044344"
+goldbeter2007 hypernym "http://identifiers.org/go/GO:0001756"

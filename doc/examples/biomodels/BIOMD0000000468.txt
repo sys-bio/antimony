@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *MODEL1308190000()
 
   // Compartments and Species:
@@ -22,15 +22,15 @@ model *MODEL1308190000()
 
   // Reactions:
   re3: s4 => s3; -k6*s3*(B_T - s4) + k7*s4;
-  re4: s5 => s2; k_CCE*((fracK*Cao)/(K3 + Cao) - s2)*(s1 - s2);
-  re5: s7 => s6; (0.5*k1*(R_T - half*R_T*(exp(-s12/tau_I) + exp(-s12/tau_II) + ((exp(-s12/tau_I) - exp(-s12/tau_II))*(tau_I + tau_II))/(tau_I - tau_II)))*s3)/(K1 + s3);
+  re4: s5 => s2; k_CCE*(fracK*Cao/(K3 + Cao) - s2)*(s1 - s2);
+  re5: s7 => s6; 0.5*k1*(R_T - half*R_T*(exp(-s12/tau_I) + exp(-s12/tau_II) + (exp(-s12/tau_I) - exp(-s12/tau_II))*(tau_I + tau_II)/(tau_I - tau_II)))*s3/(K1 + s3);
   re6: s6 => s8; 0.5*k2*s6;
-  re7: s2 => s3; 0.5*k3*((k_CICR*s3)/(K_CICR + s3))*(s6/(K2 + s6))^3*s2 - 0.5*k4*(s3/(K3 + s3))^2 + 0.5*k5*s2*s2;
-  re8: s3 => s9; (0.5*dot_Vhi*s3^4)/(K_hi^4 + s3^4);
-  re9: s3 => s10; (0.5*dot_Vex*s3)/(K5 + s3);
+  re7: s2 => s3; (0.5*k3*(k_CICR*s3/(K_CICR + s3))*(s6/(K2 + s6))^3*s2 - 0.5*k4*(s3/(K3 + s3))^2) + 0.5*k5*s2*s2;
+  re8: s3 => s9; 0.5*dot_Vhi*s3^4/(K_hi^4 + s3^4);
+  re9: s3 => s10; 0.5*dot_Vex*s3/(K5 + s3);
   re10: s11 => s3; 0.5*dot_q_inpass;
   re11: s13 => s12; re11_unisec*0.5;
-  re12: s3 => s9; (0.5*dot_Vp*s3^2)/(K4^2 + s3^2);
+  re12: s3 => s9; 0.5*dot_Vp*s3^2/(K4^2 + s3^2);
   re37: s51 + s47 => s45; k15*s47*s51;
   re38: s48 + s51 -> s50; k17*s51*s48 - k18*s50;
   re41: s52 -> s48; k11*s3*s52 - k12*s48;
@@ -40,22 +40,22 @@ model *MODEL1308190000()
   re52: s58 -> s61; gam*k14*s58 - k13*s3*s61;
   re53: s61 => s50 + s57; kr90*s61;
   re54: s60 -> s62; gam*k14*s60 - k13*s3*s62;
-  re55: s58 -> s60; (kp*s58*s27)/(s58 + Kmp) - (Vdp*s60)/(s60 + Kmdp);
-  re56: s61 -> s62; (kp*s61*s27)/(s61 + Kmp) - (Vdp*s62)/(s62 + Kmdp);
+  re55: s58 -> s60; kp*s58*s27/(s58 + Kmp) - Vdp*s60/(s60 + Kmdp);
+  re56: s61 -> s62; kp*s61*s27/(s61 + Kmp) - Vdp*s62/(s62 + Kmdp);
   re57: s22 -> s20; exp(re57_unity - (s23/re57_tf)^1.8)*re57_normal*(s23/re57_unimol)^0.8*(re57_unity - (s23/re57_tf)^1.8);
-  re58: s19 => s17; (re58_k58*s19*s20)/(re58_Km58 + s19);
-  re59: s17 => s19; (re59_k59*s17*s18)/(re59_Km59 + s17);
+  re58: s19 => s17; re58_k58*s19*s20/(re58_Km58 + s19);
+  re59: s17 => s19; re59_k59*s17*s18/(re59_Km59 + s17);
   re60: s17 + s16 -> s28; re60_k60*s17*s16 - re60_kr60*s28;
-  re61: s28 => s26; (re61_k61*s28*s14)/(re61_Km61 + s28);
-  re62: s26 => s27; (re62_k62*s26*s24)/(re62_Km62 + s26);
-  re63: s26 => s28; (re63_k63*s26*s15)/(re63_Km63 + s26);
-  re64: s27 => s26; (re64_k64*s27*s15)/(re64_Km64 + s27);
-  re65: s27 => s17 + s16; (re65_k65*s27*s15)/(re65_Km65 + s27);
+  re61: s28 => s26; re61_k61*s28*s14/(re61_Km61 + s28);
+  re62: s26 => s27; re62_k62*s26*s24/(re62_Km62 + s26);
+  re63: s26 => s28; re63_k63*s26*s15/(re63_Km63 + s26);
+  re64: s27 => s26; re64_k64*s27*s15/(re64_Km64 + s27);
+  re65: s27 => s17 + s16; re65_k65*s27*s15/(re65_Km65 + s27);
   re66: s25 => s14; re66_k66*s17*s25;
   re67: s14 => s25; s14*re67_k67;
   re68: s21 => s23; re68_unitime;
   re69: s63 => s64; re69_K_cam_no*(s45 + s58) + re69_K_p_no*(s62 + s65) + re69_K_pcam_no*s60;
-  re70: s65 => s66; (Vdp*s65)/(s65 + Kmdp);
+  re70: s65 => s66; Vdp*s65/(s65 + Kmdp);
   re71: s66 => s51 + s57; kr90*s66;
   re72: s62 -> s65 + s48; k18*s62 - k17*s65*s48;
   re102: s95 -> s93; exp(re102_unity - (s39/re102_tf)^0.35)*re102_normal*((s39 + re102_tiny_num)/re102_unimol)^-0.65*(re102_unity - (s39/re102_tf)^0.35);
@@ -64,28 +64,28 @@ model *MODEL1308190000()
   re105: s110 -> s112; re105_kcat_src*s110*s92 - re105_k_6*s112;
   re106: s112 + s111 -> s113; re106_k107*s111*s112 - re106_k_107*s113;
   re107: s113 -> s114 + s93; re107_k108*s113 - re107_k_108*s93*s114;
-  re108: s98 => s91; (re108_V10*s98)/(re108_K10 + s98);
+  re108: s98 => s91; re108_V10*s98/(re108_K10 + s98);
   re109: s114 => s98 + s111; re109_k9*s114;
   re110: s115 => s106; s115*re110_kT;
   re111: s108 => s115; re111_ktr1*s107 + re111_ktr1k2*s49;
-  re112: s103 => s102; (re112_k111*s114*s103)/(s103 + re112_K111);
-  re113: s102 => s103; (re113_V12*s102)/(re113_K12 + s102);
-  re114: s97 => s101; (re114_k113*s102*s97)/(re114_K113 + s97);
-  re115: s101 => s97; (re115_V18*s101)/(re115_K18 + s101);
-  re116: s96 => s100; (re116_k19*s101*s96)/(re116_K19 + s96);
-  re117: s100 => s96; (re117_V20*s100)/(s100 + re117_K20);
-  re118: s99 => s104; (re118_k21*s99*s43)/(s99 + re118_K21);
-  re119: s104 => s99; (re119_V22*s104)/(s104 + re119_K22);
+  re112: s103 => s102; re112_k111*s114*s103/(s103 + re112_K111);
+  re113: s102 => s103; re113_V12*s102/(re113_K12 + s102);
+  re114: s97 => s101; re114_k113*s102*s97/(re114_K113 + s97);
+  re115: s101 => s97; re115_V18*s101/(re115_K18 + s101);
+  re116: s96 => s100; re116_k19*s101*s96/(re116_K19 + s96);
+  re117: s100 => s96; re117_V20*s100/(s100 + re117_K20);
+  re118: s99 => s104; re118_k21*s99*s43/(s99 + re118_K21);
+  re119: s104 => s99; re119_V22*s104/(s104 + re119_K22);
   re120: s106 => s35; re120_kD*s106;
-  re121: s37 => s51; (re121_kP*s106)/(s106 + re121_K30);
+  re121: s37 => s51; re121_kP*s106/(s106 + re121_K30);
   re122: s38 => s39; re122_unitime;
-  re123: s43 => s100; (re123_V37*s43)/(s43 + re123_K37);
-  re124: s100 => s43; (re124_k38*s100*s101)/(re124_K38 + s100);
-  re125: s44 => s104; (re125_V39*s44)/(re125_K39 + s44);
-  re126: s104 => s44; (re126_k40*s104*s43)/(re126_K40 + s104);
-  re127: s42 => s107; (s44*s42*re127_k43)/(re127_K43 + s42);
-  re128: s107 => s42; (re128_V44*s107)/(s107 + re128_K44);
-  re129: s105 => s49; exp(re129_tau*(re129_delay - s39/re129_tc))/(1 + 2*exp(re129_tau*(re129_delay - s39/re129_tc)) + exp(2*re129_tau*(re129_delay - s39/re129_tc)))/re129_uc*29.256;
+  re123: s43 => s100; re123_V37*s43/(s43 + re123_K37);
+  re124: s100 => s43; re124_k38*s100*s101/(re124_K38 + s100);
+  re125: s44 => s104; re125_V39*s44/(re125_K39 + s44);
+  re126: s104 => s44; re126_k40*s104*s43/(re126_K40 + s104);
+  re127: s42 => s107; s44*s42*re127_k43/(re127_K43 + s42);
+  re128: s107 => s42; re128_V44*s107/(s107 + re128_K44);
+  re129: s105 => s49; (exp(re129_tau*(re129_delay - s39/re129_tc))/(1 + 2*exp(re129_tau*(re129_delay - s39/re129_tc)) + exp(2*re129_tau*(re129_delay - s39/re129_tc)))/re129_uc)*29.256;
   re131: s51 => s116; kDD*s51;
   re132: s45 => s117 + s47; kDD*s45;
   re133: s50 => s117 + s48; kDD*s50;
@@ -277,7 +277,7 @@ model *MODEL1308190000()
   k3 has inv_sec;
   k4 = 5000;
   k4 has sub_sec;
-  k5 = 1e-010;
+  k5 = 1e-10;
   k5 has inv_sec_sub;
   k6 = 0.1;
   k6 has inv_sec_sub;
@@ -329,7 +329,7 @@ model *MODEL1308190000()
   alp has time_unit;
   gam = 0.1;
   gam has time_unit;
-  k8 = 7.5e-005;
+  k8 = 7.5e-05;
   k8 has time_unit;
   k11 = 0.004;
   k11 has inv_sec_sub;
@@ -359,7 +359,7 @@ model *MODEL1308190000()
   k90 has inv_sec_sub;
   kr90 = 1.5;
   kr90 has inv_sec;
-  kDD = 9.45e-005;
+  kDD = 9.45e-05;
   kDD has inv_sec;
   re11_unisec = 1;
   re11_unisec has sub_sec;
@@ -423,7 +423,7 @@ model *MODEL1308190000()
   re102_unity has dimensionless;
   re102_unimol = 1;
   re102_unimol has substance;
-  re102_tiny_num = 1e-006;
+  re102_tiny_num = 1e-06;
   re102_tiny_num has substance;
   re103_normal = 0.026;
   re103_normal has nM_inv_s;
@@ -459,9 +459,9 @@ model *MODEL1308190000()
   re110_kT has inv_sec;
   re111_ktr1 = 0.00012;
   re111_ktr1 has nM_inv_s;
-  re111_ktr1k2 = 9e-006;
+  re111_ktr1k2 = 9e-06;
   re111_ktr1k2 has nM_inv_s;
-  re111_tr2 = 3e-006;
+  re111_tr2 = 3e-06;
   re111_tr2 has nM_inv_s;
   re112_k111 = 0.222;
   re112_k111 has inv_sec;
@@ -495,7 +495,7 @@ model *MODEL1308190000()
   re119_K22 has substance;
   re119_V22 = 0.05;
   re119_V22 has nM_inv_s;
-  re120_kD = 2.8e-005;
+  re120_kD = 2.8e-05;
   re120_kD has inv_sec;
   re121_kP = 0.02824;
   re121_kP has nM_inv_s;
@@ -521,7 +521,7 @@ model *MODEL1308190000()
   re126_K40 has substance;
   re127_K43 = 25;
   re127_K43 has substance;
-  re127_k43 = 4e-005;
+  re127_k43 = 4e-05;
   re127_k43 has inv_sec;
   re128_K44 = 5;
   re128_K44 has substance;
@@ -547,16 +547,16 @@ model *MODEL1308190000()
 
   // Unit definitions:
   unit time_unit = second;
-  unit substance = 1e-009 mole;
+  unit substance = 1e-09 mole;
   unit area = metre^2;
   unit length = metre;
   unit volume = litre;
-  unit sub_sec = 1e-009 mole / second;
+  unit sub_sec = 1e-09 mole / second;
   unit inv_sec = 1 / second;
-  unit inv_sec_sub = 1 / (1e-009 mole * second);
+  unit inv_sec_sub = 1 / (1e-09 mole * second);
   unit nM_inv_s = 1e-9 mole / second;
   unit inv_nM_s = 1 / (1e-9 mole * second);
-  unit substance_per_volume = 1e-009 mole / litre;
+  unit substance_per_volume = 1e-09 mole / litre;
 
   // Display Names:
   time_unit is "time";
@@ -632,4 +632,148 @@ model *MODEL1308190000()
   s116 is "sa49_degraded";
   s119 is "Shear Stress";
   re3 is "re1";
+
+  // SBO terms:
+  s4.sboTerm = 297
+  s5.sboTerm = 291
+  s7.sboTerm = 291
+  s8.sboTerm = 291
+  s9.sboTerm = 291
+  s10.sboTerm = 291
+  s11.sboTerm = 291
+  s12.sboTerm = 331
+  s13.sboTerm = 291
+  s21.sboTerm = 291
+  s35.sboTerm = 291
+  s37.sboTerm = 291
+  s38.sboTerm = 347
+  s63.sboTerm = 291
+  s105.sboTerm = 278
+  s106.sboTerm = 278
+  s108.sboTerm = 243
+  s115.sboTerm = 278
+  s116.sboTerm = 291
+  s117.sboTerm = 291
+  s118.sboTerm = 291
+
+  // CV terms:
+  c1 container "http://identifiers.org/go/GO:0005623"
+  s1 hypernym "http://identifiers.org/chebi/CHEBI:29108"
+  s1 container "http://identifiers.org/go/GO:0005576"
+  s2 hypernym "http://identifiers.org/chebi/CHEBI:29108"
+  s3 hypernym "http://identifiers.org/chebi/CHEBI:29108"
+  s4 part "http://identifiers.org/chebi/CHEBI:29108"
+  s6 hypernym "http://identifiers.org/chebi/CHEBI:203600"
+  s14 hypernym "http://identifiers.org/uniprot/O15530"
+  s15 hypernym "http://identifiers.org/go/GO:0000159"
+  s16 hypernym "http://identifiers.org/uniprot/P31749"
+  s17 hypernym "http://identifiers.org/pubchem.compound/53480352"
+  s18 hypernym "http://identifiers.org/uniprot/P60484"
+  s19 hypernym "http://identifiers.org/chebi/CHEBI:18348"
+  s20 property "http://identifiers.org/psimod/MOD:00696"
+  s20 property "http://identifiers.org/interpro/IPR000403"
+  s22 property "http://identifiers.org/interpro/IPR000403"
+  s24 hypernym "http://identifiers.org/uniprot/Q15119"
+  s25 hypernym "http://identifiers.org/uniprot/Q15119"
+  s25 container "http://identifiers.org/go/GO:0005622"
+  s26 part "http://identifiers.org/uniprot/P31749",
+           "http://identifiers.org/pubchem.compound/53480352"
+  s26 property "http://identifiers.org/psimod/MOD:00696"
+  s27 part "http://identifiers.org/uniprot/P31749",
+           "http://identifiers.org/pubchem.compound/53480352"
+  s27 property "http://identifiers.org/psimod/MOD:00696"
+  s28 part "http://identifiers.org/uniprot/P31749",
+           "http://identifiers.org/pubchem.compound/53480352"
+  s43 hypernym "http://identifiers.org/uniprot/O14733"
+  s43 property "http://identifiers.org/psimod/MOD:00696"
+  s44 hypernym "http://identifiers.org/uniprot/P45983"
+  s44 property "http://identifiers.org/psimod/MOD:00696"
+  s45 part "http://identifiers.org/chebi/CHEBI:29108",
+           "http://identifiers.org/uniprot/P62158"
+  s47 part "http://identifiers.org/chebi/CHEBI:29108",
+           "http://identifiers.org/uniprot/P62158"
+  s48 part "http://identifiers.org/chebi/CHEBI:29108",
+           "http://identifiers.org/uniprot/P62158"
+  s49 encodement "http://identifiers.org/uniprot/Q9Y5W3"
+  s50 part "http://identifiers.org/chebi/CHEBI:29108",
+           "http://identifiers.org/uniprot/P62158"
+  s51 part "http://identifiers.org/uniprot/Q03135"
+  s52 hypernym "http://identifiers.org/uniprot/P62158"
+  s57 hypernym "http://identifiers.org/uniprot/P08238"
+  s58 part "http://identifiers.org/chebi/CHEBI:29108",
+           "http://identifiers.org/uniprot/P08238",
+           "http://identifiers.org/uniprot/P62158"
+  s60 part "http://identifiers.org/chebi/CHEBI:29108",
+           "http://identifiers.org/uniprot/P62158",
+           "http://identifiers.org/uniprot/P08238"
+  s60 property "http://identifiers.org/psimod/MOD:00696"
+  s61 part "http://identifiers.org/chebi/CHEBI:29108",
+           "http://identifiers.org/uniprot/P62158",
+           "http://identifiers.org/uniprot/P08238"
+  s62 part "http://identifiers.org/chebi/CHEBI:29108",
+           "http://identifiers.org/uniprot/P62158",
+           "http://identifiers.org/uniprot/P08238"
+  s62 property "http://identifiers.org/psimod/MOD:00696"
+  s64 hypernym "http://identifiers.org/chebi/CHEBI:16480"
+  s65 part "http://identifiers.org/uniprot/P08238"
+  s65 property "http://identifiers.org/psimod/MOD:00696"
+  s66 part "http://identifiers.org/uniprot/P08238"
+  s91 hypernym "http://identifiers.org/uniprot/P29353"
+  s92 hypernym "http://identifiers.org/uniprot/P12931"
+  s92 property "http://identifiers.org/psimod/MOD:00696"
+  s93 hypernym "http://identifiers.org/uniprot/Q05397"
+  s93 property "http://identifiers.org/psimod/MOD:00696"
+  s94 hypernym "http://identifiers.org/uniprot/P12931"
+  s95 hypernym "http://identifiers.org/uniprot/Q05397"
+  s96 hypernym "http://identifiers.org/uniprot/O14733"
+  s97 hypernym "http://identifiers.org/uniprot/Q13233"
+  s98 hypernym "http://identifiers.org/uniprot/P29353"
+  s98 property "http://identifiers.org/psimod/MOD:00696"
+  s99 hypernym "http://identifiers.org/uniprot/P45983"
+  s100 hypernym "http://identifiers.org/uniprot/O14733"
+  s100 property "http://identifiers.org/psimod/MOD:00696"
+  s101 hypernym "http://identifiers.org/uniprot/Q13233"
+  s101 property "http://identifiers.org/psimod/MOD:00696"
+  s102 part "http://identifiers.org/chebi/CHEBI:57600",
+            "http://identifiers.org/uniprot/P01112"
+  s103 part "http://identifiers.org/chebi/CHEBI:17552",
+            "http://identifiers.org/uniprot/P01112"
+  s104 hypernym "http://identifiers.org/uniprot/P45983"
+  s104 property "http://identifiers.org/psimod/MOD:00696"
+  s105 encodement "http://identifiers.org/uniprot/Q9Y5W3"
+  s106 encoder "http://identifiers.org/ncbigene/4846"
+  s107 property "http://identifiers.org/psimod/MOD:00000"
+  s108 hypernym "http://identifiers.org/ncbigene/4846"
+  s110 part "http://identifiers.org/uniprot/Q05397",
+            "http://identifiers.org/uniprot/P29353"
+  s110 property "http://identifiers.org/psimod/MOD:00696"
+  s111 part "http://identifiers.org/uniprot/Q07889",
+            "http://identifiers.org/uniprot/P62993"
+  s112 part "http://identifiers.org/uniprot/Q05397",
+            "http://identifiers.org/uniprot/P29353"
+  s112 property "http://identifiers.org/psimod/MOD:00696"
+  s113 part "http://identifiers.org/uniprot/Q05397",
+            "http://identifiers.org/uniprot/P29353",
+            "http://identifiers.org/uniprot/P62993",
+            "http://identifiers.org/uniprot/Q07889"
+  s113 property "http://identifiers.org/psimod/MOD:00696"
+  s114 part "http://identifiers.org/uniprot/P29353",
+            "http://identifiers.org/uniprot/P62993",
+            "http://identifiers.org/uniprot/Q07889"
+  s114 property "http://identifiers.org/psimod/MOD:00696"
+  s115 encoder "http://identifiers.org/ncbigene/4846"
+  s119 hypernym "http://identifiers.org/go/GO:0071498"
 end
+
+MODEL1308190000 is "Koo2013 - Integrated shear stress induced NO production model"
+
+MODEL1308190000 model_entity_is "http://identifiers.org/biomodels.db/MODEL1308190000"
+MODEL1308190000 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000468"
+MODEL1308190000 description "http://identifiers.org/pubmed/23708369"
+MODEL1308190000 origin "http://identifiers.org/biomodels.db/BIOMD0000000464",
+                       "http://identifiers.org/biomodels.db/BIOMD0000000465",
+                       "http://identifiers.org/biomodels.db/BIOMD0000000466",
+                       "http://identifiers.org/biomodels.db/BIOMD0000000467"
+MODEL1308190000 taxon "http://identifiers.org/taxonomy/9606"
+MODEL1308190000 hypernym "http://identifiers.org/go/GO:0006809",
+                         "http://identifiers.org/go/GO:0002537"

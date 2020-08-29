@@ -1,6 +1,6 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 function goldbeter_koshland(v1, v2, J1, J2)
-  (2*v1*J2)/(v2 - v1 + J1*v2 + J2*v1 + ((v2 - v1 + J1*v2 + J2*v1)^2 - 4*(v2 - v1)*v1*J2)^(1/2));
+  2*v1*J2/((v2 - v1) + J1*v2 + J2*v1 + (((v2 - v1) + J1*v2 + J2*v1)^2 - 4*(v2 - v1)*v1*J2)^(1/2));
 end
 
 
@@ -18,8 +18,8 @@ model *Tyson2003_Mutual_Activation()
   r1:  => R; env*k0*Ep;
   r2:  => R; env*k1*S;
   r3: R => ; env*k2*R;
-  r4: $E => $Ep; (env*k3*R*E)/(J3 + E);
-  r5: $Ep => $E; (env*k4*Ep)/(J4 + Ep);
+  r4: $E => $Ep; env*k3*R*E/(J3 + E);
+  r5: $Ep => $E; env*k4*Ep/(J4 + Ep);
 
   // Species initializations:
   R = 0;
@@ -60,4 +60,46 @@ model *Tyson2003_Mutual_Activation()
   // Display Names:
   time_unit is "s";
   substance is "mole";
+
+  // SBO terms:
+  env.sboTerm = 290
+  R.sboTerm = 252
+  S.sboTerm = 285
+  Ep.sboTerm = 252
+  k3.sboTerm = 25
+  k4.sboTerm = 186
+  J3.sboTerm = 2
+  J4.sboTerm = 2
+  E.sboTerm = 252
+  Et.sboTerm = 196
+  k0.sboTerm = 35
+  k1.sboTerm = 35
+  k2.sboTerm = 356
+  r1.sboTerm = 176
+  r2.sboTerm = 176
+  r3.sboTerm = 179
+  r4.sboTerm = 216
+  r5.sboTerm = 330
+
+  // CV terms:
+  env hypernym "http://identifiers.org/go/GO:0005623"
+  R property "http://identifiers.org/go/GO:0016301"
+  R hypernym "http://identifiers.org/chebi/CHEBI:36080"
+  Ep version "http://identifiers.org/psimod/MOD:00696"
+  Ep hypernym "http://identifiers.org/kegg.compound/C00562"
+  E hypernym "http://identifiers.org/chebi/CHEBI:36080"
+  r1 hypernym "http://identifiers.org/go/GO:0009058"
+  r2 hypernym "http://identifiers.org/go/GO:0009058"
+  r3 hypernym "http://identifiers.org/go/GO:0009056"
+  r4 hypernym "http://identifiers.org/go/GO:0006470"
+  r5 hypernym "http://identifiers.org/go/GO:0006470"
 end
+
+Tyson2003_Mutual_Activation is "Tyson2003_Mutual_Activation"
+
+Tyson2003_Mutual_Activation model_entity_is "http://identifiers.org/biomodels.db/MODEL1102100001"
+Tyson2003_Mutual_Activation model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000311"
+Tyson2003_Mutual_Activation description "http://identifiers.org/pubmed/12648679"
+Tyson2003_Mutual_Activation hypernym "http://identifiers.org/go/GO:0051098"
+Tyson2003_Mutual_Activation property "http://identifiers.org/mamo/MAMO_0000046"
+Tyson2003_Mutual_Activation taxon "http://identifiers.org/taxonomy/131567"

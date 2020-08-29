@@ -1,24 +1,23 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Ayati2010_BoneRemodelingDynamics_WithTumourDrugTreatment()
 
   // Compartments and Species:
-  compartment Compartment_;
-  species $C in Compartment_, $Tumour in Compartment_, $B in Compartment_;
-  species $z in Compartment_;
+  compartment Compartment;
+  species $C in Compartment, $Tumour in Compartment, $B in Compartment, $z in Compartment;
 
   // Assignment Rules:
   V1 := piecewise(v1, time >= 600, 0);
   y2 := piecewise(B - B_bar, B > B_bar, 0);
   y1 := piecewise(C - C_bar, C > C_bar, 0);
   V2 := piecewise(v2, time >= 600, 0);
-  C_bar := (beta1/alpha1)^((1 - g22 + r22)/gamma)*(beta2/alpha2)^((g21*(1 + r21))/gamma);
-  B_bar := (beta1/alpha1)^(g12/(1 + r12)/gamma)*(beta2/alpha2)^((1 - g11*(1 + r11))/gamma);
-  gamma := g12/(1 + r12)*g21*(1 + r21) - (1 - g11*(1 + r11))*(1 - g22 + r22);
+  C_bar := (beta1/alpha1)^(((1 - g22) + r22)/gamma_)*(beta2/alpha2)^(g21*(1 + r21)/gamma_);
+  B_bar := (beta1/alpha1)^(g12/(1 + r12)/gamma_)*(beta2/alpha2)^((1 - g11*(1 + r11))/gamma_);
+  gamma_ := (g12/(1 + r12))*g21*(1 + r21) - (1 - g11*(1 + r11))*((1 - g22) + r22);
 
   // Rate Rules:
-  C' = alpha1*C^(g11*(1 + (r11*Tumour)/LT_))*B^(g21*(1 + (r21*Tumour)/LT_)) - beta1*C;
-  Tumour' = (gammaT - V2)*Tumour*ln(LT_/Tumour);
-  B' = alpha2*C^(g12/(1 + (r12*Tumour)/LT_))*B^(g22 - (r22*Tumour)/LT_) - (beta2 - V1)*B;
+  C' = alpha1*C^(g11*(1 + r11*Tumour/LT))*B^(g21*(1 + r21*Tumour/LT)) - beta1*C;
+  Tumour' = (gammaT - V2)*Tumour*ln(LT/Tumour);
+  B' = alpha2*C^(g12/(1 + r12*Tumour/LT))*B^(g22 - r22*Tumour/LT) - (beta2 - V1)*B;
   z' = k2*y2 - k1*y1;
 
   // Species initializations:
@@ -28,13 +27,13 @@ model *Ayati2010_BoneRemodelingDynamics_WithTumourDrugTreatment()
   z = 100;
 
   // Compartment initializations:
-  Compartment_ = 1;
+  Compartment = 1;
 
   // Variable initializations:
   alpha1 = 3;
   g11 = 1.1;
   r11 = 0.005;
-  LT_ = 100;
+  LT = 100;
   g21 = -0.5;
   r21 = 0;
   beta1 = 0.2;
@@ -51,12 +50,58 @@ model *Ayati2010_BoneRemodelingDynamics_WithTumourDrugTreatment()
   v2 = 0.008;
 
   // Other declarations:
-  var V1, y2, y1, V2, C_bar, B_bar, gamma;
-  const Compartment_, alpha1, g11, r11, LT_, g21, r21, beta1, alpha2, g12;
-  const r12, g22, r22, beta2, k2, k1, gammaT, v1, v2;
+  var V1, y2, y1, V2, C_bar, B_bar, gamma_;
+  const Compartment, alpha1, g11, r11, LT, g21, r21, beta1, alpha2, g12, r12;
+  const g22, r22, beta2, k2, k1, gammaT, v1, v2;
 
   // Display Names:
   C is "Osteoclasts";
   B is "Osteoblasts";
   z is "BoneMass";
+  gamma_ is "gamma";
+
+  // SBO terms:
+  Compartment.sboTerm = 290
+  C.sboTerm = 236
+  alpha1.sboTerm = 9
+  g11.sboTerm = 9
+  r11.sboTerm = 9
+  LT.sboTerm = 9
+  B.sboTerm = 236
+  g21.sboTerm = 9
+  r21.sboTerm = 9
+  beta1.sboTerm = 9
+  alpha2.sboTerm = 9
+  g12.sboTerm = 9
+  r12.sboTerm = 9
+  g22.sboTerm = 9
+  r22.sboTerm = 9
+  beta2.sboTerm = 9
+  V1.sboTerm = 9
+  k2.sboTerm = 9
+  k1.sboTerm = 9
+  gammaT.sboTerm = 9
+  V2.sboTerm = 9
+  gamma_.sboTerm = 9
+  v1.sboTerm = 9
+  v2.sboTerm = 9
+
+  // CV terms:
+  Compartment hypernym "http://identifiers.org/bto/BTO:0000140"
+  C hypernym "http://identifiers.org/bto/BTO:0000968"
+  Tumour hypernym "http://identifiers.org/bto/BTO:0002101"
+  B hypernym "http://identifiers.org/bto/BTO:0001593"
+  z hypernym "http://identifiers.org/pato/PATO:0000125"
 end
+
+Ayati2010_BoneRemodelingDynamics_WithTumourDrugTreatment is "Ayati2010_BoneRemodelingDynamics_WithTumour+DrugTreatment"
+
+Ayati2010_BoneRemodelingDynamics_WithTumourDrugTreatment model_entity_is "http://identifiers.org/biomodels.db/MODEL1112060002"
+Ayati2010_BoneRemodelingDynamics_WithTumourDrugTreatment model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000403"
+Ayati2010_BoneRemodelingDynamics_WithTumourDrugTreatment description "http://identifiers.org/pubmed/20406449"
+Ayati2010_BoneRemodelingDynamics_WithTumourDrugTreatment origin "http://identifiers.org/biomodels.db/BIOMD0000000148",
+                                                                "http://identifiers.org/biomodels.db/BIOMD0000000279"
+Ayati2010_BoneRemodelingDynamics_WithTumourDrugTreatment property "http://identifiers.org/mamo/MAMO_0000046"
+Ayati2010_BoneRemodelingDynamics_WithTumourDrugTreatment taxon "http://identifiers.org/taxonomy/7711"
+Ayati2010_BoneRemodelingDynamics_WithTumourDrugTreatment version "http://identifiers.org/doid/DOID:9538"
+Ayati2010_BoneRemodelingDynamics_WithTumourDrugTreatment hypernym "http://identifiers.org/go/GO:0046850"

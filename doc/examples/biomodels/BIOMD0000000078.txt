@@ -1,23 +1,33 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 function function_3(Vs, B, n, K)
-  (Vs*B^n)/(K^n + B^n);
+  Vs*B^n/(K^n + B^n);
 end
 
+function_3 is "Activation of gene"
+
 function function_2(V, substrate, Km)
-  (V*substrate)/(Km + substrate);
+  V*substrate/(Km + substrate);
 end
+
+function_2 is "Michaelis-Menten(irreversible)"
 
 function function_1(k, mRNA)
   k*mRNA;
 end
 
+function_1 is "mRNA translated into protein"
+
 function function_0(vsb, K, m, Bn)
-  (vsb*K^m)/(K^m + Bn^m);
+  vsb*K^m/(K^m + Bn^m);
 end
 
+function_0 is "Inhibition of gene"
+
 function functionDefinition_0000005(length, time_ref)
-  ceil(sin((pi*time_ref)/ length + 0.001)/2);
+  ceil(sin(pi*time_ref/ length + 0.001)/2);
 end
+
+functionDefinition_0000005 is "ceiling"
 
 
 model *Model_1()
@@ -260,4 +270,105 @@ model *Model_1()
   reaction_45 is "PCnp dephosphorylation";
   reaction_46 is "PCn nonspecific degradation";
   reaction_47 is "PCcp dephosphorylation";
+
+  // CV terms:
+  cell hypernym "http://identifiers.org/obo.go/GO:0005623"
+  species_0 hypernym "http://identifiers.org/obo.chebi/CHEBI:33699"
+  species_1 version "http://identifiers.org/uniprot/O00327"
+  species_2 version "http://identifiers.org/uniprot/O00327"
+  species_3 version "http://identifiers.org/uniprot/O00327"
+  species_4 version "http://identifiers.org/uniprot/Q8IV71",
+                    "http://identifiers.org/uniprot/Q16526"
+  species_5 parthood "http://identifiers.org/obo.chebi/CHEBI:33699"
+  species_6 version "http://identifiers.org/uniprot/Q8IV71",
+                    "http://identifiers.org/uniprot/Q16526"
+  species_7 hypernym "http://identifiers.org/obo.chebi/CHEBI:33699"
+  species_8 version "http://identifiers.org/uniprot/P56645",
+                    "http://identifiers.org/uniprot/O15055",
+                    "http://identifiers.org/uniprot/O15534"
+  species_9 version "http://identifiers.org/uniprot/P56645",
+                    "http://identifiers.org/uniprot/O15055",
+                    "http://identifiers.org/uniprot/O15534"
+  species_10 part "http://identifiers.org/uniprot/P56645",
+                  "http://identifiers.org/uniprot/Q8IV71"
+  species_10 part "http://identifiers.org/uniprot/O15534",
+                  "http://identifiers.org/uniprot/Q8IV71"
+  species_10 part "http://identifiers.org/uniprot/O15534",
+                  "http://identifiers.org/uniprot/Q16526"
+  species_11 part "http://identifiers.org/uniprot/P56645",
+                  "http://identifiers.org/uniprot/Q8IV71"
+  species_11 part "http://identifiers.org/uniprot/O15534",
+                  "http://identifiers.org/uniprot/Q16526"
+  species_12 part "http://identifiers.org/uniprot/P56645",
+                  "http://identifiers.org/uniprot/Q8IV71"
+  species_12 part "http://identifiers.org/uniprot/O15534",
+                  "http://identifiers.org/uniprot/Q8IV71"
+  species_12 part "http://identifiers.org/uniprot/O15534",
+                  "http://identifiers.org/uniprot/Q16526"
+  species_13 hypernym "http://identifiers.org/uniprot/O00327"
+  species_14 part "http://identifiers.org/uniprot/P56645",
+                  "http://identifiers.org/uniprot/Q8IV71"
+  species_14 part "http://identifiers.org/uniprot/O15055",
+                  "http://identifiers.org/uniprot/Q8IV71"
+  species_14 part "http://identifiers.org/uniprot/O15534",
+                  "http://identifiers.org/uniprot/Q16526"
+  reaction_0 hypernym "http://identifiers.org/obo.go/GO:0045892"
+  reaction_1 hypernym "http://identifiers.org/obo.go/GO:0006412"
+  reaction_2 hypernym "http://identifiers.org/obo.go/GO:0051261"
+  reaction_3 hypernym "http://identifiers.org/obo.go/GO:0006468"
+  reaction_4 hypernym "http://identifiers.org/obo.go/GO:0000060"
+  reaction_5 hypernym "http://identifiers.org/obo.go/GO:0006412"
+  reaction_6 hypernym "http://identifiers.org/obo.go/GO:0051261"
+  reaction_7 hypernym "http://identifiers.org/obo.go/GO:0006468"
+  reaction_8 hypernym "http://identifiers.org/obo.go/GO:0008233"
+  reaction_9 identity "http://identifiers.org/obo.go/GO:0045893"
+  reaction_10 hypernym "http://identifiers.org/obo.go/GO:0006412"
+  reaction_11 hypernym "http://identifiers.org/obo.go/GO:0008233"
+  reaction_12 hypernym "http://identifiers.org/obo.go/GO:0006468"
+  reaction_13 hypernym "http://identifiers.org/obo.go/GO:0043623"
+  reaction_14 hypernym "http://identifiers.org/obo.go/GO:0006468"
+  reaction_15 parthood "http://identifiers.org/obo.go/GO:0008233"
+  reaction_16 hypernym "http://identifiers.org/obo.go/GO:0000060"
+  reaction_17 hypernym "http://identifiers.org/obo.go/GO:0051261"
+  reaction_18 hypernym "http://identifiers.org/obo.go/GO:0051261"
+  reaction_19 hypernym "http://identifiers.org/obo.go/GO:0051261"
+  reaction_20 hypernym "http://identifiers.org/obo.go/GO:0045893"
+  reaction_21 hypernym "http://identifiers.org/obo.go/GO:0006468"
+  reaction_22 hypernym "http://identifiers.org/obo.go/GO:0051261"
+  reaction_23 hypernym "http://identifiers.org/obo.go/GO:0043623"
+  reaction_24 hypernym "http://identifiers.org/obo.go/GO:0008233"
+  reaction_25 hypernym "http://identifiers.org/obo.go/GO:0008233"
+  reaction_26 parthood "http://identifiers.org/obo.go/GO:0008233"
+  reaction_27 hypernym "http://identifiers.org/obo.go/GO:0051261"
+  reaction_28 hypernym "http://identifiers.org/obo.go/GO:0051261"
+  reaction_29 hypernym "http://identifiers.org/obo.go/GO:0051261"
+  reaction_30 hypernym "http://identifiers.org/obo.go/GO:0051261"
+  reaction_31 hypernym "http://identifiers.org/obo.go/GO:0051261"
+  reaction_32 hypernym "http://identifiers.org/obo.go/GO:0051261"
+  reaction_33 hypernym "http://identifiers.org/obo.go/GO:0008233"
+  reaction_34 hypernym "http://identifiers.org/obo.go/GO:0051261"
+  reaction_35 hypernym "http://identifiers.org/obo.go/GO:0008233"
+  reaction_36 hypernym "http://identifiers.org/obo.go/GO:0006468"
+  reaction_37 hypernym "http://identifiers.org/obo.go/GO:0008233"
+  reaction_38 hypernym "http://identifiers.org/obo.go/GO:0051261"
+  reaction_39 hypernym "http://identifiers.org/obo.go/GO:0008233"
+  reaction_40 parthood "http://identifiers.org/obo.go/GO:0051261"
+  reaction_41 hypernym "http://identifiers.org/obo.go/GO:0006470"
+  reaction_42 hypernym "http://identifiers.org/obo.go/GO:0006470"
+  reaction_43 hypernym "http://identifiers.org/obo.go/GO:0006470"
+  reaction_44 hypernym "http://identifiers.org/obo.go/GO:0006470"
+  reaction_45 hypernym "http://identifiers.org/obo.go/GO:0006470"
+  reaction_46 version "http://identifiers.org/obo.go/GO:0051261"
+  reaction_47 hypernym "http://identifiers.org/obo.go/GO:0006470",
+                       "http://identifiers.org/obo.go/GO:0016311"
 end
+
+Model_1 is "Leloup2003_CircClock_LD"
+
+Model_1 model_entity_is "http://identifiers.org/biomodels.db/MODEL4108701438"
+Model_1 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000078"
+Model_1 description "http://identifiers.org/pubmed/12775757"
+Model_1 origin "http://identifiers.org/biomodels.db/BIOMD0000000021"
+Model_1 taxon "http://identifiers.org/taxonomy/40674"
+Model_1 hypernym "http://identifiers.org/obo.go/GO:0009649"
+Model_1 version "http://identifiers.org/kegg.pathway/hsa04710"

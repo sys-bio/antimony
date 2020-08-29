@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *MODEL1306190002()
 
   // Compartments and Species:
@@ -9,18 +9,18 @@ model *MODEL1306190002()
   T := N0 + N1 + N2 + N3;
   f0 := r0*N0*(1 - T/K);
   p00 := 1 - p01 - p03;
-  p03 := (q03*K03)/(N3 + K03);
+  p03 := q03*K03/(N3 + K03);
   f1 := r1*N1*(1 - T/K);
   p11 := 1 - p12;
 
   // Reactions:
-  R0X: N0 => ; (d0*N0*K0X)/(N3 + K0X);
+  R0X: N0 => ; d0*N0*K0X/(N3 + K0X);
   R01: N0 => N0 + N1; p01*f0;
-  R00: N0 => 2N0; p00*f0;
-  R1X: N1 => ; (d1*N1*K1X)/(N3 + K1X);
+  R00: N0 => 2 N0; p00*f0;
+  R1X: N1 => ; d1*N1*K1X/(N3 + K1X);
   R12: N1 => N1 + N2; p12*f1;
-  R11: N1 => 2N1; p11*f1;
-  R2X: N2 => ; (d2*N2*K2X)/(N3 + K2X);
+  R11: N1 => 2 N1; p11*f1;
+  R2X: N2 => ; d2*N2*K2X/(N3 + K2X);
   R03: N0 => N0 + N3; p03*f0;
   R3X: N3 => ; d3*N3;
 
@@ -101,4 +101,22 @@ model *MODEL1306190002()
   R2X is "N2 death";
   R03 is "N0 differentiation to N3";
   R3X is "N3 death";
+
+  // CV terms:
+  compartment_ hypernym "http://identifiers.org/bto/BTO:0000305"
+  N0 hypernym "http://identifiers.org/cl/CL:0000034"
+  N1 hypernym "http://identifiers.org/cl/CL:0000034"
+  N2 hypernym "http://identifiers.org/cl/CL:0000034"
 end
+
+MODEL1306190002 is "Smallbone2013 - Colon Crypt cycle - Version 2"
+
+MODEL1306190002 model_entity_is "http://identifiers.org/biomodels.db/MODEL1306190002"
+MODEL1306190002 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000518"
+MODEL1306190002 description "http://identifiers.org/pubmed/24354351"
+MODEL1306190002 model_entity_is "http://identifiers.org/biomodels.db/MODEL1306190002"
+MODEL1306190002 origin "http://identifiers.org/biomodels.db/BIOMD0000000519"
+MODEL1306190002 taxon "http://identifiers.org/taxonomy/39107"
+MODEL1306190002 container "http://identifiers.org/bto/BTO:0000305"
+MODEL1306190002 hypernym "http://identifiers.org/go/GO:0048863"
+MODEL1306190002 property "http://identifiers.org/mamo/MAMO_0000046"

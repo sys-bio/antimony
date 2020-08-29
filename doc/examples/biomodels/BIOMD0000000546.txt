@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *MODEL1405150000()
 
   // Compartments and Species:
@@ -14,9 +14,9 @@ model *MODEL1405150000()
   re7: s7 => s3; pi_a*s2;
 
   // Species initializations:
-  s1 = 5.800000e+005;
+  s1 = 5.8e5;
   s2 = 0;
-  s3 = 1.473000e+003;
+  s3 = 1.473e3;
   s4 = 0;
   s5 = 0;
   s6 = 0;
@@ -27,9 +27,9 @@ model *MODEL1405150000()
   default has volume;
 
   // Variable initializations:
-  rho_E = 6.2e-008;
+  rho_E = 6.2e-08;
   rho_E has substance;
-  beta_a = 2.4e-006;
+  beta_a = 2.4e-06;
   beta_a has substance;
   delta_Es = 0.6;
   delta_Es has substance;
@@ -53,4 +53,28 @@ model *MODEL1405150000()
   s1 is "Ep";
   s2 is "Eps";
   s3 is "V";
+
+  // SBO terms:
+  s4.sboTerm = 291
+  s5.sboTerm = 291
+  s6.sboTerm = 291
+  s7.sboTerm = 291
+
+  // CV terms:
+  default hypernym "http://identifiers.org/fma/FMA:7195"
+  s1 hypernym "http://identifiers.org/fma/FMA:66768"
+  s2 hypernym "http://identifiers.org/fma/FMA:66768"
+  s3 hypernym "http://identifiers.org/taxonomy/132504"
 end
+
+MODEL1405150000 is "Miao2010 - Innate and adaptive immune responses to primary Influenza A Virus infection"
+
+MODEL1405150000 model_entity_is "http://identifiers.org/biomodels.db/MODEL1405150000"
+MODEL1405150000 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000546"
+MODEL1405150000 description "http://identifiers.org/pubmed/20410284"
+MODEL1405150000 origin "http://identifiers.org/biomodels.db/MODEL1406230000"
+MODEL1405150000 taxon "http://identifiers.org/taxonomy/39107",
+                      "http://identifiers.org/taxonomy/132504"
+MODEL1405150000 hypernym "http://identifiers.org/go/GO:0045087",
+                         "http://identifiers.org/go/GO:0002250"
+MODEL1405150000 version "http://identifiers.org/doid/DOID:8469"

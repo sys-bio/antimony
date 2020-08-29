@@ -1,50 +1,50 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 function CPT1(sf, V, Kms1, Kms2, Kmp1, Kmp2, Ki1, Keq, S1, S2, P1, P2, I1, n)
-  (sf*V*((S1*S2)/(Kms1*Kms2) - (P1*P2)/(Kms1*Kms2*Keq)))/((1 + S1/Kms1 + P1/Kmp1 + (I1/Ki1)^n)*(1 + S2/Kms2 + P2/Kmp2));
+  sf*V*(S1*S2/(Kms1*Kms2) - P1*P2/(Kms1*Kms2*Keq))/((1 + S1/Kms1 + P1/Kmp1 + (I1/Ki1)^n)*(1 + S2/Kms2 + P2/Kmp2));
 end
 
 function CACT(Vf, Vr, Kms1, Kms2, Kmp1, Kmp2, Kis1, Kip2, Keq, S1, S2, P1, P2)
-  (Vf*(S1*S2 - (P1*P2)/Keq))/(S1*S2 + Kms2*S1 + Kms1*S2*(1 + P2/Kip2) + Vf/(Vr*Keq)*(Kmp2*P1*(1 + S1/Kis1) + P2*(Kmp1 + P1)));
+  Vf*(S1*S2 - P1*P2/Keq)/(S1*S2 + Kms2*S1 + Kms1*S2*(1 + P2/Kip2) + (Vf/(Vr*Keq))*(Kmp2*P1*(1 + S1/Kis1) + P2*(Kmp1 + P1)));
 end
 
 function CPT2(sf, V, Kms1, Kms2, Kms3, Kms4, Kms5, Kms6, Kms7, Kms8, Kmp1, Kmp2, Kmp3, Kmp4, Kmp5, Kmp6, Kmp7, Kmp8, Keq, S1, S2, S3, S4, S5, S6, S7, S8, P1, P2, P3, P4, P5, P6, P7, P8)
-  (sf*V*((S1*S8)/(Kms1*Kms8) - (P1*P8)/(Kms1*Kms8*Keq)))/((1 + S1/Kms1 + P1/Kmp1 + S2/Kms2 + P2/Kmp2 + S3/Kms3 + P3/Kmp3 + S4/Kms4 + P4/Kmp4 + S5/Kms5 + P5/Kmp5 + S6/Kms6 + P6/Kmp6 + S7/Kms7 + P7/Kmp7)*(1 + S8/Kms8 + P8/Kmp8));
+  sf*V*(S1*S8/(Kms1*Kms8) - P1*P8/(Kms1*Kms8*Keq))/((1 + S1/Kms1 + P1/Kmp1 + S2/Kms2 + P2/Kmp2 + S3/Kms3 + P3/Kmp3 + S4/Kms4 + P4/Kmp4 + S5/Kms5 + P5/Kmp5 + S6/Kms6 + P6/Kmp6 + S7/Kms7 + P7/Kmp7)*(1 + S8/Kms8 + P8/Kmp8));
 end
 
 function VLCAD(sf, V, Kms1, Kms2, Kms3, Kms4, Kmp1, Kmp2, Kmp3, Kmp4, Keq, S1, S2, S3, S4, P1, P2, P3, P4)
-  (sf*V*((S1*(S4 - P4))/(Kms1*Kms4) - (P1*P4)/(Kms1*Kms4*Keq)))/((1 + S1/Kms1 + P1/Kmp1 + S2/Kms2 + P2/Kmp2 + S3/Kms3 + P3/Kmp3)*(1 + (S4 - P4)/Kms4 + P4/Kmp4));
+  sf*V*(S1*(S4 - P4)/(Kms1*Kms4) - P1*P4/(Kms1*Kms4*Keq))/((1 + S1/Kms1 + P1/Kmp1 + S2/Kms2 + P2/Kmp2 + S3/Kms3 + P3/Kmp3)*(1 + (S4 - P4)/Kms4 + P4/Kmp4));
 end
 
 function LCAD(sf, V, Kms1, Kms2, Kms3, Kms4, Kms5, Kms6, Kmp1, Kmp2, Kmp3, Kmp4, Kmp5, Kmp6, Keq, S1, S2, S3, S4, S5, S6, P1, P2, P3, P4, P5, P6)
-  (sf*V*((S1*(S6 - P6))/(Kms1*Kms6) - (P1*P6)/(Kms1*Kms6*Keq)))/((1 + S1/Kms1 + P1/Kmp1 + S2/Kms2 + P2/Kmp2 + S3/Kms3 + P3/Kmp3 + S4/Kms4 + P4/Kmp4 + S5/Kms5 + P5/Kmp5)*(1 + (S6 - P6)/Kms6 + P6/Kmp6));
+  sf*V*(S1*(S6 - P6)/(Kms1*Kms6) - P1*P6/(Kms1*Kms6*Keq))/((1 + S1/Kms1 + P1/Kmp1 + S2/Kms2 + P2/Kmp2 + S3/Kms3 + P3/Kmp3 + S4/Kms4 + P4/Kmp4 + S5/Kms5 + P5/Kmp5)*(1 + (S6 - P6)/Kms6 + P6/Kmp6));
 end
 
 function MCAD(sf, V, Kms1, Kms2, Kms3, Kms4, Kms5, Kms6, Kmp1, Kmp2, Kmp3, Kmp4, Kmp5, Kmp6, Keq, S1, S2, S3, S4, S5, S6, P1, P2, P3, P4, P5, P6)
-  (sf*V*((S1*(S6 - P6))/(Kms1*Kms6) - (P1*P6)/(Kms1*Kms6*Keq)))/((1 + S1/Kms1 + P1/Kmp1 + S2/Kms2 + P2/Kmp2 + S3/Kms3 + P3/Kmp3 + S4/Kms4 + P4/Kmp4 + S5/Kms5 + P5/Kmp5)*(1 + (S6 - P6)/Kms6 + P6/Kmp6));
+  sf*V*(S1*(S6 - P6)/(Kms1*Kms6) - P1*P6/(Kms1*Kms6*Keq))/((1 + S1/Kms1 + P1/Kmp1 + S2/Kms2 + P2/Kmp2 + S3/Kms3 + P3/Kmp3 + S4/Kms4 + P4/Kmp4 + S5/Kms5 + P5/Kmp5)*(1 + (S6 - P6)/Kms6 + P6/Kmp6));
 end
 
 function SCAD(sf, V, Kms1, Kms2, Kms3, Kmp1, Kmp2, Kmp3, Keq, S1, S2, S3, P1, P2, P3)
-  (sf*V*((S1*(S3 - P3))/(Kms1*Kms3) - (P1*P3)/(Kms1*Kms3*Keq)))/((1 + S1/Kms1 + P1/Kmp1 + S2/Kms2 + P2/Kmp2)*(1 + (S3 - P3)/Kms3 + P3/Kmp3));
+  sf*V*(S1*(S3 - P3)/(Kms1*Kms3) - P1*P3/(Kms1*Kms3*Keq))/((1 + S1/Kms1 + P1/Kmp1 + S2/Kms2 + P2/Kmp2)*(1 + (S3 - P3)/Kms3 + P3/Kmp3));
 end
 
 function CROT(sf, V, Kms1, Kms2, Kms3, Kms4, Kms5, Kms6, Kms7, Kmp1, Kmp2, Kmp3, Kmp4, Kmp5, Kmp6, Kmp7, Ki1, Keq, S1, S2, S3, S4, S5, S6, S7, P1, P2, P3, P4, P5, P6, P7, I1)
-  (sf*V*(S1/Kms1 - P1/(Kms1*Keq)))/(1 + S1/Kms1 + P1/Kmp1 + S2/Kms2 + P2/Kmp2 + S3/Kms3 + P3/Kmp3 + S4/Kms4 + P4/Kmp4 + S5/Kms5 + P5/Kmp5 + S6/Kms6 + P6/Kmp6 + S7/Kms7 + P7/Kmp7 + I1/Ki1);
+  sf*V*(S1/Kms1 - P1/(Kms1*Keq))/(1 + S1/Kms1 + P1/Kmp1 + S2/Kms2 + P2/Kmp2 + S3/Kms3 + P3/Kmp3 + S4/Kms4 + P4/Kmp4 + S5/Kms5 + P5/Kmp5 + S6/Kms6 + P6/Kmp6 + S7/Kms7 + P7/Kmp7 + I1/Ki1);
 end
 
 function MSCHAD(sf, V, Kms1, Kms2, Kms3, Kms4, Kms5, Kms6, Kms7, Kms8, Kmp1, Kmp2, Kmp3, Kmp4, Kmp5, Kmp6, Kmp7, Kmp8, Keq, S1, S2, S3, S4, S5, S6, S7, S8, P1, P2, P3, P4, P5, P6, P7, P8)
-  (sf*V*((S1*(S8 - P8))/(Kms1*Kms8) - (P1*P8)/(Kms1*Kms8*Keq)))/((1 + S1/Kms1 + P1/Kmp1 + S2/Kms2 + P2/Kmp2 + S3/Kms3 + P3/Kmp3 + S4/Kms4 + P4/Kmp4 + S5/Kms5 + P5/Kmp5 + S6/Kms6 + P6/Kmp6 + S7/Kms7 + P7/Kmp7)*(1 + (S8 - P8)/Kms8 + P8/Kmp8));
+  sf*V*(S1*(S8 - P8)/(Kms1*Kms8) - P1*P8/(Kms1*Kms8*Keq))/((1 + S1/Kms1 + P1/Kmp1 + S2/Kms2 + P2/Kmp2 + S3/Kms3 + P3/Kmp3 + S4/Kms4 + P4/Kmp4 + S5/Kms5 + P5/Kmp5 + S6/Kms6 + P6/Kmp6 + S7/Kms7 + P7/Kmp7)*(1 + (S8 - P8)/Kms8 + P8/Kmp8));
 end
 
 function MCKATA(sf, V, Kms1, Kms2, Kms3, Kms4, Kms5, Kms6, Kms7, Kms8, Kmp1, Kmp2, Kmp3, Kmp4, Kmp5, Kmp6, Kmp7, Kmp8, Keq, S1, S2, S3, S4, S5, S6, S7, S8, P1, P2, P3, P4, P5, P6, P7, P8)
-  (sf*V*((S1*S8)/(Kms1*Kms8) - (P1*P8)/(Kms1*Kms8*Keq)))/((1 + S1/Kms1 + P1/Kmp1 + S2/Kms2 + P2/Kmp2 + S3/Kms3 + P3/Kmp3 + S4/Kms4 + P4/Kmp4 + S5/Kms5 + P5/Kmp5 + S6/Kms6 + P6/Kmp6 + S7/Kms7 + P7/Kmp7 + P8/Kmp8)*(1 + S8/Kms8 + P8/Kmp8));
+  sf*V*(S1*S8/(Kms1*Kms8) - P1*P8/(Kms1*Kms8*Keq))/((1 + S1/Kms1 + P1/Kmp1 + S2/Kms2 + P2/Kmp2 + S3/Kms3 + P3/Kmp3 + S4/Kms4 + P4/Kmp4 + S5/Kms5 + P5/Kmp5 + S6/Kms6 + P6/Kmp6 + S7/Kms7 + P7/Kmp7 + P8/Kmp8)*(1 + S8/Kms8 + P8/Kmp8));
 end
 
 function MCKATB(sf, V, Kms1, Kms2, Kms3, Kms4, Kms5, Kms6, Kms7, Kms8, Kmp1, Kmp2, Kmp3, Kmp4, Kmp5, Kmp6, Kmp7, Kmp8, Keq, S1, S2, S3, S4, S5, S6, S7, S8, P1, P2, P3, P4, P5, P6, P7, P8)
-  (sf*V*((S1*S8)/(Kms1*Kms8) - (P8*P8)/(Kms1*Kms8*Keq)))/((1 + S1/Kms1 + P1/Kmp1 + S2/Kms2 + P2/Kmp2 + S3/Kms3 + P3/Kmp3 + S4/Kms4 + P4/Kmp4 + S5/Kms5 + P5/Kmp5 + S6/Kms6 + P6/Kmp6 + S7/Kms7 + P7/Kmp7 + P8/Kmp8)*(1 + S8/Kms8 + P8/Kmp8));
+  sf*V*(S1*S8/(Kms1*Kms8) - P8*P8/(Kms1*Kms8*Keq))/((1 + S1/Kms1 + P1/Kmp1 + S2/Kms2 + P2/Kmp2 + S3/Kms3 + P3/Kmp3 + S4/Kms4 + P4/Kmp4 + S5/Kms5 + P5/Kmp5 + S6/Kms6 + P6/Kmp6 + S7/Kms7 + P7/Kmp7 + P8/Kmp8)*(1 + S8/Kms8 + P8/Kmp8));
 end
 
 function MTP(sf, V, Kms1, Kms2, Kms3, Kms4, Kms5, Kms7, Kms8, Kmp1, Kmp2, Kmp3, Kmp4, Kmp5, Kmp6, Kmp7, Kmp8, Ki1, Keq, S1, S2, S3, S4, S5, S7, S8, P1, P2, P3, P4, P5, P6, P7, P8, I1)
-  (sf*V*((S1*(S7 - P7)*S8)/(Kms1*Kms7*Kms8) - (P1*P7*P8)/(Kms1*Kms7*Kms8*Keq)))/((1 + S1/Kms1 + P1/Kmp1 + S2/Kms2 + P2/Kmp2 + S3/Kms3 + P3/Kmp3 + S4/Kms4 + P4/Kmp4 + S5/Kms5 + P5/Kmp5 + P6/Kmp6 + I1/Ki1)*(1 + (S7 - P7)/Kms7 + P7/Kmp7)*(1 + S8/Kms8 + P8/Kmp8));
+  sf*V*(S1*(S7 - P7)*S8/(Kms1*Kms7*Kms8) - P1*P7*P8/(Kms1*Kms7*Kms8*Keq))/((1 + S1/Kms1 + P1/Kmp1 + S2/Kms2 + P2/Kmp2 + S3/Kms3 + P3/Kmp3 + S4/Kms4 + P4/Kmp4 + S5/Kms5 + P5/Kmp5 + P6/Kmp6 + I1/Ki1)*(1 + (S7 - P7)/Kms7 + P7/Kmp7)*(1 + S8/Kms8 + P8/Kmp8));
 end
 
 function RES(Ks, S, K1)
@@ -129,7 +129,7 @@ model *MODEL1312040001()
   vmckatC10: C10KetoacylCoAMAT -> C8AcylCoAMAT + AcetylCoAMAT; MCKATA(vmckatC10_sfmckatC10, Vmckat, KmmckatC10KetoacylCoAMAT, KmmckatC16KetoacylCoAMAT, KmmckatC14KetoacylCoAMAT, KmmckatC12KetoacylCoAMAT, KmmckatC8KetoacylCoAMAT, KmmckatC6KetoacylCoAMAT, KmmckatC4AcetoacylCoAMAT, KmmckatCoAMAT, KmmckatC8AcylCoAMAT, KmmckatC16AcylCoAMAT, KmmckatC14AcylCoAMAT, KmmckatC12AcylCoAMAT, KmmckatC10AcylCoAMAT, KmmckatC6AcylCoAMAT, KmmckatC4AcylCoAMAT, KmmckatAcetylCoAMAT, Keqmckat, C10KetoacylCoAMAT, C16KetoacylCoAMAT, C14KetoacylCoAMAT, C12KetoacylCoAMAT, C8KetoacylCoAMAT, C6KetoacylCoAMAT, C4AcetoacylCoAMAT, CoAMAT, C8AcylCoAMAT, C16AcylCoAMAT, C14AcylCoAMAT, C12AcylCoAMAT, C10AcylCoAMAT, C6AcylCoAMAT, C4AcylCoAMAT, AcetylCoAMAT);
   vmckatC8: C8KetoacylCoAMAT -> C6AcylCoAMAT + AcetylCoAMAT; MCKATA(vmckatC8_sfmckatC8, Vmckat, KmmckatC8KetoacylCoAMAT, KmmckatC16KetoacylCoAMAT, KmmckatC14KetoacylCoAMAT, KmmckatC12KetoacylCoAMAT, KmmckatC10KetoacylCoAMAT, KmmckatC6KetoacylCoAMAT, KmmckatC4AcetoacylCoAMAT, KmmckatCoAMAT, KmmckatC6AcylCoAMAT, KmmckatC16AcylCoAMAT, KmmckatC14AcylCoAMAT, KmmckatC12AcylCoAMAT, KmmckatC10AcylCoAMAT, KmmckatC8AcylCoAMAT, KmmckatC4AcylCoAMAT, KmmckatAcetylCoAMAT, Keqmckat, C8KetoacylCoAMAT, C16KetoacylCoAMAT, C14KetoacylCoAMAT, C12KetoacylCoAMAT, C10KetoacylCoAMAT, C6KetoacylCoAMAT, C4AcetoacylCoAMAT, CoAMAT, C6AcylCoAMAT, C16AcylCoAMAT, C14AcylCoAMAT, C12AcylCoAMAT, C10AcylCoAMAT, C8AcylCoAMAT, C4AcylCoAMAT, AcetylCoAMAT);
   vmckatC6: C6KetoacylCoAMAT -> C4AcylCoAMAT + AcetylCoAMAT; MCKATA(vmckatC6_sfmckatC6, Vmckat, KmmckatC6KetoacylCoAMAT, KmmckatC16KetoacylCoAMAT, KmmckatC14KetoacylCoAMAT, KmmckatC12KetoacylCoAMAT, KmmckatC10KetoacylCoAMAT, KmmckatC8KetoacylCoAMAT, KmmckatC4AcetoacylCoAMAT, KmmckatCoAMAT, KmmckatC4AcylCoAMAT, KmmckatC16AcylCoAMAT, KmmckatC14AcylCoAMAT, KmmckatC12AcylCoAMAT, KmmckatC10AcylCoAMAT, KmmckatC8AcylCoAMAT, KmmckatC6AcylCoAMAT, KmmckatAcetylCoAMAT, Keqmckat, C6KetoacylCoAMAT, C16KetoacylCoAMAT, C14KetoacylCoAMAT, C12KetoacylCoAMAT, C10KetoacylCoAMAT, C8KetoacylCoAMAT, C4AcetoacylCoAMAT, CoAMAT, C4AcylCoAMAT, C16AcylCoAMAT, C14AcylCoAMAT, C12AcylCoAMAT, C10AcylCoAMAT, C8AcylCoAMAT, C6AcylCoAMAT, AcetylCoAMAT);
-  vmckatC4: C4AcetoacylCoAMAT -> 2AcetylCoAMAT; MCKATB(vmckatC4_sfmckatC4, Vmckat, KmmckatC4AcetoacylCoAMAT, KmmckatC16KetoacylCoAMAT, KmmckatC14KetoacylCoAMAT, KmmckatC12KetoacylCoAMAT, KmmckatC10KetoacylCoAMAT, KmmckatC8KetoacylCoAMAT, KmmckatC6KetoacylCoAMAT, KmmckatCoAMAT, KmmckatC4AcylCoAMAT, KmmckatC16AcylCoAMAT, KmmckatC14AcylCoAMAT, KmmckatC12AcylCoAMAT, KmmckatC10AcylCoAMAT, KmmckatC8AcylCoAMAT, KmmckatC6AcylCoAMAT, KmmckatAcetylCoAMAT, Keqmckat, C4AcetoacylCoAMAT, C16KetoacylCoAMAT, C14KetoacylCoAMAT, C12KetoacylCoAMAT, C10KetoacylCoAMAT, C8KetoacylCoAMAT, C6KetoacylCoAMAT, CoAMAT, C4AcylCoAMAT, C16AcylCoAMAT, C14AcylCoAMAT, C12AcylCoAMAT, C10AcylCoAMAT, C8AcylCoAMAT, C6AcylCoAMAT, AcetylCoAMAT);
+  vmckatC4: C4AcetoacylCoAMAT -> 2 AcetylCoAMAT; MCKATB(vmckatC4_sfmckatC4, Vmckat, KmmckatC4AcetoacylCoAMAT, KmmckatC16KetoacylCoAMAT, KmmckatC14KetoacylCoAMAT, KmmckatC12KetoacylCoAMAT, KmmckatC10KetoacylCoAMAT, KmmckatC8KetoacylCoAMAT, KmmckatC6KetoacylCoAMAT, KmmckatCoAMAT, KmmckatC4AcylCoAMAT, KmmckatC16AcylCoAMAT, KmmckatC14AcylCoAMAT, KmmckatC12AcylCoAMAT, KmmckatC10AcylCoAMAT, KmmckatC8AcylCoAMAT, KmmckatC6AcylCoAMAT, KmmckatAcetylCoAMAT, Keqmckat, C4AcetoacylCoAMAT, C16KetoacylCoAMAT, C14KetoacylCoAMAT, C12KetoacylCoAMAT, C10KetoacylCoAMAT, C8KetoacylCoAMAT, C6KetoacylCoAMAT, CoAMAT, C4AcylCoAMAT, C16AcylCoAMAT, C14AcylCoAMAT, C12AcylCoAMAT, C10AcylCoAMAT, C8AcylCoAMAT, C6AcylCoAMAT, AcetylCoAMAT);
   vmtpC16: C16EnoylCoAMAT -> C14AcylCoAMAT + AcetylCoAMAT + NADHMAT; MTP(vmtpC16_sfmtpC16, Vmtp, KmmtpC16EnoylCoAMAT, KmmtpC14EnoylCoAMAT, KmmtpC12EnoylCoAMAT, KmmtpC10EnoylCoAMAT, KmmtpC8EnoylCoAMAT, KmmtpNADMAT, KmmtpCoAMAT, KmmtpC14AcylCoAMAT, KmmtpC16AcylCoAMAT, KmmtpC12AcylCoAMAT, KmmtpC10AcylCoAMAT, KmmtpC8AcylCoAMAT, KmmtpC6AcylCoAMAT, KmmtpNADHMAT, KmmtpAcetylCoAMAT, KicrotC4AcetoacylCoA, Keqmtp, C16EnoylCoAMAT, C14EnoylCoAMAT, C12EnoylCoAMAT, C10EnoylCoAMAT, C8EnoylCoAMAT, NADtMAT, CoAMAT, C14AcylCoAMAT, C16AcylCoAMAT, C12AcylCoAMAT, C10AcylCoAMAT, C8AcylCoAMAT, C6AcylCoAMAT, NADHMAT, AcetylCoAMAT, C4AcetoacylCoAMAT);
   vmtpC14: C14EnoylCoAMAT -> C12AcylCoAMAT + AcetylCoAMAT + NADHMAT; MTP(vmtpC14_sfmtpC14, Vmtp, KmmtpC14EnoylCoAMAT, KmmtpC16EnoylCoAMAT, KmmtpC12EnoylCoAMAT, KmmtpC10EnoylCoAMAT, KmmtpC8EnoylCoAMAT, KmmtpNADMAT, KmmtpCoAMAT, KmmtpC12AcylCoAMAT, KmmtpC16AcylCoAMAT, KmmtpC14AcylCoAMAT, KmmtpC10AcylCoAMAT, KmmtpC8AcylCoAMAT, KmmtpC6AcylCoAMAT, KmmtpNADHMAT, KmmtpAcetylCoAMAT, KicrotC4AcetoacylCoA, Keqmtp, C14EnoylCoAMAT, C16EnoylCoAMAT, C12EnoylCoAMAT, C10EnoylCoAMAT, C8EnoylCoAMAT, NADtMAT, CoAMAT, C12AcylCoAMAT, C16AcylCoAMAT, C14AcylCoAMAT, C10AcylCoAMAT, C8AcylCoAMAT, C6AcylCoAMAT, NADHMAT, AcetylCoAMAT, C4AcetoacylCoAMAT);
   vmtpC12: C12EnoylCoAMAT -> C10AcylCoAMAT + AcetylCoAMAT + NADHMAT; MTP(vmtpC12_sfmtpC12, Vmtp, KmmtpC12EnoylCoAMAT, KmmtpC16EnoylCoAMAT, KmmtpC14EnoylCoAMAT, KmmtpC10EnoylCoAMAT, KmmtpC8EnoylCoAMAT, KmmtpNADMAT, KmmtpCoAMAT, KmmtpC10AcylCoAMAT, KmmtpC16AcylCoAMAT, KmmtpC14AcylCoAMAT, KmmtpC12AcylCoAMAT, KmmtpC8AcylCoAMAT, KmmtpC6AcylCoAMAT, KmmtpNADHMAT, KmmtpAcetylCoAMAT, KicrotC4AcetoacylCoA, Keqmtp, C12EnoylCoAMAT, C16EnoylCoAMAT, C14EnoylCoAMAT, C10EnoylCoAMAT, C8EnoylCoAMAT, NADtMAT, CoAMAT, C10AcylCoAMAT, C16AcylCoAMAT, C14AcylCoAMAT, C12AcylCoAMAT, C8AcylCoAMAT, C6AcylCoAMAT, NADHMAT, AcetylCoAMAT, C4AcetoacylCoAMAT);
@@ -195,7 +195,7 @@ model *MODEL1312040001()
 
   // Compartment initializations:
   VCYT = 0.01;
-  VMAT = 1.8e-006;
+  VMAT = 1.8e-06;
 
   // Variable initializations:
   Vfcact = 0.42;
@@ -699,4 +699,76 @@ model *MODEL1312040001()
   volume is "litre per mgProtein";
   uM_per_min_per_mgProtein is "uM per min per mgProtein";
   l_per_min_per_mgProtein is "l per min per mgProtein";
+
+  // CV terms:
+  VCYT hypernym "http://identifiers.org/go/GO:0005737"
+  VMAT hypernym "http://identifiers.org/go/GO:0005739"
+  C16AcylCarCYT hypernym "http://identifiers.org/chebi/CHEBI:17387"
+  C16AcylCarMAT hypernym "http://identifiers.org/chebi/CHEBI:17387"
+  C16AcylCoAMAT hypernym "http://identifiers.org/chebi/CHEBI:37554",
+                         "http://identifiers.org/chebi/CHEBI:15525"
+  C16EnoylCoAMAT hypernym "http://identifiers.org/chebi/CHEBI:27803"
+  C16HydroxyacylCoAMAT hypernym "http://identifiers.org/chebi/CHEBI:61902"
+  C16KetoacylCoAMAT hypernym "http://identifiers.org/chebi/CHEBI:37554"
+  C14AcylCarCYT hypernym "http://identifiers.org/chebi/CHEBI:17387"
+  C14AcylCarMAT hypernym "http://identifiers.org/chebi/CHEBI:17387"
+  C14AcylCoAMAT hypernym "http://identifiers.org/chebi/CHEBI:15532",
+                         "http://identifiers.org/chebi/CHEBI:37554"
+  C14EnoylCoAMAT hypernym "http://identifiers.org/chebi/CHEBI:27803"
+  C14HydroxyacylCoAMAT hypernym "http://identifiers.org/chebi/CHEBI:61902"
+  C14KetoacylCoAMAT hypernym "http://identifiers.org/chebi/CHEBI:37554"
+  C12AcylCarCYT hypernym "http://identifiers.org/chebi/CHEBI:17387"
+  C12AcylCarMAT hypernym "http://identifiers.org/chebi/CHEBI:17387"
+  C12AcylCoAMAT hypernym "http://identifiers.org/chebi/CHEBI:37554"
+  C12EnoylCoAMAT hypernym "http://identifiers.org/chebi/CHEBI:27803"
+  C12HydroxyacylCoAMAT hypernym "http://identifiers.org/chebi/CHEBI:61902"
+  C12KetoacylCoAMAT hypernym "http://identifiers.org/chebi/CHEBI:37554"
+  C10AcylCarCYT hypernym "http://identifiers.org/chebi/CHEBI:17387"
+  C10AcylCarMAT hypernym "http://identifiers.org/chebi/CHEBI:17387"
+  C10AcylCoAMAT hypernym "http://identifiers.org/chebi/CHEBI:37554"
+  C10EnoylCoAMAT hypernym "http://identifiers.org/chebi/CHEBI:27803"
+  C10HydroxyacylCoAMAT hypernym "http://identifiers.org/chebi/CHEBI:61902"
+  C10KetoacylCoAMAT hypernym "http://identifiers.org/chebi/CHEBI:37554"
+  C8AcylCarCYT hypernym "http://identifiers.org/chebi/CHEBI:17387"
+  C8AcylCarMAT hypernym "http://identifiers.org/chebi/CHEBI:17387"
+  C8AcylCoAMAT hypernym "http://identifiers.org/chebi/CHEBI:37554"
+  C8EnoylCoAMAT hypernym "http://identifiers.org/chebi/CHEBI:27803"
+  C8HydroxyacylCoAMAT hypernym "http://identifiers.org/chebi/CHEBI:61902"
+  C8KetoacylCoAMAT hypernym "http://identifiers.org/chebi/CHEBI:37554"
+  C6AcylCarCYT hypernym "http://identifiers.org/chebi/CHEBI:17387"
+  C6AcylCarMAT hypernym "http://identifiers.org/chebi/CHEBI:17387"
+  C6AcylCoAMAT hypernym "http://identifiers.org/chebi/CHEBI:37554"
+  C6EnoylCoAMAT hypernym "http://identifiers.org/chebi/CHEBI:27803"
+  C6HydroxyacylCoAMAT hypernym "http://identifiers.org/chebi/CHEBI:61902"
+  C6KetoacylCoAMAT hypernym "http://identifiers.org/chebi/CHEBI:37554"
+  C4AcylCarCYT hypernym "http://identifiers.org/chebi/CHEBI:17387"
+  C4AcylCarMAT hypernym "http://identifiers.org/chebi/CHEBI:17387"
+  C4AcylCoAMAT hypernym "http://identifiers.org/chebi/CHEBI:37554"
+  C4EnoylCoAMAT hypernym "http://identifiers.org/chebi/CHEBI:27803"
+  C4HydroxyacylCoAMAT hypernym "http://identifiers.org/chebi/CHEBI:61902"
+  C4AcetoacylCoAMAT hypernym "http://identifiers.org/chebi/CHEBI:37554"
+  AcetylCoAMAT hypernym "http://identifiers.org/chebi/CHEBI:15351"
+  FADHMAT hypernym "http://identifiers.org/chebi/CHEBI:30788"
+  NADHMAT hypernym "http://identifiers.org/chebi/CHEBI:16908"
+  CoAMAT hypernym "http://identifiers.org/chebi/CHEBI:15346"
+  CoAMATt hypernym "http://identifiers.org/chebi/CHEBI:15346"
+  C16AcylCoACYT hypernym "http://identifiers.org/chebi/CHEBI:15525",
+                         "http://identifiers.org/chebi/CHEBI:37554"
+  CarCYT hypernym "http://identifiers.org/chebi/CHEBI:17126"
+  CoACYT hypernym "http://identifiers.org/chebi/CHEBI:15346"
+  MalCoACYT hypernym "http://identifiers.org/chebi/CHEBI:15531"
+  CarMAT hypernym "http://identifiers.org/chebi/CHEBI:17126"
+  FADtMAT hypernym "http://identifiers.org/chebi/CHEBI:16238"
+  NADtMAT hypernym "http://identifiers.org/chebi/CHEBI:13389"
 end
+
+MODEL1312040001 is "vanEunen2013 - Network dynamics of fatty acid β-oxidation (time-course model)"
+
+MODEL1312040001 model_entity_is "http://identifiers.org/biomodels.db/MODEL1312040001"
+MODEL1312040001 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000506"
+MODEL1312040001 description "http://identifiers.org/pubmed/23966849"
+MODEL1312040001 container "http://identifiers.org/go/GO:0005739",
+                          "http://identifiers.org/bto/BTO:0000759"
+MODEL1312040001 taxon "http://identifiers.org/taxonomy/10114"
+MODEL1312040001 hypernym "http://identifiers.org/go/GO:0019395"
+MODEL1312040001 property "http://identifiers.org/mamo/MAMO_0000046"

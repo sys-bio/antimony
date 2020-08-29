@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Fridlyand2003_Ca_flux_pancreatic_cells()
 
   // Compartments and Species:
@@ -11,15 +11,15 @@ model *Fridlyand2003_Ca_flux_pancreatic_cells()
   n_infinity := 1/(1 + exp((Vn - V)/Sn));
   tau_n := c/(exp((V - Vtau)/a) + exp((Vtau - V)/b));
   I_Vca := gmvca*pvca*(V - Vca);
-  I_CaPump := (Pmcap*Ca_cyt^2)/(Kcap^2 + Ca_cyt^2);
-  I_NaCa := (gnaca*Ca_cyt^5*(V - Vnaca))/(Ca_cyt^5 + Knaca^5);
+  I_CaPump := Pmcap*Ca_cyt^2/(Kcap^2 + Ca_cyt^2);
+  I_NaCa := gnaca*Ca_cyt^5*(V - Vnaca)/(Ca_cyt^5 + Knaca^5);
   I_CRAN := f_CRAN*p_CRAN*(V - Vna);
   I_Na := gmna*pna*(V - Vna);
-  I_NaK := (Pnak*(F1*f_2*f_3*F4*F5*f_6 - b_1*B2*B3*B4*b_5*B6))/D;
+  I_NaK := Pnak*(F1*f_2*f_3*F4*F5*f_6 - b_1*B2*B3*B4*b_5*B6)/D;
   I_KDr := gmKDr*n*(V - Vk);
   I_KCa := gmkca*f_Ca*(V - Vk);
   I_KATP := gmkatp*Okatp*(V - Vk);
-  Vca := TV/2*ln(Ca_ec/Ca_cyt);
+  Vca := (TV/2)*ln(Ca_ec/Ca_cyt);
   Vk := TV*ln(K_ec/K_cyt);
   Vna := TV*ln(Na_ec/Na_cyt);
   Vnaca := TV*(3*ln(Na_ec/Na_cyt) - ln(Ca_ec/Ca_cyt));
@@ -39,8 +39,8 @@ model *Fridlyand2003_Ca_flux_pancreatic_cells()
   D := f_2*f_3*F4*F5*f_6 + b_1*f_3*F4*F5*f_6 + b_1*B2*F4*F5*f_6 + b_1*B2*B3*F5*f_6 + b_1*B2*B3*B4*f_6 + b_1*B2*B3*B4*b_5;
   f_Ca := Ca_cyt^4/(Ca_cyt^4 + Kkca^4);
   Okatp := (0.08*(1 + 0.33*(ADP_cyt/Kdd)) + 0.89*(0.165*(ADP_cyt/Kdd))^2)/((1 + 0.165*(ADP_cyt/Kdd))^2*(1 + 0.135*(ADP_cyt/Ktd) + 0.05*(ATP_cyt/Ktt)));
-  Jerp := (Pcaer*Ca_cyt^2)/(Ca_cyt^2 + Kcarp^2);
-  O_infinity := (Ca_cyt*IP3_cyt^3)/((Ca_cyt + Krca)*(IP3_cyt^3 + Kip3^3));
+  Jerp := Pcaer*Ca_cyt^2/(Ca_cyt^2 + Kcarp^2);
+  O_infinity := Ca_cyt*IP3_cyt^3/((Ca_cyt + Krca)*(IP3_cyt^3 + Kip3^3));
   Jout := (Pleak + Pip3*O_infinity)*(Ca_er - Ca_cyt);
 
   // Rate Rules:
@@ -48,22 +48,22 @@ model *Fridlyand2003_Ca_flux_pancreatic_cells()
   V' = (0 - (I_Vca + I_CaPump + I_NaCa + I_CRAN + I_Na + I_NaK + I_KDr + I_KCa + I_KATP))/Cm;
 
   // Reactions:
-  Calcium_cyt_Ivca:  => Ca_cyt; (fi*-I_Vca)/(2*F);
-  Calcium_cyt_Inaca:  => Ca_cyt; (fi*2*I_NaCa)/(2*F);
-  Calcium_cyt_Icapump: Ca_cyt => ; (fi*2*I_CaPump)/(2*F);
-  Calcium_cyt_Jerp: 0.01Ca_cyt => 0.03Ca_er; Cytoplasm*Jerp;
-  Calcium_cyt_Jout: 0.03Ca_er => 0.01Ca_cyt; Jout;
+  Calcium_cyt_Ivca:  => Ca_cyt; fi*-I_Vca/(2*F);
+  Calcium_cyt_Inaca:  => Ca_cyt; fi*2*I_NaCa/(2*F);
+  Calcium_cyt_Icapump: Ca_cyt => ; fi*2*I_CaPump/(2*F);
+  Calcium_cyt_Jerp: 0.01 Ca_cyt => 0.03 Ca_er; Cytoplasm*Jerp;
+  Calcium_cyt_Jout: 0.03 Ca_er => 0.01 Ca_cyt; Jout;
   Calcium_cyt_sequestration: Ca_cyt => ; Cytoplasm*ksg*Ca_cyt;
-  IP3_synthesis:  => IP3_cyt; (Cytoplasm*kip*Ca_cyt^2)/(Ca_cyt^2 + Kipca^2);
+  IP3_synthesis:  => IP3_cyt; Cytoplasm*kip*Ca_cyt^2/(Ca_cyt^2 + Kipca^2);
   IP3_degradation: IP3_cyt => ; Cytoplasm*kdip*IP3_cyt;
-  Na_Inaca: Na_cyt => ; (3*I_NaCa)/F;
-  Na_Inak: Na_cyt => ; (3*I_NaK)/F;
+  Na_Inaca: Na_cyt => ; 3*I_NaCa/F;
+  Na_Inak: Na_cyt => ; 3*I_NaK/F;
   Na_Ina:  => Na_cyt; -I_Na/F;
   Na_Icran:  => Na_cyt; -I_CRAN/F;
   ATP_production:  => ATP_cyt; Cytoplasm*kadp*ADP_cyt;
   ATP_NaKATPase: ATP_cyt => ; I_NaK/F;
   ATP_Capump: ATP_cyt => ; I_CaPump/F;
-  ATP_Jerp: ATP_cyt => ; (Cytoplasm*Jerp)/2;
+  ATP_Jerp: ATP_cyt => ; Cytoplasm*Jerp/2;
   ATP_Ca_dependent_consumption: ATP_cyt => ; Cytoplasm*katpca*Ca_cyt*ATP_cyt;
   ATP_consumption: ATP_cyt => ; Cytoplasm*katp*ATP_cyt;
 
@@ -75,8 +75,8 @@ model *Fridlyand2003_Ca_flux_pancreatic_cells()
   ATP_cyt = 932.1;
 
   // Compartment initializations:
-  Cytoplasm = 7.64e-013;
-  ER = 2.8e-013;
+  Cytoplasm = 7.64e-13;
+  ER = 2.8e-13;
 
   // Variable initializations:
   n = 0.00123;
@@ -125,19 +125,19 @@ model *Fridlyand2003_Ca_flux_pancreatic_cells()
   f5_ast has per_microM_per_millisecond;
   b5_ast = 0.03;
   b5_ast has per_millisecond;
-  f_1 = 2.5e-010;
+  f_1 = 2.5e-10;
   f_1 has per_microMcube_per_millisecond;
-  f_4 = 1.5e-008;
+  f_4 = 1.5e-08;
   f_4 has per_microMsquare_per_millisecond;
   b_2 = 0.0001;
   b_2 has per_microM_per_millisecond;
-  b_3 = 1.72e-017;
+  b_3 = 1.72e-17;
   b_3 has per_microMcube_per_millisecond;
   b_4 = 0.0002;
   b_4 has per_microM_per_millisecond;
   P = 4950;
   P has micromole_per_litre;
-  b_6 = 6e-007;
+  b_6 = 6e-07;
   b_6 has per_microM_per_millisecond;
   Ksup = 150400;
   Ksup has micromole_per_litre;
@@ -202,13 +202,13 @@ model *Fridlyand2003_Ca_flux_pancreatic_cells()
   Kip3 = 3.2;
   Kip3 has micromole_per_litre;
   Jout has micromole_per_millisecond;
-  Pleak = 1e-016;
+  Pleak = 1e-16;
   Pleak has litres_per_millisecond;
-  Pip3 = 1.2e-015;
+  Pip3 = 1.2e-15;
   Pip3 has litres_per_millisecond;
   fi = 0.01;
   fi has dimensionless;
-  F = 9.6485e+016;
+  F = 9.6485e+16;
   F has fA_msec_per_micromole;
   ksg = 0.0001;
   ksg has per_millisecond;
@@ -218,13 +218,13 @@ model *Fridlyand2003_Ca_flux_pancreatic_cells()
   kip has microM_per_millisecond;
   Kipca = 0.4;
   Kipca has micromole_per_litre;
-  kdip = 4e-005;
+  kdip = 4e-05;
   kdip has per_millisecond;
   kadp = 0.00037;
   kadp has per_millisecond;
-  katpca = 5e-005;
+  katpca = 5e-05;
   katpca has per_microM_per_millisecond;
-  katp = 5e-005;
+  katp = 5e-05;
   katp has per_millisecond;
 
   // Other declarations:
@@ -291,4 +291,58 @@ model *Fridlyand2003_Ca_flux_pancreatic_cells()
   kadp is "ATP production rate constant";
   katpca is "Ca dependent ATP consumption";
   katp is "Rate constant of ATP consumption";
+
+  // CV terms:
+  Cytoplasm identity "http://identifiers.org/go/GO:0005737"
+  ER identity "http://identifiers.org/go/GO:0005783"
+  Ca_cyt identity "http://identifiers.org/chebi/CHEBI:29108",
+                  "http://identifiers.org/kegg.compound/C00076"
+  Ca_er identity "http://identifiers.org/chebi/CHEBI:29108",
+                 "http://identifiers.org/kegg.compound/C00076"
+  IP3_cyt identity "http://identifiers.org/chebi/CHEBI:16595",
+                   "http://identifiers.org/kegg.compound/C01245"
+  Na_cyt identity "http://identifiers.org/chebi/CHEBI:29101",
+                  "http://identifiers.org/kegg.compound/C01330"
+  ATP_cyt identity "http://identifiers.org/chebi/CHEBI:15422",
+                   "http://identifiers.org/kegg.compound/C00002"
+  ADP_cyt identity "http://identifiers.org/chebi/CHEBI:16761",
+                   "http://identifiers.org/kegg.compound/C00008"
+  Calcium_cyt_Ivca hypernym "http://identifiers.org/go/GO:0005245"
+  Calcium_cyt_Inaca hypernym "http://identifiers.org/go/GO:0005432"
+  Calcium_cyt_Icapump identity "http://identifiers.org/ec-code/3.6.3.8"
+  Calcium_cyt_Icapump part "http://identifiers.org/go/GO:0005388",
+                           "http://identifiers.org/go/GO:0005524"
+  Calcium_cyt_Jerp identity "http://identifiers.org/ec-code/3.6.3.8"
+  Calcium_cyt_Jerp part "http://identifiers.org/go/GO:0005388",
+                        "http://identifiers.org/go/GO:0005524"
+  Calcium_cyt_Jout part "http://identifiers.org/go/GO:0007204",
+                        "http://identifiers.org/go/GO:0005220"
+  Calcium_cyt_sequestration identity "http://identifiers.org/go/GO:0051208"
+  IP3_synthesis identity "http://identifiers.org/ec-code/3.1.4.11",
+                         "http://identifiers.org/go/GO:0004435"
+  Na_Inaca identity "http://identifiers.org/go/GO:0005432"
+  Na_Inak identity "http://identifiers.org/ec-code/3.6.3.9",
+                   "http://identifiers.org/go/GO:0005391"
+  Na_Ina hypernym "http://identifiers.org/go/GO:0005248"
+  Na_Icran hypernym "http://identifiers.org/go/GO:0005227"
+  ATP_production identity "http://identifiers.org/go/GO:0006754"
+  ATP_NaKATPase identity "http://identifiers.org/ec-code/3.6.3.9",
+                         "http://identifiers.org/go/GO:0005391"
+  ATP_Capump identity "http://identifiers.org/ec-code/3.6.3.8",
+                      "http://identifiers.org/go/GO:0005388"
+  ATP_Jerp identity "http://identifiers.org/ec-code/3.6.3.8",
+                    "http://identifiers.org/go/GO:0005388"
+  ATP_Ca_dependent_consumption identity "http://identifiers.org/go/GO:0030899"
+  ATP_consumption identity "http://identifiers.org/go/GO:0006200"
 end
+
+Fridlyand2003_Ca_flux_pancreatic_cells is "Fridlyand2003_Calcium_flux"
+
+Fridlyand2003_Ca_flux_pancreatic_cells model_entity_is "http://identifiers.org/biomodels.db/MODEL0928773489"
+Fridlyand2003_Ca_flux_pancreatic_cells model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000059"
+Fridlyand2003_Ca_flux_pancreatic_cells description "http://identifiers.org/pubmed/12644446"
+Fridlyand2003_Ca_flux_pancreatic_cells taxon "http://identifiers.org/taxonomy/10090"
+Fridlyand2003_Ca_flux_pancreatic_cells identity "http://identifiers.org/kegg.pathway/map04020"
+Fridlyand2003_Ca_flux_pancreatic_cells part "http://identifiers.org/go/GO:0050848",
+                                            "http://identifiers.org/go/GO:0050796"
+Fridlyand2003_Ca_flux_pancreatic_cells container "http://identifiers.org/bto/BTO:0000783"

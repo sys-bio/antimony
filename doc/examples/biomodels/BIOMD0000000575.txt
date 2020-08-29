@@ -1,31 +1,45 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 function J3Sub(K, X1, G1, X2, G2, X3, G3)
   K*X1^G1*X2^G2*X3^G3;
 end
+
+J3Sub is "J3Sub"
 
 function J1Sub(K, X, G)
   K*X^G;
 end
 
+J1Sub is "J1Sub"
+
 function J2Sub(K, X1, G1, X2, G2)
   K*X1^G1*X2^G2;
 end
+
+J2Sub is "J2Sub"
 
 function J1Sub3Mod(K, X1, G1, X2, G2, X3, G3, X4, G4)
   K*X1^G1*X2^G2*X3^G3*X4^G4;
 end
 
+J1Sub3Mod is "J1Sub3Mod"
+
 function J2Sub1Mod(K, X1, G1, X2, G2, X3, G3)
   K*X1^G1*X2^G2*X3^G3;
 end
+
+J2Sub1Mod is "J2Sub1Mod"
 
 function J1Sub1Mod(K, X1, G1, X2, G2)
   K*X1^G1*X2^G2;
 end
 
+J1Sub1Mod is "J1Sub1Mod"
+
 function J3Sub1Mod(K, X1, G1, X2, G2, X3, G3, X4, G4)
   K*X1^G1*X2^G2*X3^G3*X4^G4;
 end
+
+J3Sub1Mod is "J3Sub1Mod"
 
 
 model *MODEL1504130001()
@@ -68,8 +82,8 @@ model *MODEL1504130001()
   k4_0 := 0.009*(i41*Alpha_synuclein + i42*Protofibril + i43*Fibril);
   k13_0 := 0.001*(i131*Alpha_synuclein + i1310*DA_quinone);
   k15_0 := 0.002*i152*Protofibril;
-  k32_0 := 1.000000e-005*(p328*OH_radical + p329*H2O2 + p3210*DA_quinone + p3286*O2);
-  k35_0 := 1.000000e-005*(p358*OH_radical + p359*H2O2 + p3510*DA_quinone + p3586*O2);
+  k32_0 := 1e-5*(p328*OH_radical + p329*H2O2 + p3210*DA_quinone + p3286*O2);
+  k35_0 := 1e-5*(p358*OH_radical + p359*H2O2 + p3510*DA_quinone + p3586*O2);
   k36_0 := 0.0005*(i368*OH_radical + i369*H2O2 + i3610*DA_quinone + i3686*O2);
   k38_0 := 0.007*(i381*Alpha_synuclein + i382*Protofibril + i383*Fibril);
   k46_0 := 0.0003*(i468*OH_radical + i469*H2O2 + i4610*DA_quinone + i4686*O2);
@@ -77,7 +91,7 @@ model *MODEL1504130001()
   k48_0 := 0.0003*(i488*OH_radical + i489*H2O2 + i4810*DA_quinone + i4886*O2);
 
   // Rate Rules:
-  Fe2' = J21 - J20 + 0.01;
+  Fe2' = (J21 - J20) + 0.01;
 
   // Reactions:
   J21: Fe3 => $Fe2; Neuronal_cytosol*J1Sub(k21, Fe3, g2166);
@@ -85,7 +99,7 @@ model *MODEL1504130001()
   J1: $Alpha_synuclein => Protofibril; Neuronal_cytosol*J1Sub(k1, Alpha_synuclein, g11);
   J2: Protofibril => Fibril; Neuronal_cytosol*J1Sub(k2, Protofibril, g22);
   J3: Fibril + Parkin_synphilin_1_ub => Lewy_body; Neuronal_cytosol*J2Sub(k3, Fibril, g23, Parkin_synphilin_1_ub, g326);
-  J4: Parkin_sub_ub4 => Parkin + Fragments + 4Ubiquitin; Neuronal_cytosol*J1Sub3Mod(k4, Parkin_sub_ub4, g427, Proteasome_0, g412, ATP, g415, UCH_L1, g430);
+  J4: Parkin_sub_ub4 => Parkin + Fragments + 4 Ubiquitin; Neuronal_cytosol*J1Sub3Mod(k4, Parkin_sub_ub4, g427, Proteasome_0, g412, ATP, g415, UCH_L1, g430);
   J6: Ubiquitin + E1 => Ub_E1; Neuronal_cytosol*J2Sub1Mod(k6, Ubiquitin, g613, E1, g614, ATP, g615);
   J7: Ub_E1 + UbcH8 => E1 + UbcH8_Ub; Neuronal_cytosol*J2Sub1Mod(k7, Ub_E1, g716, UbcH8, g717, ATP, g715);
   J8: Parkin + $Substrate => Parkin_sub; Neuronal_cytosol*J2Sub(k8, Parkin, g819, Substrate, g821);
@@ -104,11 +118,11 @@ model *MODEL1504130001()
   J24: GSSG => GSH; Neuronal_cytosol*J1Sub1Mod(k24, GSSG, g2463, Gluta_red, g2464);
   J25: DOPAL + $NAD => DOPAC + $NADH; Neuronal_cytosol*J2Sub1Mod(k25, DOPAL, g2552, NAD, g2556, ALDH, g2555);
   J26f: Ub_E1 + UbcH8_Ub => E1 + UbcH8ub2; Neuronal_cytosol*J2Sub1Mod(k26f, Ub_E1, g26f16, UbcH8_Ub, g26f18, ATP, g26f15);
-  J26r: UbcH8ub2 => UbcH8 + 2Ubiquitin; Neuronal_cytosol*J1Sub1Mod(k26r, UbcH8ub2, g26r68, UCH_L1, g26r30);
+  J26r: UbcH8ub2 => UbcH8 + 2 Ubiquitin; Neuronal_cytosol*J1Sub1Mod(k26r, UbcH8ub2, g26r68, UCH_L1, g26r30);
   J27f: Ub_E1 + UbcH8ub2 => E1 + UbcH8ub3; Neuronal_cytosol*J2Sub1Mod(k27f, Ub_E1, g27f16, UbcH8ub2, g27f68, ATP, g27f15);
-  J27r: UbcH8ub3 => UbcH8 + 3Ubiquitin; Neuronal_cytosol*J1Sub1Mod(k27r, UbcH8ub3, g27r69, UCH_L1, g27r30);
+  J27r: UbcH8ub3 => UbcH8 + 3 Ubiquitin; Neuronal_cytosol*J1Sub1Mod(k27r, UbcH8ub3, g27r69, UCH_L1, g27r30);
   J28f: Ub_E1 + UbcH8ub3 => E1 + UbcH8ub4; Neuronal_cytosol*J2Sub1Mod(k28f, Ub_E1, g28f16, UbcH8ub3, g28f69, ATP, g28f15);
-  J28r: UbcH8ub4 => UbcH8 + 4Ubiquitin; Neuronal_cytosol*J1Sub1Mod(k28r, UbcH8ub4, g28r70, UCH_L1, g28r30);
+  J28r: UbcH8ub4 => UbcH8 + 4 Ubiquitin; Neuronal_cytosol*J1Sub1Mod(k28r, UbcH8ub4, g28r70, UCH_L1, g28r30);
   J29: Ub_E1 + UbcH13_Uev1a => E1 + UbcH13_Uev1a_ub; Neuronal_cytosol*J2Sub1Mod(k29, Ub_E1, g2916, UbcH13_Uev1a, g2971, ATP, g2915);
   J30: $Alpha_synuclein + UCH_L1 => asyn_UCH_L1; Neuronal_cytosol*J2Sub(k30, Alpha_synuclein, g301, UCH_L1, g3030);
   J31: UbcH13_Uev1a_ub + asyn_UCH_L1 => UbcH13_Uev1a + UCH_L1 + asyn_ub; Neuronal_cytosol*J2Sub(k31, UbcH13_Uev1a_ub, g3172, asyn_UCH_L1, g3173);
@@ -118,7 +132,7 @@ model *MODEL1504130001()
   J35: Protofibril + Protofibril_Ub => Fibril; Neuronal_cytosol*J2Sub(k35, Protofibril, g352, Protofibril_Ub, g3576);
   J36: Autophagosome_0 => Fragments; J1Sub1Mod(k36, Autophagosome_0, g3679, Lysosome_0, g3677);
   J37: UbcH8ub4 + asyn_UCH_L1 => UCH_L1_asyn_ub4 + UbcH8; Neuronal_cytosol*J2Sub(k37, UbcH8ub4, g3770, asyn_UCH_L1, g3773);
-  J38: UCH_L1_asyn_ub4 => Fragments + UCH_L1 + 4Ubiquitin; Neuronal_cytosol*J1Sub3Mod(k38, UCH_L1_asyn_ub4, g3878, Proteasome_0, g3812, ATP, g3815, UCH_L1, g3830);
+  J38: UCH_L1_asyn_ub4 => Fragments + UCH_L1 + 4 Ubiquitin; Neuronal_cytosol*J1Sub3Mod(k38, UCH_L1_asyn_ub4, g3878, Proteasome_0, g3812, ATP, g3815, UCH_L1, g3830);
   J43: $Alpha_synuclein + Hsc70 => Hsc70_asyn; Neuronal_cytosol*J2Sub(k43, Alpha_synuclein, g431, Hsc70, g4384);
   J44: Protofibril + Hsc70 => Hsc70_Protofibril; Neuronal_cytosol*J2Sub(k44, Protofibril, g442, Hsc70, g4484);
   J45: Fibril + Hsc70 => Hsc70_fibril; Neuronal_cytosol*J2Sub(k45, Fibril, g453, Hsc70, g4584);
@@ -541,4 +555,138 @@ model *MODEL1504130001()
   k46_0 is "k46'";
   k47_0 is "k47'";
   k48_0 is "k48'";
+
+  // CV terms:
+  Neuronal_cytosol identity "http://identifiers.org/go/GO:0005829"
+  Vesicle identity "http://identifiers.org/go/GO:0031982"
+  Autophagosome identity "http://identifiers.org/go/GO:0005776"
+  Proteasome identity "http://identifiers.org/go/GO:0000502"
+  Lysosome identity "http://identifiers.org/go/GO:0005764"
+  Protofibril hypernym "http://identifiers.org/uniprot/P37840"
+  Fibril hypernym "http://identifiers.org/uniprot/P37840"
+  Fibril property "http://identifiers.org/go/GO:0043205"
+  Lewy_body hypernym "http://identifiers.org/uniprot/P37840"
+  Lewy_body property "http://identifiers.org/go/GO:0097413"
+  Dopamine identity "http://identifiers.org/chebi/CHEBI:18243"
+  OH identity "http://identifiers.org/chebi/CHEBI:16234"
+  OH_radical identity "http://identifiers.org/chebi/CHEBI:29191"
+  H2O2 identity "http://identifiers.org/chebi/CHEBI:16240"
+  DA_quinone part "http://identifiers.org/chebi/CHEBI:18243",
+                  "http://identifiers.org/chebi/CHEBI:36141"
+  Ubiquitin identity "http://identifiers.org/uniprot/P0CG47"
+  E1 identity "http://identifiers.org/uniprot/P22314"
+  Ub_E1 part "http://identifiers.org/uniprot/P0CG47",
+             "http://identifiers.org/uniprot/P22314"
+  UbcH8 identity "http://identifiers.org/uniprot/O14933"
+  UbcH8_Ub part "http://identifiers.org/uniprot/P0CG47",
+                "http://identifiers.org/uniprot/O14933"
+  Parkin identity "http://identifiers.org/uniprot/O60260"
+  Parkin_sub hypernym "http://identifiers.org/uniprot/O60260",
+                      "http://identifiers.org/biomodels.sbo/SBO:0000015"
+  Parkin_synphilin_1 part "http://identifiers.org/uniprot/O60260",
+                          "http://identifiers.org/uniprot/Q9Y6H5"
+  Parkin_synphilin_1_ub part "http://identifiers.org/uniprot/P0CG47",
+                             "http://identifiers.org/uniprot/O60260",
+                             "http://identifiers.org/uniprot/Q9Y6H5"
+  Parkin_sub_ub4 part "http://identifiers.org/uniprot/P0CG47",
+                      "http://identifiers.org/uniprot/O60260",
+                      "http://identifiers.org/biomodels.sbo/SBO:0000015"
+  Fragments property "http://identifiers.org/pato/PATO:0002355"
+  Fragments hypernym "http://identifiers.org/chebi/CHEBI:16670"
+  UCH_L1 identity "http://identifiers.org/uniprot/P09936"
+  L_Dopa identity "http://identifiers.org/chebi/CHEBI:15765"
+  DOPAL identity "http://identifiers.org/chebi/CHEBI:27978"
+  DOPAC identity "http://identifiers.org/chebi/CHEBI:41941"
+  GSH identity "http://identifiers.org/chebi/CHEBI:16856"
+  GSSG identity "http://identifiers.org/chebi/CHEBI:17858"
+  Fe2 identity "http://identifiers.org/chebi/CHEBI:29033"
+  Fe3 identity "http://identifiers.org/chebi/CHEBI:29034"
+  UbcH8ub2 part "http://identifiers.org/uniprot/P0CG47",
+                "http://identifiers.org/uniprot/O14933"
+  UbcH8ub3 part "http://identifiers.org/uniprot/P0CG47",
+                "http://identifiers.org/uniprot/O14933"
+  UbcH8ub4 part "http://identifiers.org/uniprot/P0CG47",
+                "http://identifiers.org/uniprot/O14933"
+  UbcH13_Uev1a part "http://identifiers.org/uniprot/P61088",
+                    "http://identifiers.org/uniprot/Q13404"
+  UbcH13_Uev1a_ub part "http://identifiers.org/uniprot/P0CG47",
+                       "http://identifiers.org/uniprot/P61088",
+                       "http://identifiers.org/uniprot/Q13404"
+  asyn_UCH_L1 part "http://identifiers.org/uniprot/P09936",
+                   "http://identifiers.org/uniprot/P37840"
+  asyn_ub part "http://identifiers.org/uniprot/P0CG47",
+               "http://identifiers.org/uniprot/P37840"
+  Protofibril_UCH_L1 part "http://identifiers.org/uniprot/P09936",
+                          "http://identifiers.org/uniprot/P37840"
+  Protofibril_Ub part "http://identifiers.org/uniprot/P0CG47",
+                      "http://identifiers.org/uniprot/P37840"
+  UCH_L1_asyn_ub4 part "http://identifiers.org/uniprot/P0CG47",
+                       "http://identifiers.org/uniprot/P09936",
+                       "http://identifiers.org/uniprot/P37840"
+  Hsc70_asyn part "http://identifiers.org/uniprot/P37840",
+                  "http://identifiers.org/uniprot/P11142"
+  Hsc70_Protofibril part "http://identifiers.org/uniprot/P37840",
+                         "http://identifiers.org/uniprot/P11142"
+  Hsc70_fibril part "http://identifiers.org/uniprot/P37840",
+                    "http://identifiers.org/uniprot/P11142"
+  Hsc70_fibril property "http://identifiers.org/go/GO:0043205"
+  Hsc70 identity "http://identifiers.org/uniprot/P11142"
+  DA_S_parkin part "http://identifiers.org/chebi/CHEBI:18243",
+                   "http://identifiers.org/chebi/CHEBI:36141",
+                   "http://identifiers.org/uniprot/O60260"
+  O2 identity "http://identifiers.org/chebi/CHEBI:18421"
+  DA_GSH part "http://identifiers.org/chebi/CHEBI:18243",
+              "http://identifiers.org/chebi/CHEBI:16856"
+  Neuromelanin hypernym "http://identifiers.org/chebi/CHEBI:27404"
+  Neuromelanin property "http://identifiers.org/chebi/CHEBI:60027"
+  Neuromelanin_ntox_Fe3 property "http://identifiers.org/chebi/CHEBI:60027"
+  Neuromelanin_ntox_Fe3 part "http://identifiers.org/chebi/CHEBI:27404",
+                             "http://identifiers.org/chebi/CHEBI:29034",
+                             "http://identifiers.org/chebi/CHEBI:50910"
+  Alpha_synuclein identity "http://identifiers.org/uniprot/P37840"
+  ATP identity "http://identifiers.org/chebi/CHEBI:15422"
+  Synphilin_1 identity "http://identifiers.org/uniprot/Q9Y6H5"
+  Substrate identity "http://identifiers.org/biomodels.sbo/SBO:0000015"
+  TH identity "http://identifiers.org/uniprot/P07101"
+  L_Tyr identity "http://identifiers.org/chebi/CHEBI:17895"
+  CO2 identity "http://identifiers.org/chebi/CHEBI:16526"
+  Neurotoxins identity "http://identifiers.org/chebi/CHEBI:50910"
+  Bioamines hypernym "http://identifiers.org/chebi/CHEBI:32952"
+  Bioamines property "http://identifiers.org/chebi/CHEBI:24432"
+  VMAT2 identity "http://identifiers.org/uniprot/Q05940"
+  O2_0 identity "http://identifiers.org/chebi/CHEBI:15379"
+  MAO identity "http://identifiers.org/uniprot/P21397"
+  NH3 identity "http://identifiers.org/chebi/CHEBI:16134"
+  ALDH identity "http://identifiers.org/uniprot/P30838"
+  NAD identity "http://identifiers.org/chebi/CHEBI:15846"
+  NADH identity "http://identifiers.org/chebi/CHEBI:16908"
+  Catalase identity "http://identifiers.org/uniprot/P04040"
+  H2O identity "http://identifiers.org/chebi/CHEBI:15377"
+  Gluta_per identity "http://identifiers.org/uniprot/P07203"
+  Gluta_red identity "http://identifiers.org/uniprot/P78417"
+  DDC identity "http://identifiers.org/uniprot/P20711"
+  Preautophagosome_membrane identity "http://identifiers.org/go/GO:0000421"
+  SOD identity "http://identifiers.org/uniprot/P00441"
+  Cysteine identity "http://identifiers.org/chebi/CHEBI:15356"
+  V_DA identity "http://identifiers.org/chebi/CHEBI:18243"
+  V_ntox_ba part "http://identifiers.org/chebi/CHEBI:50910",
+                 "http://identifiers.org/chebi/CHEBI:32952"
+  V_ntox_ba property "http://identifiers.org/chebi/CHEBI:24432"
+  Vesicle_0 identity "http://identifiers.org/go/GO:0031982"
+  Autophagosome_0 identity "http://identifiers.org/go/GO:0005776"
+  Proteasome_0 identity "http://identifiers.org/go/GO:0000502"
+  Lysosome_0 identity "http://identifiers.org/go/GO:0005764"
 end
+
+MODEL1504130001 is "Sass2009 - Approach to an α-synuclein-based BST model of Parkinson's disease"
+
+MODEL1504130001 model_entity_is "http://identifiers.org/biomodels.db/MODEL1504130001"
+MODEL1504130001 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000575"
+MODEL1504130001 description "http://identifiers.org/pubmed/19136028"
+MODEL1504130001 taxon "http://identifiers.org/taxonomy/9606"
+MODEL1504130001 hypernym "http://identifiers.org/go/GO:0070841",
+                         "http://identifiers.org/go/GO:0016236",
+                         "http://identifiers.org/go/GO:0061684",
+                         "http://identifiers.org/go/GO:0043161",
+                         "http://identifiers.org/go/GO:0042417"
+MODEL1504130001 property "http://identifiers.org/doid/DOID:14330"

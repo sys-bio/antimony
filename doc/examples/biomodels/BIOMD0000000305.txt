@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Kolomeisky2003_myosin()
 
   // Compartments and Species:
@@ -10,15 +10,15 @@ model *Kolomeisky2003_myosin()
 
   // Assignment Rules:
   S_tot := S0 + S1;
-  V := (d*((Fw_1st_step + Fw_2nd_step)/2 - (Bw_1st_step + Bw_2nd_step)/2))/S_tot;
-  V_ave := (d*((fwd_step1 + fwd_step2)/2 - (back_step1 + back_step2)/2))/(S_tot*time);
-  tau := (k_1*ATP*exp((-th_1*Force*d)/kT) + k_2*exp((-th_2*Force*d)/kT) + k_3*ATP*exp((th_3*Force*d)/kT) + k_4*exp((th_4*Force*d)/kT))/(k_1*ATP*exp((-th_1*Force*d)/kT)*k_2*exp((-th_2*Force*d)/kT) + k_3*ATP*exp((th_3*Force*d)/kT)*k_4*exp((th_4*Force*d)/kT));
+  V := d*((Fw_1st_step + Fw_2nd_step)/2 - (Bw_1st_step + Bw_2nd_step)/2)/S_tot;
+  V_ave := d*((fwd_step1 + fwd_step2)/2 - (back_step1 + back_step2)/2)/(S_tot*time);
+  tau := (k_1*ATP*exp(-th_1*Force*d/kT) + k_2*exp(-th_2*Force*d/kT) + k_3*ATP*exp(th_3*Force*d/kT) + k_4*exp(th_4*Force*d/kT))/(k_1*ATP*exp(-th_1*Force*d/kT)*k_2*exp(-th_2*Force*d/kT) + k_3*ATP*exp(th_3*Force*d/kT)*k_4*exp(th_4*Force*d/kT));
 
   // Reactions:
-  Fw_1st_step: S0 + $ATP => S1 + $Pi_ + fwd_step1; k_1*S0*ATP*exp((-th_1*Force*d)/kT);
-  Fw_2nd_step: S1 => S0 + $ADP + fwd_step2; k_2*S1*exp((-th_2*Force*d)/kT);
-  Bw_1st_step: S0 + $ATP => S1 + $Pi_ + back_step1; k_3*S0*ATP*exp((th_3*Force*d)/kT);
-  Bw_2nd_step: S1 => S0 + $ADP + back_step2; k_4*S1*exp((th_4*Force*d)/kT);
+  Fw_1st_step: S0 + $ATP => S1 + $Pi_ + fwd_step1; k_1*S0*ATP*exp(-th_1*Force*d/kT);
+  Fw_2nd_step: S1 => S0 + $ADP + fwd_step2; k_2*S1*exp(-th_2*Force*d/kT);
+  Bw_1st_step: S0 + $ATP => S1 + $Pi_ + back_step1; k_3*S0*ATP*exp(th_3*Force*d/kT);
+  Bw_2nd_step: S1 => S0 + $ADP + back_step2; k_4*S1*exp(th_4*Force*d/kT);
 
   // Species initializations:
   S0 = 10/compartment_;
@@ -35,7 +35,7 @@ model *Kolomeisky2003_myosin()
   back_step2 = 0;
 
   // Compartment initializations:
-  compartment_ = 1e-015;
+  compartment_ = 1e-15;
 
   // Variable initializations:
   k_1 = 0.7;
@@ -45,9 +45,9 @@ model *Kolomeisky2003_myosin()
   kT = 4.1164;
   k_2 = 12;
   th_2 = 0.045;
-  k_3 = 5e-006;
+  k_3 = 5e-06;
   th_3 = 0.58;
-  k_4 = 6e-006;
+  k_4 = 6e-06;
   th_4 = 0.385;
 
   // Other declarations:
@@ -65,4 +65,55 @@ model *Kolomeisky2003_myosin()
   substance is "molecules";
   umole is "micromole";
   volume is "litre";
+
+  // SBO terms:
+  compartment_.sboTerm = 290
+  S0.sboTerm = 297
+  ATP.sboTerm = 247
+  S1.sboTerm = 297
+  Pi_.sboTerm = 247
+  ADP.sboTerm = 247
+  fwd_step1.sboTerm = 409
+  fwd_step2.sboTerm = 409
+  back_step1.sboTerm = 409
+  back_step2.sboTerm = 409
+  k_1.sboTerm = 23
+  th_1.sboTerm = 380
+  d.sboTerm = 466
+  k_2.sboTerm = 22
+  th_2.sboTerm = 380
+  k_3.sboTerm = 23
+  th_3.sboTerm = 380
+  k_4.sboTerm = 22
+  th_4.sboTerm = 380
+  S_tot.sboTerm = 360
+  Fw_1st_step.sboTerm = 376
+  Fw_2nd_step.sboTerm = 180
+  Bw_1st_step.sboTerm = 376
+  Bw_2nd_step.sboTerm = 180
+  tau.sboTerm = 347
+
+  // CV terms:
+  S0 identity "http://identifiers.org/go/GO:0031475"
+  ATP identity "http://identifiers.org/chebi/CHEBI:15422"
+  ATP identity "http://identifiers.org/kegg.compound/C00002",
+               "http://identifiers.org/pubchem.substance/3304"
+  S1 part "http://identifiers.org/chebi/CHEBI:16761"
+  S1 version "http://identifiers.org/go/GO:0031475"
+  Pi_ identity "http://identifiers.org/chebi/CHEBI:18367"
+  Pi_ identity "http://identifiers.org/kegg.compound/C00009"
+  ADP identity "http://identifiers.org/kegg.compound/C00008"
+  ADP identity "http://identifiers.org/chebi/CHEBI:16761",
+               "http://identifiers.org/pubchem.substance/3310"
+  Fw_1st_step part "http://identifiers.org/ec-code/3.6.4.1"
+  Bw_1st_step part "http://identifiers.org/ec-code/3.6.4.1"
 end
+
+Kolomeisky2003_myosin is "Kolomeisky2003_MyosinV_Processivity"
+
+Kolomeisky2003_myosin model_entity_is "http://identifiers.org/biomodels.db/MODEL6623628741"
+Kolomeisky2003_myosin model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000305"
+Kolomeisky2003_myosin description "http://identifiers.org/pubmed/12609867"
+Kolomeisky2003_myosin hypernym "http://identifiers.org/go/GO:0000146",
+                               "http://identifiers.org/go/GO:0030832"
+Kolomeisky2003_myosin taxon "http://identifiers.org/taxonomy/2759"

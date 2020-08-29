@@ -1,55 +1,81 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 function function_17(substrate, Km, V)
-  (V*substrate)/(Km + substrate);
+  V*substrate/(Km + substrate);
 end
+
+function_17 is "Henri-Michaelis-Menten (irreversible)"
 
 function function_12(substrate, product, Kms, Kmp, Vf, Vr)
-  ((Vf*substrate)/Kms - (Vr*product)/Kmp)/(1 + substrate/Kms + product/Kmp);
+  (Vf*substrate/Kms - Vr*product/Kmp)/(1 + substrate/Kms + product/Kmp);
 end
+
+function_12 is "Reversible Michaelis-Menten"
 
 function function_15(Vmax_v7, GAP, KGAP_v7, NAD, KNAD_v7, r_v7, BPGA13, KBPGA13_v7, NADH, KNADH_v7)
-  Vmax_v7*((GAP/KGAP_v7*(NAD/KNAD_v7) - r_v7*(BPGA13/KBPGA13_v7)*(NADH/KNADH_v7))/((1 + GAP/KGAP_v7 + BPGA13/KBPGA13_v7)*(1 + NAD/KNAD_v7 + NADH/KNADH_v7)));
+  Vmax_v7*(((GAP/KGAP_v7)*(NAD/KNAD_v7) - r_v7*(BPGA13/KBPGA13_v7)*(NADH/KNADH_v7))/((1 + GAP/KGAP_v7 + BPGA13/KBPGA13_v7)*(1 + NAD/KNAD_v7 + NADH/KNADH_v7)));
 end
+
+function_15 is "Rate Law for glyceraldehyde3phosphatedehydrogenase"
 
 function function_20(k, atpc, adpc)
-  (k*atpc)/adpc;
+  k*atpc/adpc;
 end
+
+function_20 is "Rate Law for atp utilisation"
 
 function function_19(Vmax_v12, PEP, PK_n, ADPc, KADP_v12, ATPc)
-  (Vmax_v12*(PEP/(0.34*(1 + ATPc/0.57 + ADPc/0.64)))^PK_n*(ADPc/KADP_v12))/((1 + (PEP/(0.34*(1 + ATPc/0.57 + ADPc/0.64)))^PK_n)*(1 + ADPc/KADP_v12));
+  Vmax_v12*(PEP/(0.34*(1 + ATPc/0.57 + ADPc/0.64)))^PK_n*(ADPc/KADP_v12)/((1 + (PEP/(0.34*(1 + ATPc/0.57 + ADPc/0.64)))^PK_n)*(1 + ADPc/KADP_v12));
 end
+
+function_19 is "Rate Law for pyruvate kinase"
 
 function function_16(Vmax_v8, DHAPg, KDHAPg_v8, NADH, KNADH_v8, r_v8, NAD, KNAD_v8, Gly3Pg, KGly3Pg_v8)
-  Vmax_v8*((DHAPg/KDHAPg_v8*(NADH/KNADH_v8) - r_v8*(NAD/KNAD_v8)*(Gly3Pg/KGly3Pg_v8))/((1 + DHAPg/KDHAPg_v8 + Gly3Pg/KGly3Pg_v8)*(1 + NADH/KNADH_v8 + NAD/KNAD_v8)));
+  Vmax_v8*(((DHAPg/KDHAPg_v8)*(NADH/KNADH_v8) - r_v8*(NAD/KNAD_v8)*(Gly3Pg/KGly3Pg_v8))/((1 + DHAPg/KDHAPg_v8 + Gly3Pg/KGly3Pg_v8)*(1 + NADH/KNADH_v8 + NAD/KNAD_v8)));
 end
+
+function_16 is "Rate Law for glycerol3phosphatedehydrogenase"
 
 function function_18(Vmax_v11, BPGA13, KBPGA13_v11, ADPg, KADPg_v11, r_v11, PGA3, KPGA3_v11, ATPg, KATPg_v11)
-  Vmax_v11*((BPGA13/KBPGA13_v11*(ADPg/KADPg_v11) - r_v11*(PGA3/KPGA3_v11)*(ATPg/KATPg_v11))/((1 + BPGA13/KBPGA13_v11 + PGA3/KPGA3_v11)*(1 + ADPg/KADPg_v11 + ATPg/KATPg_v11)));
+  Vmax_v11*(((BPGA13/KBPGA13_v11)*(ADPg/KADPg_v11) - r_v11*(PGA3/KPGA3_v11)*(ATPg/KATPg_v11))/((1 + BPGA13/KBPGA13_v11 + PGA3/KPGA3_v11)*(1 + ADPg/KADPg_v11 + ATPg/KATPg_v11)));
 end
+
+function_18 is "Rate Law for phosphoglycerate kinase"
 
 function function_13(Vmax_v4, Ki1Fru16BP_v4, Fru16BP, Fru6P, KFru6P_v4, ATPg, KATPg_v4, Ki2Fru16BP_v4)
-  (Vmax_v4*(Ki1Fru16BP_v4/(Ki1Fru16BP_v4 + Fru16BP))*(Fru6P/KFru6P_v4)*(ATPg/KATPg_v4))/((1 + Fru6P/KFru6P_v4 + Fru16BP/Ki2Fru16BP_v4)*(1 + ATPg/KATPg_v4));
+  Vmax_v4*(Ki1Fru16BP_v4/(Ki1Fru16BP_v4 + Fru16BP))*(Fru6P/KFru6P_v4)*(ATPg/KATPg_v4)/((1 + Fru6P/KFru6P_v4 + Fru16BP/Ki2Fru16BP_v4)*(1 + ATPg/KATPg_v4));
 end
+
+function_13 is "Rate Law for phophofructokinase"
 
 function function_21(Vmax_v14, Gly3Pg, KGly3Pg_v14, ADPg, KADPg_v14, r_v14, Glycerol, KGlycerol_v14, ATPg, KATPg_v14)
-  Vmax_v14*((Gly3Pg/KGly3Pg_v14*(ADPg/KADPg_v14) - r_v14*(Glycerol/KGlycerol_v14)*(ATPg/KATPg_v14))/((1 + Gly3Pg/KGly3Pg_v14 + Glycerol/KGlycerol_v14)*(1 + ADPg/KADPg_v14 + ATPg/KATPg_v14)));
+  Vmax_v14*(((Gly3Pg/KGly3Pg_v14)*(ADPg/KADPg_v14) - r_v14*(Glycerol/KGlycerol_v14)*(ATPg/KATPg_v14))/((1 + Gly3Pg/KGly3Pg_v14 + Glycerol/KGlycerol_v14)*(1 + ADPg/KADPg_v14 + ATPg/KATPg_v14)));
 end
+
+function_21 is "Rate Law for glycerol kinase"
 
 function function_11(Vmax_v2, GlucoseInt, KGlcInt_v2, ATPg, KATPg_v2, ADPg, KADPg_v2, Glc6P, KGlc6P_v2)
-  (Vmax_v2*(GlucoseInt/KGlcInt_v2)*(ATPg/KATPg_v2))/((1 + ATPg/KATPg_v2 + ADPg/KADPg_v2)*(1 + GlucoseInt/KGlcInt_v2 + Glc6P/KGlc6P_v2));
+  Vmax_v2*(GlucoseInt/KGlcInt_v2)*(ATPg/KATPg_v2)/((1 + ATPg/KATPg_v2 + ADPg/KADPg_v2)*(1 + GlucoseInt/KGlcInt_v2 + Glc6P/KGlc6P_v2));
 end
 
+function_11 is "Rate Law for hexokinase"
+
 function function_14(Vmax_v5, Fru16BP, GAP, DHAPg, Keq_v5, ATPg, ADPg, AMPg, r_v5, KGAP_v5, KGAPi_v5)
-  (Vmax_v5*(Fru16BP - (GAP*DHAPg)/Keq_v5))/(0.009*(1 + ATPg/0.68 + ADPg/1.51 + AMPg/3.65) + Fru16BP + GAP*((0.015*(1 + ATPg/0.68 + ADPg/1.51 + AMPg/3.65))/Keq_v5)*(1/r_v5) + DHAPg*(KGAP_v5/Keq_v5)*(1/r_v5) + (Fru16BP*GAP)/KGAPi_v5 + (GAP*DHAPg)/Keq_v5*(1/r_v5));
+  Vmax_v5*(Fru16BP - GAP*DHAPg/Keq_v5)/(0.009*(1 + ATPg/0.68 + ADPg/1.51 + AMPg/3.65) + Fru16BP + GAP*(0.015*(1 + ATPg/0.68 + ADPg/1.51 + AMPg/3.65)/Keq_v5)*(1/r_v5) + DHAPg*(KGAP_v5/Keq_v5)*(1/r_v5) + Fru16BP*GAP/KGAPi_v5 + (GAP*DHAPg/Keq_v5)*(1/r_v5));
 end
+
+function_14 is "Rate Law for aldolase"
 
 function function_22(k, atp, amp, keqak, adp)
   k*(atp*amp - keqak*adp*adp);
 end
 
+function_22 is "Rate Law for adenylate kinase"
+
 function function_10(Vmax_v1, GlucoseExt, GlucoseInt, KGlc, Alpha_v1)
-  Vmax_v1*((GlucoseExt - GlucoseInt)/(KGlc + GlucoseExt + GlucoseInt + (Alpha_v1*GlucoseExt*GlucoseInt)/KGlc));
+  Vmax_v1*((GlucoseExt - GlucoseInt)/(KGlc + GlucoseExt + GlucoseInt + Alpha_v1*GlucoseExt*GlucoseInt/KGlc));
 end
+
+function_10 is "Rate Law for glucose transport"
 
 
 model *Model_1()
@@ -83,8 +109,8 @@ model *Model_1()
   vGK: species_22 + species_12 -> species_24 + species_11; compartment_2*function_21(vGK_Vmax_v14, species_22, vGK_KGly3Pg_v14, species_12, vGK_KADPg_v14, vGK_r_v14, species_24, vGK_KGlycerol_v14, species_11, vGK_KATPg_v14);
   vPGM: species_7 -> species_5; RaPGAM*compartment_1*function_12(species_7, species_5, vPGM_Kms, vPGM_Kmp, vPGM_Vf, vPGM_Vr);
   vENO: species_5 -> species_4; RaENO*compartment_1*function_12(species_5, species_4, vENO_Kms, vENO_Kmp, vENO_Vf, vENO_Vr);
-  vAKc: species_3 + species_6 -> 2species_2; compartment_1*function_22(vAKc_k, species_3, species_6, vAKc_keqak, species_2);
-  vAKg: species_11 + species_13 -> 2species_12; compartment_2*function_22(vAKg_k, species_11, species_13, vAKg_keqak, species_12);
+  vAKc: species_3 + species_6 -> 2 species_2; compartment_1*function_22(vAKc_k, species_3, species_6, vAKc_keqak, species_2);
+  vAKg: species_11 + species_13 -> 2 species_12; compartment_2*function_22(vAKg_k, species_11, species_13, vAKg_keqak, species_12);
   vPGT: species_23 -> species_7; vPGT_k1*species_23 - vPGT_k2*species_7;
   vANTI: species_22 + species_8 -> species_9 + species_17; vANTI_k1*species_22*species_8 - vANTI_k2*species_9*species_17;
   vGlyT: species_24 -> $species_27; vGlyT_k1*species_24 - vGlyT_k2*species_27;
@@ -267,4 +293,193 @@ model *Model_1()
   vPGT is "3phosphoglycerate transport";
   vANTI is "gly3p dhap antiporter";
   vGlyT is "glycerol transport";
+
+  // CV terms:
+  compartment_1 identity "http://identifiers.org/go/GO:0005829"
+  compartment_2 identity "http://identifiers.org/go/GO:0020015"
+  compartment_3 identity "http://identifiers.org/go/GO:0005576"
+  species_1 hypernym "http://identifiers.org/chebi/CHEBI:32816",
+                     "http://identifiers.org/kegg.compound/C00022",
+                     "http://identifiers.org/pubchem.substance/3324",
+                     "http://identifiers.org/3dmet/B00006",
+                     "http://identifiers.org/cas/127-17-3"
+  species_2 identity "http://identifiers.org/chebi/CHEBI:16761",
+                     "http://identifiers.org/kegg.compound/C00008",
+                     "http://identifiers.org/pubchem.substance/3310",
+                     "http://identifiers.org/cas/20398-34-9"
+  species_3 identity "http://identifiers.org/chebi/CHEBI:15422",
+                     "http://identifiers.org/kegg.compound/C00002",
+                     "http://identifiers.org/pubchem.substance/3304",
+                     "http://identifiers.org/cas/56-65-5"
+  species_4 identity "http://identifiers.org/kegg.compound/C00074",
+                     "http://identifiers.org/pubchem.substance/3374",
+                     "http://identifiers.org/3dmet/B00019",
+                     "http://identifiers.org/cas/138-08-9",
+                     "http://identifiers.org/chebi/CHEBI:18021"
+  species_5 identity "http://identifiers.org/chebi/CHEBI:17835",
+                     "http://identifiers.org/kegg.compound/C00631",
+                     "http://identifiers.org/pubchem.substance/3904"
+  species_6 identity "http://identifiers.org/chebi/CHEBI:16027",
+                     "http://identifiers.org/kegg.compound/C00020",
+                     "http://identifiers.org/pubchem.substance/3322",
+                     "http://identifiers.org/cas/61-19-8"
+  species_7 identity "http://identifiers.org/chebi/CHEBI:16108",
+                     "http://identifiers.org/chebi/CHEBI:17794",
+                     "http://identifiers.org/kegg.compound/C00197",
+                     "http://identifiers.org/pubchem.substance/3497"
+  species_8 identity "http://identifiers.org/chebi/CHEBI:16108",
+                     "http://identifiers.org/kegg.compound/C00111",
+                     "http://identifiers.org/pubchem.substance/3411",
+                     "http://identifiers.org/3dmet/B00029"
+  species_9 identity "http://identifiers.org/chebi/CHEBI:15978",
+                     "http://identifiers.org/kegg.compound/C00093",
+                     "http://identifiers.org/pubchem.substance/3393",
+                     "http://identifiers.org/cas/57-03-4"
+  species_10 identity "http://identifiers.org/chebi/CHEBI:4167",
+                      "http://identifiers.org/kegg.compound/C00031",
+                      "http://identifiers.org/pubchem.substance/3587"
+  species_11 identity "http://identifiers.org/chebi/CHEBI:15422",
+                      "http://identifiers.org/kegg.compound/C00002",
+                      "http://identifiers.org/pubchem.substance/3304",
+                      "http://identifiers.org/cas/56-65-5"
+  species_12 identity "http://identifiers.org/chebi/CHEBI:16761",
+                      "http://identifiers.org/kegg.compound/C00008",
+                      "http://identifiers.org/pubchem.substance/3310",
+                      "http://identifiers.org/cas/20398-34-9"
+  species_13 identity "http://identifiers.org/chebi/CHEBI:16027",
+                      "http://identifiers.org/kegg.compound/C00020",
+                      "http://identifiers.org/pubchem.substance/3322",
+                      "http://identifiers.org/cas/61-19-8"
+  species_14 identity "http://identifiers.org/chebi/CHEBI:4170",
+                      "http://identifiers.org/kegg.compound/C00668",
+                      "http://identifiers.org/pubchem.substance/3937"
+  species_15 identity "http://identifiers.org/chebi/CHEBI:16084",
+                      "http://identifiers.org/kegg.compound/C05345",
+                      "http://identifiers.org/pubchem.substance/7723"
+  species_16 identity "http://identifiers.org/chebi/CHEBI:28013",
+                      "http://identifiers.org/kegg.compound/C05378",
+                      "http://identifiers.org/pubchem.substance/7752"
+  species_17 identity "http://identifiers.org/chebi/CHEBI:16108",
+                      "http://identifiers.org/kegg.compound/C00111",
+                      "http://identifiers.org/pubchem.substance/3411",
+                      "http://identifiers.org/3dmet/B00029"
+  species_18 identity "http://identifiers.org/chebi/CHEBI:29052",
+                      "http://identifiers.org/kegg.compound/C00118",
+                      "http://identifiers.org/pubchem.substance/3418",
+                      "http://identifiers.org/cas/591-57-1"
+  species_19 identity "http://identifiers.org/chebi/CHEBI:15846",
+                      "http://identifiers.org/kegg.compound/C00003",
+                      "http://identifiers.org/pubchem.substance/3305",
+                      "http://identifiers.org/cas/53-84-9"
+  species_20 identity "http://identifiers.org/chebi/CHEBI:16908",
+                      "http://identifiers.org/kegg.compound/C00004",
+                      "http://identifiers.org/pubchem.substance/3306"
+  species_21 identity "http://identifiers.org/chebi/CHEBI:16001",
+                      "http://identifiers.org/kegg.compound/C00236",
+                      "http://identifiers.org/pubchem.substance/3535",
+                      "http://identifiers.org/cas/38168-82-0"
+  species_22 identity "http://identifiers.org/chebi/CHEBI:15978",
+                      "http://identifiers.org/kegg.compound/C00093",
+                      "http://identifiers.org/pubchem.substance/3393",
+                      "http://identifiers.org/cas/57-03-4"
+  species_23 identity "http://identifiers.org/chebi/CHEBI:17794",
+                      "http://identifiers.org/kegg.compound/C00197",
+                      "http://identifiers.org/pubchem.substance/3497"
+  species_24 identity "http://identifiers.org/chebi/CHEBI:17754",
+                      "http://identifiers.org/kegg.compound/C00116",
+                      "http://identifiers.org/pubchem.substance/3416",
+                      "http://identifiers.org/3dmet/B00032",
+                      "http://identifiers.org/cas/56-81-5"
+  species_25 identity "http://identifiers.org/chebi/CHEBI:4167",
+                      "http://identifiers.org/kegg.compound/C00031"
+  species_26 hypernym "http://identifiers.org/chebi/CHEBI:32816",
+                      "http://identifiers.org/kegg.compound/C00022",
+                      "http://identifiers.org/pubchem.substance/3324",
+                      "http://identifiers.org/3dmet/B00006",
+                      "http://identifiers.org/cas/127-17-3"
+  species_27 identity "http://identifiers.org/chebi/CHEBI:17754",
+                      "http://identifiers.org/kegg.compound/C00116",
+                      "http://identifiers.org/pubchem.substance/3416",
+                      "http://identifiers.org/3dmet/B00032",
+                      "http://identifiers.org/cas/56-81-5"
+  vGT homolog "http://identifiers.org/reactome/REACT_2092"
+  vGT hypernym "http://identifiers.org/go/GO:0046323"
+  vHK homolog "http://identifiers.org/reactome/REACT_1318"
+  vHK hypernym "http://identifiers.org/ec-code/2.7.1.2",
+               "http://identifiers.org/go/GO:0004396"
+  vHK identity "http://identifiers.org/kegg.reaction/R00299"
+  vPGI homolog "http://identifiers.org/reactome/REACT_1164"
+  vPGI hypernym "http://identifiers.org/ec-code/5.3.1.9",
+                "http://identifiers.org/go/GO:0004347"
+  vPGI identity "http://identifiers.org/kegg.reaction/R00771"
+  vPFK homolog "http://identifiers.org/reactome/REACT_736"
+  vPFK hypernym "http://identifiers.org/ec-code/2.7.1.11",
+                "http://identifiers.org/go/GO:0003872"
+  vPFK identity "http://identifiers.org/kegg.reaction/R00756"
+  vALD homolog "http://identifiers.org/reactome/REACT_1602"
+  vALD hypernym "http://identifiers.org/ec-code/4.1.2.13",
+                "http://identifiers.org/go/GO:0004332"
+  vALD identity "http://identifiers.org/kegg.reaction/R01070"
+  vTPI homolog "http://identifiers.org/reactome/REACT_775"
+  vTPI hypernym "http://identifiers.org/ec-code/5.3.1.1",
+                "http://identifiers.org/go/GO:0004807"
+  vTPI identity "http://identifiers.org/kegg.reaction/R01015"
+  vGAPDH homolog "http://identifiers.org/reactome/REACT_1847"
+  vGAPDH hypernym "http://identifiers.org/ec-code/1.2.1.12",
+                  "http://identifiers.org/go/GO:0043878"
+  vGAPDH identity "http://identifiers.org/kegg.reaction/R01061"
+  vGPDH homolog "http://identifiers.org/reactome/REACT_1146"
+  vGPDH hypernym "http://identifiers.org/ec-code/3.1.3.21",
+                 "http://identifiers.org/go/GO:0004367"
+  vGPDH identity "http://identifiers.org/kegg.reaction/R00841"
+  vGPO hypernym "http://identifiers.org/ec-code/1.1.3.21",
+                "http://identifiers.org/go/GO:0004369"
+  vGPO identity "http://identifiers.org/kegg.reaction/R00846"
+  vPT hypernym "http://identifiers.org/go/GO:0050833",
+               "http://identifiers.org/go/GO:0006849"
+  vPGK homolog "http://identifiers.org/reactome/REACT_1186"
+  vPGK hypernym "http://identifiers.org/ec-code/2.7.2.3",
+                "http://identifiers.org/go/GO:0004618"
+  vPGK identity "http://identifiers.org/kegg.reaction/R01512"
+  vPK homolog "http://identifiers.org/reactome/REACT_1911"
+  vPK hypernym "http://identifiers.org/ec-code/2.7.1.40",
+               "http://identifiers.org/go/GO:0004743"
+  vPK identity "http://identifiers.org/kegg.reaction/R00200"
+  vAU hypernym "http://identifiers.org/go/GO:0006200"
+  vGK hypernym "http://identifiers.org/ec-code/2.7.1.30",
+               "http://identifiers.org/go/GO:0004370"
+  vGK identity "http://identifiers.org/kegg.reaction/R00847"
+  vGK homolog "http://identifiers.org/reactome/REACT_724"
+  vPGM identity "http://identifiers.org/kegg.reaction/R01518"
+  vPGM hypernym "http://identifiers.org/ec-code/5.4.2.1",
+                "http://identifiers.org/go/GO:0004619"
+  vPGM homolog "http://identifiers.org/reactome/REACT_576"
+  vENO identity "http://identifiers.org/kegg.reaction/R00658"
+  vENO hypernym "http://identifiers.org/ec-code/4.2.1.11",
+                "http://identifiers.org/go/GO:0004634"
+  vENO homolog "http://identifiers.org/reactome/REACT_1400"
+  vAKc identity "http://identifiers.org/kegg.reaction/R00127"
+  vAKc hypernym "http://identifiers.org/ec-code/2.7.4.3",
+                "http://identifiers.org/go/GO:0004017"
+  vAKc homolog "http://identifiers.org/reactome/REACT_643"
+  vAKg identity "http://identifiers.org/kegg.reaction/R00127"
+  vAKg hypernym "http://identifiers.org/ec-code/2.7.4.3",
+                "http://identifiers.org/go/GO:0004017"
+  vAKg homolog "http://identifiers.org/reactome/REACT_643"
+  vPGT hypernym "http://identifiers.org/go/GO:0015120"
+  vANTI hypernym "http://identifiers.org/go/GO:0015169"
+  vGlyT hypernym "http://identifiers.org/go/GO:0015793"
 end
+
+Model_1 is "Albert2005_Glycolysis"
+
+Model_1 model_entity_is "http://identifiers.org/biomodels.db/MODEL1511155915"
+Model_1 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000211"
+Model_1 description "http://identifiers.org/pubmed/15955817"
+Model_1 origin "http://identifiers.org/biomodels.db/MODEL1101100000",
+               "http://identifiers.org/biomodels.db/BIOMD0000000071",
+               "http://identifiers.org/pubmed/10329645"
+Model_1 taxon "http://identifiers.org/taxonomy/5691"
+Model_1 homolog "http://identifiers.org/reactome/REACT_1383"
+Model_1 hypernym "http://identifiers.org/go/GO:0006096"
+Model_1 identity "http://identifiers.org/kegg.pathway/tbr00010"

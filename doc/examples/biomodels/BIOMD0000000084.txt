@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Hornberg2005_ERKcascade()
 
   // Compartments and Species:
@@ -8,14 +8,14 @@ model *Hornberg2005_ERKcascade()
   substanceOnly species x3 in compartment_, x3p in compartment_;
 
   // Reactions:
-  v1: R -> Rin; (v1_Vm1*R)/(v1_Km1 + R);
-  v2: Rin -> R; (v2_Vm2*Rin)/(v2_Km2 + Rin);
-  v3: x1 -> x1p; (v3_k3*R*x1)/(v3_Km3 + x1);
-  v4: x1p -> x1; (v4_Vm4*x1p)/(v4_Km4 + x1p);
-  v5: x2 -> x2p; (v5_k5*x1p*x2)/(v5_Km5 + x2);
-  v6: x2p -> x2; (v6_Vm6*x2p)/(v6_Km6 + x2p);
-  v7: x3 -> x3p; (v7_k7*x2p*x3)/(v7_Km7 + x3);
-  v8: x3p -> x3; (v8_Vm8*x3p)/v8_Km8/(1 + x3p/v8_Km8 + v8_Inh/v8_Ki8);
+  v1: R -> Rin; v1_Vm1*R/(v1_Km1 + R);
+  v2: Rin -> R; v2_Vm2*Rin/(v2_Km2 + Rin);
+  v3: x1 -> x1p; v3_k3*R*x1/(v3_Km3 + x1);
+  v4: x1p -> x1; v4_Vm4*x1p/(v4_Km4 + x1p);
+  v5: x2 -> x2p; v5_k5*x1p*x2/(v5_Km5 + x2);
+  v6: x2p -> x2; v6_Vm6*x2p/(v6_Km6 + x2p);
+  v7: x3 -> x3p; v7_k7*x2p*x3/(v7_Km7 + x3);
+  v8: x3p -> x3; v8_Vm8*x3p/v8_Km8/(1 + x3p/v8_Km8 + v8_Inh/v8_Ki8);
 
   // Species initializations:
   R = 0.5/compartment_;
@@ -67,4 +67,37 @@ model *Hornberg2005_ERKcascade()
   v6 is "Kinase-2 inactivation";
   v7 is "Kinase-3 activation";
   v8 is "Kinase-3 inactivation";
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/obo.go/GO:0005829"
+  R hypernym "http://identifiers.org/uniprot/Q9QX70"
+  Rin hypernym "http://identifiers.org/uniprot/Q9QX70"
+  x1 hypernym "http://identifiers.org/uniprot/P04049"
+  x1p hypernym "http://identifiers.org/uniprot/P04049"
+  x2 hypernym "http://identifiers.org/uniprot/Q02750"
+  x2p hypernym "http://identifiers.org/uniprot/Q02750"
+  x3 hypernym "http://identifiers.org/uniprot/P28482"
+  x3p hypernym "http://identifiers.org/uniprot/P28482"
+  v1 hypernym "http://identifiers.org/obo.go/GO:0007175"
+  v2 hypernym "http://identifiers.org/obo.go/GO:0045741"
+  v3 identity "http://identifiers.org/obo.go/GO:0000185"
+  v4 identity "http://identifiers.org/obo.go/GO:0051390"
+  v5 identity "http://identifiers.org/ec-code/2.7.11.1",
+              "http://identifiers.org/obo.go/GO:0000186",
+              "http://identifiers.org/obo.go/GO:0004709"
+  v6 identity "http://identifiers.org/obo.go/GO:0051389"
+  v7 identity "http://identifiers.org/ec-code/2.7.12.2",
+              "http://identifiers.org/obo.go/GO:0000187",
+              "http://identifiers.org/obo.go/GO:0004708"
+  v8 hypernym "http://identifiers.org/obo.go/GO:0043407"
 end
+
+Hornberg2005_ERKcascade is "Hornberg2005_ERKcascade"
+
+Hornberg2005_ERKcascade model_entity_is "http://identifiers.org/biomodels.db/MODEL6623610941"
+Hornberg2005_ERKcascade model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000084"
+Hornberg2005_ERKcascade description "http://identifiers.org/pubmed/15634347"
+Hornberg2005_ERKcascade identity "http://identifiers.org/obo.go/GO:0000165",
+                                 "http://identifiers.org/obo.go/GO:0007173"
+Hornberg2005_ERKcascade part "http://identifiers.org/kegg.pathway/rno04010"
+Hornberg2005_ERKcascade taxon "http://identifiers.org/taxonomy/40674"

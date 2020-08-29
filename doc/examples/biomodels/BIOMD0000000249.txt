@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *restif06()
 
   // Compartments and Species:
@@ -13,8 +13,8 @@ model *restif06()
   beta_2 := R0_2*gamma_2;
   gamma_2 := 365/tInf_2;
   sigma := 1/tImm;
-  Lambda_1 := (beta_1*(I_1 + I_1p))/N;
-  Lambda_2 := (beta_2*(I_2 + I_2p))/N;
+  Lambda_1 := beta_1*(I_1 + I_1p)/N;
+  Lambda_2 := beta_2*(I_2 + I_2p)/N;
   I_1_frac := (I_1 + I_1p)/N;
   I_2_frac := (I_2 + I_2p)/N;
   S_frac := S/N;
@@ -34,8 +34,8 @@ model *restif06()
   r9: R_p => ; mu*R_p;
   r10: S => I_1; beta_1*((I_1 + I_1p)/N)*S;
   r11: S => I_2; beta_2*((I_2 + I_2p)/N)*S;
-  r12: R_2 => I_1p; ((1 - psi)*beta_1*(I_1 + I_1p))/N*R_2;
-  r13: R_1 => I_2p; ((1 - psi)*beta_2*(I_2 + I_2p))/N*R_1;
+  r12: R_2 => I_1p; ((1 - psi)*beta_1*(I_1 + I_1p)/N)*R_2;
+  r13: R_1 => I_2p; ((1 - psi)*beta_2*(I_2 + I_2p)/N)*R_1;
   r14: I_1 => R_1; gamma_1*I_1;
   r15: I_2 => R_2; gamma_2*I_2;
   r16: I_1p => R_p; gamma_1*I_1p;
@@ -48,7 +48,7 @@ model *restif06()
   N = 1;
   S = 0.0588912;
   I_1 = 0.003775;
-  I_2 = 1e-006;
+  I_2 = 1e-06;
   R_1 = 0.93733;
   R_2 = 0;
   I_1p = 0;
@@ -95,9 +95,9 @@ model *restif06()
 
   // Unit definitions:
   unit substance = item;
-  unit time_unit = 3.1536e+007 second;
+  unit time_unit = 3.1536e+07 second;
   unit day = 86400 second;
-  unit per_year = 1 / 3.1536e+007 second;
+  unit per_year = 1 / 3.1536e+07 second;
 
   // Display Names:
   substance is "individuals";
@@ -128,4 +128,75 @@ model *restif06()
   r18 is "Loss of Immunity (R_1)";
   r19 is "Loss of Immunity (R_2)";
   r20 is "Loss of Immunity (R_p)";
+
+  // SBO terms:
+  env.sboTerm = 290
+  N.sboTerm = 240
+  S.sboTerm = 240
+  I_1.sboTerm = 240
+  I_2.sboTerm = 240
+  R_1.sboTerm = 240
+  R_2.sboTerm = 240
+  I_1p.sboTerm = 240
+  I_2p.sboTerm = 240
+  R_p.sboTerm = 240
+  r1.sboTerm = 375
+  r2.sboTerm = 375
+  r3.sboTerm = 375
+  r4.sboTerm = 375
+  r5.sboTerm = 375
+  r6.sboTerm = 375
+  r7.sboTerm = 375
+  r8.sboTerm = 375
+  r9.sboTerm = 375
+  r10.sboTerm = 375
+  r11.sboTerm = 375
+  r12.sboTerm = 375
+  r13.sboTerm = 375
+  r14.sboTerm = 375
+  r15.sboTerm = 375
+  r16.sboTerm = 375
+  r17.sboTerm = 375
+  r18.sboTerm = 375
+  r19.sboTerm = 375
+  r20.sboTerm = 375
+
+  // CV terms:
+  env identity "http://identifiers.org/go/GO:0043245"
+  N hypernym "http://identifiers.org/taxonomy/9606"
+  S hypernym "http://identifiers.org/taxonomy/9606"
+  I_1 version "http://identifiers.org/taxonomy/9606",
+              "http://identifiers.org/taxonomy/520"
+  I_2 version "http://identifiers.org/taxonomy/9606",
+              "http://identifiers.org/taxonomy/520"
+  R_1 hypernym "http://identifiers.org/taxonomy/9606"
+  R_2 hypernym "http://identifiers.org/taxonomy/9606"
+  I_1p version "http://identifiers.org/taxonomy/9606",
+               "http://identifiers.org/taxonomy/520"
+  I_2p version "http://identifiers.org/taxonomy/9606",
+               "http://identifiers.org/taxonomy/520"
+  R_p hypernym "http://identifiers.org/taxonomy/9606"
+  r1 hypernym "http://identifiers.org/go/GO:0007567"
+  r2 hypernym "http://identifiers.org/go/GO:0016265"
+  r3 hypernym "http://identifiers.org/go/GO:0016265"
+  r4 hypernym "http://identifiers.org/go/GO:0016265"
+  r5 hypernym "http://identifiers.org/go/GO:0016265"
+  r6 hypernym "http://identifiers.org/go/GO:0016265"
+  r7 hypernym "http://identifiers.org/go/GO:0016265"
+  r8 hypernym "http://identifiers.org/go/GO:0016265"
+  r9 hypernym "http://identifiers.org/go/GO:0016265"
 end
+
+restif06 is "Restif2006 - Whooping cough"
+
+restif06 model_entity_is "http://identifiers.org/biomodels.db/MODEL1003290000"
+restif06 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000249"
+restif06 description "http://identifiers.org/pubmed/16615206"
+restif06 origin "http://identifiers.org/pubmed/460412",
+                "http://identifiers.org/pubmed/460424"
+restif06 taxon "http://identifiers.org/taxonomy/9606",
+               "http://identifiers.org/taxonomy/520"
+restif06 property "http://identifiers.org/doid/DOID:1116"
+restif06 hypernym "http://identifiers.org/go/GO:0044403",
+                  "http://identifiers.org/go/GO:0009814"
+restif06 property "http://identifiers.org/mamo/MAMO_0000046"

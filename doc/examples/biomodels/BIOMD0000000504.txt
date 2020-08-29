@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *MODEL1305280001()
 
   // Compartments and Species:
@@ -44,8 +44,8 @@ model *MODEL1305280001()
   JNKdephosphorylationByDUSP16: JNK_P + DUSP16 => JNK + DUSP16; kdephosJNKDUSP16*JNK_P*DUSP16;
   cJunPhosphorylation: cJun + JNK_P => cJun_P + JNK_P; kphoscJun*cJun*JNK_P;
   cJunDephosphorylation: cJun_P => cJun; kdephoscJun*cJun_P;
-  cJunDimerisation: 2cJun_P => cJun_dimer; kdimercJun*cJun_P*(cJun_P - 1)*0.5;
-  cJunDedimerisation: cJun_dimer => 2cJun_P; kdedimercJun*cJun_dimer;
+  cJunDimerisation: 2 cJun_P => cJun_dimer; kdimercJun*cJun_P*(cJun_P - 1)*0.5;
+  cJunDedimerisation: cJun_dimer => 2 cJun_P; kdedimercJun*cJun_dimer;
   cJunTranscriptionAP1: cFos_cJun => cJun_mRNA + cFos_cJun; ksyncJunmRNA*cFos_cJun*kAP1activity;
   cJunTranscriptioncJun: cJun_dimer => cJun_mRNA + cJun_dimer; ksyncJunmRNAcJun*cJun_dimer;
   cJunBasalTranscription: $Source => cJun_mRNA; ksynbasalcJunmRNA*Source;
@@ -247,51 +247,51 @@ model *MODEL1305280001()
   ecm = 1;
 
   // Variable initializations:
-  kactMMP13mmp3 = 5e-008;
-  kactMMP1mat = 1e-009;
-  kactMMP1mmp3 = 1e-008;
-  kactMMP3mat = 4e-006;
+  kactMMP13mmp3 = 5e-08;
+  kactMMP1mat = 1e-09;
+  kactMMP1mmp3 = 1e-08;
+  kactMMP3mat = 4e-06;
   kAP1activity = 1;
-  kbincFoscJun = 5e-005;
+  kbincFoscJun = 5e-05;
   kbinIL1IL1R = 0.0001;
   kbinIL1IL1Ra = 0.0001;
-  kbinIRAK2 = 5e-005;
-  kbinOSMOSMR = 1e-005;
+  kbinIRAK2 = 5e-05;
+  kbinOSMOSMR = 1e-05;
   kbinOSMOSMRa = 0.0001;
   kbinSOCS3OSMR = 0.005;
-  kbinSP1TIMP1DNA = 1e-005;
-  kbinTRAF6 = 1e-005;
+  kbinSP1TIMP1DNA = 1e-05;
+  kbinTRAF6 = 1e-05;
   kcyt2nucSTAT3 = 0.001;
   kdedimercJun = 0.01;
-  kdegADAMTS4 = 5e-005;
-  kdegADAMTS4mRNA = 1.4e-005;
-  kdegAggrecan = 3e-008;
+  kdegADAMTS4 = 5e-05;
+  kdegADAMTS4mRNA = 1.4e-05;
+  kdegAggrecan = 3e-08;
   kdegcFos = 0.0002;
   kdegcFosmRNA = 0.003;
   kdegcJun = 0.00013;
   kdegcJunmRNA = 0.003;
-  kdegCollagen2mmp1 = 5e-012;
-  kdegCollagen2mmp13 = 5e-011;
+  kdegCollagen2mmp1 = 5e-12;
+  kdegCollagen2mmp13 = 5e-11;
   kdegDUSP16 = 0.00013;
   kdegIL1 = 0.0002;
-  kdegMatriptase = 8e-006;
+  kdegMatriptase = 8e-06;
   kdegMKP1 = 0.0001;
-  kdegMMP1 = 1e-006;
-  kdegMMP13 = 1e-006;
-  kdegMMP13mRNA = 6.4e-006;
-  kdegMMP1mRNA = 6.4e-006;
-  kdegMMP3 = 1e-006;
-  kdegMMP3mRNA = 6.4e-006;
-  kdegOSM = 4.8e-005;
+  kdegMMP1 = 1e-06;
+  kdegMMP13 = 1e-06;
+  kdegMMP13mRNA = 6.4e-06;
+  kdegMMP1mRNA = 6.4e-06;
+  kdegMMP3 = 1e-06;
+  kdegMMP3mRNA = 6.4e-06;
+  kdegOSM = 4.8e-05;
   kdegPP4 = 0.0001;
-  kdegPTPRT = 5e-005;
+  kdegPTPRT = 5e-05;
   kdegSOCS3 = 0.0008;
   kdegSOCS3mRNA = 0.0004;
-  kdegSP1 = 2e-005;
-  kdegTIMP1 = 2e-005;
-  kdegTIMP1mRNA = 1.4e-005;
-  kdegTIMP3 = 2e-005;
-  kdegTIMP3mRNA = 1.4e-005;
+  kdegSP1 = 2e-05;
+  kdegTIMP1 = 2e-05;
+  kdegTIMP1mRNA = 1.4e-05;
+  kdegTIMP3 = 2e-05;
+  kdegTIMP3mRNA = 1.4e-05;
   kdephoscFos = 0.0001;
   kdephoscFosDUSP16 = 0.0001;
   kdephoscJun = 0.01;
@@ -300,31 +300,31 @@ model *MODEL1305280001()
   kdephosJNK = 0.001;
   kdephosJNKDUSP16 = 0.001;
   kdephosp38 = 0.001;
-  kdephosp38MKP1 = 1e-005;
-  kdephosSTAT3 = 1e-005;
-  kdephosSTAT3nuc = 1e-007;
+  kdephosp38MKP1 = 1e-05;
+  kdephosSTAT3 = 1e-05;
+  kdephosSTAT3nuc = 1e-07;
   kdephosSTAT3nucPTPRT = 0.0005;
   kdephosSTAT3PTPRT = 0.0008;
-  kdimercJun = 5e-005;
-  kinhibADAMTS4TIMP1 = 3e-006;
+  kdimercJun = 5e-05;
+  kinhibADAMTS4TIMP1 = 3e-06;
   kinhibADAMTS4TIMP3 = 0.0005;
-  kinhibMMP13TIMP1 = 3e-007;
-  kinhibMMP13TIMP3 = 1e-008;
-  kinhibMMP1TIMP1 = 3e-007;
-  kinhibMMP1TIMP3 = 1e-008;
-  kinhibMMP3TIMP1 = 3e-007;
-  kinhibMMP3TIMP3 = 1e-008;
+  kinhibMMP13TIMP1 = 3e-07;
+  kinhibMMP13TIMP3 = 1e-08;
+  kinhibMMP1TIMP1 = 3e-07;
+  kinhibMMP1TIMP3 = 1e-08;
+  kinhibMMP3TIMP1 = 3e-07;
+  kinhibMMP3TIMP3 = 1e-08;
   kinhibTRAF6 = 0.5;
   knuc2cytSTAT3 = 0.001;
-  kphoscFos = 5e-007;
+  kphoscFos = 5e-07;
   kphoscJun = 0.0001;
-  kphosJAK1 = 1e-005;
+  kphosJAK1 = 1e-05;
   kphosJNK = 0.0001;
   kphosp38 = 0.0001;
   kphosSTAT3 = 0.005;
   krelADAMTS4TIMP1 = 0.001;
   krelADAMTS4TIMP3 = 0.001;
-  krelcFoscJun = 4e-005;
+  krelcFoscJun = 4e-05;
   krelIL1IL1R = 0.001;
   krelIL1IL1Ra = 0.0001;
   krelIRAK2 = 0.001;
@@ -334,36 +334,36 @@ model *MODEL1305280001()
   krelMMP1TIMP3 = 0.001;
   krelMMP3 = 0.001;
   krelMMP3TIMP3 = 0.001;
-  krelOSMOSMR = 1e-005;
-  krelOSMOSMRa = 1e-005;
-  krelSOCS3OSMR = 1e-005;
-  krelSP1TIMP1DNA = 5e-006;
+  krelOSMOSMR = 1e-05;
+  krelOSMOSMRa = 1e-05;
+  krelSOCS3OSMR = 1e-05;
+  krelSP1TIMP1DNA = 5e-06;
   krelTRAF6 = 0.0001;
-  krelTRAF6PP4 = 1e-006;
+  krelTRAF6PP4 = 1e-06;
   ksynADAMTS4 = 0.0005;
   ksynADAMTS4mRNA = 0.0005;
-  ksynADAMTS4mRNAcJun = 4e-006;
+  ksynADAMTS4mRNAcJun = 4e-06;
   ksynbasalcJunmRNA = 0.015;
   ksynbasalTIMP1mRNA = 0.00014;
   ksynbasalTIMP3mRNA = 0.00028;
   ksyncFos = 0.001;
-  ksyncFosmRNA = 5e-006;
+  ksyncFosmRNA = 5e-06;
   ksyncFosmRNAStat3 = 0.05;
   ksyncJun = 0.0026;
   ksyncJunmRNA = 0.0125;
   ksyncJunmRNAcJun = 0.005;
   ksynDUSP16 = 0.005;
   ksynDUSP16cJun = 0.0002;
-  ksynMatriptase = 9e-010;
-  ksynMKP1 = 2.5e-005;
-  ksynMKP1cJun = 1e-006;
+  ksynMatriptase = 9e-10;
+  ksynMKP1 = 2.5e-05;
+  ksynMKP1cJun = 1e-06;
   ksynMMP1 = 0.00015;
-  ksynMMP13 = 1.5e-005;
+  ksynMMP13 = 1.5e-05;
   ksynMMP13mRNA = 0.0005;
-  ksynMMP13mRNAcJun = 2e-005;
+  ksynMMP13mRNAcJun = 2e-05;
   ksynMMP1mRNA = 0.005;
   ksynMMP1mRNAcJun = 0.0002;
-  ksynMMP3 = 3e-005;
+  ksynMMP3 = 3e-05;
   ksynMMP3mRNA = 0.005;
   ksynMMP3mRNAcJun = 0.0002;
   ksynPP4 = 0.005;
@@ -371,13 +371,13 @@ model *MODEL1305280001()
   ksynPTPRT = 0.0001;
   ksynSOCS3 = 0.001;
   ksynSOCS3mRNA = 0.006;
-  ksynSP1 = 2e-005;
+  ksynSP1 = 2e-05;
   ksynTIMP1 = 0.0002;
-  ksynTIMP1mRNA = 5e-007;
-  ksynTIMP1mRNAStat3 = 4e-005;
+  ksynTIMP1mRNA = 5e-07;
+  ksynTIMP1mRNAStat3 = 4e-05;
   ksynTIMP3 = 0.0004;
-  ksynTIMP3mRNA = 5e-007;
-  ksynTIMP3mRNAStat3 = 4e-005;
+  ksynTIMP3mRNA = 5e-07;
+  ksynTIMP3mRNAStat3 = 4e-05;
 
   // Other declarations:
   const cytoplasm, nucleus, membrane, ecm, kactMMP13mmp3, kactMMP1mat, kactMMP1mmp3;
@@ -409,4 +409,149 @@ model *MODEL1305280001()
 
   // Unit definitions:
   unit substance = item;
+
+  // SBO terms:
+  cytoplasm.sboTerm = 290
+  nucleus.sboTerm = 290
+  ecm.sboTerm = 290
+  ADAMTS4_mRNA.sboTerm = 278
+  cFos_mRNA.sboTerm = 278
+  SOCS3_mRNA.sboTerm = 278
+  cJun_dimer.sboTerm = 607
+  Source.sboTerm = 291
+  Sink.sboTerm = 291
+
+  // CV terms:
+  cytoplasm hypernym "http://identifiers.org/bto/BTO:0000249"
+  nucleus hypernym "http://identifiers.org/go/GO:0005634"
+  membrane hypernym "http://identifiers.org/go/GO:0009986"
+  ecm hypernym "http://identifiers.org/go/GO:0005737"
+  ADAMTS4_mRNA encodement "http://identifiers.org/uniprot/O75173"
+  ADAMTS4_mRNA encoder "http://identifiers.org/ensembl/ENSG00000158859"
+  cFos hypernym "http://identifiers.org/uniprot/P01100"
+  cFos_mRNA encodement "http://identifiers.org/uniprot/P01100"
+  cFos_mRNA encoder "http://identifiers.org/ensembl/ENSG00000170345"
+  cJun hypernym "http://identifiers.org/uniprot/P05412"
+  cJun_mRNA encodement "http://identifiers.org/uniprot/P05412"
+  cJun_mRNA encoder "http://identifiers.org/ensembl/ENSG00000177606"
+  DUSP16 hypernym "http://identifiers.org/uniprot/Q9BY84"
+  IRAK2 hypernym "http://identifiers.org/uniprot/O43187"
+  IRAK2_TRAF6 part "http://identifiers.org/uniprot/Q9Y4K3",
+                   "http://identifiers.org/uniprot/O43187"
+  IRAK2_TRAF6_PP4 part "http://identifiers.org/uniprot/P60510",
+                       "http://identifiers.org/uniprot/O43187",
+                       "http://identifiers.org/uniprot/Q9Y4K3"
+  JAK1 hypernym "http://identifiers.org/uniprot/P23458"
+  JAK1_P hypernym "http://identifiers.org/uniprot/P23458",
+                  "http://identifiers.org/pubchem.compound/3842"
+  JNK hypernym "http://identifiers.org/uniprot/P45983"
+  JNK_P hypernym "http://identifiers.org/uniprot/P45983",
+                 "http://identifiers.org/pubchem.compound/3842"
+  Matriptase hypernym "http://identifiers.org/uniprot/Q9Y5Y6"
+  MKP1 hypernym "http://identifiers.org/uniprot/P28562"
+  MMP1_mRNA encodement "http://identifiers.org/uniprot/P03956"
+  MMP1_mRNA encoder "http://identifiers.org/ensembl/ENSG00000196611"
+  MMP3_mRNA encodement "http://identifiers.org/uniprot/P08254"
+  MMP3_mRNA encoder "http://identifiers.org/ensembl/ENSG00000149968"
+  MMP13_mRNA encoder "http://identifiers.org/ensembl/ENSG00000137745"
+  MMP13_mRNA encodement "http://identifiers.org/uniprot/P45452"
+  p38 hypernym "http://identifiers.org/uniprot/Q15759"
+  p38_P hypernym "http://identifiers.org/uniprot/Q15759",
+                 "http://identifiers.org/pubchem.compound/3842"
+  PP4 hypernym "http://identifiers.org/uniprot/P60510"
+  proMMP1 hypernym "http://identifiers.org/uniprot/P03956"
+  proMMP3 hypernym "http://identifiers.org/uniprot/P08254"
+  proMMP13 hypernym "http://identifiers.org/uniprot/P45452"
+  PTPRT hypernym "http://identifiers.org/uniprot/O14522"
+  SOCS3 hypernym "http://identifiers.org/uniprot/O14543"
+  SOCS3_mRNA encoder "http://identifiers.org/ensembl/ENSG00000184557"
+  SOCS3_mRNA encodement "http://identifiers.org/uniprot/O14543"
+  STAT3_cyt container "http://identifiers.org/go/GO:0005737"
+  STAT3_cyt hypernym "http://identifiers.org/uniprot/P40763"
+  STAT3_P_cyt container "http://identifiers.org/go/GO:0005737"
+  STAT3_P_cyt hypernym "http://identifiers.org/uniprot/P40763",
+                       "http://identifiers.org/pubchem.compound/3842"
+  TIMP1_mRNA encoder "http://identifiers.org/ensembl/ENSG00000102265"
+  TIMP1_mRNA encodement "http://identifiers.org/uniprot/P01033"
+  TIMP3_mRNA encoder "http://identifiers.org/ensembl/ENSG00000100234"
+  TIMP3_mRNA encodement "http://identifiers.org/uniprot/P35625"
+  TRAF6 hypernym "http://identifiers.org/uniprot/Q9Y4K3"
+  TRAF6_PP4 part "http://identifiers.org/uniprot/P60510",
+                 "http://identifiers.org/uniprot/Q9Y4K3"
+  ADAMTS4 hypernym "http://identifiers.org/uniprot/O75173"
+  ADAMTS4_TIMP1 part "http://identifiers.org/uniprot/P01033",
+                     "http://identifiers.org/uniprot/O75173"
+  ADAMTS4_TIMP3 part "http://identifiers.org/uniprot/P01033",
+                     "http://identifiers.org/uniprot/O75173"
+  Aggrecan hypernym "http://identifiers.org/uniprot/Q6PID9"
+  Aggrecan_Collagen2 part "http://identifiers.org/uniprot/P02458",
+                          "http://identifiers.org/uniprot/Q6PID9"
+  AggFrag hypernym "http://identifiers.org/uniprot/Q6PID9"
+  ColFrag hypernym "http://identifiers.org/uniprot/P02458"
+  Collagen2 hypernym "http://identifiers.org/uniprot/P02458"
+  IL1 hypernym "http://identifiers.org/uniprot/P01583"
+  MMP1 hypernym "http://identifiers.org/uniprot/P03956"
+  MMP1_TIMP1 part "http://identifiers.org/uniprot/P01033",
+                  "http://identifiers.org/uniprot/P03956"
+  MMP1_TIMP3 part "http://identifiers.org/uniprot/P35625",
+                  "http://identifiers.org/uniprot/P03956"
+  MMP3 hypernym "http://identifiers.org/uniprot/P08254"
+  MMP3_TIMP1 part "http://identifiers.org/uniprot/P01033",
+                  "http://identifiers.org/uniprot/P08254"
+  MMP3_TIMP3 part "http://identifiers.org/uniprot/P35625",
+                  "http://identifiers.org/uniprot/P08254"
+  MMP13 hypernym "http://identifiers.org/uniprot/P45452"
+  MMP13_TIMP1 part "http://identifiers.org/uniprot/P01033",
+                   "http://identifiers.org/uniprot/P45452"
+  MMP13_TIMP3 part "http://identifiers.org/uniprot/P35625",
+                   "http://identifiers.org/uniprot/P45452"
+  OSM hypernym "http://identifiers.org/uniprot/P13725"
+  TIMP1 hypernym "http://identifiers.org/uniprot/P01033"
+  TIMP3 hypernym "http://identifiers.org/uniprot/P35625"
+  IL1_IL1R part "http://identifiers.org/uniprot/P01583",
+                "http://identifiers.org/uniprot/P14778"
+  IL1_IL1Ra part "http://identifiers.org/uniprot/P01583",
+                 "http://identifiers.org/uniprot/P14778"
+  IL1_IL1R_IRAK2 part "http://identifiers.org/uniprot/O43187",
+                      "http://identifiers.org/uniprot/P01583",
+                      "http://identifiers.org/uniprot/P14778"
+  IL1R hypernym "http://identifiers.org/uniprot/P14778"
+  IL1Ra hypernym "http://identifiers.org/uniprot/P14778"
+  OSM_OSMR part "http://identifiers.org/uniprot/Q99650",
+                "http://identifiers.org/uniprot/P13725"
+  OSM_OSMRa part "http://identifiers.org/uniprot/P13725",
+                 "http://identifiers.org/uniprot/Q99650"
+  OSMR_SOCS3 part "http://identifiers.org/uniprot/Q99650",
+                  "http://identifiers.org/uniprot/O14543"
+  OSMR hypernym "http://identifiers.org/uniprot/Q99650"
+  OSMRa hypernym "http://identifiers.org/uniprot/Q99650"
+  cFos_cJun part "http://identifiers.org/uniprot/P01100",
+                 "http://identifiers.org/uniprot/P05412"
+  cFos_P hypernym "http://identifiers.org/uniprot/P01100",
+                  "http://identifiers.org/pubchem.compound/3842"
+  cJun_P hypernym "http://identifiers.org/uniprot/P05412",
+                  "http://identifiers.org/pubchem.compound/3842"
+  cJun_dimer part "http://identifiers.org/uniprot/P05412"
+  SP1 hypernym "http://identifiers.org/uniprot/P08047"
+  SP1_TIMP1_DNA part "http://identifiers.org/chebi/CHEBI:16991",
+                     "http://identifiers.org/uniprot/P08047",
+                     "http://identifiers.org/uniprot/P01033"
+  STAT3_nuc hypernym "http://identifiers.org/uniprot/P40763"
+  STAT3_nuc container "http://identifiers.org/go/GO:0005634"
+  STAT3_P_nuc hypernym "http://identifiers.org/uniprot/P40763",
+                       "http://identifiers.org/pubchem.compound/3842"
+  STAT3_P_nuc container "http://identifiers.org/go/GO:0005634"
+  TIMP1_DNA part "http://identifiers.org/chebi/CHEBI:16991",
+                 "http://identifiers.org/uniprot/P01033"
 end
+
+MODEL1305280001 is "Proctor2013 - Cartilage breakdown, interventions to reduce collagen release"
+
+MODEL1305280001 model_entity_is "http://identifiers.org/biomodels.db/MODEL1305280001"
+MODEL1305280001 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000504"
+MODEL1305280001 description "http://identifiers.org/pubmed/24285357"
+MODEL1305280001 container "http://identifiers.org/bto/BTO:0000249"
+MODEL1305280001 taxon "http://identifiers.org/taxonomy/9606"
+MODEL1305280001 hypernym "http://identifiers.org/go/GO:0010710"
+MODEL1305280001 property "http://identifiers.org/doid/DOID:1222"
+MODEL1305280001 property "http://identifiers.org/mamo/MAMO_0000046"

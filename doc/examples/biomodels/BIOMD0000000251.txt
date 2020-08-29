@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Nakakuki2010_CellFateDecision_Core()
 
   // Compartments and Species:
@@ -12,14 +12,14 @@ model *Nakakuki2010_CellFateDecision_Core()
   ppERKc := x1 - x2;
 
   // Reactions:
-  reaction_1:  => x1; compartment_*(-x1/tau1 + (K1*L)/tau1);
-  reaction_2:  => x2; compartment_*(-x2/tau2 + (K2*L)/tau2);
+  reaction_1:  => x1; compartment_*(-x1/tau1 + K1*L/tau1);
+  reaction_2:  => x2; compartment_*(-x2/tau2 + K2*L/tau2);
   reaction_3:  => ppERKn; compartment_*(reaction_3_k1*ppERKc - reaction_3_k2*ppERKn - reaction_3_k3*DUSP*ppERKn);
   reaction_4:  => DUSP; compartment_*reaction_4_k*ppERKn;
   reaction_5:  => pRSKn; compartment_*(reaction_5_k4*ppERKn - reaction_5_k5*pRSKn);
   reaction_6:  => cFOSp; compartment_*((ppERKn*pRSKn)^reaction_6_n/(reaction_6_k6^reaction_6_n + (ppERKn*pRSKn)^reaction_6_n) - k7*cFOSp);
   reaction_7:  => cFOSm; compartment_*(k7*cFOSp - reaction_7_k8*cFOSm);
-  reaction_8:  => cFOS; compartment_*(reaction_8_k9*cFOSm - reaction_8_k10*cFOS - k11*cFOS*ppERKc + k13*pcFOS);
+  reaction_8:  => cFOS; compartment_*((reaction_8_k9*cFOSm - reaction_8_k10*cFOS - k11*cFOS*ppERKc) + k13*pcFOS);
   reaction_9:  => pcFOS; compartment_*(k11*cFOS*ppERKc - reaction_9_k12*pcFOS - k13*pcFOS);
 
   // Species initializations:
@@ -67,6 +67,7 @@ model *Nakakuki2010_CellFateDecision_Core()
   unit substance = 1e-3 mole;
 
   // Display Names:
+  compartment_ is "compartment";
   ppERKn is "ppERK(nucleus)";
   cFOSp is "cFOS preRNA";
   pcFOS is "pc-FOS";
@@ -83,4 +84,74 @@ model *Nakakuki2010_CellFateDecision_Core()
   reaction_7 is "5 cFOSm";
   reaction_8 is "6 cFOS";
   reaction_9 is "7 pcFOS";
+
+  // SBO terms:
+  compartment_.sboTerm = 290
+  x1.sboTerm = 236
+  x2.sboTerm = 236
+  ppERKn.sboTerm = 252
+  DUSP.sboTerm = 252
+  pRSKn.sboTerm = 252
+  cFOSp.sboTerm = 250
+  cFOS.sboTerm = 252
+  pcFOS.sboTerm = 252
+  cFOSm.sboTerm = 250
+  ppERKc.sboTerm = 252
+
+  // CV terms:
+  compartment_ hypernym "http://identifiers.org/go/GO:0005623"
+  ppERKn hypernym "http://identifiers.org/kegg.compound/C00562"
+  ppERKn hypernym "http://identifiers.org/uniprot/P28482",
+                  "http://identifiers.org/uniprot/P27361"
+  ppERKn hypernym "http://identifiers.org/reactome/REACT_13301.1"
+  DUSP homolog "http://identifiers.org/kegg.orthology/K04459"
+  DUSP hypernym "http://identifiers.org/interpro/IPR014393"
+  DUSP hypernym "http://identifiers.org/reactome/REACT_12976.1"
+  DUSP hypernym "http://identifiers.org/uniprot/Q13202",
+                "http://identifiers.org/uniprot/Q9Y6W6",
+                "http://identifiers.org/uniprot/Q16690",
+                "http://identifiers.org/uniprot/Q13115",
+                "http://identifiers.org/uniprot/Q05923",
+                "http://identifiers.org/uniprot/P28562"
+  pRSKn identity "http://identifiers.org/reactome/REACT_13229.1"
+  cFOSp encodement "http://identifiers.org/reactome/REACT_21788.1"
+  cFOSp encoder "http://identifiers.org/kegg.genes/hsa:2353"
+  cFOS hypernym "http://identifiers.org/uniprot/P01100"
+  cFOS hypernym "http://identifiers.org/reactome/REACT_21788.1"
+  pcFOS hypernym "http://identifiers.org/uniprot/P01100"
+  pcFOS identity "http://identifiers.org/reactome/REACT_21988.1"
+  cFOSm encodement "http://identifiers.org/reactome/REACT_21788.1"
+  cFOSm encodement "http://identifiers.org/uniprot/P01100"
+  ppERKc hypernym "http://identifiers.org/kegg.compound/C00562"
+  ppERKc hypernym "http://identifiers.org/reactome/REACT_2640",
+                  "http://identifiers.org/reactome/REACT_3037"
+  reaction_1 hypernym "http://identifiers.org/go/GO:0000187"
+  reaction_2 hypernym "http://identifiers.org/go/GO:0043407"
+  reaction_3 part "http://identifiers.org/reactome/REACT_12439",
+                  "http://identifiers.org/reactome/REACT_487",
+                  "http://identifiers.org/reactome/REACT_1866"
+  reaction_3 part "http://identifiers.org/go/GO:0017017",
+                  "http://identifiers.org/go/GO:0000189"
+  reaction_4 hypernym "http://identifiers.org/go/GO:0004707"
+  reaction_5 hypernym "http://identifiers.org/reactome/REACT_20510.1"
+  reaction_5 hypernym "http://identifiers.org/reactome/REACT_20562"
+  reaction_6 hypernym "http://identifiers.org/go/GO:0009299"
+  reaction_7 hypernym "http://identifiers.org/go/GO:0006397"
+  reaction_8 hypernym "http://identifiers.org/go/GO:0006412"
+  reaction_9 hypernym "http://identifiers.org/reactome/REACT_21251"
+  reaction_9 hypernym "http://identifiers.org/ec-code/2.7.11.24"
 end
+
+Nakakuki2010_CellFateDecision_Core is "Nakakuki2010_CellFateDecision_Core"
+
+Nakakuki2010_CellFateDecision_Core model_entity_is "http://identifiers.org/biomodels.db/MODEL1003170000"
+Nakakuki2010_CellFateDecision_Core model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000251"
+Nakakuki2010_CellFateDecision_Core description "http://identifiers.org/pubmed/20493519"
+Nakakuki2010_CellFateDecision_Core origin "http://identifiers.org/biomodels.db/BIOMD0000000175",
+                                          "http://identifiers.org/pubmed/12242336"
+Nakakuki2010_CellFateDecision_Core taxon "http://identifiers.org/taxonomy/9606"
+Nakakuki2010_CellFateDecision_Core version "http://identifiers.org/go/GO:0035559",
+                                           "http://identifiers.org/go/GO:0038029"
+Nakakuki2010_CellFateDecision_Core hypernym "http://identifiers.org/reactome/REACT_9417"
+Nakakuki2010_CellFateDecision_Core parthood "http://identifiers.org/kegg.pathway/hsa04010"
+Nakakuki2010_CellFateDecision_Core version "http://identifiers.org/reactome/REACT_634"

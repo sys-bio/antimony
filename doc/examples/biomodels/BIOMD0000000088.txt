@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Maeda2006_MyosinPhosphorylation()
 
   // Compartments and Species:
@@ -23,19 +23,19 @@ model *Maeda2006_MyosinPhosphorylation()
   species s569 in c1, s351 in c1, s570 in c1;
 
   // Reactions:
-  re1: $s2 + s130 -> s174; c1*(((1 + re1_ratio)*re1_Vmax*s130*s2)/re1_Km - re1_Vmax*re1_ratio*s174);
+  re1: $s2 + s130 -> s174; c1*((1 + re1_ratio)*re1_Vmax*s130*s2/re1_Km - re1_Vmax*re1_ratio*s174);
   re12: $s48 + s435 => s439 + s410 + $s50 + s55; c1*re12_kf*s48*s435;
   re14: s55 => s183; c1*re14_kf*s55;
   re15: s442 + s57 -> s441; c1*(re15_kf*s442*s57 - re15_kb*s441);
   re16: s441 + $s48 => s187 + s55 + $s50 + s421; c1*re16_kf*s48*s441;
   re17: s439 => s438; c1*re17_kf*s439;
   re19: s410 + s438 => s437; c1*re19_kf*s410*s438;
-  re20: s93 + s187 -> s184; c1*(((1 + re20_ratio)*re20_Vmax*s187*s93)/re20_Km - re20_ratio*re20_Vmax*s184);
+  re20: s93 + s187 -> s184; c1*((1 + re20_ratio)*re20_Vmax*s187*s93/re20_Km - re20_ratio*re20_Vmax*s184);
   re22: s421 + s440 => s442; c1*re22_kf*s421*s440;
   re23: s439 + s98 -> s436; c1*(re23_kf*s439*s98 - re23_kb*s436);
-  re24: s231 => s214; c1*((re24_Vmax*s231*s436)/(re24_Km + s214));
-  re26: s98 + s231 -> s233; c1*(((1 + re26_ratio)*re26_Vmax*s98*s231)/re26_Km - re26_Vmax*re26_ratio*s233);
-  re28: s118 + s214 -> s213; c1*(((1 + re28_ratio)*re28_Vmax*s118*s214)/re28_Km - re28_Vmax*re28_ratio*s213);
+  re24: s231 => s214; c1*(re24_Vmax*s231*s436/(re24_Km + s214));
+  re26: s98 + s231 -> s233; c1*((1 + re26_ratio)*re26_Vmax*s98*s231/re26_Km - re26_Vmax*re26_ratio*s233);
+  re28: s118 + s214 -> s213; c1*((1 + re28_ratio)*re28_Vmax*s118*s214/re28_Km - re28_Vmax*re28_ratio*s213);
   re32: s233 => s214 + s98; c1*re32_Vmax*s233;
   re33: s213 => s231 + s118; c1*re33_Vmax*s213;
   re34: s184 => s440 + s93; c1*re34_Vmax*s184;
@@ -51,15 +51,15 @@ model *Maeda2006_MyosinPhosphorylation()
   re51: s135 + s443 -> s564; c1*(re51_kf*s135*s443 - re51_kb*s564);
   re52: s424 + s135 -> s569; c1*(re52_kf*s424*s135 - re52_kb*s569);
   re54: s564 => s569 + s440; c1*re54_kf*s564;
-  re55: s569 + $s151 -> s568; c1*(((1 + re55_ratio)*re55_Vmax*s569*s151)/re55_Km - re55_ratio*re55_Vmax*s568);
-  re56: s564 + $s151 -> s567; c1*(((1 + re56_ratio)*re56_Vmax*s564*s151)/re56_Km - re56_ratio*re56_Vmax*s567);
+  re55: s569 + $s151 -> s568; c1*((1 + re55_ratio)*re55_Vmax*s569*s151/re55_Km - re55_ratio*re55_Vmax*s568);
+  re56: s564 + $s151 -> s567; c1*((1 + re56_ratio)*re56_Vmax*s564*s151/re56_Km - re56_ratio*re56_Vmax*s567);
   re57: s568 => s152 + s153 + s569; c1*re57_Vmax*s568;
   re58: s567 => s153 + s152 + s564; c1*re58_Vmax*s567;
   re59: s153 => s164; c1*re59_kf*s153;
   re60: s152 => s165; c1*re60_kf*s152;
-  re68: s171 + 3s152 -> s173; c1*(re68_kf*s152*s152*s152*s171 - re68_kb*s173);
+  re68: s171 + 3 s152 -> s173; c1*(re68_kf*s152*s152*s152*s171 - re68_kb*s173);
   re73: s172 -> s135; c1*re73_g*s173*(s172 - s135);
-  re85: s444 => 2s172 + s430; c1*re85_kf*s444;
+  re85: s444 => 2 s172 + s430; c1*re85_kf*s444;
   re86: s276 + s135 -> s277; c1*(re86_kf*s276*s135 - re86_kb*s277);
   re87: s277 + s135 -> s278; c1*(re87_kf*s277*s135 - re87_kb*s278);
   re88: s279 + s135 -> s280; c1*(re88_kf*s279*s135 - re88_kb*s280);
@@ -73,16 +73,16 @@ model *Maeda2006_MyosinPhosphorylation()
   re96: s566 -> s314; c1*(re96_kf*s566 - re96_kb*s314);
   re97: s309 + s135 -> s566; c1*(re97_kf*s309*s135 - re97_kb*s566);
   re98: s446 => s432 + $s267; c1*re98_Vmax*s446;
-  re100: s430 + 2s135 -> s444; c1*(re100_kf*s135*s135*s430 - re100_kb*s444);
+  re100: s430 + 2 s135 -> s444; c1*(re100_kf*s135*s135*s430 - re100_kb*s444);
   re101: s566 + s153 -> s565; c1*(re101_kf*s566*s153 - re101_kb*s565);
   re102: s565 -> s324; c1*(re102_kf*s565 - re102_kb*s324);
   re106: s324 => s329; c1*re106_kf*s324;
   re107: s314 => s330; c1*re107_kf*s314;
   re108: s310 => s331; c1*re108_kf*s310;
-  re109: s432 + s135 -> s446; c1*(((1 + re109_ratio)*re109_Vmax*s432*s135)/re109_Km - re109_Vmax*re109_ratio*s446);
-  re110: s324 + s349 -> s338; c1*(((1 + re110_ratio)*re110_Vmax*s324*s349)/re110_Km - re110_Vmax*re110_ratio*s338);
-  re111: s314 + s349 -> s335; c1*(((1 + re111_ratio)*re111_Vmax*s314*s349)/re111_Km - re111_ratio*re111_Vmax*s335);
-  re112: s310 + s349 -> s332; c1*(((1 + re112_ratio)*re112_Vmax*s310*s349)/re112_Km - re112_Vmax*re112_ratio*s332);
+  re109: s432 + s135 -> s446; c1*((1 + re109_ratio)*re109_Vmax*s432*s135/re109_Km - re109_Vmax*re109_ratio*s446);
+  re110: s324 + s349 -> s338; c1*((1 + re110_ratio)*re110_Vmax*s324*s349/re110_Km - re110_Vmax*re110_ratio*s338);
+  re111: s314 + s349 -> s335; c1*((1 + re111_ratio)*re111_Vmax*s314*s349/re111_Km - re111_ratio*re111_Vmax*s335);
+  re112: s310 + s349 -> s332; c1*((1 + re112_ratio)*re112_Vmax*s310*s349/re112_Km - re112_Vmax*re112_ratio*s332);
   re113: s338 => s324 + s350; c1*re113_Vmax*s338;
   re114: s335 => s314 + s350; c1*re114_Vmax*s335;
   re115: s332 => s310 + s350; c1*re115_Vmax*s332;
@@ -90,39 +90,39 @@ model *Maeda2006_MyosinPhosphorylation()
   re117: s351 + s350 -> s352; c1*(re117_kf*s351*s350 - re117_kb*s352);
   re118: s351 + s349 -> s355; c1*(re118_kf*s351*s349 - re118_kb*s355);
   re119: s352 => s355; c1*re119_kf*s352;
-  re120: s124 + s358 -> s361; c1*(((1 + re120_ratio)*re120_Vmax*s124*s358)/re120_Km - re120_Vmax*re120_ratio*s361);
-  re121: s124 + s359 -> s362; c1*(((1 + re121_ratio)*re121_Vmax*s124*s359)/re121_Km - re121_Vmax*re121_ratio*s362);
+  re120: s124 + s358 -> s361; c1*((1 + re120_ratio)*re120_Vmax*s124*s358/re120_Km - re120_Vmax*re120_ratio*s361);
+  re121: s124 + s359 -> s362; c1*((1 + re121_ratio)*re121_Vmax*s124*s359/re121_Km - re121_Vmax*re121_ratio*s362);
   re123: s361 => s359 + s124; c1*re123_Vmax*s361;
   re124: s362 => s360 + s124; c1*re124_Vmax*s362;
-  re125: s252 + s358 -> s456; c1*(((1 + re125_ratio)*re125_Vmax*s252*s358)/re125_Km - re125_Vmax*re125_ratio*s456);
-  re126: s252 + s359 => s449; c1*(((1 + re126_ratio)*re126_Vmax*s252*s359)/re126_Km - re126_Vmax*re126_ratio*s449);
+  re125: s252 + s358 -> s456; c1*((1 + re125_ratio)*re125_Vmax*s252*s358/re125_Km - re125_Vmax*re125_ratio*s456);
+  re126: s252 + s359 => s449; c1*((1 + re126_ratio)*re126_Vmax*s252*s359/re126_Km - re126_Vmax*re126_ratio*s449);
   re127: s456 => s252 + s359; c1*re127_Vmax*s456;
   re128: s449 => s252 + s360; c1*re128_Vmax*s449;
-  re129: s124 + s351 -> s463; c1*(((1 + re129_ratio)*re129_Vmax*s124*s351)/re129_Km - re129_Vmax*re129_ratio*s463);
+  re129: s124 + s351 -> s463; c1*((1 + re129_ratio)*re129_Vmax*s124*s351/re129_Km - re129_Vmax*re129_ratio*s463);
   re130: s463 => s124 + s570; c1*re130_Vmax*s463;
-  re131: s252 + s351 -> s496; c1*(((1 + re131_ratio)*re131_Vmax*s252*s351)/re131_Km - re131_Vmax*re131_ratio*s496);
+  re131: s252 + s351 -> s496; c1*((1 + re131_ratio)*re131_Vmax*s252*s351/re131_Km - re131_Vmax*re131_ratio*s496);
   re132: s496 => s252 + s570; c1*re132_Vmax*s496;
-  re133: s360 + s570 -> s467; c1*(((1 + re133_ratio)*re133_Vmax*s360*s570)/re133_Km - re133_Vmax*re133_ratio*s467);
-  re134: s360 + s351 -> s470; c1*(((1 + re134_ratio)*re134_Vmax*s360*s351)/re134_Km - re134_Vmax*re134_ratio*s470);
-  re135: s359 + s570 -> s477; c1*(((1 + re135_ratio)*re135_Vmax*s359*s570)/re135_Km - re135_Vmax*re135_ratio*s477);
-  re136: s359 + s351 -> s480; c1*(((1 + re136_ratio)*re136_Vmax*s351*s359)/re136_Km - re136_Vmax*re136_ratio*s480);
+  re133: s360 + s570 -> s467; c1*((1 + re133_ratio)*re133_Vmax*s360*s570/re133_Km - re133_Vmax*re133_ratio*s467);
+  re134: s360 + s351 -> s470; c1*((1 + re134_ratio)*re134_Vmax*s360*s351/re134_Km - re134_Vmax*re134_ratio*s470);
+  re135: s359 + s570 -> s477; c1*((1 + re135_ratio)*re135_Vmax*s359*s570/re135_Km - re135_Vmax*re135_ratio*s477);
+  re136: s359 + s351 -> s480; c1*((1 + re136_ratio)*re136_Vmax*s351*s359/re136_Km - re136_Vmax*re136_ratio*s480);
   re137: s467 => s359 + s570; c1*re137_Vmax*s467;
   re138: s470 => s359 + s351; c1*re138_Vmax*s470;
   re139: s477 => s358 + s570; c1*re139_Vmax*s477;
   re140: s480 => s358 + s351; c1*re140_Vmax*s480;
   re141: s570 => s351; c1*re141_kf*s570;
-  re154: s358 + s289 -> s487; c1*(((1 + re154_ratio)*re154_Vmax*s289*s358)/re154_Km - re154_Vmax*re154_ratio*s487);
-  re155: s359 + s289 -> s491; c1*(((1 + re155_ratio)*re155_Vmax*s289*s359)/re155_Km - re155_Vmax*re155_ratio*s491);
+  re154: s358 + s289 -> s487; c1*((1 + re154_ratio)*re154_Vmax*s289*s358/re154_Km - re154_Vmax*re154_ratio*s487);
+  re155: s359 + s289 -> s491; c1*((1 + re155_ratio)*re155_Vmax*s289*s359/re155_Km - re155_Vmax*re155_ratio*s491);
   re156: s487 => s359 + s289; c1*re156_Vmax*s487;
   re157: s491 => s360 + s289; c1*re157_Vmax*s491;
-  re158: s358 + s292 -> s551; c1*(((1 + re158_ratio)*re158_Vmax*s292*s358)/re158_Km - re158_Vmax*re158_ratio*s551);
-  re159: s358 + s293 -> s539; c1*(((1 + re159_ratio)*re159_Vmax*s293*s358)/re159_Km - re159_Vmax*re159_ratio*s539);
-  re160: s358 + s294 -> s520; c1*(((1 + re160_ratio)*re160_Vmax*s294*s358)/re160_Km - re160_Vmax*re160_ratio*s520);
-  re161: s358 + s295 -> s513; c1*(((1 + re161_ratio)*re161_Vmax*s295*s358)/re161_Km - re161_Vmax*re161_ratio*s513);
-  re162: s359 + s292 -> s546; c1*(((1 + re162_ratio)*re162_Vmax*s292*s359)/re162_Km - re162_Vmax*re162_ratio*s546);
-  re163: s359 + s293 -> s526; c1*(((1 + re163_ratio)*re163_Vmax*s293*s359)/re163_Km - re163_Vmax*re163_ratio*s526);
-  re164: s359 + s294 -> s512; c1*(((1 + re164_ratio)*re164_Vmax*s294*s359)/re164_Km - re164_Vmax*re164_ratio*s512);
-  re165: s359 + s295 -> s506; c1*(((1 + re165_ratio)*re165_Vmax*s295*s359)/re165_Km - re165_Vmax*re165_ratio*s506);
+  re158: s358 + s292 -> s551; c1*((1 + re158_ratio)*re158_Vmax*s292*s358/re158_Km - re158_Vmax*re158_ratio*s551);
+  re159: s358 + s293 -> s539; c1*((1 + re159_ratio)*re159_Vmax*s293*s358/re159_Km - re159_Vmax*re159_ratio*s539);
+  re160: s358 + s294 -> s520; c1*((1 + re160_ratio)*re160_Vmax*s294*s358/re160_Km - re160_Vmax*re160_ratio*s520);
+  re161: s358 + s295 -> s513; c1*((1 + re161_ratio)*re161_Vmax*s295*s358/re161_Km - re161_Vmax*re161_ratio*s513);
+  re162: s359 + s292 -> s546; c1*((1 + re162_ratio)*re162_Vmax*s292*s359/re162_Km - re162_Vmax*re162_ratio*s546);
+  re163: s359 + s293 -> s526; c1*((1 + re163_ratio)*re163_Vmax*s293*s359/re163_Km - re163_Vmax*re163_ratio*s526);
+  re164: s359 + s294 -> s512; c1*((1 + re164_ratio)*re164_Vmax*s294*s359/re164_Km - re164_Vmax*re164_ratio*s512);
+  re165: s359 + s295 -> s506; c1*((1 + re165_ratio)*re165_Vmax*s295*s359/re165_Km - re165_Vmax*re165_ratio*s506);
   re166: s506 => s360 + s295; c1*re166_Vmax*s506;
   re167: s513 => s359 + s295; c1*re167_Vmax*s513;
   re168: s512 => s360 + s294; c1*re168_Vmax*s512;
@@ -430,11 +430,11 @@ model *Maeda2006_MyosinPhosphorylation()
   re102_kf has per_sec;
   re102_kb = 0.1;
   re102_kb has per_sec;
-  re106_kf = 4.63e-005;
+  re106_kf = 4.63e-05;
   re106_kf has per_sec;
-  re107_kf = 4.63e-005;
+  re107_kf = 4.63e-05;
   re107_kf has per_sec;
-  re108_kf = 4.63e-005;
+  re108_kf = 4.63e-05;
   re108_kf has per_sec;
   re109_Km = 0.04;
   re109_Km has microMolar;
@@ -876,4 +876,498 @@ model *Maeda2006_MyosinPhosphorylation()
   re173 is "F2-5.1.2";
   re174 is "D3-3";
   re175 is "D3-2";
+
+  // CV terms:
+  c1 identity "http://identifiers.org/go/GO:0005829"
+  c2 identity "http://identifiers.org/go/GO:0005783"
+  s2 identity "http://identifiers.org/uniprot/P00734"
+  s174 identity "http://identifiers.org/uniprot/P25116",
+                "http://identifiers.org/interpro/IPR000935"
+  s130 identity "http://identifiers.org/uniprot/P25116",
+                "http://identifiers.org/interpro/IPR000935"
+  s4 identity "http://identifiers.org/uniprot/P00734"
+  s57 identity "http://identifiers.org/uniprot/P25116",
+               "http://identifiers.org/interpro/IPR000935"
+  s93 hypernym "http://identifiers.org/uniprot/O94810"
+  s93 identity "http://identifiers.org/interpro/IPR000342"
+  s165 identity "http://identifiers.org/chebi/CHEBI:17268",
+                "http://identifiers.org/kegg.compound/C00137"
+  s55 identity "http://identifiers.org/uniprot/P25116",
+               "http://identifiers.org/interpro/IPR000935"
+  s184 hypernym "http://identifiers.org/uniprot/O94810"
+  s184 identity "http://identifiers.org/interpro/IPR000342"
+  s48 identity "http://identifiers.org/chebi/CHEBI:15996",
+               "http://identifiers.org/kegg.compound/C00044"
+  s187 part "http://identifiers.org/chebi/CHEBI:15996",
+            "http://identifiers.org/uniprot/P29992",
+            "http://identifiers.org/kegg.compound/C00044"
+  s50 identity "http://identifiers.org/chebi/CHEBI:17552",
+               "http://identifiers.org/kegg.compound/C00035"
+  s171 identity "http://identifiers.org/uniprot/Q14643"
+  s173 part "http://identifiers.org/chebi/CHEBI:16595",
+            "http://identifiers.org/uniprot/Q14643",
+            "http://identifiers.org/kegg.compound/C01245"
+  s98 identity "http://identifiers.org/uniprot/Q92888",
+               "http://identifiers.org/interpro/IPR000219"
+  s124 identity "http://identifiers.org/uniprot/Q13464"
+  s118 identity "http://identifiers.org/uniprot/Q9NRY4",
+                "http://identifiers.org/interpro/IPR008936"
+  s153 identity "http://identifiers.org/chebi/CHEBI:18035",
+                "http://identifiers.org/kegg.compound/C00165"
+  s152 identity "http://identifiers.org/chebi/CHEBI:16595",
+                "http://identifiers.org/kegg.compound/C01245"
+  s213 identity "http://identifiers.org/uniprot/Q9NRY4"
+  s214 part "http://identifiers.org/chebi/CHEBI:15996",
+            "http://identifiers.org/uniprot/P61586",
+            "http://identifiers.org/kegg.compound/C00044"
+  s151 identity "http://identifiers.org/chebi/CHEBI:18348",
+                "http://identifiers.org/kegg.compound/C04637"
+  s231 part "http://identifiers.org/chebi/CHEBI:17552",
+            "http://identifiers.org/uniprot/P61586",
+            "http://identifiers.org/kegg.compound/C00035"
+  s233 part "http://identifiers.org/uniprot/Q92888"
+  s252 part "http://identifiers.org/chebi/CHEBI:15996",
+            "http://identifiers.org/uniprot/Q13464",
+            "http://identifiers.org/uniprot/P61586",
+            "http://identifiers.org/kegg.compound/C00044"
+  s277 version "http://identifiers.org/chebi/CHEBI:29108",
+               "http://identifiers.org/uniprot/P62158",
+               "http://identifiers.org/kegg.compound/C00391",
+               "http://identifiers.org/kegg.compound/C00076"
+  s278 version "http://identifiers.org/chebi/CHEBI:29108",
+               "http://identifiers.org/uniprot/P62158",
+               "http://identifiers.org/kegg.compound/C00391",
+               "http://identifiers.org/kegg.compound/C00076"
+  s279 identity "http://identifiers.org/chebi/CHEBI:29108",
+                "http://identifiers.org/uniprot/P62158",
+                "http://identifiers.org/kegg.compound/C00391",
+                "http://identifiers.org/kegg.compound/C00076"
+  s280 identity "http://identifiers.org/chebi/CHEBI:29108",
+                "http://identifiers.org/uniprot/P62158",
+                "http://identifiers.org/kegg.compound/C00391",
+                "http://identifiers.org/kegg.compound/C00076"
+  s289 hypernym "http://identifiers.org/uniprot/Q9H1R3"
+  s292 version "http://identifiers.org/chebi/CHEBI:29108",
+               "http://identifiers.org/uniprot/P62158",
+               "http://identifiers.org/uniprot/Q9H1R3",
+               "http://identifiers.org/kegg.compound/C00391",
+               "http://identifiers.org/kegg.compound/C00076"
+  s293 version "http://identifiers.org/chebi/CHEBI:29108",
+               "http://identifiers.org/uniprot/P62158",
+               "http://identifiers.org/uniprot/Q9H1R3",
+               "http://identifiers.org/kegg.compound/C00391",
+               "http://identifiers.org/kegg.compound/C00076"
+  s294 version "http://identifiers.org/chebi/CHEBI:29108",
+               "http://identifiers.org/uniprot/P62158",
+               "http://identifiers.org/uniprot/Q9H1R3",
+               "http://identifiers.org/kegg.compound/C00391",
+               "http://identifiers.org/kegg.compound/C00076"
+  s295 version "http://identifiers.org/chebi/CHEBI:29108",
+               "http://identifiers.org/uniprot/P62158",
+               "http://identifiers.org/uniprot/Q9H1R3",
+               "http://identifiers.org/kegg.compound/C00391",
+               "http://identifiers.org/kegg.compound/C00076"
+  s309 identity "http://identifiers.org/uniprot/P17252"
+  s310 identity "http://identifiers.org/uniprot/P17252"
+  s311 part "http://identifiers.org/chebi/CHEBI:18035",
+            "http://identifiers.org/uniprot/P17252",
+            "http://identifiers.org/kegg.compound/C00165"
+  s314 identity "http://identifiers.org/uniprot/P17252"
+  s324 identity "http://identifiers.org/uniprot/P17252"
+  s332 part "http://identifiers.org/uniprot/Q96A00",
+            "http://identifiers.org/uniprot/P17252"
+  s335 part "http://identifiers.org/uniprot/Q96A00",
+            "http://identifiers.org/uniprot/P17252"
+  s338 part "http://identifiers.org/uniprot/Q96A00",
+            "http://identifiers.org/uniprot/P17252"
+  s352 part "http://identifiers.org/uniprot/O14974",
+            "http://identifiers.org/uniprot/Q96A00"
+  s355 part "http://identifiers.org/uniprot/O14974",
+            "http://identifiers.org/uniprot/Q96A00"
+  s349 hypernym "http://identifiers.org/uniprot/Q96A00"
+  s360 identity "http://identifiers.org/kegg.compound/C01003"
+  s360 hypernym "http://identifiers.org/uniprot/P05976"
+  s358 identity "http://identifiers.org/kegg.compound/C03875"
+  s358 hypernym "http://identifiers.org/uniprot/P05976"
+  s361 part "http://identifiers.org/uniprot/Q13464",
+            "http://identifiers.org/uniprot/P05976"
+  s362 part "http://identifiers.org/uniprot/Q13464",
+            "http://identifiers.org/uniprot/P05976"
+  s350 hypernym "http://identifiers.org/uniprot/Q96A00"
+  s135 identity "http://identifiers.org/chebi/CHEBI:29108",
+                "http://identifiers.org/kegg.compound/C00076"
+  s276 identity "http://identifiers.org/uniprot/P62158",
+                "http://identifiers.org/kegg.compound/C00391"
+  s172 identity "http://identifiers.org/chebi/CHEBI:29108",
+                "http://identifiers.org/kegg.compound/C00076"
+  s410 part "http://identifiers.org/uniprot/P63211",
+            "http://identifiers.org/uniprot/P62873"
+  s421 identity "http://identifiers.org/uniprot/P63211",
+                "http://identifiers.org/uniprot/P62873"
+  s424 identity "http://identifiers.org/uniprot/Q9NQ66"
+  s430 identity "http://identifiers.org/chebi/CHEBI:29108",
+                "http://identifiers.org/kegg.compound/C00076"
+  s432 identity "http://identifiers.org/chebi/CHEBI:29108",
+                "http://identifiers.org/kegg.compound/C00076"
+  s435 part "http://identifiers.org/uniprot/P25116",
+            "http://identifiers.org/uniprot/P63211",
+            "http://identifiers.org/uniprot/P62873",
+            "http://identifiers.org/uniprot/Q03113",
+            "http://identifiers.org/interpro/IPR000935"
+  s436 part "http://identifiers.org/chebi/CHEBI:15996",
+            "http://identifiers.org/uniprot/Q03113",
+            "http://identifiers.org/uniprot/Q92888",
+            "http://identifiers.org/kegg.compound/C00044"
+  s437 part "http://identifiers.org/uniprot/P63211",
+            "http://identifiers.org/uniprot/P62873",
+            "http://identifiers.org/uniprot/Q03113"
+  s438 part "http://identifiers.org/chebi/CHEBI:17552",
+            "http://identifiers.org/uniprot/Q03113",
+            "http://identifiers.org/kegg.compound/C00035"
+  s439 part "http://identifiers.org/chebi/CHEBI:15996",
+            "http://identifiers.org/uniprot/Q03113",
+            "http://identifiers.org/kegg.compound/C00044"
+  s440 part "http://identifiers.org/chebi/CHEBI:17552",
+            "http://identifiers.org/uniprot/P29992",
+            "http://identifiers.org/kegg.compound/C00035"
+  s441 part "http://identifiers.org/uniprot/P25116",
+            "http://identifiers.org/uniprot/P63211",
+            "http://identifiers.org/uniprot/P62873",
+            "http://identifiers.org/uniprot/P29992"
+  s442 part "http://identifiers.org/uniprot/P63211",
+            "http://identifiers.org/uniprot/P62873",
+            "http://identifiers.org/uniprot/P29992"
+  s443 part "http://identifiers.org/chebi/CHEBI:15996",
+            "http://identifiers.org/uniprot/Q9NQ66",
+            "http://identifiers.org/uniprot/P63211",
+            "http://identifiers.org/uniprot/P62873",
+            "http://identifiers.org/uniprot/P29992",
+            "http://identifiers.org/kegg.compound/C00044"
+  s444 identity "http://identifiers.org/chebi/CHEBI:29108",
+                "http://identifiers.org/kegg.compound/C00076"
+  s446 identity "http://identifiers.org/chebi/CHEBI:29108",
+                "http://identifiers.org/kegg.compound/C00076"
+  s449 part "http://identifiers.org/chebi/CHEBI:15996",
+            "http://identifiers.org/uniprot/P61586",
+            "http://identifiers.org/uniprot/Q13464",
+            "http://identifiers.org/uniprot/P05976",
+            "http://identifiers.org/kegg.compound/C00044"
+  s456 part "http://identifiers.org/chebi/CHEBI:15996",
+            "http://identifiers.org/uniprot/P61586",
+            "http://identifiers.org/uniprot/Q13464",
+            "http://identifiers.org/uniprot/P05976",
+            "http://identifiers.org/kegg.compound/C00044"
+  s359 identity "http://identifiers.org/kegg.compound/C03875"
+  s359 part "http://identifiers.org/uniprot/P05976"
+  s463 part "http://identifiers.org/uniprot/Q13464",
+            "http://identifiers.org/uniprot/O14974"
+  s467 part "http://identifiers.org/uniprot/P05976",
+            "http://identifiers.org/uniprot/O14974"
+  s470 part "http://identifiers.org/uniprot/P05976",
+            "http://identifiers.org/uniprot/O14974"
+  s477 part "http://identifiers.org/uniprot/P05976",
+            "http://identifiers.org/uniprot/O14974"
+  s480 part "http://identifiers.org/uniprot/P05976",
+            "http://identifiers.org/uniprot/O14974"
+  s491 part "http://identifiers.org/uniprot/Q9H1R3",
+            "http://identifiers.org/uniprot/P05976"
+  s487 part "http://identifiers.org/uniprot/Q9H1R3",
+            "http://identifiers.org/uniprot/P05976"
+  s496 part "http://identifiers.org/uniprot/Q13464",
+            "http://identifiers.org/uniprot/O14974"
+  s506 part "http://identifiers.org/chebi/CHEBI:29108",
+            "http://identifiers.org/uniprot/Q9H1R3",
+            "http://identifiers.org/uniprot/P62158",
+            "http://identifiers.org/uniprot/P05976",
+            "http://identifiers.org/kegg.compound/C00391",
+            "http://identifiers.org/kegg.compound/C00076"
+  s512 part "http://identifiers.org/chebi/CHEBI:29108",
+            "http://identifiers.org/uniprot/Q9H1R3",
+            "http://identifiers.org/uniprot/P62158",
+            "http://identifiers.org/uniprot/P05976",
+            "http://identifiers.org/kegg.compound/C00391",
+            "http://identifiers.org/kegg.compound/C00076"
+  s513 part "http://identifiers.org/chebi/CHEBI:29108",
+            "http://identifiers.org/uniprot/Q9H1R3",
+            "http://identifiers.org/uniprot/P62158",
+            "http://identifiers.org/uniprot/P05976",
+            "http://identifiers.org/kegg.compound/C00391",
+            "http://identifiers.org/kegg.compound/C00076"
+  s520 part "http://identifiers.org/chebi/CHEBI:29108",
+            "http://identifiers.org/uniprot/Q9H1R3",
+            "http://identifiers.org/uniprot/P62158",
+            "http://identifiers.org/uniprot/P05976",
+            "http://identifiers.org/kegg.compound/C00391",
+            "http://identifiers.org/kegg.compound/C00076"
+  s526 part "http://identifiers.org/chebi/CHEBI:29108",
+            "http://identifiers.org/uniprot/Q9H1R3",
+            "http://identifiers.org/uniprot/P62158",
+            "http://identifiers.org/uniprot/P05976",
+            "http://identifiers.org/kegg.compound/C00391",
+            "http://identifiers.org/kegg.compound/C00076"
+  s539 part "http://identifiers.org/chebi/CHEBI:29108",
+            "http://identifiers.org/uniprot/Q9H1R3",
+            "http://identifiers.org/uniprot/P62158",
+            "http://identifiers.org/uniprot/P05976",
+            "http://identifiers.org/kegg.compound/C00391",
+            "http://identifiers.org/kegg.compound/C00076"
+  s546 part "http://identifiers.org/chebi/CHEBI:29108",
+            "http://identifiers.org/uniprot/Q9H1R3",
+            "http://identifiers.org/uniprot/P62158",
+            "http://identifiers.org/uniprot/P05976",
+            "http://identifiers.org/kegg.compound/C00391",
+            "http://identifiers.org/kegg.compound/C00076"
+  s551 part "http://identifiers.org/chebi/CHEBI:29108",
+            "http://identifiers.org/uniprot/Q9H1R3",
+            "http://identifiers.org/uniprot/P62158",
+            "http://identifiers.org/uniprot/P05976",
+            "http://identifiers.org/kegg.compound/C00391",
+            "http://identifiers.org/kegg.compound/C00076"
+  s556 identity "http://identifiers.org/chebi/CHEBI:29108",
+                "http://identifiers.org/kegg.compound/C00076"
+  s267 identity "http://identifiers.org/chebi/CHEBI:29108",
+                "http://identifiers.org/kegg.compound/C00076"
+  s557 identity "http://identifiers.org/chebi/CHEBI:29108",
+                "http://identifiers.org/kegg.compound/C00076"
+  s564 part "http://identifiers.org/chebi/CHEBI:15996",
+            "http://identifiers.org/chebi/CHEBI:29108",
+            "http://identifiers.org/uniprot/Q9NQ66",
+            "http://identifiers.org/uniprot/P29992",
+            "http://identifiers.org/kegg.compound/C00044",
+            "http://identifiers.org/kegg.compound/C00076"
+  s565 part "http://identifiers.org/chebi/CHEBI:18035",
+            "http://identifiers.org/chebi/CHEBI:29108",
+            "http://identifiers.org/uniprot/P17252",
+            "http://identifiers.org/kegg.compound/C00165",
+            "http://identifiers.org/kegg.compound/C00076"
+  s566 part "http://identifiers.org/chebi/CHEBI:29108",
+            "http://identifiers.org/uniprot/P17252",
+            "http://identifiers.org/kegg.compound/C00076"
+  s567 part "http://identifiers.org/chebi/CHEBI:15996",
+            "http://identifiers.org/chebi/CHEBI:29108",
+            "http://identifiers.org/uniprot/Q9NQ66",
+            "http://identifiers.org/uniprot/P29992",
+            "http://identifiers.org/kegg.compound/C00044",
+            "http://identifiers.org/kegg.compound/C00076"
+  s568 part "http://identifiers.org/chebi/CHEBI:18348",
+            "http://identifiers.org/chebi/CHEBI:29108",
+            "http://identifiers.org/uniprot/Q9NQ66",
+            "http://identifiers.org/kegg.compound/C04637",
+            "http://identifiers.org/kegg.compound/C00076"
+  s569 part "http://identifiers.org/chebi/CHEBI:29108",
+            "http://identifiers.org/uniprot/Q9NQ66",
+            "http://identifiers.org/kegg.compound/C00076"
+  s351 hypernym "http://identifiers.org/uniprot/O14974"
+  s570 hypernym "http://identifiers.org/uniprot/O14974"
+  re1 identity "http://identifiers.org/ec-code/3.4.21.5",
+               "http://identifiers.org/go/GO:0015057",
+               "http://identifiers.org/go/GO:0005102"
+  re12 identity "http://identifiers.org/go/GO:0015057",
+                "http://identifiers.org/go/GO:0031684",
+                "http://identifiers.org/go/GO:0003924"
+  re14 identity "http://identifiers.org/go/GO:0030163"
+  re15 identity "http://identifiers.org/go/GO:0015057",
+                "http://identifiers.org/go/GO:0004930"
+  re16 identity "http://identifiers.org/go/GO:0031684",
+                "http://identifiers.org/go/GO:0003924"
+  re17 identity "http://identifiers.org/go/GO:0003924"
+  re19 identity "http://identifiers.org/go/GO:0031684"
+  re20 identity "http://identifiers.org/go/GO:0016299"
+  re22 identity "http://identifiers.org/go/GO:0031684"
+  re23 identity "http://identifiers.org/go/GO:0005515"
+  re24 identity "http://identifiers.org/go/GO:0005089"
+  re26 identity "http://identifiers.org/go/GO:0005089"
+  re28 identity "http://identifiers.org/go/GO:0035024"
+  re32 identity "http://identifiers.org/go/GO:0005089"
+  re33 identity "http://identifiers.org/go/GO:0035024"
+  re34 identity "http://identifiers.org/go/GO:0016299"
+  re37 identity "http://identifiers.org/go/GO:0005089"
+  re38 identity "http://identifiers.org/go/GO:0003924"
+  re39 identity "http://identifiers.org/intact/EBI-876651",
+                "http://identifiers.org/go/GO:0035025"
+  re40 identity "http://identifiers.org/ec-code/3.4.21.5",
+                "http://identifiers.org/go/GO:0015057"
+  re43 identity "http://identifiers.org/go/GO:0015057",
+                "http://identifiers.org/go/GO:0004930"
+  re44 identity "http://identifiers.org/go/GO:0003924"
+  re45 identity "http://identifiers.org/go/GO:0030163"
+  re47 parthood "http://identifiers.org/go/GO:0007200"
+  re47 identity "http://identifiers.org/go/GO:0001965"
+  re48 identity "http://identifiers.org/go/GO:0001965"
+  re48 parthood "http://identifiers.org/go/GO:0007200"
+  re51 parthood "http://identifiers.org/go/GO:0007200"
+  re52 parthood "http://identifiers.org/go/GO:0007202"
+  re52 identity "http://identifiers.org/go/GO:0005509"
+  re54 identity "http://identifiers.org/go/GO:0003924"
+  re55 parthood "http://identifiers.org/kegg.reaction/R03435",
+                "http://identifiers.org/go/GO:0007202"
+  re55 identity "http://identifiers.org/go/GO:0005546"
+  re56 parthood "http://identifiers.org/kegg.reaction/R03435",
+                "http://identifiers.org/go/GO:0004435"
+  re56 identity "http://identifiers.org/go/GO:0005546"
+  re57 identity "http://identifiers.org/ec-code/3.1.4.11",
+                "http://identifiers.org/kegg.reaction/R03435",
+                "http://identifiers.org/go/GO:0004435"
+  re58 identity "http://identifiers.org/ec-code/3.1.4.11",
+                "http://identifiers.org/kegg.reaction/R03435",
+                "http://identifiers.org/go/GO:0004435"
+  re59 identity "http://identifiers.org/go/GO:0046340"
+  re60 identity "http://identifiers.org/go/GO:0032957"
+  re68 identity "http://identifiers.org/go/GO:0005220"
+  re73 identity "http://identifiers.org/go/GO:0005220",
+                "http://identifiers.org/go/GO:0015085"
+  re85 identity "http://identifiers.org/go/GO:0006816"
+  re86 identity "http://identifiers.org/go/GO:0005516",
+                "http://identifiers.org/go/GO:0005509"
+  re87 identity "http://identifiers.org/go/GO:0005509"
+  re88 identity "http://identifiers.org/go/GO:0005509"
+  re89 identity "http://identifiers.org/go/GO:0005509"
+  re90 identity "http://identifiers.org/go/GO:0019901"
+  re91 identity "http://identifiers.org/go/GO:0019901"
+  re92 identity "http://identifiers.org/go/GO:0019901"
+  re93 identity "http://identifiers.org/go/GO:0019901"
+  re94 identity "http://identifiers.org/go/GO:0007205"
+  re95 identity "http://identifiers.org/go/GO:0005080",
+                "http://identifiers.org/go/GO:0019992",
+                "http://identifiers.org/go/GO:0008426"
+  re96 identity "http://identifiers.org/go/GO:0007205"
+  re97 identity "http://identifiers.org/go/GO:0005509",
+                "http://identifiers.org/go/GO:0005080"
+  re98 identity "http://identifiers.org/go/GO:0051928"
+  re100 identity "http://identifiers.org/go/GO:0051928"
+  re101 parthood "http://identifiers.org/go/GO:0007205"
+  re101 identity "http://identifiers.org/go/GO:0019992"
+  re102 parthood "http://identifiers.org/go/GO:0007205"
+  re106 identity "http://identifiers.org/go/GO:0030163"
+  re107 identity "http://identifiers.org/go/GO:0030163"
+  re108 identity "http://identifiers.org/go/GO:0030163"
+  re109 identity "http://identifiers.org/go/GO:0051928"
+  re110 identity "http://identifiers.org/ec-code/2.7.11.13",
+                 "http://identifiers.org/go/GO:0005080",
+                 "http://identifiers.org/go/GO:0004697"
+  re111 identity "http://identifiers.org/ec-code/2.7.11.13",
+                 "http://identifiers.org/go/GO:0005080",
+                 "http://identifiers.org/go/GO:0004698"
+  re112 identity "http://identifiers.org/ec-code/2.7.11.13",
+                 "http://identifiers.org/go/GO:0005080",
+                 "http://identifiers.org/go/GO:0004699"
+  re113 identity "http://identifiers.org/ec-code/2.7.11.13",
+                 "http://identifiers.org/go/GO:0004697"
+  re114 identity "http://identifiers.org/ec-code/2.7.11.13",
+                 "http://identifiers.org/go/GO:0004698"
+  re115 identity "http://identifiers.org/ec-code/2.7.11.13",
+                 "http://identifiers.org/go/GO:0004699"
+  re116 identity "http://identifiers.org/go/GO:0006470"
+  re117 identity "http://identifiers.org/go/GO:0017020"
+  re118 identity "http://identifiers.org/go/GO:0017020"
+  re119 identity "http://identifiers.org/go/GO:0006470"
+  re120 identity "http://identifiers.org/go/GO:0032027"
+  re121 identity "http://identifiers.org/go/GO:0032027"
+  re123 identity "http://identifiers.org/ec-code/2.7.11.1",
+                 "http://identifiers.org/go/GO:0004674"
+  re124 identity "http://identifiers.org/ec-code/2.7.11.1",
+                 "http://identifiers.org/go/GO:0004674"
+  re125 identity "http://identifiers.org/go/GO:0017049",
+                 "http://identifiers.org/go/GO:0032027"
+  re126 identity "http://identifiers.org/go/GO:0032027",
+                 "http://identifiers.org/go/GO:0017049"
+  re127 identity "http://identifiers.org/ec-code/2.7.11.1",
+                 "http://identifiers.org/go/GO:0004674"
+  re128 identity "http://identifiers.org/ec-code/2.7.11.1",
+                 "http://identifiers.org/go/GO:0004674"
+  re129 identity "http://identifiers.org/go/GO:0019901",
+                 "http://identifiers.org/go/GO:0017020"
+  re130 identity "http://identifiers.org/ec-code/2.7.11.1",
+                 "http://identifiers.org/go/GO:0004674",
+                 "http://identifiers.org/go/GO:0017020"
+  re131 identity "http://identifiers.org/go/GO:0019901",
+                 "http://identifiers.org/go/GO:0017049",
+                 "http://identifiers.org/go/GO:0017020"
+  re132 identity "http://identifiers.org/ec-code/2.7.11.1",
+                 "http://identifiers.org/go/GO:0004674",
+                 "http://identifiers.org/go/GO:0017020"
+  re133 identity "http://identifiers.org/go/GO:0017018",
+                 "http://identifiers.org/go/GO:0032027"
+  re134 identity "http://identifiers.org/go/GO:0017018",
+                 "http://identifiers.org/go/GO:0032027"
+  re135 identity "http://identifiers.org/go/GO:0017018",
+                 "http://identifiers.org/go/GO:0032027"
+  re136 identity "http://identifiers.org/go/GO:0017018",
+                 "http://identifiers.org/go/GO:0032027"
+  re137 identity "http://identifiers.org/ec-code/3.1.3.53",
+                 "http://identifiers.org/kegg.reaction/R03151",
+                 "http://identifiers.org/go/GO:0050115"
+  re138 identity "http://identifiers.org/ec-code/3.1.3.53",
+                 "http://identifiers.org/kegg.reaction/R03151",
+                 "http://identifiers.org/go/GO:0050115"
+  re139 identity "http://identifiers.org/ec-code/3.1.3.53",
+                 "http://identifiers.org/kegg.reaction/R03151",
+                 "http://identifiers.org/go/GO:0050115"
+  re140 identity "http://identifiers.org/ec-code/3.1.3.53",
+                 "http://identifiers.org/kegg.reaction/R03151",
+                 "http://identifiers.org/go/GO:0050115"
+  re141 identity "http://identifiers.org/go/GO:0017020",
+                 "http://identifiers.org/go/GO:0006470"
+  re154 identity "http://identifiers.org/go/GO:0032027",
+                 "http://identifiers.org/go/GO:0019901"
+  re155 identity "http://identifiers.org/go/GO:0032027",
+                 "http://identifiers.org/go/GO:0019901"
+  re156 identity "http://identifiers.org/ec-code/2.7.11.18",
+                 "http://identifiers.org/kegg.reaction/R03150",
+                 "http://identifiers.org/go/GO:0004687"
+  re157 identity "http://identifiers.org/ec-code/2.7.11.18",
+                 "http://identifiers.org/kegg.reaction/R03150",
+                 "http://identifiers.org/go/GO:0004687"
+  re158 identity "http://identifiers.org/go/GO:0032027"
+  re158 parthood "http://identifiers.org/kegg.reaction/R03150"
+  re159 identity "http://identifiers.org/go/GO:0032027"
+  re159 parthood "http://identifiers.org/kegg.reaction/R03150"
+  re160 identity "http://identifiers.org/go/GO:0032027"
+  re160 parthood "http://identifiers.org/kegg.reaction/R03150"
+  re161 identity "http://identifiers.org/go/GO:0032027"
+  re161 parthood "http://identifiers.org/kegg.reaction/R03150"
+  re162 identity "http://identifiers.org/go/GO:0032027"
+  re162 parthood "http://identifiers.org/kegg.reaction/R03150"
+  re163 identity "http://identifiers.org/go/GO:0032027"
+  re163 identity "http://identifiers.org/kegg.reaction/R03150"
+  re164 identity "http://identifiers.org/go/GO:0032027"
+  re164 parthood "http://identifiers.org/kegg.reaction/R03150"
+  re165 identity "http://identifiers.org/go/GO:0032027"
+  re165 identity "http://identifiers.org/kegg.reaction/R03150"
+  re166 identity "http://identifiers.org/ec-code/2.7.11.18",
+                 "http://identifiers.org/kegg.reaction/R03150",
+                 "http://identifiers.org/go/GO:0004687"
+  re167 identity "http://identifiers.org/ec-code/2.7.11.18",
+                 "http://identifiers.org/kegg.reaction/R03150",
+                 "http://identifiers.org/go/GO:0004687"
+  re168 identity "http://identifiers.org/ec-code/2.7.11.18",
+                 "http://identifiers.org/kegg.reaction/R03150",
+                 "http://identifiers.org/go/GO:0004687"
+  re169 identity "http://identifiers.org/ec-code/2.7.11.18",
+                 "http://identifiers.org/kegg.reaction/R03150",
+                 "http://identifiers.org/go/GO:0004687"
+  re170 identity "http://identifiers.org/ec-code/2.7.11.18",
+                 "http://identifiers.org/kegg.reaction/R03150",
+                 "http://identifiers.org/go/GO:0004687"
+  re171 identity "http://identifiers.org/ec-code/2.7.11.18",
+                 "http://identifiers.org/kegg.reaction/R03150",
+                 "http://identifiers.org/go/GO:0004687"
+  re172 identity "http://identifiers.org/ec-code/2.7.11.18",
+                 "http://identifiers.org/kegg.reaction/R03150",
+                 "http://identifiers.org/go/GO:0004687"
+  re173 identity "http://identifiers.org/ec-code/2.7.11.18",
+                 "http://identifiers.org/kegg.reaction/R03150",
+                 "http://identifiers.org/go/GO:0004687"
+  re174 identity "http://identifiers.org/go/GO:0006816"
+  re175 identity "http://identifiers.org/go/GO:0006816"
 end
+
+Maeda2006_MyosinPhosphorylation is "Maeda2006_MyosinPhosphorylation"
+
+Maeda2006_MyosinPhosphorylation model_entity_is "http://identifiers.org/biomodels.db/MODEL7944007619"
+Maeda2006_MyosinPhosphorylation model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000088"
+Maeda2006_MyosinPhosphorylation description "http://identifiers.org/pubmed/16923126"
+Maeda2006_MyosinPhosphorylation taxon "http://identifiers.org/taxonomy/9606"
+Maeda2006_MyosinPhosphorylation parthood "http://identifiers.org/kegg.pathway/hsa04810"
+Maeda2006_MyosinPhosphorylation identity "http://identifiers.org/go/GO:0035023",
+                                         "http://identifiers.org/go/GO:0030036"

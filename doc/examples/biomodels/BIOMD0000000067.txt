@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Fung2005_Metabolator()
 
   // Compartments and Species:
@@ -11,12 +11,12 @@ model *Fung2005_Metabolator()
   V_gly:  => AcCoA; compartment_*S0;
   V_TCA: AcCoA => ; compartment_*kTCA*AcCoA;
   V_out: HOAc -> $HOAc_E; compartment_*k3*(HOAc - HOAc_E);
-  V_Pta: AcCoA => AcP; (compartment_*k1*Pta*AcCoA)/(KM1 + AcCoA);
+  V_Pta: AcCoA => AcP; compartment_*k1*Pta*AcCoA/(KM1 + AcCoA);
   V_Ack: AcP -> OAc; compartment_*(kAck_f*AcP - kAck_r*OAc);
-  V_Acs: OAc => AcCoA; (compartment_*k2*Acs*OAc)/(KM2 + OAc);
+  V_Acs: OAc => AcCoA; compartment_*k2*Acs*OAc/(KM2 + OAc);
   V_Ace: OAc -> HOAc; compartment_*C*(OAc*H - Keq*HOAc);
-  R_LacI:  => LacI; compartment_*((alpha1*(AcP/Kg1)^n)/(1 + (AcP/Kg1)^n) + alpha0);
-  R_Acs:  => Acs; compartment_*((alpha2*(AcP/Kg2)^n)/(1 + (AcP/Kg2)^n) + alpha0);
+  R_LacI:  => LacI; compartment_*(alpha1*(AcP/Kg1)^n/(1 + (AcP/Kg1)^n) + alpha0);
+  R_Acs:  => Acs; compartment_*(alpha2*(AcP/Kg2)^n/(1 + (AcP/Kg2)^n) + alpha0);
   R_Pta:  => Pta; alpha3/(1 + (LacI/Kg3)^n) + alpha0;
   R_dLacI: LacI => ; compartment_*kd*LacI;
   R_dAcs: Acs => ; compartment_*kd*Acs;
@@ -45,7 +45,7 @@ model *Fung2005_Metabolator()
   kAck_f = 1;
   kAck_r = 1;
   C = 100;
-  H = 1e-007;
+  H = 1e-07;
   Keq = 0.0005;
   k3 = 0.01;
   alpha0 = 0;
@@ -85,4 +85,47 @@ model *Fung2005_Metabolator()
   R_dLacI is "LacI degradation";
   R_dAcs is "Acs degradation";
   R_dPta is "Pta degradation";
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/obo.go/GO:0005622"
+  AcCoA identity "http://identifiers.org/obo.chebi/CHEBI:15351",
+                 "http://identifiers.org/kegg.compound/C00024"
+  AcP identity "http://identifiers.org/obo.chebi/CHEBI:15350",
+               "http://identifiers.org/kegg.compound/C00227"
+  OAc identity "http://identifiers.org/obo.chebi/CHEBI:30089",
+               "http://identifiers.org/kegg.compound/C00033"
+  HOAc hypernym "http://identifiers.org/obo.chebi/CHEBI:30089",
+                "http://identifiers.org/kegg.compound/C00033"
+  LacI parthood "http://identifiers.org/obo.go/GO:0017053"
+  Acs identity "http://identifiers.org/uniprot/P27550"
+  Pta identity "http://identifiers.org/uniprot/P0A9M8"
+  HOAc_E hypernym "http://identifiers.org/obo.chebi/CHEBI:30089",
+                  "http://identifiers.org/kegg.compound/C00033"
+  V_gly version "http://identifiers.org/obo.go/GO:0006096"
+  V_TCA version "http://identifiers.org/obo.go/GO:0006099"
+  V_out hypernym "http://identifiers.org/obo.go/GO:0015123"
+  V_Pta identity "http://identifiers.org/ec-code/2.3.1.8",
+                 "http://identifiers.org/kegg.reaction/R00230"
+  V_Ack hypernym "http://identifiers.org/ec-code/2.7.2.1",
+                 "http://identifiers.org/obo.go/GO:0008776"
+  V_Acs hypernym "http://identifiers.org/ec-code/6.2.1.1",
+                 "http://identifiers.org/obo.go/GO:0019427"
+  V_Acs identity "http://identifiers.org/kegg.reaction/R00235"
+  R_LacI part "http://identifiers.org/obo.go/GO:0006351",
+              "http://identifiers.org/obo.go/GO:0006412"
+  R_Acs part "http://identifiers.org/obo.go/GO:0006351",
+             "http://identifiers.org/obo.go/GO:0006412"
+  R_Pta part "http://identifiers.org/obo.go/GO:0006351",
+             "http://identifiers.org/obo.go/GO:0006412"
+  R_dLacI hypernym "http://identifiers.org/obo.go/GO:0030163"
+  R_dAcs hypernym "http://identifiers.org/obo.go/GO:0030163"
+  R_dPta hypernym "http://identifiers.org/obo.go/GO:0030163"
 end
+
+Fung2005_Metabolator is "Fung2005_Metabolic_Oscillator"
+
+Fung2005_Metabolator model_entity_is "http://identifiers.org/biomodels.db/MODEL6624231052"
+Fung2005_Metabolator model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000067"
+Fung2005_Metabolator description "http://identifiers.org/pubmed/15875027"
+Fung2005_Metabolator hypernym "http://identifiers.org/obo.go/GO:0045990"
+Fung2005_Metabolator taxon "http://identifiers.org/taxonomy/83333"

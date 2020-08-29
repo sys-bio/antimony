@@ -1,11 +1,15 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 function function_1(substrate, Km, V)
-  (V*substrate)/(Km + substrate);
+  V*substrate/(Km + substrate);
 end
 
+function_1 is "Henri-Michaelis-Menten (irreversible)"
+
 function function_2(Vm, s1, s2, K1, K2)
-  (Vm*s1*s2)/((s1 + K1)*(s2 + K2));
+  Vm*s1*s2/((s1 + K1)*(s2 + K2));
 end
+
+function_2 is "MM s2 - reg"
 
 
 model *Arnold2011_Zhu2009_CalvinCycle()
@@ -13,16 +17,16 @@ model *Arnold2011_Zhu2009_CalvinCycle()
   // Compartments and Species:
   compartment chloroplast;
   species RuBP in chloroplast, PGA in chloroplast, DPGA in chloroplast, GAP in chloroplast;
-  species Ru5P in chloroplast, $ADP in chloroplast, $ATP in chloroplast, $Pi_ in chloroplast;
+  species Ru5P in chloroplast, $ADP in chloroplast, $ATP in chloroplast, $Pi in chloroplast;
 
   // Assignment Rules:
-  Pi_ := 15 - 2*(RuBP + DPGA + ATP) - (PGA + GAP + Ru5P + ADP);
+  Pi := 15 - 2*(RuBP + DPGA + ATP) - (PGA + GAP + Ru5P + ADP);
 
   // Reactions:
-  RuBisCO: RuBP => 2PGA; chloroplast*function_1(RuBP, RuBisCO_Km, RuBisCO_V);
+  RuBisCO: RuBP => 2 PGA; chloroplast*function_1(RuBP, RuBisCO_Km, RuBisCO_V);
   PGA_K: PGA + $ATP => $ADP + DPGA; chloroplast*function_2(PGA_K_Vm, PGA, ATP, PGA_K_K1, PGA_K_K2);
-  GAP_DH: DPGA => GAP + $Pi_; chloroplast*function_1(DPGA, GAP_DH_Km, GAP_DH_V);
-  GAP2Ru5P: GAP => 0.6Ru5P; chloroplast*function_1(GAP, GAP2Ru5P_Km, GAP2Ru5P_V);
+  GAP_DH: DPGA => GAP + $Pi; chloroplast*function_1(DPGA, GAP_DH_Km, GAP_DH_V);
+  GAP2Ru5P: GAP => 0.6 Ru5P; chloroplast*function_1(GAP, GAP2Ru5P_Km, GAP2Ru5P_V);
   Ru5P_K: Ru5P + $ATP => RuBP + $ADP; chloroplast*function_2(Ru5P_K_Vm, Ru5P, ATP, Ru5P_K_K1, Ru5P_K_K2);
   PGA2sink: PGA => ; chloroplast*function_1(PGA, PGA2sink_Km, PGA2sink_V);
   GAP2sink: GAP => ; chloroplast*function_1(GAP, GAP2sink_Km, GAP2sink_V);
@@ -71,4 +75,41 @@ model *Arnold2011_Zhu2009_CalvinCycle()
   Ru5P_K is "Ru5P kinase";
   PGA2sink is "PGA to sink";
   GAP2sink is "GAP to sink";
+
+  // SBO terms:
+  RuBisCO_Km.sboTerm = 27
+  RuBisCO_V.sboTerm = 9
+  PGA_K_Vm.sboTerm = 9
+  PGA_K_K1.sboTerm = 9
+  PGA_K_K2.sboTerm = 9
+  GAP_DH_Km.sboTerm = 27
+  GAP_DH_V.sboTerm = 9
+  GAP2Ru5P_Km.sboTerm = 27
+  GAP2Ru5P_V.sboTerm = 9
+  Ru5P_K_Vm.sboTerm = 9
+  Ru5P_K_K1.sboTerm = 9
+  Ru5P_K_K2.sboTerm = 9
+  PGA2sink_Km.sboTerm = 27
+  PGA2sink_V.sboTerm = 9
+  GAP2sink_Km.sboTerm = 27
+  GAP2sink_V.sboTerm = 9
+
+  // CV terms:
+  RuBP hypernym "http://identifiers.org/obo.chebi/CHEBI:16710"
+  PGA hypernym "http://identifiers.org/obo.chebi/CHEBI:17050"
+  DPGA hypernym "http://identifiers.org/obo.chebi/CHEBI:22902"
+  GAP hypernym "http://identifiers.org/obo.chebi/CHEBI:17138"
+  Ru5P hypernym "http://identifiers.org/obo.chebi/CHEBI:17363"
+  ADP hypernym "http://identifiers.org/obo.chebi/CHEBI:16761"
+  ATP hypernym "http://identifiers.org/obo.chebi/CHEBI:15422"
+  Pi hypernym "http://identifiers.org/obo.chebi/CHEBI:43474"
 end
+
+Arnold2011_Zhu2009_CalvinCycle is "Arnold2011_Zhu2009_CalvinCycle"
+
+Arnold2011_Zhu2009_CalvinCycle model_entity_is "http://identifiers.org/biomodels.db/MODEL1109270004"
+Arnold2011_Zhu2009_CalvinCycle model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000388"
+Arnold2011_Zhu2009_CalvinCycle description "http://identifiers.org/pubmed/22001849"
+Arnold2011_Zhu2009_CalvinCycle model_entity_is "http://identifiers.org/kegg.pathway/ko00710",
+                                               "http://identifiers.org/obo.go/GO:0019253"
+Arnold2011_Zhu2009_CalvinCycle taxon "http://identifiers.org/taxonomy/33090"

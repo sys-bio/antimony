@@ -1,15 +1,21 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 function Mass_Action_1_1(k1, S1)
   k1*S1;
 end
+
+Mass_Action_1_1 is "Mass_Action_1"
 
 function Mass_Action_2_1(k1, S1, S2)
   k1*S1*S2;
 end
 
+Mass_Action_2_1 is "Mass_Action_2"
+
 function Mass_Action_0_1(k1)
   k1;
 end
+
+Mass_Action_0_1 is "Mass_Action_0"
 
 
 model *Aguda1999_CellCycle()
@@ -73,18 +79,18 @@ model *Aguda1999_CellCycle()
   kminus2_1 = 1;
   k3_1 = 1.42;
   k3p_1 = 0;
-  k4_1 = 1e-006;
+  k4_1 = 1e-06;
   kminus4_1 = 0.016;
   kminus1_1 = 0.001;
   k5_1 = 0.02;
   k6_1 = 0.018;
   kminus6_1 = 5;
-  k7_1 = 1e-005;
+  k7_1 = 1e-05;
   k8_1 = 2;
   k9_1 = 2;
   K10_1 = 0.035;
   k17_1 = 3.5;
-  k18_1 = 1e-005;
+  k18_1 = 1e-05;
   k19_1 = 0.05;
   k20_1 = 0.01;
   k21_1 = 0.1;
@@ -177,4 +183,43 @@ model *Aguda1999_CellCycle()
   pRBsynthesis_1 is "pRB synthesis";
   pRBdegradation_1 is "pRB degradation";
   pRBpdephosphorylation_1 is "pRB-p dephosphorylation";
+
+  // CV terms:
+  Y3_1 part "http://identifiers.org/interpro/IPR015652",
+            "http://identifiers.org/interpro/IPR015633"
+  Y4_1 hypernym "http://identifiers.org/interpro/IPR015633"
+  Y11_1 hypernym "http://identifiers.org/kegg.compound/C00562"
+  Y11_1 hypernym "http://identifiers.org/interpro/IPR015652"
+  Y2_1 version "http://identifiers.org/uniprot/O96020",
+               "http://identifiers.org/uniprot/P24941"
+  Y2_1 hypernym "http://identifiers.org/uniprot/P24864",
+                "http://identifiers.org/uniprot/P24941"
+  Y1_1 version "http://identifiers.org/uniprot/P24941",
+               "http://identifiers.org/uniprot/O96020"
+  Y1_1 version "http://identifiers.org/uniprot/P24864",
+               "http://identifiers.org/uniprot/P24941"
+  Y5_1 hypernym "http://identifiers.org/interpro/IPR015652"
+  Y6_1 version "http://identifiers.org/uniprot/P11802",
+               "http://identifiers.org/interpro/IPR015451"
+  Y7_1 homolog "http://identifiers.org/uniprot/P46527"
+  Y8_1 version "http://identifiers.org/uniprot/P24864",
+               "http://identifiers.org/uniprot/P24941",
+               "http://identifiers.org/uniprot/P46527"
+  Y8_1 version "http://identifiers.org/uniprot/O96020",
+               "http://identifiers.org/uniprot/P24941",
+               "http://identifiers.org/uniprot/P46527"
+  Y10_1 homolog "http://identifiers.org/uniprot/P42771"
+  Y9_1 version "http://identifiers.org/uniprot/P46527",
+               "http://identifiers.org/uniprot/P11802",
+               "http://identifiers.org/interpro/IPR015451"
 end
+
+Aguda1999_CellCycle is "Aguda1999_CellCycle"
+
+Aguda1999_CellCycle model_entity_is "http://identifiers.org/biomodels.db/MODEL3897395081"
+Aguda1999_CellCycle model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000169"
+Aguda1999_CellCycle description "http://identifiers.org/pubmed/10619492"
+Aguda1999_CellCycle parthood "http://identifiers.org/reactome/REACT_1538.1"
+Aguda1999_CellCycle hypernym "http://identifiers.org/go/GO:0031575"
+Aguda1999_CellCycle taxon "http://identifiers.org/taxonomy/40674"
+Aguda1999_CellCycle property "http://identifiers.org/mamo/MAMO_0000046"

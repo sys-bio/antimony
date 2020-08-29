@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *MODEL1401200001()
 
   // Compartments and Species:
@@ -8,23 +8,23 @@ model *MODEL1401200001()
   species $delta in cell, $atp in cell, $ip3con in cell, $rscon in cell, $y in cell;
 
   // Assignment Rules:
-  ad := addash + gamma*(ca - p1);
-  ca := p1 + (p2*ip3^m)/(p3^m + ip3^m) + (p4*ip3^n)/(p5^n + ip3^n);
+  ad := addash + gamma_*(ca - p1);
+  ca := p1 + p2*ip3^m/(p3^m + ip3^m) + p4*ip3^n/(p5^n + ip3^n);
   gstar := (ro + delta)/(kg + delta + ro);
   kg := kd/ka;
   ro := atp/(kr + atp);
-  delta := (kg*kdeg*ip30)/(rhstar - kdeg*ip30);
+  delta := kg*kdeg*ip30/(rhstar - kdeg*ip30);
   ip3con := (tanh((ip3 - ip3min)/0.01) + 1)/2;
   rscon := (tanh((rscrit - rs)/0.01) + 1)/2;
 
   // Rate Rules:
-  d' = ad*((k*gf)/(1 + k*gf)) - ddd*e*d;
+  d' = ad*(k*gf/(1 + k*gf)) - ddd*e*d;
   e' = ae*(1 + af*(yo - rs)) - dee*x*e;
-  rs' = ps*(yo - rs)*r - (pd*rs*d)/(qd + rs + d) - (pe*rs*e)/(qe + rs + e);
-  x' = (ax*e + f*(yo - rs) + g*x^2*e) - dxx*x;
-  r' = (px*(rt - rs - r)*x)/(qx + (rt - rs - r) + x) - ps*(yo - rs)*r;
+  rs' = ps*(yo - rs)*r - pd*rs*d/(qd + rs + d) - pe*rs*e/(qe + rs + e);
+  x' = ax*e + f*(yo - rs) + g*x^2*e - dxx*x;
+  r' = px*(rt - rs - r)*x/(qx + (rt - rs - r) + x) - ps*(yo - rs)*r;
   ip3' = scale*(rhstar*gstar - kdeg*ip3);
-  atp' = scale*(vatp_s*(y - atp)*rscon*ip3con*((ip3 - ip3min)/(krel + ip3)) - (vdeg*atp)/(kkdeg + atp));
+  atp' = scale*(vatp_s*(y - atp)*rscon*ip3con*((ip3 - ip3min)/(krel + ip3)) - vdeg*atp/(kkdeg + atp));
   y' = scale*(alpha*(ymax - y) - rscon*ip3con*vatp_s*(y - atp)*((ip3 - ip3min)/(krel + ip3)));
 
   // Species initializations:
@@ -45,6 +45,7 @@ model *MODEL1401200001()
   gf = 6.3;
   ddd = 0.4;
   addash = 0.41;
+  gamma_ = 1;
   p1 = 0.0159835;
   ae = 0.16;
   af = 0.9;
@@ -84,15 +85,41 @@ model *MODEL1401200001()
   n = 9.79183;
   p5 = 0.787902;
   smoothness = 0.01;
-  gamma = 1;
   dip = 280;
   datpp = 300;
   cabasil = 0.02055236;
   dist = 50;
 
   // Other declarations:
-  const cell, k, gf, ddd, addash, p1, ae, af, yo, dee, px, rt, qx, ps, pd;
-  const qd, pe, qe, ax, f, g, dxx, scale, rhstar, kdeg, kd, ka, kr, ip3min;
-  const rscrit, vatp_s, krel, vdeg, kkdeg, alpha, ymax, ip30, p2, m, p3, p4;
-  const n, p5, smoothness, gamma, dip, datpp, cabasil, dist;
+  const cell, k, gf, ddd, addash, gamma_, p1, ae, af, yo, dee, px, rt, qx;
+  const ps, pd, qd, pe, qe, ax, f, g, dxx, scale, rhstar, kdeg, kd, ka, kr;
+  const ip3min, rscrit, vatp_s, krel, vdeg, kkdeg, alpha, ymax, ip30, p2;
+  const m, p3, p4, n, p5, smoothness, dip, datpp, cabasil, dist;
+
+  // CV terms:
+  d part "http://identifiers.org/uniprot/P11802",
+         "http://identifiers.org/uniprot/P24385"
+  e part "http://identifiers.org/uniprot/P24864",
+         "http://identifiers.org/uniprot/P24941"
+  ca hypernym "http://identifiers.org/chebi/CHEBI:29108"
+  rs part "http://identifiers.org/uniprot/Q08999",
+          "http://identifiers.org/uniprot/Q01094"
+  x hypernym "http://identifiers.org/chebi/CHEBI:47867",
+             "http://identifiers.org/chebi/CHEBI:16541"
+  r hypernym "http://identifiers.org/uniprot/Q08999"
+  ip3 hypernym "http://identifiers.org/chebi/CHEBI:16595"
+  atp hypernym "http://identifiers.org/chebi/CHEBI:15422"
+  y hypernym "http://identifiers.org/chebi/CHEBI:15422"
 end
+
+MODEL1401200001 is "Barrack2014 - Calcium/cell cycle coupling - Rs dependent ATP release"
+
+MODEL1401200001 model_entity_is "http://identifiers.org/biomodels.db/MODEL1401200001"
+MODEL1401200001 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000509"
+MODEL1401200001 description "http://identifiers.org/pubmed/24434742"
+MODEL1401200001 origin "http://identifiers.org/biomodels.db/BIOMD0000000168",
+                       "http://identifiers.org/pubmed/16055527"
+MODEL1401200001 property "http://identifiers.org/mamo/MAMO_0000046"
+MODEL1401200001 parthood "http://identifiers.org/go/GO:0007049",
+                         "http://identifiers.org/go/GO:0005388"
+MODEL1401200001 taxon "http://identifiers.org/taxonomy/40674"

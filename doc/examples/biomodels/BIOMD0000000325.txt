@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *minfb()
 
   // Compartments and Species:
@@ -6,7 +6,7 @@ model *minfb()
   species $L in cell, R in cell, C in cell, I in cell, X in cell, A in cell;
 
   // Reactions:
-  R_expression:  => R; cell*(BR + (Rs*A)/(KD + A));
+  R_expression:  => R; cell*(BR + Rs*A/(KD + A));
   R_degradation: R => ; cell*kdegR*R;
   R_L_binding: R + $L -> C; cell*(kon*L*R - koff*C);
   C_degradation: C => ; cell*kdegC*C;
@@ -14,7 +14,7 @@ model *minfb()
   I_activation: X => C + A; cell*k3*X;
   X_degradation: X => ; cell*kdegX*X;
   A_degradation: A => ; cell*kdegA*A;
-  I_expression:  => I; cell*(BI + (TFs*A)/(KD + A));
+  I_expression:  => I; cell*(BI + TFs*A/(KD + A));
   I_degradation: I => ; cell*kdegI*I;
 
   // Species initializations:
@@ -48,4 +48,77 @@ model *minfb()
   // Other declarations:
   const cell, BR, Rs, KD, kdegR, kon, koff, kdegC, k1, k2, k3, kdegX, kdegA;
   const BI, TFs, kdegI;
+
+  // SBO terms:
+  cell.sboTerm = 290
+  L.sboTerm = 247
+  R.sboTerm = 252
+  C.sboTerm = 297
+  I.sboTerm = 252
+  X.sboTerm = 297
+  A.sboTerm = 252
+  BR.sboTerm = 485
+  Rs.sboTerm = 186
+  KD.sboTerm = 27
+  kdegR.sboTerm = 356
+  kon.sboTerm = 339
+  koff.sboTerm = 338
+  kdegC.sboTerm = 356
+  k1.sboTerm = 339
+  k2.sboTerm = 338
+  k3.sboTerm = 35
+  kdegX.sboTerm = 356
+  kdegA.sboTerm = 356
+  BI.sboTerm = 485
+  TFs.sboTerm = 186
+  kdegI.sboTerm = 356
+  R_expression.sboTerm = 205
+  R_degradation.sboTerm = 179
+  R_L_binding.sboTerm = 177
+  C_degradation.sboTerm = 179
+  C_I_binding.sboTerm = 177
+  I_activation.sboTerm = 216
+  X_degradation.sboTerm = 179
+  A_degradation.sboTerm = 179
+  I_expression.sboTerm = 205
+  I_degradation.sboTerm = 179
+
+  // CV terms:
+  cell hypernym "http://identifiers.org/obo.go/GO:0005623"
+  L hypernym "http://identifiers.org/obo.chebi/CHEBI:23530"
+  L identity "http://identifiers.org/obo.chebi/CHEBI:60283",
+             "http://identifiers.org/chembl.compound/CHEMBL1163500"
+  R hypernym "http://identifiers.org/uniprot/Q9C5U0"
+  C property "http://identifiers.org/obo.go/GO:0009885"
+  C hypernym "http://identifiers.org/uniprot/Q9C5U0"
+  C identity "http://identifiers.org/obo.chebi/CHEBI:60283"
+  I hypernym "http://identifiers.org/uniprot/P38889"
+  X property "http://identifiers.org/obo.go/GO:0009885"
+  X version "http://identifiers.org/uniprot/P38889"
+  X hypernym "http://identifiers.org/uniprot/Q9C5U0"
+  X identity "http://identifiers.org/obo.chebi/CHEBI:60283"
+  A property "http://identifiers.org/obo.go/GO:0016563"
+  A version "http://identifiers.org/obo.psi-mod/MOD:00890"
+  A hypernym "http://identifiers.org/uniprot/P38889"
+  R_expression hypernym "http://identifiers.org/obo.go/GO:0010467"
+  R_degradation hypernym "http://identifiers.org/obo.go/GO:0030163"
+  R_L_binding hypernym "http://identifiers.org/obo.go/GO:0023038"
+  C_degradation hypernym "http://identifiers.org/obo.go/GO:0030163"
+  C_I_binding hypernym "http://identifiers.org/obo.go/GO:0006461"
+  I_activation hypernym "http://identifiers.org/ec-code/2.7.13.3",
+                        "http://identifiers.org/obo.go/GO:0006468"
+  I_activation property "http://identifiers.org/obo.go/GO:0009885"
+  X_degradation hypernym "http://identifiers.org/obo.go/GO:0030163"
+  A_degradation hypernym "http://identifiers.org/obo.go/GO:0030163"
+  I_expression hypernym "http://identifiers.org/obo.go/GO:0010467"
+  I_degradation hypernym "http://identifiers.org/obo.go/GO:0030163"
 end
+
+minfb is "Palini2011_Minimal_2_Feedback_Model"
+
+minfb model_entity_is "http://identifiers.org/biomodels.db/MODEL1102160000"
+minfb model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000325"
+minfb description "http://identifiers.org/pubmed/21451590"
+minfb taxon "http://identifiers.org/taxonomy/4932"
+minfb version "http://identifiers.org/obo.go/GO:0009885",
+              "http://identifiers.org/obo.go/GO:0000160"

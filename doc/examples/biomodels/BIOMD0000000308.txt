@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Tyson2003_Negative_Feedback_Oscillator()
 
   // Compartments and Species:
@@ -12,10 +12,10 @@ model *Tyson2003_Negative_Feedback_Oscillator()
   // Reactions:
   r1:  => X; env*(k0 + k1*S);
   r2: X => ; env*(k2 + k2_prime*Rp)*X;
-  r3: $Y => Yp; (env*k3*X*(Yt - Yp))/(Km3 + (Yt - Yp));
-  r4: Yp => $Y; (env*k4*Yp)/(Km4 + Yp);
-  r5: $R => Rp; (env*k5*Yp*(Rt - Rp))/(Km5 + (Rt - Rp));
-  r6: Rp => $R; (env*k6*Rp)/(Km6 + Rp);
+  r3: $Y => Yp; env*k3*X*(Yt - Yp)/(Km3 + (Yt - Yp));
+  r4: Yp => $Y; env*k4*Yp/(Km4 + Yp);
+  r5: $R => Rp; env*k5*Yp*(Rt - Rp)/(Km5 + (Rt - Rp));
+  r6: Rp => $R; env*k6*Rp/(Km6 + Rp);
 
   // Species initializations:
   Rp = 0;
@@ -71,4 +71,60 @@ model *Tyson2003_Negative_Feedback_Oscillator()
   // Display Names:
   time_unit is "s";
   substance is "mole";
+
+  // SBO terms:
+  env.sboTerm = 290
+  Rp.sboTerm = 252
+  X.sboTerm = 252
+  Yp.sboTerm = 252
+  S.sboTerm = 285
+  Y.sboTerm = 252
+  Yt.sboTerm = 196
+  R.sboTerm = 252
+  Rt.sboTerm = 196
+  k0.sboTerm = 485
+  k1.sboTerm = 35
+  k2.sboTerm = 35
+  k2_prime.sboTerm = 36
+  k3.sboTerm = 186
+  Km3.sboTerm = 27
+  k4.sboTerm = 485
+  Km4.sboTerm = 196
+  k5.sboTerm = 25
+  Km5.sboTerm = 196
+  k6.sboTerm = 485
+  Km6.sboTerm = 196
+  r1.sboTerm = 176
+  r2.sboTerm = 179
+  r3.sboTerm = 216
+  r4.sboTerm = 330
+  r5.sboTerm = 216
+  r6.sboTerm = 330
+
+  // CV terms:
+  env hypernym "http://identifiers.org/go/GO:0005623"
+  Rp hypernym "http://identifiers.org/kegg.compound/C00562"
+  Rp version "http://identifiers.org/psimod/MOD:00696"
+  X hypernym "http://identifiers.org/chebi/CHEBI:36080"
+  Yp hypernym "http://identifiers.org/kegg.compound/C00562"
+  Yp version "http://identifiers.org/psimod/MOD:00696"
+  Yp property "http://identifiers.org/go/GO:0016301"
+  Y hypernym "http://identifiers.org/chebi/CHEBI:36080"
+  R hypernym "http://identifiers.org/chebi/CHEBI:36080"
+  r1 hypernym "http://identifiers.org/go/GO:0009058"
+  r2 hypernym "http://identifiers.org/go/GO:0009056"
+  r3 hypernym "http://identifiers.org/go/GO:0006468"
+  r4 hypernym "http://identifiers.org/go/GO:0006470"
+  r5 hypernym "http://identifiers.org/go/GO:0006468"
+  r6 hypernym "http://identifiers.org/go/GO:0006470"
 end
+
+Tyson2003_Negative_Feedback_Oscillator is "Tyson2003_NegFB_Oscillator"
+
+Tyson2003_Negative_Feedback_Oscillator model_entity_is "http://identifiers.org/biomodels.db/MODEL1102100004"
+Tyson2003_Negative_Feedback_Oscillator model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000308"
+Tyson2003_Negative_Feedback_Oscillator description "http://identifiers.org/pubmed/12648679"
+Tyson2003_Negative_Feedback_Oscillator hypernym "http://identifiers.org/go/GO:0051098"
+Tyson2003_Negative_Feedback_Oscillator part "http://identifiers.org/go/GO:0007243"
+Tyson2003_Negative_Feedback_Oscillator property "http://identifiers.org/mamo/MAMO_0000046"
+Tyson2003_Negative_Feedback_Oscillator taxon "http://identifiers.org/taxonomy/131567"

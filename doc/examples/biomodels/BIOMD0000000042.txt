@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Glycolysis_Nielsen()
 
   // Compartments and Species:
@@ -25,15 +25,15 @@ model *Glycolysis_Nielsen()
   EtOHflow: EtOH => ; compartment_*EtOH*flow;
   AMPflow: AMP => ; compartment_*AMP*flow;
   Pflow: P => ; compartment_*P*flow;
-  reaction_1: GLC + ATP => F6P + ADP; compartment_*((V1*ATP*GLC)/((K1GLC + GLC)*(K1ATP + ATP)));
-  reaction_2: F6P + ATP => FBP + ADP; compartment_*((V2*ATP*F6P^2)/((K2*(1 + k2*(ATP/AMP)^2) + F6P^2)*(K2ATP + ATP)));
-  reaction_3: FBP -> 2GAP; compartment_*(k3f*FBP - k3b*GAP^2);
-  reaction_4: GAP + NAD => DPG + NADH; compartment_*((V4*NAD*GAP)/((K4GAP + GAP)*(K4NAD + NAD)));
+  reaction_1: GLC + ATP => F6P + ADP; compartment_*(V1*ATP*GLC/((K1GLC + GLC)*(K1ATP + ATP)));
+  reaction_2: F6P + ATP => FBP + ADP; compartment_*(V2*ATP*F6P^2/((K2*(1 + k2*(ATP/AMP)^2) + F6P^2)*(K2ATP + ATP)));
+  reaction_3: FBP -> 2 GAP; compartment_*(k3f*FBP - k3b*GAP^2);
+  reaction_4: GAP + NAD => DPG + NADH; compartment_*(V4*NAD*GAP/((K4GAP + GAP)*(K4NAD + NAD)));
   reaction_5: DPG + ADP -> PEP + ATP; compartment_*(k5f*DPG*ADP - k5b*PEP*ATP);
-  reaction_6: PEP + ADP => PYR + ATP; compartment_*((V6*ADP*PEP)/((K6PEP + PEP)*(K6ADP + ADP)));
-  reaction_7: PYR => ACA; compartment_*((V7*PYR)/(K7PYR + PYR));
+  reaction_6: PEP + ADP => PYR + ATP; compartment_*(V6*ADP*PEP/((K6PEP + PEP)*(K6ADP + ADP)));
+  reaction_7: PYR => ACA; compartment_*(V7*PYR/(K7PYR + PYR));
   reaction_8: ACA + NADH -> EtOH + NAD; compartment_*(k8f*NADH*ACA - k8b*NAD*EtOH);
-  reaction_9: AMP + ATP -> 2ADP; compartment_*(k9f*AMP*ATP - k9b*ADP^2);
+  reaction_9: AMP + ATP -> 2 ADP; compartment_*(k9f*AMP*ATP - k9b*ADP^2);
   reaction_10: F6P => P; compartment_*k10*F6P;
 
   // Species initializations:
@@ -95,4 +95,95 @@ model *Glycolysis_Nielsen()
   // Display Names:
   substance is "millimole";
   time_unit is "minute";
+
+  // CV terms:
+  compartment_ hypernym "http://identifiers.org/go/GO:0005737"
+  ATP identity "http://identifiers.org/chebi/CHEBI:15422",
+               "http://identifiers.org/kegg.compound/C00002"
+  ADP identity "http://identifiers.org/chebi/CHEBI:16761",
+               "http://identifiers.org/kegg.compound/C00008"
+  AMP identity "http://identifiers.org/chebi/CHEBI:16027",
+               "http://identifiers.org/kegg.compound/C00020"
+  GLC identity "http://identifiers.org/chebi/CHEBI:17234",
+               "http://identifiers.org/kegg.compound/C00293"
+  F6P identity "http://identifiers.org/chebi/CHEBI:20935",
+               "http://identifiers.org/kegg.compound/C05345"
+  FBP identity "http://identifiers.org/chebi/CHEBI:16905",
+               "http://identifiers.org/kegg.compound/C05378"
+  GAP identity "http://identifiers.org/chebi/CHEBI:29052",
+               "http://identifiers.org/kegg.compound/C00118"
+  NAD identity "http://identifiers.org/chebi/CHEBI:15846",
+               "http://identifiers.org/kegg.compound/C00003"
+  NADH identity "http://identifiers.org/chebi/CHEBI:16908",
+                "http://identifiers.org/kegg.compound/C00004"
+  DPG identity "http://identifiers.org/chebi/CHEBI:16001",
+               "http://identifiers.org/kegg.compound/C00236"
+  PEP identity "http://identifiers.org/chebi/CHEBI:18021",
+               "http://identifiers.org/kegg.compound/C00074"
+  PYR identity "http://identifiers.org/chebi/CHEBI:15361",
+               "http://identifiers.org/kegg.compound/C00022"
+  ACA identity "http://identifiers.org/chebi/CHEBI:15343",
+               "http://identifiers.org/kegg.compound/C00084"
+  EtOH identity "http://identifiers.org/chebi/CHEBI:16236",
+                "http://identifiers.org/kegg.compound/C00469"
+  ATPflow hypernym "http://identifiers.org/go/GO:0006754"
+  ADPflow hypernym "http://identifiers.org/go/GO:0006172"
+  NADHflow hypernym "http://identifiers.org/go/GO:0006735"
+  NADflow hypernym "http://identifiers.org/go/GO:0009435"
+  GLCflow hypernym "http://identifiers.org/go/GO:0046323"
+  F6Pflow hypernym "http://identifiers.org/go/GO:0006002"
+  FBPflow hypernym "http://identifiers.org/go/GO:0030388"
+  GAPflow hypernym "http://identifiers.org/go/GO:0019683"
+  PYRflow hypernym "http://identifiers.org/go/GO:0042867"
+  ACAflow hypernym "http://identifiers.org/go/GO:0046187"
+  EtOHflow hypernym "http://identifiers.org/go/GO:0006068"
+  AMPflow hypernym "http://identifiers.org/go/GO:0006196"
+  reaction_1 homolog "http://identifiers.org/reactome/REACT_1164"
+  reaction_1 part "http://identifiers.org/ec-code/2.7.1.2",
+                  "http://identifiers.org/ec-code/5.3.1.9"
+  reaction_1 part "http://identifiers.org/kegg.reaction/R00771",
+                  "http://identifiers.org/kegg.reaction/R00299"
+  reaction_2 homolog "http://identifiers.org/reactome/REACT_1840"
+  reaction_2 hypernym "http://identifiers.org/ec-code/2.7.1.11",
+                      "http://identifiers.org/kegg.reaction/R00756"
+  reaction_3 homolog "http://identifiers.org/reactome/REACT_1693"
+  reaction_3 part "http://identifiers.org/kegg.reaction/R01070",
+                  "http://identifiers.org/kegg.reaction/R01015"
+  reaction_3 part "http://identifiers.org/ec-code/5.3.1.1",
+                  "http://identifiers.org/ec-code/4.1.2.13"
+  reaction_4 homolog "http://identifiers.org/reactome/REACT_587"
+  reaction_4 hypernym "http://identifiers.org/ec-code/1.2.1.12",
+                      "http://identifiers.org/kegg.reaction/R01061"
+  reaction_5 part "http://identifiers.org/ec-code/5.4.2.1",
+                  "http://identifiers.org/ec-code/2.7.2.3",
+                  "http://identifiers.org/ec-code/4.2.1.11"
+  reaction_5 part "http://identifiers.org/kegg.reaction/R00658",
+                  "http://identifiers.org/kegg.reaction/R01512",
+                  "http://identifiers.org/kegg.reaction/R01518"
+  reaction_5 part "http://identifiers.org/reactome/REACT_1771",
+                  "http://identifiers.org/reactome/REACT_1400"
+  reaction_6 version "http://identifiers.org/ec-code/2.7.1.40",
+                     "http://identifiers.org/kegg.reaction/R00200"
+  reaction_6 homolog "http://identifiers.org/reactome/REACT_1911"
+  reaction_7 hypernym "http://identifiers.org/ec-code/4.1.1.1",
+                      "http://identifiers.org/kegg.reaction/R00224"
+  reaction_8 hypernym "http://identifiers.org/ec-code/1.1.1.71",
+                      "http://identifiers.org/kegg.reaction/R00754"
+  reaction_8 homolog "http://identifiers.org/reactome/REACT_799"
+  reaction_9 hypernym "http://identifiers.org/ec-code/2.7.4.3",
+                      "http://identifiers.org/kegg.reaction/R00127"
+  reaction_10 hypernym "http://identifiers.org/go/GO:0006001"
+  reaction_10 homolog "http://identifiers.org/reactome/REACT_1571"
 end
+
+Glycolysis_Nielsen is "Nielsen1998_Glycolysis"
+
+Glycolysis_Nielsen model_entity_is "http://identifiers.org/biomodels.db/MODEL6622455387"
+Glycolysis_Nielsen model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000042"
+Glycolysis_Nielsen description "http://identifiers.org/pubmed/17029704"
+Glycolysis_Nielsen origin "http://identifiers.org/pubmed/6454892",
+                          "http://identifiers.org/pubmed/8061224"
+Glycolysis_Nielsen homolog "http://identifiers.org/reactome/REACT_1383"
+Glycolysis_Nielsen taxon "http://identifiers.org/taxonomy/4932"
+Glycolysis_Nielsen identity "http://identifiers.org/kegg.pathway/sce00010"
+Glycolysis_Nielsen hypernym "http://identifiers.org/go/GO:0006096"

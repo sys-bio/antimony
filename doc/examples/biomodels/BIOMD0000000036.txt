@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Tyson1999()
 
   // Compartments and Species:
@@ -6,7 +6,7 @@ model *Tyson1999()
   species $EmptySet in default, M in CYTOPLASM, P in CYTOPLASM;
 
   // Reactions:
-  TC: $EmptySet => M; CYTOPLASM*(TC_Vm/(1 + ((P*(1 - 2/(1 + (1 + 8*TC_Keq*P)^0.5)))/(2*TC_Pcrit))^2));
+  TC: $EmptySet => M; CYTOPLASM*(TC_Vm/(1 + (P*(1 - 2/(1 + (1 + 8*TC_Keq*P)^0.5))/(2*TC_Pcrit))^2));
   TL: $EmptySet => P; TL_V*M*CYTOPLASM;
   mRNAD: M => $EmptySet; mRNAD_D*M*CYTOPLASM;
   ProteinD: P => $EmptySet; ProteinD_D*P*CYTOPLASM;
@@ -22,7 +22,7 @@ model *Tyson1999()
   CYTOPLASM = 1;
 
   // Variable initializations:
-  N_A = 6.0221367e+023;
+  N_A = 6.0221367e+23;
   TC_Vm = 1;
   TC_Pcrit = 0.1;
   TC_Keq = 200;
@@ -48,4 +48,25 @@ model *Tyson1999()
   mRNAD is "mRNA degradation";
   ProteinD is "protein degradation";
   DBT is "Per phosphorylation and degradation";
+
+  // CV terms:
+  CYTOPLASM hypernym "http://identifiers.org/go/GO:0005737"
+  P identity "http://identifiers.org/uniprot/P07663"
+  TC hypernym "http://identifiers.org/go/GO:0006355",
+              "http://identifiers.org/go/GO:0009299"
+  TL hypernym "http://identifiers.org/go/GO:0006412"
+  mRNAD hypernym "http://identifiers.org/go/GO:0006402"
+  ProteinD hypernym "http://identifiers.org/go/GO:0030163"
+  DBT hypernym "http://identifiers.org/ec-code/2.7.1.37",
+               "http://identifiers.org/go/GO:0006468",
+               "http://identifiers.org/go/GO:0030163"
 end
+
+Tyson1999 is "Tyson1999_CircClock"
+
+Tyson1999 model_entity_is "http://identifiers.org/biomodels.db/MODEL6619720081"
+Tyson1999 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000036"
+Tyson1999 description "http://identifiers.org/pubmed/20540926"
+Tyson1999 identity "http://identifiers.org/kegg.pathway/dme04710"
+Tyson1999 taxon "http://identifiers.org/taxonomy/7227"
+Tyson1999 hypernym "http://identifiers.org/go/GO:0042752"

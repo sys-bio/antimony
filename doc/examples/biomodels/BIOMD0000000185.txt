@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Locke2008_Circadian_Clock()
 
   // Compartments and Species:
@@ -7,29 +7,29 @@ model *Locke2008_Circadian_Clock()
   species X2 in compartment_, Y2 in compartment_, Z2 in compartment_, V2 in compartment_;
 
   // Assignment Rules:
-  F := 1/2*(V1 + V2);
+  F := (1/2)*(V1 + V2);
 
   // Reactions:
-  R1:  => X1; (compartment_*v_1*K1^n)/(K1^n + Z1^n);
-  R2: X1 => ; (compartment_*v_2*X1)/(K2 + X1);
-  R3:  => X1; (compartment_*vc*K*F)/(Kc + K*F);
+  R1:  => X1; compartment_*v_1*K1^n/(K1^n + Z1^n);
+  R2: X1 => ; compartment_*v_2*X1/(K2 + X1);
+  R3:  => X1; compartment_*vc*K*F/(Kc + K*F);
   R4:  => X1; compartment_*L;
   R5:  => Y1; compartment_*k3*X1;
-  R6: Y1 => ; (compartment_*v_4*Y1)/(K4 + Y1);
+  R6: Y1 => ; compartment_*v_4*Y1/(K4 + Y1);
   R7:  => Z1; compartment_*k5*Y1;
-  R8: Z1 => ; (compartment_*v_6*Z1)/(K6 + Z1);
+  R8: Z1 => ; compartment_*v_6*Z1/(K6 + Z1);
   R9:  => V1; compartment_*k7*X1;
-  R10: V1 => ; (compartment_*v_8*V1)/(K8 + V1);
-  R11:  => X2; (compartment_*v_1*K1^n)/(K1^n + Z2^n);
-  R12: X2 => ; (compartment_*v_2*X2)/(K2 + X2);
-  R13:  => X2; (compartment_*vc*K*F)/(Kc + K*F);
+  R10: V1 => ; compartment_*v_8*V1/(K8 + V1);
+  R11:  => X2; compartment_*v_1*K1^n/(K1^n + Z2^n);
+  R12: X2 => ; compartment_*v_2*X2/(K2 + X2);
+  R13:  => X2; compartment_*vc*K*F/(Kc + K*F);
   R14:  => X2; compartment_*L;
   R15:  => Y2; compartment_*k3*X2;
-  R16: Y2 => ; (compartment_*v_4*Y2)/(K4 + Y2);
+  R16: Y2 => ; compartment_*v_4*Y2/(K4 + Y2);
   R17:  => Z2; compartment_*k5*Y2;
-  R18: Z2 => ; (compartment_*v_6*Z2)/(K6 + Z2);
+  R18: Z2 => ; compartment_*v_6*Z2/(K6 + Z2);
   R19:  => V2; compartment_*k7*X2;
-  R20: V2 => ; (compartment_*v_8*V2)/(K8 + V2);
+  R20: V2 => ; compartment_*v_8*V2/(K8 + V2);
 
   // Species initializations:
   X1 = 4.25;
@@ -127,4 +127,46 @@ model *Locke2008_Circadian_Clock()
   R18 is "Transcriptional repressor degradation";
   R19 is "Neuropeptide synthesis";
   R20 is "Neuropeptide degradation";
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/obo.go/GO:0005623"
+  X1 hypernym "http://identifiers.org/obo.chebi/CHEBI:33699"
+  X1 encodement "http://identifiers.org/uniprot/O15516"
+  Y1 homolog "http://identifiers.org/uniprot/O15516"
+  V1 homolog "http://identifiers.org/uniprot/Q9VET0"
+  V1 version "http://identifiers.org/obo.go/GO:0005184"
+  X2 encodement "http://identifiers.org/uniprot/O15516"
+  X2 hypernym "http://identifiers.org/obo.chebi/CHEBI:33699"
+  Y2 homolog "http://identifiers.org/uniprot/O15516"
+  V2 homolog "http://identifiers.org/uniprot/Q9VET0"
+  V2 version "http://identifiers.org/obo.go/GO:0005184"
+  R1 hypernym "http://identifiers.org/obo.go/GO:0009299",
+              "http://identifiers.org/obo.go/GO:0006355"
+  R2 hypernym "http://identifiers.org/obo.go/GO:0006402"
+  R3 hypernym "http://identifiers.org/obo.go/GO:0045893"
+  R4 hypernym "http://identifiers.org/obo.go/GO:0045893"
+  R5 hypernym "http://identifiers.org/obo.go/GO:0006412"
+  R6 hypernym "http://identifiers.org/obo.go/GO:0044257"
+  R8 hypernym "http://identifiers.org/obo.go/GO:0044257"
+  R9 hypernym "http://identifiers.org/obo.go/GO:0006412"
+  R10 hypernym "http://identifiers.org/obo.go/GO:0044257"
+  R11 hypernym "http://identifiers.org/obo.go/GO:0009299",
+               "http://identifiers.org/obo.go/GO:0006355"
+  R12 hypernym "http://identifiers.org/obo.go/GO:0006402"
+  R13 hypernym "http://identifiers.org/obo.go/GO:0045893"
+  R14 hypernym "http://identifiers.org/obo.go/GO:0045893"
+  R15 hypernym "http://identifiers.org/obo.go/GO:0006412"
+  R16 hypernym "http://identifiers.org/obo.go/GO:0044257"
+  R18 hypernym "http://identifiers.org/obo.go/GO:0044257"
+  R19 hypernym "http://identifiers.org/obo.go/GO:0006412"
+  R20 hypernym "http://identifiers.org/obo.go/GO:0044257"
 end
+
+Locke2008_Circadian_Clock is "Locke2008_Circadian_Clock"
+
+Locke2008_Circadian_Clock model_entity_is "http://identifiers.org/biomodels.db/MODEL9223733527"
+Locke2008_Circadian_Clock model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000185"
+Locke2008_Circadian_Clock description "http://identifiers.org/pubmed/18312618"
+Locke2008_Circadian_Clock taxon "http://identifiers.org/taxonomy/40674"
+Locke2008_Circadian_Clock hypernym "http://identifiers.org/obo.go/GO:0048512",
+                                   "http://identifiers.org/obo.go/GO:0032922"

@@ -1,35 +1,51 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 function function_3(S, M, k, ko)
   k*ko*M*S;
 end
+
+function_3 is "2p modified mass action (irrev)"
 
 function function_7(M, k, ko)
   k*ko*M;
 end
 
+function_7 is "2p modified constant flux (irrev)"
+
 function function_6(Substrate, k, Mod1, Mod, k1, kb)
   Substrate*(k*Mod1 + k1*Mod + kb);
 end
+
+function_6 is "Mixed Hill"
 
 function function_2(k, ko, sub, sub2)
   k*ko*sub*sub2;
 end
 
-function function_1(V, Mod, k, Ex, In_)
-  (36*pi)^(1/3)*V^(2/3)*Mod*k*(Ex - In_);
+function_2 is "2p 2sub"
+
+function function_1(V, Mod, k, Ex, In)
+  (36*pi)^(1/3)*V^(2/3)*Mod*k*(Ex - In);
 end
+
+function_1 is "corrected modified diffusion"
 
 function function_8(V, k, Sub)
   (36*pi)^(1/3)*V^(2/3)*k*Sub;
 end
 
+function_8 is "corrected mass action"
+
 function function_4(ko, Mod, k, V, Sub)
   ko*Mod*k*(36*pi)^(1/3)*V^(2/3)*Sub;
 end
 
+function_4 is "corrected 2p modified mass action"
+
 function function_5(V, Mod, Vmax, Sub, Km)
-  ((36*pi)^(1/3)*V^(2/3)*Mod*Vmax*Sub)/(Km + Sub);
+  (36*pi)^(1/3)*V^(2/3)*Mod*Vmax*Sub/(Km + Sub);
 end
+
+function_5 is "Rate Law for v20"
 
 
 model *MODEL1403280000()
@@ -46,17 +62,17 @@ model *MODEL1403280000()
   // Assignment Rules:
   species_6 := piecewise(parameter_5, time < parameter_7, piecewise((parameter_5 + parameter_6)*exp((parameter_8 - time)/parameter_9), time > parameter_8, parameter_5 + parameter_6*(1 - exp((parameter_7 - time)/parameter_9))))*compartment_2;
   parameter_22 := piecewise(1, ModelValue_22 > 0, 0.2175);
-  parameter_10 := (species_1/compartment_4 + species_2/compartment_4 + species_3/compartment_4)*Compartment_3*parameter_11*10^9 + species_4/compartment_1*Compartment_2*parameter_11*10^9;
-  parameter_13 := species_1/compartment_4*Compartment_3*parameter_11*10^9;
-  parameter_14 := species_2/compartment_4*Compartment_3*parameter_11*10^9;
-  parameter_15 := species_3/compartment_4*Compartment_3*parameter_11*10^9;
-  parameter_16 := species_4/compartment_1*Compartment_2*parameter_11*10^9;
-  parameter_17 := (100*(species_10/compartment_3))/parameter_12;
+  parameter_10 := (species_1/compartment_4 + species_2/compartment_4 + species_3/compartment_4)*Compartment_3*parameter_11*10^9 + (species_4/compartment_1)*Compartment_2*parameter_11*10^9;
+  parameter_13 := (species_1/compartment_4)*Compartment_3*parameter_11*10^9;
+  parameter_14 := (species_2/compartment_4)*Compartment_3*parameter_11*10^9;
+  parameter_15 := (species_3/compartment_4)*Compartment_3*parameter_11*10^9;
+  parameter_16 := (species_4/compartment_1)*Compartment_2*parameter_11*10^9;
+  parameter_17 := 100*(species_10/compartment_3)/parameter_12;
   parameter_12 := species_9/compartment_3 + species_10/compartment_3;
-  parameter_18 := (100*(species_15/compartment_3))/ModelValue_13;
-  parameter_2 := (parameter_43*Metabolite_6)/Metabolite_9;
-  parameter_3 := piecewise((parameter_33*Metabolite_5*(Metabolite_0 - Metabolite_9))/(Metabolite_6*Metabolite_9), parameter_25 > 0, 0);
-  Asngpermil_ex := species_6/compartment_2*compartment_3*parameter_11*10^9;
+  parameter_18 := 100*(species_15/compartment_3)/ModelValue_13;
+  parameter_2 := parameter_43*Metabolite_6/Metabolite_9;
+  parameter_3 := piecewise(parameter_33*Metabolite_5*(Metabolite_0 - Metabolite_9)/(Metabolite_6*Metabolite_9), parameter_25 > 0, 0);
+  Asngpermil_ex := (species_6/compartment_2)*compartment_3*parameter_11*10^9;
 
   // Reactions:
   reaction_1: $species_6 -> species_1; function_1(compartment_3, species_11/compartment_3, parameter_33, species_6/compartment_2, species_1/compartment_4);
@@ -76,20 +92,20 @@ model *MODEL1403280000()
 
   // Species initializations:
   species_5 = piecewise(0.013151, parameter_25 > 0, 0.013151*parameter_24)*compartment_3;
-  species_10 = piecewise((species_9/compartment_3*(species_1/compartment_4)*parameter_26)/parameter_27, parameter_28 > 0, 0)*compartment_3;
-  species_9 = piecewise(0.167/((species_1/compartment_4*parameter_26)/parameter_27 + 1), parameter_28 > 0, 0.167)*compartment_3;
+  species_10 = piecewise((species_9/compartment_3)*(species_1/compartment_4)*parameter_26/parameter_27, parameter_28 > 0, 0)*compartment_3;
+  species_9 = piecewise(0.167/((species_1/compartment_4)*parameter_26/parameter_27 + 1), parameter_28 > 0, 0.167)*compartment_3;
   species_1 = piecewise(parameter_4, parameter_25 > 0, 100)*compartment_4;
-  species_15 = (species_11/compartment_3*(parameter_29*(species_1/compartment_4) + parameter_30*(species_10/compartment_3) + parameter_31))/parameter_32*compartment_3;
-  species_11 = 0.03/((parameter_29*(species_1/compartment_4) + parameter_30*(species_10/compartment_3) + parameter_31)/parameter_32 + 1)*compartment_3;
-  species_14 = piecewise((species_11/compartment_3*parameter_33*(species_6/compartment_2 - species_1/compartment_4))/((parameter_34*(species_1/compartment_4))/(parameter_35 + species_1/compartment_4)), parameter_25 > 0, 0)*compartment_3;
-  species_4 = piecewise((parameter_36*(species_5/compartment_3)*(species_3/compartment_4))/parameter_37, parameter_38 > 0, 0)*compartment_1;
-  species_3 = (parameter_39*parameter_22*(species_1/compartment_4)*(species_7/compartment_4))/parameter_40*compartment_4;
+  species_15 = ((species_11/compartment_3)*(parameter_29*(species_1/compartment_4) + parameter_30*(species_10/compartment_3) + parameter_31)/parameter_32)*compartment_3;
+  species_11 = (0.03/((parameter_29*(species_1/compartment_4) + parameter_30*(species_10/compartment_3) + parameter_31)/parameter_32 + 1))*compartment_3;
+  species_14 = piecewise((species_11/compartment_3)*parameter_33*(species_6/compartment_2 - species_1/compartment_4)/(parameter_34*(species_1/compartment_4)/(parameter_35 + species_1/compartment_4)), parameter_25 > 0, 0)*compartment_3;
+  species_4 = piecewise(parameter_36*(species_5/compartment_3)*(species_3/compartment_4)/parameter_37, parameter_38 > 0, 0)*compartment_1;
+  species_3 = (parameter_39*parameter_22*(species_1/compartment_4)*(species_7/compartment_4)/parameter_40)*compartment_4;
   species_7 = piecewise(parameter_19*parameter_22, parameter_25 > 0, piecewise(parameter_19*parameter_21, parameter_28 > 0, parameter_19*parameter_20))*compartment_4;
-  species_2 = (parameter_41*(species_1/compartment_4))/parameter_42*compartment_4;
+  species_2 = (parameter_41*(species_1/compartment_4)/parameter_42)*compartment_4;
 
   // Compartment initializations:
-  compartment_2 = 5e-011;
-  compartment_3 = 5e-014;
+  compartment_2 = 5e-11;
+  compartment_3 = 5e-14;
   compartment_1 = 0.4*compartment_3;
   compartment_4 = 0.6*compartment_3;
 
@@ -110,9 +126,9 @@ model *MODEL1403280000()
   parameter_32 = 0.0719168;
   parameter_33 = 0.00215551;
   parameter_34 = 1;
-  parameter_35 = 5.16159e-006;
-  parameter_36 = 3.49703e-006;
-  parameter_37 = 1.92773e-007;
+  parameter_35 = 5.16159e-06;
+  parameter_36 = 3.49703e-06;
+  parameter_37 = 1.92773e-07;
   parameter_38 = 1;
   parameter_39 = 0.202797;
   parameter_40 = 6.1432;
@@ -127,7 +143,7 @@ model *MODEL1403280000()
   Compartment_2 = compartment_1;
   ModelValue_13 = parameter_1;
   parameter_1 = 0.0299643;
-  parameter_43 = 9.01422e-013;
+  parameter_43 = 9.01422e-13;
   Metabolite_6 = species_14;
   Metabolite_9 = species_1;
   Metabolite_5 = species_11;
@@ -234,4 +250,32 @@ model *MODEL1403280000()
   reaction_16 is "v6";
   reaction_17 is "v9";
   reaction_18 is "v11";
+
+  // CV terms:
+  species_6 hypernym "http://identifiers.org/chebi/CHEBI:29242"
+  species_6 container "http://identifiers.org/go/GO:0005576"
+  species_5 identity "http://identifiers.org/uniprot/P39109"
+  species_10 identity "http://identifiers.org/uniprot/P32485"
+  species_10 property "http://identifiers.org/pato/PATO:0002220"
+  species_9 identity "http://identifiers.org/uniprot/P32485"
+  species_1 hypernym "http://identifiers.org/chebi/CHEBI:29242"
+  species_1 property "http://identifiers.org/go/GO:0005622"
+  species_15 identity "http://identifiers.org/uniprot/P23900"
+  species_15 property "http://identifiers.org/pato/PATO:0002220"
+  species_11 identity "http://identifiers.org/uniprot/P23900"
+  species_14 identity "http://identifiers.org/uniprot/Q06598"
+  species_4 hypernym "http://identifiers.org/chebi/CHEBI:29242"
+  species_4 property "http://identifiers.org/go/GO:0044437"
+  species_3 hypernym "http://identifiers.org/chebi/CHEBI:29242"
+  species_7 identity "http://identifiers.org/chebi/CHEBI:16856"
+  species_2 version "http://identifiers.org/chebi/CHEBI:29242"
+  species_2 part "http://identifiers.org/chebi/CHEBI:36080"
 end
+
+MODEL1403280000 is "Talemi2014 - Arsenic toxicity and detoxification mechanisms in yeast"
+
+MODEL1403280000 model_entity_is "http://identifiers.org/biomodels.db/MODEL1403280000"
+MODEL1403280000 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000547"
+MODEL1403280000 description "http://identifiers.org/pubmed/24798644"
+MODEL1403280000 hypernym "http://identifiers.org/go/GO:0046685"
+MODEL1403280000 taxon "http://identifiers.org/taxonomy/4932"

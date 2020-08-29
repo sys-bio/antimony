@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Komarova2003_BoneRemodeling()
 
   // Compartments and Species:
@@ -8,9 +8,9 @@ model *Komarova2003_BoneRemodeling()
   substanceOnly species y2 in compartment_;
 
   // Assignment Rules:
-  x1_bar := (beta1/alpha1)^((1 - g22)/gamma)*(beta2/alpha2)^(g21/gamma);
-  x2_bar := (beta1/alpha1)^(g12/gamma)*(beta2/alpha2)^((1 - g11)/gamma);
-  gamma := g12*g21 - (1 - g11)*(1 - g22);
+  x1_bar := (beta1/alpha1)^((1 - g22)/gamma_)*(beta2/alpha2)^(g21/gamma_);
+  gamma_ := g12*g21 - (1 - g11)*(1 - g22);
+  x2_bar := (beta1/alpha1)^(g12/gamma_)*(beta2/alpha2)^((1 - g11)/gamma_);
 
   // Reactions:
   R1:  -> x1; alpha1*x1^g11*x2^g21;
@@ -51,7 +51,7 @@ model *Komarova2003_BoneRemodeling()
   k2 = 0.0017;
 
   // Other declarations:
-  var flag_resorption, flag_formation, gamma;
+  var gamma_, flag_resorption, flag_formation;
   const compartment_, beta1, alpha1, g22, beta2, alpha2, g21, g12, g11, k1;
   const k2;
 
@@ -75,4 +75,23 @@ model *Komarova2003_BoneRemodeling()
   R4 is "Osteoblast removal";
   R5 is "Bone resorption";
   R6 is "Bone formation";
+
+  // CV terms:
+  R1 hypernym "http://identifiers.org/go/GO:0045672"
+  R2 hypernym "http://identifiers.org/go/GO:0045671"
+  R3 hypernym "http://identifiers.org/go/GO:0045669"
+  R4 hypernym "http://identifiers.org/go/GO:0045668"
+  R5 identity "http://identifiers.org/go/GO:0045453"
+  R6 hypernym "http://identifiers.org/go/GO:0001503"
 end
+
+Komarova2003_BoneRemodeling is "Komarova2003_BoneRemodeling"
+
+Komarova2003_BoneRemodeling model_entity_is "http://identifiers.org/biomodels.db/MODEL6029826395"
+Komarova2003_BoneRemodeling model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000148"
+Komarova2003_BoneRemodeling description "http://identifiers.org/pubmed/14499354"
+Komarova2003_BoneRemodeling taxon "http://identifiers.org/taxonomy/7711"
+Komarova2003_BoneRemodeling hypernym "http://identifiers.org/go/GO:0046850"
+Komarova2003_BoneRemodeling property "http://identifiers.org/doid/DOID:11476",
+                                     "http://identifiers.org/doid/DOID:8398",
+                                     "http://identifiers.org/doid/DOID:5408"

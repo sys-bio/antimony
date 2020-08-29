@@ -1,96 +1,75 @@
-// Created by libAntimony v2.8.0
-function function_3(Vs, B, n, K)
-  (Vs*B^n)/(K^n + B^n);
-end
-
-function function_2(V, substrate, Km)
-  (V*substrate)/(Km + substrate);
-end
-
-function function_1(k, mRNA)
-  k*mRNA;
-end
-
-function function_0(vsb, K, m, Bn)
-  (vsb*K^m)/(K^m + Bn^m);
-end
-
-function function_5(length, model_time)
-  ceil(sin((pi*model_time)/ length + 0.001)/2);
-end
-
-
-model *Model_1()
+// Created by libAntimony v2.13.0
+model *Leloup2003_CircClock_LD_REV_ERBalpha()
 
   // Compartments and Species:
   compartment cell;
   species Mb in cell, Bc in cell, Bcp in cell, Bn in cell, Cc in cell, Mc in cell;
   species Ccp in cell, Mp in cell, Pc in cell, Pcp in cell, PCc in cell, PCcp in cell;
-  species PCn in cell, Bnp in cell, PCnp in cell, In_ in cell, Mr in cell;
+  species PCn in cell, Bnp in cell, PCnp in cell, In in cell, Mr in cell;
   species Rc in cell, Rn in cell;
 
   // Assignment Rules:
-  parameter_0000096 := function_5(12, time);
+  parameter_0000096 := ceil(sin(pi*time/12 + 0.001)/2);
   parameter_0000097 := 2.4 + (3 - 2.4)*parameter_0000096;
 
   // Reactions:
-  reaction_0:  => Mb; cell*function_0(reaction_0_vsb, reaction_0_K, reaction_0_m, Rn);
-  reaction_1:  => Bc; cell*function_1(reaction_1_k, Mb);
-  reaction_2: Mb => ; cell*reaction_2_k1*Mb;
-  reaction_3: Bc => Bcp; cell*function_2(reaction_3_V, Bc, reaction_3_Km);
-  reaction_4: Bc -> Bn; cell*(reaction_4_k1*Bc - reaction_4_k2*Bn);
-  reaction_5:  => Cc; cell*function_1(reaction_5_k, Mc);
-  reaction_6: Mc => ; cell*reaction_6_k1*Mc;
-  reaction_7: Cc => Ccp; cell*function_2(reaction_7_V, Cc, reaction_7_Km);
-  reaction_8: Ccp => ; cell*function_2(reaction_8_V, Ccp, reaction_8_Km);
-  reaction_9:  => Mp; cell*function_3(parameter_0000097, Bn, reaction_9_n, reaction_9_K);
-  reaction_10:  => Pc; cell*function_1(reaction_10_k, Mp);
-  reaction_11: Pcp => ; cell*function_2(reaction_11_V, Pcp, reaction_11_Km);
-  reaction_12: Pc => Pcp; cell*function_2(reaction_12_V, Pc, reaction_12_Km);
-  reaction_13: Cc + Pc -> PCc; cell*(reaction_13_k1*Cc*Pc - reaction_13_k2*PCc);
-  reaction_14: PCc => PCcp; cell*function_2(reaction_14_V, PCc, reaction_14_Km);
-  reaction_15: PCcp => ; cell*function_2(reaction_15_V, PCcp, reaction_15_Km);
-  reaction_16: PCc -> PCn; cell*(reaction_16_k1*PCc - reaction_16_k2*PCn);
-  reaction_17: PCnp => ; cell*reaction_17_k1*PCnp;
-  reaction_18: Bcp => ; cell*reaction_18_k1*Bcp;
-  reaction_19: Bnp => ; cell*reaction_19_k1*Bnp;
-  reaction_20:  => Mc; cell*function_3(reaction_20_Vs, Bn, reaction_20_n, reaction_20_K);
-  reaction_21: PCn => PCnp; cell*function_2(reaction_21_V, PCn, reaction_21_Km);
-  reaction_22: Mp => ; cell*reaction_22_k1*Mp;
-  reaction_23: PCn + Bn -> In_; cell*(reaction_23_k1*PCn*Bn - reaction_23_k2*In_);
-  reaction_24: Mb => ; cell*function_2(reaction_24_V, Mb, reaction_24_Km);
-  reaction_25: Mc => ; cell*function_2(reaction_25_V, Mc, reaction_25_Km);
-  reaction_26: Mp => ; cell*function_2(reaction_26_V, Mp, reaction_26_Km);
-  reaction_27: Pc => ; cell*reaction_27_k1*Pc;
-  reaction_28: Cc => ; cell*reaction_28_k1*Cc;
-  reaction_29: Pcp => ; cell*reaction_29_k1*Pcp;
-  reaction_30: Ccp => ; cell*reaction_30_k1*Ccp;
-  reaction_31: PCcp => ; cell*reaction_31_k1*PCcp;
-  reaction_32: PCc => ; cell*reaction_32_k1*PCc;
-  reaction_33: PCnp => ; cell*function_2(reaction_33_V, PCnp, reaction_33_Km);
-  reaction_34: Bc => ; cell*reaction_34_k1*Bc;
-  reaction_35: Bcp => ; cell*function_2(reaction_35_V, Bcp, reaction_35_Km);
-  reaction_36: Bn => Bnp; cell*function_2(reaction_36_V, Bn, reaction_36_Km);
-  reaction_37: Bnp => ; cell*function_2(reaction_37_V, Bnp, reaction_37_Km);
-  reaction_38: In_ => ; cell*reaction_38_k1*In_;
-  reaction_39: In_ => ; cell*function_2(reaction_39_V, In_, reaction_39_Km);
-  reaction_40: Bn => ; cell*reaction_40_k1*Bn;
-  reaction_41: Bcp => Bc; cell*function_2(reaction_41_V, Bcp, reaction_41_Km);
-  reaction_42: Bnp => Bn; cell*function_2(reaction_42_V, Bnp, reaction_42_Km);
-  reaction_43: Ccp => Cc; cell*function_2(reaction_43_V, Ccp, reaction_43_Km);
-  reaction_44: Pcp => Pc; cell*function_2(reaction_44_V, Pcp, reaction_44_Km);
-  reaction_45: PCnp => PCn; cell*function_2(reaction_45_V, PCnp, reaction_45_Km);
-  reaction_46: PCn => ; cell*reaction_46_k1*PCn;
-  reaction_47: PCcp => PCc; cell*function_2(reaction_47_V, PCcp, reaction_47_Km);
-  reaction_48:  => Mr; cell*function_3(reaction_48_Vs, Bn, reaction_48_n, reaction_48_K);
-  reaction_49: Mr => ; cell*reaction_49_k1*Mr;
-  reaction_50: Mr => ; cell*function_2(reaction_50_V, Mr, reaction_50_Km);
-  reaction_51:  => Rc; cell*function_1(reaction_51_k, Mr);
-  reaction_52: Rc -> Rn; cell*(reaction_52_k1*Rc - reaction_52_k2*Rn);
-  reaction_53: Rc => ; cell*function_2(reaction_53_V, Rc, reaction_53_Km);
-  reaction_54: Rc => ; cell*reaction_54_k1*Rc;
-  reaction_55: Rn => ; cell*function_2(reaction_55_V, Rn, reaction_55_Km);
-  reaction_56: Rn => ; cell*reaction_56_k1*Rn;
+  reaction_0:  => Mb; cell*(vsB*reaction_0_K^m/(reaction_0_K^m + Rn^m));
+  reaction_1:  => Bc; cell*ksB*Mb;
+  reaction_2: Mb => ; cell*kdmb*Mb;
+  reaction_3: Bc => Bcp; cell*(V1B*Bc/(Kp + Bc));
+  reaction_4: Bc -> Bn; cell*(k5*Bc - k6*Bn);
+  reaction_5:  => Cc; cell*ksC*Mc;
+  reaction_6: Mc => ; cell*kdmc*Mc;
+  reaction_7: Cc => Ccp; cell*(V1C*Cc/(Kp + Cc));
+  reaction_8: Ccp => ; cell*(vdCC*Ccp/(Kd + Ccp));
+  reaction_9:  => Mp; cell*(parameter_0000097*Bn^n/(KAP^n + Bn^n));
+  reaction_10:  => Pc; cell*ksP*Mp;
+  reaction_11: Pcp => ; cell*(VdPC*Pcp/(Kd + Pcp));
+  reaction_12: Pc => Pcp; cell*(V1P*Pc/(Kp + Pc));
+  reaction_13: Cc + Pc -> PCc; cell*(k3*Cc*Pc - k4*PCc);
+  reaction_14: PCc => PCcp; cell*(V1PC*PCc/(Kp + PCc));
+  reaction_15: PCcp => ; cell*(vdPCC*PCcp/(Kd + PCcp));
+  reaction_16: PCc -> PCn; cell*(k1*PCc - k2*PCn);
+  reaction_17: PCnp => ; cell*kdn*PCnp;
+  reaction_18: Bcp => ; cell*kdn*Bcp;
+  reaction_19: Bnp => ; cell*kdn*Bnp;
+  reaction_20:  => Mc; cell*(vsC*Bn^n/(KAC^n + Bn^n));
+  reaction_21: PCn => PCnp; cell*(V3PC*PCn/(Kp + PCn));
+  reaction_22: Mp => ; cell*kdmp*Mp;
+  reaction_23: PCn + Bn -> In; cell*(k7*PCn*Bn - k8*In);
+  reaction_24: Mb => ; cell*(vmB*Mb/(KmB + Mb));
+  reaction_25: Mc => ; cell*(vmC*Mc/(KmC + Mc));
+  reaction_26: Mp => ; cell*(vmP*Mp/(KmP + Mp));
+  reaction_27: Pc => ; cell*kdn*Pc;
+  reaction_28: Cc => ; cell*kdnC*Cc;
+  reaction_29: Pcp => ; cell*kdn*Pcp;
+  reaction_30: Ccp => ; cell*kdn*Ccp;
+  reaction_31: PCcp => ; cell*kdn*PCcp;
+  reaction_32: PCc => ; cell*kdn*PCc;
+  reaction_33: PCnp => ; cell*(vdPCN*PCnp/(Kd + PCnp));
+  reaction_34: Bc => ; cell*kdn*Bc;
+  reaction_35: Bcp => ; cell*(vdBC*Bcp/(Kd + Bcp));
+  reaction_36: Bn => Bnp; cell*(V3B*Bn/(Kp + Bn));
+  reaction_37: Bnp => ; cell*(vdBN*Bnp/(Kd + Bnp));
+  reaction_38: In => ; cell*kdn*In;
+  reaction_39: In => ; cell*(vdIN*In/(Kd + In));
+  reaction_40: Bn => ; cell*kdn*Bn;
+  reaction_41: Bcp => Bc; cell*(V2B*Bcp/(Kdp + Bcp));
+  reaction_42: Bnp => Bn; cell*(V4B*Bnp/(Kdp + Bnp));
+  reaction_43: Ccp => Cc; cell*(V2C*Ccp/(Kdp + Ccp));
+  reaction_44: Pcp => Pc; cell*(V2P*Pcp/(Kdp + Pcp));
+  reaction_45: PCnp => PCn; cell*(V4PC*PCnp/(Kdp + PCnp));
+  reaction_46: PCn => ; cell*kdn*PCn;
+  reaction_47: PCcp => PCc; cell*(V2PC*PCcp/(Kdp + PCcp));
+  reaction_48:  => Mr; cell*(vsR*Bn^h/(KAR^h + Bn^h));
+  reaction_49: Mr => ; cell*kdmr*Mr;
+  reaction_50: Mr => ; cell*(vmR*Mr/(kmR + Mr));
+  reaction_51:  => Rc; cell*ksR*Mr;
+  reaction_52: Rc -> Rn; cell*(k9*Rc - k10*Rn);
+  reaction_53: Rc => ; cell*(vdRC*Rc/(Kd + Rc));
+  reaction_54: Rc => ; cell*kdn*Rc;
+  reaction_55: Rn => ; cell*(vdRN*Rn/(Kd + Rn));
+  reaction_56: Rn => ; cell*kdn*Rn;
 
   // Species initializations:
   Mb = 0;
@@ -108,7 +87,7 @@ model *Model_1()
   PCn = 0;
   Bnp = 0;
   PCnp = 0;
-  In_ = 0;
+  In = 0;
   Mr = 0;
   Rc = 0;
   Rn = 0;
@@ -117,110 +96,83 @@ model *Model_1()
   cell = 1;
 
   // Variable initializations:
-  reaction_0_vsb = 1.8;
+  vmP = 2.2;
+  kdmp = 0.02;
+  vsC = 2.2;
+  vmC = 2;
+  kdmc = 0.02;
+  vsB = 1.8;
+  vmB = 1.3;
+  kdmb = 0.02;
+  ksP = 1.2;
+  V1P = 9.6;
+  V2P = 0.6;
+  k4 = 0.4;
+  k3 = 0.8;
+  kdn = 0.02;
+  ksC = 3.2;
+  V1C = 1.2;
+  V2C = 0.2;
+  kdnC = 0.02;
+  KmB = 0.4;
+  Kp = 1.006;
+  Kdp = 0.1;
+  VdPC = 3.4;
+  vdCC = 1.4;
+  Kd = 0.3;
+  V1PC = 2.4;
+  V2PC = 0.2;
+  k2 = 0.4;
+  k1 = 0.8;
+  V3PC = 2.4;
+  V4PC = 0.2;
+  k7 = 1;
+  k8 = 0.2;
+  vdPCC = 1.4;
+  vdPCN = 1.4;
+  ksB = 0.32;
+  V1B = 1.4;
+  V2B = 0.2;
+  k5 = 0.8;
+  k6 = 0.4;
+  vdBC = 3;
+  V3B = 1.4;
+  V4B = 0.4;
+  vdBN = 3;
+  vdIN = 1.6;
+  vsR = 1.6;
+  KAR = 0.6;
+  vmR = 1.6;
+  kmR = 0.4;
+  kdmr = 0.02;
+  ksR = 1.7;
+  k9 = 0.8;
+  k10 = 0.4;
+  vdRC = 4.4;
+  vdRN = 0.8;
+  KAP = 0.6;
+  KAC = 0.6;
+  KmP = 0.3;
+  KmC = 0.4;
+  h = 2;
+  m = 2;
+  n = 2;
   reaction_0_K = 1;
-  reaction_0_m = 2;
-  reaction_1_k = 0.32;
-  reaction_2_k1 = 0.02;
-  reaction_3_V = 1.4;
-  reaction_3_Km = 1.006;
-  reaction_4_k1 = 0.8;
-  reaction_4_k2 = 0.4;
-  reaction_5_k = 3.2;
-  reaction_6_k1 = 0.02;
-  reaction_7_V = 1.2;
-  reaction_7_Km = 1.006;
-  reaction_8_V = 1.4;
-  reaction_8_Km = 0.3;
-  reaction_9_n = 2;
-  reaction_9_K = 0.6;
-  reaction_10_k = 1.2;
-  reaction_11_V = 3.4;
-  reaction_11_Km = 0.3;
-  reaction_12_V = 9.6;
-  reaction_12_Km = 1.006;
-  reaction_13_k1 = 0.8;
-  reaction_13_k2 = 0.4;
-  reaction_14_V = 2.4;
-  reaction_14_Km = 1.006;
-  reaction_15_V = 1.4;
-  reaction_15_Km = 0.3;
-  reaction_16_k1 = 0.8;
-  reaction_16_k2 = 0.4;
-  reaction_17_k1 = 0.02;
-  reaction_18_k1 = 0.02;
-  reaction_19_k1 = 0.02;
-  reaction_20_Vs = 2.2;
-  reaction_20_n = 2;
-  reaction_20_K = 0.6;
-  reaction_21_V = 2.4;
-  reaction_21_Km = 1.006;
-  reaction_22_k1 = 0.02;
-  reaction_23_k1 = 1;
-  reaction_23_k2 = 0.2;
-  reaction_24_V = 1.3;
-  reaction_24_Km = 0.4;
-  reaction_25_V = 2;
-  reaction_25_Km = 0.4;
-  reaction_26_V = 2.2;
-  reaction_26_Km = 0.3;
-  reaction_27_k1 = 0.02;
-  reaction_28_k1 = 0.02;
-  reaction_29_k1 = 0.02;
-  reaction_30_k1 = 0.02;
-  reaction_31_k1 = 0.02;
-  reaction_32_k1 = 0.02;
-  reaction_33_V = 1.4;
-  reaction_33_Km = 0.3;
-  reaction_34_k1 = 0.02;
-  reaction_35_V = 3;
-  reaction_35_Km = 0.3;
-  reaction_36_V = 1.4;
-  reaction_36_Km = 1.006;
-  reaction_37_V = 3;
-  reaction_37_Km = 0.3;
-  reaction_38_k1 = 0.02;
-  reaction_39_V = 1.6;
-  reaction_39_Km = 0.3;
-  reaction_40_k1 = 0.02;
-  reaction_41_V = 0.2;
-  reaction_41_Km = 0.1;
-  reaction_42_V = 0.4;
-  reaction_42_Km = 0.1;
-  reaction_43_V = 0.2;
-  reaction_43_Km = 0.1;
-  reaction_44_V = 0.6;
-  reaction_44_Km = 0.1;
-  reaction_45_V = 0.2;
-  reaction_45_Km = 0.1;
-  reaction_46_k1 = 0.02;
-  reaction_47_V = 0.2;
-  reaction_47_Km = 0.1;
-  reaction_48_Vs = 1.6;
-  reaction_48_n = 2;
-  reaction_48_K = 0.6;
-  reaction_49_k1 = 0.02;
-  reaction_50_V = 1.6;
-  reaction_50_Km = 0.4;
-  reaction_51_k = 1.7;
-  reaction_52_k1 = 0.8;
-  reaction_52_k2 = 0.4;
-  reaction_53_V = 4.4;
-  reaction_53_Km = 0.3;
-  reaction_54_k1 = 0.02;
-  reaction_55_V = 0.8;
-  reaction_55_Km = 0.3;
-  reaction_56_k1 = 0.02;
 
   // Other declarations:
   var parameter_0000096, parameter_0000097;
-  const cell;
+  const cell, vmP, kdmp, vsC, vmC, kdmc, vsB, vmB, kdmb, ksP, V1P, V2P, k4;
+  const k3, kdn, ksC, V1C, V2C, kdnC, KmB, Kp, Kdp, VdPC, vdCC, Kd, V1PC;
+  const V2PC, k2, k1, V3PC, V4PC, k7, k8, vdPCC, vdPCN, ksB, V1B, V2B, k5;
+  const k6, vdBC, V3B, V4B, vdBN, vdIN, vsR, KAR, vmR, kmR, kdmr, ksR, k9;
+  const k10, vdRC, vdRN, KAP, KAC, KmP, KmC, h, m, n;
 
   // Unit definitions:
   unit time_unit = 3600 second;
   unit substance = 1e-9 mole;
 
   // Display Names:
+  time_unit is "time";
   parameter_0000096 is "LD";
   parameter_0000097 is "vsp";
   reaction_0 is "Mb synthesized";
@@ -280,4 +232,125 @@ model *Model_1()
   reaction_54 is "Rc nonspecific degradation";
   reaction_55 is "Rn specific degradation";
   reaction_56 is "Rn nonspecific degradation";
+
+  // CV terms:
+  cell hypernym "http://identifiers.org/go/GO:0005623"
+  Mb encodement "http://identifiers.org/uniprot/O00327"
+  Mb hypernym "http://identifiers.org/chebi/CHEBI:33699"
+  Bc version "http://identifiers.org/uniprot/O00327"
+  Bcp version "http://identifiers.org/uniprot/O00327"
+  Bn version "http://identifiers.org/uniprot/O00327"
+  Cc version "http://identifiers.org/uniprot/Q8IV71"
+  Cc version "http://identifiers.org/uniprot/Q16526"
+  Mc encodement "http://identifiers.org/uniprot/Q16526"
+  Mc encodement "http://identifiers.org/uniprot/Q8IV71"
+  Mc hypernym "http://identifiers.org/chebi/CHEBI:33699"
+  Ccp version "http://identifiers.org/uniprot/Q8IV71"
+  Ccp version "http://identifiers.org/uniprot/Q16526"
+  Mp encodement "http://identifiers.org/uniprot/P56645"
+  Mp encodement "http://identifiers.org/uniprot/O15055"
+  Mp encodement "http://identifiers.org/uniprot/O15534"
+  Mp hypernym "http://identifiers.org/chebi/CHEBI:33699"
+  Pc version "http://identifiers.org/uniprot/O15055"
+  Pc version "http://identifiers.org/uniprot/O15534"
+  Pc version "http://identifiers.org/uniprot/P56645"
+  Pcp version "http://identifiers.org/uniprot/O15534"
+  Pcp version "http://identifiers.org/uniprot/O15055"
+  Pcp version "http://identifiers.org/uniprot/P56645"
+  PCc part "http://identifiers.org/uniprot/Q16526"
+  PCc part "http://identifiers.org/uniprot/O15534"
+  PCc part "http://identifiers.org/uniprot/Q8IV71"
+  PCc part "http://identifiers.org/uniprot/P56645"
+  PCcp part "http://identifiers.org/uniprot/P56645"
+  PCcp part "http://identifiers.org/uniprot/O15534"
+  PCcp part "http://identifiers.org/uniprot/Q16526"
+  PCcp part "http://identifiers.org/uniprot/Q8IV71"
+  PCn part "http://identifiers.org/uniprot/Q8IV71"
+  PCn part "http://identifiers.org/uniprot/Q16526"
+  PCn part "http://identifiers.org/uniprot/P56645"
+  PCn part "http://identifiers.org/uniprot/O15534"
+  Bnp version "http://identifiers.org/uniprot/O00327"
+  PCnp part "http://identifiers.org/uniprot/P56645"
+  PCnp part "http://identifiers.org/uniprot/Q8IV71"
+  PCnp part "http://identifiers.org/uniprot/Q16526"
+  PCnp part "http://identifiers.org/uniprot/O15534"
+  Mr encodement "http://identifiers.org/uniprot/Q6EEZ7"
+  Mr hypernym "http://identifiers.org/chebi/CHEBI:33699"
+  Rc version "http://identifiers.org/uniprot/Q6EEZ7"
+  Rn version "http://identifiers.org/uniprot/Q6EEZ7"
+  reaction_0 hypernym "http://identifiers.org/go/GO:0045892"
+  reaction_1 hypernym "http://identifiers.org/go/GO:0006412"
+  reaction_2 hypernym "http://identifiers.org/go/GO:0044257"
+  reaction_3 hypernym "http://identifiers.org/go/GO:0006468"
+  reaction_4 hypernym "http://identifiers.org/go/GO:0000060"
+  reaction_5 hypernym "http://identifiers.org/go/GO:0006412"
+  reaction_6 hypernym "http://identifiers.org/go/GO:0044257"
+  reaction_7 hypernym "http://identifiers.org/go/GO:0006468"
+  reaction_8 hypernym "http://identifiers.org/go/GO:0008233"
+  reaction_9 hypernym "http://identifiers.org/go/GO:0045893"
+  reaction_10 hypernym "http://identifiers.org/go/GO:0006412"
+  reaction_11 hypernym "http://identifiers.org/go/GO:0008233"
+  reaction_12 hypernym "http://identifiers.org/go/GO:0006468"
+  reaction_13 hypernym "http://identifiers.org/go/GO:0043623"
+  reaction_14 hypernym "http://identifiers.org/go/GO:0006468"
+  reaction_15 hypernym "http://identifiers.org/go/GO:0008233"
+  reaction_16 hypernym "http://identifiers.org/go/GO:0000060"
+  reaction_17 hypernym "http://identifiers.org/go/GO:0044257"
+  reaction_18 hypernym "http://identifiers.org/go/GO:0044257"
+  reaction_19 hypernym "http://identifiers.org/go/GO:0044257"
+  reaction_20 parthood "http://identifiers.org/go/GO:0045893"
+  reaction_21 hypernym "http://identifiers.org/go/GO:0006468"
+  reaction_22 hypernym "http://identifiers.org/go/GO:0044257"
+  reaction_23 hypernym "http://identifiers.org/go/GO:0043623"
+  reaction_24 hypernym "http://identifiers.org/go/GO:0008233"
+  reaction_25 hypernym "http://identifiers.org/go/GO:0008233"
+  reaction_26 hypernym "http://identifiers.org/go/GO:0008233"
+  reaction_27 hypernym "http://identifiers.org/go/GO:0044257"
+  reaction_28 hypernym "http://identifiers.org/go/GO:0044257"
+  reaction_29 hypernym "http://identifiers.org/go/GO:0044257"
+  reaction_30 hypernym "http://identifiers.org/go/GO:0044257"
+  reaction_31 hypernym "http://identifiers.org/go/GO:0044257"
+  reaction_32 hypernym "http://identifiers.org/go/GO:0044257"
+  reaction_33 hypernym "http://identifiers.org/go/GO:0008233"
+  reaction_34 hypernym "http://identifiers.org/go/GO:0044257"
+  reaction_35 hypernym "http://identifiers.org/go/GO:0008233"
+  reaction_36 hypernym "http://identifiers.org/go/GO:0006468"
+  reaction_37 hypernym "http://identifiers.org/go/GO:0008233"
+  reaction_38 hypernym "http://identifiers.org/go/GO:0044257"
+  reaction_39 hypernym "http://identifiers.org/go/GO:0008233"
+  reaction_40 hypernym "http://identifiers.org/go/GO:0044257"
+  reaction_41 hypernym "http://identifiers.org/go/GO:0006470"
+  reaction_42 hypernym "http://identifiers.org/go/GO:0006470"
+  reaction_43 parthood "http://identifiers.org/go/GO:0006470"
+  reaction_44 hypernym "http://identifiers.org/go/GO:0006470"
+  reaction_45 hypernym "http://identifiers.org/go/GO:0006470"
+  reaction_46 hypernym "http://identifiers.org/go/GO:0044257"
+  reaction_47 hypernym "http://identifiers.org/go/GO:0006470"
+  reaction_48 parthood "http://identifiers.org/go/GO:0045893"
+  reaction_49 hypernym "http://identifiers.org/go/GO:0044257"
+  reaction_50 hypernym "http://identifiers.org/go/GO:0008233"
+  reaction_51 hypernym "http://identifiers.org/go/GO:0006412"
+  reaction_52 hypernym "http://identifiers.org/go/GO:0000060"
+  reaction_53 hypernym "http://identifiers.org/go/GO:0008233"
+  reaction_54 hypernym "http://identifiers.org/go/GO:0044257"
+  reaction_55 hypernym "http://identifiers.org/go/GO:0008233"
+  reaction_56 hypernym "http://identifiers.org/go/GO:0044257"
 end
+
+Leloup2003_CircClock_LD_REV_ERBalpha is "Leloup2003_CircClock_LD_REV-ERBalpha"
+
+Leloup2003_CircClock_LD_REV_ERBalpha origin "http://identifiers.org/kegg.pathway/hsa04710",
+                                            "http://identifiers.org/biomodels.db/BIOMD0000000083",
+                                            "http://identifiers.org/biomodels.db/MODEL4710748444",
+                                            "http://identifiers.org/go/GO:0042752",
+                                            "http://identifiers.org/taxonomy/40674",
+                                            "http://identifiers.org/biomodels.db/BIOMD0000000021"
+Leloup2003_CircClock_LD_REV_ERBalpha model_entity_is "http://identifiers.org/biomodels.db/MODEL4710748444",
+                                                     "http://identifiers.org/biomodels.db/BIOMD0000000083"
+Leloup2003_CircClock_LD_REV_ERBalpha version "http://identifiers.org/kegg.pathway/hsa04710"
+Leloup2003_CircClock_LD_REV_ERBalpha identity "http://identifiers.org/biomodels.db/BIOMD0000000083"
+Leloup2003_CircClock_LD_REV_ERBalpha identity "http://identifiers.org/biomodels.db/MODEL4710748444"
+Leloup2003_CircClock_LD_REV_ERBalpha hypernym "http://identifiers.org/go/GO:0042752"
+Leloup2003_CircClock_LD_REV_ERBalpha taxon "http://identifiers.org/taxonomy/40674"
+Leloup2003_CircClock_LD_REV_ERBalpha description "http://identifiers.org/biomodels.db/BIOMD0000000021",
+                                                 "http://identifiers.org/pubmed/12775757"

@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *MODEL1311290000()
 
   // Compartments and Species:
@@ -11,17 +11,17 @@ model *MODEL1311290000()
 
   // Assignment Rules:
   NADP := sum_NADP - NADPH;
-  G6P := 0.9 + piecewise((44.1*time)/(48 + time + 0.45*time^2), time >= 0, 0);
+  G6P := 0.9 + piecewise(44.1*time/(48 + time + 0.45*time^2), time >= 0, 0);
 
   // Reactions:
-  GND: P6G + $NADP => Ru5P + NADPH; cell*((GND1*GND_kcat_GND1*P6G*NADP)/(GND_Kp6g_GND1*GND_Knadp_GND1)/((1 + P6G/GND_Kp6g_GND1 + Ru5P/GND_Kru5p_GND1)*(1 + NADP/GND_Knadp_GND1 + NADPH/GND_Knadph_GND1)) + (GND2*GND_kcat_GND2*P6G*NADP)/((1 + P6G/GND_Kp6g_GND2 + Ru5P/GND_Kru5p_GND2)*(1 + NADP/GND_Knadp_GND2 + NADPH/GND_Knadph_GND2)));
-  RKI: Ru5P -> R5P; (cell*RKI1*RKI_kcat*(Ru5P - R5P/RKI_Keq))/RKI_Kru5p/(1 + Ru5P/RKI_Kru5p + R5P/RKI_Kr5p);
-  RPE: Ru5P -> X5P; (cell*RPE1*RPE_kcat*(Ru5P - X5P/RPE_Keq))/RPE_Kru5p/(1 + Ru5P/RPE_Kru5p + X5P/RPE_Kx5p);
-  SOL: G6L => P6G; (cell*SOL3*SOL_kcat*G6L)/SOL_Kg6l/(1 + G6L/SOL_Kg6l + P6G/SOL_Kp6g);
-  TAL: $GAP + S7P -> $F6P + E4P; cell*((TAL1*TAL_kcat_TAL1*(GAP*S7P - (F6P*E4P)/TAL_Keq))/(TAL_Kgap_TAL1*TAL_Ks7p_TAL1)/((1 + GAP/TAL_Kgap_TAL1 + F6P/TAL_Kf6p_TAL1)*(1 + S7P/TAL_Ks7p_TAL1 + E4P/TAL_Ke4p_TAL1)) + (NQM1*TAL_kcat_NQM1*(GAP*S7P - (F6P*E4P)/TAL_Keq))/(TAL_Kgap_NQM1*TAL_Ks7p_NQM1)/((1 + GAP/TAL_Kgap_NQM1 + F6P/TAL_Kf6p_NQM1)*(1 + S7P/TAL_Ks7p_NQM1 + E4P/TAL_Ke4p_NQM1)));
-  TKL_E4P: X5P + E4P -> $GAP + $F6P; (cell*TKL1*TKL_E4P_kcat*(X5P*E4P - (GAP*F6P)/TKL_E4P_Keq))/(Kx5p_TAL*Ke4p_TAL)/((1 + X5P/Kx5p_TAL + GAP/Kgap_TAL)*(1 + E4P/Ke4p_TAL + F6P/Kf6p_TAL + R5P/Kr5p_TAL + S7P/Ks7p_TAL));
-  TKL_R5P: X5P + R5P -> $GAP + S7P; (cell*TKL1*TKL_R5P_kcat*(X5P*R5P - (GAP*S7P)/TKL_R5P_Keq))/(Kx5p_TAL*Kr5p_TAL)/((1 + X5P/Kx5p_TAL + GAP/Kgap_TAL)*(1 + E4P/Ke4p_TAL + F6P/Kf6p_TAL + R5P/Kr5p_TAL + S7P/Ks7p_TAL));
-  ZWF: $G6P + $NADP => G6L + NADPH; (cell*ZWF1*ZWF_kcat*G6P*NADP)/(ZWF_Kg6p*ZWF_Knadp)/((1 + G6P/ZWF_Kg6p + G6L/ZWF_Kg6l)*(1 + NADP/ZWF_Knadp + NADPH/ZWF_Knadph));
+  GND: P6G + $NADP => Ru5P + NADPH; cell*(GND1*GND_kcat_GND1*P6G*NADP/(GND_Kp6g_GND1*GND_Knadp_GND1)/((1 + P6G/GND_Kp6g_GND1 + Ru5P/GND_Kru5p_GND1)*(1 + NADP/GND_Knadp_GND1 + NADPH/GND_Knadph_GND1)) + GND2*GND_kcat_GND2*P6G*NADP/((1 + P6G/GND_Kp6g_GND2 + Ru5P/GND_Kru5p_GND2)*(1 + NADP/GND_Knadp_GND2 + NADPH/GND_Knadph_GND2)));
+  RKI: Ru5P -> R5P; cell*RKI1*RKI_kcat*(Ru5P - R5P/RKI_Keq)/RKI_Kru5p/(1 + Ru5P/RKI_Kru5p + R5P/RKI_Kr5p);
+  RPE: Ru5P -> X5P; cell*RPE1*RPE_kcat*(Ru5P - X5P/RPE_Keq)/RPE_Kru5p/(1 + Ru5P/RPE_Kru5p + X5P/RPE_Kx5p);
+  SOL: G6L => P6G; cell*SOL3*SOL_kcat*G6L/SOL_Kg6l/(1 + G6L/SOL_Kg6l + P6G/SOL_Kp6g);
+  TAL: $GAP + S7P -> $F6P + E4P; cell*(TAL1*TAL_kcat_TAL1*(GAP*S7P - F6P*E4P/TAL_Keq)/(TAL_Kgap_TAL1*TAL_Ks7p_TAL1)/((1 + GAP/TAL_Kgap_TAL1 + F6P/TAL_Kf6p_TAL1)*(1 + S7P/TAL_Ks7p_TAL1 + E4P/TAL_Ke4p_TAL1)) + NQM1*TAL_kcat_NQM1*(GAP*S7P - F6P*E4P/TAL_Keq)/(TAL_Kgap_NQM1*TAL_Ks7p_NQM1)/((1 + GAP/TAL_Kgap_NQM1 + F6P/TAL_Kf6p_NQM1)*(1 + S7P/TAL_Ks7p_NQM1 + E4P/TAL_Ke4p_NQM1)));
+  TKL_E4P: X5P + E4P -> $GAP + $F6P; cell*TKL1*TKL_E4P_kcat*(X5P*E4P - GAP*F6P/TKL_E4P_Keq)/(Kx5p_TAL*Ke4p_TAL)/((1 + X5P/Kx5p_TAL + GAP/Kgap_TAL)*(1 + E4P/Ke4p_TAL + F6P/Kf6p_TAL + R5P/Kr5p_TAL + S7P/Ks7p_TAL));
+  TKL_R5P: X5P + R5P -> $GAP + S7P; cell*TKL1*TKL_R5P_kcat*(X5P*R5P - GAP*S7P/TKL_R5P_Keq)/(Kx5p_TAL*Kr5p_TAL)/((1 + X5P/Kx5p_TAL + GAP/Kgap_TAL)*(1 + E4P/Ke4p_TAL + F6P/Kf6p_TAL + R5P/Kr5p_TAL + S7P/Ks7p_TAL));
+  ZWF: $G6P + $NADP => G6L + NADPH; cell*ZWF1*ZWF_kcat*G6P*NADP/(ZWF_Kg6p*ZWF_Knadp)/((1 + G6P/ZWF_Kg6p + G6L/ZWF_Kg6l)*(1 + NADP/ZWF_Knadp + NADPH/ZWF_Knadph));
   NADPH_oxidase: NADPH => $NADP; cell*NADPH_oxidase_k*NADPH;
   E4P_sink: E4P => ; cell*E4P_sink_k*E4P;
   R5P_sink: R5P => ; cell*R5P_sink_k*R5P;
@@ -173,4 +173,111 @@ model *MODEL1311290000()
   NADPH_oxidase is "NADPH oxidase";
   E4P_sink is "E4P sink";
   R5P_sink is "R5P sink";
+
+  // SBO terms:
+  cell.sboTerm = 290
+  E4P.sboTerm = 247
+  G6L.sboTerm = 247
+  NADPH.sboTerm = 247
+  P6G.sboTerm = 247
+  R5P.sboTerm = 247
+  Ru5P.sboTerm = 247
+  S7P.sboTerm = 247
+  X5P.sboTerm = 247
+  NADP.sboTerm = 247
+  G6P.sboTerm = 247
+  F6P.sboTerm = 247
+  GAP.sboTerm = 247
+  GND1.sboTerm = 252
+  GND2.sboTerm = 252
+  NQM1.sboTerm = 252
+  RKI1.sboTerm = 252
+  RPE1.sboTerm = 252
+  SOL3.sboTerm = 252
+  TAL1.sboTerm = 252
+  TKL1.sboTerm = 252
+  ZWF1.sboTerm = 252
+  GND.sboTerm = 176
+  RKI.sboTerm = 176
+  RPE.sboTerm = 176
+  SOL.sboTerm = 176
+  TAL.sboTerm = 176
+  TKL_E4P.sboTerm = 176
+  TKL_R5P.sboTerm = 176
+  ZWF.sboTerm = 176
+  NADPH_oxidase.sboTerm = 176
+  E4P_sink.sboTerm = 176
+  R5P_sink.sboTerm = 176
+
+  // CV terms:
+  cell identity "http://identifiers.org/go/GO:0005737"
+  E4P identity "http://identifiers.org/chebi/CHEBI:16897",
+               "http://identifiers.org/kegg.compound/C00279"
+  G6L identity "http://identifiers.org/chebi/CHEBI:57955",
+               "http://identifiers.org/kegg.compound/C01236"
+  NADPH identity "http://identifiers.org/chebi/CHEBI:57783",
+                 "http://identifiers.org/kegg.compound/C00005"
+  P6G identity "http://identifiers.org/chebi/CHEBI:58759",
+               "http://identifiers.org/kegg.compound/C00345"
+  R5P identity "http://identifiers.org/chebi/CHEBI:18189",
+               "http://identifiers.org/kegg.compound/C03736"
+  Ru5P identity "http://identifiers.org/chebi/CHEBI:58121",
+                "http://identifiers.org/kegg.compound/C00199"
+  S7P identity "http://identifiers.org/chebi/CHEBI:57483",
+               "http://identifiers.org/kegg.compound/C05382"
+  X5P identity "http://identifiers.org/chebi/CHEBI:57737",
+               "http://identifiers.org/kegg.compound/C00231"
+  NADP identity "http://identifiers.org/chebi/CHEBI:58349",
+                "http://identifiers.org/kegg.compound/C00006"
+  G6P identity "http://identifiers.org/chebi/CHEBI:14314",
+               "http://identifiers.org/kegg.compound/C00092"
+  F6P identity "http://identifiers.org/chebi/CHEBI:57579",
+               "http://identifiers.org/kegg.compound/C00085"
+  GAP identity "http://identifiers.org/chebi/CHEBI:58027",
+               "http://identifiers.org/kegg.compound/C00661"
+  GND1 identity "http://identifiers.org/uniprot/P38720"
+  GND1 encoder "http://identifiers.org/sgd/S000001226",
+               "http://identifiers.org/kegg.genes/sce:YHR183W"
+  GND2 identity "http://identifiers.org/uniprot/P53319"
+  GND2 encoder "http://identifiers.org/sgd/S000003488",
+               "http://identifiers.org/kegg.genes/sce:YGR256W"
+  NQM1 identity "http://identifiers.org/uniprot/P53228"
+  NQM1 encoder "http://identifiers.org/sgd/S000003275",
+               "http://identifiers.org/kegg.genes/sce:YGR043C"
+  RKI1 identity "http://identifiers.org/uniprot/Q12189"
+  RKI1 encoder "http://identifiers.org/sgd/S000005621",
+               "http://identifiers.org/kegg.genes/sce:YOR095C"
+  RPE1 identity "http://identifiers.org/uniprot/P46969"
+  RPE1 encoder "http://identifiers.org/sgd/S000003657",
+               "http://identifiers.org/kegg.genes/sce:YJL121C"
+  SOL3 encoder "http://identifiers.org/sgd/S000001206",
+               "http://identifiers.org/kegg.genes/sce:YHR163W"
+  SOL3 identity "http://identifiers.org/uniprot/P38858"
+  TAL1 encoder "http://identifiers.org/sgd/S000004346",
+               "http://identifiers.org/kegg.genes/sce:YLR354C"
+  TAL1 identity "http://identifiers.org/uniprot/P15019"
+  TKL1 encoder "http://identifiers.org/sgd/S000006278",
+               "http://identifiers.org/kegg.genes/sce:YPR074C"
+  TKL1 identity "http://identifiers.org/uniprot/P23254"
+  ZWF1 encoder "http://identifiers.org/sgd/S000005185",
+               "http://identifiers.org/kegg.genes/sce:YNL241C"
+  ZWF1 identity "http://identifiers.org/uniprot/P11412"
+  GND identity "http://identifiers.org/ec-code/1.1.1.44"
+  RKI identity "http://identifiers.org/ec-code/5.3.1.6"
+  RPE identity "http://identifiers.org/ec-code/5.1.3.1"
+  SOL identity "http://identifiers.org/ec-code/3.1.1.31"
+  TAL identity "http://identifiers.org/ec-code/2.2.1.2"
+  TKL_E4P identity "http://identifiers.org/ec-code/2.2.1.1"
+  TKL_R5P identity "http://identifiers.org/ec-code/2.2.1.1"
+  ZWF identity "http://identifiers.org/ec-code/1.1.1.49"
 end
+
+MODEL1311290000 is "Messiha2013 - Pentose phosphate pathway model"
+
+MODEL1311290000 model_entity_is "http://identifiers.org/biomodels.db/MODEL1311290000"
+MODEL1311290000 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000502"
+MODEL1311290000 description "http://identifiers.org/doi/10.7287/peerj.preprints.146v2"
+MODEL1311290000 encodement "http://identifiers.org/kegg.pathway/rn00030",
+                           "http://identifiers.org/go/GO:0006098"
+MODEL1311290000 taxon "http://identifiers.org/taxonomy/4932"
+MODEL1311290000 property "http://identifiers.org/mamo/MAMO_0000046"

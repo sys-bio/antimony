@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Scheper1999()
 
   // Compartments and Species:
@@ -13,11 +13,11 @@ model *Scheper1999()
 
   // Species initializations:
   EmptySet = 0;
-  M = 1e-015/compartment_0000004;
-  P = 1e-015/compartment_0000004;
+  M = 1e-15/compartment_0000004;
+  P = 1e-15/compartment_0000004;
 
   // Compartment initializations:
-  compartment_0000004 = 1e-015;
+  compartment_0000004 = 1e-15;
 
   // Variable initializations:
   TC_rM = 1;
@@ -43,4 +43,25 @@ model *Scheper1999()
   TL is "protein production";
   Md is "messenger degradation";
   Pd is "protein degradation";
+
+  // CV terms:
+  compartment_0000004 identity "http://identifiers.org/go/GO:0005737"
+  M hypernym "http://identifiers.org/chebi/CHEBI:33699",
+             "http://identifiers.org/kegg.compound/C00046"
+  P identity "http://identifiers.org/kegg.compound/C00017",
+             "http://identifiers.org/chebi/CHEBI:16541"
+  TC hypernym "http://identifiers.org/go/GO:0009299"
+  TL hypernym "http://identifiers.org/go/GO:0006412"
+  Md hypernym "http://identifiers.org/go/GO:0006402"
+  Pd hypernym "http://identifiers.org/go/GO:0030163"
 end
+
+Scheper1999 is "Scheper1999_CircClock"
+
+Scheper1999 model_entity_is "http://identifiers.org/biomodels.db/MODEL6618241436"
+Scheper1999 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000024"
+Scheper1999 description "http://identifiers.org/pubmed/9870936"
+Scheper1999 taxon "http://identifiers.org/taxonomy/10036",
+                  "http://identifiers.org/taxonomy/7227"
+Scheper1999 identity "http://identifiers.org/kegg.pathway/dme04711"
+Scheper1999 hypernym "http://identifiers.org/go/GO:0042752"

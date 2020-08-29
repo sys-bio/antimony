@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Mayya2005_STATmodule()
 
   // Compartments and Species:
@@ -8,13 +8,13 @@ model *Mayya2005_STATmodule()
   species species_test in sol;
 
   // Assignment Rules:
-  statKinase_sol := piecewise(0.01*sin(0.001571*(-500 + time)), time > 500 && time < 2502.54614894971, 0);
+  statKinase_sol := piecewise(0.01*sin(0.001571*(-500 + time)), (time > 500) && (time < 2502.54614894971), 0);
 
   // Reactions:
-  PstatDimerisation: 2Pstat_sol -> PstatDimer_sol; (PstatDimerisation_Kf_PstatDimerisation*Pstat_sol^2 + -(PstatDimerisation_Kr_PstatDimerisation*PstatDimer_sol))*sol;
+  PstatDimerisation: 2 Pstat_sol -> PstatDimer_sol; (PstatDimerisation_Kf_PstatDimerisation*Pstat_sol^2 + -(PstatDimerisation_Kr_PstatDimerisation*PstatDimer_sol))*sol;
   statDephosphorylation: Pstat_nuc -> stat_nuc; statDephosphorylation_Kcat_dephos*statPhosphatase_nuc*Pstat_nuc*(1/(statDephosphorylation_Km_dephos + Pstat_nuc))*nuc;
   statPhosphorylation: stat_sol -> Pstat_sol + species_test; statPhosphorylation_Kcat_phos*statKinase_sol*stat_sol*(1/(statPhosphorylation_Km_phos + stat_sol))*sol;
-  PstatDimerisationNuc: 2Pstat_nuc -> PstatDimer_nuc; (PstatDimerisationNuc_Kf_PstatDimerisation*Pstat_nuc^2 + -(PstatDimerisationNuc_Kr_PstatDimerisation*PstatDimer_nuc))*nuc;
+  PstatDimerisationNuc: 2 Pstat_nuc -> PstatDimer_nuc; (PstatDimerisationNuc_Kf_PstatDimerisation*Pstat_nuc^2 + -(PstatDimerisationNuc_Kr_PstatDimerisation*PstatDimer_nuc))*nuc;
   PstatDimer__import: PstatDimer_sol -> PstatDimer_nuc; PstatDimer__import_PstatDimer_impMax*PstatDimer_sol*(1/(PstatDimer__import_Kpsd_imp + PstatDimer_sol))*nm;
   stat_export: stat_sol -> stat_nuc; nuc*stat_export_stat_expMax*stat_nuc*(1/(stat_export_Ks_exp + stat_nuc))*nm;
   stat_import: stat_sol -> stat_nuc; nuc*stat_import_stat_impMax*stat_sol*(1/(stat_import_Ks_imp + stat_sol))*nm;
@@ -83,4 +83,34 @@ model *Mayya2005_STATmodule()
 
   // Display Names:
   PstatDimer__import is "PstatDimer_ import";
+
+  // CV terms:
+  nuc identity "http://identifiers.org/go/GO:0005634"
+  sol identity "http://identifiers.org/go/GO:0005576"
+  nm identity "http://identifiers.org/go/GO:0031965"
+  stat_sol hypernym "http://identifiers.org/uniprot/P42224"
+  Pstat_sol hypernym "http://identifiers.org/uniprot/P42224"
+  PstatDimer_sol hypernym "http://identifiers.org/uniprot/P42224"
+  PstatDimer_nuc hypernym "http://identifiers.org/uniprot/P42224"
+  stat_nuc hypernym "http://identifiers.org/uniprot/P42224"
+  Pstat_nuc hypernym "http://identifiers.org/uniprot/P42224"
+  PstatDimerisation hypernym "http://identifiers.org/go/GO:0046983"
+  statDephosphorylation hypernym "http://identifiers.org/go/GO:0006470"
+  statPhosphorylation hypernym "http://identifiers.org/go/GO:0042508"
+  PstatDimerisationNuc hypernym "http://identifiers.org/go/GO:0046983"
+  PstatDimer__import hypernym "http://identifiers.org/go/GO:0007262"
+  stat_import hypernym "http://identifiers.org/go/GO:0007262"
 end
+
+Mayya2005_STATmodule is "Mayya2005_STATmodule"
+
+Mayya2005_STATmodule model_entity_is "http://identifiers.org/biomodels.db/MODEL6095659304"
+Mayya2005_STATmodule model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000167"
+Mayya2005_STATmodule description "http://identifiers.org/pubmed/17091582"
+Mayya2005_STATmodule origin "http://identifiers.org/biomodels.db/BIOMD0000000093",
+                            "http://identifiers.org/biomodels.db/BIOMD0000000094",
+                            "http://identifiers.org/pubmed/12552139",
+                            "http://identifiers.org/pubmed/15240442"
+Mayya2005_STATmodule taxon "http://identifiers.org/taxonomy/131567"
+Mayya2005_STATmodule part "http://identifiers.org/kegg.pathway/hsa04630"
+Mayya2005_STATmodule hypernym "http://identifiers.org/go/GO:0042509"

@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Ratushny2012_ASSURE_I()
 
   // Compartments and Species:
@@ -6,13 +6,13 @@ model *Ratushny2012_ASSURE_I()
   species P2 in univ, Target in univ;
 
   // Assignment Rules:
-  dsp1ksp := Ksp/2*((1 + (s + P1)/Ksp) - ((1 + (s + P1)/Ksp)^2 - (4*s*P1)/Ksp^2)^0.5);
-  dsp1p2kd := Kd/2*((1 + (dsp1ksp + P2*univ)/Kd) - ((1 + (dsp1ksp + P2*univ)/Kd)^2 - (4*dsp1ksp*P2*univ)/Kd^2)^0.5);
+  dsp1ksp := (Ksp/2)*(1 + (s + P1)/Ksp - ((1 + (s + P1)/Ksp)^2 - 4*s*P1/Ksp^2)^0.5);
+  dsp1p2kd := (Kd/2)*(1 + (dsp1ksp + P2*univ)/Kd - ((1 + (dsp1ksp + P2*univ)/Kd)^2 - 4*dsp1ksp*P2*univ/Kd^2)^0.5);
 
   // Reactions:
-  ___r1:  => P2; (ks*(k0 + (dsp1p2kd/ka)^h))/(1 + (dsp1p2kd/ka)^h);
+  ___r1:  => P2; ks*(k0 + (dsp1p2kd/ka)^h)/(1 + (dsp1p2kd/ka)^h);
   ___r2: P2 => ; ___r2___RATE__*P2;
-  ___r3:  => Target; (ks*(k0 + (dsp1p2kd/ka)^h))/(1 + (dsp1p2kd/ka)^h);
+  ___r3:  => Target; ks*(k0 + (dsp1p2kd/ka)^h)/(1 + (dsp1p2kd/ka)^h);
   ___r4: Target => ; ___r4___RATE__*Target;
 
   // Species initializations:
@@ -23,7 +23,7 @@ model *Ratushny2012_ASSURE_I()
   univ = 1;
 
   // Variable initializations:
-  Kd = 1e-005;
+  Kd = 1e-05;
   Ksp = 0.001;
   P1 = 40;
   s = 1000;
@@ -38,4 +38,21 @@ model *Ratushny2012_ASSURE_I()
   // Other declarations:
   var dsp1ksp, dsp1p2kd;
   const univ, Kd, Ksp, P1, s, h, k0, ka, ks, ku;
+
+  // SBO terms:
+  univ.sboTerm = 290
+  P2.sboTerm = 252
+  Target.sboTerm = 11
+
+  // CV terms:
+  univ hypernym "http://identifiers.org/obo.go/GO:0005623"
+  P2 hypernym "http://identifiers.org/obo.go/GO:0003675"
 end
+
+Ratushny2012_ASSURE_I is "Ratushny2012_ASSURE_I"
+
+Ratushny2012_ASSURE_I model_entity_is "http://identifiers.org/biomodels.db/MODEL1203010001"
+Ratushny2012_ASSURE_I model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000420"
+Ratushny2012_ASSURE_I description "http://identifiers.org/pubmed/22531117"
+Ratushny2012_ASSURE_I hypernym "http://identifiers.org/obo.go/GO:0006355"
+Ratushny2012_ASSURE_I taxon "http://identifiers.org/taxonomy/4932"

@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 
 // Warnings from automatic translation:
 //    Unable to set the stoichiometry math for the product Br in reaction Reaction5 because stoichiometry math is not a defined concept in Antimony.
@@ -11,16 +11,16 @@ model *Field1974_Oregonator()
 
   // Reactions:
   Reaction1: Br + $BrO3 => HBrO2 + $HOBr; Br*BrO3*Reaction1_k1*BZ;
-  Reaction2: Br + HBrO2 => 2$HOBr; Br*HBrO2*Reaction2_k2*BZ;
-  Reaction3: $BrO3 + HBrO2 => Ce + 2HBrO2; BrO3*HBrO2*Reaction3_k3*BZ;
-  Reaction4: 2HBrO2 => $BrO3 + $HOBr; HBrO2^2*Reaction4_k4*BZ;
+  Reaction2: Br + HBrO2 => 2 $HOBr; Br*HBrO2*Reaction2_k2*BZ;
+  Reaction3: $BrO3 + HBrO2 => Ce + 2 HBrO2; BrO3*HBrO2*Reaction3_k3*BZ;
+  Reaction4: 2 HBrO2 => $BrO3 + $HOBr; HBrO2^2*Reaction4_k4*BZ;
   Reaction5: Ce => Br; Ce*Reaction5_k5*BZ;
 
   // Species initializations:
-  Br = 1e-007;
+  Br = 1e-07;
   BrO3 = 0.06;
   Ce = 0.05;
-  HBrO2 = 5e-011;
+  HBrO2 = 5e-11;
   HOBr = 0;
 
   // Compartment initializations:
@@ -46,4 +46,16 @@ model *Field1974_Oregonator()
   Reaction3 is "M3";
   Reaction4 is "M4";
   Reaction5 is "M5";
+
+  // CV terms:
+  Br identity "http://identifiers.org/chebi/CHEBI:15858"
+  BrO3 identity "http://identifiers.org/chebi/CHEBI:29223"
 end
+
+Field1974_Oregonator is "Field1974_Oregonator"
+
+Field1974_Oregonator model_entity_is "http://identifiers.org/biomodels.db/MODEL6622000424"
+Field1974_Oregonator model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000040"
+Field1974_Oregonator description "http://identifiers.org/doi/10.1063/1.1681288"
+Field1974_Oregonator taxon "http://identifiers.org/taxonomy/131567"
+Field1974_Oregonator hypernym "http://identifiers.org/go/GO:0007622"

@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *BIOMD0000000149()
 
   // Compartments and Species:
@@ -32,25 +32,25 @@ model *BIOMD0000000149()
   R15: X12 => ; cytoplasm*k15*X12;
   R16: X13 + X11 -> X14; nucleus*(k_plus16*X11*X13 - k_minus16*X14);
   R17: X11 + X7 -> X15; cytoplasm*(k_plus17*X7*X11 - k_minus17*X15);
-  R18: X16 => X17; cytoplasm*((Vmax1*X16*W)/(Km1 + X16))*(Ki/(Ki + X23));
-  R19: X17 => X16; cytoplasm*((Vmax2*X17)/(Km2 + X17));
-  R20: X18 => X19; cytoplasm*((kcat1*X17*X18)/(Km3 + X18));
-  R21: X19 => X18; (cytoplasm*Vmax3*X19)/(Km4 + X19);
-  R22: X20 => X21; (cytoplasm*kcat2*X19*X20)/(Km5 + X20);
-  R23: X21 => X20; (cytoplasm*Vmax4*X21)/(Km6 + X21);
-  R24: X22 => X23; (cytoplasm*kcat3*X21*X22)/(Km7 + X22);
-  R25: X23 => X22; (cytoplasm*Vmax5*X23)/(Km8 + X23);
-  R26: X24 => X18 + X26; (cytoplasm*kcat4*X23*X24)/(Km9 + X24);
+  R18: X16 => X17; cytoplasm*(Vmax1*X16*W/(Km1 + X16))*(Ki/(Ki + X23));
+  R19: X17 => X16; cytoplasm*(Vmax2*X17/(Km2 + X17));
+  R20: X18 => X19; cytoplasm*(kcat1*X17*X18/(Km3 + X18));
+  R21: X19 => X18; cytoplasm*Vmax3*X19/(Km4 + X19);
+  R22: X20 => X21; cytoplasm*kcat2*X19*X20/(Km5 + X20);
+  R23: X21 => X20; cytoplasm*Vmax4*X21/(Km6 + X21);
+  R24: X22 => X23; cytoplasm*kcat3*X21*X22/(Km7 + X22);
+  R25: X23 => X22; cytoplasm*Vmax5*X23/(Km8 + X23);
+  R26: X24 => X18 + X26; cytoplasm*kcat4*X23*X24/(Km9 + X24);
   R27: X18 + X25 -> X24; cytoplasm*(k18*X18*X25 - k19*X24);
-  R28: X26 => X25; (cytoplasm*Vmax6*X26)/(Km10 + X26);
-  R29:  => X27; cytoplasm*((kcat5*X14^n1)/(Km11^n1 + X14^n1));
+  R28: X26 => X25; cytoplasm*Vmax6*X26/(Km10 + X26);
+  R29:  => X27; cytoplasm*(kcat5*X14^n1/(Km11^n1 + X14^n1));
   R30: X27 => ; cytoplasm*k20*X27;
-  R31: X18 => X19; cytoplasm*((kcat6*X27*X18)/(Km12 + X18));
-  R32: X5 => X28; (cytoplasm*kcat7*X23*X5)/(Km13 + X5);
-  R33: X28 => X5; (cytoplasm*Vmax7*X28)/(Km14 + X28);
+  R31: X18 => X19; cytoplasm*(kcat6*X27*X18/(Km12 + X18));
+  R32: X5 => X28; cytoplasm*kcat7*X23*X5/(Km13 + X5);
+  R33: X28 => X5; cytoplasm*Vmax7*X28/(Km14 + X28);
 
   // Events:
-  event_0000001: at time >= 500 && time <= 1000: W = 1;
+  event_0000001: at (time >= 500) && (time <= 1000): W = 1;
   event_0000002: at time > 1000: W = 0;
 
   // Species initializations:
@@ -105,8 +105,8 @@ model *BIOMD0000000149()
   k11 = 0.417;
   V12 = 0.423;
   k13 = 0.000257;
-  k14 = 8.22e-005;
-  k21 = 1e-006;
+  k14 = 8.22e-05;
+  k21 = 1e-06;
   k15 = 0.167;
   k_plus16 = 1;
   k_minus16 = 30;
@@ -224,4 +224,110 @@ model *BIOMD0000000149()
   R31 is "Factor-X mediated Raf activation";
   R32 is "ERK mediated GSK3beta phosphorylation";
   R33 is "GSK3beta dephosphorylation";
+
+  // CV terms:
+  cytoplasm identity "http://identifiers.org/go/GO:0005737"
+  nucleus identity "http://identifiers.org/go/GO:0005634"
+  X1 hypernym "http://identifiers.org/uniprot/Q5TA35"
+  X2 hypernym "http://identifiers.org/uniprot/Q5TA35"
+  X3 part "http://identifiers.org/uniprot/O95996",
+          "http://identifiers.org/uniprot/O15169",
+          "http://identifiers.org/uniprot/P49841"
+  X3 identity "http://identifiers.org/go/GO:0030877"
+  X4 part "http://identifiers.org/uniprot/O95996",
+          "http://identifiers.org/uniprot/O15169",
+          "http://identifiers.org/uniprot/P49841"
+  X4 identity "http://identifiers.org/go/GO:0030877"
+  X5 hypernym "http://identifiers.org/uniprot/P49841"
+  X6 part "http://identifiers.org/uniprot/O95996",
+          "http://identifiers.org/uniprot/O15169"
+  X7 hypernym "http://identifiers.org/uniprot/O95996"
+  X8 part "http://identifiers.org/uniprot/O95996",
+          "http://identifiers.org/uniprot/O15169",
+          "http://identifiers.org/uniprot/P49841",
+          "http://identifiers.org/uniprot/P35222"
+  X8 identity "http://identifiers.org/go/GO:0030877"
+  X9 part "http://identifiers.org/uniprot/O95996",
+          "http://identifiers.org/uniprot/O15169",
+          "http://identifiers.org/uniprot/P49841",
+          "http://identifiers.org/uniprot/P35222"
+  X9 identity "http://identifiers.org/go/GO:0030877"
+  X10 hypernym "http://identifiers.org/uniprot/P35222"
+  X11 hypernym "http://identifiers.org/uniprot/P35222"
+  X12 hypernym "http://identifiers.org/uniprot/O15169"
+  X13 hypernym "http://identifiers.org/uniprot/Q9UJU2"
+  X14 part "http://identifiers.org/uniprot/P35222",
+           "http://identifiers.org/uniprot/Q9UJU2"
+  X15 part "http://identifiers.org/uniprot/O95996",
+           "http://identifiers.org/uniprot/P35222"
+  X16 hypernym "http://identifiers.org/uniprot/P62070"
+  X17 hypernym "http://identifiers.org/uniprot/P62070"
+  X18 hypernym "http://identifiers.org/uniprot/P04049"
+  X19 hypernym "http://identifiers.org/uniprot/P04049"
+  X20 hypernym "http://identifiers.org/uniprot/Q02750"
+  X21 hypernym "http://identifiers.org/uniprot/Q02750"
+  X22 hypernym "http://identifiers.org/uniprot/P28482"
+  X23 hypernym "http://identifiers.org/uniprot/P28482"
+  X24 part "http://identifiers.org/uniprot/P04049",
+           "http://identifiers.org/uniprot/P30086"
+  X25 hypernym "http://identifiers.org/uniprot/P30086"
+  X26 hypernym "http://identifiers.org/uniprot/P30086"
+  X28 hypernym "http://identifiers.org/uniprot/P49841"
+  R1 hypernym "http://identifiers.org/go/GO:0017147"
+  R2 hypernym "http://identifiers.org/go/GO:0030111"
+  R3 hypernym "http://identifiers.org/go/GO:0030177"
+  R4 hypernym "http://identifiers.org/go/GO:0004674"
+  R4 identity "http://identifiers.org/ec-code/2.7.11.26"
+  R5 hypernym "http://identifiers.org/go/GO:0016311"
+  R6 hypernym "http://identifiers.org/go/GO:0043623"
+  R7 hypernym "http://identifiers.org/go/GO:0005515"
+  R8 identity "http://identifiers.org/go/GO:0008013"
+  R9 identity "http://identifiers.org/ec-code/2.7.11.26",
+              "http://identifiers.org/go/GO:0004674"
+  R10 hypernym "http://identifiers.org/go/GO:0043624"
+  R11 hypernym "http://identifiers.org/go/GO:0030163"
+  R12 hypernym "http://identifiers.org/go/GO:0006417"
+  R13 hypernym "http://identifiers.org/go/GO:0030163"
+  R14 hypernym "http://identifiers.org/go/GO:0045727"
+  R15 hypernym "http://identifiers.org/go/GO:0030163"
+  R16 hypernym "http://identifiers.org/go/GO:0008134",
+               "http://identifiers.org/go/GO:0008013"
+  R17 hypernym "http://identifiers.org/go/GO:0005515"
+  R18 identity "http://identifiers.org/go/GO:0032856"
+  R19 hypernym "http://identifiers.org/go/GO:0032318"
+  R20 hypernym "http://identifiers.org/go/GO:0000185"
+  R21 hypernym "http://identifiers.org/go/GO:0051390"
+  R22 identity "http://identifiers.org/ec-code/2.7.11.1"
+  R22 hypernym "http://identifiers.org/go/GO:0004709",
+               "http://identifiers.org/go/GO:0000186"
+  R23 hypernym "http://identifiers.org/go/GO:0051389"
+  R24 hypernym "http://identifiers.org/go/GO:0000187",
+               "http://identifiers.org/go/GO:0004708"
+  R24 identity "http://identifiers.org/ec-code/2.7.12.2"
+  R25 hypernym "http://identifiers.org/go/GO:0000188"
+  R26 hypernym "http://identifiers.org/go/GO:0043624"
+  R27 hypernym "http://identifiers.org/go/GO:0005515"
+  R28 hypernym "http://identifiers.org/go/GO:0016311"
+  R29 hypernym "http://identifiers.org/go/GO:0045727"
+  R30 hypernym "http://identifiers.org/go/GO:0030163"
+  R31 hypernym "http://identifiers.org/go/GO:0000185"
+  R32 identity "http://identifiers.org/ec-code/2.7.11.24",
+               "http://identifiers.org/go/GO:0004707",
+               "http://identifiers.org/go/GO:0016310"
+  R33 hypernym "http://identifiers.org/go/GO:0016311"
 end
+
+BIOMD0000000149 is "Kim2007 - Crosstalk between Wnt and ERK pathways"
+
+BIOMD0000000149 model_entity_is "http://identifiers.org/biomodels.db/MODEL4159212701"
+BIOMD0000000149 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000149"
+BIOMD0000000149 description "http://identifiers.org/pubmed/17237813"
+BIOMD0000000149 origin "http://identifiers.org/pubmed/14551908",
+                       "http://identifiers.org/doi/10.1007/3-540-36481-1_11"
+BIOMD0000000149 part "http://identifiers.org/go/GO:0000165",
+                     "http://identifiers.org/go/GO:0060070"
+BIOMD0000000149 part "http://identifiers.org/kegg.pathway/hsa04310",
+                     "http://identifiers.org/kegg.pathway/hsa04010"
+BIOMD0000000149 taxon "http://identifiers.org/taxonomy/9606"
+BIOMD0000000149 version "http://identifiers.org/doid/DOID:9256"
+BIOMD0000000149 container "http://identifiers.org/bto/BTO:0000007"

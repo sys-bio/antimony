@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Kofahl2004_PheromonePathway()
 
   // Compartments and Species:
@@ -56,7 +56,7 @@ model *Kofahl2004_PheromonePathway()
   v36: Bar1 -> Bar1a; compartment_*Ste12a*Bar1*v36_k36;
   v37: Bar1a -> Bar1; compartment_*Bar1a*v37_k37;
   v38: Bar1a -> Bar1aex; compartment_*Bar1a*v38_k38;
-  v39: Far1 -> Far1PP; compartment_*((Far1*Fus3PP*Fus3PP)/(100*100 + Fus3PP*Fus3PP))*v39_k39;
+  v39: Far1 -> Far1PP; compartment_*(Far1*Fus3PP*Fus3PP/(100*100 + Fus3PP*Fus3PP))*v39_k39;
   v40: Far1PP -> Far1; compartment_*Far1PP*v40_k40;
   v41: Far1 -> Far1U; compartment_*Far1*Cdc28*v41_k41;
   v42: Gbc + Far1PP -> complexM; compartment_*Gbc*Far1PP*v42_k42;
@@ -231,4 +231,193 @@ model *Kofahl2004_PheromonePathway()
   Bar1aex is "Bar1activeEx";
   Far1U is "Far1ubiquitin";
   v1 is "alpha degradation";
+
+  // CV terms:
+  Extracellular hypernym "http://identifiers.org/go/GO:0005615"
+  compartment_ hypernym "http://identifiers.org/go/GO:0005623"
+  Ste2 identity "http://identifiers.org/uniprot/P06842"
+  Ste2a identity "http://identifiers.org/uniprot/P06842"
+  Gabc part "http://identifiers.org/uniprot/P08539",
+            "http://identifiers.org/uniprot/P18851",
+            "http://identifiers.org/uniprot/P18852"
+  GaGTP identity "http://identifiers.org/uniprot/P08539"
+  Gbc part "http://identifiers.org/uniprot/P18851",
+           "http://identifiers.org/uniprot/P18852"
+  Gbc identity "http://identifiers.org/bind/50058"
+  GaGDP identity "http://identifiers.org/uniprot/P08539"
+  complexC part "http://identifiers.org/uniprot/P16892",
+                "http://identifiers.org/uniprot/P23561",
+                "http://identifiers.org/uniprot/P06784",
+                "http://identifiers.org/uniprot/P32917"
+  complexC identity "http://identifiers.org/bind/133390"
+  complexD part "http://identifiers.org/uniprot/P23561",
+                "http://identifiers.org/uniprot/P18851",
+                "http://identifiers.org/uniprot/P32917",
+                "http://identifiers.org/uniprot/P06784",
+                "http://identifiers.org/uniprot/P08539",
+                "http://identifiers.org/uniprot/P16892",
+                "http://identifiers.org/uniprot/P18852"
+  Ste5 identity "http://identifiers.org/uniprot/P32917"
+  Ste11 identity "http://identifiers.org/uniprot/P23561"
+  complexA part "http://identifiers.org/uniprot/P32917",
+                "http://identifiers.org/uniprot/P23561"
+  Ste7 identity "http://identifiers.org/uniprot/P06784"
+  Fus3 identity "http://identifiers.org/uniprot/P16892"
+  complexB part "http://identifiers.org/uniprot/P06784",
+                "http://identifiers.org/uniprot/P16892"
+  complexB identity "http://identifiers.org/bind/130661"
+  Ste20 identity "http://identifiers.org/uniprot/Q03497"
+  complexE part "http://identifiers.org/uniprot/P18852",
+                "http://identifiers.org/uniprot/P18851",
+                "http://identifiers.org/uniprot/P08539",
+                "http://identifiers.org/uniprot/P16892",
+                "http://identifiers.org/uniprot/P06784",
+                "http://identifiers.org/uniprot/Q03497",
+                "http://identifiers.org/uniprot/P23561",
+                "http://identifiers.org/uniprot/P32917"
+  complexF part "http://identifiers.org/uniprot/P18851",
+                "http://identifiers.org/uniprot/P18852",
+                "http://identifiers.org/uniprot/P08539",
+                "http://identifiers.org/uniprot/P16892",
+                "http://identifiers.org/uniprot/Q03497",
+                "http://identifiers.org/uniprot/P06784",
+                "http://identifiers.org/uniprot/P32917",
+                "http://identifiers.org/uniprot/P23561"
+  complexG part "http://identifiers.org/uniprot/P18852",
+                "http://identifiers.org/uniprot/P18851",
+                "http://identifiers.org/uniprot/P08539",
+                "http://identifiers.org/uniprot/P16892",
+                "http://identifiers.org/uniprot/P06784",
+                "http://identifiers.org/uniprot/P23561",
+                "http://identifiers.org/uniprot/Q03497",
+                "http://identifiers.org/uniprot/P32917"
+  complexH part "http://identifiers.org/uniprot/P18852",
+                "http://identifiers.org/uniprot/P18851",
+                "http://identifiers.org/uniprot/P16892",
+                "http://identifiers.org/uniprot/P08539",
+                "http://identifiers.org/uniprot/P06784",
+                "http://identifiers.org/uniprot/P23561",
+                "http://identifiers.org/uniprot/Q03497",
+                "http://identifiers.org/uniprot/P32917"
+  complexI part "http://identifiers.org/uniprot/P18852",
+                "http://identifiers.org/uniprot/P18851",
+                "http://identifiers.org/uniprot/P08539",
+                "http://identifiers.org/uniprot/P06784",
+                "http://identifiers.org/uniprot/P16892",
+                "http://identifiers.org/uniprot/Q03497",
+                "http://identifiers.org/uniprot/P23561",
+                "http://identifiers.org/uniprot/P32917"
+  complexL part "http://identifiers.org/uniprot/P18852",
+                "http://identifiers.org/uniprot/P18851",
+                "http://identifiers.org/uniprot/P08539",
+                "http://identifiers.org/uniprot/P06784",
+                "http://identifiers.org/uniprot/Q03497",
+                "http://identifiers.org/uniprot/P23561",
+                "http://identifiers.org/uniprot/P32917"
+  Fus3PP identity "http://identifiers.org/uniprot/P16892"
+  complexK part "http://identifiers.org/uniprot/P18852",
+                "http://identifiers.org/uniprot/P18851",
+                "http://identifiers.org/uniprot/P08539",
+                "http://identifiers.org/uniprot/P16892",
+                "http://identifiers.org/uniprot/P06784",
+                "http://identifiers.org/uniprot/Q03497",
+                "http://identifiers.org/uniprot/P23561",
+                "http://identifiers.org/uniprot/P32917"
+  Ste12 identity "http://identifiers.org/uniprot/P13574"
+  Ste12a identity "http://identifiers.org/uniprot/P13574"
+  Bar1 identity "http://identifiers.org/uniprot/P12630"
+  Bar1a identity "http://identifiers.org/uniprot/P12630"
+  Bar1aex identity "http://identifiers.org/uniprot/P12630"
+  Far1 identity "http://identifiers.org/uniprot/P21268"
+  Far1PP identity "http://identifiers.org/uniprot/P21268"
+  Far1U identity "http://identifiers.org/uniprot/P21268"
+  complexM part "http://identifiers.org/uniprot/P21268",
+                "http://identifiers.org/uniprot/P18851",
+                "http://identifiers.org/uniprot/P18852"
+  complexN part "http://identifiers.org/uniprot/P21268",
+                "http://identifiers.org/uniprot/P00546"
+  Cdc28 identity "http://identifiers.org/uniprot/P00546"
+  Sst2 identity "http://identifiers.org/uniprot/P11972"
+  v1 hypernym "http://identifiers.org/go/GO:0030163"
+  v2 identity "http://identifiers.org/intact/EBI-904275"
+  v2 hypernym "http://identifiers.org/go/GO:0004934"
+  v3 identity "http://identifiers.org/intact/EBI-904275"
+  v4 hypernym "http://identifiers.org/go/GO:0030163"
+  v5 hypernym "http://identifiers.org/go/GO:0030163"
+  v6 version "http://identifiers.org/intact/EBI-380703",
+             "http://identifiers.org/intact/EBI-48387",
+             "http://identifiers.org/intact/EBI-877237"
+  v6 hypernym "http://identifiers.org/go/GO:0004930"
+  v7 hypernym "http://identifiers.org/go/GO:0003924"
+  v8 hypernym "http://identifiers.org/go/GO:0005096"
+  v8 identity "http://identifiers.org/intact/EBI-904406"
+  v9 version "http://identifiers.org/intact/EBI-877243",
+             "http://identifiers.org/intact/EBI-380703"
+  v10 hypernym "http://identifiers.org/go/GO:0005078"
+  v10 identity "http://identifiers.org/intact/EBI-903953"
+  v11 hypernym "http://identifiers.org/go/GO:0043241"
+  v12 identity "http://identifiers.org/intact/EBI-877414"
+  v13 hypernym "http://identifiers.org/go/GO:0043241"
+  v14 hypernym "http://identifiers.org/go/GO:0051019"
+  v14 identity "http://identifiers.org/intact/EBI-877260"
+  v15 hypernym "http://identifiers.org/go/GO:0043241"
+  v16 hypernym "http://identifiers.org/go/GO:0005078"
+  v16 part "http://identifiers.org/intact/EBI-895753",
+           "http://identifiers.org/intact/EBI-877421",
+           "http://identifiers.org/intact/EBI-877417"
+  v17 hypernym "http://identifiers.org/go/GO:0043241"
+  v18 hypernym "http://identifiers.org/go/GO:0004674"
+  v18 identity "http://identifiers.org/intact/EBI-903992"
+  v19 hypernym "http://identifiers.org/go/GO:0043241"
+  v20 hypernym "http://identifiers.org/ec-code/2.7.11.1",
+               "http://identifiers.org/go/GO:0000185",
+               "http://identifiers.org/go/GO:0008349"
+  v21 hypernym "http://identifiers.org/go/GO:0043241"
+  v22 hypernym "http://identifiers.org/ec-code/2.7.11.25",
+               "http://identifiers.org/go/GO:0000186",
+               "http://identifiers.org/go/GO:0004709"
+  v23 hypernym "http://identifiers.org/go/GO:0043241"
+  v24 hypernym "http://identifiers.org/ec-code/2.7.12.2",
+               "http://identifiers.org/go/GO:0004708",
+               "http://identifiers.org/go/GO:0000187"
+  v25 hypernym "http://identifiers.org/go/GO:0043241"
+  v26 hypernym "http://identifiers.org/go/GO:0006468"
+  v27 hypernym "http://identifiers.org/go/GO:0043241"
+  v28 hypernym "http://identifiers.org/go/GO:0043241"
+  v29 hypernym "http://identifiers.org/go/GO:0051019"
+  v29 part "http://identifiers.org/intact/EBI-877260",
+           "http://identifiers.org/intact/EBI-877421"
+  v30 hypernym "http://identifiers.org/go/GO:0043241"
+  v31 hypernym "http://identifiers.org/ec-code/2.7.12.2",
+               "http://identifiers.org/go/GO:0004708",
+               "http://identifiers.org/go/GO:0000187"
+  v32 hypernym "http://identifiers.org/go/GO:0043241"
+  v33 hypernym "http://identifiers.org/ec-code/3.1.3.16",
+               "http://identifiers.org/go/GO:0016311",
+               "http://identifiers.org/go/GO:0000188"
+  v34 hypernym "http://identifiers.org/go/GO:0004707",
+               "http://identifiers.org/go/GO:0051019"
+  v35 hypernym "http://identifiers.org/go/GO:0043241"
+  v36 hypernym "http://identifiers.org/go/GO:0003700"
+  v37 hypernym "http://identifiers.org/go/GO:0043241"
+  v38 hypernym "http://identifiers.org/go/GO:0006611"
+  v39 hypernym "http://identifiers.org/ec-code/2.7.11.24",
+               "http://identifiers.org/go/GO:0004707"
+  v40 hypernym "http://identifiers.org/ec-code/3.1.3.16",
+               "http://identifiers.org/go/GO:0016311"
+  v41 hypernym "http://identifiers.org/go/GO:0016567"
+  v43 hypernym "http://identifiers.org/go/GO:0043241"
+  v44 hypernym "http://identifiers.org/go/GO:0043241"
+  v45 hypernym "http://identifiers.org/go/GO:0004861"
+  v46 hypernym "http://identifiers.org/ec-code/2.7.11.24",
+               "http://identifiers.org/go/GO:0004707"
 end
+
+Kofahl2004_PheromonePathway is "Kofahl2004_PheromonePathway"
+
+Kofahl2004_PheromonePathway model_entity_is "http://identifiers.org/biomodels.db/MODEL6618819961"
+Kofahl2004_PheromonePathway model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000032"
+Kofahl2004_PheromonePathway description "http://identifiers.org/pubmed/15300679"
+Kofahl2004_PheromonePathway hypernym "http://identifiers.org/go/GO:0019236"
+Kofahl2004_PheromonePathway taxon "http://identifiers.org/taxonomy/4932"
+Kofahl2004_PheromonePathway part "http://identifiers.org/go/GO:0000165"

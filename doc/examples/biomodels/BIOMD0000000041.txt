@@ -1,17 +1,17 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Kongas___Van_Beek()
 
   // Compartments and Species:
   compartment IMS, CYT;
   species ADPi in IMS, ATPi in IMS, Cri in IMS, PCri in IMS, PCr in CYT, ADP in CYT;
-  species ATP in CYT, Cr in CYT, Pi_ in IMS, P in CYT;
+  species ATP in CYT, Cr in CYT, Pi in IMS, P in CYT;
 
   // Reactions:
-  OxPhos: ADPi + Pi_ -> ATPi; IMS*((OxPhos_V_1*ADPi*Pi_)/(OxPhos_Ka_1*OxPhos_Kb_1*(1 + ADPi/OxPhos_Ka_1 + Pi_/OxPhos_Kb_1 + (ADPi*Pi_)/(OxPhos_Ka_1*OxPhos_Kb_1))));
-  MiCK: ATPi + Cri -> ADPi + PCri; IMS*(((MiCK_Vf_2*ATPi*Cri)/(MiCK_Kia_2*MiCK_Kb_2) - (MiCK_Vb_2*ADPi*PCri)/(MiCK_Kic_2*MiCK_Kd_2))/(1 + Cri/MiCK_Kib_2 + PCri/MiCK_Kid_2 + ATPi*(1/MiCK_Kia_2 + Cri/(MiCK_Kia_2*MiCK_Kb_2)) + ADPi*(1/MiCK_Kic_2 + Cri/(MiCK_Kic_2*MiCK_Kib_2) + PCri/(MiCK_Kid_2*((MiCK_Kic_2*MiCK_Kd_2)/MiCK_Kid_2)))));
-  MMCK: ATP + Cr -> PCr + ADP; CYT*(((MMCK_Vf_3*ATP*Cr)/(MMCK_Kia_3*MMCK_Kb_3) - (MMCK_Vb_3*ADP*PCr)/(MMCK_Kic_3*MMCK_Kd_3))/(1 + Cr/MMCK_Kib_3 + PCr/MMCK_Kid_3 + ATP*(1/MMCK_Kia_3 + Cr/(MMCK_Kia_3*MMCK_Kb_3)) + ADP*(1/MMCK_Kic_3 + Cr/(MMCK_Kic_3*MMCK_Kib_3) + PCr/(MMCK_Kid_3*((MMCK_Kic_3*MMCK_Kd_3)/MMCK_Kid_3)))));
+  OxPhos: ADPi + Pi -> ATPi; IMS*(OxPhos_V_1*ADPi*Pi/(OxPhos_Ka_1*OxPhos_Kb_1*(1 + ADPi/OxPhos_Ka_1 + Pi/OxPhos_Kb_1 + ADPi*Pi/(OxPhos_Ka_1*OxPhos_Kb_1))));
+  MiCK: ATPi + Cri -> ADPi + PCri; IMS*((MiCK_Vf_2*ATPi*Cri/(MiCK_Kia_2*MiCK_Kb_2) - MiCK_Vb_2*ADPi*PCri/(MiCK_Kic_2*MiCK_Kd_2))/(1 + Cri/MiCK_Kib_2 + PCri/MiCK_Kid_2 + ATPi*(1/MiCK_Kia_2 + Cri/(MiCK_Kia_2*MiCK_Kb_2)) + ADPi*(1/MiCK_Kic_2 + Cri/(MiCK_Kic_2*MiCK_Kib_2) + PCri/(MiCK_Kid_2*(MiCK_Kic_2*MiCK_Kd_2/MiCK_Kid_2)))));
+  MMCK: ATP + Cr -> PCr + ADP; CYT*((MMCK_Vf_3*ATP*Cr/(MMCK_Kia_3*MMCK_Kb_3) - MMCK_Vb_3*ADP*PCr/(MMCK_Kic_3*MMCK_Kd_3))/(1 + Cr/MMCK_Kib_3 + PCr/MMCK_Kid_3 + ATP*(1/MMCK_Kia_3 + Cr/(MMCK_Kia_3*MMCK_Kb_3)) + ADP*(1/MMCK_Kic_3 + Cr/(MMCK_Kic_3*MMCK_Kib_3) + PCr/(MMCK_Kid_3*(MMCK_Kic_3*MMCK_Kd_3/MMCK_Kid_3)))));
   ATPase: ATP => ADP + P; CYT*ATPase_v_4*ATP;
-  Pi_diffusion: Pi_ -> P; IMS*Pi_diffusion_k2_5*Pi_ - CYT*Pi_diffusion_k2_5*P;
+  Pi_diffusion: Pi -> P; IMS*Pi_diffusion_k2_5*Pi - CYT*Pi_diffusion_k2_5*P;
   Cr_diffusion: Cri -> Cr; IMS*Cr_diffusion_k1_6*Cri - CYT*Cr_diffusion_k1_6*Cr;
   ADP_diffusion: ADPi -> ADP; IMS*ADP_diffusion_k1_7*ADPi - CYT*ADP_diffusion_k1_7*ADP;
   PCr_diffusion: PCri -> PCr; IMS*PCr_diffusion_k1_8*PCri - CYT*PCr_diffusion_k1_8*PCr;
@@ -26,7 +26,7 @@ model *Kongas___Van_Beek()
   ADP = 0;
   ATP = 9700;
   Cr = 26000;
-  Pi_ = 32000;
+  Pi = 32000;
   P = 0;
 
   // Compartment initializations:
@@ -68,7 +68,7 @@ model *Kongas___Van_Beek()
 
   // Display Names:
   substance is "micromole";
-  Pi_ is "Pii";
+  Pi is "Pii";
   P is "Pi";
   OxPhos is "Vsyn";
   MiCK is "Vmick";
@@ -79,4 +79,49 @@ model *Kongas___Van_Beek()
   ADP_diffusion is "Jadp";
   PCr_diffusion is "Jpcr";
   ATP_diffusion is "Jatp";
+
+  // CV terms:
+  IMS hypernym "http://identifiers.org/go/GO:0005758"
+  CYT hypernym "http://identifiers.org/go/GO:0005829"
+  ADPi identity "http://identifiers.org/chebi/CHEBI:16761",
+                "http://identifiers.org/kegg.compound/C00008"
+  ATPi identity "http://identifiers.org/chebi/CHEBI:15422",
+                "http://identifiers.org/kegg.compound/C00002"
+  Cri identity "http://identifiers.org/chebi/CHEBI:16919",
+               "http://identifiers.org/kegg.compound/C00300"
+  PCri identity "http://identifiers.org/chebi/CHEBI:17287",
+                "http://identifiers.org/kegg.compound/C02305"
+  PCr identity "http://identifiers.org/chebi/CHEBI:17287",
+               "http://identifiers.org/kegg.compound/C02305"
+  ADP identity "http://identifiers.org/chebi/CHEBI:16761",
+               "http://identifiers.org/kegg.compound/C00008"
+  ATP identity "http://identifiers.org/chebi/CHEBI:15422",
+               "http://identifiers.org/kegg.compound/C00002"
+  Cr identity "http://identifiers.org/chebi/CHEBI:16919",
+              "http://identifiers.org/kegg.compound/C00300"
+  Pi identity "http://identifiers.org/chebi/CHEBI:18367",
+              "http://identifiers.org/kegg.compound/C00009"
+  P identity "http://identifiers.org/chebi/CHEBI:18367",
+             "http://identifiers.org/kegg.compound/C00009"
+  OxPhos hypernym "http://identifiers.org/go/GO:0006119"
+  MiCK hypernym "http://identifiers.org/ec-code/2.7.3.2",
+                "http://identifiers.org/go/GO:0004111"
+  MMCK hypernym "http://identifiers.org/ec-code/2.7.3.2",
+                "http://identifiers.org/go/GO:0004111"
+  ATPase hypernym "http://identifiers.org/go/GO:0016887"
+  Pi_diffusion hypernym "http://identifiers.org/go/GO:0006817"
+  Cr_diffusion hypernym "http://identifiers.org/go/GO:0015881"
+  ADP_diffusion hypernym "http://identifiers.org/go/GO:0015866"
+  PCr_diffusion hypernym "http://identifiers.org/go/GO:0015881"
+  ATP_diffusion hypernym "http://identifiers.org/go/GO:0015867"
 end
+
+Kongas___Van_Beek is "Kongas2007 - Creatine Kinase in energy metabolic signaling in muscle"
+
+Kongas___Van_Beek model_entity_is "http://identifiers.org/biomodels.db/MODEL6622188656"
+Kongas___Van_Beek model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000041"
+Kongas___Van_Beek description "http://identifiers.org/doi/10.1038/npre.2007.1317.1"
+Kongas___Van_Beek origin "http://identifiers.org/pubmed/10751324"
+Kongas___Van_Beek hypernym "http://identifiers.org/go/GO:0006600",
+                           "http://identifiers.org/go/GO:0046034"
+Kongas___Van_Beek taxon "http://identifiers.org/taxonomy/9984"

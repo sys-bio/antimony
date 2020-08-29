@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Olsen2003_peroxidase()
 
   // Compartments and Species:
@@ -17,9 +17,9 @@ model *Olsen2003_peroxidase()
   v4: coII + ArH => per3 + Ar; compartment_*v4_k4*coII*ArH;
   v5: NADrad + O2 => $NAD + super; compartment_*v5_k5*NADrad*O2;
   v6: per3 + super => coIII; compartment_*v6_k6*super*per3;
-  v7: 2super => H2O2 + O2; compartment_*v7_k7*super*super;
+  v7: 2 super => H2O2 + O2; compartment_*v7_k7*super*super;
   v8: NADrad + coIII => $NAD + coI; compartment_*v8_k8*coIII*NADrad;
-  v9: 2NADrad => $NAD2; compartment_*v9_k9*NADrad*NADrad;
+  v9: 2 NADrad => $NAD2; compartment_*v9_k9*NADrad*NADrad;
   v10: per3 + NADrad => per2 + $NAD; compartment_*v10_k10*per3*NADrad;
   v11: per2 + O2 => coIII; compartment_*v11_k11*per2*O2;
   v12: $NADHres => NADH; compartment_*v12_k12;
@@ -49,7 +49,7 @@ model *Olsen2003_peroxidase()
   compartment_ = 1;
 
   // Variable initializations:
-  v1_k1 = 3e-006;
+  v1_k1 = 3e-06;
   v2_k2 = 18;
   v3_k3 = 0.15;
   v4_k4 = 0.0052;
@@ -73,4 +73,55 @@ model *Olsen2003_peroxidase()
 
   // Display Names:
   substance is "micromole";
+
+  // CV terms:
+  NADH identity "http://identifiers.org/chebi/CHEBI:16908",
+                "http://identifiers.org/kegg.compound/C00004"
+  O2 identity "http://identifiers.org/chebi/CHEBI:15379",
+              "http://identifiers.org/kegg.compound/C00007"
+  H2O2 identity "http://identifiers.org/chebi/CHEBI:16240",
+                "http://identifiers.org/kegg.compound/C00027"
+  per3 hypernym "http://identifiers.org/interpro/IPR000823",
+                "http://identifiers.org/pirsf/PIRSF000293"
+  coI hypernym "http://identifiers.org/interpro/IPR000823",
+               "http://identifiers.org/pirsf/PIRSF000293"
+  ArH version "http://identifiers.org/chebi/CHEBI:30763",
+              "http://identifiers.org/chebi/CHEBI:16796"
+  ArH version "http://identifiers.org/kegg.compound/C00156",
+              "http://identifiers.org/kegg.compound/C01598"
+  coII hypernym "http://identifiers.org/interpro/IPR000823",
+                "http://identifiers.org/pirsf/PIRSF000293"
+  Ar version "http://identifiers.org/chebi/CHEBI:17879",
+             "http://identifiers.org/chebi/CHEBI:16796"
+  Ar version "http://identifiers.org/kegg.compound/C00156",
+             "http://identifiers.org/kegg.compound/C01598"
+  NADrad hypernym "http://identifiers.org/chebi/CHEBI:15846",
+                  "http://identifiers.org/kegg.compound/C00003"
+  super identity "http://identifiers.org/chebi/CHEBI:18421",
+                 "http://identifiers.org/kegg.compound/C00704"
+  coIII hypernym "http://identifiers.org/interpro/IPR000823",
+                 "http://identifiers.org/pirsf/PIRSF000293"
+  per2 hypernym "http://identifiers.org/interpro/IPR000823",
+                "http://identifiers.org/pirsf/PIRSF000293"
+  NAD2 part "http://identifiers.org/chebi/CHEBI:15846"
+  NAD2 part "http://identifiers.org/kegg.compound/C00003"
+  NAD identity "http://identifiers.org/chebi/CHEBI:15846",
+               "http://identifiers.org/kegg.compound/C00003"
+  O2g identity "http://identifiers.org/chebi/CHEBI:15379",
+               "http://identifiers.org/kegg.compound/C00007"
+  NADHres identity "http://identifiers.org/chebi/CHEBI:16908",
+                   "http://identifiers.org/kegg.compound/C00004"
+  v1 identity "http://identifiers.org/kegg.reaction/R07171"
+  v1 hypernym "http://identifiers.org/ec-code/1.6.3.1"
+  v7 identity "http://identifiers.org/kegg.reaction/R00275"
+  v7 hypernym "http://identifiers.org/ec-code/1.15.1.1"
 end
+
+Olsen2003_peroxidase is "Olsen2003_peroxidase"
+
+Olsen2003_peroxidase model_entity_is "http://identifiers.org/biomodels.db/MODEL6623265463"
+Olsen2003_peroxidase model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000046"
+Olsen2003_peroxidase description "http://identifiers.org/pubmed/12823550"
+Olsen2003_peroxidase origin "http://identifiers.org/pubmed/11901676"
+Olsen2003_peroxidase taxon "http://identifiers.org/taxonomy/3704"
+Olsen2003_peroxidase hypernym "http://identifiers.org/go/GO:0016692"

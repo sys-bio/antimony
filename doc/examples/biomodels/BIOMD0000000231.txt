@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Valero2006_Adenine_TernaryCycle()
 
   // Compartments and Species:
@@ -7,9 +7,9 @@ model *Valero2006_Adenine_TernaryCycle()
   species NADH in compartment_, $Lac in compartment_;
 
   // Reactions:
-  v1: ATP -> AMP; (Vmapp1*ATP)/(Kmapp1 + ATP);
-  v2: ATP + AMP -> 2ADP; (Vm2*ATP*AMP)/(K + Km2ATP*AMP + Km2AMP*ATP + ATP*AMP);
-  v3: ADP -> ATP + Pyr; (Vmapp3*ADP)/(Kmapp3 + ADP);
+  v1: ATP -> AMP; Vmapp1*ATP/(Kmapp1 + ATP);
+  v2: ATP + AMP -> 2 ADP; Vm2*ATP*AMP/(K + Km2ATP*AMP + Km2AMP*ATP + ATP*AMP);
+  v3: ADP -> ATP + Pyr; Vmapp3*ADP/(Kmapp3 + ADP);
   v4: Pyr + NADH -> $Lac; k4*Pyr;
 
   // Species initializations:
@@ -37,4 +37,42 @@ model *Valero2006_Adenine_TernaryCycle()
   // Other declarations:
   const compartment_, Vmapp1, Kmapp1, Vm2, Km2ATP, Km2AMP, K, Vmapp3, Kmapp3;
   const k4;
+
+  // Display Names:
+  compartment_ is "compartment";
+
+  // SBO terms:
+  ATP.sboTerm = 247
+  AMP.sboTerm = 247
+  ADP.sboTerm = 247
+  Pyr.sboTerm = 14
+  NADH.sboTerm = 247
+  Lac.sboTerm = 14
+
+  // CV terms:
+  ATP hypernym "http://identifiers.org/obo.chebi/CHEBI:15422",
+               "http://identifiers.org/kegg.compound/C00002"
+  AMP hypernym "http://identifiers.org/obo.chebi/CHEBI:16027",
+               "http://identifiers.org/kegg.compound/C00020"
+  ADP hypernym "http://identifiers.org/obo.chebi/CHEBI:16761",
+               "http://identifiers.org/kegg.compound/C00008"
+  Pyr hypernym "http://identifiers.org/interpro/IPR001697"
+  Pyr homolog "http://identifiers.org/uniprot/O62619"
+  NADH hypernym "http://identifiers.org/obo.chebi/CHEBI:16908",
+                "http://identifiers.org/kegg.compound/C00004"
+  Lac hypernym "http://identifiers.org/uniprot/Q2KJG0",
+               "http://identifiers.org/interpro/IPR011304"
+  v1 hypernym "http://identifiers.org/kegg.reaction/R00086"
+  v2 hypernym "http://identifiers.org/kegg.reaction/R00127"
+  v3 hypernym "http://identifiers.org/kegg.reaction/R00200"
+  v4 hypernym "http://identifiers.org/kegg.reaction/R00703"
 end
+
+Valero2006_Adenine_TernaryCycle is "Valero2006_Adenine_TernaryCycle"
+
+Valero2006_Adenine_TernaryCycle model_entity_is "http://identifiers.org/biomodels.db/MODEL5952687775"
+Valero2006_Adenine_TernaryCycle model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000231"
+Valero2006_Adenine_TernaryCycle description "http://identifiers.org/pubmed/16884499"
+Valero2006_Adenine_TernaryCycle taxon "http://identifiers.org/taxonomy/9913"
+Valero2006_Adenine_TernaryCycle hypernym "http://identifiers.org/reactome/REACT_2124"
+Valero2006_Adenine_TernaryCycle hypernym "http://identifiers.org/obo.go/GO:0046085"

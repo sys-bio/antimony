@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *MODEL1406130001()
 
   // Compartments and Species:
@@ -18,8 +18,8 @@ model *MODEL1406130001()
   s22 := s3;
 
   // Reactions:
-  re30: $s22 => s4; s9/(K_PFKL_f26bp + s9)*(K_PFKL_akg/(K_PFKL_akg + s7))*(K_PFKL_pep/(K_PFKL_pep + s5))*(K_PFKL_cit/(K_PFKL_cit + s10))*(K_PFKL_icit/(K_PFKL_icit + s6))*(K_PFKL_mal/(K_PFKL_mal + s8))*(s13/(K_PFKL_PHOS_S775 + s13))*((Vf_PFKL*s22)/(K_PFKL_f6p + s22));
-  re31: s4 => $s22; K_FBPase_f26bp/(K_FBPase_f26bp + s9)*(s10/(K_FBPase_cit + s10))*((Vf_FBPase*s4)/(K_FBPase_f16bp + s4));
+  re30: $s22 => s4; (s9/(K_PFKL_f26bp + s9))*(K_PFKL_akg/(K_PFKL_akg + s7))*(K_PFKL_pep/(K_PFKL_pep + s5))*(K_PFKL_cit/(K_PFKL_cit + s10))*(K_PFKL_icit/(K_PFKL_icit + s6))*(K_PFKL_mal/(K_PFKL_mal + s8))*(s13/(K_PFKL_PHOS_S775 + s13))*(Vf_PFKL*s22/(K_PFKL_f6p + s22));
+  re31: s4 => $s22; (K_FBPase_f26bp/(K_FBPase_f26bp + s9))*(s10/(K_FBPase_cit + s10))*(Vf_FBPase*s4/(K_FBPase_f16bp + s4));
   re32: s4 => s11; k_ALDO*s4;
   re33: s8 => s14; -k_mal;
   re34: s7 => s15; -k_akg;
@@ -160,11 +160,11 @@ model *MODEL1406130001()
   re43_k1 has dimensionless;
   re43_k2 = 0.408127912886804;
   re43_k2 has dimensionless;
-  re44_k1 = 3.88248960751442e-005;
+  re44_k1 = 3.88248960751442e-05;
   re44_k1 has dimensionless;
   re45_k1 = 0.28442597446931;
   re45_k1 has dimensionless;
-  re46_k1 = 1.00000000282413e-005;
+  re46_k1 = 1.00000000282413e-05;
   re46_k1 has dimensionless;
   re47_k1 = 0.0948960328385619;
   re47_k1 has dimensionless;
@@ -172,7 +172,7 @@ model *MODEL1406130001()
   re48_k1 has dimensionless;
   re49_k1 = 7.70618517548016;
   re49_k1 has dimensionless;
-  re50_k1 = 1.00277786609339e-005;
+  re50_k1 = 1.00277786609339e-05;
   re50_k1 has dimensionless;
   re51_k1 = 0.00792717614041237;
   re51_k1 has substance;
@@ -246,4 +246,64 @@ model *MODEL1406130001()
   s37 is "sa27_degraded";
   s38 is "sa26_degraded";
   s22 is "F6P_proxy";
+
+  // SBO terms:
+  s11.sboTerm = 291
+  s14.sboTerm = 291
+  s15.sboTerm = 291
+  s16.sboTerm = 291
+  s17.sboTerm = 291
+  s18.sboTerm = 291
+  s21.sboTerm = 291
+  s19.sboTerm = 291
+  s36.sboTerm = 291
+  s37.sboTerm = 291
+  s38.sboTerm = 291
+
+  // CV terms:
+  default hypernym "http://identifiers.org/go/GO:0005623"
+  s1 identity "http://identifiers.org/uniprot/P17858"
+  s2 identity "http://identifiers.org/uniprot/P09467"
+  s3 identity "http://identifiers.org/chebi/CHEBI:15946"
+  s4 identity "http://identifiers.org/chebi/CHEBI:16905"
+  s5 identity "http://identifiers.org/chebi/CHEBI:18021"
+  s6 identity "http://identifiers.org/chebi/CHEBI:30887"
+  s7 identity "http://identifiers.org/chebi/CHEBI:30915"
+  s8 identity "http://identifiers.org/chebi/CHEBI:6650"
+  s9 identity "http://identifiers.org/chebi/CHEBI:28602"
+  s10 identity "http://identifiers.org/chebi/CHEBI:30769"
+  s12 identity "http://identifiers.org/uniprot/P04075"
+  s13 hypernym "http://identifiers.org/uniprot/P17858"
+  s13 property "http://identifiers.org/pato/PATO:0002220"
+  s23 identity "http://identifiers.org/uniprot/P06213"
+  s24 hypernym "http://identifiers.org/uniprot/P06213"
+  s25 hypernym "http://identifiers.org/uniprot/P06213"
+  s25 part "http://identifiers.org/chebi/CHEBI:36080"
+  s26 hypernym "http://identifiers.org/uniprot/P06213"
+  s26 part "http://identifiers.org/chebi/CHEBI:36080"
+  s27 hypernym "http://identifiers.org/uniprot/P06213"
+  s27 part "http://identifiers.org/chebi/CHEBI:36080"
+  s28 identity "http://identifiers.org/uniprot/P31749"
+  s29 hypernym "http://identifiers.org/uniprot/P31749"
+  s29 property "http://identifiers.org/pato/PATO:0002220"
+  s30 identity "http://identifiers.org/uniprot/P42345"
+  s31 hypernym "http://identifiers.org/uniprot/P42345"
+  s31 property "http://identifiers.org/pato/PATO:0002220"
+  s32 identity "http://identifiers.org/uniprot/P23443"
+  s33 property "http://identifiers.org/pato/PATO:0002220"
+  s33 identity "http://identifiers.org/uniprot/P23443"
+  s34 identity "http://identifiers.org/chebi/CHEBI:36080"
+  s35 hypernym "http://identifiers.org/chebi/CHEBI:36080"
+  s35 property "http://identifiers.org/pato/PATO:0002220"
+  s22 hypernym "http://identifiers.org/chebi/CHEBI:57579"
 end
+
+MODEL1406130001 is "Yugi2014 - Insulin induced signalling (PFKL phosphorylation) - model 2"
+
+MODEL1406130001 model_entity_is "http://identifiers.org/biomodels.db/MODEL1406130001"
+MODEL1406130001 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000541"
+MODEL1406130001 description "http://identifiers.org/pubmed/25131207"
+MODEL1406130001 origin "http://identifiers.org/biomodels.db/MODEL1204060000"
+MODEL1406130001 taxon "http://identifiers.org/taxonomy/131567"
+MODEL1406130001 hypernym "http://identifiers.org/go/GO:0032868",
+                         "http://identifiers.org/go/GO:0006110"

@@ -1,7 +1,9 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 function function_1(substrate, Km, V)
-  (V*substrate)/(Km + substrate);
+  V*substrate/(Km + substrate);
 end
+
+function_1 is "Henri-Michaelis-Menten (irreversible)"
 
 
 model *Model_1()
@@ -17,14 +19,14 @@ model *Model_1()
   parameter_9 := 0.135*parameter_8;
 
   // Reactions:
-  reaction_1: species_1 => 0.574species_7 + 0.144species_8 + 0.05species_9 + 0.012species_10 + 0.162species_11 + 0.04species_12 + 0.014species_13 + 0.004species_14; compartment_1*function_1(species_1, parameter_1, parameter_2);
-  reaction_2: species_1 => 0.751species_7 + 0.023species_8 + 0.025species_9 + 0.015species_10 + 0.127species_11 + 0.026species_12 + 0.018species_13 + 0.016species_14; compartment_1*function_1(species_1, parameter_3, parameter_4);
-  reaction_3: species_1 => 0.068species_7 + 0.059species_8 + 0.136species_9 + 0.107species_10 + 0.218species_11 + 0.218species_12 + 0.098species_13 + 0.097species_14; compartment_1*function_1(species_1, parameter_5, parameter_6);
+  reaction_1: species_1 => 0.574 species_7 + 0.144 species_8 + 0.05 species_9 + 0.012 species_10 + 0.162 species_11 + 0.04 species_12 + 0.014 species_13 + 0.004 species_14; compartment_1*function_1(species_1, parameter_1, parameter_2);
+  reaction_2: species_1 => 0.751 species_7 + 0.023 species_8 + 0.025 species_9 + 0.015 species_10 + 0.127 species_11 + 0.026 species_12 + 0.018 species_13 + 0.016 species_14; compartment_1*function_1(species_1, parameter_3, parameter_4);
+  reaction_3: species_1 => 0.068 species_7 + 0.059 species_8 + 0.136 species_9 + 0.107 species_10 + 0.218 species_11 + 0.218 species_12 + 0.098 species_13 + 0.097 species_14; compartment_1*function_1(species_1, parameter_5, parameter_6);
   reaction_4: species_7 => species_15; compartment_1*function_1(species_7, parameter_7, parameter_8);
   reaction_5: species_8 => species_15; compartment_1*function_1(species_8, parameter_7, parameter_9);
 
   // Species initializations:
-  species_1 = 6.69999967735732e-005;
+  species_1 = 6.69999967735732e-05;
   species_7 = 0;
   species_8 = 0;
   species_9 = 0;
@@ -85,4 +87,41 @@ model *Model_1()
   reaction_3 is "LOX3";
   reaction_4 is "HPL";
   reaction_5 is "HPL(RZE)";
+
+  // SBO terms:
+  compartment_1.sboTerm = 290
+  species_1.sboTerm = 247
+  species_7.sboTerm = 247
+  species_8.sboTerm = 247
+  species_9.sboTerm = 247
+  species_10.sboTerm = 247
+  species_11.sboTerm = 247
+  species_12.sboTerm = 247
+  species_13.sboTerm = 247
+  species_14.sboTerm = 247
+  species_15.sboTerm = 247
+
+  // CV terms:
+  compartment_1 hypernym "http://identifiers.org/go/GO:0005623"
+  species_1 hypernym "http://identifiers.org/chebi/CHEBI:17351"
+  species_7 version "http://identifiers.org/chebi/CHEBI:35923"
+  species_8 version "http://identifiers.org/chebi/CHEBI:35923"
+  species_9 version "http://identifiers.org/chebi/CHEBI:35923"
+  species_10 version "http://identifiers.org/chebi/CHEBI:35923"
+  species_11 version "http://identifiers.org/chebi/CHEBI:35923"
+  species_12 version "http://identifiers.org/chebi/CHEBI:35923"
+  species_13 version "http://identifiers.org/chebi/CHEBI:35923"
+  species_14 version "http://identifiers.org/chebi/CHEBI:35923"
+  species_15 hypernym "http://identifiers.org/pubchem.compound/6184"
+  reaction_1 hypernym "http://identifiers.org/go/GO:0050665"
+  reaction_2 hypernym "http://identifiers.org/go/GO:0050665"
+  reaction_3 hypernym "http://identifiers.org/go/GO:0050665"
 end
+
+Model_1 is "Mellor2012_LipooxygenasePathway"
+
+Model_1 model_entity_is "http://identifiers.org/biomodels.db/MODEL1203230000"
+Model_1 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000415"
+Model_1 description "http://identifiers.org/pubmed/21535565"
+Model_1 hypernym "http://identifiers.org/go/GO:0019372"
+Model_1 taxon "http://identifiers.org/taxonomy/3847"

@@ -1,9 +1,9 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Bertram2000_PancreaticBetaCells_Oscillations()
 
   // Compartments and Species:
-  compartment Compartment_;
-  species $V in Compartment_, $n in Compartment_, $s1 in Compartment_, $s2 in Compartment_;
+  compartment Compartment;
+  species $V in Compartment, $n in Compartment, $s1 in Compartment, $s2 in Compartment;
 
   // Assignment Rules:
   ICa := gCa*minf*(V - VCa);
@@ -25,13 +25,13 @@ model *Bertram2000_PancreaticBetaCells_Oscillations()
   s2' = (s2inf - s2)/taus2;
 
   // Species initializations:
-  V = -43/Compartment_;
-  n = 0.03/Compartment_;
-  s1 = 0.1/Compartment_;
-  s2 = 0.434/Compartment_;
+  V = -43/Compartment;
+  n = 0.03/Compartment;
+  s1 = 0.1/Compartment;
+  s2 = 0.434/Compartment;
 
   // Compartment initializations:
-  Compartment_ = 1;
+  Compartment = 1;
 
   // Variable initializations:
   Cm = 4524;
@@ -58,9 +58,50 @@ model *Bertram2000_PancreaticBetaCells_Oscillations()
 
   // Other declarations:
   var ICa, IK, Il, Is1, Is2, ninf, taun, s1inf, s2inf, minf, parameter_1;
-  const Compartment_, Cm, taus1, taus2, Vm, VCa, gCa, sm, gK, VK, lambda;
-  const tnbar, Vn, sn, gs1, Vs1, ss1, Vs2, ss2, gs2, gl, Vl;
+  const Compartment, Cm, taus1, taus2, Vm, VCa, gCa, sm, gK, VK, lambda, tnbar;
+  const Vn, sn, gs1, Vs1, ss1, Vs2, ss2, gs2, gl, Vl;
 
   // Display Names:
   parameter_1 is "I1+I2";
+
+  // SBO terms:
+  V.sboTerm = 259
+  Cm.sboTerm = 258
+  taus1.sboTerm = 9
+  taus2.sboTerm = 9
+  Vm.sboTerm = 9
+  VCa.sboTerm = 9
+  gCa.sboTerm = 9
+  sm.sboTerm = 9
+  VK.sboTerm = 9
+  lambda.sboTerm = 9
+  tnbar.sboTerm = 9
+  Vn.sboTerm = 9
+  sn.sboTerm = 9
+  gs1.sboTerm = 9
+  Vs1.sboTerm = 9
+  ss1.sboTerm = 9
+  Vs2.sboTerm = 9
+  ss2.sboTerm = 9
+  gs2.sboTerm = 9
+  gl.sboTerm = 9
+  Vl.sboTerm = 9
+
+  // CV terms:
+  V hypernym "http://identifiers.org/pato/PATO:0001462"
+  n hypernym "http://identifiers.org/go/GO:0005251"
+  s1 hypernym "http://identifiers.org/pato/PATO:0001227"
+  s2 hypernym "http://identifiers.org/pato/PATO:0001227"
 end
+
+Bertram2000_PancreaticBetaCells_Oscillations is "Bertram2000_PancreaticBetaCells_Oscillations"
+
+Bertram2000_PancreaticBetaCells_Oscillations model_entity_is "http://identifiers.org/biomodels.db/MODEL0911270001"
+Bertram2000_PancreaticBetaCells_Oscillations model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000377"
+Bertram2000_PancreaticBetaCells_Oscillations description "http://identifiers.org/pubmed/11106596"
+Bertram2000_PancreaticBetaCells_Oscillations origin "http://identifiers.org/pubmed/1850840"
+Bertram2000_PancreaticBetaCells_Oscillations hypernym "http://identifiers.org/go/GO:0061469",
+                                                      "http://identifiers.org/go/GO:0044342",
+                                                      "http://identifiers.org/go/GO:0003323"
+Bertram2000_PancreaticBetaCells_Oscillations container "http://identifiers.org/bto/BTO:0000783"
+Bertram2000_PancreaticBetaCells_Oscillations taxon "http://identifiers.org/taxonomy/9606"

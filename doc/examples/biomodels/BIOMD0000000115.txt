@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *model_0000001()
 
   // Compartments and Species:
@@ -9,7 +9,7 @@ model *model_0000001()
   fy := y^n/(a^n + y^n);
 
   // Reactions:
-  reaction_0000001:  => y; gamma*Cytosol;
+  reaction_0000001:  => y; gamma_*Cytosol;
   reaction_0000002: x => y; Cytosol*k*(x - y);
   reaction_0000003: y => x; k1*y*ER;
   reaction_0000004: x => y; alpha*fy*(x - y)*Cytosol;
@@ -31,11 +31,11 @@ model *model_0000001()
   a = 1.4;
   k1 = 2;
   beta = 1;
-  gamma = 1;
+  gamma_ = 1;
 
   // Other declarations:
   var fy;
-  const Cytosol, ER, Extracellular, k, alpha, n, a, k1, beta, gamma;
+  const Cytosol, ER, Extracellular, k, alpha, n, a, k1, beta, gamma_;
 
   // Display Names:
   ER is "Endoplasmic Reticulum";
@@ -46,4 +46,37 @@ model *model_0000001()
   reaction_0000003 is "Ca transport from Cytosol to ER";
   reaction_0000004 is "InsP3 channel";
   reaction_0000005 is "Ca pumped ouside the cell";
+
+  // CV terms:
+  Cytosol hypernym "http://identifiers.org/go/GO:0005829"
+  ER hypernym "http://identifiers.org/go/GO:0005783"
+  Extracellular hypernym "http://identifiers.org/go/GO:0005576"
+  x identity "http://identifiers.org/chebi/CHEBI:29108",
+             "http://identifiers.org/kegg.compound/C00076"
+  y identity "http://identifiers.org/chebi/CHEBI:29108",
+             "http://identifiers.org/kegg.compound/C00076"
+  reaction_0000001 hypernym "http://identifiers.org/go/GO:0006816",
+                            "http://identifiers.org/go/GO:0007204"
+  reaction_0000002 hypernym "http://identifiers.org/go/GO:0032471",
+                            "http://identifiers.org/go/GO:0007204",
+                            "http://identifiers.org/go/GO:0006816"
+  reaction_0000003 hypernym "http://identifiers.org/go/GO:0032470",
+                            "http://identifiers.org/go/GO:0006816",
+                            "http://identifiers.org/go/GO:0051481"
+  reaction_0000004 hypernym "http://identifiers.org/go/GO:0006816",
+                            "http://identifiers.org/go/GO:0051482",
+                            "http://identifiers.org/go/GO:0005220"
+  reaction_0000005 hypernym "http://identifiers.org/go/GO:0051481",
+                            "http://identifiers.org/go/GO:0006816",
+                            "http://identifiers.org/go/GO:0005388"
 end
+
+model_0000001 is "Somogyi1990_CaOscillations_SingleCaSpike"
+
+model_0000001 model_entity_is "http://identifiers.org/biomodels.db/MODEL8910960676"
+model_0000001 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000115"
+model_0000001 description "http://identifiers.org/pubmed/1904060"
+model_0000001 taxon "http://identifiers.org/taxonomy/10114"
+model_0000001 hypernym "http://identifiers.org/go/GO:0051924",
+                       "http://identifiers.org/go/GO:0009755",
+                       "http://identifiers.org/go/GO:0019722"

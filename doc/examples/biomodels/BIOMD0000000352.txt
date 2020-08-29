@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Vernoux2011_AuxinSignalling_AuxinFluctuating()
 
   // Compartments and Species:
@@ -7,7 +7,7 @@ model *Vernoux2011_AuxinSignalling_AuxinFluctuating()
   species D_IA in compartment_0000001, R in compartment_0000001, $aux in compartment_0000001;
 
   // Assignment Rules:
-  aux := 1.11*sin((2*3.1416)/800*(time - 200)) + 1.11;
+  aux := 1.11*sin((2*3.1416/800)*(time - 200)) + 1.11;
   kprime_IA := K_IA*k_IA;
   kprime_II := K_II*k_II;
   aux_basal := 1/(K_aux*(gamma_I - 1));
@@ -15,16 +15,16 @@ model *Vernoux2011_AuxinSignalling_AuxinFluctuating()
   // Reactions:
   reac_DIA: A + I -> D_IA; k_IA*I*A - kprime_IA*D_IA;
   reac_DII: I + I -> D_II; k_II*I*I - kprime_II*D_II;
-  reac_degrI: I => ; (gamma_I*d_I*K_aux*aux)/(K_aux*aux + 1)*I;
+  reac_degrI: I => ; (gamma_I*d_I*K_aux*aux/(K_aux*aux + 1))*I;
   reac_degrA: A => ; d_A*A;
   reac_degrDIA: D_IA => ; d_IA*D_IA;
   reac_degrDII: D_II => ; d_II*D_II;
-  reac_DIAxA: D_IA => A; (gamma_I*d_I*K_aux*aux)/(K_aux*aux + 1)*D_IA;
-  reac_DIIxI: D_II => I; (gamma_I*d_I*K_aux*aux)/(K_aux*aux + 1)*D_II;
+  reac_DIAxA: D_IA => A; (gamma_I*d_I*K_aux*aux/(K_aux*aux + 1))*D_IA;
+  reac_DIIxI: D_II => I; (gamma_I*d_I*K_aux*aux/(K_aux*aux + 1))*D_II;
   reac_degrR: R => ; d_r*R;
   reac_prodI:  => I; pi_I*R;
   reac_prodA:  => A; pi_A;
-  reac_prodR:  => R; (1 + f_c/B_d*A*(1 + (w_A*f_A*A)/B_d))/(1 + A/B_d*(1 + (w_A*A)/B_d) + (w_I*A*I)/(K_IA*B_d) + (w_D*D_IA)/B_d + k_Am);
+  reac_prodR:  => R; (1 + (f_c/B_d)*A*(1 + w_A*f_A*A/B_d))/(1 + (A/B_d)*(1 + w_A*A/B_d) + w_I*A*I/(K_IA*B_d) + w_D*D_IA/B_d + k_Am);
 
   // Species initializations:
   I = 10;
@@ -71,4 +71,78 @@ model *Vernoux2011_AuxinSignalling_AuxinFluctuating()
   D_IA is "Aux/IAA:ARF";
   R is "mRNA";
   aux is "auxin";
+
+  // SBO terms:
+  compartment_0000001.sboTerm = 290
+  I.sboTerm = 252
+  A.sboTerm = 252
+  D_II.sboTerm = 286
+  D_IA.sboTerm = 297
+  R.sboTerm = 278
+  aux.sboTerm = 252
+  pi_I.sboTerm = 153
+  d_r.sboTerm = 356
+  d_A.sboTerm = 356
+  d_II.sboTerm = 356
+  d_IA.sboTerm = 356
+  k_II.sboTerm = 341
+  k_IA.sboTerm = 341
+  B_d.sboTerm = 282
+  f_A.sboTerm = 9
+  gamma_I.sboTerm = 9
+  K_aux.sboTerm = 282
+  K_II.sboTerm = 282
+  K_IA.sboTerm = 282
+  f_c.sboTerm = 9
+  w_A.sboTerm = 481
+  w_I.sboTerm = 481
+  w_D.sboTerm = 481
+  d_I.sboTerm = 356
+  pi_A.sboTerm = 153
+  k_Am.sboTerm = 9
+  kprime_IA.sboTerm = 338
+  kprime_II.sboTerm = 338
+  aux_basal.sboTerm = 9
+  reac_DIA.sboTerm = 526
+  reac_DII.sboTerm = 526
+  reac_degrI.sboTerm = 179
+  reac_degrA.sboTerm = 179
+  reac_degrDIA.sboTerm = 179
+  reac_degrDII.sboTerm = 179
+  reac_DIAxA.sboTerm = 180
+  reac_DIIxI.sboTerm = 180
+  reac_degrR.sboTerm = 179
+  reac_prodI.sboTerm = 393
+  reac_prodA.sboTerm = 393
+  reac_prodR.sboTerm = 393
+
+  // CV terms:
+  compartment_0000001 hypernym "http://identifiers.org/obo.go/GO:0005623"
+  I hypernym "http://identifiers.org/uniprot/P49677"
+  A hypernym "http://identifiers.org/uniprot/Q94JM3"
+  D_II part "http://identifiers.org/uniprot/P49677"
+  D_IA part "http://identifiers.org/uniprot/P49677",
+            "http://identifiers.org/uniprot/Q94JM3"
+  R hypernym "http://identifiers.org/obo.chebi/CHEBI:33699"
+  aux hypernym "http://identifiers.org/uniprot/Q96247"
+  reac_DIA hypernym "http://identifiers.org/obo.go/GO:0006461"
+  reac_DII hypernym "http://identifiers.org/obo.go/GO:0006461"
+  reac_degrI hypernym "http://identifiers.org/obo.go/GO:0009056"
+  reac_degrA hypernym "http://identifiers.org/obo.go/GO:0009056"
+  reac_degrDIA hypernym "http://identifiers.org/obo.go/GO:0009056"
+  reac_degrDII hypernym "http://identifiers.org/obo.go/GO:0009056"
+  reac_DIAxA hypernym "http://identifiers.org/obo.go/GO:0043241"
+  reac_DIIxI hypernym "http://identifiers.org/obo.go/GO:0043241"
+  reac_degrR hypernym "http://identifiers.org/obo.go/GO:0009056"
+  reac_prodI hypernym "http://identifiers.org/obo.go/GO:0009058"
+  reac_prodA hypernym "http://identifiers.org/obo.go/GO:0009058"
+  reac_prodR hypernym "http://identifiers.org/obo.go/GO:0009299"
 end
+
+Vernoux2011_AuxinSignalling_AuxinFluctuating is "Vernoux2011_AuxinSignaling_AuxinFluctuating"
+
+Vernoux2011_AuxinSignalling_AuxinFluctuating model_entity_is "http://identifiers.org/biomodels.db/MODEL1108110000"
+Vernoux2011_AuxinSignalling_AuxinFluctuating model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000352"
+Vernoux2011_AuxinSignalling_AuxinFluctuating description "http://identifiers.org/pubmed/21734647"
+Vernoux2011_AuxinSignalling_AuxinFluctuating taxon "http://identifiers.org/taxonomy/3701"
+Vernoux2011_AuxinSignalling_AuxinFluctuating hypernym "http://identifiers.org/obo.go/GO:0009734"

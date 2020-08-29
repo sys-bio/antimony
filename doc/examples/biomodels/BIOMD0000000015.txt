@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *BIOMD0000000015()
 
   // Compartments and Species:
@@ -7,20 +7,20 @@ model *BIOMD0000000015()
   substanceOnly species SAM in cell, Ade in cell, XMP in cell, GTP in cell;
   substanceOnly species dATP in cell, dGTP in cell, RNA in cell, DNA_ in cell;
   substanceOnly species HX in cell, Xa in cell, Gua in cell, UA in cell, $R5P in cell;
-  substanceOnly species $Pi_ in cell;
+  substanceOnly species $Pi in cell;
 
   // Reactions:
   ada: ATP => HX; ada_aada*ATP^ada_fada4;
   ade: Ade => ; ade_aade*Ade^ade_fade6;
   adna: dATP => DNA_; adna_aadna*dATP^adna_fdnap9*dGTP^adna_fdnap10;
   adrnr: ATP => dATP; adrnr_aadrnr*ATP^adrnr_fadrnr4*dATP^adrnr_fadrnr9*dGTP^adrnr_fadrnr10;
-  ampd: ATP => IMP; ampd_aampd*ATP^ampd_fampd4*GTP^ampd_fampd8*Pi_^ampd_fampd18;
+  ampd: ATP => IMP; ampd_aampd*ATP^ampd_fampd4*GTP^ampd_fampd8*Pi^ampd_fampd18;
   aprt: PRPP + Ade => ATP; aprt_aaprt*PRPP^aprt_faprt1*ATP^aprt_faprt4*Ade^aprt_faprt6;
   arna: ATP => RNA; arna_aarna*ATP^arna_frnap4*GTP^arna_frnap8;
-  asuc: IMP => SAMP; asuc_aasuc*IMP^asuc_fasuc2*ATP^asuc_fasuc4*GTP^asuc_fasuc8*Pi_^asuc_fasuc18;
+  asuc: IMP => SAMP; asuc_aasuc*IMP^asuc_fasuc2*ATP^asuc_fasuc4*GTP^asuc_fasuc8*Pi^asuc_fasuc18;
   asli: SAMP => ATP; asli_aasli*SAMP^asli_fasli3*ATP^asli_fasli4;
   dada: dATP => HX; dada_adada*dATP^dada_fdada9;
-  den: PRPP => IMP; den_aden*PRPP^den_fden1*IMP^den_fden2*ATP^den_fden4*GTP^den_fden8*Pi_^den_fden18;
+  den: PRPP => IMP; den_aden*PRPP^den_fden1*IMP^den_fden2*ATP^den_fden4*GTP^den_fden8*Pi^den_fden18;
   dgnuc: dGTP => Gua; dgnuc_adgnuc*dGTP^dgnuc_fdgnuc10;
   dnaa: DNA_ => dATP; dnaa_adnaa*DNA_^dnaa_fdnan12;
   dnag: DNA_ => dGTP; dnag_adnag*DNA_^dnag_fdnan12;
@@ -28,7 +28,7 @@ model *BIOMD0000000015()
   gdrnr: GTP => dGTP; gdrnr_agdrnr*GTP^gdrnr_fgdrnr8*dATP^gdrnr_fgdrnr9*dGTP^gdrnr_fgdrnr10;
   gmpr: GTP => IMP; gmpr_agmpr*IMP^gmpr_fgmpr2*ATP^gmpr_fgmpr4*XMP^gmpr_fgmpr7*GTP^gmpr_fgmpr8;
   gmps: XMP => GTP; gmps_agmps*ATP^gmps_fgmps4*XMP^gmps_fgmps7;
-  gnuc: GTP => Gua; gnuc_agnuc*GTP^gnuc_fgnuc8*Pi_^gnuc_fgnuc18;
+  gnuc: GTP => Gua; gnuc_agnuc*GTP^gnuc_fgnuc8*Pi^gnuc_fgnuc18;
   gprt: Gua + PRPP => GTP; gprt_agprt*PRPP^gprt_fgprt1*GTP^gprt_fgprt8*Gua^gprt_fgprt15;
   grna: GTP => RNA; grna_agrna*ATP^grna_frnap4*GTP^grna_frnap8;
   gua: Gua => Xa; gua_agua*Gua^gua_fgua15;
@@ -36,10 +36,10 @@ model *BIOMD0000000015()
   hx: HX => ; hx_ahx*HX^hx_fhx13;
   hxd: HX => Xa; hxd_ahxd*HX^hxd_fhxd13;
   impd: IMP => XMP; impd_aimpd*IMP^impd_fimpd2*XMP^impd_fimpd7*GTP^impd_fimpd8;
-  inuc: IMP => HX; inuc_ainuc*IMP^inuc_finuc2*Pi_^inuc_finuc18;
+  inuc: IMP => HX; inuc_ainuc*IMP^inuc_finuc2*Pi^inuc_finuc18;
   mat: ATP => SAM; mat_amat*ATP^mat_fmat4*SAM^mat_fmat5;
   polyam: SAM => Ade; polyam_apolyam*SAM^polyam_fpolyam5;
-  prpps: $R5P => PRPP; prpps_aprpps*PRPP^prpps_fprpps1*ATP^prpps_fprpps4*GTP^prpps_fprpps8*R5P^prpps_fprpps17*Pi_^prpps_fprpps18;
+  prpps: $R5P => PRPP; prpps_aprpps*PRPP^prpps_fprpps1*ATP^prpps_fprpps4*GTP^prpps_fprpps8*R5P^prpps_fprpps17*Pi^prpps_fprpps18;
   pyr: PRPP => ; pyr_apyr*PRPP^pyr_fpyr1;
   rnaa: RNA => ATP; rnaa_arnaa*RNA^rnaa_frnan11;
   rnag: RNA => GTP; rnag_arnag*RNA^rnag_frnan11;
@@ -66,7 +66,7 @@ model *BIOMD0000000015()
   Gua = 5.50638/cell;
   UA = 100.293/cell;
   R5P = 18/cell;
-  Pi_ = 1400/cell;
+  Pi = 1400/cell;
 
   // Compartment initializations:
   cell = 1;
@@ -177,7 +177,7 @@ model *BIOMD0000000015()
   rnag_frnan11 = 1;
   trans_atrans = 8.8539;
   trans_ftrans5 = 0.33;
-  ua_aua = 8.744e-005;
+  ua_aua = 8.744e-05;
   ua_fua16 = 2.21;
   x_ax = 0.0012;
   x_fx14 = 2;
@@ -209,5 +209,203 @@ model *BIOMD0000000015()
   Gua is "guanine";
   UA is "uric acid";
   R5P is "ribose-5-phosphate";
-  Pi_ is "phosphate";
+  Pi is "phosphate";
+
+  // CV terms:
+  cell hypernym "http://identifiers.org/go/GO:0005623"
+  PRPP identity "http://identifiers.org/chebi/CHEBI:17111",
+                "http://identifiers.org/kegg.compound/C00119"
+  IMP identity "http://identifiers.org/chebi/CHEBI:17202",
+               "http://identifiers.org/kegg.compound/C00130"
+  SAMP identity "http://identifiers.org/chebi/CHEBI:15919",
+                "http://identifiers.org/kegg.compound/C03794"
+  ATP part "http://identifiers.org/chebi/CHEBI:15422",
+           "http://identifiers.org/chebi/CHEBI:16335",
+           "http://identifiers.org/chebi/CHEBI:16027",
+           "http://identifiers.org/chebi/CHEBI:16761"
+  ATP part "http://identifiers.org/kegg.compound/C00008",
+           "http://identifiers.org/kegg.compound/C00212",
+           "http://identifiers.org/kegg.compound/C00020",
+           "http://identifiers.org/kegg.compound/C00002",
+           "http://identifiers.org/chebi/CHEBI:16761"
+  SAM identity "http://identifiers.org/chebi/CHEBI:15414",
+               "http://identifiers.org/kegg.compound/C00019"
+  Ade identity "http://identifiers.org/chebi/CHEBI:16708",
+               "http://identifiers.org/kegg.compound/C00147"
+  XMP identity "http://identifiers.org/chebi/CHEBI:15652",
+               "http://identifiers.org/kegg.compound/C00655"
+  GTP part "http://identifiers.org/kegg.compound/C00035",
+           "http://identifiers.org/kegg.compound/C00144",
+           "http://identifiers.org/kegg.compound/C00044",
+           "http://identifiers.org/chebi/CHEBI:17552"
+  GTP part "http://identifiers.org/chebi/CHEBI:17345",
+           "http://identifiers.org/chebi/CHEBI:17552",
+           "http://identifiers.org/chebi/CHEBI:15996"
+  dATP part "http://identifiers.org/kegg.compound/C00131",
+            "http://identifiers.org/kegg.compound/C00206",
+            "http://identifiers.org/kegg.compound/C00360",
+            "http://identifiers.org/kegg.compound/C00559",
+            "http://identifiers.org/chebi/CHEBI:16284"
+  dATP part "http://identifiers.org/chebi/CHEBI:16284",
+            "http://identifiers.org/chebi/CHEBI:16174",
+            "http://identifiers.org/chebi/CHEBI:17256",
+            "http://identifiers.org/chebi/CHEBI:17713"
+  dGTP part "http://identifiers.org/kegg.compound/C00286",
+            "http://identifiers.org/kegg.compound/C00362",
+            "http://identifiers.org/kegg.compound/C00361",
+            "http://identifiers.org/chebi/CHEBI:16497"
+  dGTP part "http://identifiers.org/chebi/CHEBI:28862",
+            "http://identifiers.org/chebi/CHEBI:16192",
+            "http://identifiers.org/chebi/CHEBI:16497"
+  RNA identity "http://identifiers.org/kegg.compound/C00046"
+  DNA_ identity "http://identifiers.org/kegg.compound/C00039",
+                "http://identifiers.org/chebi/CHEBI:16991"
+  HX part "http://identifiers.org/kegg.compound/C00262",
+          "http://identifiers.org/kegg.compound/C05512",
+          "http://identifiers.org/kegg.compound/C00294"
+  HX part "http://identifiers.org/chebi/CHEBI:17596",
+          "http://identifiers.org/chebi/CHEBI:17368",
+          "http://identifiers.org/chebi/CHEBI:28997"
+  Xa identity "http://identifiers.org/chebi/CHEBI:17712",
+              "http://identifiers.org/kegg.compound/C00385"
+  Gua part "http://identifiers.org/kegg.compound/C00242",
+           "http://identifiers.org/kegg.compound/C00330",
+           "http://identifiers.org/kegg.compound/C00387"
+  Gua part "http://identifiers.org/chebi/CHEBI:16450",
+           "http://identifiers.org/chebi/CHEBI:16235",
+           "http://identifiers.org/chebi/CHEBI:17172"
+  UA identity "http://identifiers.org/chebi/CHEBI:17775",
+              "http://identifiers.org/kegg.compound/C00366"
+  R5P identity "http://identifiers.org/chebi/CHEBI:17797",
+               "http://identifiers.org/kegg.compound/C00117"
+  Pi identity "http://identifiers.org/chebi/CHEBI:18367",
+              "http://identifiers.org/kegg.compound/C00009"
+  ada hypernym "http://identifiers.org/ec-code/3.5.4.4"
+  ada version "http://identifiers.org/kegg.reaction/R01560",
+              "http://identifiers.org/reactome/REACT_1687"
+  ade hypernym "http://identifiers.org/go/GO:0006146"
+  adna hypernym "http://identifiers.org/ec-code/2.7.7.7"
+  adna identity "http://identifiers.org/kegg.reaction/R00375"
+  adrnr version "http://identifiers.org/ec-code/1.17.4.2",
+                "http://identifiers.org/ec-code/1.17.4.1",
+                "http://identifiers.org/kegg.reaction/R02017",
+                "http://identifiers.org/kegg.reaction/R02014",
+                "http://identifiers.org/reactome/REACT_2136"
+  ampd identity "http://identifiers.org/kegg.reaction/R00181"
+  ampd hypernym "http://identifiers.org/ec-code/3.5.4.6"
+  aprt hypernym "http://identifiers.org/ec-code/2.4.2.7"
+  aprt identity "http://identifiers.org/kegg.reaction/R00190"
+  arna hypernym "http://identifiers.org/ec-code/2.7.7.6"
+  arna identity "http://identifiers.org/kegg.reaction/R00435"
+  asuc hypernym "http://identifiers.org/ec-code/6.3.4.4"
+  asuc identity "http://identifiers.org/kegg.reaction/R01135",
+                "http://identifiers.org/reactome/REACT_42"
+  asli hypernym "http://identifiers.org/ec-code/4.3.2.2"
+  asli identity "http://identifiers.org/kegg.reaction/R01083",
+                "http://identifiers.org/reactome/REACT_1042"
+  dada hypernym "http://identifiers.org/ec-code/3.5.4.4"
+  dada identity "http://identifiers.org/kegg.reaction/R02556",
+                "http://identifiers.org/reactome/REACT_2135"
+  den part "http://identifiers.org/reactome/REACT_108",
+           "http://identifiers.org/reactome/REACT_812",
+           "http://identifiers.org/reactome/REACT_1463",
+           "http://identifiers.org/reactome/REACT_589",
+           "http://identifiers.org/reactome/REACT_1917",
+           "http://identifiers.org/reactome/REACT_1509",
+           "http://identifiers.org/reactome/REACT_740",
+           "http://identifiers.org/reactome/REACT_285",
+           "http://identifiers.org/reactome/REACT_1427",
+           "http://identifiers.org/reactome/REACT_263"
+  den part "http://identifiers.org/ec-code/2.4.2.14",
+           "http://identifiers.org/ec-code/6.3.4.13",
+           "http://identifiers.org/ec-code/2.1.2.2",
+           "http://identifiers.org/ec-code/6.3.5.3",
+           "http://identifiers.org/ec-code/6.3.3.1",
+           "http://identifiers.org/ec-code/4.1.1.21",
+           "http://identifiers.org/ec-code/6.3.2.6",
+           "http://identifiers.org/ec-code/4.3.2.2",
+           "http://identifiers.org/ec-code/2.1.2.3",
+           "http://identifiers.org/ec-code/3.5.4.10"
+  den part "http://identifiers.org/kegg.reaction/R04144",
+           "http://identifiers.org/kegg.reaction/R04325",
+           "http://identifiers.org/kegg.reaction/R04463",
+           "http://identifiers.org/kegg.reaction/R04208",
+           "http://identifiers.org/kegg.reaction/R04209",
+           "http://identifiers.org/kegg.reaction/R04559",
+           "http://identifiers.org/kegg.reaction/R04560",
+           "http://identifiers.org/kegg.reaction/R04591",
+           "http://identifiers.org/kegg.reaction/R01127",
+           "http://identifiers.org/kegg.reaction/R01072"
+  dgnuc hypernym "http://identifiers.org/ec-code/3.1.3.5"
+  dgnuc identity "http://identifiers.org/kegg.reaction/R01968",
+                 "http://identifiers.org/reactome/REACT_1209"
+  dnaa hypernym "http://identifiers.org/go/GO:0006308"
+  dnag hypernym "http://identifiers.org/go/GO:0006308"
+  gdna identity "http://identifiers.org/kegg.reaction/R00376"
+  gdna hypernym "http://identifiers.org/ec-code/2.7.7.7"
+  gdrnr version "http://identifiers.org/ec-code/1.17.4.2",
+                "http://identifiers.org/ec-code/1.17.4.1",
+                "http://identifiers.org/kegg.reaction/R02019",
+                "http://identifiers.org/kegg.reaction/R02020",
+                "http://identifiers.org/reactome/REACT_906"
+  gmpr hypernym "http://identifiers.org/ec-code/1.7.1.7"
+  gmpr identity "http://identifiers.org/kegg.reaction/R01134"
+  gmps hypernym "http://identifiers.org/ec-code/6.3.5.2"
+  gmps identity "http://identifiers.org/kegg.reaction/R01231",
+                "http://identifiers.org/reactome/REACT_628"
+  gnuc hypernym "http://identifiers.org/ec-code/3.1.3.5"
+  gnuc identity "http://identifiers.org/kegg.reaction/R01227",
+                "http://identifiers.org/reactome/REACT_1774"
+  gprt hypernym "http://identifiers.org/ec-code/2.4.2.7"
+  gprt identity "http://identifiers.org/kegg.reaction/R01229"
+  grna hypernym "http://identifiers.org/ec-code/2.7.7.6"
+  grna identity "http://identifiers.org/kegg.reaction/R00441"
+  gua hypernym "http://identifiers.org/ec-code/3.5.4.3"
+  gua identity "http://identifiers.org/kegg.reaction/R01676",
+               "http://identifiers.org/reactome/REACT_1442"
+  hprt hypernym "http://identifiers.org/ec-code/2.4.2.8"
+  hprt identity "http://identifiers.org/kegg.reaction/R01132"
+  hx hypernym "http://identifiers.org/go/GO:0009114"
+  hxd hypernym "http://identifiers.org/ec-code/1.17.3.2"
+  hxd identity "http://identifiers.org/kegg.reaction/R01769",
+               "http://identifiers.org/reactome/REACT_401"
+  impd hypernym "http://identifiers.org/ec-code/1.1.1.205"
+  impd identity "http://identifiers.org/kegg.reaction/R01130",
+                "http://identifiers.org/reactome/REACT_1488"
+  inuc identity "http://identifiers.org/kegg.reaction/R01126",
+                "http://identifiers.org/reactome/REACT_430"
+  inuc hypernym "http://identifiers.org/ec-code/3.1.3.5"
+  mat identity "http://identifiers.org/kegg.reaction/R00177"
+  mat hypernym "http://identifiers.org/ec-code/2.5.1.6"
+  polyam part "http://identifiers.org/kegg.reaction/R02869",
+              "http://identifiers.org/kegg.reaction/R00178",
+              "http://identifiers.org/kegg.reaction/R01401"
+  polyam part "http://identifiers.org/ec-code/3.2.2.16",
+              "http://identifiers.org/ec-code/2.5.1.22",
+              "http://identifiers.org/ec-code/4.1.1.50"
+  polyam parthood "http://identifiers.org/kegg.pathway/map00330"
+  prpps identity "http://identifiers.org/kegg.reaction/R01049"
+  prpps hypernym "http://identifiers.org/ec-code/2.7.6.1"
+  pyr identity "http://identifiers.org/kegg.reaction/R01870",
+               "http://identifiers.org/reactome/REACT_33"
+  pyr parthood "http://identifiers.org/kegg.pathway/map00240"
+  pyr hypernym "http://identifiers.org/ec-code/2.4.2.10"
+  rnaa hypernym "http://identifiers.org/go/GO:0006401"
+  rnag hypernym "http://identifiers.org/go/GO:0006401"
+  trans identity "http://identifiers.org/go/GO:0008757"
+  ua hypernym "http://identifiers.org/go/GO:0007588"
+  x hypernym "http://identifiers.org/go/GO:0009115"
+  xd identity "http://identifiers.org/kegg.reaction/R02107",
+              "http://identifiers.org/reactome/REACT_624"
+  xd hypernym "http://identifiers.org/ec-code/1.17.3.2"
 end
+
+BIOMD0000000015 is "Curto1998 - purine metabolism"
+
+BIOMD0000000015 model_entity_is "http://identifiers.org/biomodels.db/MODEL6617035399"
+BIOMD0000000015 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000015"
+BIOMD0000000015 description "http://identifiers.org/pubmed/9664759"
+BIOMD0000000015 taxon "http://identifiers.org/taxonomy/9606"
+BIOMD0000000015 identity "http://identifiers.org/kegg.pathway/hsa00230",
+                         "http://identifiers.org/reactome/REACT_522"
+BIOMD0000000015 hypernym "http://identifiers.org/go/GO:0006144"

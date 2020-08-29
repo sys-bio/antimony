@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Fuentes2005_ZymogenActivation()
 
   // Compartments and Species:
@@ -8,10 +8,10 @@ model *Fuentes2005_ZymogenActivation()
   // Reactions:
   v1: z -> w + e; compartment_*v1_k1*z;
   v2: z + e -> ez; compartment_*(v2_k21*e*z - v2_k22*ez);
-  v3: ez -> w + 2e; compartment_*v3_k3*ez;
+  v3: ez -> w + 2 e; compartment_*v3_k3*ez;
 
   // Species initializations:
-  z = 2.4e-005;
+  z = 2.4e-05;
   e = 0;
   w = 0;
   ez = 0;
@@ -37,6 +37,7 @@ model *Fuentes2005_ZymogenActivation()
   unit sec_inv = 1 / second;
 
   // Display Names:
+  compartment_ is "compartment";
   z is "Zymogen";
   e is "Enzyme";
   w is "Peptide";
@@ -44,4 +45,21 @@ model *Fuentes2005_ZymogenActivation()
   v1 is "Intramolecular autoactivation";
   v2 is "Intermolecular autoactivation-Complex formation";
   v3 is "Intermolecular autoactivation-Enzyme release";
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/go/GO:0005623"
+  z parthood "http://identifiers.org/go/GO:0042588"
+  ez hypernym "http://identifiers.org/go/GO:0043234"
+  v1 hypernym "http://identifiers.org/go/GO:0043085"
+  v2 hypernym "http://identifiers.org/go/GO:0019899"
+  v3 hypernym "http://identifiers.org/go/GO:0043085"
 end
+
+Fuentes2005_ZymogenActivation is "Fuentes2005_ZymogenActivation"
+
+Fuentes2005_ZymogenActivation model_entity_is "http://identifiers.org/biomodels.db/MODEL6623597435"
+Fuentes2005_ZymogenActivation model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000092"
+Fuentes2005_ZymogenActivation description "http://identifiers.org/pubmed/15634334"
+Fuentes2005_ZymogenActivation origin "http://identifiers.org/pubmed/7558"
+Fuentes2005_ZymogenActivation identity "http://identifiers.org/go/GO:0031638"
+Fuentes2005_ZymogenActivation taxon "http://identifiers.org/taxonomy/131567"

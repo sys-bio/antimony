@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Sivakumar2011_HedgehogSignalingPathway()
 
   // Compartments and Species:
@@ -12,9 +12,9 @@ model *Sivakumar2011_HedgehogSignalingPathway()
   r52: s140 => s75; kass_r52*s140 - kdiss_r52*s75;
   r55: s158 => s75; kass_r55*s158;
   r7: s7 + s1 -> s21; kass_r7*s7*s1 - kdiss_r7*s21;
-  r14: s69 -> s46; s21*((kcatp_r14/kM_r14_s69*s69 - kcatn_r14/kM_r14_s46*s46)/(1 + s69/kM_r14_s69 + s46/kM_r14_s46));
+  r14: s69 -> s46; s21*(((kcatp_r14/kM_r14_s69)*s69 - (kcatn_r14/kM_r14_s46)*s46)/(1 + s69/kM_r14_s69 + s46/kM_r14_s46));
   r51: s135 + s128 -> s140; kass_r51*s135*s128 - kdiss_r51*s140;
-  r53: s70 -> s70; s48*((kcatp_r53/kM_r53_s70*s70 - kcatn_r53/kM_r53_s70*s70)/(1 + s70/kM_r53_s70 + s70/kM_r53_s70));
+  r53: s70 -> s70; s48*(((kcatp_r53/kM_r53_s70)*s70 - (kcatn_r53/kM_r53_s70)*s70)/(1 + s70/kM_r53_s70 + s70/kM_r53_s70));
   re24: s148 + s150 => s159; s157*kass_re24_s157*s148*s150;
   r15: s46 + s9 -> s48 + s10; s21*(kass_r15_s21*s46*s9 - kdiss_r15_s21*s48*s10);
   r23: s159 -> s68 + s160; s21*(kass_r23_s21*s159 - kdiss_r23_s21*s68*s160);
@@ -114,4 +114,37 @@ model *Sivakumar2011_HedgehogSignalingPathway()
   s159 is "Complex_br_(Costal2/Fused/../microtubule)";
   s160 is "Complex_br_(Su(fu)/Fused/../_br_Smoothened)";
   s161 is "Complex_br_(Su(fu)/Cubitus)";
+
+  // CV terms:
+  s9 hypernym "http://identifiers.org/chebi/CHEBI:15422"
+  s10 hypernym "http://identifiers.org/chebi/CHEBI:16761"
+  s1 hypernym "http://identifiers.org/uniprot/Q13635"
+  s75 description "http://identifiers.org/go/GO:0007228"
+  s135 homolog "http://identifiers.org/uniprot/Q3MHS8"
+  s7 hypernym "http://identifiers.org/uniprot/Q15465"
+  s21 hypernym "http://identifiers.org/go/GO:0043234"
+  s46 hypernym "http://identifiers.org/go/GO:0043234"
+  s48 hypernym "http://identifiers.org/go/GO:0043234"
+  s69 hypernym "http://identifiers.org/go/GO:0043234"
+  s71 hypernym "http://identifiers.org/uniprot/Q92793"
+  s68 identity "http://identifiers.org/go/GO:0005874"
+  s70 homolog "http://identifiers.org/uniprot/B4NUI3"
+  s128 hypernym "http://identifiers.org/go/GO:0043234"
+  s140 hypernym "http://identifiers.org/go/GO:0043234"
+  s150 hypernym "http://identifiers.org/go/GO:0043234"
+  s152 hypernym "http://identifiers.org/go/GO:0005874"
+  s157 hypernym "http://identifiers.org/uniprot/P10523"
+  s158 hypernym "http://identifiers.org/go/GO:0043234"
+  s159 hypernym "http://identifiers.org/go/GO:0043234"
+  s160 hypernym "http://identifiers.org/go/GO:0043234"
 end
+
+Sivakumar2011_HedgehogSignalingPathway is "Sivakumar2011 - Hedgehog Signaling Pathway"
+
+Sivakumar2011_HedgehogSignalingPathway model_entity_is "http://identifiers.org/biomodels.db/MODEL1101270001"
+Sivakumar2011_HedgehogSignalingPathway model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000395"
+Sivakumar2011_HedgehogSignalingPathway description "http://identifiers.org/pubmed/21978399"
+Sivakumar2011_HedgehogSignalingPathway origin "http://identifiers.org/panther.pathway/P00025"
+Sivakumar2011_HedgehogSignalingPathway hypernym "http://identifiers.org/go/GO:0007224"
+Sivakumar2011_HedgehogSignalingPathway taxon "http://identifiers.org/taxonomy/40674"
+Sivakumar2011_HedgehogSignalingPathway container "http://identifiers.org/cl/CL:0000047"

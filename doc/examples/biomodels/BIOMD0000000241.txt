@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Shi1993_Caffeine_pressor_tolerance()
 
   // Compartments and Species:
@@ -7,17 +7,17 @@ model *Shi1993_Caffeine_pressor_tolerance()
   substanceOnly species $X_gut in Gut;
 
   // Assignment Rules:
-  E := E_0 + (S*C_e)/(1 + C_t/T_50);
+  E := E_0 + S*C_e/(1 + C_t/T_50);
 
   // Rate Rules:
   X_gut' = -k_a*X_gut;
-  C_p' = ((k_a*F*X_gut)/V_C - k12*C_p + k21*C_per) - k10*C_p;
+  C_p' = (k_a*F*X_gut/V_C - k12*C_p) + k21*C_per - k10*C_p;
   C_per' = k12*C_p - k21*C_per;
   C_e' = k_eo*(C_p - C_e);
   C_t' = k_tol*(C_p - C_t);
 
   // Events:
-  coffecup: at time >= t_int*cups + t_lag: X_gut = X_gut + cupsize/bodyweight, cups = cups + 1;
+  coffecup: at time >= (t_int*cups + t_lag): X_gut = X_gut + cupsize/bodyweight, cups = cups + 1;
 
   // Species initializations:
   X_gut = 0;
@@ -96,4 +96,38 @@ model *Shi1993_Caffeine_pressor_tolerance()
   coffecup is "coffee cup";
   t_int is "t_intervall";
   E is "MAP";
+
+  // SBO terms:
+  Gut.sboTerm = 290
+  C.sboTerm = 290
+  P.sboTerm = 290
+  Tol.sboTerm = 289
+  Eff.sboTerm = 289
+  X_gut.sboTerm = 241
+  C_p.sboTerm = 247
+  C_per.sboTerm = 247
+  C_e.sboTerm = 241
+  C_t.sboTerm = 241
+
+  // CV terms:
+  Gut hypernym "http://identifiers.org/fma/FMA:71132"
+  C hypernym "http://identifiers.org/fma/FMA:62970"
+  P parthood "http://identifiers.org/fma/FMA:20394"
+  X_gut identity "http://identifiers.org/kegg.compound/C07481"
+  X_gut identity "http://identifiers.org/chebi/CHEBI:27732"
+  C_p identity "http://identifiers.org/chebi/CHEBI:27732",
+               "http://identifiers.org/kegg.compound/C07481"
+  C_per identity "http://identifiers.org/chebi/CHEBI:27732",
+                 "http://identifiers.org/kegg.compound/C07481"
+  C_e hypernym "http://identifiers.org/chebi/CHEBI:27732"
+  C_t hypernym "http://identifiers.org/chebi/CHEBI:27732"
 end
+
+Shi1993_Caffeine_pressor_tolerance is "Shi1993_Caffeine_pressor_tolerance"
+
+Shi1993_Caffeine_pressor_tolerance model_entity_is "http://identifiers.org/biomodels.db/MODEL1001080000"
+Shi1993_Caffeine_pressor_tolerance model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000241"
+Shi1993_Caffeine_pressor_tolerance description "http://identifiers.org/pubmed/8422743"
+Shi1993_Caffeine_pressor_tolerance taxon "http://identifiers.org/taxonomy/9606"
+Shi1993_Caffeine_pressor_tolerance hypernym "http://identifiers.org/go/GO:0031000",
+                                            "http://identifiers.org/go/GO:0008217"

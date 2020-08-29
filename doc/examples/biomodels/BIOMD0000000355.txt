@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Abell2011_CalciumSignaling_WithAdaptation()
 
   // Compartments and Species:
@@ -10,22 +10,22 @@ model *Abell2011_CalciumSignaling_WithAdaptation()
 
   // Reactions:
   kPLC:  => IP3; R*CaI;
-  JPump: CaI => CaS; (mw0ebc76ad_49d7_4845_8f88_04d443fbe7f3*CaI^2)/(CaI^2 + k2^2);
-  JChannel: CaS => CaI; (1 - mwd8bf5d8f_ad00_4119_bde1_91015ef2cd7c)*(L + (((1 - g)*A*IP3^2)/(IP3^2 + mw92b257b7_00af_4fd6_a11b_8e4655a4ba65^2)*CaI^2)/(CaI^2 + mw78dd80b8_e003_4c62_81d1_547d001767af^2))*CaS;
+  JPump: CaI => CaS; mw0ebc76ad_49d7_4845_8f88_04d443fbe7f3*CaI^2/(CaI^2 + k2^2);
+  JChannel: CaS => CaI; (1 - mwd8bf5d8f_ad00_4119_bde1_91015ef2cd7c)*(L + ((1 - g)*A*IP3^2/(IP3^2 + mw92b257b7_00af_4fd6_a11b_8e4655a4ba65^2))*CaI^2/(CaI^2 + mw78dd80b8_e003_4c62_81d1_547d001767af^2))*CaS;
   kPhosphatase: IP3 => ; D*IP3;
-  inhibition_parameter1:  => g; (E*CaI^4)/(CaI^4 + mwf998b218_be11_4aa4_81ae_41141861fb42^4)*(1 - g);
+  inhibition_parameter1:  => g; (E*CaI^4/(CaI^4 + mwf998b218_be11_4aa4_81ae_41141861fb42^4))*(1 - g);
   inhibition_parameter2: g => ; F*g;
   mwbdcd6a40_1ae7_4c86_a99f_1fba0b8beaf7:  => CaI; mw7cb2644a_384a_4bbb_93fd_fd686e01d7cb*(mw0ad64e84_bb75_4be4_a9c3_2d4741b0f45f + mwfe8e89cf_3c67_4dd5_939e_b4cfee2e0778^8/(CaS^8 + mwfe8e89cf_3c67_4dd5_939e_b4cfee2e0778^8));
-  mw530793e3_76b2_4483_be11_e94364306712: CaI => ; (mwaf195932_a72c_4552_8cf2_b349b15d39c4*CaI^2)/(CaI^2 + mw3a93c3a6_623a_44fe_84e9_a47823defd1f^2);
-  mw5658298a_d96a_4b97_9a4f_6f06dad35824:  => mwaf195932_a72c_4552_8cf2_b349b15d39c4; (mwd3b36919_202a_4fed_a3c8_1a3a60594404*mwfbff577a_4e9c_40fe_8777_eb0ceade28c9*mwd21d3f76_d133_4053_8e44_02a538657e0a*CaI^4)/((mwd3b36919_202a_4fed_a3c8_1a3a60594404 - 1)*0.05^4 + CaI^4);
+  mw530793e3_76b2_4483_be11_e94364306712: CaI => ; mwaf195932_a72c_4552_8cf2_b349b15d39c4*CaI^2/(CaI^2 + mw3a93c3a6_623a_44fe_84e9_a47823defd1f^2);
+  mw5658298a_d96a_4b97_9a4f_6f06dad35824:  => mwaf195932_a72c_4552_8cf2_b349b15d39c4; mwd3b36919_202a_4fed_a3c8_1a3a60594404*mwfbff577a_4e9c_40fe_8777_eb0ceade28c9*mwd21d3f76_d133_4053_8e44_02a538657e0a*CaI^4/((mwd3b36919_202a_4fed_a3c8_1a3a60594404 - 1)*0.05^4 + CaI^4);
   mw700bd02b_9fc4_47e7_864a_967c03874dd6: mwaf195932_a72c_4552_8cf2_b349b15d39c4 => ; mwaf195932_a72c_4552_8cf2_b349b15d39c4*mwfbff577a_4e9c_40fe_8777_eb0ceade28c9;
-  mw06f8fde4_d97b_4d5f_b71e_d93aa53e9932:  => mw0ebc76ad_49d7_4845_8f88_04d443fbe7f3; (1/mwd3b36919_202a_4fed_a3c8_1a3a60594404*B*mwfbff577a_4e9c_40fe_8777_eb0ceade28c9*((mwd3b36919_202a_4fed_a3c8_1a3a60594404 - 1)*2^4 + CaS^4))/CaS^4;
-  mw8021d532_dd9b_4e34_a865_c2bb1689b0b5:  => mw7cb2644a_384a_4bbb_93fd_fd686e01d7cb; ((1/(mwd3b36919_202a_4fed_a3c8_1a3a60594404*mwd3b36919_202a_4fed_a3c8_1a3a60594404)*mw004dcb62_da5f_41c7_a7bd_033574894f48*mwfbff577a_4e9c_40fe_8777_eb0ceade28c9*((mwd3b36919_202a_4fed_a3c8_1a3a60594404 - 1)*2^2 + CaS^2))/CaS^2*((mwd3b36919_202a_4fed_a3c8_1a3a60594404 - 1)*0.05^2 + CaI^2))/CaI^2;
+  mw06f8fde4_d97b_4d5f_b71e_d93aa53e9932:  => mw0ebc76ad_49d7_4845_8f88_04d443fbe7f3; (1/mwd3b36919_202a_4fed_a3c8_1a3a60594404)*B*mwfbff577a_4e9c_40fe_8777_eb0ceade28c9*((mwd3b36919_202a_4fed_a3c8_1a3a60594404 - 1)*2^4 + CaS^4)/CaS^4;
+  mw8021d532_dd9b_4e34_a865_c2bb1689b0b5:  => mw7cb2644a_384a_4bbb_93fd_fd686e01d7cb; ((1/(mwd3b36919_202a_4fed_a3c8_1a3a60594404*mwd3b36919_202a_4fed_a3c8_1a3a60594404))*mw004dcb62_da5f_41c7_a7bd_033574894f48*mwfbff577a_4e9c_40fe_8777_eb0ceade28c9*((mwd3b36919_202a_4fed_a3c8_1a3a60594404 - 1)*2^2 + CaS^2)/CaS^2)*((mwd3b36919_202a_4fed_a3c8_1a3a60594404 - 1)*0.05^2 + CaI^2)/CaI^2;
   mw1f122e51_99cb_4a32_a12e_4c2921920a17: mw7cb2644a_384a_4bbb_93fd_fd686e01d7cb => ; mw7cb2644a_384a_4bbb_93fd_fd686e01d7cb*mwfbff577a_4e9c_40fe_8777_eb0ceade28c9;
   mw89d547e1_8d48_4cd2_ba3d_e4390294089d: mw0ebc76ad_49d7_4845_8f88_04d443fbe7f3 => ; mw0ebc76ad_49d7_4845_8f88_04d443fbe7f3*mwfbff577a_4e9c_40fe_8777_eb0ceade28c9;
-  mwa61047ec_49c1_47b2_b78e_4d84a33d432a: CaI => mw013a7c64_a9ec_483c_b3b8_ed658337ee95; (mwa3072851_e3e4_4767_ac41_49fa7c0de7a7*CaI^4)/(CaI^4 + mwe3841c25_6042_49c2_9feb_90cbf6751167^4);
-  ERtoMito: CaS => mw013a7c64_a9ec_483c_b3b8_ed658337ee95; mwd8bf5d8f_ad00_4119_bde1_91015ef2cd7c*(L + (((1 - g)*A*IP3^2)/(IP3^2 + mw92b257b7_00af_4fd6_a11b_8e4655a4ba65^2)*CaI^2)/(CaI^2 + mw78dd80b8_e003_4c62_81d1_547d001767af^2))*CaS;
-  mw1c50c3d1_dab9_423a_8373_6a4c75479b54: mw013a7c64_a9ec_483c_b3b8_ed658337ee95 => CaI; (mw219cf65d_18cc_4f7e_ab5a_5b87cda6fc43*mw013a7c64_a9ec_483c_b3b8_ed658337ee95)/(mw013a7c64_a9ec_483c_b3b8_ed658337ee95 + 0.01);
+  mwa61047ec_49c1_47b2_b78e_4d84a33d432a: CaI => mw013a7c64_a9ec_483c_b3b8_ed658337ee95; mwa3072851_e3e4_4767_ac41_49fa7c0de7a7*CaI^4/(CaI^4 + mwe3841c25_6042_49c2_9feb_90cbf6751167^4);
+  ERtoMito: CaS => mw013a7c64_a9ec_483c_b3b8_ed658337ee95; mwd8bf5d8f_ad00_4119_bde1_91015ef2cd7c*(L + ((1 - g)*A*IP3^2/(IP3^2 + mw92b257b7_00af_4fd6_a11b_8e4655a4ba65^2))*CaI^2/(CaI^2 + mw78dd80b8_e003_4c62_81d1_547d001767af^2))*CaS;
+  mw1c50c3d1_dab9_423a_8373_6a4c75479b54: mw013a7c64_a9ec_483c_b3b8_ed658337ee95 => CaI; mw219cf65d_18cc_4f7e_ab5a_5b87cda6fc43*mw013a7c64_a9ec_483c_b3b8_ed658337ee95/(mw013a7c64_a9ec_483c_b3b8_ed658337ee95 + 0.01);
 
   // Species initializations:
   CaI = 0.05/cytosol;
@@ -61,7 +61,7 @@ model *Abell2011_CalciumSignaling_WithAdaptation()
   mw3a93c3a6_623a_44fe_84e9_a47823defd1f = 0.2;
   mwd21d3f76_d133_4053_8e44_02a538657e0a = 0.013;
   mwf998b218_be11_4aa4_81ae_41141861fb42 = 1;
-  mwfbff577a_4e9c_40fe_8777_eb0ceade28c9 = 1e-006;
+  mwfbff577a_4e9c_40fe_8777_eb0ceade28c9 = 1e-06;
   mwd8bf5d8f_ad00_4119_bde1_91015ef2cd7c = 0.03;
   mwe3841c25_6042_49c2_9feb_90cbf6751167 = 0.6;
   mw219cf65d_18cc_4f7e_ab5a_5b87cda6fc43 = 0.005;
@@ -124,4 +124,64 @@ model *Abell2011_CalciumSignaling_WithAdaptation()
   mw89d547e1_8d48_4cd2_ba3d_e4390294089d is "SERCA degradation";
   mwa61047ec_49c1_47b2_b78e_4d84a33d432a is "CytToMito";
   mw1c50c3d1_dab9_423a_8373_6a4c75479b54 is "MitoToCytosol";
+
+  // SBO terms:
+  cytosol.sboTerm = 290
+  outside.sboTerm = 290
+  mitochondria.sboTerm = 290
+  ER_store.sboTerm = 290
+  CaI.sboTerm = 247
+  IP3.sboTerm = 247
+  mwaf195932_a72c_4552_8cf2_b349b15d39c4.sboTerm = 242
+  mw0ebc76ad_49d7_4845_8f88_04d443fbe7f3.sboTerm = 242
+  mw7cb2644a_384a_4bbb_93fd_fd686e01d7cb.sboTerm = 252
+  mwd6b792d8_c983_42c1_b3bc_2494d6a3363e.sboTerm = 247
+  mw013a7c64_a9ec_483c_b3b8_ed658337ee95.sboTerm = 247
+  CaS.sboTerm = 247
+
+  // CV terms:
+  cytosol hypernym "http://identifiers.org/obo.go/GO:0005829"
+  outside hypernym "http://identifiers.org/obo.go/GO:0005576"
+  mitochondria hypernym "http://identifiers.org/obo.go/GO:0005739"
+  ER_store hypernym "http://identifiers.org/obo.go/GO:0005783"
+  CaI hypernym "http://identifiers.org/obo.chebi/CHEBI:29108",
+               "http://identifiers.org/kegg.compound/C00076"
+  IP3 hypernym "http://identifiers.org/obo.chebi/CHEBI:16595",
+               "http://identifiers.org/kegg.compound/C01255"
+  g hypernym "http://identifiers.org/obo.go/GO:0019855"
+  mwaf195932_a72c_4552_8cf2_b349b15d39c4 hypernym "http://identifiers.org/uniprot/Q9V4C7"
+  mw0ebc76ad_49d7_4845_8f88_04d443fbe7f3 hypernym "http://identifiers.org/uniprot/P22700"
+  mw7cb2644a_384a_4bbb_93fd_fd686e01d7cb hypernym "http://identifiers.org/uniprot/P83094"
+  mwd6b792d8_c983_42c1_b3bc_2494d6a3363e hypernym "http://identifiers.org/obo.chebi/CHEBI:29108",
+                                                  "http://identifiers.org/kegg.compound/C00076"
+  mw013a7c64_a9ec_483c_b3b8_ed658337ee95 hypernym "http://identifiers.org/obo.chebi/CHEBI:29108",
+                                                  "http://identifiers.org/kegg.compound/C00076"
+  CaS hypernym "http://identifiers.org/obo.chebi/CHEBI:29108",
+               "http://identifiers.org/kegg.compound/C00076"
+  kPLC hypernym "http://identifiers.org/obo.go/GO:0032959"
+  JPump hypernym "http://identifiers.org/obo.go/GO:0060401"
+  JChannel hypernym "http://identifiers.org/obo.go/GO:0051209"
+  kPhosphatase hypernym "http://identifiers.org/obo.go/GO:0032961"
+  inhibition_parameter1 hypernym "http://identifiers.org/obo.go/GO:0031586"
+  inhibition_parameter2 hypernym "http://identifiers.org/obo.go/GO:0031587"
+  mwbdcd6a40_1ae7_4c86_a99f_1fba0b8beaf7 hypernym "http://identifiers.org/obo.go/GO:0032234"
+  mw530793e3_76b2_4483_be11_e94364306712 hypernym "http://identifiers.org/obo.go/GO:0006816"
+  mw5658298a_d96a_4b97_9a4f_6f06dad35824 hypernym "http://identifiers.org/obo.go/GO:0009058"
+  mw700bd02b_9fc4_47e7_864a_967c03874dd6 hypernym "http://identifiers.org/obo.go/GO:0009056"
+  mw06f8fde4_d97b_4d5f_b71e_d93aa53e9932 hypernym "http://identifiers.org/obo.go/GO:0009058"
+  mw8021d532_dd9b_4e34_a865_c2bb1689b0b5 hypernym "http://identifiers.org/obo.go/GO:0009058"
+  mw1f122e51_99cb_4a32_a12e_4c2921920a17 hypernym "http://identifiers.org/obo.go/GO:0009056"
+  mw89d547e1_8d48_4cd2_ba3d_e4390294089d hypernym "http://identifiers.org/obo.go/GO:0009056"
+  mwa61047ec_49c1_47b2_b78e_4d84a33d432a hypernym "http://identifiers.org/obo.go/GO:0006851"
+  ERtoMito hypernym "http://identifiers.org/obo.go/GO:0006889",
+                    "http://identifiers.org/obo.go/GO:0006851"
+  mw1c50c3d1_dab9_423a_8373_6a4c75479b54 hypernym "http://identifiers.org/obo.go/GO:0006851"
 end
+
+Abell2011_CalciumSignaling_WithAdaptation is "Abell2011_CalciumSignaling_WithAdaptation"
+
+Abell2011_CalciumSignaling_WithAdaptation model_entity_is "http://identifiers.org/biomodels.db/MODEL1108050001"
+Abell2011_CalciumSignaling_WithAdaptation model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000355"
+Abell2011_CalciumSignaling_WithAdaptation description "http://identifiers.org/pubmed/21844332"
+Abell2011_CalciumSignaling_WithAdaptation taxon "http://identifiers.org/taxonomy/7215"
+Abell2011_CalciumSignaling_WithAdaptation hypernym "http://identifiers.org/obo.go/GO:0019722"

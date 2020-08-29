@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Nikolaev2005_AlbuminBilirubinAdsorption()
 
   // Compartments and Species:
@@ -13,10 +13,10 @@ model *Nikolaev2005_AlbuminBilirubinAdsorption()
   x7 := C0 - x2 - n*x3;
 
   // Rate Rules:
-  x1' = K_AlB*k3*x5*x6 - K_AlB2*k4*x1*x6 - k3*x1 - k9*x1*x7^(n + 1) + k4*x4 + k10*x4*x7;
+  x1' = (K_AlB*k3*x5*x6 - K_AlB2*k4*x1*x6 - k3*x1 - k9*x1*x7^(n + 1)) + k4*x4 + k10*x4*x7;
   x4' = K_AlB2*k4*x1*x6 - k4*x4 - k10*x4*x7;
-  x2' = k6*x7*x6 - k8*x2 + k9*x1*x7^(n + 1) + k10*x4*x7;
-  x3' = k5*x7^n*x5 - k7*x3 + k9*x1*x7^(n + 1);
+  x2' = (k6*x7*x6 - k8*x2) + k9*x1*x7^(n + 1) + k10*x4*x7;
+  x3' = (k5*x7^n*x5 - k7*x3) + k9*x1*x7^(n + 1);
 
   // Species initializations:
   x1 = 0;
@@ -32,14 +32,14 @@ model *Nikolaev2005_AlbuminBilirubinAdsorption()
 
   // Variable initializations:
   K_AlB = 95000;
-  k3 = 5.095e-006;
+  k3 = 5.095e-06;
   K_AlB2 = 3000;
-  k4 = 2.656e-005;
+  k4 = 2.656e-05;
   k9 = 0.01685;
   n = 1;
   k10 = 0.1325;
-  k6 = 3.226e-007;
-  k8 = 1.011e-007;
+  k6 = 3.226e-07;
+  k8 = 1.011e-07;
   k5 = 0.005489;
   k7 = 0.00301;
   k1 = 0.484;
@@ -50,6 +50,7 @@ model *Nikolaev2005_AlbuminBilirubinAdsorption()
   const k2;
 
   // Display Names:
+  compartment_ is "compartment";
   x1 is "AlB";
   x5 is "Al";
   x6 is "B";
@@ -57,4 +58,61 @@ model *Nikolaev2005_AlbuminBilirubinAdsorption()
   x4 is "AlB2";
   x2 is "BC";
   x3 is "AlCn";
+
+  // SBO terms:
+  x1.sboTerm = 296
+  K_AlB.sboTerm = 9
+  k3.sboTerm = 9
+  x5.sboTerm = 245
+  x6.sboTerm = 247
+  K_AlB2.sboTerm = 9
+  k4.sboTerm = 9
+  k9.sboTerm = 9
+  x7.sboTerm = 421
+  n.sboTerm = 189
+  x4.sboTerm = 296
+  k10.sboTerm = 9
+  x2.sboTerm = 296
+  k6.sboTerm = 9
+  k8.sboTerm = 9
+  x3.sboTerm = 296
+  k5.sboTerm = 9
+  k7.sboTerm = 9
+  A0.sboTerm = 245
+  B0.sboTerm = 247
+  C0.sboTerm = 421
+  k1.sboTerm = 9
+  k2.sboTerm = 9
+
+  // CV terms:
+  x1 parthood "http://identifiers.org/uniprot/P02768",
+              "http://identifiers.org/kegg.compound/C00486"
+  x5 hypernym "http://identifiers.org/uniprot/P02768"
+  x6 hypernym "http://identifiers.org/chebi/CHEBI:16990",
+              "http://identifiers.org/kegg.compound/C00486"
+  x7 hypernym "http://identifiers.org/chebi/CHEBI:33839",
+              "http://identifiers.org/chebi/CHEBI:27594"
+  x4 parthood "http://identifiers.org/uniprot/P02768",
+              "http://identifiers.org/kegg.compound/C00486"
+  x2 parthood "http://identifiers.org/chebi/CHEBI:33839",
+              "http://identifiers.org/chebi/CHEBI:27594",
+              "http://identifiers.org/kegg.compound/C00486"
+  x3 parthood "http://identifiers.org/chebi/CHEBI:33839",
+              "http://identifiers.org/chebi/CHEBI:27594",
+              "http://identifiers.org/uniprot/P02768"
+  A0 hypernym "http://identifiers.org/uniprot/P02768"
+  B0 hypernym "http://identifiers.org/chebi/CHEBI:16990",
+              "http://identifiers.org/kegg.compound/C00486"
+  C0 hypernym "http://identifiers.org/chebi/CHEBI:27594",
+              "http://identifiers.org/chebi/CHEBI:33839"
 end
+
+Nikolaev2005_AlbuminBilirubinAdsorption is "Nikolaev2005_AlbuminBilirubinAdsorption"
+
+Nikolaev2005_AlbuminBilirubinAdsorption model_entity_is "http://identifiers.org/biomodels.db/MODEL1101060000"
+Nikolaev2005_AlbuminBilirubinAdsorption model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000291"
+Nikolaev2005_AlbuminBilirubinAdsorption description "http://identifiers.org/pubmed/16307060"
+Nikolaev2005_AlbuminBilirubinAdsorption hypernym "http://identifiers.org/go/GO:0006789"
+Nikolaev2005_AlbuminBilirubinAdsorption parthood "http://identifiers.org/kegg.pathway/ko00860"
+Nikolaev2005_AlbuminBilirubinAdsorption taxon "http://identifiers.org/taxonomy/2759"
+Nikolaev2005_AlbuminBilirubinAdsorption property "http://identifiers.org/doid/DOID:409"

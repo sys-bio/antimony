@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Larsen2004_CalciumSpiking_EnzymeBinding()
 
   // Compartments and Species:
@@ -7,12 +7,12 @@ model *Larsen2004_CalciumSpiking_EnzymeBinding()
   species $Ca_ER in ER, $Ca_mit in mit, $Enz in cytoplasm, $Product in cytoplasm;
 
   // Rate Rules:
-  G_alpha' = (k1 + k2*G_alpha) - (k3*G_alpha*PLC)/(G_alpha + K4) - (k5*G_alpha*Ca_cyt)/(G_alpha + K6);
-  PLC' = k7*G_alpha - (k8*PLC)/(PLC + K9);
-  Ca_cyt' = (((Ca_ER - Ca_cyt)*k10*Ca_cyt*PLC^4)/(PLC^4 + K11^4) + k12*PLC + k13*G_alpha) - (k14*Ca_cyt)/(Ca_cyt + K15) - (k16*Ca_cyt)/(Ca_cyt + K17) - (k18*Ca_cyt^8)/(K19^8 + Ca_cyt^8) + ((Ca_mit - Ca_cyt)*k20*Ca_cyt)/(Ca_cyt + K21);
-  Ca_ER' = (-(Ca_ER - Ca_cyt)*k10*Ca_cyt*PLC^4)/(PLC^4 + K11^4) + (k16*Ca_cyt)/(Ca_cyt + K17);
-  Ca_mit' = (k18*Ca_cyt^8)/(K19^8 + Ca_cyt^8) - ((Ca_mit - Ca_cyt)*k20*Ca_cyt)/(Ca_cyt + K21);
-  Enz' = (k_act*Ca_cyt^p)/(KM^p + Ca_cyt^p) - k_inact*Enz;
+  G_alpha' = k1 + k2*G_alpha - k3*G_alpha*PLC/(G_alpha + K4) - k5*G_alpha*Ca_cyt/(G_alpha + K6);
+  PLC' = k7*G_alpha - k8*PLC/(PLC + K9);
+  Ca_cyt' = ((Ca_ER - Ca_cyt)*k10*Ca_cyt*PLC^4/(PLC^4 + K11^4) + k12*PLC + k13*G_alpha - k14*Ca_cyt/(Ca_cyt + K15) - k16*Ca_cyt/(Ca_cyt + K17) - k18*Ca_cyt^8/(K19^8 + Ca_cyt^8)) + (Ca_mit - Ca_cyt)*k20*Ca_cyt/(Ca_cyt + K21);
+  Ca_ER' = -(Ca_ER - Ca_cyt)*k10*Ca_cyt*PLC^4/(PLC^4 + K11^4) + k16*Ca_cyt/(Ca_cyt + K17);
+  Ca_mit' = k18*Ca_cyt^8/(K19^8 + Ca_cyt^8) - (Ca_mit - Ca_cyt)*k20*Ca_cyt/(Ca_cyt + K21);
+  Enz' = k_act*Ca_cyt^p/(KM^p + Ca_cyt^p) - k_inact*Enz;
   Product' = k_enz*Enz - k_rem*Product;
 
   // Species initializations:
@@ -71,4 +71,63 @@ model *Larsen2004_CalciumSpiking_EnzymeBinding()
   Ca_mit is "Calcium-mit";
   Enz is "Enzyme";
   Product is "EnzCatlysedProduct";
+
+  // SBO terms:
+  cytoplasm.sboTerm = 290
+  ER.sboTerm = 290
+  mit.sboTerm = 290
+  G_alpha.sboTerm = 252
+  k1.sboTerm = 9
+  k2.sboTerm = 9
+  k3.sboTerm = 9
+  PLC.sboTerm = 14
+  K4.sboTerm = 9
+  k5.sboTerm = 9
+  Ca_cyt.sboTerm = 247
+  K6.sboTerm = 9
+  k7.sboTerm = 9
+  k8.sboTerm = 9
+  K9.sboTerm = 9
+  Ca_ER.sboTerm = 247
+  k10.sboTerm = 9
+  K11.sboTerm = 9
+  k12.sboTerm = 9
+  k13.sboTerm = 9
+  k14.sboTerm = 9
+  K15.sboTerm = 9
+  k16.sboTerm = 9
+  K17.sboTerm = 9
+  k18.sboTerm = 9
+  K19.sboTerm = 9
+  Ca_mit.sboTerm = 247
+  k20.sboTerm = 9
+  K21.sboTerm = 9
+  Enz.sboTerm = 14
+  k_act.sboTerm = 363
+  p.sboTerm = 190
+  KM.sboTerm = 27
+  k_inact.sboTerm = 349
+  Product.sboTerm = 11
+  k_enz.sboTerm = 9
+  k_rem.sboTerm = 9
+
+  // CV terms:
+  cytoplasm hypernym "http://identifiers.org/go/GO:0005737"
+  ER hypernym "http://identifiers.org/go/GO:0005783"
+  mit hypernym "http://identifiers.org/go/GO:0005739"
+  G_alpha hypernym "http://identifiers.org/uniprot/Q9JID2"
+  PLC hypernym "http://identifiers.org/uniprot/P10687"
+  Ca_cyt container "http://identifiers.org/go/GO:0005737"
+  Ca_ER container "http://identifiers.org/go/GO:0005783"
+  Ca_mit container "http://identifiers.org/go/GO:0005739"
 end
+
+Larsen2004_CalciumSpiking_EnzymeBinding is "Larsen2004_CalciumSpiking_EnzymeBinding"
+
+Larsen2004_CalciumSpiking_EnzymeBinding model_entity_is "http://identifiers.org/biomodels.db/MODEL1105060002"
+Larsen2004_CalciumSpiking_EnzymeBinding model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000331"
+Larsen2004_CalciumSpiking_EnzymeBinding description "http://identifiers.org/pubmed/14871603"
+Larsen2004_CalciumSpiking_EnzymeBinding container "http://identifiers.org/cl/CL:0000182"
+Larsen2004_CalciumSpiking_EnzymeBinding hypernym "http://identifiers.org/go/GO:0019722",
+                                                 "http://identifiers.org/go/GO:0019899"
+Larsen2004_CalciumSpiking_EnzymeBinding taxon "http://identifiers.org/taxonomy/10116"

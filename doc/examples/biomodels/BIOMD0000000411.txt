@@ -1,23 +1,33 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 function function_2(v, E, R, T2, T1, k, S, h)
-  (v*exp((E/R*(T2 - T1))/(T1*T2)))/(k + S^h);
+  v*exp((E/R)*(T2 - T1)/(T1*T2))/(k + S^h);
 end
+
+function_2 is "arhenius neg feedb tempvar"
 
 function function_1(v, E, R, T2, T1, S)
-  v*exp((E/R*(T2 - T1))/(T1*T2))*S;
+  v*exp((E/R)*(T2 - T1)/(T1*T2))*S;
 end
+
+function_1 is "arhenius mass action tempvar"
 
 function function_4(v, E, R, T2, T1, S)
-  v*exp((E/R*(T2 - T1))/(T1*T2))*S;
+  v*exp((E/R)*(T2 - T1)/(T1*T2))*S;
 end
+
+function_4 is "arhenius tranls temp var"
 
 function function_3(v, E, R, T2, T1, S, Km)
-  (v*exp((E/R*(T2 - T1))/(T1*T2))*S)/(Km + S);
+  v*exp((E/R)*(T2 - T1)/(T1*T2))*S/(Km + S);
 end
 
+function_3 is "arhenius michaelis menten temp var"
+
 function function_5(v, E, R, T2, T1, S1, S2, a)
-  v*exp((E/R*(T2 - T1))/(T1*T2))*S1*S2^a;
+  v*exp((E/R)*(T2 - T1)/(T1*T2))*S1*S2^a;
 end
+
+function_5 is "arhenius complexf temp var"
 
 
 model *Model_1()
@@ -29,7 +39,7 @@ model *Model_1()
   species species_4 in default, species_12 in default;
 
   // Assignment Rules:
-  T2 := 296 + parameter_4/2*sin((2*pi*time)/parameter_5);
+  T2 := 296 + (parameter_4/2)*sin(2*pi*time/parameter_5);
   parameter_6 := 50000;
   parameter_7 := 84000;
 
@@ -141,4 +151,67 @@ model *Model_1()
   reaction_5 is "complexdegr";
   reaction_6 is "C1_dephos";
   reaction_7 is "C1_phos_degr";
+
+  // SBO terms:
+  default.sboTerm = 290
+  s2.sboTerm = 243
+  s9.sboTerm = 278
+  s10.sboTerm = 252
+  s11.sboTerm = 252
+  s13.sboTerm = 252
+  species_1.sboTerm = 252
+  species_2.sboTerm = 278
+  species_3.sboTerm = 252
+  species_4.sboTerm = 297
+  species_12.sboTerm = 291
+  T.sboTerm = 147
+  re12.sboTerm = 216
+  re13.sboTerm = 183
+  re14.sboTerm = 179
+  re15.sboTerm = 179
+  re16.sboTerm = 179
+  re18.sboTerm = 184
+  reaction_1.sboTerm = 184
+  reaction_2.sboTerm = 526
+  reaction_3.sboTerm = 216
+  reaction_4.sboTerm = 179
+  reaction_5.sboTerm = 179
+  reaction_6.sboTerm = 330
+  reaction_7.sboTerm = 179
+
+  // CV terms:
+  default hypernym "http://identifiers.org/go/GO:0005623"
+  s2 encodement "http://identifiers.org/uniprot/A8J6K7"
+  s9 encodement "http://identifiers.org/uniprot/A8J6K7"
+  s10 hypernym "http://identifiers.org/uniprot/A8J6K7"
+  s11 hypernym "http://identifiers.org/uniprot/A8J6K7",
+               "http://identifiers.org/kegg.compound/C00562"
+  s13 hypernym "http://identifiers.org/uniprot/A8J6K7"
+  species_1 hypernym "http://identifiers.org/uniprot/A8J2S3"
+  species_2 encodement "http://identifiers.org/uniprot/A8J2S3"
+  species_3 hypernym "http://identifiers.org/uniprot/A8J2S3",
+                     "http://identifiers.org/kegg.compound/C00562"
+  species_4 part "http://identifiers.org/uniprot/A8J6K7",
+                 "http://identifiers.org/uniprot/A8J2S3"
+  re12 hypernym "http://identifiers.org/go/GO:0016310"
+  re13 hypernym "http://identifiers.org/go/GO:0009299"
+  re14 hypernym "http://identifiers.org/go/GO:0006402"
+  re15 hypernym "http://identifiers.org/go/GO:0030163"
+  re16 hypernym "http://identifiers.org/go/GO:0030163"
+  re18 hypernym "http://identifiers.org/go/GO:0006412"
+  reaction_1 hypernym "http://identifiers.org/go/GO:0006412"
+  reaction_2 hypernym "http://identifiers.org/go/GO:0006461"
+  reaction_3 hypernym "http://identifiers.org/go/GO:0016310"
+  reaction_4 hypernym "http://identifiers.org/go/GO:0030163"
+  reaction_5 hypernym "http://identifiers.org/go/GO:0030163"
+  reaction_6 hypernym "http://identifiers.org/go/GO:0016311"
+  reaction_7 hypernym "http://identifiers.org/go/GO:0030163"
 end
+
+Model_1 is "Heiland2012_CircadianClock_C.reinhardtii"
+
+Model_1 model_entity_is "http://identifiers.org/biomodels.db/MODEL1201130000"
+Model_1 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000411"
+Model_1 description "http://identifiers.org/pubmed/23729908"
+Model_1 taxon "http://identifiers.org/taxonomy/3055"
+Model_1 hypernym "http://identifiers.org/go/GO:0060086"

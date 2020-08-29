@@ -1,9 +1,4 @@
-// Created by libAntimony v2.8.0
-function LD(tod, length)
-  ceil(sin((pi*tod)/ length + 0.001)/2);
-end
-
-
+// Created by libAntimony v2.13.0
 model *Locke2005_CircadianClock()
 
   // Compartments and Species:
@@ -14,38 +9,38 @@ model *Locke2005_CircadianClock()
   species cPn in compartment_;
 
   // Reactions:
-  one11:  => cLm; compartment_*LD(time, dayLength)*q1*cPn;
-  two11:  => cLm; compartment_*((n1*cXn^a)/(g1^a + cXn^a));
-  three11: cLm => ; compartment_*((m1*cLm)/(k1 + cLm));
+  one11:  => cLm; compartment_*ceil(sin(pi*time/dayLength + 0.001)/2)*q1*cPn;
+  two11:  => cLm; compartment_*(n1*cXn^a/(g1^a + cXn^a));
+  three11: cLm => ; compartment_*(m1*cLm/(k1 + cLm));
   one12:  => cLc; compartment_*p1*cLm;
   three12: cLn => cLc; compartment_*r2*cLn;
-  four12: cLc => ; compartment_*((m2*cLc)/(k2 + cLc));
+  four12: cLc => ; compartment_*(m2*cLc/(k2 + cLc));
   one13: cLc => cLn; compartment_*r1*cLc;
-  three13: cLn => ; compartment_*((m3*cLn)/(k3 + cLn));
-  one14:  => cTm; compartment_*((n2*cYn^b)/(g2^b + cYn^b))*(g3^c/(g3^c + cLn^c));
-  two14: cTm => ; compartment_*((m4*cTm)/(k4 + cTm));
+  three13: cLn => ; compartment_*(m3*cLn/(k3 + cLn));
+  one14:  => cTm; compartment_*(n2*cYn^b/(g2^b + cYn^b))*(g3^c/(g3^c + cLn^c));
+  two14: cTm => ; compartment_*(m4*cTm/(k4 + cTm));
   one15:  => cTc; compartment_*p2*cTm;
   three15: cTn => cTc; compartment_*r4*cTn;
-  four15: cTc => ; compartment_*((1 - LD(time, dayLength))*m5 + m6)*(cTc/(k5 + cTc));
+  four15: cTc => ; compartment_*((1 - ceil(sin(pi*time/dayLength + 0.001)/2))*m5 + m6)*(cTc/(k5 + cTc));
   one16: cTc => cTn; compartment_*r3*cTc;
-  three16: cTn => ; compartment_*((1 - LD(time, dayLength))*m7 + m8)*(cTn/(k6 + cTn));
-  one17:  => cXm; compartment_*((n3*cTn^d)/(g4^d + cTn^d));
-  two17: cXm => ; compartment_*((m9*cXm)/(k7 + cXm));
+  three16: cTn => ; compartment_*((1 - ceil(sin(pi*time/dayLength + 0.001)/2))*m7 + m8)*(cTn/(k6 + cTn));
+  one17:  => cXm; compartment_*(n3*cTn^d/(g4^d + cTn^d));
+  two17: cXm => ; compartment_*(m9*cXm/(k7 + cXm));
   one18:  => cXc; compartment_*p3*cXm;
   three18: cXn => cXc; compartment_*r6*cXn;
-  four18: cXc => ; compartment_*((m10*cXc)/(k8 + cXc));
+  four18: cXc => ; compartment_*(m10*cXc/(k8 + cXc));
   one19: cXc => cXn; compartment_*r5*cXc;
-  three19: cXn => ; compartment_*((m11*cXn)/(k9 + cXn));
-  one20:  => cYm; compartment_*(LD(time, dayLength)*q2*cPn + ((LD(time, dayLength)*n4 + n5)*g5^e)/(g5^e + cTn^e))*(g6^f/(g6^f + cLn^f));
-  two20: cYm => ; compartment_*((m12*cYm)/(k10 + cYm));
+  three19: cXn => ; compartment_*(m11*cXn/(k9 + cXn));
+  one20:  => cYm; compartment_*(ceil(sin(pi*time/dayLength + 0.001)/2)*q2*cPn + (ceil(sin(pi*time/dayLength + 0.001)/2)*n4 + n5)*g5^e/(g5^e + cTn^e))*(g6^f/(g6^f + cLn^f));
+  two20: cYm => ; compartment_*(m12*cYm/(k10 + cYm));
   one21:  => cYc; compartment_*p4*cYm;
   three21: cYn => cYc; compartment_*r8*cYn;
-  four21: cYc => ; compartment_*((m13*cYc)/(k11 + cYc));
+  four21: cYc => ; compartment_*(m13*cYc/(k11 + cYc));
   one22: cYc => cYn; compartment_*r7*cYc;
-  three22: cYn => ; compartment_*((m14*cYn)/(k12 + cYn));
-  one23:  => cPn; compartment_*(1 - LD(time, dayLength))*p5;
-  two23: cPn => ; compartment_*((m15*cPn)/(k13 + cPn));
-  three23: cPn => ; compartment_*q3*LD(time, dayLength)*cPn;
+  three22: cYn => ; compartment_*(m14*cYn/(k12 + cYn));
+  one23:  => cPn; compartment_*(1 - ceil(sin(pi*time/dayLength + 0.001)/2))*p5;
+  two23: cPn => ; compartment_*(m15*cPn/(k13 + cPn));
+  three23: cPn => ; compartment_*q3*ceil(sin(pi*time/dayLength + 0.001)/2)*cPn;
 
   // Species initializations:
   cLm = 0.539;
@@ -193,4 +188,175 @@ model *Locke2005_CircadianClock()
   one23 is "Light dependent production of Protein P";
   two23 is "Protein P degradation";
   three23 is "Light activated Protein P degradation";
+
+  // SBO terms:
+  compartment_.sboTerm = 290
+  cLm.sboTerm = 278
+  cLc.sboTerm = 245
+  cLn.sboTerm = 245
+  cTm.sboTerm = 278
+  cTc.sboTerm = 245
+  cTn.sboTerm = 245
+  cXm.sboTerm = 278
+  cXc.sboTerm = 245
+  cXn.sboTerm = 245
+  cYm.sboTerm = 278
+  cYc.sboTerm = 245
+  cYn.sboTerm = 245
+  cPn.sboTerm = 245
+  q1.sboTerm = 337
+  n1.sboTerm = 186
+  a.sboTerm = 190
+  g1.sboTerm = 363
+  m1.sboTerm = 324
+  k1.sboTerm = 27
+  p1.sboTerm = 153
+  r1.sboTerm = 153
+  r2.sboTerm = 156
+  m2.sboTerm = 324
+  k2.sboTerm = 26
+  m3.sboTerm = 324
+  k3.sboTerm = 27
+  n2.sboTerm = 186
+  b.sboTerm = 190
+  g2.sboTerm = 363
+  g3.sboTerm = 261
+  c.sboTerm = 190
+  m4.sboTerm = 324
+  k4.sboTerm = 27
+  p2.sboTerm = 153
+  r3.sboTerm = 153
+  r4.sboTerm = 156
+  m5.sboTerm = 324
+  m6.sboTerm = 324
+  k5.sboTerm = 27
+  m7.sboTerm = 324
+  m8.sboTerm = 324
+  k6.sboTerm = 27
+  n3.sboTerm = 186
+  d.sboTerm = 190
+  g4.sboTerm = 363
+  m9.sboTerm = 324
+  k7.sboTerm = 27
+  p3.sboTerm = 153
+  r5.sboTerm = 153
+  r6.sboTerm = 156
+  m10.sboTerm = 324
+  k8.sboTerm = 27
+  m11.sboTerm = 324
+  k9.sboTerm = 27
+  q2.sboTerm = 337
+  n4.sboTerm = 186
+  n5.sboTerm = 186
+  g5.sboTerm = 261
+  g6.sboTerm = 261
+  f.sboTerm = 190
+  e.sboTerm = 190
+  m12.sboTerm = 324
+  k10.sboTerm = 27
+  p4.sboTerm = 153
+  r7.sboTerm = 153
+  r8.sboTerm = 158
+  m13.sboTerm = 324
+  k11.sboTerm = 27
+  m14.sboTerm = 324
+  k12.sboTerm = 27
+  p5.sboTerm = 153
+  k13.sboTerm = 27
+  q3.sboTerm = 337
+  m15.sboTerm = 324
+  one11.sboTerm = 183
+  two11.sboTerm = 183
+  three11.sboTerm = 179
+  one12.sboTerm = 184
+  three12.sboTerm = 185
+  four12.sboTerm = 179
+  one13.sboTerm = 185
+  three13.sboTerm = 179
+  one14.sboTerm = 183
+  two14.sboTerm = 179
+  one15.sboTerm = 184
+  three15.sboTerm = 185
+  four15.sboTerm = 179
+  one16.sboTerm = 185
+  three16.sboTerm = 179
+  one17.sboTerm = 183
+  two17.sboTerm = 179
+  one18.sboTerm = 184
+  three18.sboTerm = 185
+  four18.sboTerm = 179
+  one19.sboTerm = 185
+  three19.sboTerm = 179
+  one20.sboTerm = 183
+  two20.sboTerm = 179
+  one21.sboTerm = 184
+  three21.sboTerm = 185
+  four21.sboTerm = 179
+  one22.sboTerm = 185
+  three22.sboTerm = 179
+  one23.sboTerm = 393
+  two23.sboTerm = 179
+  three23.sboTerm = 179
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/go/GO:0005623"
+  cLm hypernym "http://identifiers.org/chebi/CHEBI:33699",
+               "http://identifiers.org/kegg.compound/C00046"
+  cLc identity "http://identifiers.org/uniprot/O81713"
+  cLn identity "http://identifiers.org/uniprot/O81713"
+  cTm hypernym "http://identifiers.org/chebi/CHEBI:33699",
+               "http://identifiers.org/kegg.compound/C00046"
+  cTc identity "http://identifiers.org/uniprot/Q9LKL2"
+  cTn identity "http://identifiers.org/uniprot/Q9LKL2"
+  cXm hypernym "http://identifiers.org/chebi/CHEBI:33699",
+               "http://identifiers.org/kegg.compound/C00046"
+  cXn hypernym "http://identifiers.org/go/GO:0005667"
+  cYm hypernym "http://identifiers.org/chebi/CHEBI:33699",
+               "http://identifiers.org/kegg.compound/C00046"
+  cYn hypernym "http://identifiers.org/go/GO:0005667"
+  one11 hypernym "http://identifiers.org/go/GO:0009642",
+                 "http://identifiers.org/go/GO:0006351"
+  two11 hypernym "http://identifiers.org/go/GO:0006351"
+  three11 hypernym "http://identifiers.org/go/GO:0006402"
+  one12 hypernym "http://identifiers.org/go/GO:0006412"
+  three12 hypernym "http://identifiers.org/go/GO:0006886"
+  four12 hypernym "http://identifiers.org/go/GO:0030163"
+  one13 hypernym "http://identifiers.org/go/GO:0006886"
+  three13 hypernym "http://identifiers.org/go/GO:0030163"
+  one14 hypernym "http://identifiers.org/go/GO:0006351"
+  two14 hypernym "http://identifiers.org/go/GO:0006402"
+  one15 hypernym "http://identifiers.org/go/GO:0006412"
+  three15 hypernym "http://identifiers.org/go/GO:0006886"
+  four15 hypernym "http://identifiers.org/go/GO:0030163"
+  one16 hypernym "http://identifiers.org/go/GO:0006886"
+  three16 hypernym "http://identifiers.org/go/GO:0030163"
+  one17 hypernym "http://identifiers.org/go/GO:0006351"
+  two17 hypernym "http://identifiers.org/go/GO:0006402"
+  one18 hypernym "http://identifiers.org/go/GO:0006412"
+  three18 hypernym "http://identifiers.org/go/GO:0006886"
+  four18 hypernym "http://identifiers.org/go/GO:0030163"
+  one19 hypernym "http://identifiers.org/go/GO:0006886"
+  three19 hypernym "http://identifiers.org/go/GO:0030163"
+  one20 hypernym "http://identifiers.org/go/GO:0006351"
+  two20 hypernym "http://identifiers.org/go/GO:0006402"
+  one21 hypernym "http://identifiers.org/go/GO:0006412"
+  three21 hypernym "http://identifiers.org/go/GO:0006886"
+  four21 hypernym "http://identifiers.org/go/GO:0030163"
+  one22 hypernym "http://identifiers.org/go/GO:0006886"
+  three22 hypernym "http://identifiers.org/go/GO:0030163"
+  one23 hypernym "http://identifiers.org/go/GO:0009642",
+                 "http://identifiers.org/go/GO:0006412"
+  two23 hypernym "http://identifiers.org/go/GO:0030163"
+  three23 hypernym "http://identifiers.org/go/GO:0045732",
+                   "http://identifiers.org/go/GO:0009642"
 end
+
+Locke2005_CircadianClock is "Locke2005 - Circadian Clock"
+
+Locke2005_CircadianClock model_entity_is "http://identifiers.org/biomodels.db/MODEL0737170531"
+Locke2005_CircadianClock model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000055"
+Locke2005_CircadianClock description "http://identifiers.org/pubmed/16729048"
+Locke2005_CircadianClock origin "http://identifiers.org/pubmed/15784272"
+Locke2005_CircadianClock hypernym "http://identifiers.org/go/GO:0042752"
+Locke2005_CircadianClock taxon "http://identifiers.org/taxonomy/3701"
+Locke2005_CircadianClock identity "http://identifiers.org/kegg.pathway/ath04710"

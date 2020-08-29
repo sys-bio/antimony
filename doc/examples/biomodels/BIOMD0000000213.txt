@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Folate2004()
 
   // Compartments and Species:
@@ -11,7 +11,7 @@ model *Folate2004()
 
   // Reactions:
   V_NE: THF => _5_10_CH2THF; HCOOH*NE_k1*THF - NE_k2*_5_10_CH2THF;
-  V_MS: _5mTHF => THF; (MS_Vmax*(_5mTHF/MS_Km_5mTHF)*(Hcy/MS_Km_Hcy))/(MS_Kd/MS_Km_5mTHF + _5mTHF/MS_Km_5mTHF + Hcy/MS_Km_Hcy + (_5mTHF*Hcy)/(MS_Km_5mTHF*MS_Km_Hcy));
+  V_MS: _5mTHF => THF; MS_Vmax*(_5mTHF/MS_Km_5mTHF)*(Hcy/MS_Km_Hcy)/(MS_Kd/MS_Km_5mTHF + _5mTHF/MS_Km_5mTHF + Hcy/MS_Km_Hcy + _5mTHF*Hcy/(MS_Km_5mTHF*MS_Km_Hcy));
   V_MTHFR: _5_10_CH2THF => _5mTHF; MTHFR_Vmax*(NADPH/(MTHFR_Km_NADPH + NADPH))*(_5_10_CH2THF/(MTHFR_Km_5_10_CH2THF + _5_10_CH2THF));
   V_FTD: _10fTHF => THF; FTD_Vmax*(_10fTHF/(FTD_Km_10fTHF + _10fTHF));
   V_FTS: THF => _10fTHF; FTS_Vmax*(HCOOH/(FTS_Km_HCOOH + HCOOH))*(THF/(FTS_Km_THF + THF));
@@ -91,4 +91,118 @@ model *Folate2004()
   const MTCH_Km_5_10_CHTHF, MTCH_VmaxR, MTCH_Km_10fTHF, SHMT_VmaxF, SHMT_Km_Ser;
   const SHMT_Km_THF, SHMT_VmaxR, MTD_VmaxF, MTD_Km_5_10_CH2THF, MTD_VmaxR;
   const MTD_Km_5_10_CHTHF;
+
+  // SBO terms:
+  compartment_.sboTerm = 290
+  _5mTHF.sboTerm = 247
+  THF.sboTerm = 247
+  DHF.sboTerm = 247
+  _5_10_CH2THF.sboTerm = 247
+  _5_10_CHTHF.sboTerm = 247
+  _10fTHF.sboTerm = 247
+  Ser.sboTerm = 247
+  Gly.sboTerm = 247
+  dUMP.sboTerm = 247
+  GAR.sboTerm = 247
+  AICAR.sboTerm = 247
+  HCOOH.sboTerm = 247
+  NADPH.sboTerm = 247
+  Hcy.sboTerm = 247
+  V_NE.sboTerm = 210
+  V_MS.sboTerm = 402
+  V_MTHFR.sboTerm = 202
+  V_FTD.sboTerm = 402
+  V_FTS.sboTerm = 402
+  V_AICART.sboTerm = 402
+  V_PGT.sboTerm = 402
+  V_TS.sboTerm = 402
+  V_DHFR.sboTerm = 202
+  V_MTCH.sboTerm = 376
+  V_SHMT.sboTerm = 402
+  V_MTD.sboTerm = 201
+
+  // CV terms:
+  compartment_ hypernym "http://identifiers.org/go/GO:0005623"
+  _5mTHF identity "http://identifiers.org/chebi/CHEBI:15641",
+                  "http://identifiers.org/kegg.compound/C00440"
+  THF identity "http://identifiers.org/chebi/CHEBI:15635",
+               "http://identifiers.org/kegg.compound/C00101"
+  DHF identity "http://identifiers.org/chebi/CHEBI:15633",
+               "http://identifiers.org/kegg.compound/C00415"
+  _5_10_CH2THF identity "http://identifiers.org/chebi/CHEBI:1989",
+                        "http://identifiers.org/kegg.compound/C00143"
+  _5_10_CHTHF identity "http://identifiers.org/chebi/CHEBI:15638",
+                       "http://identifiers.org/kegg.compound/C00445"
+  _10fTHF identity "http://identifiers.org/chebi/CHEBI:15637",
+                   "http://identifiers.org/kegg.compound/C00234"
+  Ser hypernym "http://identifiers.org/chebi/CHEBI:17822",
+               "http://identifiers.org/kegg.compound/C00716"
+  Gly identity "http://identifiers.org/chebi/CHEBI:15428",
+               "http://identifiers.org/kegg.compound/C00037"
+  dUMP identity "http://identifiers.org/chebi/CHEBI:17622",
+                "http://identifiers.org/kegg.compound/C00365"
+  GAR identity "http://identifiers.org/chebi/CHEBI:18272",
+               "http://identifiers.org/kegg.compound/C04376"
+  GAR hypernym "http://identifiers.org/chebi/CHEBI:24367"
+  AICAR hypernym "http://identifiers.org/chebi/CHEBI:18406",
+                 "http://identifiers.org/kegg.compound/C04677"
+  HCOOH hypernym "http://identifiers.org/chebi/CHEBI:30751",
+                 "http://identifiers.org/kegg.compound/C00058"
+  NADPH identity "http://identifiers.org/chebi/CHEBI:16474",
+                 "http://identifiers.org/kegg.compound/C00005"
+  Hcy identity "http://identifiers.org/chebi/CHEBI:17230",
+               "http://identifiers.org/kegg.compound/C05330"
+  V_NE hypernym "http://identifiers.org/go/GO:0046653"
+  V_MS hypernym "http://identifiers.org/ec-code/2.1.1.13",
+                "http://identifiers.org/kegg.reaction/R00946",
+                "http://identifiers.org/go/GO:0008705"
+  V_MS homolog "http://identifiers.org/reactome/REACT_6739"
+  V_MTHFR hypernym "http://identifiers.org/ec-code/1.5.1.20",
+                   "http://identifiers.org/kegg.reaction/R01224",
+                   "http://identifiers.org/go/GO:0004489"
+  V_MTHFR homolog "http://identifiers.org/reactome/REACT_11102"
+  V_FTD hypernym "http://identifiers.org/ec-code/1.5.1.6",
+                 "http://identifiers.org/kegg.reaction/R00941",
+                 "http://identifiers.org/go/GO:0016155"
+  V_FTD homolog "http://identifiers.org/reactome/REACT_11170"
+  V_FTS hypernym "http://identifiers.org/ec-code/6.3.4.3",
+                 "http://identifiers.org/kegg.reaction/R00943",
+                 "http://identifiers.org/go/GO:0004329"
+  V_FTS homolog "http://identifiers.org/reactome/REACT_11109"
+  V_AICART hypernym "http://identifiers.org/ec-code/2.1.2.3",
+                    "http://identifiers.org/kegg.reaction/R04560",
+                    "http://identifiers.org/go/GO:0004643"
+  V_AICART homolog "http://identifiers.org/reactome/REACT_812"
+  V_PGT homolog "http://identifiers.org/reactome/REACT_1509"
+  V_PGT hypernym "http://identifiers.org/ec-code/2.1.2.2",
+                 "http://identifiers.org/kegg.reaction/R04325",
+                 "http://identifiers.org/go/GO:0004644"
+  V_TS hypernym "http://identifiers.org/ec-code/2.1.1.45",
+                "http://identifiers.org/kegg.reaction/R02101",
+                "http://identifiers.org/go/GO:0004799"
+  V_TS homolog "http://identifiers.org/reactome/REACT_1679"
+  V_DHFR hypernym "http://identifiers.org/ec-code/1.5.1.3",
+                  "http://identifiers.org/kegg.reaction/R00939",
+                  "http://identifiers.org/go/GO:0004146"
+  V_DHFR homolog "http://identifiers.org/reactome/REACT_11170"
+  V_MTCH hypernym "http://identifiers.org/ec-code/3.5.4.9",
+                  "http://identifiers.org/kegg.reaction/R01655",
+                  "http://identifiers.org/go/GO:0004477"
+  V_MTCH homolog "http://identifiers.org/reactome/REACT_11074"
+  V_SHMT homolog "http://identifiers.org/reactome/REACT_11159"
+  V_SHMT hypernym "http://identifiers.org/ec-code/2.1.2.1",
+                  "http://identifiers.org/kegg.reaction/R00945",
+                  "http://identifiers.org/go/GO:0004372"
+  V_MTD homolog "http://identifiers.org/reactome/REACT_11187"
+  V_MTD hypernym "http://identifiers.org/ec-code/1.5.1.5",
+                 "http://identifiers.org/kegg.reaction/R01220",
+                 "http://identifiers.org/go/GO:0004488"
 end
+
+Folate2004 is "Nijhout2004_Folate_Cycle"
+
+Folate2004 model_entity_is "http://identifiers.org/biomodels.db/MODEL4336555445"
+Folate2004 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000213"
+Folate2004 description "http://identifiers.org/pubmed/15496403"
+Folate2004 hypernym "http://identifiers.org/go/GO:0046655"
+Folate2004 taxon "http://identifiers.org/taxonomy/40674"

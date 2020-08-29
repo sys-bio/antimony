@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *MODEL1402200004()
 
   // Compartments and Species:
@@ -55,7 +55,7 @@ model *MODEL1402200004()
   Beclin_I_Dissociation_Bax_Bcl2_Beclin: Bax_Bcl2_Beclin_I => Beclin_I + Bax_Bcl2; krelBecBaxBcl2*Bax_Bcl2_Beclin_I;
   ROS_generation: $Source => ROS; kgenROS*Source;
   ROS_removal: ROS => $Sink; kremROS*ROS;
-  Protein_Damage_by_ROS: $NatP + ROS => DamP + ROS; (kdamNatP*NatP*ROS)/(10 + ROS);
+  Protein_Damage_by_ROS: $NatP + ROS => DamP + ROS; kdamNatP*NatP*ROS/(10 + ROS);
   Removal_DamP_by_Autophagy: DamP + Lys_A => Lys_A; kdegDamP*DamP*Lys_A;
   Production_of_AGEproducts: $Source => AGEprod; kprodAGE*Source;
   RAGE_activation: AGEprod => AGEprod + RAGE; kactRAGE*AGEprod;
@@ -88,15 +88,15 @@ model *MODEL1402200004()
   NFkB_activation: NFkB + p38_P => NFkB_P + p38_P; kphosNFkB*NFkB*p38_P;
   NFkB_dephosphorylation: NFkB_P => NFkB; kdephosNFkB*NFkB_P;
   ROS_production_by_p38_P: p38_P => p38_P + ROS; kgenROSbyp38*p38_P;
-  Lysosome_damage_by_ROS: Lys_A + ROS => Lys_I + ROS; (kdamLys*Lys_A*ROS)/(10 + ROS);
+  Lysosome_damage_by_ROS: Lys_A + ROS => Lys_I + ROS; kdamLys*Lys_A*ROS/(10 + ROS);
   IntegrinActivationByMechanicalStress: $Source => Integrin + IntegrinCount; kactIntegrin*Source;
   IntegrinInactivation: Integrin => $Sink; kinactIntegrin*Integrin;
   Alk5Synthesis: $Source => Alk5; ksynAlk5*Source;
   TgfbActivationByIntegrin: Tgfb_I + Integrin => Tgfb_A + Integrin; kactTgfbIntegrin*Tgfb_I*Integrin;
   TgfbActivationByMMP2: Tgfb_I + MMP2 => Tgfb_A + MMP2; kactTgfbMMP2*Tgfb_I*MMP2;
   TgfbInactivation: Tgfb_A => Tgfb_I; kinactTgfb*Tgfb_A;
-  Alk5Dimerisation: 2Alk5 => Alk5_dimer; kdimerAlk5*Alk5*(Alk5 - 1)*0.5;
-  Alk5Dedimerisation: Alk5_dimer => 2Alk5; kdedimerAlk5*Alk5_dimer;
+  Alk5Dimerisation: 2 Alk5 => Alk5_dimer; kdimerAlk5*Alk5*(Alk5 - 1)*0.5;
+  Alk5Dedimerisation: Alk5_dimer => 2 Alk5; kdedimerAlk5*Alk5_dimer;
   Alk1Alk5Binding: Alk1 + Alk5 => Alk1_Alk5; kbinAlk1Alk5*Alk1*Alk5;
   Alk1Alk5Release: Alk1_Alk5 => Alk1 + Alk5; krelAlk1Alk5*Alk1_Alk5;
   TgfbReceptorBindingAlk5: Tgfb_A + Alk5_dimer => Tgfb_Alk5_dimer; kbinTgfbAlk5*Tgfb_A*Alk5_dimer;
@@ -217,54 +217,54 @@ model *MODEL1402200004()
   ecm = 1;
 
   // Variable initializations:
-  kactCasp = 1e-007;
-  kactCaspBecI = 8.3e-007;
-  kactCaspp38 = 8e-007;
-  kactIntegrin = 4e-007;
-  kactLys = 1e-008;
+  kactCasp = 1e-07;
+  kactCaspBecI = 8.3e-07;
+  kactCaspp38 = 8e-07;
+  kactIntegrin = 4e-07;
+  kactLys = 1e-08;
   kactMMP13 = 0.0001;
-  kactMMP2 = 1e-007;
+  kactMMP2 = 1e-07;
   kactNFkB = 0.0001;
   kactRAGE = 0.001;
   kactRunx2 = 0.001;
-  kactSox9 = 5e-006;
+  kactSox9 = 5e-06;
   kactTgfbIntegrin = 0.001;
-  kactTgfbMMP2 = 1e-007;
+  kactTgfbMMP2 = 1e-07;
   kbinAggrecanCollagen2 = 0.0001;
-  kbinAlk1Alk5 = 5e-005;
+  kbinAlk1Alk5 = 5e-05;
   kbinBaxBcl2 = 1.67;
   kbinBaxToBcl2Bec = 0.000167;
-  kbinBcl2Beclin = 7.5e-005;
-  kbinBecToBaxBcl2 = 1.67e-005;
-  kbinSmad1Smad4 = 5e-005;
+  kbinBcl2Beclin = 7.5e-05;
+  kbinBecToBaxBcl2 = 1.67e-05;
+  kbinSmad1Smad4 = 5e-05;
   kbinSmad2Smad4 = 0.0001;
   kbinSmad7Alk1 = 0.5;
-  kbinSmad7Alk5 = 2e-005;
-  kbinTgfbAlk1 = 2e-005;
-  kbinTgfbAlk5 = 3e-005;
-  kdamLys = 5e-006;
-  kdamNatP = 8e-006;
+  kbinSmad7Alk5 = 2e-05;
+  kbinTgfbAlk1 = 2e-05;
+  kbinTgfbAlk5 = 3e-05;
+  kdamLys = 5e-06;
+  kdamNatP = 8e-06;
   kdedimerAlk5 = 0.001;
-  kdegAcanmRNA = 9e-006;
-  kdegADAMTS5 = 5e-005;
-  kdegAggrecan = 1e-009;
-  kdegAlk1 = 1.2e-008;
-  kdegAlk5 = 4e-007;
+  kdegAcanmRNA = 9e-06;
+  kdegADAMTS5 = 5e-05;
+  kdegAggrecan = 1e-09;
+  kdegAlk1 = 1.2e-08;
+  kdegAlk5 = 4e-07;
   kdegBcl2 = 0.000167;
   kdegBcl2Casp = 0.00167;
   kdegBcl2ROS = 0.00167;
-  kdegCol2mRNA = 1.07e-005;
-  kdegCollagen = 1e-008;
-  kdegDamP = 4e-005;
-  kdegIkB = 1e-006;
+  kdegCol2mRNA = 1.07e-05;
+  kdegCollagen = 1e-08;
+  kdegDamP = 4e-05;
+  kdegIkB = 1e-06;
   kdegIL1 = 0.005;
-  kdegMMP13 = 6.4e-006;
-  kdegMMP2 = 6.4e-006;
+  kdegMMP13 = 6.4e-06;
+  kdegMMP2 = 6.4e-06;
   kdegSmad7 = 0.005;
-  kdegSmad7Alk1 = 5e-006;
-  kdegSmad7Alk5 = 1e-005;
+  kdegSmad7Alk1 = 5e-06;
+  kdegSmad7Alk5 = 1e-05;
   kdegSOD = 0.001;
-  kdegSox9 = 4.8e-005;
+  kdegSox9 = 4.8e-05;
   kdegSox9mRNA = 0.0001;
   kdegTgfb = 0.00578;
   kdephosNFkB = 0.01;
@@ -277,8 +277,8 @@ model *MODEL1402200004()
   kgenROSbyDamP = 0.0001;
   kgenROSbyp38 = 0.0001;
   kgenROSbyRAGE = 0.0004;
-  kinactBec = 5e-010;
-  kinactBecCasp = 1e-008;
+  kinactBec = 5e-10;
+  kinactBecCasp = 1e-08;
   kinactCasp = 0.0003;
   kinactCaspBcl2 = 0.0003;
   kinactIntegrin = 0.0005;
@@ -287,13 +287,13 @@ model *MODEL1402200004()
   kinactRunx2 = 0.0005;
   kinactSox9 = 0.0015;
   kinactTgfb = 0.05;
-  kinhibLys = 7e-006;
+  kinhibLys = 7e-06;
   kphosNFkB = 0.001;
-  kphosp38 = 1e-007;
+  kphosp38 = 1e-07;
   kphosp38ROS = 0.0001;
-  kphosSmad1 = 2e-005;
-  kphosSmad2 = 4e-005;
-  kprodAGE = 1e-006;
+  kphosSmad1 = 2e-05;
+  kphosSmad2 = 4e-05;
+  kprodAGE = 1e-06;
   krelAlk1Alk5 = 0.01;
   krelBaxBcl2 = 0.00167;
   krelBaxBcl2Bec = 0.00167;
@@ -302,34 +302,34 @@ model *MODEL1402200004()
   krelSmad1Smad4 = 0.0167;
   krelSmad2Smad4 = 0.0167;
   krelSmad7Alk1 = 0.001;
-  krelSmad7Alk5 = 1e-006;
-  krelTgfbAlk1 = 1e-006;
-  krelTgfbAlk5 = 1e-006;
+  krelSmad7Alk5 = 1e-06;
+  krelTgfbAlk1 = 1e-06;
+  krelTgfbAlk5 = 1e-06;
   kremROS = 0.000383;
   kremROSbySOD = 0.0001;
   ksynAcanmRNA = 0;
-  ksynAcanmRNASox9A = 4.6e-006;
+  ksynAcanmRNASox9A = 4.6e-06;
   ksynADAMTS5 = 0.0005;
-  ksynAggrecan = 1e-006;
-  ksynAlk1 = 5e-006;
-  ksynAlk5 = 5e-006;
+  ksynAggrecan = 1e-06;
+  ksynAlk1 = 5e-06;
+  ksynAlk5 = 5e-06;
   ksynBcl2 = 0.002;
-  ksynCol2 = 1e-007;
+  ksynCol2 = 1e-07;
   ksynCol2mRNA = 0;
-  ksynCol2mRNASmad = 1e-006;
-  ksynCol2mRNASox9A = 1e-006;
+  ksynCol2mRNASmad = 1e-06;
+  ksynCol2mRNASox9A = 1e-06;
   ksynIkB = 0.001;
   ksynIL1 = 0.005;
-  ksynMMP13 = 3.2e-005;
-  ksynMMP13Runx2 = 1.5e-006;
-  ksynMMP2 = 5e-006;
+  ksynMMP13 = 3.2e-05;
+  ksynMMP13Runx2 = 1.5e-06;
+  ksynMMP2 = 5e-06;
   ksynNatP = 0;
   ksynRAGE = 0.0001;
-  ksynSmad7 = 1e-005;
+  ksynSmad7 = 1e-05;
   ksynSOD = 0.002;
   ksynSox9 = 0.00048;
-  ksynSox9mRNA = 1e-005;
-  ksynSox9mRNASox9A = 5e-006;
+  ksynSox9mRNA = 1e-05;
+  ksynSox9mRNASox9A = 5e-06;
 
   // Other declarations:
   const cell, nucleus, membrane, ecm, kactCasp, kactCaspBecI, kactCaspp38;
@@ -356,4 +356,116 @@ model *MODEL1402200004()
 
   // Unit definitions:
   unit substance = item;
+
+  // SBO terms:
+  Alk5_dimer.sboTerm = 607
+  Sink.sboTerm = 291
+  Source.sboTerm = 291
+
+  // CV terms:
+  cell hypernym "http://identifiers.org/go/GO:0005623"
+  nucleus hypernym "http://identifiers.org/go/GO:0005634"
+  membrane hypernym "http://identifiers.org/go/GO:0016020"
+  ecm hypernym "http://identifiers.org/go/GO:0065010"
+  AcanmRNA hypernym "http://identifiers.org/uniprot/P16112"
+  ADAMTS5 hypernym "http://identifiers.org/uniprot/Q9UNA0"
+  Alk1 hypernym "http://identifiers.org/uniprot/P37023"
+  Alk1_Alk5 part "http://identifiers.org/uniprot/P37023",
+                 "http://identifiers.org/uniprot/P36897"
+  Alk5 hypernym "http://identifiers.org/uniprot/P36897"
+  Alk5_dimer hypernym "http://identifiers.org/uniprot/P36897"
+  Bax hypernym "http://identifiers.org/uniprot/Q07812"
+  Bax_Bcl2 part "http://identifiers.org/uniprot/Q07812",
+                "http://identifiers.org/uniprot/P10415"
+  Bax_Bcl2_Beclin part "http://identifiers.org/uniprot/Q07812",
+                       "http://identifiers.org/uniprot/P10415",
+                       "http://identifiers.org/uniprot/Q14457"
+  Bax_Bcl2_Beclin_I part "http://identifiers.org/uniprot/Q07812",
+                         "http://identifiers.org/uniprot/P10415",
+                         "http://identifiers.org/uniprot/Q14457"
+  Bcl2 hypernym "http://identifiers.org/uniprot/P10415"
+  Bcl2_Beclin part "http://identifiers.org/uniprot/P10415",
+                   "http://identifiers.org/uniprot/Q14457"
+  Bcl2_Beclin_I part "http://identifiers.org/uniprot/P10415",
+                     "http://identifiers.org/uniprot/Q14457"
+  Beclin hypernym "http://identifiers.org/uniprot/Q14457"
+  Beclin_I hypernym "http://identifiers.org/uniprot/Q14457"
+  Caspase_A hypernym "http://identifiers.org/uniprot/P42574"
+  Caspase_I hypernym "http://identifiers.org/uniprot/P42574"
+  Col2mRNA hypernym "http://identifiers.org/uniprot/P02458"
+  IkB hypernym "http://identifiers.org/uniprot/P25963"
+  IkB_NFkB part "http://identifiers.org/uniprot/P25963",
+                "http://identifiers.org/uniprot/Q04206"
+  IL1 hypernym "http://identifiers.org/uniprot/P01583"
+  Lys_A hypernym "http://identifiers.org/go/GO:0005764"
+  Lys_I hypernym "http://identifiers.org/go/GO:0005764"
+  MMP13 hypernym "http://identifiers.org/uniprot/P45452"
+  MMP2 hypernym "http://identifiers.org/uniprot/P08253"
+  NFkB hypernym "http://identifiers.org/uniprot/Q04206"
+  NFkB_P hypernym "http://identifiers.org/uniprot/Q04206"
+  NFkB_P identity "http://identifiers.org/pr/PR:000037070"
+  p38 hypernym "http://identifiers.org/uniprot/Q16539"
+  p38_P hypernym "http://identifiers.org/uniprot/Q16539"
+  p38_P identity "http://identifiers.org/pr/PR:000037070"
+  proMMP13 hypernym "http://identifiers.org/uniprot/P45452"
+  proMMP2 hypernym "http://identifiers.org/uniprot/P08253"
+  RAGE hypernym "http://identifiers.org/uniprot/Q15109"
+  ROS hypernym "http://identifiers.org/chebi/CHEBI:26523"
+  Runx2_A hypernym "http://identifiers.org/uniprot/Q13950"
+  Runx2_I hypernym "http://identifiers.org/uniprot/Q13950"
+  Smad1 hypernym "http://identifiers.org/uniprot/Q15797"
+  Smad1_P hypernym "http://identifiers.org/uniprot/Q15797"
+  Smad1_P identity "http://identifiers.org/pr/PR:000037070"
+  Smad1_P_Smad4 part "http://identifiers.org/uniprot/Q15797",
+                     "http://identifiers.org/uniprot/Q13485"
+  Smad1_P_Smad4 identity "http://identifiers.org/pr/PR:000037070"
+  Smad2 hypernym "http://identifiers.org/uniprot/Q15796"
+  Smad2_P hypernym "http://identifiers.org/uniprot/Q15796"
+  Smad2_P identity "http://identifiers.org/pr/PR:000037070"
+  Smad2_P_Smad4 part "http://identifiers.org/uniprot/Q15796",
+                     "http://identifiers.org/uniprot/Q13485"
+  Smad2_P_Smad4 identity "http://identifiers.org/pr/PR:000037070"
+  Smad4 hypernym "http://identifiers.org/uniprot/Q13485"
+  Smad7 hypernym "http://identifiers.org/uniprot/O15105"
+  SOD hypernym "http://identifiers.org/uniprot/P00441"
+  Sox9 hypernym "http://identifiers.org/uniprot/P48436"
+  Sox9_A hypernym "http://identifiers.org/uniprot/P48436"
+  Sox9mRNA encodement "http://identifiers.org/uniprot/P48436"
+  Tgfb_A hypernym "http://identifiers.org/uniprot/P01137"
+  Tgfb_Alk1_Alk5 part "http://identifiers.org/uniprot/P01137",
+                      "http://identifiers.org/uniprot/P37023",
+                      "http://identifiers.org/uniprot/P36897",
+                      "http://identifiers.org/uniprot/O15105"
+  Tgfb_Alk1_Alk5_Smad7 part "http://identifiers.org/uniprot/P01137",
+                            "http://identifiers.org/uniprot/P37023",
+                            "http://identifiers.org/uniprot/P36897",
+                            "http://identifiers.org/uniprot/O15105"
+  Tgfb_Alk5_dimer part "http://identifiers.org/uniprot/P01137",
+                       "http://identifiers.org/uniprot/P36897"
+  Tgfb_Alk5_dimer_Smad7 part "http://identifiers.org/uniprot/P01137",
+                             "http://identifiers.org/uniprot/P36897",
+                             "http://identifiers.org/uniprot/O15105"
+  AggFrag hypernym "http://identifiers.org/uniprot/P16112"
+  AggFrag property "http://identifiers.org/pato/PATO:0001444"
+  Aggrecan hypernym "http://identifiers.org/uniprot/P16112"
+  Aggrecan_Collagen2 part "http://identifiers.org/uniprot/P16112",
+                          "http://identifiers.org/uniprot/P02458"
+  ColFrag hypernym "http://identifiers.org/uniprot/P02458"
+  ColFrag property "http://identifiers.org/pato/PATO:0001444"
+  Collagen2 hypernym "http://identifiers.org/uniprot/P02458"
+  Integrin hypernym "http://identifiers.org/go/GO:0008305"
+  Tgfb_I hypernym "http://identifiers.org/uniprot/P01137"
+  IntegrinCount hypernym "http://identifiers.org/go/GO:0008305"
+  IntegrinCount identity "http://identifiers.org/pato/PATO:0000070"
 end
+
+MODEL1402200004 is "Hui2016 - Age-related changes in articular cartilage"
+
+MODEL1402200004 model_entity_is "http://identifiers.org/biomodels.db/MODEL1402200004"
+MODEL1402200004 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000560"
+MODEL1402200004 description "http://identifiers.org/pubmed/25475114"
+MODEL1402200004 property "http://identifiers.org/doid/DOID:8398"
+MODEL1402200004 hypernym "http://identifiers.org/go/GO:0001322",
+                         "http://identifiers.org/go/GO:0051216"
+MODEL1402200004 taxon "http://identifiers.org/taxonomy/10090"
+MODEL1402200004 container "http://identifiers.org/fma/FMA:35175"

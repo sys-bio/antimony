@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *BIOMD0000000009()
 
   // Compartments and Species:
@@ -41,7 +41,7 @@ model *BIOMD0000000009()
   r10b: KPase_PP_K => P_K + KPase; compartment_*r10b_k10*KPase_PP_K;
 
   // Species initializations:
-  E1 = 3e-005;
+  E1 = 3e-05;
   E2 = 0.0003;
   KKK = 0.003;
   P_KKK = 0;
@@ -65,7 +65,7 @@ model *BIOMD0000000009()
   KPase_P_K = 0;
 
   // Compartment initializations:
-  compartment_ = 4e-012;
+  compartment_ = 4e-12;
 
   // Variable initializations:
   K_PP_norm_max = 0.900049;
@@ -151,4 +151,100 @@ model *BIOMD0000000009()
   r9b is "phosphorylation of P-MAPK";
   r10a is "binding MAPK-Pase and PP-MAPK";
   r10b is "dephosphorylation of PP-MAPK";
+
+  // CV terms:
+  E1 hypernym "http://identifiers.org/interpro/IPR003577"
+  KKK hypernym "http://identifiers.org/uniprot/P12965"
+  P_KKK hypernym "http://identifiers.org/uniprot/P12965"
+  KK hypernym "http://identifiers.org/uniprot/Q05116"
+  P_KK hypernym "http://identifiers.org/uniprot/Q05116"
+  PP_KK hypernym "http://identifiers.org/uniprot/Q05116"
+  K hypernym "http://identifiers.org/uniprot/P26696"
+  P_K hypernym "http://identifiers.org/uniprot/P26696"
+  PP_K hypernym "http://identifiers.org/uniprot/P26696"
+  KPase identity "http://identifiers.org/uniprot/Q90W58"
+  E1_KKK part "http://identifiers.org/uniprot/P12965",
+              "http://identifiers.org/interpro/IPR003577"
+  E2_P_KKK part "http://identifiers.org/uniprot/P12965"
+  P_KKK_KK part "http://identifiers.org/uniprot/P12965",
+                "http://identifiers.org/uniprot/Q05116"
+  P_KKK_P_KK part "http://identifiers.org/uniprot/P12965",
+                  "http://identifiers.org/uniprot/Q05116"
+  PP_KK_K part "http://identifiers.org/uniprot/Q05116",
+               "http://identifiers.org/uniprot/P26696"
+  PP_KK_P_K part "http://identifiers.org/uniprot/Q05116",
+                 "http://identifiers.org/uniprot/P26696"
+  KKPase_PP_KK part "http://identifiers.org/uniprot/Q05116"
+  KKPase_P_KK part "http://identifiers.org/uniprot/Q05116"
+  KPase_PP_K part "http://identifiers.org/uniprot/Q90W58",
+                  "http://identifiers.org/uniprot/P26696"
+  KPase_P_K part "http://identifiers.org/uniprot/P26696",
+                 "http://identifiers.org/uniprot/Q90W58"
+  r1a homolog "http://identifiers.org/reactome/REACT_996"
+  r1a hypernym "http://identifiers.org/go/GO:0031435"
+  r1b homolog "http://identifiers.org/reactome/REACT_525"
+  r1b hypernym "http://identifiers.org/ec-code/2.7.11.1",
+               "http://identifiers.org/go/GO:0008349",
+               "http://identifiers.org/go/GO:0000185"
+  r2a hypernym "http://identifiers.org/go/GO:0031435"
+  r2b hypernym "http://identifiers.org/ec-code/3.1.3.16",
+               "http://identifiers.org/go/GO:0051390",
+               "http://identifiers.org/go/GO:0006470"
+  r3a homolog "http://identifiers.org/reactome/REACT_143"
+  r3a hypernym "http://identifiers.org/go/GO:0031434",
+               "http://identifiers.org/go/GO:0031435"
+  r3b homolog "http://identifiers.org/reactome/REACT_614"
+  r3b hypernym "http://identifiers.org/ec-code/2.7.11.25",
+               "http://identifiers.org/go/GO:0006468",
+               "http://identifiers.org/go/GO:0004709"
+  r4a hypernym "http://identifiers.org/go/GO:0031434"
+  r4b hypernym "http://identifiers.org/ec-code/3.1.3.16",
+               "http://identifiers.org/go/GO:0006470"
+  r5a homolog "http://identifiers.org/reactome/REACT_143"
+  r5a hypernym "http://identifiers.org/go/GO:0031435",
+               "http://identifiers.org/go/GO:0031434"
+  r5b homolog "http://identifiers.org/reactome/REACT_614"
+  r5b hypernym "http://identifiers.org/ec-code/2.7.11.25",
+               "http://identifiers.org/go/GO:0006468",
+               "http://identifiers.org/go/GO:0004709",
+               "http://identifiers.org/go/GO:0000186"
+  r6a hypernym "http://identifiers.org/go/GO:0031434"
+  r6b hypernym "http://identifiers.org/ec-code/3.1.3.16",
+               "http://identifiers.org/go/GO:0006470",
+               "http://identifiers.org/go/GO:0051389"
+  r7a version "http://identifiers.org/reactome/REACT_1780",
+              "http://identifiers.org/reactome/REACT_495"
+  r7a hypernym "http://identifiers.org/go/GO:0031434",
+               "http://identifiers.org/go/GO:0051019"
+  r7b version "http://identifiers.org/reactome/REACT_136",
+              "http://identifiers.org/reactome/REACT_2247"
+  r7b hypernym "http://identifiers.org/ec-code/2.7.12.2",
+               "http://identifiers.org/go/GO:0006468",
+               "http://identifiers.org/go/GO:0004708"
+  r8a hypernym "http://identifiers.org/go/GO:0051019"
+  r8b hypernym "http://identifiers.org/ec-code/3.1.3.16",
+               "http://identifiers.org/go/GO:0006470"
+  r9a version "http://identifiers.org/reactome/REACT_1780",
+              "http://identifiers.org/reactome/REACT_495"
+  r9a hypernym "http://identifiers.org/go/GO:0051019",
+               "http://identifiers.org/go/GO:0031434"
+  r9b hypernym "http://identifiers.org/ec-code/2.7.12.2",
+               "http://identifiers.org/go/GO:0006468",
+               "http://identifiers.org/go/GO:0004708",
+               "http://identifiers.org/go/GO:0000187"
+  r9b version "http://identifiers.org/reactome/REACT_136",
+              "http://identifiers.org/reactome/REACT_2247"
+  r10a hypernym "http://identifiers.org/go/GO:0051019"
+  r10b hypernym "http://identifiers.org/ec-code/3.1.3.16",
+                "http://identifiers.org/go/GO:0006470",
+                "http://identifiers.org/go/GO:0000188"
 end
+
+BIOMD0000000009 is "Huang1996 - Ultrasensitivity in MAPK cascade"
+
+BIOMD0000000009 model_entity_is "http://identifiers.org/biomodels.db/MODEL6615048798"
+BIOMD0000000009 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000009"
+BIOMD0000000009 description "http://identifiers.org/pubmed/8816754"
+BIOMD0000000009 homolog "http://identifiers.org/reactome/REACT_634"
+BIOMD0000000009 hypernym "http://identifiers.org/go/GO:0000165"
+BIOMD0000000009 taxon "http://identifiers.org/taxonomy/8355"

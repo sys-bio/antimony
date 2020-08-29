@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *MODEL8609366518()
 
   // Compartments and Species:
@@ -314,7 +314,7 @@ model *MODEL8609366518()
 
   // Unit definitions:
   unit substance = item;
-  unit volume = (1e-006 metre)^3;
+  unit volume = (1e-06 metre)^3;
   unit area = (1e-6 metre)^2;
   unit molecule = item;
   unit um2 = (1e-6 metre)^2;
@@ -322,10 +322,121 @@ model *MODEL8609366518()
   unit molecules_um_2_s_1 = item / ((1e-6 metre)^2 * second);
   unit pA_um_2 = dimensionless * ampere / metre^2;
   unit s_1 = 1 / second;
-  unit _one_000000_0_m6_mol_2_s_1 = 1e+006 dimensionless * metre^6 / (mole^2 * second);
+  unit _one_000000_0_m6_mol_2_s_1 = 1e+06 dimensionless * metre^6 / (mole^2 * second);
   unit uM_s_1 = 0.001 dimensionless * mole / (metre^3 * second);
   unit uM = 0.001 dimensionless * mole / metre^3;
   unit uM_1_s_1 = 1000 dimensionless * metre^3 / (mole * second);
   unit molecules_um_2 = item / (1e-6 metre)^2;
-  unit molecule_per_volume = item / (1e-006 metre)^3;
+  unit molecule_per_volume = item / (1e-06 metre)^3;
+
+  // CV terms:
+  cyto identity "http://identifiers.org/go/GO:0005737"
+  extra identity "http://identifiers.org/go/GO:0005576"
+  cyto_mem identity "http://identifiers.org/go/GO:0005886"
+  AC_active_cyto_mem hypernym "http://identifiers.org/uniprot/P26769"
+  AC_active_cyto_mem part "http://identifiers.org/interpro/IPR001054"
+  G_GDP_cyto part "http://identifiers.org/chebi/CHEBI:17552",
+                  "http://identifiers.org/interpro/IPR001019",
+                  "http://identifiers.org/kegg.compound/C00035"
+  G_protein_cyto identity "http://identifiers.org/go/GO:0005834"
+  G_a_s_cyto hypernym "http://identifiers.org/uniprot/Q8CGK7"
+  iso_BAR_p_cyto_mem part "http://identifiers.org/uniprot/P18090"
+  PDE4_cyto hypernym "http://identifiers.org/uniprot/P54748",
+                     "http://identifiers.org/interpro/IPR003607"
+  ATP_cyto identity "http://identifiers.org/chebi/CHEBI:15422",
+                    "http://identifiers.org/kegg.compound/C00002"
+  AC_PKA_cyto_mem part "http://identifiers.org/uniprot/A1L1M0",
+                       "http://identifiers.org/uniprot/P26769",
+                       "http://identifiers.org/interpro/IPR001054"
+  R2C2_cyto hypernym "http://identifiers.org/go/GO:0005952"
+  PP_PDE_cyto hypernym "http://identifiers.org/uniprot/P54748",
+                       "http://identifiers.org/interpro/IPR003607"
+  BAR_cyto_mem hypernym "http://identifiers.org/uniprot/P18090"
+  BAR_G_cyto_mem hypernym "http://identifiers.org/uniprot/P18090"
+  iso_BAR_cyto_mem part "http://identifiers.org/uniprot/P18090"
+  MAPK_active_cyto hypernym "http://identifiers.org/uniprot/P63086"
+  MEK_cyto hypernym "http://identifiers.org/uniprot/Q01986"
+  MEK_active_cyto hypernym "http://identifiers.org/uniprot/Q01986"
+  B_Raf_active_cyto hypernym "http://identifiers.org/uniprot/Q99MC6"
+  B_Raf_cyto hypernym "http://identifiers.org/uniprot/Q99MC6"
+  PKA_cyto hypernym "http://identifiers.org/uniprot/A1L1M0"
+  AC_cyto_mem hypernym "http://identifiers.org/uniprot/P26769"
+  AC_cyto_mem part "http://identifiers.org/interpro/IPR001054"
+  AMP_cyto identity "http://identifiers.org/chebi/CHEBI:16027",
+                    "http://identifiers.org/kegg.compound/C00020"
+  PP2A_cyto hypernym "http://identifiers.org/uniprot/Q64623"
+  MAPK_cyto hypernym "http://identifiers.org/uniprot/P63086"
+  PTP_cyto hypernym "http://identifiers.org/uniprot/P49445"
+  PTP_PKA_cyto part "http://identifiers.org/uniprot/P49445",
+                    "http://identifiers.org/uniprot/A1L1M0"
+  c_R2C2_cyto hypernym "http://identifiers.org/go/GO:0005952"
+  c2_R2C2_cyto hypernym "http://identifiers.org/go/GO:0005952"
+  c3_R2C2_cyto hypernym "http://identifiers.org/go/GO:0005952"
+  iso_BAR_G_cyto_mem part "http://identifiers.org/uniprot/P18090",
+                          "http://identifiers.org/go/GO:0005834"
+  cAMP_cyto identity "http://identifiers.org/chebi/CHEBI:17489",
+                     "http://identifiers.org/kegg.compound/C00575"
+  PTP_PP_cyto part "http://identifiers.org/uniprot/P49445"
+  PDE4_P_cyto hypernym "http://identifiers.org/uniprot/P54748",
+                       "http://identifiers.org/interpro/IPR003607"
+  activate_Gs hypernym "http://identifiers.org/go/GO:0004930"
+  pde4_p hypernym "http://identifiers.org/ec-code/3.1.4.17",
+                  "http://identifiers.org/go/GO:0004115"
+  PPase_Raf hypernym "http://identifiers.org/ec-code/3.1.3.16",
+                     "http://identifiers.org/go/GO:0004721"
+  iso_binds_BAR hypernym "http://identifiers.org/go/GO:0031697"
+  PDE4 hypernym "http://identifiers.org/ec-code/3.1.4.17",
+                "http://identifiers.org/go/GO:0004115"
+  bg_binds_GRK hypernym "http://identifiers.org/go/GO:0005515"
+  MEK_activates_MAPK hypernym "http://identifiers.org/ec-code/2.7.12.2",
+                              "http://identifiers.org/go/GO:0004709"
+  PKA_activates_Raf hypernym "http://identifiers.org/ec-code/2.7.11.11",
+                             "http://identifiers.org/go/GO:0004674"
+  AC_active hypernym "http://identifiers.org/ec-code/4.6.1.1",
+                     "http://identifiers.org/go/GO:0006171"
+  GTPase hypernym "http://identifiers.org/go/GO:0003924"
+  trimer parthood "http://identifiers.org/go/GO:0031684"
+  G_binds_iso_BAR hypernym "http://identifiers.org/go/GO:0032795"
+  A2 hypernym "http://identifiers.org/go/GO:0034199",
+              "http://identifiers.org/go/GO:0030552"
+  highKM_PDE hypernym "http://identifiers.org/ec-code/3.1.4.17",
+                      "http://identifiers.org/go/GO:0004115"
+  PKA_P_PTP hypernym "http://identifiers.org/ec-code/2.7.11.11",
+                     "http://identifiers.org/go/GO:0004674"
+  AC_activation hypernym "http://identifiers.org/go/GO:0007190"
+  AC_basal hypernym "http://identifiers.org/go/GO:0007190"
+  B1 hypernym "http://identifiers.org/go/GO:0034199",
+              "http://identifiers.org/go/GO:0030552"
+  GRK hypernym "http://identifiers.org/go/GO:0004703"
+  PKA_P_PDE hypernym "http://identifiers.org/ec-code/2.7.11.11",
+                     "http://identifiers.org/go/GO:0004674"
+  Raf_activates_MEK hypernym "http://identifiers.org/ec-code/2.7.11.1",
+                             "http://identifiers.org/go/GO:0004674"
+  PTP_PKA hypernym "http://identifiers.org/ec-code/3.1.3.48",
+                   "http://identifiers.org/go/GO:0004725"
+  B2 hypernym "http://identifiers.org/go/GO:0034199",
+              "http://identifiers.org/go/GO:0030552"
+  PTP hypernym "http://identifiers.org/ec-code/3.1.3.48",
+               "http://identifiers.org/go/GO:0004725"
+  iso_binds_BAR_g hypernym "http://identifiers.org/go/GO:0031697"
+  PPase_MAPK hypernym "http://identifiers.org/ec-code/3.1.3.16",
+                      "http://identifiers.org/go/GO:0000188"
+  pp2a_4 hypernym "http://identifiers.org/go/GO:0006470"
+  GRK_bg hypernym "http://identifiers.org/go/GO:0004703"
+  G_binds_BAR hypernym "http://identifiers.org/go/GO:0032795"
+  PPase_mek hypernym "http://identifiers.org/ec-code/3.1.3.16",
+                     "http://identifiers.org/go/GO:0000188"
+  A1 hypernym "http://identifiers.org/go/GO:0030552",
+              "http://identifiers.org/go/GO:0034199"
 end
+
+MODEL8609366518 is "Neves2008 - Role of cell shape and size in controlling intracellular signalling"
+
+MODEL8609366518 model_entity_is "http://identifiers.org/biomodels.db/MODEL8609366518"
+MODEL8609366518 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000182"
+MODEL8609366518 description "http://identifiers.org/pubmed/18485874"
+MODEL8609366518 parthood "http://identifiers.org/kegg.pathway/rno04010"
+MODEL8609366518 part "http://identifiers.org/go/GO:0000165",
+                     "http://identifiers.org/go/GO:0007190"
+MODEL8609366518 taxon "http://identifiers.org/taxonomy/10116"
+MODEL8609366518 hypernym "http://identifiers.org/go/GO:0000902"

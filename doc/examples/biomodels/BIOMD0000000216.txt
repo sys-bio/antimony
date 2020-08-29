@@ -1,27 +1,39 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 function function_4_r1(Dex, system)
   Dex/system;
 end
 
+function_4_r1 is "function_4_r1"
+
 function function_4_r8(CP, CP2, IC, Jp, kp1, system)
-  (kp1*CP)/(Jp + CP + 2*CP2 + 2*IC)/system;
+  kp1*CP/(Jp + CP + 2*CP2 + 2*IC)/system;
 end
+
+function_4_r8 is "function_4_r8"
 
 function function_4_r2(J, TF, kms, n, system)
-  (kms*TF^n)/(J^n + TF^n)/system;
+  kms*TF^n/(J^n + TF^n)/system;
 end
+
+function_4_r2 is "function_4_r2"
 
 function function_4_r17(CP, CP2, IC, Jp, kp2, system)
-  (kp2*IC)/(Jp + CP + 2*CP2 + 2*IC)/system;
+  kp2*IC/(Jp + CP + 2*CP2 + 2*IC)/system;
 end
 
+function_4_r17 is "function_4_r17"
+
 function function_4_r13(CP, CP2, IC, Jp, kp2, system)
-  (kp2*CP2)/(Jp + CP + 2*CP2 + 2*IC)/system;
+  kp2*CP2/(Jp + CP + 2*CP2 + 2*IC)/system;
 end
+
+function_4_r13 is "function_4_r13"
 
 function function_1(kcps, M)
   kcps*M;
 end
+
+function_1 is "Rate Law for r4"
 
 
 model *Hong2009_CircadianClock()
@@ -40,8 +52,8 @@ model *Hong2009_CircadianClock()
   r3: M => ; system*kmd*M;
   r4:  => CP; system*function_1(kcps, M);
   r5: CP => ; system*kcpd*CP;
-  r6: 2CP => CP2; system*ka*CP^2;
-  r7: CP2 => 2CP; system*kd*CP2;
+  r6: 2 CP => CP2; system*ka*CP^2;
+  r7: CP2 => 2 CP; system*kd*CP2;
   r8: CP => ; system*function_4_r8(CP, CP2, IC, Jp, kp1, system);
   r9: CP => ; system*chk2*CP;
   r10: IC => CP2 + TF; system*kicd*IC;
@@ -89,4 +101,36 @@ model *Hong2009_CircadianClock()
 
   // Display Names:
   ICtot is "TFtot";
+
+  // SBO terms:
+  system.sboTerm = 290
+  M.sboTerm = 278
+  TF.sboTerm = 296
+  CP.sboTerm = 252
+  CP2.sboTerm = 297
+  IC.sboTerm = 296
+  Dex.sboTerm = 196
+
+  // CV terms:
+  system hypernym "http://identifiers.org/go/GO:0005623"
+  M hypernym "http://identifiers.org/chebi/CHEBI:33699",
+             "http://identifiers.org/kegg.compound/C00046"
+  TF part "http://identifiers.org/uniprot/P49759",
+          "http://identifiers.org/uniprot/O00327"
+  CP homolog "http://identifiers.org/uniprot/O15516"
+  CP2 part "http://identifiers.org/uniprot/O15516"
+  IC part "http://identifiers.org/uniprot/P49759",
+          "http://identifiers.org/uniprot/O00327",
+          "http://identifiers.org/uniprot/O15516"
+  Dex hypernym "http://identifiers.org/chebi/CHEBI:41879"
 end
+
+Hong2009_CircadianClock is "Hong2009_CircadianClock"
+
+Hong2009_CircadianClock model_entity_is "http://identifiers.org/biomodels.db/MODEL7984093336"
+Hong2009_CircadianClock model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000216"
+Hong2009_CircadianClock description "http://identifiers.org/pubmed/19424508"
+Hong2009_CircadianClock origin "http://identifiers.org/pubmed/18057329"
+Hong2009_CircadianClock taxon "http://identifiers.org/taxonomy/40674"
+Hong2009_CircadianClock hypernym "http://identifiers.org/kegg.pathway/map04710",
+                                 "http://identifiers.org/go/GO:0042752"

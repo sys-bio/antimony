@@ -1,5 +1,5 @@
-// Created by libAntimony v2.8.0
-model *Kholodenko1999___EGFR_signaling()
+// Created by libAntimony v2.13.0
+model *Kholodenko1999_-_EGFR_signaling()
 
   // Compartments and Species:
   compartment compartment_;
@@ -13,13 +13,13 @@ model *Kholodenko1999___EGFR_signaling()
 
   // Reactions:
   v1: R + EGF -> Ra; (v1_k1f*R*EGF - v1_k1b*Ra)*compartment_;
-  v2: 2Ra -> R2; (v2_k2f*Ra*Ra - v2_k2b*R2)*compartment_;
+  v2: 2 Ra -> R2; (v2_k2f*Ra*Ra - v2_k2b*R2)*compartment_;
   v3: R2 -> RP; (v3_k3f*R2 - v3_k3b*RP)*compartment_;
-  v4: RP => R2; (v4_V4*RP)/(v4_K4 + RP)*compartment_;
+  v4: RP => R2; (v4_V4*RP/(v4_K4 + RP))*compartment_;
   v5: RP + PLCg -> RPLCg; (v5_k5f*RP*PLCg - v5_k5b*RPLCg)*compartment_;
   v6: RPLCg -> RPLCgP; (v6_k6f*RPLCg - v6_k6b*RPLCgP)*compartment_;
   v7: RPLCgP -> PLCgP + RP; (v7_k7f*RPLCgP - v7_k7b*RP*PLCgP)*compartment_;
-  v8: PLCgP => PLCg; (v8_V8*PLCgP)/(v8_K8 + PLCgP)*compartment_;
+  v8: PLCgP => PLCg; (v8_V8*PLCgP/(v8_K8 + PLCgP))*compartment_;
   v9: Grb + RP -> RG; (v9_k9f*RP*Grb - v9_k9b*RG)*compartment_;
   v10: RG + SOS -> RGS; (v10_k10f*RG*SOS - v10_k10b*RGS)*compartment_;
   v11: RGS -> GS + RP; (v11_k11f*RGS - v11_k11b*RP*GS)*compartment_;
@@ -27,7 +27,7 @@ model *Kholodenko1999___EGFR_signaling()
   v13: Shc + RP -> RSh; (v13_k13f*RP*Shc - v13_k13b*RSh)*compartment_;
   v14: RSh -> RShP; (v14_k14f*RSh - v14_k14b*RShP)*compartment_;
   v15: RShP -> RP + ShP; (v15_k15f*RShP - v15_k15b*ShP*RP)*compartment_;
-  v16: ShP => Shc; (v16_V16*ShP)/(v16_K16 + ShP)*compartment_;
+  v16: ShP => Shc; (v16_V16*ShP/(v16_K16 + ShP))*compartment_;
   v17: RShP + Grb -> RShG; (v17_k17f*RShP*Grb - v17_k17b*RShG)*compartment_;
   v18: RShG -> ShG + RP; (v18_k18f*RShG - v18_k18b*RP*ShG)*compartment_;
   v19: SOS + RShG -> RShGS; (v19_k19f*RShG*SOS - v19_k19b*RShGS)*compartment_;
@@ -64,7 +64,7 @@ model *Kholodenko1999___EGFR_signaling()
   PLCgl = 0;
 
   // Compartment initializations:
-  compartment_ = 3e-012;
+  compartment_ = 3e-12;
 
   // Variable initializations:
   v1_k1f = 0.003;
@@ -172,4 +172,106 @@ model *Kholodenko1999___EGFR_signaling()
   v23 is "dissociation_of_ShGS";
   v24 is "association_of_RShP_and_GS";
   v25 is "translocation_of_PLCgP";
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/go/GO:0005737"
+  EGF identity "http://identifiers.org/uniprot/P07522"
+  R hypernym "http://identifiers.org/uniprot/Q9QX70"
+  Ra part "http://identifiers.org/uniprot/Q9QX70",
+          "http://identifiers.org/uniprot/P07522"
+  R2 part "http://identifiers.org/uniprot/P07522",
+          "http://identifiers.org/uniprot/Q9QX70"
+  RP hypernym "http://identifiers.org/uniprot/Q9QX70"
+  PLCg hypernym "http://identifiers.org/interpro/IPR001192"
+  PLCg version "http://identifiers.org/uniprot/P10686",
+               "http://identifiers.org/uniprot/P24135"
+  RPLCg version "http://identifiers.org/uniprot/P10686",
+                "http://identifiers.org/uniprot/P24135",
+                "http://identifiers.org/uniprot/Q9QX70"
+  RPLCgP version "http://identifiers.org/uniprot/P24135",
+                 "http://identifiers.org/uniprot/P10686",
+                 "http://identifiers.org/uniprot/Q9QX70"
+  PLCgP version "http://identifiers.org/interpro/IPR001192"
+  PLCgP hypernym "http://identifiers.org/uniprot/P24135",
+                 "http://identifiers.org/uniprot/P10686"
+  Grb identity "http://identifiers.org/uniprot/P62994"
+  RG part "http://identifiers.org/uniprot/P62994",
+          "http://identifiers.org/uniprot/Q9QX70"
+  SOS identity "http://identifiers.org/uniprot/Q9Z1I1"
+  RGS part "http://identifiers.org/uniprot/Q9QX70",
+           "http://identifiers.org/uniprot/P62994",
+           "http://identifiers.org/uniprot/Q9Z1I1"
+  GS part "http://identifiers.org/uniprot/P62994",
+          "http://identifiers.org/uniprot/Q9Z1I1"
+  Shc hypernym "http://identifiers.org/uniprot/Q5M824"
+  RSh part "http://identifiers.org/uniprot/Q9QX70",
+           "http://identifiers.org/uniprot/Q5M824"
+  RShP part "http://identifiers.org/uniprot/Q5M824",
+            "http://identifiers.org/uniprot/Q9QX70"
+  ShP hypernym "http://identifiers.org/uniprot/Q5M824"
+  RShG part "http://identifiers.org/uniprot/Q5M824",
+            "http://identifiers.org/uniprot/P62994",
+            "http://identifiers.org/uniprot/Q9QX70"
+  ShG part "http://identifiers.org/uniprot/Q5M824",
+           "http://identifiers.org/uniprot/P62994"
+  RShGS part "http://identifiers.org/uniprot/P62994",
+             "http://identifiers.org/uniprot/Q5M824",
+             "http://identifiers.org/uniprot/Q9Z1I1",
+             "http://identifiers.org/uniprot/Q9QX70"
+  ShGS part "http://identifiers.org/uniprot/Q5M824",
+            "http://identifiers.org/uniprot/P62994",
+            "http://identifiers.org/uniprot/Q9Z1I1"
+  PLCgl hypernym "http://identifiers.org/interpro/IPR001192"
+  PLCgl version "http://identifiers.org/uniprot/P24135",
+                "http://identifiers.org/uniprot/P10686"
+  v1 identity "http://identifiers.org/go/GO:0005154",
+              "http://identifiers.org/go/GO:0048408"
+  v1 parthood "http://identifiers.org/go/GO:0045741"
+  v2 hypernym "http://identifiers.org/go/GO:0046983"
+  v3 hypernym "http://identifiers.org/ec-code/2.7.1.37",
+              "http://identifiers.org/go/GO:0006468",
+              "http://identifiers.org/go/GO:0004716"
+  v4 hypernym "http://identifiers.org/ec-code/3.1.3.16",
+              "http://identifiers.org/go/GO:0006470"
+  v5 hypernym "http://identifiers.org/go/GO:0051425",
+              "http://identifiers.org/go/GO:0042169"
+  v6 hypernym "http://identifiers.org/ec-code/2.7.1.37",
+              "http://identifiers.org/go/GO:0006468",
+              "http://identifiers.org/go/GO:0004716"
+  v8 hypernym "http://identifiers.org/ec-code/3.1.3.16",
+              "http://identifiers.org/go/GO:0006470"
+  v9 hypernym "http://identifiers.org/go/GO:0042169",
+              "http://identifiers.org/go/GO:0051425"
+  v10 hypernym "http://identifiers.org/go/GO:0005070",
+               "http://identifiers.org/go/GO:0017124",
+               "http://identifiers.org/go/GO:0005068"
+  v13 hypernym "http://identifiers.org/go/GO:0051425",
+               "http://identifiers.org/go/GO:0042169"
+  v14 hypernym "http://identifiers.org/ec-code/2.7.1.37",
+               "http://identifiers.org/go/GO:0006468",
+               "http://identifiers.org/go/GO:0004716"
+  v16 hypernym "http://identifiers.org/ec-code/3.1.3.16",
+               "http://identifiers.org/go/GO:0006470"
+  v17 hypernym "http://identifiers.org/go/GO:0051425",
+               "http://identifiers.org/go/GO:0042169"
+  v19 hypernym "http://identifiers.org/go/GO:0017124",
+               "http://identifiers.org/go/GO:0005070",
+               "http://identifiers.org/go/GO:0005068"
+  v21 hypernym "http://identifiers.org/go/GO:0051425",
+               "http://identifiers.org/go/GO:0042169"
+  v22 hypernym "http://identifiers.org/go/GO:0017124",
+               "http://identifiers.org/go/GO:0005070"
+  v24 hypernym "http://identifiers.org/go/GO:0051425",
+               "http://identifiers.org/go/GO:0042169"
+  v25 hypernym "http://identifiers.org/go/GO:0030845"
 end
+
+Kholodenko1999_-_EGFR_signaling is "Kholodenko1999 - EGFR signaling"
+
+Kholodenko1999_-_EGFR_signaling model_entity_is "http://identifiers.org/biomodels.db/MODEL6624193277"
+Kholodenko1999_-_EGFR_signaling model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000048"
+Kholodenko1999_-_EGFR_signaling description "http://identifiers.org/pubmed/10514507"
+Kholodenko1999_-_EGFR_signaling model_entity_is "http://identifiers.org/biomodels.db/MODEL6624193277"
+Kholodenko1999_-_EGFR_signaling model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000048"
+Kholodenko1999_-_EGFR_signaling container "http://identifiers.org/go/GO:0007173"
+Kholodenko1999_-_EGFR_signaling taxon "http://identifiers.org/taxonomy/10116"

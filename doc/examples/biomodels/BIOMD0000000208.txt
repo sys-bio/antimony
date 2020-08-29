@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Deineko2003_CellCycle()
 
   // Compartments and Species:
@@ -10,7 +10,7 @@ model *Deineko2003_CellCycle()
   F6 := piecewise(0.044, time <= 60, 0);
 
   // Reactions:
-  R1:  => y1; (emax*k1*y1)/(k1*y1 + (k1_prime + k1_double_prime*y1)*y2);
+  R1:  => y1; emax*k1*y1/(k1*y1 + (k1_prime + k1_double_prime*y1)*y2);
   R2: y1 => ; phi1*y1;
   R3:  => y2; k2*y1;
   R4: y2 => y3; k3*y2*y5;
@@ -68,4 +68,40 @@ model *Deineko2003_CellCycle()
   y4 is "inactive cycE_cdk2";
   y5 is "active cycE_cdk2";
   y6 is "AP-1";
+
+  // CV terms:
+  y1 hypernym "http://identifiers.org/uniprot/Q01094"
+  y2 hypernym "http://identifiers.org/uniprot/P06400"
+  y3 hypernym "http://identifiers.org/uniprot/P06400"
+  y4 part "http://identifiers.org/uniprot/P24941",
+          "http://identifiers.org/uniprot/P24864"
+  y5 part "http://identifiers.org/uniprot/P24941",
+          "http://identifiers.org/uniprot/P24864"
+  y6 hypernym "http://identifiers.org/uniprot/P05412"
+  R1 hypernym "http://identifiers.org/obo.go/GO:0006412"
+  R2 hypernym "http://identifiers.org/obo.go/GO:0019941"
+  R3 hypernym "http://identifiers.org/obo.go/GO:0003700",
+              "http://identifiers.org/obo.go/GO:0045727"
+  R4 hypernym "http://identifiers.org/obo.go/GO:0004693"
+  R5 hypernym "http://identifiers.org/obo.go/GO:0019941"
+  R6 hypernym "http://identifiers.org/obo.go/GO:0019941"
+  R7 hypernym "http://identifiers.org/obo.go/GO:0003700",
+              "http://identifiers.org/obo.go/GO:0045727"
+  R8 hypernym "http://identifiers.org/obo.go/GO:0003700",
+              "http://identifiers.org/obo.go/GO:0045727"
+  R9 hypernym "http://identifiers.org/obo.go/GO:0000082"
+  R12 hypernym "http://identifiers.org/obo.go/GO:0019941"
+  R13 hypernym "http://identifiers.org/obo.go/GO:0045727",
+               "http://identifiers.org/obo.go/GO:0003700"
+  R14 hypernym "http://identifiers.org/obo.go/GO:0006412"
+  R15 hypernym "http://identifiers.org/obo.go/GO:0019941"
 end
+
+Deineko2003_CellCycle is "Deineko2003_CellCycle"
+
+Deineko2003_CellCycle model_entity_is "http://identifiers.org/biomodels.db/MODEL1475866846"
+Deineko2003_CellCycle model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000208"
+Deineko2003_CellCycle description "http://identifiers.org/pubmed/14582399"
+Deineko2003_CellCycle taxon "http://identifiers.org/taxonomy/40674"
+Deineko2003_CellCycle hypernym "http://identifiers.org/kegg.pathway/hsa04110",
+                               "http://identifiers.org/obo.go/GO:0000278"

@@ -1,6 +1,6 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 function goldbeter_koshland(v1, v2, J1, J2)
-  (2*v1*J2)/(v2 - v1 + J1*v2 + J2*v1 + ((v2 - v1 + J1*v2 + J2*v1)^2 - 4*(v2 - v1)*v1*J2)^(1/2));
+  2*v1*J2/((v2 - v1) + J1*v2 + J2*v1 + (((v2 - v1) + J1*v2 + J2*v1)^2 - 4*(v2 - v1)*v1*J2)^(1/2));
 end
 
 
@@ -19,8 +19,8 @@ model *Tyson2003_NegFB_Homeostasis()
   // Reactions:
   r0:  => R; env*k0*E;
   r2: R => ; env*k2*R*S;
-  r3: $Ep => $E; (env*k3*Ep)/(Km3 + Ep);
-  r4: $E => $Ep; (env*k4*R*E)/(Km4 + E);
+  r3: $Ep => $E; env*k3*Ep/(Km3 + Ep);
+  r4: $E => $Ep; env*k4*R*E/(Km4 + E);
 
   // Species initializations:
   R = 0;
@@ -62,4 +62,45 @@ model *Tyson2003_NegFB_Homeostasis()
   // Display Names:
   time_unit is "s";
   substance is "mole";
+
+  // SBO terms:
+  env.sboTerm = 290
+  R.sboTerm = 252
+  S.sboTerm = 285
+  Ep.sboTerm = 252
+  Et.sboTerm = 196
+  E.sboTerm = 252
+  k3.sboTerm = 186
+  k4.sboTerm = 25
+  J3.sboTerm = 2
+  J4.sboTerm = 2
+  k0.sboTerm = 35
+  k2.sboTerm = 36
+  Km3.sboTerm = 27
+  Km4.sboTerm = 27
+  r0.sboTerm = 176
+  r2.sboTerm = 179
+  r3.sboTerm = 330
+  r4.sboTerm = 216
+
+  // CV terms:
+  env hypernym "http://identifiers.org/go/GO:0005623"
+  R hypernym "http://identifiers.org/chebi/CHEBI:36080"
+  R property "http://identifiers.org/go/GO:0016301"
+  Ep hypernym "http://identifiers.org/kegg.compound/C00562"
+  Ep version "http://identifiers.org/psimod/MOD:00696"
+  E hypernym "http://identifiers.org/chebi/CHEBI:36080"
+  r0 hypernym "http://identifiers.org/go/GO:0009058"
+  r2 hypernym "http://identifiers.org/go/GO:0009056"
+  r3 hypernym "http://identifiers.org/go/GO:0006470"
+  r4 hypernym "http://identifiers.org/go/GO:0006468"
 end
+
+Tyson2003_NegFB_Homeostasis is "Tyson2003_NegFB_Homeostasis"
+
+Tyson2003_NegFB_Homeostasis model_entity_is "http://identifiers.org/biomodels.db/MODEL1102100003"
+Tyson2003_NegFB_Homeostasis model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000309"
+Tyson2003_NegFB_Homeostasis description "http://identifiers.org/pubmed/12648679"
+Tyson2003_NegFB_Homeostasis property "http://identifiers.org/mamo/MAMO_0000046"
+Tyson2003_NegFB_Homeostasis taxon "http://identifiers.org/taxonomy/131567"
+Tyson2003_NegFB_Homeostasis hypernym "http://identifiers.org/go/GO:0051098"

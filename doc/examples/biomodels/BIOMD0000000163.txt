@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Zi2007_TGFbeta_signaling()
 
   // Compartments and Species:
@@ -80,7 +80,7 @@ model *Zi2007_TGFbeta_signaling()
   Kexp_Smad2n = 1;
   Kimp_Smad4c = 0.08;
   Kexp_Smad4n = 0.5;
-  k_Smads_Complex_c = 6.85e-005;
+  k_Smads_Complex_c = 6.85e-05;
   Kimp_Smads_Complex_c = 0.16;
   Kdiss_Smads_Complex_n = 0.1174;
 
@@ -100,4 +100,67 @@ model *Zi2007_TGFbeta_signaling()
   V_medium is "Medium";
   V_nuc is "Nucleus";
   V_cyt is "Cytoplasm";
+
+  // CV terms:
+  V_medium identity "http://identifiers.org/obo.go/GO:0005576"
+  V_nuc identity "http://identifiers.org/obo.go/GO:0005634"
+  V_cyt identity "http://identifiers.org/obo.go/GO:0005737"
+  Smad2c hypernym "http://identifiers.org/uniprot/Q15796"
+  Smad2n hypernym "http://identifiers.org/uniprot/Q15796"
+  Smad4c hypernym "http://identifiers.org/uniprot/Q13485"
+  Smad4n hypernym "http://identifiers.org/uniprot/Q13485"
+  T1R_Surf hypernym "http://identifiers.org/uniprot/Q8NER5"
+  T1R_Cave hypernym "http://identifiers.org/uniprot/Q8NER5"
+  T1R_EE hypernym "http://identifiers.org/uniprot/Q8NER5"
+  T2R_Surf hypernym "http://identifiers.org/uniprot/P37173"
+  T2R_Cave hypernym "http://identifiers.org/uniprot/P37173"
+  T2R_EE hypernym "http://identifiers.org/uniprot/P37173"
+  LRC_Surf part "http://identifiers.org/uniprot/P37173",
+                "http://identifiers.org/uniprot/Q8NER5",
+                "http://identifiers.org/uniprot/P01137"
+  LRC_Cave part "http://identifiers.org/uniprot/P37173",
+                "http://identifiers.org/uniprot/Q8NER5",
+                "http://identifiers.org/uniprot/P01137"
+  LRC_EE part "http://identifiers.org/uniprot/P37173",
+              "http://identifiers.org/uniprot/Q8NER5",
+              "http://identifiers.org/uniprot/P01137"
+  Smads_Complex_c part "http://identifiers.org/uniprot/Q13485",
+                       "http://identifiers.org/uniprot/Q15796"
+  Smads_Complex_n part "http://identifiers.org/uniprot/Q13485",
+                       "http://identifiers.org/uniprot/Q15796"
+  TGF_beta hypernym "http://identifiers.org/uniprot/P01137"
+  R1_Smad2_import identity "http://identifiers.org/obo.go/GO:0007184"
+  R2_Smad2_export hypernym "http://identifiers.org/obo.go/GO:0006886"
+  R3_Smad4_import identity "http://identifiers.org/obo.go/GO:0007184"
+  R4_Smad4_export hypernym "http://identifiers.org/obo.go/GO:0006886"
+  R5_T1R_production hypernym "http://identifiers.org/obo.go/GO:0032905"
+  R6_T1R_Cave_formation hypernym "http://identifiers.org/obo.go/GO:0002090"
+  R7_T1R_Cave_recycling hypernym "http://identifiers.org/obo.go/GO:0002090"
+  R8_T1R_EE_formation hypernym "http://identifiers.org/obo.go/GO:0002090"
+  R9_T1R_EE_recycling hypernym "http://identifiers.org/obo.go/GO:0002090"
+  R10_T1R_EE_degradation hypernym "http://identifiers.org/obo.go/GO:0031623"
+  R11_T2R_production hypernym "http://identifiers.org/obo.go/GO:0032906"
+  R12_T2R_Cave_formation hypernym "http://identifiers.org/obo.go/GO:0002090"
+  R13_T2R_Cave_recycling hypernym "http://identifiers.org/obo.go/GO:0002090"
+  R14_T2R_EE_formation hypernym "http://identifiers.org/obo.go/GO:0031623"
+  R15_T2R_EE_recycling hypernym "http://identifiers.org/obo.go/GO:0002090"
+  R16_T2R_EE_degradation hypernym "http://identifiers.org/obo.go/GO:0031623"
+  R17_LRC_formation hypernym "http://identifiers.org/obo.go/GO:0005160"
+  R18_LRC_Cave_formation hypernym "http://identifiers.org/obo.go/GO:0017015"
+  R19_LRC_Cave_recycling hypernym "http://identifiers.org/obo.go/GO:0017015"
+  R20_LRC_EE_formation hypernym "http://identifiers.org/obo.go/GO:0017015"
+  R21_LRC_EE_recycling hypernym "http://identifiers.org/obo.go/GO:0017015"
+  R22_LRC_EE_degradation hypernym "http://identifiers.org/obo.go/GO:0017015"
+  R23_Smads_Complex_formation identity "http://identifiers.org/obo.go/GO:0007184"
+  R24_Smads_Complex_import hypernym "http://identifiers.org/obo.go/GO:0007184"
+  R26_LRC_Cave_degradation hypernym "http://identifiers.org/obo.go/GO:0030163"
 end
+
+Zi2007_TGFbeta_signaling is "Zi2007_TGFbeta_signaling"
+
+Zi2007_TGFbeta_signaling model_entity_is "http://identifiers.org/biomodels.db/MODEL3388742457"
+Zi2007_TGFbeta_signaling model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000163"
+Zi2007_TGFbeta_signaling description "http://identifiers.org/pubmed/17895977"
+Zi2007_TGFbeta_signaling taxon "http://identifiers.org/taxonomy/131567"
+Zi2007_TGFbeta_signaling hypernym "http://identifiers.org/obo.go/GO:0017015"
+Zi2007_TGFbeta_signaling parthood "http://identifiers.org/kegg.pathway/hsa04350"

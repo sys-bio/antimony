@@ -1,20 +1,20 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *decroly82()
 
   // Compartments and Species:
   compartment cell;
-  species alpha in cell, beta in cell, gamma in cell;
+  species alpha in cell, beta in cell, gamma_ in cell;
 
   // Reactions:
   r1:  => alpha; r1_v_Km1;
-  r2: alpha => 50beta; (r2_sigma1*alpha*(1 + alpha)*(1 + beta)^2)/(r2_L1 + (1 + alpha)^2*(1 + beta)^2);
-  r3: beta => 0.02gamma; (r3_sigma2*beta*(1 + r3_d*beta)*(1 + gamma)^2)/(r3_L2 + (1 + r3_d*beta)^2*(1 + gamma)^2);
-  r4: gamma => ; r4_ks*gamma;
+  r2: alpha => 50 beta; r2_sigma1*alpha*(1 + alpha)*(1 + beta)^2/(r2_L1 + (1 + alpha)^2*(1 + beta)^2);
+  r3: beta => 0.02 gamma_; r3_sigma2*beta*(1 + r3_d*beta)*(1 + gamma_)^2/(r3_L2 + (1 + r3_d*beta)^2*(1 + gamma_)^2);
+  r4: gamma_ => ; r4_ks*gamma_;
 
   // Species initializations:
   alpha = 29.19988;
   beta = 188.8;
-  gamma = 0.3367;
+  gamma_ = 0.3367;
 
   // Compartment initializations:
   cell = 1;
@@ -45,4 +45,31 @@ model *decroly82()
 
   // Display Names:
   per_sec is "per sec";
+  gamma_ is "gamma";
+
+  // SBO terms:
+  alpha.sboTerm = 247
+  beta.sboTerm = 247
+  gamma_.sboTerm = 247
+  r1.sboTerm = 176
+  r1_v_Km1.sboTerm = 48
+  r2.sboTerm = 176
+  r2_sigma1.sboTerm = 186
+  r3.sboTerm = 176
+  r3_sigma2.sboTerm = 186
+  r4.sboTerm = 179
+  r4_ks.sboTerm = 356
+
+  // CV terms:
+  cell identity "http://identifiers.org/go/GO:0005622"
+  r2 hypernym "http://identifiers.org/go/GO:0003824"
+  r3 hypernym "http://identifiers.org/go/GO:0003824"
 end
+
+decroly82 is "Decroly1982_Enzymatic_Oscillator"
+
+decroly82 model_entity_is "http://identifiers.org/biomodels.db/MODEL1102070000"
+decroly82 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000319"
+decroly82 description "http://identifiers.org/pubmed/6960354"
+decroly82 hypernym "http://identifiers.org/go/GO:0007622"
+decroly82 taxon "http://identifiers.org/taxonomy/131567"

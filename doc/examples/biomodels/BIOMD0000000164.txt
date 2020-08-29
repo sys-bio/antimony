@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *SmithAE2002_RanTransport()
 
   // Compartments and Species:
@@ -19,7 +19,7 @@ model *SmithAE2002_RanTransport()
   Vmax_dephosphorylation_dephosphorylationF := RanGAP_Cytosol*RanGAP_Kcat_dephosphorylationF;
   Vmax_RanGTP_dephosphorylation_RanGTP_dephosphorylation := RanGAP_Kcat_RanGTP_dephosphorylation*RanGAP_Cytosol;
   Vmax_dephosphorylation_dephosphorylation := RanGAP_Cytosol*RanGAP_Kcat_dephosphorylation;
-  ar_for_Microinj := piecewise(kinj*0.0016611295681*Pipet_Cytosol, time > start && time < start + tau, 0);
+  ar_for_Microinj := piecewise(kinj*0.0016611295681*Pipet_Cytosol, (time > start) && (time < (start + tau)), 0);
 
   // Reactions:
   Carrier_FRanGTP_binding: Carrier_Cytosol + FRanGTP_Cytosol -> FCarrier_RanGTP_Cytosol; (Carrier_FRanGTP_binding_Kon_Carrier_RanGTP_binding*Carrier_Cytosol*FRanGTP_Cytosol + -(Carrier_FRanGTP_binding_Koff_Carrier_RanGTP_binding*FCarrier_RanGTP_Cytosol))*Cytosol;
@@ -36,10 +36,10 @@ model *SmithAE2002_RanTransport()
   NTF2_RanGDP_Unbinding: RanGDP_Cytosol + NTF2_Cytosol -> NTF2_RanGDP_Cytosol; (NTF2_RanGDP_Unbinding_Kon_NTF2_RanGDP_binding*RanGDP_Cytosol*NTF2_Cytosol + -(NTF2_RanGDP_Unbinding_Koff_NTF2_RanGDP_binding*NTF2_RanGDP_Cytosol))*Cytosol;
   dephosphorylation: RanBP1_Carrier_RanGTP_Cytosol -> RanGDP_Cytosol + Carrier_Cytosol + RanBP1_Cytosol; Vmax_dephosphorylation_dephosphorylation*RanBP1_Carrier_RanGTP_Cytosol*(1/(dephosphorylation_Km_dephosphorylation + RanBP1_Carrier_RanGTP_Cytosol))*Cytosol;
   RanGDP_to_RanGTP: RanGDP_Nucleus -> RanGTP_Nucleus; 0.75*RanGDP_to_RanGTP_RCC1Kcat*RCC1_Nucleus*RanGDP_Nucleus*(1/(RanGDP_to_RanGTP_RCC1Km + RanGDP_Nucleus + NTF2_RanGDP_Nucleus))*Nucleus;
-  NTF2_RAN_Nuc_Exchange: 4NTF2_RanGDP_Nucleus -> 4NTF2_Nucleus + RanGDP_Nucleus + 3RanGTP_Nucleus; 0.25*NTF2_RAN_Nuc_Exchange_RCC1Kcat*RCC1_Nucleus*NTF2_RanGDP_Nucleus*(1/(NTF2_RAN_Nuc_Exchange_RCC1Km + RanGDP_Nucleus + NTF2_RanGDP_Nucleus))*Nucleus;
+  NTF2_RAN_Nuc_Exchange: 4 NTF2_RanGDP_Nucleus -> 4 NTF2_Nucleus + RanGDP_Nucleus + 3 RanGTP_Nucleus; 0.25*NTF2_RAN_Nuc_Exchange_RCC1Kcat*RCC1_Nucleus*NTF2_RanGDP_Nucleus*(1/(NTF2_RAN_Nuc_Exchange_RCC1Km + RanGDP_Nucleus + NTF2_RanGDP_Nucleus))*Nucleus;
   NTF2_RanGDP_unbinding: NTF2_RanGDP_Nucleus -> RanGDP_Nucleus + NTF2_Nucleus; (NTF2_RanGDP_unbinding_Koff_NTF2_RanGDP_unbinding*NTF2_RanGDP_Nucleus + -(NTF2_RanGDP_unbinding_Kon_NTF2_RanGDP_unbinding*RanGDP_Nucleus*NTF2_Nucleus))*Nucleus;
   Carrier_RanGTP_binding: RanGTP_Cytosol + Carrier_Cytosol -> Carrier_RanGTP_Cytosol; (Carrier_RanGTP_binding_Kon_Carrier_RanGTP_binding*RanGTP_Cytosol*Carrier_Cytosol + -(Carrier_RanGTP_binding_Koff_Carrier_RanGTP_binding*Carrier_RanGTP_Cytosol))*Cytosol;
-  NTF2_FRAN_Nuc_Exchange: 4FNTF2_RanGDP_Nucleus -> 4NTF2_Nucleus + 3FRanGTP_Nucleus + FRanGDP_Nucleus; 0.25*NTF2_FRAN_Nuc_Exchange_RCC1Kcat*RCC1_Nucleus*FNTF2_RanGDP_Nucleus*(1/(NTF2_FRAN_Nuc_Exchange_RCC1Km + RanGDP_Nucleus + FNTF2_RanGDP_Nucleus))*Nucleus;
+  NTF2_FRAN_Nuc_Exchange: 4 FNTF2_RanGDP_Nucleus -> 4 NTF2_Nucleus + 3 FRanGTP_Nucleus + FRanGDP_Nucleus; 0.25*NTF2_FRAN_Nuc_Exchange_RCC1Kcat*RCC1_Nucleus*FNTF2_RanGDP_Nucleus*(1/(NTF2_FRAN_Nuc_Exchange_RCC1Km + RanGDP_Nucleus + FNTF2_RanGDP_Nucleus))*Nucleus;
   RanBP1_binding: RanBP1_Cytosol + Carrier_RanGTP_Cytosol -> RanBP1_Carrier_RanGTP_Cytosol; (RanBP1_binding_Kon_RanBP1_binding*RanBP1_Cytosol*Carrier_RanGTP_Cytosol + -(RanBP1_binding_Koff_RanBP1_binding*RanBP1_Carrier_RanGTP_Cytosol))*Cytosol;
   Carrier_RanGTP_flux: Carrier_RanGTP_Cytosol -> Carrier_RanGTP_Nucleus; Carrier_RanGTP_flux_Carrier_RanGTP_Kperm*(Carrier_RanGTP_Cytosol + -Carrier_RanGTP_Nucleus)*Nuc_membrane;
   NTF2_flux: NTF2_Cytosol -> NTF2_Nucleus; NTF2_flux_NTF2_Kperm*(NTF2_Cytosol + -NTF2_Nucleus)*Nuc_membrane;
@@ -235,9 +235,9 @@ model *SmithAE2002_RanTransport()
   unit s_1 = 1 / second;
   unit uM = 0.001 dimensionless * mole / metre^3;
   unit s = second;
-  unit uM_um_s_1 = 1e-009 dimensionless * mole / (metre^2 * second);
+  unit uM_um_s_1 = 1e-09 dimensionless * mole / (metre^2 * second);
   unit pA_um_2 = dimensionless * ampere / metre^2;
-  unit um_s_1 = 1e-006 dimensionless * metre / second;
+  unit um_s_1 = 1e-06 dimensionless * metre / second;
   unit um3 = (1e-6 metre)^3;
 
   // Display Names:
@@ -265,4 +265,112 @@ model *SmithAE2002_RanTransport()
   FRanGTP_flux is "FRanGTP flux";
   RanGDP_flux is "RanGDP flux";
   RanGTP_flux is "RanGTP flux";
+
+  // CV terms:
+  Carrier_RanGTP_Cytosol part "http://identifiers.org/chebi/CHEBI:15996",
+                              "http://identifiers.org/uniprot/P62826"
+  Carrier_RanGTP_Cytosol part "http://identifiers.org/uniprot/P62826",
+                              "http://identifiers.org/kegg.compound/C00044",
+                              "http://identifiers.org/chebi/CHEBI:15996"
+  RanBP1_Carrier_RanGTP_Cytosol part "http://identifiers.org/chebi/CHEBI:15996",
+                                     "http://identifiers.org/uniprot/P62826",
+                                     "http://identifiers.org/kegg.compound/C00044"
+  NTF2_Nucleus hypernym "http://identifiers.org/uniprot/P61970"
+  RanGDP_Nucleus part "http://identifiers.org/uniprot/P62826",
+                      "http://identifiers.org/kegg.compound/C00035",
+                      "http://identifiers.org/chebi/CHEBI:17552"
+  RanGTP_Nucleus part "http://identifiers.org/chebi/CHEBI:15996",
+                      "http://identifiers.org/uniprot/P62826"
+  RanGTP_Nucleus part "http://identifiers.org/uniprot/P62826",
+                      "http://identifiers.org/kegg.compound/C00044",
+                      "http://identifiers.org/chebi/CHEBI:15996"
+  NTF2_RanGDP_Nucleus part "http://identifiers.org/uniprot/P62826",
+                           "http://identifiers.org/uniprot/P61970",
+                           "http://identifiers.org/kegg.compound/C00035",
+                           "http://identifiers.org/chebi/CHEBI:17552"
+  RanGDP_Cytosol part "http://identifiers.org/uniprot/P62826",
+                      "http://identifiers.org/kegg.compound/C00035",
+                      "http://identifiers.org/chebi/CHEBI:17552"
+  Carrier_RanGTP_Nucleus part "http://identifiers.org/chebi/CHEBI:15996",
+                              "http://identifiers.org/uniprot/P62826"
+  Carrier_RanGTP_Nucleus part "http://identifiers.org/uniprot/P62826",
+                              "http://identifiers.org/kegg.compound/C00044",
+                              "http://identifiers.org/chebi/CHEBI:15996"
+  NTF2_RanGDP_Cytosol part "http://identifiers.org/uniprot/P61970",
+                           "http://identifiers.org/uniprot/P62826",
+                           "http://identifiers.org/kegg.compound/C00035",
+                           "http://identifiers.org/chebi/CHEBI:17552"
+  FRanGTP_Cytosol part "http://identifiers.org/chebi/CHEBI:15996",
+                       "http://identifiers.org/uniprot/P62826"
+  FRanGTP_Cytosol part "http://identifiers.org/uniprot/P62826",
+                       "http://identifiers.org/kegg.compound/C00044",
+                       "http://identifiers.org/chebi/CHEBI:15996"
+  FCarrier_RanGTP_Cytosol part "http://identifiers.org/chebi/CHEBI:15996",
+                               "http://identifiers.org/uniprot/P62826"
+  FCarrier_RanGTP_Cytosol part "http://identifiers.org/uniprot/P62826",
+                               "http://identifiers.org/kegg.compound/C00044",
+                               "http://identifiers.org/chebi/CHEBI:15996"
+  FRanGDP_Cytosol part "http://identifiers.org/uniprot/P62826",
+                       "http://identifiers.org/kegg.compound/C00035",
+                       "http://identifiers.org/chebi/CHEBI:17552"
+  FNTF2_RanGDP_Cytosol part "http://identifiers.org/uniprot/P61970",
+                            "http://identifiers.org/uniprot/P62826",
+                            "http://identifiers.org/kegg.compound/C00035",
+                            "http://identifiers.org/chebi/CHEBI:17552"
+  FRanBP1_Carrier_RanGTP_Cytosol part "http://identifiers.org/chebi/CHEBI:15996",
+                                      "http://identifiers.org/uniprot/P62826"
+  FRanBP1_Carrier_RanGTP_Cytosol part "http://identifiers.org/uniprot/P62826",
+                                      "http://identifiers.org/kegg.compound/C00044",
+                                      "http://identifiers.org/chebi/CHEBI:15996"
+  FCarrier_RanGTP_Nucleus part "http://identifiers.org/chebi/CHEBI:15996",
+                               "http://identifiers.org/uniprot/P62826"
+  FCarrier_RanGTP_Nucleus part "http://identifiers.org/uniprot/P62826",
+                               "http://identifiers.org/kegg.compound/C00044",
+                               "http://identifiers.org/chebi/CHEBI:15996"
+  FRanGDP_Nucleus part "http://identifiers.org/uniprot/P62826",
+                       "http://identifiers.org/kegg.compound/C00035",
+                       "http://identifiers.org/chebi/CHEBI:17552"
+  FNTF2_RanGDP_Nucleus part "http://identifiers.org/uniprot/P61970",
+                            "http://identifiers.org/uniprot/P62826",
+                            "http://identifiers.org/kegg.compound/C00035",
+                            "http://identifiers.org/chebi/CHEBI:17552"
+  FRanGTP_Nucleus part "http://identifiers.org/chebi/CHEBI:15996",
+                       "http://identifiers.org/uniprot/P62826"
+  FRanGTP_Nucleus part "http://identifiers.org/uniprot/P62826",
+                       "http://identifiers.org/kegg.compound/C00044",
+                       "http://identifiers.org/chebi/CHEBI:15996"
+  NTF2_Cytosol hypernym "http://identifiers.org/uniprot/P61970"
+  RanGTP_Cytosol part "http://identifiers.org/chebi/CHEBI:15996",
+                      "http://identifiers.org/uniprot/P62826"
+  RanGTP_Cytosol part "http://identifiers.org/uniprot/P62826",
+                      "http://identifiers.org/kegg.compound/C00044",
+                      "http://identifiers.org/chebi/CHEBI:15996"
+  FRanGTP_dephosphorylation hypernym "http://identifiers.org/go/GO:0016311"
+  dephosphorylationF hypernym "http://identifiers.org/go/GO:0016311"
+  FRanGDP_to_FRanGTP hypernym "http://identifiers.org/go/GO:0042325"
+  RanGTP_dephosphorylation hypernym "http://identifiers.org/go/GO:0016311"
+  dephosphorylation hypernym "http://identifiers.org/go/GO:0016311"
+  RanGDP_to_RanGTP hypernym "http://identifiers.org/go/GO:0042325"
+  Carrier_RanGTP_binding hypernym "http://identifiers.org/go/GO:0008536"
+  RanBP1_binding hypernym "http://identifiers.org/go/GO:0008536"
+  Carrier_RanGTP_flux hypernym "http://identifiers.org/go/GO:0005487"
+  NTF2_flux hypernym "http://identifiers.org/go/GO:0005487"
+  NTF2_RanGDP_flux hypernym "http://identifiers.org/go/GO:0005487"
+  Carrier_flux hypernym "http://identifiers.org/go/GO:0005487"
+  FRanGDP_flux hypernym "http://identifiers.org/go/GO:0005487"
+  Carrier_FRanGTP_flux hypernym "http://identifiers.org/go/GO:0005487"
+  FNTF2_RanGDP_flux hypernym "http://identifiers.org/go/GO:0005487"
+  FRanGTP_flux hypernym "http://identifiers.org/go/GO:0005487"
+  RanGDP_flux hypernym "http://identifiers.org/go/GO:0005487"
+  RanGTP_flux hypernym "http://identifiers.org/go/GO:0005487"
 end
+
+SmithAE2002_RanTransport is "SmithAE2002_RanTransport"
+
+SmithAE2002_RanTransport model_entity_is "http://identifiers.org/biomodels.db/MODEL1886921294"
+SmithAE2002_RanTransport model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000164"
+SmithAE2002_RanTransport description "http://identifiers.org/pubmed/11799242"
+SmithAE2002_RanTransport taxon "http://identifiers.org/taxonomy/40674"
+SmithAE2002_RanTransport property "http://identifiers.org/mamo/MAMO_0000046"
+SmithAE2002_RanTransport hypernym "http://identifiers.org/go/GO:0031291",
+                                  "http://identifiers.org/go/GO:0006913"

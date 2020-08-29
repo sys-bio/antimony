@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Zi2011_TGFbeta_Pathway()
 
   // Compartments and Species:
@@ -11,7 +11,7 @@ model *Zi2011_TGFbeta_Pathway()
   species TGF_beta_ns in Vmed, $AA in Vcyt, $empty_degraded in Vcyt;
 
   // Assignment Rules:
-  Vmed := 2.000000e-003/(1.000000e+006*exp((ln(1.45)*time)/1440));
+  Vmed := 2e-3/(1e6*exp(ln(1.45)*time/1440));
   totalNumT1R := (T1R_surf + T1R_endo + LRC_surf + LRC_endo)*2.3*602;
   totalNumT2R := (T2R_surf + T2R_endo + LRC_surf + LRC_endo)*2.3*602;
   totalNumLRC := (LRC_surf + LRC_endo)*2.3*602;
@@ -19,7 +19,7 @@ model *Zi2011_TGFbeta_Pathway()
   totalNuclearPSmad2 := PSmad2n + 2*PSmad2_PSmad2_n + PSmad2_Smad4_n;
   totalSmad2c := Smad2c + PSmad2c + 2*PSmad2_PSmad2_c + PSmad2_Smad4_c;
   totalSmad2n := Smad2n + PSmad2n + 2*PSmad2_PSmad2_n + PSmad2_Smad4_n;
-  medium_TGF_beta_amount := TGF_beta_ex*1.000000e-009*Vmed*6.000000e+023;
+  medium_TGF_beta_amount := TGF_beta_ex*1e-9*Vmed*6e23;
   koff_ns := kon_ns*KD_ns;
 
   // Reactions:
@@ -47,14 +47,14 @@ model *Zi2011_TGFbeta_Pathway()
   re22: PSmad2_Smad4_c => PSmad2_Smad4_n; Vcyt*kimp_Smads*PSmad2_Smad4_c;
   re23: PSmad2_Smad4_n -> PSmad2n + Smad4n; Vnuc*(koff_Smads*PSmad2_Smad4_n - kon_Smads*PSmad2n*Smad4n);
   re24: PSmad2n => Smad2n; Vnuc*kdepho_Smad2*PSmad2n;
-  re25: 2PSmad2c -> PSmad2_PSmad2_c; Vcyt*(kon_Smads*PSmad2c^2 - koff_Smads*PSmad2_PSmad2_c);
+  re25: 2 PSmad2c -> PSmad2_PSmad2_c; Vcyt*(kon_Smads*PSmad2c^2 - koff_Smads*PSmad2_PSmad2_c);
   re26: PSmad2_PSmad2_c => PSmad2_PSmad2_n; Vcyt*kimp_Smads*PSmad2_PSmad2_c;
-  re27: PSmad2_PSmad2_n -> 2PSmad2n; Vnuc*(koff_Smads*PSmad2_PSmad2_n - kon_Smads*PSmad2n^2);
+  re27: PSmad2_PSmad2_n -> 2 PSmad2n; Vnuc*(koff_Smads*PSmad2_PSmad2_n - kon_Smads*PSmad2n^2);
   re28: LRC_surf => $empty_degraded; Vcyt*klid*LRC_surf*totalNuclearPSmad2;
   re29: TGF_beta_ex -> TGF_beta_ns; Vmed*(kon_ns*TGF_beta_ex - koff_ns*TGF_beta_ns);
 
   // Events:
-  single_pulse_TGF_beta_washout: at 0 after stimulation_type == 2 && time == single_pulse_duration: TGF_beta_ex = 0;
+  single_pulse_TGF_beta_washout: at 0 after (stimulation_type == 2) && (time == single_pulse_duration): TGF_beta_ex = 0;
 
   // Species initializations:
   TGF_beta_ex = 0.05;
@@ -104,9 +104,9 @@ model *Zi2011_TGFbeta_Pathway()
   default = 1;
   default has volume;
   Vmed has volume;
-  Vcyt = 2.3e-012;
+  Vcyt = 2.3e-12;
   Vcyt has volume;
-  Vnuc = 1e-012;
+  Vnuc = 1e-12;
   Vnuc has volume;
 
   // Variable initializations:
@@ -134,7 +134,7 @@ model *Zi2011_TGFbeta_Pathway()
   totalSmad2c has nM;
   totalSmad2n has nM;
   medium_TGF_beta_amount has molecules_per_cell;
-  TGF_beta_dose_mol_per_cell = TGF_beta_ex*1.000000e-009*Vmed*6.000000e+023;
+  TGF_beta_dose_mol_per_cell = TGF_beta_ex*1e-9*Vmed*6e23;
   TGF_beta_dose_mol_per_cell has molecules_per_cell;
   kdeg_LRC = 0.00256;
   kdeg_LRC has per_min;
@@ -236,4 +236,117 @@ model *Zi2011_TGFbeta_Pathway()
   re27 is "PSmad2 dimmer dissociation";
   re28 is "negative feedback induced LRC degradation";
   re29 is "non-specific binding of TGF-beta";
+
+  // SBO terms:
+  Vmed.sboTerm = 290
+  Vcyt.sboTerm = 290
+  Vnuc.sboTerm = 290
+  TGF_beta_ex.sboTerm = 252
+  T1R_surf.sboTerm = 244
+  T1R_endo.sboTerm = 244
+  T2R_surf.sboTerm = 244
+  T2R_endo.sboTerm = 244
+  LRC_surf.sboTerm = 297
+  LRC_endo.sboTerm = 297
+  Smad2c.sboTerm = 252
+  Smad2n.sboTerm = 252
+  Smad4c.sboTerm = 252
+  Smad4n.sboTerm = 252
+  PSmad2c.sboTerm = 252
+  PSmad2_PSmad2_c.sboTerm = 286
+  PSmad2_Smad4_c.sboTerm = 297
+  PSmad2n.sboTerm = 252
+  PSmad2_PSmad2_n.sboTerm = 286
+  PSmad2_Smad4_n.sboTerm = 297
+  TGF_beta_endo.sboTerm = 252
+  TGF_beta_ns.sboTerm = 252
+  AA.sboTerm = 291
+  empty_degraded.sboTerm = 291
+
+  // CV terms:
+  Vmed hypernym "http://identifiers.org/bto/BTO:0000316"
+  Vcyt hypernym "http://identifiers.org/go/GO:0005737"
+  Vnuc hypernym "http://identifiers.org/go/GO:0005634"
+  TGF_beta_ex hypernym "http://identifiers.org/uniprot/P01137"
+  TGF_beta_ex container "http://identifiers.org/bto/BTO:0000316"
+  T1R_surf hypernym "http://identifiers.org/uniprot/P36897"
+  T1R_surf container "http://identifiers.org/go/GO:0009986"
+  T1R_endo hypernym "http://identifiers.org/uniprot/P36897"
+  T1R_endo container "http://identifiers.org/go/GO:0005769"
+  T2R_surf hypernym "http://identifiers.org/uniprot/P37173"
+  T2R_surf container "http://identifiers.org/go/GO:0009986"
+  T2R_endo hypernym "http://identifiers.org/uniprot/P37173"
+  T2R_endo encodement "http://identifiers.org/go/GO:0005769"
+  LRC_surf container "http://identifiers.org/go/GO:0009986"
+  LRC_surf hypernym "http://identifiers.org/go/GO:0043235"
+  LRC_surf part "http://identifiers.org/uniprot/P01137",
+                "http://identifiers.org/uniprot/P36897"
+  LRC_surf part "http://identifiers.org/uniprot/P01137",
+                "http://identifiers.org/uniprot/P37173"
+  LRC_endo container "http://identifiers.org/go/GO:0005769"
+  LRC_endo hypernym "http://identifiers.org/go/GO:0043235"
+  LRC_endo part "http://identifiers.org/uniprot/P01137",
+                "http://identifiers.org/uniprot/P36897"
+  LRC_endo part "http://identifiers.org/uniprot/P01137",
+                "http://identifiers.org/uniprot/P37173"
+  Smad2c hypernym "http://identifiers.org/uniprot/Q15796"
+  Smad2n hypernym "http://identifiers.org/uniprot/Q15796"
+  Smad4c hypernym "http://identifiers.org/uniprot/Q13485"
+  Smad4n hypernym "http://identifiers.org/uniprot/Q13485"
+  PSmad2c hypernym "http://identifiers.org/uniprot/Q15796",
+                   "http://identifiers.org/kegg.compound/C00562"
+  PSmad2_PSmad2_c part "http://identifiers.org/uniprot/Q15796"
+  PSmad2_PSmad2_c hypernym "http://identifiers.org/kegg.compound/C00562"
+  PSmad2_Smad4_c part "http://identifiers.org/uniprot/Q15796",
+                      "http://identifiers.org/uniprot/Q13485"
+  PSmad2_Smad4_c hypernym "http://identifiers.org/kegg.compound/C00562"
+  PSmad2n hypernym "http://identifiers.org/uniprot/Q15796",
+                   "http://identifiers.org/kegg.compound/C00562"
+  PSmad2_PSmad2_n part "http://identifiers.org/uniprot/Q15796"
+  PSmad2_PSmad2_n hypernym "http://identifiers.org/kegg.compound/C00562"
+  PSmad2_Smad4_n part "http://identifiers.org/uniprot/Q15796",
+                      "http://identifiers.org/uniprot/Q13485"
+  PSmad2_Smad4_n version "http://identifiers.org/kegg.compound/C00562"
+  TGF_beta_endo hypernym "http://identifiers.org/uniprot/P01137"
+  TGF_beta_endo container "http://identifiers.org/go/GO:0005769"
+  TGF_beta_ns hypernym "http://identifiers.org/uniprot/P01137"
+  re1 hypernym "http://identifiers.org/go/GO:0032800"
+  re2 hypernym "http://identifiers.org/go/GO:0031623"
+  re3 hypernym "http://identifiers.org/go/GO:0032456"
+  re4 hypernym "http://identifiers.org/go/GO:0032801"
+  re5 hypernym "http://identifiers.org/go/GO:0032800"
+  re6 hypernym "http://identifiers.org/go/GO:0031623"
+  re7 hypernym "http://identifiers.org/go/GO:0032456"
+  re8 hypernym "http://identifiers.org/go/GO:0032801"
+  re9 hypernym "http://identifiers.org/go/GO:0005102"
+  re10 hypernym "http://identifiers.org/go/GO:0031623"
+  re11 hypernym "http://identifiers.org/go/GO:0032801"
+  re12 hypernym "http://identifiers.org/go/GO:0043241"
+  re13 hypernym "http://identifiers.org/go/GO:0030163"
+  re14 hypernym "http://identifiers.org/go/GO:0051169"
+  re15 hypernym "http://identifiers.org/go/GO:0051169"
+  re16 hypernym "http://identifiers.org/go/GO:0051169"
+  re17 hypernym "http://identifiers.org/go/GO:0051169"
+  re18 hypernym "http://identifiers.org/go/GO:0006468"
+  re19 hypernym "http://identifiers.org/go/GO:0051169"
+  re20 hypernym "http://identifiers.org/go/GO:0051169"
+  re21 hypernym "http://identifiers.org/go/GO:0006461"
+  re23 hypernym "http://identifiers.org/go/GO:0051169"
+  re24 hypernym "http://identifiers.org/go/GO:0006470"
+  re25 hypernym "http://identifiers.org/go/GO:0006461"
+  re26 hypernym "http://identifiers.org/go/GO:0051169"
+  re27 hypernym "http://identifiers.org/go/GO:0043241"
+  re28 hypernym "http://identifiers.org/go/GO:0009057"
+  re29 hypernym "http://identifiers.org/go/GO:0005102"
 end
+
+Zi2011_TGFbeta_Pathway is "Zi2011_TGF-beta_Pathway"
+
+Zi2011_TGFbeta_Pathway model_entity_is "http://identifiers.org/biomodels.db/MODEL1104050000"
+Zi2011_TGFbeta_Pathway model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000342"
+Zi2011_TGFbeta_Pathway description "http://identifiers.org/pubmed/21613981"
+Zi2011_TGFbeta_Pathway taxon "http://identifiers.org/taxonomy/9606"
+Zi2011_TGFbeta_Pathway container "http://identifiers.org/bto/BTO:0000312"
+Zi2011_TGFbeta_Pathway parthood "http://identifiers.org/kegg.pathway/map04350",
+                                "http://identifiers.org/reactome/REACT_6844"
+Zi2011_TGFbeta_Pathway hypernym "http://identifiers.org/go/GO:0007179"

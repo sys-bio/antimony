@@ -1,15 +1,21 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 function Mass_Action_0(k1)
   k1;
 end
+
+Mass_Action_0 is "Mass_Action_0"
 
 function Mass_Action_2(k1, S1, S2)
   k1*S1*S2;
 end
 
+Mass_Action_2 is "Mass_Action_2"
+
 function Mass_Action_1(k1, S1)
   k1*S1;
 end
+
+Mass_Action_1 is "Mass_Action_1"
 
 
 model *Srividhya2006_CellCycle()
@@ -30,14 +36,14 @@ model *Srividhya2006_CellCycle()
   cyclincdkcomplexformation: x1 + $x2 => Pre_MPF; Mass_Action_2(kf, x1, x2);
   cyclindegradation: x1 => ; x1*(kc + Bc*x6);
   MPFdissociation: x3 => $x2; kd*(1 + B2*x6)*x3;
-  PreMPFMPFtransition: Pre_MPF => x3; vM1*(1 + (a1*x4)/(Ka + x4))*(Pre_MPF/(j1 + Pre_MPF));
-  MPFPreMPFtransition: x3 => Pre_MPF; vM1_2*(1 + (B1*x5)/(Ka + x5))*(x3/(j1_2 + x3));
-  cdc25phosphorylation: y4 => $x4; vM2*(1 + (a2*m*x3)/(Ka + m*x3))*((1 - x4)/((j2 + 1) - x4));
-  cdc25dephosphorylation: $x4 => y4; (vM2_2*x4)/(j2_2 + x4);
-  wee1dephosphorylation: $y5 => x5; vM3*((1 - x5)/((j3_2 + 1) - x5));
-  wee1phosphorylation: x5 => $y5; vM3_2*(1 + (B3*m*x3)/(Ka + m*x3))*(x5/(j3 + x5));
-  _2: $y6 => x6; vM4*(((1 + (a4*m*delay(x3, tau))/(Ka + m*delay(x3, tau)))*(1 - x6))/(j4 + (1 - x6)));
-  APCdephosphorylation: x6 => $y6; (vM4_2*x6)/(j4_2 + x6);
+  PreMPFMPFtransition: Pre_MPF => x3; vM1*(1 + a1*x4/(Ka + x4))*(Pre_MPF/(j1 + Pre_MPF));
+  MPFPreMPFtransition: x3 => Pre_MPF; vM1_2*(1 + B1*x5/(Ka + x5))*(x3/(j1_2 + x3));
+  cdc25phosphorylation: y4 => $x4; vM2*(1 + a2*m*x3/(Ka + m*x3))*((1 - x4)/(j2 + 1 - x4));
+  cdc25dephosphorylation: $x4 => y4; vM2_2*x4/(j2_2 + x4);
+  wee1dephosphorylation: $y5 => x5; vM3*((1 - x5)/(j3_2 + 1 - x5));
+  wee1phosphorylation: x5 => $y5; vM3_2*(1 + B3*m*x3/(Ka + m*x3))*(x5/(j3 + x5));
+  _2: $y6 => x6; vM4*((1 + a4*m*delay(x3, tau)/(Ka + m*delay(x3, tau)))*(1 - x6)/(j4 + (1 - x6)));
+  APCdephosphorylation: x6 => $y6; vM4_2*x6/(j4_2 + x6);
   cellmass:  => m; mu*m*(1 - m/a);
 
   // Events:
@@ -131,4 +137,55 @@ model *Srividhya2006_CellCycle()
   _2 is "APC phosphorylation";
   APCdephosphorylation is "APC dephosphorylation";
   cellmass is "cell growth";
+
+  // CV terms:
+  cell identity "http://identifiers.org/go/GO:0005623"
+  x1 homolog "http://identifiers.org/uniprot/P14635"
+  x1 hypernym "http://identifiers.org/go/GO:0016538"
+  x2 homolog "http://identifiers.org/uniprot/P06493"
+  x2 hypernym "http://identifiers.org/go/GO:0004672"
+  Pre_MPF version "http://identifiers.org/uniprot/P06493",
+                  "http://identifiers.org/interpro/IPR015454"
+  Pre_MPF hypernym "http://identifiers.org/go/GO:0031387",
+                   "http://identifiers.org/go/GO:0000307"
+  x3 version "http://identifiers.org/uniprot/P06493",
+             "http://identifiers.org/uniprot/P14635"
+  x3 hypernym "http://identifiers.org/go/GO:0031387"
+  x4 homolog "http://identifiers.org/uniprot/P04821",
+             "http://identifiers.org/uniprot/P30304"
+  x4 hypernym "http://identifiers.org/kegg.compound/C00562"
+  y4 homolog "http://identifiers.org/uniprot/P04821",
+             "http://identifiers.org/uniprot/P30304"
+  x5 homolog "http://identifiers.org/uniprot/P30291"
+  x6 version "http://identifiers.org/kegg.compound/C00562"
+  x6 hypernym "http://identifiers.org/go/GO:0005680"
+  m hypernym "http://identifiers.org/go/GO:0005623"
+  y5 homolog "http://identifiers.org/uniprot/P30291"
+  y5 hypernym "http://identifiers.org/kegg.compound/C00562"
+  y6 hypernym "http://identifiers.org/go/GO:0005680"
+  cyclinsythesis hypernym "http://identifiers.org/go/GO:0010467"
+  cyclincdkcomplexformation hypernym "http://identifiers.org/reactome/REACT_6216.2"
+  cyclindegradation hypernym "http://identifiers.org/go/GO:0008054"
+  MPFdissociation hypernym "http://identifiers.org/reactome/REACT_6914.2"
+  PreMPFMPFtransition hypernym "http://identifiers.org/reactome/REACT_6255.1"
+  MPFPreMPFtransition hypernym "http://identifiers.org/reactome/REACT_6178.2"
+  cdc25phosphorylation hypernym "http://identifiers.org/reactome/REACT_2119.3",
+                                "http://identifiers.org/go/GO:0016310"
+  cdc25dephosphorylation hypernym "http://identifiers.org/go/GO:0016311"
+  wee1dephosphorylation hypernym "http://identifiers.org/go/GO:0016311"
+  wee1phosphorylation hypernym "http://identifiers.org/reactome/REACT_1944.2",
+                               "http://identifiers.org/go/GO:0016310"
+  _2 hypernym "http://identifiers.org/go/GO:0016310"
+  APCdephosphorylation hypernym "http://identifiers.org/go/GO:0016311"
+  cellmass hypernym "http://identifiers.org/go/GO:0016049"
 end
+
+Srividhya2006_CellCycle is "Srividhya2006_CellCycle"
+
+Srividhya2006_CellCycle model_entity_is "http://identifiers.org/biomodels.db/MODEL1502077979"
+Srividhya2006_CellCycle model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000196"
+Srividhya2006_CellCycle description "http://identifiers.org/pubmed/16473373"
+Srividhya2006_CellCycle origin "http://identifiers.org/pubmed/11371173"
+Srividhya2006_CellCycle taxon "http://identifiers.org/taxonomy/2759"
+Srividhya2006_CellCycle hypernym "http://identifiers.org/reactome/REACT_152"
+Srividhya2006_CellCycle hypernym "http://identifiers.org/go/GO:0022402"

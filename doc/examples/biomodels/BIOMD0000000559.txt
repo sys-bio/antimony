@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *MODEL1412010000()
 
   // Compartments and Species:
@@ -30,7 +30,7 @@ model *MODEL1412010000()
   // Reactions:
   re1: $s3 => s17; c1*re1_k1*s3;
   re2: $s3 => s22; c1*re2_k1*s3;
-  re3: 2s17 => s18; c1*k_2merForm*s17^2;
+  re3: 2 s17 => s18; c1*k_2merForm*s17^2;
   re4: s17 + s22 => s7; c1*re4_k1*s17*s22;
   re5: s17 + s51 => s78; k_WTasyn1_2merBindOnLamp*s17*s51;
   re6: s18 => s521; k_OligAutophagUptake*s18;
@@ -59,7 +59,7 @@ model *MODEL1412010000()
   re29: s29 + s35 => s393; c1*k_ProteasomeBind*s29*s35;
   re30: s29 + s51 => s501; k_WTOligBindOnLamp*s29*s51;
   re31: s22 => s200; c1*re31_k1*s22;
-  re32: 2s7 => s6; c1*k_2merForm*s7^2;
+  re32: 2 s7 => s6; c1*k_2merForm*s7^2;
   re33: s7 + s536 => s482; k_2merForm*s7*s536;
   re34: s7 + s490 => s489; k_OligomerForm*s7*s490;
   re35: s7 + s489 => s492; k_OligomerForm*s7*s489;
@@ -150,7 +150,7 @@ model *MODEL1412010000()
   re121: s2 => s5 + s7; c1*k_DisRate*s2;
   re122: s1 => s2 + s7; c1*k_DisRate*s1;
   re123: s5 => s6 + s7; c1*k_DisRate*s5;
-  re124: s6 => 2s7; c1*k_DisRate*s6;
+  re124: s6 => 2 s7; c1*k_DisRate*s6;
   re125: s29 => s17 + s30; c1*k_DisRate*s29;
   re126: s30 => s31 + s17; c1*k_DisRate*s30;
   re127: s31 => s32 + s17; c1*k_DisRate*s31;
@@ -158,7 +158,7 @@ model *MODEL1412010000()
   re129: s23 => s24 + s17; c1*k_DisRate*s23;
   re130: s24 => s20 + s17; c1*k_DisRate*s24;
   re131: s20 => s18 + s17; c1*k_DisRate*s20;
-  re132: s18 => 2s17; c1*k_DisRate*s18;
+  re132: s18 => 2 s17; c1*k_DisRate*s18;
   re133: s33 + s17 => s33; c1*re133_k1*s33*s17;
   re134: s17 => s533; k_OligAutophagUptake*s17;
   re135: s533 => s107; c2*k_M_autophagyDegr*s533;
@@ -263,26 +263,26 @@ model *MODEL1412010000()
   c1 = 1;
 
   // Variable initializations:
-  k_DisRate = 4.999533748e-007;
-  k_2merForm = 1.462941015e-009;
-  k_DopModWTasynLampBind = 7.6715997e-009;
+  k_DisRate = 4.999533748e-07;
+  k_2merForm = 1.462941015e-09;
+  k_DopModWTasynLampBind = 7.6715997e-09;
   k_LampFreeWTasyn = 0.0003044571674;
-  k_OligAutophagUptake = 2.39034347e-008;
-  k_OligomerForm = 3.350497192e-008;
-  k_ProteasomeBind = 3.424693672e-009;
+  k_OligAutophagUptake = 2.39034347e-08;
+  k_OligomerForm = 3.350497192e-08;
+  k_ProteasomeBind = 3.424693672e-09;
   k_ProtOligDegr = 0.000370096;
-  k_WTasyn1_2merBindOnLamp = 6.865455081e-007;
-  k_WTOligBindOnLamp = 4e-006;
+  k_WTasyn1_2merBindOnLamp = 6.865455081e-07;
+  k_WTOligBindOnLamp = 4e-06;
   k_M_autophagyDegr = 0.1;
   re1_k1 = 0.0294219;
   re2_k1 = 0.0791823;
-  re4_k1 = 6.74768e-007;
+  re4_k1 = 6.74768e-07;
   re31_k1 = 0.00679501;
   re37_k1 = 0.00999558;
   re38_k1 = 0.00995312;
   re69_k1 = 0.1;
   re70_k1 = 0.1;
-  re133_k1 = 4.90556e-007;
+  re133_k1 = 4.90556e-07;
 
   // Other declarations:
   var Total_Cytosolic_WTASYN_Oligomers, Total_Cytosolic_WTASYN_Monomer, Total_Cytosolic_WTASYN_Dimer;
@@ -524,4 +524,352 @@ model *MODEL1412010000()
   re135 is "M/autophagyWTasyn1Degr";
   re136 is "DopModAutophagosomeUptake";
   re137 is "M/autophagyDopModWTasyn1Degr";
+
+  // CV terms:
+  c3 identity "http://identifiers.org/go/GO:0005764"
+  c2 identity "http://identifiers.org/go/GO:0005776"
+  c1 identity "http://identifiers.org/go/GO:0005829"
+  s51 identity "http://identifiers.org/uniprot/P13473"
+  s52 hypernym "http://identifiers.org/uniprot/P37840"
+  s53 hypernym "http://identifiers.org/uniprot/P37840"
+  s78 hypernym "http://identifiers.org/uniprot/P37840"
+  s85 hypernym "http://identifiers.org/uniprot/P37840"
+  s211 part "http://identifiers.org/uniprot/P13473"
+  s211 part "http://identifiers.org/uniprot/P37840"
+  s213 part "http://identifiers.org/uniprot/P13473"
+  s213 part "http://identifiers.org/uniprot/P37840"
+  s482 part "http://identifiers.org/uniprot/P13473"
+  s482 part "http://identifiers.org/chebi/CHEBI:18243"
+  s482 part "http://identifiers.org/uniprot/P37840"
+  s483 part "http://identifiers.org/chebi/CHEBI:18243"
+  s483 part "http://identifiers.org/uniprot/P13473"
+  s483 part "http://identifiers.org/uniprot/P37840"
+  s484 part "http://identifiers.org/chebi/CHEBI:18243"
+  s484 part "http://identifiers.org/uniprot/P37840"
+  s484 part "http://identifiers.org/uniprot/P13473"
+  s489 part "http://identifiers.org/uniprot/P13473"
+  s489 part "http://identifiers.org/chebi/CHEBI:18243"
+  s489 part "http://identifiers.org/uniprot/P37840"
+  s490 part "http://identifiers.org/uniprot/P37840"
+  s490 part "http://identifiers.org/chebi/CHEBI:18243"
+  s490 part "http://identifiers.org/uniprot/P13473"
+  s491 part "http://identifiers.org/uniprot/P13473"
+  s491 part "http://identifiers.org/chebi/CHEBI:18243"
+  s491 part "http://identifiers.org/uniprot/P37840"
+  s492 part "http://identifiers.org/uniprot/P37840"
+  s492 part "http://identifiers.org/chebi/CHEBI:18243"
+  s492 part "http://identifiers.org/uniprot/P13473"
+  s493 part "http://identifiers.org/uniprot/P13473"
+  s493 part "http://identifiers.org/uniprot/P37840"
+  s493 part "http://identifiers.org/chebi/CHEBI:18243"
+  s494 part "http://identifiers.org/uniprot/P13473"
+  s494 part "http://identifiers.org/uniprot/P37840"
+  s495 part "http://identifiers.org/uniprot/P37840"
+  s495 part "http://identifiers.org/uniprot/P13473"
+  s496 part "http://identifiers.org/uniprot/P37840"
+  s496 part "http://identifiers.org/uniprot/P13473"
+  s498 part "http://identifiers.org/uniprot/P13473"
+  s498 part "http://identifiers.org/uniprot/P37840"
+  s499 part "http://identifiers.org/uniprot/P13473"
+  s499 part "http://identifiers.org/uniprot/P37840"
+  s500 part "http://identifiers.org/uniprot/P37840"
+  s500 part "http://identifiers.org/uniprot/P13473"
+  s501 part "http://identifiers.org/uniprot/P37840"
+  s501 part "http://identifiers.org/uniprot/P13473"
+  s536 part "http://identifiers.org/uniprot/P13473"
+  s536 part "http://identifiers.org/uniprot/P37840"
+  s536 part "http://identifiers.org/chebi/CHEBI:18243"
+  s107 hypernym "http://identifiers.org/uniprot/P37840"
+  s108 hypernym "http://identifiers.org/uniprot/P37840"
+  s109 hypernym "http://identifiers.org/uniprot/P37840"
+  s110 hypernym "http://identifiers.org/uniprot/P37840"
+  s111 hypernym "http://identifiers.org/uniprot/P37840"
+  s112 hypernym "http://identifiers.org/uniprot/P37840"
+  s113 hypernym "http://identifiers.org/uniprot/P37840"
+  s445 version "http://identifiers.org/uniprot/P37840"
+  s445 version "http://identifiers.org/chebi/CHEBI:18243"
+  s446 version "http://identifiers.org/chebi/CHEBI:18243"
+  s446 version "http://identifiers.org/uniprot/P37840"
+  s447 version "http://identifiers.org/chebi/CHEBI:18243"
+  s447 version "http://identifiers.org/uniprot/P37840"
+  s448 version "http://identifiers.org/chebi/CHEBI:18243"
+  s448 version "http://identifiers.org/uniprot/P37840"
+  s451 version "http://identifiers.org/uniprot/P37840"
+  s451 version "http://identifiers.org/chebi/CHEBI:18243"
+  s517 identity "http://identifiers.org/uniprot/P37840"
+  s518 identity "http://identifiers.org/uniprot/P37840"
+  s519 identity "http://identifiers.org/uniprot/P37840"
+  s520 identity "http://identifiers.org/uniprot/P37840"
+  s521 identity "http://identifiers.org/uniprot/P37840"
+  s522 identity "http://identifiers.org/uniprot/P37840"
+  s523 identity "http://identifiers.org/uniprot/P37840"
+  s524 version "http://identifiers.org/chebi/CHEBI:18243"
+  s524 version "http://identifiers.org/uniprot/P37840"
+  s525 part "http://identifiers.org/chebi/CHEBI:18243"
+  s525 part "http://identifiers.org/uniprot/P37840"
+  s526 part "http://identifiers.org/chebi/CHEBI:18243"
+  s526 part "http://identifiers.org/uniprot/P37840"
+  s528 part "http://identifiers.org/chebi/CHEBI:18243"
+  s528 part "http://identifiers.org/uniprot/P37840"
+  s529 part "http://identifiers.org/uniprot/P37840"
+  s529 part "http://identifiers.org/chebi/CHEBI:18243"
+  s530 part "http://identifiers.org/chebi/CHEBI:18243"
+  s530 part "http://identifiers.org/uniprot/P37840"
+  s531 part "http://identifiers.org/chebi/CHEBI:18243"
+  s531 part "http://identifiers.org/uniprot/P37840"
+  s533 identity "http://identifiers.org/uniprot/P37840"
+  s535 part "http://identifiers.org/uniprot/P37840"
+  s535 part "http://identifiers.org/chebi/CHEBI:18243"
+  s527 version "http://identifiers.org/chebi/CHEBI:18243"
+  s527 version "http://identifiers.org/uniprot/P37840"
+  s1 part "http://identifiers.org/uniprot/P37840"
+  s1 part "http://identifiers.org/chebi/CHEBI:18243"
+  s2 part "http://identifiers.org/chebi/CHEBI:18243"
+  s2 part "http://identifiers.org/uniprot/P37840"
+  s3 hypernym "http://identifiers.org/go/GO:0006351"
+  s3 hypernym "http://identifiers.org/go/GO:0006412"
+  s5 part "http://identifiers.org/chebi/CHEBI:18243"
+  s5 part "http://identifiers.org/uniprot/P37840"
+  s6 part "http://identifiers.org/uniprot/P37840"
+  s6 part "http://identifiers.org/chebi/CHEBI:18243"
+  s7 part "http://identifiers.org/uniprot/P37840"
+  s17 identity "http://identifiers.org/uniprot/P37840"
+  s18 part "http://identifiers.org/uniprot/P37840"
+  s20 part "http://identifiers.org/uniprot/P37840"
+  s21 part "http://identifiers.org/uniprot/P37840"
+  s21 part "http://identifiers.org/chebi/CHEBI:18243"
+  s22 identity "http://identifiers.org/chebi/CHEBI:18243"
+  s23 part "http://identifiers.org/uniprot/P37840"
+  s24 part "http://identifiers.org/uniprot/P37840"
+  s25 part "http://identifiers.org/uniprot/P37840"
+  s25 part "http://identifiers.org/chebi/CHEBI:18243"
+  s26 part "http://identifiers.org/uniprot/P37840"
+  s26 part "http://identifiers.org/chebi/CHEBI:18243"
+  s27 part "http://identifiers.org/chebi/CHEBI:18243"
+  s27 part "http://identifiers.org/uniprot/P37840"
+  s29 part "http://identifiers.org/uniprot/P37840"
+  s30 part "http://identifiers.org/uniprot/P37840"
+  s31 part "http://identifiers.org/uniprot/P37840"
+  s32 part "http://identifiers.org/uniprot/P37840"
+  s33 part "http://identifiers.org/uniprot/P37840"
+  s35 hypernym "http://identifiers.org/go/GO:0000502"
+  s200 hypernym "http://identifiers.org/chebi/CHEBI:18243"
+  s381 part "http://identifiers.org/go/GO:0000502"
+  s381 part "http://identifiers.org/uniprot/P37840"
+  s383 part "http://identifiers.org/uniprot/P37840"
+  s383 part "http://identifiers.org/go/GO:0000502"
+  s385 part "http://identifiers.org/uniprot/P37840"
+  s385 part "http://identifiers.org/go/GO:0000502"
+  s387 part "http://identifiers.org/uniprot/P37840"
+  s387 part "http://identifiers.org/go/GO:0000502"
+  s389 part "http://identifiers.org/uniprot/P37840"
+  s389 part "http://identifiers.org/go/GO:0000502"
+  s391 part "http://identifiers.org/uniprot/P37840"
+  s391 part "http://identifiers.org/go/GO:0000502"
+  s393 part "http://identifiers.org/go/GO:0000502"
+  s393 part "http://identifiers.org/uniprot/P37840"
+  s473 part "http://identifiers.org/chebi/CHEBI:18243"
+  s473 part "http://identifiers.org/uniprot/P37840"
+  s473 part "http://identifiers.org/go/GO:0000502"
+  s474 part "http://identifiers.org/uniprot/P37840"
+  s474 part "http://identifiers.org/go/GO:0000502"
+  s474 part "http://identifiers.org/chebi/CHEBI:18243"
+  s475 part "http://identifiers.org/uniprot/P37840"
+  s475 part "http://identifiers.org/chebi/CHEBI:18243"
+  s475 part "http://identifiers.org/go/GO:0000502"
+  s476 part "http://identifiers.org/chebi/CHEBI:18243"
+  s476 part "http://identifiers.org/go/GO:0000502"
+  s476 part "http://identifiers.org/uniprot/P37840"
+  s477 part "http://identifiers.org/uniprot/P37840"
+  s477 part "http://identifiers.org/chebi/CHEBI:18243"
+  s477 part "http://identifiers.org/go/GO:0000502"
+  s478 part "http://identifiers.org/uniprot/P37840"
+  s478 part "http://identifiers.org/go/GO:0000502"
+  s478 part "http://identifiers.org/chebi/CHEBI:18243"
+  s479 part "http://identifiers.org/chebi/CHEBI:18243"
+  s479 part "http://identifiers.org/uniprot/P37840"
+  s479 part "http://identifiers.org/go/GO:0000502"
+  s502 part "http://identifiers.org/uniprot/P37840"
+  s502 part "http://identifiers.org/go/GO:0000502"
+  re1 hypernym "http://identifiers.org/go/GO:0006412"
+  re1 hypernym "http://identifiers.org/go/GO:0006351"
+  re2 hypernym "http://identifiers.org/go/GO:0042416"
+  re3 hypernym "http://identifiers.org/go/GO:0051259"
+  re4 hypernym "http://identifiers.org/go/GO:0006461"
+  re4 hypernym "http://identifiers.org/go/GO:0032460"
+  re5 hypernym "http://identifiers.org/go/GO:0006622"
+  re5 hypernym "http://identifiers.org/go/GO:0005102"
+  re6 hypernym "http://identifiers.org/go/GO:0016236"
+  re7 hypernym "http://identifiers.org/go/GO:0051259"
+  re8 hypernym "http://identifiers.org/go/GO:0006622"
+  re8 hypernym "http://identifiers.org/go/GO:0005102"
+  re9 hypernym "http://identifiers.org/go/GO:0016236"
+  re10 hypernym "http://identifiers.org/go/GO:0051529"
+  re11 hypernym "http://identifiers.org/go/GO:1901799"
+  re11 hypernym "http://identifiers.org/go/GO:0070628"
+  re11 hypernym "http://identifiers.org/go/GO:0010498"
+  re12 hypernym "http://identifiers.org/go/GO:0016236"
+  re13 hypernym "http://identifiers.org/go/GO:0051259"
+  re14 hypernym "http://identifiers.org/go/GO:0070628"
+  re14 hypernym "http://identifiers.org/go/GO:1901799"
+  re14 hypernym "http://identifiers.org/go/GO:0010498"
+  re15 hypernym "http://identifiers.org/go/GO:0016236"
+  re16 version "http://identifiers.org/go/GO:0051259"
+  re17 hypernym "http://identifiers.org/go/GO:0010498"
+  re17 hypernym "http://identifiers.org/go/GO:0070628"
+  re17 hypernym "http://identifiers.org/go/GO:1901799"
+  re18 hypernym "http://identifiers.org/go/GO:0005102"
+  re19 hypernym "http://identifiers.org/go/GO:0016236"
+  re20 hypernym "http://identifiers.org/go/GO:0051259"
+  re21 hypernym "http://identifiers.org/go/GO:0070628"
+  re21 hypernym "http://identifiers.org/go/GO:0010498"
+  re21 hypernym "http://identifiers.org/go/GO:1901799"
+  re22 hypernym "http://identifiers.org/go/GO:0016236"
+  re23 hypernym "http://identifiers.org/go/GO:0051259"
+  re24 hypernym "http://identifiers.org/go/GO:0070628"
+  re24 hypernym "http://identifiers.org/go/GO:0010498"
+  re24 hypernym "http://identifiers.org/go/GO:1901799"
+  re25 hypernym "http://identifiers.org/go/GO:0005102"
+  re26 hypernym "http://identifiers.org/go/GO:0016236"
+  re27 hypernym "http://identifiers.org/go/GO:0051259"
+  re28 hypernym "http://identifiers.org/go/GO:0010498"
+  re28 hypernym "http://identifiers.org/go/GO:0070628"
+  re28 hypernym "http://identifiers.org/go/GO:1901799"
+  re29 hypernym "http://identifiers.org/go/GO:0010498"
+  re29 hypernym "http://identifiers.org/go/GO:0070628"
+  re29 hypernym "http://identifiers.org/go/GO:1901799"
+  re30 hypernym "http://identifiers.org/go/GO:0005102"
+  re31 hypernym "http://identifiers.org/go/GO:0042240"
+  re32 hypernym "http://identifiers.org/go/GO:0035786"
+  re33 hypernym "http://identifiers.org/go/GO:0035786"
+  re34 hypernym "http://identifiers.org/go/GO:0035786"
+  re35 hypernym "http://identifiers.org/go/GO:0035786"
+  re36 hypernym "http://identifiers.org/go/GO:0035786"
+  re37 hypernym "http://identifiers.org/go/GO:0006914"
+  re38 hypernym "http://identifiers.org/go/GO:0006914"
+  re40 hypernym "http://identifiers.org/go/GO:0016236"
+  re41 hypernym "http://identifiers.org/go/GO:0016236"
+  re42 hypernym "http://identifiers.org/go/GO:0016236"
+  re43 hypernym "http://identifiers.org/go/GO:0016236"
+  re44 hypernym "http://identifiers.org/go/GO:0016236"
+  re45 hypernym "http://identifiers.org/go/GO:0016236"
+  re46 hypernym "http://identifiers.org/go/GO:0016236"
+  re47 hypernym "http://identifiers.org/go/GO:0070841"
+  re48 hypernym "http://identifiers.org/go/GO:0016236"
+  re49 hypernym "http://identifiers.org/go/GO:0035786"
+  re50 hypernym "http://identifiers.org/go/GO:0016236"
+  re51 hypernym "http://identifiers.org/go/GO:0035786"
+  re52 hypernym "http://identifiers.org/go/GO:1901799"
+  re52 hypernym "http://identifiers.org/go/GO:0010498"
+  re52 hypernym "http://identifiers.org/go/GO:0070628"
+  re53 hypernym "http://identifiers.org/go/GO:0016236"
+  re54 hypernym "http://identifiers.org/go/GO:0035786"
+  re55 hypernym "http://identifiers.org/go/GO:1901799"
+  re55 hypernym "http://identifiers.org/go/GO:0010498"
+  re55 hypernym "http://identifiers.org/go/GO:0070628"
+  re56 hypernym "http://identifiers.org/go/GO:0016236"
+  re57 hypernym "http://identifiers.org/go/GO:0035786"
+  re58 hypernym "http://identifiers.org/go/GO:0010498"
+  re58 hypernym "http://identifiers.org/go/GO:0070628"
+  re58 hypernym "http://identifiers.org/go/GO:1901799"
+  re59 hypernym "http://identifiers.org/go/GO:0016236"
+  re60 hypernym "http://identifiers.org/go/GO:0035786"
+  re61 hypernym "http://identifiers.org/go/GO:0070628"
+  re61 hypernym "http://identifiers.org/go/GO:1901799"
+  re61 hypernym "http://identifiers.org/go/GO:0010498"
+  re62 hypernym "http://identifiers.org/go/GO:0016236"
+  re63 hypernym "http://identifiers.org/go/GO:0035786"
+  re64 hypernym "http://identifiers.org/go/GO:0010498"
+  re64 hypernym "http://identifiers.org/go/GO:1901799"
+  re64 hypernym "http://identifiers.org/go/GO:0070628"
+  re65 hypernym "http://identifiers.org/go/GO:0016236"
+  re66 hypernym "http://identifiers.org/go/GO:0035786"
+  re67 hypernym "http://identifiers.org/go/GO:1901799"
+  re67 hypernym "http://identifiers.org/go/GO:0010498"
+  re67 hypernym "http://identifiers.org/go/GO:0070628"
+  re68 hypernym "http://identifiers.org/go/GO:1901799"
+  re68 hypernym "http://identifiers.org/go/GO:0070628"
+  re68 hypernym "http://identifiers.org/go/GO:0010498"
+  re69 hypernym "http://identifiers.org/go/GO:0006914"
+  re70 hypernym "http://identifiers.org/go/GO:0006914"
+  re71 hypernym "http://identifiers.org/go/GO:0032984"
+  re72 hypernym "http://identifiers.org/go/GO:0035786"
+  re73 hypernym "http://identifiers.org/go/GO:0035786"
+  re74 hypernym "http://identifiers.org/go/GO:0035786"
+  re75 hypernym "http://identifiers.org/go/GO:0035786"
+  re76 hypernym "http://identifiers.org/go/GO:0032984"
+  re77 hypernym "http://identifiers.org/go/GO:0032984"
+  re78 hypernym "http://identifiers.org/go/GO:0032984"
+  re79 hypernym "http://identifiers.org/go/GO:0032984"
+  re80 hypernym "http://identifiers.org/go/GO:0032984"
+  re81 hypernym "http://identifiers.org/go/GO:0032984"
+  re82 hypernym "http://identifiers.org/go/GO:0005102"
+  re83 hypernym "http://identifiers.org/go/GO:0005102"
+  re84 hypernym "http://identifiers.org/go/GO:0005102"
+  re85 hypernym "http://identifiers.org/go/GO:0005102"
+  re86 hypernym "http://identifiers.org/go/GO:0005102"
+  re87 hypernym "http://identifiers.org/go/GO:0016236"
+  re88 hypernym "http://identifiers.org/go/GO:0016236"
+  re89 hypernym "http://identifiers.org/go/GO:0016236"
+  re90 hypernym "http://identifiers.org/go/GO:0016236"
+  re91 hypernym "http://identifiers.org/go/GO:0016236"
+  re92 hypernym "http://identifiers.org/go/GO:0016236"
+  re93 hypernym "http://identifiers.org/go/GO:0016236"
+  re94 hypernym "http://identifiers.org/go/GO:0016236"
+  re95 hypernym "http://identifiers.org/go/GO:0016236"
+  re96 hypernym "http://identifiers.org/go/GO:0016236"
+  re97 hypernym "http://identifiers.org/go/GO:0016236"
+  re98 hypernym "http://identifiers.org/go/GO:0016236"
+  re99 hypernym "http://identifiers.org/go/GO:0016236"
+  re100 hypernym "http://identifiers.org/go/GO:0016236"
+  re101 hypernym "http://identifiers.org/go/GO:0016236"
+  re102 hypernym "http://identifiers.org/go/GO:0010498"
+  re103 hypernym "http://identifiers.org/go/GO:0010498"
+  re104 hypernym "http://identifiers.org/go/GO:0010498"
+  re105 hypernym "http://identifiers.org/go/GO:0010498"
+  re106 hypernym "http://identifiers.org/go/GO:0010498"
+  re107 hypernym "http://identifiers.org/go/GO:0010498"
+  re108 hypernym "http://identifiers.org/go/GO:0010498"
+  re109 hypernym "http://identifiers.org/go/GO:0010498"
+  re110 hypernym "http://identifiers.org/go/GO:0010498"
+  re111 hypernym "http://identifiers.org/go/GO:0010498"
+  re112 hypernym "http://identifiers.org/go/GO:0010498"
+  re113 hypernym "http://identifiers.org/go/GO:0010498"
+  re114 hypernym "http://identifiers.org/go/GO:0010498"
+  re115 hypernym "http://identifiers.org/go/GO:0010498"
+  re116 hypernym "http://identifiers.org/go/GO:0070628"
+  re116 hypernym "http://identifiers.org/go/GO:1901799"
+  re117 hypernym "http://identifiers.org/go/GO:0043241"
+  re118 hypernym "http://identifiers.org/go/GO:0043241"
+  re119 hypernym "http://identifiers.org/go/GO:0043241"
+  re120 hypernym "http://identifiers.org/go/GO:0043241"
+  re121 hypernym "http://identifiers.org/go/GO:0043241"
+  re122 hypernym "http://identifiers.org/go/GO:0043241"
+  re123 hypernym "http://identifiers.org/go/GO:0043241"
+  re124 hypernym "http://identifiers.org/go/GO:0043241"
+  re125 hypernym "http://identifiers.org/go/GO:0043241"
+  re126 hypernym "http://identifiers.org/go/GO:0043241"
+  re127 hypernym "http://identifiers.org/go/GO:0043241"
+  re128 hypernym "http://identifiers.org/go/GO:0043241"
+  re129 hypernym "http://identifiers.org/go/GO:0043241"
+  re130 hypernym "http://identifiers.org/go/GO:0043241"
+  re131 hypernym "http://identifiers.org/go/GO:0043241"
+  re132 hypernym "http://identifiers.org/go/GO:0043241"
+  re133 hypernym "http://identifiers.org/go/GO:0070841"
+  re134 hypernym "http://identifiers.org/go/GO:0016236"
+  re135 hypernym "http://identifiers.org/go/GO:0016236"
+  re136 hypernym "http://identifiers.org/go/GO:0016236"
+  re137 hypernym "http://identifiers.org/go/GO:0016236"
 end
+
+MODEL1412010000 is "Ouzounoglou2014 - Modeling of alpha-synuclein effects on neuronal homeostasis"
+
+MODEL1412010000 model_entity_is "http://identifiers.org/biomodels.db/MODEL1412010000"
+MODEL1412010000 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000559"
+MODEL1412010000 description "http://identifiers.org/pubmed/24885905"
+MODEL1412010000 hypernym "http://identifiers.org/go/GO:0006914",
+                         "http://identifiers.org/go/GO:0030163",
+                         "http://identifiers.org/go/GO:0042053",
+                         "http://identifiers.org/go/GO:0070841"
+MODEL1412010000 taxon "http://identifiers.org/taxonomy/9606"
+MODEL1412010000 property "http://identifiers.org/doid/DOID:14330"

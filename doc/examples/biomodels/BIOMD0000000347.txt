@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Bachmann2011_JAK2STAT5_FeedbackControl()
 
   // Compartments and Species:
@@ -12,40 +12,40 @@ model *Bachmann2011_JAK2STAT5_FeedbackControl()
   species Epo in cyt;
 
   // Reactions:
-  reaction_1: EpoRJAK2 => EpoRpJAK2; (JAK2ActEpo*Epo*EpoRJAK2)/((SOCS3Inh*SOCS3)/SOCS3Eqc + 1)*cyt;
-  reaction_2: EpoRpJAK2 => EpoRJAK2; (JAK2EpoRDeaSHP1*SHP1Act*EpoRpJAK2)/init_SHP1*cyt;
-  reaction_3: EpoRpJAK2 => p1EpoRpJAK2; (EpoRActJAK2*EpoRpJAK2)/((SOCS3Inh*SOCS3)/SOCS3Eqc + 1)*cyt;
-  reaction_4: EpoRpJAK2 => p2EpoRpJAK2; (3*EpoRActJAK2*EpoRpJAK2)/(((SOCS3Inh*SOCS3)/SOCS3Eqc + 1)*(EpoRCISInh*EpoRJAK2_CIS + 1))*cyt;
-  reaction_5: p1EpoRpJAK2 => p12EpoRpJAK2; (3*EpoRActJAK2*p1EpoRpJAK2)/(((SOCS3Inh*SOCS3)/SOCS3Eqc + 1)*(EpoRCISInh*EpoRJAK2_CIS + 1))*cyt;
-  reaction_6: p2EpoRpJAK2 => p12EpoRpJAK2; (EpoRActJAK2*p2EpoRpJAK2)/((SOCS3Inh*SOCS3)/SOCS3Eqc + 1)*cyt;
-  reaction_7: p1EpoRpJAK2 => EpoRJAK2; (JAK2EpoRDeaSHP1*SHP1Act*p1EpoRpJAK2)/init_SHP1*cyt;
-  reaction_8: p2EpoRpJAK2 => EpoRJAK2; (JAK2EpoRDeaSHP1*SHP1Act*p2EpoRpJAK2)/init_SHP1*cyt;
-  reaction_9: p12EpoRpJAK2 => EpoRJAK2; (JAK2EpoRDeaSHP1*SHP1Act*p12EpoRpJAK2)/init_SHP1*cyt;
-  reaction_10: EpoRJAK2_CIS => ; (EpoRCISRemove*EpoRJAK2_CIS*(p12EpoRpJAK2 + p1EpoRpJAK2))/init_EpoRJAK2*cyt;
-  reaction_11: SHP1 => SHP1Act; (SHP1ActEpoR*SHP1*(EpoRpJAK2 + p12EpoRpJAK2 + p1EpoRpJAK2 + p2EpoRpJAK2))/init_EpoRJAK2*cyt;
+  reaction_1: EpoRJAK2 => EpoRpJAK2; (JAK2ActEpo*Epo*EpoRJAK2/(SOCS3Inh*SOCS3/SOCS3Eqc + 1))*cyt;
+  reaction_2: EpoRpJAK2 => EpoRJAK2; (JAK2EpoRDeaSHP1*SHP1Act*EpoRpJAK2/init_SHP1)*cyt;
+  reaction_3: EpoRpJAK2 => p1EpoRpJAK2; (EpoRActJAK2*EpoRpJAK2/(SOCS3Inh*SOCS3/SOCS3Eqc + 1))*cyt;
+  reaction_4: EpoRpJAK2 => p2EpoRpJAK2; (3*EpoRActJAK2*EpoRpJAK2/((SOCS3Inh*SOCS3/SOCS3Eqc + 1)*(EpoRCISInh*EpoRJAK2_CIS + 1)))*cyt;
+  reaction_5: p1EpoRpJAK2 => p12EpoRpJAK2; (3*EpoRActJAK2*p1EpoRpJAK2/((SOCS3Inh*SOCS3/SOCS3Eqc + 1)*(EpoRCISInh*EpoRJAK2_CIS + 1)))*cyt;
+  reaction_6: p2EpoRpJAK2 => p12EpoRpJAK2; (EpoRActJAK2*p2EpoRpJAK2/(SOCS3Inh*SOCS3/SOCS3Eqc + 1))*cyt;
+  reaction_7: p1EpoRpJAK2 => EpoRJAK2; (JAK2EpoRDeaSHP1*SHP1Act*p1EpoRpJAK2/init_SHP1)*cyt;
+  reaction_8: p2EpoRpJAK2 => EpoRJAK2; (JAK2EpoRDeaSHP1*SHP1Act*p2EpoRpJAK2/init_SHP1)*cyt;
+  reaction_9: p12EpoRpJAK2 => EpoRJAK2; (JAK2EpoRDeaSHP1*SHP1Act*p12EpoRpJAK2/init_SHP1)*cyt;
+  reaction_10: EpoRJAK2_CIS => ; (EpoRCISRemove*EpoRJAK2_CIS*(p12EpoRpJAK2 + p1EpoRpJAK2)/init_EpoRJAK2)*cyt;
+  reaction_11: SHP1 => SHP1Act; (SHP1ActEpoR*SHP1*(EpoRpJAK2 + p12EpoRpJAK2 + p1EpoRpJAK2 + p2EpoRpJAK2)/init_EpoRJAK2)*cyt;
   reaction_12: SHP1Act => SHP1; SHP1Dea*SHP1Act*cyt;
-  reaction_13: STAT5 => pSTAT5; (STAT5ActJAK2*STAT5*(EpoRpJAK2 + p12EpoRpJAK2 + p1EpoRpJAK2 + p2EpoRpJAK2))/(init_EpoRJAK2*((SOCS3Inh*SOCS3)/SOCS3Eqc + 1))*cyt;
-  reaction_14: STAT5 => pSTAT5; (STAT5ActEpoR*STAT5*(p12EpoRpJAK2 + p1EpoRpJAK2)^2)/(init_EpoRJAK2^2*((CISInh*CIS)/CISEqc + 1)*((SOCS3Inh*SOCS3)/SOCS3Eqc + 1))*cyt;
+  reaction_13: STAT5 => pSTAT5; (STAT5ActJAK2*STAT5*(EpoRpJAK2 + p12EpoRpJAK2 + p1EpoRpJAK2 + p2EpoRpJAK2)/(init_EpoRJAK2*(SOCS3Inh*SOCS3/SOCS3Eqc + 1)))*cyt;
+  reaction_14: STAT5 => pSTAT5; (STAT5ActEpoR*STAT5*(p12EpoRpJAK2 + p1EpoRpJAK2)^2/(init_EpoRJAK2^2*(CISInh*CIS/CISEqc + 1)*(SOCS3Inh*SOCS3/SOCS3Eqc + 1)))*cyt;
   reaction_15: pSTAT5 => npSTAT5; STAT5Imp*pSTAT5*cyt;
   reaction_16: npSTAT5 => STAT5; STAT5Exp*npSTAT5*nuc;
-  reaction_17:  -> CISnRNA1; -((CISRNAEqc*CISRNATurn*npSTAT5*(ActD - 1))/init_STAT5*nuc);
+  reaction_17:  -> CISnRNA1; -((CISRNAEqc*CISRNATurn*npSTAT5*(ActD - 1)/init_STAT5)*nuc);
   reaction_18: CISnRNA1 => CISnRNA2; CISRNADelay*CISnRNA1*nuc;
   reaction_19: CISnRNA2 => CISnRNA3; CISRNADelay*CISnRNA2*nuc;
   reaction_20: CISnRNA3 => CISnRNA4; CISRNADelay*CISnRNA3*nuc;
   reaction_21: CISnRNA4 => CISnRNA5; CISRNADelay*CISnRNA4*nuc;
   reaction_22: CISnRNA5 => CISRNA; CISRNADelay*CISnRNA5*nuc;
   reaction_23: CISRNA => ; CISRNATurn*CISRNA*cyt;
-  reaction_24:  => CIS; (CISEqc*CISTurn*CISRNA)/CISRNAEqc*cyt;
+  reaction_24:  => CIS; (CISEqc*CISTurn*CISRNA/CISRNAEqc)*cyt;
   reaction_25: CIS => ; CISTurn*CIS*cyt;
   reaction_26:  => CIS; CISoe*CISEqc*CISTurn*CISEqcOE;
-  reaction_27:  -> SOCS3nRNA1; -((SOCS3RNAEqc*SOCS3RNATurn*npSTAT5*(ActD - 1))/init_STAT5*nuc);
+  reaction_27:  -> SOCS3nRNA1; -((SOCS3RNAEqc*SOCS3RNATurn*npSTAT5*(ActD - 1)/init_STAT5)*nuc);
   reaction_28: SOCS3nRNA1 => SOCS3nRNA2; SOCS3RNADelay*SOCS3nRNA1*nuc;
   reaction_29: SOCS3nRNA2 => SOCS3nRNA3; SOCS3RNADelay*SOCS3nRNA2*nuc;
   reaction_30: SOCS3nRNA3 => SOCS3nRNA4; SOCS3RNADelay*SOCS3nRNA3*nuc;
   reaction_31: SOCS3nRNA4 => SOCS3nRNA5; SOCS3RNADelay*SOCS3nRNA4*nuc;
   reaction_32: SOCS3nRNA5 => SOCS3RNA; SOCS3RNADelay*SOCS3nRNA5*nuc;
   reaction_33: SOCS3RNA => ; SOCS3RNATurn*SOCS3RNA*cyt;
-  reaction_34:  => SOCS3; (SOCS3Eqc*SOCS3Turn*SOCS3RNA)/SOCS3RNAEqc*cyt;
+  reaction_34:  => SOCS3; (SOCS3Eqc*SOCS3Turn*SOCS3RNA/SOCS3RNAEqc)*cyt;
   reaction_35: SOCS3 => ; SOCS3Turn*SOCS3*cyt;
   reaction_36:  => SOCS3; SOCS3oe*SOCS3Eqc*SOCS3Turn*SOCS3EqcOE;
 
@@ -75,7 +75,7 @@ model *Bachmann2011_JAK2STAT5_FeedbackControl()
   SOCS3nRNA5 = 0;
   SOCS3RNA = 0;
   SOCS3 = 0;
-  Epo = 1.24997e-007;
+  Epo = 1.24997e-07;
 
   // Compartment initializations:
   cyt = 0.4;
@@ -110,7 +110,7 @@ model *Bachmann2011_JAK2STAT5_FeedbackControl()
   STAT5ActJAK2 = 0.0780965;
   STAT5Exp = 0.0745155;
   STAT5Imp = 0.0268889;
-  epo_level = 1.24997e-007;
+  epo_level = 1.24997e-07;
   init_EpoRJAK2 = 3.97622;
   init_SHP1 = 26.7251;
   init_STAT5 = 79.7535;
@@ -122,4 +122,189 @@ model *Bachmann2011_JAK2STAT5_FeedbackControl()
   const SOCS3Inh, SOCS3RNADelay, SOCS3RNAEqc, SOCS3RNATurn, SOCS3Turn, SOCS3oe;
   const STAT5ActEpoR, STAT5ActJAK2, STAT5Exp, STAT5Imp, epo_level, init_EpoRJAK2;
   const init_SHP1, init_STAT5;
+
+  // SBO terms:
+  cyt.sboTerm = 290
+  nuc.sboTerm = 290
+  EpoRJAK2.sboTerm = 297
+  EpoRpJAK2.sboTerm = 297
+  p1EpoRpJAK2.sboTerm = 297
+  p2EpoRpJAK2.sboTerm = 297
+  p12EpoRpJAK2.sboTerm = 297
+  EpoRJAK2_CIS.sboTerm = 297
+  SHP1.sboTerm = 252
+  SHP1Act.sboTerm = 252
+  STAT5.sboTerm = 252
+  pSTAT5.sboTerm = 252
+  npSTAT5.sboTerm = 252
+  CISnRNA1.sboTerm = 278
+  CISnRNA2.sboTerm = 278
+  CISnRNA3.sboTerm = 278
+  CISnRNA4.sboTerm = 278
+  CISnRNA5.sboTerm = 278
+  CISRNA.sboTerm = 278
+  CIS.sboTerm = 252
+  SOCS3nRNA1.sboTerm = 278
+  SOCS3nRNA2.sboTerm = 278
+  SOCS3nRNA3.sboTerm = 278
+  SOCS3nRNA4.sboTerm = 278
+  SOCS3nRNA5.sboTerm = 278
+  SOCS3RNA.sboTerm = 278
+  SOCS3.sboTerm = 252
+  Epo.sboTerm = 252
+  ActD.sboTerm = 363
+  CISEqc.sboTerm = 281
+  CISEqcOE.sboTerm = 281
+  CISInh.sboTerm = 261
+  CISRNADelay.sboTerm = 225
+  CISRNAEqc.sboTerm = 281
+  CISRNATurn.sboTerm = 9
+  CISTurn.sboTerm = 9
+  CISoe.sboTerm = 9
+  EpoRActJAK2.sboTerm = 363
+  EpoRCISInh.sboTerm = 261
+  EpoRCISRemove.sboTerm = 9
+  JAK2ActEpo.sboTerm = 363
+  JAK2EpoRDeaSHP1.sboTerm = 9
+  SHP1ActEpoR.sboTerm = 363
+  SHP1Dea.sboTerm = 9
+  SOCS3Eqc.sboTerm = 281
+  SOCS3EqcOE.sboTerm = 281
+  SOCS3Inh.sboTerm = 261
+  SOCS3RNADelay.sboTerm = 225
+  SOCS3RNAEqc.sboTerm = 281
+  SOCS3RNATurn.sboTerm = 9
+  SOCS3Turn.sboTerm = 9
+  SOCS3oe.sboTerm = 9
+  STAT5ActJAK2.sboTerm = 363
+  STAT5Exp.sboTerm = 9
+  STAT5Imp.sboTerm = 9
+  epo_level.sboTerm = 9
+  init_EpoRJAK2.sboTerm = 9
+  init_SHP1.sboTerm = 9
+  init_STAT5.sboTerm = 9
+  reaction_1.sboTerm = 216
+  reaction_2.sboTerm = 330
+  reaction_3.sboTerm = 216
+  reaction_4.sboTerm = 330
+  reaction_5.sboTerm = 216
+  reaction_6.sboTerm = 216
+  reaction_7.sboTerm = 330
+  reaction_8.sboTerm = 330
+  reaction_9.sboTerm = 330
+  reaction_10.sboTerm = 179
+  reaction_11.sboTerm = 181
+  reaction_12.sboTerm = 181
+  reaction_13.sboTerm = 216
+  reaction_14.sboTerm = 216
+  reaction_15.sboTerm = 185
+  reaction_16.sboTerm = 330
+  reaction_17.sboTerm = 393
+  reaction_18.sboTerm = 182
+  reaction_19.sboTerm = 182
+  reaction_20.sboTerm = 182
+  reaction_21.sboTerm = 182
+  reaction_22.sboTerm = 182
+  reaction_23.sboTerm = 179
+  reaction_24.sboTerm = 393
+  reaction_25.sboTerm = 179
+  reaction_26.sboTerm = 393
+  reaction_27.sboTerm = 393
+  reaction_28.sboTerm = 182
+  reaction_29.sboTerm = 182
+  reaction_30.sboTerm = 182
+  reaction_31.sboTerm = 182
+  reaction_32.sboTerm = 182
+  reaction_33.sboTerm = 179
+  reaction_34.sboTerm = 393
+  reaction_35.sboTerm = 179
+  reaction_36.sboTerm = 393
+
+  // CV terms:
+  cyt hypernym "http://identifiers.org/obo.go/GO:0005829"
+  nuc hypernym "http://identifiers.org/obo.go/GO:0005634"
+  EpoRJAK2 part "http://identifiers.org/uniprot/P14753",
+                "http://identifiers.org/uniprot/Q62120"
+  EpoRpJAK2 part "http://identifiers.org/uniprot/P14753",
+                 "http://identifiers.org/uniprot/Q62120"
+  EpoRpJAK2 hypernym "http://identifiers.org/kegg.compound/C00562"
+  p1EpoRpJAK2 part "http://identifiers.org/uniprot/P14753",
+                   "http://identifiers.org/uniprot/Q62120"
+  p1EpoRpJAK2 hypernym "http://identifiers.org/kegg.compound/C00562"
+  p2EpoRpJAK2 part "http://identifiers.org/uniprot/P14753",
+                   "http://identifiers.org/uniprot/Q62120"
+  p2EpoRpJAK2 hypernym "http://identifiers.org/kegg.compound/C00562"
+  p12EpoRpJAK2 part "http://identifiers.org/uniprot/P14753",
+                    "http://identifiers.org/uniprot/Q62120"
+  p12EpoRpJAK2 hypernym "http://identifiers.org/kegg.compound/C00562"
+  EpoRJAK2_CIS part "http://identifiers.org/uniprot/P14753",
+                    "http://identifiers.org/uniprot/Q62120",
+                    "http://identifiers.org/uniprot/Q62225"
+  SHP1 hypernym "http://identifiers.org/uniprot/P29351"
+  SHP1Act hypernym "http://identifiers.org/uniprot/P29351"
+  STAT5 hypernym "http://identifiers.org/uniprot/P42230"
+  pSTAT5 hypernym "http://identifiers.org/uniprot/P42230",
+                  "http://identifiers.org/kegg.compound/C00562"
+  npSTAT5 hypernym "http://identifiers.org/uniprot/P42230",
+                   "http://identifiers.org/kegg.compound/C00562"
+  CISnRNA1 hypernym "http://identifiers.org/obo.chebi/CHEBI:33699"
+  CISnRNA2 hypernym "http://identifiers.org/obo.chebi/CHEBI:33699"
+  CISnRNA3 hypernym "http://identifiers.org/obo.chebi/CHEBI:33699"
+  CISnRNA4 hypernym "http://identifiers.org/obo.chebi/CHEBI:33699"
+  CISnRNA5 hypernym "http://identifiers.org/obo.chebi/CHEBI:33699"
+  CISRNA hypernym "http://identifiers.org/obo.chebi/CHEBI:33699"
+  CIS hypernym "http://identifiers.org/uniprot/Q62225"
+  SOCS3nRNA1 hypernym "http://identifiers.org/obo.chebi/CHEBI:33699"
+  SOCS3nRNA2 hypernym "http://identifiers.org/obo.chebi/CHEBI:33699"
+  SOCS3nRNA3 hypernym "http://identifiers.org/obo.chebi/CHEBI:33699"
+  SOCS3nRNA4 hypernym "http://identifiers.org/obo.chebi/CHEBI:33699"
+  SOCS3nRNA5 hypernym "http://identifiers.org/obo.chebi/CHEBI:33699"
+  SOCS3RNA hypernym "http://identifiers.org/obo.chebi/CHEBI:33699"
+  SOCS3 hypernym "http://identifiers.org/uniprot/O35718"
+  Epo hypernym "http://identifiers.org/uniprot/P07321"
+  reaction_1 hypernym "http://identifiers.org/obo.go/GO:0016310"
+  reaction_2 hypernym "http://identifiers.org/obo.go/GO:0016311"
+  reaction_3 hypernym "http://identifiers.org/obo.go/GO:0016310"
+  reaction_4 hypernym "http://identifiers.org/obo.go/GO:0016310"
+  reaction_5 hypernym "http://identifiers.org/obo.go/GO:0016310"
+  reaction_6 hypernym "http://identifiers.org/obo.go/GO:0016310"
+  reaction_7 hypernym "http://identifiers.org/obo.go/GO:0016311"
+  reaction_8 hypernym "http://identifiers.org/obo.go/GO:0016311"
+  reaction_9 hypernym "http://identifiers.org/obo.go/GO:0016311"
+  reaction_10 hypernym "http://identifiers.org/obo.go/GO:0009056"
+  reaction_11 hypernym "http://identifiers.org/obo.psi-mod/MOD:00000"
+  reaction_12 hypernym "http://identifiers.org/obo.psi-mod/MOD:00000"
+  reaction_13 hypernym "http://identifiers.org/obo.go/GO:0016310"
+  reaction_14 hypernym "http://identifiers.org/obo.go/GO:0016310"
+  reaction_15 hypernym "http://identifiers.org/obo.go/GO:0051169"
+  reaction_16 hypernym "http://identifiers.org/obo.go/GO:0016311"
+  reaction_17 hypernym "http://identifiers.org/obo.go/GO:0032774"
+  reaction_18 hypernym "http://identifiers.org/obo.go/GO:0009451"
+  reaction_19 hypernym "http://identifiers.org/obo.go/GO:0009451"
+  reaction_20 hypernym "http://identifiers.org/obo.go/GO:0009451"
+  reaction_21 hypernym "http://identifiers.org/obo.go/GO:0009451"
+  reaction_22 hypernym "http://identifiers.org/obo.go/GO:0009451"
+  reaction_23 hypernym "http://identifiers.org/obo.go/GO:0006401"
+  reaction_24 hypernym "http://identifiers.org/obo.go/GO:0009058"
+  reaction_25 hypernym "http://identifiers.org/obo.go/GO:0006401"
+  reaction_26 hypernym "http://identifiers.org/obo.go/GO:0009058"
+  reaction_27 hypernym "http://identifiers.org/obo.go/GO:0032774"
+  reaction_28 hypernym "http://identifiers.org/obo.go/GO:0009451"
+  reaction_29 hypernym "http://identifiers.org/obo.go/GO:0009451"
+  reaction_30 hypernym "http://identifiers.org/obo.go/GO:0009451"
+  reaction_31 hypernym "http://identifiers.org/obo.go/GO:0009451"
+  reaction_32 hypernym "http://identifiers.org/obo.go/GO:0009451"
+  reaction_33 hypernym "http://identifiers.org/obo.go/GO:0006401"
+  reaction_34 hypernym "http://identifiers.org/obo.go/GO:0009058"
+  reaction_35 hypernym "http://identifiers.org/obo.go/GO:0006401"
+  reaction_36 hypernym "http://identifiers.org/obo.go/GO:0009058"
 end
+
+Bachmann2011_JAK2STAT5_FeedbackControl is "Bachmann2011_JAK2-STAT5_FeedbackControl"
+
+Bachmann2011_JAK2STAT5_FeedbackControl model_entity_is "http://identifiers.org/biomodels.db/MODEL1107220000"
+Bachmann2011_JAK2STAT5_FeedbackControl model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000347"
+Bachmann2011_JAK2STAT5_FeedbackControl description "http://identifiers.org/pubmed/21772264"
+Bachmann2011_JAK2STAT5_FeedbackControl taxon "http://identifiers.org/taxonomy/10090",
+                                             "http://identifiers.org/obo.bto/BTO:0004911"
+Bachmann2011_JAK2STAT5_FeedbackControl hypernym "http://identifiers.org/obo.go/GO:0046425"

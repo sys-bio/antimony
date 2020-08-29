@@ -1,18 +1,18 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 function function_4(P, V3, R, k3)
-  (P*V3*(1 - R))/(k3 + (1 - R));
+  P*V3*(1 - R)/(k3 + (1 - R));
 end
 
 function function_3(V2, R, Q, K2)
-  (V2*R*Q)/(K2 + Q);
+  V2*R*Q/(K2 + Q);
 end
 
 function function_2(V1, Q, K1)
-  (V1*(1 - Q))/(K1 + (1 - Q));
+  V1*(1 - Q)/(K1 + (1 - Q));
 end
 
 function function_1(V, substrate, Km)
-  (V*substrate)/(Km + substrate);
+  V*substrate/(Km + substrate);
 end
 
 function function_0(a, Q)
@@ -71,4 +71,21 @@ model *Model_0()
   reaction_3 is "Decrease of Q";
   reaction_4 is "Increase of R";
   reaction_5 is "Decrease of R";
+
+  // CV terms:
+  reaction_0 hypernym "http://identifiers.org/go/GO:0040018",
+                      "http://identifiers.org/go/GO:0035264"
+  reaction_1 hypernym "http://identifiers.org/go/GO:0040015"
+  reaction_2 hypernym "http://identifiers.org/go/GO:0007631"
+  reaction_3 hypernym "http://identifiers.org/go/GO:0002023"
+  reaction_4 hypernym "http://identifiers.org/go/GO:0048520"
+  reaction_5 hypernym "http://identifiers.org/go/GO:0048521"
 end
+
+Model_0 is "Goldbeter2006_weightCycling"
+
+Model_0 model_entity_is "http://identifiers.org/biomodels.db/MODEL4644593552"
+Model_0 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000079"
+Model_0 description "http://identifiers.org/pubmed/16595882"
+Model_0 taxon "http://identifiers.org/taxonomy/9606"
+Model_0 hypernym "http://identifiers.org/go/GO:0040014"

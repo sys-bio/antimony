@@ -1,18 +1,18 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Chay1997_CalciumConcentration()
 
   // Compartments and Species:
-  compartment Compartment_;
-  species $V_membrane in Compartment_, $h in Compartment_, $d in Compartment_;
-  species $n in Compartment_, $Ca_i_cytosolic_calcium in Compartment_, $Ca_lum in Compartment_;
+  compartment Compartment;
+  species $V_membrane in Compartment, $h in Compartment, $d in Compartment;
+  species $n in Compartment, $Ca_i_cytosolic_calcium in Compartment, $Ca_lum in Compartment;
 
   // Assignment Rules:
   i_K_dr := g_K_dr*n^4*(V_membrane - V_K);
-  i_K_Ca := (g_K_Ca*Ca_i_cytosolic_calcium^3)/(K_Ca^3 + Ca_i_cytosolic_calcium^3)*(V_membrane - V_K);
+  i_K_Ca := (g_K_Ca*Ca_i_cytosolic_calcium^3/(K_Ca^3 + Ca_i_cytosolic_calcium^3))*(V_membrane - V_K);
   i_K_ATP := g_K_ATP*(V_membrane - V_K);
   i_fast := g_fast*m_infinity^3*h*(V_membrane - V_fast);
-  i_Ca := ((P_Ca*d*f_infinity*2*F*V_membrane)/(R*T)*(Ca_o - Ca_i_cytosolic_calcium*exp((2*F*V_membrane)/(R*T))))/(1 - exp((2*F*V_membrane)/(R*T)));
-  i_NS := (g_NS*K_NS^2)/(K_NS^2 + Ca_lum^2)*((V_membrane - VNS)/(1 - exp(0.1*(VNS - V_membrane))) - 10);
+  i_Ca := (P_Ca*d*f_infinity*2*F*V_membrane/(R*T))*(Ca_o - Ca_i_cytosolic_calcium*exp(2*F*V_membrane/(R*T)))/(1 - exp(2*F*V_membrane/(R*T)));
+  i_NS := (g_NS*K_NS^2/(K_NS^2 + Ca_lum^2))*((V_membrane - VNS)/(1 - exp(0.1*(VNS - V_membrane))) - 10);
   i_NaL := g_NaL*(V_membrane - V_Na);
   h_infinity := 1/(1 + exp((Vh - V_membrane)/Sh));
   tau_h := 1/(lamda_h*(exp((Vh - V_membrane)/(2*Sh)) + exp((V_membrane - Vh)/(2*Sh))));
@@ -32,15 +32,15 @@ model *Chay1997_CalciumConcentration()
   Ca_lum' = -k_rel*(Ca_lum - Ca_i_cytosolic_calcium) + k_pump*Ca_i_cytosolic_calcium;
 
   // Species initializations:
-  V_membrane = -38.34146/Compartment_;
-  h = 0.214723/Compartment_;
-  d = 0.0031711238/Compartment_;
-  n = 0.1836403/Compartment_;
-  Ca_i_cytosolic_calcium = 0.6959466/Compartment_;
-  Ca_lum = 102.686/Compartment_;
+  V_membrane = -38.34146/Compartment;
+  h = 0.214723/Compartment;
+  d = 0.0031711238/Compartment;
+  n = 0.1836403/Compartment;
+  Ca_i_cytosolic_calcium = 0.6959466/Compartment;
+  Ca_lum = 102.686/Compartment;
 
   // Compartment initializations:
-  Compartment_ = 1;
+  Compartment = 1;
 
   // Variable initializations:
   Cm = 1;
@@ -81,11 +81,69 @@ model *Chay1997_CalciumConcentration()
   // Other declarations:
   var i_K_dr, i_K_Ca, i_K_ATP, i_fast, i_Ca, i_NS, i_NaL, h_infinity, tau_h;
   var d_infinity, tau_d, n_infinity, tau_n, m_infinity, f_infinity;
-  const Compartment_, Cm, k_rel, omega, k_Ca, k_pump, R, T, F, g_fast, V_fast;
+  const Compartment, Cm, k_rel, omega, k_Ca, k_pump, R, T, F, g_fast, V_fast;
   const Vm, Sm, lamda_h, Vh, Sh, P_Ca, Ca_o, K_Ca, lamda_d, Vd, Sd, Ca_i_calcium_current_f_gate;
   const g_NS, K_NS, VNS, g_K_dr, V_K, lamda_n, Vn, Sn, g_K_Ca, g_K_ATP, g_NaL;
   const V_Na;
 
   // Display Names:
   Ca_i_calcium_current_f_gate is "Ca_i";
+
+  // SBO terms:
+  V_membrane.sboTerm = 259
+  i_Ca.sboTerm = 9
+  i_NS.sboTerm = 9
+  Cm.sboTerm = 247
+  h_infinity.sboTerm = 9
+  tau_h.sboTerm = 9
+  k_rel.sboTerm = 9
+  omega.sboTerm = 9
+  k_Ca.sboTerm = 9
+  k_pump.sboTerm = 9
+  R.sboTerm = 567
+  T.sboTerm = 2
+  F.sboTerm = 568
+  g_fast.sboTerm = 9
+  m_infinity.sboTerm = 9
+  V_fast.sboTerm = 9
+  Vm.sboTerm = 9
+  Sm.sboTerm = 9
+  Vh.sboTerm = 9
+  Sh.sboTerm = 9
+  P_Ca.sboTerm = 9
+  Ca_o.sboTerm = 9
+  K_Ca.sboTerm = 9
+  lamda_d.sboTerm = 9
+  Vd.sboTerm = 9
+  Sd.sboTerm = 9
+  g_NS.sboTerm = 9
+  K_NS.sboTerm = 9
+  VNS.sboTerm = 9
+  g_K_dr.sboTerm = 9
+  V_K.sboTerm = 9
+  lamda_n.sboTerm = 9
+  Vn.sboTerm = 9
+  Sn.sboTerm = 9
+  g_NaL.sboTerm = 9
+  V_Na.sboTerm = 9
+
+  // CV terms:
+  V_membrane identity "http://identifiers.org/pato/PATO:0001462"
+  Cm model_entity_is "http://identifiers.org/chebi/CHEBI:29108"
+  h property "http://identifiers.org/go/GO:0022836"
+  d property "http://identifiers.org/go/GO:0022836"
+  n hypernym "http://identifiers.org/go/GO:0005251"
+  Ca_i_cytosolic_calcium hypernym "http://identifiers.org/chebi/CHEBI:29108"
+  Ca_lum hypernym "http://identifiers.org/chebi/CHEBI:29108"
 end
+
+Chay1997_CalciumConcentration is "Chay1997_CalciumConcentration"
+
+Chay1997_CalciumConcentration model_entity_is "http://identifiers.org/biomodels.db/MODEL0491199816"
+Chay1997_CalciumConcentration model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000378"
+Chay1997_CalciumConcentration description "http://identifiers.org/pubmed/9284334"
+Chay1997_CalciumConcentration hypernym "http://identifiers.org/go/GO:0061469",
+                                       "http://identifiers.org/go/GO:0044342",
+                                       "http://identifiers.org/go/GO:0019722"
+Chay1997_CalciumConcentration container "http://identifiers.org/bto/BTO:0000783"
+Chay1997_CalciumConcentration taxon "http://identifiers.org/taxonomy/9606"

@@ -1,51 +1,75 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 function function_5(v)
   v;
 end
 
+function_5 is "Constant flux (irreversible)"
+
 function function_10(substrate, Km, V)
-  (V*substrate)/(Km + substrate);
+  V*substrate/(Km + substrate);
 end
+
+function_10 is "Henri-Michaelis-Menten (irreversible)"
 
 function function_3(a, M, n, K)
   a*(1 - M^n/(K^n + M^n));
 end
 
+function_3 is "Hill Function -|"
+
 function function_2(a, n, K, M)
-  (a*M^n)/(K^n + M^n);
+  a*M^n/(K^n + M^n);
 end
+
+function_2 is "Hill Function ->"
 
 function function_7(a, M, n, K, L)
   a*(M^n/(K^n + M^n))*L;
 end
 
+function_7 is "Biochemical Hill Function -> (workaround)"
+
 function function_4(a, M, n, K, L)
   a*(1 - M^n/(K^n + M^n))*L;
 end
+
+function_4 is "Biochemical Hill Function -| (workaround)"
 
 function function_9(a, M, K)
   a*(M/(K + M));
 end
 
+function_9 is "Hill expression"
+
 function function_8(S, kloss, FT1, FT)
-  S*kloss*(1 + (0.048*(FT1/FT))/(1 + FT1/FT));
+  S*kloss*(1 + 0.048*(FT1/FT)/(1 + FT1/FT));
 end
+
+function_8 is "Kloss Hill [1]"
 
 function function_12(K, FT1, FT, S)
   K*(FT1/FT)*S;
 end
 
+function_12 is "Mass Action Ferritin [2]"
+
 function function_1(a, M, n, K, S)
   a*(M^n/(K^n + M^n))*S;
 end
 
+function_1 is "Biochemical Hill Function General"
+
 function function_6(E, C, S, K)
-  (E*C*S)/(K + S);
+  E*C*S/(K + S);
 end
 
+function_6 is "Henri-Michaelis-Menten kcat (irreversible) [1]"
+
 function function_11(basal, a, M, n, K, a1, M1, K1)
-  basal + (a*M^n)/(K^n + M^n) + (a1*M1)/(K1 + M1);
+  basal + a*M^n/(K^n + M^n) + a1*M1/(K1 + M1);
 end
+
+function_11 is "Hepc Expression 7 [1]"
 
 
 model *MODEL1302260000()
@@ -61,10 +85,10 @@ model *MODEL1302260000()
   species species_19 in compartment_3, species_10 in compartment_3, $species_11 in compartment_3;
 
   // Assignment Rules:
-  parameter_1 := piecewise(1.000000e-007, -5.000000e-013*(time - 40000)^2 + 0.0001 < 1.000000e-007, -5.000000e-013*(time - 40000)^2 + 0.0001);
+  parameter_1 := piecewise(1e-7, (-5e-13*(time - 40000)^2 + 0.0001) < 1e-7, -5e-13*(time - 40000)^2 + 0.0001);
 
   // Reactions:
-  reaction_1: 2species_2 => $species_43; function_1(reaction_1_a, species_4, reaction_1_n, reaction_1_K, species_2);
+  reaction_1: 2 species_2 => $species_43; function_1(reaction_1_a, species_4, reaction_1_n, reaction_1_K, species_2);
   reaction_2:  => species_3; compartment_3*function_2(reaction_2_a, reaction_2_n, reaction_2_K, species_6);
   reaction_3: species_3 => ; compartment_3*reaction_3_k1*species_3;
   reaction_4:  => species_4; compartment_1*function_3(reaction_4_a, species_6, reaction_4_n, reaction_4_K);
@@ -81,8 +105,8 @@ model *MODEL1302260000()
   reaction_22: species_9 => species_8 + species_3; compartment_3*reaction_22_k1*species_9;
   reaction_23: $species_43 + species_3 => species_12; compartment_3*reaction_23_k1*species_43*species_3;
   reaction_24: species_12 => $species_43 + species_3; compartment_3*reaction_24_k1*species_12;
-  reaction_25: 2species_8 + species_10 => species_18; compartment_3*reaction_25_k1*species_8^2*species_10;
-  reaction_26: species_18 => 2species_8 + species_10; compartment_3*reaction_26_k1*species_18;
+  reaction_25: 2 species_8 + species_10 => species_18; compartment_3*reaction_25_k1*species_8^2*species_10;
+  reaction_26: species_18 => 2 species_8 + species_10; compartment_3*reaction_26_k1*species_18;
   reaction_27: $species_43 + species_10 => species_15; compartment_3*reaction_27_k1*species_43*species_10;
   reaction_28: species_15 => $species_43 + species_10; compartment_3*reaction_28_k1*species_15;
   reaction_29: species_12 + $species_43 => species_16; compartment_3*reaction_29_k1*species_12*species_43;
@@ -91,8 +115,8 @@ model *MODEL1302260000()
   reaction_32: species_17 => species_9 + species_8; compartment_3*reaction_32_k1*species_17;
   reaction_35: species_15 + $species_43 => species_19; compartment_3*reaction_35_k1*species_15*species_43;
   reaction_36: species_19 => species_15 + $species_43; compartment_3*reaction_36_k1*species_19;
-  reaction_6: species_16 => 4species_2 + species_3; reaction_6_k1*species_16;
-  reaction_7: species_19 => 4species_2 + species_10; reaction_7_k1*species_19;
+  reaction_6: species_16 => 4 species_2 + species_3; reaction_6_k1*species_16;
+  reaction_7: species_19 => 4 species_2 + species_10; reaction_7_k1*species_19;
   reaction_44: species_2 => ; compartment_1*reaction_44_k1*species_2;
   reaction_45: species_2 + species_25 => species_24; compartment_1*reaction_45_k1*species_2*species_25;
   reaction_46: species_24 => species_2 + species_25; compartment_1*reaction_46_k1*species_24;
@@ -110,27 +134,27 @@ model *MODEL1302260000()
   reaction_34: species_5 => species_2; compartment_1*function_6(species_1, reaction_34_C, species_5, reaction_34_K);
 
   // Species initializations:
-  species_7 = 5e-009;
+  species_7 = 5e-09;
   species_24 = 0;
-  species_25 = 1.66e-010;
+  species_25 = 1.66e-10;
   species_26 = 0;
-  species_1 = 3.56e-011;
-  species_5 = 1e-009;
-  species_2 = 1.3e-006;
-  species_4 = 1e-009;
-  species_6 = 1.16e-006;
-  species_43 = 5e-006;
-  species_3 = 4e-007;
+  species_1 = 3.56e-11;
+  species_5 = 1e-09;
+  species_2 = 1.3e-06;
+  species_4 = 1e-09;
+  species_6 = 1.16e-06;
+  species_43 = 5e-06;
+  species_3 = 4e-07;
   species_12 = 0;
-  species_8 = 2e-007;
+  species_8 = 2e-07;
   species_9 = 0;
   species_15 = 0;
   species_16 = 0;
   species_17 = 0;
   species_18 = 0;
   species_19 = 0;
-  species_10 = 3e-006;
-  species_11 = 1e-007;
+  species_10 = 3e-06;
+  species_11 = 1e-07;
 
   // Compartment initializations:
   compartment_1 = 1;
@@ -139,33 +163,33 @@ model *MODEL1302260000()
   // Variable initializations:
   reaction_1_a = 2;
   reaction_1_n = 1;
-  reaction_1_K = 3e-006;
-  reaction_2_a = 6e-012;
+  reaction_1_K = 3e-06;
+  reaction_2_a = 6e-12;
   reaction_2_n = 1;
-  reaction_2_K = 1e-006;
-  reaction_3_k1 = 8.37e-006;
-  reaction_4_a = 1e-009;
+  reaction_2_K = 1e-06;
+  reaction_3_k1 = 8.37e-06;
+  reaction_4_a = 1e-09;
   reaction_4_n = 1;
-  reaction_4_K = 5e-006;
-  reaction_8_a = 4e-011;
+  reaction_4_K = 5e-06;
+  reaction_8_a = 4e-11;
   reaction_8_n = 1;
-  reaction_8_K = 1e-006;
-  reaction_9_k1 = 1.597e-005;
+  reaction_8_K = 1e-06;
+  reaction_9_k1 = 1.597e-05;
   reaction_11_a = 0.0002315;
   reaction_11_n = 5;
-  reaction_11_K = 5e-009;
-  reaction_12_k1 = 6.418e-005;
-  reaction_13_v = 2.3469e-011;
-  reaction_14_v = 3e-011;
-  reaction_15_a = 3.2e-005;
+  reaction_11_K = 5e-09;
+  reaction_12_k1 = 6.418e-05;
+  reaction_13_v = 2.3469e-11;
+  reaction_14_v = 3e-11;
+  reaction_15_a = 3.2e-05;
   reaction_15_n = 1;
-  reaction_15_K = 2.5e-006;
+  reaction_15_K = 2.5e-06;
   reaction_17_basal = 0;
-  reaction_17_a = 5e-012;
+  reaction_17_a = 5e-12;
   reaction_17_n = 5;
-  reaction_17_K = 1.35e-007;
-  reaction_17_a1 = 5e-012;
-  reaction_17_K1 = 6e-007;
+  reaction_17_K = 1.35e-07;
+  reaction_17_a1 = 5e-12;
+  reaction_17_K1 = 6e-07;
   reaction_18_k1 = 0.00056;
   reaction_21_k1 = 1102000;
   reaction_22_k1 = 0.08;
@@ -188,22 +212,22 @@ model *MODEL1302260000()
   reaction_46_k1 = 22922;
   reaction_47_k1 = 108000;
   reaction_48_kloss = 13.112;
-  reaction_49_a = 2.312e-013;
+  reaction_49_a = 2.312e-13;
   reaction_49_n = 1;
-  reaction_49_K = 1e-006;
-  reaction_67_k1 = 1.203e-005;
-  reaction_73_K = 1.203e-005;
-  reaction_5_k1 = 8.37e-007;
-  reaction_10_k1 = 8.37e-005;
+  reaction_49_K = 1e-06;
+  reaction_67_k1 = 1.203e-05;
+  reaction_73_K = 1.203e-05;
+  reaction_5_k1 = 8.37e-07;
+  reaction_10_k1 = 8.37e-05;
   reaction_16_Km = 0.000125;
-  reaction_16_V = 1.034e-005;
-  reaction_19_Km = 1.78e-005;
-  reaction_19_V = 2.18e-005;
-  reaction_20_a = 2.1432e-015;
-  reaction_20_K = 1e-009;
-  reaction_33_k1 = 3.209e-005;
+  reaction_16_V = 1.034e-05;
+  reaction_19_Km = 1.78e-05;
+  reaction_19_V = 2.18e-05;
+  reaction_20_a = 2.1432e-15;
+  reaction_20_K = 1e-09;
+  reaction_33_k1 = 3.209e-05;
   reaction_34_C = 17777.7;
-  reaction_34_K = 2e-006;
+  reaction_34_K = 2e-06;
 
   // Other declarations:
   var parameter_1;
@@ -278,4 +302,133 @@ model *MODEL1302260000()
   reaction_20 is "HO1 exp";
   reaction_33 is "HO1 Deg";
   reaction_34 is "Heme oxygenation";
+
+  // SBO terms:
+  compartment_1.sboTerm = 290
+  compartment_3.sboTerm = 290
+  species_7.sboTerm = 252
+  species_24.sboTerm = 296
+  species_25.sboTerm = 252
+  species_26.sboTerm = 247
+  species_1.sboTerm = 252
+  species_5.sboTerm = 252
+  species_2.sboTerm = 327
+  species_4.sboTerm = 252
+  species_6.sboTerm = 252
+  species_43.sboTerm = 297
+  species_3.sboTerm = 252
+  species_12.sboTerm = 297
+  species_8.sboTerm = 252
+  species_9.sboTerm = 297
+  species_15.sboTerm = 297
+  species_16.sboTerm = 297
+  species_17.sboTerm = 297
+  species_18.sboTerm = 297
+  species_19.sboTerm = 297
+  species_10.sboTerm = 252
+  species_11.sboTerm = 247
+
+  // CV terms:
+  compartment_1 parthood "http://identifiers.org/go/GO:0036333"
+  compartment_3 hypernym "http://identifiers.org/go/GO:0005615"
+  species_7 identity "http://identifiers.org/uniprot/P81172"
+  species_24 part "http://identifiers.org/uniprot/P02792",
+                  "http://identifiers.org/kegg.compound/C00023",
+                  "http://identifiers.org/chebi/CHEBI:18248"
+  species_25 identity "http://identifiers.org/uniprot/P02792"
+  species_26 identity "http://identifiers.org/kegg.compound/C00023",
+                      "http://identifiers.org/chebi/CHEBI:18248"
+  species_1 identity "http://identifiers.org/uniprot/P09601"
+  species_5 identity "http://identifiers.org/kegg.compound/C00032",
+                     "http://identifiers.org/chebi/CHEBI:17627"
+  species_2 identity "http://identifiers.org/kegg.compound/C00023",
+                     "http://identifiers.org/chebi/CHEBI:18248"
+  species_4 identity "http://identifiers.org/uniprot/Q9NP59"
+  species_6 identity "http://identifiers.org/uniprot/P21399"
+  species_43 part "http://identifiers.org/uniprot/P02787",
+                  "http://identifiers.org/kegg.compound/C00023",
+                  "http://identifiers.org/chebi/CHEBI:18248"
+  species_3 identity "http://identifiers.org/uniprot/P02786"
+  species_12 part "http://identifiers.org/uniprot/P02787",
+                  "http://identifiers.org/uniprot/Q9UP52",
+                  "http://identifiers.org/kegg.compound/C00023",
+                  "http://identifiers.org/chebi/CHEBI:18248"
+  species_8 identity "http://identifiers.org/uniprot/Q30201"
+  species_9 part "http://identifiers.org/uniprot/P02786",
+                 "http://identifiers.org/uniprot/Q30201"
+  species_15 part "http://identifiers.org/uniprot/P02787",
+                  "http://identifiers.org/uniprot/Q9UP52",
+                  "http://identifiers.org/kegg.compound/C00023",
+                  "http://identifiers.org/chebi/CHEBI:18248"
+  species_16 part "http://identifiers.org/uniprot/P02787",
+                  "http://identifiers.org/uniprot/P02786",
+                  "http://identifiers.org/kegg.compound/C00023",
+                  "http://identifiers.org/chebi/CHEBI:18248"
+  species_17 part "http://identifiers.org/uniprot/P02786",
+                  "http://identifiers.org/uniprot/Q30201"
+  species_18 part "http://identifiers.org/uniprot/Q30201",
+                  "http://identifiers.org/uniprot/Q9UP52"
+  species_19 part "http://identifiers.org/uniprot/Q9UP52",
+                  "http://identifiers.org/uniprot/P02787",
+                  "http://identifiers.org/kegg.compound/C00023",
+                  "http://identifiers.org/chebi/CHEBI:18248"
+  species_10 identity "http://identifiers.org/uniprot/Q9UP52"
+  species_11 identity "http://identifiers.org/kegg.compound/C00032",
+                      "http://identifiers.org/chebi/CHEBI:17627"
+  reaction_1 identity "http://identifiers.org/biomodels.sbo/SBO:0000588"
+  reaction_2 identity "http://identifiers.org/biomodels.sbo/SBO:0000184"
+  reaction_3 identity "http://identifiers.org/biomodels.sbo/SBO:0000179"
+  reaction_4 identity "http://identifiers.org/biomodels.sbo/SBO:0000184"
+  reaction_8 identity "http://identifiers.org/biomodels.sbo/SBO:0000184"
+  reaction_9 identity "http://identifiers.org/biomodels.sbo/SBO:0000179"
+  reaction_11 identity "http://identifiers.org/biomodels.sbo/SBO:0000179"
+  reaction_12 identity "http://identifiers.org/biomodels.sbo/SBO:0000179"
+  reaction_13 identity "http://identifiers.org/biomodels.sbo/SBO:0000184"
+  reaction_14 identity "http://identifiers.org/biomodels.sbo/SBO:0000184"
+  reaction_15 identity "http://identifiers.org/biomodels.sbo/SBO:0000179"
+  reaction_17 identity "http://identifiers.org/biomodels.sbo/SBO:0000184"
+  reaction_18 identity "http://identifiers.org/biomodels.sbo/SBO:0000179"
+  reaction_21 identity "http://identifiers.org/biomodels.sbo/SBO:0000526"
+  reaction_22 identity "http://identifiers.org/biomodels.sbo/SBO:0000180"
+  reaction_23 identity "http://identifiers.org/biomodels.sbo/SBO:0000526"
+  reaction_24 identity "http://identifiers.org/biomodels.sbo/SBO:0000180"
+  reaction_25 identity "http://identifiers.org/biomodels.sbo/SBO:0000526"
+  reaction_26 identity "http://identifiers.org/biomodels.sbo/SBO:0000180"
+  reaction_27 identity "http://identifiers.org/biomodels.sbo/SBO:0000526"
+  reaction_28 identity "http://identifiers.org/biomodels.sbo/SBO:0000180"
+  reaction_29 identity "http://identifiers.org/biomodels.sbo/SBO:0000526"
+  reaction_30 identity "http://identifiers.org/biomodels.sbo/SBO:0000180"
+  reaction_31 identity "http://identifiers.org/biomodels.sbo/SBO:0000526"
+  reaction_32 identity "http://identifiers.org/biomodels.sbo/SBO:0000180"
+  reaction_35 identity "http://identifiers.org/biomodels.sbo/SBO:0000526"
+  reaction_36 identity "http://identifiers.org/biomodels.sbo/SBO:0000180"
+  reaction_6 identity "http://identifiers.org/biomodels.sbo/SBO:0000180"
+  reaction_6 identity "http://identifiers.org/biomodels.sbo/SBO:0000587"
+  reaction_7 identity "http://identifiers.org/biomodels.sbo/SBO:0000180"
+  reaction_7 identity "http://identifiers.org/biomodels.sbo/SBO:0000587"
+  reaction_44 identity "http://identifiers.org/biomodels.sbo/SBO:0000395"
+  reaction_45 identity "http://identifiers.org/biomodels.sbo/SBO:0000177"
+  reaction_46 identity "http://identifiers.org/biomodels.sbo/SBO:0000180"
+  reaction_47 identity "http://identifiers.org/biomodels.sbo/SBO:0000180"
+  reaction_48 identity "http://identifiers.org/biomodels.sbo/SBO:0000180"
+  reaction_49 identity "http://identifiers.org/biomodels.sbo/SBO:0000184"
+  reaction_67 identity "http://identifiers.org/biomodels.sbo/SBO:0000179"
+  reaction_73 identity "http://identifiers.org/biomodels.sbo/SBO:0000180"
+  reaction_5 identity "http://identifiers.org/biomodels.sbo/SBO:0000179"
+  reaction_10 identity "http://identifiers.org/biomodels.sbo/SBO:0000179"
+  reaction_16 identity "http://identifiers.org/biomodels.sbo/SBO:0000587"
+  reaction_19 identity "http://identifiers.org/biomodels.sbo/SBO:0000588"
+  reaction_20 identity "http://identifiers.org/biomodels.sbo/SBO:0000184"
+  reaction_33 identity "http://identifiers.org/biomodels.sbo/SBO:0000179"
+  reaction_34 identity "http://identifiers.org/subtiwiki/BSU0000201"
 end
+
+MODEL1302260000 is "Mitchell2013 - Liver Iron Metabolism"
+
+MODEL1302260000 model_entity_is "http://identifiers.org/biomodels.db/MODEL1302260000"
+MODEL1302260000 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000498"
+MODEL1302260000 description "http://identifiers.org/pubmed/24244122"
+MODEL1302260000 taxon "http://identifiers.org/taxonomy/9606"
+MODEL1302260000 parthood "http://identifiers.org/go/GO:0036333"
+MODEL1302260000 property "http://identifiers.org/mamo/MAMO_0000046"
+MODEL1302260000 property "http://identifiers.org/doid/DOID:2352"

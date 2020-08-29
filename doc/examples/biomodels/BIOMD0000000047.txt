@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Oxhamre_Bacteria_induced_Ca_oscillations()
 
   // Compartments and Species:
@@ -7,7 +7,7 @@ model *Oxhamre_Bacteria_induced_Ca_oscillations()
 
   // Assignment Rules:
   n := n0*(exp(-kbN*time) + kappa*(1 - exp(-kbN*time)));
-  p1 := p11 + (p12*n)/(K1 + n);
+  p1 := p11 + p12*n/(K1 + n);
   p2 := Ca_Cyt/(K2 + Ca_Cyt);
 
   // Rate Rules:
@@ -16,7 +16,7 @@ model *Oxhamre_Bacteria_induced_Ca_oscillations()
   // Reactions:
   Jch: CaER => Ca_Cyt; Jch_Fch_0*p1*p2*p3;
   Jleak: CaER => Ca_Cyt; Jleak_Fleak;
-  Jpump: Ca_Cyt => CaER; (Jpump_Fpump_0*Ca_Cyt)/(Jpump_Kpump + Ca_Cyt);
+  Jpump: Ca_Cyt => CaER; Jpump_Fpump_0*Ca_Cyt/(Jpump_Kpump + Ca_Cyt);
 
   // Species initializations:
   CaER = 0;
@@ -54,4 +54,27 @@ model *Oxhamre_Bacteria_induced_Ca_oscillations()
   // Display Names:
   substance is "micromole (default)";
   time_unit is "minute (default)";
+
+  // CV terms:
+  Cytosol hypernym "http://identifiers.org/go/GO:0005829"
+  Endoplasmic_Reticulum hypernym "http://identifiers.org/go/GO:0005790"
+  CaER hypernym "http://identifiers.org/chebi/CHEBI:29108"
+  Ca_Cyt hypernym "http://identifiers.org/chebi/CHEBI:29108"
+  Jch hypernym "http://identifiers.org/go/GO:0006816",
+               "http://identifiers.org/go/GO:0051482"
+  Jleak hypernym "http://identifiers.org/go/GO:0007204",
+                 "http://identifiers.org/go/GO:0006816"
+  Jpump hypernym "http://identifiers.org/go/GO:0051481",
+                 "http://identifiers.org/go/GO:0006816"
 end
+
+Oxhamre_Bacteria_induced_Ca_oscillations is "Oxhamre2005_Ca_oscillation"
+
+Oxhamre_Bacteria_induced_Ca_oscillations model_entity_is "http://identifiers.org/biomodels.db/MODEL6623415355"
+Oxhamre_Bacteria_induced_Ca_oscillations model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000047"
+Oxhamre_Bacteria_induced_Ca_oscillations description "http://identifiers.org/pubmed/15596518"
+Oxhamre_Bacteria_induced_Ca_oscillations origin "http://identifiers.org/pubmed/11874447"
+Oxhamre_Bacteria_induced_Ca_oscillations identity "http://identifiers.org/kegg.pathway/rno04020"
+Oxhamre_Bacteria_induced_Ca_oscillations taxon "http://identifiers.org/taxonomy/10114"
+Oxhamre_Bacteria_induced_Ca_oscillations hypernym "http://identifiers.org/go/GO:0048016",
+                                                  "http://identifiers.org/go/GO:0019722"

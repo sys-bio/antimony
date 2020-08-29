@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Model_1()
 
   // Compartments and Species:
@@ -8,7 +8,7 @@ model *Model_1()
   species EGF_EGFR in Cell;
 
   // Assignment Rules:
-  EGF := EGF_conc_step + piecewise(EGF_conc_impulse, time <= pulse_time, 0) + (EGF_conc_ramp*time)/ramp_time;
+  EGF := EGF_conc_step + piecewise(EGF_conc_impulse, time <= pulse_time, 0) + EGF_conc_ramp*time/ramp_time;
   pEGFR_total := (pEGFR + pEGFR_Akt)*pEGFR_scaleFactor;
   pAkt_total := (pAkt + pAkt_S6)*pAkt_scaleFactor;
   pS6_total := pS6*pS6_scaleFactor;
@@ -67,7 +67,7 @@ model *Model_1()
   reaction_1_k1 = 0.00673816;
   reaction_1_k2 = 0.040749;
   reaction_1_k2 has per_sec;
-  reaction_2_k1 = 1.5543e-005;
+  reaction_2_k1 = 1.5543e-05;
   reaction_2_k1 has per_conc_per_sec;
   reaction_2_k2 = 0.00517473;
   reaction_2_k2 has per_sec;
@@ -75,9 +75,9 @@ model *Model_1()
   reaction_3_k1 has per_sec;
   reaction_4_k1 = 0.0997194;
   reaction_4_k1 has per_sec;
-  reaction_5_k1 = 2.10189e-006;
+  reaction_5_k1 = 2.10189e-06;
   reaction_5_k1 has per_conc_per_sec;
-  reaction_5_k2 = 5.1794e-015;
+  reaction_5_k2 = 5.1794e-15;
   reaction_5_k2 has per_sec;
   reaction_6_k1 = 0.00121498;
   reaction_6_k1 has per_sec;
@@ -121,4 +121,83 @@ model *Model_1()
   reaction_9 is "EGFR_synthesis";
   reaction_10 is "EGFR_phosphorylation";
   reaction_11 is "EGFR_degradation";
+
+  // SBO terms:
+  Cell.sboTerm = 290
+  EGF.sboTerm = 252
+  EGFR.sboTerm = 297
+  pro_EGFR.sboTerm = 297
+  pEGFR.sboTerm = 297
+  pEGFR_Akt.sboTerm = 297
+  Akt.sboTerm = 252
+  pAkt.sboTerm = 252
+  S6.sboTerm = 252
+  pAkt_S6.sboTerm = 297
+  pS6.sboTerm = 252
+  EGF_EGFR.sboTerm = 297
+  reaction_1.sboTerm = 177
+  reaction_2.sboTerm = 177
+  reaction_3.sboTerm = 216
+  reaction_4.sboTerm = 179
+  reaction_5.sboTerm = 179
+  reaction_6.sboTerm = 179
+  reaction_7.sboTerm = 330
+  reaction_8.sboTerm = 330
+  reaction_9.sboTerm = 184
+  reaction_10.sboTerm = 179
+  reaction_11.sboTerm = 179
+
+  // CV terms:
+  Cell hypernym "http://identifiers.org/go/GO:0005623"
+  EGF hypernym "http://identifiers.org/interpro/IPR006209"
+  EGFR hypernym "http://identifiers.org/uniprot/Q9WTS1"
+  pro_EGFR hypernym "http://identifiers.org/uniprot/Q9WTS1"
+  pEGFR hypernym "http://identifiers.org/uniprot/Q9WTS1"
+  pEGFR_Akt part "http://identifiers.org/uniprot/Q9WTS1",
+                 "http://identifiers.org/uniprot/Q63484"
+  pEGFR_Akt version "http://identifiers.org/kegg.compound/C00562"
+  Akt hypernym "http://identifiers.org/uniprot/Q63484"
+  pAkt hypernym "http://identifiers.org/uniprot/Q63484"
+  pAkt hypernym "http://identifiers.org/kegg.compound/C00562"
+  S6 hypernym "http://identifiers.org/uniprot/P62755"
+  pAkt_S6 version "http://identifiers.org/uniprot/P62755"
+  pAkt_S6 version "http://identifiers.org/uniprot/Q63484",
+                  "http://identifiers.org/kegg.compound/C00562"
+  pS6 hypernym "http://identifiers.org/uniprot/P62755"
+  pS6 hypernym "http://identifiers.org/kegg.compound/C00562"
+  EGF_EGFR part "http://identifiers.org/uniprot/Q9WTS1"
+  EGF_EGFR version "http://identifiers.org/uniprot/P07522"
+  pEGFR_total hypernym "http://identifiers.org/kegg.compound/C00562"
+  pEGFR_total version "http://identifiers.org/uniprot/Q63484"
+  pAkt_total hypernym "http://identifiers.org/kegg.compound/C00562"
+  pAkt_total version "http://identifiers.org/uniprot/Q63484"
+  pS6_total hypernym "http://identifiers.org/kegg.compound/C00562"
+  pS6_total hypernym "http://identifiers.org/uniprot/P62755"
+  reaction_1 hypernym "http://identifiers.org/go/GO:0005515"
+  reaction_1 hypernym "http://identifiers.org/go/GO:0005154"
+  reaction_2 hypernym "http://identifiers.org/go/GO:0005515"
+  reaction_3 hypernym "http://identifiers.org/go/GO:0004672"
+  reaction_4 hypernym "http://identifiers.org/go/GO:0030163"
+  reaction_5 hypernym "http://identifiers.org/go/GO:0005515"
+  reaction_5 hypernym "http://identifiers.org/reactome/REACT_12442"
+  reaction_6 hypernym "http://identifiers.org/go/GO:0004672"
+  reaction_7 hypernym "http://identifiers.org/go/GO:0004721"
+  reaction_8 hypernym "http://identifiers.org/go/GO:0004721"
+  reaction_9 hypernym "http://identifiers.org/go/GO:0010467"
+  reaction_10 hypernym "http://identifiers.org/go/GO:0004672"
+  reaction_11 hypernym "http://identifiers.org/go/GO:0030163"
 end
+
+Model_1 is "Fujita2010_Akt_Signalling_EGF"
+
+Model_1 model_entity_is "http://identifiers.org/biomodels.db/MODEL1004060001"
+Model_1 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000262"
+Model_1 description "http://identifiers.org/pubmed/20664065"
+Model_1 version "http://identifiers.org/kegg.pathway/rno04012",
+                "http://identifiers.org/reactome/REACT_12464.1",
+                "http://identifiers.org/reactome/REACT_9417.3",
+                "http://identifiers.org/go/GO:0007173",
+                "http://identifiers.org/go/GO:0043491",
+                "http://identifiers.org/go/GO:0071364"
+Model_1 container "http://identifiers.org/bto/BTO:0001009"
+Model_1 taxon "http://identifiers.org/taxonomy/10116"

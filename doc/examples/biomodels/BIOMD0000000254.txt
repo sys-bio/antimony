@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Bier2000_GlycolyticOscillation()
 
   // Compartments and Species:
@@ -11,8 +11,8 @@ model *Bier2000_GlycolyticOscillation()
 
   // Rate Rules:
   G1' = V_in - k1*G1*T1;
-  T1' = 2*k1*T1*G1 - (kp*T1)/(km + T1) + epsilon*(T2 - T1);
-  T2' = 2*k1*G2*T2 - (kp*T2)/(km + T2) - epsilon*(T2 - T1);
+  T1' = (2*k1*T1*G1 - kp*T1/(km + T1)) + epsilon*(T2 - T1);
+  T2' = 2*k1*G2*T2 - kp*T2/(km + T2) - epsilon*(T2 - T1);
   G2' = V_in - k1*G2*T2;
 
   // Species initializations:
@@ -40,4 +40,30 @@ model *Bier2000_GlycolyticOscillation()
   T1 is "ATP_1";
   T2 is "ATP_2";
   G2 is "Glucose_2";
+
+  // SBO terms:
+  compartment_.sboTerm = 290
+  G1.sboTerm = 247
+  T1.sboTerm = 247
+  T2.sboTerm = 247
+  G2.sboTerm = 247
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/go/GO:0005623"
+  G1 hypernym "http://identifiers.org/chebi/CHEBI:17234",
+              "http://identifiers.org/kegg.compound/C00293"
+  T1 hypernym "http://identifiers.org/chebi/CHEBI:15422",
+              "http://identifiers.org/kegg.compound/C00002"
+  T2 hypernym "http://identifiers.org/chebi/CHEBI:15422",
+              "http://identifiers.org/kegg.compound/C00002"
+  G2 hypernym "http://identifiers.org/chebi/CHEBI:17234",
+              "http://identifiers.org/kegg.compound/C00293"
 end
+
+Bier2000_GlycolyticOscillation is "Bier2000_GlycolyticOscillation"
+
+Bier2000_GlycolyticOscillation model_entity_is "http://identifiers.org/biomodels.db/MODEL1007260000"
+Bier2000_GlycolyticOscillation model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000254"
+Bier2000_GlycolyticOscillation description "http://identifiers.org/pubmed/10692299"
+Bier2000_GlycolyticOscillation taxon "http://identifiers.org/taxonomy/4932"
+Bier2000_GlycolyticOscillation hypernym "http://identifiers.org/go/GO:0006096"

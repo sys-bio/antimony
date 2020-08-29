@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Pfeiffer2001_ATPProducingPathways_CooperationCompetition()
 
   // Compartments and Species:
@@ -7,8 +7,8 @@ model *Pfeiffer2001_ATPProducingPathways_CooperationCompetition()
 
   // Reactions:
   r1:  -> S; v;
-  r2: S -> 10N1; (N1*S)/(1 + S);
-  r3: S -> N2; (N2*20*S)/(1 + S);
+  r2: S -> 10 N1; N1*S/(1 + S);
+  r3: S -> N2; N2*20*S/(1 + S);
   r4: N1 -> ; d*N1;
   r5: N2 -> ; d*N2;
 
@@ -43,4 +43,30 @@ model *Pfeiffer2001_ATPProducingPathways_CooperationCompetition()
   r3 is "resource consumption and cell growth 2";
   r4 is "cell death 1";
   r5 is "cell death 2";
+
+  // SBO terms:
+  r1.sboTerm = 393
+  r2.sboTerm = 394
+  r3.sboTerm = 394
+  r4.sboTerm = 179
+  r5.sboTerm = 179
+
+  // CV terms:
+  S hypernym "http://identifiers.org/obo.pato/PATO:0001021"
+  N1 hypernym "http://identifiers.org/obo.go/GO:0005623"
+  N2 hypernym "http://identifiers.org/obo.go/GO:0005623"
+  r1 hypernym "http://identifiers.org/obo.go/GO:0006754"
+  r2 hypernym "http://identifiers.org/obo.go/GO:0016049"
+  r3 hypernym "http://identifiers.org/obo.go/GO:0016049"
+  r4 hypernym "http://identifiers.org/obo.go/GO:0008219"
+  r5 hypernym "http://identifiers.org/obo.go/GO:0008219"
 end
+
+Pfeiffer2001_ATPProducingPathways_CooperationCompetition is "Pfeiffer2001_ATP-ProducingPathways_CooperationCompetition"
+
+Pfeiffer2001_ATPProducingPathways_CooperationCompetition model_entity_is "http://identifiers.org/biomodels.db/MODEL1105120000"
+Pfeiffer2001_ATPProducingPathways_CooperationCompetition model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000337"
+Pfeiffer2001_ATPProducingPathways_CooperationCompetition description "http://identifiers.org/pubmed/11283355"
+Pfeiffer2001_ATPProducingPathways_CooperationCompetition hypernym "http://identifiers.org/obo.go/GO:0006754",
+                                                                  "http://identifiers.org/obo.go/GO:0071318"
+Pfeiffer2001_ATPProducingPathways_CooperationCompetition taxon "http://identifiers.org/taxonomy/131567"

@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *MODEL1412110000()
 
   // Compartments and Species:
@@ -7,8 +7,8 @@ model *MODEL1412110000()
 
   // Assignment Rules:
   Amyloid := (1 - 1/(kb*(exp(ka*time) - 1) + 1))*deltamt;
-  deltamt := sigmao*V*C*gamma;
-  gamma := (C_0 - C)/C;
+  deltamt := sigmao*V*C*gamma_;
+  gamma_ := (C_0 - C)/C;
 
   // Compartment initializations:
   Brain = 1;
@@ -22,7 +22,7 @@ model *MODEL1412110000()
   C_0 = 2;
 
   // Other declarations:
-  var deltamt, gamma;
+  var deltamt, gamma_;
   const Brain, kb, ka, sigmao, V, C, C_0;
 
   // Unit definitions:
@@ -33,5 +33,22 @@ model *MODEL1412110000()
   // Display Names:
   time_unit is "time";
   C is "C*";
+  gamma_ is "gamma";
   C_0 is "C";
+
+  // CV terms:
+  Brain identity "http://identifiers.org/bto/BTO:0000142"
+  Amyloid identity "http://identifiers.org/chebi/CHEBI:60425"
 end
+
+MODEL1412110000 is "Martins2013 - True and apparent inhibition of amyloid fribril formation"
+
+MODEL1412110000 model_entity_is "http://identifiers.org/biomodels.db/MODEL1412110000"
+MODEL1412110000 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000561"
+MODEL1412110000 description "http://identifiers.org/pubmed/23232498"
+MODEL1412110000 origin "http://identifiers.org/biomodels.db/BIOMD0000000531"
+MODEL1412110000 property "http://identifiers.org/doid/DOID:649",
+                         "http://identifiers.org/doid/DOID:14330",
+                         "http://identifiers.org/doid/DOID:10652"
+MODEL1412110000 hypernym "http://identifiers.org/go/GO:1990000"
+MODEL1412110000 taxon "http://identifiers.org/taxonomy/9606"

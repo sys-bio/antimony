@@ -1,16 +1,16 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Lai2007_O2_Transport_Metabolism()
 
   // Compartments and Species:
   compartment Capillary, Tissue;
-  species ATP in Tissue, PCr in Tissue, ADP in Tissue, Cr in Tissue, Pi_ in Tissue;
+  species ATP in Tissue, PCr in Tissue, ADP in Tissue, Cr in Tissue, Pi in Tissue;
   species CTcap in Capillary, CTtis in Tissue, $CFcap in Capillary, $CFtis in Tissue;
 
   // Assignment Rules:
   Qm := piecewise(QWm, time <= tE, QWm + dQMm*(1 - exp((tE - time)/tauQm)));
   PSm := PSR + (PSE - PSR)*(1 - exp((QRm - Qm)/Qc));
   Vmax := piecewise(VmaxM, exercise_level == 1, piecewise(VmaxH, exercise_level == 2, VmaxVH));
-  StO2m := (100*((Hct*CrbcHb*KHb*CFcap^nH)/(1 + KHb*CFcap^nH)*Capillary + (Wmc*CmcMb*KMb*CFtis)/(1 + KMb*CFtis)*Tissue))/(CrbcHb*Hct*Capillary + CmcMb*Wmc*Tissue);
+  StO2m := 100*((Hct*CrbcHb*KHb*CFcap^nH/(1 + KHb*CFcap^nH))*Capillary + (Wmc*CmcMb*KMb*CFtis/(1 + KMb*CFtis))*Tissue)/(CrbcHb*Hct*Capillary + CmcMb*Wmc*Tissue);
   RStO2m := StO2m/StO2mW - 1;
   Katpase := piecewise(KatpaseW, time <= tE, KatpaseE);
   KatpaseE := piecewise(KatpaseM, exercise_level == 1, piecewise(KatpaseH, exercise_level == 2, KatpaseVH));
@@ -18,16 +18,16 @@ model *Lai2007_O2_Transport_Metabolism()
   tauQm := piecewise(tauQmM, exercise_level == 1, piecewise(tauQmH, exercise_level == 2, tauQmVH));
   ATPase_flux_mM := ATPase/Tissue;
   CK_flux_mM := 1*(CreatineKinase/Tissue);
-  oxygen_phosph := OxidativePhosphorylation/Tissue*6;
+  oxygen_phosph := (OxidativePhosphorylation/Tissue)*6;
 
   // Rate Rules:
-  CFcap' = ((Qm*(CTart - CTcap) - PSm*(CFcap - CFtis))*(1/Capillary))/(1 + (4*Hct*CrbcHb*KHb*nH*CFcap^(nH - 1))/(1 + KHb*CFcap^nH)^2);
-  CFtis' = ((PSm*(CFcap - CFtis))/Tissue - Vmax*((CFtis/(Km + CFtis)*ADP)/(Kadp + ADP)))/(1 + (Wmc*CmcMb*KMb)/(1 + KMb*CFtis)^2);
+  CFcap' = (Qm*(CTart - CTcap) - PSm*(CFcap - CFtis))*(1/Capillary)/(1 + 4*Hct*CrbcHb*KHb*nH*CFcap^(nH - 1)/(1 + KHb*CFcap^nH)^2);
+  CFtis' = (PSm*(CFcap - CFtis)/Tissue - Vmax*((CFtis/(Km + CFtis))*ADP/(Kadp + ADP)))/(1 + Wmc*CmcMb*KMb/(1 + KMb*CFtis)^2);
 
   // Reactions:
   ATPase: ATP -> ADP; Tissue*Katpase*ATP;
-  CreatineKinase: ADP + PCr -> ATP + Cr; (Tissue*((VfCK*ADP*PCr)/(Kb*Kia) - (VrCK*Cr*ATP)/(Kiq*Kp)))/((Kia + ADP)/Kia + ATP/Kiq + PCr/Kib + (ADP*PCr)/(Kb*Kia) + (Cr*ATP)/(Kiq*Kp));
-  OxidativePhosphorylation: 6ADP + CTtis -> 6ATP; (Tissue*Vmax*(CFtis/(Km + CFtis))*ADP)/(Kadp + ADP);
+  CreatineKinase: ADP + PCr -> ATP + Cr; Tissue*(VfCK*ADP*PCr/(Kb*Kia) - VrCK*Cr*ATP/(Kiq*Kp))/((Kia + ADP)/Kia + ATP/Kiq + PCr/Kib + ADP*PCr/(Kb*Kia) + Cr*ATP/(Kiq*Kp));
+  OxidativePhosphorylation: 6 ADP + CTtis -> 6 ATP; Tissue*Vmax*(CFtis/(Km + CFtis))*ADP/(Kadp + ADP);
   ConvectionTransport:  -> CTcap; Qm*(CTart - CTcap);
   DiffusionTransport: CTcap -> CTtis; PSm*(CFcap - CFtis);
 
@@ -36,7 +36,7 @@ model *Lai2007_O2_Transport_Metabolism()
   PCr = 40.98942;
   ADP = 0.001142;
   Cr = 1.01056;
-  Pi_ = 0.5;
+  Pi = 0.5;
   CTcap = 5.281527;
   CTtis = 0.4084824;
   CFcap = 0.03969;
@@ -158,4 +158,67 @@ model *Lai2007_O2_Transport_Metabolism()
   // Display Names:
   time_min is "min";
   oxygen_phosph is "oxygen_phosphorilation_rate_mM";
+
+  // SBO terms:
+  Capillary.sboTerm = 290
+  Tissue.sboTerm = 290
+  ATP.sboTerm = 247
+  PCr.sboTerm = 247
+  ADP.sboTerm = 247
+  Cr.sboTerm = 247
+  Pi.sboTerm = 247
+  CTcap.sboTerm = 247
+  CTtis.sboTerm = 247
+  CFcap.sboTerm = 247
+  CFtis.sboTerm = 247
+  ATPase.sboTerm = 376
+  CreatineKinase.sboTerm = 216
+  OxidativePhosphorylation.sboTerm = 216
+  ConvectionTransport.sboTerm = 185
+  DiffusionTransport.sboTerm = 185
+
+  // CV terms:
+  Capillary hypernym "http://identifiers.org/fma/FMA:63194"
+  Tissue hypernym "http://identifiers.org/fma/FMA:9641"
+  ATP identity "http://identifiers.org/chebi/CHEBI:15422",
+               "http://identifiers.org/kegg.compound/C00002"
+  PCr identity "http://identifiers.org/chebi/CHEBI:17287",
+               "http://identifiers.org/kegg.compound/C02305"
+  ADP identity "http://identifiers.org/chebi/CHEBI:16761",
+               "http://identifiers.org/kegg.compound/C00008"
+  Cr identity "http://identifiers.org/chebi/CHEBI:16919",
+              "http://identifiers.org/kegg.compound/C00300"
+  Pi hypernym "http://identifiers.org/chebi/CHEBI:18367",
+              "http://identifiers.org/kegg.compound/C00009"
+  CTcap version "http://identifiers.org/chebi/CHEBI:7861",
+                "http://identifiers.org/chebi/CHEBI:15379",
+                "http://identifiers.org/kegg.compound/C05781",
+                "http://identifiers.org/kegg.compound/C00007",
+                "http://identifiers.org/go/GO:0005833"
+  CTtis version "http://identifiers.org/chebi/CHEBI:7044",
+                "http://identifiers.org/chebi/CHEBI:15379",
+                "http://identifiers.org/kegg.compound/C05782",
+                "http://identifiers.org/kegg.compound/C00007"
+  CFcap hypernym "http://identifiers.org/chebi/CHEBI:15379",
+                 "http://identifiers.org/kegg.compound/C00007"
+  CFtis hypernym "http://identifiers.org/chebi/CHEBI:15379",
+                 "http://identifiers.org/kegg.compound/C00007"
+  ATPase hypernym "http://identifiers.org/ec-code/3.6.1.3",
+                  "http://identifiers.org/go/GO:0016887"
+  CreatineKinase hypernym "http://identifiers.org/ec-code/2.7.3.2",
+                          "http://identifiers.org/kegg.reaction/R01881",
+                          "http://identifiers.org/go/GO:0004111"
+  OxidativePhosphorylation hypernym "http://identifiers.org/go/GO:0006119"
 end
+
+Lai2007_O2_Transport_Metabolism is "Lai2007_O2_Transport_Metabolism"
+
+Lai2007_O2_Transport_Metabolism model_entity_is "http://identifiers.org/biomodels.db/MODEL1004170000"
+Lai2007_O2_Transport_Metabolism model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000248"
+Lai2007_O2_Transport_Metabolism description "http://identifiers.org/pubmed/17380394"
+Lai2007_O2_Transport_Metabolism origin "http://identifiers.org/pubmed/16636861",
+                                       "http://identifiers.org/pubmed/10898733"
+Lai2007_O2_Transport_Metabolism hypernym "http://identifiers.org/go/GO:0015671",
+                                         "http://identifiers.org/go/GO:0072592",
+                                         "http://identifiers.org/go/GO:0071453"
+Lai2007_O2_Transport_Metabolism taxon "http://identifiers.org/taxonomy/9606"

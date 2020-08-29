@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Vilar2006_TGFbeta()
 
   // Compartments and Species:
@@ -37,7 +37,7 @@ model *Vilar2006_TGFbeta()
   Endosome = 1;
 
   // Variable initializations:
-  ligand = 3e-005;
+  ligand = 3e-05;
   ka = 1;
   kcd = 0.0277777778;
   klid = 0.25;
@@ -78,4 +78,42 @@ model *Vilar2006_TGFbeta()
   v11 is "RII constitutive degradation";
   v12 is "RII internalization";
   v13 is "RII recycling";
+
+  // CV terms:
+  PM identity "http://identifiers.org/obo.go/GO:0005886"
+  Endosome identity "http://identifiers.org/obo.go/GO:0005768"
+  RI hypernym "http://identifiers.org/uniprot/P36897"
+  RII hypernym "http://identifiers.org/uniprot/P37173"
+  lRIRII part "http://identifiers.org/uniprot/P01137",
+              "http://identifiers.org/uniprot/P36897",
+              "http://identifiers.org/uniprot/P37173"
+  lRIRII_endo part "http://identifiers.org/uniprot/P01137",
+                   "http://identifiers.org/uniprot/P36897",
+                   "http://identifiers.org/uniprot/P37173"
+  RI_endo hypernym "http://identifiers.org/uniprot/P36897"
+  RII_endo hypernym "http://identifiers.org/uniprot/P37173"
+  v1 identity "http://identifiers.org/obo.go/GO:0050431",
+              "http://identifiers.org/obo.go/GO:0007181"
+  v2 hypernym "http://identifiers.org/obo.go/GO:0030512"
+  v3 hypernym "http://identifiers.org/obo.go/GO:0030512"
+  v4 hypernym "http://identifiers.org/obo.go/GO:0030511"
+  v5 hypernym "http://identifiers.org/obo.go/GO:0006412"
+  v6 hypernym "http://identifiers.org/obo.go/GO:0032801"
+  v7 hypernym "http://identifiers.org/obo.go/GO:0031623"
+  v8 hypernym "http://identifiers.org/obo.go/GO:0001881"
+  v9 hypernym "http://identifiers.org/obo.go/GO:0001881"
+  v10 hypernym "http://identifiers.org/obo.go/GO:0006412"
+  v11 hypernym "http://identifiers.org/obo.go/GO:0032801"
+  v12 hypernym "http://identifiers.org/obo.go/GO:0031623"
+  v13 hypernym "http://identifiers.org/obo.go/GO:0001881"
 end
+
+Vilar2006_TGFbeta is "Vilar2006_TGFbeta"
+
+Vilar2006_TGFbeta model_entity_is "http://identifiers.org/biomodels.db/MODEL4023382414"
+Vilar2006_TGFbeta model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000101"
+Vilar2006_TGFbeta description "http://identifiers.org/pubmed/16446785"
+Vilar2006_TGFbeta taxon "http://identifiers.org/taxonomy/131567"
+Vilar2006_TGFbeta part "http://identifiers.org/reactome/REACT_6844.3"
+Vilar2006_TGFbeta hypernym "http://identifiers.org/obo.go/GO:0007179"
+Vilar2006_TGFbeta part "http://identifiers.org/kegg.pathway/hsa04350"

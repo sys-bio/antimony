@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Sneyd2002_dynamic_model_of_IP3_Receptor()
 
   // Compartments and Species:
@@ -8,13 +8,13 @@ model *Sneyd2002_dynamic_model_of_IP3_Receptor()
 
   // Assignment Rules:
   open_probability := (0.1*O + 0.9*A)^4;
-  Phi1 := ((k1*L1 + l2)*c)/(L1 + c*(1 + L1/L3));
+  Phi1 := (k1*L1 + l2)*c/(L1 + c*(1 + L1/L3));
   Phi2 := (k2*L3 + l4*c)/(L3 + c*(1 + L3/L1));
   Phi_minus2 := (kminus2 + lminus4*c)/(1 + c/L5);
-  Phi3 := (k3*L5)/(L5 + c);
-  Phi4 := ((k4*L5 + l6)*c)/(L5 + c);
-  Phi_minus4 := (L1*(kminus4 + lminus6))/(L1 + c);
-  Phi5 := ((k1*L1 + l2)*c)/(L1 + c);
+  Phi3 := k3*L5/(L5 + c);
+  Phi4 := (k4*L5 + l6)*c/(L5 + c);
+  Phi_minus4 := L1*(kminus4 + lminus6)/(L1 + c);
+  Phi5 := (k1*L1 + l2)*c/(L1 + c);
 
   // Reactions:
   v1: R -> O; compartment_*(Phi2*v1_IP3*R - Phi_minus2*O);
@@ -82,4 +82,29 @@ model *Sneyd2002_dynamic_model_of_IP3_Receptor()
   v3 is "Open-Shut state transition";
   v4 is "Open-Activated state transition";
   v5 is "Activated-Inactivated state 2 transition";
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/go/GO:0005829"
+  R hypernym "http://identifiers.org/interpro/IPR000493"
+  O hypernym "http://identifiers.org/interpro/IPR000493"
+  I1 hypernym "http://identifiers.org/interpro/IPR000493"
+  S hypernym "http://identifiers.org/interpro/IPR000493"
+  A hypernym "http://identifiers.org/interpro/IPR000493"
+  I2 hypernym "http://identifiers.org/interpro/IPR000493"
+  v1 hypernym "http://identifiers.org/go/GO:0031587",
+              "http://identifiers.org/go/GO:0005220"
+  v2 hypernym "http://identifiers.org/go/GO:0031586"
+  v3 hypernym "http://identifiers.org/go/GO:0031586"
+  v4 hypernym "http://identifiers.org/go/GO:0031587"
+  v5 hypernym "http://identifiers.org/go/GO:0031586"
 end
+
+Sneyd2002_dynamic_model_of_IP3_Receptor is "Sneyd2002_IP3_Receptor"
+
+Sneyd2002_dynamic_model_of_IP3_Receptor model_entity_is "http://identifiers.org/biomodels.db/MODEL9098147664"
+Sneyd2002_dynamic_model_of_IP3_Receptor model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000057"
+Sneyd2002_dynamic_model_of_IP3_Receptor description "http://identifiers.org/pubmed/11842185"
+Sneyd2002_dynamic_model_of_IP3_Receptor taxon "http://identifiers.org/taxonomy/10117"
+Sneyd2002_dynamic_model_of_IP3_Receptor identity "http://identifiers.org/kegg.pathway/map04020"
+Sneyd2002_dynamic_model_of_IP3_Receptor hypernym "http://identifiers.org/go/GO:0048016",
+                                                 "http://identifiers.org/go/GO:0019722"

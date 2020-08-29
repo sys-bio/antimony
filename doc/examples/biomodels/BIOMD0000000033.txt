@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Brown2004_NGF_EGF_signaling()
 
   // Compartments and Species:
@@ -18,28 +18,28 @@ model *Brown2004_NGF_EGF_signaling()
   EGFUnbindingReaction: boundEGFReceptor => EGF + freeEGFReceptor; cell*kruEGF*boundEGFReceptor;
   NGFBindingReaction: NGF + freeNGFReceptor => boundNGFReceptor; krbNGF*NGF*freeNGFReceptor*cell;
   NGFUnbindingReaction: boundNGFReceptor => NGF + freeNGFReceptor; kruNGF*boundNGFReceptor*cell;
-  SosActivationByEGFReaction: SosInactive -> SosActive; cell*((kEGF*boundEGFReceptor*SosInactive)/(SosInactive + KmEGF));
-  SosActivationByNGFReaction: SosInactive -> SosActive; cell*((kNGF*boundNGFReceptor*SosInactive)/(SosInactive + KmNGF));
-  SosDeactivationReaction: SosActive -> SosInactive; cell*((kdSos*P90RskActive*SosActive)/(SosActive + KmdSos));
-  RasActivationReaction: RasInactive -> RasActive; cell*((kSos*SosActive*RasInactive)/(RasInactive + KmSos));
-  RasDeactivationReaction: RasActive -> RasInactive; cell*((kRasGap*RasGapActive*RasActive)/(RasActive + KmRasGap));
-  Raf1ByRasActivationReaction: Raf1Inactive -> Raf1Active; cell*((kRasToRaf1*RasActive*Raf1Inactive)/(Raf1Inactive + KmRasToRaf1));
-  MekbyRaf1ActivationReaction: MekInactive -> MekActive; cell*((kpRaf1*Raf1Active*MekInactive)/(MekInactive + KmpRaf1));
-  MekbyBRafActivationReaction: MekInactive -> MekActive; cell*((kpBRaf*BRafActive*MekInactive)/(MekInactive + KmpBRaf));
-  ErkActivationReaction: ErkInactive -> ErkActive; cell*((kpMekCytoplasmic*MekActive*ErkInactive)/(ErkInactive + KmpMekCytoplasmic));
-  MekDeactivationReaction: MekActive -> MekInactive; cell*((kdMek*PP2AActive*MekActive)/(MekActive + KmdMek));
-  ErkDeactivationReaction: ErkActive -> ErkInactive; cell*((kdErk*PP2AActive*ErkActive)/(ErkActive + KmdErk));
-  Raf1byPPtaseDeactivationReaction: Raf1Active -> Raf1Inactive; cell*((kdRaf1*Raf1PPtase*Raf1Active)/(Raf1Active + KmdRaf1));
-  P90RskActivationReaction: P90RskInactive -> P90RskActive; cell*((kpP90Rsk*ErkActive*P90RskInactive)/(P90RskInactive + KmpP90Rsk));
-  PI3KbyEGFRActivationReaction: PI3KInactive -> PI3KActive; cell*((kPI3K*boundEGFReceptor*PI3KInactive)/(PI3KInactive + KmPI3K));
-  PI3KbyRasActivationReaction: PI3KInactive -> PI3KActive; cell*((kPI3KRas*RasActive*PI3KInactive)/(PI3KInactive + KmPI3KRas));
-  AktActivationReaction: AktInactive -> AktActive; cell*((kAkt*PI3KActive*AktInactive)/(AktInactive + KmAkt));
-  Raf1ByAktDeactivationReaction: Raf1Active -> Raf1Inactive; cell*((kdRaf1ByAkt*AktActive*Raf1Active)/(Raf1Active + KmRaf1ByAkt));
-  C3GActivationReaction: C3GInactive -> C3GActive; cell*((kC3GNGF*boundNGFReceptor*C3GInactive)/(C3GInactive + KmC3GNGF));
-  Rap1ActivationReaction: Rap1Inactive -> Rap1Active; cell*((kC3G*C3GActive*Rap1Inactive)/(Rap1Inactive + KmC3G));
-  Rap1DeactivationReaction: Rap1Active -> Rap1Inactive; cell*((kRapGap*RapGapActive*Rap1Active)/(Rap1Active + KmRapGap));
-  BRafByRap1ActivationReaction: BRafInactive -> BRafActive; cell*((kRap1ToBRaf*Rap1Active*BRafInactive)/(BRafInactive + KmRap1ToBRaf));
-  BRafbyPPtaseDeactivationReaction: BRafActive -> BRafInactive; cell*((kdBRaf*Raf1PPtase*BRafActive)/(BRafActive + KmdBRaf));
+  SosActivationByEGFReaction: SosInactive -> SosActive; cell*(kEGF*boundEGFReceptor*SosInactive/(SosInactive + KmEGF));
+  SosActivationByNGFReaction: SosInactive -> SosActive; cell*(kNGF*boundNGFReceptor*SosInactive/(SosInactive + KmNGF));
+  SosDeactivationReaction: SosActive -> SosInactive; cell*(kdSos*P90RskActive*SosActive/(SosActive + KmdSos));
+  RasActivationReaction: RasInactive -> RasActive; cell*(kSos*SosActive*RasInactive/(RasInactive + KmSos));
+  RasDeactivationReaction: RasActive -> RasInactive; cell*(kRasGap*RasGapActive*RasActive/(RasActive + KmRasGap));
+  Raf1ByRasActivationReaction: Raf1Inactive -> Raf1Active; cell*(kRasToRaf1*RasActive*Raf1Inactive/(Raf1Inactive + KmRasToRaf1));
+  MekbyRaf1ActivationReaction: MekInactive -> MekActive; cell*(kpRaf1*Raf1Active*MekInactive/(MekInactive + KmpRaf1));
+  MekbyBRafActivationReaction: MekInactive -> MekActive; cell*(kpBRaf*BRafActive*MekInactive/(MekInactive + KmpBRaf));
+  ErkActivationReaction: ErkInactive -> ErkActive; cell*(kpMekCytoplasmic*MekActive*ErkInactive/(ErkInactive + KmpMekCytoplasmic));
+  MekDeactivationReaction: MekActive -> MekInactive; cell*(kdMek*PP2AActive*MekActive/(MekActive + KmdMek));
+  ErkDeactivationReaction: ErkActive -> ErkInactive; cell*(kdErk*PP2AActive*ErkActive/(ErkActive + KmdErk));
+  Raf1byPPtaseDeactivationReaction: Raf1Active -> Raf1Inactive; cell*(kdRaf1*Raf1PPtase*Raf1Active/(Raf1Active + KmdRaf1));
+  P90RskActivationReaction: P90RskInactive -> P90RskActive; cell*(kpP90Rsk*ErkActive*P90RskInactive/(P90RskInactive + KmpP90Rsk));
+  PI3KbyEGFRActivationReaction: PI3KInactive -> PI3KActive; cell*(kPI3K*boundEGFReceptor*PI3KInactive/(PI3KInactive + KmPI3K));
+  PI3KbyRasActivationReaction: PI3KInactive -> PI3KActive; cell*(kPI3KRas*RasActive*PI3KInactive/(PI3KInactive + KmPI3KRas));
+  AktActivationReaction: AktInactive -> AktActive; cell*(kAkt*PI3KActive*AktInactive/(AktInactive + KmAkt));
+  Raf1ByAktDeactivationReaction: Raf1Active -> Raf1Inactive; cell*(kdRaf1ByAkt*AktActive*Raf1Active/(Raf1Active + KmRaf1ByAkt));
+  C3GActivationReaction: C3GInactive -> C3GActive; cell*(kC3GNGF*boundNGFReceptor*C3GInactive/(C3GInactive + KmC3GNGF));
+  Rap1ActivationReaction: Rap1Inactive -> Rap1Active; cell*(kC3G*C3GActive*Rap1Inactive/(Rap1Inactive + KmC3G));
+  Rap1DeactivationReaction: Rap1Active -> Rap1Inactive; cell*(kRapGap*RapGapActive*Rap1Active/(Rap1Active + KmRapGap));
+  BRafByRap1ActivationReaction: BRafInactive -> BRafActive; cell*(kRap1ToBRaf*Rap1Active*BRafInactive/(BRafInactive + KmRap1ToBRaf));
+  BRafbyPPtaseDeactivationReaction: BRafActive -> BRafInactive; cell*(kdBRaf*Raf1PPtase*BRafActive/(BRafActive + KmdBRaf));
 
   // Species initializations:
   EGF = 10002000;
@@ -79,9 +79,9 @@ model *Brown2004_NGF_EGF_signaling()
   cell = 1;
 
   // Variable initializations:
-  krbEGF = 2.18503e-005;
+  krbEGF = 2.18503e-05;
   kruEGF = 0.0121008;
-  krbNGF = 1.38209e-007;
+  krbNGF = 1.38209e-07;
   kruNGF = 0.00723811;
   kEGF = 694.731;
   KmEGF = 6086070;
@@ -170,4 +170,109 @@ model *Brown2004_NGF_EGF_signaling()
   Rap1DeactivationReaction is "Rap1 deactivation";
   BRafByRap1ActivationReaction is "BRaf activation by Rap1";
   BRafbyPPtaseDeactivationReaction is "BRaf deactivation by PPase";
+
+  // CV terms:
+  cell identity "http://identifiers.org/go/GO:0005623"
+  EGF identity "http://identifiers.org/uniprot/P07522"
+  NGF identity "http://identifiers.org/uniprot/P25427"
+  freeEGFReceptor identity "http://identifiers.org/uniprot/Q9QX70"
+  boundEGFReceptor part "http://identifiers.org/uniprot/Q9QX70",
+                        "http://identifiers.org/uniprot/P07522"
+  freeNGFReceptor identity "http://identifiers.org/uniprot/P35739"
+  boundNGFReceptor part "http://identifiers.org/uniprot/P35739",
+                        "http://identifiers.org/uniprot/P25427"
+  SosInactive hypernym "http://identifiers.org/ensembl/ENSRNOP00000009359",
+                       "http://identifiers.org/uniprot/Q9Z1I1"
+  SosActive hypernym "http://identifiers.org/ensembl/ENSRNOP00000009359",
+                     "http://identifiers.org/uniprot/Q9Z1I1"
+  P90RskInactive version "http://identifiers.org/uniprot/Q9Z1I2",
+                         "http://identifiers.org/uniprot/Q63531"
+  P90RskActive version "http://identifiers.org/uniprot/Q9Z1I2",
+                       "http://identifiers.org/uniprot/Q63531"
+  RasInactive hypernym "http://identifiers.org/interpro/IPR003577"
+  RasActive hypernym "http://identifiers.org/interpro/IPR003577"
+  RasGapActive identity "http://identifiers.org/uniprot/P50904"
+  Raf1Inactive hypernym "http://identifiers.org/uniprot/P11345"
+  Raf1Active hypernym "http://identifiers.org/uniprot/P11345"
+  BRafInactive hypernym "http://identifiers.org/uniprot/Q99MC6"
+  BRafActive hypernym "http://identifiers.org/uniprot/Q99MC6"
+  MekInactive hypernym "http://identifiers.org/uniprot/Q01986",
+                       "http://identifiers.org/uniprot/P36506"
+  MekActive hypernym "http://identifiers.org/uniprot/Q01986",
+                     "http://identifiers.org/uniprot/P36506"
+  ErkInactive hypernym "http://identifiers.org/uniprot/P21708",
+                       "http://identifiers.org/uniprot/P63086"
+  ErkActive hypernym "http://identifiers.org/uniprot/P21708",
+                     "http://identifiers.org/uniprot/P63086"
+  PI3KInactive part "http://identifiers.org/interpro/IPR015433"
+  PI3KInactive hypernym "http://identifiers.org/go/GO:0005942"
+  PI3KActive part "http://identifiers.org/interpro/IPR015433"
+  PI3KActive hypernym "http://identifiers.org/go/GO:0005942"
+  AktInactive version "http://identifiers.org/uniprot/P47196",
+                      "http://identifiers.org/uniprot/P47197",
+                      "http://identifiers.org/uniprot/Q63484"
+  AktActive version "http://identifiers.org/uniprot/P47196",
+                    "http://identifiers.org/uniprot/P47197",
+                    "http://identifiers.org/uniprot/Q63484"
+  C3GInactive hypernym "http://identifiers.org/uniprot/Q9QYV3"
+  C3GActive hypernym "http://identifiers.org/uniprot/Q9QYV3"
+  Rap1Inactive version "http://identifiers.org/uniprot/P10113",
+                       "http://identifiers.org/uniprot/Q62636"
+  Rap1Active version "http://identifiers.org/uniprot/P10113",
+                     "http://identifiers.org/uniprot/Q62636"
+  RapGapActive identity "http://identifiers.org/uniprot/P47736"
+  PP2AActive identity "http://identifiers.org/go/GO:0000159"
+  EGFBindingReaction identity "http://identifiers.org/go/GO:0048408"
+  EGFBindingReaction hypernym "http://identifiers.org/go/GO:0045741"
+  EGFUnbindingReaction hypernym "http://identifiers.org/go/GO:0007175"
+  NGFBindingReaction hypernym "http://identifiers.org/go/GO:0051396"
+  NGFBindingReaction identity "http://identifiers.org/go/GO:0048406"
+  NGFUnbindingReaction hypernym "http://identifiers.org/go/GO:0051395"
+  SosActivationByEGFReaction hypernym "http://identifiers.org/ec-code/2.7.1.37",
+                                      "http://identifiers.org/go/GO:0004716"
+  SosActivationByNGFReaction hypernym "http://identifiers.org/ec-code/2.7.1.37",
+                                      "http://identifiers.org/go/GO:0004716"
+  SosDeactivationReaction hypernym "http://identifiers.org/ec-code/2.7.1.37"
+  RasActivationReaction identity "http://identifiers.org/go/GO:0046579"
+  RasDeactivationReaction identity "http://identifiers.org/go/GO:0046580"
+  Raf1ByRasActivationReaction hypernym "http://identifiers.org/ec-code/2.7.1.37",
+                                       "http://identifiers.org/go/GO:0008349",
+                                       "http://identifiers.org/go/GO:0000185"
+  MekbyRaf1ActivationReaction hypernym "http://identifiers.org/ec-code/2.7.1.37",
+                                       "http://identifiers.org/go/GO:0004709",
+                                       "http://identifiers.org/go/GO:0000186"
+  MekbyBRafActivationReaction hypernym "http://identifiers.org/ec-code/2.7.1.37",
+                                       "http://identifiers.org/go/GO:0004709",
+                                       "http://identifiers.org/go/GO:0000186"
+  ErkActivationReaction hypernym "http://identifiers.org/ec-code/2.7.1.37",
+                                 "http://identifiers.org/go/GO:0000187",
+                                 "http://identifiers.org/go/GO:0004708"
+  MekDeactivationReaction hypernym "http://identifiers.org/ec-code/3.1.3.16"
+  ErkDeactivationReaction hypernym "http://identifiers.org/ec-code/3.1.3.16",
+                                   "http://identifiers.org/go/GO:0000188"
+  Raf1byPPtaseDeactivationReaction hypernym "http://identifiers.org/ec-code/3.1.3.16"
+  P90RskActivationReaction hypernym "http://identifiers.org/ec-code/2.7.1.37",
+                                    "http://identifiers.org/go/GO:0004707"
+  PI3KbyEGFRActivationReaction hypernym "http://identifiers.org/ec-code/2.7.1.37"
+  PI3KbyRasActivationReaction hypernym "http://identifiers.org/ec-code/2.7.1.37",
+                                       "http://identifiers.org/go/GO:0008349"
+  AktActivationReaction hypernym "http://identifiers.org/go/GO:0045860"
+  Raf1ByAktDeactivationReaction hypernym "http://identifiers.org/ec-code/2.7.1.37"
+  C3GActivationReaction hypernym "http://identifiers.org/ec-code/2.7.1.37",
+                                 "http://identifiers.org/go/GO:0004716"
+  Rap1ActivationReaction identity "http://identifiers.org/go/GO:0046582"
+  BRafByRap1ActivationReaction hypernym "http://identifiers.org/ec-code/2.7.1.37",
+                                        "http://identifiers.org/go/GO:0000185"
+  BRafbyPPtaseDeactivationReaction hypernym "http://identifiers.org/ec-code/3.1.3.16"
 end
+
+Brown2004_NGF_EGF_signaling is "Brown2004 - NGF and EGF signaling"
+
+Brown2004_NGF_EGF_signaling model_entity_is "http://identifiers.org/biomodels.db/MODEL6619514794"
+Brown2004_NGF_EGF_signaling model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000033"
+Brown2004_NGF_EGF_signaling description "http://identifiers.org/pubmed/16204838"
+Brown2004_NGF_EGF_signaling hypernym "http://identifiers.org/go/GO:0070371"
+Brown2004_NGF_EGF_signaling taxon "http://identifiers.org/taxonomy/131567"
+Brown2004_NGF_EGF_signaling property "http://identifiers.org/mamo/MAMO_0000046"
+Brown2004_NGF_EGF_signaling part "http://identifiers.org/go/GO:0048011",
+                                 "http://identifiers.org/go/GO:0007173"

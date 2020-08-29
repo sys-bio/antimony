@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Bray1995_chemotaxis_receptorlinkedcomplex()
 
   // Compartments and Species:
@@ -48,14 +48,14 @@ model *Bray1995_chemotaxis_receptorlinkedcomplex()
   phosphotransfer_r12: Y + TTWWAAp => Yp + TTWWAA; cell*phosphotransfer_r12_k1*Y*TTWWAAp;
 
   // Species initializations:
-  AA = 2.5e-006;
+  AA = 2.5e-06;
   AAp = 0;
-  W = 5e-006;
+  W = 5e-06;
   WAA = 0;
   WAAp = 0;
   WWAA = 0;
   WWAAp = 0;
-  TT = 2.5e-006;
+  TT = 2.5e-06;
   TTW = 0;
   TTWW = 0;
   TTWAA = 0;
@@ -64,12 +64,12 @@ model *Bray1995_chemotaxis_receptorlinkedcomplex()
   TTAAp = 0;
   TTWWAA = 0;
   TTWWAAp = 0;
-  Y = 1e-005;
+  Y = 1e-05;
   Yp = 0;
-  Z = 2e-005;
-  B = 2e-006;
+  Z = 2e-05;
+  B = 2e-06;
   Bp = 0;
-  SetYp = 1.63e-006;
+  SetYp = 1.63e-06;
 
   // Compartment initializations:
   cell = 1.41;
@@ -109,7 +109,7 @@ model *Bray1995_chemotaxis_receptorlinkedcomplex()
   complex_r8_k1 has persec;
   complex_r8_k2 = 1000000;
   complex_r8_k2 has perMpersec;
-  complex_r9_k1 = 7.87e-006;
+  complex_r9_k1 = 7.87e-06;
   complex_r9_k1 has persec;
   complex_r9_k2 = 1000000;
   complex_r9_k2 has perMpersec;
@@ -184,4 +184,101 @@ model *Bray1995_chemotaxis_receptorlinkedcomplex()
   // Display Names:
   volume is "femtolitre";
   SetYp is "setYp";
+
+  // CV terms:
+  cell hypernym "http://identifiers.org/go/GO:0005623"
+  AA part "http://identifiers.org/uniprot/P07363"
+  AAp part "http://identifiers.org/uniprot/P07363"
+  W hypernym "http://identifiers.org/uniprot/P0A964"
+  WAA part "http://identifiers.org/uniprot/P07363",
+           "http://identifiers.org/uniprot/P0A964"
+  WAAp part "http://identifiers.org/uniprot/P07363",
+            "http://identifiers.org/uniprot/P0A964"
+  WWAA part "http://identifiers.org/uniprot/P0A964",
+            "http://identifiers.org/uniprot/P07363"
+  WWAAp part "http://identifiers.org/uniprot/P0A964",
+             "http://identifiers.org/uniprot/P07363"
+  TT part "http://identifiers.org/uniprot/P07017"
+  TTW part "http://identifiers.org/uniprot/P0A964",
+           "http://identifiers.org/uniprot/P07017"
+  TTWW part "http://identifiers.org/uniprot/P0A964",
+            "http://identifiers.org/uniprot/P07017"
+  TTWAA part "http://identifiers.org/uniprot/P0A964",
+             "http://identifiers.org/uniprot/P07363",
+             "http://identifiers.org/uniprot/P07017"
+  TTWAAp part "http://identifiers.org/uniprot/P0A964",
+              "http://identifiers.org/uniprot/P07363",
+              "http://identifiers.org/uniprot/P07017"
+  TTAA part "http://identifiers.org/uniprot/P07363",
+            "http://identifiers.org/uniprot/P07017"
+  TTAAp part "http://identifiers.org/uniprot/P07363",
+             "http://identifiers.org/uniprot/P07017"
+  TTWWAA part "http://identifiers.org/uniprot/P0A964",
+              "http://identifiers.org/uniprot/P07363",
+              "http://identifiers.org/uniprot/P07017"
+  TTWWAAp part "http://identifiers.org/uniprot/P0A964",
+               "http://identifiers.org/uniprot/P07363",
+               "http://identifiers.org/uniprot/P07017"
+  Y hypernym "http://identifiers.org/uniprot/P0AE67"
+  Yp hypernym "http://identifiers.org/uniprot/P0AE67"
+  Z hypernym "http://identifiers.org/uniprot/P0A9H9"
+  B hypernym "http://identifiers.org/uniprot/P07330"
+  Bp hypernym "http://identifiers.org/uniprot/P07330"
+  SetYp hypernym "http://identifiers.org/uniprot/P0AE67"
+  complex_r1 hypernym "http://identifiers.org/go/GO:0006461",
+                      "http://identifiers.org/go/GO:0043241"
+  complex_r2 hypernym "http://identifiers.org/go/GO:0043241",
+                      "http://identifiers.org/go/GO:0006461"
+  complex_r3 hypernym "http://identifiers.org/go/GO:0043241",
+                      "http://identifiers.org/go/GO:0006461"
+  complex_r4 hypernym "http://identifiers.org/go/GO:0043241",
+                      "http://identifiers.org/go/GO:0006461"
+  complex_r5 hypernym "http://identifiers.org/go/GO:0043241",
+                      "http://identifiers.org/go/GO:0006461"
+  complex_r6 hypernym "http://identifiers.org/go/GO:0043241",
+                      "http://identifiers.org/go/GO:0006461"
+  complex_r7 hypernym "http://identifiers.org/go/GO:0043241",
+                      "http://identifiers.org/go/GO:0006461"
+  complex_r8 hypernym "http://identifiers.org/go/GO:0043241",
+                      "http://identifiers.org/go/GO:0006461"
+  complex_r9 hypernym "http://identifiers.org/go/GO:0043241",
+                      "http://identifiers.org/go/GO:0006461"
+  complex_r10 hypernym "http://identifiers.org/go/GO:0043241",
+                       "http://identifiers.org/go/GO:0006461"
+  complex_r11 hypernym "http://identifiers.org/go/GO:0043241",
+                       "http://identifiers.org/go/GO:0006461"
+  complex_r12 hypernym "http://identifiers.org/go/GO:0043241",
+                       "http://identifiers.org/go/GO:0006461"
+  phosphorylation_r1 hypernym "http://identifiers.org/go/GO:0016310"
+  phosphorylation_r2 hypernym "http://identifiers.org/go/GO:0016310"
+  phosphorylation_r3 hypernym "http://identifiers.org/go/GO:0016310"
+  phosphorylation_r4 hypernym "http://identifiers.org/go/GO:0016310"
+  phosphorylation_r5 hypernym "http://identifiers.org/go/GO:0016310"
+  phosphorylation_r6 hypernym "http://identifiers.org/go/GO:0016310"
+  phosphorylation_r7 hypernym "http://identifiers.org/go/GO:0016310"
+  phosphorylation_r8 hypernym "http://identifiers.org/go/GO:0016311"
+  phosphorylation_r9 hypernym "http://identifiers.org/go/GO:0016311"
+  phosphorylation_r10 hypernym "http://identifiers.org/go/GO:0016311"
+  phosphotransfer_r1 hypernym "http://identifiers.org/go/GO:0016780"
+  phosphotransfer_r2 hypernym "http://identifiers.org/go/GO:0016780"
+  phosphotransfer_r3 version "http://identifiers.org/go/GO:0016780"
+  phosphotransfer_r4 hypernym "http://identifiers.org/go/GO:0016780"
+  phosphotransfer_r5 hypernym "http://identifiers.org/go/GO:0016780"
+  phosphotransfer_r6 hypernym "http://identifiers.org/go/GO:0016780"
+  phosphotransfer_r7 hypernym "http://identifiers.org/go/GO:0016780"
+  phosphotransfer_r8 hypernym "http://identifiers.org/go/GO:0016780"
+  phosphotransfer_r9 hypernym "http://identifiers.org/go/GO:0016780"
+  phosphotransfer_r10 hypernym "http://identifiers.org/go/GO:0016780"
+  phosphotransfer_r11 hypernym "http://identifiers.org/go/GO:0016780"
+  phosphotransfer_r12 hypernym "http://identifiers.org/go/GO:0016780"
 end
+
+Bray1995_chemotaxis_receptorlinkedcomplex is "Bray1995_chemotaxis_receptorlinkedcomplex"
+
+Bray1995_chemotaxis_receptorlinkedcomplex model_entity_is "http://identifiers.org/biomodels.db/MODEL6409760567"
+Bray1995_chemotaxis_receptorlinkedcomplex model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000200"
+Bray1995_chemotaxis_receptorlinkedcomplex description "http://identifiers.org/pubmed/8573792"
+Bray1995_chemotaxis_receptorlinkedcomplex origin "http://identifiers.org/biomodels.db/BIOMD0000000404"
+Bray1995_chemotaxis_receptorlinkedcomplex taxon "http://identifiers.org/taxonomy/562"
+Bray1995_chemotaxis_receptorlinkedcomplex description "http://identifiers.org/kegg.pathway/eco02030"
+Bray1995_chemotaxis_receptorlinkedcomplex hypernym "http://identifiers.org/go/GO:0006935"

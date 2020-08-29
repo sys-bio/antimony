@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Smallbone2011_TrehaloseBiosynthesis()
 
   // Compartments and Species:
@@ -17,14 +17,14 @@ model *Smallbone2011_TrehaloseBiosynthesis()
   udg_change := log10(udg/udg_0);
 
   // Reactions:
-  pgi: g6p -> $f6p; ((cell*pgi_shock^heat*pgi_Vmax)/pgi_Kg6p*(g6p - f6p/pgi_Keq))/(1 + g6p/pgi_Kg6p + f6p/pgi_Kf6p);
-  hxt: $glx -> glc; (cell*hxt_shock^heat*hxt_Vmax*(glx - glc))/hxt_Kglc/(1 + (glx + glc)/hxt_Kglc + (hxt_Ki*glx*glc)/hxt_Kglc^2);
-  hxk: glc + $atp => g6p + $adp + $h; ((cell*hxk_shock^heat*hxk_Vmax)/(hxk_Kglc*hxk_Katp)*(glc*atp - (g6p*adp)/hxk_Keq))/((1 + glc/hxk_Kglc + g6p/hxk_Kg6p + t6p/hxk_Kit6p)*(1 + atp/hxk_Katp + adp/hxk_Kadp));
-  pgm: g6p -> g1p; ((cell*pgm_shock^heat*pgm_Vmax)/pgm_Kg6p*(g6p - g1p/pgm_Keq))/(1 + g6p/pgm_Kg6p + g1p/pgm_Kg1p);
-  tpp: t6p + $h2o => trh + $pho; (cell*tpp_shock^heat*tpp_Vmax*t6p)/tpp_Kt6p/(1 + t6p/tpp_Kt6p);
-  tps: g6p + udg => t6p + $udp + $h; (cell*tps_activity*tps_shock^heat*tps_Vmax*g6p*udg)/(tps_Kg6p*tps_Kudg)/((1 + g6p/tps_Kg6p)*(1 + udg/tps_Kudg));
-  nth: trh + $h2o => 2glc; (cell*nth_shock^heat*nth_Vmax*trh)/nth_Ktrh/(1 + trh/nth_Ktrh);
-  ugp: g1p + $utp + $h => udg + $ppi; (cell*ugp_shock^heat*ugp_Vmax*utp*g1p)/(ugp_Kutp*ugp_Kg1p)/(ugp_Kiutp/ugp_Kutp + utp/ugp_Kutp + g1p/ugp_Kg1p + (utp*g1p)/(ugp_Kutp*ugp_Kg1p) + (ugp_Kiutp/ugp_Kutp*udg)/ugp_Kiudg + (g1p*udg)/(ugp_Kg1p*ugp_Kiudg));
+  pgi: g6p -> $f6p; (cell*pgi_shock^heat*pgi_Vmax/pgi_Kg6p)*(g6p - f6p/pgi_Keq)/(1 + g6p/pgi_Kg6p + f6p/pgi_Kf6p);
+  hxt: $glx -> glc; cell*hxt_shock^heat*hxt_Vmax*(glx - glc)/hxt_Kglc/(1 + (glx + glc)/hxt_Kglc + hxt_Ki*glx*glc/hxt_Kglc^2);
+  hxk: glc + $atp => g6p + $adp + $h; (cell*hxk_shock^heat*hxk_Vmax/(hxk_Kglc*hxk_Katp))*(glc*atp - g6p*adp/hxk_Keq)/((1 + glc/hxk_Kglc + g6p/hxk_Kg6p + t6p/hxk_Kit6p)*(1 + atp/hxk_Katp + adp/hxk_Kadp));
+  pgm: g6p -> g1p; (cell*pgm_shock^heat*pgm_Vmax/pgm_Kg6p)*(g6p - g1p/pgm_Keq)/(1 + g6p/pgm_Kg6p + g1p/pgm_Kg1p);
+  tpp: t6p + $h2o => trh + $pho; cell*tpp_shock^heat*tpp_Vmax*t6p/tpp_Kt6p/(1 + t6p/tpp_Kt6p);
+  tps: g6p + udg => t6p + $udp + $h; cell*tps_activity*tps_shock^heat*tps_Vmax*g6p*udg/(tps_Kg6p*tps_Kudg)/((1 + g6p/tps_Kg6p)*(1 + udg/tps_Kudg));
+  nth: trh + $h2o => 2 glc; cell*nth_shock^heat*nth_Vmax*trh/nth_Ktrh/(1 + trh/nth_Ktrh);
+  ugp: g1p + $utp + $h => udg + $ppi; cell*ugp_shock^heat*ugp_Vmax*utp*g1p/(ugp_Kutp*ugp_Kg1p)/(ugp_Kiutp/ugp_Kutp + utp/ugp_Kutp + g1p/ugp_Kg1p + utp*g1p/(ugp_Kutp*ugp_Kg1p) + (ugp_Kiutp/ugp_Kutp)*udg/ugp_Kiudg + g1p*udg/(ugp_Kg1p*ugp_Kiudg));
 
   // Species initializations:
   glc = glc_0;
@@ -194,4 +194,65 @@ model *Smallbone2011_TrehaloseBiosynthesis()
   tps is "T6P synthase";
   nth is "trehalase";
   ugp is "UDP glucose phosphorylase";
+
+  // SBO terms:
+  glc.sboTerm = 247
+  g1p.sboTerm = 247
+  g6p.sboTerm = 247
+  trh.sboTerm = 247
+  t6p.sboTerm = 247
+  udg.sboTerm = 247
+  adp.sboTerm = 247
+  atp.sboTerm = 247
+  ppi.sboTerm = 247
+  f6p.sboTerm = 247
+  h.sboTerm = 247
+  pho.sboTerm = 247
+  udp.sboTerm = 247
+  utp.sboTerm = 247
+  h2o.sboTerm = 247
+  glx.sboTerm = 247
+  pgi.sboTerm = 176
+  hxt.sboTerm = 185
+  hxk.sboTerm = 176
+  pgm.sboTerm = 176
+  tpp.sboTerm = 176
+  tps.sboTerm = 176
+  nth.sboTerm = 176
+  ugp.sboTerm = 176
+
+  // CV terms:
+  cell identity "http://identifiers.org/obo.go/GO:0005622"
+  medium identity "http://identifiers.org/obo.go/GO:0005576"
+  glc identity "http://identifiers.org/obo.chebi/CHEBI:17925"
+  g1p identity "http://identifiers.org/obo.chebi/CHEBI:16077"
+  g6p identity "http://identifiers.org/obo.chebi/CHEBI:17665"
+  trh identity "http://identifiers.org/obo.chebi/CHEBI:16551"
+  t6p identity "http://identifiers.org/obo.chebi/CHEBI:18283"
+  udg identity "http://identifiers.org/obo.chebi/CHEBI:18066"
+  adp identity "http://identifiers.org/obo.chebi/CHEBI:16761"
+  atp identity "http://identifiers.org/obo.chebi/CHEBI:15422"
+  ppi identity "http://identifiers.org/obo.chebi/CHEBI:18361"
+  f6p identity "http://identifiers.org/obo.chebi/CHEBI:16084"
+  h identity "http://identifiers.org/obo.chebi/CHEBI:24636"
+  pho identity "http://identifiers.org/obo.chebi/CHEBI:43474"
+  udp identity "http://identifiers.org/obo.chebi/CHEBI:17659"
+  utp identity "http://identifiers.org/obo.chebi/CHEBI:46398"
+  h2o identity "http://identifiers.org/obo.chebi/CHEBI:15377"
+  glx identity "http://identifiers.org/obo.chebi/CHEBI:17925"
+  pgi hypernym "http://identifiers.org/ec-code/5.3.1.9"
+  hxk hypernym "http://identifiers.org/ec-code/2.7.1.1"
+  pgm hypernym "http://identifiers.org/ec-code/5.4.2.2"
+  tpp hypernym "http://identifiers.org/ec-code/3.1.3.12"
+  tps hypernym "http://identifiers.org/ec-code/2.4.1.15"
+  nth hypernym "http://identifiers.org/ec-code/3.2.1.28"
+  ugp hypernym "http://identifiers.org/ec-code/2.7.7.9"
 end
+
+Smallbone2011_TrehaloseBiosynthesis is "Smallbone2011_TrehaloseBiosynthesis"
+
+Smallbone2011_TrehaloseBiosynthesis model_entity_is "http://identifiers.org/biomodels.db/MODEL1010010000"
+Smallbone2011_TrehaloseBiosynthesis model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000380"
+Smallbone2011_TrehaloseBiosynthesis description "http://identifiers.org/pubmed/21943906"
+Smallbone2011_TrehaloseBiosynthesis taxon "http://identifiers.org/taxonomy/4932"
+Smallbone2011_TrehaloseBiosynthesis hypernym "http://identifiers.org/obo.go/GO:0005992"

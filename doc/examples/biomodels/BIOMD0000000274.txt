@@ -1,14 +1,14 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Rattanakul2003_BoneFormationModel()
 
   // Compartments and Species:
-  compartment Compartment_;
-  species $x in Compartment_, $y in Compartment_, $z in Compartment_;
+  compartment Compartment;
+  species $x in Compartment, $y in Compartment, $z in Compartment;
 
   // Rate Rules:
   x' = a1/(k1 + y) - b1*x;
-  y' = epsilon*(((a2 + a3*x)*y*z)/(k2 + x^2) - b2*y);
-  z' = epsilon*delta*(a4*x - (b3*z + (a5*x*z)/(k3 + x)));
+  y' = epsilon*((a2 + a3*x)*y*z/(k2 + x^2) - b2*y);
+  z' = epsilon*delta*(a4*x - (b3*z + a5*x*z/(k3 + x)));
 
   // Species initializations:
   x = 2;
@@ -16,8 +16,8 @@ model *Rattanakul2003_BoneFormationModel()
   z = 0.15;
 
   // Compartment initializations:
-  Compartment_ = 1;
-  Compartment_ has litre;
+  Compartment = 1;
+  Compartment has litre;
 
   // Variable initializations:
   a1 = 0.05;
@@ -35,8 +35,8 @@ model *Rattanakul2003_BoneFormationModel()
   k3 = 0.025;
 
   // Other declarations:
-  const Compartment_, a1, k1, b1, epsilon, a2, a3, k2, b2, delta, a4, b3;
-  const a5, k3;
+  const Compartment, a1, k1, b1, epsilon, a2, a3, k2, b2, delta, a4, b3, a5;
+  const k3;
 
   // Unit definitions:
   unit minute = 60 second;
@@ -47,4 +47,38 @@ model *Rattanakul2003_BoneFormationModel()
   x is "PTH";
   y is "active osteoclasts";
   z is "active osteoblasts";
+
+  // SBO terms:
+  Compartment.sboTerm = 290
+  x.sboTerm = 245
+  a1.sboTerm = 2
+  k1.sboTerm = 9
+  y.sboTerm = 236
+  b1.sboTerm = 2
+  epsilon.sboTerm = 2
+  a2.sboTerm = 2
+  a3.sboTerm = 2
+  z.sboTerm = 236
+  k2.sboTerm = 9
+  b2.sboTerm = 2
+  delta.sboTerm = 2
+  a4.sboTerm = 2
+  b3.sboTerm = 2
+  a5.sboTerm = 2
+  k3.sboTerm = 9
+
+  // CV terms:
+  Compartment hypernym "http://identifiers.org/bto/BTO:0000140"
+  x hypernym "http://identifiers.org/uniprot/P01270"
+  y hypernym "http://identifiers.org/bto/BTO:0000968"
+  z hypernym "http://identifiers.org/bto/BTO:0001593"
 end
+
+Rattanakul2003_BoneFormationModel is "Rattanakul2003_BoneFormationModel"
+
+Rattanakul2003_BoneFormationModel model_entity_is "http://identifiers.org/biomodels.db/MODEL7909987998"
+Rattanakul2003_BoneFormationModel model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000274"
+Rattanakul2003_BoneFormationModel description "http://identifiers.org/pubmed/12753937"
+Rattanakul2003_BoneFormationModel hypernym "http://identifiers.org/go/GO:0001503",
+                                           "http://identifiers.org/go/GO:0045453"
+Rattanakul2003_BoneFormationModel taxon "http://identifiers.org/taxonomy/7711"

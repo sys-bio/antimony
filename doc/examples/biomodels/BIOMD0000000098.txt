@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Goldbeter1990_CalciumSpike_CICR()
 
   // Compartments and Species:
@@ -8,8 +8,8 @@ model *Goldbeter1990_CalciumSpike_CICR()
   // Reactions:
   R0:  => Z; cytosol*v0;
   R1:  => Z; cytosol*v1*beta;
-  R2: Z => Y; cytosol*((Vm2*Z^n)/(K2^n + Z^n));
-  R3: Y => Z; store*((Vm3*Y^m*Z^p)/((Kr^m + Y^m)*(Ka^p + Z^p)));
+  R2: Z => Y; cytosol*(Vm2*Z^n/(K2^n + Z^n));
+  R3: Y => Z; store*(Vm3*Y^m*Z^p/((Kr^m + Y^m)*(Ka^p + Z^p)));
   Rf: Y => Z; store*kf*Y;
   R_eff: Z => ; cytosol*k*Z;
 
@@ -66,4 +66,31 @@ model *Goldbeter1990_CalciumSpike_CICR()
   R3 is "ATP driven pumping into cytosol";
   Rf is "Ca leak";
   R_eff is "Ca efflux";
+
+  // CV terms:
+  cytosol identity "http://identifiers.org/go/GO:0005829"
+  store identity "http://identifiers.org/go/GO:0005783"
+  Z identity "http://identifiers.org/chebi/CHEBI:29108",
+             "http://identifiers.org/kegg.compound/C00076"
+  Y identity "http://identifiers.org/chebi/CHEBI:29108",
+             "http://identifiers.org/kegg.compound/C00076"
+  R0 identity "http://identifiers.org/go/GO:0006816"
+  R1 identity "http://identifiers.org/go/GO:0005220"
+  R2 identity "http://identifiers.org/go/GO:0032470"
+  R3 identity "http://identifiers.org/go/GO:0007204",
+              "http://identifiers.org/go/GO:0048763"
+  Rf identity "http://identifiers.org/go/GO:0007204"
+  R_eff identity "http://identifiers.org/go/GO:0006816"
 end
+
+Goldbeter1990_CalciumSpike_CICR is "Goldbeter1990_CalciumSpike_CICR"
+
+Goldbeter1990_CalciumSpike_CICR model_entity_is "http://identifiers.org/biomodels.db/MODEL4519937652"
+Goldbeter1990_CalciumSpike_CICR model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000098"
+Goldbeter1990_CalciumSpike_CICR description "http://identifiers.org/pubmed/2304911"
+Goldbeter1990_CalciumSpike_CICR origin "http://identifiers.org/pubmed/6281582"
+Goldbeter1990_CalciumSpike_CICR hypernym "http://identifiers.org/go/GO:0005220",
+                                         "http://identifiers.org/go/GO:0006816",
+                                         "http://identifiers.org/go/GO:0019722"
+Goldbeter1990_CalciumSpike_CICR taxon "http://identifiers.org/taxonomy/131567"
+Goldbeter1990_CalciumSpike_CICR property "http://identifiers.org/mamo/MAMO_0000046"

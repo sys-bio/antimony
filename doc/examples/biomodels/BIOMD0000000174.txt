@@ -1,23 +1,33 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 function hydrolysis(kh, R)
   kh*R;
 end
 
+hydrolysis is "hydrolysis"
+
 function sig_act(ke, r, kg, R, kf)
-  (ke*r)/(1 + exp((kg - R)*kf));
+  ke*r/(1 + exp((kg - R)*kf));
 end
 
+sig_act is "Sigmoid Activation"
+
 function hill_act(r, ke, R, h, kg)
-  (r*ke*R^h)/(kg + R^h);
+  r*ke*R^h/(kg + R^h);
 end
+
+hill_act is "Hills activation"
 
 function extraction(kminus1, r)
   kminus1*r;
 end
 
+extraction is "extraction"
+
 function sig_act_t(r, ke, t, kg, R, kf)
-  (r*((ke*t)/(100 + t)))/(1 + exp((kg - R)*kf));
+  r*(ke*t/(100 + t))/(1 + exp((kg - R)*kf));
 end
+
+sig_act_t is "Sigmoid Activation 3 (t)"
 
 
 model *Model_1()
@@ -114,4 +124,41 @@ model *Model_1()
   reaction_7 is "extraction of rab7";
   reaction_8 is "hydrolysis of Rab5 (intr.)";
   reaction_9 is "hydrolysis of Rab7 (intr.)";
+
+  // CV terms:
+  endosome identity "http://identifiers.org/go/GO:0010008"
+  r5 part "http://identifiers.org/chebi/CHEBI:17552",
+          "http://identifiers.org/uniprot/P20339"
+  r5 identity "http://identifiers.org/go/GO:0031225"
+  R5 part "http://identifiers.org/chebi/CHEBI:15996",
+          "http://identifiers.org/uniprot/P20339"
+  R5 identity "http://identifiers.org/go/GO:0031225"
+  r7 part "http://identifiers.org/chebi/CHEBI:17552",
+          "http://identifiers.org/uniprot/P51149"
+  r7 identity "http://identifiers.org/go/GO:0031225"
+  R7 part "http://identifiers.org/chebi/CHEBI:15996",
+          "http://identifiers.org/uniprot/P51149"
+  R7 identity "http://identifiers.org/go/GO:0031225"
+  reaction_0 hypernym "http://identifiers.org/go/GO:0045184"
+  reaction_1 hypernym "http://identifiers.org/go/GO:0032858"
+  reaction_3 hypernym "http://identifiers.org/go/GO:0045184"
+  reaction_4 hypernym "http://identifiers.org/go/GO:0017112",
+                      "http://identifiers.org/go/GO:0032858"
+  reaction_5 hypernym "http://identifiers.org/go/GO:0032858",
+                      "http://identifiers.org/go/GO:0017112"
+  reaction_6 hypernym "http://identifiers.org/go/GO:0003924",
+                      "http://identifiers.org/go/GO:0005097"
+  reaction_8 hypernym "http://identifiers.org/go/GO:0003924"
+  reaction_9 hypernym "http://identifiers.org/go/GO:0003924"
 end
+
+Model_1 is "Del_Conte_Zerial2008_Rab5_Rab7_cut_out_switch"
+
+Model_1 model_entity_is "http://identifiers.org/biomodels.db/MODEL5937037510"
+Model_1 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000174"
+Model_1 description "http://identifiers.org/pubmed/18628746"
+Model_1 origin "http://identifiers.org/pubmed/10591225",
+               "http://identifiers.org/pubmed/16890441"
+Model_1 hypernym "http://identifiers.org/go/GO:0032313"
+Model_1 taxon "http://identifiers.org/taxonomy/9606"
+Model_1 property "http://identifiers.org/mamo/MAMO_0000046"

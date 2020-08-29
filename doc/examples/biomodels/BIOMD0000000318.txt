@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *yao08()
 
   // Compartments and Species:
@@ -7,16 +7,16 @@ model *yao08()
   species RP in cell;
 
   // Reactions:
-  r1:  => MC; cell*((r1_kM*S)/(r1_KS + S));
-  r2:  => CD; cell*((r2_kkCDS*S)/(r2_KS + S));
-  r3:  => EF; cell*((r3_kkEF*MC*EF)/((r3_KMC + MC)*(r3_KEF + EF)) + (r3_kkb*MC)/(r3_KMC + MC));
-  r4:  => CE; cell*((r4_kkCE*EF)/(r4_KEF + EF));
-  r5:  => CD; cell*((r5_kkCD*MC)/(r5_KMC + MC));
+  r1:  => MC; cell*(r1_kM*S/(r1_KS + S));
+  r2:  => CD; cell*(r2_kkCDS*S/(r2_KS + S));
+  r3:  => EF; cell*(r3_kkEF*MC*EF/((r3_KMC + MC)*(r3_KEF + EF)) + r3_kkb*MC/(r3_KMC + MC));
+  r4:  => CE; cell*(r4_kkCE*EF/(r4_KEF + EF));
+  r5:  => CD; cell*(r5_kkCD*MC/(r5_KMC + MC));
   r6:  => RB; cell*r6_kkRB;
-  r7: RE => EF + RP; cell*((r7_kkRBPP*CD*RE)/(r7_KD + RE) + (r7_kkRBPP*CE*RE)/(r7_KE + RE));
+  r7: RE => EF + RP; cell*(r7_kkRBPP*CD*RE/(r7_KD + RE) + r7_kkRBPP*CE*RE/(r7_KE + RE));
   r8: EF + RB => RE; cell*r8_kkRE*RB*EF;
-  r9: RB => RP; cell*((r9_kkRBP*CD*RB)/(r9_KD + RB) + (r9_kkRBP2*CE*RB)/(r9_KE + RB));
-  r10: RP => RB; cell*((r10_kkRBUP*RP)/(r10_Kp + RP));
+  r9: RB => RP; cell*(r9_kkRBP*CD*RB/(r9_KD + RB) + r9_kkRBP2*CE*RB/(r9_KE + RB));
+  r10: RP => RB; cell*(r10_kkRBUP*RP/(r10_Kp + RP));
   r11: MC => ; cell*r11_dMC*MC;
   r12: EF => ; cell*r12_dEF*EF;
   r13: CE => ; cell*r13_dCE*CE;
@@ -130,4 +130,112 @@ model *yao08()
   RB is "Rb";
   RE is "Rb-E2F complex";
   RP is "phosphorylated Rb";
+
+  // SBO terms:
+  cell.sboTerm = 290
+  MC.sboTerm = 252
+  EF.sboTerm = 252
+  CD.sboTerm = 252
+  CE.sboTerm = 252
+  RB.sboTerm = 252
+  RE.sboTerm = 297
+  RP.sboTerm = 252
+  S.sboTerm = 472
+  r1.sboTerm = 205
+  r1_KS.sboTerm = 27
+  r1_kM.sboTerm = 186
+  r2.sboTerm = 205
+  r2_KS.sboTerm = 27
+  r2_kkCDS.sboTerm = 186
+  r3.sboTerm = 205
+  r3_KEF.sboTerm = 27
+  r3_KMC.sboTerm = 27
+  r3_kkEF.sboTerm = 186
+  r3_kkb.sboTerm = 186
+  r4.sboTerm = 205
+  r4_KEF.sboTerm = 27
+  r4_kkCE.sboTerm = 186
+  r5.sboTerm = 205
+  r5_KMC.sboTerm = 27
+  r5_kkCD.sboTerm = 186
+  r6.sboTerm = 205
+  r6_kkRB.sboTerm = 48
+  r7.sboTerm = 180
+  r7_KD.sboTerm = 27
+  r7_KE.sboTerm = 27
+  r7_kkRBPP.sboTerm = 25
+  r8.sboTerm = 177
+  r8_kkRE.sboTerm = 339
+  r9.sboTerm = 216
+  r9_KD.sboTerm = 27
+  r9_KE.sboTerm = 27
+  r9_kkRBP.sboTerm = 25
+  r9_kkRBP2.sboTerm = 25
+  r10.sboTerm = 330
+  r10_Kp.sboTerm = 27
+  r10_kkRBUP.sboTerm = 186
+  r11.sboTerm = 179
+  r11_dMC.sboTerm = 356
+  r12.sboTerm = 179
+  r12_dEF.sboTerm = 356
+  r13.sboTerm = 179
+  r13_dCE.sboTerm = 356
+  r14.sboTerm = 179
+  r14_dCD.sboTerm = 356
+  r15.sboTerm = 179
+  r15_dRB.sboTerm = 356
+  r16.sboTerm = 179
+  r16_dRP.sboTerm = 356
+  r17.sboTerm = 179
+  r17_dRE.sboTerm = 356
+
+  // CV terms:
+  cell identity "http://identifiers.org/go/GO:0005622"
+  MC homolog "http://identifiers.org/uniprot/P01106"
+  EF homolog "http://identifiers.org/uniprot/Q01094"
+  CD hypernym "http://identifiers.org/go/GO:0000307"
+  CD version "http://identifiers.org/interpro/IPR015451"
+  CD property "http://identifiers.org/go/GO:0004693"
+  CE hypernym "http://identifiers.org/go/GO:0000307"
+  CE version "http://identifiers.org/uniprot/P24864",
+             "http://identifiers.org/uniprot/O96020"
+  CE property "http://identifiers.org/go/GO:0004693"
+  RB homolog "http://identifiers.org/uniprot/P06400"
+  RE part "http://identifiers.org/uniprot/P06400",
+          "http://identifiers.org/uniprot/Q01094"
+  RP hypernym "http://identifiers.org/kegg.compound/C00562"
+  RP homolog "http://identifiers.org/uniprot/P06400"
+  RP property "http://identifiers.org/psimod/MOD:00046"
+  S property "http://identifiers.org/go/GO:0008083"
+  r1 hypernym "http://identifiers.org/go/GO:0010467"
+  r2 hypernym "http://identifiers.org/go/GO:0010467"
+  r3 hypernym "http://identifiers.org/go/GO:0010467"
+  r4 hypernym "http://identifiers.org/go/GO:0031659"
+  r5 hypernym "http://identifiers.org/go/GO:0031659"
+  r6 hypernym "http://identifiers.org/go/GO:0010467"
+  r7 version "http://identifiers.org/go/GO:0004693",
+             "http://identifiers.org/go/GO:0043241"
+  r7 version "http://identifiers.org/ec-code/2.7.11.22"
+  r8 hypernym "http://identifiers.org/go/GO:0006461"
+  r9 hypernym "http://identifiers.org/ec-code/2.7.11.22"
+  r9 hypernym "http://identifiers.org/go/GO:0006468"
+  r10 hypernym "http://identifiers.org/go/GO:0006470"
+  r11 hypernym "http://identifiers.org/go/GO:0030163"
+  r12 hypernym "http://identifiers.org/go/GO:0030163"
+  r13 hypernym "http://identifiers.org/go/GO:0030163"
+  r14 hypernym "http://identifiers.org/go/GO:0030163"
+  r15 hypernym "http://identifiers.org/go/GO:0030163"
+  r16 hypernym "http://identifiers.org/go/GO:0030163"
+  r17 hypernym "http://identifiers.org/go/GO:0030163"
 end
+
+yao08 is "Yao2008_Rb_E2F_Switch"
+
+yao08 model_entity_is "http://identifiers.org/biomodels.db/MODEL1102090000"
+yao08 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000318"
+yao08 description "http://identifiers.org/pubmed/18364697"
+yao08 property "http://identifiers.org/mamo/MAMO_0000046"
+yao08 parthood "http://identifiers.org/reactome/REACT_1783.2"
+yao08 parthood "http://identifiers.org/go/GO:2000045"
+yao08 version "http://identifiers.org/go/GO:0000083"
+yao08 taxon "http://identifiers.org/taxonomy/40674"

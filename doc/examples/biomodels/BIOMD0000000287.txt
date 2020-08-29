@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Passos2010_DNAdamage_CellularSenescence()
 
   // Compartments and Species:
@@ -89,12 +89,12 @@ model *Passos2010_DNAdamage_CellularSenescence()
   kdegMdm2 = 0.000433;
   ksynp53 = 0.006;
   kdegp53 = 0.000825;
-  kdegp53mdm2ind = 8.25e-007;
+  kdegp53mdm2ind = 8.25e-07;
   kbinMdm2p53 = 0.001155;
-  krelMdm2p53 = 1.155e-006;
+  krelMdm2p53 = 1.155e-06;
   ksynMdm2mRNA = 0.0001;
   kdegMdm2mRNA = 0.0001;
-  kactATM = 2e-005;
+  kactATM = 2e-05;
   kdegATMMdm2 = 0.0004;
   kinactATM = 0.0005;
   kphosp53 = 0.006;
@@ -104,22 +104,22 @@ model *Passos2010_DNAdamage_CellularSenescence()
   kphosp38 = 0.008;
   kdephosp38 = 0.1;
   kdam = 0.007;
-  krepair = 6e-005;
-  kGADD45 = 4e-006;
-  kdegGADD45 = 1e-005;
+  krepair = 6e-05;
+  kGADD45 = 4e-06;
+  kdegGADD45 = 1e-05;
   ksynp53mRNA = 0.001;
   kdegp53mRNA = 0.0001;
-  ksynp21mRNAp53P = 6e-006;
-  ksynp21mRNAp53 = 6e-008;
-  kdegp21mRNA = 2.4e-005;
+  ksynp21mRNAp53P = 6e-06;
+  ksynp21mRNAp53 = 6e-08;
+  kdegp21mRNA = 2.4e-05;
   ksynp21step1 = 0.0004;
-  ksynp21step2 = 4e-005;
-  ksynp21step3 = 4e-005;
+  ksynp21step2 = 4e-05;
+  ksynp21step3 = 4e-05;
   kdegp21 = 0.00019;
   kremROS = 0.000383;
   kgenROSp38 = 0.00045;
-  kdamROS = 1e-005;
-  kdamBasalROS = 1e-009;
+  kdamROS = 1e-05;
+  kdamBasalROS = 1e-09;
 
   // Other declarations:
   var kp38ROS;
@@ -132,4 +132,176 @@ model *Passos2010_DNAdamage_CellularSenescence()
 
   // Unit definitions:
   unit substance = item;
+
+  // SBO terms:
+  cell.sboTerm = 290
+  Mdm2.sboTerm = 245
+  p53.sboTerm = 245
+  Mdm2_p53.sboTerm = 296
+  Mdm2_mRNA.sboTerm = 278
+  p53_mRNA.sboTerm = 278
+  ATMA.sboTerm = 245
+  ATMI.sboTerm = 245
+  p21.sboTerm = 245
+  p21_mRNA.sboTerm = 278
+  p21step1.sboTerm = 245
+  p21step2.sboTerm = 245
+  p53_P.sboTerm = 245
+  Mdm2_P.sboTerm = 245
+  p21_basal.sboTerm = 245
+  p38.sboTerm = 245
+  p38_P.sboTerm = 245
+  GADD45.sboTerm = 245
+  IR.sboTerm = 405
+  damDNA.sboTerm = 251
+  ROS.sboTerm = 327
+  basalROS.sboTerm = 327
+  Sink.sboTerm = 291
+  Source.sboTerm = 291
+  kp38ROS.sboTerm = 9
+  ksynMdm2.sboTerm = 9
+  kdegMdm2.sboTerm = 356
+  ksynp53.sboTerm = 9
+  kdegp53.sboTerm = 356
+  kdegp53mdm2ind.sboTerm = 282
+  kbinMdm2p53.sboTerm = 337
+  krelMdm2p53.sboTerm = 282
+  ksynMdm2mRNA.sboTerm = 9
+  kdegMdm2mRNA.sboTerm = 282
+  kactATM.sboTerm = 363
+  kdegATMMdm2.sboTerm = 356
+  kinactATM.sboTerm = 349
+  kphosp53.sboTerm = 9
+  kdephosp53.sboTerm = 9
+  kdephosMdm2.sboTerm = 9
+  kphosp38.sboTerm = 9
+  kdephosp38.sboTerm = 9
+  kdam.sboTerm = 9
+  krepair.sboTerm = 9
+  kGADD45.sboTerm = 9
+  kdegGADD45.sboTerm = 356
+  ksynp53mRNA.sboTerm = 9
+  kdegp53mRNA.sboTerm = 356
+  ksynp21mRNAp53.sboTerm = 9
+  kdegp21mRNA.sboTerm = 356
+  ksynp21step1.sboTerm = 9
+  ksynp21step2.sboTerm = 9
+  ksynp21step3.sboTerm = 9
+  kdegp21.sboTerm = 356
+  kremROS.sboTerm = 356
+  kgenROSp38.sboTerm = 9
+  kdamROS.sboTerm = 9
+  kdamBasalROS.sboTerm = 9
+  p53mRNASynthesis.sboTerm = 183
+  p53mRNADegradation.sboTerm = 179
+  Mdm2Synthesis.sboTerm = 184
+  Mdm2mRNASynthesis1.sboTerm = 183
+  Mdm2mRNASynthesis2.sboTerm = 183
+  Mdm2mRNADegradation.sboTerm = 179
+  Mdm2Degradation.sboTerm = 179
+  p53Synthesis.sboTerm = 184
+  p53Degradation.sboTerm = 179
+  p53Mdm2IndepDegradation1.sboTerm = 179
+  p53Mdm2IndepDegradation2.sboTerm = 179
+  P53_Mdm2Binding.sboTerm = 526
+  P53_Mdm2Release.sboTerm = 180
+  DNAdamage.sboTerm = 375
+  DNArepair.sboTerm = 179
+  ATMactivation.sboTerm = 176
+  p53phoshorylation.sboTerm = 216
+  p53dephosorylation.sboTerm = 216
+  Mdm2phoshorylation.sboTerm = 216
+  Mdm2dephosorylation.sboTerm = 330
+  Mdm2Pdegradation.sboTerm = 179
+  ATMInactivation.sboTerm = 176
+  p21mRNASynthesis1.sboTerm = 183
+  p21mRNASynthesis2.sboTerm = 183
+  p21mRNADegradation.sboTerm = 179
+  p21Synthesis1.sboTerm = 184
+  p21Synthesis2.sboTerm = 184
+  p21Synthesis3.sboTerm = 184
+  p21degradation.sboTerm = 179
+  GADD45activation2.sboTerm = 176
+  GADD45degradation.sboTerm = 179
+  p38activation.sboTerm = 176
+  p38inactivation.sboTerm = 176
+  ROSgenerationP38.sboTerm = 393
+  ROSremoval.sboTerm = 179
+  ROSDNAdamage.sboTerm = 176
+  basalROSDNAdamage.sboTerm = 176
+
+  // CV terms:
+  cell hypernym "http://identifiers.org/go/GO:0005623"
+  Mdm2 hypernym "http://identifiers.org/uniprot/Q00987"
+  p53 hypernym "http://identifiers.org/uniprot/P04637"
+  Mdm2_p53 part "http://identifiers.org/uniprot/Q00987",
+                "http://identifiers.org/uniprot/P04637"
+  Mdm2_mRNA encodement "http://identifiers.org/uniprot/Q00987"
+  p53_mRNA encodement "http://identifiers.org/uniprot/P04637"
+  ATMA hypernym "http://identifiers.org/uniprot/Q13315"
+  ATMI hypernym "http://identifiers.org/uniprot/Q13315"
+  p21 hypernym "http://identifiers.org/uniprot/P38936"
+  p21_mRNA encodement "http://identifiers.org/uniprot/P38936"
+  p21step1 hypernym "http://identifiers.org/uniprot/P38936"
+  p21step2 hypernym "http://identifiers.org/uniprot/P38936"
+  p53_P hypernym "http://identifiers.org/uniprot/P04637"
+  Mdm2_P hypernym "http://identifiers.org/uniprot/Q00987"
+  p21_basal hypernym "http://identifiers.org/uniprot/P38936"
+  p38 hypernym "http://identifiers.org/uniprot/Q16539"
+  p38_P hypernym "http://identifiers.org/uniprot/Q16539"
+  GADD45 part "http://identifiers.org/uniprot/P24522",
+              "http://identifiers.org/uniprot/O75293",
+              "http://identifiers.org/uniprot/O95257"
+  damDNA hypernym "http://identifiers.org/chebi/CHEBI:16991"
+  ROS hypernym "http://identifiers.org/chebi/CHEBI:26523"
+  basalROS hypernym "http://identifiers.org/chebi/CHEBI:26523"
+  p53mRNASynthesis parthood "http://identifiers.org/go/GO:0006351"
+  p53mRNADegradation hypernym "http://identifiers.org/go/GO:0009056"
+  Mdm2Synthesis hypernym "http://identifiers.org/go/GO:0006412"
+  Mdm2mRNASynthesis1 hypernym "http://identifiers.org/go/GO:0006351"
+  Mdm2mRNASynthesis2 hypernym "http://identifiers.org/go/GO:0006351"
+  Mdm2mRNADegradation hypernym "http://identifiers.org/go/GO:0009056"
+  Mdm2Degradation hypernym "http://identifiers.org/go/GO:0009056"
+  p53Synthesis hypernym "http://identifiers.org/go/GO:0006412"
+  p53Degradation hypernym "http://identifiers.org/go/GO:0009056"
+  p53Mdm2IndepDegradation1 hypernym "http://identifiers.org/go/GO:0009056"
+  p53Mdm2IndepDegradation2 hypernym "http://identifiers.org/go/GO:0009056"
+  P53_Mdm2Binding hypernym "http://identifiers.org/go/GO:0006461"
+  P53_Mdm2Release hypernym "http://identifiers.org/go/GO:0043241"
+  DNAdamage hypernym "http://identifiers.org/go/GO:0006950"
+  DNArepair hypernym "http://identifiers.org/go/GO:0006281"
+  ATMactivation parthood "http://identifiers.org/go/GO:0006974"
+  p53phoshorylation hypernym "http://identifiers.org/go/GO:0016310"
+  p53dephosorylation hypernym "http://identifiers.org/go/GO:0016310"
+  Mdm2phoshorylation hypernym "http://identifiers.org/go/GO:0016310"
+  Mdm2dephosorylation hypernym "http://identifiers.org/go/GO:0016311"
+  Mdm2Pdegradation hypernym "http://identifiers.org/go/GO:0009056"
+  ATMInactivation hypernym "http://identifiers.org/go/GO:0006464"
+  p21mRNASynthesis1 hypernym "http://identifiers.org/go/GO:0006351"
+  p21mRNASynthesis2 hypernym "http://identifiers.org/go/GO:0006351"
+  p21mRNADegradation hypernym "http://identifiers.org/go/GO:0009056"
+  p21Synthesis1 hypernym "http://identifiers.org/go/GO:0006412"
+  p21Synthesis2 hypernym "http://identifiers.org/go/GO:0006412"
+  p21Synthesis3 hypernym "http://identifiers.org/go/GO:0006412"
+  p21degradation hypernym "http://identifiers.org/go/GO:0009056"
+  GADD45activation2 hypernym "http://identifiers.org/go/GO:0006412"
+  GADD45degradation hypernym "http://identifiers.org/go/GO:0009056"
+  p38activation hypernym "http://identifiers.org/go/GO:0006464"
+  p38inactivation hypernym "http://identifiers.org/go/GO:0006464"
+  ROSgenerationP38 hypernym "http://identifiers.org/go/GO:0052064"
+  ROSremoval hypernym "http://identifiers.org/go/GO:0009056"
+  ROSDNAdamage hypernym "http://identifiers.org/go/GO:0034614"
+  basalROSDNAdamage hypernym "http://identifiers.org/go/GO:0034614"
 end
+
+Passos2010_DNAdamage_CellularSenescence is "Passos2010_DNAdamage_CellularSenescence"
+
+Passos2010_DNAdamage_CellularSenescence model_entity_is "http://identifiers.org/biomodels.db/MODEL5989624192"
+Passos2010_DNAdamage_CellularSenescence model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000287"
+Passos2010_DNAdamage_CellularSenescence description "http://identifiers.org/pubmed/20160708"
+Passos2010_DNAdamage_CellularSenescence origin "http://identifiers.org/biomodels.db/BIOMD0000000188",
+                                               "http://identifiers.org/biomodels.db/BIOMD0000000189"
+Passos2010_DNAdamage_CellularSenescence parthood "http://identifiers.org/kegg.pathway/ko05200"
+Passos2010_DNAdamage_CellularSenescence taxon "http://identifiers.org/taxonomy/9606"
+Passos2010_DNAdamage_CellularSenescence hypernym "http://identifiers.org/go/GO:0090398",
+                                                 "http://identifiers.org/go/GO:0006974"

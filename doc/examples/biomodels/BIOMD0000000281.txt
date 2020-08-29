@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *chance()
 
   // Compartments and Species:
@@ -13,13 +13,13 @@ model *chance()
 
   // Assignment Rules:
   GLU_0 := GLU/0.003;
-  ENZ_0 := ENZ/1.020000e-005;
-  ENG_0 := ENG/1.020000e-005;
+  ENZ_0 := ENZ/1.02e-5;
+  ENG_0 := ENG/1.02e-5;
   TP1_0 := TP1/0.0015;
   ADP_0 := ADP/0.001;
   GLP_0 := GLP/0.001;
-  ETZ_0 := ETZ/1.000000e-005;
-  ETG_0 := ETG/1.000000e-005;
+  ETZ_0 := ETZ/1e-5;
+  ETG_0 := ETG/1e-5;
   GPP_0 := GPP/0.001;
   GAP_0 := GAP/0.0002;
   DHA_0 := DHA/0.0013;
@@ -30,44 +30,44 @@ model *chance()
   PGA_0 := PGA/0.0002;
   PYR_0 := PYR/0.002;
   LAC_0 := LAC/0.0012;
-  DIN_0 := DIN/7.000000e-005;
-  DIH_0 := DIH/7.000000e-005;
-  XI_0 := XI/6.000000e-005;
-  XSI_0 := XSI/6.000000e-005;
+  DIN_0 := DIN/7e-5;
+  DIH_0 := DIH/7e-5;
+  XI_0 := XI/6e-5;
+  XSI_0 := XSI/6e-5;
   OXY_0 := OXY/0.0005;
-  XSP_0 := XSP/6.000000e-005;
+  XSP_0 := XSP/6e-5;
   TP2_0 := TP2/0.0015;
   DBP_0 := DBP/0.025;
-  PUE_0 := PUE/3.060000e-006;
+  PUE_0 := PUE/3.06e-6;
   PPP_0 := PPP/3.06;
   AGP_0 := AGP/0.0013;
-  MOD_0 := MOD/5.000000e-005;
+  MOD_0 := MOD/5e-5;
   MOB_0 := MOB/0.0001;
-  MOX_0 := MOX/5.000000e-005;
+  MOX_0 := MOX/5e-5;
 
   // Reactions:
-  r_1: GLU + ENZ => ENG; cell*1.000000e-006*r_1_k*GLU*ENZ;
-  r_2: ENG + TP1 => ADP + GLP + ENZ; cell*1.000000e-006*r_2_k*ENG*TP1;
-  r_3: GLP + ETZ => ETG; cell*1.000000e-006*r_3_k*GLP*ETZ;
-  r_4: ETG + TP1 => GPP + ETZ + ADP; cell*1.000000e-006*r_4_k*ETG*TP1;
-  r_5: GPP => GAP + DHA; cell*1.000000e-006*r_5_k*GPP;
-  r_6: DHA + DPH => AGP + DPN; cell*1.000000e-006*r_6_k*DHA*DPH;
-  r_7: AGP + DPN => DHA + DPH; cell*1.000000e-006*r_7_k*AGP*DPN;
-  r_8: GAP + MOD => MOB + DPH; cell*1.000000e-006*r_8_k*GAP*MOD;
-  r_9: MOB + PID => DGA + MOX; cell*1.000000e-006*r_9_k*MOB*PID;
-  r_10: MOX + DPN => MOD; cell*1.000000e-006*r_10_k*MOX*DPN;
-  r_11: DGA + ADP => TP1 + PGA; cell*1.000000e-006*r_11_k*DGA*ADP;
-  r_12: PGA + ADP => TP1 + PYR; cell*1.000000e-006*r_12_k*PGA*ADP;
-  r_13: PYR + DPH => LAC + DPN; cell*1.000000e-006*r_13_k*PYR*DPH;
-  r_14: LAC + DPN => PYR + DPH; cell*1.000000e-006*r_14_k*LAC*DPN;
-  r_15: PYR + 4DIN => 4DIH; cell*1.000000e-006*r_15_k*PYR*DIN;
-  r_16: DIH + 3XI + OXY => 3XSI + DIN; cell*1.000000e-006*r_16_k*DIH*XI*OXY;
-  r_17: XSI + PID => XSP; cell*1.000000e-006*r_17_k*XSI*PID;
-  r_18: XSP + ADP => TP2 + XI; cell*1.000000e-006*r_18_k*XSP*ADP;
-  r_19: XSI => XI; cell*1.000000e-006*r_19_k*XSI*DBP;
-  r_20: TP2 => TP1; cell*1.000000e-006*r_20_k*TP2*DBP;
-  r_21: TP1 + PUE => PPP; cell*1.000000e-006*r_21_k*TP1*PUE;
-  r_22: PPP => ADP + PUE + PID; cell*1.000000e-006*r_22_k*PPP;
+  r_1: GLU + ENZ => ENG; cell*1e-6*r_1_k*GLU*ENZ;
+  r_2: ENG + TP1 => ADP + GLP + ENZ; cell*1e-6*r_2_k*ENG*TP1;
+  r_3: GLP + ETZ => ETG; cell*1e-6*r_3_k*GLP*ETZ;
+  r_4: ETG + TP1 => GPP + ETZ + ADP; cell*1e-6*r_4_k*ETG*TP1;
+  r_5: GPP => GAP + DHA; cell*1e-6*r_5_k*GPP;
+  r_6: DHA + DPH => AGP + DPN; cell*1e-6*r_6_k*DHA*DPH;
+  r_7: AGP + DPN => DHA + DPH; cell*1e-6*r_7_k*AGP*DPN;
+  r_8: GAP + MOD => MOB + DPH; cell*1e-6*r_8_k*GAP*MOD;
+  r_9: MOB + PID => DGA + MOX; cell*1e-6*r_9_k*MOB*PID;
+  r_10: MOX + DPN => MOD; cell*1e-6*r_10_k*MOX*DPN;
+  r_11: DGA + ADP => TP1 + PGA; cell*1e-6*r_11_k*DGA*ADP;
+  r_12: PGA + ADP => TP1 + PYR; cell*1e-6*r_12_k*PGA*ADP;
+  r_13: PYR + DPH => LAC + DPN; cell*1e-6*r_13_k*PYR*DPH;
+  r_14: LAC + DPN => PYR + DPH; cell*1e-6*r_14_k*LAC*DPN;
+  r_15: PYR + 4 DIN => 4 DIH; cell*1e-6*r_15_k*PYR*DIN;
+  r_16: DIH + 3 XI + OXY => 3 XSI + DIN; cell*1e-6*r_16_k*DIH*XI*OXY;
+  r_17: XSI + PID => XSP; cell*1e-6*r_17_k*XSI*PID;
+  r_18: XSP + ADP => TP2 + XI; cell*1e-6*r_18_k*XSP*ADP;
+  r_19: XSI => XI; cell*1e-6*r_19_k*XSI*DBP;
+  r_20: TP2 => TP1; cell*1e-6*r_20_k*TP2*DBP;
+  r_21: TP1 + PUE => PPP; cell*1e-6*r_21_k*TP1*PUE;
+  r_22: PPP => ADP + PUE + PID; cell*1e-6*r_22_k*PPP;
 
   // Events:
   e_1: at time >= 64: GLU = 0.003;
@@ -75,12 +75,12 @@ model *chance()
 
   // Species initializations:
   GLU = 0;
-  ENZ = 1e-005;
+  ENZ = 1e-05;
   ENG = 0;
   TP1 = 0.0005;
   ADP = 0.0001;
   GLP = 0;
-  ETZ = 1e-005;
+  ETZ = 1e-05;
   ETG = 0;
   GPP = 0;
   GAP = 0;
@@ -92,18 +92,18 @@ model *chance()
   PGA = 0;
   PYR = 0.001;
   LAC = 0.001;
-  DIN = 3e-005;
-  DIH = 3e-005;
-  XI = 2e-005;
-  XSI = 2e-005;
+  DIN = 3e-05;
+  DIH = 3e-05;
+  XI = 2e-05;
+  XSI = 2e-05;
   OXY = 0.0005;
-  XSP = 2e-005;
+  XSP = 2e-05;
   TP2 = 0.0005;
   DBP = 0;
-  PUE = 2e-006;
-  PPP = 1e-006;
+  PUE = 2e-06;
+  PPP = 1e-06;
   AGP = 0;
-  MOD = 5e-005;
+  MOD = 5e-05;
   MOB = 0;
   MOX = 0;
 
@@ -292,4 +292,199 @@ model *chance()
   r_20 is "reaction 20";
   r_21 is "reaction 21";
   r_22 is "reaction 22";
+
+  // SBO terms:
+  cell.sboTerm = 290
+  GLU.sboTerm = 247
+  ENZ.sboTerm = 297
+  ENG.sboTerm = 297
+  TP1.sboTerm = 247
+  ADP.sboTerm = 247
+  GLP.sboTerm = 247
+  ETZ.sboTerm = 297
+  ETG.sboTerm = 297
+  GPP.sboTerm = 247
+  GAP.sboTerm = 247
+  DHA.sboTerm = 247
+  DPN.sboTerm = 247
+  DPH.sboTerm = 247
+  PID.sboTerm = 247
+  DGA.sboTerm = 247
+  PGA.sboTerm = 247
+  PYR.sboTerm = 247
+  LAC.sboTerm = 247
+  DIN.sboTerm = 247
+  DIH.sboTerm = 247
+  XI.sboTerm = 296
+  XSI.sboTerm = 296
+  OXY.sboTerm = 247
+  XSP.sboTerm = 296
+  TP2.sboTerm = 247
+  DBP.sboTerm = 247
+  PUE.sboTerm = 297
+  PPP.sboTerm = 297
+  AGP.sboTerm = 247
+  MOD.sboTerm = 297
+  MOB.sboTerm = 297
+  MOX.sboTerm = 252
+  r_1.sboTerm = 177
+  r_2.sboTerm = 216
+  r_3.sboTerm = 177
+  r_4.sboTerm = 216
+  r_5.sboTerm = 376
+  r_6.sboTerm = 200
+  r_7.sboTerm = 200
+  r_8.sboTerm = 176
+  r_9.sboTerm = 216
+  r_10.sboTerm = 177
+  r_11.sboTerm = 216
+  r_12.sboTerm = 216
+  r_13.sboTerm = 200
+  r_14.sboTerm = 200
+  r_15.sboTerm = 200
+  r_16.sboTerm = 200
+  r_17.sboTerm = 216
+  r_18.sboTerm = 216
+  r_19.sboTerm = 200
+  r_20.sboTerm = 185
+  r_21.sboTerm = 177
+  r_22.sboTerm = 330
+
+  // CV terms:
+  cell identity "http://identifiers.org/obo.go/GO:0005623"
+  GLU identity "http://identifiers.org/kegg.compound/C00293"
+  GLU identity "http://identifiers.org/obo.chebi/CHEBI:17234"
+  ENZ hypernym "http://identifiers.org/interpro/IPR001312"
+  ENZ property "http://identifiers.org/obo.go/GO:0004396"
+  ENG part "http://identifiers.org/obo.chebi/CHEBI:17234"
+  ENG version "http://identifiers.org/interpro/IPR001312"
+  TP1 identity "http://identifiers.org/obo.chebi/CHEBI:15422"
+  TP1 identity "http://identifiers.org/kegg.compound/C00002"
+  ADP identity "http://identifiers.org/obo.chebi/CHEBI:16761"
+  ADP identity "http://identifiers.org/kegg.compound/C00008"
+  GLP identity "http://identifiers.org/obo.chebi/CHEBI:4170",
+               "http://identifiers.org/kegg.compound/C00092"
+  ETZ hypernym "http://identifiers.org/interpro/IPR022463"
+  ETZ property "http://identifiers.org/obo.go/GO:0008662"
+  ETG part "http://identifiers.org/obo.chebi/CHEBI:4170"
+  ETG version "http://identifiers.org/interpro/IPR022463"
+  ETG property "http://identifiers.org/obo.go/GO:0008662"
+  GPP identity "http://identifiers.org/kegg.compound/C05378"
+  GPP identity "http://identifiers.org/obo.chebi/CHEBI:28013"
+  GAP identity "http://identifiers.org/obo.chebi/CHEBI:29052"
+  GAP identity "http://identifiers.org/kegg.compound/C00118"
+  DHA identity "http://identifiers.org/kegg.compound/C00111"
+  DHA identity "http://identifiers.org/obo.chebi/CHEBI:16108"
+  DPN identity "http://identifiers.org/obo.chebi/CHEBI:15846",
+               "http://identifiers.org/kegg.compound/C00003"
+  DPH identity "http://identifiers.org/obo.chebi/CHEBI:16908",
+               "http://identifiers.org/kegg.compound/C00004"
+  PID identity "http://identifiers.org/obo.chebi/CHEBI:18367",
+               "http://identifiers.org/kegg.compound/C00009"
+  DGA identity "http://identifiers.org/kegg.compound/C00236"
+  DGA identity "http://identifiers.org/obo.chebi/CHEBI:16001"
+  PGA identity "http://identifiers.org/kegg.compound/C00197"
+  PGA identity "http://identifiers.org/obo.chebi/CHEBI:17794"
+  PYR identity "http://identifiers.org/kegg.compound/C00022"
+  PYR identity "http://identifiers.org/obo.chebi/CHEBI:32816"
+  LAC identity "http://identifiers.org/kegg.compound/C00186"
+  LAC identity "http://identifiers.org/obo.chebi/CHEBI:422"
+  DIN identity "http://identifiers.org/kegg.compound/C00003"
+  DIN identity "http://identifiers.org/obo.chebi/CHEBI:15846"
+  DIH identity "http://identifiers.org/obo.chebi/CHEBI:16908"
+  DIH identity "http://identifiers.org/kegg.compound/C00004"
+  XI parthood "http://identifiers.org/obo.go/GO:0045259",
+              "http://identifiers.org/obo.go/GO:0005746"
+  XSI parthood "http://identifiers.org/obo.go/GO:0045259",
+               "http://identifiers.org/obo.go/GO:0005746"
+  OXY identity "http://identifiers.org/kegg.compound/C00007"
+  OXY identity "http://identifiers.org/obo.chebi/CHEBI:15379"
+  XSP parthood "http://identifiers.org/obo.go/GO:0005746",
+               "http://identifiers.org/obo.go/GO:0045259"
+  TP2 identity "http://identifiers.org/kegg.compound/C00002"
+  TP2 identity "http://identifiers.org/obo.chebi/CHEBI:15422"
+  DBP identity "http://identifiers.org/obo.chebi/CHEBI:33625"
+  PUE hypernym "http://identifiers.org/kegg.compound/C00017"
+  PUE hypernym "http://identifiers.org/obo.chebi/CHEBI:16541"
+  PPP part "http://identifiers.org/obo.chebi/CHEBI:15422",
+           "http://identifiers.org/obo.chebi/CHEBI:16541"
+  PPP property "http://identifiers.org/obo.go/GO:0016887"
+  AGP identity "http://identifiers.org/kegg.compound/C00623"
+  AGP identity "http://identifiers.org/obo.chebi/CHEBI:16221"
+  MOD part "http://identifiers.org/obo.chebi/CHEBI:15846"
+  MOD version "http://identifiers.org/interpro/IPR006424"
+  MOB part "http://identifiers.org/obo.chebi/CHEBI:29052"
+  MOB version "http://identifiers.org/interpro/IPR006424"
+  MOB property "http://identifiers.org/obo.go/GO:0004365"
+  MOX hypernym "http://identifiers.org/uniprot/P04406",
+               "http://identifiers.org/uniprot/Q2TSD0",
+               "http://identifiers.org/interpro/IPR006424"
+  MOX property "http://identifiers.org/obo.go/GO:0004365"
+  r_1 parthood "http://identifiers.org/ec-code/2.7.1.1"
+  r_1 parthood "http://identifiers.org/kegg.reaction/R00299",
+               "http://identifiers.org/obo.go/GO:0004396"
+  r_2 parthood "http://identifiers.org/obo.go/GO:0004396"
+  r_2 parthood "http://identifiers.org/ec-code/2.7.1.1",
+               "http://identifiers.org/kegg.reaction/R00299"
+  r_3 parthood "http://identifiers.org/ec-code/2.7.1.4",
+               "http://identifiers.org/kegg.reaction/R04779",
+               "http://identifiers.org/obo.go/GO:0008865"
+  r_4 parthood "http://identifiers.org/ec-code/2.7.1.4"
+  r_4 parthood "http://identifiers.org/kegg.reaction/R04779",
+               "http://identifiers.org/obo.go/GO:0008865"
+  r_5 hypernym "http://identifiers.org/obo.go/GO:0004332"
+  r_5 hypernym "http://identifiers.org/ec-code/4.1.2.13",
+               "http://identifiers.org/kegg.reaction/R01068"
+  r_6 parthood "http://identifiers.org/obo.go/GO:0006127"
+  r_6 hypernym "http://identifiers.org/kegg.reaction/R00842"
+  r_6 hypernym "http://identifiers.org/ec-code/1.1.1.8",
+               "http://identifiers.org/obo.go/GO:0004367"
+  r_7 parthood "http://identifiers.org/obo.go/GO:0006127"
+  r_7 hypernym "http://identifiers.org/obo.go/GO:0004367"
+  r_7 hypernym "http://identifiers.org/ec-code/1.1.1.8",
+               "http://identifiers.org/kegg.reaction/R00842"
+  r_8 parthood "http://identifiers.org/ec-code/1.2.1.12",
+               "http://identifiers.org/kegg.reaction/R01061",
+               "http://identifiers.org/obo.go/GO:0008943"
+  r_9 parthood "http://identifiers.org/obo.go/GO:0008943"
+  r_9 parthood "http://identifiers.org/ec-code/1.2.1.12",
+               "http://identifiers.org/kegg.reaction/R01061"
+  r_10 parthood "http://identifiers.org/obo.go/GO:0008943"
+  r_10 parthood "http://identifiers.org/ec-code/1.2.1.12",
+                "http://identifiers.org/kegg.reaction/R01061"
+  r_11 hypernym "http://identifiers.org/ec-code/2.7.2.3"
+  r_11 hypernym "http://identifiers.org/kegg.reaction/R01512"
+  r_12 part "http://identifiers.org/ec-code/4.2.1.11"
+  r_12 part "http://identifiers.org/ec-code/2.7.1.40",
+            "http://identifiers.org/kegg.reaction/R00658"
+  r_12 version "http://identifiers.org/kegg.reaction/R00200",
+               "http://identifiers.org/obo.go/GO:0004634",
+               "http://identifiers.org/obo.go/GO:0004743"
+  r_13 hypernym "http://identifiers.org/ec-code/1.1.1.27"
+  r_13 hypernym "http://identifiers.org/kegg.reaction/R00703",
+                "http://identifiers.org/obo.go/GO:0004459"
+  r_14 hypernym "http://identifiers.org/ec-code/1.1.1.27",
+                "http://identifiers.org/kegg.reaction/R00703",
+                "http://identifiers.org/obo.go/GO:0004459"
+  r_15 hypernym "http://identifiers.org/obo.go/GO:0042867"
+  r_15 version "http://identifiers.org/obo.go/GO:0006099"
+  r_16 hypernym "http://identifiers.org/obo.go/GO:0019646"
+  r_17 parthood "http://identifiers.org/obo.go/GO:0006119"
+  r_18 parthood "http://identifiers.org/obo.go/GO:0006119"
+  r_19 hypernym "http://identifiers.org/obo.go/GO:0022900"
+  r_20 hypernym "http://identifiers.org/obo.go/GO:0015867"
+  r_21 hypernym "http://identifiers.org/obo.go/GO:0005524"
+  r_22 hypernym "http://identifiers.org/obo.go/GO:0006200"
 end
+
+chance is "Chance1960_Glycolysis_Respiration"
+
+chance model_entity_is "http://identifiers.org/biomodels.db/MODEL1010190002"
+chance model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000281"
+chance description "http://identifiers.org/pubmed/13692276"
+chance taxon "http://identifiers.org/taxonomy/9606",
+             "http://identifiers.org/obo.bto/BTO:0000094"
+chance version "http://identifiers.org/kegg.pathway/hsa00010"
+chance version "http://identifiers.org/reactome/REACT_1383.6"
+chance hypernym "http://identifiers.org/obo.go/GO:0006119",
+                "http://identifiers.org/obo.go/GO:0006096"

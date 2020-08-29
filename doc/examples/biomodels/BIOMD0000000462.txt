@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *BIOMD0000000462()
 
   // Compartments and Species:
@@ -9,10 +9,10 @@ model *BIOMD0000000462()
   // Reactions:
   Abetaproduction: $Source => Abeta; kprod*Source;
   AbetaDegradation: Abeta + Nep => $Sink + Nep; kdeg*Abeta*Nep*0.001;
-  AbetaDimerisation: 2Abeta => AbDim; kdimer*Abeta*(Abeta - 1)*0.5;
-  AbetaDedimerisation: AbDim => 2Abeta; kdedimer*AbDim;
-  AbetaPlaqueFormation: 2AbDim => 4AbP; kpf*AbDim*(AbDim - 1)*0.5;
-  AbetaPlaqueGrowth: Abeta + AbP => 2AbP; (kpg*Abeta*AbP^2)/(kpghalf^2 + AbP^2);
+  AbetaDimerisation: 2 Abeta => AbDim; kdimer*Abeta*(Abeta - 1)*0.5;
+  AbetaDedimerisation: AbDim => 2 Abeta; kdedimer*AbDim;
+  AbetaPlaqueFormation: 2 AbDim => 4 AbP; kpf*AbDim*(AbDim - 1)*0.5;
+  AbetaPlaqueGrowth: Abeta + AbP => 2 AbP; kpg*Abeta*AbP^2/(kpghalf^2 + AbP^2);
   AbetaDisaggregation: AbP => Abeta; kdisagg*AbP;
   NepDegradation: Nep => $Sink; kdegNep*Nep;
 
@@ -28,15 +28,15 @@ model *BIOMD0000000462()
   cell = 1;
 
   // Variable initializations:
-  kprod = 1.86e-005;
-  kdeg = 2.1e-005;
-  kdimer = 1.1783e-007;
-  kdedimer = 8.4655e-006;
-  kdisagg = 5.4357e-005;
-  kpf = 2.785e-006;
+  kprod = 1.86e-05;
+  kdeg = 2.1e-05;
+  kdimer = 1.1783e-07;
+  kdedimer = 8.4655e-06;
+  kdisagg = 5.4357e-05;
+  kpf = 2.785e-06;
   kpg = 0.00574;
   kpghalf = 4;
-  kdegNep = 1.8e-010;
+  kdegNep = 1.8e-10;
 
   // Other declarations:
   const cell, kprod, kdeg, kdimer, kdedimer, kdisagg, kpf, kpg, kpghalf, kdegNep;
@@ -49,4 +49,26 @@ model *BIOMD0000000462()
   AbDim is "AbetaDimer";
   AbP is "AbetaPlaque";
   Nep is "Neprilysin";
+
+  // SBO terms:
+  Source.sboTerm = 291
+  Sink.sboTerm = 291
+
+  // CV terms:
+  Abeta hypernym "http://identifiers.org/chebi/CHEBI:64645"
+  AbDim hypernym "http://identifiers.org/chebi/CHEBI:64645",
+                 "http://identifiers.org/go/GO:0043234"
+  AbP hypernym "http://identifiers.org/chebi/CHEBI:64645",
+               "http://identifiers.org/bto/BTO:0002774"
+  Nep hypernym "http://identifiers.org/uniprot/P08473"
 end
+
+BIOMD0000000462 is "Proctor2012 - Role of Amyloid-beta dimers in aggregation formation"
+
+BIOMD0000000462 model_entity_is "http://identifiers.org/biomodels.db/MODEL1202290000"
+BIOMD0000000462 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000462"
+BIOMD0000000462 description "http://identifiers.org/pubmed/22748062"
+BIOMD0000000462 property "http://identifiers.org/doid/DOID:10652"
+BIOMD0000000462 hypernym "http://identifiers.org/go/GO:0097242",
+                         "http://identifiers.org/go/GO:0070841"
+BIOMD0000000462 taxon "http://identifiers.org/taxonomy/9606"

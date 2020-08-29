@@ -1,7 +1,9 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 function GK(A1, A2, A3, A4)
-  (2*A4*A1)/(A2 - A1 + A3*A2 + A4*A1 + root(2, (A2 - A1 + A3*A2 + A4*A1)^2 - 4*(A2 - A1)*A4*A1));
+  2*A4*A1/((A2 - A1) + A3*A2 + A4*A1 + root(2, ((A2 - A1) + A3*A2 + A4*A1)^2 - 4*(A2 - A1)*A4*A1));
 end
+
+GK is "Goldbeter Koshland Function"
 
 
 model *Tyson2001_Cell_Cycle_Regulation()
@@ -13,8 +15,8 @@ model *Tyson2001_Cell_Cycle_Regulation()
   substanceOnly species IEP in cell, $Mad in cell, SK in cell;
 
   // Assignment Rules:
-  CycB := CycBt - (2*CycBt*CKIt)/(CycBt + CKIt + 1/Keq + ((CycBt + CKIt + 1/Keq)^2 - 4*CycBt*CKIt)^(1/2));
-  Trimer := (2*CycBt*CKIt)/(CycBt + CKIt + 1/Keq + ((CycBt + CKIt + 1/Keq)^2 - 4*CycBt*CKIt)^(1/2));
+  CycB := CycBt - 2*CycBt*CKIt/(CycBt + CKIt + 1/Keq + ((CycBt + CKIt + 1/Keq)^2 - 4*CycBt*CKIt)^(1/2));
+  Trimer := 2*CycBt*CKIt/(CycBt + CKIt + 1/Keq + ((CycBt + CKIt + 1/Keq)^2 - 4*CycBt*CKIt)^(1/2));
   Mad := 1;
   TF := GK(k15p*m + k15pp*SK, k16p + k16pp*m*CycB, J15, J16);
 
@@ -23,12 +25,12 @@ model *Tyson2001_Cell_Cycle_Regulation()
   CycBdegradation: CycBt => ; k2p*CycBt;
   CycBdegradationviaCdh1: CycBt => ; k2pp*Cdh1*CycBt;
   CycBtdegradationviaCdc20a: CycBt => ; k2ppp*Cdc20a*CycBt;
-  Cdh1synthesis:  => Cdh1; ((k3p + k3pp*Cdc20a)*(1 - Cdh1))/((J3 + 1) - Cdh1);
+  Cdh1synthesis:  => Cdh1; (k3p + k3pp*Cdc20a)*(1 - Cdh1)/(J3 + 1 - Cdh1);
   Cdh1degradation: Cdh1 => ; (k4p*SK*Cdh1 + k4*m*CycB*Cdh1)/(J4 + Cdh1);
-  Cdc20tsynthesis:  => Cdc20t; k5p + (k5pp*((CycB*m)/J5)^n)/(1 + ((CycB*m)/J5)^n);
+  Cdc20tsynthesis:  => Cdc20t; k5p + k5pp*(CycB*m/J5)^n/(1 + (CycB*m/J5)^n);
   Cdc20t_deg: Cdc20t => ; k6*Cdc20t;
-  Cdc20activation:  => Cdc20a; (k7*IEP*(Cdc20t - Cdc20a))/((J7 + Cdc20t) - Cdc20a);
-  Cdc20ainhibition: Cdc20a => ; (k8*Mad*Cdc20a)/(J8 + Cdc20a);
+  Cdc20activation:  => Cdc20a; k7*IEP*(Cdc20t - Cdc20a)/(J7 + Cdc20t - Cdc20a);
+  Cdc20ainhibition: Cdc20a => ; k8*Mad*Cdc20a/(J8 + Cdc20a);
   Cdc20adegradation: Cdc20a => ; k6*Cdc20a;
   IEPsynthesis:  => IEP; k9*m*CycB*(1 - IEP);
   IEPdegradation: IEP => ; k10*IEP;
@@ -127,4 +129,64 @@ model *Tyson2001_Cell_Cycle_Regulation()
   eq_7 is "CKIt Trimer sequestred";
   SKsynthesis is "SK synthesis";
   SKdegradation is "SK degradation";
+
+  // CV terms:
+  cell identity "http://identifiers.org/go/GO:0005623"
+  CycBt part "http://identifiers.org/uniprot/P00546",
+             "http://identifiers.org/interpro/IPR015454"
+  CycBt hypernym "http://identifiers.org/go/GO:0000307"
+  CycBt version "http://identifiers.org/uniprot/P00546",
+                "http://identifiers.org/uniprot/P32943",
+                "http://identifiers.org/uniprot/P30283",
+                "http://identifiers.org/uniprot/P24871",
+                "http://identifiers.org/uniprot/P24870",
+                "http://identifiers.org/uniprot/P24869",
+                "http://identifiers.org/uniprot/P24868"
+  CycB part "http://identifiers.org/uniprot/P00546",
+            "http://identifiers.org/interpro/IPR015454"
+  CKIt hypernym "http://identifiers.org/uniprot/P38634"
+  Cdc20a hypernym "http://identifiers.org/uniprot/P26309"
+  Trimer part "http://identifiers.org/uniprot/P00546",
+              "http://identifiers.org/uniprot/P38634",
+              "http://identifiers.org/interpro/IPR015454"
+  Cdh1 hypernym "http://identifiers.org/uniprot/P53197"
+  m hypernym "http://identifiers.org/go/GO:0016049"
+  Cdc20t hypernym "http://identifiers.org/uniprot/P26309"
+  Mad hypernym "http://identifiers.org/uniprot/P40957"
+  SK hypernym "http://identifiers.org/uniprot/P20437",
+              "http://identifiers.org/uniprot/P20438"
+  SK hypernym "http://identifiers.org/interpro/IPR014399"
+  CycBt_synthesis hypernym "http://identifiers.org/go/GO:0010467"
+  CycBdegradation hypernym "http://identifiers.org/go/GO:0008054"
+  CycBdegradationviaCdh1 hypernym "http://identifiers.org/reactome/REACT_6761.1",
+                                  "http://identifiers.org/go/GO:0008054"
+  CycBtdegradationviaCdc20a hypernym "http://identifiers.org/reactome/REACT_6820.1"
+  Cdh1synthesis hypernym "http://identifiers.org/go/GO:0010467"
+  Cdh1degradation hypernym "http://identifiers.org/go/GO:0030163"
+  Cdc20tsynthesis hypernym "http://identifiers.org/go/GO:0010467"
+  Cdc20t_deg hypernym "http://identifiers.org/go/GO:0030163"
+  Cdc20activation hypernym "http://identifiers.org/reactome/REACT_6954.1"
+  Cdc20ainhibition hypernym "http://identifiers.org/reactome/REACT_1041.2"
+  Cdc20adegradation hypernym "http://identifiers.org/go/GO:0030163"
+  IEPsynthesis hypernym "http://identifiers.org/go/GO:0010467"
+  IEPdegradation hypernym "http://identifiers.org/go/GO:0030163"
+  growth hypernym "http://identifiers.org/go/GO:0016049"
+  CKItsynthesis hypernym "http://identifiers.org/go/GO:0010467"
+  CKIdegradation hypernym "http://identifiers.org/go/GO:0030163"
+  CKItphosphorilationviaSK hypernym "http://identifiers.org/reactome/REACT_9003.1"
+  eq_7 hypernym "http://identifiers.org/reactome/REACT_9005.1",
+                "http://identifiers.org/go/GO:0045736"
+  SKsynthesis hypernym "http://identifiers.org/go/GO:0010467"
+  SKdegradation hypernym "http://identifiers.org/go/GO:0030163",
+                         "http://identifiers.org/go/GO:0008054"
 end
+
+Tyson2001_Cell_Cycle_Regulation is "Tyson2001_Cell_Cycle_Regulation"
+
+Tyson2001_Cell_Cycle_Regulation model_entity_is "http://identifiers.org/biomodels.db/MODEL3897475441"
+Tyson2001_Cell_Cycle_Regulation model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000195"
+Tyson2001_Cell_Cycle_Regulation description "http://identifiers.org/pubmed/11371178"
+Tyson2001_Cell_Cycle_Regulation hypernym "http://identifiers.org/kegg.pathway/map04111",
+                                         "http://identifiers.org/reactome/REACT_152.2",
+                                         "http://identifiers.org/go/GO:0051726"
+Tyson2001_Cell_Cycle_Regulation taxon "http://identifiers.org/taxonomy/4932"

@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Singh2006_IL6_Signal_Transduction()
 
   // Compartments and Species:
@@ -26,8 +26,8 @@ model *Singh2006_IL6_Signal_Transduction()
   R2: x2 => ; cytosol*kr0*x2;
   R3: x6 => x5 + x2; cytosol*(kr2*x6 - kf2*x2*x5);
   R5: x4 => x5; cytosol*(kf1*x3*x4 - kr1*x5);
-  R7: 2x6 => x7; cytosol*kf3*x6^2;
-  R8: x7 => 2x6; cytosol*kr3*x7;
+  R7: 2 x6 => x7; cytosol*kf3*x6^2;
+  R8: x7 => 2 x6; cytosol*kr3*x7;
   R9: x7 => x8; cytosol*k4*x7;
   R10: x16 => x15 + x7; cytosol*k10*x16;
   R11: x9 + x8 => x11; cytosol*(kf5*x8*x9 - kr5*x11);
@@ -43,21 +43,21 @@ model *Singh2006_IL6_Signal_Transduction()
   R20: x22 => x9; nucleus*k17*x22;
   R21: x30 + x9 -> x31; cytosol*(kf5*x9*x30 - kr5*x31);
   R22: x32 => x29 + x15 + x9 + x7; cytosol*k10*x32;
-  R23: x10 -> 0.5x13; cytosol*(2*kf8*x10^2 - 2*kr8*x13);
+  R23: x10 -> 0.5 x13; cytosol*(2*kf8*x10^2 - 2*kr8*x13);
   R24: x17 + x10 -> x18; cytosol*(kf11*x10*x17 - kr11*x18);
   R25: x17 + x13 -> x19; cytosol*(kf11*x13*x17 - kr11*x19);
   R26: x13 => x20; cytosol*k14*x13;
   R27: x19 => x17 + x14; cytosol*k12*x19;
   R28: x31 + x15 => x32; cytosol*(kf9*x15*x31 - kr9*x32);
-  R29: x46 => x15; (cytosol*Vm*x46)/(Km + x46);
+  R29: x46 => x15; cytosol*Vm*x46/(Km + x46);
   R30: x16 -> x39; cytosol*(kf34*x16 - kr34*x39);
-  R31: x20 -> 2x21; nucleus*(kr8*x20 - kf8*x21^2);
+  R31: x20 -> 2 x21; nucleus*(kr8*x20 - kf8*x21^2);
   R32: x23 + x20 -> x27; nucleus*(kf15*x23*x20 - kr15*x27);
   R33: x23 + x21 -> x28; nucleus*(kf15*x23*x21 - kr15*x28);
   R34: x24 -> x22 + x21; nucleus*(kr13*x24 - kf13*x21*x22);
   R35: x28 => x23 + x22; nucleus*k16*x28;
   R36: x27 => x24 + x23; nucleus*k16*x27;
-  R37:  => x25; nucleus*((k18a*x20)/(k18b + x20));
+  R37:  => x25; nucleus*(k18a*x20/(k18b + x20));
   R38: x25 => x26; nucleus*k19*x25;
   R39: x26 => ; nucleus*k22*x26;
   R40:  => x29; nucleus*k20*x26;
@@ -197,7 +197,7 @@ model *Singh2006_IL6_Signal_Transduction()
   kf32 = 0.1;
   kr32 = 0.000245;
   k12 = 0.003;
-  kf13 = 2e-007;
+  kf13 = 2e-07;
   kr13 = 0.2;
   k17 = 0.05;
   kf8 = 0.02;
@@ -214,7 +214,7 @@ model *Singh2006_IL6_Signal_Transduction()
   kf15 = 0.001;
   kr15 = 0.2;
   kf61 = 0.2;
-  kr61 = 2e-007;
+  kr61 = 2e-07;
   k16 = 0.005;
   k18a = 0.01;
   k18b = 400;
@@ -432,4 +432,253 @@ model *Singh2006_IL6_Signal_Transduction()
   R71 is "ERK-PP-Phosp3 dissociation";
   R72 is "ERK-P-Phosp3 formation";
   R73 is "ERK-PP-Phosp3 formation";
+
+  // CV terms:
+  cytosol identity "http://identifiers.org/go/GO:0005829"
+  nucleus identity "http://identifiers.org/go/GO:0005634"
+  x1 hypernym "http://identifiers.org/uniprot/P22272"
+  x2 part "http://identifiers.org/uniprot/P08505",
+          "http://identifiers.org/uniprot/P22272"
+  x6 part "http://identifiers.org/uniprot/P52332",
+          "http://identifiers.org/uniprot/Q6PDI9",
+          "http://identifiers.org/uniprot/P08505",
+          "http://identifiers.org/uniprot/P22272"
+  x5 part "http://identifiers.org/uniprot/Q6PDI9",
+          "http://identifiers.org/uniprot/P52332"
+  x7 part "http://identifiers.org/uniprot/P52332",
+          "http://identifiers.org/uniprot/Q6PDI9",
+          "http://identifiers.org/uniprot/P08505",
+          "http://identifiers.org/uniprot/P22272"
+  x8 part "http://identifiers.org/uniprot/P52332",
+          "http://identifiers.org/uniprot/Q6PDI9",
+          "http://identifiers.org/uniprot/P08505",
+          "http://identifiers.org/uniprot/P22272"
+  x16 part "http://identifiers.org/uniprot/P35235",
+           "http://identifiers.org/uniprot/P52332",
+           "http://identifiers.org/uniprot/Q6PDI9",
+           "http://identifiers.org/uniprot/P08505",
+           "http://identifiers.org/uniprot/P22272"
+  x15 hypernym "http://identifiers.org/uniprot/P35235"
+  x9 hypernym "http://identifiers.org/uniprot/P42227"
+  x11 part "http://identifiers.org/uniprot/P42227",
+           "http://identifiers.org/uniprot/P52332",
+           "http://identifiers.org/uniprot/Q6PDI9",
+           "http://identifiers.org/uniprot/P08505",
+           "http://identifiers.org/uniprot/P22272"
+  x10 hypernym "http://identifiers.org/uniprot/P42227"
+  x12 part "http://identifiers.org/uniprot/P42227",
+           "http://identifiers.org/uniprot/P52332",
+           "http://identifiers.org/uniprot/Q6PDI9",
+           "http://identifiers.org/uniprot/P08505",
+           "http://identifiers.org/uniprot/P22272"
+  x29 hypernym "http://identifiers.org/uniprot/O35718"
+  x30 part "http://identifiers.org/uniprot/O35718",
+           "http://identifiers.org/uniprot/P52332",
+           "http://identifiers.org/uniprot/Q6PDI9",
+           "http://identifiers.org/uniprot/P08505",
+           "http://identifiers.org/uniprot/P22272"
+  x39 part "http://identifiers.org/uniprot/P35235",
+           "http://identifiers.org/uniprot/P52332",
+           "http://identifiers.org/uniprot/Q6PDI9",
+           "http://identifiers.org/uniprot/P08505",
+           "http://identifiers.org/uniprot/P22272"
+  x46 hypernym "http://identifiers.org/uniprot/P35235"
+  x40 part "http://identifiers.org/uniprot/Q60631",
+           "http://identifiers.org/uniprot/P35235",
+           "http://identifiers.org/uniprot/P52332",
+           "http://identifiers.org/uniprot/Q6PDI9",
+           "http://identifiers.org/uniprot/P08505",
+           "http://identifiers.org/uniprot/P22272"
+  x45 part "http://identifiers.org/uniprot/Q60631",
+           "http://identifiers.org/uniprot/P35235"
+  x41 part "http://identifiers.org/uniprot/Q60631",
+           "http://identifiers.org/uniprot/P35235",
+           "http://identifiers.org/uniprot/P52332",
+           "http://identifiers.org/uniprot/Q6PDI9",
+           "http://identifiers.org/uniprot/P08505",
+           "http://identifiers.org/uniprot/P22272"
+  x44 part "http://identifiers.org/uniprot/Q60631",
+           "http://identifiers.org/uniprot/P35235"
+  x18 part "http://identifiers.org/uniprot/P42227"
+  x14 part "http://identifiers.org/uniprot/P42227"
+  x22 hypernym "http://identifiers.org/uniprot/P42227"
+  x32 part "http://identifiers.org/uniprot/O35718",
+           "http://identifiers.org/uniprot/P42227",
+           "http://identifiers.org/uniprot/P35235",
+           "http://identifiers.org/uniprot/P52332",
+           "http://identifiers.org/uniprot/Q6PDI9",
+           "http://identifiers.org/uniprot/P08505",
+           "http://identifiers.org/uniprot/P22272"
+  x13 hypernym "http://identifiers.org/uniprot/P42227"
+  x20 hypernym "http://identifiers.org/uniprot/P42227"
+  x21 hypernym "http://identifiers.org/uniprot/P42227"
+  x27 part "http://identifiers.org/uniprot/P42227"
+  x24 hypernym "http://identifiers.org/uniprot/P42227"
+  x34 hypernym "http://identifiers.org/uniprot/Q60631"
+  x36 part "http://identifiers.org/uniprot/Q61411"
+  x42 part "http://identifiers.org/uniprot/Q62245",
+           "http://identifiers.org/uniprot/Q61411",
+           "http://identifiers.org/uniprot/Q60631",
+           "http://identifiers.org/uniprot/P35235",
+           "http://identifiers.org/uniprot/P52332",
+           "http://identifiers.org/uniprot/Q6PDI9",
+           "http://identifiers.org/uniprot/P08505",
+           "http://identifiers.org/uniprot/P22272"
+  x37 part "http://identifiers.org/uniprot/Q61411"
+  x47 hypernym "http://identifiers.org/uniprot/Q99N57"
+  x48 part "http://identifiers.org/uniprot/Q61411"
+  x52 part "http://identifiers.org/uniprot/Q99N57"
+  x51 hypernym "http://identifiers.org/uniprot/Q99N57"
+  x53 hypernym "http://identifiers.org/uniprot/Q3TMJ8"
+  x54 part "http://identifiers.org/uniprot/Q3TMJ8",
+           "http://identifiers.org/uniprot/Q99N57"
+  x55 hypernym "http://identifiers.org/uniprot/Q3TMJ8"
+  x60 part "http://identifiers.org/uniprot/Q3TMJ8"
+  x57 hypernym "http://identifiers.org/uniprot/Q3TMJ8"
+  x61 hypernym "http://identifiers.org/uniprot/P63085"
+  x62 part "http://identifiers.org/uniprot/P63085",
+           "http://identifiers.org/uniprot/Q3TMJ8"
+  x63 hypernym "http://identifiers.org/uniprot/P63085"
+  x65 hypernym "http://identifiers.org/uniprot/P63085"
+  x68 hypernym "http://identifiers.org/uniprot/P63085"
+  x35 hypernym "http://identifiers.org/uniprot/Q62245"
+  x28 part "http://identifiers.org/uniprot/P42227"
+  x31 part "http://identifiers.org/uniprot/O35718",
+           "http://identifiers.org/uniprot/P52332",
+           "http://identifiers.org/uniprot/Q6PDI9",
+           "http://identifiers.org/uniprot/P08505",
+           "http://identifiers.org/uniprot/P22272"
+  x56 part "http://identifiers.org/uniprot/Q3TMJ8",
+           "http://identifiers.org/uniprot/Q99N57"
+  x43 part "http://identifiers.org/uniprot/Q62245",
+           "http://identifiers.org/uniprot/Q61411",
+           "http://identifiers.org/uniprot/Q60631",
+           "http://identifiers.org/uniprot/P35235",
+           "http://identifiers.org/uniprot/P52332",
+           "http://identifiers.org/uniprot/Q6PDI9",
+           "http://identifiers.org/uniprot/P08505",
+           "http://identifiers.org/uniprot/P22272"
+  x3 hypernym "http://identifiers.org/uniprot/Q6PDI9"
+  x58 part "http://identifiers.org/uniprot/Q3TMJ8"
+  x4 hypernym "http://identifiers.org/uniprot/P52332"
+  x49 part "http://identifiers.org/uniprot/Q61411"
+  x33 part "http://identifiers.org/uniprot/P42227",
+           "http://identifiers.org/uniprot/P35235",
+           "http://identifiers.org/uniprot/P52332",
+           "http://identifiers.org/uniprot/Q6PDI9",
+           "http://identifiers.org/uniprot/P08505",
+           "http://identifiers.org/uniprot/P22272"
+  x64 part "http://identifiers.org/uniprot/P63085",
+           "http://identifiers.org/uniprot/Q3TMJ8"
+  x19 part "http://identifiers.org/uniprot/P42227"
+  x38 part "http://identifiers.org/uniprot/Q62245",
+           "http://identifiers.org/uniprot/Q60631"
+  x67 part "http://identifiers.org/uniprot/P63085"
+  R1 hypernym "http://identifiers.org/go/GO:0005515"
+  R2 hypernym "http://identifiers.org/go/GO:0043624"
+  R3 hypernym "http://identifiers.org/go/GO:0043624"
+  R5 hypernym "http://identifiers.org/go/GO:0005515"
+  R7 hypernym "http://identifiers.org/go/GO:0042803"
+  R8 hypernym "http://identifiers.org/go/GO:0043624"
+  R9 identity "http://identifiers.org/ec-code/2.7.10.2",
+              "http://identifiers.org/go/GO:0004713"
+  R10 identity "http://identifiers.org/ec-code/3.1.3.48"
+  R10 hypernym "http://identifiers.org/go/GO:0043624"
+  R11 hypernym "http://identifiers.org/go/GO:0046983"
+  R12 identity "http://identifiers.org/ec-code/2.7.10.2",
+               "http://identifiers.org/go/GO:0043624",
+               "http://identifiers.org/go/GO:0004713"
+  R13 hypernym "http://identifiers.org/go/GO:0043623"
+  R14 hypernym "http://identifiers.org/go/GO:0005515"
+  R15 hypernym "http://identifiers.org/go/GO:0005515"
+  R16 hypernym "http://identifiers.org/go/GO:0043624"
+  R16a hypernym "http://identifiers.org/go/GO:0043624"
+  R17 identity "http://identifiers.org/ec-code/2.7.10.2",
+               "http://identifiers.org/go/GO:0043624",
+               "http://identifiers.org/go/GO:0004713"
+  R18 hypernym "http://identifiers.org/go/GO:0032516"
+  R19 hypernym "http://identifiers.org/go/GO:0046983"
+  R20 hypernym "http://identifiers.org/go/GO:0006611"
+  R21 hypernym "http://identifiers.org/go/GO:0005515"
+  R22 identity "http://identifiers.org/ec-code/3.1.3.48",
+               "http://identifiers.org/go/GO:0043624"
+  R23 hypernym "http://identifiers.org/go/GO:0046983"
+  R24 hypernym "http://identifiers.org/go/GO:0005515"
+  R25 hypernym "http://identifiers.org/go/GO:0005515"
+  R26 hypernym "http://identifiers.org/go/GO:0000060"
+  R27 hypernym "http://identifiers.org/go/GO:0032516"
+  R28 hypernym "http://identifiers.org/go/GO:0005515"
+  R29 hypernym "http://identifiers.org/go/GO:0016311"
+  R30 identity "http://identifiers.org/ec-code/2.7.10.2",
+               "http://identifiers.org/go/GO:0004713"
+  R31 hypernym "http://identifiers.org/go/GO:0043624"
+  R32 hypernym "http://identifiers.org/go/GO:0005515"
+  R33 hypernym "http://identifiers.org/go/GO:0005515"
+  R34 hypernym "http://identifiers.org/go/GO:0043624"
+  R35 hypernym "http://identifiers.org/go/GO:0043624",
+               "http://identifiers.org/go/GO:0032516"
+  R36 hypernym "http://identifiers.org/go/GO:0043624",
+               "http://identifiers.org/go/GO:0032516"
+  R37 identity "http://identifiers.org/go/GO:0006351"
+  R38 hypernym "http://identifiers.org/go/GO:0006611"
+  R39 hypernym "http://identifiers.org/go/GO:0006402"
+  R40 hypernym "http://identifiers.org/go/GO:0006412"
+  R41 hypernym "http://identifiers.org/go/GO:0030163"
+  R42 hypernym "http://identifiers.org/go/GO:0043624"
+  R43 hypernym "http://identifiers.org/go/GO:0005515"
+  R44 hypernym "http://identifiers.org/go/GO:0043624"
+  R45 hypernym "http://identifiers.org/go/GO:0005515"
+  R46 hypernym "http://identifiers.org/go/GO:0005515"
+  R47 hypernym "http://identifiers.org/go/GO:0005515"
+  R48 hypernym "http://identifiers.org/go/GO:0005515"
+  R49 hypernym "http://identifiers.org/go/GO:0043624"
+  R50 hypernym "http://identifiers.org/go/GO:0032856"
+  R51 hypernym "http://identifiers.org/go/GO:0005515"
+  R52 hypernym "http://identifiers.org/go/GO:0043623"
+  R53 hypernym "http://identifiers.org/go/GO:0043623"
+  R54 hypernym "http://identifiers.org/go/GO:0043623"
+  R55 hypernym "http://identifiers.org/go/GO:0032516"
+  R56 hypernym "http://identifiers.org/go/GO:0005515"
+  R57 hypernym "http://identifiers.org/go/GO:0005515"
+  R58 hypernym "http://identifiers.org/go/GO:0005515"
+  R59 identity "http://identifiers.org/ec-code/2.7.11.1",
+               "http://identifiers.org/go/GO:0004672"
+  R60 hypernym "http://identifiers.org/go/GO:0005515"
+  R61 hypernym "http://identifiers.org/go/GO:0032516"
+  R62 hypernym "http://identifiers.org/go/GO:0032516"
+  R63 hypernym "http://identifiers.org/go/GO:0005515"
+  R64 identity "http://identifiers.org/ec-code/2.7.11.1",
+               "http://identifiers.org/go/GO:0004672"
+  R65 hypernym "http://identifiers.org/go/GO:0005515"
+  R66 hypernym "http://identifiers.org/go/GO:0005515"
+  R67 identity "http://identifiers.org/ec-code/2.7.12.2",
+               "http://identifiers.org/go/GO:0004708"
+  R68 hypernym "http://identifiers.org/go/GO:0043624"
+  R69 identity "http://identifiers.org/ec-code/2.7.12.2",
+               "http://identifiers.org/go/GO:0004708"
+  R70 hypernym "http://identifiers.org/go/GO:0043624",
+               "http://identifiers.org/go/GO:0032516"
+  R71 hypernym "http://identifiers.org/go/GO:0043624",
+               "http://identifiers.org/go/GO:0032516"
+  R72 hypernym "http://identifiers.org/go/GO:0005515"
+  R73 hypernym "http://identifiers.org/go/GO:0005515"
 end
+
+Singh2006_IL6_Signal_Transduction is "Singh2006_IL6_Signal_Transduction"
+
+Singh2006_IL6_Signal_Transduction model_entity_is "http://identifiers.org/biomodels.db/MODEL9750203466"
+Singh2006_IL6_Signal_Transduction model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000151"
+Singh2006_IL6_Signal_Transduction description "http://identifiers.org/pubmed/16752369"
+Singh2006_IL6_Signal_Transduction origin "http://identifiers.org/biomodels.db/BIOMD0000000093",
+                                         "http://identifiers.org/biomodels.db/BIOMD0000000094",
+                                         "http://identifiers.org/biomodels.db/BIOMD0000000019",
+                                         "http://identifiers.org/pubmed/12773095"
+Singh2006_IL6_Signal_Transduction container "http://identifiers.org/bto/BTO:0000575",
+                                            "http://identifiers.org/bto/BTO:0000759"
+Singh2006_IL6_Signal_Transduction part "http://identifiers.org/go/GO:0000165",
+                                       "http://identifiers.org/go/GO:0007259"
+Singh2006_IL6_Signal_Transduction taxon "http://identifiers.org/taxonomy/2759"
+Singh2006_IL6_Signal_Transduction part "http://identifiers.org/kegg.pathway/mmu04010",
+                                       "http://identifiers.org/kegg.pathway/mmu04630"
+Singh2006_IL6_Signal_Transduction property "http://identifiers.org/mamo/MAMO_0000046"
+Singh2006_IL6_Signal_Transduction hypernym "http://identifiers.org/go/GO:0070102"

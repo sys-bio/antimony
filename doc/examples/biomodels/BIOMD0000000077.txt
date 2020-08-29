@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Model_1()
 
   // Compartments and Species:
@@ -7,11 +7,11 @@ model *Model_1()
   species IP3 in cell, $CHO in cell;
 
   // Assignment Rules:
-  CHO := (0.001*alpha*IP3*(0.3 + 0.3*beta*time*exp(1 - beta*time)))/(1 + 0.001*alpha*IP3);
+  CHO := 0.001*alpha*IP3*(0.3 + 0.3*beta*time*exp(1 - beta*time))/(1 + 0.001*alpha*IP3);
 
   // Reactions:
   reaction_0: H + R -> HR; cell*(reaction_0_k1*H*R - reaction_0_k2*HR);
-  reaction_1: 2HR -> HRRH; cell*(reaction_1_k1*HR^2 - reaction_1_k2*HRRH);
+  reaction_1: 2 HR -> HRRH; cell*(reaction_1_k1*HR^2 - reaction_1_k2*HRRH);
   reaction_2: HRRH + GQ -> E; cell*(reaction_2_k1*HRRH*GQ - reaction_2_k2*E);
   reaction_3: IP3 => ; cell*reaction_3_k1*IP3;
   reaction_4:  => IP3; cell*reaction_4_k*E;
@@ -61,4 +61,36 @@ model *Model_1()
   reaction_2 is "G protein react with dimer producing E";
   reaction_3 is "IP3 converted into inactive metabolites";
   reaction_4 is "Production of IP3";
+
+  // CV terms:
+  cell identity "http://identifiers.org/go/GO:0005623"
+  H version "http://identifiers.org/uniprot/P51924"
+  H version "http://identifiers.org/uniprot/P07490"
+  HR version "http://identifiers.org/uniprot/P07490",
+             "http://identifiers.org/uniprot/P30969"
+  R version "http://identifiers.org/uniprot/P30969"
+  HRRH hypernym "http://identifiers.org/go/GO:0043234"
+  E identity "http://identifiers.org/pirsf/PIRSF005483"
+  GQ version "http://identifiers.org/go/GO:0005834"
+  IP3 hypernym "http://identifiers.org/chebi/CHEBI:16595"
+  IP3 hypernym "http://identifiers.org/kegg.compound/C01245"
+  CHO hypernym "http://identifiers.org/interpro/IPR000699"
+  reaction_0 hypernym "http://identifiers.org/go/GO:0051428",
+                      "http://identifiers.org/go/GO:0005102"
+  reaction_0 hypernym "http://identifiers.org/go/GO:0004968"
+  reaction_1 hypernym "http://identifiers.org/go/GO:0006461"
+  reaction_2 hypernym "http://identifiers.org/go/GO:0007202"
+  reaction_3 hypernym "http://identifiers.org/go/GO:0009056"
+  reaction_4 hypernym "http://identifiers.org/go/GO:0004629"
 end
+
+Model_1 is "Blum2000_LHsecretion_1"
+
+Model_1 model_entity_is "http://identifiers.org/biomodels.db/MODEL3092061764"
+Model_1 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000077"
+Model_1 description "http://identifiers.org/pubmed/10662710"
+Model_1 parthood "http://identifiers.org/go/GO:0032275",
+                 "http://identifiers.org/go/GO:0007200"
+Model_1 taxon "http://identifiers.org/taxonomy/131567"
+Model_1 hypernym "http://identifiers.org/go/GO:0097210"
+Model_1 property "http://identifiers.org/mamo/MAMO_0000046"

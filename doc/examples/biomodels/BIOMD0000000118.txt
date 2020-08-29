@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 function GAMMAF(VV, theta, sigma)
   1/(1 + exp(-(VV - theta)/sigma));
 end
@@ -20,9 +20,9 @@ model *model_0000001()
   Iz := gZ*zzs*(V - VK);
 
   // Rate Rules:
-  hhs' = (phi*(GAMMAF(V, thetah, sigmah) - hhs))/(1 + 7.5*GAMMAF(V, t_tauh, -6));
-  V' = (-gL*(V - VL) - INa - INaP - IKdr - IA - Iz + Iapp)/Cm;
-  nns' = (phi*(GAMMAF(V, thetan, sigman) - nns))/(1 + 5*GAMMAF(V, t_taun, -15));
+  hhs' = phi*(GAMMAF(V, thetah, sigmah) - hhs)/(1 + 7.5*GAMMAF(V, t_tauh, -6));
+  V' = ((-gL*(V - VL) - INa - INaP - IKdr - IA - Iz) + Iapp)/Cm;
+  nns' = phi*(GAMMAF(V, thetan, sigman) - nns)/(1 + 5*GAMMAF(V, t_taun, -15));
   bbs' = (GAMMAF(V, thetab, sigmab) - bbs)/tauBs;
   zzs' = (GAMMAF(V, thetaz, sigmaz) - zzs)/tauZs;
 
@@ -82,4 +82,17 @@ model *model_0000001()
   // Display Names:
   time_unit is "ms";
   V is "VVs";
+
+  // CV terms:
+  compartment_0000001 hypernym "http://identifiers.org/obo.go/GO:0005623"
 end
+
+model_0000001 is "Golomb2006_SomaticBursting"
+
+model_0000001 model_entity_is "http://identifiers.org/biomodels.db/MODEL1243247625"
+model_0000001 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000118"
+model_0000001 description "http://identifiers.org/pubmed/16807352"
+model_0000001 taxon "http://identifiers.org/taxonomy/10114"
+model_0000001 hypernym "http://identifiers.org/obo.go/GO:0019227",
+                       "http://identifiers.org/obo.go/GO:0005248",
+                       "http://identifiers.org/obo.go/GO:0005249"

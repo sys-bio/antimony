@@ -1,23 +1,33 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 function function_1(v)
   v;
 end
 
+function_1 is "Constant flux (irreversible)"
+
 function function_2(kcatPH, Ptot, O2, KdPH, Htot, HP)
-  (Htot*kcatPH*Ptot*O2)/(1 + O2)/(KdPH + Ptot + HP);
+  Htot*kcatPH*Ptot*O2/(1 + O2)/(KdPH + Ptot + HP);
 end
+
+function_2 is "vPH Htot"
 
 function vFH(Ftot, O2, alpha, H, KiFH, HF, KcatFH)
-  (H*KcatFH*Ftot*O2)/(alpha + O2)/(KiFH + Ftot + HF);
+  H*KcatFH*Ftot*O2/(alpha + O2)/(KiFH + Ftot + HF);
 end
 
-function vFA(Ftot, O2, alpha, A, gamma, Atot, KiFA, KcatFH)
-  (A*KcatFH*Ftot*O2)/(alpha + O2)/(KiFA + A + gamma*(Atot - A));
+vFH is "vFH"
+
+function vFA(Ftot, O2, alpha, A, gamma_, Atot, KiFA, KcatFH)
+  A*KcatFH*Ftot*O2/(alpha + O2)/(KiFA + A + gamma_*(Atot - A));
 end
+
+vFA is "vFA"
 
 function function_3(H, kcatPH, Ptot, O2, KdPH, HP)
-  (H*kcatPH*Ptot*O2)/(1 + O2)/(KdPH + Ptot + HP);
+  H*kcatPH*Ptot*O2/(1 + O2)/(KdPH + Ptot + HP);
 end
+
+function_3 is "vPH H"
 
 
 model *Schmierer2010_FIH_Ankyrins()
@@ -34,9 +44,9 @@ model *Schmierer2010_FIH_Ankyrins()
   // Assignment Rules:
   species_4 := species_1 - species_2;
   species_6 := species_5 - species_3;
-  species_9 := 0.5*(species_2 - species_7 - parameter_7 + sqrt((parameter_7 - species_2 + species_7)^2 + 4*species_2*parameter_7));
-  parameter_7 := parameter_2/parameter_3*(parameter_3 + species_3 + parameter_6*(species_5 - species_3));
-  species_10 := 0.5*(species_1 - species_8 - parameter_4 + sqrt((parameter_4 - species_1 + species_8)^2 + 4*species_1*parameter_4));
+  species_9 := 0.5*((species_2 - species_7 - parameter_7) + sqrt(((parameter_7 - species_2) + species_7)^2 + 4*species_2*parameter_7));
+  parameter_7 := (parameter_2/parameter_3)*(parameter_3 + species_3 + parameter_6*(species_5 - species_3));
+  species_10 := 0.5*((species_1 - species_8 - parameter_4) + sqrt(((parameter_4 - species_1) + species_8)^2 + 4*species_1*parameter_4));
   species_12 := (parameter_2 + species_9)/(parameter_7 + species_9);
   species_13 := species_2/(parameter_5 + species_1);
   species_14 := species_1/(parameter_5 + species_1);
@@ -44,7 +54,7 @@ model *Schmierer2010_FIH_Ankyrins()
   species_16 := species_3/species_5;
   parameter_14 := 1/parameter_11;
   parameter_16 := species_5/parameter_11;
-  parameter_9 := parameter_3/parameter_2*(parameter_2 + species_9);
+  parameter_9 := (parameter_3/parameter_2)*(parameter_2 + species_9);
   parameter_13 := parameter_8*parameter_10;
 
   // Reactions:
@@ -155,4 +165,88 @@ model *Schmierer2010_FIH_Ankyrins()
   reaction_8 is "A synthesis";
   reaction_9 is "A degradation";
   reaction_10 is "A hydroxylation";
+
+  // SBO terms:
+  compartment_1.sboTerm = 290
+  species_1.sboTerm = 245
+  species_2.sboTerm = 245
+  species_3.sboTerm = 245
+  species_4.sboTerm = 245
+  species_5.sboTerm = 245
+  species_6.sboTerm = 245
+  species_7.sboTerm = 245
+  species_8.sboTerm = 245
+  species_9.sboTerm = 245
+  parameter_7.sboTerm = 261
+  species_10.sboTerm = 245
+  parameter_4.sboTerm = 282
+  species_11.sboTerm = 247
+  species_12.sboTerm = 245
+  parameter_2.sboTerm = 282
+  species_13.sboTerm = 245
+  parameter_5.sboTerm = 282
+  species_14.sboTerm = 247
+  species_15.sboTerm = 245
+  parameter_1.sboTerm = 9
+  parameter_3.sboTerm = 282
+  parameter_6.sboTerm = 9
+  parameter_8.sboTerm = 25
+  parameter_10.sboTerm = 9
+  parameter_11.sboTerm = 485
+  parameter_14.sboTerm = 356
+  parameter_16.sboTerm = 153
+  parameter_9.sboTerm = 261
+  parameter_13.sboTerm = 25
+  parameter_17.sboTerm = 356
+  parameter_18.sboTerm = 153
+  reaction_1.sboTerm = 393
+  reaction_2.sboTerm = 179
+  reaction_3.sboTerm = 179
+  reaction_4.sboTerm = 393
+  reaction_5.sboTerm = 179
+  reaction_6.sboTerm = 179
+  reaction_7.sboTerm = 233
+  reaction_8.sboTerm = 393
+  reaction_9.sboTerm = 179
+  reaction_10.sboTerm = 233
+
+  // CV terms:
+  compartment_1 hypernym "http://identifiers.org/go/GO:0005623"
+  species_1 part "http://identifiers.org/uniprot/Q99814",
+                 "http://identifiers.org/uniprot/Q16665",
+                 "http://identifiers.org/uniprot/Q9Y2N7"
+  species_2 hypernym "http://identifiers.org/uniprot/Q99814",
+                     "http://identifiers.org/uniprot/Q16665",
+                     "http://identifiers.org/uniprot/Q9Y2N7"
+  species_3 hypernym "http://identifiers.org/uniprot/P16157"
+  species_4 hypernym "http://identifiers.org/uniprot/Q16665",
+                     "http://identifiers.org/uniprot/Q99814",
+                     "http://identifiers.org/uniprot/Q9Y2N7"
+  species_5 hypernym "http://identifiers.org/uniprot/P16157"
+  species_6 hypernym "http://identifiers.org/uniprot/P16157"
+  species_7 hypernym "http://identifiers.org/uniprot/Q9NWT6"
+  species_8 hypernym "http://identifiers.org/uniprot/Q3T1B0",
+                     "http://identifiers.org/uniprot/Q9NTU9"
+  species_11 hypernym "http://identifiers.org/chebi/CHEBI:15379"
+  reaction_1 hypernym "http://identifiers.org/go/GO:0009058"
+  reaction_2 hypernym "http://identifiers.org/go/GO:0030163"
+  reaction_3 hypernym "http://identifiers.org/go/GO:0030163"
+  reaction_4 hypernym "http://identifiers.org/go/GO:0009058"
+  reaction_5 hypernym "http://identifiers.org/go/GO:0030163"
+  reaction_6 hypernym "http://identifiers.org/go/GO:0030163"
+  reaction_7 hypernym "http://identifiers.org/go/GO:0018126"
+  reaction_8 hypernym "http://identifiers.org/go/GO:0009058"
+  reaction_9 hypernym "http://identifiers.org/go/GO:0030163"
+  reaction_10 hypernym "http://identifiers.org/go/GO:0018126"
 end
+
+Schmierer2010_FIH_Ankyrins is "Schmierer2010_FIH_Ankyrins"
+
+Schmierer2010_FIH_Ankyrins model_entity_is "http://identifiers.org/biomodels.db/MODEL1008170000"
+Schmierer2010_FIH_Ankyrins model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000300"
+Schmierer2010_FIH_Ankyrins description "http://identifiers.org/pubmed/20955552"
+Schmierer2010_FIH_Ankyrins taxon "http://identifiers.org/taxonomy/9606"
+Schmierer2010_FIH_Ankyrins hypernym "http://identifiers.org/go/GO:0001666",
+                                    "http://identifiers.org/go/GO:0070482"
+Schmierer2010_FIH_Ankyrins property "http://identifiers.org/mamo/MAMO_0000046"
+Schmierer2010_FIH_Ankyrins property "http://identifiers.org/doid/DOID:2835"

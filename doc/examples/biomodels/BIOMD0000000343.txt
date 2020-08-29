@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *model01()
 
   // Compartments and Species:
@@ -21,7 +21,7 @@ model *model01()
   V1g := k1g*IRp;
   V1c := k1c*IRins;
   V1d := k1d*IRp;
-  V1e := IRip*(k1e + (k1f*Xp)/(1 + Xp));
+  V1e := IRip*(k1e + k1f*Xp/(1 + Xp));
   V2 := k21*(IRp + k22*IRip)*IRS;
   Vm2 := km2*IRSip;
   V3 := k3*X*IRSip;
@@ -65,7 +65,7 @@ model *model01()
   k1b = 0.02000224505;
   k1c = 0.3635167928;
   k1d = 1580.6782649401;
-  k1e = 4.38334e-005;
+  k1e = 4.38334e-05;
   k1f = 20.0726035037;
   k1g = 286.6994648072;
   k1r = 3.6327773442;
@@ -87,4 +87,63 @@ model *model01()
   compartment_0000001 is "compartemnt 1";
   V1r is "v1r";
   simXP is "simXp";
+
+  // SBO terms:
+  IR.sboTerm = 244
+  IRins.sboTerm = 240
+  IRp.sboTerm = 240
+  IRip.sboTerm = 240
+  IRi.sboTerm = 240
+  IRS.sboTerm = 240
+  IRSip.sboTerm = 240
+  X.sboTerm = 240
+  Xp.sboTerm = 240
+  k1a.sboTerm = 9
+  ins.sboTerm = 196
+  k1abasic.sboTerm = 9
+  k1b.sboTerm = 9
+  k1c.sboTerm = 9
+  k1d.sboTerm = 9
+  k1e.sboTerm = 9
+  k1f.sboTerm = 9
+  k1g.sboTerm = 9
+  k1r.sboTerm = 9
+  k21.sboTerm = 9
+  k22.sboTerm = 9
+  km2.sboTerm = 9
+  k3.sboTerm = 9
+  km3.sboTerm = 9
+  measIRp.sboTerm = 196
+  ky2.sboTerm = 9
+  kyanna.sboTerm = 9
+  kyDosR.sboTerm = 9
+  ky1.sboTerm = 9
+
+  // CV terms:
+  IR identity "http://identifiers.org/uniprot/P06213"
+  IRins part "http://identifiers.org/uniprot/P06213",
+             "http://identifiers.org/uniprot/P01308"
+  IRp hypernym "http://identifiers.org/uniprot/P06213",
+               "http://identifiers.org/kegg.compound/C00562"
+  IRip hypernym "http://identifiers.org/uniprot/P06213",
+                "http://identifiers.org/kegg.compound/C00562"
+  IRi hypernym "http://identifiers.org/uniprot/P06213"
+  IRS hypernym "http://identifiers.org/uniprot/P35568"
+  IRSip hypernym "http://identifiers.org/uniprot/P35568",
+                 "http://identifiers.org/kegg.compound/C00562"
+  X hypernym "http://identifiers.org/chebi/CHEBI:36080",
+             "http://identifiers.org/fma/FMA:74531"
+  Xp identity "http://identifiers.org/chebi/CHEBI:36080",
+              "http://identifiers.org/fma/FMA:74531"
 end
+
+model01 is "Brannmark2010_InsulinSignalling_Mifamodel"
+
+model01 model_entity_is "http://identifiers.org/biomodels.db/MODEL1107140000"
+model01 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000343"
+model01 description "http://identifiers.org/pubmed/20421297"
+model01 taxon "http://identifiers.org/taxonomy/9606"
+model01 parthood "http://identifiers.org/go/GO:0008286"
+model01 container "http://identifiers.org/bto/BTO:0000443"
+model01 hypernym "http://identifiers.org/go/GO:0038016"
+model01 property "http://identifiers.org/doid/DOID:9351"

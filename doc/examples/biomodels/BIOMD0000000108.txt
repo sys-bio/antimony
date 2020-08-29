@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *model_0000001()
 
   // Compartments and Species:
@@ -18,8 +18,8 @@ model *model_0000001()
   reaction_0: species_0000001 + species_0000002 => ; compartment_0000001*k2*species_0000001*species_0000002;
   reaction_1: species_0000001 => species_0000006 + species_0000002; compartment_0000001*k3*species_0000001*Cu_I_ZnSOD;
   reaction_2: species_0000001 + species_0000007 => species_0000009; compartment_0000001*k4*species_0000001*species_0000007;
-  reaction_3: species_0000001 + species_0000006 => 2species_0000008; compartment_0000001*k5*species_0000001*species_0000006;
-  reaction_4: species_0000006 => 2species_0000008; compartment_0000001*k6*species_0000006*species_0000002;
+  reaction_3: species_0000001 + species_0000006 => 2 species_0000008; compartment_0000001*k5*species_0000001*species_0000006;
+  reaction_4: species_0000006 => 2 species_0000008; compartment_0000001*k6*species_0000006*species_0000002;
   reaction_5: species_0000006 => ; compartment_0000001*k7*species_0000006*species_0000017;
   reaction_6: species_0000008 => ; compartment_0000001*k9*species_0000008;
   reaction_7:  => species_0000011 + species_0000006; compartment_0000001*k10*HO2star;
@@ -29,25 +29,25 @@ model *model_0000001()
   reaction_11: species_0000002 => ; compartment_0000001*k13b*species_0000002;
   reaction_12: species_0000011 => species_0000007; compartment_0000001*k17*species_0000011;
   reaction_13: species_0000007 => species_0000011 + species_0000009; compartment_0000001*k18*species_0000007;
-  reaction_14: 2species_0000007 => ; compartment_0000001*k19*species_0000007^2;
+  reaction_14: 2 species_0000007 => ; compartment_0000001*k19*species_0000007^2;
   fast: species_0000001 -> ; k10*HO2star*compartment_0000001;
 
   // Species initializations:
   species_0000001 = 0;
-  species_0000002 = 5e-006;
+  species_0000002 = 5e-06;
   species_0000006 = 0;
   species_0000007 = 0;
   species_0000008 = 0;
   species_0000009 = 0;
   species_0000011 = 0;
-  species_0000016 = 1e-005;
-  species_0000017 = 1e-005;
+  species_0000016 = 1e-05;
+  species_0000017 = 1e-05;
 
   // Compartment initializations:
   compartment_0000001 = 1;
 
   // Variable initializations:
-  k1 = 6.6e-007;
+  k1 = 6.6e-07;
   k2 = 1600000000;
   k3 = 1600000000;
   k4 = 100000;
@@ -99,4 +99,38 @@ model *model_0000001()
   reaction_13 is "v18";
   reaction_14 is "v19";
   fast is "v16";
+
+  // CV terms:
+  compartment_0000001 hypernym "http://identifiers.org/go/GO:0005623"
+  species_0000001 identity "http://identifiers.org/chebi/CHEBI:18421",
+                           "http://identifiers.org/kegg.compound/C00704"
+  species_0000002 hypernym "http://identifiers.org/interpro/IPR001424"
+  species_0000006 identity "http://identifiers.org/chebi/CHEBI:16240",
+                           "http://identifiers.org/kegg.compound/C00027"
+  species_0000008 identity "http://identifiers.org/chebi/CHEBI:29191"
+  species_0000009 identity "http://identifiers.org/kegg.compound/C01025",
+                           "http://identifiers.org/chebi/CHEBI:61051"
+  species_0000011 hypernym "http://identifiers.org/chebi/CHEBI:18059"
+  species_0000016 hypernym "http://identifiers.org/interpro/IPR001424"
+  species_0000017 version "http://identifiers.org/interpro/IPR002226"
+  reaction_0000001 hypernym "http://identifiers.org/go/GO:0042554"
+  reaction_0 parthood "http://identifiers.org/go/GO:0004784"
+  reaction_1 parthood "http://identifiers.org/go/GO:0004784"
+  reaction_1 hypernym "http://identifiers.org/ec-code/1.15.1.2",
+                      "http://identifiers.org/kegg.reaction/R05743"
+  reaction_5 hypernym "http://identifiers.org/ec-code/1.11.1.6",
+                      "http://identifiers.org/go/GO:0004096"
+  reaction_6 hypernym "http://identifiers.org/go/GO:0044248"
+  reaction_10 hypernym "http://identifiers.org/go/GO:0009055"
+  reaction_11 hypernym "http://identifiers.org/go/GO:0009055"
 end
+
+model_0000001 is "Kowald2006_SOD"
+
+model_0000001 model_entity_is "http://identifiers.org/biomodels.db/MODEL5128825728"
+model_0000001 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000108"
+model_0000001 description "http://identifiers.org/pubmed/16085106"
+model_0000001 taxon "http://identifiers.org/taxonomy/131567"
+model_0000001 hypernym "http://identifiers.org/go/GO:0004784",
+                       "http://identifiers.org/go/GO:0090322"
+model_0000001 property "http://identifiers.org/doid/DOID:14250"

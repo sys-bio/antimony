@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Fridlyand2010_GlucoseSensitivity_B()
 
   // Compartments and Species:
@@ -12,7 +12,7 @@ model *Fridlyand2010_GlucoseSensitivity_B()
   Jgpd := Vmgpd*G3P*NADc*(1/(G3P + Kmg3p))*(1/(KgNc + NADc*(1/NADHc)))*(1/NADHc);
   JPYR := Vmpdh*FPNAD*FPCa*FPYR;
   JLDH := Vmldh*FLNADc*PYR*(1/(KmLD + PYR));
-  Jph := Vmph*AD*AT_*ACa;
+  Jph := Vmph*AD*AT*ACa;
   Jhres := Vme*FTe*FDe;
   Jtnadh := Tnadh*FNADc*NADm*(1/(KTNm + NADm*(1/NADHm)))*(1/NADHm);
   Jhl := (Plb + Plr)*exp(klp*Vm);
@@ -22,7 +22,7 @@ model *Fridlyand2010_GlucoseSensitivity_B()
   AD := MgADP*MgADP*(1/(MgADP*MgADP + Kmadp*Kmadp));
   MgADP := 0.055*ADP;
   ADP := Ao + -ATP;
-  AT_ := Vm^hp*(1/(Kmph^hp + Vm^hp));
+  AT := Vm^hp*(1/(Kmph^hp + Vm^hp));
   DelJNCa := 1 + Ni^3*(1/KNaj^3) + Cam*(1/KCaj) + Ni^3*Cam*(1/(KNaj^3*KCaj)) + Nam^3*(1/KNaj^3) + Cac*(1/KCaj) + Nam^3*Cac*(1/(KNaj^3*KCaj));
   FDe := NADHm*(1/(KmNh + NADHm));
   FLNADc := NADHc*(1/(Klnc + NADHc*(1/NADc)))*(1/NADc);
@@ -66,12 +66,12 @@ model *Fridlyand2010_GlucoseSensitivity_B()
   // Variable initializations:
   G3P_init = 30;
   Vi = 0.53;
-  kgpd = 1e-005;
+  kgpd = 1e-05;
   PYR_init = 10;
   Vmmit = 0.0144;
   ATP_init = 3700;
-  kATP = 4e-005;
-  kATPCa = 9e-005;
+  kATP = 4e-05;
+  kATPCa = 9e-05;
   Cac = Cac_init;
   NADHm_init = 50;
   knadhm = 0.0001;
@@ -113,7 +113,7 @@ model *Fridlyand2010_GlucoseSensitivity_B()
   KNaj = 8000;
   KpCam = 0.165;
   KPNm = 81;
-  ksg = 2e-005;
+  ksg = 2e-05;
   KTNc = 0.002;
   KTNm = 16.78;
   Nam = 5000;
@@ -141,7 +141,7 @@ model *Fridlyand2010_GlucoseSensitivity_B()
 
   // Other declarations:
   var JGlu, Jgpd, JPYR, JLDH, Cac, Jph, Jhres, Jtnadh, Jhl, Juni, JNCa, ACa;
-  var AD, MgADP, ADP, AT_, DelJNCa, FDe, FLNADc, NADc, FNADc, FPCa, FPNAD;
+  var AD, MgADP, ADP, AT, DelJNCa, FDe, FLNADc, NADc, FNADc, FPCa, FPNAD;
   var NADm, FPYR, FTe, hCa, Vp, IKCa, nKCa, IVCa, PVCa, JO2;
   const compartment_, G3P_init, Vi, kgpd, PYR_init, Vmmit, ATP_init, kATP;
   const kATPCa, NADHm_init, knadhm, NADHc_init, knadhc, Vm_init, Cmit, Cam_init;
@@ -150,4 +150,107 @@ model *Fridlyand2010_GlucoseSensitivity_B()
   const Kmgl, KmLD, KmNh, Kmph, Kmpyr, KNaj, KpCam, KPNm, ksg, KTNc, KTNm;
   const Nam, Ni, Ntc, Ntm, PCa, Plb, Plr, Tnadh, Tv, u1, u2, Vci, Vme, Vmglu;
   const Vmgpd, Vmldh, Vmnc, Vmpdh, Vmph, Vp_init, ZCa;
+
+  // SBO terms:
+  G3P.sboTerm = 247
+  G3P_init.sboTerm = 196
+  Vi.sboTerm = 468
+  kgpd.sboTerm = 9
+  PYR.sboTerm = 247
+  PYR_init.sboTerm = 9
+  Vmmit.sboTerm = 468
+  ATP.sboTerm = 248
+  ATP_init.sboTerm = 196
+  kATP.sboTerm = 9
+  kATPCa.sboTerm = 9
+  NADHm.sboTerm = 248
+  NADHm_init.sboTerm = 196
+  knadhm.sboTerm = 9
+  NADHc.sboTerm = 248
+  NADHc_init.sboTerm = 196
+  knadhc.sboTerm = 9
+  Vm.sboTerm = 2
+  Vm_init.sboTerm = 196
+  Cmit.sboTerm = 258
+  Cam.sboTerm = 240
+  Cam_init.sboTerm = 196
+  fm.sboTerm = 540
+  ai.sboTerm = 9
+  am.sboTerm = 9
+  Ao.sboTerm = 196
+  Cac_init.sboTerm = 196
+  Cmp.sboTerm = 258
+  F.sboTerm = 568
+  fi.sboTerm = 540
+  gKCa.sboTerm = 257
+  Glu.sboTerm = 196
+  gmVCa.sboTerm = 257
+  hgl.sboTerm = 190
+  hp.sboTerm = 190
+  hpc.sboTerm = 9
+  kat.sboTerm = 9
+  kbt.sboTerm = 9
+  kCaA.sboTerm = 9
+  KCaj.sboTerm = 9
+  KCam.sboTerm = 9
+  KgNc.sboTerm = 540
+  Klnc.sboTerm = 9
+  klp.sboTerm = 9
+  Kmadp.sboTerm = 27
+  KmATP.sboTerm = 27
+  Kmg3p.sboTerm = 27
+  Kmgl.sboTerm = 27
+  KmLD.sboTerm = 27
+  KmNh.sboTerm = 27
+  Kmph.sboTerm = 27
+  Kmpyr.sboTerm = 27
+  KNaj.sboTerm = 9
+  KpCam.sboTerm = 9
+  KPNm.sboTerm = 540
+  ksg.sboTerm = 9
+  KTNc.sboTerm = 231
+  KTNm.sboTerm = 231
+  Nam.sboTerm = 196
+  Ni.sboTerm = 196
+  Ntc.sboTerm = 196
+  Ntm.sboTerm = 196
+  PCa.sboTerm = 538
+  Plb.sboTerm = 380
+  Plr.sboTerm = 380
+  Tnadh.sboTerm = 9
+  Tv.sboTerm = 259
+  u1.sboTerm = 9
+  u2.sboTerm = 9
+  Vci.sboTerm = 468
+  Vme.sboTerm = 9
+  Vmglu.sboTerm = 9
+  Vmgpd.sboTerm = 9
+  Vmnc.sboTerm = 9
+  Vmpdh.sboTerm = 9
+  Vmph.sboTerm = 9
+  Vp_init.sboTerm = 196
+  ZCa.sboTerm = 545
+  Vp.sboTerm = 2
+
+  // CV terms:
+  G3P hypernym "http://identifiers.org/chebi/CHEBI:17138"
+  PYR hypernym "http://identifiers.org/chebi/CHEBI:15361"
+  ATP hypernym "http://identifiers.org/chebi/CHEBI:15422"
+  NADHm hypernym "http://identifiers.org/chebi/CHEBI:16908"
+  NADHc hypernym "http://identifiers.org/chebi/CHEBI:16908"
+  Vm hypernym "http://identifiers.org/pato/PATO:0001462"
+  Cam hypernym "http://identifiers.org/chebi/CHEBI:29108"
 end
+
+Fridlyand2010_GlucoseSensitivity_B is "Fridlyand2010_GlucoseSensitivity_B"
+
+Fridlyand2010_GlucoseSensitivity_B model_entity_is "http://identifiers.org/biomodels.db/MODEL1108090001"
+Fridlyand2010_GlucoseSensitivity_B model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000349"
+Fridlyand2010_GlucoseSensitivity_B description "http://identifiers.org/pubmed/20497556"
+Fridlyand2010_GlucoseSensitivity_B origin "http://identifiers.org/pubmed/9575814",
+                                          "http://identifiers.org/pubmed/9575813"
+Fridlyand2010_GlucoseSensitivity_B taxon "http://identifiers.org/taxonomy/9606"
+Fridlyand2010_GlucoseSensitivity_B container "http://identifiers.org/bto/BTO:0000783"
+Fridlyand2010_GlucoseSensitivity_B hypernym "http://identifiers.org/go/GO:0044342",
+                                            "http://identifiers.org/go/GO:0061178"
+Fridlyand2010_GlucoseSensitivity_B property "http://identifiers.org/doid/DOID:9351"

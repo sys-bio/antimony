@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Topp2000_BetaCellMass_Diabetes()
 
   // Compartments and Species:
@@ -7,8 +7,8 @@ model *Topp2000_BetaCellMass_Diabetes()
 
   // Rate Rules:
   G' = R0 - (Eg0 + si*I)*G;
-  I' = (B*sigma*G^2)/(alpha + G^2) - k*I;
-  B' = ((-d0 + r1*G) - r2*G^2)*B;
+  I' = B*sigma*G^2/(alpha + G^2) - k*I;
+  B' = (-d0 + r1*G - r2*G^2)*B;
 
   // Species initializations:
   G = 250;
@@ -27,7 +27,7 @@ model *Topp2000_BetaCellMass_Diabetes()
   k = 432;
   d0 = 0.06;
   r1 = 0.00084;
-  r2 = 2.4e-006;
+  r2 = 2.4e-06;
 
   // Other declarations:
   const cell, R0, Eg0, si, sigma, alpha, k, d0, r1, r2;
@@ -36,4 +36,34 @@ model *Topp2000_BetaCellMass_Diabetes()
   G is "glucose";
   I is "insulin";
   B is "Mass";
+
+  // SBO terms:
+  G.sboTerm = 247
+  R0.sboTerm = 393
+  Eg0.sboTerm = 9
+  si.sboTerm = 9
+  I.sboTerm = 252
+  B.sboTerm = 240
+  sigma.sboTerm = 9
+  alpha.sboTerm = 9
+  k.sboTerm = 9
+  d0.sboTerm = 179
+  r1.sboTerm = 9
+  r2.sboTerm = 9
+
+  // CV terms:
+  G hypernym "http://identifiers.org/chebi/CHEBI:17234",
+             "http://identifiers.org/kegg.compound/C00293"
+  I hypernym "http://identifiers.org/uniprot/P01308"
+  B hypernym "http://identifiers.org/bto/BTO:0000783"
+  B container "http://identifiers.org/bto/BTO:0000991"
 end
+
+Topp2000_BetaCellMass_Diabetes is "Topp2000_BetaCellMass_Diabetes"
+
+Topp2000_BetaCellMass_Diabetes model_entity_is "http://identifiers.org/biomodels.db/MODEL1106270000"
+Topp2000_BetaCellMass_Diabetes model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000341"
+Topp2000_BetaCellMass_Diabetes description "http://identifiers.org/pubmed/11013117"
+Topp2000_BetaCellMass_Diabetes taxon "http://identifiers.org/taxonomy/9606"
+Topp2000_BetaCellMass_Diabetes hypernym "http://identifiers.org/go/GO:0061178"
+Topp2000_BetaCellMass_Diabetes property "http://identifiers.org/doid/DOID:9351"

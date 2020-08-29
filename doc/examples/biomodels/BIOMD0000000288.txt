@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *BIOMD0000000288()
 
   // Compartments and Species:
@@ -9,10 +9,10 @@ model *BIOMD0000000288()
   species zpp in cell, w in cell, eph in cell;
 
   // Assignment Rules:
-  r := (KDL*sumrc1)/(KDL + L);
-  c1 := (L*sumrc1)/(KDL + L);
-  ePI3K := ((1 + kappaPI3K + 2*alphaPI3K*c2) - ((1 + kappaPI3K + 2*alphaPI3K*c2)^2 - 8*alphaPI3K*c2)^0.5)/2;
-  eGEF := (KGR*c2 + KGP*m3PI)/(1 + KGR*c2 + KGP*m3PI)*fGEF;
+  r := KDL*sumrc1/(KDL + L);
+  c1 := L*sumrc1/(KDL + L);
+  ePI3K := (1 + kappaPI3K + 2*alphaPI3K*c2 - ((1 + kappaPI3K + 2*alphaPI3K*c2)^2 - 8*alphaPI3K*c2)^0.5)/2;
+  eGEF := ((KGR*c2 + KGP*m3PI)/(1 + KGR*c2 + KGP*m3PI))*fGEF;
   yp := 1 - y - ypp;
   zp := 1 - z - zpp;
 
@@ -22,12 +22,12 @@ model *BIOMD0000000288()
   m3PIODE:  -> m3PI; k3PI*(ePI3K - m3PI);
   mRasODE:  -> mRas; kRas*((1 + Gamma)*eGEF - (1 + Gamma*eGEF)*mRas);
   x1ODE:  -> x1; kdx1*(mRas - x1/(1 + y/KMx11 + yp/KMx12));
-  x2ODE:  -> x2; kdx2*(((1 + Kx2)*m3PI)/(1 + Kx2*m3PI) - x2/(1 + y/KMx21 + yp/KMx22));
-  yODE:  -> y; (VmaxOVERKMyph1*yp)/(1 + yp/KMyph1 + ypp/KMyph2) - (VmaxOVERKMx11*x1*y)/(1 + y/KMx11 + yp/KMx12) - (VmaxOVERKMx21*x2*y)/(1 + y/KMx21 + yp/KMx22);
-  yppODE:  -> ypp; ((VmaxOVERKMx12*x1*yp)/(1 + y/KMx11 + yp/KMx12) + (VmaxOVERKMx22*x2*yp)/(1 + y/KMx21 + yp/KMx22)) - (VmaxOVERKMyph2*ypp)/((1 + z/KMy1 + zp/KMy2)*(1 + yp/KMyph1) + ypp/KMyph2);
-  zODE:  -> z; (VmaxOVERKMzph1*eph*zp)/(1 + zp/KMzph1 + zpp/KMzph2) - (VmaxOVERKMy1*ypp*z)/(1 + z/KMy1 + zp/KMy2);
-  zppODE:  -> zpp; (VmaxOVERKMy2*ypp*zp)/(1 + z/KMy1 + zp/KMy2) - (VmaxOVERKMzph2*eph*zpp)/(1 + zp/KMzph1 + zpp/KMzph2);
-  fGEFODE:  -> fGEF; kFBf*((1 - fGEF)/Kf - zpp^n/(Zf^n + zpp^n)*fGEF);
+  x2ODE:  -> x2; kdx2*((1 + Kx2)*m3PI/(1 + Kx2*m3PI) - x2/(1 + y/KMx21 + yp/KMx22));
+  yODE:  -> y; VmaxOVERKMyph1*yp/(1 + yp/KMyph1 + ypp/KMyph2) - VmaxOVERKMx11*x1*y/(1 + y/KMx11 + yp/KMx12) - VmaxOVERKMx21*x2*y/(1 + y/KMx21 + yp/KMx22);
+  yppODE:  -> ypp; VmaxOVERKMx12*x1*yp/(1 + y/KMx11 + yp/KMx12) + VmaxOVERKMx22*x2*yp/(1 + y/KMx21 + yp/KMx22) - VmaxOVERKMyph2*ypp/((1 + z/KMy1 + zp/KMy2)*(1 + yp/KMyph1) + ypp/KMyph2);
+  zODE:  -> z; VmaxOVERKMzph1*eph*zp/(1 + zp/KMzph1 + zpp/KMzph2) - VmaxOVERKMy1*ypp*z/(1 + z/KMy1 + zp/KMy2);
+  zppODE:  -> zpp; VmaxOVERKMy2*ypp*zp/(1 + z/KMy1 + zp/KMy2) - VmaxOVERKMzph2*eph*zpp/(1 + zp/KMzph1 + zpp/KMzph2);
+  fGEFODE:  -> fGEF; kFBf*((1 - fGEF)/Kf - (zpp^n/(Zf^n + zpp^n))*fGEF);
   wODE:  -> w; kdw*(zpp - w);
   ephODE:  -> eph; kFBph*(w^p/(Wph^p + w^p) - (eph - 1)/Kph);
 
@@ -103,4 +103,121 @@ model *BIOMD0000000288()
   const KMx22, VmaxOVERKMyph2, KMyph2, VmaxOVERKMy1, KMy1, VmaxOVERKMzph1;
   const KMzph1, VmaxOVERKMy2, KMy2, VmaxOVERKMzph2, KMzph2, kFBf, Zf, n, Kf;
   const kdw, kFBph, Wph, p, Kph;
+
+  // SBO terms:
+  cell.sboTerm = 290
+  sumrc1.sboTerm = 296
+  r.sboTerm = 245
+  KDL.sboTerm = 282
+  L.sboTerm = 188
+  c1.sboTerm = 296
+  c2.sboTerm = 420
+  ePI3K.sboTerm = 245
+  kappaPI3K.sboTerm = 282
+  alphaPI3K.sboTerm = 2
+  m3PI.sboTerm = 236
+  KGR.sboTerm = 337
+  KGP.sboTerm = 337
+  fGEF.sboTerm = 245
+  mRas.sboTerm = 245
+  x1.sboTerm = 14
+  x2.sboTerm = 14
+  y.sboTerm = 245
+  yp.sboTerm = 245
+  ypp.sboTerm = 245
+  z.sboTerm = 245
+  zp.sboTerm = 245
+  zpp.sboTerm = 245
+  w.sboTerm = 245
+  eph.sboTerm = 245
+  kxR0.sboTerm = 9
+  kminusx.sboTerm = 9
+  ke.sboTerm = 9
+  kt.sboTerm = 9
+  k3PI.sboTerm = 2
+  kRas.sboTerm = 9
+  Gamma.sboTerm = 2
+  kdx1.sboTerm = 9
+  kdx2.sboTerm = 9
+  Kx2.sboTerm = 2
+  VmaxOVERKMx11.sboTerm = 2
+  KMx11.sboTerm = 27
+  VmaxOVERKMx21.sboTerm = 2
+  KMx21.sboTerm = 27
+  VmaxOVERKMyph1.sboTerm = 2
+  KMyph1.sboTerm = 27
+  VmaxOVERKMx12.sboTerm = 2
+  KMx12.sboTerm = 27
+  VmaxOVERKMx22.sboTerm = 2
+  KMx22.sboTerm = 27
+  VmaxOVERKMyph2.sboTerm = 2
+  KMyph2.sboTerm = 27
+  VmaxOVERKMy1.sboTerm = 2
+  KMy1.sboTerm = 27
+  VmaxOVERKMzph1.sboTerm = 2
+  KMzph1.sboTerm = 27
+  VmaxOVERKMy2.sboTerm = 2
+  KMy2.sboTerm = 27
+  VmaxOVERKMzph2.sboTerm = 2
+  KMzph2.sboTerm = 27
+  kFBf.sboTerm = 2
+  Zf.sboTerm = 2
+  n.sboTerm = 190
+  Kf.sboTerm = 9
+  kdw.sboTerm = 9
+  kFBph.sboTerm = 9
+  Wph.sboTerm = 9
+  p.sboTerm = 190
+  Kph.sboTerm = 9
+
+  // CV terms:
+  cell hypernym "http://identifiers.org/go/GO:0005623"
+  sumrc1 hypernym "http://identifiers.org/uniprot/Q15198"
+  sumrc1 part "http://identifiers.org/uniprot/Q15198",
+              "http://identifiers.org/uniprot/Q9NRA1"
+  sumrc1 part "http://identifiers.org/uniprot/Q15198",
+              "http://identifiers.org/uniprot/Q9GZP0"
+  sumrc1 part "http://identifiers.org/uniprot/Q15198",
+              "http://identifiers.org/uniprot/P01127"
+  sumrc1 part "http://identifiers.org/uniprot/P04085",
+              "http://identifiers.org/uniprot/Q15198"
+  r hypernym "http://identifiers.org/uniprot/Q15198"
+  c1 part "http://identifiers.org/uniprot/Q9GZP0",
+          "http://identifiers.org/uniprot/Q15198"
+  c1 part "http://identifiers.org/uniprot/Q9NRA1",
+          "http://identifiers.org/uniprot/Q15198"
+  c1 part "http://identifiers.org/uniprot/P01127",
+          "http://identifiers.org/uniprot/Q15198"
+  c1 part "http://identifiers.org/uniprot/P04085",
+          "http://identifiers.org/uniprot/Q15198"
+  c2 hypernym "http://identifiers.org/uniprot/Q15198"
+  ePI3K hypernym "http://identifiers.org/uniprot/O00750"
+  m3PI hypernym "http://identifiers.org/go/GO:0005811"
+  eGEF homolog "http://identifiers.org/uniprot/P70392"
+  fGEF hypernym "http://identifiers.org/uniprot/P70392"
+  mRas hypernym "http://identifiers.org/uniprot/O14807"
+  x1 parthood "http://identifiers.org/uniprot/P04049"
+  x2 hypernym "http://identifiers.org/uniprot/Q13153"
+  y hypernym "http://identifiers.org/uniprot/P36507"
+  yp hypernym "http://identifiers.org/uniprot/P36507"
+  ypp hypernym "http://identifiers.org/uniprot/P36507"
+  z hypernym "http://identifiers.org/uniprot/P27361"
+  zp hypernym "http://identifiers.org/uniprot/P27361"
+  zpp hypernym "http://identifiers.org/uniprot/P27361"
+  w hypernym "http://identifiers.org/go/GO:0016563"
+  eph hypernym "http://identifiers.org/go/GO:0016791"
 end
+
+BIOMD0000000288 is "Wang2009 - PI3K Ras Crosstalk"
+
+BIOMD0000000288 model_entity_is "http://identifiers.org/biomodels.db/MODEL0910130003"
+BIOMD0000000288 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000288"
+BIOMD0000000288 description "http://identifiers.org/pubmed/19225459"
+BIOMD0000000288 origin "http://identifiers.org/pubmed/12871957",
+                       "http://identifiers.org/pubmed/16314431"
+BIOMD0000000288 hypernym "http://identifiers.org/go/GO:0014065",
+                         "http://identifiers.org/go/GO:0070371",
+                         "http://identifiers.org/go/GO:0048008"
+BIOMD0000000288 parthood "http://identifiers.org/kegg.pathway/ko04010",
+                         "http://identifiers.org/kegg.pathway/ko04012"
+BIOMD0000000288 taxon "http://identifiers.org/taxonomy/9606"

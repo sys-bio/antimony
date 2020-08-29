@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Obeyesekere1999_CellCycle()
 
   // Compartments and Species:
@@ -12,14 +12,14 @@ model *Obeyesekere1999_CellCycle()
   unpho_RB := R_1 + RS_1;
 
   // Reactions:
-  _1:  => D_1; aD_1*((k_1*GF_1)/(1 + k_1*GF_1));
+  _1:  => D_1; aD_1*(k_1*GF_1/(1 + k_1*GF_1));
   cyclinCDK4degradation_1: D_1 => ; dD_1*E_1*D_1;
   cyclin_1:  => E_1; aE_1*(1 + af_1*E2F_1);
   cycECDK2degradation_1: E_1 => ; dE_1*X_1*E_1;
-  pRBpdephosphorylation_1:  => R_1; (pX_1*RP_1*X_1)/(qX_1 + RP_1 + X_1);
+  pRBpdephosphorylation_1:  => R_1; pX_1*RP_1*X_1/(qX_1 + RP_1 + X_1);
   pRBE2Fcomplexassociation_1: R_1 => RS_1; pS_1*E2F_1*R_1;
-  pRBE2FcomplexdeassociationviacycDCDK4_1: RS_1 => ; (pD_1*RS_1*D_1)/(qD_1 + RS_1 + D_1);
-  _7: RS_1 => ; (pE_1*RS_1*E_1)/(qE_1 + RS_1 + E_1);
+  pRBE2FcomplexdeassociationviacycDCDK4_1: RS_1 => ; pD_1*RS_1*D_1/(qD_1 + RS_1 + D_1);
+  _7: RS_1 => ; pE_1*RS_1*E_1/(qE_1 + RS_1 + E_1);
   cycleprogression_1:  => X_1; aX_1*E_1 + f_1*E2F_1 + g_1*X_1^2*E_1;
   cyclebreak_1: X_1 => ; dX_1*X_1;
 
@@ -99,4 +99,34 @@ model *Obeyesekere1999_CellCycle()
   _7 is "pRB/E2F complex deassociation via cycE/CDK2";
   cycleprogression_1 is "cycle progression";
   cyclebreak_1 is "cycle break";
+
+  // CV terms:
+  cell_1 identity "http://identifiers.org/go/GO:0005623"
+  D_1 hypernym "http://identifiers.org/uniprot/P24385"
+  E_1 hypernym "http://identifiers.org/uniprot/P24864"
+  RS_1 part "http://identifiers.org/uniprot/Q01094",
+            "http://identifiers.org/uniprot/P06400"
+  R_1 hypernym "http://identifiers.org/uniprot/P06400"
+  E2F_1 hypernym "http://identifiers.org/uniprot/Q01094"
+  RP_1 hypernym "http://identifiers.org/uniprot/P06400"
+  _1 hypernym "http://identifiers.org/go/GO:0006412"
+  cyclinCDK4degradation_1 hypernym "http://identifiers.org/go/GO:0008054"
+  cyclin_1 hypernym "http://identifiers.org/go/GO:0006412"
+  cycECDK2degradation_1 hypernym "http://identifiers.org/go/GO:0008054"
+  pRBpdephosphorylation_1 hypernym "http://identifiers.org/go/GO:0016311"
+  pRBE2Fcomplexassociation_1 hypernym "http://identifiers.org/go/GO:0006461"
+  pRBE2FcomplexdeassociationviacycDCDK4_1 hypernym "http://identifiers.org/go/GO:0043624"
+  _7 hypernym "http://identifiers.org/go/GO:0043624"
+  cycleprogression_1 hypernym "http://identifiers.org/go/GO:0051726"
+  cyclebreak_1 hypernym "http://identifiers.org/go/GO:0051726"
 end
+
+Obeyesekere1999_CellCycle is "Obeyesekere1999_CellCycle"
+
+Obeyesekere1999_CellCycle model_entity_is "http://identifiers.org/biomodels.db/MODEL3896909694"
+Obeyesekere1999_CellCycle model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000168"
+Obeyesekere1999_CellCycle description "http://identifiers.org/pubmed/17886749"
+Obeyesekere1999_CellCycle origin "http://identifiers.org/pubmed/9375029"
+Obeyesekere1999_CellCycle parthood "http://identifiers.org/kegg.pathway/hsa04110"
+Obeyesekere1999_CellCycle hypernym "http://identifiers.org/go/GO:0000278"
+Obeyesekere1999_CellCycle taxon "http://identifiers.org/taxonomy/2759"

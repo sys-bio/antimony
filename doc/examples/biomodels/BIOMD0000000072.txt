@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Model_1()
 
   // Compartments and Species:
@@ -16,7 +16,7 @@ model *Model_1()
   reaction_6: Ga => Gd; cell*reaction_6_k1*Ga;
 
   // Species initializations:
-  L = 6.02e+017;
+  L = 6.02e+17;
   R = 10000;
   G = 7000;
   Gbg = 3000;
@@ -28,12 +28,12 @@ model *Model_1()
   cell = 1;
 
   // Variable initializations:
-  reaction_0_k1 = 3.32e-018;
+  reaction_0_k1 = 3.32e-18;
   reaction_0_k2 = 0.01;
   reaction_1_v = 4;
   reaction_2_k1 = 0.0004;
   reaction_3_k1 = 1;
-  reaction_4_k1 = 1e-005;
+  reaction_4_k1 = 1e-05;
   reaction_5_k1 = 0.004;
   reaction_6_k1 = 0.11;
 
@@ -58,4 +58,45 @@ model *Model_1()
   reaction_4 is "G-protein Activation";
   reaction_5 is "Receptor-Ligand Degradation";
   reaction_6 is "G-protein Inactivation ";
+
+  // CV terms:
+  cell hypernym "http://identifiers.org/go/GO:0005623"
+  L version "http://identifiers.org/uniprot/P34165",
+            "http://identifiers.org/uniprot/P34166"
+  L hypernym "http://identifiers.org/interpro/IPR006742"
+  R identity "http://identifiers.org/uniprot/P06842"
+  G hypernym "http://identifiers.org/go/GO:0005834"
+  Gbg identity "http://identifiers.org/go/GO:0031680"
+  Gd part "http://identifiers.org/interpro/IPR001019",
+          "http://identifiers.org/kegg.compound/C00035"
+  Gd part "http://identifiers.org/chebi/CHEBI:17552",
+          "http://identifiers.org/interpro/IPR001019"
+  Ga part "http://identifiers.org/interpro/IPR001019",
+          "http://identifiers.org/kegg.compound/C00044"
+  Ga part "http://identifiers.org/chebi/CHEBI:15996",
+          "http://identifiers.org/interpro/IPR001019"
+  RL hypernym "http://identifiers.org/go/GO:0043235"
+  RL part "http://identifiers.org/uniprot/P34165",
+          "http://identifiers.org/uniprot/P06842"
+  RL part "http://identifiers.org/uniprot/P34166",
+          "http://identifiers.org/uniprot/P06842"
+  reaction_0 hypernym "http://identifiers.org/go/GO:0004934",
+                      "http://identifiers.org/go/GO:0001664",
+                      "http://identifiers.org/go/GO:0005102"
+  reaction_1 hypernym "http://identifiers.org/go/GO:0006412"
+  reaction_2 hypernym "http://identifiers.org/go/GO:0030163"
+  reaction_3 hypernym "http://identifiers.org/go/GO:0001965",
+                      "http://identifiers.org/go/GO:0031683"
+  reaction_4 hypernym "http://identifiers.org/go/GO:0004930",
+                      "http://identifiers.org/go/GO:0043241"
+  reaction_5 hypernym "http://identifiers.org/go/GO:0030163"
+  reaction_6 hypernym "http://identifiers.org/go/GO:0003924"
 end
+
+Model_1 is "Yi2003_GproteinCycle"
+
+Model_1 model_entity_is "http://identifiers.org/biomodels.db/MODEL9468910329"
+Model_1 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000072"
+Model_1 description "http://identifiers.org/pubmed/12960402"
+Model_1 hypernym "http://identifiers.org/go/GO:0031684"
+Model_1 taxon "http://identifiers.org/taxonomy/4932"

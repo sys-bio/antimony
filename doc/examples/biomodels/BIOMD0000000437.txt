@@ -1,7 +1,7 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 
 // Warnings from automatic translation:
-//    Unable to set the stoichiometry math for the reactant time in reaction re45 because stoichiometry math is not a defined concept in Antimony.
+//    Unable to set the stoichiometry math for the reactant time_ in reaction re45 because stoichiometry math is not a defined concept in Antimony.
 //    Unable to set the stoichiometry math for the reactant frq_gene in reaction frq_transcription because stoichiometry math is not a defined concept in Antimony.
 //    Unable to set the stoichiometry math for the reactant wc1_gene in reaction wc1_transcription because stoichiometry math is not a defined concept in Antimony.
 //    Unable to set the stoichiometry math for the reactant wc2_gene in reaction wc2_transcription because stoichiometry math is not a defined concept in Antimony.
@@ -109,12 +109,12 @@ model *MODEL1212150000()
   L_WCCVVD_degradation: L_WCCVVDn => degraded_L_WCCCVVDn; L_WCCVVDn*kd_WCCVVD;
 
   // Events:
-  n_CYCLE: at 0 after time_ > 125 && frq_mRNA > frq_level_A: cycle = cycle + 1;
-  light_on: at 0 after time_ > T_light_on: kact_L_WCC = kact_L_WCC_light;
-  light_off: at 0 after time_ > T_light_on + LP: kact_L_WCC = 0;
-  calculate_period_find_frq_level_A: at 0 after time_ > 125: frq_level_A = frq_mRNA;
-  calculate_period_find_Y: at 0 after time_ > 125 && frq_mRNA > frq_level_A && cycle < 3: Y = time_;
-  calculate_period_find_X: at 0 after time_ > 125 && frq_mRNA > frq_level_A && cycle < 2: X = time_;
+  n_CYCLE: at 0 after (time > 125) && (frq_mRNA > frq_level_A): cycle = cycle + 1;
+  light_on: at 0 after time > T_light_on: kact_L_WCC = kact_L_WCC_light;
+  light_off: at 0 after time > (T_light_on + LP): kact_L_WCC = 0;
+  calculate_period_find_frq_level_A: at 0 after time > 125: frq_level_A = frq_mRNA;
+  calculate_period_find_Y: at 0 after ((time > 125) && (frq_mRNA > frq_level_A)) && (cycle < 3): Y = time;
+  calculate_period_find_X: at 0 after ((time > 125) && (frq_mRNA > frq_level_A)) && (cycle < 2): X = time;
 
   // Species initializations:
   L_WCC = 0;
@@ -308,6 +308,7 @@ model *MODEL1212150000()
   time_unit is "time";
   c1 is "Cytoplasm";
   c2 is "Nucleus";
+  time_ is "time";
   s61 is "hyper_hypo_WCC";
   kact_L_WCC is "k_26";
   kmax_frq is "k_01";
@@ -398,4 +399,53 @@ model *MODEL1212150000()
   VVDc_degradation is "re37";
   VVDn_degradation is "re38";
   L_WCCVVD_degradation is "re39";
+
+  // CV terms:
+  L_WCC part "http://identifiers.org/uniprot/Q01371",
+             "http://identifiers.org/uniprot/P78714"
+  L_WCCVVDn part "http://identifiers.org/uniprot/Q01371",
+                 "http://identifiers.org/uniprot/P78714"
+  T identity "http://identifiers.org/pato/PATO:0000146"
+  WC1c hypernym "http://identifiers.org/uniprot/Q01371"
+  WC2c hypernym "http://identifiers.org/uniprot/P78714"
+  hypoFRQc hypernym "http://identifiers.org/uniprot/P19970"
+  frq_level_A hypernym "http://identifiers.org/uniprot/P19970"
+  frq_mRNA hypernym "http://identifiers.org/chebi/CHEBI:33699"
+  frq_mRNA encodement "http://identifiers.org/uniprot/P19970"
+  hyperFRQn hypernym "http://identifiers.org/uniprot/P19970"
+  hyperWCCc part "http://identifiers.org/uniprot/Q01371",
+                 "http://identifiers.org/uniprot/P78714"
+  hyperWCCn part "http://identifiers.org/uniprot/Q01371",
+                 "http://identifiers.org/uniprot/P78714"
+  hypoFRQn hypernym "http://identifiers.org/uniprot/P19970"
+  hypoWCCc part "http://identifiers.org/uniprot/Q01371",
+                "http://identifiers.org/uniprot/P78714"
+  hypoWCCn part "http://identifiers.org/uniprot/Q01371",
+                "http://identifiers.org/uniprot/P78714"
+  total_FRQ hypernym "http://identifiers.org/uniprot/P19970"
+  total_FRQc hypernym "http://identifiers.org/uniprot/P19970"
+  total_FRQn hypernym "http://identifiers.org/uniprot/P19970"
+  total_WC1 hypernym "http://identifiers.org/uniprot/Q01371"
+  total_WC2 hypernym "http://identifiers.org/uniprot/P78714"
+  total_WCCn part "http://identifiers.org/uniprot/Q01371",
+                  "http://identifiers.org/uniprot/P78714"
+  total_hyper_FRQ hypernym "http://identifiers.org/uniprot/P19970"
+  total_hypoWCC part "http://identifiers.org/uniprot/Q01371",
+                     "http://identifiers.org/uniprot/P78714"
+  total_hypo_FRQ hypernym "http://identifiers.org/uniprot/P19970"
+  total_hyperWCC part "http://identifiers.org/uniprot/Q01371",
+                      "http://identifiers.org/uniprot/P78714"
+  s61 part "http://identifiers.org/uniprot/Q01371",
+           "http://identifiers.org/uniprot/P78714"
 end
+
+MODEL1212150000 is "Tseng2012 - Circadian clock of N.crassa"
+
+MODEL1212150000 model_entity_is "http://identifiers.org/biomodels.db/MODEL1212150000"
+MODEL1212150000 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000437"
+MODEL1212150000 description "http://identifiers.org/pubmed/22496627"
+MODEL1212150000 origin "http://identifiers.org/biomodels.db/BIOMD0000000299",
+                       "http://identifiers.org/pubmed/15653726",
+                       "http://identifiers.org/pubmed/17965132"
+MODEL1212150000 hypernym "http://identifiers.org/go/GO:0010378"
+MODEL1212150000 taxon "http://identifiers.org/taxonomy/5141"

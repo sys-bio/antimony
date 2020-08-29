@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *MODEL1406060000()
 
   // Compartments and Species:
@@ -12,36 +12,36 @@ model *MODEL1406060000()
   species cur in cytosol, cur_ext in extracellular;
 
   // Reactions:
-  vPTS: cglcex + cpep => cg6p + cpyr; (extracellular*vPTS_rmaxPTS*cglcex*(cpep/cpyr))/((vPTS_KPTSa1 + vPTS_KPTSa2*(cpep/cpyr) + vPTS_KPTSa3*cglcex + cglcex*(cpep/cpyr))*(1 + cg6p^vPTS_nPTSg6p/vPTS_KPTSg6p));
-  vPGI: cg6p -> cf6p; (cytosol*vPGI_rmaxPGI*(cg6p - cf6p/vPGI_KPGIeq))/(vPGI_KPGIg6p*(1 + cf6p/(vPGI_KPGIf6p*(1 + cpg/vPGI_KPGIf6ppginh)) + cpg/vPGI_KPGIg6ppginh) + cg6p);
-  vPGM: cg6p -> cg1p; (cytosol*vPGM_rmaxPGM*(cg6p - cg1p/vPGM_KPGMeq))/(vPGM_KPGMg6p*(1 + cg1p/vPGM_KPGMg1p) + cg6p);
-  vG6PDH: cg6p => cpg; (cytosol*vG6PDH_rmaxG6PDH*cg6p*cnadp)/((cg6p + vG6PDH_KG6PDHg6p)*(1 + cnadph/vG6PDH_KG6PDHnadphg6pinh)*(vG6PDH_KG6PDHnadp*(1 + cnadph/vG6PDH_KG6PDHnadphnadpinh) + cnadp));
-  vPFK: cf6p => cfdp; (cytosol*vPFK_rmaxPFK*catp*cf6p)/((catp + vPFK_KPFKatps*(1 + cadp/vPFK_KPFKadpc))*(cf6p + (vPFK_KPFKf6ps*(1 + cpep/vPFK_KPFKpep + cadp/vPFK_KPFKadpb + camp/vPFK_KPFKampb))/(1 + cadp/vPFK_KPFKadpa + camp/vPFK_KPFKampa))*(1 + vPFK_LPFK/(1 + (cf6p*(1 + cadp/vPFK_KPFKadpa + camp/vPFK_KPFKampa))/(vPFK_KPFKf6ps*(1 + cpep/vPFK_KPFKpep + cadp/vPFK_KPFKadpb + camp/vPFK_KPFKampb)))^vPFK_nPFK));
-  vTA: cgap + csed7p -> cf6p + ce4p; cytosol*vTA_rmaxTA*(cgap*csed7p - (ce4p*cf6p)/vTA_KTAeq);
-  vTKA: crib5p + cxyl5p -> cgap + csed7p; cytosol*vTKA_rmaxTKa*(crib5p*cxyl5p - (csed7p*cgap)/vTKA_KTKaeq);
-  vTKB: ce4p + cxyl5p -> cgap + cf6p; cytosol*vTKB_rmaxTKb*(cxyl5p*ce4p - (cf6p*cgap)/vTKB_KTKbeq);
-  vMURSyNTH: 2cf6p => ; cytosol*vMURSyNTH_rmaxMurSynth;
-  vALDO: cfdp -> cdhap + cgap; (cytosol*vALDO_rmaxALDO*(cfdp - (cgap*cdhap)/vALDO_kALDOeq))/(vALDO_kALDOfdp + cfdp + (vALDO_kALDOgap*cdhap)/(vALDO_kALDOeq*vALDO_VALDOblf) + (vALDO_kALDOdhap*cgap)/(vALDO_kALDOeq*vALDO_VALDOblf) + (cfdp*cgap)/vALDO_kALDOgapinh + (cgap*cdhap)/(vALDO_VALDOblf*vALDO_kALDOeq));
-  vGAPDH: cgap -> cpgp; (cytosol*vGAPDH_rmaxGAPDH*(cgap*cnad - (cpgp*cnadh)/vGAPDH_KGAPDHeq))/((vGAPDH_KGAPDHgap*(1 + cpgp/vGAPDH_KGAPDHpgp) + cgap)*(vGAPDH_KGAPDHnad*(1 + cnadh/vGAPDH_KGAPDHnadh) + cnad));
-  vTIS: cdhap -> cgap; (cytosol*vTIS_rmaxTIS*(cdhap - cgap/vTIS_kTISeq))/(vTIS_kTISdhap*(1 + cgap/vTIS_kTISgap) + cdhap);
+  vPTS: cglcex + cpep => cg6p + cpyr; extracellular*vPTS_rmaxPTS*cglcex*(cpep/cpyr)/((vPTS_KPTSa1 + vPTS_KPTSa2*(cpep/cpyr) + vPTS_KPTSa3*cglcex + cglcex*(cpep/cpyr))*(1 + cg6p^vPTS_nPTSg6p/vPTS_KPTSg6p));
+  vPGI: cg6p -> cf6p; cytosol*vPGI_rmaxPGI*(cg6p - cf6p/vPGI_KPGIeq)/(vPGI_KPGIg6p*(1 + cf6p/(vPGI_KPGIf6p*(1 + cpg/vPGI_KPGIf6ppginh)) + cpg/vPGI_KPGIg6ppginh) + cg6p);
+  vPGM: cg6p -> cg1p; cytosol*vPGM_rmaxPGM*(cg6p - cg1p/vPGM_KPGMeq)/(vPGM_KPGMg6p*(1 + cg1p/vPGM_KPGMg1p) + cg6p);
+  vG6PDH: cg6p => cpg; cytosol*vG6PDH_rmaxG6PDH*cg6p*cnadp/((cg6p + vG6PDH_KG6PDHg6p)*(1 + cnadph/vG6PDH_KG6PDHnadphg6pinh)*(vG6PDH_KG6PDHnadp*(1 + cnadph/vG6PDH_KG6PDHnadphnadpinh) + cnadp));
+  vPFK: cf6p => cfdp; cytosol*vPFK_rmaxPFK*catp*cf6p/((catp + vPFK_KPFKatps*(1 + cadp/vPFK_KPFKadpc))*(cf6p + vPFK_KPFKf6ps*(1 + cpep/vPFK_KPFKpep + cadp/vPFK_KPFKadpb + camp/vPFK_KPFKampb)/(1 + cadp/vPFK_KPFKadpa + camp/vPFK_KPFKampa))*(1 + vPFK_LPFK/(1 + cf6p*(1 + cadp/vPFK_KPFKadpa + camp/vPFK_KPFKampa)/(vPFK_KPFKf6ps*(1 + cpep/vPFK_KPFKpep + cadp/vPFK_KPFKadpb + camp/vPFK_KPFKampb)))^vPFK_nPFK));
+  vTA: cgap + csed7p -> cf6p + ce4p; cytosol*vTA_rmaxTA*(cgap*csed7p - ce4p*cf6p/vTA_KTAeq);
+  vTKA: crib5p + cxyl5p -> cgap + csed7p; cytosol*vTKA_rmaxTKa*(crib5p*cxyl5p - csed7p*cgap/vTKA_KTKaeq);
+  vTKB: ce4p + cxyl5p -> cgap + cf6p; cytosol*vTKB_rmaxTKb*(cxyl5p*ce4p - cf6p*cgap/vTKB_KTKbeq);
+  vMURSyNTH: 2 cf6p => ; cytosol*vMURSyNTH_rmaxMurSynth;
+  vALDO: cfdp -> cdhap + cgap; cytosol*vALDO_rmaxALDO*(cfdp - cgap*cdhap/vALDO_kALDOeq)/(vALDO_kALDOfdp + cfdp + vALDO_kALDOgap*cdhap/(vALDO_kALDOeq*vALDO_VALDOblf) + vALDO_kALDOdhap*cgap/(vALDO_kALDOeq*vALDO_VALDOblf) + cfdp*cgap/vALDO_kALDOgapinh + cgap*cdhap/(vALDO_VALDOblf*vALDO_kALDOeq));
+  vGAPDH: cgap -> cpgp; cytosol*vGAPDH_rmaxGAPDH*(cgap*cnad - cpgp*cnadh/vGAPDH_KGAPDHeq)/((vGAPDH_KGAPDHgap*(1 + cpgp/vGAPDH_KGAPDHpgp) + cgap)*(vGAPDH_KGAPDHnad*(1 + cnadh/vGAPDH_KGAPDHnadh) + cnad));
+  vTIS: cdhap -> cgap; cytosol*vTIS_rmaxTIS*(cdhap - cgap/vTIS_kTISeq)/(vTIS_kTISdhap*(1 + cgap/vTIS_kTISgap) + cdhap);
   vTRPSYNTH:  => cpyr + cgap; cytosol*vTRPSYNTH_rmaxTrpSynth;
-  vG3PDH: cdhap => ; (cytosol*vG3PDH_rmaxG3PDH*cdhap)/(vG3PDH_KG3PDHdhap + cdhap);
-  vPGK: cpgp -> cpg3; (cytosol*vPGK_rmaxPGK*(cadp*cpgp - (catp*cpg3)/vPGK_KPGKeq))/((vPGK_KPGKadp*(1 + catp/vPGK_KPGKatp) + cadp)*(vPGK_KPGKpgp*(1 + cpg3/vPGK_KPGKpg3) + cpgp));
-  vsersynth: cpg3 => ; (cytosol*vsersynth_rmaxSerSynth*cpg3)/(vsersynth_KSerSynthpg3 + cpg3);
-  vrpGluMu: cpg3 -> cpg2; (cytosol*vrpGluMu_rmaxPGluMu*(cpg3 - cpg2/vrpGluMu_KPGluMueq))/(vrpGluMu_KPGluMupg3*(1 + cpg2/vrpGluMu_KPGluMupg2) + cpg3);
-  vENO: cpg2 -> cpep; (cytosol*vENO_rmaxENO*(cpg2 - cpep/vENO_KENOeq))/(vENO_KENOpg2*(1 + cpep/vENO_KENOpep) + cpg2);
-  vPK: cpep => cpyr; (cytosol*vPK_rmaxPK*cpep*(cpep/vPK_KPKpep + 1)^(vPK_nPK - 1)*cadp)/(vPK_KPKpep*(vPK_LPK*((1 + catp/vPK_KPKatp)/(cfdp/vPK_KPKfdp + camp/vPK_KPKamp + 1))^vPK_nPK + (cpep/vPK_KPKpep + 1)^vPK_nPK)*(cadp + vPK_KPKadp));
-  vpepCxylase: cpep => ; (cytosol*vpepCxylase_rmaxpepCxylase*cpep*(1 + (cfdp/vpepCxylase_KpepCxylasefdp)^vpepCxylase_npepCxylasefdp))/(vpepCxylase_KpepCxylasepep + cpep);
-  vSynth1: cpep => ; (cytosol*vSynth1_rmaxSynth1*cpep)/(vSynth1_KSynth1pep + cpep);
-  vSynth2: cpyr => ; (cytosol*vSynth2_rmaxSynth2*cpyr)/(vSynth2_KSynth2pyr + cpyr);
-  vDAHPS: ce4p + cpep => ; (cytosol*vDAHPS_rmaxDAHPS*ce4p^vDAHPS_nDAHPSe4p*cpep^vDAHPS_nDAHPSpep)/((vDAHPS_KDAHPSe4p + ce4p^vDAHPS_nDAHPSe4p)*(vDAHPS_KDAHPSpep + cpep^vDAHPS_nDAHPSpep));
-  vPDH: cpyr => accoa; (cytosol*vPDH_rmaxPDH*cpyr^vPDH_nPDH)/(vPDH_KPDHpyr*(1 + accoa/vPDH_Ki_PDH_accoa) + cpyr^vPDH_nPDH);
+  vG3PDH: cdhap => ; cytosol*vG3PDH_rmaxG3PDH*cdhap/(vG3PDH_KG3PDHdhap + cdhap);
+  vPGK: cpgp -> cpg3; cytosol*vPGK_rmaxPGK*(cadp*cpgp - catp*cpg3/vPGK_KPGKeq)/((vPGK_KPGKadp*(1 + catp/vPGK_KPGKatp) + cadp)*(vPGK_KPGKpgp*(1 + cpg3/vPGK_KPGKpg3) + cpgp));
+  vsersynth: cpg3 => ; cytosol*vsersynth_rmaxSerSynth*cpg3/(vsersynth_KSerSynthpg3 + cpg3);
+  vrpGluMu: cpg3 -> cpg2; cytosol*vrpGluMu_rmaxPGluMu*(cpg3 - cpg2/vrpGluMu_KPGluMueq)/(vrpGluMu_KPGluMupg3*(1 + cpg2/vrpGluMu_KPGluMupg2) + cpg3);
+  vENO: cpg2 -> cpep; cytosol*vENO_rmaxENO*(cpg2 - cpep/vENO_KENOeq)/(vENO_KENOpg2*(1 + cpep/vENO_KENOpep) + cpg2);
+  vPK: cpep => cpyr; cytosol*vPK_rmaxPK*cpep*(cpep/vPK_KPKpep + 1)^(vPK_nPK - 1)*cadp/(vPK_KPKpep*(vPK_LPK*((1 + catp/vPK_KPKatp)/(cfdp/vPK_KPKfdp + camp/vPK_KPKamp + 1))^vPK_nPK + (cpep/vPK_KPKpep + 1)^vPK_nPK)*(cadp + vPK_KPKadp));
+  vpepCxylase: cpep => ; cytosol*vpepCxylase_rmaxpepCxylase*cpep*(1 + (cfdp/vpepCxylase_KpepCxylasefdp)^vpepCxylase_npepCxylasefdp)/(vpepCxylase_KpepCxylasepep + cpep);
+  vSynth1: cpep => ; cytosol*vSynth1_rmaxSynth1*cpep/(vSynth1_KSynth1pep + cpep);
+  vSynth2: cpyr => ; cytosol*vSynth2_rmaxSynth2*cpyr/(vSynth2_KSynth2pyr + cpyr);
+  vDAHPS: ce4p + cpep => ; cytosol*vDAHPS_rmaxDAHPS*ce4p^vDAHPS_nDAHPSe4p*cpep^vDAHPS_nDAHPSpep/((vDAHPS_KDAHPSe4p + ce4p^vDAHPS_nDAHPSe4p)*(vDAHPS_KDAHPSpep + cpep^vDAHPS_nDAHPSpep));
+  vPDH: cpyr => accoa; cytosol*vPDH_rmaxPDH*cpyr^vPDH_nPDH/(vPDH_KPDHpyr*(1 + accoa/vPDH_Ki_PDH_accoa) + cpyr^vPDH_nPDH);
   vMethSynth:  => cpyr; cytosol*vMethSynth_rmaxMetSynth;
-  vPGDH: cpg => cribu5p; (cytosol*vPGDH_rmaxPGDH*cpg*cnadp)/((cpg + vPGDH_KPGDHpg)*(cnadp + vPGDH_KPGDHnadp*(1 + cnadph/vPGDH_KPGDHnadphinh)*(1 + catp/vPGDH_KPGDHatpinh)));
+  vPGDH: cpg => cribu5p; cytosol*vPGDH_rmaxPGDH*cpg*cnadp/((cpg + vPGDH_KPGDHpg)*(cnadp + vPGDH_KPGDHnadp*(1 + cnadph/vPGDH_KPGDHnadphinh)*(1 + catp/vPGDH_KPGDHatpinh)));
   vR5PI: cribu5p -> crib5p; cytosol*vR5PI_rmaxR5PI*(cribu5p - crib5p/vR5PI_KR5PIeq);
   vRu5P: cribu5p -> cxyl5p; cytosol*vRu5P_rmaxRu5P*(cribu5p - cxyl5p/vRu5P_KRu5Peq);
-  vPPK: crib5p => ; (cytosol*vPPK_rmaxRPPK*crib5p)/(vPPK_KRPPKrib5p + crib5p);
-  vG1PAT: cg1p => ; (cytosol*vG1PAT_rmaxG1PAT*cg1p*catp*(1 + (cfdp/vG1PAT_KG1PATfdp)^vG1PAT_nG1PATfdp))/((vG1PAT_KG1PATatp + catp)*(vG1PAT_KG1PATg1p + cg1p));
+  vPPK: crib5p => ; cytosol*vPPK_rmaxRPPK*crib5p/(vPPK_KRPPKrib5p + crib5p);
+  vG1PAT: cg1p => ; cytosol*vG1PAT_rmaxG1PAT*cg1p*catp*(1 + (cfdp/vG1PAT_KG1PATfdp)^vG1PAT_nG1PATfdp)/((vG1PAT_KG1PATatp + catp)*(vG1PAT_KG1PATg1p + cg1p));
   vG6P: cg6p -> ; cytosol*Dil*cg6p;
   vf6P: cf6p -> ; cytosol*Dil*cf6p;
   vfdP: cfdp -> ; cytosol*Dil*cfdp;
@@ -60,10 +60,10 @@ model *MODEL1406060000()
   vE4P: ce4p -> ; cytosol*Dil*ce4p;
   vGLP: cg1p -> ; cytosol*Dil*cg1p;
   vEXTER:  => cglcex; extracellular*Dil*(vEXTER_cfeed_glc - cglcex);
-  ACCOAC: accoa => malcoa; (cytosol*ACCOAC_rmaxACCOAC*accoa)/(ACCOAC_K_ACCOAC_accoa*(1 + malcoa/ACCOAC_Ki_ACCOAC_malcoa) + accoa);
-  Synth3: accoa => ; (cytosol*Synth3_rmaxSynth3*accoa)/(Synth3_KSynth3accoa + accoa);
-  Synth4: malcoa => ; (cytosol*Synth4_rmaxSynth4*malcoa)/(Synth4_KSynth4malcoa + malcoa);
-  R4CL: fer => fercoa; (R4CL_E_4CL*R4CL_kcat_4CL*fer)/(R4CL_Km_4CL + fer);
+  ACCOAC: accoa => malcoa; cytosol*ACCOAC_rmaxACCOAC*accoa/(ACCOAC_K_ACCOAC_accoa*(1 + malcoa/ACCOAC_Ki_ACCOAC_malcoa) + accoa);
+  Synth3: accoa => ; cytosol*Synth3_rmaxSynth3*accoa/(Synth3_KSynth3accoa + accoa);
+  Synth4: malcoa => ; cytosol*Synth4_rmaxSynth4*malcoa/(Synth4_KSynth4malcoa + malcoa);
+  R4CL: fer => fercoa; R4CL_E_4CL*R4CL_kcat_4CL*fer/(R4CL_Km_4CL + fer);
   DCS: fercoa + malcoa => ferdicoa; DCS_E_DCS*DCS_kcat_DCS*(fercoa^DCS_n_DCS_fercoa/(DCS_Km_DCS_fercoa^DCS_n_DCS_fercoa + fercoa^DCS_n_DCS_fercoa))*(malcoa/(DCS_Km_DCS_malcoa + malcoa));
   CURS: fercoa + ferdicoa => cur; CURS_E_CURS*CURS_kcat_CURS*(fercoa/(CURS_Km_CURS_fercoa + fercoa))*(ferdicoa/(CURS_Km_CURS_ferdicoa + ferdicoa));
   FER_t: fer_ext -> fer; extracellular*FER_t_k_FER_t*(fer_ext - fer/FER_t_Keq_FER_t);
@@ -224,7 +224,7 @@ model *MODEL1406060000()
   vGAPDH_KGAPDHeq has dimensionless;
   vGAPDH_KGAPDHgap = 0.683;
   vGAPDH_KGAPDHgap has mM;
-  vGAPDH_KGAPDHpgp = 1.04e-005;
+  vGAPDH_KGAPDHpgp = 1.04e-05;
   vGAPDH_KGAPDHpgp has mM;
   vGAPDH_KGAPDHnad = 0.252;
   vGAPDH_KGAPDHnad has mM;
@@ -490,4 +490,43 @@ model *MODEL1406060000()
   vFERCOA is "FERCOA dilution";
   vFERDICOA is "FERDICOA dilution";
   vCUR is "CUR dilution";
+
+  // CV terms:
+  extracellular hypernym "http://identifiers.org/go/GO:0005576"
+  cytosol hypernym "http://identifiers.org/go/GO:0005829"
+  cpep hypernym "http://identifiers.org/chebi/CHEBI:44897"
+  cglcex hypernym "http://identifiers.org/chebi/CHEBI:17234"
+  cg6p hypernym "http://identifiers.org/chebi/CHEBI:14314"
+  cpyr hypernym "http://identifiers.org/chebi/CHEBI:32816"
+  cf6p hypernym "http://identifiers.org/chebi/CHEBI:78697"
+  cg1p hypernym "http://identifiers.org/chebi/CHEBI:16077"
+  cpg hypernym "http://identifiers.org/chebi/CHEBI:48928"
+  cfdp hypernym "http://identifiers.org/chebi/CHEBI:40595"
+  csed7p hypernym "http://identifiers.org/chebi/CHEBI:15721"
+  cgap hypernym "http://identifiers.org/chebi/CHEBI:17138"
+  ce4p hypernym "http://identifiers.org/chebi/CHEBI:48153"
+  cxyl5p hypernym "http://identifiers.org/chebi/CHEBI:57737"
+  crib5p hypernym "http://identifiers.org/chebi/CHEBI:58273"
+  cdhap hypernym "http://identifiers.org/chebi/CHEBI:57642"
+  cpgp hypernym "http://identifiers.org/pubchem.compound/683"
+  cpg3 hypernym "http://identifiers.org/chebi/CHEBI:17794"
+  cpg2 hypernym "http://identifiers.org/chebi/CHEBI:24344"
+  cribu5p hypernym "http://identifiers.org/chebi/CHEBI:58121"
+  accoa hypernym "http://identifiers.org/chebi/CHEBI:15351"
+  malcoa hypernym "http://identifiers.org/chebi/CHEBI:15531"
+  fer hypernym "http://identifiers.org/chebi/CHEBI:17620"
+  fer_ext hypernym "http://identifiers.org/chebi/CHEBI:17620"
+  fercoa hypernym "http://identifiers.org/chebi/CHEBI:14261"
+  ferdicoa hypernym "http://identifiers.org/chebi/CHEBI:71236"
+  cur hypernym "http://identifiers.org/chebi/CHEBI:3962"
+  cur_ext hypernym "http://identifiers.org/chebi/CHEBI:3962"
 end
+
+MODEL1406060000 is "Machado2014 - Curcumin production pathway in Escherichia coli"
+
+MODEL1406060000 model_entity_is "http://identifiers.org/biomodels.db/MODEL1406060000"
+MODEL1406060000 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000565"
+MODEL1406060000 description "http://identifiers.org/pubmed/25218090"
+MODEL1406060000 origin "http://identifiers.org/biomodels.db/BIOMD0000000051"
+MODEL1406060000 hypernym "http://identifiers.org/go/GO:0036039"
+MODEL1406060000 taxon "http://identifiers.org/taxonomy/562"

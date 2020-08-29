@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *MODEL1208300000()
 
   // Compartments and Species:
@@ -9,7 +9,7 @@ model *MODEL1208300000()
   reaction_1:  => c; reaction_1_alpha;
   reaction_3: c => ; reaction_3_kd*c;
   reaction_2:  => c; c/(reaction_2_kappa + c);
-  reaction_4: c => ; (reaction_4_phi*c)/(reaction_4_delta + reaction_4_gamma*c);
+  reaction_4: c => ; reaction_4_phi*c/(reaction_4_delta + reaction_4_gamma*c);
 
   // Species initializations:
   c = 1/cell;
@@ -21,13 +21,27 @@ model *MODEL1208300000()
   reaction_1_alpha = 0.001;
   reaction_3_kd = 1;
   reaction_2_kappa = 0.5;
-  reaction_4_phi = 5e-006;
-  reaction_4_delta = 1e-005;
-  reaction_4_gamma = 1e-005;
+  reaction_4_phi = 5e-06;
+  reaction_4_delta = 1e-05;
+  reaction_4_gamma = 1e-05;
 
   // Other declarations:
   const cell;
 
   // Display Names:
   c is "ribosome concentration";
+
+  // CV terms:
+  cell hypernym "http://identifiers.org/go/GO:0005623"
+  c part "http://identifiers.org/uniprot/P0AG67",
+         "http://identifiers.org/uniprot/P0A7L0"
 end
+
+MODEL1208300000 is "Tan2012 - Antibiotic Treatment, Inoculum Effect"
+
+MODEL1208300000 model_entity_is "http://identifiers.org/biomodels.db/MODEL1208300000"
+MODEL1208300000 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000425"
+MODEL1208300000 description "http://identifiers.org/pubmed/23047527"
+MODEL1208300000 hypernym "http://identifiers.org/go/GO:0071236"
+MODEL1208300000 taxon "http://identifiers.org/taxonomy/562"
+MODEL1208300000 property "http://identifiers.org/doid/DOID:104"

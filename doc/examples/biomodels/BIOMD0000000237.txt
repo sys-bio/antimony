@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Schaber2006_Pheromone_Starvation_Crosstalk()
 
   // Compartments and Species:
@@ -14,8 +14,8 @@ model *Schaber2006_Pheromone_Starvation_Crosstalk()
   species Ste12TeSte5 in compartment_, Ste12TeSte5P in compartment_, FREP in compartment_;
 
   // Assignment Rules:
-  alpha := alphastim*piecewise(alphaA*(1 - exp(-(time - alphat)/alphas)), time >= alphat && time <= alphae, piecewise(alphaA*exp(-(time - alphat)/alphas), time >= alphae, 0));
-  beta := betastim*betaA*piecewise(1 - exp(-(time - betat)/betas), time >= betat && time <= betae, piecewise(exp(-(time - betae)/betas), time > betae, 0));
+  alpha := alphastim*piecewise(alphaA*(1 - exp(-(time - alphat)/alphas)), (time >= alphat) && (time <= alphae), piecewise(alphaA*exp(-(time - alphat)/alphas), time >= alphae, 0));
+  beta := betastim*betaA*piecewise(1 - exp(-(time - betat)/betas), (time >= betat) && (time <= betae), piecewise(exp(-(time - betae)/betas), time > betae, 0));
 
   // Reactions:
   v1: Ste5 + Ste11 -> Ste5Ste11; compartment_*k1*Ste5*Ste11;
@@ -34,8 +34,8 @@ model *Schaber2006_Pheromone_Starvation_Crosstalk()
   v14: Ste11P -> Ste11; compartment_*k14*Ste11P;
   v15: Kss1 -> Kss1PP; compartment_*(k15*Kss1*Ste11P + k30*Kss1*Ste11Ubi);
   v16: Kss1PP -> Kss1; compartment_*(k16*Kss1PP + k28*Kss1PP*Fus3PP);
-  v17: Ste12Kss1 -> 2Kss1 + Ste12; compartment_*k17*Ste12Kss1;
-  v18: 2Kss1 + Ste12 -> Ste12Kss1; compartment_*k18*Kss1*Ste12;
+  v17: Ste12Kss1 -> 2 Kss1 + Ste12; compartment_*k17*Ste12Kss1;
+  v18: 2 Kss1 + Ste12 -> Ste12Kss1; compartment_*k18*Kss1*Ste12;
   v19: Ste12 -> Ste12P; compartment_*(k19*Ste12*Fus3PP + k29*Ste12*Kss1PP);
   v20: $s -> PREP; compartment_*k20*Ste12P;
   v21: Ste12TeSte5Kss1 -> Kss1 + Ste12TeSte5; compartment_*k21*Ste12TeSte5Kss1;
@@ -133,4 +133,170 @@ model *Schaber2006_Pheromone_Starvation_Crosstalk()
   const betaA, betat, betas, betae, k3, k4, k5, k6, k9, k10, k11, k12, k13;
   const k17, k19, k20, k21, k22, k23, k25, k27, k31, k32, k33, k34, k8, k14;
   const k15, k16, k26, k30, k7, k18, k1, k2, k24, k28, k29;
+
+  // Display Names:
+  compartment_ is "compartment";
+
+  // SBO terms:
+  compartment_.sboTerm = 290
+  Ste5.sboTerm = 252
+  Ste11.sboTerm = 252
+  Ste5Ste11.sboTerm = 297
+  Gbg.sboTerm = 252
+  Ste5Ste11Gbg.sboTerm = 297
+  Fus3.sboTerm = 252
+  Ste5Ste11GbgFus3.sboTerm = 297
+  Ste5Ste11GbgFus3P.sboTerm = 297
+  Fus3PP.sboTerm = 252
+  Ste5Ste11GbgP.sboTerm = 297
+  Ste11Ubi.sboTerm = 252
+  p.sboTerm = 291
+  Kss1.sboTerm = 252
+  Ste5Ste11GbgKss1.sboTerm = 297
+  Ste5Ste11GbgKss1P.sboTerm = 297
+  Kss1PP.sboTerm = 252
+  Ste11P.sboTerm = 252
+  Ste12Kss1.sboTerm = 297
+  Ste12.sboTerm = 252
+  Ste12P.sboTerm = 252
+  s.sboTerm = 291
+  PREP.sboTerm = 406
+  Ste12TeSte5Kss1.sboTerm = 297
+  Ste12TeSte5.sboTerm = 297
+  Ste12TeSte5P.sboTerm = 297
+  FREP.sboTerm = 406
+  v1.sboTerm = 177
+  v2.sboTerm = 177
+  v3.sboTerm = 177
+  v4.sboTerm = 216
+  v5.sboTerm = 216
+  v6.sboTerm = 177
+  v7.sboTerm = 180
+  v8.sboTerm = 179
+  v9.sboTerm = 177
+  v10.sboTerm = 216
+  v11.sboTerm = 216
+  v12.sboTerm = 177
+  v13.sboTerm = 216
+  v14.sboTerm = 330
+  v15.sboTerm = 216
+  v16.sboTerm = 330
+  v17.sboTerm = 180
+  v18.sboTerm = 177
+  v19.sboTerm = 216
+  v20.sboTerm = 205
+  v21.sboTerm = 180
+  v22.sboTerm = 177
+  v23.sboTerm = 216
+  v24.sboTerm = 179
+  v25.sboTerm = 205
+  v26.sboTerm = 330
+  v27.sboTerm = 180
+  v28.sboTerm = 330
+  v29.sboTerm = 179
+  v30.sboTerm = 330
+  v31.sboTerm = 179
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/go/GO:0005623"
+  Ste5 hypernym "http://identifiers.org/uniprot/P32917"
+  Ste5 property "http://identifiers.org/go/GO:0005078"
+  Ste11 hypernym "http://identifiers.org/uniprot/P23561"
+  Ste11 property "http://identifiers.org/go/GO:0004709"
+  Ste5Ste11 part "http://identifiers.org/uniprot/P23561",
+                 "http://identifiers.org/uniprot/P32917"
+  Gbg part "http://identifiers.org/uniprot/A6ZP55",
+           "http://identifiers.org/uniprot/P53130"
+  Ste5Ste11Gbg part "http://identifiers.org/uniprot/P53130",
+                    "http://identifiers.org/uniprot/A6ZP55",
+                    "http://identifiers.org/uniprot/P32917",
+                    "http://identifiers.org/uniprot/P23561"
+  Fus3 hypernym "http://identifiers.org/uniprot/P16892"
+  Ste5Ste11GbgFus3 part "http://identifiers.org/uniprot/P32917",
+                        "http://identifiers.org/uniprot/P23561",
+                        "http://identifiers.org/uniprot/A6ZP55",
+                        "http://identifiers.org/uniprot/P53130",
+                        "http://identifiers.org/uniprot/P16892"
+  Ste5Ste11GbgFus3P part "http://identifiers.org/uniprot/P32917",
+                         "http://identifiers.org/uniprot/P23561",
+                         "http://identifiers.org/uniprot/A6ZP55",
+                         "http://identifiers.org/uniprot/P53130",
+                         "http://identifiers.org/uniprot/P16892"
+  Fus3PP hypernym "http://identifiers.org/uniprot/P16892"
+  Fus3PP property "http://identifiers.org/go/GO:0004707"
+  Ste5Ste11GbgP part "http://identifiers.org/uniprot/P32917",
+                     "http://identifiers.org/uniprot/P23561",
+                     "http://identifiers.org/uniprot/A6ZP55",
+                     "http://identifiers.org/uniprot/P53130"
+  Ste11Ubi part "http://identifiers.org/uniprot/P23561",
+                "http://identifiers.org/uniprot/P61864"
+  Kss1 hypernym "http://identifiers.org/uniprot/P14681"
+  Ste5Ste11GbgKss1 part "http://identifiers.org/uniprot/P32917",
+                        "http://identifiers.org/uniprot/P23561",
+                        "http://identifiers.org/uniprot/A6ZP55",
+                        "http://identifiers.org/uniprot/P53130",
+                        "http://identifiers.org/uniprot/P14681"
+  Ste5Ste11GbgKss1P part "http://identifiers.org/uniprot/P32917",
+                         "http://identifiers.org/uniprot/P23561",
+                         "http://identifiers.org/uniprot/A6ZP55",
+                         "http://identifiers.org/uniprot/P53130",
+                         "http://identifiers.org/uniprot/P14681"
+  Kss1PP hypernym "http://identifiers.org/uniprot/P14681"
+  Ste11P hypernym "http://identifiers.org/uniprot/P23561"
+  Ste12Kss1 part "http://identifiers.org/uniprot/P14681",
+                 "http://identifiers.org/uniprot/P13574"
+  Ste12 hypernym "http://identifiers.org/uniprot/P13574"
+  Ste12P hypernym "http://identifiers.org/uniprot/P13574"
+  PREP parthood "http://identifiers.org/go/GO:0019236"
+  Ste12TeSte5Kss1 part "http://identifiers.org/uniprot/P32917",
+                       "http://identifiers.org/uniprot/P14681",
+                       "http://identifiers.org/uniprot/P13574"
+  Ste12TeSte5 part "http://identifiers.org/uniprot/P32917",
+                   "http://identifiers.org/uniprot/P13574"
+  Ste12TeSte5P part "http://identifiers.org/uniprot/P32917",
+                    "http://identifiers.org/uniprot/P13574"
+  FREP parthood "http://identifiers.org/go/GO:0045311"
+  v1 hypernym "http://identifiers.org/go/GO:0006461"
+  v2 hypernym "http://identifiers.org/go/GO:0006461"
+  v3 hypernym "http://identifiers.org/go/GO:0006461"
+  v4 hypernym "http://identifiers.org/go/GO:0016310"
+  v5 hypernym "http://identifiers.org/go/GO:0016310",
+              "http://identifiers.org/go/GO:0043241"
+  v6 hypernym "http://identifiers.org/go/GO:0006461"
+  v7 hypernym "http://identifiers.org/go/GO:0043241"
+  v8 hypernym "http://identifiers.org/go/GO:0030163"
+  v9 hypernym "http://identifiers.org/go/GO:0006461"
+  v10 hypernym "http://identifiers.org/go/GO:0016310"
+  v11 hypernym "http://identifiers.org/go/GO:0016310",
+               "http://identifiers.org/go/GO:0043241"
+  v12 hypernym "http://identifiers.org/go/GO:0006461"
+  v13 hypernym "http://identifiers.org/go/GO:0016310"
+  v14 hypernym "http://identifiers.org/go/GO:0016311"
+  v15 hypernym "http://identifiers.org/go/GO:0016310"
+  v16 hypernym "http://identifiers.org/go/GO:0016311"
+  v17 hypernym "http://identifiers.org/go/GO:0043241"
+  v18 hypernym "http://identifiers.org/go/GO:0006461"
+  v19 hypernym "http://identifiers.org/go/GO:0016310"
+  v20 hypernym "http://identifiers.org/go/GO:0010467"
+  v21 hypernym "http://identifiers.org/go/GO:0043241"
+  v22 hypernym "http://identifiers.org/go/GO:0006461"
+  v23 hypernym "http://identifiers.org/go/GO:0016310"
+  v25 hypernym "http://identifiers.org/go/GO:0010467"
+  v26 hypernym "http://identifiers.org/go/GO:0016311"
+  v27 hypernym "http://identifiers.org/go/GO:0043241"
+  v28 hypernym "http://identifiers.org/go/GO:0016311"
+  v29 hypernym "http://identifiers.org/go/GO:0030163"
+  v30 hypernym "http://identifiers.org/go/GO:0016311"
+  v31 hypernym "http://identifiers.org/go/GO:0030163"
 end
+
+Schaber2006_Pheromone_Starvation_Crosstalk is "Schaber2006_Pheromone_Starvation_Crosstalk"
+
+Schaber2006_Pheromone_Starvation_Crosstalk model_entity_is "http://identifiers.org/biomodels.db/MODEL5952001443"
+Schaber2006_Pheromone_Starvation_Crosstalk model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000237"
+Schaber2006_Pheromone_Starvation_Crosstalk description "http://identifiers.org/pubmed/16884493"
+Schaber2006_Pheromone_Starvation_Crosstalk taxon "http://identifiers.org/taxonomy/4932"
+Schaber2006_Pheromone_Starvation_Crosstalk version "http://identifiers.org/go/GO:0042810",
+                                                   "http://identifiers.org/go/GO:0010570"
+Schaber2006_Pheromone_Starvation_Crosstalk hypernym "http://identifiers.org/go/GO:0009267"
+Schaber2006_Pheromone_Starvation_Crosstalk property "http://identifiers.org/mamo/MAMO_0000046"

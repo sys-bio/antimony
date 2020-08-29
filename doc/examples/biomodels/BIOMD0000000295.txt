@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Akman2008_Circadian_Clock_Model1()
 
   // Compartments and Species:
@@ -10,8 +10,8 @@ model *Akman2008_Circadian_Clock_Model1()
   Tot_FRQ := FC + FCp + FN + FNp;
 
   // Reactions:
-  MFtrn:  => MF; ((vs + amp*(((1 + tanh(2*(time - 24*floor(time/24) - dawn)))*(1 - tanh(2*(time - 24*floor(time/24) - dusk))))/4))*ki^n)/(ki^n + (FN + FNp)^n);
-  MFdeg: MF => ; (vm*MF)/(km + MF);
+  MFtrn:  => MF; (vs + amp*((1 + tanh(2*(time - 24*floor(time/24) - dawn)))*(1 - tanh(2*(time - 24*floor(time/24) - dusk)))/4))*ki^n/(ki^n + (FN + FNp)^n);
+  MFdeg: MF => ; vm*MF/(km + MF);
   FCtrl:  => FC; ks*MF;
   FCdeg: FC => ; vd*FC;
   FCtrs: FC -> FN; k1n*FC - k2n*FN;
@@ -52,4 +52,63 @@ model *Akman2008_Circadian_Clock_Model1()
   var Tot_FRQ;
   const nucleus, cytoplasm, vs, ki, n, vm, km, ks, vd, k1n, k2n, ksp, vdp;
   const k1np, k2np, amp, dawn, dusk;
+
+  // SBO terms:
+  nucleus.sboTerm = 290
+  cytoplasm.sboTerm = 290
+  FC.sboTerm = 245
+  FCp.sboTerm = 245
+  FN.sboTerm = 245
+  FNp.sboTerm = 245
+  MF.sboTerm = 278
+  vs.sboTerm = 186
+  ki.sboTerm = 9
+  n.sboTerm = 190
+  vm.sboTerm = 186
+  km.sboTerm = 27
+  ks.sboTerm = 9
+  vd.sboTerm = 9
+  k1n.sboTerm = 27
+  k2n.sboTerm = 27
+  ksp.sboTerm = 9
+  vdp.sboTerm = 9
+  k1np.sboTerm = 9
+  k2np.sboTerm = 9
+  amp.sboTerm = 492
+  dawn.sboTerm = 2
+  dusk.sboTerm = 2
+  MFtrn.sboTerm = 183
+  MFdeg.sboTerm = 179
+  FCtrl.sboTerm = 184
+  FCdeg.sboTerm = 179
+  FCtrs.sboTerm = 185
+  FCptrl.sboTerm = 184
+  FCpdeg.sboTerm = 179
+  FCptrs.sboTerm = 185
+
+  // CV terms:
+  nucleus hypernym "http://identifiers.org/go/GO:0005634"
+  cytoplasm hypernym "http://identifiers.org/go/GO:0005737"
+  FC hypernym "http://identifiers.org/uniprot/P19970"
+  FCp hypernym "http://identifiers.org/uniprot/P19970"
+  FN hypernym "http://identifiers.org/uniprot/P19970"
+  FNp hypernym "http://identifiers.org/uniprot/P19970"
+  MF encodement "http://identifiers.org/uniprot/P19970"
+  MFtrn hypernym "http://identifiers.org/go/GO:0006351"
+  MFdeg hypernym "http://identifiers.org/go/GO:0009056"
+  FCtrl hypernym "http://identifiers.org/go/GO:0006412"
+  FCdeg hypernym "http://identifiers.org/go/GO:0009056"
+  FCtrs hypernym "http://identifiers.org/go/GO:0006810"
+  FCptrl hypernym "http://identifiers.org/go/GO:0006412"
+  FCpdeg hypernym "http://identifiers.org/go/GO:0009056"
+  FCptrs hypernym "http://identifiers.org/go/GO:0006810"
 end
+
+Akman2008_Circadian_Clock_Model1 is "Akman2008_Circadian_Clock_Model1"
+
+Akman2008_Circadian_Clock_Model1 model_entity_is "http://identifiers.org/biomodels.db/MODEL8306248909"
+Akman2008_Circadian_Clock_Model1 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000295"
+Akman2008_Circadian_Clock_Model1 description "http://identifiers.org/pubmed/18277380"
+Akman2008_Circadian_Clock_Model1 origin "http://identifiers.org/biomodels.db/BIOMD0000000299"
+Akman2008_Circadian_Clock_Model1 taxon "http://identifiers.org/taxonomy/5141"
+Akman2008_Circadian_Clock_Model1 hypernym "http://identifiers.org/go/GO:0042752"

@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Middleton2012_GibberellinSignalling()
 
   // Compartments and Species:
@@ -43,10 +43,10 @@ model *Middleton2012_GibberellinSignalling()
   re22: $s6 => s27; re22_deltaGA20ox*s39;
   re23: $s5 => s28; re23_deltaGA3ox*s41;
   re24: $s33 => s2; re24_deltaGID*s42;
-  re27: $s11 => s39; (muGA20ox*s16)/(s16 + re27_thetaGA20ox);
-  re28: $s15 => s42; (muGID*s16)/(s16 + re28_thetaGID);
-  re29: $s34 => s40; (muDELLA*re29_thetaDELLA)/(s16 + re29_thetaDELLA);
-  re30: $s35 => s41; (muGA3ox*s16)/(s16 + re30_thetaGA3ox);
+  re27: $s11 => s39; muGA20ox*s16/(s16 + re27_thetaGA20ox);
+  re28: $s15 => s42; muGID*s16/(s16 + re28_thetaGID);
+  re29: $s34 => s40; muDELLA*re29_thetaDELLA/(s16 + re29_thetaDELLA);
+  re30: $s35 => s41; muGA3ox*s16/(s16 + re30_thetaGA3ox);
   re31: s40 => $s34; muDELLA*s40;
   re32: s42 => $s15; muGID*s42;
   re33: s39 => $s11; muGA20ox*s39;
@@ -299,4 +299,64 @@ model *Middleton2012_GibberellinSignalling()
   re44 is "degradation of GA24";
   re45 is "degradation of GA9";
   re46 is "degradation of GA4";
+
+  // SBO terms:
+  s3.sboTerm = 291
+  s5.sboTerm = 291
+  s6.sboTerm = 291
+  s7.sboTerm = 291
+  s33.sboTerm = 291
+  s11.sboTerm = 291
+  s15.sboTerm = 291
+  s34.sboTerm = 291
+  s35.sboTerm = 291
+  s66.sboTerm = 291
+  s67.sboTerm = 291
+  s68.sboTerm = 291
+  s69.sboTerm = 291
+  s70.sboTerm = 291
+  s71.sboTerm = 291
+
+  // CV terms:
+  default hypernym "http://identifiers.org/obo.go/GO:0005623"
+  s1 hypernym "http://identifiers.org/obo.chebi/CHEBI:32902"
+  s2 hypernym "http://identifiers.org/uniprot/Q9MAA7"
+  s16 hypernym "http://identifiers.org/uniprot/Q9LQT8"
+  s22 hypernym "http://identifiers.org/uniprot/Q9LQT8"
+  s23 hypernym "http://identifiers.org/obo.chebi/CHEBI:30088"
+  s24 hypernym "http://identifiers.org/obo.chebi/CHEBI:29590"
+  s25 hypernym "http://identifiers.org/obo.chebi/CHEBI:32906"
+  s26 hypernym "http://identifiers.org/obo.chebi/CHEBI:29605"
+  s27 hypernym "http://identifiers.org/kegg.genes/ath:AT4G25420"
+  s28 hypernym "http://identifiers.org/kegg.genes/ath:AT4G21690"
+  s39 hypernym "http://identifiers.org/kegg.genes/ath:AT4G25420"
+  s40 hypernym "http://identifiers.org/uniprot/Q9LQT8"
+  s41 hypernym "http://identifiers.org/kegg.genes/ath:AT4G21690"
+  s42 hypernym "http://identifiers.org/uniprot/Q9MAA7"
+  s65 part "http://identifiers.org/obo.chebi/CHEBI:32902",
+           "http://identifiers.org/uniprot/Q9MAA7"
+  s29 part "http://identifiers.org/obo.chebi/CHEBI:29605",
+           "http://identifiers.org/kegg.genes/ath:AT4G21690"
+  s30 part "http://identifiers.org/obo.chebi/CHEBI:32906",
+           "http://identifiers.org/kegg.genes/ath:AT4G25420"
+  s31 part "http://identifiers.org/obo.chebi/CHEBI:29590",
+           "http://identifiers.org/kegg.genes/ath:AT4G25420"
+  s32 part "http://identifiers.org/obo.chebi/CHEBI:30088",
+           "http://identifiers.org/kegg.genes/ath:AT4G25420"
+  s62 part "http://identifiers.org/obo.chebi/CHEBI:32902",
+           "http://identifiers.org/uniprot/Q9MAA7"
+  s36 part "http://identifiers.org/obo.chebi/CHEBI:32902",
+           "http://identifiers.org/uniprot/Q9MAA7",
+           "http://identifiers.org/uniprot/Q9LQT8"
+  s45 part "http://identifiers.org/obo.chebi/CHEBI:32902",
+           "http://identifiers.org/uniprot/Q9LQT8",
+           "http://identifiers.org/uniprot/Q9MAA7"
 end
+
+Middleton2012_GibberellinSignalling is "Middleton2012_GibberellinSignalling"
+
+Middleton2012_GibberellinSignalling model_entity_is "http://identifiers.org/biomodels.db/MODEL1206190000"
+Middleton2012_GibberellinSignalling model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000422"
+Middleton2012_GibberellinSignalling description "http://identifiers.org/pubmed/22523240"
+Middleton2012_GibberellinSignalling taxon "http://identifiers.org/taxonomy/3701"
+Middleton2012_GibberellinSignalling hypernym "http://identifiers.org/obo.go/GO:0010476"

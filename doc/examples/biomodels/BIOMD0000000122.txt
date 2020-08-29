@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Fisher2006_Ca_Oscillation_dpdnt_NFAT_dynamics()
 
   // Compartments and Species:
@@ -23,39 +23,39 @@ model *Fisher2006_Ca_Oscillation_dpdnt_NFAT_dynamics()
   R11: NFAT_Act_C_Cyt -> Act_C_Cyt + NFAT_Cyt; cytosol*(k15*NFAT_Act_C_Cyt - k16*NFAT_Cyt*Act_C_Cyt);
   R17: NFAT_Pi_Act_C_Cyt -> NFAT_Pi_Act_C_Nuc; cytosol*k7*NFAT_Pi_Act_C_Cyt - nucleus*k8*NFAT_Pi_Act_C_Nuc;
   R12: NFAT_Pi_Cyt + Act_C_Cyt -> Act_C_Cyt + NFAT_Cyt; cytosol*(k1*NFAT_Pi_Cyt - k2*NFAT_Cyt);
-  R13: 3$Ca_Cyt + Inact_C_Cyt -> Act_C_Cyt; cytosol*(k19*Inact_C_Cyt*Ca_Cyt^3 - k20*Act_C_Cyt);
-  R14: 3$Ca_Nuc + Inact_C_Nuc -> Act_C_Nuc; nucleus*(k19*Inact_C_Nuc*Ca_Nuc^3 - k20*Act_C_Nuc);
+  R13: 3 $Ca_Cyt + Inact_C_Cyt -> Act_C_Cyt; cytosol*(k19*Inact_C_Cyt*Ca_Cyt^3 - k20*Act_C_Cyt);
+  R14: 3 $Ca_Nuc + Inact_C_Nuc -> Act_C_Nuc; nucleus*(k19*Inact_C_Nuc*Ca_Nuc^3 - k20*Act_C_Nuc);
   R15: Inact_C_Cyt -> Inact_C_Nuc; cytosol*k5*Inact_C_Cyt - nucleus*k6*Inact_C_Nuc;
   R16: $Ca_Cyt -> $Ca_Nuc; cytosol*k21*Ca_Cyt - nucleus*k22*Ca_Nuc;
 
   // Events:
-  event_0000001: at Time_in_Seconds - time <= 0 && time < 1500: Ca_Nuc = 1, Ca_Cyt = 1, Time_in_Seconds = Time_in_Seconds + 100;
-  event_0000002: at Time_in_Seconds - time <= 90 && time < 1500: Ca_Nuc = 0.1, Ca_Cyt = 0.1;
+  event_0000001: at ((Time_in_Seconds - time) <= 0) && (time < 1500): Ca_Nuc = 1, Ca_Cyt = 1, Time_in_Seconds = Time_in_Seconds + 100;
+  event_0000002: at ((Time_in_Seconds - time) <= 90) && (time < 1500): Ca_Nuc = 0.1, Ca_Cyt = 0.1;
   event_0000003: at time >= 1500: Ca_Nuc = 0.1, Ca_Cyt = 0.1;
 
   // Species initializations:
   Ca_Nuc = 1;
   Ca_Cyt = 1;
   NFAT_Nuc = 0.0005219;
-  Act_C_Nuc = 5.05e-005;
+  Act_C_Nuc = 5.05e-05;
   NFAT_Pi_Nuc = 0.0002272;
   NFAT_Act_C_Nuc = 0.0009477;
-  NFAT_Pi_Act_C_Nuc = 2.5e-006;
+  NFAT_Pi_Act_C_Nuc = 2.5e-06;
   Inact_C_Nuc = 0.049198;
   NFAT_Cyt = 0.0001101;
-  Act_C_Cyt = 9.1e-006;
+  Act_C_Cyt = 9.1e-06;
   NFAT_Pi_Cyt = 0.0094397;
-  NFAT_Act_C_Cyt = 6.1e-006;
-  NFAT_Pi_Act_C_Cyt = 2.2e-006;
+  NFAT_Act_C_Cyt = 6.1e-06;
+  NFAT_Pi_Act_C_Cyt = 2.2e-06;
   Inact_C_Cyt = 0.0097108;
 
   // Compartment initializations:
-  cytosol = 2.69e-013;
-  nucleus = 1.13e-013;
+  cytosol = 2.69e-13;
+  nucleus = 1.13e-13;
 
   // Variable initializations:
   Time_in_Seconds = 100;
-  k1 = 2.56e-005;
+  k1 = 2.56e-05;
   k2 = 0.00256;
   k16 = 6.63;
   k15 = 0.00168;
@@ -118,4 +118,60 @@ model *Fisher2006_Ca_Oscillation_dpdnt_NFAT_dynamics()
   R14 is "Calcineurin activation";
   R15 is "Inactive Calcineurin transport";
   R16 is "Calcium transport";
+
+  // CV terms:
+  cytosol identity "http://identifiers.org/go/GO:0005829"
+  nucleus identity "http://identifiers.org/go/GO:0005634"
+  Ca_Nuc identity "http://identifiers.org/chebi/CHEBI:29108",
+                  "http://identifiers.org/kegg.compound/C00076"
+  Ca_Cyt identity "http://identifiers.org/chebi/CHEBI:29108",
+                  "http://identifiers.org/kegg.compound/C00076"
+  NFAT_Nuc hypernym "http://identifiers.org/uniprot/O94916"
+  Act_C_Nuc hypernym "http://identifiers.org/uniprot/Q99653"
+  NFAT_Pi_Nuc hypernym "http://identifiers.org/uniprot/O94916"
+  NFAT_Act_C_Nuc part "http://identifiers.org/uniprot/Q99653",
+                      "http://identifiers.org/uniprot/O94916"
+  NFAT_Pi_Act_C_Nuc part "http://identifiers.org/uniprot/Q99653",
+                         "http://identifiers.org/uniprot/O94916"
+  Inact_C_Nuc hypernym "http://identifiers.org/uniprot/Q99653"
+  NFAT_Cyt hypernym "http://identifiers.org/uniprot/O94916"
+  Act_C_Cyt hypernym "http://identifiers.org/uniprot/Q99653"
+  NFAT_Pi_Cyt hypernym "http://identifiers.org/uniprot/O94916"
+  NFAT_Act_C_Cyt part "http://identifiers.org/uniprot/Q99653",
+                      "http://identifiers.org/uniprot/O94916"
+  NFAT_Pi_Act_C_Cyt part "http://identifiers.org/uniprot/Q99653",
+                         "http://identifiers.org/uniprot/O94916"
+  Inact_C_Cyt hypernym "http://identifiers.org/uniprot/Q99653"
+  R1 identity "http://identifiers.org/ec-code/3.1.3.16",
+              "http://identifiers.org/go/GO:0004722",
+              "http://identifiers.org/go/GO:0004723"
+  R1 hypernym "http://identifiers.org/kegg.reaction/R00164"
+  R2 hypernym "http://identifiers.org/go/GO:0051525"
+  R3 identity "http://identifiers.org/go/GO:0051531"
+  R4 hypernym "http://identifiers.org/go/GO:0015031"
+  R5 hypernym "http://identifiers.org/go/GO:0006468"
+  R6 hypernym "http://identifiers.org/go/GO:0043624"
+  R7 hypernym "http://identifiers.org/go/GO:0015031"
+  R8 hypernym "http://identifiers.org/go/GO:0006468"
+  R9 hypernym "http://identifiers.org/go/GO:0043624"
+  R10 hypernym "http://identifiers.org/go/GO:0015031"
+  R11 hypernym "http://identifiers.org/go/GO:0043624"
+  R17 hypernym "http://identifiers.org/go/GO:0015031"
+  R12 identity "http://identifiers.org/ec-code/3.1.3.16",
+               "http://identifiers.org/go/GO:0004723"
+  R13 hypernym "http://identifiers.org/go/GO:0032514"
+  R14 hypernym "http://identifiers.org/go/GO:0032514"
+  R15 hypernym "http://identifiers.org/go/GO:0015031"
+  R16 hypernym "http://identifiers.org/go/GO:0006816"
 end
+
+Fisher2006_Ca_Oscillation_dpdnt_NFAT_dynamics is "Fisher2006_Ca_Oscillation_dpdnt_NFAT_dynamics"
+
+Fisher2006_Ca_Oscillation_dpdnt_NFAT_dynamics model_entity_is "http://identifiers.org/biomodels.db/MODEL2977476330"
+Fisher2006_Ca_Oscillation_dpdnt_NFAT_dynamics model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000122"
+Fisher2006_Ca_Oscillation_dpdnt_NFAT_dynamics description "http://identifiers.org/pubmed/17031595"
+Fisher2006_Ca_Oscillation_dpdnt_NFAT_dynamics container "http://identifiers.org/bto/BTO:0000782"
+Fisher2006_Ca_Oscillation_dpdnt_NFAT_dynamics taxon "http://identifiers.org/taxonomy/40674"
+Fisher2006_Ca_Oscillation_dpdnt_NFAT_dynamics identity "http://identifiers.org/go/GO:0033173"
+Fisher2006_Ca_Oscillation_dpdnt_NFAT_dynamics parthood "http://identifiers.org/kegg.pathway/hsa04660"
+Fisher2006_Ca_Oscillation_dpdnt_NFAT_dynamics hypernym "http://identifiers.org/go/GO:0002709"

@@ -1,19 +1,27 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 function Constant_flux__irreversible(v)
   v;
 end
 
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
 function Henri_Michaelis_Menten__irreversible(substrate, Km, V)
-  (V*substrate)/(Km + substrate);
+  V*substrate/(Km + substrate);
 end
 
+Henri_Michaelis_Menten__irreversible is "Henri-Michaelis-Menten (irreversible)"
+
 function Irr_Michaelis_Menten__enzyme__userdefined(V, E, S, Km)
-  (V*E*S)/(Km + S);
+  V*E*S/(Km + S);
 end
+
+Irr_Michaelis_Menten__enzyme__userdefined is "Irr Michaelis-Menten (enzyme)[userdefined]"
 
 function linear_activation(constant, Activator)
   constant*Activator;
 end
+
+linear_activation is "linear activation"
 
 
 model *BIOMD0000000329()
@@ -38,7 +46,7 @@ model *BIOMD0000000329()
   c = 0.01;
 
   // Compartment initializations:
-  compartment_ = 1e-013;
+  compartment_ = 1e-13;
 
   // Variable initializations:
   R1_v = 0.212;
@@ -61,7 +69,29 @@ model *BIOMD0000000329()
   unit substance = 1e-9 mole;
 
   // Display Names:
+  compartment_ is "compartment";
   a is "G-alpha";
   b is "activePLC";
   c is "Calcium";
+
+  // SBO terms:
+  compartment_.sboTerm = 290
+  a.sboTerm = 252
+  b.sboTerm = 14
+  c.sboTerm = 247
+
+  // CV terms:
+  compartment_ hypernym "http://identifiers.org/go/GO:0005623"
+  a hypernym "http://identifiers.org/uniprot/Q9JID2"
+  b hypernym "http://identifiers.org/uniprot/P10687"
+  c hypernym "http://identifiers.org/chebi/CHEBI:29108"
 end
+
+BIOMD0000000329 is "Kummer2000 - Oscillations in Calcium Signalling"
+
+BIOMD0000000329 model_entity_is "http://identifiers.org/biomodels.db/MODEL1105060000"
+BIOMD0000000329 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000329"
+BIOMD0000000329 description "http://identifiers.org/pubmed/10968983"
+BIOMD0000000329 hypernym "http://identifiers.org/go/GO:0019722"
+BIOMD0000000329 taxon "http://identifiers.org/taxonomy/10116"
+BIOMD0000000329 container "http://identifiers.org/bto/BTO:0000575"

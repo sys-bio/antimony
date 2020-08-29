@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Chassagnole2001_Threonine_Synthesis()
 
   // Compartments and Species:
@@ -9,11 +9,11 @@ model *Chassagnole2001_Threonine_Synthesis()
   species atp in compartment_;
 
   // Reactions:
-  vak: atp + asp -> aspp + adp; compartment_*((vak_vm11*(asp*atp - (aspp*adp)/vak_keqak))/(((vak_k11*(1 + (thr/vak_k1thr)^vak_nak1))/(1 + (thr/(vak_alpha*vak_k1thr))^vak_nak1) + (vak_k11*aspp)/vak_k1aspp + asp)*(vak_k1atp*(1 + adp/vak_k1adp) + atp)) + (vak_vm13*(asp*atp - (aspp*adp)/vak_keqak))/((1 + (vak_lys/vak_k1lys)^vak_nak3)*(vak_k13*(1 + aspp/vak_k13aspp) + asp)*(vak_k13atp*(1 + adp/vak_k13adp) + atp)));
-  vasd: nadph + aspp -> nadp + phos + asa; compartment_*((vasd_vm2f*(aspp*nadph - (asa*nadp*phos)/vasd_k2eq))/((vasd_k2aspp*(1 + asa/vasd_k2asa)*(1 + phos/vasd_k2p) + aspp)*(vasd_k2nadph*(1 + nadp/vasd_k2nadp) + nadph)));
-  vhdh: nadph + asa -> hs + nadp; compartment_*((vhdh_vm3f*(asa*nadph - (hs*nadp)/vhdh_k3eq))/((1 + (thr/vhdh_k3thr)^vhdh_nhdh1)/(1 + (thr/(vhdh_alpha3*vhdh_k3thr))^vhdh_nhdh1)*(vhdh_k3asa + asa + (hs*vhdh_k3asa)/vhdh_k3hs)*(vhdh_k3nadph*(1 + nadp/vhdh_k3nadp) + nadph)));
-  vtsy: hsp -> thr + phos; (compartment_*vtsy_vm5*hsp)/(hsp + vtsy_k5hsp);
-  vhk: hs + atp -> hsp + adp; compartment_*((vhk_vm4f*hs*atp)/((1 + vhk_lys/vhk_k4lys)*(atp + vhk_k4atp*(1 + hs/vhk_k4ihs))*(hs + vhk_k4hs*(1 + thr/vhk_k4thr)*(1 + atp/vhk_k4iatp))));
+  vak: atp + asp -> aspp + adp; compartment_*(vak_vm11*(asp*atp - aspp*adp/vak_keqak)/((vak_k11*(1 + (thr/vak_k1thr)^vak_nak1)/(1 + (thr/(vak_alpha*vak_k1thr))^vak_nak1) + vak_k11*aspp/vak_k1aspp + asp)*(vak_k1atp*(1 + adp/vak_k1adp) + atp)) + vak_vm13*(asp*atp - aspp*adp/vak_keqak)/((1 + (vak_lys/vak_k1lys)^vak_nak3)*(vak_k13*(1 + aspp/vak_k13aspp) + asp)*(vak_k13atp*(1 + adp/vak_k13adp) + atp)));
+  vasd: nadph + aspp -> nadp + phos + asa; compartment_*(vasd_vm2f*(aspp*nadph - asa*nadp*phos/vasd_k2eq)/((vasd_k2aspp*(1 + asa/vasd_k2asa)*(1 + phos/vasd_k2p) + aspp)*(vasd_k2nadph*(1 + nadp/vasd_k2nadp) + nadph)));
+  vhdh: nadph + asa -> hs + nadp; compartment_*(vhdh_vm3f*(asa*nadph - hs*nadp/vhdh_k3eq)/(((1 + (thr/vhdh_k3thr)^vhdh_nhdh1)/(1 + (thr/(vhdh_alpha3*vhdh_k3thr))^vhdh_nhdh1))*(vhdh_k3asa + asa + hs*vhdh_k3asa/vhdh_k3hs)*(vhdh_k3nadph*(1 + nadp/vhdh_k3nadp) + nadph)));
+  vtsy: hsp -> thr + phos; compartment_*vtsy_vm5*hsp/(hsp + vtsy_k5hsp);
+  vhk: hs + atp -> hsp + adp; compartment_*(vhk_vm4f*hs*atp/((1 + vhk_lys/vhk_k4lys)*(atp + vhk_k4atp*(1 + hs/vhk_k4ihs))*(hs + vhk_k4hs*(1 + thr/vhk_k4thr)*(1 + atp/vhk_k4iatp))));
   vnadph_endo: nadph -> nadp; compartment_*vnadph_endo_prot*vnadph_endo_knadph*nadph;
   vatpase: atp -> adp + phos; compartment_*vatpase_prot*vatpase_katpase;
 
@@ -120,11 +120,11 @@ model *Chassagnole2001_Threonine_Synthesis()
   vhk_k4thr has mM;
   vhk_k4iatp = 4.35;
   vhk_k4iatp has mM;
-  vnadph_endo_knadph = 5.4e-006;
+  vnadph_endo_knadph = 5.4e-06;
   vnadph_endo_knadph has litre_per_mg_per_min;
   vnadph_endo_prot = 202;
   vnadph_endo_prot has mg_per_litre;
-  vatpase_katpase = 4.1e-005;
+  vatpase_katpase = 4.1e-05;
   vatpase_katpase has millimole_per_mg_per_min;
   vatpase_prot = 202;
   vatpase_prot has mg_per_litre;
@@ -162,4 +162,56 @@ model *Chassagnole2001_Threonine_Synthesis()
   vhk is "Homoserine kinase";
   vnadph_endo is "Endogenous consumption of NADPH";
   vatpase is "ATPase";
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/obo.go/GO:0005623"
+  aspp identity "http://identifiers.org/obo.chebi/CHEBI:15836",
+                "http://identifiers.org/kegg.compound/C03082"
+  asa identity "http://identifiers.org/obo.chebi/CHEBI:18051",
+               "http://identifiers.org/kegg.compound/C00441"
+  hs identity "http://identifiers.org/obo.chebi/CHEBI:15699",
+              "http://identifiers.org/kegg.compound/C00263"
+  hsp identity "http://identifiers.org/obo.chebi/CHEBI:15961",
+               "http://identifiers.org/kegg.compound/C01102"
+  phos identity "http://identifiers.org/obo.chebi/CHEBI:18367",
+                "http://identifiers.org/kegg.compound/C00009"
+  thr identity "http://identifiers.org/obo.chebi/CHEBI:16857",
+               "http://identifiers.org/kegg.compound/C00188"
+  asp identity "http://identifiers.org/obo.chebi/CHEBI:17053",
+               "http://identifiers.org/kegg.compound/C00049"
+  nadp identity "http://identifiers.org/obo.chebi/CHEBI:18009",
+                "http://identifiers.org/kegg.compound/C00006"
+  nadph identity "http://identifiers.org/obo.chebi/CHEBI:16474",
+                 "http://identifiers.org/kegg.compound/C00005"
+  adp identity "http://identifiers.org/obo.chebi/CHEBI:16761",
+               "http://identifiers.org/kegg.compound/C00008"
+  atp identity "http://identifiers.org/obo.chebi/CHEBI:15422",
+               "http://identifiers.org/kegg.compound/C00002"
+  vak identity "http://identifiers.org/kegg.reaction/R00480"
+  vak hypernym "http://identifiers.org/ec-code/2.7.2.4",
+               "http://identifiers.org/obo.go/GO:0004072"
+  vasd hypernym "http://identifiers.org/ec-code/1.2.1.11",
+                "http://identifiers.org/obo.go/GO:0004073"
+  vasd identity "http://identifiers.org/kegg.reaction/R02291"
+  vhdh hypernym "http://identifiers.org/ec-code/1.1.1.3",
+                "http://identifiers.org/obo.go/GO:0004412"
+  vhdh identity "http://identifiers.org/kegg.reaction/R01775"
+  vtsy identity "http://identifiers.org/kegg.reaction/R01466"
+  vtsy hypernym "http://identifiers.org/ec-code/4.2.3.1",
+                "http://identifiers.org/obo.go/GO:0004795"
+  vhk hypernym "http://identifiers.org/ec-code/2.7.1.39",
+               "http://identifiers.org/obo.go/GO:0004413"
+  vhk identity "http://identifiers.org/kegg.reaction/R01771"
+  vnadph_endo hypernym "http://identifiers.org/obo.go/GO:0006739"
+  vatpase identity "http://identifiers.org/obo.go/GO:0016887"
 end
+
+Chassagnole2001_Threonine_Synthesis is "Chassagnole2001_Threonine Synthesis"
+
+Chassagnole2001_Threonine_Synthesis model_entity_is "http://identifiers.org/biomodels.db/MODEL6624131052"
+Chassagnole2001_Threonine_Synthesis model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000066"
+Chassagnole2001_Threonine_Synthesis description "http://identifiers.org/pubmed/11368770"
+Chassagnole2001_Threonine_Synthesis part "http://identifiers.org/obo.go/GO:0009088",
+                                         "http://identifiers.org/obo.go/GO:0006531"
+Chassagnole2001_Threonine_Synthesis taxon "http://identifiers.org/taxonomy/83333"
+Chassagnole2001_Threonine_Synthesis hypernym "http://identifiers.org/kegg.pathway/map00260"

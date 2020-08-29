@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Curien2003_MetThr_synthesis()
 
   // Compartments and Species:
@@ -9,8 +9,8 @@ model *Curien2003_MetThr_synthesis()
 
   // Reactions:
   v1: $Hser -> Phser; compartment_*v1_V0;
-  vCys: Phser + $Cys -> $Cystathionine + $Phi; (CGS*(vCys_kcat2/(1 + vCys_KmCYS/Cys))*Phser)/(Phser + (vCys_KmPHSER*(1 + Phi/vCys_Ki2))/(1 + vCys_KmCYS/Cys));
-  vThr: Phser -> $Thr + $Phi; (TS*(5.900000e-004 + (0.062*AdoMet^2.9)/(32^2.9 + AdoMet^2.9))*Phser)/(1 + Phi/vThr_Ki3);
+  vCys: Phser + $Cys -> $Cystathionine + $Phi; CGS*(vCys_kcat2/(1 + vCys_KmCYS/Cys))*Phser/(Phser + vCys_KmPHSER*(1 + Phi/vCys_Ki2)/(1 + vCys_KmCYS/Cys));
+  vThr: Phser -> $Thr + $Phi; TS*(5.9e-4 + 0.062*AdoMet^2.9/(32^2.9 + AdoMet^2.9))*Phser/(1 + Phi/vThr_Ki3);
 
   // Species initializations:
   Phser = 0;
@@ -63,4 +63,42 @@ model *Curien2003_MetThr_synthesis()
   v1 is "Phosphohomoserine synthesis";
   vCys is "Cystathionine gamma-synthase";
   vThr is "Threonine Synthase";
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/obo.go/GO:0005623"
+  Phser identity "http://identifiers.org/obo.chebi/CHEBI:15961",
+                 "http://identifiers.org/kegg.compound/C01102"
+  Thr identity "http://identifiers.org/obo.chebi/CHEBI:16857",
+               "http://identifiers.org/kegg.compound/C00188"
+  Cystathionine identity "http://identifiers.org/obo.chebi/CHEBI:17482",
+                         "http://identifiers.org/kegg.compound/C02291"
+  Hser identity "http://identifiers.org/obo.chebi/CHEBI:15699",
+                "http://identifiers.org/kegg.compound/C00263"
+  Phi identity "http://identifiers.org/obo.chebi/CHEBI:18367",
+               "http://identifiers.org/kegg.compound/C00009"
+  Cys identity "http://identifiers.org/obo.chebi/CHEBI:17561",
+               "http://identifiers.org/kegg.compound/C00097"
+  AdoMet identity "http://identifiers.org/obo.chebi/CHEBI:15414",
+                  "http://identifiers.org/kegg.compound/C00019"
+  CGS hypernym "http://identifiers.org/uniprot/P55217"
+  TS hypernym "http://identifiers.org/uniprot/Q9S7B5"
+  v1 hypernym "http://identifiers.org/ec-code/2.7.1.39",
+              "http://identifiers.org/obo.go/GO:0004413"
+  v1 identity "http://identifiers.org/kegg.reaction/R01775"
+  vCys hypernym "http://identifiers.org/ec-code/2.5.1.48",
+                "http://identifiers.org/obo.go/GO:0003962"
+  vThr identity "http://identifiers.org/kegg.reaction/R01466"
+  vThr hypernym "http://identifiers.org/ec-code/4.2.3.1",
+                "http://identifiers.org/obo.go/GO:0004795"
 end
+
+Curien2003_MetThr_synthesis is "Curien2003_MetThr_synthesis"
+
+Curien2003_MetThr_synthesis model_entity_is "http://identifiers.org/biomodels.db/MODEL6624146302"
+Curien2003_MetThr_synthesis model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000068"
+Curien2003_MetThr_synthesis description "http://identifiers.org/pubmed/14622248"
+Curien2003_MetThr_synthesis part "http://identifiers.org/obo.go/GO:0019283",
+                                 "http://identifiers.org/obo.go/GO:0009088"
+Curien2003_MetThr_synthesis part "http://identifiers.org/kegg.pathway/map00260",
+                                 "http://identifiers.org/kegg.pathway/map00271"
+Curien2003_MetThr_synthesis taxon "http://identifiers.org/taxonomy/3702"

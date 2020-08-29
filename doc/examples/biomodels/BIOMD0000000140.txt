@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Hoffmann2002_WT_IkBNFkB_Signaling()
 
   // Compartments and Species:
@@ -69,7 +69,7 @@ model *Hoffmann2002_WT_IkBNFkB_Signaling()
   v45: IKK => ; cytoplasm*k02*IKK;
 
   // Events:
-  event_0000001: at time >= 2000 && trigger_value == 0: flag_for_after_trigger = 0, trigger_value = 1, IKK = 0.1;
+  event_0000001: at (time >= 2000) && (trigger_value == 0): flag_for_after_trigger = 0, trigger_value = 1, IKK = 0.1;
 
   // Species initializations:
   IkBalpha = 0.1;
@@ -116,11 +116,11 @@ model *Hoffmann2002_WT_IkBNFkB_Signaling()
   deg4 = 0.00135;
   k1 = 5.4;
   k01 = 0.0048;
-  tr2a = 9.25e-005;
+  tr2a = 9.25e-05;
   tr2 = 0.99;
   tr3 = 0.0168;
-  tr2b = 1.068e-005;
-  tr2e = 7.62e-006;
+  tr2b = 1.068e-05;
+  tr2e = 7.62e-06;
   a1 = 1.35;
   d1 = 0.075;
   tr1 = 0.2448;
@@ -204,4 +204,129 @@ model *Hoffmann2002_WT_IkBNFkB_Signaling()
   v43 is "IkBbeta degradation";
   v44 is "IkBeps degradation";
   v45 is "IKK consumption";
+
+  // CV terms:
+  cytoplasm identity "http://identifiers.org/obo.go/GO:0005737"
+  nucleus identity "http://identifiers.org/obo.go/GO:0005634"
+  IkBalpha hypernym "http://identifiers.org/uniprot/Q9Z1E3"
+  NFkB hypernym "http://identifiers.org/uniprot/P25799"
+  IkBalpha_NFkB part "http://identifiers.org/uniprot/P25799",
+                     "http://identifiers.org/uniprot/Q9Z1E3"
+  IkBbeta hypernym "http://identifiers.org/uniprot/Q60778"
+  IkBbeta_NFkB part "http://identifiers.org/uniprot/Q60778",
+                    "http://identifiers.org/uniprot/P25799"
+  IkBeps hypernym "http://identifiers.org/uniprot/O54910"
+  IkBeps_NFkB part "http://identifiers.org/uniprot/O54910",
+                   "http://identifiers.org/uniprot/P25799"
+  IKK_IkBalpha part "http://identifiers.org/uniprot/O88351",
+                    "http://identifiers.org/uniprot/O88522",
+                    "http://identifiers.org/uniprot/Q60680",
+                    "http://identifiers.org/uniprot/Q9Z1E3"
+  IKK_IkBalpha_NFkB part "http://identifiers.org/uniprot/O88351",
+                         "http://identifiers.org/uniprot/O88522",
+                         "http://identifiers.org/uniprot/Q60680",
+                         "http://identifiers.org/uniprot/Q9Z1E3",
+                         "http://identifiers.org/uniprot/P25799"
+  IKK part "http://identifiers.org/uniprot/O88351",
+           "http://identifiers.org/uniprot/O88522",
+           "http://identifiers.org/uniprot/Q60680"
+  IKK_IkBbeta hypernym "http://identifiers.org/uniprot/O88351",
+                       "http://identifiers.org/uniprot/O88522",
+                       "http://identifiers.org/uniprot/Q60680",
+                       "http://identifiers.org/uniprot/Q60778"
+  IKK_IkBbeta_NFkB part "http://identifiers.org/uniprot/Q60680",
+                        "http://identifiers.org/uniprot/O88351",
+                        "http://identifiers.org/uniprot/O88522",
+                        "http://identifiers.org/uniprot/Q60778",
+                        "http://identifiers.org/uniprot/P25799"
+  IKK_IkBeps part "http://identifiers.org/uniprot/O88351",
+                  "http://identifiers.org/uniprot/O88522",
+                  "http://identifiers.org/uniprot/Q60680",
+                  "http://identifiers.org/uniprot/O54910"
+  IKK_IkBeps_NFkB part "http://identifiers.org/uniprot/O54910",
+                       "http://identifiers.org/uniprot/O88351",
+                       "http://identifiers.org/uniprot/O88522",
+                       "http://identifiers.org/uniprot/Q60680",
+                       "http://identifiers.org/uniprot/P25799"
+  NFkB_nuc hypernym "http://identifiers.org/uniprot/P25799"
+  IkBalpha_nuc hypernym "http://identifiers.org/uniprot/Q9Z1E3"
+  IkBalpha_nuc_NFkB_nuc part "http://identifiers.org/uniprot/Q9Z1E3",
+                             "http://identifiers.org/uniprot/P25799"
+  IkBbeta_nuc hypernym "http://identifiers.org/uniprot/Q60778"
+  IkBbeta_nuc_NFkB_nuc part "http://identifiers.org/uniprot/Q60778",
+                            "http://identifiers.org/uniprot/P25799"
+  IkBeps_nuc hypernym "http://identifiers.org/uniprot/O54910"
+  IkBeps_nuc_NFkB_nuc part "http://identifiers.org/uniprot/O54910",
+                           "http://identifiers.org/uniprot/P25799"
+  v1 hypernym "http://identifiers.org/obo.go/GO:0005515"
+  v2 hypernym "http://identifiers.org/obo.go/GO:0005515"
+  v3 hypernym "http://identifiers.org/obo.go/GO:0005515"
+  v4 hypernym "http://identifiers.org/obo.go/GO:0043623",
+              "http://identifiers.org/obo.go/GO:0005515"
+  v5 hypernym "http://identifiers.org/obo.go/GO:0044257"
+  v5 part "http://identifiers.org/ec-code/2.7.11.10"
+  v6 hypernym "http://identifiers.org/obo.go/GO:0043623",
+              "http://identifiers.org/obo.go/GO:0005515"
+  v7 hypernym "http://identifiers.org/obo.go/GO:0044257"
+  v7 part "http://identifiers.org/ec-code/2.7.11.10"
+  v8 hypernym "http://identifiers.org/obo.go/GO:0043623",
+              "http://identifiers.org/obo.go/GO:0005515"
+  v9 hypernym "http://identifiers.org/obo.go/GO:0044257"
+  v9 part "http://identifiers.org/ec-code/2.7.11.10"
+  v10 hypernym "http://identifiers.org/obo.go/GO:0044257"
+  v11 hypernym "http://identifiers.org/obo.go/GO:0044257"
+  v12 hypernym "http://identifiers.org/obo.go/GO:0044257"
+  v13 hypernym "http://identifiers.org/obo.go/GO:0000060"
+  v14 hypernym "http://identifiers.org/obo.go/GO:0043623",
+               "http://identifiers.org/obo.go/GO:0005515"
+  v15 hypernym "http://identifiers.org/obo.go/GO:0043623",
+               "http://identifiers.org/obo.go/GO:0005515"
+  v16 hypernym "http://identifiers.org/obo.go/GO:0043623",
+               "http://identifiers.org/obo.go/GO:0005515"
+  v17 hypernym "http://identifiers.org/obo.go/GO:0006351"
+  v18 hypernym "http://identifiers.org/obo.go/GO:0006351"
+  v19 hypernym "http://identifiers.org/obo.go/GO:0006402"
+  v20 hypernym "http://identifiers.org/obo.go/GO:0006351"
+  v21 hypernym "http://identifiers.org/obo.go/GO:0006402"
+  v22 hypernym "http://identifiers.org/obo.go/GO:0006351"
+  v23 hypernym "http://identifiers.org/obo.go/GO:0006402"
+  v24 hypernym "http://identifiers.org/obo.go/GO:0043623",
+               "http://identifiers.org/obo.go/GO:0005515"
+  v25 hypernym "http://identifiers.org/obo.go/GO:0006412"
+  v26 hypernym "http://identifiers.org/obo.go/GO:0044257"
+  v27 hypernym "http://identifiers.org/obo.go/GO:0000060"
+  v28 hypernym "http://identifiers.org/obo.go/GO:0043623",
+               "http://identifiers.org/obo.go/GO:0005515"
+  v29 hypernym "http://identifiers.org/obo.go/GO:0006412"
+  v30 hypernym "http://identifiers.org/obo.go/GO:0044257"
+  v31 hypernym "http://identifiers.org/obo.go/GO:0000060"
+  v32 hypernym "http://identifiers.org/obo.go/GO:0043623",
+               "http://identifiers.org/obo.go/GO:0005515"
+  v33 hypernym "http://identifiers.org/obo.go/GO:0006412"
+  v34 hypernym "http://identifiers.org/obo.go/GO:0044257"
+  v35 hypernym "http://identifiers.org/obo.go/GO:0000060"
+  v36 hypernym "http://identifiers.org/obo.go/GO:0005515",
+               "http://identifiers.org/obo.go/GO:0043623"
+  v37 hypernym "http://identifiers.org/obo.go/GO:0006611"
+  v38 hypernym "http://identifiers.org/obo.go/GO:0005515",
+               "http://identifiers.org/obo.go/GO:0043623"
+  v39 hypernym "http://identifiers.org/obo.go/GO:0006611"
+  v40 hypernym "http://identifiers.org/obo.go/GO:0005515",
+               "http://identifiers.org/obo.go/GO:0043623"
+  v41 hypernym "http://identifiers.org/obo.go/GO:0006611"
+  v42 part "http://identifiers.org/ec-code/2.7.11.10"
+  v42 hypernym "http://identifiers.org/obo.go/GO:0044257"
+  v43 part "http://identifiers.org/ec-code/2.7.11.10"
+  v43 hypernym "http://identifiers.org/obo.go/GO:0044257"
+  v44 part "http://identifiers.org/ec-code/2.7.11.10"
+  v44 hypernym "http://identifiers.org/obo.go/GO:0044257"
 end
+
+Hoffmann2002_WT_IkBNFkB_Signaling is "Hoffmann2002_WT_IkBNFkB_Signaling"
+
+Hoffmann2002_WT_IkBNFkB_Signaling model_entity_is "http://identifiers.org/biomodels.db/MODEL7158174175"
+Hoffmann2002_WT_IkBNFkB_Signaling model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000140"
+Hoffmann2002_WT_IkBNFkB_Signaling description "http://identifiers.org/pubmed/12424381"
+Hoffmann2002_WT_IkBNFkB_Signaling taxon "http://identifiers.org/taxonomy/10090"
+Hoffmann2002_WT_IkBNFkB_Signaling parthood "http://identifiers.org/kegg.pathway/mmu04660",
+                                           "http://identifiers.org/obo.go/GO:0007249"

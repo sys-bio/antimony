@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *model_0000001()
 
   // Compartments and Species:
@@ -19,14 +19,14 @@ model *model_0000001()
   o := ainf^3*binf^3*hinfer^3;
   jerleak := perl*(cer - c);
   jerip3 := o*(cer - c);
-  jertot := (jerleak + jerip3) - jerp;
+  jertot := jerleak + jerip3 - jerp;
   jmemtot := -(alpha*ica + kc*c);
-  perl_inf := (inh*cAMP*c^4)/(ki^4 + c^4);
+  perl_inf := inh*cAMP*c^4/(ki^4 + c^4);
 
   // Rate Rules:
   V' = (-ica - ik - igirk)/cm;
   h' = (hinf - h)/tauh;
-  n' = (lambda*(ninf - n))/taun;
+  n' = lambda*(ninf - n)/taun;
   inh' = ETswitch*((0.2 - inh)/taudir);
 
   // Reactions:
@@ -68,7 +68,7 @@ model *model_0000001()
   cm = 5300;
   f = 0.01;
   fer = 0.01;
-  alpha = 4.5e-006;
+  alpha = 4.5e-06;
   perl = 0.0005;
   dact = 0.35;
   dip3 = 0.5;
@@ -99,4 +99,27 @@ model *model_0000001()
   V is "voltage";
   n is "delayed rectifier activation";
   inh is "variable for direct inhibition of secretion";
+
+  // CV terms:
+  cell hypernym "http://identifiers.org/obo.go/GO:0005623"
+  c identity "http://identifiers.org/obo.chebi/CHEBI:29108",
+             "http://identifiers.org/kegg.compound/C00076"
+  cer identity "http://identifiers.org/obo.chebi/CHEBI:29108",
+               "http://identifiers.org/kegg.compound/C00076"
+  cAMP identity "http://identifiers.org/obo.chebi/CHEBI:17489",
+                "http://identifiers.org/kegg.compound/C00575"
+  reaction_0000001 hypernym "http://identifiers.org/obo.go/GO:0051480"
+  reaction_0000002 hypernym "http://identifiers.org/obo.go/GO:0032469"
+  reaction_000003 hypernym "http://identifiers.org/obo.go/GO:0004016",
+                           "http://identifiers.org/obo.go/GO:0030817"
 end
+
+model_0000001 is "Bertram2006_Endothelin"
+
+model_0000001 model_entity_is "http://identifiers.org/biomodels.db/MODEL6509019628"
+model_0000001 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000128"
+model_0000001 description "http://identifiers.org/pubmed/16434725"
+model_0000001 taxon "http://identifiers.org/taxonomy/10114"
+model_0000001 hypernym "http://identifiers.org/obo.go/GO:0007188",
+                       "http://identifiers.org/obo.go/GO:0004962",
+                       "http://identifiers.org/obo.go/GO:0001664"

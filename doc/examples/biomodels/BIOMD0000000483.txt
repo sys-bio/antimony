@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *MODEL1308080008()
 
   // Compartments and Species:
@@ -11,10 +11,10 @@ model *MODEL1308080008()
   re1: ESB => Pb; default*sb*Db;
   re12: Pa => ESA; default*da*Pa;
   re11: Pb => ESB; default*db*Pb;
-  re13: 2Pa + Db => BDb; default*bb*((Pa*(Pa - 1))/2)*Db;
-  re5: 2Pb + Da => BDa; default*ba*((Pb*(Pb - 1))/2)*Da;
-  re7: BDa => Da + 2Pb; default*ua*BDa;
-  re14: BDb => 2Pa + Db; default*ub*BDb;
+  re13: 2 Pa + Db => BDb; default*bb*(Pa*(Pa - 1)/2)*Db;
+  re5: 2 Pb + Da => BDa; default*ba*(Pb*(Pb - 1)/2)*Da;
+  re7: BDa => Da + 2 Pb; default*ua*BDa;
+  re14: BDb => 2 Pa + Db; default*ub*BDb;
 
   // Species initializations:
   Pa = 0;
@@ -34,11 +34,43 @@ model *MODEL1308080008()
   db = 1;
   sa = 100;
   sb = 100;
-  ba = 1e-005;
-  bb = 1e-005;
+  ba = 1e-05;
+  bb = 1e-05;
   ua = 0.1;
   ub = 0.1;
 
   // Other declarations:
   const default, da, db, sa, sb, ba, bb, ua, ub;
+
+  // SBO terms:
+  ESA.sboTerm = 291
+  ESB.sboTerm = 291
+
+  // CV terms:
+  default hypernym "http://identifiers.org/go/GO:0005623"
+  Pa hypernym "http://identifiers.org/chebi/CHEBI:16541"
+  Pb hypernym "http://identifiers.org/chebi/CHEBI:16541"
+  Da hypernym "http://identifiers.org/fma/FMA:74402"
+  Db hypernym "http://identifiers.org/fma/FMA:74402"
+  BDa part "http://identifiers.org/chebi/CHEBI:16541",
+           "http://identifiers.org/fma/FMA:74402"
+  BDb part "http://identifiers.org/chebi/CHEBI:16541",
+           "http://identifiers.org/fma/FMA:74402"
+  re2 hypernym "http://identifiers.org/go/GO:0006412"
+  re1 hypernym "http://identifiers.org/go/GO:0006412"
+  re12 hypernym "http://identifiers.org/go/GO:0030163"
+  re11 hypernym "http://identifiers.org/go/GO:0030163"
+  re13 hypernym "http://identifiers.org/go/GO:0065003"
+  re5 hypernym "http://identifiers.org/go/GO:0065003"
+  re7 hypernym "http://identifiers.org/go/GO:0032984"
+  re14 hypernym "http://identifiers.org/go/GO:0032984"
 end
+
+MODEL1308080008 is "Cao2008 - Network of a toggle switch"
+
+MODEL1308080008 model_entity_is "http://identifiers.org/biomodels.db/MODEL1308080008"
+MODEL1308080008 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000483"
+MODEL1308080008 description "http://identifiers.org/pubmed/18373871"
+MODEL1308080008 taxon "http://identifiers.org/taxonomy/131567"
+MODEL1308080008 property "http://identifiers.org/mamo/MAMO_0000046"
+MODEL1308080008 hypernym "http://identifiers.org/go/GO:0010468"

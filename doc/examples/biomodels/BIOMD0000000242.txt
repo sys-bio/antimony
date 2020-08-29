@@ -1,7 +1,9 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 function Mass_Action_2_1(k1, S1, S2)
   k1*S1*S2;
 end
+
+Mass_Action_2_1 is "Mass_Action_2"
 
 
 model *Bai2003_G1phaseRegulation()
@@ -19,10 +21,10 @@ model *Bai2003_G1phaseRegulation()
   cyclinD_1: D_1 => ; cell*dD_1*E_1*D_1;
   cyclinEsynthesis_1:  => E_1; cell*aE_1*(GF_1/(k2_1^-1 + GF_1) + aF_1*theta_1);
   cyclinEdegradation_1: E_1 => ; cell*dE_1*X_1*E_1;
-  pRBsynthesis_1:  => R_1; cell*((pX_1*(RT_1 - RS_1 - R_1)*X_1)/((qX_1 + RT_1) - RS_1 - R_1 + X_1));
+  pRBsynthesis_1:  => R_1; cell*(pX_1*(RT_1 - RS_1 - R_1)*X_1/((qX_1 + RT_1 - RS_1 - R_1) + X_1));
   pRBdeplation_1: R_1 + theta_1 => RS_1; cell*Mass_Action_2_1(pS_1, R_1, theta_1);
-  _2: RS_1 => theta_1; cell*((pD_1*RS_1*D_1)/(qD_1 + RS_1 + D_1));
-  null2_1: RS_1 => theta_1; cell*((pE_1*RS_1*E_1)/(qE_1 + RS_1 + E_1));
+  _2: RS_1 => theta_1; cell*(pD_1*RS_1*D_1/(qD_1 + RS_1 + D_1));
+  null2_1: RS_1 => theta_1; cell*(pE_1*RS_1*E_1/(qE_1 + RS_1 + E_1));
   null3_1:  => theta_1; cell*atheta_1*(GF_1/(k3_1^-1 + GF_1) + fC_1_1*theta_1);
   E2Fdegradationviacellcycleprogression_1: theta_1 => ; cell*dtheta_1*(X_1/(qtheta_1 + X_1))*theta_1;
   cellcycleprogression_1:  => X_1; cell*(aX_1*E_1 + f_1*theta_1 + g_1*X_1^2*E_1);
@@ -117,4 +119,36 @@ model *Bai2003_G1phaseRegulation()
   E2Fdegradationviacellcycleprogression_1 is "E2F degradation via cell cycle progression";
   cellcycleprogression_1 is "cell cycle progression go";
   cellcycleprogressionslow_1 is "cell cycle progression slow";
+
+  // CV terms:
+  cell hypernym "http://identifiers.org/go/GO:0005623"
+  D_1 part "http://identifiers.org/uniprot/Q9JKW8",
+           "http://identifiers.org/uniprot/P25322"
+  E_1 part "http://identifiers.org/uniprot/P97377",
+           "http://identifiers.org/uniprot/Q61457"
+  R_1 hypernym "http://identifiers.org/uniprot/P13405"
+  RS_1 hypernym "http://identifiers.org/uniprot/Q61501"
+  theta_1 hypernym "http://identifiers.org/uniprot/Q61501"
+  _1 hypernym "http://identifiers.org/go/GO:0006412"
+  cyclinD_1 hypernym "http://identifiers.org/go/GO:0008054"
+  cyclinEsynthesis_1 hypernym "http://identifiers.org/go/GO:0006412"
+  cyclinEdegradation_1 hypernym "http://identifiers.org/go/GO:0008054"
+  pRBsynthesis_1 hypernym "http://identifiers.org/go/GO:0006412"
+  pRBdeplation_1 hypernym "http://identifiers.org/go/GO:0035189"
+  _2 hypernym "http://identifiers.org/go/GO:0043241"
+  null2_1 hypernym "http://identifiers.org/go/GO:0043241"
+  null3_1 hypernym "http://identifiers.org/go/GO:0006412"
+  E2Fdegradationviacellcycleprogression_1 hypernym "http://identifiers.org/go/GO:0030163"
+  cellcycleprogression_1 hypernym "http://identifiers.org/go/GO:0051726"
+  cellcycleprogressionslow_1 hypernym "http://identifiers.org/go/GO:0051726"
 end
+
+Bai2003_G1phaseRegulation is "Bai2003_G1phaseRegulation"
+
+Bai2003_G1phaseRegulation model_entity_is "http://identifiers.org/biomodels.db/MODEL1003050000"
+Bai2003_G1phaseRegulation model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000242"
+Bai2003_G1phaseRegulation description "http://identifiers.org/pubmed/12695688"
+Bai2003_G1phaseRegulation origin "http://identifiers.org/biomodels.db/BIOMD0000000168"
+Bai2003_G1phaseRegulation hypernym "http://identifiers.org/reactome/REACT_1590",
+                                   "http://identifiers.org/go/GO:0000114"
+Bai2003_G1phaseRegulation taxon "http://identifiers.org/taxonomy/39107"

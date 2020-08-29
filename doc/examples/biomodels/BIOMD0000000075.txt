@@ -1,4 +1,53 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
+function Function_for_PIPSyn(PI_PM, Ratebasal_PIPsyn_PIPSyn, Ratestim_PIPsyn_PIPSyn)
+  (Ratebasal_PIPsyn_PIPSyn + Ratestim_PIPsyn_PIPSyn)*PI_PM;
+end
+
+Function_for_PIPSyn is "Function for PIPSyn"
+
+function Function_for_PLCact(KfPLCact, PLC_PM, PLC_act_PM, krPLCact, signal_PLCact, stim_PM)
+  KfPLCact*PLC_PM*stim_PM*signal_PLCact + -(krPLCact*PLC_act_PM);
+end
+
+Function_for_PLCact is "Function for PLCact"
+
+function Function_for_IP3_PHGFP(IP3_Cyt, IP3_PHGFP_Cyt, KMOLE, PH_GFP_Cyt, kf_IP3PH_IP3_PHGFP, kr_IP3PH_IP3_PHGFP)
+  (kf_IP3PH_IP3_PHGFP*0.00166112956810631*IP3_Cyt*0.00166112956810631*PH_GFP_Cyt + -(kr_IP3PH_IP3_PHGFP*0.00166112956810631*IP3_PHGFP_Cyt))*1*(1/KMOLE);
+end
+
+Function_for_IP3_PHGFP is "Function for IP3-PHGFP"
+
+function Function_for_PIP2_PH(PH_GFP_Cyt, PIP2_PHGFP_PM, PIP2_PM, PM, kf_PIP2PH_PIP2_PH, kr_PIP2PH_PIP2_PH)
+  (kf_PIP2PH_PIP2_PH*0.00166112956810631*PH_GFP_Cyt*PIP2_PM + -(kr_PIP2PH_PIP2_PH*PIP2_PHGFP_PM))*PM;
+end
+
+Function_for_PIP2_PH is "Function for PIP2_PH"
+
+function Function_for_PIP2_PH_hyd(PIP2_PHGFP_PM, PLC_act_PM, PM, k_PIP2PHhyd)
+  k_PIP2PHhyd*PLC_act_PM*PIP2_PHGFP_PM*PM;
+end
+
+Function_for_PIP2_PH_hyd is "Function for PIP2_PH_hyd"
+
+function Function_for_IP3deg(IP3_Cyt, IP3_basal, KMOLE, kIP3deg)
+  kIP3deg*(0.00166112956810631*IP3_Cyt + -IP3_basal)*1*(1/KMOLE);
+end
+
+Function_for_IP3deg is "Function for IP3deg"
+
+function Function_for_PIP2Syn(PIP_PM, Rate_PIP2SynStim_PIP2Syn, Rate_PIP2Synbasal_PIP2Syn)
+  (Rate_PIP2Synbasal_PIP2Syn + Rate_PIP2SynStim_PIP2Syn)*PIP_PM;
+end
+
+Function_for_PIP2Syn is "Function for PIP2Syn"
+
+function Function_for_PIP2_hyd(PIP2_PM, PLC_act_PM, PM, k_PIP2hyd)
+  k_PIP2hyd*PIP2_PM*PLC_act_PM*PM;
+end
+
+Function_for_PIP2_hyd is "Function for PIP2_hyd"
+
+
 model *Xu2003_Phosphoinositide_turnover()
 
   // Compartments and Species:
@@ -18,118 +67,103 @@ model *Xu2003_Phosphoinositide_turnover()
   kr_IP3PH_IP3_PHGFP := kf_IP3PH_IP3_PHGFP*KdIP3PH_IP3_PHGFP;
 
   // Reactions:
-  PIPSyn: PI_PM -> PIP_PM; (Ratebasal_PIPsyn_PIPSyn + Ratestim_PIPsyn_PIPSyn)*PI_PM*PM;
-  PIP2_hyd: PIP2_PM -> DAG_PM + IP3_Cyt; PIP2_hyd_k_PIP2hyd*PIP2_PM*PLC_act_PM*PM;
-  PLCact: PLC_PM -> PLC_act_PM; (PLCact_KfPLCact*PLC_PM*stim_PM*signal_PLCact + -(PLCact_krPLCact*PLC_act_PM))*PM;
-  PIP2_PH_hyd: PIP2_PHGFP_PM -> PH_GFP_Cyt + IP3_Cyt + DAG_PM; PIP2_PH_hyd_k_PIP2PHhyd*PLC_act_PM*PIP2_PHGFP_PM*PM;
-  PIP2_PH: PH_GFP_Cyt + PIP2_PM -> PIP2_PHGFP_PM; (kf_PIP2PH_PIP2_PH*0.00166112956810631*PH_GFP_Cyt*PIP2_PM + -(kr_PIP2PH_PIP2_PH*PIP2_PHGFP_PM))*PM;
-  IP3deg: IP3_Cyt -> ; IP3deg_kIP3deg*(0.00166112956810631*IP3_Cyt + -IP3deg_IP3_basal)*Cytosol*1*(1/KMOLE);
-  PIP2Syn: PIP_PM -> PIP2_PM; (Rate_PIP2Synbasal_PIP2Syn + Rate_PIP2SynStim_PIP2Syn)*PIP_PM*PM;
-  IP3_PHGFP: IP3_Cyt + PH_GFP_Cyt -> IP3_PHGFP_Cyt; (kf_IP3PH_IP3_PHGFP*0.00166112956810631*IP3_Cyt*0.00166112956810631*PH_GFP_Cyt + -(kr_IP3PH_IP3_PHGFP*0.00166112956810631*IP3_PHGFP_Cyt))*Cytosol*1*(1/KMOLE);
+  PIPSyn: PI_PM -> PIP_PM; PM*Function_for_PIPSyn(PI_PM, Ratebasal_PIPsyn_PIPSyn, Ratestim_PIPsyn_PIPSyn);
+  PIP2_hyd: PIP2_PM -> DAG_PM + IP3_Cyt; Function_for_PIP2_hyd(PIP2_PM, PLC_act_PM, PM, PIP2_hyd_k_PIP2hyd);
+  PLCact: PLC_PM -> PLC_act_PM; PM*Function_for_PLCact(PLCact_KfPLCact, PLC_PM, PLC_act_PM, PLCact_krPLCact, signal_PLCact, stim_PM);
+  PIP2_PH_hyd: PIP2_PHGFP_PM -> PH_GFP_Cyt + IP3_Cyt + DAG_PM; Function_for_PIP2_PH_hyd(PIP2_PHGFP_PM, PLC_act_PM, PM, PIP2_PH_hyd_k_PIP2PHhyd);
+  PIP2_PH: PH_GFP_Cyt + PIP2_PM -> PIP2_PHGFP_PM; Function_for_PIP2_PH(PH_GFP_Cyt, PIP2_PHGFP_PM, PIP2_PM, PM, kf_PIP2PH_PIP2_PH, kr_PIP2PH_PIP2_PH);
+  IP3deg: IP3_Cyt -> ; Cytosol*Function_for_IP3deg(IP3_Cyt, IP3deg_IP3_basal, KMOLE, IP3deg_kIP3deg);
+  PIP2Syn: PIP_PM -> PIP2_PM; PM*Function_for_PIP2Syn(PIP_PM, Rate_PIP2SynStim_PIP2Syn, Rate_PIP2Synbasal_PIP2Syn);
+  IP3_PHGFP: IP3_Cyt + PH_GFP_Cyt -> IP3_PHGFP_Cyt; Cytosol*Function_for_IP3_PHGFP(IP3_Cyt, IP3_PHGFP_Cyt, KMOLE, PH_GFP_Cyt, kf_IP3PH_IP3_PHGFP, kr_IP3PH_IP3_PHGFP);
 
   // Species initializations:
   PIP2_PHGFP_PM = 0;
-  PIP2_PHGFP_PM has molecules_um_2;
+  PIP2_PHGFP_PM has substance_per_volume;
   PH_GFP_Cyt = 0;
-  PH_GFP_Cyt has molecule_per_volume;
+  PH_GFP_Cyt has substance_per_volume;
   PI_PM = 142857;
-  PI_PM has molecules_um_2;
+  PI_PM has substance_per_volume;
   stim_PM = 1;
-  stim_PM has molecules_um_2;
+  stim_PM has substance_per_volume;
   IP3_PHGFP_Cyt = 0;
-  IP3_PHGFP_Cyt has molecule_per_volume;
+  IP3_PHGFP_Cyt has substance_per_volume;
   PIP2_PM = 4000;
-  PIP2_PM has molecules_um_2;
+  PIP2_PM has substance_per_volume;
   PIP_PM = 2857;
-  PIP_PM has molecules_um_2;
+  PIP_PM has substance_per_volume;
   DAG_PM = 2000;
-  DAG_PM has molecules_um_2;
+  DAG_PM has substance_per_volume;
   hv_Cytosol = 0;
-  hv_Cytosol has molecule_per_volume;
+  hv_Cytosol has substance_per_volume;
   IP3X_Cytosol = 0;
-  IP3X_Cytosol has molecule_per_volume;
+  IP3X_Cytosol has substance_per_volume;
   PLC_PM = 100;
-  PLC_PM has molecules_um_2;
+  PLC_PM has substance_per_volume;
   PLC_act_PM = 0;
-  PLC_act_PM has molecules_um_2;
+  PLC_act_PM has substance_per_volume;
   IP3_Cyt = 96.32;
-  IP3_Cyt has molecule_per_volume;
+  IP3_Cyt has substance_per_volume;
 
   // Compartment initializations:
   Extracellular = 0.277777777777778;
+  Extracellular has volume;
   PM = 0.5555555555556;
-  PM has um2;
+  PM has volume;
   Cytosol = 1;
+  Cytosol has volume;
   NM = 0.111111111111111;
-  NM has um2;
+  NM has volume;
   Nucleus = 0.111111111111111;
+  Nucleus has volume;
 
   // Variable initializations:
   KMOLE = 0.00166112956810631;
-  KMOLE has uM_um3_molecules_1;
+  KMOLE has unit_0;
   PIP_basal_PIPSyn = 2857;
-  PIP_basal_PIPSyn has molecules_um_2;
+  PIP_basal_PIPSyn has unit_1;
   kBasalSynPIP_PIPSyn = 0.0055;
-  kBasalSynPIP_PIPSyn has s_1;
+  kBasalSynPIP_PIPSyn has unit_2;
   kStimSynPIP_PIPSyn = 0.019;
-  kStimSynPIP_PIPSyn has s_1;
+  kStimSynPIP_PIPSyn has unit_2;
   tauPIPsyn_PIPSyn = 0.05;
-  tauPIPsyn_PIPSyn has s;
+  tauPIPsyn_PIPSyn has unit_3;
   PIPsyndecay_PIPSyn = 1;
-  PIPsyndecay_PIPSyn has s;
-  Ratebasal_PIPsyn_PIPSyn has s_1;
-  Ratestim_PIPsyn_PIPSyn has s_1;
+  PIPsyndecay_PIPSyn has unit_3;
+  Ratebasal_PIPsyn_PIPSyn has unit_2;
+  Ratestim_PIPsyn_PIPSyn has unit_2;
   tau0_PLCact = 0.05;
-  tau0_PLCact has second;
+  tau0_PLCact has unit_3;
   stimdecay_PLCact = 1;
-  stimdecay_PLCact has second;
-  signal_PLCact has dimensionless;
+  stimdecay_PLCact has unit_3;
+  signal_PLCact has unit_4;
   kf_PIP2PH_PIP2_PH = 0.12;
-  kf_PIP2PH_PIP2_PH has uM_1_s_1;
+  kf_PIP2PH_PIP2_PH has unit_5;
   KdPIP2PH_PIP2_PH = 2;
-  KdPIP2PH_PIP2_PH has uM;
-  kr_PIP2PH_PIP2_PH has s_1;
+  KdPIP2PH_PIP2_PH has unit_6;
+  kr_PIP2PH_PIP2_PH has unit_2;
   kStimSynPIP2_PIP2Syn = 0.92;
-  kStimSynPIP2_PIP2Syn has s_1;
+  kStimSynPIP2_PIP2Syn has unit_2;
   tauPIP2syn_PIP2Syn = 0.05;
-  tauPIP2syn_PIP2Syn has s;
+  tauPIP2syn_PIP2Syn has unit_3;
   PIP2syndecay_PIP2Syn = 1;
-  PIP2syndecay_PIP2Syn has s;
+  PIP2syndecay_PIP2Syn has unit_3;
   PIP2_basal_PIP2Syn = 4000;
-  PIP2_basal_PIP2Syn has molecules_um_2;
+  PIP2_basal_PIP2Syn has unit_1;
   kBasalSynPIP2_PIP2Syn = 0.048;
-  kBasalSynPIP2_PIP2Syn has s_1;
-  Rate_PIP2Synbasal_PIP2Syn has s_1;
-  Rate_PIP2SynStim_PIP2Syn has s_1;
+  kBasalSynPIP2_PIP2Syn has unit_2;
+  Rate_PIP2Synbasal_PIP2Syn has unit_2;
+  Rate_PIP2SynStim_PIP2Syn has unit_2;
   kf_IP3PH_IP3_PHGFP = 10;
-  kf_IP3PH_IP3_PHGFP has uM_1_s_1;
+  kf_IP3PH_IP3_PHGFP has unit_5;
   KdIP3PH_IP3_PHGFP = 2;
-  KdIP3PH_IP3_PHGFP has uM;
-  kr_IP3PH_IP3_PHGFP has s_1;
-  PIPSyn_I = 0;
-  PIPSyn_I has pA_um_2;
-  PIP2_hyd_I = 0;
-  PIP2_hyd_I has pA_um_2;
+  KdIP3PH_IP3_PHGFP has unit_6;
+  kr_IP3PH_IP3_PHGFP has unit_2;
   PIP2_hyd_k_PIP2hyd = 2.4;
-  PIP2_hyd_k_PIP2hyd has um2_molecules_1_s_1;
-  PLCact_I = 0;
-  PLCact_I has pA_um_2;
   PLCact_KfPLCact = 0.0005;
-  PLCact_KfPLCact has um2_molecules_1_s_1;
   PLCact_krPLCact = 0.1;
-  PLCact_krPLCact has s_1;
-  PIP2_PH_hyd_I = 0;
-  PIP2_PH_hyd_I has pA_um_2;
   PIP2_PH_hyd_k_PIP2PHhyd = 0;
-  PIP2_PH_hyd_k_PIP2PHhyd has um2_molecules_1_s_1;
-  PIP2_PH_I = 0;
-  PIP2_PH_I has pA_um_2;
-  IP3deg_kIP3deg = 0.08;
-  IP3deg_kIP3deg has s_1;
   IP3deg_IP3_basal = 0.16;
-  IP3deg_IP3_basal has uM;
-  PIP2Syn_I = 0;
-  PIP2Syn_I has pA_um_2;
+  IP3deg_kIP3deg = 0.08;
 
   // Other declarations:
   var Ratebasal_PIPsyn_PIPSyn, Ratestim_PIPsyn_PIPSyn, signal_PLCact, kr_PIP2PH_PIP2_PH;
@@ -141,24 +175,76 @@ model *Xu2003_Phosphoinositide_turnover()
   const kBasalSynPIP2_PIP2Syn, kf_IP3PH_IP3_PHGFP, KdIP3PH_IP3_PHGFP;
 
   // Unit definitions:
-  unit substance = item;
-  unit volume = (1e-6 metre)^3;
+  unit length = metre;
   unit area = (1e-6 metre)^2;
-  unit molecule = item;
-  unit umol_um3_litre_1 = 1e-021 mole;
-  unit um2 = (1e-6 metre)^2;
-  unit uM_um3_molecules_1 = 1e-021 dimensionless * mole / item;
-  unit molecules_um_2_s_1 = item / ((1e-6 metre)^2 * second);
-  unit pA_um_2 = dimensionless * ampere / metre^2;
-  unit s_1 = 1 / second;
-  unit molecules_um_2 = item / (1e-6 metre)^2;
-  unit s = second;
-  unit um2_molecules_1_s_1 = (1e-6 metre)^2 / (item * second);
-  unit uM_s_1 = 1e-6 mole / (litre * second);
-  unit uM_1_s_1 = litre / (1e-6 mole * second);
-  unit uM = 1e-6 mole / litre;
-  unit molecule_per_volume = item / (1e-6 metre)^3;
+  unit volume = litre;
+  unit time_unit = time_unit;
+  unit substance = item;
+  unit unit_0 = 1e-18 avogadro;
+  unit unit_1 = item / (1e6 metre)^2;
+  unit unit_2 = 1 / second;
+  unit unit_3 = second;
+  unit unit_4 = 1 / dimensionless^-0;
+  unit unit_5 = metre^3 / ((1e-9 dimensionless)^-0 * mole * second);
+  unit unit_6 = item * avogadro / ((1e-6 dimensionless)^-0 * litre);
+  unit extent = substance;
+  unit substance_per_volume = item / litre;
 
   // Display Names:
+  time_unit is "time";
+  unit_0 is "aAvogadro";
+  unit_1 is "#/Mm²";
+  unit_2 is "1/s";
+  unit_3 is "s";
+  unit_4 is "1";
+  unit_5 is "µl/(mol*s)";
+  unit_6 is "µmol/l";
   IP3_PHGFP is "IP3-PHGFP";
+
+  // CV terms:
+  Extracellular identity "http://identifiers.org/go/GO:0005576"
+  PM identity "http://identifiers.org/go/GO:0005886"
+  Cytosol identity "http://identifiers.org/go/GO:0005622"
+  NM identity "http://identifiers.org/go/GO:0031965"
+  Nucleus identity "http://identifiers.org/go/GO:0005634"
+  PIP2_PHGFP_PM part "http://identifiers.org/chebi/CHEBI:18348"
+  PIP2_PHGFP_PM part "http://identifiers.org/interpro/IPR011584"
+  PIP2_PHGFP_PM part "http://identifiers.org/interpro/IPR001849"
+  PH_GFP_Cyt part "http://identifiers.org/interpro/IPR001849"
+  PH_GFP_Cyt part "http://identifiers.org/interpro/IPR011584"
+  PI_PM hypernym "http://identifiers.org/chebi/CHEBI:28874"
+  stim_PM property "http://identifiers.org/opb/OPB_01072"
+  IP3_PHGFP_Cyt part "http://identifiers.org/interpro/IPR001849"
+  IP3_PHGFP_Cyt part "http://identifiers.org/chebi/CHEBI:16595"
+  IP3_PHGFP_Cyt part "http://identifiers.org/interpro/IPR011584"
+  PIP2_PM hypernym "http://identifiers.org/chebi/CHEBI:18348"
+  PIP_PM hypernym "http://identifiers.org/chebi/CHEBI:26034"
+  DAG_PM hypernym "http://identifiers.org/chebi/CHEBI:18035"
+  hv_Cytosol hypernym "http://identifiers.org/chebi/CHEBI:30212"
+  IP3X_Cytosol identity "http://identifiers.org/pato/PATO:0002355"
+  IP3X_Cytosol hypernym "http://identifiers.org/chebi/CHEBI:16595"
+  PLC_PM hypernym "http://identifiers.org/uniprot/Q8K4S1"
+  PLC_act_PM hypernym "http://identifiers.org/uniprot/Q8K4S1"
+  PLC_act_PM property "http://identifiers.org/ec-code/3.1.4.11"
+  IP3_Cyt hypernym "http://identifiers.org/chebi/CHEBI:16595"
+  PIPSyn hypernym "http://identifiers.org/biomodels.sbo/SBO:0000216"
+  PIP2_hyd hypernym "http://identifiers.org/biomodels.sbo/SBO:0000182"
+  PLCact hypernym "http://identifiers.org/biomodels.sbo/SBO:0000170"
+  PIP2_PH_hyd hypernym "http://identifiers.org/biomodels.sbo/SBO:0000182"
+  PIP2_PH hypernym "http://identifiers.org/biomodels.sbo/SBO:0000182"
+  IP3deg hypernym "http://identifiers.org/biomodels.sbo/SBO:0000179"
+  PIP2Syn hypernym "http://identifiers.org/biomodels.sbo/SBO:0000216"
+  IP3_PHGFP hypernym "http://identifiers.org/biomodels.sbo/SBO:0000182"
 end
+
+Xu2003_Phosphoinositide_turnover is "Xu2003 - Phosphoinositide turnover"
+
+Xu2003_Phosphoinositide_turnover model_entity_is "http://identifiers.org/biomodels.db/MODEL3095606944",
+                                                 "http://identifiers.org/biomodels.db/BIOMD0000000075"
+Xu2003_Phosphoinositide_turnover identity "http://identifiers.org/biomodels.db/MODEL3095606944"
+Xu2003_Phosphoinositide_turnover identity "http://identifiers.org/biomodels.db/BIOMD0000000075"
+Xu2003_Phosphoinositide_turnover parthood "http://identifiers.org/kegg.pathway/map04070"
+Xu2003_Phosphoinositide_turnover hypernym "http://identifiers.org/go/GO:0046488"
+Xu2003_Phosphoinositide_turnover container "http://identifiers.org/bto/BTO:0000931"
+Xu2003_Phosphoinositide_turnover taxon "http://identifiers.org/taxonomy/10090"
+Xu2003_Phosphoinositide_turnover description "http://identifiers.org/pubmed/12771127"

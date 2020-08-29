@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *DallaMan2007_MealModel_GlucoseInsulinSystem()
 
   // Compartments and Species:
@@ -10,35 +10,35 @@ model *DallaMan2007_MealModel_GlucoseInsulinSystem()
 
   // Assignment Rules:
   EGP := k_p1 - k_p2*G_p - k_p3*I_d - k_p4*I_po;
-  Ra := (f*k_abs*Q_gut)/BW;
+  Ra := f*k_abs*Q_gut/BW;
   E := 0;
   U_id := U_idm;
-  m_3 := (HE*m_1)/(1 - HE);
-  S := gamma*I_po;
-  k_empt := k_min + (k_max - k_min)/2*(tanh(aa*(Q_sto - b*D)) - tanh(cc*(Q_sto - d*D)) + 2);
+  m_3 := HE*m_1/(1 - HE);
+  S := gamma_*I_po;
+  k_empt := k_min + ((k_max - k_min)/2)*((tanh(aa*(Q_sto - b*D)) - tanh(cc*(Q_sto - d*D))) + 2);
   I := I_p/V_I;
-  S_po := Y + (K*((EGP + Ra) - E - U_ii - k_1*G_p + k_2*G_t))/V_G + S_b;
+  S_po := Y + K*((EGP + Ra - E - U_ii - k_1*G_p) + k_2*G_t)/V_G + S_b;
   G := G_p/V_G;
   aa := 5/2/(1 - b)/D;
   cc := 5/2/d/D;
   V_mmax := (1 - part)*(V_m0 + V_mX*X);
   HE := -m_5*S + m_6;
   Q_sto := Q_sto1 + Q_sto2;
-  U_idm := (V_mmax*G_t)/(K_m0 + G_t);
+  U_idm := V_mmax*G_t/(K_m0 + G_t);
   U := U_ii + U_id;
 
   // Rate Rules:
-  G_p' = (EGP + Ra) - E - U_ii - k_1*G_p + k_2*G_t;
-  G_t' = (-U_id + k_1*G_p) - k_2*G_t;
-  I_l' = -m_1*I_l - m_3*I_l + m_2*I_p + S;
-  I_p' = -m_2*I_p - m_4*I_p + m_1*I_l;
+  G_p' = (EGP + Ra - E - U_ii - k_1*G_p) + k_2*G_t;
+  G_t' = -U_id + k_1*G_p - k_2*G_t;
+  I_l' = (-m_1*I_l - m_3*I_l) + m_2*I_p + S;
+  I_p' = (-m_2*I_p - m_4*I_p) + m_1*I_l;
   Q_sto1' = -k_gri*Q_sto1;
   Q_gut' = -k_abs*Q_gut + k_empt*Q_sto2;
   Q_sto2' = -k_empt*Q_sto2 + k_gri*Q_sto1;
   I_1' = -k_i*(I_1 - I);
   I_d' = -k_i*(I_d - I_1);
   X' = -p_2U*X + p_2U*(I - I_b);
-  I_po' = -gamma*I_po + S_po;
+  I_po' = -gamma_*I_po + S_po;
   Y' = -alpha*(Y - beta*(G - G_b));
 
   // Species initializations:
@@ -70,6 +70,7 @@ model *DallaMan2007_MealModel_GlucoseInsulinSystem()
   k_i = 0.0079;
   p_2U = 0.0331;
   I_b = 25;
+  gamma_ = 0.5;
   alpha = 0.05;
   beta = 0.11;
   G_b = 95;
@@ -95,7 +96,6 @@ model *DallaMan2007_MealModel_GlucoseInsulinSystem()
   K_m0 = 225.59;
   part = 0.2;
   K = 2.3;
-  gamma = 0.5;
   k_e1 = 0.0005;
   k_e2 = 339;
   D = 78000;
@@ -104,10 +104,93 @@ model *DallaMan2007_MealModel_GlucoseInsulinSystem()
   var EGP, Ra, E, U_id, m_3, S, k_empt, I, S_po, G, aa, cc, V_mmax, HE, Q_sto;
   var U_idm, U;
   const Compartment1, U_ii, k_1, k_2, m_1, m_2, m_4, k_gri, k_abs, k_i, p_2U;
-  const I_b, alpha, beta, G_b, V_G, V_I, m_5, m_6, HE_b, S_b, S_b_minus, k_max;
-  const k_min, f, b, d, BW, k_p1, k_p2, k_p3, k_p4, V_m0, V_mX, K_m0, part;
-  const K, gamma, k_e1, k_e2, D;
+  const I_b, gamma_, alpha, beta, G_b, V_G, V_I, m_5, m_6, HE_b, S_b, S_b_minus;
+  const k_max, k_min, f, b, d, BW, k_p1, k_p2, k_p3, k_p4, V_m0, V_mX, K_m0;
+  const part, K, k_e1, k_e2, D;
 
   // Display Names:
   Compartment1 is "default";
+  gamma_ is "gamma";
+
+  // SBO terms:
+  EGP.sboTerm = 393
+  Ra.sboTerm = 9
+  E.sboTerm = 375
+  U_ii.sboTerm = 375
+  k_1.sboTerm = 9
+  k_2.sboTerm = 9
+  U_id.sboTerm = 9
+  m_1.sboTerm = 9
+  m_3.sboTerm = 9
+  m_2.sboTerm = 9
+  S.sboTerm = 375
+  m_4.sboTerm = 9
+  k_gri.sboTerm = 9
+  k_abs.sboTerm = 9
+  k_empt.sboTerm = 9
+  k_i.sboTerm = 9
+  I.sboTerm = 361
+  I_d.sboTerm = 375
+  p_2U.sboTerm = 9
+  I_b.sboTerm = 9
+  gamma_.sboTerm = 9
+  S_po.sboTerm = 375
+  Y.sboTerm = 236
+  alpha.sboTerm = 9
+  beta.sboTerm = 9
+  G.sboTerm = 361
+  G_b.sboTerm = 9
+  V_G.sboTerm = 468
+  V_I.sboTerm = 468
+  m_5.sboTerm = 9
+  m_6.sboTerm = 9
+  HE_b.sboTerm = 9
+  S_b.sboTerm = 9
+  S_b_minus.sboTerm = 9
+  k_max.sboTerm = 9
+  k_min.sboTerm = 9
+  f.sboTerm = 540
+  b.sboTerm = 9
+  d.sboTerm = 9
+  BW.sboTerm = 2
+  k_p1.sboTerm = 9
+  k_p2.sboTerm = 9
+  k_p3.sboTerm = 9
+  k_p4.sboTerm = 9
+  V_m0.sboTerm = 9
+  V_mX.sboTerm = 9
+  K_m0.sboTerm = 9
+  part.sboTerm = 9
+  K.sboTerm = 9
+  k_e1.sboTerm = 9
+  k_e2.sboTerm = 9
+  D.sboTerm = 361
+  aa.sboTerm = 9
+  cc.sboTerm = 9
+  V_mmax.sboTerm = 9
+  HE.sboTerm = 375
+  Q_sto.sboTerm = 361
+  U_idm.sboTerm = 9
+  U.sboTerm = 375
+
+  // CV terms:
+  G_p hypernym "http://identifiers.org/chebi/CHEBI:17234"
+  G_t hypernym "http://identifiers.org/chebi/CHEBI:17234"
+  I_l hypernym "http://identifiers.org/uniprot/P01308"
+  I_p hypernym "http://identifiers.org/uniprot/P01308"
+  Q_sto1 hypernym "http://identifiers.org/chebi/CHEBI:17234"
+  Q_gut identity "http://identifiers.org/chebi/CHEBI:17234"
+  Q_sto2 hypernym "http://identifiers.org/chebi/CHEBI:17234"
+  I_1 hypernym "http://identifiers.org/uniprot/P01308"
+  X hypernym "http://identifiers.org/uniprot/P01308"
+  I_po hypernym "http://identifiers.org/uniprot/P01308"
 end
+
+DallaMan2007_MealModel_GlucoseInsulinSystem is "DallaMan2007_MealModel_GlucoseInsulinSystem"
+
+DallaMan2007_MealModel_GlucoseInsulinSystem model_entity_is "http://identifiers.org/biomodels.db/MODEL1110030000"
+DallaMan2007_MealModel_GlucoseInsulinSystem model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000379"
+DallaMan2007_MealModel_GlucoseInsulinSystem description "http://identifiers.org/pubmed/17926672"
+DallaMan2007_MealModel_GlucoseInsulinSystem taxon "http://identifiers.org/taxonomy/9606"
+DallaMan2007_MealModel_GlucoseInsulinSystem hypernym "http://identifiers.org/go/GO:0061178"
+DallaMan2007_MealModel_GlucoseInsulinSystem property "http://identifiers.org/doid/DOID:9351"

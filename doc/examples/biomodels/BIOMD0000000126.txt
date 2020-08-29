@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *model_0000001()
 
   // Compartments and Species:
@@ -7,7 +7,7 @@ model *model_0000001()
   species IM2 in cell, O in cell, IF in cell;
 
   // Assignment Rules:
-  Ena := (Rk*Temp)/Fara*ln(nao/nai);
+  Ena := (Rk*Temp/Fara)*ln(nao/nai);
   a11 := 3.802/(0.1027*exp(-v/17) + 0.2*exp(-v/150));
   a12 := 3.802/(0.1027*exp(-v/15) + 0.23*exp(-v/150));
   a13 := 3.802/(0.1027*exp(-v/12) + 0.25*exp(-v/150));
@@ -15,14 +15,14 @@ model *model_0000001()
   b12 := 0.2*exp(-(v - 5)/20.3);
   b13 := 0.22*exp(-(v - 10)/20.3);
   a2 := 9.178*exp(v/29.68);
-  b2 := (a13*a2*a3)/(b13*b3);
-  a3 := 3.7933*1.000000e-007*exp(-v/7.7);
-  b3 := 0.0084 + 2.000000e-005*v;
+  b2 := a13*a2*a3/(b13*b3);
+  a3 := 3.7933*1e-7*exp(-v/7.7);
+  b3 := 0.0084 + 2e-5*v;
   a4 := a2/100;
   b4 := a3;
   a5 := a2/(9.5*10000);
   b5 := a3/50;
-  Ina := (Gna*(O/(IC3 + IC2 + IF + IM1 + IM2 + C3 + C2 + C1 + O))*(v - Ena))/scale;
+  Ina := Gna*(O/(IC3 + IC2 + IF + IM1 + IM2 + C3 + C2 + C1 + O))*(v - Ena)/scale;
 
   // Reactions:
   reaction_0000001: IC3 -> IC2; cell*(IC3*a11 - IC2*b11);
@@ -38,7 +38,7 @@ model *model_0000001()
   reaction_0000011: O -> C1; cell*(-C1*a13 + O*b13);
 
   // Events:
-  event_0000001: at time >= 5 && time <= 20: v = -30;
+  event_0000001: at (time >= 5) && (time <= 20): v = -30;
   event_0000002: at time > 20: v = -80;
 
   // Species initializations:
@@ -92,4 +92,66 @@ model *model_0000001()
   reaction_0000009 is "C1=IF";
   reaction_0000010 is "IF=O";
   reaction_0000011 is "O=C1";
+
+  // CV terms:
+  cell hypernym "http://identifiers.org/go/GO:0005623"
+  C1 hypernym "http://identifiers.org/interpro/IPR001696",
+              "http://identifiers.org/go/GO:0001518"
+  C2 hypernym "http://identifiers.org/interpro/IPR001696",
+              "http://identifiers.org/go/GO:0001518"
+  C3 hypernym "http://identifiers.org/interpro/IPR001696",
+              "http://identifiers.org/go/GO:0001518"
+  IC3 hypernym "http://identifiers.org/interpro/IPR001696",
+               "http://identifiers.org/go/GO:0001518"
+  IC2 hypernym "http://identifiers.org/interpro/IPR001696",
+               "http://identifiers.org/go/GO:0001518"
+  IM1 hypernym "http://identifiers.org/interpro/IPR001696",
+               "http://identifiers.org/go/GO:0001518"
+  IM2 hypernym "http://identifiers.org/interpro/IPR001696",
+               "http://identifiers.org/go/GO:0001518"
+  O hypernym "http://identifiers.org/interpro/IPR001696",
+             "http://identifiers.org/go/GO:0001518"
+  IF hypernym "http://identifiers.org/interpro/IPR001696",
+              "http://identifiers.org/go/GO:0001518"
+  reaction_0000001 hypernym "http://identifiers.org/go/GO:0017080",
+                            "http://identifiers.org/go/GO:0002028"
+  reaction_0000002 hypernym "http://identifiers.org/go/GO:0017080",
+                            "http://identifiers.org/go/GO:0002028"
+  reaction_0000003 hypernym "http://identifiers.org/go/GO:0017080",
+                            "http://identifiers.org/go/GO:0002028"
+  reaction_0000004 hypernym "http://identifiers.org/go/GO:0017080",
+                            "http://identifiers.org/go/GO:0002028"
+  reaction_0000005 hypernym "http://identifiers.org/go/GO:0017080",
+                            "http://identifiers.org/go/GO:0002028"
+  reaction_0000006 hypernym "http://identifiers.org/go/GO:0017080",
+                            "http://identifiers.org/go/GO:0002028"
+  reaction_0000007 hypernym "http://identifiers.org/go/GO:0017080",
+                            "http://identifiers.org/go/GO:0002028"
+  reaction_0000008 hypernym "http://identifiers.org/go/GO:0017080",
+                            "http://identifiers.org/go/GO:0002028"
+  reaction_0000009 hypernym "http://identifiers.org/go/GO:0017080",
+                            "http://identifiers.org/go/GO:0002028"
+  reaction_0000010 hypernym "http://identifiers.org/go/GO:0017080",
+                            "http://identifiers.org/go/GO:0002028"
+  reaction_0000011 hypernym "http://identifiers.org/go/GO:0017080",
+                            "http://identifiers.org/go/GO:0002028"
 end
+
+model_0000001 is "Clancy2002_CardiacSodiumChannel_WT"
+
+model_0000001 model_entity_is "http://identifiers.org/biomodels.db/MODEL4716238623"
+model_0000001 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000126"
+model_0000001 description "http://identifiers.org/pubmed/11889015"
+model_0000001 origin "http://identifiers.org/biomodels.db/BIOMD0000000121",
+                     "http://identifiers.org/pubmed/10533588",
+                     "http://identifiers.org/pubmed/10318671",
+                     "http://identifiers.org/pubmed/7788872",
+                     "http://identifiers.org/pubmed/7514509"
+model_0000001 taxon "http://identifiers.org/taxonomy/7711"
+model_0000001 hypernym "http://identifiers.org/go/GO:0005272",
+                       "http://identifiers.org/go/GO:0002028",
+                       "http://identifiers.org/go/GO:0003015"
+model_0000001 version "http://identifiers.org/omim/603830",
+                      "http://identifiers.org/omim/601144"
+model_0000001 property "http://identifiers.org/mamo/MAMO_0000046"
+model_0000001 property "http://identifiers.org/doid/DOID:0050451"

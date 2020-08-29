@@ -1,15 +1,21 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 function V2_4(k, S, Sx)
   k*S*Sx;
 end
+
+V2_4 is "V2-4"
 
 function V3(k, S, Sx)
   k*S*Sx;
 end
 
+V3 is "V3"
+
 function V1(k1, Sx, d, S, k2)
   k1*(1 + Sx + d*((S/k2)^4/(1 + (S/k2)^4)));
 end
+
+V1 is "V1"
 
 
 model *Cloutier2012()
@@ -19,7 +25,7 @@ model *Cloutier2012()
   species ROS in Neuron, alpha_syn in Neuron;
 
   // Assignment Rules:
-  S1 := piecewise(2.6, time > 10 && time < 150, 0);
+  S1 := piecewise(2.6, (time > 10) && (time < 150), 0);
 
   // Reactions:
   ROS_1:  => ROS; Neuron*V1(k1, S1, dalphasyn, alpha_syn, kalphasyn);
@@ -60,4 +66,20 @@ model *Cloutier2012()
   ROS_2 is "ROS 2";
   aSyn_1 is "aSyn 1";
   aSyn_2 is "aSyn 2";
+
+  // CV terms:
+  Neuron identity "http://identifiers.org/bto/BTO:0000938"
+  ROS identity "http://identifiers.org/chebi/CHEBI:26523"
+  alpha_syn hypernym "http://identifiers.org/uniprot/P37840"
 end
+
+Cloutier2012 is "Cloutier2012 - Feedback motif for Parkinson's disease"
+
+Cloutier2012 model_entity_is "http://identifiers.org/biomodels.db/MODEL1410300000"
+Cloutier2012 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000558"
+Cloutier2012 description "http://identifiers.org/pubmed/22757587"
+Cloutier2012 origin "http://identifiers.org/pubmed/22757585"
+Cloutier2012 taxon "http://identifiers.org/taxonomy/9606"
+Cloutier2012 hypernym "http://identifiers.org/go/GO:0000302",
+                      "http://identifiers.org/go/GO:0070841"
+Cloutier2012 version "http://identifiers.org/doid/DOID:14330"

@@ -1,19 +1,27 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 function function_1(k_syn_mRNA, species_7)
   k_syn_mRNA*species_7;
 end
+
+function_1 is "mRNA synthesis_1"
 
 function function_3(k_syn_miRNA_2, species_9)
   k_syn_miRNA_2*species_9;
 end
 
+function_3 is "miRNA_2 synthesis_1"
+
 function function_4(k_syn_prot, species_1)
   k_syn_prot*species_1;
 end
 
+function_4 is "protein synthesis_1"
+
 function function_2(k_syn_miRNA_1, species_8)
   k_syn_miRNA_1*species_8;
 end
+
+function_2 is "miRNA_1 synthesis_1"
 
 
 model *Model_1()
@@ -61,7 +69,7 @@ model *Model_1()
 
   // Variable initializations:
   reaction_1_k1 = 0.00045298;
-  reaction_2_k1 = 1.30837e-005;
+  reaction_2_k1 = 1.30837e-05;
   reaction_3_k1 = 0.999534;
   reaction_4_k_syn_mRNA = 1;
   reaction_5_k_syn_miRNA_1 = 1;
@@ -113,4 +121,28 @@ model *Model_1()
   reaction_15 is "triplex degradation";
   reaction_16 is "protein synthesis";
   reaction_17 is "protein degradation";
+
+  // CV terms:
+  species_1 identity "http://identifiers.org/ensembl/ENSG00000151468"
+  species_1 identity "http://identifiers.org/chebi/CHEBI:33699"
+  species_2 identity "http://identifiers.org/mirbase/MI0003575"
+  species_2 identity "http://identifiers.org/biomodels.sbo/SBO:0000316"
+  species_3 identity "http://identifiers.org/mirbase/MI0000476"
+  species_3 identity "http://identifiers.org/biomodels.sbo/SBO:0000316"
+  species_4 part "http://identifiers.org/ensembl/ENSG00000151468"
+  species_4 part "http://identifiers.org/mirbase/MI0003575"
+  species_5 part "http://identifiers.org/ensembl/ENSG00000151468"
+  species_5 part "http://identifiers.org/mirbase/MI0000476"
+  species_6 part "http://identifiers.org/ensembl/ENSG00000151468"
+  species_6 part "http://identifiers.org/mirbase/MI0003575"
+  species_6 part "http://identifiers.org/mirbase/MI0000476"
+  species_10 encoder "http://identifiers.org/ensembl/ENSG00000151468"
 end
+
+Model_1 is "Schmitz2014 - RNA triplex formation"
+
+Model_1 model_entity_is "http://identifiers.org/biomodels.db/MODEL1402210000"
+Model_1 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000530"
+Model_1 description "http://identifiers.org/pubmed/24875477"
+Model_1 hypernym "http://identifiers.org/go/GO:0010468"
+Model_1 taxon "http://identifiers.org/taxonomy/9606"

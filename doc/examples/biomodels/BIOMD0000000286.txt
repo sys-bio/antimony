@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *BIOMD0000000462()
 
   // Compartments and Species:
@@ -24,7 +24,7 @@ model *BIOMD0000000462()
   substanceOnly species $Sink in cell;
 
   // Assignment Rules:
-  IR := piecewise(25, time >= 3600 && time <= 3660, 0);
+  IR := piecewise(25, (time >= 3600) && (time <= 3660), 0);
   tot_mdm2 := Mdm2 + Mdm2_p53 + Mdm2_P + Mdm2_p53_Ub + Mdm2_p53_Ub2 + Mdm2_p53_Ub3 + Mdm2_p53_Ub4 + Mdm2_P1_p53_Ub4 + Mdm2_Ub + Mdm2_Ub2 + Mdm2_Ub3 + Mdm2_Ub4 + Mdm2_P_Ub + Mdm2_P_Ub2 + Mdm2_P_Ub3 + Mdm2_P_Ub4 + Mdm2_Ub4_Proteasome + Mdm2_P_Ub4_Proteasome;
   tot_p53 := p53 + Mdm2_p53 + p53_P + Mdm2_p53_Ub + Mdm2_p53_Ub2 + Mdm2_p53_Ub3 + Mdm2_p53_Ub4 + Mdm2_P1_p53_Ub4 + p53_Ub4_Proteasome;
 
@@ -43,7 +43,7 @@ model *BIOMD0000000462()
   GSK3p53Release: GSK3b_p53 => GSK3b + p53; krelGSK3bp53*GSK3b_p53;
   GSK3p53PBinding: GSK3b + p53_P => GSK3b_p53_P; kbinGSK3bp53*GSK3b*p53_P;
   GSK3_p53PRelease: GSK3b_p53_P => GSK3b + p53_P; krelGSK3bp53*GSK3b_p53_P;
-  E1UbBinding: E1 + Ub + $ATP => E1_Ub + $AMP; (kbinE1Ub*E1*Ub*ATP)/(5000 + ATP);
+  E1UbBinding: E1 + Ub + $ATP => E1_Ub + $AMP; kbinE1Ub*E1*Ub*ATP/(5000 + ATP);
   E2UbBinding: E2 + E1_Ub => E2_Ub + E1; kbinE2Ub*E2*E1_Ub;
   Mdm2Ubiquitination: Mdm2 + E2_Ub => Mdm2_Ub + E2; kMdm2Ub*Mdm2*E2_Ub;
   Mdm2polyUbiquitination1: Mdm2_Ub + E2_Ub => Mdm2_Ub2 + E2; kMdm2PolyUb*Mdm2_Ub*E2_Ub;
@@ -54,7 +54,7 @@ model *BIOMD0000000462()
   Mdm2Deubiquitination2: Mdm2_Ub2 + Mdm2DUB => Mdm2_Ub + Mdm2DUB + Ub; kactDUBMdm2*Mdm2_Ub2*Mdm2DUB;
   Mdm2Deubiquitination1: Mdm2_Ub + Mdm2DUB => Mdm2 + Mdm2DUB + Ub; kactDUBMdm2*Mdm2_Ub*Mdm2DUB;
   Mdm2ProteasomeBinding1: Mdm2_Ub4 + Proteasome => Mdm2_Ub4_Proteasome; kbinProt*Mdm2_Ub4*Proteasome;
-  Mdm2Degradation: Mdm2_Ub4_Proteasome => Proteasome + 4Ub; kdegMdm2*Mdm2_Ub4_Proteasome*kproteff;
+  Mdm2Degradation: Mdm2_Ub4_Proteasome => Proteasome + 4 Ub; kdegMdm2*Mdm2_Ub4_Proteasome*kproteff;
   p53Synthesis: p53_mRNA => p53 + p53_mRNA; ksynp53*p53_mRNA;
   p53Monoubiquitination: E2_Ub + Mdm2_p53 => Mdm2_p53_Ub + E2; kp53Ub*E2_Ub*Mdm2_p53;
   p53Polyubiquitination1: Mdm2_p53_Ub + E2_Ub => Mdm2_p53_Ub2 + E2; kp53PolyUb*Mdm2_p53_Ub*E2_Ub;
@@ -68,7 +68,7 @@ model *BIOMD0000000462()
   Mdm2GSK3phosphorylation2: Mdm2_p53_Ub4 + GSK3b_p53 => Mdm2_P1_p53_Ub4 + GSK3b_p53; kphosMdm2GSK3bp53*Mdm2_p53_Ub4*GSK3b_p53;
   Mdm2GSK3phosphorylation3: Mdm2_p53_Ub4 + GSK3b_p53_P => Mdm2_P1_p53_Ub4 + GSK3b_p53_P; kphosMdm2GSK3bp53*Mdm2_p53_Ub4*GSK3b_p53_P;
   p53ProteasomeBinding1: Mdm2_P1_p53_Ub4 + Proteasome => p53_Ub4_Proteasome + Mdm2; kbinProt*Mdm2_P1_p53_Ub4*Proteasome;
-  Degradationp53_Ub4: p53_Ub4_Proteasome + $ATP => 4Ub + Proteasome + $ADP; (kdegp53*kproteff*p53_Ub4_Proteasome*ATP)/(5000 + ATP);
+  Degradationp53_Ub4: p53_Ub4_Proteasome + $ATP => 4 Ub + Proteasome + $ADP; kdegp53*kproteff*p53_Ub4_Proteasome*ATP/(5000 + ATP);
   TauMTbinding: Tau => MT_Tau; kbinMTTau*Tau;
   TauMTrelease: MT_Tau => Tau; krelMTTau*MT_Tau;
   Tauphosphorylation1: GSK3b_p53 + Tau => GSK3b_p53 + Tau_P1; kphospTauGSK3bp53*GSK3b_p53*Tau;
@@ -79,23 +79,23 @@ model *BIOMD0000000462()
   Tauphosphorylation6: GSK3b + Tau_P1 => GSK3b + Tau_P2; kphospTauGSK3b*GSK3b*Tau_P1;
   Taudephosphorylation1: Tau_P2 + PP1 => Tau_P1 + PP1; kdephospTau*Tau_P2*PP1;
   Taudephosphorylation2: Tau_P1 + PP1 => Tau + PP1; kdephospTau*Tau_P1*PP1;
-  TauP1Aggregation1: 2Tau_P1 => 2AggTau; kaggTauP1*Tau_P1*(Tau_P1 - 1)*0.5;
-  TauP1Aggregation2: Tau_P1 + AggTau => 2AggTau; kaggTauP1*Tau_P1*AggTau;
-  TauP2Aggregation1: 2Tau_P2 => 2AggTau; kaggTauP2*Tau_P2*(Tau_P2 - 1)*0.5;
-  TauP2Aggregation2: Tau_P2 + AggTau => 2AggTau; kaggTauP2*Tau_P2*AggTau;
-  TauAggregation1: 2Tau => 2AggTau; kaggTau*Tau*(Tau - 1)*0.5;
-  TauAggregation2: Tau + AggTau => 2AggTau; kaggTau*Tau*AggTau;
-  TangleFormation1: 2AggTau => 2NFT; ktangfor*AggTau*(AggTau - 1)*0.5;
-  TangleFormation2: AggTau + NFT => 2NFT; ktangfor*AggTau*NFT;
+  TauP1Aggregation1: 2 Tau_P1 => 2 AggTau; kaggTauP1*Tau_P1*(Tau_P1 - 1)*0.5;
+  TauP1Aggregation2: Tau_P1 + AggTau => 2 AggTau; kaggTauP1*Tau_P1*AggTau;
+  TauP2Aggregation1: 2 Tau_P2 => 2 AggTau; kaggTauP2*Tau_P2*(Tau_P2 - 1)*0.5;
+  TauP2Aggregation2: Tau_P2 + AggTau => 2 AggTau; kaggTauP2*Tau_P2*AggTau;
+  TauAggregation1: 2 Tau => 2 AggTau; kaggTau*Tau*(Tau - 1)*0.5;
+  TauAggregation2: Tau + AggTau => 2 AggTau; kaggTau*Tau*AggTau;
+  TangleFormation1: 2 AggTau => 2 NFT; ktangfor*AggTau*(AggTau - 1)*0.5;
+  TangleFormation2: AggTau + NFT => 2 NFT; ktangfor*AggTau*NFT;
   ProteasomeInhibitionAggTau: AggTau + Proteasome => AggTau_Proteasome; kinhibprot*AggTau*Proteasome;
   Abetaproduction1: GSK3b_p53 => Abeta + GSK3b_p53; kprodAbeta*GSK3b_p53;
   Abetaproduction2: GSK3b_p53_P => Abeta + GSK3b_p53_P; kprodAbeta*GSK3b_p53_P;
   ProteasomeInhibitionAbeta: AggAbeta + Proteasome => AggAbeta_Proteasome; kinhibprot*AggAbeta*Proteasome;
   AbetaDegradation: Abeta => $Sink; kdegAbeta*Abeta;
-  AbetaAggregation1: 2Abeta => AggAbeta; kaggAbeta*Abeta*(Abeta - 1)*0.5;
-  AbetaAggregation2: Abeta + AggAbeta => 2AggAbeta; kaggAbeta*Abeta*AggAbeta;
-  AbetaPlaqueFormation1: 2AggAbeta => 2AbetaPlaque; kpf*AggAbeta*(AggAbeta - 1)*0.5;
-  AbetaPlaqueFormation2: AggAbeta + AbetaPlaque => 2AbetaPlaque; kpf*AggAbeta*AbetaPlaque;
+  AbetaAggregation1: 2 Abeta => AggAbeta; kaggAbeta*Abeta*(Abeta - 1)*0.5;
+  AbetaAggregation2: Abeta + AggAbeta => 2 AggAbeta; kaggAbeta*Abeta*AggAbeta;
+  AbetaPlaqueFormation1: 2 AggAbeta => 2 AbetaPlaque; kpf*AggAbeta*(AggAbeta - 1)*0.5;
+  AbetaPlaqueFormation2: AggAbeta + AbetaPlaque => 2 AbetaPlaque; kpf*AggAbeta*AbetaPlaque;
   p53transcriptionViaAbeta: Abeta => p53_mRNA + Abeta; ksynp53mRNAAbeta*Abeta;
   DNAdamage:  => damDNA; kdam*IR;
   DNArepair: damDNA => $Sink; krepair*damDNA;
@@ -113,7 +113,7 @@ model *BIOMD0000000462()
   Mdm2PDeubiquitination2: Mdm2_P_Ub2 + Mdm2DUB => Mdm2_P_Ub + Mdm2DUB + Ub; kactDUBMdm2*Mdm2_P_Ub2*Mdm2DUB;
   Mdm2PDeubiquitination1: Mdm2_P_Ub + Mdm2DUB => Mdm2_P + Mdm2DUB + Ub; kactDUBMdm2*Mdm2_P_Ub*Mdm2DUB;
   Mdm2PProteasomeBinding1: Mdm2_P_Ub4 + Proteasome => Mdm2_P_Ub4_Proteasome; kbinProt*Mdm2_P_Ub4*Proteasome;
-  Mdm2PDegradation: Mdm2_P_Ub4_Proteasome => Proteasome + 4Ub; kdegMdm2*Mdm2_P_Ub4_Proteasome*kproteff;
+  Mdm2PDegradation: Mdm2_P_Ub4_Proteasome => Proteasome + 4 Ub; kdegMdm2*Mdm2_P_Ub4_Proteasome*kproteff;
   ATMInactivation: ATMA => ATMI; kinactATM*ATMA;
   AggAbetaROSproduction1: AggAbeta => AggAbeta + ROS; kgenROSAbeta*AggAbeta;
   AggAbetaROSproduction2: AggAbeta_Proteasome => AggAbeta_Proteasome + ROS; kgenROSAbeta*AggAbeta_Proteasome;
@@ -195,24 +195,24 @@ model *BIOMD0000000462()
   ksynp53 = 0.007;
   kdegp53 = 0.005;
   kbinMdm2p53 = 0.001155;
-  krelMdm2p53 = 1.155e-005;
-  kbinGSK3bp53 = 2e-006;
+  krelMdm2p53 = 1.155e-05;
+  kbinGSK3bp53 = 2e-06;
   krelGSK3bp53 = 0.002;
   ksynMdm2 = 0.000495;
   kdegMdm2 = 0.01;
   kbinE1Ub = 0.0002;
   kbinE2Ub = 0.001;
-  kp53Ub = 5e-005;
+  kp53Ub = 5e-05;
   kp53PolyUb = 0.01;
-  kbinProt = 2e-006;
-  kactDUBp53 = 1e-007;
+  kbinProt = 2e-06;
+  kactDUBp53 = 1e-07;
   kactDUBProtp53 = 0.0001;
-  kactDUBMdm2 = 1e-007;
-  kMdm2Ub = 4.56e-006;
-  kMdm2PUb = 6.84e-006;
+  kactDUBMdm2 = 1e-07;
+  kMdm2Ub = 4.56e-06;
+  kMdm2PUb = 6.84e-06;
   kMdm2PolyUb = 0.00456;
   kdam = 0.08;
-  krepair = 2e-005;
+  krepair = 2e-05;
   kactATM = 0.0001;
   kinactATM = 0.0005;
   kphosp53 = 0.0002;
@@ -226,22 +226,22 @@ model *BIOMD0000000462()
   kdephospTau = 0.01;
   kbinMTTau = 0.1;
   krelMTTau = 0.0001;
-  ksynTau = 8e-005;
-  kbinTauProt = 1.925e-007;
+  ksynTau = 8e-05;
+  kbinTauProt = 1.925e-07;
   kdegTau20SProt = 0.01;
-  kaggTau = 1e-008;
-  kaggTauP1 = 1e-008;
-  kaggTauP2 = 1e-007;
+  kaggTau = 1e-08;
+  kaggTauP1 = 1e-08;
+  kaggTauP2 = 1e-07;
   ktangfor = 0.001;
-  kprodAbeta = 5e-005;
-  kinhibprot = 1e-005;
+  kprodAbeta = 5e-05;
+  kinhibprot = 1e-05;
   kdegAbeta = 0.0001;
-  kaggAbeta = 1e-008;
+  kaggAbeta = 1e-08;
   kpf = 0.001;
-  ksynp53mRNAAbeta = 1e-005;
-  kdamROS = 1e-005;
-  kdamBasalROS = 1e-009;
-  kgenROSAbeta = 1e-005;
+  ksynp53mRNAAbeta = 1e-05;
+  kdamROS = 1e-05;
+  kdamBasalROS = 1e-09;
+  kgenROSAbeta = 1e-05;
   kproteff = 1;
 
   // Other declarations:
@@ -259,4 +259,413 @@ model *BIOMD0000000462()
 
   // Unit definitions:
   unit substance = item;
+
+  // SBO terms:
+  cell.sboTerm = 290
+  Mdm2.sboTerm = 245
+  p53.sboTerm = 245
+  Mdm2_p53.sboTerm = 296
+  Mdm2_mRNA.sboTerm = 278
+  p53_mRNA.sboTerm = 278
+  ATMA.sboTerm = 245
+  ATMI.sboTerm = 245
+  p53_P.sboTerm = 245
+  Mdm2_P.sboTerm = 245
+  IR.sboTerm = 405
+  ROS.sboTerm = 245
+  basalROS.sboTerm = 245
+  damDNA.sboTerm = 251
+  E1.sboTerm = 14
+  E2.sboTerm = 14
+  E1_Ub.sboTerm = 296
+  E2_Ub.sboTerm = 296
+  Proteasome.sboTerm = 245
+  Ub.sboTerm = 245
+  p53DUB.sboTerm = 14
+  Mdm2DUB.sboTerm = 14
+  DUB.sboTerm = 14
+  Mdm2_p53_Ub.sboTerm = 296
+  Mdm2_p53_Ub2.sboTerm = 296
+  Mdm2_p53_Ub3.sboTerm = 296
+  Mdm2_p53_Ub4.sboTerm = 296
+  Mdm2_P1_p53_Ub4.sboTerm = 296
+  Mdm2_Ub.sboTerm = 296
+  Mdm2_Ub2.sboTerm = 296
+  Mdm2_Ub3.sboTerm = 296
+  Mdm2_Ub4.sboTerm = 296
+  Mdm2_P_Ub.sboTerm = 296
+  Mdm2_P_Ub2.sboTerm = 296
+  Mdm2_P_Ub3.sboTerm = 296
+  Mdm2_P_Ub4.sboTerm = 296
+  p53_Ub4_Proteasome.sboTerm = 296
+  Mdm2_Ub4_Proteasome.sboTerm = 296
+  Mdm2_P_Ub4_Proteasome.sboTerm = 296
+  GSK3b.sboTerm = 245
+  GSK3b_p53.sboTerm = 296
+  GSK3b_p53_P.sboTerm = 296
+  Abeta.sboTerm = 245
+  AggAbeta_Proteasome.sboTerm = 296
+  AggAbeta.sboTerm = 296
+  AbetaPlaque.sboTerm = 296
+  Tau.sboTerm = 245
+  Tau_P1.sboTerm = 245
+  Tau_P2.sboTerm = 245
+  MT_Tau.sboTerm = 296
+  AggTau.sboTerm = 296
+  AggTau_Proteasome.sboTerm = 296
+  Proteasome_Tau.sboTerm = 296
+  PP1.sboTerm = 245
+  ATP.sboTerm = 296
+  AMP.sboTerm = 247
+  Source.sboTerm = 291
+  Sink.sboTerm = 291
+  ksynp53mRNA.sboTerm = 9
+  kdegp53mRNA.sboTerm = 356
+  ksynMdm2mRNA.sboTerm = 9
+  kdegMdm2mRNA.sboTerm = 356
+  ksynMdm2mRNAGSK3bp53.sboTerm = 9
+  ksynp53.sboTerm = 9
+  kdegp53.sboTerm = 356
+  kbinMdm2p53.sboTerm = 337
+  krelMdm2p53.sboTerm = 282
+  kbinGSK3bp53.sboTerm = 337
+  krelGSK3bp53.sboTerm = 282
+  ksynMdm2.sboTerm = 9
+  kdegMdm2.sboTerm = 356
+  kbinE1Ub.sboTerm = 337
+  kbinE2Ub.sboTerm = 337
+  kp53Ub.sboTerm = 337
+  kp53PolyUb.sboTerm = 337
+  kbinProt.sboTerm = 337
+  kactDUBp53.sboTerm = 282
+  kactDUBProtp53.sboTerm = 282
+  kactDUBMdm2.sboTerm = 282
+  kMdm2Ub.sboTerm = 337
+  kMdm2PUb.sboTerm = 337
+  kMdm2PolyUb.sboTerm = 337
+  kdam.sboTerm = 9
+  krepair.sboTerm = 9
+  kactATM.sboTerm = 363
+  kinactATM.sboTerm = 349
+  kphosp53.sboTerm = 9
+  kdephosp53.sboTerm = 9
+  kphosMdm2.sboTerm = 9
+  kdephosMdm2.sboTerm = 9
+  kphosMdm2GSK3b.sboTerm = 9
+  kphosMdm2GSK3bp53.sboTerm = 9
+  kphospTauGSK3bp53.sboTerm = 9
+  kphospTauGSK3b.sboTerm = 9
+  kdephospTau.sboTerm = 9
+  kbinMTTau.sboTerm = 337
+  krelMTTau.sboTerm = 282
+  ksynTau.sboTerm = 9
+  kbinTauProt.sboTerm = 337
+  kdegTau20SProt.sboTerm = 356
+  kaggTau.sboTerm = 337
+  kaggTauP1.sboTerm = 337
+  kaggTauP2.sboTerm = 337
+  ktangfor.sboTerm = 337
+  kprodAbeta.sboTerm = 337
+  kinhibprot.sboTerm = 261
+  kdegAbeta.sboTerm = 282
+  kaggAbeta.sboTerm = 337
+  kpf.sboTerm = 337
+  ksynp53mRNAAbeta.sboTerm = 337
+  kdamROS.sboTerm = 9
+  kdamBasalROS.sboTerm = 9
+  kgenROSAbeta.sboTerm = 9
+  kproteff.sboTerm = 9
+  p53mRNASynthesis.sboTerm = 183
+  p53mRNADegradation.sboTerm = 179
+  Mdm2Synthesis.sboTerm = 393
+  Mdm2mRNASynthesis1.sboTerm = 183
+  Mdm2mRNASynthesis2.sboTerm = 183
+  Mdm2mRNASynthesis3.sboTerm = 183
+  Mdm2mRNASynthesis4.sboTerm = 183
+  Mdm2mRNADegradation.sboTerm = 279
+  P53Mdm2Binding.sboTerm = 526
+  P53Mdm2Release.sboTerm = 180
+  GSK3p53Binding.sboTerm = 526
+  GSK3p53Release.sboTerm = 180
+  GSK3p53PBinding.sboTerm = 526
+  GSK3_p53PRelease.sboTerm = 180
+  E1UbBinding.sboTerm = 526
+  E2UbBinding.sboTerm = 526
+  Mdm2Ubiquitination.sboTerm = 526
+  Mdm2polyUbiquitination1.sboTerm = 526
+  Mdm2polyUbiquitination2.sboTerm = 526
+  Mdm2polyUbiquitination3.sboTerm = 526
+  Mdm2Deubiquitination4.sboTerm = 526
+  Mdm2Deubiquitination3.sboTerm = 526
+  Mdm2Deubiquitination2.sboTerm = 526
+  Mdm2Deubiquitination1.sboTerm = 526
+  Mdm2ProteasomeBinding1.sboTerm = 526
+  Mdm2Degradation.sboTerm = 179
+  p53Synthesis.sboTerm = 393
+  p53Monoubiquitination.sboTerm = 526
+  p53Polyubiquitination1.sboTerm = 526
+  p53Polyubiquitination2.sboTerm = 526
+  p53Polyubiquitination3.sboTerm = 526
+  p53Deubiqutination4.sboTerm = 526
+  p53Deubiquitination3.sboTerm = 526
+  p53Deubiquitination2.sboTerm = 526
+  p53Deubiquitination1.sboTerm = 526
+  Mdm2GSK3phosphorylation1.sboTerm = 216
+  Mdm2GSK3phosphorylation2.sboTerm = 216
+  Mdm2GSK3phosphorylation3.sboTerm = 216
+  p53ProteasomeBinding1.sboTerm = 526
+  Degradationp53_Ub4.sboTerm = 180
+  TauMTbinding.sboTerm = 526
+  TauMTrelease.sboTerm = 180
+  Tauphosphorylation1.sboTerm = 216
+  Tauphosphorylation2.sboTerm = 216
+  Tauphosphorylation3.sboTerm = 216
+  Tauphosphorylation4.sboTerm = 216
+  Tauphosphorylation5.sboTerm = 216
+  Tauphosphorylation6.sboTerm = 216
+  Taudephosphorylation1.sboTerm = 330
+  Taudephosphorylation2.sboTerm = 330
+  TauP1Aggregation1.sboTerm = 526
+  TauP1Aggregation2.sboTerm = 526
+  TauP2Aggregation1.sboTerm = 526
+  TauP2Aggregation2.sboTerm = 526
+  TauAggregation1.sboTerm = 526
+  TauAggregation2.sboTerm = 526
+  TangleFormation1.sboTerm = 526
+  TangleFormation2.sboTerm = 526
+  ProteasomeInhibitionAggTau.sboTerm = 169
+  Abetaproduction1.sboTerm = 393
+  Abetaproduction2.sboTerm = 393
+  ProteasomeInhibitionAbeta.sboTerm = 169
+  AbetaDegradation.sboTerm = 179
+  AbetaAggregation1.sboTerm = 526
+  AbetaAggregation2.sboTerm = 526
+  AbetaPlaqueFormation1.sboTerm = 526
+  AbetaPlaqueFormation2.sboTerm = 526
+  p53transcriptionViaAbeta.sboTerm = 183
+  DNAdamage.sboTerm = 357
+  DNArepair.sboTerm = 179
+  ATMactivation.sboTerm = 176
+  p53phosphorylation.sboTerm = 216
+  p53dephosphorylation.sboTerm = 330
+  Mdm2phosphorylation.sboTerm = 216
+  Mdm2dephosphorylation.sboTerm = 330
+  Mdm2PUbiquitination.sboTerm = 526
+  Mdm2PpolyUbiquitination1.sboTerm = 526
+  Mdm2PpolyUbiquitination2.sboTerm = 526
+  Mdm2PpolyUbiquitination3.sboTerm = 526
+  Mdm2PDeubiquitination4.sboTerm = 526
+  Mdm2PDeubiquitination3.sboTerm = 526
+  Mdm2PDeubiquitination2.sboTerm = 526
+  Mdm2PDeubiquitination1.sboTerm = 526
+  Mdm2PProteasomeBinding1.sboTerm = 526
+  Mdm2PDegradation.sboTerm = 179
+  ATMInactivation.sboTerm = 176
+  AggAbetaROSproduction1.sboTerm = 393
+  AggAbetaROSproduction2.sboTerm = 393
+  ROSDNAdamage.sboTerm = 176
+  basalROSDNAdamage.sboTerm = 176
+  TauSynthesis.sboTerm = 393
+  TauProteasomeBinding.sboTerm = 526
+  Tau20SProteasomeDegradation.sboTerm = 179
+
+  // CV terms:
+  cell hypernym "http://identifiers.org/go/GO:0005623"
+  Mdm2 hypernym "http://identifiers.org/uniprot/Q00987"
+  p53 hypernym "http://identifiers.org/uniprot/P04637"
+  Mdm2_p53 part "http://identifiers.org/uniprot/Q00987",
+                "http://identifiers.org/uniprot/P04637"
+  Mdm2_mRNA encodement "http://identifiers.org/uniprot/Q00987"
+  p53_mRNA encodement "http://identifiers.org/uniprot/P04637"
+  ATMA hypernym "http://identifiers.org/uniprot/Q13315"
+  ATMI hypernym "http://identifiers.org/uniprot/Q13315"
+  p53_P hypernym "http://identifiers.org/uniprot/P04637"
+  Mdm2_P hypernym "http://identifiers.org/uniprot/Q00987"
+  ROS hypernym "http://identifiers.org/chebi/CHEBI:26523"
+  basalROS hypernym "http://identifiers.org/chebi/CHEBI:26523"
+  damDNA hypernym "http://identifiers.org/chebi/CHEBI:16991"
+  E1 hypernym "http://identifiers.org/interpro/IPR000011"
+  E2 hypernym "http://identifiers.org/interpro/IPR000608"
+  E1_Ub part "http://identifiers.org/uniprot/P62988",
+             "http://identifiers.org/interpro/IPR000011"
+  E2_Ub part "http://identifiers.org/uniprot/P62988",
+             "http://identifiers.org/interpro/IPR000608"
+  Proteasome hypernym "http://identifiers.org/go/GO:0000502"
+  Ub hypernym "http://identifiers.org/uniprot/P62988"
+  p53DUB parthood "http://identifiers.org/interpro/IPR001394"
+  Mdm2DUB hypernym "http://identifiers.org/interpro/IPR001394"
+  DUB hypernym "http://identifiers.org/interpro/IPR001394"
+  Mdm2_p53_Ub part "http://identifiers.org/uniprot/Q00987",
+                   "http://identifiers.org/uniprot/P04637",
+                   "http://identifiers.org/uniprot/P62988"
+  Mdm2_p53_Ub2 part "http://identifiers.org/uniprot/Q00987",
+                    "http://identifiers.org/uniprot/P04637",
+                    "http://identifiers.org/uniprot/P62988"
+  Mdm2_p53_Ub3 part "http://identifiers.org/uniprot/Q00987",
+                    "http://identifiers.org/uniprot/P04637",
+                    "http://identifiers.org/uniprot/P62988"
+  Mdm2_p53_Ub4 part "http://identifiers.org/uniprot/Q00987",
+                    "http://identifiers.org/uniprot/P04637",
+                    "http://identifiers.org/uniprot/P62988"
+  Mdm2_P1_p53_Ub4 part "http://identifiers.org/uniprot/Q00987",
+                       "http://identifiers.org/uniprot/P04637",
+                       "http://identifiers.org/uniprot/P62988"
+  Mdm2_Ub part "http://identifiers.org/uniprot/Q00987",
+               "http://identifiers.org/uniprot/P62988"
+  Mdm2_Ub2 part "http://identifiers.org/uniprot/Q00987",
+                "http://identifiers.org/uniprot/P62988"
+  Mdm2_Ub3 part "http://identifiers.org/uniprot/Q00987",
+                "http://identifiers.org/uniprot/P62988"
+  Mdm2_Ub4 part "http://identifiers.org/uniprot/Q00987",
+                "http://identifiers.org/uniprot/P62988"
+  Mdm2_P_Ub part "http://identifiers.org/uniprot/Q00987",
+                 "http://identifiers.org/uniprot/P62988"
+  Mdm2_P_Ub2 part "http://identifiers.org/uniprot/Q00987",
+                  "http://identifiers.org/uniprot/P62988"
+  Mdm2_P_Ub3 part "http://identifiers.org/uniprot/Q00987",
+                  "http://identifiers.org/uniprot/P62988"
+  Mdm2_P_Ub4 part "http://identifiers.org/uniprot/Q00987",
+                  "http://identifiers.org/uniprot/P62988"
+  p53_Ub4_Proteasome part "http://identifiers.org/uniprot/P04637",
+                          "http://identifiers.org/uniprot/P62988",
+                          "http://identifiers.org/go/GO:0000502"
+  Mdm2_Ub4_Proteasome part "http://identifiers.org/uniprot/Q00987",
+                           "http://identifiers.org/uniprot/P62988",
+                           "http://identifiers.org/go/GO:0000502"
+  Mdm2_P_Ub4_Proteasome part "http://identifiers.org/uniprot/Q00987",
+                             "http://identifiers.org/uniprot/P62988",
+                             "http://identifiers.org/go/GO:0000502"
+  GSK3b hypernym "http://identifiers.org/uniprot/P49841"
+  GSK3b_p53 part "http://identifiers.org/uniprot/P49841",
+                 "http://identifiers.org/uniprot/P04637"
+  GSK3b_p53_P part "http://identifiers.org/uniprot/P49841",
+                   "http://identifiers.org/uniprot/P04637"
+  Abeta hypernym "http://identifiers.org/uniprot/P05067"
+  AggAbeta_Proteasome hypernym "http://identifiers.org/uniprot/P05067",
+                               "http://identifiers.org/go/GO:0000502"
+  AggAbeta hypernym "http://identifiers.org/uniprot/P05067"
+  AbetaPlaque hypernym "http://identifiers.org/uniprot/P05067"
+  Tau hypernym "http://identifiers.org/interpro/IPR002955"
+  Tau_P1 hypernym "http://identifiers.org/interpro/IPR002955"
+  Tau_P2 hypernym "http://identifiers.org/interpro/IPR002955"
+  MT_Tau hypernym "http://identifiers.org/interpro/IPR015562"
+  AggTau hypernym "http://identifiers.org/interpro/IPR002955"
+  AggTau_Proteasome part "http://identifiers.org/interpro/IPR002955",
+                         "http://identifiers.org/go/GO:0000502"
+  Proteasome_Tau part "http://identifiers.org/interpro/IPR002955",
+                      "http://identifiers.org/go/GO:0000502"
+  PP1 hypernym "http://identifiers.org/uniprot/P62136"
+  NFT hypernym "http://identifiers.org/interpro/IPR002955"
+  ATP hypernym "http://identifiers.org/chebi/CHEBI:15422"
+  ADP hypernym "http://identifiers.org/chebi/CHEBI:16761"
+  AMP hypernym "http://identifiers.org/chebi/CHEBI:16027",
+               "http://identifiers.org/kegg.compound/C00020"
+  p53mRNASynthesis hypernym "http://identifiers.org/go/GO:0006351"
+  p53mRNADegradation hypernym "http://identifiers.org/go/GO:0009056"
+  Mdm2Synthesis hypernym "http://identifiers.org/go/GO:0006412"
+  Mdm2mRNASynthesis1 hypernym "http://identifiers.org/go/GO:0006351"
+  Mdm2mRNASynthesis2 hypernym "http://identifiers.org/go/GO:0006351"
+  Mdm2mRNASynthesis3 hypernym "http://identifiers.org/go/GO:0006351"
+  Mdm2mRNASynthesis4 hypernym "http://identifiers.org/go/GO:0006351"
+  Mdm2mRNADegradation hypernym "http://identifiers.org/go/GO:0009056"
+  P53Mdm2Binding hypernym "http://identifiers.org/go/GO:0006461"
+  P53Mdm2Release hypernym "http://identifiers.org/go/GO:0043241"
+  GSK3p53Binding hypernym "http://identifiers.org/go/GO:0006461"
+  GSK3p53Release hypernym "http://identifiers.org/go/GO:0043241"
+  GSK3p53PBinding hypernym "http://identifiers.org/go/GO:0006461"
+  GSK3_p53PRelease hypernym "http://identifiers.org/go/GO:0043241"
+  E1UbBinding hypernym "http://identifiers.org/go/GO:0006461"
+  E2UbBinding hypernym "http://identifiers.org/go/GO:0006461"
+  Mdm2Ubiquitination hypernym "http://identifiers.org/go/GO:0016567"
+  Mdm2polyUbiquitination1 hypernym "http://identifiers.org/go/GO:0016567"
+  Mdm2polyUbiquitination2 hypernym "http://identifiers.org/go/GO:0016567"
+  Mdm2polyUbiquitination3 hypernym "http://identifiers.org/go/GO:0016567"
+  Mdm2Deubiquitination4 hypernym "http://identifiers.org/go/GO:0016567"
+  Mdm2Deubiquitination3 hypernym "http://identifiers.org/go/GO:0016567"
+  Mdm2Deubiquitination2 hypernym "http://identifiers.org/go/GO:0016567"
+  Mdm2Deubiquitination1 hypernym "http://identifiers.org/go/GO:0016567"
+  Mdm2ProteasomeBinding1 hypernym "http://identifiers.org/go/GO:0070628"
+  Mdm2Degradation hypernym "http://identifiers.org/go/GO:0009056"
+  p53Synthesis hypernym "http://identifiers.org/go/GO:0006412"
+  p53Monoubiquitination hypernym "http://identifiers.org/go/GO:0016567"
+  p53Polyubiquitination1 parthood "http://identifiers.org/go/GO:0016567"
+  p53Polyubiquitination2 hypernym "http://identifiers.org/go/GO:0016567"
+  p53Polyubiquitination3 hypernym "http://identifiers.org/go/GO:0016567"
+  p53Deubiqutination4 hypernym "http://identifiers.org/go/GO:0016567"
+  p53Deubiquitination3 hypernym "http://identifiers.org/go/GO:0016567"
+  p53Deubiquitination2 hypernym "http://identifiers.org/go/GO:0016567"
+  p53Deubiquitination1 hypernym "http://identifiers.org/go/GO:0016567"
+  Mdm2GSK3phosphorylation1 hypernym "http://identifiers.org/go/GO:0016310"
+  Mdm2GSK3phosphorylation2 hypernym "http://identifiers.org/go/GO:0016310"
+  Mdm2GSK3phosphorylation3 hypernym "http://identifiers.org/go/GO:0016310"
+  p53ProteasomeBinding1 hypernym "http://identifiers.org/go/GO:0070628"
+  Degradationp53_Ub4 hypernym "http://identifiers.org/go/GO:0030163"
+  TauMTbinding hypernym "http://identifiers.org/go/GO:0048156",
+                        "http://identifiers.org/go/GO:0008017"
+  TauMTrelease hypernym "http://identifiers.org/go/GO:0043241"
+  Tauphosphorylation1 hypernym "http://identifiers.org/go/GO:0016310"
+  Tauphosphorylation2 hypernym "http://identifiers.org/go/GO:0016310"
+  Tauphosphorylation3 hypernym "http://identifiers.org/go/GO:0016310"
+  Tauphosphorylation4 hypernym "http://identifiers.org/go/GO:0016310"
+  Tauphosphorylation5 hypernym "http://identifiers.org/go/GO:0016310"
+  Tauphosphorylation6 hypernym "http://identifiers.org/go/GO:0016310"
+  Taudephosphorylation1 hypernym "http://identifiers.org/go/GO:0016310"
+  Taudephosphorylation2 hypernym "http://identifiers.org/go/GO:0016310"
+  TauP1Aggregation1 hypernym "http://identifiers.org/go/GO:0070841"
+  TauP1Aggregation2 hypernym "http://identifiers.org/go/GO:0070841"
+  TauP2Aggregation1 hypernym "http://identifiers.org/go/GO:0070841"
+  TauP2Aggregation2 hypernym "http://identifiers.org/go/GO:0070841"
+  TauAggregation1 hypernym "http://identifiers.org/go/GO:0070841"
+  TauAggregation2 hypernym "http://identifiers.org/go/GO:0070841"
+  TangleFormation1 hypernym "http://identifiers.org/go/GO:0051787"
+  TangleFormation2 hypernym "http://identifiers.org/go/GO:0051787"
+  ProteasomeInhibitionAggTau hypernym "http://identifiers.org/go/GO:0008539"
+  Abetaproduction1 hypernym "http://identifiers.org/go/GO:0034205"
+  Abetaproduction2 hypernym "http://identifiers.org/go/GO:0034205"
+  ProteasomeInhibitionAbeta hypernym "http://identifiers.org/go/GO:0008539"
+  AbetaDegradation hypernym "http://identifiers.org/go/GO:0009056"
+  AbetaAggregation1 hypernym "http://identifiers.org/go/GO:0051787"
+  AbetaAggregation2 hypernym "http://identifiers.org/go/GO:0051787"
+  AbetaPlaqueFormation1 hypernym "http://identifiers.org/go/GO:0005914"
+  AbetaPlaqueFormation2 hypernym "http://identifiers.org/go/GO:0005914"
+  p53transcriptionViaAbeta parthood "http://identifiers.org/go/GO:0006351"
+  DNAdamage hypernym "http://identifiers.org/go/GO:0006950"
+  DNArepair hypernym "http://identifiers.org/go/GO:0006281"
+  ATMactivation hypernym "http://identifiers.org/go/GO:0006974"
+  p53phosphorylation hypernym "http://identifiers.org/go/GO:0016310"
+  p53dephosphorylation hypernym "http://identifiers.org/go/GO:0016310"
+  Mdm2phosphorylation hypernym "http://identifiers.org/go/GO:0016310"
+  Mdm2dephosphorylation hypernym "http://identifiers.org/go/GO:0016310"
+  Mdm2PUbiquitination hypernym "http://identifiers.org/go/GO:0016567"
+  Mdm2PpolyUbiquitination1 hypernym "http://identifiers.org/go/GO:0016567"
+  Mdm2PpolyUbiquitination2 hypernym "http://identifiers.org/go/GO:0016567"
+  Mdm2PpolyUbiquitination3 hypernym "http://identifiers.org/go/GO:0016567"
+  Mdm2PDeubiquitination4 hypernym "http://identifiers.org/go/GO:0016579"
+  Mdm2PDeubiquitination3 hypernym "http://identifiers.org/go/GO:0016579"
+  Mdm2PDeubiquitination2 hypernym "http://identifiers.org/go/GO:0016579"
+  Mdm2PDeubiquitination1 hypernym "http://identifiers.org/go/GO:0016579"
+  Mdm2PProteasomeBinding1 hypernym "http://identifiers.org/go/GO:0070628"
+  Mdm2PDegradation hypernym "http://identifiers.org/go/GO:0009056"
+  ATMInactivation hypernym "http://identifiers.org/go/GO:0006464"
+  AggAbetaROSproduction1 hypernym "http://identifiers.org/go/GO:0052064"
+  AggAbetaROSproduction2 hypernym "http://identifiers.org/go/GO:0052064"
+  ROSDNAdamage hypernym "http://identifiers.org/go/GO:0034614"
+  basalROSDNAdamage hypernym "http://identifiers.org/go/GO:0034614"
+  TauSynthesis hypernym "http://identifiers.org/go/GO:0006412"
+  TauProteasomeBinding parthood "http://identifiers.org/go/GO:0070628"
+  Tau20SProteasomeDegradation hypernym "http://identifiers.org/go/GO:0009056"
 end
+
+BIOMD0000000462 is "Proctor2010 - a link between GSK3 and p53 in Alzheimer's Disease"
+
+BIOMD0000000462 model_entity_is "http://identifiers.org/biomodels.db/MODEL0910130002"
+BIOMD0000000462 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000286"
+BIOMD0000000462 description "http://identifiers.org/pubmed/20181016"
+BIOMD0000000462 origin "http://identifiers.org/biomodels.db/BIOMD0000000105",
+                       "http://identifiers.org/biomodels.db/BIOMD0000000188",
+                       "http://identifiers.org/biomodels.db/BIOMD0000000189"
+BIOMD0000000462 property "http://identifiers.org/doid/DOID:10652"
+BIOMD0000000462 taxon "http://identifiers.org/taxonomy/40674"
+BIOMD0000000462 parthood "http://identifiers.org/kegg.pathway/ko05010"
+BIOMD0000000462 hypernym "http://identifiers.org/go/GO:0030330",
+                         "http://identifiers.org/go/GO:0070841"

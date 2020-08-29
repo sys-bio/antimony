@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Goldbeter_Calcium_Oscillation_based_on_CICR_AND_CA_channel_inhibition()
 
   // Compartments and Species:
@@ -8,8 +8,8 @@ model *Goldbeter_Calcium_Oscillation_based_on_CICR_AND_CA_channel_inhibition()
 
   // Reactions:
   vin: EC => Z; cytosol*(vin_v0 + vin_v1*beta);
-  v2: Z => Y; intravesicular*((v2_Vm2*Z^2)/(v2_K2^2 + Z^2));
-  v3: Y => Z; cytosol*((beta*((Rho*(a/d)*Z^4)/(1 + a/d*Z^4))*v3_Vm3*Y^2)/(v3_Ky^2 + Y^2));
+  v2: Z => Y; intravesicular*(v2_Vm2*Z^2/(v2_K2^2 + Z^2));
+  v3: Y => Z; cytosol*(beta*(Rho*(a/d)*Z^4/(1 + (a/d)*Z^4))*v3_Vm3*Y^2/(v3_Ky^2 + Y^2));
   v4: Y => Z; cytosol*v4_Kf*Y;
   v5: Z => EC; extracellular*v5_K*Z;
   v6: Rho => Fraction_Inactive_Channels; cytosol*v6_Kd*Z^4*Rho;
@@ -52,4 +52,37 @@ model *Goldbeter_Calcium_Oscillation_based_on_CICR_AND_CA_channel_inhibition()
   // Display Names:
   substance is "micromole (default)";
   time_unit is "minute (default)";
+
+  // CV terms:
+  extracellular hypernym "http://identifiers.org/obo.go/GO:0005615"
+  cytosol hypernym "http://identifiers.org/obo.go/GO:0005829"
+  intravesicular hypernym "http://identifiers.org/obo.go/GO:0005790"
+  EC identity "http://identifiers.org/chebi/CHEBI:29108",
+              "http://identifiers.org/kegg.compound/C00076"
+  Z identity "http://identifiers.org/chebi/CHEBI:29108",
+             "http://identifiers.org/kegg.compound/C00076"
+  Rho hypernym "http://identifiers.org/interpro/IPR016093",
+               "http://identifiers.org/interpro/IPR000493"
+  Y identity "http://identifiers.org/chebi/CHEBI:29108",
+             "http://identifiers.org/kegg.compound/C00076"
+  Fraction_Inactive_Channels hypernym "http://identifiers.org/interpro/IPR000493",
+                                      "http://identifiers.org/pirsf/PIRSF002433"
+  vin hypernym "http://identifiers.org/obo.go/GO:0006816",
+               "http://identifiers.org/obo.go/GO:0007204"
+  v2 hypernym "http://identifiers.org/obo.go/GO:0051481"
+  v3 hypernym "http://identifiers.org/obo.go/GO:0007204"
+  v4 hypernym "http://identifiers.org/obo.go/GO:0007204"
+  v5 hypernym "http://identifiers.org/obo.go/GO:0051481"
+  v6 hypernym "http://identifiers.org/obo.go/GO:0005220"
+  v7 hypernym "http://identifiers.org/obo.go/GO:0005220"
 end
+
+Goldbeter_Calcium_Oscillation_based_on_CICR_AND_CA_channel_inhibition is "Borghans1997 - Calcium Oscillation - Model 1"
+
+Goldbeter_Calcium_Oscillation_based_on_CICR_AND_CA_channel_inhibition model_entity_is "http://identifiers.org/biomodels.db/MODEL6622689184"
+Goldbeter_Calcium_Oscillation_based_on_CICR_AND_CA_channel_inhibition model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000043"
+Goldbeter_Calcium_Oscillation_based_on_CICR_AND_CA_channel_inhibition description "http://identifiers.org/pubmed/17029867"
+Goldbeter_Calcium_Oscillation_based_on_CICR_AND_CA_channel_inhibition hypernym "http://identifiers.org/obo.go/GO:0048016",
+                                                                               "http://identifiers.org/obo.go/GO:0019722"
+Goldbeter_Calcium_Oscillation_based_on_CICR_AND_CA_channel_inhibition identity "http://identifiers.org/kegg.pathway/rno04020"
+Goldbeter_Calcium_Oscillation_based_on_CICR_AND_CA_channel_inhibition taxon "http://identifiers.org/taxonomy/10114"

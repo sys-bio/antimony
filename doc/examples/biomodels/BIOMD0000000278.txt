@@ -1,22 +1,22 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *BIOMD0000000278()
 
   // Compartments and Species:
-  compartment Compartment_;
-  species $R in Compartment_, $B in Compartment_, $C in Compartment_;
+  compartment Compartment;
+  species $R in Compartment, $B in Compartment, $C in Compartment;
 
   // Assignment Rules:
   Phi_C := (C + f0*C_s)/(C + C_s);
   D_B := f0*d_B;
-  Phi_L := (k3/k4*K_L_P*Phi_P*B)/(1 + (k3*K)/k4 + k1/(k2*kO)*(I_O + (K_O_P*R)/Phi_P))*(1 + I_L/r_L);
+  Phi_L := ((k3/k4)*K_L_P*Phi_P*B/(1 + k3*K/k4 + (k1/(k2*kO))*(I_O + K_O_P*R/Phi_P)))*(1 + I_L/r_L);
   Phi_P := (Pbar + P_O)/(Pbar + P_S);
   Pbar := I_P/k_P;
   P_O := S_P/k_P;
   P_S := k6/k5;
 
   // Rate Rules:
-  R' = D_R*Phi_C - (D_B*R)/Phi_C;
-  B' = (D_B*R)/Phi_C - k_B*B;
+  R' = D_R*Phi_C - D_B*R/Phi_C;
+  B' = D_B*R/Phi_C - k_B*B;
   C' = D_C*Phi_L - D_A*Phi_C*C;
 
   // Species initializations:
@@ -25,7 +25,7 @@ model *BIOMD0000000278()
   C = 0.0009127;
 
   // Compartment initializations:
-  Compartment_ = 1;
+  Compartment = 1;
 
   // Variable initializations:
   D_R = 0.0007;
@@ -54,11 +54,55 @@ model *BIOMD0000000278()
 
   // Other declarations:
   var Phi_C, D_B, Phi_L, Phi_P, Pbar, P_O, P_S;
-  const Compartment_, D_R, k_B, D_C, D_A, C_s, d_B, f0, I_L, I_O, I_P, K;
-  const k1, k2, k3, k4, k5, k6, K_L_P, kO, K_O_P, k_P, r_L, S_P;
+  const Compartment, D_R, k_B, D_C, D_A, C_s, d_B, f0, I_L, I_O, I_P, K, k1;
+  const k2, k3, k4, k5, k6, K_L_P, kO, K_O_P, k_P, r_L, S_P;
 
   // Display Names:
   R is "Responding_Osteoblasts";
   B is "Active_Osteoblasts";
   C is "Active_Osteoclasts";
+
+  // SBO terms:
+  Compartment.sboTerm = 290
+  R.sboTerm = 236
+  D_R.sboTerm = 9
+  B.sboTerm = 236
+  k_B.sboTerm = 9
+  C.sboTerm = 236
+  D_C.sboTerm = 9
+  D_A.sboTerm = 9
+  C_s.sboTerm = 188
+  d_B.sboTerm = 9
+  f0.sboTerm = 9
+  I_L.sboTerm = 188
+  I_O.sboTerm = 188
+  I_P.sboTerm = 188
+  K.sboTerm = 188
+  k1.sboTerm = 9
+  k2.sboTerm = 9
+  k3.sboTerm = 9
+  k4.sboTerm = 9
+  k5.sboTerm = 9
+  k6.sboTerm = 9
+  K_L_P.sboTerm = 188
+  kO.sboTerm = 9
+  K_O_P.sboTerm = 188
+  k_P.sboTerm = 9
+  r_L.sboTerm = 9
+  S_P.sboTerm = 9
+
+  // CV terms:
+  Compartment hypernym "http://identifiers.org/bto/BTO:0000140"
+  R hypernym "http://identifiers.org/bto/BTO:0001593"
+  B hypernym "http://identifiers.org/bto/BTO:0001593"
+  C hypernym "http://identifiers.org/bto/BTO:0000968"
 end
+
+BIOMD0000000278 is "Lemaire2004 - Role of RANK/RANKL/OPG pathway in bone remodelling process"
+
+BIOMD0000000278 model_entity_is "http://identifiers.org/biomodels.db/MODEL1006230067"
+BIOMD0000000278 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000278"
+BIOMD0000000278 description "http://identifiers.org/pubmed/15234198"
+BIOMD0000000278 hypernym "http://identifiers.org/go/GO:0046850"
+BIOMD0000000278 taxon "http://identifiers.org/taxonomy/7711"
+BIOMD0000000278 property "http://identifiers.org/doid/DOID:14080"

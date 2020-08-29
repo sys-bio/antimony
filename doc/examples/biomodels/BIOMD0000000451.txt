@@ -1,67 +1,99 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 function function_1(Vf, r1, r2, K, n, I, Vr, p)
   Vf*r1*r2*(K^n/(I^n + K^n)) - Vr*p;
 end
+
+function_1 is "2 Reactants, 1 Inhibitor"
 
 function function_2(Vf, r1, A, n, K, Vr, p)
   Vf*r1*(1 + A^n/(A^n + K^n)) - Vr*p;
 end
 
+function_2 is "1 Reactant, 1 Activator"
+
 function function_3(Vf, r1, r2, K1, n1, I1, K2, n2, I2, Vr, p)
   Vf*r1*r2*(K1^n1/(I1^n1 + K1^n1))*(K2^n2/(I2^n2 + K2^n2)) - Vr*p;
 end
+
+function_3 is "2 Reactants, 2 Inhibitors"
 
 function function_4(Vf, K1, n1, I1, K2, n2, I2, A, n3, K3, Vr, p, r1, r2)
   Vf*r1*r2*(K1^n1/(I1^n1 + K1^n1))*(K2^n2/(I2^n2 + K2^n2))*(1 + A^n3/(A^n3 + K3^n3)) - Vr*p;
 end
 
+function_4 is "2 Reactants, 2 Inhibitors, 1  Activator"
+
 function function_6(Vf, r1, K, n, I, A1, n1, K1, A2, n2, K2, A3, n3, K3, Vr, p)
   Vf*r1*(K^n/(I^n + K^n))*(A1^n1/(A1^n1 + K1^n1) + A2^n2/(A2^n2 + K2^n2) + A3^n3/(A3^n3 + K3^n3)) - Vr*p;
 end
+
+function_6 is "1 Reactant, 1 Inhibitor, 3  Activators"
 
 function function_7(Vf, r1, K1, n1, I1, K2, n2, I2, K3, n3, I3, A1, n4, K4, A2, n5, K5, A3, n6, K6, Vr, p)
   Vf*r1*(K1^n1/(I1^n1 + K1^n1))*(K2^n2/(I2^n2 + K2^n2))*(K3^n3/(I3^n3 + K3^n3))*(A1^n4/(A1^n4 + K4^n4) + A2^n5/(A2^n5 + K5^n5) + A3^n6/(A3^n6 + K6^n6)) - Vr*p;
 end
 
+function_7 is "1 Reactant, 3 Inhibitors, 3  Activators"
+
 function function_8(Vf, r1, K1, n1, I1, K2, n2, I2, A, n3, K3, Vr, p)
   Vf*r1*(K1^n1/(I1^n1 + K1^n1))*(K2^n2/(I2^n2 + K2^n2))*(1 + A^n3/(A^n3 + K3^n3)) - Vr*p;
 end
+
+function_8 is "1 Reactant, 2 Inhibitors, 1  Activator"
 
 function function_9(Vf, r1, A1, n1, K1, A2, n2, K2, Vr, p)
   Vf*r1*(A1^n1/(A1^n1 + K1^n1))*(A2^n2/(A2^n2 + K2^n2)) - Vr*p;
 end
 
+function_9 is "1 Reactant, 2 Activators"
+
 function function_10(Vf, r1, K1, n1, I1, K2, n2, I2, K3, n3, I3, A1, n4, K4, A2, n5, K5, Vr, p)
   Vf*r1*(K1^n1/(I1^n1 + K1^n1))*(K2^n2/(I2^n2 + K2^n2))*(K3^n3/(I3^n3 + K3^n3))*(A1^n4/(A1^n4 + K4^n4) + A2^n5/(A2^n5 + K5^n5)) - Vr*p;
 end
+
+function_10 is "1 Reactant, 3 Inhibitors, 2  Activators"
 
 function function_12(Vf, r1, K, n, I, A1, n1, K1, A2, n2, K2, A3, n3, K3, A4, n4, K4, Vr, p)
   Vf*r1*(K^n/(I^n + K^n))*(A1^n1/(A1^n1 + K1^n1) + A2^n2/(A2^n2 + K2^n2) + A3^n3/(A3^n3 + K3^n3) + A4^n4/(A4^n4 + K4^n4)) - Vr*p;
 end
 
+function_12 is "1 Reactant, 1 Inhibitor, 4  Activators"
+
 function function_14(Vf, r1, r2, K, n, I, A, n1, K1, Vr, p)
   Vf*r1*r2*(K^n/(I^n + K^n))*(1 + A^n1/(A^n1 + K1^n1)) - Vr*p;
 end
+
+function_14 is "2 Reactants, 1 Inhibitor, 1  Activator"
 
 function function_11(Vf, r1, K1, n1, I1, K2, n2, I2, K3, n3, I3, A1, n4, K4, A2, n5, K5, A3, n6, K6, A4, n7, K7, Vr, p)
   Vf*r1*(K1^n1/(I1^n1 + K1^n1))*(K2^n2/(I2^n2 + K2^n2))*(K3^n3/(I3^n3 + K3^n3))*(A1^n4/(A1^n4 + K4^n4) + A2^n5/(A2^n5 + K5^n5) + A3^n6/(A3^n6 + K6^n6) + A4^n7/(A4^n7 + K7^n7)) - Vr*p;
 end
 
+function_11 is "1 Reactant, 3 Inhibitors, 4  Activators"
+
 function function_5(Vf, r1, K1, n1, I1, K2, n2, I2, A1, n3, K3, A2, n4, K4, Vr, p)
   Vf*r1*(K1^n1/(I1^n1 + K1^n1))*(K2^n2/(I2^n2 + K2^n2))*(A1^n3/(A1^n3 + K3^n3) + A2^n4/(A2^n4 + K4^n4)) - Vr*p;
 end
+
+function_5 is "1 Reactant, 2 Inhibitors, 2  Activators"
 
 function function_13(Vf, r1, K1, n1, I1, K2, n2, I2, A1, n3, K3, A2, n4, K4, A3, n5, K5, Vr, p)
   Vf*r1*(K1^n1/(I1^n1 + K1^n1))*(K2^n2/(I2^n2 + K2^n2))*(A1^n3/(A1^n3 + K3^n3) + A2^n4/(A2^n4 + K4^n4) + A3^n5/(A3^n5 + K5^n5)) - Vr*p;
 end
 
+function_13 is "1 Reactant, 2 Inhibitors, 3 Activators"
+
 function function_15(Vf, r1, K, n, I, A1, n1, K1, Vr, p)
   Vf*r1*(K^n/(I^n + K^n))*(A1^n1/(A1^n1 + K1^n1)) - Vr*p;
 end
 
+function_15 is "1 Reactant, 1 inhibitor, 1 activator"
+
 function function_16(V, pool, n, ext_, k)
   V*(pool^n/(pool^n + ext_^n + 0.001) - k*ext_);
 end
+
+function_16 is "Pool coupling"
 
 
 model *MODEL1304230001()
@@ -343,7 +375,7 @@ model *MODEL1304230001()
   re27_K4 = 0.000679025;
   re27_K5 = 2.07945;
   re27_K6 = 100;
-  re27_K7 = 1.93254e-007;
+  re27_K7 = 1.93254e-07;
   re27_Vr = 0.1;
   re28_k1 = 0.1;
   re28_k2 = 0.1;
@@ -556,4 +588,153 @@ model *MODEL1304230001()
   reaction_15 is "TGFb pool";
   reaction_16 is "IL4 pool";
   reaction_17 is "re52";
+
+  // SBO terms:
+  default.sboTerm = 290
+  c1.sboTerm = 290
+
+  // CV terms:
+  default hypernym "http://identifiers.org/go/GO:0005623"
+  c1 hypernym "http://identifiers.org/bto/BTO:0002417"
+  s22 hypernym "http://identifiers.org/uniprot/P01580"
+  species_18 hypernym "http://identifiers.org/uniprot/P01580"
+  s11 part "http://identifiers.org/uniprot/P43431",
+           "http://identifiers.org/uniprot/P43432"
+  species_17 part "http://identifiers.org/uniprot/P43432",
+                  "http://identifiers.org/uniprot/P43431"
+  s51 hypernym "http://identifiers.org/uniprot/Q9ES17"
+  species_19 hypernym "http://identifiers.org/uniprot/Q9ES17"
+  s55 hypernym "http://identifiers.org/uniprot/Q9EQ14"
+  species_20 hypernym "http://identifiers.org/uniprot/Q9EQ14"
+  s30 hypernym "http://identifiers.org/uniprot/P07750"
+  species_26 hypernym "http://identifiers.org/uniprot/P07750"
+  s87 hypernym "http://identifiers.org/uniprot/P04202"
+  species_25 hypernym "http://identifiers.org/uniprot/P04202"
+  s89 hypernym "http://identifiers.org/uniprot/P04351"
+  species_24 hypernym "http://identifiers.org/uniprot/P04351"
+  s90 hypernym "http://identifiers.org/uniprot/P08505"
+  species_23 hypernym "http://identifiers.org/uniprot/P08505"
+  species_1 hypernym "http://identifiers.org/interpro/IPR010345"
+  species_21 hypernym "http://identifiers.org/interpro/IPR010345"
+  species_2 hypernym "http://identifiers.org/uniprot/P18893"
+  species_22 hypernym "http://identifiers.org/uniprot/P18893"
+  species_12 hypernym "http://identifiers.org/uniprot/P70380"
+  species_16 hypernym "http://identifiers.org/uniprot/P70380"
+  species_13 hypernym "http://identifiers.org/fma/FMA:62871"
+  species_14 hypernym "http://identifiers.org/fma/FMA:62871"
+  species_15 hypernym "http://identifiers.org/uniprot/P07750"
+  species_27 hypernym "http://identifiers.org/uniprot/P18893"
+  s48 part "http://identifiers.org/uniprot/P08505",
+           "http://identifiers.org/uniprot/P22272",
+           "http://identifiers.org/uniprot/Q00560"
+  s47 part "http://identifiers.org/uniprot/P22272",
+           "http://identifiers.org/uniprot/Q00560"
+  s46 hypernym "http://identifiers.org/uniprot/P08505"
+  s45 part "http://identifiers.org/uniprot/P04202",
+           "http://identifiers.org/uniprot/Q64729"
+  s44 hypernym "http://identifiers.org/uniprot/Q64729"
+  s43 hypernym "http://identifiers.org/uniprot/P04202"
+  s38 part "http://identifiers.org/uniprot/P04351",
+           "http://identifiers.org/uniprot/P01590"
+  s37 hypernym "http://identifiers.org/uniprot/P01590"
+  s36 hypernym "http://identifiers.org/uniprot/P04351"
+  s33 part "http://identifiers.org/uniprot/P07750",
+           "http://identifiers.org/uniprot/P16382"
+  s32 hypernym "http://identifiers.org/uniprot/P16382"
+  s31 hypernym "http://identifiers.org/uniprot/P07750"
+  s25 part "http://identifiers.org/uniprot/P01580",
+           "http://identifiers.org/uniprot/P15261"
+  s24 hypernym "http://identifiers.org/uniprot/P15261"
+  s14 part "http://identifiers.org/uniprot/P43432",
+           "http://identifiers.org/uniprot/P43431",
+           "http://identifiers.org/uniprot/Q60837",
+           "http://identifiers.org/uniprot/P97378"
+  s13 part "http://identifiers.org/uniprot/Q60837",
+           "http://identifiers.org/uniprot/P97378"
+  s12 hypernym "http://identifiers.org/uniprot/P43431",
+               "http://identifiers.org/uniprot/P43432"
+  s3 part "http://identifiers.org/uniprot/P70380",
+          "http://identifiers.org/uniprot/Q61098"
+  s2 hypernym "http://identifiers.org/uniprot/Q61098"
+  s1 hypernym "http://identifiers.org/uniprot/P70380"
+  s52 hypernym "http://identifiers.org/uniprot/Q9ES17"
+  s54 part "http://identifiers.org/uniprot/Q9ES17",
+           "http://identifiers.org/uniprot/Q9JHX3"
+  s53 hypernym "http://identifiers.org/uniprot/Q9JHX3"
+  s58 hypernym "http://identifiers.org/uniprot/Q8K4B4"
+  s59 part "http://identifiers.org/uniprot/Q9EQ14",
+           "http://identifiers.org/uniprot/Q8K4B4"
+  s62 part "http://identifiers.org/uniprot/Q61727",
+           "http://identifiers.org/uniprot/Q61190"
+  s63 part "http://identifiers.org/uniprot/P18893",
+           "http://identifiers.org/uniprot/Q61727",
+           "http://identifiers.org/uniprot/Q61190"
+  s65 hypernym "http://identifiers.org/uniprot/Q62406"
+  s10 hypernym "http://identifiers.org/uniprot/Q62406"
+  s10 property "http://identifiers.org/pato/PATO:0002220"
+  s20 hypernym "http://identifiers.org/uniprot/P25799"
+  s67 hypernym "http://identifiers.org/uniprot/P42228"
+  s21 hypernym "http://identifiers.org/uniprot/P42228"
+  s21 property "http://identifiers.org/pato/PATO:0002220"
+  s68 hypernym "http://identifiers.org/uniprot/P01580"
+  s69 hypernym "http://identifiers.org/uniprot/P52332"
+  s28 hypernym "http://identifiers.org/uniprot/P52332"
+  s28 property "http://identifiers.org/pato/PATO:0002220"
+  s70 hypernym "http://identifiers.org/uniprot/P42225"
+  s26 hypernym "http://identifiers.org/uniprot/P42225"
+  s26 property "http://identifiers.org/pato/PATO:0002220"
+  s57 part "http://identifiers.org/uniprot/Q9EQ14",
+           "http://identifiers.org/uniprot/P43432"
+  s73 hypernym "http://identifiers.org/interpro/IPR010345"
+  s74 hypernym "http://identifiers.org/uniprot/P18893"
+  s75 hypernym "http://identifiers.org/uniprot/P51450"
+  s50 part "http://identifiers.org/uniprot/P51450",
+           "http://identifiers.org/biomodels.sbo/SBO:0000280"
+  s49 hypernym "http://identifiers.org/uniprot/P42227"
+  s49 property "http://identifiers.org/pato/PATO:0002220"
+  s76 hypernym "http://identifiers.org/uniprot/P42227"
+  s39 hypernym "http://identifiers.org/uniprot/P42230"
+  s39 property "http://identifiers.org/pato/PATO:0002220"
+  s77 hypernym "http://identifiers.org/uniprot/P42230"
+  s78 hypernym "http://identifiers.org/uniprot/Q99JB6"
+  s79 hypernym "http://identifiers.org/uniprot/O35716"
+  s29 part "http://identifiers.org/uniprot/O35716",
+           "http://identifiers.org/uniprot/P52332"
+  s27 hypernym "http://identifiers.org/uniprot/Q5PSB0"
+  s27 property "http://identifiers.org/pato/PATO:0002220"
+  s80 hypernym "http://identifiers.org/uniprot/Q5PSB0"
+  s81 hypernym "http://identifiers.org/uniprot/P23772"
+  s35 hypernym "http://identifiers.org/uniprot/P23772"
+  s35 property "http://identifiers.org/pato/PATO:0002220"
+  s34 hypernym "http://identifiers.org/uniprot/P52633"
+  s34 property "http://identifiers.org/pato/PATO:0002220"
+  s82 hypernym "http://identifiers.org/uniprot/P52633"
+  s85 hypernym "http://identifiers.org/uniprot/Q6GU14"
+  s83 part "http://identifiers.org/uniprot/Q6GU14",
+           "http://identifiers.org/biomodels.sbo/SBO:0000280"
+  s86 hypernym "http://identifiers.org/biomodels.sbo/SBO:0000280"
+  s40 hypernym "http://identifiers.org/uniprot/Q99JB6"
+  s40 property "http://identifiers.org/biomodels.sbo/SBO:0000215"
+  species_8 hypernym "http://identifiers.org/uniprot/Q9EQ14"
+  species_9 hypernym "http://identifiers.org/uniprot/P43432"
+  species_10 parthood "http://identifiers.org/uniprot/P25799"
+  species_11 hypernym "http://identifiers.org/uniprot/Q04207"
+  species_4 hypernym "http://identifiers.org/uniprot/Q60943"
+  species_3 part "http://identifiers.org/uniprot/Q60943",
+                 "http://identifiers.org/interpro/IPR010345"
+  species_5 hypernym "http://identifiers.org/uniprot/P01580"
+  species_6 hypernym "http://identifiers.org/uniprot/Q9ES17"
+  species_7 hypernym "http://identifiers.org/interpro/IPR010345"
 end
+
+MODEL1304230001 is "Carbo2013 - Cytokine driven CD4+ T Cell differentiation and phenotype plasticity"
+
+MODEL1304230001 model_entity_is "http://identifiers.org/biomodels.db/MODEL1304230001"
+MODEL1304230001 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000451"
+MODEL1304230001 description "http://identifiers.org/pubmed/23592971"
+MODEL1304230001 hypernym "http://identifiers.org/go/GO:0030217",
+                         "http://identifiers.org/go/GO:0045222"
+MODEL1304230001 property "http://identifiers.org/mamo/MAMO_0000046"
+MODEL1304230001 container "http://identifiers.org/bto/BTO:0000545"
+MODEL1304230001 taxon "http://identifiers.org/taxonomy/10090"
+MODEL1304230001 property "http://identifiers.org/doid/DOID:104"

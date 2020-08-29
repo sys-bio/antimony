@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *BIOMD0000000320()
 
   // Compartments and Species:
@@ -29,7 +29,7 @@ model *BIOMD0000000320()
   rest_clearance: C_dopa => ; CL_rest*C_dopa;
   _3_OMD_clearance: C_OMD => ; CL_OMD*C_OMD;
   bens_clearance: C1_B => ; CL_B*C1_B;
-  bens_metabolism: C1_B => C1_M; fm/(1 - fm)*CL_B*C1_B;
+  bens_metabolism: C1_B => C1_M; (fm/(1 - fm))*CL_B*C1_B;
   ro_clearance: C1_M => ; CL_M*C1_M;
   bens_distribution: C1_B -> C2_B; CL_dB*(C1_B - C2_B);
   ro_distribution: C1_M -> C2_M; CL_dM*(C1_M - C2_M);
@@ -140,4 +140,126 @@ model *BIOMD0000000320()
   ro_clearance is "ro 04-5127 clearance";
   bens_distribution is "benserazide distribution";
   ro_distribution is "ro 04-5127 distribution";
+
+  // SBO terms:
+  gut.sboTerm = 290
+  Vdopa.sboTerm = 290
+  V_3_OMD.sboTerm = 290
+  V1_B.sboTerm = 290
+  V2_B.sboTerm = 290
+  V1_M.sboTerm = 290
+  V2_M.sboTerm = 290
+  A_dopa.sboTerm = 247
+  L_Dopa_per_kg_rat.sboTerm = 197
+  rat_body_mass.sboTerm = 2
+  A_B.sboTerm = 247
+  A_bens_tot.sboTerm = 196
+  B_M_frac.sboTerm = 381
+  A_M.sboTerm = 247
+  C_dopa.sboTerm = 247
+  C_OMD.sboTerm = 247
+  C1_M.sboTerm = 247
+  C2_M.sboTerm = 247
+  C1_B.sboTerm = 247
+  C2_B.sboTerm = 247
+  F_c.sboTerm = 381
+  F_H.sboTerm = 381
+  F_G.sboTerm = 381
+  CL_H.sboTerm = 35
+  Q.sboTerm = 2
+  f_H.sboTerm = 381
+  CL_dopa.sboTerm = 35
+  CL_AADC.sboTerm = 35
+  CL_rest.sboTerm = 35
+  CL_COMT.sboTerm = 35
+  f_rest.sboTerm = 381
+  f_AADC.sboTerm = 381
+  f_COMT.sboTerm = 381
+  CL_AADC0.sboTerm = 35
+  ki.sboTerm = 288
+  CL_dopa0.sboTerm = 35
+  ka_c.sboTerm = 35
+  ka_M.sboTerm = 35
+  ka_B.sboTerm = 35
+  F_B.sboTerm = 381
+  CL_OMD.sboTerm = 35
+  CL_B.sboTerm = 35
+  fm.sboTerm = 381
+  CL_M.sboTerm = 35
+  CL_dB.sboTerm = 35
+  CL_dM.sboTerm = 35
+  Benserazide_per_kg_rat.sboTerm = 197
+  l_dopa_absorption.sboTerm = 185
+  l_dopa_blood_hepa_clearance.sboTerm = 179
+  ro_04_5127_absorption.sboTerm = 185
+  benserazide_absorption.sboTerm = 185
+  benserazide_gut_clearance.sboTerm = 179
+  AADC_clearance.sboTerm = 399
+  COMT_clearance.sboTerm = 214
+  rest_clearance.sboTerm = 179
+  _3_OMD_clearance.sboTerm = 179
+  bens_clearance.sboTerm = 179
+  bens_metabolism.sboTerm = 211
+  ro_clearance.sboTerm = 179
+  bens_distribution.sboTerm = 185
+  ro_distribution.sboTerm = 185
+
+  // CV terms:
+  gut hypernym "http://identifiers.org/bto/BTO:0000648"
+  Vdopa hypernym "http://identifiers.org/fma/FMA:7563"
+  V_3_OMD hypernym "http://identifiers.org/fma/FMA:7563"
+  V1_B hypernym "http://identifiers.org/fma/FMA:76700"
+  V2_B hypernym "http://identifiers.org/fma/FMA:76700"
+  V1_M hypernym "http://identifiers.org/fma/FMA:76700"
+  V2_M hypernym "http://identifiers.org/fma/FMA:76700"
+  A_dopa identity "http://identifiers.org/chebi/CHEBI:15765",
+                  "http://identifiers.org/kegg.compound/C00355",
+                  "http://identifiers.org/pubchem.compound/6047"
+  A_B identity "http://identifiers.org/kegg.drug/D03082",
+               "http://identifiers.org/pubchem.compound/2327"
+  A_M hypernym "http://identifiers.org/chebi/CHEBI:25212"
+  A_M identity "http://identifiers.org/pubchem.compound/188973"
+  C_dopa identity "http://identifiers.org/chebi/CHEBI:15765",
+                  "http://identifiers.org/kegg.compound/C00355",
+                  "http://identifiers.org/pubchem.compound/6047"
+  C_OMD identity "http://identifiers.org/pubchem.compound/9307"
+  C_OMD hypernym "http://identifiers.org/chebi/CHEBI:25212"
+  C1_M hypernym "http://identifiers.org/chebi/CHEBI:25212"
+  C1_M identity "http://identifiers.org/pubchem.compound/188973"
+  C2_M hypernym "http://identifiers.org/chebi/CHEBI:25212"
+  C2_M identity "http://identifiers.org/pubchem.compound/188973"
+  C1_B identity "http://identifiers.org/kegg.drug/D03082",
+                "http://identifiers.org/pubchem.compound/2327"
+  C2_B identity "http://identifiers.org/kegg.drug/D03082",
+                "http://identifiers.org/pubchem.compound/2327"
+  l_dopa_absorption hypernym "http://identifiers.org/go/GO:0050892"
+  l_dopa_blood_hepa_clearance version "http://identifiers.org/go/GO:0042737"
+  l_dopa_blood_hepa_clearance identity "http://identifiers.org/go/GO:0030421"
+  ro_04_5127_absorption hypernym "http://identifiers.org/go/GO:0050892"
+  benserazide_absorption hypernym "http://identifiers.org/go/GO:0050892"
+  benserazide_gut_clearance version "http://identifiers.org/go/GO:0042737"
+  benserazide_gut_clearance identity "http://identifiers.org/go/GO:0030421"
+  AADC_clearance hypernym "http://identifiers.org/reactome/REACT_15382.1"
+  AADC_clearance hypernym "http://identifiers.org/ec-code/4.1.1.28",
+                          "http://identifiers.org/go/GO:0042737"
+  COMT_clearance hypernym "http://identifiers.org/ec-code/2.1.1.6",
+                          "http://identifiers.org/go/GO:0042737"
+  rest_clearance version "http://identifiers.org/go/GO:0042737"
+  rest_clearance version "http://identifiers.org/go/GO:0007588"
+  _3_OMD_clearance version "http://identifiers.org/go/GO:0007588"
+  _3_OMD_clearance version "http://identifiers.org/go/GO:0042737"
+  bens_clearance version "http://identifiers.org/go/GO:0007588"
+  bens_clearance version "http://identifiers.org/go/GO:0042737"
+  bens_metabolism hypernym "http://identifiers.org/go/GO:0042737"
+  ro_clearance version "http://identifiers.org/go/GO:0007588"
+  ro_clearance version "http://identifiers.org/go/GO:0042737"
 end
+
+BIOMD0000000320 is "Grange2001 - PK interaction of L-dopa and benserazide"
+
+BIOMD0000000320 model_entity_is "http://identifiers.org/biomodels.db/MODEL0910130001"
+BIOMD0000000320 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000320"
+BIOMD0000000320 description "http://identifiers.org/pubmed/11587490"
+BIOMD0000000320 hypernym "http://identifiers.org/go/GO:0051583"
+BIOMD0000000320 taxon "http://identifiers.org/taxonomy/10116"
+BIOMD0000000320 property "http://identifiers.org/doid/DOID:14330"

@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Ihekwaba2004_NFkB_Sensitivity()
 
   // Compartments and Species:
@@ -39,7 +39,7 @@ model *Ihekwaba2004_NFkB_Sensitivity()
   v23: IKK + IkBeNFkB => IKKIkBeNFkB; k58*IKK*IkBeNFkB;
   v24: IKKIkBeNFkB => IKK + IkBeNFkB; k59*IKKIkBeNFkB;
   v25: IkBa + NFkB => IkBaNFkB; k1*IkBa*NFkB;
-  v26: 2$source => IkBat + 2$sink; k28*NFkBn*NFkBn;
+  v26: 2 $source => IkBat + 2 $sink; k28*NFkBn*NFkBn;
   v27: IkBaNFkB => IkBa + NFkB; k2*IkBaNFkB;
   v28: NFkBn + IkBan => IkBanNFkBn; k21*IkBan*NFkBn;
   v29: IkBanNFkBn => NFkBn + IkBan; k22*IkBanNFkBn;
@@ -126,23 +126,23 @@ model *Ihekwaba2004_NFkB_Sensitivity()
   k13 = 0.5;
   k14 = 0.0005;
   k15 = 0.011;
-  k16 = 2.25e-005;
-  k17 = 2.25e-005;
-  k18 = 2.25e-005;
+  k16 = 2.25e-05;
+  k17 = 2.25e-05;
+  k18 = 2.25e-05;
   k19 = 0.09;
-  k20 = 8e-005;
+  k20 = 8e-05;
   k21 = 0.5;
   k22 = 0.0005;
   k23 = 0.5;
   k24 = 0.0005;
   k25 = 0.5;
   k26 = 0.0005;
-  k27 = 1.54e-006;
+  k27 = 1.54e-06;
   k28 = 0.0165;
   k29 = 0.00028;
-  k30 = 1.78e-007;
+  k30 = 1.78e-07;
   k31 = 0.00028;
-  k32 = 1.27e-007;
+  k32 = 1.27e-07;
   k33 = 0.00028;
   k34 = 0.0225;
   k35 = 0.00125;
@@ -182,4 +182,133 @@ model *Ihekwaba2004_NFkB_Sensitivity()
   const k28, k29, k30, k31, k32, k33, k34, k35, k36, k37, k38, k39, k40, k41;
   const k42, k43, k44, k45, k46, k47, k48, k49, k50, k51, k52, k53, k54, k55;
   const k56, k57, k58, k59, k60, k61, k62, k63, k64;
+
+  // Display Names:
+  compartment_ is "compartment";
+
+  // CV terms:
+  compartment_ hypernym "http://identifiers.org/go/GO:0005623"
+  NFkB hypernym "http://identifiers.org/uniprot/P25799"
+  IKKIkBa part "http://identifiers.org/uniprot/O88351",
+               "http://identifiers.org/uniprot/O88522",
+               "http://identifiers.org/uniprot/Q60680",
+               "http://identifiers.org/uniprot/Q9Z1E3"
+  IKKIkBaNFkB part "http://identifiers.org/uniprot/O88351",
+                   "http://identifiers.org/uniprot/O88522",
+                   "http://identifiers.org/uniprot/Q60680",
+                   "http://identifiers.org/uniprot/Q9Z1E3",
+                   "http://identifiers.org/uniprot/P25799"
+  IKK part "http://identifiers.org/uniprot/O88351",
+           "http://identifiers.org/uniprot/O88522",
+           "http://identifiers.org/uniprot/Q60680"
+  IkBa hypernym "http://identifiers.org/uniprot/Q9Z1E3"
+  IKKIkBb part "http://identifiers.org/uniprot/O88351",
+               "http://identifiers.org/uniprot/O88522",
+               "http://identifiers.org/uniprot/Q60680",
+               "http://identifiers.org/uniprot/Q60778"
+  IKKIkBbNFkB part "http://identifiers.org/uniprot/O88351",
+                   "http://identifiers.org/uniprot/O88522",
+                   "http://identifiers.org/uniprot/Q60680",
+                   "http://identifiers.org/uniprot/Q60778",
+                   "http://identifiers.org/uniprot/P25799"
+  IkBb hypernym "http://identifiers.org/uniprot/Q60778"
+  IKKIkBe part "http://identifiers.org/uniprot/O88351",
+               "http://identifiers.org/uniprot/O88522",
+               "http://identifiers.org/uniprot/Q60680",
+               "http://identifiers.org/uniprot/O54910"
+  IKKIkBeNFkB hypernym "http://identifiers.org/uniprot/O88351",
+                       "http://identifiers.org/uniprot/O88522",
+                       "http://identifiers.org/uniprot/Q60680",
+                       "http://identifiers.org/uniprot/O54910",
+                       "http://identifiers.org/uniprot/P25799"
+  IkBe hypernym "http://identifiers.org/uniprot/O54910"
+  IkBaNFkB part "http://identifiers.org/uniprot/Q9Z1E3",
+                "http://identifiers.org/uniprot/P25799"
+  IkBbNFkB part "http://identifiers.org/uniprot/Q60778",
+                "http://identifiers.org/uniprot/P25799"
+  IkBeNFkB hypernym "http://identifiers.org/uniprot/O54910",
+                    "http://identifiers.org/uniprot/P25799"
+  NFkBn hypernym "http://identifiers.org/uniprot/P25799"
+  IkBan hypernym "http://identifiers.org/uniprot/Q9Z1E3"
+  IkBanNFkBn part "http://identifiers.org/uniprot/Q9Z1E3",
+                  "http://identifiers.org/uniprot/P25799"
+  IkBbn hypernym "http://identifiers.org/uniprot/Q60778"
+  IkBbnNFkBn part "http://identifiers.org/uniprot/Q60778",
+                  "http://identifiers.org/uniprot/P25799"
+  IkBen hypernym "http://identifiers.org/uniprot/O54910"
+  IkBenNFkBn part "http://identifiers.org/uniprot/O54910",
+                  "http://identifiers.org/uniprot/P25799"
+  v1 hypernym "http://identifiers.org/go/GO:0006461"
+  v2 hypernym "http://identifiers.org/go/GO:0043241"
+  v3 hypernym "http://identifiers.org/go/GO:0043241"
+  v4 hypernym "http://identifiers.org/go/GO:0006461"
+  v5 hypernym "http://identifiers.org/go/GO:0044257"
+  v6 hypernym "http://identifiers.org/go/GO:0043241"
+  v7 hypernym "http://identifiers.org/go/GO:0006461"
+  v8 hypernym "http://identifiers.org/go/GO:0044257"
+  v9 hypernym "http://identifiers.org/go/GO:0043241"
+  v10 hypernym "http://identifiers.org/go/GO:0006461"
+  v11 hypernym "http://identifiers.org/go/GO:0044257"
+  v12 hypernym "http://identifiers.org/go/GO:0043241"
+  v13 hypernym "http://identifiers.org/go/GO:0006461"
+  v14 hypernym "http://identifiers.org/go/GO:0044257"
+  v15 hypernym "http://identifiers.org/go/GO:0043241"
+  v16 hypernym "http://identifiers.org/go/GO:0006461"
+  v17 hypernym "http://identifiers.org/go/GO:0044257"
+  v18 hypernym "http://identifiers.org/go/GO:0043241"
+  v19 hypernym "http://identifiers.org/go/GO:0006461"
+  v20 hypernym "http://identifiers.org/go/GO:0043241"
+  v21 hypernym "http://identifiers.org/go/GO:0006461"
+  v22 hypernym "http://identifiers.org/go/GO:0043241"
+  v23 hypernym "http://identifiers.org/go/GO:0006461"
+  v24 hypernym "http://identifiers.org/go/GO:0043241"
+  v25 hypernym "http://identifiers.org/go/GO:0006461"
+  v26 hypernym "http://identifiers.org/go/GO:0006351"
+  v27 hypernym "http://identifiers.org/go/GO:0043241"
+  v28 hypernym "http://identifiers.org/go/GO:0006461"
+  v29 hypernym "http://identifiers.org/go/GO:0043241"
+  v30 hypernym "http://identifiers.org/go/GO:0051168"
+  v31 hypernym "http://identifiers.org/go/GO:0044257"
+  v32 hypernym "http://identifiers.org/go/GO:0044257"
+  v33 hypernym "http://identifiers.org/go/GO:0051168"
+  v34 hypernym "http://identifiers.org/go/GO:0000060"
+  v35 hypernym "http://identifiers.org/go/GO:0006412"
+  v36 hypernym "http://identifiers.org/go/GO:0006461"
+  v37 hypernym "http://identifiers.org/go/GO:0043241"
+  v38 hypernym "http://identifiers.org/go/GO:0006461"
+  v39 hypernym "http://identifiers.org/go/GO:0043241"
+  v40 hypernym "http://identifiers.org/go/GO:0006611"
+  v41 hypernym "http://identifiers.org/go/GO:0044257"
+  v42 hypernym "http://identifiers.org/go/GO:0044257"
+  v43 hypernym "http://identifiers.org/go/GO:0006611"
+  v44 hypernym "http://identifiers.org/go/GO:0000060"
+  v46 hypernym "http://identifiers.org/go/GO:0006461"
+  v47 hypernym "http://identifiers.org/go/GO:0043241"
+  v48 hypernym "http://identifiers.org/go/GO:0006461"
+  v49 hypernym "http://identifiers.org/go/GO:0043241"
+  v50 hypernym "http://identifiers.org/go/GO:0006611"
+  v51 hypernym "http://identifiers.org/go/GO:0044257"
+  v52 hypernym "http://identifiers.org/go/GO:0044257"
+  v53 hypernym "http://identifiers.org/go/GO:0006611"
+  v54 hypernym "http://identifiers.org/go/GO:0000060"
+  v56 hypernym "http://identifiers.org/go/GO:0006611"
+  v57 hypernym "http://identifiers.org/go/GO:0000060"
+  v58 hypernym "http://identifiers.org/go/GO:0006351"
+  v59 hypernym "http://identifiers.org/go/GO:0006351"
+  v60 hypernym "http://identifiers.org/go/GO:0006351"
+  v61 hypernym "http://identifiers.org/go/GO:0044257"
+  v62 hypernym "http://identifiers.org/go/GO:0044257"
+  v63 hypernym "http://identifiers.org/go/GO:0044257"
+  v64 hypernym "http://identifiers.org/go/GO:0044257"
 end
+
+Ihekwaba2004_NFkB_Sensitivity is "Ihekwaba2004_NFkB_Sensitivity"
+
+Ihekwaba2004_NFkB_Sensitivity model_entity_is "http://identifiers.org/biomodels.db/MODEL5952988280"
+Ihekwaba2004_NFkB_Sensitivity model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000230"
+Ihekwaba2004_NFkB_Sensitivity description "http://identifiers.org/pubmed/17052119"
+Ihekwaba2004_NFkB_Sensitivity parthood "http://identifiers.org/kegg.pathway/mmu04660"
+Ihekwaba2004_NFkB_Sensitivity hypernym "http://identifiers.org/biomodels.db/BIOMD0000000139",
+                                       "http://identifiers.org/biomodels.db/BIOMD0000000140"
+Ihekwaba2004_NFkB_Sensitivity taxon "http://identifiers.org/taxonomy/10090"
+Ihekwaba2004_NFkB_Sensitivity hypernym "http://identifiers.org/go/GO:0007249"

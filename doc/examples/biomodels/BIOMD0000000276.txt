@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Shrestha2010_HypoCalcemia_PTHresponse()
 
   // Compartments and Species:
@@ -9,8 +9,8 @@ model *Shrestha2010_HypoCalcemia_PTHresponse()
   k := lambda_2*x2_n + lambda_1*x1_n;
   lambda_Ca := (A - B)/(1 + (Ca/S)^m_Ca) + B;
   Ca := piecewise(Ca0, time < t0, Ca0 - Ca1*(1 - exp(-alpha*(time - t0))));
-  A := (lambda_1*lambda_2*x2_max)/(k - lambda_2*x2_max);
-  B := (lambda_1*lambda_2*x2_min)/(k - lambda_2*x2_min);
+  A := lambda_1*lambda_2*x2_max/(k - lambda_2*x2_max);
+  B := lambda_1*lambda_2*x2_min/(k - lambda_2*x2_min);
   S := Ca0_baseline*(-(x1_n*B - lambda_2*x2_n)/(x1_n*A - lambda_2*x2_n))^(1/m_Ca);
   m_Ca := m1/(1 + exp(-beta*(R - Ca))) + m2;
 
@@ -52,4 +52,35 @@ model *Shrestha2010_HypoCalcemia_PTHresponse()
   x1 is "PTH_in_PTG";
   x2 is "PTH_in_Plasma";
   Ca is "Ca_in_Plasma";
+
+  // SBO terms:
+  PTG_pool.sboTerm = 290
+  Plasma_pool.sboTerm = 290
+  x1.sboTerm = 245
+  k.sboTerm = 2
+  lambda_1.sboTerm = 2
+  x2.sboTerm = 245
+  lambda_2.sboTerm = 2
+  Ca.sboTerm = 247
+  m1.sboTerm = 2
+  beta.sboTerm = 2
+  R.sboTerm = 2
+  m2.sboTerm = 2
+
+  // CV terms:
+  PTG_pool hypernym "http://identifiers.org/bto/BTO:0000997"
+  Plasma_pool hypernym "http://identifiers.org/bto/BTO:0000131"
+  x1 hypernym "http://identifiers.org/uniprot/P01270"
+  x2 hypernym "http://identifiers.org/uniprot/P01270"
+  Ca hypernym "http://identifiers.org/chebi/CHEBI:29108"
+  Ca hypernym "http://identifiers.org/kegg.compound/C00076"
 end
+
+Shrestha2010_HypoCalcemia_PTHresponse is "Shrestha2010_HypoCalcemia_PTHresponse"
+
+Shrestha2010_HypoCalcemia_PTHresponse model_entity_is "http://identifiers.org/biomodels.db/MODEL1011170001"
+Shrestha2010_HypoCalcemia_PTHresponse model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000276"
+Shrestha2010_HypoCalcemia_PTHresponse description "http://identifiers.org/pubmed/20406649"
+Shrestha2010_HypoCalcemia_PTHresponse taxon "http://identifiers.org/taxonomy/9606"
+Shrestha2010_HypoCalcemia_PTHresponse hypernym "http://identifiers.org/go/GO:0071107"
+Shrestha2010_HypoCalcemia_PTHresponse property "http://identifiers.org/doid/DOID:10575"

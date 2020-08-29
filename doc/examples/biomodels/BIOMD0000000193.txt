@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *KDM()
 
   // Compartments and Species:
@@ -19,17 +19,17 @@ model *KDM()
   mt_attachment: at time > 2000: u = const_val_0;
 
   // Species initializations:
-  Mad1_CMad2 = 5e-008;
+  Mad1_CMad2 = 5e-08;
   Mad1_CMad2 has mole_per_volume;
-  OMad2 = 1.3e-007;
+  OMad2 = 1.3e-07;
   OMad2 has mole_per_volume;
   Mad1_CMad2_OMad2 = 0;
   Mad1_CMad2_OMad2 has mole_per_volume;
-  Cdc20 = 2.2e-007;
+  Cdc20 = 2.2e-07;
   Cdc20 has mole_per_volume;
   Cdc20_CMad2 = 0;
   Cdc20_CMad2 has mole_per_volume;
-  Bub3_BubR1 = 1.3e-007;
+  Bub3_BubR1 = 1.3e-07;
   Bub3_BubR1 has mole_per_volume;
   MCC = 0;
   MCC has mole_per_volume;
@@ -85,4 +85,70 @@ model *KDM()
   Bub3_BubR1 is "Bub3:BubR1";
   Bub3_BubR1_Cdc20 is "Bub3:BubR1:Cdc20";
   mt_attachment is "Microtubule attachment";
+
+  // SBO terms:
+  Mad1_CMad2.sboTerm = 297
+  Mad1_CMad2_OMad2.sboTerm = 297
+  Cdc20_CMad2.sboTerm = 297
+  Bub3_BubR1.sboTerm = 297
+  MCC.sboTerm = 297
+  Bub3_BubR1_Cdc20.sboTerm = 297
+  k3f.sboTerm = 338
+  kf6.sboTerm = 339
+  k5f.sboTerm = 339
+  k5r.sboTerm = 38
+  k2f.sboTerm = 339
+  k1f.sboTerm = 339
+  k1r.sboTerm = 338
+  k4f.sboTerm = 339
+  k4r.sboTerm = 338
+  R1.sboTerm = 177
+  R2.sboTerm = 176
+  R3.sboTerm = 180
+  R4.sboTerm = 177
+  R5.sboTerm = 177
+  R6.sboTerm = 177
+
+  // CV terms:
+  Cytoplasm identity "http://identifiers.org/obo.go/GO:0005737"
+  Mad1_CMad2 part "http://identifiers.org/uniprot/Q13257",
+                  "http://identifiers.org/uniprot/Q9Y6D9"
+  OMad2 hypernym "http://identifiers.org/uniprot/Q13257"
+  Mad1_CMad2_OMad2 part "http://identifiers.org/uniprot/Q13257",
+                        "http://identifiers.org/uniprot/Q9Y6D9"
+  Cdc20 hypernym "http://identifiers.org/uniprot/Q12834"
+  Cdc20_CMad2 part "http://identifiers.org/uniprot/Q13257",
+                   "http://identifiers.org/uniprot/Q12834"
+  Bub3_BubR1 part "http://identifiers.org/uniprot/O43684",
+                  "http://identifiers.org/uniprot/O60566"
+  MCC hypernym "http://identifiers.org/obo.go/GO:0033597"
+  MCC part "http://identifiers.org/uniprot/O60566",
+           "http://identifiers.org/uniprot/Q13257",
+           "http://identifiers.org/uniprot/Q12834",
+           "http://identifiers.org/uniprot/O43684"
+  Bub3_BubR1_Cdc20 part "http://identifiers.org/uniprot/Q12834",
+                        "http://identifiers.org/uniprot/O60566",
+                        "http://identifiers.org/uniprot/O43684"
+  R1 hypernym "http://identifiers.org/obo.go/GO:0032092",
+              "http://identifiers.org/obo.go/GO:0043241",
+              "http://identifiers.org/obo.go/GO:0006461"
+  R2 hypernym "http://identifiers.org/obo.go/GO:0032092",
+              "http://identifiers.org/obo.go/GO:0006461"
+  R3 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  R4 hypernym "http://identifiers.org/reactome/REACT_36.2",
+              "http://identifiers.org/obo.go/GO:0006461",
+              "http://identifiers.org/obo.go/GO:0043241"
+  R5 hypernym "http://identifiers.org/obo.go/GO:0006461",
+              "http://identifiers.org/obo.go/GO:0043241"
+  R6 hypernym "http://identifiers.org/obo.go/GO:0006461"
 end
+
+KDM is "Ibrahim2008_MCC_assembly_model_KDM"
+
+KDM model_entity_is "http://identifiers.org/biomodels.db/MODEL1667758030"
+KDM model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000193"
+KDM description "http://identifiers.org/pubmed/18675311"
+KDM taxon "http://identifiers.org/taxonomy/9606"
+KDM hypernym "http://identifiers.org/reactome/REACT_2137.2",
+             "http://identifiers.org/obo.go/GO:0007094"
+KDM parthood "http://identifiers.org/kegg.pathway/hsa04110"

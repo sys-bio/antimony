@@ -1,31 +1,45 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 function function_4(v)
   v;
 end
 
+function_4 is "Constant flux (irreversible)"
+
 function function_1(substrate, Km, V)
-  (V*substrate)/(Km + substrate);
+  V*substrate/(Km + substrate);
 end
 
+function_1 is "Henri-Michaelis-Menten (irreversible)"
+
 function function_3(k, rec, s, km)
-  (k*rec*s)/(km + s);
+  k*rec*s/(km + s);
 end
+
+function_3 is "Rate Law for SARA-Phosph [1]"
 
 function function_2(TGFbeta, k, s, s2)
   k*s*s2*TGFbeta;
 end
 
+function_2 is "Rate Law for Rec_comp1 [1]"
+
 function function_7(k1, substrate, modifier)
   k1*substrate*(1 + modifier);
 end
+
+function_7 is "Rate Law for Degradation"
 
 function function_5(k, k1, m)
   k + k1*m;
 end
 
+function_5 is "Rate Law for flux and basicflux [1]"
+
 function function_6(k, k1, m, m2, m3)
   (k + k1*m)/(1 + m2 + m3);
 end
+
+function_6 is "Rate Law for fluxSmad7_1 [1]"
 
 
 model *Model_1()
@@ -57,21 +71,21 @@ model *Model_1()
   parameter_10 := species_11 + _5 + _9 + _13 + species_18 + species_16 + species_18 + species_19 + species_21 + species_23 + species_26 + species_26 + species_27;
 
   // Reactions:
-  _29: species_27 => _5 + 2species_17; _3*_29_k1*species_27;
+  _29: species_27 => _5 + 2 species_17; _3*_29_k1*species_27;
   _31: _9 => species_19; _3*function_1(_9, _31_Km, _31_V);
-  _33: _9 + 2_11 -> _13; _3*(_33_k1*_9*_11^2 - _33_k2*_13);
-  _35: 3_15 + species_13 => 3_19; _35_k1*_15^3*species_13;
-  _37: _5 + 2_19 => _9; _3*_37_k1*_5*_19^2;
+  _33: _9 + 2 _11 -> _13; _3*(_33_k1*_9*_11^2 - _33_k2*_13);
+  _35: 3 _15 + species_13 => 3 _19; _35_k1*_15^3*species_13;
+  _37: _5 + 2 _19 => _9; _3*_37_k1*_5*_19^2;
   _39: _19 => _21; _3*function_1(_19, _39_Km, _39_V);
   _41: _21 + _15 => ; _3*_41_k1*_21*_15;
   _43: _15 + _25 -> _27; _3*(_43_k1*_15*_25 - _43_k2*_27);
-  _77: 2_75 => _79; _1*function_2(parameter_1, _77_k, _75, _75);
-  _86: _79 + 2_84 -> _96; _1*(_86_k1*_79*_84^2 - _86_k2*_96);
+  _77: 2 _75 => _79; _1*function_2(parameter_1, _77_k, _75, _75);
+  _86: _79 + 2 _84 -> _96; _1*(_86_k1*_79*_84^2 - _86_k2*_96);
   _103: _101 + _99 -> _105; _1*(_103_k1*_101*_99 - _103_k2*_105);
   _125: _99 => _129; _1*function_3(_125_k, _96, _99, _125_km);
   _132: _105 => _129 + _101; _1*function_3(_132_k, _96, _105, _132_km);
   _139: _129 => _19; _139_k1*_129;
-  _149: _147 + 2_129 => _153; _1*_149_k1*_147*_129^2;
+  _149: _147 + 2 _129 => _153; _1*_149_k1*_147*_129^2;
   _156: _147 -> _5; _156_k1*_147 - _156_k2*_5;
   _164: _153 => _9; _164_k1*_153;
   _172: _25 -> _174; _172_k1*_25 - _172_k2*_174;
@@ -89,7 +103,7 @@ model *Model_1()
   reaction_9: _96 => ; _1*reaction_9_k1*_96;
   reaction_10: _84 => ; _1*reaction_10_k1*_84;
   reaction_11: _75 => ; _1*reaction_11_k1*_75;
-  reaction_12: _79 => 2_75; _1*reaction_12_k1*_79;
+  reaction_12: _79 => 2 _75; _1*reaction_12_k1*_79;
   reaction_13:  => _99; _1*function_4(reaction_13_v);
   reaction_14:  => _147; _1*function_4(reaction_14_v);
   reaction_15: _147 => ; _1*reaction_15_k1*_147;
@@ -109,11 +123,11 @@ model *Model_1()
   reaction_29: species_17 => ; _3*reaction_29_k1*species_17;
   reaction_30: species_3 -> species_17; reaction_30_k1*species_3 - reaction_30_k2*species_17;
   reaction_31: _101 + species_3 -> species_5; _1*(reaction_31_k1*_101*species_3 - reaction_31_k2*species_5);
-  reaction_32: species_19 => _5 + 2_21; _3*reaction_32_k1*species_19;
+  reaction_32: species_19 => _5 + 2 _21; _3*reaction_32_k1*species_19;
   reaction_33: species_4 => species_20; reaction_33_k1*species_4;
-  reaction_34: _147 + 2species_4 => species_6; _1*reaction_34_k1*_147*species_4^2;
-  reaction_35: _5 + 2species_20 => species_18; _3*reaction_35_k1*_5*species_20^2;
-  reaction_36: species_18 + 2_11 -> species_21; _3*(reaction_36_k1*species_18*_11^2 - reaction_36_k2*species_21);
+  reaction_34: _147 + 2 species_4 => species_6; _1*reaction_34_k1*_147*species_4^2;
+  reaction_35: _5 + 2 species_20 => species_18; _3*reaction_35_k1*_5*species_20^2;
+  reaction_36: species_18 + 2 _11 -> species_21; _3*(reaction_36_k1*species_18*_11^2 - reaction_36_k2*species_21);
   reaction_37: species_6 => species_18; reaction_37_k1*species_6;
   reaction_38: species_14 => species_20; reaction_38_k1*species_14;
   reaction_39: _174 => ; _1*function_7(reaction_39_k1, _174, species_15);
@@ -125,7 +139,7 @@ model *Model_1()
   reaction_45: species_3 + species_7 -> species_8; _1*(reaction_45_k1*species_3*species_7 - reaction_45_k2*species_8);
   reaction_46: species_24 + _25 -> species_25; _3*(reaction_46_k1*species_24*_25 - reaction_46_k2*species_25);
   reaction_47:  => species_9; _1*function_5(reaction_47_k, reaction_47_k1, species_30);
-  reaction_48: species_18 + 2species_22 -> species_26; _3*(reaction_48_k1*species_18*species_22^2 - reaction_48_k2*species_26);
+  reaction_48: species_18 + 2 species_22 -> species_26; _3*(reaction_48_k1*species_18*species_22^2 - reaction_48_k2*species_26);
   reaction_49: species_10 + _96 => ; _1*reaction_49_k1*species_10*_96;
   reaction_50: species_25 -> species_10; reaction_50_k1*species_25 - reaction_50_k2*species_10;
   reaction_51: species_9 => ; _1*function_7(reaction_51_k1, species_9, _174);
@@ -135,18 +149,18 @@ model *Model_1()
   reaction_55: species_21 + species_28 -> species_29; _3*(reaction_55_k1*species_21*species_28 - reaction_55_k2*species_29);
   reaction_56: _13 + species_28 -> species_29; _3*(reaction_56_k1*_13*species_28 - reaction_56_k2*species_29);
   reaction_57: species_26 + species_28 -> species_29; _3*(reaction_57_k1*species_26*species_28 - reaction_57_k2*species_29);
-  reaction_58: _9 + 2species_22 -> species_11; reaction_58_k1*_9*species_22^2 - reaction_58_k2*species_11;
+  reaction_58: _9 + 2 species_22 -> species_11; reaction_58_k1*_9*species_22^2 - reaction_58_k2*species_11;
   reaction_59: species_11 + species_28 -> species_29; reaction_59_k1*species_11*species_28 - reaction_59_k2*species_29;
   reaction_60: species_23 + species_28 -> species_29; _3*(reaction_60_k1*species_23*species_28 - reaction_60_k2*species_29);
   reaction_61: _99 + species_7 -> species_12; _1*(reaction_61_k1*_99*species_7 - reaction_61_k2*species_12);
-  reaction_62: 3_19 + 3_11 -> species_13; reaction_62_k1*_19^3*_11^3 - reaction_62_k2*species_13;
-  reaction_63: 3species_20 + 3_11 -> species_14; reaction_63_k1*species_20^3*_11^3 - reaction_63_k2*species_14;
+  reaction_62: 3 _19 + 3 _11 -> species_13; reaction_62_k1*_19^3*_11^3 - reaction_62_k2*species_13;
+  reaction_63: 3 species_20 + 3 _11 -> species_14; reaction_63_k1*species_20^3*_11^3 - reaction_63_k2*species_14;
   reaction_64: _9 => ; _3*reaction_64_k1*_9;
   reaction_65: species_18 => ; _3*reaction_65_k1*species_18;
   reaction_66:  => species_15; _1*function_4(reaction_66_v);
   reaction_67: species_15 => ; _1*reaction_67_k1*species_15;
-  reaction_68: species_13 + 3species_31 => 3_19; reaction_68_k1*species_13*species_31^3;
-  reaction_69: species_14 + 3species_31 => species_20; reaction_69_k1*species_14*species_31^3;
+  reaction_68: species_13 + 3 species_31 => 3 _19; reaction_68_k1*species_13*species_31^3;
+  reaction_69: species_14 + 3 species_31 => species_20; reaction_69_k1*species_14*species_31^3;
   reaction_70: species_15 -> species_31; reaction_70_k1*species_15 - reaction_70_k2*species_31;
 
   // Species initializations:
@@ -250,7 +264,7 @@ model *Model_1()
   reaction_3_k1 = 0.1;
   reaction_4_k = 0.000228;
   reaction_4_k1 = 0.0285;
-  reaction_5_k = 2e-005;
+  reaction_5_k = 2e-05;
   reaction_5_k1 = 0.00055;
   reaction_6_v = 0.0125;
   reaction_7_k1 = 1;
@@ -302,7 +316,7 @@ model *Model_1()
   reaction_40_k1 = 0.232;
   reaction_41_k1 = 0.1;
   reaction_41_k2 = 0.2;
-  reaction_42_k = 2e-005;
+  reaction_42_k = 2e-05;
   reaction_42_k1 = 0.00055;
   reaction_43_k1 = 0.05;
   reaction_44_k1 = 1;
@@ -345,7 +359,7 @@ model *Model_1()
   reaction_63_k2 = 1;
   reaction_64_k1 = 0.005;
   reaction_65_k1 = 0.005;
-  reaction_66_v = 2e-005;
+  reaction_66_v = 2e-05;
   reaction_67_k1 = 0.1;
   reaction_68_k1 = 0.1;
   reaction_69_k1 = 0.1;
@@ -519,4 +533,399 @@ model *Model_1()
   reaction_68 is "SnoN-deg2";
   reaction_69 is "SnoN-deg3";
   reaction_70 is "transArkadia";
+
+  // SBO terms:
+  _1.sboTerm = 290
+  _3.sboTerm = 290
+  _75.sboTerm = 252
+  _79.sboTerm = 296
+  _84.sboTerm = 252
+  _96.sboTerm = 247
+  _99.sboTerm = 252
+  _101.sboTerm = 252
+  _105.sboTerm = 296
+  _129.sboTerm = 252
+  _147.sboTerm = 252
+  _153.sboTerm = 296
+  _174.sboTerm = 252
+  _181.sboTerm = 296
+  _198.sboTerm = 296
+  species_1.sboTerm = 252
+  species_2.sboTerm = 252
+  species_3.sboTerm = 252
+  species_4.sboTerm = 252
+  species_5.sboTerm = 296
+  species_6.sboTerm = 296
+  species_7.sboTerm = 252
+  species_8.sboTerm = 296
+  species_9.sboTerm = 252
+  species_10.sboTerm = 296
+  species_11.sboTerm = 296
+  species_12.sboTerm = 296
+  species_13.sboTerm = 296
+  species_14.sboTerm = 296
+  species_15.sboTerm = 252
+  _5.sboTerm = 252
+  _9.sboTerm = 296
+  _11.sboTerm = 252
+  _13.sboTerm = 296
+  _15.sboTerm = 252
+  _19.sboTerm = 252
+  _21.sboTerm = 252
+  _25.sboTerm = 252
+  _27.sboTerm = 296
+  species_16.sboTerm = 296
+  species_17.sboTerm = 252
+  species_18.sboTerm = 296
+  species_19.sboTerm = 296
+  species_20.sboTerm = 252
+  species_21.sboTerm = 296
+  species_22.sboTerm = 252
+  species_23.sboTerm = 252
+  species_24.sboTerm = 252
+  species_25.sboTerm = 296
+  species_26.sboTerm = 296
+  species_27.sboTerm = 296
+  species_28.sboTerm = 252
+  species_29.sboTerm = 252
+  species_30.sboTerm = 236
+  species_31.sboTerm = 252
+  parameter_1.sboTerm = 196
+  _29_k1.sboTerm = 282
+  _31_Km.sboTerm = 27
+  _31_V.sboTerm = 186
+  _33_k1.sboTerm = 153
+  _33_k2.sboTerm = 156
+  _35_k1.sboTerm = 356
+  _37_k1.sboTerm = 337
+  _39_Km.sboTerm = 27
+  _39_V.sboTerm = 186
+  _41_k1.sboTerm = 356
+  _43_k1.sboTerm = 153
+  _43_k2.sboTerm = 156
+  _77_k.sboTerm = 337
+  _86_k1.sboTerm = 153
+  _86_k2.sboTerm = 156
+  _103_k1.sboTerm = 153
+  _103_k2.sboTerm = 156
+  _125_k.sboTerm = 25
+  _125_km.sboTerm = 27
+  _132_k.sboTerm = 25
+  _132_km.sboTerm = 27
+  _139_k1.sboTerm = 9
+  _149_k1.sboTerm = 337
+  _156_k1.sboTerm = 153
+  _156_k2.sboTerm = 156
+  _164_k1.sboTerm = 9
+  _172_k1.sboTerm = 153
+  _172_k2.sboTerm = 156
+  _178_k1.sboTerm = 153
+  _178_k2.sboTerm = 156
+  _192_k1.sboTerm = 356
+  _194_k1.sboTerm = 153
+  _194_k2.sboTerm = 156
+  reaction_1_v.sboTerm = 9
+  reaction_2_k.sboTerm = 153
+  reaction_2_k1.sboTerm = 156
+  reaction_3_k.sboTerm = 153
+  reaction_3_k1.sboTerm = 156
+  reaction_4_k.sboTerm = 153
+  reaction_4_k1.sboTerm = 156
+  reaction_5_k.sboTerm = 153
+  reaction_5_k1.sboTerm = 156
+  reaction_6_v.sboTerm = 9
+  reaction_7_k1.sboTerm = 153
+  reaction_7_k2.sboTerm = 156
+  reaction_8_k1.sboTerm = 153
+  reaction_8_k2.sboTerm = 156
+  reaction_9_k1.sboTerm = 356
+  reaction_10_k1.sboTerm = 356
+  reaction_11_k1.sboTerm = 356
+  reaction_12_k1.sboTerm = 9
+  reaction_13_v.sboTerm = 9
+  reaction_14_v.sboTerm = 9
+  reaction_15_k1.sboTerm = 356
+  reaction_16_k1.sboTerm = 356
+  reaction_17_Km.sboTerm = 27
+  reaction_17_V.sboTerm = 186
+  reaction_18_k1.sboTerm = 356
+  reaction_19_k1.sboTerm = 153
+  reaction_19_k2.sboTerm = 156
+  reaction_20_k1.sboTerm = 356
+  reaction_21_k1.sboTerm = 153
+  reaction_21_k2.sboTerm = 156
+  reaction_22_v.sboTerm = 9
+  reaction_23_k1.sboTerm = 356
+  reaction_24_Km.sboTerm = 27
+  reaction_24_V.sboTerm = 186
+  reaction_25_Km.sboTerm = 27
+  reaction_25_V.sboTerm = 186
+  reaction_26_Km.sboTerm = 27
+  reaction_26_V.sboTerm = 186
+  reaction_27_k.sboTerm = 25
+  reaction_27_km.sboTerm = 27
+  reaction_28_k.sboTerm = 25
+  reaction_28_km.sboTerm = 27
+  reaction_29_k1.sboTerm = 356
+  reaction_30_k1.sboTerm = 153
+  reaction_30_k2.sboTerm = 156
+  reaction_31_k1.sboTerm = 153
+  reaction_31_k2.sboTerm = 156
+  reaction_32_k1.sboTerm = 282
+  reaction_33_k1.sboTerm = 9
+  reaction_34_k1.sboTerm = 337
+  reaction_35_k1.sboTerm = 337
+  reaction_36_k1.sboTerm = 153
+  reaction_36_k2.sboTerm = 156
+  reaction_37_k1.sboTerm = 337
+  reaction_38_k1.sboTerm = 356
+  reaction_39_k1.sboTerm = 356
+  reaction_40_k1.sboTerm = 356
+  reaction_41_k1.sboTerm = 153
+  reaction_41_k2.sboTerm = 156
+  reaction_42_k.sboTerm = 153
+  reaction_42_k1.sboTerm = 156
+  reaction_43_k1.sboTerm = 356
+  reaction_44_k1.sboTerm = 153
+  reaction_44_k2.sboTerm = 156
+  reaction_45_k1.sboTerm = 153
+  reaction_45_k2.sboTerm = 156
+  reaction_46_k1.sboTerm = 153
+  reaction_46_k2.sboTerm = 156
+  reaction_47_k.sboTerm = 153
+  reaction_47_k1.sboTerm = 156
+  reaction_48_k1.sboTerm = 153
+  reaction_48_k2.sboTerm = 156
+  reaction_49_k1.sboTerm = 356
+  reaction_50_k1.sboTerm = 153
+  reaction_50_k2.sboTerm = 156
+  reaction_51_k1.sboTerm = 356
+  reaction_52_k1.sboTerm = 153
+  reaction_52_k2.sboTerm = 156
+  reaction_53_k1.sboTerm = 153
+  reaction_53_k2.sboTerm = 156
+  reaction_54_k1.sboTerm = 153
+  reaction_54_k2.sboTerm = 156
+  reaction_55_k1.sboTerm = 153
+  reaction_55_k2.sboTerm = 156
+  reaction_56_k1.sboTerm = 153
+  reaction_56_k2.sboTerm = 156
+  reaction_57_k1.sboTerm = 153
+  reaction_57_k2.sboTerm = 156
+  reaction_58_k1.sboTerm = 153
+  reaction_58_k2.sboTerm = 156
+  reaction_59_k1.sboTerm = 153
+  reaction_59_k2.sboTerm = 156
+  reaction_60_k1.sboTerm = 153
+  reaction_60_k2.sboTerm = 156
+  reaction_61_k1.sboTerm = 153
+  reaction_61_k2.sboTerm = 156
+  reaction_62_k1.sboTerm = 153
+  reaction_62_k2.sboTerm = 156
+  reaction_63_k1.sboTerm = 153
+  reaction_63_k2.sboTerm = 156
+  reaction_64_k1.sboTerm = 356
+  reaction_65_k1.sboTerm = 356
+  reaction_66_v.sboTerm = 9
+  reaction_67_k1.sboTerm = 356
+  reaction_68_k1.sboTerm = 356
+  reaction_69_k1.sboTerm = 356
+  reaction_70_k1.sboTerm = 153
+  reaction_70_k2.sboTerm = 156
+
+  // CV terms:
+  _1 hypernym "http://identifiers.org/obo.go/GO:0005737"
+  _3 hypernym "http://identifiers.org/obo.go/GO:0005634"
+  _75 hypernym "http://identifiers.org/uniprot/Q62312"
+  _79 part "http://identifiers.org/uniprot/Q62312",
+           "http://identifiers.org/uniprot/P04202"
+  _84 hypernym "http://identifiers.org/uniprot/Q64729"
+  _96 hypernym "http://identifiers.org/obo.chebi/CHEBI:26523"
+  _99 hypernym "http://identifiers.org/uniprot/Q62432"
+  _101 homolog "http://identifiers.org/uniprot/A9XB08"
+  _105 part "http://identifiers.org/uniprot/A9XB08",
+            "http://identifiers.org/uniprot/Q62432"
+  _129 hypernym "http://identifiers.org/uniprot/Q62432",
+                "http://identifiers.org/kegg.compound/C00562"
+  _147 hypernym "http://identifiers.org/uniprot/P97471"
+  _153 hypernym "http://identifiers.org/kegg.compound/C00562"
+  _153 part "http://identifiers.org/uniprot/P97471",
+            "http://identifiers.org/uniprot/Q62432"
+  _174 hypernym "http://identifiers.org/uniprot/O35253"
+  _181 part "http://identifiers.org/uniprot/A2A5Z6",
+            "http://identifiers.org/uniprot/O35253"
+  _198 part "http://identifiers.org/uniprot/P04202",
+            "http://identifiers.org/uniprot/Q64729",
+            "http://identifiers.org/uniprot/Q62312",
+            "http://identifiers.org/uniprot/O35253"
+  species_1 hypernym "http://identifiers.org/uniprot/A2A5Z6"
+  species_2 hypernym "http://identifiers.org/uniprot/Q60979"
+  species_3 hypernym "http://identifiers.org/uniprot/Q05CN3"
+  species_4 hypernym "http://identifiers.org/uniprot/Q05CN3",
+                     "http://identifiers.org/kegg.compound/C00562"
+  species_5 part "http://identifiers.org/uniprot/A9XB08",
+                 "http://identifiers.org/uniprot/Q05CN3"
+  species_6 hypernym "http://identifiers.org/kegg.compound/C00562"
+  species_6 part "http://identifiers.org/uniprot/Q05CN3",
+                 "http://identifiers.org/uniprot/P97471"
+  species_7 hypernym "http://identifiers.org/uniprot/Q60698"
+  species_8 part "http://identifiers.org/uniprot/Q60698",
+                 "http://identifiers.org/uniprot/Q05CN3"
+  species_9 hypernym "http://identifiers.org/uniprot/A2A5Z6"
+  species_10 part "http://identifiers.org/uniprot/A2A5Z6",
+                  "http://identifiers.org/uniprot/O35253"
+  species_11 hypernym "http://identifiers.org/kegg.compound/C00562"
+  species_11 part "http://identifiers.org/uniprot/Q60698",
+                  "http://identifiers.org/uniprot/P97471",
+                  "http://identifiers.org/uniprot/Q62432"
+  species_12 part "http://identifiers.org/uniprot/Q60698",
+                  "http://identifiers.org/uniprot/Q62432"
+  species_13 hypernym "http://identifiers.org/kegg.compound/C00562"
+  species_13 part "http://identifiers.org/uniprot/Q60979",
+                  "http://identifiers.org/uniprot/Q62432"
+  species_14 hypernym "http://identifiers.org/kegg.compound/C00562"
+  species_14 part "http://identifiers.org/uniprot/Q05CN3",
+                  "http://identifiers.org/uniprot/Q60979"
+  species_15 hypernym "http://identifiers.org/uniprot/Q99ML9"
+  _5 hypernym "http://identifiers.org/uniprot/P97471"
+  _9 hypernym "http://identifiers.org/kegg.compound/C00562"
+  _9 part "http://identifiers.org/uniprot/P97471",
+          "http://identifiers.org/uniprot/Q62432"
+  _11 hypernym "http://identifiers.org/uniprot/Q60979"
+  _13 hypernym "http://identifiers.org/kegg.compound/C00562"
+  _13 part "http://identifiers.org/uniprot/Q60979",
+           "http://identifiers.org/uniprot/P97471",
+           "http://identifiers.org/uniprot/Q62432"
+  _15 hypernym "http://identifiers.org/uniprot/A2A5Z6"
+  _19 hypernym "http://identifiers.org/kegg.compound/C00562"
+  _19 part "http://identifiers.org/uniprot/Q62432"
+  _21 part "http://identifiers.org/uniprot/Q62432"
+  _25 hypernym "http://identifiers.org/uniprot/O35253"
+  _27 hypernym "http://identifiers.org/uniprot/A2A5Z6",
+               "http://identifiers.org/uniprot/O35253"
+  species_16 part "http://identifiers.org/uniprot/Q60979",
+                  "http://identifiers.org/uniprot/P97471"
+  species_17 hypernym "http://identifiers.org/uniprot/Q05CN3"
+  species_18 hypernym "http://identifiers.org/kegg.compound/C00562"
+  species_18 part "http://identifiers.org/uniprot/Q05CN3",
+                  "http://identifiers.org/uniprot/P97471"
+  species_19 part "http://identifiers.org/uniprot/Q62432",
+                  "http://identifiers.org/uniprot/P97471"
+  species_20 hypernym "http://identifiers.org/uniprot/Q05CN3",
+                      "http://identifiers.org/kegg.compound/C00562"
+  species_21 hypernym "http://identifiers.org/kegg.compound/C00562"
+  species_21 part "http://identifiers.org/uniprot/Q60979",
+                  "http://identifiers.org/uniprot/P97471"
+  species_22 hypernym "http://identifiers.org/uniprot/Q60698"
+  species_23 part "http://identifiers.org/uniprot/P97471"
+  species_24 hypernym "http://identifiers.org/uniprot/A2A5Z6"
+  species_25 part "http://identifiers.org/uniprot/A2A5Z6",
+                  "http://identifiers.org/uniprot/O35253"
+  species_26 hypernym "http://identifiers.org/kegg.compound/C00562"
+  species_26 part "http://identifiers.org/uniprot/Q60698",
+                  "http://identifiers.org/uniprot/Q05CN3",
+                  "http://identifiers.org/uniprot/P97471"
+  species_27 part "http://identifiers.org/uniprot/Q05CN3",
+                  "http://identifiers.org/uniprot/P97471"
+  species_30 hypernym "http://identifiers.org/cco/CCO:U0000003"
+  species_31 hypernym "http://identifiers.org/uniprot/Q99ML9"
+  _29 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  _31 hypernym "http://identifiers.org/obo.go/GO:0016311"
+  _33 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  _35 hypernym "http://identifiers.org/obo.go/GO:0009056"
+  _37 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  _39 hypernym "http://identifiers.org/obo.go/GO:0016311"
+  _41 hypernym "http://identifiers.org/obo.go/GO:0009056"
+  _43 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  _77 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  _86 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  _103 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  _125 hypernym "http://identifiers.org/obo.go/GO:0016310"
+  _132 hypernym "http://identifiers.org/obo.go/GO:0016310"
+  _139 hypernym "http://identifiers.org/obo.go/GO:0006810"
+  _149 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  _156 hypernym "http://identifiers.org/obo.go/GO:0006810"
+  _164 hypernym "http://identifiers.org/obo.go/GO:0006810"
+  _172 hypernym "http://identifiers.org/obo.go/GO:0006810"
+  _178 hypernym "http://identifiers.org/obo.go/GO:0006810"
+  _192 hypernym "http://identifiers.org/obo.go/GO:0009056"
+  _194 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  reaction_1 hypernym "http://identifiers.org/obo.go/GO:0032800"
+  reaction_2 hypernym "http://identifiers.org/obo.go/GO:0006412"
+  reaction_3 hypernym "http://identifiers.org/obo.go/GO:0006412"
+  reaction_4 hypernym "http://identifiers.org/obo.go/GO:0006412"
+  reaction_5 hypernym "http://identifiers.org/obo.go/GO:0006412"
+  reaction_6 hypernym "http://identifiers.org/obo.go/GO:0032800"
+  reaction_7 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  reaction_8 hypernym "http://identifiers.org/obo.go/GO:0006810"
+  reaction_9 hypernym "http://identifiers.org/obo.go/GO:0009056"
+  reaction_10 hypernym "http://identifiers.org/obo.go/GO:0009056"
+  reaction_11 hypernym "http://identifiers.org/obo.go/GO:0009056"
+  reaction_12 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  reaction_13 hypernym "http://identifiers.org/obo.go/GO:0006412"
+  reaction_14 hypernym "http://identifiers.org/obo.go/GO:0006412"
+  reaction_15 hypernym "http://identifiers.org/obo.go/GO:0009056"
+  reaction_16 hypernym "http://identifiers.org/obo.go/GO:0009056"
+  reaction_17 hypernym "http://identifiers.org/obo.go/GO:0016311"
+  reaction_18 hypernym "http://identifiers.org/obo.go/GO:0009056"
+  reaction_19 hypernym "http://identifiers.org/obo.go/GO:0006810"
+  reaction_20 hypernym "http://identifiers.org/obo.go/GO:0009056"
+  reaction_21 hypernym "http://identifiers.org/obo.go/GO:0006810"
+  reaction_22 hypernym "http://identifiers.org/obo.go/GO:0006412"
+  reaction_23 hypernym "http://identifiers.org/obo.go/GO:0009056"
+  reaction_24 hypernym "http://identifiers.org/obo.go/GO:0016311"
+  reaction_25 hypernym "http://identifiers.org/obo.go/GO:0016311"
+  reaction_26 hypernym "http://identifiers.org/obo.go/GO:0016311"
+  reaction_27 hypernym "http://identifiers.org/obo.go/GO:0016310"
+  reaction_28 hypernym "http://identifiers.org/obo.go/GO:0016310"
+  reaction_29 hypernym "http://identifiers.org/obo.go/GO:0009056"
+  reaction_30 hypernym "http://identifiers.org/obo.go/GO:0006810"
+  reaction_31 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  reaction_32 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  reaction_33 hypernym "http://identifiers.org/obo.go/GO:0006810"
+  reaction_34 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  reaction_35 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  reaction_36 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  reaction_37 hypernym "http://identifiers.org/obo.go/GO:0006810"
+  reaction_38 hypernym "http://identifiers.org/obo.go/GO:0009056"
+  reaction_39 hypernym "http://identifiers.org/obo.go/GO:0009056"
+  reaction_40 hypernym "http://identifiers.org/obo.go/GO:0009056"
+  reaction_41 hypernym "http://identifiers.org/obo.go/GO:0006810"
+  reaction_42 hypernym "http://identifiers.org/obo.go/GO:0006412"
+  reaction_43 hypernym "http://identifiers.org/obo.go/GO:0009056"
+  reaction_44 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  reaction_45 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  reaction_46 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  reaction_47 hypernym "http://identifiers.org/obo.go/GO:0006412"
+  reaction_48 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  reaction_49 hypernym "http://identifiers.org/obo.go/GO:0009056"
+  reaction_50 hypernym "http://identifiers.org/obo.go/GO:0006810"
+  reaction_51 hypernym "http://identifiers.org/obo.go/GO:0009056"
+  reaction_52 hypernym "http://identifiers.org/obo.go/GO:0006810"
+  reaction_53 hypernym "http://identifiers.org/obo.go/GO:0010843"
+  reaction_54 hypernym "http://identifiers.org/obo.go/GO:0010843"
+  reaction_55 hypernym "http://identifiers.org/obo.go/GO:0010843"
+  reaction_57 hypernym "http://identifiers.org/obo.go/GO:0010843"
+  reaction_58 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  reaction_59 hypernym "http://identifiers.org/obo.go/GO:0010843"
+  reaction_60 hypernym "http://identifiers.org/obo.go/GO:0010843"
+  reaction_61 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  reaction_62 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  reaction_63 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  reaction_64 hypernym "http://identifiers.org/obo.go/GO:0009056"
+  reaction_65 hypernym "http://identifiers.org/obo.go/GO:0009056"
+  reaction_66 hypernym "http://identifiers.org/obo.go/GO:0006412"
+  reaction_67 hypernym "http://identifiers.org/obo.go/GO:0009056"
+  reaction_68 hypernym "http://identifiers.org/obo.go/GO:0009056"
+  reaction_69 hypernym "http://identifiers.org/obo.go/GO:0009056"
+  reaction_70 hypernym "http://identifiers.org/obo.go/GO:0006810"
 end
+
+Model_1 is "Wegner2012_TGFbetaSignalling_FeedbackLoops"
+
+Model_1 model_entity_is "http://identifiers.org/biomodels.db/MODEL1202090000"
+Model_1 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000410"
+Model_1 description "http://identifiers.org/pubmed/22284904"
+Model_1 taxon "http://identifiers.org/taxonomy/10090",
+              "http://identifiers.org/obo.bto/BTO:0000575"
+Model_1 hypernym "http://identifiers.org/obo.go/GO:0007179"

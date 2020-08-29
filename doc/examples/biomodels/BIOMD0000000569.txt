@@ -1,35 +1,51 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 function Ligand_Binding_1(k, R, L)
   4*k*R*L;
 end
+
+Ligand_Binding_1 is "Ligand Binding 1"
 
 function Ligand_Binding_2(k, R, L)
   3*k*R*L;
 end
 
+Ligand_Binding_2 is "Ligand Binding 2"
+
 function Ligand_Binding_3(k, R, L)
   2*k*R*L;
 end
+
+Ligand_Binding_3 is "Ligand Binding 3"
 
 function Ligand_Binding_4(k, R, L)
   k*R*L;
 end
 
+Ligand_Binding_4 is "Ligand Binding 4"
+
 function Ligand_Unbinding_1(k, R)
   k*R;
 end
+
+Ligand_Unbinding_1 is "Ligand Unbinding 1"
 
 function Ligand_Unbinding_2(k, R)
   2*k*R;
 end
 
+Ligand_Unbinding_2 is "Ligand Unbinding 2"
+
 function Ligand_Unbinding_3(k, R)
   3*k*R;
 end
 
+Ligand_Unbinding_3 is "Ligand Unbinding 3"
+
 function Ligand_Unbinding_4(k, R)
   4*k*R;
 end
+
+Ligand_Unbinding_4 is "Ligand Unbinding 4"
 
 
 model *MODEL1407160000()
@@ -107,7 +123,7 @@ model *MODEL1407160000()
   L4____L3: L4 => L3 + glu; synapse*Ligand_Unbinding_4(Lkoff, L4);
 
   // Species initializations:
-  B0 = 8.30269391581363e-007;
+  B0 = 8.30269391581363e-07;
   S0 = 0;
   B1 = 0;
   S1 = 0;
@@ -130,7 +146,7 @@ model *MODEL1407160000()
   glu = 0.000830269391581363;
 
   // Compartment initializations:
-  synapse = 1e-016;
+  synapse = 1e-16;
 
   // Variable initializations:
   Bkon = 5000000;
@@ -245,4 +261,18 @@ model *MODEL1407160000()
   L3____L2 is "L3 -> L2";
   L3____L4 is "L3 -> L4";
   L4____L3 is "L4 -> L3";
+
+  // CV terms:
+  synapse identity "http://identifiers.org/fma/FMA:55675"
+  B0 part "http://identifiers.org/uniprot/Q13002"
+  B0 part "http://identifiers.org/uniprot/P42263"
+  glu identity "http://identifiers.org/chebi/CHEBI:18237"
 end
+
+MODEL1407160000 is "Dutta-Roy2015 - Opening of the multiple AMPA receptor conductance states"
+
+MODEL1407160000 model_entity_is "http://identifiers.org/biomodels.db/MODEL1407160000"
+MODEL1407160000 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000569"
+MODEL1407160000 description "http://identifiers.org/pubmed/25629405"
+MODEL1407160000 hypernym "http://identifiers.org/go/GO:0004971"
+MODEL1407160000 taxon "http://identifiers.org/taxonomy/9606"

@@ -1,11 +1,11 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *model_0000001()
 
   // Compartments and Species:
   compartment cell;
 
   // Rate Rules:
-  v' = (0.04*v^2 + 5*v + 140) - U + i;
+  v' = (0.04*v^2 + 5*v + 140 - U) + i;
   U' = a*(b*v - U);
 
   // Events:
@@ -36,4 +36,20 @@ model *model_0000001()
   // Display Names:
   time_unit is "ms";
   event_0000002 is "Stimulus";
+
+  // SBO terms:
+  v.sboTerm = 259
+
+  // CV terms:
+  cell hypernym "http://identifiers.org/go/GO:0005623"
 end
+
+model_0000001 is "Izhikevich2003_SpikingNeuron"
+
+model_0000001 model_entity_is "http://identifiers.org/biomodels.db/MODEL4880479792"
+model_0000001 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000127"
+model_0000001 description "http://identifiers.org/pubmed/18244602"
+model_0000001 taxon "http://identifiers.org/taxonomy/40674"
+model_0000001 hypernym "http://identifiers.org/go/GO:0001508",
+                       "http://identifiers.org/go/GO:0042391",
+                       "http://identifiers.org/go/GO:0019228"

@@ -1,11 +1,15 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 function Constant_flux__irreversible(v)
   v;
 end
 
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
 function Michaellis_Menten(substrate, Km, Vmax)
-  (Vmax*substrate)/(Km + substrate);
+  Vmax*substrate/(Km + substrate);
 end
+
+Michaellis_Menten is "Michaellis Menten"
 
 
 model *MODEL1503180001()
@@ -16,7 +20,7 @@ model *MODEL1503180001()
 
   // Reactions:
   Kb:  => V; compartment_*Constant_flux__irreversible(Kb_v);
-  Kv: V => 2V; compartment_*Michaellis_Menten(V, Kv_Km, Kv_Vmax);
+  Kv: V => 2 V; compartment_*Michaellis_Menten(V, Kv_Km, Kv_Vmax);
   Kcv: V + C => C; compartment_*Kcv_k1*V*C;
   Kdv: V => ; compartment_*Kdv_k1*V;
   Kc:  => C; compartment_*Constant_flux__irreversible(Kc_v);
@@ -35,10 +39,10 @@ model *MODEL1503180001()
   Kv_Km = 380;
   Kv_Vmax = 0.134;
   Kcv_k1 = 0.0295;
-  Kdv_k1 = 6.85e-005;
+  Kdv_k1 = 6.85e-05;
   Kc_v = 0.07;
   Kvc_k1 = 0.927;
-  Kdc_k1 = 5.01e-005;
+  Kdc_k1 = 5.01e-05;
 
   // Other declarations:
   const compartment_;
@@ -50,4 +54,18 @@ model *MODEL1503180001()
   compartment_ is "cell";
   Kcv is "Kvc";
   Kvc is "Kcv";
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/go/GO:0005623"
+  V part "http://identifiers.org/go/GO:0039660"
+  V part "http://identifiers.org/go/GO:0019021"
 end
+
+MODEL1503180001 is "Aguilera 2014 - HIV latency. Interaction between HIV proteins and immune response"
+
+MODEL1503180001 model_entity_is "http://identifiers.org/biomodels.db/MODEL1503180001"
+MODEL1503180001 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000573"
+MODEL1503180001 description "http://identifiers.org/pubmed/24997239"
+MODEL1503180001 taxon "http://identifiers.org/taxonomy/9606"
+MODEL1503180001 property "http://identifiers.org/doid/DOID:526"
+MODEL1503180001 hypernym "http://identifiers.org/go/GO:0045087"

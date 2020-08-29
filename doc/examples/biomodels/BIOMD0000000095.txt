@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Zeilinger2006_PRR7_PRR9_Y()
 
   // Compartments and Species:
@@ -11,51 +11,51 @@ model *Zeilinger2006_PRR7_PRR9_Y()
 
   // Reactions:
   R1:  => cLm; nucleus*ld*q1*cPn;
-  R2:  => cLm; nucleus*((n1*cXn^a)/(g1^a + cXn^a))*(g7^h/(g7^h + cP7n^h))*(g8^i/(g8^i + cP9n^i));
-  R3: cLm => ; (nucleus*m1*cLm)/(k1 + cLm);
+  R2:  => cLm; nucleus*(n1*cXn^a/(g1^a + cXn^a))*(g7^h/(g7^h + cP7n^h))*(g8^i/(g8^i + cP9n^i));
+  R3: cLm => ; nucleus*m1*cLm/(k1 + cLm);
   R4:  => cLc; cytoplasm*p1*cLm;
   R5: cLc => cLn; cytoplasm*r1*cLc;
   R6: cLn => cLc; nucleus*r2*cLn;
-  R7: cLc => ; (cytoplasm*m2*cLc)/(k2 + cLc);
-  R8: cLn => ; (nucleus*m3*cLn)/(k3 + cLn);
-  R9:  => cTm; nucleus*((n2*cYn^b)/(g2^b + cYn^b))*(g3^c/(g3^c + cLn^c));
-  R10: cTm => ; (nucleus*m4*cTm)/(k4 + cTm);
+  R7: cLc => ; cytoplasm*m2*cLc/(k2 + cLc);
+  R8: cLn => ; nucleus*m3*cLn/(k3 + cLn);
+  R9:  => cTm; nucleus*(n2*cYn^b/(g2^b + cYn^b))*(g3^c/(g3^c + cLn^c));
+  R10: cTm => ; nucleus*m4*cTm/(k4 + cTm);
   R11:  => cTc; cytoplasm*p2*cTm;
   R12: cTc => cTn; cytoplasm*r3*cTc;
   R13: cTn => cTc; nucleus*r4*cTn;
   R14: cTc => ; cytoplasm*((lmax - ld)*m5 + m6)*(cTc/(k5 + cTc));
   R15: cTn => ; nucleus*((lmax - ld)*m7 + m8)*(cTn/(k6 + cTn));
-  R16:  => cXm; nucleus*((n3*cTn^d)/(g4^d + cTn^d));
-  R17: cXm => ; nucleus*((m9*cXm)/(k7 + cXm));
+  R16:  => cXm; nucleus*(n3*cTn^d/(g4^d + cTn^d));
+  R17: cXm => ; nucleus*(m9*cXm/(k7 + cXm));
   R18:  => cXc; cytoplasm*p3*cXm;
   R19: cXc => cXn; cytoplasm*r5*cXc;
   R20: cXn => cXc; nucleus*r6*cXn;
-  R21: cXc => ; (cytoplasm*m10*cXc)/(k8 + cXc);
-  R22: cXn => ; (nucleus*m11*cXn)/(k9 + cXn);
-  R23:  => cYm; nucleus*(ld*q2*cPn + ((ld*n4 + n5)*g5^e)/(g5^e + cTn^e))*(g6^f/(g6^f + cLn^f));
-  R24: cYm => ; (nucleus*m12*cYm)/(k10 + cYm);
+  R21: cXc => ; cytoplasm*m10*cXc/(k8 + cXc);
+  R22: cXn => ; nucleus*m11*cXn/(k9 + cXn);
+  R23:  => cYm; nucleus*(ld*q2*cPn + (ld*n4 + n5)*g5^e/(g5^e + cTn^e))*(g6^f/(g6^f + cLn^f));
+  R24: cYm => ; nucleus*m12*cYm/(k10 + cYm);
   R25:  => cYc; cytoplasm*p4*cYm;
   R26: cYc => cYn; cytoplasm*r7*cYc;
   R27: cYn => cYc; nucleus*r8*cYn;
-  R28: cYc => ; (cytoplasm*m13*cYc)/(k11 + cYc);
-  R29: cYn => ; (nucleus*m14*cYn)/(k12 + cYn);
+  R28: cYc => ; cytoplasm*m13*cYc/(k11 + cYc);
+  R29: cYn => ; nucleus*m14*cYn/(k12 + cYn);
   R30:  => cPn; nucleus*(lmax - ld)*p5;
-  R31a: cPn => ; (nucleus*m15*cPn)/(k13 + cPn);
+  R31a: cPn => ; nucleus*m15*cPn/(k13 + cPn);
   R31b: cPn => ; nucleus*q3*ld*cPn;
-  R32:  => cP7m; (nucleus*n6*cLn^j)/(g9^j + cLn^j);
-  R33: cP7m => ; (nucleus*m16*cP7m)/(k14 + cP7m);
+  R32:  => cP7m; nucleus*n6*cLn^j/(g9^j + cLn^j);
+  R33: cP7m => ; nucleus*m16*cP7m/(k14 + cP7m);
   R34:  => cP7c; cytoplasm*p6*cP7m;
   R35: cP7c => cP7n; cytoplasm*r9*cP7c;
   R36: cP7n => cP7c; nucleus*r10*cP7n;
-  R37: cP7c => ; (cytoplasm*m17*cP7c)/(k15 + cP7c);
-  R38: cP7n => ; (nucleus*m18*cP7n)/(k16 + cP7n);
-  R39:  => cP9m; (nucleus*n7*cLn^k)/(g10^k + cLn^k);
-  R40: cP9m => ; (nucleus*m19*cP9m)/(k17 + cP9m);
+  R37: cP7c => ; cytoplasm*m17*cP7c/(k15 + cP7c);
+  R38: cP7n => ; nucleus*m18*cP7n/(k16 + cP7n);
+  R39:  => cP9m; nucleus*n7*cLn^k/(g10^k + cLn^k);
+  R40: cP9m => ; nucleus*m19*cP9m/(k17 + cP9m);
   R41:  => cP9c; cytoplasm*p7*cP9m;
   R42: cP9c => cP9n; cytoplasm*r11*cP9c;
   R43: cP9n => cP9c; nucleus*r12*cP9n;
-  R44: cP9c => ; (cytoplasm*m20*cP9c)/(k18 + cP9c);
-  R45: cP9n => ; (nucleus*m21*cP9n)/(k19 + cP9n);
+  R44: cP9c => ; cytoplasm*m20*cP9c/(k18 + cP9c);
+  R45: cP9n => ; nucleus*m21*cP9n/(k19 + cP9n);
 
   // Events:
   event_0000001: at time > 30: ld = 1;
@@ -335,4 +335,92 @@ model *Zeilinger2006_PRR7_PRR9_Y()
   R43 is "cP9n transport to cytoplasm";
   R44 is "cP9c degradation";
   R45 is "cP9n degradation";
+
+  // CV terms:
+  cytoplasm identity "http://identifiers.org/obo.go/GO:0005737"
+  nucleus identity "http://identifiers.org/obo.go/GO:0005634"
+  cLc identity "http://identifiers.org/uniprot/O81713"
+  cLm hypernym "http://identifiers.org/obo.chebi/CHEBI:33699",
+               "http://identifiers.org/kegg.compound/C00046"
+  cLn identity "http://identifiers.org/uniprot/O81713"
+  cP7c identity "http://identifiers.org/uniprot/Q93WK5"
+  cP7m hypernym "http://identifiers.org/obo.chebi/CHEBI:33699",
+                "http://identifiers.org/kegg.compound/C00046"
+  cP7n identity "http://identifiers.org/uniprot/Q93WK5"
+  cP9c identity "http://identifiers.org/uniprot/Q8L500"
+  cP9m hypernym "http://identifiers.org/obo.chebi/CHEBI:33699",
+                "http://identifiers.org/kegg.compound/C00046"
+  cP9n identity "http://identifiers.org/uniprot/Q8L500"
+  cTc identity "http://identifiers.org/uniprot/Q9LKL2",
+               "http://identifiers.org/interpro/IPR010402"
+  cTm hypernym "http://identifiers.org/obo.chebi/CHEBI:33699",
+               "http://identifiers.org/kegg.compound/C00046"
+  cTn identity "http://identifiers.org/uniprot/Q9LKL2",
+               "http://identifiers.org/interpro/IPR010402"
+  cXm hypernym "http://identifiers.org/obo.chebi/CHEBI:33699",
+               "http://identifiers.org/kegg.compound/C00046"
+  cXn identity "http://identifiers.org/obo.go/GO:0005667"
+  cYm hypernym "http://identifiers.org/obo.chebi/CHEBI:33699",
+               "http://identifiers.org/kegg.compound/C00046"
+  cYn identity "http://identifiers.org/obo.go/GO:0005667"
+  R1 identity "http://identifiers.org/obo.go/GO:0006351",
+              "http://identifiers.org/obo.go/GO:0009642"
+  R2 identity "http://identifiers.org/obo.go/GO:0006351"
+  R3 identity "http://identifiers.org/obo.go/GO:0006402"
+  R4 identity "http://identifiers.org/obo.go/GO:0006412"
+  R5 identity "http://identifiers.org/obo.go/GO:0000060"
+  R6 identity "http://identifiers.org/obo.go/GO:0065002"
+  R7 identity "http://identifiers.org/obo.go/GO:0044257"
+  R8 identity "http://identifiers.org/obo.go/GO:0044257"
+  R9 identity "http://identifiers.org/obo.go/GO:0006351"
+  R10 identity "http://identifiers.org/obo.go/GO:0006402"
+  R11 identity "http://identifiers.org/obo.go/GO:0006412"
+  R12 identity "http://identifiers.org/obo.go/GO:0000060"
+  R13 identity "http://identifiers.org/obo.go/GO:0065002"
+  R14 identity "http://identifiers.org/obo.go/GO:0044257"
+  R15 identity "http://identifiers.org/obo.go/GO:0044257"
+  R16 identity "http://identifiers.org/obo.go/GO:0006351"
+  R17 identity "http://identifiers.org/obo.go/GO:0006402"
+  R18 identity "http://identifiers.org/obo.go/GO:0006412"
+  R19 identity "http://identifiers.org/obo.go/GO:0000060"
+  R20 identity "http://identifiers.org/obo.go/GO:0065002"
+  R21 identity "http://identifiers.org/obo.go/GO:0044257"
+  R22 identity "http://identifiers.org/obo.go/GO:0044257"
+  R23 identity "http://identifiers.org/obo.go/GO:0006351"
+  R23 part "http://identifiers.org/obo.go/GO:0009642"
+  R24 identity "http://identifiers.org/obo.go/GO:0006402"
+  R25 identity "http://identifiers.org/obo.go/GO:0006412"
+  R26 identity "http://identifiers.org/obo.go/GO:0000060"
+  R27 identity "http://identifiers.org/obo.go/GO:0065002"
+  R28 identity "http://identifiers.org/obo.go/GO:0044257"
+  R29 identity "http://identifiers.org/obo.go/GO:0044257"
+  R30 identity "http://identifiers.org/obo.go/GO:0009642",
+               "http://identifiers.org/obo.go/GO:0006412"
+  R31a identity "http://identifiers.org/obo.go/GO:0044257"
+  R31b identity "http://identifiers.org/obo.go/GO:0045732",
+                "http://identifiers.org/obo.go/GO:0009642"
+  R32 identity "http://identifiers.org/obo.go/GO:0006351"
+  R33 identity "http://identifiers.org/obo.go/GO:0006402"
+  R34 identity "http://identifiers.org/obo.go/GO:0006412"
+  R35 identity "http://identifiers.org/obo.go/GO:0000060"
+  R36 identity "http://identifiers.org/obo.go/GO:0065002"
+  R37 identity "http://identifiers.org/obo.go/GO:0044257"
+  R38 identity "http://identifiers.org/obo.go/GO:0044257"
+  R39 identity "http://identifiers.org/obo.go/GO:0006351"
+  R40 identity "http://identifiers.org/obo.go/GO:0006402"
+  R41 identity "http://identifiers.org/obo.go/GO:0006412"
+  R42 identity "http://identifiers.org/obo.go/GO:0000060"
+  R43 identity "http://identifiers.org/obo.go/GO:0065002"
+  R44 identity "http://identifiers.org/obo.go/GO:0044257"
+  R45 identity "http://identifiers.org/obo.go/GO:0044257"
 end
+
+Zeilinger2006_PRR7_PRR9_Y is "Zeilinger2006_PRR7-PRR9-Y"
+
+Zeilinger2006_PRR7_PRR9_Y model_entity_is "http://identifiers.org/biomodels.db/MODEL4025663985"
+Zeilinger2006_PRR7_PRR9_Y model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000095"
+Zeilinger2006_PRR7_PRR9_Y description "http://identifiers.org/pubmed/17102803"
+Zeilinger2006_PRR7_PRR9_Y origin "http://identifiers.org/biomodels.db/BIOMD0000000055"
+Zeilinger2006_PRR7_PRR9_Y taxon "http://identifiers.org/taxonomy/3701"
+Zeilinger2006_PRR7_PRR9_Y identity "http://identifiers.org/kegg.pathway/ath04710",
+                                   "http://identifiers.org/obo.go/GO:0007623"

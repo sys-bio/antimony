@@ -1,4 +1,95 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
+function Function_for_PIP2_5Pase(MgSat20, PIP2_M, kPIP2Pase)
+  MgSat20*kPIP2Pase*PIP2_M;
+end
+
+Function_for_PIP2_5Pase is "Function for PIP2_5Pase"
+
+function Function_for_MgonGDPAIF4(GGDPAlF4_M, M, Mg2_C, kMgonAlF4)
+  kMgonAlF4*GGDPAlF4_M*Mg2_C*M;
+end
+
+Function_for_MgonGDPAIF4 is "Function for MgonGDPAIF4"
+
+function Function_for_MgGTPon(GGTP_M, M, Mg2_C, kMg2onGTP)
+  kMg2onGTP*GGTP_M*Mg2_C*M;
+end
+
+Function_for_MgGTPon is "Function for MgGTPon"
+
+function Function_for_PI4Kinase(ATPSat1000, M, MgSat20, PI_M, kPI4Kinase)
+  (0.2 + 0.8*MgSat20)*kPI4Kinase*PI_M*ATPSat1000*M;
+end
+
+Function_for_PI4Kinase is "Function for PI4Kinase"
+
+function Function_for_PIP2binding(KCNQsites_M, PIP2_M, PIP2xKCNQ_M, kPIP2off, kPIP2on)
+  kPIP2on*KCNQsites_M*PIP2_M + -(kPIP2off*PIP2xKCNQ_M);
+end
+
+Function_for_PIP2binding is "Function for PIP2binding"
+
+function Function_for_IP3Phosphatase(NA_micro, ip3_C, kIP3ase)
+  ip3_C*kIP3ase*NA_micro;
+end
+
+Function_for_IP3Phosphatase is "Function for IP3Phosphatase"
+
+function Function_for_PLC(M, PIP2_M, PLCspont, fGactive, kPLC)
+  kPLC*(fGactive + PLCspont)*PIP2_M*M;
+end
+
+Function_for_PLC is "Function for PLC"
+
+function Function_for_AIF4on(AlF4_C, GGDPAlF4_M, GGDP_M, M, kAlF4off, kAlF4on)
+  (kAlF4on*AlF4_C*GGDP_M + -(kAlF4off*GGDPAlF4_M))*M;
+end
+
+Function_for_AIF4on is "Function for AIF4on"
+
+function Function_for_GGTPase(GGTPMg_M, MgSat10, kGGTPase)
+  kGGTPase*MgSat10*GGTPMg_M;
+end
+
+Function_for_GGTPase is "Function for GGTPase"
+
+function Function_for_PIP5kinase(ATPSat300, MgSat20, PIP_M, kPIP5Kinase)
+  (0.2 + 0.8*MgSat20)*kPIP5Kinase*PIP_M*ATPSat300;
+end
+
+Function_for_PIP5kinase is "Function for PIP5kinase"
+
+function Function_for_GDPdissoc(GDP_C, GGDP_M, G_M, M, OxoSat, TonicAct, kGDPoff, kGDPon)
+  (kGDPoff*GGDP_M*(OxoSat + TonicAct) + -(kGDPon*GDP_C*G_M))*M;
+end
+
+Function_for_GDPdissoc is "Function for GDPdissoc"
+
+function Function_for_GTPon(GGTP_M, GTP_C, G_M, M, kGTPoff, kGTPon)
+  (kGTPon*G_M*GTP_C + -(kGTPoff*GGTP_M))*M;
+end
+
+Function_for_GTPon is "Function for GTPon"
+
+function Function_for_GTPgSon(GGTPgS_M, GTPgS_C, G_M, M, kGTPgSoff, kGTPgSon)
+  (kGTPgSon*G_M*GTPgS_C + -(kGTPgSoff*GGTPgS_M))*M;
+end
+
+Function_for_GTPgSon is "Function for GTPgSon"
+
+function Function_for_GDPbSon(GDPbS_C, GGDPbS_M, G_M, M, OxoSat, kGDPbSon, kGGDPbSoff)
+  (kGDPbSon*G_M*GDPbS_C + -(kGGDPbSoff*(1 + 20*OxoSat)*GGDPbS_M))*M;
+end
+
+Function_for_GDPbSon is "Function for GDPbSon"
+
+function Function_for_MgonGGTPgS(GGTPgS_M, M, Mg2_C, kMg2onGTPgS)
+  kMg2onGTPgS*GGTPgS_M*Mg2_C*M;
+end
+
+Function_for_MgonGGTPgS is "Function for MgonGGTPgS"
+
+
 model *Suh2004_KCNQ_regulation()
 
   // Compartments and Species:
@@ -15,180 +106,268 @@ model *Suh2004_KCNQ_regulation()
   MgSat20 := 1*(1/(1 + 20*(1/Mg2_C)));
   ATPSat300 := 1*(1/(1 + 300*(1/(0.5 + ATP_C))));
   MgSat10 := 0.2 + 0.8*1*(1/(1 + KMgGTPase*(1/Mg2_C)));
-  OxoSat := 1*(1/(1 + Koxom*(1/(1.000000e-005 + oxoM_EX))));
+  OxoSat := 1*(1/(1 + Koxom*(1/(1e-5 + oxoM_EX))));
   Gactive := GGTPMg_M + GGTPgSMg_M + GGDPAlF4Mg_M;
   ATPSat1000 := 1*(1/(1 + 1000*(1/(0.5 + ATP_C))));
   I_KCNQ := 1.33*(0.025*PIP2xKCNQ_M)^nHill;
   fGactive := (GGTPMg_M + GGTPgSMg_M + GGDPAlF4Mg_M)/200;
 
   // Reactions:
-  PIP5kinase: 0.0009967ATP_C + PIP_M -> PIP2_M; (0.2 + 0.8*MgSat20)*PIP5kinase_kPIP5Kinase*PIP_M*ATPSat300;
-  IP3Phosphatase: 1.66611e-018ip3_C -> ; ip3_C*IP3Phosphatase_kIP3ase*Cytoplasm*NA_micro;
-  PIP2binding: KCNQsites_M + PIP2_M -> PIP2xKCNQ_M; (PIP2binding_kPIP2on*KCNQsites_M*PIP2_M + -(PIP2binding_kPIP2off*PIP2xKCNQ_M))*M;
-  MgonGGTPgS: GGTPgS_M -> GGTPgSMg_M; MgonGGTPgS_kMg2onGTPgS*GGTPgS_M*Mg2_C*M;
-  GGTPase: GGTPMg_M -> GGDP_M; GGTPase_kGGTPase*MgSat10*GGTPMg_M*M;
-  GTPon: G_M -> GGTP_M; (GTPon_kGTPon*G_M*GTP_C + -(GTPon_kGTPoff*GGTP_M))*M;
-  GTPgSon: 0.0009967GTPgS_C + G_M -> GGTPgS_M; (GTPgSon_kGTPgSon*G_M*GTPgS_C + -(GTPgSon_kGTPgSoff*GGTPgS_M))*M;
-  GDPbSon: G_M + 0.0009967GDPbS_C -> GGDPbS_M; (GDPbSon_kGDPbSon*G_M*GDPbS_C + -(GDPbSon_kGGDPbSoff*(1 + 20*OxoSat)*GGDPbS_M))*M;
-  MgGTPon: GGTP_M -> GGTPMg_M; MgGTPon_kMg2onGTP*GGTP_M*Mg2_C*M;
-  GDPdissoc: GGDP_M -> 0.0009967GDP_C + G_M; (GDPdissoc_kGDPoff*GGDP_M*(OxoSat + GDPdissoc_TonicAct) + -(GDPdissoc_kGDPon*GDP_C*G_M))*M;
-  PIP2_5Pase: PIP2_M -> PIP_M; MgSat20*PIP2_5Pase_kPIP2Pase*PIP2_M*M;
-  PLC: PIP2_M -> 0.0009967ip3_C; PLC_kPLC*(fGactive + PLC_PLCspont)*PIP2_M*M;
-  AlF4on: 0.0009967AlF4_C + GGDP_M -> GGDPAlF4_M; (AlF4on_kAlF4on*AlF4_C*GGDP_M + -(AlF4on_kAlF4off*GGDPAlF4_M))*M;
-  PI4Kinase: 0.0009967ATP_C + PI_M -> PIP_M; (0.2 + 0.8*MgSat20)*PI4Kinase_kPI4Kinase*PI_M*ATPSat1000*M;
-  MgonGDPAlF4: GGDPAlF4_M -> GGDPAlF4Mg_M; MgonGDPAlF4_kMgonAlF4*GGDPAlF4_M*Mg2_C*M;
+  PIP5kinase: 0.0009967 ATP_C + PIP_M -> PIP2_M; Function_for_PIP5kinase(ATPSat300, MgSat20, PIP_M, PIP5kinase_kPIP5Kinase);
+  IP3Phosphatase: 1.66611e-18 ip3_C -> ; Cytoplasm*Function_for_IP3Phosphatase(NA_micro, ip3_C, IP3Phosphatase_kIP3ase);
+  PIP2binding: KCNQsites_M + PIP2_M -> PIP2xKCNQ_M; M*Function_for_PIP2binding(KCNQsites_M, PIP2_M, PIP2xKCNQ_M, PIP2binding_kPIP2off, PIP2binding_kPIP2on);
+  MgonGGTPgS: GGTPgS_M -> GGTPgSMg_M; Function_for_MgonGGTPgS(GGTPgS_M, M, Mg2_C, MgonGGTPgS_kMg2onGTPgS);
+  GGTPase: GGTPMg_M -> GGDP_M; M*Function_for_GGTPase(GGTPMg_M, MgSat10, GGTPase_kGGTPase);
+  GTPon: G_M -> GGTP_M; Function_for_GTPon(GGTP_M, GTP_C, G_M, M, GTPon_kGTPoff, GTPon_kGTPon);
+  GTPgSon: 0.0009967 GTPgS_C + G_M -> GGTPgS_M; Function_for_GTPgSon(GGTPgS_M, GTPgS_C, G_M, M, GTPgSon_kGTPgSoff, GTPgSon_kGTPgSon);
+  GDPbSon: G_M + 0.0009967 GDPbS_C -> GGDPbS_M; Function_for_GDPbSon(GDPbS_C, GGDPbS_M, G_M, M, OxoSat, GDPbSon_kGDPbSon, GDPbSon_kGGDPbSoff);
+  MgGTPon: GGTP_M -> GGTPMg_M; Function_for_MgGTPon(GGTP_M, M, Mg2_C, MgGTPon_kMg2onGTP);
+  GDPdissoc: GGDP_M -> 0.0009967 GDP_C + G_M; Function_for_GDPdissoc(GDP_C, GGDP_M, G_M, M, OxoSat, GDPdissoc_TonicAct, GDPdissoc_kGDPoff, GDPdissoc_kGDPon);
+  PIP2_5Pase: PIP2_M -> PIP_M; M*Function_for_PIP2_5Pase(MgSat20, PIP2_M, PIP2_5Pase_kPIP2Pase);
+  PLC: PIP2_M -> 0.0009967 ip3_C; Function_for_PLC(M, PIP2_M, PLC_PLCspont, fGactive, PLC_kPLC);
+  AlF4on: 0.0009967 AlF4_C + GGDP_M -> GGDPAlF4_M; Function_for_AIF4on(AlF4_C, GGDPAlF4_M, GGDP_M, M, AlF4on_kAlF4off, AlF4on_kAlF4on);
+  PI4Kinase: 0.0009967 ATP_C + PI_M -> PIP_M; Function_for_PI4Kinase(ATPSat1000, M, MgSat20, PI_M, PI4Kinase_kPI4Kinase);
+  MgonGDPAlF4: GGDPAlF4_M -> GGDPAlF4Mg_M; Function_for_MgonGDPAIF4(GGDPAlF4_M, M, Mg2_C, MgonGDPAlF4_kMgonAlF4);
 
   // Events:
-  event_0000001: at time >= 3: oxoM_EX = 10;
-  event_0000002: at time >= 8: oxoM_EX = 0;
+  event_0000001_0: at 0 after time >= 3: oxoM_EX = 10;
+  event_0000002_0: at 0 after time >= 8: oxoM_EX = 0;
 
   // Species initializations:
   GTPgS_C = 0;
-  GTPgS_C has microMolar;
+  GTPgS_C has substance_per_volume;
   KCNQsites_M = 6.7;
-  KCNQsites_M has molecules_um_2;
+  KCNQsites_M has substance_per_volume;
   PIP2_M = 5000;
-  PIP2_M has molecules_um_2;
+  PIP2_M has substance_per_volume;
   GGDPbS_M = 0;
-  GGDPbS_M has molecules_um_2;
+  GGDPbS_M has substance_per_volume;
   Mg2_C = 2100;
-  Mg2_C has microMolar;
+  Mg2_C has substance_per_volume;
   ATP_C = 3000;
-  ATP_C has microMolar;
+  ATP_C has substance_per_volume;
   oxoM_EX = 0;
-  oxoM_EX has microMolar;
+  oxoM_EX has substance_per_volume;
   GDPbS_C = 0;
-  GDPbS_C has microMolar;
+  GDPbS_C has substance_per_volume;
   GGTPMg_M = 0.1;
-  GGTPMg_M has molecules_um_2;
+  GGTPMg_M has substance_per_volume;
   GDP_C = 0;
-  GDP_C has microMolar;
-  GTP_C has microMolar;
+  GDP_C has substance_per_volume;
+  GTP_C has substance_per_volume;
   GGDPAlF4Mg_M = 0;
-  GGDPAlF4Mg_M has molecules_um_2;
+  GGDPAlF4Mg_M has substance_per_volume;
   ip3_C = 0.48;
-  ip3_C has microMolar;
+  ip3_C has substance_per_volume;
   AlF4_C = 0;
-  AlF4_C has microMolar;
+  AlF4_C has substance_per_volume;
   G_M = 0.065;
-  G_M has molecules_um_2;
+  G_M has substance_per_volume;
   GGTP_M = 0.048;
-  GGTP_M has molecules_um_2;
+  GGTP_M has substance_per_volume;
   GGDPAlF4_M = 0;
-  GGDPAlF4_M has molecules_um_2;
+  GGDPAlF4_M has substance_per_volume;
   GGTPgS_M = 0;
-  GGTPgS_M has molecules_um_2;
+  GGTPgS_M has substance_per_volume;
   PI_M = 200000;
-  PI_M has molecules_um_2;
+  PI_M has substance_per_volume;
   PIP_M = 1150;
-  PIP_M has molecules_um_2;
+  PIP_M has substance_per_volume;
   PIP2xKCNQ_M = 33.3;
-  PIP2xKCNQ_M has molecules_um_2;
+  PIP2xKCNQ_M has substance_per_volume;
   GGTPgSMg_M = 0;
-  GGTPgSMg_M has molecules_um_2;
+  GGTPgSMg_M has substance_per_volume;
   GGDP_M = 200;
-  GGDP_M has molecules_um_2;
+  GGDP_M has substance_per_volume;
 
   // Compartment initializations:
   EX = 1;
-  EX has litre;
+  EX has volume;
   M = 1;
-  M has um2;
+  M has volume;
   Cytoplasm = 1;
-  Cytoplasm has litre;
-  MgSat20 has dimensionless;
-  ATPSat300 has dimensionless;
-  MgSat10 has dimensionless;
+  Cytoplasm has volume;
+  MgSat20 has unit_0;
+  ATPSat300 has unit_0;
+  MgSat10 has unit_0;
 
   // Variable initializations:
   KMgGTPase = 10;
-  KMgGTPase has microMolar;
-  OxoSat has dimensionless;
+  KMgGTPase has unit_2;
+  OxoSat has unit_0;
   Koxom = 8;
-  Koxom has microMolar;
-  Gactive has molecules_um_2;
-  ATPSat1000 has dimensionless;
-  I_KCNQ has dimensionless;
+  Koxom has unit_2;
+  Gactive has unit_1;
+  ATPSat1000 has unit_0;
+  I_KCNQ has unit_0;
   nHill = 1.8;
-  nHill has dimensionless;
-  fGactive has dimensionless;
-  NA_micro = 6.022e+017;
-  NA_micro has items_per_micromole;
+  nHill has unit_0;
+  fGactive has unit_0;
+  NA_micro = 6.022e+17;
+  NA_micro has unit_3;
   PIP5kinase_kPIP5Kinase = 0.06;
-  PIP5kinase_kPIP5Kinase has s_1;
   IP3Phosphatase_kIP3ase = 0.3;
-  IP3Phosphatase_kIP3ase has s_1;
-  PIP2binding_kPIP2on = 0.00025;
-  PIP2binding_kPIP2on has um2_molecules_1_s_1;
   PIP2binding_kPIP2off = 0.25;
-  PIP2binding_kPIP2off has s_1;
+  PIP2binding_kPIP2on = 0.00025;
   MgonGGTPgS_kMg2onGTPgS = 0.002;
-  MgonGGTPgS_kMg2onGTPgS has uM_1_s_1;
   GGTPase_kGGTPase = 1.8;
-  GGTPase_kGGTPase has s_1;
-  GTPon_kGTPon = 0.45;
-  GTPon_kGTPon has uM_1_s_1;
   GTPon_kGTPoff = 0.08;
-  GTPon_kGTPoff has s_1;
-  GTPgSon_kGTPgSon = 0.006;
-  GTPgSon_kGTPgSon has uM_1_s_1;
+  GTPon_kGTPon = 0.45;
   GTPgSon_kGTPgSoff = 0.005;
-  GTPgSon_kGTPgSoff has s_1;
+  GTPgSon_kGTPgSon = 0.006;
   GDPbSon_kGDPbSon = 0.28;
-  GDPbSon_kGDPbSon has uM_1_s_1;
   GDPbSon_kGGDPbSoff = 0.1;
-  GDPbSon_kGGDPbSoff has s_1;
   MgGTPon_kMg2onGTP = 0.003;
-  MgGTPon_kMg2onGTP has uM_1_s_1;
-  GDPdissoc_kGDPoff = 0.5;
-  GDPdissoc_kGDPoff has s_1;
   GDPdissoc_TonicAct = 0.002;
-  GDPdissoc_TonicAct has dimensionless;
+  GDPdissoc_kGDPoff = 0.5;
   GDPdissoc_kGDPon = 0.003;
-  GDPdissoc_kGDPon has uM_1_s_1;
   PIP2_5Pase_kPIP2Pase = 0.005;
-  PIP2_5Pase_kPIP2Pase has s_1;
-  PLC_kPLC = 4.8;
-  PLC_kPLC has s_1;
   PLC_PLCspont = 0.00075;
-  PLC_PLCspont has dimensionless;
-  AlF4on_kAlF4on = 7e-006;
-  AlF4on_kAlF4on has uM_1_s_1;
+  PLC_kPLC = 4.8;
   AlF4on_kAlF4off = 0.005;
-  AlF4on_kAlF4off has s_1;
+  AlF4on_kAlF4on = 7e-06;
   PI4Kinase_kPI4Kinase = 0.0001;
-  PI4Kinase_kPI4Kinase has s_1;
   MgonGDPAlF4_kMgonAlF4 = 0.002;
-  MgonGDPAlF4_kMgonAlF4 has uM_1_s_1;
 
   // Other declarations:
   var MgSat20, ATPSat300, MgSat10, OxoSat, Gactive, ATPSat1000, I_KCNQ, fGactive;
   const EX, M, Cytoplasm, KMgGTPase, Koxom, nHill, NA_micro;
 
   // Unit definitions:
-  unit micromole = 1e-6 mole;
+  unit length = metre;
+  unit area = (1e-6 metre)^2;
+  unit volume = litre;
+  unit time_unit = time_unit;
   unit substance = item;
-  unit items_per_micromole = item / 1e-6 mole;
-  unit molecule = item;
-  unit um2 = (1e-6 metre)^2;
-  unit molecules_um_2_s_1 = item / ((1e-6 metre)^2 * second);
-  unit molecules_um_2 = item / (1e-6 metre)^2;
-  unit uM_s_1 = 1e-6 mole / (litre * second);
-  unit s_1 = 1 / second;
-  unit um2_molecules_1_s_1 = (1e-6 metre)^2 / (item * second);
-  unit uM_1_s_1 = litre / (1e-6 mole * second);
-  unit uM_um_s_1 = 1e-6 metre * 1e-6 mole / (second * litre);
-  unit microMolar = 1e-6 mole / litre;
+  unit unit_0 = 1 / dimensionless^-0;
+  unit unit_1 = item / (1e6 metre)^2;
+  unit unit_2 = item * avogadro / ((1e-6 dimensionless)^-0 * litre);
+  unit unit_3 = 1 / 1e6 avogadro;
+  unit extent = substance;
+  unit substance_per_volume = item / litre;
 
   // Display Names:
-  substance is "items";
+  time_unit is "time";
+  unit_0 is "1";
+  unit_1 is "#/Mm²";
+  unit_2 is "µmol/l";
+  unit_3 is "1/MAvogadro";
   EX is "Extracellular";
   M is "Membrane";
   GGDPAlF4Mg_M is "GGDPAIF4Mg_M";
   ip3_C is "IP3_C";
   AlF4_C is "AIF4_C";
   GGDPAlF4_M is "GGDPAIF4_M";
+  event_0000001_0 is "event_0000001";
+  event_0000002_0 is "event_0000002";
   NA_micro is "NA(micro)";
   AlF4on is "AIF4on";
   MgonGDPAlF4 is "MgonGDPAIF4";
+
+  // CV terms:
+  EX identity "http://identifiers.org/go/GO:0005576"
+  M identity "http://identifiers.org/go/GO:0005886"
+  Cytoplasm identity "http://identifiers.org/go/GO:0005737"
+  GTPgS_C identity "http://identifiers.org/kegg.compound/C01806"
+  GTPgS_C identity "http://identifiers.org/chebi/CHEBI:5235"
+  KCNQsites_M part "http://identifiers.org/uniprot/O88944"
+  KCNQsites_M part "http://identifiers.org/uniprot/O43526"
+  PIP2_M identity "http://identifiers.org/chebi/CHEBI:18348"
+  PIP2_M identity "http://identifiers.org/kegg.compound/C04637"
+  GGDPbS_M part "http://identifiers.org/chebi/CHEBI:38309"
+  GGDPbS_M part "http://identifiers.org/go/GO:0005834"
+  Mg2_C identity "http://identifiers.org/chebi/CHEBI:25107"
+  Mg2_C identity "http://identifiers.org/kegg.compound/C00305"
+  ATP_C identity "http://identifiers.org/kegg.compound/C00002"
+  ATP_C identity "http://identifiers.org/chebi/CHEBI:15422"
+  oxoM_EX identity "http://identifiers.org/chebi/CHEBI:38322"
+  GDPbS_C hypernym "http://identifiers.org/chebi/CHEBI:38309"
+  GGTPMg_M part "http://identifiers.org/kegg.compound/C00044"
+  GGTPMg_M part "http://identifiers.org/kegg.compound/C00305"
+  GGTPMg_M part "http://identifiers.org/go/GO:0005834"
+  GGTPMg_M part "http://identifiers.org/chebi/CHEBI:18420"
+  GGTPMg_M part "http://identifiers.org/chebi/CHEBI:15996"
+  GGTPMg_M part "http://identifiers.org/chebi/CHEBI:25107"
+  GDP_C identity "http://identifiers.org/kegg.compound/C00035"
+  GDP_C identity "http://identifiers.org/chebi/CHEBI:17552"
+  GTP_C identity "http://identifiers.org/chebi/CHEBI:15996"
+  GTP_C identity "http://identifiers.org/kegg.compound/C00044"
+  GGDPAlF4Mg_M part "http://identifiers.org/uniprot/P29992"
+  GGDPAlF4Mg_M part "http://identifiers.org/kegg.compound/C00305"
+  GGDPAlF4Mg_M part "http://identifiers.org/kegg.compound/C00035"
+  GGDPAlF4Mg_M part "http://identifiers.org/chebi/CHEBI:30111"
+  GGDPAlF4Mg_M part "http://identifiers.org/chebi/CHEBI:25107"
+  GGDPAlF4Mg_M part "http://identifiers.org/chebi/CHEBI:17552"
+  ip3_C identity "http://identifiers.org/chebi/CHEBI:16595"
+  ip3_C identity "http://identifiers.org/kegg.compound/C01245"
+  AlF4_C identity "http://identifiers.org/chebi/CHEBI:30111"
+  G_M identity "http://identifiers.org/go/GO:0005834"
+  GGTP_M part "http://identifiers.org/go/GO:0005834"
+  GGTP_M part "http://identifiers.org/chebi/CHEBI:15996"
+  GGTP_M part "http://identifiers.org/kegg.compound/C00044"
+  GGDPAlF4_M part "http://identifiers.org/kegg.compound/C00035"
+  GGDPAlF4_M part "http://identifiers.org/go/GO:0005834"
+  GGDPAlF4_M part "http://identifiers.org/chebi/CHEBI:17552"
+  GGDPAlF4_M part "http://identifiers.org/chebi/CHEBI:30111"
+  GGTPgS_M part "http://identifiers.org/go/GO:0005834"
+  GGTPgS_M part "http://identifiers.org/chebi/CHEBI:43000"
+  GGTPgS_M part "http://identifiers.org/chebi/CHEBI:5235"
+  GGTPgS_M part "http://identifiers.org/kegg.compound/C01806"
+  PI_M identity "http://identifiers.org/chebi/CHEBI:16749"
+  PI_M identity "http://identifiers.org/kegg.compound/C01194"
+  PIP_M identity "http://identifiers.org/chebi/CHEBI:17526"
+  PIP_M identity "http://identifiers.org/kegg.compound/C01277"
+  PIP2xKCNQ_M part "http://identifiers.org/uniprot/O88944"
+  PIP2xKCNQ_M part "http://identifiers.org/chebi/CHEBI:18348"
+  PIP2xKCNQ_M part "http://identifiers.org/kegg.compound/C04637"
+  PIP2xKCNQ_M part "http://identifiers.org/uniprot/O43526"
+  GGTPgSMg_M part "http://identifiers.org/kegg.compound/C00305"
+  GGTPgSMg_M part "http://identifiers.org/chebi/CHEBI:5235"
+  GGTPgSMg_M part "http://identifiers.org/chebi/CHEBI:25107"
+  GGTPgSMg_M part "http://identifiers.org/kegg.compound/C01806"
+  GGTPgSMg_M part "http://identifiers.org/go/GO:0005834"
+  GGTPgSMg_M part "http://identifiers.org/chebi/CHEBI:18420"
+  GGDP_M part "http://identifiers.org/go/GO:0005834"
+  GGDP_M part "http://identifiers.org/chebi/CHEBI:17552"
+  GGDP_M part "http://identifiers.org/kegg.compound/C00035"
+  PIP5kinase identity "http://identifiers.org/kegg.reaction/R03469"
+  PIP5kinase hypernym "http://identifiers.org/ec-code/2.7.1.68"
+  PIP5kinase hypernym "http://identifiers.org/go/GO:0016308"
+  IP3Phosphatase identity "http://identifiers.org/kegg.reaction/R03394"
+  IP3Phosphatase hypernym "http://identifiers.org/ec-code/3.1.3.56"
+  IP3Phosphatase hypernym "http://identifiers.org/go/GO:0004445"
+  PIP2binding hypernym "http://identifiers.org/go/GO:0005267"
+  PIP2binding hypernym "http://identifiers.org/go/GO:0005546"
+  MgonGGTPgS parthood "http://identifiers.org/go/GO:0031684"
+  GGTPase hypernym "http://identifiers.org/go/GO:0003924"
+  GTPon parthood "http://identifiers.org/go/GO:0031684"
+  GTPgSon parthood "http://identifiers.org/go/GO:0031684"
+  GDPbSon parthood "http://identifiers.org/go/GO:0031684"
+  MgGTPon parthood "http://identifiers.org/go/GO:0031684"
+  GDPdissoc parthood "http://identifiers.org/go/GO:0031684"
+  PIP2_5Pase identity "http://identifiers.org/kegg.reaction/R04404"
+  PIP2_5Pase hypernym "http://identifiers.org/ec-code/3.1.3.36"
+  PIP2_5Pase hypernym "http://identifiers.org/go/GO:0004439"
+  PLC identity "http://identifiers.org/kegg.reaction/R03435"
+  PLC hypernym "http://identifiers.org/ec-code/3.1.4.11"
+  PLC hypernym "http://identifiers.org/go/GO:0004435"
+  PLC hypernym "http://identifiers.org/go/GO:0007200"
+  AlF4on parthood "http://identifiers.org/go/GO:0031684"
+  PI4Kinase identity "http://identifiers.org/kegg.reaction/R03361"
+  PI4Kinase hypernym "http://identifiers.org/ec-code/2.7.1.67"
+  PI4Kinase hypernym "http://identifiers.org/go/GO:0004430"
+  MgonGDPAlF4 parthood "http://identifiers.org/go/GO:0031684"
 end
+
+Suh2004_KCNQ_regulation is "Suh2004_KCNQ_Regulation"
+
+Suh2004_KCNQ_regulation model_entity_is "http://identifiers.org/biomodels.db/MODEL4662889298",
+                                        "http://identifiers.org/biomodels.db/BIOMD0000000081"
+Suh2004_KCNQ_regulation part "http://identifiers.org/go/GO:0007207"
+Suh2004_KCNQ_regulation part "http://identifiers.org/go/GO:0006629"
+Suh2004_KCNQ_regulation identity "http://identifiers.org/biomodels.db/MODEL4662889298"
+Suh2004_KCNQ_regulation identity "http://identifiers.org/kegg.pathway/map04020"
+Suh2004_KCNQ_regulation identity "http://identifiers.org/biomodels.db/BIOMD0000000081"
+Suh2004_KCNQ_regulation identity "http://identifiers.org/kegg.pathway/map04070"
+Suh2004_KCNQ_regulation taxon "http://identifiers.org/taxonomy/9606"
+Suh2004_KCNQ_regulation description "http://identifiers.org/pubmed/15173220"

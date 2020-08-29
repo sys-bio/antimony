@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *MODEL1409100000()
 
   // Compartments and Species:
@@ -6,9 +6,9 @@ model *MODEL1409100000()
   species $F in Brain, $P in Brain, $C in Brain;
 
   // Rate Rules:
-  F' = m/(1 + P) - gamma*F*P;
-  P' = sigma - P - gamma*F*P + nu*C;
-  C' = gamma*F*P - nu*C;
+  F' = m/(1 + P) - gamma_*F*P;
+  P' = (sigma - P - gamma_*F*P) + nu*C;
+  C' = gamma_*F*P - nu*C;
 
   // Species initializations:
   F = 135;
@@ -20,12 +20,12 @@ model *MODEL1409100000()
 
   // Variable initializations:
   m = 25;
+  gamma_ = 1;
   sigma = 1;
   nu = 1;
-  gamma = 1;
 
   // Other declarations:
-  const Brain, m, sigma, nu, gamma;
+  const Brain, m, gamma_, sigma, nu;
 
   // Unit definitions:
   unit volume = 1e-3 litre;
@@ -33,4 +33,24 @@ model *MODEL1409100000()
 
   // Display Names:
   Brain is "Brain ";
+  gamma_ is "gamma";
+
+  // CV terms:
+  Brain identity "http://identifiers.org/bto/BTO:0000142"
+  F hypernym "http://identifiers.org/go/GO:0043205"
+  F identity "http://identifiers.org/uniprot/P37840"
+  P identity "http://identifiers.org/go/GO:0000502"
+  C part "http://identifiers.org/uniprot/P37840"
+  C part "http://identifiers.org/go/GO:0000502"
+  C version "http://identifiers.org/go/GO:0043205"
 end
+
+MODEL1409100000 is "Sneppen2009 - Modeling proteasome dynamics in Parkinson's disease"
+
+MODEL1409100000 model_entity_is "http://identifiers.org/biomodels.db/MODEL1409100000"
+MODEL1409100000 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000548"
+MODEL1409100000 description "http://identifiers.org/pubmed/19411740"
+MODEL1409100000 taxon "http://identifiers.org/taxonomy/9606"
+MODEL1409100000 property "http://identifiers.org/doid/DOID:14330"
+MODEL1409100000 hypernym "http://identifiers.org/go/GO:0043161",
+                         "http://identifiers.org/go/GO:0070841"

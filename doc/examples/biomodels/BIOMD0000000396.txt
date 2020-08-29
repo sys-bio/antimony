@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Sivakumar2011_NotchSignalingPathway()
 
   // Compartments and Species:
@@ -15,19 +15,19 @@ model *Sivakumar2011_NotchSignalingPathway()
   r30: s32 => s75; kass_r30*s32;
   r31: s35 => s75; kass_r31*s35 - kdiss_r31*s75;
   r8: s15 -> s19 + s63; s82*((kcatp_r8*(s15/kM_r8_s15) - kcatn_r8*(s19/kM_r8_s19)*(s63/kM_r8_s63))/(s15/kM_r8_s15 + (1 + s19/kM_r8_s19)*(1 + s63/kM_r8_s63)));
-  r9: s7 -> s22; s23*((kcatp_r9/kM_r9_s7*s7 - kcatn_r9/kM_r9_s22*s22)/(1 + s7/kM_r9_s7 + s22/kM_r9_s22));
-  r10: s63 -> s24; kI_r10_s25/(kI_r10_s25 + s25)*(kass_r10*s63 - kdiss_r10*s24);
+  r9: s7 -> s22; s23*(((kcatp_r9/kM_r9_s7)*s7 - (kcatn_r9/kM_r9_s22)*s22)/(1 + s7/kM_r9_s7 + s22/kM_r9_s22));
+  r10: s63 -> s24; (kI_r10_s25/(kI_r10_s25 + s25))*(kass_r10*s63 - kdiss_r10*s24);
   r11: s32 -> s26 + s28; s24*((kcatp_r11*(s32/kM_r11_s32) - kcatn_r11*(s26/kM_r11_s26)*(s28/kM_r11_s28))/(s32/kM_r11_s32 + (1 + s26/kM_r11_s26)*(1 + s28/kM_r11_s28)));
   r13: s24 + s26 + s27 + s29 -> s35; kass_r13*s24*s26*s27*s29 - kdiss_r13*s35;
-  r16: s24 + s39 -> s37; (kcatp_r16/(ki_r16_s39*kM_r16_s39)*s38*s24*s39 - kcatn_r16/kM_r16_s39*s38*s37)/(1 + s24/ki_r16_s39 + s39/ki_r16_s39 + (s24*s39)/(ki_r16_s39*kM_r16_s39) + s37/kM_r16_s39);
+  r16: s24 + s39 -> s37; ((kcatp_r16/(ki_r16_s39*kM_r16_s39))*s38*s24*s39 - (kcatn_r16/kM_r16_s39)*s38*s37)/(1 + s24/ki_r16_s39 + s39/ki_r16_s39 + s24*s39/(ki_r16_s39*kM_r16_s39) + s37/kM_r16_s39);
   r17: s37 -> s40; kass_r17*s37 - kdiss_r17*s40;
-  r18: s1 + s4 -> s41; (kcatp_r18/(ki_r18_s4*kM_r18_s4)*s42*s1*s4 - kcatn_r18/kM_r18_s4*s42*s41)/(1 + s1/ki_r18_s4 + s4/ki_r18_s4 + (s1*s4)/(ki_r18_s4*kM_r18_s4) + s41/kM_r18_s4);
-  r21: s41 + s48 -> s53; kI_r21_s2/(kI_r21_s2 + s2)*(kass_r21*s41*s48 - kdiss_r21*s53);
+  r18: s1 + s4 -> s41; ((kcatp_r18/(ki_r18_s4*kM_r18_s4))*s42*s1*s4 - (kcatn_r18/kM_r18_s4)*s42*s41)/(1 + s1/ki_r18_s4 + s4/ki_r18_s4 + s1*s4/(ki_r18_s4*kM_r18_s4) + s41/kM_r18_s4);
+  r21: s41 + s48 -> s53; (kI_r21_s2/(kI_r21_s2 + s2))*(kass_r21*s41*s48 - kdiss_r21*s53);
   r25: s53 -> s60 + s15; s21*((kcatp_r25*(s53/kM_r25_s53) - kcatn_r25*(s60/kM_r25_s60)*(s15/kM_r25_s15))/(s53/kM_r25_s53 + (1 + s60/kM_r25_s60)*(1 + s15/kM_r25_s15)));
-  r26: s25 -> s64; s65*((kcatp_r26/kM_r26_s25*s25 - kcatn_r26/kM_r26_s64*s64)/(1 + s25/kM_r26_s25 + s64/kM_r26_s64));
-  r28: s7 + s41 -> s67; (kcatp_r28/(ki_r28_s41*kM_r28_s41)*s2*s7*s41 - kcatn_r28/kM_r28_s41*s2*s67)/(1 + s7/ki_r28_s41 + s41/ki_r28_s41 + (s7*s41)/(ki_r28_s41*kM_r28_s41) + s67/kM_r28_s41);
+  r26: s25 -> s64; s65*(((kcatp_r26/kM_r26_s25)*s25 - (kcatn_r26/kM_r26_s64)*s64)/(1 + s25/kM_r26_s25 + s64/kM_r26_s64));
+  r28: s7 + s41 -> s67; ((kcatp_r28/(ki_r28_s41*kM_r28_s41))*s2*s7*s41 - (kcatn_r28/kM_r28_s41)*s2*s67)/(1 + s7/ki_r28_s41 + s41/ki_r28_s41 + s7*s41/(ki_r28_s41*kM_r28_s41) + s67/kM_r28_s41);
   r29: s67 -> s18 + s15; s21*((kcatp_r29*(s67/kM_r29_s67) - kcatn_r29*(s18/kM_r29_s18)*(s15/kM_r29_s15))/(s67/kM_r29_s67 + (1 + s18/kM_r29_s18)*(1 + s15/kM_r29_s15)));
-  re16: s76 + s77 -> s82; kI_re16_s81/(kI_re16_s81 + s81)*(kass_re16*s76*s77 - kdiss_re16*s82);
+  re16: s76 + s77 -> s82; (kI_re16_s81/(kI_re16_s81 + s81))*(kass_re16*s76*s77 - kdiss_re16*s82);
 
   // Species initializations:
   s2 = 5/default;
@@ -179,4 +179,51 @@ model *Sivakumar2011_NotchSignalingPathway()
   s75 is "E(spl)-C genes";
   s81 is "dapt";
   s82 is "gama secretase";
+
+  // CV terms:
+  s2 hypernym "http://identifiers.org/uniprot/Q8NES3"
+  s4 hypernym "http://identifiers.org/chebi/CHEBI:18287"
+  s7 hypernym "http://identifiers.org/uniprot/O00548"
+  s15 hypernym "http://identifiers.org/go/GO:0043234"
+  s19 hypernym "http://identifiers.org/go/GO:0043234"
+  s21 hypernym "http://identifiers.org/uniprot/Q8TE56"
+  s22 identity "http://identifiers.org/chebi/CHEBI:36080"
+  s23 hypernym "http://identifiers.org/uniprot/Q9BR09"
+  s25 homolog "http://identifiers.org/uniprot/P49757"
+  s27 hypernym "http://identifiers.org/uniprot/Q92585"
+  s26 hypernym "http://identifiers.org/uniprot/P28159"
+  s32 hypernym "http://identifiers.org/go/GO:0043234"
+  s29 hypernym "http://identifiers.org/chebi/CHEBI:36080"
+  s24 hypernym "http://identifiers.org/go/GO:0043234"
+  s35 hypernym "http://identifiers.org/go/GO:0043234"
+  s37 hypernym "http://identifiers.org/go/GO:0043234"
+  s38 homolog "http://identifiers.org/uniprot/Q9UBV2"
+  s39 identity "http://identifiers.org/cco/CCO:F0004655"
+  s40 identity "http://identifiers.org/chebi/CHEBI:36080"
+  s1 hypernym "http://identifiers.org/uniprot/Q6IAD4"
+  s18 hypernym "http://identifiers.org/go/GO:0043234"
+  s41 hypernym "http://identifiers.org/uniprot/Q6IAD4"
+  s42 homolog "http://identifiers.org/uniprot/Q9V6X7"
+  s48 homolog "http://identifiers.org/uniprot/Q6SPF9"
+  s53 hypernym "http://identifiers.org/go/GO:0043234"
+  s60 hypernym "http://identifiers.org/go/GO:0043234"
+  s63 hypernym "http://identifiers.org/go/GO:0043234"
+  s65 homolog "http://identifiers.org/uniprot/O70263"
+  s67 hypernym "http://identifiers.org/go/GO:0043234"
+  s75 homolog "http://identifiers.org/uniprot/Q5S414"
+  s76 hypernym "http://identifiers.org/cco/CCO:U0000005"
+  s77 hypernym "http://identifiers.org/cco/CCO:U0000005"
+  s81 hypernym "http://identifiers.org/cco/CCO:U0000005"
+  s82 part "http://identifiers.org/uniprot/Q9NZ42",
+           "http://identifiers.org/uniprot/Q96BI3"
 end
+
+Sivakumar2011_NotchSignalingPathway is "Sivakumar2011 - Notch Signaling Pathway"
+
+Sivakumar2011_NotchSignalingPathway model_entity_is "http://identifiers.org/biomodels.db/MODEL1101270000"
+Sivakumar2011_NotchSignalingPathway model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000396"
+Sivakumar2011_NotchSignalingPathway description "http://identifiers.org/pubmed/21978399"
+Sivakumar2011_NotchSignalingPathway origin "http://identifiers.org/panther.pathway/P00045"
+Sivakumar2011_NotchSignalingPathway hypernym "http://identifiers.org/go/GO:0007219"
+Sivakumar2011_NotchSignalingPathway taxon "http://identifiers.org/taxonomy/40674"
+Sivakumar2011_NotchSignalingPathway container "http://identifiers.org/cl/CL:0000047"

@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *BIOMD0000000007()
 
   // Compartments and Species:
@@ -49,12 +49,12 @@ model *BIOMD0000000007()
   G2R_Dissociation_UbE: G2R => R; G2R*k2;
   PG2R_Dissociation_UbE: PG2R => R; k2*PG2R;
   Rum1_Production:  => R; k3;
-  Rum1_Deg_SPF: R => ; (kp*Mass*R*SPF)/(Kmp + R);
-  IE_Reaction: $IEB -> IE; (IEB*ki*MPF)/(IEB + Kmi) - (IE*kir)/(IE + Kmir);
-  UbE_Reaction: $UbEB -> UbE; (IE*ku*UbEB)/(Kmu + UbEB) - (kur*UbE)/(Kmur + UbE);
-  UbE2_Reaction: $UbE2B -> UbE2; (ku2*MPF*UbE2B)/(Kmu2 + UbE2B) - (kur2*UbE2)/(Kmur2 + UbE2);
-  Wee1_Reaction: $Wee1B -> Wee1; (kwr*Wee1B)/(Kmwr + Wee1B) - (kw*MPF*Wee1)/(Kmw + Wee1);
-  Cdc25_Reaction: $Cdc25B -> Cdc25; (Cdc25B*kc*MPF)/(Cdc25B + Kmc) - (Cdc25*kcr)/(Cdc25 + Kmcr);
+  Rum1_Deg_SPF: R => ; kp*Mass*R*SPF/(Kmp + R);
+  IE_Reaction: $IEB -> IE; IEB*ki*MPF/(IEB + Kmi) - IE*kir/(IE + Kmir);
+  UbE_Reaction: $UbEB -> UbE; IE*ku*UbEB/(Kmu + UbEB) - kur*UbE/(Kmur + UbE);
+  UbE2_Reaction: $UbE2B -> UbE2; ku2*MPF*UbE2B/(Kmu2 + UbE2B) - kur2*UbE2/(Kmur2 + UbE2);
+  Wee1_Reaction: $Wee1B -> Wee1; kwr*Wee1B/(Kmwr + Wee1B) - kw*MPF*Wee1/(Kmw + Wee1);
+  Cdc25_Reaction: $Cdc25B -> Cdc25; Cdc25B*kc*MPF/(Cdc25B + Kmc) - Cdc25*kcr/(Cdc25 + Kmcr);
 
   // Events:
   Start: at 60 after SPF >= 0.1: kp = kp/2;
@@ -191,4 +191,76 @@ model *BIOMD0000000007()
   UbE2_Reaction is "UbE2 production & degradation";
   Wee1_Reaction is "Wee1 production & degradation";
   Cdc25_Reaction is "Cdc25 production & degradation";
+
+  // CV terms:
+  Cell identity "http://identifiers.org/go/GO:0005623"
+  UbE hypernym "http://identifiers.org/go/GO:0000502"
+  UbE2 hypernym "http://identifiers.org/go/GO:0000502"
+  Wee1 version "http://identifiers.org/uniprot/P30290",
+               "http://identifiers.org/uniprot/P07527"
+  Cdc25 identity "http://identifiers.org/uniprot/P06652"
+  G2K part "http://identifiers.org/uniprot/P04551",
+           "http://identifiers.org/uniprot/P10815"
+  R hypernym "http://identifiers.org/uniprot/P40380"
+  G1K part "http://identifiers.org/uniprot/P04551",
+           "http://identifiers.org/uniprot/P36630"
+  PG2 part "http://identifiers.org/uniprot/P10815",
+           "http://identifiers.org/uniprot/P04551"
+  G1R part "http://identifiers.org/uniprot/P04551",
+           "http://identifiers.org/uniprot/P36630",
+           "http://identifiers.org/uniprot/P40380"
+  G2R part "http://identifiers.org/uniprot/P04551",
+           "http://identifiers.org/uniprot/P10815",
+           "http://identifiers.org/uniprot/P40380"
+  PG2R part "http://identifiers.org/uniprot/P10815",
+            "http://identifiers.org/uniprot/P04551",
+            "http://identifiers.org/uniprot/P40380"
+  SPF part "http://identifiers.org/uniprot/P04551",
+           "http://identifiers.org/uniprot/P10815",
+           "http://identifiers.org/uniprot/P36630"
+  MPF part "http://identifiers.org/uniprot/P10815",
+           "http://identifiers.org/uniprot/P04551"
+  UbEB hypernym "http://identifiers.org/go/GO:0000502"
+  UbE2B hypernym "http://identifiers.org/go/GO:0000502"
+  Wee1B version "http://identifiers.org/uniprot/P07527",
+                "http://identifiers.org/uniprot/P30290"
+  Cdc25B hypernym "http://identifiers.org/uniprot/P06652"
+  Rum1Total identity "http://identifiers.org/uniprot/P40380"
+  Cdc13Total identity "http://identifiers.org/uniprot/P10815"
+  Cig2Total identity "http://identifiers.org/uniprot/P36630"
+  Cdc2Phos part "http://identifiers.org/reactome/REACT_6294",
+                "http://identifiers.org/reactome/REACT_6327"
+  Cdc2Phos part "http://identifiers.org/reactome/REACT_6257",
+                "http://identifiers.org/reactome/REACT_6178"
+  Cdc2Phos hypernym "http://identifiers.org/ec-code/2.7.10.2",
+                    "http://identifiers.org/go/GO:0006468"
+  G2R_Creation hypernym "http://identifiers.org/go/GO:0006461"
+  PG2R_Creation hypernym "http://identifiers.org/go/GO:0006461"
+  Rum1DegInG2R hypernym "http://identifiers.org/go/GO:0030163"
+  Rum1Deg hypernym "http://identifiers.org/go/GO:0030163"
+  Rum1DegInPG2R hypernym "http://identifiers.org/go/GO:0030163"
+  RumDegInG1R hypernym "http://identifiers.org/go/GO:0030163"
+  G2K_dissoc hypernym "http://identifiers.org/go/GO:0008054"
+  PG2_dissoc hypernym "http://identifiers.org/go/GO:0008054"
+  G1K_Dissociation hypernym "http://identifiers.org/go/GO:0008054"
+  PG2R_Dissociation hypernym "http://identifiers.org/go/GO:0008054"
+  G2R_Dissociation hypernym "http://identifiers.org/go/GO:0008054"
+  G1R_Dissociation hypernym "http://identifiers.org/go/GO:0008054"
+  G1R_Binding hypernym "http://identifiers.org/go/GO:0006461"
+  G2R_Dissociation_UbE hypernym "http://identifiers.org/kegg.pathway/spo04120",
+                                "http://identifiers.org/go/GO:0030163"
+  PG2R_Dissociation_UbE hypernym "http://identifiers.org/kegg.pathway/spo04120",
+                                 "http://identifiers.org/go/GO:0030163"
+  Rum1_Deg_SPF hypernym "http://identifiers.org/go/GO:0030163"
 end
+
+BIOMD0000000007 is "Novak1997 - Cell Cycle"
+
+BIOMD0000000007 model_entity_is "http://identifiers.org/biomodels.db/MODEL6614787694"
+BIOMD0000000007 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000007"
+BIOMD0000000007 description "http://identifiers.org/pubmed/9256450"
+BIOMD0000000007 origin "http://identifiers.org/pubmed/10395816"
+BIOMD0000000007 taxon "http://identifiers.org/taxonomy/4896"
+BIOMD0000000007 hypernym "http://identifiers.org/kegg.pathway/ko04110",
+                         "http://identifiers.org/go/GO:0000278"
+BIOMD0000000007 homolog "http://identifiers.org/reactome/REACT_152"

@@ -1,47 +1,69 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 function function_3(substrate, Km, V)
-  (V*substrate)/(Km + substrate);
+  V*substrate/(Km + substrate);
 end
+
+function_3 is "Henri-Michaelis-Menten (irreversible)"
 
 function function_2(parameter_55, species_31)
   parameter_55*species_31;
 end
 
+function_2 is "function_4_reaction-34"
+
 function function_1(parameter_52, parameter_53, species_23)
-  (parameter_52*species_23)/(parameter_53 + species_23);
+  parameter_52*species_23/(parameter_53 + species_23);
 end
+
+function_1 is "function_4_reaction-32"
 
 function function_4(c2, parameter_152, parameter_153, species_24, species_94, species_95)
   c2*(parameter_152*species_24*species_95 - parameter_153*species_94);
 end
 
+function_4 is "function_4_reaction-v15"
+
 function function_5(c2, parameter_155, species_94)
   c2*parameter_155*species_94;
 end
 
+function_5 is "function_4_reaction-v16"
+
 function function_6(parameter_156, parameter_157, species_92)
-  (parameter_156*species_92)/(parameter_157 + species_92);
+  parameter_156*species_92/(parameter_157 + species_92);
 end
+
+function_6 is "function_4_reaction-v18"
 
 function function_7(parameter_159, species_98)
   parameter_159*species_98;
 end
 
+function_7 is "function_4_reaction-v20"
+
 function function_8(c2, parameter_169, parameter_170, species_102, species_24, species_92)
   c2*(parameter_169*species_24*species_92 - parameter_170*species_102);
 end
+
+function_8 is "function_4_reaction-v27"
 
 function function_9(c2, parameter_171, species_102)
   c2*parameter_171*species_102;
 end
 
+function_9 is "function_4_reaction-v28"
+
 function function_4_reaction_n7_1(parameter_231, parameter_232, species_92)
-  (parameter_231*species_92)/(parameter_232 + species_92);
+  parameter_231*species_92/(parameter_232 + species_92);
 end
 
+function_4_reaction_n7_1 is "function_4_reaction_n7_1"
+
 function function_activation(v, a, b, k)
-  (v*a*b)/(b + k);
+  v*a*b/(b + k);
 end
+
+function_activation is "function_activation"
 
 
 model *MODEL1408190002()
@@ -92,7 +114,7 @@ model *MODEL1408190002()
   re160: s140 + $species_4 -> species_6; compartment_1*(parameter_3*s140*species_4 - parameter_4*species_6);
   reaction_1: $species_2 + $species_1 -> species_3; parameter_1*species_2*species_1 - parameter_2*species_3;
   reaction_8: species_9 + species_12 -> species_13; compartment_1*(parameter_17*species_9*species_12 - parameter_18*species_13);
-  reaction_9: 2species_12 -> species_14; compartment_1*(parameter_27*species_12^2 - parameter_28*species_14);
+  reaction_9: 2 species_12 -> species_14; compartment_1*(parameter_27*species_12^2 - parameter_28*species_14);
   re138: species_9 + species_108 -> species_16; compartment_1*(parameter_29*species_9*species_108 - parameter_30*species_16);
   re137: species_16 => species_8 + species_108; compartment_1*parameter_31*species_16;
   reaction_12: species_12 + species_20 -> species_21; compartment_1*(parameter_32*species_12*species_20 - parameter_33*species_21);
@@ -101,7 +123,7 @@ model *MODEL1408190002()
   reaction_15: species_22 => species_18 + species_20; compartment_1*parameter_37*species_22;
   reaction_16: species_11 + species_12 -> species_18; compartment_1*(parameter_38*species_11*species_12 - parameter_39*species_18);
   reaction_17: species_14 => species_23; parameter_40*species_14;
-  reaction_65: species_23 -> 2species_26; c3*(parameter_41*species_23 - parameter_42*species_26^2);
+  reaction_65: species_23 -> 2 species_26; c3*(parameter_41*species_23 - parameter_42*species_26^2);
   reaction_19: species_24 + species_26 -> species_27; c3*(parameter_43*species_24*species_26 - parameter_44*species_27);
   reaction_20: species_27 => species_28 + species_24; c3*parameter_45*species_27;
   reaction_18: species_24 + species_23 -> species_25; c3*(parameter_46*species_24*species_23 - parameter_47*species_25);
@@ -137,7 +159,7 @@ model *MODEL1408190002()
   reaction_47: species_49 + species_44 -> species_50; compartment_1*(parameter_97*species_49*species_44 - parameter_98*species_50);
   reaction_48: species_50 => species_41 + species_49; compartment_1*parameter_99*species_50;
   reaction_49: species_44 + species_51 -> species_52; compartment_1*(parameter_100*species_44*species_51 - parameter_101*species_52);
-  reaction_5: 2species_7 -> species_8; compartment_1*(parameter_11*species_7^2 - parameter_12*species_8);
+  reaction_5: 2 species_7 -> species_8; compartment_1*(parameter_11*species_7^2 - parameter_12*species_8);
   reaction_50: species_52 => species_53 + species_44; compartment_1*parameter_102*species_52;
   reaction_51: species_44 + species_53 -> species_54; compartment_1*(parameter_103*species_44*species_53 - parameter_104*species_54);
   reaction_52: species_54 => species_55 + species_44; compartment_1*parameter_105*species_54;
@@ -156,7 +178,7 @@ model *MODEL1408190002()
   reaction_63: species_66 => species_64 + species_59; compartment_1*parameter_123*species_66;
   reaction_74: species_74 => species_75; compartment_1*function_activation(parameter_124, species_63, species_74, parameter_125);
   reaction_75: species_75 => species_74; compartment_1*parameter_126*species_75;
-  reaction_76: 2species_75 -> species_76; compartment_1*(parameter_127*species_75^2 - parameter_128*species_76);
+  reaction_76: 2 species_75 -> species_76; compartment_1*(parameter_127*species_75^2 - parameter_128*species_76);
   reaction_4: species_9 + species_11 -> species_10; compartment_1*(parameter_14*species_9*species_11 - parameter_15*species_10);
   reaction_7: species_10 => species_9 + species_12; compartment_1*parameter_16*species_10;
   re135: species_5 + species_107 -> species_78; compartment_1*(parameter_129*species_5*species_107 - parameter_130*species_78);
@@ -177,11 +199,11 @@ model *MODEL1408190002()
   reaction_100: species_99 => ; compartment_1*parameter_163*species_99;
   re142: species_87 + species_20 -> species_101; compartment_1*(parameter_164*species_87*species_20 - parameter_165*species_101);
   re143: species_101 => species_91 + species_20; compartment_1*parameter_166*species_101;
-  reaction_103: 2species_95 -> species_92; c2*(parameter_167*species_95^2 - parameter_168*species_92);
+  reaction_103: 2 species_95 -> species_92; c2*(parameter_167*species_95^2 - parameter_168*species_92);
   re147: species_92 + species_24 -> species_102; function_8(c2, parameter_169, parameter_170, species_102, species_24, species_92);
   re148: species_102 => species_103 + species_24; function_9(c2, parameter_171, species_102);
   reaction_106: species_96 + species_95 -> species_103; c2*(parameter_172*species_96*species_95 - parameter_173*species_103);
-  reaction_79: 2species_80 -> species_81; compartment_1*(parameter_133*species_80^2 - parameter_134*species_81);
+  reaction_79: 2 species_80 -> species_81; compartment_1*(parameter_133*species_80^2 - parameter_134*species_81);
   reaction_107: species_84 + species_100 -> species_104; compartment_1*(parameter_174*species_84*species_100 - parameter_175*species_104);
   reaction_110: species_108 + species_104 -> species_105; compartment_1*(parameter_176*species_108*species_104 - parameter_177*species_105);
   reaction_108: species_105 => species_99 + species_81 + species_84 + species_108; compartment_1*parameter_178*species_105;
@@ -190,7 +212,7 @@ model *MODEL1408190002()
   reaction_82: species_82 + species_84 -> species_83; compartment_1*(parameter_136*species_82*species_84 - parameter_137*species_83);
   reaction_83: species_83 => species_82 + species_85; compartment_1*parameter_138*species_83;
   reaction_84: species_82 + species_85 -> species_86; compartment_1*(parameter_139*species_82*species_85 - parameter_140*species_86);
-  reaction_85: 2species_85 -> species_87; compartment_1*(parameter_141*species_85^2 - parameter_142*species_87);
+  reaction_85: 2 species_85 -> species_87; compartment_1*(parameter_141*species_85^2 - parameter_142*species_87);
   reaction_86: species_82 + species_108 -> species_88; compartment_1*(parameter_143*species_82*species_108 - parameter_144*species_88);
   re112: species_82 + species_11 -> s118; compartment_1*(parameter_221*species_82*species_11 - parameter_222*s118);
   re117: s120 => s122; compartment_1*parameter_237*s120;
@@ -349,7 +371,7 @@ model *MODEL1408190002()
   parameter_35 = 0.001;
   parameter_36 = 0.2;
   parameter_37 = 0.003;
-  parameter_38 = 2e-007;
+  parameter_38 = 2e-07;
   parameter_39 = 0.2;
   parameter_40 = 0.005;
   parameter_41 = 0.1;
@@ -361,7 +383,7 @@ model *MODEL1408190002()
   parameter_47 = 0.2;
   parameter_48 = 0.005;
   parameter_49 = 0.2;
-  parameter_50 = 2e-007;
+  parameter_50 = 2e-07;
   parameter_51 = 0.05;
   parameter_52 = 0.01;
   parameter_53 = 400;
@@ -460,7 +482,7 @@ model *MODEL1408190002()
   parameter_146 = 0.001;
   parameter_147 = 0.2;
   parameter_148 = 0.003;
-  parameter_149 = 2e-007;
+  parameter_149 = 2e-07;
   parameter_150 = 0.2;
   parameter_151 = 0.005;
   parameter_152 = 0.001;
@@ -483,7 +505,7 @@ model *MODEL1408190002()
   parameter_169 = 0.001;
   parameter_170 = 0.2;
   parameter_171 = 0.005;
-  parameter_172 = 2e-007;
+  parameter_172 = 2e-07;
   parameter_173 = 0.2;
   parameter_174 = 0.008;
   parameter_175 = 0.8;
@@ -985,4 +1007,361 @@ model *MODEL1408190002()
   re162 is "reaction_n14";
   re163 is "reaction_n15";
   re164 is "reaction_n16";
+
+  // CV terms:
+  default hypernym "http://identifiers.org/go/GO:0005576"
+  compartment_1 hypernym "http://identifiers.org/go/GO:0005623"
+  c2 hypernym "http://identifiers.org/go/GO:0005634"
+  c3 hypernym "http://identifiers.org/go/GO:0005634"
+  species_1 hypernym "http://identifiers.org/uniprot/P05231"
+  species_79 hypernym "http://identifiers.org/uniprot/P01579"
+  s118 part "http://identifiers.org/uniprot/P01579",
+            "http://identifiers.org/uniprot/P15260",
+            "http://identifiers.org/uniprot/O60674"
+  s118 property "http://identifiers.org/biomodels.sbo/SBO:0000286"
+  s118 hypernym "http://identifiers.org/uniprot/P40763"
+  s119 part "http://identifiers.org/uniprot/P15260",
+            "http://identifiers.org/uniprot/P01579",
+            "http://identifiers.org/uniprot/O60674"
+  s119 part "http://identifiers.org/uniprot/P40763"
+  s119 property "http://identifiers.org/biomodels.sbo/SBO:0000286"
+  s119 property "http://identifiers.org/pato/PATO:0002220"
+  s120 part "http://identifiers.org/uniprot/P40763",
+            "http://identifiers.org/uniprot/P42224"
+  s120 property "http://identifiers.org/biomodels.sbo/SBO:0000607",
+                "http://identifiers.org/pato/PATO:0002220"
+  s122 part "http://identifiers.org/uniprot/P40763",
+            "http://identifiers.org/uniprot/P42224"
+  s122 property "http://identifiers.org/biomodels.sbo/SBO:0000607",
+                "http://identifiers.org/pato/PATO:0002220"
+  species_2 hypernym "http://identifiers.org/uniprot/P08887"
+  species_3 part "http://identifiers.org/uniprot/P08887",
+                 "http://identifiers.org/uniprot/P05231"
+  species_4 hypernym "http://identifiers.org/uniprot/P40189"
+  species_5 hypernym "http://identifiers.org/uniprot/O60674"
+  species_6 hypernym "http://identifiers.org/uniprot/P23458",
+                     "http://identifiers.org/uniprot/P40189"
+  species_7 part "http://identifiers.org/uniprot/P05231",
+                 "http://identifiers.org/uniprot/P08887",
+                 "http://identifiers.org/uniprot/P23458",
+                 "http://identifiers.org/uniprot/P40189"
+  species_8 part "http://identifiers.org/uniprot/P08887",
+                 "http://identifiers.org/uniprot/P05231",
+                 "http://identifiers.org/uniprot/P23458",
+                 "http://identifiers.org/uniprot/P40189"
+  species_8 property "http://identifiers.org/biomodels.sbo/SBO:0000286"
+  species_9 part "http://identifiers.org/uniprot/P08887",
+                 "http://identifiers.org/uniprot/P05231",
+                 "http://identifiers.org/uniprot/P23458",
+                 "http://identifiers.org/uniprot/P40189"
+  species_9 property "http://identifiers.org/biomodels.sbo/SBO:0000286",
+                     "http://identifiers.org/pato/PATO:0002354"
+  species_10 part "http://identifiers.org/uniprot/P40763"
+  species_10 part "http://identifiers.org/uniprot/P08887",
+                  "http://identifiers.org/uniprot/P05231",
+                  "http://identifiers.org/uniprot/P23458",
+                  "http://identifiers.org/uniprot/P40189"
+  species_10 property "http://identifiers.org/biomodels.sbo/SBO:0000286"
+  species_11 hypernym "http://identifiers.org/uniprot/P40763"
+  species_12 hypernym "http://identifiers.org/uniprot/P40763"
+  species_12 property "http://identifiers.org/pato/PATO:0002220"
+  species_13 part "http://identifiers.org/uniprot/P40763"
+  species_13 part "http://identifiers.org/uniprot/P08887",
+                  "http://identifiers.org/uniprot/P05231",
+                  "http://identifiers.org/uniprot/P23458",
+                  "http://identifiers.org/uniprot/P40189"
+  species_13 property "http://identifiers.org/pato/PATO:0002220"
+  species_13 property "http://identifiers.org/biomodels.sbo/SBO:0000286"
+  species_14 property "http://identifiers.org/biomodels.sbo/SBO:0000608",
+                      "http://identifiers.org/pato/PATO:0002220"
+  species_14 hypernym "http://identifiers.org/uniprot/P40763"
+  species_15 part "http://identifiers.org/uniprot/P08887",
+                  "http://identifiers.org/uniprot/P05231",
+                  "http://identifiers.org/uniprot/P23458",
+                  "http://identifiers.org/uniprot/P40189"
+  species_15 part "http://identifiers.org/uniprot/O14543"
+  species_15 property "http://identifiers.org/biomodels.sbo/SBO:0000286"
+  species_16 part "http://identifiers.org/uniprot/P08887",
+                  "http://identifiers.org/uniprot/P05231",
+                  "http://identifiers.org/uniprot/P23458",
+                  "http://identifiers.org/uniprot/P40189"
+  species_16 part "http://identifiers.org/uniprot/Q06124"
+  species_16 property "http://identifiers.org/biomodels.sbo/SBO:0000286"
+  species_18 hypernym "http://identifiers.org/uniprot/P40763"
+  species_18 property "http://identifiers.org/pato/PATO:0002220"
+  species_19 hypernym "http://identifiers.org/uniprot/O14543"
+  species_20 hypernym "http://identifiers.org/uniprot/P62136"
+  species_21 part "http://identifiers.org/uniprot/P62136",
+                  "http://identifiers.org/uniprot/P40763"
+  species_21 property "http://identifiers.org/pato/PATO:0002220"
+  species_22 part "http://identifiers.org/uniprot/P40763",
+                  "http://identifiers.org/uniprot/P62136"
+  species_22 property "http://identifiers.org/biomodels.sbo/SBO:0000608",
+                      "http://identifiers.org/pato/PATO:0002220"
+  species_31 hypernym "http://identifiers.org/uniprot/O14543"
+  species_31 property "http://identifiers.org/biomodels.sbo/SBO:0000278"
+  species_32 hypernym "http://identifiers.org/uniprot/P62993"
+  species_33 part "http://identifiers.org/uniprot/P05231",
+                  "http://identifiers.org/uniprot/P08887",
+                  "http://identifiers.org/uniprot/P40189",
+                  "http://identifiers.org/uniprot/P23458"
+  species_33 part "http://identifiers.org/uniprot/Q06124"
+  species_33 property "http://identifiers.org/biomodels.sbo/SBO:0000286"
+  species_33 property "http://identifiers.org/pato/PATO:0002220"
+  species_34 part "http://identifiers.org/uniprot/P08887",
+                  "http://identifiers.org/uniprot/P05231",
+                  "http://identifiers.org/uniprot/P23458",
+                  "http://identifiers.org/uniprot/P40189"
+  species_34 part "http://identifiers.org/uniprot/Q06124",
+                  "http://identifiers.org/uniprot/P62993"
+  species_34 property "http://identifiers.org/biomodels.sbo/SBO:0000286"
+  species_35 hypernym "http://identifiers.org/uniprot/Q07889"
+  species_36 hypernym "http://identifiers.org/uniprot/P62993",
+                      "http://identifiers.org/uniprot/Q06124"
+  species_37 part "http://identifiers.org/uniprot/P08887",
+                  "http://identifiers.org/uniprot/P05231",
+                  "http://identifiers.org/uniprot/P40189",
+                  "http://identifiers.org/uniprot/P23458"
+  species_37 part "http://identifiers.org/uniprot/Q07889",
+                  "http://identifiers.org/uniprot/Q06124",
+                  "http://identifiers.org/uniprot/P62993"
+  species_37 property "http://identifiers.org/biomodels.sbo/SBO:0000286"
+  species_38 hypernym "http://identifiers.org/uniprot/P01112"
+  species_38 property "http://identifiers.org/pato/PATO:0002355"
+  species_39 part "http://identifiers.org/uniprot/P08887",
+                  "http://identifiers.org/uniprot/P05231",
+                  "http://identifiers.org/uniprot/P23458",
+                  "http://identifiers.org/uniprot/P40189"
+  species_39 part "http://identifiers.org/uniprot/Q07889",
+                  "http://identifiers.org/uniprot/Q06124",
+                  "http://identifiers.org/uniprot/P62993",
+                  "http://identifiers.org/uniprot/P01112"
+  species_39 property "http://identifiers.org/biomodels.sbo/SBO:0000286"
+  species_40 hypernym "http://identifiers.org/uniprot/P01112"
+  species_40 property "http://identifiers.org/pato/PATO:0002354"
+  species_41 hypernym "http://identifiers.org/uniprot/P04049"
+  species_42 part "http://identifiers.org/uniprot/P04049",
+                  "http://identifiers.org/uniprot/P01112"
+  species_43 hypernym "http://identifiers.org/uniprot/P01112"
+  species_43 property "http://identifiers.org/pato/PATO:0002220",
+                      "http://identifiers.org/pato/PATO:0002354"
+  species_44 hypernym "http://identifiers.org/uniprot/P04049"
+  species_44 property "http://identifiers.org/pato/PATO:0002354"
+  species_45 part "http://identifiers.org/uniprot/P08887",
+                  "http://identifiers.org/uniprot/P05231",
+                  "http://identifiers.org/uniprot/P23458",
+                  "http://identifiers.org/uniprot/P40189"
+  species_45 part "http://identifiers.org/uniprot/Q06124",
+                  "http://identifiers.org/uniprot/Q07889",
+                  "http://identifiers.org/uniprot/P62993",
+                  "http://identifiers.org/uniprot/P01112"
+  species_45 property "http://identifiers.org/biomodels.sbo/SBO:0000286"
+  species_46 part "http://identifiers.org/uniprot/Q06124",
+                  "http://identifiers.org/uniprot/Q07889",
+                  "http://identifiers.org/uniprot/P62993"
+  species_47 part "http://identifiers.org/uniprot/P62993",
+                  "http://identifiers.org/uniprot/Q07889"
+  species_48 hypernym "http://identifiers.org/uniprot/Q06124"
+  species_48 property "http://identifiers.org/pato/PATO:0002220"
+  species_49 hypernym "http://identifiers.org/uniprot/P62136"
+  species_50 part "http://identifiers.org/uniprot/P62136",
+                  "http://identifiers.org/uniprot/P04049"
+  species_51 hypernym "http://identifiers.org/uniprot/Q02750"
+  species_52 part "http://identifiers.org/uniprot/Q02750",
+                  "http://identifiers.org/uniprot/P04049"
+  species_53 hypernym "http://identifiers.org/uniprot/Q02750"
+  species_53 property "http://identifiers.org/pato/PATO:0002220"
+  species_54 part "http://identifiers.org/uniprot/Q02750",
+                  "http://identifiers.org/uniprot/P04049"
+  species_54 property "http://identifiers.org/pato/PATO:0002220"
+  species_55 hypernym "http://identifiers.org/uniprot/Q02750"
+  species_55 property "http://identifiers.org/pato/PATO:0002220"
+  species_56 hypernym "http://identifiers.org/uniprot/P67775",
+                      "http://identifiers.org/uniprot/Q02750"
+  species_56 property "http://identifiers.org/pato/PATO:0002220"
+  species_57 hypernym "http://identifiers.org/uniprot/P67775"
+  species_58 part "http://identifiers.org/uniprot/P67775",
+                  "http://identifiers.org/uniprot/Q02750"
+  species_58 property "http://identifiers.org/pato/PATO:0002220"
+  species_59 hypernym "http://identifiers.org/uniprot/P28482"
+  species_60 part "http://identifiers.org/uniprot/P28482",
+                  "http://identifiers.org/uniprot/Q02750"
+  species_60 property "http://identifiers.org/pato/PATO:0002220"
+  species_61 hypernym "http://identifiers.org/uniprot/P28482"
+  species_61 property "http://identifiers.org/pato/PATO:0002220"
+  species_62 part "http://identifiers.org/uniprot/P28482",
+                  "http://identifiers.org/uniprot/Q02750"
+  species_62 property "http://identifiers.org/pato/PATO:0002220"
+  species_63 hypernym "http://identifiers.org/uniprot/P28482"
+  species_64 hypernym "http://identifiers.org/uniprot/P67775"
+  species_65 part "http://identifiers.org/uniprot/P28482",
+                  "http://identifiers.org/uniprot/P67775"
+  species_65 property "http://identifiers.org/pato/PATO:0002220"
+  species_66 part "http://identifiers.org/uniprot/P28482",
+                  "http://identifiers.org/uniprot/P67775"
+  species_66 property "http://identifiers.org/pato/PATO:0002220"
+  s126 part "http://identifiers.org/uniprot/P42224",
+            "http://identifiers.org/uniprot/P40763",
+            "http://identifiers.org/uniprot/P67775"
+  s126 property "http://identifiers.org/pato/PATO:0002220"
+  s135 part "http://identifiers.org/uniprot/P40763",
+            "http://identifiers.org/uniprot/P42224",
+            "http://identifiers.org/uniprot/P62136"
+  s135 property "http://identifiers.org/pato/PATO:0002220"
+  species_74 hypernym "http://identifiers.org/uniprot/P17676"
+  species_75 hypernym "http://identifiers.org/uniprot/P17676"
+  species_75 property "http://identifiers.org/pato/PATO:0002354"
+  species_76 hypernym "http://identifiers.org/uniprot/P17676"
+  species_76 property "http://identifiers.org/pato/PATO:0002354"
+  species_78 part "http://identifiers.org/uniprot/P15260",
+                  "http://identifiers.org/uniprot/O60674"
+  species_80 part "http://identifiers.org/uniprot/O60674",
+                  "http://identifiers.org/uniprot/P15260",
+                  "http://identifiers.org/uniprot/P01579"
+  species_81 part "http://identifiers.org/uniprot/P01579",
+                  "http://identifiers.org/uniprot/O60674",
+                  "http://identifiers.org/uniprot/P15260"
+  species_81 property "http://identifiers.org/biomodels.sbo/SBO:0000286"
+  species_82 part "http://identifiers.org/uniprot/P01579",
+                  "http://identifiers.org/uniprot/O60674",
+                  "http://identifiers.org/uniprot/P15260"
+  species_82 property "http://identifiers.org/biomodels.sbo/SBO:0000286",
+                      "http://identifiers.org/pato/PATO:0002220"
+  species_83 part "http://identifiers.org/uniprot/P01579",
+                  "http://identifiers.org/uniprot/O60674",
+                  "http://identifiers.org/uniprot/P15260"
+  species_83 part "http://identifiers.org/uniprot/P42224"
+  species_83 property "http://identifiers.org/biomodels.sbo/SBO:0000286",
+                      "http://identifiers.org/pato/PATO:0002220"
+  species_84 hypernym "http://identifiers.org/uniprot/P42224"
+  species_85 hypernym "http://identifiers.org/uniprot/P42224"
+  species_85 property "http://identifiers.org/pato/PATO:0002220"
+  species_86 part "http://identifiers.org/uniprot/P01579",
+                  "http://identifiers.org/uniprot/P15260",
+                  "http://identifiers.org/uniprot/O60674"
+  species_86 part "http://identifiers.org/uniprot/P42224"
+  species_86 property "http://identifiers.org/biomodels.sbo/SBO:0000286",
+                      "http://identifiers.org/pato/PATO:0002220"
+  species_86 property "http://identifiers.org/pato/PATO:0002220"
+  species_87 hypernym "http://identifiers.org/uniprot/P42224"
+  species_87 property "http://identifiers.org/biomodels.sbo/SBO:0000608",
+                      "http://identifiers.org/pato/PATO:0002220"
+  species_88 part "http://identifiers.org/uniprot/P01579",
+                  "http://identifiers.org/uniprot/P15260",
+                  "http://identifiers.org/uniprot/O60674"
+  species_88 part "http://identifiers.org/uniprot/Q06124"
+  species_88 property "http://identifiers.org/biomodels.sbo/SBO:0000286",
+                      "http://identifiers.org/pato/PATO:0002220"
+  species_90 part "http://identifiers.org/uniprot/P62136",
+                  "http://identifiers.org/uniprot/P42224"
+  species_90 property "http://identifiers.org/pato/PATO:0002220"
+  species_91 part "http://identifiers.org/uniprot/P42224"
+  species_91 part "http://identifiers.org/uniprot/P42224"
+  species_91 property "http://identifiers.org/pato/PATO:0002220"
+  species_98 hypernym "http://identifiers.org/uniprot/O15524"
+  species_98 property "http://identifiers.org/biomodels.sbo/SBO:0000278"
+  species_99 hypernym "http://identifiers.org/uniprot/O15524"
+  species_100 part "http://identifiers.org/uniprot/O60674",
+                   "http://identifiers.org/uniprot/P01579",
+                   "http://identifiers.org/uniprot/P15260"
+  species_100 part "http://identifiers.org/uniprot/O15524"
+  species_100 property "http://identifiers.org/biomodels.sbo/SBO:0000286",
+                       "http://identifiers.org/pato/PATO:0002220"
+  species_101 part "http://identifiers.org/uniprot/P62136"
+  species_101 part "http://identifiers.org/uniprot/P42224"
+  species_101 property "http://identifiers.org/biomodels.sbo/SBO:0000286",
+                       "http://identifiers.org/pato/PATO:0002220"
+  species_104 part "http://identifiers.org/uniprot/P15260",
+                   "http://identifiers.org/uniprot/P01579",
+                   "http://identifiers.org/uniprot/O60674"
+  species_104 part "http://identifiers.org/uniprot/P42224",
+                   "http://identifiers.org/uniprot/O15524"
+  species_104 property "http://identifiers.org/biomodels.sbo/SBO:0000286",
+                       "http://identifiers.org/pato/PATO:0002220"
+  species_105 part "http://identifiers.org/uniprot/P15260",
+                   "http://identifiers.org/uniprot/P01579",
+                   "http://identifiers.org/uniprot/O60674"
+  species_105 part "http://identifiers.org/uniprot/P42224",
+                   "http://identifiers.org/uniprot/O15524",
+                   "http://identifiers.org/uniprot/Q06124"
+  species_105 property "http://identifiers.org/biomodels.sbo/SBO:0000286",
+                       "http://identifiers.org/pato/PATO:0002220"
+  species_106 part "http://identifiers.org/uniprot/P15260",
+                   "http://identifiers.org/uniprot/P01579",
+                   "http://identifiers.org/uniprot/O60674"
+  species_106 part "http://identifiers.org/uniprot/P42224",
+                   "http://identifiers.org/uniprot/Q06124"
+  species_106 property "http://identifiers.org/biomodels.sbo/SBO:0000286",
+                       "http://identifiers.org/pato/PATO:0002220"
+  species_107 hypernym "http://identifiers.org/uniprot/P15260"
+  species_108 hypernym "http://identifiers.org/uniprot/Q06124"
+  s137 hypernym "http://identifiers.org/uniprot/P40763"
+  s137 property "http://identifiers.org/pato/PATO:0002220"
+  species_25 part "http://identifiers.org/uniprot/P67775"
+  species_25 part "http://identifiers.org/uniprot/P40763"
+  species_25 property "http://identifiers.org/biomodels.sbo/SBO:0000608",
+                      "http://identifiers.org/pato/PATO:0002220"
+  species_27 part "http://identifiers.org/uniprot/P67775"
+  species_27 part "http://identifiers.org/uniprot/P40763"
+  species_27 property "http://identifiers.org/pato/PATO:0002220"
+  species_23 part "http://identifiers.org/uniprot/P40763"
+  species_23 property "http://identifiers.org/biomodels.sbo/SBO:0000608",
+                      "http://identifiers.org/pato/PATO:0002220"
+  species_26 hypernym "http://identifiers.org/uniprot/P40763"
+  species_26 property "http://identifiers.org/pato/PATO:0002220"
+  species_29 part "http://identifiers.org/uniprot/P40763"
+  species_29 part "http://identifiers.org/uniprot/P40763"
+  species_29 property "http://identifiers.org/pato/PATO:0002220"
+  s136 hypernym "http://identifiers.org/uniprot/P42224"
+  s136 property "http://identifiers.org/pato/PATO:0002220"
+  species_102 part "http://identifiers.org/uniprot/P67775"
+  species_102 part "http://identifiers.org/uniprot/P42224"
+  species_102 property "http://identifiers.org/biomodels.sbo/SBO:0000608",
+                       "http://identifiers.org/pato/PATO:0002220"
+  species_94 part "http://identifiers.org/uniprot/P42224"
+  species_94 part "http://identifiers.org/uniprot/P67775"
+  species_94 property "http://identifiers.org/pato/PATO:0002220"
+  species_92 property "http://identifiers.org/biomodels.sbo/SBO:0000608",
+                      "http://identifiers.org/pato/PATO:0002220"
+  species_92 part "http://identifiers.org/uniprot/P42224"
+  species_95 hypernym "http://identifiers.org/uniprot/P42224"
+  species_95 property "http://identifiers.org/pato/PATO:0002220"
+  species_103 part "http://identifiers.org/uniprot/P42224"
+  species_103 part "http://identifiers.org/uniprot/P42224"
+  species_103 property "http://identifiers.org/pato/PATO:0002220"
+  s139 part "http://identifiers.org/uniprot/P08887",
+            "http://identifiers.org/uniprot/P05231",
+            "http://identifiers.org/uniprot/P40189",
+            "http://identifiers.org/uniprot/P23458"
+  s139 part "http://identifiers.org/uniprot/P42224"
+  s139 property "http://identifiers.org/biomodels.sbo/SBO:0000286",
+                "http://identifiers.org/pato/PATO:0002220"
+  s139 property "http://identifiers.org/pato/PATO:0002220"
+  s138 part "http://identifiers.org/uniprot/P08887",
+            "http://identifiers.org/uniprot/P05231",
+            "http://identifiers.org/uniprot/P40189",
+            "http://identifiers.org/uniprot/P23458"
+  s138 part "http://identifiers.org/uniprot/P42224"
+  s138 property "http://identifiers.org/biomodels.sbo/SBO:0000286",
+                "http://identifiers.org/pato/PATO:0002220"
+  s140 hypernym "http://identifiers.org/uniprot/P23458"
+  species_96 hypernym "http://identifiers.org/uniprot/P42224"
+  species_97 hypernym "http://identifiers.org/uniprot/O15524"
+  species_97 property "http://identifiers.org/biomodels.sbo/SBO:0000278"
+  species_24 hypernym "http://identifiers.org/uniprot/P67775"
+  species_28 hypernym "http://identifiers.org/uniprot/P40763"
+  species_30 hypernym "http://identifiers.org/uniprot/O14543"
+  species_30 property "http://identifiers.org/biomodels.sbo/SBO:0000278"
 end
+
+MODEL1408190002 is "Qi2013 - IL-6 and IFN crosstalk model"
+
+MODEL1408190002 model_entity_is "http://identifiers.org/biomodels.db/MODEL1408190002"
+MODEL1408190002 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000544"
+MODEL1408190002 description "http://identifiers.org/pubmed/23384097"
+MODEL1408190002 taxon "http://identifiers.org/taxonomy/131567"
+MODEL1408190002 part "http://identifiers.org/go/GO:0070102",
+                     "http://identifiers.org/go/GO:0060333"
+MODEL1408190002 parthood "http://identifiers.org/reactome/REACT_25078",
+                         "http://identifiers.org/reactome/REACT_27307"
+MODEL1408190002 hypernym "http://identifiers.org/go/GO:0019221"

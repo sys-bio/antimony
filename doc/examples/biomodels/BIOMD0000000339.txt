@@ -1,23 +1,33 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 function Irreversible_association(s1, s2, c)
-  (s1*s2)/c;
+  s1*s2/c;
 end
 
+Irreversible_association is "Irreversible association"
+
 function Hyperbolic_rate_law(v, substrate, enzyme, k)
-  (v*substrate*enzyme)/(k + enzyme);
+  v*substrate*enzyme/(k + enzyme);
 end
+
+Hyperbolic_rate_law is "Hyperbolic rate law"
 
 function Factor_production(initial, degradation)
   initial*degradation;
 end
 
+Factor_production is "Factor production"
+
 function VKH2mediated_factor_production(d_factor, factor_initial, VKH2, VKH2_initial)
-  (d_factor*factor_initial*VKH2)/VKH2_initial;
+  d_factor*factor_initial*VKH2/VKH2_initial;
 end
 
+VKH2mediated_factor_production is "VKH2-mediated factor production"
+
 function Warfarin_inhibited_first_order_kinetics(Imax, Cwarf, IC50, substrate, degradation)
-  degradation*substrate*(1 - (Imax*Cwarf)/(IC50 + Cwarf));
+  degradation*substrate*(1 - Imax*Cwarf/(IC50 + Cwarf));
 end
+
+Warfarin_inhibited_first_order_kinetics is "Warfarin inhibited first order kinetics"
 
 
 model *Model_1()
@@ -47,7 +57,7 @@ model *Model_1()
   DP := FDP + D;
 
   // Rate Rules:
-  C_warf' = (Warfarin_ka*A_warf)/Warfarin_Vd - Warfarin_ke*C_warf;
+  C_warf' = Warfarin_ka*A_warf/Warfarin_Vd - Warfarin_ke*C_warf;
   A_warf' = -Warfarin_ka*A_warf;
   Integral_Fibrin' = F;
 
@@ -169,7 +179,7 @@ model *Model_1()
   dVK: VK => ; compartment_1*d_VK*VK;
 
   // Events:
-  clottingTime_event: at Integral_Fibrin*3600 > 1500: clottingTime_s = time*3600;
+  clottingTime_event: at (Integral_Fibrin*3600) > 1500: clottingTime_s = time*3600;
   dilution_event: at time > 0: compartment_1 = compartment_1*3;
 
   // Species initializations:
@@ -265,8 +275,8 @@ model *Model_1()
   d_PS = 0.0165;
   VitaminK_Vc = 24;
   d_VK2 = 0.0228;
-  d_VKH2 = (d_VK2*VK0)/VKH20;
-  d_VKO = (d_VK2*VK0)/VKO0;
+  d_VKH2 = d_VK2*VK0/VKH20;
+  d_VKO = d_VK2*VK0/VKO0;
   VitaminK_k21_Vc = 0.0122/VitaminK_Vc;
   VitaminK_k12 = 0.0587;
   Heparin_ke = 0.693;
@@ -288,7 +298,7 @@ model *Model_1()
   c46 = c45*R2;
   d_VK = 0.2052;
   r1__v = 50000;
-  r1__k = 1e-006;
+  r1__k = 1e-06;
   r2__v = 50;
   r2__k = 1;
   r3__v = 7;
@@ -303,7 +313,7 @@ model *Model_1()
   r7__k = 10;
   r8__v = 2;
   r8__k = 0.1;
-  r9__v = 1e-009;
+  r9__v = 1e-09;
   r9__k = 10;
   r10_v = 50000;
   r10_k = 10;
@@ -441,4 +451,237 @@ model *Model_1()
   r7_ is "r7 ";
   r8_ is "r8 ";
   r9_ is "r9 ";
+
+  // SBO terms:
+  d_II.sboTerm = 35
+  d_VII.sboTerm = 35
+  d_IX.sboTerm = 35
+  d_X.sboTerm = 35
+  d_PC.sboTerm = 35
+  d_PS.sboTerm = 35
+  d_VKH2.sboTerm = 35
+  VitaminK_k21_Vc.sboTerm = 38
+  VitaminK_k12.sboTerm = 35
+  Heparin_ke.sboTerm = 35
+  d_XII.sboTerm = 35
+  d_VIII.sboTerm = 35
+  d_V.sboTerm = 35
+  d_Fg.sboTerm = 35
+  d_XIII.sboTerm = 35
+  d_Pg.sboTerm = 35
+  d_Tmod.sboTerm = 35
+  d_TFPI.sboTerm = 35
+  d_Pk.sboTerm = 35
+  c44.sboTerm = 36
+  c45.sboTerm = 36
+  c46.sboTerm = 36
+  d_VK.sboTerm = 35
+  r1__v.sboTerm = 25
+  r1__k.sboTerm = 371
+  r2__v.sboTerm = 25
+  r2__k.sboTerm = 371
+  r3__v.sboTerm = 25
+  r3__k.sboTerm = 371
+  r4__v.sboTerm = 25
+  r4__k.sboTerm = 371
+  r5__v.sboTerm = 25
+  r5__k.sboTerm = 371
+  r6__v.sboTerm = 25
+  r6__k.sboTerm = 371
+  r7__v.sboTerm = 25
+  r7__k.sboTerm = 371
+  r8__v.sboTerm = 25
+  r8__k.sboTerm = 371
+  r9__v.sboTerm = 25
+  r9__k.sboTerm = 371
+  r10_v.sboTerm = 25
+  r10_k.sboTerm = 371
+  r11_v.sboTerm = 25
+  r11_k.sboTerm = 371
+  r12_v.sboTerm = 25
+  r12_k.sboTerm = 371
+  r13_v.sboTerm = 25
+  r13_k.sboTerm = 371
+  r14_v.sboTerm = 25
+  r14_k.sboTerm = 371
+  r15_v.sboTerm = 25
+  r15_k.sboTerm = 371
+  r16_v.sboTerm = 25
+  r16_k.sboTerm = 371
+  r17_v.sboTerm = 25
+  r17_k.sboTerm = 371
+  r18_v.sboTerm = 25
+  r18_k.sboTerm = 371
+  r19_v.sboTerm = 25
+  r19_k.sboTerm = 371
+  r20_v.sboTerm = 25
+  r20_k.sboTerm = 371
+  r21_v.sboTerm = 25
+  r21_k.sboTerm = 371
+  r22_v.sboTerm = 25
+  r22_k.sboTerm = 371
+  r23_v.sboTerm = 25
+  r23_k.sboTerm = 371
+  r24_v.sboTerm = 25
+  r24_k.sboTerm = 371
+  r25_v.sboTerm = 25
+  r25_k.sboTerm = 371
+  r26_c.sboTerm = 36
+  r27_c.sboTerm = 36
+  r28_c.sboTerm = 36
+  r29_c.sboTerm = 36
+  r30_c.sboTerm = 36
+  r31_c.sboTerm = 36
+  r32_c.sboTerm = 36
+  r33_v.sboTerm = 25
+  r33_k.sboTerm = 371
+  r34_v.sboTerm = 25
+  r34_k.sboTerm = 371
+  r35_v.sboTerm = 25
+  r35_k.sboTerm = 371
+  r36_v.sboTerm = 25
+  r36_k.sboTerm = 371
+  r37_c.sboTerm = 36
+  r38_v.sboTerm = 25
+  r38_k.sboTerm = 371
+  r39_v.sboTerm = 25
+  r39_k.sboTerm = 371
+  r40_v.sboTerm = 25
+  r40_k.sboTerm = 371
+  r41_v.sboTerm = 25
+  r41_k.sboTerm = 371
+  r42_v.sboTerm = 25
+  r42_k.sboTerm = 371
+  r43_v.sboTerm = 25
+  r43_k.sboTerm = 371
+  dF_k1.sboTerm = 35
+  dXF_k1.sboTerm = 35
+  dIIa_k1.sboTerm = 35
+  dTF_k1.sboTerm = 35
+  dVa_k1.sboTerm = 35
+  dVIIa_k1.sboTerm = 35
+  dVIIIa_k1.sboTerm = 35
+  dXa_k1.sboTerm = 35
+  dIXa_k1.sboTerm = 35
+  dXIIa_k1.sboTerm = 35
+  dXIIIa_k1.sboTerm = 35
+  dK_k1.sboTerm = 35
+  dP_k1.sboTerm = 35
+  dAPC_k1.sboTerm = 35
+  dFDP_k1.sboTerm = 35
+  dD_k1.sboTerm = 35
+  dVIIa_TF_k1.sboTerm = 35
+  dVII_TF_k1.sboTerm = 35
+  dAPC_PS_k1.sboTerm = 35
+  dVa_Xa_k1.sboTerm = 35
+  dIXa_VIIIa_k1.sboTerm = 35
+  dIIa_Tmod_k1.sboTerm = 35
+  dXa_TFPI_k1.sboTerm = 35
+  dVIIa_TF_Xa_TFPI_k1.sboTerm = 35
+  dTAT_k1.sboTerm = 35
+  dCA_k1.sboTerm = 35
+  dXIa_k1.sboTerm = 35
+  dXI_k1.sboTerm = 35
+
+  // CV terms:
+  IIa hypernym "http://identifiers.org/uniprot/P00734"
+  VIII identity "http://identifiers.org/uniprot/P00451"
+  VIIIa hypernym "http://identifiers.org/uniprot/P00451"
+  APC_PS part "http://identifiers.org/uniprot/P04070",
+              "http://identifiers.org/uniprot/P07225"
+  IX identity "http://identifiers.org/uniprot/P00740"
+  IXa hypernym "http://identifiers.org/uniprot/P00740"
+  XIa hypernym "http://identifiers.org/uniprot/P03951"
+  XI identity "http://identifiers.org/uniprot/P03951"
+  XIIa hypernym "http://identifiers.org/uniprot/P00748"
+  VII identity "http://identifiers.org/uniprot/P08709"
+  VIIa hypernym "http://identifiers.org/uniprot/P08709"
+  X identity "http://identifiers.org/uniprot/P00742"
+  Xa hypernym "http://identifiers.org/uniprot/P00742"
+  IXa_VIIIa part "http://identifiers.org/uniprot/P00740",
+                 "http://identifiers.org/uniprot/P00451"
+  V identity "http://identifiers.org/uniprot/P12259"
+  Va hypernym "http://identifiers.org/uniprot/P12259"
+  II identity "http://identifiers.org/uniprot/P00734"
+  F part "http://identifiers.org/uniprot/P02671",
+         "http://identifiers.org/uniprot/P02679",
+         "http://identifiers.org/uniprot/P02675"
+  Fg part "http://identifiers.org/uniprot/P02671",
+          "http://identifiers.org/uniprot/P02679",
+          "http://identifiers.org/uniprot/P02675"
+  FDP part "http://identifiers.org/uniprot/P02671",
+           "http://identifiers.org/uniprot/P02679",
+           "http://identifiers.org/uniprot/P02675"
+  P hypernym "http://identifiers.org/uniprot/P00747"
+  XF part "http://identifiers.org/uniprot/P02671",
+          "http://identifiers.org/uniprot/P02679",
+          "http://identifiers.org/uniprot/P02675"
+  XIII part "http://identifiers.org/uniprot/P00488",
+            "http://identifiers.org/uniprot/P05160"
+  Pg identity "http://identifiers.org/uniprot/P00747"
+  APC hypernym "http://identifiers.org/uniprot/P04070"
+  IIa_Tmod part "http://identifiers.org/uniprot/P07204",
+                "http://identifiers.org/uniprot/P00734"
+  PC identity "http://identifiers.org/uniprot/P04070"
+  Tmod identity "http://identifiers.org/uniprot/P07204"
+  TF identity "http://identifiers.org/uniprot/P13726"
+  VIIa_TF part "http://identifiers.org/uniprot/P13726",
+               "http://identifiers.org/uniprot/P08709"
+  VII_TF part "http://identifiers.org/uniprot/P13726",
+              "http://identifiers.org/uniprot/P08709"
+  Xa_TFPI part "http://identifiers.org/uniprot/P00742",
+               "http://identifiers.org/uniprot/P10646"
+  TFPI identity "http://identifiers.org/uniprot/P10646"
+  PS identity "http://identifiers.org/uniprot/P07225"
+  VKH2 hypernym "http://identifiers.org/chebi/CHEBI:28384"
+  Va_Xa part "http://identifiers.org/uniprot/P12259",
+             "http://identifiers.org/uniprot/P00742"
+  XII identity "http://identifiers.org/uniprot/P00748"
+  K hypernym "http://identifiers.org/uniprot/P03952"
+  ATIII_Heparin part "http://identifiers.org/chebi/CHEBI:28304",
+                     "http://identifiers.org/uniprot/P01008"
+  Xa_ATIII_Heparin part "http://identifiers.org/chebi/CHEBI:28304",
+                        "http://identifiers.org/uniprot/P00742",
+                        "http://identifiers.org/uniprot/P01008"
+  VK identity "http://identifiers.org/chebi/CHEBI:28384"
+  C_warf identity "http://identifiers.org/chebi/CHEBI:10033"
+  A_warf identity "http://identifiers.org/chebi/CHEBI:10033"
+  VKO hypernym "http://identifiers.org/chebi/CHEBI:28384"
+  Pk identity "http://identifiers.org/uniprot/P03952"
+  TAT part "http://identifiers.org/uniprot/P00734",
+           "http://identifiers.org/uniprot/P01008"
+  VIIa_TF_Xa_TFPI part "http://identifiers.org/uniprot/P13726",
+                       "http://identifiers.org/uniprot/P00742",
+                       "http://identifiers.org/uniprot/P08709",
+                       "http://identifiers.org/uniprot/P10646"
+  XIIIa version "http://identifiers.org/uniprot/P00488"
+  IIa_ATIII_Heparin part "http://identifiers.org/chebi/CHEBI:28304",
+                         "http://identifiers.org/uniprot/P01008",
+                         "http://identifiers.org/uniprot/P00734"
+  IXa_ATIII_Heparin part "http://identifiers.org/chebi/CHEBI:28304",
+                         "http://identifiers.org/uniprot/P00740",
+                         "http://identifiers.org/uniprot/P01008"
+  VK_p identity "http://identifiers.org/chebi/CHEBI:28384"
 end
+
+Model_1 is "Wajima2009_BloodCoagulation_PTtest"
+
+Model_1 model_entity_is "http://identifiers.org/biomodels.db/MODEL1107010001"
+Model_1 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000339"
+Model_1 description "http://identifiers.org/pubmed/19516255"
+Model_1 origin "http://identifiers.org/biomodels.db/BIOMD0000000365",
+               "http://identifiers.org/biomodels.db/MODEL1108260015",
+               "http://identifiers.org/biomodels.db/MODEL1109160000",
+               "http://identifiers.org/biomodels.db/MODEL1109160001",
+               "http://identifiers.org/pubmed/18831981",
+               "http://identifiers.org/pubmed/12524220",
+               "http://identifiers.org/pubmed/2779263",
+               "http://identifiers.org/pubmed/8948060",
+               "http://identifiers.org/pubmed/12231555",
+               "http://identifiers.org/pubmed/9645916",
+               "http://identifiers.org/pubmed/7843644",
+               "http://identifiers.org/pubmed/16432308",
+               "http://identifiers.org/pubmed/15804855"
+Model_1 encodement "http://identifiers.org/go/GO:0072378"
+Model_1 taxon "http://identifiers.org/taxonomy/9606"
+Model_1 property "http://identifiers.org/doid/DOID:12259"

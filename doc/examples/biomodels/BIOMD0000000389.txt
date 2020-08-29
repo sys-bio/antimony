@@ -1,7 +1,9 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 function function_1(v)
   v;
 end
+
+function_1 is "irreversilbe Constant flux (Suc synth)"
 
 
 model *Arnold2011_Hahn1986_CalvinCycle_Starch_Sucrose()
@@ -11,7 +13,7 @@ model *Arnold2011_Hahn1986_CalvinCycle_Starch_Sucrose()
   species RuBP in chloroplast, PGA in chloroplast, TP in chloroplast, HeP in chloroplast;
   species TPGA in chloroplast, E4P in chloroplast, S7P in chloroplast, Ru5P in chloroplast;
   species GG in chloroplast, ATP in chloroplast, ADP in chloroplast, UTP in chloroplast;
-  species UDP in chloroplast, Pi_ in chloroplast, $CO2 in chloroplast, TPc in cytosol;
+  species UDP in chloroplast, Pi in chloroplast, $CO2 in chloroplast, TPc in cytosol;
   species HePc in cytosol, Suc in cytosol, Pic in cytosol, SucV in vacuole;
   species $E in phloem, $Resp in chloroplast;
 
@@ -19,20 +21,20 @@ model *Arnold2011_Hahn1986_CalvinCycle_Starch_Sucrose()
   v_15 := 0.0258*HePc*UTP;
 
   // Reactions:
-  RuBisCO: RuBP + $CO2 => 2PGA; chloroplast*RuBisCO_k1*RuBP*CO2;
-  PGA_red: PGA + ATP => TP + ADP + Pi_; chloroplast*PGA_red_k1*PGA*ATP;
-  FBP_A_ase: 2TP -> HeP + Pi_; chloroplast*(FBP_A_ase_k1*TP^2 - FBP_A_ase_k2*HeP*Pi_);
+  RuBisCO: RuBP + $CO2 => 2 PGA; chloroplast*RuBisCO_k1*RuBP*CO2;
+  PGA_red: PGA + ATP => TP + ADP + Pi; chloroplast*PGA_red_k1*PGA*ATP;
+  FBP_A_ase: 2 TP -> HeP + Pi; chloroplast*(FBP_A_ase_k1*TP^2 - FBP_A_ase_k2*HeP*Pi);
   F6P_TK1: HeP => TPGA + E4P; chloroplast*F6P_TK1_k1*HeP;
-  SBP_A_ase: E4P + TP => S7P + Pi_; chloroplast*SBP_A_ase_k1*E4P*TP;
+  SBP_A_ase: E4P + TP => S7P + Pi; chloroplast*SBP_A_ase_k1*E4P*TP;
   S7P_TK1_R5P_I: S7P => TPGA + Ru5P; chloroplast*S7P_TK1_R5P_I_k1*S7P;
   TK2_Ru5P_E: TPGA + TP => Ru5P; chloroplast*TK2_Ru5P_E_k1*TPGA*TP;
   Ru5P_K: Ru5P + ATP => RuBP + ADP; chloroplast*Ru5P_K_k1*Ru5P*ATP;
-  ATP_S: ADP + Pi_ => ATP; chloroplast*ATP_S_k1*ADP*Pi_;
-  Starch_S: ATP + HeP => GG + ADP + 2Pi_; chloroplast*Starch_S_k1*ATP*HeP;
-  Starch_P: GG + Pi_ => HeP; chloroplast*Starch_P_k1*GG*Pi_;
-  TPT: TP + Pic => TPc + Pi_; TPT_k1*TP*Pic;
-  FBPc_A_ase: 2TPc => HePc + Pic; cytosol*FBPc_A_ase_k1*TPc^2;
-  Suc_S: 2HePc + UTP => Suc + UDP + 3Pic; function_1(v_15);
+  ATP_S: ADP + Pi => ATP; chloroplast*ATP_S_k1*ADP*Pi;
+  Starch_S: ATP + HeP => GG + ADP + 2 Pi; chloroplast*Starch_S_k1*ATP*HeP;
+  Starch_P: GG + Pi => HeP; chloroplast*Starch_P_k1*GG*Pi;
+  TPT: TP + Pic => TPc + Pi; TPT_k1*TP*Pic;
+  FBPc_A_ase: 2 TPc => HePc + Pic; cytosol*FBPc_A_ase_k1*TPc^2;
+  Suc_S: 2 HePc + UTP => Suc + UDP + 3 Pic; function_1(v_15);
   UTP_S: UDP + Pic => UTP; UTP_S_k1*UDP*Pic;
   Respi: Suc => $Resp; r*Suc;
   Diffu: Suc -> SucV; D*Suc - D*SucV;
@@ -52,7 +54,7 @@ model *Arnold2011_Hahn1986_CalvinCycle_Starch_Sucrose()
   ADP = 0.53;
   UTP = 3.871;
   UDP = 1.613;
-  Pi_ = 2.5;
+  Pi = 2.5;
   CO2 = 31;
   TPc = 0.114;
   HePc = 0.1;
@@ -69,7 +71,7 @@ model *Arnold2011_Hahn1986_CalvinCycle_Starch_Sucrose()
   phloem = 1;
 
   // Variable initializations:
-  r = 3e-005;
+  r = 3e-05;
   D = 0.0001;
   phi = 0.0001;
   RuBisCO_k1 = 0.006;
@@ -83,7 +85,7 @@ model *Arnold2011_Hahn1986_CalvinCycle_Starch_Sucrose()
   Ru5P_K_k1 = 0.031;
   ATP_S_k1 = 0.279;
   Starch_S_k1 = 0.002;
-  Starch_P_k1 = 4e-005;
+  Starch_P_k1 = 4e-05;
   TPT_k1 = 0.5;
   FBPc_A_ase_k1 = 1.55;
   UTP_S_k1 = 0.00755;
@@ -115,4 +117,54 @@ model *Arnold2011_Hahn1986_CalvinCycle_Starch_Sucrose()
   Respi is "respiration rate";
   Diffu is "diffusion rate";
   Transl is "translocation rate";
+
+  // SBO terms:
+  E.sboTerm = 9
+  r.sboTerm = 9
+  D.sboTerm = 9
+  phi.sboTerm = 9
+  v_15.sboTerm = 9
+  RuBisCO_k1.sboTerm = 9
+  PGA_red_k1.sboTerm = 9
+  FBP_A_ase_k1.sboTerm = 9
+  FBP_A_ase_k2.sboTerm = 9
+  F6P_TK1_k1.sboTerm = 9
+  SBP_A_ase_k1.sboTerm = 9
+  S7P_TK1_R5P_I_k1.sboTerm = 9
+  TK2_Ru5P_E_k1.sboTerm = 9
+  Ru5P_K_k1.sboTerm = 9
+  ATP_S_k1.sboTerm = 9
+  Starch_S_k1.sboTerm = 9
+  Starch_P_k1.sboTerm = 9
+  TPT_k1.sboTerm = 9
+  FBPc_A_ase_k1.sboTerm = 9
+  UTP_S_k1.sboTerm = 9
+
+  // CV terms:
+  RuBP hypernym "http://identifiers.org/obo.chebi/CHEBI:16710"
+  PGA hypernym "http://identifiers.org/obo.chebi/CHEBI:17050"
+  TP hypernym "http://identifiers.org/interpro/IPR000652"
+  HeP hypernym "http://identifiers.org/obo.chebi/CHEBI:15965"
+  TPGA part "http://identifiers.org/pubchem.compound/15938963",
+            "http://identifiers.org/pubchem.compound/756"
+  E4P hypernym "http://identifiers.org/pubchem.compound/122357"
+  S7P hypernym "http://identifiers.org/pubchem.compound/165007"
+  Ru5P hypernym "http://identifiers.org/obo.chebi/CHEBI:17363"
+  UTP hypernym "http://identifiers.org/obo.chebi/CHEBI:15713"
+  UDP hypernym "http://identifiers.org/obo.chebi/CHEBI:17659"
+  Pi hypernym "http://identifiers.org/obo.chebi/CHEBI:43474"
+  CO2 hypernym "http://identifiers.org/obo.chebi/CHEBI:16526"
+  TPc hypernym "http://identifiers.org/pubchem.compound/24794350"
+  HePc hypernym "http://identifiers.org/obo.chebi/CHEBI:15965"
+  Suc hypernym "http://identifiers.org/obo.chebi/CHEBI:17992"
+  Pic hypernym "http://identifiers.org/obo.chebi/CHEBI:43474"
+  SucV hypernym "http://identifiers.org/obo.chebi/CHEBI:17992"
 end
+
+Arnold2011_Hahn1986_CalvinCycle_Starch_Sucrose is "Arnold2011_Hahn1986_CalvinCycle_Starch_Sucrose"
+
+Arnold2011_Hahn1986_CalvinCycle_Starch_Sucrose model_entity_is "http://identifiers.org/biomodels.db/MODEL1109270006"
+Arnold2011_Hahn1986_CalvinCycle_Starch_Sucrose model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000389"
+Arnold2011_Hahn1986_CalvinCycle_Starch_Sucrose description "http://identifiers.org/pubmed/22001849"
+Arnold2011_Hahn1986_CalvinCycle_Starch_Sucrose encodement "http://identifiers.org/obo.go/GO:0019253"
+Arnold2011_Hahn1986_CalvinCycle_Starch_Sucrose taxon "http://identifiers.org/taxonomy/33090"

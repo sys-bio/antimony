@@ -1,75 +1,111 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 function function_1(k3, k3a, X, Auxin)
   (k3 + k3a*X)*Auxin;
 end
+
+function_1 is "Rate law for v3: Auxin removal from the cell"
 
 function function_2(k1a, X, k1)
   k1a/(1 + X/k1);
 end
 
+function_2 is "Rate law for v1: Auxin Transport to the cell"
+
 function function_3(k2, k2a, ET, CK, k2b, PLSp, k2c)
   k2 + k2a*(ET/(1 + CK/k2b))*(PLSp/(k2c + PLSp));
 end
+
+function_3 is "Rate law for v2: Auxin biosynthesis in the cell"
 
 function function_4(k4, Auxin, Ra)
   k4*Auxin*Ra;
 end
 
+function_4 is "Rate law for v4: Conversion of auxin receptor from the inactivated form to the activated form"
+
 function function_6(k6, Ra_star, ET, k6a)
-  (k6*Ra_star)/(1 + ET/k6a);
+  k6*Ra_star/(1 + ET/k6a);
 end
+
+function_6 is "Rate law for v6: Transcription of POLARIS gene"
 
 function function_7(k7, PLSm)
   k7*PLSm;
 end
 
+function_7 is "Rate law for v7: Decay of mRNA of POLARIS gene"
+
 function function_8(k8, PLSm)
   k8*PLSm;
 end
+
+function_8 is "Rate law for v8: Translation of POLARIS gene"
 
 function function_9(k9, PLSp)
   k9*PLSp;
 end
 
+function_9 is "Rate law for v9: Decay of protein of POLARIS gene"
+
 function function_10(k10, PLSp, k10a, Re)
   (k10 + k10a*PLSp)*Re;
 end
+
+function_10 is "Rate law for v10: Conversion of the inactivated form of ethylene receptor to its activated form by PLSp "
 
 function function_12(Re_star, ET, k11)
   k11*Re_star*ET;
 end
 
+function_12 is "Rate law for v11: Conversion of the activated form of ethylene receptor to its inactivated form"
+
 function function_13(Auxin, CK, k12, k12a)
   k12 + k12a*Auxin*CK;
 end
+
+function_13 is "Rate law for v12: Ethylene biosynthesis "
 
 function function_15(ET, k13)
   k13*ET;
 end
 
+function_15 is "Rate law for v13: Removal of ethylene"
+
 function function_16(Re_star, k14, CTR1)
   k14*Re_star*CTR1;
 end
+
+function_16 is "Rate law for v14: Conversion of the inactivated form of CTR1 protein to its activated form by Re*"
 
 function function_17(CTR1_star, k15)
   k15*CTR1_star;
 end
 
+function_17 is "Rate law for v15: Conversion of the activated form of CTR1 protein to its inactivated form"
+
 function function_20(Auxin, k18a, k18)
   k18a/(1 + Auxin/k18);
 end
+
+function_20 is "Rate law for v18: Biosynthesis of cytokinin"
 
 function function_18(CTR1_star, k16, k16a)
   k16 - k16a*CTR1_star;
 end
 
+function_18 is "Rate law for v16: Activation of the downstream of ethylene signalling response is inhibited by  CTR1*"
+
 function function_19(X, k17)
   k17*X;
 end
 
+function_19 is "Rate law for v17: Removal of the unknown molecule X"
+
 function function_21(CK, k19)
   k19*CK;
 end
+
+function_21 is "Rate law for v19: removal of cytokinin"
 
 
 model *Model_1()
@@ -249,4 +285,130 @@ model *Model_1()
   v_Ethylene is "vEthylene: Uptake rate of exogenous ACC (1-aminocyclopropane-1-carboxylic acid)";
   v_Auxin is "vAuxin: Uptake rate of exogenous auxin (indole-3-acetic acid, IAA)";
   v_Cytokinin is "vCytokinin: Uptake rate of exogenous cytokinin";
+
+  // SBO terms:
+  compartment_1.sboTerm = 290
+  Auxin.sboTerm = 247
+  X.sboTerm = 240
+  PLSp.sboTerm = 252
+  Ra.sboTerm = 297
+  RaT.sboTerm = 297
+  Ra_star.sboTerm = 297
+  CK.sboTerm = 247
+  ET.sboTerm = 247
+  PLSm.sboTerm = 278
+  Re.sboTerm = 252
+  ReT.sboTerm = 252
+  Re_star.sboTerm = 252
+  CTR1.sboTerm = 252
+  CTR1T.sboTerm = 252
+  CTR1_star.sboTerm = 252
+  IAA.sboTerm = 247
+  ACC.sboTerm = 247
+  CK_ex.sboTerm = 247
+  k1a.sboTerm = 186
+  k1.sboTerm = 288
+  k2.sboTerm = 485
+  k2a.sboTerm = 46
+  k2b.sboTerm = 288
+  k2c.sboTerm = 27
+  k3.sboTerm = 35
+  k3a.sboTerm = 36
+  k4.sboTerm = 36
+  k5.sboTerm = 35
+  k6.sboTerm = 35
+  k6a.sboTerm = 288
+  k7.sboTerm = 35
+  k8.sboTerm = 35
+  k9.sboTerm = 35
+  k10.sboTerm = 35
+  k10a.sboTerm = 36
+  k11.sboTerm = 36
+  k12.sboTerm = 35
+  k12a.sboTerm = 36
+  k13.sboTerm = 35
+  k14.sboTerm = 36
+  k15.sboTerm = 35
+  k16.sboTerm = 324
+  k16a.sboTerm = 38
+  k17.sboTerm = 35
+  k18a.sboTerm = 324
+  k18.sboTerm = 288
+  k19.sboTerm = 35
+  k_ethylene.sboTerm = 35
+  k_auxin.sboTerm = 35
+  k_cytokinin.sboTerm = 35
+  reaction_1.sboTerm = 185
+  reaction_2.sboTerm = 393
+  reaction_3.sboTerm = 179
+  reaction_4.sboTerm = 176
+  reaction_5.sboTerm = 176
+  reaction_6.sboTerm = 183
+  reaction_7.sboTerm = 179
+  reaction_8.sboTerm = 184
+  reaction_9.sboTerm = 179
+  reaction_10.sboTerm = 176
+  reaction_11.sboTerm = 176
+  reaction_12.sboTerm = 393
+  reaction_13.sboTerm = 179
+  reaction_14.sboTerm = 176
+  reaction_15.sboTerm = 176
+  reaction_16.sboTerm = 176
+  reaction_17.sboTerm = 179
+  reaction_18.sboTerm = 393
+  reaction_19.sboTerm = 179
+  v_Ethylene.sboTerm = 185
+  v_Auxin.sboTerm = 185
+  v_Cytokinin.sboTerm = 185
+
+  // CV terms:
+  compartment_1 hypernym "http://identifiers.org/obo.go/GO:0005623"
+  extra hypernym "http://identifiers.org/obo.go/GO:0005615"
+  Auxin hypernym "http://identifiers.org/obo.chebi/CHEBI:22676"
+  PLSp encoder "http://identifiers.org/ncbigene/3770598"
+  PLSp hypernym "http://identifiers.org/uniprot/Q8LLV8"
+  Ra property "http://identifiers.org/obo.go/GO:0010011"
+  RaT property "http://identifiers.org/obo.go/GO:0010011"
+  Ra_star property "http://identifiers.org/obo.go/GO:0010011"
+  CK hypernym "http://identifiers.org/obo.chebi/CHEBI:23530"
+  ET identity "http://identifiers.org/obo.chebi/CHEBI:18153",
+              "http://identifiers.org/kegg.compound/C06547"
+  PLSm encoder "http://identifiers.org/ncbigene/3770598"
+  Re hypernym "http://identifiers.org/uniprot/P49333",
+              "http://identifiers.org/uniprot/Q0WPQ2"
+  ReT hypernym "http://identifiers.org/uniprot/P49333"
+  Re_star hypernym "http://identifiers.org/uniprot/P49333"
+  CTR1 hypernym "http://identifiers.org/uniprot/Q05609"
+  CTR1T hypernym "http://identifiers.org/uniprot/Q05609"
+  CTR1_star hypernym "http://identifiers.org/uniprot/Q05609"
+  IAA identity "http://identifiers.org/obo.chebi/CHEBI:16411",
+               "http://identifiers.org/kegg.compound/C00954"
+  ACC identity "http://identifiers.org/obo.chebi/CHEBI:18053"
+  CK_ex hypernym "http://identifiers.org/obo.chebi/CHEBI:23530"
+  reaction_1 hypernym "http://identifiers.org/obo.go/GO:0060918"
+  reaction_2 hypernym "http://identifiers.org/obo.go/GO:0009851"
+  reaction_3 hypernym "http://identifiers.org/obo.go/GO:0009852"
+  reaction_4 hypernym "http://identifiers.org/obo.go/GO:0010929"
+  reaction_5 hypernym "http://identifiers.org/obo.go/GO:0010930"
+  reaction_6 hypernym "http://identifiers.org/obo.go/GO:0009299"
+  reaction_7 hypernym "http://identifiers.org/obo.go/GO:0006402"
+  reaction_8 identity "http://identifiers.org/obo.go/GO:0006412"
+  reaction_9 hypernym "http://identifiers.org/obo.go/GO:0030163"
+  reaction_12 hypernym "http://identifiers.org/obo.go/GO:0009693"
+  reaction_13 hypernym "http://identifiers.org/obo.go/GO:0042457"
+  reaction_17 hypernym "http://identifiers.org/obo.go/GO:0030163"
+  reaction_18 hypernym "http://identifiers.org/obo.go/GO:0009691"
+  reaction_19 hypernym "http://identifiers.org/obo.go/GO:0009823"
+  v_Auxin hypernym "http://identifiers.org/obo.go/GO:0060919"
+  v_Cytokinin hypernym "http://identifiers.org/obo.go/GO:0010184"
 end
+
+Model_1 is "Liu2010_Hormonal_Crosstalk_Arabidopsis"
+
+Model_1 model_entity_is "http://identifiers.org/biomodels.db/MODEL1008260000"
+Model_1 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000269"
+Model_1 description "http://identifiers.org/pubmed/20531403"
+Model_1 taxon "http://identifiers.org/taxonomy/3702"
+Model_1 hypernym "http://identifiers.org/obo.go/GO:0009736",
+                 "http://identifiers.org/obo.go/GO:0009734",
+                 "http://identifiers.org/obo.go/GO:0009873"

@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *BIOMD0000000012()
 
   // Compartments and Species:
@@ -8,9 +8,9 @@ model *BIOMD0000000012()
 
   // Assignment Rules:
   beta := tau_mRNA/tau_prot;
-  alpha0 := (a0_tr*eff*tau_prot)/(ln(2)*KM);
+  alpha0 := a0_tr*eff*tau_prot/(ln(2)*KM);
   a0_tr := ps_0*60;
-  alpha := (a_tr*eff*tau_prot)/(ln(2)*KM);
+  alpha := a_tr*eff*tau_prot/(ln(2)*KM);
   a_tr := (ps_a - ps_0)*60;
   t_ave := tau_mRNA/ln(2);
   kd_mRNA := ln(2)/tau_mRNA;
@@ -27,9 +27,9 @@ model *BIOMD0000000012()
   Reaction7: PX => ; kd_prot*PX;
   Reaction8: PY => ; kd_prot*PY;
   Reaction9: PZ => ; kd_prot*PZ;
-  Reaction10:  => X; a0_tr + (a_tr*KM^n)/(KM^n + PZ^n);
-  Reaction11:  => Y; a0_tr + (a_tr*KM^n)/(KM^n + PX^n);
-  Reaction12:  => Z; a0_tr + (a_tr*KM^n)/(KM^n + PY^n);
+  Reaction10:  => X; a0_tr + a_tr*KM^n/(KM^n + PZ^n);
+  Reaction11:  => Y; a0_tr + a_tr*KM^n/(KM^n + PX^n);
+  Reaction12:  => Z; a0_tr + a_tr*KM^n/(KM^n + PY^n);
 
   // Species initializations:
   PX = 0;
@@ -88,4 +88,74 @@ model *BIOMD0000000012()
   Reaction10 is "transcription of LacI";
   Reaction11 is "transcription of TetR";
   Reaction12 is "transcription of CI";
+
+  // SBO terms:
+  cell.sboTerm = 290
+  PX.sboTerm = 252
+  PY.sboTerm = 252
+  PZ.sboTerm = 252
+  X.sboTerm = 250
+  Y.sboTerm = 250
+  Z.sboTerm = 250
+  tau_mRNA.sboTerm = 332
+  tau_prot.sboTerm = 332
+  alpha0.sboTerm = 485
+  a0_tr.sboTerm = 485
+  KM.sboTerm = 288
+  alpha.sboTerm = 186
+  a_tr.sboTerm = 186
+  n.sboTerm = 190
+  t_ave.sboTerm = 348
+  kd_mRNA.sboTerm = 356
+  kd_prot.sboTerm = 356
+  k_tl.sboTerm = 16
+  ps_a.sboTerm = 186
+  ps_0.sboTerm = 485
+  Reaction1.sboTerm = 179
+  Reaction2.sboTerm = 179
+  Reaction3.sboTerm = 179
+  Reaction4.sboTerm = 184
+  Reaction5.sboTerm = 184
+  Reaction6.sboTerm = 184
+  Reaction7.sboTerm = 179
+  Reaction8.sboTerm = 179
+  Reaction9.sboTerm = 179
+  Reaction10.sboTerm = 183
+  Reaction11.sboTerm = 183
+  Reaction12.sboTerm = 183
+
+  // CV terms:
+  cell identity "http://identifiers.org/obo.go/GO:0005623"
+  PX identity "http://identifiers.org/uniprot/P03023"
+  PY identity "http://identifiers.org/uniprot/P04483"
+  PZ identity "http://identifiers.org/uniprot/P03034"
+  X hypernym "http://identifiers.org/chebi/CHEBI:33699",
+             "http://identifiers.org/kegg.compound/C00046"
+  X encodement "http://identifiers.org/uniprot/P03023"
+  Y hypernym "http://identifiers.org/chebi/CHEBI:33699",
+             "http://identifiers.org/kegg.compound/C00046"
+  Y encodement "http://identifiers.org/uniprot/P04483"
+  Z hypernym "http://identifiers.org/chebi/CHEBI:33699",
+             "http://identifiers.org/kegg.compound/C00046"
+  Z encodement "http://identifiers.org/uniprot/P03034"
+  Reaction1 hypernym "http://identifiers.org/obo.go/GO:0006402"
+  Reaction2 hypernym "http://identifiers.org/obo.go/GO:0006402"
+  Reaction3 hypernym "http://identifiers.org/obo.go/GO:0006402"
+  Reaction4 hypernym "http://identifiers.org/obo.go/GO:0006412"
+  Reaction5 hypernym "http://identifiers.org/obo.go/GO:0006412"
+  Reaction6 hypernym "http://identifiers.org/obo.go/GO:0006412"
+  Reaction7 hypernym "http://identifiers.org/obo.go/GO:0030163"
+  Reaction8 hypernym "http://identifiers.org/obo.go/GO:0030163"
+  Reaction9 hypernym "http://identifiers.org/obo.go/GO:0030163"
+  Reaction10 hypernym "http://identifiers.org/obo.go/GO:0006351"
+  Reaction11 hypernym "http://identifiers.org/obo.go/GO:0006351"
+  Reaction12 hypernym "http://identifiers.org/obo.go/GO:0006351"
 end
+
+BIOMD0000000012 is "Elowitz2000 - Repressilator"
+
+BIOMD0000000012 model_entity_is "http://identifiers.org/biomodels.db/MODEL6615351360"
+BIOMD0000000012 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000012"
+BIOMD0000000012 description "http://identifiers.org/pubmed/10659856"
+BIOMD0000000012 taxon "http://identifiers.org/taxonomy/562"
+BIOMD0000000012 hypernym "http://identifiers.org/obo.go/GO:0040029"
