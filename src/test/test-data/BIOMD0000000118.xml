@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created by libAntimony version v2.13.0 with libSBML version 5.18.1. -->
+<sbml xmlns="http://www.sbml.org/sbml/level3/version1/core" level="3" version="1">
+  <model metaid="model_0000001" id="model_0000001" name="Golomb2006_SomaticBursting">
+    <listOfFunctionDefinitions>
+      <functionDefinition id="GAMMA">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> VV </ci>
+            </bvar>
+            <bvar>
+              <ci> theta </ci>
+            </bvar>
+            <bvar>
+              <ci> sigma </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <plus/>
+                <cn type="integer"> 1 </cn>
+                <apply>
+                  <exp/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <minus/>
+                      <apply>
+                        <minus/>
+                        <ci> VV </ci>
+                        <ci> theta </ci>
+                      </apply>
+                    </apply>
+                    <ci> sigma </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+    </listOfFunctionDefinitions>
+    <listOfCompartments>
+      <compartment id="compartment_0000001" spatialDimensions="3" constant="true"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="Minfs" constant="false"/>
+      <parameter id="V" constant="true"/>
+      <parameter id="thetam" constant="true"/>
+      <parameter id="sigmam" constant="true"/>
+      <parameter id="bbs" constant="false"/>
+      <parameter id="thetab" constant="true"/>
+      <parameter id="sigmab" constant="true"/>
+      <parameter id="tauBs" constant="true"/>
+      <parameter id="zzs" constant="false"/>
+      <parameter id="thetaz" constant="true"/>
+      <parameter id="sigmaz" constant="true"/>
+      <parameter id="tauZs" constant="true"/>
+    </listOfParameters>
+    <listOfRules>
+      <assignmentRule variable="Minfs">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <ci> GAMMA </ci>
+            <ci> V </ci>
+            <ci> thetam </ci>
+            <ci> sigmam </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="bbs">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <apply>
+                <ci> GAMMA </ci>
+                <ci> V </ci>
+                <ci> thetab </ci>
+                <ci> sigmab </ci>
+              </apply>
+              <ci> bbs </ci>
+            </apply>
+            <ci> tauBs </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="zzs">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <apply>
+                <ci> GAMMA </ci>
+                <ci> V </ci>
+                <ci> thetaz </ci>
+                <ci> sigmaz </ci>
+              </apply>
+              <ci> zzs </ci>
+            </apply>
+            <ci> tauZs </ci>
+          </apply>
+        </math>
+      </rateRule>
+    </listOfRules>
+  </model>
+</sbml>

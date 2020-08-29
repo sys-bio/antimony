@@ -55,6 +55,7 @@ Suite *create_suite_Constraints(void);
 Suite *create_suite_CVTerms(void);
 Suite *create_suite_SBO(void);
 Suite *create_suite_Uncert(void);
+Suite* create_suite_Import(void);
 
 //Suite *create_suite_FlatteningFailures(void);
 /**
@@ -132,7 +133,9 @@ main (int argc, char* argv[])
   //SRunner* runner = srunner_create(create_suite_CVTerms());
   //SRunner* runner = srunner_create(create_suite_SBO());
   //SRunner* runner = srunner_create(create_suite_Uncert());
+  //SRunner* runner = srunner_create(create_suite_Import());
 
+  srunner_add_suite(runner, create_suite_Import());
   srunner_add_suite( runner, create_suite_Errors() );
   srunner_add_suite( runner, create_suite_Basic() );
   srunner_add_suite( runner, create_suite_SBO());

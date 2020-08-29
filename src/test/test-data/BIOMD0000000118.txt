@@ -1,0 +1,41 @@
+// Created by libAntimony v2.13.0
+function GAMMA(VV, theta, sigma)
+  1/(1 + exp(-(VV - theta)/sigma));
+end
+
+
+model *model_0000001()
+
+  // Compartments and Species:
+  compartment compartment_0000001;
+
+  // Assignment Rules:
+  Minfs := GAMMA(V, thetam, sigmam);
+
+  // Rate Rules:
+  bbs' = (GAMMA(V, thetab, sigmab) - bbs)/tauBs;
+  zzs' = (GAMMA(V, thetaz, sigmaz) - zzs)/tauZs;
+
+  // Compartment initializations:
+  compartment_0000001 = ;
+
+  // Variable initializations:
+  V = ;
+  thetam = ;
+  sigmam = ;
+  bbs = ;
+  thetab = ;
+  sigmab = ;
+  tauBs = ;
+  zzs = ;
+  thetaz = ;
+  sigmaz = ;
+  tauZs = ;
+
+  // Other declarations:
+  var Minfs, bbs, zzs;
+  const compartment_0000001, V, thetam, sigmam, thetab, sigmab, tauBs, thetaz;
+  const sigmaz, tauZs;
+end
+
+model_0000001 is "Golomb2006_SomaticBursting"
