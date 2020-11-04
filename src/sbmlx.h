@@ -26,7 +26,7 @@ void caratToPower(ASTNode* node);
 void powerToCarat(ASTNode* node);
 void GetUnitNames(ASTNode* astn, std::set<std::string>& names);
 void GetFunctionNames(ASTNode* astn, std::set<std::string>& names);
-bool UsesDistrib(ASTNode* astn);
+bool UsesDistrib(const ASTNode* astn);
 double GetValueFrom(const ASTNode* astn);
 ASTNodeType_t ConstraintTypeToASTType(constraint_type type);
 

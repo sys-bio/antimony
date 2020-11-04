@@ -2307,6 +2307,7 @@ void Variable::ReadAnnotationFrom(const SBase * sbmlobj)
   if (dsbp == NULL || dsbp->getNumUncertainties() == 0) {
     return;
   }
+  g_registry.GetModule(m_module)->setUsedDistrib(true);
   const Uncertainty* uncertainty = dsbp->getUncertainty(0);
   for (unsigned long u = 0; u < uncertainty->getNumUncertParameters(); u++) {
     const UncertParameter* up = uncertainty->getUncertParameter(u);

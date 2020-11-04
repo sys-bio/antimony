@@ -2648,6 +2648,11 @@ void Module::AddVarToSyncMap(const Variable* var, map<const Variable*, Variable 
   syncmap.insert(make_pair(var, copied));
 }
 
+void Module::setUsedDistrib(bool useddistrib)
+{
+    m_usedDistributions = useddistrib;
+}
+
 void Module::Convert(Variable* conv, Variable* cf, string modulename)
 {
   Module* origmod = g_registry.GetModule(m_modulename);

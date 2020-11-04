@@ -194,6 +194,8 @@ public:
   void FillInSyncmap(std::map<const Variable*, Variable >& syncmap) const;
   void AddVarToSyncMap(const Variable* var, std::map<const Variable*, Variable >& syncmap) const;
 
+  void setUsedDistrib(bool useddistrib);
+
 #ifndef NCELLML
   //Reading:
   void  LoadCellMLModel(iface::cellml_api::Model* model,

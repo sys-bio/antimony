@@ -318,7 +318,7 @@ void GetFunctionNames(ASTNode* astn, set<string>& names)
   return;
 }
 
-bool UsesDistrib(ASTNode* astn)
+bool UsesDistrib(const ASTNode* astn)
 {
   if (astn==NULL) return false;
   ASTNodeType_t type = astn->getType();

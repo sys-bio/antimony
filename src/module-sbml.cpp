@@ -1056,7 +1056,11 @@ void Module::LoadSBML(Model* sbml)
       Variable* expvar = g_registry.AddVariableToCurrent(&argument);
       g_registry.AddVariableToCurrentExportList(expvar);
     }
-    string formulastring(parseASTNodeToString(function->getBody()));
+    const ASTNode* astn = function->getBody();
+    if (!m_usedDistributions && UsesDistrib(astn)) {
+        m_usedDistributions = true;
+    }
+    string formulastring(parseASTNodeToString(astn));
     Formula formula;
     setFormulaWithString(formulastring, &formula, uf);
     g_registry.SetUserFunction(&formula);
@@ -1273,7 +1277,11 @@ void Module::LoadSBML(Model* sbml)
     }
     if (constraint->isSetMath()) {
       AntimonyConstraint acon(var);
-      acon.SetWithASTNode(constraint->getMath());
+      const ASTNode* astn = constraint->getMath();
+      if (!m_usedDistributions && UsesDistrib(astn)) {
+          m_usedDistributions = true;
+      }
+      acon.SetWithASTNode(astn);
       var->SetConstraint(&acon);
       constraints.push_back(acon);
     }
@@ -1405,6 +1413,9 @@ void Module::LoadSBML(Model* sbml)
       if (astn) {
         formulastring = parseASTNodeToString(astn);
         setFormulaWithString(formulastring, &formula, this);
+        if (!m_usedDistributions && UsesDistrib(astn)) {
+            m_usedDistributions = true;
+        }
         delete astn;
       }
     }
