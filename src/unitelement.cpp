@@ -144,7 +144,7 @@ string UnitElement::ToString() const
 
 string UnitElement::ToInvString() const
 {
-  assert(m_exponent<0);
+  assert(m_exponent<=0);
   stringstream ret;
   bool needparens = false;
   if (m_scale != 0) {

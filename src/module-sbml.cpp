@@ -2531,7 +2531,7 @@ InitialAssignment* Module::FindInitialAssignment(Model* md, vector<string> syncn
   SBase* object = md->getElementBySId(syncname[syncname.size()-1]);
   if (object==NULL) return NULL;
   CompSBasePlugin* objp = static_cast<CompSBasePlugin*>(object->getPlugin("comp"));
-  for (unsigned long re=0; re<objp->getNumReplacedElements(); objp++) {
+  for (unsigned long re=0; re<objp->getNumReplacedElements(); re++) {
     SBase* referenced = objp->getReplacedElement(re)->getReferencedElement();
     syncname[1] = referenced->getId();
     SBase* parent = referenced->getParentSBMLObject();
@@ -2557,7 +2557,7 @@ Rule* Module::FindRule(Model* md, vector<string> syncname)
   SBase* object = md->getElementBySId(syncname[syncname.size()-1]);
   if (object==NULL) return NULL;
   CompSBasePlugin* objp = static_cast<CompSBasePlugin*>(object->getPlugin("comp"));
-  for (unsigned long re=0; re<objp->getNumReplacedElements(); objp++) {
+  for (unsigned long re=0; re<objp->getNumReplacedElements(); re++) {
     SBase* referenced = objp->getReplacedElement(re)->getReferencedElement();
     syncname[1] = referenced->getId();
     SBase* parent = referenced->getParentSBMLObject();
