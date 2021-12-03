@@ -71,8 +71,6 @@ if (WITH_SBML)
 endif()
 option(WITH_CELLML          "Generate CellML translations"    OFF )
 option(WITH_QTANTIMONY      "Generate QTAntimony"             ON )
-option(WITH_SBW             "QTAntimony integration with SBW" OFF )
-option(WITH_SBW_TRANSLATOR  "Generate SBWTranslator"          OFF )
 option(WITH_SWIG   "Regenerate SWIG-based language bindings." OFF )
 option(WITH_PYTHON       "Generate Python language bindings." OFF)
 if (WITH_PYTHON)
@@ -690,6 +688,9 @@ endif(WITH_CELLML)
 # Build QT Antimony
 #
 
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 set (QTANTIMONY_SRC_DIR QTAntimony_src/)
 set (QTANTIMONY_DIALOG_DIR QTAntimony_src/qtfindreplacedialog-1.1/dialogs/)
 
@@ -703,7 +704,6 @@ file(GLOB QTANTIMONY_SOURCES
         ${QTANTIMONY_SRC_DIR}main.cpp
         ${QTANTIMONY_SRC_DIR}QTAntimony.cpp
         ${QTANTIMONY_SRC_DIR}SBMLTab.cpp
-        ${QTANTIMONY_SRC_DIR}SBWIntegration.cpp
         ${QTANTIMONY_SRC_DIR}TabManager.cpp
         ${QTANTIMONY_SRC_DIR}Translator.cpp
         ${QTANTIMONY_SRC_DIR}Tutorial.cpp
@@ -725,7 +725,6 @@ file(GLOB QTANTIMONY_HEADERS
         ${QTANTIMONY_SRC_DIR}LineNumberArea.h
         ${QTANTIMONY_SRC_DIR}resource.h
         ${QTANTIMONY_SRC_DIR}SBMLTab.h
-        ${QTANTIMONY_SRC_DIR}SBWIntegration.h
         ${QTANTIMONY_SRC_DIR}Settings.h
         ${QTANTIMONY_SRC_DIR}TabManager.h
         ${QTANTIMONY_SRC_DIR}Translator.h
@@ -751,44 +750,28 @@ file(GLOB QTANTIMONY_RESOURCES
         ${QTANTIMONY_SRC_DIR}antimony.qrc
         )
 if (WITH_QTANTIMONY)
-        find_package(Qt4 COMPONENTS QtCore QtGui REQUIRED )
-        include(${QT_USE_FILE})
+        set(CMAKE_AUTOMOC ON)
+        set(CMAKE_AUTORCC ON)
+        set(CMAKE_AUTOUIC ON)
+
+        cmake_policy(SET CMP0020 NEW)
+
+        find_package(Qt5 COMPONENTS Widgets PrintSupport REQUIRED )
         INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${ANTIMONY_SRC_DIR} ${QTANTIMONY_SRC_DIR} ${QTANTIMONY_DIALOG_DIR} ${QT_INCLUDES})
-        QT4_WRAP_CPP(QTANTIMONY_MOC_SRCS ${QTANTIMONY_HEADERS})
-        QT4_ADD_RESOURCES(RC_SRC_FILES ${QTANTIMONY_SRC_DIR}antimony.qrc )
-        QT4_WRAP_UI(QTANTIMONY_FORMS_HEADERS ${QTANTIMONY_FORMS})
+        QT5_WRAP_CPP(QTANTIMONY_MOC_SRCS ${QTANTIMONY_HEADERS})
+        QT5_ADD_RESOURCES(RC_SRC_FILES ${QTANTIMONY_SRC_DIR}antimony.qrc )
+        QT_WRAP_UI(QTANTIMONY_FORMS_HEADERS ${QTANTIMONY_FORMS})
         source_group(MOC_sources FILES ${QTANTIMONY_MOC_SRCS})
         if (WIN32)
            link_libraries(${QT_QTMAIN_LIBRARY})
         endif(WIN32)
         set( MACOSX_BUNDLE_ICON_FILE antimony.icns )
-        set (QTANTIMONY_LIBRARIES ${QT_LIBRARIES} ${LIBANTIMONY_LIBRARY}-static ${LIBANTIMONY_LIBS} )
-        if (WITH_SBW)
-           set(SBW_DEFINITIONS "-DSBW_INTEGRATION" )
-           find_library(SBW_LIBRARY
-        NAMES libsbw.lib sbw.lib libsbw.so libsbw sbw
-        PATHS /usr/lib /usr/local/lib
-              ${CMAKE_SOURCE_DIR}
-              ${CMAKE_SOURCE_DIR}/dependencies/lib
-                          ${CMAKE_SOURCE_DIR}/../SBW/install/lib
-                          )
-           set(QTANTIMONY_LIBRARIES ${QTANTIMONY_LIBRARIES} ${SBW_LIBRARY} )
-
-       find_path(SBW_INCLUDE_DIR
-        NAMES SBW/config.h
-        PATHS /usr/include /usr/local/include
-              ${CMAKE_SOURCE_DIR}/include
-              ${CMAKE_SOURCE_DIR}/dependencies/include
-                          ${CMAKE_SOURCE_DIR}/../SBW/install/include/
-              )
-           INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${SBW_INCLUDE_DIR})
-
-        endif(WITH_SBW)
         INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
         INCLUDE_DIRECTORIES(${QTANTIMONY_DIALOG_DIR})
+        INCLUDE_DIRECTORIES(${Qt5PrintSupport_INCLUDE_DIRS})
         add_executable(QTAntimony WIN32 MACOSX_BUNDLE ${QTANTIMONY_SOURCES} ${QTANTIMONY_MOC_SRCS} ${QTANTIMONY_FORMS_HEADERS} ${QTANTIMONY_HEADERS} ${QTANTIMONY_RESOURCES})
-        target_link_libraries(QTAntimony ${QTANTIMONY_LIBRARIES} )
-        add_definitions(${QT_DEFINITIONS} ${SBW_DEFINITIONS})
+        target_link_libraries(QTAntimony Qt5::Widgets Qt5::PrintSupport ${LIBANTIMONY_LIBRARY}-static ${LIBANTIMONY_LIBS} )
+        add_definitions(${QT_DEFINITIONS})
         set(MACOSX_BUNDLE_ICON_FILE ${QTANTIMONY_SRC_DIR}antimony.icns)
         install(TARGETS QTAntimony DESTINATION bin)
         install(FILES ${QTANTIMONY_SRC_DIR}antimony.ico ${QTANTIMONY_SRC_DIR}antimony_ico.png DESTINATION bin)
@@ -841,36 +824,6 @@ else(UNIX)
 
 endif(UNIX)
 
-if (WITH_SBW_TRANSLATOR)
-
-    find_library(LIBSBW_LIBRARY
-        NAMES libsbw.lib sbw.lib libsbw.so libsbw sbw
-        PATHS /usr/lib /usr/local/lib
-              ${CMAKE_SOURCE_DIR}
-              ${CMAKE_SOURCE_DIR}/dependencies/lib
-              ${CMAKE_SOURCE_DIR}/../libsbml-5/build/src/RelWithDebInfo
-    )
-    find_path(SBW_INCLUDE_DIR
-        NAMES SBW/config.h
-        PATHS /usr/include /usr/local/include
-              ${CMAKE_SOURCE_DIR}/include
-              ${CMAKE_SOURCE_DIR}/dependencies/include
-              ${CMAKE_SOURCE_DIR}/../SBW/include/
-    )
-  INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${SBW_INCLUDE_DIR})
-
-  if(MSVC)
-    set_target_properties(sbwantimony PROPERTIES LINK_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /ENTRY:mainCRTStartup")
-    #set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /ENTRY:mainCRTStartup")
-  endif()
-  add_executable(sbwantimony WIN32 ${ANTIMONY_SRC_DIR}sbwtranslator.cpp)
-  add_dependencies(sbwantimony ${LIBANTIMONY_LIBRARY})
-  target_link_libraries(sbwantimony ${LIBANTIMONY_LIBRARY} ${LIBANTIMONY_LIBS} ${LIBSBW_LIBRARY})
-  install(TARGETS sbwantimony DESTINATION bin)
-
-endif()
-
-
 ###############################################################################
 #
 # Install win32 dependencies
@@ -881,6 +834,7 @@ if (NOT UNIX)
       list(APPEND win_dependencies ${LIBSBML_DLL})
    endif()
    install(FILES ${win_dependencies} DESTINATION bin/)
+   install(FILES "${CMAKE_SOURCE_DIR}/win32/platforms/qwindows.dll" DESTINATION bin/platforms/)
 endif()
 
 if(WIN32 AND INSTALL_SYSTEM_RUNTIMES)
