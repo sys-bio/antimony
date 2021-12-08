@@ -112,27 +112,27 @@ stages:
               cd $(BUILD_DIR)
               cmake -DCMAKE_PREFIX_PATH=/usr/local/opt/qt@5/lib  -DLIBSBML_INSTALL_DIR=$(DEPS_INSTALL_PREFIX) -WITH_QTANTIMONY=OFF -DBUILD_TESTS=ON -DCMAKE_INSTALL_PREFIX=$(INSTALL_DIR) -DCMAKE_BUILD_TYPE=$(BuildType) ..
             displayName: Run CMake Configure Command
-#          - script: |
-#              echo "less -N $(BUILD_DIR)/source/CMakeFiles/antimony.dir/build.make"
-#              less -N "$(BUILD_DIR)/source/CMakeFiles/antimony.dir/build.make"
-#              echo "Building antimony"
-#              echo "cd to build dir"
-#              cd $(BUILD_DIR)
-#              cmake --build . --target install --config $(BuildType) -j 12
-#            displayName: Run CMake Build Command
-#          - script: |
-#              echo "cd to build dir $(BUILD_DIR)"
-#              cd $(BUILD_DIR)
-#              ctest --verbose --extra-verbose --progress
-#            displayName: RunCTest
-#          - task: CopyFiles@2
-#            inputs:
-#              contents: '$(INSTALL_DIR)/**'
-#              targetFolder: $(Build.ArtifactStagingDirectory)
-#            displayName: Copy to Staging Area
-#          - publish: $(Build.ArtifactStagingDirectory)
-#            artifact: antimony-MacOS10.15-$(BuildType)
-#            displayName: Publish
+          - script: |
+              echo "less -N $(BUILD_DIR)/source/CMakeFiles/antimony.dir/build.make"
+              less -N "$(BUILD_DIR)/source/CMakeFiles/antimony.dir/build.make"
+              echo "Building antimony"
+              echo "cd to build dir"
+              cd $(BUILD_DIR)
+              cmake --build . --target install --config $(BuildType) -j 12
+            displayName: Run CMake Build Command
+          - script: |
+              echo "cd to build dir $(BUILD_DIR)"
+              cd $(BUILD_DIR)
+              ctest --verbose --extra-verbose --progress
+            displayName: RunCTest
+          - task: CopyFiles@2
+            inputs:
+              contents: '$(INSTALL_DIR)/**'
+              targetFolder: $(Build.ArtifactStagingDirectory)
+            displayName: Copy to Staging Area
+          - publish: $(Build.ArtifactStagingDirectory)
+            artifact: antimony-MacOS10.15-$(BuildType)
+            displayName: Publish
 
 #  - stage: MacBuildAntimonyPython
 #    dependsOn: []
