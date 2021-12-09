@@ -2943,7 +2943,7 @@ void changeRateOf(ASTNode* astn)
     if (astn == NULL) {
         return;
     }
-    if (astn->getType() == AST_FUNCTION && astn->getName() == "rateOf") {
+    if (astn->getType() == AST_FUNCTION && astn->getName() == (string)"rateOf") {
         astn->setType(AST_FUNCTION_RATE_OF);
     }
     for (unsigned int c = 0; c < astn->getNumChildren(); c++) {
@@ -2956,7 +2956,7 @@ void Module::UpdateRateOf(Model* model)
     FunctionDefinition* rateOf = NULL;
     for (unsigned int fd = 0; fd < model->getNumFunctionDefinitions(); fd++) {
         FunctionDefinition* function = model->getFunctionDefinition(fd);
-        if (function->getId() == "rateOf" && function->getNumArguments() == 1) {
+        if (function->getId() == (string)"rateOf" && function->getNumArguments() == 1) {
             rateOf = function;
         }
     }
