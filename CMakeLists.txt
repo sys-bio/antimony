@@ -117,7 +117,7 @@ if(WITH_SBML)
 
     if(WITH_STATIC_SBML)
         find_library(LIBSBML_LIBRARY
-             NAMES libsbml-static.lib libsbml-static.so libsbml-static sbml-static.lib sbml-static.so sbml-static
+             NAMES libsbml-static.lib libsbml-static.so libsbml-static sbml-static.lib sbml-static.so sbml-static libsbml-staticd.lib libsbml-staticd.so libsbml-staticd sbml-staticd.lib sbml-staticd.so sbml-staticd
              PATHS /usr/lib /usr/local/lib
                ${LIBSBML_INSTALL_DIR}/lib
                ${CMAKE_SOURCE_DIR}
