@@ -196,9 +196,9 @@ public:
   virtual bool Synchronize(Variable* clone, const Variable* conversionFactor);
 #ifndef NSBML
   //bool Synchronize(Variable* clone, SBase* foo);
-  void SetWithRule(const Rule* rule);
-  virtual bool TransferAnnotationTo(SBase* sbmlobj, std::string metaid) const;
-  void ReadAnnotationFrom(const SBase* sbmlobj);
+  void SetWithRule(const libsbml::Rule* rule);
+  virtual bool TransferAnnotationTo(libsbml::SBase* sbmlobj, std::string metaid) const;
+  void ReadAnnotationFrom(const libsbml::SBase* sbmlobj);
   virtual size_t GetNumUncertWrappers() const;
 #endif
 

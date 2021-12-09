@@ -24,7 +24,9 @@
 #endif
 
 extern Registry g_registry;
+
 using namespace std;
+using namespace libsbml;
 
 #define DEFAULTCOMP "default_compartment" //Also defined in antimony_api.cpp
 

@@ -6,12 +6,10 @@
 #include <vector>
 #include <set>
 #include "unitelement.h"
+#include <sbml/Model.h>
 
 class Formula;
 class Variable;
-#ifndef NSBML
-class Model;
-#endif
 
 class UnitDef
 {
@@ -61,8 +59,8 @@ public:
   bool IsBuiltin() const;
 
 #ifndef NSBML
-  UnitDef* GetUnitDefFromASTNode(ASTNode* astn);
-  UnitDefinition* AddToSBML(Model* sbmlmod, std::string id, std::string name);
+  UnitDef* GetUnitDefFromASTNode(libsbml::ASTNode* astn);
+  libsbml::UnitDefinition* AddToSBML(libsbml::Model* sbmlmod, std::string id, std::string name);
 #endif
 
 private:

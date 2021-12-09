@@ -1,4 +1,8 @@
 #include "module.h"
+#include "sbml/Model.h"
+
+using namespace libsbml;
+
 #ifndef NSBML
 void SetVarWithEvent(Variable* var, const Event* event, Module* module, vector<string> submodname)
 {
@@ -165,7 +169,7 @@ void  SetSBaseReference(SBaseRef* sbr, SBase* target, Model* targetmodel, string
   return;
 }
 
-void Module::FindOrCreateLocalVersionOf(const Variable* var, Model* sbmlmod)
+void Module::FindOrCreateLocalVersionOf(const Variable* var, libsbml::Model* sbmlmod)
 {
   if(var->GetName().size() == 1) {
     //We'll create this variable normally.

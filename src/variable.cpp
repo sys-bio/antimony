@@ -14,6 +14,7 @@
 #endif
 
 using namespace std;
+using namespace libsbml;
 
 Variable::Variable(const string name, const Module* module)
   : Annotated(),

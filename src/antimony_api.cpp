@@ -10,6 +10,7 @@
 #ifndef NSBML
 #include <sbml/SBMLTypes.h>
 #include <sbml/xml/XMLOutputStream.h>
+#include <sbml/Model.h>
 #endif
 
 #ifndef NCELLML
@@ -25,6 +26,8 @@
 #define DEFAULTCOMP "default_compartment" //Also defined in module.cpp
 
 using namespace std;
+using namespace libsbml;
+
 extern int antimony_yyparse();
 extern int antimony_yylloc_first_line;
 

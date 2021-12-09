@@ -33,6 +33,8 @@
 #include <QMimeData>
 
 using namespace std;
+using namespace libsbml;
+
 Translator::Translator(QTAntimony* app, QString filename)
         : QMainWindow(NULL),
         m_app(app),

@@ -8,6 +8,7 @@
 #endif
 
 using namespace std;
+using namespace libsbml;
 
 UncertWrapper::UncertWrapper(Variable* parent, uncert_type type)
   : Variable()

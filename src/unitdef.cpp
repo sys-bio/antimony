@@ -9,6 +9,7 @@
 #include "registry.h"
 
 using namespace std;
+using namespace libsbml;
 
 UnitDef::UnitDef(string name, string modname)
   : m_components()

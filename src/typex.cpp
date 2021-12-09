@@ -5,6 +5,8 @@
 #include "stringx.h"
 
 using namespace std;
+using namespace libsbml;
+
 extern bool CaselessStrCmp(bool caseless, const string& lhs, const string& rhs);
 
 bool IsReaction(const var_type vtype)
