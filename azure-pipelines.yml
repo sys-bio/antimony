@@ -141,7 +141,6 @@ stages:
         timeoutInMinutes: "0"
         displayName: MacBuildAntimonyPython
         continueOnError: "false"
-        BuildType: Release
         pool:
           vmImage: 'macOS-10.15'
         strategy:
@@ -162,6 +161,7 @@ stages:
           PythonExecutable: '$(PythonRoot)/bin/python'
           CondaExecutable: '$(MinicondaRoot)/condabin/conda'
           PipExecutable: '$(PythonRoot)/bin/pip'
+          BuildType: Release
 
           MINICONDA_CACHE: 'false'
         steps:
