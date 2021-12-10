@@ -207,7 +207,7 @@ stages:
               mkdir $(DEPS_INSTALL_PREFIX)
             displayName: Make Directories
           - task: DownloadPipelineArtifact@2
-            # In this task we go and grab the build artefacts from
+            # In this task we go and grab the build artifacts from
             # the libroadrunner-dependencies package
             inputs:
               source: 'specific'
@@ -232,14 +232,6 @@ stages:
               ls
             displayName: Move Dependencies
           - script: |
-              echo "less -N $(BUILD_DIR)/source/CMakeFiles/antimony.dir/build.make"
-              less -N "$(BUILD_DIR)/source/CMakeFiles/antimony.dir/build.make"
-              echo "Building antimony"
-              echo "cd to build dir"
-              cd $(BUILD_DIR)
-              cmake --build . --target install --config $(BuildType) -j 12
-            displayName: Run CMake Build Command
-          - script: |
               echo "Configuring antimony"
               echo "mkdir build directory: $(BUILD_DIR)"
               mkdir $(BUILD_DIR)
@@ -255,6 +247,14 @@ stages:
               cmake -DCMAKE_PREFIX_PATH=/usr/local/opt/qt@5/lib  -DLIBSBML_INSTALL_DIR=$(DEPS_INSTALL_PREFIX) -DWITH_QTANTIMONY=OFF -DWITH_STATIC_SBML=ON -DCMAKE_INSTALL_PREFIX=$(INSTALL_DIR) -DCMAKE_BUILD_TYPE=$(BuildType) -DWITH_CHECK=ON -DWITH_PYTHON=ON -DPython_ROOT_DIR=$(PythonRoot) ..
               cmake --build . --target install --config Release -j 12
             displayName: BuildAntimonyWithPython
+          - script: |
+              echo "less -N $(BUILD_DIR)/source/CMakeFiles/antimony.dir/build.make"
+              less -N "$(BUILD_DIR)/source/CMakeFiles/antimony.dir/build.make"
+              echo "Building antimony"
+              echo "cd to build dir"
+              cd $(BUILD_DIR)
+              cmake --build . --target install --config $(BuildType) -j 12
+            displayName: Run CMake Build Command
 #          - script: |
 #              echo "LD_LIBRARY_PATH $LD_LIBRARY_PATH"
 #              export LD_LIBRARY_PATH=$(PythonLibDir)
