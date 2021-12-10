@@ -196,13 +196,16 @@ stages:
               echo "PythonLibDir $(PythonLibDir)"
               echo "CondaExecutable $(CondaExecutable)"
             displayName: PrintPythonVariables
-          - script: |
-              mkdir $(DEPS_INSTALL_PREFIX)
-            displayName: Make Directories
 #          - script: brew install ncurses
 #            displayName: install ncurses
           - script: brew install qt@5 check
             displayName: install QT5 and check
+          - script: |
+              mkdir -p $(SOURCE_DIR)
+              mkdir -p $(BUILD_DIR)
+              mkdir -p $(INSTALL_DIR)
+              mkdir $(DEPS_INSTALL_PREFIX)
+            displayName: Make Directories
           - task: DownloadPipelineArtifact@2
             # In this task we go and grab the build artefacts from
             # the libroadrunner-dependencies package
@@ -236,11 +239,6 @@ stages:
               cd $(BUILD_DIR)
               cmake --build . --target install --config $(BuildType) -j 12
             displayName: Run CMake Build Command
-          - script: |
-              mkdir -p $(SOURCE_DIR)
-              mkdir -p $(BUILD_DIR)
-              mkdir -p $(INSTALL_DIR)
-            displayName: Make directories
           - script: |
               echo "Configuring antimony"
               echo "mkdir build directory: $(BUILD_DIR)"
