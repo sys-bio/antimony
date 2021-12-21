@@ -35,8 +35,22 @@ stages:
           matrix:
             64-bit Windows Release:
               BuildType: Release
+              CheckFile: check-release.zip
+              CheckURL: https://github.com/sys-bio/antimony/releases/download/libcheck/check-release.zip
             64-bit Windows Debug:
               BuildType: Debug
+              CheckFile: check-debug.zip
+              CheckURL: https://github.com/sys-bio/antimony/releases/download/libcheck/check-debug.zip
+        variables:
+          LLVM_CACHE: 'false'
+          MinicondaRoot : 'C:\Miniconda'
+          PythonName: 'py39'
+          PythonVersion: '3.9'
+          PythonRoot: '$(MinicondaRoot)\envs\$(PythonName)'
+          PythonLibDir: '$(PythonRoot)\Lib'
+          PythonScriptsDir: '$(PythonRoot)\Scripts'
+          PythonExecutable: '$(PythonRoot)\python.exe'
+          PipExecutable: '$(PythonScriptsDir)\pip.exe'
         steps:
           - script: |
               echo "SOURCE_DIR $(SOURCE_DIR)"
@@ -74,11 +88,26 @@ stages:
               echo "System.TeamProjectId $(System.TeamProjectId)"
               echo "TF_BUILD $(TF_BUILD)"
             displayName: Print Variables
-          - script: |
+          - powershell: |
               mkdir $(DEPS_INSTALL_PREFIX)
             displayName: Make Directories
-          - script: brew install qt@5 check
-            displayName: install QT5 and check
+          - powershell: Write-Host "##vso[task.prependpath]$env:CONDA\Scripts"
+            displayName: Add conda to PATH
+          - powershell: |
+              where.exe conda
+              where.exe python
+              echo "PythonVersion $(PythonVersion)"
+              echo "PythonName $(PythonName)"
+              echo "MinicondaRoot $(MinicondaRoot)"
+              echo "PythonRoot $(PythonRoot)"
+              echo "PythonLibDir $(PythonLibDir)"
+            displayName: PrintPythonVariables
+          - script: |
+              $(PipExecutable) install requests
+              $(PythonExecutable) ./.azurepipelines/getCheck.py $(CheckURL) check
+            displayName: "Get Check for Windows for tests"
+          #- script: brew install qt@5 check
+          #  displayName: install QT5 and check
           - task: DownloadPipelineArtifact@2
             # In this task we go and grab the build artifacts from
             # the libroadrunner-dependencies package
@@ -110,7 +139,7 @@ stages:
               mkdir $(BUILD_DIR)
               echo "CD to build dir: $(BUILD_DIR)"
               cd $(BUILD_DIR)
-              cmake -DCMAKE_PREFIX_PATH=/usr/local/opt/qt@5/lib  -DLIBSBML_INSTALL_DIR=$(DEPS_INSTALL_PREFIX) -DWITH_QTANTIMONY=OFF -DWITH_STATIC_SBML=ON -DCMAKE_INSTALL_PREFIX=$(INSTALL_DIR) -DCMAKE_BUILD_TYPE=$(BuildType) -DWITH_CHECK=ON ..
+              cmake -DCMAKE_PREFIX_PATH=/usr/local/opt/qt@5/lib  -DLIBSBML_INSTALL_DIR=$(DEPS_INSTALL_PREFIX) -DWITH_QTANTIMONY=OFF -DWITH_STATIC_SBML=ON -DCMAKE_INSTALL_PREFIX=$(INSTALL_DIR) -DCMAKE_BUILD_TYPE=$(BuildType) -DWITH_CHECK=ON -DLIBCHECK_INCLUDE_DIR=check/include/ -DLIBCHECK_LIBRARY=check/lib/libcheck.lib ..
             displayName: Run CMake Configure Command
           - script: |
               echo "less -N $(BUILD_DIR)/source/CMakeFiles/antimony.dir/build.make"
@@ -165,27 +194,19 @@ stages:
 
           MINICONDA_CACHE: 'false'
         steps:
-          - bash: echo "##vso[task.prependpath]$CONDA/bin"
+          - checkout: self
+            submodules: recursive
+          - powershell: Write-Host "##vso[task.prependpath]$env:CONDA\Scripts"
             displayName: Add conda to PATH
-
-          # On Hosted macOS, the agent user doesn't have ownership of Miniconda's installation directory/
-          # We need to take ownership if we want to update conda or install packages globally
-          - bash: sudo chown -R $USER $CONDA
-            displayName: Take ownership of conda installation
-          - script: |
-              echo "cd to source dir: $(SOURCE_DIR)"
-              cd $(SOURCE_DIR)
-              echo "ls"
-              ls
-              echo "which conda"
-              which conda
-              echo "cd miniconda root: $(MinicondaRoot)"
-              cd $(MinicondaRoot)
-              echo "ls"
-              ls
-              $(CondaExecutable) create --quiet --yes --name $(PythonName) python=$(PythonVersion)
-              echo "running: $(PipExecutable) install -r $(SOURCE_DIR)/test-requirements.txt"
-            displayName: InstallCondaEnv
+          - powershell: |
+              where.exe conda
+              where.exe python
+              echo "PythonVersion $(PythonVersion)"
+              echo "PythonName $(PythonName)"
+              echo "MinicondaRoot $(MinicondaRoot)"
+              echo "PythonRoot $(PythonRoot)"
+              echo "PythonLibDir $(PythonLibDir)"
+            displayName: PrintPythonVariables
           - script: |
               which conda
               which python
