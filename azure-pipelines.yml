@@ -90,6 +90,7 @@ stages:
             displayName: Print Variables
           - powershell: |
               mkdir $(DEPS_INSTALL_PREFIX)
+              mkdir check
             displayName: Make Directories
           - powershell: Write-Host "##vso[task.prependpath]$env:CONDA\Scripts"
             displayName: Add conda to PATH
@@ -174,12 +175,6 @@ stages:
           vmImage: 'windowsOS-10.15'
         strategy:
           matrix:
-            py37:
-              PythonVersion: 3.7
-              PythonName: py37
-            py38:
-              PythonVersion: 3.8
-              PythonName: py38
             py39:
               PythonVersion: 3.9
               PythonName: py39
@@ -423,12 +418,6 @@ stages:
           vmImage: 'macOS-10.15'
         strategy:
           matrix:
-            py37:
-              PythonVersion: 3.7
-              PythonName: py37
-            py38:
-              PythonVersion: 3.8
-              PythonName: py38
             py39:
               PythonVersion: 3.9
               PythonName: py39
