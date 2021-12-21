@@ -104,6 +104,10 @@ stages:
               echo "PythonLibDir $(PythonLibDir)"
             displayName: PrintPythonVariables
           - script: |
+              echo "Creating new conda environment"
+              conda create --quiet --yes --name $(PythonName) python=$(PythonVersion)
+              echo "pip help:"
+              $(PipExecutable) install --help
               echo $(PipExecutable) install requests
               $(PipExecutable) install requests
               echo $(PythonExecutable) ./.azurepipelines/getCheck.py $(CheckURL) check
