@@ -17,6 +17,7 @@ variables:
   BUILD_DIR: '$(SOURCE_DIR)/build'
   INSTALL_DIR: '$(SOURCE_DIR)/antimony-$(Agent.OS)'
   DEPS_INSTALL_PREFIX: '$(SOURCE_DIR)/libroadrunner-deps' # e.g./home/vsts/work/1
+  CHECK_INSTALL_PREFIX: '$(SOURCE_DIR)/check' # e.g./home/vsts/work/1
 
 stages:
 ########################################################################
@@ -57,6 +58,7 @@ stages:
               echo "BUILD_DIR $(BUILD_DIR)"
               echo "INSTALL_DIR $(INSTALL_DIR)"
               echo "DEPS_INSTALL_PREFIX $(DEPS_INSTALL_PREFIX)"
+              echo "CHECK_INSTALL_PREFIX $(CHECK_INSTALL_PREFIX)"
               echo "Build.DefinitionName $(Build.DefinitionName)"
               echo "System.DefinitionId	 $(System.DefinitionId)"
               echo "Agent.OS $(Agent.OS)"
@@ -110,7 +112,7 @@ stages:
               $(PipExecutable) install --help
               echo $(PipExecutable) install requests
               $(PipExecutable) install requests
-              echo $(PythonExecutable) ./.azurepipelines/getCheck.py $(CheckURL) check
+              echo $(PythonExecutable) ./.azurepipelines/getCheck.py $(CheckURL) $(CHECK_INSTALL_PREFIX)
               $(PythonExecutable) ./.azurepipelines/getCheck.py $(CheckURL) check
             displayName: "Get Check for Windows for tests"
           #- script: brew install qt@5 check
@@ -146,7 +148,7 @@ stages:
               mkdir $(BUILD_DIR)
               echo "CD to build dir: $(BUILD_DIR)"
               cd $(BUILD_DIR)
-              cmake -DCMAKE_PREFIX_PATH=/usr/local/opt/qt@5/lib  -DLIBSBML_INSTALL_DIR=$(DEPS_INSTALL_PREFIX) -DWITH_QTANTIMONY=OFF -DWITH_STATIC_SBML=ON -DCMAKE_INSTALL_PREFIX=$(INSTALL_DIR) -DCMAKE_BUILD_TYPE=$(BuildType) -DWITH_CHECK=ON -DLIBCHECK_INCLUDE_DIR=check/include/ -DLIBCHECK_LIBRARY=check/lib/libcheck.lib ..
+              cmake -DCMAKE_PREFIX_PATH=/usr/local/opt/qt@5/lib  -DLIBSBML_INSTALL_DIR=$(DEPS_INSTALL_PREFIX) -DWITH_QTANTIMONY=OFF -DWITH_STATIC_SBML=ON -DCMAKE_INSTALL_PREFIX=$(INSTALL_DIR) -DCMAKE_BUILD_TYPE=$(BuildType) -DWITH_CHECK=ON -DLIBCHECK_INCLUDE_DIR=$(CHECK_INSTALL_PREFIX)/include/ -DLIBCHECK_LIBRARY=$(CHECK_INSTALL_PREFIX)/lib/libcheck.lib ..
             displayName: Run CMake Configure Command
           - script: |
               echo "less -N $(BUILD_DIR)/source/CMakeFiles/antimony.dir/build.make"
