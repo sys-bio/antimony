@@ -104,7 +104,9 @@ stages:
               echo "PythonLibDir $(PythonLibDir)"
             displayName: PrintPythonVariables
           - script: |
+              echo $(PipExecutable) install requests
               $(PipExecutable) install requests
+              echo $(PythonExecutable) ./.azurepipelines/getCheck.py $(CheckURL) check
               $(PythonExecutable) ./.azurepipelines/getCheck.py $(CheckURL) check
             displayName: "Get Check for Windows for tests"
           #- script: brew install qt@5 check
