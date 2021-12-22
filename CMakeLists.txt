@@ -253,7 +253,7 @@ endif()
 
 if(WITH_LIBSBML_LIBXML)
     find_library(LIBXML_LIBRARY
-        NAMES libxml2 libxml2d libxml2s libxml2sd
+        NAMES libxml2.lib libxml2.so libxml2.dylib libxml2 libxml2s libxml2sd
 	PATHS /usr/lib /usr/local/lib
               ${CMAKE_SOURCE_DIR}
               ${CMAKE_SOURCE_DIR}/dependencies/lib
@@ -263,7 +263,7 @@ if(WITH_LIBSBML_LIBXML)
 
     #The libxml library requires the libz library, too.
     find_library(ZDLL_LIBRARY
-        NAMES zdll.lib zdll.so zdll.dylib zdll z zlibd zlibmd zlibstatic zlibstaticd
+        NAMES zdll.lib zdll.so zdll.dylib zdll z zlibd.lib zlibstaticd.lib zlibmd.lib zlibstatic.lib
 	PATHS /usr/lib /usr/local/lib
               ${CMAKE_SOURCE_DIR}
               ${CMAKE_SOURCE_DIR}/dependencies/lib
@@ -273,7 +273,7 @@ if(WITH_LIBSBML_LIBXML)
 
     if(WIN32)
       find_library(ICONV_LIBRARY
-          NAMES iconv libiconv libiconv libiconv libiconv libiconv-static libiconv-staticd
+          NAMES iconv.lib iconv.so iconv.dylib iconv libiconv.lib libiconv.so libiconv.dylib libiconv libiconv-static.lib libiconv-staticd.lib
           PATHS /usr/lib /usr/local/lib
                 ${CMAKE_SOURCE_DIR}
                 ${CMAKE_SOURCE_DIR}/dependencies/lib
