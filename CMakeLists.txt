@@ -117,7 +117,7 @@ if(WITH_SBML)
 
     if(WITH_STATIC_SBML)
         find_library(LIBSBML_LIBRARY
-             NAMES libsbml-static.lib libsbml-static.so libsbml-static sbml-static.lib sbml-static.so sbml-static libsbml-staticd.lib libsbml-staticd.so libsbml-staticd sbml-staticd.lib sbml-staticd.so sbml-staticd
+             NAMES libsbml-static.lib libsbml-static.so libsbml-static sbml-static.lib sbml-static.so sbml-static libsbml-staticd.lib libsbml-staticmd.lib libsbml-staticmdd.lib libsbml-staticd.so libsbml-staticd sbml-staticd.lib sbml-staticd.so sbml-staticd
              PATHS /usr/lib /usr/local/lib
                ${LIBSBML_INSTALL_DIR}/lib
                ${CMAKE_SOURCE_DIR}
@@ -253,7 +253,7 @@ endif()
 
 if(WITH_LIBSBML_LIBXML)
     find_library(LIBXML_LIBRARY
-        NAMES libxml2.lib libxml2.so libxml2.dylib libxml2
+        NAMES libxml2.lib libxml2.so libxml2.dylib libxml2 libxml2s libxml2sd
 	PATHS /usr/lib /usr/local/lib
               ${CMAKE_SOURCE_DIR}
               ${CMAKE_SOURCE_DIR}/dependencies/lib
@@ -263,7 +263,7 @@ if(WITH_LIBSBML_LIBXML)
 
     #The libxml library requires the libz library, too.
     find_library(ZDLL_LIBRARY
-        NAMES zdll.lib zdll.so zdll.dylib zdll z
+        NAMES zdll.lib zdll.so zdll.dylib zdll z zlibd.lib zlibstaticd.lib zlibmd.lib zlibstaticmd.lib
 	PATHS /usr/lib /usr/local/lib
               ${CMAKE_SOURCE_DIR}
               ${CMAKE_SOURCE_DIR}/dependencies/lib
@@ -273,7 +273,7 @@ if(WITH_LIBSBML_LIBXML)
 
     if(WIN32)
       find_library(ICONV_LIBRARY
-          NAMES iconv.lib iconv.so iconv.dylib iconv libiconv.lib libiconv.so libiconv.dylib libiconv
+          NAMES iconv.lib iconv.so iconv.dylib iconv libiconv.lib libiconv.so libiconv.dylib libiconv libiconv-staticmdd.lib libiconv-staticmd.lib
           PATHS /usr/lib /usr/local/lib
                 ${CMAKE_SOURCE_DIR}
                 ${CMAKE_SOURCE_DIR}/dependencies/lib
