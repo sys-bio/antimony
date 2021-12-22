@@ -1,6 +1,4 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
+# Antimony pipeline
 # https://aka.ms/yaml
 name: $(Date:yyyyMMdd)$(Rev:.r)
 
@@ -136,7 +134,7 @@ stages:
               echo "cd to $(DEPS_INSTALL_PREFIX)"
               cd $(DEPS_INSTALL_PREFIX)
               echo "ls: "
-              ls
+              ls -R
               echo "moving contents of $(DEPS_INSTALL_PREFIX)/install to  $(DEPS_INSTALL_PREFIX)"
               mv $(DEPS_INSTALL_PREFIX)/install-azure/$(BuildType)/** .
               rm -r $(DEPS_INSTALL_PREFIX)/install-azure
