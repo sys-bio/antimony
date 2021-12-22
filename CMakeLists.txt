@@ -280,6 +280,14 @@ if(WITH_LIBSBML_LIBXML)
                 ${LIBSBML_INCLUDE_DIR}/../lib
           )
       set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${ICONV_LIBRARY})
+      find_library(LIBCHARSET_LIBRARY
+          NAMES libcharset.lib libcharsetd.lib
+          PATHS /usr/lib /usr/local/lib
+                ${CMAKE_SOURCE_DIR}
+                ${CMAKE_SOURCE_DIR}/dependencies/lib
+                ${LIBSBML_INCLUDE_DIR}/../lib
+          )
+      set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${LIBCHARSET_LIBRARY})
     endif()
 endif()
 
