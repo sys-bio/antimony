@@ -146,7 +146,7 @@ stages:
               mkdir $(BUILD_DIR)
               echo "CD to build dir: $(BUILD_DIR)"
               cd $(BUILD_DIR)
-              cmake -DCMAKE_PREFIX_PATH=/usr/local/opt/qt@5/lib  -DLIBSBML_INSTALL_DIR=$(DEPS_INSTALL_PREFIX) -DWITH_QTANTIMONY=OFF -DWITH_STATIC_SBML=ON -DCMAKE_INSTALL_PREFIX=$(INSTALL_DIR) -DCMAKE_BUILD_TYPE=$(BuildType) -DWITH_CHECK=ON -DLIBCHECK_INCLUDE_DIR=$(CHECK_INSTALL_PREFIX)/include/ -DLIBCHECK_LIBRARY=$(CHECK_INSTALL_PREFIX)/lib/libcheck.lib -DEXTRA_LIBS=wsock32.lib  -DLIBCHARSET_DLL_EXPORTED="" ..
+              cmake -DCMAKE_PREFIX_PATH=/usr/local/opt/qt@5/lib  -DLIBSBML_INSTALL_DIR=$(DEPS_INSTALL_PREFIX) -DWITH_QTANTIMONY=OFF -DWITH_STATIC_SBML=ON -DCMAKE_INSTALL_PREFIX=$(INSTALL_DIR) -DCMAKE_BUILD_TYPE=$(BuildType) -DWITH_CHECK=ON -DLIBCHECK_INCLUDE_DIR=$(CHECK_INSTALL_PREFIX)/include/ -DLIBCHECK_LIBRARY=$(CHECK_INSTALL_PREFIX)/lib/libcheck.lib -DEXTRA_LIBS=wsock32.lib ..
             displayName: Run CMake Configure Command
           - script: |
               echo "less -N $(BUILD_DIR)/source/CMakeFiles/antimony.dir/build.make"
