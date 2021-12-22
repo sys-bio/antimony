@@ -263,7 +263,7 @@ if(WITH_LIBSBML_LIBXML)
 
     #The libxml library requires the libz library, too.
     find_library(ZDLL_LIBRARY
-        NAMES zdll.lib zdll.so zdll.dylib zdll z zlibd.lib zlibstaticd.lib zlibmd.lib zlibstaticmd.lib
+        NAMES zdll.lib zdll.so zdll.dylib zdll z zlibd.lib zlibstaticd.lib zlibmd.lib zlibstatic.lib
 	PATHS /usr/lib /usr/local/lib
               ${CMAKE_SOURCE_DIR}
               ${CMAKE_SOURCE_DIR}/dependencies/lib
@@ -273,7 +273,7 @@ if(WITH_LIBSBML_LIBXML)
 
     if(WIN32)
       find_library(ICONV_LIBRARY
-          NAMES iconv.lib iconv.so iconv.dylib iconv libiconv.lib libiconv.so libiconv.dylib libiconv libiconv-staticmdd.lib libiconv-staticmd.lib
+          NAMES iconv.lib iconv.so iconv.dylib iconv libiconv.lib libiconv.so libiconv.dylib libiconv libiconv-static.lib libiconv-staticd.lib
           PATHS /usr/lib /usr/local/lib
                 ${CMAKE_SOURCE_DIR}
                 ${CMAKE_SOURCE_DIR}/dependencies/lib
@@ -305,7 +305,7 @@ if(WITH_LIBSBML_COMPRESSION)
     set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${ZDLL_LIBRARY} )
 
     find_library(BZIP_LIBRARY
-        NAMES bzip2.lib bzip2.so bzip2.dylib bzip2 bz2
+        NAMES bzip2.lib bzip2.so bzip2.dylib bzip2 bz2 bz2d
 	PATHS /usr/lib /usr/local/lib
               ${CMAKE_SOURCE_DIR}
               ${CMAKE_SOURCE_DIR}/dependencies/lib
