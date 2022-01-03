@@ -167,7 +167,7 @@ stages:
               targetFolder: $(Build.ArtifactStagingDirectory)
             displayName: Copy to Staging Area
           - publish: $(Build.ArtifactStagingDirectory)
-            artifact: antimony-WindowsOS10.15-$(BuildType)
+            artifact: antimony-Windows-$(BuildType)
             displayName: Publish
 
   - stage: WindowsBuildAntimonyPython
@@ -178,7 +178,7 @@ stages:
         displayName: WindowsBuildAntimonyPython
         continueOnError: "false"
         pool:
-          vmImage: 'windowsOS-10.15'
+          vmImage: 'windows-2019'
         strategy:
           matrix:
             py39:
@@ -287,7 +287,7 @@ stages:
           - task: CopyFiles@2
             inputs:
               contents: '$(INSTALL_DIR)/**'
-              targetFolder: $(Build.ArtifactStagingDirectory)/antimony-WindowsOS10.15-$(PythonName)
+              targetFolder: $(Build.ArtifactStagingDirectory)/antimony-Windows-$(PythonName)
             displayName: Copy Install Tree to Staging Area
           - task: CopyFiles@2
             inputs:
@@ -295,7 +295,7 @@ stages:
               targetFolder: $(Build.ArtifactStagingDirectory)/pip-wheels
             displayName: Copy Pip Wheels to Staging Area
           - publish: $(Build.ArtifactStagingDirectory)
-            artifact: antimony-WindowsOS10.15-$(PythonName)
+            artifact: antimony-Windows-$(PythonName)
             displayName: Publish Pip Wheels Artifacts
 
 ########################################################################
