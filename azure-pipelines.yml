@@ -47,13 +47,11 @@ stages:
               CheckFile: check-release.zip
               CheckURL: https://github.com/sys-bio/antimony/releases/download/libcheck/check-release.zip
               PythonCMake: -DWITH_PYTHON=ON -DPython_ROOT_DIR=$(PythonRoot)
-              PythonWheel: $(PythonExecutable) setup.py bdist_wheel
             64-bit Windows Debug:
               BuildType: Debug
               CheckFile: check-debug.zip
               CheckURL: https://github.com/sys-bio/antimony/releases/download/libcheck/check-debug.zip
               PythonCMake: -DWITH_PYTHON=OFF
-              PythonWheel: echo "No Python build in debug mode."
         steps:
           - script: |
               echo "SOURCE_DIR $(SOURCE_DIR)"
