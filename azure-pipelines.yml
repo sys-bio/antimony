@@ -178,16 +178,17 @@ stages:
               ls
               echo "$(PythonExecutable) setup.py bdist_wheel"
               $(PythonExecutable) setup.py bdist_wheel
-            condition: eq($(BuildType), "Release")
+            condition: eq(variables.BuildType, "Release")
             displayName: Generate pip wheel
           - task: CopyFiles@2
             inputs:
               contents: '$(INSTALL_DIR)/bindings/python/dist/**'
               targetFolder: $(Build.ArtifactStagingDirectory)/pip-wheels
+            condition: eq(variables.BuildType, "Release")
             displayName: Copy Pip Wheels to Staging Area
           - publish: $(Build.ArtifactStagingDirectory)
             artifact: antimony-Windows-$(PythonName)
-            condition: eq($(BuildType), "Release")
+            condition: eq(variables.BuildType, "Release")
             displayName: Publish Pip Wheels Artifacts
 
 ########################################################################
