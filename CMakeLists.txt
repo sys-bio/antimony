@@ -281,7 +281,7 @@ if(WITH_LIBSBML_LIBXML)
           )
       set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${ICONV_LIBRARY})
       find_library(LIBCHARSET_LIBRARY
-          NAMES libcharset.lib libcharsetd.lib
+          NAMES libcharset.lib libcharsetd.lib libcharsetmd.lib libcharsetmdd.lib
           PATHS /usr/lib /usr/local/lib
                 ${CMAKE_SOURCE_DIR}
                 ${CMAKE_SOURCE_DIR}/dependencies/lib
