@@ -180,20 +180,15 @@ stages:
               $(PythonExecutable) setup.py bdist_wheel
             condition: eq($(BuildType), "Release")
             displayName: Generate pip wheel
-#
-#          - task: CopyFiles@2
-#            inputs:
-#              contents: '$(INSTALL_DIR)/**'
-#              targetFolder: $(Build.ArtifactStagingDirectory)/antimony-Windows-$(PythonName)
-#            displayName: Copy Install Tree to Staging Area
-#          - task: CopyFiles@2
-#            inputs:
-#              contents: '$(INSTALL_DIR)/bindings/python/dist/**'
-#              targetFolder: $(Build.ArtifactStagingDirectory)/pip-wheels
-#            displayName: Copy Pip Wheels to Staging Area
-#          - publish: $(Build.ArtifactStagingDirectory)
-#            artifact: antimony-Windows-$(PythonName)
-#            displayName: Publish Pip Wheels Artifacts
+          - task: CopyFiles@2
+            inputs:
+              contents: '$(INSTALL_DIR)/bindings/python/dist/**'
+              targetFolder: $(Build.ArtifactStagingDirectory)/pip-wheels
+            displayName: Copy Pip Wheels to Staging Area
+          - publish: $(Build.ArtifactStagingDirectory)
+            artifact: antimony-Windows-$(PythonName)
+            condition: eq($(BuildType), "Release")
+            displayName: Publish Pip Wheels Artifacts
 
 ########################################################################
 # MacOS Build
