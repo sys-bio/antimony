@@ -171,22 +171,15 @@ stages:
           - publish: $(Build.ArtifactStagingDirectory)
             artifact: antimony-Windows-$(BuildType)
             displayName: Publish
-#          - script: |
-#              echo "less -N $(BUILD_DIR)/source/CMakeFiles/antimony.dir/build.make"
-#              less -N "$(BUILD_DIR)/source/CMakeFiles/antimony.dir/build.make"
-#              echo "Building antimony"
-#              echo "cd to build dir"
-#              cd $(BUILD_DIR)
-#              cmake --build . --target install --config $(BuildType) -j 12
-#            displayName: Run CMake Build Command
-#          - script: |
-#              echo "cd to python bindings dir: $(INSTALL_DIR)/bindings/python"
-#              cd $(INSTALL_DIR)/bindings/python
-#              echo "ls in install dir"
-#              ls
-#              echo "$(PythonExecutable) setup.py bdist_wheel"
-#              $(PythonExecutable) setup.py bdist_wheel
-#            displayName: Generate pip wheel
+          - script: |
+              echo "cd to python bindings dir: $(INSTALL_DIR)/bindings/python"
+              cd $(INSTALL_DIR)/bindings/python
+              echo "ls in install dir"
+              ls
+              echo "$(PythonExecutable) setup.py bdist_wheel"
+              $(PythonExecutable) setup.py bdist_wheel
+            condition: eq($(BuildType), "Release")
+            displayName: Generate pip wheel
 #
 #          - task: CopyFiles@2
 #            inputs:
