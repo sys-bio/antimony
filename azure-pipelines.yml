@@ -183,6 +183,10 @@ stages:
           - publish: $(Build.ArtifactStagingDirectory)
             artifact: antimony-Windows-$(BuildType)
             displayName: Publish
+          - publish: $(BUILD_DIR)
+            artifact: antimony-Windows-Debug-build
+            condition: eq(variables.BuildType, 'Debug')
+            displayName: Publish build directory for testing.
           - script: |
               rm -r $(Build.ArtifactStagingDirectory)/*
               ls $(Build.ArtifactStagingDirectory)
