@@ -161,8 +161,7 @@ stages:
           - script: |
               echo "cd to build dir $(BUILD_DIR)"
               cd $(BUILD_DIR)
-              ls -R
-              cp $(DEPS_INSTALL_PREFIX)/bin/zlibd.dll bin/Debug/
+              cp $(DEPS_INSTALL_PREFIX)/bin/zlibd.dll Debug/
             condition: eq(variables.BuildType, 'Debug')
             displayName: copy zlibd.dll to build directory
           - script: |
@@ -177,7 +176,7 @@ stages:
             displayName: Copy to Staging Area
           - script: |
               echo "cp $(BUILD_DIR)/bin/Debug/zlibd.dll $(Build.ArtifactStagingDirectory)/bin/"
-              cp $(BUILD_DIR)/bin/Debug/zlibd.dll $(Build.ArtifactStagingDirectory)/bin/
+              cp $(BUILD_DIR)/Debug/zlibd.dll $(Build.ArtifactStagingDirectory)/bin/
             condition: eq(variables.BuildType, 'Debug')
             displayName: copy zlibd.dll to install
           - publish: $(Build.ArtifactStagingDirectory)
