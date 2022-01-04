@@ -162,8 +162,9 @@ stages:
               echo "cd to build dir $(BUILD_DIR)"
               cd $(BUILD_DIR)
               cp $(DEPS_INSTALL_PREFIX)/bin/zlibd.dll Debug/
+              cp $(DEPS_INSTALL_PREFIX)/bin/zlibd.dll src/test/Debug/
             condition: eq(variables.BuildType, 'Debug')
-            displayName: copy zlibd.dll to build directory
+            displayName: copy zlibd.dll to build directories
           - script: |
               echo "cd to build dir $(BUILD_DIR)"
               cd $(BUILD_DIR)
