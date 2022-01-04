@@ -168,7 +168,6 @@ stages:
           - script: |
               echo "cd to build dir $(BUILD_DIR)"
               cd $(BUILD_DIR)
-              ls -R
               ctest --verbose --extra-verbose --progress
             displayName: RunCTest
           - task: CopyFiles@2
@@ -184,10 +183,10 @@ stages:
           - publish: $(Build.ArtifactStagingDirectory)
             artifact: antimony-Windows-$(BuildType)
             displayName: Publish
-          - publish: $(BUILD_DIR)
-            artifact: antimony-Windows-Debug-build
-            condition: eq(variables.BuildType, 'Debug')
-            displayName: Publish build directory for testing.
+#          - publish: $(BUILD_DIR)
+#            artifact: antimony-Windows-Debug-build
+#            condition: eq(variables.BuildType, 'Debug')
+#            displayName: Publish build directory for testing.
           - script: |
               rm -r $(Build.ArtifactStagingDirectory)/*
               ls $(Build.ArtifactStagingDirectory)
@@ -412,7 +411,21 @@ stages:
         displayName: LinuxBuildAntimonyCpp
         continueOnError: "false"
         pool:
-          vmImage: 'manylinux'
+          vmImage: 'ubuntu-18.04'
+        container: ciaranwelsh/roadrunner-manylinux2014-base:llvm-13.x
+        variables:
+          CCACHE_DIR: '$(Pipeline.Workspace)/ccache'
+          BUILD_DIRECTORY: '$(System.DefaultWorkingDirectory)/build'
+          SOURCE_DIRECTORY: '$(System.DefaultWorkingDirectory)'
+          INSTALL_DIRECTORY: '$(System.DefaultWorkingDirectory)/install-azure'
+          MinicondaRoot: '/Miniconda3'
+          PythonRoot: '$(MinicondaRoot)/envs/$(PythonName)'
+          CondaExecutable: '$(MinicondaRoot)/bin/conda'
+          PythonExecutable: '$(PythonRoot)/bin/python'
+          PythonLibDir: '$(PythonRoot)/lib'
+          PythonIncludeDir: '$(PythonRoot)/include'
+          PipExecutable: '$(PythonRoot)/bin/pip'
+          SwigExecutable: '/swig-4.0.2/install-swig-4.0.2/bin/swig'
         strategy:
           matrix:
             Linux Release:
@@ -459,7 +472,7 @@ stages:
           - script: |
               mkdir $(DEPS_INSTALL_PREFIX)
             displayName: Make Directories
-          - script: brew install qt@5 check
+          - script: sudo yum install qt5-qtbase-devel check
             displayName: install QT5 and check
           - task: DownloadPipelineArtifact@2
             # In this task we go and grab the build artefacts from
@@ -492,7 +505,7 @@ stages:
               mkdir $(BUILD_DIR)
               echo "CD to build dir: $(BUILD_DIR)"
               cd $(BUILD_DIR)
-              cmake -DCMAKE_PREFIX_PATH=/usr/local/opt/qt@5/lib  -DLIBSBML_INSTALL_DIR=$(DEPS_INSTALL_PREFIX) -DWITH_QTANTIMONY=OFF -DWITH_STATIC_SBML=ON -DCMAKE_INSTALL_PREFIX=$(INSTALL_DIR) -DCMAKE_BUILD_TYPE=$(BuildType) -DWITH_CHECK=ON ..
+              cmake -DCMAKE_PREFIX_PATH=/usr/local/opt/qt@5/lib  -DLIBSBML_INSTALL_DIR=$(DEPS_INSTALL_PREFIX) -DWITH_QTANTIMONY=OFF -DWITH_STATIC_SBML=ON -DCMAKE_INSTALL_PREFIX=$(INSTALL_DIR) -DCMAKE_BUILD_TYPE=$(BuildType) -DWITH_CHECK=ON -DWITH_PYTHON=ON -DPython_ROOT_DIR=$(PythonRoot) ..
             displayName: Run CMake Configure Command
           - script: |
               echo "less -N $(BUILD_DIR)/source/CMakeFiles/antimony.dir/build.make"
@@ -515,6 +528,37 @@ stages:
           - publish: $(Build.ArtifactStagingDirectory)
             artifact: antimony-MacOS10.15-$(BuildType)
             displayName: Publish
+          - script: |
+              rm -r $(Build.ArtifactStagingDirectory)/*
+              ls $(Build.ArtifactStagingDirectory)
+            condition: eq(variables.BuildType, 'Release')
+            displayName: Clear published artifacts
+          - script: |
+              echo "cd to python bindings dir: $(INSTALL_DIR)/bindings/python"
+              cd $(INSTALL_DIR)/bindings/python
+              echo "ls in install dir"
+              ls
+              echo "$(PythonExecutable) setup.py bdist_wheel"
+              $(PythonExecutable) setup.py bdist_wheel
+            condition: eq(variables.BuildType, 'Release')
+            displayName: Generate pip wheel
+          - task: CopyFiles@2
+            inputs:
+              contents: '$(INSTALL_DIR)/**'
+              targetFolder: $(Build.ArtifactStagingDirectory)/antimony-MacOS10.15-$(PythonName)
+            condition: eq(variables.BuildType, 'Release')
+            displayName: Copy Install Tree to Staging Area
+          - task: CopyFiles@2
+            inputs:
+              contents: '$(INSTALL_DIR)/bindings/python/dist/**'
+              targetFolder: $(Build.ArtifactStagingDirectory)/pip-wheels
+              flattenFolders: true
+            condition: eq(variables.BuildType, 'Release')
+            displayName: Copy Pip Wheels to Staging Area
+          - publish: $(Build.ArtifactStagingDirectory)
+            artifact: antimony-MacOS10.15-$(PythonName)
+            condition: eq(variables.BuildType, 'Release')
+            displayName: Publish Pip Wheels Artifacts
 
 ##########################################################################
 ### Linux Build
