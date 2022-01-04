@@ -21,12 +21,12 @@ stages:
 ########################################################################
 # Windows Build
 #
-  - stage: WindowsBuildAntimonyCpp
+  - stage: WindowsBuildAntimony
     dependsOn: []
     jobs:
-      - job: WindowsBuildAntimonyCpp
+      - job: WindowsBuildAntimony
         timeoutInMinutes: "0"
-        displayName: WindowsBuildAntimonyCpp
+        displayName: WindowsBuildAntimony
         continueOnError: "false"
         pool:
           vmImage: 'windows-2019'
@@ -178,17 +178,17 @@ stages:
               ls
               echo "$(PythonExecutable) setup.py bdist_wheel"
               $(PythonExecutable) setup.py bdist_wheel
-            condition: eq(variables.BuildType, "Release")
+            condition: eq(variables.BuildType, 'Release')
             displayName: Generate pip wheel
           - task: CopyFiles@2
             inputs:
               contents: '$(INSTALL_DIR)/bindings/python/dist/**'
               targetFolder: $(Build.ArtifactStagingDirectory)/pip-wheels
-            condition: eq(variables.BuildType, "Release")
+            condition: eq(variables.BuildType, 'Release')
             displayName: Copy Pip Wheels to Staging Area
           - publish: $(Build.ArtifactStagingDirectory)
             artifact: antimony-Windows-$(PythonName)
-            condition: eq(variables.BuildType, "Release")
+            condition: eq(variables.BuildType, 'Release')
             displayName: Publish Pip Wheels Artifacts
 
 ########################################################################
@@ -442,220 +442,120 @@ stages:
             artifact: antimony-MacOS10.15-$(PythonName)
             displayName: Publish Pip Wheels Artifacts
 
-#########################################################################
-## Windows Build
-##
-#  - stage: WindowsBuildAntimonyCpp
-#    dependsOn: []
-#    jobs:
-#      - job: WindowsBuildAntimonyCpp
-#        timeoutInMinutes: "0"
-#        displayName: WindowsBuildAntimonyCpp
-#        continueOnError: "false"
-#        pool:
-#          vmImage: 'windows-2019'
-#        strategy:
-#          matrix:
-#            64-bit Windows Release:
-#              BuildType: Release
-#        steps:
-#          - powershell: |
-#              echo "SOURCE_DIR $(SOURCE_DIR)"
-#              echo "BUILD_DIR $(BUILD_DIR)"
-#              echo "INSTALL_DIR $(INSTALL_DIR)"
-#              echo "DEPS_INSTALL_PREFIX $(DEPS_INSTALL_PREFIX)"
-#              echo "Build.DefinitionName $(Build.DefinitionName)"
-#              echo "System.DefinitionId	 $(System.DefinitionId)"
-#              echo "Agent.OS $(Agent.OS)"
+########################################################################
+# Linux Build
+#
+  - stage: LinuxBuildAntimonyCpp
+    dependsOn: []
+    jobs:
+      - job: LinuxBuildAntimony
+        timeoutInMinutes: "0"
+        displayName: MacBuildAntimonyCpp
+        continueOnError: "false"
+        pool:
+          vmImage: 'manylinux'
+        strategy:
+          matrix:
+            64-bit Mac Release:
+              BuildType: Release
+            64-bit Mac Debug:
+              BuildType: Debug
+        steps:
+          - script: |
+              echo "SOURCE_DIR $(SOURCE_DIR)"
+              echo "BUILD_DIR $(BUILD_DIR)"
+              echo "INSTALL_DIR $(INSTALL_DIR)"
+              echo "DEPS_INSTALL_PREFIX $(DEPS_INSTALL_PREFIX)"
+              echo "Build.DefinitionName $(Build.DefinitionName)"
+              echo "System.DefinitionId	 $(System.DefinitionId)"
+              echo "Agent.OS $(Agent.OS)"
 
-#              echo "System.AccessToken  $(System.AccessToken)"
-#              echo "System.CollectionId $(System.CollectionId)"
-#              echo "System.CollectionUri  $(System.CollectionUri)"
-#              echo "System.DefaultWorkingDirectory  $(System.DefaultWorkingDirectory)"
-#              echo "System.DefinitionId $(System.DefinitionId)"
-#              echo "System.HostType $(System.HostType)"
-#              echo "System.JobAttempt $(System.JobAttempt)"
-#              echo "System.JobDisplayName $(System.JobDisplayName)"
-#              echo "System.JobId  $(System.JobId)"
-#              echo "System.JobName  $(System.JobName)"
-#              echo "System.PhaseAttempt $(System.PhaseAttempt)"
-#              echo "System.PhaseDisplayName $(System.PhaseDisplayName)"
-#              echo "System.PhaseName  $(System.PhaseName)"
-#              echo "System.StageAttempt $(System.StageAttempt)"
-#              echo "System.StageDisplayName $(System.StageDisplayName)"
-#              echo "System.StageName  $(System.StageName)"
-#              echo "System.TeamProject $(System.TeamProject)"
-#              echo "System.TeamProjectId $(System.TeamProjectId)"
-#              echo "TF_BUILD $(TF_BUILD)"
-#            displayName: Print Variables
-#          - powershell: |
-#              mkdir $(DEPS_INSTALL_PREFIX)
-#            displayName: Make Directories
-#          - task: DownloadPipelineArtifact@2
-#            inputs:
-#              source: 'specific'
-#              project: 'libroadrunner-deps'
-#              pipeline: 9
-#              runVersion: 'latest'
-#              artifact: libroadrunner-deps-$(Agent.OS)-$(BuildType)
-#              path: $(DEPS_INSTALL_PREFIX)
-#            displayName: Download libroadrunner-deps install artifacts
-#          - powershell: |
-#              echo "$(DEPS_INSTALL_PREFIX)"
-#              echo "cd to $(DEPS_INSTALL_PREFIX)"
-#              cd $(DEPS_INSTALL_PREFIX)
-#              echo "ls: "
-#              ls
-#              echo "moving contents of $(DEPS_INSTALL_PREFIX)/install to  $(DEPS_INSTALL_PREFIX)"
-#              mv $(DEPS_INSTALL_PREFIX)/install-azure/$(BuildType)/** .
-#              rm -R $(DEPS_INSTALL_PREFIX)/install-azure
-#              ls
-#            displayName: Move Dependencies
-#          - powershell: |
-#              echo "Configuring antimony"
-#              echo "mkdir build directory: $(BUILD_DIR)"
-#              mkdir $(BUILD_DIR)
-#              echo "CD to build dir: $(BUILD_DIR)"
-#              cd $(BUILD_DIR)
-#              cmake -DRR_DEPENDENCIES_INSTALL_PREFIX=$(DEPS_INSTALL_PREFIX) -DBUILD_TESTS=ON -DCMAKE_INSTALL_PREFIX=$(INSTALL_DIR) -DBUILD_RR_PLUGINS=ON -DBUILD_RR_CAPI=ON -DCMAKE_BUILD_TYPE=$(BuildType) ..
-#            displayName: Run CMake Configure Command
-#          - powershell: |
-#              echo "Building antimony"
-#              echo "cd to build dir"
-#              cd $(BUILD_DIR)
-#              cmake --build . --target install --config $(BuildType) -j 12
-#            displayName: Run CMake Build Command
-#          - powershell: |
-#              echo "cd to build dir $(BUILD_DIR)"
-#              cd $(BUILD_DIR)
-#              ctest --verbose --extra-verbose --progress
-#            displayName: RunCTest
-#          - task: CopyFiles@2
-#            inputs:
-#              contents: '$(INSTALL_DIR)/**'
-#              targetFolder: $(Build.ArtifactStagingDirectory)
-#            displayName: Copy to Staging Area
-#          - publish: $(Build.ArtifactStagingDirectory)
-#            artifact: antimony-$(Agent.OS)-$(BuildType)
-#            displayName: Publish
-
-#  - stage: WindowsBuildAntimonyPython
-#    dependsOn: []
-#    jobs:
-#      - job: WindowsBuildAntimonyPython
-#        timeoutInMinutes: "0"
-#        displayName: WindowsBuildAntimonyPython
-#        continueOnError: "false"
-#        pool:
-#          vmImage: 'windows-2019'
-#        strategy:
-#          matrix:
-#            py39:
-#              PythonVersion: 3.9
-#              PythonName: py39
-#        variables:
-#          MinicondaRoot : 'C:\Miniconda'
-#          PythonRoot: '$(MinicondaRoot)\envs\$(PythonName)'
-#          PythonLibDir: '$(PythonRoot)\Lib'
-#          PythonScriptsDir: '$(PythonRoot)\Scripts'
-#          PythonExecutable: '$(PythonRoot)\python.exe'
-#          PipExecutable: '$(PythonScriptsDir)\pip.exe'
-
-#        steps:
-#          - powershell: Write-Host "##vso[task.prependpath]$env:CONDA\Scripts"
-#            displayName: Add conda to PATH
-#          - powershell: |
-#              where.exe conda
-#              where.exe python
-#              echo "PythonVersion $(PythonVersion)"
-#              echo "PythonName $(PythonName)"
-#              echo "MinicondaRoot $(MinicondaRoot)"
-#              echo "PythonRoot $(PythonRoot)"
-#              echo "PythonLibDir $(PythonLibDir)"
-#            displayName: PrintPythonVariables
-#          - powershell: |
-#              mkdir -p $(DEPS_INSTALL_PREFIX)
-#              mkdir -p $(INSTALL_DIR)
-#              mkdir -p $(BUILD_DIR)
-#            displayName: Make Directories
-#          - task: DownloadPipelineArtifact@2
-#            inputs:
-#              source: 'specific'
-#              project: 'libroadrunner-deps'
-#              pipeline: 9
-#              runVersion: 'latest'
-#              artifact: libroadrunner-deps-$(Agent.OS)-Release
-#              path: $(DEPS_INSTALL_PREFIX)
-#            displayName: Download libroadrunner-deps install artifacts
-#          - powershell: |
-#              echo "$(DEPS_INSTALL_PREFIX)"
-#              echo "cd to $(DEPS_INSTALL_PREFIX)"
-#              cd $(DEPS_INSTALL_PREFIX)
-#              echo "ls: "
-#              ls
-#              echo "moving contents of $(DEPS_INSTALL_PREFIX)/install to  $(DEPS_INSTALL_PREFIX)"
-#              mv $(DEPS_INSTALL_PREFIX)/install-azure/Release/** .
-#              rm -r $(DEPS_INSTALL_PREFIX)/install-azure
-#              ls
-#            displayName: Move Dependencies
-#          - powershell: |
-#              echo "where.exe conda"
-#              where.exe conda
-#              echo "where.exe python"
-#              where.exe python
-#              echo "Variable PythonRoot set to $(PythonRoot)"
-#              echo "cd to source dir: $(SOURCE_DIR)"
-#              cd $(SOURCE_DIR)
-#              echo "ls"
-#              ls
-#              echo "Creating new conda environment"
-#              conda create --quiet --yes --name $(PythonName) python=$(PythonVersion)
-#              echo "pip help:"
-#              $(PipExecutable) install --help
-#              echo "Installing nose and numpy: $(PipExecutable) install --yes nose numpy pytest"
-#              $(PipExecutable) install -q -r test-requirements.txt
-#              $ENV:PATH="$ENV:PATH;$(PythonScriptsDir)"
-#              echo "cd to build dir $(BUILD_DIR)"
-#              cd $(BUILD_DIR)
-#              ls
-#              cmake -DRR_DEPENDENCIES_INSTALL_PREFIX=$(DEPS_INSTALL_PREFIX) -DBUILD_TESTS=ON -DCMAKE_INSTALL_PREFIX=$(INSTALL_DIR) -DBUILD_RR_PLUGINS=ON -DBUILD_RR_CAPI=ON -DCMAKE_BUILD_TYPE=Release -DBUILD_PYTHON=ON -DPython_ROOT_DIR=$(PythonRoot) ..
-#              cmake --build . --target install --config Release -j 12
-#            displayName: BuildAntimonyWithPython
-#          - powershell: |
-#              echo "cd to isntall dir: $(INSTALL_DIR)"
-#              cd $(INSTALL_DIR)
-#              echo "python exe $(PythonExecutable)"
-#              echo "ls in install dir"
-#              ls
-#              #$(PythonExecutable) site-packages/antimony/testing/__main__.py
-
-#              echo "Switching to build dir: $(BUILD_DIR)"
-#              cd $(BUILD_DIR)
-#              echo "ctest --output-on-failure --verbose --extra-verbose --tests-regex python_tests*"
-#              ctest -C Release --output-on-failure --verbose --extra-verbose --tests-regex python_tests*
-#            displayName: RunPythonTests
-#          - powershell: |
-#              echo "cd to isntall dir: $(INSTALL_DIR)"
-#              cd $(INSTALL_DIR)
-#              echo "ls in install dir"
-#              ls
-#              $(PythonExecutable) setup.py bdist_wheel
-#            displayName: Generate pip wheel
-
-#          - task: CopyFiles@2
-#            inputs:
-#              contents: '$(INSTALL_DIR)/**'
-#              targetFolder: $(Build.ArtifactStagingDirectory)/antimony-Windows2019-$(PythonName)
-#            displayName: Copy Install Tree to Staging Area
-#          - task: CopyFiles@2
-#            inputs:
-#              contents: '$(INSTALL_DIR)/dist/**'
-#              targetFolder: $(Build.ArtifactStagingDirectory)/pip-wheels
-#            displayName: Copy Pip Wheels to Staging Area
-#          - publish: $(Build.ArtifactStagingDirectory)
-#            artifact: antimony-Windows2019-$(PythonName)
-#            displayName: Publish Pip Wheels Artifacts
-
+              echo "System.AccessToken  $(System.AccessToken)"
+              echo "System.CollectionId $(System.CollectionId)"
+              echo "System.CollectionUri  $(System.CollectionUri)"
+              echo "System.DefaultWorkingDirectory  $(System.DefaultWorkingDirectory)"
+              echo "System.DefinitionId $(System.DefinitionId)"
+              echo "System.HostType $(System.HostType)"
+              echo "System.JobAttempt $(System.JobAttempt)"
+              echo "System.JobDisplayName $(System.JobDisplayName)"
+              echo "System.JobId  $(System.JobId)"
+              echo "System.JobName  $(System.JobName)"
+              echo "System.PhaseAttempt $(System.PhaseAttempt)"
+              echo "System.PhaseDisplayName $(System.PhaseDisplayName)"
+              echo "System.PhaseName  $(System.PhaseName)"
+              echo "System.StageAttempt $(System.StageAttempt)"
+              echo "System.StageDisplayName $(System.StageDisplayName)"
+              echo "System.StageName  $(System.StageName)"
+              echo "System.PullRequest.IsFork $(System.PullRequest.IsFork)"
+              echo "System.PullRequest.PullRequestId $(System.PullRequest.PullRequestId)"
+              echo "System.PullRequest.PullRequestNumber $(System.PullRequest.PullRequestNumber)"
+              echo "System.PullRequest.SourceBranch $(System.PullRequest.SourceBranch)"
+              echo "System.PullRequest.SourceRepositoryURI $(System.PullRequest.SourceRepositoryURI)"
+              echo "System.PullRequest.TargetBranch $(System.PullRequest.TargetBranch)"
+              echo "System.TeamFoundationCollectionUri $(System.TeamFoundationCollectionUri)"
+              echo "System.TeamProject $(System.TeamProject)"
+              echo "System.TeamProjectId $(System.TeamProjectId)"
+              echo "TF_BUILD $(TF_BUILD)"
+            displayName: Print Variables
+          - script: |
+              mkdir $(DEPS_INSTALL_PREFIX)
+            displayName: Make Directories
+          - script: brew install qt@5 check
+            displayName: install QT5 and check
+          - task: DownloadPipelineArtifact@2
+            # In this task we go and grab the build artefacts from
+            # the libroadrunner-dependencies package
+            inputs:
+              source: 'specific'
+              project: 'libroadrunner-deps'
+              # pipeline is found in the url when looking at azure in browser.
+              # for example, it looks like this:
+              # - https://dev.azure.com/TheRoadrunnerProject/libroadrunner-deps/_build?definitionId=9
+              pipeline: 9
+              runVersion: 'latest'
+              artifact: libroadrunner-deps-$(Agent.OS)-$(BuildType)
+              path: $(DEPS_INSTALL_PREFIX)
+            displayName: Download libroadrunner-deps install artifacts
+          - script: |
+              echo "$(DEPS_INSTALL_PREFIX)"
+              echo "cd to $(DEPS_INSTALL_PREFIX)"
+              cd $(DEPS_INSTALL_PREFIX)
+              echo "ls: "
+              ls
+              echo "moving contents of $(DEPS_INSTALL_PREFIX)/install to  $(DEPS_INSTALL_PREFIX)"
+              mv $(DEPS_INSTALL_PREFIX)/install-azure/$(BuildType)/** .
+              rm -r $(DEPS_INSTALL_PREFIX)/install-azure
+              ls
+            displayName: Move Dependencies
+          - script: |
+              echo "Configuring antimony"
+              echo "mkdir build directory: $(BUILD_DIR)"
+              mkdir $(BUILD_DIR)
+              echo "CD to build dir: $(BUILD_DIR)"
+              cd $(BUILD_DIR)
+              cmake -DCMAKE_PREFIX_PATH=/usr/local/opt/qt@5/lib  -DLIBSBML_INSTALL_DIR=$(DEPS_INSTALL_PREFIX) -DWITH_QTANTIMONY=OFF -DWITH_STATIC_SBML=ON -DCMAKE_INSTALL_PREFIX=$(INSTALL_DIR) -DCMAKE_BUILD_TYPE=$(BuildType) -DWITH_CHECK=ON ..
+            displayName: Run CMake Configure Command
+          - script: |
+              echo "less -N $(BUILD_DIR)/source/CMakeFiles/antimony.dir/build.make"
+              less -N "$(BUILD_DIR)/source/CMakeFiles/antimony.dir/build.make"
+              echo "Building antimony"
+              echo "cd to build dir"
+              cd $(BUILD_DIR)
+              cmake --build . --target install --config $(BuildType) -j 12
+            displayName: Run CMake Build Command
+          - script: |
+              echo "cd to build dir $(BUILD_DIR)"
+              cd $(BUILD_DIR)
+              ctest --verbose --extra-verbose --progress
+            displayName: RunCTest
+          - task: CopyFiles@2
+            inputs:
+              contents: '$(INSTALL_DIR)/**'
+              targetFolder: $(Build.ArtifactStagingDirectory)
+            displayName: Copy to Staging Area
+          - publish: $(Build.ArtifactStagingDirectory)
+            artifact: antimony-MacOS10.15-$(BuildType)
+            displayName: Publish
 
 ##########################################################################
 ### Linux Build
