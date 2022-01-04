@@ -227,6 +227,15 @@ stages:
               BuildType: Release
             64-bit Mac Debug:
               BuildType: Debug
+        variables:
+          PythonVersion: 3.9
+          PythonName: py39
+          MinicondaRoot : '/usr/local/miniconda'
+          PythonRoot: '$(MinicondaRoot)/envs/$(PythonName)'
+          PythonLibDir: '$(PythonRoot)/lib'
+          PythonExecutable: '$(PythonRoot)/bin/python'
+          CondaExecutable: '$(MinicondaRoot)/condabin/conda'
+          PipExecutable: '$(PythonRoot)/bin/pip'
         steps:
           - script: |
               echo "SOURCE_DIR $(SOURCE_DIR)"
