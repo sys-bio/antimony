@@ -167,8 +167,8 @@ stages:
           - script: |
               echo "cd to build dir $(BUILD_DIR)"
               cd $(BUILD_DIR)
+              ls -R
               ctest --verbose --extra-verbose --progress
-            condition: eq(variables.BuildType, 'Release')
             displayName: RunCTest
           - task: CopyFiles@2
             inputs:
