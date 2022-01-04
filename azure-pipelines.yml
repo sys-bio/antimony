@@ -235,7 +235,39 @@ stages:
           PythonExecutable: '$(PythonRoot)/bin/python'
           CondaExecutable: '$(MinicondaRoot)/condabin/conda'
           PipExecutable: '$(PythonRoot)/bin/pip'
+          MINICONDA_CACHE: 'false'
         steps:
+          - bash: echo "##vso[task.prependpath]$CONDA/bin"
+            displayName: Add conda to PATH
+
+          # On Hosted macOS, the agent user doesn't have ownership of Miniconda's installation directory/
+          # We need to take ownership if we want to update conda or install packages globally
+          - bash: sudo chown -R $USER $CONDA
+            displayName: Take ownership of conda installation
+          - script: |
+              echo "cd to source dir: $(SOURCE_DIR)"
+              cd $(SOURCE_DIR)
+              echo "ls"
+              ls
+              echo "which conda"
+              which conda
+              echo "cd miniconda root: $(MinicondaRoot)"
+              cd $(MinicondaRoot)
+              echo "ls"
+              ls
+              $(CondaExecutable) create --quiet --yes --name $(PythonName) python=$(PythonVersion)
+              echo "running: $(PipExecutable) install -r $(SOURCE_DIR)/test-requirements.txt"
+            displayName: InstallCondaEnv
+          - script: |
+              which conda
+              which python
+              echo "PythonVersion $(PythonVersion)"
+              echo "PythonName $(PythonName)"
+              echo "MinicondaRoot $(MinicondaRoot)"
+              echo "PythonRoot $(PythonRoot)"
+              echo "PythonLibDir $(PythonLibDir)"
+              echo "CondaExecutable $(CondaExecutable)"
+            displayName: PrintPythonVariables
           - script: |
               echo "SOURCE_DIR $(SOURCE_DIR)"
               echo "BUILD_DIR $(BUILD_DIR)"
