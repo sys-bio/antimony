@@ -168,6 +168,7 @@ stages:
               echo "cd to build dir $(BUILD_DIR)"
               cd $(BUILD_DIR)
               ctest --verbose --extra-verbose --progress
+            condition: eq(variables.BuildType, 'Debug')
             displayName: RunCTest
           - task: CopyFiles@2
             inputs:
@@ -206,7 +207,7 @@ stages:
           - publish: $(Build.ArtifactStagingDirectory)
             artifact: antimony-Windows-$(PythonName)
             condition: eq(variables.BuildType, 'Release')
-            displayName: Publish Pip Wheels Artifacts
+Exit code 0xc0000135            displayName: Publish Pip Wheels Artifacts
 
 ########################################################################
 # MacOS Build
