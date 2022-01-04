@@ -472,7 +472,11 @@ stages:
           - script: |
               mkdir $(DEPS_INSTALL_PREFIX)
             displayName: Make Directories
-          - script: sudo yum install qt5-qtbase-devel check
+          - script: |
+              echo ". ~/.bashrc"
+              . ~/.bashrc
+              echo "sudo yum install -y qt5-qtbase-devel check"
+              sudo yum install -y qt5-qtbase-devel check
             displayName: install QT5 and check
           - task: DownloadPipelineArtifact@2
             # In this task we go and grab the build artefacts from
