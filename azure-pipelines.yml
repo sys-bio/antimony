@@ -162,6 +162,7 @@ stages:
               echo "cd to build dir $(BUILD_DIR)"
               cd $(BUILD_DIR)
               ctest --verbose --extra-verbose --progress
+            condition: eq(variables.BuildType, 'Release')
             displayName: RunCTest
           - task: CopyFiles@2
             inputs:
@@ -171,6 +172,11 @@ stages:
           - publish: $(Build.ArtifactStagingDirectory)
             artifact: antimony-Windows-$(BuildType)
             displayName: Publish
+          - script: |
+              rm -r $(Build.ArtifactStagingDirectory)/*
+              ls $(Build.ArtifactStagingDirectory)
+            condition: eq(variables.BuildType, 'Release')
+            displayName: Clear published artifacts
           - script: |
               echo "cd to python bindings dir: $(INSTALL_DIR)/bindings/python"
               cd $(INSTALL_DIR)/bindings/python
@@ -184,6 +190,7 @@ stages:
             inputs:
               contents: '$(INSTALL_DIR)/bindings/python/dist/**'
               targetFolder: $(Build.ArtifactStagingDirectory)/pip-wheels
+              flattenFolders: true
             condition: eq(variables.BuildType, 'Release')
             displayName: Copy Pip Wheels to Staging Area
           - publish: $(Build.ArtifactStagingDirectory)
@@ -437,6 +444,7 @@ stages:
             inputs:
               contents: '$(INSTALL_DIR)/bindings/python/dist/**'
               targetFolder: $(Build.ArtifactStagingDirectory)/pip-wheels
+              flattenFolders: true
             displayName: Copy Pip Wheels to Staging Area
           - publish: $(Build.ArtifactStagingDirectory)
             artifact: antimony-MacOS10.15-$(PythonName)
