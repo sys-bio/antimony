@@ -161,6 +161,7 @@ stages:
           - script: |
               echo "cd to build dir $(BUILD_DIR)"
               cd $(BUILD_DIR)
+              ls -R
               cp $(DEPS_INSTALL_PREFIX)/bin/zlibd.dll bin/Debug/
             condition: eq(variables.BuildType, 'Debug')
             displayName: copy zlibd.dll to build directory
@@ -191,7 +192,7 @@ stages:
               echo "cd to python bindings dir: $(INSTALL_DIR)/bindings/python"
               cd $(INSTALL_DIR)/bindings/python
               echo "ls in install dir"
-              ls
+              ls -R
               echo "$(PythonExecutable) setup.py bdist_wheel"
               $(PythonExecutable) setup.py bdist_wheel
             condition: eq(variables.BuildType, 'Release')
