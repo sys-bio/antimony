@@ -116,6 +116,7 @@ stages:
               echo $(PythonExecutable) ./.azurepipelines/getCheck.py $(CheckURL) check
               $(PythonExecutable) ./.azurepipelines/getCheck.py $(CheckURL) check
               $(PythonExecutable) ./.azurepipelines/getQt.py https://github.com/sys-bio/antimony/releases/download/libcheck/Qt5.15.2.msvc.zip qt
+              ls -R qt
             displayName: "Get Check and Qt for Windows"
           #- script: brew install qt@5 check
           #  displayName: install QT5 and check
@@ -150,7 +151,7 @@ stages:
               mkdir $(BUILD_DIR)
               echo "CD to build dir: $(BUILD_DIR)"
               cd $(BUILD_DIR)
-              cmake -DCMAKE_PREFIX_PATH=/usr/local/opt/qt@5/lib  -DLIBSBML_INSTALL_DIR=$(DEPS_INSTALL_PREFIX) -DWITH_QTANTIMONY=ON -DWITH_STATIC_SBML=ON -DCMAKE_INSTALL_PREFIX=$(INSTALL_DIR) -DCMAKE_BUILD_TYPE=$(BuildType) -DWITH_CHECK=ON -DLIBCHECK_INCLUDE_DIR=$(CHECK_INSTALL_PREFIX)/include/ -DLIBCHECK_LIBRARY=$(CHECK_INSTALL_PREFIX)/lib/libcheck.lib -DQt5_DIR=$(QT_INSTALL_PREFIX)  -DEXTRA_LIBS=wsock32.lib $(PythonCMake)  ..
+              cmake -DCMAKE_PREFIX_PATH=/usr/local/opt/qt@5/lib  -DLIBSBML_INSTALL_DIR=$(DEPS_INSTALL_PREFIX) -DWITH_QTANTIMONY=ON -DWITH_STATIC_SBML=ON -DCMAKE_INSTALL_PREFIX=$(INSTALL_DIR) -DCMAKE_BUILD_TYPE=$(BuildType) -DWITH_CHECK=ON -DLIBCHECK_INCLUDE_DIR=$(CHECK_INSTALL_PREFIX)/include/ -DLIBCHECK_LIBRARY=$(CHECK_INSTALL_PREFIX)/lib/libcheck.lib -DQt5_DIR=$(QT_INSTALL_PREFIX)/Qt5  -DEXTRA_LIBS=wsock32.lib $(PythonCMake)  ..
             displayName: Run CMake Configure Command
           - script: |
               echo "less -N $(BUILD_DIR)/source/CMakeFiles/antimony.dir/build.make"
