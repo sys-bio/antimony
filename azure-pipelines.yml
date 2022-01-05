@@ -360,6 +360,14 @@ stages:
               cd $(BUILD_DIR)
               ctest --verbose --extra-verbose --progress
             displayName: RunCTest
+          - script: |
+              echo "cd $(INSTALL_DIR)/bin"
+              cd $(INSTALL_DIR)/bin
+              echo "chmod a+x QTAntimony.app/Contents/MacOS/QTAntimony"
+              chmod a+x QTAntimony.app/Contents/MacOS/QTAntimony
+              echo "chmod a+x antimony2sbml rehashantimony sbml2antimony sbtranslate testantimony"
+              chmod a+x antimony2sbml rehashantimony sbml2antimony sbtranslate testantimony
+            displayName: Make applications executable
           - task: CopyFiles@2
             inputs:
               contents: '$(INSTALL_DIR)/**'
