@@ -806,7 +806,8 @@ void Module::AddDefaultInitialValues()
     case varCompartment:
     case varFormulaUndef:
     case varFormulaOperator:
-      if (m_variables[var]->GetFormula()->IsEmpty()) {
+    case varStoichiometry:
+        if (m_variables[var]->GetFormula()->IsEmpty()) {
         m_variables[var]->SetFormula(&one);
       }
       break;
@@ -1516,99 +1517,104 @@ Variable* Module::GetNthVariableOfType(return_type rtype, size_t n, bool comp)
 
 bool Module::AreEquivalent(return_type rtype, var_type vtype) const
 {
-  switch (rtype) {
-  case allSpecies:
-  case varSpecies:
-  case constSpecies:
-    if (vtype == varSpeciesUndef) {
-      return true;
+    switch (rtype) {
+    case allSpecies:
+    case varSpecies:
+    case constSpecies:
+        if (vtype == varSpeciesUndef) {
+            return true;
+        }
+        return false;
+    case allFormulas:
+    case varFormulas:
+    case constFormulas:
+        if (vtype == varFormulaUndef ||
+            vtype == varDNA ||
+            vtype == varFormulaOperator) {
+            return true;
+        }
+        return false;
+    case allDNA:
+        if (vtype == varDNA ||
+            vtype == varFormulaOperator ||
+            vtype == varReactionGene) {
+            return true;
+        }
+        return false;
+    case allOperators:
+    case varOperators:
+    case constOperators:
+        if (vtype == varFormulaOperator) {
+            return true;
+        }
+        return false;
+    case allGenes:
+        if (vtype == varReactionGene) {
+            return true;
+        }
+        return false;
+    case allReactions:
+        if (vtype == varReactionGene ||
+            vtype == varReactionUndef) {
+            return true;
+        }
+        return false;
+    case allInteractions:
+        if (vtype == varInteraction) {
+            return true;
+        }
+        return false;
+    case allUnknown:
+        if (vtype == varUndefined) {
+            return true;
+        }
+        return false;
+    case subModules:
+        if (vtype == varModule) {
+            return true;
+        }
+        return false;
+    case allSymbols:
+        return true;
+    case allEvents:
+        if (vtype == varEvent) {
+            return true;
+        }
+        return false;
+    case expandedStrands:
+    case modularStrands:
+        if (vtype == varStrand) {
+            return true;
+        }
+        return false;
+    case allCompartments:
+    case varCompartments:
+    case constCompartments:
+        if (vtype == varCompartment) {
+            return true;
+        }
+        return false;
+    case allUnits:
+        if (vtype == varUnitDefinition) {
+            return true;
+        }
+        return false;
+    case allDeleted:
+        if (vtype == varDeleted) {
+            return true;
+        }
+        return false;
+    case allConstraints:
+        if (vtype == varConstraint) {
+            return true;
+        }
+        return false;
+    case allStoichiometries:
+        if (vtype == varStoichiometry) {
+            return true;
+        }
+        return false;
     }
-    return false;
-  case allFormulas:
-  case varFormulas:
-  case constFormulas:
-    if (vtype == varFormulaUndef ||
-        vtype == varDNA ||
-        vtype == varFormulaOperator) {
-      return true;
-    }
-    return false;
-  case allDNA:
-    if (vtype == varDNA ||
-        vtype == varFormulaOperator ||
-        vtype == varReactionGene) {
-      return true;
-    }
-    return false;
-  case allOperators:
-  case varOperators:
-  case constOperators:
-    if (vtype == varFormulaOperator) {
-      return true;
-    }
-    return false;
-  case allGenes:
-    if (vtype == varReactionGene) {
-      return true;
-    }
-    return false;
-  case allReactions:
-    if (vtype == varReactionGene ||
-        vtype == varReactionUndef) {
-      return true;
-    }
-    return false;
-  case allInteractions:
-    if (vtype == varInteraction) {
-      return true;
-    }
-    return false;
-  case allUnknown:
-    if (vtype == varUndefined) {
-      return true;
-    }
-    return false;
-  case subModules:
-    if (vtype == varModule) {
-      return true;
-    }
-    return false;
-  case allSymbols:
-    return true;
-  case allEvents:
-    if (vtype == varEvent) {
-      return true;
-    }
-    return false;
-  case expandedStrands:
-  case modularStrands:
-    if (vtype == varStrand) {
-      return true;
-    }
-    return false;
-  case allCompartments:
-  case varCompartments:
-  case constCompartments:
-    if (vtype == varCompartment) {
-      return true;
-    }
-    return false;
-  case allUnits:
-    if (vtype==varUnitDefinition) {
-      return true;
-    }
-    return false;
-  case allDeleted:
-    if (vtype==varDeleted) {
-      return true;
-    }
-    return false;
-  case allConstraints:
-    if (vtype==varConstraint) {
-      return true;
-    }
-    return false;
-  }
   //This is just to to get compiler warnings if we switch vtype later, so
   // we remember to change the rest of this function:
   switch(vtype) {
@@ -1629,6 +1635,7 @@ bool Module::AreEquivalent(return_type rtype, var_type vtype) const
   case varSboTermWrapper:
   case varUncertWrapper:
   case varConstraint:
+  case varStoichiometry:
     break;
   }
   assert(false); //uncaught return type
@@ -1642,6 +1649,7 @@ bool Module::AreEquivalent(return_type rtype, bool isconst) const
   case varFormulas:
   case varOperators:
   case varCompartments:
+  case allStoichiometries:
     return (!isconst);
   case constSpecies:
   case constFormulas:
@@ -2061,6 +2069,7 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
   types.push_back(varFormulaOperator);
   types.push_back(varUndefined);
   types.push_back(varDNA);
+  types.push_back(varStoichiometry);
   retval += OutputOnly(types, "Variable initializations", indent, cc, origmap);
 
   //Whether things are variable or constant (if not already declared)
@@ -2137,7 +2146,8 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
     case varSboTermWrapper:
     case varUncertWrapper:
     case varConstraint:
-      break;
+    case varStoichiometry:
+        break;
     }
   }
 
@@ -2675,6 +2685,7 @@ void Module::Convert(Variable* conv, Variable* cf, string modulename)
     case varReactionGene:
     case varInteraction:
     case varConstraint:
+    case varStoichiometry:
       form = subvar->GetFormula();
       origform = *origsubvar->GetFormula();
       for (size_t vn=m_variablename.size() - origsubvar->GetName().size() + 1; vn > 0; vn--) {
@@ -2729,6 +2740,7 @@ void Module::ConvertTime(Variable* tcf)
     case varUndefined:
     case varInteraction:
     case varConstraint:
+    case varStoichiometry:
       subvar->GetFormula()->ConvertTime(tcf);
       if (subvar->GetFormulaType() == formulaRATE) {
         subvar->GetRateRule()->AddInvTimeConversionFactor(tcf);
@@ -2779,6 +2791,7 @@ void Module::ConvertExtent(Variable* xcf)
     case varSboTermWrapper:
     case varUncertWrapper:
     case varConstraint:
+    case varStoichiometry:
       break;
     }
   }
@@ -2800,6 +2813,7 @@ void Module::UndoTimeExtentConversions(Variable* tcf, Variable* xcf)
     case varUndefined:
     case varInteraction:
     case varConstraint:
+    case varStoichiometry:
       subvar->GetFormula()->UnConvertTimeExtent(tcf, xcf);
       if (subvar->GetFormulaType() == formulaRATE) {
         subvar->GetRateRule()->UnConvertTimeExtent(tcf, xcf);

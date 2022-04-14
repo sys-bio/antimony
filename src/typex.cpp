@@ -28,6 +28,7 @@ bool IsReaction(const var_type vtype)
   case varConstraint:
   case varSboTermWrapper:
   case varUncertWrapper:
+  case varStoichiometry:
     return false;
   }
   assert(false); //uncaught vtype
@@ -70,7 +71,8 @@ bool IsSpecies(const var_type vtype)
   case varConstraint:
   case varSboTermWrapper:
   case varUncertWrapper:
-    return false;
+  case varStoichiometry:
+      return false;
   }
   assert(false); //uncaught vtype
   return false;
@@ -97,7 +99,8 @@ bool IsDNA(const var_type vtype)
   case varConstraint:
   case varSboTermWrapper:
   case varUncertWrapper:
-    return false;
+  case varStoichiometry:
+      return false;
   }
   assert(false); //uncaught vtype
   return false;
@@ -112,7 +115,8 @@ bool CanHaveRateRule(const var_type vtype)
   case varSpeciesUndef:
   case varCompartment:
   case varUndefined:
-    return true;
+  case varStoichiometry:
+      return true;
   case varReactionUndef:
   case varReactionGene:
   case varInteraction:
@@ -142,7 +146,8 @@ bool CanHaveAssignmentRule(const var_type vtype)
   case varReactionUndef:
   case varReactionGene:
   case varInteraction:
-    return true;
+  case varStoichiometry:
+      return true;
   case varModule:
   case varEvent:
   case varStrand:
@@ -178,10 +183,39 @@ bool CanBeInReaction(const var_type vtype)
   case varConstraint:
   case varSboTermWrapper:
   case varUncertWrapper:
-    return false;
+  case varStoichiometry:
+      return false;
   }
   assert(false); //uncaught type
   return false;
+}
+
+bool CanBeStoichiometry(const var_type vtype)
+{
+    switch (vtype) {
+    case varFormulaUndef:
+    case varFormulaOperator:
+    case varUndefined:
+    case varStoichiometry:
+        return true;
+    case varReactionUndef:
+    case varReactionGene:
+    case varInteraction:
+    case varSpeciesUndef:
+    case varDNA:
+    case varCompartment:
+    case varModule:
+    case varEvent:
+    case varStrand:
+    case varUnitDefinition:
+    case varDeleted:
+    case varConstraint:
+    case varSboTermWrapper:
+    case varUncertWrapper:
+        return false;
+    }
+    assert(false); //uncaught type
+    return false;
 }
 
 bool HasOrIsFormula(const var_type vtype)
@@ -194,7 +228,8 @@ bool HasOrIsFormula(const var_type vtype)
   case varCompartment:
   case varUnitDefinition:
   case varConstraint:
-    return true;
+  case varStoichiometry:
+      return true;
   case varReactionGene:
   case varReactionUndef:
   case varInteraction:
@@ -227,7 +262,8 @@ bool IsSpan(const uncert_type utype)
   case unDistribution:
   case unExternalParameter:
   case unUnknown:
-    return false;
+  case varStoichiometry:
+      return false;
   case unConfidenceInterval:
   case unCredibleInterval:
   case unInterquartileRange:
@@ -288,6 +324,8 @@ string VarTypeToString(const var_type vtype)
     return "SBO Term";
   case varUncertWrapper:
     return "Uncertainty parameter";
+  case varStoichiometry:
+      return "Stoichiometry";
   }
   assert(false);
   return "";
@@ -325,7 +363,8 @@ string VarTypeToAntimony(const var_type vtype)
   case varUndefined:
   case varSboTermWrapper:
   case varUncertWrapper:
-    assert(false);
+  case varStoichiometry:
+      assert(false);
     return "undefinable_type";
     break;
   }
@@ -386,6 +425,8 @@ string ReturnTypeToString(const return_type rtype)
     return "deleted submodel elements";
   case allConstraints:
     return "constraints";
+  case allStoichiometries:
+    return "stoichiometries";
   }
   assert(false); //uncaught type
   return "Uncaught type";

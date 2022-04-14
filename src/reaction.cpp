@@ -219,3 +219,11 @@ bool AntimonyReaction::Matches(const AntimonyReaction* newreaction) const
   return true;
 }
 
+bool AntimonyReaction::HasReactantFor(const Variable* species) const
+{
+    if (m_left.HasReactantFor(species)) {
+        return true;
+    }
+    return m_right.HasReactantFor(species);
+}
+
