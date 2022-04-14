@@ -2,12 +2,14 @@
  * This file is designed to be compiled by the 'bison' program with the
  * command:
  *
- * bison -v antimony.ypp
+ * bison -v antimony.ypp --update -Wcounterexamples
  *
  * The '-v' creates a file called 'antimony.output' which can be examined
  * to piece together the explicit logic of the parser.  The fact that no
  * '-o' option is used means that the default output file (antimony.tab.cpp)
- * will be produced.
+ * will be produced.  --update will update the file as bison changes,
+ * and -Wcounterexamples will show shift/reduce or reduce/reduce conflicts
+ * with examples.
  *
  * This command produces the file 'antimony.tab.cpp' which is included
  * explicitly in the antimony distribution.  Automatic creation of this
@@ -146,9 +148,9 @@ using namespace libsbml;
 %token  <word> VARWORD "'var'"
 //                      %token  <word> DELETEWORD "'delete'"
 
-%name-prefix "antimony_yy"
+%define api.prefix {antimony_yy}
 %debug
-%error-verbose
+%define parse.error verbose
 %% /* The grammar: */
 
 input:          /* empty */
@@ -332,8 +334,10 @@ reaction:       varmaybein ':' reactantList reactionDivider reactantList ';' for
 
 reactantList:   variable {$$ = g_registry.NewBlankReactantList(); if($$->AddReactant($1)) YYABORT; }
         |       NUM variable {$$ = g_registry.NewBlankReactantList(); if($$->AddReactant($2, $1)) YYABORT; }
+        |       variable variable {$$ = g_registry.NewBlankReactantList(); if($$->AddReactant($2, $1)) YYABORT; }
         |       reactantList '+' variable {$$ = $1; if($1->AddReactant($3)) YYABORT; }
         |       reactantList '+' NUM variable {$$ = $1; if($1->AddReactant($4, $3)) YYABORT; }
+        |       reactantList '+' variable variable {$$ = $1; if($1->AddReactant($4, $3)) YYABORT; }
         ;
 
 reactionDivider:

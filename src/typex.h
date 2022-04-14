@@ -14,6 +14,7 @@ bool IsDNA(const var_type vtype);
 bool CanHaveRateRule(const var_type vtype);
 bool CanHaveAssignmentRule(const var_type vtype);
 bool CanBeInReaction(const var_type vtype);
+bool CanBeStoichiometry(const var_type vtype);
 bool HasOrIsFormula(const var_type vtype);
 bool IsSpan(const uncert_type utype);
 std::string RDToString(rd_type type);
