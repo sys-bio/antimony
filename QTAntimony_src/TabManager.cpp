@@ -8,6 +8,7 @@
 #include "antimony_api.h"
 #include "Settings.h"
 #include <QPrintDialog>
+#include <QPrinter>
 #include <QAction>
 #include <QFontDialog>
 #include <QInputDialog>
@@ -15,10 +16,6 @@
 #include <vector>
 #include <cassert>
 
-
-#ifdef SBW_INTEGRATION
-#include "SBW/SBWC.h"
-#endif
 
 using namespace std;
 
@@ -413,7 +410,7 @@ void TabManager::TranslateSBML(int tab, const QString& text)
 {
     ChangeableTextBox* tab_s = textbox(tab);
     QString oldmodelname = tab_s->GetModelName();
-    int handle = loadSBMLStringWithLocation(text.toUtf8().data(), tab_s->GetFilename().toAscii());
+    int handle = loadSBMLStringWithLocation(text.toUtf8().data(), tab_s->GetFilename().toLatin1());
     if (handle == -1) {
         char* error = getLastError();
         emit FailedSBMLTranslation();
@@ -604,7 +601,7 @@ void TabManager::SetFlatten(bool flatten)
 #ifdef USE_COMP
     if (flatten) {
 #endif
-      int ret = loadSBMLStringWithLocation(sbmltab->toPlainText().toAscii(), sbmltab->GetFilename().toAscii());
+      int ret = loadSBMLStringWithLocation(sbmltab->toPlainText().toLatin1(), sbmltab->GetFilename().toLatin1());
       if (ret==-1) {
         //Error in the SBML itself.
         char* error = getLastError();
@@ -617,8 +614,8 @@ void TabManager::SetFlatten(bool flatten)
     }
     else {
       QString modelname = sbmltab->GetModelName();
-      loadAntimonyString(anttab->toPlainText().toAscii());
-      SBML = getCompSBMLString(modelname.toAscii());
+      loadAntimonyString(anttab->toPlainText().toLatin1());
+      SBML = getCompSBMLString(modelname.toLatin1());
       if (sbmltab->GetLevelAndVersionCode() < 6) {
         sbmltab->StoreLevelAndVersion(3, 2);
       }
@@ -781,38 +778,3 @@ void TabManager::SaveTabDisplay()
     qset.setValue("displaycellml", (m_cellmltab != -1));
     qset.setValue("flattensbml", m_flatten);
 }
-
-#ifdef SBW_INTEGRATION
-void TabManager::startSBWAnalyzer()
-{
-    ChangeableTextBox* exporttab = GetActiveEditor();
-    if (currentIndex()==m_anttab) {
-        //We were on the Antimony tab--translate it if needed
-        if (!exporttab->IsOriginal() &&
-            !exporttab->IsTranslated() &&
-            !exporttab->IsMixed()) {
-            Translate(m_anttab);
-        }
-        //Assume the last SBML tab is the one to export
-        exporttab = textbox(count()-1);
-    }
-    string sbml = exporttab->toPlainText().toUtf8().constData();
-    if (sbml.length() == 0) return;
-    QAction *action = qobject_cast<QAction *>(sender());
-    if (action)
-    {
-        try
-        {
-            QStringList oModuleInfo = action->data().toStringList();
-
-            int nModule =  SBWGetModuleInstance(oModuleInfo[0].toUtf8().constData());
-            int nService =  SBWModuleFindServiceByName(nModule, oModuleInfo[1].toUtf8().constData());
-            int nMethod = SBWServiceGetMethod(nModule, nService, "void doAnalysis(string)");
-            SBWMethodSend(nModule, nService, nMethod,"void doAnalysis(string)", sbml.c_str());
-        }
-        catch(...)
-        {
-        }
-    }
-}
-#endif

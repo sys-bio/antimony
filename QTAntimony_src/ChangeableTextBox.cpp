@@ -15,6 +15,7 @@
 #include <QTextBlock>
 #include <QList>
 #include <QUrl>
+#include <QMimeData>
 
 using namespace std;
 
@@ -368,7 +369,7 @@ int ChangeableTextBox::lineNumberAreaWidth()
         max /= 10;
         ++digits;
     }
-     int space = 3 + fontMetrics().width(QLatin1Char('9')) * digits;
+     int space = 3 + fontMetrics().horizontalAdvance(QLatin1Char('9')) * digits;
      return space;
 }
 

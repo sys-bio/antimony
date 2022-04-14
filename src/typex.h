@@ -24,8 +24,8 @@ std::string FormulaTypeToString(const formula_type ftype);
 std::string UncertTypeToString(const uncert_type utype);
 uncert_type UncertStringToType(const std::string& uncert);
 #ifdef LIBSBML_HAS_PACKAGE_DISTRIB
-UncertType_t UncertTypeToSBML(const uncert_type utype);
-uncert_type SBMLToUncertType(const UncertType_t utype);
+libsbml::UncertType_t UncertTypeToSBML(const uncert_type utype);
+uncert_type SBMLToUncertType(const libsbml::UncertType_t utype);
 #endif
 
 #endif

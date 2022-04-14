@@ -2,6 +2,7 @@
 #include "registry.h"
 
 using namespace std;
+using namespace libsbml;
 #ifndef NSBML
 
 bool Annotated::TransferAnnotationTo(SBase* sbmlobj, string metaid) const

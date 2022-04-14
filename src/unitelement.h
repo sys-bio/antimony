@@ -22,7 +22,7 @@ private:
 public:
   UnitElement(std::string kind);
 #ifndef NSBML
-  UnitElement(const Unit* unit);
+  UnitElement(const libsbml::Unit* unit);
 #endif
   ~UnitElement() {};
   bool operator<(const UnitElement& ue) const;

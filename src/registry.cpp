@@ -21,6 +21,7 @@ extern std::vector<int> antimony_yylloc_last_lines;
 #define CONFIGFILE ".antimony";
 
 using namespace std;
+using namespace libsbml;
 
 Registry::Registry()
   : m_oldinputs(),

@@ -8,6 +8,7 @@
 #endif
 
 using namespace std;
+using namespace libsbml;
 
 UnitElement::UnitElement(string kind)
   : m_kind(kind)

@@ -2,7 +2,6 @@
 #include "QTAntimony.h"
 #include "Translator.h"
 #include "resource.h"
-#include "SBWIntegration.h"
 #include "Settings.h"
 #include <QStringList>
 #include <QString>
@@ -16,16 +15,12 @@ QTAntimony::QTAntimony(int& argc, char**& argv)
         : QApplication(argc, argv),
         m_original(NULL),
         m_opened(false),
-        m_usesbw(false),
         m_currentdir(""), //will set this below.
         m_basewindow(NULL)
 {
-#ifdef SBW_INTEGRATION
-    m_usesbw = true;
-#endif
 	QSettings qset(ORG, APP);
 	qset.sync();
-	m_currentdir = qset.value("currentdir", QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation)).toString();
+	m_currentdir = qset.value("currentdir", QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation)).toString();
 }
 
 void QTAntimony::OpenFile(QString filename)
@@ -90,22 +85,6 @@ void QTAntimony::SaveCurrentDirectory(QString dir)
     m_currentdir = dir;
 }
 
-#ifdef SBW_INTEGRATION
-
- bool QTAntimony::eventFilter(QObject * /*obj*/, QEvent *oEvent)
- {
-    QSBMLEvent *sbmlEvent = dynamic_cast<QSBMLEvent *>( oEvent );
-    if (sbmlEvent != NULL)
-    {
-        // here we open a new window with the SBML string
-        NewWindow()->AddSBMLTab(sbmlEvent->getSBML());
-        return true;
-    }
-    return false;
- }
-#endif
-
-
 void QTAntimony::DisplayWindow(QMainWindow* t) {
     if (t==NULL) return;
     QWidget* focus = m_basewindow;
@@ -153,9 +132,4 @@ void QTAntimony::DisplayWindow(QMainWindow* t) {
 	t->setWindowIcon(QIcon(file.c_str()));
     t->show();
     m_basewindow = t;
-}
-
-void QTAntimony::SetUseSBW(bool on)
-{
-    m_usesbw = on;
 }

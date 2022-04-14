@@ -19,6 +19,7 @@
 #include <cerrno>
 
 using namespace std;
+using namespace libsbml;
 
 BEGIN_C_DECLS
 

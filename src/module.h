@@ -61,8 +61,8 @@ private:
   std::map<std::vector<std::string>, Variable*> m_varmap;
 
 #ifndef NSBML
-  SBMLNamespaces m_sbmlnamespaces;
-  SBMLDocument m_sbml;
+  libsbml::SBMLNamespaces m_sbmlnamespaces;
+  libsbml::SBMLDocument m_sbml;
   std::string m_libsbml_info;
   std::string m_libsbml_warnings;
   bool m_hasFBC;
@@ -177,18 +177,18 @@ public:
   std::string ListAssignmentDifferencesFrom(const Module* origmod, std::string mname, std::string indent) const;
 #ifndef NSBML
 #ifdef USE_COMP
-  void  AddSubmodelsToDocument(SBMLDocument* sbml);
-  void  ReturnSubmodelsFromDocument(SBMLDocument* sbml);
-  bool  SynchronizeAssignments(Model* sbmlmod, const Variable* var, const std::vector<const Variable*>& synchronized, const std::map<const Variable*, Variable>& syncmap);
-  bool  SynchronizeRates(Model* sbmlmod, const Variable* var, const std::vector<const Variable*>& synchronized, const std::map<const Variable*, Variable>& syncmap);
+  void  AddSubmodelsToDocument(libsbml::SBMLDocument* sbml);
+  void  ReturnSubmodelsFromDocument(libsbml::SBMLDocument* sbml);
+  bool  SynchronizeAssignments(libsbml::Model* sbmlmod, const Variable* var, const std::vector<const Variable*>& synchronized, const std::map<const Variable*, Variable>& syncmap);
+  bool  SynchronizeRates(libsbml::Model* sbmlmod, const Variable* var, const std::vector<const Variable*>& synchronized, const std::map<const Variable*, Variable>& syncmap);
 #endif //USE_COMP
-  void TranslateRulesAndAssignmentsTo(const SBase* obj, Variable* var);
+  void TranslateRulesAndAssignmentsTo(const libsbml::SBase* obj, Variable* var);
   //void  LoadSBML(const SBMLDocument* sbmldoc);
-  void  LoadSBML(Model* sbml);
-  const SBMLDocument* GetSBML(bool comp);
+  void  LoadSBML(libsbml::Model* sbml);
+  const libsbml::SBMLDocument* GetSBML(bool comp);
   void  CreateSBMLModel(bool comp);
-  void  SetAssignmentFor(Model* sbmlmod, const Variable* var, const std::map<const Variable*, Variable>& syncmap, bool comp, std::set<std::pair<std::string, const Variable*> > referencedVars);
-  void  FindOrCreateLocalVersionOf(const Variable* var, Model* sbmlmod);
+  void  SetAssignmentFor(libsbml::Model* sbmlmod, const Variable* var, const std::map<const Variable*, Variable>& syncmap, bool comp, std::set<std::pair<std::string, const Variable*> > referencedVars);
+  void  FindOrCreateLocalVersionOf(const Variable* var, libsbml::Model* sbmlmod);
 #endif //NSBML
   std::vector<const Variable*> GetSynchronizedVariablesFor(const Variable* var);
   void FillInSyncmap(std::map<const Variable*, Variable >& syncmap) const;
@@ -270,18 +270,18 @@ private:
   const Variable* GetNthConstVariableOfType(return_type rtype, size_t n, bool comp) const;
   void Convert(Variable* converted, Variable* cf, std::string modulename);
 #ifndef NSBML
-  bool IsReplaced(const InitialAssignment* ia, const Model* parent);
-  bool IsReplaced(const Rule* rule, const Model* parent);
+  bool IsReplaced(const libsbml::InitialAssignment* ia, const libsbml::Model* parent);
+  bool IsReplaced(const libsbml::Rule* rule, const libsbml::Model* parent);
 #ifdef USE_COMP
-  void GetReplacingAndRules(const Replacing* replacing, std::string re_string, const SBase* orig, Variable*& reference, const InitialAssignment*& ia, const Rule*& rule);
-  Variable* GetSBaseRef(const SBaseRef* sbr, std::string modname, std::string re_string, const SBase* orig);
-  InitialAssignment* FindInitialAssignment(Model* md, std::vector<std::string> syncname);
-  Rule* FindRule(Model* md, std::vector<std::string> syncname);
-  void FixNames(Model* model);
-  void FixConstants(const std::string& name, Model* model);
-  void FixFunctions(const std::string& name, Model* model);
-  void FixUnitNames(Model* model);
-  void UpdateRateOf(Model* model);
+  void GetReplacingAndRules(const libsbml::Replacing* replacing, std::string re_string, const libsbml::SBase* orig, Variable*& reference, const libsbml::InitialAssignment*& ia, const libsbml::Rule*& rule);
+  Variable* GetSBaseRef(const libsbml::SBaseRef* sbr, std::string modname, std::string re_string, const libsbml::SBase* orig);
+  libsbml::InitialAssignment* FindInitialAssignment(libsbml::Model* md, std::vector<std::string> syncname);
+  libsbml::Rule* FindRule(libsbml::Model* md, std::vector<std::string> syncname);
+  void FixNames(libsbml::Model* model);
+  void FixConstants(const std::string& name, libsbml::Model* model);
+  void FixFunctions(const std::string& name, libsbml::Model* model);
+  void FixUnitNames(libsbml::Model* model);
+  void UpdateRateOf(libsbml::Model* model);
 #endif
 #endif
 };

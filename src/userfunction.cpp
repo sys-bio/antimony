@@ -7,6 +7,7 @@
 #include "sbmlx.h"
 
 using namespace std;
+using namespace libsbml;
 
 UserFunction::UserFunction(string name)
   : Module(name),

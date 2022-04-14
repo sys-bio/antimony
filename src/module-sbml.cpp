@@ -1,4 +1,8 @@
 #include "module.h"
+#include "sbml/Model.h"
+
+using namespace libsbml;
+
 #ifndef NSBML
 void SetVarWithEvent(Variable* var, const Event* event, Module* module, vector<string> submodname)
 {
@@ -165,7 +169,7 @@ void  SetSBaseReference(SBaseRef* sbr, SBase* target, Model* targetmodel, string
   return;
 }
 
-void Module::FindOrCreateLocalVersionOf(const Variable* var, Model* sbmlmod)
+void Module::FindOrCreateLocalVersionOf(const Variable* var, libsbml::Model* sbmlmod)
 {
   if(var->GetName().size() == 1) {
     //We'll create this variable normally.
@@ -2939,7 +2943,7 @@ void changeRateOf(ASTNode* astn)
     if (astn == NULL) {
         return;
     }
-    if (astn->getType() == AST_FUNCTION && astn->getName() == "rateOf") {
+    if (astn->getType() == AST_FUNCTION && astn->getName() == (string)"rateOf") {
         astn->setType(AST_FUNCTION_RATE_OF);
     }
     for (unsigned int c = 0; c < astn->getNumChildren(); c++) {
@@ -2952,7 +2956,7 @@ void Module::UpdateRateOf(Model* model)
     FunctionDefinition* rateOf = NULL;
     for (unsigned int fd = 0; fd < model->getNumFunctionDefinitions(); fd++) {
         FunctionDefinition* function = model->getFunctionDefinition(fd);
-        if (function->getId() == "rateOf" && function->getNumArguments() == 1) {
+        if (function->getId() == (string)"rateOf" && function->getNumArguments() == 1) {
             rateOf = function;
         }
     }

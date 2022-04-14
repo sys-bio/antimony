@@ -36,11 +36,8 @@ configure_file(${SETUP_PY_IN} ${SETUP_PY})
 ####################################################################
 #For installation, we can run setup.py for people automatically (on by default):
 
-file(GLOB win_dependencies "${CMAKE_SOURCE_DIR}/win32/*.dll")
-list(REMOVE_ITEM win_dependencies ${CMAKE_SOURCE_DIR}/win32/QtCore4.dll)
-list(REMOVE_ITEM win_dependencies ${CMAKE_SOURCE_DIR}/win32/QtGui4.dll)
 if (NOT WITH_STATIC_SBML)
-    list(APPEND win_dependencies ${LIBSBML_DLL})
+    file(GLOB win_dependencies "${CMAKE_SOURCE_DIR}/win32/${LIBSBML_DLL}")
 endif()
 
 #Create the 'libantimony.pth' file (which lets users 'import libantimony').

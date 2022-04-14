@@ -9,7 +9,7 @@ class SBMLTab : public ChangeableTextBox
 private:
     QString m_modelname;
     int m_levelversion;
-    SBMLWriter m_sbmlw;
+    libsbml::SBMLWriter m_sbmlw;
 
 public:
     SBMLTab(QWidget* parent = 0);

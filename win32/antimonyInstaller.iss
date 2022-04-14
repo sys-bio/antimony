@@ -30,8 +30,11 @@ Name: {app}\biomodels
 Source: "{#MinimalSetupInstaller}"; DestDir: "{tmp}"; Flags: ignoreversion onlyifdoesntexist
 Source: ..\install-release\bindings\*; DestDir: {app}; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: ..\install-release\bin\QTAntimony.exe; DestDir: {app}
-Source: ..\install-release\bin\QtCore4.dll; DestDir: {app}
-Source: ..\install-release\bin\QtGui4.dll; DestDir: {app}
+Source: ..\install-release\bin\Qt5Core.dll; DestDir: {app}
+Source: ..\install-release\bin\Qt5Gui.dll; DestDir: {app}
+Source: ..\install-release\bin\Qt5PrintSupport.dll; DestDir: {app}
+Source: ..\install-release\bin\Qt5Widgets.dll; DestDir: {app}
+Source: ..\install-release\bin\platforms\qwindows.dll; DestDir: {app}\platforms
 Source: ..\install-release\bin\README.txt; DestDir: {app}
 Source: ..\install-release\bin\antimony.ico; DestDir: {app}
 Source: ..\install-release\bin\antimony_ico.png; DestDir: {app}

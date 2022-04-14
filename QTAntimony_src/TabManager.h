@@ -69,10 +69,6 @@ public slots:
 
     void TabNameIs(const QString& tabname, ChangeableTextBox* tab);
 
-#ifdef SBW_INTEGRATION
-    void startSBWAnalyzer();
-#endif
-
 signals:
     void FailedAntimonyTranslation();
     void FailedSBMLTranslation();

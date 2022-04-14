@@ -6,6 +6,7 @@
 #include "stringx.h"
 
 using namespace std;
+using namespace libsbml;
 
 AntimonyConstraint::AntimonyConstraint()
   : m_formula()

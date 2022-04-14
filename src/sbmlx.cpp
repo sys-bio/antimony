@@ -8,6 +8,8 @@
 #include "typex.h"
 
 using namespace std;
+using namespace libsbml;
+
 extern bool CaselessStrCmp(bool caseless, const string& lhs, const string& rhs);
 
 #ifndef NSBML
