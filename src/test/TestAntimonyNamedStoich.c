@@ -29,18 +29,25 @@ START_TEST(test_NamedStoichBasic)
 }
 END_TEST
 
-
 START_TEST(test_NamedStoichBasic_file)
 {
     compareFileTranslation("namedstoich_basic");
 }
 END_TEST
 
+
 START_TEST(test_NamedStoichValue)
 {
     compareStringTranslation("J0: sr1 a->;; sr1 = 2", "namedstoich_value.xml");
 }
 END_TEST
+
+START_TEST(test_NamedStoichValue_file)
+{
+    compareFileTranslation("namedstoich_value");
+}
+END_TEST
+
 
 
 
