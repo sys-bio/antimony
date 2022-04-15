@@ -148,11 +148,6 @@ void  SetSBaseReference(SBaseRef* sbr, SBase* target, Model* targetmodel, string
       sbr->setIdRef(id);
       return;
   }
-  if (id.empty() && type == SBML_SPECIES_REFERENCE) {
-    target->setId(baseid);
-    sbr->setIdRef(baseid);
-    return;
-  }
   if (metaid.empty()) {
     SBMLDocument* sbml = sbr->getSBMLDocument();
     assert(sbml != NULL);
@@ -1328,85 +1323,70 @@ void Module::LoadSBML(Model* sbml)
     if (reaction->isSetName()) {
       var->SetDisplayName(reaction->getName());
     }
-    //reactants
+
+    //reactants and products
     ReactantList reactants;
-    for (unsigned int react=0; react<reaction->getNumReactants(); react++) {
-      const SpeciesReference* reactant = reaction->getReactant(react);
-      Variable* stoichvar = NULL;
-      double stoichiometry = 1;
-      if (reactant->isSetStoichiometryMath()) {
-          string reactantId = reactant->getId();
-          if (reactantId.empty()) {
-              reactantId = sbmlname + "_" + reactant->getSpecies() + "_stoichiometry";
-          }
-          stoichvar = AddOrFindVariable(&reactantId);
-          assert(!stoichvar->SetType(varStoichiometry)); //Since the SBML file is valid.
-          Formula formula;
-          string formulastring(parseASTNodeToString(reactant->getStoichiometryMath()->getMath()));
-          setFormulaWithString(formulastring, &formula, this);
-          formula.SetNewTopNameWith(reactant, GetModuleName());
-          formula.ReadAnnotationFrom(reactant);
-          stoichvar->SetAssignmentRule(&formula);
-      }
-      else if (reactant->isSetIdAttribute()) {
-          stoichvar = AddOrFindVariable(&(reactant->getIdAttribute()));
-          bool setret = stoichvar->SetType(varStoichiometry); //Since the SBML file is valid.
-          assert(!setret);
-          if (reactant->isSetStoichiometry() && !stoichvar->HasFormula()) {
-              Formula formula;
-              formula.AddNum(reactant->getStoichiometry());
-              stoichvar->SetFormula(&formula);
-          }
-      }
-      else {
-        if (reactant->isSetStoichiometry()) {
-          stoichiometry = reactant->getStoichiometry();
-        }
-      }
-      sbmlname = reactant->getSpecies();
-      if (sbmlname == "") {
-        sbmlname = getNameFromSBMLObject(reactant, "_S");
-      }
-      Variable* rvar = AddOrFindVariable(&sbmlname);
-      if (stoichvar) {
-          reactants.AddReactant(rvar, stoichvar);
-      }
-      else {
-          reactants.AddReactant(rvar, stoichiometry);
-      }
-#ifdef USE_COMP
-      const CompSBasePlugin* csbp = static_cast<const CompSBasePlugin*>(reactant->getPlugin("comp"));
-      if (csbp != NULL && (csbp->getNumReplacedElements() != 0 || csbp->isSetReplacedBy())) {
-        g_registry.AddWarning("Cannot replace stoichiometries in Antimony:  all replacedElements and replacedBy children of " + reactant->getSpecies() + " in reaction " + reaction->getId() + " will be ignored.");
-      }
-#endif
-    }
-    //products
     ReactantList products;
-    for (unsigned int react=0; react<reaction->getNumProducts(); react++) {
-      const SpeciesReference* product = reaction->getProduct(react);
-      double stoichiometry = 1;
-      if (product->isSetStoichiometryMath()) {
-        g_registry.AddWarning("Unable to set the stoichiometry math for the product " + product->getSpecies() + " in reaction " + reaction->getId() + " because stoichiometry math is not a defined concept in Antimony.");
-      }
-      else {
-        if (product->isSetStoichiometry()) {
-          stoichiometry = product->getStoichiometry();
+    for (int lr = 0; lr < 2; lr++) {
+        const ListOfSpeciesReferences* losr = reaction->getListOfReactants();
+        ReactantList* rl = &reactants;
+        if (lr == 1) {
+            losr = reaction->getListOfProducts();
+            rl = &products;
         }
-      }
-      sbmlname = product->getSpecies();
-      if (sbmlname == "") {
-        sbmlname = getNameFromSBMLObject(product, "_S");
-      }
-      Variable* rvar = AddOrFindVariable(&sbmlname);
-      products.AddReactant(rvar, stoichiometry);
+        for (unsigned int react = 0; react < losr->size(); react++) {
+            const SpeciesReference* specref = static_cast<const SpeciesReference*>(losr->get(react));
+            Variable* stoichvar = NULL;
+            double stoichiometry = 1;
+            if (specref->isSetStoichiometryMath()) {
+                string reactantId = specref->getId();
+                if (reactantId.empty()) {
+                    reactantId = sbmlname + "_" + specref->getSpecies() + "_stoichiometry";
+                }
+                stoichvar = AddOrFindVariable(&reactantId);
+                assert(!stoichvar->SetType(varStoichiometry)); //Since the SBML file is valid.
+                Formula formula;
+                string formulastring(parseASTNodeToString(specref->getStoichiometryMath()->getMath()));
+                setFormulaWithString(formulastring, &formula, this);
+                formula.SetNewTopNameWith(specref, GetModuleName());
+                formula.ReadAnnotationFrom(specref);
+                stoichvar->SetAssignmentRule(&formula);
+            }
+            else if (specref->isSetIdAttribute()) {
+                stoichvar = AddOrFindVariable(&(specref->getIdAttribute()));
+                bool setret = stoichvar->SetType(varStoichiometry); //Since the SBML file is valid.
+                assert(!setret);
+                if (specref->isSetStoichiometry() && !stoichvar->HasFormula()) {
+                    Formula formula;
+                    formula.AddNum(specref->getStoichiometry());
+                    stoichvar->SetFormula(&formula);
+                }
+            }
+            else {
+                if (specref->isSetStoichiometry()) {
+                    stoichiometry = specref->getStoichiometry();
+                }
+            }
+            sbmlname = specref->getSpecies();
+            if (sbmlname == "") {
+                sbmlname = getNameFromSBMLObject(specref, "_S");
+            }
+            Variable* rvar = AddOrFindVariable(&sbmlname);
+            if (stoichvar) {
+                rl->AddReactant(rvar, stoichvar);
+            }
+            else {
+                rl->AddReactant(rvar, stoichiometry);
+            }
 #ifdef USE_COMP
-      const CompSBasePlugin* csbp = static_cast<const CompSBasePlugin*>(product->getPlugin("comp"));
-      if (csbp != NULL && (csbp->getNumReplacedElements() != 0 || csbp->isSetReplacedBy())) {
-        g_registry.AddWarning("Cannot replace stoichiometries in Antimony:  all replacedElements and replacedBy children of " + product->getSpecies() + " in reaction " + reaction->getId() + " will be ignored.");
-      }
+            const CompSBasePlugin* csbp = static_cast<const CompSBasePlugin*>(specref->getPlugin("comp"));
+            if (csbp != NULL && (csbp->getNumReplacedElements() != 0 || csbp->isSetReplacedBy())) {
+                g_registry.AddWarning("Cannot replace stoichiometries in Antimony:  all replacedElements and replacedBy children of " + specref->getSpecies() + " in reaction " + reaction->getId() + " will be ignored.");
+            }
 #endif
+        }
     }
+
     //formula
     string formulastring = "";
     Formula formula;
@@ -2135,7 +2115,13 @@ void Module::CreateSBMLModel(bool comp)
         for (size_t lnum = 0; lnum < rl->Size(); lnum++) {
             const Variable* nthr = rl->GetNthReactant(lnum);
             referencedVars.insert(make_pair(nthr->GetNameDelimitedBy(cc), nthr));
-            SpeciesReference* sr = sbmlmod->createReactant();
+            SpeciesReference* sr = NULL;
+            if (lr == 1) {
+                sr = sbmlmod->createProduct();
+            }
+            else {
+                sr = sbmlmod->createReactant();
+            }
             sr->setSpecies(nthr->GetNameDelimitedBy(cc));
             double nthstoich = rl->GetStoichiometryFor(lnum);
             const Variable* namedstoich = rl->GetNthStoichiometryVar(lnum);

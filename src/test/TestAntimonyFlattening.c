@@ -125,6 +125,8 @@ void compareFileFlatteningWithDifferences(const string& base)
   std::ifstream t2(flatfile.c_str());
   std::stringstream sbmlflat_ref;
   sbmlflat_ref << t2.rdbuf();
+
+  //string sf_r = sbmlflat_ref.str();
   fail_unless(elideMetaIdsFromSBMLstring(NormalizeLineEndings(sbmlflat_ref.str())) ==
               elideMetaIdsFromSBMLstring(NormalizeLineEndings(string(sbmlflat))));
 

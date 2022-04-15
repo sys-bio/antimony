@@ -270,7 +270,13 @@ bool ReactantList::Matches(const ReactantList* newrl) const
   if (components.size() != newvariables.size()) return false;
   for (size_t component=0; component<components.size(); component++) {
     //Check stoichiometry value
-    if (get<0>(components[component]) != get<0>(newrl->m_components[component])) return false;
+    double ostoich = get<0>(components[component]);
+    double nstoich = get<0>(newrl->m_components[component]);
+    if (ostoich != nstoich) {
+        if (!(isnan(ostoich) && isnan(nstoich))) {
+            return false;
+        }
+    }
     Module* module = g_registry.GetModule(m_module);
     assert(module != NULL);
     //Check stoichiometry variable (if any)
