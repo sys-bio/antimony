@@ -7,6 +7,7 @@
 #include "module.h"
 #include "variable.h"
 #include <iostream>
+#include <tuple>
 
 using namespace std;
 
