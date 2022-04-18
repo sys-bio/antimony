@@ -1361,6 +1361,7 @@ void Module::LoadSBML(Model* sbml)
                     formula.AddNum(specref->getStoichiometry());
                     stoichvar->SetFormula(&formula);
                 }
+                TranslateRulesAndAssignmentsTo(specref, stoichvar);
             }
             else {
                 if (specref->isSetStoichiometry()) {

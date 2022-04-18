@@ -49,6 +49,32 @@ START_TEST(test_NamedStoichValue_file)
 END_TEST
 
 
+START_TEST(test_NamedStoichAssignment)
+{
+    compareStringTranslation("J0: sr1 a->;; sr1 := 2+1", "namedstoich_assignment.xml");
+}
+END_TEST
+
+START_TEST(test_NamedStoichAssignment_file)
+{
+    compareFileTranslation("namedstoich_assignment");
+}
+END_TEST
+
+
+START_TEST(test_NamedStoichRate)
+{
+    compareStringTranslation("J0: sr1 a->;; sr1' = 1.1", "namedstoich_rate.xml");
+}
+END_TEST
+
+START_TEST(test_NamedStoichRate_file)
+{
+    compareFileTranslation("namedstoich_rate");
+}
+END_TEST
+
+
 
 
 
@@ -63,6 +89,11 @@ create_suite_NamedStoich (void)
   tcase_add_test(tcase, test_NamedStoichBasic);
   tcase_add_test(tcase, test_NamedStoichBasic_file);
   tcase_add_test(tcase, test_NamedStoichValue);
+  tcase_add_test(tcase, test_NamedStoichValue_file);
+  tcase_add_test(tcase, test_NamedStoichAssignment);
+  tcase_add_test(tcase, test_NamedStoichAssignment_file);
+  tcase_add_test(tcase, test_NamedStoichRate);
+  tcase_add_test(tcase, test_NamedStoichRate_file);
 
 
   suite_add_tcase(suite, tcase);

@@ -596,17 +596,17 @@ START_TEST (test_test57)
 }
 END_TEST
 
-START_TEST (test_test58)
-{
-  compareFileFlatteningWithDifferences("test58");
-}
-END_TEST
+//START_TEST (test_test58)
+//{
+//  compareFileFlatteningWithDifferences("test58");
+//}
+//END_TEST
 
-START_TEST (test_test59)
-{
-  compareFileFlatteningWithDifferences("test59");
-}
-END_TEST
+//START_TEST (test_test59)
+//{
+//  compareFileFlatteningWithDifferences("test59");
+//}
+//END_TEST
 
 START_TEST (test_test60)
 {
@@ -614,11 +614,11 @@ START_TEST (test_test60)
 }
 END_TEST
 
-START_TEST (test_test61)
-{
-  compareFileFlatteningWithDifferences("test61");
-}
-END_TEST
+//START_TEST (test_test61)
+//{
+//  compareFileFlatteningWithDifferences("test61");
+//}
+//END_TEST
 
 
 Suite *
@@ -704,10 +704,10 @@ create_suite_Flattening(void)
   tcase_add_test( tcase, test_test55);
   tcase_add_test( tcase, test_test56);
   tcase_add_test( tcase, test_test57);
-  tcase_add_test( tcase, test_test58);
-  tcase_add_test( tcase, test_test59);
+  //tcase_add_test( tcase, test_test58);
+  //tcase_add_test( tcase, test_test59);
   tcase_add_test( tcase, test_test60);
-  tcase_add_test( tcase, test_test61);
+  //tcase_add_test( tcase, test_test61);
   
   suite_add_tcase(suite, tcase);
 
