@@ -212,7 +212,7 @@ stages:
             condition: eq(variables.BuildType, 'Release')
             displayName: Copy Pip Wheels to Staging Area
           - publish: $(Build.ArtifactStagingDirectory)
-            artifact: antimony-Windows-$(PythonName)
+            artifact: antimony-Windows-python
             condition: eq(variables.BuildType, 'Release')
             displayName: Publish Pip Wheels Artifacts
 
@@ -388,7 +388,7 @@ stages:
           - task: CopyFiles@2
             inputs:
               contents: '$(INSTALL_DIR)/**'
-              targetFolder: $(Build.ArtifactStagingDirectory)/antimony-MacOS10.15-$(PythonName)
+              targetFolder: $(Build.ArtifactStagingDirectory)/antimony-MacOS10.15-python
             condition: eq(variables.BuildType, 'Release')
             displayName: Copy Install Tree to Staging Area
           - task: CopyFiles@2
@@ -399,7 +399,7 @@ stages:
             condition: eq(variables.BuildType, 'Release')
             displayName: Copy Pip Wheels to Staging Area
           - publish: $(Build.ArtifactStagingDirectory)
-            artifact: antimony-MacOS10.15-$(PythonName)
+            artifact: antimony-MacOS10.15-python
             condition: eq(variables.BuildType, 'Release')
             displayName: Publish Pip Wheels Artifacts
 
@@ -529,7 +529,7 @@ stages:
               targetFolder: $(Build.ArtifactStagingDirectory)
             displayName: Copy to Staging Area
           - publish: $(Build.ArtifactStagingDirectory)
-            artifact: antimony-manulinux2014-$(BuildType)
+            artifact: antimony-manylinux2014-$(BuildType)
             displayName: Publish
           - script: |
               rm -r $(Build.ArtifactStagingDirectory)/*
@@ -548,7 +548,7 @@ stages:
           - task: CopyFiles@2
             inputs:
               contents: '$(INSTALL_DIR)/**'
-              targetFolder: $(Build.ArtifactStagingDirectory)/antimony-MacOS10.15-$(PythonName)
+              targetFolder: $(Build.ArtifactStagingDirectory)/antimony-manylinux2014-python
             condition: eq(variables.BuildType, 'Release')
             displayName: Copy Install Tree to Staging Area
           - task: CopyFiles@2
@@ -559,7 +559,7 @@ stages:
             condition: eq(variables.BuildType, 'Release')
             displayName: Copy Pip Wheels to Staging Area
           - publish: $(Build.ArtifactStagingDirectory)
-            artifact: antimony-MacOS10.15-$(PythonName)
+            artifact: antimony-manylinux2014-python
             condition: eq(variables.BuildType, 'Release')
             displayName: Publish Pip Wheels Artifacts
 
