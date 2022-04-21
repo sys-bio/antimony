@@ -123,6 +123,7 @@ if(WITH_SBML)
              NAMES libsbml-static.lib libsbml-static.so libsbml-static sbml-static.lib sbml-static.so sbml-static libsbml-staticd.lib libsbml-staticmd.lib libsbml-staticmdd.lib libsbml-staticd.so libsbml-staticd sbml-staticd.lib sbml-staticd.so sbml-staticd
              PATHS /usr/lib /usr/local/lib
                ${LIBSBML_INSTALL_DIR}/lib
+               ${LIBSBML_INSTALL_DIR}/lib64
                ${CMAKE_SOURCE_DIR}
                ${CMAKE_SOURCE_DIR}/dependencies/lib
                ${CMAKE_SOURCE_DIR}/../libsbml-5/release/lib/
@@ -132,6 +133,7 @@ if(WITH_SBML)
             NAMES libsbml.lib libsbml.so libsbml sbml.lib sbml.so sbml
             PATHS /usr/lib /usr/local/lib
               ${LIBSBML_INSTALL_DIR}/lib
+              ${LIBSBML_INSTALL_DIR}/lib64
               ${CMAKE_SOURCE_DIR}
               ${CMAKE_SOURCE_DIR}/dependencies/lib
               ${CMAKE_SOURCE_DIR}/../libsbml-5/release/lib/
