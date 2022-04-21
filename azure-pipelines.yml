@@ -212,7 +212,7 @@ stages:
             condition: eq(variables.BuildType, 'Release')
             displayName: Copy Pip Wheels to Staging Area
           - publish: $(Build.ArtifactStagingDirectory)
-            artifact: antimony-Windows-$(PythonName)
+            artifact: antimony-Windows-python
             condition: eq(variables.BuildType, 'Release')
             displayName: Publish Pip Wheels Artifacts
 
@@ -388,7 +388,7 @@ stages:
           - task: CopyFiles@2
             inputs:
               contents: '$(INSTALL_DIR)/**'
-              targetFolder: $(Build.ArtifactStagingDirectory)/antimony-MacOS10.15-$(PythonName)
+              targetFolder: $(Build.ArtifactStagingDirectory)/antimony-MacOS10.15-python
             condition: eq(variables.BuildType, 'Release')
             displayName: Copy Install Tree to Staging Area
           - task: CopyFiles@2
@@ -399,7 +399,7 @@ stages:
             condition: eq(variables.BuildType, 'Release')
             displayName: Copy Pip Wheels to Staging Area
           - publish: $(Build.ArtifactStagingDirectory)
-            artifact: antimony-MacOS10.15-$(PythonName)
+            artifact: antimony-MacOS10.15-python
             condition: eq(variables.BuildType, 'Release')
             displayName: Publish Pip Wheels Artifacts
 
@@ -422,7 +422,7 @@ stages:
           SOURCE_DIRECTORY: '$(System.DefaultWorkingDirectory)'
           INSTALL_DIRECTORY: '$(System.DefaultWorkingDirectory)/install-azure'
           MinicondaRoot: '/Miniconda3'
-          PythonRoot: '$(MinicondaRoot)/envs/$(PythonName)'
+          PythonRoot: '$(MinicondaRoot)/envs/py39'
           CondaExecutable: '$(MinicondaRoot)/bin/conda'
           PythonExecutable: '$(PythonRoot)/bin/python'
           PythonLibDir: '$(PythonRoot)/lib'
@@ -486,7 +486,7 @@ stages:
               # - https://dev.azure.com/TheRoadrunnerProject/libroadrunner-deps/_build?definitionId=9
               pipeline: 9
               runVersion: 'latest'
-              artifact: libroadrunner-deps-$(Agent.OS)-$(BuildType)
+              artifact: libroadrunner-deps-manylinux2014-$(BuildType)
               path: $(DEPS_INSTALL_PREFIX)
             displayName: Download libroadrunner-deps install artifacts
           - script: |
@@ -499,6 +499,7 @@ stages:
               mv $(DEPS_INSTALL_PREFIX)/install-azure/$(BuildType)/** .
               rm -r $(DEPS_INSTALL_PREFIX)/install-azure
               ls
+              ls */
             displayName: Move Dependencies
           - script: |
               echo "Configuring antimony"
@@ -506,7 +507,7 @@ stages:
               mkdir $(BUILD_DIR)
               echo "CD to build dir: $(BUILD_DIR)"
               cd $(BUILD_DIR)
-              cmake -DCMAKE_PREFIX_PATH=/usr/local/opt/qt@5/lib  -DLIBSBML_INSTALL_DIR=$(DEPS_INSTALL_PREFIX) -DWITH_QTANTIMONY=OFF -DWITH_STATIC_SBML=ON -DCMAKE_INSTALL_PREFIX=$(INSTALL_DIR) -DCMAKE_BUILD_TYPE=$(BuildType) -DWITH_CHECK=ON -DWITH_PYTHON=ON -DPython_ROOT_DIR=$(PythonRoot) ..
+              cmake -DCMAKE_PREFIX_PATH=/usr/local/opt/qt@5/lib  -DLIBSBML_INSTALL_DIR=$(DEPS_INSTALL_PREFIX) -DLIBXML_LIBRARY=${DEPS_INSTALL_PREFIX}/lib64/libxml2.a -DWITH_QTANTIMONY=OFF -DWITH_STATIC_SBML=ON -DCMAKE_INSTALL_PREFIX=$(INSTALL_DIR) -DCMAKE_BUILD_TYPE=$(BuildType) -DWITH_CHECK=OFF -DWITH_PYTHON=ON -DPython_ROOT_DIR=$(PythonRoot) ..
             displayName: Run CMake Configure Command
           - script: |
               echo "less -N $(BUILD_DIR)/source/CMakeFiles/antimony.dir/build.make"
@@ -514,7 +515,8 @@ stages:
               echo "Building antimony"
               echo "cd to build dir"
               cd $(BUILD_DIR)
-              cmake --build . --target install --config $(BuildType) -j 12
+              cat CMakeCache.txt
+              cmake --build . --verbose --target install --config $(BuildType) -j 12
             displayName: Run CMake Build Command
           - script: |
               echo "cd to build dir $(BUILD_DIR)"
@@ -527,7 +529,7 @@ stages:
               targetFolder: $(Build.ArtifactStagingDirectory)
             displayName: Copy to Staging Area
           - publish: $(Build.ArtifactStagingDirectory)
-            artifact: antimony-MacOS10.15-$(BuildType)
+            artifact: antimony-manylinux2014-$(BuildType)
             displayName: Publish
           - script: |
               rm -r $(Build.ArtifactStagingDirectory)/*
@@ -546,7 +548,7 @@ stages:
           - task: CopyFiles@2
             inputs:
               contents: '$(INSTALL_DIR)/**'
-              targetFolder: $(Build.ArtifactStagingDirectory)/antimony-MacOS10.15-$(PythonName)
+              targetFolder: $(Build.ArtifactStagingDirectory)/antimony-manylinux2014-python
             condition: eq(variables.BuildType, 'Release')
             displayName: Copy Install Tree to Staging Area
           - task: CopyFiles@2
@@ -557,294 +559,9 @@ stages:
             condition: eq(variables.BuildType, 'Release')
             displayName: Copy Pip Wheels to Staging Area
           - publish: $(Build.ArtifactStagingDirectory)
-            artifact: antimony-MacOS10.15-$(PythonName)
+            artifact: antimony-manylinux2014-python
             condition: eq(variables.BuildType, 'Release')
             displayName: Publish Pip Wheels Artifacts
-
-##########################################################################
-### Linux Build
-###
-#  - stage: LinuxBuildAntimonyCpp
-#    dependsOn: []
-#    jobs:
-#      - job: LinuxBuildAntimonyCpp
-#        timeoutInMinutes: "0"
-#        displayName: LinuxBuildAntimonyCpp
-#        continueOnError: "false"
-#        pool:
-#          vmImage: 'Ubuntu-18.04'
-#        strategy:
-#          matrix:
-#            64-bit Linux Release:
-#              BuildType: Release
-#            64-bit Linux Debug:
-#              BuildType: Debug
-#        steps:
-#          # we cannot upload prebuilt binaries onto github for linux debug version because of github file size limits.
-#          - script: |
-#              echo "SOURCE_DIR $(SOURCE_DIR)"
-#              echo "BUILD_DIR $(BUILD_DIR)"
-#              echo "INSTALL_DIR $(INSTALL_DIR)"
-#              echo "DEPS_INSTALL_PREFIX $(DEPS_INSTALL_PREFIX)"
-#              echo "Build.DefinitionName $(Build.DefinitionName)"
-#              echo "System.DefinitionId	 $(System.DefinitionId)"
-#              echo "Agent.OS $(Agent.OS)"
-
-#              echo "System.AccessToken  $(System.AccessToken)"
-#              echo "System.CollectionId $(System.CollectionId)"
-#              echo "System.CollectionUri  $(System.CollectionUri)"
-#              echo "System.DefaultWorkingDirectory  $(System.DefaultWorkingDirectory)"
-#              echo "System.DefinitionId $(System.DefinitionId)"
-#              echo "System.HostType $(System.HostType)"
-#              echo "System.JobAttempt $(System.JobAttempt)"
-#              echo "System.JobDisplayName $(System.JobDisplayName)"
-#              echo "System.JobId  $(System.JobId)"
-#              echo "System.JobName  $(System.JobName)"
-#              echo "System.PhaseAttempt $(System.PhaseAttempt)"
-#              echo "System.PhaseDisplayName $(System.PhaseDisplayName)"
-#              echo "System.PhaseName  $(System.PhaseName)"
-#              echo "System.StageAttempt $(System.StageAttempt)"
-#              echo "System.StageDisplayName $(System.StageDisplayName)"
-#              echo "System.StageName  $(System.StageName)"
-#              echo "System.PullRequest.IsFork $(System.PullRequest.IsFork)"
-#              echo "System.PullRequest.PullRequestId $(System.PullRequest.PullRequestId)"
-#              echo "System.PullRequest.PullRequestNumber $(System.PullRequest.PullRequestNumber)"
-#              echo "System.PullRequest.SourceBranch $(System.PullRequest.SourceBranch)"
-#              echo "System.PullRequest.SourceRepositoryURI $(System.PullRequest.SourceRepositoryURI)"
-#              echo "System.PullRequest.TargetBranch $(System.PullRequest.TargetBranch)"
-#              echo "System.TeamFoundationCollectionUri $(System.TeamFoundationCollectionUri)"
-#              echo "System.TeamProject $(System.TeamProject)"
-#              echo "System.TeamProjectId $(System.TeamProjectId)"
-#              echo "TF_BUILD $(TF_BUILD)"
-#            displayName: Print Variables
-#          - script: |
-#              mkdir $(DEPS_INSTALL_PREFIX)
-#            displayName: Make Directories
-#          - script: |
-#              echo "gcc $(gcc --version)"
-#              echo "g++ $(g++ --version)"
-#              sudo add-apt-repository ppa:ubuntu-toolchain-r/test
-#              sudo apt-get update
-#              sudo apt-get install -y gcc-10 g++-10
-#              sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 1
-#            displayName: Install g++10
-#          - task: DownloadPipelineArtifact@2
-#            inputs:
-#              source: 'specific'
-#              project: 'libroadrunner-deps'
-#              pipeline: 9
-#              runVersion: 'latest'
-#              artifact: libroadrunner-deps-$(Agent.OS)-$(BuildType)
-#              path: $(DEPS_INSTALL_PREFIX)
-#            displayName: Download libroadrunner-deps install artifacts
-#          - script: |
-#              echo "$(DEPS_INSTALL_PREFIX)"
-#              echo "cd to $(DEPS_INSTALL_PREFIX)"
-#              cd $(DEPS_INSTALL_PREFIX)
-#              echo "ls: "
-#              ls
-#              echo "moving contents of $(DEPS_INSTALL_PREFIX)/install to  $(DEPS_INSTALL_PREFIX)"
-#              mv $(DEPS_INSTALL_PREFIX)/install-azure/$(BuildType)/** .
-#              rm -r $(DEPS_INSTALL_PREFIX)/install-azure
-#              ls
-#            displayName: Move Dependencies
-#          - script: |
-#              export CC=/usr/bin/gcc-10
-#              export CXX=/usr/bin/g++-10
-#              export C=/usr/bin/gcc-10
-#              echo "Configuring antimony"
-#              echo "mkdir build directory: $(BUILD_DIR)"
-#              mkdir $(BUILD_DIR)
-#              echo "CD to build dir: $(BUILD_DIR)"
-#              cd $(BUILD_DIR)
-#              cmake -DRR_DEPENDENCIES_INSTALL_PREFIX=$(DEPS_INSTALL_PREFIX) -DBUILD_TESTS=ON -DCMAKE_INSTALL_PREFIX=$(INSTALL_DIR) -DBUILD_RR_PLUGINS=ON -DBUILD_RR_CAPI=ON -DCMAKE_BUILD_TYPE=$(BuildType) ..
-#            displayName: Run CMake Configure Command
-#          - script: |
-#              export CC=/usr/bin/gcc-10
-#              export CXX=/usr/bin/g++-10
-#              export C=/usr/bin/gcc-10
-#              echo "Building antimony"
-#              echo "cd to build dir"
-#              cd $(BUILD_DIR)
-#              cmake --build . --target install --config $(BuildType) -j 12
-#            displayName: Run CMake Build Command
-#          - script: |
-#              export CC=/usr/bin/gcc-10
-#              export CXX=/usr/bin/g++-10
-#              export C=/usr/bin/gcc-10
-#              echo "cd to build dir $(BUILD_DIR)"
-#              cd $(BUILD_DIR)
-#              ctest --verbose --extra-verbose --progress
-#            displayName: RunCTest
-#          - task: CopyFiles@2
-#            inputs:
-#              contents: '$(INSTALL_DIR)/**'
-#              targetFolder: $(Build.ArtifactStagingDirectory)
-#            displayName: Copy to Staging Area
-#          - publish: $(Build.ArtifactStagingDirectory)
-#            artifact: antimony-$(Agent.OS)-$(BuildType)
-#            displayName: Publish
-
-##########################################################################
-### Many Linux Build
-###
-#  - stage: ManyLinux
-#    displayName: ManyLinux2014
-#    dependsOn: []
-#    jobs:
-#      - job:
-#        strategy:
-#          matrix:
-#            py37:
-#              PythonVersion: 3.7
-#              PythonName: py37
-#            py38:
-#              PythonVersion: 3.8
-#              PythonName: py38
-#            py39:
-#              PythonVersion: 3.9
-#              PythonName: py39
-#        pool:
-#          vmImage: 'ubuntu-18.04'
-#        container: ciaranwelsh/roadrunner-manylinux2014-base:latest
-#        variables:
-#          CCACHE_DIR: '$(Pipeline.Workspace)/ccache'
-#          BUILD_DIRECTORY: '$(System.DefaultWorkingDirectory)/build'
-#          SOURCE_DIRECTORY: '$(System.DefaultWorkingDirectory)'
-#          INSTALL_DIRECTORY: '$(System.DefaultWorkingDirectory)/install-azure'
-#          MinicondaRoot: '/Miniconda3'
-#          PythonRoot: '$(MinicondaRoot)/envs/$(PythonName)'
-#          CondaExecutable: '$(MinicondaRoot)/bin/conda'
-#          PythonExecutable: '$(PythonRoot)/bin/python'
-#          PythonLibDir: '$(PythonRoot)/lib'
-#          PythonIncludeDir: '$(PythonRoot)/include'
-#          PipExecutable: '$(PythonRoot)/bin/pip'
-
-#        steps:
-#          - checkout: self
-#            submodules: recursive
-
-#          - script: |
-
-#              echo "SOURCE_DIRECTORY   $(SOURCE_DIRECTORY)"
-#              if [ ! -d "$(SOURCE_DIRECTORY)" ]; then
-#                echo "Can't find SOURCE_DIRECTORY at $(SOURCE_DIRECTORY)"
-#                exit 1
-#              fi
-
-#              echo "MinicondaRoot      $(MinicondaRoot)"
-#              if [ ! -d "$(MinicondaRoot)" ]; then
-#                echo "Can't find MinicondaRoot at $(MinicondaRoot)"
-#                exit 1
-#              fi
-
-#              echo "PythonRoot         $(PythonRoot)"
-#              if [ ! -d "$(PythonRoot)" ]; then
-#                echo "Can't find PythonRoot at $(PythonRoot)"
-#                exit 1
-#              fi
-
-#              echo "CondaExecutable    $(CondaExecutable)"
-#              if [ ! -f "$(CondaExecutable)" ]; then
-#                echo "Can't find CondaExecutable at $(CondaExecutable)"
-#                exit 1
-#              fi
-
-#              echo "PythonExecutable   $(PythonExecutable)"
-#              if [ ! -f "$(PythonExecutable)" ]; then
-#                echo "Can't find PythonExecutable at $(PythonExecutable)"
-#                exit 1
-#              fi
-
-#              echo "PythonLibDir       $(PythonLibDir)"
-#              if [ ! -d "$(PythonLibDir)" ]; then
-#                echo "Can't find PythonLibDir at $(PythonLibDir)"
-#                exit 1
-#              fi
-
-#              echo "PythonIncludeDir   $(PythonIncludeDir)"
-#              if [ ! -d "$(PythonIncludeDir)" ]; then
-#                echo "Can't find PythonIncludeDir at $(PythonIncludeDir)"
-#                exit 1
-#              fi
-
-#              echo "PipExecutable      $(PipExecutable)"
-#              if [ ! -f "$(PipExecutable)" ]; then
-#                echo "Can't find PipExecutable at $(PipExecutable)"
-#                exit 1
-#              fi
-
-#            displayName: Print Azure Variables
-
-#          - script: |
-#              echo "$(CondaExecutable) activate $(PythonName)"
-#              eval "$($(CondaExecutable) shell.bash hook)"
-#              $(CondaExecutable) init
-
-#              echo ". ~/.bashrc"
-#              . ~/.bashrc
-#              $(CondaExecutable) activate $(PythonName)
-
-#              echo "mkdir $(BUILD_DIRECTORY)"
-#              mkdir $(BUILD_DIRECTORY)
-
-#              echo "cd $(BUILD_DIRECTORY)"
-#              cd $(BUILD_DIRECTORY)
-
-#              echo "$(PipExecutable) install numpy pytest"
-#              $(PipExecutable) install -r $(SOURCE_DIR)/test-requirements.txt
-
-#              echo "sudo yum install -y ncurses-devel"
-#              sudo yum install -y ncurses-devel
-
-#              echo "cmake command: cmake -DRR_DEPENDENCIES_INSTALL_PREFIX=/libroadrunner-deps/install-libroadrunner-deps -DCMAKE_INSTALL_PREFIX=$(INSTALL_DIRECTORY) -DBUILD_PYTHON=ON -DBUILD_RR_PLUGINS=ON -DBUILD_TESTS=ON -DPython_ROOT_DIR=$(PythonRoot) .."
-#              cmake -DRR_DEPENDENCIES_INSTALL_PREFIX=/libroadrunner-deps/install-libroadrunner-deps -DCMAKE_INSTALL_PREFIX=$(INSTALL_DIRECTORY) -DBUILD_PYTHON=ON -DBUILD_RR_PLUGINS=ON -DBUILD_TESTS=ON -DPython_ROOT_DIR=$(PythonRoot) ..
-#              cmake --build . --target install --config Release -j 12
-#              ctest --verbose --extra-verbose --output-on-failure
-
-#            displayName: Build With Python
-#          - script: |
-#              echo ". ~/.bashrc"
-#              . ~/.bashrc
-#              $(CondaExecutable) activate $(PythonName)
-
-#              echo "cd'ing to build dir $(BUILD_DIR)"
-#              cd $(BUILD_DIR)
-#              cmake --build . --target run-pytest-tests -j4
-
-#            displayName: Run Tests
-
-#          - script: |
-#              echo "cd to $(INSTALL_DIRECTORY)"
-#              cd $(INSTALL_DIRECTORY)
-
-#              echo "ls"
-#              ls
-
-#              $(PipExecutable) install numpy pytest
-#              echo "$(PythonExecutable) ./setup.py bdist_wheel"
-#              $(PythonExecutable) ./setup.py bdist_wheel
-
-
-#              # cd dist
-#              # wheel=$(realpath $(ls))
-#              # echo "wheel is: $wheel"
-#              # $(PipExecutable) install $wheel
-#            displayName: Build Pip Wheel
-#          - task: CopyFiles@2
-#            inputs:
-#              sourceFolder: '$(INSTALL_DIRECTORY)'
-#              contents: '**'
-#              targetFolder: '$(Build.ArtifactStagingDirectory)/antimony-manylinux2014-$(PythonName)'
-#            displayName: Copy install to artifact staging area
-#          - task: PublishBuildArtifacts@1
-#            inputs:
-#              pathToPublish: '$(Build.ArtifactStagingDirectory)/antimony-manylinux2014-$(PythonName)'
-#              artifactName: antimony-ManyLinux2014-$(PythonName)
-#              Parallel: true
-#              ParallelCount: 8
-
-
 
 
 
