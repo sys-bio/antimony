@@ -197,14 +197,13 @@ stages:
             displayName: Clear published artifacts
           - script: |
               echo "cd to python bindings dir: $(INSTALL_DIR)/bindings/python"
-              cp .azurepipelines/renameWheel.py ${INSTALL_DIR}/bindings/python/
               cd $(INSTALL_DIR)/bindings/python
               echo "ls in install dir"
               ls -R
               echo "$(PythonExecutable) setup.py bdist_wheel"
               $(PythonExecutable) setup.py bdist_wheel
               cd dist/
-              $(PythonExecutable) ../renameWheel.py
+              $(PythonExecutable) ../../../.azurepipelines/renameWheel.py
             condition: eq(variables.BuildType, 'Release')
             displayName: Generate pip wheel
           - task: CopyFiles@2
@@ -380,8 +379,8 @@ stages:
             condition: eq(variables.BuildType, 'Release')
             displayName: Clear published artifacts
           - script: |
-              echo "cd to python bindings dir: $(INSTALL_DIR)/bindings/python"
               cp .azurepipelines/renameWheel.py ${INSTALL_DIR}/bindings/python/
+              echo "cd to python bindings dir: $(INSTALL_DIR)/bindings/python"
               cd $(INSTALL_DIR)/bindings/python
               echo "ls in install dir"
               ls
@@ -543,8 +542,8 @@ stages:
             condition: eq(variables.BuildType, 'Release')
             displayName: Clear published artifacts
           - script: |
-              echo "cd to python bindings dir: $(INSTALL_DIR)/bindings/python"
               cp .azurepipelines/renameWheel.py ${INSTALL_DIR}/bindings/python/
+              echo "cd to python bindings dir: $(INSTALL_DIR)/bindings/python"
               cd $(INSTALL_DIR)/bindings/python
               echo "ls in install dir"
               ls
