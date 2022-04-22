@@ -197,13 +197,14 @@ stages:
             displayName: Clear published artifacts
           - script: |
               echo "cd to python bindings dir: $(INSTALL_DIR)/bindings/python"
+              cp .azurepipelines/renameWheel.py ${INSTALL_DIR}/bindings/python/
               cd $(INSTALL_DIR)/bindings/python
               echo "ls in install dir"
               ls -R
               echo "$(PythonExecutable) setup.py bdist_wheel"
               $(PythonExecutable) setup.py bdist_wheel
               cd dist/
-              $(PythonExecutable) ~/.azurepipelines/renameWheel.py
+              $(PythonExecutable) ../renameWheel.py
             condition: eq(variables.BuildType, 'Release')
             displayName: Generate pip wheel
           - task: CopyFiles@2
@@ -380,13 +381,14 @@ stages:
             displayName: Clear published artifacts
           - script: |
               echo "cd to python bindings dir: $(INSTALL_DIR)/bindings/python"
+              cp .azurepipelines/renameWheel.py ${INSTALL_DIR}/bindings/python/
               cd $(INSTALL_DIR)/bindings/python
               echo "ls in install dir"
               ls
               echo "$(PythonExecutable) setup.py bdist_wheel"
               $(PythonExecutable) setup.py bdist_wheel
               cd dist/
-              $(PythonExecutable) ~/.azurepipelines/renameWheel.py
+              $(PythonExecutable) ../renameWheel.py
             condition: eq(variables.BuildType, 'Release')
             displayName: Generate pip wheel
           - task: CopyFiles@2
@@ -542,13 +544,14 @@ stages:
             displayName: Clear published artifacts
           - script: |
               echo "cd to python bindings dir: $(INSTALL_DIR)/bindings/python"
+              cp .azurepipelines/renameWheel.py ${INSTALL_DIR}/bindings/python/
               cd $(INSTALL_DIR)/bindings/python
               echo "ls in install dir"
               ls
               echo "$(PythonExecutable) setup.py bdist_wheel"
               $(PythonExecutable) setup.py bdist_wheel
               cd dist/
-              $(PythonExecutable) ~/.azurepipelines/renameWheel.py
+              $(PythonExecutable) ../renameWheel.py
             condition: eq(variables.BuildType, 'Release')
             displayName: Generate pip wheel
           - task: CopyFiles@2
