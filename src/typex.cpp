@@ -264,7 +264,6 @@ bool IsSpan(const uncert_type utype)
   case unDistribution:
   case unExternalParameter:
   case unUnknown:
-  case varStoichiometry:
       return false;
   case unConfidenceInterval:
   case unCredibleInterval:

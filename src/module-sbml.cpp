@@ -231,6 +231,7 @@ void Module::FindOrCreateLocalVersionOf(const Variable* var, libsbml::Model* sbm
   case varSboTermWrapper:
   case varUncertWrapper:
   case varConstraint:
+  case varStoichiometry:
     assert(false); //Unhandled type
     break;
   }
