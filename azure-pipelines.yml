@@ -202,6 +202,8 @@ stages:
               ls -R
               echo "$(PythonExecutable) setup.py bdist_wheel"
               $(PythonExecutable) setup.py bdist_wheel
+              cd dist/
+              $(PythonExecutable) ../.azurepipelines/renameWheel.py
             condition: eq(variables.BuildType, 'Release')
             displayName: Generate pip wheel
           - task: CopyFiles@2
@@ -383,6 +385,8 @@ stages:
               ls
               echo "$(PythonExecutable) setup.py bdist_wheel"
               $(PythonExecutable) setup.py bdist_wheel
+              cd dist/
+              $(PythonExecutable) ../.azurepipelines/renameWheel.py
             condition: eq(variables.BuildType, 'Release')
             displayName: Generate pip wheel
           - task: CopyFiles@2
@@ -543,6 +547,8 @@ stages:
               ls
               echo "$(PythonExecutable) setup.py bdist_wheel"
               $(PythonExecutable) setup.py bdist_wheel
+              cd dist/
+              $(PythonExecutable) ../.azurepipelines/renameWheel.py
             condition: eq(variables.BuildType, 'Release')
             displayName: Generate pip wheel
           - task: CopyFiles@2
