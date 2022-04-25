@@ -35,7 +35,7 @@ configure_file(${SETUP_PY_IN} ${SETUP_PY})
 set(INIT_PY_IN "${CMAKE_CURRENT_SOURCE_DIR}/__init__.py.in")
 set(INIT_PY    "${CMAKE_CURRENT_BINARY_DIR}/__init__.py")
 
-configure_file(${SETUP_PY_IN} ${SETUP_PY})
+configure_file(${INIT_PY_IN} ${INIT_PY})
 
 
 
@@ -58,6 +58,8 @@ file (GLOB antimony_python_files
     ${CPACK_RESOURCE_FILE_LICENSE}
     ${win_dependencies}
 )
+
+message(STATUS "  Using Python libraries                 = ${antimony_python_files}")
 
 
 if (PYTHON_SYSTEM_INSTALL)
