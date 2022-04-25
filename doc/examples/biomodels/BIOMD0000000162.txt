@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Hernjak2005_Calcium_Signaling()
 
   // Compartments and Species:
@@ -16,9 +16,9 @@ model *Hernjak2005_Calcium_Signaling()
   species D28kB_Cytosol in Cytosol;
 
   // Assignment Rules:
-  flux0_ar := piecewise(Jch*(0.0016611295681*Ca_Extracellular + -(0.0016611295681*Ca_Cytosol)), time > t1 && time < t2, 0);
-  flux1_ar := piecewise(JchD*(0.0016611295681*Ca_D_Extracellular + -(0.0016611295681*Ca_D_Cytosol)), time > t1 && time < t2, 0);
-  pulses_ar := piecewise(p0*exp(-((time + -delta)*Ks)), time > delta, 0) + piecewise(p1*exp(-((time + -(tau + delta))*Ks)), time > tau + delta, 0) + piecewise(p2*exp(-(Ks*(time + -(2*tau + delta)))), time > 2*tau + delta, 0) + piecewise(p3*exp(-(Ks*(time + -(3*tau + delta)))), time > 3*tau + delta, 0) + piecewise(p4*exp(-(Ks*(time + -(4*tau + delta)))), time > 4*tau + delta, 0) + piecewise(p5*exp(-(Ks*(time + -(5*tau + delta)))), time > 5*tau + delta, 0) + piecewise(p6*exp(-(Ks*(time + -(6*tau + delta)))), time > 6*tau + delta, 0) + piecewise(p7*exp(-(Ks*(time + -(7*tau + delta)))), time > 7*tau + delta, 0) + piecewise(p8*exp(-(Ks*(time + -(8*tau + delta)))), time > 8*tau + delta, 0) + piecewise(p9*exp(-(Ks*(time + -(9*tau + delta)))), time > 9*tau + delta, 0) + piecewise(p10*exp(-(Ks*(time + -(10*tau + delta)))), time > 10*tau + delta, 0) + piecewise(p11*exp(-(Ks*(time + -(11*tau + delta)))), time > 11*tau + delta, 0);
+  flux0_ar := piecewise(Jch*(0.0016611295681*Ca_Extracellular + -(0.0016611295681*Ca_Cytosol)), (time > t1) && (time < t2), 0);
+  flux1_ar := piecewise(JchD*(0.0016611295681*Ca_D_Extracellular + -(0.0016611295681*Ca_D_Cytosol)), (time > t1) && (time < t2), 0);
+  pulses_ar := piecewise(p0*exp(-((time + -delta)*Ks)), time > delta, 0) + piecewise(p1*exp(-((time + -(tau + delta))*Ks)), time > (tau + delta), 0) + piecewise(p2*exp(-(Ks*(time + -(2*tau + delta)))), time > (2*tau + delta), 0) + piecewise(p3*exp(-(Ks*(time + -(3*tau + delta)))), time > (3*tau + delta), 0) + piecewise(p4*exp(-(Ks*(time + -(4*tau + delta)))), time > (4*tau + delta), 0) + piecewise(p5*exp(-(Ks*(time + -(5*tau + delta)))), time > (5*tau + delta), 0) + piecewise(p6*exp(-(Ks*(time + -(6*tau + delta)))), time > (6*tau + delta), 0) + piecewise(p7*exp(-(Ks*(time + -(7*tau + delta)))), time > (7*tau + delta), 0) + piecewise(p8*exp(-(Ks*(time + -(8*tau + delta)))), time > (8*tau + delta), 0) + piecewise(p9*exp(-(Ks*(time + -(9*tau + delta)))), time > (9*tau + delta), 0) + piecewise(p10*exp(-(Ks*(time + -(10*tau + delta)))), time > (10*tau + delta), 0) + piecewise(p11*exp(-(Ks*(time + -(11*tau + delta)))), time > (11*tau + delta), 0);
 
   // Reactions:
   CD28k_highDbinding: Ca_D_Cytosol + D28k_high_D_Cytosol -> D28kB_high_D_Cytosol; (CD28k_highDbinding_Kf*0.00166112956810631*Ca_D_Cytosol*0.00166112956810631*D28k_high_D_Cytosol + -(CD28k_highDbinding_Kr*0.00166112956810631*D28kB_high_D_Cytosol))*Cytosol*1*(1/KMOLE);
@@ -527,25 +527,121 @@ model *Hernjak2005_Calcium_Signaling()
   unit volume = (1e-6 metre)^3;
   unit area = (1e-6 metre)^2;
   unit molecule = item;
-  unit umol_um3_litre_1 = 1e-021 mole;
+  unit umol_um3_litre_1 = 1e-21 mole;
   unit um2 = (1e-6 metre)^2;
-  unit uM_um3_molecules_1 = 1e-021 dimensionless * mole / item;
+  unit uM_um3_molecules_1 = 1e-21 dimensionless * mole / item;
   unit uM_s_1 = 0.001 dimensionless * mole / (metre^3 * second);
   unit uM_1_s_1 = 1000 dimensionless * metre^3 / (mole * second);
   unit s_1 = 1 / second;
-  unit um2_s_1 = 1e-012 dimensionless * metre^2 / second;
+  unit um2_s_1 = 1e-12 dimensionless * metre^2 / second;
   unit um = 1e-6 metre;
   unit uM = 0.001 dimensionless * mole / metre^3;
-  unit molecules_um_2_s_1 = 1e+012 dimensionless * item / (metre^2 * second);
+  unit molecules_um_2_s_1 = 1e+12 dimensionless * item / (metre^2 * second);
   unit pA_um_2 = dimensionless * ampere / metre^2;
-  unit molecules_um_2_uM_1_s_1 = 1e+015 dimensionless * item * metre / (mole * second);
+  unit molecules_um_2_uM_1_s_1 = 1e+15 dimensionless * item * metre / (mole * second);
   unit um_1 = 1 / 1e-6 metre;
-  unit uM_um_s_1 = 1e-009 dimensionless * mole / (metre^2 * second);
+  unit uM_um_s_1 = 1e-09 dimensionless * mole / (metre^2 * second);
   unit _one_ = dimensionless;
   unit s = second;
-  unit uM_um3_molecules_1_s_1 = 1e-021 dimensionless * mole / (item * second);
-  unit _one__0E_57_item_4_m6_mol_s_1 = 1e-057 dimensionless * metre^6 * mole / (item^4 * second);
+  unit uM_um3_molecules_1_s_1 = 1e-21 dimensionless * mole / (item * second);
+  unit _one__0E_57_item_4_m6_mol_s_1 = 1e-57 dimensionless * metre^6 * mole / (item^4 * second);
   unit um_s_1 = 1e-6 metre / second;
   unit molecule_per_um2 = item / (1e-6 metre)^2;
   unit molecule_per_volume = item / (1e-6 metre)^3;
+
+  // CV terms:
+  Extracellular identity "http://identifiers.org/go/GO:0005576"
+  Cytosol identity "http://identifiers.org/go/GO:0005829"
+  ER identity "http://identifiers.org/go/GO:0005783"
+  PM identity "http://identifiers.org/go/GO:0005886"
+  ERM identity "http://identifiers.org/go/GO:0005789"
+  PA_D_Cytosol hypernym "http://identifiers.org/uniprot/P20472"
+  PABCa_D_Cytosol part "http://identifiers.org/uniprot/P20472",
+                       "http://identifiers.org/kegg.compound/C00076"
+  PABCa_D_Cytosol part "http://identifiers.org/chebi/CHEBI:29108",
+                       "http://identifiers.org/uniprot/P20472"
+  Ca_D_ER identity "http://identifiers.org/chebi/CHEBI:29108",
+                   "http://identifiers.org/kegg.compound/C00076"
+  PABMg_D_Cytosol part "http://identifiers.org/uniprot/P20472",
+                       "http://identifiers.org/kegg.compound/C00305"
+  PABMg_D_Cytosol part "http://identifiers.org/chebi/CHEBI:25107",
+                       "http://identifiers.org/uniprot/P20472"
+  D28kB_D_Cytosol hypernym "http://identifiers.org/uniprot/P05937"
+  PA_Cytosol hypernym "http://identifiers.org/uniprot/P20472"
+  PABCa_Cytosol part "http://identifiers.org/uniprot/P20472",
+                     "http://identifiers.org/kegg.compound/C00076"
+  PABCa_Cytosol part "http://identifiers.org/chebi/CHEBI:29108",
+                     "http://identifiers.org/uniprot/P20472"
+  Mg_Cytosol identity "http://identifiers.org/chebi/CHEBI:18420",
+                      "http://identifiers.org/kegg.compound/C00305"
+  D28k_high_Cytosol hypernym "http://identifiers.org/uniprot/P05937"
+  D28k_high_D_Cytosol hypernym "http://identifiers.org/uniprot/P05937"
+  Ca_ER identity "http://identifiers.org/chebi/CHEBI:29108",
+                 "http://identifiers.org/kegg.compound/C00076"
+  D28kB_high_D_Cytosol hypernym "http://identifiers.org/uniprot/P05937"
+  Ca_D_Cytosol identity "http://identifiers.org/chebi/CHEBI:29108",
+                        "http://identifiers.org/kegg.compound/C00076"
+  D28k_Cytosol hypernym "http://identifiers.org/uniprot/P05937"
+  D28kB_high_Cytosol hypernym "http://identifiers.org/uniprot/P05937"
+  PABMg_Cytosol part "http://identifiers.org/uniprot/P20472",
+                     "http://identifiers.org/kegg.compound/C00305"
+  PABMg_Cytosol part "http://identifiers.org/chebi/CHEBI:25107",
+                     "http://identifiers.org/uniprot/P20472"
+  IP3_Cytosol identity "http://identifiers.org/chebi/CHEBI:16595",
+                       "http://identifiers.org/kegg.compound/C01245"
+  Ca_Extracellular identity "http://identifiers.org/chebi/CHEBI:29108",
+                            "http://identifiers.org/kegg.compound/C00076"
+  D28k_D_Cytosol hypernym "http://identifiers.org/uniprot/P05937"
+  IP3_D_Cytosol identity "http://identifiers.org/chebi/CHEBI:16595",
+                         "http://identifiers.org/kegg.compound/C01245"
+  Mg_D_Cytosol identity "http://identifiers.org/chebi/CHEBI:18420",
+                        "http://identifiers.org/kegg.compound/C00305"
+  Ca_Cytosol identity "http://identifiers.org/chebi/CHEBI:29108",
+                      "http://identifiers.org/kegg.compound/C00076"
+  Ca_D_Extracellular identity "http://identifiers.org/chebi/CHEBI:29108",
+                              "http://identifiers.org/kegg.compound/C00076"
+  D28kB_Cytosol hypernym "http://identifiers.org/uniprot/P05937"
+  CD28k_highDbinding hypernym "http://identifiers.org/go/GO:0005509"
+  PA_Dbinding hypernym "http://identifiers.org/go/GO:0005509"
+  D28kB_deg hypernym "http://identifiers.org/go/GO:0030163"
+  D28k_deg hypernym "http://identifiers.org/go/GO:0030163"
+  PA_MgD hypernym "http://identifiers.org/go/GO:0000287"
+  PA_Ca hypernym "http://identifiers.org/go/GO:0005509"
+  PABMg_deg hypernym "http://identifiers.org/go/GO:0030163"
+  D28k_high_deg hypernym "http://identifiers.org/go/GO:0030163"
+  D28kB_high_deg hypernym "http://identifiers.org/go/GO:0030163"
+  D28kB_d hypernym "http://identifiers.org/go/GO:0030163"
+  CGbinding hypernym "http://identifiers.org/go/GO:0005509"
+  CaD28k_med hypernym "http://identifiers.org/go/GO:0005509"
+  PABCa_deg hypernym "http://identifiers.org/go/GO:0030163"
+  D28k_high_d hypernym "http://identifiers.org/go/GO:0030163"
+  PABMg_d hypernym "http://identifiers.org/go/GO:0030163"
+  CD28k_high hypernym "http://identifiers.org/go/GO:0005509"
+  D28kBDbinding hypernym "http://identifiers.org/go/GO:0005509"
+  PABCa_d hypernym "http://identifiers.org/go/GO:0030163"
+  PA_d hypernym "http://identifiers.org/go/GO:0030163"
+  PA_Mg hypernym "http://identifiers.org/go/GO:0000287"
+  PA_deg hypernym "http://identifiers.org/go/GO:0030163"
+  D28kB_high_d hypernym "http://identifiers.org/go/GO:0030163"
+  D28k_d hypernym "http://identifiers.org/go/GO:0030163"
+  CG_Dbinding hypernym "http://identifiers.org/go/GO:0005509"
+  ER_leak_flux hypernym "http://identifiers.org/go/GO:0051924"
+  SERCA_fluxD hypernym "http://identifiers.org/go/GO:0051924"
+  IP3R_fluxD hypernym "http://identifiers.org/go/GO:0051924"
+  SERCA_flux hypernym "http://identifiers.org/go/GO:0051924"
+  flux0 hypernym "http://identifiers.org/go/GO:0051924"
+  IP3R_flux hypernym "http://identifiers.org/go/GO:0051924"
+  flux1 hypernym "http://identifiers.org/go/GO:0051924"
+  ER_leak_fluxD hypernym "http://identifiers.org/go/GO:0051924"
 end
+
+Hernjak2005_Calcium_Signaling is "Hernjak2005_Calcium_Signaling"
+
+Hernjak2005_Calcium_Signaling model_entity_is "http://identifiers.org/biomodels.db/MODEL1629310283"
+Hernjak2005_Calcium_Signaling model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000162"
+Hernjak2005_Calcium_Signaling description "http://identifiers.org/pubmed/16169982"
+Hernjak2005_Calcium_Signaling parthood "http://identifiers.org/kegg.pathway/hsa04730",
+                                       "http://identifiers.org/go/GO:0006816",
+                                       "http://identifiers.org/go/GO:0060025"
+Hernjak2005_Calcium_Signaling taxon "http://identifiers.org/taxonomy/7711"
+Hernjak2005_Calcium_Signaling container "http://identifiers.org/bto/BTO:0001011"

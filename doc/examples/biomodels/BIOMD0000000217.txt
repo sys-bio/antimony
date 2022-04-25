@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Bruggeman2005_AmmoniumAssimilation()
 
   // Compartments and Species:
@@ -13,28 +13,28 @@ model *Bruggeman2005_AmmoniumAssimilation()
   species $P_i in compartment_;
 
   // Assignment Rules:
-  vAPP_GS := (aamp*camp)/((1 + 12^n1amp*(AMP/(bamp*GStot))^n1amp)*(1 + 12^n2amp*(AMP/(damp*GStot))^n2amp))*Vgs;
-  nAMP := (12*AMP)/GStot;
-  PIIKG1 := (3*PII*KG)/Kd1/(1 + (3*KG)/Kd1 + (3*KG^2)/(Kd1*Kd2) + KG^3/(Kd1*Kd2*Kd3));
-  PIIUMP3KG3 := (PIIUMP3*KG^3)/(Kd1piiump*Kd2piiump*Kd3piiump)/(1 + (3*KG)/Kd1piiump + (3*KG^2)/(Kd1piiump*Kd2piiump) + KG^3/(Kd1piiump*Kd2piiump*Kd3piiump));
+  vAPP_GS := (aamp*camp/((1 + 12^n1amp*(AMP/(bamp*GStot))^n1amp)*(1 + 12^n2amp*(AMP/(damp*GStot))^n2amp)))*Vgs;
+  nAMP := 12*AMP/GStot;
+  PIIKG1 := 3*PII*KG/Kd1/(1 + 3*KG/Kd1 + 3*KG^2/(Kd1*Kd2) + KG^3/(Kd1*Kd2*Kd3));
+  PIIUMP3KG3 := PIIUMP3*KG^3/(Kd1piiump*Kd2piiump*Kd3piiump)/(1 + 3*KG/Kd1piiump + 3*KG^2/(Kd1piiump*Kd2piiump) + KG^3/(Kd1piiump*Kd2piiump*Kd3piiump));
 
   // Reactions:
-  vut1: PII + $UTP -> PIIUMP + $PPi; compartment_*((kcatut*UT*UTP*PII)/(Kutipii*Kututp*(1 + GLN/Kglnut)*(1 + UTP/Kututp + (PII + PIIUMP + PIIUMP2)/Kutipii + (UTP*(PII + PIIUMP + PIIUMP2))/(Kutipii*Kututp) + (PPi*UTP*(PII + PIIUMP + PIIUMP2))/(Kutipii*Kutippi*Kututp) + (Kutpii*(PIIUMP + PIIUMP2 + PIIUMP3))/(Kutipii*Kutpiiump))));
-  vur1: PIIUMP -> PII + $UMP; compartment_*((kcatur*UR*PIIUMP)/(Kurpiiump*(1 + Kglnur/GLN)*(1 + ((1 + UMP/Kurump)*(PIIUMP + PIIUMP2 + PIIUMP3))/Kurpiiump)));
-  vut2: PIIUMP + $UTP -> PIIUMP2 + $PPi; compartment_*((kcatut*UT*UTP*PIIUMP)/(Kutipii*Kututp*(1 + GLN/Kglnut)*(1 + UTP/Kututp + (PII + PIIUMP + PIIUMP2)/Kutipii + (UTP*(PII + PIIUMP + PIIUMP2))/(Kutipii*Kututp) + (PPi*UTP*(PII + PIIUMP + PIIUMP2))/(Kutipii*Kutippi*Kututp) + (Kutpii*(PIIUMP + PIIUMP2 + PIIUMP3))/(Kutipii*Kutpiiump))));
-  vur2: PIIUMP2 -> PIIUMP + $UMP; compartment_*((kcatur*UR*PIIUMP2)/(Kurpiiump*(1 + Kglnur/GLN)*(1 + ((1 + UMP/Kurump)*(PIIUMP + PIIUMP2 + PIIUMP3))/Kurpiiump)));
-  vut3: PIIUMP2 + $UTP -> PIIUMP3 + $PPi; compartment_*((kcatut*UT*UTP*PIIUMP2)/(Kutipii*Kututp*(1 + GLN/Kglnut)*(1 + UTP/Kututp + (PII + PIIUMP + PIIUMP2)/Kutipii + (UTP*(PII + PIIUMP + PIIUMP2))/(Kutipii*Kututp) + (PPi*UTP*(PII + PIIUMP + PIIUMP2))/(Kutipii*Kutippi*Kututp) + (Kutpii*(PIIUMP + PIIUMP2 + PIIUMP3))/(Kutipii*Kutpiiump))));
-  vur3: PIIUMP3 -> PIIUMP2 + $UMP; compartment_*((kcatur*UR*PIIUMP3)/(Kurpiiump*(1 + Kglnur/GLN)*(1 + ((1 + UMP/Kurump)*(PIIUMP + PIIUMP2 + PIIUMP3))/Kurpiiump)));
-  vad: GS -> AMP; compartment_*((Vad*GS*((b1*GLN)/Kadgln + (3*a1*KG*PII)/(Kadpiikg*Kd1*(1 + (3*KG)/Kd1 + (3*KG^2)/(Kd1*Kd2) + KG^3/(Kd1*Kd2*Kd3))) + (3*c1*KG*GLN*PII)/(Kadgln*Kadpiikg*Kd1*(1 + (3*KG)/Kd1 + (3*KG^2)/(Kd1*Kd2) + KG^3/(Kd1*Kd2*Kd3)))))/((Kadgs + GS)*(1 + GLN/Kadgln + (3*KG*PII)/(Kadpiikg*Kd1*(1 + (3*KG)/Kd1 + (3*KG^2)/(Kd1*Kd2) + KG^3/(Kd1*Kd2*Kd3))) + (3*KG*GLN*PII)/(d1*Kadgln*Kadpiikg*Kd1*(1 + (3*KG)/Kd1 + (3*KG^2)/(Kd1*Kd2) + KG^3/(Kd1*Kd2*Kd3))))));
-  vdead: AMP -> GS; compartment_*((Vdead*AMP*((f1*GLN)/Kdeadgln + (3*e1*KG*PII)/(Kd1*Kdeadpiikg*(1 + (3*KG)/Kd1 + (3*KG^2)/(Kd1*Kd2) + KG^3/(Kd1*Kd2*Kd3))) + (3*h1*KG*GLN*PII)/(Kd1*Kdeadgln*Kdeadpiikg*(1 + (3*KG)/Kd1 + (3*KG^2)/(Kd1*Kd2) + KG^3/(Kd1*Kd2*Kd3))) + (g1*KG^3*PIIUMP3)/(Kd1piiump*Kd2piiump*Kd3piiump*Kdeadpiiu*(1 + (3*KG)/Kd1piiump + (3*KG^2)/(Kd1piiump*Kd2piiump) + KG^3/(Kd1piiump*Kd2piiump*Kd3piiump))) + (j1*KG^3*GLN*PIIUMP3)/(Kd1piiump*Kd2piiump*Kd3piiump*Kdeadgln*Kdeadpiiu*(1 + (3*KG)/Kd1piiump + (3*KG^2)/(Kd1piiump*Kd2piiump) + KG^3/(Kd1piiump*Kd2piiump*Kd3piiump))) + (3*i1*KG^4*PII*PIIUMP3)/(Kd1*Kd1piiump*Kd2piiump*Kd3piiump*Kdeadpiikg*Kdeadpiiu*(1 + (3*KG)/Kd1 + (3*KG^2)/(Kd1*Kd2) + KG^3/(Kd1*Kd2*Kd3))*(1 + (3*KG)/Kd1piiump + (3*KG^2)/(Kd1piiump*Kd2piiump) + KG^3/(Kd1piiump*Kd2piiump*Kd3piiump))) + (3*k1*KG^4*GLN*PII*PIIUMP3)/(Kd1*Kd1piiump*Kd2piiump*Kd3piiump*Kdeadgln*Kdeadpiikg*Kdeadpiiu*(1 + (3*KG)/Kd1 + (3*KG^2)/(Kd1*Kd2) + KG^3/(Kd1*Kd2*Kd3))*(1 + (3*KG)/Kd1piiump + (3*KG^2)/(Kd1piiump*Kd2piiump) + KG^3/(Kd1piiump*Kd2piiump*Kd3piiump)))))/((Kdeadgsa + AMP)*(1 + GLN/Kdeadgln + (3*KG*PII)/(Kd1*Kdeadpiikg*(1 + (3*KG)/Kd1 + (3*KG^2)/(Kd1*Kd2) + KG^3/(Kd1*Kd2*Kd3))) + (3*KG*GLN*PII)/(Kd1*Kdeadgln*Kdeadpiikg*(1 + (3*KG)/Kd1 + (3*KG^2)/(Kd1*Kd2) + KG^3/(Kd1*Kd2*Kd3))*l1) + (KG^3*PIIUMP3)/(Kd1piiump*Kd2piiump*Kd3piiump*Kdeadpiiu*(1 + (3*KG)/Kd1piiump + (3*KG^2)/(Kd1piiump*Kd2piiump) + KG^3/(Kd1piiump*Kd2piiump*Kd3piiump))) + (KG^3*GLN*PIIUMP3)/(Kd1piiump*Kd2piiump*Kd3piiump*Kdeadgln*Kdeadpiiu*(1 + (3*KG)/Kd1piiump + (3*KG^2)/(Kd1piiump*Kd2piiump) + KG^3/(Kd1piiump*Kd2piiump*Kd3piiump))*n1) + (3*KG^4*PII*PIIUMP3)/(Kd1*Kd1piiump*Kd2piiump*Kd3piiump*Kdeadpiikg*Kdeadpiiu*(1 + (3*KG)/Kd1 + (3*KG^2)/(Kd1*Kd2) + KG^3/(Kd1*Kd2*Kd3))*(1 + (3*KG)/Kd1piiump + (3*KG^2)/(Kd1piiump*Kd2piiump) + KG^3/(Kd1piiump*Kd2piiump*Kd3piiump))*m1) + (3*KG^4*GLN*PII*PIIUMP3)/(Kd1*Kd1piiump*Kd2piiump*Kd3piiump*Kdeadgln*Kdeadpiikg*Kdeadpiiu*(1 + (3*KG)/Kd1 + (3*KG^2)/(Kd1*Kd2) + KG^3/(Kd1*Kd2*Kd3))*(1 + (3*KG)/Kd1piiump + (3*KG^2)/(Kd1piiump*Kd2piiump) + KG^3/(Kd1piiump*Kd2piiump*Kd3piiump))*o1))));
-  vgdh: $NH4 + $KG + $NADPH -> GLU + $NADP; compartment_*((Vgdh*(KG*NADPH*NH4 - (NADP*GLU)/Keqgdh))/(Kgdhkg*Kgdhnadph*Kgdhnh*(1 + NADP/Kgdhnadp + NADPH/Kgdhnadph)*(1 + NH4/Kgdhnh)*(1 + KG/Kgdhkg + GLU/Kgdhglu)));
-  vgog: GLN + $NADPH + $KG -> 2GLU + $NADP; compartment_*((KG*NADPH*Vgog*GLN)/(Kgoggln*Kgogkg*Kgognadph*(1 + NADP/Kgognadp + NADPH/Kgognadph)*(1 + AZGLU/Kgogaz)*(1 + KG/Kgogkg + GLU/Kgogglu)*(1 + GLN/Kgoggln + GLU/Kgogglu)));
-  vgs: GLU + ATP + $NH4 -> $P_i + GLN + ADP; compartment_*((aamp*camp*Vgs*(-((P_i*ADP*GLN)/Keq) + NH4*ATP*GLU))/(Kgsatp*Kgsglu*Kgsnh*(1 + P_i/Kgspi + ADP/Kgsadp + (P_i*ADP)/(Kgsadp*Kgspi) + ATP/Kgsatp)*(1 + NH4/Kgsnh + GLN/Kgsgln + (NH4*GLN)/(Kgsgln*Kgsnh) + GLU/Kgsglu + (NH4*GLU)/(Kgsglu*Kgsnh))*(1 + 12^n1amp*(AMP/(bamp*GStot))^n1amp)*(1 + 12^n2amp*(AMP/(damp*GStot))^n2amp)));
-  vgludem: GLU -> AZGLU; compartment_*((Vgludem*(-(AZGLU/Kgludemeq) + GLU))/(Kgludemglu*(1 + AZGLU/Kgludemazglu + GLU/Kgludemglu)));
-  vazgludem: AZGLU -> $AZglu; compartment_*((Vazgludem*(-(AZglu/Kazgludemeq) + AZGLU))/(Kazgludemazglu*(1 + AZglu/Kazgludemazinter + AZGLU/Kazgludemazglu)));
-  vglndem: GLN -> AZGLN; compartment_*((Vglndem*(-(AZGLN/Kglndemeq) + GLN))/(Kglndemgln*(1 + AZGLN/Kglndemazgln + GLN/Kglndemgln)));
-  vazglndem: AZGLN -> $AZgln; compartment_*((Vazglndem*(-(AZgln/Kazglndemeq) + AZGLN))/(Kazglndemazgln*(1 + AZgln/Kazglndemazinter + AZGLN/Kazglndemazgln)));
-  vatpase: ADP -> ATP; compartment_*((Vadp*ADP)/(Kadp + ADP));
+  vut1: PII + $UTP -> PIIUMP + $PPi; compartment_*(kcatut*UT*UTP*PII/(Kutipii*Kututp*(1 + GLN/Kglnut)*(1 + UTP/Kututp + (PII + PIIUMP + PIIUMP2)/Kutipii + UTP*(PII + PIIUMP + PIIUMP2)/(Kutipii*Kututp) + PPi*UTP*(PII + PIIUMP + PIIUMP2)/(Kutipii*Kutippi*Kututp) + Kutpii*(PIIUMP + PIIUMP2 + PIIUMP3)/(Kutipii*Kutpiiump))));
+  vur1: PIIUMP -> PII + $UMP; compartment_*(kcatur*UR*PIIUMP/(Kurpiiump*(1 + Kglnur/GLN)*(1 + (1 + UMP/Kurump)*(PIIUMP + PIIUMP2 + PIIUMP3)/Kurpiiump)));
+  vut2: PIIUMP + $UTP -> PIIUMP2 + $PPi; compartment_*(kcatut*UT*UTP*PIIUMP/(Kutipii*Kututp*(1 + GLN/Kglnut)*(1 + UTP/Kututp + (PII + PIIUMP + PIIUMP2)/Kutipii + UTP*(PII + PIIUMP + PIIUMP2)/(Kutipii*Kututp) + PPi*UTP*(PII + PIIUMP + PIIUMP2)/(Kutipii*Kutippi*Kututp) + Kutpii*(PIIUMP + PIIUMP2 + PIIUMP3)/(Kutipii*Kutpiiump))));
+  vur2: PIIUMP2 -> PIIUMP + $UMP; compartment_*(kcatur*UR*PIIUMP2/(Kurpiiump*(1 + Kglnur/GLN)*(1 + (1 + UMP/Kurump)*(PIIUMP + PIIUMP2 + PIIUMP3)/Kurpiiump)));
+  vut3: PIIUMP2 + $UTP -> PIIUMP3 + $PPi; compartment_*(kcatut*UT*UTP*PIIUMP2/(Kutipii*Kututp*(1 + GLN/Kglnut)*(1 + UTP/Kututp + (PII + PIIUMP + PIIUMP2)/Kutipii + UTP*(PII + PIIUMP + PIIUMP2)/(Kutipii*Kututp) + PPi*UTP*(PII + PIIUMP + PIIUMP2)/(Kutipii*Kutippi*Kututp) + Kutpii*(PIIUMP + PIIUMP2 + PIIUMP3)/(Kutipii*Kutpiiump))));
+  vur3: PIIUMP3 -> PIIUMP2 + $UMP; compartment_*(kcatur*UR*PIIUMP3/(Kurpiiump*(1 + Kglnur/GLN)*(1 + (1 + UMP/Kurump)*(PIIUMP + PIIUMP2 + PIIUMP3)/Kurpiiump)));
+  vad: GS -> AMP; compartment_*(Vad*GS*(b1*GLN/Kadgln + 3*a1*KG*PII/(Kadpiikg*Kd1*(1 + 3*KG/Kd1 + 3*KG^2/(Kd1*Kd2) + KG^3/(Kd1*Kd2*Kd3))) + 3*c1*KG*GLN*PII/(Kadgln*Kadpiikg*Kd1*(1 + 3*KG/Kd1 + 3*KG^2/(Kd1*Kd2) + KG^3/(Kd1*Kd2*Kd3))))/((Kadgs + GS)*(1 + GLN/Kadgln + 3*KG*PII/(Kadpiikg*Kd1*(1 + 3*KG/Kd1 + 3*KG^2/(Kd1*Kd2) + KG^3/(Kd1*Kd2*Kd3))) + 3*KG*GLN*PII/(d1*Kadgln*Kadpiikg*Kd1*(1 + 3*KG/Kd1 + 3*KG^2/(Kd1*Kd2) + KG^3/(Kd1*Kd2*Kd3))))));
+  vdead: AMP -> GS; compartment_*(Vdead*AMP*(f1*GLN/Kdeadgln + 3*e1*KG*PII/(Kd1*Kdeadpiikg*(1 + 3*KG/Kd1 + 3*KG^2/(Kd1*Kd2) + KG^3/(Kd1*Kd2*Kd3))) + 3*h1*KG*GLN*PII/(Kd1*Kdeadgln*Kdeadpiikg*(1 + 3*KG/Kd1 + 3*KG^2/(Kd1*Kd2) + KG^3/(Kd1*Kd2*Kd3))) + g1*KG^3*PIIUMP3/(Kd1piiump*Kd2piiump*Kd3piiump*Kdeadpiiu*(1 + 3*KG/Kd1piiump + 3*KG^2/(Kd1piiump*Kd2piiump) + KG^3/(Kd1piiump*Kd2piiump*Kd3piiump))) + j1*KG^3*GLN*PIIUMP3/(Kd1piiump*Kd2piiump*Kd3piiump*Kdeadgln*Kdeadpiiu*(1 + 3*KG/Kd1piiump + 3*KG^2/(Kd1piiump*Kd2piiump) + KG^3/(Kd1piiump*Kd2piiump*Kd3piiump))) + 3*i1*KG^4*PII*PIIUMP3/(Kd1*Kd1piiump*Kd2piiump*Kd3piiump*Kdeadpiikg*Kdeadpiiu*(1 + 3*KG/Kd1 + 3*KG^2/(Kd1*Kd2) + KG^3/(Kd1*Kd2*Kd3))*(1 + 3*KG/Kd1piiump + 3*KG^2/(Kd1piiump*Kd2piiump) + KG^3/(Kd1piiump*Kd2piiump*Kd3piiump))) + 3*k1*KG^4*GLN*PII*PIIUMP3/(Kd1*Kd1piiump*Kd2piiump*Kd3piiump*Kdeadgln*Kdeadpiikg*Kdeadpiiu*(1 + 3*KG/Kd1 + 3*KG^2/(Kd1*Kd2) + KG^3/(Kd1*Kd2*Kd3))*(1 + 3*KG/Kd1piiump + 3*KG^2/(Kd1piiump*Kd2piiump) + KG^3/(Kd1piiump*Kd2piiump*Kd3piiump))))/((Kdeadgsa + AMP)*(1 + GLN/Kdeadgln + 3*KG*PII/(Kd1*Kdeadpiikg*(1 + 3*KG/Kd1 + 3*KG^2/(Kd1*Kd2) + KG^3/(Kd1*Kd2*Kd3))) + 3*KG*GLN*PII/(Kd1*Kdeadgln*Kdeadpiikg*(1 + 3*KG/Kd1 + 3*KG^2/(Kd1*Kd2) + KG^3/(Kd1*Kd2*Kd3))*l1) + KG^3*PIIUMP3/(Kd1piiump*Kd2piiump*Kd3piiump*Kdeadpiiu*(1 + 3*KG/Kd1piiump + 3*KG^2/(Kd1piiump*Kd2piiump) + KG^3/(Kd1piiump*Kd2piiump*Kd3piiump))) + KG^3*GLN*PIIUMP3/(Kd1piiump*Kd2piiump*Kd3piiump*Kdeadgln*Kdeadpiiu*(1 + 3*KG/Kd1piiump + 3*KG^2/(Kd1piiump*Kd2piiump) + KG^3/(Kd1piiump*Kd2piiump*Kd3piiump))*n1) + 3*KG^4*PII*PIIUMP3/(Kd1*Kd1piiump*Kd2piiump*Kd3piiump*Kdeadpiikg*Kdeadpiiu*(1 + 3*KG/Kd1 + 3*KG^2/(Kd1*Kd2) + KG^3/(Kd1*Kd2*Kd3))*(1 + 3*KG/Kd1piiump + 3*KG^2/(Kd1piiump*Kd2piiump) + KG^3/(Kd1piiump*Kd2piiump*Kd3piiump))*m1) + 3*KG^4*GLN*PII*PIIUMP3/(Kd1*Kd1piiump*Kd2piiump*Kd3piiump*Kdeadgln*Kdeadpiikg*Kdeadpiiu*(1 + 3*KG/Kd1 + 3*KG^2/(Kd1*Kd2) + KG^3/(Kd1*Kd2*Kd3))*(1 + 3*KG/Kd1piiump + 3*KG^2/(Kd1piiump*Kd2piiump) + KG^3/(Kd1piiump*Kd2piiump*Kd3piiump))*o1))));
+  vgdh: $NH4 + $KG + $NADPH -> GLU + $NADP; compartment_*(Vgdh*(KG*NADPH*NH4 - NADP*GLU/Keqgdh)/(Kgdhkg*Kgdhnadph*Kgdhnh*(1 + NADP/Kgdhnadp + NADPH/Kgdhnadph)*(1 + NH4/Kgdhnh)*(1 + KG/Kgdhkg + GLU/Kgdhglu)));
+  vgog: GLN + $NADPH + $KG -> 2 GLU + $NADP; compartment_*(KG*NADPH*Vgog*GLN/(Kgoggln*Kgogkg*Kgognadph*(1 + NADP/Kgognadp + NADPH/Kgognadph)*(1 + AZGLU/Kgogaz)*(1 + KG/Kgogkg + GLU/Kgogglu)*(1 + GLN/Kgoggln + GLU/Kgogglu)));
+  vgs: GLU + ATP + $NH4 -> $P_i + GLN + ADP; compartment_*(aamp*camp*Vgs*(-(P_i*ADP*GLN/Keq) + NH4*ATP*GLU)/(Kgsatp*Kgsglu*Kgsnh*(1 + P_i/Kgspi + ADP/Kgsadp + P_i*ADP/(Kgsadp*Kgspi) + ATP/Kgsatp)*(1 + NH4/Kgsnh + GLN/Kgsgln + NH4*GLN/(Kgsgln*Kgsnh) + GLU/Kgsglu + NH4*GLU/(Kgsglu*Kgsnh))*(1 + 12^n1amp*(AMP/(bamp*GStot))^n1amp)*(1 + 12^n2amp*(AMP/(damp*GStot))^n2amp)));
+  vgludem: GLU -> AZGLU; compartment_*(Vgludem*(-(AZGLU/Kgludemeq) + GLU)/(Kgludemglu*(1 + AZGLU/Kgludemazglu + GLU/Kgludemglu)));
+  vazgludem: AZGLU -> $AZglu; compartment_*(Vazgludem*(-(AZglu/Kazgludemeq) + AZGLU)/(Kazgludemazglu*(1 + AZglu/Kazgludemazinter + AZGLU/Kazgludemazglu)));
+  vglndem: GLN -> AZGLN; compartment_*(Vglndem*(-(AZGLN/Kglndemeq) + GLN)/(Kglndemgln*(1 + AZGLN/Kglndemazgln + GLN/Kglndemgln)));
+  vazglndem: AZGLN -> $AZgln; compartment_*(Vazglndem*(-(AZgln/Kazglndemeq) + AZGLN)/(Kazglndemazgln*(1 + AZgln/Kazglndemazinter + AZGLN/Kazglndemazgln)));
+  vatpase: ADP -> ATP; compartment_*(Vadp*ADP/(Kadp + ADP));
 
   // Species initializations:
   PII = 0.003;
@@ -77,29 +77,29 @@ model *Bruggeman2005_AmmoniumAssimilation()
   Kurpiiump = 0.0023;
   Kurump = 8.4;
   Kglnur = 0.07;
-  a1 = 1e-022;
+  a1 = 1e-22;
   b1 = 0.5166;
   c1 = 0.5974;
   d1 = 0.0387;
   Vad = 0.5;
-  Kadpiikg = 1.052e-005;
+  Kadpiikg = 1.052e-05;
   Kadgln = 0.9714;
   Kadgs = 0.001703;
-  e1 = 1e-022;
+  e1 = 1e-22;
   f1 = 2.766;
   g1 = 3.323;
   h1 = 0.2148;
-  i1 = 1e-022;
-  j1 = 1e-022;
-  k1 = 1e-022;
+  i1 = 1e-22;
+  j1 = 1e-22;
+  k1 = 1e-22;
   l1 = 0.02316;
   m1 = 0.8821;
   n1 = 8.491;
   o1 = 0.8791;
   Vdead = 0.5;
-  Kdeadpiikg = 2.274e-006;
+  Kdeadpiikg = 2.274e-06;
   Kdeadgln = 0.04444;
-  Kdeadpiiu = 1.805e-005;
+  Kdeadpiiu = 1.805e-05;
   Kdeadgsa = 0.0002015;
   Vgdh = 360;
   Kgdhkg = 0.32;
@@ -183,6 +183,50 @@ model *Bruggeman2005_AmmoniumAssimilation()
   // Display Names:
   time_unit is "mins";
   milliMolar is "mM";
+  compartment_ is "compartment";
   vAPP_GS is "maxRateGS";
   nAMP is "AdenylationStateGS";
+
+  // CV terms:
+  PII hypernym "http://identifiers.org/uniprot/P0A9Z1"
+  UTP hypernym "http://identifiers.org/obo.chebi/CHEBI:15713",
+               "http://identifiers.org/kegg.compound/C00075"
+  PPi hypernym "http://identifiers.org/obo.chebi/CHEBI:18361",
+               "http://identifiers.org/kegg.compound/C00013"
+  GLN hypernym "http://identifiers.org/obo.chebi/CHEBI:30011",
+               "http://identifiers.org/kegg.compound/C00303"
+  UMP hypernym "http://identifiers.org/obo.chebi/CHEBI:16695",
+               "http://identifiers.org/kegg.compound/C00105"
+  GS hypernym "http://identifiers.org/uniprot/P0A9C5"
+  AMP hypernym "http://identifiers.org/obo.chebi/CHEBI:16027",
+               "http://identifiers.org/kegg.compound/C00020"
+  NH4 hypernym "http://identifiers.org/obo.chebi/CHEBI:28938",
+               "http://identifiers.org/kegg.compound/C01342"
+  KG hypernym "http://identifiers.org/uniprot/P0AEX3"
+  NADPH hypernym "http://identifiers.org/obo.chebi/CHEBI:16474",
+                 "http://identifiers.org/kegg.compound/C00005"
+  GLU hypernym "http://identifiers.org/obo.chebi/CHEBI:16015",
+               "http://identifiers.org/kegg.compound/C00025"
+  NADP hypernym "http://identifiers.org/obo.chebi/CHEBI:18009",
+                "http://identifiers.org/kegg.compound/C00006"
+  ATP hypernym "http://identifiers.org/obo.chebi/CHEBI:15422",
+               "http://identifiers.org/kegg.compound/C00002"
+  ADP hypernym "http://identifiers.org/obo.chebi/CHEBI:16761",
+               "http://identifiers.org/kegg.compound/C00008"
+  P_i hypernym "http://identifiers.org/obo.chebi/CHEBI:43474"
+  vut1 hypernym "http://identifiers.org/obo.go/GO:0008773"
+  vur1 hypernym "http://identifiers.org/obo.go/GO:0008773"
+  vut2 hypernym "http://identifiers.org/obo.go/GO:0008773"
+  vur2 hypernym "http://identifiers.org/obo.go/GO:0008773"
+  vut3 hypernym "http://identifiers.org/obo.go/GO:0008773"
+  vur3 hypernym "http://identifiers.org/obo.go/GO:0008773"
+  vad hypernym "http://identifiers.org/obo.go/GO:0018117"
 end
+
+Bruggeman2005_AmmoniumAssimilation is "Bruggeman2005_AmmoniumAssimilation"
+
+Bruggeman2005_AmmoniumAssimilation model_entity_is "http://identifiers.org/biomodels.db/MODEL3579243073"
+Bruggeman2005_AmmoniumAssimilation model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000217"
+Bruggeman2005_AmmoniumAssimilation description "http://identifiers.org/pubmed/15819889"
+Bruggeman2005_AmmoniumAssimilation hypernym "http://identifiers.org/obo.go/GO:0019676"
+Bruggeman2005_AmmoniumAssimilation taxon "http://identifiers.org/taxonomy/562"

@@ -8,6 +8,7 @@
 #endif
 
 using namespace std;
+using namespace libsbml;
 
 UncertWrapper::UncertWrapper(Variable* parent, uncert_type type)
   : Variable()
@@ -307,7 +308,7 @@ bool UncertWrapper::TransferAnnotationTo(SBase * sbmlobj, std::string metaid) co
     else {
       assert(sbmltype == DISTRIB_UNCERTTYPE_EXTERNALPARAMETER || uspan != NULL); //should be only remaining category.
       ASTNode* astn = parseStringToASTNode(m_valFormula.ToSBMLString());
-      if (astn->getType() == AST_LINEAR_ALGEBRA_VECTOR && astn->getNumChildren() == 2) {
+      if (astn && astn->getType() == AST_LINEAR_ALGEBRA_VECTOR && astn->getNumChildren() == 2) {
         extParamAssigned = true;
         for (int c = 0; c < 2; c++) {
           ASTNode* ch = astn->getChild(c);

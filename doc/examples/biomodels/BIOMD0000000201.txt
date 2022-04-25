@@ -1,9 +1,9 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Goldbeter2008_Somite_Segmentation_Clock_Notch_Wnt_FGF()
 
   // Compartments and Species:
   compartment cytosol;
-  species N in cytosol, Na in cytosol, Nan_ in cytosol, MF in cytosol, F in cytosol;
+  species N in cytosol, Na in cytosol, Nan in cytosol, MF in cytosol, F in cytosol;
   species Bp in cytosol, BN in cytosol, A in cytosol, K in cytosol, B in cytosol;
   species MAx in cytosol, Rasa in cytosol, ERKa in cytosol, Xa in cytosol;
   species MDusp in cytosol, Dusp in cytosol, $Rasi in cytosol, Rast in cytosol;
@@ -19,43 +19,43 @@ model *Goldbeter2008_Somite_Segmentation_Clock_Notch_Wnt_FGF()
 
   // Reactions:
   n_synth:  => N; cytosol*epsilon*vsN;
-  N_degradation: N => ; (epsilon*cytosol*vdN*N)/(KdN + N);
-  N_activation: N => Na; (epsilon*cytosol*kc*N*KIF^j)/(KIF^j + F^j);
-  Na_degradation: Na => ; (epsilon*cytosol*VdNa*Na)/(KdNa + Na);
-  Na_transport: Na -> Nan_; epsilon*cytosol*(kt1*Na - kt2*Nan_);
-  Nan_degradation: Nan_ => ; (epsilon*cytosol*VdNan*Nan_)/(KdNan + Nan_);
-  MF_transkription:  => MF; (epsilon*cytosol*vsFK*Nan_^p)/(KA^p + Nan_^p);
-  MF_degradation: MF => ; (epsilon*cytosol*vmF*MF)/(KdMF + MF);
+  N_degradation: N => ; epsilon*cytosol*vdN*N/(KdN + N);
+  N_activation: N => Na; epsilon*cytosol*kc*N*KIF^j/(KIF^j + F^j);
+  Na_degradation: Na => ; epsilon*cytosol*VdNa*Na/(KdNa + Na);
+  Na_transport: Na -> Nan; epsilon*cytosol*(kt1*Na - kt2*Nan);
+  Nan_degradation: Nan => ; epsilon*cytosol*VdNan*Nan/(KdNan + Nan);
+  MF_transkription:  => MF; epsilon*cytosol*vsFK*Nan^p/(KA^p + Nan^p);
+  MF_degradation: MF => ; epsilon*cytosol*vmF*MF/(KdMF + MF);
   F_translation:  => F; epsilon*cytosol*ksF*MF;
-  F_degradation: F => ; (epsilon*cytosol*vdF*F)/(KdF + F);
+  F_degradation: F => ; epsilon*cytosol*vdF*F/(KdF + F);
   AK_dissoc: $AK -> A + K; theta*cytosol*(d1*AK - a1*A*K);
   B_synth:  => B; theta*cytosol*vsB;
   B_degradation: B => ; theta*cytosol*kd1*B;
-  B_phosphorylation: B => Bp; (((theta*cytosol*VMK*KID)/(KID + D)*B)/(K1 + B)*AK)/Kt;
-  BP_dephosphorylation: Bp => B; (theta*cytosol*VMP*Bp)/(K2 + Bp);
+  B_phosphorylation: B => Bp; ((theta*cytosol*VMK*KID/(KID + D))*B/(K1 + B))*AK/Kt;
+  BP_dephosphorylation: Bp => B; theta*cytosol*VMP*Bp/(K2 + Bp);
   B_shuttling: BN -> B; theta*cytosol*(kt4*BN - kt3*B);
   Bp_degradation: Bp => ; theta*cytosol*kd2*Bp;
   MAx_trans_basal:  => MAx; theta*cytosol*v0;
-  MAx_trans_BN:  => MAx; theta*cytosol*((vMB*BN^n)/(KaB^n + BN^n));
-  MAx_trans_Xa:  => MAx; theta*cytosol*((vMXa*Xa^m)/(KaXa^m + Xa^m));
-  MAx_degradation: MAx => ; (theta*cytosol*vmd*MAx)/(Kmd + MAx);
+  MAx_trans_BN:  => MAx; theta*cytosol*(vMB*BN^n/(KaB^n + BN^n));
+  MAx_trans_Xa:  => MAx; theta*cytosol*(vMXa*Xa^m/(KaXa^m + Xa^m));
+  MAx_degradation: MAx => ; theta*cytosol*vmd*MAx/(Kmd + MAx);
   A_translation:  => A; theta*cytosol*ksAx*MAx;
-  A_degradation: A => ; (theta*cytosol*vdAx*A)/(KdAx + A);
-  Ras_activation:  => Rasa; ((eta*cytosol*VMaRas*Fgf^r)/(KaFgf^r + Fgf^r)*Rasi)/(KaRas + Rasi);
-  Ras_inactivation: Rasa => ; (eta*cytosol*VMdRas*Rasa)/(KdRas + Rasa);
-  Erk_activation:  => ERKa; ((eta*cytosol*VMaErk*Rasa)/Rast*ERKi)/(KaErk + ERKi);
-  Erk_inactivation: ERKa => ; (eta*cytosol*kcDusp*Dusp*ERKa)/(KdErk + ERKa);
-  X_activation:  => Xa; ((eta*cytosol*VMaX*ERKa)/ERKt*Xi)/(KaX + Xi);
-  X_inactivation: Xa => ; (eta*cytosol*VMdX*Xa)/(KdX + Xa);
-  MDusp_transkription:  => MDusp; (eta*cytosol*VMsMDusp*Xa^q)/(KaMDusp^q + Xa^q);
-  MDusp_degradation: MDusp => ; (eta*cytosol*VMdMDusp*MDusp)/(KdMDusp + MDusp);
+  A_degradation: A => ; theta*cytosol*vdAx*A/(KdAx + A);
+  Ras_activation:  => Rasa; (eta*cytosol*VMaRas*Fgf^r/(KaFgf^r + Fgf^r))*Rasi/(KaRas + Rasi);
+  Ras_inactivation: Rasa => ; eta*cytosol*VMdRas*Rasa/(KdRas + Rasa);
+  Erk_activation:  => ERKa; (eta*cytosol*VMaErk*Rasa/Rast)*ERKi/(KaErk + ERKi);
+  Erk_inactivation: ERKa => ; eta*cytosol*kcDusp*Dusp*ERKa/(KdErk + ERKa);
+  X_activation:  => Xa; (eta*cytosol*VMaX*ERKa/ERKt)*Xi/(KaX + Xi);
+  X_inactivation: Xa => ; eta*cytosol*VMdX*Xa/(KdX + Xa);
+  MDusp_transkription:  => MDusp; eta*cytosol*VMsMDusp*Xa^q/(KaMDusp^q + Xa^q);
+  MDusp_degradation: MDusp => ; eta*cytosol*VMdMDusp*MDusp/(KdMDusp + MDusp);
   Dusp_translation:  => Dusp; eta*cytosol*ksDusp*MDusp;
-  Dusp_degradation: Dusp => ; (eta*cytosol*vdDusp*Dusp)/(KdDusp + Dusp);
+  Dusp_degradation: Dusp => ; eta*cytosol*vdDusp*Dusp/(KdDusp + Dusp);
 
   // Species initializations:
   N = 0.5;
   Na = 0.2;
-  Nan_ = 0;
+  Nan = 0;
   MF = 0.1;
   F = 0.001;
   Bp = 0.1;
@@ -245,7 +245,7 @@ model *Goldbeter2008_Somite_Segmentation_Clock_Notch_Wnt_FGF()
   time_unit is "minute";
   N is "Notch protein";
   Na is "cytosolic NicD";
-  Nan_ is "nuclear NicD";
+  Nan is "nuclear NicD";
   MF is "Lunatic fringe mRNA";
   F is "Lunatic Fringe protein";
   Bp is "phosph. beta-catenin";
@@ -269,4 +269,222 @@ model *Goldbeter2008_Somite_Segmentation_Clock_Notch_Wnt_FGF()
   AK is "Axin2/Gsk3 destruction complex";
   n_synth is "Notch_synthesis";
   N_activation is "Notch_activation";
+
+  // SBO terms:
+  N.sboTerm = 252
+  Na.sboTerm = 252
+  Nan.sboTerm = 252
+  MF.sboTerm = 250
+  F.sboTerm = 252
+  Bp.sboTerm = 252
+  BN.sboTerm = 252
+  A.sboTerm = 252
+  K.sboTerm = 252
+  B.sboTerm = 252
+  MAx.sboTerm = 250
+  Rasa.sboTerm = 252
+  ERKa.sboTerm = 252
+  Xa.sboTerm = 252
+  MDusp.sboTerm = 250
+  Dusp.sboTerm = 252
+  Rasi.sboTerm = 252
+  Rast.sboTerm = 252
+  ERKi.sboTerm = 252
+  ERKt.sboTerm = 252
+  Xi.sboTerm = 252
+  Xt.sboTerm = 252
+  D.sboTerm = 252
+  AK.sboTerm = 297
+  Kt.sboTerm = 252
+  Fgf.sboTerm = 252
+  KdN.sboTerm = 27
+  vsN.sboTerm = 48
+  vdN.sboTerm = 324
+  KdNa.sboTerm = 27
+  VdNa.sboTerm = 186
+  kt1.sboTerm = 22
+  kt2.sboTerm = 32
+  KdNan.sboTerm = 27
+  VdNan.sboTerm = 186
+  KdMF.sboTerm = 27
+  vsFK.sboTerm = 186
+  vsF.sboTerm = 186
+  vmF.sboTerm = 186
+  KdF.sboTerm = 27
+  vdF.sboTerm = 186
+  ksF.sboTerm = 22
+  kd1.sboTerm = 22
+  vsB.sboTerm = 186
+  kd2.sboTerm = 22
+  v0.sboTerm = 186
+  vMB.sboTerm = 186
+  vmd.sboTerm = 186
+  KaXa.sboTerm = 27
+  n.sboTerm = 190
+  m.sboTerm = 190
+  vMXa.sboTerm = 186
+  ksAx.sboTerm = 22
+  vdAx.sboTerm = 186
+  KdAx.sboTerm = 27
+  d1.sboTerm = 338
+  a1.sboTerm = 23
+  K1.sboTerm = 27
+  K2.sboTerm = 27
+  kt3.sboTerm = 22
+  kt4.sboTerm = 32
+  ksDusp.sboTerm = 22
+  vdDusp.sboTerm = 186
+  KdDusp.sboTerm = 27
+  kcDusp.sboTerm = 22
+  KaFgf.sboTerm = 191
+  KaRas.sboTerm = 27
+  KdRas.sboTerm = 27
+  KdErk.sboTerm = 27
+  KaErk.sboTerm = 27
+  KaX.sboTerm = 27
+  KIF.sboTerm = 191
+  KID.sboTerm = 27
+  KdX.sboTerm = 27
+  KaMDusp.sboTerm = 191
+  KdMDusp.sboTerm = 27
+  q.sboTerm = 190
+  r.sboTerm = 191
+  kc.sboTerm = 22
+  j.sboTerm = 191
+  p.sboTerm = 191
+  epsilon.sboTerm = 381
+  theta.sboTerm = 381
+  eta.sboTerm = 381
+  VMsMDusp.sboTerm = 186
+  VMdMDusp.sboTerm = 186
+  VMK.sboTerm = 186
+  VMP.sboTerm = 186
+  VMaRas.sboTerm = 186
+  VMdRas.sboTerm = 186
+  VMaErk.sboTerm = 186
+  VMaX.sboTerm = 186
+  VMdX.sboTerm = 186
+  N_degradation.sboTerm = 179
+  N_activation.sboTerm = 178
+  Na_degradation.sboTerm = 179
+  Na_transport.sboTerm = 185
+  Nan_degradation.sboTerm = 179
+  MF_transkription.sboTerm = 183
+  MF_degradation.sboTerm = 179
+  F_translation.sboTerm = 184
+  F_degradation.sboTerm = 179
+  AK_dissoc.sboTerm = 180
+  B_degradation.sboTerm = 179
+  B_phosphorylation.sboTerm = 216
+  BP_dephosphorylation.sboTerm = 330
+  B_shuttling.sboTerm = 185
+  Bp_degradation.sboTerm = 179
+  MAx_trans_basal.sboTerm = 183
+  MAx_trans_BN.sboTerm = 183
+  MAx_trans_Xa.sboTerm = 183
+  MAx_degradation.sboTerm = 179
+  A_translation.sboTerm = 184
+  A_degradation.sboTerm = 179
+  MDusp_transkription.sboTerm = 183
+  MDusp_degradation.sboTerm = 179
+  Dusp_translation.sboTerm = 184
+  Dusp_degradation.sboTerm = 179
+
+  // CV terms:
+  cytosol identity "http://identifiers.org/obo.go/GO:0005829"
+  N homolog "http://identifiers.org/uniprot/P46531"
+  N hypernym "http://identifiers.org/interpro/IPR008297"
+  Na parthood "http://identifiers.org/interpro/IPR008297"
+  Nan parthood "http://identifiers.org/interpro/IPR008297"
+  MF hypernym "http://identifiers.org/chebi/CHEBI:33699"
+  MF encodement "http://identifiers.org/uniprot/Q8NES3",
+                "http://identifiers.org/interpro/IPR017374"
+  F hypernym "http://identifiers.org/interpro/IPR017374"
+  F homolog "http://identifiers.org/uniprot/Q8NES3"
+  Bp homolog "http://identifiers.org/uniprot/P35222"
+  Bp hypernym "http://identifiers.org/interpro/IPR013284",
+              "http://identifiers.org/kegg.compound/C00562"
+  BN homolog "http://identifiers.org/uniprot/P35222"
+  BN hypernym "http://identifiers.org/interpro/IPR013284"
+  A homolog "http://identifiers.org/uniprot/Q9Y2T1"
+  K homolog "http://identifiers.org/uniprot/P49841"
+  B hypernym "http://identifiers.org/interpro/IPR013284"
+  MAx hypernym "http://identifiers.org/chebi/CHEBI:33699"
+  MAx homolog "http://identifiers.org/ensembl/ENSG00000168646"
+  MAx encodement "http://identifiers.org/uniprot/Q9Y2T1"
+  Rasa version "http://identifiers.org/chebi/CHEBI:15996",
+               "http://identifiers.org/interpro/IPR001806"
+  ERKa hypernym "http://identifiers.org/interpro/IPR008349"
+  Xa hypernym "http://identifiers.org/interpro/IPR006715"
+  MDusp encodement "http://identifiers.org/uniprot/Q16828"
+  MDusp homolog "http://identifiers.org/ensembl/ENSG00000139318"
+  Dusp homolog "http://identifiers.org/uniprot/Q16828"
+  Rasi version "http://identifiers.org/chebi/CHEBI:17552",
+               "http://identifiers.org/interpro/IPR001806"
+  Rast hypernym "http://identifiers.org/interpro/IPR001806"
+  ERKi hypernym "http://identifiers.org/interpro/IPR008349"
+  ERKt hypernym "http://identifiers.org/interpro/IPR008349"
+  Xi hypernym "http://identifiers.org/interpro/IPR006715"
+  Xt hypernym "http://identifiers.org/interpro/IPR006715"
+  D hypernym "http://identifiers.org/interpro/IPR003351"
+  D homolog "http://identifiers.org/uniprot/O14640"
+  AK part "http://identifiers.org/uniprot/Q9Y2T1",
+          "http://identifiers.org/uniprot/P49841"
+  Kt homolog "http://identifiers.org/uniprot/P49841"
+  Fgf hypernym "http://identifiers.org/interpro/IPR017338"
+  n_synth hypernym "http://identifiers.org/obo.go/GO:0010467"
+  N_degradation hypernym "http://identifiers.org/obo.go/GO:0030163"
+  N_activation hypernym "http://identifiers.org/reactome/REACT_691.2",
+                        "http://identifiers.org/obo.go/GO:0007220"
+  Na_degradation hypernym "http://identifiers.org/obo.go/GO:0030163"
+  Na_transport hypernym "http://identifiers.org/reactome/REACT_2155.3",
+                        "http://identifiers.org/obo.go/GO:0006913"
+  Nan_degradation hypernym "http://identifiers.org/obo.go/GO:0030163"
+  MF_transkription hypernym "http://identifiers.org/obo.go/GO:0009299"
+  MF_degradation hypernym "http://identifiers.org/obo.go/GO:0006402"
+  F_translation hypernym "http://identifiers.org/obo.go/GO:0006412"
+  F_degradation hypernym "http://identifiers.org/obo.go/GO:0030163"
+  AK_dissoc hypernym "http://identifiers.org/obo.go/GO:0043241"
+  B_synth hypernym "http://identifiers.org/obo.go/GO:0010467"
+  B_degradation hypernym "http://identifiers.org/obo.go/GO:0030163"
+  B_phosphorylation hypernym "http://identifiers.org/reactome/REACT_11065.1",
+                             "http://identifiers.org/obo.go/GO:0006468"
+  BP_dephosphorylation hypernym "http://identifiers.org/obo.go/GO:0006470"
+  B_shuttling hypernym "http://identifiers.org/obo.go/GO:0006913"
+  Bp_degradation hypernym "http://identifiers.org/reactome/REACT_11063.1",
+                          "http://identifiers.org/obo.go/GO:0030163"
+  MAx_trans_basal hypernym "http://identifiers.org/obo.go/GO:0009299"
+  MAx_trans_BN hypernym "http://identifiers.org/obo.go/GO:0009299"
+  MAx_trans_Xa hypernym "http://identifiers.org/obo.go/GO:0009299"
+  MAx_degradation hypernym "http://identifiers.org/obo.go/GO:0006402"
+  A_translation hypernym "http://identifiers.org/obo.go/GO:0006412"
+  A_degradation hypernym "http://identifiers.org/obo.go/GO:0030163"
+  Ras_activation hypernym "http://identifiers.org/reactome/REACT_2010.5",
+                          "http://identifiers.org/obo.go/GO:0032856"
+  Ras_inactivation hypernym "http://identifiers.org/obo.go/GO:0034261"
+  Erk_activation hypernym "http://identifiers.org/reactome/REACT_1482.4"
+  Erk_inactivation hypernym "http://identifiers.org/reactome/REACT_12436.1"
+  X_activation hypernym "http://identifiers.org/obo.go/GO:0051091"
+  X_inactivation hypernym "http://identifiers.org/obo.go/GO:0043433"
+  MDusp_transkription hypernym "http://identifiers.org/obo.go/GO:0009299"
+  MDusp_degradation hypernym "http://identifiers.org/obo.go/GO:0006402"
+  Dusp_translation hypernym "http://identifiers.org/obo.go/GO:0006412"
+  Dusp_degradation hypernym "http://identifiers.org/obo.go/GO:0030163"
 end
+
+Goldbeter2008_Somite_Segmentation_Clock_Notch_Wnt_FGF is "Goldbeter2008_Somite_Segmentation_Clock_Notch_Wnt_FGF"
+
+Goldbeter2008_Somite_Segmentation_Clock_Notch_Wnt_FGF model_entity_is "http://identifiers.org/biomodels.db/MODEL6415057828"
+Goldbeter2008_Somite_Segmentation_Clock_Notch_Wnt_FGF model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000201"
+Goldbeter2008_Somite_Segmentation_Clock_Notch_Wnt_FGF description "http://identifiers.org/pubmed/18308339"
+Goldbeter2008_Somite_Segmentation_Clock_Notch_Wnt_FGF version "http://identifiers.org/obo.go/GO:0007219",
+                                                              "http://identifiers.org/obo.go/GO:0008543",
+                                                              "http://identifiers.org/obo.go/GO:0016055"
+Goldbeter2008_Somite_Segmentation_Clock_Notch_Wnt_FGF parthood "http://identifiers.org/obo.go/GO:0001756"
+Goldbeter2008_Somite_Segmentation_Clock_Notch_Wnt_FGF version "http://identifiers.org/kegg.pathway/ko04010",
+                                                              "http://identifiers.org/kegg.pathway/ko04330",
+                                                              "http://identifiers.org/kegg.pathway/ko04310"
+Goldbeter2008_Somite_Segmentation_Clock_Notch_Wnt_FGF version "http://identifiers.org/reactome/REACT_9470.2",
+                                                              "http://identifiers.org/reactome/REACT_299.2",
+                                                              "http://identifiers.org/reactome/REACT_11045.1"
+Goldbeter2008_Somite_Segmentation_Clock_Notch_Wnt_FGF taxon "http://identifiers.org/taxonomy/32524"

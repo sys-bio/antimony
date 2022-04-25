@@ -1,0 +1,173 @@
+// Created by libAntimony v2.13.0
+model *Cursons2015___Regulation_of_ERK_MAPK_signaling_in_human_epidermis()
+
+  // Compartments and Species:
+  compartment c, n;
+  species $pRaf_cyto in c, $pMEK_cyto in c, $pMEK_nuc in n, $pERK_cyto in c;
+  species $pERK_nuc in n, $Ca in c, $CaM_memb in c;
+
+  // Assignment Rules:
+  funcHillRafToMEK := numHillWeight*numHillBeta*pRaf_cyto^numHillCoeff/(numHillK^numHillCoeff + pRaf_cyto^numHillCoeff);
+  numCytoToNucVolRatio := 2 + 5*(numTissuePos/7);
+  funcHillMEKToERKCyto := numHillWeight*numHillBeta*pMEK_cyto^numHillCoeff/(numHillK^numHillCoeff + pMEK_cyto^numHillCoeff);
+  funcHillMEKToERKNuc := numHillWeight*numHillBeta*pMEK_nuc^numHillCoeff/(numHillK^numHillCoeff + pMEK_nuc^numHillCoeff);
+  funcHillERKToERKNuc := numHillWeight*numHillBeta*pERK_nuc^numHillCoeff/(numHillK^numHillCoeff + pERK_nuc^numHillCoeff);
+  funcHillCaToRaf := numHillWeight*numHillBeta*Ca^numHillCoeff/(numHillK^numHillCoeff + Ca^numHillCoeff);
+  funcHillCaMToRaf := numHillWeight*numHillBeta*CaM_memb^numHillCoeff/(numHillK^numHillCoeff + CaM_memb^numHillCoeff);
+  funcHillERKToRaf := numHillWeight*numHillBeta*pERK_nuc^numHillCoeff/(numHillK^numHillCoeff + pERK_nuc^numHillCoeff);
+
+  // Rate Rules:
+  pRaf_cyto' = (1/numHillTau)*(numTotalRafInputs*numHillMax - pRaf_cyto);
+  pMEK_cyto' = (1/numHillTau)*((funcHillRafToMEK*numHillMax - pMEK_cyto - numMEKCytoToNucParam*pMEK_cyto) + (1/numCytoToNucVolRatio)*numMEKNucToCytoParam*pMEK_nuc);
+  pMEK_nuc' = (1/numHillTau)*((-pMEK_nuc - numMEKNucToCytoParam*pMEK_nuc) + numCytoToNucVolRatio*numMEKCytoToNucParam*pMEK_cyto);
+  pERK_cyto' = (1/numHillTau)*((funcHillMEKToERKCyto*numHillMax - pERK_cyto - numERKCytoToNucParam*pERK_cyto) + (1/numCytoToNucVolRatio)*numERKNucToCytoParam*pERK_nuc);
+  pERK_nuc' = (1/numHillTau)*(((funcHillMEKToERKNuc - funcHillERKToERKNuc)*numHillMax - pERK_nuc - numERKCytoToNucParam*pERK_nuc) + numCytoToNucVolRatio*numERKNucToCytoParam*pERK_cyto);
+
+  // Events:
+  Position_0: at 0 after numTissuePos >= 0: CaM_memb = numCaMInputBaseline + numCaMInputAmp*((numTissuePos + 1)/2), Ca = numCaInputBaseline + numCaInputAmp*(numTissuePos/5);
+  Position_1: at 0 after numTissuePos >= 1: CaM_memb = numCaMInputBaseline + numCaMInputAmp*exp(1 - numTissuePos);
+  Position_5: at 0 after numTissuePos >= 5: CaM_memb = 0, Ca = numCaInputBaseline + numCaInputAmp*((7 - numTissuePos)/2);
+  Total_Rafc_input_less_than_0: at 0 after (funcHillCaToRaf - funcHillCaMToRaf - funcHillERKToRaf) <= 0: numTotalRafInputs = 0;
+  Total_Raf_input_greater_than_0: at 0 after (funcHillCaToRaf - funcHillCaMToRaf - funcHillERKToRaf) > 0: numTotalRafInputs = funcHillCaToRaf - funcHillCaMToRaf - funcHillERKToRaf;
+
+  // Species initializations:
+  pRaf_cyto = 0.5;
+  pMEK_cyto = 0.8;
+  pMEK_nuc = 0.4;
+  pERK_cyto = 0.7;
+  pERK_nuc = 0.2;
+  Ca = 0.7632;
+  CaM_memb = 0.72675;
+
+  // Compartment initializations:
+  c = 1;
+  n = 0.5;
+
+  // Variable initializations:
+  numHillTau = 1;
+  numHillTau has unit_0;
+  numTotalRafInputs = 0;
+  numTotalRafInputs has unit_0;
+  numHillMax = 1;
+  numHillMax has unit_0;
+  funcHillRafToMEK has unit_0;
+  numMEKCytoToNucParam = 0.05;
+  numMEKCytoToNucParam has unit_0;
+  numCytoToNucVolRatio has unit_0;
+  numMEKNucToCytoParam = 0.5;
+  numMEKNucToCytoParam has unit_0;
+  funcHillMEKToERKCyto has unit_0;
+  numERKCytoToNucParam = 0.01;
+  numERKCytoToNucParam has unit_0;
+  numERKNucToCytoParam = 0.01;
+  numERKNucToCytoParam has unit_0;
+  funcHillMEKToERKNuc has unit_0;
+  funcHillERKToERKNuc has unit_0;
+  numTissuePos = 0.5;
+  numTissuePos has unit_0;
+  numCaInputBaseline = 0.754;
+  numCaInputBaseline has unit_0;
+  numCaInputAmp = 0.092;
+  numCaInputAmp has unit_0;
+  numCaMInputBaseline = 0.363;
+  numCaMInputBaseline has unit_0;
+  numCaMInputAmp = 0.485;
+  numCaMInputAmp has unit_0;
+  funcHillCaToRaf has unit_0;
+  funcHillCaMToRaf has unit_0;
+  funcHillERKToRaf has unit_0;
+  numHillCoeff = 1.4;
+  numHillCoeff has unit_0;
+  numHillWeight = 1;
+  numHillWeight has unit_0;
+  numHillEC50 = 0.5;
+  numHillEC50 has unit_0;
+  numHillBeta = 2.56;
+  numHillBeta has unit_0;
+  numHillK = 1.37;
+  numHillK has unit_0;
+
+  // Other declarations:
+  var numTotalRafInputs, funcHillRafToMEK, numCytoToNucVolRatio, funcHillMEKToERKCyto;
+  var funcHillMEKToERKNuc, funcHillERKToERKNuc, funcHillCaToRaf, funcHillCaMToRaf;
+  var funcHillERKToRaf;
+  const c, n, numHillTau, numHillMax, numMEKCytoToNucParam, numMEKNucToCytoParam;
+  const numERKCytoToNucParam, numERKNucToCytoParam, numTissuePos, numCaInputBaseline;
+  const numCaInputAmp, numCaMInputBaseline, numCaMInputAmp, numHillCoeff;
+  const numHillWeight, numHillEC50, numHillBeta, numHillK;
+
+  // Unit definitions:
+  unit substance = 1e-3 mole;
+  unit unit_0 = 1 / dimensionless^-0;
+
+  // Display Names:
+  unit_0 is "1";
+  c is "cytoplasm";
+  n is "nucleus";
+  pRaf_cyto is "Rafc";
+  numHillTau is "Hill_Tau";
+  numTotalRafInputs is "TotalRafInputs";
+  numHillMax is "Hill_Max";
+  pMEK_cyto is "MEKc";
+  funcHillRafToMEK is "Hill_RafToMEK";
+  numMEKCytoToNucParam is "MEK_CtoN";
+  numCytoToNucVolRatio is "CtoN_VolRatio";
+  numMEKNucToCytoParam is "MEK_NtoC";
+  pMEK_nuc is "MEKn";
+  pERK_cyto is "ERKc";
+  funcHillMEKToERKCyto is "Hill_MEKToERKCyto";
+  numERKCytoToNucParam is "ERK_CtoN";
+  numERKNucToCytoParam is "ERK_NtoC";
+  pERK_nuc is "ERKn";
+  funcHillMEKToERKNuc is "Hill_MEKToERKNuc";
+  funcHillERKToERKNuc is "Hill_ERKToERKn";
+  CaM_memb is "CaM";
+  Position_0 is "Position 0";
+  numTissuePos is "Tissue_Pos";
+  numCaInputBaseline is "Ca_Baseline";
+  numCaInputAmp is "Ca_Amp";
+  numCaMInputBaseline is "CaM_Baseline";
+  numCaMInputAmp is "CaM_Amp";
+  Position_1 is "Position 1";
+  Position_5 is "Position 5";
+  Total_Rafc_input_less_than_0 is "Total Rafc input less than 0";
+  funcHillCaToRaf is "Hill_CaToRaf";
+  funcHillCaMToRaf is "Hill_CaMToRaf";
+  funcHillERKToRaf is "Hill_ERKToRaf";
+  Total_Raf_input_greater_than_0 is "Total Raf input greater than 0";
+  numHillCoeff is "Hill_Coeff";
+  numHillWeight is "Hill_Weight";
+  numHillEC50 is "Hill_EC50";
+  numHillBeta is "Hill_Beta";
+  numHillK is "Hill_K";
+
+  // CV terms:
+  c identity "http://identifiers.org/go/GO:0005737"
+  n identity "http://identifiers.org/go/GO:0005634"
+  pRaf_cyto hypernym "http://identifiers.org/uniprot/P04049"
+  pRaf_cyto property "urn:miriam:pato:PATO_0002220"
+  pMEK_cyto property "urn:miriam:pato:PATO_0002220"
+  pMEK_cyto hypernym "http://identifiers.org/uniprot/Q02750"
+  pMEK_nuc hypernym "http://identifiers.org/uniprot/Q02750"
+  pMEK_nuc property "urn:miriam:pato:PATO_0002220"
+  pERK_cyto property "urn:miriam:pato:PATO_0002220"
+  pERK_cyto hypernym "http://identifiers.org/uniprot/P28482"
+  pERK_nuc property "urn:miriam:pato:PATO_0002220"
+  pERK_nuc hypernym "http://identifiers.org/uniprot/P28482"
+  Ca hypernym "http://identifiers.org/chebi/CHEBI:39124"
+  CaM_memb hypernym "http://identifiers.org/uniprot/P0DP23"
+end
+
+Cursons2015___Regulation_of_ERK_MAPK_signaling_in_human_epidermis is "Cursons2015 - Regulation of ERK-MAPK signaling in human epidermis"
+
+Cursons2015___Regulation_of_ERK_MAPK_signaling_in_human_epidermis model_entity_is "http://identifiers.org/biomodels.db/MODEL1503270000"
+Cursons2015___Regulation_of_ERK_MAPK_signaling_in_human_epidermis model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000659"
+Cursons2015___Regulation_of_ERK_MAPK_signaling_in_human_epidermis description "http://identifiers.org/pubmed/26209520"
+Cursons2015___Regulation_of_ERK_MAPK_signaling_in_human_epidermis property "http://identifiers.org/go/GO:0019722"
+Cursons2015___Regulation_of_ERK_MAPK_signaling_in_human_epidermis hypernym "http://identifiers.org/go/GO:0000165"
+Cursons2015___Regulation_of_ERK_MAPK_signaling_in_human_epidermis container "http://identifiers.org/bto/BTO:0000404"
+Cursons2015___Regulation_of_ERK_MAPK_signaling_in_human_epidermis property "http://identifiers.org/go/GO:0043408"
+Cursons2015___Regulation_of_ERK_MAPK_signaling_in_human_epidermis taxon "http://identifiers.org/taxonomy/9606"
+Cursons2015___Regulation_of_ERK_MAPK_signaling_in_human_epidermis hypernym "http://identifiers.org/kegg.pathway/map04010"
+Cursons2015___Regulation_of_ERK_MAPK_signaling_in_human_epidermis description "http://identifiers.org/pubmed/26209520"
+Cursons2015___Regulation_of_ERK_MAPK_signaling_in_human_epidermis property "http://identifiers.org/mamo/MAMO_0000046"

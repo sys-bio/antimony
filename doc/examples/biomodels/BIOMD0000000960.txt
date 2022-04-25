@@ -1,0 +1,500 @@
+// Created by libAntimony v2.13.0
+function Rate_Law_for_Cumulative_cases(constant, E)
+  constant*E;
+end
+
+Rate_Law_for_Cumulative_cases is "Rate Law for Cumulative_cases"
+
+function Rate_Law_for_Susceptible_to_Exposed(S, beta, I, l_a, A, l, H, N)
+  S*beta*(I + l_a*A + l*H)/N;
+end
+
+Rate_Law_for_Susceptible_to_Exposed is "Rate Law for Susceptible_to_Exposed"
+
+
+model *Paiva2020___SEIAHRD_model_of_transmission_dynamics_of_COVID_19()
+
+  // Compartments and Species:
+  compartment Country;
+  species Susceptible in Country, Exposed in Country, Infectious in Country;
+  species Asymptomatic in Country, Hospitalized in Country, Recovered in Country;
+  species Deceased in Country, Cumulative_Cases in Country;
+
+  // Assignment Rules:
+  Total_pop := ModelValue_0*ModelValue_130 + ModelValue_1*ModelValue_131 + ModelValue_2*ModelValue_132 + ModelValue_3*ModelValue_133 + ModelValue_4*ModelValue_134 + ModelValue_5*ModelValue_135;
+  Initial_infected_pop := ModelValue_0*ModelValue_42 + ModelValue_1*ModelValue_58 + ModelValue_2*ModelValue_75 + ModelValue_3*ModelValue_92 + ModelValue_4*ModelValue_109 + ModelValue_5*ModelValue_126;
+  beta_1 := ModelValue_0*beta_1_China + ModelValue_1*beta_1_Italy + ModelValue_2*beta_1_Spain + ModelValue_3*beta_1_France + ModelValue_4*beta_1_Germany + ModelValue_5*beta_1_USA;
+  l_1 := ModelValue_0*l_1_China + ModelValue_1*l_1_Italy + ModelValue_2*l_1_Spain + ModelValue_3*l_1_France + ModelValue_4*l_1_Germany + ModelValue_5*l_1_USA;
+  l_a_1 := ModelValue_0*l_a_1_China + ModelValue_1*l_a_1_Italy + ModelValue_2*ModelValue_64 + ModelValue_3*l_a_1_France + ModelValue_4*l_a_1_Germany + ModelValue_5*l_a_1_USA;
+  kappa := ModelValue_0*ModelValue_32 + ModelValue_1*ModelValue_50 + ModelValue_2*ModelValue_66 + ModelValue_3*ModelValue_83 + ModelValue_4*ModelValue_100 + ModelValue_5*ModelValue_117;
+  rho := ModelValue_0*ModelValue_31 + ModelValue_1*ModelValue_51 + ModelValue_2*ModelValue_67 + ModelValue_3*ModelValue_84 + ModelValue_4*ModelValue_101 + ModelValue_5*ModelValue_118;
+  gamma_a := ModelValue_0*ModelValue_30 + ModelValue_1*ModelValue_52 + ModelValue_2*ModelValue_68 + ModelValue_3*ModelValue_85 + ModelValue_4*ModelValue_102 + ModelValue_5*ModelValue_119;
+  gamma_i := ModelValue_0*ModelValue_29 + ModelValue_1*ModelValue_53 + ModelValue_2*ModelValue_69 + ModelValue_3*ModelValue_86 + ModelValue_4*ModelValue_103 + ModelValue_5*ModelValue_120;
+  gamma_r := ModelValue_0*ModelValue_28 + ModelValue_1*ModelValue_128 + ModelValue_2*ModelValue_70 + ModelValue_3*ModelValue_87 + ModelValue_4*ModelValue_104 + ModelValue_5*ModelValue_121;
+  mu := ModelValue_0*ModelValue_27 + ModelValue_1*ModelValue_54 + ModelValue_2*ModelValue_71 + ModelValue_3*ModelValue_88 + ModelValue_4*ModelValue_105 + ModelValue_5*ModelValue_122;
+  delta_A := ModelValue_0*ModelValue_39 + ModelValue_1*ModelValue_55 + ModelValue_2*ModelValue_72 + ModelValue_3*ModelValue_72 + ModelValue_3*ModelValue_89 + ModelValue_4*ModelValue_106 + ModelValue_5*ModelValue_123;
+  delta_H := ModelValue_0*ModelValue_40 + ModelValue_1*ModelValue_56 + ModelValue_2*ModelValue_73 + ModelValue_3*ModelValue_90 + ModelValue_4*ModelValue_107 + ModelValue_5*ModelValue_124;
+  delta_I := ModelValue_0*ModelValue_41 + ModelValue_1*ModelValue_57 + ModelValue_2*ModelValue_74 + ModelValue_3*ModelValue_91 + ModelValue_4*ModelValue_108 + ModelValue_5*ModelValue_125;
+  kappa_rho := ModelValue_12*ModelValue_13;
+  kappa_1_rho := ModelValue_12*(1 - ModelValue_13);
+  mu_delta_A := ModelValue_17*ModelValue_18;
+  mu_1_delta_A := ModelValue_17*(1 - ModelValue_18);
+  Time_threshold := ModelValue_0*ModelValue_43 + ModelValue_1*ModelValue_59 + ModelValue_2*ModelValue_76 + ModelValue_3*ModelValue_93 + ModelValue_4*ModelValue_110 + ModelValue_5*ModelValue_127;
+
+  // Reactions:
+  Susceptible_to_Exposed: Susceptible => Exposed; Country*Rate_Law_for_Susceptible_to_Exposed(Susceptible, beta_1, Infectious, l_a_1, Asymptomatic, l_1, Hospitalized, Total_pop);
+  Exposed_to_Infectious: Exposed => Infectious; Country*kappa_rho*Exposed;
+  Exposed_to_Asymptomatic: Exposed => Asymptomatic; Country*kappa_1_rho*Exposed;
+  Infectious_to_Hospitalized: Infectious => Hospitalized; Country*gamma_a*Infectious;
+  Infectious_to_Recovered: Infectious => Recovered; Country*gamma_i*Infectious;
+  Infectious_to_Deceased: Infectious => Deceased; Country*delta_I*Infectious;
+  Asymptomatic_to_Recovered: Asymptomatic => Recovered; Country*mu_1_delta_A*Asymptomatic;
+  Asymptomatic_to_Deceased: Asymptomatic => Deceased; Country*mu_delta_A*Asymptomatic;
+  Hospitalized_to_Deceased: Hospitalized => Deceased; Country*delta_H*Hospitalized;
+  Hospitalized_to_Recovered: Hospitalized => Recovered; Country*gamma_r*Hospitalized;
+  Cumulative_cases:  => Cumulative_Cases; Country*Rate_Law_for_Cumulative_cases(kappa_rho, Exposed);
+
+  // Events:
+  event_: at 0 after time >= ModelValue_26: l_a_1_USA = l_a_2_USA, l_a_1_Spain = l_a_2_Spain, l_a_1_Italy = l_a_2_Italy, l_a_1_Germany = l_a_2_Germany, l_a_1_France = l_a_2_France, l_a_1_China = l_a_2_China, l_1_USA = l_2_USA, l_1_Spain = l_2_Spain, l_1_Italy = l_2_Italy, l_1_Germany = l_2_Germany, l_1_France = l_2_France, l_1_China = l_2_China, beta_1_USA = beta_2_USA, beta_1_Spain = beta_2_Spain, beta_1_Italy = beta_2_Italy, beta_1_Germany = beta_2_Germany, beta_1_France = beta_2_France, beta_1_China = beta_2_China;
+
+  // Species initializations:
+  Susceptible = 0.9*Total_pop;
+  Exposed = 50*Infectious;
+  Infectious = Initial_infected_pop;
+  Asymptomatic = 3*Infectious;
+  Hospitalized = 0;
+  Recovered = 0;
+  Deceased = 0;
+  Cumulative_Cases = 0;
+
+  // Compartment initializations:
+  Country = 1;
+  Total_pop has unit_0;
+
+  // Variable initializations:
+  ModelValue_26 = Time_threshold;
+  beta_1_China = 0.334;
+  beta_2_China = 0.14;
+  beta_1_France = 0.298;
+  beta_2_France = 0.129;
+  beta_1_Germany = 0.135;
+  beta_2_Germany = 0.055;
+  beta_1_Italy = 0.189;
+  beta_2_Italy = 0.081;
+  beta_1_Spain = 0.382;
+  beta_2_Spain = 0.16;
+  beta_1_USA = 0.303;
+  beta_2_USA = 0.13;
+  l_1_China = 0.673;
+  l_2_China = 0.135;
+  l_1_France = 8;
+  l_2_France = 8;
+  l_1_Germany = 4.8;
+  l_2_Germany = 1.13;
+  l_1_Italy = 8;
+  l_2_Italy = 8;
+  l_1_Spain = 7.69;
+  l_2_Spain = 6.49;
+  l_1_USA = 0.851;
+  l_2_USA = 0.851;
+  l_a_1_China = 8;
+  l_a_2_China = 8;
+  l_a_1_France = 8;
+  l_a_2_France = 8;
+  l_a_1_Germany = 4.9;
+  l_a_2_Germany = 4.9;
+  l_a_1_Italy = 0.649;
+  l_a_2_Italy = 0.649;
+  l_a_1_Spain = 3.9;
+  l_a_2_Spain = 3.9;
+  l_a_1_USA = 4.09;
+  l_a_2_USA = 0.82;
+  _1_Trigger_China = 1;
+  _2_Trigger_Italy = 0;
+  _3_Trigger_Spain = 0;
+  _4_Trigger_France = 0;
+  _5_Trigger_Germany = 0;
+  _6_Trigger_USA = 0;
+  ModelValue_0 = _1_Trigger_China;
+  ModelValue_1 = _2_Trigger_Italy;
+  ModelValue_2 = _3_Trigger_Spain;
+  ModelValue_3 = _4_Trigger_France;
+  ModelValue_4 = _5_Trigger_Germany;
+  ModelValue_5 = _6_Trigger_USA;
+  ModelValue_64 = l_a_1_Spain;
+  ModelValue_32 = kappa_China;
+  ModelValue_50 = kappa_Italy;
+  ModelValue_66 = kappa_Spain;
+  ModelValue_83 = kappa_France;
+  ModelValue_100 = kappa_Germany;
+  ModelValue_117 = kappa_USA;
+  ModelValue_31 = rho_China;
+  ModelValue_51 = rho_Italy;
+  ModelValue_67 = rho_Spain;
+  ModelValue_84 = rho_France;
+  ModelValue_101 = rho_Germany;
+  ModelValue_118 = rho_USA;
+  ModelValue_30 = gamma_a_China;
+  ModelValue_52 = gamma_a_Italy;
+  ModelValue_68 = gamma_a_Spain;
+  ModelValue_85 = gamma_a_France;
+  ModelValue_102 = gamma_a_Germany;
+  ModelValue_119 = gamma_a_USA;
+  ModelValue_29 = gamma_i_China;
+  ModelValue_53 = gamma_i_Italy;
+  ModelValue_69 = gamma_i_Spain;
+  ModelValue_86 = gamma_i_France;
+  ModelValue_103 = gamma_i_Germany;
+  ModelValue_120 = gamma_i_USA;
+  ModelValue_28 = gamma_r_China;
+  ModelValue_128 = gamma_r_Italy;
+  ModelValue_70 = gamma_r_Spain;
+  ModelValue_87 = gamma_r_France;
+  ModelValue_104 = gamma_r_Germany;
+  ModelValue_121 = gamma_r_USA;
+  ModelValue_27 = mu_China;
+  ModelValue_54 = mu_Italy;
+  ModelValue_71 = mu_Spain;
+  ModelValue_88 = mu_France;
+  ModelValue_105 = mu_Germany;
+  ModelValue_122 = mu_USA;
+  ModelValue_39 = delta_A_China;
+  ModelValue_55 = delta_A_Italy;
+  ModelValue_72 = delta_A_Spain;
+  ModelValue_89 = delta_A_France;
+  ModelValue_106 = delta_A_Germany;
+  ModelValue_123 = delta_A_USA;
+  ModelValue_40 = delta_H_China;
+  ModelValue_56 = delta_H_Italy;
+  ModelValue_73 = delta_H_Spain;
+  ModelValue_90 = delta_H_France;
+  ModelValue_107 = delta_H_Germany;
+  ModelValue_124 = delta_H_USA;
+  ModelValue_41 = delta_I_China;
+  ModelValue_57 = delta_I_Italy;
+  ModelValue_74 = delta_I_Spain;
+  ModelValue_91 = delta_I_France;
+  ModelValue_108 = delta_I_Germany;
+  ModelValue_125 = delta_I_USA;
+  ModelValue_42 = Initial_infected_pop_China;
+  ModelValue_58 = Initial_infected_pop_Italy;
+  ModelValue_75 = Initial_infected_pop_Spain;
+  ModelValue_92 = Initial_infected_pop_France;
+  ModelValue_109 = Initial_infected_pop_Germany;
+  ModelValue_126 = Initial_infected_pop_USA;
+  ModelValue_12 = kappa;
+  ModelValue_13 = rho;
+  ModelValue_17 = mu;
+  ModelValue_18 = delta_A;
+  ModelValue_43 = Time_threshold_China;
+  ModelValue_59 = Time_threshold_Italy;
+  ModelValue_76 = Time_threshold_Spain;
+  ModelValue_93 = Time_threshold_France;
+  ModelValue_110 = Time_threshold_Germany;
+  ModelValue_127 = Time_threshold_USA;
+  kappa_China = 0.44;
+  rho_China = 0.053;
+  gamma_a_China = 0.503;
+  gamma_i_China = 0.263;
+  gamma_r_China = 0.141;
+  mu_China = 1.64;
+  delta_A_China = 0;
+  delta_H_China = 0.008;
+  delta_I_China = 0.003;
+  Initial_infected_pop_China = 732;
+  Time_threshold_China = 18;
+  kappa_Italy = 0.284;
+  rho_Italy = 0.27;
+  gamma_a_Italy = 0.224;
+  gamma_i_Italy = 0.04;
+  mu_Italy = 0.146;
+  delta_A_Italy = 0;
+  delta_H_Italy = 0.023;
+  delta_I_Italy = 0.023;
+  Initial_infected_pop_Italy = 648;
+  Time_threshold_Italy = 30;
+  kappa_Spain = 0.362;
+  rho_Spain = 0.102;
+  gamma_a_Spain = 0.116;
+  gamma_i_Spain = 0.063;
+  gamma_r_Spain = 0.281;
+  mu_Spain = 1.03;
+  delta_A_Spain = 0;
+  delta_H_Spain = 0.019;
+  delta_I_Spain = 0.016;
+  Initial_infected_pop_Spain = 500;
+  Time_threshold_Spain = 23;
+  kappa_France = 0.309;
+  rho_France = 0.033;
+  gamma_a_France = 0.3;
+  gamma_i_France = 0.02;
+  gamma_r_France = 0.131;
+  mu_France = 1.53;
+  delta_A_France = 0;
+  delta_H_France = 0.029;
+  delta_I_France = 0.018;
+  Initial_infected_pop_France = 575;
+  Time_threshold_France = 26;
+  kappa_Germany = 0.578;
+  rho_Germany = 0.021;
+  gamma_a_Germany = 0.542;
+  gamma_i_Germany = 0.05;
+  gamma_r_Germany = 0.036;
+  mu_Germany = 0.302;
+  delta_A_Germany = 0;
+  delta_H_Germany = 0.003;
+  delta_I_Germany = 0.002;
+  Initial_infected_pop_Germany = 735;
+  Time_threshold_Germany = 24;
+  kappa_USA = 1.33;
+  rho_USA = 1.01;
+  gamma_a_USA = 0.055;
+  gamma_i_USA = 0.296;
+  gamma_r_USA = 0.018;
+  mu_USA = 0.828;
+  delta_A_USA = 0;
+  delta_H_USA = 0.00029;
+  delta_I_USA = 0.023;
+  Initial_infected_pop_USA = 576;
+  Time_threshold_USA = 51;
+  gamma_r_Italy = 0.24;
+  ModelValue_130 = Total_pop_China;
+  ModelValue_131 = Total_pop_Italy;
+  ModelValue_132 = Total_pop_Spain;
+  ModelValue_133 = Total_pop_France;
+  ModelValue_134 = Total_pop_Germany;
+  ModelValue_135 = Total_pop_USA;
+  Total_pop_China = 11000000;
+  Total_pop_China has unit_0;
+  Total_pop_Italy = 60400000;
+  Total_pop_Italy has unit_0;
+  Total_pop_Spain = 46900000;
+  Total_pop_Spain has unit_0;
+  Total_pop_France = 67000000;
+  Total_pop_France has unit_0;
+  Total_pop_Germany = 83000000;
+  Total_pop_Germany has unit_0;
+  Total_pop_USA = 328200000;
+  Total_pop_USA has unit_0;
+
+  // Other declarations:
+  var Total_pop, Initial_infected_pop, beta_1_China, beta_1_France, beta_1_Germany;
+  var beta_1_Italy, beta_1_Spain, beta_1_USA, l_1_China, l_1_France, l_1_Germany;
+  var l_1_Italy, l_1_Spain, l_1_USA, l_a_1_China, l_a_1_France, l_a_1_Germany;
+  var l_a_1_Italy, l_a_1_Spain, l_a_1_USA, beta_1, l_1, l_a_1, kappa, rho;
+  var gamma_a, gamma_i, gamma_r, mu, delta_A, delta_H, delta_I, kappa_rho;
+  var kappa_1_rho, mu_delta_A, mu_1_delta_A, Time_threshold;
+  const Country, ModelValue_26, beta_2_China, beta_2_France, beta_2_Germany;
+  const beta_2_Italy, beta_2_Spain, beta_2_USA, l_2_China, l_2_France, l_2_Germany;
+  const l_2_Italy, l_2_Spain, l_2_USA, l_a_2_China, l_a_2_France, l_a_2_Germany;
+  const l_a_2_Italy, l_a_2_Spain, l_a_2_USA, _1_Trigger_China, _2_Trigger_Italy;
+  const _3_Trigger_Spain, _4_Trigger_France, _5_Trigger_Germany, _6_Trigger_USA;
+  const ModelValue_0, ModelValue_1, ModelValue_2, ModelValue_3, ModelValue_4;
+  const ModelValue_5, ModelValue_64, ModelValue_32, ModelValue_50, ModelValue_66;
+  const ModelValue_83, ModelValue_100, ModelValue_117, ModelValue_31, ModelValue_51;
+  const ModelValue_67, ModelValue_84, ModelValue_101, ModelValue_118, ModelValue_30;
+  const ModelValue_52, ModelValue_68, ModelValue_85, ModelValue_102, ModelValue_119;
+  const ModelValue_29, ModelValue_53, ModelValue_69, ModelValue_86, ModelValue_103;
+  const ModelValue_120, ModelValue_28, ModelValue_128, ModelValue_70, ModelValue_87;
+  const ModelValue_104, ModelValue_121, ModelValue_27, ModelValue_54, ModelValue_71;
+  const ModelValue_88, ModelValue_105, ModelValue_122, ModelValue_39, ModelValue_55;
+  const ModelValue_72, ModelValue_89, ModelValue_106, ModelValue_123, ModelValue_40;
+  const ModelValue_56, ModelValue_73, ModelValue_90, ModelValue_107, ModelValue_124;
+  const ModelValue_41, ModelValue_57, ModelValue_74, ModelValue_91, ModelValue_108;
+  const ModelValue_125, ModelValue_42, ModelValue_58, ModelValue_75, ModelValue_92;
+  const ModelValue_109, ModelValue_126, ModelValue_12, ModelValue_13, ModelValue_17;
+  const ModelValue_18, ModelValue_43, ModelValue_59, ModelValue_76, ModelValue_93;
+  const ModelValue_110, ModelValue_127, kappa_China, rho_China, gamma_a_China;
+  const gamma_i_China, gamma_r_China, mu_China, delta_A_China, delta_H_China;
+  const delta_I_China, Initial_infected_pop_China, Time_threshold_China, kappa_Italy;
+  const rho_Italy, gamma_a_Italy, gamma_i_Italy, mu_Italy, delta_A_Italy;
+  const delta_H_Italy, delta_I_Italy, Initial_infected_pop_Italy, Time_threshold_Italy;
+  const kappa_Spain, rho_Spain, gamma_a_Spain, gamma_i_Spain, gamma_r_Spain;
+  const mu_Spain, delta_A_Spain, delta_H_Spain, delta_I_Spain, Initial_infected_pop_Spain;
+  const Time_threshold_Spain, kappa_France, rho_France, gamma_a_France, gamma_i_France;
+  const gamma_r_France, mu_France, delta_A_France, delta_H_France, delta_I_France;
+  const Initial_infected_pop_France, Time_threshold_France, kappa_Germany;
+  const rho_Germany, gamma_a_Germany, gamma_i_Germany, gamma_r_Germany, mu_Germany;
+  const delta_A_Germany, delta_H_Germany, delta_I_Germany, Initial_infected_pop_Germany;
+  const Time_threshold_Germany, kappa_USA, rho_USA, gamma_a_USA, gamma_i_USA;
+  const gamma_r_USA, mu_USA, delta_A_USA, delta_H_USA, delta_I_USA, Initial_infected_pop_USA;
+  const Time_threshold_USA, gamma_r_Italy, ModelValue_130, ModelValue_131;
+  const ModelValue_132, ModelValue_133, ModelValue_134, ModelValue_135, Total_pop_China;
+  const Total_pop_Italy, Total_pop_Spain, Total_pop_France, Total_pop_Germany;
+  const Total_pop_USA;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = item;
+  unit unit_0 = item;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "#";
+  event_ is "event";
+  ModelValue_26 is "Initial for Time_threshold";
+  _1_Trigger_China is "1_Trigger_China";
+  _2_Trigger_Italy is "2_Trigger_Italy";
+  _3_Trigger_Spain is "3_Trigger_Spain";
+  _4_Trigger_France is "4_Trigger_France";
+  _5_Trigger_Germany is "5_Trigger_Germany";
+  _6_Trigger_USA is "6_Trigger_USA";
+  ModelValue_0 is "Initial for 1_Trigger_China";
+  ModelValue_1 is "Initial for 2_Trigger_Italy";
+  ModelValue_2 is "Initial for 3_Trigger_Spain";
+  ModelValue_3 is "Initial for 4_Trigger_France";
+  ModelValue_4 is "Initial for 5_Trigger_Germany";
+  ModelValue_5 is "Initial for 6_Trigger_USA";
+  ModelValue_64 is "Initial for l_a_1_Spain";
+  ModelValue_32 is "Initial for kappa_China";
+  ModelValue_50 is "Initial for kappa_Italy";
+  ModelValue_66 is "Initial for kappa_Spain";
+  ModelValue_83 is "Initial for kappa_France";
+  ModelValue_100 is "Initial for kappa_Germany";
+  ModelValue_117 is "Initial for kappa_USA";
+  ModelValue_31 is "Initial for rho_China";
+  ModelValue_51 is "Initial for rho_Italy";
+  ModelValue_67 is "Initial for rho_Spain";
+  ModelValue_84 is "Initial for rho_France";
+  ModelValue_101 is "Initial for rho_Germany";
+  ModelValue_118 is "Initial for rho_USA";
+  ModelValue_30 is "Initial for gamma_a_China";
+  ModelValue_52 is "Initial for gamma_a_Italy";
+  ModelValue_68 is "Initial for gamma_a_Spain";
+  ModelValue_85 is "Initial for gamma_a_France";
+  ModelValue_102 is "Initial for gamma_a_Germany";
+  ModelValue_119 is "Initial for gamma_a_USA";
+  ModelValue_29 is "Initial for gamma_i_China";
+  ModelValue_53 is "Initial for gamma_i_Italy";
+  ModelValue_69 is "Initial for gamma_i_Spain";
+  ModelValue_86 is "Initial for gamma_i_France";
+  ModelValue_103 is "Initial for gamma_i_Germany";
+  ModelValue_120 is "Initial for gamma_i_USA";
+  ModelValue_28 is "Initial for gamma_r_China";
+  ModelValue_128 is "Initial for gamma_r_Italy";
+  ModelValue_70 is "Initial for gamma_r_Spain";
+  ModelValue_87 is "Initial for gamma_r_France";
+  ModelValue_104 is "Initial for gamma_r_Germany";
+  ModelValue_121 is "Initial for gamma_r_USA";
+  ModelValue_27 is "Initial for mu_China";
+  ModelValue_54 is "Initial for mu_Italy";
+  ModelValue_71 is "Initial for mu_Spain";
+  ModelValue_88 is "Initial for mu_France";
+  ModelValue_105 is "Initial for mu_Germany";
+  ModelValue_122 is "Initial for mu_USA";
+  ModelValue_39 is "Initial for delta_A_China";
+  ModelValue_55 is "Initial for delta_A_Italy";
+  ModelValue_72 is "Initial for delta_A_Spain";
+  ModelValue_89 is "Initial for delta_A_France";
+  ModelValue_106 is "Initial for delta_A_Germany";
+  ModelValue_123 is "Initial for delta_A_USA";
+  ModelValue_40 is "Initial for delta_H_China";
+  ModelValue_56 is "Initial for delta_H_Italy";
+  ModelValue_73 is "Initial for delta_H_Spain";
+  ModelValue_90 is "Initial for delta_H_France";
+  ModelValue_107 is "Initial for delta_H_Germany";
+  ModelValue_124 is "Initial for delta_H_USA";
+  ModelValue_41 is "Initial for delta_I_China";
+  ModelValue_57 is "Initial for delta_I_Italy";
+  ModelValue_74 is "Initial for delta_I_Spain";
+  ModelValue_91 is "Initial for delta_I_France";
+  ModelValue_108 is "Initial for delta_I_Germany";
+  ModelValue_125 is "Initial for delta_I_USA";
+  ModelValue_42 is "Initial for Initial_infected_pop_China";
+  ModelValue_58 is "Initial for Initial_infected_pop_Italy";
+  ModelValue_75 is "Initial for Initial_infected_pop_Spain";
+  ModelValue_92 is "Initial for Initial_infected_pop_France";
+  ModelValue_109 is "Initial for Initial_infected_pop_Germany";
+  ModelValue_126 is "Initial for Initial_infected_pop_USA";
+  kappa_rho is "kappa(rho)";
+  ModelValue_12 is "Initial for kappa";
+  ModelValue_13 is "Initial for rho";
+  kappa_1_rho is "kappa(1-rho)";
+  mu_delta_A is "mu(delta_A)";
+  ModelValue_17 is "Initial for mu";
+  ModelValue_18 is "Initial for delta_A";
+  mu_1_delta_A is "mu(1-delta_A)";
+  ModelValue_43 is "Initial for Time_threshold_China";
+  ModelValue_59 is "Initial for Time_threshold_Italy";
+  ModelValue_76 is "Initial for Time_threshold_Spain";
+  ModelValue_93 is "Initial for Time_threshold_France";
+  ModelValue_110 is "Initial for Time_threshold_Germany";
+  ModelValue_127 is "Initial for Time_threshold_USA";
+  ModelValue_130 is "Initial for Total_pop_China";
+  ModelValue_131 is "Initial for Total_pop_Italy";
+  ModelValue_132 is "Initial for Total_pop_Spain";
+  ModelValue_133 is "Initial for Total_pop_France";
+  ModelValue_134 is "Initial for Total_pop_Germany";
+  ModelValue_135 is "Initial for Total_pop_USA";
+  Cumulative_cases is "Cumulative cases";
+
+  // CV terms:
+  Country hypernym "http://identifiers.org/ncit/C16761"
+  Country hypernym "http://identifiers.org/ncit/C16428"
+  Country hypernym "http://identifiers.org/ncit/C16592"
+  Country hypernym "http://identifiers.org/ncit/C16636"
+  Country hypernym "http://identifiers.org/ncit/C17152"
+  Country hypernym "http://identifiers.org/ncit/C17234"
+  Susceptible hypernym "http://identifiers.org/ncit/C171133"
+  Susceptible hypernym "http://identifiers.org/ido/0000514"
+  Exposed hypernym "http://identifiers.org/ncit/C171133"
+  Exposed hypernym "http://identifiers.org/ido/0000514"
+  Exposed hypernym "http://identifiers.org/ido/0000597"
+  Infectious hypernym "http://identifiers.org/ncit/C171133"
+  Infectious hypernym "http://identifiers.org/ido/0000511"
+  Asymptomatic hypernym "http://identifiers.org/ido/0000511"
+  Asymptomatic hypernym "http://identifiers.org/ido/0000569"
+  Asymptomatic hypernym "http://identifiers.org/ncit/C171133"
+  Hospitalized hypernym "http://identifiers.org/ido/0000511"
+  Hospitalized hypernym "http://identifiers.org/ncit/C168447"
+  Hospitalized hypernym "http://identifiers.org/ncit/C171133"
+  Hospitalized hypernym "http://identifiers.org/ncit/C25179"
+  Recovered hypernym "http://identifiers.org/ido/0000621"
+  Recovered hypernym "http://identifiers.org/ncit/C171133"
+  Deceased hypernym "http://identifiers.org/ncit/C28554"
+  Deceased hypernym "http://identifiers.org/ncit/C171133"
+  Cumulative_Cases hypernym "http://identifiers.org/ncit/C171133"
+  Cumulative_Cases hypernym "http://identifiers.org/ido/0000480"
+  Susceptible_to_Exposed hypernym "http://identifiers.org/ido/0000514"
+  Susceptible_to_Exposed hypernym "http://identifiers.org/ncit/C171133"
+  Susceptible_to_Exposed hypernym "http://identifiers.org/ido/0000597"
+  Exposed_to_Infectious hypernym "http://identifiers.org/ncit/C171133"
+  Exposed_to_Infectious hypernym "http://identifiers.org/ncit/C168447"
+  Exposed_to_Infectious hypernym "http://identifiers.org/ncit/C128320"
+  Exposed_to_Asymptomatic hypernym "http://identifiers.org/ido/0000511"
+  Exposed_to_Asymptomatic hypernym "http://identifiers.org/ncit/C171133"
+  Exposed_to_Asymptomatic hypernym "http://identifiers.org/ncit/C128320"
+  Infectious_to_Hospitalized hypernym "http://identifiers.org/ncit/C171133"
+  Infectious_to_Hospitalized hypernym "http://identifiers.org/ido/0000511"
+  Infectious_to_Hospitalized hypernym "http://identifiers.org/ncit/C25179"
+  Infectious_to_Recovered hypernym "http://identifiers.org/ncit/C171133"
+  Infectious_to_Recovered hypernym "http://identifiers.org/ncit/C25746"
+  Infectious_to_Deceased hypernym "http://identifiers.org/ncit/C171133"
+  Infectious_to_Deceased hypernym "http://identifiers.org/ncit/C28554"
+  Infectious_to_Deceased hypernym "http://identifiers.org/ido/0000511"
+  Asymptomatic_to_Recovered hypernym "http://identifiers.org/ncit/C25746"
+  Asymptomatic_to_Recovered hypernym "http://identifiers.org/ncit/C171133"
+  Asymptomatic_to_Deceased hypernym "http://identifiers.org/ncit/C171133"
+  Asymptomatic_to_Deceased hypernym "http://identifiers.org/ncit/C28554"
+  Hospitalized_to_Deceased hypernym "http://identifiers.org/ncit/C28554"
+  Hospitalized_to_Deceased hypernym "http://identifiers.org/ncit/C171133"
+  Hospitalized_to_Recovered hypernym "http://identifiers.org/ncit/C25746"
+  Hospitalized_to_Recovered hypernym "http://identifiers.org/ncit/C171133"
+  Cumulative_cases hypernym "http://identifiers.org/ido/0000480"
+  Cumulative_cases hypernym "http://identifiers.org/ido/0000511"
+  Cumulative_cases hypernym "http://identifiers.org/ncit/C171133"
+end
+
+Paiva2020___SEIAHRD_model_of_transmission_dynamics_of_COVID_19 is "Paiva2020 - SEIAHRD model of transmission dynamics of COVID-19"
+
+Paiva2020___SEIAHRD_model_of_transmission_dynamics_of_COVID_19 description "http://identifiers.org/pubmed/32735581"
+Paiva2020___SEIAHRD_model_of_transmission_dynamics_of_COVID_19 model_entity_is "http://identifiers.org/biomodels.db/MODEL2008200001",
+                                                                               "http://identifiers.org/biomodels.db/BIOMD0000000960"
+Paiva2020___SEIAHRD_model_of_transmission_dynamics_of_COVID_19 hypernym "http://identifiers.org/doid/DOID:0080600"
+Paiva2020___SEIAHRD_model_of_transmission_dynamics_of_COVID_19 hypernym "http://identifiers.org/ido/0000503"
+Paiva2020___SEIAHRD_model_of_transmission_dynamics_of_COVID_19 taxon "http://identifiers.org/taxonomy/9606",
+                                                                     "http://identifiers.org/taxonomy/2697049"
+Paiva2020___SEIAHRD_model_of_transmission_dynamics_of_COVID_19 property "http://identifiers.org/mamo/MAMO_0000046"

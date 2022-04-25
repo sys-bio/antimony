@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *BIOMD0000000010()
 
   // Compartments and Species:
@@ -7,16 +7,16 @@ model *BIOMD0000000010()
   species MAPK in uVol, MAPK_P in uVol, MAPK_PP in uVol;
 
   // Reactions:
-  J0: MKKK => MKKK_P; (uVol*J0_V1*MKKK)/((1 + (MAPK_PP/J0_Ki)^J0_n)*(J0_K1 + MKKK));
-  J1: MKKK_P => MKKK; (uVol*J1_V2*MKKK_P)/(J1_KK2 + MKKK_P);
-  J2: MKK => MKK_P; (uVol*J2_k3*MKKK_P*MKK)/(J2_KK3 + MKK);
-  J3: MKK_P => MKK_PP; (uVol*J3_k4*MKKK_P*MKK_P)/(J3_KK4 + MKK_P);
-  J4: MKK_PP => MKK_P; (uVol*J4_V5*MKK_PP)/(J4_KK5 + MKK_PP);
-  J5: MKK_P => MKK; (uVol*J5_V6*MKK_P)/(J5_KK6 + MKK_P);
-  J6: MAPK => MAPK_P; (uVol*J6_k7*MKK_PP*MAPK)/(J6_KK7 + MAPK);
-  J7: MAPK_P => MAPK_PP; (uVol*J7_k8*MKK_PP*MAPK_P)/(J7_KK8 + MAPK_P);
-  J8: MAPK_PP => MAPK_P; (uVol*J8_V9*MAPK_PP)/(J8_KK9 + MAPK_PP);
-  J9: MAPK_P => MAPK; (uVol*J9_V10*MAPK_P)/(J9_KK10 + MAPK_P);
+  J0: MKKK => MKKK_P; uVol*J0_V1*MKKK/((1 + (MAPK_PP/J0_Ki)^J0_n)*(J0_K1 + MKKK));
+  J1: MKKK_P => MKKK; uVol*J1_V2*MKKK_P/(J1_KK2 + MKKK_P);
+  J2: MKK => MKK_P; uVol*J2_k3*MKKK_P*MKK/(J2_KK3 + MKK);
+  J3: MKK_P => MKK_PP; uVol*J3_k4*MKKK_P*MKK_P/(J3_KK4 + MKK_P);
+  J4: MKK_PP => MKK_P; uVol*J4_V5*MKK_PP/(J4_KK5 + MKK_PP);
+  J5: MKK_P => MKK; uVol*J5_V6*MKK_P/(J5_KK6 + MKK_P);
+  J6: MAPK => MAPK_P; uVol*J6_k7*MKK_PP*MAPK/(J6_KK7 + MAPK);
+  J7: MAPK_P => MAPK_PP; uVol*J7_k8*MKK_PP*MAPK_P/(J7_KK8 + MAPK_P);
+  J8: MAPK_PP => MAPK_P; uVol*J8_V9*MAPK_PP/(J8_KK9 + MAPK_PP);
+  J9: MAPK_P => MAPK; uVol*J9_V10*MAPK_P/(J9_KK10 + MAPK_P);
 
   // Species initializations:
   MKKK = 90;
@@ -81,4 +81,60 @@ model *BIOMD0000000010()
   J7 is "phosphorylation of MAPK-P";
   J8 is "dephosphorylation of MAPK-PP";
   J9 is "dephosphorylation of MAPK-P";
+
+  // CV terms:
+  MKKK hypernym "http://identifiers.org/uniprot/P09560"
+  MKKK_P hypernym "http://identifiers.org/uniprot/P09560"
+  MKK hypernym "http://identifiers.org/uniprot/Q05116"
+  MKK_P hypernym "http://identifiers.org/uniprot/Q05116"
+  MKK_PP hypernym "http://identifiers.org/uniprot/Q05116"
+  MAPK hypernym "http://identifiers.org/uniprot/P26696"
+  MAPK_P hypernym "http://identifiers.org/uniprot/P26696"
+  MAPK_PP hypernym "http://identifiers.org/uniprot/P26696"
+  J0 homolog "http://identifiers.org/reactome/REACT_525"
+  J0 hypernym "http://identifiers.org/ec-code/2.7.11.1",
+              "http://identifiers.org/go/GO:0000185",
+              "http://identifiers.org/go/GO:0008349"
+  J1 hypernym "http://identifiers.org/ec-code/3.1.3.16",
+              "http://identifiers.org/go/GO:0051390",
+              "http://identifiers.org/go/GO:0006470"
+  J2 homolog "http://identifiers.org/reactome/REACT_614"
+  J2 hypernym "http://identifiers.org/ec-code/2.7.11.25",
+              "http://identifiers.org/go/GO:0004709",
+              "http://identifiers.org/go/GO:0006468"
+  J3 homolog "http://identifiers.org/reactome/REACT_614"
+  J3 hypernym "http://identifiers.org/ec-code/2.7.11.25",
+              "http://identifiers.org/go/GO:0000186",
+              "http://identifiers.org/go/GO:0006468",
+              "http://identifiers.org/go/GO:0004709"
+  J4 hypernym "http://identifiers.org/ec-code/3.1.3.16",
+              "http://identifiers.org/go/GO:0006470",
+              "http://identifiers.org/go/GO:0051389"
+  J5 hypernym "http://identifiers.org/ec-code/3.1.3.16",
+              "http://identifiers.org/go/GO:0006470"
+  J6 version "http://identifiers.org/reactome/REACT_136",
+             "http://identifiers.org/reactome/REACT_2247"
+  J6 hypernym "http://identifiers.org/ec-code/2.7.12.2",
+              "http://identifiers.org/go/GO:0004708",
+              "http://identifiers.org/go/GO:0006468"
+  J7 version "http://identifiers.org/reactome/REACT_136",
+             "http://identifiers.org/reactome/REACT_2247"
+  J7 hypernym "http://identifiers.org/ec-code/2.7.12.2",
+              "http://identifiers.org/go/GO:0006468",
+              "http://identifiers.org/go/GO:0004708",
+              "http://identifiers.org/go/GO:0000187"
+  J8 hypernym "http://identifiers.org/ec-code/3.1.3.16",
+              "http://identifiers.org/go/GO:0000188",
+              "http://identifiers.org/go/GO:0006470"
+  J9 hypernym "http://identifiers.org/ec-code/3.1.3.16",
+              "http://identifiers.org/go/GO:0006470"
 end
+
+BIOMD0000000010 is "Kholodenko2000 - Ultrasensitivity and negative feedback bring oscillations in MAPK cascade"
+
+BIOMD0000000010 model_entity_is "http://identifiers.org/biomodels.db/MODEL6615119181"
+BIOMD0000000010 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000010"
+BIOMD0000000010 description "http://identifiers.org/pubmed/10712587"
+BIOMD0000000010 hypernym "http://identifiers.org/go/GO:0000165"
+BIOMD0000000010 homolog "http://identifiers.org/reactome/REACT_634"
+BIOMD0000000010 taxon "http://identifiers.org/taxonomy/8355"

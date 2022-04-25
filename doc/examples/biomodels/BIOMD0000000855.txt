@@ -1,0 +1,175 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function Function_for_Pathogen_Growth(kpg, P, pinf)
+  kpg*P*(1 - P/pinf);
+end
+
+Function_for_Pathogen_Growth is "Function_for_Pathogen_Growth"
+
+function Function_for_Pathogen_Destruction_Neutrophils(kpn, P, N, ken, E)
+  kpn*P*N*(1 + ken*E);
+end
+
+Function_for_Pathogen_Destruction_Neutrophils is "Function_for_Pathogen_Destruction_Neutrophils"
+
+function Function_for_Pathogen_Destruction_Background_Response(kpb, sb, P, mub, kbp)
+  kpb*sb*P/(mub + kbp*P);
+end
+
+Function_for_Pathogen_Destruction_Background_Response is "Function_for_Pathogen_Destruction_Background_Response"
+
+function Function_for_Macrophage_Recruitment(smr, R1, mumr)
+  smr*R1/(mumr + R1);
+end
+
+Function_for_Macrophage_Recruitment is "Function_for_Macrophage_Recruitment"
+
+function Function_for_Debris_Destruction_Macrophages(kptm, Pt, fi2, kem, E)
+  kptm*Pt*fi2*(1 + kem*E);
+end
+
+Function_for_Debris_Destruction_Macrophages is "Function_for_Debris_Destruction_Macrophages"
+
+function Function_for_Debris_Destruction_Neutrophils(kptn, Pt, N, ken)
+  kptn*Pt*N*(1 + ken*N);
+end
+
+Function_for_Debris_Destruction_Neutrophils is "Function_for_Debris_Destruction_Neutrophils"
+
+function Function_for_Pathogen_Destruction_Macrophages(kpm, P, fi2, kem, E)
+  kpm*P*fi2*(1 + kem*E);
+end
+
+Function_for_Pathogen_Destruction_Macrophages is "Function_for_Pathogen_Destruction_Macrophages"
+
+function Function_for_Neutrophil_Destruction_Macrophage(knm, N, fi2)
+  knm*N*fi2;
+end
+
+Function_for_Neutrophil_Destruction_Macrophage is "Function_for_Neutrophil_Destruction_Macrophage"
+
+
+model *Cooper2015___Modeling_the_effects_of_systemic_mediators_on_the_inflammatory_phase_of_wound_healing()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species P in compartment_, Pt in compartment_, M in compartment_, N in compartment_;
+
+  // Assignment Rules:
+  fi2 := M/(1 + (N/Ninf)^2 + (C/Cm1)^2);
+  fEN := snr*R2/(munr + R2)/(1 + (E/ENinf)^2);
+  R2 := (knpt*Pt + knp*P)/(1 + (C/Cn)^2);
+  R1 := (kmpt*Pt + kmp*P + fEM_Kmm_E*M + kmn*N)/(1 + (C/Cm2)^2);
+  fEM_Kmm_E := kmm/(1 + (E/EMinf)^2);
+
+  // Reactions:
+  Pathogen_Growth:  => P; compartment_*Function_for_Pathogen_Growth(kpg, P, pinf);
+  Pathogen_Destruction_Background_Response: P => ; compartment_*Function_for_Pathogen_Destruction_Background_Response(kpb, sb, P, mub, kbp);
+  Pathogen_Destruction_Neutrophils: P => ; compartment_*Function_for_Pathogen_Destruction_Neutrophils(kpn, P, N, ken, E);
+  Pathogen_Destruction_Macrophages: P => ; compartment_*Function_for_Pathogen_Destruction_Macrophages(kpm, P, fi2, kem, E);
+  Debris_Destruction_Neutrophils: Pt => ; compartment_*Function_for_Debris_Destruction_Neutrophils(kptn, Pt, N, ken);
+  Debris_Destruction_Macrophages: Pt => ; compartment_*Function_for_Debris_Destruction_Macrophages(kptm, Pt, fi2, kem, E);
+  Debris_Neutrophil_Decay: N => Pt; compartment_*mun*N;
+  Debris_Decay_Intrinsic: Pt => ; compartment_*mupt*Pt;
+  Macrophage_Recruitment:  => M; compartment_*Function_for_Macrophage_Recruitment(smr, R1, mumr);
+  Macrophage_Activation: M => ; compartment_*mum*M;
+  Neutrophil_Activation:  => N; compartment_*Constant_flux__irreversible(fEN);
+  Neutrophil_Destruction_Macrophage: N => ; compartment_*Function_for_Neutrophil_Destruction_Macrophage(knm, N, fi2);
+
+  // Species initializations:
+  P = 0.1;
+  Pt = 2;
+  M = 0;
+  N = 0.1;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  kpn = 35.03;
+  kpm = 34.8;
+  Ninf = 0.11;
+  kptn = 2.03;
+  kptm = 3.16;
+  mupt = 0.37;
+  knp = 17.58;
+  knpt = 2.97;
+  snr = 0.38;
+  munr = 3.3;
+  mun = 1.02;
+  knm = 6.42;
+  kmp = 18.52;
+  kmm = 0.06;
+  kmn = 10.58;
+  kmpt = 41.5;
+  smr = 0.17;
+  mumr = 0.54;
+  mum = 0.5;
+  C = 0;
+  Cm1 = 72.84;
+  E = 0;
+  ENinf = 6.8;
+  Cm2 = 13.06;
+  Cn = 175.72;
+  ken = 5.37;
+  EMinf = 5;
+  kem = 4.97;
+  kpg = 14.4;
+  pinf = 20;
+  kbp = 0.2;
+  sb = 0.12;
+  mub = 0.048;
+  kpb = 14.4;
+
+  // Other declarations:
+  var fi2, fEN, R2, R1, fEM_Kmm_E;
+  const compartment_, kpn, kpm, Ninf, kptn, kptm, mupt, knp, knpt, snr, munr;
+  const mun, knm, kmp, kmm, kmn, kmpt, smr, mumr, mum, C, Cm1, E, ENinf, Cm2;
+  const Cn, ken, EMinf, kem, kpg, pinf, kbp, sb, mub, kpb;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = item;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+
+  // CV terms:
+  compartment_ hypernym "http://identifiers.org/ncit/C13232"
+  P identity "http://identifiers.org/ncit/C80324"
+  Pt hypernym "http://identifiers.org/ncit/C120869"
+  M identity "http://identifiers.org/cl/CL:0000235"
+  N identity "http://identifiers.org/cl/CL:0000775"
+  Pathogen_Growth hypernym "http://identifiers.org/ncit/C18081"
+  Pathogen_Destruction_Background_Response hypernym "http://identifiers.org/ncit/C40676"
+  Pathogen_Destruction_Neutrophils hypernym "http://identifiers.org/go/GO:0006909"
+  Pathogen_Destruction_Macrophages hypernym "http://identifiers.org/go/GO:0006909"
+  Debris_Destruction_Neutrophils hypernym "http://identifiers.org/go/GO:0006909"
+  Debris_Destruction_Macrophages hypernym "http://identifiers.org/go/GO:0006909"
+  Debris_Neutrophil_Decay part "http://identifiers.org/cl/CL:0000775"
+  Debris_Neutrophil_Decay hypernym "http://identifiers.org/go/GO:0008219"
+  Debris_Decay_Intrinsic hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Macrophage_Recruitment hypernym "http://identifiers.org/go/GO:0042116"
+  Macrophage_Activation hypernym "http://identifiers.org/go/GO:0008219"
+  Neutrophil_Activation hypernym "http://identifiers.org/go/GO:0042119"
+  Neutrophil_Destruction_Macrophage hypernym "http://identifiers.org/go/GO:0006909"
+end
+
+Cooper2015___Modeling_the_effects_of_systemic_mediators_on_the_inflammatory_phase_of_wound_healing is "Cooper2015 - Modeling the effects of systemic mediators on the inflammatory phase of wound healing"
+
+Cooper2015___Modeling_the_effects_of_systemic_mediators_on_the_inflammatory_phase_of_wound_healing description "http://identifiers.org/pubmed/25446708"
+Cooper2015___Modeling_the_effects_of_systemic_mediators_on_the_inflammatory_phase_of_wound_healing model_entity_is "http://identifiers.org/biomodels.db/MODEL1911130002",
+                                                                                                                   "http://identifiers.org/biomodels.db/BIOMD0000000855"
+Cooper2015___Modeling_the_effects_of_systemic_mediators_on_the_inflammatory_phase_of_wound_healing property "http://identifiers.org/chebi/CHEBI:50114"
+Cooper2015___Modeling_the_effects_of_systemic_mediators_on_the_inflammatory_phase_of_wound_healing property "http://identifiers.org/chebi/CHEBI:17650"
+Cooper2015___Modeling_the_effects_of_systemic_mediators_on_the_inflammatory_phase_of_wound_healing property "http://identifiers.org/cl/CL:0000235"
+Cooper2015___Modeling_the_effects_of_systemic_mediators_on_the_inflammatory_phase_of_wound_healing property "http://identifiers.org/mamo/MAMO_0000046"
+Cooper2015___Modeling_the_effects_of_systemic_mediators_on_the_inflammatory_phase_of_wound_healing property "http://identifiers.org/cl/CL:0000775"
+Cooper2015___Modeling_the_effects_of_systemic_mediators_on_the_inflammatory_phase_of_wound_healing taxon "http://identifiers.org/taxonomy/9606"

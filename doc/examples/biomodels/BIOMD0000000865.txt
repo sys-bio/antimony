@@ -1,0 +1,161 @@
+// Created by libAntimony v2.13.0
+function Function_for_Bcl6_Production(a_c, U, n_c, A_c, M_c, r_c, B, I, C)
+  (a_c*U^n_c/(A_c^n_c + U^n_c))*(M_c^r_c/(M_c^r_c + B^r_c + I^r_c + C^r_c));
+end
+
+Function_for_Bcl6_Production is "Function_for_Bcl6_Production"
+
+function Function_for_IRF4_Production(Phi_L_P, sigma_i, a_i, U, n_i, A_i, k_i, B, m_i, K_i, I, s_i, Q_i, q_i)
+  Phi_L_P*(sigma_i + a_i*U^n_i/(A_i^n_i + U^n_i) + k_i*B^m_i/(K_i^m_i + B^m_i) + q_i*I^s_i/(Q_i^s_i + I^s_i));
+end
+
+Function_for_IRF4_Production is "Function_for_IRF4_Production"
+
+function Function_for_PD1_Production(sigma_p, a_p, U, n_p, A_p, M_p, r_p, B)
+  (sigma_p + a_p*U^n_p/(A_p^n_p + U^n_p))*(M_p^r_p/(M_p^r_p + B^r_p));
+end
+
+Function_for_PD1_Production is "Function_for_PD1_Production"
+
+function Function_for_Blimp1_Production(a_b, U, n_b, A_b, k_b, I, m_b, K_b, r_b, M_b, C)
+  (a_b*U^n_b/(A_b^n_b + U^n_b) + k_b*I^m_b/(K_b^m_b + I^m_b))*(M_b^r_b/(M_b^r_b + C^r_b));
+end
+
+Function_for_Blimp1_Production is "Function_for_Blimp1_Production"
+
+
+model *Nikolaev2019___Immunobiochemical_reconstruction_of_influenza_lung_infection_melanoma_skin_cancer_interactions()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species C in compartment_, P in compartment_, I in compartment_, B in compartment_;
+
+  // Assignment Rules:
+  y_a_k := (1 + lambda*nu_k*c_T_a_k)/(1 + gamma_y + lambda*nu_k*c_T_a_k);
+  nu_k := (K_p/(kappa + K_i_nu))*(kappa/(kappa + K_p));
+  c_T_a_k := 0.5*(1 + alpha + kappa - ((1 + alpha + kappa)^2 - 4*alpha)^0.5);
+  mu_a_k := (1 + delta*y_a_k)/(1 + gamma_p + theta*nu_k*c_T_a_k + delta*y_a_k);
+  phi_L_P := H_p/(H_p + L*P);
+  U_a_k_P := mu_a_k*phi_L_P;
+  sigma_p_tilde := sigma_p + k_T*T^n_T/(K_T^n_T + T^n_T);
+  Phi_L_P := H_L^h_L/(H_L^h_L + (L*P)^h_L);
+
+  // Reactions:
+  Bcl6_Production:  => C; compartment_*Function_for_Bcl6_Production(a_c, U_a_k_P, n_c, A_c, M_c, r_c, B, I, C);
+  Bcl6_Degradation: C => ; compartment_*mu_c*C;
+  PD1_Production:  => P; compartment_*Function_for_PD1_Production(sigma_p_tilde, a_p, U_a_k_P, n_p, A_p, M_p, r_p, B);
+  PD1_Degradation: P => ; compartment_*mu_p*P;
+  IRF4_Production:  => I; compartment_*Function_for_IRF4_Production(Phi_L_P, sigma_i, a_i, U_a_k_P, n_i, A_i, k_i, B, m_i, K_i, I, s_i, Q_i, q_i);
+  IRF4_Degradation: I => ; compartment_*mu_i*I;
+  Blimp1_Degradation: B => ; compartment_*mu_b*B;
+  Blimp1_Production:  => B; compartment_*Function_for_Blimp1_Production(a_b, U_a_k_P, n_b, A_b, k_b, I, m_b, K_b, r_b, M_b, C);
+
+  // Species initializations:
+  C = 1;
+  P = 1;
+  I = 1;
+  B = 1;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  sigma_i = 0.3;
+  sigma_p = 0.1;
+  a_c = 0.75;
+  a_p = 0.75;
+  a_i = 75;
+  a_b = 100;
+  A_c = 0.01;
+  A_p = 0.1;
+  A_i = 1;
+  A_b = 10;
+  n_c = 3;
+  n_p = 3;
+  n_b = 2;
+  n_i = 2;
+  k_b = 25;
+  k_i = 7.5;
+  q_i = 7.5;
+  K_b = 1;
+  K_i = 1;
+  Q_i = 1;
+  m_b = 2;
+  m_i = 2;
+  s_i = 2;
+  M_b = 10;
+  M_c = 10;
+  M_p = 10;
+  H_p = 0.1;
+  H_L = 0.1;
+  r_b = 2;
+  r_c = 2;
+  r_p = 4;
+  h_L = 4;
+  mu_c = 0.1;
+  mu_p = 0.1;
+  mu_b = 1;
+  mu_i = 1;
+  L = 0;
+  K_i_nu = 0.001;
+  K_p = 0.01;
+  gamma_y = 500;
+  gamma_p = 500;
+  delta = 5000;
+  theta = 50000;
+  lambda = 10000;
+  alpha = 0.0001;
+  kappa = 1;
+  k_T = 0.5;
+  T = 0;
+  n_T = 2;
+  K_T = 1;
+
+  // Other declarations:
+  var y_a_k, nu_k, c_T_a_k, mu_a_k, phi_L_P, U_a_k_P, sigma_p_tilde, Phi_L_P;
+  const compartment_, sigma_i, sigma_p, a_c, a_p, a_i, a_b, A_c, A_p, A_i;
+  const A_b, n_c, n_p, n_b, n_i, k_b, k_i, q_i, K_b, K_i, Q_i, m_b, m_i, s_i;
+  const M_b, M_c, M_p, H_p, H_L, r_b, r_c, r_p, h_L, mu_c, mu_p, mu_b, mu_i;
+  const L, K_i_nu, K_p, gamma_y, gamma_p, delta, theta, lambda, alpha, kappa;
+  const k_T, T, n_T, K_T;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = item;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+
+  // CV terms:
+  compartment_ hypernym "http://identifiers.org/bto/BTO:0000763"
+  C identity "http://identifiers.org/ncit/C26149"
+  P identity "http://identifiers.org/pr/PR:000001919"
+  I identity "http://identifiers.org/ncit/C17926"
+  B identity "http://identifiers.org/pr/PR:000001831"
+  Bcl6_Production hypernym "http://identifiers.org/ncit/C112927"
+  Bcl6_Production property "http://identifiers.org/ncit/C19060"
+  Bcl6_Degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+  PD1_Production hypernym "http://identifiers.org/ncit/C112927"
+  PD1_Production property "http://identifiers.org/ncit/C19060"
+  PD1_Degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+  IRF4_Production hypernym "http://identifiers.org/ncit/C112927"
+  IRF4_Production property "http://identifiers.org/ncit/C19060"
+  IRF4_Degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Blimp1_Degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Blimp1_Production hypernym "http://identifiers.org/ncit/C112927"
+  Blimp1_Production property "http://identifiers.org/ncit/C19060"
+end
+
+Nikolaev2019___Immunobiochemical_reconstruction_of_influenza_lung_infection_melanoma_skin_cancer_interactions is "Nikolaev2019 - Immunobiochemical reconstruction of influenza lung infection-melanoma skin cancer interactions"
+
+Nikolaev2019___Immunobiochemical_reconstruction_of_influenza_lung_infection_melanoma_skin_cancer_interactions description "http://identifiers.org/pubmed/30745900"
+Nikolaev2019___Immunobiochemical_reconstruction_of_influenza_lung_infection_melanoma_skin_cancer_interactions model_entity_is "http://identifiers.org/biomodels.db/MODEL1911180001",
+                                                                                                                              "http://identifiers.org/biomodels.db/BIOMD0000000865"
+Nikolaev2019___Immunobiochemical_reconstruction_of_influenza_lung_infection_melanoma_skin_cancer_interactions property "http://identifiers.org/mamo/MAMO_0000046"
+Nikolaev2019___Immunobiochemical_reconstruction_of_influenza_lung_infection_melanoma_skin_cancer_interactions property "http://identifiers.org/ncit/C94697"
+Nikolaev2019___Immunobiochemical_reconstruction_of_influenza_lung_infection_melanoma_skin_cancer_interactions property "http://identifiers.org/ncit/C3224"
+Nikolaev2019___Immunobiochemical_reconstruction_of_influenza_lung_infection_melanoma_skin_cancer_interactions property "http://identifiers.org/ncit/C53482"
+Nikolaev2019___Immunobiochemical_reconstruction_of_influenza_lung_infection_melanoma_skin_cancer_interactions property "http://identifiers.org/pr/PR:000001543"
+Nikolaev2019___Immunobiochemical_reconstruction_of_influenza_lung_infection_melanoma_skin_cancer_interactions taxon "http://identifiers.org/taxonomy/10090"

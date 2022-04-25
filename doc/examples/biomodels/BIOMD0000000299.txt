@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Leloup1999_CircadianRhythms_Neurospora()
 
   // Compartments and Species:
@@ -11,7 +11,7 @@ model *Leloup1999_CircadianRhythms_Neurospora()
   // Rate Rules:
   M' = vs*(KI^n/(KI^n + FN^n)) - vm*(M/(Km + M));
   FN' = k1*FC - k2*FN;
-  FC' = (ks*M + k2*FN) - (vd*(FC/(Kd + FC)) + k1*FC);
+  FC' = ks*M + k2*FN - (vd*(FC/(Kd + FC)) + k1*FC);
 
   // Species initializations:
   M = 0.1;
@@ -37,4 +37,39 @@ model *Leloup1999_CircadianRhythms_Neurospora()
   // Other declarations:
   var Ft;
   const Cytoplasm, Nucleus, vs, KI, n, vm, Km, ks, k2, vd, Kd, k1;
+
+  // SBO terms:
+  Cytoplasm.sboTerm = 290
+  Nucleus.sboTerm = 290
+  M.sboTerm = 278
+  vs.sboTerm = 153
+  KI.sboTerm = 9
+  n.sboTerm = 190
+  FN.sboTerm = 245
+  vm.sboTerm = 186
+  Km.sboTerm = 27
+  FC.sboTerm = 245
+  ks.sboTerm = 22
+  k2.sboTerm = 22
+  vd.sboTerm = 186
+  Kd.sboTerm = 27
+  k1.sboTerm = 22
+  Ft.sboTerm = 360
+
+  // CV terms:
+  Cytoplasm hypernym "http://identifiers.org/go/GO:0005737"
+  Nucleus hypernym "http://identifiers.org/go/GO:0005634"
+  M encodement "http://identifiers.org/uniprot/P19970"
+  M hypernym "http://identifiers.org/chebi/CHEBI:33699",
+             "http://identifiers.org/kegg.compound/C02100"
+  FN hypernym "http://identifiers.org/uniprot/P19970"
+  FC hypernym "http://identifiers.org/uniprot/P19970"
 end
+
+Leloup1999_CircadianRhythms_Neurospora is "Leloup1999_CircadianRhythms_Neurospora"
+
+Leloup1999_CircadianRhythms_Neurospora model_entity_is "http://identifiers.org/biomodels.db/MODEL1101140000"
+Leloup1999_CircadianRhythms_Neurospora model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000299"
+Leloup1999_CircadianRhythms_Neurospora description "http://identifiers.org/pubmed/10643740"
+Leloup1999_CircadianRhythms_Neurospora hypernym "http://identifiers.org/go/GO:0042752"
+Leloup1999_CircadianRhythms_Neurospora taxon "http://identifiers.org/taxonomy/5141"

@@ -1,0 +1,269 @@
+// Created by libAntimony v2.13.0
+model *Panteleev2010___Blood_Coagulation__Full_Model()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species $VIIa_TF in compartment_, $VIIa in compartment_, $TF in compartment_;
+  species $VIIa_TF_F in compartment_, $VII_TF in compartment_, $IIa_F in compartment_;
+  species $Xa_F in compartment_, $Xa_TFPI in compartment_, $Xa_VIIa_TF in compartment_;
+  species $TFPI in compartment_, $VII in compartment_, $IXa in compartment_;
+  species $IX in compartment_, $XIa in compartment_, $Xa in compartment_;
+  species $X in compartment_, $IXa_B_F in compartment_, $X_B in compartment_;
+  species Phospholipid in compartment_, $VIIIa_B_F in compartment_, $AT_III in compartment_;
+  species alpha2_macroglobulin in compartment_, alpha1_antitrypsin in compartment_;
+  species ProteinC_Inhibitor in compartment_, $Xa_Va_b in compartment_, $IIa in compartment_;
+  species $II in compartment_, $II_B in compartment_, heparin_cofactor2 in compartment_;
+  species $fibrin in compartment_, $fibrinogen in compartment_, $VIIIa in compartment_;
+  species $VIII in compartment_, $Va in compartment_, $V in compartment_;
+  species $APC in compartment_, $Va_B_F in compartment_, $XI in compartment_;
+  species alpha2_antiplasmin in compartment_, C1_inhibitor in compartment_;
+  species $PC in compartment_, ProteinS_inhibitor in compartment_, $Va_B in compartment_;
+
+  // Assignment Rules:
+  VIIa_TF_F := VIIa_TF/(1 + IX/K04 + X/K06);
+  IIa_F := IIa/(1 + (fibrin + fibrinogen)/K14);
+  Xa_F := Xa - Xa_Va_b;
+  Xa_VIIa_TF := (k06/(K06*k_19))*X*VIIa_TF_F;
+  IXa_B_F := IXa*Phospholipid*n20/(K20 + IXa);
+  X_B := X*Phospholipid*n25/(K25*(1 + X/K25 + II/K26));
+  VIIIa_B_F := VIIIa*Phospholipid*n21/((K21 + VIIIa)*(1 + (X_B/(Phospholipid*K10))*(1 + ProteinS_inhibitor/K22)));
+  Xa_Va_b := Xa*Va_B/(K23*(1 + ProteinS_inhibitor/K24 + Xa/K23) + Va_B);
+  II_B := II*Phospholipid*n25/(K26*(1 + X/K25 + II/K26));
+  Va_B_F := Va_B - Xa_Va_b;
+  Va_B := Va*Phospholipid*n27/(K27 + Va);
+  Fibrin_uM := fibrin/1000;
+
+  // Rate Rules:
+  VIIa_TF' = (k01*VIIa*TF - k_01*VIIa_TF_F) + k02*VII_TF*IIa_F + k03*VII_TF*Xa_F - h01*VIIa_TF_F*Xa_TFPI - h02*Xa_VIIa_TF*TFPI;
+  VIIa' = -(k01*VIIa*TF - k_01*VIIa_TF_F) + k02*VII*IIa_F;
+  TF' = -(k01*VIIa*TF - k_01*VIIa_TF_F) - (k01*VII*TF - k_01*VII_TF);
+  VII_TF' = k01*VII*TF - k_01*VII_TF - k02*VII_TF*IIa_F - k03*VII_TF*Xa_F;
+  Xa_TFPI' = k11*Xa_F*TFPI - k_11*Xa_TFPI - h01*VIIa_TF_F*Xa_TFPI;
+  TFPI' = -(k11*Xa_F*TFPI - k_11*Xa_TFPI) - h02*Xa_VIIa_TF*TFPI;
+  VII' = -(k01*VII*TF - k_01*VII_TF) - k02*VII*IIa_F;
+  IXa' = (k04/K04)*IX*VIIa_TF_F + k05*IX*XIa/(K05 + IX) - h03*Xa_TFPI*IXa;
+  IX' = -(k04/K04)*IX*VIIa_TF_F - k05*IX*XIa/(K05 + IX);
+  XIa' = k17*Phospholipid*XI*IIa_F - (h16*AT_III + h17*alpha2_antiplasmin + h18*alpha1_antitrypsin + h19*ProteinC_Inhibitor + h20*C1_inhibitor)*XIa;
+  Xa' = (k06/K06)*X*VIIa_TF_F + k07*IXa_B_F*X_B/(Phospholipid*K07) + k08*IXa_B_F*VIIIa_B_F*X_B/(Phospholipid^2*K09*k08) - (k11*Xa_F*TFPI - k_11*Xa_TFPI) - (h04*AT_III + h05*alpha2_macroglobulin + h06*alpha1_antitrypsin + h07*ProteinC_Inhibitor)*Xa_F - h08*AT_III*Xa_Va_b;
+  X' = -(k06/K06)*X*VIIa_TF_F - k07*IXa_B_F*X_B/(Phospholipid*K07) - k08*IXa_B_F*VIIIa_B_F*X_B/(Phospholipid^2*K09*k08);
+  AT_III' = -(h03*IXa + h04*Xa_F + h08*Xa_Va_b + h09*IIa_F + h16*XIa)*AT_III;
+  IIa' = k12*Phospholipid*Xa_F*II + k13*Xa_Va_b*II_B/Phospholipid - (h09*AT_III + h10*alpha2_macroglobulin + h11*alpha1_antitrypsin + h12*ProteinC_Inhibitor + h13*heparin_cofactor2)*IIa_F;
+  II' = -k12*Phospholipid*Xa_F*II - k13*Xa_Va_b*II_B/Phospholipid;
+  fibrin' = (k14/K14)*fibrinogen*IIa_F;
+  fibrinogen' = -(k14/K14)*fibrinogen*IIa_F;
+  VIIIa' = k15*VIII*IIa_F/(K15 + IIa_F) - h14*VIIIa;
+  VIII' = -k15*VIII*IIa_F/(K15 + IIa_F);
+  Va' = k16*V*IIa_F/(K16 + IIa_F) - h15*APC*Va_B_F;
+  V' = -k16*V*IIa_F/(K16 + IIa_F);
+  APC' = k18*PC*IIa_F - (h21*alpha2_macroglobulin + h22*alpha2_antiplasmin + h23*alpha1_antitrypsin + h24*ProteinC_Inhibitor)*APC;
+  XI' = -k17*Phospholipid*XI*IIa_F;
+  PC' = -k18*PC*IIa_F;
+
+  // Species initializations:
+  VIIa_TF = 0;
+  VIIa = 0.1;
+  TF = 0.005;
+  VII_TF = 0;
+  Xa_TFPI = 0;
+  TFPI = 2.5;
+  VII = 10;
+  IXa = 0;
+  IX = 90;
+  XIa = 0;
+  Xa = 0;
+  X = 170;
+  Phospholipid = 7.5e-05;
+  AT_III = 3400;
+  alpha2_macroglobulin = 3000;
+  alpha1_antitrypsin = 40000;
+  ProteinC_Inhibitor = 88;
+  IIa = 0;
+  II = 1400;
+  heparin_cofactor2 = 1400;
+  fibrin = 0;
+  fibrinogen = 7600;
+  VIIIa = 0;
+  VIII = 0.7;
+  Va = 0;
+  V = 0;
+  APC = 0;
+  XI = 30;
+  alpha2_antiplasmin = 1100;
+  C1_inhibitor = 1700;
+  PC = 60;
+  ProteinS_inhibitor = 346;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  k01 = 4.2;
+  k_01 = 1.1;
+  k02 = 0.0014;
+  k03 = 0.4;
+  h01 = 0.44;
+  h02 = 6;
+  k04 = 15;
+  K04 = 210;
+  k05 = 5.8;
+  K05 = 200;
+  h03 = 8.2e-06;
+  k06 = 435;
+  K06 = 238;
+  k07 = 0.06;
+  K07 = 230;
+  k08 = 6350;
+  K09 = 278;
+  k11 = 0.052;
+  k_11 = 0.02;
+  h04 = 0.00015;
+  h05 = 4e-05;
+  h06 = 1.36e-05;
+  h07 = 0.0012;
+  h08 = 2.2e-05;
+  k12 = 45;
+  k13 = 1.44;
+  h09 = 0.00041;
+  h10 = 0.0001;
+  h11 = 3e-06;
+  h12 = 0.00037;
+  h13 = 6.3e-05;
+  k14 = 5040;
+  K14 = 7200;
+  k15 = 54;
+  K15 = 147;
+  h14 = 0.35;
+  k16 = 14;
+  K16 = 71.7;
+  h15 = 7.7;
+  k17 = 0.03;
+  h16 = 1.9e-05;
+  h17 = 2.6e-05;
+  h18 = 6e-06;
+  h19 = 0.0054;
+  h20 = 0.00014;
+  k18 = 2e-05;
+  h21 = 6e-06;
+  h22 = 6e-06;
+  h23 = 7e-07;
+  h24 = 0.00039;
+  k_19 = 770;
+  n20 = 260;
+  K20 = 2.57;
+  n21 = 750;
+  K21 = 1.5;
+  K10 = 1655;
+  K22 = 150;
+  K23 = 0.118;
+  K24 = 200;
+  n25 = 16000;
+  K25 = 320;
+  K26 = 470;
+  n27 = 2700;
+  K27 = 2.9;
+  K08 = 1216;
+  quantity = 0;
+
+  // Other declarations:
+  var Fibrin_uM;
+  const compartment_, k01, k_01, k02, k03, h01, h02, k04, K04, k05, K05, h03;
+  const k06, K06, k07, K07, k08, K09, k11, k_11, h04, h05, h06, h07, h08;
+  const k12, k13, h09, h10, h11, h12, h13, k14, K14, k15, K15, h14, k16, K16;
+  const h15, k17, h16, h17, h18, h19, h20, k18, h21, h22, h23, h24, k_19;
+  const n20, K20, n21, K21, K10, K22, K23, K24, n25, K25, K26, n27, K27, K08;
+  const quantity;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-9 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  VIIa_TF is "VIIa-TF";
+  VIIa_TF_F is "VIIa-TF^F";
+  VII_TF is "VII-TF";
+  IIa_F is "IIa^F";
+  Xa_F is "Xa^F";
+  Xa_TFPI is "Xa-TFPI";
+  Xa_VIIa_TF is "Xa-VIIa-TF";
+  IXa_B_F is "IXa^B^F";
+  X_B is "X^B";
+  VIIIa_B_F is "VIIIa^B^F";
+  AT_III is "AT-III";
+  alpha2_macroglobulin is "alpha2-macroglobulin";
+  alpha1_antitrypsin is "alpha1-antitrypsin";
+  ProteinC_Inhibitor is "ProteinC-Inhibitor";
+  Xa_Va_b is "Xa-Va^b";
+  II_B is "II^B";
+  heparin_cofactor2 is "heparin-cofactor2";
+  Va_B_F is "Va^B^F";
+  alpha2_antiplasmin is "alpha2-antiplasmin";
+  C1_inhibitor is "C1-inhibitor";
+  ProteinS_inhibitor is "ProteinS-inhibitor";
+  Va_B is "Va^B";
+  Fibrin_uM is "Fibrin(uM)";
+
+  // CV terms:
+  VIIa_TF part "http://identifiers.org/ncit/C16570"
+  VIIa_TF part "http://identifiers.org/ncit/C17197"
+  VIIa parthood "http://identifiers.org/ncit/C16570"
+  TF identity "http://identifiers.org/ncit/C17197"
+  VIIa_TF_F part "http://identifiers.org/ncit/C17197"
+  VIIa_TF_F part "http://identifiers.org/ncit/C16570"
+  VII_TF part "http://identifiers.org/ncit/C16570"
+  VII_TF part "http://identifiers.org/ncit/C17197"
+  IIa_F hypernym "http://identifiers.org/chebi/CHEBI:9574"
+  Xa_F hypernym "http://identifiers.org/ncit/C76142"
+  Xa_TFPI instance "http://identifiers.org/ncit/C76142",
+                   "http://identifiers.org/ncit/C97260"
+  Xa_TFPI part "http://identifiers.org/ncit/C76142"
+  Xa_VIIa_TF instance "http://identifiers.org/ncit/C16570",
+                      "http://identifiers.org/ncit/C76142",
+                      "http://identifiers.org/ncit/C17197"
+  Xa_VIIa_TF part "http://identifiers.org/ncit/C16570"
+  Xa_VIIa_TF part "http://identifiers.org/ncit/C76142"
+  TFPI identity "http://identifiers.org/ncit/C97260"
+  VII identity "http://identifiers.org/ncit/C16570"
+  IXa hypernym "http://identifiers.org/ncit/C28482"
+  IX identity "http://identifiers.org/ncit/C28482"
+  XIa propertyBearer "http://identifiers.org/orphanet/121660"
+  Xa hypernym "http://identifiers.org/ncit/C76142"
+  X version "http://identifiers.org/ncit/C76142"
+  IXa_B_F hypernym "http://identifiers.org/ncit/C28482"
+  X_B hypernym "http://identifiers.org/ncit/C76142"
+  Phospholipid identity "http://identifiers.org/chebi/CHEBI:16247"
+  VIIIa_B_F hypernym "http://identifiers.org/ncit/C16571"
+  AT_III identity "http://identifiers.org/ncit/C136824"
+  alpha2_macroglobulin identity "http://identifiers.org/ncit/C105924"
+  alpha1_antitrypsin identity "http://identifiers.org/ncit/C105012"
+  ProteinC_Inhibitor property "http://identifiers.org/ncit/C17324"
+  Xa_Va_b part "http://identifiers.org/ncit/C91335"
+  Xa_Va_b part "http://identifiers.org/ncit/C76142"
+  IIa propertyBearer "http://identifiers.org/chebi/CHEBI:9574"
+  II identity "http://identifiers.org/chebi/CHEBI:9574"
+  II_B hypernym "http://identifiers.org/chebi/CHEBI:9574"
+  heparin_cofactor2 identity "http://identifiers.org/ncit/C113637"
+  fibrin identity "http://identifiers.org/ncit/C32598"
+  fibrinogen identity "http://identifiers.org/ncit/C25736"
+  VIIIa hypernym "http://identifiers.org/ncit/C16571"
+  VIII taxon "http://identifiers.org/ncit/C16571"
+  Va propertyBearer "http://identifiers.org/ncit/C91335"
+  V identity "http://identifiers.org/ncit/C91335"
+  APC hypernym "http://identifiers.org/ncit/C87607"
+  Va_B_F hypernym "http://identifiers.org/ncit/C91335"
+  XI identity "http://identifiers.org/orphanet/121660"
+  alpha2_antiplasmin identity "http://identifiers.org/ncit/C129263"
+  C1_inhibitor identity "http://identifiers.org/ncit/C87730"
+  PC identity "http://identifiers.org/ncit/C87607"
+  ProteinS_inhibitor property "http://identifiers.org/ncit/C17324"
+  Va_B hypernym "http://identifiers.org/ncit/C91335"
+end
+
+Panteleev2010___Blood_Coagulation__Full_Model is "Panteleev2010 - Blood Coagulation: Full Model"
+
+Panteleev2010___Blood_Coagulation__Full_Model description "http://identifiers.org/pubmed/20441738"
+Panteleev2010___Blood_Coagulation__Full_Model model_entity_is "http://identifiers.org/biomodels.db/MODEL1808160002",
+                                                              "http://identifiers.org/biomodels.db/BIOMD0000000740"
+Panteleev2010___Blood_Coagulation__Full_Model hypernym "http://identifiers.org/go/GO:0007596"
+Panteleev2010___Blood_Coagulation__Full_Model property "http://identifiers.org/mamo/MAMO_0000046"
+Panteleev2010___Blood_Coagulation__Full_Model taxon "http://identifiers.org/taxonomy/9606"

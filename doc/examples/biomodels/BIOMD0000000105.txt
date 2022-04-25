@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *BIOMD0000000105()
 
   // Compartments and Species:
@@ -23,7 +23,7 @@ model *BIOMD0000000105()
   Refolding: MisP => NatP + refNatP; k3*MisP;
   MisPE3Binding: MisP + E3 => E3_MisP; k61*MisP*E3;
   MisPE3Release: E3_MisP => MisP + E3; k61r*E3_MisP;
-  E1UbBinding: E1 + Ub + $ATP => E1_Ub + $AMP; (k62*E1*Ub*ATP)/(5000 + ATP);
+  E1UbBinding: E1 + Ub + $ATP => E1_Ub + $AMP; k62*E1*Ub*ATP/(5000 + ATP);
   E2UbBinding: E2 + E1_Ub => E2_Ub + E1; k63*E2*E1_Ub;
   Monoubiquitination: E2_Ub + E3_MisP => MisP_Ub + E2 + E3; k64*E2_Ub*E3_MisP;
   Polyubiquitination1: MisP_Ub + E2_Ub => MisP_Ub2 + E2; k65*MisP_Ub*E2_Ub;
@@ -51,21 +51,21 @@ model *BIOMD0000000105()
   DeubiquitinationBoundMisP3: MisP_Ub6_Proteasome + DUB => MisP_Ub5_Proteasome + Ub + DUB; k68*MisP_Ub6_Proteasome*DUB;
   DeubiquitinationBoundMisP2: MisP_Ub5_Proteasome + DUB => MisP_Ub4_Proteasome + Ub + DUB; k68*MisP_Ub5_Proteasome*DUB;
   DeubiquitinationBoundMisP1: MisP_Ub4_Proteasome + DUB => MisP_Ub3 + Proteasome + Ub + DUB; k68*MisP_Ub4_Proteasome*DUB;
-  ProteasomeActivity1: MisP_Ub4_Proteasome + $ATP => 4Ub + Proteasome + $ADP + degUb4; (k69*MisP_Ub4_Proteasome*ATP)/(5000 + ATP);
-  ProteasomeActivity2: MisP_Ub5_Proteasome + $ATP => 5Ub + Proteasome + $ADP + degUb5; (k69*MisP_Ub5_Proteasome*ATP)/(5000 + ATP);
-  ProteasomeActivity3: MisP_Ub6_Proteasome + $ATP => 6Ub + Proteasome + $ADP + degUb6; (k69*MisP_Ub6_Proteasome*ATP)/(5000 + ATP);
-  ProteasomeActivity4: MisP_Ub7_Proteasome + $ATP => 7Ub + Proteasome + $ADP + degUb7; (k69*MisP_Ub7_Proteasome*ATP)/(5000 + ATP);
-  ProteasomeActivity5: MisP_Ub8_Proteasome + $ATP => 8Ub + Proteasome + $ADP + degUb8; (k69*MisP_Ub8_Proteasome*ATP)/(5000 + ATP);
-  Aggregation1: 2MisP => AggP; k71*MisP*(MisP - 1)*0.5;
-  Aggregation2: MisP + AggP => 2AggP; k71*MisP*AggP;
-  Aggregation3: 2MisP_Ub => AggP; k72*MisP_Ub*(MisP_Ub - 1)*0.5;
-  Aggregation4: 2MisP_Ub2 => AggP; k72*MisP_Ub2*(MisP_Ub2 - 1)*0.5;
-  Aggregation5: 2MisP_Ub3 => AggP; k72*MisP_Ub3*(MisP_Ub3 - 1)*0.5;
-  Aggregation6: 2MisP_Ub4 => AggP; k72*MisP_Ub4*(MisP_Ub4 - 1)*0.5;
-  Aggregation7: 2MisP_Ub5 => AggP; k72*MisP_Ub5*(MisP_Ub5 - 1)*0.5;
-  Aggregation8: 2MisP_Ub6 => AggP; k72*MisP_Ub6*(MisP_Ub6 - 1)*0.5;
-  Aggregation9: 2MisP_Ub7 => AggP; k72*MisP_Ub7*(MisP_Ub7 - 1)*0.5;
-  Aggregation10: 2MisP_Ub8 => AggP; k72*MisP_Ub8*(MisP_Ub8 - 1)*0.5;
+  ProteasomeActivity1: MisP_Ub4_Proteasome + $ATP => 4 Ub + Proteasome + $ADP + degUb4; k69*MisP_Ub4_Proteasome*ATP/(5000 + ATP);
+  ProteasomeActivity2: MisP_Ub5_Proteasome + $ATP => 5 Ub + Proteasome + $ADP + degUb5; k69*MisP_Ub5_Proteasome*ATP/(5000 + ATP);
+  ProteasomeActivity3: MisP_Ub6_Proteasome + $ATP => 6 Ub + Proteasome + $ADP + degUb6; k69*MisP_Ub6_Proteasome*ATP/(5000 + ATP);
+  ProteasomeActivity4: MisP_Ub7_Proteasome + $ATP => 7 Ub + Proteasome + $ADP + degUb7; k69*MisP_Ub7_Proteasome*ATP/(5000 + ATP);
+  ProteasomeActivity5: MisP_Ub8_Proteasome + $ATP => 8 Ub + Proteasome + $ADP + degUb8; k69*MisP_Ub8_Proteasome*ATP/(5000 + ATP);
+  Aggregation1: 2 MisP => AggP; k71*MisP*(MisP - 1)*0.5;
+  Aggregation2: MisP + AggP => 2 AggP; k71*MisP*AggP;
+  Aggregation3: 2 MisP_Ub => AggP; k72*MisP_Ub*(MisP_Ub - 1)*0.5;
+  Aggregation4: 2 MisP_Ub2 => AggP; k72*MisP_Ub2*(MisP_Ub2 - 1)*0.5;
+  Aggregation5: 2 MisP_Ub3 => AggP; k72*MisP_Ub3*(MisP_Ub3 - 1)*0.5;
+  Aggregation6: 2 MisP_Ub4 => AggP; k72*MisP_Ub4*(MisP_Ub4 - 1)*0.5;
+  Aggregation7: 2 MisP_Ub5 => AggP; k72*MisP_Ub5*(MisP_Ub5 - 1)*0.5;
+  Aggregation8: 2 MisP_Ub6 => AggP; k72*MisP_Ub6*(MisP_Ub6 - 1)*0.5;
+  Aggregation9: 2 MisP_Ub7 => AggP; k72*MisP_Ub7*(MisP_Ub7 - 1)*0.5;
+  Aggregation10: 2 MisP_Ub8 => AggP; k72*MisP_Ub8*(MisP_Ub8 - 1)*0.5;
   Aggregation11: MisP_Ub + MisP => AggP; k72*MisP_Ub*MisP;
   Aggregation12: MisP_Ub2 + MisP => AggP; k72*MisP_Ub2*MisP;
   Aggregation13: MisP_Ub3 + MisP => AggP; k72*MisP_Ub3*MisP;
@@ -74,14 +74,14 @@ model *BIOMD0000000105()
   Aggregation16: MisP_Ub6 + MisP => AggP; k72*MisP_Ub6*MisP;
   Aggregation17: MisP_Ub7 + MisP => AggP; k72*MisP_Ub7*MisP;
   Aggregation18: MisP_Ub8 + MisP => AggP; k72*MisP_Ub8*MisP;
-  Aggregation19: MisP_Ub + AggP => 2AggP; k72*MisP_Ub*AggP;
-  Aggregation20: MisP_Ub2 + AggP => 2AggP; k72*MisP_Ub2*AggP;
-  Aggregation21: MisP_Ub3 + AggP => 2AggP; k72*MisP_Ub3*AggP;
-  Aggregation22: MisP_Ub4 + AggP => 2AggP; k72*MisP_Ub4*AggP;
-  Aggregation23: MisP_Ub5 + AggP => 2AggP; k72*MisP_Ub5*AggP;
-  Aggregation24: MisP_Ub6 + AggP => 2AggP; k72*MisP_Ub6*AggP;
-  Aggregation25: MisP_Ub7 + AggP => 2AggP; k72*MisP_Ub7*AggP;
-  Aggregation26: MisP_Ub8 + AggP => 2AggP; k72*MisP_Ub8*AggP;
+  Aggregation19: MisP_Ub + AggP => 2 AggP; k72*MisP_Ub*AggP;
+  Aggregation20: MisP_Ub2 + AggP => 2 AggP; k72*MisP_Ub2*AggP;
+  Aggregation21: MisP_Ub3 + AggP => 2 AggP; k72*MisP_Ub3*AggP;
+  Aggregation22: MisP_Ub4 + AggP => 2 AggP; k72*MisP_Ub4*AggP;
+  Aggregation23: MisP_Ub5 + AggP => 2 AggP; k72*MisP_Ub5*AggP;
+  Aggregation24: MisP_Ub6 + AggP => 2 AggP; k72*MisP_Ub6*AggP;
+  Aggregation25: MisP_Ub7 + AggP => 2 AggP; k72*MisP_Ub7*AggP;
+  Aggregation26: MisP_Ub8 + AggP => 2 AggP; k72*MisP_Ub8*AggP;
   Aggregation27: MisP_Ub + MisP_Ub2 => AggP; k72*MisP_Ub*MisP_Ub2;
   Aggregation28: MisP_Ub + MisP_Ub3 => AggP; k72*MisP_Ub*MisP_Ub3;
   Aggregation29: MisP_Ub + MisP_Ub4 => AggP; k72*MisP_Ub*MisP_Ub4;
@@ -159,22 +159,22 @@ model *BIOMD0000000105()
 
   // Variable initializations:
   k1 = 0.01;
-  k2 = 2e-006;
-  k3 = 4e-006;
-  k61 = 1.7e-005;
+  k2 = 2e-06;
+  k3 = 4e-06;
+  k61 = 1.7e-05;
   k61r = 0.0002;
   k62 = 0.0002;
   k63 = 0.001;
   k64 = 0.001;
   k65 = 0.01;
-  k66 = 1e-005;
-  k67 = 1e-005;
-  k68 = 1e-005;
+  k66 = 1e-05;
+  k67 = 1e-05;
+  k68 = 1e-05;
   k69 = 0;
-  k71 = 1e-008;
-  k72 = 1e-008;
+  k71 = 1e-08;
+  k72 = 1e-08;
   k73 = 0.001;
-  k74 = 1e-005;
+  k74 = 1e-05;
 
   // Other declarations:
   const cytosol, k1, k2, k3, k61, k61r, k62, k63, k64, k65, k66, k67, k68;
@@ -182,4 +182,134 @@ model *BIOMD0000000105()
 
   // Unit definitions:
   unit substance = item;
+
+  // CV terms:
+  cytosol hypernym "http://identifiers.org/go/GO:0005829"
+  Ub hypernym "http://identifiers.org/interpro/IPR000626"
+  E1 hypernym "http://identifiers.org/interpro/IPR000011"
+  E2 hypernym "http://identifiers.org/interpro/IPR000608"
+  E3 hypernym "http://identifiers.org/interpro/IPR000569"
+  DUB hypernym "http://identifiers.org/interpro/IPR001394"
+  Proteasome hypernym "http://identifiers.org/go/GO:0000502"
+  ROS hypernym "http://identifiers.org/chebi/CHEBI:26523"
+  E1_Ub part "http://identifiers.org/interpro/IPR000011",
+             "http://identifiers.org/interpro/IPR000626"
+  E2_Ub part "http://identifiers.org/interpro/IPR000626",
+             "http://identifiers.org/interpro/IPR000608"
+  ATP identity "http://identifiers.org/chebi/CHEBI:15422"
+  ADP identity "http://identifiers.org/chebi/CHEBI:16761"
+  AMP identity "http://identifiers.org/chebi/CHEBI:16027"
+  ProteinSynthesis hypernym "http://identifiers.org/go/GO:0009059"
+  Misfolding version "http://identifiers.org/go/GO:0022417"
+  Refolding hypernym "http://identifiers.org/go/GO:0042026"
+  MisPE3Binding hypernym "http://identifiers.org/go/GO:0004842",
+                         "http://identifiers.org/go/GO:0005515"
+  MisPE3Release hypernym "http://identifiers.org/go/GO:0043624"
+  E1UbBinding hypernym "http://identifiers.org/go/GO:0005515",
+                       "http://identifiers.org/go/GO:0008641",
+                       "http://identifiers.org/go/GO:0006167"
+  E2UbBinding hypernym "http://identifiers.org/go/GO:0019787",
+                       "http://identifiers.org/go/GO:0005515"
+  Monoubiquitination hypernym "http://identifiers.org/go/GO:0006513"
+  Polyubiquitination1 hypernym "http://identifiers.org/go/GO:0000209"
+  Polyubiquitination2 hypernym "http://identifiers.org/go/GO:0000209"
+  Polyubiquitination3 hypernym "http://identifiers.org/go/GO:0000209"
+  Polyubiquitination4 hypernym "http://identifiers.org/go/GO:0000209"
+  Polyubiquitination5 hypernym "http://identifiers.org/go/GO:0000209"
+  Polyubiquitination6 hypernym "http://identifiers.org/go/GO:0000209"
+  Polyubiquitination7 hypernym "http://identifiers.org/go/GO:0000209"
+  Deubiqutination1 hypernym "http://identifiers.org/go/GO:0016579"
+  Deubiqutination2 hypernym "http://identifiers.org/go/GO:0016579"
+  Deubiqutination3 hypernym "http://identifiers.org/go/GO:0016579"
+  Deubiqutination4 hypernym "http://identifiers.org/go/GO:0016579"
+  Deubiqutination5 hypernym "http://identifiers.org/go/GO:0016579"
+  Deubiqutination6 hypernym "http://identifiers.org/go/GO:0016579"
+  Deubiqutination7 hypernym "http://identifiers.org/go/GO:0016579"
+  Deubiqutination8 hypernym "http://identifiers.org/go/GO:0016579"
+  ProteasomeBinding1 hypernym "http://identifiers.org/go/GO:0005515"
+  ProteasomeBinding2 hypernym "http://identifiers.org/go/GO:0005515"
+  ProteasomeBinding3 hypernym "http://identifiers.org/go/GO:0005515"
+  ProteasomeBinding4 hypernym "http://identifiers.org/go/GO:0005515"
+  ProteasomeBinding5 hypernym "http://identifiers.org/go/GO:0005515"
+  DeubiquitinationBoundMisP5 hypernym "http://identifiers.org/go/GO:0016579"
+  DeubiquitinationBoundMisP4 hypernym "http://identifiers.org/go/GO:0016579"
+  DeubiquitinationBoundMisP3 hypernym "http://identifiers.org/go/GO:0016579"
+  DeubiquitinationBoundMisP2 hypernym "http://identifiers.org/go/GO:0016579"
+  DeubiquitinationBoundMisP1 hypernym "http://identifiers.org/go/GO:0016579"
+  ProteasomeActivity1 hypernym "http://identifiers.org/go/GO:0016887",
+                               "http://identifiers.org/go/GO:0008233"
+  ProteasomeActivity2 hypernym "http://identifiers.org/go/GO:0016887",
+                               "http://identifiers.org/go/GO:0008233"
+  ProteasomeActivity3 hypernym "http://identifiers.org/go/GO:0016887",
+                               "http://identifiers.org/go/GO:0008233"
+  ProteasomeActivity4 hypernym "http://identifiers.org/go/GO:0016887",
+                               "http://identifiers.org/go/GO:0008233"
+  ProteasomeActivity5 hypernym "http://identifiers.org/go/GO:0016887",
+                               "http://identifiers.org/go/GO:0008233"
+  Aggregation1 hypernym "http://identifiers.org/go/GO:0006461"
+  Aggregation2 hypernym "http://identifiers.org/go/GO:0006461"
+  Aggregation3 hypernym "http://identifiers.org/go/GO:0006461"
+  Aggregation4 hypernym "http://identifiers.org/go/GO:0006461"
+  Aggregation5 hypernym "http://identifiers.org/go/GO:0006461"
+  Aggregation6 hypernym "http://identifiers.org/go/GO:0006461"
+  Aggregation7 hypernym "http://identifiers.org/go/GO:0006461"
+  Aggregation8 hypernym "http://identifiers.org/go/GO:0006461"
+  Aggregation9 hypernym "http://identifiers.org/go/GO:0006461"
+  Aggregation10 hypernym "http://identifiers.org/go/GO:0006461"
+  Aggregation11 hypernym "http://identifiers.org/go/GO:0006461"
+  Aggregation12 hypernym "http://identifiers.org/go/GO:0006461"
+  Aggregation13 hypernym "http://identifiers.org/go/GO:0006461"
+  Aggregation14 hypernym "http://identifiers.org/go/GO:0006461"
+  Aggregation15 hypernym "http://identifiers.org/go/GO:0006461"
+  Aggregation16 hypernym "http://identifiers.org/go/GO:0006461"
+  Aggregation17 hypernym "http://identifiers.org/go/GO:0006461"
+  Aggregation18 hypernym "http://identifiers.org/go/GO:0006461"
+  Aggregation19 hypernym "http://identifiers.org/go/GO:0006461"
+  Aggregation20 hypernym "http://identifiers.org/go/GO:0006461"
+  Aggregation21 hypernym "http://identifiers.org/go/GO:0006461"
+  Aggregation22 hypernym "http://identifiers.org/go/GO:0006461"
+  Aggregation23 hypernym "http://identifiers.org/go/GO:0006461"
+  Aggregation24 hypernym "http://identifiers.org/go/GO:0006461"
+  Aggregation25 hypernym "http://identifiers.org/go/GO:0006461"
+  Aggregation26 hypernym "http://identifiers.org/go/GO:0006461"
+  Aggregation27 hypernym "http://identifiers.org/go/GO:0006461"
+  Aggregation28 hypernym "http://identifiers.org/go/GO:0006461"
+  Aggregation29 hypernym "http://identifiers.org/go/GO:0006461"
+  Aggregation30 hypernym "http://identifiers.org/go/GO:0006461"
+  Aggregation31 hypernym "http://identifiers.org/go/GO:0006461"
+  Aggregation32 hypernym "http://identifiers.org/go/GO:0006461"
+  Aggregation33 hypernym "http://identifiers.org/go/GO:0006461"
+  Aggregation34 hypernym "http://identifiers.org/go/GO:0006461"
+  Aggregation35 hypernym "http://identifiers.org/go/GO:0006461"
+  Aggregation36 hypernym "http://identifiers.org/go/GO:0006461"
+  Aggregation37 hypernym "http://identifiers.org/go/GO:0006461"
+  Aggregation38 hypernym "http://identifiers.org/go/GO:0006461"
+  Aggregation39 hypernym "http://identifiers.org/go/GO:0006461"
+  Aggregation40 hypernym "http://identifiers.org/go/GO:0006461"
+  Aggregation41 hypernym "http://identifiers.org/go/GO:0006461"
+  Aggregation42 hypernym "http://identifiers.org/go/GO:0006461"
+  Aggregation43 hypernym "http://identifiers.org/go/GO:0006461"
+  Aggregation44 hypernym "http://identifiers.org/go/GO:0006461"
+  Aggregation45 hypernym "http://identifiers.org/go/GO:0006461"
+  Aggregation46 hypernym "http://identifiers.org/go/GO:0006461"
+  Aggregation47 hypernym "http://identifiers.org/go/GO:0006461"
+  Aggregation48 hypernym "http://identifiers.org/go/GO:0006461"
+  Aggregation49 hypernym "http://identifiers.org/go/GO:0006461"
+  Aggregation50 hypernym "http://identifiers.org/go/GO:0006461"
+  Aggregation51 hypernym "http://identifiers.org/go/GO:0006461"
+  Aggregation52 hypernym "http://identifiers.org/go/GO:0006461"
+  Aggregation53 hypernym "http://identifiers.org/go/GO:0006461"
+  Aggregation54 hypernym "http://identifiers.org/go/GO:0006461"
+  SequesteringOfAggregates hypernym "http://identifiers.org/go/GO:0051220"
+  ProteasomeInhibtion hypernym "http://identifiers.org/go/GO:0008539"
 end
+
+BIOMD0000000105 is "Proctor2007 - Age related decline of proteolysis, ubiquitin-proteome system"
+
+BIOMD0000000105 model_entity_is "http://identifiers.org/biomodels.db/MODEL6540028317"
+BIOMD0000000105 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000105"
+BIOMD0000000105 description "http://identifiers.org/pubmed/17408507"
+BIOMD0000000105 origin "http://identifiers.org/biomodels.db/BIOMD0000000091"
+BIOMD0000000105 property "http://identifiers.org/doid/DOID:1289"
+BIOMD0000000105 hypernym "http://identifiers.org/go/GO:0043161"
+BIOMD0000000105 taxon "http://identifiers.org/taxonomy/2759"

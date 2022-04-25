@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *RanGTP_gradient()
 
   // Compartments and Species:
@@ -16,8 +16,8 @@ model *RanGTP_gradient()
   Cytoplasmic_transfer: RanGTP_nuc -> RanGTP_cy; Cytoplasmic_transfer_kpermRanGTP*nucleus*(RanGTP_nuc - RanGTP_cy);
   Nucleoplasmic_transfer: RanGDP_nuc -> RanGDP_cy; Nucleoplasmic_transfer_kpermRanGDP*nucleus*(RanGDP_nuc - RanGDP_cy);
   RanGTP_binding: RanGTP_cy + RanBP1 -> RanGTP_RanBP1; (RanGTP_binding_kon*RanGTP_cy*RanBP1 - RanGTP_binding_koff*RanGTP_RanBP1)*cytoplasm;
-  RanBP1_RanGDP: RanGTP_RanBP1 -> RanGDP_cy + RanBP1; (cytoplasm*RanBP1_RanGDP_kcat*RanGTP_RanBP1*RanGAP)/(RanGTP_RanBP1 + RanBP1_RanGDP_Km);
-  RanGAP_RanGDP: RanGTP_cy -> RanGDP_cy; (cytoplasm*RanGAP_RanGDP_kcat_GAP*RanGTP_cy*RanGAP)/(RanGAP_RanGDP_Km_GAP + RanGTP_cy);
+  RanBP1_RanGDP: RanGTP_RanBP1 -> RanGDP_cy + RanBP1; cytoplasm*RanBP1_RanGDP_kcat*RanGTP_RanBP1*RanGAP/(RanGTP_RanBP1 + RanBP1_RanGDP_Km);
+  RanGAP_RanGDP: RanGTP_cy -> RanGDP_cy; cytoplasm*RanGAP_RanGDP_kcat_GAP*RanGTP_cy*RanGAP/(RanGAP_RanGDP_Km_GAP + RanGTP_cy);
 
   // Species initializations:
   RanGDP_nuc = 0;
@@ -35,8 +35,8 @@ model *RanGTP_gradient()
   RanGDP_cy = 5;
 
   // Compartment initializations:
-  nucleus = 1.2e-011;
-  cytoplasm = 1.8e-011;
+  nucleus = 1.2e-11;
+  cytoplasm = 1.8e-11;
 
   // Variable initializations:
   RCC1_binding_r1 = 74;
@@ -81,4 +81,57 @@ model *RanGTP_gradient()
   unit pmicroMpsec = litre / (1e-6 mole * second);
   unit psec = 1 / second;
   unit microM = 1e-6 mole / litre;
+
+  // CV terms:
+  nucleus identity "http://identifiers.org/go/GO:0005634"
+  cytoplasm identity "http://identifiers.org/go/GO:0005737"
+  RanGDP_nuc part "http://identifiers.org/uniprot/P62826",
+                  "http://identifiers.org/kegg.compound/C00035"
+  RCC1_RanGDP part "http://identifiers.org/chebi/CHEBI:17552",
+                   "http://identifiers.org/uniprot/P18754",
+                   "http://identifiers.org/uniprot/P62826",
+                   "http://identifiers.org/kegg.compound/C00035"
+  GDP identity "http://identifiers.org/chebi/CHEBI:17552",
+               "http://identifiers.org/kegg.compound/C00035"
+  RCC1 encoder "http://identifiers.org/ensembl/ENSG00000180198"
+  RCC1 identity "http://identifiers.org/uniprot/P18754"
+  RCC1_RanGTP part "http://identifiers.org/chebi/CHEBI:15996",
+                   "http://identifiers.org/uniprot/P62826",
+                   "http://identifiers.org/uniprot/P18754",
+                   "http://identifiers.org/kegg.compound/C00044"
+  RCC1_Ran part "http://identifiers.org/uniprot/P18754",
+                "http://identifiers.org/uniprot/P62826"
+  GTP identity "http://identifiers.org/chebi/CHEBI:15996",
+               "http://identifiers.org/kegg.compound/C00044"
+  RanGTP_nuc part "http://identifiers.org/uniprot/P62826",
+                  "http://identifiers.org/kegg.compound/C00044"
+  RanGAP hypernym "http://identifiers.org/interpro/IPR000331"
+  RanGAP identity "http://identifiers.org/uniprot/P46060"
+  RanBP1 hypernym "http://identifiers.org/interpro/IPR000156"
+  RanBP1 identity "http://identifiers.org/uniprot/P43487"
+  RanGTP_cy part "http://identifiers.org/uniprot/P62826",
+                 "http://identifiers.org/kegg.compound/C00044"
+  RanGTP_RanBP1 part "http://identifiers.org/uniprot/P62826",
+                     "http://identifiers.org/uniprot/P43487",
+                     "http://identifiers.org/kegg.compound/C00044"
+  RanGDP_cy part "http://identifiers.org/uniprot/P62826",
+                 "http://identifiers.org/kegg.compound/C00035"
+  RCC1_binding hypernym "http://identifiers.org/go/GO:0006461"
+  GDP_dissociation hypernym "http://identifiers.org/go/GO:0005087"
+  GTP_binding hypernym "http://identifiers.org/go/GO:0005525"
+  RanGTP_release hypernym "http://identifiers.org/go/GO:0043241"
+  Cytoplasmic_transfer hypernym "http://identifiers.org/go/GO:0006913"
+  Nucleoplasmic_transfer hypernym "http://identifiers.org/go/GO:0006913"
+  RanGTP_binding hypernym "http://identifiers.org/go/GO:0006461"
+  RanBP1_RanGDP hypernym "http://identifiers.org/go/GO:0043241"
+  RanGAP_RanGDP hypernym "http://identifiers.org/go/GO:0032860"
 end
+
+RanGTP_gradient is "Görlich2003_RanGTP_gradient"
+
+RanGTP_gradient model_entity_is "http://identifiers.org/biomodels.db/MODEL4969417017"
+RanGTP_gradient model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000192"
+RanGTP_gradient description "http://identifiers.org/pubmed/12606574"
+RanGTP_gradient taxon "http://identifiers.org/taxonomy/9606"
+RanGTP_gradient hypernym "http://identifiers.org/go/GO:0008536"
+RanGTP_gradient parthood "http://identifiers.org/reactome/REACT_9507"

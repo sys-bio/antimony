@@ -1,0 +1,336 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function Function_fro_Clb2_degradation(k, k_p, modifier, k_pp, modifier2, substrate)
+  (k + k_p*modifier + k_pp*modifier2)*substrate;
+end
+
+Function_fro_Clb2_degradation is "Function fro Clb2 degradation"
+
+function Function_for_Cdc20_degradation(k, k_p, modifier, substrate)
+  (k + k_p*modifier)*substrate;
+end
+
+Function_for_Cdc20_degradation is "Function for Cdc20 degradation"
+
+function Function_for_cdh1_d(k, k_p, Cdc14, J_cdh, Cdh1_total, Cdh1)
+  (k + k_p*Cdc14)*(Cdh1_total - Cdh1)/(J_cdh + Cdh1_total - Cdh1);
+end
+
+Function_for_cdh1_d is "Function for cdh1 d"
+
+function Function_for_Cdh1_p(k, modifier, substrate, J_cdh)
+  k*modifier*substrate/(J_cdh + substrate);
+end
+
+Function_for_Cdh1_p is "Function for Cdh1 p"
+
+function Function_for_securin_separase_de(ld, k_d, k_dp, k_dpp, modifier, substrate)
+  (ld + k_d + k_dp + k_dpp*modifier)*substrate;
+end
+
+Function_for_securin_separase_de is "Function for securin_separase de"
+
+function function_for_Net1_dephosphorylation(kd_p, Cdc14, kd, PP2A, Net1P, J_net)
+  (kd_p*Cdc14 + kd*PP2A)*Net1P/(J_net + Net1P);
+end
+
+function_for_Net1_dephosphorylation is "function for Net1 dephosphorylation"
+
+function Function_for_Net1_d(J_net, k_p, Cdk, kp_p, MEN, Net1, Net1_Cdc14)
+  (k_p*Cdk + kp_p*MEN)*Net1/(J_net + Net1 + Net1_Cdc14);
+end
+
+Function_for_Net1_d is "Function for Net1 d"
+
+function Function_for_Net1_Cdc14_d(k_p, Cdk, kp_p, MEN, Net1, J_net, Net1_Cdc14)
+  (k_p*Cdk + kp_p*MEN)*Net1_Cdc14/(J_net + Net1 + Net1_Cdc14);
+end
+
+Function_for_Net1_Cdc14_d is "Function for Net1_Cdc14 d"
+
+function Function_for_Polo_total_degradation(k, k_p, Cdh1, Polo_total)
+  (k + k_p*Cdh1)*Polo_total;
+end
+
+Function_for_Polo_total_degradation is "Function for Polo_total degradation"
+
+function function_for_Polo_inactivation(ki, Polo, J_polo)
+  ki*Polo/(J_polo + Polo);
+end
+
+function_for_Polo_inactivation is "function for Polo inactivation"
+
+function function_for_Tem1_inactivation(k, k_p, PP2A, Tem1, J_tem1)
+  (k + k_p*PP2A)*Tem1/(J_tem1 + Tem1);
+end
+
+function_for_Tem1_inactivation is "function for Tem1 inactivation"
+
+function Function_for_MEN_a(Tem1, Ia, MEN, Cdc15)
+  Ia*(Tem1 - MEN)*(Cdc15 - MEN);
+end
+
+Function_for_MEN_a is "Function for MEN a"
+
+function Function_for_MEN_d(MEN, ld)
+  ld*MEN;
+end
+
+Function_for_MEN_d is "Function for MEN d"
+
+function Function_for_MEN_i(k_i, k_ip, PP2A, MEN, J_tem1, Tem1)
+  (k_i + k_ip*PP2A)*MEN/(J_tem1 + Tem1);
+end
+
+Function_for_MEN_i is "Function for MEN i"
+
+function Function_for_R11(la_securin, securin, separase)
+  la_securin*securin*separase;
+end
+
+Function_for_R11 is "Function for R11"
+
+
+model *Queralt2006___Initiation_of_mitotic_exit_by_downregulation_of_PP2A_in_budding_yeast()
+
+  // Compartments and Species:
+  compartment nucleus;
+  species clb2 in nucleus, cdc20 in nucleus, cdh1 in nucleus, securin_total in nucleus;
+  species separase_total in nucleus, securin_separase in nucleus, net1 in nucleus;
+  species $net1p in nucleus, $net1_total in nucleus, net1cdc14 in nucleus;
+  species $cdc14 in nucleus, $cdc14_total in nucleus, polo_total in nucleus;
+  species $cdk in nucleus, $Inh in nucleus, $pp2a in nucleus, $separase in nucleus;
+  species $pp2a_total in nucleus, men in nucleus, polo in nucleus, tem1 in nucleus;
+  species cdc15 in nucleus, $cdh1_total in nucleus, $tem1_total in nucleus;
+  species $cdc15_total in nucleus, $securin in nucleus, $Cdc14x2 in nucleus;
+
+  // Assignment Rules:
+  net1p := net1_total - net1 - net1cdc14;
+  cdc14 := cdc14_total - net1cdc14;
+  cdk := clb2/(1 + Inh);
+  pp2a := ((1 + kpp*ki*separase)/(1 + ki*separase))*pp2a_total;
+  separase := separase_total - securin_separase;
+  securin := securin_total - securin_separase;
+  Cdc14x2 := cdc14*2;
+
+  // Reactions:
+  R1_Clb2_synthesis:  => clb2; nucleus*Constant_flux__irreversible(ks_clb2);
+  R2_Clb2_degradation: clb2 => ; nucleus*Function_fro_Clb2_degradation(kd_clb2, kd_clb2_p, cdc20, kd_clb2_pp, cdh1, clb2);
+  R3_Cdc20_synthesis:  => cdc20; nucleus*Constant_flux__irreversible(ks_cdc20);
+  R4_Cdc20_degradation: cdc20 => ; nucleus*Function_for_Cdc20_degradation(kd_cdc20, kd_cdc20_p, cdh1, cdc20);
+  R5_Cdh1_activation:  => cdh1; nucleus*Function_for_cdh1_d(kd_cdh, kd_cdh_p, cdc14, J_cdh, cdh1_total, cdh1);
+  R6_Cdh1_inactivation: cdh1 => ; nucleus*Function_for_Cdh1_p(kp_cdh_p, cdk, cdh1, J_cdh);
+  R7_Securin_synthesis:  => securin_total; nucleus*Constant_flux__irreversible(ks_securin);
+  R8_Securin_degradation: securin_total => ; nucleus*Function_for_Cdc20_degradation(kd_securin, kd_securin_p, cdc20, securin_total);
+  R9_Separase_synthesis:  => separase_total; nucleus*Constant_flux__irreversible(ks_separase);
+  R10_Separase_degradation: separase_total => ; nucleus*kd_separase*separase_total;
+  R11_Securin_separase_association:  => securin_separase; nucleus*Function_for_R11(la_securin, securin, separase);
+  R12_Securin_separase_dissociation: securin_separase => ; nucleus*Function_for_securin_separase_de(ld_securin, kd_separase, kd_securin, kd_securin_p, cdc20, securin_separase);
+  R13_Net1_dephosphorylation:  => net1; nucleus*function_for_Net1_dephosphorylation(kd_p, cdc14, kd, pp2a, net1p, Jnet);
+  R14_Net1_phosphorylation: net1 => ; nucleus*Function_for_Net1_d(Jnet, kp, cdk, kp_p, men, net1, net1cdc14);
+  R15_Net1_Cdc14_association: net1 + $cdc14 -> net1cdc14; nucleus*(l_a_net*net1*cdc14 - l_d_net*net1cdc14);
+  R16_Net1_Cdc14_dissociation: net1cdc14 => ; nucleus*Function_for_Net1_Cdc14_d(kp, cdk, kp_p, men, net1, Jnet, net1cdc14);
+  R17_Polo_synthesis:  => polo_total; nucleus*Constant_flux__irreversible(ks_polo);
+  R18_Polo_degradation: polo_total => ; nucleus*Function_for_Polo_total_degradation(kd_polo, kd_polo_p, cdh1, polo_total);
+  R19_Polo_activation:  => polo; nucleus*Function_for_cdh1_d(ka_polo, ka_polo_p, cdk, J_polo, polo_total, polo);
+  R20_Polo_inactivation: polo => ; nucleus*function_for_Polo_inactivation(ki_polo, polo, J_polo);
+  R21_Polo_inactivation: polo => ; nucleus*Function_for_Cdc20_degradation(kd_polo, kd_polo_p, cdh1, polo);
+  R22_Tem1_activation:  => tem1; nucleus*Function_for_cdh1_d(ka_tem, ka_tem_p, polo, J_tem1, tem1_total, tem1);
+  R23_Tem1_inactivation: tem1 => ; nucleus*function_for_Tem1_inactivation(ki_tem, kitem_p, pp2a, tem1, J_tem1);
+  R24_Cdc15_activation:  => cdc15; nucleus*Function_for_cdh1_d(ka_cdc15, ka_cdc15_p, cdc14, J_cdc15, cdc15_total, cdc15);
+  R25_Cdc15_inactivation: cdc15 => ; nucleus*function_for_Tem1_inactivation(ki_cdc15, ki_cdc15_p, cdk, cdc15, J_cdc15);
+  R26_MEN_activation:  => men; nucleus*Function_for_MEN_a(tem1, la_men, men, cdc15);
+  R27_MEN: men => ; nucleus*Function_for_MEN_d(men, ld_men);
+  R28_MEN_inactivation: men => ; nucleus*Function_for_MEN_i(ki_tem, kitem_p, pp2a, men, J_tem1, tem1);
+  R29_MEN_inactivation: men => ; nucleus*Function_for_MEN_i(ki_cdc15, ki_cdc15_p, cdk, men, J_cdc15, cdc15);
+
+  // Species initializations:
+  clb2 = 0.997;
+  cdc20 = 0;
+  cdh1 = 0;
+  securin_total = 0.6;
+  separase_total = 0.25;
+  securin_separase = 0.248;
+  net1 = 0.098;
+  net1_total = 1;
+  net1cdc14 = 0.485;
+  cdc14_total = 0.5;
+  polo_total = 0.99;
+  Inh = 0;
+  pp2a_total = 1;
+  men = 8e-06;
+  polo = 0.945;
+  tem1 = 1;
+  cdc15 = 0.0257;
+  cdh1_total = 1;
+  tem1_total = 1;
+  cdc15_total = 1;
+
+  // Compartment initializations:
+  nucleus = 1;
+
+  // Variable initializations:
+  kpp = 0.1;
+  ki = 20;
+  ks_clb2 = 0.03;
+  kd_clb2 = 0.03;
+  kd_clb2_p = 0.2;
+  kd_clb2_pp = 2;
+  ks_cdc20 = 0.015;
+  kd_cdc20 = 0.05;
+  kd_cdc20_p = 2;
+  kd_cdh = 0.01;
+  kd_cdh_p = 1;
+  kp_cdh_p = 1;
+  J_cdh = 0.0015;
+  ks_securin = 0.03;
+  kd_securin = 0.05;
+  kd_securin_p = 2;
+  ks_separase = 0.001;
+  kd_separase = 0.004;
+  la_securin = 500;
+  ld_securin = 1;
+  kd_p = 0.1;
+  kd = 0.45;
+  kp = 0.4;
+  kp_p = 2;
+  Jnet = 0.2;
+  l_a_net = 500;
+  l_d_net = 1;
+  ks_polo = 0.01;
+  kd_polo = 0.01;
+  kd_polo_p = 0.25;
+  ka_polo = 0;
+  ka_polo_p = 0.5;
+  ki_polo = 0.1;
+  J_polo = 0.25;
+  ka_tem = 0;
+  ka_tem_p = 0.5;
+  ki_tem = 0.1;
+  kitem_p = 1;
+  J_tem1 = 0.005;
+  ka_cdc15 = 0.02;
+  ka_cdc15_p = 0.5;
+  ki_cdc15 = 0;
+  ki_cdc15_p = 0.2;
+  J_cdc15 = 0.2;
+  la_men = 10;
+  ld_men = 0.01;
+
+  // Other declarations:
+  const nucleus, kpp, ki, ks_clb2, kd_clb2, kd_clb2_p, kd_clb2_pp, ks_cdc20;
+  const kd_cdc20, kd_cdc20_p, kd_cdh, kd_cdh_p, kp_cdh_p, J_cdh, ks_securin;
+  const kd_securin, kd_securin_p, ks_separase, kd_separase, la_securin, ld_securin;
+  const kd_p, kd, kp, kp_p, Jnet, l_a_net, l_d_net, ks_polo, kd_polo, kd_polo_p;
+  const ka_polo, ka_polo_p, ki_polo, J_polo, ka_tem, ka_tem_p, ki_tem, kitem_p;
+  const J_tem1, ka_cdc15, ka_cdc15_p, ki_cdc15, ki_cdc15_p, J_cdc15, la_men;
+  const ld_men;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 60 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+  R1_Clb2_synthesis is "R1 Clb2 synthesis";
+  R2_Clb2_degradation is "R2 Clb2 degradation";
+  R3_Cdc20_synthesis is "R3 Cdc20 synthesis";
+  R4_Cdc20_degradation is "R4 Cdc20 degradation";
+  R5_Cdh1_activation is "R5 Cdh1 activation";
+  R6_Cdh1_inactivation is "R6 Cdh1 inactivation";
+  R7_Securin_synthesis is "R7 Securin synthesis";
+  R8_Securin_degradation is "R8 Securin degradation";
+  R9_Separase_synthesis is "R9 Separase synthesis";
+  R10_Separase_degradation is "R10 Separase degradation";
+  R11_Securin_separase_association is "R11 Securin separase association";
+  R12_Securin_separase_dissociation is "R12 Securin separase dissociation";
+  R13_Net1_dephosphorylation is "R13 Net1 dephosphorylation";
+  R14_Net1_phosphorylation is "R14 Net1 phosphorylation";
+  R15_Net1_Cdc14_association is "R15 Net1 Cdc14 association";
+  R16_Net1_Cdc14_dissociation is "R16 Net1 Cdc14 dissociation";
+  R17_Polo_synthesis is "R17 Polo synthesis";
+  R18_Polo_degradation is "R18 Polo degradation";
+  R19_Polo_activation is "R19 Polo activation";
+  R20_Polo_inactivation is "R20 Polo inactivation";
+  R21_Polo_inactivation is "R21 Polo inactivation";
+  R22_Tem1_activation is "R22 Tem1 activation";
+  R23_Tem1_inactivation is "R23 Tem1 inactivation";
+  R24_Cdc15_activation is "R24 Cdc15 activation";
+  R25_Cdc15_inactivation is "R25 Cdc15 inactivation";
+  R26_MEN_activation is "R26 MEN activation";
+  R27_MEN is "R27 MEN";
+  R28_MEN_inactivation is "R28 MEN inactivation";
+  R29_MEN_inactivation is "R29 MEN inactivation";
+
+  // CV terms:
+  nucleus identity "http://identifiers.org/go/GO:0005634"
+  clb2 hypernym "http://identifiers.org/uniprot/P24869"
+  cdc20 hypernym "http://identifiers.org/uniprot/P26309"
+  cdh1 hypernym "http://identifiers.org/uniprot/P53197"
+  securin_total hypernym "http://identifiers.org/uniprot/P40316"
+  separase_total hypernym "http://identifiers.org/uniprot/Q03018"
+  securin_separase part "http://identifiers.org/uniprot/P40316"
+  securin_separase part "http://identifiers.org/uniprot/Q03018"
+  securin_separase property "http://identifiers.org/sbo/SBO:0000297"
+  net1 hypernym "http://identifiers.org/uniprot/P47035"
+  net1p hypernym "http://identifiers.org/uniprot/P47035"
+  net1p property "http://identifiers.org/pato/PATO:0002220"
+  net1_total hypernym "http://identifiers.org/uniprot/P47035"
+  net1cdc14 part "http://identifiers.org/uniprot/Q00684"
+  net1cdc14 part "http://identifiers.org/uniprot/P47035"
+  net1cdc14 property "http://identifiers.org/sbo/SBO:0000297"
+  cdc14 hypernym "http://identifiers.org/uniprot/Q00684"
+  cdc14_total hypernym "http://identifiers.org/uniprot/Q00684"
+  polo_total homolog "http://identifiers.org/uniprot/P32562"
+  cdk hypernym "http://identifiers.org/uniprot/P00546"
+  Inh hypernym "http://identifiers.org/uniprot/P01097"
+  pp2a part "http://identifiers.org/uniprot/Q00362"
+  separase hypernym "http://identifiers.org/uniprot/Q03018"
+  pp2a_total part "http://identifiers.org/uniprot/Q00362"
+  polo homolog "http://identifiers.org/uniprot/P32562"
+  tem1 hypernym "http://identifiers.org/uniprot/P38987"
+  cdc15 hypernym "http://identifiers.org/uniprot/P27636"
+  cdh1_total hypernym "http://identifiers.org/uniprot/P53197"
+  tem1_total hypernym "http://identifiers.org/uniprot/P38987"
+  cdc15_total hypernym "http://identifiers.org/uniprot/P27636"
+  securin hypernym "http://identifiers.org/uniprot/P40316"
+  Cdc14x2 hypernym "http://identifiers.org/uniprot/Q00684"
+  R1_Clb2_synthesis hypernym "http://identifiers.org/ncit/C61408"
+  R2_Clb2_degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+  R3_Cdc20_synthesis hypernym "http://identifiers.org/ncit/C61408"
+  R4_Cdc20_degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+  R5_Cdh1_activation hypernym "http://identifiers.org/sbo/SBO:0000656"
+  R7_Securin_synthesis hypernym "http://identifiers.org/ncit/C61408"
+  R8_Securin_degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+  R9_Separase_synthesis hypernym "http://identifiers.org/ncit/C61408"
+  R10_Separase_degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+  R11_Securin_separase_association hypernym "http://identifiers.org/sbo/SBO:0000526"
+  R12_Securin_separase_dissociation hypernym "http://identifiers.org/sbo/SBO:0000180"
+  R13_Net1_dephosphorylation hypernym "http://identifiers.org/go/GO:0016311"
+  R14_Net1_phosphorylation hypernym "http://identifiers.org/pato/PATO:0002262"
+  R15_Net1_Cdc14_association hypernym "http://identifiers.org/sbo/SBO:0000526"
+  R16_Net1_Cdc14_dissociation hypernym "http://identifiers.org/sbo/SBO:0000180"
+  R17_Polo_synthesis hypernym "http://identifiers.org/ncit/C61408"
+  R18_Polo_degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+  R19_Polo_activation hypernym "http://identifiers.org/sbo/SBO:0000656"
+  R22_Tem1_activation hypernym "http://identifiers.org/sbo/SBO:0000656"
+  R24_Cdc15_activation hypernym "http://identifiers.org/sbo/SBO:0000656"
+  R26_MEN_activation hypernym "http://identifiers.org/sbo/SBO:0000656"
+end
+
+Queralt2006___Initiation_of_mitotic_exit_by_downregulation_of_PP2A_in_budding_yeast is "Queralt2006 - Initiation of mitotic exit by downregulation of PP2A in budding yeast"
+
+Queralt2006___Initiation_of_mitotic_exit_by_downregulation_of_PP2A_in_budding_yeast unknown_model_qual "http://identifiers.org/mamo/MAMO_0000046"
+Queralt2006___Initiation_of_mitotic_exit_by_downregulation_of_PP2A_in_budding_yeast model_entity_is "http://identifiers.org/biomodels.db/MODEL1809060004",
+                                                                                                    "http://identifiers.org/biomodels.db/BIOMD0000000953"
+Queralt2006___Initiation_of_mitotic_exit_by_downregulation_of_PP2A_in_budding_yeast hypernym "http://identifiers.org/go/GO:0045839"
+Queralt2006___Initiation_of_mitotic_exit_by_downregulation_of_PP2A_in_budding_yeast taxon "http://identifiers.org/taxonomy/559292"
+Queralt2006___Initiation_of_mitotic_exit_by_downregulation_of_PP2A_in_budding_yeast description "http://identifiers.org/pubmed/16713564"
+Queralt2006___Initiation_of_mitotic_exit_by_downregulation_of_PP2A_in_budding_yeast description "http://identifiers.org/doi/10.1016/j.cell.2006.03.038"
+Queralt2006___Initiation_of_mitotic_exit_by_downregulation_of_PP2A_in_budding_yeast property "http://identifiers.org/mamo/MAMO_0000046"

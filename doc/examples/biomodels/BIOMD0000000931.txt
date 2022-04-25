@@ -1,0 +1,81 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+
+model *Voliotis2019_GnRH_Pulse_Generation()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species D in compartment_, N in compartment_, v in compartment_;
+
+  // Assignment Rules:
+  f_D := k_D0 + k_D*v^n_1/(v^n_1 + K_v1^n_1);
+  f_N := k_N0 + k_N*(v^n_2/(v^n_2 + K_v2^n_2))*(K_D^n_3/(D^n_3 + K_D^n_3));
+  f_v := v_0*((1 - exp(-I))/(1 + exp(-I)));
+  I := I_0 + p_v*v*(N^n_4/(N^n_4 + K_N^n_4));
+
+  // Reactions:
+  Dyn_Secretion:  => D; compartment_*Constant_flux__irreversible(f_D);
+  NKB_Secretion:  => N; compartment_*Constant_flux__irreversible(f_N);
+  Firing_Rate:  => v; compartment_*Constant_flux__irreversible(f_v);
+  Dyn_Decay: D => ; compartment_*d_D*D;
+  NKB_Decay: N => ; compartment_*d_N*N;
+  FR_Decay: v => ; compartment_*d_v*v;
+
+  // Species initializations:
+  D = 2.348;
+  N = 0.07764;
+  v = 300;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  d_D = 0.25;
+  d_N = 1;
+  d_v = 10;
+  k_D = 4.5;
+  k_N = 320;
+  k_D0 = 0.175;
+  k_N0 = 0;
+  p_v = 1;
+  v_0 = 30000;
+  K_D = 0.3;
+  K_N = 32;
+  K_v1 = 1200;
+  K_v2 = 1200;
+  I_0 = 0.2;
+  n_1 = 2;
+  n_2 = 2;
+  n_3 = 2;
+  n_4 = 2;
+
+  // Other declarations:
+  var f_D, f_N, f_v, I;
+  const compartment_, d_D, d_N, d_v, k_D, k_N, k_D0, k_N0, p_v, v_0, K_D;
+  const K_N, K_v1, K_v2, I_0, n_1, n_2, n_3, n_4;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 60 second;
+  unit substance = item;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+end
+
+Voliotis2019_GnRH_Pulse_Generation is "Voliotis2019-GnRH Pulse Generation"
+
+Voliotis2019_GnRH_Pulse_Generation model_entity_is "http://identifiers.org/biomodels.db/MODEL2003190007",
+                                                   "http://identifiers.org/biomodels.db/BIOMD0000000931"
+Voliotis2019_GnRH_Pulse_Generation taxon "http://identifiers.org/taxonomy/10088"
+Voliotis2019_GnRH_Pulse_Generation description "http://identifiers.org/pubmed/31645462"
+Voliotis2019_GnRH_Pulse_Generation property "http://identifiers.org/ncit/C16578",
+                                            "http://identifiers.org/ncit/C41064",
+                                            "http://identifiers.org/ncit/C2270",
+                                            "http://identifiers.org/mamo/MAMO_0000046"

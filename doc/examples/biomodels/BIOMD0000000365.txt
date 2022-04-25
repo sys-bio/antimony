@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Model_1()
 
   // Compartments and Species:
@@ -50,8 +50,8 @@ model *Model_1()
   r33: VaLCA1 + APC -> VaLCA1_APC; compartment_1*(k1*VaLCA1*APC - k2*VaLCA1_APC);
 
   // Species initializations:
-  APC = 1e-008;
-  Va = 2e-007;
+  APC = 1e-08;
+  Va = 2e-07;
   Va_APC = 0;
   Va3 = 0;
   Va3_APC = 0;
@@ -92,9 +92,43 @@ model *Model_1()
   k6 = 0.00052;
   k7 = 0.028;
   k8 = 2570;
-  k9 = 1.72e-005;
+  k9 = 1.72e-05;
   k10 = 2630;
 
   // Other declarations:
   const compartment_1, k1, k2, k3, k5, k6, k7, k8, k9, k10;
+
+  // SBO terms:
+  k1.sboTerm = 36
+  k2.sboTerm = 38
+  k3.sboTerm = 35
+  k5.sboTerm = 35
+  k6.sboTerm = 35
+  k7.sboTerm = 35
+  k8.sboTerm = 39
+  k9.sboTerm = 35
+  k10.sboTerm = 39
+
+  // CV terms:
+  APC identity "http://identifiers.org/uniprot/P04070"
+  Va identity "http://identifiers.org/uniprot/P12259"
+  Va_APC part "http://identifiers.org/uniprot/P12259",
+              "http://identifiers.org/uniprot/P04070"
+  Va3_APC part "http://identifiers.org/uniprot/P04070"
+  Va5_APC part "http://identifiers.org/uniprot/P04070"
+  Va53_APC part "http://identifiers.org/uniprot/P04070"
+  Va56_APC part "http://identifiers.org/uniprot/P04070"
+  Va36_APC part "http://identifiers.org/uniprot/P04070"
+  Va536_APC part "http://identifiers.org/uniprot/P04070"
+  LC_APC part "http://identifiers.org/uniprot/P04070"
+  VaLCA1_APC part "http://identifiers.org/uniprot/P04070"
 end
+
+Model_1 is "Hockin1999_BloodCoagulation_VaInactivation"
+
+Model_1 model_entity_is "http://identifiers.org/biomodels.db/MODEL1108260001"
+Model_1 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000365"
+Model_1 description "http://identifiers.org/pubmed/10346914"
+Model_1 model_entity_is "http://identifiers.org/go/GO:0007596"
+Model_1 taxon "http://identifiers.org/taxonomy/2759"
+Model_1 property "http://identifiers.org/doid/DOID:2214"

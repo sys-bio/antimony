@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Hsp70Model()
 
   // Compartments and Species:
@@ -34,20 +34,20 @@ model *Hsp70Model()
   Misfolding: NatP + ROS => MisP + ROS; kmisfold*NatP*ROS*kalive;
   Hsp90MisPBinding: MisP + Hsp90 => Hsp90_MisP; kbinHspMisp*MisP*Hsp90*kalive;
   Hsp90unsuccessulRefolding: Hsp90_MisP => MisP + Hsp90; krelHspMisp*Hsp90_MisP*kalive;
-  Hsp90refolding: Hsp90_MisP + $ATP => Hsp90 + NatP + $ADP; (krefold*Hsp90_MisP*kalive*ATP)/(5000 + ATP);
+  Hsp90refolding: Hsp90_MisP + $ATP => Hsp90 + NatP + $ADP; krefold*Hsp90_MisP*kalive*ATP/(5000 + ATP);
   Hsp70MisPBinding: MisP + Hsp70 => Hsp70_MisP; kbinHspMisp*MisP*Hsp70*kalive;
   Hsp70unsuccessulRefolding: Hsp70_MisP => MisP + Hsp70; krelHspMisp*Hsp70_MisP*kalive;
-  Hsp70refolding: Hsp70_MisP + $ATP => Hsp70 + NatP + $ADP; (krefold*Hsp70_MisP*kalive*ATP)/(5000 + ATP);
+  Hsp70refolding: Hsp70_MisP + $ATP => Hsp70 + NatP + $ADP; krefold*Hsp70_MisP*kalive*ATP/(5000 + ATP);
   Hsp70ClientBinding: Hsp70 + Hsp70Client => Hsp70_Hsp70Client; kbinHsp70client*Hsp70*Hsp70Client*kalive;
   Hsp70ClientRelease: Hsp70_Hsp70Client => Hsp70 + Hsp70Client; krelHsp70client*Hsp70_Hsp70Client*kalive;
   Hsp90ClientBinding: Hsp90 + Hsp90Client => Hsp90_Hsp90Client; kbinHsp90client*Hsp90*Hsp90Client*kalive;
   Hsp90ClientRelease: Hsp90_Hsp90Client => Hsp90 + Hsp90Client; krelHsp90client*Hsp90_Hsp90Client*kalive;
   Hsp90HSF1Binding: Hsp90 + Hsf1 => Hsf1_Hsp90; kbinHsf1Hsp90*Hsp90*Hsf1*kalive;
   Hsp90HSF1Release: Hsf1_Hsp90 => Hsp90 + Hsf1; krelHsf1Hsp90*Hsf1_Hsp90*kalive;
-  dimerisation: 2Hsf1 => Hsf1_Hsf1; ((Hsf1 - 1)*kdimerHsf1*kalive*Hsf1)/2;
+  dimerisation: 2 Hsf1 => Hsf1_Hsf1; (Hsf1 - 1)*kdimerHsf1*kalive*Hsf1/2;
   trimerisation: Hsf1 + Hsf1_Hsf1 => Hsf1_Hsf1_Hsf1; ktrimerHsf1*Hsf1*Hsf1_Hsf1*kalive;
   deTrimerisation: Hsf1_Hsf1_Hsf1 => Hsf1 + Hsf1_Hsf1; kdetrimerHsf1*Hsf1_Hsf1_Hsf1*kalive;
-  deDimerisation: Hsf1_Hsf1 => 2Hsf1; kdedimerHsf1*Hsf1_Hsf1*kalive;
+  deDimerisation: Hsf1_Hsf1 => 2 Hsf1; kdedimerHsf1*Hsf1_Hsf1*kalive;
   HSE70TriHBinding: Hsf1_Hsf1_Hsf1 + HSEHsp70 => HSEHsp70_Hsf1_Hsf1_Hsf1; kbinHSEHsf1*HSEHsp70*Hsf1_Hsf1_Hsf1*kalive;
   HSE70TriHRelease: HSEHsp70_Hsf1_Hsf1_Hsf1 => HSEHsp70 + Hsf1_Hsf1_Hsf1; krelHSEHsf1*HSEHsp70_Hsf1_Hsf1_Hsf1*kalive;
   HSE90TriHBinding: Hsf1_Hsf1_Hsf1 + HSEHsp90 => HSEHsp90_Hsf1_Hsf1_Hsf1; kbinHSEHsf1*HSEHsp90*Hsf1_Hsf1_Hsf1*kalive;
@@ -61,14 +61,14 @@ model *Hsp70Model()
   Hsp90BasalSynthesis: $Source => Hsp90; kbasalsynHsp90*kalive;
   Hsp90Upregulation: HSEHsp90_Hsf1_Hsf1_Hsf1_P => HSEHsp90_Hsf1_Hsf1_Hsf1_P + Hsp90; kupregHsp*HSEHsp90_Hsf1_Hsf1_Hsf1_P*kalive;
   Hsp90ProteasomeBinding: Hsp90 + Proteasome => Hsp90_Proteasome; kbinHsp90Prot*Hsp90*Proteasome*kalive;
-  Hsp90Degradation: Hsp90_Proteasome + $ATP => Proteasome + $ADP; (kdegHsp90*Hsp90_Proteasome*kalive*ATP)/(5000 + ATP);
+  Hsp90Degradation: Hsp90_Proteasome + $ATP => Proteasome + $ADP; kdegHsp90*Hsp90_Proteasome*kalive*ATP/(5000 + ATP);
   Hsp70BasalSynthesis: $Source => Hsp70; kbasalsynHsp70*kalive;
   Hsp70Upregulation: HSEHsp70_Hsf1_Hsf1_Hsf1_P => HSEHsp70_Hsf1_Hsf1_Hsf1_P + Hsp70; kupregHsp*HSEHsp70_Hsf1_Hsf1_Hsf1_P*kalive;
   Hsp70ProteasomeBinding: Hsp70 + Proteasome => Hsp70_Proteasome; kbinHsp70Prot*Hsp70*Proteasome*kalive;
-  Hsp70Degradation: Hsp70_Proteasome + $ATP => Proteasome + $ADP; (kdegHsp70*Hsp70_Proteasome*kalive*ATP)/(5000 + ATP);
+  Hsp70Degradation: Hsp70_Proteasome + $ATP => Proteasome + $ADP; kdegHsp70*Hsp70_Proteasome*kalive*ATP/(5000 + ATP);
   MisPProteasomeBinding1: Hsp70_MisP + Proteasome => MisP_Proteasome + Hsp70; kbinMisPProt*Hsp70_MisP*Proteasome*kalive;
   MisPProteasomeBinding2: Hsp90_MisP + Proteasome => MisP_Proteasome + Hsp90; kbinMisPProt*Hsp90_MisP*Proteasome*kalive;
-  MisPDegradation: MisP_Proteasome + $ATP => Proteasome + $ADP; (kdegMisP*MisP_Proteasome*kalive*ATP)/(5000 + ATP);
+  MisPDegradation: MisP_Proteasome + $ATP => Proteasome + $ADP; kdegMisP*MisP_Proteasome*kalive*ATP/(5000 + ATP);
   radicalFormation: $Source => ROS; kgenROS*Source*kalive;
   radicalScavenging: ROS => $Sink; kremROS*ROS*kalive;
   Hsp70_PpxBinding: Hsp70 + Ppx => Hsp70_Ppx; kbinHsp70Ppx*Hsp70*Ppx*kalive;
@@ -77,9 +77,9 @@ model *Hsp70Model()
   JNKDephosphorylatioByMkp1: Jnk_P + Mkp1_P => Jnk + Mkp1_P; kdephosJnkMkp1*Jnk_P*Mkp1_P*kalive;
   p38Phosphorylation: ROS + p38 => ROS + p38_P; kphosp38*ROS*p38*kalive;
   p38DePhosphorylationByMkp1: p38_P + Mkp1_P => p38 + Mkp1_P; kdephosp38Mkp1*p38_P*Mkp1_P*kalive;
-  Aggregation1: 2MisP => AggP; kagg*MisP*(MisP - 1)*0.5*kalive;
+  Aggregation1: 2 MisP => AggP; kagg*MisP*(MisP - 1)*0.5*kalive;
   SequesteringOfAggregate: MisP + AggP => SeqAggP; kagg*MisP*AggP*kalive;
-  InclusionGrowth: SeqAggP + MisP => 2SeqAggP; kseqagg*SeqAggP*MisP*kalive;
+  InclusionGrowth: SeqAggP + MisP => 2 SeqAggP; kseqagg*SeqAggP*MisP*kalive;
   ProteasomeInhibtion: AggP + Proteasome => AggP_Proteasome; kbinAggPProt*AggP*Proteasome*kalive;
   ROSgenerationSmallAggP: AggP => AggP + ROS; kgenROSAggP*AggP*kalive;
   ROSgenerationAggPProteasome: AggP_Proteasome => AggP_Proteasome + ROS; kgenROSAggP*AggP_Proteasome*kalive;
@@ -90,10 +90,10 @@ model *Hsp70Model()
   CHIPrelease: Akt_CHIP_Hsp90 => CHIP + Akt_Hsp90; krelCHIP*Akt_CHIP_Hsp90*kalive;
   AktProteasomeBinding: Akt_CHIP_Hsp90 + Proteasome => Akt_Proteasome + CHIP + Hsp90; kbinAktProt*Akt_CHIP_Hsp90*Proteasome*kalive;
   AktProteasomeRelease: Akt_Proteasome => Akt + Proteasome; krelAktProt*Akt_Proteasome*kalive;
-  AktDegradation: Akt_Proteasome + $ATP => Proteasome + $ADP; (kdegAkt*Akt_Proteasome*kalive*ATP)/(5000 + ATP);
+  AktDegradation: Akt_Proteasome + $ATP => Proteasome + $ADP; kdegAkt*Akt_Proteasome*kalive*ATP/(5000 + ATP);
   Mkp1Synthesis: $Source => Mkp1; ksynMkp1*Source*kalive;
   Mkp1ProteasomeBinding: Mkp1 + Proteasome => Mkp1_Proteasome; kbinMkp1Prot*Mkp1*Proteasome*kalive;
-  Mkp1Degradation: Mkp1_Proteasome + $ATP => Proteasome + $ADP; (kdegMkp1*Mkp1_Proteasome*kalive*ATP)/(5000 + ATP);
+  Mkp1Degradation: Mkp1_Proteasome + $ATP => Proteasome + $ADP; kdegMkp1*Mkp1_Proteasome*kalive*ATP/(5000 + ATP);
   Mkp1Phosphorylation: Mkp1 + Hsp70 => Mkp1_P + Hsp70; kphosMkp1*Mkp1*Hsp70*kalive;
   Mkp1Dephosphorylation: Mkp1_P + ROS => Mkp1 + ROS; kdephosMkp1*Mkp1_P*ROS*kalive;
   p38ROSproduction: p38_P => p38_P + ROS; kgenROSp38*p38_P*kalive*kp38act;
@@ -101,12 +101,12 @@ model *Hsp70Model()
   Hsp90Damage: Hsp90 + ROS => Hsp90_dam + ROS; kdamHsp*Hsp90*ROS*kalive;
   Hsp70DamProteasomeBinding: Hsp70_dam + Proteasome => Hsp70_Proteasome; kbinHsp70Prot*Hsp70_dam*Proteasome*kalive;
   Hsp90DamProteasomeBinding: Hsp90_dam + Proteasome => Hsp90_Proteasome; kbinHsp90Prot*Hsp90_dam*Proteasome*kalive;
-  Hsp70DamAggregation1: 2Hsp70_dam => AggP; kagg*Hsp70_dam*(Hsp70_dam - 1)*0.5*kalive;
+  Hsp70DamAggregation1: 2 Hsp70_dam => AggP; kagg*Hsp70_dam*(Hsp70_dam - 1)*0.5*kalive;
   Hsp70DamInclusionFormation: Hsp70_dam + AggP => SeqAggP; kagg*Hsp70_dam*AggP*kalive;
-  Hsp90DamAggregation: 2Hsp90_dam => AggP; kagg*Hsp90_dam*(Hsp90_dam - 1)*0.5*kalive;
+  Hsp90DamAggregation: 2 Hsp90_dam => AggP; kagg*Hsp90_dam*(Hsp90_dam - 1)*0.5*kalive;
   Hsp90DamInclusionFormation: Hsp90_dam + AggP => SeqAggP; kagg*Hsp90_dam*AggP*kalive;
-  Hsp70DamSequestering: Hsp70_dam + SeqAggP => 2SeqAggP; kseqagg*Hsp70_dam*SeqAggP*kalive;
-  Hsp90DamSequestering: Hsp90_dam + SeqAggP => 2SeqAggP; kseqagg*Hsp90_dam*SeqAggP*kalive;
+  Hsp70DamSequestering: Hsp70_dam + SeqAggP => 2 SeqAggP; kseqagg*Hsp70_dam*SeqAggP*kalive;
+  Hsp90DamSequestering: Hsp90_dam + SeqAggP => 2 SeqAggP; kseqagg*Hsp90_dam*SeqAggP*kalive;
   p38CellDeath: p38_P => p38_P + p38Death + CellDeath; kp38death*p38_P*kalive*kp38act;
   JnkCellDeath: Jnk_P => Jnk_P + JNKDeath + CellDeath; kJnkdeath*Jnk_P*kalive;
   PICellDeath: AggP_Proteasome => AggP_Proteasome + PIDeath + CellDeath; kPIdeath*AggP_Proteasome*kalive;
@@ -177,18 +177,18 @@ model *Hsp70Model()
   // Variable initializations:
   kalive = 1;
   ksynNatP = 0.042;
-  kmisfold = 2e-006;
-  kbinMisPProt = 1e-007;
+  kmisfold = 2e-06;
+  kbinMisPProt = 1e-07;
   kdegMisP = 0.01;
-  kagg = 1e-008;
-  kseqagg = 7e-007;
-  kbinAggPProt = 1e-005;
-  kbinHspMisp = 8e-006;
-  krelHspMisp = 8e-005;
+  kagg = 1e-08;
+  kseqagg = 7e-07;
+  kbinAggPProt = 1e-05;
+  kbinHspMisp = 8e-06;
+  krelHspMisp = 8e-05;
   krefold = 0.00055;
   kbinHsf1Hsp90 = 0.02;
   krelHsf1Hsp90 = 0.5;
-  kdimerHsf1 = 8e-005;
+  kdimerHsf1 = 8e-05;
   ktrimerHsf1 = 0.01;
   kdetrimerHsf1 = 0.5;
   kdedimerHsf1 = 0.5;
@@ -197,8 +197,8 @@ model *Hsp70Model()
   kupregHsp = 0.2;
   kbasalsynHsp70 = 0.008;
   kbasalsynHsp90 = 0.008;
-  kbinHsp70Prot = 1.2e-008;
-  kbinHsp90Prot = 1e-008;
+  kbinHsp70Prot = 1.2e-08;
+  kbinHsp90Prot = 1e-08;
   kdegHsp70 = 0.01;
   kdegHsp90 = 0.01;
   kgenROS = 0.01;
@@ -217,25 +217,25 @@ model *Hsp70Model()
   krelHSEPhosTriH = 0.08;
   kphosp38 = 0.02;
   kdephosp38Mkp1 = 0.05;
-  kgenROSAggP = 1e-006;
+  kgenROSAggP = 1e-06;
   ksynAkt = 0.0015;
   kbinAktHsp90 = 0.00037;
   krelAktHsp90 = 7;
-  kbinAktProt = 6e-008;
-  krelAktProt = 1e-008;
+  kbinAktProt = 6e-08;
+  krelAktProt = 1e-08;
   kdegAkt = 0.01;
-  kbinCHIP = 2e-007;
-  krelCHIP = 1e-008;
-  ksynMkp1 = 1e-005;
-  kbinMkp1Prot = 9.6e-009;
+  kbinCHIP = 2e-07;
+  krelCHIP = 1e-08;
+  ksynMkp1 = 1e-05;
+  kbinMkp1Prot = 9.6e-09;
   kdegMkp1 = 0.01;
   kphosMkp1 = 0.02;
   kdephosMkp1 = 0.001;
   kgenROSp38 = 0.0001;
-  kdamHsp = 1e-008;
-  kp38death = 1.5e-007;
-  kJnkdeath = 1.5e-007;
-  kPIdeath = 2e-008;
+  kdamHsp = 1e-08;
+  kp38death = 1.5e-07;
+  kJnkdeath = 1.5e-07;
+  kPIdeath = 2e-08;
   kp38act = 1;
 
   // Other declarations:
@@ -254,4 +254,368 @@ model *Hsp70Model()
 
   // Unit definitions:
   unit substance = item;
+
+  // SBO terms:
+  cytosol.sboTerm = 290
+  nucleus.sboTerm = 290
+  NatP.sboTerm = 252
+  MisP.sboTerm = 252
+  Hsp70.sboTerm = 252
+  Hsp90.sboTerm = 252
+  Hsp70_dam.sboTerm = 252
+  Hsp90_dam.sboTerm = 252
+  Hsp70_Proteasome.sboTerm = 297
+  Hsp70Client.sboTerm = 252
+  Hsp90Client.sboTerm = 252
+  Hsp70_Hsp70Client.sboTerm = 297
+  Hsp90_Hsp90Client.sboTerm = 297
+  Akt.sboTerm = 252
+  Akt_Hsp90.sboTerm = 297
+  CHIP.sboTerm = 252
+  Akt_CHIP_Hsp90.sboTerm = 297
+  Akt_Proteasome.sboTerm = 297
+  Hsf1.sboTerm = 252
+  Hsf1_Hsp90.sboTerm = 297
+  Hsp90_MisP.sboTerm = 297
+  Hsp70_MisP.sboTerm = 297
+  Hsf1_Hsf1_Hsf1.sboTerm = 297
+  Hsf1_Hsf1_Hsf1_P.sboTerm = 297
+  Hsf1_Hsf1.sboTerm = 297
+  HSEHsp70.sboTerm = 369
+  HSEHsp90.sboTerm = 369
+  HSEHsp70_Hsf1_Hsf1_Hsf1.sboTerm = 297
+  HSEHsp70_Hsf1_Hsf1_Hsf1_P.sboTerm = 297
+  HSEHsp90_Hsf1_Hsf1_Hsf1.sboTerm = 297
+  HSEHsp90_Hsf1_Hsf1_Hsf1_P.sboTerm = 297
+  Jnk.sboTerm = 252
+  Jnk_P.sboTerm = 252
+  Ppx.sboTerm = 252
+  Mkp1.sboTerm = 252
+  Mkp1_P.sboTerm = 252
+  Mkp1_Proteasome.sboTerm = 297
+  Hsp70_Ppx.sboTerm = 297
+  Pkc.sboTerm = 252
+  p38.sboTerm = 252
+  p38_P.sboTerm = 252
+  Proteasome.sboTerm = 297
+  MisP_Proteasome.sboTerm = 297
+  AggP.sboTerm = 252
+  SeqAggP.sboTerm = 252
+  AggP_Proteasome.sboTerm = 297
+  ROS.sboTerm = 247
+  ATP.sboTerm = 247
+  ADP.sboTerm = 247
+  Source.sboTerm = 291
+  Sink.sboTerm = 291
+  p38Death.sboTerm = 236
+  JNKDeath.sboTerm = 236
+  PIDeath.sboTerm = 236
+  CellDeath.sboTerm = 236
+  kalive.sboTerm = 9
+  ksynNatP.sboTerm = 9
+  kmisfold.sboTerm = 9
+  kbinMisPProt.sboTerm = 9
+  kdegMisP.sboTerm = 9
+  kagg.sboTerm = 9
+  kseqagg.sboTerm = 9
+  kbinAggPProt.sboTerm = 9
+  kbinHspMisp.sboTerm = 9
+  krelHspMisp.sboTerm = 9
+  krefold.sboTerm = 9
+  kbinHsf1Hsp90.sboTerm = 9
+  krelHsf1Hsp90.sboTerm = 9
+  kdimerHsf1.sboTerm = 9
+  ktrimerHsf1.sboTerm = 9
+  kdetrimerHsf1.sboTerm = 9
+  kdedimerHsf1.sboTerm = 9
+  kbinHSEHsf1.sboTerm = 9
+  krelHSEHsf1.sboTerm = 9
+  kupregHsp.sboTerm = 9
+  kbasalsynHsp70.sboTerm = 9
+  kbasalsynHsp90.sboTerm = 9
+  kbinHsp70Prot.sboTerm = 9
+  kbinHsp90Prot.sboTerm = 9
+  kdegHsp70.sboTerm = 9
+  kdegHsp90.sboTerm = 9
+  kgenROS.sboTerm = 9
+  kremROS.sboTerm = 9
+  kbinHsp70client.sboTerm = 9
+  krelHsp70client.sboTerm = 9
+  kbinHsp90client.sboTerm = 9
+  krelHsp90client.sboTerm = 9
+  kphosJnk.sboTerm = 9
+  kdephosJnkMkp1.sboTerm = 9
+  kbinHsp70Ppx.sboTerm = 9
+  krelHsp70Ppx.sboTerm = 9
+  kphosHsf1.sboTerm = 9
+  kdephosHsf1.sboTerm = 9
+  kbinHSEPhosTriH.sboTerm = 9
+  krelHSEPhosTriH.sboTerm = 9
+  kphosp38.sboTerm = 9
+  kdephosp38Mkp1.sboTerm = 9
+  kgenROSAggP.sboTerm = 9
+  ksynAkt.sboTerm = 9
+  kbinAktHsp90.sboTerm = 9
+  krelAktHsp90.sboTerm = 9
+  kbinAktProt.sboTerm = 9
+  krelAktProt.sboTerm = 9
+  kdegAkt.sboTerm = 9
+  kbinCHIP.sboTerm = 9
+  krelCHIP.sboTerm = 9
+  ksynMkp1.sboTerm = 9
+  kbinMkp1Prot.sboTerm = 9
+  kdegMkp1.sboTerm = 9
+  kphosMkp1.sboTerm = 9
+  kdephosMkp1.sboTerm = 9
+  kgenROSp38.sboTerm = 9
+  kdamHsp.sboTerm = 9
+  kp38death.sboTerm = 9
+  kJnkdeath.sboTerm = 9
+  kPIdeath.sboTerm = 9
+  kp38act.sboTerm = 9
+  ProteinSynthesis.sboTerm = 284
+  Misfolding.sboTerm = 344
+  Hsp90MisPBinding.sboTerm = 526
+  Hsp90unsuccessulRefolding.sboTerm = 180
+  Hsp90refolding.sboTerm = 344
+  Hsp70MisPBinding.sboTerm = 526
+  Hsp70unsuccessulRefolding.sboTerm = 180
+  Hsp70refolding.sboTerm = 344
+  Hsp70ClientBinding.sboTerm = 526
+  Hsp70ClientRelease.sboTerm = 180
+  Hsp90ClientBinding.sboTerm = 526
+  Hsp90ClientRelease.sboTerm = 180
+  Hsp90HSF1Binding.sboTerm = 526
+  Hsp90HSF1Release.sboTerm = 180
+  dimerisation.sboTerm = 526
+  trimerisation.sboTerm = 526
+  deTrimerisation.sboTerm = 180
+  deDimerisation.sboTerm = 180
+  HSE70TriHBinding.sboTerm = 526
+  HSE70TriHRelease.sboTerm = 180
+  HSE90TriHBinding.sboTerm = 526
+  HSE90TriHRelease.sboTerm = 180
+  Hsf1_Hsf1_Hsf1Phosphorylation.sboTerm = 216
+  Hsf1_Hsf1_Hsf1DePhosphorylation.sboTerm = 330
+  HSE70PhosTriHBinding.sboTerm = 526
+  HSE70PhosTriHRelease.sboTerm = 180
+  HSE90PhosTriHBinding.sboTerm = 526
+  HSE90PhosTriHRelease.sboTerm = 180
+  Hsp90BasalSynthesis.sboTerm = 184
+  Hsp90Upregulation.sboTerm = 177
+  Hsp90ProteasomeBinding.sboTerm = 526
+  Hsp90Degradation.sboTerm = 179
+  Hsp70BasalSynthesis.sboTerm = 184
+  Hsp70Upregulation.sboTerm = 177
+  Hsp70ProteasomeBinding.sboTerm = 526
+  Hsp70Degradation.sboTerm = 179
+  MisPProteasomeBinding1.sboTerm = 177
+  MisPProteasomeBinding2.sboTerm = 177
+  MisPDegradation.sboTerm = 179
+  radicalFormation.sboTerm = 393
+  radicalScavenging.sboTerm = 179
+  Hsp70_PpxBinding.sboTerm = 526
+  Hsp70_PPXRelease.sboTerm = 180
+  JnkPhosphorylation.sboTerm = 216
+  JNKDephosphorylatioByMkp1.sboTerm = 330
+  p38Phosphorylation.sboTerm = 216
+  p38DePhosphorylationByMkp1.sboTerm = 330
+  Aggregation1.sboTerm = 177
+  SequesteringOfAggregate.sboTerm = 177
+  InclusionGrowth.sboTerm = 177
+  ProteasomeInhibtion.sboTerm = 177
+  ROSgenerationSmallAggP.sboTerm = 393
+  ROSgenerationAggPProteasome.sboTerm = 393
+  AktSynthesis.sboTerm = 184
+  Hsp90AktBinding.sboTerm = 526
+  Hsp90AktRelease.sboTerm = 180
+  CHIPbinding.sboTerm = 526
+  CHIPrelease.sboTerm = 526
+  AktProteasomeBinding.sboTerm = 177
+  AktProteasomeRelease.sboTerm = 180
+  AktDegradation.sboTerm = 179
+  Mkp1Synthesis.sboTerm = 184
+  Mkp1ProteasomeBinding.sboTerm = 177
+  Mkp1Degradation.sboTerm = 179
+  Mkp1Phosphorylation.sboTerm = 216
+  Mkp1Dephosphorylation.sboTerm = 330
+  p38ROSproduction.sboTerm = 393
+  Hsp70Damage.sboTerm = 177
+  Hsp90Damage.sboTerm = 177
+  Hsp70DamProteasomeBinding.sboTerm = 177
+  Hsp90DamProteasomeBinding.sboTerm = 177
+  Hsp70DamAggregation1.sboTerm = 177
+  Hsp70DamInclusionFormation.sboTerm = 177
+  Hsp90DamAggregation.sboTerm = 177
+  Hsp90DamInclusionFormation.sboTerm = 177
+  Hsp70DamSequestering.sboTerm = 177
+  Hsp90DamSequestering.sboTerm = 177
+  p38CellDeath.sboTerm = 179
+  JnkCellDeath.sboTerm = 179
+  PICellDeath.sboTerm = 179
+
+  // CV terms:
+  cytosol hypernym "http://identifiers.org/go/GO:0005829"
+  nucleus identity "http://identifiers.org/go/GO:0005634"
+  NatP hypernym "http://identifiers.org/chebi/CHEBI:36080"
+  MisP hypernym "http://identifiers.org/chebi/CHEBI:36080"
+  Hsp70 parthood "http://identifiers.org/interpro/IPR001023"
+  Hsp90 hypernym "http://identifiers.org/interpro/IPR001404"
+  Hsp70_dam hypernym "http://identifiers.org/interpro/IPR001023"
+  Hsp90_dam hypernym "http://identifiers.org/interpro/IPR001404"
+  Hsp90_Proteasome hypernym "http://identifiers.org/interpro/IPR001023",
+                            "http://identifiers.org/go/GO:0000502"
+  Hsp70_Proteasome hypernym "http://identifiers.org/interpro/IPR001404",
+                            "http://identifiers.org/go/GO:0000502"
+  Hsp70Client hypernym "http://identifiers.org/chebi/CHEBI:36080"
+  Hsp90Client hypernym "http://identifiers.org/chebi/CHEBI:36080"
+  Hsp70_Hsp70Client part "http://identifiers.org/chebi/CHEBI:36080",
+                         "http://identifiers.org/interpro/IPR001023"
+  Hsp90_Hsp90Client part "http://identifiers.org/chebi/CHEBI:36080",
+                         "http://identifiers.org/interpro/IPR001404"
+  Akt hypernym "http://identifiers.org/uniprot/P31749"
+  Akt_Hsp90 part "http://identifiers.org/uniprot/P31749",
+                 "http://identifiers.org/interpro/IPR001404"
+  CHIP hypernym "http://identifiers.org/uniprot/Q9UNE7"
+  Akt_CHIP_Hsp90 part "http://identifiers.org/uniprot/P31749",
+                      "http://identifiers.org/uniprot/Q9UNE7",
+                      "http://identifiers.org/interpro/IPR001404"
+  Akt_Proteasome part "http://identifiers.org/uniprot/P31749",
+                      "http://identifiers.org/go/GO:0000502"
+  Hsf1 hypernym "http://identifiers.org/uniprot/Q00613"
+  Hsf1_Hsp90 part "http://identifiers.org/uniprot/Q00613",
+                  "http://identifiers.org/interpro/IPR001404"
+  Hsp90_MisP part "http://identifiers.org/chebi/CHEBI:36080",
+                  "http://identifiers.org/interpro/IPR001023"
+  Hsp70_MisP part "http://identifiers.org/chebi/CHEBI:36080",
+                  "http://identifiers.org/interpro/IPR001404"
+  Hsf1_Hsf1_Hsf1 part "http://identifiers.org/uniprot/Q00613"
+  Hsf1_Hsf1_Hsf1_P hypernym "http://identifiers.org/kegg.compound/C00562"
+  Hsf1_Hsf1_Hsf1_P part "http://identifiers.org/uniprot/Q00613"
+  Hsf1_Hsf1 part "http://identifiers.org/uniprot/Q00613"
+  HSEHsp70_Hsf1_Hsf1_Hsf1 hypernym "http://identifiers.org/go/GO:0043234"
+  HSEHsp70_Hsf1_Hsf1_Hsf1_P hypernym "http://identifiers.org/kegg.compound/C00562",
+                                     "http://identifiers.org/go/GO:0043234"
+  HSEHsp90_Hsf1_Hsf1_Hsf1 hypernym "http://identifiers.org/go/GO:0043234"
+  HSEHsp90_Hsf1_Hsf1_Hsf1_P hypernym "http://identifiers.org/kegg.compound/C00562",
+                                     "http://identifiers.org/go/GO:0043234"
+  Jnk hypernym "http://identifiers.org/uniprot/P45983"
+  Jnk_P hypernym "http://identifiers.org/uniprot/P45983",
+                 "http://identifiers.org/kegg.compound/C00562"
+  Ppx hypernym "http://identifiers.org/go/GO:0008287"
+  Mkp1 hypernym "http://identifiers.org/uniprot/P28562"
+  Mkp1_P hypernym "http://identifiers.org/uniprot/P28562",
+                  "http://identifiers.org/kegg.compound/C00562"
+  Mkp1_Proteasome part "http://identifiers.org/uniprot/P28562",
+                       "http://identifiers.org/go/GO:0000502"
+  Hsp70_Ppx part "http://identifiers.org/interpro/IPR001023",
+                 "http://identifiers.org/go/GO:0008287"
+  Pkc hypernym "http://identifiers.org/interpro/IPR012233"
+  p38 hypernym "http://identifiers.org/uniprot/Q16539"
+  p38_P hypernym "http://identifiers.org/uniprot/Q16539",
+                 "http://identifiers.org/kegg.compound/C00562"
+  Proteasome hypernym "http://identifiers.org/go/GO:0000502"
+  MisP_Proteasome part "http://identifiers.org/chebi/CHEBI:36080",
+                       "http://identifiers.org/go/GO:0000502"
+  AggP hypernym "http://identifiers.org/chebi/CHEBI:36080"
+  SeqAggP hypernym "http://identifiers.org/chebi/CHEBI:36080"
+  AggP_Proteasome part "http://identifiers.org/chebi/CHEBI:36080",
+                       "http://identifiers.org/go/GO:0000502"
+  ROS hypernym "http://identifiers.org/chebi/CHEBI:26523"
+  ATP parthood "http://identifiers.org/chebi/CHEBI:15422"
+  ADP parthood "http://identifiers.org/chebi/CHEBI:16761"
+  ProteinSynthesis hypernym "http://identifiers.org/go/GO:0006412"
+  Misfolding hypernym "http://identifiers.org/go/GO:0000302"
+  Hsp90MisPBinding hypernym "http://identifiers.org/go/GO:0051087"
+  Hsp90unsuccessulRefolding hypernym "http://identifiers.org/go/GO:0070389"
+  Hsp90refolding hypernym "http://identifiers.org/go/GO:0070389"
+  Hsp70MisPBinding hypernym "http://identifiers.org/go/GO:0051087"
+  Hsp70unsuccessulRefolding hypernym "http://identifiers.org/go/GO:0070389"
+  Hsp70refolding hypernym "http://identifiers.org/go/GO:0070389"
+  Hsp70ClientBinding hypernym "http://identifiers.org/go/GO:0006461"
+  Hsp70ClientRelease hypernym "http://identifiers.org/go/GO:0032986"
+  Hsp90ClientBinding hypernym "http://identifiers.org/go/GO:0006461"
+  Hsp90ClientRelease hypernym "http://identifiers.org/go/GO:0032986"
+  Hsp90HSF1Binding hypernym "http://identifiers.org/go/GO:0006461"
+  Hsp90HSF1Release hypernym "http://identifiers.org/go/GO:0032986"
+  dimerisation hypernym "http://identifiers.org/go/GO:0042803"
+  trimerisation hypernym "http://identifiers.org/go/GO:0070206"
+  deTrimerisation hypernym "http://identifiers.org/go/GO:0070206"
+  deDimerisation hypernym "http://identifiers.org/go/GO:0043241"
+  HSE70TriHBinding hypernym "http://identifiers.org/go/GO:0006461"
+  HSE70TriHRelease hypernym "http://identifiers.org/go/GO:0032986"
+  HSE90TriHBinding hypernym "http://identifiers.org/go/GO:0006461"
+  HSE90TriHRelease hypernym "http://identifiers.org/go/GO:0032986"
+  Hsf1_Hsf1_Hsf1Phosphorylation hypernym "http://identifiers.org/go/GO:0016310"
+  Hsf1_Hsf1_Hsf1DePhosphorylation hypernym "http://identifiers.org/go/GO:0016311"
+  HSE70PhosTriHBinding hypernym "http://identifiers.org/go/GO:0006461"
+  HSE70PhosTriHRelease hypernym "http://identifiers.org/go/GO:0032986"
+  HSE90PhosTriHBinding hypernym "http://identifiers.org/go/GO:0006461"
+  HSE90PhosTriHRelease hypernym "http://identifiers.org/go/GO:0032986"
+  Hsp90BasalSynthesis hypernym "http://identifiers.org/go/GO:0006412"
+  Hsp90Upregulation hypernym "http://identifiers.org/go/GO:0032092"
+  Hsp90ProteasomeBinding hypernym "http://identifiers.org/go/GO:0006461"
+  Hsp90Degradation hypernym "http://identifiers.org/go/GO:0009056"
+  Hsp70BasalSynthesis hypernym "http://identifiers.org/go/GO:0006412"
+  Hsp70Upregulation hypernym "http://identifiers.org/go/GO:0032092"
+  Hsp70ProteasomeBinding hypernym "http://identifiers.org/go/GO:0006461"
+  Hsp70Degradation hypernym "http://identifiers.org/go/GO:0009056"
+  MisPProteasomeBinding1 hypernym "http://identifiers.org/go/GO:0070628"
+  MisPProteasomeBinding2 hypernym "http://identifiers.org/go/GO:0070628"
+  MisPDegradation hypernym "http://identifiers.org/go/GO:0009056"
+  radicalFormation hypernym "http://identifiers.org/go/GO:0009058"
+  radicalScavenging hypernym "http://identifiers.org/go/GO:0009056"
+  Hsp70_PpxBinding hypernym "http://identifiers.org/go/GO:0006461"
+  Hsp70_PPXRelease hypernym "http://identifiers.org/go/GO:0043241"
+  JnkPhosphorylation hypernym "http://identifiers.org/go/GO:0016310"
+  JNKDephosphorylatioByMkp1 hypernym "http://identifiers.org/go/GO:0016311"
+  p38Phosphorylation hypernym "http://identifiers.org/go/GO:0016310"
+  p38DePhosphorylationByMkp1 hypernym "http://identifiers.org/go/GO:0016311"
+  Aggregation1 hypernym "http://identifiers.org/go/GO:0070841"
+  SequesteringOfAggregate hypernym "http://identifiers.org/go/GO:0051235"
+  InclusionGrowth hypernym "http://identifiers.org/go/GO:0090261"
+  ProteasomeInhibtion hypernym "http://identifiers.org/go/GO:0006461"
+  ROSgenerationSmallAggP hypernym "http://identifiers.org/go/GO:0052064"
+  ROSgenerationAggPProteasome hypernym "http://identifiers.org/go/GO:0052064"
+  AktSynthesis hypernym "http://identifiers.org/go/GO:0006412"
+  Hsp90AktBinding hypernym "http://identifiers.org/go/GO:0006461"
+  Hsp90AktRelease hypernym "http://identifiers.org/go/GO:0043241"
+  CHIPbinding hypernym "http://identifiers.org/go/GO:0006461"
+  CHIPrelease hypernym "http://identifiers.org/go/GO:0043241"
+  AktProteasomeBinding hypernym "http://identifiers.org/go/GO:0070628"
+  AktProteasomeRelease hypernym "http://identifiers.org/go/GO:0043241"
+  AktDegradation hypernym "http://identifiers.org/go/GO:0009056"
+  Mkp1Synthesis hypernym "http://identifiers.org/go/GO:0006412"
+  Mkp1ProteasomeBinding hypernym "http://identifiers.org/go/GO:0006461"
+  Mkp1Degradation hypernym "http://identifiers.org/go/GO:0009056"
+  Mkp1Phosphorylation hypernym "http://identifiers.org/go/GO:0016310"
+  Mkp1Dephosphorylation hypernym "http://identifiers.org/go/GO:0016311"
+  p38ROSproduction hypernym "http://identifiers.org/go/GO:0052064"
+  Hsp70Damage hypernym "http://identifiers.org/go/GO:0006974"
+  Hsp90Damage hypernym "http://identifiers.org/go/GO:0006974"
+  Hsp70DamProteasomeBinding hypernym "http://identifiers.org/go/GO:0006461"
+  Hsp90DamProteasomeBinding hypernym "http://identifiers.org/go/GO:0006461"
+  Hsp70DamAggregation1 hypernym "http://identifiers.org/go/GO:0070841"
+  Hsp70DamInclusionFormation hypernym "http://identifiers.org/go/GO:0070841"
+  Hsp90DamAggregation hypernym "http://identifiers.org/go/GO:0070841"
+  Hsp90DamInclusionFormation hypernym "http://identifiers.org/go/GO:0070841"
+  Hsp70DamSequestering hypernym "http://identifiers.org/go/GO:0051235"
+  Hsp90DamSequestering hypernym "http://identifiers.org/go/GO:0051235"
+  p38CellDeath hypernym "http://identifiers.org/go/GO:0008219"
+  JnkCellDeath hypernym "http://identifiers.org/go/GO:0008219"
+  PICellDeath hypernym "http://identifiers.org/go/GO:0008219"
 end
+
+Hsp70Model is "Proctor2011_ProteinHomeostasis_NormalCondition"
+
+Hsp70Model model_entity_is "http://identifiers.org/biomodels.db/MODEL1005280000"
+Hsp70Model model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000344"
+Hsp70Model description "http://identifiers.org/pubmed/21779370"
+Hsp70Model origin "http://identifiers.org/biomodels.db/BIOMD0000000091"
+Hsp70Model hypernym "http://identifiers.org/go/GO:0070841",
+                    "http://identifiers.org/go/GO:0006915",
+                    "http://identifiers.org/go/GO:0003773",
+                    "http://identifiers.org/go/GO:0051085"
+Hsp70Model taxon "http://identifiers.org/taxonomy/7711"
+Hsp70Model property "http://identifiers.org/mamo/MAMO_0000046"
+Hsp70Model property "http://identifiers.org/doid/DOID:1289"

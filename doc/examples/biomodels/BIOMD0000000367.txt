@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Model_1()
 
   // Compartments and Species:
@@ -6,9 +6,9 @@ model *Model_1()
   species $x in compartment_1, $y in compartment_1, $z in compartment_1;
 
   // Rate Rules:
-  x' = (-r*x*y + zeta*mu_x) - zeta*x;
+  x' = -r*x*y + zeta*mu_x - zeta*x;
   y' = r*x*y - b*y*z - zeta*y;
-  z' = (-b*y*z + zeta*mu_z) - zeta*z;
+  z' = -b*y*z + zeta*mu_z - zeta*z;
   mu_z' = epsilon*(y - k*(mu_z - mu_z_star));
 
   // Species initializations:
@@ -33,3 +33,12 @@ model *Model_1()
   var mu_z;
   const compartment_1, r, zeta, mu_x, b, epsilon, k, mu_z_star;
 end
+
+Model_1 is "Muller2008_treshold_minimal"
+
+Model_1 model_entity_is "http://identifiers.org/biomodels.db/MODEL1108260013"
+Model_1 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000367"
+Model_1 description "http://identifiers.org/pubmed/17936855"
+Model_1 identity "http://identifiers.org/go/GO:0007596"
+Model_1 taxon "http://identifiers.org/taxonomy/2759"
+Model_1 property "http://identifiers.org/doid/DOID:3393"

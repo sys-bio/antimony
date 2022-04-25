@@ -1,0 +1,117 @@
+// Created by libAntimony v2.13.0
+function Function_for_miR_degradation(cell, kdegMiR, miR)
+  kdegMiR*miR*cell/cell;
+end
+
+Function_for_miR_degradation is "Function for miR_degradation"
+
+function Function_for_miR_gene_TF1_binding(TF1, cell, kbinTF1miRgene, miR_gene)
+  kbinTF1miRgene*miR_gene*cell*TF1*cell/cell;
+end
+
+Function_for_miR_gene_TF1_binding is "Function for miR_gene_TF1_binding"
+
+function Function_for_miR_gene_TF1_release(cell, krelTF1miRgene, miR_gene_TF1)
+  krelTF1miRgene*miR_gene_TF1*cell/cell;
+end
+
+Function_for_miR_gene_TF1_release is "Function for miR_gene_TF1_release"
+
+function Function_for_TF1_transcription(Signal, cell, ksynTF1mRNA)
+  ksynTF1mRNA*Signal*cell/cell;
+end
+
+Function_for_TF1_transcription is "Function for TF1_transcription"
+
+function Function_for_TF1_mRNA_degradation(TF1_mRNA, cell, kdegTF1mRNA)
+  kdegTF1mRNA*TF1_mRNA*cell/cell;
+end
+
+Function_for_TF1_mRNA_degradation is "Function for TF1_mRNA_degradation"
+
+function Function_for_TF1_mRNA_degradation_via_miR(TF1_mRNA, cell, kdegTF1mRNAbyMiR, miR)
+  kdegTF1mRNAbyMiR*TF1_mRNA*cell*miR*cell/cell;
+end
+
+Function_for_TF1_mRNA_degradation_via_miR is "Function for TF1_mRNA_degradation_via_miR"
+
+function Function_for_TF1_translation(TF1_mRNA, cell, ksynTF1)
+  ksynTF1*TF1_mRNA*cell/cell;
+end
+
+Function_for_TF1_translation is "Function for TF1_translation"
+
+function Function_for_TF1_degradation(TF1, cell, kdegTF1)
+  kdegTF1*TF1*cell/cell;
+end
+
+Function_for_TF1_degradation is "Function for TF1_degradation"
+
+function Function_for_miR_synthesis(cell, ksynMiR, miR_gene_TF1)
+  ksynMiR*miR_gene_TF1*cell/cell;
+end
+
+Function_for_miR_synthesis is "Function for miR_synthesis"
+
+
+model *MODEL1610100001()
+
+  // Compartments and Species:
+  compartment cell;
+  species miR in cell, miR_gene in cell, miR_gene_TF1 in cell, Signal in cell;
+  species TF1 in cell, TF1_mRNA in cell, $Sink in cell;
+
+  // Reactions:
+  miR_gene_TF1_binding: miR_gene + TF1 => miR_gene_TF1; cell*Function_for_miR_gene_TF1_binding(TF1, cell, kbinTF1miRgene, miR_gene);
+  miR_gene_TF1_release: miR_gene_TF1 => miR_gene + TF1; cell*Function_for_miR_gene_TF1_release(cell, krelTF1miRgene, miR_gene_TF1);
+  miR_synthesis: miR_gene_TF1 => miR_gene_TF1 + miR; cell*Function_for_miR_synthesis(cell, ksynMiR, miR_gene_TF1);
+  miR_degradation: miR => $Sink; cell*Function_for_miR_degradation(cell, kdegMiR, miR);
+  TF1_transcription: Signal => Signal + TF1_mRNA; cell*Function_for_TF1_transcription(Signal, cell, ksynTF1mRNA);
+  TF1_mRNA_degradation: TF1_mRNA => $Sink; cell*Function_for_TF1_mRNA_degradation(TF1_mRNA, cell, kdegTF1mRNA);
+  TF1_mRNA_degradation_via_miR: TF1_mRNA + miR => miR; cell*Function_for_TF1_mRNA_degradation_via_miR(TF1_mRNA, cell, kdegTF1mRNAbyMiR, miR);
+  TF1_translation: TF1_mRNA => TF1_mRNA + TF1; cell*Function_for_TF1_translation(TF1_mRNA, cell, ksynTF1);
+  TF1_degradation: TF1 => $Sink; cell*Function_for_TF1_degradation(TF1, cell, kdegTF1);
+
+  // Events:
+  ActivateSignal: at 0 after time > 3600: Signal = 1/cell;
+
+  // Species initializations:
+  miR = 0;
+  miR_gene = 2/cell;
+  miR_gene_TF1 = 0;
+  Signal = 0;
+  TF1 = 0;
+  TF1_mRNA = 0;
+  Sink = 0;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  kbinTF1miRgene = 0.005;
+  kdegMiR = 0.008;
+  kdegTF1 = 0.005;
+  kdegTF1mRNA = 0.0001;
+  kdegTF1mRNAbyMiR = 0.001;
+  krelTF1miRgene = 5;
+  ksynMiR = 5;
+  ksynTF1 = 0.05;
+  ksynTF1mRNA = 10;
+
+  // Other declarations:
+  const cell, kbinTF1miRgene, kdegMiR, kdegTF1, kdegTF1mRNA, kdegTF1mRNAbyMiR;
+  const krelTF1miRgene, ksynMiR, ksynTF1, ksynTF1mRNA;
+
+  // Unit definitions:
+  unit substance = item;
+end
+
+MODEL1610100001 is "Proctor2017- Role of microRNAs in osteoarthritis (Negative Feedback By MicroRNA)"
+
+MODEL1610100001 description "http://identifiers.org/pubmed/29095952"
+MODEL1610100001 model_entity_is "http://identifiers.org/biomodels.db/MODEL1610100001",
+                                "http://identifiers.org/biomodels.db/BIOMD0000000864"
+MODEL1610100001 identity "http://identifiers.org/biomodels.db/MODEL1610100001"
+MODEL1610100001 property "http://identifiers.org/ncit/C3293"
+MODEL1610100001 property "http://identifiers.org/ncit/C25966"
+MODEL1610100001 property "http://identifiers.org/taxonomy/9606"

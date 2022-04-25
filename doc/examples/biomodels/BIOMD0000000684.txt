@@ -1,0 +1,108 @@
+// Created by libAntimony v2.13.0
+model *Wodarz2003_ImmunologicalMemory()
+
+  // Compartments and Species:
+  compartment COMpartment;
+
+  // Assignment Rules:
+  H := S + I_1 + R_1 + I_2 + R_2 + I_12 + I_21 + R_12;
+  P := P_1 + P_2;
+  log_P1 := log10(P_1)/log10(10);
+  log_P2 := log10(P_2)/log10(10);
+  G := 1/g;
+
+  // Rate Rules:
+  S' = (r*H/(epsilon*H + 1) - d*S - beta_1*S*P_1 - beta_2*S*P_2) + g*(R_1 + R_2 + R_12);
+  P_1' = k_1*(I_1 + I_21) - u*P_1;
+  P_2' = k_2*(I_2 + I_12) - u*P_2;
+  R_1' = alpha_1*I_1 - d*R_1 - g*R_1 - beta_2*R_1*P_2;
+  R_2' = alpha_2*I_2 - d*R_2 - g*R_2 - beta_1*R_2*P_1;
+  R_12' = alpha_2*I_12 + alpha_1*I_21 - d*R_12 - g*R_12;
+  I_1' = beta_1*S*P_1 - a_1*I_1 - alpha_1*I_1;
+  I_2' = beta_2*S*P_2 - a_2*I_2 - alpha_2*I_2;
+  I_12' = beta_2*R_1*P_2 - a_2*I_12 - alpha_2*I_12;
+  I_21' = beta_1*R_2*P_1 - a_1*I_21 - alpha_1*I_21;
+
+  // Compartment initializations:
+  COMpartment = 1;
+  COMpartment has litre;
+
+  // Variable initializations:
+  S = 100;
+  r = 0.5;
+  epsilon = 0.1;
+  d = 0.01;
+  beta_1 = 1;
+  P_1 = 0.1;
+  beta_2 = 1;
+  P_2 = 0.1;
+  g = 0.01;
+  R_1 = 0;
+  R_2 = 0;
+  R_12 = 0;
+  I_1 = 0;
+  I_2 = 0;
+  I_12 = 0;
+  I_21 = 0;
+  a_1 = 0.03;
+  alpha_1 = 0.1;
+  a_2 = 1;
+  alpha_2 = 0.1;
+  k_1 = 0.1;
+  u = 0.5;
+  k_2 = 0.1;
+
+  // Other declarations:
+  var S, H, P_1, P_2, R_1, R_2, R_12, I_1, I_2, I_12, I_21, P, log_P1, log_P2;
+  var G;
+  const COMpartment, r, epsilon, d, beta_1, beta_2, g, a_1, alpha_1, a_2;
+  const alpha_2, k_1, u, k_2;
+
+  // Unit definitions:
+  unit day = 86400 second;
+  unit first_order_rate_constant = 1 / 86400 second;
+  unit time_unit = 86400 second;
+
+  // Display Names:
+  time_unit is "time";
+  COMpartment is "population";
+
+  // CV terms:
+  COMpartment hypernym "http://identifiers.org/obi/OBI:0000181"
+  S property "http://identifiers.org/ncit/C16505"
+  r encodement "http://identifiers.org/go/GO:0000003"
+  H hypernym "http://identifiers.org/obi/OBI:0000181"
+  epsilon encodement "http://identifiers.org/go/GO:0000003"
+  d encodement "http://identifiers.org/go/GO:0016265"
+  beta_1 encodement "http://identifiers.org/efo/0000544"
+  P_1 hypernym "http://identifiers.org/efo/EFO:0000643"
+  beta_2 encodement "http://identifiers.org/efo/0000544"
+  P_2 hypernym "http://identifiers.org/efo/EFO:0000643"
+  g encodement "http://identifiers.org/go/GO:0090716"
+  R_1 property "http://identifiers.org/ncit/C17997"
+  R_2 property "http://identifiers.org/ncit/C17997"
+  R_12 property "http://identifiers.org/ncit/C17997"
+  I_1 property "http://identifiers.org/efo/0000544"
+  I_2 property "http://identifiers.org/efo/0000544"
+  I_12 property "http://identifiers.org/efo/0000544"
+  I_12 property "http://identifiers.org/ncit/C17997"
+  I_21 property "http://identifiers.org/ncit/C17997"
+  I_21 property "http://identifiers.org/efo/0000544"
+  a_1 encodement "http://identifiers.org/go/GO:0016265"
+  alpha_1 encodement "http://identifiers.org/ncit/C25746"
+  a_2 encodement "http://identifiers.org/go/GO:0016265"
+  alpha_2 encodement "http://identifiers.org/ncit/C25746"
+  k_1 encodement "http://identifiers.org/ncit/C61404"
+  u encodement "http://identifiers.org/sbo/SBO:0000179"
+  k_2 encodement "http://identifiers.org/ncit/C61404"
+  G encodement "http://identifiers.org/go/GO:0090716"
+end
+
+Wodarz2003_ImmunologicalMemory is "Wodarz2003 Immunological Memory"
+
+Wodarz2003_ImmunologicalMemory model_entity_is "http://identifiers.org/biomodels.db/MODEL1006230061"
+Wodarz2003_ImmunologicalMemory description "http://identifiers.org/pubmed/13678598"
+Wodarz2003_ImmunologicalMemory model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000684"
+Wodarz2003_ImmunologicalMemory hypernym "http://identifiers.org/go/GO:0002250"
+Wodarz2003_ImmunologicalMemory taxon "http://identifiers.org/taxonomy/9606"
+Wodarz2003_ImmunologicalMemory description "http://identifiers.org/pubmed/13678598"

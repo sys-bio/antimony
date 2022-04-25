@@ -1,27 +1,39 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 function function_4_motor_r1(M, MYp, Yp, cell, ka, kappa)
-  (ka*(M*Yp - kappa/4*MYp))/cell;
+  ka*(M*Yp - (kappa/4)*MYp)/cell;
 end
+
+function_4_motor_r1 is "function_4_motor_r1"
 
 function function_4_motor_r2(MYp, MYpYp, Yp, alpha, cell, ka, kappa)
-  (ka*(MYp*Yp - (2*alpha*kappa)/3*MYpYp))/cell;
+  ka*(MYp*Yp - (2*alpha*kappa/3)*MYpYp)/cell;
 end
+
+function_4_motor_r2 is "function_4_motor_r2"
 
 function function_4_motor_r3(MYpYp, MYpYpYp, Yp, alpha, cell, ka, kappa)
-  (ka*(MYpYp*Yp - (3*alpha*alpha*kappa)/2*MYpYpYp))/cell;
+  ka*(MYpYp*Yp - (3*alpha*alpha*kappa/2)*MYpYpYp)/cell;
 end
 
+function_4_motor_r3 is "function_4_motor_r3"
+
 function function_4_motor_r4(MYpYpYp, MYpYpYpYp, Yp, alpha, cell, ka, kappa)
-  (ka*(MYpYpYp*Yp - 4*alpha*alpha*alpha*kappa*MYpYpYpYp))/cell;
+  ka*(MYpYpYp*Yp - 4*alpha*alpha*alpha*kappa*MYpYpYpYp)/cell;
 end
+
+function_4_motor_r4 is "function_4_motor_r4"
 
 function Autophosphorylation(kcat, correction, E)
   kcat*correction*E;
 end
 
+Autophosphorylation is "Autophosphorylation"
+
 function ModAutophosphorylation(M, S, kcat, correction)
   M*S*kcat*correction;
 end
+
+ModAutophosphorylation is "ModAutophosphorylation"
 
 
 model *Bray1993_chemotaxis()
@@ -83,41 +95,41 @@ model *Bray1993_chemotaxis()
   // Species initializations:
   asp = 0;
   ni = 0;
-  T = 3.12e-006;
+  T = 3.12e-06;
   Tasp = 0;
   Tni = 0;
-  W = 2.89e-006;
-  TW = 5.91e-007;
+  W = 2.89e-06;
+  TW = 5.91e-07;
   Tasp_W = 0;
   Tni_W = 0;
-  TA = 4.44e-007;
+  TA = 4.44e-07;
   Tasp_A = 0;
   Tni_A = 0;
-  WA = 6.78e-007;
-  TWA = 8.47e-007;
+  WA = 6.78e-07;
+  TWA = 8.47e-07;
   Tasp_WA = 0;
   Tni_WA = 0;
-  A = 3e-006;
-  Ap = 3.48e-008;
-  B = 1.93e-006;
-  Bp = 6.87e-008;
-  Z = 2e-005;
-  Y = 9.9e-006;
-  Yp = 7e-009;
-  M = 6.24e-009;
-  MYp = 7.77e-010;
-  MYpYp = 2.99e-010;
-  MYpYpYp = 3.78e-010;
-  MYpYpYpYp = 2.31e-009;
+  A = 3e-06;
+  Ap = 3.48e-08;
+  B = 1.93e-06;
+  Bp = 6.87e-08;
+  Z = 2e-05;
+  Y = 9.9e-06;
+  Yp = 7e-09;
+  M = 6.24e-09;
+  MYp = 7.77e-10;
+  MYpYp = 2.99e-10;
+  MYpYpYp = 3.78e-10;
+  MYpYpYpYp = 2.31e-09;
   species_1 = 0.1;
 
   // Compartment initializations:
-  cell = 1.41e-015;
+  cell = 1.41e-15;
 
   // Variable initializations:
-  parameter_1 = 1e-007;
+  parameter_1 = 1e-07;
   alpha = 0.14;
-  kappa = 2.25e-007;
+  kappa = 2.25e-07;
   ka = 0.1;
   parameter_3 = 0.0003;
   phosphorylation_r1_kcat = 0.001;
@@ -219,4 +231,185 @@ model *Bray1993_chemotaxis()
   reaction_1 is "TA + asp <-> Tasp_A";
   reaction_2 is "TW+asp <-> Tasp_W";
   reaction_3 is "TWA+asp <-> Tasp_WA";
+
+  // SBO terms:
+  cell.sboTerm = 290
+  asp.sboTerm = 247
+  ni.sboTerm = 247
+  T.sboTerm = 245
+  Tasp.sboTerm = 253
+  Tni.sboTerm = 253
+  W.sboTerm = 245
+  TW.sboTerm = 253
+  Tasp_W.sboTerm = 253
+  Tni_W.sboTerm = 253
+  TA.sboTerm = 253
+  Tasp_A.sboTerm = 253
+  Tni_A.sboTerm = 253
+  WA.sboTerm = 253
+  TWA.sboTerm = 253
+  Tasp_WA.sboTerm = 253
+  Tni_WA.sboTerm = 253
+  A.sboTerm = 245
+  Ap.sboTerm = 245
+  B.sboTerm = 245
+  Z.sboTerm = 245
+  Y.sboTerm = 245
+  M.sboTerm = 245
+  MYp.sboTerm = 253
+  MYpYp.sboTerm = 253
+  MYpYpYp.sboTerm = 253
+  MYpYpYpYp.sboTerm = 253
+  species_1.sboTerm = 247
+  phosphorylation_r1.sboTerm = 216
+  phosphorylation_r2.sboTerm = 216
+  phosphorylation_r3.sboTerm = 216
+  phosphorylation_r4.sboTerm = 330
+  phosphorylation_r5.sboTerm = 216
+  phosphorylation_r6.sboTerm = 216
+  phosphorylation_r7.sboTerm = 330
+  phosphorylation_r8.sboTerm = 330
+  phosphorylation_r9.sboTerm = 402
+  phosphorylation_r10.sboTerm = 330
+  regulatory_r1.sboTerm = 177
+  regulatory_r2.sboTerm = 177
+  regulatory_r3.sboTerm = 177
+  regulatory_r4.sboTerm = 177
+  regulatory_r5.sboTerm = 177
+  regulatory_r6.sboTerm = 177
+  regulatory_r7.sboTerm = 177
+  regulatory_r8.sboTerm = 177
+  regulatory_r9.sboTerm = 177
+  regulatory_r10.sboTerm = 177
+  regulatory_r11.sboTerm = 177
+  regulatory_r12.sboTerm = 177
+  regulatory_r13.sboTerm = 177
+  regulatory_r14.sboTerm = 177
+  regulatory_r15.sboTerm = 177
+  regulatory_r16.sboTerm = 177
+  regulatory_r17.sboTerm = 177
+  regulatory_r18.sboTerm = 177
+  motor_r1.sboTerm = 177
+  motor_r2.sboTerm = 177
+  motor_r3.sboTerm = 177
+  motor_r4.sboTerm = 177
+  reaction_1.sboTerm = 177
+  reaction_2.sboTerm = 177
+  reaction_3.sboTerm = 177
+
+  // CV terms:
+  cell hypernym "http://identifiers.org/obo.go/GO:0005623"
+  asp identity "http://identifiers.org/obo.chebi/CHEBI:35391"
+  ni identity "http://identifiers.org/obo.chebi/CHEBI:49786"
+  T identity "http://identifiers.org/uniprot/P07017"
+  Tasp part "http://identifiers.org/obo.chebi/CHEBI:35391",
+            "http://identifiers.org/uniprot/P07017"
+  Tni part "http://identifiers.org/obo.chebi/CHEBI:49786",
+           "http://identifiers.org/uniprot/P07017"
+  W identity "http://identifiers.org/uniprot/P0A964"
+  TW part "http://identifiers.org/uniprot/P0A964",
+          "http://identifiers.org/uniprot/P07017"
+  Tasp_W part "http://identifiers.org/obo.chebi/CHEBI:35391",
+              "http://identifiers.org/uniprot/P07017",
+              "http://identifiers.org/uniprot/P0A964"
+  Tni_W part "http://identifiers.org/obo.chebi/CHEBI:49786",
+             "http://identifiers.org/uniprot/P07017",
+             "http://identifiers.org/uniprot/P0A964"
+  TA part "http://identifiers.org/uniprot/P07017",
+          "http://identifiers.org/uniprot/P07363"
+  Tasp_A part "http://identifiers.org/obo.chebi/CHEBI:35391",
+              "http://identifiers.org/uniprot/P07017",
+              "http://identifiers.org/uniprot/P07363"
+  Tni_A part "http://identifiers.org/obo.chebi/CHEBI:49786",
+             "http://identifiers.org/uniprot/P07017",
+             "http://identifiers.org/uniprot/P07363"
+  WA part "http://identifiers.org/uniprot/P07363",
+          "http://identifiers.org/uniprot/P0A964"
+  TWA part "http://identifiers.org/uniprot/P07017",
+           "http://identifiers.org/uniprot/P07363",
+           "http://identifiers.org/uniprot/P0A964"
+  Tasp_WA part "http://identifiers.org/obo.chebi/CHEBI:35391",
+               "http://identifiers.org/uniprot/P07017",
+               "http://identifiers.org/uniprot/P07363",
+               "http://identifiers.org/uniprot/P0A964"
+  Tni_WA part "http://identifiers.org/obo.chebi/CHEBI:49786",
+              "http://identifiers.org/uniprot/P07017",
+              "http://identifiers.org/uniprot/P07363",
+              "http://identifiers.org/uniprot/P0A964"
+  A hypernym "http://identifiers.org/uniprot/P07363"
+  Ap property "http://identifiers.org/obo.psi-mod/MOD:00696"
+  Ap hypernym "http://identifiers.org/uniprot/P07363"
+  B hypernym "http://identifiers.org/uniprot/P07330"
+  Bp property "http://identifiers.org/obo.psi-mod/MOD:00696"
+  Bp hypernym "http://identifiers.org/uniprot/P07330"
+  Z identity "http://identifiers.org/uniprot/P0A9H9"
+  Y hypernym "http://identifiers.org/uniprot/P0AE67"
+  Yp property "http://identifiers.org/obo.psi-mod/MOD:00696"
+  Yp hypernym "http://identifiers.org/uniprot/P0AE67"
+  M identity "http://identifiers.org/uniprot/P06974"
+  MYp part "http://identifiers.org/uniprot/P06974",
+           "http://identifiers.org/uniprot/P0AE67"
+  MYpYp part "http://identifiers.org/uniprot/P0AE67",
+             "http://identifiers.org/uniprot/P06974"
+  MYpYpYp part "http://identifiers.org/uniprot/P0AE67",
+               "http://identifiers.org/uniprot/P06974"
+  MYpYpYpYp part "http://identifiers.org/uniprot/P06974",
+                 "http://identifiers.org/uniprot/P0AE67"
+  species_1 identity "http://identifiers.org/obo.chebi/CHEBI:15422"
+  phosphorylation_r1 hypernym "http://identifiers.org/ec-code/2.7.11.1",
+                              "http://identifiers.org/obo.go/GO:0006468"
+  phosphorylation_r2 hypernym "http://identifiers.org/ec-code/2.7.11.1",
+                              "http://identifiers.org/obo.go/GO:0006468"
+  phosphorylation_r3 hypernym "http://identifiers.org/ec-code/2.7.11.1",
+                              "http://identifiers.org/obo.go/GO:0006468"
+  phosphorylation_r4 hypernym "http://identifiers.org/ec-code/3.1.3.16",
+                              "http://identifiers.org/obo.go/GO:0006470"
+  phosphorylation_r5 hypernym "http://identifiers.org/ec-code/2.7.11.1",
+                              "http://identifiers.org/obo.go/GO:0006468"
+  phosphorylation_r6 hypernym "http://identifiers.org/ec-code/2.7.11.1",
+                              "http://identifiers.org/obo.go/GO:0006468"
+  phosphorylation_r7 hypernym "http://identifiers.org/ec-code/3.1.3.16",
+                              "http://identifiers.org/obo.go/GO:0006470"
+  phosphorylation_r8 hypernym "http://identifiers.org/ec-code/3.1.3.16",
+                              "http://identifiers.org/obo.go/GO:0006470"
+  phosphorylation_r9 part "http://identifiers.org/obo.go/GO:0006470",
+                          "http://identifiers.org/obo.go/GO:0006468"
+  phosphorylation_r9 part "http://identifiers.org/ec-code/3.1.3.16",
+                          "http://identifiers.org/ec-code/2.7.11.1"
+  phosphorylation_r10 hypernym "http://identifiers.org/ec-code/3.1.3.16",
+                               "http://identifiers.org/obo.go/GO:0006470"
+  regulatory_r1 hypernym "http://identifiers.org/obo.go/GO:0070335"
+  regulatory_r2 hypernym "http://identifiers.org/obo.go/GO:0016151"
+  regulatory_r3 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  regulatory_r4 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  regulatory_r5 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  regulatory_r6 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  regulatory_r7 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  regulatory_r8 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  regulatory_r9 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  regulatory_r10 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  regulatory_r11 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  regulatory_r12 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  regulatory_r13 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  regulatory_r14 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  regulatory_r15 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  regulatory_r16 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  regulatory_r17 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  regulatory_r18 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  motor_r1 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  motor_r2 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  motor_r3 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  motor_r4 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  reaction_1 hypernym "http://identifiers.org/obo.go/GO:0070335"
+  reaction_2 hypernym "http://identifiers.org/obo.go/GO:0070335"
+  reaction_3 hypernym "http://identifiers.org/obo.go/GO:0070335"
 end
+
+Bray1993_chemotaxis is "Bray1993_chemotaxis"
+
+Bray1993_chemotaxis model_entity_is "http://identifiers.org/biomodels.db/MODEL6929313478"
+Bray1993_chemotaxis model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000404"
+Bray1993_chemotaxis description "http://identifiers.org/pubmed/8334303"
+Bray1993_chemotaxis taxon "http://identifiers.org/taxonomy/562"
+Bray1993_chemotaxis hypernym "http://identifiers.org/kegg.pathway/map02030",
+                             "http://identifiers.org/obo.go/GO:0006935"

@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Cronwright2002_Glycerol_Synthesis()
 
   // Compartments and Species:
@@ -6,8 +6,8 @@ model *Cronwright2002_Glycerol_Synthesis()
   species G3P in compartment_, $Gly in compartment_, $DHAP in compartment_;
 
   // Reactions:
-  Gpd_p: $DHAP -> G3P; ((compartment_*Gpd_p_Vf1)/(Gpd_p_K1nadh*Gpd_p_K1dhap)*(Gpd_p_NADH*DHAP - (Gpd_p_NAD*G3P)/Gpd_p_Keq1))/((1 + Gpd_p_F16BP/Gpd_p_K1f16bp + Gpd_p_ATP/Gpd_p_K1atp + Gpd_p_ADP/Gpd_p_K1adp)*(1 + Gpd_p_NADH/Gpd_p_K1nadh + Gpd_p_NAD/Gpd_p_K1nad)*(1 + DHAP/Gpd_p_K1dhap + G3P/Gpd_p_K1g3p));
-  Gpp_p: G3P -> $Gly; (compartment_*Gpp_p_V2*G3P)/Gpp_p_K2g3p/((1 + G3P/Gpp_p_K2g3p)*(1 + Gpp_p_Phi/Gpp_p_K2phi));
+  Gpd_p: $DHAP -> G3P; (compartment_*Gpd_p_Vf1/(Gpd_p_K1nadh*Gpd_p_K1dhap))*(Gpd_p_NADH*DHAP - Gpd_p_NAD*G3P/Gpd_p_Keq1)/((1 + Gpd_p_F16BP/Gpd_p_K1f16bp + Gpd_p_ATP/Gpd_p_K1atp + Gpd_p_ADP/Gpd_p_K1adp)*(1 + Gpd_p_NADH/Gpd_p_K1nadh + Gpd_p_NAD/Gpd_p_K1nad)*(1 + DHAP/Gpd_p_K1dhap + G3P/Gpd_p_K1g3p));
+  Gpp_p: G3P -> $Gly; compartment_*Gpp_p_V2*G3P/Gpp_p_K2g3p/((1 + G3P/Gpp_p_K2g3p)*(1 + Gpp_p_Phi/Gpp_p_K2phi));
 
   // Species initializations:
   G3P = 0;
@@ -72,4 +72,26 @@ model *Cronwright2002_Glycerol_Synthesis()
   Gly is "Glycerol";
   Gpd_p is "Glycerol 3-phosphate dehydrogenase";
   Gpp_p is "Glycerol 3-phosphatase";
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/obo.go/GO:0005737"
+  G3P identity "http://identifiers.org/obo.chebi/CHEBI:15978",
+               "http://identifiers.org/kegg.compound/C00093"
+  Gly identity "http://identifiers.org/obo.chebi/CHEBI:17754",
+               "http://identifiers.org/kegg.compound/C00116"
+  DHAP identity "http://identifiers.org/obo.chebi/CHEBI:16108",
+                "http://identifiers.org/kegg.compound/C00111"
+  Gpd_p identity "http://identifiers.org/ec-code/1.1.1.94",
+                 "http://identifiers.org/kegg.reaction/R00842"
+  Gpp_p identity "http://identifiers.org/ec-code/3.1.3.21",
+                 "http://identifiers.org/kegg.reaction/R00841"
 end
+
+Cronwright2002_Glycerol_Synthesis is "Cronwright2002_Glycerol_Synthesis"
+
+Cronwright2002_Glycerol_Synthesis model_entity_is "http://identifiers.org/biomodels.db/MODEL6624139162"
+Cronwright2002_Glycerol_Synthesis model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000076"
+Cronwright2002_Glycerol_Synthesis description "http://identifiers.org/pubmed/12200299"
+Cronwright2002_Glycerol_Synthesis identity "http://identifiers.org/obo.go/GO:0006114"
+Cronwright2002_Glycerol_Synthesis parthood "http://identifiers.org/kegg.pathway/sce00561"
+Cronwright2002_Glycerol_Synthesis taxon "http://identifiers.org/taxonomy/4932"

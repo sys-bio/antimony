@@ -1,55 +1,55 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Mears1997_CRAC_PancreaticBetaCells()
 
   // Compartments and Species:
-  compartment COMpartment_;
-  species $V_membrane in COMpartment_, $n in COMpartment_, $jm in COMpartment_;
-  species $Ca_er_Ca_equations in COMpartment_, $Ca_i in COMpartment_;
+  compartment COMpartment;
+  species $V_membrane in COMpartment, $n in COMpartment, $jm in COMpartment;
+  species $Ca_er_Ca_equations in COMpartment, $Ca_i in COMpartment;
 
   // Assignment Rules:
   i_Ca := i_Ca_f + i_Ca_s;
   i_K := g_K*n*(V_membrane - V_K);
   i_K_ATP := g_K_ATP*(V_membrane - V_K);
-  i_K_Ca := (g_K_Ca*Ca_i^5)/(Ca_i^5 + kdkca^5)*(V_membrane - V_K);
+  i_K_Ca := (g_K_Ca*Ca_i^5/(Ca_i^5 + kdkca^5))*(V_membrane - V_K);
   i_CRAC := g_CRAC*r_infinity*(V_membrane - V_CRAC);
   i_leak := g_leak*(V_membrane - V_CRAC);
   n_infinity := 1/(1 + exp((-15 - V_membrane)/6));
   tau_n := 9.09/(1 + exp((V_membrane + 15)/6));
   jm_infinity := 1 - 1/(1 + exp((V_membrane + 53)/2));
   tau_j := 50000/(exp((V_membrane + 53)/4) + exp((-53 - V_membrane)/4)) + 1500;
-  J_er_tot := (J_er_leak + J_er_IP3) - J_er_p;
-  J_mem_tot := -f*(gamma*i_Ca + Jmp);
-  g_K_ATP := piecewise(2000, time > 60000 && time < 660000, 150);
+  J_er_tot := J_er_leak + J_er_IP3 - J_er_p;
+  J_mem_tot := -f*(gamma_*i_Ca + Jmp);
+  g_K_ATP := piecewise(2000, (time > 60000) && (time < 660000), 150);
   i_Ca_f := g_Ca_f*m_f_infinity*(V_membrane - V_Ca);
   m_f_infinity := 1/(1 + exp((-20 - V_membrane)/7.5));
   i_Ca_s := g_Ca_s*m_s_infinity*(1 - jm)*(V_membrane - V_Ca);
   m_s_infinity := 1/(1 + exp((-16 - V_membrane)/10));
   r_infinity := 1/(1 + exp((Ca_er_Ca_equations - Ca_er_bar)/sloper));
-  J_er_p := (verp*Ca_i^2)/(Ca_i^2 + kerp^2);
+  J_er_p := verp*Ca_i^2/(Ca_i^2 + kerp^2);
   a_infinity := 1/(1 + dact/Ca_i);
   b_infinity := IP3/(IP3 + dip3);
   h_infinity := 1/(1 + Ca_i/dinh);
   O := a_infinity^3*b_infinity^3*h_infinity^3*1;
   J_er_leak := perl*(Ca_er_Ca_equations - Ca_i);
   J_er_IP3 := O*(Ca_er_Ca_equations - Ca_i);
-  Jmp := (vmp*Ca_i^2)/(Ca_i^2 + kmp^2);
+  Jmp := vmp*Ca_i^2/(Ca_i^2 + kmp^2);
 
   // Rate Rules:
   V_membrane' = -(i_Ca + i_K + i_K_ATP + i_K_Ca + i_CRAC + i_leak)/Cm;
-  n' = (lambda_n*(n_infinity - n))/tau_n;
+  n' = lambda_n*(n_infinity - n)/tau_n;
   jm' = (jm_infinity - jm)/tau_j;
   Ca_er_Ca_equations' = -J_er_tot/(lambda_er*sigma_er);
   Ca_i' = J_er_tot/lambda_er + J_mem_tot;
 
   // Species initializations:
-  V_membrane = -61/COMpartment_;
-  n = 0.0005/COMpartment_;
-  jm = 0.12/COMpartment_;
-  Ca_er_Ca_equations = 60/COMpartment_;
-  Ca_i = 0.11/COMpartment_;
+  V_membrane = -61/COMpartment;
+  n = 0.0005/COMpartment;
+  jm = 0.12/COMpartment;
+  Ca_er_Ca_equations = 60/COMpartment;
+  Ca_i = 0.11/COMpartment;
 
   // Compartment initializations:
-  COMpartment_ = 1;
+  COMpartment = 1;
 
   // Variable initializations:
   Cm = 6158;
@@ -85,7 +85,7 @@ model *Mears1997_CRAC_PancreaticBetaCells()
   perl = 0.003;
   kmp = 0.35;
   vmp = 0.08;
-  gamma = 3.607e-006;
+  gamma_ = 3.607e-06;
   f = 0.01;
 
   // Other declarations:
@@ -93,8 +93,68 @@ model *Mears1997_CRAC_PancreaticBetaCells()
   var tau_j, J_er_tot, J_mem_tot, g_K_ATP, i_Ca_f, m_f_infinity, i_Ca_s, m_s_infinity;
   var r_infinity, J_er_p, a_infinity, b_infinity, h_infinity, O, J_er_leak;
   var J_er_IP3, Jmp;
-  const COMpartment_, Cm, lambda_n, lambda_er, sigma_er, g_K, V_K, Vn, Sn;
+  const COMpartment, Cm, lambda_n, lambda_er, sigma_er, g_K, V_K, Vn, Sn;
   const g_Ca_f, V_Ca, Vm_f, Sm_f, g_Ca_s, Vm_s, Sm_s, Vj, Sj, g_K_Ca, kdkca;
   const g_CRAC, V_CRAC, Ca_er_bar, sloper, g_leak, verp, kerp, IP3, dact;
-  const dinh, dip3, perl, kmp, vmp, gamma, f;
+  const dinh, dip3, perl, kmp, vmp, gamma_, f;
+
+  // Display Names:
+  gamma_ is "gamma";
+
+  // SBO terms:
+  V_membrane.sboTerm = 259
+  Cm.sboTerm = 258
+  lambda_n.sboTerm = 9
+  jm.sboTerm = 412
+  lambda_er.sboTerm = 9
+  sigma_er.sboTerm = 9
+  g_K.sboTerm = 9
+  V_K.sboTerm = 9
+  Vn.sboTerm = 9
+  Sn.sboTerm = 9
+  g_Ca_f.sboTerm = 9
+  V_Ca.sboTerm = 9
+  Vm_f.sboTerm = 9
+  Sm_f.sboTerm = 9
+  g_Ca_s.sboTerm = 9
+  Vm_s.sboTerm = 9
+  Sm_s.sboTerm = 9
+  Vj.sboTerm = 9
+  Sj.sboTerm = 9
+  g_K_Ca.sboTerm = 9
+  kdkca.sboTerm = 9
+  g_CRAC.sboTerm = 9
+  V_CRAC.sboTerm = 9
+  Ca_er_bar.sboTerm = 9
+  sloper.sboTerm = 9
+  g_leak.sboTerm = 9
+  verp.sboTerm = 9
+  kerp.sboTerm = 9
+  IP3.sboTerm = 196
+  dact.sboTerm = 9
+  dinh.sboTerm = 9
+  dip3.sboTerm = 9
+  perl.sboTerm = 9
+  kmp.sboTerm = 9
+  vmp.sboTerm = 9
+  gamma_.sboTerm = 9
+  f.sboTerm = 9
+
+  // CV terms:
+  V_membrane identity "http://identifiers.org/pato/PATO:0001462"
+  n identity "http://identifiers.org/go/GO:0005251"
+  Ca_er_Ca_equations identity "http://identifiers.org/chebi/CHEBI:29108"
+  Ca_i identity "http://identifiers.org/chebi/CHEBI:29108"
 end
+
+Mears1997_CRAC_PancreaticBetaCells is "Mears1997_CRAC_PancreaticBetaCells"
+
+Mears1997_CRAC_PancreaticBetaCells model_entity_is "http://identifiers.org/biomodels.db/MODEL1006230074"
+Mears1997_CRAC_PancreaticBetaCells model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000375"
+Mears1997_CRAC_PancreaticBetaCells description "http://identifiers.org/pubmed/9002424"
+Mears1997_CRAC_PancreaticBetaCells origin "http://identifiers.org/biomodels.db/BIOMD0000000374"
+Mears1997_CRAC_PancreaticBetaCells container "http://identifiers.org/bto/BTO:0000783"
+Mears1997_CRAC_PancreaticBetaCells hypernym "http://identifiers.org/go/GO:0061469",
+                                            "http://identifiers.org/go/GO:0044342",
+                                            "http://identifiers.org/go/GO:0015278"
+Mears1997_CRAC_PancreaticBetaCells taxon "http://identifiers.org/taxonomy/9606"

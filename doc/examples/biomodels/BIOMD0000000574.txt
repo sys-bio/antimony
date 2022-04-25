@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *MODEL1405060000()
 
   // Compartments and Species:
@@ -73,9 +73,9 @@ model *MODEL1405060000()
   kon_DR := kon_CR;
   kon_BR := kon_AR;
   koff_tbp_RR := Kd_tbp_RR*kon_tbp;
-  k_T2R_N2 := k_R2T_N2/(lN_*cN*cN);
+  k_T2R_N2 := k_R2T_N2/(lN*cN*cN);
   k_R2T_N2 := k_R2T_N;
-  k_T2R_N1 := k_R2T_N1/(lN_*cN);
+  k_T2R_N1 := k_R2T_N1/(lN*cN);
   k_R2T_N1 := k_R2T_N;
   koff_AT := KAT*kon_AT;
   koff_tbp_TR := Kd_tbp_TR*kon_tbp;
@@ -102,7 +102,7 @@ model *MODEL1405060000()
   koff_BR := KBR*kon_BR;
   KBR := KBT*cN;
   koff_rbp_TR := Kd_rbp_TR*kon_rbp;
-  k_T2R_N := k_R2T_N/lN_;
+  k_T2R_N := k_R2T_N/lN;
   koff_rbp_TT := Kd_rbp_TT*kon_rbp;
   cam_tbp_tot := cam_RR_0_tbp + cam_RR_A_tbp + cam_RR_B_tbp + cam_RR_C_tbp + cam_RR_D_tbp + cam_RR_AB_tbp + cam_RR_AC_tbp + cam_RR_AD_tbp + cam_RR_BC_tbp + cam_RR_BD_tbp + cam_RR_CD_tbp + cam_RR_ABC_tbp + cam_RR_ABD_tbp + cam_RR_ACD_tbp + cam_RR_BCD_tbp + cam_RR_ABCD_tbp + cam_RT_0_tbp + cam_RT_A_tbp + cam_RT_B_tbp + cam_RT_C_tbp + cam_RT_D_tbp + cam_RT_AB_tbp + cam_RT_AC_tbp + cam_RT_AD_tbp + cam_RT_BC_tbp + cam_RT_BD_tbp + cam_RT_CD_tbp + cam_RT_ABC_tbp + cam_RT_ABD_tbp + cam_RT_ACD_tbp + cam_RT_BCD_tbp + cam_RT_ABCD_tbp + cam_TR_0_tbp + cam_TR_A_tbp + cam_TR_B_tbp + cam_TR_C_tbp + cam_TR_D_tbp + cam_TR_AB_tbp + cam_TR_AC_tbp + cam_TR_AD_tbp + cam_TR_BC_tbp + cam_TR_BD_tbp + cam_TR_CD_tbp + cam_TR_ABC_tbp + cam_TR_ABD_tbp + cam_TR_ACD_tbp + cam_TR_BCD_tbp + cam_TR_ABCD_tbp + cam_TT_0_tbp + cam_TT_A_tbp + cam_TT_B_tbp + cam_TT_C_tbp + cam_TT_D_tbp + cam_TT_AB_tbp + cam_TT_AC_tbp + cam_TT_AD_tbp + cam_TT_BC_tbp + cam_TT_BD_tbp + cam_TT_CD_tbp + cam_TT_ABC_tbp + cam_TT_ABD_tbp + cam_TT_ACD_tbp + cam_TT_BCD_tbp + cam_TT_ABCD_tbp;
   ybarN_0 := (1*cam_RR_A_0 + 1*cam_RR_B_0 + 2*cam_RR_AB_0 + 1*cam_RR_AC_0 + 1*cam_RR_AD_0 + 1*cam_RR_BC_0 + 1*cam_RR_BD_0 + 2*cam_RR_ABC_0 + 2*cam_RR_ABD_0 + 1*cam_RR_ACD_0 + 1*cam_RR_BCD_0 + 2*cam_RR_ABCD_0 + 1*cam_RT_A_0 + 1*cam_RT_B_0 + 2*cam_RT_AB_0 + 1*cam_RT_AC_0 + 1*cam_RT_AD_0 + 1*cam_RT_BC_0 + 1*cam_RT_BD_0 + 2*cam_RT_ABC_0 + 2*cam_RT_ABD_0 + 1*cam_RT_ACD_0 + 1*cam_RT_BCD_0 + 2*cam_RT_ABCD_0 + 1*cam_TR_A_0 + 1*cam_TR_B_0 + 2*cam_TR_AB_0 + 1*cam_TR_AC_0 + 1*cam_TR_AD_0 + 1*cam_TR_BC_0 + 1*cam_TR_BD_0 + 2*cam_TR_ABC_0 + 2*cam_TR_ABD_0 + 1*cam_TR_ACD_0 + 1*cam_TR_BCD_0 + 2*cam_TR_ABCD_0 + 1*cam_TT_A_0 + 1*cam_TT_B_0 + 2*cam_TT_AB_0 + 1*cam_TT_AC_0 + 1*cam_TT_AD_0 + 1*cam_TT_BC_0 + 1*cam_TT_BD_0 + 2*cam_TT_ABC_0 + 2*cam_TT_ABD_0 + 1*cam_TT_ACD_0 + 1*cam_TT_BCD_0 + 2*cam_TT_ABCD_0)/(2*cam_0_tot);
@@ -847,7 +847,7 @@ model *MODEL1405060000()
   cam_TR_ABCD_0 = 0;
   cam_TR_ABCD_rbp = 0;
   cam_TR_ABCD_tbp = 0;
-  cam_TT_0_0 = 3.3e-005;
+  cam_TT_0_0 = 3.3e-05;
   cam_TT_0_rbp = 0;
   cam_TT_0_tbp = 0;
   cam_TT_A_0 = 0;
@@ -904,7 +904,7 @@ model *MODEL1405060000()
 
   // Variable initializations:
   lC = 8616.61;
-  lN_ = 322686;
+  lN = 322686;
   Kd_rbp_TT = 0.0006;
   kon_tbp = 100000000;
   Kd_rbp_RT = 0.0006;
@@ -917,19 +917,19 @@ model *MODEL1405060000()
   kon_CT = 10000000;
   k_R2T_N = 10000;
   Kd_tbp_RT = 1;
-  KDT = 6.242e-005;
-  conc_rbp = 1e-006;
-  KBT = 9.192e-005;
-  Kd_rbp_RR = 5e-011;
-  Kd_rbp_TR = 7e-008;
+  KDT = 6.242e-05;
+  conc_rbp = 1e-06;
+  KBT = 9.192e-05;
+  Kd_rbp_RR = 5e-11;
+  Kd_rbp_TR = 7e-08;
   Kd_tbp_TT = 1;
   Kd_tbp_TR = 1;
-  conc_cam = 1e-006;
-  Kd_tbp_RR = 1e-009;
-  conc_tbp = 1e-006;
+  conc_cam = 1e-06;
+  Kd_tbp_RR = 1e-09;
+  conc_tbp = 1e-06;
   kon_rbp = 100000000;
-  KCT = 6.242e-005;
-  KAT = 9.192e-005;
+  KCT = 6.242e-05;
+  KAT = 9.192e-05;
 
   // Other declarations:
   var kon_DR, kon_BR, koff_tbp_RR, k_T2R_N2, k_R2T_N2, k_T2R_N1, k_R2T_N1;
@@ -940,7 +940,7 @@ model *MODEL1405060000()
   var ybar_rbp, cam_rbp_tot, cam_tot, ybar_tot, cam_tbp_bound_fraction, ybar_tbp;
   var ybarN_tot, cam_0_bound_fraction, ybar_0, cam_rbp_bound_fraction, ybarC_0;
   var ybarN_rbp, ybarC_rbp, ybarN_tbp, ybarC_tbp, ybarC_tot;
-  const cytosol, lC, lN_, Kd_rbp_TT, kon_tbp, Kd_rbp_RT, kon_AT, kon_AR, kon_CR;
+  const cytosol, lC, lN, Kd_rbp_TT, kon_tbp, Kd_rbp_RT, kon_AT, kon_AR, kon_CR;
   const cN, k_R2T_C, cC, kon_CT, k_R2T_N, Kd_tbp_RT, KDT, conc_rbp, KBT, Kd_rbp_RR;
   const Kd_rbp_TR, Kd_tbp_TT, Kd_tbp_TR, conc_cam, Kd_tbp_RR, conc_tbp, kon_rbp;
   const KCT, KAT;
@@ -1522,4 +1522,338 @@ model *MODEL1405060000()
   Transition_from_cam_TT_BCD_0_to_cam_TR_BCD_0 is "Transition from cam_TT_BCD_0 to cam_TR_BCD_0";
   Transition_from_cam_TT_ABCD_0_to_cam_RT_ABCD_0 is "Transition from cam_TT_ABCD_0 to cam_RT_ABCD_0";
   Transition_from_cam_TT_ABCD_0_to_cam_TR_ABCD_0 is "Transition from cam_TT_ABCD_0 to cam_TR_ABCD_0";
+
+  // CV terms:
+  cytosol hypernym "http://identifiers.org/go/GO:0005829"
+  cam_RR_0_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_RR_0_rbp part "http://identifiers.org/interpro/IPR020636",
+                    "http://identifiers.org/kegg.compound/C00391"
+  cam_RR_0_tbp part "http://identifiers.org/uniprot/Q92686",
+                    "http://identifiers.org/kegg.compound/C00391"
+  cam_RR_A_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_RR_A_rbp part "http://identifiers.org/interpro/IPR020636",
+                    "http://identifiers.org/kegg.compound/C00391"
+  cam_RR_A_tbp part "http://identifiers.org/uniprot/Q92686",
+                    "http://identifiers.org/kegg.compound/C00391"
+  cam_RR_B_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_RR_B_rbp part "http://identifiers.org/interpro/IPR020636",
+                    "http://identifiers.org/kegg.compound/C00391"
+  cam_RR_B_tbp part "http://identifiers.org/uniprot/Q92686",
+                    "http://identifiers.org/kegg.compound/C00391"
+  cam_RR_C_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_RR_C_rbp part "http://identifiers.org/interpro/IPR020636",
+                    "http://identifiers.org/kegg.compound/C00391"
+  cam_RR_C_tbp part "http://identifiers.org/uniprot/Q92686",
+                    "http://identifiers.org/kegg.compound/C00391"
+  cam_RR_D_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_RR_D_rbp part "http://identifiers.org/interpro/IPR020636",
+                    "http://identifiers.org/kegg.compound/C00391"
+  cam_RR_D_tbp part "http://identifiers.org/uniprot/Q92686",
+                    "http://identifiers.org/kegg.compound/C00391"
+  cam_RR_AB_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_RR_AB_rbp part "http://identifiers.org/interpro/IPR020636",
+                     "http://identifiers.org/kegg.compound/C00391"
+  cam_RR_AB_tbp part "http://identifiers.org/uniprot/Q92686",
+                     "http://identifiers.org/kegg.compound/C00391"
+  cam_RR_AC_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_RR_AC_rbp part "http://identifiers.org/interpro/IPR020636",
+                     "http://identifiers.org/kegg.compound/C00391"
+  cam_RR_AC_tbp part "http://identifiers.org/uniprot/Q92686",
+                     "http://identifiers.org/kegg.compound/C00391"
+  cam_RR_AD_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_RR_AD_rbp part "http://identifiers.org/interpro/IPR020636",
+                     "http://identifiers.org/kegg.compound/C00391"
+  cam_RR_AD_tbp part "http://identifiers.org/uniprot/Q92686",
+                     "http://identifiers.org/kegg.compound/C00391"
+  cam_RR_BC_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_RR_BC_rbp part "http://identifiers.org/interpro/IPR020636",
+                     "http://identifiers.org/kegg.compound/C00391"
+  cam_RR_BC_tbp part "http://identifiers.org/uniprot/Q92686",
+                     "http://identifiers.org/kegg.compound/C00391"
+  cam_RR_BD_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_RR_BD_rbp part "http://identifiers.org/interpro/IPR020636",
+                     "http://identifiers.org/kegg.compound/C00391"
+  cam_RR_BD_tbp part "http://identifiers.org/uniprot/Q92686",
+                     "http://identifiers.org/kegg.compound/C00391"
+  cam_RR_CD_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_RR_CD_rbp part "http://identifiers.org/interpro/IPR020636",
+                     "http://identifiers.org/kegg.compound/C00391"
+  cam_RR_CD_tbp part "http://identifiers.org/uniprot/Q92686",
+                     "http://identifiers.org/kegg.compound/C00391"
+  cam_RR_ABC_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_RR_ABC_rbp part "http://identifiers.org/interpro/IPR020636",
+                      "http://identifiers.org/kegg.compound/C00391"
+  cam_RR_ABC_tbp part "http://identifiers.org/uniprot/Q92686",
+                      "http://identifiers.org/kegg.compound/C00391"
+  cam_RR_ABD_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_RR_ABD_rbp part "http://identifiers.org/interpro/IPR020636",
+                      "http://identifiers.org/kegg.compound/C00391"
+  cam_RR_ABD_tbp part "http://identifiers.org/uniprot/Q92686",
+                      "http://identifiers.org/kegg.compound/C00391"
+  cam_RR_ACD_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_RR_ACD_rbp part "http://identifiers.org/interpro/IPR020636",
+                      "http://identifiers.org/kegg.compound/C00391"
+  cam_RR_ACD_tbp part "http://identifiers.org/uniprot/Q92686",
+                      "http://identifiers.org/kegg.compound/C00391"
+  cam_RR_BCD_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_RR_BCD_rbp part "http://identifiers.org/interpro/IPR020636",
+                      "http://identifiers.org/kegg.compound/C00391"
+  cam_RR_BCD_tbp part "http://identifiers.org/uniprot/Q92686",
+                      "http://identifiers.org/kegg.compound/C00391"
+  cam_RR_ABCD_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_RR_ABCD_rbp part "http://identifiers.org/interpro/IPR020636",
+                       "http://identifiers.org/kegg.compound/C00391"
+  cam_RR_ABCD_tbp part "http://identifiers.org/uniprot/Q92686",
+                       "http://identifiers.org/kegg.compound/C00391"
+  cam_RT_0_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_RT_0_rbp part "http://identifiers.org/interpro/IPR020636",
+                    "http://identifiers.org/kegg.compound/C00391"
+  cam_RT_0_tbp part "http://identifiers.org/uniprot/Q92686",
+                    "http://identifiers.org/kegg.compound/C00391"
+  cam_RT_A_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_RT_A_rbp part "http://identifiers.org/interpro/IPR020636",
+                    "http://identifiers.org/kegg.compound/C00391"
+  cam_RT_A_tbp part "http://identifiers.org/uniprot/Q92686",
+                    "http://identifiers.org/kegg.compound/C00391"
+  cam_RT_B_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_RT_B_rbp part "http://identifiers.org/interpro/IPR020636",
+                    "http://identifiers.org/kegg.compound/C00391"
+  cam_RT_B_tbp part "http://identifiers.org/uniprot/Q92686",
+                    "http://identifiers.org/kegg.compound/C00391"
+  cam_RT_C_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_RT_C_rbp part "http://identifiers.org/interpro/IPR020636",
+                    "http://identifiers.org/kegg.compound/C00391"
+  cam_RT_C_tbp part "http://identifiers.org/uniprot/Q92686",
+                    "http://identifiers.org/kegg.compound/C00391"
+  cam_RT_D_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_RT_D_rbp part "http://identifiers.org/interpro/IPR020636",
+                    "http://identifiers.org/kegg.compound/C00391"
+  cam_RT_D_tbp part "http://identifiers.org/uniprot/Q92686",
+                    "http://identifiers.org/kegg.compound/C00391"
+  cam_RT_AB_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_RT_AB_rbp part "http://identifiers.org/interpro/IPR020636",
+                     "http://identifiers.org/kegg.compound/C00391"
+  cam_RT_AB_tbp part "http://identifiers.org/uniprot/Q92686",
+                     "http://identifiers.org/kegg.compound/C00391"
+  cam_RT_AC_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_RT_AC_rbp part "http://identifiers.org/interpro/IPR020636",
+                     "http://identifiers.org/kegg.compound/C00391"
+  cam_RT_AC_tbp part "http://identifiers.org/uniprot/Q92686",
+                     "http://identifiers.org/kegg.compound/C00391"
+  cam_RT_AD_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_RT_AD_rbp part "http://identifiers.org/interpro/IPR020636",
+                     "http://identifiers.org/kegg.compound/C00391"
+  cam_RT_AD_tbp part "http://identifiers.org/uniprot/Q92686",
+                     "http://identifiers.org/kegg.compound/C00391"
+  cam_RT_BC_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_RT_BC_rbp part "http://identifiers.org/interpro/IPR020636",
+                     "http://identifiers.org/kegg.compound/C00391"
+  cam_RT_BC_tbp part "http://identifiers.org/uniprot/Q92686",
+                     "http://identifiers.org/kegg.compound/C00391"
+  cam_RT_BD_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_RT_BD_rbp part "http://identifiers.org/interpro/IPR020636",
+                     "http://identifiers.org/kegg.compound/C00391"
+  cam_RT_BD_tbp part "http://identifiers.org/uniprot/Q92686",
+                     "http://identifiers.org/kegg.compound/C00391"
+  cam_RT_CD_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_RT_CD_rbp part "http://identifiers.org/interpro/IPR020636",
+                     "http://identifiers.org/kegg.compound/C00391"
+  cam_RT_CD_tbp part "http://identifiers.org/uniprot/Q92686",
+                     "http://identifiers.org/kegg.compound/C00391"
+  cam_RT_ABC_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_RT_ABC_rbp part "http://identifiers.org/interpro/IPR020636",
+                      "http://identifiers.org/kegg.compound/C00391"
+  cam_RT_ABC_tbp part "http://identifiers.org/uniprot/Q92686",
+                      "http://identifiers.org/kegg.compound/C00391"
+  cam_RT_ABD_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_RT_ABD_rbp part "http://identifiers.org/interpro/IPR020636",
+                      "http://identifiers.org/kegg.compound/C00391"
+  cam_RT_ABD_tbp part "http://identifiers.org/uniprot/Q92686",
+                      "http://identifiers.org/kegg.compound/C00391"
+  cam_RT_ACD_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_RT_ACD_rbp part "http://identifiers.org/interpro/IPR020636",
+                      "http://identifiers.org/kegg.compound/C00391"
+  cam_RT_ACD_tbp part "http://identifiers.org/uniprot/Q92686",
+                      "http://identifiers.org/kegg.compound/C00391"
+  cam_RT_BCD_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_RT_BCD_rbp part "http://identifiers.org/interpro/IPR020636",
+                      "http://identifiers.org/kegg.compound/C00391"
+  cam_RT_BCD_tbp part "http://identifiers.org/uniprot/Q92686",
+                      "http://identifiers.org/kegg.compound/C00391"
+  cam_RT_ABCD_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_RT_ABCD_rbp part "http://identifiers.org/interpro/IPR020636",
+                       "http://identifiers.org/kegg.compound/C00391"
+  cam_RT_ABCD_tbp part "http://identifiers.org/uniprot/Q92686",
+                       "http://identifiers.org/kegg.compound/C00391"
+  cam_TR_0_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_TR_0_rbp part "http://identifiers.org/interpro/IPR020636",
+                    "http://identifiers.org/kegg.compound/C00391"
+  cam_TR_0_tbp part "http://identifiers.org/uniprot/Q92686",
+                    "http://identifiers.org/kegg.compound/C00391"
+  cam_TR_A_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_TR_A_rbp part "http://identifiers.org/kegg.compound/C00391"
+  cam_TR_A_tbp part "http://identifiers.org/uniprot/Q92686",
+                    "http://identifiers.org/kegg.compound/C00391"
+  cam_TR_B_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_TR_B_rbp part "http://identifiers.org/interpro/IPR020636",
+                    "http://identifiers.org/kegg.compound/C00391"
+  cam_TR_B_tbp part "http://identifiers.org/uniprot/Q92686",
+                    "http://identifiers.org/kegg.compound/C00391"
+  cam_TR_C_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_TR_C_rbp part "http://identifiers.org/interpro/IPR020636",
+                    "http://identifiers.org/kegg.compound/C00391"
+  cam_TR_C_tbp part "http://identifiers.org/uniprot/Q92686",
+                    "http://identifiers.org/kegg.compound/C00391"
+  cam_TR_D_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_TR_D_rbp part "http://identifiers.org/interpro/IPR020636",
+                    "http://identifiers.org/kegg.compound/C00391"
+  cam_TR_D_tbp version "http://identifiers.org/uniprot/Q92686",
+                       "http://identifiers.org/kegg.compound/C00391"
+  cam_TR_AB_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_TR_AB_rbp part "http://identifiers.org/interpro/IPR020636",
+                     "http://identifiers.org/kegg.compound/C00391"
+  cam_TR_AB_tbp part "http://identifiers.org/uniprot/Q92686",
+                     "http://identifiers.org/kegg.compound/C00391"
+  cam_TR_AC_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_TR_AC_rbp part "http://identifiers.org/interpro/IPR020636",
+                     "http://identifiers.org/kegg.compound/C00391"
+  cam_TR_AC_tbp part "http://identifiers.org/uniprot/Q92686",
+                     "http://identifiers.org/kegg.compound/C00391"
+  cam_TR_AD_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_TR_AD_rbp part "http://identifiers.org/interpro/IPR020636",
+                     "http://identifiers.org/kegg.compound/C00391"
+  cam_TR_AD_tbp part "http://identifiers.org/uniprot/Q92686",
+                     "http://identifiers.org/kegg.compound/C00391"
+  cam_TR_BC_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_TR_BC_rbp part "http://identifiers.org/interpro/IPR020636",
+                     "http://identifiers.org/kegg.compound/C00391"
+  cam_TR_BC_tbp part "http://identifiers.org/uniprot/Q92686",
+                     "http://identifiers.org/kegg.compound/C00391"
+  cam_TR_BD_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_TR_BD_rbp part "http://identifiers.org/interpro/IPR020636",
+                     "http://identifiers.org/kegg.compound/C00391"
+  cam_TR_BD_tbp part "http://identifiers.org/uniprot/Q92686",
+                     "http://identifiers.org/kegg.compound/C00391"
+  cam_TR_CD_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_TR_CD_rbp part "http://identifiers.org/interpro/IPR020636",
+                     "http://identifiers.org/kegg.compound/C00391"
+  cam_TR_CD_tbp part "http://identifiers.org/uniprot/Q92686",
+                     "http://identifiers.org/kegg.compound/C00391"
+  cam_TR_ABC_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_TR_ABC_rbp part "http://identifiers.org/interpro/IPR020636",
+                      "http://identifiers.org/kegg.compound/C00391"
+  cam_TR_ABC_tbp part "http://identifiers.org/uniprot/Q92686",
+                      "http://identifiers.org/kegg.compound/C00391"
+  cam_TR_ABD_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_TR_ABD_rbp part "http://identifiers.org/interpro/IPR020636",
+                      "http://identifiers.org/kegg.compound/C00391"
+  cam_TR_ABD_tbp part "http://identifiers.org/uniprot/Q92686",
+                      "http://identifiers.org/kegg.compound/C00391"
+  cam_TR_ACD_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_TR_ACD_rbp part "http://identifiers.org/interpro/IPR020636",
+                      "http://identifiers.org/kegg.compound/C00391"
+  cam_TR_ACD_tbp part "http://identifiers.org/uniprot/Q92686",
+                      "http://identifiers.org/kegg.compound/C00391"
+  cam_TR_BCD_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_TR_BCD_rbp part "http://identifiers.org/interpro/IPR020636",
+                      "http://identifiers.org/kegg.compound/C00391"
+  cam_TR_BCD_tbp part "http://identifiers.org/uniprot/Q92686",
+                      "http://identifiers.org/kegg.compound/C00391"
+  cam_TR_ABCD_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_TR_ABCD_rbp part "http://identifiers.org/interpro/IPR020636",
+                       "http://identifiers.org/kegg.compound/C00391"
+  cam_TR_ABCD_tbp part "http://identifiers.org/uniprot/Q92686",
+                       "http://identifiers.org/kegg.compound/C00391"
+  cam_TT_0_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_TT_0_rbp part "http://identifiers.org/interpro/IPR020636",
+                    "http://identifiers.org/kegg.compound/C00391"
+  cam_TT_0_tbp part "http://identifiers.org/uniprot/Q92686",
+                    "http://identifiers.org/kegg.compound/C00391"
+  cam_TT_A_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_TT_A_rbp part "http://identifiers.org/interpro/IPR020636",
+                    "http://identifiers.org/kegg.compound/C00391"
+  cam_TT_A_tbp part "http://identifiers.org/uniprot/Q92686",
+                    "http://identifiers.org/kegg.compound/C00391"
+  cam_TT_B_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_TT_B_rbp part "http://identifiers.org/interpro/IPR020636",
+                    "http://identifiers.org/kegg.compound/C00391"
+  cam_TT_B_tbp part "http://identifiers.org/uniprot/Q92686",
+                    "http://identifiers.org/kegg.compound/C00391"
+  cam_TT_C_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_TT_C_rbp part "http://identifiers.org/interpro/IPR020636",
+                    "http://identifiers.org/kegg.compound/C00391"
+  cam_TT_C_tbp part "http://identifiers.org/uniprot/Q92686",
+                    "http://identifiers.org/kegg.compound/C00391"
+  cam_TT_D_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_TT_D_rbp part "http://identifiers.org/interpro/IPR020636",
+                    "http://identifiers.org/kegg.compound/C00391"
+  cam_TT_D_tbp part "http://identifiers.org/uniprot/Q92686",
+                    "http://identifiers.org/kegg.compound/C00391"
+  cam_TT_AB_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_TT_AB_rbp part "http://identifiers.org/interpro/IPR020636",
+                     "http://identifiers.org/kegg.compound/C00391"
+  cam_TT_AB_tbp part "http://identifiers.org/uniprot/Q92686",
+                     "http://identifiers.org/kegg.compound/C00391"
+  cam_TT_AC_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_TT_AC_rbp part "http://identifiers.org/interpro/IPR020636",
+                     "http://identifiers.org/kegg.compound/C00391"
+  cam_TT_AC_tbp part "http://identifiers.org/uniprot/Q92686",
+                     "http://identifiers.org/kegg.compound/C00391"
+  cam_TT_AD_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_TT_AD_rbp part "http://identifiers.org/interpro/IPR020636",
+                     "http://identifiers.org/kegg.compound/C00391"
+  cam_TT_AD_tbp part "http://identifiers.org/uniprot/Q92686",
+                     "http://identifiers.org/kegg.compound/C00391"
+  cam_TT_BC_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_TT_BC_rbp part "http://identifiers.org/interpro/IPR020636",
+                     "http://identifiers.org/kegg.compound/C00391"
+  cam_TT_BC_tbp part "http://identifiers.org/uniprot/Q92686",
+                     "http://identifiers.org/kegg.compound/C00391"
+  cam_TT_BD_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_TT_BD_rbp part "http://identifiers.org/interpro/IPR003966",
+                     "http://identifiers.org/kegg.compound/C00391"
+  cam_TT_BD_tbp part "http://identifiers.org/uniprot/Q92686",
+                     "http://identifiers.org/kegg.compound/C00391"
+  cam_TT_CD_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_TT_CD_rbp part "http://identifiers.org/interpro/IPR020636",
+                     "http://identifiers.org/kegg.compound/C00391"
+  cam_TT_CD_tbp part "http://identifiers.org/uniprot/Q92686",
+                     "http://identifiers.org/kegg.compound/C00391"
+  cam_TT_ABC_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_TT_ABC_rbp part "http://identifiers.org/interpro/IPR020636",
+                      "http://identifiers.org/kegg.compound/C00391"
+  cam_TT_ABC_tbp part "http://identifiers.org/uniprot/Q92686",
+                      "http://identifiers.org/kegg.compound/C00391"
+  cam_TT_ABD_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_TT_ABD_rbp part "http://identifiers.org/interpro/IPR020636",
+                      "http://identifiers.org/kegg.compound/C00391"
+  cam_TT_ABD_tbp part "http://identifiers.org/uniprot/Q92686",
+                      "http://identifiers.org/kegg.compound/C00391"
+  cam_TT_ACD_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_TT_ACD_rbp part "http://identifiers.org/interpro/IPR020636",
+                      "http://identifiers.org/kegg.compound/C00391"
+  cam_TT_ACD_tbp part "http://identifiers.org/uniprot/Q92686",
+                      "http://identifiers.org/kegg.compound/C00391"
+  cam_TT_BCD_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_TT_BCD_rbp part "http://identifiers.org/interpro/IPR020636",
+                      "http://identifiers.org/kegg.compound/C00391"
+  cam_TT_BCD_tbp part "http://identifiers.org/uniprot/Q92686",
+                      "http://identifiers.org/kegg.compound/C00391"
+  cam_TT_ABCD_0 hypernym "http://identifiers.org/kegg.compound/C00391"
+  cam_TT_ABCD_rbp part "http://identifiers.org/interpro/IPR020636",
+                       "http://identifiers.org/kegg.compound/C00391"
+  cam_TT_ABCD_tbp part "http://identifiers.org/uniprot/Q92686",
+                       "http://identifiers.org/kegg.compound/C00391"
+  ca hypernym "http://identifiers.org/chebi/CHEBI:29108"
+  rbp hypernym "http://identifiers.org/interpro/IPR020636"
+  tbp hypernym "http://identifiers.org/uniprot/Q92686"
 end
+
+MODEL1405060000 is "Lai2014 - Hemiconcerted MWC model of intact calmodulin with two targets"
+
+MODEL1405060000 model_entity_is "http://identifiers.org/biomodels.db/MODEL1405060000"
+MODEL1405060000 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000574"
+MODEL1405060000 description "http://identifiers.org/pubmed/25611683"
+MODEL1405060000 property "http://identifiers.org/mamo/MAMO_0000046"
+MODEL1405060000 hypernym "http://identifiers.org/go/GO:0004683"
+MODEL1405060000 taxon "http://identifiers.org/taxonomy/40674"

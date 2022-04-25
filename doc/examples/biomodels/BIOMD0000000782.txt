@@ -1,0 +1,121 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function death(d, e, sub)
+  (d + e)*sub;
+end
+
+death is "death"
+
+function decrease(u, sub, mod)
+  u*sub*mod;
+end
+
+decrease is "decrease"
+
+function growth(r, mod, pro, u)
+  r*u*mod*pro;
+end
+
+growth is "growth"
+
+
+model *Wang2016_3___oncolytic_efficacy_of_M1_virus_SN_model()
+
+  // Compartments and Species:
+  compartment tme;
+  species S in tme, N in tme;
+
+  // Assignment Rules:
+  Q1 := a*r1*u1/(d*(d + e1));
+
+  // Reactions:
+  nutrient_supply:  => S; tme*Constant_flux__irreversible(a);
+  nutrient_decay: S => ; tme*d*S;
+  nutrient_consumption_N: S => ; tme*decrease(u1, S, N);
+  normal_cell_growth:  => N; tme*growth(r1, S, N, u1);
+  normal_cell_death: N => ; tme*death(d, e1, N);
+
+  // Species initializations:
+  S = 0.1;
+  S has substance_per_volume;
+  N = 0.2;
+  N has substance_per_volume;
+
+  // Compartment initializations:
+  tme = 1;
+  tme has volume;
+
+  // Variable initializations:
+  a = 0.02;
+  a has unit_0;
+  d = 0.02;
+  d has unit_0;
+  u1 = 0.2;
+  u1 has unit_0;
+  r1 = 0.8;
+  r1 has unit_0;
+  e1 = 0.01;
+  e1 has unit_0;
+  Q1 has unit_0;
+
+  // Other declarations:
+  var Q1;
+  const tme, a, d, u1, r1, e1;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = time_unit;
+  unit substance = 1e-3 mole;
+  unit unit_0 = 1 / dimensionless^-0;
+  unit extent = substance;
+  unit substance_per_volume = 1e-3 mole / 1e-3 litre;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1";
+  nutrient_supply is "nutrient supply";
+  nutrient_decay is "nutrient decay";
+  nutrient_consumption_N is "nutrient consumption";
+  normal_cell_growth is "normal cell growth";
+  normal_cell_death is "normal cell death";
+
+  // CV terms:
+  tme hypernym "http://identifiers.org/ncit/C94498"
+  S hypernym "http://identifiers.org/ncit/C1814"
+  N hypernym "http://identifiers.org/cl/CL:0000000"
+  a hypernym "http://identifiers.org/ncit/C25636"
+  d hypernym "http://identifiers.org/ncit/C25636"
+  u1 hypernym "http://identifiers.org/sbo/SBO:0000610"
+  r1 hypernym "http://identifiers.org/ncit/C84380"
+  e1 hypernym "http://identifiers.org/ncit/C25636"
+  Q1 hypernym "http://identifiers.org/ncit/C84380"
+end
+
+Wang2016_3___oncolytic_efficacy_of_M1_virus_SN_model is "Wang2016/3 - oncolytic efficacy of M1 virus-SN model"
+
+Wang2016_3___oncolytic_efficacy_of_M1_virus_SN_model origin "http://identifiers.org/ncit/C62713",
+                                                            "http://identifiers.org/mamo/MAMO_0000046",
+                                                            "http://identifiers.org/go/GO:0002418",
+                                                            "http://identifiers.org/taxonomy/9606",
+                                                            "http://identifiers.org/biomodels.db/MODEL1908060001"
+Wang2016_3___oncolytic_efficacy_of_M1_virus_SN_model origin "http://identifiers.org/biomodels.db/BIOMD0000000781"
+Wang2016_3___oncolytic_efficacy_of_M1_virus_SN_model origin "http://identifiers.org/biomodels.db/BIOMD0000000780"
+Wang2016_3___oncolytic_efficacy_of_M1_virus_SN_model origin "http://identifiers.org/biomodels.db/MODEL1908060002"
+Wang2016_3___oncolytic_efficacy_of_M1_virus_SN_model description "http://identifiers.org/biomodels.db/MODEL1908060001",
+                                                                 "http://identifiers.org/biomodels.db/BIOMD0000000781",
+                                                                 "http://identifiers.org/biomodels.db/BIOMD0000000780",
+                                                                 "http://identifiers.org/biomodels.db/MODEL1908060002",
+                                                                 "http://identifiers.org/pubmed/26976483"
+Wang2016_3___oncolytic_efficacy_of_M1_virus_SN_model model_entity_is "http://identifiers.org/biomodels.db/MODEL1908060003",
+                                                                     "http://identifiers.org/biomodels.db/BIOMD0000000782"
+Wang2016_3___oncolytic_efficacy_of_M1_virus_SN_model property "http://identifiers.org/ncit/C62713"
+Wang2016_3___oncolytic_efficacy_of_M1_virus_SN_model property "http://identifiers.org/mamo/MAMO_0000046"
+Wang2016_3___oncolytic_efficacy_of_M1_virus_SN_model property "http://identifiers.org/go/GO:0002418"
+Wang2016_3___oncolytic_efficacy_of_M1_virus_SN_model taxon "http://identifiers.org/taxonomy/9606"

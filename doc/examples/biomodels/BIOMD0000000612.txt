@@ -1,0 +1,290 @@
+// Created by libAntimony v2.13.0
+model *MODEL1602290000()
+
+  // Compartments and Species:
+  compartment bone, ecm, osteoblast;
+  substanceOnly species Bone in bone, HSC in bone, Ob_m in bone, Ob_p in bone;
+  substanceOnly species Ob_p_Tgfb_A in bone, Ob_pro in bone, Ocl_m in bone;
+  substanceOnly species Ocl_p in bone, Ocl_p_RANKL in bone, Ocy_A in bone;
+  substanceOnly species Ocy_I in bone, Ocy_I_PTH in bone, MSC in bone, LOAD in ecm;
+  substanceOnly species MCSF in ecm, Ob_m_PTH in ecm, Ob_p_PTH in ecm, OPG in ecm;
+  substanceOnly species OPG_RANKL in ecm, PTH in ecm, RANKL in ecm, Sost in ecm;
+  substanceOnly species Tgfb_A in ecm, Tgfb_I in ecm, Wnt_A in ecm, Wnt_I in ecm;
+  substanceOnly species $Source in ecm, $Sink in ecm, X in ecm, newbone in ecm;
+  substanceOnly species Bax in osteoblast, Bax_Bcl2 in osteoblast, Bcl2 in osteoblast;
+  substanceOnly species CREB in osteoblast, CREB_P in osteoblast, CREB_Runx2 in osteoblast;
+  substanceOnly species Runx2 in osteoblast;
+
+  // Reactions:
+  Unloading: LOAD => $Sink; kunload*LOAD;
+  Osteocyte_activation: Ocy_I + LOAD => Ocy_A + LOAD; kactOcy*Ocy_I*LOAD;
+  Osteocyte_activation_by_PTH: Ocy_I_PTH => Ocy_A + PTH; kactOcyPth*Ocy_I_PTH;
+  Osteocyte_inactivation: Ocy_A => Ocy_I; kinactOcy*Ocy_A;
+  Ocy_I_bound_by_PTH: Ocy_I + PTH => Ocy_I_PTH; kbinOcyPTH*Ocy_I*(PTH^2/(100^2 + PTH^2));
+  Ocy_I_PTH_release: Ocy_I_PTH => Ocy_I + PTH; krelOcyPTH*Ocy_I_PTH;
+  Ocy_apoptosis: Ocy_I => $Sink; kdeathOcy*Ocy_I;
+  Sost_secretion: Ocy_I => Ocy_I + Sost; ksecSost*Ocy_I;
+  Sost_degradation: Sost => $Sink; kdegSost*Sost;
+  Wnt_activation: Wnt_I => Wnt_A; kactWnt*Wnt_I;
+  Wnt_activation_by_PTH: Wnt_I + Ob_m_PTH => Wnt_A + Ob_m_PTH; kactWntPth*Wnt_I*Ob_m_PTH;
+  Inactivation_of_Wnt_by_Sost: Wnt_A + Sost => Wnt_I + Sost; kinactWnt*Wnt_A*Sost^2/(50^2 + Sost^2);
+  MSC_differentiation_to_Ob_pro: MSC + Wnt_A => MSC + Wnt_A + Ob_pro; kdiffMSC*MSC*Wnt_A^2/(50^2 + Wnt_A^2);
+  Osteoblast_progenitor_differentiation_by_Tgfb: Ob_pro + Tgfb_A => Ob_p + Tgfb_A; kdiffObproTgfb*Ob_pro*Tgfb_A^2/(50^2 + Tgfb_A^2);
+  Ob_precursor_differentiation: Ob_p => Ob_m; kdiffObP*Ob_p;
+  Ob_p_binding_by_PTH: Ob_p + PTH => Ob_p_PTH; kbinObpPTH*Ob_p*(PTH^2/(100^2 + PTH^2));
+  Ob_p_PTH_release: Ob_p_PTH => Ob_p + PTH; krelObpPTH*Ob_p_PTH;
+  Ob_p_Tgfb_binding: Ob_p + Tgfb_A => Ob_p_Tgfb_A; kbinObpTgfb*Ob_p*Tgfb_A;
+  Ob_p_Tgfb_release: Ob_p_Tgfb_A => Ob_p + Tgfb_A; krelObpTgfb*Ob_p_Tgfb_A;
+  Ob_maturation_to_Ocy: Ob_m => Ocy_I; kmatOb*Ob_m;
+  Ob_maturation_to_Ocy_by_Tgfb: Ob_m + Tgfb_A => Ocy_I + Tgfb_A; kmatObTgfb*Ob_m*Tgfb_A^2/(50^2 + Tgfb_A^2);
+  Ob_m_bound_by_PTH: Ob_m + PTH => Ob_m_PTH; kbinObmPTH*Ob_m*(PTH^2/(100^2 + PTH^2));
+  Ob_m_PTH_release: Ob_m_PTH => Ob_m + PTH; krelObmPTH*Ob_m_PTH;
+  Ob_m_apoptosis: Ob_m + Bax => Bax; kdeathOb*Ob_m*Bax^2/(50^2 + Bax^2);
+  Ob_m_PTH_apoptosis: Ob_m_PTH + Bax => Bax + PTH; kdeathOb*Ob_m_PTH*Bax^2/(50^2 + Bax^2);
+  HSC_differentiation_to_Ocl_p: HSC + MCSF => HSC + MCSF + Ocl_p; kdiffHSC*HSC*MCSF^2/(50^2 + MCSF^2);
+  Ocl_p_apoptosis: Ocl_p => $Sink; kdeathOclp*Ocl_p;
+  Ocl_p_RANKL_binding: RANKL + Ocl_p => Ocl_p_RANKL; kbinOclpRANKL*Ocl_p*RANKL;
+  Ocl_p_RANKL_release: Ocl_p_RANKL => Ocl_p + RANKL; krelOclpRANKL*Ocl_p_RANKL;
+  Osteoclast_precursor_differentiation: Ocl_p_RANKL => Ocl_m; kdiffOclP*Ocl_p_RANKL;
+  RANKL_inhibition: OPG + RANKL => OPG_RANKL; kinhibRANKL*OPG*RANKL;
+  OPG_RANKL_dissociation: OPG_RANKL => OPG + RANKL; krelRANKL*OPG_RANKL;
+  OPG_RANKL_degradation: OPG_RANKL => $Sink; kdegOPGRANKL*OPG_RANKL;
+  Osteoclast_apoptosis: Ocl_m => $Sink; kdeathOcl*Ocl_m;
+  RANKL_degradation: RANKL => $Sink; kdegRANKL*RANKL;
+  OPG_degradation: OPG => $Sink; kdegOPG*OPG;
+  MCSF_secretion_by_MSC: MSC => MSC + MCSF; ksecMCSFbyMSC*MSC;
+  MCSF_secretion_by_Ob_pro: Ob_pro => Ob_pro + MCSF; ksecMCSFbyObpro*Ob_pro;
+  MCSF_secretion_by_Ob_p: Ob_p => Ob_p + MCSF; ksecMCSFbyObp*Ob_p;
+  MCSF_secretion_by_Ob_p_PTH: Ob_p_PTH => Ob_p_PTH + MCSF; ksecMCSFbyObp*Ob_p_PTH;
+  MCSF_secretion_by_Ob_m: Ob_m => Ob_m + MCSF; ksecMCSFbyObm*Ob_m;
+  MCSF_secretion_by_Ob_m_PTH: Ob_m_PTH => Ob_m_PTH + MCSF; ksecMCSFbyObm*Ob_m_PTH;
+  MCSF_degradation: MCSF => $Sink; kdegMCSF*MCSF;
+  OPG_secretion_by_Ob_p: Ob_p => Ob_p + OPG; ksecOPGbyObp*Ob_p;
+  OPG_secretion_by_Ob_p_PTH: Ob_p_PTH => Ob_p_PTH + OPG; ksecOPGbyObpPTH*Ob_p_PTH;
+  OPG_secretion_by_Ob_m: Ob_m => Ob_m + OPG; ksecOPGbyObm*Ob_m;
+  RANKL_secretion_by_Ocy_A: Ocy_A => Ocy_A + RANKL; ksecRANKLbyOcy*Ocy_A;
+  RANKL_secretion_by_Ocy_I: Ocy_I => Ocy_I + RANKL; ksecRANKLbyOcyI*Ocy_I;
+  RANKL_secretion_by_MSCs: MSC => MSC + RANKL; ksecRANKLbyMSC*MSC;
+  RANKL_secretion_by_Ob_p: Ob_p => Ob_p + RANKL; ksecRANKLbyObp*Ob_p;
+  RANKL_secretion_by_Ob_p_Tgfb_A: Ob_p_Tgfb_A => Ob_p_Tgfb_A + RANKL; ksecRANKLbyObpTgfb*Ob_p_Tgfb_A;
+  RANKL_secretion_by_Ob_p_PTH: Ob_p_PTH => Ob_p_PTH + RANKL; ksecRANKLbyObpPTH*Ob_p_PTH;
+  RANKL_secretion_by_Ob_pro: Ob_pro => Ob_pro + RANKL; ksecRANKLbyObpro*Ob_pro;
+  RANKL_secretion_by_Ob_m: Ob_m => Ob_m + RANKL; ksecRANKLbyObm*Ob_m;
+  RANKL_secretion_by_Ob_m_PTH_enhanced: Ob_m_PTH => Ob_m_PTH + RANKL; ksecRANKLbyObmPTH*Ob_m_PTH;
+  Tgfb_secretion_by_Obm: Ob_m => Ob_m + Tgfb_I; ksecTgfb*Ob_m;
+  Tgfb_activation: Tgfb_I + Ocl_m => Tgfb_A + Ocl_m; kactTgfb*Tgfb_I*Ocl_m;
+  Tgfb_degradation: Tgfb_A => $Sink; kdegTgfb*Tgfb_A;
+  Tgfb_degradation_by_PTH: Tgfb_A + Ob_m_PTH => Ob_m_PTH; kdegTgfbPTH*Tgfb_A*Ob_m_PTH;
+  PTH_production: $Source => PTH; ksynPTH*Source;
+  PTH_degradation: PTH => $Sink; kdegPTH*PTH;
+  CREB_activation: Ob_m_PTH + CREB => Ob_m_PTH + CREB_P; kactCreb*CREB*Ob_m_PTH^2/(100^2 + Ob_m_PTH^2);
+  CREB_inactivation: CREB_P => CREB; kinactCreb*CREB_P;
+  CREB_Runx2_binding: CREB_P + Runx2 => CREB_Runx2; kbinCrebRunx2*CREB_P*Runx2;
+  CREB_Runx2_release: CREB_Runx2 => CREB_P + Runx2; krelCrebRunx2*CREB_Runx2;
+  Bcl2_synthesis: CREB_Runx2 => CREB_Runx2 + Bcl2; ksynBcl2*CREB_Runx2;
+  Bcl2_degradation: Bcl2 => $Sink; kdegBcl2*Bcl2;
+  Bax_Bcl2_binding: Bax + Bcl2 => Bax_Bcl2; kbinBaxBcl2*Bax*Bcl2;
+  Bax_Bcl2_release: Bax_Bcl2 => Bax + Bcl2; krelBaxBcl2*Bax_Bcl2;
+  Runx2_synthesis: $Source => Runx2; ksynRunx2*Source;
+  Runx2_degradation_via_PTH: Ob_m_PTH + Runx2 => Ob_m_PTH; kdegRunx2PTH*Runx2*Ob_m_PTH;
+  Runx2_degradation: Runx2 => $Sink; kdegRunx2*Runx2;
+  Bone_formation: Ob_m => Ob_m + Bone + newbone; kformBone*Ob_m;
+  Bone_formation_Obm_PTH: Ob_m_PTH => Ob_m_PTH + Bone + newbone; kformBone*Ob_m_PTH;
+  Bone_degradation: Ocl_m + Bone => Ocl_m; kdegBone*Ocl_m*Bone;
+  Xsynthesis: $Source => X; ksynX*Source;
+
+  // Events:
+  AddLOAD1: at X > 300: LOAD = 1;
+  AddLOAD2: at X > 600: LOAD = 1;
+  AddPTH1: at X > 625: PTH = 150;
+  AddPTH2: at X > 1000: X = 0, PTH = 170;
+
+  // Species initializations:
+  Bone = 2000/bone;
+  HSC = 100/bone;
+  Ob_m = 0;
+  Ob_p = 0;
+  Ob_p_Tgfb_A = 0;
+  Ob_pro = 0;
+  Ocl_m = 0;
+  Ocl_p = 0;
+  Ocl_p_RANKL = 0;
+  Ocy_A = 0;
+  Ocy_I = 1800/bone;
+  Ocy_I_PTH = 0;
+  MSC = 100/bone;
+  LOAD = 0;
+  MCSF = 5/ecm;
+  Ob_m_PTH = 0;
+  Ob_p_PTH = 0;
+  OPG = 0;
+  OPG_RANKL = 0;
+  PTH = 170/ecm;
+  RANKL = 0;
+  Sost = 0;
+  Tgfb_A = 5/ecm;
+  Tgfb_I = 500/ecm;
+  Wnt_A = 0;
+  Wnt_I = 200/ecm;
+  Source = 1/ecm;
+  Sink = 1/ecm;
+  X = 0;
+  newbone = 0;
+  Bax = 100/osteoblast;
+  Bax_Bcl2 = 0;
+  Bcl2 = 0;
+  CREB = 100/osteoblast;
+  CREB_P = 0;
+  CREB_Runx2 = 0;
+  Runx2 = 10/osteoblast;
+
+  // Compartment initializations:
+  bone = 1;
+  ecm = 1;
+  osteoblast = 1;
+
+  // Variable initializations:
+  kactCreb = 0.009;
+  kactOcy = 0.004;
+  kactOcyPth = 0.08;
+  kactTgfb = 2e-07;
+  kactWnt = 0.03;
+  kactWntPth = 0.001;
+  kbinBaxBcl2 = 0.01;
+  kbinCrebRunx2 = 0.01;
+  kbinObmPTH = 0.02;
+  kbinObpPTH = 0.0003;
+  kbinObpTgfb = 0.0002;
+  kbinOclpRANKL = 0.001;
+  kbinOcyPTH = 0.008;
+  kdeathOb = 0.00024;
+  kdeathOcl = 6.5e-05;
+  kdeathOclp = 1e-05;
+  kdeathOcy = 1e-08;
+  kdegBcl2 = 0.0025;
+  kdegBone = 6.5e-09;
+  kdegMCSF = 0.0001;
+  kdegOPG = 4e-06;
+  kdegOPGRANKL = 1e-05;
+  kdegPTH = 0.002;
+  kdegRANKL = 3e-05;
+  kdegRunx2 = 0.0001;
+  kdegRunx2PTH = 0.003;
+  kdegSost = 0.004;
+  kdegTgfb = 5e-05;
+  kdegTgfbPTH = 1.7e-05;
+  kdiffHSC = 5.5e-05;
+  kdiffMSC = 0.00065;
+  kdiffObP = 0.0001;
+  kdiffObproTgfb = 0.05;
+  kdiffOclP = 8e-05;
+  kformBone = 3.07e-06;
+  kinactCreb = 0.0001;
+  kinactOcy = 2e-05;
+  kinactWnt = 0.8;
+  kinhibRANKL = 0.001;
+  kmatOb = 2e-09;
+  kmatObTgfb = 1e-08;
+  krelBaxBcl2 = 0.5;
+  krelCrebRunx2 = 0.01;
+  krelObmPTH = 0.005;
+  krelObpPTH = 0.005;
+  krelObpTgfb = 0.01;
+  krelOclpRANKL = 0.001;
+  krelOcyPTH = 0.005;
+  krelRANKL = 0.001;
+  ksecMCSFbyMSC = 1e-05;
+  ksecMCSFbyObm = 1e-05;
+  ksecMCSFbyObp = 1e-05;
+  ksecMCSFbyObpro = 1e-05;
+  ksecOPGbyObm = 1e-05;
+  ksecOPGbyObp = 2e-06;
+  ksecOPGbyObpPTH = 1e-06;
+  ksecRANKLbyMSC = 1e-06;
+  ksecRANKLbyObm = 1e-07;
+  ksecRANKLbyObmPTH = 1e-06;
+  ksecRANKLbyObp = 3e-06;
+  ksecRANKLbyObpPTH = 2e-05;
+  ksecRANKLbyObpro = 7e-06;
+  ksecRANKLbyObpTgfb = 4e-06;
+  ksecRANKLbyOcy = 1e-06;
+  ksecRANKLbyOcyI = 1e-07;
+  ksecSost = 0.00075;
+  ksecTgfb = 5e-05;
+  ksynBcl2 = 0.005;
+  ksynPTH = 0.02;
+  ksynRunx2 = 0.005;
+  ksynX = 0.01157;
+  kunload = 0.00035;
+
+  // Other declarations:
+  const bone, ecm, osteoblast, kactCreb, kactOcy, kactOcyPth, kactTgfb, kactWnt;
+  const kactWntPth, kbinBaxBcl2, kbinCrebRunx2, kbinObmPTH, kbinObpPTH, kbinObpTgfb;
+  const kbinOclpRANKL, kbinOcyPTH, kdeathOb, kdeathOcl, kdeathOclp, kdeathOcy;
+  const kdegBcl2, kdegBone, kdegMCSF, kdegOPG, kdegOPGRANKL, kdegPTH, kdegRANKL;
+  const kdegRunx2, kdegRunx2PTH, kdegSost, kdegTgfb, kdegTgfbPTH, kdiffHSC;
+  const kdiffMSC, kdiffObP, kdiffObproTgfb, kdiffOclP, kformBone, kinactCreb;
+  const kinactOcy, kinactWnt, kinhibRANKL, kmatOb, kmatObTgfb, krelBaxBcl2;
+  const krelCrebRunx2, krelObmPTH, krelObpPTH, krelObpTgfb, krelOclpRANKL;
+  const krelOcyPTH, krelRANKL, ksecMCSFbyMSC, ksecMCSFbyObm, ksecMCSFbyObp;
+  const ksecMCSFbyObpro, ksecOPGbyObm, ksecOPGbyObp, ksecOPGbyObpPTH, ksecRANKLbyMSC;
+  const ksecRANKLbyObm, ksecRANKLbyObmPTH, ksecRANKLbyObp, ksecRANKLbyObpPTH;
+  const ksecRANKLbyObpro, ksecRANKLbyObpTgfb, ksecRANKLbyOcy, ksecRANKLbyOcyI;
+  const ksecSost, ksecTgfb, ksynBcl2, ksynPTH, ksynRunx2, ksynX, kunload;
+
+  // Unit definitions:
+  unit substance = item;
+
+  // CV terms:
+  bone identity "http://identifiers.org/bto/BTO:0000140"
+  HSC identity "http://identifiers.org/cl/CL:1001610"
+  Ob_m identity "http://identifiers.org/cl/CL:0001039"
+  Ob_p identity "http://identifiers.org/cl/CL:0007010"
+  Ob_p_Tgfb_A part "http://identifiers.org/uniprot/P01137",
+                   "http://identifiers.org/cl/CL:0007010"
+  Ob_pro identity "http://identifiers.org/cl/CL:0001040"
+  Ocl_m identity "http://identifiers.org/cl/CL:0000779"
+  Ocl_p identity "http://identifiers.org/cl/CL:0000778"
+  Ocl_p_RANKL part "http://identifiers.org/uniprot/O14788",
+                   "http://identifiers.org/cl/CL:0000778"
+  Ocy_A identity "http://identifiers.org/cl/CL:0000137"
+  Ocy_I identity "http://identifiers.org/cl/CL:0000137"
+  Ocy_I_PTH part "http://identifiers.org/uniprot/P01270",
+                 "http://identifiers.org/cl/CL:0000137"
+  MSC identity "http://identifiers.org/cl/CL:0000134"
+  MCSF hypernym "http://identifiers.org/uniprot/P09603"
+  Ob_m_PTH part "http://identifiers.org/uniprot/P01270",
+                "http://identifiers.org/cl/CL:0001039"
+  Ob_p_PTH part "http://identifiers.org/uniprot/P01270",
+                "http://identifiers.org/cl/CL:0007010"
+  OPG hypernym "http://identifiers.org/uniprot/O00300"
+  OPG_RANKL part "http://identifiers.org/uniprot/O14788",
+                 "http://identifiers.org/uniprot/O00300"
+  PTH hypernym "http://identifiers.org/uniprot/P01270"
+  RANKL hypernym "http://identifiers.org/uniprot/O14788"
+  Sost hypernym "http://identifiers.org/uniprot/Q9BQB4"
+  Tgfb_A hypernym "http://identifiers.org/uniprot/P01137"
+  Tgfb_I hypernym "http://identifiers.org/uniprot/P01137"
+  Wnt_A hypernym "http://identifiers.org/uniprot/P04628",
+                 "http://identifiers.org/pr/PR:000000616"
+  Wnt_I hypernym "http://identifiers.org/uniprot/P04628"
+  Bax hypernym "http://identifiers.org/uniprot/Q07812"
+  Bax_Bcl2 part "http://identifiers.org/uniprot/P10415",
+                "http://identifiers.org/uniprot/Q07812"
+  Bcl2 hypernym "http://identifiers.org/uniprot/P10415"
+  CREB hypernym "http://identifiers.org/uniprot/P16220"
+  CREB_P hypernym "http://identifiers.org/uniprot/P16220",
+                  "http://identifiers.org/pr/PR:000037070"
+  CREB_Runx2 part "http://identifiers.org/uniprot/P16220",
+                  "http://identifiers.org/uniprot/Q13950"
+  Runx2 hypernym "http://identifiers.org/uniprot/Q13950"
+end
+
+MODEL1602290000 is "Proctor2016 - Circadian rhythm of PTH and the dynamics of signaling molecules on bone remodeling"
+
+MODEL1602290000 description "http://journal.frontiersin.org/article/10.3389/fendo.2016.00061/abstract"
+MODEL1602290000 model_entity_is "http://identifiers.org/biomodels.db/MODEL1602290000"
+MODEL1602290000 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000612"
+MODEL1602290000 description "http://identifiers.org/pubmed/27379013"
+MODEL1602290000 hypernym "http://identifiers.org/go/GO:0046849"
+MODEL1602290000 taxon "http://identifiers.org/taxonomy/9606"

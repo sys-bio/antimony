@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Raia2010_IL13_MedB1()
 
   // Compartments and Species:
@@ -16,8 +16,8 @@ model *Raia2010_IL13_MedB1()
   reaction_2: Rec => Rec_i; Rec_intern*Rec*cell;
   reaction_3: Rec_i => Rec; Rec_recycle*Rec_i*cell;
   reaction_4: IL13_Rec => p_IL13_Rec; Rec_phosphorylation*IL13_Rec*pJAK2*cell;
-  reaction_5: JAK2 => pJAK2; (JAK2_phosphorylation*IL13_Rec*JAK2)/(1 + JAK2_p_inhibition*SOCS3)*cell;
-  reaction_6: JAK2 => pJAK2; (JAK2_phosphorylation*p_IL13_Rec*JAK2)/(1 + JAK2_p_inhibition*SOCS3)*cell;
+  reaction_5: JAK2 => pJAK2; (JAK2_phosphorylation*IL13_Rec*JAK2/(1 + JAK2_p_inhibition*SOCS3))*cell;
+  reaction_6: JAK2 => pJAK2; (JAK2_phosphorylation*p_IL13_Rec*JAK2/(1 + JAK2_p_inhibition*SOCS3))*cell;
   reaction_7: p_IL13_Rec => p_IL13_Rec_i; pRec_intern*p_IL13_Rec*cell;
   reaction_8: p_IL13_Rec_i => ; pRec_degradation*p_IL13_Rec_i*cell;
   reaction_9: pJAK2 => JAK2; pJAK2_dephosphorylation*pJAK2*SHP1*cell;
@@ -25,7 +25,7 @@ model *Raia2010_IL13_MedB1()
   reaction_11: pSTAT5 => STAT5; pSTAT5_dephosphorylation*pSTAT5*SHP1*cell;
   reaction_12: DecoyR => IL13_DecoyR; DecoyR_binding*IL13*DecoyR*cell;
   reaction_13:  => SOCS3mRNA; pSTAT5*SOCS3mRNA_production*cell;
-  reaction_14:  => SOCS3; (SOCS3mRNA*SOCS3_translation)/(SOCS3_accumulation + SOCS3mRNA)*cell;
+  reaction_14:  => SOCS3; (SOCS3mRNA*SOCS3_translation/(SOCS3_accumulation + SOCS3mRNA))*cell;
   reaction_15: SOCS3 => ; SOCS3_degradation*SOCS3*cell;
   reaction_16:  => CD274mRNA; pSTAT5*CD274mRNA_production*cell;
 
@@ -68,7 +68,7 @@ model *Raia2010_IL13_MedB1()
   SOCS3_translation = 11.9086;
   SOCS3_accumulation = 3.70803;
   SOCS3_degradation = 0.0429186;
-  CD274mRNA_production = 8.21752e-005;
+  CD274mRNA_production = 8.21752e-05;
 
   // Other declarations:
   const cell, IL13stimulation, Kon_IL13Rec, Rec_phosphorylation, pRec_intern;
@@ -87,4 +87,130 @@ model *Raia2010_IL13_MedB1()
   substance is "molecules";
   time_unit is "minutes";
   volume is "cell_volumes";
+
+  // SBO terms:
+  cell.sboTerm = 290
+  Rec.sboTerm = 297
+  Rec_i.sboTerm = 297
+  IL13_Rec.sboTerm = 297
+  p_IL13_Rec.sboTerm = 297
+  p_IL13_Rec_i.sboTerm = 297
+  JAK2.sboTerm = 252
+  pJAK2.sboTerm = 252
+  SHP1.sboTerm = 252
+  STAT5.sboTerm = 252
+  pSTAT5.sboTerm = 252
+  SOCS3mRNA.sboTerm = 250
+  DecoyR.sboTerm = 297
+  IL13_DecoyR.sboTerm = 297
+  SOCS3.sboTerm = 252
+  CD274mRNA.sboTerm = 250
+  IL13.sboTerm = 252
+  IL13stimulation.sboTerm = 228
+  Kon_IL13Rec.sboTerm = 339
+  Rec_phosphorylation.sboTerm = 36
+  pRec_intern.sboTerm = 35
+  pRec_degradation.sboTerm = 356
+  Rec_intern.sboTerm = 35
+  Rec_recycle.sboTerm = 35
+  JAK2_phosphorylation.sboTerm = 36
+  pJAK2_dephosphorylation.sboTerm = 36
+  STAT5_phosphorylation.sboTerm = 36
+  pSTAT5_dephosphorylation.sboTerm = 36
+  SOCS3mRNA_production.sboTerm = 35
+  DecoyR_binding.sboTerm = 339
+  JAK2_p_inhibition.sboTerm = 308
+  SOCS3_translation.sboTerm = 324
+  SOCS3_accumulation.sboTerm = 27
+  SOCS3_degradation.sboTerm = 356
+  CD274mRNA_production.sboTerm = 35
+  reaction_1.sboTerm = 177
+  reaction_2.sboTerm = 185
+  reaction_3.sboTerm = 185
+  reaction_4.sboTerm = 216
+  reaction_5.sboTerm = 216
+  reaction_6.sboTerm = 216
+  reaction_7.sboTerm = 185
+  reaction_8.sboTerm = 179
+  reaction_9.sboTerm = 330
+  reaction_10.sboTerm = 216
+  reaction_11.sboTerm = 330
+  reaction_12.sboTerm = 177
+  reaction_13.sboTerm = 183
+  reaction_14.sboTerm = 181
+  reaction_15.sboTerm = 179
+  reaction_16.sboTerm = 183
+
+  // CV terms:
+  cell hypernym "http://identifiers.org/go/GO:0005623",
+                "http://identifiers.org/bto/BTO:0001518"
+  Rec identity "http://identifiers.org/go/GO:0016516"
+  Rec part "http://identifiers.org/uniprot/P29597"
+  Rec version "http://identifiers.org/uniprot/P24394",
+              "http://identifiers.org/uniprot/P78552"
+  Rec property "http://identifiers.org/go/GO:0019973"
+  Rec_i part "http://identifiers.org/uniprot/P29597"
+  Rec_i hypernym "http://identifiers.org/go/GO:0016516"
+  Rec_i version "http://identifiers.org/uniprot/P78552"
+  Rec_i property "http://identifiers.org/go/GO:0031623"
+  Rec_i version "http://identifiers.org/uniprot/P24394"
+  IL13_Rec part "http://identifiers.org/uniprot/P35225"
+  IL13_Rec version "http://identifiers.org/uniprot/P78552",
+                   "http://identifiers.org/uniprot/P24394"
+  IL13_Rec part "http://identifiers.org/uniprot/P29597",
+                "http://identifiers.org/go/GO:0016516"
+  p_IL13_Rec part "http://identifiers.org/psimod/MOD:00048"
+  p_IL13_Rec part "http://identifiers.org/uniprot/P35225"
+  p_IL13_Rec version "http://identifiers.org/uniprot/P24394",
+                     "http://identifiers.org/uniprot/P78552",
+                     "http://identifiers.org/kegg.compound/C00562"
+  p_IL13_Rec part "http://identifiers.org/uniprot/P29597",
+                  "http://identifiers.org/go/GO:0016516",
+                  "urn:miriam:mod:MOD%3A00048"
+  p_IL13_Rec_i part "http://identifiers.org/psimod/MOD:00048"
+  p_IL13_Rec_i part "http://identifiers.org/uniprot/P35225",
+                    "http://identifiers.org/uniprot/P29597",
+                    "urn:miriam:mod:MOD%3A00048"
+  p_IL13_Rec_i hypernym "http://identifiers.org/go/GO:0016516"
+  p_IL13_Rec_i version "http://identifiers.org/uniprot/P24394",
+                       "http://identifiers.org/uniprot/P78552"
+  p_IL13_Rec_i property "http://identifiers.org/go/GO:0031623"
+  JAK2 hypernym "http://identifiers.org/uniprot/O60674"
+  pJAK2 version "http://identifiers.org/psimod/MOD:00048"
+  pJAK2 hypernym "http://identifiers.org/uniprot/O60674",
+                 "http://identifiers.org/kegg.compound/C00562"
+  pJAK2 version "urn:miriam:mod:MOD%3A00048"
+  SHP1 hypernym "http://identifiers.org/uniprot/P29350"
+  STAT5 hypernym "http://identifiers.org/uniprot/P42229"
+  STAT5 hypernym "http://identifiers.org/uniprot/P51692"
+  pSTAT5 version "http://identifiers.org/psimod/MOD:00048"
+  pSTAT5 hypernym "http://identifiers.org/uniprot/P51692"
+  pSTAT5 version "urn:miriam:mod:MOD%3A00048"
+  pSTAT5 hypernym "http://identifiers.org/uniprot/P42229",
+                  "http://identifiers.org/kegg.compound/C00562"
+  SOCS3mRNA identity "http://identifiers.org/chebi/CHEBI:33699"
+  SOCS3mRNA hypernym "http://identifiers.org/kegg.compound/C00046"
+  SOCS3mRNA encodement "http://identifiers.org/uniprot/O14543"
+  DecoyR hypernym "http://identifiers.org/uniprot/Q14627"
+  IL13_DecoyR part "http://identifiers.org/uniprot/P35225"
+  IL13_DecoyR version "http://identifiers.org/uniprot/Q14627"
+  SOCS3 hypernym "http://identifiers.org/uniprot/O14543"
+  CD274mRNA identity "http://identifiers.org/chebi/CHEBI:33699"
+  CD274mRNA hypernym "http://identifiers.org/kegg.compound/C00046"
+  CD274mRNA encodement "http://identifiers.org/uniprot/P20963"
+  IL13 hypernym "http://identifiers.org/uniprot/P35225"
+  IL13 property "http://identifiers.org/go/GO:0005144"
+  IL13stimulation hypernym "http://identifiers.org/uniprot/P35225"
 end
+
+Raia2010_IL13_MedB1 is "Raia2010 - IL13 Signalling MedB1"
+
+Raia2010_IL13_MedB1 model_entity_is "http://identifiers.org/biomodels.db/MODEL1102020001"
+Raia2010_IL13_MedB1 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000313"
+Raia2010_IL13_MedB1 description "http://identifiers.org/pubmed/21127196"
+Raia2010_IL13_MedB1 property "http://identifiers.org/doid/DOID:0050743"
+Raia2010_IL13_MedB1 part "http://identifiers.org/kegg.pathway/hsa04630",
+                         "http://identifiers.org/reactome/REACT_22232"
+Raia2010_IL13_MedB1 container "http://identifiers.org/bto/BTO:0001518"
+Raia2010_IL13_MedB1 taxon "http://identifiers.org/taxonomy/9606"
+Raia2010_IL13_MedB1 hypernym "http://identifiers.org/go/GO:0046425"

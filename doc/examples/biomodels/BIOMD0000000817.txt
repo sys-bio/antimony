@@ -1,0 +1,252 @@
+// Created by libAntimony v2.13.0
+function Function_for_Tumor_Cell_exponential_growth(r, U)
+  r*U;
+end
+
+Function_for_Tumor_Cell_exponential_growth is "Function for Tumor Cell exponential growth"
+
+function Function_for_Tumor_Cell_infection(beta, U, V, N)
+  beta*U*V/N;
+end
+
+Function_for_Tumor_Cell_infection is "Function for Tumor Cell infection"
+
+function Function_for_Tumor_Cell_elimination(k0, c_kill, I, U, T, N)
+  (k0 + c_kill*I)*U*T/N;
+end
+
+Function_for_Tumor_Cell_elimination is "Function for Tumor Cell elimination"
+
+function Function_for_Infected_Tumor_Cell_death(delta_I, I)
+  delta_I*I;
+end
+
+Function_for_Infected_Tumor_Cell_death is "Function for Infected Tumor Cell death"
+
+function Function_for_Infected_Tumor_Cell_elimination(k0, c_kill, I, T, N)
+  (k0 + c_kill*I)*I*T/N;
+end
+
+Function_for_Infected_Tumor_Cell_elimination is "Function for Infected Tumor Cell elimination"
+
+function Function_for_treatment_with_virus(U_V)
+  U_V;
+end
+
+Function_for_treatment_with_virus is "Function for treatment with virus"
+
+function Function_for_release_of_virus(alpha, delta_I, I)
+  alpha*delta_I*I;
+end
+
+Function_for_release_of_virus is "Function for release of virus"
+
+function Function_for_natural_decay_of_virus(delta_V, V)
+  delta_V*V;
+end
+
+Function_for_natural_decay_of_virus is "Function for natural decay of virus"
+
+function Function_for_Activation_of_T_cells__4_1BBL(C_T, I)
+  C_T*I;
+end
+
+Function_for_Activation_of_T_cells__4_1BBL is "Function for Activation of T cells; 4-1BBL"
+
+function Function_for_natural_death_of_T_cells(delta_T, T)
+  delta_T*T;
+end
+
+Function_for_natural_death_of_T_cells is "Function for natural death of T cells"
+
+function Function_for_production_of_T_cells(chi_D, D)
+  chi_D*D;
+end
+
+Function_for_production_of_T_cells is "Function for production of T cells"
+
+function Function_for_treatment_of_DC(U_D)
+  U_D;
+end
+
+Function_for_treatment_of_DC is "Function for treatment of DC"
+
+function Function_for_natural_decay_of_DC(delta_D, D)
+  delta_D*D;
+end
+
+Function_for_natural_decay_of_DC is "Function for natural decay of DC"
+
+
+model *New_Model()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species Uninfected_Tumor_Cell_U in compartment_, Infected_Cancer_Cell_I in compartment_;
+  species Oncolytic_Adenovirus_V in compartment_, Tumor_targeting_T_cells_T in compartment_;
+  species Naive_T_cells_A in compartment_, Dendritic_Cells_D in compartment_;
+  species $Total_cells_N in compartment_, $total_tumor_cells in compartment_;
+
+  // Assignment Rules:
+  Total_cells_N := Uninfected_Tumor_Cell_U + Infected_Cancer_Cell_I + Tumor_targeting_T_cells_T;
+  total_tumor_cells := Uninfected_Tumor_Cell_U + Infected_Cancer_Cell_I;
+
+  // Reactions:
+  Tumor_cell_U_exponential_growth:  => Uninfected_Tumor_Cell_U; compartment_*Function_for_Tumor_Cell_exponential_growth(r, Uninfected_Tumor_Cell_U);
+  Tumour_cell_U_elimination: Uninfected_Tumor_Cell_U => ; compartment_*Function_for_Tumor_Cell_elimination(k0, c_kill, Infected_Cancer_Cell_I, Uninfected_Tumor_Cell_U, Tumor_targeting_T_cells_T, Total_cells_N);
+  Tumor_Cell_U_infection: Uninfected_Tumor_Cell_U => Infected_Cancer_Cell_I; compartment_*Function_for_Tumor_Cell_infection(beta, Uninfected_Tumor_Cell_U, Oncolytic_Adenovirus_V, Total_cells_N);
+  Infected_Tumor_Cell_I_death: Infected_Cancer_Cell_I => ; compartment_*Function_for_Infected_Tumor_Cell_death(delta_I, Infected_Cancer_Cell_I);
+  Infected_Tumor_Cell_I_elimination: Infected_Cancer_Cell_I => ; compartment_*Function_for_Infected_Tumor_Cell_elimination(k0, c_kill, Infected_Cancer_Cell_I, Tumor_targeting_T_cells_T, Total_cells_N);
+  Treatment_with_virus:  => Oncolytic_Adenovirus_V; compartment_*Function_for_treatment_with_virus(U_V);
+  Natural_decay_of_virus: Oncolytic_Adenovirus_V => ; compartment_*Function_for_natural_decay_of_virus(delta_V, Oncolytic_Adenovirus_V);
+  Release_of_virus:  => Oncolytic_Adenovirus_V; compartment_*Function_for_release_of_virus(alpha, delta_I, Infected_Cancer_Cell_I);
+  Activation_of_T_cells_4_1BBL:  => Tumor_targeting_T_cells_T; compartment_*Function_for_Activation_of_T_cells__4_1BBL(C_T, Infected_Cancer_Cell_I);
+  Production_of_T_cells:  => Tumor_targeting_T_cells_T; compartment_*Function_for_production_of_T_cells(chi_D, Dendritic_Cells_D);
+  natural_death_of_T_cells: Tumor_targeting_T_cells_T => ; compartment_*Function_for_natural_death_of_T_cells(delta_T, Tumor_targeting_T_cells_T);
+  Treatment_with_Dendritic_Cells_D:  => Dendritic_Cells_D; compartment_*Function_for_treatment_of_DC(U_D);
+  natural_decay_of_Dendritic_Cells_D: Dendritic_Cells_D => ; compartment_*Function_for_natural_decay_of_DC(delta_D, Dendritic_Cells_D);
+
+  // Events:
+  OV_1: at time == 0, t0=false, fromTrigger=false: Oncolytic_Adenovirus_V = Oncolytic_Adenovirus_V + OV_dose;
+  OV_2: at time == 2, t0=false, fromTrigger=false: Oncolytic_Adenovirus_V = Oncolytic_Adenovirus_V + OV_dose;
+  OV_3: at time == 4, t0=false, fromTrigger=false: Oncolytic_Adenovirus_V = Oncolytic_Adenovirus_V + OV_dose;
+  AD_1: at time == 1, t0=false, fromTrigger=false: Dendritic_Cells_D = Dendritic_Cells_D + D0;
+  AD_2: at time == 3, t0=false, fromTrigger=false: Dendritic_Cells_D = Dendritic_Cells_D + D0;
+  AD_3: at time == 5, t0=false, fromTrigger=false: Dendritic_Cells_D = D0 + Dendritic_Cells_D;
+
+  // Species initializations:
+  Uninfected_Tumor_Cell_U = 57.414042;
+  Uninfected_Tumor_Cell_U has substance_per_volume;
+  Infected_Cancer_Cell_I = 0;
+  Infected_Cancer_Cell_I has substance_per_volume;
+  Oncolytic_Adenovirus_V = 0;
+  Oncolytic_Adenovirus_V has substance_per_volume;
+  Tumor_targeting_T_cells_T = 0;
+  Tumor_targeting_T_cells_T has substance_per_volume;
+  Naive_T_cells_A = 0;
+  Naive_T_cells_A has substance_per_volume;
+  Dendritic_Cells_D = 0;
+  Dendritic_Cells_D has substance_per_volume;
+  Total_cells_N has substance_per_volume;
+  total_tumor_cells has substance_per_volume;
+
+  // Compartment initializations:
+  compartment_ = 1;
+  compartment_ has volume;
+
+  // Variable initializations:
+  OV_dose = 2.5;
+  D0 = 1;
+  r = 0.3198;
+  beta = 1.008538;
+  k0 = 2;
+  c_kill = 0.623397;
+  delta_I = 1;
+  U_V = 0;
+  alpha = 3;
+  delta_V = 2.3;
+  C_T = 1.428064;
+  chi_D = 4.901894;
+  delta_T = 0.35;
+  U_D = 0;
+  delta_D = 0.35;
+
+  // Other declarations:
+  const compartment_, OV_dose, D0, r, beta, k0, c_kill, delta_I, U_V, alpha;
+  const delta_V, C_T, chi_D, delta_T, U_D, delta_D;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = time_unit;
+  unit substance = 1e-3 mole;
+  unit extent = substance;
+  unit substance_per_volume = 1e-3 mole / 1e-3 litre;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+  Uninfected_Tumor_Cell_U is "Uninfected Tumor Cell U";
+  Infected_Cancer_Cell_I is "Infected Cancer Cell I";
+  Oncolytic_Adenovirus_V is "Oncolytic Adenovirus V";
+  Tumor_targeting_T_cells_T is "Tumor-targeting T cells T";
+  Naive_T_cells_A is "Naive T cells A";
+  Dendritic_Cells_D is "Dendritic Cells D";
+  Total_cells_N is "Total cells N";
+  total_tumor_cells is "total tumor cells";
+  OV_1 is "OV 1";
+  OV_dose is "OV dose";
+  OV_2 is "OV 2";
+  OV_3 is "OV 3";
+  AD_1 is "AD 1";
+  AD_2 is "AD 2";
+  AD_3 is "AD 3";
+  Tumor_cell_U_exponential_growth is "Tumor cell U exponential growth";
+  Tumour_cell_U_elimination is "Tumour cell U elimination";
+  Tumor_Cell_U_infection is "Tumor Cell U infection";
+  Infected_Tumor_Cell_I_death is "Infected Tumor Cell I death";
+  Infected_Tumor_Cell_I_elimination is "Infected Tumor Cell I elimination";
+  Treatment_with_virus is "Treatment with virus";
+  Natural_decay_of_virus is "Natural decay of virus";
+  Release_of_virus is "Release of virus";
+  Activation_of_T_cells_4_1BBL is "Activation of T cells;4-1BBL";
+  Production_of_T_cells is "Production of T cells";
+  natural_death_of_T_cells is "natural death of T cells";
+  Treatment_with_Dendritic_Cells_D is "Treatment with Dendritic Cells D";
+  natural_decay_of_Dendritic_Cells_D is "natural decay of Dendritic Cells D";
+
+  // CV terms:
+  compartment_ property "http://identifiers.org/ncit/C13413"
+  compartment_ taxon "http://identifiers.org/taxonomy/10090"
+  Uninfected_Tumor_Cell_U hypernym "http://identifiers.org/efo/0000311"
+  Uninfected_Tumor_Cell_U hypernym "http://identifiers.org/bto/BTO:0002014"
+  Infected_Cancer_Cell_I hypernym "http://identifiers.org/bto/BTO:0002014"
+  Infected_Cancer_Cell_I hypernym "http://identifiers.org/efo/0000311"
+  Infected_Cancer_Cell_I propertyBearer "http://identifiers.org/ncit/C25401"
+  Oncolytic_Adenovirus_V hypernym "http://identifiers.org/ncit/C28373"
+  Oncolytic_Adenovirus_V hypernym "http://identifiers.org/ncit/C14179"
+  Tumor_targeting_T_cells_T hypernym "http://identifiers.org/ncit/C129906"
+  Tumor_targeting_T_cells_T propertyBearer "http://identifiers.org/ncit/C64542"
+  Naive_T_cells_A hypernym "http://identifiers.org/ncit/C129906"
+  Dendritic_Cells_D hypernym "http://identifiers.org/bto/BTO:0002042"
+  Dendritic_Cells_D hypernym "http://identifiers.org/ncit/C12583"
+  Total_cells_N parthood "http://identifiers.org/bto/BTO:0002014"
+  Total_cells_N parthood "http://identifiers.org/efo/0000311"
+  Total_cells_N parthood "http://identifiers.org/ncit/C129906"
+  total_tumor_cells hypernym "http://identifiers.org/efo/0000311"
+  total_tumor_cells hypernym "http://identifiers.org/bto/BTO:0002014"
+  r hypernym "http://identifiers.org/sbo/SBO:0000610"
+  delta_I hypernym "http://identifiers.org/sbo/SBO:0000356"
+  delta_V hypernym "http://identifiers.org/sbo/SBO:0000356"
+  C_T hypernym "http://identifiers.org/sbo/SBO:0000610"
+  chi_D hypernym "http://identifiers.org/sbo/SBO:0000610"
+  delta_T hypernym "http://identifiers.org/sbo/SBO:0000356"
+  delta_D hypernym "http://identifiers.org/sbo/SBO:0000356"
+  Tumor_cell_U_exponential_growth hypernym "http://identifiers.org/go/GO:0040007"
+  Tumour_cell_U_elimination hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Tumor_Cell_U_infection hypernym "http://identifiers.org/go/GO:0019089"
+  Infected_Tumor_Cell_I_death hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Infected_Tumor_Cell_I_elimination hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Treatment_with_virus hypernym "http://identifiers.org/go/GO:0035737"
+  Natural_decay_of_virus hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Release_of_virus hypernym "http://identifiers.org/sbo/SBO:0000393"
+  Activation_of_T_cells_4_1BBL hypernym "http://identifiers.org/go/GO:0051132"
+  Production_of_T_cells hypernym "http://identifiers.org/sbo/SBO:0000393"
+  natural_death_of_T_cells hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Treatment_with_Dendritic_Cells_D hypernym "http://identifiers.org/go/GO:0035737"
+  natural_decay_of_Dendritic_Cells_D hypernym "http://identifiers.org/sbo/SBO:0000179"
+end
+
+New_Model is "Gevertz2018 - cancer treatment with oncolytic viruses and dendritic cell injections minimal model"
+
+New_Model model_entity_is "http://identifiers.org/biomodels.db/MODEL1909180002",
+                          "http://identifiers.org/biomodels.db/BIOMD0000000817"
+New_Model property "http://identifiers.org/doid/DOID:1909"
+New_Model property "http://identifiers.org/efo/0000311"
+New_Model property "http://identifiers.org/ncit/C62713"
+New_Model property "http://identifiers.org/bto/BTO:0002014"
+New_Model property "http://identifiers.org/mamo/MAMO_0000046"
+New_Model property "http://identifiers.org/efo/0000756"
+New_Model taxon "http://identifiers.org/taxonomy/10090"
+New_Model description "http://identifiers.org/pubmed/30510594"

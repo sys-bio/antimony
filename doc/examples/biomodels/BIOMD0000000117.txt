@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *model_0000001()
 
   // Compartments and Species:
@@ -12,7 +12,7 @@ model *model_0000001()
   reaction_0000001:  => z; v1*beta*Cytosol;
   reaction_0000002:  => z; v0*Cytosol;
   reaction_0000003: y => z; kf*y*Cytosol;
-  reaction_0000004: z => y; (intracellular_Ca_storepool*VM2*z^n)/(K2^n + z^n);
+  reaction_0000004: z => y; intracellular_Ca_storepool*VM2*z^n/(K2^n + z^n);
   reaction_0000005: y => z; Cytosol*VM3*(y^m/(KR^m + y^m))*(z^p/(KA^p + z^p));
   reaction_0000006: z => ; k*z*extracellular;
 
@@ -63,4 +63,35 @@ model *model_0000001()
   reaction_0000004 is "Pumping Ca into the InsP3-insensitive store";
   reaction_0000005 is "Release of Ca from the pool into the cytosol";
   reaction_0000006 is "Transport of cytosolic ca into the extracellular medium";
+
+  // CV terms:
+  extracellular hypernym "http://identifiers.org/obo.go/GO:0005576"
+  Cytosol hypernym "http://identifiers.org/obo.go/GO:0005829"
+  intracellular_Ca_storepool hypernym "http://identifiers.org/obo.go/GO:0044424"
+  z identity "http://identifiers.org/obo.chebi/CHEBI:29108",
+             "http://identifiers.org/kegg.compound/C00076"
+  y identity "http://identifiers.org/obo.chebi/CHEBI:29108",
+             "http://identifiers.org/kegg.compound/C00076"
+  reaction_0000001 hypernym "http://identifiers.org/obo.go/GO:0006816",
+                            "http://identifiers.org/obo.go/GO:0007204"
+  reaction_0000002 hypernym "http://identifiers.org/obo.go/GO:0006816",
+                            "http://identifiers.org/obo.go/GO:0007204"
+  reaction_0000003 hypernym "http://identifiers.org/obo.go/GO:0006816",
+                            "http://identifiers.org/obo.go/GO:0007204"
+  reaction_0000004 hypernym "http://identifiers.org/obo.go/GO:0005388",
+                            "http://identifiers.org/obo.go/GO:0006816",
+                            "http://identifiers.org/obo.go/GO:0051481"
+  reaction_0000005 hypernym "http://identifiers.org/obo.go/GO:0006816",
+                            "http://identifiers.org/obo.go/GO:0007204"
+  reaction_0000006 hypernym "http://identifiers.org/obo.go/GO:0006816",
+                            "http://identifiers.org/obo.go/GO:0051481"
 end
+
+model_0000001 is "Dupont1991_CaOscillation"
+
+model_0000001 model_entity_is "http://identifiers.org/biomodels.db/MODEL0466937756"
+model_0000001 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000117"
+model_0000001 description "http://identifiers.org/pubmed/1647878"
+model_0000001 taxon "http://identifiers.org/taxonomy/131567"
+model_0000001 hypernym "http://identifiers.org/obo.go/GO:0019722",
+                       "http://identifiers.org/obo.go/GO:0048763"

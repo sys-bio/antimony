@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Qu2003_CellCycle()
 
   // Compartments and Species:
@@ -20,11 +20,11 @@ model *Qu2003_CellCycle()
   reaction_0000006: z1 -> z2; cell*((bz + cz*x)*z1 - az*z2);
   reaction_0000007:  => w0; k10*cell;
   reaction_000008: w0 -> w1; cell*((bw + cw*x)*w0 - aw*w1);
-  reaction_000009:  => u; (cell*x^2)/(a^2 + x^2)/Tau;
+  reaction_000009:  => u; cell*x^2/(a^2 + x^2)/Tau;
   reaction_0000010:  => i; k12*cell;
   reaction_0000011: i + x -> ix; (k14*x*i - k15*ix)*cell;
   reaction_0000014: ix -> ixp; cell*((bi + ci*x)*ix - ai*ixp);
-  reaction_0000013: u => ; (cell*u)/Tau;
+  reaction_0000013: u => ; cell*u/Tau;
   reaction_0000015: i => ; cell*k13*i;
   reaction_0000016: ixp => x; cell*k16*k16u*ixp;
   reaction_0000017: w0 => ; cell*w0*k11;
@@ -132,4 +132,66 @@ model *Qu2003_CellCycle()
   reaction_0000021 is "Two site phosphorylated CDC25 degradation";
   reaction_0000022 is "Unphosphorylation CDC25 synthesis";
   reaction_0000023 is "Active cyclin:CDK complex degradation";
+
+  // CV terms:
+  cell hypernym "http://identifiers.org/go/GO:0005623"
+  x1 part "http://identifiers.org/interpro/IPR006670",
+          "http://identifiers.org/go/GO:0000307"
+  x part "http://identifiers.org/interpro/IPR006670",
+         "http://identifiers.org/go/GO:0000307"
+  c0 hypernym "http://identifiers.org/go/GO:0000307"
+  c hypernym "http://identifiers.org/go/GO:0000307"
+  ix part "http://identifiers.org/interpro/IPR003175",
+          "http://identifiers.org/interpro/IPR006670",
+          "http://identifiers.org/go/GO:0000307"
+  ixp part "http://identifiers.org/interpro/IPR003175",
+           "http://identifiers.org/interpro/IPR006670",
+           "http://identifiers.org/go/GO:0000307"
+  z0 version "http://identifiers.org/uniprot/P04821"
+  z1 version "http://identifiers.org/uniprot/P04821"
+  z2 version "http://identifiers.org/uniprot/P04821"
+  w0 homolog "http://identifiers.org/uniprot/P30291"
+  w1 homolog "http://identifiers.org/uniprot/P30291"
+  u hypernym "http://identifiers.org/interpro/IPR001810",
+             "http://identifiers.org/go/GO:0005680"
+  i hypernym "http://identifiers.org/interpro/IPR003175"
+  y hypernym "http://identifiers.org/interpro/IPR006670"
+  totalCyclin hypernym "http://identifiers.org/interpro/IPR006670"
+  reaction_0000001 hypernym "http://identifiers.org/go/GO:0044249"
+  reaction_0000002 hypernym "http://identifiers.org/go/GO:0005515",
+                            "http://identifiers.org/go/GO:0030332"
+  reaction_0000003 hypernym "http://identifiers.org/go/GO:0008054"
+  reaction_0000004 hypernym "http://identifiers.org/go/GO:0006468"
+  reaction_0000005 hypernym "http://identifiers.org/go/GO:0045736"
+  reaction_0000006 hypernym "http://identifiers.org/go/GO:0006468"
+  reaction_0000007 hypernym "http://identifiers.org/go/GO:0044249"
+  reaction_000008 hypernym "http://identifiers.org/go/GO:0006468"
+  reaction_000009 hypernym "http://identifiers.org/go/GO:0044249",
+                           "http://identifiers.org/go/GO:0051488"
+  reaction_0000010 hypernym "http://identifiers.org/go/GO:0044249"
+  reaction_0000011 hypernym "http://identifiers.org/go/GO:0004861",
+                            "http://identifiers.org/go/GO:0032403"
+  reaction_0000014 hypernym "http://identifiers.org/go/GO:0004693",
+                            "http://identifiers.org/go/GO:0006468"
+  reaction_0000013 hypernym "http://identifiers.org/go/GO:0030163"
+  reaction_0000015 hypernym "http://identifiers.org/go/GO:0030163"
+  reaction_0000016 hypernym "http://identifiers.org/go/GO:0043624"
+  reaction_0000017 hypernym "http://identifiers.org/go/GO:0030163"
+  reaction_0000018 hypernym "http://identifiers.org/go/GO:0030163"
+  reaction_0000019 hypernym "http://identifiers.org/go/GO:0030163"
+  reaction_0000020 hypernym "http://identifiers.org/go/GO:0030163"
+  reaction_0000021 hypernym "http://identifiers.org/go/GO:0030163"
+  reaction_0000022 hypernym "http://identifiers.org/go/GO:0044249"
+  reaction_0000023 hypernym "http://identifiers.org/go/GO:0030163"
 end
+
+Qu2003_CellCycle is "Qu2003_CellCycle"
+
+Qu2003_CellCycle model_entity_is "http://identifiers.org/biomodels.db/MODEL6931308526"
+Qu2003_CellCycle model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000110"
+Qu2003_CellCycle description "http://identifiers.org/pubmed/14645053"
+Qu2003_CellCycle version "http://identifiers.org/kegg.pathway/sce04111",
+                         "http://identifiers.org/reactome/REACT_152"
+Qu2003_CellCycle taxon "http://identifiers.org/taxonomy/2759"
+Qu2003_CellCycle hypernym "http://identifiers.org/go/GO:0044839",
+                          "http://identifiers.org/go/GO:0044843"

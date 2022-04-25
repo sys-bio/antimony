@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *MODEL1403310002()
 
   // Compartments and Species:
@@ -9,25 +9,25 @@ model *MODEL1403310002()
   species TNFenv in c2, STATm in compartment_, STAT in compartment_;
 
   // Assignment Rules:
-  NS := (r5*time^n3)/(bm^n3 + time^n3);
+  NS := r5*time^n3/(bm^n3 + time^n3);
   IC1 := (1 + sp*(NS/delta1)^n1)/(1 + (NS/delta1)^n1);
   IC2 := 1;
   IC2ifa := 1;
-  TJ := ((TJtot*(IFNb_env + IFNa_env))/(K3 + IFNb_env + IFNa_env)*1)/(1 + (K9*SOCS1m)/delta);
+  TJ := (TJtot*(IFNb_env + IFNa_env)/(K3 + IFNb_env + IFNa_env))*1/(1 + K9*SOCS1m/delta);
 
   // Reactions:
-  J1: $w => IFNb_mRNA; (r0*IC1 + k15*IRF7Pn)*IC2 - (IFNb_mRNA*ln(2))/tao1;
-  J2: $w => IFNb_env; ((1000000000*C*vmax2)/NA*IFNb_mRNA)/(K2 + IFNb_mRNA);
-  J3: $w => STATP2n; (K5*TJ*STAT)/2/(K5 + STAT) - (STATP2n*ln(2))/tao3;
-  J4: $w => SOCS1m; (r3*IC1 + k8*STATP2n)*IC2 - (SOCS1m*ln(2))/tao4;
-  J5: $w => IRF7m; (k11*STATP2n + k14*IRF7Pn)*IC2 - (IRF7m*ln(2))/tao6;
+  J1: $w => IFNb_mRNA; (r0*IC1 + k15*IRF7Pn)*IC2 - IFNb_mRNA*ln(2)/tao1;
+  J2: $w => IFNb_env; (1000000000*C*vmax2/NA)*IFNb_mRNA/(K2 + IFNb_mRNA);
+  J3: $w => STATP2n; K5*TJ*STAT/2/(K5 + STAT) - STATP2n*ln(2)/tao3;
+  J4: $w => SOCS1m; (r3*IC1 + k8*STATP2n)*IC2 - SOCS1m*ln(2)/tao4;
+  J5: $w => IRF7m; (k11*STATP2n + k14*IRF7Pn)*IC2 - IRF7m*ln(2)/tao6;
   J6: $w => IRF7Pn; k12*IC1*IRF7m;
-  J7: $w => IFNa_mRNA; k16*IRF7Pn*IC2ifa - (IFNa_mRNA*ln(2))/tao8;
-  J8: $w => IFNa_env; ((1000000000*C*vmax17)/NA*IFNa_mRNA)/(K17 + IFNa_mRNA);
-  J9: $w => TNFam; (r1*IC1 + (rmax20*TNFenv)/(K20 + TNFenv))*IC2 - (TNFam*ln(2))/tao9;
-  J10: $w => TNFenv; ((1000000000*C*vmax19)/NA*TNFam)/(K19 + TNFam);
-  J11: $w => STATm; (r4*IC1 + k26*STATP2n)*IC2 - (STATm*ln(2))/tao12;
-  J12: $w => STAT; k28*STATm - (STAT*ln(2))/tao13;
+  J7: $w => IFNa_mRNA; k16*IRF7Pn*IC2ifa - IFNa_mRNA*ln(2)/tao8;
+  J8: $w => IFNa_env; (1000000000*C*vmax17/NA)*IFNa_mRNA/(K17 + IFNa_mRNA);
+  J9: $w => TNFam; (r1*IC1 + rmax20*TNFenv/(K20 + TNFenv))*IC2 - TNFam*ln(2)/tao9;
+  J10: $w => TNFenv; (1000000000*C*vmax19/NA)*TNFam/(K19 + TNFam);
+  J11: $w => STATm; (r4*IC1 + k26*STATP2n)*IC2 - STATm*ln(2)/tao12;
+  J12: $w => STAT; k28*STATm - STAT*ln(2)/tao13;
 
   // Species initializations:
   w = 0;
@@ -81,7 +81,7 @@ model *MODEL1403310002()
   delta has substance;
   r0 = 0.001;
   r0 has substance;
-  k15 = 3.6e-008;
+  k15 = 3.6e-08;
   k15 has substance;
   tao1 = 2.5;
   tao1 has substance;
@@ -89,7 +89,7 @@ model *MODEL1403310002()
   C has substance;
   vmax2 = 72000;
   vmax2 has substance;
-  NA = 6.023e+023;
+  NA = 6.023e+23;
   NA has substance;
   K2 = 0.002;
   K2 has substance;
@@ -97,7 +97,7 @@ model *MODEL1403310002()
   K5 has substance;
   tao3 = 0.56;
   tao3 has substance;
-  r3 = 1e-007;
+  r3 = 1e-07;
   r3 has substance;
   k8 = 0.0036;
   k8 has substance;
@@ -105,7 +105,7 @@ model *MODEL1403310002()
   tao4 has substance;
   k11 = 0.00036;
   k11 has substance;
-  k14 = 3.204e-007;
+  k14 = 3.204e-07;
   k14 has substance;
   tao6 = 1;
   k12 = 360;
@@ -130,7 +130,7 @@ model *MODEL1403310002()
   vmax19 has substance;
   K19 = 0.004;
   K19 has substance;
-  r4 = 1e-005;
+  r4 = 1e-05;
   r4 has substance;
   k26 = 0.360085;
   k26 has substance;
@@ -149,7 +149,7 @@ model *MODEL1403310002()
   const K20, tao9, vmax19, K19, r4, k26, tao12, k28, tao13;
 
   // Unit definitions:
-  unit substance = 1e-006 mole;
+  unit substance = 1e-06 mole;
   unit volume = litre;
   unit area = metre^2;
   unit length = metre;
@@ -159,4 +159,40 @@ model *MODEL1403310002()
   time_unit is "time";
   c2 is "Environment";
   compartment_ is "Cell";
+
+  // SBO terms:
+  default.sboTerm = 290
+  c2.sboTerm = 290
+  compartment_.sboTerm = 290
+  w.sboTerm = 291
+
+  // CV terms:
+  c2 hypernym "http://identifiers.org/bto/BTO:0000316"
+  compartment_ hypernym "http://identifiers.org/bto/BTO:0002042"
+  IFNb_mRNA encodement "http://identifiers.org/uniprot/P01574"
+  IFNb_env hypernym "http://identifiers.org/uniprot/P01574"
+  STATP2n hypernym "http://identifiers.org/interpro/IPR001217"
+  SOCS1m encodement "http://identifiers.org/interpro/IPR028411"
+  IRF7m encodement "http://identifiers.org/uniprot/Q92985"
+  IRF7Pn hypernym "http://identifiers.org/uniprot/Q92985"
+  IFNa_mRNA encodement "http://identifiers.org/interpro/IPR015589"
+  IFNa_env hypernym "http://identifiers.org/interpro/IPR015589"
+  TNFam hypernym "http://identifiers.org/uniprot/P01375"
+  TNFenv hypernym "http://identifiers.org/uniprot/P01375"
+  STATm encodement "http://identifiers.org/interpro/IPR001217"
+  STAT hypernym "http://identifiers.org/interpro/IPR001217"
 end
+
+MODEL1403310002 is "Fribourg2014 - Dynamics of viral antagonism and innate immune response (H1N1 influenza A virus - Cal/09)"
+
+MODEL1403310002 model_entity_is "http://identifiers.org/biomodels.db/MODEL1403310002"
+MODEL1403310002 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000528"
+MODEL1403310002 description "http://identifiers.org/pubmed/24594370"
+MODEL1403310002 origin "http://identifiers.org/pubmed/20159146",
+                       "http://identifiers.org/pubmed/20739535"
+MODEL1403310002 hypernym "http://identifiers.org/go/GO:0009814"
+MODEL1403310002 taxon "http://identifiers.org/taxonomy/9606",
+                      "http://identifiers.org/taxonomy/36420"
+MODEL1403310002 container "http://identifiers.org/cl/CL:0001056"
+MODEL1403310002 property "http://identifiers.org/mamo/MAMO_0000046"
+MODEL1403310002 version "http://identifiers.org/doid/DOID:0050211"

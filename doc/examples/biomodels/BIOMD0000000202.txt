@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *ChenXF2008_CICR()
 
   // Compartments and Species:
@@ -7,26 +7,26 @@ model *ChenXF2008_CICR()
   species S2a in ER, S4 in ER, Oc in PM, O_o in PM, $Orai1 in PM;
 
   // Assignment Rules:
-  S2 := K1^2/(Ca_ER^2 + K1^2)*(St - S2a);
+  S2 := (K1^2/(Ca_ER^2 + K1^2))*(St - S2a);
   Orai1 := Orai1_t - (r_hill*Oc + r_hill*O_o);
 
   // Rate Rules:
   h' = A*(Kd - (Ca_Cyt + Kd)*h);
 
   // Reactions:
-  ER_Channel: Ca_ER => Ca_Cyt; Cytoplasm*(L + (P_IP3R*IP3_Cyt^3*Ca_Cyt^3*h^3)/((IP3_Cyt + Ki)^3*(Ca_Cyt + Ka)^3))*(Ca_ER - Ca_Cyt);
-  SERCA: Ca_Cyt => Ca_ER; Cytoplasm*((V_SERCA*Ca_Cyt^p)/(K_SERCA^p + Ca_Cyt^p));
+  ER_Channel: Ca_ER => Ca_Cyt; Cytoplasm*(L + P_IP3R*IP3_Cyt^3*Ca_Cyt^3*h^3/((IP3_Cyt + Ki)^3*(Ca_Cyt + Ka)^3))*(Ca_ER - Ca_Cyt);
+  SERCA: Ca_Cyt => Ca_ER; Cytoplasm*(V_SERCA*Ca_Cyt^p/(K_SERCA^p + Ca_Cyt^p));
   PM_Channel:  => Ca_Cyt; Cytoplasm*(k_soc*O_o + V_PMleak)*(Ca_ec - Ca_Cyt);
-  PMCA: Ca_Cyt => ; Cytoplasm*((V_PMCA*Ca_Cyt^q)/(K_PMCA^q + Ca_Cyt^q));
-  PLC:  => IP3_Cyt; Cytoplasm*((V_PLC*Ca_Cyt^2)/(K_PLC^2 + Ca_Cyt^2));
-  deg: IP3_Cyt => ; Cytoplasm*((kdeg*Ca_Cyt^2)/(K_deg^2 + Ca_Cyt^2))*IP3_Cyt;
+  PMCA: Ca_Cyt => ; Cytoplasm*(V_PMCA*Ca_Cyt^q/(K_PMCA^q + Ca_Cyt^q));
+  PLC:  => IP3_Cyt; Cytoplasm*(V_PLC*Ca_Cyt^2/(K_PLC^2 + Ca_Cyt^2));
+  deg: IP3_Cyt => ; Cytoplasm*(kdeg*Ca_Cyt^2/(K_deg^2 + Ca_Cyt^2))*IP3_Cyt;
   act_apoSTIM1_syn:  => S2a; ER*k_a*S2;
   act_apoSTIM1_deg: S2a => ; ER*k_i*S2a;
-  apoSTIM1_oligo_syn:  => S4; ER*((Vs4*S2^2)/(S2^2 + K2^2));
+  apoSTIM1_oligo_syn:  => S4; ER*(Vs4*S2^2/(S2^2 + K2^2));
   apoSTIM1_oligo_deg: S4 => ; ER*kd_oligo*S4;
-  close_CRAC_prod:  => Oc; PM*((Vcp*Orai1^n_hill)/(Kc^n_hill + Orai1^n_hill));
+  close_CRAC_prod:  => Oc; PM*(Vcp*Orai1^n_hill/(Kc^n_hill + Orai1^n_hill));
   closed_CRAC_channel_deg: Oc => ; PM*kdc*Oc;
-  open_CRAC_channel_prod: Oc => O_o; PM*((kop*S2a^l_hill*Oc)/(Ko^l_hill + S2a^l_hill));
+  open_CRAC_channel_prod: Oc => O_o; PM*(kop*S2a^l_hill*Oc/(Ko^l_hill + S2a^l_hill));
   open_to_closed: O_o => Oc; PM*kod*O_o;
   open_CRAC_channel_deg: O_o => ; PM*kdo*O_o;
 
@@ -71,7 +71,7 @@ model *ChenXF2008_CICR()
   K_SERCA has uM;
   k_soc = 2.3;
   k_soc has uM_1_s_1;
-  V_PMleak = 5e-007;
+  V_PMleak = 5e-07;
   V_PMleak has s_1;
   Ca_ec = 1500;
   Ca_ec has uM;
@@ -105,7 +105,7 @@ model *ChenXF2008_CICR()
   Vcp has uM_s_1;
   n_hill = 3;
   n_hill has dimensionless;
-  Kc = 2e-005;
+  Kc = 2e-05;
   Kc has uM;
   kdc = 0.5;
   kdc has s_1;
@@ -138,4 +138,32 @@ model *ChenXF2008_CICR()
 
   // Display Names:
   substance is "micromole";
+
+  // CV terms:
+  Ca_Cyt identity "http://identifiers.org/chebi/CHEBI:29108",
+                  "http://identifiers.org/kegg.compound/C00076"
+  IP3_Cyt identity "http://identifiers.org/chebi/CHEBI:16595",
+                   "http://identifiers.org/kegg.compound/C01245"
+  Ca_ER identity "http://identifiers.org/chebi/CHEBI:29108",
+                 "http://identifiers.org/kegg.compound/C00076"
+  S2 hypernym "http://identifiers.org/uniprot/Q13586"
+  S2a hypernym "http://identifiers.org/uniprot/Q13586"
+  S4 hypernym "http://identifiers.org/uniprot/Q13586"
+  Orai1 hypernym "http://identifiers.org/uniprot/Q96D31"
+  ER_Channel hypernym "http://identifiers.org/go/GO:0048763"
+  SERCA hypernym "http://identifiers.org/go/GO:0005388"
+  PM_Channel hypernym "http://identifiers.org/go/GO:0051928"
+  PMCA hypernym "http://identifiers.org/go/GO:0005388"
+  PLC hypernym "http://identifiers.org/go/GO:0050429"
+  act_apoSTIM1_syn hypernym "http://identifiers.org/go/GO:0032237"
 end
+
+ChenXF2008_CICR is "ChenXF2008_CICR"
+
+ChenXF2008_CICR model_entity_is "http://identifiers.org/biomodels.db/MODEL7519277765"
+ChenXF2008_CICR model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000202"
+ChenXF2008_CICR description "http://identifiers.org/pubmed/18538916"
+ChenXF2008_CICR origin "http://identifiers.org/pubmed/1329108"
+ChenXF2008_CICR hypernym "http://identifiers.org/go/GO:0051209",
+                         "http://identifiers.org/go/GO:0032237"
+ChenXF2008_CICR taxon "http://identifiers.org/taxonomy/131567"

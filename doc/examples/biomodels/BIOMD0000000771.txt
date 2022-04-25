@@ -1,0 +1,82 @@
+// Created by libAntimony v2.13.0
+function Function_for_Tumor_Growth(r, y, x, epsilon, K)
+  r*y*(1 - (y + x)^epsilon/K^epsilon);
+end
+
+Function_for_Tumor_Growth is "Function_for_Tumor_Growth"
+
+function Function_for_Virus_Production_Infected_Cell(alpha, x)
+  alpha*x;
+end
+
+Function_for_Virus_Production_Infected_Cell is "Function_for_Virus_Production_Infected_Cell"
+
+function Function_for_Tumor_Cell_Fusion(rho, x, y)
+  rho*x*y;
+end
+
+Function_for_Tumor_Cell_Fusion is "Function_for_Tumor_Cell_Fusion"
+
+
+model *Bajzer2008___Modeling_of_cancer_virotherapy_with_recombinant_measles_viruses()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species y_Tumor_Cell in compartment_, v_Virus in compartment_, x_Infected_Cell in compartment_;
+
+  // Reactions:
+  Tumor_Growth:  => y_Tumor_Cell; compartment_*Function_for_Tumor_Growth(r, y_Tumor_Cell, x_Infected_Cell, epsilon, K);
+  Tumor_Cell_Infection: y_Tumor_Cell + v_Virus => x_Infected_Cell; compartment_*kappa*y_Tumor_Cell*v_Virus;
+  Tumor_Cell_Fusion: y_Tumor_Cell => ; compartment_*Function_for_Tumor_Cell_Fusion(rho, x_Infected_Cell, y_Tumor_Cell);
+  Infected_Cell_Death: x_Infected_Cell => ; compartment_*delta*x_Infected_Cell;
+  Virus_Production_Infected_Cell:  => v_Virus; compartment_*Function_for_Virus_Production_Infected_Cell(alpha, x_Infected_Cell);
+  Virus_Elimination: v_Virus => ; compartment_*omega*v_Virus;
+
+  // Species initializations:
+  y_Tumor_Cell = 126.237;
+  v_Virus = 2;
+  x_Infected_Cell = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  r = 0.2062134;
+  K = 2139.258;
+  epsilon = 1.648773;
+  kappa = 0.000448;
+  rho = 0.608;
+  delta = 0.309;
+  alpha = 0.001;
+  omega = 0.3;
+
+  // Other declarations:
+  const compartment_, r, K, epsilon, kappa, rho, delta, alpha, omega;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+
+  // CV terms:
+  compartment_ hypernym "http://identifiers.org/ncit/C94498"
+  y_Tumor_Cell hypernym "http://identifiers.org/cl/CL:0001063"
+  v_Virus hypernym "http://identifiers.org/ncit/C717"
+  x_Infected_Cell hypernym "http://identifiers.org/bto/BTO:0000152"
+  Tumor_Growth hypernym "http://identifiers.org/ncit/C18081"
+  Tumor_Cell_Infection hypernym "http://identifiers.org/ncit/C3439"
+  Tumor_Cell_Fusion hypernym "http://identifiers.org/ncit/C16401"
+  Infected_Cell_Death hypernym "http://identifiers.org/go/GO:0008219"
+  Virus_Production_Infected_Cell hypernym "http://identifiers.org/go/GO:0019076"
+  Virus_Elimination hypernym "http://identifiers.org/sbo/SBO:0000179"
+end
+
+Bajzer2008___Modeling_of_cancer_virotherapy_with_recombinant_measles_viruses is "Bajzer2008 - Modeling of cancer virotherapy with recombinant measles viruses"
+
+Bajzer2008___Modeling_of_cancer_virotherapy_with_recombinant_measles_viruses description "http://identifiers.org/pubmed/18316099"
+Bajzer2008___Modeling_of_cancer_virotherapy_with_recombinant_measles_viruses model_entity_is "http://identifiers.org/biomodels.db/MODEL1907310005",
+                                                                                             "http://identifiers.org/biomodels.db/BIOMD0000000771"
+Bajzer2008___Modeling_of_cancer_virotherapy_with_recombinant_measles_viruses property "http://identifiers.org/mamo/MAMO_0000046"
+Bajzer2008___Modeling_of_cancer_virotherapy_with_recombinant_measles_viruses property "http://identifiers.org/ncit/C62713"

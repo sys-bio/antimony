@@ -1,0 +1,191 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function modifier_function_1(parameter, modifier, substrate)
+  parameter*modifier*substrate;
+end
+
+modifier_function_1 is "modifier function 1"
+
+function function_for_Li(kf, Li, Ri, kre, Ci, Ve, Na)
+  (kf*Li*Ri - kre*Ci)/(Ve*Na);
+end
+
+function_for_Li is "function for Li"
+
+function function_for_L(kf, L, Rs, kr, Cs, kx, Li, Ve, Na, Y)
+  (kf*L*Rs - kr*Cs - kx*Li*Ve*Na)*Y/Na;
+end
+
+function_for_L is "function for L"
+
+function modifier_function_3(parameter, modifier)
+  parameter*modifier;
+end
+
+modifier_function_3 is "modifier function 3"
+
+
+model *Fallon2000_IL2dynamics()
+
+  // Compartments and Species:
+  compartment COMpartment;
+  species Rs_0 in COMpartment, Cs_0 in COMpartment, Ri_0 in COMpartment, Ci_0 in COMpartment;
+  species Li_0 in COMpartment, Ld_0 in COMpartment, L_0 in COMpartment, $Y_0 in COMpartment;
+
+  // Assignment Rules:
+  kf := piecewise(kr/11.1, IL2 == 1, kr/8.2);
+  kre := piecewise(kr*8, IL2 == 1, kr*5);
+  kfe := piecewise(kre/1000, IL2 == 1, kre/3000);
+
+  // Rate Rules:
+  Y_0' = piecewise((600*Cs_0/(250 + Cs_0) - 200)*1000, (600*Cs_0/(250 + Cs_0) - 200) > 0, 0);
+
+  // Reactions:
+  Receptor_binding_to_Ligand: Rs_0 => Cs_0; COMpartment*modifier_function_1(kf, L_0, Rs_0);
+  Receptor_Ligand_complex_dissocation: Cs_0 => Rs_0; COMpartment*kr*Cs_0;
+  Upregulation_of_Receptor_Synthesis:  => Rs_0; COMpartment*modifier_function_3(ksyn, Cs_0);
+  Receptor_Internalisation: Rs_0 => Ri_0; COMpartment*kt*Rs_0;
+  Receptor_Synthesis:  => Rs_0; COMpartment*Constant_flux__irreversible(Vs);
+  Endocytosis_of_Receptor_Ligand_complex: Cs_0 => Ci_0; COMpartment*ke*Cs_0;
+  IL_2_binding_to_free_BetaGamma_heterodimer_1: Ri_0 => Ci_0; COMpartment*modifier_function_1(kfe, Li_0, Ri_0);
+  Dissocation_of_IL_2_Heterodimer_complex: Ci_0 => Ri_0; COMpartment*kre*Ci_0;
+  Degradation_of_heterodimer: Ri_0 => ; COMpartment*kh*Ri_0;
+  Degradation_of_IL_2_heterodimer_complex: Ci_0 => Ld_0; COMpartment*kh*Ci_0;
+  IL_2_binding_dissociating: Li_0 => ; COMpartment*function_for_Li(kf, Li_0, Ri_0, kre, Ci_0, Ve, NA);
+  Ligand_recycling: Li_0 => ; COMpartment*kx*Li_0;
+  Ligand_Binding_Dissociation_Recycling: L_0 => ; COMpartment*function_for_L(kf, L_0, Rs_0, kr, Cs_0, kx, Li_0, Ve, NA, Y_0);
+
+  // Species initializations:
+  Rs_0 = 1500;
+  Cs_0 = 1;
+  Ri_0 = 300;
+  Ci_0 = 1;
+  Li_0 = 0.01;
+  Ld_0 = 1;
+  L_0 = 10;
+  Y_0 = 250000000;
+
+  // Compartment initializations:
+  COMpartment = 1;
+
+  // Variable initializations:
+  kr = 0.0138;
+  kr has unit_0;
+  kf has unit_1;
+  IL2 = 1;
+  IL2 has unit_4;
+  kre has unit_0;
+  kfe has unit_1;
+  kt = 0.007;
+  kt has unit_0;
+  Vs = 11;
+  Vs has unit_0;
+  ksyn = 0.0011;
+  ksyn has unit_0;
+  ke = 0.04;
+  ke has unit_0;
+  kx = 0.15;
+  kx has unit_0;
+  kh = 0.035;
+  kh has unit_0;
+  Ve = 1e-14;
+  Ve has unit_2;
+  NA = 602200000000;
+  NA has unit_3;
+
+  // Other declarations:
+  var kf, kre, kfe;
+  const COMpartment, kr, IL2, kt, Vs, ksyn, ke, kx, kh, Ve, NA;
+
+  // Unit definitions:
+  unit time_unit = 60 second;
+  unit unit_0 = 1 / 0.0166667 second;
+  unit unit_1 = 0.06e-9 litre / (mole * second);
+  unit unit_2 = litre;
+  unit unit_3 = 1 / 1e12 mole;
+  unit unit_4 = 1 / dimensionless^-0;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1/(0.0166667*s)";
+  unit_1 is "0.06*nl/(mol*s)";
+  unit_2 is "l";
+  unit_3 is "1/Tmol";
+  unit_4 is "1";
+  COMpartment is "compartment";
+  Rs_0 is "Rs";
+  Cs_0 is "Cs";
+  Ri_0 is "Ri";
+  Ci_0 is "Ci";
+  Li_0 is "Li";
+  Ld_0 is "Ld";
+  L_0 is "L";
+  Y_0 is "Y";
+  Receptor_binding_to_Ligand is "Receptor binding to Ligand";
+  Receptor_Ligand_complex_dissocation is "Receptor/Ligand complex dissocation";
+  Upregulation_of_Receptor_Synthesis is "Upregulation of Receptor Synthesis";
+  Receptor_Internalisation is "Receptor Internalisation";
+  Receptor_Synthesis is "Receptor Synthesis";
+  Endocytosis_of_Receptor_Ligand_complex is "Endocytosis of Receptor/Ligand complex";
+  IL_2_binding_to_free_BetaGamma_heterodimer_1 is "IL-2 binding to free BetaGamma heterodimer";
+  Dissocation_of_IL_2_Heterodimer_complex is "Dissocation of IL-2/Heterodimer complex";
+  Degradation_of_heterodimer is "Degradation of heterodimer";
+  Degradation_of_IL_2_heterodimer_complex is "Degradation of IL-2/heterodimer complex";
+  IL_2_binding_dissociating is "IL-2 binding/dissociating";
+  Ligand_recycling is "Ligand recycling";
+  Ligand_Binding_Dissociation_Recycling is "Ligand Binding/Dissociation/Recycling";
+
+  // CV terms:
+  Rs_0 part "http://identifiers.org/uniprot/P14784"
+  Rs_0 part "http://identifiers.org/uniprot/P31785"
+  Rs_0 hypernym "http://identifiers.org/ncit/C104679"
+  Rs_0 container "http://identifiers.org/go/GO:0005886"
+  Cs_0 part "http://identifiers.org/uniprot/P31785"
+  Cs_0 part "http://identifiers.org/uniprot/P60568"
+  Cs_0 part "http://identifiers.org/uniprot/P14784"
+  Cs_0 hypernym "http://identifiers.org/uniprot/GO:0005893"
+  Cs_0 container "http://identifiers.org/go/GO:0005886"
+  Ri_0 part "http://identifiers.org/uniprot/P31785"
+  Ri_0 part "http://identifiers.org/uniprot/P14784"
+  Ri_0 hypernym "http://identifiers.org/ncit/C104679"
+  Ri_0 container "http://identifiers.org/go/GO:0044424"
+  Ci_0 part "http://identifiers.org/uniprot/P31785"
+  Ci_0 part "http://identifiers.org/uniprot/P60568"
+  Ci_0 part "http://identifiers.org/uniprot/P14784"
+  Ci_0 hypernym "http://identifiers.org/go/GO:0005893"
+  Ci_0 container "http://identifiers.org/go/GO:0044424"
+  Li_0 hypernym "http://identifiers.org/uniprot/P60568"
+  Li_0 container "http://identifiers.org/go/GO:0044424"
+  Ld_0 hypernym "http://identifiers.org/uniprot/P60568"
+  L_0 hypernym "http://identifiers.org/uniprot/P60568"
+  L_0 container "http://identifiers.org/go/GO:0005615"
+  Y_0 hypernym "http://identifiers.org/bto/BTO:0000782"
+  Receptor_binding_to_Ligand hypernym "http://identifiers.org/go/GO:0005134"
+  Receptor_Ligand_complex_dissocation hypernym "http://identifiers.org/sbo/SBO:0000180"
+  Upregulation_of_Receptor_Synthesis hypernym "http://identifiers.org/go/GO:0032800"
+  Receptor_Internalisation hypernym "http://identifiers.org/go/GO:0031623"
+  Receptor_Synthesis hypernym "http://identifiers.org/go/GO:0032800"
+  Endocytosis_of_Receptor_Ligand_complex hypernym "http://identifiers.org/go/GO:0006897"
+  IL_2_binding_to_free_BetaGamma_heterodimer_1 hypernym "http://identifiers.org/go/GO:0005134"
+  Dissocation_of_IL_2_Heterodimer_complex hypernym "http://identifiers.org/sbo/SBO:0000180"
+  Degradation_of_heterodimer hypernym "http://identifiers.org/go/GO:0032801"
+  Degradation_of_IL_2_heterodimer_complex hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Ligand_recycling hypernym "http://identifiers.org/ncit/C126395"
+  Ligand_Binding_Dissociation_Recycling hypernym "http://identifiers.org/go/GO:0019976"
+  Ligand_Binding_Dissociation_Recycling hypernym "http://identifiers.org/ncit/C126395"
+  Ligand_Binding_Dissociation_Recycling hypernym "http://identifiers.org/sbo/SBO:0000180"
+end
+
+Fallon2000_IL2dynamics is "Fallon2000 - Interleukin-2 dynamics"
+
+Fallon2000_IL2dynamics model_entity_is "http://identifiers.org/biomodels.db/MODEL1006230001"
+Fallon2000_IL2dynamics model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000665"
+Fallon2000_IL2dynamics part "http://identifiers.org/go/GO:0006897"
+Fallon2000_IL2dynamics hypernym "http://identifiers.org/reactome/R-HSA-449836"
+Fallon2000_IL2dynamics property "http://identifiers.org/mamo/MAMO_0000046"
+Fallon2000_IL2dynamics description "http://identifiers.org/pubmed/11027188"

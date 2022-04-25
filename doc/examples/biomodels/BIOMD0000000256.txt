@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Rehm2006_Caspase()
 
   // Compartments and Species:
@@ -37,7 +37,7 @@ model *Rehm2006_Caspase()
   reaction3: C9 + PC3 -> C3 + C9; cell*k3*C9*PC3;
   reaction4: C9 + C3 -> C9P + C3; cell*k4*C9*C3;
   reaction5: C9P + PC3 -> C9P + C3; cell*k5*C9P*PC3;
-  reaction6: PC3 + C3 -> 2C3; cell*k6*PC3*C3;
+  reaction6: PC3 + C3 -> 2 C3; cell*k6*PC3*C3;
   reaction7: C3 + XIAP -> XIAP_C3; cell*(k7*C3*XIAP - k7r*XIAP_C3);
   reaction8: C3 + XIAP_C9 -> XIAP_C9_C3; cell*(k8*C3*XIAP_C9 - k8r*XIAP_C9_C3);
   reaction9: C3 + XIAP_p2frag -> XIAP_p2frag_C3; cell*(k9*C3*XIAP_p2frag - k9r*XIAP_p2frag_C3);
@@ -57,15 +57,15 @@ model *Rehm2006_Caspase()
   reaction23: C9 + BIR3R -> BIR3R_C9; cell*(k23*C9*BIR3R - k23r*BIR3R_C9);
   reaction24: BIR3R_p2frag -> BIR3R; cell*k24*BIR3R_p2frag;
   reaction25: XIAP_p2frag -> XIAP; cell*k25*XIAP_p2frag;
-  reaction26: XIAP + 2SMAC -> XIAP_2SMAC; cell*(k26*XIAP*SMAC*SMAC - k26r*XIAP_2SMAC);
-  reaction27: XIAP_C9 + 2SMAC -> XIAP_2SMAC + C9; cell*(k27*XIAP_C9*SMAC*SMAC - k27r*XIAP_2SMAC*C9);
-  reaction28: XIAP_C3 + 2SMAC -> XIAP_2SMAC + C3; cell*(k28*XIAP_C3*SMAC*SMAC - k28r*XIAP_2SMAC*C3);
-  reaction29: XIAP_C9_C3 + 2SMAC -> XIAP_2SMAC + C3 + C9; cell*(k29*XIAP_C9_C3*SMAC*SMAC - k29r*XIAP_2SMAC*C3*C9);
+  reaction26: XIAP + 2 SMAC -> XIAP_2SMAC; cell*(k26*XIAP*SMAC*SMAC - k26r*XIAP_2SMAC);
+  reaction27: XIAP_C9 + 2 SMAC -> XIAP_2SMAC + C9; cell*(k27*XIAP_C9*SMAC*SMAC - k27r*XIAP_2SMAC*C9);
+  reaction28: XIAP_C3 + 2 SMAC -> XIAP_2SMAC + C3; cell*(k28*XIAP_C3*SMAC*SMAC - k28r*XIAP_2SMAC*C3);
+  reaction29: XIAP_C9_C3 + 2 SMAC -> XIAP_2SMAC + C3 + C9; cell*(k29*XIAP_C9_C3*SMAC*SMAC - k29r*XIAP_2SMAC*C3*C9);
   reaction30: BIR12 + SMAC -> BIR12_SMAC; cell*(k30*BIR12*SMAC - k30r*BIR12_SMAC);
   reaction31: BIR3R + SMAC -> BIR3R_SMAC; cell*(k31*BIR3R*SMAC - k31r*BIR3R_SMAC);
   reaction32: BIR12_C3 + SMAC -> BIR12_SMAC + C3; cell*(k32*BIR12_C3*SMAC - k32r*BIR12_SMAC*C3);
   reaction33: BIR3R_C9 + SMAC -> BIR3R_SMAC + C9; cell*(k33*BIR3R_C9*SMAC - k33r*BIR3R_SMAC*C9);
-  reaction34: XIAP_p2frag + 2SMAC -> XIAP_p2frag_2SMAC; cell*(k34*XIAP_p2frag*SMAC*SMAC - k34r*XIAP_p2frag_2SMAC);
+  reaction34: XIAP_p2frag + 2 SMAC -> XIAP_p2frag_2SMAC; cell*(k34*XIAP_p2frag*SMAC*SMAC - k34r*XIAP_p2frag_2SMAC);
   reaction35: C9P -> ; cell*k35*C9P;
   reaction36: C9 -> ; cell*k36*C9;
   reaction37: C3 -> ; cell*k37*C3;
@@ -85,9 +85,9 @@ model *Rehm2006_Caspase()
   reaction51: BIR3R_p2frag -> ; cell*k51*BIR3R_p2frag;
   reaction52: SMAC -> ; cell*k52*SMAC;
   reaction53: C3 + Substrate -> C3 + ClvgPrds; cell*k53*C3*Substrate;
-  SMAC_release: SMAC_mito -> SMAC; (cell*SMAC_mito*ln(2))/th_SMAC;
-  Apo_formation: PC9 + APAF1 -> C9; (cell*apo_lim*ln(2))/th_Apop;
-  CytC_release: CytC_mit -> CytC_cell; (cell*CytC_mit*ln(2))/th_CytC;
+  SMAC_release: SMAC_mito -> SMAC; cell*SMAC_mito*ln(2)/th_SMAC;
+  Apo_formation: PC9 + APAF1 -> C9; cell*apo_lim*ln(2)/th_Apop;
+  CytC_release: CytC_mit -> CytC_cell; cell*CytC_mit*ln(2)/th_CytC;
 
   // Events:
   Production_Breakdown: at Substrate < S_breakdown: k1 = 0, k1r = 0, k2 = 0, k2r = 0, k38 = 0.0058, k39 = 0.0058, k40 = 0.0058, k43 = 0.0058, k44 = 0.0058, k46 = 0.0058, k48 = 0.0058, k50 = 0.0058, k51 = 0.0058;
@@ -374,4 +374,205 @@ model *Rehm2006_Caspase()
   Apoform is "percent Apoptosome formation";
   reaction1 is "ProCaspase3 Production";
   reaction2 is "XIAP Production";
+
+  // SBO terms:
+  cell.sboTerm = 290
+  mito.sboTerm = 290
+  PC3.sboTerm = 245
+  XIAP.sboTerm = 245
+  C9.sboTerm = 245
+  PC9.sboTerm = 245
+  C3.sboTerm = 245
+  C9P.sboTerm = 245
+  XIAP_C3.sboTerm = 296
+  XIAP_C9.sboTerm = 296
+  XIAP_C9_C3.sboTerm = 296
+  XIAP_p2frag.sboTerm = 296
+  XIAP_p2frag_C3.sboTerm = 296
+  BIR12.sboTerm = 245
+  BIR12_C3.sboTerm = 296
+  BIR3R.sboTerm = 245
+  BIR3R_C9.sboTerm = 296
+  BIR3R_p2frag.sboTerm = 296
+  XIAP_2SMAC.sboTerm = 296
+  BIR12_SMAC.sboTerm = 296
+  BIR3R_SMAC.sboTerm = 296
+  SMAC.sboTerm = 245
+  APAF1.sboTerm = 245
+  XIAP_p2frag_2SMAC.sboTerm = 296
+  Substrate.sboTerm = 252
+  ClvgPrds.sboTerm = 252
+  SMAC_mito.sboTerm = 245
+  CytC_mit.sboTerm = 245
+  CytC_cell.sboTerm = 245
+  reaction1.sboTerm = 393
+  reaction2.sboTerm = 393
+  reaction3.sboTerm = 297
+  reaction4.sboTerm = 231
+  reaction5.sboTerm = 231
+  reaction6.sboTerm = 344
+  reaction7.sboTerm = 526
+  reaction8.sboTerm = 526
+  reaction9.sboTerm = 526
+  reaction10.sboTerm = 526
+  reaction11.sboTerm = 526
+  reaction12.sboTerm = 344
+  reaction13.sboTerm = 344
+  reaction14.sboTerm = 344
+  reaction15.sboTerm = 344
+  reaction16.sboTerm = 344
+  reaction17.sboTerm = 344
+  reaction18.sboTerm = 344
+  reaction19.sboTerm = 344
+  reaction20.sboTerm = 344
+  reaction21.sboTerm = 344
+  reaction22.sboTerm = 344
+  reaction23.sboTerm = 344
+  reaction24.sboTerm = 180
+  reaction25.sboTerm = 180
+  reaction26.sboTerm = 526
+  reaction27.sboTerm = 526
+  reaction28.sboTerm = 526
+  reaction29.sboTerm = 526
+  reaction30.sboTerm = 526
+  reaction31.sboTerm = 526
+  reaction32.sboTerm = 526
+  reaction33.sboTerm = 526
+  reaction34.sboTerm = 526
+  reaction35.sboTerm = 179
+  reaction36.sboTerm = 179
+  reaction37.sboTerm = 179
+  reaction38.sboTerm = 179
+  reaction39.sboTerm = 179
+  reaction40.sboTerm = 179
+  reaction41.sboTerm = 179
+  reaction42.sboTerm = 179
+  reaction43.sboTerm = 179
+  reaction44.sboTerm = 179
+  reaction45.sboTerm = 179
+  reaction46.sboTerm = 179
+  reaction47.sboTerm = 179
+  reaction48.sboTerm = 179
+  reaction49.sboTerm = 179
+  reaction50.sboTerm = 179
+  reaction51.sboTerm = 179
+  reaction52.sboTerm = 179
+  reaction53.sboTerm = 344
+  SMAC_release.sboTerm = 185
+  Apo_formation.sboTerm = 526
+  CytC_release.sboTerm = 185
+
+  // CV terms:
+  cell identity "http://identifiers.org/go/GO:0005623"
+  mito hypernym "http://identifiers.org/go/GO:0005739"
+  PC3 hypernym "http://identifiers.org/uniprot/P42574"
+  XIAP hypernym "http://identifiers.org/uniprot/P98170"
+  C9 hypernym "http://identifiers.org/uniprot/P55211"
+  PC9 hypernym "http://identifiers.org/uniprot/P55211"
+  C3 hypernym "http://identifiers.org/uniprot/P42574"
+  C9P part "http://identifiers.org/uniprot/P55211"
+  XIAP_C3 part "http://identifiers.org/uniprot/P42574",
+               "http://identifiers.org/uniprot/P98170"
+  XIAP_C9 part "http://identifiers.org/uniprot/P98170",
+               "http://identifiers.org/uniprot/P55211"
+  XIAP_C9_C3 part "http://identifiers.org/uniprot/P42574",
+                  "http://identifiers.org/uniprot/P98170",
+                  "http://identifiers.org/uniprot/P55211"
+  XIAP_p2frag parthood "http://identifiers.org/uniprot/P55211"
+  XIAP_p2frag part "http://identifiers.org/uniprot/P98170"
+  XIAP_p2frag_C3 parthood "http://identifiers.org/uniprot/P55211"
+  XIAP_p2frag_C3 part "http://identifiers.org/uniprot/P42574",
+                      "http://identifiers.org/uniprot/P98170"
+  BIR12 parthood "http://identifiers.org/uniprot/P98170"
+  BIR12_C3 parthood "http://identifiers.org/uniprot/P98170"
+  BIR12_C3 part "http://identifiers.org/uniprot/P42574"
+  BIR3R parthood "http://identifiers.org/uniprot/P98170"
+  BIR3R_C9 parthood "http://identifiers.org/uniprot/P98170"
+  BIR3R_C9 part "http://identifiers.org/uniprot/P55211"
+  BIR3R_p2frag parthood "http://identifiers.org/uniprot/P98170",
+                        "http://identifiers.org/uniprot/P55211"
+  XIAP_2SMAC part "http://identifiers.org/uniprot/P98170"
+  BIR12_SMAC parthood "http://identifiers.org/uniprot/P98170"
+  BIR12_SMAC part "http://identifiers.org/uniprot/Q9NR28"
+  BIR3R_SMAC parthood "http://identifiers.org/uniprot/P98170"
+  BIR3R_SMAC part "http://identifiers.org/uniprot/Q9NR28"
+  SMAC hypernym "http://identifiers.org/uniprot/Q9NR28"
+  APAF1 hypernym "http://identifiers.org/uniprot/O14727"
+  XIAP_p2frag_2SMAC parthood "http://identifiers.org/uniprot/P55211"
+  XIAP_p2frag_2SMAC part "http://identifiers.org/uniprot/P98170",
+                         "http://identifiers.org/uniprot/Q9NR28"
+  Substrate parthood "http://identifiers.org/uniprot/P42574"
+  SMAC_mito hypernym "http://identifiers.org/uniprot/Q9NR28"
+  CytC_mit hypernym "http://identifiers.org/uniprot/P08574"
+  CytC_cell hypernym "http://identifiers.org/uniprot/P08574"
+  reaction3 hypernym "http://identifiers.org/go/GO:0016485"
+  reaction4 hypernym "http://identifiers.org/go/GO:0016485"
+  reaction5 hypernym "http://identifiers.org/go/GO:0006461"
+  reaction6 hypernym "http://identifiers.org/go/GO:0016485"
+  reaction7 hypernym "http://identifiers.org/go/GO:0006461"
+  reaction8 hypernym "http://identifiers.org/go/GO:0006461"
+  reaction9 hypernym "http://identifiers.org/go/GO:0006461"
+  reaction10 hypernym "http://identifiers.org/go/GO:0006461"
+  reaction11 hypernym "http://identifiers.org/go/GO:0032403"
+  reaction12 hypernym "http://identifiers.org/go/GO:0032403"
+  reaction13 hypernym "http://identifiers.org/go/GO:0032403"
+  reaction14 hypernym "http://identifiers.org/go/GO:0032403"
+  reaction15 hypernym "http://identifiers.org/go/GO:0032403"
+  reaction16 hypernym "http://identifiers.org/go/GO:0032403"
+  reaction17 hypernym "http://identifiers.org/go/GO:0032403"
+  reaction18 hypernym "http://identifiers.org/go/GO:0032403"
+  reaction19 hypernym "http://identifiers.org/go/GO:0032403"
+  reaction20 hypernym "http://identifiers.org/go/GO:0032403"
+  reaction21 hypernym "http://identifiers.org/go/GO:0006461"
+  reaction22 hypernym "http://identifiers.org/go/GO:0006461"
+  reaction23 hypernym "http://identifiers.org/go/GO:0006461"
+  reaction24 hypernym "http://identifiers.org/go/GO:0043241"
+  reaction25 hypernym "http://identifiers.org/go/GO:0043241"
+  reaction26 hypernym "http://identifiers.org/go/GO:0006461"
+  reaction27 hypernym "http://identifiers.org/reactome/REACT_1312"
+  reaction27 hypernym "http://identifiers.org/go/GO:0032403"
+  reaction28 hypernym "http://identifiers.org/reactome/REACT_1090"
+  reaction28 hypernym "http://identifiers.org/go/GO:0032403"
+  reaction29 hypernym "http://identifiers.org/go/GO:0032403"
+  reaction30 hypernym "http://identifiers.org/go/GO:0006461"
+  reaction31 hypernym "http://identifiers.org/go/GO:0006461"
+  reaction32 version "http://identifiers.org/reactome/REACT_1090"
+  reaction32 hypernym "http://identifiers.org/go/GO:0032403"
+  reaction33 version "http://identifiers.org/reactome/REACT_1312"
+  reaction33 hypernym "http://identifiers.org/go/GO:0032403"
+  reaction34 version "http://identifiers.org/reactome/REACT_1090"
+  reaction34 hypernym "http://identifiers.org/go/GO:0006461"
+  reaction35 hypernym "http://identifiers.org/go/GO:0009056"
+  reaction36 hypernym "http://identifiers.org/go/GO:0009056"
+  reaction37 hypernym "http://identifiers.org/go/GO:0009056"
+  reaction38 hypernym "http://identifiers.org/go/GO:0009056"
+  reaction39 hypernym "http://identifiers.org/go/GO:0009056"
+  reaction40 hypernym "http://identifiers.org/go/GO:0009056"
+  reaction41 hypernym "http://identifiers.org/go/GO:0009056"
+  reaction42 hypernym "http://identifiers.org/go/GO:0009056"
+  reaction43 parthood "http://identifiers.org/go/GO:0009056"
+  reaction44 hypernym "http://identifiers.org/go/GO:0009056"
+  reaction45 hypernym "http://identifiers.org/go/GO:0009056"
+  reaction46 hypernym "http://identifiers.org/go/GO:0009056"
+  reaction47 hypernym "http://identifiers.org/go/GO:0009056"
+  reaction48 hypernym "http://identifiers.org/go/GO:0009056"
+  reaction49 hypernym "http://identifiers.org/go/GO:0009056"
+  reaction50 hypernym "http://identifiers.org/go/GO:0009056"
+  reaction51 hypernym "http://identifiers.org/go/GO:0009056"
+  reaction52 hypernym "http://identifiers.org/go/GO:0009056"
+  reaction53 hypernym "http://identifiers.org/go/GO:0032403"
+  SMAC_release hypernym "http://identifiers.org/reactome/REACT_1101"
+  Apo_formation hypernym "http://identifiers.org/go/GO:0006461"
+  Apo_formation version "http://identifiers.org/reactome/REACT_89"
+  CytC_release hypernym "http://identifiers.org/reactome/REACT_535"
 end
+
+Rehm2006_Caspase is "Rehm2006_Caspase"
+
+Rehm2006_Caspase model_entity_is "http://identifiers.org/biomodels.db/MODEL5073396359"
+Rehm2006_Caspase model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000256"
+Rehm2006_Caspase description "http://identifiers.org/pubmed/16932741"
+Rehm2006_Caspase taxon "http://identifiers.org/taxonomy/9606",
+                       "http://identifiers.org/bto/BTO:0000567"
+Rehm2006_Caspase hypernym "http://identifiers.org/go/GO:0006919",
+                          "http://identifiers.org/go/GO:0006915"

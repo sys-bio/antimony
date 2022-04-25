@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Cloutier2009_BrainEnergyMetabolism()
 
   // Compartments and Species:
@@ -12,7 +12,7 @@ model *Cloutier2009_BrainEnergyMetabolism()
   species $GLCc in Capillaries, $LACc in Capillaries, $CO2c in Capillaries;
   species $GLCe in Extracellular_space, $LACe in Extracellular_space, $GLUe in Extracellular_space;
   species $NAe in Extracellular_space, $O2a in Extracellular_space, $CO2a in Extracellular_space;
-  species $GLCa in Extracellular_space, $LACa in Extracellular_space, $NAn_ in Neurons;
+  species $GLCa in Extracellular_space, $LACa in Extracellular_space, $NAn in Neurons;
   species $GLCn in Neurons, $G6Pn in Neurons, $F6Pn in Neurons, $GAPn in Neurons;
   species $PEPn in Neurons, $PYRn in Neurons, $LACn in Neurons, $NADHn in Neurons;
   species $ATPn in Neurons, $PCrn in Neurons, $O2n in Neurons, $GLUn in Neurons;
@@ -20,9 +20,9 @@ model *Cloutier2009_BrainEnergyMetabolism()
   species $NADH_n_tot in Neurons, $AMPn in Neurons;
 
   // Assignment Rules:
-  Vg_leak_Na := Sm_g/Vg*(gg_NA/F)*(RT/F*ln(NAe/NAg) - Vm);
+  Vg_leak_Na := (Sm_g/Vg)*(gg_NA/F)*((RT/F)*ln(NAe/NAg) - Vm);
   Veg_GLU := Vmax_eg_GLU*(GLUe/(GLUe + Km_GLU));
-  Vg_pump := Sm_g/Vg*kpump*ATPg*NAg*(1 + ATPg/Km_pump)^-1;
+  Vg_pump := (Sm_g/Vg)*kpump*ATPg*NAg*(1 + ATPg/Km_pump)^-1;
   Vcg_GLC := Vm_cg_GLC*(GLCc/(GLCc + Km_cg_GLC) - GLCg/(GLCg + Km_cg_GLC));
   Veg_GLC := KO1*Vm_eg_GLC*(GLCe/(GLCe + Km_eg_GLC) - GLCg/(GLCg + Km_eg_GLC));
   Vg_hk := Vmax_g_hk*ATPg*(GLCg/(GLCg + Km_GLC))*(1 - 1/(1 + exp(-aG6P_inh_hk*1*(G6Pg - G6P_inh_hk))));
@@ -39,14 +39,14 @@ model *Cloutier2009_BrainEnergyMetabolism()
   Vg_ck := kfg_ck*PCrg*ADPg - krg_ck*CRg*ATPg;
   Vg_ATPase := Vmax_g_ATPase*(ATPg/(ATPg + 0.001));
   Vg_gs := Vmax_g_gs*(GLUg/(GLUg + Km_GLU))*(ATPg/(ATPg + Km_ATP));
-  dAMP_dATPg := (qak/2 + qak*(ATPtot/(ATPg*u_g^(1/2)))) - (1 + 0.5*u_g^(1/2));
-  Vcg_O2 := PScapg/Vg*(Ko2*(HbOP/O2c - 1)^(-1/nh_O2_model_parameters) - O2g);
+  dAMP_dATPg := qak/2 + qak*(ATPtot/(ATPg*u_g^(1/2))) - (1 + 0.5*u_g^(1/2));
+  Vcg_O2 := (PScapg/Vg)*(Ko2*(HbOP/O2c - 1)^(-1/nh_O2_model_parameters) - O2g);
   NADg := NADH_g_tot - NADHg;
-  ADPg := ATPg/2*(-qak + (qak^2 + 4*qak*(ATPtot/ATPg - 1))^(1/2));
+  ADPg := (ATPg/2)*(-qak + (qak^2 + 4*qak*(ATPtot/ATPg - 1))^(1/2));
   CRg := PCrg_tot - PCrg;
   AMPg := ATPtot - (ATPg + ADPg);
   Vc_O2 := 2*(Fin_t/Vc)*(O2a - O2c);
-  Vcn_O2 := PScapn/Vn*(Ko2*(HbOP/O2c - 1)^(-1/nh_O2_Vcn_O2) - O2n);
+  Vcn_O2 := (PScapn/Vn)*(Ko2*(HbOP/O2c - 1)^(-1/nh_O2_Vcn_O2) - O2n);
   Vc_GLC := 2*(Fin_t/Vc)*(GLCa - GLCc);
   Vce_GLC := Vm_ce_GLC*(GLCc/(GLCc + Km_ce_GLC) - GLCe/(GLCe + Km_ce_GLC));
   Vc_LAC := 2*(Fin_t/Vc)*(LACa - LACc);
@@ -57,9 +57,9 @@ model *Cloutier2009_BrainEnergyMetabolism()
   V_en_GLC := Vm_en_GLC*(GLCe/(GLCe + Km_en_GLC) - GLCn/(GLCn + Km_en_GLC));
   Vne_LAC := Vmax_ne_LAC*(LACn/(LACn + Km_ne_LAC) - LACe/(LACe + Km_ne_LAC));
   Vn_stim_GLU := Vn_stim*R_GLU_NA*KO2*(GLUn/(GLUn + Km_GLU));
-  Vn_leak_Na := Sm_n/Vn*(gn_NA/F)*(RT/F*ln(NAe/NAn_) - Vm);
+  Vn_leak_Na := (Sm_n/Vn)*(gn_NA/F)*((RT/F)*ln(NAe/NAn) - Vm);
   Vn_stim := v_stim;
-  Vn_pump := Sm_n/Vn*kpump*ATPn*NAn_*(1 + ATPn/Km_pump)^-1;
+  Vn_pump := (Sm_n/Vn)*kpump*ATPn*NAn*(1 + ATPn/Km_pump)^-1;
   Vn_hk := Vmax_n_hk*ATPn*(GLCn/(GLCn + Km_GLC))*(1 - 1/(1 + exp(-aG6P_inh_hk*1*(G6Pn - G6P_inh_hk))));
   Vn_pgi := Vmaxf_n_pgi*(G6Pn/(G6Pn + Km_G6P)) - Vmaxr_n_pgi*(F6Pn/(F6Pn + Km_F6P_pgi));
   Vn_pfk := kn_pfk*ATPn*(F6Pn/(F6Pn + Km_F6P_pfk))*(1 + (ATPn/Ki_ATP)^nH)^-1;
@@ -69,33 +69,33 @@ model *Cloutier2009_BrainEnergyMetabolism()
   Vn_mito := Vmax_n_mito*(O2n/(O2n + Km_O2))*(ADPn/(ADPn + Km_ADP))*(PYRn/(PYRn + Km_PYR))*(1 - 1/(1 + exp(-aATP_mito*1*(ATPn/ADPn - 1*rATP_mito))));
   Vn_ck := kfn_ck*PCrn*ADPn - krn_ck*CRn*ATPn;
   Vn_ATPase := Vmax_n_ATPase*(ATPn/(ATPn + 0.001));
-  dAMP_dATPn := (qak/2 + qak*(ATPtot/(ATPn*u_n^(1/2)))) - (1 + 0.5*u_n^(1/2));
-  ADPn := ATPn/2*(-qak + (qak^2 + 4*qak*(ATPtot/ATPn - 1))^(1/2));
+  dAMP_dATPn := qak/2 + qak*(ATPtot/(ATPn*u_n^(1/2))) - (1 + 0.5*u_n^(1/2));
+  ADPn := (ATPn/2)*(-qak + (qak^2 + 4*qak*(ATPtot/ATPn - 1))^(1/2));
   CRn := PCrn_tot - PCrn;
   NADn := NADH_n_tot - NADHn;
   AMPn := ATPtot - (ATPn + ADPn);
   u_n := qak^2 + 4*qak*(ATPtot/ATPn - 1);
   u_g := qak^2 + 4*qak*(ATPtot/ATPg - 1);
-  Fin_t := CBF0_Fin_t + (stim*CBF0_Fin_t*deltaf*(1/(1 + exp(1*-sr*(time - ((to + t1) - 3))))) - stim*CBF0_Fin_t*deltaf*(1/(1 + exp(1*-sr*(time - (to + tend + t1 + 3))))));
+  Fin_t := CBF0_Fin_t + (stim*CBF0_Fin_t*deltaf*(1/(1 + exp(1*-sr*(time - (to + t1 - 3))))) - stim*CBF0_Fin_t*deltaf*(1/(1 + exp(1*-sr*(time - (to + tend + t1 + 3))))));
   Fout_t := CBF0_model_parameters*(((Vv/Vv0)^2 + tv*(Vv/Vv0)^-0.5*(Fin_t/Vv0))/(1 + CBF0_model_parameters*tv*(Vv/Vv0)^-0.5*(1/Vv0)));
   v_stim := stim*(v1_n + v2_n*((time - to)/t_n_stim)*exp(-((time - to)*(unitpulseSB/t_n_stim))))*unitpulseSB;
   deltaVt_GLY := 1 + stim*delta_GLY*KO3*(1/(1 + exp(1*-sr_GLY*(time - (to + to_GLY)))))*(1 - unitstepSB2);
-  unitstepSB2 := piecewise(1, time - (tend_GLY + to + to_GLY) >= 0, 0);
+  unitstepSB2 := piecewise(1, (time - (tend_GLY + to + to_GLY)) >= 0, 0);
   BOLD := Vv0*((k1 + k2)*(1 - dHb/dHb0) - (k2 + k3)*(1 - Vv/Vv0));
-  unitpulseSB := piecewise(1, time >= to && time <= to + tend, 0);
-  unitstepSB := piecewise(1, time - (tend + to) >= 0, 0);
+  unitpulseSB := piecewise(1, (time >= to) && (time <= (to + tend)), 0);
+  unitstepSB := piecewise(1, (time - (tend + to)) >= 0, 0);
 
   // Rate Rules:
-  NAg' = (Vg_leak_Na + 3*Veg_GLU) - 3*Vg_pump;
-  GLCg' = (Vcg_GLC + Veg_GLC) - Vg_hk;
-  G6Pg' = (Vg_hk + Vg_glyp) - (Vg_pgi + Vg_glys);
+  NAg' = Vg_leak_Na + 3*Veg_GLU - 3*Vg_pump;
+  GLCg' = Vcg_GLC + Veg_GLC - Vg_hk;
+  G6Pg' = Vg_hk + Vg_glyp - (Vg_pgi + Vg_glys);
   F6Pg' = Vg_pgi - Vg_pfk;
   GAPg' = 2*Vg_pfk - Vg_pgk;
   PEPg' = Vg_pgk - Vg_pk;
   PYRg' = Vg_pk - (Vg_ldh + Vg_mito);
   LACg' = Vg_ldh - (Vge_LAC + Vgc_LAC);
   NADHg' = Vg_pgk - (Vg_ldh + Vg_mito);
-  ATPg' = ((Vg_pgk + Vg_pk + nOP*Vg_mito + Vg_ck) - (Vg_hk + Vg_pfk + Vg_ATPase + Vg_pump + Vg_gs))*(1 - dAMP_dATPg)^-1;
+  ATPg' = (Vg_pgk + Vg_pk + nOP*Vg_mito + Vg_ck - (Vg_hk + Vg_pfk + Vg_ATPase + Vg_pump + Vg_gs))*(1 - dAMP_dATPg)^-1;
   PCrg' = -Vg_ck;
   O2g' = Vcg_O2 - NAero*Vg_mito;
   GLYg' = Vg_glys - Vg_glyp;
@@ -103,11 +103,11 @@ model *Cloutier2009_BrainEnergyMetabolism()
   O2c' = Vc_O2 - (Vcn_O2*(1/Rcn) + Vcg_O2*(1/Rcg));
   GLCc' = Vc_GLC - (Vce_GLC*(1/Rce) + Vcg_GLC*(1/Rcg));
   LACc' = Vc_LAC + Vec_LAC*(1/Rce) + Vgc_LAC*(1/Rcg);
-  CO2c' = (Vnc_CO2*(1/Rcn) + Vgc_CO2*(1/Rcg)) - Vc_CO2;
+  CO2c' = Vnc_CO2*(1/Rcn) + Vgc_CO2*(1/Rcg) - Vc_CO2;
   GLCe' = Vce_GLC - (Veg_GLC*(1/Reg) + V_en_GLC*(1/Ren));
-  LACe' = (Vne_LAC*(1/Ren) + Vge_LAC*(1/Reg)) - Vec_LAC;
+  LACe' = Vne_LAC*(1/Ren) + Vge_LAC*(1/Reg) - Vec_LAC;
   GLUe' = Vn_stim_GLU*(1/Ren) - Veg_GLU*(1/Reg);
-  NAn_' = (Vn_leak_Na + Vn_stim) - 3*Vn_pump;
+  NAn' = Vn_leak_Na + Vn_stim - 3*Vn_pump;
   GLCn' = V_en_GLC - Vn_hk;
   G6Pn' = Vn_hk - Vn_pgi;
   F6Pn' = Vn_pgi - Vn_pfk;
@@ -116,7 +116,7 @@ model *Cloutier2009_BrainEnergyMetabolism()
   PYRn' = Vn_pk - (Vn_ldh + Vn_mito);
   LACn' = Vn_ldh - Vne_LAC;
   NADHn' = Vn_pgk - (Vn_ldh + Vn_mito);
-  ATPn' = ((Vn_pgk + Vn_pk + nOP*Vn_mito + Vn_ck) - (Vn_hk + Vn_pfk + Vn_ATPase + Vn_pump))*(1 - dAMP_dATPn)^-1;
+  ATPn' = (Vn_pgk + Vn_pk + nOP*Vn_mito + Vn_ck - (Vn_hk + Vn_pfk + Vn_ATPase + Vn_pump))*(1 - dAMP_dATPn)^-1;
   PCrn' = -Vn_ck;
   O2n' = Vcn_O2 - NAero*Vn_mito;
   GLUn' = Vg_gs*(1/Rng) - Vn_stim_GLU;
@@ -152,7 +152,7 @@ model *Cloutier2009_BrainEnergyMetabolism()
   CO2a = 1.2;
   GLCa = 4.8;
   LACa = 0.313;
-  NAn_ = 15.533;
+  NAn = 15.533;
   GLCn = 0.2633;
   G6Pn = 0.7275;
   F6Pn = 0.1091;
@@ -193,7 +193,7 @@ model *Cloutier2009_BrainEnergyMetabolism()
   F = 96500;
   RT = 2577340;
   Vm = -70;
-  kpump = 3.17e-007;
+  kpump = 3.17e-07;
   Km_pump = 0.4243;
   Vm_en_GLC = 0.50417;
   Km_en_GLC = 5.32;
@@ -269,7 +269,7 @@ model *Cloutier2009_BrainEnergyMetabolism()
   Km_G6P_glys = 0.5;
   aGLY_inh = 20;
   GLY_inh = 4.2;
-  Vmax_glyp = 4.922e-005;
+  Vmax_glyp = 4.922e-05;
   Km_GLY = 1;
   stim = 1;
   delta_GLY = 62;
@@ -325,4 +325,73 @@ model *Cloutier2009_BrainEnergyMetabolism()
   nh_O2_model_parameters is "nh_O2_2";
   CBF0_Fin_t is "CBF0";
   CBF0_model_parameters is "CBF0_2";
+
+  // CV terms:
+  Astrocytes identity "http://identifiers.org/bto/BTO:0000099"
+  Capillaries identity "http://identifiers.org/bto/BTO:0002045"
+  Extracellular_space identity "http://identifiers.org/go/GO:0005615"
+  Neurons identity "http://identifiers.org/bto/BTO:0000938"
+  NAg identity "http://identifiers.org/chebi/CHEBI:29101"
+  GLCg identity "http://identifiers.org/chebi/CHEBI:17234"
+  G6Pg identity "http://identifiers.org/chebi/CHEBI:4170"
+  F6Pg identity "http://identifiers.org/chebi/CHEBI:57579"
+  GAPg identity "http://identifiers.org/chebi/CHEBI:17138"
+  PEPg identity "http://identifiers.org/chebi/CHEBI:44897"
+  PYRg identity "http://identifiers.org/chebi/CHEBI:15361"
+  LACg identity "http://identifiers.org/chebi/CHEBI:422"
+  NADHg identity "http://identifiers.org/chebi/CHEBI:16908"
+  ATPg identity "http://identifiers.org/chebi/CHEBI:15422"
+  PCrg identity "http://identifiers.org/chebi/CHEBI:17287"
+  O2g identity "http://identifiers.org/chebi/CHEBI:26689"
+  GLYg identity "http://identifiers.org/chebi/CHEBI:28087"
+  GLUg identity "http://identifiers.org/chebi/CHEBI:18237"
+  NADg identity "http://identifiers.org/chebi/CHEBI:15846"
+  NADH_g_tot identity "http://identifiers.org/chebi/CHEBI:16908"
+  ADPg identity "http://identifiers.org/chebi/CHEBI:16761"
+  CRg identity "http://identifiers.org/chebi/CHEBI:16919"
+  PCrg_tot identity "http://identifiers.org/chebi/CHEBI:17287"
+  AMPg identity "http://identifiers.org/chebi/CHEBI:16027"
+  O2c identity "http://identifiers.org/chebi/CHEBI:26689"
+  GLCc identity "http://identifiers.org/chebi/CHEBI:17234"
+  LACc identity "http://identifiers.org/chebi/CHEBI:422"
+  CO2c identity "http://identifiers.org/chebi/CHEBI:16526"
+  GLCe identity "http://identifiers.org/chebi/CHEBI:17234"
+  LACe identity "http://identifiers.org/chebi/CHEBI:422"
+  GLUe identity "http://identifiers.org/chebi/CHEBI:18237"
+  NAe identity "http://identifiers.org/chebi/CHEBI:29101"
+  O2a identity "http://identifiers.org/chebi/CHEBI:26689"
+  CO2a identity "http://identifiers.org/chebi/CHEBI:16526"
+  GLCa identity "http://identifiers.org/chebi/CHEBI:17234"
+  LACa identity "http://identifiers.org/chebi/CHEBI:422"
+  NAn identity "http://identifiers.org/chebi/CHEBI:29101"
+  GLCn identity "http://identifiers.org/chebi/CHEBI:17234"
+  G6Pn identity "http://identifiers.org/chebi/CHEBI:4170"
+  F6Pn identity "http://identifiers.org/chebi/CHEBI:57579"
+  GAPn identity "http://identifiers.org/chebi/CHEBI:17138"
+  PEPn identity "http://identifiers.org/chebi/CHEBI:18021"
+  PYRn identity "http://identifiers.org/chebi/CHEBI:15361"
+  LACn identity "http://identifiers.org/chebi/CHEBI:422"
+  NADHn identity "http://identifiers.org/chebi/CHEBI:16908"
+  ATPn identity "http://identifiers.org/chebi/CHEBI:15422"
+  PCrn identity "http://identifiers.org/chebi/CHEBI:17287"
+  O2n identity "http://identifiers.org/chebi/CHEBI:26689"
+  GLUn identity "http://identifiers.org/chebi/CHEBI:18237"
+  ADPn identity "http://identifiers.org/chebi/CHEBI:16761"
+  CRn identity "http://identifiers.org/chebi/CHEBI:16919"
+  PCrn_tot identity "http://identifiers.org/chebi/CHEBI:17287"
+  NADn identity "http://identifiers.org/chebi/CHEBI:15846"
+  NADH_n_tot identity "http://identifiers.org/chebi/CHEBI:16908"
+  AMPn identity "http://identifiers.org/chebi/CHEBI:16027"
 end
+
+Cloutier2009_BrainEnergyMetabolism is "Cloutier2009 - Brain Energy Metabolism"
+
+Cloutier2009_BrainEnergyMetabolism model_entity_is "http://identifiers.org/biomodels.db/MODEL1006230041"
+Cloutier2009_BrainEnergyMetabolism model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000554"
+Cloutier2009_BrainEnergyMetabolism description "http://identifiers.org/pubmed/19396534"
+Cloutier2009_BrainEnergyMetabolism origin "http://identifiers.org/biomodels.db/MODEL1411210000",
+                                          "http://identifiers.org/pubmed/16260743"
+Cloutier2009_BrainEnergyMetabolism taxon "http://identifiers.org/taxonomy/10116",
+                                         "http://identifiers.org/taxonomy/9606"
+Cloutier2009_BrainEnergyMetabolism hypernym "http://identifiers.org/go/GO:0006091"
+Cloutier2009_BrainEnergyMetabolism container "http://identifiers.org/bto/BTO:0000142"

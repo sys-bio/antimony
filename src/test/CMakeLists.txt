@@ -5,16 +5,10 @@
 # 
 include(${CMAKE_SOURCE_DIR}/common.cmake)
 
-file(GLOB C_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.c)
-
-foreach(c_file ${C_FILES})
-	set_source_files_properties(${c_file} PROPERTIES LANGUAGE CXX)
-endforeach()
-
 file(GLOB CPP_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp )
 file(GLOB H_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.h )
 
-set(TEST_FILES ${CPP_FILES} ${C_FILES} ${H_FILES})
+set(TEST_FILES ${CPP_FILES} ${H_FILES})
 
 include_directories(BEFORE ${CMAKE_SOURCE_DIR}/src)
 if (EXTRA_INCLUDE_DIRS)

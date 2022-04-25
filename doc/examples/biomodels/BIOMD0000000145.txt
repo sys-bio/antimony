@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *BIOMD0000000145()
 
   // Compartments and Species:
@@ -10,7 +10,7 @@ model *BIOMD0000000145()
   PLC := Cplc_total - APLC;
   DG := IP3;
   Raplc := APLC/(Kp + APLC);
-  Rpkc := (DG/(Kd + DG)*Ca_Cyt)/(Kr + Ca_Cyt);
+  Rpkc := (DG/(Kd + DG))*Ca_Cyt/(Kr + Ca_Cyt);
   Rgalpha_gtp := Galpha_GTP^n/(Kg^n + Galpha_GTP^n);
   Rdg := DG^m/(Kd^m + DG^m);
   Rip3 := IP3^3/(Ks^3 + IP3^3);
@@ -27,9 +27,9 @@ model *BIOMD0000000145()
   R6: APLC => ; Cytosol*k5*APLC;
   R7:  => IP3; Cytosol*k6*APLC;
   R8: IP3 => ; Cytosol*k7*IP3;
-  R9: 0.001Ca_ER -> 0.01Ca_Cyt; ER*(k8*Rip3*Rer - k9*Rcyt1);
-  R10: 0.05Ca_Cyt => ; Cytosol*k10*Rcyt2;
-  R11:  => 0.05Ca_Cyt; Cytosol*k11;
+  R9: 0.001 Ca_ER -> 0.01 Ca_Cyt; ER*(k8*Rip3*Rer - k9*Rcyt1);
+  R10: 0.05 Ca_Cyt => ; Cytosol*k10*Rcyt2;
+  R11:  => 0.05 Ca_Cyt; Cytosol*k11;
 
   // Species initializations:
   Galpha_GTP = 1;
@@ -81,4 +81,40 @@ model *BIOMD0000000145()
   Ca_ER is "Calcium";
   Ca_Cyt is "Calcium";
   DG is "Diacylglycerol";
+
+  // CV terms:
+  Cytosol identity "http://identifiers.org/go/GO:0005829"
+  ER identity "http://identifiers.org/go/GO:0005783"
+  Galpha_GTP part "http://identifiers.org/chebi/CHEBI:15996",
+                  "http://identifiers.org/uniprot/P29992"
+  APLC hypernym "http://identifiers.org/uniprot/Q9NQ66"
+  IP3 identity "http://identifiers.org/chebi/CHEBI:16595"
+  Ca_ER identity "http://identifiers.org/chebi/CHEBI:29108"
+  Ca_Cyt identity "http://identifiers.org/chebi/CHEBI:29108"
+  PLC hypernym "http://identifiers.org/uniprot/Q9NQ66"
+  DG identity "http://identifiers.org/chebi/CHEBI:18035"
+  R1 hypernym "http://identifiers.org/go/GO:0006417"
+  R2 hypernym "http://identifiers.org/go/GO:0045745"
+  R3 hypernym "http://identifiers.org/go/GO:0003924"
+  R4 hypernym "http://identifiers.org/go/GO:0045744"
+  R5 hypernym "http://identifiers.org/go/GO:0016004"
+  R6 hypernym "http://identifiers.org/go/GO:0004859"
+  R7 hypernym "http://identifiers.org/go/GO:0007200",
+              "http://identifiers.org/go/GO:0004435"
+  R7 identity "http://identifiers.org/ec-code/3.1.4.11"
+  R8 hypernym "http://identifiers.org/go/GO:0032961"
+  R9 hypernym "http://identifiers.org/go/GO:0006816"
+  R10 hypernym "http://identifiers.org/go/GO:0006816"
+  R11 hypernym "http://identifiers.org/go/GO:0006816"
 end
+
+BIOMD0000000145 is "Wang2007 - ATP induced intracellular Calcium Oscillation"
+
+BIOMD0000000145 model_entity_is "http://identifiers.org/biomodels.db/MODEL8342350003"
+BIOMD0000000145 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000145"
+BIOMD0000000145 description "http://identifiers.org/pubmed/17188305"
+BIOMD0000000145 origin "http://identifiers.org/pubmed/1647879"
+BIOMD0000000145 property "http://identifiers.org/mamo/MAMO_0000046"
+BIOMD0000000145 part "http://identifiers.org/kegg.pathway/hsa04020",
+                     "http://identifiers.org/go/GO:0051482"
+BIOMD0000000145 taxon "http://identifiers.org/taxonomy/131567"

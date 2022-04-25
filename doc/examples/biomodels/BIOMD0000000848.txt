@@ -1,0 +1,229 @@
+// Created by libAntimony v2.13.0
+function Function_for_Uninfected_To_Refractory_IFN(phi_1, T, F_1, F_2)
+  phi_1*T*(F_1 + F_2);
+end
+
+Function_for_Uninfected_To_Refractory_IFN is "Function_for_Uninfected_To_Refractory_IFN"
+
+function Function_for_Uninfected_Death(d, T)
+  d*(1 - T);
+end
+
+Function_for_Uninfected_Death is "Function_for_Uninfected_Death"
+
+function Function_for_Uninfected_Infection(beta, V, T)
+  beta*V*T;
+end
+
+Function_for_Uninfected_Infection is "Function_for_Uninfected_Infection"
+
+function Function_for_Infected_Killing_Immune(mu_1, s_1, F_1, s_2, F_2, N, mu_2, s_1_prime, s_2_prime, E, I)
+  (mu_1*(1 + s_1*F_1 + s_2*F_2)*N + mu_2*(1 + s_1_prime*F_1 + s_2_prime*F_2)*E)*I;
+end
+
+Function_for_Infected_Killing_Immune is "Function_for_Infected_Killing_Immune"
+
+function Function_for_IFN_AB_Production_Infected(p_1, I)
+  p_1*I;
+end
+
+Function_for_IFN_AB_Production_Infected is "Function_for_IFN_AB_Production_Infected"
+
+function Function_for_HBV_S_CTL_Proliferation_Antigen(alpha, I, E)
+  alpha*I*E;
+end
+
+Function_for_HBV_S_CTL_Proliferation_Antigen is "Function_for_HBV_S_CTL_Proliferation_Antigen"
+
+function Function_for_Antibody_Turnover(d_a, A)
+  d_a*(1 - A);
+end
+
+Function_for_Antibody_Turnover is "Function_for_Antibody_Turnover"
+
+function Function_for_IFN_G_Production_CTLs(p_2, E)
+  p_2*E;
+end
+
+Function_for_IFN_G_Production_CTLs is "Function_for_IFN_G_Production_CTLs"
+
+function Function_for_NK_Cells_Proliferaton(N)
+  N*(1 - N);
+end
+
+Function_for_NK_Cells_Proliferaton is "Function_for_NK_Cells_Proliferaton"
+
+function Function_for_HBV_S_CTL_Proliferation(r_e, E)
+  r_e*E*(1 - E);
+end
+
+Function_for_HBV_S_CTL_Proliferation is "Function_for_HBV_S_CTL_Proliferation"
+
+function Function_for_Antibody_Production_Virus(q, V)
+  q*V;
+end
+
+Function_for_Antibody_Production_Virus is "Function_for_Antibody_Production_Virus"
+
+function Function_for_Virus_Production(I, p, s_3, F_1, s_4, F_2)
+  I*p/(1 + s_3*F_1 + s_4*F_2);
+end
+
+Function_for_Virus_Production is "Function_for_Virus_Production"
+
+function Function_for_NK_Cells_Production_IFN(q_1, F_1, q_2, F_2, N)
+  (q_1*F_1 + q_2*F_2)*N;
+end
+
+Function_for_NK_Cells_Production_IFN is "Function_for_NK_Cells_Production_IFN"
+
+function Function_for_Infected_To_Refractory(psi_2, I, F_2)
+  psi_2*I*F_2;
+end
+
+Function_for_Infected_To_Refractory is "Function_for_Infected_To_Refractory"
+
+function Function_for_IFN_G_Production_NK(p_3, N)
+  p_3*N;
+end
+
+Function_for_IFN_G_Production_NK is "Function_for_IFN_G_Production_NK"
+
+
+model *FatehiChenar2018___Mathematical_model_of_immune_response_to_hepatitis_B()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species T in compartment_, I in compartment_, F_1 in compartment_, F_2 in compartment_;
+  species N in compartment_, E in compartment_, R in compartment_, V in compartment_;
+  species A in compartment_;
+
+  // Reactions:
+  Uninfected_Death:  => T; compartment_*Function_for_Uninfected_Death(d, T);
+  Uninfected_Infection: T => I; compartment_*Function_for_Uninfected_Infection(beta, V, T);
+  Refractory_To_Uninfected: R => T; compartment_*rho*R;
+  Uninfected_To_Refractory_IFN: T => R; compartment_*Function_for_Uninfected_To_Refractory_IFN(psi_1, T, F_1, F_2);
+  Infected_Death: I => ; compartment_*delta*I;
+  Infected_Killing_Immune: I => ; compartment_*Function_for_Infected_Killing_Immune(mu_1, s_1, F_1, s_2, F_2, N, mu_2, s_1_prime, s_2_prime, E, I);
+  IFN_AB_Production_Infected:  => F_1; compartment_*Function_for_IFN_AB_Production_Infected(p_1, I);
+  IFN_AB_Degradation: F_1 => ; compartment_*delta_1*F_1;
+  IFN_G_Production_CTLs:  => F_2; compartment_*Function_for_IFN_G_Production_CTLs(p_2, E);
+  IFN_G_Production_NK:  => F_2; compartment_*Function_for_IFN_G_Production_NK(p_3, N);
+  IFN_G_Degradation: F_2 => ; compartment_*delta_2*F_2;
+  NK_Cells_Proliferaton:  => N; compartment_*Function_for_NK_Cells_Proliferaton(N);
+  NK_Cells_Production_IFN:  => N; compartment_*Function_for_NK_Cells_Production_IFN(q_1, F_1, q_2, F_2, N);
+  HBV_S_CTL_Proliferation:  => E; compartment_*Function_for_HBV_S_CTL_Proliferation(r_e, E);
+  HBV_S_CTL_Proliferation_Antigen:  => E; compartment_*Function_for_HBV_S_CTL_Proliferation_Antigen(alpha, I, E);
+  Infected_To_Refractory: I => R; compartment_*Function_for_Infected_To_Refractory(psi_2, I, F_2);
+  Virus_Production:  => V; compartment_*Function_for_Virus_Production(I, p, s_3, F_1, s_4, F_2);
+  Virus_Clearance_Natural: V => ; compartment_*c*V;
+  Virus_Clearance_Antibodies: V + A => ; compartment_*k*V*A;
+  Antibody_Turnover:  => A; compartment_*Function_for_Antibody_Turnover(d_a, A);
+  Antibody_Production_Virus:  => A; compartment_*Function_for_Antibody_Production_Virus(q, V);
+
+  // Species initializations:
+  T = 0.9;
+  I = 0;
+  F_1 = 0;
+  F_2 = 0;
+  N = 0.1;
+  E = 0.2;
+  R = 0;
+  V = 0.4;
+  A = 0.1;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  d = 0.003;
+  beta = 7;
+  rho = 5;
+  psi_1 = 14;
+  delta = 0.56;
+  mu_1 = 5;
+  s_1 = 1.5;
+  s_2 = 0.6;
+  mu_2 = 0.14;
+  s_1_prime = 1.9;
+  s_2_prime = 2;
+  psi_2 = 21;
+  p_1 = 1;
+  delta_1 = 4.9;
+  p_2 = 0.5;
+  p_3 = 3;
+  delta_2 = 5.16;
+  q_1 = 0.8;
+  q_2 = 0.6;
+  r_e = 0.5;
+  alpha = 1;
+  p = 20;
+  s_3 = 1.7;
+  s_4 = 1;
+  c = 0.67;
+  k = 8;
+  d_a = 0.332;
+  q = 5;
+
+  // Other declarations:
+  const compartment_, d, beta, rho, psi_1, delta, mu_1, s_1, s_2, mu_2, s_1_prime;
+  const s_2_prime, psi_2, p_1, delta_1, p_2, p_3, delta_2, q_1, q_2, r_e;
+  const alpha, p, s_3, s_4, c, k, d_a, q;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+
+  // CV terms:
+  compartment_ hypernym "http://identifiers.org/ncit/C13041"
+  T identity "http://identifiers.org/cl/CL:0000182"
+  I part "http://identifiers.org/ncit/C14215"
+  I identity "http://identifiers.org/bto/BTO:0000152"
+  F_1 identity "http://identifiers.org/pr/PR:000025848"
+  F_2 identity "http://identifiers.org/pr/PR:000024990"
+  N identity "http://identifiers.org/cl/CL:0000623"
+  E hypernym "http://identifiers.org/cl/CL:0000910"
+  R identity "http://identifiers.org/cl/CL:0000182"
+  R property "http://identifiers.org/ncit/C38014"
+  V identity "http://identifiers.org/ncit/C14215"
+  A identity "http://identifiers.org/ncit/C62795"
+  Uninfected_Death identity "http://identifiers.org/go/GO:0008219"
+  Uninfected_Infection hypernym "http://identifiers.org/go/GO:0046718"
+  Refractory_To_Uninfected property "http://identifiers.org/efo/0001460"
+  Refractory_To_Uninfected property "http://identifiers.org/ncit/C75958"
+  Uninfected_To_Refractory_IFN property "http://identifiers.org/ncit/C75958"
+  Uninfected_To_Refractory_IFN property "http://identifiers.org/ncit/C20493"
+  Uninfected_To_Refractory_IFN property "http://identifiers.org/ncit/C38014"
+  Infected_Death identity "http://identifiers.org/go/GO:0008219"
+  Infected_Killing_Immune property "http://identifiers.org/go/GO:0006955"
+  Infected_Killing_Immune property "http://identifiers.org/go/GO:0001906"
+  IFN_AB_Production_Infected identity "http://identifiers.org/go/GO:0032606"
+  IFN_AB_Degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+  IFN_G_Production_CTLs hypernym "http://identifiers.org/go/GO:0032609"
+  IFN_G_Production_NK hypernym "http://identifiers.org/go/GO:0032609"
+  IFN_G_Degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+  NK_Cells_Proliferaton identity "http://identifiers.org/go/GO:0001787"
+  NK_Cells_Production_IFN hypernym "http://identifiers.org/go/GO:0032819"
+  HBV_S_CTL_Proliferation hypernym "http://identifiers.org/go/GO:0045065"
+  HBV_S_CTL_Proliferation_Antigen hypernym "http://identifiers.org/go/GO:0045065"
+  Infected_To_Refractory property "http://identifiers.org/ncit/C38014"
+  Infected_To_Refractory property "http://identifiers.org/ncit/C75958"
+  Virus_Production hypernym "http://identifiers.org/go/GO:0046753"
+  Virus_Clearance_Natural hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Virus_Clearance_Antibodies property "http://identifiers.org/ncit/C62795"
+  Virus_Clearance_Antibodies property "http://identifiers.org/ncit/C95533"
+  Antibody_Turnover hypernym "http://identifiers.org/go/GO:0048305"
+  Antibody_Production_Virus identity "http://identifiers.org/go/GO:0048305"
+end
+
+FatehiChenar2018___Mathematical_model_of_immune_response_to_hepatitis_B is "FatehiChenar2018 - Mathematical model of immune response to hepatitis B"
+
+FatehiChenar2018___Mathematical_model_of_immune_response_to_hepatitis_B description "http://identifiers.org/pubmed/29574141"
+FatehiChenar2018___Mathematical_model_of_immune_response_to_hepatitis_B model_entity_is "http://identifiers.org/biomodels.db/MODEL1911110001",
+                                                                                        "http://identifiers.org/biomodels.db/BIOMD0000000848"
+FatehiChenar2018___Mathematical_model_of_immune_response_to_hepatitis_B property "http://identifiers.org/go/GO:0006955"
+FatehiChenar2018___Mathematical_model_of_immune_response_to_hepatitis_B property "http://identifiers.org/mamo/MAMO_0000046"
+FatehiChenar2018___Mathematical_model_of_immune_response_to_hepatitis_B property "http://identifiers.org/ncit/C3097"

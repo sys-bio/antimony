@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *MODEL1305030001()
 
   // Compartments and Species:
@@ -7,10 +7,10 @@ model *MODEL1305030001()
   species $y4 in cell, $y5 in cell, $y6 in cell;
 
   // Reactions:
-  v1: $y1 + x2 -> x1 + x3; (v1_e1*(v1_p1*y1*x2 - x1*x3))/(1 + y1 + x2 + x1 + x3 + y1*x2 + x1*x3);
-  v2: $y4 + x3 -> $y5 + x2; (v2_e2*(v2_p2*y4*x3 - y5*x2))/(1 + x3 + x2 + y4 + y5 + x3*y4 + x2*y5);
-  v3: x1 -> $y2; (v3_e3*(v3_p3*x1 - y2))/(1 + x1 + y2);
-  v4: x1 -> $y3; (v4_e4*(v4_p4*x1 - y3))/(1 + x1 + y3);
+  v1: $y1 + x2 -> x1 + x3; v1_e1*(v1_p1*y1*x2 - x1*x3)/(1 + y1 + x2 + x1 + x3 + y1*x2 + x1*x3);
+  v2: $y4 + x3 -> $y5 + x2; v2_e2*(v2_p2*y4*x3 - y5*x2)/(1 + x3 + x2 + y4 + y5 + x3*y4 + x2*y5);
+  v3: x1 -> $y2; v3_e3*(v3_p3*x1 - y2)/(1 + x1 + y2);
+  v4: x1 -> $y3; v4_e4*(v4_p4*x1 - y3)/(1 + x1 + y3);
   v5: x3 -> $y6; v5_e5*v5_p5*x3;
 
   // Species initializations:
@@ -56,4 +56,33 @@ model *MODEL1305030001()
   unit substance = dimensionless;
   unit time_unit = dimensionless;
   unit volume = dimensionless;
+
+  // SBO terms:
+  cell.sboTerm = 290
+  x1.sboTerm = 247
+  x2.sboTerm = 247
+  x3.sboTerm = 247
+  y1.sboTerm = 247
+  y2.sboTerm = 247
+  y3.sboTerm = 247
+  y4.sboTerm = 247
+  y5.sboTerm = 247
+  y6.sboTerm = 247
+  v1.sboTerm = 176
+  v2.sboTerm = 176
+  v3.sboTerm = 176
+  v4.sboTerm = 176
+  v5.sboTerm = 176
+
+  // CV terms:
+  cell identity "http://identifiers.org/go/GO:0005623"
 end
+
+MODEL1305030001 is "Smallbone2013 - Metabolic Control Analysis - Example 2"
+
+MODEL1305030001 model_entity_is "http://identifiers.org/biomodels.db/MODEL1305030001"
+MODEL1305030001 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000455"
+MODEL1305030001 description "http://arxiv.org/pdf/1305.6449v1.pdf"
+MODEL1305030001 taxon "http://identifiers.org/taxonomy/131567"
+MODEL1305030001 property "http://identifiers.org/mamo/MAMO_0000046"
+MODEL1305030001 hypernym "http://identifiers.org/go/GO:0051098"

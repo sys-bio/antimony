@@ -31,16 +31,19 @@ set(SETUP_PY    "${CMAKE_CURRENT_BINARY_DIR}/setup.py")
 
 configure_file(${SETUP_PY_IN} ${SETUP_PY})
 
+#Create init.py from __init__.py.in
+set(INIT_PY_IN "${CMAKE_CURRENT_SOURCE_DIR}/__init__.py.in")
+set(INIT_PY    "${CMAKE_CURRENT_BINARY_DIR}/__init__.py")
+
+configure_file(${INIT_PY_IN} ${INIT_PY})
+
 
 
 ####################################################################
 #For installation, we can run setup.py for people automatically (on by default):
 
-file(GLOB win_dependencies "${CMAKE_SOURCE_DIR}/win32/*.dll")
-list(REMOVE_ITEM win_dependencies ${CMAKE_SOURCE_DIR}/win32/QtCore4.dll)
-list(REMOVE_ITEM win_dependencies ${CMAKE_SOURCE_DIR}/win32/QtGui4.dll)
 if (NOT WITH_STATIC_SBML)
-    list(APPEND win_dependencies ${LIBSBML_DLL})
+    file(GLOB win_dependencies "${CMAKE_SOURCE_DIR}/win32/${LIBSBML_DLL}")
 endif()
 
 #Create the 'libantimony.pth' file (which lets users 'import libantimony').
@@ -48,13 +51,15 @@ file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/libantimony.pth" "antimony\n")
 
 #All the files that need to be installed in the python library directory.
 file (GLOB antimony_python_files
-    ${CMAKE_SOURCE_DIR}/src/bindings/python/__init__.py
+    ${INIT_PY}
     ${CMAKE_CURRENT_BINARY_DIR}/antimony.py
     ${CMAKE_CURRENT_BINARY_DIR}/libantimony.pth
     ${CPACK_PACKAGE_DESCRIPTION_FILE}
     ${CPACK_RESOURCE_FILE_LICENSE}
     ${win_dependencies}
 )
+
+message(STATUS "  Using Python libraries                 = ${antimony_python_files}")
 
 
 if (PYTHON_SYSTEM_INSTALL)

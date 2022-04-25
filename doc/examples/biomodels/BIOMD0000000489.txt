@@ -1,11 +1,15 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 function function_2(k, Enzyme, Substrate, Km)
-  (k*Enzyme*Substrate)/(Km + Substrate);
+  k*Enzyme*Substrate/(Km + Substrate);
 end
+
+function_2 is "Modified Michaelis Menten"
 
 function function_1(k1, Enzyme, Substrate1, Substrate2, k2, Product)
   k1*Enzyme*Substrate1*Substrate2 - k2*Product;
 end
+
+function_1 is "Modified Mass Action"
 
 
 model *MODEL1303230000()
@@ -41,7 +45,7 @@ model *MODEL1303230000()
   reaction_7: species_19 => species_20; compartment_1*function_2(reaction_7_k, species_52, species_19, reaction_7_Km);
   reaction_8: species_20 => species_19; compartment_1*reaction_8_k1*species_20;
   reaction_9: species_20 -> species_21; compartment_1*(reaction_9_k1*species_20 - reaction_9_k2*species_21);
-  reaction_10: 2species_21 => species_24 + 2species_21; compartment_1*reaction_10_k1*species_21^2;
+  reaction_10: 2 species_21 => species_24 + 2 species_21; compartment_1*reaction_10_k1*species_21^2;
   reaction_11: $species_22 => species_24; compartment_1*reaction_11_k1*species_22;
   reaction_12: species_24 => $species_23; compartment_1*reaction_12_k1*species_24;
   reaction_13: species_24 + $species_25 + $species_27 + $species_26 + $species_16 -> species_28; compartment_1*(reaction_13_k1*species_24*species_25*species_27*species_26*species_16 - reaction_13_k2*species_28);
@@ -63,7 +67,7 @@ model *MODEL1303230000()
   reaction_29: species_42 + species_39 -> species_43; compartment_1*(reaction_29_k1*species_42*species_39 - reaction_29_k2*species_43);
   reaction_30: species_44 + species_39 -> species_45; compartment_1*(reaction_30_k1*species_44*species_39 - reaction_30_k2*species_45);
   reaction_31: $species_22 => species_46; compartment_1*reaction_31_k1*species_22;
-  reaction_32: 2species_39 => species_46 + 2species_39; compartment_1*reaction_32_k1*species_39^2;
+  reaction_32: 2 species_39 => species_46 + 2 species_39; compartment_1*reaction_32_k1*species_39^2;
   reaction_33: species_46 => $species_23; compartment_1*reaction_33_k1*species_46;
   reaction_34: $species_22 => species_47; compartment_1*reaction_34_k1*species_22;
   reaction_35: species_47 => $species_23; compartment_1*reaction_35_k1*species_47;
@@ -90,7 +94,7 @@ model *MODEL1303230000()
   reaction_56: species_49 => species_15; compartment_1*reaction_56_k1*species_49;
   reaction_57: species_50 => species_15; compartment_1*reaction_57_k1*species_50;
   reaction_58: species_51 => species_15; compartment_1*reaction_58_k1*species_51;
-  reaction_59: 2species_39 => species_24 + 2species_39; compartment_1*reaction_59_k1*species_39^2;
+  reaction_59: 2 species_39 => species_24 + 2 species_39; compartment_1*reaction_59_k1*species_39^2;
 
   // Species initializations:
   species_1 = 1;
@@ -189,23 +193,23 @@ model *MODEL1303230000()
   reaction_21_k1 = 0.0204;
   reaction_22_k1 = 0.0075;
   reaction_23_k1 = 0.011;
-  reaction_24_k1 = 2.25e-005;
-  reaction_25_k1 = 2.25e-005;
-  reaction_26_k1 = 2.25e-005;
+  reaction_24_k1 = 2.25e-05;
+  reaction_25_k1 = 2.25e-05;
+  reaction_26_k1 = 2.25e-05;
   reaction_27_k1 = 0.09;
-  reaction_27_k2 = 8e-005;
+  reaction_27_k2 = 8e-05;
   reaction_28_k1 = 0.5;
   reaction_28_k2 = 0.0005;
   reaction_29_k1 = 0.5;
   reaction_29_k2 = 0.0005;
   reaction_30_k1 = 0.5;
   reaction_30_k2 = 0.0005;
-  reaction_31_k1 = 1.54e-006;
+  reaction_31_k1 = 1.54e-06;
   reaction_32_k1 = 0.0165;
   reaction_33_k1 = 0.00028;
-  reaction_34_k1 = 1.78e-007;
+  reaction_34_k1 = 1.78e-07;
   reaction_35_k1 = 0.00028;
-  reaction_36_k1 = 1.27e-007;
+  reaction_36_k1 = 1.27e-07;
   reaction_37_k1 = 0.00028;
   reaction_38_k1 = 0.0225;
   reaction_38_k2 = 0.00125;
@@ -360,4 +364,126 @@ model *MODEL1303230000()
   reaction_57 is "NFkB43) IKK:IkBb Catalysis";
   reaction_58 is "NFkB44) IKK:IkBe Catalysis";
   reaction_59 is "TRIF06a)Inducible TNFa Synthesis by NFkB";
+
+  // SBO terms:
+  compartment_1.sboTerm = 290
+  species_22.sboTerm = 291
+  species_23.sboTerm = 291
+
+  // CV terms:
+  compartment_1 hypernym "http://identifiers.org/go/GO:0005623"
+  species_1 hypernym "http://identifiers.org/uniprot/P10810"
+  species_2 hypernym "http://identifiers.org/uniprot/Q8R4K2"
+  species_3 hypernym "http://identifiers.org/uniprot/Q61805"
+  species_4 hypernym "http://identifiers.org/chebi/CHEBI:16412"
+  species_5 part "http://identifiers.org/chebi/CHEBI:16412",
+                 "http://identifiers.org/uniprot/Q8R4K2",
+                 "http://identifiers.org/uniprot/Q61805",
+                 "http://identifiers.org/uniprot/Q9QUK6",
+                 "http://identifiers.org/uniprot/Q99JY1",
+                 "http://identifiers.org/uniprot/P22366",
+                 "http://identifiers.org/uniprot/P08571"
+  species_6 hypernym "http://identifiers.org/uniprot/P22366"
+  species_7 hypernym "http://identifiers.org/uniprot/Q99JY1"
+  species_8 hypernym "http://identifiers.org/uniprot/Q9QUK6"
+  species_9 hypernym "http://identifiers.org/uniprot/Q62406"
+  species_10 hypernym "http://identifiers.org/uniprot/P70196"
+  species_11 part "http://identifiers.org/uniprot/P70196",
+                  "http://identifiers.org/uniprot/Q62406"
+  species_12 part "http://identifiers.org/uniprot/P49117",
+                  "http://identifiers.org/uniprot/Q8CF89",
+                  "http://identifiers.org/uniprot/Q9NYJ8"
+  species_13 part "http://identifiers.org/uniprot/P49117",
+                  "http://identifiers.org/uniprot/Q8CF89",
+                  "http://identifiers.org/uniprot/Q9NYJ8",
+                  "http://identifiers.org/uniprot/P70196"
+  species_14 hypernym "http://identifiers.org/uniprot/Q60680"
+  species_15 hypernym "http://identifiers.org/uniprot/Q60680",
+                      "http://identifiers.org/kegg.compound/C00562"
+  species_16 hypernym "http://identifiers.org/uniprot/Q62172"
+  species_17 hypernym "http://identifiers.org/uniprot/O09000"
+  species_18 hypernym "http://identifiers.org/uniprot/Q80X56"
+  species_19 hypernym "http://identifiers.org/uniprot/P70671"
+  species_20 hypernym "http://identifiers.org/uniprot/P70671",
+                      "http://identifiers.org/kegg.compound/C00562"
+  species_21 hypernym "http://identifiers.org/uniprot/P70671",
+                      "http://identifiers.org/kegg.compound/C00562"
+  species_21 container "http://identifiers.org/go/GO:0005634"
+  species_24 hypernym "http://identifiers.org/uniprot/P06804"
+  species_25 hypernym "http://identifiers.org/uniprot/P25118"
+  species_26 hypernym "http://identifiers.org/uniprot/Q3U0V2"
+  species_27 hypernym "http://identifiers.org/uniprot/P39429"
+  species_28 part "http://identifiers.org/uniprot/Q62172",
+                  "http://identifiers.org/uniprot/P06804",
+                  "http://identifiers.org/uniprot/P25118",
+                  "http://identifiers.org/uniprot/Q3U0V2",
+                  "http://identifiers.org/uniprot/P39429"
+  species_29 hypernym "http://identifiers.org/uniprot/Q9Z1E3"
+  species_30 part "http://identifiers.org/uniprot/Q9Z1E3",
+                  "http://identifiers.org/uniprot/P25799"
+  species_31 hypernym "http://identifiers.org/uniprot/P25799"
+  species_32 part "http://identifiers.org/uniprot/Q60680",
+                  "http://identifiers.org/uniprot/Q9Z1E3",
+                  "http://identifiers.org/uniprot/Q60778"
+  species_33 hypernym "http://identifiers.org/uniprot/Q60778"
+  species_34 part "http://identifiers.org/uniprot/P25799",
+                  "http://identifiers.org/uniprot/Q60778"
+  species_35 part "http://identifiers.org/uniprot/Q60680",
+                  "http://identifiers.org/uniprot/P25799"
+  species_36 hypernym "http://identifiers.org/uniprot/O54910"
+  species_37 part "http://identifiers.org/uniprot/P25799",
+                  "http://identifiers.org/uniprot/O54910"
+  species_38 part "http://identifiers.org/uniprot/Q60680",
+                  "http://identifiers.org/uniprot/P25799",
+                  "http://identifiers.org/uniprot/O54910"
+  species_39 container "http://identifiers.org/go/GO:0005634"
+  species_39 hypernym "http://identifiers.org/uniprot/P25799"
+  species_40 hypernym "http://identifiers.org/uniprot/Q9Z1E3"
+  species_40 container "http://identifiers.org/go/GO:0005634"
+  species_41 part "http://identifiers.org/uniprot/Q9Z1E3",
+                  "http://identifiers.org/uniprot/P25799"
+  species_41 container "http://identifiers.org/go/GO:0005634"
+  species_42 hypernym "http://identifiers.org/uniprot/Q60778"
+  species_42 container "http://identifiers.org/go/GO:0005634"
+  species_43 part "http://identifiers.org/uniprot/P25799",
+                  "http://identifiers.org/uniprot/Q60778"
+  species_43 container "http://identifiers.org/go/GO:0005634"
+  species_44 hypernym "http://identifiers.org/uniprot/O54910"
+  species_44 container "http://identifiers.org/go/GO:0005634"
+  species_45 part "http://identifiers.org/uniprot/P25799",
+                  "http://identifiers.org/uniprot/O54910"
+  species_45 container "http://identifiers.org/go/GO:0005634"
+  species_46 encodement "http://identifiers.org/uniprot/Q9Z1E3"
+  species_47 encodement "http://identifiers.org/uniprot/Q60778"
+  species_48 encodement "http://identifiers.org/uniprot/O54910"
+  species_49 part "http://identifiers.org/uniprot/Q60680",
+                  "http://identifiers.org/uniprot/Q9Z1E3"
+  species_50 part "http://identifiers.org/uniprot/Q60680",
+                  "http://identifiers.org/uniprot/Q60778"
+  species_51 part "http://identifiers.org/uniprot/Q60680",
+                  "http://identifiers.org/uniprot/O54910"
+  species_52 part "http://identifiers.org/chebi/CHEBI:16412",
+                  "http://identifiers.org/uniprot/Q61805",
+                  "http://identifiers.org/uniprot/Q9QUK6",
+                  "http://identifiers.org/uniprot/P08571",
+                  "http://identifiers.org/uniprot/Q9R0T8",
+                  "http://identifiers.org/uniprot/Q9WUN2",
+                  "http://identifiers.org/uniprot/Q80X56",
+                  "http://identifiers.org/uniprot/O09000",
+                  "http://identifiers.org/uniprot/Q62172"
+  species_53 part "http://identifiers.org/uniprot/Q9WUN2",
+                  "http://identifiers.org/uniprot/Q9R0T8"
 end
+
+MODEL1303230000 is "Sharp2013 - Lipopolysaccharide induced NFkB activation"
+
+MODEL1303230000 model_entity_is "http://identifiers.org/biomodels.db/MODEL1303230000"
+MODEL1303230000 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000489"
+MODEL1303230000 description "http://identifiers.org/pubmed/23936158"
+MODEL1303230000 origin "http://identifiers.org/biomodels.db/BIOMD0000000139",
+                       "http://identifiers.org/biomodels.db/BIOMD0000000140",
+                       "http://identifiers.org/pubmed/16166516"
+MODEL1303230000 taxon "http://identifiers.org/taxonomy/10090"
+MODEL1303230000 hypernym "http://identifiers.org/go/GO:0008653",
+                         "http://identifiers.org/go/GO:0008588"
+MODEL1303230000 property "http://identifiers.org/mamo/MAMO_0000046"

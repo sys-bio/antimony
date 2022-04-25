@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *PRR_model()
 
   // Compartments and Species:
@@ -17,8 +17,8 @@ model *PRR_model()
 
   // Reactions:
   reaction_1: species_2 + species_1 => species_3; compartment_1*reaction_1_k1*species_2*species_1;
-  reaction_2: 2species_5 => species_4; compartment_1*reaction_2_k1*species_5^2;
-  reaction_3: species_4 => 2species_5; compartment_1*reaction_3_k1*species_4;
+  reaction_2: 2 species_5 => species_4; compartment_1*reaction_2_k1*species_5^2;
+  reaction_3: species_4 => 2 species_5; compartment_1*reaction_3_k1*species_4;
   reaction_4: species_6 + species_8 => species_7; compartment_1*reaction_4_k1*species_6*species_8;
   reaction_5: species_3 + species_4 => species_9; compartment_1*reaction_5_k1*species_3*species_4;
   reaction_6: species_9 => species_3 + species_4; compartment_1*reaction_6_k1*species_9;
@@ -39,8 +39,8 @@ model *PRR_model()
   reaction_21: species_20 => species_18 + species_21; compartment_1*reaction_21_k1*species_20;
   reaction_22: species_21 => species_13 + species_22; compartment_1*reaction_22_k1*species_21;
   reaction_23: species_12 => species_8 + species_23; compartment_1*reaction_23_k1*species_12;
-  reaction_24: species_19 => 2species_8 + species_23; compartment_1*reaction_24_k1*species_19;
-  reaction_25: species_22 => 3species_8 + species_23; compartment_1*reaction_25_k1*species_22;
+  reaction_24: species_19 => 2 species_8 + species_23; compartment_1*reaction_24_k1*species_19;
+  reaction_25: species_22 => 3 species_8 + species_23; compartment_1*reaction_25_k1*species_22;
 
   // Species initializations:
   species_1 = 1001;
@@ -71,10 +71,10 @@ model *PRR_model()
   compartment_1 = 1;
 
   // Variable initializations:
-  reaction_1_k1 = 1.5e-008;
+  reaction_1_k1 = 1.5e-08;
   reaction_2_k1 = 0.01;
   reaction_3_k1 = 1000;
-  reaction_4_k1 = 2.5e-007;
+  reaction_4_k1 = 2.5e-07;
   reaction_5_k1 = 100000;
   reaction_6_k1 = 1000;
   reaction_7_k1 = 0.0351;
@@ -82,18 +82,18 @@ model *PRR_model()
   reaction_9_k1 = 0.01;
   reaction_10_k1 = 1;
   reaction_11_k1 = 100000;
-  reaction_12_k1 = 5e-006;
+  reaction_12_k1 = 5e-06;
   reaction_13_k1 = 0.005;
   reaction_14_k1 = 0.078;
-  reaction_15_k1 = 1e-010;
+  reaction_15_k1 = 1e-10;
   reaction_16_k1 = 0.05;
-  reaction_17_k1 = 7.5e-006;
-  reaction_18_k1 = 5e-006;
+  reaction_17_k1 = 7.5e-06;
+  reaction_18_k1 = 5e-06;
   reaction_19_k1 = 0.078;
-  reaction_20_k1 = 1e-010;
+  reaction_20_k1 = 1e-10;
   reaction_21_k1 = 0.005;
   reaction_22_k1 = 0.005;
-  reaction_23_k1 = 3e-008;
+  reaction_23_k1 = 3e-08;
   reaction_24_k1 = 0.0008;
   reaction_25_k1 = 0.005;
 
@@ -157,4 +157,104 @@ model *PRR_model()
   reaction_23 is "r23";
   reaction_24 is "r24";
   reaction_25 is "r25";
+
+  // SBO terms:
+  species_4.sboTerm = 286
+  species_9.sboTerm = 297
+  species_10.sboTerm = 297
+  species_11.sboTerm = 297
+  species_14.sboTerm = 297
+  species_15.sboTerm = 297
+  species_16.sboTerm = 297
+  species_17.sboTerm = 297
+  species_18.sboTerm = 297
+  species_20.sboTerm = 297
+  species_21.sboTerm = 297
+
+  // CV terms:
+  compartment_1 identity "http://identifiers.org/go/GO:0005623"
+  species_1 hypernym "http://identifiers.org/go/GO:0035861"
+  species_2 identity "http://identifiers.org/uniprot/P15873"
+  species_3 hypernym "http://identifiers.org/uniprot/P15873"
+  species_4 part "http://identifiers.org/uniprot/P10862"
+  species_5 hypernym "http://identifiers.org/uniprot/P10862"
+  species_6 hypernym "http://identifiers.org/uniprot/P06104"
+  species_7 hypernym "http://identifiers.org/uniprot/P06104"
+  species_7 property "http://identifiers.org/go/GO:0006513"
+  species_8 hypernym "http://identifiers.org/uniprot/P0CG63"
+  species_9 part "http://identifiers.org/uniprot/P10862",
+                 "http://identifiers.org/uniprot/P15873"
+  species_10 part "http://identifiers.org/uniprot/P10862",
+                  "http://identifiers.org/uniprot/P15873",
+                  "http://identifiers.org/uniprot/P06104"
+  species_10 property "http://identifiers.org/go/GO:0006513"
+  species_11 part "http://identifiers.org/uniprot/P10862",
+                  "http://identifiers.org/uniprot/P15873"
+  species_11 property "http://identifiers.org/go/GO:0006513"
+  species_12 hypernym "http://identifiers.org/uniprot/P15873"
+  species_12 property "http://identifiers.org/go/GO:0006513"
+  species_13 hypernym "http://identifiers.org/uniprot/P32849"
+  species_14 part "http://identifiers.org/uniprot/P32849",
+                  "http://identifiers.org/uniprot/P15873"
+  species_14 property "http://identifiers.org/go/GO:0006513"
+  species_15 part "http://identifiers.org/uniprot/P52490",
+                  "http://identifiers.org/uniprot/P53152"
+  species_15 property "http://identifiers.org/go/GO:0006513"
+  species_16 part "http://identifiers.org/uniprot/P52490",
+                  "http://identifiers.org/uniprot/P53152",
+                  "http://identifiers.org/uniprot/P32849",
+                  "http://identifiers.org/uniprot/P15873"
+  species_16 propertyBearer "http://identifiers.org/psimod/MOD:01148"
+  species_17 part "http://identifiers.org/uniprot/P32849",
+                  "http://identifiers.org/uniprot/P15873"
+  species_17 property "http://identifiers.org/psimod/MOD:01148"
+  species_18 part "http://identifiers.org/uniprot/P53152",
+                  "http://identifiers.org/uniprot/P52490"
+  species_19 part "http://identifiers.org/uniprot/P15873",
+                  "http://identifiers.org/uniprot/P0CG63"
+  species_19 property "http://identifiers.org/psimod/MOD:01148"
+  species_20 part "http://identifiers.org/uniprot/P15873",
+                  "http://identifiers.org/uniprot/P0CG63",
+                  "http://identifiers.org/uniprot/P53152",
+                  "http://identifiers.org/uniprot/P52490",
+                  "http://identifiers.org/uniprot/P32849"
+  species_20 property "http://identifiers.org/go/GO:0000209"
+  species_21 part "http://identifiers.org/uniprot/P32849",
+                  "http://identifiers.org/uniprot/P15873"
+  species_21 property "http://identifiers.org/go/GO:0000209"
+  species_22 property "http://identifiers.org/go/GO:0000209"
+  species_22 hypernym "http://identifiers.org/uniprot/P15873"
+  species_23 hypernym "http://identifiers.org/uniprot/P15873"
+  reaction_1 hypernym "http://identifiers.org/go/GO:0016567"
+  reaction_2 property "http://identifiers.org/go/GO:0042803"
+  reaction_3 hypernym "http://identifiers.org/go/GO:0043241"
+  reaction_4 hypernym "http://identifiers.org/go/GO:0016567"
+  reaction_5 hypernym "http://identifiers.org/go/GO:0006461"
+  reaction_6 hypernym "http://identifiers.org/go/GO:0043241"
+  reaction_7 hypernym "http://identifiers.org/go/GO:0006461"
+  reaction_8 hypernym "http://identifiers.org/go/GO:0043241"
+  reaction_9 hypernym "http://identifiers.org/go/GO:0043241"
+  reaction_10 hypernym "http://identifiers.org/go/GO:0043241"
+  reaction_11 hypernym "http://identifiers.org/go/GO:0016567"
+  reaction_12 hypernym "http://identifiers.org/go/GO:0006461"
+  reaction_13 hypernym "http://identifiers.org/go/GO:0043241"
+  reaction_14 hypernym "http://identifiers.org/go/GO:0006461"
+  reaction_15 hypernym "http://identifiers.org/go/GO:0043241"
+  reaction_17 hypernym "http://identifiers.org/go/GO:0043241"
+  reaction_18 hypernym "http://identifiers.org/go/GO:0006461"
+  reaction_19 hypernym "http://identifiers.org/go/GO:0006461"
+  reaction_20 hypernym "http://identifiers.org/go/GO:0043241"
+  reaction_21 hypernym "http://identifiers.org/go/GO:0043241"
+  reaction_22 hypernym "http://identifiers.org/go/GO:0043241"
+  reaction_23 hypernym "http://identifiers.org/go/GO:0016579"
+  reaction_24 hypernym "http://identifiers.org/go/GO:0016579"
+  reaction_25 hypernym "http://identifiers.org/go/GO:0016579"
 end
+
+PRR_model is "Amara2013 - PCNA ubiquitylation in the activation of PRR pathway"
+
+PRR_model model_entity_is "http://identifiers.org/biomodels.db/MODEL1211260000"
+PRR_model model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000475"
+PRR_model description "http://identifiers.org/pubmed/23514624"
+PRR_model taxon "http://identifiers.org/taxonomy/4932"
+PRR_model hypernym "http://identifiers.org/go/GO:0006301"

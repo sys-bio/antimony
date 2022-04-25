@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *MODEL1501300000()
 
   // Compartments and Species:
@@ -68,7 +68,7 @@ model *MODEL1501300000()
   binding_IIA_P_CYA: CYA + IIA_P -> IIA_P_CYA; cyt*fast*(binding_IIA_P_CYA_Kb*CYA*IIA_P^2 - IIA_P_CYA);
   transcription_CRP_cAMP_CRPsite_cyaA_cyaA:  -> mRNA_cyaA; cyt*transcription_CRP_cAMP_CRPsite_cyaA_cyaA_km*(1 - CRP_cAMP_CRPsite_cyaA/TCRPsite_cyaA)*cyaA;
   transcription_cyaA_basal:  -> mRNA_cyaA; cyt*transcription_cyaA_basal_km*cyaA_basal;
-  transcription_CRP_cAMP_CRPsiteI_crp_CRP_cAMP_CRPsiteII_crp_crp:  -> mRNA_crp; cyt*transcription_CRP_cAMP_CRPsiteI_crp_CRP_cAMP_CRPsiteII_crp_crp_km*((1 + (transcription_CRP_cAMP_CRPsiteI_crp_CRP_cAMP_CRPsiteII_crp_crp_RelativeactivityatTCRPsiteII_crp*CRP_cAMP_CRPsiteII_crp)/TCRPsiteII_crp) - CRP_cAMP_CRPsiteI_crp/TCRPsiteI_crp)*crp;
+  transcription_CRP_cAMP_CRPsiteI_crp_CRP_cAMP_CRPsiteII_crp_crp:  -> mRNA_crp; cyt*transcription_CRP_cAMP_CRPsiteI_crp_CRP_cAMP_CRPsiteII_crp_crp_km*(1 + transcription_CRP_cAMP_CRPsiteI_crp_CRP_cAMP_CRPsiteII_crp_crp_RelativeactivityatTCRPsiteII_crp*CRP_cAMP_CRPsiteII_crp/TCRPsiteII_crp - CRP_cAMP_CRPsiteI_crp/TCRPsiteI_crp)*crp;
   transcription_crp_basal:  -> mRNA_crp; cyt*transcription_crp_basal_km*crp_basal;
   transcription_CRP_cAMP_CRPsite_ptsGp1_Mlc_Mlcsite_ptsGp1_ptsGp1:  -> mRNA_ptsG; cyt*transcription_CRP_cAMP_CRPsite_ptsGp1_Mlc_Mlcsite_ptsGp1_ptsGp1_km*(CRP_cAMP_CRPsite_ptsGp1/TCRPsite_ptsGp1)*(1 - Mlc_Mlcsite_ptsGp1/TMlcsite_ptsGp1)*ptsGp1;
   transcription_CRP_cAMP_CRPsite_ptsGp2_Mlc_Mlcsite_ptsGp2_ptsGp2:  -> mRNA_ptsG; cyt*transcription_CRP_cAMP_CRPsite_ptsGp2_Mlc_Mlcsite_ptsGp2_ptsGp2_km*(CRP_cAMP_CRPsite_ptsGp2/TCRPsite_ptsGp2)*(1 - Mlc_Mlcsite_ptsGp2/TMlcsite_ptsGp2)*ptsGp2;
@@ -131,88 +131,88 @@ model *MODEL1501300000()
   PTS3rev: IIA_P + HPr -> IIA + HPr_P; cyt*PTS3rev_kx*HPr*IIA_P;
   PTS4for: IICB + IIA_P -> IICB_P + IIA; cyt*PTS4for_kx*IICB*IIA_P;
   PTS4rev: IICB_P + IIA -> IICB + IIA_P; cyt*PTS4rev_kx*IIA*IICB_P;
-  reaction_CYA_ATP: $ATP -> cAMP; cyt*((reaction_CYA_ATP_Q*CYA*ATP)/(reaction_CYA_ATP_Kmich + ATP));
-  reaction_IIA_P_CYA_ATP: $ATP -> cAMP; cyt*((reaction_IIA_P_CYA_ATP_Q*IIA_P_CYA*ATP)/(reaction_IIA_P_CYA_ATP_Kmich + ATP));
-  reaction_EI_PEP: EI + $PEP -> EI_P + $Pyr; cyt*((2*reaction_EI_PEP_Q*EI*PEP^2)/(reaction_EI_PEP_Kmich^2 + PEP^2));
-  reaction_EIP_Pyr: EI_P + $Pyr -> EI + $PEP; cyt*((2*reaction_EIP_Pyr_Q*EI_P*Pyr^2)/(reaction_EIP_Pyr_Kmich^2 + Pyr^2));
-  reaction_IICB_P_Glucose: IICB_P + $Glucose -> IICB + $Glc6P; cyt*((reaction_IICB_P_Glucose_Q*IICB_P*Glucose)/(reaction_IICB_P_Glucose_Kmich + Glucose));
-  reaction_IICB_Glc6P: IICB + $Glc6P -> IICB_P + $Glucose; cyt*((reaction_IICB_Glc6P_Q*IICB*Glc6P)/(reaction_IICB_Glc6P_Kmich + Glc6P));
+  reaction_CYA_ATP: $ATP -> cAMP; cyt*(reaction_CYA_ATP_Q*CYA*ATP/(reaction_CYA_ATP_Kmich + ATP));
+  reaction_IIA_P_CYA_ATP: $ATP -> cAMP; cyt*(reaction_IIA_P_CYA_ATP_Q*IIA_P_CYA*ATP/(reaction_IIA_P_CYA_ATP_Kmich + ATP));
+  reaction_EI_PEP: EI + $PEP -> EI_P + $Pyr; cyt*(2*reaction_EI_PEP_Q*EI*PEP^2/(reaction_EI_PEP_Kmich^2 + PEP^2));
+  reaction_EIP_Pyr: EI_P + $Pyr -> EI + $PEP; cyt*(2*reaction_EIP_Pyr_Q*EI_P*Pyr^2/(reaction_EIP_Pyr_Kmich^2 + Pyr^2));
+  reaction_IICB_P_Glucose: IICB_P + $Glucose -> IICB + $Glc6P; cyt*(reaction_IICB_P_Glucose_Q*IICB_P*Glucose/(reaction_IICB_P_Glucose_Kmich + Glucose));
+  reaction_IICB_Glc6P: IICB + $Glc6P -> IICB_P + $Glucose; cyt*(reaction_IICB_Glc6P_Q*IICB*Glc6P/(reaction_IICB_Glc6P_Kmich + Glc6P));
 
   // Events:
-  _E0: at time >= 500: Glucose = 2.000000e-009;
+  _E0: at time >= 500: Glucose = 2e-9;
 
   // Species initializations:
-  CRP = 5.4207e-006;
-  CRPsiteI_crp = 7.4368e-011;
-  CRPsiteII_crp = 1.9047e-010;
-  CRPsite_cyaA = 3.1103e-011;
-  CRPsite_genome = 3.6756e-009;
-  CRPsite_ptsGp1 = 1.2021e-010;
-  CRPsite_ptsGp2 = 1.2021e-010;
-  CRPsite_ptsHp0 = 1.2021e-010;
-  CRPsite_ptsHp1 = 1.2021e-010;
-  CRPsite_ptsIp0 = 1.2021e-010;
-  CRPsite_ptsIp1 = 1.2021e-010;
-  CRPsite_mlcp1 = 1.2021e-010;
-  CRPsite_mlcp2 = 1.2021e-010;
-  Mlc = 5.5172e-010;
-  Mlcsite_mlcp1 = 2.4267e-010;
-  Mlcsite_mlcp2 = 2.4282e-010;
-  Mlcsite_ptsGp1 = 2.1885e-010;
-  Mlcsite_ptsGp2 = 2.1885e-010;
-  Mlcsite_ptsHp0 = 2.1885e-010;
-  Mlcsite_ptsIp0 = 2.1885e-010;
-  CRP_cAMP = 1.0214e-007;
-  CRP_cAMP_CRPsiteI_crp = 1.6863e-010;
-  CRP_cAMP_CRPsiteII_crp = 5.2529e-011;
-  CRP_cAMP_CRPsite_cyaA = 2.119e-010;
-  CRP_cAMP_CRPsite_genome = 3.7544e-009;
-  CRP_cAMP_CRPsite_ptsGp1 = 1.2279e-010;
-  CRP_cAMP_CRPsite_ptsGp2 = 1.2279e-010;
-  CRP_cAMP_CRPsite_ptsHp0 = 1.2279e-010;
-  CRP_cAMP_CRPsite_ptsHp1 = 1.2279e-010;
-  CRP_cAMP_CRPsite_ptsIp0 = 1.2279e-010;
-  CRP_cAMP_CRPsite_ptsIp1 = 1.2279e-010;
-  CRP_cAMP_CRPsite_mlcp1 = 1.2279e-010;
-  CRP_cAMP_CRPsite_mlcp2 = 1.2279e-010;
-  Mlc_Mlcsite_ptsGp1 = 2.4149e-011;
-  Mlc_Mlcsite_ptsGp2 = 2.4149e-011;
-  Mlc_Mlcsite_ptsIp0 = 2.4149e-011;
-  Mlc_Mlcsite_ptsHp0 = 2.4149e-011;
-  Mlc_Mlcsite_mlcp1 = 3.2535e-013;
-  Mlc_Mlcsite_mlcp2 = 1.8086e-013;
-  IICB = 4.2844e-005;
-  IICB_Mlc = 1.6546e-007;
-  CYA = 1.4934e-006;
-  IIA_P = 7.0094e-006;
-  IIA_P_CYA = 7.3371e-009;
-  mRNA_cyaA = 1.3643e-008;
-  mRNA_crp = 5.0254e-008;
-  mRNA_ptsG = 4.5559e-007;
-  mRNA_ptsH = 1.1411e-007;
-  mRNA_ptsI = 1.0038e-008;
-  mRNA_crr = 9.3861e-007;
-  mRNA_mlc = 1.5101e-009;
-  IICB_P = 7.1055e-006;
-  IIA = 9.623e-005;
-  HPr_P = 7.5867e-007;
-  HPr = 1.1793e-005;
-  EI_P = 2.4319e-007;
-  EI = 8.6098e-007;
-  cAMP = 4.7107e-007;
-  cyaA = 2.43e-010;
-  cyaA_basal = 2.43e-010;
-  crp = 2.43e-010;
-  crp_basal = 2.43e-010;
-  ptsGp1 = 2.43e-010;
-  ptsGp2 = 2.43e-010;
-  ptsHp0 = 2.43e-010;
-  ptsHp1 = 2.43e-010;
-  ptsIp0 = 2.43e-010;
-  ptsIp1 = 2.43e-010;
-  crr = 2.43e-010;
-  mlcp1 = 2.43e-010;
-  mlcp2 = 2.43e-010;
+  CRP = 5.4207e-06;
+  CRPsiteI_crp = 7.4368e-11;
+  CRPsiteII_crp = 1.9047e-10;
+  CRPsite_cyaA = 3.1103e-11;
+  CRPsite_genome = 3.6756e-09;
+  CRPsite_ptsGp1 = 1.2021e-10;
+  CRPsite_ptsGp2 = 1.2021e-10;
+  CRPsite_ptsHp0 = 1.2021e-10;
+  CRPsite_ptsHp1 = 1.2021e-10;
+  CRPsite_ptsIp0 = 1.2021e-10;
+  CRPsite_ptsIp1 = 1.2021e-10;
+  CRPsite_mlcp1 = 1.2021e-10;
+  CRPsite_mlcp2 = 1.2021e-10;
+  Mlc = 5.5172e-10;
+  Mlcsite_mlcp1 = 2.4267e-10;
+  Mlcsite_mlcp2 = 2.4282e-10;
+  Mlcsite_ptsGp1 = 2.1885e-10;
+  Mlcsite_ptsGp2 = 2.1885e-10;
+  Mlcsite_ptsHp0 = 2.1885e-10;
+  Mlcsite_ptsIp0 = 2.1885e-10;
+  CRP_cAMP = 1.0214e-07;
+  CRP_cAMP_CRPsiteI_crp = 1.6863e-10;
+  CRP_cAMP_CRPsiteII_crp = 5.2529e-11;
+  CRP_cAMP_CRPsite_cyaA = 2.119e-10;
+  CRP_cAMP_CRPsite_genome = 3.7544e-09;
+  CRP_cAMP_CRPsite_ptsGp1 = 1.2279e-10;
+  CRP_cAMP_CRPsite_ptsGp2 = 1.2279e-10;
+  CRP_cAMP_CRPsite_ptsHp0 = 1.2279e-10;
+  CRP_cAMP_CRPsite_ptsHp1 = 1.2279e-10;
+  CRP_cAMP_CRPsite_ptsIp0 = 1.2279e-10;
+  CRP_cAMP_CRPsite_ptsIp1 = 1.2279e-10;
+  CRP_cAMP_CRPsite_mlcp1 = 1.2279e-10;
+  CRP_cAMP_CRPsite_mlcp2 = 1.2279e-10;
+  Mlc_Mlcsite_ptsGp1 = 2.4149e-11;
+  Mlc_Mlcsite_ptsGp2 = 2.4149e-11;
+  Mlc_Mlcsite_ptsIp0 = 2.4149e-11;
+  Mlc_Mlcsite_ptsHp0 = 2.4149e-11;
+  Mlc_Mlcsite_mlcp1 = 3.2535e-13;
+  Mlc_Mlcsite_mlcp2 = 1.8086e-13;
+  IICB = 4.2844e-05;
+  IICB_Mlc = 1.6546e-07;
+  CYA = 1.4934e-06;
+  IIA_P = 7.0094e-06;
+  IIA_P_CYA = 7.3371e-09;
+  mRNA_cyaA = 1.3643e-08;
+  mRNA_crp = 5.0254e-08;
+  mRNA_ptsG = 4.5559e-07;
+  mRNA_ptsH = 1.1411e-07;
+  mRNA_ptsI = 1.0038e-08;
+  mRNA_crr = 9.3861e-07;
+  mRNA_mlc = 1.5101e-09;
+  IICB_P = 7.1055e-06;
+  IIA = 9.623e-05;
+  HPr_P = 7.5867e-07;
+  HPr = 1.1793e-05;
+  EI_P = 2.4319e-07;
+  EI = 8.6098e-07;
+  cAMP = 4.7107e-07;
+  cyaA = 2.43e-10;
+  cyaA_basal = 2.43e-10;
+  crp = 2.43e-10;
+  crp_basal = 2.43e-10;
+  ptsGp1 = 2.43e-10;
+  ptsGp2 = 2.43e-10;
+  ptsHp0 = 2.43e-10;
+  ptsHp1 = 2.43e-10;
+  ptsIp0 = 2.43e-10;
+  ptsIp1 = 2.43e-10;
+  crr = 2.43e-10;
+  mlcp1 = 2.43e-10;
+  mlcp2 = 2.43e-10;
   Pyr = 0.00267;
   PEP = 0.00267;
   Glc6P = 0.00148;
@@ -434,7 +434,7 @@ model *MODEL1501300000()
   reaction_EIP_Pyr_Kmich has M;
   reaction_EIP_Pyr_Q = 480000;
   reaction_EIP_Pyr_Q has per_min;
-  reaction_IICB_P_Glucose_Kmich = 2e-005;
+  reaction_IICB_P_Glucose_Kmich = 2e-05;
   reaction_IICB_P_Glucose_Kmich has M;
   reaction_IICB_P_Glucose_Q = 4800;
   reaction_IICB_P_Glucose_Q has per_min;
@@ -459,4 +459,126 @@ model *MODEL1501300000()
   unit per_M = litre / mole;
   unit per_M_per_min = litre / (mole * 60 second);
   unit per_M_squared = litre^2 / mole^2;
+
+  // CV terms:
+  cyt identity "http://identifiers.org/go/GO:0005737"
+  CRP identity "http://identifiers.org/uniprot/P0ACJ8"
+  CRPsiteI_crp hypernym "http://identifiers.org/uniprot/P0ACJ8"
+  CRPsiteII_crp hypernym "http://identifiers.org/uniprot/P0ACJ8"
+  CRPsite_cyaA hypernym "http://identifiers.org/uniprot/P0ACJ8"
+  CRPsite_cyaA parthood "http://identifiers.org/uniprot/P00936"
+  CRPsite_genome hypernym "http://identifiers.org/uniprot/P0ACJ8"
+  CRPsite_ptsGp1 hypernym "http://identifiers.org/uniprot/P0ACJ8"
+  CRPsite_ptsGp1 part "http://identifiers.org/uniprot/C3TDU2"
+  CRPsite_ptsGp2 hypernym "http://identifiers.org/uniprot/P0ACJ8"
+  CRPsite_ptsGp2 part "http://identifiers.org/uniprot/C3TDU2"
+  CRPsite_ptsHp0 hypernym "http://identifiers.org/uniprot/P0ACJ8"
+  CRPsite_ptsHp0 part "http://identifiers.org/uniprot/P0AA04"
+  CRPsite_ptsHp1 hypernym "http://identifiers.org/uniprot/P0ACJ8"
+  CRPsite_ptsHp1 part "http://identifiers.org/uniprot/P0AA04"
+  CRPsite_ptsIp0 hypernym "http://identifiers.org/uniprot/P0ACJ8"
+  CRPsite_ptsIp0 part "http://identifiers.org/uniprot/P08839"
+  CRPsite_ptsIp1 hypernym "http://identifiers.org/uniprot/P0ACJ8"
+  CRPsite_ptsIp1 part "http://identifiers.org/uniprot/P08839"
+  CRPsite_mlcp1 hypernym "http://identifiers.org/uniprot/P0ACJ8"
+  CRPsite_mlcp1 part "http://identifiers.org/uniprot/P50456"
+  CRPsite_mlcp2 hypernym "http://identifiers.org/uniprot/P0ACJ8"
+  CRPsite_mlcp2 part "http://identifiers.org/uniprot/P50456"
+  Mlc identity "http://identifiers.org/uniprot/P50456"
+  Mlcsite_mlcp1 hypernym "http://identifiers.org/uniprot/P50456"
+  Mlcsite_mlcp2 hypernym "http://identifiers.org/uniprot/P50456"
+  Mlcsite_ptsGp1 hypernym "http://identifiers.org/uniprot/P50456"
+  Mlcsite_ptsGp1 part "http://identifiers.org/uniprot/C3TDU2"
+  Mlcsite_ptsGp2 hypernym "http://identifiers.org/uniprot/P50456"
+  Mlcsite_ptsGp2 part "http://identifiers.org/uniprot/C3TDU2"
+  Mlcsite_ptsHp0 hypernym "http://identifiers.org/uniprot/P50456"
+  Mlcsite_ptsHp0 part "http://identifiers.org/uniprot/P0AA04"
+  Mlcsite_ptsIp0 hypernym "http://identifiers.org/uniprot/P50456"
+  Mlcsite_ptsIp0 part "http://identifiers.org/uniprot/P08839"
+  CRP_cAMP hypernym "http://identifiers.org/uniprot/P0ACJ8"
+  CRP_cAMP part "http://identifiers.org/chebi/CHEBI:17489"
+  CRP_cAMP_CRPsiteI_crp hypernym "http://identifiers.org/uniprot/P0ACJ8"
+  CRP_cAMP_CRPsiteI_crp part "http://identifiers.org/chebi/CHEBI:17489"
+  CRP_cAMP_CRPsiteII_crp hypernym "http://identifiers.org/uniprot/P0ACJ8"
+  CRP_cAMP_CRPsiteII_crp part "http://identifiers.org/chebi/CHEBI:17489"
+  CRP_cAMP_CRPsite_cyaA hypernym "http://identifiers.org/uniprot/P0ACJ8"
+  CRP_cAMP_CRPsite_cyaA part "http://identifiers.org/chebi/CHEBI:17489"
+  CRP_cAMP_CRPsite_genome hypernym "http://identifiers.org/uniprot/P0ACJ8"
+  CRP_cAMP_CRPsite_genome part "http://identifiers.org/chebi/CHEBI:17489"
+  CRP_cAMP_CRPsite_ptsGp1 hypernym "http://identifiers.org/uniprot/P0ACJ8"
+  CRP_cAMP_CRPsite_ptsGp1 part "http://identifiers.org/chebi/CHEBI:17489"
+  CRP_cAMP_CRPsite_ptsGp2 hypernym "http://identifiers.org/uniprot/P0ACJ8"
+  CRP_cAMP_CRPsite_ptsGp2 part "http://identifiers.org/chebi/CHEBI:17489"
+  CRP_cAMP_CRPsite_ptsHp0 hypernym "http://identifiers.org/uniprot/P0ACJ8"
+  CRP_cAMP_CRPsite_ptsHp0 part "http://identifiers.org/chebi/CHEBI:17489"
+  CRP_cAMP_CRPsite_ptsHp1 hypernym "http://identifiers.org/uniprot/P0ACJ8"
+  CRP_cAMP_CRPsite_ptsHp1 part "http://identifiers.org/chebi/CHEBI:17489"
+  CRP_cAMP_CRPsite_ptsIp0 hypernym "http://identifiers.org/uniprot/P0ACJ8"
+  CRP_cAMP_CRPsite_ptsIp0 part "http://identifiers.org/chebi/CHEBI:17489"
+  CRP_cAMP_CRPsite_ptsIp1 hypernym "http://identifiers.org/uniprot/P0ACJ8"
+  CRP_cAMP_CRPsite_ptsIp1 part "http://identifiers.org/chebi/CHEBI:17489"
+  CRP_cAMP_CRPsite_mlcp1 hypernym "http://identifiers.org/uniprot/P0ACJ8"
+  CRP_cAMP_CRPsite_mlcp1 part "http://identifiers.org/chebi/CHEBI:17489"
+  CRP_cAMP_CRPsite_mlcp2 hypernym "http://identifiers.org/uniprot/P0ACJ8"
+  CRP_cAMP_CRPsite_mlcp2 part "http://identifiers.org/chebi/CHEBI:17489"
+  Mlc_Mlcsite_ptsGp1 hypernym "http://identifiers.org/uniprot/P50456"
+  Mlc_Mlcsite_ptsGp1 part "http://identifiers.org/uniprot/P50456"
+  Mlc_Mlcsite_ptsGp2 hypernym "http://identifiers.org/uniprot/P50456"
+  Mlc_Mlcsite_ptsGp2 part "http://identifiers.org/uniprot/P50456"
+  Mlc_Mlcsite_ptsIp0 hypernym "http://identifiers.org/uniprot/P50456"
+  Mlc_Mlcsite_ptsIp0 part "http://identifiers.org/uniprot/P50456"
+  Mlc_Mlcsite_ptsHp0 hypernym "http://identifiers.org/uniprot/P50456"
+  Mlc_Mlcsite_ptsHp0 part "http://identifiers.org/uniprot/P50456"
+  Mlc_Mlcsite_mlcp1 hypernym "http://identifiers.org/uniprot/P50456"
+  Mlc_Mlcsite_mlcp1 part "http://identifiers.org/uniprot/P50456"
+  Mlc_Mlcsite_mlcp2 hypernym "http://identifiers.org/uniprot/P50456"
+  Mlc_Mlcsite_mlcp2 part "http://identifiers.org/uniprot/P50456"
+  IICB identity "http://identifiers.org/uniprot/C3TDU2"
+  IICB_Mlc hypernym "http://identifiers.org/uniprot/C3TDU2"
+  IICB_Mlc part "http://identifiers.org/uniprot/P50456"
+  CYA identity "http://identifiers.org/uniprot/P00936"
+  IIA_P identity "http://identifiers.org/uniprot/P69783"
+  IIA_P_CYA hypernym "http://identifiers.org/uniprot/P69783"
+  IIA_P_CYA part "http://identifiers.org/uniprot/P00936"
+  mRNA_cyaA hypernym "http://identifiers.org/chebi/CHEBI:33699"
+  mRNA_crp hypernym "http://identifiers.org/chebi/CHEBI:33699"
+  mRNA_ptsG hypernym "http://identifiers.org/chebi/CHEBI:33699"
+  mRNA_ptsH hypernym "http://identifiers.org/chebi/CHEBI:33699"
+  mRNA_ptsI hypernym "http://identifiers.org/chebi/CHEBI:33699"
+  mRNA_crr hypernym "http://identifiers.org/chebi/CHEBI:33699"
+  mRNA_mlc hypernym "http://identifiers.org/chebi/CHEBI:33699"
+  IICB_P hypernym "http://identifiers.org/uniprot/C3TDU2"
+  IIA hypernym "http://identifiers.org/uniprot/P69783"
+  HPr_P hypernym "http://identifiers.org/uniprot/P0AA04"
+  HPr identity "http://identifiers.org/uniprot/P0AA04"
+  EI_P hypernym "http://identifiers.org/uniprot/P08839"
+  EI identity "http://identifiers.org/uniprot/P08839"
+  cAMP identity "http://identifiers.org/chebi/CHEBI:17489"
+  cyaA identity "http://identifiers.org/uniprot/P00936"
+  cyaA_basal hypernym "http://identifiers.org/uniprot/P00936"
+  crp hypernym "http://identifiers.org/uniprot/P0ACJ8"
+  crp_basal hypernym "http://identifiers.org/uniprot/P0ACJ8"
+  ptsGp1 hypernym "http://identifiers.org/uniprot/C3TDU2"
+  ptsGp2 hypernym "http://identifiers.org/uniprot/C3TDU2"
+  ptsHp0 hypernym "http://identifiers.org/uniprot/C3TDU2"
+  ptsHp1 hypernym "http://identifiers.org/uniprot/C3TDU2"
+  ptsIp0 hypernym "http://identifiers.org/uniprot/C3TDU2"
+  ptsIp1 hypernym "http://identifiers.org/uniprot/C3TDU2"
+  crr identity "http://identifiers.org/uniprot/P69783"
+  mlcp1 hypernym "http://identifiers.org/uniprot/P50456"
+  mlcp2 hypernym "http://identifiers.org/uniprot/P50456"
+  Pyr identity "http://identifiers.org/chebi/CHEBI:32816"
+  PEP identity "http://identifiers.org/chebi/CHEBI:44897"
+  Glc6P identity "http://identifiers.org/chebi/CHEBI:4170"
+  Glucose identity "http://identifiers.org/chebi/CHEBI:4167"
+  ATP identity "http://identifiers.org/chebi/CHEBI:15422"
 end
+
+MODEL1501300000 is "Nishio2008 - Design of the phosphotransferase system for enhanced glucose uptake in E. coli."
+
+MODEL1501300000 model_entity_is "http://identifiers.org/biomodels.db/MODEL1501300000"
+MODEL1501300000 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000571"
+MODEL1501300000 description "http://identifiers.org/pubmed/18197177"
+MODEL1501300000 origin "http://identifiers.org/biomodels.db/BIOMD0000000051"
+MODEL1501300000 taxon "http://identifiers.org/taxonomy/83333"
+MODEL1501300000 hypernym "http://identifiers.org/go/GO:0008982"

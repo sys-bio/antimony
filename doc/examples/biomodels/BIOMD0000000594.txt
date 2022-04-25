@@ -1,0 +1,355 @@
+// Created by libAntimony v2.13.0
+model *MODEL1505190001()
+
+  // Compartments and Species:
+  compartment cell;
+  species Cbl in cell, Grb2 in cell, CG in cell, $Tyr in cell, EGFR_10UU in cell;
+  species EGFR_10CU in cell, EGFR_10LU in cell, EGFR_01UU in cell, EGFR_01UG in cell;
+  species EGFR_01UL in cell, EGFR_11UU in cell, EGFR_11CU in cell, EGFR_11LU in cell;
+  species EGFR_11UG in cell, EGFR_11UL in cell, EGFR_11CG in cell, EGFR_11CC in cell;
+  species EGFR_11LG in cell, EGFR_02UU in cell, EGFR_02UG in cell, EGFR_02UL in cell;
+  species EGFR_12UU in cell, EGFR_12CU in cell, EGFR_12LU in cell, EGFR_12UG in cell;
+  species EGFR_12UL in cell, EGFR_12CG in cell, EGFR_12CC in cell, EGFR_12LG in cell;
+  species $Ub in cell, $TyrNorm in cell, $UbNorm in cell, EGFR_00UU in cell;
+
+  // Assignment Rules:
+  Tyr := EGFR_10UU + EGFR_10CU + EGFR_10LU + 1*(EGFR_01UU + EGFR_01UG + EGFR_01UL) + 2*(EGFR_11UU + EGFR_11CU + EGFR_11LU + EGFR_11UG + EGFR_11UL + EGFR_11CG + EGFR_11CC + EGFR_11LG) + 2*(EGFR_02UU + EGFR_02UG + EGFR_02UL) + 3*(EGFR_12UU + EGFR_12CU + EGFR_12LU + EGFR_12UG + EGFR_12UL + EGFR_12CG + EGFR_12CC + EGFR_12LG);
+  Ub := EGFR_11CC + EGFR_12CC + EGFR_10CU + EGFR_11CU + EGFR_12CU + EGFR_10LU + EGFR_11LU + EGFR_12LU + EGFR_11CG + EGFR_12CG + EGFR_11LG + EGFR_12LG;
+  TyrNorm := Tyr/PYMax;
+  UbNorm := Ub/(UbMax*CblFactor);
+  K45P := K45/floc;
+  KcgP := Kcg/floc;
+  kptp68 := kptp;
+  kkin := kkinbase*(Ltot^nH/(Ltot^nH + xT^nH));
+  kkin68 := kkin;
+  kb45 := ku45/K45;
+  ku45M := ku45;
+  kb45P := ku45M/K45P;
+  kb68 := kb45;
+  ku68 := ku45;
+  kb68P := kb45P;
+  ku68M := ku45M;
+  kbcg := kucg/Kcg;
+  kbcgP := kucgM/KcgP;
+  kucgM := kucg;
+
+  // Reactions:
+  r1: EGFR_10UU -> EGFR_00UU; kptp*EGFR_10UU;
+  r2: EGFR_01UU -> EGFR_00UU; kptp68*EGFR_01UU;
+  r3: EGFR_11UU -> EGFR_01UU; kptp*EGFR_11UU;
+  r4: EGFR_11UU -> EGFR_10UU; kptp68*EGFR_11UU;
+  r5: EGFR_11CU -> EGFR_10CU; kptp68*EGFR_11CU;
+  r6: EGFR_11LU -> EGFR_10LU; kptp68*EGFR_11LU;
+  r7: EGFR_11UG -> EGFR_01UG; kptp*EGFR_11UG;
+  r8: EGFR_11UL -> EGFR_01UL; kptp*EGFR_11UL;
+  r9: EGFR_02UU -> EGFR_01UU; 2*kptp68*EGFR_02UU;
+  r10: EGFR_02UG -> EGFR_01UG; kptp68*EGFR_02UG;
+  r11: EGFR_02UL -> EGFR_01UL; kptp68*EGFR_02UL;
+  r12: EGFR_12UU -> EGFR_02UU; kptp*EGFR_12UU;
+  r13: EGFR_12UU -> EGFR_11UU; 2*kptp68*EGFR_12UU;
+  r14: EGFR_12CU -> EGFR_11CU; 2*kptp68*EGFR_12CU;
+  r15: EGFR_12LU -> EGFR_11LU; 2*kptp68*EGFR_12LU;
+  r16: EGFR_12UG -> EGFR_02UG; kptp*EGFR_12UG;
+  r17: EGFR_12UG -> EGFR_11UG; kptp68*EGFR_12UG;
+  r18: EGFR_12UL -> EGFR_02UL; kptp*EGFR_12UL;
+  r19: EGFR_12UL -> EGFR_11UL; kptp68*EGFR_12UL;
+  r20: EGFR_12CG -> EGFR_11CG; kptp68*EGFR_12CG;
+  r21: EGFR_12CC -> EGFR_11CC; kptp68*EGFR_12CC;
+  r22: EGFR_12LG -> EGFR_11LG; kptp68*EGFR_12LG;
+  r23: EGFR_00UU -> EGFR_10UU; kkin*EGFR_00UU;
+  r24: EGFR_00UU -> EGFR_01UU; 2*kkin68*EGFR_00UU;
+  r25: EGFR_10UU -> EGFR_11UU; 2*kkin68*EGFR_10UU;
+  r26: EGFR_10CU -> EGFR_11CU; 2*kkin68*EGFR_10CU;
+  r27: EGFR_10LU -> EGFR_11LU; 2*kkin68*EGFR_10LU;
+  r28: EGFR_01UU -> EGFR_11UU; kkin*EGFR_01UU;
+  r29: EGFR_01UU -> EGFR_02UU; kkin68*EGFR_01UU;
+  r30: EGFR_01UG -> EGFR_11UG; kkin*EGFR_01UG;
+  r31: EGFR_01UG -> EGFR_02UG; kkin68*EGFR_01UG;
+  r32: EGFR_01UL -> EGFR_11UL; kkin*EGFR_01UL;
+  r33: EGFR_01UL -> EGFR_02UL; kkin68*EGFR_01UL;
+  r34: EGFR_11UU -> EGFR_12UU; kkin68*EGFR_11UU;
+  r35: EGFR_11CU -> EGFR_12CU; kkin68*EGFR_11CU;
+  r36: EGFR_11LU -> EGFR_12LU; kkin68*EGFR_11LU;
+  r37: EGFR_11UG -> EGFR_12UG; kkin68*EGFR_11UG;
+  r38: EGFR_11UL -> EGFR_12UL; kkin68*EGFR_11UL;
+  r39: EGFR_11CG -> EGFR_12CG; kkin68*EGFR_11CG;
+  r40: EGFR_11CC -> EGFR_12CC; kkin68*EGFR_11CC;
+  r41: EGFR_11LG -> EGFR_12LG; kkin68*EGFR_11LG;
+  r42: EGFR_02UU -> EGFR_12UU; kkin*EGFR_02UU;
+  r43: EGFR_02UG -> EGFR_12UG; kkin*EGFR_02UG;
+  r44: EGFR_02UL -> EGFR_12UL; kkin*EGFR_02UL;
+  r45: Cbl + Grb2 -> CG; kbcg*Cbl*Grb2;
+  r46: CG -> Cbl + Grb2; kucg*CG;
+  r47: Cbl + EGFR_10UU -> EGFR_10CU; kb45*Cbl*EGFR_10UU;
+  r48: EGFR_10CU -> Cbl + EGFR_10UU; ku45*EGFR_10CU;
+  r49: CG + EGFR_10UU -> EGFR_10LU; kb45*CG*EGFR_10UU;
+  r50: EGFR_10LU -> CG + EGFR_10UU; ku45*EGFR_10LU;
+  r51: Grb2 + EGFR_10CU -> EGFR_10LU; kbcg*Grb2*EGFR_10CU;
+  r52: EGFR_10LU -> Grb2 + EGFR_10CU; kucg*EGFR_10LU;
+  r53: Grb2 + EGFR_01UU -> EGFR_01UG; kb68*Grb2*EGFR_01UU;
+  r54: EGFR_01UG -> Grb2 + EGFR_01UU; ku68*EGFR_01UG;
+  r55: CG + EGFR_01UU -> EGFR_01UL; kb68*CG*EGFR_01UU;
+  r56: EGFR_01UL -> CG + EGFR_01UU; ku68*EGFR_01UL;
+  r57: Cbl + EGFR_01UG -> EGFR_01UL; kbcg*Cbl*EGFR_01UG;
+  r58: EGFR_01UL -> Cbl + EGFR_01UG; kucg*EGFR_01UL;
+  r59: Cbl + EGFR_11UU -> EGFR_11CU; kb45*Cbl*EGFR_11UU;
+  r60: EGFR_11CU -> Cbl + EGFR_11UU; ku45*EGFR_11CU;
+  r61: CG + EGFR_11UU -> EGFR_11LU; kb45*CG*EGFR_11UU;
+  r62: EGFR_11LU -> CG + EGFR_11UU; ku45*EGFR_11LU;
+  r63: Grb2 + EGFR_11UU -> EGFR_11UG; kb68*Grb2*EGFR_11UU;
+  r64: EGFR_11UG -> Grb2 + EGFR_11UU; ku68*EGFR_11UG;
+  r65: CG + EGFR_11UU -> EGFR_11UL; kb68*CG*EGFR_11UU;
+  r66: EGFR_11UL -> CG + EGFR_11UU; ku68*EGFR_11UL;
+  r67: Grb2 + EGFR_11CU -> EGFR_11LU; kbcg*Grb2*EGFR_11CU;
+  r68: EGFR_11LU -> Grb2 + EGFR_11CU; kucg*EGFR_11LU;
+  r69: Grb2 + EGFR_11CU -> EGFR_11CG; kb68*Grb2*EGFR_11CU;
+  r70: EGFR_11CG -> Grb2 + EGFR_11CU; ku68*EGFR_11CG;
+  r71: Grb2 + EGFR_11LU -> EGFR_11LG; kb68*Grb2*EGFR_11LU;
+  r72: EGFR_11LG -> Grb2 + EGFR_11LU; ku68*EGFR_11LG;
+  r73: EGFR_11LU -> EGFR_11CC; kb68P*EGFR_11LU;
+  r74: EGFR_11CC -> EGFR_11LU; ku68M*EGFR_11CC;
+  r75: Cbl + EGFR_11UG -> EGFR_11CG; kb45*Cbl*EGFR_11UG;
+  r76: EGFR_11CG -> Cbl + EGFR_11UG; ku45*EGFR_11CG;
+  r77: CG + EGFR_11UG -> EGFR_11LG; kb45*CG*EGFR_11UG;
+  r78: EGFR_11LG -> CG + EGFR_11UG; ku45*EGFR_11LG;
+  r79: Cbl + EGFR_11UG -> EGFR_11UL; kbcg*Cbl*EGFR_11UG;
+  r80: EGFR_11UL -> Cbl + EGFR_11UG; kucg*EGFR_11UL;
+  r81: EGFR_11UL -> EGFR_11CC; kb45P*EGFR_11UL;
+  r82: EGFR_11CC -> EGFR_11UL; ku45M*EGFR_11CC;
+  r83: EGFR_11CG -> EGFR_11CC; kbcgP*EGFR_11CG;
+  r84: EGFR_11CC -> EGFR_11CG; kucgM*EGFR_11CC;
+  r85: Grb2 + EGFR_11CG -> EGFR_11LG; kbcg*Grb2*EGFR_11CG;
+  r86: EGFR_11LG -> Grb2 + EGFR_11CG; kucg*EGFR_11LG;
+  r87: Grb2 + EGFR_02UU -> EGFR_02UG; 2*kb68*Grb2*EGFR_02UU;
+  r88: EGFR_02UG -> Grb2 + EGFR_02UU; ku68*EGFR_02UG;
+  r89: CG + EGFR_02UU -> EGFR_02UL; 2*kb68*CG*EGFR_02UU;
+  r90: EGFR_02UL -> CG + EGFR_02UU; ku68*EGFR_02UL;
+  r91: Cbl + EGFR_02UG -> EGFR_02UL; kbcg*Cbl*EGFR_02UG;
+  r92: EGFR_02UL -> Cbl + EGFR_02UG; kucg*EGFR_02UL;
+  r93: Cbl + EGFR_12UU -> EGFR_12CU; kb45*Cbl*EGFR_12UU;
+  r94: EGFR_12CU -> Cbl + EGFR_12UU; ku45*EGFR_12CU;
+  r95: CG + EGFR_12UU -> EGFR_12LU; kb45*CG*EGFR_12UU;
+  r96: EGFR_12LU -> CG + EGFR_12UU; ku45*EGFR_12LU;
+  r97: Grb2 + EGFR_12UU -> EGFR_12UG; 2*kb68*Grb2*EGFR_12UU;
+  r98: EGFR_12UG -> Grb2 + EGFR_12UU; ku68*EGFR_12UG;
+  r99: CG + EGFR_12UU -> EGFR_12UL; 2*kb68*CG*EGFR_12UU;
+  r100: EGFR_12UL -> CG + EGFR_12UU; ku68*EGFR_12UL;
+  r101: Grb2 + EGFR_12CU -> EGFR_12LU; kbcg*Grb2*EGFR_12CU;
+  r102: EGFR_12LU -> Grb2 + EGFR_12CU; kucg*EGFR_12LU;
+  r103: Grb2 + EGFR_12CU -> EGFR_12CG; 2*kb68*Grb2*EGFR_12CU;
+  r104: EGFR_12CG -> Grb2 + EGFR_12CU; ku68*EGFR_12CG;
+  r105: Grb2 + EGFR_12LU -> EGFR_12LG; 2*kb68*Grb2*EGFR_12LU;
+  r106: EGFR_12LG -> Grb2 + EGFR_12LU; ku68*EGFR_12LG;
+  r107: EGFR_12LU -> EGFR_12CC; 2*kb68P*EGFR_12LU;
+  r108: EGFR_12CC -> EGFR_12LU; ku68M*EGFR_12CC;
+  r109: Cbl + EGFR_12UG -> EGFR_12CG; kb45*Cbl*EGFR_12UG;
+  r110: EGFR_12CG -> Cbl + EGFR_12UG; ku45*EGFR_12CG;
+  r111: CG + EGFR_12UG -> EGFR_12LG; kb45*CG*EGFR_12UG;
+  r112: EGFR_12LG -> CG + EGFR_12UG; ku45*EGFR_12LG;
+  r113: Cbl + EGFR_12UG -> EGFR_12UL; kbcg*Cbl*EGFR_12UG;
+  r114: EGFR_12UL -> Cbl + EGFR_12UG; kucg*EGFR_12UL;
+  r115: EGFR_12UL -> EGFR_12CC; kb45P*EGFR_12UL;
+  r116: EGFR_12CC -> EGFR_12UL; ku45M*EGFR_12CC;
+  r117: EGFR_12CG -> EGFR_12CC; kbcgP*EGFR_12CG;
+  r118: EGFR_12CC -> EGFR_12CG; kucgM*EGFR_12CC;
+  r119: Grb2 + EGFR_12CG -> EGFR_12LG; kbcg*Grb2*EGFR_12CG;
+  r120: EGFR_12LG -> Grb2 + EGFR_12CG; kucg*EGFR_12LG;
+
+  // Species initializations:
+  Cbl = 2.80975332814237e-05;
+  Grb2 = 3.30538809753328;
+  CG = 0.0146119024667186;
+  EGFR_10UU = 0;
+  EGFR_10CU = 0;
+  EGFR_10LU = 0;
+  EGFR_01UU = 0;
+  EGFR_01UG = 0;
+  EGFR_01UL = 0;
+  EGFR_11UU = 0;
+  EGFR_11CU = 0;
+  EGFR_11LU = 0;
+  EGFR_11UG = 0;
+  EGFR_11UL = 0;
+  EGFR_11CG = 0;
+  EGFR_11CC = 0;
+  EGFR_11LG = 0;
+  EGFR_02UU = 0;
+  EGFR_02UG = 0;
+  EGFR_02UL = 0;
+  EGFR_12UU = 0;
+  EGFR_12CU = 0;
+  EGFR_12LU = 0;
+  EGFR_12UG = 0;
+  EGFR_12UL = 0;
+  EGFR_12CG = 0;
+  EGFR_12CC = 0;
+  EGFR_12LG = 0;
+  EGFR_00UU = 0.833;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  PYMax = 2.279493223;
+  UbMax = 0.014306;
+  CblFactor = 1;
+  K45 = 0.201361;
+  floc = 20000;
+  Kcg = 0.006356;
+  kptp = 0.016;
+  kkinbase = 0.0759155;
+  Ltot = 0;
+  nH = 1.13;
+  xT = 4.59181;
+  ku45 = 0.001011;
+  kucg = 0.309271;
+  RT = 0.833;
+  CblT = 0.01464;
+  Grb2T = 3.32;
+  CblWT = 0.01464;
+
+  // Other declarations:
+  var K45P, KcgP, kptp68, kkin, kkin68, kb45, ku45M, kb45P, kb68, ku68, kb68P;
+  var ku68M, kbcg, kbcgP, kucgM;
+  const cell, PYMax, UbMax, CblFactor, K45, floc, Kcg, kptp, kkinbase, Ltot;
+  const nH, xT, ku45, kucg, RT, CblT, Grb2T, CblWT;
+
+  // Display Names:
+  r1 is "EGFR_10UU has site Y1045 dephosphorylated";
+  r2 is "EGFR_01UU has site Y1068/Y1086 dephosphorylated";
+  r3 is "EGFR_11UU has site Y1045 dephosphorylated";
+  r4 is "EGFR_11UU has site Y1068/Y1086 dephosphorylated";
+  r5 is "EGFR_11CU has site Y1068/Y1086 dephosphorylated";
+  r6 is "EGFR_11LU has site Y1068/Y1086 dephosphorylated";
+  r7 is "EGFR_11UG has site Y1045 dephosphorylated";
+  r8 is "EGFR_11UL has site Y1045 dephosphorylated";
+  r9 is "EGFR_02UU has site Y1068/Y1086 dephosphorylated";
+  r10 is "EGFR_02UG has site Y1068/Y1-86 dephosphorylated";
+  r11 is "EGFR_02UL has site Y1068/Y1-86 dephosphorylated";
+  r12 is "EGFR_12UU has site Y1045 dephosphorylated";
+  r13 is "EGFR_12UU has site Y1068/Y1086 dephosphorylated";
+  r14 is "EGFR_12CU has site Y1068/Y1086 dephosphorylated";
+  r15 is "EGFR_12LU has site Y1068/Y1086 dephosphorylated";
+  r16 is "EGFR_12UG has site Y1045 dephosphorylated";
+  r17 is "EGFR_12UG has site Y1068/Y1-86 dephosphorylated";
+  r18 is "EGFR_12UL has site Y1045 dephosphorylated";
+  r19 is "EGFR_12UL has site Y1068/Y1-86 dephosphorylated";
+  r20 is "EGFR_12CG has site Y1068/Y1-86 dephosphorylated";
+  r21 is "EGFR_12CC has site Y1068/Y1-86 dephosphorylated";
+  r22 is "EGFR_12LG has site Y1068/Y1-86 dephosphorylated";
+  r23 is "EGFR_00UU has site Y1045 phosphorylated";
+  r24 is "EGFR_00UU has site Y1068/Y1086 phosphorylated";
+  r25 is "EGFR_10UU has site Y1068/Y1086 phosphorylated";
+  r26 is "EGFR_10CU has site Y1068/Y1086 phosphorylated";
+  r27 is "EGFR_10LU has site Y1068/Y1086 phosphorylated";
+  r28 is "EGFR_01UU has site Y1045 phosphorylated";
+  r29 is "EGFR_01UU has site Y1068/Y1086 phosphorylated";
+  r30 is "EGFR_01UG has site Y1045 phosphorylated";
+  r31 is "EGFR_01UG has site Y1068/Y1086 phosphorylated";
+  r32 is "EGFR_01UL has site Y1045 phosphorylated";
+  r33 is "EGFR_01UL has site Y1068/Y1086 phosphorylated";
+  r34 is "EGFR_11UU has site Y1068/Y1086 phosphorylated";
+  r35 is "EGFR_11CU has site Y1068/Y1086 phosphorylated";
+  r36 is "EGFR_11LU has site Y1068/Y1086 phosphorylated";
+  r37 is "EGFR_11UG has site Y1068/Y1086 phosphorylated";
+  r38 is "EGFR_11UL has site Y1068/Y1086 phosphorylated";
+  r39 is "EGFR_11CG has site Y1068/Y1086 phosphorylated";
+  r40 is "EGFR_11CC has site Y1068/Y1086 phosphorylated";
+  r41 is "EGFR_11LG has site Y1068/Y1086 phosphorylated";
+  r42 is "EGFR_02UU has site Y1045 phosphorylated";
+  r43 is "EGFR_02UG has site Y1045 phosphorylated";
+  r44 is "EGFR_02UL has site Y1045 phosphorylated";
+  r45 is "Cbl and Grb2  bind yielding  CG";
+  r46 is "CG  dissociates to  Cbl and Grb2";
+  r47 is "Cbl and EGFR_10UU  bind yielding  EGFR_10CU";
+  r48 is "EGFR_10CU  dissociates to  Cbl and EGFR_10UU";
+  r49 is "CG and EGFR_10UU  bind yielding  EGFR_10LU";
+  r50 is "EGFR_10LU  dissociates to  CG and EGFR_10UU";
+  r51 is "Grb2 and EGFR_10CU  bind yielding  EGFR_10LU";
+  r52 is "EGFR_10LU  dissociates to  Grb2 and EGFR_10CU";
+  r53 is "Grb2 and EGFR_01UU  bind yielding  EGFR_01UG";
+  r54 is "EGFR_01UG  dissociates to  Grb2 and EGFR_01UU";
+  r55 is "CG and EGFR_01UU  bind yielding  EGFR_01UL";
+  r56 is "EGFR_01UL  dissociates to  CG and EGFR_01UU";
+  r57 is "Cbl and EGFR_01UG  bind yielding  EGFR_01UL";
+  r58 is "EGFR_01UL  dissociates to Cbl and EGFR_01UG";
+  r59 is "Cbl and EGFR_11UU  bind yielding  EGFR_11CU";
+  r60 is "EGFR_11CU  dissociates to  Cbl and EGFR_11UU";
+  r61 is "CG and EGFR_11UU  bind yielding  EGFR_11LU";
+  r62 is "EGFR_11LU  dissociates to  CG and EGFR_11UU";
+  r63 is "Grb2 and EGFR_11UU  bind yielding  EGFR_11UG";
+  r64 is "EGFR_11UG  dissociates to  Grb2 and EGFR_11UU";
+  r65 is "CG and EGFR_11UU  bind yielding  EGFR_11UL";
+  r66 is "EGFR_11UL  dissociates to  CG and EGFR_11UU";
+  r67 is "Grb2 and EGFR_11CU  bind yielding  EGFR_11LU";
+  r68 is "EGFR_11LU  dissociates to  Grb2 and EGFR_11CU";
+  r69 is "Grb2 and EGFR_11CU  bind yielding  EGFR_11CG";
+  r70 is "EGFR_11CG  dissociates to  Grb2 and EGFR_11CU";
+  r71 is "Grb2 and EGFR_11LU  bind yielding  EGFR_11LG";
+  r72 is "EGFR_11LG  dissociates to  Grb2 and EGFR_11LU";
+  r73 is "EGFR_11LU  transforms in (singly-bound -> doubly-bound)  EGFR_11CC";
+  r74 is "EGFR_11CC  tranforms in (doubly-bound -> singly-bound)  EGFR_11LU";
+  r75 is "Cbl and EGFR_11UG  bind yielding  EGFR_11CG";
+  r76 is "EGFR_11CG  dissociates to  Cbl and EGFR_11UG";
+  r77 is "CG and EGFR_11UG  bind yielding  EGFR_11LG";
+  r78 is "EGFR_11LG  dissociates to  CG and EGFR_11UG";
+  r79 is "Cbl and EGFR_11UG  bind yielding  EGFR_11UL";
+  r80 is "EGFR_11UL  dissociates to Cbl and EGFR_11UG";
+  r81 is "EGFR_11UL  transforms in (singly-bound -> doubly-bound)  EGFR_11CC";
+  r82 is "EGFR_11CC  tranforms in (doubly-bound -> singly-bound)  EGFR_11UL";
+  r83 is "EGFR_11CG  transforms in (Cbl bind Grb2 directly)  EGFR_11CC";
+  r84 is "EGFR_11CC  tranforms in (Cbl-Grb2 loose direct binding, but stay bound to EGFR)  EGFR_11CG";
+  r85 is "Grb2 and EGFR_11CG  bind yielding  EGFR_11LG";
+  r86 is "EGFR_11LG  dissociates to  Grb2 and EGFR_11CG";
+  r87 is "Grb2 and EGFR_02UU  bind yielding  EGFR_02UG";
+  r88 is "EGFR_02UG  dissociates to  Grb2 and EGFR_02UU";
+  r89 is "CG and EGFR_02UU  bind yielding  EGFR_02UL";
+  r90 is "EGFR_02UL  dissociates to  CG and EGFR_02UU";
+  r91 is "Cbl and EGFR_02UG  bind yielding  EGFR_02UL";
+  r92 is "EGFR_02UL  dissociates to Cbl and EGFR_02UG";
+  r93 is "Cbl and EGFR_12UU  bind yielding  EGFR_12CU";
+  r94 is "EGFR_12CU  dissociates to  Cbl and EGFR_12UU";
+  r95 is "CG and EGFR_12UU  bind yielding  EGFR_12LU";
+  r96 is "EGFR_12LU  dissociates to  CG and EGFR_12UU";
+  r97 is "Grb2 and EGFR_12UU  bind yielding  EGFR_12UG";
+  r98 is "EGFR_12UG  dissociates to  Grb2 and EGFR_12UU";
+  r99 is "CG and EGFR_12UU  bind yielding  EGFR_12UL";
+  r100 is "EGFR_12UL  dissociates to  CG and EGFR_12UU";
+  r101 is "Grb2 and EGFR_12CU  bind yielding  EGFR_12LU";
+  r102 is "EGFR_12LU  dissociates to  Grb2 and EGFR_12CU";
+  r103 is "Grb2 and EGFR_12CU  bind yielding  EGFR_12CG";
+  r104 is "EGFR_12CG  dissociates to  Grb2 and EGFR_12CU";
+  r105 is "Grb2 and EGFR_12LU  bind yielding  EGFR_12LG";
+  r106 is "EGFR_12LG  dissociates to  Grb2 and EGFR_12LU";
+  r107 is "EGFR_12LU  transforms in (singly-bound -> doubly-bound)  EGFR_12CC";
+  r108 is "EGFR_12CC  tranforms in (doubly-bound -> singly-bound)  EGFR_12LU";
+  r109 is "Cbl and EGFR_12UG  bind yielding  EGFR_12CG";
+  r110 is "EGFR_12CG  dissociates to  Cbl and EGFR_12UG";
+  r111 is "CG and EGFR_12UG  bind yielding  EGFR_12LG";
+  r112 is "EGFR_12LG  dissociates to  CG and EGFR_12UG";
+  r113 is "Cbl and EGFR_12UG  bind yielding  EGFR_12UL";
+  r114 is "EGFR_12UL  dissociates to Cbl and EGFR_12UG";
+  r115 is "EGFR_12UL  transforms in (singly-bound -> doubly-bound)  EGFR_12CC";
+  r116 is "EGFR_12CC  tranforms in (doubly-bound -> singly-bound)  EGFR_12UL";
+  r117 is "EGFR_12CG  transforms in (Cbl bind Grb2 directly)  EGFR_12CC";
+  r118 is "EGFR_12CC  tranforms in (Cbl-Grb2 loose direct binding, but stay bound to EGFR)  EGFR_12CG";
+  r119 is "Grb2 and EGFR_12CG  bind yielding  EGFR_12LG";
+  r120 is "EGFR_12LG  dissociates to  Grb2 and EGFR_12CG";
+
+  // CV terms:
+  Cbl version "http://identifiers.org/uniprot/P22681"
+  Grb2 model_entity_is "http://identifiers.org/uniprot/P62993"
+  CG part "http://identifiers.org/uniprot/P22681",
+          "http://identifiers.org/uniprot/P62993"
+  EGFR_00UU hypernym "http://identifiers.org/uniprot/P00533"
+end
+
+MODEL1505190001 is "Capuani2015 - Binding of Cbl and Gbr2 to EGFR (Multisite Phosphorylation Model - MPM)"
+
+MODEL1505190001 model_entity_is "http://identifiers.org/biomodels.db/MODEL1505190001"
+MODEL1505190001 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000594"
+MODEL1505190001 description "http://identifiers.org/pubmed/26264748"
+MODEL1505190001 property "http://identifiers.org/doid/DOID:162"
+MODEL1505190001 taxon "http://identifiers.org/taxonomy/9606"
+MODEL1505190001 container "http://identifiers.org/bto/BTO:0000567"
+MODEL1505190001 hypernym "http://identifiers.org/go/GO:0007173"

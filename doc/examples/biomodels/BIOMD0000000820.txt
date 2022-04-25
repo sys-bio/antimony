@@ -1,0 +1,152 @@
+// Created by libAntimony v2.13.0
+function Function_for_exponential_linear_growth(alpha_0, n, alpha_1)
+  alpha_0*n + alpha_1;
+end
+
+Function_for_exponential_linear_growth is "Function for exponential-linear growth"
+
+function Function_for_generalized_logistic_growth(alpha, n, K, v)
+  alpha*n*(1 - (n/K)^v);
+end
+
+Function_for_generalized_logistic_growth is "Function for generalized logistic growth"
+
+function Function_for_Gompertz_growth(alpha, n, K)
+  alpha*n*ln(K) - alpha*n*ln(n);
+end
+
+Function_for_Gompertz_growth is "Function for Gompertz growth"
+
+function Function_for_Von_Bertalanffy_equation(a, n, gamma_, b)
+  a*n^gamma_ - b*n;
+end
+
+Function_for_Von_Bertalanffy_equation is "Function for Von Bertalanffy equation"
+
+function Function_for_exponential_growth(alpha_0, n)
+  alpha_0*n;
+end
+
+Function_for_exponential_growth is "Function for exponential growth"
+
+function Function_for_power_law_model(a, n, gamma_)
+  a*n^gamma_;
+end
+
+Function_for_power_law_model is "Function for power law model"
+
+function Function_for_logistic_growth(alpha, n, K)
+  alpha*n*(1 - n/K);
+end
+
+Function_for_logistic_growth is "Function for logistic growth"
+
+
+model *New_Model()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species tumor_at_Exp_Lin_growth in compartment_, tumor_at_Gen__logistic_growth in compartment_;
+  species tumor_at_Gomp__growth in compartment_, tumor_at_Power_growth in compartment_;
+  species tumor_at_Von_Bert__growth in compartment_, tumor_at_Exp_growth in compartment_;
+  species tumor_at_Logistic_growth in compartment_;
+
+  // Assignment Rules:
+  gamma_ := 2/3;
+
+  // Reactions:
+  exponential_linear_growth:  => tumor_at_Exp_Lin_growth; compartment_*Function_for_exponential_linear_growth(alpha_0_variable, tumor_at_Exp_Lin_growth, alpha_1_variable);
+  generalized_logistic_growth:  => tumor_at_Gen__logistic_growth; compartment_*Function_for_generalized_logistic_growth(alpha, tumor_at_Gen__logistic_growth, K, nu);
+  Gompertz_growth:  => tumor_at_Gomp__growth; compartment_*Function_for_Gompertz_growth(alpha, tumor_at_Gomp__growth, K);
+  power_law_model:  => tumor_at_Power_growth; compartment_*Function_for_power_law_model(a, tumor_at_Power_growth, gamma_);
+  Von_Bertalanffy_equation:  => tumor_at_Von_Bert__growth; compartment_*Function_for_Von_Bertalanffy_equation(a, tumor_at_Von_Bert__growth, gamma_, b);
+  exponential_growth:  => tumor_at_Exp_growth; compartment_*Function_for_exponential_growth(alpha_0, tumor_at_Exp_growth);
+  logistic_growth:  => tumor_at_Logistic_growth; compartment_*Function_for_logistic_growth(alpha, tumor_at_Logistic_growth, K);
+
+  // Events:
+  exponential_model_switch: at time > tau: alpha_0_variable = alpha_0_variable - alpha_0, alpha_1_variable = alpha_1_variable + alpha_1;
+
+  // Species initializations:
+  tumor_at_Exp_Lin_growth = 1;
+  tumor_at_Gen__logistic_growth = 1;
+  tumor_at_Gomp__growth = 1;
+  tumor_at_Power_growth = 1;
+  tumor_at_Von_Bert__growth = 1;
+  tumor_at_Exp_growth = 1;
+  tumor_at_Logistic_growth = 1;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  tau = 10;
+  alpha_1_variable = 0;
+  alpha_1 = 10000;
+  alpha_0_variable = 1;
+  alpha_0 = 1;
+  alpha = 1;
+  K = 100;
+  nu = 0.3;
+  a = 4;
+  b = 0.2;
+
+  // Other declarations:
+  var alpha_1_variable, alpha_0_variable, gamma_;
+  const compartment_, tau, alpha_1, alpha_0, alpha, K, nu, a, b;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  tumor_at_Exp_Lin_growth is "tumor at Exp-Lin growth";
+  tumor_at_Gen__logistic_growth is "tumor at Gen. logistic growth";
+  tumor_at_Gomp__growth is "tumor at Gomp. growth";
+  tumor_at_Power_growth is "tumor at Power growth";
+  tumor_at_Von_Bert__growth is "tumor at Von Bert. growth";
+  tumor_at_Exp_growth is "tumor at Exp growth";
+  tumor_at_Logistic_growth is "tumor at Logistic growth";
+  exponential_model_switch is "exponential model switch";
+  alpha_1_variable is "alpha_1 variable";
+  alpha_0_variable is "alpha_0 variable";
+  gamma_ is "gamma";
+  exponential_linear_growth is "exponential-linear growth";
+  generalized_logistic_growth is "generalized logistic growth";
+  Gompertz_growth is "Gompertz growth";
+  power_law_model is "power law model";
+  Von_Bertalanffy_equation is "Von Bertalanffy equation";
+  exponential_growth is "exponential growth";
+  logistic_growth is "logistic growth";
+
+  // CV terms:
+  compartment_ hypernym "http://identifiers.org/ncit/C13413"
+  tumor_at_Exp_Lin_growth hypernym "http://identifiers.org/ncit/C120284"
+  tumor_at_Gen__logistic_growth hypernym "http://identifiers.org/ncit/C120284"
+  tumor_at_Gomp__growth hypernym "http://identifiers.org/ncit/C120284"
+  tumor_at_Power_growth hypernym "http://identifiers.org/ncit/C120284"
+  tumor_at_Power_growth propertyBearer "http://identifiers.org/sbo/SBO:0000531"
+  tumor_at_Von_Bert__growth hypernym "http://identifiers.org/ncit/C120284"
+  tumor_at_Exp_growth hypernym "http://identifiers.org/ncit/C120284"
+  tumor_at_Logistic_growth hypernym "http://identifiers.org/ncit/C120284"
+  alpha_0 hypernym "http://identifiers.org/sbo/SBO:0000382"
+  exponential_linear_growth hypernym "http://identifiers.org/go/GO:0040007"
+  generalized_logistic_growth hypernym "http://identifiers.org/go/GO:0040007"
+  Gompertz_growth hypernym "http://identifiers.org/go/GO:0040007"
+  power_law_model hypernym "http://identifiers.org/go/GO:0040007"
+  power_law_model propertyBearer "http://identifiers.org/sbo/SBO:0000531"
+  Von_Bertalanffy_equation hypernym "http://identifiers.org/go/GO:0040007"
+  exponential_growth hypernym "http://identifiers.org/go/GO:0040007"
+  logistic_growth hypernym "http://identifiers.org/go/GO:0040007"
+end
+
+New_Model is "West2019 - Cellular interactions constrain tumor growth"
+
+New_Model model_entity_is "http://identifiers.org/biomodels.db/MODEL1909240001",
+                          "http://identifiers.org/biomodels.db/BIOMD0000000820"
+New_Model property "http://identifiers.org/efo/0000311"
+New_Model property "http://identifiers.org/ncit/C28359"
+New_Model property "http://identifiers.org/mamo/MAMO_0000046"
+New_Model property "http://identifiers.org/ncit/C19388"
+New_Model property "http://identifiers.org/sbo/SBO:0000001"
+New_Model description "http://identifiers.org/pubmed/30674661"

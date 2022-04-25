@@ -1,0 +1,95 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function function_for_cyclin_degradataion(M)
+  M;
+end
+
+function_for_cyclin_degradataion is "function for cyclin degradataion"
+
+function function_for_MPF_syntehsis_1(k, M)
+  k*M;
+end
+
+function_for_MPF_syntehsis_1 is "function for MPF syntehsis 1"
+
+function function_for_MPF_synthesis_2(k, M, P)
+  k*M*P^2;
+end
+
+function_for_MPF_synthesis_2 is "function for MPF synthesis 2"
+
+function function_for_MPF_degradation(k, S)
+  k*S/(S + 1);
+end
+
+function_for_MPF_degradation is "function for MPF degradation"
+
+
+model *Norel1990___MPF_and_Cyclin_Oscillations()
+
+  // Compartments and Species:
+  compartment cell;
+  species M in cell, C in cell;
+
+  // Reactions:
+  Cylin_synthesis:  => C; cell*Constant_flux__irreversible(i);
+  Cyclin_degradation: C => ; cell*function_for_cyclin_degradataion(M);
+  MPF_synthesis_1:  => M; cell*function_for_MPF_syntehsis_1(e, C);
+  MPF_synthesis_2:  => M; cell*function_for_MPF_synthesis_2(f, C, M);
+  MPF_degradation: M => ; cell*function_for_MPF_degradation(g, M);
+
+  // Species initializations:
+  M = 0.4;
+  C = 0.8;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  e = 3.46616;
+  f = 1;
+  g = 10;
+  i = 1.2;
+
+  // Other declarations:
+  const cell, e, f, g, i;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  Cylin_synthesis is "Cylin synthesis";
+  Cyclin_degradation is "Cyclin degradation";
+  MPF_synthesis_1 is "MPF synthesis 1";
+  MPF_synthesis_2 is "MPF synthesis 2";
+  MPF_degradation is "MPF degradation";
+
+  // CV terms:
+  cell property "http://identifiers.org/ncit/C48694"
+  M hypernym "http://identifiers.org/go/GO:0031387"
+  C property "http://identifiers.org/ncit/C17349"
+  e property "http://identifiers.org/ncit/C94967"
+  f property "http://identifiers.org/ncit/C94967"
+  g property "http://identifiers.org/ncit/C94967"
+  i property "http://identifiers.org/ncit/C94967"
+  Cylin_synthesis property "http://identifiers.org/ncit/C61408"
+  Cyclin_degradation property "http://identifiers.org/ncit/C61559"
+  MPF_synthesis_1 property "http://identifiers.org/ncit/C61408"
+  MPF_synthesis_2 property "http://identifiers.org/ncit/C61408"
+  MPF_degradation property "http://identifiers.org/ncit/C61559"
+end
+
+Norel1990___MPF_and_Cyclin_Oscillations is "Norel1990 - MPF and Cyclin Oscillations"
+
+Norel1990___MPF_and_Cyclin_Oscillations model_entity_is "http://identifiers.org/biomodels.db/MODEL1812120004",
+                                                        "http://identifiers.org/biomodels.db/BIOMD0000000728"
+Norel1990___MPF_and_Cyclin_Oscillations property "http://identifiers.org/mamo/MAMO_0000046"
+Norel1990___MPF_and_Cyclin_Oscillations property "http://identifiers.org/go/GO:0000278"
+Norel1990___MPF_and_Cyclin_Oscillations taxon "http://identifiers.org/taxonomy/9606"
+Norel1990___MPF_and_Cyclin_Oscillations description "http://identifiers.org/pubmed/1825521"

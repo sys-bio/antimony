@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *MODEL1410300001()
 
   // Compartments and Species:
@@ -28,21 +28,21 @@ model *MODEL1410300001()
   reaction_5: ERKc => ERKn; k_ERKin*ERKc*cytosol - k_ERKout*ERKn*nucleus;
   reaction_6: pERKc => pERKn; k_pERKin*pERKc*cytosol - k_pERKout*pERKn*nucleus;
   reaction_7: ppERKc => ppERKn; k_ppERKin*ppERKc*cytosol - k_ppERKout*ppERKn*nucleus;
-  reaction_8: ppERKc + DUSPc -> ppERK_DUSPc; ((kd1_ppERKc*ppERKc*DUSPc)/0.94*cytosol - kd2_ppERKc*ppERK_DUSPc)*cytosol;
+  reaction_8: ppERKc + DUSPc -> ppERK_DUSPc; ((kd1_ppERKc*ppERKc*DUSPc/0.94)*cytosol - kd2_ppERKc*ppERK_DUSPc)*cytosol;
   reaction_9: ppERK_DUSPc => pERKc + DUSPc; kd3_ppERKc*ppERK_DUSPc*cytosol;
-  reaction_10: pERKc + DUSPc -> pERK_DUSPc; ((kd1_pERKc*pERKc*DUSPc)/0.94*cytosol - kd2_pERKc*pERK_DUSPc)*cytosol;
+  reaction_10: pERKc + DUSPc -> pERK_DUSPc; ((kd1_pERKc*pERKc*DUSPc/0.94)*cytosol - kd2_pERKc*pERK_DUSPc)*cytosol;
   reaction_11: pERK_DUSPc => ERKc + DUSPc; kd3_pERKc*pERK_DUSPc*cytosol;
-  reaction_12: ppERKn + DUSPn -> ppERK_DUSPn; ((kd1_ppERKn*ppERKn*DUSPn)/0.22*nucleus - kd2_ppERKn*ppERK_DUSPn)*nucleus;
+  reaction_12: ppERKn + DUSPn -> ppERK_DUSPn; ((kd1_ppERKn*ppERKn*DUSPn/0.22)*nucleus - kd2_ppERKn*ppERK_DUSPn)*nucleus;
   reaction_13: ppERK_DUSPn => pERKn + DUSPn; kd3_ppERKn*ppERK_DUSPn*nucleus;
-  reaction_14: pERKn + DUSPn -> pERK_DUSPn; ((kd1_pERKn*pERKn*DUSPn)/0.22*nucleus - kd2_pERKn*pERK_DUSPn)*nucleus;
+  reaction_14: pERKn + DUSPn -> pERK_DUSPn; ((kd1_pERKn*pERKn*DUSPn/0.22)*nucleus - kd2_pERKn*pERK_DUSPn)*nucleus;
   reaction_15: pERK_DUSPn => ERKn + DUSPn; kd3_pERKn*pERK_DUSPn*nucleus;
-  reaction_16:  => duspn; (duspn_basal*(1 + (duspn_ind*ppERKn^2)/(ppERKn^2*nucleus + Kduspn^2))*0.693)/Tduspn;
-  reaction_17: duspn => ; (duspn*0.693)/Tduspn*nucleus;
-  reaction_18:  => DUSPn; ((v2*duspn)/0.22*0.693)/TDUSPn*nucleus;
-  reaction_19: DUSPn => ; (DUSPn*0.693)/TDUSPn*nucleus;
-  reaction_20: ERKn + STYXn -> ERK_STYXn; ((k1_ES*ERKn*STYXn)/0.22*nucleus - k2_ES*ERK_STYXn)*nucleus;
-  reaction_21: pERKn + STYXn -> pERK_STYXn; ((k1_pES*pERKn*STYXn)/0.22*nucleus - k2_pES*pERK_STYXn)*nucleus;
-  reaction_22: ppERKn + STYXn -> ppERK_STYXn; ((k1_ppES*ppERKn*STYXn)/0.22*nucleus - k2_ppES*ppERK_STYXn)*nucleus;
+  reaction_16:  => duspn; duspn_basal*(1 + duspn_ind*ppERKn^2/(ppERKn^2*nucleus + Kduspn^2))*0.693/Tduspn;
+  reaction_17: duspn => ; (duspn*0.693/Tduspn)*nucleus;
+  reaction_18:  => DUSPn; ((v2*duspn/0.22)*0.693/TDUSPn)*nucleus;
+  reaction_19: DUSPn => ; (DUSPn*0.693/TDUSPn)*nucleus;
+  reaction_20: ERKn + STYXn -> ERK_STYXn; ((k1_ES*ERKn*STYXn/0.22)*nucleus - k2_ES*ERK_STYXn)*nucleus;
+  reaction_21: pERKn + STYXn -> pERK_STYXn; ((k1_pES*pERKn*STYXn/0.22)*nucleus - k2_pES*pERK_STYXn)*nucleus;
+  reaction_22: ppERKn + STYXn -> ppERK_STYXn; ((k1_ppES*ppERKn*STYXn/0.22)*nucleus - k2_ppES*ppERK_STYXn)*nucleus;
 
   // Species initializations:
   ERKc = 572.5;
@@ -105,7 +105,7 @@ model *MODEL1410300001()
   kd3_pERKn = 43.2;
   kd1_ERKn = 0;
   kd2_ERKn = 160;
-  actCompl = 1e-009;
+  actCompl = 1e-09;
   duspn_basal = 1;
   duspn_ind = 20;
   Kduspn = 1000;
@@ -131,4 +131,52 @@ model *MODEL1410300001()
   const v2, TDUSPn, scale_cytERK_tot, scale_nucERK_tot, scale_cellERK_tot;
   const scale_cytppERK_tot, scale_nucppERK_tot, scale_cellppERK_tot, scale_tDUSPn;
   const scale_tERK_STYXn;
+
+  // CV terms:
+  cytosol hypernym "http://identifiers.org/go/GO:0005829"
+  nucleus hypernym "http://identifiers.org/go/GO:0005634"
+  ERKc hypernym "http://identifiers.org/uniprot/P27361"
+  pERKc hypernym "http://identifiers.org/uniprot/P27361"
+  ppERKc hypernym "http://identifiers.org/uniprot/P27361"
+  ERK_ppMEKc part "http://identifiers.org/uniprot/P27361",
+                  "http://identifiers.org/uniprot/Q02750"
+  pERK_ppMEKc part "http://identifiers.org/uniprot/P27361",
+                   "http://identifiers.org/uniprot/Q02750"
+  DUSPc hypernym "http://identifiers.org/uniprot/Q13115"
+  pERK_DUSPc hypernym "http://identifiers.org/uniprot/P27361",
+                      "http://identifiers.org/uniprot/Q13115"
+  ppERK_DUSPc hypernym "http://identifiers.org/uniprot/P27361",
+                       "http://identifiers.org/uniprot/Q13115"
+  ERKn hypernym "http://identifiers.org/uniprot/P27361"
+  pERKn hypernym "http://identifiers.org/uniprot/P27361"
+  ppERKn hypernym "http://identifiers.org/uniprot/P27361"
+  pERK_DUSPn part "http://identifiers.org/uniprot/P27361",
+                  "http://identifiers.org/uniprot/Q13115"
+  ppERK_DUSPn part "http://identifiers.org/uniprot/P27361",
+                   "http://identifiers.org/uniprot/Q13115"
+  STYXn hypernym "http://identifiers.org/uniprot/Q8WUJ0"
+  ERK_STYXn part "http://identifiers.org/uniprot/P27361",
+                 "http://identifiers.org/uniprot/Q8WUJ0"
+  pERK_STYXn part "http://identifiers.org/uniprot/P27361",
+                  "http://identifiers.org/uniprot/Q8WUJ0"
+  ppERK_STYXn part "http://identifiers.org/uniprot/P27361",
+                   "http://identifiers.org/uniprot/Q8WUJ0"
+  duspn hypernym "http://identifiers.org/uniprot/Q13115"
+  DUSPn hypernym "http://identifiers.org/uniprot/Q13115"
+  u_ppMEKc_tot hypernym "http://identifiers.org/uniprot/Q02750"
+  ppMEKc_tot hypernym "http://identifiers.org/uniprot/Q02750"
+  ERKc_obs hypernym "http://identifiers.org/uniprot/P27361"
+  pERKc_obs hypernym "http://identifiers.org/uniprot/P27361"
+  ppERKc_obs hypernym "http://identifiers.org/uniprot/P27361"
+  ERK_ppMEKc_obs part "http://identifiers.org/uniprot/P27361",
+                      "http://identifiers.org/uniprot/Q02750"
 end
+
+MODEL1410300001 is "Reiterer2013 - pseudophosphatase STYX role in ERK signalling"
+
+MODEL1410300001 model_entity_is "http://identifiers.org/biomodels.db/MODEL1410300001"
+MODEL1410300001 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000557"
+MODEL1410300001 description "http://identifiers.org/pubmed/23847209"
+MODEL1410300001 hypernym "http://identifiers.org/go/GO:0070372"
+MODEL1410300001 container "http://identifiers.org/bto/BTO:0000567"
+MODEL1410300001 taxon "http://identifiers.org/taxonomy/9606"

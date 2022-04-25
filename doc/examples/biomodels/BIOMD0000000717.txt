@@ -1,0 +1,137 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function Rate_for_reaction_3(beta_b, S_b, I_b, H_b)
+  beta_b*S_b*I_b/(H_b + I_b);
+end
+
+Rate_for_reaction_3 is "Rate for reaction 3"
+
+function Rate_for_reaction_8__1(beta_bh, S_h, I_b, H_bh)
+  beta_bh*S_h*I_b/(H_bh + I_b);
+end
+
+Rate_for_reaction_8__1 is "Rate for reaction 8 [1]"
+
+
+model *New_Model()
+
+  // Compartments and Species:
+  compartment compartment_, Human_Population;
+  species S_b in compartment_, I_b in compartment_, S_h in compartment_, I_a in compartment_;
+
+  // Assignment Rules:
+  Nb := S_b + I_b;
+  Nh := S_h + I_a;
+  LAMBDA_b := 2060/365;
+  LAMBDA_h := 23.7*ModelValue_1/365000;
+  mu_b := 1/(2*365);
+  mu_h := 1/(69.2*365);
+  beta_bh := 16/(108*1000000*912.5);
+  beta_b := 45685/(439197*30);
+  beta_v := 45685/(2*439197*30);
+  d := 6/(108*1000000*912.5);
+  delta_b := 45682/(439197*30);
+
+  // Reactions:
+  reaction_1:  => S_b; compartment_*Constant_flux__irreversible(LAMBDA_b);
+  reaction_2: S_b => ; compartment_*mu_b*S_b;
+  reaction_3: S_b => I_b; compartment_*Rate_for_reaction_3(beta_b, S_b, I_b, H_b);
+  reaction_4: I_b => ; compartment_*delta_b*I_b;
+  reaction_5: I_b => ; compartment_*mu_b*I_b;
+  reaction_6:  => S_h; compartment_*Constant_flux__irreversible(LAMBDA_h);
+  reaction_7: S_h => ; compartment_*mu_h*S_h;
+  reaction_8: S_h => I_a; compartment_*Rate_for_reaction_8__1(beta_bh, S_h, I_b, H_bh);
+  reaction_9: I_a => ; compartment_*d*I_a;
+  reaction_10: I_a => ; compartment_*mu_h*I_a;
+
+  // Species initializations:
+  S_b = 244956;
+  I_b = 36485;
+  S_h = 171977;
+  I_a = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+  Human_Population = 1;
+
+  // Variable initializations:
+  ModelValue_1 = Nh;
+  H_b = 180000;
+  H_bh = 120000;
+  H_v = 850;
+  p = 0;
+  phi = 0;
+  gamma_b = 0.003;
+  c = 0;
+  q = 0;
+
+  // Other declarations:
+  var Nb, Nh, LAMBDA_b, LAMBDA_h, mu_b, mu_h, beta_bh, beta_b, beta_v, d;
+  var delta_b;
+  const compartment_, Human_Population, ModelValue_1, H_b, H_bh, H_v, p, phi;
+  const gamma_b, c, q;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "Bird Population";
+  Human_Population is "Human Population";
+  S_b is "Susceptible bird (S_b)";
+  I_b is "Infected bird (I_b)";
+  S_h is "Susceptible human (S_h)";
+  I_a is "Infected Human (I_a)";
+  ModelValue_1 is "Initial for Nh";
+  reaction_1 is "Birth of susceptible bird population";
+  reaction_2 is "Natural death of susceptible bird population";
+  reaction_3 is "Infection of susceptible bird population";
+  reaction_4 is "Disease related death of infected bird population";
+  reaction_5 is "Natural death of infected bird population";
+  reaction_6 is "Birth of susceptible human population";
+  reaction_7 is "Natural death of susceptible human population";
+  reaction_8 is "Infection of susceptible human population";
+  reaction_9 is "Disease related death of infected human population";
+  reaction_10 is "Natural death of infected human ppopulation";
+
+  // CV terms:
+  compartment_ hypernym "http://identifiers.org/obi/OBI:0000181"
+  compartment_ taxon "http://identifiers.org/taxonomy/8782"
+  Human_Population hypernym "http://identifiers.org/obi/OBI:0000181"
+  Human_Population taxon "http://identifiers.org/taxonomy/9606"
+  S_b hypernym "http://identifiers.org/ido/0000514"
+  S_b taxon "http://identifiers.org/taxonomy/8782"
+  I_b hypernym "http://identifiers.org/ido/0000511"
+  I_b taxon "http://identifiers.org/taxonomy/8782"
+  S_h hypernym "http://identifiers.org/ido/0000514"
+  S_h taxon "http://identifiers.org/taxonomy/9606"
+  I_a hypernym "http://identifiers.org/ido/0000511"
+  I_a taxon "http://identifiers.org/taxonomy/9606"
+  reaction_2 hypernym "http://identifiers.org/efo/0000480"
+  reaction_3 hypernym "http://identifiers.org/ncit/C128320"
+  reaction_4 hypernym "http://identifiers.org/efo/0000480"
+  reaction_5 hypernym "http://identifiers.org/efo/0000480"
+  reaction_7 hypernym "http://identifiers.org/efo/0000480"
+  reaction_8 hypernym "http://identifiers.org/ncit/C128320"
+  reaction_9 hypernym "http://identifiers.org/efo/0000480"
+  reaction_10 hypernym "http://identifiers.org/efo/0000480"
+end
+
+New_Model is "Lee2018 - Avian human half-saturated incidence (HSI) model"
+
+New_Model model_entity_is "http://identifiers.org/biomodels.db/MODEL1808280010",
+                          "http://identifiers.org/biomodels.db/BIOMD0000000717"
+New_Model property "http://identifiers.org/mamo/MAMO_0000046"
+New_Model property "http://identifiers.org/ncit/C3439"
+New_Model property "http://identifiers.org/efo/0005222"
+New_Model taxon "http://identifiers.org/taxonomy/8782"
+New_Model taxon "http://identifiers.org/taxonomy/329376"
+New_Model taxon "http://identifiers.org/taxonomy/9606"
+New_Model description "http://identifiers.org/doi/10.1016/j.idm.2018.03.004"

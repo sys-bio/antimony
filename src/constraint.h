@@ -23,12 +23,12 @@ private:
   std::vector<std::string> m_name;
   std::string m_module;
 #ifndef NSBML
-  ASTNode* m_astnode;
+  libsbml::ASTNode* m_astnode;
 #endif
 #ifdef LIBSBML_HAS_PACKAGE_FBC
   bool m_isSetFB;
-  FluxBound m_fbLeft;
-  FluxBound m_fbRight;
+  libsbml::FluxBound m_fbLeft;
+  libsbml::FluxBound m_fbRight;
 #endif
 
 public:
@@ -61,15 +61,15 @@ public:
   void FixNames();
 
 #ifndef NSBML
-  void SetWithASTNode(const ASTNode* astnode);
+  void SetWithASTNode(const libsbml::ASTNode* astnode);
   void calculateASTNode();
-  const ASTNode* getASTNode() const;
+  const libsbml::ASTNode* getASTNode() const;
 #ifdef LIBSBML_HAS_PACKAGE_FBC
   bool calculateFluxBounds();
-  void addFluxBounds(Model* sbml) const;
-  bool ContainsFlux(const FluxBound* fb) const;
-  void SetFromFluxBound(const FluxBound* fb);
-  FluxBound GetFluxBoundFrom(const ASTNode* node) const;
+  void addFluxBounds(libsbml::Model* sbml) const;
+  bool ContainsFlux(const libsbml::FluxBound* fb) const;
+  void SetFromFluxBound(const libsbml::FluxBound* fb);
+  libsbml::FluxBound GetFluxBoundFrom(const libsbml::ASTNode* node) const;
   bool IsReactionID(const std::string& rxnid) const;
 #endif
 #endif

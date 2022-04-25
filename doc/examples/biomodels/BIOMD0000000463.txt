@@ -1,11 +1,15 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 function function_2(k, substrateA, substrateB, KmB, substrateC, KmC, substrateD, KmD, substrateE, KmE, substrateF, KmF, substrateG, KmG, substrateH, KmH)
-  (k*substrateA*substrateB*substrateC*substrateD*substrateE*substrateF*substrateG*substrateH)/((substrateB + KmB)*(substrateC + KmC)*(substrateD + KmD)*(substrateE + KmE)*(substrateF + KmF)*(substrateG + KmG)*(substrateH + KmH));
+  k*substrateA*substrateB*substrateC*substrateD*substrateE*substrateF*substrateG*substrateH/((substrateB + KmB)*(substrateC + KmC)*(substrateD + KmD)*(substrateE + KmE)*(substrateF + KmF)*(substrateG + KmG)*(substrateH + KmH));
 end
+
+function_2 is "Virus release kinetic"
 
 function function_1(k, substratea, substrateb)
   k*substratea*substrateb;
 end
+
+function_1 is "Protein binding"
 
 
 model *MODEL1307270000()
@@ -33,11 +37,11 @@ model *MODEL1307270000()
   species_39 := species_38/8;
   parameter_3 := parameter_1/parameter_47;
   parameter_4 := parameter_2/parameter_48;
-  parameter_7 := (1 - parameter_23)/parameter_23*parameter_6;
+  parameter_7 := ((1 - parameter_23)/parameter_23)*parameter_6;
   parameter_16 := parameter_9/parameter_24;
-  parameter_27 := parameter_9/parameter_24*(1 - parameter_25);
-  parameter_28 := parameter_9/parameter_24*parameter_25;
-  parameter_29 := parameter_9/parameter_24*parameter_26;
+  parameter_27 := (parameter_9/parameter_24)*(1 - parameter_25);
+  parameter_28 := (parameter_9/parameter_24)*parameter_25;
+  parameter_29 := (parameter_9/parameter_24)*parameter_26;
   parameter_39 := parameter_38/parameter_30/8;
   parameter_40 := parameter_38/parameter_31/8;
   parameter_41 := parameter_38/parameter_32/8;
@@ -52,17 +56,17 @@ model *MODEL1307270000()
   reaction_2: species_3 + species_4 -> species_5; compartment_1*(parameter_2*species_3*species_4 - parameter_4*species_5);
   reaction_3: species_2 => species_6 + species_1; compartment_1*parameter_5*species_2;
   reaction_4: species_5 => species_6 + species_4; compartment_1*parameter_5*species_5;
-  reaction_5: species_6 => species_7 + 8species_8; compartment_1*parameter_6*species_6;
+  reaction_5: species_6 => species_7 + 8 species_8; compartment_1*parameter_6*species_6;
   reaction_6: species_6 => ; compartment_1*parameter_7*species_6;
   reaction_7: species_8 => species_9; compartment_1*parameter_8*species_8;
   reaction_8: species_9 => species_9 + species_10; compartment_1*parameter_11*species_9;
   reaction_9: species_10 + species_11 => species_12; compartment_1*parameter_12*species_10*species_11;
-  reaction_10: species_12 + 71species_13 => species_17; compartment_1*function_1(parameter_13, species_12, species_13);
-  reaction_11: species_9 + 8.5species_14 => species_15; compartment_1*function_1(parameter_14, species_9, species_14);
+  reaction_10: species_12 + 71 species_13 => species_17; compartment_1*function_1(parameter_13, species_12, species_13);
+  reaction_11: species_9 + 8.5 species_14 => species_15; compartment_1*function_1(parameter_14, species_9, species_14);
   reaction_12: species_15 + species_31 => species_16; compartment_1*parameter_15*species_15*species_31;
   reaction_13: species_17 => species_17 + species_18; compartment_1*parameter_10*species_17;
   reaction_14: species_18 + species_11 => species_19; compartment_1*parameter_12*species_18*species_11;
-  reaction_15: species_19 + 71species_13 => species_9; compartment_1*function_1(parameter_13, species_19, species_13);
+  reaction_15: species_19 + 71 species_13 => species_9; compartment_1*function_1(parameter_13, species_19, species_13);
   reaction_16: species_9 => species_9 + species_20; compartment_1*parameter_39*species_9;
   reaction_17: species_9 => species_9 + species_21; compartment_1*parameter_40*species_9;
   reaction_18: species_9 => species_9 + species_22; compartment_1*parameter_41*species_9;
@@ -81,7 +85,7 @@ model *MODEL1307270000()
   reaction_31: species_23 => species_23 + species_32; compartment_1*parameter_16*species_23;
   reaction_32: species_25 => species_25 + species_33; compartment_1*parameter_16*species_25;
   reaction_33: species_26 => species_26 + species_34; compartment_1*parameter_28*species_26;
-  reaction_34: 8species_16 + 37species_11 + 433species_13 + 2932species_14 + 157species_31 + 500species_32 + 100species_33 + 40species_34 => species_35; compartment_1*function_2(parameter_18, species_16, species_11, reaction_34_KmB, species_32, reaction_34_KmC, species_13, reaction_34_KmD, species_33, reaction_34_KmE, species_14, reaction_34_KmF, species_34, reaction_34_KmG, species_31, reaction_34_KmH);
+  reaction_34: 8 species_16 + 37 species_11 + 433 species_13 + 2932 species_14 + 157 species_31 + 500 species_32 + 100 species_33 + 40 species_34 => species_35; compartment_1*function_2(parameter_18, species_16, species_11, reaction_34_KmB, species_32, reaction_34_KmC, species_13, reaction_34_KmD, species_33, reaction_34_KmE, species_14, reaction_34_KmF, species_34, reaction_34_KmG, species_31, reaction_34_KmH);
   reaction_35: species_9 => ; compartment_1*parameter_20*species_9;
   reaction_36: species_10 => ; compartment_1*parameter_19*species_10;
   reaction_37: species_18 => ; compartment_1*parameter_19*species_18;
@@ -183,7 +187,7 @@ model *MODEL1307270000()
   parameter_1 = 0.0809;
   parameter_2 = 0.000455;
   parameter_47 = 0.0113;
-  parameter_48 = 8.33e-005;
+  parameter_48 = 8.33e-05;
   parameter_5 = 4.8;
   parameter_6 = 3.21;
   parameter_23 = 0.51;
@@ -193,8 +197,8 @@ model *MODEL1307270000()
   parameter_11 = 1.38;
   parameter_12 = 1;
   parameter_13 = 0.000301;
-  parameter_14 = 1.39e-006;
-  parameter_15 = 1e-006;
+  parameter_14 = 1.39e-06;
+  parameter_15 = 1e-06;
   parameter_24 = 160;
   parameter_17 = 1;
   parameter_18 = 0.0037;
@@ -382,4 +386,78 @@ model *MODEL1307270000()
   reaction_48 is "Degradation of mRNA of segment 6";
   reaction_49 is "Degradation of mRNA of segment 7";
   reaction_50 is "Degradation of mRNA of segment 8";
+
+  // SBO terms:
+  species_1.sboTerm = 605
+  species_2.sboTerm = 605
+  species_4.sboTerm = 606
+  species_5.sboTerm = 606
+  species_11.sboTerm = 297
+  species_12.sboTerm = 296
+  species_20.sboTerm = 278
+  species_21.sboTerm = 278
+  species_22.sboTerm = 278
+  species_23.sboTerm = 278
+  species_24.sboTerm = 278
+  species_25.sboTerm = 278
+  species_26.sboTerm = 278
+  species_27.sboTerm = 278
+
+  // CV terms:
+  compartment_1 identity "http://identifiers.org/go/GO:0005623"
+  species_1 part "http://identifiers.org/chebi/CHEBI:26667"
+  species_2 hypernym "http://identifiers.org/go/GO:0019062"
+  species_2 part "http://identifiers.org/go/GO:0019012"
+  species_3 container "http://identifiers.org/go/GO:0005576"
+  species_3 hypernym "http://identifiers.org/go/GO:0019012"
+  species_5 hypernym "http://identifiers.org/go/GO:0019062"
+  species_5 part "http://identifiers.org/go/GO:0019012"
+  species_6 container "http://identifiers.org/go/GO:0005768"
+  species_6 hypernym "http://identifiers.org/go/GO:0019012"
+  species_7 hypernym "http://identifiers.org/go/GO:0039654"
+  species_7 part "http://identifiers.org/go/GO:0036338"
+  species_7 part "http://identifiers.org/go/GO:0010008"
+  species_8 container "http://identifiers.org/go/GO:0005737"
+  species_8 hypernym "http://identifiers.org/go/GO:0030529"
+  species_9 container "http://identifiers.org/go/GO:0005634"
+  species_9 hypernym "http://identifiers.org/go/GO:0030529"
+  species_10 hypernym "http://identifiers.org/go/GO:0019022"
+  species_10 hypernym "http://identifiers.org/go/GO:0001172"
+  species_11 hypernym "http://identifiers.org/go/GO:0031381"
+  species_12 part "http://identifiers.org/go/GO:0019022",
+                  "http://identifiers.org/go/GO:0031381"
+  species_13 hypernym "http://identifiers.org/uniprot/P03466"
+  species_14 hypernym "http://identifiers.org/uniprot/P05777"
+  species_15 container "http://identifiers.org/go/GO:0005634"
+  species_15 part "http://identifiers.org/uniprot/P05777",
+                  "http://identifiers.org/go/GO:0030529"
+  species_16 container "http://identifiers.org/go/GO:0005737"
+  species_16 part "http://identifiers.org/uniprot/P05777",
+                  "http://identifiers.org/go/GO:0030529"
+  species_17 hypernym "http://identifiers.org/go/GO:0030529"
+  species_18 parthood "http://identifiers.org/taxonomy/211044"
+  species_19 part "http://identifiers.org/go/GO:0019022",
+                  "http://identifiers.org/go/GO:0031381"
+  species_28 hypernym "http://identifiers.org/uniprot/P16511"
+  species_29 hypernym "http://identifiers.org/uniprot/P03427"
+  species_30 hypernym "http://identifiers.org/uniprot/P15659"
+  species_31 hypernym "http://identifiers.org/uniprot/P03508"
+  species_32 hypernym "http://identifiers.org/uniprot/P03437"
+  species_33 hypernym "http://identifiers.org/uniprot/P06820"
+  species_34 hypernym "http://identifiers.org/uniprot/P63231"
+  species_35 hypernym "http://identifiers.org/go/GO:0019012"
 end
+
+MODEL1307270000 is "Heldt2012 - Influenza Virus Replication"
+
+MODEL1307270000 model_entity_is "http://identifiers.org/biomodels.db/MODEL1307270000"
+MODEL1307270000 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000463"
+MODEL1307270000 description "http://identifiers.org/pubmed/22593159"
+MODEL1307270000 origin "http://identifiers.org/pubmed/9894006"
+MODEL1307270000 property "http://identifiers.org/doid/DOID:8469"
+MODEL1307270000 property "http://identifiers.org/mamo/MAMO_0000046"
+MODEL1307270000 hypernym "http://identifiers.org/go/GO:0009814",
+                         "http://identifiers.org/go/GO:0046718",
+                         "http://identifiers.org/go/GO:0019058"
+MODEL1307270000 taxon "http://identifiers.org/taxonomy/11320",
+                      "http://identifiers.org/taxonomy/40674"

@@ -1,11 +1,15 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 function function_1(V, Shalve, h, substrate)
   V/(Shalve^h + substrate^h);
 end
 
+function_1 is "Hill inhibition"
+
 function function_3(x, beta)
   x/beta/(1 + x/beta);
 end
+
+function_3 is "Simple inhibition"
 
 
 model *Kim2011_Oscillator_SimpleIII()
@@ -60,4 +64,33 @@ model *Kim2011_Oscillator_SimpleIII()
   reaction_4 is "reaction4";
   reaction_5 is "reaction5";
   reaction_6 is "reaction6";
+
+  // SBO terms:
+  compartment_1.sboTerm = 290
+  species_1.sboTerm = 20
+  species_2.sboTerm = 20
+  species_3.sboTerm = 20
+  parameter_1.sboTerm = 9
+  parameter_2.sboTerm = 9
+  parameter_3.sboTerm = 190
+  reaction_1_Shalve.sboTerm = 9
+  reaction_2_Shalve.sboTerm = 9
+  reaction_3_Shalve.sboTerm = 9
+
+  // CV terms:
+  compartment_1 hypernym "http://identifiers.org/obo.go/GO:0005623"
+  species_1 hypernym "http://identifiers.org/obo.chebi/CHEBI:35222",
+                     "http://identifiers.org/obo.chebi/CHEBI:33697"
+  species_2 hypernym "http://identifiers.org/obo.chebi/CHEBI:35222",
+                     "http://identifiers.org/obo.chebi/CHEBI:33697"
+  species_3 hypernym "http://identifiers.org/obo.chebi/CHEBI:35222",
+                     "http://identifiers.org/obo.chebi/CHEBI:33697"
 end
+
+Kim2011_Oscillator_SimpleIII is "Kim2011_Oscillator_SimpleIII"
+
+Kim2011_Oscillator_SimpleIII model_entity_is "http://identifiers.org/biomodels.db/MODEL1012090001"
+Kim2011_Oscillator_SimpleIII model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000323"
+Kim2011_Oscillator_SimpleIII description "http://identifiers.org/pubmed/21283141"
+Kim2011_Oscillator_SimpleIII hypernym "http://identifiers.org/obo.go/GO:0010468"
+Kim2011_Oscillator_SimpleIII taxon "http://identifiers.org/taxonomy/131567"

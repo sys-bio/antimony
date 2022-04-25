@@ -8,7 +8,7 @@
 #include <stdlib.h>
 
 using namespace std;
-extern bool CaselessStrCmp(const string& lhs, const string& rhs);
+extern bool CaselessStrCmp(bool caseless, const string& lhs, const string& rhs);
 
 string SizeTToString(size_t number)
 {
@@ -39,11 +39,11 @@ string ToStringFromVecDelimitedBy(vector<string> name, std::string cc)
 bool IsReal(const string& src)
 {
   if (src.empty()) return false;
-  if (CaselessStrCmp(src, "inf")) return true;
-  if (CaselessStrCmp(src, "infinity")) return true;
-  if (CaselessStrCmp(src, "NaN")) return true;
-  if (CaselessStrCmp(src, "-inf")) return true;
-  if (CaselessStrCmp(src, "-infinity")) return true;
+  if (CaselessStrCmp(true, src, "inf")) return true;
+  if (CaselessStrCmp(false, src, "infinity")) return true;
+  if (CaselessStrCmp(true, src, "NaN")) return true;
+  if (CaselessStrCmp(true, src, "-inf")) return true;
+  if (CaselessStrCmp(false, src, "-infinity")) return true;
 
   long i;
   size_t end = src.size();
@@ -65,14 +65,14 @@ bool IsReal(const string& src)
 double GetReal(const string& src)
 {
   if (src.empty()) return false;
-  if (CaselessStrCmp(src, "inf")) return numeric_limits<double>::infinity();
-  if (CaselessStrCmp(src, "infinity")) return numeric_limits<double>::infinity();
-  if (CaselessStrCmp(src, "-inf")) return -numeric_limits<double>::infinity();
-  if (CaselessStrCmp(src, "-infinity")) return -numeric_limits<double>::infinity();
-  if (CaselessStrCmp(src, "NaN")) return numeric_limits<double>::quiet_NaN();
-  if (CaselessStrCmp(src, "notanumber")) return numeric_limits<double>::quiet_NaN();
-  if (CaselessStrCmp(src, "-NaN")) return numeric_limits<double>::quiet_NaN();
-  if (CaselessStrCmp(src, "-notanumber")) return numeric_limits<double>::quiet_NaN();
+  if (CaselessStrCmp(true, src, "inf")) return numeric_limits<double>::infinity();
+  if (CaselessStrCmp(false, src, "infinity")) return numeric_limits<double>::infinity();
+  if (CaselessStrCmp(true, src, "-inf")) return -numeric_limits<double>::infinity();
+  if (CaselessStrCmp(false, src, "-infinity")) return -numeric_limits<double>::infinity();
+  if (CaselessStrCmp(true, src, "NaN")) return numeric_limits<double>::quiet_NaN();
+  if (CaselessStrCmp(false, src, "notanumber")) return numeric_limits<double>::quiet_NaN();
+  if (CaselessStrCmp(true, src, "-NaN")) return numeric_limits<double>::quiet_NaN();
+  if (CaselessStrCmp(false, src, "-notanumber")) return numeric_limits<double>::quiet_NaN();
 
   return atof(src.c_str());
 } /* IsReal */
@@ -275,15 +275,17 @@ void setFormulaWithString(string formulastring, Formula* formula, Module* module
   }
 }
 
-bool CaselessStrCmp(const string& lhs, const string& rhs)
+bool CaselessStrCmp(bool caseless, const string& lhs, const string& rhs)
 {
+    if (caseless) {
+        if (lhs.size() != rhs.size()) return false;
 
-  if (lhs.size() != rhs.size()) return false;
-
-  for (size_t i = 0; i < lhs.size(); ++i) {
-    if (toupper(lhs[i]) != toupper(rhs[i])) return false;
-  }
-  return true;
+        for (size_t i = 0; i < lhs.size(); ++i) {
+            if (toupper(lhs[i]) != toupper(rhs[i])) return false;
+        }
+        return true;
+    }
+    return lhs == rhs;
 
 } /* CaselessStrCmp */
 
@@ -296,13 +298,13 @@ void FixUnitName(string& name)
   {
     name.erase(name.size()-1, name.size());
   }
-  if (CaselessStrCmp(name, "meter")) {
+  if (CaselessStrCmp(false, name, "meter")) {
     name = "metre";
   }
-  if (CaselessStrCmp(name, "liter")) {
+  if (CaselessStrCmp(false, name, "liter")) {
     name = "litre";
   }
-  if (CaselessStrCmp(name, "time")) {
+  if (CaselessStrCmp(false, name, "time")) {
     name = "time_unit";
   }
 }

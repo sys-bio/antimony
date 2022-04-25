@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Novak2001_FissionYeast_CellCycle()
 
   // Compartments and Species:
@@ -8,12 +8,12 @@ model *Novak2001_FissionYeast_CellCycle()
   substanceOnly species M in cell, $MPF in cell;
 
   // Assignment Rules:
-  MPF := ((cdc13T - preMPF)*(cdc13T - Trimer))/cdc13T;
-  Trimer := (2*cdc13T*rum1T)/(sigma + (sigma^2 - 4*cdc13T*rum1T)^0.5);
+  MPF := (cdc13T - preMPF)*(cdc13T - Trimer)/cdc13T;
+  Trimer := 2*cdc13T*rum1T/(sigma + (sigma^2 - 4*cdc13T*rum1T)^0.5);
   sigma := cdc13T + rum1T + Kdiss;
-  TF := (2*k15*M*J16)/((k16_prime + k16_double_prime*MPF) - k15*M + (k16_prime + k16_double_prime*MPF)*J15 + k15*M*J16 + sqrt(((k16_prime + k16_double_prime*MPF) - k15*M + (k16_prime + k16_double_prime*MPF)*J15 + k15*M*J16)^2 - 4*((k16_prime + k16_double_prime*MPF) - k15*M)*k15*M*J16));
-  kwee := kwee_prime + (kwee_double_prime - kwee_prime)*((2*Vawee*Jiwee)/(Viwee*MPF - Vawee + Viwee*MPF*Jawee + Vawee*Jiwee + sqrt((Viwee*MPF - Vawee + Viwee*MPF*Jawee + Vawee*Jiwee)^2 - 4*(Viwee*MPF - Vawee)*Vawee*Jiwee)));
-  k25 := k25_prime + (k25_double_prime - k25_prime)*((2*Va25*MPF*Ji25)/(Vi25 - Va25*MPF + Vi25*Ja25 + Va25*MPF*Ji25 + sqrt((Vi25 - Va25*MPF + Vi25*Ja25 + Va25*MPF*Ji25)^2 - 4*(Vi25 - Va25*MPF)*Va25*MPF*Ji25)));
+  TF := 2*k15*M*J16/((k16_prime + k16_double_prime*MPF - k15*M) + (k16_prime + k16_double_prime*MPF)*J15 + k15*M*J16 + sqrt(((k16_prime + k16_double_prime*MPF - k15*M) + (k16_prime + k16_double_prime*MPF)*J15 + k15*M*J16)^2 - 4*(k16_prime + k16_double_prime*MPF - k15*M)*k15*M*J16));
+  kwee := kwee_prime + (kwee_double_prime - kwee_prime)*(2*Vawee*Jiwee/((Viwee*MPF - Vawee) + Viwee*MPF*Jawee + Vawee*Jiwee + sqrt(((Viwee*MPF - Vawee) + Viwee*MPF*Jawee + Vawee*Jiwee)^2 - 4*(Viwee*MPF - Vawee)*Vawee*Jiwee)));
+  k25 := k25_prime + (k25_double_prime - k25_prime)*(2*Va25*MPF*Ji25/((Vi25 - Va25*MPF) + Vi25*Ja25 + Va25*MPF*Ji25 + sqrt(((Vi25 - Va25*MPF) + Vi25*Ja25 + Va25*MPF*Ji25)^2 - 4*(Vi25 - Va25*MPF)*Va25*MPF*Ji25)));
 
   // Reactions:
   R1:  => cdc13T; k1*M;
@@ -21,15 +21,15 @@ model *Novak2001_FissionYeast_CellCycle()
   R3:  => preMPF; kwee*(cdc13T - preMPF);
   R4: preMPF => ; k25*preMPF;
   R5: preMPF => ; (k2_prime + k2_double_prime*ste9 + k2_triple_prime*slp1)*preMPF;
-  R6:  => ste9; ((k3_prime + k3_double_prime*slp1)*(1 - ste9))/((J3 + 1) - ste9);
-  R7: ste9 => ; ((k4_prime*SK + k4*MPF)*ste9)/(J4 + ste9);
-  R8:  => slp1T; k5_prime + (k5_double_prime*MPF^4)/(J5^4 + MPF^4);
+  R6:  => ste9; (k3_prime + k3_double_prime*slp1)*(1 - ste9)/(J3 + 1 - ste9);
+  R7: ste9 => ; (k4_prime*SK + k4*MPF)*ste9/(J4 + ste9);
+  R8:  => slp1T; k5_prime + k5_double_prime*MPF^4/(J5^4 + MPF^4);
   R9: slp1T => ; k6*slp1T;
-  R10:  => slp1; (k7*IEP*(slp1T - slp1))/((J7 + slp1T) - slp1);
-  R11: slp1 => ; (k8*slp1)/(J8 + slp1);
+  R10:  => slp1; k7*IEP*(slp1T - slp1)/(J7 + slp1T - slp1);
+  R11: slp1 => ; k8*slp1/(J8 + slp1);
   R12: slp1 => ; k6*slp1;
-  R13:  => IEP; (k9*MPF*(1 - IEP))/((J9 + 1) - IEP);
-  R14: IEP => ; (k10*IEP)/(J10 + IEP);
+  R13:  => IEP; k9*MPF*(1 - IEP)/(J9 + 1 - IEP);
+  R14: IEP => ; k10*IEP/(J10 + IEP);
   R15:  => rum1T; k11;
   R16: rum1T => ; (k12 + k12_prime*SK + k12_double_prime*MPF)*rum1T;
   R17:  => SK; k13*TF;
@@ -37,7 +37,7 @@ model *Novak2001_FissionYeast_CellCycle()
   R19:  => M; mu*M;
 
   // Events:
-  event_0000001: at MPF <= 0.1 && flag_MPF == 1: flag_MPF = 0, M = M/2;
+  event_0000001: at (MPF <= 0.1) && (flag_MPF == 1): flag_MPF = 0, M = M/2;
   event_0000002: at MPF > 0.1: flag_MPF = 1;
 
   // Species initializations:
@@ -196,4 +196,56 @@ model *Novak2001_FissionYeast_CellCycle()
   R17 is "SK synthesis";
   R18 is "SK degradation";
   R19 is "Cell growth";
+
+  // CV terms:
+  cell identity "http://identifiers.org/obo.go/GO:0005623"
+  cdc13T hypernym "http://identifiers.org/interpro/IPR015454"
+  preMPF part "http://identifiers.org/uniprot/P04551",
+              "http://identifiers.org/interpro/IPR015454"
+  ste9 identity "http://identifiers.org/uniprot/O13286"
+  slp1T identity "http://identifiers.org/uniprot/P78972"
+  slp1 identity "http://identifiers.org/uniprot/P78972"
+  rum1T identity "http://identifiers.org/uniprot/P40380"
+  SK hypernym "http://identifiers.org/uniprot/P24865"
+  MPF part "http://identifiers.org/uniprot/P04551",
+           "http://identifiers.org/interpro/IPR015454"
+  R1 identity "http://identifiers.org/obo.go/GO:0007346",
+              "http://identifiers.org/obo.go/GO:0006412"
+  R2 identity "http://identifiers.org/obo.go/GO:0008054",
+              "http://identifiers.org/obo.go/GO:0007092"
+  R3 identity "http://identifiers.org/ec-code/2.7.10.2"
+  R3 identity "http://identifiers.org/obo.go/GO:0018108",
+              "http://identifiers.org/obo.go/GO:0045736"
+  R3 hypernym "http://identifiers.org/reactome/REACT_6178"
+  R4 identity "http://identifiers.org/ec-code/3.1.3.48",
+              "http://identifiers.org/obo.go/GO:0004725",
+              "http://identifiers.org/obo.go/GO:0010389"
+  R4 hypernym "http://identifiers.org/reactome/REACT_6257.1"
+  R5 identity "http://identifiers.org/obo.go/GO:0008054",
+              "http://identifiers.org/obo.go/GO:0000216",
+              "http://identifiers.org/obo.go/GO:0007092"
+  R6 identity "http://identifiers.org/obo.go/GO:0035307"
+  R7 identity "http://identifiers.org/obo.go/GO:0006468"
+  R8 identity "http://identifiers.org/obo.go/GO:0006468"
+  R9 identity "http://identifiers.org/obo.go/GO:0044257"
+  R10 identity "http://identifiers.org/obo.go/GO:0051443"
+  R11 identity "http://identifiers.org/obo.go/GO:0044257"
+  R12 identity "http://identifiers.org/obo.go/GO:0044257"
+  R13 identity "http://identifiers.org/obo.go/GO:0006468"
+  R14 identity "http://identifiers.org/obo.go/GO:0006470"
+  R15 identity "http://identifiers.org/obo.go/GO:0031657"
+  R16 identity "http://identifiers.org/obo.go/GO:0031657"
+  R17 identity "http://identifiers.org/obo.go/GO:0006412"
+  R18 identity "http://identifiers.org/obo.go/GO:0044257"
+  R19 identity "http://identifiers.org/obo.go/GO:0016049"
 end
+
+Novak2001_FissionYeast_CellCycle is "Novak2001_FissionYeast_CellCycle"
+
+Novak2001_FissionYeast_CellCycle model_entity_is "http://identifiers.org/biomodels.db/MODEL6488296959"
+Novak2001_FissionYeast_CellCycle model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000111"
+Novak2001_FissionYeast_CellCycle description "http://identifiers.org/pubmed/12779461"
+Novak2001_FissionYeast_CellCycle taxon "http://identifiers.org/taxonomy/4894"
+Novak2001_FissionYeast_CellCycle hypernym "http://identifiers.org/kegg.pathway/spo04111",
+                                          "http://identifiers.org/obo.go/GO:0000278"
+Novak2001_FissionYeast_CellCycle version "http://identifiers.org/reactome/REACT_152"

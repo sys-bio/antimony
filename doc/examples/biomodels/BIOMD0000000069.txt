@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Src_MitoticActivation()
 
   // Compartments and Species:
@@ -59,4 +59,41 @@ model *Src_MitoticActivation()
   var ptp_activity, src_activity;
   const default, k1, k2, k3, k4, kPTP, kCbp, p1, p2, p3, src_background, PTP_background;
   const kCSKon, kCSKoff, rho_srca, rho_srco, rho_srcc, Kser, acsk0;
+
+  // CV terms:
+  default identity "http://identifiers.org/go/GO:0005623"
+  srci hypernym "http://identifiers.org/uniprot/P12931"
+  srco hypernym "http://identifiers.org/uniprot/P12931"
+  srca hypernym "http://identifiers.org/uniprot/P12931"
+  srcc hypernym "http://identifiers.org/uniprot/P12931"
+  Cbp_P_CSK part "http://identifiers.org/uniprot/P41240",
+                 "http://identifiers.org/uniprot/Q9NWQ8"
+  CSK_cytoplasm identity "http://identifiers.org/uniprot/P41240"
+  PTP hypernym "http://identifiers.org/uniprot/P18433"
+  PTP_pY789 hypernym "http://identifiers.org/uniprot/P18433"
+  Cbp hypernym "http://identifiers.org/uniprot/Q9NWQ8"
+  Cbp_P hypernym "http://identifiers.org/uniprot/Q9NWQ8"
+  v1 hypernym "http://identifiers.org/ec-code/2.7.10.2",
+              "http://identifiers.org/go/GO:0004713"
+  v2 hypernym "http://identifiers.org/ec-code/2.7.10.2",
+              "http://identifiers.org/go/GO:0004713"
+  v3 hypernym "http://identifiers.org/ec-code/2.7.10.2",
+              "http://identifiers.org/go/GO:0004713"
+  v4 hypernym "http://identifiers.org/ec-code/3.1.3.48",
+              "http://identifiers.org/go/GO:0004725"
+  CSK_translocation part "http://identifiers.org/go/GO:0006461",
+                         "http://identifiers.org/go/GO:0006612"
+  PTP_phosphorylation hypernym "http://identifiers.org/ec-code/2.7.10.2",
+                               "http://identifiers.org/go/GO:0004713"
+  Cbp_phosphorylation hypernym "http://identifiers.org/ec-code/2.7.10.2",
+                               "http://identifiers.org/go/GO:0004713"
 end
+
+Src_MitoticActivation is "Fuss2006_MitoticActivation"
+
+Src_MitoticActivation model_entity_is "http://identifiers.org/biomodels.db/MODEL7146478294"
+Src_MitoticActivation model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000069"
+Src_MitoticActivation description "http://identifiers.org/pubmed/16873466"
+Src_MitoticActivation taxon "http://identifiers.org/taxonomy/9606"
+Src_MitoticActivation hypernym "http://identifiers.org/reactome/REACT_152",
+                               "http://identifiers.org/go/GO:0000278"

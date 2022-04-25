@@ -1,0 +1,113 @@
+// Created by libAntimony v2.13.0
+function Rate_Law_for_reaction_for_Gp_consumbtion1(k4, Gp)
+  k4*Gp;
+end
+
+Rate_Law_for_reaction_for_Gp_consumbtion1 is "Rate Law for reaction for Gp consumbtion1"
+
+function Rate_Law_for_reaction_Gp_production(K1, GE, Gp, K2, A)
+  K1*GE*Gp - K2*A*Gp;
+end
+
+Rate_Law_for_reaction_Gp_production is "Rate Law for reaction Gp production"
+
+function Rate_Law_for_reaction_for_A_consumbtion(K3, A)
+  K3*A;
+end
+
+Rate_Law_for_reaction_for_A_consumbtion is "Rate Law for reaction for A consumbtion"
+
+function Rate_Law_for_reaction_Gi_consumbtion(K5, Gi)
+  K5*Gi;
+end
+
+Rate_Law_for_reaction_Gi_consumbtion is "Rate Law for reaction Gi consumbtion"
+
+function Rate_Law_for_reaction_for_Biomass(b, A, Gp, B)
+  b*A*Gp*B;
+end
+
+Rate_Law_for_reaction_for_Biomass is "Rate Law for reaction for Biomass"
+
+
+model *Garde2020_Minimal_model_describing_metabolic_oscillations_in_Bacillus_subtilis_biofilms()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species Gp in compartment_, Gi in compartment_, A in compartment_, B in compartment_;
+
+  // Reactions:
+  The_uptake_of_glutamate_and_Consumption_of_glutamate_and_ammonia:  => Gp; compartment_*Rate_Law_for_reaction_Gp_production(k1, GE, Gp, k2, A);
+  Diffusion_of_glutamate: Gp => Gi; compartment_*Rate_Law_for_reaction_for_Gp_consumbtion1(k4, Gp);
+  Consumption_of_glutamate_to_produce_ammonia: Gi => A; compartment_*Rate_Law_for_reaction_Gi_consumbtion(k5, Gi);
+  Diffusion_of_ammonia: A => ; compartment_*Rate_Law_for_reaction_for_A_consumbtion(k3, A);
+  The_synthesis_of_biomass_from_ammonia_and_glutamate:  => B; compartment_*Rate_Law_for_reaction_for_Biomass(b, A, Gp, B);
+
+  // Species initializations:
+  Gp = 1;
+  Gi = 1;
+  A = 1;
+  B = 100000000000;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  k1 = 0.3426;
+  k2 = 5.3;
+  k3 = 4;
+  k4 = 2;
+  k5 = 2.3;
+  GE = 30;
+  b = 0.1;
+
+  // Other declarations:
+  const compartment_, k1, k2, k3, k4, k5, GE, b;
+
+  // Unit definitions:
+  unit time_unit = 3600 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+  The_uptake_of_glutamate_and_Consumption_of_glutamate_and_ammonia is "The uptake of glutamate and Consumption of glutamate and ammonia";
+  Diffusion_of_glutamate is "Diffusion of glutamate";
+  Consumption_of_glutamate_to_produce_ammonia is "Consumption of glutamate to produce ammonia";
+  Diffusion_of_ammonia is "Diffusion of ammonia";
+  The_synthesis_of_biomass_from_ammonia_and_glutamate is "The synthesis of biomass from ammonia and glutamate";
+
+  // CV terms:
+  Gp property "http://identifiers.org/chebi/CHEBI:32484"
+  Gp property "http://identifiers.org/ncit/C25233"
+  Gi property "http://identifiers.org/chebi/CHEBI:32484"
+  Gi property "http://identifiers.org/ncit/C25234"
+  A property "http://identifiers.org/chebi/CHEBI:16134"
+  B property "http://identifiers.org/sbo/SBO:0000629"
+  The_uptake_of_glutamate_and_Consumption_of_glutamate_and_ammonia property "http://identifiers.org/ncit/C71688"
+  The_uptake_of_glutamate_and_Consumption_of_glutamate_and_ammonia property "http://identifiers.org/sbo/SBO:0000394"
+  Diffusion_of_glutamate property "http://identifiers.org/ncit/C82333"
+  Consumption_of_glutamate_to_produce_ammonia property "http://identifiers.org/sbo/SBO:0000394"
+  Diffusion_of_ammonia property "http://identifiers.org/ncit/C82333"
+  The_synthesis_of_biomass_from_ammonia_and_glutamate property "http://identifiers.org/ncit/C61408"
+end
+
+Garde2020_Minimal_model_describing_metabolic_oscillations_in_Bacillus_subtilis_biofilms is "Garde2020-Minimal model describing metabolic oscillations in Bacillus subtilis biofilms"
+
+Garde2020_Minimal_model_describing_metabolic_oscillations_in_Bacillus_subtilis_biofilms origin "http://identifiers.org/go/GO:0006536",
+                                                                                               "http://identifiers.org/envo/ENVO:00002034",
+                                                                                               "http://identifiers.org/mamo/MAMO_0000046",
+                                                                                               "http://identifiers.org/ncit/C28240",
+                                                                                               "http://identifiers.org/biomodels.teddy/TEDDY_0000072",
+                                                                                               "http://identifiers.org/taxonomy/1423",
+                                                                                               "urn:miriam:unknown:https://link.springer.com/article/10.1007%2FBF01165134"
+Garde2020_Minimal_model_describing_metabolic_oscillations_in_Bacillus_subtilis_biofilms model_entity_is "http://identifiers.org/biomodels.db/MODEL2004140001",
+                                                                                                        "http://identifiers.org/biomodels.db/BIOMD0000000932"
+Garde2020_Minimal_model_describing_metabolic_oscillations_in_Bacillus_subtilis_biofilms taxon "http://identifiers.org/taxonomy/1423"
+Garde2020_Minimal_model_describing_metabolic_oscillations_in_Bacillus_subtilis_biofilms description "urn:miriam:unknown:https://link.springer.com/article/10.1007%2FBF01165134",
+                                                                                                    "http://identifiers.org/pubmed/32257302"
+Garde2020_Minimal_model_describing_metabolic_oscillations_in_Bacillus_subtilis_biofilms property "http://identifiers.org/go/GO:0006536",
+                                                                                                 "http://identifiers.org/envo/ENVO:00002034",
+                                                                                                 "http://identifiers.org/ncit/C28240",
+                                                                                                 "http://identifiers.org/biomodels.teddy/TEDDY_0000072",
+                                                                                                 "http://identifiers.org/mamo/MAMO_0000046"

@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *MODEL6655578762()
 
   // Compartments and Species:
@@ -23,23 +23,23 @@ model *MODEL6655578762()
   mt_attachment: at time > 2000: u_prime = const_val_1, u = const_val_0;
 
   // Species initializations:
-  Mad1_CMad2 = 5e-008;
+  Mad1_CMad2 = 5e-08;
   Mad1_CMad2 has mole_per_volume;
-  OMad2 = 1.3e-007;
+  OMad2 = 1.3e-07;
   OMad2 has mole_per_volume;
   Mad1_CMad2_OMad2 = 0;
   Mad1_CMad2_OMad2 has mole_per_volume;
-  Cdc20 = 2.2e-007;
+  Cdc20 = 2.2e-07;
   Cdc20 has mole_per_volume;
   Cdc20_CMad2 = 0;
   Cdc20_CMad2 has mole_per_volume;
-  Bub3_BubR1 = 1.27e-007;
+  Bub3_BubR1 = 1.27e-07;
   Bub3_BubR1 has mole_per_volume;
   MCC = 0;
   MCC has mole_per_volume;
   Bub3_BubR1_Cdc20 = 0;
   Bub3_BubR1_Cdc20 has mole_per_volume;
-  APC = 9e-008;
+  APC = 9e-08;
   APC has mole_per_volume;
   MCC_APC = 0;
   MCC_APC has mole_per_volume;
@@ -107,4 +107,100 @@ model *MODEL6655578762()
   MCC_APC is "MCC:APC";
   APC_Cdc20 is "APC:Cdc20";
   mt_attachment is "Microtubule attachment";
+
+  // CV terms:
+  Cytoplasm identity "http://identifiers.org/go/GO:0005737"
+  Mad1_CMad2 part "http://identifiers.org/uniprot/Q13257",
+                  "http://identifiers.org/uniprot/Q9Y6D9"
+  Mad1_CMad2 hypernym "http://identifiers.org/go/GO:0043234"
+  OMad2 identity "http://identifiers.org/uniprot/Q13257"
+  Mad1_CMad2_OMad2 hypernym "http://identifiers.org/go/GO:0043234"
+  Mad1_CMad2_OMad2 part "http://identifiers.org/uniprot/Q13257",
+                        "http://identifiers.org/uniprot/Q9Y6D9"
+  Cdc20 identity "http://identifiers.org/uniprot/Q12834"
+  Cdc20_CMad2 part "http://identifiers.org/uniprot/Q13257",
+                   "http://identifiers.org/uniprot/Q12834"
+  Bub3_BubR1 part "http://identifiers.org/uniprot/Q60566",
+                  "http://identifiers.org/uniprot/O43684"
+  MCC part "http://identifiers.org/uniprot/Q12834",
+           "http://identifiers.org/uniprot/Q13257",
+           "http://identifiers.org/uniprot/Q60566",
+           "http://identifiers.org/uniprot/O43684"
+  MCC identity "http://identifiers.org/go/GO:0033597"
+  Bub3_BubR1_Cdc20 part "http://identifiers.org/uniprot/Q12834",
+                        "http://identifiers.org/uniprot/Q60566",
+                        "http://identifiers.org/uniprot/O43684"
+  APC hypernym "http://identifiers.org/go/GO:0005680"
+  APC part "http://identifiers.org/uniprot/Q8NHZ8",
+           "http://identifiers.org/uniprot/Q9BS18",
+           "http://identifiers.org/uniprot/Q9NYG5",
+           "http://identifiers.org/uniprot/Q9UM13",
+           "http://identifiers.org/uniprot/Q9UJX2",
+           "http://identifiers.org/uniprot/Q9UJX3",
+           "http://identifiers.org/uniprot/Q13042",
+           "http://identifiers.org/uniprot/Q9UJX4",
+           "http://identifiers.org/uniprot/Q9UJX5",
+           "http://identifiers.org/uniprot/P30260",
+           "http://identifiers.org/uniprot/Q9UJX6",
+           "http://identifiers.org/uniprot/Q9H1A4"
+  MCC_APC part "http://identifiers.org/uniprot/Q12834",
+               "http://identifiers.org/uniprot/Q13257",
+               "http://identifiers.org/uniprot/Q60566",
+               "http://identifiers.org/uniprot/O43684",
+               "http://identifiers.org/uniprot/Q8NHZ8",
+               "http://identifiers.org/uniprot/Q9BS18",
+               "http://identifiers.org/uniprot/Q9NYG5",
+               "http://identifiers.org/uniprot/Q9UM13",
+               "http://identifiers.org/uniprot/Q9UJX2",
+               "http://identifiers.org/uniprot/Q9UJX3",
+               "http://identifiers.org/uniprot/Q13042",
+               "http://identifiers.org/uniprot/Q9UJX4",
+               "http://identifiers.org/uniprot/Q9UJX5",
+               "http://identifiers.org/uniprot/P30260",
+               "http://identifiers.org/uniprot/Q9UJX6",
+               "http://identifiers.org/uniprot/Q9H1A4"
+  MCC_APC part "http://identifiers.org/go/GO:0005680",
+               "http://identifiers.org/go/GO:0033597"
+  APC_Cdc20 part "http://identifiers.org/uniprot/Q12834",
+                 "http://identifiers.org/uniprot/Q8NHZ8",
+                 "http://identifiers.org/uniprot/Q9BS18",
+                 "http://identifiers.org/uniprot/Q9NYG5",
+                 "http://identifiers.org/uniprot/Q9UM13",
+                 "http://identifiers.org/uniprot/Q9UJX2",
+                 "http://identifiers.org/uniprot/Q9UJX3",
+                 "http://identifiers.org/uniprot/Q13042",
+                 "http://identifiers.org/uniprot/Q9UJX4",
+                 "http://identifiers.org/uniprot/Q9UJX5",
+                 "http://identifiers.org/uniprot/P30260",
+                 "http://identifiers.org/uniprot/Q9UJX6",
+                 "http://identifiers.org/uniprot/Q9H1A4"
+  R1 hypernym "http://identifiers.org/go/GO:0032092",
+              "http://identifiers.org/go/GO:0043241",
+              "http://identifiers.org/go/GO:0006461"
+  R2 hypernym "http://identifiers.org/go/GO:0032092",
+              "http://identifiers.org/go/GO:0006461"
+  R3 hypernym "http://identifiers.org/go/GO:0043241"
+  R4 hypernym "http://identifiers.org/reactome/REACT_36.2",
+              "http://identifiers.org/go/GO:0043241",
+              "http://identifiers.org/go/GO:0006461"
+  R5 hypernym "http://identifiers.org/go/GO:0043241",
+              "http://identifiers.org/go/GO:0006461"
+  R6 hypernym "http://identifiers.org/go/GO:0006461"
+  R7 hypernym "http://identifiers.org/go/GO:0043623",
+              "http://identifiers.org/go/GO:0051436"
+  R7b hypernym "http://identifiers.org/go/GO:0043624",
+               "http://identifiers.org/go/GO:0007092"
+  R8 hypernym "http://identifiers.org/go/GO:0043623",
+              "http://identifiers.org/go/GO:0007092"
 end
+
+MODEL6655578762 is "Ibrahim2008 - Mitotic Spindle Assembly Checkpoint - Convey variant"
+
+MODEL6655578762 model_entity_is "http://identifiers.org/biomodels.db/MODEL6655578762"
+MODEL6655578762 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000187"
+MODEL6655578762 description "http://identifiers.org/pubmed/18253502"
+MODEL6655578762 origin "http://identifiers.org/pubmed/15694304"
+MODEL6655578762 hypernym "http://identifiers.org/reactome/REACT_2137.2",
+                         "http://identifiers.org/go/GO:0007094"
+MODEL6655578762 parthood "http://identifiers.org/kegg.pathway/hsa04110"
+MODEL6655578762 taxon "http://identifiers.org/taxonomy/9606"

@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *MODEL1407300000()
 
   // Compartments and Species:
@@ -6,7 +6,7 @@ model *MODEL1407300000()
   species $X in cell, $Xm in cell, $Vm in cell, $Lambda in cell;
 
   // Assignment Rules:
-  X := Xm/(1 + exp(2 + (4*Vm)/Xm*(Lambda - time)));
+  X := Xm/(1 + exp(2 + (4*Vm/Xm)*(Lambda - time)));
   Xm := xm*(1 - kx*(1 - exp(-ln(2)*(C/mx)^ax)));
   Vm := vm*(1 - kv*(1 - exp(-ln(2)*(C/mv)^av)));
   Lambda := lambda*(1 + klambda*(1 - exp(-ln(2)*(C/mlambda)^alambda)));
@@ -38,4 +38,18 @@ model *MODEL1407300000()
 
   // Display Names:
   time_unit is "time";
+
+  // CV terms:
+  cell identity "http://identifiers.org/bto/BTO:0000142"
+  X hypernym "http://identifiers.org/bto/BTO:0002774"
 end
+
+MODEL1407300000 is "Vazquez2014 - Chemical inhibition from amyloid protein aggregation kinetics"
+
+MODEL1407300000 model_entity_is "http://identifiers.org/biomodels.db/MODEL1407300000"
+MODEL1407300000 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000532"
+MODEL1407300000 description "http://identifiers.org/pubmed/24572069"
+MODEL1407300000 taxon "http://identifiers.org/taxonomy/9606"
+MODEL1407300000 hypernym "http://identifiers.org/go/GO:1990000",
+                         "http://identifiers.org/go/GO:0070841"
+MODEL1407300000 property "http://identifiers.org/doid/DOID:10652"

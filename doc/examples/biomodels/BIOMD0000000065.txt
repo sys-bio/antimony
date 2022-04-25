@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Yildirim2003_Lac_operon()
 
   // Compartments and Species:
@@ -9,10 +9,10 @@ model *Yildirim2003_Lac_operon()
   // Reactions:
   r_m1:  => M; cell*gamma_0;
   r_m2: M => ; cell*M*(gamma_M + mu);
-  r_m3_i1: I1 => M; (cell*I1)/tau_M;
+  r_m3_i1: I1 => M; cell*I1/tau_M;
   r_i1:  => I1; cell*alpha_M*((K_1*exp(mu*tau_M*-2)*A^2 + 1)/(K + K_1*exp(-2*mu*tau_M)*A^2));
   r_b1: B => ; cell*B*(gamma_B + mu);
-  r_b2_i2: I2 => B; (cell*I2)/tau_B;
+  r_b2_i2: I2 => B; cell*I2/tau_B;
   r_i2:  => I2; cell*alpha_B*M*exp(-(mu*tau_B));
   r_a1: A => ; cell*A*(gamma_A + mu);
   r_a2: A => ; cell*beta_A*B*(A/(K_A + A));
@@ -21,7 +21,7 @@ model *Yildirim2003_Lac_operon()
   r_l3: L => ; cell*beta_L1*P*(L/(K_L1 + L));
   r_l4:  => L; cell*alpha_L*P*(L_e/(K_Le + L_e));
   r_p1: P => ; cell*P*(gamma_P + mu);
-  r_p2_i3: I3 => P; (cell*I3)/(tau_B + tau_P);
+  r_p2_i3: I3 => P; cell*I3/(tau_B + tau_P);
   r_i3:  => I3; cell*alpha_P*M*exp(-1*mu*(tau_B + tau_P));
 
   // Species initializations:
@@ -43,7 +43,7 @@ model *Yildirim2003_Lac_operon()
   gamma_M = 0.411;
   gamma_B = 0.000833;
   gamma_A = 0.52;
-  gamma_0 = 7.25e-007;
+  gamma_0 = 7.25e-07;
   K = 7200;
   alpha_M = 0.000997;
   tau_B = 2;
@@ -100,4 +100,41 @@ model *Yildirim2003_Lac_operon()
   r_p1 is "permease_degradation";
   r_p2_i3 is "permease_synthesis";
   r_i3 is "partial_permease_synthesis";
+
+  // CV terms:
+  cell identity "http://identifiers.org/go/GO:0005623"
+  M identity "http://identifiers.org/chebi/CHEBI:33699"
+  B identity "http://identifiers.org/uniprot/P00722"
+  A part "http://identifiers.org/chebi/CHEBI:36229"
+  L identity "http://identifiers.org/chebi/CHEBI:17716",
+             "http://identifiers.org/kegg.compound/C00243"
+  P identity "http://identifiers.org/uniprot/P02920"
+  L_e identity "http://identifiers.org/chebi/CHEBI:17716",
+               "http://identifiers.org/kegg.compound/C00243"
+  r_m1 hypernym "http://identifiers.org/go/GO:0006351"
+  r_m2 identity "http://identifiers.org/go/GO:0006402"
+  r_m3_i1 hypernym "http://identifiers.org/go/GO:0009299"
+  r_i1 hypernym "http://identifiers.org/go/GO:0009299"
+  r_b1 hypernym "http://identifiers.org/go/GO:0044257"
+  r_b2_i2 hypernym "http://identifiers.org/go/GO:0006412"
+  r_i2 hypernym "http://identifiers.org/go/GO:0006412"
+  r_a1 hypernym "http://identifiers.org/go/GO:0046352"
+  r_a2 hypernym "http://identifiers.org/go/GO:0046352"
+  r_a3_l1 identity "http://identifiers.org/ec-code/3.2.1.108",
+                   "http://identifiers.org/go/GO:0004565"
+  r_l2 identity "http://identifiers.org/go/GO:0005990"
+  r_l3 identity "http://identifiers.org/go/GO:0015155"
+  r_l4 identity "http://identifiers.org/go/GO:0015155"
+  r_p1 hypernym "http://identifiers.org/go/GO:0044257"
+  r_p2_i3 hypernym "http://identifiers.org/go/GO:0006412"
+  r_i3 hypernym "http://identifiers.org/go/GO:0006412"
 end
+
+Yildirim2003_Lac_operon is "Yildirim2003_Lac_Operon"
+
+Yildirim2003_Lac_operon model_entity_is "http://identifiers.org/biomodels.db/MODEL6624248569"
+Yildirim2003_Lac_operon model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000065"
+Yildirim2003_Lac_operon description "http://identifiers.org/pubmed/12719218"
+Yildirim2003_Lac_operon origin "http://identifiers.org/pubmed/9104037"
+Yildirim2003_Lac_operon hypernym "http://identifiers.org/go/GO:0045990"
+Yildirim2003_Lac_operon taxon "http://identifiers.org/taxonomy/562"

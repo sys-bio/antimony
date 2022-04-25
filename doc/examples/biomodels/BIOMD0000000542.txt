@@ -1,27 +1,39 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 function Constant_flux__irreversible(v)
   v;
 end
 
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
 function Henri_Michaelis_Menten__irreversible(substrate, Km, V)
-  (V*substrate)/(Km + substrate);
+  V*substrate/(Km + substrate);
 end
+
+Henri_Michaelis_Menten__irreversible is "Henri-Michaelis-Menten (irreversible)"
 
 function Mass_Action(k1, x1, x2)
   k1*x1*x2;
 end
 
+Mass_Action is "Mass Action*"
+
 function Michaelis_Menten(k1, x1, x2, k2)
-  (k1*x1*x2)/(k2 + x1);
+  k1*x1*x2/(k2 + x1);
 end
+
+Michaelis_Menten is "Michaelis-Menten*"
 
 function Mass_Action_(K1, x1, x2, x3)
   K1*x1*x2*x3;
 end
 
+Mass_Action_ is "Mass Action**"
+
 function Nucleation(k1, x1)
   k1*x1^2;
 end
+
+Nucleation is "Nucleation"
 
 
 model *MODEL1408150000()
@@ -120,10 +132,10 @@ model *MODEL1408150000()
   r68: TauH4RUb + $_26S + ATP => ADP + $_26S; Brain*Mass_Action_(k83, TauH4RUb, _26S, ATP);
   r69: ADP => ATP; Brain*k84*ADP;
   r70: ATP => ADP; Brain*k85*ATP;
-  r71: 2TauH3RUb => Nucleus3; Brain*Nucleation(k86, TauH3RUb);
-  r72: Nucleus3 => 2TauH3RUb; Brain*k87*Nucleus3;
-  r73: 2TauH4RUb => Nucleus4; Brain*Nucleation(k88, TauH4RUb);
-  r74: Nucleus4 => 2TauH4RUb; Brain*k89*Nucleus4;
+  r71: 2 TauH3RUb => Nucleus3; Brain*Nucleation(k86, TauH3RUb);
+  r72: Nucleus3 => 2 TauH3RUb; Brain*k87*Nucleus3;
+  r73: 2 TauH4RUb => Nucleus4; Brain*Nucleation(k88, TauH4RUb);
+  r74: Nucleus4 => 2 TauH4RUb; Brain*k89*Nucleus4;
   r75: Nucleus3 + TauH3RUb => Agg33; Brain*Mass_Action(k90, Nucleus3, TauH3RUb);
   r76: Agg33 => Nucleus3 + TauH3RUb; Brain*k91*Agg33;
   r78: TauH3RUb + $Ap => $Ap; Brain*Mass_Action(k90, TauH3RUb, Ap);
@@ -258,20 +270,20 @@ model *MODEL1408150000()
   k72 = 0.014352;
   k73 = 7.130081;
   k74 = 0.000161;
-  k75 = 8.57e-005;
+  k75 = 8.57e-05;
   k76 = 0.283991;
   k77 = 1.185806;
   k78 = 0.004562;
   k79 = 0.346673;
   k80 = 0.551509;
-  k81 = 5.59e-005;
+  k81 = 5.59e-05;
   k82 = 0.644848;
   k83 = 0.006502;
   k84 = 0.68;
   k85 = 0.015317;
-  k86 = 5e-006;
+  k86 = 5e-06;
   k87 = 0.0012;
-  k88 = 5e-006;
+  k88 = 5e-06;
   k89 = 0.06;
   k90 = 0.095;
   k91 = 0.005429;
@@ -310,4 +322,118 @@ model *MODEL1408150000()
   Tau04R_Hsp90 is "Tau04R-Hsp90";
   TauH4R_CHIP_Hsc70 is "TauH4R-CHIP-Hsc70";
   TauH4R_CHIP_Hsc70_Bag2 is "TauH4R-CHIP-Hsc70-Bag2";
+
+  // CV terms:
+  Brain identity "http://identifiers.org/bto/BTO:0000142"
+  ADP identity "http://identifiers.org/chebi/CHEBI:16761"
+  ATP identity "http://identifiers.org/chebi/CHEBI:15422"
+  MT hypernym "http://identifiers.org/uniprot/Q71U36"
+  _20S identity "http://identifiers.org/go/GO:0005839"
+  Hsc70 identity "http://identifiers.org/uniprot/P11142"
+  Hsp90 identity "http://identifiers.org/uniprot/Q16543"
+  CHIP identity "http://identifiers.org/uniprot/Q9UNE7"
+  Bag2 identity "http://identifiers.org/uniprot/O95816"
+  _26S identity "http://identifiers.org/go/GO:0000502"
+  TauH3RUb part "http://identifiers.org/uniprot/P10636"
+  TauH3RUb property "http://identifiers.org/biomodels.sbo/SBO:0000181",
+                    "http://identifiers.org/pato/PATO:0002216"
+  TauH4RUb part "http://identifiers.org/uniprot/P10636"
+  TauH4RUb property "http://identifiers.org/biomodels.sbo/SBO:0000181",
+                    "http://identifiers.org/pato/PATO:0002216"
+  Nucleus3 hypernym "http://identifiers.org/uniprot/P10636"
+  Nucleus3 property "http://identifiers.org/pato/PATO:0001629"
+  Nucleus4 hypernym "http://identifiers.org/uniprot/P10636"
+  Nucleus4 property "http://identifiers.org/pato/PATO:0001629"
+  Agg33 hypernym "http://identifiers.org/uniprot/P10636"
+  Agg33 property "http://identifiers.org/pato/PATO:0001629"
+  Ap hypernym "http://identifiers.org/uniprot/P10636"
+  Ap property "http://identifiers.org/pato/PATO:0001629"
+  Agg43 hypernym "http://identifiers.org/uniprot/P10636"
+  Agg43 property "http://identifiers.org/pato/PATO:0001629"
+  Bp hypernym "http://identifiers.org/uniprot/P10636"
+  Bp property "http://identifiers.org/pato/PATO:0001629"
+  Tau03R hypernym "http://identifiers.org/uniprot/P10636"
+  TauN3R hypernym "http://identifiers.org/uniprot/P10636"
+  TauN3R property "http://identifiers.org/pato/PATO:0002220"
+  TauH3R hypernym "http://identifiers.org/uniprot/P10636"
+  TauH3R property "http://identifiers.org/biomodels.sbo/SBO:0000181"
+  Tau0_3R hypernym "http://identifiers.org/uniprot/P10636"
+  Tau0_3R property "http://identifiers.org/biomodels.sbo/SBO:0000181"
+  Tau03RMT hypernym "http://identifiers.org/uniprot/Q71U36"
+  Tau03RMT hypernym "http://identifiers.org/uniprot/P10636"
+  TauN_3R hypernym "http://identifiers.org/uniprot/P10636"
+  TauN_3R property "http://identifiers.org/biomodels.sbo/SBO:0000181",
+                   "http://identifiers.org/pato/PATO:0002220"
+  TauN3RMT part "http://identifiers.org/uniprot/Q71U36"
+  TauN3RMT hypernym "http://identifiers.org/uniprot/P10636"
+  TauN3RMT property "http://identifiers.org/pato/PATO:0002220"
+  TauH_3R hypernym "http://identifiers.org/uniprot/P10636"
+  TauH_3R property "http://identifiers.org/biomodels.sbo/SBO:0000181"
+  TauH3RMT part "http://identifiers.org/uniprot/Q71U36"
+  TauH3RMT hypernym "http://identifiers.org/uniprot/P10636"
+  TauH3RMT property "http://identifiers.org/biomodels.sbo/SBO:0000181"
+  TauH3R_Hsc70 part "http://identifiers.org/uniprot/P11142"
+  TauH3R_Hsc70 hypernym "http://identifiers.org/uniprot/P10636"
+  TauH3R_Hsc70 property "http://identifiers.org/biomodels.sbo/SBO:0000181"
+  TauH3R_Hsp90 part "http://identifiers.org/uniprot/Q16543"
+  TauH3R_Hsp90 hypernym "http://identifiers.org/uniprot/P10636"
+  TauH3R_Hsp90 property "http://identifiers.org/biomodels.sbo/SBO:0000181"
+  Tau03R_Hsp90 part "http://identifiers.org/uniprot/Q16543"
+  Tau03R_Hsp90 hypernym "http://identifiers.org/uniprot/P10636"
+  TauH3R_CHIP_Hsc70 part "http://identifiers.org/uniprot/P11142",
+                         "http://identifiers.org/uniprot/Q9UNE7"
+  TauH3R_CHIP_Hsc70 hypernym "http://identifiers.org/uniprot/P10636"
+  TauH3R_CHIP_Hsc70 property "http://identifiers.org/biomodels.sbo/SBO:0000181"
+  TauH3R_CHIP_Hsc70_Bag2 part "http://identifiers.org/uniprot/P11142",
+                              "http://identifiers.org/uniprot/Q9UNE7",
+                              "http://identifiers.org/uniprot/O95816"
+  TauH3R_CHIP_Hsc70_Bag2 hypernym "http://identifiers.org/uniprot/P10636"
+  TauH3R_CHIP_Hsc70_Bag2 property "http://identifiers.org/biomodels.sbo/SBO:0000181"
+  Tau04R hypernym "http://identifiers.org/uniprot/P10636"
+  TauN4R hypernym "http://identifiers.org/uniprot/P10636"
+  TauN4R property "http://identifiers.org/pato/PATO:0002220"
+  TauH4R hypernym "http://identifiers.org/uniprot/P10636"
+  TauH4R property "http://identifiers.org/biomodels.sbo/SBO:0000181"
+  Tau0_4R hypernym "http://identifiers.org/uniprot/P10636"
+  Tau0_4R property "http://identifiers.org/biomodels.sbo/SBO:0000181"
+  Tau04RMT part "http://identifiers.org/uniprot/Q71U36"
+  Tau04RMT hypernym "http://identifiers.org/uniprot/P10636"
+  TauN_4R hypernym "http://identifiers.org/uniprot/P10636"
+  TauN_4R property "http://identifiers.org/biomodels.sbo/SBO:0000181",
+                   "http://identifiers.org/pato/PATO:0002220"
+  TauN4RMT part "http://identifiers.org/uniprot/Q71U36"
+  TauN4RMT hypernym "http://identifiers.org/uniprot/P10636"
+  TauN4RMT property "http://identifiers.org/pato/PATO:0002220"
+  TauH_4R hypernym "http://identifiers.org/uniprot/P10636"
+  TauH_4R property "http://identifiers.org/biomodels.sbo/SBO:0000181"
+  TauH4RMT part "http://identifiers.org/uniprot/Q71U36"
+  TauH4RMT hypernym "http://identifiers.org/uniprot/P10636"
+  TauH4RMT property "http://identifiers.org/biomodels.sbo/SBO:0000181"
+  TauH4R_Hsc70 part "http://identifiers.org/uniprot/P11142"
+  TauH4R_Hsc70 hypernym "http://identifiers.org/uniprot/P10636"
+  TauH4R_Hsc70 property "http://identifiers.org/biomodels.sbo/SBO:0000181"
+  TauH4R_Hsp90 part "http://identifiers.org/uniprot/Q16543"
+  TauH4R_Hsp90 hypernym "http://identifiers.org/uniprot/P10636"
+  TauH4R_Hsp90 property "http://identifiers.org/biomodels.sbo/SBO:0000181"
+  Tau04R_Hsp90 part "http://identifiers.org/uniprot/Q16543"
+  Tau04R_Hsp90 hypernym "http://identifiers.org/uniprot/P10636"
+  TauH4R_CHIP_Hsc70 part "http://identifiers.org/uniprot/P11142",
+                         "http://identifiers.org/uniprot/Q9UNE7"
+  TauH4R_CHIP_Hsc70 hypernym "http://identifiers.org/uniprot/P10636"
+  TauH4R_CHIP_Hsc70 property "http://identifiers.org/biomodels.sbo/SBO:0000181"
+  TauH4R_CHIP_Hsc70_Bag2 part "http://identifiers.org/uniprot/P11142",
+                              "http://identifiers.org/uniprot/Q9UNE7",
+                              "http://identifiers.org/uniprot/O95816"
+  TauH4R_CHIP_Hsc70_Bag2 hypernym "http://identifiers.org/uniprot/P10636"
+  TauH4R_CHIP_Hsc70_Bag2 property "http://identifiers.org/biomodels.sbo/SBO:0000181"
 end
+
+MODEL1408150000 is "Yuraszeck2010 - Vulnerabilities in the Tau Network in Tau Pathophysiology"
+
+MODEL1408150000 model_entity_is "http://identifiers.org/biomodels.db/MODEL1408150000"
+MODEL1408150000 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000542"
+MODEL1408150000 description "http://identifiers.org/pubmed/21085645"
+MODEL1408150000 hypernym "http://identifiers.org/go/GO:0070841"
+MODEL1408150000 property "http://identifiers.org/doid/DOID:10652",
+                         "http://identifiers.org/doid/DOID:680"
+MODEL1408150000 taxon "http://identifiers.org/taxonomy/9606"

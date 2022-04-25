@@ -1,0 +1,97 @@
+// Created by libAntimony v2.13.0
+function Function_for_x_Formation(A, x, epsilon, z)
+  A*(1 - x)/(epsilon + z);
+end
+
+Function_for_x_Formation is "Function_for_x_Formation"
+
+function Function_for_y_Formation(x)
+  x*x;
+end
+
+Function_for_y_Formation is "Function_for_y_Formation"
+
+function Function_for_z_Consumption(C, z, x, epsilon)
+  C*z*(1 - x)/(epsilon + z);
+end
+
+Function_for_z_Consumption is "Function_for_z_Consumption"
+
+function Function_for_x_Consumption(B, z, x, delta)
+  B*z*x/(delta + x);
+end
+
+Function_for_x_Consumption is "Function_for_x_Consumption"
+
+function Function_for_z_Formation(y)
+  y;
+end
+
+Function_for_z_Formation is "Function_for_z_Formation"
+
+
+model *GonzalezMiranda2013___The_effect_of_circadian_oscillations_on_biochemical_cell_signaling_by_NF__B()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species x in compartment_, y in compartment_, z in compartment_;
+
+  // Reactions:
+  x_Formation:  => x; compartment_*Function_for_x_Formation(A, x, epsilon, z);
+  x_Consumption: x => ; compartment_*Function_for_x_Consumption(B, z, x, delta);
+  y_Formation:  => y; compartment_*Function_for_y_Formation(x);
+  y_Consumption: y => ; compartment_*y_Consumption_k1*y;
+  z_Formation:  => z; compartment_*Function_for_z_Formation(y);
+  z_Consumption: z => ; compartment_*Function_for_z_Consumption(C, z, x, epsilon);
+
+  // Species initializations:
+  x = 0;
+  y = 0;
+  z = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  A = 0.007;
+  B = 954.5;
+  C = 0.035;
+  epsilon = 2e-05;
+  delta = 0.029;
+  y_Consumption_k1 = 1;
+
+  // Other declarations:
+  const compartment_, A, B, C, epsilon, delta;
+
+  // Unit definitions:
+  unit substance = item;
+
+  // Display Names:
+  compartment_ is "compartment";
+
+  // SBO terms:
+  y_Formation.sboTerm = 183
+  z_Formation.sboTerm = 184
+
+  // CV terms:
+  compartment_ hypernym "http://identifiers.org/cl/CL:0000000"
+  x identity "http://identifiers.org/ncit/C17380"
+  y encodement "http://identifiers.org/ncit/C104199"
+  z identity "http://identifiers.org/ncit/C104199"
+  x_Formation hypernym "http://identifiers.org/sbo/SBO:0000180"
+  x_Consumption propertyBearer "http://identifiers.org/sbo/SBO:0000177"
+  y_Formation identity "http://identifiers.org/sbo/SBO:0000183"
+  y_Consumption hypernym "http://identifiers.org/sbo/SBO:0000179"
+  z_Formation identity "http://identifiers.org/sbo/SBO:0000184"
+  z_Consumption hypernym "http://identifiers.org/sbo/SBO:0000177"
+end
+
+GonzalezMiranda2013___The_effect_of_circadian_oscillations_on_biochemical_cell_signaling_by_NF__B is "GonzalezMiranda2013 - The effect of circadian oscillations on biochemical cell signaling by NF-κB"
+
+GonzalezMiranda2013___The_effect_of_circadian_oscillations_on_biochemical_cell_signaling_by_NF__B description "http://identifiers.org/pubmed/23820037"
+GonzalezMiranda2013___The_effect_of_circadian_oscillations_on_biochemical_cell_signaling_by_NF__B model_entity_is "http://identifiers.org/biomodels.db/MODEL1912160002",
+                                                                                                                  "http://identifiers.org/biomodels.db/BIOMD0000000893"
+GonzalezMiranda2013___The_effect_of_circadian_oscillations_on_biochemical_cell_signaling_by_NF__B property "http://identifiers.org/ncit/C16348"
+GonzalezMiranda2013___The_effect_of_circadian_oscillations_on_biochemical_cell_signaling_by_NF__B property "http://identifiers.org/mamo/MAMO_0000046"
+GonzalezMiranda2013___The_effect_of_circadian_oscillations_on_biochemical_cell_signaling_by_NF__B property "http://identifiers.org/efo/0004354"
+GonzalezMiranda2013___The_effect_of_circadian_oscillations_on_biochemical_cell_signaling_by_NF__B property "http://identifiers.org/ncit/C17132"

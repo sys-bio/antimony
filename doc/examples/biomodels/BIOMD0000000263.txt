@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Model_1()
 
   // Compartments and Species:
@@ -8,7 +8,7 @@ model *Model_1()
   species NGF_TrkA in Cell;
 
   // Assignment Rules:
-  NGF := NGF_conc_step + piecewise(NGF_conc_pulse, time <= pulse_time, 0) + (NGF_conc_ramp*time)/ramp_time;
+  NGF := NGF_conc_step + piecewise(NGF_conc_pulse, time <= pulse_time, 0) + NGF_conc_ramp*time/ramp_time;
   pTrkA_total := (pTrkA + pTrkA_Akt)*pTrkA_scaleFactor;
   pAkt_total := (pAkt + pAkt_S6)*pAkt_scaleFactor;
   pS6_total := pS6*pS6_scaleFactor;
@@ -68,7 +68,7 @@ model *Model_1()
   reaction_1_k2 = 0.0133747;
   reaction_2_k1 = 0.0882701;
   reaction_2_k1 has per_conc_per_sec;
-  reaction_2_k2 = 1.47518e-010;
+  reaction_2_k2 = 1.47518e-10;
   reaction_2_k2 has per_sec;
   reaction_3_k1 = 0.0202517;
   reaction_4_k1 = 0.0684084;
@@ -119,4 +119,83 @@ model *Model_1()
   reaction_9 is "TrkA_synthesis";
   reaction_10 is "TrkA_phosphorylation";
   reaction_11 is "TrkA_degradation";
+
+  // SBO terms:
+  Cell.sboTerm = 290
+  NGF.sboTerm = 252
+  TrkA.sboTerm = 252
+  pro_TrkA.sboTerm = 252
+  pTrkA.sboTerm = 252
+  pTrkA_Akt.sboTerm = 297
+  Akt.sboTerm = 297
+  pAkt.sboTerm = 297
+  S6.sboTerm = 252
+  pAkt_S6.sboTerm = 297
+  pS6.sboTerm = 252
+  NGF_TrkA.sboTerm = 297
+  reaction_1.sboTerm = 177
+  reaction_2.sboTerm = 177
+  reaction_3.sboTerm = 216
+  reaction_4.sboTerm = 179
+  reaction_5.sboTerm = 177
+  reaction_6.sboTerm = 216
+  reaction_7.sboTerm = 330
+  reaction_8.sboTerm = 330
+  reaction_9.sboTerm = 184
+  reaction_10.sboTerm = 216
+  reaction_11.sboTerm = 179
+
+  // CV terms:
+  Cell identity "http://identifiers.org/go/GO:0005623"
+  NGF hypernym "http://identifiers.org/uniprot/P25427"
+  TrkA hypernym "http://identifiers.org/uniprot/P35739"
+  pro_TrkA hypernym "http://identifiers.org/uniprot/P35739"
+  pTrkA hypernym "http://identifiers.org/uniprot/P35739"
+  pTrkA_Akt part "http://identifiers.org/uniprot/P35739",
+                 "http://identifiers.org/uniprot/Q63484"
+  pTrkA_Akt version "http://identifiers.org/kegg.compound/C00562"
+  Akt hypernym "http://identifiers.org/uniprot/Q63484"
+  pAkt hypernym "http://identifiers.org/kegg.compound/C00562"
+  pAkt homolog "http://identifiers.org/reactome/REACT_13319"
+  S6 hypernym "http://identifiers.org/uniprot/P62755"
+  pAkt_S6 version "http://identifiers.org/uniprot/Q63484"
+  pAkt_S6 version "http://identifiers.org/uniprot/P62755",
+                  "http://identifiers.org/kegg.compound/C00562"
+  pS6 hypernym "http://identifiers.org/kegg.compound/C00562"
+  pS6 hypernym "http://identifiers.org/uniprot/P62755"
+  NGF_TrkA part "http://identifiers.org/uniprot/P35739",
+                "http://identifiers.org/uniprot/P25427"
+  pTrkA_total hypernym "http://identifiers.org/go/GO:0048406"
+  pTrkA_total hypernym "http://identifiers.org/uniprot/P35739",
+                       "http://identifiers.org/kegg.compound/C00562"
+  pAkt_total hypernym "http://identifiers.org/kegg.compound/C00562"
+  pAkt_total version "http://identifiers.org/uniprot/Q63484"
+  pS6_total hypernym "http://identifiers.org/uniprot/P62755"
+  pS6_total hypernym "http://identifiers.org/kegg.compound/C00562"
+  reaction_1 hypernym "http://identifiers.org/reactome/REACT_10088"
+  reaction_1 hypernym "http://identifiers.org/go/GO:0005167"
+  reaction_2 hypernym "http://identifiers.org/go/GO:0005515"
+  reaction_3 hypernym "http://identifiers.org/go/GO:0004672"
+  reaction_4 hypernym "http://identifiers.org/go/GO:0030163"
+  reaction_5 hypernym "http://identifiers.org/reactome/REACT_12442"
+  reaction_5 hypernym "http://identifiers.org/go/GO:0005515"
+  reaction_6 hypernym "http://identifiers.org/go/GO:0004672"
+  reaction_6 version "http://identifiers.org/reactome/REACT_12442"
+  reaction_7 hypernym "http://identifiers.org/go/GO:0004721"
+  reaction_8 hypernym "http://identifiers.org/go/GO:0004721"
+  reaction_9 hypernym "http://identifiers.org/go/GO:0010467"
+  reaction_10 hypernym "http://identifiers.org/go/GO:0004672"
+  reaction_11 hypernym "http://identifiers.org/go/GO:0030163"
 end
+
+Model_1 is "Fujita2010_Akt_Signalling_NGF"
+
+Model_1 model_entity_is "http://identifiers.org/biomodels.db/MODEL1004060002"
+Model_1 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000263"
+Model_1 description "http://identifiers.org/pubmed/20664065"
+Model_1 version "http://identifiers.org/reactome/REACT_12056",
+                "http://identifiers.org/reactome/REACT_12464.1",
+                "http://identifiers.org/go/GO:0043491",
+                "http://identifiers.org/go/GO:0048011"
+Model_1 container "http://identifiers.org/bto/BTO:0001009"
+Model_1 taxon "http://identifiers.org/taxonomy/10116"

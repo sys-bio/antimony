@@ -1,0 +1,144 @@
+// Created by libAntimony v2.13.0
+function Function_for_reaction_1(a, T, b)
+  a*T*(1 - b*T);
+end
+
+Function_for_reaction_1 is "Function for reaction 1"
+
+function Function_for_reaction_3(Kt, M, T)
+  Kt*M*T;
+end
+
+Function_for_reaction_3 is "Function for reaction 3"
+
+function Function_for_reaction_2(c1, N, T)
+  c1*N*T;
+end
+
+Function_for_reaction_2 is "Function for reaction 2"
+
+function Function_for_reaction_5(g, T, s, N)
+  g*(T/(s + T))*N;
+end
+
+Function_for_reaction_5 is "Function for reaction 5"
+
+function Function_for_reaction_7(p, T, N)
+  p*T*N;
+end
+
+Function_for_reaction_7 is "Function for reaction 7"
+
+function Function_for_reaction_8(Kn, eta, M, N)
+  Kn*(1 - eta)*M*N;
+end
+
+Function_for_reaction_8 is "Function for reaction 8"
+
+function Function_for_reaction_11(Kc, eta, M, C)
+  Kc*(1 - eta)*M*C;
+end
+
+Function_for_reaction_11 is "Function for reaction 11"
+
+function Function_for_reaction_14(kt, T, M)
+  kt*T*M;
+end
+
+Function_for_reaction_14 is "Function for reaction 14"
+
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+
+model *Liu2017___chemotherapy_targeted_model_of_tumor_immune_system()
+
+  // Compartments and Species:
+  compartment Tumor_Microenvironment;
+  species Tumor_Cell_Population__T in Tumor_Microenvironment, Effector_immune_cell_population__N in Tumor_Microenvironment;
+  species Circulating_lymphocyte_population__C in Tumor_Microenvironment;
+  species Chemotherapeutic_drug_concentration__M in Tumor_Microenvironment;
+
+  // Reactions:
+  reaction_1:  => Tumor_Cell_Population__T; Tumor_Microenvironment*Function_for_reaction_1(a, Tumor_Cell_Population__T, b);
+  reaction_2: Tumor_Cell_Population__T => ; Tumor_Microenvironment*Function_for_reaction_2(c1, Effector_immune_cell_population__N, Tumor_Cell_Population__T);
+  reaction_3: Tumor_Cell_Population__T => ; Tumor_Microenvironment*Function_for_reaction_3(Kt, Chemotherapeutic_drug_concentration__M, Tumor_Cell_Population__T);
+  reaction_4:  => Effector_immune_cell_population__N; Tumor_Microenvironment*Constant_flux__irreversible(alpha1);
+  reaction_5:  => Effector_immune_cell_population__N; Tumor_Microenvironment*Function_for_reaction_5(g, Tumor_Cell_Population__T, s, Effector_immune_cell_population__N);
+  reaction_6: Effector_immune_cell_population__N => ; Tumor_Microenvironment*mu*Effector_immune_cell_population__N;
+  reaction_7: Effector_immune_cell_population__N => ; Tumor_Microenvironment*Function_for_reaction_7(p, Tumor_Cell_Population__T, Effector_immune_cell_population__N);
+  reaction_8: Effector_immune_cell_population__N => ; Tumor_Microenvironment*Function_for_reaction_8(Kn, eta, Chemotherapeutic_drug_concentration__M, Effector_immune_cell_population__N);
+  reaction_9:  => Circulating_lymphocyte_population__C; Tumor_Microenvironment*Constant_flux__irreversible(alpha2);
+  reaction_10: Circulating_lymphocyte_population__C => ; Tumor_Microenvironment*beta*Circulating_lymphocyte_population__C;
+  reaction_11: Circulating_lymphocyte_population__C => ; Tumor_Microenvironment*Function_for_reaction_11(Kc, eta, Chemotherapeutic_drug_concentration__M, Circulating_lymphocyte_population__C);
+  reaction_12: Chemotherapeutic_drug_concentration__M => ; Tumor_Microenvironment*gamma_*Chemotherapeutic_drug_concentration__M;
+  reaction_13:  => Chemotherapeutic_drug_concentration__M; Tumor_Microenvironment*Constant_flux__irreversible(Vm);
+  reaction_14: Chemotherapeutic_drug_concentration__M => ; Tumor_Microenvironment*Function_for_reaction_14(kt, Tumor_Cell_Population__T, Chemotherapeutic_drug_concentration__M);
+
+  // Species initializations:
+  Tumor_Cell_Population__T = 10000000;
+  Effector_immune_cell_population__N = 300000;
+  Circulating_lymphocyte_population__C = 62500000000;
+  Chemotherapeutic_drug_concentration__M = 0.45;
+
+  // Compartment initializations:
+  Tumor_Microenvironment = 1;
+
+  // Variable initializations:
+  a = 0.431;
+  b = 1.02e-14;
+  c1 = 3.41e-10;
+  mu = 0.0412;
+  g = 0.015;
+  s = 20.2;
+  Kc = 0.6;
+  Kn = 0.6;
+  Kt = 0.8;
+  kt = 3.2e-09;
+  p = 2e-11;
+  alpha1 = 12000;
+  alpha2 = 750000000;
+  beta = 0.012;
+  gamma_ = 0.9;
+  Vm = 0.45;
+  eta = 0;
+
+  // Other declarations:
+  const Tumor_Microenvironment, a, b, c1, mu, g, s, Kc, Kn, Kt, kt, p, alpha1;
+  const alpha2, beta, gamma_, Vm, eta;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+  Tumor_Microenvironment is "Tumor Microenvironment";
+  Tumor_Cell_Population__T is "Tumor Cell Population (T)";
+  Effector_immune_cell_population__N is "Effector immune cell population (N)";
+  Circulating_lymphocyte_population__C is "Circulating lymphocyte population (C)";
+  Chemotherapeutic_drug_concentration__M is "Chemotherapeutic drug concentration (M)";
+  gamma_ is "gamma";
+
+  // CV terms:
+  Tumor_Microenvironment identity "http://identifiers.org/ncit/C94498"
+  Tumor_Cell_Population__T property "http://identifiers.org/ncit/C12922"
+  Effector_immune_cell_population__N property "http://identifiers.org/obi/OBI_1110016"
+  Circulating_lymphocyte_population__C property "http://identifiers.org/bto/BTO:0000775"
+  Circulating_lymphocyte_population__C property "http://identifiers.org/obi/OBI_0000181"
+  Chemotherapeutic_drug_concentration__M property "http://identifiers.org/chebi/CHEBI:23888"
+end
+
+Liu2017___chemotherapy_targeted_model_of_tumor_immune_system is "Liu2017 - chemotherapy targeted model of tumor immune system"
+
+Liu2017___chemotherapy_targeted_model_of_tumor_immune_system description "http://identifiers.org/doi/10.1016/j.chaos.2017.03.002"
+Liu2017___chemotherapy_targeted_model_of_tumor_immune_system model_entity_is "http://identifiers.org/biomodels.db/MODEL2004060002",
+                                                                             "http://identifiers.org/biomodels.db/BIOMD0000000930"
+Liu2017___chemotherapy_targeted_model_of_tumor_immune_system container "http://identifiers.org/ncit/C94498"
+Liu2017___chemotherapy_targeted_model_of_tumor_immune_system taxon "http://identifiers.org/taxonomy/9606"
+Liu2017___chemotherapy_targeted_model_of_tumor_immune_system property "http://identifiers.org/go/GO:0002418",
+                                                                      "http://identifiers.org/mamo/MAMO_0000046"

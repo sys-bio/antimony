@@ -1,0 +1,175 @@
+// Created by libAntimony v2.13.0
+function Rate_Law_for_R4(kappa, rho1, E)
+  kappa*rho1*E;
+end
+
+Rate_Law_for_R4 is "Rate Law for R4"
+
+function Rate_Law_for_R3(kappa, rho2, E)
+  kappa*rho2*E;
+end
+
+Rate_Law_for_R3 is "Rate Law for R3"
+
+function Rate_Law_for_R1(beta, I, S, N, l, H, beta_prime, P)
+  beta*I*S/N + l*beta*H*S/N + beta_prime*P*S/N;
+end
+
+Rate_Law_for_R1 is "Rate Law for R1"
+
+function Rate_Law_for_R2(kappa, rho1, rho2, E)
+  kappa*(1 - rho1 - rho2)*E;
+end
+
+Rate_Law_for_R2 is "Rate Law for R2"
+
+
+model *Ndairou2020___early_stage_transmission_of_dynamics_of_COVID_19_in_Wuhan()
+
+  // Compartments and Species:
+  compartment Wuhan;
+  species Susceptible in Wuhan, Infectious in Wuhan, Super_spreaders in Wuhan;
+  species Exposed in Wuhan, Asymptomatic in Wuhan, Hospitalised in Wuhan;
+  species Recovered in Wuhan, Fatalities in Wuhan;
+
+  // Assignment Rules:
+  Confimed_cases := Infectious + Super_spreaders + Hospitalised;
+
+  // Reactions:
+  Susceptible_to_Exposed: Susceptible => Exposed; Wuhan*Rate_Law_for_R1(beta, Infectious, Susceptible, N, l, Hospitalised, beta_prime, Super_spreaders);
+  Exposed_to_Asymptomatic: Exposed => Asymptomatic; Wuhan*Rate_Law_for_R2(kappa, rho1, rho2, Exposed);
+  Exposed_to_Superspreaders: Exposed => Super_spreaders; Wuhan*Rate_Law_for_R3(kappa, rho2, Exposed);
+  Exposed_to_Infectious: Exposed => Infectious; Wuhan*Rate_Law_for_R4(kappa, rho1, Exposed);
+  Superspreaders_to_Fatalities: Super_spreaders => Fatalities; Wuhan*delta_p*Super_spreaders;
+  Superspreaders_to_Hospitalised: Super_spreaders => Hospitalised; Wuhan*gamma_a*Super_spreaders;
+  Superspreaders_to_Recovered: Super_spreaders => Recovered; Wuhan*gamma_i*Super_spreaders;
+  Infectious_to_Fatalities: Infectious => Fatalities; Wuhan*delta_i*Infectious;
+  Infectious_to_Hospitalised: Infectious => Hospitalised; Wuhan*gamma_a*Infectious;
+  Infectious_To_Recovered: Infectious => Recovered; Wuhan*gamma_i*Infectious;
+  Hospitalised_to_Recovered: Hospitalised => Recovered; Wuhan*gamma_r*Hospitalised;
+  Hospitalised_to_Fatalities: Hospitalised => Fatalities; Wuhan*delta_h*Hospitalised;
+
+  // Species initializations:
+  Susceptible = N - Infectious - Super_spreaders;
+  Infectious = 1;
+  Super_spreaders = 5;
+  Exposed = 0;
+  Asymptomatic = 0;
+  Hospitalised = 0;
+  Recovered = 0;
+  Fatalities = 0;
+
+  // Compartment initializations:
+  Wuhan = 1;
+
+  // Variable initializations:
+  N = 44000;
+  N has unit_2;
+  beta = 2.8;
+  beta has unit_0;
+  beta_prime = 7.65;
+  beta_prime has unit_0;
+  rho1 = 0.58;
+  rho1 has unit_1;
+  rho2 = 0.001;
+  rho2 has unit_1;
+  l = 1.56;
+  l has unit_1;
+  kappa = 0.25;
+  kappa has unit_0;
+  gamma_a = 0.94;
+  gamma_a has unit_0;
+  gamma_i = 0.27;
+  gamma_i has unit_0;
+  gamma_r = 0.5;
+  gamma_r has unit_0;
+  delta_i = 0.035;
+  delta_i has unit_0;
+  delta_p = 1;
+  delta_p has unit_0;
+  delta_h = 0.085;
+  delta_h has unit_0;
+
+  // Other declarations:
+  var Confimed_cases;
+  const Wuhan, N, beta, beta_prime, rho1, rho2, l, kappa, gamma_a, gamma_i;
+  const gamma_r, delta_i, delta_p, delta_h;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = item;
+  unit unit_0 = 1 / 86400 second;
+  unit unit_1 = 1 / dimensionless^-0;
+  unit unit_2 = item;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1/d";
+  unit_1 is "dimensionless";
+  unit_2 is "#";
+
+  // CV terms:
+  Wuhan hypernym "http://identifiers.org/ncit/C16428"
+  Wuhan hypernym "http://identifiers.org/ncit/C25632"
+  Susceptible hypernym "http://identifiers.org/ido/0000514"
+  Susceptible hypernym "http://identifiers.org/ncit/C171133"
+  Infectious hypernym "http://identifiers.org/ido/0000463"
+  Infectious hypernym "http://identifiers.org/ncit/C171133"
+  Infectious hypernym "http://identifiers.org/ido/0000511"
+  Infectious hypernym "http://identifiers.org/ncit/C171549"
+  Super_spreaders hypernym "http://identifiers.org/ido/0000463"
+  Super_spreaders hypernym "http://identifiers.org/ncit/0000511"
+  Super_spreaders hypernym "http://identifiers.org/ncit/C171133"
+  Super_spreaders hypernym "http://identifiers.org/ncit/C49508"
+  Exposed hypernym "http://identifiers.org/ncit/C171133"
+  Exposed hypernym "http://identifiers.org/ido/0000597"
+  Asymptomatic hypernym "http://identifiers.org/ncit/C171133"
+  Asymptomatic hypernym "http://identifiers.org/ido/0000569"
+  Hospitalised hypernym "http://identifiers.org/ncit/C171133"
+  Hospitalised hypernym "http://identifiers.org/ncit/C25179"
+  Recovered hypernym "http://identifiers.org/ncit/C25746"
+  Recovered hypernym "http://identifiers.org/ncit/C171133"
+  Fatalities hypernym "http://identifiers.org/ncit/C171133"
+  Fatalities hypernym "http://identifiers.org/ncit/C28554"
+  Susceptible_to_Exposed hypernym "http://identifiers.org/ido/0000597"
+  Susceptible_to_Exposed hypernym "http://identifiers.org/ncit/C171133"
+  Exposed_to_Asymptomatic hypernym "http://identifiers.org/ncit/C128320"
+  Exposed_to_Asymptomatic hypernym "http://identifiers.org/ido/0000569"
+  Exposed_to_Asymptomatic hypernym "http://identifiers.org/ncit/C171133"
+  Exposed_to_Superspreaders hypernym "http://identifiers.org/ncit/C171133"
+  Exposed_to_Superspreaders hypernym "http://identifiers.org/ido/0000463"
+  Exposed_to_Superspreaders hypernym "http://identifiers.org/ncit/C128320"
+  Exposed_to_Superspreaders property "http://identifiers.org/ncit/C25227"
+  Exposed_to_Infectious hypernym "http://identifiers.org/ido/0000463"
+  Exposed_to_Infectious hypernym "http://identifiers.org/ncit/C128320"
+  Exposed_to_Infectious hypernym "http://identifiers.org/ncit/C171133"
+  Superspreaders_to_Fatalities hypernym "http://identifiers.org/ncit/C171133"
+  Superspreaders_to_Fatalities hypernym "http://identifiers.org/ncit/C28554"
+  Superspreaders_to_Hospitalised hypernym "http://identifiers.org/ncit/C171133"
+  Superspreaders_to_Hospitalised hypernym "http://identifiers.org/ncit/C25179"
+  Superspreaders_to_Recovered hypernym "http://identifiers.org/ncit/C171133"
+  Superspreaders_to_Recovered hypernym "http://identifiers.org/ncit/C25746"
+  Infectious_to_Fatalities hypernym "http://identifiers.org/ncit/C28554"
+  Infectious_to_Fatalities hypernym "http://identifiers.org/ncit/C171133"
+  Infectious_to_Hospitalised hypernym "http://identifiers.org/ncit/C171133"
+  Infectious_to_Hospitalised hypernym "http://identifiers.org/ncit/C25179"
+  Infectious_To_Recovered hypernym "http://identifiers.org/ncit/C171133"
+  Infectious_To_Recovered hypernym "http://identifiers.org/ncit/C25746"
+  Hospitalised_to_Recovered hypernym "http://identifiers.org/ncit/C25746"
+  Hospitalised_to_Recovered hypernym "http://identifiers.org/ncit/C171133"
+  Hospitalised_to_Fatalities hypernym "http://identifiers.org/ncit/C171133"
+  Hospitalised_to_Fatalities hypernym "http://identifiers.org/ncit/C28554"
+end
+
+Ndairou2020___early_stage_transmission_of_dynamics_of_COVID_19_in_Wuhan is "Ndairou2020 - early-stage transmission of dynamics of COVID-19 in Wuhan"
+
+Ndairou2020___early_stage_transmission_of_dynamics_of_COVID_19_in_Wuhan description "http://identifiers.org/pubmed/32341628"
+Ndairou2020___early_stage_transmission_of_dynamics_of_COVID_19_in_Wuhan model_entity_is "http://identifiers.org/biomodels.db/MODEL2008140001",
+                                                                                        "http://identifiers.org/biomodels.db/BIOMD0000000958"
+Ndairou2020___early_stage_transmission_of_dynamics_of_COVID_19_in_Wuhan hypernym "http://identifiers.org/doid/DOID:0080600"
+Ndairou2020___early_stage_transmission_of_dynamics_of_COVID_19_in_Wuhan taxon "http://identifiers.org/taxonomy/2697049",
+                                                                              "http://identifiers.org/taxonomy/9606"
+Ndairou2020___early_stage_transmission_of_dynamics_of_COVID_19_in_Wuhan property "http://identifiers.org/mamo/MAMO_0000046"

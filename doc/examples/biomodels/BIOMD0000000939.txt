@@ -1,0 +1,884 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function Function_for_synthesis_by_modifier(k, modifier)
+  k*modifier;
+end
+
+Function_for_synthesis_by_modifier is "Function for synthesis by modifier"
+
+function Function_for_R17(k17, y8)
+  k17*y8*y8;
+end
+
+Function_for_R17 is "Function for R17"
+
+function Function_for_degradation_mass_action_modifier(k, substrate, modifier)
+  k*substrate*modifier;
+end
+
+Function_for_degradation_mass_action_modifier is "Function for degradation_mass action modifier"
+
+function Function_for_synthesis_with_modifier(k22, modifier, substrate)
+  k22*modifier*substrate;
+end
+
+Function_for_synthesis_with_modifier is "Function for synthesis with modifier"
+
+function Function_for_R41(k41, k42, Y_24)
+  k41/(1 + k42*Y_24);
+end
+
+Function_for_R41 is "Function for R41"
+
+function Function_for_R65(k66, Im, k65)
+  k66*Im^50/(k65^50 + Im^50);
+end
+
+Function_for_R65 is "Function for R65"
+
+function Function_for_R14(k14, y10, y49, y51)
+  k14*y10*(y49 + y51);
+end
+
+Function_for_R14 is "Function for R14"
+
+function Function_for_R51(k51, product)
+  k51*product;
+end
+
+Function_for_R51 is "Function for R51"
+
+function Function_for_R15(k15, y9, y49, y51)
+  k15*y9*(y49 + y51);
+end
+
+Function_for_R15 is "Function for R15"
+
+function Function_for_R70(k70, y25, sig, k71, y26)
+  k70*y25*sig/(1 + k71*y25*y26);
+end
+
+Function_for_R70 is "Function for R70"
+
+function Function_for_Rdeg(deg, modifier, substrate)
+  deg*modifier*substrate;
+end
+
+Function_for_Rdeg is "Function for Rdeg"
+
+
+model *Iwamoto2010___Cell_cycle_reponse_to_DNA_damage()
+
+  // Compartments and Species:
+  compartment nuclear, cytoplasm;
+  species Cyclin_D in nuclear, Cdk4 in nuclear, Cyclin_D_Cdk4 in nuclear;
+  species Cyclin_E in nuclear, E2F in nuclear, Cdk2 in nuclear, Cyclin_E_Cdk2_inactive_phosphorylated in nuclear;
+  species Cyclin_A in nuclear, B_Myb_active in nuclear, Cyclin_A_Cdk2_inactive in nuclear;
+  species Cyclin_A_Cdk2_active in nuclear, APC_Ccdc20_active in nuclear, APC_Ccdh1_active in nuclear;
+  species Cyclin_E_Cdk2_active_unphosphorylated in nuclear, p21 in nuclear;
+  species p21_CyclinD_Cdk4 in nuclear, p27 in nuclear, p27_CyclinD_Cdk4 in nuclear;
+  species Cdc25A_active in nuclear, p27_CyclinE_Cdk2 in nuclear, p21_CyclinE_Cdk2 in nuclear;
+  species p27_CyclinA_Cdk2 in nuclear, p21_CyclinA_Cdk2 in nuclear, p53 in nuclear;
+  species p16 in nuclear, Rb in nuclear, Rb_E2F in nuclear, Rb_PP_E2F in nuclear;
+  species Rb_PPP in nuclear, ATM_ATR in nuclear, Mdm2 in nuclear, Intermediate in nuclear;
+  species $sig in nuclear, $deg in nuclear, NF_Y in nuclear, Cdc25A_inactive in nuclear;
+  species Chk1_active in nuclear, Chk1_inactive in nuclear, Cyclin_B in nuclear;
+  species Cdk1 in nuclear, Cyclin_B_Cdk1_inactive_unphosphorylated_cytoplasm in cytoplasm;
+  species Cyclin_B_Cdk1_active_phosphorylated_cytoplasm in cytoplasm, Cdc25C_active in nuclear;
+  species _14_3_3_sigma in nuclear, Cdc25C_Ps216_phosphorylated_active in nuclear;
+  species Wee1 in nuclear, Wee1_phosphorylated in nuclear, Cyclin_B_Cdk1_nuclear in nuclear;
+  species p21_CyclinB_Cdk1 in nuclear, B_Myb_inactive in nuclear, Cdc25C_inactive in nuclear;
+  species Cdc25C_Ps216_phosphorylated_inactive in nuclear, _14_3_3_sigma_iCdc25C_PS216_phosphorylated in nuclear;
+  species APC_Ccdc20_inactive in nuclear, APC_Ccdh1_inactive in nuclear, Cyclin_B_Cdk1_nuclear_inactive in nuclear;
+  species $Cyclin_E_total in nuclear, $Cyclin_A_total in nuclear, $Cyclin_B_total in nuclear;
+  species $APC_C_Cdc20_active_x20 in nuclear;
+
+  // Assignment Rules:
+  sig := DNA_damage_signal*exp(-k72*time);
+  deg := k76 - k74*(sig - DNA_damage_signal*exp(-k77*DNA_damage_signal*time));
+  Cyclin_E_total := Cyclin_E + Cyclin_E_Cdk2_inactive_phosphorylated + Cyclin_E_Cdk2_active_unphosphorylated + p27_CyclinE_Cdk2 + p21_CyclinE_Cdk2;
+  Cyclin_A_total := Cyclin_A + Cyclin_A_Cdk2_inactive + Cyclin_A_Cdk2_active + p27_CyclinA_Cdk2 + p21_CyclinA_Cdk2*0 + Cdc25A_inactive*0 + Cdc25A_active*0;
+  Cyclin_B_total := Cyclin_B + Cyclin_B_Cdk1_inactive_unphosphorylated_cytoplasm + Cyclin_B_Cdk1_active_phosphorylated_cytoplasm;
+  APC_C_Cdc20_active_x20 := 20*APC_Ccdc20_active;
+
+  // Reactions:
+  R1_Cyclin_D_synthesis:  => Cyclin_D; nuclear*Constant_flux__irreversible(k1);
+  R2_Cyclin_degradation: Cyclin_D => ; nuclear*k2*Cyclin_D;
+  R3_4_Cyclin_D_Cdk4_complex_formation: Cyclin_D + Cdk4 -> Cyclin_D_Cdk4; nuclear*(k3*Cyclin_D*Cdk4 - k4*Cyclin_D_Cdk4);
+  R5_Cyclin_E_synthesis_mediated_by_E2F:  => Cyclin_E; nuclear*Function_for_synthesis_by_modifier(k5, E2F);
+  R6_Cyclin_E_degradation: Cyclin_E => ; nuclear*k6*Cyclin_E;
+  R7_Cyclin_E_Cdk2_complex_formation: Cyclin_E + Cdk2 => Cyclin_E_Cdk2_inactive_phosphorylated; nuclear*k7*Cyclin_E*Cdk2;
+  R8_Cyclin_E_Cdk2_complex_dissociation: Cyclin_E_Cdk2_inactive_phosphorylated => Cyclin_E + Cdk2; nuclear*k8*Cyclin_E_Cdk2_inactive_phosphorylated;
+  R9_Cyclin_A_synthesis:  => Cyclin_A; nuclear*Function_for_synthesis_by_modifier(k9, B_Myb_active);
+  R10_Cyclin_A_degradation: Cyclin_A => ; nuclear*k10*Cyclin_A;
+  R11_Cyclin_A_Cdk2_complex_formation: Cyclin_A + Cdk2 => Cyclin_A_Cdk2_inactive; nuclear*k11*Cyclin_A*Cdk2;
+  R12_Cyclin_A_Cdk2_complex_dissociation: Cyclin_A_Cdk2_inactive => Cyclin_A + Cdk2; nuclear*k12*Cyclin_A_Cdk2_inactive;
+  R13_Cyclin_D_degradation: Cyclin_D_Cdk4 => Cdk4; nuclear*k13*Cyclin_D_Cdk4;
+  R14_Cyclin_A_degradation: Cyclin_A_Cdk2_active => Cdk2; nuclear*Function_for_R14(k14, Cyclin_A_Cdk2_active, APC_Ccdc20_active, APC_Ccdh1_active);
+  R15_Cyclin_A_degradation: Cyclin_A_Cdk2_inactive => Cdk2; nuclear*Function_for_R15(k15, Cyclin_A_Cdk2_inactive, APC_Ccdc20_active, APC_Ccdh1_active);
+  R16_Cyclin_E_degradation: Cyclin_E_Cdk2_inactive_phosphorylated => Cdk2; nuclear*k16*Cyclin_E_Cdk2_inactive_phosphorylated;
+  R17_Cyclin_E_degradation: Cyclin_E_Cdk2_active_unphosphorylated => Cdk2; nuclear*Function_for_R17(k17, Cyclin_E_Cdk2_active_unphosphorylated);
+  R18_binding_of_p21_to_Cyclin_D_Cdk4_complex: p21 + Cyclin_D_Cdk4 => p21_CyclinD_Cdk4; nuclear*k18*p21*Cyclin_D_Cdk4;
+  R19_unbinding_of_p21_to_Cyclin_D_Cdk4_complex: p21_CyclinD_Cdk4 => p21 + Cyclin_D_Cdk4; nuclear*k19*p21_CyclinD_Cdk4;
+  R20_binding_of_p27_to_Cyclin_D_Cdk4_complex: Cyclin_D_Cdk4 + p27 => p27_CyclinD_Cdk4; nuclear*k20*Cyclin_D_Cdk4*p27;
+  R21_unbinding_of_p27_to_Cyclin_D_Cdk4_complex: p27_CyclinD_Cdk4 => p27 + Cyclin_D_Cdk4; nuclear*k21*p27_CyclinD_Cdk4;
+  R22_Dephosphorylation_of_CycE_Cdk2_complex_by_Cdc25: Cyclin_E_Cdk2_inactive_phosphorylated => Cyclin_E_Cdk2_active_unphosphorylated; nuclear*Function_for_synthesis_with_modifier(k22, Cdc25A_active, Cyclin_E_Cdk2_inactive_phosphorylated);
+  R23_Phosphorylation_of_Cyclin_E_Cdk2_complex: Cyclin_E_Cdk2_active_unphosphorylated => Cyclin_E_Cdk2_inactive_phosphorylated; nuclear*k23*Cyclin_E_Cdk2_active_unphosphorylated;
+  R24_binding_of_p27_to_Cyclin_E_Cdk2_complex: Cyclin_E_Cdk2_active_unphosphorylated + p27 => p27_CyclinE_Cdk2; nuclear*k24*Cyclin_E_Cdk2_active_unphosphorylated*p27;
+  R25_unbinding_of_p27_to_Cyclin_E_Cdk2_complex: p27_CyclinE_Cdk2 => Cyclin_E_Cdk2_active_unphosphorylated + p27; nuclear*k25*p27_CyclinE_Cdk2;
+  R26_binding_of_p21_to_Cyclin_E_Cdk2_complex: Cyclin_E_Cdk2_active_unphosphorylated + p21 => p21_CyclinE_Cdk2; nuclear*k26*Cyclin_E_Cdk2_active_unphosphorylated*p21;
+  R27_unbinding_of_p21_to_Cyclin_E_Cdk2_complex: p21_CyclinE_Cdk2 => Cyclin_E_Cdk2_active_unphosphorylated + p21; nuclear*k27*p21_CyclinE_Cdk2;
+  R28_Dephosphorylation_of_Cyclin_A_Cdk2_complex: Cyclin_A_Cdk2_inactive => Cyclin_A_Cdk2_active; nuclear*Function_for_synthesis_with_modifier(k28, Cdc25A_active, Cyclin_A_Cdk2_inactive);
+  R29_Phosphorylation_of_Cyclin_A_Cdk2_complex: Cyclin_A_Cdk2_active => Cyclin_A_Cdk2_inactive; nuclear*k29*Cyclin_A_Cdk2_active;
+  R30_binding_of_p27_to_Cyclin_A_Cdk2_complex: Cyclin_A_Cdk2_active + p27 => p27_CyclinA_Cdk2; nuclear*k30*Cyclin_A_Cdk2_active*p27;
+  R31_unbinding_of_p27_to_Cyclin_A_Cdk2_complex: p27_CyclinA_Cdk2 => Cyclin_A_Cdk2_active + p27; nuclear*k31*p27_CyclinA_Cdk2;
+  R32_binding_of_p21_to_Cyclin_A_Cdk2_complex: Cyclin_A_Cdk2_active + p21 => p21_CyclinA_Cdk2; nuclear*k32*Cyclin_A_Cdk2_active*p21;
+  R33_unbinding_of_p21_to_Cyclin_A_Cdk2_complex: p21_CyclinA_Cdk2 => Cyclin_A_Cdk2_active + p21; nuclear*k33*p21_CyclinA_Cdk2;
+  R34_synthesis_of_p27:  => p27; nuclear*Constant_flux__irreversible(k34);
+  R35_p27_degradation_mediated_by_Cyclin_E_Cdk2_complex: p27 => ; nuclear*Function_for_degradation_mass_action_modifier(k35, p27, Cyclin_E_Cdk2_active_unphosphorylated);
+  R36_p27_degradation_mediated_by_Cyclin_A_Cdk2_complex: p27 => ; nuclear*Function_for_degradation_mass_action_modifier(k36, p27, Cyclin_A_Cdk2_active);
+  R37_p21_synthesis:  => p21; nuclear*Constant_flux__irreversible(k37);
+  R38_p21_synthesis_mediated_by_p53:  => p21; nuclear*Function_for_synthesis_by_modifier(k38, p53);
+  R39_p21_degradation: p21 => ; nuclear*k39*p21;
+  R40_p16_synthesis:  => p16; nuclear*Constant_flux__irreversible(k40);
+  R41_p16_synthesis_mediated_by_Rb:  => p16; nuclear*Function_for_R41(k41, k42, Rb);
+  R43_p16_degradation: p16 => ; nuclear*k43*p16;
+  R44_Inhibition_by_p16_of_Cyclin_D_Cdk4_complex: Cyclin_D_Cdk4 + p16 => ; nuclear*k44*Cyclin_D_Cdk4*p16;
+  R45_E2F_Rb_binding: E2F + Rb => Rb_E2F; nuclear*k45*E2F*Rb;
+  R46_Phosphorylation_of_Rb_E2F_by_Cyclin_D_Cdk4_complex: Rb_E2F => Rb_PP_E2F; nuclear*Function_for_synthesis_with_modifier(k46, Cyclin_D_Cdk4, Rb_E2F);
+  R47_Phosphorylation_of_Rb_E2F_by_Cyclin_D_Cdk4_complex: Rb_E2F => Rb_PP_E2F; nuclear*Function_for_synthesis_with_modifier(k47, p27_CyclinD_Cdk4, Rb_E2F);
+  R48_Phosphorylation_of_Rb_E2F_by_Cyclin_D_Cdk4_complex: Rb_E2F => Rb_PP_E2F; nuclear*Function_for_synthesis_with_modifier(k48, p21_CyclinD_Cdk4, Rb_E2F);
+  R49_Dissociation_of_Rb_and_E2F: Rb_PP_E2F => E2F + Rb_PPP; nuclear*Function_for_synthesis_with_modifier(k49, Cyclin_E_Cdk2_active_unphosphorylated, Rb_PP_E2F);
+  R50_Dissociation_of_Rb_and_E2F: Rb_PP_E2F => E2F + Rb_PPP; nuclear*Function_for_degradation_mass_action_modifier(k50, Rb_PP_E2F, Cyclin_A_Cdk2_active);
+  R51_E2F_synthesis:  => E2F; nuclear*Function_for_R51(k51, E2F);
+  R52_E2F_synthesis:  => E2F; nuclear*Constant_flux__irreversible(k52);
+  R53_E2F_degradation: E2F => ; nuclear*k53*E2F;
+  R54_E2F_degradation_mediated_by_Cyclin_A_Cdk2: E2F => ; nuclear*Function_for_degradation_mass_action_modifier(k54, E2F, Cyclin_A_Cdk2_active);
+  R55_Dephosphorylation_of_Rb: Rb_PPP => Rb; nuclear*k55*Rb_PPP;
+  R56_Rb_synthesis:  => Rb; nuclear*Constant_flux__irreversible(k56);
+  R57_Rb_degradation: Rb => ; nuclear*k57*Rb;
+  R58_Rb_synthesis_mediated_by_p16:  => Rb; nuclear*Function_for_R41(k58, k59, p16);
+  R60_synthesis_of_p53:  => p53; nuclear*Constant_flux__irreversible(k60);
+  R61_synthesis_of_p53_mediated_by_ATM_ATR:  => p53; nuclear*Function_for_synthesis_by_modifier(k61, ATM_ATR);
+  R62_degradation_of_p53_mediated_by_mdm2: p53 => ; nuclear*k62*p53;
+  R63_mdm2_synthesis:  => Mdm2; nuclear*Constant_flux__irreversible(k63);
+  R64_mdm2_degradation: Mdm2 => ; nuclear*k64*Mdm2;
+  R65_mdm2_synthesis:  => Mdm2; nuclear*Function_for_R65(k66, Intermediate, k65);
+  R67_Intermediate_Degradation: Intermediate => ; nuclear*k67*Intermediate;
+  R70_Synthesis_mediated_by_p53_mdm2:  => Intermediate; nuclear*Function_for_R70(k70, p53, sig, k71, Mdm2);
+  R75_Cyclin_A_synthesis_mediated_by_NF_Y:  => Cyclin_A; nuclear*Function_for_synthesis_by_modifier(k75, NF_Y);
+  R78_synthesis_of_ATM_ATR:  => ATM_ATR; nuclear*Function_for_synthesis_by_modifier(k78, sig);
+  R79_ATM_ATR_degradation: ATM_ATR => ; nuclear*k79*ATM_ATR;
+  R80_synthesis_of_Cdc25_mediated_by_E2F:  => Cdc25A_inactive; nuclear*Function_for_synthesis_by_modifier(k80, E2F);
+  R81_Cdc25_degradation_mediated_by_Chk1: Cdc25A_inactive => ; nuclear*Function_for_degradation_mass_action_modifier(k81, Cdc25A_inactive, Chk1_active);
+  R82_Cdc25_activation_mediated_by_Cyclin_E_A_Cdk2_complexes: Cdc25A_inactive => Cdc25A_active; nuclear*Function_for_R14(k82, Cdc25A_inactive, Cyclin_E_Cdk2_active_unphosphorylated, Cyclin_A_Cdk2_active);
+  R83_Cdc25_degradation: Cdc25A_inactive => ; nuclear*k83*Cdc25A_inactive;
+  R84_Cdc25_degradation: Cdc25A_active => ; nuclear*Function_for_degradation_mass_action_modifier(k84, Cdc25A_active, Chk1_active);
+  R85_Cdc25_inactivation: Cdc25A_active => Cdc25A_inactive; nuclear*k85*Cdc25A_active;
+  R86_Cdc25_degradation: Cdc25A_active => ; nuclear*k86*Cdc25A_active;
+  R87_inactivation_of_Chk1: Chk1_active => Chk1_inactive; nuclear*k87*Chk1_active;
+  R88_activation_of_Chk1: Chk1_inactive => Chk1_active; nuclear*Function_for_synthesis_with_modifier(k88, ATM_ATR, Chk1_inactive);
+  R89_synthesis_of_NF_Y_mediated_by_Cyclin_A_Cdk2_complex:  => NF_Y; nuclear*Function_for_synthesis_by_modifier(k89, Cyclin_A_Cdk2_active);
+  R90_NF_Y_degradation: NF_Y => ; nuclear*k90*NF_Y;
+  R91_Cyclin_B_synthesis_mediated_by_NF_Y:  => Cyclin_B; nuclear*Function_for_synthesis_by_modifier(k91, NF_Y);
+  R92_Cyclin_B_degradation: Cyclin_B => ; nuclear*k92*Cyclin_B;
+  R93_Cyclin_B_Cdk1_binding: Cyclin_B + Cdk1 => Cyclin_B_Cdk1_inactive_unphosphorylated_cytoplasm; k93*Cyclin_B*Cdk1;
+  R94_Cyclin_B_Cdk1_dissociation: Cyclin_B_Cdk1_inactive_unphosphorylated_cytoplasm => Cyclin_B + Cdk1; k94*Cyclin_B_Cdk1_inactive_unphosphorylated_cytoplasm;
+  R95_Cyclin_B_Cdk1_complex_activation_by_dephosphorylation: Cyclin_B_Cdk1_inactive_unphosphorylated_cytoplasm => Cyclin_B_Cdk1_active_phosphorylated_cytoplasm; Function_for_R14(k95, Cyclin_B_Cdk1_inactive_unphosphorylated_cytoplasm, Cdc25C_active, Cdc25C_Ps216_phosphorylated_active);
+  R96_Cyclin_B_Cdk1_complex_phosphorylation__inactivation: Cyclin_B_Cdk1_active_phosphorylated_cytoplasm => Cyclin_B_Cdk1_inactive_unphosphorylated_cytoplasm; cytoplasm*k96*Cyclin_B_Cdk1_active_phosphorylated_cytoplasm;
+  R97_Cyclin_B_degradation_by_APC_Cdc20_Cdh1: Cyclin_B_Cdk1_inactive_unphosphorylated_cytoplasm => Cdk1; Function_for_R14(k97, Cyclin_B_Cdk1_inactive_unphosphorylated_cytoplasm, APC_Ccdc20_active, APC_Ccdh1_active);
+  R98_Cyclin_B_degradation: Cyclin_B_Cdk1_active_phosphorylated_cytoplasm => Cdk1; Function_for_R14(k98, Cyclin_B_Cdk1_active_phosphorylated_cytoplasm, APC_Ccdc20_active, APC_Ccdh1_active);
+  R99_synthesis_of_Wee1:  => Wee1; nuclear*Constant_flux__irreversible(k99);
+  R100_phosphorylation_of_wee1: Wee1 => Wee1_phosphorylated; nuclear*Function_for_synthesis_with_modifier(k100, Cyclin_B_Cdk1_nuclear, Wee1);
+  R101_dephosphorylation_of_wee1: Wee1_phosphorylated => Wee1; nuclear*k101*Wee1_phosphorylated;
+  R102_degradation_of_wee1: Wee1_phosphorylated => ; nuclear*k102*Wee1_phosphorylated;
+  R103_p21_binding_to_Cyclin_B_Cdk1_complex: Cyclin_B_Cdk1_nuclear + p21 => p21_CyclinB_Cdk1; nuclear*k103*Cyclin_B_Cdk1_nuclear*p21;
+  R104_p21_dissociation_to_Cyclin_B_Cdk1_complex: p21_CyclinB_Cdk1 => p21 + Cyclin_B_Cdk1_nuclear; nuclear*k104*p21_CyclinB_Cdk1;
+  R105_synthesis_of_iB_Myb_mediated_by_E2F:  => B_Myb_inactive; nuclear*Function_for_synthesis_by_modifier(k105, E2F);
+  R106_activation_of_B_Myb_by_Cyclin_A_Cdk2_complex: B_Myb_inactive => B_Myb_active; nuclear*Function_for_degradation_mass_action_modifier(k106, B_Myb_inactive, Cyclin_A_Cdk2_active);
+  R107_degradation_of_B_Myb: B_Myb_active => ; nuclear*k107*B_Myb_active;
+  R108_synthesis_of_Cdc25:  => Cdc25C_inactive; nuclear*Constant_flux__irreversible(k108);
+  R109_inactivation_of_Cdc25: Cdc25C_active => Cdc25C_inactive; nuclear*k109*Cdc25C_active;
+  R110_activation_of_Cdc25_mediated_by_cyclin_B_Cdk1_complex: Cdc25C_inactive => Cdc25C_active; Function_for_R14(k110, Cdc25C_inactive, Cyclin_B_Cdk1_active_phosphorylated_cytoplasm, Cyclin_B_Cdk1_nuclear);
+  R111_phosphorylation_of_Cdc25_mediated_by_Chk1: Cdc25C_inactive => Cdc25C_Ps216_phosphorylated_inactive; nuclear*Function_for_synthesis_with_modifier(k111, Chk1_active, Cdc25C_inactive);
+  R112_dephosphorylation_of_Cdc25: Cdc25C_Ps216_phosphorylated_active => Cdc25C_active; nuclear*k112*Cdc25C_Ps216_phosphorylated_active;
+  R113_phosphorylation_of_Cdc25_mediated_by_Chk1: Cdc25C_active => Cdc25C_Ps216_phosphorylated_active; nuclear*Function_for_synthesis_with_modifier(k113, Chk1_active, Cdc25C_active);
+  R114_degradation_of_Cdc25: Cdc25C_active => ; nuclear*k114*Cdc25C_active;
+  R115_inactivation_of_Cdc25: Cdc25C_Ps216_phosphorylated_active => Cdc25C_Ps216_phosphorylated_inactive; nuclear*k115*Cdc25C_Ps216_phosphorylated_active;
+  R116_activation_of_Cdc25_mediated_by_Cyclin_B_Cdk1: Cdc25C_Ps216_phosphorylated_inactive => Cdc25C_Ps216_phosphorylated_active; Function_for_R14(k116, Cdc25C_Ps216_phosphorylated_inactive, Cyclin_B_Cdk1_active_phosphorylated_cytoplasm, Cyclin_B_Cdk1_nuclear);
+  R117_synthesis_of_14_3_3_sigma:  => _14_3_3_sigma; nuclear*Constant_flux__irreversible(k117);
+  R118_synthesis_of_14_3_3_sigma_mediated_by_p53:  => _14_3_3_sigma; nuclear*Function_for_synthesis_by_modifier(k118, p53);
+  R119_degradation_of_14_3_3_sigma: _14_3_3_sigma => ; nuclear*k119*_14_3_3_sigma;
+  R120_Binding_of_Cdc25_to_14_3_3: Cdc25C_Ps216_phosphorylated_inactive + _14_3_3_sigma => _14_3_3_sigma_iCdc25C_PS216_phosphorylated; nuclear*k120*Cdc25C_Ps216_phosphorylated_inactive*_14_3_3_sigma;
+  R121_Degradation_of_Cdc25_14_3_3_sigma_complex: _14_3_3_sigma_iCdc25C_PS216_phosphorylated => ; nuclear*k121*_14_3_3_sigma_iCdc25C_PS216_phosphorylated;
+  R122_Inactivation_of_APC_C_Cdc20: APC_Ccdc20_active => APC_Ccdc20_inactive; nuclear*Function_for_synthesis_with_modifier(k122, APC_Ccdh1_active, APC_Ccdc20_active);
+  R123_Activation_of_APC_C_Cdc20: APC_Ccdc20_inactive => APC_Ccdc20_active; nuclear*Function_for_synthesis_with_modifier(k123, Cyclin_B_Cdk1_nuclear, APC_Ccdc20_inactive);
+  R124_Inactivation_of_APC_C_Cdh1: APC_Ccdh1_active => APC_Ccdh1_inactive; nuclear*Function_for_R14(k124, APC_Ccdh1_active, Cyclin_B_Cdk1_nuclear, Cyclin_A_Cdk2_active);
+  R125_Activation_of_APC_C_Cdh1: APC_Ccdh1_inactive => APC_Ccdh1_active; nuclear*k125*APC_Ccdh1_inactive;
+  R126_Degradation_of_Cyclin_A_mediated_by_APC_C_Cdc20: Cyclin_A => ; nuclear*Function_for_degradation_mass_action_modifier(k126, Cyclin_A, APC_Ccdc20_active);
+  R127_Degradation_of_Cyclin_A__mediated_by_APC_C_Cdh1: Cyclin_A => ; nuclear*Function_for_degradation_mass_action_modifier(k127, Cyclin_A, APC_Ccdh1_active);
+  R128_Degradation_of_Cyclin_B_mediated_by_APC_C_Cdc20: Cyclin_B => ; nuclear*Function_for_degradation_mass_action_modifier(k128, Cyclin_B, APC_Ccdc20_active);
+  R129_Degradation_of_Cyclin_B__mediated_by_APC_C_Cdh1: Cyclin_B => ; nuclear*Function_for_degradation_mass_action_modifier(k129, Cyclin_B, APC_Ccdh1_active);
+  R130_Synthesis_of_Cyclin_A_mediated_by_E2F:  => Cyclin_A; nuclear*Function_for_synthesis_by_modifier(k130, E2F);
+  R131_translocation_of_Cyclin_B_Cdk1_complex_for_cytoplasm_to_nuclear: Cyclin_B_Cdk1_active_phosphorylated_cytoplasm => Cyclin_B_Cdk1_nuclear; Function_for_R17(k131, Cyclin_B_Cdk1_active_phosphorylated_cytoplasm);
+  R132_translocation_of_Cyclin_B_Cdk1_complex_for_cytoplasm_to_nuclear: Cyclin_B_Cdk1_nuclear => Cyclin_B_Cdk1_active_phosphorylated_cytoplasm; k132*Cyclin_B_Cdk1_nuclear;
+  R133_inactivation_of_Cyclin_B_Cdk1: Cyclin_B_Cdk1_nuclear => Cyclin_B_Cdk1_nuclear_inactive; nuclear*Function_for_synthesis_with_modifier(k133, Wee1, Cyclin_B_Cdk1_nuclear);
+  R134_Activation_of_cyclin_B_Cdk1: Cyclin_B_Cdk1_nuclear_inactive => Cyclin_B_Cdk1_nuclear; nuclear*Function_for_R14(k134, Cyclin_B_Cdk1_nuclear_inactive, Cdc25C_active, Cdc25C_Ps216_phosphorylated_active);
+  R135_degradation_of_cyclin_B_cdk1: Cyclin_B_Cdk1_nuclear => ; nuclear*Function_for_degradation_mass_action_modifier(k135, Cyclin_B_Cdk1_nuclear, APC_Ccdc20_active);
+  R136_degradation_of_cyclin_B_cdk1: Cyclin_B_Cdk1_nuclear_inactive => ; nuclear*Function_for_R14(k136, Cyclin_B_Cdk1_nuclear_inactive, APC_Ccdc20_active, APC_Ccdh1_active);
+  R137_degradation_of_cyclin_B_cdk1: Cyclin_B_Cdk1_nuclear => ; nuclear*Function_for_degradation_mass_action_modifier(k137, Cyclin_B_Cdk1_nuclear, APC_Ccdh1_active);
+  Rdeg_p53_degradation: p53 => ; nuclear*Function_for_Rdeg(deg, Mdm2, p53);
+
+  // Species initializations:
+  Cyclin_D = 0.03;
+  Cdk4 = 5;
+  Cyclin_D_Cdk4 = 7.5;
+  Cyclin_E = 0.001;
+  E2F = 0;
+  Cdk2 = 15;
+  Cyclin_E_Cdk2_inactive_phosphorylated = 0.001;
+  Cyclin_A = 4e-05;
+  B_Myb_active = 0;
+  Cyclin_A_Cdk2_inactive = 0.0004;
+  Cyclin_A_Cdk2_active = 0.0001;
+  APC_Ccdc20_active = 0.1;
+  APC_Ccdh1_active = 0.9;
+  Cyclin_E_Cdk2_active_unphosphorylated = 0.001;
+  p21 = 0;
+  p21_CyclinD_Cdk4 = 0;
+  p27 = 14;
+  p27_CyclinD_Cdk4 = 0.001;
+  Cdc25A_active = 0.0001;
+  p27_CyclinE_Cdk2 = 1;
+  p21_CyclinE_Cdk2 = 0;
+  p27_CyclinA_Cdk2 = 0.0001;
+  p21_CyclinA_Cdk2 = 0;
+  p53 = 0.0265;
+  p16 = 0.001;
+  Rb = 0.05;
+  Rb_E2F = 1.95;
+  Rb_PP_E2F = 0.001;
+  Rb_PPP = 0.01;
+  ATM_ATR = 0;
+  Mdm2 = 0.000235;
+  Intermediate = 0;
+  NF_Y = 0;
+  Cdc25A_inactive = 0.001;
+  Chk1_active = 0.01;
+  Chk1_inactive = 0.99;
+  Cyclin_B = 0;
+  Cdk1 = 10;
+  Cyclin_B_Cdk1_inactive_unphosphorylated_cytoplasm = 0.0001;
+  Cyclin_B_Cdk1_active_phosphorylated_cytoplasm = 0.0001;
+  Cdc25C_active = 1e-06;
+  _14_3_3_sigma = 2;
+  Cdc25C_Ps216_phosphorylated_active = 0;
+  Wee1 = 0.001;
+  Wee1_phosphorylated = 0;
+  Cyclin_B_Cdk1_nuclear = 0;
+  p21_CyclinB_Cdk1 = 0;
+  B_Myb_inactive = 0;
+  Cdc25C_inactive = 1e-06;
+  Cdc25C_Ps216_phosphorylated_inactive = 0.03;
+  _14_3_3_sigma_iCdc25C_PS216_phosphorylated = 0.03;
+  APC_Ccdc20_inactive = 0.9;
+  APC_Ccdh1_inactive = 0.1;
+  Cyclin_B_Cdk1_nuclear_inactive = 0;
+
+  // Compartment initializations:
+  nuclear = 1;
+  cytoplasm = 1;
+
+  // Variable initializations:
+  DNA_damage_signal = 0;
+  k72 = 1e-08;
+  k76 = 0.0556;
+  k74 = 0.772;
+  k77 = 0.02;
+  k1 = 0.0005;
+  k2 = 0.0005;
+  k3 = 0.005;
+  k4 = 0.0025;
+  k5 = 0.1;
+  k6 = 0.0025;
+  k7 = 0.0025;
+  k8 = 2.5e-05;
+  k9 = 0.0003;
+  k10 = 0.0005;
+  k11 = 0.0005;
+  k12 = 0.0002;
+  k13 = 0.0005;
+  k14 = 0.0075;
+  k15 = 0.005;
+  k16 = 0.005;
+  k17 = 0.05;
+  k18 = 0.0005;
+  k19 = 0.005;
+  k20 = 0.0005;
+  k21 = 5e-05;
+  k22 = 0.006;
+  k23 = 0.00175;
+  k24 = 0.0225;
+  k25 = 0.000175;
+  k26 = 0.0225;
+  k27 = 0.000175;
+  k28 = 0.0009;
+  k29 = 5e-05;
+  k30 = 0.0025;
+  k31 = 0.000175;
+  k32 = 0.0025;
+  k33 = 0.000175;
+  k34 = 5e-08;
+  k35 = 0.05;
+  k36 = 0.0015;
+  k37 = 5e-05;
+  k38 = 0.001;
+  k39 = 0.005;
+  k40 = 0.002;
+  k41 = 5e-05;
+  k42 = 0.0001;
+  k43 = 0.0005;
+  k44 = 0.0005;
+  k45 = 5e-05;
+  k46 = 0.0025;
+  k47 = 0.0025;
+  k48 = 0.0025;
+  k49 = 0.04;
+  k50 = 0.0025;
+  k51 = 5e-08;
+  k52 = 5e-07;
+  k53 = 5e-05;
+  k54 = 0.01;
+  k55 = 5e-08;
+  k56 = 5e-05;
+  k57 = 0.005;
+  k58 = 5e-05;
+  k59 = 0.0005;
+  k60 = 0.0001;
+  k61 = 0.07;
+  k62 = 0.001;
+  k63 = 0.00094;
+  k64 = 0.02;
+  k65 = 9.5;
+  k66 = 10;
+  k67 = 0.005;
+  k68 = 0.05;
+  k69 = 0.0008;
+  k70 = 6;
+  k71 = 0.004;
+  k73 = 3;
+  k75 = 1e-05;
+  k78 = 0.2;
+  k79 = 0.01;
+  k80 = 0.04;
+  k81 = 0.001;
+  k82 = 0.05;
+  k83 = 0.005;
+  k84 = 0.001;
+  k85 = 0.005;
+  k86 = 0.0005;
+  k87 = 1;
+  k88 = 1;
+  k89 = 0.001;
+  k90 = 0.0005;
+  k91 = 0.02;
+  k92 = 0.005;
+  k93 = 0.00125;
+  k94 = 0.00025;
+  k95 = 0.05;
+  k96 = 0.0001;
+  k97 = 0.005;
+  k98 = 0.005;
+  k99 = 0.0002;
+  k100 = 0.1;
+  k101 = 1;
+  k102 = 1;
+  k103 = 0.0225;
+  k104 = 0.000175;
+  k105 = 0.05;
+  k106 = 0.05;
+  k107 = 0.002;
+  k108 = 1e-05;
+  k109 = 0.01;
+  k110 = 1;
+  k111 = 0.001;
+  k112 = 0.01;
+  k113 = 0.001;
+  k114 = 0.0001;
+  k115 = 0.01;
+  k116 = 1;
+  k117 = 1;
+  k118 = 0.01;
+  k119 = 1;
+  k120 = 100;
+  k121 = 1;
+  k122 = 0.005;
+  k123 = 0.01;
+  k124 = 0.01;
+  k125 = 0.005;
+  k126 = 0.005;
+  k127 = 0.005;
+  k128 = 0.001;
+  k129 = 0.3;
+  k130 = 3e-06;
+  k131 = 0.01;
+  k132 = 5e-05;
+  k133 = 0.0005;
+  k134 = 0.01;
+  k135 = 0.005;
+  k136 = 0.005;
+  k137 = 0.03;
+
+  // Other declarations:
+  const nuclear, cytoplasm, DNA_damage_signal, k72, k76, k74, k77, k1, k2;
+  const k3, k4, k5, k6, k7, k8, k9, k10, k11, k12, k13, k14, k15, k16, k17;
+  const k18, k19, k20, k21, k22, k23, k24, k25, k26, k27, k28, k29, k30, k31;
+  const k32, k33, k34, k35, k36, k37, k38, k39, k40, k41, k42, k43, k44, k45;
+  const k46, k47, k48, k49, k50, k51, k52, k53, k54, k55, k56, k57, k58, k59;
+  const k60, k61, k62, k63, k64, k65, k66, k67, k68, k69, k70, k71, k73, k75;
+  const k78, k79, k80, k81, k82, k83, k84, k85, k86, k87, k88, k89, k90, k91;
+  const k92, k93, k94, k95, k96, k97, k98, k99, k100, k101, k102, k103, k104;
+  const k105, k106, k107, k108, k109, k110, k111, k112, k113, k114, k115;
+  const k116, k117, k118, k119, k120, k121, k122, k123, k124, k125, k126;
+  const k127, k128, k129, k130, k131, k132, k133, k134, k135, k136, k137;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  Cyclin_D_Cdk4 is "Cyclin_D/Cdk4";
+  Cyclin_E_Cdk2_inactive_phosphorylated is "Cyclin_E/Cdk2_inactive_phosphorylated";
+  B_Myb_active is "B-Myb_active";
+  Cyclin_A_Cdk2_inactive is "Cyclin_A/Cdk2_inactive";
+  Cyclin_A_Cdk2_active is "Cyclin_A/Cdk2_active";
+  APC_Ccdc20_active is "APC/Ccdc20_active";
+  APC_Ccdh1_active is "APC/Ccdh1_active";
+  Cyclin_E_Cdk2_active_unphosphorylated is "Cyclin_E/Cdk2_active_unphosphorylated";
+  p21_CyclinD_Cdk4 is "p21/CyclinD/Cdk4";
+  p27_CyclinD_Cdk4 is "p27/CyclinD/Cdk4";
+  p27_CyclinE_Cdk2 is "p27/CyclinE/Cdk2";
+  p21_CyclinE_Cdk2 is "p21/CyclinE/Cdk2";
+  p27_CyclinA_Cdk2 is "p27/CyclinA/Cdk2";
+  p21_CyclinA_Cdk2 is "p21/CyclinA/Cdk2";
+  Rb_E2F is "Rb/E2F";
+  Rb_PP_E2F is "Rb-PP/E2F";
+  Rb_PPP is "Rb-PPP";
+  ATM_ATR is "ATM/ATR";
+  DNA_damage_signal is "DNA damage signal";
+  NF_Y is "NF-Y";
+  Cyclin_B_Cdk1_inactive_unphosphorylated_cytoplasm is "Cyclin_B/Cdk1_inactive_unphosphorylated_cytoplasm";
+  Cyclin_B_Cdk1_nuclear is "Cyclin_B/Cdk1_nuclear";
+  p21_CyclinB_Cdk1 is "p21/CyclinB/Cdk1";
+  B_Myb_inactive is "B-Myb_inactive";
+  APC_Ccdc20_inactive is "APC/Ccdc20_inactive";
+  APC_Ccdh1_inactive is "APC/Ccdh1_inactive";
+  Cyclin_B_Cdk1_nuclear_inactive is "Cyclin_B/Cdk1_nuclear_inactive";
+  APC_C_Cdc20_active_x20 is "APC/C_Cdc20_active_x20";
+  R1_Cyclin_D_synthesis is "R1 Cyclin D synthesis";
+  R2_Cyclin_degradation is "R2 Cyclin degradation";
+  R3_4_Cyclin_D_Cdk4_complex_formation is "R3_4 Cyclin D Cdk4 complex formation";
+  R5_Cyclin_E_synthesis_mediated_by_E2F is "R5 Cyclin E synthesis mediated by E2F";
+  R6_Cyclin_E_degradation is "R6 Cyclin E degradation";
+  R7_Cyclin_E_Cdk2_complex_formation is "R7 Cyclin E Cdk2 complex formation";
+  R8_Cyclin_E_Cdk2_complex_dissociation is "R8 Cyclin E Cdk2 complex dissociation";
+  R9_Cyclin_A_synthesis is "R9 Cyclin A synthesis";
+  R10_Cyclin_A_degradation is "R10 Cyclin A degradation";
+  R11_Cyclin_A_Cdk2_complex_formation is "R11 Cyclin A Cdk2 complex formation";
+  R12_Cyclin_A_Cdk2_complex_dissociation is "R12 Cyclin A Cdk2 complex dissociation";
+  R13_Cyclin_D_degradation is "R13 Cyclin D degradation";
+  R14_Cyclin_A_degradation is "R14 Cyclin A degradation";
+  R15_Cyclin_A_degradation is "R15 Cyclin A degradation";
+  R16_Cyclin_E_degradation is "R16 Cyclin E degradation";
+  R17_Cyclin_E_degradation is "R17 Cyclin E degradation";
+  R18_binding_of_p21_to_Cyclin_D_Cdk4_complex is "R18 binding of p21 to Cyclin D/Cdk4 complex";
+  R19_unbinding_of_p21_to_Cyclin_D_Cdk4_complex is "R19 unbinding of p21 to Cyclin D/Cdk4 complex";
+  R20_binding_of_p27_to_Cyclin_D_Cdk4_complex is "R20 binding of p27 to Cyclin D/Cdk4 complex";
+  R21_unbinding_of_p27_to_Cyclin_D_Cdk4_complex is "R21 unbinding of p27 to Cyclin D/Cdk4 complex";
+  R22_Dephosphorylation_of_CycE_Cdk2_complex_by_Cdc25 is "R22 Dephosphorylation of CycE_Cdk2 complex by Cdc25";
+  R23_Phosphorylation_of_Cyclin_E_Cdk2_complex is "R23 Phosphorylation of Cyclin E Cdk2 complex";
+  R24_binding_of_p27_to_Cyclin_E_Cdk2_complex is "R24 binding of p27 to Cyclin E/Cdk2 complex";
+  R25_unbinding_of_p27_to_Cyclin_E_Cdk2_complex is "R25 unbinding of p27 to Cyclin E/Cdk2 complex";
+  R26_binding_of_p21_to_Cyclin_E_Cdk2_complex is "R26 binding of p21 to Cyclin E/Cdk2 complex";
+  R27_unbinding_of_p21_to_Cyclin_E_Cdk2_complex is "R27 unbinding of p21 to Cyclin E/Cdk2 complex";
+  R28_Dephosphorylation_of_Cyclin_A_Cdk2_complex is "R28 Dephosphorylation of Cyclin A Cdk2 complex";
+  R29_Phosphorylation_of_Cyclin_A_Cdk2_complex is "R29 Phosphorylation of Cyclin A Cdk2 complex";
+  R30_binding_of_p27_to_Cyclin_A_Cdk2_complex is "R30 binding of p27 to Cyclin A/Cdk2 complex";
+  R31_unbinding_of_p27_to_Cyclin_A_Cdk2_complex is "R31 unbinding of p27 to Cyclin A/Cdk2 complex";
+  R32_binding_of_p21_to_Cyclin_A_Cdk2_complex is "R32 binding of p21 to Cyclin A/Cdk2 complex";
+  R33_unbinding_of_p21_to_Cyclin_A_Cdk2_complex is "R33 unbinding of p21 to Cyclin A/Cdk2 complex";
+  R34_synthesis_of_p27 is "R34 synthesis of p27";
+  R35_p27_degradation_mediated_by_Cyclin_E_Cdk2_complex is "R35 p27 degradation mediated by Cyclin E Cdk2 complex";
+  R36_p27_degradation_mediated_by_Cyclin_A_Cdk2_complex is "R36 p27 degradation mediated by Cyclin A Cdk2 complex";
+  R37_p21_synthesis is "R37 p21 synthesis";
+  R38_p21_synthesis_mediated_by_p53 is "R38 p21 synthesis mediated by p53";
+  R39_p21_degradation is "R39 p21 degradation";
+  R40_p16_synthesis is "R40 p16 synthesis";
+  R41_p16_synthesis_mediated_by_Rb is "R41 p16 synthesis mediated by Rb";
+  R43_p16_degradation is "R43 p16 degradation";
+  R44_Inhibition_by_p16_of_Cyclin_D_Cdk4_complex is "R44 Inhibition by p16 of Cyclin D Cdk4 complex";
+  R45_E2F_Rb_binding is "R45 E2F Rb binding";
+  R46_Phosphorylation_of_Rb_E2F_by_Cyclin_D_Cdk4_complex is "R46 Phosphorylation of Rb_E2F by Cyclin D Cdk4 complex";
+  R47_Phosphorylation_of_Rb_E2F_by_Cyclin_D_Cdk4_complex is "R47 Phosphorylation of Rb_E2F by Cyclin D Cdk4 complex";
+  R48_Phosphorylation_of_Rb_E2F_by_Cyclin_D_Cdk4_complex is "R48 Phosphorylation of Rb_E2F by Cyclin D Cdk4 complex";
+  R49_Dissociation_of_Rb_and_E2F is "R49 Dissociation of Rb and E2F";
+  R50_Dissociation_of_Rb_and_E2F is "R50 Dissociation of Rb and E2F";
+  R51_E2F_synthesis is "R51 E2F synthesis";
+  R52_E2F_synthesis is "R52 E2F synthesis";
+  R53_E2F_degradation is "R53 E2F degradation";
+  R54_E2F_degradation_mediated_by_Cyclin_A_Cdk2 is "R54 E2F degradation mediated by Cyclin A Cdk2";
+  R55_Dephosphorylation_of_Rb is "R55 Dephosphorylation of Rb";
+  R56_Rb_synthesis is "R56 Rb synthesis";
+  R57_Rb_degradation is "R57 Rb degradation";
+  R58_Rb_synthesis_mediated_by_p16 is "R58 Rb synthesis mediated by p16";
+  R60_synthesis_of_p53 is "R60 synthesis of p53";
+  R61_synthesis_of_p53_mediated_by_ATM_ATR is "R61 synthesis of p53 mediated by ATM_ATR";
+  R62_degradation_of_p53_mediated_by_mdm2 is "R62 degradation of p53 mediated by mdm2";
+  R63_mdm2_synthesis is "R63 mdm2 synthesis";
+  R64_mdm2_degradation is "R64 mdm2 degradation";
+  R65_mdm2_synthesis is "R65 mdm2 synthesis";
+  R67_Intermediate_Degradation is "R67 Intermediate Degradation";
+  R70_Synthesis_mediated_by_p53_mdm2 is "R70 Synthesis mediated by p53 mdm2";
+  R75_Cyclin_A_synthesis_mediated_by_NF_Y is "R75 Cyclin A synthesis mediated by NF-Y";
+  R78_synthesis_of_ATM_ATR is "R78 synthesis of ATM/ATR";
+  R79_ATM_ATR_degradation is "R79 ATM/ATR degradation";
+  R80_synthesis_of_Cdc25_mediated_by_E2F is "R80 synthesis of Cdc25 mediated by E2F";
+  R81_Cdc25_degradation_mediated_by_Chk1 is "R81 Cdc25 degradation mediated by Chk1";
+  R82_Cdc25_activation_mediated_by_Cyclin_E_A_Cdk2_complexes is "R82 Cdc25 activation mediated by Cyclin E/A Cdk2 complexes";
+  R83_Cdc25_degradation is "R83 Cdc25 degradation";
+  R84_Cdc25_degradation is "R84 Cdc25 degradation";
+  R85_Cdc25_inactivation is "R85 Cdc25 inactivation";
+  R86_Cdc25_degradation is "R86 Cdc25 degradation";
+  R87_inactivation_of_Chk1 is "R87 inactivation of Chk1";
+  R88_activation_of_Chk1 is "R88 activation of Chk1";
+  R89_synthesis_of_NF_Y_mediated_by_Cyclin_A_Cdk2_complex is "R89 synthesis of NF-Y mediated by Cyclin A Cdk2 complex";
+  R90_NF_Y_degradation is "R90 NF-Y degradation";
+  R91_Cyclin_B_synthesis_mediated_by_NF_Y is "R91 Cyclin B synthesis mediated by NF-Y";
+  R92_Cyclin_B_degradation is "R92 Cyclin B degradation";
+  R93_Cyclin_B_Cdk1_binding is "R93 Cyclin B Cdk1 binding";
+  R94_Cyclin_B_Cdk1_dissociation is "R94 Cyclin B Cdk1 dissociation";
+  R95_Cyclin_B_Cdk1_complex_activation_by_dephosphorylation is "R95 Cyclin B Cdk1 complex activation by dephosphorylation";
+  R96_Cyclin_B_Cdk1_complex_phosphorylation__inactivation is "R96 Cyclin B Cdk1 complex phosphorylation_ inactivation";
+  R97_Cyclin_B_degradation_by_APC_Cdc20_Cdh1 is "R97 Cyclin B degradation by APC Cdc20/Cdh1";
+  R98_Cyclin_B_degradation is "R98 Cyclin B degradation";
+  R99_synthesis_of_Wee1 is "R99 synthesis of Wee1";
+  R100_phosphorylation_of_wee1 is "R100 phosphorylation of wee1";
+  R101_dephosphorylation_of_wee1 is "R101 dephosphorylation of wee1";
+  R102_degradation_of_wee1 is "R102 degradation of wee1";
+  R103_p21_binding_to_Cyclin_B_Cdk1_complex is "R103 p21 binding to Cyclin B Cdk1 complex";
+  R104_p21_dissociation_to_Cyclin_B_Cdk1_complex is "R104 p21 dissociation to Cyclin B Cdk1 complex";
+  R105_synthesis_of_iB_Myb_mediated_by_E2F is "R105 synthesis of iB-Myb mediated by E2F";
+  R106_activation_of_B_Myb_by_Cyclin_A_Cdk2_complex is "R106 activation of B-Myb by Cyclin A Cdk2 complex";
+  R107_degradation_of_B_Myb is "R107 degradation of B-Myb";
+  R108_synthesis_of_Cdc25 is "R108 synthesis of Cdc25";
+  R109_inactivation_of_Cdc25 is "R109 inactivation of Cdc25";
+  R110_activation_of_Cdc25_mediated_by_cyclin_B_Cdk1_complex is "R110 activation of Cdc25 mediated by cyclin B Cdk1 complex";
+  R111_phosphorylation_of_Cdc25_mediated_by_Chk1 is "R111 phosphorylation of Cdc25 mediated by Chk1";
+  R112_dephosphorylation_of_Cdc25 is "R112 dephosphorylation of Cdc25";
+  R113_phosphorylation_of_Cdc25_mediated_by_Chk1 is "R113 phosphorylation of Cdc25 mediated by Chk1";
+  R114_degradation_of_Cdc25 is "R114 degradation of Cdc25";
+  R115_inactivation_of_Cdc25 is "R115 inactivation of Cdc25";
+  R116_activation_of_Cdc25_mediated_by_Cyclin_B_Cdk1 is "R116 activation of Cdc25 mediated by Cyclin B Cdk1";
+  R117_synthesis_of_14_3_3_sigma is "R117 synthesis of 14_3_3_sigma";
+  R118_synthesis_of_14_3_3_sigma_mediated_by_p53 is "R118 synthesis of 14_3_3_sigma mediated by p53";
+  R119_degradation_of_14_3_3_sigma is "R119 degradation of 14_3_3_sigma";
+  R120_Binding_of_Cdc25_to_14_3_3 is "R120 Binding of Cdc25 to 14-3-3";
+  R121_Degradation_of_Cdc25_14_3_3_sigma_complex is "R121 Degradation of Cdc25 14_3_3_sigma complex";
+  R122_Inactivation_of_APC_C_Cdc20 is "R122 Inactivation of APC/C_Cdc20";
+  R123_Activation_of_APC_C_Cdc20 is "R123 Activation of APC/C_Cdc20";
+  R124_Inactivation_of_APC_C_Cdh1 is "R124 Inactivation of APC/C_Cdh1";
+  R125_Activation_of_APC_C_Cdh1 is "R125 Activation of APC/C_Cdh1";
+  R126_Degradation_of_Cyclin_A_mediated_by_APC_C_Cdc20 is "R126 Degradation of Cyclin A mediated by APC_C_Cdc20";
+  R127_Degradation_of_Cyclin_A__mediated_by_APC_C_Cdh1 is "R127 Degradation of Cyclin A  mediated by APC_C_Cdh1";
+  R128_Degradation_of_Cyclin_B_mediated_by_APC_C_Cdc20 is "R128 Degradation of Cyclin B mediated by APC_C_Cdc20";
+  R129_Degradation_of_Cyclin_B__mediated_by_APC_C_Cdh1 is "R129 Degradation of Cyclin B  mediated by APC_C_Cdh1";
+  R130_Synthesis_of_Cyclin_A_mediated_by_E2F is "R130 Synthesis of Cyclin A mediated by E2F";
+  R131_translocation_of_Cyclin_B_Cdk1_complex_for_cytoplasm_to_nuclear is "R131 translocation of Cyclin B Cdk1 complex for cytoplasm to nuclear";
+  R132_translocation_of_Cyclin_B_Cdk1_complex_for_cytoplasm_to_nuclear is "R132 translocation of Cyclin B Cdk1 complex for cytoplasm to nuclear";
+  R133_inactivation_of_Cyclin_B_Cdk1 is "R133 inactivation of Cyclin B Cdk1";
+  R134_Activation_of_cyclin_B_Cdk1 is "R134 Activation of cyclin B Cdk1";
+  R135_degradation_of_cyclin_B_cdk1 is "R135 degradation of cyclin B cdk1";
+  R136_degradation_of_cyclin_B_cdk1 is "R136 degradation of cyclin B cdk1";
+  R137_degradation_of_cyclin_B_cdk1 is "R137 degradation of cyclin B cdk1";
+  Rdeg_p53_degradation is "Rdeg p53 degradation";
+
+  // CV terms:
+  nuclear hypernym "http://identifiers.org/ncit/C13361"
+  cytoplasm hypernym "http://identifiers.org/go/GO:0005737"
+  Cyclin_D hypernym "http://identifiers.org/uniprot/P30279"
+  Cdk4 hypernym "http://identifiers.org/uniprot/P11802"
+  Cyclin_D_Cdk4 part "http://identifiers.org/uniprot/P30279"
+  Cyclin_D_Cdk4 part "http://identifiers.org/uniprot/P11802"
+  Cyclin_D_Cdk4 property "http://identifiers.org/go/GO:0032991"
+  Cyclin_E hypernym "http://identifiers.org/uniprot/P24864"
+  E2F hypernym "http://identifiers.org/uniprot/Q01094"
+  Cdk2 hypernym "http://identifiers.org/uniprot/P24941"
+  Cyclin_E_Cdk2_inactive_phosphorylated part "http://identifiers.org/uniprot/P24864"
+  Cyclin_E_Cdk2_inactive_phosphorylated part "http://identifiers.org/uniprot/P24941"
+  Cyclin_E_Cdk2_inactive_phosphorylated property "http://identifiers.org/go/GO:0032991"
+  Cyclin_E_Cdk2_inactive_phosphorylated property "http://identifiers.org/pato/PATO:0002355"
+  Cyclin_E_Cdk2_inactive_phosphorylated property "http://identifiers.org/pato/PATO:0002220"
+  Cyclin_A hypernym "http://identifiers.org/uniprot/P20248"
+  B_Myb_active hypernym "http://identifiers.org/uniprot/P10244"
+  B_Myb_active property "http://identifiers.org/pato/PATO:0002354"
+  Cyclin_A_Cdk2_inactive part "http://identifiers.org/uniprot/P24941"
+  Cyclin_A_Cdk2_inactive part "http://identifiers.org/uniprot/P20248"
+  Cyclin_A_Cdk2_inactive property "http://identifiers.org/pato/PATO:0002355"
+  Cyclin_A_Cdk2_inactive property "http://identifiers.org/go/GO:0032991"
+  Cyclin_A_Cdk2_active part "http://identifiers.org/uniprot/P24941"
+  Cyclin_A_Cdk2_active part "http://identifiers.org/uniprot/P20248"
+  Cyclin_A_Cdk2_active property "http://identifiers.org/go/GO:0032991"
+  Cyclin_A_Cdk2_active property "http://identifiers.org/pato/PATO:0002354"
+  APC_Ccdc20_active part "http://identifiers.org/go/GO:0005680"
+  APC_Ccdc20_active part "http://identifiers.org/uniprot/Q12834"
+  APC_Ccdc20_active property "http://identifiers.org/go/GO:0032991"
+  APC_Ccdc20_active property "http://identifiers.org/pato/PATO:0002354"
+  APC_Ccdh1_active part "http://identifiers.org/go/GO:0005680"
+  APC_Ccdh1_active part "http://identifiers.org/uniprot/P12830"
+  APC_Ccdh1_active property "http://identifiers.org/go/GO:0032991"
+  APC_Ccdh1_active property "http://identifiers.org/pato/PATO:0002354"
+  Cyclin_E_Cdk2_active_unphosphorylated part "http://identifiers.org/uniprot/P24864"
+  Cyclin_E_Cdk2_active_unphosphorylated part "http://identifiers.org/uniprot/P24941"
+  Cyclin_E_Cdk2_active_unphosphorylated property "http://identifiers.org/go/GO:0032991"
+  Cyclin_E_Cdk2_active_unphosphorylated property "http://identifiers.org/pato/PATO:0002354"
+  p21 hypernym "http://identifiers.org/uniprot/P38936"
+  p21_CyclinD_Cdk4 part "http://identifiers.org/uniprot/P11802"
+  p21_CyclinD_Cdk4 part "http://identifiers.org/uniprot/P30279"
+  p21_CyclinD_Cdk4 part "http://identifiers.org/uniprot/P38936"
+  p21_CyclinD_Cdk4 property "http://identifiers.org/go/GO:0032991"
+  p27 hypernym "http://identifiers.org/uniprot/P46527"
+  p27_CyclinD_Cdk4 part "http://identifiers.org/uniprot/P30279"
+  p27_CyclinD_Cdk4 part "http://identifiers.org/uniprot/P11802"
+  p27_CyclinD_Cdk4 part "http://identifiers.org/uniprot/P46527"
+  p27_CyclinD_Cdk4 property "http://identifiers.org/go/GO:0032991"
+  Cdc25A_active hypernym "http://identifiers.org/uniprot/P30304"
+  Cdc25A_active property "http://identifiers.org/pato/PATO:0002354"
+  p27_CyclinE_Cdk2 part "http://identifiers.org/uniprot/P24864"
+  p27_CyclinE_Cdk2 part "http://identifiers.org/uniprot/P46527"
+  p27_CyclinE_Cdk2 part "http://identifiers.org/uniprot/P24941"
+  p27_CyclinE_Cdk2 property "http://identifiers.org/go/GO:0032991"
+  p21_CyclinE_Cdk2 part "http://identifiers.org/uniprot/P24864"
+  p21_CyclinE_Cdk2 part "http://identifiers.org/uniprot/P38936"
+  p21_CyclinE_Cdk2 part "http://identifiers.org/uniprot/P24941"
+  p21_CyclinE_Cdk2 property "http://identifiers.org/go/GO:0032991"
+  p27_CyclinA_Cdk2 part "http://identifiers.org/uniprot/P24941"
+  p27_CyclinA_Cdk2 part "http://identifiers.org/uniprot/P20248"
+  p27_CyclinA_Cdk2 part "http://identifiers.org/uniprot/P46527"
+  p27_CyclinA_Cdk2 property "http://identifiers.org/go/GO:0032991"
+  p21_CyclinA_Cdk2 part "http://identifiers.org/uniprot/P20248"
+  p21_CyclinA_Cdk2 part "http://identifiers.org/uniprot/P38936"
+  p21_CyclinA_Cdk2 part "http://identifiers.org/uniprot/P24941"
+  p21_CyclinA_Cdk2 property "http://identifiers.org/go/GO:0032991"
+  p53 hypernym "http://identifiers.org/uniprot/P04637"
+  p16 hypernym "http://identifiers.org/uniprot/P42771"
+  Rb hypernym "http://identifiers.org/uniprot/Q08999"
+  Rb_E2F part "http://identifiers.org/uniprot/Q01094"
+  Rb_E2F part "http://identifiers.org/uniprot/Q08999"
+  Rb_E2F property "http://identifiers.org/go/GO:0032991"
+  Rb_PP_E2F part "http://identifiers.org/uniprot/Q08999"
+  Rb_PP_E2F part "http://identifiers.org/uniprot/Q01094"
+  Rb_PP_E2F property "http://identifiers.org/pato/PATO:0002220"
+  Rb_PP_E2F property "http://identifiers.org/go/GO:0032991"
+  Rb_PPP hypernym "http://identifiers.org/uniprot/Q08999"
+  Rb_PPP property "http://identifiers.org/pato/PATO:0002220"
+  ATM_ATR part "http://identifiers.org/uniprot/Q13315"
+  ATM_ATR part "http://identifiers.org/uniprot/Q13535"
+  Mdm2 hypernym "http://identifiers.org/uniprot/Q00987"
+  NF_Y part "http://identifiers.org/uniprot/P25208"
+  Cdc25A_inactive hypernym "http://identifiers.org/uniprot/P30304"
+  Cdc25A_inactive property "http://identifiers.org/pato/PATO:0002355"
+  Chk1_active hypernym "http://identifiers.org/uniprot/O14757"
+  Chk1_active property "http://identifiers.org/pato/PATO:0002354"
+  Chk1_inactive hypernym "http://identifiers.org/uniprot/O14757"
+  Chk1_inactive property "http://identifiers.org/pato/PATO:0002355"
+  Cyclin_B hypernym "http://identifiers.org/uniprot/P14635"
+  Cdk1 hypernym "http://identifiers.org/uniprot/P06493"
+  Cyclin_B_Cdk1_inactive_unphosphorylated_cytoplasm part "http://identifiers.org/uniprot/P06493"
+  Cyclin_B_Cdk1_inactive_unphosphorylated_cytoplasm part "http://identifiers.org/uniprot/P14635"
+  Cyclin_B_Cdk1_inactive_unphosphorylated_cytoplasm property "http://identifiers.org/go/GO:0032991"
+  Cyclin_B_Cdk1_inactive_unphosphorylated_cytoplasm property "http://identifiers.org/pato/PATO:0002355"
+  Cyclin_B_Cdk1_active_phosphorylated_cytoplasm part "http://identifiers.org/uniprot/P14635"
+  Cyclin_B_Cdk1_active_phosphorylated_cytoplasm part "http://identifiers.org/uniprot/P06493"
+  Cyclin_B_Cdk1_active_phosphorylated_cytoplasm property "http://identifiers.org/go/GO:0032991"
+  Cyclin_B_Cdk1_active_phosphorylated_cytoplasm property "http://identifiers.org/pato/PATO:0002354"
+  Cyclin_B_Cdk1_active_phosphorylated_cytoplasm property "http://identifiers.org/pato/PATO:0002220"
+  Cdc25C_active hypernym "http://identifiers.org/uniprot/P30307"
+  Cdc25C_active property "http://identifiers.org/pato/PATO:0002354"
+  _14_3_3_sigma hypernym "http://identifiers.org/uniprot/P31947"
+  Cdc25C_Ps216_phosphorylated_active hypernym "http://identifiers.org/uniprot/P30307"
+  Cdc25C_Ps216_phosphorylated_active property "http://identifiers.org/pato/PATO:0002354"
+  Cdc25C_Ps216_phosphorylated_active property "http://identifiers.org/pato/PATO:0002220"
+  Wee1 hypernym "http://identifiers.org/uniprot/P30291"
+  Wee1_phosphorylated hypernym "http://identifiers.org/uniprot/P30291"
+  Wee1_phosphorylated property "http://identifiers.org/pato/PATO:0002220"
+  Cyclin_B_Cdk1_nuclear part "http://identifiers.org/uniprot/P06493"
+  Cyclin_B_Cdk1_nuclear part "http://identifiers.org/uniprot/P14635"
+  Cyclin_B_Cdk1_nuclear property "http://identifiers.org/go/GO:0032991"
+  p21_CyclinB_Cdk1 part "http://identifiers.org/uniprot/P06493"
+  p21_CyclinB_Cdk1 part "http://identifiers.org/uniprot/P38936"
+  p21_CyclinB_Cdk1 part "http://identifiers.org/uniprot/P14635"
+  p21_CyclinB_Cdk1 property "http://identifiers.org/go/GO:0032991"
+  B_Myb_inactive hypernym "http://identifiers.org/uniprot/P10244"
+  B_Myb_inactive property "http://identifiers.org/pato/PATO:0002355"
+  Cdc25C_inactive hypernym "http://identifiers.org/uniprot/P30307"
+  Cdc25C_inactive property "http://identifiers.org/pato/PATO:0002355"
+  Cdc25C_Ps216_phosphorylated_inactive hypernym "http://identifiers.org/uniprot/P30307"
+  Cdc25C_Ps216_phosphorylated_inactive property "http://identifiers.org/pato/PATO:0002220"
+  Cdc25C_Ps216_phosphorylated_inactive property "http://identifiers.org/pato/PATO:0002355"
+  _14_3_3_sigma_iCdc25C_PS216_phosphorylated part "http://identifiers.org/uniprot/P31947"
+  _14_3_3_sigma_iCdc25C_PS216_phosphorylated part "http://identifiers.org/uniprot/P30307"
+  _14_3_3_sigma_iCdc25C_PS216_phosphorylated property "http://identifiers.org/go/GO:0032991"
+  _14_3_3_sigma_iCdc25C_PS216_phosphorylated property "http://identifiers.org/pato/PATO:0002220"
+  APC_Ccdc20_inactive part "http://identifiers.org/go/GO:0005680"
+  APC_Ccdc20_inactive part "http://identifiers.org/uniprot/Q12834"
+  APC_Ccdc20_inactive property "http://identifiers.org/pato/PATO:0002355"
+  APC_Ccdc20_inactive property "http://identifiers.org/go/GO:0032991"
+  APC_Ccdh1_inactive part "http://identifiers.org/go/GO:0005680"
+  APC_Ccdh1_inactive part "http://identifiers.org/uniprot/P12830"
+  APC_Ccdh1_inactive property "http://identifiers.org/go/GO:0032991"
+  APC_Ccdh1_inactive property "http://identifiers.org/pato/PATO:0002355"
+  Cyclin_B_Cdk1_nuclear_inactive part "http://identifiers.org/uniprot/P06493"
+  Cyclin_B_Cdk1_nuclear_inactive part "http://identifiers.org/uniprot/P14635"
+  Cyclin_B_Cdk1_nuclear_inactive property "http://identifiers.org/go/GO:0032991"
+  Cyclin_B_Cdk1_nuclear_inactive property "http://identifiers.org/pato/PATO:0002355"
+  Cyclin_E_total hypernym "http://identifiers.org/uniprot/P24864"
+  Cyclin_A_total hypernym "http://identifiers.org/uniprot/P20248"
+  Cyclin_B_total hypernym "http://identifiers.org/uniprot/P14635"
+  APC_C_Cdc20_active_x20 part "http://identifiers.org/uniprot/Q12834"
+  APC_C_Cdc20_active_x20 part "http://identifiers.org/go/GO:0005680"
+  APC_C_Cdc20_active_x20 property "http://identifiers.org/pato/PATO:0002354"
+  APC_C_Cdc20_active_x20 property "http://identifiers.org/go/GO:0032991"
+  R1_Cyclin_D_synthesis hypernym "http://identifiers.org/go/GO:0006412"
+  R2_Cyclin_degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+  R3_4_Cyclin_D_Cdk4_complex_formation hypernym "http://identifiers.org/go/GO:0005488"
+  R5_Cyclin_E_synthesis_mediated_by_E2F hypernym "http://identifiers.org/go/GO:0006412"
+  R6_Cyclin_E_degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+  R7_Cyclin_E_Cdk2_complex_formation hypernym "http://identifiers.org/go/GO:0005488"
+  R8_Cyclin_E_Cdk2_complex_dissociation hypernym "http://identifiers.org/sbo/SBO:0000180"
+  R9_Cyclin_A_synthesis hypernym "http://identifiers.org/go/GO:0006412"
+  R10_Cyclin_A_degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+  R11_Cyclin_A_Cdk2_complex_formation hypernym "http://identifiers.org/go/GO:0005488"
+  R12_Cyclin_A_Cdk2_complex_dissociation hypernym "http://identifiers.org/sbo/SBO:0000180"
+  R13_Cyclin_D_degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+  R14_Cyclin_A_degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+  R15_Cyclin_A_degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+  R16_Cyclin_E_degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+  R17_Cyclin_E_degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+  R18_binding_of_p21_to_Cyclin_D_Cdk4_complex hypernym "http://identifiers.org/go/GO:0005488"
+  R19_unbinding_of_p21_to_Cyclin_D_Cdk4_complex hypernym "http://identifiers.org/sbo/SBO:0000180"
+  R20_binding_of_p27_to_Cyclin_D_Cdk4_complex hypernym "http://identifiers.org/go/GO:0005488"
+  R21_unbinding_of_p27_to_Cyclin_D_Cdk4_complex hypernym "http://identifiers.org/sbo/SBO:0000180"
+  R22_Dephosphorylation_of_CycE_Cdk2_complex_by_Cdc25 hypernym "http://identifiers.org/go/GO:0016311"
+  R23_Phosphorylation_of_Cyclin_E_Cdk2_complex hypernym "http://identifiers.org/go/GO:0016310"
+  R24_binding_of_p27_to_Cyclin_E_Cdk2_complex hypernym "http://identifiers.org/go/GO:0005488"
+  R25_unbinding_of_p27_to_Cyclin_E_Cdk2_complex hypernym "http://identifiers.org/sbo/SBO:0000180"
+  R26_binding_of_p21_to_Cyclin_E_Cdk2_complex hypernym "http://identifiers.org/go/GO:0005488"
+  R27_unbinding_of_p21_to_Cyclin_E_Cdk2_complex hypernym "http://identifiers.org/sbo/SBO:0000180"
+  R28_Dephosphorylation_of_Cyclin_A_Cdk2_complex hypernym "http://identifiers.org/go/GO:0016311"
+  R29_Phosphorylation_of_Cyclin_A_Cdk2_complex hypernym "http://identifiers.org/go/GO:0016310"
+  R30_binding_of_p27_to_Cyclin_A_Cdk2_complex hypernym "http://identifiers.org/go/GO:0005488"
+  R31_unbinding_of_p27_to_Cyclin_A_Cdk2_complex hypernym "http://identifiers.org/sbo/SBO:0000180"
+  R32_binding_of_p21_to_Cyclin_A_Cdk2_complex hypernym "http://identifiers.org/go/GO:0005488"
+  R33_unbinding_of_p21_to_Cyclin_A_Cdk2_complex hypernym "http://identifiers.org/sbo/SBO:0000180"
+  R34_synthesis_of_p27 hypernym "http://identifiers.org/go/GO:0006412"
+  R35_p27_degradation_mediated_by_Cyclin_E_Cdk2_complex hypernym "http://identifiers.org/sbo/SBO:0000179"
+  R36_p27_degradation_mediated_by_Cyclin_A_Cdk2_complex hypernym "http://identifiers.org/sbo/SBO:0000179"
+  R37_p21_synthesis hypernym "http://identifiers.org/go/GO:0006412"
+  R38_p21_synthesis_mediated_by_p53 hypernym "http://identifiers.org/go/GO:0006412"
+  R39_p21_degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+  R40_p16_synthesis hypernym "http://identifiers.org/go/GO:0006412"
+  R41_p16_synthesis_mediated_by_Rb hypernym "http://identifiers.org/go/GO:0006412"
+  R43_p16_degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+  R45_E2F_Rb_binding hypernym "http://identifiers.org/go/GO:0005488"
+  R46_Phosphorylation_of_Rb_E2F_by_Cyclin_D_Cdk4_complex hypernym "http://identifiers.org/go/GO:0016310"
+  R47_Phosphorylation_of_Rb_E2F_by_Cyclin_D_Cdk4_complex hypernym "http://identifiers.org/go/GO:0016310"
+  R48_Phosphorylation_of_Rb_E2F_by_Cyclin_D_Cdk4_complex hypernym "http://identifiers.org/go/GO:0016310"
+  R49_Dissociation_of_Rb_and_E2F hypernym "http://identifiers.org/sbo/SBO:0000180"
+  R50_Dissociation_of_Rb_and_E2F hypernym "http://identifiers.org/sbo/SBO:0000180"
+  R51_E2F_synthesis hypernym "http://identifiers.org/go/GO:0006412"
+  R52_E2F_synthesis hypernym "http://identifiers.org/go/GO:0006412"
+  R53_E2F_degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+  R54_E2F_degradation_mediated_by_Cyclin_A_Cdk2 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  R55_Dephosphorylation_of_Rb hypernym "http://identifiers.org/go/GO:0016311"
+  R56_Rb_synthesis hypernym "http://identifiers.org/go/GO:0006412"
+  R57_Rb_degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+  R58_Rb_synthesis_mediated_by_p16 hypernym "http://identifiers.org/go/GO:0006412"
+  R60_synthesis_of_p53 hypernym "http://identifiers.org/go/GO:0006412"
+  R61_synthesis_of_p53_mediated_by_ATM_ATR hypernym "http://identifiers.org/go/GO:0006412"
+  R62_degradation_of_p53_mediated_by_mdm2 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  R63_mdm2_synthesis hypernym "http://identifiers.org/go/GO:0006412"
+  R64_mdm2_degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+  R65_mdm2_synthesis hypernym "http://identifiers.org/go/GO:0006412"
+  R67_Intermediate_Degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+  R70_Synthesis_mediated_by_p53_mdm2 hypernym "http://identifiers.org/go/GO:0006412"
+  R75_Cyclin_A_synthesis_mediated_by_NF_Y hypernym "http://identifiers.org/go/GO:0006412"
+  R78_synthesis_of_ATM_ATR hypernym "http://identifiers.org/go/GO:0006412"
+  R79_ATM_ATR_degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+  R80_synthesis_of_Cdc25_mediated_by_E2F hypernym "http://identifiers.org/go/GO:0006412"
+  R81_Cdc25_degradation_mediated_by_Chk1 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  R82_Cdc25_activation_mediated_by_Cyclin_E_A_Cdk2_complexes hypernym "http://identifiers.org/sbo/SBO:0000656"
+  R83_Cdc25_degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+  R84_Cdc25_degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+  R86_Cdc25_degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+  R88_activation_of_Chk1 hypernym "http://identifiers.org/sbo/SBO:0000656"
+  R89_synthesis_of_NF_Y_mediated_by_Cyclin_A_Cdk2_complex hypernym "http://identifiers.org/go/GO:0006412"
+  R90_NF_Y_degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+  R91_Cyclin_B_synthesis_mediated_by_NF_Y hypernym "http://identifiers.org/go/GO:0006412"
+  R92_Cyclin_B_degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+  R93_Cyclin_B_Cdk1_binding hypernym "http://identifiers.org/go/GO:0005488"
+  R94_Cyclin_B_Cdk1_dissociation hypernym "http://identifiers.org/sbo/SBO:0000180"
+  R95_Cyclin_B_Cdk1_complex_activation_by_dephosphorylation hypernym "http://identifiers.org/go/GO:0016311"
+  R96_Cyclin_B_Cdk1_complex_phosphorylation__inactivation hypernym "http://identifiers.org/go/GO:0016310"
+  R97_Cyclin_B_degradation_by_APC_Cdc20_Cdh1 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  R98_Cyclin_B_degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+  R99_synthesis_of_Wee1 hypernym "http://identifiers.org/go/GO:0006412"
+  R100_phosphorylation_of_wee1 hypernym "http://identifiers.org/go/GO:0016310"
+  R101_dephosphorylation_of_wee1 hypernym "http://identifiers.org/go/GO:0016311"
+  R102_degradation_of_wee1 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  R103_p21_binding_to_Cyclin_B_Cdk1_complex hypernym "http://identifiers.org/go/GO:0005488"
+  R104_p21_dissociation_to_Cyclin_B_Cdk1_complex hypernym "http://identifiers.org/sbo/SBO:0000180"
+  R105_synthesis_of_iB_Myb_mediated_by_E2F hypernym "http://identifiers.org/ncit/C61408"
+  R106_activation_of_B_Myb_by_Cyclin_A_Cdk2_complex hypernym "http://identifiers.org/sbo/SBO:0000656"
+  R107_degradation_of_B_Myb hypernym "http://identifiers.org/sbo/SBO:0000179"
+  R108_synthesis_of_Cdc25 hypernym "http://identifiers.org/go/GO:0006412"
+  R110_activation_of_Cdc25_mediated_by_cyclin_B_Cdk1_complex hypernym "http://identifiers.org/sbo/SBO:0000656"
+  R111_phosphorylation_of_Cdc25_mediated_by_Chk1 hypernym "http://identifiers.org/go/GO:0016310"
+  R112_dephosphorylation_of_Cdc25 hypernym "http://identifiers.org/go/GO:0016311"
+  R113_phosphorylation_of_Cdc25_mediated_by_Chk1 hypernym "http://identifiers.org/go/GO:0016310"
+  R114_degradation_of_Cdc25 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  R116_activation_of_Cdc25_mediated_by_Cyclin_B_Cdk1 hypernym "http://identifiers.org/sbo/SBO:0000656"
+  R117_synthesis_of_14_3_3_sigma hypernym "http://identifiers.org/go/GO:0006412"
+  R118_synthesis_of_14_3_3_sigma_mediated_by_p53 hypernym "http://identifiers.org/go/GO:0006412"
+  R119_degradation_of_14_3_3_sigma hypernym "http://identifiers.org/sbo/SBO:0000179"
+  R120_Binding_of_Cdc25_to_14_3_3 hypernym "http://identifiers.org/go/GO:0005488"
+  R121_Degradation_of_Cdc25_14_3_3_sigma_complex hypernym "http://identifiers.org/sbo/SBO:0000179"
+  R123_Activation_of_APC_C_Cdc20 hypernym "http://identifiers.org/sbo/SBO:0000656"
+  R125_Activation_of_APC_C_Cdh1 hypernym "http://identifiers.org/sbo/SBO:0000656"
+  R126_Degradation_of_Cyclin_A_mediated_by_APC_C_Cdc20 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  R127_Degradation_of_Cyclin_A__mediated_by_APC_C_Cdh1 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  R128_Degradation_of_Cyclin_B_mediated_by_APC_C_Cdc20 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  R129_Degradation_of_Cyclin_B__mediated_by_APC_C_Cdh1 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  R130_Synthesis_of_Cyclin_A_mediated_by_E2F hypernym "http://identifiers.org/go/GO:0006412"
+  R131_translocation_of_Cyclin_B_Cdk1_complex_for_cytoplasm_to_nuclear hypernym "http://identifiers.org/ncit/C89777"
+  R132_translocation_of_Cyclin_B_Cdk1_complex_for_cytoplasm_to_nuclear hypernym "http://identifiers.org/ncit/C89777"
+  R134_Activation_of_cyclin_B_Cdk1 hypernym "http://identifiers.org/sbo/SBO:0000656"
+  R135_degradation_of_cyclin_B_cdk1 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  R136_degradation_of_cyclin_B_cdk1 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  R137_degradation_of_cyclin_B_cdk1 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Rdeg_p53_degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+end
+
+Iwamoto2010___Cell_cycle_reponse_to_DNA_damage is "Iwamoto2010 - Cell cycle reponse to DNA damage"
+
+Iwamoto2010___Cell_cycle_reponse_to_DNA_damage model_entity_is "http://identifiers.org/biomodels.db/MODEL1809060003",
+                                                               "http://identifiers.org/biomodels.db/BIOMD0000000939"
+Iwamoto2010___Cell_cycle_reponse_to_DNA_damage part "http://identifiers.org/go/GO:0042769"
+Iwamoto2010___Cell_cycle_reponse_to_DNA_damage taxon "http://identifiers.org/taxonomy/9606"
+Iwamoto2010___Cell_cycle_reponse_to_DNA_damage description "http://identifiers.org/pubmed/21095219"
+Iwamoto2010___Cell_cycle_reponse_to_DNA_damage description "http://identifiers.org/doi/10.1016/j.biosystems.2010.11.011"
+Iwamoto2010___Cell_cycle_reponse_to_DNA_damage property "http://identifiers.org/mamo/MAMO_0000046"

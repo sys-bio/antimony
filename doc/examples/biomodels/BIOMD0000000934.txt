@@ -1,0 +1,216 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible_0(v)
+  v;
+end
+
+Constant_flux__irreversible_0 is "Constant flux (irreversible)"
+
+function Function_for_Sic1_degradation_1(Cdk1_Clb1or2, Cdk1_Clb3or4, Cdk1_Clb5or6, Cdk1_Clb5or6_Sic1, k5)
+  k5*Cdk1_Clb5or6_Sic1*(1 + Cdk1_Clb5or6 + Cdk1_Clb3or4 + Cdk1_Clb1or2);
+end
+
+Function_for_Sic1_degradation_1 is "Function for Sic1 degradation_1"
+
+function Function_for_Cdk1_Clb3_4_production_1(Cdk1_Clb5or6, k7, kA)
+  k7*(1 + kA*Cdk1_Clb5or6);
+end
+
+Function_for_Cdk1_Clb3_4_production_1 is "Function for Cdk1-Clb3,4 production_1"
+
+function Function_for_Cd1_Clb12_production_1(Cdk1_Clb1or2, Cdk1_Clb3or4, Cdk1_Clb5or6, k9, kB, kC, kD)
+  k9*(1 + kD*Cdk1_Clb1or2 + kB*Cdk1_Clb3or4 + kC*Cdk1_Clb5or6);
+end
+
+Function_for_Cd1_Clb12_production_1 is "Function for Cd1_Clb12 production_1"
+
+function Function_for_Sic1_degradation_2(Cdk1_Clb1or2, Cdk1_Clb1or2_Sic1, Cdk1_Clb3or4, Cdk1_Clb5or6, k14)
+  k14*Cdk1_Clb1or2_Sic1*(1 + Cdk1_Clb5or6 + Cdk1_Clb3or4 + Cdk1_Clb1or2);
+end
+
+Function_for_Sic1_degradation_2 is "Function for Sic1 degradation_2"
+
+function Function_for_Sic1_degradation_3(Cdk1_Clb1or2, Cdk1_Clb3or4, Cdk1_Clb3or4_Sic1, Cdk1_Clb5or6, k18)
+  k18*Cdk1_Clb3or4_Sic1*(1 + Cdk1_Clb5or6 + Cdk1_Clb3or4 + Cdk1_Clb1or2);
+end
+
+Function_for_Sic1_degradation_3 is "Function for Sic1 degradation_3"
+
+
+model *Linke2017___Synchronization_of_Cyclins__expression_by_the_Fkh2_transcription_factor_in_the_budding_yeast_cell_cycle()
+
+  // Compartments and Species:
+  compartment cell;
+  species Sic1 in cell, Cdk1_Clb5or6 in cell, Cdk1_Clb5or6_Sic1 in cell, Clb5or6_degraded in cell;
+  species Cdk1_Clb3or4 in cell, Cdk1_Clb3or4_Sic1 in cell, Clb3or4_degraded in cell;
+  species Cdk1_Clb1or2 in cell, Cdk1_Clb1or2_Sic1 in cell, Clb1or2_degraded in cell;
+  species Sic1_degraded_re14 in cell, Sic1_degraded_re18 in cell, Sic1_degraded_re5 in cell;
+  species $Clb34_total in cell, $Clb12_total in cell, $Clb56_total in cell;
+
+  // Assignment Rules:
+  Clb34_total := Cdk1_Clb3or4 + Cdk1_Clb3or4_Sic1;
+  Clb12_total := Cdk1_Clb1or2 + Cdk1_Clb1or2_Sic1;
+  Clb56_total := Cdk1_Clb5or6 + Cdk1_Clb5or6_Sic1;
+
+  // Reactions:
+  Cdk1_Clb5_6_production:  => Cdk1_Clb5or6; cell*Constant_flux__irreversible_0(k1);
+  Sic1_binding_to_Cdk1_Clb5_6: Sic1 + Cdk1_Clb5or6 => Cdk1_Clb5or6_Sic1; cell*k2*Sic1*Cdk1_Clb5or6;
+  Cdk1_Clb5_6_Sic1_dissociation: Cdk1_Clb5or6_Sic1 => Sic1 + Cdk1_Clb5or6; cell*k3*Cdk1_Clb5or6_Sic1;
+  Clb5_6_degradation__ternary: Cdk1_Clb5or6_Sic1 => Clb5or6_degraded; cell*k4*Cdk1_Clb5or6_Sic1;
+  Sic1_degradation__Clb_regulated: Cdk1_Clb5or6_Sic1 => Cdk1_Clb5or6 + Sic1_degraded_re5; cell*Function_for_Sic1_degradation_1(Cdk1_Clb1or2, Cdk1_Clb3or4, Cdk1_Clb5or6, Cdk1_Clb5or6_Sic1, k5);
+  Clb5_6_degradation__binary: Cdk1_Clb5or6 => Clb5or6_degraded; cell*k6*Cdk1_Clb5or6;
+  Cdk1_Clb3_4_production:  => Cdk1_Clb3or4; cell*Function_for_Cdk1_Clb3_4_production_1(Cdk1_Clb5or6, k7, kA);
+  Clb3_4_degradation__binary: Cdk1_Clb3or4 => Clb3or4_degraded; cell*k8*Cdk1_Clb3or4;
+  Cdk1_Clb1_2_production:  => Cdk1_Clb1or2; cell*Function_for_Cd1_Clb12_production_1(Cdk1_Clb1or2, Cdk1_Clb3or4, Cdk1_Clb5or6, k9, kB, kC, kD);
+  Clb1_2_degradation__binary: Cdk1_Clb1or2 => Clb1or2_degraded; cell*k10*Cdk1_Clb1or2;
+  Sic1_binding_to_Cdk1_Clb1_2: Sic1 + Cdk1_Clb1or2 => Cdk1_Clb1or2_Sic1; cell*k11*Sic1*Cdk1_Clb1or2;
+  Cdk1_Clb1_2_Sic1_dissociation: Cdk1_Clb1or2_Sic1 => Sic1 + Cdk1_Clb1or2; cell*k12*Cdk1_Clb1or2_Sic1;
+  Clb1_2_degradation__ternary: Cdk1_Clb1or2_Sic1 => Clb1or2_degraded; cell*k13*Cdk1_Clb1or2_Sic1;
+  Sic1_degradation__Clb_regulated__1: Cdk1_Clb1or2_Sic1 => Sic1_degraded_re14; cell*Function_for_Sic1_degradation_2(Cdk1_Clb1or2, Cdk1_Clb1or2_Sic1, Cdk1_Clb3or4, Cdk1_Clb5or6, k14);
+  Sic1_binding_to_Cdk1_Clb3_4: Sic1 + Cdk1_Clb3or4 => Cdk1_Clb3or4_Sic1; cell*k15*Sic1*Cdk1_Clb3or4;
+  Cdk1_Clb3_4_Sic1_dissociation: Cdk1_Clb3or4_Sic1 => Sic1 + Cdk1_Clb3or4; cell*k16*Cdk1_Clb3or4_Sic1;
+  Clb3_4_degradation__ternary: Cdk1_Clb3or4_Sic1 => Clb3or4_degraded; cell*k17*Cdk1_Clb3or4_Sic1;
+  Sic1_degradation__Clb_regulated__2: Cdk1_Clb3or4_Sic1 => Sic1_degraded_re18; cell*Function_for_Sic1_degradation_3(Cdk1_Clb1or2, Cdk1_Clb3or4, Cdk1_Clb3or4_Sic1, Cdk1_Clb5or6, k18);
+  Sic1_degradation__basal: Sic1 => ; cell*k26*Sic1;
+
+  // Species initializations:
+  Sic1 = 5;
+  Cdk1_Clb5or6 = 0;
+  Cdk1_Clb5or6_Sic1 = 0;
+  Clb5or6_degraded = 0;
+  Cdk1_Clb3or4 = 0;
+  Cdk1_Clb3or4_Sic1 = 0;
+  Clb3or4_degraded = 0;
+  Cdk1_Clb1or2 = 0;
+  Cdk1_Clb1or2_Sic1 = 0;
+  Clb1or2_degraded = 0;
+  Sic1_degraded_re14 = 0;
+  Sic1_degraded_re18 = 0;
+  Sic1_degraded_re5 = 0;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  k1 = 0.1;
+  k2 = 5;
+  k3 = 0.5;
+  k4 = 0.01;
+  k5 = 0.05;
+  k6 = 0.7;
+  k7 = 0.01;
+  k8 = 0.7;
+  k9 = 0.001;
+  k10 = 0.7;
+  k11 = 5;
+  k12 = 0.5;
+  k13 = 0.01;
+  k14 = 0.05;
+  k15 = 5;
+  k16 = 0.5;
+  k17 = 0.01;
+  k18 = 0.05;
+  k26 = 0.001;
+  kA = 100;
+  kB = 1000;
+  kC = 100;
+  kD = 100;
+
+  // Other declarations:
+  const cell, k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11, k12, k13, k14;
+  const k15, k16, k17, k18, k26, kA, kB, kC, kD;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 60 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+  Cdk1_Clb5_6_production is "Cdk1-Clb5,6 production";
+  Sic1_binding_to_Cdk1_Clb5_6 is "Sic1 binding to Cdk1-Clb5,6";
+  Cdk1_Clb5_6_Sic1_dissociation is "Cdk1-Clb5,6-Sic1 dissociation";
+  Clb5_6_degradation__ternary is "Clb5,6 degradation (ternary)";
+  Sic1_degradation__Clb_regulated is "Sic1 degradation (Clb-regulated)";
+  Clb5_6_degradation__binary is "Clb5,6 degradation (binary)";
+  Cdk1_Clb3_4_production is "Cdk1-Clb3,4 production";
+  Clb3_4_degradation__binary is "Clb3,4 degradation (binary)";
+  Cdk1_Clb1_2_production is "Cdk1-Clb1,2 production";
+  Clb1_2_degradation__binary is "Clb1,2 degradation (binary)";
+  Sic1_binding_to_Cdk1_Clb1_2 is "Sic1 binding to Cdk1-Clb1,2";
+  Cdk1_Clb1_2_Sic1_dissociation is "Cdk1-Clb1,2-Sic1 dissociation";
+  Clb1_2_degradation__ternary is "Clb1,2 degradation (ternary)";
+  Sic1_degradation__Clb_regulated__1 is "Sic1 degradation (Clb-regulated)_1";
+  Sic1_binding_to_Cdk1_Clb3_4 is "Sic1 binding to Cdk1-Clb3,4";
+  Cdk1_Clb3_4_Sic1_dissociation is "Cdk1-Clb3,4-Sic1 dissociation";
+  Clb3_4_degradation__ternary is "Clb3,4 degradation (ternary)";
+  Sic1_degradation__Clb_regulated__2 is "Sic1 degradation (Clb-regulated)_2";
+  Sic1_degradation__basal is "Sic1 degradation (basal)";
+
+  // CV terms:
+  cell identity "http://identifiers.org/go/GO:0005623"
+  Sic1 hypernym "http://identifiers.org/uniprot/P38634"
+  Cdk1_Clb5or6 part "http://identifiers.org/uniprot/P00546"
+  Cdk1_Clb5or6 part "http://identifiers.org/uniprot/P30283"
+  Cdk1_Clb5or6 property "http://identifiers.org/go/GO:0032991"
+  Cdk1_Clb5or6_Sic1 part "http://identifiers.org/uniprot/P38634"
+  Cdk1_Clb5or6_Sic1 part "http://identifiers.org/uniprot/P00546"
+  Cdk1_Clb5or6_Sic1 part "http://identifiers.org/uniprot/P30283"
+  Cdk1_Clb5or6_Sic1 property "http://identifiers.org/go/GO:0032991"
+  Clb5or6_degraded hypernym "http://identifiers.org/uniprot/P30283"
+  Clb5or6_degraded property "http://identifiers.org/ncit/C25650"
+  Cdk1_Clb3or4 part "http://identifiers.org/uniprot/P24870"
+  Cdk1_Clb3or4 part "http://identifiers.org/uniprot/P00546"
+  Cdk1_Clb3or4 property "http://identifiers.org/go/GO:0032991"
+  Cdk1_Clb3or4_Sic1 part "http://identifiers.org/uniprot/P24870"
+  Cdk1_Clb3or4_Sic1 part "http://identifiers.org/uniprot/P00546"
+  Cdk1_Clb3or4_Sic1 part "http://identifiers.org/uniprot/P38634"
+  Cdk1_Clb3or4_Sic1 property "http://identifiers.org/go/GO:0032991"
+  Clb3or4_degraded hypernym "http://identifiers.org/uniprot/P24870"
+  Clb3or4_degraded property "http://identifiers.org/ncit/C25650"
+  Cdk1_Clb1or2 part "http://identifiers.org/uniprot/P24869"
+  Cdk1_Clb1or2 part "http://identifiers.org/uniprot/P00546"
+  Cdk1_Clb1or2 property "http://identifiers.org/go/GO:0032991"
+  Cdk1_Clb1or2_Sic1 part "http://identifiers.org/uniprot/P00546"
+  Cdk1_Clb1or2_Sic1 part "http://identifiers.org/uniprot/P38634"
+  Cdk1_Clb1or2_Sic1 part "http://identifiers.org/uniprot/P24869"
+  Cdk1_Clb1or2_Sic1 property "http://identifiers.org/go/GO:0032991"
+  Clb1or2_degraded hypernym "http://identifiers.org/uniprot/P24869"
+  Clb1or2_degraded property "http://identifiers.org/ncit/C25650"
+  Sic1_degraded_re14 hypernym "http://identifiers.org/uniprot/P38634"
+  Sic1_degraded_re14 property "http://identifiers.org/ncit/C25650"
+  Sic1_degraded_re18 hypernym "http://identifiers.org/uniprot/P38634"
+  Sic1_degraded_re18 property "http://identifiers.org/ncit/C25650"
+  Sic1_degraded_re5 hypernym "http://identifiers.org/uniprot/P38634"
+  Sic1_degraded_re5 property "http://identifiers.org/ncit/C25650"
+  Clb34_total hypernym "http://identifiers.org/uniprot/P24870"
+  Clb12_total hypernym "http://identifiers.org/uniprot/P24869"
+  Clb56_total hypernym "http://identifiers.org/uniprot/P30283"
+  Cdk1_Clb5_6_production hypernym "http://identifiers.org/ncit/C61408"
+  Sic1_binding_to_Cdk1_Clb5_6 hypernym "http://identifiers.org/go/GO:0044877"
+  Cdk1_Clb5_6_Sic1_dissociation hypernym "http://identifiers.org/sbo/SBO:0000180"
+  Clb5_6_degradation__ternary hypernym "http://identifiers.org/ncit/C18104"
+  Sic1_degradation__Clb_regulated hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Clb5_6_degradation__binary hypernym "http://identifiers.org/ncit/C18104"
+  Cdk1_Clb3_4_production hypernym "http://identifiers.org/ncit/C61408"
+  Clb3_4_degradation__binary hypernym "http://identifiers.org/ncit/C18104"
+  Cdk1_Clb1_2_production hypernym "http://identifiers.org/ncit/C61408"
+  Clb1_2_degradation__binary hypernym "http://identifiers.org/ncit/C18104"
+  Sic1_binding_to_Cdk1_Clb1_2 hypernym "http://identifiers.org/go/GO:0044877"
+  Cdk1_Clb1_2_Sic1_dissociation hypernym "http://identifiers.org/sbo/SBO:0000180"
+  Clb1_2_degradation__ternary hypernym "http://identifiers.org/ncit/C18104"
+  Sic1_degradation__Clb_regulated__1 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Sic1_binding_to_Cdk1_Clb3_4 hypernym "http://identifiers.org/go/GO:0044877"
+  Cdk1_Clb3_4_Sic1_dissociation hypernym "http://identifiers.org/sbo/SBO:0000180"
+  Clb3_4_degradation__ternary hypernym "http://identifiers.org/ncit/C18104"
+  Sic1_degradation__Clb_regulated__2 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Sic1_degradation__basal hypernym "http://identifiers.org/sbo/SBO:0000179"
+end
+
+Linke2017___Synchronization_of_Cyclins__expression_by_the_Fkh2_transcription_factor_in_the_budding_yeast_cell_cycle is "Linke2017 - Synchronization of Cyclins' expression by the Fkh2 transcription factor in the budding yeast cell cycle"
+
+Linke2017___Synchronization_of_Cyclins__expression_by_the_Fkh2_transcription_factor_in_the_budding_yeast_cell_cycle model_entity_is "http://identifiers.org/biomodels.db/MODEL1809050002",
+                                                                                                                                    "http://identifiers.org/biomodels.db/BIOMD0000000934"
+Linke2017___Synchronization_of_Cyclins__expression_by_the_Fkh2_transcription_factor_in_the_budding_yeast_cell_cycle part "http://identifiers.org/go/GO:0051726"
+Linke2017___Synchronization_of_Cyclins__expression_by_the_Fkh2_transcription_factor_in_the_budding_yeast_cell_cycle taxon "http://identifiers.org/ncit/C14271"
+Linke2017___Synchronization_of_Cyclins__expression_by_the_Fkh2_transcription_factor_in_the_budding_yeast_cell_cycle description "http://identifiers.org/pubmed/28649434"
+Linke2017___Synchronization_of_Cyclins__expression_by_the_Fkh2_transcription_factor_in_the_budding_yeast_cell_cycle property "http://identifiers.org/mamo/MAMO_0000046"

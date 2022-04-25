@@ -1,0 +1,242 @@
+// Created by libAntimony v2.13.0
+function cyt(i, Th, c, T, h2, kp, Cp)
+  (i*Th + c)*T/((h2 + T)*(1 + kp*Cp));
+end
+
+cyt is "cyt"
+
+function tp2(i3t, T, h1)
+  i3t*T^2/(h1^2 + T^2);
+end
+
+tp2 is "tp2"
+
+function tp1(i31, Th, c, T, h2)
+  (i31*Th + c)*T/(h2 + T);
+end
+
+tp1 is "tp1"
+
+function thd(cth, f)
+  cth*f;
+end
+
+thd is "thd"
+
+function the(dth, T, Th)
+  dth*T*Th;
+end
+
+the is "the"
+
+function thg(bth, Th, kth, kp, Cp)
+  bth*Th*(1 - kth*Th)/(1 + kp*Cp);
+end
+
+thg is "thg"
+
+function ths(ath, C, T, h2, kp, Cp)
+  ath*C*T/((h2 + T)*(1 + kp*Cp));
+end
+
+ths is "ths"
+
+function td(gtum, Cs, T, h0)
+  gtum*Cs*T/(h0 + T);
+end
+
+td is "td"
+
+function tg(atum, T, kp, Cp, ktum, ks, Cs)
+  atum*T*(1 + kp*Cp)*(1 - ktum*T)/(1 + ks*Cs);
+end
+
+tg is "tg"
+
+
+model *Eftimie2010___immunity_to_melanoma()
+
+  // Compartments and Species:
+  compartment tme;
+  species Th in tme, T in tme, Cs in tme, Cp in tme, C in tme;
+
+  // Assignment Rules:
+  f := Th;
+
+  // Reactions:
+  Th_stimulation:  => Th; tme*ths(ath, C, T, h2, kp, Cp);
+  Th_growth:  => Th; tme*thg(bth, Th, kth, kp, Cp);
+  Th_death: Th => ; tme*thd(cth, f);
+  Th_exhaustion: Th => ; tme*the(dth, T, Th);
+  tumor_growth:  => T; tme*tg(atum, T, kp, Cp, ktum, ks, Cs);
+  tumor_death: T => ; tme*td(gtum, Cs, T, h0);
+  cytokine_decay: C => ; tme*j0*C;
+  Th_cytokine_secretion:  => C; tme*cyt(i11, Th, c, T, h2, kp, Cp);
+  TS_cytokine_decay: Cs => ; tme*jts*Cs;
+  TS_cytokine_secretion:  => Cs; tme*cyt(i21, Th, c, T, h2, kp, Cp);
+  TP_cytokine_decay: Cp => ; tme*jtp*Cp;
+  TP_cytokine_secretion:  => Cp; tme*tp1(i31, Th, c, T, h2);
+  TP_cytokine_by_tumor:  => Cp; tme*tp2(i3t, T, h1);
+
+  // Species initializations:
+  Th = 0;
+  Th has substance_per_volume;
+  T = 100000;
+  T has substance_per_volume;
+  Cs = 0;
+  Cs has substance_per_volume;
+  Cp = 0;
+  Cp has substance_per_volume;
+  C = 0;
+  C has substance_per_volume;
+
+  // Compartment initializations:
+  tme = 1;
+  tme has volume;
+
+  // Variable initializations:
+  ath = 0.008;
+  ath has unit_0;
+  bth = 0.09;
+  bth has unit_0;
+  cth = 0.1;
+  cth has unit_0;
+  kth = 1e-08;
+  kth has unit_1;
+  k1 = 1e-08;
+  k1 has unit_1;
+  kp = 1;
+  kp has unit_1;
+  ks = 1;
+  ks has unit_1;
+  dth = 1e-07;
+  dth has unit_0;
+  atum = 0.514;
+  atum has unit_0;
+  ktum = 1.02e-09;
+  ktum has unit_1;
+  gtum = 0.2;
+  gtum has unit_0;
+  h2 = 1000;
+  h2 has unit_1;
+  h1 = 1000000;
+  h1 has unit_1;
+  h0 = 100000;
+  h0 has unit_1;
+  j0 = 34;
+  j0 has unit_0;
+  jts = 34;
+  jts has unit_0;
+  jtp = 34;
+  jtp has unit_0;
+  i11 = 5.4;
+  i11 has unit_0;
+  i21 = 8.6;
+  i21 has unit_0;
+  i31 = 0.00038;
+  i31 has unit_0;
+  i3t = 10;
+  i3t has unit_0;
+  c = 1;
+  c has unit_0;
+  f has unit_1;
+
+  // Other declarations:
+  var f;
+  const tme, ath, bth, cth, kth, k1, kp, ks, dth, atum, ktum, gtum, h2, h1;
+  const h0, j0, jts, jtp, i11, i21, i31, i3t, c;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = time_unit;
+  unit substance = 1e-3 mole;
+  unit unit_0 = 1 / 86400e-1 second;
+  unit unit_1 = 1 / dimensionless^-0;
+  unit extent = substance;
+  unit substance_per_volume = 1e-3 mole / 1e-3 litre;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1/d";
+  unit_1 is "1";
+  Th_stimulation is "Th stimulation";
+  Th_growth is "Th growth";
+  Th_death is "Th death";
+  Th_exhaustion is "Th exhaustion";
+  tumor_growth is "tumor growth";
+  tumor_death is "tumor death";
+  cytokine_decay is "cytokine decay";
+  Th_cytokine_secretion is "Th cytokine secretion";
+  TS_cytokine_decay is "TS cytokine decay";
+  TS_cytokine_secretion is "TS cytokine secretion";
+  TP_cytokine_decay is "TP cytokine decay";
+  TP_cytokine_secretion is "TP cytokine secretion";
+  TP_cytokine_by_tumor is "TP cytokine by tumor";
+
+  // CV terms:
+  tme hypernym "http://identifiers.org/ncit/C94498"
+  Th hypernym "http://identifiers.org/cl/CL:0000912"
+  T hypernym "http://identifiers.org/cl/CL:0001064"
+  Cs hypernym "http://identifiers.org/ncit/C20464"
+  Cp hypernym "http://identifiers.org/ncit/C20464"
+  C hypernym "http://identifiers.org/ncit/C20464"
+  ath hypernym "http://identifiers.org/sbo/SBO:0000610"
+  cth hypernym "http://identifiers.org/ncit/C25636"
+  kth hypernym "http://identifiers.org/sbo/SBO:0000661"
+  k1 hypernym "http://identifiers.org/sbo/SBO:0000281"
+  kp hypernym "http://identifiers.org/sbo/SBO:0000281"
+  ks hypernym "http://identifiers.org/sbo/SBO:0000281"
+  dth hypernym "http://identifiers.org/ncit/C25636"
+  atum hypernym "http://identifiers.org/sbo/SBO:0000610"
+  ktum hypernym "http://identifiers.org/sbo/SBO:0000661"
+  gtum hypernym "http://identifiers.org/ncit/C25636"
+  h2 hypernym "http://identifiers.org/sbo/SBO:0000281"
+  h1 hypernym "http://identifiers.org/sbo/SBO:0000281"
+  h0 hypernym "http://identifiers.org/sbo/SBO:0000281"
+  j0 hypernym "http://identifiers.org/ncit/C25636"
+  jts hypernym "http://identifiers.org/ncit/C25636"
+  jtp hypernym "http://identifiers.org/ncit/C25636"
+  i11 hypernym "http://identifiers.org/ncit/C25636"
+  i21 hypernym "http://identifiers.org/ncit/C25636"
+  i31 hypernym "http://identifiers.org/ncit/C25636"
+  i3t hypernym "http://identifiers.org/ncit/C25636"
+  c hypernym "http://identifiers.org/ncit/C25636"
+  Th_stimulation hypernym "http://identifiers.org/go/GO:0042098"
+  Th_stimulation hypernym "http://identifiers.org/sbo/SBO:0000393"
+  Th_growth hypernym "http://identifiers.org/sbo/SBO:0000393"
+  Th_growth hypernym "http://identifiers.org/go/GO:0042098"
+  Th_death hypernym "http://identifiers.org/go/GO:0008219"
+  Th_death hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Th_exhaustion hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Th_exhaustion hypernym "http://identifiers.org/go/GO:0008219"
+  tumor_growth hypernym "http://identifiers.org/sbo/SBO:0000393"
+  tumor_growth hypernym "http://identifiers.org/go/GO:0008283"
+  tumor_death hypernym "http://identifiers.org/go/GO:0008219"
+  tumor_death hypernym "http://identifiers.org/sbo/SBO:0000179"
+  cytokine_decay hypernym "http://identifiers.org/go/GO:0030163"
+  cytokine_decay hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Th_cytokine_secretion hypernym "http://identifiers.org/sbo/SBO:0000393"
+  Th_cytokine_secretion hypernym "http://identifiers.org/go/GO:0050663"
+  TS_cytokine_decay hypernym "http://identifiers.org/sbo/SBO:0000179"
+  TS_cytokine_decay hypernym "http://identifiers.org/go/GO:0030163"
+  TS_cytokine_secretion hypernym "http://identifiers.org/go/GO:0050663"
+  TS_cytokine_secretion hypernym "http://identifiers.org/sbo/SBO:0000393"
+  TP_cytokine_decay hypernym "http://identifiers.org/sbo/SBO:0000179"
+  TP_cytokine_decay hypernym "http://identifiers.org/go/GO:0030163"
+  TP_cytokine_secretion hypernym "http://identifiers.org/go/GO:0050663"
+  TP_cytokine_secretion hypernym "http://identifiers.org/sbo/SBO:0000393"
+  TP_cytokine_by_tumor hypernym "http://identifiers.org/sbo/SBO:0000393"
+  TP_cytokine_by_tumor hypernym "http://identifiers.org/go/GO:0050663"
+end
+
+Eftimie2010___immunity_to_melanoma is "Eftimie2010 - immunity to melanoma"
+
+Eftimie2010___immunity_to_melanoma description "http://identifiers.org/pubmed/20450922"
+Eftimie2010___immunity_to_melanoma model_entity_is "http://identifiers.org/biomodels.db/MODEL1907300001",
+                                                   "http://identifiers.org/biomodels.db/BIOMD0000000768"
+Eftimie2010___immunity_to_melanoma property "http://identifiers.org/mamo/MAMO_0000046"
+Eftimie2010___immunity_to_melanoma property "http://identifiers.org/go/GO:0002418"
+Eftimie2010___immunity_to_melanoma property "http://identifiers.org/efo/0000756"
+Eftimie2010___immunity_to_melanoma taxon "http://identifiers.org/taxonomy/9606"

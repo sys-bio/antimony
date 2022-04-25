@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *MODEL1409250001()
 
   // Compartments and Species:
@@ -6,11 +6,11 @@ model *MODEL1409250001()
   species $species_1 in compartment_1, $species_2 in compartment_1;
 
   // Assignment Rules:
-  parameter_2 := parameter_7 + ((parameter_8 - parameter_7)*time^2)/(parameter_6^2 + time^2);
+  parameter_2 := parameter_7 + (parameter_8 - parameter_7)*time^2/(parameter_6^2 + time^2);
 
   // Rate Rules:
   species_1' = -species_1 + parameter_4*(species_2^2/(parameter_3^2 + species_2^2));
-  species_2' = -parameter_5*species_2 + 1/(1 + species_1^2)*(parameter_1 + parameter_2*(species_2^2/(1 + species_2^2)));
+  species_2' = -parameter_5*species_2 + (1/(1 + species_1^2))*(parameter_1 + parameter_2*(species_2^2/(1 + species_2^2)));
 
   // Species initializations:
   species_1 = 0.00577667577789773;
@@ -51,4 +51,21 @@ model *MODEL1409250001()
   parameter_7 is "alpha2_min";
   parameter_8 is "alpha2_max";
   parameter_6 is "alpha2T";
+
+  // CV terms:
+  compartment_1 identity "http://identifiers.org/bto/BTO:0001823"
+  species_1 hypernym "http://identifiers.org/chebi/CHEBI:67079"
+  species_2 hypernym "http://identifiers.org/fma/FMA:84050"
+  species_2 property "http://identifiers.org/pato/PATO:0002104"
 end
+
+MODEL1409250001 is "Baker2013 - Cytokine Mediated Inflammation in Rheumatoid Arthritis - Age Dependent"
+
+MODEL1409250001 model_entity_is "http://identifiers.org/biomodels.db/MODEL1409250001"
+MODEL1409250001 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000549"
+MODEL1409250001 description "http://identifiers.org/pubmed/23002057"
+MODEL1409250001 property "http://identifiers.org/doid/DOID:7148"
+MODEL1409250001 taxon "http://identifiers.org/taxonomy/9606"
+MODEL1409250001 parthood "http://identifiers.org/reactome/REACT_75790"
+MODEL1409250001 hypernym "http://identifiers.org/go/GO:0050727",
+                         "http://identifiers.org/go/GO:0019221"

@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Bhartiya2003_Tryptophan_operon()
 
   // Compartments and Species:
@@ -7,17 +7,17 @@ model *Bhartiya2003_Tryptophan_operon()
 
   // Assignment Rules:
   Tt := To + Ts;
-  To := (Tomax*Tex)/(Tex*(1 + Ts/f_val) + e_val);
+  To := Tomax*Tex/(Tex*(1 + Ts/f_val) + e_val);
   Ts_norm := Ts/82;
   To_norm := To/82;
   Tt_norm := Tt/82;
   Enz_norm := Enz/1;
 
   // Reactions:
-  Enzyme_synthesis:  -> Enz; (compartment_*Enzyme_synthesis_k1*Enzyme_synthesis_ki1^Enzyme_synthesis_nH*Enzyme_synthesis_Ot)/(Enzyme_synthesis_ki1^Enzyme_synthesis_nH + Tt^Enzyme_synthesis_nH);
+  Enzyme_synthesis:  -> Enz; compartment_*Enzyme_synthesis_k1*Enzyme_synthesis_ki1^Enzyme_synthesis_nH*Enzyme_synthesis_Ot/(Enzyme_synthesis_ki1^Enzyme_synthesis_nH + Tt^Enzyme_synthesis_nH);
   Enzyme_dilution: Enz -> ; compartment_*Enzyme_dilution_mu*Enz;
-  tryptophan_synthesis:  -> Ts; (compartment_*tryptophan_synthesis_k2*Enz*tryptophan_synthesis_Ki2)/(tryptophan_synthesis_Ki2 + Tt);
-  tryptophan_consumption: Ts -> ; (compartment_*tryptophan_consumption_g*Ts)/(tryptophan_consumption_Kg + Ts);
+  tryptophan_synthesis:  -> Ts; compartment_*tryptophan_synthesis_k2*Enz*tryptophan_synthesis_Ki2/(tryptophan_synthesis_Ki2 + Tt);
+  tryptophan_consumption: Ts -> ; compartment_*tryptophan_consumption_g*Ts/(tryptophan_consumption_Kg + Ts);
   tryptophan_dilution: Ts -> ; compartment_*tryptophan_dilution_mu*Ts;
 
   // Species initializations:
@@ -88,4 +88,24 @@ model *Bhartiya2003_Tryptophan_operon()
   tryptophan_synthesis is "Tryptophan synthesis";
   tryptophan_consumption is "Tryptophan consumption for protein synthesis";
   tryptophan_dilution is "Tryptophan dilution due to cell growth";
+
+  // CV terms:
+  compartment_ hypernym "http://identifiers.org/go/GO:0005623"
+  Enz identity "http://identifiers.org/uniprot/P00895"
+  Ts identity "http://identifiers.org/chebi/CHEBI:27897",
+              "http://identifiers.org/kegg.compound/C00806"
+  Tt identity "http://identifiers.org/chebi/CHEBI:27897",
+              "http://identifiers.org/kegg.compound/C00806"
+  Enzyme_synthesis hypernym "http://identifiers.org/go/GO:0006417"
+  tryptophan_synthesis hypernym "http://identifiers.org/go/GO:0000162"
+  tryptophan_consumption hypernym "http://identifiers.org/go/GO:0006412"
 end
+
+Bhartiya2003_Tryptophan_operon is "Bhartiya2003_Tryptophan_operon"
+
+Bhartiya2003_Tryptophan_operon model_entity_is "http://identifiers.org/biomodels.db/MODEL6624111460"
+Bhartiya2003_Tryptophan_operon model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000062"
+Bhartiya2003_Tryptophan_operon description "http://identifiers.org/pubmed/12787031"
+Bhartiya2003_Tryptophan_operon origin "http://identifiers.org/pubmed/11171956"
+Bhartiya2003_Tryptophan_operon hypernym "http://identifiers.org/go/GO:0000162"
+Bhartiya2003_Tryptophan_operon taxon "http://identifiers.org/taxonomy/562"

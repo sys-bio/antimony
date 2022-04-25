@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *MODEL1308080005()
 
   // Compartments and Species:
@@ -6,8 +6,8 @@ model *MODEL1308080005()
   species X in default, ES in default;
 
   // Reactions:
-  Reaction1: ES => X; (default*k1*A*X*(X - 1))/V;
-  Reaction2: X => ES; (default*(k2/1)*X*(X - 1)*(X - 2))/V^2;
+  Reaction1: ES => X; default*k1*A*X*(X - 1)/V;
+  Reaction2: X => ES; default*(k2/1)*X*(X - 1)*(X - 2)/V^2;
   Reaction6: ES => X; default*k3*B*V;
   Reaction7: X => ES; default*k4*X;
 
@@ -30,4 +30,19 @@ model *MODEL1308080005()
 
   // Other declarations:
   const default, k1, k2, k3, k4, A, B, V, value;
+
+  // SBO terms:
+  default.sboTerm = 290
+  X.sboTerm = 285
+  ES.sboTerm = 285
 end
+
+MODEL1308080005 is "Cao2013 - Application of ABSIS method in the bistable Schlögl model"
+
+MODEL1308080005 model_entity_is "http://identifiers.org/biomodels.db/MODEL1308080005"
+MODEL1308080005 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000485"
+MODEL1308080005 description "http://identifiers.org/pubmed/23862966"
+MODEL1308080005 origin "http://identifiers.org/doi/10.1007/BF01379769"
+MODEL1308080005 taxon "http://identifiers.org/taxonomy/131567"
+MODEL1308080005 hypernym "http://identifiers.org/go/GO:0003824"
+MODEL1308080005 property "http://identifiers.org/mamo/MAMO_0000046"

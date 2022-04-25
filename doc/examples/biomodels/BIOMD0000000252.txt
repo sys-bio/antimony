@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Hunziker2010_p53_StressSpecificResponse()
 
   // Compartments and Species:
@@ -7,9 +7,9 @@ model *Hunziker2010_p53_StressSpecificResponse()
   species $mm in compartment_1;
 
   // Rate Rules:
-  p' = S - k_f*p*m - alpha*p + (k_b + gamma)*pm;
-  m' = (k_tl*mm - k_f*p*m + (k_b + delta)*pm) - gamma*m;
-  pm' = k_f*p*m - (k_b + delta)*pm - gamma*pm;
+  p' = (S - k_f*p*m - alpha*p) + (k_b + gamma_)*pm;
+  m' = (k_tl*mm - k_f*p*m) + (k_b + delta)*pm - gamma_*m;
+  pm' = k_f*p*m - (k_b + delta)*pm - gamma_*pm;
   mm' = k_t*p^2 - beta*mm;
 
   // Species initializations:
@@ -26,14 +26,14 @@ model *Hunziker2010_p53_StressSpecificResponse()
   k_f = 5000;
   alpha = 0.1;
   k_b = 7200;
+  gamma_ = 0.2;
   k_t = 0.03;
   beta = 0.6;
   k_tl = 1.4;
   delta = 11;
-  gamma = 0.2;
 
   // Other declarations:
-  const compartment_1, S, k_f, alpha, k_b, k_t, beta, k_tl, delta, gamma;
+  const compartment_1, S, k_f, alpha, k_b, gamma_, k_t, beta, k_tl, delta;
 
   // Unit definitions:
   unit volume = dimensionless;
@@ -42,4 +42,41 @@ model *Hunziker2010_p53_StressSpecificResponse()
 
   // Display Names:
   compartment_1 is "cell";
+  gamma_ is "gamma";
+
+  // SBO terms:
+  p.sboTerm = 252
+  k_f.sboTerm = 337
+  m.sboTerm = 252
+  alpha.sboTerm = 356
+  k_b.sboTerm = 282
+  gamma_.sboTerm = 356
+  pm.sboTerm = 297
+  mm.sboTerm = 250
+  k_t.sboTerm = 9
+  beta.sboTerm = 356
+  k_tl.sboTerm = 9
+  delta.sboTerm = 356
+
+  // CV terms:
+  p encoder "http://identifiers.org/ensembl/ENSG00000141510"
+  p hypernym "http://identifiers.org/uniprot/P04637"
+  m encoder "http://identifiers.org/ensembl/ENSG00000135679"
+  m hypernym "http://identifiers.org/uniprot/Q00987"
+  pm part "http://identifiers.org/uniprot/P04637",
+          "http://identifiers.org/uniprot/Q00987"
+  mm hypernym "http://identifiers.org/chebi/CHEBI:33699",
+              "http://identifiers.org/kegg.compound/C00046"
 end
+
+Hunziker2010_p53_StressSpecificResponse is "Hunziker2010_p53_StressSpecificResponse"
+
+Hunziker2010_p53_StressSpecificResponse model_entity_is "http://identifiers.org/biomodels.db/MODEL1006280000"
+Hunziker2010_p53_StressSpecificResponse model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000252"
+Hunziker2010_p53_StressSpecificResponse description "http://identifiers.org/pubmed/20624280"
+Hunziker2010_p53_StressSpecificResponse parthood "http://identifiers.org/kegg.pathway/map04115",
+                                                 "http://identifiers.org/reactome/REACT_309"
+Hunziker2010_p53_StressSpecificResponse part "http://identifiers.org/go/GO:0001666",
+                                             "http://identifiers.org/go/GO:0030330"
+Hunziker2010_p53_StressSpecificResponse taxon "http://identifiers.org/taxonomy/2759"
+Hunziker2010_p53_StressSpecificResponse property "http://identifiers.org/doid/DOID:2835"

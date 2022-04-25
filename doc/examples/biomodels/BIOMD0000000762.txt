@@ -1,0 +1,104 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function Function_for_EC_Tumor_Complex_Formation(m, E, T)
+  m*E*T;
+end
+
+Function_for_EC_Tumor_Complex_Formation is "Function_for_EC_Tumor_Complex_Formation"
+
+function Function_for_Tumor_Growth(a, T)
+  a*T;
+end
+
+Function_for_Tumor_Growth is "Function_for_Tumor_Growth"
+
+function Function_for_Tumor_Killing(n, E, T)
+  n*E*T;
+end
+
+Function_for_Tumor_Killing is "Function_for_Tumor_Killing"
+
+function Function_for_EC_Accumulation(p, E, T, g)
+  p*E*T/(g + T);
+end
+
+Function_for_EC_Accumulation is "Function_for_EC_Accumulation"
+
+function Function_for_Tumor_Growth_Inhibition(a, b, T)
+  a*b*T^2;
+end
+
+Function_for_Tumor_Growth_Inhibition is "Function_for_Tumor_Growth_Inhibition"
+
+
+model *Kuznetsov1994___Nonlinear_dynamics_of_immunogenic_tumors()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species E in compartment_, T in compartment_;
+
+  // Reactions:
+  EC_Passive_Accumulation:  => E; compartment_*Constant_flux__irreversible(s);
+  EC_Accumulation:  => E; compartment_*Function_for_EC_Accumulation(p, E, T, g);
+  Tumor_Growth:  => T; compartment_*Function_for_Tumor_Growth(a, T);
+  Tumor_Growth_Inhibition: T => ; compartment_*Function_for_Tumor_Growth_Inhibition(a, b, T);
+  Tumor_Killing: T => ; compartment_*Function_for_Tumor_Killing(n, E, T);
+  EC_Tumor_Complex_Formation: E => ; compartment_*Function_for_EC_Tumor_Complex_Formation(m, E, T);
+  EC_Elimination: E => ; compartment_*d*E;
+
+  // Species initializations:
+  E = 320000;
+  T = 5000000;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  p = 0.1245;
+  g = 20190000;
+  m = 3.422e-10;
+  n = 1.101e-07;
+  d = 0.0412;
+  s = 13000;
+  a = 0.18;
+  b = 2e-09;
+
+  // Other declarations:
+  const compartment_, p, g, m, n, d, s, a, b;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+  E is "Effector Cells";
+  T is "Tumor Cells";
+
+  // CV terms:
+  compartment_ hypernym "http://identifiers.org/ncit/C94498"
+  E hypernym "http://identifiers.org/cl/CL:0000911"
+  T hypernym "http://identifiers.org/ncit/C12922"
+  EC_Passive_Accumulation hypernym "http://identifiers.org/ncit/GO:0072683"
+  EC_Accumulation hypernym "http://identifiers.org/go/GO:0072683"
+  Tumor_Growth hypernym "http://identifiers.org/ncit/C18081"
+  Tumor_Growth_Inhibition hypernym "http://identifiers.org/ncit/C20751"
+  Tumor_Killing hypernym "http://identifiers.org/sbo/SBO:0000179"
+  EC_Tumor_Complex_Formation hypernym "http://identifiers.org/go/GO:0090722"
+  EC_Elimination hypernym "http://identifiers.org/sbo/SBO:0000179"
+end
+
+Kuznetsov1994___Nonlinear_dynamics_of_immunogenic_tumors is "Kuznetsov1994 - Nonlinear dynamics of immunogenic tumors"
+
+Kuznetsov1994___Nonlinear_dynamics_of_immunogenic_tumors description "http://identifiers.org/pubmed/8186756"
+Kuznetsov1994___Nonlinear_dynamics_of_immunogenic_tumors model_entity_is "http://identifiers.org/biomodels.db/MODEL1907230002",
+                                                                         "http://identifiers.org/biomodels.db/BIOMD0000000762"
+Kuznetsov1994___Nonlinear_dynamics_of_immunogenic_tumors hypernym "http://identifiers.org/mamo/MAMO_0000046"
+Kuznetsov1994___Nonlinear_dynamics_of_immunogenic_tumors hypernym "http://identifiers.org/go/GO:0002424"

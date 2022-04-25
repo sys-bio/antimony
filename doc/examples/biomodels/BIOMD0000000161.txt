@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Eungdamrong2007_Ras_Activation()
 
   // Compartments and Species:
@@ -284,7 +284,7 @@ model *Eungdamrong2007_Ras_Activation()
   RasGDP_pal_I has pA_um_2;
   RasGDP_pal_Kf = 0.015;
   RasGDP_pal_Kf has s_1;
-  RasGDP_pal_Kr = 1e-005;
+  RasGDP_pal_Kr = 1e-05;
   RasGDP_pal_Kr has molecules_um_2_uM_1_s_1;
   CAPRI_GAP_I = 0;
   CAPRI_GAP_I has pA_um_2;
@@ -310,7 +310,7 @@ model *Eungdamrong2007_Ras_Activation()
   Ras_GTP_palm1_I has pA_um_2;
   Ras_GTP_palm1_Kf = 0.000158489319246111;
   Ras_GTP_palm1_Kf has s_1;
-  Ras_GTP_palm1_Kr = 1e-005;
+  Ras_GTP_palm1_Kr = 1e-05;
   Ras_GTP_palm1_Kr has molecules_um_2_uM_1_s_1;
   RasPal_basal_GAP_Kf = 0.0001;
   RasPal_basal_GAP_Kf has s_1;
@@ -423,7 +423,7 @@ model *Eungdamrong2007_Ras_Activation()
   flux0_singleChanFlux has _one__0E_30_item_2_m5_s_1;
   flux2_I = 0;
   flux2_I has pA_um_2;
-  flux2_vL = 3.16e-005;
+  flux2_vL = 3.16e-05;
   flux2_vL has um3_molecules_1_s_1;
   Ras_PM_depal1_I = 0;
   Ras_PM_depal1_I has pA_um_2;
@@ -448,23 +448,23 @@ model *Eungdamrong2007_Ras_Activation()
   unit volume = (1e-6 metre)^3;
   unit area = (1e-6 metre)^2;
   unit molecule = item;
-  unit umol_um3_litre_1 = 1e-021 mole;
+  unit umol_um3_litre_1 = 1e-21 mole;
   unit um2 = (1e-6 metre)^2;
-  unit uM_um3_molecules_1 = 1e-021 dimensionless * mole / item;
-  unit molecules_um_2_s_1 = 1e+012 dimensionless * item / (metre^2 * second);
+  unit uM_um3_molecules_1 = 1e-21 dimensionless * mole / item;
+  unit molecules_um_2_s_1 = 1e+12 dimensionless * item / (metre^2 * second);
   unit pA_um_2 = dimensionless * ampere / metre^2;
   unit s_1 = 1 / second;
   unit s = second;
-  unit molecules_um_2 = 1e+012 dimensionless * item / metre^2;
+  unit molecules_um_2 = 1e+12 dimensionless * item / metre^2;
   unit uM_s_1 = 0.001 dimensionless * mole / (metre^3 * second);
   unit uM_1_s_1 = 1000 dimensionless * metre^3 / (mole * second);
   unit uM = 0.001 dimensionless * mole / metre^3;
-  unit molecules_um_2_uM_1_s_1 = 1e+015 dimensionless * item * metre / (mole * second);
-  unit um2_molecules_1_s_1 = 1e-012 dimensionless * metre^2 / (item * second);
-  unit uM_um_s_1 = 1e-009 dimensionless * mole / (metre^2 * second);
-  unit _one__0E_33_item_2_m2_mol_s_1 = 1e-033 dimensionless * metre^2 * mole / (item^2 * second);
-  unit _one__0E_30_item_2_m5_s_1 = 1e-030 dimensionless * metre^5 / (item^2 * second);
-  unit um3_molecules_1_s_1 = 1e-018 dimensionless * metre^3 / (item * second);
+  unit molecules_um_2_uM_1_s_1 = 1e+15 dimensionless * item * metre / (mole * second);
+  unit um2_molecules_1_s_1 = 1e-12 dimensionless * metre^2 / (item * second);
+  unit uM_um_s_1 = 1e-09 dimensionless * mole / (metre^2 * second);
+  unit _one__0E_33_item_2_m2_mol_s_1 = 1e-33 dimensionless * metre^2 * mole / (item^2 * second);
+  unit _one__0E_30_item_2_m5_s_1 = 1e-30 dimensionless * metre^5 / (item^2 * second);
+  unit um3_molecules_1_s_1 = 1e-18 dimensionless * metre^3 / (item * second);
   unit molecule_per_um2 = item / (1e-6 metre)^2;
   unit molecule_per_volume = item / (1e-6 metre)^3;
 
@@ -501,4 +501,120 @@ model *Eungdamrong2007_Ras_Activation()
   EGF_act_PLCgamma is "EGF act PLCgamma";
   Sos_act_RasPM is "Sos act RasPM";
   Ras_PM_depal1 is "Ras PM depal1";
+
+  // CV terms:
+  EC identity "http://identifiers.org/go/GO:0005576"
+  cyt identity "http://identifiers.org/go/GO:0005829"
+  er identity "http://identifiers.org/go/GO:0005783"
+  Golgi identity "http://identifiers.org/go/GO:0005794"
+  PM identity "http://identifiers.org/go/GO:0005886"
+  erMembrane identity "http://identifiers.org/go/GO:0005789"
+  GM identity "http://identifiers.org/go/GO:0000139"
+  RasGTP_Golgi_GM part "http://identifiers.org/uniprot/P62070"
+  PIP_PM identity "http://identifiers.org/chebi/CHEBI:17526",
+                  "http://identifiers.org/kegg.compound/C01277"
+  PI_PM identity "http://identifiers.org/chebi/CHEBI:16749",
+                 "http://identifiers.org/kegg.compound/C01194"
+  Shc_PM hypernym "http://identifiers.org/uniprot/P98077"
+  CaCAPRI_PM_PM part "http://identifiers.org/chebi/CHEBI:29108",
+                     "http://identifiers.org/kegg.compound/C00076"
+  Shc_star_PM hypernym "http://identifiers.org/uniprot/P98077"
+  EGFR_PM hypernym "http://identifiers.org/uniprot/P00533"
+  RasGTP_pal_cyt part "http://identifiers.org/uniprot/P62070"
+  PIP2_PM identity "http://identifiers.org/chebi/CHEBI:18348",
+                   "http://identifiers.org/kegg.compound/C04637"
+  Activated_EGFR_PM hypernym "http://identifiers.org/uniprot/P00533"
+  Ca identity "http://identifiers.org/chebi/CHEBI:29108",
+              "http://identifiers.org/kegg.compound/C00076"
+  RinhCa part "http://identifiers.org/chebi/CHEBI:29108",
+              "http://identifiers.org/kegg.compound/C00076"
+  IP3 identity "http://identifiers.org/chebi/CHEBI:16595",
+               "http://identifiers.org/kegg.compound/C01245"
+  RasGDP_Golgi_GM part "http://identifiers.org/uniprot/P62070"
+  Ca_RasGRP_GM_GM part "http://identifiers.org/chebi/CHEBI:29108",
+                       "http://identifiers.org/uniprot/O95267",
+                       "http://identifiers.org/kegg.compound/C00076"
+  DAG_GM_GM identity "http://identifiers.org/chebi/CHEBI:18035",
+                     "http://identifiers.org/kegg.compound/C00165"
+  RasGRP_DAG_GM part "http://identifiers.org/uniprot/O95267"
+  CaCAPRI_cyt part "http://identifiers.org/chebi/CHEBI:29108",
+                   "http://identifiers.org/kegg.compound/C00076"
+  DAG_PM identity "http://identifiers.org/chebi/CHEBI:18035",
+                  "http://identifiers.org/kegg.compound/C00165"
+  RasGTP_depal_cyt part "http://identifiers.org/uniprot/P62070"
+  RasGDP_depal_cyt part "http://identifiers.org/uniprot/P62070"
+  RasGDP_pal_cyt part "http://identifiers.org/uniprot/P62070"
+  Ca_PLCe_cyt part "http://identifiers.org/chebi/CHEBI:29108",
+                   "http://identifiers.org/kegg.compound/C00076"
+  Ras_CaPLCe_GM part "http://identifiers.org/chebi/CHEBI:29108",
+                     "http://identifiers.org/uniprot/P62070",
+                     "http://identifiers.org/kegg.compound/C00076"
+  PIP2_GM_GM identity "http://identifiers.org/chebi/CHEBI:18348",
+                      "http://identifiers.org/kegg.compound/C04637"
+  Ca_ER identity "http://identifiers.org/chebi/CHEBI:29108",
+                 "http://identifiers.org/kegg.compound/C00076"
+  Sos_cyt hypernym "http://identifiers.org/uniprot/Q07889"
+  Grb2_cyt hypernym "http://identifiers.org/uniprot/P62993"
+  SosGrb2_cyt part "http://identifiers.org/uniprot/P62993",
+                   "http://identifiers.org/uniprot/Q07889"
+  RasGTP_PM part "http://identifiers.org/uniprot/P62070"
+  RasGDP_PM part "http://identifiers.org/uniprot/P62070"
+  RasGRP_cyt hypernym "http://identifiers.org/uniprot/O95267"
+  CaRasGRP1_cyt part "http://identifiers.org/chebi/CHEBI:29108",
+                     "http://identifiers.org/uniprot/O95267",
+                     "http://identifiers.org/kegg.compound/C00076"
+  PIP2_synthesis identity "http://identifiers.org/go/GO:0016308"
+  Shc_phosphorylation hypernym "http://identifiers.org/go/GO:0006468"
+  Ca_bind_CAPRI hypernym "http://identifiers.org/go/GO:0005509"
+  RasGTP_depal_translocate hypernym "http://identifiers.org/go/GO:0006886"
+  ca_bind_rasGRP hypernym "http://identifiers.org/go/GO:0005509"
+  RasGRP_DAG_GEF hypernym "http://identifiers.org/go/GO:0005085"
+  rasGTP_pal_translocation hypernym "http://identifiers.org/go/GO:0006886"
+  PLCg_dephos hypernym "http://identifiers.org/go/GO:0010519"
+  basal_GAP hypernym "http://identifiers.org/go/GO:0005099"
+  CAPRI_translocation hypernym "http://identifiers.org/go/GO:0006886"
+  reaction5 hypernym "http://identifiers.org/go/GO:0019992"
+  RasGDP_pal hypernym "http://identifiers.org/go/GO:0006886"
+  CAPRI_GAP hypernym "http://identifiers.org/go/GO:0003924"
+  RasGDPpal_translocation hypernym "http://identifiers.org/go/GO:0006886"
+  sos_grb2_binding hypernym "http://identifiers.org/go/GO:0005515"
+  RasGDP_depal_translocate hypernym "http://identifiers.org/go/GO:0006886"
+  Ras_GTP_palm1 hypernym "http://identifiers.org/go/GO:0006886"
+  RasPal_basal_GAP hypernym "http://identifiers.org/go/GO:0003924"
+  basal_cyt_depal_GEF hypernym "http://identifiers.org/go/GO:0003924"
+  caPLCe_gen_DAG identity "http://identifiers.org/go/GO:0006651",
+                          "http://identifiers.org/go/GO:0004435"
+  CaRasGRP_act_RasGM hypernym "http://identifiers.org/go/GO:0005085"
+  PIP2_hydrolysis identity "http://identifiers.org/go/GO:0004435"
+  Sos_activation hypernym "http://identifiers.org/go/GO:0005515"
+  PIP_synthesis identity "http://identifiers.org/go/GO:0004430"
+  EGF_internalization hypernym "http://identifiers.org/go/GO:0007176"
+  RasGM_basal_GAP hypernym "http://identifiers.org/go/GO:0003924"
+  EGFR_binding identity "http://identifiers.org/go/GO:0045741"
+  ca_act_PLCe hypernym "http://identifiers.org/go/GO:0005509"
+  RasGDP_depal2 hypernym "http://identifiers.org/go/GO:0006886"
+  CaRasGRP_translocation hypernym "http://identifiers.org/go/GO:0006886"
+  reaction2 hypernym "http://identifiers.org/go/GO:0005509"
+  Ca_binds_IP3R hypernym "http://identifiers.org/go/GO:0005509"
+  reaction7 identity "http://identifiers.org/go/GO:0046340"
+  Sos_act_RasPM hypernym "http://identifiers.org/go/GO:0003924"
+  flux1 identity "http://identifiers.org/go/GO:0006816"
+  flux0 identity "http://identifiers.org/go/GO:0006816"
+  flux2 identity "http://identifiers.org/go/GO:0006816"
+  Ras_PM_depal1 identity "http://identifiers.org/go/GO:0006886"
 end
+
+Eungdamrong2007_Ras_Activation is "Eungdamrong2007_Ras_Activation"
+
+Eungdamrong2007_Ras_Activation model_entity_is "http://identifiers.org/biomodels.db/MODEL1633592197"
+Eungdamrong2007_Ras_Activation model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000161"
+Eungdamrong2007_Ras_Activation description "http://identifiers.org/pubmed/17098795"
+Eungdamrong2007_Ras_Activation origin "http://identifiers.org/biomodels.db/MODEL9071122126",
+                                      "http://identifiers.org/biomodels.db/BIOMD0000000075",
+                                      "http://identifiers.org/pubmed/10579714",
+                                      "http://identifiers.org/pubmed/10388786"
+Eungdamrong2007_Ras_Activation taxon "http://identifiers.org/taxonomy/131567"
+Eungdamrong2007_Ras_Activation part "http://identifiers.org/go/GO:0007265"
+Eungdamrong2007_Ras_Activation parthood "http://identifiers.org/go/GO:0007173"
+Eungdamrong2007_Ras_Activation hypernym "http://identifiers.org/kegg.pathway/hsa04010"
+Eungdamrong2007_Ras_Activation property "http://identifiers.org/mamo/MAMO_0000046"

@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Haberichter2007_cellcycle()
 
   // Compartments and Species:
@@ -29,10 +29,10 @@ model *Haberichter2007_cellcycle()
   hyperphosphorylatedYpRb := pRbY20 + pRbY21;
   totalYEmi1 := Emi1 + APCCYEmi1;
   activeYCdk2 := Cdk2Y011 + Cdk2Y012;
-  ksYE2F := ks0YE2F + (ks1YE2F*E2F)/(ksMYE2F + E2F);
-  ksYEmi1 := ks0YEmi1 + (ks1YEmi1*E2F)/(ksMYEmi1 + E2F);
-  ksYCyclinA := ks0YCyclinA + (ks1YCyclinA*E2F)/(ksMYCyclinA + E2F);
-  ksYCyclinE := ks0YCyclinE + (ks1YCyclinE*E2F)/(ksMYCyclinE + E2F);
+  ksYE2F := ks0YE2F + ks1YE2F*E2F/(ksMYE2F + E2F);
+  ksYEmi1 := ks0YEmi1 + ks1YEmi1*E2F/(ksMYEmi1 + E2F);
+  ksYCyclinA := ks0YCyclinA + ks1YCyclinA*E2F/(ksMYCyclinA + E2F);
+  ksYCyclinE := ks0YCyclinE + ks1YCyclinE*E2F/(ksMYCyclinE + E2F);
 
   // Reactions:
   rxnY001:  => CyclinD; ksYCyclinD*X;
@@ -253,25 +253,25 @@ model *Haberichter2007_cellcycle()
   kdYE2F = 0.006465;
   kd0YE2F = 0.002229;
   kdYEmi1 = 0.018158;
-  kbYCyclinDYYCdk4 = 1.43e-006;
-  kbYp27YYCdk4 = 6.34e-006;
-  kbYp27YYCdk2 = 1.23e-005;
+  kbYCyclinDYYCdk4 = 1.43e-06;
+  kbYp27YYCdk4 = 6.34e-06;
+  kbYp27YYCdk2 = 1.23e-05;
   timeYModifier = 240.0637;
-  kbYCyclinEYYCdk2 = 5.01e-005;
-  kbYCyclinAYYCdk2 = 9.52e-005;
-  kbYCyclinAYYCdk1 = 6.48e-005;
-  kbYD4YYpRb = 3.15e-005;
+  kbYCyclinEYYCdk2 = 5.01e-05;
+  kbYCyclinAYYCdk2 = 9.52e-05;
+  kbYCyclinAYYCdk1 = 6.48e-05;
+  kbYD4YYpRb = 3.15e-05;
   kupYD4YYpRb = 1.694662;
-  kbYE2YYpRb = 5.74e-005;
+  kbYE2YYpRb = 5.74e-05;
   kupYE2YYpRb = 4.78271;
-  kbYA2YYpRb = 6.25e-005;
+  kbYA2YYpRb = 6.25e-05;
   kupYA2YYpRb = 0.200091;
-  kbYA1YYpRb = 6.73e-005;
+  kbYA1YYpRb = 6.73e-05;
   kupYA1YYpRb = 0.202132;
   ktYpRbYYDephos = 0.023194;
-  kbYE2FYYpRb = 9.66e-006;
+  kbYE2FYYpRb = 9.66e-06;
   kbYEmi1YYAPCC = 0.0001;
-  kbYAPCCYYCyclinA = 1.61e-005;
+  kbYAPCCYYCyclinA = 1.61e-05;
   kudYAPCCYYCyclinA = 4.999555;
   kdYCyclinD = 0.05;
   kdYCyclinE = 0.05;
@@ -312,4 +312,280 @@ model *Haberichter2007_cellcycle()
   substance is "#";
   X is "cell";
   modifier_activation is "modifier activation";
+
+  // CV terms:
+  X hypernym "http://identifiers.org/obo.go/GO:0005623"
+  APCC hypernym "http://identifiers.org/obo.go/GO:0005680"
+  APCC version "http://identifiers.org/uniprot/Q9UJX6"
+  APCCYCdk1Y00YCdk1Y01YInt part "http://identifiers.org/uniprot/Q9UJX6",
+                                "http://identifiers.org/uniprot/P06493",
+                                "http://identifiers.org/interpro/IPR015453"
+  APCCYCdk1Y10YCdk1Y11YInt part "http://identifiers.org/uniprot/P06493",
+                                "http://identifiers.org/uniprot/Q9UJX6",
+                                "http://identifiers.org/interpro/IPR015453"
+  APCCYCdk2Y000YCdk2Y002YInt part "http://identifiers.org/uniprot/P24941",
+                                  "http://identifiers.org/uniprot/Q9UJX6",
+                                  "http://identifiers.org/interpro/IPR015453"
+  APCCYCdk2Y010YCdk2Y012YInt part "http://identifiers.org/uniprot/Q9UJX6",
+                                  "http://identifiers.org/uniprot/P24941",
+                                  "http://identifiers.org/interpro/IPR015453"
+  APCCYCdk2Y100YCdk2Y102YInt part "http://identifiers.org/uniprot/Q9UJX6",
+                                  "http://identifiers.org/uniprot/P24941",
+                                  "http://identifiers.org/interpro/IPR015453",
+                                  "http://identifiers.org/interpro/IPR015456"
+  APCCYCdk2Y110YCdk2Y112YInt part "http://identifiers.org/uniprot/Q9UJX6",
+                                  "http://identifiers.org/uniprot/P24941",
+                                  "http://identifiers.org/interpro/IPR015453",
+                                  "http://identifiers.org/interpro/IPR015456"
+  APCCYCyclinAYInt part "http://identifiers.org/uniprot/Q9UJX6",
+                        "http://identifiers.org/interpro/IPR015453"
+  APCCYEmi1 part "http://identifiers.org/uniprot/Q9UJX6",
+                 "http://identifiers.org/uniprot/Q9UKT4"
+  Cdk1Y00 version "http://identifiers.org/uniprot/P06493"
+  Cdk1Y01 part "http://identifiers.org/uniprot/P06493",
+               "http://identifiers.org/interpro/IPR015453"
+  Cdk1Y10 version "http://identifiers.org/uniprot/P06493"
+  Cdk1Y11 part "http://identifiers.org/uniprot/P06493",
+               "http://identifiers.org/interpro/IPR015453"
+  Cdk1Y11YpRbY10YpRbY20YInt part "http://identifiers.org/uniprot/P06493",
+                                 "http://identifiers.org/uniprot/P06400",
+                                 "http://identifiers.org/interpro/IPR015453"
+  Cdk1Y11YpRbY11YpRbY21YInt part "http://identifiers.org/uniprot/P06493",
+                                 "http://identifiers.org/uniprot/P06400",
+                                 "http://identifiers.org/interpro/IPR015453",
+                                 "http://identifiers.org/interpro/IPR015633"
+  Cdk2Y000 version "http://identifiers.org/uniprot/P24941"
+  Cdk2Y001 part "http://identifiers.org/uniprot/P24941",
+                "http://identifiers.org/uniprot/P24864"
+  Cdk2Y002 part "http://identifiers.org/uniprot/P24941"
+  Cdk2Y010 part "http://identifiers.org/uniprot/P24941"
+  Cdk2Y011 part "http://identifiers.org/uniprot/P24941",
+                "http://identifiers.org/uniprot/P24864"
+  Cdk2Y011YpRbY10YpRbY20YInt part "http://identifiers.org/uniprot/P24864",
+                                  "http://identifiers.org/uniprot/P24941",
+                                  "http://identifiers.org/uniprot/P06400"
+  Cdk2Y011YpRbY11YpRbY21YInt part "http://identifiers.org/uniprot/P24864",
+                                  "http://identifiers.org/uniprot/P24941",
+                                  "http://identifiers.org/uniprot/P06400",
+                                  "http://identifiers.org/interpro/IPR015633"
+  Cdk2Y012 part "http://identifiers.org/uniprot/P24941",
+                "http://identifiers.org/interpro/IPR015453"
+  Cdk2Y012YpRbY10YpRbY20YInt part "http://identifiers.org/uniprot/P24941",
+                                  "http://identifiers.org/uniprot/P06400",
+                                  "http://identifiers.org/interpro/IPR015453"
+  Cdk2Y012YpRbY11YpRbY21YInt part "http://identifiers.org/uniprot/P24941",
+                                  "http://identifiers.org/uniprot/P06400",
+                                  "http://identifiers.org/interpro/IPR015453",
+                                  "http://identifiers.org/interpro/IPR015633"
+  Cdk2Y100 part "http://identifiers.org/uniprot/P24941",
+                "http://identifiers.org/interpro/IPR015456"
+  Cdk2Y101 part "http://identifiers.org/uniprot/P24941",
+                "http://identifiers.org/uniprot/P24864",
+                "http://identifiers.org/interpro/IPR015456"
+  Cdk2Y102 part "http://identifiers.org/uniprot/P24941",
+                "http://identifiers.org/interpro/IPR015456",
+                "http://identifiers.org/interpro/IPR015453"
+  Cdk2Y110 part "http://identifiers.org/uniprot/P24941",
+                "http://identifiers.org/interpro/IPR015456"
+  Cdk2Y111 part "http://identifiers.org/uniprot/P24941",
+                "http://identifiers.org/uniprot/P24864",
+                "http://identifiers.org/interpro/IPR015456"
+  Cdk2Y112 part "http://identifiers.org/uniprot/P24941",
+                "http://identifiers.org/interpro/IPR015456",
+                "http://identifiers.org/interpro/IPR015453"
+  Cdk4Y00 version "http://identifiers.org/uniprot/P30285"
+  Cdk4Y01 part "http://identifiers.org/uniprot/P30285",
+               "http://identifiers.org/uniprot/Q5SCB5"
+  Cdk4Y01YpRbY00YpRbY10YInt part "http://identifiers.org/uniprot/P30285",
+                                 "http://identifiers.org/uniprot/Q5SCB5",
+                                 "http://identifiers.org/uniprot/P06400"
+  Cdk4Y01YpRbY01YpRbY11YInt part "http://identifiers.org/uniprot/P30285",
+                                 "http://identifiers.org/uniprot/Q5SCB5",
+                                 "http://identifiers.org/uniprot/P06400",
+                                 "http://identifiers.org/interpro/IPR015633"
+  Cdk4Y10 part "http://identifiers.org/uniprot/P30285",
+               "http://identifiers.org/interpro/IPR015456"
+  Cdk4Y11 part "http://identifiers.org/uniprot/P30285",
+               "http://identifiers.org/uniprot/Q5SCB5",
+               "http://identifiers.org/interpro/IPR015456"
+  CyclinA hypernym "http://identifiers.org/interpro/IPR015453"
+  CyclinD homolog "http://identifiers.org/uniprot/Q5SCB5"
+  CyclinE version "http://identifiers.org/uniprot/P24864"
+  E2F hypernym "http://identifiers.org/interpro/IPR015633"
+  Emi1 version "http://identifiers.org/uniprot/Q9UKT4"
+  p27 hypernym "http://identifiers.org/interpro/IPR015456"
+  pRbY00 version "http://identifiers.org/uniprot/P06400"
+  pRbY01 hypernym "http://identifiers.org/obo.go/GO:0035189"
+  pRbY10 version "http://identifiers.org/uniprot/P06400"
+  pRbY11 part "http://identifiers.org/uniprot/P06400"
+  pRbY11 hypernym "http://identifiers.org/obo.go/GO:0035189"
+  pRbY20 version "http://identifiers.org/uniprot/P06400"
+  pRbY21 part "http://identifiers.org/uniprot/P06400"
+  pRbY21 hypernym "http://identifiers.org/obo.go/GO:0035189"
+  rxnY001 hypernym "http://identifiers.org/obo.go/GO:0009058"
+  rxnY002 hypernym "http://identifiers.org/obo.go/GO:0044257"
+  rxnY003 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY004 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY005 hypernym "http://identifiers.org/obo.go/GO:0009058"
+  rxnY006 hypernym "http://identifiers.org/obo.go/GO:0044257"
+  rxnY007 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY008 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY009 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY010 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY011 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY012 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY013 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY014 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY015 hypernym "http://identifiers.org/obo.go/GO:0006412"
+  rxnY016 hypernym "http://identifiers.org/obo.go/GO:0044257"
+  rxnY017 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY018 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY019 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY020 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY021 hypernym "http://identifiers.org/obo.go/GO:0006412"
+  rxnY022 hypernym "http://identifiers.org/obo.go/GO:0044257"
+  rxnY023 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY024 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY025 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY026 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY027 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY028 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY029 hypernym "http://identifiers.org/obo.go/GO:0006412"
+  rxnY030 hypernym "http://identifiers.org/obo.go/GO:0044257"
+  rxnY031 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY032 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY033 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY034 hypernym "http://identifiers.org/obo.go/GO:0006412"
+  rxnY035 hypernym "http://identifiers.org/obo.go/GO:0044257"
+  rxnY036 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY037 hypernym "http://identifiers.org/obo.go/GO:0045737",
+                   "http://identifiers.org/obo.go/GO:0006461"
+  rxnY038 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY039 hypernym "http://identifiers.org/obo.go/GO:0045737",
+                   "http://identifiers.org/obo.go/GO:0006461"
+  rxnY040 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY041 hypernym "http://identifiers.org/obo.go/GO:0004861",
+                   "http://identifiers.org/obo.go/GO:0006461"
+  rxnY042 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY043 hypernym "http://identifiers.org/obo.go/GO:0004861",
+                   "http://identifiers.org/obo.go/GO:0006461"
+  rxnY044 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY045 hypernym "http://identifiers.org/obo.go/GO:0004861",
+                   "http://identifiers.org/obo.go/GO:0006461"
+  rxnY046 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY047 hypernym "http://identifiers.org/obo.go/GO:0004861",
+                   "http://identifiers.org/obo.go/GO:0006461"
+  rxnY048 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY049 hypernym "http://identifiers.org/obo.go/GO:0006461",
+                   "http://identifiers.org/obo.go/GO:0004861"
+  rxnY050 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY051 hypernym "http://identifiers.org/obo.go/GO:0004861",
+                   "http://identifiers.org/obo.go/GO:0006461"
+  rxnY052 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY053 hypernym "http://identifiers.org/obo.go/GO:0006461",
+                   "http://identifiers.org/obo.go/GO:0004861"
+  rxnY054 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY055 hypernym "http://identifiers.org/obo.go/GO:0006461",
+                   "http://identifiers.org/obo.go/GO:0004861"
+  rxnY056 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY057 hypernym "http://identifiers.org/obo.go/GO:0032147"
+  rxnY058 hypernym "http://identifiers.org/obo.go/GO:0032147"
+  rxnY059 hypernym "http://identifiers.org/obo.go/GO:0032147"
+  rxnY060 hypernym "http://identifiers.org/obo.go/GO:0032147"
+  rxnY061 hypernym "http://identifiers.org/obo.go/GO:0032147"
+  rxnY062 hypernym "http://identifiers.org/obo.go/GO:0032147"
+  rxnY063 hypernym "http://identifiers.org/obo.go/GO:0006461",
+                   "http://identifiers.org/obo.go/GO:0045737"
+  rxnY064 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY065 hypernym "http://identifiers.org/obo.go/GO:0045737",
+                   "http://identifiers.org/obo.go/GO:0006461"
+  rxnY066 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY067 hypernym "http://identifiers.org/obo.go/GO:0006461",
+                   "http://identifiers.org/obo.go/GO:0045737"
+  rxnY068 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY069 hypernym "http://identifiers.org/obo.go/GO:0045737",
+                   "http://identifiers.org/obo.go/GO:0006461"
+  rxnY070 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY071 hypernym "http://identifiers.org/obo.go/GO:0045737",
+                   "http://identifiers.org/obo.go/GO:0006461"
+  rxnY072 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY073 hypernym "http://identifiers.org/obo.go/GO:0045737",
+                   "http://identifiers.org/obo.go/GO:0006461"
+  rxnY074 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY075 hypernym "http://identifiers.org/obo.go/GO:0045737",
+                   "http://identifiers.org/obo.go/GO:0006461"
+  rxnY076 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY077 hypernym "http://identifiers.org/obo.go/GO:0006461",
+                   "http://identifiers.org/obo.go/GO:0045737"
+  rxnY078 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY079 hypernym "http://identifiers.org/obo.go/GO:0043241",
+                   "http://identifiers.org/obo.go/GO:0032147"
+  rxnY080 hypernym "http://identifiers.org/obo.go/GO:0043241",
+                   "http://identifiers.org/obo.go/GO:0032147"
+  rxnY081 hypernym "http://identifiers.org/obo.go/GO:0006461",
+                   "http://identifiers.org/obo.go/GO:0045737"
+  rxnY082 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY083 hypernym "http://identifiers.org/obo.go/GO:0006461",
+                   "http://identifiers.org/obo.go/GO:0045737"
+  rxnY084 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY085 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  rxnY086 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY087 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY088 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  rxnY089 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY090 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY091 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  rxnY092 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY093 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY094 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  rxnY095 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY096 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY097 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  rxnY098 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY099 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY100 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  rxnY101 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY102 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY103 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  rxnY104 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY105 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY107 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY108 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY109 hypernym "http://identifiers.org/obo.go/GO:0016311"
+  rxnY110 hypernym "http://identifiers.org/obo.go/GO:0016311"
+  rxnY111 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  rxnY112 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY113 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  rxnY114 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY115 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY116 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  rxnY117 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY118 hypernym "http://identifiers.org/obo.go/GO:0005515"
+  rxnY119 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY120 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY121 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  rxnY122 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY123 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY124 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  rxnY125 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY126 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY128 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY129 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY130 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  rxnY131 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY132 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY133 hypernym "http://identifiers.org/obo.go/GO:0005515"
+  rxnY134 hypernym "http://identifiers.org/obo.go/GO:0005515"
+  rxnY135 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  rxnY136 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  rxnY138 hypernym "http://identifiers.org/obo.go/GO:0043241"
 end
+
+Haberichter2007_cellcycle is "Haberichter2007_cellcycle"
+
+Haberichter2007_cellcycle model_entity_is "http://identifiers.org/biomodels.db/MODEL3734058719"
+Haberichter2007_cellcycle model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000109"
+Haberichter2007_cellcycle description "http://identifiers.org/pubmed/17299420"
+Haberichter2007_cellcycle taxon "http://identifiers.org/taxonomy/40674"
+Haberichter2007_cellcycle hypernym "http://identifiers.org/obo.go/GO:0051318"
+Haberichter2007_cellcycle version "http://identifiers.org/kegg.pathway/hsa04110"

@@ -1,0 +1,89 @@
+// Created by libAntimony v2.13.0
+function Function_for_removal_of_activated_tumor_immune_cell(m, E, T, d)
+  m*E*T + d*E;
+end
+
+Function_for_removal_of_activated_tumor_immune_cell is "Function for removal of activated tumor immune cell"
+
+function Function_for_formation_of_immune_effector_cell(s, e1, p, E, T, g)
+  s*e1 + p*E*T/(g + T);
+end
+
+Function_for_formation_of_immune_effector_cell is "Function for formation of immune effector cell"
+
+function Function_for_removal_of_tumor_cell(n, E, T, e2)
+  n*E*T + e2*T;
+end
+
+Function_for_removal_of_tumor_cell is "Function for removal of tumor cell"
+
+function Function_for_formation_of_tumor_cell(a, T, b)
+  a*T*(1 - b*T);
+end
+
+Function_for_formation_of_tumor_cell is "Function for formation of tumor cell"
+
+
+model *New_Model()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species E in compartment_, T in compartment_;
+
+  // Reactions:
+  Fomation_of_activated_immune_effector_cell:  => E; compartment_*Function_for_formation_of_immune_effector_cell(s, e1, p, E, T, g);
+  Removal_of_activated_tumor_immune_cell: E => ; compartment_*Function_for_removal_of_activated_tumor_immune_cell(m, E, T, d);
+  Formation_of_tumor_cell:  => T; compartment_*Function_for_formation_of_tumor_cell(a, T, b);
+  Removal_of_tumor_cell: T => ; compartment_*Function_for_removal_of_tumor_cell(n, E, T, e2);
+
+  // Species initializations:
+  E = 1708110;
+  T = 8286380;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  s = 13000;
+  p = 0.1245;
+  g = 20190000;
+  m = 3.422e-10;
+  d = 0.0412;
+  a = 0.18;
+  b = 2e-09;
+  n = 1.101e-07;
+  e1 = 1;
+  e2 = 0;
+
+  // Other declarations:
+  const compartment_, s, p, g, m, d, a, b, n, e1, e2;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  Fomation_of_activated_immune_effector_cell is "Fomation of activated immune effector cell";
+  Removal_of_activated_tumor_immune_cell is "Removal of activated tumor immune cell";
+  Formation_of_tumor_cell is "Formation of tumor cell";
+  Removal_of_tumor_cell is "Removal of tumor cell";
+
+  // CV terms:
+  E property "http://identifiers.org/ncit/C28241"
+  T property "http://identifiers.org/ncit/C12922"
+  Fomation_of_activated_immune_effector_cell property "http://identifiers.org/ncit/C25513"
+  Removal_of_activated_tumor_immune_cell property "http://identifiers.org/ncit/C64914"
+  Formation_of_tumor_cell property "http://identifiers.org/ncit/C25513"
+  Removal_of_tumor_cell property "http://identifiers.org/ncit/C64914"
+end
+
+New_Model is "Khajanchi2015 - The combined effects of optimal control in cancer remission"
+
+New_Model description "http://identifiers.org/doi/10.1016/j.amc.2015.09.012"
+New_Model origin "http://identifiers.org/doi/10.1080/10273660108833067",
+                 "http://identifiers.org/doi/10.3934/mbe.2005.2.499"
+New_Model model_entity_is "http://identifiers.org/biomodels.db/MODEL1912170001",
+                          "http://identifiers.org/biomodels.db/BIOMD0000000897"
+New_Model property "http://identifiers.org/mamo/MAMO_0000046"
+New_Model taxon "http://identifiers.org/taxonomy/9606"

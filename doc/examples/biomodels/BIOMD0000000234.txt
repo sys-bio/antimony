@@ -1,14 +1,14 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Tham2008_PDmodel_TumourShrinkage()
 
   // Compartments and Species:
-  compartment COMpartment_;
-  species $Ce in COMpartment_;
+  compartment COMpartment;
+  species $Ce in COMpartment;
 
   // Assignment Rules:
-  Exposure := piecewise(Dose, time < Cycle_Int*N_Cycle && Dose_Int1 < rem_time && rem_time < Dose_Length, Dose, time < Cycle_Int*N_Cycle && Dose_Int2 < rem_time && rem_time < Dose_Int2 + Dose_Length, 0);
+  Exposure := piecewise(Dose, (time < (Cycle_Int*N_Cycle)) && (Dose_Int1 < rem_time) && (rem_time < Dose_Length), Dose, (time < (Cycle_Int*N_Cycle)) && (Dose_Int2 < rem_time) && (rem_time < (Dose_Int2 + Dose_Length)), 0);
   Keq := ln(2)/Teq;
-  rem_time := (time*conversion_factor - floor((time*conversion_factor)/(Cycle_Int*conversion_factor))*Cycle_Int*conversion_factor)/conversion_factor;
+  rem_time := (time*conversion_factor - floor(time*conversion_factor/(Cycle_Int*conversion_factor))*Cycle_Int*conversion_factor)/conversion_factor;
   RateIn := Size_0*Kover;
   Effect := 1 - Ce/(AE50 + Ce);
   Kover := 1/T_Turnover;
@@ -21,7 +21,7 @@ model *Tham2008_PDmodel_TumourShrinkage()
   Ce = 0;
 
   // Compartment initializations:
-  COMpartment_ = 1;
+  COMpartment = 1;
   Exposure has mg;
   Keq has per_week;
   rem_time has week;
@@ -57,7 +57,7 @@ model *Tham2008_PDmodel_TumourShrinkage()
 
   // Other declarations:
   var Exposure, Keq, rem_time, Size, RateIn, Effect, Kover;
-  const COMpartment_, conversion_factor, Cycle_Int, Dose, N_Cycle, Dose_Int1;
+  const COMpartment, conversion_factor, Cycle_Int, Dose, N_Cycle, Dose_Int1;
   const Dose_Length, Dose_Int2, AE50, Teq, Size_0, T_Turnover;
 
   // Unit definitions:
@@ -73,4 +73,16 @@ model *Tham2008_PDmodel_TumourShrinkage()
 
   // Display Names:
   effect_unit is "normalised";
+
+  // SBO terms:
+  Ce.sboTerm = 247
 end
+
+Tham2008_PDmodel_TumourShrinkage is "Tham2008 - PDmodel, Tumour shrinkage by gemcitabine and carboplatin "
+
+Tham2008_PDmodel_TumourShrinkage model_entity_is "http://identifiers.org/biomodels.db/MODEL0911120001"
+Tham2008_PDmodel_TumourShrinkage model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000234"
+Tham2008_PDmodel_TumourShrinkage description "http://identifiers.org/pubmed/18594002"
+Tham2008_PDmodel_TumourShrinkage taxon "http://identifiers.org/taxonomy/9606"
+Tham2008_PDmodel_TumourShrinkage hypernym "http://identifiers.org/go/GO:0002357"
+Tham2008_PDmodel_TumourShrinkage property "http://identifiers.org/doid/DOID:1324"

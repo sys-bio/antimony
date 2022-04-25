@@ -1,0 +1,143 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function Function_for_Trimer_Formation(k_3, HSF)
+  k_3*HSF^3;
+end
+
+Function_for_Trimer_Formation is "Function_for_Trimer_Formation"
+
+function Function_for_mRNA_Transcription(k_8, HSF_3_HSE)
+  k_8*HSF_3_HSE;
+end
+
+Function_for_mRNA_Transcription is "Function_for_mRNA_Transcription"
+
+
+model *Szymanska2009___Mathematical_modeling_of_heat_shock_protein_synthesis_in_response_to_temperature_change()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species Hsp70 in compartment_, HSF in compartment_, S in compartment_, Hsp70_HSF in compartment_;
+  species Hsp70_S in compartment_, HSF_3 in compartment_, HSE in compartment_;
+  species HSF_3_HSE in compartment_, mRNA in compartment_;
+
+  // Assignment Rules:
+  Temperature := piecewise(37, time <= 10, 42);
+  V_den := (1 - 0.4/exp(Temperature - 37))*0.03*1.4^(Temperature - 37);
+  F_T := V_den*F_T_Scale;
+
+  // Reactions:
+  Hsp70_Substrate_Association: Hsp70 + HSF => Hsp70_HSF; compartment_*k_1*Hsp70*HSF;
+  Hsp70_Substrate_Dissociation: Hsp70_HSF => Hsp70 + HSF; compartment_*l_1*Hsp70_HSF;
+  Hsp70_S_Association: Hsp70 + S => Hsp70_S; compartment_*k_2*Hsp70*S;
+  Hsp70_S_Dissociation: Hsp70_S => Hsp70 + S; compartment_*l_2*Hsp70_S;
+  Trimer_Formation: 3 HSF => HSF_3; compartment_*Function_for_Trimer_Formation(k_3, HSF);
+  Trimer_Dissociation: HSF_3 + Hsp70 => 2 HSF + Hsp70_HSF; compartment_*l_3*HSF_3*Hsp70;
+  Hsp70_Synthesis: mRNA => Hsp70; compartment_*k_4*mRNA;
+  Hsp70_S_Substrate_Refolding: Hsp70_S => Hsp70; compartment_*k_10*Hsp70_S;
+  Hsp70_Degradation: Hsp70 => ; compartment_*l_10*Hsp70;
+  Hsp70_S_Formation: S + Hsp70_HSF => Hsp70_S + HSF; compartment_*k_6*S*Hsp70_HSF;
+  Hsp70_S_Substrate_Dissociation: Hsp70_S + HSF => Hsp70_HSF + S; compartment_*l_6*Hsp70_S*HSF;
+  HSF_HSE_Association: HSF_3 + HSE => HSF_3_HSE; compartment_*k_7*HSF_3*HSE;
+  HSF_HSE_Dissociation: HSF_3_HSE => HSE + HSF_3; compartment_*l_7*HSF_3_HSE;
+  mRNA_Transcription:  => mRNA; compartment_*Function_for_mRNA_Transcription(k_8, HSF_3_HSE);
+  Protein_Denaturation:  => S; compartment_*Constant_flux__irreversible(F_T);
+
+  // Species initializations:
+  Hsp70 = 2.73546;
+  HSF = 0.332019;
+  S = 3.09e-17;
+  Hsp70_HSF = 76.4593;
+  Hsp70_S = 1.74782e-14;
+  HSF_3 = 0.0535203;
+  HSE = 18.984;
+  HSF_3_HSE = 1.01603;
+  mRNA = 1.01603;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  k_1 = 0.42;
+  l_1 = 0.005;
+  k_2 = 0.42;
+  l_2 = 0.005;
+  k_3 = 0.023;
+  l_3 = 0.00575;
+  k_4 = 0.035;
+  k_6 = 0.023;
+  l_6 = 0.00036;
+  k_10 = 0.014;
+  l_10 = 0.013;
+  k_8 = 0.035;
+  k_7 = 0.035;
+  l_7 = 0.035;
+  F_T_Scale = 5.5;
+
+  // Other declarations:
+  var Temperature, V_den, F_T;
+  const compartment_, k_1, l_1, k_2, l_2, k_3, l_3, k_4, k_6, l_6, k_10, l_10;
+  const k_8, k_7, l_7, F_T_Scale;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 60 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+
+  // SBO terms:
+  Hsp70_Synthesis.sboTerm = 184
+  Hsp70_Degradation.sboTerm = 179
+  HSF_HSE_Association.sboTerm = 177
+  mRNA_Transcription.sboTerm = 183
+
+  // CV terms:
+  Hsp70 identity "http://identifiers.org/ncit/C17765"
+  HSF instance "http://identifiers.org/ncit/C71446"
+  S hypernym "http://identifiers.org/ncit/C120264"
+  S property "http://identifiers.org/psimi/MI:0908"
+  Hsp70_HSF part "http://identifiers.org/ncit/C71446"
+  Hsp70_HSF part "http://identifiers.org/ncit/C17765"
+  Hsp70_S part "http://identifiers.org/ncit/C17765"
+  Hsp70_S part "http://identifiers.org/ncit/C120264"
+  HSF_3 part "http://identifiers.org/ncit/C71446"
+  HSE identity "http://identifiers.org/so/SO:0001850"
+  HSF_3_HSE part "http://identifiers.org/so/SO:0001850"
+  HSF_3_HSE part "http://identifiers.org/ncit/C71446"
+  mRNA encodement "http://identifiers.org/ncit/C17765"
+  mRNA hypernym "http://identifiers.org/ncit/C813"
+  Hsp70_Substrate_Association hypernym "http://identifiers.org/sbo/SBO:0000177"
+  Hsp70_Substrate_Dissociation hypernym "http://identifiers.org/sbo/SBO:0000180"
+  Hsp70_S_Association hypernym "http://identifiers.org/sbo/SBO:0000177"
+  Hsp70_S_Dissociation hypernym "http://identifiers.org/sbo/SBO:0000180"
+  Trimer_Formation hypernym "http://identifiers.org/sbo/SBO:0000177"
+  Trimer_Dissociation hypernym "http://identifiers.org/sbo/SBO:0000180"
+  Hsp70_Synthesis identity "http://identifiers.org/sbo/SBO:0000184"
+  Hsp70_S_Substrate_Refolding hypernym "http://identifiers.org/ncit/C17568"
+  Hsp70_Degradation identity "http://identifiers.org/sbo/SBO:0000179"
+  Hsp70_S_Formation hypernym "http://identifiers.org/sbo/SBO:0000177"
+  Hsp70_S_Substrate_Dissociation hypernym "http://identifiers.org/sbo/SBO:0000180"
+  HSF_HSE_Association identity "http://identifiers.org/sbo/SBO:0000177"
+  HSF_HSE_Dissociation hypernym "http://identifiers.org/sbo/SBO:0000180"
+  mRNA_Transcription identity "http://identifiers.org/sbo/SBO:0000183"
+  Protein_Denaturation identity "http://identifiers.org/go/GO:0030164"
+end
+
+Szymanska2009___Mathematical_modeling_of_heat_shock_protein_synthesis_in_response_to_temperature_change is "Szymanska2009 - Mathematical modeling of heat shock protein synthesis in response to temperature change"
+
+Szymanska2009___Mathematical_modeling_of_heat_shock_protein_synthesis_in_response_to_temperature_change description "http://identifiers.org/pubmed/19327370"
+Szymanska2009___Mathematical_modeling_of_heat_shock_protein_synthesis_in_response_to_temperature_change model_entity_is "http://identifiers.org/biomodels.db/MODEL1912160005",
+                                                                                                                        "http://identifiers.org/biomodels.db/BIOMD0000000896"
+Szymanska2009___Mathematical_modeling_of_heat_shock_protein_synthesis_in_response_to_temperature_change property "http://identifiers.org/ncit/C16672"
+Szymanska2009___Mathematical_modeling_of_heat_shock_protein_synthesis_in_response_to_temperature_change property "http://identifiers.org/ncit/C17132"
+Szymanska2009___Mathematical_modeling_of_heat_shock_protein_synthesis_in_response_to_temperature_change property "http://identifiers.org/mamo/MAMO_0000046"
+Szymanska2009___Mathematical_modeling_of_heat_shock_protein_synthesis_in_response_to_temperature_change property "http://identifiers.org/ncit/C21065"
+Szymanska2009___Mathematical_modeling_of_heat_shock_protein_synthesis_in_response_to_temperature_change taxon "http://identifiers.org/taxonomy/9606"

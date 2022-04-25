@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Westermark2003_Pancreatic_GlycOsc_extended()
 
   // Compartments and Species:
@@ -7,20 +7,20 @@ model *Westermark2003_Pancreatic_GlycOsc_extended()
   species DHAP_G3P in cell, $DHAP in cell;
 
   // Assignment Rules:
-  F6P := (G6P_F6P*KeqGPI)/(1 + KeqGPI);
-  G3P := (DHAP_G3P*KeqTPI)/(1 + KeqTPI);
+  F6P := G6P_F6P*KeqGPI/(1 + KeqGPI);
+  G3P := DHAP_G3P*KeqTPI/(1 + KeqTPI);
   DHAP := DHAP_G3P - G3P;
-  Vgk := (Vgk_min*dw_per_ml)/min_to_sec;
-  Vpfk := (Vpfk_min*dw_per_ml)/min_to_sec;
-  Vfba := (Vfba_min*dw_per_ml)/min_to_sec;
-  Vgapdh := (Vgapdh_min*dw_per_ml)/min_to_sec;
+  Vgk := Vgk_min*dw_per_ml/min_to_sec;
+  Vpfk := Vpfk_min*dw_per_ml/min_to_sec;
+  Vfba := Vfba_min*dw_per_ml/min_to_sec;
+  Vgapdh := Vgapdh_min*dw_per_ml/min_to_sec;
   sigma := F6P/Spfk;
 
   // Reactions:
-  vgk: $GLC -> G6P_F6P; (cell*Vgk*(GLC/Sgk)^hGK)/(1 + (GLC/Sgk)^hGK);
-  vpfk: G6P_F6P -> FBP; (cell*Vpfk*(F6P/Spfk)^(hpfk - (hpfk - hact)*(FBP/Sfba/(1 + FBP/Sfba))))/((F6P/Spfk)^(hpfk - (hpfk - hact)*(FBP/Sfba/(1 + FBP/Sfba))) + (1 + (FBP/Xpfk)^hx)/(1 + alpha^(hpfk - (hpfk - hact)*(FBP/Sfba/(1 + FBP/Sfba)))*(FBP/Xpfk)^hx));
-  vfba: FBP -> 2DHAP_G3P; (cell*Vfba*(FBP/Sfba - (G3P*DHAP)/(Pfba*Qfba*KeqFBA)))/(1 + FBP/Sfba + DHAP/Qfba + (G3P*DHAP)/(Pfba*Qfba));
-  vgapdh: DHAP_G3P => ; (cell*Vgapdh*G3P)/(Sgapdh + G3P);
+  vgk: $GLC -> G6P_F6P; cell*Vgk*(GLC/Sgk)^hGK/(1 + (GLC/Sgk)^hGK);
+  vpfk: G6P_F6P -> FBP; cell*Vpfk*(F6P/Spfk)^(hpfk - (hpfk - hact)*(FBP/Sfba/(1 + FBP/Sfba)))/((F6P/Spfk)^(hpfk - (hpfk - hact)*(FBP/Sfba/(1 + FBP/Sfba))) + (1 + (FBP/Xpfk)^hx)/(1 + alpha^(hpfk - (hpfk - hact)*(FBP/Sfba/(1 + FBP/Sfba)))*(FBP/Xpfk)^hx));
+  vfba: FBP -> 2 DHAP_G3P; cell*Vfba*(FBP/Sfba - G3P*DHAP/(Pfba*Qfba*KeqFBA))/(1 + FBP/Sfba + DHAP/Qfba + G3P*DHAP/(Pfba*Qfba));
+  vgapdh: DHAP_G3P => ; cell*Vgapdh*G3P/(Sgapdh + G3P);
 
   // Species initializations:
   GLC = 10;
@@ -105,4 +105,68 @@ model *Westermark2003_Pancreatic_GlycOsc_extended()
   G3P is "glyceraldehyde--phosphate";
   DHAP_G3P is "DHAP-G3P pool";
   DHAP is "dihydroxyacetone-phosphate";
+
+  // SBO terms:
+  cell.sboTerm = 290
+  GLC.sboTerm = 247
+  G6P_F6P.sboTerm = 247
+  F6P.sboTerm = 247
+  FBP.sboTerm = 247
+  G3P.sboTerm = 247
+  DHAP_G3P.sboTerm = 247
+  DHAP.sboTerm = 247
+  vgk.sboTerm = 167
+  vpfk.sboTerm = 216
+  vfba.sboTerm = 178
+  vgapdh.sboTerm = 201
+
+  // CV terms:
+  cell hypernym "http://identifiers.org/fma/FMA:70586"
+  cell hypernym "http://identifiers.org/go/GO:0005623"
+  GLC hypernym "http://identifiers.org/chebi/CHEBI:17234",
+               "http://identifiers.org/kegg.compound/C00293"
+  G6P_F6P part "http://identifiers.org/kegg.compound/C00092",
+               "http://identifiers.org/kegg.compound/C00085",
+               "http://identifiers.org/chebi/CHEBI:4170"
+  G6P_F6P part "http://identifiers.org/chebi/CHEBI:14314",
+               "http://identifiers.org/chebi/CHEBI:15946"
+  F6P hypernym "http://identifiers.org/chebi/CHEBI:15946",
+               "http://identifiers.org/kegg.compound/C00085"
+  FBP hypernym "http://identifiers.org/chebi/CHEBI:16905",
+               "http://identifiers.org/kegg.compound/C00354"
+  G3P hypernym "http://identifiers.org/chebi/CHEBI:29052",
+               "http://identifiers.org/kegg.compound/C00118"
+  DHAP_G3P part "http://identifiers.org/chebi/CHEBI:16108",
+                "http://identifiers.org/chebi/CHEBI:29052"
+  DHAP_G3P part "http://identifiers.org/kegg.compound/C00111",
+                "http://identifiers.org/kegg.compound/C00118",
+                "http://identifiers.org/chebi/CHEBI:16108"
+  DHAP hypernym "http://identifiers.org/chebi/CHEBI:16108",
+                "http://identifiers.org/kegg.compound/C00111"
+  vgk version "http://identifiers.org/kegg.reaction/R00725",
+              "http://identifiers.org/kegg.reaction/R00771"
+  vgk version "http://identifiers.org/go/GO:0004347",
+              "http://identifiers.org/go/GO:0004396"
+  vgk version "http://identifiers.org/ec-code/5.3.1.9",
+              "http://identifiers.org/ec-code/2.7.1.1"
+  vpfk hypernym "http://identifiers.org/kegg.reaction/R00756"
+  vpfk hypernym "http://identifiers.org/go/GO:0003872"
+  vpfk hypernym "http://identifiers.org/ec-code/2.7.1.11"
+  vfba hypernym "http://identifiers.org/kegg.reaction/R01068"
+  vfba hypernym "http://identifiers.org/ec-code/4.1.2.13"
+  vfba hypernym "http://identifiers.org/go/GO:0004332"
+  vgapdh hypernym "http://identifiers.org/kegg.reaction/R01061"
+  vgapdh hypernym "http://identifiers.org/go/GO:0004365"
+  vgapdh hypernym "http://identifiers.org/ec-code/1.2.1.12"
 end
+
+Westermark2003_Pancreatic_GlycOsc_extended is "Westermark2003_Pancreatic_GlycOsc_extended"
+
+Westermark2003_Pancreatic_GlycOsc_extended model_entity_is "http://identifiers.org/biomodels.db/MODEL9574422639"
+Westermark2003_Pancreatic_GlycOsc_extended model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000236"
+Westermark2003_Pancreatic_GlycOsc_extended description "http://identifiers.org/pubmed/12829470"
+Westermark2003_Pancreatic_GlycOsc_extended origin "http://identifiers.org/pubmed/6271617"
+Westermark2003_Pancreatic_GlycOsc_extended hypernym "http://identifiers.org/go/GO:0006096"
+Westermark2003_Pancreatic_GlycOsc_extended parthood "http://identifiers.org/kegg.pathway/map00010"
+Westermark2003_Pancreatic_GlycOsc_extended taxon "http://identifiers.org/taxonomy/40674"
+Westermark2003_Pancreatic_GlycOsc_extended parthood "http://identifiers.org/reactome/REACT_1383"

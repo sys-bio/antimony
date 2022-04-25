@@ -1,27 +1,39 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 function function_6(Vm, S1, S2, P1, P2, P3, k, K1, K2)
-  (Vm*(S1*S2 - (P1*P2*P3)/k))/(K1 + (S1*S2*K1)/K2 + (P1*P2*P3)/k);
+  Vm*(S1*S2 - P1*P2*P3/k)/(K1 + S1*S2*K1/K2 + P1*P2*P3/k);
 end
+
+function_6 is "PGA reduction"
 
 function function_5(k, E, S, K)
-  k/2*((E + S + K) - sqrt((E + S + K)^2 - 4*E*S));
+  (k/2)*(E + S + K - sqrt((E + S + K)^2 - 4*E*S));
 end
+
+function_5 is "High Substrate MM - RuBisCO"
 
 function function_7(Vm, S, K)
-  (Vm*S)/(S + K);
+  Vm*S/(S + K);
 end
+
+function_7 is "MM s1 - reg (TP reduction)"
 
 function function_8(Vm, S1, S2, K1, K2, K3, R)
-  (Vm*S1*S2)/(K1*K2 + K2*S2 + S1*S2 + K3*R);
+  Vm*S1*S2/(K1*K2 + K2*S2 + S1*S2 + K3*R);
 end
+
+function_8 is "RuBP regeneration"
 
 function function_10(Vm, s1, s2, K1, K2)
-  (Vm*s1*s2)/((s1 + K1)*(s2 + K2));
+  Vm*s1*s2/((s1 + K1)*(s2 + K2));
 end
 
+function_10 is "MM s2 - reg (ATP synthesis)"
+
 function function_9(S1, S2, P1, P2, K2, K1, Vm)
-  (Vm*(S1*S2 - P1*P2))/((S1 + P1)*K2 + (S2 + P2)*K1 + K1*K2*(S1/K1 + P2/K2)*(S2/K2 + P1/K1));
+  Vm*(S1*S2 - P1*P2)/((S1 + P1)*K2 + (S2 + P2)*K1 + K1*K2*(S1/K1 + P2/K2)*(S2/K2 + P1/K1));
 end
+
+function_9 is "TP translocator"
 
 
 model *Arnold2011_Giersch1990_CalvinCycle()
@@ -29,26 +41,26 @@ model *Arnold2011_Giersch1990_CalvinCycle()
   // Compartments and Species:
   compartment chloroplast, cytosol;
   species RuBP in chloroplast, PGA in chloroplast, TP in chloroplast, Ru5P in chloroplast;
-  species Pi_ in chloroplast, ATP in chloroplast, ADP in chloroplast, $E_RuBisCO in chloroplast;
+  species Pi in chloroplast, ATP in chloroplast, ADP in chloroplast, $E_RuBisCO in chloroplast;
   species $totRuBP in chloroplast, $TPc in cytosol, $Pic in cytosol;
 
   // Assignment Rules:
-  totRuBP := 1/2*(P_0 - (PGA + TP + Ru5P + Pi_ + ATP));
+  totRuBP := (1/2)*(P_0 - (PGA + TP + Ru5P + Pi + ATP));
 
   // Reactions:
-  RuBisCO: $totRuBP + RuBP => 2PGA; chloroplast*function_5(RuBisCO_k, E_RuBisCO, totRuBP, RuBisCO_K);
-  PGA_red: PGA + ATP -> ADP + TP + Pi_; chloroplast*function_6(PGA_red_Vm, PGA, ATP, ADP, TP, Pi_, PGA_red_k, PGA_red_K1, PGA_red_K2);
-  TP_red: 5TP => 3Ru5P + 2Pi_; chloroplast*function_7(TP_red_Vm, TP, TP_red_K);
-  RuBP_reg: Ru5P + ATP => RuBP + ADP; chloroplast*function_8(RuBP_reg_Vm, Ru5P, ATP, RuBP_reg_K1, RuBP_reg_K2, RuBP_reg_K3, Pi_);
-  TPT: TP + $Pic -> $TPc + Pi_; function_9(TP, Pic, TPc, Pi_, TPT_K2, TPT_K1, TPT_Vm);
-  ATP_S: ADP + Pi_ => ATP; chloroplast*function_10(V6, ADP, Pi_, ATP_S_K1, ATP_S_K2);
+  RuBisCO: $totRuBP + RuBP => 2 PGA; chloroplast*function_5(RuBisCO_k, E_RuBisCO, totRuBP, RuBisCO_K);
+  PGA_red: PGA + ATP -> ADP + TP + Pi; chloroplast*function_6(PGA_red_Vm, PGA, ATP, ADP, TP, Pi, PGA_red_k, PGA_red_K1, PGA_red_K2);
+  TP_red: 5 TP => 3 Ru5P + 2 Pi; chloroplast*function_7(TP_red_Vm, TP, TP_red_K);
+  RuBP_reg: Ru5P + ATP => RuBP + ADP; chloroplast*function_8(RuBP_reg_Vm, Ru5P, ATP, RuBP_reg_K1, RuBP_reg_K2, RuBP_reg_K3, Pi);
+  TPT: TP + $Pic -> $TPc + Pi; function_9(TP, Pic, TPc, Pi, TPT_K2, TPT_K1, TPT_Vm);
+  ATP_S: ADP + Pi => ATP; chloroplast*function_10(V6, ADP, Pi, ATP_S_K1, ATP_S_K2);
 
   // Species initializations:
   RuBP = 2;
   PGA = 2.4;
   TP = 0.5;
   Ru5P = 0.0500747384155456;
-  Pi_ = 5;
+  Pi = 5;
   ATP = 0.68;
   ADP = 0.82;
   E_RuBisCO = 3.56;
@@ -94,4 +106,45 @@ model *Arnold2011_Giersch1990_CalvinCycle()
   RuBP_reg is "RuBP regeneration";
   TPT is "TP translocator";
   ATP_S is "ATP synthesis";
+
+  // SBO terms:
+  P_0.sboTerm = 9
+  V6.sboTerm = 9
+  RuBisCO_k.sboTerm = 9
+  RuBisCO_K.sboTerm = 9
+  PGA_red_Vm.sboTerm = 9
+  PGA_red_k.sboTerm = 9
+  PGA_red_K1.sboTerm = 9
+  PGA_red_K2.sboTerm = 9
+  TP_red_Vm.sboTerm = 9
+  TP_red_K.sboTerm = 9
+  RuBP_reg_Vm.sboTerm = 9
+  RuBP_reg_K1.sboTerm = 9
+  RuBP_reg_K2.sboTerm = 9
+  RuBP_reg_K3.sboTerm = 9
+  TPT_K2.sboTerm = 9
+  TPT_K1.sboTerm = 9
+  TPT_Vm.sboTerm = 9
+  ATP_S_K1.sboTerm = 9
+  ATP_S_K2.sboTerm = 9
+
+  // CV terms:
+  RuBP hypernym "http://identifiers.org/chebi/CHEBI:16710"
+  PGA hypernym "http://identifiers.org/chebi/CHEBI:17050"
+  TP hypernym "http://identifiers.org/pubchem.compound/24794350"
+  Ru5P hypernym "http://identifiers.org/chebi/CHEBI:17363"
+  Pi hypernym "http://identifiers.org/chebi/CHEBI:43474"
+  ATP hypernym "http://identifiers.org/chebi/CHEBI:15422"
+  ADP identity "http://identifiers.org/chebi/CHEBI:16761"
+  E_RuBisCO hypernym "http://identifiers.org/interpro/IPR020871"
+  TPc hypernym "http://identifiers.org/pubchem.compound/24794350"
+  Pic hypernym "http://identifiers.org/chebi/CHEBI:43474"
 end
+
+Arnold2011_Giersch1990_CalvinCycle is "Arnold2011_Giersch1990_CalvinCycle"
+
+Arnold2011_Giersch1990_CalvinCycle model_entity_is "http://identifiers.org/biomodels.db/MODEL1109270005"
+Arnold2011_Giersch1990_CalvinCycle model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000390"
+Arnold2011_Giersch1990_CalvinCycle description "http://identifiers.org/pubmed/22001849"
+Arnold2011_Giersch1990_CalvinCycle encodement "http://identifiers.org/go/GO:0019253"
+Arnold2011_Giersch1990_CalvinCycle taxon "http://identifiers.org/taxonomy/33090"

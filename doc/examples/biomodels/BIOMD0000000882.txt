@@ -1,0 +1,102 @@
+// Created by libAntimony v2.13.0
+function Function_for_Removal_of_zombie_or_susceptible(beta, Susceptible, Zombie, delta)
+  beta*Susceptible*Zombie + delta*Susceptible;
+end
+
+Function_for_Removal_of_zombie_or_susceptible is "Function for Removal of zombie or susceptible"
+
+function Function_for_resurrection_to_Zombie(zeta, Removal)
+  zeta*Removal;
+end
+
+Function_for_resurrection_to_Zombie is "Function for resurrection to Zombie"
+
+function Function_for_Susceptible_to_Zombie_or_death(beta, Susceptible, Zombie, delta)
+  beta*Susceptible*Zombie + delta*Susceptible;
+end
+
+Function_for_Susceptible_to_Zombie_or_death is "Function for Susceptible to Zombie or death"
+
+function Function_for_Death_from_Zombie(alpha, Susceptible, Zombie)
+  alpha*Susceptible*Zombie;
+end
+
+Function_for_Death_from_Zombie is "Function for Death from Zombie"
+
+function Function_for_Zombification(beta, Susceptible, Zombie, zeta, Removal)
+  beta*Susceptible*Zombie + zeta*Removal;
+end
+
+Function_for_Zombification is "Function for Zombification"
+
+function Function_for_Birth(p)
+  p;
+end
+
+Function_for_Birth is "Function for Birth"
+
+
+model *New_Model()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species Susceptible in compartment_, Zombie in compartment_, Removal in compartment_;
+
+  // Reactions:
+  Birth:  => Susceptible; compartment_*Function_for_Birth(p);
+  Zombification:  => Zombie; compartment_*Function_for_Zombification(beta, Susceptible, Zombie, zeta, Removal);
+  Susceptible_to_Zombie_or_death: Susceptible => ; compartment_*Function_for_Susceptible_to_Zombie_or_death(beta, Susceptible, Zombie, delta);
+  Removal_of_zombie_or_susceptible:  => Removal; compartment_*Function_for_Removal_of_zombie_or_susceptible(alpha, Susceptible, Zombie, delta);
+  Resurrection_to_Zombie: Removal => ; compartment_*Function_for_resurrection_to_Zombie(zeta, Removal);
+  Death_from_Zombie: Zombie => ; compartment_*Function_for_Death_from_Zombie(alpha, Susceptible, Zombie);
+
+  // Species initializations:
+  Susceptible = 500;
+  Zombie = 1;
+  Removal = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  alpha = 0.005;
+  beta = 0.0095;
+  delta = 0.0001;
+  zeta = 0.0001;
+  p = 0.05;
+
+  // Other declarations:
+  const compartment_, alpha, beta, delta, zeta, p;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+  Susceptible_to_Zombie_or_death is "Susceptible to Zombie or death";
+  Removal_of_zombie_or_susceptible is "Removal of zombie or susceptible";
+  Resurrection_to_Zombie is "Resurrection to Zombie";
+  Death_from_Zombie is "Death from Zombie";
+
+  // CV terms:
+  Susceptible instance "http://identifiers.org/ncit/C16505"
+  Removal instance "http://identifiers.org/ncit/C64914"
+  Birth property "http://identifiers.org/ncit/C25155"
+  Susceptible_to_Zombie_or_death property "http://identifiers.org/ncit/C16505"
+  Removal_of_zombie_or_susceptible property "http://identifiers.org/ncit/C64914"
+  Resurrection_to_Zombie property "http://identifiers.org/ncit/C37987"
+  Death_from_Zombie instance "http://identifiers.org/go/GO:0016265"
+end
+
+New_Model is "Munz2009 - Zombie SIZRC"
+
+New_Model description "http://identifiers.org/isbn/ISBN:1607413477"
+New_Model model_entity_is "http://identifiers.org/biomodels.db/MODEL1008060001",
+                          "http://identifiers.org/biomodels.db/BIOMD0000000882"
+New_Model identity "http://identifiers.org/biomodels.db/MODEL1008060001"
+New_Model hypernym "http://identifiers.org/doid/DOID:0050117"
+New_Model propertyBearer "http://identifiers.org/go/GO:0016032"
+New_Model taxon "http://identifiers.org/taxonomy/9606"

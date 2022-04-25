@@ -1,0 +1,70 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__reversible(v)
+  v;
+end
+
+Constant_flux__reversible is "Constant flux (reversible)"
+
+function Function_for_R2(a, f, k2)
+  k2*a*f;
+end
+
+Function_for_R2 is "Function for R2"
+
+function Function_for_R3(f, k1)
+  k1*f;
+end
+
+Function_for_R3 is "Function for R3"
+
+function Function_for_R4(a, f, k2)
+  k2*a*f*f;
+end
+
+Function_for_R4 is "Function for R4"
+
+
+model *Kamihira2000()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species f in compartment_;
+
+  // Reactions:
+  R1:  -> f; compartment_*Constant_flux__reversible(k1);
+  R2:  -> f; compartment_*Function_for_R2(a, f, k2);
+  R3: f -> ; compartment_*Function_for_R3(f, k1);
+  R4: f -> ; compartment_*Function_for_R4(a, f, k2);
+
+  // Species initializations:
+  f = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  k1 = 2.79e-06;
+  k2 = 2.29;
+  a = 5.85e-05;
+
+  // Other declarations:
+  const compartment_, k1, k2, a;
+
+  // Display Names:
+  f is "fibril fraction";
+
+  // SBO terms:
+  compartment_.sboTerm = 290
+  f.sboTerm = 280
+
+  // CV terms:
+  f model_entity_is "http://identifiers.org/uniprot/P01258"
+end
+
+Kamihira2000 is "Kamihira2000"
+
+Kamihira2000 model_entity_is "http://identifiers.org/biomodels.db/MODEL1608100002"
+Kamihira2000 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000614"
+Kamihira2000 description "http://identifiers.org/pubmed/10850796"
+Kamihira2000 hypernym "http://identifiers.org/go/GO:1902903"
+Kamihira2000 taxon "http://identifiers.org/taxonomy/9606"

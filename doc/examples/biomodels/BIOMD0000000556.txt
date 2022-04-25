@@ -1,19 +1,27 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 function Constant_flux__irreversible(v)
   v;
 end
 
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
 function VD(Vm, X, Kx, S, Km, Den)
-  (Vm/(1 + X/Kx)*S)/Km/Den;
+  (Vm/(1 + X/Kx))*S/Km/Den;
 end
+
+VD is "VD"
 
 function V1_3_4_5(Vm, S, Km1, M, Km2)
-  (Vm*S)/Km1/(1 + S/Km1 + M/Km2);
+  Vm*S/Km1/(1 + S/Km1 + M/Km2);
 end
 
+V1_3_4_5 is "V1,3,4,5"
+
 function V2(Vm, S, Km)
-  (Vm*S)/Km/(1 + S/Km);
+  Vm*S/Km/(1 + S/Km);
 end
+
+V2 is "V2"
 
 
 model *Ortega2013()
@@ -24,11 +32,11 @@ model *Ortega2013()
   species $p3 in Brain;
 
   // Assignment Rules:
-  den := 1 + C83/km3*((1 + X/kiu1)/(1 + X/kic)) + C99/km4*((1 + X/kiu2)/(1 + X/kic));
+  den := 1 + (C83/km3)*((1 + X/kiu1)/(1 + X/kic)) + (C99/km4)*((1 + X/kiu2)/(1 + X/kic));
 
   // Rate Rules:
   APP' = r0 - r1 - r2;
-  C83' = (r1 + r5) - r3__D;
+  C83' = r1 + r5 - r3__D;
   C99' = r2 - r5 - r4__D;
   AB' = r4__D;
   p3' = r3__D;
@@ -84,4 +92,23 @@ model *Ortega2013()
   r4__D is "r4 (D)";
   r3__ND is "r3 (ND)";
   r4__ND is "r4 (ND)";
+
+  // CV terms:
+  Brain identity "http://identifiers.org/bto/BTO:0000142"
+  APP hypernym "http://identifiers.org/uniprot/P05067"
+  C83 hypernym "http://identifiers.org/uniprot/P05067"
+  C99 hypernym "http://identifiers.org/uniprot/P05067"
+  AB hypernym "http://identifiers.org/uniprot/P05067"
+  X identity "http://identifiers.org/chembl.compound/CHEMBL177969"
+  p3 hypernym "http://identifiers.org/uniprot/P05067"
 end
+
+Ortega2013 is "Ortega2013 - Interplay between secretases determines biphasic amyloid-beta level"
+
+Ortega2013 model_entity_is "http://identifiers.org/biomodels.db/MODEL1409240000"
+Ortega2013 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000556"
+Ortega2013 description "http://identifiers.org/pubmed/23152503"
+Ortega2013 hypernym "http://identifiers.org/go/GO:0042987",
+                    "http://identifiers.org/go/GO:0034205"
+Ortega2013 property "http://identifiers.org/doid/DOID:10652"
+Ortega2013 taxon "http://identifiers.org/taxonomy/9606"

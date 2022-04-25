@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Ciliberto2003_Morphogenesis()
 
   // Compartments and Species:
@@ -29,26 +29,26 @@ model *Ciliberto2003_Morphogenesis()
   R6: PTrim => Trim; PTrim*kmih;
   R7: Clb => ; Clb*(kdclb_doubleprime*Cdh1 + kdclb_tripleprime*Cdc20a + kdclb_prime);
   R8: Clb => PClb; kswe*Clb;
-  R9:  => Clb; (ksclb*mass*Jm*(eps + Mcm))/(mass + Jm);
+  R9:  => Clb; ksclb*mass*Jm*(eps + Mcm)/(mass + Jm);
   R10: PClb => Clb; kmih*PClb;
-  R11: SBF => ; (SBF*(kisbf_prime + kisbf_doubleprime*Clb))/(jisbf + SBF);
-  R12:  => SBF; (SBFin*(kasbf_prime*mass + kasbf_doubleprime*Cln))/(jasbf + SBFin);
-  R13: IE => ; (IE*kiie)/(jiie + IE);
-  R14:  => IE; (kaie*IEin*Clb)/(jaie + IEin);
-  R15: Cdc20a => Cdc20; (Cdc20a*kicdc20)/(jicdc20 + Cdc20a);
+  R11: SBF => ; SBF*(kisbf_prime + kisbf_doubleprime*Clb)/(jisbf + SBF);
+  R12:  => SBF; SBFin*(kasbf_prime*mass + kasbf_doubleprime*Cln)/(jasbf + SBFin);
+  R13: IE => ; IE*kiie/(jiie + IE);
+  R14:  => IE; kaie*IEin*Clb/(jaie + IEin);
+  R15: Cdc20a => Cdc20; Cdc20a*kicdc20/(jicdc20 + Cdc20a);
   R16: Cdc20a => ; kdcdc20*Cdc20a;
-  R18: Cdc20 => Cdc20a; (kacdc20*Cdc20*IE)/(jacdc20 + Cdc20);
-  R19: Cdh1 => ; (Cdh1*(kicdh*Clb + kicdh_prime*Cln))/(jicdh + Cdh1);
-  R20:  => Cdh1; (Cdh1in*(Kacdh_prime + Kacdh_doubleprime*Cdc20a))/(jacdh + Cdh1in);
+  R18: Cdc20 => Cdc20a; kacdc20*Cdc20*IE/(jacdc20 + Cdc20);
+  R19: Cdh1 => ; Cdh1*(kicdh*Clb + kicdh_prime*Cln)/(jicdh + Cdh1);
+  R20:  => Cdh1; Cdh1in*(Kacdh_prime + Kacdh_doubleprime*Cdc20a)/(jacdh + Cdh1in);
   R21: Swe1 => Swe1M; khsl1*BUD*Swe1;
   R22: PSwe1 => PSwe1M; khsl1*BUD*PSwe1;
-  R23: Swe1 => PSwe1; (Viwee*Swe1*Clb)/(Jiwee + Swe1);
-  R24: Swe1M => PSwe1M; (Viwee*Swe1M*Clb)/(Jiwee + Swe1M);
+  R23: Swe1 => PSwe1; Viwee*Swe1*Clb/(Jiwee + Swe1);
+  R24: Swe1M => PSwe1M; Viwee*Swe1M*Clb/(Jiwee + Swe1M);
   R25: Swe1 => ; kdswe_prime*Swe1;
   R26: Swe1M => Swe1; khsl1r*Swe1M;
   R27: PSwe1M => PSwe1; khsl1r*PSwe1M;
-  R28: PSwe1 => Swe1; (PSwe1*Vawee)/(Jawee + PSwe1);
-  R29: PSwe1M => Swe1M; (PSwe1M*Vawee)/(Jawee + PSwe1M);
+  R28: PSwe1 => Swe1; PSwe1*Vawee/(Jawee + PSwe1);
+  R29: PSwe1M => Swe1M; PSwe1M*Vawee/(Jawee + PSwe1M);
   R30:  => Swe1; ksswe*SBF;
   R31:  => Swe1; kssweC;
   R32: PSwe1 => ; kdswe_prime*PSwe1;
@@ -56,10 +56,10 @@ model *Ciliberto2003_Morphogenesis()
   R34: PTrim => Sic; PTrim*(kdclb_doubleprime*Cdh1 + kdclb_tripleprime*Cdc20a + kdclb_prime);
   R35: PTrim => PClb; PTrim*(kdsic_prime*Cln + kdsic_doubleprime*Clb + kdsic);
   R36: Sic + PClb => PTrim; kass*PClb*Sic;
-  R37: Mih1a => ; (Mih1a*Vimih)/(jimih + Mih1a);
-  R38:  => Mih1a; (Vamih*Mih1*Clb)/(Jamih + Mih1);
-  R39: Mcm => ; (Mcm*kimcm)/(jimcm + Mcm);
-  R40:  => Mcm; (Mcmin*Clb*kamcm)/(jamcm + Mcmin);
+  R37: Mih1a => ; Mih1a*Vimih/(jimih + Mih1a);
+  R38:  => Mih1a; Vamih*Mih1*Clb/(Jamih + Mih1);
+  R39: Mcm => ; Mcm*kimcm/(jimcm + Mcm);
+  R40:  => Mcm; Mcmin*Clb*kamcm/(jamcm + Mcmin);
   R41: BE => ; kdbud*BE;
   R42:  => BE; ksbud*Cln;
   R43: Sic => ; Sic*(kdsic_prime*Cln + kdsic_doubleprime*Clb + kdsic);
@@ -68,23 +68,23 @@ model *Ciliberto2003_Morphogenesis()
   R46:  => Cln; kscln*SBF;
   R47: Swe1M => ; kdswe_prime*Swe1M;
   R48: Cdc20 => ; kdcdc20*Cdc20;
-  R49:  => Cdc20; kscdc20_prime + (kscdc20_doubleprime*Clb^4)/(jscdc20^4 + Clb^4);
+  R49:  => Cdc20; kscdc20_prime + kscdc20_doubleprime*Clb^4/(jscdc20^4 + Clb^4);
   R50: PSwe1M => ; kdswe_doubleprime*PSwe1M;
   R51: PClb => ; PClb*(kdclb_doubleprime*Cdh1 + kdclb_tripleprime*Cdc20a + kdclb_prime);
   R52:  => mass; mu*mass;
 
   // Events:
   event_0000002: at Clb > 0.2: flag = 1;
-  event_0000004: at Clb < 0.2 && flag > 0: mass = 0.5*mass, BE = 0;
-  event_0000003: at Clb >= 0.2 || BE >= 0.6: BUD = 1;
-  event_0000005: at Clb < 0.2 && BE < 0.6: BUD = 0;
+  event_0000004: at (Clb < 0.2) && (flag > 0): mass = 0.5*mass, BE = 0;
+  event_0000003: at (Clb >= 0.2) || (BE >= 0.6): BUD = 1;
+  event_0000005: at (Clb < 0.2) && (BE < 0.6): BUD = 0;
 
   // Species initializations:
   Trim = 0.084410675;
   Clb = 0.18453673;
   Sic = 0.0035491784;
-  PTrim = 1.402314e-005;
-  PClb = 3.0203049e-005;
+  PTrim = 1.402314e-05;
+  PClb = 3.0203049e-05;
   SBF = 0.12405464;
   IE = 0.52220768;
   Cdc20a = 1.4384692;
@@ -258,4 +258,240 @@ model *Ciliberto2003_Morphogenesis()
   R50 is "PSwe1M degradation";
   R51 is "PClb degradation";
   R52 is "cell mass";
+
+  // SBO terms:
+  compartment_.sboTerm = 290
+  Trim.sboTerm = 296
+  Clb.sboTerm = 245
+  Sic.sboTerm = 245
+  PTrim.sboTerm = 296
+  PClb.sboTerm = 245
+  SBF.sboTerm = 245
+  IE.sboTerm = 14
+  Cdc20a.sboTerm = 245
+  Cdc20.sboTerm = 245
+  Cdh1.sboTerm = 245
+  Swe1.sboTerm = 245
+  Swe1M.sboTerm = 245
+  PSwe1.sboTerm = 245
+  PSwe1M.sboTerm = 245
+  Mih1a.sboTerm = 245
+  Mcm.sboTerm = 245
+  BE.sboTerm = 236
+  Cln.sboTerm = 245
+  mass.sboTerm = 236
+  kswe.sboTerm = 153
+  kswe_prime.sboTerm = 153
+  kswe_doubleprime.sboTerm = 153
+  kswe_tripleprime.sboTerm = 153
+  kmih.sboTerm = 153
+  kmih_prime.sboTerm = 153
+  Mih_ast.sboTerm = 9
+  kmih_doubleprime.sboTerm = 153
+  Mih.sboTerm = 9
+  IEin.sboTerm = 360
+  IEtot.sboTerm = 360
+  Cdh1in.sboTerm = 360
+  Cdh1tot.sboTerm = 360
+  Mih1.sboTerm = 360
+  Mih1tot.sboTerm = 360
+  Mcmin.sboTerm = 360
+  Mcmtot.sboTerm = 360
+  SBFin.sboTerm = 360
+  SBFtot.sboTerm = 360
+  kdiss.sboTerm = 360
+  kdsic_prime.sboTerm = 356
+  kdsic_doubleprime.sboTerm = 356
+  kdsic.sboTerm = 356
+  kdclb_doubleprime.sboTerm = 356
+  kdclb_tripleprime.sboTerm = 356
+  kdclb_prime.sboTerm = 356
+  kass.sboTerm = 337
+  ksclb.sboTerm = 153
+  Jm.sboTerm = 9
+  eps.sboTerm = 9
+  kisbf_prime.sboTerm = 261
+  kisbf_doubleprime.sboTerm = 261
+  jisbf.sboTerm = 9
+  kasbf_prime.sboTerm = 337
+  kasbf_doubleprime.sboTerm = 337
+  jasbf.sboTerm = 9
+  kiie.sboTerm = 261
+  jiie.sboTerm = 9
+  kaie.sboTerm = 337
+  jaie.sboTerm = 9
+  kicdc20.sboTerm = 261
+  jicdc20.sboTerm = 9
+  kdcdc20.sboTerm = 356
+  kacdc20.sboTerm = 337
+  jacdc20.sboTerm = 9
+  kicdh.sboTerm = 261
+  kicdh_prime.sboTerm = 261
+  jicdh.sboTerm = 9
+  Kacdh_prime.sboTerm = 336
+  Kacdh_doubleprime.sboTerm = 336
+  jacdh.sboTerm = 9
+  khsl1.sboTerm = 153
+  Viwee.sboTerm = 9
+  Jiwee.sboTerm = 9
+  kdswe_prime.sboTerm = 356
+  khsl1r.sboTerm = 153
+  Vawee.sboTerm = 9
+  Jawee.sboTerm = 9
+  ksswe.sboTerm = 393
+  kssweC.sboTerm = 393
+  Vimih.sboTerm = 9
+  jimih.sboTerm = 9
+  Vamih.sboTerm = 9
+  Jamih.sboTerm = 9
+  kimcm.sboTerm = 261
+  jimcm.sboTerm = 9
+  kamcm.sboTerm = 337
+  jamcm.sboTerm = 9
+  kdbud.sboTerm = 356
+  ksbud.sboTerm = 393
+  kssic.sboTerm = 393
+  kdcln.sboTerm = 356
+  kscln.sboTerm = 393
+  kscdc20_prime.sboTerm = 393
+  kscdc20_doubleprime.sboTerm = 393
+  jscdc20.sboTerm = 9
+  kdswe_doubleprime.sboTerm = 356
+  mu.sboTerm = 9
+  Swe1T.sboTerm = 360
+  R1.sboTerm = 180
+  R2.sboTerm = 180
+  R3.sboTerm = 180
+  R4.sboTerm = 216
+  R5.sboTerm = 526
+  R6.sboTerm = 330
+  R7.sboTerm = 179
+  R8.sboTerm = 216
+  R9.sboTerm = 393
+  R10.sboTerm = 330
+  R11.sboTerm = 169
+  R12.sboTerm = 393
+  R13.sboTerm = 169
+  R14.sboTerm = 393
+  R15.sboTerm = 182
+  R16.sboTerm = 179
+  R18.sboTerm = 182
+  R19.sboTerm = 169
+  R20.sboTerm = 393
+  R21.sboTerm = 182
+  R22.sboTerm = 182
+  R23.sboTerm = 216
+  R24.sboTerm = 216
+  R25.sboTerm = 179
+  R26.sboTerm = 182
+  R27.sboTerm = 182
+  R28.sboTerm = 330
+  R29.sboTerm = 330
+  R30.sboTerm = 393
+  R31.sboTerm = 393
+  R32.sboTerm = 179
+  R33.sboTerm = 180
+  R34.sboTerm = 180
+  R35.sboTerm = 180
+  R36.sboTerm = 526
+  R37.sboTerm = 169
+  R38.sboTerm = 393
+  R39.sboTerm = 169
+  R40.sboTerm = 393
+  R41.sboTerm = 179
+  R42.sboTerm = 393
+  R43.sboTerm = 179
+  R44.sboTerm = 393
+  R45.sboTerm = 179
+  R46.sboTerm = 393
+  R47.sboTerm = 179
+  R48.sboTerm = 179
+  R49.sboTerm = 393
+  R50.sboTerm = 179
+  R51.sboTerm = 179
+  R52.sboTerm = 375
+
+  // CV terms:
+  compartment_ hypernym "http://identifiers.org/obo.go/GO:0005623"
+  Trim part "http://identifiers.org/uniprot/P38634",
+            "http://identifiers.org/uniprot/P24869",
+            "http://identifiers.org/uniprot/Q10752"
+  Clb homolog "http://identifiers.org/uniprot/P24869"
+  Sic homolog "http://identifiers.org/uniprot/P38634"
+  PTrim part "http://identifiers.org/uniprot/P24869",
+             "http://identifiers.org/uniprot/P38634",
+             "http://identifiers.org/uniprot/Q10752"
+  PClb homolog "http://identifiers.org/uniprot/P24869"
+  SBF homolog "http://identifiers.org/uniprot/Q08471"
+  Cdc20a homolog "http://identifiers.org/uniprot/P26309"
+  Cdc20 homolog "http://identifiers.org/uniprot/P26309"
+  Cdh1 homolog "http://identifiers.org/uniprot/P53197"
+  Swe1 homolog "http://identifiers.org/uniprot/P32944"
+  Swe1M homolog "http://identifiers.org/uniprot/P32944"
+  PSwe1 homolog "http://identifiers.org/uniprot/P32944"
+  PSwe1M homolog "http://identifiers.org/uniprot/P32944"
+  Mih1a homolog "http://identifiers.org/uniprot/P23748"
+  Mcm homolog "http://identifiers.org/uniprot/P11746"
+  Cln homolog "http://identifiers.org/uniprot/P20438",
+              "http://identifiers.org/uniprot/P20437"
+  R1 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  R2 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  R3 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  R4 hypernym "http://identifiers.org/obo.go/GO:0006468"
+  R5 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  R6 hypernym "http://identifiers.org/obo.go/GO:0006470"
+  R7 hypernym "http://identifiers.org/obo.go/GO:0030163"
+  R8 hypernym "http://identifiers.org/obo.go/GO:0006468"
+  R9 hypernym "http://identifiers.org/obo.go/GO:0006412"
+  R10 hypernym "http://identifiers.org/obo.go/GO:0006470"
+  R11 hypernym "http://identifiers.org/obo.go/GO:0032091"
+  R12 hypernym "http://identifiers.org/obo.go/GO:0006412"
+  R13 hypernym "http://identifiers.org/obo.go/GO:0032091"
+  R14 hypernym "http://identifiers.org/obo.go/GO:0006412"
+  R15 hypernym "http://identifiers.org/obo.psi-mod/MOD:00000"
+  R16 hypernym "http://identifiers.org/obo.go/GO:0030163"
+  R18 hypernym "http://identifiers.org/obo.psi-mod/MOD:00000"
+  R19 hypernym "http://identifiers.org/obo.go/GO:0032091"
+  R20 hypernym "http://identifiers.org/obo.go/GO:0006412"
+  R21 hypernym "http://identifiers.org/obo.psi-mod/MOD:00000"
+  R22 hypernym "http://identifiers.org/obo.psi-mod/MOD:00000"
+  R23 hypernym "http://identifiers.org/obo.go/GO:0006468"
+  R24 hypernym "http://identifiers.org/obo.go/GO:0006468"
+  R25 hypernym "http://identifiers.org/obo.go/GO:0030163"
+  R26 hypernym "http://identifiers.org/obo.psi-mod/MOD:00000"
+  R27 hypernym "http://identifiers.org/obo.psi-mod/MOD:00000"
+  R28 hypernym "http://identifiers.org/obo.go/GO:0006470"
+  R29 hypernym "http://identifiers.org/obo.go/GO:0006470"
+  R30 hypernym "http://identifiers.org/obo.go/GO:0006412"
+  R31 hypernym "http://identifiers.org/obo.go/GO:0006412"
+  R32 hypernym "http://identifiers.org/obo.go/GO:0030163"
+  R33 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  R34 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  R35 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  R36 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  R37 hypernym "http://identifiers.org/obo.go/GO:0032091"
+  R38 hypernym "http://identifiers.org/obo.go/GO:0006412"
+  R39 hypernym "http://identifiers.org/obo.go/GO:0032091"
+  R40 hypernym "http://identifiers.org/obo.go/GO:0006412"
+  R41 hypernym "http://identifiers.org/obo.go/GO:0030163"
+  R43 hypernym "http://identifiers.org/obo.go/GO:0030163"
+  R44 hypernym "http://identifiers.org/obo.go/GO:0006412"
+  R45 hypernym "http://identifiers.org/obo.go/GO:0030163"
+  R46 hypernym "http://identifiers.org/obo.go/GO:0006412"
+  R47 hypernym "http://identifiers.org/obo.go/GO:0030163"
+  R48 hypernym "http://identifiers.org/obo.go/GO:0030163"
+  R49 hypernym "http://identifiers.org/obo.go/GO:0006412"
+  R50 hypernym "http://identifiers.org/obo.go/GO:0030163"
+  R51 hypernym "http://identifiers.org/obo.go/GO:0030163"
+  R52 hypernym "http://identifiers.org/obo.go/GO:0001828"
 end
+
+Ciliberto2003_Morphogenesis is "Ciliberto2003_Morphogenesis_Checkpoint"
+
+Ciliberto2003_Morphogenesis model_entity_is "http://identifiers.org/biomodels.db/MODEL2504064544"
+Ciliberto2003_Morphogenesis model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000297"
+Ciliberto2003_Morphogenesis description "http://identifiers.org/pubmed/14691135"
+Ciliberto2003_Morphogenesis taxon "http://identifiers.org/taxonomy/4896"
+Ciliberto2003_Morphogenesis hypernym "http://identifiers.org/obo.go/GO:0000078",
+                                     "http://identifiers.org/obo.go/GO:0009653"
+Ciliberto2003_Morphogenesis parthood "http://identifiers.org/kegg.pathway/ko04111"

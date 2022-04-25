@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *MDCKII_Transport()
 
   // Compartments and Species:
@@ -45,7 +45,7 @@ model *MDCKII_Transport()
   p4 has permin;
   p5 = 0.0091;
   p5 has permin;
-  p6 = 6.4e-005;
+  p6 = 6.4e-05;
   p6 has per_nmole_per_ml;
   p7 = 0.0397;
   p7 has permin;
@@ -96,4 +96,62 @@ model *MDCKII_Transport()
   cellular_BSP_binding is "cellular BSP binding";
   cellular_BSP_dissoc is "cellular BSP dissoc";
   paracell_transp is "paracellular transport";
+
+  // SBO terms:
+  basolat.sboTerm = 290
+  cell.sboTerm = 290
+  apical.sboTerm = 290
+  x1.sboTerm = 247
+  x2.sboTerm = 247
+  x3.sboTerm = 247
+  x4.sboTerm = 247
+  x5.sboTerm = 247
+  BSP_tot.sboTerm = 247
+  BSP_cell.sboTerm = 247
+  OATP1B3.sboTerm = 185
+  ABCC2.sboTerm = 185
+  endo_in_bl.sboTerm = 185
+  endo_ex_bl.sboTerm = 185
+  endo_ex_ap.sboTerm = 185
+  bl_BSP_binding.sboTerm = 177
+  bl_BSP_dissoc.sboTerm = 180
+  cellular_BSP_binding.sboTerm = 177
+  cellular_BSP_dissoc.sboTerm = 180
+  paracell_transp.sboTerm = 185
+
+  // CV terms:
+  basolat identity "http://identifiers.org/go/GO:0005615"
+  cell identity "http://identifiers.org/go/GO:0005623"
+  apical identity "http://identifiers.org/go/GO:0005615"
+  x1 identity "http://identifiers.org/kegg.compound/C11363",
+              "http://identifiers.org/chebi/CHEBI:63836"
+  x2 identity "http://identifiers.org/kegg.compound/C11363",
+              "http://identifiers.org/chebi/CHEBI:63836"
+  x3 identity "http://identifiers.org/kegg.compound/C11363",
+              "http://identifiers.org/chebi/CHEBI:63836"
+  x4 identity "http://identifiers.org/kegg.compound/C11363",
+              "http://identifiers.org/chebi/CHEBI:63836"
+  x5 identity "http://identifiers.org/kegg.compound/C11363",
+              "http://identifiers.org/chebi/CHEBI:63836"
+  BSP_tot identity "http://identifiers.org/kegg.compound/C11363",
+                   "http://identifiers.org/chebi/CHEBI:63836"
+  BSP_cell identity "http://identifiers.org/kegg.compound/C11363",
+                    "http://identifiers.org/chebi/CHEBI:63836"
+  OATP1B3 hypernym "http://identifiers.org/go/GO:0006810"
+  ABCC2 hypernym "http://identifiers.org/kegg.pathway/hsa02010",
+                 "http://identifiers.org/go/GO:0015415"
+  endo_in_bl hypernym "http://identifiers.org/go/GO:0006810"
+  endo_ex_bl hypernym "http://identifiers.org/go/GO:0006810"
+  endo_ex_ap hypernym "http://identifiers.org/go/GO:0006810"
+  bl_BSP_binding hypernym "http://identifiers.org/go/GO:0005488"
+  cellular_BSP_binding hypernym "http://identifiers.org/go/GO:0005488"
+  paracell_transp hypernym "http://identifiers.org/go/GO:0006810"
 end
+
+MDCKII_Transport is "Bartholome2007_MDCKII"
+
+MDCKII_Transport model_entity_is "http://identifiers.org/biomodels.db/MODEL0212154960"
+MDCKII_Transport model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000197"
+MDCKII_Transport description "http://identifiers.org/pubmed/17548463"
+MDCKII_Transport taxon "http://identifiers.org/taxonomy/40674"
+MDCKII_Transport hypernym "http://identifiers.org/go/GO:0060341"

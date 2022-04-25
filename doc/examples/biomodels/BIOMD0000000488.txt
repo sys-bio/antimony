@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *MODEL1212030000()
 
   // Compartments and Species:
@@ -40,7 +40,7 @@ model *MODEL1212030000()
   GSK3p53Release: GSK3b_p53 => GSK3b + p53; krelGSK3bp53*GSK3b_p53;
   GSK3p53PBinding: GSK3b + p53_P => GSK3b_p53_P; kbinGSK3bp53*GSK3b*p53_P;
   GSK3_p53PRelease: GSK3b_p53_P => GSK3b + p53_P; krelGSK3bp53*GSK3b_p53_P;
-  E1UbBinding: E1 + Ub + $ATP => E1_Ub + $AMP; (kbinE1Ub*E1*Ub*ATP)/(5000 + ATP);
+  E1UbBinding: E1 + Ub + $ATP => E1_Ub + $AMP; kbinE1Ub*E1*Ub*ATP/(5000 + ATP);
   E2UbBinding: E2 + E1_Ub => E2_Ub + E1; kbinE2Ub*E2*E1_Ub;
   Mdm2Ubiquitination: Mdm2 + E2_Ub => Mdm2_Ub + E2; kMdm2Ub*Mdm2*E2_Ub;
   Mdm2polyUbiquitination1: Mdm2_Ub + E2_Ub => Mdm2_Ub2 + E2; kMdm2PolyUb*Mdm2_Ub*E2_Ub;
@@ -51,7 +51,7 @@ model *MODEL1212030000()
   Mdm2Deubiquitination2: Mdm2_Ub2 + Mdm2DUB => Mdm2_Ub + Mdm2DUB + Ub; kactDUBMdm2*Mdm2_Ub2*Mdm2DUB;
   Mdm2Deubiquitination1: Mdm2_Ub + Mdm2DUB => Mdm2 + Mdm2DUB + Ub; kactDUBMdm2*Mdm2_Ub*Mdm2DUB;
   Mdm2ProteasomeBinding1: Mdm2_Ub4 + Proteasome => Mdm2_Ub4_Proteasome; kbinProt*Mdm2_Ub4*Proteasome;
-  Mdm2Degradation: Mdm2_Ub4_Proteasome => Proteasome + 4Ub; kdegMdm2*Mdm2_Ub4_Proteasome*kproteff;
+  Mdm2Degradation: Mdm2_Ub4_Proteasome => Proteasome + 4 Ub; kdegMdm2*Mdm2_Ub4_Proteasome*kproteff;
   p53Synthesis: p53_mRNA => p53 + p53_mRNA; ksynp53*p53_mRNA;
   p53Monoubiquitination: E2_Ub + Mdm2_p53 => Mdm2_p53_Ub + E2; kp53Ub*E2_Ub*Mdm2_p53;
   p53Polyubiquitination1: Mdm2_p53_Ub + E2_Ub => Mdm2_p53_Ub2 + E2; kp53PolyUb*Mdm2_p53_Ub*E2_Ub;
@@ -65,7 +65,7 @@ model *MODEL1212030000()
   Mdm2GSK3phosphorylation2: Mdm2_p53_Ub4 + GSK3b_p53 => Mdm2_P1_p53_Ub4 + GSK3b_p53; kphosMdm2GSK3bp53*Mdm2_p53_Ub4*GSK3b_p53;
   Mdm2GSK3phosphorylation3: Mdm2_p53_Ub4 + GSK3b_p53_P => Mdm2_P1_p53_Ub4 + GSK3b_p53_P; kphosMdm2GSK3bp53*Mdm2_p53_Ub4*GSK3b_p53_P;
   p53ProteasomeBinding1: Mdm2_P1_p53_Ub4 + Proteasome => p53_Ub4_Proteasome + Mdm2; kbinProt*Mdm2_P1_p53_Ub4*Proteasome;
-  Degradationp53_Ub4: p53_Ub4_Proteasome + $ATP => 4Ub + Proteasome + $ADP; (kdegp53*kproteff*p53_Ub4_Proteasome*ATP)/(5000 + ATP);
+  Degradationp53_Ub4: p53_Ub4_Proteasome + $ATP => 4 Ub + Proteasome + $ADP; kdegp53*kproteff*p53_Ub4_Proteasome*ATP/(5000 + ATP);
   TauMTbinding: Tau => MT_Tau; kbinMTTau*Tau;
   TauMTrelease: MT_Tau => Tau; krelMTTau*MT_Tau;
   Tauphosphorylation1: GSK3b_p53 + Tau => GSK3b_p53 + Tau_P1; kphospTauGSK3bp53*GSK3b_p53*Tau;
@@ -76,14 +76,14 @@ model *MODEL1212030000()
   Tauphosphorylation6: GSK3b + Tau_P1 => GSK3b + Tau_P2; kphospTauGSK3b*GSK3b*Tau_P1;
   Taudephosphorylation1: Tau_P2 + PP1 => Tau_P1 + PP1; kdephospTau*Tau_P2*PP1;
   Taudephosphorylation2: Tau_P1 + PP1 => Tau + PP1; kdephospTau*Tau_P1*PP1;
-  TauP1Aggregation1: 2Tau_P1 => 2AggTau; kaggTauP1*Tau_P1^2*0.5;
-  TauP1Aggregation2: Tau_P1 + AggTau => 2AggTau; kaggTauP1*Tau_P1*AggTau;
-  TauP2Aggregation1: 2Tau_P2 => 2AggTau; kaggTauP2*Tau_P2^2*0.5;
-  TauP2Aggregation2: Tau_P2 + AggTau => 2AggTau; kaggTauP2*Tau_P2*AggTau;
-  TauAggregation1: 2Tau => 2AggTau; kaggTau*Tau^2*0.5;
-  TauAggregation2: Tau + AggTau => 2AggTau; kaggTau*Tau*AggTau;
-  TangleFormation1: 2AggTau => 2NFT; ktangfor*AggTau^2*0.5;
-  TangleFormation2: AggTau + NFT => 2NFT; ktangfor*AggTau*NFT;
+  TauP1Aggregation1: 2 Tau_P1 => 2 AggTau; kaggTauP1*Tau_P1^2*0.5;
+  TauP1Aggregation2: Tau_P1 + AggTau => 2 AggTau; kaggTauP1*Tau_P1*AggTau;
+  TauP2Aggregation1: 2 Tau_P2 => 2 AggTau; kaggTauP2*Tau_P2^2*0.5;
+  TauP2Aggregation2: Tau_P2 + AggTau => 2 AggTau; kaggTauP2*Tau_P2*AggTau;
+  TauAggregation1: 2 Tau => 2 AggTau; kaggTau*Tau^2*0.5;
+  TauAggregation2: Tau + AggTau => 2 AggTau; kaggTau*Tau*AggTau;
+  TangleFormation1: 2 AggTau => 2 NFT; ktangfor*AggTau^2*0.5;
+  TangleFormation2: AggTau + NFT => 2 NFT; ktangfor*AggTau*NFT;
   ProteasomeInhibitionAggTau: AggTau + Proteasome => AggTau_Proteasome; kinhibprot*AggTau*Proteasome;
   Abetaproduction1: $Source => Abeta; kprodAbeta*Source;
   Abetaproduction2: GSK3b_p53 => Abeta + GSK3b_p53; kprodAbeta2*GSK3b_p53;
@@ -107,7 +107,7 @@ model *MODEL1212030000()
   Mdm2PDeubiquitination2: Mdm2_P_Ub2 + Mdm2DUB => Mdm2_P_Ub + Mdm2DUB + Ub; kactDUBMdm2*Mdm2_P_Ub2*Mdm2DUB;
   Mdm2PDeubiquitination1: Mdm2_P_Ub + Mdm2DUB => Mdm2_P + Mdm2DUB + Ub; kactDUBMdm2*Mdm2_P_Ub*Mdm2DUB;
   Mdm2PProteasomeBinding1: Mdm2_P_Ub4 + Proteasome => Mdm2_P_Ub4_Proteasome; kbinProt*Mdm2_P_Ub4*Proteasome;
-  Mdm2PDegradation: Mdm2_P_Ub4_Proteasome => Proteasome + 4Ub; kdegMdm2*Mdm2_P_Ub4_Proteasome*kproteff;
+  Mdm2PDegradation: Mdm2_P_Ub4_Proteasome => Proteasome + 4 Ub; kdegMdm2*Mdm2_P_Ub4_Proteasome*kproteff;
   ATMInactivation: ATMA => ATMI; kinactATM*ATMA;
   AbetaROSproduction1: Abeta => Abeta + ROS; kgenROSAbeta*Abeta;
   PlaqueROSproduction: AbetaPlaque => AbetaPlaque + ROS; kgenROSPlaque*AbetaPlaque;
@@ -116,10 +116,10 @@ model *MODEL1212030000()
   TauSynthesis: $Source => Tau; ksynTau*Source;
   TauProteasomeBinding: Tau + Proteasome => Proteasome_Tau; kbinTauProt*Tau*Proteasome;
   Tau20SProteasomeDegradation: Proteasome_Tau => Proteasome; kdegTau20SProt*Proteasome_Tau;
-  AbetaAggregation1: 2Abeta => AbetaDimer; kaggAbeta*Abeta^2*0.5;
-  AbetaPlaqueFormation1: 2AbetaDimer => AbetaPlaque; kpf*AbetaDimer^2*0.5;
-  AbetaPlaqueGrowth: AbetaDimer + AbetaPlaque => 2AbetaPlaque; (kpg*AbetaDimer*AbetaPlaque^2)/(kpghalf^2 + AbetaPlaque^2);
-  AbetaDisaggregation1: AbetaDimer => 2Abeta; kdisaggAbeta*AbetaDimer;
+  AbetaAggregation1: 2 Abeta => AbetaDimer; kaggAbeta*Abeta^2*0.5;
+  AbetaPlaqueFormation1: 2 AbetaDimer => AbetaPlaque; kpf*AbetaDimer^2*0.5;
+  AbetaPlaqueGrowth: AbetaDimer + AbetaPlaque => 2 AbetaPlaque; kpg*AbetaDimer*AbetaPlaque^2/(kpghalf^2 + AbetaPlaque^2);
+  AbetaDisaggregation1: AbetaDimer => 2 Abeta; kdisaggAbeta*AbetaDimer;
   AbetaDisaggregation3: AbetaPlaque => AbetaDimer + disaggPlaque1; kdisaggAbeta1*AbetaPlaque;
   AbetaDisaggregation4: AbetaPlaque + antiAb => AbetaDimer + antiAb + disaggPlaque2; kdisaggAbeta2*antiAb*AbetaPlaque;
   Abeta_antiAbBinding: Abeta + antiAb => Abeta_antiAb; kbinAbantiAb*Abeta*antiAb;
@@ -225,24 +225,24 @@ model *MODEL1212030000()
   ksynp53 = 0.007;
   kdegp53 = 0.005;
   kbinMdm2p53 = 0.001155;
-  krelMdm2p53 = 1.155e-005;
-  kbinGSK3bp53 = 2e-006;
+  krelMdm2p53 = 1.155e-05;
+  kbinGSK3bp53 = 2e-06;
   krelGSK3bp53 = 0.002;
   ksynMdm2 = 0.000495;
   kdegMdm2 = 0.01;
   kbinE1Ub = 0.0002;
   kbinE2Ub = 0.001;
-  kp53Ub = 5e-005;
+  kp53Ub = 5e-05;
   kp53PolyUb = 0.01;
-  kbinProt = 2e-006;
-  kactDUBp53 = 1e-007;
+  kbinProt = 2e-06;
+  kactDUBp53 = 1e-07;
   kactDUBProtp53 = 0.0001;
-  kactDUBMdm2 = 1e-007;
-  kMdm2Ub = 4.56e-006;
-  kMdm2PUb = 6.84e-006;
+  kactDUBMdm2 = 1e-07;
+  kMdm2Ub = 4.56e-06;
+  kMdm2PUb = 6.84e-06;
   kMdm2PolyUb = 0.00456;
   kdam = 0.08;
-  krepair = 2e-005;
+  krepair = 2e-05;
   kactATM = 0.0001;
   kinactATM = 0.0005;
   kphosp53 = 0.0002;
@@ -256,40 +256,40 @@ model *MODEL1212030000()
   kdephospTau = 0.01;
   kbinMTTau = 0.1;
   krelMTTau = 0.0001;
-  ksynTau = 8e-005;
-  kbinTauProt = 1.925e-007;
+  ksynTau = 8e-05;
+  kbinTauProt = 1.925e-07;
   kdegTau20SProt = 0.01;
-  kaggTau = 1e-008;
-  kaggTauP1 = 1e-008;
-  kaggTauP2 = 1e-007;
+  kaggTau = 1e-08;
+  kaggTauP1 = 1e-08;
+  kaggTauP2 = 1e-07;
   ktangfor = 0.001;
-  kinhibprot = 1e-007;
-  ksynp53mRNAAbeta = 1e-005;
-  kdamROS = 1e-005;
-  kgenROSAbeta = 2e-005;
-  kgenROSPlaque = 1e-005;
-  kgenROSGlia = 1e-005;
+  kinhibprot = 1e-07;
+  ksynp53mRNAAbeta = 1e-05;
+  kdamROS = 1e-05;
+  kgenROSAbeta = 2e-05;
+  kgenROSPlaque = 1e-05;
+  kgenROSGlia = 1e-05;
   kproteff = 1;
-  kremROS = 7e-005;
-  kprodAbeta = 1.86e-005;
-  kprodAbeta2 = 1.86e-005;
-  kdegAbeta = 1.5e-005;
-  kaggAbeta = 3e-006;
-  kdisaggAbeta = 1e-006;
+  kremROS = 7e-05;
+  kprodAbeta = 1.86e-05;
+  kprodAbeta2 = 1.86e-05;
+  kdegAbeta = 1.5e-05;
+  kaggAbeta = 3e-06;
+  kdisaggAbeta = 1e-06;
   kdisaggAbeta1 = 0.0002;
-  kdisaggAbeta2 = 1e-006;
+  kdisaggAbeta2 = 1e-06;
   kdegAbetaGlia = 0.005;
   kpf = 0.2;
   kpg = 0.15;
   kpghalf = 10;
-  kactglia1 = 6e-007;
-  kactglia2 = 6e-007;
-  kinactglia1 = 5e-006;
-  kinactglia2 = 5e-006;
-  kbinAbetaGlia = 1e-005;
-  krelAbetaGlia = 5e-005;
-  kdegAntiAb = 2.75e-006;
-  kbinAbantiAb = 1e-006;
+  kactglia1 = 6e-07;
+  kactglia2 = 6e-07;
+  kinactglia1 = 5e-06;
+  kinactglia2 = 5e-06;
+  kbinAbetaGlia = 1e-05;
+  krelAbetaGlia = 5e-05;
+  kdegAntiAb = 2.75e-06;
+  kbinAbantiAb = 1e-06;
 
   // Other declarations:
   var kproteff;
@@ -309,4 +309,139 @@ model *MODEL1212030000()
 
   // Unit definitions:
   unit substance = item;
+
+  // SBO terms:
+  Source.sboTerm = 291
+  Sink.sboTerm = 291
+
+  // CV terms:
+  cell hypernym "http://identifiers.org/go/GO:0005623"
+  Mdm2 hypernym "http://identifiers.org/uniprot/Q00987"
+  p53 hypernym "http://identifiers.org/uniprot/P04637"
+  Mdm2_p53 part "http://identifiers.org/uniprot/Q00987",
+                "http://identifiers.org/uniprot/P04637"
+  Mdm2_mRNA encodement "http://identifiers.org/uniprot/Q00987"
+  p53_mRNA encodement "http://identifiers.org/uniprot/P04637"
+  ATMA hypernym "http://identifiers.org/uniprot/Q13315"
+  ATMA property "urn:miriam:pato:PATO%3A000234"
+  ATMI hypernym "http://identifiers.org/uniprot/Q13315"
+  ATMI property "http://identifiers.org/pato/PATO:0002355"
+  p53_P hypernym "http://identifiers.org/uniprot/P04637"
+  p53_P identity "http://identifiers.org/pr/PR:000037070"
+  Mdm2_P hypernym "http://identifiers.org/uniprot/Q00987"
+  Mdm2_P identity "http://identifiers.org/pr/PR:000037070"
+  ROS hypernym "http://identifiers.org/chebi/CHEBI:26523"
+  damDNA hypernym "http://identifiers.org/chebi/CHEBI:16991"
+  E1 hypernym "http://identifiers.org/interpro/IPR000011"
+  E2 hypernym "http://identifiers.org/interpro/IPR000608"
+  E1_Ub part "http://identifiers.org/uniprot/P0CG47",
+             "http://identifiers.org/interpro/IPR000011"
+  E2_Ub part "http://identifiers.org/uniprot/P0CG47",
+             "http://identifiers.org/interpro/IPR000608"
+  Proteasome hypernym "http://identifiers.org/go/GO:0000502"
+  Ub hypernym "http://identifiers.org/uniprot/P0CG47"
+  p53DUB part "http://identifiers.org/uniprot/P04637",
+              "http://identifiers.org/interpro/IPR001394"
+  Mdm2DUB part "http://identifiers.org/uniprot/Q00987",
+               "http://identifiers.org/interpro/IPR001394"
+  DUB hypernym "http://identifiers.org/interpro/IPR001394"
+  Mdm2_p53_Ub part "http://identifiers.org/uniprot/P04637",
+                   "http://identifiers.org/uniprot/Q00987",
+                   "http://identifiers.org/uniprot/P0CG47"
+  Mdm2_p53_Ub2 part "http://identifiers.org/uniprot/P04637",
+                    "http://identifiers.org/uniprot/Q00987",
+                    "http://identifiers.org/uniprot/P0CG47"
+  Mdm2_p53_Ub3 part "http://identifiers.org/uniprot/P0CG47",
+                    "http://identifiers.org/uniprot/P04637",
+                    "http://identifiers.org/uniprot/Q00987"
+  Mdm2_p53_Ub4 part "http://identifiers.org/uniprot/P04637",
+                    "http://identifiers.org/uniprot/Q00987",
+                    "http://identifiers.org/uniprot/P0CG47"
+  Mdm2_P1_p53_Ub4 part "http://identifiers.org/uniprot/P0CG47",
+                       "http://identifiers.org/uniprot/P04637",
+                       "http://identifiers.org/uniprot/Q00987"
+  Mdm2_Ub part "http://identifiers.org/uniprot/P0CG47",
+               "http://identifiers.org/uniprot/Q00987"
+  Mdm2_Ub2 part "http://identifiers.org/uniprot/Q00987",
+                "http://identifiers.org/uniprot/P0CG47"
+  Mdm2_Ub3 part "http://identifiers.org/uniprot/P0CG47",
+                "http://identifiers.org/uniprot/Q00987"
+  Mdm2_Ub4 part "http://identifiers.org/uniprot/P0CG47",
+                "http://identifiers.org/uniprot/Q00987"
+  Mdm2_P_Ub part "http://identifiers.org/uniprot/P0CG47",
+                 "http://identifiers.org/uniprot/Q00987"
+  Mdm2_P_Ub identity "http://identifiers.org/pr/PR:000037070"
+  Mdm2_P_Ub2 part "http://identifiers.org/uniprot/P0CG47",
+                  "http://identifiers.org/uniprot/Q00987"
+  Mdm2_P_Ub2 identity "http://identifiers.org/pr/PR:000037070"
+  Mdm2_P_Ub3 part "http://identifiers.org/uniprot/P0CG47",
+                  "http://identifiers.org/uniprot/Q00987"
+  Mdm2_P_Ub3 identity "http://identifiers.org/pr/PR:000037070"
+  Mdm2_P_Ub4 part "http://identifiers.org/uniprot/P0CG47",
+                  "http://identifiers.org/uniprot/Q00987"
+  Mdm2_P_Ub4 identity "http://identifiers.org/pr/PR:000037070"
+  p53_Ub4_Proteasome part "http://identifiers.org/uniprot/P0CG47",
+                          "http://identifiers.org/uniprot/P04637",
+                          "http://identifiers.org/go/GO:0000502"
+  Mdm2_Ub4_Proteasome part "http://identifiers.org/uniprot/P0CG47",
+                           "http://identifiers.org/uniprot/Q00987",
+                           "http://identifiers.org/go/GO:0000502"
+  Mdm2_P_Ub4_Proteasome part "http://identifiers.org/uniprot/P0CG47",
+                             "http://identifiers.org/uniprot/Q00987",
+                             "http://identifiers.org/go/GO:0000502"
+  Mdm2_P_Ub4_Proteasome identity "http://identifiers.org/pr/PR:000037070"
+  GSK3b hypernym "http://identifiers.org/uniprot/P49841"
+  GSK3b_p53 part "http://identifiers.org/uniprot/P04637",
+                 "http://identifiers.org/uniprot/P49841"
+  GSK3b_p53_P part "http://identifiers.org/uniprot/P04637",
+                   "http://identifiers.org/uniprot/P49841"
+  Abeta hypernym "http://identifiers.org/uniprot/P05067"
+  AggAbeta_Proteasome part "http://identifiers.org/uniprot/P05067",
+                           "http://identifiers.org/go/GO:0000502"
+  AggAbeta_Proteasome property "urn:miriam:sbo:SBO%3A0000543"
+  AbetaPlaque hypernym "http://identifiers.org/uniprot/P05067"
+  AbetaPlaque property "urn:miriam:sbo:SBO%3A0000543"
+  Tau hypernym "http://identifiers.org/interpro/IPR002955"
+  Tau_P1 hypernym "http://identifiers.org/interpro/IPR002955"
+  Tau_P2 hypernym "http://identifiers.org/interpro/IPR002955"
+  MT_Tau hypernym "http://identifiers.org/interpro/IPR015562"
+  AggTau hypernym "http://identifiers.org/interpro/IPR002955"
+  AggTau property "urn:miriam:sbo:SBO%3A0000543"
+  AggTau_Proteasome part "http://identifiers.org/interpro/IPR002955",
+                         "http://identifiers.org/go/GO:0000502"
+  AggTau_Proteasome property "urn:miriam:sbo:SBO%3A0000543"
+  Proteasome_Tau part "http://identifiers.org/interpro/IPR002955",
+                      "http://identifiers.org/go/GO:0000502"
+  PP1 hypernym "http://identifiers.org/uniprot/P62136"
+  NFT hypernym "http://identifiers.org/interpro/IPR002955"
+  ATP hypernym "http://identifiers.org/chebi/CHEBI:15422"
+  ADP hypernym "http://identifiers.org/chebi/CHEBI:16761"
+  AMP hypernym "http://identifiers.org/chebi/CHEBI:16027"
+  AbetaDimer part "http://identifiers.org/uniprot/P05067"
+  AbetaPlaque_GliaA part "http://identifiers.org/uniprot/P05067",
+                         "http://identifiers.org/cl/CL:0000129"
+  AbetaPlaque_GliaA property "urn:miriam:sbo:SBO%3A0000543"
+  GliaI hypernym "http://identifiers.org/cl/CL:0000129"
+  GliaM1 hypernym "http://identifiers.org/cl/CL:0000129"
+  GliaM2 hypernym "http://identifiers.org/cl/CL:0000129"
+  GliaA hypernym "http://identifiers.org/cl/CL:0000129"
+  antiAb hypernym "http://identifiers.org/fma/FMA:62871"
+  Abeta_antiAb part "http://identifiers.org/uniprot/P05067",
+                    "http://identifiers.org/fma/FMA:62871"
+  AbetaDimer_antiAb part "http://identifiers.org/uniprot/P05067",
+                         "http://identifiers.org/fma/FMA:62871"
 end
+
+MODEL1212030000 is "Proctor2013 - Effect of Aβ immunisation in Alzheimer's disease (deterministic version)"
+
+MODEL1212030000 model_entity_is "http://identifiers.org/biomodels.db/MODEL1212030000"
+MODEL1212030000 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000488"
+MODEL1212030000 description "http://identifiers.org/pubmed/24098635"
+MODEL1212030000 origin "http://identifiers.org/biomodels.db/BIOMD0000000462",
+                       "http://identifiers.org/biomodels.db/BIOMD0000000286"
+MODEL1212030000 property "http://identifiers.org/doid/DOID:10652"
+MODEL1212030000 property "http://identifiers.org/mamo/MAMO_0000046"
+MODEL1212030000 taxon "http://identifiers.org/taxonomy/40674"
+MODEL1212030000 part "http://identifiers.org/pw/PW:0000015"
+MODEL1212030000 hypernym "http://identifiers.org/go/GO:0070841",
+                         "http://identifiers.org/go/GO:0030330"

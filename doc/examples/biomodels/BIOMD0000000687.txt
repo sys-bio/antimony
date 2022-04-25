@@ -1,0 +1,222 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function function_1(param, mod)
+  param*mod;
+end
+
+function_1 is "function_1"
+
+function function_3(c_a, y0, y1, za)
+  c_a*(y0 + y1)*za;
+end
+
+function_3 is "function_3"
+
+function function_(parameter, modifier, substrate)
+  parameter*modifier*substrate;
+end
+
+function_ is "function"
+
+function function_2(parameter, modifier)
+  parameter*modifier;
+end
+
+function_2 is "function_2"
+
+
+model *Wodarz2007_CTLinflation_ModelB()
+
+  // Compartments and Species:
+  compartment COMpartment;
+  species x_0 in COMpartment, y_0 in COMpartment, y_1 in COMpartment, L_0 in COMpartment;
+  species v_0 in COMpartment, z_a in COMpartment, m_0_0 in COMpartment, m_1_0 in COMpartment;
+  species m_2_0 in COMpartment, m_3_0 in COMpartment, m_4_0 in COMpartment;
+  species m_5_0 in COMpartment, m_6_0 in COMpartment, m_7_0 in COMpartment;
+  species m_8_0 in COMpartment;
+
+  // Assignment Rules:
+  R0 := (lambda*eta/(d*a1*(a0 + eta)))*(beta + gamma_*phi/(phi + d));
+
+  // Reactions:
+  Host_cell_proliferation:  => x_0; COMpartment*Constant_flux__irreversible(lambda);
+  Host_cell_death: x_0 => ; COMpartment*d*x_0;
+  Infection_1: x_0 => y_0; COMpartment*function_(beta, v_0, x_0);
+  Infection_2: x_0 => L_0; COMpartment*function_(gamma_, v_0, x_0);
+  Infected_cell_death_1: y_0 => ; COMpartment*a0*y_0;
+  Infected_cell_infection_progression_1: y_0 => y_1; COMpartment*eta*y_0;
+  Infected_cell_infection_progression_2: L_0 => y_0; COMpartment*phi*L_0;
+  CTL_induced_infected_cell_death_1: y_0 => ; COMpartment*function_(pa, z_a, y_0);
+  Infected_cell_death_2: y_1 => ; COMpartment*a1*y_1;
+  CTL_induced_infected_cell_death_2: y_1 => ; COMpartment*function_(pa, z_a, y_1);
+  Infected_cell_death_3: L_0 => ; COMpartment*d*L_0;
+  Virus_particle_production:  => v_0; COMpartment*function_1(k, y_1);
+  Viral_particle_degradation: v_0 => ; COMpartment*u*v_0;
+  Precursor_T_cell_differentiation_2:  => z_a; COMpartment*function_2(alpha, m_8_0);
+  Infection_induced_CTL_proliferation_stimulation:  => z_a; COMpartment*function_3(ca, y_0, y_1, z_a);
+  CTL_cell_death: z_a => ; COMpartment*ba*z_a;
+  Naive_CTL_division_1: m_0_0 => 2 m_1_0; COMpartment*r*m_0_0;
+  Naive_CTL_division_2: m_1_0 => 2 m_2_0; COMpartment*r*m_1_0;
+  Naive_CTL_division_3: m_2_0 => 2 m_3_0; COMpartment*r*m_2_0;
+  Naive_CTL_division_4: m_3_0 => 2 m_4_0; COMpartment*r*m_3_0;
+  Naive_CTL_division_5: m_4_0 => 2 m_5_0; COMpartment*r*m_4_0;
+  Naive_CTL_division_6: m_5_0 => 2 m_6_0; COMpartment*r*m_5_0;
+  Naive_CTL_division_7: m_6_0 => 2 m_7_0; COMpartment*r*m_6_0;
+  Naive_CTL_division_8: m_7_0 => 2 m_8_0; COMpartment*r*m_7_0;
+  Precursor_T_cell_differentiation_1: m_8_0 => ; COMpartment*r*m_8_0;
+
+  // Species initializations:
+  x_0 = 1;
+  y_0 = 0;
+  y_1 = 0;
+  L_0 = 0;
+  v_0 = 1;
+  z_a = 1;
+  m_0_0 = 1;
+  m_1_0 = 0;
+  m_2_0 = 0;
+  m_3_0 = 0;
+  m_4_0 = 0;
+  m_5_0 = 0;
+  m_6_0 = 0;
+  m_7_0 = 0;
+  m_8_0 = 0;
+
+  // Compartment initializations:
+  COMpartment = 1;
+  COMpartment has litre;
+
+  // Variable initializations:
+  lambda = 10;
+  eta = 0.01;
+  d = 0.1;
+  a1 = 0.2;
+  a0 = 0.1;
+  beta = 0.1;
+  gamma_ = 0.5;
+  phi = 0.1;
+  k = 1;
+  u = 1;
+  alpha = 0.2;
+  pa = 1e-06;
+  ca = 15.5;
+  r = 1;
+  ba = 0.1;
+
+  // Other declarations:
+  var R0;
+  const COMpartment, lambda, eta, d, a1, a0, beta, gamma_, phi, k, u, alpha;
+  const pa, ca, r, ba;
+
+  // Unit definitions:
+  unit hour = 3600 second;
+  unit first_order_rate_constant = 1 / 3600 second;
+  unit time_unit = 3600 second;
+
+  // Display Names:
+  time_unit is "time";
+  COMpartment is "Mouse";
+  x_0 is "x";
+  L_0 is "L";
+  v_0 is "v";
+  m_0_0 is "m_0";
+  m_1_0 is "m_1";
+  m_2_0 is "m_2";
+  m_3_0 is "m_3";
+  m_4_0 is "m_4";
+  m_5_0 is "m_5";
+  m_6_0 is "m_6";
+  m_7_0 is "m_7";
+  m_8_0 is "m_8";
+  gamma_ is "gamma";
+  Host_cell_proliferation is "Host cell proliferation";
+  Host_cell_death is "Host cell death";
+  Infection_1 is "Infection 1";
+  Infection_2 is "Infection 2";
+  Infected_cell_death_1 is "Infected cell death 1";
+  Infected_cell_infection_progression_1 is "Infected cell infection progression 1";
+  Infected_cell_infection_progression_2 is "Infected cell infection progression 2";
+  CTL_induced_infected_cell_death_1 is "CTL-induced infected cell death 1";
+  Infected_cell_death_2 is "Infected cell death 2";
+  CTL_induced_infected_cell_death_2 is "CTL-induced infected cell death 2";
+  Infected_cell_death_3 is "Infected cell death 3";
+  Virus_particle_production is "Virus particle production";
+  Viral_particle_degradation is "Viral particle degradation";
+  Precursor_T_cell_differentiation_2 is "Precursor T-cell differentiation 2";
+  Infection_induced_CTL_proliferation_stimulation is "Infection-induced CTL proliferation stimulation";
+  CTL_cell_death is "CTL cell death";
+  Naive_CTL_division_1 is "Naive CTL division 1";
+  Naive_CTL_division_2 is "Naive CTL division 2";
+  Naive_CTL_division_3 is "Naive CTL division 3";
+  Naive_CTL_division_4 is "Naive CTL division 4";
+  Naive_CTL_division_5 is "Naive CTL division 5";
+  Naive_CTL_division_6 is "Naive CTL division 6";
+  Naive_CTL_division_7 is "Naive CTL division 7";
+  Naive_CTL_division_8 is "Naive CTL division 8";
+  Precursor_T_cell_differentiation_1 is "Precursor T-cell differentiation 1";
+
+  // CV terms:
+  x_0 hypernym "http://identifiers.org/go/GO:0005623"
+  x_0 property "http://identifiers.org/ncit/C16505"
+  x_0 hypernym "http://identifiers.org/cl/CL:0000000"
+  y_0 part "http://identifiers.org/efo/0001062"
+  y_0 hypernym "http://identifiers.org/bto/BTO:0000152"
+  y_1 part "http://identifiers.org/efo/0001062"
+  y_1 hypernym "http://identifiers.org/bto/BTO:0000152"
+  L_0 part "http://identifiers.org/efo/0001062"
+  L_0 hypernym "http://identifiers.org/bto/BTO:0000152"
+  v_0 hypernym "http://identifiers.org/go/GO:0019012"
+  v_0 hypernym "http://identifiers.org/efo/0001062"
+  z_a hypernym "http://identifiers.org/bto/BTO:0000289"
+  z_a hypernym "http://identifiers.org/cl/CL:0000910"
+  m_0_0 hypernym "http://identifiers.org/cl/CL:0000898"
+  m_1_0 hypernym "http://identifiers.org/cl/CL:0000898"
+  m_2_0 hypernym "http://identifiers.org/cl/CL:0000898"
+  m_3_0 hypernym "http://identifiers.org/cl/CL:0000898"
+  m_4_0 hypernym "http://identifiers.org/cl/CL:0000898"
+  m_5_0 hypernym "http://identifiers.org/cl/CL:0000898"
+  m_6_0 hypernym "http://identifiers.org/cl/CL:0000898"
+  m_7_0 hypernym "http://identifiers.org/cl/CL:0000898"
+  m_8_0 hypernym "http://identifiers.org/cl/CL:0000898"
+  Host_cell_proliferation hypernym "http://identifiers.org/go/GO:0008283"
+  Host_cell_death hypernym "http://identifiers.org/go/GO:0008219"
+  Infection_1 hypernym "urn:miriam:obi:OBI%3A1110021"
+  Infection_2 hypernym "urn:miriam:obi:OBI%3A1110021"
+  Infected_cell_death_1 hypernym "http://identifiers.org/go/GO:0008219"
+  CTL_induced_infected_cell_death_1 hypernym "http://identifiers.org/go/GO:0012501"
+  Infected_cell_death_2 hypernym "http://identifiers.org/go/GO:0008219"
+  CTL_induced_infected_cell_death_2 hypernym "http://identifiers.org/go/GO:0012501"
+  Infected_cell_death_3 hypernym "http://identifiers.org/go/GO:0008219"
+  Virus_particle_production hypernym "urn:miriam:sbo:SBO%3A0000393"
+  Viral_particle_degradation hypernym "urn:miriam:sbo:SBO%3A0000179"
+  Precursor_T_cell_differentiation_2 hypernym "http://identifiers.org/go/GO:0030217"
+  Infection_induced_CTL_proliferation_stimulation hypernym "http://identifiers.org/ncit/C20863"
+  CTL_cell_death hypernym "http://identifiers.org/go/GO:0008219"
+  Naive_CTL_division_1 hypernym "http://identifiers.org/go/GO:0051301"
+  Naive_CTL_division_2 hypernym "http://identifiers.org/go/GO:0051301"
+  Naive_CTL_division_3 hypernym "http://identifiers.org/go/GO:0051301"
+  Naive_CTL_division_4 hypernym "http://identifiers.org/go/GO:0051301"
+  Naive_CTL_division_5 hypernym "http://identifiers.org/go/GO:0051301"
+  Naive_CTL_division_6 hypernym "http://identifiers.org/go/GO:0051301"
+  Naive_CTL_division_7 hypernym "http://identifiers.org/go/GO:0051301"
+  Naive_CTL_division_8 hypernym "http://identifiers.org/go/GO:0051301"
+  Precursor_T_cell_differentiation_1 hypernym "http://identifiers.org/go/GO:0030217"
+end
+
+Wodarz2007_CTLinflation_ModelB is "Wodarz2007 - Cytomegalovirus infection model with cytotoxic T lymphocyte response"
+
+Wodarz2007_CTLinflation_ModelB model_entity_is "http://identifiers.org/biomodels.db/MODEL1006230052"
+Wodarz2007_CTLinflation_ModelB model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000687"
+Wodarz2007_CTLinflation_ModelB description "http://identifiers.org/pubmed/17251133"
+Wodarz2007_CTLinflation_ModelB origin "http://identifiers.org/doi/10.1093/intimm/dxh303"
+Wodarz2007_CTLinflation_ModelB model_entity_is "http://identifiers.org/biomodels.db/MODEL1006230052"
+Wodarz2007_CTLinflation_ModelB part "http://identifiers.org/bto/BTO:0000289"
+Wodarz2007_CTLinflation_ModelB hypernym "http://identifiers.org/go/GO:0009615"
+Wodarz2007_CTLinflation_ModelB taxon "http://identifiers.org/taxonomy/10088"
+Wodarz2007_CTLinflation_ModelB part "http://identifiers.org/efo/0001062"
+Wodarz2007_CTLinflation_ModelB description "http://identifiers.org/pubmed/17251133"

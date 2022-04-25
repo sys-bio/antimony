@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *MODEL1407170000()
 
   // Compartments and Species:
@@ -8,13 +8,13 @@ model *MODEL1407170000()
   // Assignment Rules:
   alpha := 1 - 1/(kb*(exp(Ka*time) - 1) + 1);
   kat50 := ln(1/kb + 1);
-  v50t50 := 1/4*(kb + 1)*ln(1/kb + 1);
+  v50t50 := (1/4)*(kb + 1)*ln(1/kb + 1);
 
   // Compartment initializations:
   Cell = 1;
 
   // Variable initializations:
-  kb = 1.6e-010;
+  kb = 1.6e-10;
   Ka = 1.44;
 
   // Other declarations:
@@ -28,4 +28,18 @@ model *MODEL1407170000()
 
   // Display Names:
   time_unit is "time";
+
+  // CV terms:
+  Cell identity "http://identifiers.org/bto/BTO:0000142"
+  alpha identity "http://identifiers.org/chebi/CHEBI:60425"
 end
+
+MODEL1407170000 is "Crespo2012 - Kinetics of Amyloid Fibril Formation"
+
+MODEL1407170000 model_entity_is "http://identifiers.org/biomodels.db/MODEL1407170000"
+MODEL1407170000 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000531"
+MODEL1407170000 description "http://identifiers.org/pubmed/22767606"
+MODEL1407170000 taxon "http://identifiers.org/taxonomy/9606"
+MODEL1407170000 hypernym "http://identifiers.org/go/GO:1990000",
+                         "http://identifiers.org/go/GO:0070841"
+MODEL1407170000 property "http://identifiers.org/doid/DOID:10652"

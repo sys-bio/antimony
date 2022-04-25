@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Goldbeter1995()
 
   // Compartments and Species:
@@ -10,16 +10,16 @@ model *Goldbeter1995()
   Pt := P0 + P1 + P2 + Pn;
 
   // Reactions:
-  rM: $EmptySet => M; (default*rM_Vs*rM_KI^rM_n)/(rM_KI^rM_n + Pn^rM_n);
+  rM: $EmptySet => M; default*rM_Vs*rM_KI^rM_n/(rM_KI^rM_n + Pn^rM_n);
   rTL: $EmptySet => P0; rTL_ks*M*default;
-  rP01: P0 => P1; (CYTOPLASM*rP01_V1*P0)/(rP01_K1 + P0);
-  rP10: P1 => P0; (CYTOPLASM*rP10_V2*P1)/(rP10_K2 + P1);
-  rP12: P1 => P2; (CYTOPLASM*rP12_V3*P1)/(rP12_K3 + P1);
-  rP21: P2 => P1; (CYTOPLASM*rP21_V4*P2)/(rP21_K4 + P2);
+  rP01: P0 => P1; CYTOPLASM*rP01_V1*P0/(rP01_K1 + P0);
+  rP10: P1 => P0; CYTOPLASM*rP10_V2*P1/(rP10_K2 + P1);
+  rP12: P1 => P2; CYTOPLASM*rP12_V3*P1/(rP12_K3 + P1);
+  rP21: P2 => P1; CYTOPLASM*rP21_V4*P2/(rP21_K4 + P2);
   rP2n: P2 => Pn; rP2n_k1*P2*CYTOPLASM;
   rPn2: Pn => P2; rPn2_k2*Pn*compartment_0000004;
-  rmRNAd: M => $EmptySet; (rmRNAd_Vm*M*CYTOPLASM)/(rmRNAd_Km + M);
-  rVd: P2 => $EmptySet; (CYTOPLASM*rVd_Vd*P2)/(rVd_Kd + P2);
+  rmRNAd: M => $EmptySet; rmRNAd_Vm*M*CYTOPLASM/(rmRNAd_Km + M);
+  rVd: P2 => $EmptySet; CYTOPLASM*rVd_Vd*P2/(rVd_Kd + P2);
 
   // Species initializations:
   EmptySet = 0;
@@ -30,9 +30,9 @@ model *Goldbeter1995()
   Pn = 0.25;
 
   // Compartment initializations:
-  default = 1e-015;
-  CYTOPLASM = 1e-015;
-  compartment_0000004 = 1e-015;
+  default = 1e-15;
+  CYTOPLASM = 1e-15;
+  compartment_0000004 = 1e-15;
 
   // Variable initializations:
   rM_Vs = 0.76;
@@ -81,4 +81,39 @@ model *Goldbeter1995()
   rPn2 is "translocation of PER to the cytoplasm";
   rmRNAd is "degradation of PER mRNA";
   rVd is "degradation of PER";
+
+  // CV terms:
+  CYTOPLASM identity "http://identifiers.org/go/GO:0005737"
+  compartment_0000004 identity "http://identifiers.org/go/GO:0005634"
+  M hypernym "http://identifiers.org/chebi/CHEBI:33699",
+             "http://identifiers.org/kegg.compound/C00046"
+  P0 hypernym "http://identifiers.org/uniprot/P07663"
+  P1 hypernym "http://identifiers.org/uniprot/P07663"
+  P2 hypernym "http://identifiers.org/uniprot/P07663"
+  Pn identity "http://identifiers.org/uniprot/P07663"
+  Pt identity "http://identifiers.org/uniprot/P07663"
+  rM hypernym "http://identifiers.org/go/GO:0006355",
+              "http://identifiers.org/go/GO:0009299"
+  rTL hypernym "http://identifiers.org/go/GO:0006412"
+  rP01 hypernym "http://identifiers.org/ec-code/2.7.11.1",
+                "http://identifiers.org/go/GO:0006468"
+  rP10 hypernym "http://identifiers.org/ec-code/3.1.3.16",
+                "http://identifiers.org/go/GO:0006470"
+  rP12 hypernym "http://identifiers.org/ec-code/2.7.11.1",
+                "http://identifiers.org/go/GO:0006468"
+  rP21 hypernym "http://identifiers.org/ec-code/3.1.3.16",
+                "http://identifiers.org/go/GO:0006470"
+  rP2n hypernym "http://identifiers.org/go/GO:0006606"
+  rPn2 hypernym "http://identifiers.org/go/GO:0006611"
+  rmRNAd hypernym "http://identifiers.org/go/GO:0006402"
+  rVd hypernym "http://identifiers.org/go/GO:0006402"
 end
+
+Goldbeter1995 is "Goldbeter1995_CircClock"
+
+Goldbeter1995 model_entity_is "http://identifiers.org/biomodels.db/MODEL6617161845"
+Goldbeter1995 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000016"
+Goldbeter1995 description "http://identifiers.org/pubmed/8587874"
+Goldbeter1995 identity "http://identifiers.org/kegg.pathway/dme04710"
+Goldbeter1995 taxon "http://identifiers.org/taxonomy/7227"
+Goldbeter1995 hypernym "http://identifiers.org/go/GO:0042752"

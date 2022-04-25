@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *BIOMD0000000189()
 
   // Compartments and Species:
@@ -67,7 +67,7 @@ model *BIOMD0000000189()
   kdegp53 has psec;
   kbinMdm2p53 = 0.001155;
   kbinMdm2p53 has pmolepsec;
-  krelMdm2p53 = 1.155e-005;
+  krelMdm2p53 = 1.155e-05;
   krelMdm2p53 has psec;
   ksynMdm2mRNA = 0.0001;
   ksynMdm2mRNA has psec;
@@ -79,11 +79,11 @@ model *BIOMD0000000189()
   kdegARFMdm2 has psec;
   kdegARF = 0.0001;
   kdegARF has psec;
-  kactARF = 3.3e-005;
+  kactARF = 3.3e-05;
   kactARF has psec;
   kdam = 0.08;
   kdam has molepsecpdGy;
-  krepair = 2e-005;
+  krepair = 2e-05;
   krepair has psec;
   kproteff = 1;
   kproteff has dimensionless;
@@ -103,4 +103,55 @@ model *BIOMD0000000189()
 
   // Display Names:
   decagray is "dGy";
+
+  // SBO terms:
+  Mdm2.sboTerm = 245
+  p53.sboTerm = 245
+
+  // CV terms:
+  cell identity "http://identifiers.org/go/GO:0005623"
+  Mdm2 encoder "http://identifiers.org/ensembl/ENSG00000135679"
+  Mdm2 identity "http://identifiers.org/uniprot/Q00987"
+  p53 hypernym "http://identifiers.org/uniprot/P04637"
+  p53 encoder "http://identifiers.org/ensembl/ENSG00000141510"
+  Mdm2_p53 part "http://identifiers.org/uniprot/Q00987",
+                "http://identifiers.org/uniprot/P04637"
+  Mdm2_mRNA hypernym "http://identifiers.org/chebi/CHEBI:33699",
+                     "http://identifiers.org/kegg.compound/C00046"
+  ARF encoder "http://identifiers.org/ensembl/ENSG00000147889"
+  ARF identity "http://identifiers.org/uniprot/Q8N726"
+  ARF_Mdm2 part "http://identifiers.org/uniprot/Q00987",
+                "http://identifiers.org/uniprot/Q8N726"
+  damDNA hypernym "http://identifiers.org/chebi/CHEBI:16991",
+                  "http://identifiers.org/go/GO:0006974"
+  p53deg hypernym "http://identifiers.org/go/GO:0043161"
+  p53syn hypernym "http://identifiers.org/go/GO:0006412"
+  mdm2deg hypernym "http://identifiers.org/go/GO:0043161"
+  mdm2syn hypernym "http://identifiers.org/go/GO:0006412"
+  Mdm2mRNAdeg hypernym "http://identifiers.org/go/GO:0006402"
+  Mdm2mRNAsyn hypernym "http://identifiers.org/go/GO:0003700"
+  Mdm2Synthesis identity "http://identifiers.org/go/GO:0006412"
+  Mdm2mRNASynthesis hypernym "http://identifiers.org/go/GO:0003700"
+  Mdm2mRNADegradation hypernym "http://identifiers.org/go/GO:0006402"
+  Mdm2Degradation hypernym "http://identifiers.org/go/GO:0043161"
+  p53Synthesis identity "http://identifiers.org/go/GO:0006412"
+  p53Degradation hypernym "http://identifiers.org/go/GO:0043161"
+  P53_Mdm2Binding hypernym "http://identifiers.org/go/GO:0002039"
+  P53_Mdm2Release hypernym "http://identifiers.org/go/GO:0043624"
+  DNAdamage hypernym "http://identifiers.org/go/GO:0006974"
+  DNArepair hypernym "http://identifiers.org/go/GO:0006281"
+  ARFactivation hypernym "http://identifiers.org/go/GO:0030330"
+  ARF_Mdm2Binding hypernym "http://identifiers.org/go/GO:0005515"
+  ARF_Mdm2Degradation hypernym "http://identifiers.org/go/GO:0043161"
+  ARFDegradation hypernym "http://identifiers.org/go/GO:0043161"
 end
+
+BIOMD0000000189 is "Proctor2008 - p53/Mdm2 circuit - p53 stablisation by p14ARF"
+
+BIOMD0000000189 model_entity_is "http://identifiers.org/biomodels.db/MODEL8142536273"
+BIOMD0000000189 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000189"
+BIOMD0000000189 description "http://identifiers.org/pubmed/18706112"
+BIOMD0000000189 hypernym "http://identifiers.org/go/GO:0030330"
+BIOMD0000000189 parthood "http://identifiers.org/kegg.pathway/hsa04115",
+                         "http://identifiers.org/reactome/REACT_85.1"
+BIOMD0000000189 taxon "http://identifiers.org/taxonomy/9606"

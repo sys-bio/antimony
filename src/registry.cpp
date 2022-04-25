@@ -21,6 +21,7 @@ extern std::vector<int> antimony_yylloc_last_lines;
 #define CONFIGFILE ".antimony";
 
 using namespace std;
+using namespace libsbml;
 
 Registry::Registry()
   : m_oldinputs(),
@@ -381,7 +382,7 @@ int Registry::CheckAndAddSBMLIfGood(SBMLDocument* document)
   SBMLErrorLog* log = document->getErrorLog();
   if (log->getNumFailsWithSeverity(2) == 0 && log->getNumFailsWithSeverity(3) == 0) {
     //It's a valid SBML file. 
-    const Model* sbml = document->getModel();
+    Model* sbml = document->getModel();
     LoadSubmodelsFrom(sbml);
     string sbmlname = getNameFromSBMLObject(sbml, "file");
     if (sbmlname != MAINMODULE) {
@@ -399,7 +400,7 @@ int Registry::CheckAndAddSBMLIfGood(SBMLDocument* document)
   return 0;
 }
 
-void Registry::LoadSubmodelsFrom(const Model* model)
+void Registry::LoadSubmodelsFrom(Model* model)
 {
   //Only meaningful if using sbml-comp
 #ifdef USE_COMP
@@ -415,20 +416,20 @@ void Registry::LoadSubmodelsFrom(const Model* model)
 #endif
 }
 
-bool Registry::LoadModelFrom(string modelname, const SBMLDocument* document)
+bool Registry::LoadModelFrom(string modelname, SBMLDocument* document)
 {
   if (modelname.empty()) return true;
   if (GetModule(modelname) != NULL) return false; //Already loaded.
   if (document==NULL) return true;
 #ifdef USE_COMP
-  const CompSBMLDocumentPlugin* docplug = static_cast<const CompSBMLDocumentPlugin*>(document->getPlugin("comp"));
+  CompSBMLDocumentPlugin* docplug = static_cast<CompSBMLDocumentPlugin*>(document->getPlugin("comp"));
   if (docplug==NULL) return true;
-  const SBase* model = docplug->getModel(modelname);
+  SBase* model = docplug->getModel(modelname);
   if (model==NULL) {
     AddWarning("Unable to find model " + modelname + " in the SBML Document.");
     return true;
   }
-  const Model* mod = NULL;
+  Model* mod = NULL;
   const SBMLDocument* modeldoc = document;
   if (model->getTypeCode()==SBML_COMP_EXTERNALMODELDEFINITION) {
     const ExternalModelDefinition* emd = static_cast<const ExternalModelDefinition*>(model);
@@ -439,7 +440,7 @@ bool Registry::LoadModelFrom(string modelname, const SBMLDocument* document)
     }
   }
   else {
-    mod = static_cast<const Model*>(model);
+    mod = static_cast<Model*>(model);
   }
   LoadSubmodelsFrom(mod);
   NewCurrentModule(&modelname);
@@ -866,18 +867,25 @@ void Registry::SetupConstants()
 {
   //This list straight from sbml's L3Parser (which I also wrote).
   const char* constants[] = {
-  "true"  
-  , "false"  
-  , "pi"  
-  , "exponentiale" 
-  , "avogadro"  
-  , "time"  
-  , "inf"  
-  , "infinity"  
-  , "NaN"  
+  "true"
+  , "True"
+  , "TRUE"
+  , "false"
+  , "False"
+  , "FALSE"
+  , "pi"
+  , "exponentiale"
+  , "avogadro"
+  , "time"
+  , "inf"
+  , "INF"
+  , "infinity"
+  , "NaN"
+  , "nan"
+  , "NAN"
   , "notanumber"
   };
-  for (size_t c=0; c<10; c++) {
+  for (size_t c=0; c<17; c++) {
     m_constants.push_back(constants[c]);
   }
 }
@@ -1255,7 +1263,7 @@ void Registry::StoreVariable(Variable* var)
 const string* Registry::IsFunction(string word)
 {
   for (size_t func=0; func<m_functions.size(); func++) {
-    if (CaselessStrCmp(word, m_functions[func])) {
+    if (word == m_functions[func]) {
       return &(m_functions[func]);
     }
   }
@@ -1270,7 +1278,7 @@ const string* Registry::IsFunction(string word)
 const string* Registry::IsConstant(string word)
 {
   for (size_t c=0; c<m_constants.size(); c++) {
-    if (CaselessStrCmp(word, m_constants[c])) {
+    if (CaselessStrCmp(false, word, m_constants[c])) {
       return &(m_constants[c]);
     }
   }

@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Sturis1991_InsulinGlucoseModel_UltradianOscillation()
 
   // Compartments and Species:
@@ -8,18 +8,18 @@ model *Sturis1991_InsulinGlucoseModel_UltradianOscillation()
 
   // Assignment Rules:
   f1 := 209/(1 + exp(-z/(300*v3) + 6.6));
-  f5 := 180/(1 + exp((0.29*h3)/v1 - 7.5));
-  f2 := 72*(1 - exp(-z/144*v3));
-  f3 := (0.01*z)/v3;
+  f5 := 180/(1 + exp(0.29*h3/v1 - 7.5));
+  f2 := 72*(1 - exp((-z/144)*v3));
+  f3 := 0.01*z/v3;
   f4 := 90/(1 + exp(-1.772*ln(y*(1/v2 + 1/(E*t2))) + 7.76)) + 4;
 
   // Rate Rules:
   x' = f1 - E*(x/v1 - y/v2) - x/t1;
   y' = E*(x/v1 - y/v2) - y/t2;
-  z' = (f5 + I) - f2 - f3*f4;
-  h1' = (3*(x - h1))/t3;
-  h2' = (3*(h1 - h2))/t3;
-  h3' = (3*(h2 - h3))/t3;
+  z' = f5 + I - f2 - f3*f4;
+  h1' = 3*(x - h1)/t3;
+  h2' = 3*(h1 - h2)/t3;
+  h3' = 3*(h2 - h3)/t3;
 
   // Species initializations:
   x = 90/compartment1;
@@ -45,4 +45,38 @@ model *Sturis1991_InsulinGlucoseModel_UltradianOscillation()
   // Other declarations:
   var f1, f5, f2, f3, f4;
   const compartment1, E, v1, v2, t1, t2, I, t3, v3;
+
+  // SBO terms:
+  f1.sboTerm = 375
+  E.sboTerm = 9
+  v1.sboTerm = 468
+  v2.sboTerm = 468
+  t1.sboTerm = 225
+  t2.sboTerm = 225
+  f5.sboTerm = 393
+  I.sboTerm = 9
+  f2.sboTerm = 375
+  f3.sboTerm = 375
+  f4.sboTerm = 375
+  h1.sboTerm = 225
+  t3.sboTerm = 225
+  h2.sboTerm = 225
+  h3.sboTerm = 225
+  v3.sboTerm = 468
+
+  // CV terms:
+  x hypernym "http://identifiers.org/uniprot/P01308"
+  y hypernym "http://identifiers.org/uniprot/P01308"
+  z identity "http://identifiers.org/chebi/CHEBI:17234"
 end
+
+Sturis1991_InsulinGlucoseModel_UltradianOscillation is "Sturis1991_InsulinGlucoseModel_UltradianOscillation"
+
+Sturis1991_InsulinGlucoseModel_UltradianOscillation model_entity_is "http://identifiers.org/biomodels.db/MODEL1110180000"
+Sturis1991_InsulinGlucoseModel_UltradianOscillation model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000382"
+Sturis1991_InsulinGlucoseModel_UltradianOscillation description "http://identifiers.org/pubmed/2035636"
+Sturis1991_InsulinGlucoseModel_UltradianOscillation taxon "http://identifiers.org/taxonomy/9606"
+Sturis1991_InsulinGlucoseModel_UltradianOscillation encodement "http://identifiers.org/go/GO:0030073",
+                                                               "http://identifiers.org/go/GO:0015758",
+                                                               "http://identifiers.org/go/GO:0044381"
+Sturis1991_InsulinGlucoseModel_UltradianOscillation property "http://identifiers.org/doid/DOID:9351"

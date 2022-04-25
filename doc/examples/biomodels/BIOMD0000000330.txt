@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Larsen2004_CalciumSpiking()
 
   // Compartments and Species:
@@ -7,11 +7,11 @@ model *Larsen2004_CalciumSpiking()
   species $Ca_ER in ER, $Ca_mit in mit;
 
   // Rate Rules:
-  G_alpha' = (k1 + k2*G_alpha) - (k3*G_alpha*PLC)/(G_alpha + K4) - (k5*G_alpha*Ca_cyt)/(G_alpha + K6);
-  PLC' = k7*G_alpha - (k8*PLC)/(PLC + K9);
-  Ca_cyt' = (((Ca_ER - Ca_cyt)*k10*Ca_cyt*PLC^4)/(PLC^4 + K11^4) + k12*PLC + k13*G_alpha) - (k14*Ca_cyt)/(Ca_cyt + K15) - (k16*Ca_cyt)/(Ca_cyt + K17) - (k18*Ca_cyt^8)/(K19^8 + Ca_cyt^8) + ((Ca_mit - Ca_cyt)*k20*Ca_cyt)/(Ca_cyt + K21);
-  Ca_ER' = (-(Ca_ER - Ca_cyt)*k10*Ca_cyt*PLC^4)/(PLC^4 + K11^4) + (k16*Ca_cyt)/(Ca_cyt + K17);
-  Ca_mit' = (k18*Ca_cyt^8)/(K19^8 + Ca_cyt^8) - ((Ca_mit - Ca_cyt)*k20*Ca_cyt)/(Ca_cyt + K21);
+  G_alpha' = k1 + k2*G_alpha - k3*G_alpha*PLC/(G_alpha + K4) - k5*G_alpha*Ca_cyt/(G_alpha + K6);
+  PLC' = k7*G_alpha - k8*PLC/(PLC + K9);
+  Ca_cyt' = ((Ca_ER - Ca_cyt)*k10*Ca_cyt*PLC^4/(PLC^4 + K11^4) + k12*PLC + k13*G_alpha - k14*Ca_cyt/(Ca_cyt + K15) - k16*Ca_cyt/(Ca_cyt + K17) - k18*Ca_cyt^8/(K19^8 + Ca_cyt^8)) + (Ca_mit - Ca_cyt)*k20*Ca_cyt/(Ca_cyt + K21);
+  Ca_ER' = -(Ca_ER - Ca_cyt)*k10*Ca_cyt*PLC^4/(PLC^4 + K11^4) + k16*Ca_cyt/(Ca_cyt + K17);
+  Ca_mit' = k18*Ca_cyt^8/(K19^8 + Ca_cyt^8) - (Ca_mit - Ca_cyt)*k20*Ca_cyt/(Ca_cyt + K21);
 
   // Species initializations:
   G_alpha = 0.01;
@@ -58,4 +58,60 @@ model *Larsen2004_CalciumSpiking()
   Ca_cyt is "Calcium-Cyt";
   Ca_ER is "Calcium-ER";
   Ca_mit is "Calcium-mit";
+
+  // SBO terms:
+  cytoplasm.sboTerm = 290
+  ER.sboTerm = 290
+  mit.sboTerm = 290
+  G_alpha.sboTerm = 252
+  k1.sboTerm = 9
+  k2.sboTerm = 9
+  k3.sboTerm = 9
+  PLC.sboTerm = 14
+  K4.sboTerm = 9
+  k5.sboTerm = 9
+  Ca_cyt.sboTerm = 247
+  K6.sboTerm = 9
+  k7.sboTerm = 9
+  k8.sboTerm = 9
+  K9.sboTerm = 9
+  Ca_ER.sboTerm = 247
+  k10.sboTerm = 9
+  K11.sboTerm = 9
+  k12.sboTerm = 9
+  k13.sboTerm = 9
+  k14.sboTerm = 9
+  K15.sboTerm = 9
+  k16.sboTerm = 9
+  K17.sboTerm = 9
+  k18.sboTerm = 9
+  K19.sboTerm = 9
+  Ca_mit.sboTerm = 247
+  k20.sboTerm = 9
+  K21.sboTerm = 9
+
+  // CV terms:
+  cytoplasm hypernym "http://identifiers.org/go/GO:0005737"
+  ER hypernym "http://identifiers.org/go/GO:0005783"
+  G_alpha hypernym "http://identifiers.org/uniprot/Q9JID2"
+  PLC hypernym "http://identifiers.org/uniprot/P10687"
+  Ca_cyt hypernym "http://identifiers.org/chebi/CHEBI:29108",
+                  "http://identifiers.org/kegg.compound/C00076"
+  Ca_cyt container "http://identifiers.org/go/GO:0005737"
+  Ca_ER container "http://identifiers.org/go/GO:0005783"
+  Ca_ER hypernym "http://identifiers.org/chebi/CHEBI:29108",
+                 "http://identifiers.org/kegg.compound/C00076"
+  Ca_mit hypernym "http://identifiers.org/chebi/CHEBI:29108",
+                  "http://identifiers.org/kegg.compound/C00076"
+  Ca_mit container "http://identifiers.org/go/GO:0005739"
 end
+
+Larsen2004_CalciumSpiking is "Larsen2004_CalciumSpiking"
+
+Larsen2004_CalciumSpiking model_entity_is "http://identifiers.org/biomodels.db/MODEL1105060001"
+Larsen2004_CalciumSpiking model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000330"
+Larsen2004_CalciumSpiking description "http://identifiers.org/pubmed/14871603"
+Larsen2004_CalciumSpiking origin "http://identifiers.org/biomodels.db/BIOMD0000000329"
+Larsen2004_CalciumSpiking taxon "http://identifiers.org/taxonomy/10116"
+Larsen2004_CalciumSpiking hypernym "http://identifiers.org/go/GO:0019722"
+Larsen2004_CalciumSpiking container "http://identifiers.org/cl/CL:0000182"

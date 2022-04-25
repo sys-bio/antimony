@@ -2,11 +2,11 @@
 #define UNCERTWRAPPER_H
 
 #include "variable.h"
+#ifdef LIBSBML_HAS_PACKAGE_DISTRIB
+#include <sbml/packages/distrib/sbml/Uncertainty.h>
+#endif
 
 class Variable;
-#ifdef LIBSBML_HAS_PACKAGE_DISTRIB
-class Uncertainty;
-#endif
 // A proxy class returned by the parser for setting SBO terms
 class UncertWrapper : public Variable
 {
@@ -29,10 +29,10 @@ public:
   virtual bool Synchronize(Variable* clone, const Variable* conversionFactor);
   virtual std::string CreateUncertParamsAntimonySyntax(const std::string& indent) const;
 #ifdef LIBSBML_HAS_PACKAGE_DISTRIB
-  virtual Uncertainty * GetOrCreateUncertainty(SBase * sbmlobj) const;
+  virtual libsbml::Uncertainty * GetOrCreateUncertainty(libsbml::SBase * sbmlobj) const;
 #endif
-  virtual bool TransferAnnotationTo(SBase* sbmlobj, std::string metaid) const;
-  void ReadAnnotationFrom(const SBase* sbmlobj);
+  virtual bool TransferAnnotationTo(libsbml::SBase* sbmlobj, std::string metaid) const;
+  void ReadAnnotationFrom(const libsbml::SBase* sbmlobj);
 };
 
 

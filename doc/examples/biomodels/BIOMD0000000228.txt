@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Swat2004_Mammalian_G1_S_Transition()
 
   // Compartments and Species:
@@ -11,7 +11,7 @@ model *Swat2004_Mammalian_G1_S_Transition()
   pRB_phosphorylation: pRB => pRBp; cell*k16*pRB*CycDa;
   pRBp_dephosphorylation: pRBp => pRB; cell*k61*pRBp;
   pRB_degradation: pRB => ; cell*phi_pRB*pRB;
-  E2F1_synthesis:  => E2F1; cell*(kp + (k2*(a^2 + E2F1^2))/(Km2^2 + E2F1^2)*(J12/(J12 + pRB))*(J62/(J62 + pRBp)));
+  E2F1_synthesis:  => E2F1; cell*(kp + (k2*(a^2 + E2F1^2)/(Km2^2 + E2F1^2))*(J12/(J12 + pRB))*(J62/(J62 + pRBp)));
   E2F1_degradation: E2F1 => ; cell*phi_E2F1*E2F1;
   CycD_synthesis:  => CycDi; cell*(k3*AP1 + k23*E2F1*(J13/(J13 + pRB))*(J63/(J63 + pRBp)));
   CycD_inibition: CycDa => CycDi; cell*k43*CycDa;
@@ -25,7 +25,7 @@ model *Swat2004_Mammalian_G1_S_Transition()
   pRBpp_degradation: pRBpp => ; cell*phi_pRBpp*pRBpp;
   pRBp_degradation: pRBp => ; cell*phi_pRBp*pRBp;
   CycE_synthesis:  => CycEi; cell*k28*E2F1*(J18/(J18 + pRB))*(J68/(J68 + pRBp));
-  CycE_activation: CycEi => CycEa; (cell*k89*CycEi*CycEa)/(Km9 + CycEa);
+  CycE_activation: CycEi => CycEa; cell*k89*CycEi*CycEa/(Km9 + CycEa);
   CycE_inibition: CycEa => CycEi; cell*k98*CycEa;
   CycE_degradation: CycEi => ; cell*phi_CycEi*CycEi;
   CycE_degradation2: CycEa => ; cell*phi_CycEa*CycEa;
@@ -127,4 +127,54 @@ model *Swat2004_Mammalian_G1_S_Transition()
   CycE_inibition is "CycE inibition";
   CycE_degradation is "CycE degradation";
   CycE_degradation2 is "CycE degradation2";
+
+  // CV terms:
+  pRB homolog "http://identifiers.org/uniprot/P06400"
+  pRBp homolog "http://identifiers.org/uniprot/P06400"
+  E2F1 homolog "http://identifiers.org/uniprot/Q01094"
+  CycDi part "http://identifiers.org/uniprot/P30281",
+             "http://identifiers.org/uniprot/P11802",
+             "http://identifiers.org/uniprot/Q00534"
+  CycDa part "http://identifiers.org/uniprot/Q00534",
+             "http://identifiers.org/uniprot/P11802",
+             "http://identifiers.org/uniprot/P30281"
+  AP1 homolog "http://identifiers.org/uniprot/P01100"
+  pRBpp homolog "http://identifiers.org/uniprot/P06400"
+  CycEi part "http://identifiers.org/uniprot/P24864",
+             "http://identifiers.org/uniprot/O96020",
+             "http://identifiers.org/uniprot/P24941"
+  CycEa part "http://identifiers.org/uniprot/P24864",
+             "http://identifiers.org/uniprot/O96020",
+             "http://identifiers.org/uniprot/P24941"
+  pRB_synthesis hypernym "http://identifiers.org/obo.go/GO:0006412"
+  pRB_phosphorylation hypernym "http://identifiers.org/obo.go/GO:0006468"
+  pRBp_dephosphorylation hypernym "http://identifiers.org/obo.go/GO:0006470"
+  pRB_degradation hypernym "http://identifiers.org/obo.go/GO:0030163"
+  E2F1_synthesis hypernym "http://identifiers.org/obo.go/GO:0006412"
+  E2F1_degradation hypernym "http://identifiers.org/obo.go/GO:0030163"
+  CycD_synthesis hypernym "http://identifiers.org/obo.go/GO:0006412"
+  CycD_inibition hypernym "http://identifiers.org/obo.go/GO:0031658"
+  CycD_activation hypernym "http://identifiers.org/obo.go/GO:0031659"
+  CycD_degradation hypernym "http://identifiers.org/obo.go/GO:0030163"
+  CycD_degradation2 hypernym "http://identifiers.org/obo.go/GO:0030163"
+  AP1_synthesis hypernym "http://identifiers.org/obo.go/GO:0006412"
+  Ap1_degradation hypernym "http://identifiers.org/obo.go/GO:0030163"
+  pRBp_phosphorylation hypernym "http://identifiers.org/obo.go/GO:0006468"
+  pRBpp_dephosphorylation hypernym "http://identifiers.org/obo.go/GO:0006470"
+  pRBpp_degradation hypernym "http://identifiers.org/obo.go/GO:0030163"
+  pRBp_degradation hypernym "http://identifiers.org/obo.go/GO:0030163"
+  CycE_synthesis hypernym "http://identifiers.org/obo.go/GO:0006412"
+  CycE_activation hypernym "http://identifiers.org/obo.go/GO:0031659"
+  CycE_inibition hypernym "http://identifiers.org/obo.go/GO:0031658"
+  CycE_degradation hypernym "http://identifiers.org/obo.go/GO:0030163"
+  CycE_degradation2 hypernym "http://identifiers.org/obo.go/GO:0030163"
 end
+
+Swat2004_Mammalian_G1_S_Transition is "Swat2004_Mammalian_G1_S_Transition"
+
+Swat2004_Mammalian_G1_S_Transition model_entity_is "http://identifiers.org/biomodels.db/MODEL3897709120"
+Swat2004_Mammalian_G1_S_Transition model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000228"
+Swat2004_Mammalian_G1_S_Transition description "http://identifiers.org/pubmed/15231543"
+Swat2004_Mammalian_G1_S_Transition parthood "http://identifiers.org/reactome/REACT_1783"
+Swat2004_Mammalian_G1_S_Transition hypernym "http://identifiers.org/obo.go/GO:0000083"
+Swat2004_Mammalian_G1_S_Transition taxon "http://identifiers.org/taxonomy/40674"

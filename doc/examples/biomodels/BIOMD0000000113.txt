@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Dupont1992_Ca_dpt_protein_phospho()
 
   // Compartments and Species:
@@ -6,16 +6,16 @@ model *Dupont1992_Ca_dpt_protein_phospho()
   species Z in cytosol, Y in store, Wt in cytosol, W_star in cytosol;
 
   // Assignment Rules:
-  vk := (vMK*Z^q)/(Ka^q + Z^q);
+  vk := vMK*Z^q/(Ka^q + Z^q);
 
   // Reactions:
   R0:  => Z; cytosol*v0;
   R1:  => Z; cytosol*v1_beta;
-  R2: Z => Y; cytosol*((Vm2*Z^n)/(Kp^n + Z^n));
-  R3: Y => Z; store*((Vm3*Y^m*Z^p)/((Kr^m + Y^m)*(K_A^p + Z^p)));
+  R2: Z => Y; cytosol*(Vm2*Z^n/(Kp^n + Z^n));
+  R3: Y => Z; store*(Vm3*Y^m*Z^p/((Kr^m + Y^m)*(K_A^p + Z^p)));
   Rf: Y => Z; store*kf*Y;
   R_eff: Z => ; cytosol*k*Z;
-  Protein_Phosphorylation:  -> W_star; cytosol*(vp/Wt)*(vk/vp*((1 - W_star)/((K1 + 1) - W_star)) - W_star/(K2 + W_star));
+  Protein_Phosphorylation:  -> W_star; cytosol*(vp/Wt)*((vk/vp)*((1 - W_star)/(K1 + 1 - W_star)) - W_star/(K2 + W_star));
 
   // Species initializations:
   Z = 0.15;
@@ -68,4 +68,29 @@ model *Dupont1992_Ca_dpt_protein_phospho()
   Rf is "Calcium leak";
   R_eff is "Ca efflux";
   Protein_Phosphorylation is "Protein Phosphorylation";
+
+  // CV terms:
+  cytosol identity "http://identifiers.org/go/GO:0005829"
+  store identity "http://identifiers.org/go/GO:0005783"
+  Z identity "http://identifiers.org/chebi/CHEBI:29108",
+             "http://identifiers.org/kegg.compound/C00076"
+  Y identity "http://identifiers.org/chebi/CHEBI:29108",
+             "http://identifiers.org/kegg.compound/C00076"
+  R0 identity "http://identifiers.org/go/GO:0006816"
+  R1 identity "http://identifiers.org/go/GO:0005220"
+  R2 identity "http://identifiers.org/go/GO:0032470"
+  R3 identity "http://identifiers.org/go/GO:0048763",
+              "http://identifiers.org/go/GO:0007204"
+  Rf identity "http://identifiers.org/go/GO:0006816"
+  R_eff identity "http://identifiers.org/go/GO:0006816"
+  Protein_Phosphorylation identity "http://identifiers.org/go/GO:0042327"
 end
+
+Dupont1992_Ca_dpt_protein_phospho is "Dupont1992_Ca_dpt_protein_phospho"
+
+Dupont1992_Ca_dpt_protein_phospho model_entity_is "http://identifiers.org/biomodels.db/MODEL7007141507"
+Dupont1992_Ca_dpt_protein_phospho model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000113"
+Dupont1992_Ca_dpt_protein_phospho description "http://identifiers.org/pubmed/1316185"
+Dupont1992_Ca_dpt_protein_phospho taxon "http://identifiers.org/taxonomy/131567"
+Dupont1992_Ca_dpt_protein_phospho identity "http://identifiers.org/go/GO:0019722",
+                                           "http://identifiers.org/go/GO:0048016"

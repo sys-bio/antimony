@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *BIOMD0000000458()
 
   // Compartments and Species:
@@ -7,9 +7,9 @@ model *BIOMD0000000458()
   species $serC in cell, $serB in cell;
 
   // Reactions:
-  PDH: $p3g -> php; (cell*serA*PDH_kcatA*(p3g/PDH_KAp3g))/(1 + p3g/PDH_KAp3g + php/PDH_KAphp)/(1 + ser/PDH_KiAser);
-  PSA: php -> pser; (cell*serC*PSA_kcatC*(php/PSA_KCphp))/(1 + php/PSA_KCphp + pser/PSA_KCpser);
-  PSP: pser -> $ser; (cell*serB*PSP_kcatB*(pser/PSP_KBpser))/(1 + pser/PSP_KBpser + ser/PSP_KBser);
+  PDH: $p3g -> php; cell*serA*PDH_kcatA*(p3g/PDH_KAp3g)/(1 + p3g/PDH_KAp3g + php/PDH_KAphp)/(1 + ser/PDH_KiAser);
+  PSA: php -> pser; cell*serC*PSA_kcatC*(php/PSA_KCphp)/(1 + php/PSA_KCphp + pser/PSA_KCpser);
+  PSP: pser -> $ser; cell*serB*PSP_kcatB*(pser/PSP_KBpser)/(1 + pser/PSP_KBpser + ser/PSP_KBser);
 
   // Species initializations:
   p3g = 2.36;
@@ -63,4 +63,38 @@ model *BIOMD0000000458()
   PDH is "phosphoglycerate dehydrogenase";
   PSA is "phosphoserine aminotransferase";
   PSP is "phosphoserine phosphatase";
+
+  // SBO terms:
+  cell.sboTerm = 290
+  p3g.sboTerm = 247
+  php.sboTerm = 247
+  pser.sboTerm = 247
+  ser.sboTerm = 247
+  serA.sboTerm = 252
+  serC.sboTerm = 252
+  serB.sboTerm = 252
+  PDH.sboTerm = 176
+  PSA.sboTerm = 176
+  PSP.sboTerm = 176
+
+  // CV terms:
+  cell identity "http://identifiers.org/go/GO:0005622"
+  p3g identity "http://identifiers.org/chebi/CHEBI:58272"
+  php identity "http://identifiers.org/chebi/CHEBI:18110"
+  pser identity "http://identifiers.org/chebi/CHEBI:57524"
+  ser identity "http://identifiers.org/chebi/CHEBI:17115"
+  serA identity "http://identifiers.org/uniprot/P0A9T0"
+  serC identity "http://identifiers.org/uniprot/P23721"
+  serB identity "http://identifiers.org/uniprot/P0AGB0"
+  PDH identity "http://identifiers.org/ec-code/1.1.1.95"
+  PSA identity "http://identifiers.org/ec-code/2.6.1.52"
+  PSP identity "http://identifiers.org/ec-code/3.1.3.3"
 end
+
+BIOMD0000000458 is "Smallbone2013 - Serine biosynthesis"
+
+BIOMD0000000458 model_entity_is "http://identifiers.org/biomodels.db/MODEL1203210000"
+BIOMD0000000458 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000458"
+BIOMD0000000458 description "http://identifiers.org/pubmed/23417802"
+BIOMD0000000458 taxon "http://identifiers.org/taxonomy/562"
+BIOMD0000000458 hypernym "http://identifiers.org/go/GO:0006564"

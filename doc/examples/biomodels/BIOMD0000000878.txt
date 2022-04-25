@@ -1,0 +1,109 @@
+// Created by libAntimony v2.13.0
+function function_for_formation_of_insulin(r_1, y, c_1, z)
+  z*(r_1*y + c_1);
+end
+
+function_for_formation_of_insulin is "function for formation of insulin"
+
+function Function_for_utilisation_of_insulin(r_2, x, z)
+  z*r_2*x;
+end
+
+Function_for_utilisation_of_insulin is "Function for utilisation of insulin"
+
+function Function_for_production_of_glucose(epsilon, r_3, z, c_2)
+  epsilon*r_3/z + epsilon*c_2;
+end
+
+Function_for_production_of_glucose is "Function for production of glucose"
+
+function Function_for_utilisation_of_glucose(epsilon, r_4, x)
+  epsilon*r_4*x;
+end
+
+Function_for_utilisation_of_glucose is "Function for utilisation of glucose"
+
+function Function_for_production_of_Beta_cell(r_5, y, y_hat, z_hat, z, r_6)
+  r_5*(y - y_hat)*(z_hat - z) + r_6*z*(z_hat - z);
+end
+
+Function_for_production_of_Beta_cell is "Function for production of Beta cell"
+
+function Function_for_removal_of_Beta_Cell(r_7, z)
+  r_7*z;
+end
+
+Function_for_removal_of_Beta_Cell is "Function for removal of Beta Cell"
+
+
+model *Lenbury2001_InsulinKineticsModel_A()
+
+  // Compartments and Species:
+  compartment COMpartment;
+  species x in COMpartment, y in COMpartment, z in COMpartment;
+
+  // Reactions:
+  Production_of_insulin:  => x; COMpartment*function_for_formation_of_insulin(r_1, y, c_1, z);
+  Utilisation_of_insulin: x => ; COMpartment*Function_for_utilisation_of_insulin(r_2, x, z);
+  Production_of_glucose:  => y; COMpartment*Function_for_production_of_glucose(epsilon, r_3, z, c_2);
+  utilisation_of_glucose: y => ; COMpartment*Function_for_utilisation_of_glucose(epsilon, r_4, x);
+  Production_of_Beta_cell:  => z; COMpartment*Function_for_production_of_Beta_cell(r_5, y, y_hat, z_hat, z, r_6);
+  Removal_of_Beta_Cell: z => ; COMpartment*Function_for_removal_of_Beta_Cell(r_7, z);
+
+  // Species initializations:
+  x = 4.57;
+  y = 1.9;
+  z = 1.01;
+
+  // Compartment initializations:
+  COMpartment = 1;
+
+  // Variable initializations:
+  time_environment = 1;
+  r_1 = 0.2;
+  r_2 = 0.1;
+  c_1 = 0.1;
+  r_3 = 0.1;
+  r_4 = 0.1;
+  c_2 = 0.1;
+  r_5 = 0.1;
+  r_6 = 0.1;
+  r_7 = 0.05;
+  z_hat = 2.57039578276886;
+  y_hat = 1.24;
+  epsilon = 0.1;
+
+  // Other declarations:
+  const COMpartment, time_environment, r_1, r_2, c_1, r_3, r_4, c_2, r_5;
+  const r_6, r_7, z_hat, y_hat, epsilon;
+
+  // Display Names:
+  time_environment is "time";
+  Production_of_insulin is "Production of insulin";
+  Utilisation_of_insulin is "Utilisation of insulin";
+  Production_of_glucose is "Production of glucose";
+  utilisation_of_glucose is "utilisation of glucose";
+  Production_of_Beta_cell is "Production of Beta cell";
+  Removal_of_Beta_Cell is "Removal of Beta Cell";
+
+  // CV terms:
+  x property "http://identifiers.org/uniprot/P01308"
+  y property "http://identifiers.org/ncit/C2831"
+  z property "http://identifiers.org/bto/BTO:0000783"
+  Production_of_insulin instance "http://identifiers.org/sbo/SBO:0000393"
+  Utilisation_of_insulin property "http://identifiers.org/ncit/C25340"
+  Production_of_glucose instance "http://identifiers.org/sbo/SBO:0000393"
+  utilisation_of_glucose instance "http://identifiers.org/ncit/C25340"
+  Production_of_Beta_cell instance "http://identifiers.org/sbo/SBO:0000393"
+  Removal_of_Beta_Cell property "http://identifiers.org/ncit/C64914"
+end
+
+Lenbury2001_InsulinKineticsModel_A is "Lenbury2001_InsulinKineticsModel_A"
+
+Lenbury2001_InsulinKineticsModel_A description "http://identifiers.org/pubmed/11226623"
+Lenbury2001_InsulinKineticsModel_A model_entity_is "http://identifiers.org/biomodels.db/MODEL1201140002",
+                                                   "http://identifiers.org/biomodels.db/BIOMD0000000878"
+Lenbury2001_InsulinKineticsModel_A identity "http://identifiers.org/biomodels.db/MODEL1201140002"
+Lenbury2001_InsulinKineticsModel_A hypernym "http://identifiers.org/doid/DOID:9351"
+Lenbury2001_InsulinKineticsModel_A hypernym "http://identifiers.org/go/GO:0042593"
+Lenbury2001_InsulinKineticsModel_A taxon "http://identifiers.org/taxonomy/9606"

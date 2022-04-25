@@ -1,0 +1,208 @@
+// Created by libAntimony v2.13.0
+function Function_for_dAdt_Ca_Down(Ca_buffer, ILVA, IHVA, Ca_z, F, d)
+  Ca_buffer*10*(ILVA + IHVA)/(Ca_z*F*d);
+end
+
+Function_for_dAdt_Ca_Down is "Function_for_dAdt_Ca_Down"
+
+function Function_for_dAdt_V(INa, IK, ILVA, IH, INaP, IL, IHVA, IBK, IHVK, C)
+  (INa + IK + ILVA + IH + INaP + IL + IHVA + IBK + IHVK)/C;
+end
+
+Function_for_dAdt_V is "Function_for_dAdt_V"
+
+function Function_for_Ion(inf_, ion, tau)
+  (inf_ - ion)/tau;
+end
+
+Function_for_Ion is "Function_for_Ion"
+
+function Function_for_dAdt_Ca_Up(Ca0, Ca, tau_Ca)
+  (Ca0 - Ca)/tau_Ca;
+end
+
+Function_for_dAdt_Ca_Up is "Function_for_dAdt_Ca_Up"
+
+
+model *Viertel2019___A_Computational_model_of_the_mammalian_external_tufted_cell()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species V in compartment_, Ca in compartment_, nK in compartment_, hNaP in compartment_;
+  species hH in compartment_, mLVA in compartment_, hLVA in compartment_;
+  species mBK in compartment_, nHVK in compartment_;
+
+  // Assignment Rules:
+  mNa_inf := 1/(1 + exp((V - theta_mNa)/beta_mNa));
+  nK_Inf := 1/(1 + exp((V - theta_nK)/beta_nK));
+  mNaP_inf := 1/(1 + exp((V - theta_mNaP)/beta_mNaP));
+  hNaP_inf := 1/(1 + exp((V - theta_hNaP)/beta_hNaP));
+  hH_inf := 1/(1 + exp((V - theta_hH)/beta_hH));
+  mLVA_inf := 1/(1 + exp((V - theta_mLVA)/beta_mLVA));
+  hLVA_inf := 1/(1 + exp((V - theta_hLVA)/beta_hLVA));
+  mHVA_inf := 1/(1 + exp((V - theta_mHVA)/beta_mHVA));
+  mBK_inf := 1/(1 + exp((V - theta_mBK)/beta_mBK));
+  theta_mBK := -20 + 59.2*exp(-90*Ca) + 96.7*exp(-470*Ca);
+  mHVK_inf := 1/(1 + exp((V - theta_mHVK)/beta_mHVK));
+  nHVK_inf := 1/(1 + exp((V - theta_nHVK)/beta_nHVK));
+  p_mBK := 2.9 + 6.3*exp(-360*Ca);
+  s := -25.3 + 107.5*exp(-120*Ca);
+  f := 1/(10*(exp(-(V + 100 - s)/63.6) + exp((-150 + (V + 100 - s))/63.6))) - 5.2;
+  nHVK_tau := 1000/(1 + exp(-(V + 35))) + 1000;
+  nK_tau := tau_nK/cosh((V - theta_nK)/(2*beta_nK));
+  hNaP_tau := tau_hNaP/cosh((V - theta_hNaP)/(2*beta_hNaP));
+  hH_tau := tau_hH_T*exp(delta_hH_T*(V - theta_hH_T)/beta_hH_T)/(1 + exp((V - theta_hH_T)/beta_hH_T));
+  mLVA_tau := tau_mLVA/cosh((V - theta_mLVA)/(2*beta_mLVA));
+  hLVA_tau := tau_hLVA/cosh((V - theta_hLVA)/(2*beta_hLVA));
+  mBK_tau := -(p_mBK - 1)*(f - 0.2)/0.8 + mBK_base;
+  INa := gNa*(1 - nK)*mNa_inf^3*(V - vNa);
+  IHVK := gHVK*mHVK_inf*nHVK*(V - vK);
+  IK := gK*nK^4*(V - vK);
+  IL := gL*(V - vL);
+  IH := gH*hH*(V - vH);
+  INaP := gNaP*mNaP_inf*hNaP*(V - vNa);
+  ILVA := gLVA*mLVA^2*hLVA*(V - vCa);
+  IHVA := gHVA*mHVA_inf*(V - vCa);
+  IBK := gBK*mBK*(V - vK);
+
+  // Reactions:
+  dAdt_V: V => ; compartment_*Function_for_dAdt_V(INa, IK, ILVA, IH, INaP, IL, IHVA, IBK, IHVK, C);
+  dAdt_nK:  => nK; compartment_*Function_for_Ion(nK_Inf, nK, nK_tau);
+  dAdt_hNaP:  => hNaP; compartment_*Function_for_Ion(hNaP_inf, hNaP, hNaP_tau);
+  dAdt_hH:  => hH; compartment_*Function_for_Ion(hH_inf, hH, hH_tau);
+  dAdt_mLVA:  => mLVA; compartment_*Function_for_Ion(mLVA_inf, mLVA, mLVA_tau);
+  dAdt_hLVA:  => hLVA; compartment_*Function_for_Ion(hLVA_inf, hLVA, hLVA_tau);
+  dAdt_mBK:  => mBK; compartment_*Function_for_Ion(mBK_inf, mBK, mBK_tau);
+  dAdt_Ca_Up:  => Ca; compartment_*Function_for_dAdt_Ca_Up(Ca0, Ca, tau_Ca);
+  dAdt_nHVK:  => nHVK; compartment_*Function_for_Ion(nHVK_inf, nHVK, nHVK_tau);
+  dAdt_Ca_Down: Ca => ; compartment_*Function_for_dAdt_Ca_Down(Ca_buffer, ILVA, IHVA, Ca_z, F, d);
+
+  // Species initializations:
+  V = -51.4085348748388;
+  Ca = 0.00039839179219;
+  nK = 0.055706295559466;
+  hNaP = 0.139259083672574;
+  hH = 0.157733123889777;
+  mLVA = 0.048620921041047;
+  hLVA = 0.216830183163897;
+  mBK = 0.118223401083348;
+  nHVK = 0.049382804823416;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  vL = -62.5;
+  vH = -35;
+  vNa = 45;
+  vK = -105;
+  vCa = 120;
+  gL = 2.5;
+  gH = 20;
+  gNaP = 8.3244;
+  gLVA = 15.0213;
+  gNa = 29.17;
+  gK = 12.96;
+  gHVA = 2;
+  gBK = 5;
+  gHVK = 10;
+  theta_mNa = -25;
+  beta_mNa = -6.5;
+  theta_nK = -26;
+  beta_nK = -9;
+  tau_nK = 10;
+  theta_mLVA = -37.1;
+  beta_mLVA = -4.8916;
+  tau_mLVA = 40;
+  theta_hLVA = -59.2;
+  beta_hLVA = 11.2326;
+  tau_hLVA = 350;
+  theta_mHVA = -10;
+  beta_mHVA = -6.5;
+  theta_mNaP = -40;
+  beta_mNaP = -4;
+  theta_hNaP = -54;
+  beta_hNaP = 5;
+  tau_hNaP = 500;
+  theta_hH = -61.32;
+  beta_hH = 5.855;
+  tau_hH_T = 100;
+  delta_hH_T = 0.205;
+  theta_hH_T = -65.95;
+  beta_hH_T = 4.44;
+  theta_mHVK = -40;
+  beta_mHVK = -2;
+  theta_nHVK = -30;
+  beta_nHVK = -2;
+  mBK_base = 170;
+  beta_mBK = -15.6;
+  Ca0 = 2e-05;
+  tau_Ca = 8;
+  Ca_buffer = 0.5;
+  Ca_z = 2;
+  d = 1;
+  C = 21;
+  F = 96485;
+
+  // Other declarations:
+  var mNa_inf, nK_Inf, mNaP_inf, hNaP_inf, hH_inf, mLVA_inf, hLVA_inf, mHVA_inf;
+  var mBK_inf, theta_mBK, mHVK_inf, nHVK_inf, p_mBK, s, f, nHVK_tau, nK_tau;
+  var hNaP_tau, hH_tau, mLVA_tau, hLVA_tau, mBK_tau, INa, IHVK, IK, IL, IH;
+  var INaP, ILVA, IHVA, IBK;
+  const compartment_, vL, vH, vNa, vK, vCa, gL, gH, gNaP, gLVA, gNa, gK, gHVA;
+  const gBK, gHVK, theta_mNa, beta_mNa, theta_nK, beta_nK, tau_nK, theta_mLVA;
+  const beta_mLVA, tau_mLVA, theta_hLVA, beta_hLVA, tau_hLVA, theta_mHVA;
+  const beta_mHVA, theta_mNaP, beta_mNaP, theta_hNaP, beta_hNaP, tau_hNaP;
+  const theta_hH, beta_hH, tau_hH_T, delta_hH_T, theta_hH_T, beta_hH_T, theta_mHVK;
+  const beta_mHVK, theta_nHVK, beta_nHVK, mBK_base, beta_mBK, Ca0, tau_Ca;
+  const Ca_buffer, Ca_z, d, C, F;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 1e-3 second;
+  unit substance = item;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+
+  // SBO terms:
+  V.sboTerm = 259
+
+  // CV terms:
+  compartment_ hypernym "http://identifiers.org/cl/CL:1001503"
+  V identity "http://identifiers.org/sbo/SBO:0000259"
+  Ca identity "http://identifiers.org/ncit/C331"
+  nK property "http://identifiers.org/ncit/C48434"
+  nK property "http://identifiers.org/ncit/C765"
+  hNaP property "http://identifiers.org/ncit/C48434"
+  hNaP property "http://identifiers.org/ncit/C830"
+  hH property "http://identifiers.org/ncit/C48434"
+  mLVA property "http://identifiers.org/ncit/C48434"
+  mLVA property "http://identifiers.org/ncit/C331"
+  hLVA property "http://identifiers.org/ncit/C331"
+  hLVA property "http://identifiers.org/ncit/C48434"
+  mBK property "http://identifiers.org/ncit/C765"
+  mBK property "http://identifiers.org/ncit/C48434"
+  nHVK property "http://identifiers.org/ncit/C765"
+  nHVK property "http://identifiers.org/ncit/C48434"
+  dAdt_V hypernym "http://identifiers.org/go/GO:0051899"
+  dAdt_nK hypernym "http://identifiers.org/go/GO:0051899"
+  dAdt_hNaP hypernym "http://identifiers.org/go/GO:0051899"
+  dAdt_hH hypernym "http://identifiers.org/go/GO:0051899"
+  dAdt_mLVA hypernym "http://identifiers.org/go/GO:0051899"
+  dAdt_hLVA hypernym "http://identifiers.org/go/GO:0051899"
+  dAdt_mBK hypernym "http://identifiers.org/go/GO:0051899"
+  dAdt_Ca_Up hypernym "http://identifiers.org/go/GO:0051899"
+  dAdt_nHVK hypernym "http://identifiers.org/go/GO:0051899"
+  dAdt_Ca_Down hypernym "http://identifiers.org/go/GO:0051899"
+end
+
+Viertel2019___A_Computational_model_of_the_mammalian_external_tufted_cell is "Viertel2019 - A Computational model of the mammalian external tufted cell"
+
+Viertel2019___A_Computational_model_of_the_mammalian_external_tufted_cell description "http://identifiers.org/pubmed/30290156"
+Viertel2019___A_Computational_model_of_the_mammalian_external_tufted_cell model_entity_is "http://identifiers.org/biomodels.db/MODEL1911100001",
+                                                                                          "http://identifiers.org/biomodels.db/BIOMD0000000844"
+Viertel2019___A_Computational_model_of_the_mammalian_external_tufted_cell property "http://identifiers.org/biomodels.teddy/TEDDY_0000055"
+Viertel2019___A_Computational_model_of_the_mammalian_external_tufted_cell property "http://identifiers.org/mamo/MAMO_0000046"
+Viertel2019___A_Computational_model_of_the_mammalian_external_tufted_cell property "http://identifiers.org/cl/CL:1001503"

@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *model_0000001()
 
   // Compartments and Species:
@@ -8,13 +8,13 @@ model *model_0000001()
   species C in cytoplasm, CN in nucleus, $Tt in cytoplasm, $Pt in cytoplasm;
 
   // Assignment Rules:
-  Tt := T0 + T1 + T2 + C + (CN*nucleus)/cytoplasm;
-  Pt := P0 + P1 + P2 + C + (CN*nucleus)/cytoplasm;
-  v_dT := (1 + (v_dT_fac - 1)*ceil(sin(time/l_d*pi)*0.9))*v_dT_dark;
+  Tt := T0 + T1 + T2 + C + CN*nucleus/cytoplasm;
+  Pt := P0 + P1 + P2 + C + CN*nucleus/cytoplasm;
+  v_dT := (1 + (v_dT_fac - 1)*ceil(sin((time/l_d)*pi)*0.9))*v_dT_dark;
 
   // Reactions:
-  per_trans:  => M_P; (per_trans_v_sP*per_trans_Ki_P^n)/(per_trans_Ki_P^n + CN^n);
-  tim_trans:  => M_T; (tim_trans_v_sT*tim_trans_Ki_T^n)/(tim_trans_Ki_T^n + CN^n);
+  per_trans:  => M_P; per_trans_v_sP*per_trans_Ki_P^n/(per_trans_Ki_P^n + CN^n);
+  tim_trans:  => M_T; tim_trans_v_sT*tim_trans_Ki_T^n/(tim_trans_Ki_T^n + CN^n);
   M_T_decay: M_T => ; (M_T_decay_v_mT/(M_T_decay_K_mT + M_T) + kd)*M_T*cytoplasm;
   M_P_decay: M_P => ; (M_P_decay_v_mP/(M_P_decay_K_mP + M_P) + kd)*M_P*cytoplasm;
   PER_transl:  => P0; PER_transl_k_sP*M_P*cytoplasm;
@@ -29,16 +29,16 @@ model *model_0000001()
   C_decay: C => ; C_decay_kd_C*C*cytoplasm;
   CN_decay: CN => ; CN_decay_kd_CN*CN*nucleus;
   C_transp: C -> CN; C_transp_k1*C*cytoplasm - C_transp_k2*CN*nucleus;
-  P_pho: P0 => P1; (P_pho_V_1P*P0)/(P_pho_K_1P + P0)*cytoplasm;
-  P1_pho: P1 => P2; (P1_pho_V_3P*P1)/(P1_pho_K_3P + P1)*cytoplasm;
-  P1_depho: P1 => P0; (P1_depho_V_2P*P1)/(P1_depho_K_2P + P1)*cytoplasm;
-  P2_depho: P2 => P1; (P2_depho_V_4P*P2)/(P2_depho_K_4P + P2)*cytoplasm;
-  T_pho: T0 => T1; (T_pho_V_1T*T0)/(T_pho_K_1T + T0)*cytoplasm;
-  T1_pho: T1 => T2; (T1_pho_V_3T*T1)/(T1_pho_K_3T + T1)*cytoplasm;
-  T1_depho: T1 => T0; (T1_depho_V_2T*T1)/(T1_depho_K_2T + T1)*cytoplasm;
-  T2_depho: T2 => T1; (T2_depho_V_4T*T2)/(T2_depho_K_4T + T2)*cytoplasm;
-  T2_light_deact: T2 => ; (v_dT*T2)/(T2_light_deact_K_dT + T2)*cytoplasm;
-  P2_light_deact: P2 => ; (P2_light_deact_v_dP*P2)/(P2_light_deact_K_dP + P2)*cytoplasm;
+  P_pho: P0 => P1; (P_pho_V_1P*P0/(P_pho_K_1P + P0))*cytoplasm;
+  P1_pho: P1 => P2; (P1_pho_V_3P*P1/(P1_pho_K_3P + P1))*cytoplasm;
+  P1_depho: P1 => P0; (P1_depho_V_2P*P1/(P1_depho_K_2P + P1))*cytoplasm;
+  P2_depho: P2 => P1; (P2_depho_V_4P*P2/(P2_depho_K_4P + P2))*cytoplasm;
+  T_pho: T0 => T1; (T_pho_V_1T*T0/(T_pho_K_1T + T0))*cytoplasm;
+  T1_pho: T1 => T2; (T1_pho_V_3T*T1/(T1_pho_K_3T + T1))*cytoplasm;
+  T1_depho: T1 => T0; (T1_depho_V_2T*T1/(T1_depho_K_2T + T1))*cytoplasm;
+  T2_depho: T2 => T1; (T2_depho_V_4T*T2/(T2_depho_K_4T + T2))*cytoplasm;
+  T2_light_deact: T2 => ; (v_dT*T2/(T2_light_deact_K_dT + T2))*cytoplasm;
+  P2_light_deact: P2 => ; (P2_light_deact_v_dP*P2/(P2_light_deact_K_dP + P2))*cytoplasm;
 
   // Species initializations:
   M_T = 1.41;
@@ -206,4 +206,80 @@ model *model_0000001()
   T2_depho is "TIM-pp dephosphorylation";
   T2_light_deact is "TIM-pp light deactivation";
   P2_light_deact is "PER-pp light deactivation";
+
+  // CV terms:
+  nucleus identity "http://identifiers.org/go/GO:0005634"
+  cytoplasm identity "http://identifiers.org/go/GO:0005737"
+  M_T hypernym "http://identifiers.org/chebi/CHEBI:33699",
+               "http://identifiers.org/kegg.compound/C02100"
+  M_P hypernym "http://identifiers.org/chebi/CHEBI:33699",
+               "http://identifiers.org/kegg.compound/C02100"
+  T0 hypernym "http://identifiers.org/uniprot/P49021"
+  T1 hypernym "http://identifiers.org/uniprot/P49021",
+              "http://identifiers.org/kegg.compound/C00562"
+  T2 hypernym "http://identifiers.org/uniprot/P49021"
+  P0 hypernym "http://identifiers.org/uniprot/P07663"
+  P1 hypernym "http://identifiers.org/uniprot/P07663",
+              "http://identifiers.org/kegg.compound/C00562"
+  P2 hypernym "http://identifiers.org/uniprot/P07663",
+              "http://identifiers.org/kegg.compound/C00562"
+  C part "http://identifiers.org/uniprot/P07663",
+         "http://identifiers.org/uniprot/P49021"
+  C hypernym "http://identifiers.org/go/GO:0043234"
+  CN part "http://identifiers.org/uniprot/P07663",
+          "http://identifiers.org/uniprot/P49021"
+  CN hypernym "http://identifiers.org/go/GO:0043234"
+  Tt version "http://identifiers.org/uniprot/P49021"
+  Pt version "http://identifiers.org/uniprot/P07663"
+  per_trans hypernym "http://identifiers.org/go/GO:0009299"
+  tim_trans identity "http://identifiers.org/go/GO:0009299"
+  M_T_decay hypernym "http://identifiers.org/go/GO:0006402"
+  M_P_decay hypernym "http://identifiers.org/go/GO:0006402"
+  PER_transl hypernym "http://identifiers.org/go/GO:0006412"
+  TIM_transl hypernym "http://identifiers.org/go/GO:0006412"
+  PO_decay hypernym "http://identifiers.org/go/GO:0030163"
+  P1_decay hypernym "http://identifiers.org/go/GO:0030163"
+  P2_decay hypernym "http://identifiers.org/go/GO:0030163"
+  T0_decay hypernym "http://identifiers.org/go/GO:0030163"
+  T1_decay hypernym "http://identifiers.org/go/GO:0030163"
+  T2_decay hypernym "http://identifiers.org/go/GO:0030163"
+  C_form part "http://identifiers.org/go/GO:0043241",
+              "http://identifiers.org/go/GO:0006461"
+  C_decay hypernym "http://identifiers.org/go/GO:0030163"
+  CN_decay hypernym "http://identifiers.org/go/GO:0030163"
+  C_transp part "http://identifiers.org/go/GO:0006606",
+                "http://identifiers.org/go/GO:0006611"
+  C_transp hypernym "http://identifiers.org/go/GO:0006886"
+  P_pho hypernym "http://identifiers.org/ec-code/2.7.11.1",
+                 "http://identifiers.org/kegg.reaction/R00162",
+                 "http://identifiers.org/go/GO:0006468"
+  P1_pho hypernym "http://identifiers.org/ec-code/2.7.11.1",
+                  "http://identifiers.org/kegg.reaction/R00162",
+                  "http://identifiers.org/go/GO:0006468"
+  P1_depho hypernym "http://identifiers.org/ec-code/3.1.3.16",
+                    "http://identifiers.org/go/GO:0006470"
+  P2_depho hypernym "http://identifiers.org/ec-code/3.1.3.16",
+                    "http://identifiers.org/go/GO:0006470"
+  T_pho hypernym "http://identifiers.org/ec-code/2.7.11.1",
+                 "http://identifiers.org/kegg.reaction/R00162",
+                 "http://identifiers.org/go/GO:0006468"
+  T1_pho hypernym "http://identifiers.org/ec-code/2.7.11.1",
+                  "http://identifiers.org/kegg.reaction/R00162",
+                  "http://identifiers.org/go/GO:0006468"
+  T1_depho hypernym "http://identifiers.org/ec-code/3.1.3.16",
+                    "http://identifiers.org/go/GO:0006470"
+  T2_depho hypernym "http://identifiers.org/ec-code/3.1.3.16",
+                    "http://identifiers.org/go/GO:0006470"
+  T2_light_deact hypernym "http://identifiers.org/go/GO:0030163"
+  P2_light_deact hypernym "http://identifiers.org/go/GO:0030163"
 end
+
+model_0000001 is "Leloup1998_CircClock_LD"
+
+model_0000001 model_entity_is "http://identifiers.org/biomodels.db/MODEL0243843132"
+model_0000001 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000171"
+model_0000001 description "http://identifiers.org/pubmed/9486845"
+model_0000001 origin "http://identifiers.org/biomodels.db/BIOMD0000000016"
+model_0000001 taxon "http://identifiers.org/taxonomy/7227"
+model_0000001 parthood "http://identifiers.org/kegg.pathway/dme04710"
+model_0000001 hypernym "http://identifiers.org/go/GO:0042752"

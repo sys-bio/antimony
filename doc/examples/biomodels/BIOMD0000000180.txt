@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Kim2007_CellularMemory_SymmetricModel()
 
   // Compartments and Species:
@@ -8,8 +8,8 @@ model *Kim2007_CellularMemory_SymmetricModel()
   substanceOnly species P3_prime in compartment_, P4_prime in compartment_;
 
   // Assignment Rules:
-  i1 := piecewise(1, time >= 50 && time <= 100, 0);
-  i2 := piecewise(1, time >= 175 && time <= 225, 0);
+  i1 := piecewise(1, (time >= 50) && (time <= 100), 0);
+  i2 := piecewise(1, (time >= 175) && (time <= 225), 0);
 
   // Reactions:
   React1:  => R1; i1;
@@ -77,4 +77,44 @@ model *Kim2007_CellularMemory_SymmetricModel()
 
   // Display Names:
   substance is "dimensionless";
+
+  // CV terms:
+  R1 identity "http://identifiers.org/chebi/CHEBI:33699",
+              "http://identifiers.org/kegg.compound/C00046"
+  P1 hypernym "http://identifiers.org/chebi/CHEBI:36080",
+              "http://identifiers.org/kegg.compound/C00017"
+  P1_prime hypernym "http://identifiers.org/chebi/CHEBI:36080",
+                    "http://identifiers.org/kegg.compound/C00017"
+  R2 identity "http://identifiers.org/chebi/CHEBI:33699",
+              "http://identifiers.org/kegg.compound/C00046"
+  P2 hypernym "http://identifiers.org/chebi/CHEBI:36080",
+              "http://identifiers.org/kegg.compound/C00017"
+  P2_prime hypernym "http://identifiers.org/chebi/CHEBI:36080",
+                    "http://identifiers.org/kegg.compound/C00017"
+  P3_prime hypernym "http://identifiers.org/chebi/CHEBI:36080",
+                    "http://identifiers.org/kegg.compound/C00017"
+  P4_prime hypernym "http://identifiers.org/chebi/CHEBI:36080",
+                    "http://identifiers.org/kegg.compound/C00017"
+  React1 hypernym "http://identifiers.org/go/GO:0009299"
+  React2 hypernym "http://identifiers.org/go/GO:0006402"
+  React3 identity "http://identifiers.org/go/GO:0006412"
+  React4 hypernym "http://identifiers.org/go/GO:0030163"
+  React5 hypernym "http://identifiers.org/go/GO:0006464"
+  React8 hypernym "http://identifiers.org/go/GO:0030163"
+  React9 hypernym "http://identifiers.org/go/GO:0009299"
+  React10 hypernym "http://identifiers.org/go/GO:0006402"
+  React11 identity "http://identifiers.org/go/GO:0006412"
+  React12 hypernym "http://identifiers.org/go/GO:0030163"
+  React13 hypernym "http://identifiers.org/go/GO:0006464"
+  React15 hypernym "http://identifiers.org/go/GO:0030163"
+  React17 hypernym "http://identifiers.org/go/GO:0030163"
+  React20 hypernym "http://identifiers.org/go/GO:0030163"
 end
+
+Kim2007_CellularMemory_SymmetricModel is "Kim2007_CellularMemory_SymmetricModel"
+
+Kim2007_CellularMemory_SymmetricModel model_entity_is "http://identifiers.org/biomodels.db/MODEL8716097586"
+Kim2007_CellularMemory_SymmetricModel model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000180"
+Kim2007_CellularMemory_SymmetricModel description "http://identifiers.org/pubmed/17892872"
+Kim2007_CellularMemory_SymmetricModel taxon "http://identifiers.org/taxonomy/131567"
+Kim2007_CellularMemory_SymmetricModel hypernym "http://identifiers.org/go/GO:0051270"

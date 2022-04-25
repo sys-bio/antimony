@@ -1,0 +1,305 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function logistic(r, P, k)
+  r*P*(1 - P/k);
+end
+
+logistic is "logistic"
+
+function killing(a1, M1, e, a2, Fb, C, sub, h)
+  a1*(M1/(M1 + e))*(a2 + e*(1 - a2)/(Fb + e))*C*sub/(h + sub);
+end
+
+killing is "killing"
+
+function transformation(ra, T, k1, S, k2)
+  ra*(T/k1)*(S/k2)*(k1 - T);
+end
+
+transformation is "transformation"
+
+function one_mod(k, mod)
+  k*mod;
+end
+
+one_mod is "one mod"
+
+function M2(am2y, Fy, em2y, em2b, am2b, Fb)
+  (am2y*Fy/(Fy + em2y))*(em2b*(1 - am2b)/(Fb + em2b) + am2b);
+end
+
+M2 is "M2"
+
+function M1(am1y, Fy, em1y)
+  am1y*Fy/(Fy + em1y);
+end
+
+M1 is "M1"
+
+
+model *Abernathy2016___glioblastoma_treatment()
+
+  // Compartments and Species:
+  compartment tumor_microenvironment;
+  species Tumor in tumor_microenvironment, CancerStemCell in tumor_microenvironment;
+  species CytotoxicTcell in tumor_microenvironment, TGFb in tumor_microenvironment;
+  species IFNy in tumor_microenvironment, MHC1 in tumor_microenvironment;
+  species MHC2 in tumor_microenvironment, $Tumor_Plot in tumor_microenvironment;
+  species $CSC_Plot in tumor_microenvironment, $CTL_Plot in tumor_microenvironment;
+
+  // Assignment Rules:
+  Tumor_Plot := Tumor/100000000;
+  CSC_Plot := CancerStemCell/10000000;
+  CTL_Plot := CytotoxicTcell/100;
+  as := at_*0.1;
+  es := et;
+  asb := atb;
+  esb := etb;
+  hs := ht;
+  abs_ := abt;
+
+  // Reactions:
+  tumor_growth:  => Tumor; tumor_microenvironment*logistic(r1, Tumor, k1);
+  tumor_transformation: CancerStemCell => Tumor; tumor_microenvironment*transformation(ra, Tumor, k1, CancerStemCell, k2);
+  tumor_killing: Tumor => ; tumor_microenvironment*killing(at_, MHC1, etb, atb, TGFb, CytotoxicTcell, Tumor, ht);
+  csc_growth:  => CancerStemCell; tumor_microenvironment*logistic(r2, CancerStemCell, k2);
+  csc_killing: CancerStemCell => ; tumor_microenvironment*killing(as, MHC1, esb, asb, TGFb, CytotoxicTcell, CancerStemCell, hs);
+  ctl_death: CytotoxicTcell => ; tumor_microenvironment*uc*CytotoxicTcell;
+  ctl_source:  => CytotoxicTcell; tumor_microenvironment*Constant_flux__irreversible(N);
+  tgfb_source:  => TGFb; tumor_microenvironment*Constant_flux__irreversible(gb);
+  tgfb_by_tumor:  => TGFb; tumor_microenvironment*one_mod(abt, Tumor);
+  tgfb_by_csc:  => TGFb; tumor_microenvironment*one_mod(abs_, CancerStemCell);
+  tgfb_decay: TGFb => ; tumor_microenvironment*ub*TGFb;
+  ifny_production:  => IFNy; tumor_microenvironment*one_mod(ayc, CytotoxicTcell);
+  ifny_decay: IFNy => ; tumor_microenvironment*uy*IFNy;
+  mhc1_source:  => MHC1; tumor_microenvironment*Constant_flux__irreversible(gm1);
+  mhc1_decay: MHC1 => ; tumor_microenvironment*um1*MHC1;
+  mhc1_stimulation:  => MHC1; tumor_microenvironment*M1(am1y, IFNy, em1y);
+  mhc2_production:  => MHC2; tumor_microenvironment*M2(am2y, IFNy, em2y, em2b, am2b, TGFb);
+  mhc2_decay: MHC2 => ; tumor_microenvironment*um2*MHC2;
+
+  // Species initializations:
+  Tumor = 70;
+  Tumor has substance_per_volume;
+  CancerStemCell = 30;
+  CancerStemCell has substance_per_volume;
+  CytotoxicTcell = 250;
+  CytotoxicTcell has substance_per_volume;
+  TGFb = 50;
+  TGFb has substance_per_volume;
+  IFNy = 50;
+  IFNy has substance_per_volume;
+  MHC1 = 50;
+  MHC1 has substance_per_volume;
+  MHC2 = 50;
+  MHC2 has substance_per_volume;
+  Tumor_Plot has substance_per_volume;
+  CSC_Plot has substance_per_volume;
+  CTL_Plot has substance_per_volume;
+
+  // Compartment initializations:
+  tumor_microenvironment = 1;
+  tumor_microenvironment has volume;
+
+  // Variable initializations:
+  r1 = 0.001;
+  r1 has unit_0;
+  k1 = 100000000;
+  k1 has unit_1;
+  at_ = 0.12;
+  at_ has unit_0;
+  et = 50;
+  et has unit_1;
+  atb = 0.69;
+  atb has unit_1;
+  etb = 10000;
+  etb has unit_1;
+  ht = 500000000;
+  ht has unit_1;
+  r2 = 0.1;
+  r2 has unit_0;
+  k2 = 10000000;
+  k2 has unit_1;
+  ra = 0.006;
+  ra has unit_0;
+  as has unit_0;
+  es has unit_1;
+  asb has unit_1;
+  esb has unit_1;
+  hs has unit_1;
+  uc = 0.007;
+  uc has unit_0;
+  gb = 63945;
+  gb has unit_0;
+  abt = 5.75e-06;
+  abt has unit_0;
+  abs_ has unit_0;
+  ub = 7;
+  ub has unit_0;
+  gm1 = 1.44;
+  gm1 has unit_0;
+  am1y = 2.88;
+  am1y has unit_0;
+  em1y = 338000;
+  em1y has unit_1;
+  um1 = 0.0144;
+  um1 has unit_0;
+  am2y = 8660;
+  am2y has unit_0;
+  em2y = 1420;
+  em2y has unit_1;
+  am2b = 0.012;
+  am2b has unit_1;
+  em2b = 100000;
+  em2b has unit_1;
+  um2 = 0.0144;
+  um2 has unit_0;
+  ayc = 0.000102;
+  ayc has unit_0;
+  uy = 0.102;
+  uy has unit_0;
+  N = 0;
+  N has unit_0;
+
+  // Other declarations:
+  var as, es, asb, esb, hs, abs_;
+  const tumor_microenvironment, r1, k1, at_, et, atb, etb, ht, r2, k2, ra;
+  const uc, gb, abt, ub, gm1, am1y, em1y, um1, am2y, em2y, am2b, em2b, um2;
+  const ayc, uy, N;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = time_unit;
+  unit substance = 1e-3 mole;
+  unit unit_0 = 1 / 3600e2 second;
+  unit unit_1 = 1 / dimensionless^-0;
+  unit extent = substance;
+  unit substance_per_volume = 1e-3 mole / 1e-3 litre;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1/h";
+  unit_1 is "1";
+  tumor_microenvironment is "tumor microenvironment";
+  Tumor_Plot is "Tumor Plot";
+  CSC_Plot is "CSC Plot";
+  CTL_Plot is "CTL Plot";
+  at_ is "at";
+  abs_ is "abs";
+  tumor_growth is "tumor growth";
+  tumor_transformation is "tumor transformation";
+  tumor_killing is "tumor killing";
+  csc_growth is "csc growth";
+  csc_killing is "csc killing";
+  ctl_death is "ctl death";
+  ctl_source is "ctl source";
+  tgfb_source is "tgfb source";
+  tgfb_by_tumor is "tgfb by tumor";
+  tgfb_by_csc is "tgfb by csc";
+  tgfb_decay is "tgfb decay";
+  ifny_production is "ifny production";
+  ifny_decay is "ifny decay";
+  mhc1_source is "mhc1 source";
+  mhc1_decay is "mhc1 decay";
+  mhc1_stimulation is "mhc1 stimulation";
+  mhc2_production is "mhc2 production";
+  mhc2_decay is "mhc2 decay";
+
+  // CV terms:
+  tumor_microenvironment hypernym "http://identifiers.org/ncit/C94498"
+  tumor_microenvironment hypernym "http://identifiers.org/ncit/C3058"
+  Tumor hypernym "http://identifiers.org/cl/CL:0001064"
+  CancerStemCell hypernym "http://identifiers.org/bto/BTO:0004254"
+  CytotoxicTcell hypernym "http://identifiers.org/cl/CL:0000910"
+  TGFb identity "http://identifiers.org/uniprot/P01137"
+  IFNy identity "http://identifiers.org/uniprot/P01579"
+  MHC1 hypernym "http://identifiers.org/ncit/C20706"
+  MHC2 hypernym "http://identifiers.org/ncit/C20705"
+  Tumor_Plot hypernym "http://identifiers.org/cl/CL:0001064"
+  CSC_Plot hypernym "http://identifiers.org/bto/BTO:0004254"
+  CTL_Plot hypernym "http://identifiers.org/cl/CL:0000910"
+  r1 hypernym "http://identifiers.org/sbo/SBO:0000610"
+  k1 hypernym "http://identifiers.org/sbo/SBO:0000661"
+  at_ hypernym "http://identifiers.org/ncit/C53346"
+  et hypernym "http://identifiers.org/sbo/SBO:0000193"
+  atb hypernym "http://identifiers.org/sbo/SBO:0000540"
+  etb hypernym "http://identifiers.org/sbo/SBO:0000193"
+  ht hypernym "http://identifiers.org/sbo/SBO:0000193"
+  r2 hypernym "http://identifiers.org/sbo/SBO:0000610"
+  k2 hypernym "http://identifiers.org/sbo/SBO:0000661"
+  ra hypernym "http://identifiers.org/ncit/C25636"
+  as hypernym "http://identifiers.org/ncit/C25636"
+  es hypernym "http://identifiers.org/sbo/SBO:0000193"
+  asb hypernym "http://identifiers.org/sbo/SBO:0000540"
+  esb hypernym "http://identifiers.org/sbo/SBO:0000193"
+  hs hypernym "http://identifiers.org/sbo/SBO:0000193"
+  uc hypernym "http://identifiers.org/ncit/C25636"
+  gb hypernym "http://identifiers.org/ncit/C25636"
+  abt hypernym "http://identifiers.org/ncit/C25636"
+  abs_ hypernym "http://identifiers.org/ncit/C25636"
+  ub hypernym "http://identifiers.org/ncit/C25636"
+  gm1 hypernym "http://identifiers.org/ncit/C25636"
+  am1y hypernym "http://identifiers.org/ncit/C25636"
+  em1y hypernym "http://identifiers.org/sbo/SBO:0000193"
+  um1 hypernym "http://identifiers.org/ncit/C25636"
+  am2y hypernym "http://identifiers.org/ncit/C25636"
+  em2y hypernym "http://identifiers.org/sbo/SBO:0000193"
+  am2b hypernym "http://identifiers.org/sbo/SBO:0000540"
+  em2b hypernym "http://identifiers.org/sbo/SBO:0000193"
+  um2 hypernym "http://identifiers.org/ncit/C25636"
+  ayc hypernym "http://identifiers.org/ncit/C25636"
+  uy hypernym "http://identifiers.org/ncit/C25636"
+  N hypernym "http://identifiers.org/ncit/C25636"
+  tumor_growth hypernym "http://identifiers.org/go/GO:0008283"
+  tumor_growth hypernym "http://identifiers.org/sbo/SBO:0000393"
+  tumor_transformation hypernym "http://identifiers.org/go/GO:0048863"
+  tumor_killing hypernym "http://identifiers.org/go/GO:0002419"
+  tumor_killing hypernym "http://identifiers.org/sbo/SBO:0000179"
+  csc_growth hypernym "http://identifiers.org/go/GO:0008283"
+  csc_growth hypernym "http://identifiers.org/sbo/SBO:0000393"
+  csc_killing hypernym "http://identifiers.org/sbo/SBO:0000179"
+  csc_killing hypernym "http://identifiers.org/go/GO:0002419"
+  ctl_death hypernym "http://identifiers.org/go/GO:0008219"
+  ctl_death hypernym "http://identifiers.org/sbo/SBO:0000179"
+  ctl_source hypernym "http://identifiers.org/sbo/SBO:0000393"
+  ctl_source hypernym "http://identifiers.org/go/GO:0008283"
+  tgfb_source hypernym "http://identifiers.org/sbo/SBO:0000393"
+  tgfb_source hypernym "http://identifiers.org/go/GO:0038044"
+  tgfb_by_tumor hypernym "http://identifiers.org/go/GO:0038044"
+  tgfb_by_tumor hypernym "http://identifiers.org/sbo/SBO:0000393"
+  tgfb_by_csc hypernym "http://identifiers.org/go/GO:0038044"
+  tgfb_by_csc hypernym "http://identifiers.org/sbo/SBO:0000393"
+  tgfb_decay hypernym "http://identifiers.org/sbo/SBO:0000179"
+  tgfb_decay hypernym "http://identifiers.org/go/GO:0030163"
+  ifny_production hypernym "http://identifiers.org/sbo/SBO:0000393"
+  ifny_production hypernym "http://identifiers.org/go/GO:0072643"
+  ifny_decay hypernym "http://identifiers.org/go/GO:0030163"
+  ifny_decay hypernym "http://identifiers.org/sbo/SBO:0000179"
+  mhc1_source hypernym "http://identifiers.org/go/GO:0009306"
+  mhc1_source hypernym "http://identifiers.org/sbo/SBO:0000393"
+  mhc1_decay hypernym "http://identifiers.org/sbo/SBO:0000179"
+  mhc1_decay hypernym "http://identifiers.org/go/GO:0030163"
+  mhc1_stimulation hypernym "http://identifiers.org/sbo/SBO:0000393"
+  mhc1_stimulation hypernym "http://identifiers.org/go/GO:0009306"
+  mhc2_production hypernym "http://identifiers.org/sbo/SBO:0000393"
+  mhc2_production hypernym "http://identifiers.org/go/GO:0009306"
+  mhc2_decay hypernym "http://identifiers.org/sbo/SBO:0000179"
+  mhc2_decay hypernym "http://identifiers.org/go/GO:0030163"
+end
+
+Abernathy2016___glioblastoma_treatment is "Abernathy2016 - glioblastoma treatment"
+
+Abernathy2016___glioblastoma_treatment description "http://identifiers.org/pubmed/27022405"
+Abernathy2016___glioblastoma_treatment model_entity_is "http://identifiers.org/biomodels.db/MODEL1907240001",
+                                                       "http://identifiers.org/biomodels.db/BIOMD0000000757"
+Abernathy2016___glioblastoma_treatment property "http://identifiers.org/efo/0000519"
+Abernathy2016___glioblastoma_treatment property "http://identifiers.org/go/GO:0002418"
+Abernathy2016___glioblastoma_treatment property "http://identifiers.org/mamo/MAMO_0000046"
+Abernathy2016___glioblastoma_treatment taxon "http://identifiers.org/taxonomy/9606"

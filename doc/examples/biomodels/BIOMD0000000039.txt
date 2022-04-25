@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Marhl_Calcium_Oscillations_role_of_mitochondria_and_cytosolic_proteins()
 
   // Compartments and Species:
@@ -7,11 +7,11 @@ model *Marhl_Calcium_Oscillations_role_of_mitochondria_and_cytosolic_proteins()
   species CaPr in Cytosol, Pr in Cytosol;
 
   // Reactions:
-  v1: 0.25CaER => Ca_cyt; Cytosol*((v1_Kch*Ca_cyt^2*(CaER - Ca_cyt))/(v1_K1^2 + Ca_cyt^2));
-  v3: 0.25CaER => Ca_cyt; Cytosol*v3_Kleak*(CaER - Ca_cyt);
-  v5: Ca_cyt => 0.25CaER; Endoplasmic_Reticulum*v5_Kpump*Ca_cyt;
-  v7: 0.25CaM => Ca_cyt; Cytosol*CaM*((v7_Kout*Ca_cyt^2)/(v7_K3^2 + Ca_cyt^2) + v7_Km);
-  v9: Ca_cyt => 0.25CaM; Mitochondria*((v9_Kin*Ca_cyt^8)/(v9_K2^8 + Ca_cyt^8));
+  v1: 0.25 CaER => Ca_cyt; Cytosol*(v1_Kch*Ca_cyt^2*(CaER - Ca_cyt)/(v1_K1^2 + Ca_cyt^2));
+  v3: 0.25 CaER => Ca_cyt; Cytosol*v3_Kleak*(CaER - Ca_cyt);
+  v5: Ca_cyt => 0.25 CaER; Endoplasmic_Reticulum*v5_Kpump*Ca_cyt;
+  v7: 0.25 CaM => Ca_cyt; Cytosol*CaM*(v7_Kout*Ca_cyt^2/(v7_K3^2 + Ca_cyt^2) + v7_Km);
+  v9: Ca_cyt => 0.25 CaM; Mitochondria*(v9_Kin*Ca_cyt^8/(v9_K2^8 + Ca_cyt^8));
   v11: CaPr => Pr + Ca_cyt; Cytosol*v11_Kminus*CaPr;
   v12: Pr + Ca_cyt => CaPr; Cytosol*v12_Kplus*Ca_cyt*Pr;
 
@@ -55,4 +55,41 @@ model *Marhl_Calcium_Oscillations_role_of_mitochondria_and_cytosolic_proteins()
   v9 is "Jin";
   v11 is "dissociation of CaPr";
   v12 is "binding of Ca on Pr";
+
+  // CV terms:
+  Cytosol identity "http://identifiers.org/go/GO:0005829"
+  Endoplasmic_Reticulum identity "http://identifiers.org/go/GO:0005790"
+  Mitochondria identity "http://identifiers.org/go/GO:0005739"
+  Ca_cyt identity "http://identifiers.org/chebi/CHEBI:29108"
+  CaER identity "http://identifiers.org/chebi/CHEBI:29108"
+  CaM identity "http://identifiers.org/chebi/CHEBI:29108"
+  CaPr part "http://identifiers.org/chebi/CHEBI:29108",
+            "http://identifiers.org/kegg.compound/C00017"
+  Pr hypernym "http://identifiers.org/kegg.compound/C00017",
+              "http://identifiers.org/chebi/CHEBI:16541"
+  v1 hypernym "http://identifiers.org/go/GO:0051482",
+              "http://identifiers.org/go/GO:0006816"
+  v3 hypernym "http://identifiers.org/go/GO:0006816",
+              "http://identifiers.org/go/GO:0007204"
+  v5 hypernym "http://identifiers.org/go/GO:0051481",
+              "http://identifiers.org/go/GO:0006816"
+  v7 identity "http://identifiers.org/go/GO:0006816",
+              "http://identifiers.org/go/GO:0007204"
+  v9 hypernym "http://identifiers.org/go/GO:0006816",
+              "http://identifiers.org/go/GO:0051481"
+  v11 hypernym "http://identifiers.org/go/GO:0007204"
+  v12 hypernym "http://identifiers.org/go/GO:0005509",
+               "http://identifiers.org/go/GO:0051481"
 end
+
+Marhl_Calcium_Oscillations_role_of_mitochondria_and_cytosolic_proteins is "Marhl2000_CaOscillations"
+
+Marhl_Calcium_Oscillations_role_of_mitochondria_and_cytosolic_proteins model_entity_is "http://identifiers.org/biomodels.db/MODEL6621933497"
+Marhl_Calcium_Oscillations_role_of_mitochondria_and_cytosolic_proteins model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000039"
+Marhl_Calcium_Oscillations_role_of_mitochondria_and_cytosolic_proteins description "http://identifiers.org/pubmed/11004387"
+Marhl_Calcium_Oscillations_role_of_mitochondria_and_cytosolic_proteins origin "http://identifiers.org/pubmed/17029696",
+                                                                              "http://identifiers.org/pubmed/12362939"
+Marhl_Calcium_Oscillations_role_of_mitochondria_and_cytosolic_proteins taxon "http://identifiers.org/taxonomy/8355"
+Marhl_Calcium_Oscillations_role_of_mitochondria_and_cytosolic_proteins identity "http://identifiers.org/kegg.pathway/hsa04020",
+                                                                                "http://identifiers.org/go/GO:0019722",
+                                                                                "http://identifiers.org/go/GO:0048016"

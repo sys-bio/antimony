@@ -1,0 +1,191 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function Function_for_Cytotoxic_T_Cells_Memory_Formation(r_2, C_m, LT)
+  r_2*C_m*LT;
+end
+
+Function_for_Cytotoxic_T_Cells_Memory_Formation is "Function_for_Cytotoxic_T_Cells_Memory_Formation"
+
+function Function_for_Inflammation_Suppression_Drug(D)
+  D;
+end
+
+Function_for_Inflammation_Suppression_Drug is "Function_for_Inflammation_Suppression_Drug"
+
+function Function_for_Tumor_Growth(r_1, B, k_1)
+  r_1*B*(1 - B/k_1);
+end
+
+Function_for_Tumor_Growth is "Function_for_Tumor_Growth"
+
+function Function_for_Tumor_Killing_C_e(d_1, B, C_e)
+  d_1*B*C_e;
+end
+
+Function_for_Tumor_Killing_C_e is "Function_for_Tumor_Killing_C_e"
+
+function Function_for_Immune_Stimulation_C_e(p_1, B, C_e, H_e)
+  p_1*B*(C_e + H_e);
+end
+
+Function_for_Immune_Stimulation_C_e is "Function_for_Immune_Stimulation_C_e"
+
+function Function_for_Cytotoxic_T_Cells_Effector_Formation(n, a_1, B, C_m, I, a_2, H_e, b)
+  2^n*a_1*B*C_m*(I^2/(I^2 + b^2))*(1 + a_2*H_e);
+end
+
+Function_for_Cytotoxic_T_Cells_Effector_Formation is "Function_for_Cytotoxic_T_Cells_Effector_Formation"
+
+function Function_for_Helper_T_Cells_Memory_Formation(r_3, H_m, LT)
+  r_3*H_m*LT;
+end
+
+Function_for_Helper_T_Cells_Memory_Formation is "Function_for_Helper_T_Cells_Memory_Formation"
+
+function Function_for_Lympocyte_Formation(r_4, L, LT)
+  r_4*L*LT;
+end
+
+Function_for_Lympocyte_Formation is "Function_for_Lympocyte_Formation"
+
+function Function_for_Cytotoxic_T_Cells_Memory_Decay(a_1, B, C_m, a_2, H_e, I, b)
+  a_1*B*C_m*(1 + a_2*H_e)*(I^2/(I^2 + b^2));
+end
+
+Function_for_Cytotoxic_T_Cells_Memory_Decay is "Function_for_Cytotoxic_T_Cells_Memory_Decay"
+
+function Function_for_Helper_T_Cells_Memory_Decay(a_3, B, H_m, I, b)
+  a_3*B*H_m*(I^2/(I^2 + b^2));
+end
+
+Function_for_Helper_T_Cells_Memory_Decay is "Function_for_Helper_T_Cells_Memory_Decay"
+
+function Function_for_Helper_T_Cells_Effector_Formation(n, a_3, B, H_m, I, b)
+  2^n*a_3*B*H_m*(I^2/(I^2 + b^2));
+end
+
+Function_for_Helper_T_Cells_Effector_Formation is "Function_for_Helper_T_Cells_Effector_Formation"
+
+
+model *Hanson2016___Toxicity_Management_in_CAR_T_cell_therapy_for_B_ALL()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species C_m in compartment_, C_e in compartment_, H_m in compartment_, H_e in compartment_;
+  species L in compartment_, Inflam in compartment_, B in compartment_, D in compartment_;
+
+  // Assignment Rules:
+  Total_Lymphocytes := B + C_e + C_m + H_e + H_m + L;
+  Lymphocyte_Term := piecewise(1 - Total_Lymphocytes/ModelValue_16, (1 - Total_Lymphocytes/ModelValue_16) > 0, 0);
+
+  // Reactions:
+  Tumor_Growth:  => B; compartment_*Function_for_Tumor_Growth(r_1, B, k);
+  Tumor_Killing_C_e: B => ; compartment_*Function_for_Tumor_Killing_C_e(d_1, B, C_e);
+  Inflammation_Stimulation_C_e:  => Inflam; compartment_*Function_for_Immune_Stimulation_C_e(p_1, B, C_e, H_e);
+  Inflammation_Decay: Inflam => ; compartment_*d_2*Inflam;
+  Inflammation_Suppression_Drug: Inflam => ; compartment_*Function_for_Inflammation_Suppression_Drug(D);
+  Cytotoxic_T_Cells_Effector_Formation:  => C_e; compartment_*Function_for_Cytotoxic_T_Cells_Effector_Formation(n, a_1, B, C_m, Inflam, a_2, H_e, b);
+  Cytotoxic_T_Cells_Effector_Decay: C_e => ; compartment_*d_3*C_e;
+  Cytotoxic_T_Cells_Memory_Formation:  => C_m; compartment_*Function_for_Cytotoxic_T_Cells_Memory_Formation(r_2, C_m, Lymphocyte_Term);
+  Cytotoxic_T_Cells_Memory_Decay: C_m => ; compartment_*Function_for_Cytotoxic_T_Cells_Memory_Decay(a_1, B, C_m, a_2, H_e, Inflam, b);
+  Helper_T_Cells_Effector_Formation:  => H_e; compartment_*Function_for_Helper_T_Cells_Effector_Formation(n, a_3, B, H_m, Inflam, b);
+  Helper_T_Cells_Effector_Decay: H_e => ; compartment_*d_4*H_e;
+  Helper_T_Cells_Memory_Formation:  => H_m; compartment_*Function_for_Helper_T_Cells_Memory_Formation(r_3, H_m, Lymphocyte_Term);
+  Helper_T_Cells_Memory_Decay: H_m => ; compartment_*Function_for_Helper_T_Cells_Memory_Decay(a_3, B, H_m, Inflam, b);
+  Lympocyte_Formation_Constant:  => L; compartment_*Constant_flux__irreversible(p_2);
+  Lympocyte_Formation:  => L; compartment_*Function_for_Lympocyte_Formation(r_4, L, Lymphocyte_Term);
+  Lympocyte_Decay: L => ; compartment_*d_5*L;
+  Inflammation_Input:  => Inflam; compartment_*Constant_flux__irreversible(p_0);
+
+  // Species initializations:
+  C_m = 10;
+  C_e = 10;
+  H_m = 10;
+  H_e = 10;
+  L = 1600;
+  Inflam = 140;
+  B = 300;
+  D = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  n = 6;
+  r_1 = 0.003;
+  r_2 = 0.1;
+  r_3 = 0.1;
+  r_4 = 0.1;
+  d_1 = 0.0002;
+  d_2 = 1.5;
+  d_3 = 0.004;
+  d_4 = 0.004;
+  d_5 = 0.0002;
+  p_1 = 0.002;
+  p_2 = 0.4;
+  a_1 = 4e-07;
+  a_2 = 2;
+  a_3 = 8e-05;
+  b = 800;
+  l = 1600;
+  k = 4800;
+  ModelValue_16 = l;
+  p_0 = 200;
+
+  // Other declarations:
+  var Total_Lymphocytes, Lymphocyte_Term;
+  const compartment_, n, r_1, r_2, r_3, r_4, d_1, d_2, d_3, d_4, d_5, p_1;
+  const p_2, a_1, a_2, a_3, b, l, k, ModelValue_16, p_0;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 3600 second;
+  unit substance = item;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+  ModelValue_16 is "Initial for l";
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/bto/BTO:0000141"
+  C_m hypernym "http://identifiers.org/cl/CL:0000910"
+  C_e hypernym "http://identifiers.org/cl/CL:0000910"
+  H_m hypernym "http://identifiers.org/cl/CL:0000912"
+  H_e hypernym "http://identifiers.org/cl/CL:0000912"
+  L identity "http://identifiers.org/cl/CL:0000542"
+  Inflam identity "http://identifiers.org/go/GO:0006954"
+  B identity "http://identifiers.org/bto/BTO:0000731"
+  D hypernym "http://identifiers.org/ncit/C574"
+  Tumor_Growth identity "http://identifiers.org/ncit/C36294"
+  Tumor_Killing_C_e hypernym "http://identifiers.org/go/GO:0002419"
+  Inflammation_Stimulation_C_e hypernym "http://identifiers.org/go/GO:0006954"
+  Inflammation_Decay hypernym "http://identifiers.org/ncit/SBO:0000179"
+  Inflammation_Suppression_Drug hypernym "http://identifiers.org/ncit/C574"
+  Cytotoxic_T_Cells_Effector_Formation hypernym "http://identifiers.org/ncit/C18081"
+  Cytotoxic_T_Cells_Effector_Decay hypernym "http://identifiers.org/go/GO:0008219"
+  Cytotoxic_T_Cells_Memory_Formation hypernym "http://identifiers.org/ncit/C18081"
+  Cytotoxic_T_Cells_Memory_Decay hypernym "http://identifiers.org/go/GO:0008219"
+  Helper_T_Cells_Effector_Formation hypernym "http://identifiers.org/ncit/C18081"
+  Helper_T_Cells_Effector_Decay hypernym "http://identifiers.org/go/GO:0008219"
+  Helper_T_Cells_Memory_Formation hypernym "http://identifiers.org/ncit/C18081"
+  Helper_T_Cells_Memory_Decay hypernym "http://identifiers.org/go/GO:0008219"
+  Lympocyte_Formation_Constant hypernym "http://identifiers.org/ncit/C18081"
+  Lympocyte_Formation hypernym "http://identifiers.org/ncit/C18081"
+  Lympocyte_Decay hypernym "http://identifiers.org/go/GO:0008219"
+  Inflammation_Input hypernym "http://identifiers.org/go/GO:0006954"
+end
+
+Hanson2016___Toxicity_Management_in_CAR_T_cell_therapy_for_B_ALL is "Hanson2016 - Toxicity Management in CAR T cell therapy for B-ALL"
+
+Hanson2016___Toxicity_Management_in_CAR_T_cell_therapy_for_B_ALL description "http://identifiers.org/doi/10.1101/049908"
+Hanson2016___Toxicity_Management_in_CAR_T_cell_therapy_for_B_ALL model_entity_is "http://identifiers.org/biomodels.db/MODEL1910250001",
+                                                                                 "http://identifiers.org/biomodels.db/BIOMD0000000837"
+Hanson2016___Toxicity_Management_in_CAR_T_cell_therapy_for_B_ALL property "http://identifiers.org/mamo/MAMO_0000046"
+Hanson2016___Toxicity_Management_in_CAR_T_cell_therapy_for_B_ALL property "http://identifiers.org/ncit/C126102"
+Hanson2016___Toxicity_Management_in_CAR_T_cell_therapy_for_B_ALL property "http://identifiers.org/ncit/C8644"

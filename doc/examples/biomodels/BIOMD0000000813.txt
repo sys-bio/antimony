@@ -1,0 +1,106 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function Function_for_Tumor_Growth(r, x, K)
+  r*x*(1 - x/K);
+end
+
+Function_for_Tumor_Growth is "Function_for_Tumor_Growth"
+
+function Function_for_Tumor_Killing(delta, x, z, m)
+  delta*x*z/(m + x);
+end
+
+Function_for_Tumor_Killing is "Function_for_Tumor_Killing"
+
+function Function_for_Cytokine_Production(alpha, x, y, b)
+  alpha*x*y/(b + x);
+end
+
+Function_for_Cytokine_Production is "Function_for_Cytokine_Production"
+
+function Function_for_CD4_Production(beta, x, y, k)
+  beta*x*y/(k + x);
+end
+
+Function_for_CD4_Production is "Function_for_CD4_Production"
+
+
+model *Anderson2015___Qualitative_behavior_of_systems_of_tumor_CD4__cytokine_interactions_with_treatments()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species x_Tumor_Cells in compartment_, y_CD4_T_Cells in compartment_, z_Cytokine in compartment_;
+
+  // Reactions:
+  Tumor_Growth:  => x_Tumor_Cells; compartment_*Function_for_Tumor_Growth(r, x_Tumor_Cells, K);
+  Tumor_Killing: x_Tumor_Cells => ; compartment_*Function_for_Tumor_Killing(delta, x_Tumor_Cells, z_Cytokine, m);
+  CD4_Production:  => y_CD4_T_Cells; compartment_*Function_for_CD4_Production(beta, x_Tumor_Cells, y_CD4_T_Cells, k);
+  CD4_Death: y_CD4_T_Cells => ; compartment_*a*y_CD4_T_Cells;
+  CD4_Treatment:  => y_CD4_T_Cells; compartment_*Constant_flux__irreversible(I_1);
+  Cytokine_Production:  => z_Cytokine; compartment_*Function_for_Cytokine_Production(alpha, x_Tumor_Cells, y_CD4_T_Cells, b);
+  Cytokine_Loss: z_Cytokine => ; compartment_*mu*z_Cytokine;
+  Cytokine_Treatment:  => z_Cytokine; compartment_*Constant_flux__irreversible(I_2);
+
+  // Species initializations:
+  x_Tumor_Cells = 0.5;
+  y_CD4_T_Cells = 0.01;
+  z_Cytokine = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  r = 0.03;
+  K = 1000;
+  delta = 0.1;
+  m = 1;
+  beta = 0.02;
+  k = 10;
+  a = 0.02;
+  alpha = 0.1;
+  b = 0.1;
+  mu = 47;
+  I_1 = 10;
+  I_2 = 0;
+
+  // Other declarations:
+  const compartment_, r, K, delta, m, beta, k, a, alpha, b, mu, I_1, I_2;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = item;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+
+  // CV terms:
+  compartment_ hypernym "http://identifiers.org/ncit/C94498"
+  x_Tumor_Cells identity "http://identifiers.org/cl/CL:0001063"
+  y_CD4_T_Cells identity "http://identifiers.org/cl/CL:0000492"
+  z_Cytokine identity "http://identifiers.org/ncit/C20464"
+  Tumor_Growth hypernym "http://identifiers.org/ncit/C36294"
+  Tumor_Killing hypernym "http://identifiers.org/go/GO:0008219"
+  Tumor_Killing hypernym "http://identifiers.org/go/GO:0002418"
+  CD4_Production hypernym "http://identifiers.org/ncit/C18081"
+  CD4_Death identity "http://identifiers.org/go/GO:0008219"
+  CD4_Treatment hypernym "http://identifiers.org/ncit/C15351"
+  Cytokine_Production hypernym "http://identifiers.org/go/GO:0002374"
+  Cytokine_Loss hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Cytokine_Treatment hypernym "http://identifiers.org/ncit/C15411"
+end
+
+Anderson2015___Qualitative_behavior_of_systems_of_tumor_CD4__cytokine_interactions_with_treatments is "Anderson2015 - Qualitative behavior of systems of tumor-CD4+-cytokine interactions with treatments"
+
+Anderson2015___Qualitative_behavior_of_systems_of_tumor_CD4__cytokine_interactions_with_treatments description "http://identifiers.org/doi/10.1002/mma.3370"
+Anderson2015___Qualitative_behavior_of_systems_of_tumor_CD4__cytokine_interactions_with_treatments model_entity_is "http://identifiers.org/biomodels.db/MODEL1909170001",
+                                                                                                                   "http://identifiers.org/biomodels.db/BIOMD0000000813"
+Anderson2015___Qualitative_behavior_of_systems_of_tumor_CD4__cytokine_interactions_with_treatments property "http://identifiers.org/ncit/C15411"
+Anderson2015___Qualitative_behavior_of_systems_of_tumor_CD4__cytokine_interactions_with_treatments property "http://identifiers.org/mamo/MAMO_0000046"
+Anderson2015___Qualitative_behavior_of_systems_of_tumor_CD4__cytokine_interactions_with_treatments property "http://identifiers.org/taxonomy/9606"

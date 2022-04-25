@@ -1,0 +1,114 @@
+// Created by libAntimony v2.13.0
+model *MODEL1406180001()
+
+  // Compartments and Species:
+  compartment mw0dac359a_a4cd_40bf_97a0_45006cef2a7c, mw44539b83_caa2_4da5_bae0_a8dcf7439431;
+  species mwd805cc43_4a96_472f_a894_c119a6aa895f in mw0dac359a_a4cd_40bf_97a0_45006cef2a7c;
+  species $mw447078ee_8bc8_4358_abcd_ade10dba93b0 in mw0dac359a_a4cd_40bf_97a0_45006cef2a7c;
+  species mw40a96ef6_32da_46d1_9712_4f53f60bad43 in mw44539b83_caa2_4da5_bae0_a8dcf7439431;
+  species $mwe1a0a651_d2d5_4f75_8d45_9336c60eb9a6 in mw44539b83_caa2_4da5_bae0_a8dcf7439431;
+  species mw168e0d8a_b9f7_4d4c_b437_a81206c5d381 in mw44539b83_caa2_4da5_bae0_a8dcf7439431;
+
+  // Assignment Rules:
+  mw447078ee_8bc8_4358_abcd_ade10dba93b0 := (parameter_26 - (parameter_26^2 - 4*mwd805cc43_4a96_472f_a894_c119a6aa895f*parameter_14)^(1/2))/2;
+  parameter_26 := mwd805cc43_4a96_472f_a894_c119a6aa895f + parameter_24 + parameter_14;
+  mwe1a0a651_d2d5_4f75_8d45_9336c60eb9a6 := mw40a96ef6_32da_46d1_9712_4f53f60bad43/parameter_9;
+  parameter_22 := (parameter_2*parameter_5^parameter_6*(parameter_4/parameter_9)^parameter_10*(parameter_25 - parameter_4/parameter_9)*(((parameter_4/parameter_9)^parameter_8 + parameter_7^parameter_8)/(parameter_3*(parameter_4/parameter_9)^parameter_8)) - (parameter_4/parameter_9)^parameter_10)^(1/parameter_10);
+  parameter_23 := (mwe1a0a651_d2d5_4f75_8d45_9336c60eb9a6*(1 + parameter_11*mw168e0d8a_b9f7_4d4c_b437_a81206c5d381))^parameter_10/(parameter_22^parameter_10 + (mwe1a0a651_d2d5_4f75_8d45_9336c60eb9a6*(1 + parameter_11*mw168e0d8a_b9f7_4d4c_b437_a81206c5d381))^parameter_10);
+  parameter_24 := parameter_15*(parameter_14 - parameter_25);
+
+  // Reactions:
+  mw97ca2b6b_8c30_48ef_80cb_5ce4ebaa420f: mw40a96ef6_32da_46d1_9712_4f53f60bad43 + $mwe1a0a651_d2d5_4f75_8d45_9336c60eb9a6 => mwd805cc43_4a96_472f_a894_c119a6aa895f + $mwe1a0a651_d2d5_4f75_8d45_9336c60eb9a6; parameter_3*mwe1a0a651_d2d5_4f75_8d45_9336c60eb9a6^parameter_8/(parameter_7^parameter_8 + mwe1a0a651_d2d5_4f75_8d45_9336c60eb9a6^parameter_8);
+  mw18c30692_65ff_4c7a_b820_079f8ddd9b33: mwd805cc43_4a96_472f_a894_c119a6aa895f + $mw447078ee_8bc8_4358_abcd_ade10dba93b0 + $mwe1a0a651_d2d5_4f75_8d45_9336c60eb9a6 => mw40a96ef6_32da_46d1_9712_4f53f60bad43 + $mw447078ee_8bc8_4358_abcd_ade10dba93b0 + $mwe1a0a651_d2d5_4f75_8d45_9336c60eb9a6; parameter_2*parameter_5^parameter_6*parameter_23*(mw447078ee_8bc8_4358_abcd_ade10dba93b0 - mwe1a0a651_d2d5_4f75_8d45_9336c60eb9a6);
+  mwf3ceaa7c_ebe4_4e1b_842a_b4446b0aa527: mw40a96ef6_32da_46d1_9712_4f53f60bad43 + $mwe1a0a651_d2d5_4f75_8d45_9336c60eb9a6 => $mwe1a0a651_d2d5_4f75_8d45_9336c60eb9a6; mw44539b83_caa2_4da5_bae0_a8dcf7439431*(parameter_1*(mwe1a0a651_d2d5_4f75_8d45_9336c60eb9a6 - parameter_4/parameter_9)/mw44539b83_caa2_4da5_bae0_a8dcf7439431);
+
+  // Events:
+  Caff_ON: at time > 10: mw168e0d8a_b9f7_4d4c_b437_a81206c5d381 = 0.02;
+  Caff_OFF: at time > 15: mw168e0d8a_b9f7_4d4c_b437_a81206c5d381 = 0;
+
+  // Species initializations:
+  mwd805cc43_4a96_472f_a894_c119a6aa895f = 0.00165/mw0dac359a_a4cd_40bf_97a0_45006cef2a7c;
+  mw40a96ef6_32da_46d1_9712_4f53f60bad43 = 7.5e-06/mw44539b83_caa2_4da5_bae0_a8dcf7439431;
+  mw168e0d8a_b9f7_4d4c_b437_a81206c5d381 = 0;
+
+  // Compartment initializations:
+  mw0dac359a_a4cd_40bf_97a0_45006cef2a7c = 0.052;
+  mw44539b83_caa2_4da5_bae0_a8dcf7439431 = 1;
+
+  // Variable initializations:
+  parameter_14 = 0.0001515;
+  parameter_9 = 100;
+  parameter_1 = 35;
+  parameter_2 = 65;
+  parameter_3 = 1.125e-05;
+  parameter_4 = 7.5e-06;
+  parameter_5 = 0.052;
+  parameter_6 = 1.7;
+  parameter_7 = 3e-07;
+  parameter_8 = 2;
+  parameter_10 = 1.8;
+  parameter_11 = 4000;
+  parameter_15 = 10;
+  parameter_25 = 0.00015;
+
+  // Other declarations:
+  var parameter_26, parameter_22, parameter_23, parameter_24;
+  const mw0dac359a_a4cd_40bf_97a0_45006cef2a7c, mw44539b83_caa2_4da5_bae0_a8dcf7439431;
+  const parameter_14, parameter_9, parameter_1, parameter_2, parameter_3;
+  const parameter_4, parameter_5, parameter_6, parameter_7, parameter_8, parameter_10;
+  const parameter_11, parameter_15, parameter_25;
+
+  // Display Names:
+  mw0dac359a_a4cd_40bf_97a0_45006cef2a7c is "SR";
+  mw44539b83_caa2_4da5_bae0_a8dcf7439431 is "cytoplasm";
+  mwd805cc43_4a96_472f_a894_c119a6aa895f is "Ca_SR_Total";
+  mw447078ee_8bc8_4358_abcd_ade10dba93b0 is "Ca_SR";
+  parameter_26 is "Xi";
+  parameter_14 is "KR";
+  mw40a96ef6_32da_46d1_9712_4f53f60bad43 is "Ca_i_Total";
+  mwe1a0a651_d2d5_4f75_8d45_9336c60eb9a6 is "Ca_i";
+  parameter_9 is "B";
+  mw168e0d8a_b9f7_4d4c_b437_a81206c5d381 is "caff";
+  parameter_1 is "a";
+  parameter_2 is "b";
+  parameter_3 is "c";
+  parameter_4 is "Ca_i_basal";
+  parameter_5 is "gamma";
+  parameter_6 is "nv";
+  parameter_7 is "Ks";
+  parameter_8 is "ns";
+  parameter_10 is "nf";
+  parameter_11 is "kf";
+  parameter_15 is "csq";
+  parameter_22 is "KC";
+  parameter_25 is "Ca_SR_basal";
+  parameter_23 is "Po";
+  parameter_24 is "PE";
+  mw97ca2b6b_8c30_48ef_80cb_5ce4ebaa420f is "J3";
+  mw18c30692_65ff_4c7a_b820_079f8ddd9b33 is "J2";
+  mwf3ceaa7c_ebe4_4e1b_842a_b4446b0aa527 is "J1";
+
+  // CV terms:
+  mw0dac359a_a4cd_40bf_97a0_45006cef2a7c identity "http://identifiers.org/go/GO:0016529"
+  mw44539b83_caa2_4da5_bae0_a8dcf7439431 model_entity_is "http://identifiers.org/go/GO:0005737"
+  mwd805cc43_4a96_472f_a894_c119a6aa895f hypernym "http://identifiers.org/chebi/CHEBI:29108"
+  mw447078ee_8bc8_4358_abcd_ade10dba93b0 hypernym "http://identifiers.org/chebi/CHEBI:29108"
+  mw40a96ef6_32da_46d1_9712_4f53f60bad43 hypernym "http://identifiers.org/chebi/CHEBI:29108"
+  mwe1a0a651_d2d5_4f75_8d45_9336c60eb9a6 hypernym "http://identifiers.org/chebi/CHEBI:29108"
+  mw168e0d8a_b9f7_4d4c_b437_a81206c5d381 hypernym "http://identifiers.org/chebi/CHEBI:27732"
+  mw97ca2b6b_8c30_48ef_80cb_5ce4ebaa420f hypernym "http://identifiers.org/go/GO:0070296"
+  mw97ca2b6b_8c30_48ef_80cb_5ce4ebaa420f hypernym "http://identifiers.org/go/GO:0051481"
+  mw18c30692_65ff_4c7a_b820_079f8ddd9b33 hypernym "http://identifiers.org/go/GO:0060316"
+  mw18c30692_65ff_4c7a_b820_079f8ddd9b33 hypernym "http://identifiers.org/go/GO:0006816"
+  mwf3ceaa7c_ebe4_4e1b_842a_b4446b0aa527 hypernym "http://identifiers.org/go/GO:0006816"
+  mwf3ceaa7c_ebe4_4e1b_842a_b4446b0aa527 hypernym "http://identifiers.org/go/GO:0051481"
+end
+
+MODEL1406180001 is "Rosas2015 - Caffeine-induced luminal SR calcium changes"
+
+MODEL1406180001 model_entity_is "http://identifiers.org/biomodels.db/MODEL1406180001"
+MODEL1406180001 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000601"
+MODEL1406180001 description "http://identifiers.org/pubmed/26390403"
+MODEL1406180001 hypernym "http://identifiers.org/go/GO:0014808"
+MODEL1406180001 container "http://identifiers.org/bto/BTO:0001849"
+MODEL1406180001 taxon "http://identifiers.org/taxonomy/10141"

@@ -1,0 +1,123 @@
+// Created by libAntimony v2.13.0
+function Function_for_production_of_CD4__T_cell(s, r, T)
+  s + r*T;
+end
+
+Function_for_production_of_CD4__T_cell is "Function for production of CD4+ T cell"
+
+function Function_for_death_of_CD4__T_cell(mu_T, k_1, V, T, r, T_1, T_2, T_max)
+  mu_T*T + k_1*V*T + r*T*((T + T_1 + T_2)/T_max);
+end
+
+Function_for_death_of_CD4__T_cell is "Function for death of CD4+ T cell"
+
+function Function_for_production_of_latently_infected_T_cell(k_1, V, T)
+  k_1*V*T;
+end
+
+Function_for_production_of_latently_infected_T_cell is "Function for production of latently infected T cell"
+
+function Function_for_death_of_latently_infected_T_cell(mu_T, T_1, k_2)
+  mu_T*T_1 + k_2*T_1;
+end
+
+Function_for_death_of_latently_infected_T_cell is "Function for death of latently infected T cell"
+
+function Function_for_production_of_actively_infected_T_cell(k_2, T_1)
+  k_2*T_1;
+end
+
+Function_for_production_of_actively_infected_T_cell is "Function for production of actively infected T cell"
+
+function Function_for_death_of_Actively_infected_T_cell(mu_b, T_2)
+  mu_b*T_2;
+end
+
+Function_for_death_of_Actively_infected_T_cell is "Function for death of Actively infected T cell"
+
+function Function_for_production_of_infectious_virus(N, mu_b, T_2)
+  N*mu_b*T_2;
+end
+
+Function_for_production_of_infectious_virus is "Function for production of infectious virus"
+
+function Function_for_Death_of_Infectious_Virus_particle(k_1, V, T, mu_V)
+  k_1*V*T + mu_V*V;
+end
+
+Function_for_Death_of_Infectious_Virus_particle is "Function for Death of Infectious Virus particle"
+
+
+model *Perelson1993_HIVinfection_CD4Tcells_ModelA()
+
+  // Compartments and Species:
+  compartment COMpartment;
+  species T in COMpartment, T_1 in COMpartment, T_2 in COMpartment, V in COMpartment;
+
+  // Assignment Rules:
+  T_tot := T + T_1 + T_2;
+
+  // Reactions:
+  Production_of_CD4__T_cell:  => T; COMpartment*Function_for_production_of_CD4__T_cell(s, r, T);
+  Death_of_CD4__T_cell: T => ; COMpartment*Function_for_death_of_CD4__T_cell(mu_T, k_1, V, T, r, T_1, T_2, T_max);
+  Production_of_Latently_infected_T_cell:  => T_1; COMpartment*Function_for_production_of_latently_infected_T_cell(k_1, V, T);
+  Death_of_Latently_infected_T_cell: T_1 => ; COMpartment*Function_for_death_of_latently_infected_T_cell(mu_T, T_1, k_2);
+  Production_of_Actively_infected_T_cell:  => T_2; COMpartment*Function_for_production_of_actively_infected_T_cell(k_2, T_1);
+  Death_of_Actively_infected_T_cell: T_2 => ; COMpartment*Function_for_death_of_Actively_infected_T_cell(mu_b, T_2);
+  Production_of_infectious_virus_particle:  => V; COMpartment*Function_for_production_of_infectious_virus(N, mu_b, T_2);
+  Death_of_infectious_virus_particle: V => ; COMpartment*Function_for_Death_of_Infectious_Virus_particle(k_1, V, T, mu_V);
+
+  // Species initializations:
+  T = 1000;
+  T_1 = 0;
+  T_2 = 0;
+  V = 0.001;
+
+  // Compartment initializations:
+  COMpartment = 1;
+
+  // Variable initializations:
+  s = 10;
+  r = 0.03;
+  T_max = 1500;
+  mu_T = 0.02;
+  k_1 = 2.4e-05;
+  k_2 = 0.003;
+  mu_b = 0.24;
+  mu_V = 2.4;
+  N = 1000;
+
+  // Other declarations:
+  var T_tot;
+  const COMpartment, s, r, T_max, mu_T, k_1, k_2, mu_b, mu_V, N;
+
+  // Unit definitions:
+  unit time_unit = 86400 second;
+
+  // Display Names:
+  time_unit is "time";
+  Production_of_CD4__T_cell is "Production of CD4+ T cell";
+  Death_of_CD4__T_cell is "Death of CD4+ T cell";
+  Production_of_Latently_infected_T_cell is "Production of Latently infected T cell";
+  Death_of_Latently_infected_T_cell is "Death of Latently infected T cell";
+  Production_of_Actively_infected_T_cell is "Production of Actively infected T cell";
+  Death_of_Actively_infected_T_cell is "Death of Actively infected T cell";
+  Production_of_infectious_virus_particle is "Production of infectious virus particle";
+  Death_of_infectious_virus_particle is "Death of infectious virus particle";
+
+  // CV terms:
+  T property "http://identifiers.org/uniprot/P01730"
+  T_1 property "http://identifiers.org/unigene/P01730"
+  T_2 property "http://identifiers.org/uniprot/P01730"
+end
+
+Perelson1993_HIVinfection_CD4Tcells_ModelA is "Perelson1993 - HIVinfection_CD4Tcells_ModelA"
+
+Perelson1993_HIVinfection_CD4Tcells_ModelA description "http://identifiers.org/pubmed/8096155"
+Perelson1993_HIVinfection_CD4Tcells_ModelA model_entity_is "http://identifiers.org/biomodels.db/MODEL1006230079",
+                                                           "http://identifiers.org/biomodels.db/BIOMD0000000874"
+Perelson1993_HIVinfection_CD4Tcells_ModelA identity "http://identifiers.org/biomodels.db/MODEL1006230079"
+Perelson1993_HIVinfection_CD4Tcells_ModelA hypernym "http://identifiers.org/efo/0000764"
+Perelson1993_HIVinfection_CD4Tcells_ModelA hypernym "http://identifiers.org/go/GO:0046718"
+Perelson1993_HIVinfection_CD4Tcells_ModelA container "http://identifiers.org/bto/BTO:0002417"
+Perelson1993_HIVinfection_CD4Tcells_ModelA taxon "http://identifiers.org/taxonomy/9606"

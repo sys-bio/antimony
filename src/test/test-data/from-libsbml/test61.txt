@@ -1,4 +1,4 @@
-// Created by libAntimony v2.12.0
+// Created by libAntimony v2.13.1
 
 // Warnings from automatic translation:
 //    Cannot replace stoichiometries in Antimony:  all replacedElements and replacedBy children of S1 in reaction R1 will be ignored.
@@ -10,7 +10,7 @@ model enzyme()
   substanceOnly species S1 in c;
 
   // Reactions:
-  R1: S1 => ; S1/R1_k;
+  R1: S1_stoich S1 => ; S1/R1_k;
 
   // Species initializations:
   S1 = 1/c;
@@ -21,6 +21,7 @@ model enzyme()
   c has litre;
 
   // Variable initializations:
+  S1_stoich = ;
   R1_k = 0.1;
   R1_k has second;
 
@@ -45,7 +46,7 @@ model *aggregate()
   substanceOnly species S in c, S1 in c;
 
   // Reactions:
-  R1: S1 => S; S/R1_k;
+  R1: S1_stoich S1 => S; S/R1_k;
 
   // Species initializations:
   S = 1/c;
@@ -58,6 +59,7 @@ model *aggregate()
   c has litre;
 
   // Variable initializations:
+  S1_stoich = ;
   R1_k = 0.1;
   R1_k has second;
 

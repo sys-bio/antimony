@@ -1,0 +1,672 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function Occupy_GAS_binding_site_0(genOccGASbsBySTAT1dimn, pSTAT1dimn)
+  genOccGASbsBySTAT1dimn*pSTAT1dimn;
+end
+
+Occupy_GAS_binding_site_0 is "Occupy GAS binding site"
+
+function OccGAS_ISREbs_formation_by_heterodimer_0(genOccGAS_ISREbsBySTAT1STAT2n, pSTAT1pSTAT2n)
+  genOccGAS_ISREbsBySTAT1STAT2n*pSTAT1pSTAT2n;
+end
+
+OccGAS_ISREbs_formation_by_heterodimer_0 is "OccGAS_ISREbs formation by heterodimer"
+
+function Receptor_degradation_by_SOCS1_1(Rec, SOCS1, degRecBySOCS)
+  degRecBySOCS*Rec*SOCS1;
+end
+
+Receptor_degradation_by_SOCS1_1 is "Receptor degradation by SOCS1_1"
+
+function Active_receptor_complex_formation_1(BindIFN, IFN, Rec, SOCS1, SOCS3, USP18, kinhBySOCS, kinhByUSP18)
+  BindIFN*IFN*Rec/(1 + kinhBySOCS*SOCS1)/(1 + kinhByUSP18*USP18)/SOCS3;
+end
+
+Active_receptor_complex_formation_1 is "Active receptor complex formation_1"
+
+function Active_receptor_complex_degradation_by_SOCS1_1(SOCS1, aRecIFN, degaRecIFNBySOCS)
+  aRecIFN*degaRecIFNBySOCS*SOCS1;
+end
+
+Active_receptor_complex_degradation_by_SOCS1_1 is "Active receptor complex degradation by SOCS1_1"
+
+function Active_receptor_complex_degradation_by_USP18_1(USP18, aRecIFN, degByUSP18)
+  aRecIFN*degByUSP18*USP18;
+end
+
+Active_receptor_complex_degradation_by_USP18_1 is "Active receptor complex degradation by USP18_1"
+
+function Active_receptor_complex_degradation_by_USP18_and_SOCS1__synergy__1(SOCS1, USP18, aRecIFN, degBySOCSandUSP18)
+  aRecIFN*degBySOCSandUSP18*SOCS1*USP18;
+end
+
+Active_receptor_complex_degradation_by_USP18_and_SOCS1__synergy__1 is "Active receptor complex degradation by USP18 and SOCS1 (synergy)_1"
+
+function Heterodimer_complex_formation_1(ComplFormSTAT1STAT2c, STAT1c, STAT2c, aRecIFN)
+  ComplFormSTAT1STAT2c*aRecIFN*STAT1c*STAT2c;
+end
+
+Heterodimer_complex_formation_1 is "Heterodimer complex formation_1"
+
+function Homodimer_complex_formation_1(ComplFormSTAT1dimc, STAT1c, aRecIFN)
+  ComplFormSTAT1dimc*aRecIFN*STAT1c*STAT1c;
+end
+
+Homodimer_complex_formation_1 is "Homodimer complex formation_1"
+
+function OccGAS_ISREbs_formation_by_ISGF3_1(ISGF3n, genOccGAS_ISREbsByISGF3n)
+  genOccGAS_ISREbsByISGF3n*ISGF3n;
+end
+
+OccGAS_ISREbs_formation_by_ISGF3_1 is "OccGAS_ISREbs formation by ISGF3_1"
+
+function SOCS3_synthesis_1(SOCS3mRNA, synthSOCS3)
+  synthSOCS3*SOCS3mRNA;
+end
+
+SOCS3_synthesis_1 is "SOCS3 synthesis_1"
+
+function STAT1mRNA_production_by_ISRE_1(OccGAS_ISREbs, kmSTAT1, synthSTAT1mRNA)
+  synthSTAT1mRNA*OccGAS_ISREbs/(kmSTAT1 + OccGAS_ISREbs);
+end
+
+STAT1mRNA_production_by_ISRE_1 is "STAT1mRNA production by ISRE_1"
+
+function STAT2mRNA_production_by_ISRE_1(OccGAS_ISREbs, synthSTAT2mRNA)
+  synthSTAT2mRNA*OccGAS_ISREbs;
+end
+
+STAT2mRNA_production_by_ISRE_1 is "STAT2mRNA production by ISRE_1"
+
+function IRF9mRNA_production_by_ISRE_1(OccGAS_ISREbs, kmIRF9, synthIRF9mRNA)
+  synthIRF9mRNA*OccGAS_ISREbs/(kmIRF9 + OccGAS_ISREbs);
+end
+
+IRF9mRNA_production_by_ISRE_1 is "IRF9mRNA production by ISRE_1"
+
+function IRF2mRNA_production_by_ISRE_1(OccGAS_ISREbs, synthIRF2mRNA)
+  synthIRF2mRNA*OccGAS_ISREbs;
+end
+
+IRF2mRNA_production_by_ISRE_1 is "IRF2mRNA production by ISRE_1"
+
+function USP18mRNA_production_by_ISRE_1(OccGAS_ISREbs, synthUSP18mRNA)
+  synthUSP18mRNA*OccGAS_ISREbs;
+end
+
+USP18mRNA_production_by_ISRE_1 is "USP18mRNA production by ISRE_1"
+
+function SOCS1mRNA_production_by_ISRE_1(OccGAS_ISREbs, synthSOCS1mRNA)
+  synthSOCS1mRNA*OccGAS_ISREbs;
+end
+
+SOCS1mRNA_production_by_ISRE_1 is "SOCS1mRNA production by ISRE_1"
+
+function SOCS1mRNA_decay_1(IRF2, SOCS1mRNA, hlSOCS1mRNA)
+  hlSOCS1mRNA*SOCS1mRNA*(1 + IRF2);
+end
+
+SOCS1mRNA_decay_1 is "SOCS1mRNA decay_1"
+
+function SOCS3mRNA_production_by_ISRE_1(OccGASbs, synthSOCS3mRNA)
+  synthSOCS3mRNA*OccGASbs;
+end
+
+SOCS3mRNA_production_by_ISRE_1 is "SOCS3mRNA production by ISRE_1"
+
+function Linear_chain_for_time_delay_in_STAT1_translation_1(STAT1mRNA, kmsynthSTAT1, synthSTAT1)
+  synthSTAT1*STAT1mRNA/(kmsynthSTAT1 + STAT1mRNA);
+end
+
+Linear_chain_for_time_delay_in_STAT1_translation_1 is "Linear chain for time delay in STAT1 translation_1"
+
+function Linear_chain_for_time_delay_in_STAT2_translation_1(STAT2mRNA, synthSTAT2)
+  synthSTAT2*STAT2mRNA;
+end
+
+Linear_chain_for_time_delay_in_STAT2_translation_1 is "Linear chain for time delay in STAT2 translation_1"
+
+function Linear_chain_for_time_delay_in_IRF9_translation_1(IRF9mRNA, synthIRF9)
+  synthIRF9*IRF9mRNA;
+end
+
+Linear_chain_for_time_delay_in_IRF9_translation_1 is "Linear chain for time delay in IRF9 translation_1"
+
+function Linear_chain_for_time_delay_in_USP18_translation_1(USP18mRNA, synthUSP18)
+  synthUSP18*USP18mRNA;
+end
+
+Linear_chain_for_time_delay_in_USP18_translation_1 is "Linear chain for time delay in USP18 translation_1"
+
+function Linear_chain_for_time_delay_in_SOCS1_translation_1(SOCS1mRNA, synthSOCS1)
+  synthSOCS1*SOCS1mRNA;
+end
+
+Linear_chain_for_time_delay_in_SOCS1_translation_1 is "Linear chain for time delay in SOCS1 translation_1"
+
+
+model *Kok2020___IFNalpha_induced_signaling_in_Huh7_5_cells()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species Rec in compartment_, SOCS1 in compartment_, IFN in compartment_;
+  species aRecIFN in compartment_, USP18 in compartment_, STAT1c in compartment_;
+  species STAT2c in compartment_, pSTAT1pSTAT2c in compartment_, pSTAT1pSTAT2n in compartment_;
+  species STAT1n in compartment_, STAT2n in compartment_, ISGF3c in compartment_;
+  species ISGF3n in compartment_, IRF9n in compartment_, pSTAT1dimc in compartment_;
+  species pSTAT1dimn in compartment_, OccGAS_ISREbs in compartment_, OccGASbs in compartment_;
+  species IRF9c in compartment_, SOCS3 in compartment_, STAT1mRNA in compartment_;
+  species STAT2mRNA in compartment_, IRF9mRNA in compartment_, IRF2mRNA in compartment_;
+  species IRF2 in compartment_, USP18mRNA in compartment_, SOCS1mRNA in compartment_;
+  species SOCS3mRNA in compartment_, STAT1_LC_1 in compartment_, STAT1_LC_2 in compartment_;
+  species STAT1_LC_3 in compartment_, STAT2_LC_1 in compartment_, STAT2_LC_2 in compartment_;
+  species STAT2_LC_3 in compartment_, STAT2_LC_4 in compartment_, STAT2_LC_5 in compartment_;
+  species IRF9_LC_1 in compartment_, IRF9_LC_2 in compartment_, USP18_LC_1 in compartment_;
+  species USP18_LC_2 in compartment_, SOCS1_LC_1 in compartment_;
+
+  // Assignment Rules:
+  IRF2_mRNA_log10 := log10(IRF2mRNA);
+  IRF9_mRNA_log10 := log10(IRF9mRNA);
+  STAT1mRNA_log10 := log10(STAT1mRNA);
+  STAT2mRNA_log10 := log10(STAT2mRNA);
+  USP18mRNA_log10 := log10(USP18mRNA);
+  SOCS1mRNA_log10 := log10(SOCS1mRNA);
+  SOCS3mRNA_log10 := log10(SOCS3mRNA);
+
+  // Reactions:
+  Receptor_production:  => Rec; compartment_*Constant_flux__irreversible(Receptor_production_v);
+  Receptor_degradation_basal: Rec => ; compartment_*Receptor_degradation_basal_k1*Rec;
+  Receptor_degradation_by_SOCS1: Rec => ; compartment_*Receptor_degradation_by_SOCS1_1(Rec, SOCS1, Receptor_degradation_by_SOCS1_degRecBySOCS);
+  Active_receptor_complex_formation: IFN + Rec => aRecIFN; compartment_*Active_receptor_complex_formation_1(Active_receptor_complex_formation_BindIFN, IFN, Rec, SOCS1, SOCS3, USP18, Active_receptor_complex_formation_kinhBySOCS, Active_receptor_complex_formation_kinhByUSP18);
+  Active_receptor_complex_degradation_basal: aRecIFN => ; compartment_*Active_receptor_complex_degradation_basal_k1*aRecIFN;
+  Active_receptor_complex_degradation_by_SOCS1: aRecIFN => ; compartment_*Active_receptor_complex_degradation_by_SOCS1_1(SOCS1, aRecIFN, Active_receptor_complex_degradation_by_SOCS1_degaRecIFNBySOCS);
+  Active_receptor_complex_degradation_by_USP18: aRecIFN => ; compartment_*Active_receptor_complex_degradation_by_USP18_1(USP18, aRecIFN, Active_receptor_complex_degradation_by_USP18_degByUSP18);
+  Active_receptor_complex_degradation_by_USP18_and_SOCS1__synergy: aRecIFN => ; compartment_*Active_receptor_complex_degradation_by_USP18_and_SOCS1__synergy__1(SOCS1, USP18, aRecIFN, Active_receptor_complex_degradation_by_USP18_and_SOCS1__synergy_degBySOCSandUSP18);
+  USP18_degradation: USP18 => ; compartment_*USP18_degradation_k1*USP18;
+  Heterodimer_complex_formation: STAT1c + STAT2c => pSTAT1pSTAT2c; compartment_*Heterodimer_complex_formation_1(Heterodimer_complex_formation_ComplFormSTAT1STAT2c, STAT1c, STAT2c, aRecIFN);
+  Heterodimer_translocation_to_nucleus: pSTAT1pSTAT2c => pSTAT1pSTAT2n; compartment_*Heterodimer_translocation_to_nucleus_k1*pSTAT1pSTAT2c;
+  Heterodimer_decay: pSTAT1pSTAT2n => STAT1n + STAT2n; compartment_*Heterodimer_decay_k1*pSTAT1pSTAT2n;
+  ISGF3_complex_formation: pSTAT1pSTAT2c + IRF9c => ISGF3c; compartment_*ISGF3_complex_formation_k1*pSTAT1pSTAT2c*IRF9c;
+  ISGF3_translocation_to_nucleus: ISGF3c => ISGF3n; compartment_*ISGF3_translocation_to_nucleus_k1*ISGF3c;
+  ISGF3_decay: ISGF3n => STAT1n + STAT2n + IRF9n; compartment_*ISGF3_decay_k1*ISGF3n;
+  Homodimer_complex_formation: 2 STAT1c => pSTAT1dimc; compartment_*Homodimer_complex_formation_1(Homodimer_complex_formation_ComplFormSTAT1dimc, STAT1c, aRecIFN);
+  Homodimer_translocation_to_nucleus: pSTAT1dimc => pSTAT1dimn; compartment_*Homodimer_translocation_to_nucleus_k1*pSTAT1dimc;
+  Homodimer_decay: pSTAT1dimn => 2 STAT1n; compartment_*Homodimer_decay_k1*pSTAT1dimn;
+  OccGAS_ISREbs_formation_by_ISGF3:  => OccGAS_ISREbs; compartment_*OccGAS_ISREbs_formation_by_ISGF3_1(ISGF3n, OccGAS_ISREbs_formation_by_ISGF3_genOccGAS_ISREbsByISGF3n);
+  OccGAS_ISREbs_formation_by_heterodimer:  => OccGAS_ISREbs; compartment_*OccGAS_ISREbs_formation_by_heterodimer_0(OccGAS_ISREbs_formation_by_heterodimer_genOccGAS_ISREbsBySTAT1STAT2n, pSTAT1pSTAT2n);
+  OccGAS_ISREbs_decay: OccGAS_ISREbs => ; compartment_*OccGAS_ISREbs_decay_k1*OccGAS_ISREbs;
+  Occupy_GAS_binding_site:  => OccGASbs; compartment_*Occupy_GAS_binding_site_0(Occupy_GAS_binding_site_genOccGASbsBySTAT1dimn, pSTAT1dimn);
+  OccGASbs_0: OccGASbs => ; compartment_*OccGASbs_0_k1*OccGASbs;
+  STAT1_degradation: STAT1c => ; compartment_*STAT1_degradation_k1*STAT1c;
+  STAT1_translocation_to_cytoplasm: STAT1n => STAT1c; compartment_*STAT1_translocation_to_cytoplasm_k1*STAT1n;
+  STAT1_translocation_to_nucleus: STAT1c => STAT1n; compartment_*STAT1_translocation_to_nucleus_k1*STAT1c;
+  STAT2_degradation: STAT2c => ; compartment_*STAT2_degradation_k1*STAT2c;
+  STAT2_translocation_to_cytoplasm: STAT2n => STAT2c; compartment_*STAT2_translocation_to_cytoplasm_k1*STAT2n;
+  STAT2_translocation_to_nucleus: STAT2c => STAT2n; compartment_*STAT2_translocation_to_nucleus_k1*STAT2c;
+  IRF9_translocation_to_cytoplasm: IRF9n => IRF9c; compartment_*IRF9_translocation_to_cytoplasm_k1*IRF9n;
+  IRF9_translocation_to_nucleus: IRF9c => IRF9n; compartment_*IRF9_translocation_to_nucleus_k1*IRF9c;
+  IRF9_degradation: IRF9c => ; compartment_*IRF9_degradation_k1*IRF9c;
+  SOCS1_degradation: SOCS1 => ; compartment_*SOCS1_degradation_k1*SOCS1;
+  SOCS3_synthesis:  => SOCS3; compartment_*SOCS3_synthesis_1(SOCS3mRNA, SOCS3_synthesis_synthSOCS3);
+  SOCS3_degradation: SOCS3 => ; compartment_*SOCS3_degradation_k1*SOCS3;
+  STAT1_mRNA_basal_production:  => STAT1mRNA; compartment_*Constant_flux__irreversible(STAT1_mRNA_basal_production_v);
+  STAT1mRNA_production_by_ISRE:  => STAT1mRNA; compartment_*STAT1mRNA_production_by_ISRE_1(OccGAS_ISREbs, STAT1mRNA_production_by_ISRE_kmSTAT1, STAT1mRNA_production_by_ISRE_synthSTAT1mRNA);
+  STAT1mRNA_decay: STAT1mRNA => ; compartment_*STAT1mRNA_decay_k1*STAT1mRNA;
+  STAT2mRNA_basal_production:  => STAT2mRNA; compartment_*Constant_flux__irreversible(STAT2mRNA_basal_production_v);
+  STAT2mRNA_production_by_ISRE:  => STAT2mRNA; compartment_*STAT2mRNA_production_by_ISRE_1(OccGAS_ISREbs, STAT2mRNA_production_by_ISRE_synthSTAT2mRNA);
+  STAT2mRNA_decay: STAT2mRNA => ; compartment_*STAT2mRNA_decay_k1*STAT2mRNA;
+  IRF9mRNA_basal_production:  => IRF9mRNA; compartment_*Constant_flux__irreversible(IRF9mRNA_basal_production_v);
+  IRF9mRNA_production_by_ISRE:  => IRF9mRNA; compartment_*IRF9mRNA_production_by_ISRE_1(OccGAS_ISREbs, IRF9mRNA_production_by_ISRE_kmIRF9, IRF9mRNA_production_by_ISRE_synthIRF9mRNA);
+  IRF9mRNA_decay: IRF9mRNA => ; compartment_*IRF9mRNA_decay_k1*IRF9mRNA;
+  IRF2mRNA_basal_production:  => IRF2mRNA; compartment_*Constant_flux__irreversible(IRF2mRNA_basal_production_v);
+  IRF2mRNA_production_by_ISRE:  => IRF2mRNA; compartment_*IRF2mRNA_production_by_ISRE_1(OccGAS_ISREbs, IRF2mRNA_production_by_ISRE_synthIRF2mRNA);
+  IRF2_translation_and_mRNA_decay: IRF2mRNA => IRF2; compartment_*IRF2_translation_and_mRNA_decay_k1*IRF2mRNA;
+  USP18mRNA_basal_production:  => USP18mRNA; compartment_*Constant_flux__irreversible(USP18mRNA_basal_production_v);
+  USP18mRNA_production_by_ISRE:  => USP18mRNA; compartment_*USP18mRNA_production_by_ISRE_1(OccGAS_ISREbs, USP18mRNA_production_by_ISRE_synthUSP18mRNA);
+  USP18mRNA_decay: USP18mRNA => ; compartment_*USP18mRNA_decay_k1*USP18mRNA;
+  SOCS1mRNA_basal_production:  => SOCS1mRNA; compartment_*Constant_flux__irreversible(SOCS1mRNA_basal_production_v);
+  SOCS1mRNA_production_by_ISRE:  => SOCS1mRNA; compartment_*SOCS1mRNA_production_by_ISRE_1(OccGAS_ISREbs, SOCS1mRNA_production_by_ISRE_synthSOCS1mRNA);
+  SOCS1mRNA_decay: SOCS1mRNA => ; compartment_*SOCS1mRNA_decay_1(IRF2, SOCS1mRNA, SOCS1mRNA_decay_hlSOCS1mRNA);
+  SOCS3mRNA_basal_production:  => SOCS3mRNA; compartment_*Constant_flux__irreversible(SOCS3mRNA_basal_production_v);
+  SOCS3mRNA_production_by_ISRE:  => SOCS3mRNA; compartment_*SOCS3mRNA_production_by_ISRE_1(OccGASbs, SOCS3mRNA_production_by_ISRE_synthSOCS3mRNA);
+  SOCS3mRNA_decay: SOCS3mRNA => ; compartment_*SOCS3mRNA_decay_k1*SOCS3mRNA;
+  IRF2_degradation: IRF2 => ; compartment_*IRF2_degradation_k1*IRF2;
+  Linear_chain_for_time_delay_in_STAT1_translation:  => STAT1_LC_1; compartment_*Linear_chain_for_time_delay_in_STAT1_translation_1(STAT1mRNA, Linear_chain_for_time_delay_in_STAT1_translation_kmsynthSTAT1, Linear_chain_for_time_delay_in_STAT1_translation_synthSTAT1);
+  STAT1_chain_step_1: STAT1_LC_1 => STAT1_LC_2; compartment_*STAT1_chain_step_1_k1*STAT1_LC_1;
+  STAT1_chain_step_2: STAT1_LC_2 => STAT1_LC_3; compartment_*STAT1_chain_step_2_k1*STAT1_LC_2;
+  STAT1_chain_step3: STAT1_LC_3 => STAT1c; compartment_*STAT1_chain_step3_k1*STAT1_LC_3;
+  Linear_chain_for_time_delay_in_STAT2_translation:  => STAT2_LC_1; compartment_*Linear_chain_for_time_delay_in_STAT2_translation_1(STAT2mRNA, Linear_chain_for_time_delay_in_STAT2_translation_synthSTAT2);
+  STAT2_chain_step_1: STAT2_LC_1 => STAT2_LC_2; compartment_*STAT2_chain_step_1_k1*STAT2_LC_1;
+  STAT2_chain_step_2: STAT2_LC_2 => STAT2_LC_3; compartment_*STAT2_chain_step_2_k1*STAT2_LC_2;
+  STAT2_chain_step_3: STAT2_LC_3 => STAT2_LC_4; compartment_*STAT2_chain_step_3_k1*STAT2_LC_3;
+  STAT2_chain_step_4: STAT2_LC_4 => STAT2_LC_5; compartment_*STAT2_chain_step_4_k1*STAT2_LC_4;
+  STAT2_chain_step_5: STAT2_LC_5 => STAT2c; compartment_*STAT2_chain_step_5_k1*STAT2_LC_5;
+  Linear_chain_for_time_delay_in_IRF9_translation:  => IRF9_LC_1; compartment_*Linear_chain_for_time_delay_in_IRF9_translation_1(IRF9mRNA, Linear_chain_for_time_delay_in_IRF9_translation_synthIRF9);
+  IRF9_chain_step_1: IRF9_LC_1 => IRF9_LC_2; compartment_*IRF9_chain_step_1_k1*IRF9_LC_1;
+  IRF9_chain_step_2: IRF9_LC_2 => IRF9c; compartment_*IRF9_chain_step_2_k1*IRF9_LC_2;
+  Linear_chain_for_time_delay_in_USP18_translation:  => USP18_LC_1; compartment_*Linear_chain_for_time_delay_in_USP18_translation_1(USP18mRNA, Linear_chain_for_time_delay_in_USP18_translation_synthUSP18);
+  USP18_chain_step_1: USP18_LC_1 => USP18_LC_2; compartment_*USP18_chain_step_1_k1*USP18_LC_1;
+  USP18_chain_step_2: USP18_LC_2 => USP18; compartment_*USP18_chain_step_2_k1*USP18_LC_2;
+  Linear_chain_for_time_delay_in_SOCS1_translation:  => SOCS1_LC_1; compartment_*Linear_chain_for_time_delay_in_SOCS1_translation_1(SOCS1mRNA, Linear_chain_for_time_delay_in_SOCS1_translation_synthSOCS1);
+  SOCS1_chain_step_1: SOCS1_LC_1 => SOCS1; compartment_*SOCS1_chain_step_1_k1*SOCS1_LC_1;
+
+  // Species initializations:
+  Rec = 1989;
+  SOCS1 = 0.8286;
+  IFN = 50000;
+  aRecIFN = 0;
+  USP18 = 1746;
+  STAT1c = 486300;
+  STAT2c = 30390;
+  pSTAT1pSTAT2c = 0;
+  pSTAT1pSTAT2n = 0;
+  STAT1n = 48630;
+  STAT2n = 3039;
+  ISGF3c = 0;
+  ISGF3n = 0;
+  IRF9n = 140;
+  pSTAT1dimc = 0;
+  pSTAT1dimn = 0;
+  OccGAS_ISREbs = 0;
+  OccGASbs = 0;
+  IRF9c = 1400;
+  SOCS3 = 1.081;
+  STAT1mRNA = 1.012;
+  STAT2mRNA = 0.8458;
+  IRF9mRNA = 0.8606;
+  IRF2mRNA = 0.9258;
+  IRF2 = 1.781;
+  USP18mRNA = 0.7077;
+  SOCS1mRNA = 0.8286;
+  SOCS3mRNA = 1.081;
+  STAT1_LC_1 = 460600;
+  STAT1_LC_2 = 460600;
+  STAT1_LC_3 = 460600;
+  STAT2_LC_1 = 2520;
+  STAT2_LC_2 = 2520;
+  STAT2_LC_3 = 2520;
+  STAT2_LC_4 = 2520;
+  STAT2_LC_5 = 2520;
+  IRF9_LC_1 = 249.7;
+  IRF9_LC_2 = 249.7;
+  USP18_LC_1 = 1745;
+  USP18_LC_2 = 1745;
+  SOCS1_LC_1 = 0.8286;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  Receptor_production_v = 16.98;
+  Receptor_degradation_basal_k1 = 2.06e-05;
+  Receptor_degradation_by_SOCS1_degRecBySOCS = 0.01028;
+  Active_receptor_complex_formation_BindIFN = 0.0593;
+  Active_receptor_complex_formation_kinhBySOCS = 889.4;
+  Active_receptor_complex_formation_kinhByUSP18 = 0.0001364;
+  Active_receptor_complex_degradation_basal_k1 = 19840;
+  Active_receptor_complex_degradation_by_SOCS1_degaRecIFNBySOCS = 0.8837;
+  Active_receptor_complex_degradation_by_USP18_degByUSP18 = 0.01644;
+  Active_receptor_complex_degradation_by_USP18_and_SOCS1__synergy_degBySOCSandUSP18 = 27.82;
+  USP18_degradation_k1 = 0.6719;
+  Heterodimer_complex_formation_ComplFormSTAT1STAT2c = 0.001112;
+  Heterodimer_translocation_to_nucleus_k1 = 0.1855;
+  Heterodimer_decay_k1 = 1.187;
+  ISGF3_complex_formation_k1 = 0.008975;
+  ISGF3_translocation_to_nucleus_k1 = 0.8636;
+  ISGF3_decay_k1 = 3.407;
+  Homodimer_complex_formation_ComplFormSTAT1dimc = 7.12e-06;
+  Homodimer_translocation_to_nucleus_k1 = 4.296;
+  Homodimer_decay_k1 = 10.53;
+  OccGAS_ISREbs_formation_by_ISGF3_genOccGAS_ISREbsByISGF3n = 0.0003583;
+  OccGAS_ISREbs_formation_by_heterodimer_genOccGAS_ISREbsBySTAT1STAT2n = 0.0002972;
+  OccGAS_ISREbs_decay_k1 = 0.5519;
+  Occupy_GAS_binding_site_genOccGASbsBySTAT1dimn = 1395;
+  OccGASbs_0_k1 = 1395;
+  STAT1_degradation_k1 = 0.4996;
+  STAT1_translocation_to_cytoplasm_k1 = 0.9702;
+  STAT1_translocation_to_nucleus_k1 = 0.09702;
+  STAT2_degradation_k1 = 0.1468;
+  STAT2_translocation_to_cytoplasm_k1 = 1.81;
+  STAT2_translocation_to_nucleus_k1 = 0.181;
+  IRF9_translocation_to_cytoplasm_k1 = 2981;
+  IRF9_translocation_to_nucleus_k1 = 298.1;
+  IRF9_degradation_k1 = 0.2028;
+  SOCS1_degradation_k1 = 0.9029;
+  SOCS3_synthesis_synthSOCS3 = 1958;
+  SOCS3_degradation_k1 = 1958;
+  STAT1_mRNA_basal_production_v = 0.2395;
+  STAT1mRNA_production_by_ISRE_kmSTAT1 = 0.9761;
+  STAT1mRNA_production_by_ISRE_synthSTAT1mRNA = 4.375;
+  STAT1mRNA_decay_k1 = 0.2367;
+  STAT2mRNA_basal_production_v = 0.2069;
+  STAT2mRNA_production_by_ISRE_synthSTAT2mRNA = 1.561;
+  STAT2mRNA_decay_k1 = 0.2446;
+  IRF9mRNA_basal_production_v = 0.3605;
+  IRF9mRNA_production_by_ISRE_kmIRF9 = 0.121;
+  IRF9mRNA_production_by_ISRE_synthIRF9mRNA = 18.62;
+  IRF9mRNA_decay_k1 = 0.4189;
+  IRF2mRNA_basal_production_v = 0.9833;
+  IRF2mRNA_production_by_ISRE_synthIRF2mRNA = 0.6775;
+  IRF2_translation_and_mRNA_decay_k1 = 1.062;
+  USP18mRNA_basal_production_v = 0.06442;
+  USP18mRNA_production_by_ISRE_synthUSP18mRNA = 2.784;
+  USP18mRNA_decay_k1 = 0.09103;
+  SOCS1mRNA_basal_production_v = 1.301;
+  SOCS1mRNA_production_by_ISRE_synthSOCS1mRNA = 8.848;
+  SOCS1mRNA_decay_hlSOCS1mRNA = 0.5644;
+  SOCS3mRNA_basal_production_v = 1.257;
+  SOCS3mRNA_production_by_ISRE_synthSOCS3mRNA = 0.01205;
+  SOCS3mRNA_decay_k1 = 1.163;
+  IRF2_degradation_k1 = 0.552;
+  Linear_chain_for_time_delay_in_STAT1_translation_kmsynthSTAT1 = 5.373;
+  Linear_chain_for_time_delay_in_STAT1_translation_synthSTAT1 = 1533000;
+  STAT1_chain_step_1_k1 = 0.5275;
+  STAT1_chain_step_2_k1 = 0.5275;
+  STAT1_chain_step3_k1 = 0.5275;
+  Linear_chain_for_time_delay_in_STAT2_translation_synthSTAT2 = 5274;
+  STAT2_chain_step_1_k1 = 1.77;
+  STAT2_chain_step_2_k1 = 1.77;
+  STAT2_chain_step_3_k1 = 1.77;
+  STAT2_chain_step_4_k1 = 1.77;
+  STAT2_chain_step_5_k1 = 1.77;
+  Linear_chain_for_time_delay_in_IRF9_translation_synthIRF9 = 329.9;
+  IRF9_chain_step_1_k1 = 1.137;
+  IRF9_chain_step_2_k1 = 1.137;
+  Linear_chain_for_time_delay_in_USP18_translation_synthUSP18 = 1658;
+  USP18_chain_step_1_k1 = 0.6722;
+  USP18_chain_step_2_k1 = 0.6722;
+  Linear_chain_for_time_delay_in_SOCS1_translation_synthSOCS1 = 0.9029;
+  SOCS1_chain_step_1_k1 = 0.9029;
+
+  // Other declarations:
+  var IRF2_mRNA_log10, IRF9_mRNA_log10, STAT1mRNA_log10, STAT2mRNA_log10;
+  var USP18mRNA_log10, SOCS1mRNA_log10, SOCS3mRNA_log10;
+  const compartment_;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = litre;
+  unit time_unit = 3600 second;
+  unit substance = 1e-9 mole;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "cell";
+  IFN is "IFNa";
+  aRecIFN is "aRecIFNa";
+  Receptor_production is "Receptor production";
+  Receptor_degradation_basal is "Receptor degradation basal";
+  Receptor_degradation_by_SOCS1 is "Receptor degradation by SOCS1";
+  Active_receptor_complex_formation is "Active receptor complex formation";
+  Active_receptor_complex_degradation_basal is "Active receptor complex degradation basal";
+  Active_receptor_complex_degradation_by_SOCS1 is "Active receptor complex degradation by SOCS1";
+  Active_receptor_complex_degradation_by_USP18 is "Active receptor complex degradation by USP18";
+  Active_receptor_complex_degradation_by_USP18_and_SOCS1__synergy is "Active receptor complex degradation by USP18 and SOCS1 (synergy)";
+  USP18_degradation is "USP18 degradation";
+  Heterodimer_complex_formation is "Heterodimer complex formation";
+  Heterodimer_translocation_to_nucleus is "Heterodimer translocation to nucleus";
+  Heterodimer_decay is "Heterodimer decay";
+  ISGF3_complex_formation is "ISGF3 complex formation";
+  ISGF3_translocation_to_nucleus is "ISGF3 translocation to nucleus";
+  ISGF3_decay is "ISGF3 decay";
+  Homodimer_complex_formation is "Homodimer complex formation";
+  Homodimer_translocation_to_nucleus is "Homodimer translocation to nucleus";
+  Homodimer_decay is "Homodimer decay";
+  OccGAS_ISREbs_formation_by_ISGF3 is "OccGAS_ISREbs formation by ISGF3";
+  OccGAS_ISREbs_formation_by_heterodimer is "OccGAS_ISREbs formation by heterodimer";
+  OccGAS_ISREbs_decay is "OccGAS_ISREbs decay";
+  Occupy_GAS_binding_site is "Occupy GAS binding site";
+  OccGASbs_0 is "OccGASbs";
+  STAT1_degradation is "STAT1 degradation";
+  STAT1_translocation_to_cytoplasm is "STAT1 translocation to cytoplasm";
+  STAT1_translocation_to_nucleus is "STAT1 translocation to nucleus";
+  STAT2_degradation is "STAT2 degradation";
+  STAT2_translocation_to_cytoplasm is "STAT2 translocation to cytoplasm";
+  STAT2_translocation_to_nucleus is "STAT2 translocation to nucleus";
+  IRF9_translocation_to_cytoplasm is "IRF9 translocation to cytoplasm";
+  IRF9_translocation_to_nucleus is "IRF9 translocation to nucleus";
+  IRF9_degradation is "IRF9 degradation";
+  SOCS1_degradation is "SOCS1 degradation";
+  SOCS3_synthesis is "SOCS3 synthesis";
+  SOCS3_degradation is "SOCS3 degradation";
+  STAT1_mRNA_basal_production is "STAT1 mRNA basal production";
+  STAT1mRNA_production_by_ISRE is "STAT1mRNA production by ISRE";
+  STAT1mRNA_decay is "STAT1mRNA decay";
+  STAT2mRNA_basal_production is "STAT2mRNA basal production";
+  STAT2mRNA_production_by_ISRE is "STAT2mRNA production by ISRE";
+  STAT2mRNA_decay is "STAT2mRNA decay";
+  IRF9mRNA_basal_production is "IRF9mRNA basal production";
+  IRF9mRNA_production_by_ISRE is "IRF9mRNA production by ISRE";
+  IRF9mRNA_decay is "IRF9mRNA decay";
+  IRF2mRNA_basal_production is "IRF2mRNA basal production";
+  IRF2mRNA_production_by_ISRE is "IRF2mRNA production by ISRE";
+  IRF2_translation_and_mRNA_decay is "IRF2 translation and mRNA decay";
+  USP18mRNA_basal_production is "USP18mRNA basal production";
+  USP18mRNA_production_by_ISRE is "USP18mRNA production by ISRE";
+  USP18mRNA_decay is "USP18mRNA decay";
+  SOCS1mRNA_basal_production is "SOCS1mRNA basal production";
+  SOCS1mRNA_production_by_ISRE is "SOCS1mRNA production by ISRE";
+  SOCS1mRNA_decay is "SOCS1mRNA decay";
+  SOCS3mRNA_basal_production is "SOCS3mRNA basal production";
+  SOCS3mRNA_production_by_ISRE is "SOCS3mRNA production by ISRE";
+  SOCS3mRNA_decay is "SOCS3mRNA decay";
+  IRF2_degradation is "IRF2 degradation";
+  Linear_chain_for_time_delay_in_STAT1_translation is "Linear chain for time delay in STAT1 translation";
+  STAT1_chain_step_1 is "STAT1 chain step 1";
+  STAT1_chain_step_2 is "STAT1 chain step 2";
+  STAT1_chain_step3 is "STAT1 chain step3";
+  Linear_chain_for_time_delay_in_STAT2_translation is "Linear chain for time delay in STAT2 translation";
+  STAT2_chain_step_1 is "STAT2 chain step 1";
+  STAT2_chain_step_2 is "STAT2 chain step 2";
+  STAT2_chain_step_3 is "STAT2 chain step 3";
+  STAT2_chain_step_4 is "STAT2 chain step 4";
+  STAT2_chain_step_5 is "STAT2 chain step 5";
+  Linear_chain_for_time_delay_in_IRF9_translation is "Linear chain for time delay in IRF9 translation";
+  IRF9_chain_step_1 is "IRF9 chain step 1";
+  IRF9_chain_step_2 is "IRF9 chain step 2";
+  Linear_chain_for_time_delay_in_USP18_translation is "Linear chain for time delay in USP18 translation";
+  USP18_chain_step_1 is "USP18 chain step 1";
+  USP18_chain_step_2 is "USP18 chain step 2";
+  Linear_chain_for_time_delay_in_SOCS1_translation is "Linear chain for time delay in SOCS1 translation";
+  SOCS1_chain_step_1 is "SOCS1 chain step 1";
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/efo/0005704"
+  Rec identity "http://identifiers.org/uniprot/P17181"
+  SOCS1 identity "http://identifiers.org/uniprot/O15524"
+  IFN identity "http://identifiers.org/uniprot/P01562"
+  aRecIFN part "http://identifiers.org/uniprot/P17181"
+  aRecIFN part "http://identifiers.org/uniprot/P01562"
+  aRecIFN property "http://identifiers.org/go/GO:0043235"
+  USP18 identity "http://identifiers.org/uniprot/Q9UMW8"
+  STAT1c identity "http://identifiers.org/uniprot/P42224"
+  STAT1c property "http://identifiers.org/ncit/C13226"
+  STAT2c identity "http://identifiers.org/uniprot/P52630"
+  STAT2c property "http://identifiers.org/ncit/C13226"
+  pSTAT1pSTAT2c part "http://identifiers.org/uniprot/P42224"
+  pSTAT1pSTAT2c part "http://identifiers.org/uniprot/P52630"
+  pSTAT1pSTAT2c property "http://identifiers.org/pato/PATO:0002220"
+  pSTAT1pSTAT2c property "http://identifiers.org/ncit/C13226"
+  pSTAT1pSTAT2n part "http://identifiers.org/uniprot/P42224"
+  pSTAT1pSTAT2n part "http://identifiers.org/uniprot/P52630"
+  pSTAT1pSTAT2n property "http://identifiers.org/pato/PATO:0002220"
+  pSTAT1pSTAT2n property "http://identifiers.org/ncit/C13361"
+  STAT1n identity "http://identifiers.org/uniprot/P42224"
+  STAT1n property "http://identifiers.org/ncit/C13361"
+  STAT2n identity "http://identifiers.org/uniprot/P52630"
+  STAT2n property "http://identifiers.org/ncit/C13361"
+  ISGF3c part "http://identifiers.org/uniprot/Q00978"
+  ISGF3c part "http://identifiers.org/uniprot/P52630"
+  ISGF3c part "http://identifiers.org/uniprot/P42224"
+  ISGF3c property "http://identifiers.org/ncit/C13226"
+  ISGF3n part "http://identifiers.org/uniprot/Q00978"
+  ISGF3n part "http://identifiers.org/uniprot/P42224"
+  ISGF3n part "http://identifiers.org/uniprot/P52630"
+  ISGF3n property "http://identifiers.org/ncit/C13361"
+  IRF9n identity "http://identifiers.org/uniprot/Q00978"
+  IRF9n property "http://identifiers.org/ncit/C13361"
+  pSTAT1dimc hypernym "http://identifiers.org/uniprot/P42224"
+  pSTAT1dimc property "http://identifiers.org/sbo/SBO:0000607"
+  pSTAT1dimc property "http://identifiers.org/pato/PATO:0002220"
+  pSTAT1dimc property "http://identifiers.org/ncit/C13226"
+  pSTAT1dimn hypernym "http://identifiers.org/uniprot/P42224"
+  pSTAT1dimn property "http://identifiers.org/pato/PATO:0002220"
+  pSTAT1dimn property "http://identifiers.org/ncit/C13361"
+  pSTAT1dimn property "http://identifiers.org/sbo/SBO:0000607"
+  OccGAS_ISREbs property "http://identifiers.org/obi/OBI:0000794"
+  OccGAS_ISREbs property "http://identifiers.org/omit/OMIT:0020133"
+  OccGASbs property "http://identifiers.org/obi/OBI:0000794"
+  IRF9c identity "http://identifiers.org/uniprot/Q00978"
+  IRF9c property "http://identifiers.org/ncit/C13226"
+  SOCS3 identity "http://identifiers.org/uniprot/O14543"
+  STAT1mRNA identity "http://identifiers.org/ncit/C813"
+  STAT1mRNA hypernym "http://identifiers.org/uniprot/P42224"
+  STAT2mRNA identity "http://identifiers.org/ncit/C813"
+  STAT2mRNA hypernym "http://identifiers.org/uniprot/P52630"
+  IRF9mRNA identity "http://identifiers.org/ncit/C813"
+  IRF9mRNA hypernym "http://identifiers.org/uniprot/Q00978"
+  IRF2mRNA identity "http://identifiers.org/ncit/C813"
+  IRF2mRNA hypernym "http://identifiers.org/uniprot/P14316"
+  IRF2 identity "http://identifiers.org/uniprot/P14316"
+  USP18mRNA identity "http://identifiers.org/ncit/C813"
+  USP18mRNA hypernym "http://identifiers.org/uniprot/Q9UMW8"
+  SOCS1mRNA identity "http://identifiers.org/ncit/C813"
+  SOCS1mRNA hypernym "http://identifiers.org/uniprot/O15524"
+  SOCS3mRNA identity "http://identifiers.org/ncit/C813"
+  SOCS3mRNA hypernym "http://identifiers.org/uniprot/O14543"
+  STAT1_LC_1 class "http://identifiers.org/uniprot/P42224",
+                   "http://identifiers.org/ncit/C80450"
+  STAT1_LC_1 hypernym "http://identifiers.org/uniprot/P42224"
+  STAT1_LC_2 class "http://identifiers.org/uniprot/P42224",
+                   "http://identifiers.org/ncit/C80450"
+  STAT1_LC_2 propertyBearer "http://identifiers.org/uniprot/P42224"
+  STAT1_LC_3 class "http://identifiers.org/uniprot/P42224",
+                   "http://identifiers.org/ncit/C80450"
+  STAT1_LC_3 hypernym "http://identifiers.org/uniprot/P42224"
+  STAT2_LC_1 class "http://identifiers.org/uniprot/P52630",
+                   "http://identifiers.org/ncit/C80450"
+  STAT2_LC_1 hypernym "http://identifiers.org/uniprot/P52630"
+  STAT2_LC_2 class "http://identifiers.org/uniprot/P52630",
+                   "http://identifiers.org/ncit/C80450"
+  STAT2_LC_2 hypernym "http://identifiers.org/uniprot/P52630"
+  STAT2_LC_3 class "http://identifiers.org/uniprot/P52630",
+                   "http://identifiers.org/ncit/C80450"
+  STAT2_LC_3 hypernym "http://identifiers.org/uniprot/P52630"
+  STAT2_LC_4 class "http://identifiers.org/uniprot/P52630",
+                   "http://identifiers.org/ncit/C80450"
+  STAT2_LC_4 hypernym "http://identifiers.org/uniprot/P52630"
+  STAT2_LC_5 class "http://identifiers.org/uniprot/P52630",
+                   "http://identifiers.org/ncit/C80450"
+  STAT2_LC_5 hypernym "http://identifiers.org/uniprot/P52630"
+  IRF9_LC_1 class "http://identifiers.org/uniprot/Q00978",
+                  "http://identifiers.org/ncit/C80450"
+  IRF9_LC_1 hypernym "http://identifiers.org/uniprot/Q00978"
+  IRF9_LC_2 class "http://identifiers.org/uniprot/Q00978",
+                  "http://identifiers.org/ncit/C80450"
+  IRF9_LC_2 hypernym "http://identifiers.org/uniprot/Q00978"
+  USP18_LC_1 class "http://identifiers.org/uniprot/Q9UMW8",
+                   "http://identifiers.org/ncit/C80450"
+  USP18_LC_1 hypernym "http://identifiers.org/uniprot/Q9UMW8"
+  USP18_LC_2 class "http://identifiers.org/uniprot/Q9UMW8",
+                   "http://identifiers.org/ncit/C80450"
+  USP18_LC_2 hypernym "http://identifiers.org/uniprot/Q9UMW8"
+  SOCS1_LC_1 class "http://identifiers.org/uniprot/O15524",
+                   "http://identifiers.org/ncit/C80450"
+  SOCS1_LC_1 hypernym "http://identifiers.org/uniprot/O15524"
+  Receptor_production class "http://identifiers.org/sbo/SBO:0000393"
+  Receptor_degradation_basal hypernym "http://identifiers.org/go/GO:0032801"
+  Receptor_degradation_by_SOCS1 hypernym "http://identifiers.org/go/GO:0032801"
+  Active_receptor_complex_formation property "http://identifiers.org/go/GO:0043235"
+  Active_receptor_complex_degradation_basal property "http://identifiers.org/sbo/SBO:0000179"
+  Active_receptor_complex_degradation_by_SOCS1 property "http://identifiers.org/sbo/SBO:0000179"
+  Active_receptor_complex_degradation_by_USP18 property "http://identifiers.org/sbo/SBO:0000179"
+  Active_receptor_complex_degradation_by_USP18_and_SOCS1__synergy property "http://identifiers.org/sbo/SBO:0000179"
+  USP18_degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Heterodimer_complex_formation property "http://identifiers.org/sbo/SBO:0000609"
+  Heterodimer_complex_formation property "http://identifiers.org/sbo/SBO:0000526"
+  Heterodimer_translocation_to_nucleus hypernym "http://identifiers.org/ncit/C28506"
+  Heterodimer_decay hypernym "http://identifiers.org/ncit/C75947"
+  ISGF3_complex_formation property "http://identifiers.org/sbo/SBO:0000526"
+  ISGF3_translocation_to_nucleus hypernym "http://identifiers.org/ncit/C28506"
+  ISGF3_decay hypernym "http://identifiers.org/ncit/C75947"
+  Homodimer_complex_formation property "http://identifiers.org/sbo/SBO:0000526"
+  Homodimer_complex_formation property "http://identifiers.org/sbo/SBO:0000608"
+  Homodimer_translocation_to_nucleus hypernym "http://identifiers.org/ncit/C28506"
+  Homodimer_decay hypernym "http://identifiers.org/ncit/C75947"
+  OccGAS_ISREbs_formation_by_ISGF3 hypernym "http://identifiers.org/go/GO:0001046"
+  OccGAS_ISREbs_formation_by_heterodimer hypernym "http://identifiers.org/go/GO:0001046"
+  OccGAS_ISREbs_formation_by_heterodimer property "http://identifiers.org/sbo/SBO:0000609"
+  OccGAS_ISREbs_decay hypernym "http://identifiers.org/ncit/C75947"
+  Occupy_GAS_binding_site hypernym "http://identifiers.org/go/GO:0001047"
+  OccGASbs_0 property "http://identifiers.org/go/GO:0001046"
+  STAT1_degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+  STAT1_translocation_to_cytoplasm hypernym "http://identifiers.org/sbo/SBO:0000185"
+  STAT1_translocation_to_nucleus hypernym "http://identifiers.org/ncit/C28506"
+  STAT2_degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+  STAT2_translocation_to_cytoplasm hypernym "http://identifiers.org/sbo/SBO:0000185"
+  STAT2_translocation_to_nucleus hypernym "http://identifiers.org/ncit/C28506"
+  IRF9_translocation_to_cytoplasm hypernym "http://identifiers.org/sbo/SBO:0000185"
+  IRF9_translocation_to_nucleus hypernym "http://identifiers.org/ncit/C28506"
+  IRF9_degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+  SOCS1_degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+  SOCS3_synthesis hypernym "http://identifiers.org/ncit/C18103"
+  SOCS3_degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+  STAT1_mRNA_basal_production hypernym "http://identifiers.org/sbo/SBO:0000183"
+  STAT1mRNA_production_by_ISRE hypernym "http://identifiers.org/sbo/SBO:0000183"
+  STAT1mRNA_decay hypernym "http://identifiers.org/ncit/C75947"
+  STAT2mRNA_basal_production hypernym "http://identifiers.org/sbo/SBO:0000183"
+  STAT2mRNA_production_by_ISRE hypernym "http://identifiers.org/sbo/SBO:0000183"
+  STAT2mRNA_decay hypernym "http://identifiers.org/ncit/C75947"
+  IRF9mRNA_basal_production hypernym "http://identifiers.org/sbo/SBO:0000393"
+  IRF9mRNA_production_by_ISRE hypernym "http://identifiers.org/sbo/SBO:0000183"
+  IRF9mRNA_decay hypernym "http://identifiers.org/ncit/C75947"
+  IRF2mRNA_basal_production hypernym "http://identifiers.org/sbo/SBO:0000183"
+  IRF2mRNA_production_by_ISRE hypernym "http://identifiers.org/sbo/SBO:0000183"
+  IRF2_translation_and_mRNA_decay hypernym "http://identifiers.org/sbo/SBO:0000184"
+  IRF2_translation_and_mRNA_decay hypernym "http://identifiers.org/ncit/C75947"
+  USP18mRNA_basal_production hypernym "http://identifiers.org/sbo/SBO:0000183"
+  USP18mRNA_production_by_ISRE hypernym "http://identifiers.org/sbo/SBO:0000183"
+  USP18mRNA_decay hypernym "http://identifiers.org/ncit/C75947"
+  SOCS1mRNA_basal_production hypernym "http://identifiers.org/sbo/SBO:0000393"
+  SOCS1mRNA_production_by_ISRE hypernym "http://identifiers.org/sbo/SBO:0000183"
+  SOCS1mRNA_decay hypernym "http://identifiers.org/ncit/C75947"
+  SOCS3mRNA_basal_production hypernym "http://identifiers.org/sbo/SBO:0000393"
+  SOCS3mRNA_production_by_ISRE hypernym "http://identifiers.org/sbo/SBO:0000183"
+  SOCS3mRNA_decay hypernym "http://identifiers.org/ncit/C75947"
+  IRF2_degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Linear_chain_for_time_delay_in_STAT1_translation hypernym "http://identifiers.org/sbo/SBO:0000184"
+  STAT1_chain_step_1 hypernym "http://identifiers.org/omit/0011435"
+  STAT1_chain_step_2 hypernym "http://identifiers.org/omit/0011435"
+  STAT1_chain_step3 hypernym "http://identifiers.org/omit/0011435"
+  Linear_chain_for_time_delay_in_STAT2_translation hypernym "http://identifiers.org/sbo/SBO:0000184"
+  STAT2_chain_step_1 hypernym "http://identifiers.org/omit/0011435"
+  STAT2_chain_step_2 hypernym "http://identifiers.org/omit/0011435"
+  STAT2_chain_step_3 hypernym "http://identifiers.org/omit/0011435"
+  STAT2_chain_step_4 hypernym "http://identifiers.org/omit/0011435"
+  STAT2_chain_step_5 hypernym "http://identifiers.org/omit/0011435"
+  Linear_chain_for_time_delay_in_IRF9_translation hypernym "http://identifiers.org/sbo/SBO:0000184"
+  IRF9_chain_step_1 hypernym "http://identifiers.org/omit/0011435"
+  IRF9_chain_step_2 hypernym "http://identifiers.org/omit/0011435"
+  Linear_chain_for_time_delay_in_USP18_translation hypernym "http://identifiers.org/sbo/SBO:0000184"
+  USP18_chain_step_1 hypernym "http://identifiers.org/omit/0011435"
+  USP18_chain_step_2 hypernym "http://identifiers.org/omit/0011435"
+  Linear_chain_for_time_delay_in_SOCS1_translation hypernym "http://identifiers.org/sbo/SBO:0000184"
+  SOCS1_chain_step_1 property "http://identifiers.org/omit/0011435"
+end
+
+Kok2020___IFNalpha_induced_signaling_in_Huh7_5_cells is "Kok2020 - IFNalpha-induced signaling in Huh7.5 cells"
+
+Kok2020___IFNalpha_induced_signaling_in_Huh7_5_cells description "http://identifiers.org/pubmed/32696599"
+Kok2020___IFNalpha_induced_signaling_in_Huh7_5_cells model_entity_is "http://identifiers.org/biomodels.db/MODEL2005110001",
+                                                                     "http://identifiers.org/biomodels.db/BIOMD0000000959"
+Kok2020___IFNalpha_induced_signaling_in_Huh7_5_cells identity "http://identifiers.org/biomodels.db/MODEL2005110001"
+Kok2020___IFNalpha_induced_signaling_in_Huh7_5_cells container "http://identifiers.org/bto/BTO:0004126"
+Kok2020___IFNalpha_induced_signaling_in_Huh7_5_cells property "http://identifiers.org/go/GO:0060338",
+                                                              "http://identifiers.org/taxonomy/9606",
+                                                              "http://identifiers.org/mamo/MAMO_0000046"

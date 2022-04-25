@@ -1,0 +1,124 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function Differentiate_into_effectors_0(c, y, q, w)
+  c*q*y*w;
+end
+
+Differentiate_into_effectors_0 is "Differentiate into effectors"
+
+function Killed_by_CTL_effectors_0(p, y, z)
+  p*y*z;
+end
+
+Killed_by_CTL_effectors_0 is "Killed by CTL effectors"
+
+function Proliferation_of_CTLp_0(c, x, y, w)
+  c*x*y*w;
+end
+
+Proliferation_of_CTLp_0 is "Proliferation of CTLp"
+
+function Drug_therapy_during_primary_phase_of_infection(s, beta, x, y)
+  s*beta*x*y;
+end
+
+Drug_therapy_during_primary_phase_of_infection is "Drug therapy during primary phase of infection"
+
+
+model *Wodarz1999_CTL_memory_response_HIV()
+
+  // Compartments and Species:
+  compartment COMpartment;
+  species w in COMpartment, x in COMpartment, y in COMpartment, z in COMpartment;
+
+  // Assignment Rules:
+  log_y := log10(y);
+  log_w := log10(w);
+  s := piecewise(1, time < 1, piecewise(1, time > 15, 0.0042));
+
+  // Reactions:
+  Degradation_of_w: w => ; COMpartment*b*w;
+  Degradation_of_x: x => ; COMpartment*d*x;
+  Degradation_of_y: y => ; COMpartment*a*y;
+  Degradation_of_z: z => ; COMpartment*h*z;
+  Differentiate_into_effectors: w => z; COMpartment*Differentiate_into_effectors_0(c, y, q, w);
+  Infection_of_x: x => y; COMpartment*Drug_therapy_during_primary_phase_of_infection(s, beta, x, y);
+  Killed_by_CTL_effectors: y => ; COMpartment*Killed_by_CTL_effectors_0(p, y, z);
+  Production_of_x:  => x; COMpartment*Constant_flux__irreversible(lamda);
+  Proliferation_of_CTLp:  => w; COMpartment*Proliferation_of_CTLp_0(c, x, y, w);
+
+  // Species initializations:
+  w = 0.001;
+  x = 10;
+  y = 0.1;
+  z = 0;
+
+  // Compartment initializations:
+  COMpartment = 1;
+
+  // Variable initializations:
+  lamda = 1;
+  d = 0.1;
+  a = 0.2;
+  b = 0.01;
+  h = 0.1;
+  beta = 1.5;
+  p = 1;
+  q = 0.5;
+  c = 0.1;
+
+  // Other declarations:
+  var log_y, log_w, s;
+  const COMpartment, lamda, d, a, b, h, beta, p, q, c;
+
+  // Unit definitions:
+  unit time_unit = 86400 second;
+
+  // Display Names:
+  time_unit is "time";
+  COMpartment is "Patient";
+  Degradation_of_w is "Degradation of w";
+  Degradation_of_x is "Degradation of x";
+  Degradation_of_y is "Degradation of y";
+  Degradation_of_z is "Degradation of z";
+  Differentiate_into_effectors is "Differentiate into effectors";
+  Infection_of_x is "Infection of x";
+  Killed_by_CTL_effectors is "Killed by CTL effectors";
+  Production_of_x is "Production of x";
+  Proliferation_of_CTLp is "Proliferation of CTLp";
+
+  // CV terms:
+  w hypernym "http://identifiers.org/bto/BTO:0000289"
+  w property "http://identifiers.org/efo/0001651"
+  x hypernym "http://identifiers.org/ncit/C12537"
+  x property "http://identifiers.org/efo/0001460"
+  y hypernym "http://identifiers.org/ncit/C12537"
+  y property "http://identifiers.org/efo/0000764"
+  z hypernym "http://identifiers.org/cl/CL:0000911"
+  z hypernym "http://identifiers.org/bto/BTO:0000289"
+  lamda hypernym "http://identifiers.org/sbo/SBO:0000610"
+  d encodement "http://identifiers.org/go/GO:0008219"
+  a encodement "http://identifiers.org/sbo/SBO:0000179"
+  b encodement "http://identifiers.org/go/GO:0008219"
+  h encodement "http://identifiers.org/go/GO:0008219"
+  beta encodement "http://identifiers.org/efo/0000544"
+  p encodement "http://identifiers.org/go/GO:0001909"
+  q encodement "http://identifiers.org/go/GO:0045065"
+  c encodement "http://identifiers.org/go/GO:0046651"
+  s encodement "http://identifiers.org/go/GO:0042493"
+end
+
+Wodarz1999_CTL_memory_response_HIV is "Wodarz1999 CTL memory response HIV"
+
+Wodarz1999_CTL_memory_response_HIV model_entity_is "http://identifiers.org/biomodels.db/MODEL1006230062",
+                                                   "http://identifiers.org/biomodels.db/BIOMD0000000683"
+Wodarz1999_CTL_memory_response_HIV hypernym "http://identifiers.org/efo/0000764"
+Wodarz1999_CTL_memory_response_HIV hypernym "http://identifiers.org/go/GO:0046718"
+Wodarz1999_CTL_memory_response_HIV container "http://identifiers.org/bto/BTO:0002417"
+Wodarz1999_CTL_memory_response_HIV taxon "http://identifiers.org/taxonomy/9606"
+Wodarz1999_CTL_memory_response_HIV description "http://identifiers.org/pubmed/10588728"

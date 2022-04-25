@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Model_1()
 
   // Compartments and Species:
@@ -18,15 +18,15 @@ model *Model_1()
   Vmaxsamdc' = Kssamdc*(1/(1 + Keq*(D + S))) - Kdsamdc*Vmaxsamdc;
 
   // Reactions:
-  ODC: $ORN => P; cytosol*((Vmaxodc*ORN)/(ODC_Kmodc*(1 + P/ODC_Kipodc) + ORN));
-  SAMdc: SAM => A; cytosol*((Vmaxsamdc/(1 + S/SAMdc_Kissamdc)*SAM)/(SAMdc_Kmsamdc*(1 + SAMdc_Kapsamdc/P + A/SAMdc_Kiasamdc) + SAM));
-  SSAT_for_S: S + $AcCoA => aS + $CoA; cytosol*((1/C*Vmaxssat*S*AcCoA)/(SSAT_for_S_Kmsssat*(1 + D/SSAT_for_S_Kmdssat)*SSAT_for_S_Kmaccoassat*(1 + CoA/SSAT_for_S_Kmcoassat) + SSAT_for_S_Kmaccoassat*(1 + CoA/SSAT_for_S_Kmcoassat)*S + SSAT_for_S_Kmsssat*(1 + D/SSAT_for_S_Kmdssat)*AcCoA + S*AcCoA));
-  SSAT_for_D: D + $AcCoA => aD + $CoA; cytosol*((Vmaxssat*D*AcCoA)/(SSAT_for_D_Kmdssat*(1 + S/SSAT_for_D_Kmsssat)*SSAT_for_D_Kmaccoassat*(1 + CoA/SSAT_for_D_Kmcoassat) + SSAT_for_D_Kmaccoassat*(1 + CoA/SSAT_for_D_Kmcoassat)*D + SSAT_for_D_Kmdssat*(1 + S/SSAT_for_D_Kmsssat)*AcCoA + D*AcCoA));
-  PAO_for_aD: aD => P; cytosol*((PAO_for_aD_Vmpao*aD)/(PAO_for_aD_Kmadpao*(1 + aD/PAO_for_aD_Kmadpao + aS/PAO_for_aD_Kmaspao + D/PAO_for_aD_Kmdpao + S/PAO_for_aD_Kmspao)));
-  PAO_for_aS: aS => D; cytosol*((PAO_for_aS_Vmpao*aS)/(PAO_for_aS_Kmaspao*(1 + aD/PAO_for_aS_Kmadpao + aS/PAO_for_aS_Kmaspao + D/PAO_for_aS_Kmdpao + S/PAO_for_aS_Kmspao)));
-  SpdS: A + P => D; cytosol*((SpdS_Vmspds*A*P)/(SpdS_Kiaspds*SpdS_Kpspds*(1 + D/SpdS_Kidspds) + SpdS_Kpspds*A + SpdS_KaSpds*(1 + D/SpdS_Kidspds)*P + A*P));
-  SpmS: A + D => S; cytosol*((SpmS_Vmspms*A*D)/(SpmS_Kiaspms*SpmS_Kdspms*(1 + S/SpmS_Kisspms) + SpmS_Kdspms*A + SpmS_Kaspms*(1 + S/SpmS_Kisspms)*D + A*D));
-  MAT: $Met => SAM; cytosol*(MAT_Vmmat/(1 + MAT_Kmmat/Met*(1 + SAM/MAT_Kimetmat)));
+  ODC: $ORN => P; cytosol*(Vmaxodc*ORN/(ODC_Kmodc*(1 + P/ODC_Kipodc) + ORN));
+  SAMdc: SAM => A; cytosol*((Vmaxsamdc/(1 + S/SAMdc_Kissamdc))*SAM/(SAMdc_Kmsamdc*(1 + SAMdc_Kapsamdc/P + A/SAMdc_Kiasamdc) + SAM));
+  SSAT_for_S: S + $AcCoA => aS + $CoA; cytosol*((1/C)*Vmaxssat*S*AcCoA/(SSAT_for_S_Kmsssat*(1 + D/SSAT_for_S_Kmdssat)*SSAT_for_S_Kmaccoassat*(1 + CoA/SSAT_for_S_Kmcoassat) + SSAT_for_S_Kmaccoassat*(1 + CoA/SSAT_for_S_Kmcoassat)*S + SSAT_for_S_Kmsssat*(1 + D/SSAT_for_S_Kmdssat)*AcCoA + S*AcCoA));
+  SSAT_for_D: D + $AcCoA => aD + $CoA; cytosol*(Vmaxssat*D*AcCoA/(SSAT_for_D_Kmdssat*(1 + S/SSAT_for_D_Kmsssat)*SSAT_for_D_Kmaccoassat*(1 + CoA/SSAT_for_D_Kmcoassat) + SSAT_for_D_Kmaccoassat*(1 + CoA/SSAT_for_D_Kmcoassat)*D + SSAT_for_D_Kmdssat*(1 + S/SSAT_for_D_Kmsssat)*AcCoA + D*AcCoA));
+  PAO_for_aD: aD => P; cytosol*(PAO_for_aD_Vmpao*aD/(PAO_for_aD_Kmadpao*(1 + aD/PAO_for_aD_Kmadpao + aS/PAO_for_aD_Kmaspao + D/PAO_for_aD_Kmdpao + S/PAO_for_aD_Kmspao)));
+  PAO_for_aS: aS => D; cytosol*(PAO_for_aS_Vmpao*aS/(PAO_for_aS_Kmaspao*(1 + aD/PAO_for_aS_Kmadpao + aS/PAO_for_aS_Kmaspao + D/PAO_for_aS_Kmdpao + S/PAO_for_aS_Kmspao)));
+  SpdS: A + P => D; cytosol*(SpdS_Vmspds*A*P/(SpdS_Kiaspds*SpdS_Kpspds*(1 + D/SpdS_Kidspds) + SpdS_Kpspds*A + SpdS_KaSpds*(1 + D/SpdS_Kidspds)*P + A*P));
+  SpmS: A + D => S; cytosol*(SpmS_Vmspms*A*D/(SpmS_Kiaspms*SpmS_Kdspms*(1 + S/SpmS_Kisspms) + SpmS_Kdspms*A + SpmS_Kaspms*(1 + S/SpmS_Kisspms)*D + A*D));
+  MAT: $Met => SAM; cytosol*(MAT_Vmmat/(1 + (MAT_Kmmat/Met)*(1 + SAM/MAT_Kimetmat)));
   VCoA: $AcCoA => $CoA; cytosol*Kcoa*AcCoA;
   VacCoA: $CoA => $AcCoA; cytosol*Kaccoa*CoA;
   P_efflux: P => ; cytosol*P_efflux_Kpefflux*P;
@@ -220,4 +220,62 @@ model *Model_1()
   VacCoA is "VACCOA";
   P_efflux is "Putrescine efflux";
   aD_efflux is "aD efflux";
+
+  // CV terms:
+  cytosol identity "http://identifiers.org/obo.go/GO:0005829"
+  SAM identity "http://identifiers.org/obo.chebi/CHEBI:15414",
+               "http://identifiers.org/kegg.compound/C00019"
+  A identity "http://identifiers.org/obo.chebi/CHEBI:15625",
+             "http://identifiers.org/kegg.compound/C01137"
+  P identity "http://identifiers.org/obo.chebi/CHEBI:17148",
+             "http://identifiers.org/kegg.compound/C00134"
+  S identity "http://identifiers.org/obo.chebi/CHEBI:15746",
+             "http://identifiers.org/kegg.compound/C00750"
+  D identity "http://identifiers.org/obo.chebi/CHEBI:16610",
+             "http://identifiers.org/kegg.compound/C00315"
+  aS identity "http://identifiers.org/obo.chebi/CHEBI:17312",
+              "http://identifiers.org/kegg.compound/C02567"
+  aD identity "http://identifiers.org/obo.chebi/CHEBI:22204",
+              "http://identifiers.org/kegg.compound/C00612"
+  Met identity "http://identifiers.org/obo.chebi/CHEBI:16643",
+               "http://identifiers.org/kegg.compound/C00073"
+  ORN identity "http://identifiers.org/obo.chebi/CHEBI:15729",
+               "http://identifiers.org/kegg.compound/C00077"
+  AcCoA identity "http://identifiers.org/obo.chebi/CHEBI:15351",
+                 "http://identifiers.org/kegg.compound/C00024"
+  CoA identity "http://identifiers.org/obo.chebi/CHEBI:15346",
+               "http://identifiers.org/kegg.compound/C00010"
+  ODC hypernym "http://identifiers.org/ec-code/4.1.1.17",
+               "http://identifiers.org/kegg.reaction/R00670",
+               "http://identifiers.org/reactome/REACT_1211.3"
+  SAMdc hypernym "http://identifiers.org/ec-code/4.1.1.50",
+                 "http://identifiers.org/kegg.reaction/R00178"
+  SSAT_for_S hypernym "http://identifiers.org/ec-code/2.3.1.57",
+                      "http://identifiers.org/kegg.reaction/R03910"
+  SSAT_for_D hypernym "http://identifiers.org/ec-code/2.3.1.57",
+                      "http://identifiers.org/kegg.reaction/R03910"
+  PAO_for_aD hypernym "http://identifiers.org/ec-code/1.5.3.11",
+                      "http://identifiers.org/kegg.reaction/R03899",
+                      "http://identifiers.org/reactome/REACT_1548.3"
+  PAO_for_aS hypernym "http://identifiers.org/ec-code/1.5.3.11",
+                      "http://identifiers.org/kegg.reaction/R03899",
+                      "http://identifiers.org/reactome/REACT_2231.4"
+  SpdS hypernym "http://identifiers.org/ec-code/2.5.1.16",
+                "http://identifiers.org/kegg.reaction/R01920"
+  SpmS hypernym "http://identifiers.org/ec-code/2.5.1.22",
+                "http://identifiers.org/kegg.reaction/R02869"
+  MAT hypernym "http://identifiers.org/ec-code/2.5.1.6",
+               "http://identifiers.org/kegg.reaction/R00177"
+  VCoA hypernym "http://identifiers.org/obo.go/GO:0046356"
+  VacCoA hypernym "http://identifiers.org/obo.go/GO:0006085"
+  P_efflux hypernym "http://identifiers.org/obo.go/GO:0009447"
 end
+
+Model_1 is "Rodriguez-Caso2006_Polyamine_Metabolism"
+
+Model_1 model_entity_is "http://identifiers.org/biomodels.db/MODEL6812345601"
+Model_1 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000190"
+Model_1 description "http://identifiers.org/pubmed/16709566"
+Model_1 taxon "http://identifiers.org/taxonomy/40674",
+              "http://identifiers.org/taxonomy/9989"
+Model_1 hypernym "http://identifiers.org/obo.go/GO:0006595"

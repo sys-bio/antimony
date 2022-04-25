@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *testid()
 
   // Compartments and Species:
@@ -15,11 +15,11 @@ model *testid()
   r1: FeIII + $NADPH => FeII + $NADPplus; cytosol*k1*FeIII;
   r2: FeII + $O2 => FeII_O2; cytosol*k2*FeII*O2;
   r3: FeII_O2 => FeIII_star; cytosol*k3*FeII_O2;
-  r4: FeIII_star + 0.5$NADPH => FeII_star + 0.5$NADPplus; cytosol*k4*FeIII_star;
+  r4: FeIII_star + 0.5 $NADPH => FeII_star + 0.5 $NADPplus; cytosol*k4*FeIII_star;
   r5: FeII_star + $O2 => FeII_star_O2; cytosol*k5*FeII_star*O2;
   r6: FeII_star_O2 => FeIII_NO + $citrulline; cytosol*k6*FeII_star_O2;
   rF: FeIII_NO => FeIII + $NO; cytosol*k7*FeIII_NO;
-  rG: FeIII_NO + 0.5$NADPH => FeII_NO + 0.5$NADPplus; cytosol*k8*FeIII_NO;
+  rG: FeIII_NO + 0.5 $NADPH => FeII_NO + 0.5 $NADPplus; cytosol*k8*FeIII_NO;
   r9: FeII_NO => FeII + $NO; cytosol*k9*FeII_NO;
   r10: FeII_NO + $O2 => FeIII + $NO3; cytosol*k10*FeII_NO*O2;
 
@@ -76,4 +76,99 @@ model *testid()
   // Display Names:
   substance is "micromole";
   citrulline is "citruline";
+
+  // SBO terms:
+  FeIII.sboTerm = 297
+  FeII.sboTerm = 297
+  FeII_O2.sboTerm = 297
+  FeIII_star.sboTerm = 297
+  FeII_star.sboTerm = 297
+  FeII_star_O2.sboTerm = 297
+  FeIII_NO.sboTerm = 297
+  FeII_NO.sboTerm = 297
+  NADPH.sboTerm = 247
+  O2.sboTerm = 247
+  citrulline.sboTerm = 247
+  NO3.sboTerm = 247
+  NO.sboTerm = 247
+  NADPplus.sboTerm = 327
+  FeIII_t.sboTerm = 297
+  k1.sboTerm = 35
+  k2.sboTerm = 339
+  k3.sboTerm = 35
+  k4.sboTerm = 35
+  k5.sboTerm = 339
+  k6.sboTerm = 35
+  k7.sboTerm = 35
+  k8.sboTerm = 35
+  k9.sboTerm = 35
+  k10.sboTerm = 339
+  r1.sboTerm = 200
+  r2.sboTerm = 177
+  r3.sboTerm = 201
+  r4.sboTerm = 200
+  r5.sboTerm = 177
+  r6.sboTerm = 182
+  rF.sboTerm = 180
+  rG.sboTerm = 200
+  r9.sboTerm = 180
+  r10.sboTerm = 200
+
+  // CV terms:
+  cytosol identity "http://identifiers.org/go/GO:0005829"
+  FeIII part "http://identifiers.org/chebi/CHEBI:29034",
+             "http://identifiers.org/chebi/CHEBI:17627",
+             "http://identifiers.org/uniprot/P29476"
+  FeII part "http://identifiers.org/chebi/CHEBI:17627",
+            "http://identifiers.org/chebi/CHEBI:29033",
+            "http://identifiers.org/uniprot/P29476"
+  FeII_O2 identity "http://identifiers.org/chebi/CHEBI:15379",
+                   "http://identifiers.org/chebi/CHEBI:29033",
+                   "http://identifiers.org/chebi/CHEBI:17627",
+                   "http://identifiers.org/uniprot/P29476"
+  FeIII_star part "http://identifiers.org/chebi/CHEBI:17627",
+                  "http://identifiers.org/chebi/CHEBI:29034",
+                  "http://identifiers.org/uniprot/P29476"
+  FeII_star part "http://identifiers.org/chebi/CHEBI:17627",
+                 "http://identifiers.org/chebi/CHEBI:29033",
+                 "http://identifiers.org/uniprot/P29476"
+  FeII_star_O2 part "http://identifiers.org/chebi/CHEBI:15379",
+                    "http://identifiers.org/chebi/CHEBI:17627",
+                    "http://identifiers.org/chebi/CHEBI:29033",
+                    "http://identifiers.org/uniprot/P29476"
+  FeIII_NO part "http://identifiers.org/chebi/CHEBI:16480",
+                "http://identifiers.org/chebi/CHEBI:17627",
+                "http://identifiers.org/chebi/CHEBI:29034",
+                "http://identifiers.org/uniprot/P29476"
+  FeII_NO part "http://identifiers.org/chebi/CHEBI:16480",
+               "http://identifiers.org/chebi/CHEBI:17627",
+               "http://identifiers.org/chebi/CHEBI:29033",
+               "http://identifiers.org/uniprot/P29476"
+  NADPH identity "http://identifiers.org/chebi/CHEBI:16474",
+                 "http://identifiers.org/kegg.compound/C00005"
+  O2 identity "http://identifiers.org/chebi/CHEBI:15379",
+              "http://identifiers.org/kegg.compound/C00007"
+  citrulline identity "http://identifiers.org/chebi/CHEBI:16349",
+                      "http://identifiers.org/kegg.compound/C00327"
+  NO3 identity "http://identifiers.org/chebi/CHEBI:17632",
+               "http://identifiers.org/kegg.compound/C00244"
+  NO identity "http://identifiers.org/chebi/CHEBI:16480",
+              "http://identifiers.org/kegg.compound/C00533"
+  NADPplus identity "http://identifiers.org/chebi/CHEBI:18009",
+                    "http://identifiers.org/kegg.compound/C00006"
+  FeIII_t part "http://identifiers.org/chebi/CHEBI:29034",
+               "http://identifiers.org/chebi/CHEBI:17627",
+               "http://identifiers.org/uniprot/P29476"
+  r1 hypernym "http://identifiers.org/go/GO:0016651"
+  r4 hypernym "http://identifiers.org/go/GO:0016651"
+  rG hypernym "http://identifiers.org/go/GO:0016651"
 end
+
+testid is "Santolini2001_nNOS_Mechanism_Regulation"
+
+testid model_entity_is "http://identifiers.org/biomodels.db/MODEL4734733125"
+testid model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000199"
+testid description "http://identifiers.org/pubmed/11038356"
+testid version "http://identifiers.org/omim/163731"
+testid hypernym "http://identifiers.org/go/GO:0004517"
+testid taxon "http://identifiers.org/taxonomy/10116"

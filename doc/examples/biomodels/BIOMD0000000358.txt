@@ -1,7 +1,9 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 function HenriMichaelisMenten_irreversible_kcat(kcat, enzyme, substrate, Km)
-  (kcat*enzyme*substrate)/(Km + substrate);
+  kcat*enzyme*substrate/(Km + substrate);
 end
+
+HenriMichaelisMenten_irreversible_kcat is "Henri-Michaelis-Menten (irreversible) kcat"
 
 
 model *BIOMD0000000358()
@@ -69,4 +71,42 @@ model *BIOMD0000000358()
 
   // Display Names:
   time_unit is "time";
+
+  // SBO terms:
+  kcat_X.sboTerm = 25
+  km_X.sboTerm = 371
+  ki_Xa.sboTerm = 35
+  k_PT.sboTerm = 37
+  k_PL.sboTerm = 38
+  kcat_V.sboTerm = 25
+  km_V.sboTerm = 371
+  kcat_II.sboTerm = 25
+  km_II.sboTerm = 371
+  kcat_2.sboTerm = 25
+  km_2.sboTerm = 371
+  ki_IIaAlpha2M.sboTerm = 35
+  ki_IIaATIII.sboTerm = 35
+
+  // CV terms:
+  X identity "http://identifiers.org/uniprot/P00742"
+  Xa identity "http://identifiers.org/uniprot/P00742"
+  Xa_ATIII part "http://identifiers.org/uniprot/P01008",
+                "http://identifiers.org/uniprot/P00742"
+  Va identity "http://identifiers.org/uniprot/P12259"
+  IIa identity "http://identifiers.org/uniprot/P00734"
+  V identity "http://identifiers.org/uniprot/P12259"
+  II identity "http://identifiers.org/uniprot/P00734"
+  IIa_alpha2M part "http://identifiers.org/uniprot/P01023",
+                   "http://identifiers.org/uniprot/P00734"
+  IIa_ATIII part "http://identifiers.org/uniprot/P00734",
+                 "http://identifiers.org/uniprot/P01008"
 end
+
+BIOMD0000000358 is "Stortelder1997 - Thrombin Generation Amidolytic Activity"
+
+BIOMD0000000358 model_entity_is "http://identifiers.org/biomodels.db/MODEL1108260009"
+BIOMD0000000358 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000358"
+BIOMD0000000358 description "http://www.narcis.nl/publication/RecordID/oai:cwi.nl:4725"
+BIOMD0000000358 description "http://identifiers.org/narcis/oai:cwi.nl:4725"
+BIOMD0000000358 model_entity_is "http://identifiers.org/go/GO:0007596"
+BIOMD0000000358 taxon "http://identifiers.org/taxonomy/2759"

@@ -1,0 +1,52 @@
+// Created by libAntimony v2.13.0
+model *Owen1998___tumour_growth_model()
+
+  // Compartments and Species:
+  compartment cell;
+  species $l in cell, $m in cell, $n in cell;
+
+  // Rate Rules:
+  l' = A*l*m*(N + 1)/(N + l + m + n) + I*(1 + S*m) - K_l*l*m*m - delta_l*l;
+  m' = xi*m*(N + 1)/(N + l + m + n) - m - K_m*l*m*m;
+  n' = n*(N + 1)/(N + l + m + n) - n;
+
+  // Species initializations:
+  l = 0.0999999999999985;
+  m = 0.899999999999988;
+  n = 0.899999999999988;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  A = 0.025;
+  N = 1;
+  I = 0.01;
+  S = 62.5;
+  K_l = 17.857;
+  delta_l = 0.1;
+  xi = 2;
+  K_m = 25;
+
+  // Other declarations:
+  const cell, A, N, I, S, K_l, delta_l, xi, K_m;
+
+  // Display Names:
+  cell is "Tumor Microenvironment";
+  l is "macrophage";
+  m is "mutated cell";
+  n is "normal cell";
+
+  // CV terms:
+  l hypernym "http://identifiers.org/bto/BTO:0000801"
+  m hypernym "http://identifiers.org/cl/CL:0001063"
+  n hypernym "http://identifiers.org/go/GO:0005623"
+end
+
+Owen1998___tumour_growth_model is "Owen1998 - tumour growth model"
+
+Owen1998___tumour_growth_model model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000670",
+                                               "http://identifiers.org/biomodels.db/MODEL1708240000"
+Owen1998___tumour_growth_model property "http://identifiers.org/go/GO:0002837"
+Owen1998___tumour_growth_model property "http://identifiers.org/mamo/MAMO_0000046"
+Owen1998___tumour_growth_model description "http://identifiers.org/pubmed/9661282"

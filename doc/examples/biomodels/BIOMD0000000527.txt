@@ -1,20 +1,20 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *MODEL1312170001()
 
   // Compartments and Species:
-  compartment LN_;
-  substanceOnly species $L in LN_;
+  compartment LN;
+  substanceOnly species $L in LN;
 
   // Rate Rules:
-  L' = piecewise(mu1 + (r1 - c1)*L, time >= 0 && time <= t1, mu3 + (r3 - c3)*L, time > t1 && time <= t3, mu5 + (r5 - c5)*L, time > t3 && time <= t5, mu10 + (r10 - c10)*L, time > t5 && time <= t10);
+  L' = piecewise(mu1 + (r1 - c1)*L, (time >= 0) && (time <= t1), mu3 + (r3 - c3)*L, (time > t1) && (time <= t3), mu5 + (r5 - c5)*L, (time > t3) && (time <= t5), mu10 + (r10 - c10)*L, (time > t5) && (time <= t10));
 
   // Species initializations:
   L = 0;
   L has dimensionless_per_dimensionles;
 
   // Compartment initializations:
-  LN_ = 1;
-  LN_ has dimensionless;
+  LN = 1;
+  LN has dimensionless;
 
   // Variable initializations:
   mu1 = 297.78957;
@@ -45,13 +45,13 @@ model *MODEL1312170001()
   mu10 has per_day;
   r10 = 0.3757764;
   r10 has per_day;
-  c10 = 2.43e-007;
+  c10 = 2.43e-07;
   c10 has per_day;
   t10 = 10;
   t10 has day;
 
   // Other declarations:
-  const LN_, mu1, r1, c1, t1, mu3, r3, c3, t3, mu5, r5, c5, t5, mu10, r10;
+  const LN, mu1, r1, c1, t1, mu3, r3, c3, t3, mu5, r5, c5, t5, mu10, r10;
   const c10, t10;
 
   // Unit definitions:
@@ -60,5 +60,21 @@ model *MODEL1312170001()
   unit dimensionless_per_dimensionles = dimensionless / dimensionless;
 
   // Display Names:
-  LN_ is "Lymph node";
+  LN is "Lymph node";
+
+  // CV terms:
+  LN hypernym "http://identifiers.org/bto/BTO:0000784"
+  L hypernym "http://identifiers.org/taxonomy/85569"
 end
+
+MODEL1312170001 is "Kaiser2014 - Salmonella persistence after ciprofloxacin treatment"
+
+MODEL1312170001 model_entity_is "http://identifiers.org/biomodels.db/MODEL1312170001"
+MODEL1312170001 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000527"
+MODEL1312170001 description "http://identifiers.org/pubmed/24558351"
+MODEL1312170001 model_entity_is "http://identifiers.org/biomodels.db/MODEL1312170001"
+MODEL1312170001 taxon "http://identifiers.org/taxonomy/10090",
+                      "http://identifiers.org/taxonomy/85569"
+MODEL1312170001 hypernym "http://identifiers.org/go/GO:0046677"
+MODEL1312170001 property "http://identifiers.org/mamo/MAMO_0000046"
+MODEL1312170001 version "http://identifiers.org/doid/DOID:0050338"

@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *MODEL1304160000()
 
   // Compartments and Species:
@@ -53,11 +53,11 @@ model *MODEL1304160000()
   v4e: PKB473p => PKB308p473p; k4e*PKB473p*IRS1p307;
   v4f: PKB308p473p => PKB473p; k4f*PKB308p473p;
   v4h: PKB473p => PKB; k4h*PKB473p;
-  v6f1: AS160 => AS160p; AS160*(k6f1*PKB308p473p + (k6f2*PKB473p^n6)/(km6^n6 + PKB473p^n6));
+  v6f1: AS160 => AS160p; AS160*(k6f1*PKB308p473p + k6f2*PKB473p^n6/(km6^n6 + PKB473p^n6));
   v6b1: AS160p => AS160; AS160p*k6b;
   v7f: GLUT4 => GLUT4m; GLUT4*k7f*AS160p;
   v7b: GLUT4m => GLUT4; GLUT4m*k7b;
-  v9f1: S6K => S6Kp; (S6K*k9f1*mTORC1a^n9)/(km9^n9 + mTORC1a^n9);
+  v9f1: S6K => S6Kp; S6K*k9f1*mTORC1a^n9/(km9^n9 + mTORC1a^n9);
   v9b1: S6Kp => S6K; S6Kp*k9b1;
   v9f2: S6 => S6p; S6*k9f2*S6Kp;
   v9b2: S6p => S6; S6p*k9b2;
@@ -162,4 +162,66 @@ model *MODEL1304160000()
   const k7b, k8, glut1, k9f1, k9b1, k9f2, k9b2, km9, n9, scaleIR, scaleIRS1;
   const scaleIRS1ds, scaleIRS1307, scalePKB308, scalePKB473, scaleAS160, scaleGLUCOSE;
   const scaleS6K, scaleS6, gluc, insulin;
+
+  // SBO terms:
+  cellvolume.sboTerm = 290
+
+  // CV terms:
+  cellvolume identity "http://identifiers.org/go/GO:0005623"
+  IR hypernym "http://identifiers.org/uniprot/P06213"
+  IRp hypernym "http://identifiers.org/uniprot/P06213",
+               "http://identifiers.org/kegg.compound/C00562"
+  IRins part "http://identifiers.org/uniprot/P06213"
+  IRip hypernym "http://identifiers.org/uniprot/P06213",
+                "http://identifiers.org/kegg.compound/C00562"
+  IRi hypernym "http://identifiers.org/uniprot/P06213"
+  IRS1 hypernym "http://identifiers.org/uniprot/P35568"
+  IRS1p hypernym "http://identifiers.org/uniprot/P35568",
+                 "http://identifiers.org/kegg.compound/C00562"
+  IRS1p307 hypernym "http://identifiers.org/uniprot/P35568",
+                    "http://identifiers.org/kegg.compound/C00562",
+                    "urn:miriam:mod:MOD%3A00046"
+  IRS1307 hypernym "http://identifiers.org/uniprot/P35568"
+  X hypernym "http://identifiers.org/chebi/CHEBI:36080",
+             "http://identifiers.org/fma/FMA:74531"
+  Xp hypernym "http://identifiers.org/kegg.compound/C00562",
+              "http://identifiers.org/fma/FMA:74531"
+  PKB hypernym "http://identifiers.org/uniprot/P31751"
+  PKB308p hypernym "http://identifiers.org/uniprot/P31751",
+                   "http://identifiers.org/kegg.compound/C00562"
+  PKB473p hypernym "http://identifiers.org/uniprot/P31751",
+                   "http://identifiers.org/kegg.compound/C00562"
+  PKB308p473p hypernym "http://identifiers.org/uniprot/P31751",
+                       "http://identifiers.org/kegg.compound/C00562"
+  mTORC1 part "http://identifiers.org/uniprot/P42345",
+              "http://identifiers.org/uniprot/Q8N122"
+  mTORC1a part "http://identifiers.org/uniprot/P42345",
+               "http://identifiers.org/uniprot/Q8N122"
+  mTORC2 part "http://identifiers.org/uniprot/P42345",
+              "http://identifiers.org/uniprot/Q6R327"
+  mTORC2a part "http://identifiers.org/uniprot/P42345",
+               "http://identifiers.org/uniprot/Q6R327"
+  AS160 hypernym "http://identifiers.org/uniprot/O60343"
+  AS160p property "http://identifiers.org/pato/PATO:0002220"
+  AS160p hypernym "http://identifiers.org/uniprot/O60343"
+  GLUT4m hypernym "http://identifiers.org/uniprot/P14672"
+  GLUT4m container "http://identifiers.org/go/GO:0005886"
+  GLUT4 hypernym "http://identifiers.org/uniprot/P14672"
+  S6K hypernym "http://identifiers.org/uniprot/P23443"
+  S6Kp hypernym "http://identifiers.org/uniprot/P23443",
+                "http://identifiers.org/kegg.compound/C00562"
+  S6 hypernym "http://identifiers.org/uniprot/P62753"
+  S6p hypernym "http://identifiers.org/uniprot/P62753",
+               "http://identifiers.org/kegg.compound/C00562"
 end
+
+MODEL1304160000 is "Brännmark2013 - Insulin signalling in human adipocytes (diabetic condition)"
+
+MODEL1304160000 model_entity_is "http://identifiers.org/biomodels.db/MODEL1304160000"
+MODEL1304160000 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000449"
+MODEL1304160000 description "http://identifiers.org/pubmed/23400783"
+MODEL1304160000 origin "http://identifiers.org/biomodels.db/BIOMD0000000343"
+MODEL1304160000 taxon "http://identifiers.org/taxonomy/9606"
+MODEL1304160000 hypernym "http://identifiers.org/go/GO:0032869"
+MODEL1304160000 property "http://identifiers.org/mamo/MAMO_0000046"
+MODEL1304160000 version "http://identifiers.org/doid/DOID:9352"

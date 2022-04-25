@@ -1,0 +1,229 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible_0(v)
+  v;
+end
+
+Constant_flux__irreversible_0 is "Constant flux (irreversible)"
+
+function tumor_killing_1(NI, NT, dt, hi)
+  dt*NT*NI/(hi + NI);
+end
+
+tumor_killing_1 is "tumor killing_1"
+
+function tumor_growth_1(NT, kgr)
+  kgr*NT;
+end
+
+tumor_growth_1 is "tumor growth_1"
+
+function CA125_secretion_1(NT, ft, rt)
+  ft*rt*NT;
+end
+
+CA125_secretion_1 is "CA125 secretion_1"
+
+function IL7_secretion_1(NI, firi)
+  firi*NI;
+end
+
+IL7_secretion_1 is "IL7 secretion_1"
+
+function immune_cell_growth_1(M, NI, NT, ai)
+  ai*NT*(1 - NI/M);
+end
+
+immune_cell_growth_1 is "immune cell growth_1"
+
+
+model *Eftimie2018___Cancer_and_Immune_biomarkers()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species NT in compartment_, NI in compartment_, BT in compartment_, BI in compartment_;
+
+  // Assignment Rules:
+  cca := ModelValue_18*ModelValue_8;
+  dca := ModelValue_19*ModelValue_8;
+  cil := ModelValue_16*ModelValue_8;
+  dil := ModelValue_17*ModelValue_8;
+
+  // Reactions:
+  tumor_growth:  => NT; compartment_*tumor_growth_1(NT, kgr);
+  tumor_killing: NT => ; compartment_*tumor_killing_1(NI, NT, dt, hi);
+  immune_cell_growth:  => NI; compartment_*immune_cell_growth_1(M, NI, NT, ai);
+  immune_cell_decay: NI => ; compartment_*di*NI;
+  CA125_shedding_natural:  => BT; compartment_*Constant_flux__irreversible_0(fhtrhtnh);
+  CA125_decay: BT => ; compartment_*ket*BT;
+  CA125_secretion:  => BT; compartment_*CA125_secretion_1(NT, ft, rt);
+  IL7_shedding_natural:  => BI; compartment_*Constant_flux__irreversible_0(fhirhinh);
+  IL7_decay: BI => ; compartment_*kei*BI;
+  IL7_secretion:  => BI; compartment_*IL7_secretion_1(NI, firi);
+
+  // Species initializations:
+  NT = 1;
+  NT has substance_per_volume;
+  NI = 0;
+  NI has substance_per_volume;
+  BT = 0;
+  BT has substance_per_volume;
+  BI = 0;
+  BI has substance_per_volume;
+
+  // Compartment initializations:
+  compartment_ = 1;
+  compartment_ has volume;
+
+  // Variable initializations:
+  fhtrhtnh = 4560;
+  fhtrhtnh has unit_0;
+  ft = 0.1;
+  ft has unit_1;
+  rt = 4.5e-05;
+  rt has unit_0;
+  nh = 0;
+  nh has unit_1;
+  kgr = 0.00578;
+  kgr has unit_0;
+  ket = 0.11;
+  ket has unit_0;
+  cca has unit_1;
+  ModelValue_18 = cca_conc;
+  ModelValue_8 = vpl;
+  dca has unit_1;
+  ModelValue_19 = dca_conc;
+  vpl = 3150;
+  vpl has unit_2;
+  ai = 2.0794;
+  ai has unit_0;
+  kei = 2.14;
+  kei has unit_0;
+  M = 1000000000;
+  M has unit_1;
+  firi = 1.0925e-06;
+  firi has unit_0;
+  fhirhinh = 19548;
+  fhirhinh has unit_0;
+  cil has unit_1;
+  ModelValue_16 = cil_conc;
+  dil has unit_1;
+  ModelValue_17 = dil_conc;
+  cil_conc = 3.8;
+  cil_conc has unit_3;
+  dil_conc = 1;
+  dil_conc has unit_3;
+  cca_conc = 34.11;
+  cca_conc has unit_3;
+  dca_conc = 1.5;
+  dca_conc has unit_3;
+  di = 0.4;
+  di has unit_0;
+  dt = 1e-06;
+  dt has unit_0;
+  hi = 1000;
+  hi has unit_1;
+
+  // Other declarations:
+  var cca, dca, cil, dil;
+  const compartment_, fhtrhtnh, ft, rt, nh, kgr, ket, ModelValue_18, ModelValue_8;
+  const ModelValue_19, vpl, ai, kei, M, firi, fhirhinh, ModelValue_16, ModelValue_17;
+  const cil_conc, dil_conc, cca_conc, dca_conc, di, dt, hi;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = time_unit;
+  unit substance = 1e-3 mole;
+  unit unit_0 = 1 / 1e3 second;
+  unit unit_1 = 1 / dimensionless^-0;
+  unit unit_2 = 1e-3 litre;
+  unit unit_3 = 1 / 1e-3 litre;
+  unit extent = substance;
+  unit substance_per_volume = 1e-3 mole / 1e-3 litre;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1/ks";
+  unit_1 is "1";
+  unit_2 is "ml";
+  unit_3 is "1/ml";
+  compartment_ is "compartment";
+  ModelValue_18 is "Initial for cca-conc";
+  ModelValue_8 is "Initial for vpl";
+  ModelValue_19 is "Initial for dca-conc";
+  ModelValue_16 is "Initial for cil-conc";
+  ModelValue_17 is "Initial for dil-conc";
+  cil_conc is "cil-conc";
+  dil_conc is "dil-conc";
+  cca_conc is "cca-conc";
+  dca_conc is "dca-conc";
+  tumor_growth is "tumor growth";
+  tumor_killing is "tumor killing";
+  immune_cell_growth is "immune cell growth";
+  immune_cell_decay is "immune cell death";
+  CA125_shedding_natural is "CA125 secretion from normal cells";
+  CA125_decay is "CA125 decay";
+  CA125_secretion is "CA125 secretion from cancer cells";
+  IL7_shedding_natural is "IL7 secretion from non-immune cells";
+  IL7_decay is "IL7 decay";
+  IL7_secretion is "IL7 secretion from immune cells";
+
+  // CV terms:
+  compartment_ hypernym "http://identifiers.org/ncit/C94498"
+  NT identity "http://identifiers.org/cl/CL:0001064"
+  NT identity "http://identifiers.org/ncit/C12917"
+  NI hypernym "http://identifiers.org/cl/CL:0000542"
+  NI hypernym "http://identifiers.org/ncit/C12535"
+  BT identity "http://identifiers.org/uniprot/Q8WXI7"
+  BT hypernym "http://identifiers.org/ncit/C16342"
+  BI identity "http://identifiers.org/uniprot/P13232"
+  BI hypernym "http://identifiers.org/ncit/C16342"
+  ft hypernym "http://identifiers.org/sbo/SBO:0000540"
+  kgr hypernym "http://identifiers.org/sbo/SBO:0000610"
+  ket propertyBearer "http://identifiers.org/ncit/C40678"
+  cca homolog "http://identifiers.org/ncit/C105701"
+  dca hypernym "http://identifiers.org/ncit/C105701"
+  vpl hypernym "http://identifiers.org/sbo/SBO:0000468"
+  ai hypernym "http://identifiers.org/ncit/C94346"
+  kei hypernym "http://identifiers.org/sbo/SBO:0000331"
+  M hypernym "http://identifiers.org/sbo/SBO:0000661"
+  cil homolog "http://identifiers.org/ncit/C105701"
+  dil hypernym "http://identifiers.org/ncit/C105701"
+  cil_conc homolog "http://identifiers.org/ncit/C105701"
+  dil_conc hypernym "http://identifiers.org/ncit/C105701"
+  cca_conc homolog "http://identifiers.org/ncit/C105701"
+  dca_conc hypernym "http://identifiers.org/ncit/C105701"
+  di hypernym "http://identifiers.org/sbo/SBO:0000331"
+  dt propertyBearer "http://identifiers.org/go/GO:0001909"
+  hi hypernym "http://identifiers.org/sbo/SBO:0000193"
+  tumor_growth parthood "http://identifiers.org/sbo/SBO:0000393"
+  tumor_growth hypernym "http://identifiers.org/go/GO:0008283"
+  tumor_killing hypernym "http://identifiers.org/go/GO:0001909"
+  tumor_killing hypernym "http://identifiers.org/sbo/SBO:0000179"
+  immune_cell_growth hypernym "http://identifiers.org/sbo/SBO:0000393"
+  immune_cell_growth hypernym "http://identifiers.org/go/GO:0008283"
+  immune_cell_decay hypernym "http://identifiers.org/sbo/SBO:0000179"
+  immune_cell_decay hypernym "http://identifiers.org/go/GO:0008219"
+  CA125_shedding_natural hypernym "http://identifiers.org/sbo/SBO:0000393"
+  CA125_shedding_natural hypernym "http://identifiers.org/go/GO:0046903"
+  CA125_decay hypernym "http://identifiers.org/sbo/SBO:0000179"
+  CA125_secretion hypernym "http://identifiers.org/sbo/SBO:0000393"
+  CA125_secretion hypernym "http://identifiers.org/go/GO:0046903"
+  IL7_shedding_natural hypernym "http://identifiers.org/go/GO:0050663"
+  IL7_shedding_natural hypernym "http://identifiers.org/sbo/SBO:0000393"
+  IL7_decay hypernym "http://identifiers.org/sbo/SBO:0000179"
+  IL7_secretion hypernym "http://identifiers.org/sbo/SBO:0000393"
+  IL7_secretion hypernym "http://identifiers.org/go/GO:0050663"
+end
+
+Eftimie2018___Cancer_and_Immune_biomarkers is "Eftimie2018 - Cancer and Immune biomarkers"
+
+Eftimie2018___Cancer_and_Immune_biomarkers model_entity_is "http://identifiers.org/biomodels.db/MODEL1907050002",
+                                                           "http://identifiers.org/biomodels.db/BIOMD0000000741"
+Eftimie2018___Cancer_and_Immune_biomarkers description "http://identifiers.org/pubmed/29554938"
+Eftimie2018___Cancer_and_Immune_biomarkers hypernym "http://identifiers.org/go/GO:0002418"
+Eftimie2018___Cancer_and_Immune_biomarkers container "http://identifiers.org/bto/BTO:0000975"
+Eftimie2018___Cancer_and_Immune_biomarkers property "http://identifiers.org/efo/0001075"
+Eftimie2018___Cancer_and_Immune_biomarkers property "http://identifiers.org/mamo/MAMO_0000046"
+Eftimie2018___Cancer_and_Immune_biomarkers taxon "http://identifiers.org/taxonomy/9606"

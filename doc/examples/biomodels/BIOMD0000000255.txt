@@ -1,10 +1,10 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 function stepfunc2(t, t_start, v_start, t_end, v_end)
-  piecewise(v_start, t < t_start, v_end, t > t_end, (v_end - v_start)/(t_end - t_start)*(t - t_start) + v_start);
+  piecewise(v_start, t < t_start, v_end, t > t_end, ((v_end - v_start)/(t_end - t_start))*(t - t_start) + v_start);
 end
 
 function stepfunc(t, t_start, v_start, t_end, v_end)
-  piecewise(v_start, t < t_start, piecewise(v_end, t > t_end, (v_start + v_end)/2 + (v_end - v_start)/2*sin((3.14/2*(2*t - t_end - t_start))/(t_end - t_start))));
+  piecewise(v_start, t < t_start, piecewise(v_end, t > t_end, (v_start + v_end)/2 + ((v_end - v_start)/2)*sin((3.14/2)*(2*t - t_end - t_start)/(t_end - t_start))));
 end
 
 
@@ -249,14 +249,14 @@ model *A431_ErbB()
   k1c := stepfunc(model_time, 1799.99, 0, 1800, 0);
   kd1c := stepfunc(model_time, 1799.99, 0, 1800, 0);
   kd1d := stepfunc(model_time, 1799.99, 0, 1800, 0);
-  kd6 := stepfunc(model_time, 1799.99, 0, 1800, 5.000000e-005);
+  kd6 := stepfunc(model_time, 1799.99, 0, 1800, 5e-5);
   k97 := kd97/KD_iressa_wt;
   k97c := kd97c/KD_iressa_mt;
   k116 := stepfunc(model_time, 2659.99, 0, 2660, 0.0150356);
   k119 := stepfunc(model_time, 1799.99, 0, 1800, 10000000);
   kd122 := stepfunc(model_time, 1799.99, 0, 1800, 1);
   k1 := stepfunc(model_time, 1799.99, 0, 1800, 10000000);
-  k122 := stepfunc(model_time, 1799.99, 0, 1800, 1.870400e-008);
+  k122 := stepfunc(model_time, 1799.99, 0, 1800, 1.8704e-8);
 
   // Reactions:
   v1: $c1 + c2 -> c3; k1*c1*c2 - kd1*c3;
@@ -1088,7 +1088,7 @@ model *A431_ErbB()
   v862: c5 + c105 -> c558; k123h*c5*c105 - kd123h*c558;
 
   // Species initializations:
-  c1 = 1e-011;
+  c1 = 1e-11;
   c1 has mole_per_volume;
   c2 = 0;
   c3 = 0;
@@ -1618,13 +1618,13 @@ model *A431_ErbB()
   AKT_t has item;
   model_time has time_unit;
   k1d = 518;
-  k2 = 7.44622e-006;
+  k2 = 7.44622e-06;
   kd2 = 0.16;
-  k2b = 3.73632e-008;
+  k2b = 3.73632e-08;
   kd2b = 0.016;
   k3 = 1;
   kd3 = 0.001;
-  k4 = 6.73e-006;
+  k4 = 6.73e-06;
   kd4 = 0.000166;
   k4b = 0;
   kd4b = 0.000166;
@@ -1634,10 +1634,10 @@ model *A431_ErbB()
   kd5b = 0.0080833;
   kd5c = 0.162;
   k6 = 0.013;
-  k8 = 5.91474e-007;
+  k8 = 5.91474e-07;
   kd8 = 0.2;
   kd8b = 0.02;
-  k8b = 9.34641e-006;
+  k8b = 9.34641e-06;
   k10 = 140000;
   k10b = 0.05426;
   kd10 = 0.011;
@@ -1645,50 +1645,50 @@ model *A431_ErbB()
   kd13 = 0;
   k14 = 0;
   kd14 = 0;
-  k15 = 1.667e-008;
+  k15 = 1.667e-08;
   kd15 = 0;
-  k16 = 1.67e-005;
-  k16b = 1.667e-007;
-  k17 = 1.67e-005;
+  k16 = 1.67e-05;
+  k16b = 1.667e-07;
+  k17 = 1.67e-05;
   kd17 = 0.06;
-  k18 = 2.5e-005;
+  k18 = 2.5e-05;
   kd18 = 1.3;
-  k19 = 1.667e-007;
+  k19 = 1.667e-07;
   kd19 = 0.5;
-  k20 = 1.1068e-005;
+  k20 = 1.1068e-05;
   kd20 = 0.4;
-  k21 = 3.67e-007;
+  k21 = 3.67e-07;
   kd21 = 0.23;
-  k22 = 1.39338e-007;
+  k22 = 1.39338e-07;
   kd22 = 0.1;
   k23 = 6;
   kd23 = 0.06;
   kd24 = 0.55;
-  k25 = 1.67e-005;
+  k25 = 1.67e-05;
   kd25 = 0.0214;
-  k28 = 5e-006;
+  k28 = 5e-06;
   kd28 = 0.0053;
-  k28b = 5e-006;
+  k28b = 5e-06;
   kd28b = 0.0053;
-  k29 = 1.17e-006;
+  k29 = 1.17e-06;
   kd29 = 3.1;
   kd32 = 0.1;
-  k32 = 4e-007;
+  k32 = 4e-07;
   kd33 = 0.2;
-  k33 = 3.5e-005;
+  k33 = 3.5e-05;
   kd34 = 0.03;
-  k34 = 7.5e-006;
+  k34 = 7.5e-06;
   kd35 = 0.0015;
-  k35 = 7.5e-006;
+  k35 = 7.5e-06;
   k36 = 0.005;
   kd36 = 0;
   kd37 = 0.3;
-  k37 = 1.5e-006;
-  k40 = 5e-005;
+  k37 = 1.5e-06;
+  k40 = 5e-05;
   kd40 = 0.064;
-  k41 = 5e-005;
+  k41 = 5e-05;
   kd41 = 0.0429;
-  k42 = 6e-005;
+  k42 = 6e-05;
   kd42 = 0.0141589;
   kd43 = 31.6228;
   k43 = 0;
@@ -1697,11 +1697,11 @@ model *A431_ErbB()
   k45 = 0;
   kd47 = 0.8;
   k47 = 0;
-  k48 = 2.37e-005;
+  k48 = 2.37e-05;
   kd48 = 0.79;
   kd49 = 0.112387;
   k49 = 0;
-  k50 = 4.74801e-008;
+  k50 = 4.74801e-08;
   kd50 = 0.252982;
   kd52 = 0.033;
   kd53 = 0.28;
@@ -1712,29 +1712,29 @@ model *A431_ErbB()
   k56 = 0.000397392;
   kd57 = 0.0076;
   k57 = 0;
-  k58 = 8.33e-007;
+  k58 = 8.33e-07;
   kd58 = 56.7862;
-  k52 = 8.85125e-006;
-  k44 = 1.07e-005;
+  k52 = 8.85125e-06;
+  k44 = 1.07e-05;
   k60 = 0.00266742;
   kd60 = 0;
   k61 = 0.00057;
   kd61 = 0;
   kd63 = 0.275;
-  k64 = 1.67e-005;
+  k64 = 1.67e-05;
   kd64 = 0.3;
   kd65 = 0.2;
   k65 = 0;
-  k66 = 1.5e-005;
+  k66 = 1.5e-05;
   kd66 = 0.2;
-  k67 = 5e-005;
+  k67 = 5e-05;
   kd67 = 0.02;
   kd68 = 0.2;
   k68 = 0;
   kd68b = 20.5;
-  k69 = 3.33e-005;
+  k69 = 3.33e-05;
   kd69 = 0.1;
-  k70 = 6.67e-007;
+  k70 = 6.67e-07;
   kd70 = 0.1;
   k71 = 0;
   kd71 = 25.2;
@@ -1742,36 +1742,36 @@ model *A431_ErbB()
   kd72 = 5.01187;
   k73 = 0.00374845;
   kd73 = 0.5;
-  k74 = 6.36184e-007;
+  k74 = 6.36184e-07;
   kd74 = 0.355656;
   kd75 = 0.00633957;
   k75 = 0;
   k76 = 0;
   kd76 = 142.262;
   kd60d = 0;
-  k22b = 3.5e-005;
+  k22b = 3.5e-05;
   kd22b = 0.1;
   kd34b = 0.1;
-  k34b = 7.5e-005;
-  k94b = 5e-005;
-  k94 = 5e-005;
+  k34b = 7.5e-05;
+  k94b = 5e-05;
+  k94 = 5e-05;
   kd94 = 0.01;
   k95 = 0;
   kd95 = 33;
-  k96 = 1.67e-006;
+  k96 = 1.67e-06;
   kd96 = 0.1;
   kd6b = 0;
-  k7 = 5e-005;
+  k7 = 5e-05;
   kd7 = 0.000138;
   k62b = 0.000416;
   kd60b = 0;
   k60c = 0.00052;
   k60b = 0.0471248;
-  KD_iressa_wt = 3.5e-008;
+  KD_iressa_wt = 3.5e-08;
   kd97 = 0.015;
-  KD_iressa_mt = 3e-009;
+  KD_iressa_mt = 3e-09;
   kd97c = 0.001;
-  Kinh2 = 3e-007;
+  Kinh2 = 3e-07;
   kd98 = 0.001;
   k98 = 33300;
   Kinh4 = 0.113;
@@ -1780,25 +1780,25 @@ model *A431_ErbB()
   Kinh3 = 0.001;
   kd100 = 0.001;
   k100 = 1;
-  k101 = 8.33e-007;
+  k101 = 8.33e-07;
   kd101 = 0.03;
-  k102 = 5e-007;
+  k102 = 5e-07;
   kd102 = 5.61009;
-  k103 = 8.36983e-009;
+  k103 = 8.36983e-09;
   kd103 = 0.016;
   k104 = 0;
   kd104 = 0.2;
-  k105 = 6.67e-005;
+  k105 = 6.67e-05;
   kd105 = 0.1;
-  k106 = 1.33e-005;
+  k106 = 1.33e-05;
   kd106 = 0.1;
-  k106b = 2.63418e-008;
+  k106b = 2.63418e-08;
   kd106b = 0.1;
-  k107 = 3.33e-005;
+  k107 = 3.33e-05;
   kd107 = 0.1;
   k108 = 0;
   kd108 = 5;
-  k109 = 5e-006;
+  k109 = 5e-06;
   kd109 = 0.1;
   k110 = 0.000333;
   kd110 = 0.1;
@@ -1808,19 +1808,19 @@ model *A431_ErbB()
   kd112 = 0.1;
   k113 = 0;
   kd113 = 177.828;
-  k114 = 4.98816e-006;
+  k114 = 4.98816e-06;
   kd114 = 0.1;
   k115 = 0;
   kd115 = 1;
   kd116 = 0;
-  k117 = 8.33e-008;
+  k117 = 8.33e-08;
   kd117 = 0.1;
   k118 = 0;
   kd118 = 0.03;
   kd119 = 0.0103115;
-  k120 = 1.48131e-008;
+  k120 = 1.48131e-08;
   kd120 = 0.1;
-  k120b = 5.92538e-011;
+  k120b = 5.92538e-11;
   kd120b = 0.1;
   Ks = 0.001;
   k121 = 0.001;
@@ -3207,4 +3207,157 @@ model *A431_ErbB()
   v860 is "v860 2(EGF:ErbB1)#P + ATP -> (EGF:ErbB1:Inh::EGF:ErbB1_h:ATP)-HalfActive k123h kd123h";
   v861 is "v861 2(EGF:ErbB1)#P + ATP -> 2(EGF:ErbB1_h:ATP)-FullActive k123 kd123";
   v862 is "v862 2(EGF:ErbB1)#P + ATP -> (EGF:ErbB1_h:ATP::EGF:ErbB1_h:Inh)-HalfActive k123h kd123h";
+
+  // SBO terms:
+  plasma_membrane.sboTerm = 290
+  endosomes.sboTerm = 290
+  lysosomes.sboTerm = 290
+  medium.sboTerm = 290
+  endosomal_membrane.sboTerm = 290
+  cytoplasm.sboTerm = 290
+  c1.sboTerm = 297
+  c2.sboTerm = 297
+  c3.sboTerm = 297
+  c288.sboTerm = 297
+  c16.sboTerm = 252
+  c515.sboTerm = 252
+
+  // CV terms:
+  plasma_membrane identity "http://identifiers.org/go/GO:0005886"
+  endosomes identity "http://identifiers.org/go/GO:0005768"
+  lysosomes identity "http://identifiers.org/go/GO:0005764"
+  medium identity "http://identifiers.org/go/GO:0005615"
+  endosomal_membrane identity "http://identifiers.org/go/GO:0010008"
+  cytoplasm identity "http://identifiers.org/go/GO:0005829"
+  c1 hypernym "http://identifiers.org/uniprot/P01133",
+              "http://identifiers.org/go/GO:0005154"
+  c2 part "http://identifiers.org/chebi/CHEBI:15422",
+          "http://identifiers.org/uniprot/P00533"
+  c3 version "http://identifiers.org/uniprot/P01133"
+  c3 part "http://identifiers.org/chebi/CHEBI:15422",
+          "http://identifiers.org/uniprot/P00533"
+  c288 part "http://identifiers.org/uniprot/P21860",
+            "http://identifiers.org/uniprot/P04626"
+  c335 version "http://identifiers.org/kegg.compound/C00562"
+  c335 part "http://identifiers.org/uniprot/P04626",
+            "http://identifiers.org/uniprot/P21860"
+  c117 part "http://identifiers.org/uniprot/P04626",
+            "http://identifiers.org/uniprot/Q15303"
+  c336 part "http://identifiers.org/uniprot/Q15303",
+            "http://identifiers.org/uniprot/P04626"
+  c286 part "http://identifiers.org/uniprot/P00533"
+  c499 version "http://identifiers.org/uniprot/P01133"
+  c499 part "http://identifiers.org/uniprot/P00533"
+  c500 version "http://identifiers.org/uniprot/P01133"
+  c500 part "http://identifiers.org/chebi/CHEBI:15422",
+            "http://identifiers.org/uniprot/P00533"
+  c501 version "http://identifiers.org/uniprot/P01133"
+  c501 part "http://identifiers.org/uniprot/P00533"
+  c4 version "http://identifiers.org/uniprot/P01133"
+  c4 part "http://identifiers.org/chebi/CHEBI:15422",
+          "http://identifiers.org/uniprot/P00533"
+  c10 version "http://identifiers.org/uniprot/P01133"
+  c10 part "http://identifiers.org/chebi/CHEBI:15422",
+           "http://identifiers.org/uniprot/P00533"
+  c11 version "http://identifiers.org/uniprot/P01133"
+  c11 part "http://identifiers.org/chebi/CHEBI:15422",
+           "http://identifiers.org/uniprot/P00533"
+  c141 hypernym "http://identifiers.org/uniprot/P04626"
+  c145 version "http://identifiers.org/uniprot/P01133"
+  c145 hypernym "http://identifiers.org/uniprot/P04626"
+  c145 part "http://identifiers.org/uniprot/P00533"
+  c146 version "http://identifiers.org/uniprot/P01133"
+  c146 part "http://identifiers.org/uniprot/P00533"
+  c147 version "http://identifiers.org/uniprot/P01133"
+  c147 part "http://identifiers.org/uniprot/P00533"
+  c159 version "http://identifiers.org/uniprot/P01133"
+  c159 part "http://identifiers.org/uniprot/P00533"
+  c160 version "http://identifiers.org/uniprot/P01133"
+  c160 part "http://identifiers.org/uniprot/P00533"
+  c161 version "http://identifiers.org/uniprot/P01133"
+  c161 part "http://identifiers.org/uniprot/P00533"
+  c492 version "http://identifiers.org/uniprot/P01133"
+  c492 part "http://identifiers.org/uniprot/P00533"
+  c493 version "http://identifiers.org/uniprot/P01133"
+  c493 part "http://identifiers.org/uniprot/P00533"
+  c494 version "http://identifiers.org/uniprot/P01133"
+  c494 part "http://identifiers.org/uniprot/P00533"
+  c504 version "http://identifiers.org/uniprot/P01133"
+  c504 part "http://identifiers.org/uniprot/P00533"
+  c505 version "http://identifiers.org/uniprot/P01133"
+  c505 part "http://identifiers.org/uniprot/P00533"
+  c507 version "http://identifiers.org/uniprot/P01133"
+  c507 part "http://identifiers.org/uniprot/P00533"
+  c123 version "http://identifiers.org/uniprot/P01133"
+  c123 part "http://identifiers.org/uniprot/P00533"
+  c124 version "http://identifiers.org/uniprot/P01133"
+  c124 part "http://identifiers.org/uniprot/P00533"
+  c125 version "http://identifiers.org/uniprot/P01133"
+  c125 part "http://identifiers.org/uniprot/P00533"
+  c126 version "http://identifiers.org/uniprot/P01133"
+  c126 part "http://identifiers.org/uniprot/P00533"
+  c116 version "http://identifiers.org/uniprot/P01133"
+  c116 part "http://identifiers.org/uniprot/P00533"
+  c122 version "http://identifiers.org/uniprot/P01133"
+  c122 part "http://identifiers.org/uniprot/P00533"
+  c127 version "http://identifiers.org/uniprot/P01133"
+  c127 part "http://identifiers.org/uniprot/P00533"
+  c128 version "http://identifiers.org/uniprot/P01133"
+  c128 part "http://identifiers.org/uniprot/P00533"
+  c14 hypernym "http://identifiers.org/uniprot/P20936",
+               "http://identifiers.org/interpro/IPR001936"
+  c14 description "http://identifiers.org/omim/139150"
+  c16 hypernym "http://identifiers.org/uniprot/P01133",
+               "http://identifiers.org/go/GO:0005154"
+  c515 hypernym "http://identifiers.org/uniprot/Q02297",
+                "http://identifiers.org/interpro/IPR018250"
+  c22 hypernym "http://identifiers.org/uniprot/P62993"
+  c22 description "http://identifiers.org/omim/108355"
+  c24 hypernym "http://identifiers.org/uniprot/Q07889"
+  c24 description "http://identifiers.org/omim/182530"
+  c31 hypernym "http://identifiers.org/uniprot/P98077"
+  c31 description "http://identifiers.org/omim/605217"
+  c41 description "http://identifiers.org/omim/164760"
+  c41 hypernym "http://identifiers.org/uniprot/P04049"
+  c44 hypernym "http://identifiers.org/uniprot/P28562"
+  c47 description "http://identifiers.org/omim/176872"
+  c47 hypernym "http://identifiers.org/uniprot/A4QPA9",
+               "http://identifiers.org/uniprot/Q02750"
+  c53 hypernym "http://identifiers.org/uniprot/Q13115"
+  c55 description "http://identifiers.org/omim/176948"
+  c55 hypernym "http://identifiers.org/uniprot/P28482"
+  c60 hypernym "http://identifiers.org/uniprot/Q16828"
+  c287 part "http://identifiers.org/uniprot/P42336",
+            "http://identifiers.org/uniprot/P27986",
+            "http://identifiers.org/uniprot/O00459",
+            "http://identifiers.org/uniprot/P42338"
+  c287 hypernym "http://identifiers.org/reactome/REACT_4240.1"
+  c106 identity "http://identifiers.org/chebi/CHEBI:16618"
+  c107 hypernym "http://identifiers.org/uniprot/P31749"
+  c109 hypernym "http://identifiers.org/uniprot/O15530"
+  c113 hypernym "http://identifiers.org/uniprot/Q13115"
+  c285 hypernym "http://identifiers.org/chebi/CHEBI:49603",
+                "http://identifiers.org/go/GO:0030293"
+  c462 part "http://identifiers.org/chebi/CHEBI:16618"
+  c455 part "http://identifiers.org/uniprot/P42338",
+            "http://identifiers.org/uniprot/O00459",
+            "http://identifiers.org/uniprot/P27986",
+            "http://identifiers.org/uniprot/P42336"
+  c455 hypernym "http://identifiers.org/reactome/REACT_4240.1"
+  c463 hypernym "http://identifiers.org/uniprot/Q06124"
 end
+
+A431_ErbB is "Chen2009 - ErbB Signaling"
+
+A431_ErbB model_entity_is "http://identifiers.org/biomodels.db/MODEL1007260001"
+A431_ErbB model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000255"
+A431_ErbB description "http://identifiers.org/pubmed/19156131"
+A431_ErbB origin "http://identifiers.org/biomodels.db/BIOMD0000000019"
+A431_ErbB model_entity_is "http://identifiers.org/biomodels.db/MODEL1007260001"
+A431_ErbB model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000255"
+A431_ErbB taxon "http://identifiers.org/taxonomy/9606"
+A431_ErbB container "http://identifiers.org/bto/BTO:0000567"
+A431_ErbB version "http://identifiers.org/go/GO:0007265",
+                  "http://identifiers.org/go/GO:0000165"
+A431_ErbB hypernym "http://identifiers.org/reactome/REACT_9417.3",
+                   "http://identifiers.org/go/GO:0007173"

@@ -1,0 +1,504 @@
+// Created by libAntimony v2.13.0
+model *MODEL1604270004()
+
+  // Compartments and Species:
+  compartment Gut, Vasculature, Bone, PTH_Gland, Kidney, Intracellular, Osteoblast_Intracellular;
+  species PTH in Vasculature, S in PTH_Gland, PTmax in PTH_Gland, B in Vasculature;
+  species SC in Vasculature, P in Vasculature, ECCPhos in Vasculature, T in Gut;
+  species R in Gut, HAp in Bone, OB in Bone, PhosGut in Gut, IntraPO in Intracellular;
+  species OC in Bone, ROB1 in Bone, L in Bone, RNK in Bone, O in Bone, Q in Bone;
+  species Qbone in Bone, RX2 in Osteoblast_Intracellular, CREB in Osteoblast_Intracellular;
+  species BCL2 in Osteoblast_Intracellular, TERISC in Vasculature, A in Kidney;
+  species TGFB in Bone, TGFBact in Bone, OBfast in Bone, OBslow in Bone, M in Bone;
+  species N in Bone;
+
+  // Assignment Rules:
+  T13 := CaDay/24/Q0;
+  T15 := CaDay/(2.35*14*24);
+  T17 := 3.85*T16 - 3.85;
+  Osteoclast := OC;
+  J14OC50 := exp(ln(J14OCmax*OC0^J14OCgam/T13 - OC0^J14OCgam)/J14OCgam);
+  OCeqn := J14OCmax*Osteoclast^J14OCgam/(Osteoclast^J14OCgam + J14OC50^J14OCgam);
+  kinRNK := (koutRNK*RNK0 + k3*RNK0*RANKL0 - k4*M0)/TGFBact0^kinRNKgam;
+  MOCratio := M/Osteoclast;
+  MOCratio0 := M0/OC0;
+  MOCratioEff := (MOCratio/MOCratio0)^MOCratioGam;
+  J14OCdepend := OCeqn*Q0*FracJ14*MOCratioEff;
+  J14 := T13*Q0*(1 - FracJ14) + J14OCdepend;
+  J41 := 0.464*J14;
+  PicOCkin := Pic0;
+  bigDb := kb*OB0*Pic0/ROB0;
+  kinTGF := koutTGF0*TGFB0;
+  koutTGF := koutTGF0;
+  koutTGFact := koutTGF0*1000;
+  koutTGFeqn := koutTGF*TGFB*(Osteoclast/OC0)^OCtgfGAM;
+  E0PicROB := FracPicROB*Pic0;
+  EC50PicROBparen := EmaxPicROB*TGFBact0^PicROBgam/(Pic0 - E0PicROB) - TGFBact0^PicROBgam;
+  EC50PicROB := exp(ln(EC50PicROBparen)/PicROBgam);
+  Dr := kb*OB0/Pic0;
+  PicROB := E0PicROB + EmaxPicROB*TGFBact^PicROBgam/(TGFBact^PicROBgam + EC50PicROB^PicROBgam);
+  ROBin2 := Dr*PicROB;
+  ROBin := ROBin2;
+  E0PicOB := FracPicOB*Pic0;
+  EC50PicOBparen := EmaxPicOB*TGFBact0^PicOBgam/(Pic0 - E0PicOB) - TGFBact0^PicOBgam;
+  EC50PicOB := exp(ln(EC50PicOBparen)/PicOBgam);
+  PicOB := E0PicOB + EmaxPicOB*TGFBact^PicOBgam/(TGFBact^PicOBgam + EC50PicOB^PicOBgam);
+  KPT := 1*(bigDb/PicOB);
+  D := ROB1;
+  EC50MeffOC := exp(ln(M0^kinOCgam*EmaxMeffOC/(1 - E0Meff) - M0^kinOCgam)/kinOCgam);
+  MeffOC := E0Meff + EmaxMeffOC*M^kinOCgam/(M^kinOCgam + EC50MeffOC^kinOCgam);
+  kinOC2 := Da*PicOCkin*MeffOC*OC0;
+  E0PicOC := FracPicOC*Pic0;
+  EC50PicOCparen := EmaxPicOC*TGFBact0^PicOCgam/(Pic0 - E0PicOC) - TGFBact0^PicOCgam;
+  EC50PicOC := exp(ln(EC50PicOCparen)/PicOCgam);
+  PicOC := E0PicOC + EmaxPicOC*TGFBact^PicOCgam/(TGFBact^PicOCgam + EC50PicOC^PicOCgam);
+  PiL0 := (k3/k4)*RANKL0;
+  PiL := M/10;
+  EC50survInPar := (E0RANKL - EmaxL)*(PiL0^LsurvOCgam/(E0RANKL - 1)) - PiL0^LsurvOCgam;
+  EC50surv := exp(ln(EC50survInPar)/LsurvOCgam);
+  LsurvOC := E0RANKL - (E0RANKL - EmaxL)*(PiL^LsurvOCgam/(PiL^LsurvOCgam + EC50surv^LsurvOCgam));
+  KLSoc := Da*PicOC*LsurvOC;
+  C4 := PTH/V1;
+  T66 := (T67^AlphOHgam + 3.85^AlphOHgam)/3.85^AlphOHgam;
+  k15a := k14a*QboneInit/Q0;
+  J14a := k14a*Qbone;
+  J15a := k15a*Q;
+  kLShap := 1/HApMRT;
+  kHApIn := kLShap/OB0;
+  J15 := T15*P*(1 - FracJ15) + T15*P*FracJ15*HAp;
+  J42 := 0.464*J15;
+  OBfast0 := OB0*FracOBfast;
+  Osteoblast := OBfast + OBslow;
+  kinLbase := koutL*RANKL0;
+  OsteoEffect := (Osteoblast/OB0)^OsteoEffectGam;
+  PTH50 := EmaxLpth*3.85 - 3.85;
+  PTHconc := C4;
+  LpthEff := EmaxLpth*PTHconc/(PTH50*OsteoEffect^TESTPOWER + PTHconc);
+  kinL := kinLbase*OsteoEffect*LpthEff;
+  pObase := kO*OPG0;
+  pO := pObase*(D/ROB0)*((PTHconc + opgPTH50*(D/ROB0))/(2*PTHconc)) + IO;
+  RX2Kin := RX2Kout0*RX20;
+  EC50PTHRX2x := EmaxPTHRX2x*3.85/(RX2Kout0 - E0rx2Kout) - 3.85;
+  RX2Kout := E0rx2Kout + EmaxPTHRX2x*PTHconc/(PTHconc + EC50PTHRX2x);
+  EC50PTHcreb := EmaxPTHcreb*3.85/(1 - E0crebKin) - 3.85;
+  crebKin0 := crebKout*CREB0;
+  crebKin := crebKin0*(E0crebKin + EmaxPTHcreb*PTHconc/(PTHconc + EC50PTHcreb));
+  bcl2Kin := RX2*CREB*0.693;
+  CaConc := P/14;
+  C2 := ECCPhos/V1;
+  PO4inhPTH := (C2/1.2)^PO4inhPTHgam;
+  PhosEffTop := (PhosEff0 - 1)*(1.2^PhosEffGam + PhosEff50^PhosEffGam);
+  PhosEffBot := PhosEff0*1.2^PhosEffGam;
+  PhosEffMax := PhosEffTop/PhosEffBot;
+  PhosEff := PhosEff0 - PhosEffMax*PhosEff0*C2^PhosEffGam/(C2^PhosEffGam + PhosEff50^PhosEffGam);
+  PhosEffect := piecewise(PhosEff, C2 > 1.2, 1);
+  T68 := T66*C4^AlphOHgam/(T67^AlphOHgam*PO4inhPTH + C4^AlphOHgam);
+  SE := T65*T68*PhosEffect;
+  C8 := B/V1;
+  C1 := P/V1;
+  T36 := T33 + (T34 - T33)*(C8^CaPOgam/(T35^CaPOgam + C8^CaPOgam));
+  T37 := T34 - (T34 - T33)*(C8^CaPOgam/(T35^CaPOgam + C8^CaPOgam));
+  CaFilt := 0.6*0.5*GFR*C1;
+  ReabsMax := (0.3*GFR*2.35 - 0.149997)*(Reabs50 + 2.35)/2.35;
+  ReabsPTHeff := T16*C4/(C4 + T17);
+  CaReabsActive := (ReabsMax*C1/(Reabs50 + C1))*ReabsPTHeff;
+  T20 := CaFilt - CaReabsActive;
+  T10 := T7*C8/(C8 + T9);
+  J27a := (2 - T10)*T20;
+  J27 := piecewise(0, J27a < 0, J27a);
+  ScaEff := (2.35/CaConc)^ScaEffGam;
+  T72 := 90*ScaEff;
+  T73 := T71*(C8 - T72);
+  T74 := (exp(T73) - exp(-T73))/(exp(T73) + exp(-T73));
+  T75 := T70*(0.85*(1 + T74) + 0.15);
+  T76 := T70*(0.85*(1 - T74) + 0.15);
+  T47 := T46*0.88*GFR;
+  J48a := 0.88*GFR*C2 - T47;
+  J48 := piecewise(0, J48a < 0, J48a);
+  J53 := T52*PhosGut;
+  J54 := T49*C2;
+  J56 := T55*IntraPO;
+  E0PicOBkb := MultPicOBkb*Pic0;
+  EmaxPicOBkb := FracPic0kb*Pic0;
+  EC50PicOBparenKb := (E0PicOBkb - EmaxPicOBkb)*TGFBact0^PicOBgamkb/(E0PicOBkb - Pic0) - TGFBact0^PicOBgamkb;
+  EC50PicOBkb := exp(ln(EC50PicOBparenKb)/PicOBgamkb);
+  PicOBkb := E0PicOBkb - (E0PicOBkb - EmaxPicOBkb)*TGFBact^PicOBgamkb/(TGFBact^PicOBgamkb + EC50PicOBkb^PicOBgamkb);
+  PicOBkbEff := PicOBkb/Pic0;
+  E0RUNX2kbEff := E0RUNX2kbEffFACT*kb;
+  RUNX2 := piecewise(BCL2 - 90, BCL2 > 105, 10);
+  RUNkbMax := E0RUNX2kbEff*RUNkbMaxFact;
+  INparen := RUNkbMax*RUNX20^RUNkbGAM/(E0RUNX2kbEff - kb) - RUNX20^RUNkbGAM;
+  RUNkb50 := exp(ln(INparen)/RUNkbGAM);
+  RUNX2kbPrimeEff := RUNkbMax*RUNX2^RUNkbGAM/(RUNX2^RUNkbGAM + RUNkb50^RUNkbGAM);
+  kbprime := E0RUNX2kbEff*PicOBkbEff - RUNX2kbPrimeEff;
+  kbslow := kbprime*Frackb;
+  kbfast := (kb*OB0 + kbslow*OBfast0 - kbslow*OB0)/OBfast0;
+  Frackb2 := kbfast/kbprime;
+  T29 := (T28*T0 - 0.17533*T0)/0.17533;
+  T31 := T28*T/(T + T29);
+  T83 := R/0.5;
+  J40 := T31*T*T83/(T + T81) + T87*T;
+  T85Rpart := R^T80/(R^T80 + T81^T80);
+  T85 := T77*T85Rpart;
+  F11 := T85;
+  INparenCtriol := (CtriolMax - CtriolMin)*C8^CtriolPTgam/(CtriolMax - 1) - C8^CtriolPTgam;
+  Ctriol50 := exp(ln(INparenCtriol)/CtriolPTgam);
+  CtriolPTeff := CtriolMax - (CtriolMax - CtriolMin)*C8^CtriolPTgam/(C8^CtriolPTgam + Ctriol50^CtriolPTgam);
+  PTin := PTout*CtriolPTeff;
+  INparenCa := (T58 - T61)*2.35^T59/(T58 - 385) - 2.35^T59;
+  T60 := exp(ln(INparenCa)/T59);
+  FCTD := (S/0.5)*PTmax;
+  T63 := T58 - (T58 - T61)*CaConc^T59/(CaConc^T59 + T60^T59);
+  EPTH := T63*FCTD;
+  IPTH := 0.693*SC + IPTHinf;
+  SPTH := EPTH + IPTH;
+  kout := T57/14;
+  TERIPK := TERISC*TERICL/TERIVC;
+
+  // Reactions:
+  PTH_production:  => PTH; SPTH;
+  PTH_administration: TERISC => PTH; TERIPK;
+  PTH_degradation: PTH => ; kout*PTH;
+  PTH_gland_pool_production:  => S; (1 - S)*T76;
+  PTH_gland_pool_degradation: S => ; S*T75;
+  PTH_max_capacity_increase:  => PTmax; PTin;
+  PTH_max_capacity_decrease: PTmax => ; PTout*PTmax;
+  Calcitriol_production:  => B; A;
+  Calcitriol_degradation: B => ; T69*B;
+  SC_in:  => SC; IPTHint;
+  SC_out: SC => ; 0.693*SC;
+  alpha_hydroxylase_production:  => A; SE;
+  alpha_hydroxylase_degradation: A => ; T64*A;
+  Ca_flux_from_Bone: Q => P; J14;
+  Ca_absorption: T => P; J40;
+  Ca_flux_to_Bone: P => Q; J15;
+  Ca_filtration: P => ; J27;
+  Ca_oral_intake:  => T; OralCa*F11;
+  PO4_transfer_from_bone:  => ECCPhos; J41;
+  PO4_absorption: PhosGut => ECCPhos; J53;
+  PO4_flux_from_intracellular: IntraPO => ECCPhos; J56;
+  PO4_transfer_to_bone: ECCPhos => ; J42;
+  PO4_filtration: ECCPhos => ; J48;
+  PO4_flux_to_intracellular: ECCPhos => IntraPO; J54;
+  PO4_oral_intake:  => PhosGut; OralPhos*F12;
+  Intestinal_calcium_in:  => R; T36*(1 - R);
+  Intestinal_calcium_out: R => ; T37*R;
+  HAp_prouction:  => HAp; kHApIn*Osteoblast;
+  HAp_out: HAp => ; kLShap*HAp;
+  OBfast_fraction:  => OBfast; (bigDb/PicOB)*D*FracOBfast*Frackb2;
+  OBfast_degradation: OBfast => ; kbfast*OBfast;
+  OBslow_fraction:  => OBslow; (bigDb/PicOB)*D*(1 - FracOBfast)*Frackb;
+  OBslow_degradation: OBslow => ; kbslow*OBslow;
+  Osteoclast_production:  => OC; kinOC2;
+  Osteoclast_degradation: OC => ; KLSoc*OC;
+  Responding_Osteoblast_production:  => ROB1; ROBin;
+  Responding_Osteoblast_degradation: ROB1 => ; KPT*ROB1;
+  TGFB_production:  => TGFB; kinTGF*(Osteoblast/OB0)^OBtgfGAM;
+  TGFB_activation: TGFB => TGFBact; koutTGFeqn;
+  TGFB_degradation: TGFBact => ; koutTGFact*TGFBact;
+  RANKL_production:  => L; kinL;
+  RANKL_degradation: L => ; koutL*L;
+  RANK_production:  => RNK; kinRNK*TGFBact^kinRNKgam;
+  RANK_degradation: RNK => ; koutRNK*RNK;
+  OPG_production:  => O; pO;
+  OPG_degradation: O => ; kO*O;
+  RANKLRANKL_association: L + RNK => M; k3*RNK*L;
+  RANKLRANKL_dissociation: M => L + RNK; k4*M;
+  OPGRANKL_association:  => N; k1*O*L;
+  OPGRANKL_dissociation: N => ; k2*N;
+  Ca_to_intracellular_transfer: Qbone => Q; J14a;
+  Ca_to_extracellular_transfer: Q => Qbone; J15a;
+  RunX2_production:  => RX2; RX2Kin;
+  RunX2_degradation: RX2 => ; RX2Kout*RX2;
+  CREB_production:  => CREB; crebKin;
+  CREB_degradation: CREB => ; crebKout*CREB;
+  Bcl2_production:  => BCL2; bcl2Kin;
+  Bcl2_degradation: BCL2 => ; bcl2Kout*BCL2;
+
+  // Events:
+  Event: at 0 after (time == teri_times_initial) || ((time == (event_counter + teri_times_initial)) && (time < (teri_times_interval*teri_number_of_doses + teri_times_initial))), fromTrigger=false: TERISC = teri_dose_mcg*1000000/4117.8, event_counter = event_counter + teri_times_interval;
+
+  // Species initializations:
+  PTH = 53.9;
+  S = 0.5;
+  PTmax = 1;
+  B = 1260;
+  SC = 0;
+  P = 32.9;
+  ECCPhos = 16.8;
+  T = 1.2375;
+  R = 0.5;
+  HAp = 1;
+  OB = 0.00501324;
+  PhosGut = 0.839;
+  IntraPO = 3226;
+  OC = 0.00115398;
+  ROB1 = 0.00104122;
+  L = 0.4;
+  RNK = 10;
+  O = 4;
+  Q = 100;
+  Qbone = 24900;
+  RX2 = 10;
+  CREB = 10;
+  BCL2 = 100;
+  TERISC = 0;
+  A = B/10;
+  TGFB = Pic0*1000;
+  TGFBact = Pic0;
+  OBfast = OB*FracOBfast;
+  OBslow = OB*(1 - FracOBfast);
+  M = k3*RNK*L/k4;
+  N = k1*O*L/k2;
+
+  // Compartment initializations:
+  Gut = 1;
+  Vasculature = 1;
+  Bone = 1;
+  PTH_Gland = 1;
+  Kidney = 1;
+  Intracellular = 1;
+  Osteoblast_Intracellular = 1;
+
+  // Variable initializations:
+  Pic0 = 0.228142;
+  FracOBfast = 0.797629;
+  k3 = 6.24e-06;
+  k4 = 0.112013;
+  k1 = 6.24e-06;
+  k2 = 0.112013;
+  teri_times_initial = 12;
+  event_counter = 0;
+  teri_times_interval = 24;
+  teri_number_of_doses = 3;
+  teri_dose_mcg = 20;
+  V1 = 14;
+  CaDay = 88;
+  FracJ14 = 0.107763;
+  J14OCmax = 0.543488;
+  J14OCgam = 1.6971;
+  FracJ15 = 0.114376;
+  kinRNKgam = 0.151825;
+  koutRNK = 0.00323667;
+  MOCratioGam = 0.603754;
+  Da = 0.7/24;
+  OBtgfGAM = 0.0111319;
+  koutTGF0 = 2.98449e-05;
+  koutTGFGam = 0.919131;
+  OCtgfGAM = 0.593891;
+  EmaxPicROB = 3.9745;
+  PicROBgam = 1.80968;
+  FracPicROB = 0.883824;
+  PicOBgam = 0.122313;
+  FracPicOB = 0.000244818;
+  EmaxPicOB = 0.251636;
+  E0Meff = 0.388267;
+  EmaxMeffOC = 3.15667;
+  kinOCgam = 8.53065;
+  EmaxPicOC = 1.9746;
+  FracPicOC = 0.878215;
+  PicOCgam = 1.0168;
+  E0RANKL = 3.80338;
+  EmaxL = 0.469779;
+  GFR = 100/16.667;
+  T16 = 1.06147;
+  T64 = 0.05;
+  T65 = 6.3;
+  T67 = 1.54865;
+  AlphOHgam = 0.111241;
+  k14a = 2.44437e-05;
+  HApMRT = 3.60609;
+  koutL = 0.00293273;
+  OsteoEffectGam = 0.173833;
+  TESTPOWER = 1;
+  opgPTH50 = 3.85;
+  IO = 0;
+  RX2Kout0 = 0.693;
+  E0rx2Kout = 0.125;
+  EmaxPTHRX2x = 5;
+  E0crebKin = 0.5;
+  EmaxPTHcreb = 3.39745;
+  crebKout = 0.00279513;
+  bcl2Kout = 0.693;
+  ScaEffGam = 0.9;
+  PhosEff0 = 1.52493;
+  PhosEff50 = 1.3021;
+  PhosEffGam = 8.25229;
+  PO4inhPTHgam = 0;
+  T69 = 0.1;
+  Reabs50 = 1.57322;
+  T7 = 2;
+  T9 = 90;
+  T70 = 0.01;
+  T71 = 0.03;
+  T33 = 0.003;
+  T34 = 0.037;
+  T35 = 90;
+  CaPOgam = 1;
+  T46 = 1.142;
+  T52 = 0.365;
+  OralPhos = 10.5/24;
+  F12 = 0.7;
+  T49 = 51.8;
+  T55 = 0.019268;
+  PicOBgamkb = 2.92375;
+  MultPicOBkb = 3.11842;
+  FracPic0kb = 0.764028;
+  E0RUNX2kbEffFACT = 1.01;
+  RUNkbGAM = 3.67798;
+  RUNkbMaxFact = 0.638114;
+  RUNX20 = 10;
+  Frackb = 0.313186;
+  T81 = 0.75;
+  T87 = 0.0495;
+  T0 = 1.58471;
+  T28 = 0.9;
+  OralCa = 24.055/24;
+  T77 = 0.909359;
+  T80 = 4;
+  CtriolPTgam = 12.5033;
+  CtriolMax = 4.1029;
+  CtriolMin = 0.9;
+  PTout = 0.0001604;
+  T57 = 100;
+  T58 = 6249.09;
+  T59 = 11.7387;
+  T61 = 96.25;
+  IPTHint = 0;
+  IPTHinf = 0;
+  LsurvOCCgam = 3.0923;
+  EmaxLpth = 1.30721;
+  kO = 15.8885;
+  kb = 0.000605516;
+  LsurvOCgam = 3.09023;
+  TERIVC = 133;
+  TERICL = 94.3;
+  TERIKA = 16.4;
+  Q0 = Q;
+  OC0 = OC;
+  RNK0 = RNK;
+  RANKL0 = L;
+  RNKL0 = L;
+  OB0 = OB;
+  ROB0 = ROB1;
+  QboneInit = Qbone;
+  OPG0 = O;
+  RX20 = RX2;
+  CREB0 = CREB;
+  M0 = M;
+  TGFBact0 = TGFBact;
+  TGFB0 = TGFB;
+
+  // Other declarations:
+  var event_counter, T13, T15, T17, Osteoclast, J14OC50, OCeqn, kinRNK, MOCratio;
+  var MOCratio0, MOCratioEff, J14OCdepend, J14, J41, PicOCkin, bigDb, kinTGF;
+  var koutTGF, koutTGFact, koutTGFeqn, E0PicROB, EC50PicROBparen, EC50PicROB;
+  var Dr, PicROB, ROBin2, ROBin, E0PicOB, EC50PicOBparen, EC50PicOB, PicOB;
+  var KPT, D, EC50MeffOC, MeffOC, kinOC2, E0PicOC, EC50PicOCparen, EC50PicOC;
+  var PicOC, PiL0, PiL, EC50survInPar, EC50surv, LsurvOC, KLSoc, C4, T66;
+  var k15a, J14a, J15a, kLShap, kHApIn, J15, J42, OBfast0, Osteoblast, kinLbase;
+  var OsteoEffect, PTH50, PTHconc, LpthEff, kinL, pObase, pO, RX2Kin, EC50PTHRX2x;
+  var RX2Kout, EC50PTHcreb, crebKin0, crebKin, bcl2Kin, CaConc, C2, PO4inhPTH;
+  var PhosEffTop, PhosEffBot, PhosEffMax, PhosEff, PhosEffect, T68, SE, C8;
+  var C1, T36, T37, CaFilt, ReabsMax, ReabsPTHeff, CaReabsActive, T20, T10;
+  var J27a, J27, ScaEff, T72, T73, T74, T75, T76, T47, J48a, J48, J53, J54;
+  var J56, E0PicOBkb, EmaxPicOBkb, EC50PicOBparenKb, EC50PicOBkb, PicOBkb;
+  var PicOBkbEff, E0RUNX2kbEff, RUNX2, RUNkbMax, INparen, RUNkb50, RUNX2kbPrimeEff;
+  var kbprime, kbslow, kbfast, Frackb2, T29, T31, T83, J40, T85Rpart, T85;
+  var F11, INparenCtriol, Ctriol50, CtriolPTeff, PTin, INparenCa, T60, FCTD;
+  var T63, EPTH, IPTH, SPTH, kout, TERIPK;
+  const Gut, Vasculature, Bone, PTH_Gland, Kidney, Intracellular, Osteoblast_Intracellular;
+  const Pic0, FracOBfast, k3, k4, k1, k2, teri_times_initial, teri_times_interval;
+  const teri_number_of_doses, teri_dose_mcg, V1, CaDay, FracJ14, J14OCmax;
+  const J14OCgam, FracJ15, kinRNKgam, koutRNK, MOCratioGam, Da, OBtgfGAM;
+  const koutTGF0, koutTGFGam, OCtgfGAM, EmaxPicROB, PicROBgam, FracPicROB;
+  const PicOBgam, FracPicOB, EmaxPicOB, E0Meff, EmaxMeffOC, kinOCgam, EmaxPicOC;
+  const FracPicOC, PicOCgam, E0RANKL, EmaxL, GFR, T16, T64, T65, T67, AlphOHgam;
+  const k14a, HApMRT, koutL, OsteoEffectGam, TESTPOWER, opgPTH50, IO, RX2Kout0;
+  const E0rx2Kout, EmaxPTHRX2x, E0crebKin, EmaxPTHcreb, crebKout, bcl2Kout;
+  const ScaEffGam, PhosEff0, PhosEff50, PhosEffGam, PO4inhPTHgam, T69, Reabs50;
+  const T7, T9, T70, T71, T33, T34, T35, CaPOgam, T46, T52, OralPhos, F12;
+  const T49, T55, PicOBgamkb, MultPicOBkb, FracPic0kb, E0RUNX2kbEffFACT, RUNkbGAM;
+  const RUNkbMaxFact, RUNX20, Frackb, T81, T87, T0, T28, OralCa, T77, T80;
+  const CtriolPTgam, CtriolMax, CtriolMin, PTout, T57, T58, T59, T61, IPTHint;
+  const IPTHinf, LsurvOCCgam, EmaxLpth, kO, kb, LsurvOCgam, TERIVC, TERICL;
+  const TERIKA, Q0, OC0, RNK0, RANKL0, RNKL0, OB0, ROB0, QboneInit, OPG0;
+  const RX20, CREB0, M0, TGFBact0, TGFB0;
+
+  // Unit definitions:
+  unit time_unit = 3600 second;
+  unit volume = 1e1 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+
+  // SBO terms:
+  Gut.sboTerm = 290
+  Vasculature.sboTerm = 290
+  Bone.sboTerm = 290
+  PTH_Gland.sboTerm = 290
+  Kidney.sboTerm = 290
+  Intracellular.sboTerm = 290
+  Osteoblast_Intracellular.sboTerm = 290
+
+  // CV terms:
+  Gut hypernym "http://identifiers.org/bto/BTO:0000545"
+  Vasculature hypernym "http://identifiers.org/bto/BTO:0003718"
+  Bone hypernym "http://identifiers.org/bto/BTO:0000140"
+  PTH hypernym "http://identifiers.org/uniprot/P01270"
+  S hypernym "http://identifiers.org/uniprot/P01270"
+  PTmax hypernym "http://identifiers.org/uniprot/P01270"
+  B hypernym "http://identifiers.org/chebi/CHEBI:17823"
+  SC container "http://identifiers.org/bto/BTO:0004042"
+  SC hypernym "http://identifiers.org/uniprot/P01270"
+  SC property "http://identifiers.org/chebi/CHEBI:52217"
+  P hypernym "http://identifiers.org/chebi/CHEBI:29108"
+  ECCPhos hypernym "http://identifiers.org/chebi/CHEBI:35780"
+  T hypernym "http://identifiers.org/chebi/CHEBI:29108"
+  R container "http://identifiers.org/bto/BTO:0000648"
+  R hypernym "http://identifiers.org/chebi/CHEBI:29108"
+  HAp hypernym "http://identifiers.org/chebi/CHEBI:52254"
+  OB hypernym "http://identifiers.org/bto/BTO:0001593"
+  PhosGut hypernym "http://identifiers.org/chebi/CHEBI:35780"
+  IntraPO hypernym "http://identifiers.org/chebi/CHEBI:35780"
+  OC hypernym "http://identifiers.org/bto/BTO:0000968"
+  ROB1 hypernym "http://identifiers.org/bto/BTO:0000968"
+  ROB1 property "urn:miriam:pato:PATO%3A0000487+"
+  L hypernym "http://identifiers.org/uniprot/O14788"
+  RNK hypernym "http://identifiers.org/uniprot/Q9Y6Q6"
+  O hypernym "http://identifiers.org/uniprot/O00300"
+  Q hypernym "http://identifiers.org/chebi/CHEBI:29108"
+  Q container "http://identifiers.org/go/GO:0005622"
+  Qbone hypernym "http://identifiers.org/chebi/CHEBI:29108"
+  Qbone container "http://identifiers.org/go/GO:0005576"
+  RX2 hypernym "http://identifiers.org/uniprot/Q13950"
+  CREB hypernym "http://identifiers.org/uniprot/P16220"
+  BCL2 hypernym "http://identifiers.org/uniprot/P10415"
+  TERISC hypernym "http://identifiers.org/pubchem.compound/16132393"
+  A hypernym "http://identifiers.org/uniprot/O15528"
+  TGFB hypernym "http://identifiers.org/uniprot/P01137"
+  TGFBact hypernym "http://identifiers.org/uniprot/P01137"
+  TGFBact property "http://identifiers.org/pato/PATO:0002354"
+  OBfast hypernym "http://identifiers.org/bto/BTO:0001593"
+  OBslow hypernym "http://identifiers.org/bto/BTO:0001593"
+  M property "http://identifiers.org/go/GO:0043234"
+  M part "http://identifiers.org/uniprot/O14788",
+         "http://identifiers.org/uniprot/Q9Y6Q6"
+  N property "http://identifiers.org/go/GO:0043234"
+  N part "http://identifiers.org/uniprot/O14788",
+         "http://identifiers.org/uniprot/O00300"
+end
+
+MODEL1604270004 is "Peterson2010 - Integrated calcium homeostasis and bone remodelling"
+
+MODEL1604270004 description "http://identifiers.org/pubmed/19732857"
+MODEL1604270004 model_entity_is "http://identifiers.org/biomodels.db/MODEL1604270004",
+                                "http://identifiers.org/biomodels.db/BIOMD0000000613"
+MODEL1604270004 hypernym "http://identifiers.org/go/GO:0046849",
+                         "http://identifiers.org/go/GO:0055074",
+                         "http://identifiers.org/go/GO:2000828"
+MODEL1604270004 taxon "http://identifiers.org/taxonomy/9606"
+MODEL1604270004 property "http://identifiers.org/doid/DOID:11199",
+                         "http://identifiers.org/doid/DOID:13543",
+                         "http://identifiers.org/mamo/MAMO_0000046"

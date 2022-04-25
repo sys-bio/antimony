@@ -1,11 +1,15 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 function function_2(substrate, Shalve, V, h)
-  (V*substrate^h)/(Shalve^h + substrate^h);
+  V*substrate^h/(Shalve^h + substrate^h);
 end
+
+function_2 is "Hill Cooperativity"
 
 function function_1(V, Shalve, h, substrate)
   V/(Shalve^h + substrate^h);
 end
+
+function_1 is "Hill inhibition"
 
 
 model *Kim2011_Oscillator_SimpleI()
@@ -81,4 +85,39 @@ model *Kim2011_Oscillator_SimpleI()
   reaction_7 is "reaction7";
   reaction_8 is "reaction8";
   reaction_9 is "reaction9";
+
+  // SBO terms:
+  compartment_1.sboTerm = 290
+  species_1.sboTerm = 459
+  species_2.sboTerm = 20
+  species_3.sboTerm = 540
+  species_4.sboTerm = 540
+  parameter_1.sboTerm = 9
+  parameter_2.sboTerm = 9
+  parameter_3.sboTerm = 9
+  parameter_4.sboTerm = 190
+  parameter_5.sboTerm = 190
+  parameter_6.sboTerm = 9
+  reaction_1_k1.sboTerm = 9
+  reaction_2_k1.sboTerm = 9
+  reaction_3_k1.sboTerm = 9
+  reaction_4_k1.sboTerm = 9
+  reaction_7_V.sboTerm = 9
+  reaction_7_Shalve.sboTerm = 9
+  reaction_8_Shalve.sboTerm = 9
+  reaction_8_V.sboTerm = 9
+
+  // CV terms:
+  compartment_1 hypernym "http://identifiers.org/obo.go/GO:0005623"
+  species_1 hypernym "http://identifiers.org/chebi/CHEBI:33697"
+  species_2 hypernym "http://identifiers.org/chebi/CHEBI:35222",
+                     "http://identifiers.org/chebi/CHEBI:33697"
 end
+
+Kim2011_Oscillator_SimpleI is "Kim2011_Oscillator_SimpleI"
+
+Kim2011_Oscillator_SimpleI model_entity_is "http://identifiers.org/biomodels.db/MODEL1012090000"
+Kim2011_Oscillator_SimpleI model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000322"
+Kim2011_Oscillator_SimpleI description "http://identifiers.org/pubmed/21283141"
+Kim2011_Oscillator_SimpleI taxon "http://identifiers.org/taxonomy/131567"
+Kim2011_Oscillator_SimpleI hypernym "http://identifiers.org/obo.go/GO:0010468"

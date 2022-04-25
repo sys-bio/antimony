@@ -1,0 +1,215 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function Function_for_T_cell_degradation(k1, m, T, Lm, RT)
+  k1*m*T*Lm*RT;
+end
+
+Function_for_T_cell_degradation is "Function for T-cell degradation"
+
+function Function_for_tumour_cell_degradation(k1, m, T, LT, Rm)
+  k1*m*T*LT*Rm;
+end
+
+Function_for_tumour_cell_degradation is "Function for tumour cell degradation"
+
+function Function_for_LT_synthesis(k2, T, m)
+  k2*T*m;
+end
+
+Function_for_LT_synthesis is "Function for LT synthesis"
+
+function Function_for_RT_degradation__SL_modifier(k8, RT, SL)
+  k8*RT*SL;
+end
+
+Function_for_RT_degradation__SL_modifier is "Function for RT degradation (SL modifier)"
+
+function Function_for_Rm_degradation__SL_modifier(k8, Rm, SL)
+  k8*Rm*SL;
+end
+
+Function_for_Rm_degradation__SL_modifier is "Function for Rm degradation (SL modifier)"
+
+function Function_for_LT_degradation(K4, k3, LT)
+  (K4 + k3)*LT;
+end
+
+Function_for_LT_degradation is "Function for LT degradation"
+
+function Function_for_Lm_degradation(k3, k4, Lm)
+  (k3 + k4)*Lm;
+end
+
+Function_for_Lm_degradation is "Function for Lm degradation"
+
+function Function_for_LT_degradation__m__T_and_Rm_modifiers(k5, m, T, LT, Rm)
+  k5*m*T*LT*Rm;
+end
+
+Function_for_LT_degradation__m__T_and_Rm_modifiers is "Function for LT degradation (m, T and Rm modifiers)"
+
+function Function_for_Lm_degradation__m__T_and_RT_modifiers(k5, m, T, Lm, RT)
+  k5*m*T*Lm*RT;
+end
+
+Function_for_Lm_degradation__m__T_and_RT_modifiers is "Function for Lm degradation (m, T and RT modifiers)"
+
+function Function_for_SL_synthesis(k3, Lm, m, LT, T)
+  k3*(Lm*m + LT*T);
+end
+
+Function_for_SL_synthesis is "Function for SL synthesis"
+
+function Function_for_SL_degradation__Rm__m__RT__T_and_SL_modifiers(k9, Rm, m, RT, T, SL)
+  k9*(Rm*m + RT*T)*SL;
+end
+
+Function_for_SL_degradation__Rm__m__RT__T_and_SL_modifiers is "Function for SL degradation (Rm, m, RT, T and SL modifiers)"
+
+
+model *Webb2002_FasFasLsystem_Tumour()
+
+  // Compartments and Species:
+  compartment compartment_, Tumour_cell, T_Lymphocyte_cell;
+  species T in compartment_, LT in compartment_, RT in T_Lymphocyte_cell;
+  species m in compartment_, Lm in Tumour_cell, Rm in Tumour_cell, SL in compartment_;
+
+  // Reactions:
+  T_cell_degradation: T => ; Function_for_T_cell_degradation(k1, m, T, Lm, RT);
+  Tumour_cell_degradation: m => ; Function_for_tumour_cell_degradation(k1, m, T, LT, Rm);
+  SL_degradation: SL => ; compartment_*k11*SL;
+  Lm_synthesis:  => Lm; Tumour_cell*Constant_flux__irreversible(k10);
+  RT_synthesis:  => RT; T_Lymphocyte_cell*Constant_flux__irreversible(k6);
+  Rm_synthesis:  => Rm; Tumour_cell*Constant_flux__irreversible(k6);
+  RT_degradation: RT => ; T_Lymphocyte_cell*k7*RT;
+  Rm_degradation: Rm => ; Tumour_cell*k7*Rm;
+  LT_synthesis:  => LT; compartment_*Function_for_LT_synthesis(k2, T, m);
+  RT_degradation__SL_modifier: RT => ; Function_for_RT_degradation__SL_modifier(k8, RT, SL);
+  Rm_degradation__SL_modifier: Rm => ; Function_for_Rm_degradation__SL_modifier(k8, Rm, SL);
+  LT_degradation: LT => ; compartment_*Function_for_LT_degradation(k4, k3, LT);
+  Lm_degradation: Lm => ; Tumour_cell*Function_for_Lm_degradation(k3, k4, Lm);
+  LT_degradation__m__T_and_Rm_modifiers: LT => ; Function_for_LT_degradation__m__T_and_Rm_modifiers(k5, m, T, LT, Rm);
+  Lm_degradation__m__T_and_RT_modifiers: Lm => ; Function_for_Lm_degradation__m__T_and_RT_modifiers(k5, m, T, Lm, RT);
+  SL_synthesis:  => SL; Function_for_SL_synthesis(k3, Lm, m, LT, T);
+  SL_degradation__Rm__m__RT__T_and_SL_modifiers: SL => ; Function_for_SL_degradation__Rm__m__RT__T_and_SL_modifiers(k9, Rm, m, RT, T, SL);
+
+  // Species initializations:
+  T = 500.000000000001;
+  LT = 0;
+  RT = 10000.0000000001;
+  m = 500.000000000001;
+  Lm = 1000;
+  Rm = 1000;
+  SL = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+  Tumour_cell = 1;
+  T_Lymphocyte_cell = 1;
+
+  // Variable initializations:
+  k1 = 8.38e-10;
+  k2 = 0.006;
+  k3 = 5.9413;
+  k4 = 0.35;
+  k5 = 2.52e-09;
+  k6 = 2244;
+  k7 = 0.35;
+  k8 = 19200000000;
+  k9 = 8730000000;
+  k10 = 3110;
+  k11 = 13.9;
+
+  // Other declarations:
+  const compartment_, Tumour_cell, T_Lymphocyte_cell, k1, k2, k3, k4, k5;
+  const k6, k7, k8, k9, k10, k11;
+
+  // Display Names:
+  compartment_ is "compartment";
+  Tumour_cell is "Tumour cell";
+  T_Lymphocyte_cell is "T-Lymphocyte cell";
+  T is "T-cells (T)";
+  LT is "mFasL (LT)";
+  RT is "FasR (RT)";
+  m is "Tumour cells (m)";
+  Lm is "mFasL (Lm)";
+  Rm is "FasR (Rm)";
+  SL is "sFasL (SL)";
+  T_cell_degradation is "T-cell degradation";
+  Tumour_cell_degradation is "Tumour cell degradation";
+  SL_degradation is "SL degradation";
+  Lm_synthesis is "Lm synthesis";
+  RT_synthesis is "RT synthesis";
+  Rm_synthesis is "Rm synthesis";
+  RT_degradation is "RT degradation";
+  Rm_degradation is "Rm degradation";
+  LT_synthesis is "LT synthesis";
+  RT_degradation__SL_modifier is "RT degradation (SL modifier)";
+  Rm_degradation__SL_modifier is "Rm degradation (SL modifier)";
+  LT_degradation is "LT degradation";
+  Lm_degradation is "Lm degradation";
+  LT_degradation__m__T_and_Rm_modifiers is "LT degradation (m, T and Rm modifiers)";
+  Lm_degradation__m__T_and_RT_modifiers is "Lm degradation (m, T and RT modifiers)";
+  SL_synthesis is "SL formation";
+  SL_degradation__Rm__m__RT__T_and_SL_modifiers is "SL degradation (Rm, m, RT, T and SL modifiers)";
+
+  // CV terms:
+  compartment_ hypernym "urn:miriam:sbo:SBO%3A0000289"
+  Tumour_cell hypernym "http://identifiers.org/ncit/C12922"
+  T_Lymphocyte_cell hypernym "http://identifiers.org/ncit/C104083"
+  T hypernym "http://identifiers.org/ncit/C104083"
+  LT hypernym "http://identifiers.org/chebi/CHEBI:17089"
+  LT container "http://identifiers.org/ncit/C14070"
+  LT hypernym "http://identifiers.org/uniprot/P48023"
+  RT hypernym "http://identifiers.org/uniprot/P25445"
+  RT container "http://identifiers.org/ncit/C14070"
+  m hypernym "http://identifiers.org/ncit/C12922"
+  Lm hypernym "http://identifiers.org/chebi/CHEBI:17089"
+  Lm container "http://identifiers.org/ncit/C14070"
+  Lm hypernym "http://identifiers.org/uniprot/P48023"
+  Rm hypernym "http://identifiers.org/uniprot/P25445"
+  Rm container "http://identifiers.org/ncit/C14070"
+  SL hypernym "http://identifiers.org/pr/PR:000000547"
+  k2 description "http://identifiers.org/pubmed/9257817"
+  k6 description "http://identifiers.org/pubmed/7505205"
+  k7 description "http://identifiers.org/pubmed/1372394"
+  k8 description "http://identifiers.org/pubmed/7505205"
+  k9 description "http://identifiers.org/pubmed/7505205"
+  k11 description "http://identifiers.org/isbn/0195064666"
+  T_cell_degradation hypernym "http://identifiers.org/ncit/C17557"
+  Tumour_cell_degradation hypernym "http://identifiers.org/ncit/C17557"
+  SL_degradation hypernym "urn:miriam:sbo:SBO%3A0000179"
+  Lm_synthesis hypernym "http://identifiers.org/ncit/C61408"
+  RT_synthesis hypernym "http://identifiers.org/go/GO:0032800"
+  Rm_synthesis hypernym "http://identifiers.org/go/GO:0032800"
+  RT_degradation hypernym "urn:miriam:sbo:SBO%3A0000179"
+  Rm_degradation hypernym "urn:miriam:sbo:SBO%3A0000179"
+  LT_synthesis hypernym "http://identifiers.org/ncit/C61408"
+  RT_degradation__SL_modifier hypernym "urn:miriam:sbo:SBO%3A0000526"
+  Rm_degradation__SL_modifier hypernym "urn:miriam:sbo:SBO%3A0000526"
+  LT_degradation hypernym "urn:miriam:sbo:SBO%3A0000178"
+  LT_degradation hypernym "urn:miriam:sbo:SBO%3A0000179"
+  LT_degradation propertyBearer "http://identifiers.org/ncit/C18164"
+  Lm_degradation hypernym "urn:miriam:sbo:SBO%3A0000179"
+  Lm_degradation property "urn:miriam:sbo:SBO%3A0000178"
+  Lm_degradation property "http://identifiers.org/ncit/C18164"
+  LT_degradation__m__T_and_Rm_modifiers hypernym "http://identifiers.org/ncit/C20139"
+  Lm_degradation__m__T_and_RT_modifiers hypernym "http://identifiers.org/ncit/C20139"
+  SL_synthesis propertyBearer "http://identifiers.org/ncit/C18164"
+end
+
+Webb2002_FasFasLsystem_Tumour is "Webb2002 - Fas/FasL mediated tumor T-cell interaction"
+
+Webb2002_FasFasLsystem_Tumour model_entity_is "http://identifiers.org/biomodels.db/MODEL1006230046"
+Webb2002_FasFasLsystem_Tumour model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000661"
+Webb2002_FasFasLsystem_Tumour description "http://identifiers.org/pubmed/12208611"
+Webb2002_FasFasLsystem_Tumour unknown_model_qual "http://identifiers.org/mamo/MAMO_0000046"
+Webb2002_FasFasLsystem_Tumour taxon "http://identifiers.org/taxonomy/9606"
+Webb2002_FasFasLsystem_Tumour hypernym "http://identifiers.org/go/GO:1902044"
+Webb2002_FasFasLsystem_Tumour hypernym "http://identifiers.org/pw/PW:0000106"
+Webb2002_FasFasLsystem_Tumour hypernym "http://identifiers.org/go/GO:0002418"

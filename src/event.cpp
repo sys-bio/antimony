@@ -8,6 +8,7 @@
 #include "stringx.h"
 
 using namespace std;
+using namespace libsbml;
 
 AntimonyEvent::AntimonyEvent(const Formula& delay, const Formula& trigger, Variable* var)
   : m_trigger(trigger),

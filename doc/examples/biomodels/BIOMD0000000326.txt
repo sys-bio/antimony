@@ -1,11 +1,11 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *DellOrco2009_phototransduction()
 
   // Compartments and Species:
   compartment cytosol;
   species Arr in cytosol, Ca2_buff in cytosol, Ca2_free in cytosol, G_GTP in cytosol;
   species Ga_GDP in cytosol, Ga_GTP in cytosol, Ga_GTP_PDE_a_Ga_GTP in cytosol;
-  species Ga_GTP_a_PDE_a_Ga_GTP in cytosol, Gbg in cytosol, Gt_ in cytosol;
+  species Ga_GTP_a_PDE_a_Ga_GTP in cytosol, Gbg in cytosol, Gt in cytosol;
   species Ops in cytosol, Ops_G in cytosol, Ops_G_GTP in cytosol, Ops_Gt in cytosol;
   species PDE in cytosol, PDE_Ga_GTP in cytosol, PDE_a_Ga_GTP in cytosol;
   species R in cytosol, R0 in cytosol, R0_G in cytosol, R0_G_GTP in cytosol;
@@ -31,9 +31,9 @@ model *DellOrco2009_phototransduction()
   dur := flashDur;
   del := flashDel;
   preflash := piecewise(premag, time <= predur, 0);
-  testflash := piecewise(mag, time >= del && time <= del + dur, 0);
+  testflash := piecewise(mag, (time >= del) && (time <= (del + dur)), 0);
   stimulus := background + preflash + testflash + otherstimulus;
-  numConcFactor := 1/(6.022000e+005*Vcyto);
+  numConcFactor := 1/(6.022e5*Vcyto);
   kRK1_1 := kRK1_0*exp(-omega);
   kRK1_2 := kRK1_0*exp(-omega*2);
   kRK1_3 := kRK1_0*exp(-omega*3);
@@ -55,11 +55,11 @@ model *DellOrco2009_phototransduction()
   E := PDE_a_Ga_GTP + 2*Ga_GTP_a_PDE_a_Ga_GTP;
   Rec_wCa2 := (Rectot - Rec_wCa2_RK*numConcFactor)/(1 + (Kp/Ca2_free)^w);
   alfamax := betadark*cGMPdark*(1 + (Ca2dark/Kc)^m);
-  J := 2/(2 + fCa)*(cGMP/cGMPdark)^ncg*Jdark + (fCa/(fCa + 2)*(Ca2_free - Ca2_0))/(Ca2dark - Ca2_0)*Jdark;
+  J := (2/(2 + fCa))*(cGMP/cGMPdark)^ncg*Jdark + ((fCa/(fCa + 2))*(Ca2_free - Ca2_0)/(Ca2dark - Ca2_0))*Jdark;
   deltaJ := Jdark - J;
 
   // Reactions:
-  v_r1: R => R0; (stimulus*R)/Rtot;
+  v_r1: R => R0; stimulus*R/Rtot;
   v_r2_0: R0 + RK -> R0_RKpre; kRK1_0*RK*R0 - kRK2*R0_RKpre;
   v_r2_1: R1 + RK -> R1_RKpre; kRK1_1*RK*R1 - kRK2*R1_RKpre;
   v_r2_2: R2 + RK -> R2_RKpre; kRK1_2*RK*R2 - kRK2*R2_RKpre;
@@ -98,18 +98,18 @@ model *DellOrco2009_phototransduction()
   v_r7_4: R4 => Ops; ktherm*R4;
   v_r7_5: R5 => Ops; ktherm*R5;
   v_r7_6: R6 => Ops; ktherm*R6;
-  v_r8: Gt_ + Ops -> Ops_Gt; kOps*Ops*Gt_ - kG2*Ops_Gt;
+  v_r8: Gt + Ops -> Ops_Gt; kOps*Ops*Gt - kG2*Ops_Gt;
   v_r9: Ops_Gt -> Ops_G; kG3*Ops_Gt - kG4_GDP*Ops_G;
   v_r10: Ops_G => Ops_G_GTP; kG5_GTP*Ops_G;
   v_r11: Ops_G_GTP => G_GTP + Ops; kG6*Ops_G_GTP;
   v_r12: Ops => R; kRrecyc*Ops;
-  v_r13_0: Gt_ + R0 -> R0_Gt; kG1_0*Gt_*R0 - kG2*R0_Gt;
-  v_r13_1: Gt_ + R1 -> R1_Gt; kG1_1*Gt_*R1 - kG2*R1_Gt;
-  v_r13_2: Gt_ + R2 -> R2_Gt; kG1_2*Gt_*R2 - kG2*R2_Gt;
-  v_r13_3: Gt_ + R3 -> R3_Gt; kG1_3*Gt_*R3 - kG2*R3_Gt;
-  v_r13_4: Gt_ + R4 -> R4_Gt; kG1_4*Gt_*R4 - kG2*R4_Gt;
-  v_r13_5: Gt_ + R5 -> R5_Gt; kG1_5*Gt_*R5 - kG2*R5_Gt;
-  v_r13_6: Gt_ + R6 -> R6_Gt; kG1_6*Gt_*R6 - kG2*R6_Gt;
+  v_r13_0: Gt + R0 -> R0_Gt; kG1_0*Gt*R0 - kG2*R0_Gt;
+  v_r13_1: Gt + R1 -> R1_Gt; kG1_1*Gt*R1 - kG2*R1_Gt;
+  v_r13_2: Gt + R2 -> R2_Gt; kG1_2*Gt*R2 - kG2*R2_Gt;
+  v_r13_3: Gt + R3 -> R3_Gt; kG1_3*Gt*R3 - kG2*R3_Gt;
+  v_r13_4: Gt + R4 -> R4_Gt; kG1_4*Gt*R4 - kG2*R4_Gt;
+  v_r13_5: Gt + R5 -> R5_Gt; kG1_5*Gt*R5 - kG2*R5_Gt;
+  v_r13_6: Gt + R6 -> R6_Gt; kG1_6*Gt*R6 - kG2*R6_Gt;
   v_r14_0: R0_Gt -> R0_G; kG3*R0_Gt - kG4_GDP*R0_G;
   v_r14_1: R1_Gt -> R1_G; kG3*R1_Gt - kG4_GDP*R1_G;
   v_r14_2: R2_Gt -> R2_G; kG3*R2_Gt - kG4_GDP*R2_G;
@@ -143,11 +143,11 @@ model *DellOrco2009_phototransduction()
   v_r26: PDE_a_Ga_GTP => Ga_GDP + PDE; kPDEshutoff*PDE_a_Ga_GTP;
   v_r27: Ga_GTP_a_PDE_a_Ga_GTP => Ga_GDP + PDE_a_Ga_GTP; kPDEshutoff*Ga_GTP_a_PDE_a_Ga_GTP;
   v_r28: Ga_GTP => Ga_GDP; kGshutoff*Ga_GTP;
-  v_r29: Ga_GDP + Gbg => Gt_; kGrecyc*Gbg*Ga_GDP;
+  v_r29: Ga_GDP + Gbg => Gt; kGrecyc*Gbg*Ga_GDP;
   v_r30: RK -> Rec_wCa2_RK; kRec3*Rec_wCa2*RK - kRec4*Rec_wCa2_RK;
   v_r31: Ca2_free -> Ca2_buff; k1*(eT - Ca2_buff)*Ca2_free - k2*Ca2_buff;
   v_r32: Ca2_free => ; gammaCa*(Ca2_free - Ca2_0);
-  v_r33:  => Ca2_free; (1.000000e+006*fCa*Jdark)/((2 + fCa)*F*Vcyto)*(cGMP/cGMPdark)^ncg;
+  v_r33:  => Ca2_free; (1e6*fCa*Jdark/((2 + fCa)*F*Vcyto))*(cGMP/cGMPdark)^ncg;
   v_r34:  => cGMP; alfamax/(1 + (Ca2_free/Kc)^m);
   v_r35: cGMP => ; (betadark + betasub*E)*cGMP;
 
@@ -161,7 +161,7 @@ model *DellOrco2009_phototransduction()
   Ga_GTP_PDE_a_Ga_GTP = 0;
   Ga_GTP_a_PDE_a_Ga_GTP = 0;
   Gbg = 0;
-  Gt_ = 360000000;
+  Gt = 360000000;
   Ops = 0;
   Ops_G = 0;
   Ops_G_GTP = 0;
@@ -248,12 +248,12 @@ model *DellOrco2009_phototransduction()
   kRK3_ATP = 400;
   kRK4 = 20;
   omega_arr = 0.81323;
-  kArr = 6.0918e-010;
+  kArr = 6.0918e-10;
   kA2 = 0.00323198;
   kA3 = 0.0445091;
-  kOps = 6.1172e-013;
+  kOps = 6.1172e-13;
   kRrecyc = 0.0007;
-  kG1_0 = 3.0586111111e-005;
+  kG1_0 = 3.0586111111e-05;
   kG2 = 2250.34;
   kG3 = 2000;
   kG4_GDP = 600;
@@ -265,10 +265,10 @@ model *DellOrco2009_phototransduction()
   kP1 = 0.0549715;
   kP1_rev = 0;
   kP2 = 940.706;
-  kP3 = 1.49834e-009;
+  kP3 = 1.49834e-09;
   kP4 = 21.0881;
   kPDEshutoff = 0.033;
-  kRGS1 = 1.57e-007;
+  kRGS1 = 1.57e-07;
   kRGS2 = 256.07;
   kRec3 = 9.68777;
   kRec4 = 0.610084;
@@ -304,4 +304,322 @@ model *DellOrco2009_phototransduction()
   const kP1_rev, kP2, kP3, kP4, kPDEshutoff, kRGS1, kRGS2, kRec3, kRec4, Kp;
   const w, Vcyto, Kc, m, betadark, betasub, fCa, Jdark, F, cGMPdark, ncg;
   const gammaCa, Ca2dark, Ca2_0, k1, k2, eT, ktherm;
+
+  // SBO terms:
+  cytosol.sboTerm = 290
+  Arr.sboTerm = 252
+  Ca2_buff.sboTerm = 247
+  Ca2_free.sboTerm = 247
+  G_GTP.sboTerm = 296
+  Ga_GDP.sboTerm = 296
+  Ga_GTP.sboTerm = 296
+  Ga_GTP_PDE_a_Ga_GTP.sboTerm = 296
+  Ga_GTP_a_PDE_a_Ga_GTP.sboTerm = 296
+  Gbg.sboTerm = 297
+  Gt.sboTerm = 252
+  Ops.sboTerm = 252
+  Ops_G.sboTerm = 297
+  Ops_G_GTP.sboTerm = 296
+  Ops_Gt.sboTerm = 297
+  PDE.sboTerm = 252
+  PDE_Ga_GTP.sboTerm = 296
+  PDE_a_Ga_GTP.sboTerm = 296
+  R.sboTerm = 252
+  R0.sboTerm = 252
+  R0_G.sboTerm = 297
+  R0_G_GTP.sboTerm = 296
+  R0_Gt.sboTerm = 297
+  R0_RKpre.sboTerm = 297
+  R1.sboTerm = 252
+  R1_Arr.sboTerm = 297
+  R1_G.sboTerm = 297
+  R1_G_GTP.sboTerm = 296
+  R1_Gt.sboTerm = 297
+  R1_RKpost.sboTerm = 297
+  R1_RKpre.sboTerm = 297
+  R2.sboTerm = 252
+  R2_Arr.sboTerm = 297
+  R2_G.sboTerm = 297
+  R2_G_GTP.sboTerm = 296
+  R2_Gt.sboTerm = 297
+  R2_RKpost.sboTerm = 297
+  R2_RKpre.sboTerm = 297
+  R3.sboTerm = 252
+  R3_Arr.sboTerm = 297
+  R3_G.sboTerm = 297
+  R3_G_GTP.sboTerm = 296
+  R3_Gt.sboTerm = 297
+  R3_RKpost.sboTerm = 297
+  R3_RKpre.sboTerm = 297
+  R4.sboTerm = 252
+  R4_Arr.sboTerm = 297
+  R4_G.sboTerm = 297
+  R4_G_GTP.sboTerm = 296
+  R4_Gt.sboTerm = 297
+  R4_RKpost.sboTerm = 297
+  R4_RKpre.sboTerm = 297
+  R5.sboTerm = 252
+  R5_Arr.sboTerm = 297
+  R5_G.sboTerm = 297
+  R5_G_GTP.sboTerm = 296
+  R5_Gt.sboTerm = 297
+  R5_RKpost.sboTerm = 297
+  R5_RKpre.sboTerm = 297
+  R6.sboTerm = 252
+  R6_Arr.sboTerm = 297
+  R6_G.sboTerm = 297
+  R6_G_GTP.sboTerm = 296
+  R6_Gt.sboTerm = 297
+  R6_RKpost.sboTerm = 297
+  R6_RKpre.sboTerm = 297
+  RGS.sboTerm = 252
+  RGS_Ga_GTP_a_PDE_a_Ga_GTP.sboTerm = 296
+  RGS_PDE_a_Ga_GTP.sboTerm = 296
+  RK.sboTerm = 252
+  Rec_wCa2_RK.sboTerm = 296
+  cGMP.sboTerm = 247
+
+  // CV terms:
+  cytosol hypernym "http://identifiers.org/go/GO:0005829"
+  Arr hypernym "http://identifiers.org/uniprot/P20443"
+  Ca2_buff hypernym "http://identifiers.org/chebi/CHEBI:29108",
+                    "http://identifiers.org/kegg.compound/C00076"
+  Ca2_free hypernym "http://identifiers.org/chebi/CHEBI:29108",
+                    "http://identifiers.org/kegg.compound/C00076"
+  G_GTP part "http://identifiers.org/chebi/CHEBI:15996",
+             "http://identifiers.org/uniprot/Q3U6B2"
+  Ga_GDP part "http://identifiers.org/chebi/CHEBI:17552",
+              "http://identifiers.org/uniprot/P27600"
+  Ga_GTP part "http://identifiers.org/chebi/CHEBI:15996",
+              "http://identifiers.org/uniprot/P27600"
+  Ga_GTP_PDE_a_Ga_GTP part "http://identifiers.org/chebi/CHEBI:15996",
+                           "http://identifiers.org/uniprot/P09174",
+                           "http://identifiers.org/uniprot/P27600"
+  Ga_GTP_a_PDE_a_Ga_GTP part "http://identifiers.org/chebi/CHEBI:15996",
+                             "http://identifiers.org/uniprot/P27600",
+                             "http://identifiers.org/uniprot/P09174"
+  Gbg hypernym "http://identifiers.org/go/GO:0031680"
+  Gt hypernym "http://identifiers.org/uniprot/Q8CFY0"
+  Ops hypernym "http://identifiers.org/uniprot/O35599"
+  Ops_G part "http://identifiers.org/uniprot/Q3U6B2",
+             "http://identifiers.org/uniprot/O35599"
+  Ops_G_GTP part "http://identifiers.org/chebi/CHEBI:15996",
+                 "http://identifiers.org/uniprot/O35599",
+                 "http://identifiers.org/uniprot/Q3U6B2"
+  Ops_Gt part "http://identifiers.org/uniprot/Q8CFY0",
+              "http://identifiers.org/uniprot/O35599"
+  PDE hypernym "http://identifiers.org/uniprot/P09174"
+  PDE_Ga_GTP part "http://identifiers.org/chebi/CHEBI:15996",
+                  "http://identifiers.org/uniprot/P27600",
+                  "http://identifiers.org/uniprot/P09174"
+  PDE_a_Ga_GTP part "http://identifiers.org/chebi/CHEBI:15996",
+                    "http://identifiers.org/uniprot/P27600",
+                    "http://identifiers.org/uniprot/P09174"
+  R hypernym "http://identifiers.org/uniprot/P15409"
+  R0 part "http://identifiers.org/uniprot/P15409"
+  R0_G part "http://identifiers.org/uniprot/P15409",
+            "http://identifiers.org/uniprot/Q3U6B2"
+  R0_G_GTP part "http://identifiers.org/chebi/CHEBI:15996",
+                "http://identifiers.org/uniprot/P15409",
+                "http://identifiers.org/uniprot/Q3U6B2"
+  R0_Gt part "http://identifiers.org/uniprot/P15409",
+             "http://identifiers.org/uniprot/Q8CFY0"
+  R0_RKpre hypernym "http://identifiers.org/uniprot/Q9WVL4",
+                    "http://identifiers.org/uniprot/P15409"
+  R1 hypernym "http://identifiers.org/kegg.compound/C02456"
+  R1_Arr part "http://identifiers.org/uniprot/P20443",
+              "http://identifiers.org/kegg.compound/C02456"
+  R1_G part "http://identifiers.org/uniprot/Q3U6B2",
+            "http://identifiers.org/kegg.compound/C02456"
+  R1_G_GTP part "http://identifiers.org/chebi/CHEBI:15996",
+                "http://identifiers.org/uniprot/Q3U6B2",
+                "http://identifiers.org/kegg.compound/C02456"
+  R1_Gt part "http://identifiers.org/uniprot/Q8CFY0",
+             "http://identifiers.org/kegg.compound/C02456"
+  R1_RKpost part "http://identifiers.org/uniprot/Q9WVL4",
+                 "http://identifiers.org/kegg.compound/C02456"
+  R1_RKpre part "http://identifiers.org/uniprot/Q9WVL4",
+                "http://identifiers.org/kegg.compound/C02456"
+  R2 hypernym "http://identifiers.org/kegg.compound/C02456"
+  R2_Arr part "http://identifiers.org/uniprot/P20443",
+              "http://identifiers.org/kegg.compound/C02456"
+  R2_G part "http://identifiers.org/uniprot/Q3U6B2",
+            "http://identifiers.org/kegg.compound/C02456"
+  R2_G_GTP part "http://identifiers.org/chebi/CHEBI:15996",
+                "http://identifiers.org/uniprot/Q3U6B2",
+                "http://identifiers.org/kegg.compound/C02456"
+  R2_Gt part "http://identifiers.org/uniprot/Q8CFY0",
+             "http://identifiers.org/kegg.compound/C02456"
+  R2_RKpost part "http://identifiers.org/uniprot/Q9WVL4",
+                 "http://identifiers.org/kegg.compound/C02456"
+  R2_RKpre part "http://identifiers.org/uniprot/Q9WVL4",
+                "http://identifiers.org/kegg.compound/C02456"
+  R3 hypernym "http://identifiers.org/kegg.compound/C02456"
+  R3_Arr part "http://identifiers.org/uniprot/P20443",
+              "http://identifiers.org/kegg.compound/C02456"
+  R3_G part "http://identifiers.org/uniprot/Q3U6B2",
+            "http://identifiers.org/kegg.compound/C02456"
+  R3_G_GTP part "http://identifiers.org/chebi/CHEBI:15996",
+                "http://identifiers.org/uniprot/Q3U6B2",
+                "http://identifiers.org/kegg.compound/C02456"
+  R3_Gt part "http://identifiers.org/uniprot/Q8CFY0",
+             "http://identifiers.org/kegg.compound/C02456"
+  R3_RKpost part "http://identifiers.org/uniprot/Q9WVL4",
+                 "http://identifiers.org/kegg.compound/C02456"
+  R3_RKpre part "http://identifiers.org/uniprot/Q9WVL4",
+                "http://identifiers.org/kegg.compound/C02456"
+  R4 hypernym "http://identifiers.org/kegg.compound/C02456"
+  R4_Arr part "http://identifiers.org/uniprot/P20443",
+              "http://identifiers.org/kegg.compound/C02456"
+  R4_G part "http://identifiers.org/uniprot/Q3U6B2",
+            "http://identifiers.org/kegg.compound/C02456"
+  R4_G_GTP part "http://identifiers.org/chebi/CHEBI:15996",
+                "http://identifiers.org/uniprot/Q3U6B2",
+                "http://identifiers.org/kegg.compound/C02456"
+  R4_Gt part "http://identifiers.org/uniprot/Q8CFY0",
+             "http://identifiers.org/kegg.compound/C02456"
+  R4_RKpost part "http://identifiers.org/uniprot/Q9WVL4",
+                 "http://identifiers.org/kegg.compound/C02456"
+  R4_RKpre part "http://identifiers.org/uniprot/Q9WVL4",
+                "http://identifiers.org/kegg.compound/C02456"
+  R5 hypernym "http://identifiers.org/kegg.compound/C02456"
+  R5_Arr part "http://identifiers.org/uniprot/P20443",
+              "http://identifiers.org/kegg.compound/C02456"
+  R5_G part "http://identifiers.org/uniprot/Q3U6B2",
+            "http://identifiers.org/kegg.compound/C02456"
+  R5_G_GTP part "http://identifiers.org/chebi/CHEBI:15996",
+                "http://identifiers.org/uniprot/Q3U6B2",
+                "http://identifiers.org/kegg.compound/C02456"
+  R5_Gt part "http://identifiers.org/uniprot/Q8CFY0",
+             "http://identifiers.org/kegg.compound/C02456"
+  R5_RKpost part "http://identifiers.org/uniprot/Q9WVL4",
+                 "http://identifiers.org/kegg.compound/C02456"
+  R5_RKpre part "http://identifiers.org/uniprot/Q9WVL4",
+                "http://identifiers.org/kegg.compound/C02456"
+  R6 hypernym "http://identifiers.org/kegg.compound/C02456"
+  R6_Arr part "http://identifiers.org/uniprot/P20443",
+              "http://identifiers.org/kegg.compound/C02456"
+  R6_G part "http://identifiers.org/uniprot/Q3U6B2",
+            "http://identifiers.org/kegg.compound/C02456"
+  R6_G_GTP part "http://identifiers.org/chebi/CHEBI:15996",
+                "http://identifiers.org/uniprot/Q3U6B2",
+                "http://identifiers.org/kegg.compound/C02456"
+  R6_Gt part "http://identifiers.org/uniprot/Q8CFY0",
+             "http://identifiers.org/kegg.compound/C02456"
+  R6_RKpost part "http://identifiers.org/uniprot/Q9WVL4",
+                 "http://identifiers.org/kegg.compound/C02456"
+  R6_RKpre part "http://identifiers.org/uniprot/Q9WVL4",
+                "http://identifiers.org/kegg.compound/C02456"
+  RGS hypernym "http://identifiers.org/uniprot/O54828"
+  RGS_Ga_GTP_a_PDE_a_Ga_GTP part "http://identifiers.org/chebi/CHEBI:15996",
+                                 "http://identifiers.org/uniprot/P09174",
+                                 "http://identifiers.org/uniprot/P27600",
+                                 "http://identifiers.org/uniprot/O54828"
+  RGS_PDE_a_Ga_GTP part "http://identifiers.org/chebi/CHEBI:15996",
+                        "http://identifiers.org/uniprot/O54828",
+                        "http://identifiers.org/uniprot/P27600",
+                        "http://identifiers.org/uniprot/P09174"
+  RK hypernym "http://identifiers.org/uniprot/Q9WVL4"
+  Rec_wCa2_RK part "http://identifiers.org/chebi/CHEBI:29108",
+                   "http://identifiers.org/uniprot/P34057",
+                   "http://identifiers.org/uniprot/Q9WVL4"
+  cGMP hypernym "http://identifiers.org/chebi/CHEBI:16356"
+  v_r1 hypernym "http://identifiers.org/go/GO:0070141"
+  v_r2_0 hypernym "http://identifiers.org/go/GO:0006461"
+  v_r2_1 hypernym "http://identifiers.org/go/GO:0006461"
+  v_r2_2 hypernym "http://identifiers.org/go/GO:0006461"
+  v_r2_3 hypernym "http://identifiers.org/go/GO:0006461"
+  v_r2_4 hypernym "http://identifiers.org/go/GO:0006461"
+  v_r2_5 hypernym "http://identifiers.org/go/GO:0006461"
+  v_r2_6 hypernym "http://identifiers.org/go/GO:0006461"
+  v_r3_0 hypernym "http://identifiers.org/go/GO:0016310"
+  v_r3_1 hypernym "http://identifiers.org/go/GO:0016310"
+  v_r3_2 hypernym "http://identifiers.org/go/GO:0016310"
+  v_r3_3 hypernym "http://identifiers.org/go/GO:0016310"
+  v_r3_4 hypernym "http://identifiers.org/go/GO:0016310"
+  v_r3_5 hypernym "http://identifiers.org/go/GO:0016310"
+  v_r4_1 hypernym "http://identifiers.org/go/GO:0043241"
+  v_r4_2 hypernym "http://identifiers.org/go/GO:0043241"
+  v_r4_3 hypernym "http://identifiers.org/go/GO:0043241"
+  v_r4_4 hypernym "http://identifiers.org/go/GO:0043241"
+  v_r4_5 hypernym "http://identifiers.org/go/GO:0043241"
+  v_r4_6 hypernym "http://identifiers.org/go/GO:0043241"
+  v_r5_1 hypernym "http://identifiers.org/go/GO:0006461"
+  v_r5_2 hypernym "http://identifiers.org/go/GO:0006461"
+  v_r5_3 hypernym "http://identifiers.org/go/GO:0006461"
+  v_r5_4 hypernym "http://identifiers.org/go/GO:0006461"
+  v_r5_5 hypernym "http://identifiers.org/go/GO:0006461"
+  v_r5_6 hypernym "http://identifiers.org/go/GO:0006461"
+  v_r6_1 hypernym "http://identifiers.org/go/GO:0046155"
+  v_r6_2 hypernym "http://identifiers.org/go/GO:0046155"
+  v_r6_3 hypernym "http://identifiers.org/go/GO:0046155"
+  v_r6_4 hypernym "http://identifiers.org/go/GO:0046155"
+  v_r6_5 hypernym "http://identifiers.org/go/GO:0046155"
+  v_r6_6 hypernym "http://identifiers.org/go/GO:0046155"
+  v_r7_0 hypernym "http://identifiers.org/go/GO:0046155"
+  v_r7_1 hypernym "http://identifiers.org/go/GO:0046155"
+  v_r7_2 hypernym "http://identifiers.org/go/GO:0046155"
+  v_r7_3 hypernym "http://identifiers.org/go/GO:0046155"
+  v_r7_4 hypernym "http://identifiers.org/go/GO:0046155"
+  v_r7_5 hypernym "http://identifiers.org/go/GO:0046155"
+  v_r7_6 hypernym "http://identifiers.org/go/GO:0046155"
+  v_r8 hypernym "http://identifiers.org/go/GO:0006461"
+  v_r10 hypernym "http://identifiers.org/go/GO:0005525"
+  v_r11 hypernym "http://identifiers.org/go/GO:0043241"
+  v_r12 hypernym "http://identifiers.org/go/GO:0016063"
+  v_r13_0 hypernym "http://identifiers.org/go/GO:0006461"
+  v_r13_1 hypernym "http://identifiers.org/go/GO:0006461"
+  v_r13_2 hypernym "http://identifiers.org/go/GO:0006461"
+  v_r13_3 hypernym "http://identifiers.org/go/GO:0006461"
+  v_r13_4 hypernym "http://identifiers.org/go/GO:0006461"
+  v_r13_5 hypernym "http://identifiers.org/go/GO:0006461"
+  v_r13_6 hypernym "http://identifiers.org/go/GO:0006461"
+  v_r14_0 hypernym "http://identifiers.org/go/GO:0046154"
+  v_r14_1 hypernym "http://identifiers.org/go/GO:0046154"
+  v_r14_2 hypernym "http://identifiers.org/go/GO:0046154"
+  v_r14_3 hypernym "http://identifiers.org/go/GO:0046154"
+  v_r14_4 hypernym "http://identifiers.org/go/GO:0046154"
+  v_r14_5 hypernym "http://identifiers.org/go/GO:0046154"
+  v_r14_6 hypernym "http://identifiers.org/go/GO:0046154"
+  v_r15_0 hypernym "http://identifiers.org/go/GO:0005525"
+  v_r15_1 hypernym "http://identifiers.org/go/GO:0005525"
+  v_r15_2 hypernym "http://identifiers.org/go/GO:0005525"
+  v_r15_3 hypernym "http://identifiers.org/go/GO:0005525"
+  v_r15_4 hypernym "http://identifiers.org/go/GO:0005525"
+  v_r15_5 hypernym "http://identifiers.org/go/GO:0005525"
+  v_r15_6 hypernym "http://identifiers.org/go/GO:0005525"
+  v_r16_0 hypernym "http://identifiers.org/go/GO:0043241"
+  v_r16_1 hypernym "http://identifiers.org/go/GO:0043241"
+  v_r16_2 hypernym "http://identifiers.org/go/GO:0043241"
+  v_r16_3 hypernym "http://identifiers.org/go/GO:0043241"
+  v_r16_4 hypernym "http://identifiers.org/go/GO:0043241"
+  v_r16_5 hypernym "http://identifiers.org/go/GO:0043241"
+  v_r16_6 hypernym "http://identifiers.org/go/GO:0043241"
+  v_r17 hypernym "http://identifiers.org/go/GO:0007201"
+  v_r18 hypernym "http://identifiers.org/go/GO:0006461"
+  v_r19 hypernym "http://identifiers.org/go/GO:0031334"
+  v_r20 hypernym "http://identifiers.org/go/GO:0006461"
+  v_r21 hypernym "http://identifiers.org/go/GO:0031334"
+  v_r22 hypernym "http://identifiers.org/go/GO:0006461"
+  v_r23 hypernym "http://identifiers.org/go/GO:0043241"
+  v_r24 hypernym "http://identifiers.org/go/GO:0006461"
+  v_r25 hypernym "http://identifiers.org/go/GO:0043241"
+  v_r26 hypernym "http://identifiers.org/go/GO:0006461"
+  v_r27 hypernym "http://identifiers.org/go/GO:0043241"
+  v_r28 hypernym "http://identifiers.org/go/GO:0006184"
+  v_r29 hypernym "http://identifiers.org/go/GO:0032795"
+  v_r30 hypernym "http://identifiers.org/go/GO:0050254"
+  v_r31 hypernym "http://identifiers.org/go/GO:0006816"
 end
+
+DellOrco2009_phototransduction is "DellOrco2009_phototransduction"
+
+DellOrco2009_phototransduction model_entity_is "http://identifiers.org/biomodels.db/MODEL1103090000"
+DellOrco2009_phototransduction model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000326"
+DellOrco2009_phototransduction description "http://identifiers.org/pubmed/19756313"
+DellOrco2009_phototransduction origin "http://identifiers.org/pubmed/16212700"
+DellOrco2009_phototransduction container "http://identifiers.org/fma/FMA:67747",
+                                         "http://identifiers.org/cl/CL:0000604"
+DellOrco2009_phototransduction hypernym "http://identifiers.org/go/GO:0007602"
+DellOrco2009_phototransduction taxon "http://identifiers.org/taxonomy/10090"
+DellOrco2009_phototransduction property "http://identifiers.org/mamo/MAMO_0000046"

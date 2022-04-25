@@ -1,11 +1,19 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 function function_1(alpha, X, n)
   alpha/(1 + X^n);
 end
 
+function_1.sboTerm = 393
+
+function_1 is "toggle repressor production"
+
 function function_2(alpha, X, n)
   alpha/(1 + X^n);
 end
+
+function_2.sboTerm = 393
+
+function_2 is "toggle repressor production with induction"
 
 
 model *MODEL1401190000()
@@ -40,7 +48,7 @@ model *MODEL1401190000()
   parameter_2 = 15.6;
   parameter_3 = 2.5;
   parameter_4 = 1;
-  parameter_5 = 2.9618e-005;
+  parameter_5 = 2.9618e-05;
   parameter_6 = 2.0015;
   ModelValue_4 = parameter_5;
   ModelValue_5 = parameter_6;
@@ -80,4 +88,27 @@ model *MODEL1401190000()
   reaction_2 is "degradation of U";
   reaction_3 is "production of V";
   reaction_4 is "degration of V";
+
+  // SBO terms:
+  compartment_1.sboTerm = 290
+  reaction_1.sboTerm = 393
+  reaction_2.sboTerm = 179
+  reaction_2_k1.sboTerm = 356
+  reaction_3.sboTerm = 393
+  reaction_4.sboTerm = 179
+  reaction_4_k1.sboTerm = 356
+
+  // CV terms:
+  species_1 hypernym "http://identifiers.org/uniprot/P03023"
+  species_2 hypernym "http://identifiers.org/uniprot/P04483"
+  species_3 hypernym "http://identifiers.org/chebi/CHEBI:61448"
 end
+
+MODEL1401190000 is "Gardner2000 - genetic toggle switch in E.coli"
+
+MODEL1401190000 model_entity_is "http://identifiers.org/biomodels.db/MODEL1401190000"
+MODEL1401190000 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000507"
+MODEL1401190000 description "http://identifiers.org/pubmed/10659857"
+MODEL1401190000 hypernym "http://identifiers.org/go/GO:0010468"
+MODEL1401190000 property "http://identifiers.org/mamo/MAMO_0000046"
+MODEL1401190000 taxon "http://identifiers.org/taxonomy/562"

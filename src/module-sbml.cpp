@@ -1,3 +1,8 @@
+#include "module.h"
+#include "sbml/Model.h"
+
+using namespace libsbml;
+
 #ifndef NSBML
 void SetVarWithEvent(Variable* var, const Event* event, Module* module, vector<string> submodname)
 {
@@ -143,11 +148,6 @@ void  SetSBaseReference(SBaseRef* sbr, SBase* target, Model* targetmodel, string
       sbr->setIdRef(id);
       return;
   }
-  if (id.empty() && type == SBML_SPECIES_REFERENCE) {
-    target->setId(baseid);
-    sbr->setIdRef(baseid);
-    return;
-  }
   if (metaid.empty()) {
     SBMLDocument* sbml = sbr->getSBMLDocument();
     assert(sbml != NULL);
@@ -164,7 +164,7 @@ void  SetSBaseReference(SBaseRef* sbr, SBase* target, Model* targetmodel, string
   return;
 }
 
-void Module::FindOrCreateLocalVersionOf(const Variable* var, Model* sbmlmod)
+void Module::FindOrCreateLocalVersionOf(const Variable* var, libsbml::Model* sbmlmod)
 {
   if(var->GetName().size() == 1) {
     //We'll create this variable normally.
@@ -231,6 +231,7 @@ void Module::FindOrCreateLocalVersionOf(const Variable* var, Model* sbmlmod)
   case varSboTermWrapper:
   case varUncertWrapper:
   case varConstraint:
+  case varStoichiometry:
     assert(false); //Unhandled type
     break;
   }
@@ -763,11 +764,16 @@ void SynchronizeLocalAndGlobal(const vector<string>& paramname, const vector<str
   targetvar->Synchronize(localvar, NULL);
 }
 
-void Module::LoadSBML(const Model* sbml)
+void Module::LoadSBML(Model* sbml)
 {
   if (sbml == NULL) {
     return;
   }
+  //Some models use an old 'rateOf' function, which we can update to the l3v2 version.
+  UpdateRateOf(sbml);
+
+  //Some SBML-OK names are not OK in Antimony
+  FixNames(sbml);
   if(sbml->isSetName())
     SetDisplayName(sbml->getName());
   PopulateCVTerms((SBase*)sbml);
@@ -1050,7 +1056,11 @@ void Module::LoadSBML(const Model* sbml)
       Variable* expvar = g_registry.AddVariableToCurrent(&argument);
       g_registry.AddVariableToCurrentExportList(expvar);
     }
-    string formulastring(parseASTNodeToString(function->getBody()));
+    const ASTNode* astn = function->getBody();
+    if (!m_usedDistributions && UsesDistrib(astn)) {
+        m_usedDistributions = true;
+    }
+    string formulastring(parseASTNodeToString(astn));
     Formula formula;
     setFormulaWithString(formulastring, &formula, uf);
     g_registry.SetUserFunction(&formula);
@@ -1267,7 +1277,11 @@ void Module::LoadSBML(const Model* sbml)
     }
     if (constraint->isSetMath()) {
       AntimonyConstraint acon(var);
-      acon.SetWithASTNode(constraint->getMath());
+      const ASTNode* astn = constraint->getMath();
+      if (!m_usedDistributions && UsesDistrib(astn)) {
+          m_usedDistributions = true;
+      }
+      acon.SetWithASTNode(astn);
       var->SetConstraint(&acon);
       constraints.push_back(acon);
     }
@@ -1310,58 +1324,71 @@ void Module::LoadSBML(const Model* sbml)
     if (reaction->isSetName()) {
       var->SetDisplayName(reaction->getName());
     }
-    //reactants
+
+    //reactants and products
     ReactantList reactants;
-    for (unsigned int react=0; react<reaction->getNumReactants(); react++) {
-      const SpeciesReference* reactant = reaction->getReactant(react);
-      double stoichiometry = 1;
-      if (reactant->isSetStoichiometryMath()) {
-        g_registry.AddWarning("Unable to set the stoichiometry math for the reactant " + reactant->getSpecies() + " in reaction " + reaction->getId() + " because stoichiometry math is not a defined concept in Antimony.");
-      }
-      else {
-        if (reactant->isSetStoichiometry()) {
-          stoichiometry = reactant->getStoichiometry();
-        }
-      }
-      sbmlname = reactant->getSpecies();
-      if (sbmlname == "") {
-        sbmlname = getNameFromSBMLObject(reactant, "_S");
-      }
-      Variable* rvar = AddOrFindVariable(&sbmlname);
-      reactants.AddReactant(rvar, stoichiometry);
-#ifdef USE_COMP
-      const CompSBasePlugin* csbp = static_cast<const CompSBasePlugin*>(reactant->getPlugin("comp"));
-      if (csbp != NULL && (csbp->getNumReplacedElements() != 0 || csbp->isSetReplacedBy())) {
-        g_registry.AddWarning("Cannot replace stoichiometries in Antimony:  all replacedElements and replacedBy children of " + reactant->getSpecies() + " in reaction " + reaction->getId() + " will be ignored.");
-      }
-#endif
-    }
-    //products
     ReactantList products;
-    for (unsigned int react=0; react<reaction->getNumProducts(); react++) {
-      const SpeciesReference* product = reaction->getProduct(react);
-      double stoichiometry = 1;
-      if (product->isSetStoichiometryMath()) {
-        g_registry.AddWarning("Unable to set the stoichiometry math for the product " + product->getSpecies() + " in reaction " + reaction->getId() + " because stoichiometry math is not a defined concept in Antimony.");
-      }
-      else {
-        if (product->isSetStoichiometry()) {
-          stoichiometry = product->getStoichiometry();
+    for (int lr = 0; lr < 2; lr++) {
+        const ListOfSpeciesReferences* losr = reaction->getListOfReactants();
+        ReactantList* rl = &reactants;
+        if (lr == 1) {
+            losr = reaction->getListOfProducts();
+            rl = &products;
         }
-      }
-      sbmlname = product->getSpecies();
-      if (sbmlname == "") {
-        sbmlname = getNameFromSBMLObject(product, "_S");
-      }
-      Variable* rvar = AddOrFindVariable(&sbmlname);
-      products.AddReactant(rvar, stoichiometry);
+        for (unsigned int react = 0; react < losr->size(); react++) {
+            const SpeciesReference* specref = static_cast<const SpeciesReference*>(losr->get(react));
+            Variable* stoichvar = NULL;
+            double stoichiometry = 1;
+            if (specref->isSetStoichiometryMath()) {
+                string reactantId = specref->getId();
+                if (reactantId.empty()) {
+                    reactantId = sbmlname + "_" + specref->getSpecies() + "_stoichiometry";
+                }
+                stoichvar = AddOrFindVariable(&reactantId);
+                assert(!stoichvar->SetType(varStoichiometry)); //Since the SBML file is valid.
+                Formula formula;
+                string formulastring(parseASTNodeToString(specref->getStoichiometryMath()->getMath()));
+                setFormulaWithString(formulastring, &formula, this);
+                formula.SetNewTopNameWith(specref, GetModuleName());
+                formula.ReadAnnotationFrom(specref);
+                stoichvar->SetAssignmentRule(&formula);
+            }
+            else if (specref->isSetIdAttribute()) {
+                stoichvar = AddOrFindVariable(&(specref->getIdAttribute()));
+                bool setret = stoichvar->SetType(varStoichiometry); //Since the SBML file is valid.
+                assert(!setret);
+                if (specref->isSetStoichiometry() && !stoichvar->HasFormula()) {
+                    Formula formula;
+                    formula.AddNum(specref->getStoichiometry());
+                    stoichvar->SetFormula(&formula);
+                }
+                TranslateRulesAndAssignmentsTo(specref, stoichvar);
+            }
+            else {
+                if (specref->isSetStoichiometry()) {
+                    stoichiometry = specref->getStoichiometry();
+                }
+            }
+            sbmlname = specref->getSpecies();
+            if (sbmlname == "") {
+                sbmlname = getNameFromSBMLObject(specref, "_S");
+            }
+            Variable* rvar = AddOrFindVariable(&sbmlname);
+            if (stoichvar) {
+                rl->AddReactant(rvar, stoichvar);
+            }
+            else {
+                rl->AddReactant(rvar, stoichiometry);
+            }
 #ifdef USE_COMP
-      const CompSBasePlugin* csbp = static_cast<const CompSBasePlugin*>(product->getPlugin("comp"));
-      if (csbp != NULL && (csbp->getNumReplacedElements() != 0 || csbp->isSetReplacedBy())) {
-        g_registry.AddWarning("Cannot replace stoichiometries in Antimony:  all replacedElements and replacedBy children of " + product->getSpecies() + " in reaction " + reaction->getId() + " will be ignored.");
-      }
+            const CompSBasePlugin* csbp = static_cast<const CompSBasePlugin*>(specref->getPlugin("comp"));
+            if (csbp != NULL && (csbp->getNumReplacedElements() != 0 || csbp->isSetReplacedBy())) {
+                g_registry.AddWarning("Cannot replace stoichiometries in Antimony:  all replacedElements and replacedBy children of " + specref->getSpecies() + " in reaction " + reaction->getId() + " will be ignored.");
+            }
 #endif
+        }
     }
+
     //formula
     string formulastring = "";
     Formula formula;
@@ -1399,6 +1426,9 @@ void Module::LoadSBML(const Model* sbml)
       if (astn) {
         formulastring = parseASTNodeToString(astn);
         setFormulaWithString(formulastring, &formula, this);
+        if (!m_usedDistributions && UsesDistrib(astn)) {
+            m_usedDistributions = true;
+        }
         delete astn;
       }
     }
@@ -1573,8 +1603,6 @@ void Module::LoadSBML(const Model* sbml)
 
   //Finally, fix the fact that 'time' used to be OK in functions (l2v1), but is no longer (l2v2).
   g_registry.FixTimeInFunctions();
-  //And that some SBML-OK names are not OK in Antimony
-  FixNames();
 }
 
 const SBMLDocument* Module::GetSBML(bool comp)
@@ -2081,32 +2109,48 @@ void Module::CreateSBMLModel(bool comp)
       }
 #endif
     }
-    const ReactantList* left = reaction->GetLeft();
-    for (size_t lnum=0; lnum<left->Size(); lnum++) {
-      const Variable* nthleft = left->GetNthReactant(lnum);
-      referencedVars.insert(make_pair(nthleft->GetNameDelimitedBy(cc), nthleft));
-      double nthstoich = left->GetStoichiometryFor(lnum);
-      SpeciesReference* sr = sbmlmod->createReactant();
-      sr->setSpecies(nthleft->GetNameDelimitedBy(cc));
-      sr->setStoichiometry(nthstoich);
-      sr->setConstant(true);
-    }
-    const ReactantList* right = reaction->GetRight();
-    for (size_t rnum=0; rnum<right->Size(); rnum++) {
-      const Variable* nthright = right->GetNthReactant(rnum);
-      referencedVars.insert(make_pair(nthright->GetNameDelimitedBy(cc), nthright));
-      double nthstoich = right->GetStoichiometryFor(rnum);
-      SpeciesReference* sr = sbmlmod->createProduct();
-      sr->setSpecies(nthright->GetNameDelimitedBy(cc));
-      sr->setStoichiometry(nthstoich);
-      sr->setConstant(true);
+    for (int lr = 0; lr < 2; lr++) {
+        const ReactantList* rl = reaction->GetLeft();
+        if (lr == 1) {
+            rl = reaction->GetRight();
+        }
+        for (size_t lnum = 0; lnum < rl->Size(); lnum++) {
+            const Variable* nthr = rl->GetNthReactant(lnum);
+            referencedVars.insert(make_pair(nthr->GetNameDelimitedBy(cc), nthr));
+            SpeciesReference* sr = NULL;
+            if (lr == 1) {
+                sr = sbmlmod->createProduct();
+            }
+            else {
+                sr = sbmlmod->createReactant();
+            }
+            sr->setSpecies(nthr->GetNameDelimitedBy(cc));
+            double nthstoich = rl->GetStoichiometryFor(lnum);
+            const Variable* namedstoich = rl->GetNthStoichiometryVar(lnum);
+            if (namedstoich == NULL) {
+                sr->setConstant(true);
+                sr->setStoichiometry(nthstoich);
+            }
+            else {
+                sr->setIdAttribute(namedstoich->GetNameDelimitedBy(cc));
+                if (namedstoich->GetFormulaType() != formulaINITIAL) {
+                    sr->setConstant(false);
+                }
+                else {
+                    sr->setConstant(namedstoich->GetIsConst());
+                }
+                if (namedstoich->GetFormula()->IsDouble()) {
+                    sr->setStoichiometry(nthstoich);
+                }
+                SetAssignmentFor(sbmlmod, namedstoich, syncmap, comp, referencedVars);
+            }
+        }
     }
     //Find 'modifiers' and add them.
     vector<const Variable*> subvars = formula->GetVariablesFrom(formstring, m_modulename);
     for (size_t v=0; v<subvars.size(); v++) {
       if (subvars[v] != NULL && subvars[v]->GetType() == varSpeciesUndef) {
-        if (left->GetStoichiometryFor(subvars[v]) == 0 &&
-            right->GetStoichiometryFor(subvars[v]) == 0) {
+        if (!reaction->HasReactantFor(subvars[v])) {
           ModifierSpeciesReference* msr = sbmlmod->createModifier();
           msr->setSpecies(subvars[v]->GetNameDelimitedBy(cc));
         }
@@ -2516,7 +2560,7 @@ InitialAssignment* Module::FindInitialAssignment(Model* md, vector<string> syncn
   SBase* object = md->getElementBySId(syncname[syncname.size()-1]);
   if (object==NULL) return NULL;
   CompSBasePlugin* objp = static_cast<CompSBasePlugin*>(object->getPlugin("comp"));
-  for (unsigned long re=0; re<objp->getNumReplacedElements(); objp++) {
+  for (unsigned long re=0; re<objp->getNumReplacedElements(); re++) {
     SBase* referenced = objp->getReplacedElement(re)->getReferencedElement();
     syncname[1] = referenced->getId();
     SBase* parent = referenced->getParentSBMLObject();
@@ -2542,7 +2586,7 @@ Rule* Module::FindRule(Model* md, vector<string> syncname)
   SBase* object = md->getElementBySId(syncname[syncname.size()-1]);
   if (object==NULL) return NULL;
   CompSBasePlugin* objp = static_cast<CompSBasePlugin*>(object->getPlugin("comp"));
-  for (unsigned long re=0; re<objp->getNumReplacedElements(); objp++) {
+  for (unsigned long re=0; re<objp->getNumReplacedElements(); re++) {
     SBase* referenced = objp->getReplacedElement(re)->getReferencedElement();
     syncname[1] = referenced->getId();
     SBase* parent = referenced->getParentSBMLObject();
@@ -2679,5 +2723,278 @@ bool Module::SynchronizeRates(Model* sbmlmod, const Variable* var, const vector<
   return ret;
 }
 #endif //USE_COMP
+
+void Module::FixNames(Model* model)
+{
+    const char* keywords[] = {
+    "DNA",
+    "at",
+    "compartment",
+    "const",
+    "delete",
+    "end",
+    "event",
+    "ext",
+    "formula",
+    "function",
+    "gene",
+    "has",
+    "import",
+    "in",
+    "is",
+    "model",
+    "module",
+    "operator",
+    "reaction",
+    "species",
+    "var"
+    };
+
+    const char* functions[] = {
+    "abs"
+    , "acos"
+    , "arccos"
+    , "acosh"
+    , "arccosh"
+    , "acot"
+    , "arccot"
+    , "acoth"
+    , "arccoth"
+    , "acsc"
+    , "arccsc"
+    , "acsch"
+    , "arccsch"
+    , "asec"
+    , "arcsec"
+    , "asech"
+    , "arcsech"
+    , "asin"
+    , "arcsin"
+    , "arcsinh"
+    , "atan"
+    , "arctan"
+    , "atanh"
+    , "arctanh"
+    , "ceil"
+    , "ceiling"
+    , "cos"
+    , "cosh"
+    , "cot"
+    , "coth"
+    , "csc"
+    , "csch"
+    , "delay"
+    , "exp"
+    , "factorial"
+    , "floor"
+    , "log"
+    , "ln"
+    , "log10"
+    , "piecewise"
+    , "power"
+    , "pow"
+    , "sqr"
+    , "sqrt"
+    , "root"
+    , "sec"
+    , "sech"
+    , "sin"
+    , "sinh"
+    , "tan"
+    , "tanh"
+    , "and"
+    , "not"
+    , "or"
+    , "xor"
+    , "eq"
+    , "equals"
+    , "geq"
+    , "gt"
+    , "leq"
+    , "lt"
+    , "neq"
+    , "divide"
+    , "minus"
+    , "plus"
+    , "times"
+
+    , "rateOf"
+    , "quotient"
+    , "max"
+    , "min"
+    , "rem"
+    , "implies"
+
+    , "normal"
+    , "truncatedNormal"
+    , "uniform"
+    , "exponential"
+    , "truncatedExponential"
+    , "gamma"
+    , "truncatedGamma"
+    , "poisson"
+    , "truncatedPoisson"
+    , "bernoulli"
+    , "binomial"
+    , "cauchy"
+    , "chisquare"
+    , "laplace"
+    , "lognormal"
+    , "rayleigh"
+    };
+
+    const char* constants[] = {
+    "true"
+    , "True"
+    , "TRUE"
+    , "false"
+    , "False"
+    , "FALSE"
+    , "pi"
+    , "exponentiale"
+    , "exponentialE"
+    , "avogadro"
+    , "time"
+    , "inf"
+    , "INF"
+    , "infinity"
+    , "NaN"
+    , "nan"
+    , "NAN"
+    , "notanumber"
+    };
+
+    //At some point, it would be nice to allow keywords that are functions as 
+    // variable names, and visa versa.  But today is not that day.
+    for (size_t kw = 0; kw < 21; kw++) {
+        FixConstants(keywords[kw], model);
+        FixFunctions(keywords[kw], model);
+    }
+
+    for (size_t fn = 0; fn < 88; fn++) {
+        FixConstants(functions[fn], model);
+        FixFunctions(functions[fn], model);
+    }
+
+    for (size_t c = 0; c < 18; c++) {
+        FixConstants(constants[c], model);
+        FixFunctions(constants[c], model);
+    }
+
+    FixUnitNames(model);
+}
+
+void Module::FixConstants(const string& name, Model* model)
+{
+    SBase* obj = model->getElementBySId(name);
+    if (obj != NULL && obj->getTypeCode() != SBML_FUNCTION_DEFINITION) {
+        string newname = name + "_";
+        obj->setId(newname);
+        List* elements = model->getAllElements();
+        for (unsigned int el = 0; el < elements->getSize(); el++) {
+            SBase* element = static_cast<SBase*>(elements->get(el));
+            element->renameSIdRefs(name, newname);
+        }
+    }
+}
+
+void Module::FixFunctions(const string& name, Model* model)
+{
+    SBase* obj = model->getElementBySId(name);
+    if (obj != NULL && obj->getTypeCode() == SBML_FUNCTION_DEFINITION) {
+        string newname = name + "_";
+        obj->setId(newname);
+        model->renameSIdRefs(name, newname);
+        List* elements = model->getAllElements();
+        for (unsigned int el = 0; el < elements->getSize(); el++) {
+            SBase* element = static_cast<SBase*>(elements->get(el));
+            element->renameSIdRefs(name, newname);
+        }
+        for (unsigned int fd = 0; fd < model->getNumFunctionDefinitions(); fd++) {
+            ASTNode* astn = const_cast<ASTNode*>(model->getFunctionDefinition(fd)->getMath());
+            if (astn) {
+                astn->renameSIdRefs(name, newname);
+            }
+        }
+    }
+    else {
+
+    }
+}
+
+void Module::FixUnitNames(Model* model)
+{
+    for (unsigned int un = 0; un < model->getNumUnitDefinitions(); un++) {
+        UnitDefinition* ud = model->getUnitDefinition(un);
+        if (!ud->isSetId()) {
+            continue;
+        }
+        string unitid = ud->getId();
+        bool shadowed_unit_name = false;
+        SBase* shadow = model->getListOfCompartments()->getElementBySId(unitid);
+        if (shadow == NULL) {
+            shadow = model->getListOfConstraints()->getElementBySId(unitid);
+        }
+        if (shadow == NULL) {
+            shadow = model->getListOfEvents()->getElementBySId(unitid);
+        }
+        if (shadow == NULL) {
+            shadow = model->getListOfFunctionDefinitions()->getElementBySId(unitid);
+        }
+        if (shadow == NULL) {
+            shadow = model->getListOfParameters()->getElementBySId(unitid);
+        }
+        if (shadow == NULL) {
+            shadow = model->getListOfReactions()->getElementBySId(unitid);
+        }
+        if (shadow == NULL) {
+            shadow = model->getListOfSpecies()->getElementBySId(unitid);
+        }
+        if (shadow != NULL) {
+            //It was shadowed:  rename the unit.
+            string newunitid = unitid + "_unit";
+            ud->setId(newunitid);
+            List* elements = model->getAllElements();
+            for (unsigned int el = 0; el < elements->getSize(); el++) {
+                SBase* element = static_cast<SBase*>(elements->get(el));
+                element->renameUnitSIdRefs(unitid, newunitid);
+            }
+        }
+    }
+}
+
+void changeRateOf(ASTNode* astn)
+{
+    if (astn == NULL) {
+        return;
+    }
+    if (astn->getType() == AST_FUNCTION && astn->getName() == (string)"rateOf") {
+        astn->setType(AST_FUNCTION_RATE_OF);
+    }
+    for (unsigned int c = 0; c < astn->getNumChildren(); c++) {
+        changeRateOf(astn->getChild(c));
+    }
+}
+
+void Module::UpdateRateOf(Model* model)
+{
+    FunctionDefinition* rateOf = NULL;
+    for (unsigned int fd = 0; fd < model->getNumFunctionDefinitions(); fd++) {
+        FunctionDefinition* function = model->getFunctionDefinition(fd);
+        if (function->getId() == (string)"rateOf" && function->getNumArguments() == 1) {
+            rateOf = function;
+        }
+    }
+    if (rateOf != NULL) {
+        model->getSBMLDocument()->setLevelAndVersion(3, 2, false);
+        model->removeFunctionDefinition("rateOf");
+        List* elements = model->getAllElements();
+        for (unsigned int el = 0; el < elements->getSize(); el++) {
+            SBase* element = static_cast<SBase*>(elements->get(el));
+            ASTNode* astn = const_cast<ASTNode*>(element->getMath());
+            changeRateOf(astn);
+        }
+    }
+}
 
 #endif //NSBML

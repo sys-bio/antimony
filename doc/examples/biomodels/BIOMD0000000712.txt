@@ -1,0 +1,109 @@
+// Created by libAntimony v2.13.0
+function Function_for_Reaction_1(alpha, P, k_p)
+  alpha*P*(1 - P/k_p);
+end
+
+Function_for_Reaction_1 is "Function for Reaction 1"
+
+function Function_for_Reaction_5(epsilon, f_D)
+  epsilon*f_D;
+end
+
+Function_for_Reaction_5 is "Function for Reaction 5"
+
+function Function_for_Reaction_2(beta, D, P)
+  beta*D*(P/(P + 0.01));
+end
+
+Function_for_Reaction_2 is "Function for Reaction 2 [1]"
+
+function Function_for_Reaction_3(gamma_, P)
+  gamma_*P;
+end
+
+Function_for_Reaction_3 is "Function for Reaction 3 [1]"
+
+
+model *New_Model()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species P in compartment_, D in compartment_, I in compartment_, $S in compartment_;
+
+  // Assignment Rules:
+  S := P + I;
+  f_D := 1 + tanh((D - delta)/omega);
+
+  // Reactions:
+  reaction_1:  => P; compartment_*Function_for_Reaction_1(alpha, P, k_p);
+  reaction_2: P => ; compartment_*Function_for_Reaction_2(beta, D, P);
+  reaction_3:  => D; compartment_*Function_for_Reaction_3(gamma_, P);
+  reaction_4: D => ; compartment_*theta*D;
+  reaction_5:  => I; compartment_*Function_for_Reaction_5(epsilon, f_D);
+  reaction_6: I => ; compartment_*rho*I;
+
+  // Species initializations:
+  P = 0.01;
+  D = 0;
+  I = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  alpha = 3.63;
+  k_p = 3.23;
+  beta = 1;
+  gamma_ = 0.51;
+  theta = 0.01;
+  epsilon = 6.81;
+  delta = 4.27;
+  omega = 0.13;
+  rho = 1.82;
+
+  // Other declarations:
+  var f_D;
+  const compartment_, alpha, k_p, beta, gamma_, theta, epsilon, delta, omega;
+  const rho;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "Mice";
+  P is "Virus Pathogenicity (P)";
+  D is "Antiviral Immune defense (D)";
+  I is "Inflammation (I)";
+  S is "Clinical Score (S)";
+  gamma_ is "gamma'";
+  delta is "delta'";
+  omega is "omega'";
+  reaction_1 is "Infection of Virus";
+  reaction_2 is "Early immune response to the virus";
+  reaction_3 is "Activation of the defense system";
+  reaction_4 is "Decay in immunity";
+  reaction_5 is "Inflammatory response by the host";
+  reaction_6 is "Anti-inflammatory response by the host";
+
+  // CV terms:
+  compartment_ taxon "http://identifiers.org/taxonomy/10090"
+  P hypernym "http://identifiers.org/efo/0001761"
+  D hypernym "http://identifiers.org/ncit/C26011"
+  I hypernym "http://identifiers.org/ncit/C3137"
+  S hypernym "http://identifiers.org/ncit/C118969"
+end
+
+New_Model is "Manchanda2014 - Effect on Immune System by 4 different Influenza A virus strains"
+
+New_Model model_entity_is "http://identifiers.org/biomodels.db/MODEL1808280001",
+                          "http://identifiers.org/biomodels.db/BIOMD0000000712"
+New_Model identity "http://identifiers.org/biomodels.db/MODEL1808280001"
+New_Model property "http://identifiers.org/mamo/MAMO_0000046"
+New_Model property "http://identifiers.org/efo/0001669"
+New_Model property "http://identifiers.org/ncit/C17930"
+New_Model taxon "http://identifiers.org/taxonomy/10090"
+New_Model taxon "http://identifiers.org/taxonomy/1472294"
+New_Model description "http://identifiers.org/pubmed/24614233"

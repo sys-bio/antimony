@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Novak1993_M_phase_control()
 
   // Compartments and Species:
@@ -23,7 +23,7 @@ model *Novak1993_M_phase_control()
   // Reactions:
   R1:  => cyclin; k1AA;
   R2: cyclin => ; k2*cyclin;
-  R3: cyclin => dimer; k3*cyclin*cdc2;
+  R3: cyclin + $cdc2 => dimer; k3*cyclin*cdc2;
   R4: dimer_p => dimer; kinh*dimer_p;
   R5: dimer => p_dimer; kwee*dimer;
   R6: dimer => dimer_p; kcak*dimer;
@@ -36,14 +36,14 @@ model *Novak1993_M_phase_control()
   R13: p_dimer_p => dimer_p; k25*p_dimer_p;
   R14: p_dimer_p => ; k2*p_dimer_p;
   R15: dimer_p => ; k2*dimer_p;
-  R17:  => cdc25_p; (ka*dimer_p*(total_cdc25 - cdc25_p))/((K_a + total_cdc25) - cdc25_p);
-  R18: cdc25_p => ; (kbPPase*cdc25_p)/(K_b + cdc25_p);
-  R19:  => wee1_p; (ke*dimer_p*(total_wee1 - wee1_p))/((K_e + total_wee1) - wee1_p);
-  R20: wee1_p => ; (kfPPase*wee1_p)/(K_f + wee1_p);
-  R21:  => IE_p; (kg*dimer_p*(total_IE - IE_p))/((K_g + total_IE) - IE_p);
-  R22: IE_p => ; (khPPAse*IE_p)/(K_h + IE_p);
-  R23:  => UbE_star; (kc*IE_p*(total_UbE - UbE_star))/((K_c + total_UbE) - UbE_star);
-  R24: UbE_star => ; (kd_anti_IE*UbE_star)/(K_d + UbE_star);
+  R17: $cdc25 => cdc25_p; ka*dimer_p*(total_cdc25 - cdc25_p)/(K_a + total_cdc25 - cdc25_p);
+  R18: cdc25_p => $cdc25; kbPPase*cdc25_p/(K_b + cdc25_p);
+  R19: $wee1 => wee1_p; ke*dimer_p*(total_wee1 - wee1_p)/(K_e + total_wee1 - wee1_p);
+  R20: wee1_p => $wee1; kfPPase*wee1_p/(K_f + wee1_p);
+  R21: $IE => IE_p; kg*dimer_p*(total_IE - IE_p)/(K_g + total_IE - IE_p);
+  R22: IE_p => $IE; khPPAse*IE_p/(K_h + IE_p);
+  R23: $UbE => UbE_star; kc*IE_p*(total_UbE - UbE_star)/(K_c + total_UbE - UbE_star);
+  R24: UbE_star => $UbE; kd_anti_IE*UbE_star/(K_d + UbE_star);
 
   // Species initializations:
   cyclin = 100;
@@ -139,4 +139,62 @@ model *Novak1993_M_phase_control()
   R22 is "intermediary enzyme deactivation";
   R23 is "ubiquitin conjugating enzyme activation";
   R24 is "ubiquitin conjugating enzyme deactivation";
+
+  // CV terms:
+  cytoplasm identity "http://identifiers.org/go/GO:0005737"
+  cyclin identity "http://identifiers.org/interpro/IPR015454"
+  dimer part "http://identifiers.org/uniprot/P35567",
+             "http://identifiers.org/interpro/IPR015454"
+  dimer_p part "http://identifiers.org/uniprot/P35567",
+               "http://identifiers.org/interpro/IPR015454"
+  p_dimer part "http://identifiers.org/uniprot/P35567",
+               "http://identifiers.org/interpro/IPR015454"
+  p_dimer_p part "http://identifiers.org/uniprot/P35567",
+                 "http://identifiers.org/interpro/IPR015454"
+  cdc25_p hypernym "http://identifiers.org/uniprot/P30311"
+  wee1_p hypernym "http://identifiers.org/uniprot/P47817"
+  UbE_star hypernym "http://identifiers.org/go/GO:0031371"
+  cdc2 hypernym "http://identifiers.org/uniprot/P35567"
+  cdc25 hypernym "http://identifiers.org/uniprot/P30311"
+  wee1 hypernym "http://identifiers.org/uniprot/P47817"
+  UbE hypernym "http://identifiers.org/go/GO:0031371"
+  R1 hypernym "http://identifiers.org/go/GO:0006412"
+  R2 hypernym "http://identifiers.org/go/GO:0008054"
+  R3 hypernym "http://identifiers.org/go/GO:0030332"
+  R4 hypernym "http://identifiers.org/go/GO:0045736"
+  R5 hypernym "http://identifiers.org/go/GO:0045736"
+  R5 hypernym "http://identifiers.org/reactome/REACT_6178"
+  R5 identity "http://identifiers.org/ec-code/2.7.10.2"
+  R6 hypernym "http://identifiers.org/go/GO:0045737"
+  R7 hypernym "http://identifiers.org/go/GO:0008054"
+  R8 hypernym "http://identifiers.org/go/GO:0045737"
+  R8 hypernym "http://identifiers.org/reactome/REACT_6257.1"
+  R8 identity "http://identifiers.org/ec-code/3.1.3.48"
+  R9 hypernym "http://identifiers.org/go/GO:0000079"
+  R10 hypernym "http://identifiers.org/go/GO:0008054"
+  R11 hypernym "http://identifiers.org/go/GO:0000079"
+  R12 hypernym "http://identifiers.org/go/GO:0045736"
+  R12 hypernym "http://identifiers.org/reactome/REACT_6178"
+  R12 identity "http://identifiers.org/ec-code/2.7.10.2"
+  R13 hypernym "http://identifiers.org/go/GO:0045737"
+  R13 hypernym "http://identifiers.org/reactome/REACT_6257.1"
+  R13 identity "http://identifiers.org/ec-code/3.1.3.48"
+  R14 hypernym "http://identifiers.org/go/GO:0008054"
+  R15 hypernym "http://identifiers.org/go/GO:0008054"
+  R17 hypernym "http://identifiers.org/go/GO:0004674"
+  R17 identity "http://identifiers.org/ec-code/2.7.11.22"
+  R18 hypernym "http://identifiers.org/go/GO:0044257"
+  R19 identity "http://identifiers.org/ec-code/2.7.11.22"
+  R19 hypernym "http://identifiers.org/go/GO:0044257"
+  R21 identity "http://identifiers.org/ec-code/2.7.11.22"
+  R22 hypernym "http://identifiers.org/go/GO:0044257"
 end
+
+Novak1993_M_phase_control is "Novak1993 - Cell cycle M-phase control"
+
+Novak1993_M_phase_control model_entity_is "http://identifiers.org/biomodels.db/MODEL5876465734"
+Novak1993_M_phase_control model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000107"
+Novak1993_M_phase_control description "http://identifiers.org/pubmed/8126097"
+Novak1993_M_phase_control homolog "http://identifiers.org/reactome/REACT_152"
+Novak1993_M_phase_control hypernym "http://identifiers.org/go/GO:0000278"
+Novak1993_M_phase_control taxon "http://identifiers.org/taxonomy/8292"

@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Singh2006_TCA_mtu_model1()
 
   // Compartments and Species:
@@ -19,8 +19,8 @@ model *Singh2006_TCA_mtu_model1()
   SDH: suc -> fa; cell*((SDH_Vf_sdh*(suc/SDH_Ksuc_sdh) - SDH_Vr_sdh*(fa/SDH_Kfa_sdh))/(1 + suc/SDH_Ksuc_sdh + fa/SDH_Kfa_sdh));
   FUM: fa -> mal; cell*((FUM_Vf_fum*(fa/FUM_Kfa_fum) - FUM_Vr_fum*(mal/FUM_Kmal_fum))/(1 + fa/FUM_Kfa_fum + mal/FUM_Kmal_fum));
   MDH: mal -> $oaa; cell*((MDH_Vf_mdh*(mal/MDH_Kmal_mdh) - MDH_Vr_mdh*(oaa/MDH_Koaa_mdh))/(1 + mal/MDH_Kmal_mdh + oaa/MDH_Koaa_mdh));
-  ICL1: icit -> suc + gly; cell*((ICL1_Vf_icl1*(icit/ICL1_Kicit_icl1) - ICL1_Vr_icl1*(suc/ICL1_Ksuc_icl1)*(gly/ICL1_Kgly_icl1))/(1 + icit/ICL1_Kicit_icl1 + suc/ICL1_Ksuc_icl1 + gly/ICL1_Kgly_icl1 + icit/ICL1_Kicit_icl1*(suc/ICL1_Ksuc_icl1) + suc/ICL1_Ksuc_icl1*(gly/ICL1_Kgly_icl1)));
-  ICL2: icit -> suc + gly; cell*((ICL2_Vf_icl2*(icit/ICL2_Kicit_icl2) - ICL2_Vr_icl2*(suc/ICL2_Ksuc_icl2)*(gly/ICL2_Kgly_icl2))/(1 + icit/ICL2_Kicit_icl2 + suc/ICL2_Ksuc_icl2 + gly/ICL2_Kgly_icl2 + icit/ICL2_Kicit_icl2*(suc/ICL2_Ksuc_icl2) + suc/ICL2_Ksuc_icl2*(gly/ICL2_Kgly_icl2)));
+  ICL1: icit -> suc + gly; cell*((ICL1_Vf_icl1*(icit/ICL1_Kicit_icl1) - ICL1_Vr_icl1*(suc/ICL1_Ksuc_icl1)*(gly/ICL1_Kgly_icl1))/(1 + icit/ICL1_Kicit_icl1 + suc/ICL1_Ksuc_icl1 + gly/ICL1_Kgly_icl1 + (icit/ICL1_Kicit_icl1)*(suc/ICL1_Ksuc_icl1) + (suc/ICL1_Ksuc_icl1)*(gly/ICL1_Kgly_icl1)));
+  ICL2: icit -> suc + gly; cell*((ICL2_Vf_icl2*(icit/ICL2_Kicit_icl2) - ICL2_Vr_icl2*(suc/ICL2_Ksuc_icl2)*(gly/ICL2_Kgly_icl2))/(1 + icit/ICL2_Kicit_icl2 + suc/ICL2_Ksuc_icl2 + gly/ICL2_Kgly_icl2 + (icit/ICL2_Kicit_icl2)*(suc/ICL2_Ksuc_icl2) + (suc/ICL2_Ksuc_icl2)*(gly/ICL2_Kgly_icl2)));
   MS: gly + $aca -> mal + $coa; cell*((MS_Vf_ms*(gly/MS_Kgly_ms)*(aca/MS_Kaca_ms) - MS_Vr_ms*(mal/MS_Kmal_ms)*(coa/MS_Kcoa_ms))/((1 + gly/MS_Kgly_ms + mal/MS_Kmal_ms)*(1 + aca/MS_Kaca_ms + coa/MS_Kcoa_ms)));
   SYN: akg -> $biosyn; cell*0.0341*((SYN_Vf_icd1*(icit/SYN_Kicit_icd1) - SYN_Vr_icd1*(akg/SYN_Kakg_icd1))/(1 + icit/SYN_Kicit_icd1 + akg/SYN_Kakg_icd1) + (SYN_Vf_icd2*(icit/SYN_Kicit_icd2) - SYN_Vr_icd2*(akg/SYN_Kakg_icd2))/(1 + icit/SYN_Kicit_icd2 + akg/SYN_Kakg_icd2));
 
@@ -198,4 +198,140 @@ model *Singh2006_TCA_mtu_model1()
   substance is "mmole";
   mmlmin is "mM_per_min";
   mml is "mM";
+
+  // SBO terms:
+  aca.sboTerm = 247
+  oaa.sboTerm = 247
+  coa.sboTerm = 247
+  cit.sboTerm = 247
+  icit.sboTerm = 247
+  akg.sboTerm = 247
+  ssa.sboTerm = 247
+  suc.sboTerm = 247
+  sca.sboTerm = 247
+  fa.sboTerm = 247
+  mal.sboTerm = 247
+  gly.sboTerm = 247
+  CS_Vf_cs.sboTerm = 350
+  CS_Kaca_cs.sboTerm = 322
+  CS_Koaa_cs.sboTerm = 322
+  CS_Vr_cs.sboTerm = 353
+  CS_Kcoa_cs.sboTerm = 323
+  CS_Kcit_cs.sboTerm = 323
+  ACN_Vf_acn.sboTerm = 350
+  ACN_Kcit_acn.sboTerm = 322
+  ACN_Vr_acn.sboTerm = 353
+  ACN_Kicit_acn.sboTerm = 323
+  ICD1_Vf_icd1.sboTerm = 350
+  ICD1_Kicit_icd1.sboTerm = 322
+  ICD1_Vr_icd1.sboTerm = 353
+  ICD1_Kakg_icd1.sboTerm = 323
+  ICD2_Vf_icd2.sboTerm = 350
+  ICD2_Kicit_icd2.sboTerm = 322
+  ICD2_Vr_icd2.sboTerm = 353
+  ICD2_Kakg_icd2.sboTerm = 323
+  KDH_Vf_kdh.sboTerm = 350
+  KDH_Kakg_kdh.sboTerm = 322
+  KDH_Vr_kdh.sboTerm = 353
+  KDH_Ksca_kdh.sboTerm = 323
+  KGD_Vf_kgd.sboTerm = 350
+  KGD_Kakg_kgd.sboTerm = 322
+  KGD_Vr_kgd.sboTerm = 353
+  KGD_Kssa_kgd.sboTerm = 323
+  SSADH_Vf_ssadh.sboTerm = 350
+  SSADH_Kssa_ssadh.sboTerm = 322
+  SSADH_Vr_ssadh.sboTerm = 353
+  SSADH_Ksuc_ssadh.sboTerm = 323
+  ScAS_Vf_scas.sboTerm = 350
+  ScAS_Ksca_scas.sboTerm = 322
+  ScAS_Vr_scas.sboTerm = 353
+  ScAS_Ksuc_scas.sboTerm = 323
+  SDH_Vf_sdh.sboTerm = 350
+  SDH_Ksuc_sdh.sboTerm = 322
+  SDH_Vr_sdh.sboTerm = 353
+  SDH_Kfa_sdh.sboTerm = 323
+  FUM_Vf_fum.sboTerm = 350
+  FUM_Kfa_fum.sboTerm = 322
+  FUM_Vr_fum.sboTerm = 353
+  FUM_Kmal_fum.sboTerm = 323
+  MDH_Vf_mdh.sboTerm = 350
+  MDH_Kmal_mdh.sboTerm = 322
+  MDH_Vr_mdh.sboTerm = 353
+  MDH_Koaa_mdh.sboTerm = 323
+  ICL1_Vf_icl1.sboTerm = 350
+  ICL1_Kicit_icl1.sboTerm = 322
+  ICL1_Vr_icl1.sboTerm = 353
+  ICL1_Ksuc_icl1.sboTerm = 323
+  ICL1_Kgly_icl1.sboTerm = 323
+  ICL2_Vf_icl2.sboTerm = 350
+  ICL2_Kicit_icl2.sboTerm = 322
+  ICL2_Vr_icl2.sboTerm = 353
+  ICL2_Ksuc_icl2.sboTerm = 323
+  ICL2_Kgly_icl2.sboTerm = 323
+  MS_Vf_ms.sboTerm = 350
+  MS_Kgly_ms.sboTerm = 322
+  MS_Kaca_ms.sboTerm = 322
+  MS_Vr_ms.sboTerm = 353
+  MS_Kmal_ms.sboTerm = 323
+  MS_Kcoa_ms.sboTerm = 323
+  SYN_Vf_icd1.sboTerm = 350
+  SYN_Kicit_icd1.sboTerm = 322
+  SYN_Vr_icd1.sboTerm = 353
+  SYN_Kakg_icd1.sboTerm = 323
+  SYN_Vf_icd2.sboTerm = 350
+  SYN_Kicit_icd2.sboTerm = 322
+  SYN_Vr_icd2.sboTerm = 353
+  SYN_Kakg_icd2.sboTerm = 323
+
+  // CV terms:
+  aca hypernym "http://identifiers.org/obo.chebi/CHEBI:15351",
+               "http://identifiers.org/kegg.compound/C00024"
+  oaa hypernym "http://identifiers.org/obo.chebi/CHEBI:30744",
+               "http://identifiers.org/kegg.compound/C00036"
+  coa hypernym "http://identifiers.org/obo.chebi/CHEBI:15346",
+               "http://identifiers.org/kegg.compound/C00010"
+  cit hypernym "http://identifiers.org/obo.chebi/CHEBI:30769",
+               "http://identifiers.org/kegg.compound/C00158"
+  icit hypernym "http://identifiers.org/obo.chebi/CHEBI:30887",
+                "http://identifiers.org/kegg.compound/C00311"
+  akg hypernym "http://identifiers.org/obo.chebi/CHEBI:30915",
+               "http://identifiers.org/kegg.compound/C00026"
+  ssa hypernym "http://identifiers.org/obo.chebi/CHEBI:16265",
+               "http://identifiers.org/kegg.compound/C00232"
+  suc hypernym "http://identifiers.org/obo.chebi/CHEBI:15741",
+               "http://identifiers.org/kegg.compound/C00042"
+  sca hypernym "http://identifiers.org/obo.chebi/CHEBI:15380",
+               "http://identifiers.org/kegg.compound/C00091"
+  fa hypernym "http://identifiers.org/obo.chebi/CHEBI:18012",
+              "http://identifiers.org/kegg.compound/C00122"
+  mal hypernym "http://identifiers.org/obo.chebi/CHEBI:6650",
+               "http://identifiers.org/kegg.compound/C00711"
+  gly hypernym "http://identifiers.org/obo.chebi/CHEBI:16891",
+               "http://identifiers.org/kegg.compound/C00048"
+  CS hypernym "http://identifiers.org/kegg.reaction/R00351"
+  ACN hypernym "http://identifiers.org/kegg.reaction/R01324"
+  ICD1 hypernym "http://identifiers.org/kegg.reaction/R00709"
+  ICD2 hypernym "http://identifiers.org/kegg.reaction/R00709"
+  KDH hypernym "http://identifiers.org/kegg.reaction/R08549"
+  KGD hypernym "http://identifiers.org/kegg.reaction/R00272"
+  SSADH hypernym "http://identifiers.org/kegg.reaction/R00714"
+  ScAS hypernym "http://identifiers.org/kegg.reaction/R00407"
+  SDH hypernym "http://identifiers.org/kegg.reaction/R00402"
+  FUM hypernym "http://identifiers.org/kegg.reaction/R01082"
+  MDH hypernym "http://identifiers.org/kegg.reaction/R00342"
+  ICL1 hypernym "http://identifiers.org/kegg.reaction/R00479"
+  ICL2 hypernym "http://identifiers.org/kegg.reaction/R00479"
+  MS hypernym "http://identifiers.org/kegg.reaction/R00472"
+  SYN hypernym "http://identifiers.org/obo.go/GO:0006103"
 end
+
+Singh2006_TCA_mtu_model1 is "Singh2006_TCA_mtu_model1"
+
+Singh2006_TCA_mtu_model1 model_entity_is "http://identifiers.org/biomodels.db/MODEL8584292730"
+Singh2006_TCA_mtu_model1 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000219"
+Singh2006_TCA_mtu_model1 description "http://identifiers.org/pubmed/16887020"
+Singh2006_TCA_mtu_model1 taxon "http://identifiers.org/taxonomy/1773"
+Singh2006_TCA_mtu_model1 homolog "http://identifiers.org/reactome/REACT_1785"
+Singh2006_TCA_mtu_model1 version "http://identifiers.org/obo.go/GO:0006097",
+                                 "http://identifiers.org/obo.go/GO:0006099"
+Singh2006_TCA_mtu_model1 hypernym "http://identifiers.org/kegg.pathway/ko00020"

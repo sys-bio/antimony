@@ -1,0 +1,125 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function Function_for_Complex_Dissociation(k_off, RC)
+  k_off*RC;
+end
+
+Function_for_Complex_Dissociation is "Function_for_Complex_Dissociation"
+
+function Function_for_Drug_Distribution_Tissue_to_Central(k_tp, A_T, V_c)
+  k_tp*(A_T/V_c);
+end
+
+Function_for_Drug_Distribution_Tissue_to_Central is "Function_for_Drug_Distribution_Tissue_to_Central"
+
+function Function_for_Drug_Exit_Central(k_pt, C, k_el)
+  (k_el + k_pt)*C;
+end
+
+Function_for_Drug_Exit_Central is "Function_for_Drug_Exit_Central"
+
+function Function_for_Complex_Internalisation(k_off, k_int, RC)
+  (k_off + k_int)*RC;
+end
+
+Function_for_Complex_Internalisation is "Function_for_Complex_Internalisation"
+
+function Function_for_Drug_Distribution_Central_to_Tissue(k_pt, C, V_c)
+  k_pt*C*V_c;
+end
+
+Function_for_Drug_Distribution_Central_to_Tissue is "Function_for_Drug_Distribution_Central_to_Tissue"
+
+
+model *Mager2005___Quasi_equilibrium_pharmacokinetic_model_for_drugs_exhibiting_target_mediated_drug_disposition()
+
+  // Compartments and Species:
+  compartment Central, Peripheral_Tissue;
+  species C in Central, A_T in Peripheral_Tissue, R in Central, RC in Central;
+
+  // Assignment Rules:
+  C_Concentration := C/ModelValue_1;
+  C_tot := (C + RC)/ModelValue_1;
+
+  // Reactions:
+  Complex_Formation: R + C => RC; Central*k_on*R*C;
+  Complex_Dissociation:  => R + C; Central*Function_for_Complex_Dissociation(k_off, RC);
+  Complex_Internalisation: RC => ; Central*Function_for_Complex_Internalisation(k_off, k_int, RC);
+  Drug_Exit_Central: C => ; Central*Function_for_Drug_Exit_Central(k_pt, C, k_el);
+  Drug_Distribution_Tissue_to_Central:  => C; Function_for_Drug_Distribution_Tissue_to_Central(k_tp, A_T, V_c);
+  Drug_Distribution_Central_to_Tissue:  => A_T; Function_for_Drug_Distribution_Central_to_Tissue(k_pt, C, V_c);
+  Drug_Distribution_Tissue_to_Central_MA: A_T => ; Peripheral_Tissue*k_tp*A_T;
+  Receptor_Synthesis:  => R; Central*Constant_flux__irreversible(k_syn);
+  Receptor_Dergradation: R => ; Central*k_deg*R;
+
+  // Species initializations:
+  C = 4000;
+  A_T = 0;
+  R = 53;
+  RC = 0;
+
+  // Compartment initializations:
+  Central = 1;
+  Peripheral_Tissue = 1;
+
+  // Variable initializations:
+  k_el = 1;
+  V_c = 10;
+  k_on = 0.1;
+  K_D = 1;
+  k_int = 0;
+  k_deg = 0.566;
+  k_syn = 0;
+  k_off = 0.1;
+  k_tp = 0;
+  k_pt = 0;
+  ModelValue_1 = V_c;
+
+  // Other declarations:
+  var C_Concentration, C_tot;
+  const Central, Peripheral_Tissue, k_el, V_c, k_on, K_D, k_int, k_deg, k_syn;
+  const k_off, k_tp, k_pt, ModelValue_1;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 3600 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+  Peripheral_Tissue is "Peripheral Tissue";
+  ModelValue_1 is "Initial for V_c";
+
+  // CV terms:
+  Central hypernym "http://identifiers.org/ncit/C16353"
+  Peripheral_Tissue hypernym "http://identifiers.org/ncit/C12801"
+  C identity "http://identifiers.org/chebi/CHEBI:23888"
+  C container "http://identifiers.org/ncit/C16353"
+  A_T identity "http://identifiers.org/chebi/CHEBI:23888"
+  A_T container "http://identifiers.org/ncit/C12801"
+  R hypernym "http://identifiers.org/ncit/C18106"
+  RC hypernym "http://identifiers.org/go/GO:0043235"
+  Complex_Formation hypernym "http://identifiers.org/sbo/SBO:0000177"
+  Complex_Dissociation hypernym "http://identifiers.org/sbo/SBO:0000180"
+  Complex_Internalisation hypernym "http://identifiers.org/go/GO:0031623"
+  Drug_Exit_Central hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Drug_Distribution_Tissue_to_Central hypernym "http://identifiers.org/ncit/C79370"
+  Drug_Distribution_Central_to_Tissue hypernym "http://identifiers.org/ncit/C79370"
+  Drug_Distribution_Tissue_to_Central_MA hypernym "http://identifiers.org/ncit/C79370"
+  Receptor_Synthesis hypernym "http://identifiers.org/go/GO:0006412"
+  Receptor_Dergradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+end
+
+Mager2005___Quasi_equilibrium_pharmacokinetic_model_for_drugs_exhibiting_target_mediated_drug_disposition is "Mager2005 - Quasi-equilibrium pharmacokinetic model for drugs exhibiting target-mediated drug disposition"
+
+Mager2005___Quasi_equilibrium_pharmacokinetic_model_for_drugs_exhibiting_target_mediated_drug_disposition model_entity_is "http://identifiers.org/biomodels.db/MODEL1907290001",
+                                                                                                                          "http://identifiers.org/biomodels.db/BIOMD0000000765"
+Mager2005___Quasi_equilibrium_pharmacokinetic_model_for_drugs_exhibiting_target_mediated_drug_disposition property "http://identifiers.org/mamo/MAMO_0000046"
+Mager2005___Quasi_equilibrium_pharmacokinetic_model_for_drugs_exhibiting_target_mediated_drug_disposition property "http://identifiers.org/ncit/C15299"
+Mager2005___Quasi_equilibrium_pharmacokinetic_model_for_drugs_exhibiting_target_mediated_drug_disposition taxon "http://identifiers.org/taxonomy/1758"
+Mager2005___Quasi_equilibrium_pharmacokinetic_model_for_drugs_exhibiting_target_mediated_drug_disposition description "http://identifiers.org/pubmed/16180117"

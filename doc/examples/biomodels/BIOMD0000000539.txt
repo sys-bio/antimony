@@ -1,11 +1,15 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 function Constant_flux__irreversible(v)
   v;
 end
 
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
 function transcription_and_translation(k, X)
   k*X;
 end
+
+transcription_and_translation is "transcription and translation"
 
 
 model *MODEL1408130000()
@@ -24,7 +28,7 @@ model *MODEL1408130000()
   degradation_A: A => ; cell*deltaA*A;
   translation_B:  => B; cell*transcription_and_translation(beta, rB);
   degradation_B: B => ; cell*deltaB*B;
-  formation_dimer: A + B => AB; cell*gamma*A*B;
+  formation_dimer: A + B => AB; cell*gamma_*A*B;
   degradation_dimer: AB => ; cell*deltaAB*AB;
 
   // Species initializations:
@@ -52,14 +56,14 @@ model *MODEL1408130000()
   rhof = 0.1;
   deltar = 0.03;
   rhoA = 100;
-  gamma = 1;
+  gamma_ = 1;
   deltaA = 0.01;
   deltaB = 0.01;
   beta = 3;
   deltaAB = 0.01;
 
   // Other declarations:
-  const cell, theta, alpha, rhob, rhof, deltar, rhoA, gamma, deltaA, deltaB;
+  const cell, theta, alpha, rhob, rhof, deltar, rhoA, gamma_, deltaA, deltaB;
   const beta, deltaAB;
 
   // Unit definitions:
@@ -73,6 +77,7 @@ model *MODEL1408130000()
 
   // Display Names:
   time_unit is "time";
+  gamma_ is "gamma";
   A_binds_gB is "A binds gB";
   gB_releases_A is "gB releases A";
   basal_transcription_B is "basal transcription B";
@@ -84,4 +89,30 @@ model *MODEL1408130000()
   degradation_B is "degradation B";
   formation_dimer is "formation dimer";
   degradation_dimer is "degradation dimer";
+
+  // CV terms:
+  A identity "http://identifiers.org/chebi/CHEBI:36080"
+  AgB identity "http://identifiers.org/so/SO:0000704"
+  gB identity "http://identifiers.org/so/SO:0000704"
+  rB identity "http://identifiers.org/chebi/CHEBI:33699"
+  B identity "http://identifiers.org/chebi/CHEBI:36080"
+  AB identity "http://identifiers.org/go/GO:0043234"
+  A_binds_gB hypernym "http://identifiers.org/go/GO:0008134"
+  basal_transcription_B hypernym "http://identifiers.org/go/GO:0009299"
+  stim_transcription_B hypernym "http://identifiers.org/go/GO:0009299"
+  degradation_mRNA_B hypernym "http://identifiers.org/go/GO:0006402"
+  production_A hypernym "http://identifiers.org/go/GO:0006412"
+  degradation_A hypernym "http://identifiers.org/go/GO:0030163"
+  translation_B hypernym "http://identifiers.org/go/GO:0006412"
+  degradation_B hypernym "http://identifiers.org/go/GO:0030163"
+  formation_dimer hypernym "http://identifiers.org/go/GO:0006461"
+  degradation_dimer hypernym "http://identifiers.org/go/GO:0030163"
 end
+
+MODEL1408130000 is "François2005 - Mixed Feedback Loop (two-gene network)"
+
+MODEL1408130000 model_entity_is "http://identifiers.org/biomodels.db/MODEL1408130000"
+MODEL1408130000 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000539"
+MODEL1408130000 description "http://identifiers.org/pubmed/16241483"
+MODEL1408130000 hypernym "http://identifiers.org/go/GO:0010468"
+MODEL1408130000 taxon "http://identifiers.org/taxonomy/131567"

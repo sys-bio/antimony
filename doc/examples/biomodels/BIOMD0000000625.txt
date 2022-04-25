@@ -1,0 +1,379 @@
+// Created by libAntimony v2.13.0
+function Molecule_Production__1A_0I__2(IL2, sigma)
+  sigma*IL2;
+end
+
+Molecule_Production__1A_0I__2 is "Molecule Production (1A/0I)_2"
+
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function Molecule_Production__1A_0I__1(nTreg, sigma)
+  sigma*nTreg;
+end
+
+Molecule_Production__1A_0I__1 is "Molecule Production (1A/0I)_1"
+
+function Molecule_Production__2A_3I__v2_1(Blimp1, ICOS, RXR, STAT3, STAT5, alpha1, alpha2, alpha3, sigma1, sigma2)
+  (sigma1*ICOS + sigma2*STAT3)/((alpha1 + Blimp1)*(alpha2 + STAT5)*(alpha3 + RXR));
+end
+
+Molecule_Production__2A_3I__v2_1 is "Molecule Production (2A/3I) v2_1"
+
+function Molecule_Production__0A_1I__1(IL4, alpha1, sigma1)
+  sigma1/(alpha1 + IL4);
+end
+
+Molecule_Production__0A_1I__1 is "Molecule Production (0A/1I)_1"
+
+function Molecule_Production__1A_0I__5(IL10, sigma)
+  sigma*IL10;
+end
+
+Molecule_Production__1A_0I__5 is "Molecule Production (1A/0I)_5"
+
+function Cell_Differentiation__2A__1(Bcl6, CXCR5, gamma1, gamma2, nTreg)
+  gamma1*nTreg*Bcl6 + gamma2*nTreg*CXCR5;
+end
+
+Cell_Differentiation__2A__1 is "Cell Differentiation (2A)_1"
+
+function Molecule_Production__2A_0I__1(IL21, IL6, sigma1, sigma2)
+  sigma1*IL6 + sigma2*IL21;
+end
+
+Molecule_Production__2A_0I__1 is "Molecule Production (2A/0I)_1"
+
+function Molecule_Production__2A_1I__1(Blimp1, Tfh, Tfr, alpha, sigma1, sigma2)
+  (sigma1*Tfh + sigma2*Tfr)/(alpha + Blimp1);
+end
+
+Molecule_Production__2A_1I__1 is "Molecule Production (2A/1I)_1"
+
+function Molecule_Production__1A_0I__4(Tfr, sigma)
+  sigma*Tfr;
+end
+
+Molecule_Production__1A_0I__4 is "Molecule Production (1A/0I)_4"
+
+function Molecule_Production__1A_1I__2(TGFb, Tgif1, alpha, sigma)
+  sigma*TGFb/(alpha + Tgif1);
+end
+
+Molecule_Production__1A_1I__2 is "Molecule Production (1A/1I)_2"
+
+function Molecule_Production__1A_1I__1(Bcl6, Tfr, alpha, sigma)
+  sigma*Tfr/(alpha + Bcl6);
+end
+
+Molecule_Production__1A_1I__1 is "Molecule Production (1A/1I)_1"
+
+function Molecule_Production__1A_0I__3(Tfh, sigma)
+  sigma*Tfh;
+end
+
+Molecule_Production__1A_0I__3 is "Molecule Production (1A/0I)_3"
+
+function Cell_Differentiation__1A_1I__1(Bcl6, IL10, NaiveCD4, alpha, gamma_)
+  gamma_*NaiveCD4*Bcl6/(alpha + IL10);
+end
+
+Cell_Differentiation__1A_1I__1 is "Cell Differentiation (1A/1I)_1"
+
+
+model *Leber2016___Expanded_model_of_Tfh_Tfr_differentiation___Helicobacter_pylori_infection_1_1()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species NaiveCD4 in compartment_, nTreg in compartment_, Tfh in compartment_;
+  species Tfr in compartment_, Bcl6 in compartment_, Blimp1 in compartment_;
+  species FoxP3 in compartment_, STAT3 in compartment_, $STAT5 in compartment_;
+  species $IL2 in compartment_, IL4 in compartment_, IL6 in compartment_;
+  species IL10 in compartment_, IL21 in compartment_, CXCR5 in compartment_;
+  species ICOS in compartment_, TGFb in compartment_, Tgif1 in compartment_;
+  species RXR in compartment_;
+
+  // Reactions:
+  NaiveCD4_Source:  => NaiveCD4; compartment_*Constant_flux__irreversible(NaiveCD4_Source_v);
+  NaiveCD4_Death: NaiveCD4 => ; compartment_*NaiveCD4_Death_k1*NaiveCD4;
+  nTreg_Source:  => nTreg; compartment_*Constant_flux__irreversible(nTreg_Source_v);
+  nTreg_Death: nTreg => ; compartment_*nTreg_Death_k1*nTreg;
+  Tfh_Differentiation: NaiveCD4 => Tfh; compartment_*Cell_Differentiation__1A_1I__1(Bcl6, IL10, NaiveCD4, Tfh_Differentiation_alpha, Tfh_Differentiation_gamma);
+  Tfr_Differentiation: nTreg => Tfr; compartment_*Cell_Differentiation__2A__1(Bcl6, CXCR5, Tfr_Differentiation_gamma1, Tfr_Differentiation_gamma2, nTreg);
+  Tfh_Death: Tfh => ; compartment_*Tfh_Death_k1*Tfh;
+  Tfr_Death: Tfr => ; compartment_*Tfr_Death_k1*Tfr;
+  Bcl6_Activation:  => Bcl6; compartment_*Molecule_Production__2A_3I__v2_1(Blimp1, ICOS, RXR, STAT3, STAT5, Bcl6_Activation_alpha1, Bcl6_Activation_alpha2, Bcl6_Activation_alpha3, Bcl6_Activation_sigma1, Bcl6_Activation_sigma2);
+  Blimp1_Activation:  => Blimp1; compartment_*Molecule_Production__1A_1I__1(Bcl6, Tfr, Blimp1_Activation_alpha, Blimp1_Activation_sigma);
+  FoxP3_Activation:  => FoxP3; compartment_*Molecule_Production__1A_0I__1(nTreg, FoxP3_Activation_sigma);
+  STAT3_Activation:  => STAT3; compartment_*Molecule_Production__2A_0I__1(IL21, IL6, STAT3_Activation_sigma1, STAT3_Activation_sigma2);
+  STAT5_Activation:  => $STAT5; compartment_*Molecule_Production__1A_0I__2(IL2, STAT5_Activation_sigma);
+  CXCR5_Production:  => CXCR5; compartment_*Molecule_Production__2A_1I__1(Blimp1, Tfh, Tfr, CXCR5_Production_alpha, CXCR5_Production_sigma1, CXCR5_Production_sigma2);
+  ICOS_Production:  => ICOS; compartment_*Molecule_Production__1A_0I__3(Tfh, ICOS_Production_sigma);
+  IL2_Production:  => $IL2; compartment_*Constant_flux__irreversible(IL2_Production_v);
+  IL4_Production:  => IL4; compartment_*Molecule_Production__1A_0I__3(Tfh, IL4_Production_sigma);
+  IL6_Production:  => IL6; compartment_*Molecule_Production__0A_1I__1(IL4, IL6_Production_alpha1, IL6_Production_sigma1);
+  IL10_Production:  => IL10; compartment_*Molecule_Production__1A_0I__4(Tfr, IL10_Production_sigma);
+  Bcl6_Degradation: Bcl6 => ; compartment_*Bcl6_Degradation_k1*Bcl6;
+  Blimp1_Degradation: Blimp1 => ; compartment_*Blimp1_Degradation_k1*Blimp1;
+  FoxP3_Degradation: FoxP3 => ; compartment_*FoxP3_Degradation_k1*FoxP3;
+  STAT3_Degradation: STAT3 => ; compartment_*STAT3_Degradation_k1*STAT3;
+  STAT5_Degradation: $STAT5 => ; compartment_*STAT5_Degradation_k1*STAT5;
+  CXCR5_Degradation: CXCR5 => ; compartment_*CXCR5_Degradation_k1*CXCR5;
+  ICOS_Degradation: ICOS => ; compartment_*ICOS_Degradation_k1*ICOS;
+  IL2_Degradation: $IL2 => ; compartment_*IL2_Degradation_k1*IL2;
+  IL4_Degradation: IL4 => ; compartment_*IL4_Degradation_k1*IL4;
+  IL6_Degradation: IL6 => ; compartment_*IL6_Degradation_k1*IL6;
+  IL10_Degradation: IL10 => ; compartment_*IL10_Degradation_k1*IL10;
+  IL21_Degradation: IL21 => ; compartment_*IL21_Degradation_k1*IL21;
+  IL21_Production:  => IL21; compartment_*Molecule_Production__1A_0I__3(Tfh, IL21_Production_sigma);
+  TGFb_Production:  => TGFb; compartment_*Molecule_Production__1A_0I__5(IL10, TGFb_Production_sigma);
+  TGFb_Degradation: TGFb => ; compartment_*TGFb_Degradation_k1*TGFb;
+  RXR_Activation:  => RXR; compartment_*Molecule_Production__1A_1I__2(TGFb, Tgif1, RXR_Activation_alpha, RXR_Activation_sigma);
+  Tgif1_Production:  => Tgif1; compartment_*Molecule_Production__1A_0I__3(Tfh, Tgif1_Production_sigma);
+  RXR_Degradation: RXR => ; compartment_*RXR_Degradation_k1*RXR;
+  Tgif1_Degradation: Tgif1 => ; compartment_*Tgif1_Degradation_k1*Tgif1;
+
+  // Species initializations:
+  NaiveCD4 = 200;
+  nTreg = 100;
+  Tfh = 1;
+  Tfr = 1;
+  Bcl6 = 1;
+  Blimp1 = 1;
+  FoxP3 = 1;
+  STAT3 = 1;
+  STAT5 = 0;
+  IL2 = 0.0001;
+  IL4 = 1;
+  IL6 = 1;
+  IL10 = 1;
+  IL21 = 1;
+  CXCR5 = 1;
+  ICOS = 1;
+  TGFb = 1;
+  Tgif1 = 1;
+  RXR = 1;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  NaiveCD4_Source_v = 100;
+  NaiveCD4_Death_k1 = 0.035655;
+  nTreg_Source_v = 10;
+  nTreg_Death_k1 = 0.03;
+  Tfh_Differentiation_alpha = 0.1;
+  Tfh_Differentiation_gamma = 0.364318;
+  Tfr_Differentiation_gamma1 = 0.0555708;
+  Tfr_Differentiation_gamma2 = 0.111444;
+  Tfh_Death_k1 = 0.03;
+  Tfr_Death_k1 = 0.03;
+  Bcl6_Activation_alpha1 = 0.20001;
+  Bcl6_Activation_alpha2 = 1.36752;
+  Bcl6_Activation_alpha3 = 0.1253;
+  Bcl6_Activation_sigma1 = 3.24417;
+  Bcl6_Activation_sigma2 = 3.2195;
+  Blimp1_Activation_alpha = 2.386;
+  Blimp1_Activation_sigma = 3.59995;
+  FoxP3_Activation_sigma = 0.1;
+  STAT3_Activation_sigma1 = 0.1253;
+  STAT3_Activation_sigma2 = 0.1;
+  STAT5_Activation_sigma = 10;
+  CXCR5_Production_alpha = 0.0539319;
+  CXCR5_Production_sigma1 = 3.0403;
+  CXCR5_Production_sigma2 = 2.92243;
+  ICOS_Production_sigma = 0.01787;
+  IL2_Production_v = 0.1;
+  IL4_Production_sigma = 0.014555;
+  IL6_Production_alpha1 = 0.43475;
+  IL6_Production_sigma1 = 0.9901;
+  IL10_Production_sigma = 0.0677;
+  Bcl6_Degradation_k1 = 0.16373;
+  Blimp1_Degradation_k1 = 0.1106;
+  FoxP3_Degradation_k1 = 0.1;
+  STAT3_Degradation_k1 = 0.1;
+  STAT5_Degradation_k1 = 0.1;
+  CXCR5_Degradation_k1 = 0.1;
+  ICOS_Degradation_k1 = 0.1;
+  IL2_Degradation_k1 = 0.1;
+  IL4_Degradation_k1 = 0.1;
+  IL6_Degradation_k1 = 0.69675;
+  IL10_Degradation_k1 = 0.1;
+  IL21_Degradation_k1 = 0.1;
+  IL21_Production_sigma = 0.06005;
+  TGFb_Production_sigma = 0.1;
+  TGFb_Degradation_k1 = 0.1;
+  RXR_Activation_alpha = 3.04985;
+  RXR_Activation_sigma = 0.05;
+  Tgif1_Production_sigma = 0.1;
+  RXR_Degradation_k1 = 0.08465;
+  Tgif1_Degradation_k1 = 0.1;
+
+  // Other declarations:
+  const compartment_;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = item;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+  NaiveCD4_Source is "NaiveCD4 Source";
+  NaiveCD4_Death is "NaiveCD4 Death";
+  nTreg_Source is "nTreg Source";
+  nTreg_Death is "nTreg Death";
+  Tfh_Differentiation is "Tfh Differentiation";
+  Tfr_Differentiation is "Tfr Differentiation";
+  Tfh_Death is "Tfh Death";
+  Tfr_Death is "Tfr Death";
+  Bcl6_Activation is "Bcl6 Activation";
+  Blimp1_Activation is "Blimp1 Activation";
+  FoxP3_Activation is "FoxP3 Activation";
+  STAT3_Activation is "STAT3 Activation";
+  STAT5_Activation is "STAT5 Activation";
+  CXCR5_Production is "CXCR5 Production";
+  ICOS_Production is "ICOS Production";
+  IL2_Production is "IL2 Production";
+  IL4_Production is "IL4 Production";
+  IL6_Production is "IL6 Production";
+  IL10_Production is "IL10 Production";
+  Bcl6_Degradation is "Bcl6 Degradation";
+  Blimp1_Degradation is "Blimp1 Degradation";
+  FoxP3_Degradation is "FoxP3 Degradation";
+  STAT3_Degradation is "STAT3 Degradation";
+  STAT5_Degradation is "STAT5 Degradation";
+  CXCR5_Degradation is "CXCR5 Degradation";
+  ICOS_Degradation is "ICOS Degradation";
+  IL2_Degradation is "IL2 Degradation";
+  IL4_Degradation is "IL4 Degradation";
+  IL6_Degradation is "IL6 Degradation";
+  IL10_Degradation is "IL10 Degradation";
+  IL21_Degradation is "IL21 Degradation";
+  IL21_Production is "IL21 Production";
+  TGFb_Production is "TGFb Production";
+  TGFb_Degradation is "TGFb Degradation";
+  RXR_Activation is "RXR Activation";
+  Tgif1_Production is "Tgif1 Production";
+  RXR_Degradation is "RXR Degradation";
+  Tgif1_Degradation is "Tgif1 Degradation";
+
+  // SBO terms:
+  NaiveCD4_Source.sboTerm = 393
+  NaiveCD4_Source_v.sboTerm = 485
+  NaiveCD4_Death.sboTerm = 291
+  NaiveCD4_Death_k1.sboTerm = 485
+  nTreg_Source.sboTerm = 393
+  nTreg_Source_v.sboTerm = 485
+  nTreg_Death.sboTerm = 291
+  nTreg_Death_k1.sboTerm = 485
+  Tfh_Death.sboTerm = 291
+  Tfh_Death_k1.sboTerm = 485
+  Tfr_Death.sboTerm = 291
+  Tfr_Death_k1.sboTerm = 485
+  Bcl6_Activation.sboTerm = 393
+  Blimp1_Activation.sboTerm = 393
+  FoxP3_Activation.sboTerm = 393
+  STAT3_Activation.sboTerm = 393
+  STAT5_Activation.sboTerm = 393
+  CXCR5_Production.sboTerm = 393
+  ICOS_Production.sboTerm = 393
+  IL2_Production.sboTerm = 393
+  IL2_Production_v.sboTerm = 485
+  IL4_Production.sboTerm = 393
+  IL6_Production.sboTerm = 393
+  IL10_Production.sboTerm = 393
+  IL10_Production_sigma.sboTerm = 485
+  Bcl6_Degradation.sboTerm = 179
+  Bcl6_Degradation_k1.sboTerm = 485
+  Blimp1_Degradation.sboTerm = 179
+  Blimp1_Degradation_k1.sboTerm = 485
+  FoxP3_Degradation.sboTerm = 179
+  FoxP3_Degradation_k1.sboTerm = 485
+  STAT3_Degradation.sboTerm = 179
+  STAT3_Degradation_k1.sboTerm = 485
+  STAT5_Degradation.sboTerm = 179
+  STAT5_Degradation_k1.sboTerm = 485
+  CXCR5_Degradation.sboTerm = 179
+  CXCR5_Degradation_k1.sboTerm = 485
+  ICOS_Degradation.sboTerm = 179
+  ICOS_Degradation_k1.sboTerm = 485
+  IL2_Degradation.sboTerm = 179
+  IL2_Degradation_k1.sboTerm = 485
+  IL4_Degradation.sboTerm = 179
+  IL4_Degradation_k1.sboTerm = 485
+  IL6_Degradation.sboTerm = 179
+  IL6_Degradation_k1.sboTerm = 485
+  IL10_Degradation.sboTerm = 179
+  IL10_Degradation_k1.sboTerm = 485
+  IL21_Degradation.sboTerm = 179
+  IL21_Degradation_k1.sboTerm = 485
+  TGFb_Production.sboTerm = 393
+  TGFb_Degradation.sboTerm = 179
+  TGFb_Degradation_k1.sboTerm = 485
+  RXR_Activation.sboTerm = 393
+  Tgif1_Production.sboTerm = 393
+  RXR_Degradation.sboTerm = 179
+  RXR_Degradation_k1.sboTerm = 485
+  Tgif1_Degradation.sboTerm = 179
+  Tgif1_Degradation_k1.sboTerm = 485
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/bto/BTO:0005568"
+  NaiveCD4 hypernym "http://identifiers.org/uniprot/P06332"
+  nTreg hypernym "http://identifiers.org/cl/CL:0002677"
+  Tfh hypernym "http://identifiers.org/cl/CL:0002038"
+  Tfr parthood "http://identifiers.org/cl/CL:0002677"
+  Bcl6 hypernym "http://identifiers.org/uniprot/P41183"
+  Blimp1 hypernym "http://identifiers.org/uniprot/Q60636"
+  FoxP3 hypernym "http://identifiers.org/uniprot/Q99JB6"
+  STAT3 hypernym "http://identifiers.org/uniprot/P42227"
+  STAT5 hypernym "http://identifiers.org/uniprot/P42232"
+  IL2 hypernym "http://identifiers.org/uniprot/P04351"
+  IL4 hypernym "http://identifiers.org/uniprot/P07750"
+  IL6 hypernym "http://identifiers.org/uniprot/P08505"
+  IL10 hypernym "http://identifiers.org/uniprot/P18893"
+  IL21 hypernym "http://identifiers.org/uniprot/Q9ES17"
+  CXCR5 hypernym "http://identifiers.org/uniprot/Q04683"
+  ICOS hypernym "http://identifiers.org/uniprot/Q9WVS0"
+  TGFb hypernym "http://identifiers.org/uniprot/Q64729"
+  Tgif1 hypernym "http://identifiers.org/uniprot/P70284"
+  RXR hypernym "http://identifiers.org/uniprot/P28700"
+  Tfh_Differentiation hypernym "http://identifiers.org/go/GO:0061470"
+  Tfr_Differentiation hypernym "http://identifiers.org/go/GO:0045066"
+  Tfh_Death hypernym "http://identifiers.org/go/GO:0070231"
+  Tfr_Death hypernym "http://identifiers.org/go/GO:0070238"
+  Bcl6_Degradation identity "http://identifiers.org/go/GO:0030163"
+  Blimp1_Degradation identity "http://identifiers.org/go/GO:0030163"
+  FoxP3_Degradation identity "http://identifiers.org/go/GO:0030163"
+  STAT3_Degradation identity "http://identifiers.org/go/GO:0030163"
+  STAT5_Degradation identity "http://identifiers.org/go/GO:0030163"
+  CXCR5_Degradation identity "http://identifiers.org/go/GO:0030163"
+  ICOS_Degradation identity "http://identifiers.org/go/GO:0030163"
+  IL2_Degradation identity "http://identifiers.org/go/GO:0030163"
+  IL4_Degradation identity "http://identifiers.org/go/GO:0030163"
+  IL6_Degradation identity "http://identifiers.org/go/GO:0030163"
+  IL10_Degradation identity "http://identifiers.org/go/GO:0030163"
+  IL21_Degradation identity "http://identifiers.org/go/GO:0030163"
+  IL21_Production hypernym "http://identifiers.org/go/GO:0072619"
+  TGFb_Degradation identity "http://identifiers.org/go/GO:0030163"
+  RXR_Degradation identity "http://identifiers.org/go/GO:0030163"
+  Tgif1_Degradation identity "http://identifiers.org/go/GO:0030163"
+end
+
+Leber2016___Expanded_model_of_Tfh_Tfr_differentiation___Helicobacter_pylori_infection_1_1 is "Leber2016 - Expanded model of Tfh-Tfr differentiation - Helicobacter pylori infection"
+
+Leber2016___Expanded_model_of_Tfh_Tfr_differentiation___Helicobacter_pylori_infection_1_1 model_entity_is "http://identifiers.org/biomodels.db/MODEL1603010000"
+Leber2016___Expanded_model_of_Tfh_Tfr_differentiation___Helicobacter_pylori_infection_1_1 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000625"
+Leber2016___Expanded_model_of_Tfh_Tfr_differentiation___Helicobacter_pylori_infection_1_1 description "http://identifiers.org/pubmed/26947272"
+Leber2016___Expanded_model_of_Tfh_Tfr_differentiation___Helicobacter_pylori_infection_1_1 property "http://identifiers.org/mamo/MAMO_0000046"
+Leber2016___Expanded_model_of_Tfh_Tfr_differentiation___Helicobacter_pylori_infection_1_1 hypernym "http://identifiers.org/go/GO:0044419"
+Leber2016___Expanded_model_of_Tfh_Tfr_differentiation___Helicobacter_pylori_infection_1_1 container "http://identifiers.org/bto/BTO:0005568"
+Leber2016___Expanded_model_of_Tfh_Tfr_differentiation___Helicobacter_pylori_infection_1_1 taxon "http://identifiers.org/taxonomy/10090",
+                                                                                                "http://identifiers.org/taxonomy/210"
+Leber2016___Expanded_model_of_Tfh_Tfr_differentiation___Helicobacter_pylori_infection_1_1 property "http://identifiers.org/doid/DOID:1724",
+                                                                                                   "http://identifiers.org/doid/DOID:750"

@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Radulescu2008_NFkB_hierarchy_M_14_25_28_Lipniacky()
 
   // Compartments and Species:
@@ -29,12 +29,12 @@ model *Radulescu2008_NFkB_hierarchy_M_14_25_28_Lipniacky()
   re64: $s150 => s133; k3;
   re65: s160 + s161 => s135; kf13*s161*s160 - kr13*s135;
   re66: s160 + s132 => s139; k7*s132*s160;
-  re67: s161 => 5s164; kf15*s161 - kr15*s164;
-  re68: 5s159 => s135; kf28*s159 - kr28*s135;
+  re67: s161 => 5 s164; kf15*s161 - kr15*s164;
+  re68: 5 s159 => s135; kf28*s159 - kr28*s135;
   re69: s164 + s167 => s159; kf14*s164*s167 - kr14*s159;
   re70: s127 => $s153; k17*s127;
   re71: s128 => $s154; k18*s128;
-  re72: s160 => 5s167; kf23*s160 - kr23*s167;
+  re72: s160 => 5 s167; kf23*s160 - kr23*s167;
 
   // Species initializations:
   s121 = 0;
@@ -69,7 +69,7 @@ model *Radulescu2008_NFkB_hierarchy_M_14_25_28_Lipniacky()
   // Variable initializations:
   k1 = 0.0025;
   k2 = 0.000125;
-  k3 = 2.5e-006;
+  k3 = 2.5e-06;
   k4 = 0.1;
   k5 = 0.0015;
   k6 = 0.000125;
@@ -78,7 +78,7 @@ model *Radulescu2008_NFkB_hierarchy_M_14_25_28_Lipniacky()
   k9 = 1;
   k10 = 0.1;
   k11 = 0.000125;
-  k12 = 2e-005;
+  k12 = 2e-05;
   kf13 = 18.4;
   kr13 = 0;
   kf14 = 18.4;
@@ -88,7 +88,7 @@ model *Radulescu2008_NFkB_hierarchy_M_14_25_28_Lipniacky()
   k16 = 0.5;
   k17 = 0.0004;
   k18 = 0.0003;
-  k20 = 5e-007;
+  k20 = 5e-07;
   k19 = 0;
   k21 = 0.0001;
   k22 = 0.5;
@@ -97,7 +97,7 @@ model *Radulescu2008_NFkB_hierarchy_M_14_25_28_Lipniacky()
   k27 = 0.0004;
   kf28 = 0.01;
   kr28 = 0;
-  k26 = 5e-007;
+  k26 = 5e-07;
 
   // Other declarations:
   var k3;
@@ -131,4 +131,72 @@ model *Radulescu2008_NFkB_hierarchy_M_14_25_28_Lipniacky()
   s161 is "NFkB";
   s164 is "NFkB";
   s167 is "IkB_alpha";
+
+  // CV terms:
+  default hypernym "http://identifiers.org/go/GO:0005829"
+  c2 hypernym "http://identifiers.org/go/GO:0005634"
+  s121 hypernym "http://identifiers.org/uniprot/Q9Z1E3"
+  s125 hypernym "http://identifiers.org/ensembl/ENSMUST00000021413"
+  s126 hypernym "http://identifiers.org/uniprot/Q60769"
+  s127 hypernym "http://identifiers.org/ensembl/ENSMUST00000019997"
+  s128 hypernym "http://identifiers.org/uniprot/Q60769"
+  s130 part "http://identifiers.org/uniprot/Q60680",
+            "http://identifiers.org/uniprot/O88351",
+            "http://identifiers.org/uniprot/O88522"
+  s132 part "http://identifiers.org/uniprot/O88351",
+            "http://identifiers.org/uniprot/Q60680",
+            "http://identifiers.org/uniprot/O88522"
+  s133 part "http://identifiers.org/uniprot/Q60680",
+            "http://identifiers.org/uniprot/O88351",
+            "http://identifiers.org/uniprot/O88522"
+  s135 part "http://identifiers.org/uniprot/P25799",
+            "http://identifiers.org/uniprot/Q9Z1E3"
+  s139 part "http://identifiers.org/uniprot/Q9Z1E3",
+            "http://identifiers.org/uniprot/Q60680",
+            "http://identifiers.org/uniprot/O88351",
+            "http://identifiers.org/uniprot/O88522"
+  s150 part "http://identifiers.org/uniprot/Q60680",
+            "http://identifiers.org/uniprot/O88351",
+            "http://identifiers.org/uniprot/O88522"
+  s152 part "http://identifiers.org/uniprot/P25799",
+            "http://identifiers.org/uniprot/Q9Z1E3",
+            "http://identifiers.org/uniprot/Q60680",
+            "http://identifiers.org/uniprot/O88351",
+            "http://identifiers.org/uniprot/O88522"
+  s159 part "http://identifiers.org/uniprot/P25799",
+            "http://identifiers.org/uniprot/Q9Z1E3"
+  s160 hypernym "http://identifiers.org/uniprot/Q9Z1E3"
+  s161 hypernym "http://identifiers.org/uniprot/P25799"
+  s164 hypernym "http://identifiers.org/uniprot/P25799"
+  s167 hypernym "http://identifiers.org/uniprot/Q9Z1E3"
+  re44 hypernym "http://identifiers.org/go/GO:0006406"
+  re45 hypernym "http://identifiers.org/go/GO:0006402"
+  re46 hypernym "http://identifiers.org/go/GO:0030163"
+  re47 hypernym "http://identifiers.org/go/GO:0006412"
+  re48 hypernym "http://identifiers.org/go/GO:0006406"
+  re52 hypernym "http://identifiers.org/go/GO:0043241"
+  re53 hypernym "http://identifiers.org/go/GO:0030163"
+  re56 hypernym "http://identifiers.org/go/GO:0030163"
+  re57 hypernym "http://identifiers.org/go/GO:0043241"
+  re58 hypernym "http://identifiers.org/go/GO:0006461"
+  re59 hypernym "http://identifiers.org/go/GO:0043241"
+  re60 hypernym "http://identifiers.org/go/GO:0030163"
+  re61 hypernym "http://identifiers.org/go/GO:0006412"
+  re65 hypernym "http://identifiers.org/go/GO:0006461"
+  re66 hypernym "http://identifiers.org/go/GO:0006461"
+  re69 hypernym "http://identifiers.org/go/GO:0006461"
+  re70 hypernym "http://identifiers.org/go/GO:0006402"
+  re71 hypernym "http://identifiers.org/go/GO:0030163"
 end
+
+Radulescu2008_NFkB_hierarchy_M_14_25_28_Lipniacky is "Radulescu2008_NFkB_hierarchy_M_14_25_28_Lipniacky"
+
+Radulescu2008_NFkB_hierarchy_M_14_25_28_Lipniacky model_entity_is "http://identifiers.org/biomodels.db/MODEL7743386835"
+Radulescu2008_NFkB_hierarchy_M_14_25_28_Lipniacky model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000226"
+Radulescu2008_NFkB_hierarchy_M_14_25_28_Lipniacky description "http://identifiers.org/pubmed/18854041"
+Radulescu2008_NFkB_hierarchy_M_14_25_28_Lipniacky origin "http://identifiers.org/biomodels.db/BIOMD0000000139",
+                                                         "http://identifiers.org/biomodels.db/BIOMD0000000140",
+                                                         "http://identifiers.org/pubmed/15094015"
+Radulescu2008_NFkB_hierarchy_M_14_25_28_Lipniacky taxon "http://identifiers.org/taxonomy/10090"
+Radulescu2008_NFkB_hierarchy_M_14_25_28_Lipniacky parthood "http://identifiers.org/kegg.pathway/mmu04660"
+Radulescu2008_NFkB_hierarchy_M_14_25_28_Lipniacky hypernym "http://identifiers.org/go/GO:0007249"

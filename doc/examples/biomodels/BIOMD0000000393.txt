@@ -1,91 +1,135 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 function function_9(Vm, s1, s2, p1, p2, q, Ks1, r1, Kr1, r2, Kr2, r3, Kr3, r4, Kr41, Ks2, Kr42)
-  (Vm*(s1*s2 - (p1*p2)/q))/((s1 + Ks1*(1 + r1/Kr1 + r2/Kr2 + r3/Kr3))*(s2*(1 + r4/Kr41) + Ks2*(1 + r4/Kr42)));
+  Vm*(s1*s2 - p1*p2/q)/((s1 + Ks1*(1 + r1/Kr1 + r2/Kr2 + r3/Kr3))*(s2*(1 + r4/Kr41) + Ks2*(1 + r4/Kr42)));
 end
+
+function_9 is "MMlike s2p2 + reg 3*c-s1,1*m-s2"
 
 function function_18(substrate, Inhibitor, Km, V, Ki)
-  (V*substrate)/(Km + substrate + (Km*Inhibitor)/Ki);
+  V*substrate/(Km + substrate + Km*Inhibitor/Ki);
 end
+
+function_18 is "Competitive inhibition (irr)"
 
 function function_17(substrate, Km, V)
-  (V*substrate)/(Km + substrate);
+  V*substrate/(Km + substrate);
 end
+
+function_17 is "Henri-Michaelis-Menten (irreversible)"
 
 function function_5(Vm, s1, p1, p2, q, Ks1, r1, Kr1, r2, Kr2)
-  (Vm*(s1 - (p1*p2)/q))/(s1 + Ks1*(1 + r1/Kr1 + r2/Kr2));
+  Vm*(s1 - p1*p2/q)/(s1 + Ks1*(1 + r1/Kr1 + r2/Kr2));
 end
+
+function_5 is "MMlike s1p2 + reg 2*c"
 
 function function_14(Vm, s1, s2, p1, p2, q, Ks1, r1, Kr1, Ks2, r2, Kr2, r3, Kr3, r4, Kr4, r5, Kr5)
-  (Vm*(s1*s2 - (p1*p2)/q))/((s1 + Ks1*(1 + r1/Kr1))*(s2 + Ks2*(1 + r2/Kr2)*(1 + r3/Kr3)*(1 + r4/Kr4)*(1 + r5/Kr5)));
+  Vm*(s1*s2 - p1*p2/q)/((s1 + Ks1*(1 + r1/Kr1))*(s2 + Ks2*(1 + r2/Kr2)*(1 + r3/Kr3)*(1 + r4/Kr4)*(1 + r5/Kr5)));
 end
+
+function_14 is "MMlike s2p2 + reg 1*c-s1,4*c-s2"
 
 function function_21(Vm, s1, s2, p1, p2, q, Ks1, r1, Kr1)
-  (Vm*(s1*s2 - (p1*p2)/q))/(s1 + Ks1*(1 + r1/Kr1));
+  Vm*(s1*s2 - p1*p2/q)/(s1 + Ks1*(1 + r1/Kr1));
 end
+
+function_21 is "MMlike s2p2 -s2 + reg 1*c"
 
 function function_15(Vm, s1, s2, p1, p2, q, Ks1, r1, Kr1, r2, Kr2, Ks2, r3, Kr3)
-  (Vm*(s1*s2 - (p1*p2)/q))/((s1 + Ks1*(1 + r1/Kr1)*(1 + r2/Kr2))*(s2 + Ks2*(1 + r3/Kr3)));
+  Vm*(s1*s2 - p1*p2/q)/((s1 + Ks1*(1 + r1/Kr1)*(1 + r2/Kr2))*(s2 + Ks2*(1 + r3/Kr3)));
 end
+
+function_15 is "MMlike s2p2 + reg 2*c-s1,1*c-s2"
 
 function function_4(s1, s2, p1, q, Ks1, Ks2, Kp1, Vm)
-  (Vm*(s1*s2 - p1/q))/(Ks1*Ks2*((1 + s1/Ks1)*(1 + s2/Ks2) + p1/Kp1));
+  Vm*(s1*s2 - p1/q)/(Ks1*Ks2*((1 + s1/Ks1)*(1 + s2/Ks2) + p1/Kp1));
 end
+
+function_4 is "MM s2p1 - reg"
 
 function function_8(Vm, s1, p1, p2, q, Ks1, r1, Kr1)
-  (Vm*(s1 - (p1*p2)/q))/(s1 + Ks1*(1 + r1/Kr1));
+  Vm*(s1 - p1*p2/q)/(s1 + Ks1*(1 + r1/Kr1));
 end
+
+function_8 is "MMlike s1p2 + reg 1*c"
 
 function function_12(s1, p1, p2, q, Ks1, Kp1, Kp2, Vm)
-  (Vm*(s1 - (p1*p2)/q))/(Ks1*(s1/Ks1 + (1 + p1/Kp1)*(1 + p2/Kp2)));
+  Vm*(s1 - p1*p2/q)/(Ks1*(s1/Ks1 + (1 + p1/Kp1)*(1 + p2/Kp2)));
 end
+
+function_12 is "MM s1p2 - reg"
 
 function function_13(s1, s2, p1, p2, q, Ks1, Ks2, Kp1, Kp2, Vm)
-  (Vm*(s1*s2 - (p1*p2)/q))/(Ks1*Ks2*(((1 + s1/Ks1)*(1 + s2/Ks2) + (1 + p1/Kp1)*(1 + p2/Kp2)) - 1));
+  Vm*(s1*s2 - p1*p2/q)/(Ks1*Ks2*((1 + s1/Ks1)*(1 + s2/Ks2) + (1 + p1/Kp1)*(1 + p2/Kp2) - 1));
 end
+
+function_13 is "MM s2p2 - reg"
 
 function function_2(Vm, s1, s2, Ks1, Ks2, r1, Kr1)
-  (Vm*s1*s2)/((s1 + Ks1)*(s2 + Ks2*(1 + r1/Kr1)));
+  Vm*s1*s2/((s1 + Ks1)*(s2 + Ks2*(1 + r1/Kr1)));
 end
+
+function_2 is "MM s2 + reg 1*c"
 
 function function_10(Vm, S1, S2, K1, K2, R1, KR1, R2, KA1, A1, KA2, A2, KA3, A3)
-  (Vm*S1*S2)/((S1 + K1)*(1 + R1/KR1)*(S2 + K2*(1 + (K2*R2)/(KA1*A1 + KA2*A2 + KA3*A3))));
+  Vm*S1*S2/((S1 + K1)*(1 + R1/KR1)*(S2 + K2*(1 + K2*R2/(KA1*A1 + KA2*A2 + KA3*A3))));
 end
+
+function_10 is "starch synthase - Pettersson"
 
 function function_19(Vm, s1, Ks1, r1, Kr1, r2, Kr2)
-  (Vm*s1)/(s1 + Ks1*(1 + r1/Kr1)*(1 + r2/Kr2));
+  Vm*s1/(s1 + Ks1*(1 + r1/Kr1)*(1 + r2/Kr2));
 end
+
+function_19 is "MM s1 + reg 2*s"
 
 function function_20(Vm, s1, s2, p1, p2, q, Ks1, r1, Kr1, Ks2)
-  (Vm*(s1*s2 - (p1*p2)/q))/((s1 + Ks1*(1 + r1/Kr1))*(s2 + Ks2));
+  Vm*(s1*s2 - p1*p2/q)/((s1 + Ks1*(1 + r1/Kr1))*(s2 + Ks2));
 end
+
+function_20 is "MMlike s2p2 + reg 1*c"
 
 function function_1(Vm, S, K, R1, KR1, R2, KR2, R3, KR3, R4, KR4, R5, KR5)
-  (Vm*S)/(S + K*(1 + R1/KR1 + R2/KR2 + R3/KR3 + R4/KR4 + R5/KR5));
+  Vm*S/(S + K*(1 + R1/KR1 + R2/KR2 + R3/KR3 + R4/KR4 + R5/KR5));
 end
+
+function_1 is "MM s1 + reg 5*c"
 
 function function_3(Vm, s1, s2, K1, K2)
-  (Vm*s1*s2)/((s1 + K1)*(s2 + K2));
+  Vm*s1*s2/((s1 + K1)*(s2 + K2));
 end
+
+function_3 is "MM s2 - reg"
 
 function function_22(Vm, s1, Ks1, r1, Kr1)
-  (Vm*s1)/(s1 + Ks1*(1 + r1/Kr1));
+  Vm*s1/(s1 + Ks1*(1 + r1/Kr1));
 end
+
+function_22 is "MMlike s1 - reg"
 
 function function_16(Vm, s1, r1, Kr1, r2, Kr2, Ks1)
-  (Vm*s1)/((s1 + Ks1)*(1 + r1/Kr1)*(1 + r2/Kr2));
+  Vm*s1/((s1 + Ks1)*(1 + r1/Kr1)*(1 + r2/Kr2));
 end
+
+function_16 is "MM s1 + reg 2*n"
 
 function function_6(Vm, s1, s2, p1, p2, Ks1, Ks2, r1, Kr1, r2, Kr2, q)
-  (Vm*(s1*s2 - (p1*p2)/q))/((s1 + Ks1*(1 + r1/Kr1 + r2/Kr2))*(s2 + Ks2));
+  Vm*(s1*s2 - p1*p2/q)/((s1 + Ks1*(1 + r1/Kr1 + r2/Kr2))*(s2 + Ks2));
 end
+
+function_6 is "MMlike s2p2 + reg 2*c"
 
 function function_7(Vm, s1, s2, p1, q, Ks1, Ks2)
-  (Vm*(s1*s2 - p1/q))/((s1 + Ks1)*(s2 + Ks2));
+  Vm*(s1*s2 - p1/q)/((s1 + Ks1)*(s2 + Ks2));
 end
 
+function_7 is "MMlike s2p1 - reg"
+
 function function_11(Vm, S, KA, A, K, R1, KR1, R2, KR2, R3, KR3)
-  (Vm*S)/(S*(1 + KA/A) + K*(1 + (1 + KA/A)*(R1/KR1 + R2/KR2 + R3/KR3)));
+  Vm*S/(S*(1 + KA/A) + K*(1 + (1 + KA/A)*(R1/KR1 + R2/KR2 + R3/KR3)));
 end
+
+function_11 is "MM s1 + reg A,3*c "
 
 
 model *Arnold2011_Zhu2007_CalvinCycle_Starch_Sucrose_Photorespiration()
@@ -97,7 +141,7 @@ model *Arnold2011_Zhu2007_CalvinCycle_Starch_Sucrose_Photorespiration()
   species $G6P in chloroplast, $G1P in chloroplast, E4P in chloroplast, SBP in chloroplast;
   species S7P in chloroplast, $X5P in chloroplast, PeP in chloroplast, $R5P in chloroplast;
   species $Ru5P in chloroplast, RuBP in chloroplast, ATP in chloroplast, $ADP in chloroplast;
-  species $NADPH in chloroplast, $Pi_ in chloroplast, PGCA in chloroplast;
+  species $NADPH in chloroplast, $Pi in chloroplast, PGCA in chloroplast;
   species GCA in chloroplast, GCEA in chloroplast, $CO2 in chloroplast, $O2 in chloroplast;
   species $NADP in chloroplast, HPRc in chloroplast, GCAc in cytosol, GOAc in cytosol;
   species GLYc in cytosol, SERc in cytosol, GCEAc in cytosol, PGAc in cytosol;
@@ -109,47 +153,47 @@ model *Arnold2011_Zhu2007_CalvinCycle_Starch_Sucrose_Photorespiration()
   species $ATPc in cytosol, $ADPc in cytosol, $PiPic in cytosol;
 
   // Assignment Rules:
-  GAP := (0.05*TP)/(1 + 0.05);
+  GAP := 0.05*TP/(1 + 0.05);
   DHAP := TP/(1 + 0.05);
   F6P := HeP/2.3/(1 + 1/2.3 + 0.058);
   G6P := HeP/(1 + 1/2.3 + 0.058);
-  G1P := (HeP*0.058)/(1 + 1/2.3 + 0.058);
+  G1P := HeP*0.058/(1 + 1/2.3 + 0.058);
   X5P := PeP/0.67/(1 + 1/0.4 + 1/0.67);
   R5P := PeP/0.4/(1 + 1/0.4 + 1/0.67);
   Ru5P := PeP/(1 + 1/0.4 + 1/0.67);
   ADP := cA - ATP;
-  Pi_ := cP - 2*(RuBP + DPGA + FBP + SBP) - (PGA + TP + HeP + E4P + S7P + PeP + ATP + PGCA);
-  GAPc := (0.05*TPc)/(1 + 0.05);
+  Pi := cP - 2*(RuBP + DPGA + FBP + SBP) - (PGA + TP + HeP + E4P + S7P + PeP + ATP + PGCA);
+  GAPc := 0.05*TPc/(1 + 0.05);
   DHAPc := TPc/(1 + 0.05);
   F6Pc := HePc/2.3/(1 + 1/2.3 + 0.0584);
   G6Pc := HePc/(1 + 1/2.3 + 0.0584);
-  G1Pc := (HePc*0.0584)/(1 + 1/2.3 + 0.0584);
+  G1Pc := HePc*0.0584/(1 + 1/2.3 + 0.0584);
   UDPc := cUc - UTPc - UDPGc;
-  Pic := 12000000/2*(sqrt(1 + (4*PiTc)/12000000) - 1);
+  Pic := (12000000/2)*(sqrt(1 + 4*PiTc/12000000) - 1);
   PiTc := cPc - 2*(FBPc + F26BPc) - (PGAc + TPc + HePc + SucPc + ATPc + UTPc);
   ADPc := cAc - ATPc;
   PiPic := PiTc - Pic;
-  Wc_min := (2.913930914*CO2)/(CO2 + 0.0115*(1 + O2/0.222))*(((1 + RuBP/E) - abs(1 - RuBP/E))/2);
-  Wo_min := (0.24*2.913930914*O2)/(O2 + 0.222*(1 + CO2/0.0115))*(((1 + RuBP/E) - abs(1 - RuBP/E))/2);
-  K52a := 0.0025*(1 + F26BPc/7.000000e-005);
+  Wc_min := (2.913930914*CO2/(CO2 + 0.0115*(1 + O2/0.222)))*((1 + RuBP/E - abs(1 - RuBP/E))/2);
+  Wo_min := (0.24*2.913930914*O2/(O2 + 0.222*(1 + CO2/0.0115)))*((1 + RuBP/E - abs(1 - RuBP/E))/2);
+  K52a := 0.0025*(1 + F26BPc/7e-5);
 
   // Reactions:
-  RuBisCO_CO2: RuBP => 2PGA; chloroplast*function_1(Wc_min, RuBP, RuBisCO_CO2_K, PGA, RuBisCO_CO2_KR1, FBP, RuBisCO_CO2_KR2, SBP, RuBisCO_CO2_KR3, Pi_, RuBisCO_CO2_KR4, NADPH, RuBisCO_CO2_KR5);
+  RuBisCO_CO2: RuBP => 2 PGA; chloroplast*function_1(Wc_min, RuBP, RuBisCO_CO2_K, PGA, RuBisCO_CO2_KR1, FBP, RuBisCO_CO2_KR2, SBP, RuBisCO_CO2_KR3, Pi, RuBisCO_CO2_KR4, NADPH, RuBisCO_CO2_KR5);
   PGA_K: PGA + ATP => DPGA + $ADP; chloroplast*function_2(PGA_K_Vm, PGA, ATP, PGA_K_Ks1, PGA_K_Ks2, ADP, PGA_K_Kr1);
   GAP_DH: DPGA + $NADPH => TP + $NADP; chloroplast*function_3(GAP_DH_Vm, DPGA, NADPH, GAP_DH_K1, GAP_DH_K2);
-  FBP_A: 2TP -> FBP; chloroplast*function_4(GAP, DHAP, FBP, FBP_A_q, FBP_A_Ks1, FBP_A_Ks2, FBP_A_Kp1, FBP_A_Vm);
-  FBPase: FBP -> HeP + $Pi_; chloroplast*function_5(FBPase_Vm, FBP, F6P, Pi_, FBPase_q, FBPase_Ks1, F6P, FBPase_Kr1, Pi_, FBPase_Kr2);
+  FBP_A: 2 TP -> FBP; chloroplast*function_4(GAP, DHAP, FBP, FBP_A_q, FBP_A_Ks1, FBP_A_Ks2, FBP_A_Kp1, FBP_A_Vm);
+  FBPase: FBP -> HeP + $Pi; chloroplast*function_5(FBPase_Vm, FBP, F6P, Pi, FBPase_q, FBPase_Ks1, F6P, FBPase_Kr1, Pi, FBPase_Kr2);
   F6P_TK: HeP + TP -> E4P + PeP; chloroplast*function_6(F6P_TK_Vm, F6P, GAP, X5P, E4P, F6P_TK_Ks1, F6P_TK_Ks2, X5P, F6P_TK_Kr1, E4P, F6P_TK_Kr2, F6P_TK_q);
   SBP_A: TP + E4P -> SBP; chloroplast*function_7(SBP_A_Vm, DHAP, E4P, SBP, SBP_A_q, SBP_A_Ks1, SBP_A_Ks2);
-  SBPase: SBP -> S7P + $Pi_; chloroplast*function_8(SBPase_Vm, SBP, S7P, Pi_, SBPase_q, SBPase_Ks1, Pi_, SBPase_Kr1);
-  S7P_TK: TP + S7P -> 2PeP; chloroplast*function_6(S7P_TK_Vm, GAP, S7P, X5P, R5P, S7P_TK_Ks1, S7P_TK_Ks2, X5P, S7P_TK_Kr1, R5P, S7P_TK_Kr2, S7P_TK_q);
-  Ru5P_K: PeP + ATP -> RuBP + $ADP; chloroplast*function_9(Ru5P_K_Vm, Ru5P, ATP, RuBP, ADP, Ru5P_K_q, Ru5P_K_Ks1, PGA, Ru5P_K_Kr1, RuBP, Ru5P_K_Kr2, Pi_, Ru5P_K_Kr3, ADP, Ru5P_K_Kr41, Ru5P_K_Ks2, Ru5P_K_Kr42);
-  ATP_S: $ADP + $Pi_ -> ATP; chloroplast*function_4(ADP, Pi_, ATP, ATP_S_q, ATP_S_Ks1, ATP_S_Ks2, ATP_S_Kp1, ATP_S_Vm);
-  AGPase: HeP + ATP => ; chloroplast*function_10(AGPase_Vm, G1P, ATP, AGPase_K1, AGPase_K2, ADP, AGPase_KR1, Pi_, AGPase_KA1, PGA, AGPase_KA2, F6P, AGPase_KA3, FBP);
-  TPT_PGA: PGA => PGAc; function_11(TPT_PGA_Vm, PGA, TPT_PGA_KA, Pic, TPT_PGA_K, Pi_, TPT_PGA_KR1, GAP, TPT_PGA_KR2, DHAP, TPT_PGA_KR3);
-  TPT_GAP: TP => TPc; function_11(TPT_GAP_Vm, GAP, TPT_GAP_KA, Pic, TPT_GAP_K, Pi_, TPT_GAP_KR1, PGA, TPT_GAP_KR2, DHAP, TPT_GAP_KR3);
-  TPT_DHAP: TP => TPc; function_11(TPT_DHAP_Vm, DHAP, TPT_DHAP_KA, Pic, TPT_DHAP_K, Pi_, TPT_DHAP_KR1, PGA, TPT_DHAP_KR2, GAP, TPT_DHAP_KR3);
-  FBPc_A: 2TPc -> FBPc; cytosol*function_4(GAPc, DHAPc, FBPc, FBPc_A_q, FBPc_A_Ks1, FBPc_A_Ks2, FBPc_A_Kp1, FBPc_A_Vm);
+  SBPase: SBP -> S7P + $Pi; chloroplast*function_8(SBPase_Vm, SBP, S7P, Pi, SBPase_q, SBPase_Ks1, Pi, SBPase_Kr1);
+  S7P_TK: TP + S7P -> 2 PeP; chloroplast*function_6(S7P_TK_Vm, GAP, S7P, X5P, R5P, S7P_TK_Ks1, S7P_TK_Ks2, X5P, S7P_TK_Kr1, R5P, S7P_TK_Kr2, S7P_TK_q);
+  Ru5P_K: PeP + ATP -> RuBP + $ADP; chloroplast*function_9(Ru5P_K_Vm, Ru5P, ATP, RuBP, ADP, Ru5P_K_q, Ru5P_K_Ks1, PGA, Ru5P_K_Kr1, RuBP, Ru5P_K_Kr2, Pi, Ru5P_K_Kr3, ADP, Ru5P_K_Kr41, Ru5P_K_Ks2, Ru5P_K_Kr42);
+  ATP_S: $ADP + $Pi -> ATP; chloroplast*function_4(ADP, Pi, ATP, ATP_S_q, ATP_S_Ks1, ATP_S_Ks2, ATP_S_Kp1, ATP_S_Vm);
+  AGPase: HeP + ATP => ; chloroplast*function_10(AGPase_Vm, G1P, ATP, AGPase_K1, AGPase_K2, ADP, AGPase_KR1, Pi, AGPase_KA1, PGA, AGPase_KA2, F6P, AGPase_KA3, FBP);
+  TPT_PGA: PGA => PGAc; function_11(TPT_PGA_Vm, PGA, TPT_PGA_KA, Pic, TPT_PGA_K, Pi, TPT_PGA_KR1, GAP, TPT_PGA_KR2, DHAP, TPT_PGA_KR3);
+  TPT_GAP: TP => TPc; function_11(TPT_GAP_Vm, GAP, TPT_GAP_KA, Pic, TPT_GAP_K, Pi, TPT_GAP_KR1, PGA, TPT_GAP_KR2, DHAP, TPT_GAP_KR3);
+  TPT_DHAP: TP => TPc; function_11(TPT_DHAP_Vm, DHAP, TPT_DHAP_KA, Pic, TPT_DHAP_K, Pi, TPT_DHAP_KR1, PGA, TPT_DHAP_KR2, GAP, TPT_DHAP_KR3);
+  FBPc_A: 2 TPc -> FBPc; cytosol*function_4(GAPc, DHAPc, FBPc, FBPc_A_q, FBPc_A_Ks1, FBPc_A_Ks2, FBPc_A_Kp1, FBPc_A_Vm);
   FBPcase: FBPc -> HePc + $Pic; cytosol*function_12(FBPc, F6Pc, Pic, FBPcase_q, K52a, FBPcase_Kp1, FBPcase_Kp2, FBPcase_Vm);
   UGPase: HePc + $UTPc -> UDPGc + $PiPic; cytosol*function_13(G1Pc, UTPc, UDPGc, PiPic, UGPase_q, UGPase_Ks1, UGPase_Ks2, UGPase_Kp1, UGPase_Kp2, UGPase_Vm);
   SucPc_S: HePc + UDPGc -> SucPc + $UDPc; cytosol*function_14(SucPc_S_Vm, F6Pc, UDPGc, SucPc, UDPc, SucPc_S_q, SucPc_S_Ks1, FBPc, SucPc_S_Kr1, SucPc_S_Ks2, UDPc, SucPc_S_Kr2, SucPc, SucPc_S_Kr3, Succ, SucPc_S_Kr4, Pic, SucPc_S_Kr5);
@@ -162,14 +206,14 @@ model *Arnold2011_Zhu2007_CalvinCycle_Starch_Sucrose_Photorespiration()
   GPT_GCEA: GCEA => GCEAc; function_18(GCEA, GCA, GPT_GCEA_Km, GPT_GCEA_V, GPT_GCEA_Ki);
   GPT_GCA: GCA => GCAc; function_18(GCA, GCEA, GPT_GCA_Km, GPT_GCA_V, GPT_GCA_Ki);
   GPT_GCAc: GCAc => GCA; function_18(GCAc, GCEAc, GPT_GCAc_Km, GPT_GCAc_V, GPT_GCAc_Ki);
-  RuBisCO_O2: RuBP => PGA + PGCA; chloroplast*function_1(Wo_min, RuBP, RuBisCO_O2_K, PGA, RuBisCO_O2_KR1, FBP, RuBisCO_O2_KR2, SBP, RuBisCO_O2_KR3, Pi_, RuBisCO_O2_KR4, NADPH, RuBisCO_O2_KR5);
-  PGCA_P: PGCA => GCA; chloroplast*function_19(PGCA_P_Vm, PGCA, PGCA_P_Ks1, GCA, PGCA_P_Kr1, Pi_, PGCA_P_Kr2);
+  RuBisCO_O2: RuBP => PGA + PGCA; chloroplast*function_1(Wo_min, RuBP, RuBisCO_O2_K, PGA, RuBisCO_O2_KR1, FBP, RuBisCO_O2_KR2, SBP, RuBisCO_O2_KR3, Pi, RuBisCO_O2_KR4, NADPH, RuBisCO_O2_KR5);
+  PGCA_P: PGCA => GCA; chloroplast*function_19(PGCA_P_Vm, PGCA, PGCA_P_Ks1, GCA, PGCA_P_Kr1, Pi, PGCA_P_Kr2);
   GCEA_K: ATP + GCEA -> PGA + $ADP; chloroplast*function_20(GCEA_K_Vm, ATP, GCEA, PGA, ADP, GCEA_K_q, GCEA_K_Ks1, PGA, GCEA_K_Kr1, GCEA_K_Ks2);
   GCAc_Ox: GCAc => GOAc; cytosol*function_17(GCAc, GCAc_Ox_Km, GCAc_Ox_V);
   SERcGOAc_AT: SERc + GOAc -> HPRc + GLYc; function_20(SERcGOAc_AT_Vm, SERc, GOAc, HPRc, GLYc, SERcGOAc_AT_q, SERcGOAc_AT_Ks1, GLYc, SERcGOAc_AT_Kr1, SERcGOAc_AT_Ks2);
   GCEA_DH: HPRc + $NADH -> GCEAc + $NAD; function_21(GCEA_DH_Vm, HPRc, NADH, GCEAc, NAD, GCEA_DH_q, GCEA_DH_Ks1, HPRc, GCEA_DH_Kr1);
   GLUcGOAc_AT: $GLUc + GOAc -> $KGc + GLYc; cytosol*function_20(GLUcGOAc_AT_Vm, GLUc, GOAc, KGc, GLYc, GLUcGOAc_AT_q, GLUcGOAc_AT_Ks1, GLYc, GLUcGOAc_AT_Kr1, GLUcGOAc_AT_Ks2);
-  GLYc_DC: 2GLYc => SERc; cytosol*function_22(GLYc_DC_Vm, GLYc, GLYc_DC_Ks1, SERc, GLYc_DC_Kr1);
+  GLYc_DC: 2 GLYc => SERc; cytosol*function_22(GLYc_DC_Vm, GLYc, GLYc_DC_Ks1, SERc, GLYc_DC_Kr1);
 
   // Species initializations:
   PGA = 2.4;
@@ -200,7 +244,7 @@ model *Arnold2011_Zhu2007_CalvinCycle_Starch_Sucrose_Photorespiration()
   TPc = 2.3;
   FBPc = 2;
   HePc = 5.8;
-  F26BPc = 7.8e-006;
+  F26BPc = 7.8e-06;
   UDPGc = 0.57;
   SucPc = 0;
   Succ = 0;
@@ -437,4 +481,254 @@ model *Arnold2011_Zhu2007_CalvinCycle_Starch_Sucrose_Photorespiration()
   GCEA_DH is "GCEA dehydrogenase";
   GLUcGOAc_AT is "GLUc:GOAc aminotransferase";
   GLYc_DC is "GLYc decarboxylase";
+
+  // SBO terms:
+  cA.sboTerm = 9
+  cP.sboTerm = 9
+  cUc.sboTerm = 9
+  cPc.sboTerm = 9
+  cAc.sboTerm = 9
+  cNc.sboTerm = 9
+  E.sboTerm = 9
+  Wc_min.sboTerm = 9
+  Wo_min.sboTerm = 9
+  K52a.sboTerm = 9
+  RuBisCO_CO2_K.sboTerm = 9
+  RuBisCO_CO2_KR1.sboTerm = 9
+  RuBisCO_CO2_KR2.sboTerm = 9
+  RuBisCO_CO2_KR3.sboTerm = 9
+  RuBisCO_CO2_KR4.sboTerm = 9
+  RuBisCO_CO2_KR5.sboTerm = 9
+  PGA_K_Vm.sboTerm = 9
+  PGA_K_Ks1.sboTerm = 9
+  PGA_K_Ks2.sboTerm = 9
+  PGA_K_Kr1.sboTerm = 9
+  GAP_DH_Vm.sboTerm = 9
+  GAP_DH_K1.sboTerm = 9
+  GAP_DH_K2.sboTerm = 9
+  FBP_A_q.sboTerm = 9
+  FBP_A_Ks1.sboTerm = 9
+  FBP_A_Ks2.sboTerm = 9
+  FBP_A_Kp1.sboTerm = 9
+  FBP_A_Vm.sboTerm = 9
+  FBPase_Vm.sboTerm = 9
+  FBPase_q.sboTerm = 9
+  FBPase_Ks1.sboTerm = 9
+  FBPase_Kr1.sboTerm = 9
+  FBPase_Kr2.sboTerm = 9
+  F6P_TK_Vm.sboTerm = 9
+  F6P_TK_Ks1.sboTerm = 9
+  F6P_TK_Ks2.sboTerm = 9
+  F6P_TK_Kr1.sboTerm = 9
+  F6P_TK_Kr2.sboTerm = 9
+  F6P_TK_q.sboTerm = 9
+  SBP_A_Vm.sboTerm = 9
+  SBP_A_q.sboTerm = 9
+  SBP_A_Ks1.sboTerm = 9
+  SBP_A_Ks2.sboTerm = 9
+  SBPase_Vm.sboTerm = 9
+  SBPase_q.sboTerm = 9
+  SBPase_Ks1.sboTerm = 9
+  SBPase_Kr1.sboTerm = 9
+  S7P_TK_Vm.sboTerm = 9
+  S7P_TK_Ks1.sboTerm = 9
+  S7P_TK_Ks2.sboTerm = 9
+  S7P_TK_Kr1.sboTerm = 9
+  S7P_TK_Kr2.sboTerm = 9
+  S7P_TK_q.sboTerm = 9
+  Ru5P_K_Vm.sboTerm = 9
+  Ru5P_K_q.sboTerm = 9
+  Ru5P_K_Ks1.sboTerm = 9
+  Ru5P_K_Kr1.sboTerm = 9
+  Ru5P_K_Kr2.sboTerm = 9
+  Ru5P_K_Kr3.sboTerm = 9
+  Ru5P_K_Kr41.sboTerm = 9
+  Ru5P_K_Ks2.sboTerm = 9
+  Ru5P_K_Kr42.sboTerm = 9
+  ATP_S_q.sboTerm = 9
+  ATP_S_Ks1.sboTerm = 9
+  ATP_S_Ks2.sboTerm = 9
+  ATP_S_Kp1.sboTerm = 9
+  ATP_S_Vm.sboTerm = 9
+  AGPase_Vm.sboTerm = 9
+  AGPase_K1.sboTerm = 9
+  AGPase_K2.sboTerm = 9
+  AGPase_KR1.sboTerm = 9
+  AGPase_KA1.sboTerm = 9
+  AGPase_KA2.sboTerm = 9
+  AGPase_KA3.sboTerm = 9
+  TPT_PGA_Vm.sboTerm = 9
+  TPT_PGA_KA.sboTerm = 9
+  TPT_PGA_K.sboTerm = 9
+  TPT_PGA_KR1.sboTerm = 9
+  TPT_PGA_KR2.sboTerm = 9
+  TPT_PGA_KR3.sboTerm = 9
+  TPT_GAP_Vm.sboTerm = 9
+  TPT_GAP_KA.sboTerm = 9
+  TPT_GAP_K.sboTerm = 9
+  TPT_GAP_KR1.sboTerm = 9
+  TPT_GAP_KR2.sboTerm = 9
+  TPT_GAP_KR3.sboTerm = 9
+  TPT_DHAP_Vm.sboTerm = 9
+  TPT_DHAP_KA.sboTerm = 9
+  TPT_DHAP_K.sboTerm = 9
+  TPT_DHAP_KR1.sboTerm = 9
+  TPT_DHAP_KR2.sboTerm = 9
+  TPT_DHAP_KR3.sboTerm = 9
+  FBPc_A_q.sboTerm = 9
+  FBPc_A_Ks1.sboTerm = 9
+  FBPc_A_Ks2.sboTerm = 9
+  FBPc_A_Kp1.sboTerm = 9
+  FBPc_A_Vm.sboTerm = 9
+  FBPcase_q.sboTerm = 9
+  FBPcase_Kp1.sboTerm = 9
+  FBPcase_Kp2.sboTerm = 9
+  FBPcase_Vm.sboTerm = 9
+  UGPase_q.sboTerm = 9
+  UGPase_Ks1.sboTerm = 9
+  UGPase_Ks2.sboTerm = 9
+  UGPase_Kp1.sboTerm = 9
+  UGPase_Kp2.sboTerm = 9
+  UGPase_Vm.sboTerm = 9
+  SucPc_S_Vm.sboTerm = 9
+  SucPc_S_q.sboTerm = 9
+  SucPc_S_Ks1.sboTerm = 9
+  SucPc_S_Kr1.sboTerm = 9
+  SucPc_S_Ks2.sboTerm = 9
+  SucPc_S_Kr2.sboTerm = 9
+  SucPc_S_Kr3.sboTerm = 9
+  SucPc_S_Kr4.sboTerm = 9
+  SucPc_S_Kr5.sboTerm = 9
+  SucPc_P_Vm.sboTerm = 9
+  SucPc_P_q.sboTerm = 9
+  SucPc_P_Ks1.sboTerm = 9
+  SucPc_P_Kr1.sboTerm = 9
+  F6Pc_K_Vm.sboTerm = 9
+  F6Pc_K_q.sboTerm = 9
+  F6Pc_K_Ks1.sboTerm = 9
+  F6Pc_K_Kr1.sboTerm = 9
+  F6Pc_K_Kr2.sboTerm = 9
+  F6Pc_K_Ks2.sboTerm = 9
+  F6Pc_K_Kr3.sboTerm = 9
+  F26BPc_P_Vm.sboTerm = 9
+  F26BPc_P_Kr1.sboTerm = 9
+  F26BPc_P_Kr2.sboTerm = 9
+  F26BPc_P_Ks1.sboTerm = 9
+  Succ_Deg_Km.sboTerm = 27
+  Succ_Deg_V.sboTerm = 9
+  PGAc_Deg_Km.sboTerm = 27
+  PGAc_Deg_V.sboTerm = 9
+  GPT_GCEAc_Km.sboTerm = 27
+  GPT_GCEAc_V.sboTerm = 9
+  GPT_GCEAc_Ki.sboTerm = 9
+  GPT_GCEA_Km.sboTerm = 27
+  GPT_GCEA_V.sboTerm = 9
+  GPT_GCEA_Ki.sboTerm = 9
+  GPT_GCA_Km.sboTerm = 27
+  GPT_GCA_V.sboTerm = 9
+  GPT_GCA_Ki.sboTerm = 9
+  GPT_GCAc_Km.sboTerm = 27
+  GPT_GCAc_V.sboTerm = 9
+  GPT_GCAc_Ki.sboTerm = 9
+  RuBisCO_O2_K.sboTerm = 9
+  RuBisCO_O2_KR1.sboTerm = 9
+  RuBisCO_O2_KR2.sboTerm = 9
+  RuBisCO_O2_KR3.sboTerm = 9
+  RuBisCO_O2_KR4.sboTerm = 9
+  RuBisCO_O2_KR5.sboTerm = 9
+  PGCA_P_Vm.sboTerm = 9
+  PGCA_P_Ks1.sboTerm = 9
+  PGCA_P_Kr1.sboTerm = 9
+  PGCA_P_Kr2.sboTerm = 9
+  GCEA_K_Vm.sboTerm = 9
+  GCEA_K_q.sboTerm = 9
+  GCEA_K_Ks1.sboTerm = 9
+  GCEA_K_Kr1.sboTerm = 9
+  GCEA_K_Ks2.sboTerm = 9
+  GCAc_Ox_Km.sboTerm = 27
+  GCAc_Ox_V.sboTerm = 9
+  SERcGOAc_AT_Vm.sboTerm = 9
+  SERcGOAc_AT_q.sboTerm = 9
+  SERcGOAc_AT_Ks1.sboTerm = 9
+  SERcGOAc_AT_Kr1.sboTerm = 9
+  SERcGOAc_AT_Ks2.sboTerm = 9
+  GCEA_DH_Vm.sboTerm = 9
+  GCEA_DH_q.sboTerm = 9
+  GCEA_DH_Ks1.sboTerm = 9
+  GCEA_DH_Kr1.sboTerm = 9
+  GLUcGOAc_AT_Vm.sboTerm = 9
+  GLUcGOAc_AT_q.sboTerm = 9
+  GLUcGOAc_AT_Ks1.sboTerm = 9
+  GLUcGOAc_AT_Kr1.sboTerm = 9
+  GLUcGOAc_AT_Ks2.sboTerm = 9
+  GLYc_DC_Vm.sboTerm = 9
+  GLYc_DC_Ks1.sboTerm = 9
+  GLYc_DC_Kr1.sboTerm = 9
+
+  // CV terms:
+  PGA hypernym "http://identifiers.org/pubchem.compound/724"
+  DPGA hypernym "http://identifiers.org/pubchem.compound/44472828"
+  GAP hypernym "http://identifiers.org/pubchem.compound/643984"
+  TP hypernym "http://identifiers.org/pubchem.compound/24794350"
+  DHAP hypernym "http://identifiers.org/pubchem.compound/668"
+  FBP hypernym "http://identifiers.org/pubchem.compound/172313"
+  F6P hypernym "http://identifiers.org/pubchem.compound/69507"
+  HeP hypernym "http://identifiers.org/chebi/CHEBI:15965"
+  G6P hypernym "http://identifiers.org/pubchem.compound/439958"
+  G1P hypernym "http://identifiers.org/pubchem.compound/65533"
+  E4P hypernym "http://identifiers.org/pubchem.compound/122357"
+  SBP hypernym "http://identifiers.org/chebi/CHEBI:17969"
+  S7P hypernym "http://identifiers.org/chebi/CHEBI:15721"
+  X5P hypernym "http://identifiers.org/pubchem.compound/42609827"
+  PeP hypernym "http://identifiers.org/pubchem.compound/1005"
+  R5P hypernym "http://identifiers.org/pubchem.compound/439167"
+  Ru5P hypernym "http://identifiers.org/pubchem.compound/439184"
+  RuBP hypernym "http://identifiers.org/pubchem.compound/4337391"
+  ATP hypernym "http://identifiers.org/chebi/CHEBI:15422"
+  ADP hypernym "http://identifiers.org/chebi/CHEBI:16761"
+  NADPH hypernym "http://identifiers.org/chebi/CHEBI:16474"
+  Pi hypernym "http://identifiers.org/chebi/CHEBI:43474"
+  PGCA hypernym "http://identifiers.org/pubchem.compound/126523595"
+  GCA hypernym "http://identifiers.org/pubchem.compound/126523016"
+  GCEA hypernym "http://identifiers.org/pubchem.compound/3557"
+  CO2 hypernym "http://identifiers.org/chebi/CHEBI:16526"
+  O2 hypernym "http://identifiers.org/chebi/CHEBI:15279"
+  NADP hypernym "http://identifiers.org/chebi/CHEBI:25523"
+  HPRc hypernym "http://identifiers.org/pubchem.compound/3468"
+  GCAc hypernym "http://identifiers.org/pubchem.compound/841751"
+  GOAc hypernym "http://identifiers.org/pubchem.compound/2775"
+  GLYc hypernym "http://identifiers.org/chebi/CHEBI:15428"
+  SERc hypernym "http://identifiers.org/chebi/CHEBI:17822"
+  GCEAc hypernym "http://identifiers.org/pubchem.compound/3557"
+  PGAc hypernym "http://identifiers.org/pubchem.compound/668242"
+  GAPc hypernym "http://identifiers.org/pubchem.compound/152025"
+  TPc hypernym "http://identifiers.org/pubchem.compound/841076"
+  DHAPc hypernym "http://identifiers.org/pubchem.compound/53788488"
+  FBPc hypernym "http://identifiers.org/pubchem.compound/56435918"
+  F6Pc hypernym "http://identifiers.org/pubchem.compound/691766"
+  HePc hypernym "http://identifiers.org/chebi/CHEBI:15965"
+  G6Pc hypernym "http://identifiers.org/pubchem.compound/126700772"
+  G1Pc hypernym "http://identifiers.org/pubchem.compound/49847001"
+  F26BPc hypernym "http://identifiers.org/pubchem.compound/105021"
+  UDPGc hypernym "http://identifiers.org/pubchem.compound/53477679"
+  SucPc identity "http://identifiers.org/chebi/CHEBI:16308"
+  Succ hypernym "http://identifiers.org/pubchem.compound/5988"
+  UTPc hypernym "http://identifiers.org/pubchem.compound/6133"
+  UDPc hypernym "http://identifiers.org/pubchem.compound/20056717"
+  NAD hypernym "http://identifiers.org/chebi/CHEBI:13389"
+  NADH hypernym "http://identifiers.org/chebi/CHEBI:16908"
+  GLUc parthood "http://identifiers.org/chebi/CHEBI:17234"
+  Pic identity "http://identifiers.org/chebi/CHEBI:43474"
+  PiTc part "http://identifiers.org/chebi/CHEBI:43474"
+  ATPc identity "http://identifiers.org/chebi/CHEBI:15422"
+  ADPc identity "http://identifiers.org/chebi/CHEBI:16761"
+  PiPic part "http://identifiers.org/chebi/CHEBI:43474"
 end
+
+Arnold2011_Zhu2007_CalvinCycle_Starch_Sucrose_Photorespiration is "Arnold2011_Zhu2007_CalvinCycle_Starch_Sucrose_Photorespiration"
+
+Arnold2011_Zhu2007_CalvinCycle_Starch_Sucrose_Photorespiration model_entity_is "http://identifiers.org/biomodels.db/MODEL1109270009"
+Arnold2011_Zhu2007_CalvinCycle_Starch_Sucrose_Photorespiration model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000393"
+Arnold2011_Zhu2007_CalvinCycle_Starch_Sucrose_Photorespiration description "http://identifiers.org/pubmed/22001849"
+Arnold2011_Zhu2007_CalvinCycle_Starch_Sucrose_Photorespiration encodement "http://identifiers.org/go/GO:0019253"
+Arnold2011_Zhu2007_CalvinCycle_Starch_Sucrose_Photorespiration taxon "http://identifiers.org/taxonomy/33090"

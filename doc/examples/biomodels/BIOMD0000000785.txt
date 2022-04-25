@@ -1,0 +1,85 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function Function_for_Malignant_Cells_Growth(alpha, x)
+  alpha*x;
+end
+
+Function_for_Malignant_Cells_Growth is "Function_for_Malignant_Cells_Growth"
+
+function Function_for_Lymphocyte_Elimination_1(y, alpha)
+  y/alpha;
+end
+
+Function_for_Lymphocyte_Elimination_1 is "Function_for_Lymphocyte_Elimination_1"
+
+function Function_for_Lymphocyte_Elimination_Malignant_Cells(k, x)
+  k*x;
+end
+
+Function_for_Lymphocyte_Elimination_Malignant_Cells is "Function_for_Lymphocyte_Elimination_Malignant_Cells"
+
+function Function_for_Malignant_Cells_Death_Lymphocytes(x, y)
+  x*y;
+end
+
+Function_for_Malignant_Cells_Death_Lymphocytes is "Function_for_Malignant_Cells_Death_Lymphocytes"
+
+
+model *Sotolongo_Costa2003___Behavior_of_tumors_under_nonstationary_therapy()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species x_Malignant_Cells in compartment_, y_Lymphocytes in compartment_;
+
+  // Reactions:
+  Malignant_Cells_Growth:  => x_Malignant_Cells; compartment_*Function_for_Malignant_Cells_Growth(alpha, x_Malignant_Cells);
+  Malignant_Cells_Death_Lymphocytes: x_Malignant_Cells => y_Lymphocytes; compartment_*Function_for_Malignant_Cells_Death_Lymphocytes(x_Malignant_Cells, y_Lymphocytes);
+  Lymphocytes_Production:  => y_Lymphocytes; compartment_*Constant_flux__irreversible(sigma);
+  Lymphocyte_Death: y_Lymphocytes => ; compartment_*Function_for_Lymphocyte_Elimination_1(y_Lymphocytes, alpha);
+  Lymphocyte_Elimination_Malignant_Cells: y_Lymphocytes => ; compartment_*Function_for_Lymphocyte_Elimination_Malignant_Cells(k, x_Malignant_Cells);
+
+  // Species initializations:
+  x_Malignant_Cells = 5.3;
+  y_Lymphocytes = 6.7;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  alpha = 2;
+  k = 0.2;
+  sigma = 0.25;
+
+  // Other declarations:
+  const compartment_, alpha, k, sigma;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+
+  // CV terms:
+  compartment_ hypernym "http://identifiers.org/ncit/C94498"
+  x_Malignant_Cells hypernym "http://identifiers.org/cl/CL:0001063"
+  y_Lymphocytes identity "http://identifiers.org/cl/CL:0000542"
+  Malignant_Cells_Growth hypernym "http://identifiers.org/ncit/C18081"
+  Malignant_Cells_Death_Lymphocytes hypernym "http://identifiers.org/go/GO:0001906"
+  Lymphocytes_Production hypernym "http://identifiers.org/ncit/C18081"
+  Lymphocyte_Death hypernym "http://identifiers.org/go/GO:0008219"
+  Lymphocyte_Elimination_Malignant_Cells hypernym "http://identifiers.org/go/cell death"
+end
+
+Sotolongo_Costa2003___Behavior_of_tumors_under_nonstationary_therapy is "Sotolongo-Costa2003 - Behavior of tumors under nonstationary therapy"
+
+Sotolongo_Costa2003___Behavior_of_tumors_under_nonstationary_therapy description "http://identifiers.org/doi/10.1016/S0167-2789(03)00005-8"
+Sotolongo_Costa2003___Behavior_of_tumors_under_nonstationary_therapy model_entity_is "http://identifiers.org/biomodels.db/MODEL1908090002",
+                                                                                     "http://identifiers.org/biomodels.db/BIOMD0000000785"
+Sotolongo_Costa2003___Behavior_of_tumors_under_nonstationary_therapy property "http://identifiers.org/mamo/MAMO_0000046"
+Sotolongo_Costa2003___Behavior_of_tumors_under_nonstationary_therapy property "http://identifiers.org/go/GO:0002424"

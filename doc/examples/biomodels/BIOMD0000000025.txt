@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Smolen2002()
 
   // Compartments and Species:
@@ -6,9 +6,9 @@ model *Smolen2002()
   species $EmptySet in CELL, Per in CELL, dClk in CELL, $dClkF in CELL;
 
   // Assignment Rules:
-  dClkF := piecewise(0, dClk - Per < 0, dClk - Per);
-  dClkF_tau1 := piecewise(0, delay(dClk, tau1) - delay(Per, tau1) < 0, delay(dClk, tau1) - delay(Per, tau1));
-  dClkF_tau2 := piecewise(0, delay(dClk, tau2) - delay(Per, tau2) < 0, delay(dClk, tau2) - delay(Per, tau2));
+  dClkF := piecewise(0, (dClk - Per) < 0, dClk - Per);
+  dClkF_tau1 := piecewise(0, (delay(dClk, tau1) - delay(Per, tau1)) < 0, delay(dClk, tau1) - delay(Per, tau1));
+  dClkF_tau2 := piecewise(0, (delay(dClk, tau2) - delay(Per, tau2)) < 0, delay(dClk, tau2) - delay(Per, tau2));
 
   // Reactions:
   rPer: $EmptySet => Per; Vsp*(dClkF_tau1/(K1 + dClkF_tau1))*CELL;
@@ -18,11 +18,11 @@ model *Smolen2002()
 
   // Species initializations:
   EmptySet = 0;
-  Per = 5e-016;
-  dClk = 1e-016;
+  Per = 5e-16;
+  dClk = 1e-16;
 
   // Compartment initializations:
-  CELL = 1e-015;
+  CELL = 1e-15;
   dClkF_tau1 has nM;
 
   // Variable initializations:
@@ -63,4 +63,25 @@ model *Smolen2002()
   rdClk is "dClk production";
   rPerD is "Per degradation";
   rdClkD is "dClk degradation";
+
+  // CV terms:
+  CELL identity "http://identifiers.org/go/GO:0005623"
+  Per identity "http://identifiers.org/uniprot/P07663"
+  dClk part "http://identifiers.org/uniprot/P07663",
+            "http://identifiers.org/uniprot/O61735"
+  dClkF identity "http://identifiers.org/uniprot/O61735"
+  rPer hypernym "http://identifiers.org/go/GO:0006412"
+  rdClk hypernym "http://identifiers.org/go/GO:0006412"
+  rPerD hypernym "http://identifiers.org/go/GO:0030163"
+  rdClkD hypernym "http://identifiers.org/go/GO:0030163"
 end
+
+Smolen2002 is "Smolen2002_CircClock"
+
+Smolen2002 model_entity_is "http://identifiers.org/biomodels.db/MODEL6618294363"
+Smolen2002 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000025"
+Smolen2002 description "http://identifiers.org/pubmed/12414672"
+Smolen2002 origin "http://identifiers.org/pubmed/11517254"
+Smolen2002 taxon "http://identifiers.org/taxonomy/7227"
+Smolen2002 identity "http://identifiers.org/kegg.pathway/dme04710"
+Smolen2002 hypernym "http://identifiers.org/go/GO:0032922"

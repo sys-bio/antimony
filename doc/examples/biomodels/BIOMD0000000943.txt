@@ -1,0 +1,649 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function Function_for_R22(s3, q0_mdm2, q1_mdm2, y6, h, q2)
+  s3*(q0_mdm2 + q1_mdm2*y6^h)/(q2 + q0_mdm2 + q1_mdm2*y6^h);
+end
+
+Function_for_R22 is "Function for R22"
+
+function Function_for_R45(p12, AKT_0, y18)
+  p12*AKT_0*y18;
+end
+
+Function_for_R45 is "Function for R45"
+
+function Function_for_R8(g7, y4, y3, y12)
+  g7*y4*(y3 + y12)^2;
+end
+
+Function_for_R8 is "Function for R8"
+
+function Function_for_R43(p8, PIP2, PI3K_tot)
+  p8*PIP2*PI3K_tot;
+end
+
+Function_for_R43 is "Function for R43"
+
+function Function_for_R59(s9, E2F1, M3)
+  s9*E2F1^2/(M3^2 + E2F1^2);
+end
+
+Function_for_R59 is "Function for R59"
+
+function Function_for_R4(p1, ATM_0, y1, h, M1)
+  p1*ATM_0*y1^h/(y1^h + M1^h);
+end
+
+Function_for_R4 is "Function for R4"
+
+function Function_for_R12(g101, g11, y12, h, y5)
+  (g101 + g11*y12^h)*y5;
+end
+
+Function_for_R12 is "Function for R12"
+
+function Function_for_R2(y1, rep, DNA_DSB_RepairCplx_total)
+  y1*rep/(y1 + DNA_DSB_RepairCplx_total);
+end
+
+Function_for_R2 is "Function for R2"
+
+function Function_modifier(k, modifier)
+  k*modifier;
+end
+
+Function_modifier is "Function modifier"
+
+function Function_for_R1(h1, DNA_DSB_DUE_to_IR, is_IR_switched_on, h2, y33, DNA_DSB_max, y1)
+  (h1*DNA_DSB_DUE_to_IR*is_IR_switched_on + h2*y33)*(DNA_DSB_max - y1);
+end
+
+Function_for_R1 is "Function for R1"
+
+function Function_for_R53(d12, Rb_p, M2)
+  d12*Rb_p/(M2 + Rb_p);
+end
+
+Function_for_R53 is "Function for R53"
+
+function Function_modifier1_modifier2(k, modifier1, modifier2)
+  k*modifier1*modifier2;
+end
+
+Function_modifier1_modifier2 is "Function modifier1 modifier2"
+
+function Function_for_R82(a2, y33, y32)
+  a2*y33^2*y32;
+end
+
+Function_for_R82 is "Function for R82"
+
+function Function_substrate_modifier(k, modifier, substrate)
+  k*modifier*substrate;
+end
+
+Function_substrate_modifier is "Function substrate modifier"
+
+
+model *Hat2016___Reponse_of_p53_System_to_irradiation_in_cell_fate_decision_making()
+
+  // Compartments and Species:
+  compartment nuclear, cytoplasm;
+  species DNA_double_strand_break in nuclear, ATM_phosphorylated in nuclear;
+  species SIAH1_0 in nuclear, $SIAH1_tot in nuclear, HIPK2 in nuclear, p53_0phosphorylated in nuclear;
+  species p53_arrester in nuclear, p53_S46phosphorylated in nuclear, Mdm2_nuc_S166S186phosphorylated in nuclear;
+  species Wip1 in nuclear, p53_killer in nuclear, Mdm2_mRNA in nuclear, Mdm2_cyt_0phosphorylated in cytoplasm;
+  species Mdm2_cyt_S166S186phosphorylated in cytoplasm, AKT_phosphorylated in cytoplasm;
+  species Mdm2_nuc_S166S186p_S395p in nuclear, Wip1_mRNA in nuclear, PTEN_mRNA in nuclear;
+  species PTEN in nuclear, PIP3 in nuclear, p21_mRNA in nuclear, p21__free in nuclear;
+  species Cyclin_E__free in nuclear, Cyclin_E_p21_complex in nuclear, Rb1_0__free in nuclear;
+  species $Rb_tot in nuclear, Rb1_0_E2F1_complex in nuclear, Bax_mRNA in nuclear;
+  species Bax__free in nuclear, BclXL__free in cytoplasm, $BclXL_tot in cytoplasm;
+  species Bax_BclXL_complex in nuclear, Bad_0__free in cytoplasm, $Bad_tot in cytoplasm;
+  species Bad_phosphorylated__free in cytoplasm, proCaspase in nuclear, Caspase in nuclear;
+  species $ATM_tot in nuclear, $AKT_tot in nuclear, $PIP_tot in nuclear, $PI3K_tot in nuclear;
+  species $E2F1_tot in nuclear, $Fourteen33_tot in nuclear, $ATM_0 in nuclear;
+  species $SIAH1_phosphorylated in nuclear, $AKT_0 in cytoplasm, $PIP2 in nuclear;
+  species $Rb_phosphorylated in nuclear, $E2F1 in nuclear, $BclXL_Bad_complex in cytoplasm;
+  species $Bad_phosphorylated_Fourteen33_complex in cytoplasm, $Fourteen33_free in nuclear;
+
+  // Assignment Rules:
+  ATM_0 := ATM_tot - ATM_phosphorylated;
+  SIAH1_phosphorylated := SIAH1_tot - SIAH1_0;
+  AKT_0 := AKT_tot - AKT_phosphorylated;
+  PIP2 := PIP_tot - PIP3;
+  Rb_phosphorylated := Rb_tot - Rb1_0__free - Rb1_0_E2F1_complex;
+  E2F1 := E2F1_tot - Rb1_0_E2F1_complex;
+  BclXL_Bad_complex := BclXL_tot - BclXL__free - Bax_BclXL_complex;
+  Bad_phosphorylated_Fourteen33_complex := Bad_tot - BclXL_Bad_complex - Bad_0__free - Bad_phosphorylated__free;
+  Fourteen33_free := Fourteen33_tot - Bad_phosphorylated_Fourteen33_complex;
+  h2 := can_Caspase_make_DNA_DSB*1e-13;
+  rep := has_DNA_DSB_repair*0.001;
+  DNA_DSB_due_to_IR := IR_Gy*DNA_DSB_per_IR_Gy/tp2;
+  time_days := time/86400;
+
+  // Reactions:
+  DNA_damage_R1:  => DNA_double_strand_break; nuclear*Function_for_R1(h1, DNA_DSB_due_to_IR, is_IR_switched_on, h2, Caspase, DNA_DSB_max, DNA_double_strand_break);
+  DNA_Repair_R2: DNA_double_strand_break => ; nuclear*Function_for_R2(DNA_double_strand_break, rep, DNA_DSB_RepairCplx_total);
+  Dephoshorylation_by_Wip1_R3: ATM_phosphorylated => ; nuclear*Function_substrate_modifier(d1, Wip1, ATM_phosphorylated);
+  Phoshorylation_due_to_IR_R4:  => ATM_phosphorylated; nuclear*Function_for_R4(p1, ATM_0, DNA_double_strand_break, h, M1);
+  Phosphorylation_by_ATM_p_R5: SIAH1_0 => ; nuclear*Function_substrate_modifier(p2, ATM_phosphorylated, SIAH1_0);
+  Dephosphorylation_of_SIAH1_p_R6:  => SIAH1_0; nuclear*Function_modifier(d2, SIAH1_phosphorylated);
+  Synthesis_of_HIPK2_R7:  => HIPK2; nuclear*Constant_flux__irreversible(s8);
+  Degradation_induced_by_Mdm2_nuc_S166S186p_and_SIAH1_R8: HIPK2 => ; nuclear*Function_for_R8(g7, HIPK2, SIAH1_0, Mdm2_nuc_S166S186phosphorylated);
+  Synthesis_of_p53_0p_R9:  => p53_0phosphorylated; nuclear*Constant_flux__irreversible(s6);
+  Phosphorylation_by_ATM_p_on_Ser15_and_Ser20_R10: p53_0phosphorylated => p53_arrester; nuclear*Function_substrate_modifier(p3, ATM_phosphorylated, p53_0phosphorylated);
+  Dephosphorylation_spontaneous_of_p53_arrester_R11: p53_arrester => p53_0phosphorylated; nuclear*d3*p53_arrester;
+  Degradation_spontanuous_and_induced_by_Mdm2_nuc_S166S186p__R12: p53_0phosphorylated => ; nuclear*Function_for_R12(g101, g11, Mdm2_nuc_S166S186phosphorylated, h, p53_0phosphorylated);
+  Dephosphorylation_of_Ser46_by_Wip1_R13: p53_S46phosphorylated => p53_0phosphorylated; nuclear*Function_substrate_modifier(d11, Wip1, p53_S46phosphorylated);
+  Phosphorylation_at_Ser46_by_HIPK2_R14: p53_0phosphorylated => p53_S46phosphorylated; nuclear*Function_substrate_modifier(p11, HIPK2, p53_0phosphorylated);
+  Degradation_spontaneous_and_induced_by_Mdm2_nuc_S166S186p_R15: p53_arrester => ; nuclear*Function_for_R12(g101, g12, Mdm2_nuc_S166S186phosphorylated, h, p53_arrester);
+  Phosphorylation_at_Ser46_by_HIPK2_R16: p53_arrester => p53_killer; nuclear*Function_substrate_modifier(p4, HIPK2, p53_arrester);
+  Dephosphorylation_at_Ser46_by_Wip1_R17: p53_killer => p53_arrester; nuclear*Function_substrate_modifier(d4, Wip1, p53_killer);
+  Phosphorylation_by_ATM_p_on_Ser15_and_Ser20_R18: p53_S46phosphorylated => p53_killer; nuclear*Function_substrate_modifier(p3, ATM_phosphorylated, p53_S46phosphorylated);
+  Degradation_spontaneous_and_induced_by_Mdm2_nuc_S166S186p_R19: p53_S46phosphorylated => ; nuclear*Function_for_R12(g10, g13, Mdm2_nuc_S166S186phosphorylated, h, p53_S46phosphorylated);
+  Degradation_spontaneous_and_induced_by_Mdm2_nuc_S166S186p_R20: p53_killer => ; nuclear*Function_for_R12(g10, g13, Mdm2_nuc_S166S186phosphorylated, h, p53_killer);
+  Dephosphorylation_of_Ser15_and_Ser20_R21: p53_killer => p53_S46phosphorylated; nuclear*d10*p53_killer;
+  Transcription_Mdm2_gene_transcription_R22:  => Mdm2_mRNA; nuclear*Function_for_R22(s3, q0_mdm2, q1_mdm2, p53_arrester, h, q2);
+  Degradation_spontaneous_R23: Mdm2_mRNA => ; nuclear*g3*Mdm2_mRNA;
+  Translation_of_mdm2_R24:  => Mdm2_cyt_0phosphorylated; Function_modifier(t3, Mdm2_mRNA);
+  Phosphorylation_of_Mdm2_cyt_0_by_AKT_p_R25: Mdm2_cyt_0phosphorylated => Mdm2_cyt_S166S186phosphorylated; cytoplasm*Function_substrate_modifier(p5, AKT_phosphorylated, Mdm2_cyt_0phosphorylated);
+  Dephosphorylation_at_Ser166_and_186_R26: Mdm2_cyt_S166S186phosphorylated => Mdm2_cyt_0phosphorylated; cytoplasm*d5*Mdm2_cyt_S166S186phosphorylated;
+  Degradation_spontaneous_R27: Mdm2_cyt_0phosphorylated => ; cytoplasm*g14*Mdm2_cyt_0phosphorylated;
+  Nuclear_import_of_Mdm2_cyto_S166S186p_R28: Mdm2_cyt_S166S186phosphorylated => Mdm2_nuc_S166S186phosphorylated; i1*Mdm2_cyt_S166S186phosphorylated;
+  Degradation_spontaneous_R29: Mdm2_cyt_S166S186phosphorylated => ; cytoplasm*g15*Mdm2_cyt_S166S186phosphorylated;
+  Degradation_spontaneous_R30: Mdm2_nuc_S166S186phosphorylated => ; nuclear*g15*Mdm2_nuc_S166S186phosphorylated;
+  Phosphorylation_by_ATM_p_at_Ser395_R31: Mdm2_nuc_S166S186phosphorylated => Mdm2_nuc_S166S186p_S395p; nuclear*Function_substrate_modifier(p6, ATM_phosphorylated, Mdm2_nuc_S166S186phosphorylated);
+  Dephosphorylation_of_Ser395_of_Mdm2_nuc_S166S186p_S395p_by_Wip1_R32: Mdm2_nuc_S166S186p_S395p => Mdm2_nuc_S166S186phosphorylated; nuclear*Function_substrate_modifier(d6, Wip1, Mdm2_nuc_S166S186p_S395p);
+  Degradation_spontaneous_R33: Mdm2_nuc_S166S186p_S395p => ; nuclear*g15*Mdm2_nuc_S166S186p_S395p;
+  Degradation_Ser395p_dependent_R34: Mdm2_nuc_S166S186p_S395p => ; nuclear*g16*Mdm2_nuc_S166S186p_S395p;
+  Transcription_of_Wip1_gene_R35:  => Wip1_mRNA; nuclear*Function_for_R22(s1, q0_wip1, q1_wip1, p53_arrester, h, q2);
+  Degradation_R36: Wip1_mRNA => ; nuclear*g1*Wip1_mRNA;
+  Translation_of_Wip_mRNA_R37:  => Wip1; nuclear*Function_modifier(t1, Wip1_mRNA);
+  Translation_of_Wip_mRNA_R38: Wip1 => ; nuclear*g8*Wip1;
+  Transcription_of_PTEN_gene_R39:  => PTEN_mRNA; nuclear*Function_for_R22(s2, q0_pten, q1_pten, p53_killer, h, q2);
+  Degradation_R40: PTEN_mRNA => ; nuclear*g2*PTEN_mRNA;
+  Translation_of_PTEN_mRNA_R41:  => PTEN; nuclear*Function_modifier(t2, PTEN_mRNA);
+  Degradation_of_PTEN_R42: PTEN => ; nuclear*g6*PTEN;
+  Phopshorylation_of_PIP2_by_PI3K_R43:  => PIP3; nuclear*Function_for_R43(p8, PIP2, PI3K_tot);
+  Dephosphorylation_of_PIP3_by_PTENR44: PIP3 => ; nuclear*Function_substrate_modifier(d7, PTEN, PIP3);
+  Phopshorylation_at_PIP3_R45:  => AKT_phosphorylated; Function_for_R45(p12, AKT_0, PIP3);
+  Dephosphorylation_of_AKT_R46: AKT_phosphorylated => ; cytoplasm*d8*AKT_phosphorylated;
+  Transcription_of_p21_gene_R47:  => p21_mRNA; nuclear*Function_for_R22(s5, q0_p21, q1_p21, p53_arrester, h, q2);
+  Degradation_of_p21_mRNA_R48: p21_mRNA => ; nuclear*g5*p21_mRNA;
+  Translation_of_p21_mRNA_R49:  => p21__free; nuclear*Function_modifier(t5, p21_mRNA);
+  Binding_of_Cyclin_E_and_p21_R50: p21__free + Cyclin_E__free => Cyclin_E_p21_complex; nuclear*b5*p21__free*Cyclin_E__free;
+  Dissociation_of_complex_Cyclin_E_p21_R51: Cyclin_E_p21_complex => p21__free + Cyclin_E__free; nuclear*u6*Cyclin_E_p21_complex;
+  Degradation_of_p21_R52: p21__free => ; nuclear*g19*p21__free;
+  Dephosphorylation_of_Rb1_at_S567_R53:  => Rb1_0__free; nuclear*Function_for_R53(d12, Rb_phosphorylated, M2);
+  Binding_of_Rb1_and_E2F1_R54: Rb1_0__free => Rb1_0_E2F1_complex; nuclear*Function_substrate_modifier(b4, E2F1, Rb1_0__free);
+  Phosphorylation_of_Rb1_by_Cyclin_E__R55: Rb1_0__free => ; nuclear*Function_substrate_modifier(p9, Cyclin_E__free, Rb1_0__free);
+  Dissociation_of_Rb1_E2F1_complex_R56: Rb1_0_E2F1_complex => Rb1_0__free; nuclear*u5*Rb1_0_E2F1_complex;
+  Phosphorylation_of_Rb1_in_Rb1_E2F1_complex_by_Cyclin_ER57: Rb1_0_E2F1_complex => ; nuclear*Function_substrate_modifier(p10, Cyclin_E__free, Rb1_0_E2F1_complex);
+  Synthesis_R58:  => Cyclin_E__free; nuclear*Constant_flux__irreversible(s10);
+  Synthesis_induced_by_E2F1_R59:  => Cyclin_E__free; nuclear*Function_for_R59(s9, E2F1, M3);
+  Degradation_R60: Cyclin_E__free => ; nuclear*g20*Cyclin_E__free;
+  Degradation_R61: Cyclin_E_p21_complex => ; nuclear*g20*Cyclin_E_p21_complex;
+  Transcription_of_Bax_gene_R62:  => Bax_mRNA; nuclear*Function_for_R22(s4, q0_bax, q1_bax, p53_killer, h, q2);
+  Degradation_of_Bax_mRNA_R63: Bax_mRNA => ; nuclear*g4*Bax_mRNA;
+  Translation_of_Bax_mRNA_R64:  => Bax__free; nuclear*Function_modifier(t4, Bax_mRNA);
+  Dissociation_of_Bax_BclXL_complex_R65: Bax_BclXL_complex => Bax__free + BclXL__free; u1*Bax_BclXL_complex;
+  Binding_of_Bax_and_BclXL_R66: Bax__free + BclXL__free => Bax_BclXL_complex; b1*Bax__free*BclXL__free;
+  Degradation_R67: Bax__free => ; nuclear*g9*Bax__free;
+  Dissociation_of_BclXL_Bad_complex_R68:  => BclXL__free; cytoplasm*Function_modifier(u2, BclXL_Bad_complex);
+  Degradation_of_Bax_in_Bax_BclXL_complex_R69: Bax_BclXL_complex => BclXL__free; g16*Bax_BclXL_complex;
+  Phosphorylation_of_Bad_in_BclXL_Bad_complex_R70:  => BclXL__free; cytoplasm*Function_modifier1_modifier2(p7, AKT_phosphorylated, BclXL_Bad_complex);
+  Binding_of_BclXL_and_Bad_0_R71: BclXL__free + Bad_0__free => ; cytoplasm*b2*BclXL__free*Bad_0__free;
+  Dephosphorylation_R72: Bad_phosphorylated__free => Bad_0__free; cytoplasm*d9*Bad_phosphorylated__free;
+  Dissociation_of_BclXL_Bad_complex_R73:  => Bad_0__free; cytoplasm*Function_modifier(u2, BclXL_Bad_complex);
+  Phosphorylation_of_Bad_0_by_AKT_p_R74: Bad_0__free => Bad_phosphorylated__free; cytoplasm*Function_substrate_modifier(p7, AKT_phosphorylated, Bad_0__free);
+  Dephosphorylation_and_dissociation_of_Bad_p_in_Bad_14_3_3_complex_R75:  => Bad_0__free; cytoplasm*Function_modifier(d9, Bad_phosphorylated_Fourteen33_complex);
+  Dissociation_of_Bad_14_3_3_complex_R76:  => Bad_phosphorylated__free; cytoplasm*Function_modifier(u3, Bad_phosphorylated_Fourteen33_complex);
+  Phosphorylation_of_Bad_in_BclXL_Bad_complex_and_complex_Dissociation_R77:  => Bad_phosphorylated__free; cytoplasm*Function_modifier1_modifier2(p7, AKT_phosphorylated, BclXL_Bad_complex);
+  Binding_of_Bad_p_and_14_3_3_R78: Bad_phosphorylated__free => ; Function_substrate_modifier(b3, Fourteen33_free, Bad_phosphorylated__free);
+  Synthesis_of_proCaspase_R79:  => proCaspase; nuclear*Constant_flux__irreversible(s7);
+  Degradation_of_proCaspase_R80: proCaspase => ; nuclear*g17*proCaspase;
+  Activation_of_caspases_by_active__free__Bax_R81: proCaspase => Caspase; nuclear*Function_substrate_modifier(a1, Bax__free, proCaspase);
+  Activation_autoactivation_of_caspases_R82: proCaspase => Caspase; nuclear*Function_for_R82(a2, Caspase, proCaspase);
+  Degradation_of_caspases_R83: Caspase => ; nuclear*g18*Caspase;
+
+  // Events:
+  Irradiation_phase: at (2592000 <= time) && (time <= 2592600): is_IR_switched_on = 1;
+  Stop_Irradiation_phase: at time >= 2592601: is_IR_switched_on = 0;
+
+  // Species initializations:
+  DNA_double_strand_break = 0;
+  ATM_phosphorylated = 0;
+  SIAH1_0 = SIAH1_tot;
+  SIAH1_tot = 100000;
+  HIPK2 = 0;
+  p53_0phosphorylated = 0;
+  p53_arrester = 0;
+  p53_S46phosphorylated = 0;
+  Mdm2_nuc_S166S186phosphorylated = 0;
+  Wip1 = 0;
+  p53_killer = 0;
+  Mdm2_mRNA = 0;
+  Mdm2_cyt_0phosphorylated = 0;
+  Mdm2_cyt_S166S186phosphorylated = 0;
+  AKT_phosphorylated = 0;
+  Mdm2_nuc_S166S186p_S395p = 0;
+  Wip1_mRNA = 0;
+  PTEN_mRNA = 0;
+  PTEN = 0;
+  PIP3 = 0;
+  p21_mRNA = 0;
+  p21__free = 0;
+  Cyclin_E__free = 0;
+  Cyclin_E_p21_complex = 0;
+  Rb1_0__free = Rb_tot;
+  Rb_tot = 300000;
+  Rb1_0_E2F1_complex = 0;
+  Bax_mRNA = 0;
+  Bax__free = 0;
+  BclXL__free = BclXL_tot;
+  BclXL_tot = 100000;
+  Bax_BclXL_complex = 0;
+  Bad_0__free = Bad_tot;
+  Bad_tot = 60000;
+  Bad_phosphorylated__free = 0;
+  proCaspase = 0;
+  Caspase = 0;
+  ATM_tot = 100000;
+  AKT_tot = 100000;
+  PIP_tot = 100000;
+  PI3K_tot = 100000;
+  E2F1_tot = 200000;
+  Fourteen33_tot = 200000;
+
+  // Compartment initializations:
+  nuclear = 1;
+  cytoplasm = 1;
+
+  // Variable initializations:
+  is_IR_switched_on = 0;
+  h1 = 1e-06;
+  can_Caspase_make_DNA_DSB = 1;
+  has_DNA_DSB_repair = 1;
+  a1 = 3e-10;
+  a2 = 1e-12;
+  q0_pten = 1e-05;
+  q0_wip1 = 1e-05;
+  q0_mdm2 = 0.0001;
+  q0_bax = 1e-05;
+  q0_p21 = 1e-05;
+  q1_pten = 3e-13;
+  q1_mdm2 = 3e-13;
+  q1_wip1 = 3e-13;
+  q1_p21 = 3e-13;
+  q1_bax = 3e-13;
+  q2 = 0.003;
+  s1 = 0.1;
+  s2 = 0.03;
+  s3 = 0.1;
+  s4 = 0.03;
+  s5 = 0.1;
+  t1 = 0.1;
+  t2 = 0.1;
+  t3 = 0.1;
+  t4 = 0.1;
+  t5 = 0.1;
+  s6 = 300;
+  s7 = 30;
+  s8 = 30;
+  s9 = 30;
+  s10 = 3;
+  p1 = 0.0003;
+  p2 = 1e-08;
+  p3 = 3e-08;
+  p4 = 1e-10;
+  p5 = 1e-08;
+  p6 = 1e-08;
+  p7 = 3e-09;
+  p8 = 3e-09;
+  p9 = 3e-06;
+  p10 = 3e-06;
+  p11 = 1e-10;
+  p12 = 1e-09;
+  d1 = 1e-08;
+  d2 = 3e-05;
+  d3 = 0.0001;
+  d4 = 1e-10;
+  d5 = 0.0001;
+  d6 = 1e-10;
+  d7 = 3e-07;
+  d8 = 0.0001;
+  d9 = 3e-05;
+  d10 = 0.0001;
+  d11 = 1e-10;
+  d12 = 10000;
+  b1 = 3e-05;
+  b2 = 0.003;
+  b3 = 0.003;
+  b4 = 1e-05;
+  b5 = 1e-05;
+  u1 = 0.001;
+  u2 = 0.001;
+  u3 = 0.001;
+  u5 = 0.0001;
+  u6 = 0.0001;
+  i1 = 0.001;
+  g1 = 0.0003;
+  g2 = 0.0003;
+  g3 = 0.0003;
+  g4 = 0.0003;
+  g5 = 0.0003;
+  g6 = 3e-05;
+  g7 = 1e-13;
+  g8 = 0.0003;
+  g9 = 0.0001;
+  g10 = 1e-05;
+  g101 = 1e-05;
+  g11 = 1e-11;
+  g12 = 1e-13;
+  g13 = 1e-13;
+  g14 = 0.0001;
+  g15 = 3e-05;
+  g16 = 0.0001;
+  g17 = 0.0003;
+  g18 = 0.0003;
+  g19 = 0.0003;
+  g20 = 0.0001;
+  h = 2;
+  M1 = 5;
+  M2 = 100000;
+  M3 = 200000;
+  DNA_DSB_RepairCplx_total = 20;
+  DNA_DSB_max = 1000000;
+  IR_Gy = 2;
+  DNA_DSB_per_IR_Gy = 10;
+  tp2 = 600;
+
+  // Other declarations:
+  var is_IR_switched_on, h2, rep, DNA_DSB_due_to_IR, time_days;
+  const nuclear, cytoplasm, h1, can_Caspase_make_DNA_DSB, has_DNA_DSB_repair;
+  const a1, a2, q0_pten, q0_wip1, q0_mdm2, q0_bax, q0_p21, q1_pten, q1_mdm2;
+  const q1_wip1, q1_p21, q1_bax, q2, s1, s2, s3, s4, s5, t1, t2, t3, t4, t5;
+  const s6, s7, s8, s9, s10, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11;
+  const p12, d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, d11, d12, b1, b2, b3;
+  const b4, b5, u1, u2, u3, u5, u6, i1, g1, g2, g3, g4, g5, g6, g7, g8, g9;
+  const g10, g101, g11, g12, g13, g14, g15, g16, g17, g18, g19, g20, h, M1;
+  const M2, M3, DNA_DSB_RepairCplx_total, DNA_DSB_max, IR_Gy, DNA_DSB_per_IR_Gy;
+  const tp2;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  Mdm2_mRNA is "Mdm2 mRNA";
+  Wip1_mRNA is "Wip1 mRNA";
+  PTEN_mRNA is "PTEN mRNA";
+  p21__free is "p21_(free)";
+  Cyclin_E__free is "Cyclin_E (free)";
+  Cyclin_E_p21_complex is "Cyclin_E:p21_complex";
+  Rb1_0__free is "Rb1_0_(free)";
+  Rb1_0_E2F1_complex is "Rb1_0:E2F1 complex";
+  Bax__free is "Bax_(free)";
+  BclXL__free is "BclXL_(free)";
+  Bax_BclXL_complex is "Bax:BclXL_complex";
+  Bad_0__free is "Bad_0_(free)";
+  Bad_phosphorylated__free is "Bad_phosphorylated_(free)";
+  Irradiation_phase is "Irradiation phase";
+  Stop_Irradiation_phase is "Stop Irradiation phase";
+  DNA_damage_R1 is "DNA damage R1";
+  DNA_Repair_R2 is "DNA Repair R2";
+  Dephoshorylation_by_Wip1_R3 is "Dephoshorylation by Wip1 R3";
+  Phoshorylation_due_to_IR_R4 is "Phoshorylation due to IR R4";
+  Phosphorylation_by_ATM_p_R5 is "Phosphorylation by ATM_p R5";
+  Dephosphorylation_of_SIAH1_p_R6 is "Dephosphorylation of SIAH1_p R6";
+  Synthesis_of_HIPK2_R7 is "Synthesis of HIPK2 R7";
+  Degradation_induced_by_Mdm2_nuc_S166S186p_and_SIAH1_R8 is "Degradation induced by Mdm2_nuc_S166S186p and SIAH1 R8";
+  Synthesis_of_p53_0p_R9 is "Synthesis of p53_0p R9";
+  Phosphorylation_by_ATM_p_on_Ser15_and_Ser20_R10 is "Phosphorylation by ATM_p on Ser15 and Ser20 R10";
+  Dephosphorylation_spontaneous_of_p53_arrester_R11 is "Dephosphorylation spontaneous of p53_arrester R11";
+  Degradation_spontanuous_and_induced_by_Mdm2_nuc_S166S186p__R12 is "Degradation spontanuous and induced by Mdm2_nuc_S166S186p  R12";
+  Dephosphorylation_of_Ser46_by_Wip1_R13 is "Dephosphorylation of Ser46 by Wip1 R13";
+  Phosphorylation_at_Ser46_by_HIPK2_R14 is "Phosphorylation at Ser46 by HIPK2 R14";
+  Degradation_spontaneous_and_induced_by_Mdm2_nuc_S166S186p_R15 is "Degradation spontaneous and induced by Mdm2_nuc_S166S186p R15";
+  Phosphorylation_at_Ser46_by_HIPK2_R16 is "Phosphorylation at Ser46 by HIPK2 R16";
+  Dephosphorylation_at_Ser46_by_Wip1_R17 is "Dephosphorylation at Ser46 by Wip1 R17";
+  Phosphorylation_by_ATM_p_on_Ser15_and_Ser20_R18 is "Phosphorylation by ATM_p on Ser15 and Ser20 R18";
+  Degradation_spontaneous_and_induced_by_Mdm2_nuc_S166S186p_R19 is "Degradation spontaneous and induced by Mdm2_nuc_S166S186p R19";
+  Degradation_spontaneous_and_induced_by_Mdm2_nuc_S166S186p_R20 is "Degradation spontaneous and induced by Mdm2_nuc_S166S186p R20";
+  Dephosphorylation_of_Ser15_and_Ser20_R21 is "Dephosphorylation of Ser15 and Ser20 R21";
+  Transcription_Mdm2_gene_transcription_R22 is "Transcription Mdm2 gene transcription R22";
+  Degradation_spontaneous_R23 is "Degradation spontaneous R23";
+  Translation_of_mdm2_R24 is "Translation of mdm2 R24";
+  Phosphorylation_of_Mdm2_cyt_0_by_AKT_p_R25 is "Phosphorylation of Mdm2_cyt_0 by AKT_p R25";
+  Dephosphorylation_at_Ser166_and_186_R26 is "Dephosphorylation at Ser166 and 186 R26";
+  Degradation_spontaneous_R27 is "Degradation spontaneous R27";
+  Nuclear_import_of_Mdm2_cyto_S166S186p_R28 is "Nuclear import of Mdm2_cyto_S166S186p R28";
+  Degradation_spontaneous_R29 is "Degradation spontaneous R29";
+  Degradation_spontaneous_R30 is "Degradation spontaneous R30";
+  Phosphorylation_by_ATM_p_at_Ser395_R31 is "Phosphorylation by ATM_p at Ser395 R31";
+  Dephosphorylation_of_Ser395_of_Mdm2_nuc_S166S186p_S395p_by_Wip1_R32 is "Dephosphorylation of Ser395 of Mdm2_nuc_S166S186p_S395p by Wip1 R32";
+  Degradation_spontaneous_R33 is "Degradation spontaneous R33";
+  Degradation_Ser395p_dependent_R34 is "Degradation Ser395p-dependent R34";
+  Transcription_of_Wip1_gene_R35 is "Transcription of Wip1 gene R35";
+  Degradation_R36 is "Degradation R36";
+  Translation_of_Wip_mRNA_R37 is "Translation of Wip mRNA R37";
+  Translation_of_Wip_mRNA_R38 is "Translation of Wip mRNA R38";
+  Transcription_of_PTEN_gene_R39 is "Transcription of PTEN gene R39";
+  Degradation_R40 is "Degradation R40";
+  Translation_of_PTEN_mRNA_R41 is "Translation of PTEN_mRNA R41";
+  Degradation_of_PTEN_R42 is "Degradation of PTEN R42";
+  Phopshorylation_of_PIP2_by_PI3K_R43 is "Phopshorylation of PIP2 by PI3K R43";
+  Dephosphorylation_of_PIP3_by_PTENR44 is "Dephosphorylation of PIP3 by PTENR44";
+  Phopshorylation_at_PIP3_R45 is "Phopshorylation at PIP3 R45";
+  Dephosphorylation_of_AKT_R46 is "Dephosphorylation of AKT R46";
+  Transcription_of_p21_gene_R47 is "Transcription of p21 gene R47";
+  Degradation_of_p21_mRNA_R48 is "Degradation of p21 mRNA R48";
+  Translation_of_p21_mRNA_R49 is "Translation of p21 mRNA R49";
+  Binding_of_Cyclin_E_and_p21_R50 is "Binding of Cyclin_E and p21 R50";
+  Dissociation_of_complex_Cyclin_E_p21_R51 is "Dissociation of complex Cyclin_E:p21 R51";
+  Degradation_of_p21_R52 is "Degradation of p21 R52";
+  Dephosphorylation_of_Rb1_at_S567_R53 is "Dephosphorylation of Rb1 at S567 R53";
+  Binding_of_Rb1_and_E2F1_R54 is "Binding of Rb1 and E2F1 R54";
+  Phosphorylation_of_Rb1_by_Cyclin_E__R55 is "Phosphorylation of Rb1 by Cyclin_E  R55";
+  Dissociation_of_Rb1_E2F1_complex_R56 is "Dissociation of Rb1:E2F1 complex R56";
+  Phosphorylation_of_Rb1_in_Rb1_E2F1_complex_by_Cyclin_ER57 is "Phosphorylation of Rb1 in Rb1:E2F1 complex by Cyclin_ER57";
+  Synthesis_R58 is "Synthesis R58";
+  Synthesis_induced_by_E2F1_R59 is "Synthesis induced by E2F1 R59";
+  Degradation_R60 is "Degradation R60";
+  Degradation_R61 is "Degradation R61";
+  Transcription_of_Bax_gene_R62 is "Transcription of Bax gene R62";
+  Degradation_of_Bax_mRNA_R63 is "Degradation of Bax mRNA R63";
+  Translation_of_Bax_mRNA_R64 is "Translation of Bax mRNA R64";
+  Dissociation_of_Bax_BclXL_complex_R65 is "Dissociation of Bax:BclXL complex R65";
+  Binding_of_Bax_and_BclXL_R66 is "Binding of Bax and BclXL R66";
+  Degradation_R67 is "Degradation R67";
+  Dissociation_of_BclXL_Bad_complex_R68 is "Dissociation of BclXL:Bad complex R68";
+  Degradation_of_Bax_in_Bax_BclXL_complex_R69 is "Degradation of Bax in Bax:BclXL complex R69";
+  Phosphorylation_of_Bad_in_BclXL_Bad_complex_R70 is "Phosphorylation of Bad in BclXL:Bad complex R70";
+  Binding_of_BclXL_and_Bad_0_R71 is "Binding of BclXL and Bad_0 R71";
+  Dephosphorylation_R72 is "Dephosphorylation R72";
+  Dissociation_of_BclXL_Bad_complex_R73 is "Dissociation of BclXL:Bad complex R73";
+  Phosphorylation_of_Bad_0_by_AKT_p_R74 is "Phosphorylation of Bad_0 by AKT_p R74";
+  Dephosphorylation_and_dissociation_of_Bad_p_in_Bad_14_3_3_complex_R75 is "Dephosphorylation and dissociation of Bad_p in Bad:14_3_3 complex R75";
+  Dissociation_of_Bad_14_3_3_complex_R76 is "Dissociation of Bad:14-3-3 complex R76";
+  Phosphorylation_of_Bad_in_BclXL_Bad_complex_and_complex_Dissociation_R77 is "Phosphorylation of Bad in BclXL:Bad complex and complex Dissociation R77";
+  Binding_of_Bad_p_and_14_3_3_R78 is "Binding of Bad_p and 14-3-3 R78";
+  Synthesis_of_proCaspase_R79 is "Synthesis of proCaspase R79";
+  Degradation_of_proCaspase_R80 is "Degradation of proCaspase R80";
+  Activation_of_caspases_by_active__free__Bax_R81 is "Activation of caspases by active (free) Bax R81";
+  Activation_autoactivation_of_caspases_R82 is "Activation_autoactivation of caspases R82";
+  Degradation_of_caspases_R83 is "Degradation of caspases R83";
+
+  // CV terms:
+  nuclear hypernym "http://identifiers.org/ncit/C13361"
+  cytoplasm hypernym "http://identifiers.org/go/GO:0005737"
+  DNA_double_strand_break hypernym "http://identifiers.org/go/GO:0035861"
+  ATM_phosphorylated hypernym "http://identifiers.org/uniprot/Q13315"
+  ATM_phosphorylated property "http://identifiers.org/pato/PATO:0002220"
+  SIAH1_0 hypernym "http://identifiers.org/uniprot/Q8IUQ4"
+  SIAH1_tot hypernym "http://identifiers.org/uniprot/Q8IUQ4"
+  HIPK2 hypernym "http://identifiers.org/uniprot/Q9H2X6"
+  p53_0phosphorylated hypernym "http://identifiers.org/uniprot/P04637"
+  p53_0phosphorylated property "http://identifiers.org/pato/PATO:0002220"
+  p53_arrester hypernym "http://identifiers.org/uniprot/P04637"
+  p53_S46phosphorylated hypernym "http://identifiers.org/uniprot/P04637"
+  p53_S46phosphorylated property "http://identifiers.org/pato/PATO:0002220"
+  Mdm2_nuc_S166S186phosphorylated hypernym "http://identifiers.org/uniprot/Q00987"
+  Mdm2_nuc_S166S186phosphorylated property "http://identifiers.org/pato/PATO:0002220"
+  Wip1 hypernym "http://identifiers.org/uniprot/O15297"
+  p53_killer hypernym "http://identifiers.org/uniprot/P04637"
+  Mdm2_mRNA hypernym "http://identifiers.org/uniprot/Q00987"
+  Mdm2_mRNA property "http://identifiers.org/chebi/CHEBI:33697"
+  Mdm2_cyt_0phosphorylated hypernym "http://identifiers.org/uniprot/Q00987"
+  Mdm2_cyt_0phosphorylated property "http://identifiers.org/pato/PATO:0002220"
+  Mdm2_cyt_S166S186phosphorylated hypernym "http://identifiers.org/uniprot/Q00987"
+  Mdm2_cyt_S166S186phosphorylated property "http://identifiers.org/pato/PATO:0002220"
+  AKT_phosphorylated hypernym "http://identifiers.org/uniprot/P31749"
+  AKT_phosphorylated property "http://identifiers.org/pato/PATO:0002220"
+  Mdm2_nuc_S166S186p_S395p hypernym "http://identifiers.org/uniprot/Q00987"
+  Mdm2_nuc_S166S186p_S395p property "http://identifiers.org/pato/PATO:0002220"
+  Wip1_mRNA hypernym "http://identifiers.org/uniprot/O15297"
+  Wip1_mRNA property "http://identifiers.org/chebi/CHEBI:33697"
+  PTEN_mRNA hypernym "http://identifiers.org/uniprot/P60484"
+  PTEN_mRNA property "http://identifiers.org/chebi/CHEBI:33697"
+  PTEN hypernym "http://identifiers.org/uniprot/P60484"
+  p21_mRNA hypernym "http://identifiers.org/ncit/C17388"
+  p21_mRNA property "http://identifiers.org/chebi/CHEBI:33697"
+  p21__free hypernym "http://identifiers.org/ncit/C17388"
+  Cyclin_E__free hypernym "http://identifiers.org/uniprot/O96020"
+  Cyclin_E_p21_complex part "http://identifiers.org/ncit/C17388"
+  Cyclin_E_p21_complex part "http://identifiers.org/uniprot/O96020"
+  Rb1_0__free hypernym "http://identifiers.org/uniprot/P06400"
+  Rb_tot hypernym "http://identifiers.org/uniprot/P06400"
+  Rb1_0_E2F1_complex part "http://identifiers.org/uniprot/Q01094"
+  Rb1_0_E2F1_complex part "http://identifiers.org/uniprot/P06400"
+  Bax_mRNA hypernym "http://identifiers.org/uniprot/Q07812"
+  Bax_mRNA property "http://identifiers.org/chebi/CHEBI:33697"
+  Bax__free hypernym "http://identifiers.org/uniprot/Q07812"
+  BclXL__free hypernym "http://identifiers.org/uniprot/Q07817"
+  BclXL_tot hypernym "http://identifiers.org/uniprot/Q07817"
+  Bax_BclXL_complex part "http://identifiers.org/uniprot/Q92934"
+  Bax_BclXL_complex part "http://identifiers.org/uniprot/Q07812"
+  Bad_0__free hypernym "http://identifiers.org/uniprot/Q92934"
+  Bad_tot hypernym "http://identifiers.org/uniprot/Q92934"
+  Bad_phosphorylated__free hypernym "http://identifiers.org/uniprot/Q92934"
+  Bad_phosphorylated__free property "http://identifiers.org/pato/PATO:0002220"
+  proCaspase identity "http://identifiers.org/ncit/C48044"
+  Caspase hypernym "http://identifiers.org/uniprot/P42575"
+  ATM_tot hypernym "http://identifiers.org/uniprot/Q13315"
+  AKT_tot hypernym "http://identifiers.org/uniprot/P31749"
+  PI3K_tot hypernym "http://identifiers.org/uniprot/P27986"
+  E2F1_tot hypernym "http://identifiers.org/uniprot/Q01094"
+  Fourteen33_tot hypernym "http://identifiers.org/uniprot/P31947"
+  ATM_0 hypernym "http://identifiers.org/uniprot/Q13315"
+  SIAH1_phosphorylated hypernym "http://identifiers.org/uniprot/Q8IUQ4"
+  SIAH1_phosphorylated property "http://identifiers.org/pato/PATO:0002220"
+  AKT_0 hypernym "http://identifiers.org/uniprot/P31749"
+  Rb_phosphorylated hypernym "http://identifiers.org/uniprot/P06400"
+  Rb_phosphorylated property "http://identifiers.org/pato/PATO:0002220"
+  E2F1 hypernym "http://identifiers.org/uniprot/Q01094"
+  BclXL_Bad_complex part "http://identifiers.org/uniprot/Q92934"
+  BclXL_Bad_complex part "http://identifiers.org/uniprot/Q07817"
+  Bad_phosphorylated_Fourteen33_complex part "http://identifiers.org/uniprot/P31947"
+  Bad_phosphorylated_Fourteen33_complex part "http://identifiers.org/uniprot/Q92934"
+  Bad_phosphorylated_Fourteen33_complex property "http://identifiers.org/pato/PATO:0002220"
+  Fourteen33_free hypernym "http://identifiers.org/uniprot/P31947"
+  DNA_damage_R1 hypernym "http://identifiers.org/ncit/C16507"
+  DNA_Repair_R2 hypernym "http://identifiers.org/go/GO:0006281"
+  Dephoshorylation_by_Wip1_R3 hypernym "http://identifiers.org/sbo/SBO:0000330"
+  Phoshorylation_due_to_IR_R4 hypernym "http://identifiers.org/sbo/SBO:0000216"
+  Phosphorylation_by_ATM_p_R5 hypernym "http://identifiers.org/sbo/SBO:0000216"
+  Dephosphorylation_of_SIAH1_p_R6 hypernym "http://identifiers.org/sbo/SBO:0000330"
+  Synthesis_of_HIPK2_R7 hypernym "http://identifiers.org/ncit/C61408"
+  Degradation_induced_by_Mdm2_nuc_S166S186p_and_SIAH1_R8 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Synthesis_of_p53_0p_R9 hypernym "http://identifiers.org/ncit/C61408"
+  Phosphorylation_by_ATM_p_on_Ser15_and_Ser20_R10 hypernym "http://identifiers.org/sbo/SBO:0000216"
+  Dephosphorylation_spontaneous_of_p53_arrester_R11 hypernym "http://identifiers.org/sbo/SBO:0000330"
+  Degradation_spontanuous_and_induced_by_Mdm2_nuc_S166S186p__R12 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Dephosphorylation_of_Ser46_by_Wip1_R13 hypernym "http://identifiers.org/sbo/SBO:0000330"
+  Phosphorylation_at_Ser46_by_HIPK2_R14 hypernym "http://identifiers.org/sbo/SBO:0000216"
+  Degradation_spontaneous_and_induced_by_Mdm2_nuc_S166S186p_R15 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Phosphorylation_at_Ser46_by_HIPK2_R16 hypernym "http://identifiers.org/sbo/SBO:0000216"
+  Dephosphorylation_at_Ser46_by_Wip1_R17 hypernym "http://identifiers.org/sbo/SBO:0000330"
+  Phosphorylation_by_ATM_p_on_Ser15_and_Ser20_R18 hypernym "http://identifiers.org/sbo/SBO:0000216"
+  Degradation_spontaneous_and_induced_by_Mdm2_nuc_S166S186p_R19 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Degradation_spontaneous_and_induced_by_Mdm2_nuc_S166S186p_R20 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Dephosphorylation_of_Ser15_and_Ser20_R21 hypernym "http://identifiers.org/sbo/SBO:0000330"
+  Transcription_Mdm2_gene_transcription_R22 hypernym "http://identifiers.org/sbo/SBO:0000183"
+  Degradation_spontaneous_R23 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Translation_of_mdm2_R24 hypernym "http://identifiers.org/go/GO:0006412"
+  Phosphorylation_of_Mdm2_cyt_0_by_AKT_p_R25 hypernym "http://identifiers.org/sbo/SBO:0000216"
+  Dephosphorylation_at_Ser166_and_186_R26 hypernym "http://identifiers.org/sbo/SBO:0000330"
+  Degradation_spontaneous_R27 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Nuclear_import_of_Mdm2_cyto_S166S186p_R28 hypernym "http://identifiers.org/go/GO:0051170"
+  Degradation_spontaneous_R29 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Degradation_spontaneous_R30 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Phosphorylation_by_ATM_p_at_Ser395_R31 hypernym "http://identifiers.org/sbo/SBO:0000216"
+  Dephosphorylation_of_Ser395_of_Mdm2_nuc_S166S186p_S395p_by_Wip1_R32 hypernym "http://identifiers.org/sbo/SBO:0000330"
+  Degradation_spontaneous_R33 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Degradation_Ser395p_dependent_R34 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Transcription_of_Wip1_gene_R35 hypernym "http://identifiers.org/sbo/SBO:0000183"
+  Degradation_R36 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Translation_of_Wip_mRNA_R37 hypernym "http://identifiers.org/go/GO:0006412"
+  Translation_of_Wip_mRNA_R38 hypernym "http://identifiers.org/go/GO:0006412"
+  Transcription_of_PTEN_gene_R39 hypernym "http://identifiers.org/sbo/SBO:0000183"
+  Degradation_R40 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Translation_of_PTEN_mRNA_R41 hypernym "http://identifiers.org/go/GO:0006412"
+  Degradation_of_PTEN_R42 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Phopshorylation_of_PIP2_by_PI3K_R43 hypernym "http://identifiers.org/sbo/SBO:0000216"
+  Dephosphorylation_of_PIP3_by_PTENR44 hypernym "http://identifiers.org/sbo/SBO:0000330"
+  Phopshorylation_at_PIP3_R45 hypernym "http://identifiers.org/sbo/SBO:0000216"
+  Dephosphorylation_of_AKT_R46 hypernym "http://identifiers.org/sbo/SBO:0000330"
+  Transcription_of_p21_gene_R47 hypernym "http://identifiers.org/sbo/SBO:0000183"
+  Degradation_of_p21_mRNA_R48 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Translation_of_p21_mRNA_R49 hypernym "http://identifiers.org/go/GO:0006412"
+  Binding_of_Cyclin_E_and_p21_R50 hypernym "http://identifiers.org/sbo/SBO:0000526"
+  Dissociation_of_complex_Cyclin_E_p21_R51 hypernym "http://identifiers.org/sbo/SBO:0000180"
+  Degradation_of_p21_R52 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Dephosphorylation_of_Rb1_at_S567_R53 hypernym "http://identifiers.org/sbo/SBO:0000330"
+  Binding_of_Rb1_and_E2F1_R54 hypernym "http://identifiers.org/sbo/SBO:0000526"
+  Phosphorylation_of_Rb1_by_Cyclin_E__R55 hypernym "http://identifiers.org/sbo/SBO:0000216"
+  Dissociation_of_Rb1_E2F1_complex_R56 hypernym "http://identifiers.org/sbo/SBO:0000180"
+  Phosphorylation_of_Rb1_in_Rb1_E2F1_complex_by_Cyclin_ER57 hypernym "http://identifiers.org/sbo/SBO:0000216"
+  Synthesis_R58 hypernym "http://identifiers.org/ncit/C61408"
+  Synthesis_induced_by_E2F1_R59 hypernym "http://identifiers.org/ncit/C61408"
+  Degradation_R60 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Degradation_R61 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Transcription_of_Bax_gene_R62 hypernym "http://identifiers.org/sbo/SBO:0000183"
+  Degradation_of_Bax_mRNA_R63 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Translation_of_Bax_mRNA_R64 hypernym "http://identifiers.org/go/GO:0006412"
+  Dissociation_of_Bax_BclXL_complex_R65 hypernym "http://identifiers.org/sbo/SBO:0000180"
+  Binding_of_Bax_and_BclXL_R66 hypernym "http://identifiers.org/sbo/SBO:0000526"
+  Degradation_R67 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Dissociation_of_BclXL_Bad_complex_R68 hypernym "http://identifiers.org/sbo/SBO:0000180"
+  Degradation_of_Bax_in_Bax_BclXL_complex_R69 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Phosphorylation_of_Bad_in_BclXL_Bad_complex_R70 hypernym "http://identifiers.org/sbo/SBO:0000216"
+  Binding_of_BclXL_and_Bad_0_R71 hypernym "http://identifiers.org/sbo/SBO:0000526"
+  Dephosphorylation_R72 hypernym "http://identifiers.org/sbo/SBO:0000330"
+  Dissociation_of_BclXL_Bad_complex_R73 hypernym "http://identifiers.org/sbo/SBO:0000180"
+  Phosphorylation_of_Bad_0_by_AKT_p_R74 hypernym "http://identifiers.org/sbo/SBO:0000216"
+  Dephosphorylation_and_dissociation_of_Bad_p_in_Bad_14_3_3_complex_R75 hypernym "http://identifiers.org/sbo/SBO:0000330"
+  Dissociation_of_Bad_14_3_3_complex_R76 hypernym "http://identifiers.org/sbo/SBO:0000180"
+  Phosphorylation_of_Bad_in_BclXL_Bad_complex_and_complex_Dissociation_R77 hypernym "http://identifiers.org/sbo/SBO:0000216"
+  Binding_of_Bad_p_and_14_3_3_R78 hypernym "http://identifiers.org/sbo/SBO:0000526"
+  Synthesis_of_proCaspase_R79 hypernym "http://identifiers.org/ncit/C61408"
+  Degradation_of_proCaspase_R80 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Activation_of_caspases_by_active__free__Bax_R81 hypernym "http://identifiers.org/sbo/SBO:0000656"
+  Activation_autoactivation_of_caspases_R82 hypernym "http://identifiers.org/sbo/SBO:0000656"
+  Degradation_of_caspases_R83 hypernym "http://identifiers.org/sbo/SBO:0000179"
+end
+
+Hat2016___Reponse_of_p53_System_to_irradiation_in_cell_fate_decision_making is "Hat2016 - Reponse of p53 System to irradiation in cell fate decision making"
+
+Hat2016___Reponse_of_p53_System_to_irradiation_in_cell_fate_decision_making model_entity_is "http://identifiers.org/biomodels.db/MODEL1809060002",
+                                                                                            "http://identifiers.org/biomodels.db/BIOMD0000000943"
+Hat2016___Reponse_of_p53_System_to_irradiation_in_cell_fate_decision_making part "http://identifiers.org/go/GO:0007049"
+Hat2016___Reponse_of_p53_System_to_irradiation_in_cell_fate_decision_making taxon "http://identifiers.org/taxonomy/9606"
+Hat2016___Reponse_of_p53_System_to_irradiation_in_cell_fate_decision_making description "http://identifiers.org/doi/10.1371/journal.pcbi.1004787"
+Hat2016___Reponse_of_p53_System_to_irradiation_in_cell_fate_decision_making property "http://identifiers.org/mamo/MAMO_0000046"

@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *MODEL1407230000()
 
   // Compartments and Species:
@@ -16,13 +16,13 @@ model *MODEL1407230000()
   // Reactions:
   r1:  => CS; ks1*(1 + UV*n3*(HY5 + FHY3)) - kdr1*(1 + n1*UV)*CS;
   r2:  => RUP; ks2*(1 + UV*UCS) - kdr2*RUP;
-  r3: 2UVR8M => UVR8D; k1*UVR8M^2;
-  r4: 2CS + 2UVR8M -> UCS; ka1*CS^2*UVR8M^2 - kd1*UCS;
-  r5: 2CS + CD -> CDCS; ka2*CS^2*CD - kd2*CDCS;
+  r3: 2 UVR8M => UVR8D; k1*UVR8M^2;
+  r4: 2 CS + 2 UVR8M -> UCS; ka1*CS^2*UVR8M^2 - kd1*UCS;
+  r5: 2 CS + CD -> CDCS; ka2*CS^2*CD - kd2*CDCS;
   r6: UVR8M + RUP => UR; ka3*UVR8M*RUP;
-  r7: 2UR => UVR8D + 2RUP; kd3*UR^2;
-  r8: UVR8D => 2UVR8M; k2*UVR8D;
-  r9:  => HY5; ks3*(1 + n2*UV) - kdr3*((CDCS/(kdr3a + CDCS) + CDW/(kdr3b + CDW)) - UCS/(ksr + UCS))*HY5;
+  r7: 2 UR => UVR8D + 2 RUP; kd3*UR^2;
+  r8: UVR8D => 2 UVR8M; k2*UVR8D;
+  r9:  => HY5; ks3*(1 + n2*UV) - kdr3*(CDCS/(kdr3a + CDCS) + CDW/(kdr3b + CDW) - UCS/(ksr + UCS))*HY5;
   r10: CD + DWD -> CDW; ka4*CD*DWD - kd4*CDW;
 
   // Species initializations:
@@ -85,4 +85,39 @@ model *MODEL1407230000()
 
   // Unit definitions:
   unit mole_per_volume = mole / litre;
+
+  // CV terms:
+  Hypctol hypernym "http://identifiers.org/bto/BTO:0000613"
+  CS part "http://identifiers.org/uniprot/Q9SYX2",
+          "http://identifiers.org/uniprot/P43254"
+  CD part "http://identifiers.org/uniprot/Q8LGH4",
+          "http://identifiers.org/uniprot/Q9M086"
+  CDCS part "http://identifiers.org/uniprot/P43254",
+            "http://identifiers.org/uniprot/Q9SYX2",
+            "http://identifiers.org/uniprot/Q9M086",
+            "http://identifiers.org/uniprot/Q8LGH4"
+  UVR8M hypernym "http://identifiers.org/uniprot/Q9FN03"
+  UCS part "http://identifiers.org/uniprot/Q9SYX2",
+           "http://identifiers.org/uniprot/P43254",
+           "http://identifiers.org/uniprot/Q9FN03"
+  UVR8D hypernym "http://identifiers.org/uniprot/Q9FN03"
+  RUP hypernym "http://identifiers.org/uniprot/Q9LTJ6"
+  UR part "http://identifiers.org/uniprot/Q9LTJ6",
+          "http://identifiers.org/uniprot/Q9FFA7"
+  UVR8_M hypernym "http://identifiers.org/uniprot/Q9FN03"
+  COP1 hypernym "http://identifiers.org/uniprot/P43254"
+  HY5 hypernym "http://identifiers.org/uniprot/O24646"
+  FHY3 hypernym "http://identifiers.org/uniprot/Q9LIE5"
+  DWD hypernym "http://identifiers.org/interpro/IPR001680"
+  CDW part "http://identifiers.org/uniprot/Q8LGH4",
+           "http://identifiers.org/uniprot/Q9M086",
+           "http://identifiers.org/interpro/IPR001680"
 end
+
+MODEL1407230000 is "Ouyang2014 - photomorphogenic UV-B signalling network"
+
+MODEL1407230000 model_entity_is "http://identifiers.org/biomodels.db/MODEL1407230000"
+MODEL1407230000 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000545"
+MODEL1407230000 description "http://identifiers.org/pubmed/25049395"
+MODEL1407230000 taxon "http://identifiers.org/taxonomy/3702"
+MODEL1407230000 hypernym "http://identifiers.org/go/GO:0009640"

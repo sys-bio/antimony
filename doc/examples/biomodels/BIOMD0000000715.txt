@@ -1,0 +1,122 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function Function_for_Reaction_3(beta, S, I, alpha, M)
+  beta*S*I*exp(-alpha*M);
+end
+
+Function_for_Reaction_3 is "Function for Reaction 3"
+
+function Function_for_Reaction_7(alpha1, alpha2, I)
+  (alpha1 + alpha2)*I;
+end
+
+Function_for_Reaction_7 is "Function for Reaction 7"
+
+function Function_for_Message(mu, modifier)
+  mu*modifier;
+end
+
+Function_for_Message is "Function for Message"
+
+
+model *New_Model()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species S in compartment_, E in compartment_, I in compartment_, M in compartment_;
+  species $N in compartment_;
+
+  // Assignment Rules:
+  N := S + E + I;
+
+  // Reactions:
+  reaction_1:  => S; compartment_*Constant_flux__irreversible(A);
+  reaction_2: I => S; compartment_*gamma_*I;
+  reaction_3: S => E; compartment_*Function_for_Reaction_3(beta, S, I, alpha, M);
+  reaction_4: S => ; compartment_*alpha1*S;
+  reaction_5: E => I; compartment_*rho*E;
+  reaction_6: E => ; compartment_*alpha1*E;
+  reaction_7: I => ; compartment_*Function_for_Reaction_7(alpha1, alpha2, I);
+  reaction_8:  => M; compartment_*Function_for_Message(mu1, S);
+  reaction_9:  => M; compartment_*Function_for_Message(mu2, E);
+  reaction_10:  => M; compartment_*Function_for_Message(mu3, I);
+  reaction_11: M => ; compartment_*tau*M;
+
+  // Species initializations:
+  S = 3.5;
+  E = 2.5;
+  I = 3;
+  M = 6;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  A = 0.8;
+  beta = 0.8;
+  alpha = 0.08;
+  rho = 0.09;
+  mu1 = 0.99;
+  mu2 = 0.4;
+  mu3 = 0.8;
+  alpha1 = 0.6;
+  alpha2 = 0.02;
+  tau = 0.6;
+  gamma_ = 0.7;
+
+  // Other declarations:
+  const compartment_, A, beta, alpha, rho, mu1, mu2, mu3, alpha1, alpha2;
+  const tau, gamma_;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "Human Population";
+  S is "Susceptible Individuals (S)";
+  E is "Exposed Individuals (E)";
+  I is "Infected Individuals (I)";
+  M is "Message (M)";
+  N is "Total population (N)";
+  gamma_ is "gamma";
+  reaction_1 is "Birth of Susceptible individuals";
+  reaction_2 is "Transmission of virus to Susceptible individuals";
+  reaction_3 is "Exposure to the virus";
+  reaction_4 is "Death of Susceptible Individuals";
+  reaction_5 is "Exposed individuals becoming infectious";
+  reaction_6 is "Death of Exposed Individuals";
+  reaction_7 is "Death of Infected Individuals";
+  reaction_8 is "Message sent by Susceptible Individuals";
+  reaction_9 is "Message sent by Exposed Individuals";
+  reaction_10 is "Message sent by Infected Individuals";
+  reaction_11 is "Message becoming outdated";
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/obi/OBI:0000181"
+  S hypernym "http://identifiers.org/ido/0000514"
+  E hypernym "http://identifiers.org/ncit/C71551"
+  I hypernym "http://identifiers.org/ido/0000511"
+  M hypernym "http://identifiers.org/ncit/C62608"
+  N identity "http://identifiers.org/ncit/C25304"
+  N identity "http://identifiers.org/obi/OBI:0000181"
+  reaction_4 hypernym "http://identifiers.org/efo/0000480"
+  reaction_6 hypernym "http://identifiers.org/efo/0000480"
+  reaction_7 hypernym "http://identifiers.org/efo/0000480"
+end
+
+New_Model is "Huo2017 - SEIS epidemic model with the impact of media"
+
+New_Model model_entity_is "http://identifiers.org/biomodels.db/MODEL1808280008",
+                          "http://identifiers.org/biomodels.db/BIOMD0000000715"
+New_Model property "http://identifiers.org/mamo/MAMO_0000046"
+New_Model property "http://identifiers.org/efo/0005741"
+New_Model taxon "http://identifiers.org/taxonomy/9606"
+New_Model description "http://identifiers.org/doi/10.1016/j.physa.2017.08.139"

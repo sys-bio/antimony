@@ -1,0 +1,122 @@
+// Created by libAntimony v2.13.0
+model *Lee2017___Paracetamol_first_pass_metabolism_PK_model()
+
+  // Compartments and Species:
+  compartment Apical, Caco_2, Basolateral___HepG2;
+  species $C_para_Apical in Apical, $C_para_Caco_2 in Caco_2, $C_para__Basolateral___HepG2_ in Basolateral___HepG2;
+  species $C_sulf_Apical in Apical, $C_sulf_Caco_2 in Caco_2, $C_sulf__Basolateral___HepG2_ in Basolateral___HepG2;
+  species $C_glu_Apical in Apical, $C_glu_Caco_2 in Caco_2, $C_glu__Basolateral___HepG2_ in Basolateral___HepG2;
+
+  // Assignment Rules:
+  V_api := piecewise(500, time <= time_threshold, 400);
+  V_caco := piecewise(0.33, time <= time_threshold, 0.33);
+  V_basol := piecewise(380, time <= time_threshold, 280);
+
+  // Rate Rules:
+  C_para_Apical' = -1*P_para*Ai*(C_para_Apical - C_para_Caco_2)/V_api;
+  C_para_Caco_2' = (P_para*Ai*(C_para_Apical - C_para_Caco_2) - P_para*Ai*(C_para_Caco_2 - C_para__Basolateral___HepG2_) - Mp_s_caco*C_para_Caco_2*V_caco - Mp_g_caco*C_para_Caco_2*V_caco)/V_caco;
+  C_para__Basolateral___HepG2_' = (P_para*Ai*(C_para_Caco_2 - C_para__Basolateral___HepG2_) - Mp_s_HepG2*C_para__Basolateral___HepG2_*V_basol - Mp_g_HepG2*C_para__Basolateral___HepG2_*V_basol)/V_basol;
+  C_sulf_Apical' = -1*P_sulf*Ai*(C_sulf_Apical - C_sulf_Caco_2)/V_api;
+  C_sulf_Caco_2' = ((P_sulf*Ai*(C_sulf_Apical - C_sulf_Caco_2) - P_sulf*Ai*(C_sulf_Caco_2 - C_sulf__Basolateral___HepG2_)) + Mp_s_caco*C_para_Caco_2*V_caco)/V_caco;
+  C_sulf__Basolateral___HepG2_' = (P_sulf*Ai*(C_sulf_Caco_2 - C_sulf__Basolateral___HepG2_) + Mp_s_HepG2*C_para__Basolateral___HepG2_*V_basol)/V_basol;
+  C_glu_Apical' = -1*P_glu*Ai*(C_glu_Apical - C_glu_Caco_2)/V_api;
+  C_glu_Caco_2' = ((P_glu*Ai*(C_glu_Apical - C_glu_Caco_2) - P_glu*Ai*(C_glu_Caco_2 - C_glu__Basolateral___HepG2_)) + Mp_g_caco*C_para_Caco_2*V_caco)/V_caco;
+  C_glu__Basolateral___HepG2_' = (P_glu*Ai*(C_glu_Caco_2 - C_glu__Basolateral___HepG2_) + Mp_g_HepG2*C_para__Basolateral___HepG2_*V_basol)/V_basol;
+
+  // Species initializations:
+  C_para_Apical = 2500;
+  C_para_Caco_2 = 1e-15;
+  C_para__Basolateral___HepG2_ = 5;
+  C_sulf_Apical = 1e-15;
+  C_sulf_Caco_2 = 1e-15;
+  C_sulf__Basolateral___HepG2_ = 1e-15;
+  C_glu_Apical = 1e-15;
+  C_glu_Caco_2 = 1e-15;
+  C_glu__Basolateral___HepG2_ = 1e-15;
+
+  // Compartment initializations:
+  Apical = 1;
+  Caco_2 = 1;
+  Basolateral___HepG2 = 1;
+
+  // Variable initializations:
+  P_para = 103.8;
+  Ai = 0.33;
+  Mp_s_caco = 14.9;
+  Mp_g_caco = 17.6;
+  Mp_s_HepG2 = 0.35;
+  Mp_g_HepG2 = 0.59;
+  P_sulf = 49.9;
+  P_glu = 58.9;
+  time_threshold = 6;
+
+  // Other declarations:
+  var V_api, V_caco, V_basol;
+  const Apical, Caco_2, Basolateral___HepG2, P_para, Ai, Mp_s_caco, Mp_g_caco;
+  const Mp_s_HepG2, Mp_g_HepG2, P_sulf, P_glu, time_threshold;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 3600 second;
+  unit substance = 1e-6 mole;
+
+  // Display Names:
+  time_unit is "time";
+  Caco_2 is "Caco-2";
+  Basolateral___HepG2 is "Basolateral + HepG2";
+  C_para_Apical is "C_para";
+  C_para_Caco_2 is "C_para";
+  C_para__Basolateral___HepG2_ is "C_para";
+  C_sulf_Apical is "C_sulf";
+  C_sulf_Caco_2 is "C_sulf";
+  C_sulf__Basolateral___HepG2_ is "C_sulf";
+  C_glu_Apical is "C_glu";
+  C_glu_Caco_2 is "C_glu";
+  C_glu__Basolateral___HepG2_ is "C_glu";
+
+  // CV terms:
+  Caco_2 hypernym "http://identifiers.org/bto/BTO:0000195"
+  Basolateral___HepG2 hypernym "http://identifiers.org/bto/BTO:0000599"
+  C_para_Apical hypernym "http://identifiers.org/kegg.drug/D00217"
+  C_para_Apical hypernym "http://identifiers.org/chebi/CHEBI:46195"
+  P_para encodement "http://identifiers.org/ncit/C82333"
+  Ai hypernym "http://identifiers.org/ncit/C25157"
+  C_para_Caco_2 hypernym "http://identifiers.org/chebi/CHEBI:46195"
+  C_para_Caco_2 hypernym "http://identifiers.org/kegg.drug/D00217"
+  V_api hypernym "http://identifiers.org/sbo/SBO:0000468"
+  C_para__Basolateral___HepG2_ hypernym "http://identifiers.org/chebi/CHEBI:46195"
+  C_para__Basolateral___HepG2_ hypernym "http://identifiers.org/kegg.drug/D00217"
+  Mp_s_caco encodement "http://identifiers.org/ncit/C26633"
+  V_caco hypernym "http://identifiers.org/sbo/SBO:0000468"
+  Mp_g_caco encodement "http://identifiers.org/ncit/C26633"
+  Mp_s_HepG2 encodement "http://identifiers.org/ncit/C26633"
+  V_basol hypernym "http://identifiers.org/sbo/SBO:0000468"
+  Mp_g_HepG2 encodement "http://identifiers.org/ncit/C26633"
+  C_sulf_Apical hypernym "http://identifiers.org/chebi/CHEBI:32635"
+  P_sulf encodement "http://identifiers.org/ncit/C82333"
+  C_sulf_Caco_2 hypernym "http://identifiers.org/chebi/CHEBI:32635"
+  C_sulf__Basolateral___HepG2_ hypernym "http://identifiers.org/chebi/CHEBI:32635"
+  C_glu_Apical hypernym "http://identifiers.org/chebi/CHEBI:46195"
+  C_glu_Apical hypernym "http://identifiers.org/kegg.drug/D00217"
+  C_glu_Apical hypernym "http://identifiers.org/ncit/C63812"
+  P_glu encodement "http://identifiers.org/ncit/C82333"
+  C_glu_Caco_2 hypernym "http://identifiers.org/ncit/C63812"
+  C_glu_Caco_2 hypernym "http://identifiers.org/chebi/CHEBI:46195"
+  C_glu_Caco_2 hypernym "http://identifiers.org/kegg.drug/D00217"
+  C_glu__Basolateral___HepG2_ hypernym "http://identifiers.org/kegg.drug/D00217"
+  C_glu__Basolateral___HepG2_ hypernym "http://identifiers.org/chebi/CHEBI:46195"
+  C_glu__Basolateral___HepG2_ hypernym "http://identifiers.org/ncit/C63812"
+  time_threshold encodement "http://identifiers.org/ncit/C25662"
+end
+
+Lee2017___Paracetamol_first_pass_metabolism_PK_model is "Lee2017 - Paracetamol first-pass metabolism PK model"
+
+Lee2017___Paracetamol_first_pass_metabolism_PK_model model_entity_is "http://identifiers.org/biomodels.db/MODEL1803050002",
+                                                                     "http://identifiers.org/biomodels.db/BIOMD0000000947"
+Lee2017___Paracetamol_first_pass_metabolism_PK_model part "http://identifiers.org/kegg.drug/D00217"
+Lee2017___Paracetamol_first_pass_metabolism_PK_model hypernym "http://identifiers.org/ncit/C49663"
+Lee2017___Paracetamol_first_pass_metabolism_PK_model container "http://identifiers.org/bto/BTO:0000195"
+Lee2017___Paracetamol_first_pass_metabolism_PK_model container "http://identifiers.org/bto/BTO:0000599"
+Lee2017___Paracetamol_first_pass_metabolism_PK_model taxon "http://identifiers.org/taxonomy/9606"
+Lee2017___Paracetamol_first_pass_metabolism_PK_model description "http://identifiers.org/pubmed/29116458"
+Lee2017___Paracetamol_first_pass_metabolism_PK_model property "http://identifiers.org/mamo/MAMO_0000046"

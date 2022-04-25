@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *MODEL1403050003()
 
   // Compartments and Species:
@@ -9,7 +9,7 @@ model *MODEL1403050003()
   species PrER in cell, mGFP in cell, CD95L in cell;
 
   // Assignment Rules:
-  CD95act := (CD95^3*KDL^2*CD95L)/((CD95L + KDL)*(CD95^2*KDL^2 + KDR*CD95L^2 + 2*KDR*KDL*CD95L + KDR*KDL^2));
+  CD95act := CD95^3*KDL^2*CD95L/((CD95L + KDL)*(CD95^2*KDL^2 + KDR*CD95L^2 + 2*KDR*KDL*CD95L + KDR*KDL^2));
 
   // Reactions:
   reaction_1: FADD => DISC; kon_FADD*CD95act*FADD*cell;
@@ -61,7 +61,7 @@ model *MODEL1403050003()
   kDISC = 0.000364965874405544;
   kD216 = 0.00639775937416746;
   kD216trans_p55 = 0.000223246421372882;
-  kD216trans_p43 = 5.29906975294056e-005;
+  kD216trans_p43 = 5.29906975294056e-05;
   kD374 = 0.000644612643975149;
   kD374trans_p55 = 0.000543518631342483;
   kD374trans_p43 = 0.00413530054938906;
@@ -76,4 +76,46 @@ model *MODEL1403050003()
   const cell, kon_FADD, koff_FADD, kDISC, kD216, kD216trans_p55, kD216trans_p43;
   const kD374, kD374trans_p55, kD374trans_p43, kdiss_p18, kBid, kD374probe;
   const KDR, KDL;
+
+  // CV terms:
+  cell hypernym "http://identifiers.org/go/GO:0005623"
+  CD95 hypernym "http://identifiers.org/uniprot/P25445"
+  FADD hypernym "http://identifiers.org/uniprot/Q13158"
+  p55free encoder "http://identifiers.org/ensembl/ENSG00000064012"
+  Bid hypernym "http://identifiers.org/uniprot/P55957"
+  PrNES_mCherry property "http://identifiers.org/biomodels.sbo/SBO:0000178"
+  PrNES_mCherry part "http://identifiers.org/chebi/CHEBI:50406",
+                     "http://identifiers.org/uniprot/Q9U6Y8",
+                     "http://identifiers.org/so/SO:0001531"
+  PrER_mGFP property "http://identifiers.org/biomodels.sbo/SBO:0000178"
+  PrER_mGFP part "http://identifiers.org/chebi/CHEBI:50406",
+                 "http://identifiers.org/uniprot/P27824",
+                 "http://identifiers.org/uniprot/P42212"
+  DISC hypernym "http://identifiers.org/go/GO:0031264"
+  DISCp55 part "http://identifiers.org/ensembl/ENSG00000064012",
+               "http://identifiers.org/go/GO:0031264"
+  p30 encoder "http://identifiers.org/ensembl/ENSG00000064012"
+  p43 parthood "http://identifiers.org/uniprot/O15519"
+  p18 parthood "http://identifiers.org/uniprot/Q14790"
+  p18inactive property "http://identifiers.org/pato/PATO:0002355"
+  p18inactive hypernym "http://identifiers.org/uniprot/Q14790"
+  tBid part "http://identifiers.org/uniprot/P55957",
+            "http://identifiers.org/go/GO:0097345"
+  PrNES part "http://identifiers.org/chebi/CHEBI:50406",
+             "http://identifiers.org/so/SO:0001531"
+  mCherry hypernym "http://identifiers.org/uniprot/Q9U6Y8"
+  PrER part "http://identifiers.org/chebi/CHEBI:50406",
+            "http://identifiers.org/uniprot/P27824"
+  mGFP hypernym "http://identifiers.org/uniprot/P42212"
+  CD95L hypernym "http://identifiers.org/uniprot/P48023"
 end
+
+MODEL1403050003 is "Kallenberger2014 - CD95L induced apoptosis initiated by caspase-8, wild-type HeLa cells (cis/trans-cis/trans variant)"
+
+MODEL1403050003 model_entity_is "http://identifiers.org/biomodels.db/MODEL1403050003"
+MODEL1403050003 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000526"
+MODEL1403050003 description "http://identifiers.org/pubmed/24619646"
+MODEL1403050003 property "http://identifiers.org/mamo/MAMO_0000046"
+MODEL1403050003 taxon "http://identifiers.org/taxonomy/9606"
+MODEL1403050003 container "http://identifiers.org/bto/BTO:0000567"
+MODEL1403050003 hypernym "http://identifiers.org/go/GO:0006915"

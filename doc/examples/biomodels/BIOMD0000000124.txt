@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *model_0000001()
 
   // Compartments and Species:
@@ -27,8 +27,8 @@ model *model_0000001()
   jserca := kserca*c;
   jleak := pleak*(cer - c);
   jip3 := oinf*(cer - c);
-  oinf := c/(dact + c)*(ip3/(dip3 + ip3))*(dinact/(dinact + c));
-  jer := (jleak + jip3) - jserca;
+  oinf := (c/(dact + c))*(ip3/(dip3 + ip3))*(dinact/(dinact + c));
+  jer := jleak + jip3 - jserca;
 
   // Rate Rules:
   V' = -(ica + ik + ikca + ikatp + iir)/cm;
@@ -42,7 +42,7 @@ model *model_0000001()
   reaction_0000006:  => cer; -fer*vcytver*jer*cell;
 
   // Events:
-  event_0000001: at time > 3.000000e+004: gkatp = 530;
+  event_0000001: at time > 3e4: gkatp = 530;
 
   // Species initializations:
   c = 0.1;
@@ -62,7 +62,7 @@ model *model_0000001()
   vir = -75;
   cm = 5300;
   taun = 16;
-  alpha = 4.5e-006;
+  alpha = 4.5e-06;
   fcyt = 0.01;
   kpmca = 0.2;
   kd = 0.3;
@@ -121,4 +121,25 @@ model *model_0000001()
   iir is "erg like k current";
   reaction_0000005 is "cytosolic free Ca2+ concentration";
   reaction_0000006 is "ER Ca2+ concentration";
+
+  // CV terms:
+  cell hypernym "http://identifiers.org/go/GO:0005623"
+  c identity "http://identifiers.org/chebi/CHEBI:29108",
+             "http://identifiers.org/kegg.compound/C00076"
+  cer identity "http://identifiers.org/chebi/CHEBI:29108",
+               "http://identifiers.org/kegg.compound/C00076"
+  reaction_0000005 hypernym "http://identifiers.org/go/GO:0051924"
+  reaction_0000006 hypernym "http://identifiers.org/go/GO:0051924"
 end
+
+model_0000001 is "Wu2006_K+Channel"
+
+model_0000001 model_entity_is "http://identifiers.org/biomodels.db/MODEL2981976537"
+model_0000001 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000124"
+model_0000001 description "http://identifiers.org/pubmed/16375866"
+model_0000001 origin "http://identifiers.org/pubmed/6305437",
+                     "http://identifiers.org/pubmed/15294427"
+model_0000001 taxon "http://identifiers.org/taxonomy/10114"
+model_0000001 hypernym "http://identifiers.org/go/GO:0015272",
+                       "http://identifiers.org/go/GO:0019228",
+                       "http://identifiers.org/go/GO:0016570"

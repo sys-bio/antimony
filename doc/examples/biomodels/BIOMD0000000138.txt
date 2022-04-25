@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *model_0000001()
 
   // Compartments and Species:
@@ -21,7 +21,7 @@ model *model_0000001()
 
   // Rate Rules:
   V' = -(ica + ik)/Cm;
-  n' = (lambda*(phik - n))/taun;
+  n' = lambda*(phik - n)/taun;
   h' = (phih - h)/tauh;
 
   // Reactions:
@@ -79,4 +79,21 @@ model *model_0000001()
   vca is "reversal potential for Ca";
   vk is "reversal potential for K";
   Cm is "membrane capacitance";
+
+  // CV terms:
+  cell hypernym "http://identifiers.org/go/GO:0005623"
+  c identity "http://identifiers.org/chebi/CHEBI:29108",
+             "http://identifiers.org/kegg.compound/C00076"
+  reaction_0000004 hypernym "http://identifiers.org/go/GO:0006816"
 end
+
+model_0000001 is "Tabak2007_dopamine"
+
+model_0000001 model_entity_is "http://identifiers.org/biomodels.db/MODEL6090663405"
+model_0000001 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000138"
+model_0000001 description "http://identifiers.org/pubmed/17058022"
+model_0000001 taxon "http://identifiers.org/taxonomy/7711"
+model_0000001 hypernym "http://identifiers.org/go/GO:0014046",
+                       "http://identifiers.org/go/GO:0005267",
+                       "http://identifiers.org/go/GO:1902211"
+model_0000001 property "http://identifiers.org/mamo/MAMO_0000046"

@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Schmierer_2008_Smad_Tgfb()
 
   // Compartments and Species:
@@ -26,8 +26,8 @@ model *Schmierer_2008_Smad_Tgfb()
   reaction_6: pS2_n + S4_n -> S24_n; nucleus*(kon*pS2_n*S4_n - koff*S24_n);
   reaction_7: S24_c => S24_n; kin_CIF*S24_c;
   reaction_8: S22_c => S22_n; kin_CIF*S22_c;
-  reaction_9: 2pS2_c -> S22_c; cytosol*(kon*pS2_c*pS2_c - koff*S22_c);
-  reaction_10: 2pS2_n -> S22_n; nucleus*(kon*pS2_n*pS2_n - koff*S22_n);
+  reaction_9: 2 pS2_c -> S22_c; cytosol*(kon*pS2_c*pS2_c - koff*S22_c);
+  reaction_10: 2 pS2_n -> S22_n; nucleus*(kon*pS2_n*pS2_n - koff*S22_n);
   reaction_11: pS2_n + $PPase => S2_n + $PPase; nucleus*kdephos*pS2_n*PPase;
   reaction_12: R + $TGFb_c => R_act; cytosol*k_TGFb*R*TGFb_c;
   reaction_13: R_act + $SB -> R_inact; cytosol*(kon_SB*R_act*SB - koff_SB*R_inact);
@@ -35,8 +35,8 @@ model *Schmierer_2008_Smad_Tgfb()
   reaction_15: pG_n + $PPase => G_n + $PPase; nucleus*kdephos*pG_n*PPase;
   reaction_16: G_c -> G_n; kin*G_c - kex*G_n;
   reaction_17: pG_c -> pG_n; kin*pG_c - kex*pG_n;
-  reaction_18: 2pG_c -> GG_c; cytosol*(kon*pG_c*pG_c - koff*GG_c);
-  reaction_19: 2pG_n -> GG_n; nucleus*(kon*pG_n*pG_n - koff*GG_n);
+  reaction_18: 2 pG_c -> GG_c; cytosol*(kon*pG_c*pG_c - koff*GG_c);
+  reaction_19: 2 pG_n -> GG_n; nucleus*(kon*pG_n*pG_n - koff*GG_n);
   reaction_20: pS2_c + pG_c -> G2_c; cytosol*(kon*pS2_c*pG_c - koff*G2_c);
   reaction_21: pS2_n + pG_n -> G2_n; nucleus*(kon*pS2_n*pG_n - koff*G2_n);
   reaction_22: pG_c + S4_c -> G4_c; cytosol*(kon*pG_c*S4_c - koff*G4_c);
@@ -73,8 +73,8 @@ model *Schmierer_2008_Smad_Tgfb()
   R_inact = 0;
 
   // Compartment initializations:
-  nucleus = 1e-012;
-  cytosol = 2.27e-012;
+  nucleus = 1e-12;
+  cytosol = 2.27e-12;
 
   // Variable initializations:
   SB_add = 10000;
@@ -83,15 +83,15 @@ model *Schmierer_2008_Smad_Tgfb()
   t_SB has time_unit;
   SB_0 = 0;
   SB_0 has nM;
-  kin = 5.93e-015;
+  kin = 5.93e-15;
   kin has lp;
-  kex = 1.26e-014;
+  kex = 1.26e-14;
   kex has lp;
   kphos = 0.0004037081673984;
   kphos has pnMp;
   kdephos = 0.00656639;
   kdephos has pnMp;
-  kin_CIF = 3.36347821e-014;
+  kin_CIF = 3.36347821e-14;
   kin_CIF has lp;
   kon = 0.00183925592901392;
   kon has pnMp;
@@ -192,4 +192,123 @@ model *Schmierer_2008_Smad_Tgfb()
   reaction_24 is "Reaction  9C Import GG";
   reaction_25 is "Reaction  9B Import G2";
   reaction_26 is "Reaction  8B Import G4";
+
+  // CV terms:
+  nucleus identity "http://identifiers.org/go/GO:0005634"
+  cytosol identity "http://identifiers.org/go/GO:0005737"
+  PPase hypernym "http://identifiers.org/uniprot/P35813",
+                 "http://identifiers.org/go/GO:0004721"
+  S2_n hypernym "http://identifiers.org/uniprot/Q15796"
+  pS2_n hypernym "http://identifiers.org/uniprot/Q15796",
+                 "http://identifiers.org/kegg.compound/C00562"
+  G_n hypernym "http://identifiers.org/uniprot/Q15796"
+  G_n version "http://identifiers.org/interpro/IPR000786"
+  pG_n hypernym "http://identifiers.org/uniprot/Q15796",
+                "http://identifiers.org/kegg.compound/C00562"
+  pG_n version "http://identifiers.org/interpro/IPR000786"
+  S22_n hypernym "http://identifiers.org/go/GO:0043234"
+  S22_n part "http://identifiers.org/uniprot/Q15796"
+  S22_n version "http://identifiers.org/kegg.compound/C00562"
+  S24_n hypernym "http://identifiers.org/go/GO:0043234"
+  S24_n part "http://identifiers.org/uniprot/Q15796",
+             "http://identifiers.org/uniprot/Q13485"
+  S24_n version "http://identifiers.org/kegg.compound/C00562"
+  S4_n hypernym "http://identifiers.org/uniprot/Q13485"
+  G2_n hypernym "http://identifiers.org/go/GO:0043234"
+  G2_n part "http://identifiers.org/uniprot/Q15796"
+  G2_n version "http://identifiers.org/interpro/IPR000786",
+               "http://identifiers.org/kegg.compound/C00562"
+  G4_n version "http://identifiers.org/uniprot/Q15796",
+               "http://identifiers.org/uniprot/Q13485"
+  G4_n hypernym "http://identifiers.org/go/GO:0043234"
+  G4_n version "http://identifiers.org/interpro/IPR000786",
+               "http://identifiers.org/kegg.compound/C00562"
+  GG_n part "http://identifiers.org/uniprot/Q15796"
+  GG_n hypernym "http://identifiers.org/go/GO:0043234"
+  GG_n version "http://identifiers.org/interpro/IPR000786",
+               "http://identifiers.org/kegg.compound/C00562"
+  S22_c hypernym "http://identifiers.org/go/GO:0043234"
+  S22_c part "http://identifiers.org/uniprot/Q15796"
+  S22_c version "http://identifiers.org/kegg.compound/C00562"
+  S24_c hypernym "http://identifiers.org/go/GO:0043234"
+  S24_c part "http://identifiers.org/uniprot/Q15796",
+             "http://identifiers.org/uniprot/Q13485"
+  S24_c version "http://identifiers.org/kegg.compound/C00562"
+  S4_c hypernym "http://identifiers.org/uniprot/Q13485"
+  S2_c hypernym "http://identifiers.org/uniprot/Q15796"
+  pS2_c hypernym "http://identifiers.org/uniprot/Q15796",
+                 "http://identifiers.org/kegg.compound/C00562"
+  G_c hypernym "http://identifiers.org/uniprot/Q15796"
+  G_c version "http://identifiers.org/interpro/IPR000786"
+  pG_c hypernym "http://identifiers.org/uniprot/Q15796",
+                "http://identifiers.org/kegg.compound/C00562"
+  pG_c version "http://identifiers.org/interpro/IPR000786"
+  G2_c hypernym "http://identifiers.org/go/GO:0043234"
+  G2_c part "http://identifiers.org/uniprot/Q15796"
+  G2_c version "http://identifiers.org/interpro/IPR000786",
+               "http://identifiers.org/kegg.compound/C00562"
+  G4_c hypernym "http://identifiers.org/go/GO:0043234"
+  G4_c part "http://identifiers.org/uniprot/Q15796",
+            "http://identifiers.org/uniprot/Q13485"
+  G4_c version "http://identifiers.org/interpro/IPR000786",
+               "http://identifiers.org/kegg.compound/C00562"
+  GG_c hypernym "http://identifiers.org/go/GO:0043234"
+  GG_c part "http://identifiers.org/uniprot/Q15796"
+  GG_c version "http://identifiers.org/interpro/IPR000786",
+               "http://identifiers.org/kegg.compound/C00562"
+  TGFb_c version "http://identifiers.org/uniprot/P01137",
+                 "http://identifiers.org/uniprot/P61812",
+                 "http://identifiers.org/uniprot/P10600"
+  R_act version "http://identifiers.org/uniprot/P36897",
+                "http://identifiers.org/uniprot/Q8NER5",
+                "http://identifiers.org/uniprot/Q5T7S2",
+                "http://identifiers.org/uniprot/P37173"
+  R version "http://identifiers.org/uniprot/P36897",
+            "http://identifiers.org/uniprot/Q5T7S2",
+            "http://identifiers.org/uniprot/Q8NER5",
+            "http://identifiers.org/uniprot/P37173"
+  R_inact version "http://identifiers.org/uniprot/P36897",
+                  "http://identifiers.org/uniprot/Q5T7S2",
+                  "http://identifiers.org/uniprot/Q8NER5",
+                  "http://identifiers.org/uniprot/P37173"
+  SB version "http://identifiers.org/go/GO:0030291"
+  reaction_1 hypernym "http://identifiers.org/go/GO:0006913"
+  reaction_2 hypernym "http://identifiers.org/go/GO:0006913"
+  reaction_3 hypernym "http://identifiers.org/go/GO:0006913"
+  reaction_4 hypernym "http://identifiers.org/ec-code/2.7.11.30",
+                      "http://identifiers.org/go/GO:0004675"
+  reaction_5 hypernym "http://identifiers.org/go/GO:0006461"
+  reaction_6 hypernym "http://identifiers.org/go/GO:0006461"
+  reaction_7 hypernym "http://identifiers.org/go/GO:0006913"
+  reaction_8 hypernym "http://identifiers.org/go/GO:0006913"
+  reaction_9 hypernym "http://identifiers.org/go/GO:0006461"
+  reaction_10 hypernym "http://identifiers.org/go/GO:0006461"
+  reaction_11 hypernym "http://identifiers.org/ec-code/3.1.3.16",
+                       "http://identifiers.org/go/GO:0004722"
+  reaction_12 hypernym "http://identifiers.org/go/GO:0005160"
+  reaction_13 hypernym "http://identifiers.org/go/GO:0030512"
+  reaction_14 hypernym "http://identifiers.org/ec-code/2.7.11.30",
+                       "http://identifiers.org/go/GO:0004675"
+  reaction_15 hypernym "http://identifiers.org/ec-code/3.1.3.16",
+                       "http://identifiers.org/go/GO:0004722"
+  reaction_16 hypernym "http://identifiers.org/go/GO:0006913"
+  reaction_17 hypernym "http://identifiers.org/go/GO:0006913"
+  reaction_18 hypernym "http://identifiers.org/go/GO:0006461"
+  reaction_19 hypernym "http://identifiers.org/go/GO:0006461"
+  reaction_20 hypernym "http://identifiers.org/go/GO:0006461"
+  reaction_21 hypernym "http://identifiers.org/go/GO:0006461"
+  reaction_22 hypernym "http://identifiers.org/go/GO:0006461"
+  reaction_23 hypernym "http://identifiers.org/go/GO:0006461"
+  reaction_24 hypernym "http://identifiers.org/go/GO:0006913"
+  reaction_25 hypernym "http://identifiers.org/go/GO:0006913"
+  reaction_26 hypernym "http://identifiers.org/go/GO:0006913"
 end
+
+Schmierer_2008_Smad_Tgfb is "Schmierer_2008_Smad_Tgfb"
+
+Schmierer_2008_Smad_Tgfb model_entity_is "http://identifiers.org/biomodels.db/MODEL0451870146"
+Schmierer_2008_Smad_Tgfb model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000173"
+Schmierer_2008_Smad_Tgfb description "http://identifiers.org/pubmed/18443295"
+Schmierer_2008_Smad_Tgfb hypernym "http://identifiers.org/kegg.pathway/hsa04350",
+                                  "http://identifiers.org/go/GO:0007179"
+Schmierer_2008_Smad_Tgfb taxon "http://identifiers.org/taxonomy/9606"

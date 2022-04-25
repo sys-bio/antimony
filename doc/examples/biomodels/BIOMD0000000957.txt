@@ -1,0 +1,74 @@
+// Created by libAntimony v2.13.0
+function Rate_Law_for_Susceptible_to_Infected(beta, I, S)
+  beta*I*S;
+end
+
+Rate_Law_for_Susceptible_to_Infected is "Rate Law for Susceptible_to_Infected"
+
+
+model *Roda2020___SIR_model_of_COVID_19_spread_in_Wuhan()
+
+  // Compartments and Species:
+  compartment Wuhan;
+  species Susceptible in Wuhan, Infected in Wuhan, Recovered in Wuhan, Confirmed in Wuhan;
+
+  // Reactions:
+  Susceptible_to_Infected: Susceptible => Infected; Wuhan*Rate_Law_for_Susceptible_to_Infected(beta, Infected, Susceptible);
+  Infected_to_Recovered: Infected => Recovered; Wuhan*mu*Infected;
+  Infected_to_Confirmed: Infected => Confirmed; Wuhan*rho*Infected;
+
+  // Species initializations:
+  Susceptible = 5999755;
+  Infected = 60;
+  Recovered = 0;
+  Confirmed = 0;
+
+  // Compartment initializations:
+  Wuhan = 1;
+
+  // Variable initializations:
+  beta = 2.09e-07;
+  rho = 0.909;
+  mu = 0.1;
+
+  // Other declarations:
+  const Wuhan, beta, rho, mu;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = item;
+
+  // Display Names:
+  time_unit is "time";
+
+  // CV terms:
+  Wuhan hypernym "http://identifiers.org/ncit/C16428"
+  Wuhan hypernym "http://identifiers.org/ncit/C25632"
+  Susceptible hypernym "http://identifiers.org/ido/0000514"
+  Susceptible hypernym "http://identifiers.org/ncit/C171133"
+  Infected hypernym "http://identifiers.org/ido/0000511"
+  Infected hypernym "http://identifiers.org/ncit/C171133"
+  Recovered hypernym "http://identifiers.org/ncit/C171133"
+  Recovered hypernym "http://identifiers.org/ido/0000621"
+  Confirmed hypernym "http://identifiers.org/ncit/C171133"
+  Confirmed hypernym "http://identifiers.org/ncit/C15220"
+  Susceptible_to_Infected hypernym "http://identifiers.org/ncit/C128320"
+  Susceptible_to_Infected hypernym "http://identifiers.org/ncit/C171133"
+  Infected_to_Recovered hypernym "http://identifiers.org/ncit/C25746"
+  Infected_to_Recovered hypernym "http://identifiers.org/ncit/C171133"
+  Infected_to_Confirmed hypernym "http://identifiers.org/ncit/C171133"
+  Infected_to_Confirmed hypernym "http://identifiers.org/ncit/C15220"
+end
+
+Roda2020___SIR_model_of_COVID_19_spread_in_Wuhan is "Roda2020 - SIR model of COVID-19 spread in Wuhan"
+
+Roda2020___SIR_model_of_COVID_19_spread_in_Wuhan description "http://identifiers.org/pubmed/32289100"
+Roda2020___SIR_model_of_COVID_19_spread_in_Wuhan model_entity_is "http://identifiers.org/biomodels.db/MODEL2008110001",
+                                                                 "http://identifiers.org/biomodels.db/BIOMD0000000957"
+Roda2020___SIR_model_of_COVID_19_spread_in_Wuhan hypernym "http://identifiers.org/doid/DOID:0080600"
+Roda2020___SIR_model_of_COVID_19_spread_in_Wuhan taxon "http://identifiers.org/taxonomy/2697049",
+                                                       "http://identifiers.org/taxonomy/9606"
+Roda2020___SIR_model_of_COVID_19_spread_in_Wuhan property "http://identifiers.org/mamo/MAMO_0000046"

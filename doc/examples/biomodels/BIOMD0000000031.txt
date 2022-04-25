@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Markevich2004_MAPK_orderedMM2kinases()
 
   // Compartments and Species:
@@ -7,10 +7,10 @@ model *Markevich2004_MAPK_orderedMM2kinases()
   species $MKP3 in uVol;
 
   // Reactions:
-  v1: M => Mp; uVol*((k1cat*MAPKK1*M)/Km1/(1 + M/Km1));
-  v2: Mp => Mpp; uVol*((k2cat*MAPKK2*Mp)/Km2/(1 + Mp/Km2));
-  v3: Mpp => Mp; uVol*((k3cat*MKP3*Mpp)/Km3/(1 + Mpp/Km3 + Mp/Km4 + M/Km5));
-  v4: Mp => M; uVol*((k4cat*MKP3*Mp)/Km4/(1 + Mpp/Km3 + Mp/Km4 + M/Km5));
+  v1: M => Mp; uVol*(k1cat*MAPKK1*M/Km1/(1 + M/Km1));
+  v2: Mp => Mpp; uVol*(k2cat*MAPKK2*Mp/Km2/(1 + Mp/Km2));
+  v3: Mpp => Mp; uVol*(k3cat*MKP3*Mpp/Km3/(1 + Mpp/Km3 + Mp/Km4 + M/Km5));
+  v4: Mp => M; uVol*(k4cat*MKP3*Mp/Km4/(1 + Mpp/Km3 + Mp/Km4 + M/Km5));
 
   // Species initializations:
   M = 500/uVol;
@@ -46,4 +46,35 @@ model *Markevich2004_MAPK_orderedMM2kinases()
   v2 is "phosphorylation of P-MAPK";
   v3 is "dephosphorylation of PP-MAPK";
   v4 is "dephosphorylation of P-MAPK";
+
+  // CV terms:
+  M hypernym "http://identifiers.org/uniprot/P26696"
+  Mp hypernym "http://identifiers.org/uniprot/P26696"
+  Mpp hypernym "http://identifiers.org/uniprot/P26696"
+  MAPKK1 identity "http://identifiers.org/uniprot/Q05116"
+  MAPKK2 identity "http://identifiers.org/uniprot/Q05116"
+  MKP3 identity "http://identifiers.org/uniprot/Q90W58"
+  v1 homolog "http://identifiers.org/reactome/REACT_136",
+             "http://identifiers.org/reactome/REACT_2247"
+  v1 hypernym "http://identifiers.org/ec-code/2.7.12.2",
+              "http://identifiers.org/obo.go/GO:0006468",
+              "http://identifiers.org/obo.go/GO:0004708"
+  v2 homolog "http://identifiers.org/reactome/REACT_136",
+             "http://identifiers.org/reactome/REACT_2247"
+  v2 hypernym "http://identifiers.org/ec-code/2.7.12.2",
+              "http://identifiers.org/obo.go/GO:0004708",
+              "http://identifiers.org/obo.go/GO:0000187"
+  v3 hypernym "http://identifiers.org/ec-code/3.1.3.16",
+              "http://identifiers.org/obo.go/GO:0000188",
+              "http://identifiers.org/obo.go/GO:0006470"
+  v4 hypernym "http://identifiers.org/ec-code/3.1.3.16",
+              "http://identifiers.org/obo.go/GO:0006470"
 end
+
+Markevich2004_MAPK_orderedMM2kinases is "Markevich2004_MAPK_orderedMM2kinases"
+
+Markevich2004_MAPK_orderedMM2kinases model_entity_is "http://identifiers.org/biomodels.db/MODEL6618738800"
+Markevich2004_MAPK_orderedMM2kinases model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000031"
+Markevich2004_MAPK_orderedMM2kinases description "http://identifiers.org/pubmed/14744999"
+Markevich2004_MAPK_orderedMM2kinases hypernym "http://identifiers.org/obo.go/GO:0000165"
+Markevich2004_MAPK_orderedMM2kinases taxon "http://identifiers.org/taxonomy/8355"

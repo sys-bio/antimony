@@ -1,0 +1,230 @@
+// Created by libAntimony v2.13.0
+model *Zhu2015___combined_gemcitabine_and_birinapant_in_pancreatic_cancer_cells___mechanistic_PD_model()
+
+  // Compartments and Species:
+  compartment Pancreas;
+  species $G1 in Pancreas, $G2 in Pancreas, $S in Pancreas, $R_apo in Pancreas;
+  species $R_other in Pancreas, $R_total in Pancreas, $R_live in Pancreas;
+
+  // Assignment Rules:
+  Inh_3 := Imax_3*R_live/(IR50 + R_live);
+  Inh_b := Imax_b*C_b^Hi_b/(IC50_b^Hi_b + C_b^Hi_b);
+  Inh_1 := R_live/(IR50 + R_live);
+  Sti_other_g := Kother_g*C_g^Hother_g;
+  Sti_other_b := Kother_b*C_b^Hother_b;
+  k_other := piecewise(0.000297, (C_b! = 0) && (C_g! = 0), 0);
+  Inh_g := piecewise(Imax_g*C_g^Hi_g/(IC50_g^Hi_g + C_g^Hi_g), (C_b == 0) && (time <= Tlag_r), piecewise((Imax_g*C_g^Hi_g/(IC50_g^Hi_g + C_g^Hi_g))*exp(-1*k_repair*(time - Tlag_r)), (C_b == 0) && (time > Tlag_r), piecewise(Imax_g*C_g^Hi_g/((Psi_i*IC50_g)^Hi_g + C_g^Hi_g), (C_b! = 0) && (time <= Tlag_re), piecewise((Imax_g*C_g^Hi_g/((Psi_i*IC50_g)^Hi_g + C_g^Hi_g))*exp(-1*(1 - k_comb2*C_b)*k_repair*(time - Tlag_re)), (C_b! = 0) && (time > Tlag_re), 0))));
+  R_total := G1 + S + G2 + R_apo + R_other;
+  R_live := G1 + S + G2;
+  Tlag_re := (1 + k_comb1*C_b)*Tlag_r;
+  Tlag_r := piecewise(0, C_g == 0, k_delay*ln(C_g));
+  Sti_g := piecewise(0, time <= Tlag_sg, Smax_g*C_g^Hs_g/(SC50_g^Hs_g + C_g^Hs_g));
+  Sti_b := Smax_b*C_b^Hs_b/((Psi_s*SC50_b)^Hs_b + C_b^Hs_b);
+  CURVE_G1 := G1/R_total;
+  CURVE_S := S/R_total;
+  CURVE_G2 := G2/R_total;
+  CURVE_FIGURE_7a_d_g := R_live/R_total;
+  CURVE_FIGURE_7b_r_h := R_apo/R_total;
+
+  // Rate Rules:
+  G1' = 2*(1 - Inh_3)*(1 - Inh_b)*k3*G2 - (1 - Inh_1)*(1 - Inh_b)*k1*G1 - (1 + Sti_apo_g)*(1 + Sti_apo_b)*k_apo*G1 - (1 + Sti_other_g)*(1 + Sti_other_b)*k_other*G1;
+  G2' = (1 - Inh_g)*k2*S - (1 - Inh_3)*(1 - Inh_b)*k3*G2 - (1 + Sti_apo_g)*(1 + Sti_apo_b)*k_apo*G2 - (1 + Sti_other_g)*(1 + Sti_other_b)*k_other*G2;
+  S' = (1 - Inh_1)*(1 - Inh_b)*k1*G1 - (1 - Inh_g)*k2*S - (1 + Sti_apo_g)*(1 + Sti_apo_b)*k_apo*S - (1 + Sti_other_g)*(1 + Sti_other_b)*k_other*S;
+  R_apo' = (1 + Sti_apo_g)*(1 + Sti_apo_b)*k_apo*(G1 + S + G2) - (1 + Sti_apo_g)*(1 + Sti_apo_b)*f1*k_apo*R_apo;
+  R_other' = (1 + Sti_other_g)*(1 + Sti_other_b)*k_other*(G1 + S + G2) - k_other*R_other;
+
+  // Species initializations:
+  G1 = f_G1__0*R_0/100;
+  G2 = f_G2__0*R_0/100;
+  S = f_S__0*R_0/100;
+  R_apo = f_apo__0*R_0/100;
+  R_other = f_other__0*R_0/100;
+
+  // Compartment initializations:
+  Pancreas = 1;
+
+  // Variable initializations:
+  f_G1__0 = 48.1;
+  R_0 = 236000;
+  k3 = 0.222;
+  k1 = 0.357;
+  Sti_apo_g = 0;
+  Sti_apo_b = 0;
+  k_apo = 0.00394;
+  f_S__0 = 10.8;
+  k2 = 0.114;
+  f_G2__0 = 100 - f_apo__0 - f_G1__0 - f_S__0 - f_other__0;
+  f_apo__0 = 5;
+  f1 = 0.467;
+  f_other__0 = 1.5;
+  IR50 = 123000;
+  Imax_3 = 0.753;
+  Imax_g = 0.878;
+  C_g = 20;
+  C_b = 500;
+  Hi_g = 4.34;
+  Hs_b = 1.24;
+  Hi_b = 1;
+  Hs_g = 3;
+  k_comb1 = 0.000919;
+  Tlag_sg = 38.7;
+  Hother_g = 0.1;
+  Smax_b = 3.72;
+  Psi_i = piecewise(0.949, (C_b! = 0) && (C_g! = 0), 1);
+  Psi_s = piecewise(1.26, (C_b! = 0) && (C_g! = 0), 1);
+  Smax_g = 2.74;
+  SC50_g = 23.6;
+  SC50_b = 50.1;
+  k_comb2 = 0.000775;
+  k_repair = 0.0495;
+  k_delay = 18.6;
+  Imax_b = 0.177;
+  IC50_g = 6;
+  IC50_b = 154;
+  k_tau = 0.376;
+  Kother_g = 1e-05;
+  Kother_b = 0.0055;
+  Hother_b = 1;
+  CURVE_FIGURE_7c_f_i = 0;
+
+  // Other declarations:
+  var Inh_3, Inh_b, Inh_1, Sti_other_g, Sti_other_b, k_other, Inh_g, Tlag_re;
+  var Tlag_r, Sti_g, Sti_b, CURVE_G1, CURVE_S, CURVE_G2, CURVE_FIGURE_7a_d_g;
+  var CURVE_FIGURE_7b_r_h;
+  const Pancreas, f_G1__0, R_0, k3, k1, Sti_apo_g, Sti_apo_b, k_apo, f_S__0;
+  const k2, f_G2__0, f_apo__0, f1, f_other__0, IR50, Imax_3, Imax_g, C_g;
+  const C_b, Hi_g, Hs_b, Hi_b, Hs_g, k_comb1, Tlag_sg, Hother_g, Smax_b, Psi_i;
+  const Psi_s, Smax_g, SC50_g, SC50_b, k_comb2, k_repair, k_delay, Imax_b;
+  const IC50_g, IC50_b, k_tau, Kother_g, Kother_b, Hother_b, CURVE_FIGURE_7c_f_i;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  f_G1__0 is "f(G1)_0";
+  f_S__0 is "f(S)_0";
+  f_G2__0 is "f(G2)_0";
+  f_apo__0 is "f(apo)_0";
+  f_other__0 is "f(other)_0";
+  CURVE_FIGURE_7a_d_g is "CURVE_FIGURE_7a/d/g";
+  CURVE_FIGURE_7b_r_h is "CURVE_FIGURE_7b/r/h";
+  CURVE_FIGURE_7c_f_i is "CURVE_FIGURE_7c/f/i";
+
+  // CV terms:
+  Pancreas hypernym "http://identifiers.org/bto/BTO:0000988"
+  G1 hypernym "http://identifiers.org/bto/BTO:0000304"
+  G1 property "http://identifiers.org/ncit/C17355"
+  G1 property "http://identifiers.org/go/GO:0051318"
+  f_G1__0 hypernym "http://identifiers.org/ncit/C85644"
+  R_0 hypernym "http://identifiers.org/ncit/C85644"
+  Inh_3 class "http://identifiers.org/ncit/C29895",
+              "http://identifiers.org/ncit/C15632"
+  Inh_3 hypernym "http://identifiers.org/ncit/C29895"
+  Inh_b class "http://identifiers.org/ncit/C15632",
+              "http://identifiers.org/ncit/C29895"
+  Inh_b hypernym "http://identifiers.org/ncit/C15632"
+  k3 encodement "http://identifiers.org/go/GO:0044770"
+  G2 part "http://identifiers.org/go/GO:0000279"
+  G2 part "http://identifiers.org/go/GO:0051319"
+  G2 hypernym "http://identifiers.org/brenda/BTO:0000304"
+  G2 property "http://identifiers.org/ncit/C17356"
+  Inh_1 class "http://identifiers.org/ncit/C29895",
+              "http://identifiers.org/ncit/C15632"
+  Inh_1 hypernym "http://identifiers.org/ncit/C29895"
+  k1 encodement "http://identifiers.org/ncit/C25868"
+  k1 encodement "http://identifiers.org/go/GO:0044843"
+  Sti_apo_g class "http://identifiers.org/ncit/C40715",
+                  "http://identifiers.org/ncit/C15632"
+  Sti_apo_g hypernym "http://identifiers.org/ncit/C40715"
+  Sti_apo_b class "http://identifiers.org/ncit/C40715",
+                  "http://identifiers.org/ncit/C15632"
+  Sti_apo_b hypernym "http://identifiers.org/ncit/C40715"
+  k_apo encodement "http://identifiers.org/ncit/C17557"
+  Sti_other_g class "http://identifiers.org/go/GO:0008219",
+                    "http://identifiers.org/ncit/C15632"
+  Sti_other_g hypernym "http://identifiers.org/go/GO:0008219"
+  Sti_other_b class "http://identifiers.org/go/GO:0008219",
+                    "http://identifiers.org/ncit/C15632"
+  Sti_other_b hypernym "http://identifiers.org/go/GO:0008219"
+  k_other encodement "http://identifiers.org/go/GO:0008219"
+  S hypernym "http://identifiers.org/bto/BTO:0000304"
+  S property "http://identifiers.org/ncit/C17395"
+  S property "http://identifiers.org/go/GO:0051320"
+  f_S__0 hypernym "http://identifiers.org/ncit/C85644"
+  Inh_g class "http://identifiers.org/ncit/C29895",
+              "http://identifiers.org/ncit/C15632"
+  Inh_g hypernym "http://identifiers.org/ncit/C29895"
+  k2 encodement "http://identifiers.org/go/GO:0044770"
+  f_G2__0 hypernym "http://identifiers.org/ncit/C85644"
+  R_apo hypernym "http://identifiers.org/bto/BTO:0000304"
+  R_apo property "http://identifiers.org/ncit/C17557"
+  f_apo__0 hypernym "http://identifiers.org/ncit/C85644"
+  f1 encodement "http://identifiers.org/ncit/C17557"
+  R_other hypernym "http://identifiers.org/bto/BTO:0000304"
+  f_other__0 hypernym "http://identifiers.org/ncit/C85644"
+  R_total hypernym "http://identifiers.org/obi/OBI:0002076"
+  R_live hypernym "http://identifiers.org/obi/OBI:0002076"
+  R_live property "http://identifiers.org/ncit/C18081"
+  IR50 identity "http://identifiers.org/obi/OBI:0001191"
+  Imax_3 hypernym "http://identifiers.org/sbo/SBO:0000186"
+  Imax_g hypernym "http://identifiers.org/sbo/SBO:0000186"
+  C_g hypernym "http://identifiers.org/kegg.drug/D02368"
+  C_g hypernym "http://identifiers.org/ncit/C66876"
+  C_g hypernym "http://identifiers.org/chebi/CHEBI:175901"
+  C_b hypernym "http://identifiers.org/ncit/C88295"
+  C_b hypernym "http://identifiers.org/kegg.drug/D10417"
+  Hi_g identity "http://identifiers.org/ncit/C48923"
+  Hs_b identity "http://identifiers.org/ncit/C48923"
+  Hi_b identity "http://identifiers.org/ncit/C48923"
+  Hs_g identity "http://identifiers.org/ncit/C48923"
+  Tlag_re encodement "http://identifiers.org/sbo/SBO:0000225"
+  k_comb1 encodement "http://identifiers.org/sbo/SBO:0000225"
+  Tlag_r encodement "http://identifiers.org/sbo/SBO:0000225"
+  Tlag_sg encodement "http://identifiers.org/sbo/SBO:0000225"
+  Hother_g identity "http://identifiers.org/ncit/C48923"
+  Smax_b hypernym "http://identifiers.org/sbo/SBO:0000186"
+  Psi_i encodement "http://identifiers.org/ncit/C54708"
+  Psi_i encodement "http://identifiers.org/go/GO:0071156"
+  Psi_s encodement "http://identifiers.org/ncit/C19928"
+  Psi_s encodement "http://identifiers.org/ncit/C54708"
+  Smax_g hypernym "http://identifiers.org/sbo/SBO:0000186"
+  SC50_g identity "http://identifiers.org/obi/OBI:0001180"
+  SC50_b identity "http://identifiers.org/obi/OBI:0001180"
+  k_comb2 encodement "http://identifiers.org/sbo/SBO:0000225"
+  k_repair encodement "http://identifiers.org/go/GO:0071156"
+  k_delay encodement "http://identifiers.org/sbo/SBO:0000225"
+  Imax_b hypernym "http://identifiers.org/sbo/SBO:0000186"
+  IC50_g identity "http://identifiers.org/obi/OBI:0001191"
+  IC50_b identity "http://identifiers.org/obi/OBI:0001191"
+  Kother_g encodement "http://identifiers.org/go/GO:0008219"
+  Kother_b encodement "http://identifiers.org/go/GO:0008219"
+  Hother_b identity "http://identifiers.org/ncit/C48923"
+  Sti_g class "http://identifiers.org/ncit/C40715",
+              "http://identifiers.org/ncit/C15632"
+  Sti_g hypernym "http://identifiers.org/ncit/C40715"
+  Sti_b class "http://identifiers.org/ncit/C40715",
+              "http://identifiers.org/ncit/C15632"
+  Sti_b hypernym "http://identifiers.org/ncit/C40715"
+  CURVE_G1 property "http://identifiers.org/obi/OBI:0200183"
+  CURVE_S property "http://identifiers.org/obi/OBI:0200183"
+  CURVE_G2 property "http://identifiers.org/obi/OBI:0200183"
+end
+
+Zhu2015___combined_gemcitabine_and_birinapant_in_pancreatic_cancer_cells___mechanistic_PD_model is "Zhu2015 - Combined gemcitabine and birinapant in pancreatic cancer cells - mechanistic PD model"
+
+Zhu2015___combined_gemcitabine_and_birinapant_in_pancreatic_cancer_cells___mechanistic_PD_model model_entity_is "http://identifiers.org/biomodels.db/MODEL1604270001"
+Zhu2015___combined_gemcitabine_and_birinapant_in_pancreatic_cancer_cells___mechanistic_PD_model class "http://identifiers.org/kegg.drug/D02368",
+                                                                                                      "http://identifiers.org/kegg.drug/D10417",
+                                                                                                      "http://identifiers.org/biomodels.db/MODEL1604270001",
+                                                                                                      "http://identifiers.org/bto/BTO:0000988",
+                                                                                                      "http://identifiers.org/ncit/C49662"
+Zhu2015___combined_gemcitabine_and_birinapant_in_pancreatic_cancer_cells___mechanistic_PD_model class "http://identifiers.org/ncit/C191"
+Zhu2015___combined_gemcitabine_and_birinapant_in_pancreatic_cancer_cells___mechanistic_PD_model description "http://identifiers.org/pubmed/26252969"
+Zhu2015___combined_gemcitabine_and_birinapant_in_pancreatic_cancer_cells___mechanistic_PD_model model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000669"
+Zhu2015___combined_gemcitabine_and_birinapant_in_pancreatic_cancer_cells___mechanistic_PD_model part "http://identifiers.org/kegg.drug/D02368"
+Zhu2015___combined_gemcitabine_and_birinapant_in_pancreatic_cancer_cells___mechanistic_PD_model part "http://identifiers.org/kegg.drug/D10417"
+Zhu2015___combined_gemcitabine_and_birinapant_in_pancreatic_cancer_cells___mechanistic_PD_model container "http://identifiers.org/bto/BTO:0000988"
+Zhu2015___combined_gemcitabine_and_birinapant_in_pancreatic_cancer_cells___mechanistic_PD_model description "http://identifiers.org/ncit/C49662",
+                                                                                                            "http://identifiers.org/ncit/C191",
+                                                                                                            "http://identifiers.org/pubmed/26252969"

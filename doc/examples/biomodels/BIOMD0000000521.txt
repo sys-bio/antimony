@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *MODEL1402250000()
 
   // Compartments and Species:
@@ -10,9 +10,9 @@ model *MODEL1402250000()
 
   // Rate Rules:
   C' = -KDE*C;
-  P' = (lambda_P*P*(1 - Pstar/K) + k_Qp_P*Qp) - k_PQ*P - gamma*C*KDE*P;
-  Qp' = gamma*C*KDE*Q - k_Qp_P*Qp - delta_QP*Qp;
-  Q' = k_PQ - gamma*C*KDE*Q;
+  P' = lambda_P*P*(1 - Pstar/K) + k_Qp_P*Qp - k_PQ*P - gamma_*C*KDE*P;
+  Qp' = gamma_*C*KDE*Q - k_Qp_P*Qp - delta_QP*Qp;
+  Q' = k_PQ - gamma_*C*KDE*Q;
 
   // Species initializations:
   C = 1;
@@ -30,19 +30,46 @@ model *MODEL1402250000()
   K = 100;
   k_Qp_P = 0.0031;
   k_PQ = 0.00295;
+  gamma_ = 0.729;
   delta_QP = 0.0087;
   P0 = 7.13;
   Q0 = 41.2;
-  gamma = 0.729;
 
   // Other declarations:
   var Pstar;
-  const plama, tissue, KDE, lambda_P, K, k_Qp_P, k_PQ, delta_QP, P0, Q0, gamma;
+  const plama, tissue, KDE, lambda_P, K, k_Qp_P, k_PQ, gamma_, delta_QP, P0;
+  const Q0;
 
   // Display Names:
   plama is "plasma";
   C is "PCV_plasma";
   P is "Proliferative tissue";
   Qp is "damaged quiescent cells";
+  gamma_ is "gamma";
   Q is "nonproliferative quiescent tissue";
+
+  // CV terms:
+  plama hypernym "http://identifiers.org/bto/BTO:0000131"
+  tissue hypernym "http://identifiers.org/fma/FMA:9637"
+  C part "http://identifiers.org/chebi/CHEBI:71417",
+         "http://identifiers.org/chebi/CHEBI:28445",
+         "http://identifiers.org/chembl.compound/CHEMBL514"
+  C container "http://identifiers.org/bto/BTO:0000131"
+  P hypernym "http://identifiers.org/fma/FMA:9637"
+  P property "http://identifiers.org/pato/PATO:0002102"
+  Qp property "http://identifiers.org/pato/PATO:0001020",
+              "http://identifiers.org/pato/PATO:0002355"
+  Qp hypernym "http://identifiers.org/fma/FMA:9637"
+  Q hypernym "http://identifiers.org/fma/FMA:9637"
+  Q property "http://identifiers.org/pato/PATO:0002355"
 end
+
+MODEL1402250000 is "Ribba2012 - Low-grade gliomas, tumour growth inhibition model"
+
+MODEL1402250000 model_entity_is "http://identifiers.org/biomodels.db/MODEL1402250000"
+MODEL1402250000 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000521"
+MODEL1402250000 description "http://identifiers.org/pubmed/22761472"
+MODEL1402250000 property "http://identifiers.org/mamo/MAMO_0000046"
+MODEL1402250000 taxon "http://identifiers.org/taxonomy/9606"
+MODEL1402250000 hypernym "http://identifiers.org/go/GO:0002357",
+                         "http://identifiers.org/doid/DOID:0060101"

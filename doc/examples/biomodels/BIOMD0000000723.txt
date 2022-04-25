@@ -1,0 +1,505 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function Henri_Michaelis_Menten__irreversible(substrate, Km, V)
+  V*substrate/(Km + substrate);
+end
+
+Henri_Michaelis_Menten__irreversible is "Henri-Michaelis-Menten (irreversible)"
+
+function function_for_ERG(k, M, J)
+  k/(1 + (M/J)^2);
+end
+
+function_for_ERG is "function for ERG"
+
+function function_1k_1m(k, M)
+  k*M;
+end
+
+function_1k_1m is "function 1k 1m"
+
+function function_for_DRG(k, P, J)
+  k*(P/J)^2/(1 + (P/J)^2);
+end
+
+function_for_DRG is "function for DRG"
+
+function function_1k_2m(k, M1, M2)
+  k*M1*M2;
+end
+
+function_1k_2m is "function 1k 2m"
+
+function function_2k_1m(k1, M, k2)
+  k1*M*k2;
+end
+
+function_2k_1m is "function 2k 1m"
+
+function function_for_actCycACdk1(k0, k1, k2, M1, k3, M2, M3)
+  k0*(k1 + k2*M1 + k3*M2)*M3*2;
+end
+
+function_for_actCycACdk1 is "function for actCycACdk1"
+
+function function_for_actCycACdk2_1(k0, k1, k2, M1, k3, M2, M3)
+  (1 - k0)*(k1 + k2*M1 + k3*M2)*M3*2;
+end
+
+function_for_actCycACdk2_1 is "function for actCycACdk2 1"
+
+function function_for_actCycACdk2_2(k0, k1, k2, M)
+  (1 - k0)*(k1 + k2)*M;
+end
+
+function_for_actCycACdk2_2 is "function for actCycACdk2 2"
+
+function function_2k_2m(k1, M1, M2, k2)
+  k1*M1*M2*k2;
+end
+
+function_2k_2m is "function 2k 2m"
+
+function function_for_2k(k1, k2)
+  k1*k2;
+end
+
+function_for_2k is "function for 2k"
+
+function function_for_Cdh1_1(k1, k2, M, P, k3)
+  (k1 + k2*M)*(1 - P)/(k3 + 1 - P);
+end
+
+function_for_Cdh1_1 is "function for Cdh1 1"
+
+function function_for_cdh1_2(k1, M1, M2, k2, M3, S, k3)
+  (k1*(M1 + M2) + k2*M3)*S/(k3 + S);
+end
+
+function_for_cdh1_2 is "function for cdh1 2"
+
+function function_for_APCP_1(k1, M, P, k2)
+  k1*M*(1 - P)/(k2 + 1 - P);
+end
+
+function_for_APCP_1 is "function for APCP 1"
+
+function function_for_Cdc20A(k1, M1, M2, P, k2)
+  k1*M1*(M2 - P)/(k2 + M2 - P);
+end
+
+function_for_Cdc20A is "function for Cdc20A"
+
+function function_for_Cdc20T(k1, M1, k2, M2)
+  k1*M1/(k2 + M2);
+end
+
+function_for_Cdc20T is "function for Cdc20T"
+
+
+model *Weis2014___Data_driven_Mammalian_Cell_Cycle_Model()
+
+  // Compartments and Species:
+  compartment cell;
+  species ERG in cell, DRG in cell, ppRB in cell, E2F in cell, pE2F in cell;
+  species Rb in cell, E2FRB in cell, pE2FRB in cell, actCycD in cell, TriD in cell;
+  species actCycACdk1 in cell, actCycACdk2 in cell, actCycB in cell, actCycE in cell;
+  species cycA in cell, cycB in cell, cycE in cell, CKI in cell, Cdh1 in cell;
+  species preMPF in cell, TriA in cell, APCP in cell, Cdc20A in cell, Cdc20T in cell;
+  species mass in cell;
+
+  // Assignment Rules:
+  v29 := E2FRB*K20*((actCycD + TriD)*LD + LA*(actCycACdk1 + actCycACdk2) + LB*actCycB + LE*actCycE);
+  v30 := pE2FRB*K20*(LD*(actCycD + TriD) + LA*(actCycACdk1 + actCycACdk2) + LB*actCycB + LE*actCycE);
+  v43 := Rb*K20*(LD*(actCycD + TriD) + LA*(actCycACdk1 + actCycACdk2) + LB*actCycB + LE*actCycE);
+  v44 := ppRB*(K19a*(PP1T - PP1A) + K19*PP1A);
+  PP1A := PP1T/(K21*(FE*(actCycACdk1 + actCycACdk2 + actCycE) + FB*actCycB + 1));
+  v45 := K26R*E2FRB;
+  v46 := E2F*(K23a*(actCycACdk1 + actCycACdk2) + K23b*actCycB);
+  v47 := K22*pE2F;
+  v48 := K26*E2F*Rb;
+  v49 := K26R*pE2FRB;
+  v50 := K26*Rb*pE2F;
+  v51 := K22*pE2FRB;
+  v52 := E2FRB*(K23a*(actCycACdk1 + actCycACdk2) + K23b*actCycB);
+  Vatf := katfpp*(actCycACdk1 + actCycACdk2) + katfppp*actCycE + katfpppp*actCycD;
+  Vde := kdep + kdepp*actCycE + kdeppp*(actCycACdk1 + actCycACdk2) + kdepppp*actCycB;
+  Vda := kdap + kdapp*Cdc20A + kacdh1*Cdh1;
+  TFAB := 2*kafab*(actCycACdk1 + actCycACdk2)*Jifb/((kifb - kafab*(actCycACdk1 + actCycACdk2)) + Jafb*kifb + kafab*(actCycACdk1 + actCycACdk2)*Jifb + sqrt(((kifb - kafab*(actCycACdk1 + actCycACdk2)) + Jafb*kifb + kafab*(actCycACdk1 + actCycACdk2)*Jifb)^2 - 4*(kifb - kafab*(actCycACdk1 + actCycACdk2))*Jifb*kafab*(actCycACdk1 + actCycACdk2)));
+  Vsi := ksip;
+  Vsb := ksbp + ksbpp*TFAB + ksbppp*actCycB + ksbpppp*E2F;
+  Vdb := kdbp + kdbpp*Cdh1 + kdbppp*Cdc20A;
+  Wee1 := 2*kaweep*Jiwee/((kiwee*(actCycACdk1 + actCycACdk2) + kiweeb*actCycB - kaweep) + Jawee*(kiwee*(actCycACdk1 + actCycACdk2) + kiweeb*actCycB) + kaweep*Jiwee + sqrt(((kiwee*(actCycACdk1 + actCycACdk2) + kiweeb*actCycB - kaweep) + Jawee*(kiwee*(actCycACdk1 + actCycACdk2) + kiweeb*actCycB) + kaweep*Jiwee)^2 - 4*(kiwee*(actCycACdk1 + actCycACdk2) + kiweeb*actCycB - kaweep)*kaweep*Jawee));
+  Vwee := kweep + kweepp*Wee1;
+  Cdc25 := 2*ka25*actCycB*Ji25/((ki25 - ka25*actCycB) + Ja25*ki25 + Ji25*ka25*actCycB + sqrt(((ki25 - ka25*actCycB) + Ja25*ki25 + Ji25*ka25*actCycB)^2 - 4*(ki25 - ka25*actCycB)*Ja25*ka25*actCycB));
+  V25 := k25p + k25pp*Cdc25;
+  Vdi := kdip + kdipp*(actCycACdk1 + actCycACdk2) + kdippp*actCycB + kdipppp*actCycE;
+  TriE := cycE - actCycE;
+  freeCK1 := CKI - TriA - TriE - TriD;
+  CdkCycBCK1 := cycB - actCycB - preMPF;
+  Cdk1PCycB := cycB - actCycB;
+
+  // Reactions:
+  reaction_:  => ERG; cell*function_for_ERG(k15, DRG, J15);
+  reaction_1: ERG => ; cell*k16*ERG;
+  reaction_2:  => DRG; cell*function_1k_1m(k17p, ERG);
+  reaction_3:  => DRG; cell*function_for_DRG(k17, DRG, J17);
+  reaction_4: DRG => ; cell*k18*DRG;
+  reaction_5: E2FRB => ppRB + E2F; cell*Constant_flux__irreversible(v29);
+  reaction_6: pE2FRB => ppRB + pE2F; cell*Constant_flux__irreversible(v30);
+  reaction_7: Rb => ppRB; cell*Constant_flux__irreversible(v43);
+  reaction_8: ppRB => Rb; cell*Constant_flux__irreversible(v44);
+  reaction_9: E2FRB => E2F + Rb; cell*Constant_flux__irreversible(v45);
+  reaction_10: pE2F => E2F; cell*Constant_flux__irreversible(v47);
+  reaction_11: E2F => pE2F; cell*Constant_flux__irreversible(v46);
+  reaction_12: E2F + Rb => E2FRB; cell*Constant_flux__irreversible(v48);
+  reaction_13:  => E2F; cell*function_1k_2m(ke2f, mass, E2F);
+  reaction_14: E2F => ; cell*function_1k_2m(kde2fcdc20, E2F, Cdc20A);
+  reaction_15: E2F => ; cell*function_1k_2m(kde2fcdh1, Cdh1, E2F);
+  reaction_16: pE2FRB => pE2F + Rb; cell*Constant_flux__irreversible(v49);
+  reaction_17: pE2F + Rb => pE2FRB; cell*Constant_flux__irreversible(v50);
+  reaction_18: pE2F => ; cell*function_1k_2m(kde2fcdc20, pE2F, Cdc20A);
+  reaction_19: pE2F => ; cell*function_1k_2m(kde2fcdh1, pE2F, Cdh1);
+  reaction_20: pE2FRB => E2FRB; cell*Constant_flux__irreversible(v51);
+  reaction_21: E2FRB => pE2FRB; cell*Constant_flux__irreversible(v52);
+  reaction_22:  => actCycD; cell*function_1k_1m(k9, DRG);
+  reaction_23: TriD => actCycD; cell*function_1k_1m(Vdi, TriD);
+  reaction_24: TriD => actCycD; cell*function_1k_1m(k24r, TriD);
+  reaction_25: actCycD => TriD; cell*function_2k_1m(k24, actCycD, freeCK1);
+  reaction_26: actCycD => ; cell*k10*actCycD;
+  reaction_27: TriD => ; cell*k10*TriD;
+  reaction_28:  => actCycACdk1; cell*function_for_actCycACdk1(a1frac, ksap, ksapp, E2F, ksappp, TFAB, mass);
+  reaction_29:  => actCycACdk1; cell*function_2k_1m(a1frac, TriA, Vdi);
+  reaction_30:  => actCycACdk1; cell*function_2k_1m(a1frac, TriA, kdia);
+  reaction_31: actCycACdk1 => ; cell*Vda*actCycACdk1;
+  reaction_32: actCycACdk1 => ; cell*function_2k_1m(kasa, actCycACdk1, freeCK1);
+  reaction_33:  => actCycACdk2; cell*function_for_actCycACdk2_1(a1frac, ksap, ksapp, E2F, ksappp, TFAB, mass);
+  reaction_34:  => actCycACdk2; cell*function_for_actCycACdk2_2(a1frac, Vdi, kdia, TriA);
+  reaction_35: actCycACdk2 => ; cell*Vda*actCycACdk2;
+  reaction_36: actCycACdk2 => ; cell*function_2k_1m(kasa, actCycACdk2, freeCK1);
+  reaction_37:  => actCycB + cycB; cell*function_2k_1m(Vsb, mass, reaction_37_k2);
+  reaction_38:  => actCycB; cell*function_1k_1m(V25, cycB);
+  reaction_39: actCycB => ; cell*V25*actCycB;
+  reaction_40: actCycB => ; cell*Vdb*actCycB;
+  reaction_41: actCycB => ; cell*Vwee*actCycB;
+  reaction_42:  => actCycE + cycE; cell*function_2k_1m(ksep, mass, reaction_42_k2);
+  reaction_43:  => actCycE + cycE; cell*function_2k_2m(ksepp, E2F, mass, reaction_43_k2);
+  reaction_44:  => actCycE; cell*function_for_2k(Vdi, TriE);
+  reaction_45:  => actCycE; cell*function_for_2k(kdie, TriE);
+  reaction_46: actCycE => ; cell*Vde*actCycE;
+  reaction_47: actCycE => ; cell*function_2k_1m(kase, actCycE, freeCK1);
+  reaction_48:  => cycA; cell*function_for_actCycACdk1(reaction_48_k0, ksap, ksapp, E2F, ksappp, TFAB, mass);
+  reaction_49: cycA => ; cell*Vda*cycA;
+  reaction_50: cycB => ; cell*Vdb*cycB;
+  reaction_51: cycE => ; cell*Vde*cycE;
+  reaction_52:  => CKI; cell*Constant_flux__irreversible(Vsi);
+  reaction_53: CKI => ; cell*Vdi*CKI;
+  reaction_54:  => Cdh1; cell*function_for_Cdh1_1(kah1p, kah1pp, Cdc20A, Cdh1, Jah1);
+  reaction_55: Cdh1 => ; cell*function_for_cdh1_2(kih1pp, actCycACdk1, actCycACdk2, kih1ppp, actCycB, Cdh1, Jih1);
+  reaction_56:  => preMPF; cell*function_1k_1m(Vwee, cycB);
+  reaction_57: preMPF => ; cell*Vwee*preMPF;
+  reaction_58: preMPF => ; cell*V25*preMPF;
+  reaction_59: preMPF => ; cell*Vdb*preMPF;
+  reaction_60:  => TriA; cell*function_2k_1m(kasa, cycA, freeCK1);
+  reaction_61: TriA => ; cell*function_2k_1m(kasa, TriA, freeCK1);
+  reaction_62: TriA => ; cell*kdia*TriA;
+  reaction_63: TriA => ; cell*Vda*TriA;
+  reaction_64: TriA => ; cell*Vdi*TriA;
+  reaction_65:  => APCP; cell*function_for_APCP_1(kaAPC, actCycB, APCP, JaAPC);
+  reaction_66: APCP => ; cell*Henri_Michaelis_Menten__irreversible(APCP, JiAPC, kiAPC);
+  reaction_67:  => Cdc20A; cell*function_for_Cdc20A(ka20, APCP, Cdc20T, Cdc20A, Ja20);
+  reaction_68: Cdc20A => ; cell*Henri_Michaelis_Menten__irreversible(Cdc20A, Ji20, ki20);
+  reaction_69: Cdc20A => ; cell*kd20*Cdc20A;
+  reaction_70:  => Cdc20T; cell*function_for_Cdc20T(ka20, actCycB, J20, actCycB);
+  reaction_71: Cdc20T => ; cell*kd20*Cdc20T;
+  reaction_72:  => mass; cell*function_1k_1m(u, mass);
+
+  // Species initializations:
+  ERG = 0;
+  DRG = 0;
+  ppRB = 14.08011;
+  E2F = 0.716055;
+  pE2F = 1.388537;
+  Rb = 0.1071;
+  E2FRB = 0.27627;
+  pE2FRB = 0.53642;
+  actCycD = 0;
+  TriD = 0;
+  actCycACdk1 = 0.003801725709734;
+  actCycACdk2 = 0.042969690554;
+  actCycB = 0.01;
+  actCycE = 0.045866;
+  cycA = 0.067925;
+  cycB = 2.3652;
+  cycE = 0.072513;
+  CKI = 0.60183432;
+  Cdh1 = 0.99736;
+  preMPF = 2.3552058;
+  TriA = 0.0211544;
+  APCP = 0.81078;
+  Cdc20A = 0.2727;
+  Cdc20T = 0.27315;
+  mass = 1;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  a1frac = 0.081283;
+  FB = 2;
+  FE = 25;
+  J15 = 0.1;
+  J17 = 0.3;
+  J20 = 100;
+  Ja20 = 0.005;
+  Ja25 = 0.005;
+  JaAPC = 0.01;
+  Jafb = 0.01;
+  Jah1 = 0.15;
+  Jatf = 0.01;
+  Jawee = 0.05;
+  Jaweeb = 0.05;
+  Ji20 = 0.005;
+  Ji25 = 0.031623;
+  JiAPC = 0.001;
+  Jifb = 0.001;
+  Jih1 = 0.01;
+  Jitf = 0.01;
+  Jiwee = 0.05;
+  k10 = 88.175;
+  k15 = 5.2905;
+  k16 = 44.0875;
+  k17 = 2645.25;
+  k17p = 2.64525;
+  k18 = 176.35;
+  K19 = 35.27;
+  K19a = 440.875;
+  K20 = 176.35;
+  K21 = 1;
+  K22 = 3.527;
+  K23a = 0.17635;
+  K23b = 1.7635;
+  k24 = 1763.5;
+  k25p = 61.474;
+  k25pp = 30515.96;
+  K26 = 17635;
+  K26R = 35.27;
+  k9 = 45.851;
+  ka20 = 292.669;
+  ka25 = 8.85277;
+  kaAPC = 2.33401;
+  kacdh1 = 264.525;
+  kafab = 0.296268;
+  kah1p = 155.8708;
+  kah1pp = 176350;
+  kasa = 19733.57;
+  kase = 19733.57;
+  katfpp = 58.70692;
+  katfppp = 97.80724;
+  katfpppp = 77.63935;
+  kaweep = 13.8188;
+  kd20 = 17.635;
+  kdap = 0.516094;
+  kdapp = 2645.25;
+  kdbp = 0.853181;
+  kdbpp = 176.35;
+  kdbppp = 387.97;
+  kde2fcdc20 = 881.75;
+  kde2fcdh1 = 1.7635;
+  kdep = 1.961012;
+  kdepp = 1.973357;
+  kdeppp = 176.35;
+  kdepppp = 3527;
+  kdia = 196.0783;
+  kdie = 196.0783;
+  kdip = 196.0783;
+  kdipp = 978.0688;
+  kdippp = 1960.837;
+  kdipppp = 978.0688;
+  ke2f = 4.2324;
+  ki20 = 17.635;
+  ki25 = 35.27;
+  kiAPC = 3.862259;
+  kifb = 9.827456;
+  kih1pp = 17635;
+  kih1ppp = 1763.5;
+  kitfp = 48.96181;
+  kitfpp = 19.60836;
+  kitfppp = 19.60836;
+  kiwee = 0.145;
+  ks20pp = 105.81;
+  ksap = 16.75325;
+  ksapp = 0.10581;
+  ksappp = 20.28025;
+  ksbp = 6.7013;
+  ksbpp = 15.8715;
+  ksbppp = 1.7635;
+  ksbpppp = 0.617225;
+  ksep = 1.562461;
+  ksepp = 8.8175;
+  ksip = 390.9926;
+  kweep = 234.8312;
+  kweepp = 17635;
+  LA = 30;
+  LB = 0.5;
+  LD = 3.3;
+  LE = 10;
+  PP1T = 1;
+  u = 0.693937;
+  k24r = 176.35;
+  kiweeb = 5;
+  reaction_37_k2 = 2;
+  reaction_42_k2 = 2;
+  reaction_43_k2 = 2;
+  reaction_48_k0 = 1;
+
+  // Other declarations:
+  var v29, v30, v43, v44, PP1A, v45, v46, v47, v48, v49, v50, v51, v52, Vatf;
+  var Vde, Vda, TFAB, Vsi, Vsb, Vdb, Wee1, Vwee, Cdc25, V25, Vdi, TriE, freeCK1;
+  var CdkCycBCK1, Cdk1PCycB;
+  const cell, a1frac, FB, FE, J15, J17, J20, Ja20, Ja25, JaAPC, Jafb, Jah1;
+  const Jatf, Jawee, Jaweeb, Ji20, Ji25, JiAPC, Jifb, Jih1, Jitf, Jiwee, k10;
+  const k15, k16, k17, k17p, k18, K19, K19a, K20, K21, K22, K23a, K23b, k24;
+  const k25p, k25pp, K26, K26R, k9, ka20, ka25, kaAPC, kacdh1, kafab, kah1p;
+  const kah1pp, kasa, kase, katfpp, katfppp, katfpppp, kaweep, kd20, kdap;
+  const kdapp, kdbp, kdbpp, kdbppp, kde2fcdc20, kde2fcdh1, kdep, kdepp, kdeppp;
+  const kdepppp, kdia, kdie, kdip, kdipp, kdippp, kdipppp, ke2f, ki20, ki25;
+  const kiAPC, kifb, kih1pp, kih1ppp, kitfp, kitfpp, kitfppp, kiwee, ks20pp;
+  const ksap, ksapp, ksappp, ksbp, ksbpp, ksbppp, ksbpppp, ksep, ksepp, ksip;
+  const kweep, kweepp, LA, LB, LD, LE, PP1T, u, k24r, kiweeb;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 3600 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+  reaction_ is "ERG synthesis";
+  reaction_1 is "ERG degradation";
+  reaction_2 is "DRG synthesis through ERG";
+  reaction_3 is "DRG synthesis";
+  reaction_4 is "DRG degradation";
+  reaction_5 is "E2FRB complex dissociation";
+  reaction_6 is "E2FRB complex dissociation 2";
+  reaction_7 is "double phosphorylation of Rb";
+  reaction_8 is "dephosphorylation of Rb";
+  reaction_9 is "E2FRB complex dissociation 3";
+  reaction_10 is "dephosphorylation of E2F";
+  reaction_11 is "E2f phosphorylation";
+  reaction_12 is "E2FRB complex formation";
+  reaction_13 is "E2F synthesis";
+  reaction_14 is "E2F degradation through Cdc20";
+  reaction_15 is "E2F degradation through Cdh1";
+  reaction_16 is "phosphorylated E2FRB complex dissociation";
+  reaction_17 is "phosphorylated E2FRB complex formation";
+  reaction_18 is "pE2F degradation through Cdc20";
+  reaction_19 is "pE2F degradation through Cdh1";
+  reaction_20 is "E2FRB dephosphorylation";
+  reaction_21 is "E2FRB phosphorylation";
+  reaction_22 is "active cyclin D synthesis";
+  reaction_23 is "cyclin D activation 1";
+  reaction_24 is "cyclin D activation 2";
+  reaction_25 is "active cyclin D inactivation";
+  reaction_26 is "active cyclin D degradation";
+  reaction_27 is "inactive cyclin D degradation";
+  reaction_28 is "actCycACdk1 formation 1";
+  reaction_29 is "actCycACdk1 formation 2";
+  reaction_30 is "actCycACdk1 formation 3";
+  reaction_31 is "actCycACdk1 degradation 1";
+  reaction_32 is "actCycACdk1 degradation 2";
+  reaction_33 is "actCycACdk2 formation 1";
+  reaction_34 is "actCycACdk2 formation 2";
+  reaction_35 is "actCycACdk2 degradation 1";
+  reaction_36 is "actCycACdk2 degradation 2";
+  reaction_37 is "cyclinB synthesis";
+  reaction_38 is "active cyclin B synthesis";
+  reaction_39 is "active cyclinB degradation 1";
+  reaction_40 is "active cyclinB degradation 2";
+  reaction_41 is "active cyclinB degradation 3";
+  reaction_42 is "cyclinE synthesis 1";
+  reaction_43 is "cyclinE synthesis 2";
+  reaction_44 is "active cyclin E synthesis 1";
+  reaction_45 is "active cyclin E synthesis 2";
+  reaction_46 is "active cyclin E degradation 1";
+  reaction_47 is "active cyclin E degradation 2";
+  reaction_48 is "cyclinA synthesis";
+  reaction_49 is "cyclinA degradation";
+  reaction_50 is "cyclinB degradation";
+  reaction_51 is "cyclinE degradation";
+  reaction_52 is "CKI synthesis";
+  reaction_53 is "CKI degradation";
+  reaction_54 is "Cdh1 synthesis";
+  reaction_55 is "Cdh1 degradation";
+  reaction_56 is "preMPF synthesis";
+  reaction_57 is "preMPF degradation 1";
+  reaction_58 is "preMPF degradation 2";
+  reaction_59 is "preMPF degradation 3";
+  reaction_60 is "TriA synthesis";
+  reaction_61 is "TriA degradation 1";
+  reaction_62 is "TriA degradation 2";
+  reaction_63 is "TriA degradation 3";
+  reaction_64 is "TriA degradation 4";
+  reaction_65 is "APCP synthesis";
+  reaction_66 is "APCP degradation";
+  reaction_67 is "active Cdc20 synthesis";
+  reaction_68 is "active Cdc20 degradation 1";
+  reaction_69 is "active Cdc20 degradation 2";
+  reaction_70 is "Cdc20T degradation 1";
+  reaction_71 is "Cdc20T degradation 2";
+  reaction_72 is "mass";
+
+  // CV terms:
+  cell hypernym "http://identifiers.org/ncit/C12958"
+  ERG hypernym "http://identifiers.org/uniprot/P11308"
+  DRG hypernym "http://identifiers.org/uniprot/P11308"
+  ppRB hypernym "http://identifiers.org/uniprot/P06400"
+  E2F hypernym "http://identifiers.org/cco/CCO:42550"
+  pE2F hypernym "http://identifiers.org/cco/CCO:42550"
+  Rb hypernym "http://identifiers.org/uniprot/P06400"
+  E2FRB hypernym "http://identifiers.org/cco/CCO:42550"
+  E2FRB hypernym "http://identifiers.org/go/GO:0035189"
+  pE2FRB hypernym "http://identifiers.org/cco/CCO:42550"
+  pE2FRB hypernym "http://identifiers.org/uniprot/P06400"
+  actCycD hypernym "http://identifiers.org/uniprot/P30279"
+  actCycD hypernym "http://identifiers.org/uniprot/P24385"
+  TriD hypernym "http://identifiers.org/uniprot/P30279"
+  actCycACdk1 hypernym "http://identifiers.org/uniprot/P20248"
+  actCycACdk1 hypernym "http://identifiers.org/uniprot/P06493"
+  actCycACdk2 hypernym "http://identifiers.org/uniprot/P20248"
+  actCycACdk2 hypernym "http://identifiers.org/uniprot/P24941"
+  actCycB hypernym "http://identifiers.org/uniprot/Q8WWL7"
+  actCycE hypernym "http://identifiers.org/uniprot/P24864"
+  actCycE hypernym "http://identifiers.org/uniprot/O96020"
+  cycA hypernym "http://identifiers.org/uniprot/P20248"
+  cycB hypernym "http://identifiers.org/uniprot/Q8WWL7"
+  cycE hypernym "http://identifiers.org/uniprot/O96020"
+  cycE hypernym "http://identifiers.org/uniprot/P24864"
+  CKI hypernym "http://identifiers.org/uniprot/P46527"
+  Cdh1 hypernym "http://identifiers.org/uniprot/P12830"
+  preMPF version "http://identifiers.org/uniprot/P20248"
+  preMPF version "http://identifiers.org/uniprot/P06493"
+  preMPF version "http://identifiers.org/uniprot/P14635"
+  TriA hypernym "http://identifiers.org/uniprot.isoform/P20248"
+  APCP hypernym "http://identifiers.org/pr/PR:000026433"
+  APCP hypernym "http://identifiers.org/go/GO:0005680"
+  Cdc20A hypernym "http://identifiers.org/uniprot/Q12834"
+  Cdc20T hypernym "http://identifiers.org/uniprot/Q12834"
+  mass hypernym "http://identifiers.org/ncit/C43246"
+end
+
+Weis2014___Data_driven_Mammalian_Cell_Cycle_Model is "Weis2014 - Data driven Mammalian Cell Cycle Model"
+
+Weis2014___Data_driven_Mammalian_Cell_Cycle_Model model_entity_is "http://identifiers.org/biomodels.db/MODEL1811220001",
+                                                                  "http://identifiers.org/biomodels.db/BIOMD0000000723"
+Weis2014___Data_driven_Mammalian_Cell_Cycle_Model hypernym "http://identifiers.org/ncit/C38794"
+Weis2014___Data_driven_Mammalian_Cell_Cycle_Model hypernym "http://identifiers.org/go/GO:0007049"
+Weis2014___Data_driven_Mammalian_Cell_Cycle_Model property "http://identifiers.org/reactome/R-HSA-1640170"
+Weis2014___Data_driven_Mammalian_Cell_Cycle_Model taxon "http://identifiers.org/taxonomy/9606"
+Weis2014___Data_driven_Mammalian_Cell_Cycle_Model description "http://identifiers.org/pubmed/24824602"
+Weis2014___Data_driven_Mammalian_Cell_Cycle_Model description "http://identifiers.org/doi/10.1371/journal.pone.0097130"

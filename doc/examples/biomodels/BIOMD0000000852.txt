@@ -1,0 +1,186 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function Function_for_MPN_SC_Proliferation_MPN_MC(ay, Ay, y0)
+  ay*Ay*y0;
+end
+
+Function_for_MPN_SC_Proliferation_MPN_MC is "Function_for_MPN_SC_Proliferation_MPN_MC"
+
+function Function_for_Phagocyte_Upregulation_Dead_Cells(rs, a)
+  rs*a;
+end
+
+Function_for_Phagocyte_Upregulation_Dead_Cells is "Function_for_Phagocyte_Upregulation_Dead_Cells"
+
+function Function_for_HSC_Proliferation_HMC(ax, Ax, x0)
+  ax*Ax*x0;
+end
+
+Function_for_HSC_Proliferation_HMC is "Function_for_HSC_Proliferation_HMC"
+
+function Function_for_MPN_SC_Self_Renewal(ry, psi_y, s, y0)
+  ry*psi_y*s*y0;
+end
+
+Function_for_MPN_SC_Self_Renewal is "Function_for_MPN_SC_Self_Renewal"
+
+function Function_for_HSC_Self_Renewal(x0, rx, psi_x, s)
+  x0*rx*psi_x*s;
+end
+
+Function_for_HSC_Self_Renewal is "Function_for_HSC_Self_Renewal"
+
+function Function_for_HSC_MPN_Mutation(rm, s, x0)
+  rm*s*x0;
+end
+
+Function_for_HSC_MPN_Mutation is "Function_for_HSC_MPN_Mutation"
+
+function Function_for_Dead_Cells_Elimination_Per_Cytokine(ea, a, s)
+  ea*a*s;
+end
+
+Function_for_Dead_Cells_Elimination_Per_Cytokine is "Function_for_Dead_Cells_Elimination_Per_Cytokine"
+
+
+model *Andersen2017___Mathematical_modelling_as_a_proof_of_concept_for_MPNs_as_a_human_inflammation_model_for_cancer_development()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species x0 in compartment_, x1 in compartment_, y0 in compartment_, y1 in compartment_;
+  species a in compartment_, s in compartment_;
+
+  // Assignment Rules:
+  cxy := ModelValue_5;
+  ay := ModelValue_1;
+  Ay := ModelValue_2;
+  dy0 := ModelValue_3;
+  dy1 := ModelValue_4;
+  cyx := ModelValue_5;
+  cyy := ModelValue_5;
+  psi_x := 1/(1 + (ModelValue_5*x0 + ModelValue_6*y0)^2);
+  psi_y := 1/(1 + (ModelValue_15*x0 + ModelValue_16*y0)^2);
+  x0_y0 := x0_e4 + y0_e4;
+  x0_e4 := x0/10000;
+  y0_e4 := y0/10000;
+  x1_e10 := x1/10000000000;
+  y1_e10 := y1/10000000000;
+  x1_y1 := x1_e10 + y1_e10;
+
+  // Reactions:
+  HSC_Self_Renewal:  => x0; compartment_*Function_for_HSC_Self_Renewal(x0, rx, psi_x, s);
+  HSC_Death: x0 => a; compartment_*dx0*x0;
+  HSC_Proliferation: x0 => ; compartment_*ax*x0;
+  HSC_MPN_Mutation: x0 => y0; compartment_*Function_for_HSC_MPN_Mutation(rm, s, x0);
+  HSC_Proliferation_HMC:  => x1; compartment_*Function_for_HSC_Proliferation_HMC(ax, Ax, x0);
+  HMC_Death: x1 => a; compartment_*dx1*x1;
+  MPN_SC_Self_Renewal:  => y0; compartment_*Function_for_MPN_SC_Self_Renewal(ry, psi_y, s, y0);
+  MPN_SC_Death: y0 => a; compartment_*dy0*y0;
+  MPN_SC_Proliferation: y0 => ; compartment_*ay*y0;
+  MPN_SC_Proliferation_MPN_MC:  => y1; compartment_*Function_for_MPN_SC_Proliferation_MPN_MC(ay, Ay, y0);
+  MPN_MC_Death: y1 => a; compartment_*dy1*y1;
+  Dead_Cells_Elimination_Per_Cytokine: a => ; compartment_*Function_for_Dead_Cells_Elimination_Per_Cytokine(ea, a, s);
+  Phagocyte_Upregulation_Dead_Cells:  => s; compartment_*Function_for_Phagocyte_Upregulation_Dead_Cells(rs, a);
+  Cytokine_Elimination: s => ; compartment_*es*s;
+  Cytokines_Inflammation:  => s; compartment_*Constant_flux__irreversible(inflammation);
+
+  // Species initializations:
+  x0 = 10100;
+  x1 = 38400000000;
+  y0 = 0;
+  y1 = 0;
+  a = 699;
+  s = 3.61;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  rx = 0.00087;
+  ax = 1.1e-05;
+  Ax = 47000000000000;
+  dx0 = 0.002;
+  dx1 = 129;
+  cxx = 7.5e-05;
+  ModelValue_5 = cxx;
+  es = 2;
+  rm = 2e-08;
+  inflammation = 7;
+  ry = 0.0013;
+  ModelValue_1 = ax;
+  ModelValue_2 = Ax;
+  ModelValue_3 = dx0;
+  ModelValue_4 = dx1;
+  rs = 0.0003;
+  ea = 2000000000;
+  ModelValue_6 = cxy;
+  ModelValue_15 = cyx;
+  ModelValue_16 = cyy;
+
+  // Other declarations:
+  var cxy, ay, Ay, dy0, dy1, cyx, cyy, psi_x, psi_y, x0_y0, x0_e4, y0_e4;
+  var x1_e10, y1_e10, x1_y1;
+  const compartment_, rx, ax, Ax, dx0, dx1, cxx, ModelValue_5, es, rm, inflammation;
+  const ry, ModelValue_1, ModelValue_2, ModelValue_3, ModelValue_4, rs, ea;
+  const ModelValue_6, ModelValue_15, ModelValue_16;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = item;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+  ModelValue_5 is "Initial for cxx";
+  ModelValue_1 is "Initial for ax";
+  ModelValue_2 is "Initial for Ax";
+  ModelValue_3 is "Initial for dx0";
+  ModelValue_4 is "Initial for dx1";
+  ModelValue_6 is "Initial for cxy";
+  ModelValue_15 is "Initial for cyx";
+  ModelValue_16 is "Initial for cyy";
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/ncit/C12431"
+  x0 identity "http://identifiers.org/cl/CL:0000037"
+  x1 hypernym "http://identifiers.org/cl/CL:0000037"
+  x1 hypernym "http://identifiers.org/bto/BTO:0002312"
+  y0 hypernym "http://identifiers.org/ncit/C12922"
+  y0 property "http://identifiers.org/ncit/C4345"
+  y1 hypernym "http://identifiers.org/ncit/C12922"
+  y1 hypernym "http://identifiers.org/bto/BTO:0002312"
+  y1 property "http://identifiers.org/ncit/C4345"
+  a hypernym "http://identifiers.org/cl/CL:0000000"
+  a property "http://identifiers.org/ncit/C28554"
+  s identity "http://identifiers.org/go/GO:0006954"
+  HSC_Self_Renewal hypernym "http://identifiers.org/go/GO:0017145"
+  HSC_Death hypernym "http://identifiers.org/go/GO:0008219"
+  HSC_Proliferation identity "http://identifiers.org/go/GO:0071425"
+  HSC_MPN_Mutation hypernym "http://identifiers.org/ncit/C17212"
+  HSC_Proliferation_HMC hypernym "http://identifiers.org/ncit/GO:0071425"
+  HMC_Death hypernym "http://identifiers.org/go/GO:0008219"
+  MPN_SC_Self_Renewal hypernym "http://identifiers.org/go/GO:0017145"
+  MPN_SC_Death hypernym "http://identifiers.org/go/GO:0008219"
+  MPN_SC_Proliferation hypernym "http://identifiers.org/go/GO:0071425"
+  MPN_SC_Proliferation_MPN_MC hypernym "http://identifiers.org/go/GO:0071425"
+  MPN_MC_Death hypernym "http://identifiers.org/go/GO:0008219"
+  Dead_Cells_Elimination_Per_Cytokine hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Phagocyte_Upregulation_Dead_Cells hypernym "http://identifiers.org/go/GO:0006954"
+  Cytokine_Elimination hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Cytokines_Inflammation hypernym "http://identifiers.org/ncit/C20151"
+end
+
+Andersen2017___Mathematical_modelling_as_a_proof_of_concept_for_MPNs_as_a_human_inflammation_model_for_cancer_development is "Andersen2017 - Mathematical modelling as a proof of concept for MPNs as a human inflammation model for cancer development"
+
+Andersen2017___Mathematical_modelling_as_a_proof_of_concept_for_MPNs_as_a_human_inflammation_model_for_cancer_development description "http://identifiers.org/pubmed/28859112"
+Andersen2017___Mathematical_modelling_as_a_proof_of_concept_for_MPNs_as_a_human_inflammation_model_for_cancer_development model_entity_is "http://identifiers.org/biomodels.db/MODEL1911120005",
+                                                                                                                                          "http://identifiers.org/biomodels.db/BIOMD0000000852"
+Andersen2017___Mathematical_modelling_as_a_proof_of_concept_for_MPNs_as_a_human_inflammation_model_for_cancer_development property "http://identifiers.org/mp/MP:0002499"
+Andersen2017___Mathematical_modelling_as_a_proof_of_concept_for_MPNs_as_a_human_inflammation_model_for_cancer_development property "http://identifiers.org/ncit/C4345"
+Andersen2017___Mathematical_modelling_as_a_proof_of_concept_for_MPNs_as_a_human_inflammation_model_for_cancer_development property "http://identifiers.org/mamo/MAMO_0000046"

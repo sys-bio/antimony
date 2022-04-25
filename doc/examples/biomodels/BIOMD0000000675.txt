@@ -1,0 +1,313 @@
+// Created by libAntimony v2.13.0
+model *Chen2000_CellCycle()
+
+  // Compartments and Species:
+  compartment COMpartment;
+  species $Cln2 in COMpartment, $SBF in COMpartment, $Clb2 in COMpartment;
+  species $Cdc20 in COMpartment, $Cdc20_T in COMpartment, $Clb2_T in COMpartment;
+  species $Clb2_Sic1 in COMpartment, $Hct1 in COMpartment, $Hct1_T in COMpartment;
+  species $Mcm1 in COMpartment, $Sic1 in COMpartment, $Sic1_T in COMpartment;
+  species $Clb5_Sic1 in COMpartment, $Swi5 in COMpartment, $Clb5 in COMpartment;
+  species $Clb5_T in COMpartment, $Cln3 in COMpartment, $Cln3_max in COMpartment;
+  species $MBF in COMpartment, $Bck2 in COMpartment, $Bck2_0 in COMpartment;
+
+  // Assignment Rules:
+  SBF := 2*Va_sbf*Ji_sbf/((ki_sbf + ki_sbf_*Clb2 + Va_sbf*Ji_sbf + (ki_sbf + ki_sbf_*Clb2)*Ja_sbf - Va_sbf) + ((ki_sbf + ki_sbf_*Clb2 + Va_sbf*Ji_sbf + (ki_sbf + ki_sbf_*Clb2)*Ja_sbf - Va_sbf)^2 - 4*Va_sbf*Ji_sbf*(ki_sbf + ki_sbf_*Clb2 - Va_sbf))^(1/2));
+  Va_sbf := ka_sbf*(Cln2 + epsilonsbf_n3*(Cln3 + Bck2) + epsilonsbf_b5*Clb5);
+  Clb2 := Clb2_T - Clb2_Sic1;
+  Vi_20 := piecewise(10, (time >= START_S) && (time < END_M), piecewise(10 - 9.9*((time - END_M)/12), (time >= END_M) && (time < (END_M + 12)), 0.1));
+  Vi_t1 := ki_t1 + ki_t1_*(Cln3 + epsiloni_t1_n2*Cln2 + epsiloni_t1_b5*Clb5 + epsiloni_t1_b2*Clb2);
+  Mcm1 := 2*ka_mcm*Clb2*Ji_mcm/((ki_mcm + ka_mcm*Clb2*Ji_mcm + ki_mcm*Ja_mcm - ka_mcm*Clb2) + ((ki_mcm + ka_mcm*Clb2*Ji_mcm + ki_mcm*Ja_mcm - ka_mcm*Clb2)^2 - 4*(ki_mcm - ka_mcm*Clb2)*ka_mcm*Clb2*Ji_mcm)^(1/2));
+  Sic1 := Sic1_T - (Clb2_Sic1 + Clb5_Sic1);
+  Vd_b2 := kd_b2*(Hct1_T - Hct1) + kd_b2_*Hct1 + kd_b2__*Cdc20;
+  Vd2_c1 := kd2_c1*(epsilonc1_n3*Cln3 + epsilonc1_k2*Bck2 + Cln2 + epsilonc1_b5*Clb5 + epsilonc1_b2*Clb2);
+  Swi5 := 2*ka_swi*Cdc20*Ji_swi/((ki_swi + ki_swi_*Clb2 + ka_swi*Cdc20*Ji_swi + (ki_swi + ki_swi_*Clb2)*Ja_swi - ka_swi*Cdc20) + ((ki_swi + ki_swi_*Clb2 + ka_swi*Cdc20*Ji_swi + (ki_swi + ki_swi_*Clb2)*Ja_swi - ka_swi*Cdc20)^2 - 4*(ki_swi + ki_swi_*Clb2 - ka_swi*Cdc20)*ka_swi*Cdc20*Ji_swi)^(1/2));
+  Clb5 := Clb5_T - Clb5_Sic1;
+  Cln3 := Cln3_max*Dn3*mass/(Jn3 + Dn3*mass);
+  MBF := SBF;
+  Vd_b5 := kd_b5 + kd_b5_*Cdc20;
+  Bck2 := Bck2_0*mass;
+  D := 1.026/mu - 32;
+
+  // Rate Rules:
+  Cln2' = mass*(ks_n2 + ks_n2_*SBF) - kd_n2*Cln2;
+  mass' = mu*mass;
+  Cdc20' = ka_20*(Cdc20_T - Cdc20) - Cdc20*(Vi_20 + kd_20);
+  Cdc20_T' = ks_20 + ks_20_*Clb2 - kd_20*Cdc20_T;
+  Clb2_T' = mass*(ks_b2 + ks_b2_*Mcm1) - Vd_b2*Clb2_T;
+  Clb2_Sic1' = kas_b2*Clb2*Sic1 - Clb2_Sic1*(kdi_b2 + Vd_b2 + kd1_c1 + Vd2_c1/(Jd2_c1 + Sic1_T));
+  Hct1' = (ka_t1 + ka_t1_*Cdc20)*(Hct1_T - Hct1)/(Ja_t1 + Hct1_T - Hct1) - Vi_t1*Hct1/(Ji_t1 + Hct1);
+  Sic1_T' = ks_c1 + ks_c1_*Swi5 - Sic1_T*(kd1_c1 + Vd2_c1/(Jd2_c1 + Sic1_T));
+  Clb5_Sic1' = kas_b5*Clb5*Sic1 - Clb5_Sic1*(kdi_b5 + Vd_b5 + kd1_c1 + Vd2_c1/(Jd2_c1 + Sic1_T));
+  Clb5_T' = mass*(ks_b5 + ks_b5_*MBF) - Vd_b5*Clb5_T;
+  SPN' = ks_spn*Clb2/(J_spn + Clb2) - kd_spn*SPN;
+  BUD' = ks_bud*(Cln2 + Cln3 + epsilonbud_b5*Clb5) - kd_bud*BUD;
+  ORI' = ks_ori*(Clb5 + epsilonori_b2*Clb2) - kd_ori*ORI;
+
+  // Events:
+  Event_detection_for_END_M: at SPN >= 1: END_M = time;
+  Event_detection_for_Cell_Division_and_BUD_SPN_reset: at Clb2 < 0.3: SPN = 0, BUD = 0, mass = exp(-1*mu*D)*mass;
+  Event_detection_for_START_S: at ORI > 1: END_M = time + 1000, START_S = time;
+  Event_detection_for_ORI_reset: at (Clb2 + Clb5) < 0.2: ORI = 0;
+
+  // Species initializations:
+  Cln2 = 0.0078;
+  Cdc20 = 0.6848;
+  Cdc20_T = 0.8332;
+  Clb2_T = 0.2342;
+  Clb2_Sic1 = 0.079;
+  Hct1 = 0.9946;
+  Hct1_T = 1;
+  Sic1_T = 0.1231;
+  Clb5_Sic1 = 0.0207;
+  Clb5_T = 0.0614;
+  Cln3_max = 0.02;
+  Bck2_0 = 0.0027;
+
+  // Compartment initializations:
+  COMpartment = 1;
+
+  // Variable initializations:
+  mass = 0.6608;
+  ks_n2 = 0;
+  ks_n2_ = 0.05;
+  kd_n2 = 0.1;
+  Ji_sbf = 0.01;
+  ki_sbf = 0.5;
+  ki_sbf_ = 6;
+  Ja_sbf = 0.01;
+  ka_20 = 1;
+  kd_20 = 0.08;
+  ks_20 = 0.005;
+  ks_20_ = 0.06;
+  ka_t1 = 0.04;
+  ka_t1_ = 2;
+  Ja_t1 = 0.05;
+  Ji_t1 = 0.05;
+  ka_mcm = 1;
+  Ji_mcm = 1;
+  ki_mcm = 0.15;
+  Ja_mcm = 1;
+  kas_b2 = 50;
+  kdi_b2 = 0.05;
+  kd1_c1 = 0.01;
+  Jd2_c1 = 0.05;
+  ka_swi = 1;
+  Ji_swi = 0.1;
+  ki_swi = 0.3;
+  ki_swi_ = 0.2;
+  Ja_swi = 0.1;
+  ks_c1 = 0.02;
+  ks_c1_ = 0.1;
+  Dn3 = 1;
+  Jn3 = 6;
+  kas_b5 = 50;
+  kdi_b5 = 0.05;
+  ks_b5 = 0.006;
+  ks_b5_ = 0.02;
+  ks_b2 = 0.002;
+  ks_b2_ = 0.05;
+  SPN = 0;
+  END_M = 2000;
+  mu = 0.005776;
+  BUD = 0;
+  ORI = 0;
+  START_S = 1000;
+  kd_b2 = 0.01;
+  kd_b2_ = 2;
+  kd_b2__ = 0.05;
+  kd_b5 = 0.1;
+  kd_b5_ = 0.25;
+  kd2_c1 = 0.3;
+  epsilonc1_n3 = 20;
+  epsilonc1_k2 = 2;
+  epsilonc1_b5 = 1;
+  epsilonc1_b2 = 0.067;
+  ki_20 = 0.1;
+  ki_20_ = 10;
+  ki_t1 = 0;
+  ki_t1_ = 0.64;
+  epsiloni_t1_n2 = 1;
+  epsiloni_t1_b5 = 0.5;
+  epsiloni_t1_b2 = 1;
+  ks_ori = 2;
+  epsilonori_b2 = 0.4;
+  kd_ori = 0.06;
+  ks_bud = 0.3;
+  epsilonbud_b5 = 1;
+  kd_bud = 0.06;
+  ks_spn = 0.08;
+  J_spn = 0.2;
+  kd_spn = 0.06;
+  ka_sbf = 1;
+  epsilonsbf_n3 = 75;
+  epsilonsbf_b5 = 0.5;
+
+  // Other declarations:
+  var mass, Va_sbf, Vi_20, Vi_t1, Vd_b2, Vd2_c1, Vd_b5, SPN, END_M, D, BUD;
+  var ORI, START_S;
+  const COMpartment, ks_n2, ks_n2_, kd_n2, Ji_sbf, ki_sbf, ki_sbf_, Ja_sbf;
+  const ka_20, kd_20, ks_20, ks_20_, ka_t1, ka_t1_, Ja_t1, Ji_t1, ka_mcm;
+  const Ji_mcm, ki_mcm, Ja_mcm, kas_b2, kdi_b2, kd1_c1, Jd2_c1, ka_swi, Ji_swi;
+  const ki_swi, ki_swi_, Ja_swi, ks_c1, ks_c1_, Dn3, Jn3, kas_b5, kdi_b5;
+  const ks_b5, ks_b5_, ks_b2, ks_b2_, mu, kd_b2, kd_b2_, kd_b2__, kd_b5, kd_b5_;
+  const kd2_c1, epsilonc1_n3, epsilonc1_k2, epsilonc1_b5, epsilonc1_b2, ki_20;
+  const ki_20_, ki_t1, ki_t1_, epsiloni_t1_n2, epsiloni_t1_b5, epsiloni_t1_b2;
+  const ks_ori, epsilonori_b2, kd_ori, ks_bud, epsilonbud_b5, kd_bud, ks_spn;
+  const J_spn, kd_spn, ka_sbf, epsilonsbf_n3, epsilonsbf_b5;
+
+  // Unit definitions:
+  unit time_unit = 60 second;
+
+  // Display Names:
+  time_unit is "time";
+  COMpartment is "Yeast Cell";
+  ks_n2 is "ks_n2_prime";
+  ks_n2_ is "ks_n2_2prime";
+  ki_sbf is "ki_sbf_prime";
+  ki_sbf_ is "ki_sbf_2prime";
+  ks_20 is "ks_20_prime";
+  ks_20_ is "ks_20_2prime";
+  ka_t1 is "ka_t1_prime";
+  ka_t1_ is "ka_t1_2prime";
+  ki_swi is "ki_swi_prime";
+  ki_swi_ is "ki_swi_2prime";
+  ks_c1_ is "ks_c1_2prime";
+  ks_b5 is "ks_b5_prime";
+  ks_b5_ is "ks_b5_2prime";
+  ks_b2 is "ks_b2_prime";
+  ks_b2_ is "ks_b2_2prime";
+  Event_detection_for_END_M is "Event detection for END_M";
+  Event_detection_for_Cell_Division_and_BUD_SPN_reset is "Event detection for Cell Division and BUD/SPN reset";
+  Event_detection_for_START_S is "Event detection for START_S";
+  Event_detection_for_ORI_reset is "Event detection for ORI reset";
+  kd_b2 is "kd_b2_prime";
+  kd_b2_ is "kd_b2_2prime";
+  kd_b2__ is "kd_b2_3prime";
+  kd_b5 is "kd_b5_prime";
+  kd_b5_ is "kd_b5_2prime";
+  ki_20 is "ki_20_prime";
+  ki_20_ is "ki_20_2prime";
+  ki_t1 is "ki_t1_prime";
+  ki_t1_ is "ki_t1_2prime";
+
+  // CV terms:
+  COMpartment hypernym "http://identifiers.org/ncit/C14271"
+  COMpartment property "http://identifiers.org/go/GO:0007114"
+  Cln2 hypernym "http://identifiers.org/uniprot/P20438"
+  mass hypernym "http://identifiers.org/ncit/C43246"
+  ks_n2 hypernym "http://identifiers.org/ncit/C94967"
+  ks_n2_ hypernym "http://identifiers.org/ncit/C94967"
+  SBF hypernym "http://identifiers.org/uniprot/P11938"
+  SBF hypernym "http://identifiers.org/go/GO:0033309"
+  kd_n2 hypernym "http://identifiers.org/ncit/C94967"
+  Va_sbf encodement "http://identifiers.org/sbo/SBO:0000612"
+  Ji_sbf encodement "http://identifiers.org/obi/OBI:0001180"
+  ki_sbf hypernym "http://identifiers.org/ncit/C94967"
+  ki_sbf_ hypernym "http://identifiers.org/ncit/C94967"
+  Clb2 hypernym "http://identifiers.org/uniprot/P24869"
+  Ja_sbf encodement "http://identifiers.org/obi/OBI:0001180"
+  Cdc20 hypernym "http://identifiers.org/uniprot/P26309"
+  ka_20 hypernym "http://identifiers.org/ncit/C94967"
+  Cdc20_T hypernym "http://identifiers.org/uniprot/P26309"
+  Vi_20 encodement "http://identifiers.org/sbo/SBO:0000612"
+  kd_20 hypernym "http://identifiers.org/ncit/C94967"
+  Clb2_T hypernym "http://identifiers.org/uniprot/P24869"
+  Clb2_Sic1 part "http://identifiers.org/uniprot/P38634"
+  Clb2_Sic1 part "http://identifiers.org/uniprot/P24869"
+  ks_20 hypernym "http://identifiers.org/ncit/C94967"
+  ks_20_ hypernym "http://identifiers.org/ncit/C94967"
+  Hct1 hypernym "http://identifiers.org/uniprot/P53197"
+  ka_t1 hypernym "http://identifiers.org/ncit/C94967"
+  ka_t1_ hypernym "http://identifiers.org/ncit/C94967"
+  Hct1_T hypernym "http://identifiers.org/uniprot/P53197"
+  Ja_t1 encodement "http://identifiers.org/obi/OBI:0001180"
+  Vi_t1 encodement "http://identifiers.org/sbo/SBO:0000612"
+  Ji_t1 encodement "http://identifiers.org/obi/OBI:0001180"
+  Mcm1 hypernym "http://identifiers.org/uniprot/P11746"
+  ka_mcm hypernym "http://identifiers.org/ncit/C94967"
+  Ji_mcm encodement "http://identifiers.org/obi/OBI:0001180"
+  ki_mcm hypernym "http://identifiers.org/ncit/C94967"
+  Ja_mcm encodement "http://identifiers.org/obi/OBI:0001180"
+  kas_b2 hypernym "http://identifiers.org/ncit/C94967"
+  Sic1 hypernym "http://identifiers.org/uniprot/P38634"
+  kdi_b2 hypernym "http://identifiers.org/ncit/C94967"
+  Vd_b2 encodement "http://identifiers.org/sbo/SBO:0000612"
+  kd1_c1 hypernym "http://identifiers.org/ncit/C94967"
+  Vd2_c1 encodement "http://identifiers.org/sbo/SBO:0000612"
+  Jd2_c1 encodement "http://identifiers.org/obi/OBI:0001180"
+  Sic1_T hypernym "http://identifiers.org/uniprot/P38634"
+  Clb5_Sic1 part "http://identifiers.org/uniprot/P30283"
+  Clb5_Sic1 part "http://identifiers.org/uniprot/P38634"
+  Swi5 hypernym "http://identifiers.org/uniprot/P08153"
+  ka_swi hypernym "http://identifiers.org/ncit/C94967"
+  Ji_swi encodement "http://identifiers.org/obi/OBI:0001180"
+  ki_swi hypernym "http://identifiers.org/ncit/C94967"
+  ki_swi_ hypernym "http://identifiers.org/ncit/C94967"
+  Ja_swi encodement "http://identifiers.org/obi/OBI:0001180"
+  ks_c1 hypernym "http://identifiers.org/ncit/C94967"
+  ks_c1_ hypernym "http://identifiers.org/ncit/C94967"
+  Clb5 hypernym "http://identifiers.org/uniprot.isoform/P30283"
+  Clb5_T hypernym "http://identifiers.org/uniprot/P30283"
+  Cln3 hypernym "http://identifiers.org/uniprot/P13365"
+  Cln3_max hypernym "http://identifiers.org/sbo/SBO:0000186"
+  Dn3 hypernym "http://identifiers.org/sbo/SBO:0000186"
+  Jn3 encodement "http://identifiers.org/obi/OBI:0001180"
+  MBF hypernym "http://identifiers.org/uniprot/O14467"
+  kas_b5 hypernym "http://identifiers.org/ncit/C94967"
+  kdi_b5 hypernym "http://identifiers.org/ncit/C94967"
+  Vd_b5 encodement "http://identifiers.org/sbo/SBO:0000612"
+  Bck2 hypernym "http://identifiers.org/uniprot/P33306"
+  Bck2_0 identity "http://identifiers.org/ncit/C85644"
+  ks_b5 hypernym "http://identifiers.org/ncit/C94967"
+  ks_b5_ hypernym "http://identifiers.org/ncit/C94967"
+  ks_b2 hypernym "http://identifiers.org/ncit/C94967"
+  ks_b2_ hypernym "http://identifiers.org/ncit/C94967"
+  SPN hypernym "http://identifiers.org/uniprot/Q06505"
+  END_M hypernym "http://identifiers.org/ncit/C82574"
+  mu encodement "http://identifiers.org/mp/MP:0003904"
+  D encodement "http://identifiers.org/mp/MP:0003904"
+  BUD hypernym "http://identifiers.org/go/GO:0007114"
+  ORI hypernym "http://identifiers.org/uniprot/Q35811"
+  START_S hypernym "http://identifiers.org/ncit/C82575"
+  kd_b2 hypernym "http://identifiers.org/ncit/C94967"
+  kd_b2_ hypernym "http://identifiers.org/ncit/C94967"
+  kd_b2__ hypernym "http://identifiers.org/ncit/C94967"
+  kd_b5 hypernym "http://identifiers.org/ncit/C94967"
+  kd_b5_ hypernym "http://identifiers.org/ncit/C94967"
+  kd2_c1 hypernym "http://identifiers.org/ncit/C94967"
+  epsilonc1_n3 encodement "http://identifiers.org/sbo/SBO:0000302"
+  epsilonc1_k2 encodement "http://identifiers.org/sbo/SBO:0000302"
+  epsilonc1_b5 encodement "http://identifiers.org/sbo/SBO:0000302"
+  epsilonc1_b2 encodement "http://identifiers.org/sbo/SBO:0000302"
+  ki_20 hypernym "http://identifiers.org/ncit/C94967"
+  ki_20_ hypernym "http://identifiers.org/ncit/C94967"
+  ki_t1 hypernym "http://identifiers.org/ncit/C94967"
+  ki_t1_ hypernym "http://identifiers.org/ncit/C94967"
+  epsiloni_t1_n2 encodement "http://identifiers.org/sbo/SBO:0000302"
+  epsiloni_t1_b5 encodement "http://identifiers.org/sbo/SBO:0000302"
+  epsiloni_t1_b2 encodement "http://identifiers.org/sbo/SBO:0000302"
+  ks_ori hypernym "http://identifiers.org/ncit/C94967"
+  epsilonori_b2 encodement "http://identifiers.org/sbo/SBO:0000302"
+  kd_ori hypernym "http://identifiers.org/ncit/C94967"
+  ks_bud hypernym "http://identifiers.org/ncit/C94967"
+  epsilonbud_b5 encodement "http://identifiers.org/sbo/SBO:0000302"
+  kd_bud hypernym "http://identifiers.org/ncit/C94967"
+  ks_spn hypernym "http://identifiers.org/ncit/C94967"
+  J_spn encodement "http://identifiers.org/obi/OBI:0001180"
+  kd_spn hypernym "http://identifiers.org/ncit/C94967"
+  ka_sbf hypernym "http://identifiers.org/ncit/C94967"
+  epsilonsbf_n3 encodement "http://identifiers.org/sbo/SBO:0000302"
+  epsilonsbf_b5 encodement "http://identifiers.org/sbo/SBO:0000302"
+end
+
+Chen2000_CellCycle is "Chen2000_CellCycle"
+
+Chen2000_CellCycle model_entity_is "http://identifiers.org/biomodels.db/MODEL1006230004",
+                                   "http://identifiers.org/biomodels.db/BIOMD0000000675"
+Chen2000_CellCycle identity "http://identifiers.org/biomodels.db/MODEL1006230004"
+Chen2000_CellCycle hypernym "http://identifiers.org/go/GO:0000075"
+Chen2000_CellCycle taxon "http://identifiers.org/taxonomy/4932"
+Chen2000_CellCycle description "http://identifiers.org/pubmed/10637314"
+Chen2000_CellCycle description "http://identifiers.org/pubmed/10098216"
+Chen2000_CellCycle description "http://identifiers.org/pubmed/9552349"

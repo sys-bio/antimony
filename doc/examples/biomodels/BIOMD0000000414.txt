@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *DIIVENUS_reducedmodel()
 
   // Compartments and Species:
@@ -8,7 +8,7 @@ model *DIIVENUS_reducedmodel()
   // Reactions:
   VENUSproduction:  => VENUS; p2;
   VENUSdecayduetophotobleaching: VENUS => ; lambda_star*p2*VENUS;
-  VENUSdecayduetoauxin: VENUS => ; (p2*VENUS)/(p1_star*VENUS + qj_star);
+  VENUSdecayduetoauxin: VENUS => ; p2*VENUS/(p1_star*VENUS + qj_star);
 
   // Species initializations:
   VENUS = 1;
@@ -24,4 +24,29 @@ model *DIIVENUS_reducedmodel()
 
   // Other declarations:
   const cell, p1_star, p2, lambda_star, qj_star;
+
+  // SBO terms:
+  cell.sboTerm = 290
+  VENUS.sboTerm = 297
+  VENUSproduction.sboTerm = 393
+  VENUSdecayduetophotobleaching.sboTerm = 179
+  VENUSdecayduetoauxin.sboTerm = 179
+
+  // CV terms:
+  cell hypernym "http://identifiers.org/go/GO:0005623"
+  VENUS part "http://identifiers.org/uniprot/Q940U6",
+             "http://identifiers.org/uniprot/Q9XFM0"
+  VENUSproduction hypernym "http://identifiers.org/go/GO:0006412"
+  VENUSdecayduetophotobleaching hypernym "http://identifiers.org/go/GO:0030163"
+  VENUSdecayduetoauxin hypernym "http://identifiers.org/go/GO:0030163"
 end
+
+DIIVENUS_reducedmodel is "Band2012_DII-Venus_ReducedModel"
+
+DIIVENUS_reducedmodel model_entity_is "http://identifiers.org/biomodels.db/MODEL1203230001"
+DIIVENUS_reducedmodel model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000414"
+DIIVENUS_reducedmodel description "http://identifiers.org/pubmed/22393022"
+DIIVENUS_reducedmodel hypernym "http://identifiers.org/go/GO:0090354",
+                               "http://identifiers.org/go/GO:0009958"
+DIIVENUS_reducedmodel taxon "http://identifiers.org/taxonomy/3701"
+DIIVENUS_reducedmodel property "http://identifiers.org/mamo/MAMO_0000046"

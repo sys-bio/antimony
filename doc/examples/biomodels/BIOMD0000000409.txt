@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Queralt2006_MitoticExit_Cdc55DownregulationBySeparase()
 
   // Compartments and Species:
@@ -19,7 +19,7 @@ model *Queralt2006_MitoticExit_Cdc55DownregulationBySeparase()
   Polo_i := PoloT - Polo;
   Tem1_i := Tem1T - Tem1;
   Cdc15_i := Cdc15T - Cdc15;
-  PP2A := (1 + kpp*ki*separase)/(1 + ki*separase)*PP2AT;
+  PP2A := ((1 + kpp*ki*separase)/(1 + ki*separase))*PP2AT;
   Net1P := Net1T - Net1 - Net1Cdc14;
   Cdc14 := Cdc14T - Net1Cdc14;
   Cdk := Clb2/(1 + Inh);
@@ -29,7 +29,7 @@ model *Queralt2006_MitoticExit_Cdc55DownregulationBySeparase()
   v2: Clb2 -> $degr; (kdclb2 + kadclb2*Cdc20 + kaadclb2*Cdh1)*Clb2;
   v3: $AA -> Cdc20; kscdc20;
   v4: Cdc20 -> $degr; (kdcdc20 + kadcdc20*Cdh1)*Cdc20;
-  v5: $Cdh1_i -> Cdh1; (kdcdh + kadcdh*Cdc14)*((Cdh1T - Cdh1)/((Jcdh + Cdh1T) - Cdh1));
+  v5: $Cdh1_i -> Cdh1; (kdcdh + kadcdh*Cdc14)*((Cdh1T - Cdh1)/(Jcdh + Cdh1T - Cdh1));
   v6: Cdh1 -> $Cdh1_i; kapcdh*Cdk*(Cdh1/(Jcdh + Cdh1));
   v7: $AA -> securinT + $securin; kssecurin;
   v8: securinT + $securin -> $degr; (kdsecurin + kadsecurin*Cdc20)*securinT;
@@ -45,12 +45,12 @@ model *Queralt2006_MitoticExit_Cdc55DownregulationBySeparase()
   v17: Net1Cdc14 -> $Net1P; (kp*Cdk + kap*MEN)*(Net1Cdc14/(Jnet + Net1 + Net1Cdc14));
   v18: $AA -> PoloT + $Polo_i; kspolo;
   v19: PoloT + $Polo_i -> $degr; (kdpolo + kadpolo*Cdh1)*PoloT;
-  v20: $Polo_i -> Polo; (kapolo + kaapolo*Cdk)*((PoloT - Polo)/((Jpolo + PoloT) - Polo));
+  v20: $Polo_i -> Polo; (kapolo + kaapolo*Cdk)*((PoloT - Polo)/(Jpolo + PoloT - Polo));
   v21: Polo -> $Polo_i; kipolo*(Polo/(Jpolo + Polo));
   v22: Polo -> $degr; (kdpolo + kadpolo*Cdh1)*Polo;
-  v23: $Tem1_i -> Tem1; (katem + kaatem*Polo)*((Tem1T - Tem1)/((Jtem1 + Tem1T) - Tem1));
+  v23: $Tem1_i -> Tem1; (katem + kaatem*Polo)*((Tem1T - Tem1)/(Jtem1 + Tem1T - Tem1));
   v24: Tem1 -> $Tem1_i; (kitem + kaitem*PP2A)*(Tem1/(Jtem1 + Tem1));
-  v25: $Cdc15_i -> Cdc15; (kacdc15 + kaacdc15*Cdc14)*((Cdc15T - Cdc15)/((Jcdc15 + Cdc15T) - Cdc15));
+  v25: $Cdc15_i -> Cdc15; (kacdc15 + kaacdc15*Cdc14)*((Cdc15T - Cdc15)/(Jcdc15 + Cdc15T - Cdc15));
   v26: Cdc15 -> $Cdc15_i; (kicdc15 + kaicdc15*Cdk)*(Cdc15/(Jcdc15 + Cdc15));
   v27: $AA -> MEN; lamen*(Tem1 - MEN)*(Cdc15 - MEN);
   v28: MEN -> $degr; ldmen*MEN;
@@ -62,7 +62,7 @@ model *Queralt2006_MitoticExit_Cdc55DownregulationBySeparase()
   Clb2 = 0.997;
   degr = 1;
   Cdc20 = 0;
-  Cdh1 = 3.8e-005;
+  Cdh1 = 3.8e-05;
   securinT = 0.6;
   securinseparase = 0.248;
   separaseT = 0.25;
@@ -72,7 +72,7 @@ model *Queralt2006_MitoticExit_Cdc55DownregulationBySeparase()
   Polo = 0.945;
   Tem1 = 0.00389;
   Cdc15 = 0.0257;
-  MEN = 8e-006;
+  MEN = 8e-06;
 
   // Compartment initializations:
   compartment_ = 1;
@@ -143,6 +143,7 @@ model *Queralt2006_MitoticExit_Cdc55DownregulationBySeparase()
   const lamen, ldmen;
 
   // Display Names:
+  compartment_ is "compartment";
   Cdh1_i is "inactive Cdh1";
   securinseparase is "securin:separase";
   Polo_i is "inactive Polo";
@@ -156,4 +157,132 @@ model *Queralt2006_MitoticExit_Cdc55DownregulationBySeparase()
   v17 is "Net1Cdc14 phosphorylation";
   v29 is "Tem1 degradation in MEN";
   v30 is "Cdc15 degradation in MEN";
+
+  // SBO terms:
+  compartment_.sboTerm = 290
+  AA.sboTerm = 291
+  Clb2.sboTerm = 252
+  degr.sboTerm = 291
+  Cdc20.sboTerm = 252
+  Cdh1.sboTerm = 252
+  Cdh1_i.sboTerm = 252
+  securinT.sboTerm = 252
+  securin.sboTerm = 252
+  securinseparase.sboTerm = 297
+  separaseT.sboTerm = 252
+  separase.sboTerm = 252
+  Net1.sboTerm = 252
+  Net1Cdc14.sboTerm = 297
+  PoloT.sboTerm = 252
+  Polo.sboTerm = 252
+  Polo_i.sboTerm = 252
+  Tem1.sboTerm = 252
+  Tem1_i.sboTerm = 252
+  Cdc15.sboTerm = 252
+  Cdc15_i.sboTerm = 252
+  MEN.sboTerm = 297
+  PP2A.sboTerm = 252
+  Net1P.sboTerm = 297
+  Cdc14.sboTerm = 252
+  v1.sboTerm = 393
+  v2.sboTerm = 179
+  v3.sboTerm = 393
+  v4.sboTerm = 179
+  v5.sboTerm = 181
+  v6.sboTerm = 181
+  v7.sboTerm = 393
+  v8.sboTerm = 179
+  v9.sboTerm = 393
+  v10.sboTerm = 179
+  v11.sboTerm = 526
+  securinseparase_securindegradation.sboTerm = 179
+  securinseparase_separase_degradation.sboTerm = 179
+  v13.sboTerm = 330
+  v14.sboTerm = 216
+  v15.sboTerm = 526
+  v16.sboTerm = 180
+  v17.sboTerm = 216
+  v18.sboTerm = 393
+  v19.sboTerm = 179
+  v20.sboTerm = 181
+  v21.sboTerm = 181
+  v22.sboTerm = 179
+  v23.sboTerm = 181
+  v24.sboTerm = 181
+  v25.sboTerm = 181
+  v26.sboTerm = 181
+  v27.sboTerm = 393
+  v28.sboTerm = 179
+  v29.sboTerm = 179
+  v30.sboTerm = 179
+
+  // CV terms:
+  compartment_ hypernym "http://identifiers.org/obo.go/GO:0005623"
+  AA hypernym "http://identifiers.org/obo.chebi/CHEBI:33704"
+  Clb2 hypernym "http://identifiers.org/uniprot/P24869"
+  Cdc20 hypernym "http://identifiers.org/uniprot/P26309"
+  Cdh1 hypernym "http://identifiers.org/uniprot/P53197"
+  Cdh1_i hypernym "http://identifiers.org/uniprot/P53197"
+  securinT hypernym "http://identifiers.org/uniprot/P40316"
+  securin hypernym "http://identifiers.org/uniprot/P40316"
+  securinseparase part "http://identifiers.org/uniprot/P40316",
+                       "http://identifiers.org/uniprot/Q03018"
+  separaseT hypernym "http://identifiers.org/uniprot/Q03018"
+  separase hypernym "http://identifiers.org/uniprot/Q03018"
+  Net1 hypernym "http://identifiers.org/uniprot/P47035"
+  Net1Cdc14 part "http://identifiers.org/uniprot/P47035",
+                 "http://identifiers.org/uniprot/Q00684"
+  PoloT hypernym "http://identifiers.org/uniprot/P32562"
+  Polo hypernym "http://identifiers.org/uniprot/P32562"
+  Polo_i hypernym "http://identifiers.org/uniprot/P32562"
+  Tem1 hypernym "http://identifiers.org/uniprot/P38987"
+  Tem1_i hypernym "http://identifiers.org/uniprot/P38987"
+  Cdc15 hypernym "http://identifiers.org/uniprot/P27636"
+  Cdc15_i hypernym "http://identifiers.org/uniprot/P27636"
+  MEN part "http://identifiers.org/uniprot/P38987",
+           "http://identifiers.org/uniprot/P27636"
+  PP2A hypernym "http://identifiers.org/uniprot/Q00362"
+  Net1P hypernym "http://identifiers.org/uniprot/P47035",
+                 "http://identifiers.org/kegg.compound/C00562"
+  Cdc14 hypernym "http://identifiers.org/uniprot/Q00684"
+  v1 hypernym "http://identifiers.org/obo.go/GO:0006412"
+  v2 hypernym "http://identifiers.org/obo.go/GO:0030163"
+  v3 hypernym "http://identifiers.org/obo.go/GO:0006412"
+  v4 hypernym "http://identifiers.org/obo.go/GO:0030163"
+  v5 hypernym "http://identifiers.org/obo.go/GO:0006464"
+  v6 hypernym "http://identifiers.org/obo.go/GO:0006464"
+  v7 hypernym "http://identifiers.org/obo.go/GO:0006412"
+  v8 hypernym "http://identifiers.org/obo.go/GO:0030163"
+  v9 hypernym "http://identifiers.org/obo.go/GO:0006412"
+  v10 hypernym "http://identifiers.org/obo.go/GO:0030163"
+  v11 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  securinseparase_securindegradation hypernym "http://identifiers.org/obo.go/GO:0043241"
+  securinseparase_separase_degradation hypernym "http://identifiers.org/obo.go/GO:0043241"
+  v13 hypernym "http://identifiers.org/obo.go/GO:0016311"
+  v14 hypernym "http://identifiers.org/obo.go/GO:0016310"
+  v15 hypernym "http://identifiers.org/obo.go/GO:0006461"
+  v16 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  v17 hypernym "http://identifiers.org/obo.go/GO:0016310"
+  v18 hypernym "http://identifiers.org/obo.go/GO:0006412"
+  v19 hypernym "http://identifiers.org/obo.go/GO:0030163"
+  v20 hypernym "http://identifiers.org/obo.go/GO:0006464"
+  v21 hypernym "http://identifiers.org/obo.go/GO:0006464"
+  v22 hypernym "http://identifiers.org/obo.go/GO:0030163"
+  v23 hypernym "http://identifiers.org/obo.go/GO:0006464"
+  v24 hypernym "http://identifiers.org/obo.go/GO:0006464"
+  v25 hypernym "http://identifiers.org/obo.go/GO:0006464"
+  v26 hypernym "http://identifiers.org/obo.go/GO:0006464"
+  v27 hypernym "http://identifiers.org/obo.go/GO:0006412"
+  v28 hypernym "http://identifiers.org/obo.go/GO:0030163"
+  v29 hypernym "http://identifiers.org/obo.go/GO:0030163"
+  v30 hypernym "http://identifiers.org/obo.go/GO:0030163"
 end
+
+Queralt2006_MitoticExit_Cdc55DownregulationBySeparase is "Queralt2006_MitoticExit_Cdc55DownregulationBySeparase"
+
+Queralt2006_MitoticExit_Cdc55DownregulationBySeparase model_entity_is "http://identifiers.org/biomodels.db/MODEL5951818256"
+Queralt2006_MitoticExit_Cdc55DownregulationBySeparase model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000409"
+Queralt2006_MitoticExit_Cdc55DownregulationBySeparase description "http://identifiers.org/pubmed/16713564"
+Queralt2006_MitoticExit_Cdc55DownregulationBySeparase taxon "http://identifiers.org/taxonomy/4932"
+Queralt2006_MitoticExit_Cdc55DownregulationBySeparase hypernym "http://identifiers.org/obo.go/GO:0000278",
+                                                               "http://identifiers.org/cco/CCO:P0000038"

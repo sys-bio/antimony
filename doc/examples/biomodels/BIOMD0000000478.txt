@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *MODEL1309060000()
 
   // Compartments and Species:
@@ -37,10 +37,10 @@ model *MODEL1309060000()
   R18: IIIcAMP_PKA => cAMP + IIcAMP_PKA; K18*IIIcAMP_PKA;
   R19: IIcAMP_PKA => cAMP + cAMP_PKA; K19*IIcAMP_PKA;
   R20: cAMP_PKA => cAMP + PKA; K20*cAMP_PKA;
-  R21: IVcAMP_PKA => 2C + 2R_2cAMP; K21*IVcAMP_PKA;
-  R22: R_2cAMP => 2cAMP + R; K22*R_2cAMP;
+  R21: IVcAMP_PKA => 2 C + 2 R_2cAMP; K21*IVcAMP_PKA;
+  R22: R_2cAMP => 2 cAMP + R; K22*R_2cAMP;
   R23: C + R => R_C; K23*C*R;
-  R24: 2R_C => PKA; K24*((R_C*(R_C - 1))/2);
+  R24: 2 R_C => PKA; K24*(R_C*(R_C - 1)/2);
   R25: C + Pde1 => C + Pde1f; K25*C*Pde1;
   R26: cAMP + Pde1f => cAMP_Pde1f; K26*cAMP*Pde1f;
   R27: cAMP_Pde1f => cAMP + Pde1f; K27*cAMP_Pde1f;
@@ -117,17 +117,17 @@ model *MODEL1309060000()
   K9 has per_second;
   K10 = 0.001;
   K10 has per_second;
-  K11 = 2.1e-006;
+  K11 = 2.1e-06;
   K11 has per_second;
   K12 = 0.001;
   K12 has per_second;
-  K13 = 1e-005;
+  K13 = 1e-05;
   K13 has per_second;
-  K14 = 1e-005;
+  K14 = 1e-05;
   K14 has per_second;
-  K15 = 1e-005;
+  K15 = 1e-05;
   K15 has per_second;
-  K16 = 1e-005;
+  K16 = 1e-05;
   K16 has per_second;
   K17 = 0.1;
   K17 has per_second;
@@ -145,7 +145,7 @@ model *MODEL1309060000()
   K23 has per_second;
   K24 = 1;
   K24 has per_second;
-  K25 = 1e-006;
+  K25 = 1e-06;
   K25 has per_second;
   K26 = 0.1;
   K26 has per_second;
@@ -183,4 +183,84 @@ model *MODEL1309060000()
   unit volume = dimensionless;
   unit substance = dimensionless;
   unit per_second = 1 / second;
+
+  // SBO terms:
+  compartment01.sboTerm = 290
+
+  // CV terms:
+  compartment01 hypernym "http://identifiers.org/go/GO:0005623"
+  Ras2_GDP part "http://identifiers.org/chebi/CHEBI:17552",
+                "http://identifiers.org/uniprot/P01120"
+  Cdc25 hypernym "http://identifiers.org/uniprot/P04821"
+  Ras2_GDP_Cdc25 part "http://identifiers.org/chebi/CHEBI:17552",
+                      "http://identifiers.org/uniprot/P04821",
+                      "http://identifiers.org/uniprot/P01120"
+  Ras2_Cdc25 part "http://identifiers.org/uniprot/P04821",
+                  "http://identifiers.org/uniprot/P01120"
+  GDP hypernym "http://identifiers.org/chebi/CHEBI:17552"
+  GTP hypernym "http://identifiers.org/chebi/CHEBI:15996"
+  Ras2_GTP_Cdc25 part "http://identifiers.org/chebi/CHEBI:15996",
+                      "http://identifiers.org/uniprot/P04821",
+                      "http://identifiers.org/uniprot/P01120"
+  Ras2_GTP part "http://identifiers.org/chebi/CHEBI:15996",
+                "http://identifiers.org/uniprot/P01120"
+  Ira2 hypernym "http://identifiers.org/uniprot/P19158"
+  Ras2_GTP_Ira2 part "http://identifiers.org/chebi/CHEBI:15996",
+                     "http://identifiers.org/uniprot/P19158",
+                     "http://identifiers.org/uniprot/P01120"
+  CYR1 hypernym "http://identifiers.org/uniprot/P08678"
+  Ras2_GTP_CYR1 part "http://identifiers.org/chebi/CHEBI:15996",
+                     "http://identifiers.org/uniprot/P08678",
+                     "http://identifiers.org/uniprot/P01120"
+  ATP hypernym "http://identifiers.org/chebi/CHEBI:15422"
+  cAMP hypernym "http://identifiers.org/chebi/CHEBI:17489"
+  PKA hypernym "http://identifiers.org/ec-code/2.7.11.11"
+  cAMP_PKA part "http://identifiers.org/chebi/CHEBI:17489",
+                "http://identifiers.org/ec-code/2.7.11.11"
+  IIcAMP_PKA part "http://identifiers.org/chebi/CHEBI:17489",
+                  "http://identifiers.org/ec-code/2.7.11.11"
+  IIIcAMP_PKA part "http://identifiers.org/chebi/CHEBI:17489",
+                   "http://identifiers.org/ec-code/2.7.11.11"
+  IVcAMP_PKA part "http://identifiers.org/chebi/CHEBI:17489",
+                  "http://identifiers.org/ec-code/2.7.11.11"
+  C part "http://identifiers.org/uniprot/P05986",
+         "http://identifiers.org/uniprot/P06245",
+         "http://identifiers.org/uniprot/P06244"
+  R_2cAMP part "http://identifiers.org/chebi/CHEBI:17489",
+               "http://identifiers.org/uniprot/P07278"
+  R hypernym "http://identifiers.org/uniprot/P07278"
+  R_C part "http://identifiers.org/uniprot/P07278",
+           "http://identifiers.org/uniprot/P05986",
+           "http://identifiers.org/uniprot/P06245",
+           "http://identifiers.org/uniprot/P06244"
+  Pde1 hypernym "http://identifiers.org/uniprot/P22434"
+  Pde1f hypernym "http://identifiers.org/uniprot/P22434"
+  Pde1f property "http://identifiers.org/pato/PATO:0002220"
+  cAMP_Pde1f part "http://identifiers.org/chebi/CHEBI:17489",
+                  "http://identifiers.org/uniprot/P22434"
+  cAMP_Pde1f property "http://identifiers.org/pato/PATO:0002220"
+  AMP hypernym "http://identifiers.org/chebi/CHEBI:16027"
+  PPA2 hypernym "http://identifiers.org/uniprot/P28239"
+  Pde2 hypernym "http://identifiers.org/uniprot/P06776"
+  cAMP_Pde2 part "http://identifiers.org/chebi/CHEBI:17489",
+                 "http://identifiers.org/uniprot/P06776"
+  Cdc25f hypernym "http://identifiers.org/uniprot/P04821"
+  Ira2P hypernym "http://identifiers.org/uniprot/P19158"
+  Ira2P property "http://identifiers.org/pato/PATO:0002220"
+  Ras2_GTP_Ira2P part "http://identifiers.org/chebi/CHEBI:15996",
+                      "http://identifiers.org/uniprot/P01120",
+                      "http://identifiers.org/uniprot/P19158"
 end
+
+MODEL1309060000 is "Besozzi2012 - Oscillatory regimes in the Ras/cAMP/PKA pathway in S.cerevisiae"
+
+MODEL1309060000 model_entity_is "http://identifiers.org/biomodels.db/MODEL1309060000"
+MODEL1309060000 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000478"
+MODEL1309060000 description "http://identifiers.org/pubmed/22818197"
+MODEL1309060000 origin "http://identifiers.org/pubmed/18023904",
+                       "http://identifiers.org/pubmed/21741466"
+MODEL1309060000 property "http://identifiers.org/mamo/MAMO_0000046"
+MODEL1309060000 taxon "http://identifiers.org/taxonomy/4932"
+MODEL1309060000 part "http://identifiers.org/go/GO:0010737",
+                     "http://identifiers.org/go/GO:0019933",
+                     "http://identifiers.org/pw/PW:0000543"

@@ -1,0 +1,85 @@
+// Created by libAntimony v2.13.0
+model *Mufudza2012___Estrogen_effect_on_the_dynamics_of_breast_cancer()
+
+  // Compartments and Species:
+  compartment Tissue;
+  species $H in Tissue, $T in Tissue, $E in Tissue, $I in Tissue;
+
+  // Rate Rules:
+  H' = H*(alpha1 - beta1*H - delta1*T) - sigma1*H*E;
+  T' = (T*(alpha3 - beta2*T) - gamma2*I*T) + sigma2*H*E;
+  I' = s + rho*I*T/(omega + T) - gamma3*I*T - mu*I - sigma3*I*E/(v + E);
+
+  // Species initializations:
+  H = 0.999999999999998;
+  T = 9.99999999999998e-06;
+  E = 0.499999999999999;
+  I = 1.379310345;
+
+  // Compartment initializations:
+  Tissue = 1;
+
+  // Variable initializations:
+  alpha1 = 0.7;
+  beta1 = 0.3;
+  delta1 = 1;
+  sigma1 = 1.2;
+  alpha3 = 1;
+  beta2 = 0.4;
+  gamma2 = 0.9;
+  sigma2 = 0.94;
+  s = 0.4;
+  rho = 0.2;
+  omega = 0.3;
+  gamma3 = 0.085;
+  mu = 0.29;
+  sigma3 = 0.3;
+  v = 0.4;
+  alpha2 = 0.98;
+  theta = 0.8;
+  pi_ = 0;
+
+  // Other declarations:
+  const Tissue, alpha1, beta1, delta1, sigma1, alpha3, beta2, gamma2, sigma2;
+  const s, rho, omega, gamma3, mu, sigma3, v, alpha2, theta, pi_;
+
+  // Unit definitions:
+  unit time_unit = 86400 second;
+
+  // Display Names:
+  time_unit is "time";
+  Tissue is "breast";
+  H is "normal cells";
+  T is "Tumour cells";
+  E is "estrogen";
+  I is "Immune cells";
+  pi_ is "pi";
+
+  // CV terms:
+  Tissue hypernym "http://identifiers.org/omit/OMIT:0027497"
+  Tissue hypernym "http://identifiers.org/bto/BTO:0000149"
+  H hypernym "http://identifiers.org/go/GO:0005623"
+  alpha1 description "http://identifiers.org/pubmed/23365616"
+  beta1 description "http://identifiers.org/pubmed/23365616"
+  delta1 description "http://identifiers.org/pubmed/12955460"
+  T hypernym "http://identifiers.org/cl/CL:0001063"
+  E identity "http://identifiers.org/chebi/CHEBI:16469"
+  beta2 description "http://identifiers.org/pubmed/12955460"
+  gamma2 description "http://identifiers.org/pubmed/12955460"
+  I property "http://identifiers.org/go/GO:0006955"
+  I hypernym "http://identifiers.org/go/GO:0005623"
+  s description "http://identifiers.org/doi/10.1080/10273660108833067"
+  rho description "http://identifiers.org/doi/10.1080/10273660108833067"
+  omega description "urn:miriam:pubmed:10.1080%2F10273660108833067"
+  mu description "http://identifiers.org/pubmed/12955460"
+end
+
+Mufudza2012___Estrogen_effect_on_the_dynamics_of_breast_cancer is "Mufudza2012 - Estrogen effect on the dynamics of breast cancer"
+
+Mufudza2012___Estrogen_effect_on_the_dynamics_of_breast_cancer model_entity_is "http://identifiers.org/biomodels.db/MODEL1304190001"
+Mufudza2012___Estrogen_effect_on_the_dynamics_of_breast_cancer model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000642"
+Mufudza2012___Estrogen_effect_on_the_dynamics_of_breast_cancer description "http://identifiers.org/pubmed/23365616"
+Mufudza2012___Estrogen_effect_on_the_dynamics_of_breast_cancer property "http://identifiers.org/go/GO:0043627",
+                                                                        "urn:miriam:doid:DOID%3A+0060075",
+                                                                        "http://identifiers.org/mamo/MAMO_0000046"
+Mufudza2012___Estrogen_effect_on_the_dynamics_of_breast_cancer taxon "http://identifiers.org/taxonomy/9606"

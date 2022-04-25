@@ -1,0 +1,194 @@
+// Created by libAntimony v2.13.0
+function Function_for_The_limited_interaction_between_glioma_and_macrophage(alpha3, G, k2, M)
+  alpha3*(G/(G + k2))*M;
+end
+
+Function_for_The_limited_interaction_between_glioma_and_macrophage is "Function for The limited interaction between glioma and macrophage"
+
+function Function_The_natural_death_of_CTL(mu_1, C_T)
+  mu_1*C_T;
+end
+
+Function_The_natural_death_of_CTL is "Function The natural death of CTL"
+
+function Function_for_Decay_term_of_IFN_gamma(mu3, I_gamma)
+  mu3*I_gamma;
+end
+
+Function_for_Decay_term_of_IFN_gamma is "Function for Decay term of IFN-gamma"
+
+function function_for_The_degradation_of_TGF_beta(mu2, T_beta)
+  mu2*T_beta;
+end
+
+function_for_The_degradation_of_TGF_beta is "function for The degradation of TGF-beta"
+
+function Function_for_The_proliferative_enhancement_effect_of_macrophagesby_IFN_gama_and_negative_effect_of_TGF_beta(a1, I_gamma, k4, T_beta, e2)
+  a1*(I_gamma/(k4 + I_gamma))*(1/(T_beta + e2));
+end
+
+Function_for_The_proliferative_enhancement_effect_of_macrophagesby_IFN_gama_and_negative_effect_of_TGF_beta is "Function for The proliferative enhancement effect of macrophagesby IFN-gama and negative effect of TGF-beta"
+
+function Function_for_Natural_production_of_bioactive_TGF__beta_in_the_central_nervous_system(s1)
+  s1;
+end
+
+Function_for_Natural_production_of_bioactive_TGF__beta_in_the_central_nervous_system is "Function for Natural production of bioactive TGF- beta in the central nervous system"
+
+function Function_for_linear_production_of_inteferon_gamma_by_CTL(b2, C_T)
+  b2*C_T;
+end
+
+Function_for_linear_production_of_inteferon_gamma_by_CTL is "Function for linear production of inteferon gamma by CTL"
+
+function Function_for_Clearance_of_CTL_due_to_their_interaction_with_glioma_cells(alpha4, G, k3, C_T)
+  alpha4*(G/(G + k3))*C_T;
+end
+
+Function_for_Clearance_of_CTL_due_to_their_interaction_with_glioma_cells is "Function for Clearance of CTL due to their interaction with glioma cells"
+
+function Function_for_Glioma_secrete_the_cytokine_TGF_beta_to_suppress_the_immune_activity(b1, G)
+  b1*G;
+end
+
+Function_for_Glioma_secrete_the_cytokine_TGF_beta_to_suppress_the_immune_activity is "Function for Glioma secrete the cytokine TGF-beta to suppress the immune activity"
+
+function Function_for_Elimination_of_glioma_due_to_interaction_with_CTL_and_macrophage(T_beta, e1, alpha1, M, alpha2, C_T, G, k1)
+  (1/(T_beta + e1))*(alpha1*M + alpha2*C_T)*(G/(G + k1));
+end
+
+Function_for_Elimination_of_glioma_due_to_interaction_with_CTL_and_macrophage is "Function for Elimination of glioma due to interaction with CTL and macrophage"
+
+function Function_for_The_rate_of_change_of_glioma_whose_growth_follows_the_logistic_fashion_without_any_immune_intervention(r1, G, G_max)
+  r1*G*(1 - G/G_max);
+end
+
+Function_for_The_rate_of_change_of_glioma_whose_growth_follows_the_logistic_fashion_without_any_immune_intervention is "Function for The rate of change of glioma whose growth follows the logistic fashion without any immune intervention"
+
+function Function_for_The_rate_of_change_of_CTL_whose_stimulation_is_followed_by_glioma_cell(a2, G, k5, T_beta)
+  a2*G/(k5 + T_beta);
+end
+
+Function_for_The_rate_of_change_of_CTL_whose_stimulation_is_followed_by_glioma_cell is "Function for The rate of change of CTL whose stimulation is followed by glioma cell"
+
+function Function_for_logistic_growth_term_for_macrophage(r2, M, M_max)
+  r2*M*(1 - M/M_max);
+end
+
+Function_for_logistic_growth_term_for_macrophage is "Function for logistic growth term for macrophage"
+
+
+model *Khajanchi2017___Uniform_Persistence_and_Global_Stability_for_a_Brain_Tumor_and_Immune_System_Interaction()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species G in compartment_, M in compartment_, C_T in compartment_, T_beta in compartment_;
+  species I_gamma in compartment_;
+
+  // Reactions:
+  The_rate_of_change_of_glioma_whose_growth_follows_the_logistic_fashion_without_any_immune_intervention:  => G; compartment_*Function_for_The_rate_of_change_of_glioma_whose_growth_follows_the_logistic_fashion_without_any_immune_intervention(r1, G, G_max);
+  Elimination_of_glioma_due_to_interaction_with_CTL_and_macrophage: G => ; compartment_*Function_for_Elimination_of_glioma_due_to_interaction_with_CTL_and_macrophage(T_beta, e1, alpha1, M, alpha2, C_T, G, k1);
+  Logistic_growth_term_for_macrophage:  => M; compartment_*Function_for_logistic_growth_term_for_macrophage(r2, M, M_max);
+  The_proliferative_enhancement_effect_of_macrophagesby_IFN_gama_and_negative_effect_of_TGF_beta:  => M; compartment_*Function_for_The_proliferative_enhancement_effect_of_macrophagesby_IFN_gama_and_negative_effect_of_TGF_beta(a1, I_gamma, k4, T_beta, e2);
+  The_limited_interaction_between_glioma_and_macrophage: M => ; compartment_*Function_for_The_limited_interaction_between_glioma_and_macrophage(alpha3, G, k2, M);
+  The_rate_of_change_of_CTL_whose_stimulation_is_followed_by_glioma_cell:  => C_T; compartment_*Function_for_The_rate_of_change_of_CTL_whose_stimulation_is_followed_by_glioma_cell(a2, G, k5, T_beta);
+  The_natural_death_of_CTL: C_T => ; compartment_*Function_The_natural_death_of_CTL(mu1, C_T);
+  Clearance_of_CTL_due_to_their_interaction_with_glioma_cells: C_T => ; compartment_*Function_for_Clearance_of_CTL_due_to_their_interaction_with_glioma_cells(alpha4, G, k3, C_T);
+  Natural_production_of_bioactive_TGF__beta_in_the_central_nervous_system:  => T_beta; compartment_*Function_for_Natural_production_of_bioactive_TGF__beta_in_the_central_nervous_system(s1);
+  Glioma_secrete_the_cytokine_TGF_beta_to_suppress_the_immune_activity:  => T_beta; compartment_*Function_for_Glioma_secrete_the_cytokine_TGF_beta_to_suppress_the_immune_activity(b1, G);
+  The_degradation_of_TGF_beta: T_beta => ; compartment_*function_for_The_degradation_of_TGF_beta(mu2, T_beta);
+  Linear_production_of_interferon_gamma_by_CTL:  => I_gamma; compartment_*Function_for_linear_production_of_inteferon_gamma_by_CTL(b2, C_T);
+  Decay_term_of_IFN_gamma: I_gamma => ; compartment_*Function_for_Decay_term_of_IFN_gamma(mu3, I_gamma);
+
+  // Species initializations:
+  G = 100000;
+  M = 100000;
+  C_T = 1;
+  T_beta = 5000;
+  I_gamma = 9000;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  r1 = 0.01;
+  G_max = 882650;
+  e1 = 10000;
+  alpha1 = 1.5;
+  alpha2 = 0.12;
+  k1 = 27000;
+  r2 = 0.3307;
+  m1 = 1000000;
+  a1 = 0.1163;
+  k4 = 10500;
+  e2 = 10000;
+  alpha3 = 0.0194;
+  k2 = 27000;
+  a2 = 0;
+  k5 = 2000;
+  mu1 = 0.007;
+  alpha4 = 0.1694;
+  k3 = 334450;
+  s1 = 63305;
+  b1 = 5.75e-06;
+  mu2 = 6.93;
+  b2 = 0.000102;
+  mu3 = 0.102;
+  M_max = 1;
+
+  // Other declarations:
+  const compartment_, r1, G_max, e1, alpha1, alpha2, k1, r2, m1, a1, k4, e2;
+  const alpha3, k2, a2, k5, mu1, alpha4, k3, s1, b1, mu2, b2, mu3, M_max;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  The_rate_of_change_of_glioma_whose_growth_follows_the_logistic_fashion_without_any_immune_intervention is "The rate of change of glioma whose growth follows the logistic fashion without any immune intervention";
+  Elimination_of_glioma_due_to_interaction_with_CTL_and_macrophage is "Elimination of glioma due to interaction with CTL and macrophage";
+  Logistic_growth_term_for_macrophage is "Logistic growth term for macrophage";
+  The_proliferative_enhancement_effect_of_macrophagesby_IFN_gama_and_negative_effect_of_TGF_beta is "The proliferative enhancement effect of macrophagesby IFN-gama and negative effect of TGF-beta";
+  The_limited_interaction_between_glioma_and_macrophage is "The limited interaction between glioma and macrophage";
+  The_rate_of_change_of_CTL_whose_stimulation_is_followed_by_glioma_cell is "The rate of change of CTL whose stimulation is followed by glioma cell";
+  The_natural_death_of_CTL is "The natural death of CTL";
+  Clearance_of_CTL_due_to_their_interaction_with_glioma_cells is "Clearance of CTL due to their interaction with glioma cells";
+  Natural_production_of_bioactive_TGF__beta_in_the_central_nervous_system is "Natural production of bioactive TGF- beta in the central nervous system";
+  Glioma_secrete_the_cytokine_TGF_beta_to_suppress_the_immune_activity is "Glioma secrete the cytokine TGF-beta to suppress the immune activity";
+  The_degradation_of_TGF_beta is "The degradation of TGF-beta";
+  Linear_production_of_interferon_gamma_by_CTL is "Linear production of interferon gamma by CTL";
+  Decay_term_of_IFN_gamma is "Decay term of IFN-gamma";
+
+  // CV terms:
+  G class "http://identifiers.org/bto/BTO:0000526"
+  M class "http://identifiers.org/bto/BTO:0000801"
+  C_T class "http://identifiers.org/ncit/C12543"
+  T_beta class "http://identifiers.org/ncit/C30098"
+  I_gamma class "http://identifiers.org/ncit/C20496"
+  The_rate_of_change_of_glioma_whose_growth_follows_the_logistic_fashion_without_any_immune_intervention class "http://identifiers.org/pw/PW:0000711"
+  Elimination_of_glioma_due_to_interaction_with_CTL_and_macrophage class "http://identifiers.org/bto/BTO:0000526"
+  Logistic_growth_term_for_macrophage instance "http://identifiers.org/go/GO:0061517"
+  The_proliferative_enhancement_effect_of_macrophagesby_IFN_gama_and_negative_effect_of_TGF_beta class "http://identifiers.org/go/GO:0061517"
+  The_limited_interaction_between_glioma_and_macrophage class "http://identifiers.org/go/GO:0002281"
+  The_rate_of_change_of_CTL_whose_stimulation_is_followed_by_glioma_cell class "http://identifiers.org/go/GO:0043319"
+  The_natural_death_of_CTL class "http://identifiers.org/go/GO:1902483"
+  Clearance_of_CTL_due_to_their_interaction_with_glioma_cells class "http://identifiers.org/go/GO:0043316"
+  Natural_production_of_bioactive_TGF__beta_in_the_central_nervous_system class "http://identifiers.org/go/GO:0071604"
+  Glioma_secrete_the_cytokine_TGF_beta_to_suppress_the_immune_activity class "http://identifiers.org/bto/BTO:0000526"
+  The_degradation_of_TGF_beta class "http://identifiers.org/go/GO:1901389"
+  Linear_production_of_interferon_gamma_by_CTL class "http://identifiers.org/go/GO:0032609"
+  Decay_term_of_IFN_gamma class "http://identifiers.org/go/GO:1902714"
+end
+
+Khajanchi2017___Uniform_Persistence_and_Global_Stability_for_a_Brain_Tumor_and_Immune_System_Interaction is "Khajanchi2017 - Uniform Persistence and Global Stability for a Brain Tumor and Immune System Interaction"
+
+Khajanchi2017___Uniform_Persistence_and_Global_Stability_for_a_Brain_Tumor_and_Immune_System_Interaction origin "http://identifiers.org/mamo/MAMO_0000046",
+                                                                                                                "http://identifiers.org/taxonomy/9606",
+                                                                                                                "http://identifiers.org/biomodels.db/"
+Khajanchi2017___Uniform_Persistence_and_Global_Stability_for_a_Brain_Tumor_and_Immune_System_Interaction description "http://identifiers.org/biomodels.db/",
+                                                                                                                     "http://identifiers.org/doi/10.1142/S1793048017500114"
+Khajanchi2017___Uniform_Persistence_and_Global_Stability_for_a_Brain_Tumor_and_Immune_System_Interaction model_entity_is "http://identifiers.org/biomodels.db/MODEL2003110001",
+                                                                                                                         "http://identifiers.org/biomodels.db/BIOMD0000000921"
+Khajanchi2017___Uniform_Persistence_and_Global_Stability_for_a_Brain_Tumor_and_Immune_System_Interaction taxon "http://identifiers.org/taxonomy/9606"
+Khajanchi2017___Uniform_Persistence_and_Global_Stability_for_a_Brain_Tumor_and_Immune_System_Interaction property "http://identifiers.org/mamo/MAMO_0000046"

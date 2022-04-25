@@ -1,0 +1,110 @@
+// Created by libAntimony v2.13.0
+function Function_for_formation_of_tumor_system(R, Dx, tau, Dz, x, z)
+  (1 + R*(1 - Dx*tau) + 0.5*Dx*Dz*tau)*x + Dx*(1 + R*tau)*z;
+end
+
+Function_for_formation_of_tumor_system is "Function for formation of tumor system"
+
+function Function_for_Formation_of_effector_cell_against_tumor_cell(y, z)
+  y*z;
+end
+
+Function_for_Formation_of_effector_cell_against_tumor_cell is "Function for Formation of effector cell against tumor cell"
+
+function Function_for_removal_of_tumor_detecting_cell(mu, R, Dx, tau, Dz, z)
+  (mu - (R*(1 + Dx*tau) + Dx*(1 + 0.5*Dz*tau)))*z;
+end
+
+Function_for_removal_of_tumor_detecting_cell is "Function for removal of tumor detecting cell"
+
+function Function_for_Removal_of_effector_cell_functioning_against_tumor_cell(p, Dy, y)
+  (p - Dy)*y;
+end
+
+Function_for_Removal_of_effector_cell_functioning_against_tumor_cell is "Function for Removal of effector cell functioning against tumor cell"
+
+function Function_for_removal_of_tumor_system(x, y)
+  x*x + x*y;
+end
+
+Function_for_removal_of_tumor_system is "Function for removal of tumor system"
+
+function Function_for_formation_of_tumor_detecting_cell(R, Dx, tau, Dz, x)
+  (R*(1 - Dx*tau) + Dx*Dz*tau)*x;
+end
+
+Function_for_formation_of_tumor_detecting_cell is "Function for formation of tumor detecting cell"
+
+
+model *Bose2011___Noise_assisted_interactions_of_tumor_and_immune_cells()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species x in compartment_, y in compartment_, z in compartment_;
+
+  // Reactions:
+  Formation_of_tumor_system:  => x; compartment_*Function_for_formation_of_tumor_system(R, Dx, tau, Dz, x, z);
+  Removal_of_tumor_system: x => ; compartment_*Function_for_removal_of_tumor_system(x, y);
+  Formation_of_effector_cell_against_tumor_cell:  => y; compartment_*Function_for_Formation_of_effector_cell_against_tumor_cell(y, z);
+  Removal_of_effector_cell_functioning_against_tumor_cell: y => ; compartment_*Function_for_Removal_of_effector_cell_functioning_against_tumor_cell(p, Dy, y);
+  Formation_of_tumor_detecting_cell:  => z; compartment_*Function_for_formation_of_tumor_detecting_cell(R, Dx, tau, Dz, x);
+  Removal_of_tumor_detecting_cell: z => ; compartment_*Function_for_removal_of_tumor_detecting_cell(mu, R, Dx, tau, Dz, z);
+
+  // Species initializations:
+  x = 1e-06;
+  y = 0.01;
+  z = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  t = 1;
+  tau = 0.3;
+  R = 1;
+  Dx = 2.1;
+  Dy = 0.01;
+  Dz = 1.2;
+  p = 0.06;
+  mu = 20;
+
+  // Other declarations:
+  const compartment_, t, tau, R, Dx, Dy, Dz, p, mu;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  Formation_of_tumor_system is "Formation of tumor system";
+  Removal_of_tumor_system is "Removal of tumor system";
+  Formation_of_effector_cell_against_tumor_cell is "Formation of effector cell against tumor cell";
+  Removal_of_effector_cell_functioning_against_tumor_cell is "Removal of effector cell functioning against tumor cell";
+  Formation_of_tumor_detecting_cell is "Formation of tumor detecting cell";
+  Removal_of_tumor_detecting_cell is "Removal of tumor detecting cell";
+
+  // CV terms:
+  x instance "http://identifiers.org/ncit/C12922"
+  y instance "http://identifiers.org/ncit/C28241"
+  z instance "http://identifiers.org/ncit/C12535"
+  Formation_of_tumor_system instance "http://identifiers.org/ncit/C25513"
+  Removal_of_tumor_system instance "http://identifiers.org/ncit/C64914"
+  Formation_of_effector_cell_against_tumor_cell instance "http://identifiers.org/ncit/C25513"
+  Removal_of_effector_cell_functioning_against_tumor_cell instance "http://identifiers.org/ncit/C64914"
+  Formation_of_tumor_detecting_cell instance "http://identifiers.org/ncit/C25513"
+  Removal_of_tumor_detecting_cell instance "http://identifiers.org/ncit/C64914"
+end
+
+Bose2011___Noise_assisted_interactions_of_tumor_and_immune_cells is "Bose2011 - Noise-assisted interactions of tumor and immune cells"
+
+Bose2011___Noise_assisted_interactions_of_tumor_and_immune_cells instance "http://identifiers.org/mamo/MAMO_0000046",
+                                                                          "http://identifiers.org/taxonomy/9606",
+                                                                          "http://identifiers.org/ncit/C48686"
+Bose2011___Noise_assisted_interactions_of_tumor_and_immune_cells description "http://identifiers.org/ncit/C48686",
+                                                                             "http://identifiers.org/pubmed/21929038"
+Bose2011___Noise_assisted_interactions_of_tumor_and_immune_cells origin "http://identifiers.org/doi.org/10.1103/PhysRevE.79.051903"
+Bose2011___Noise_assisted_interactions_of_tumor_and_immune_cells model_entity_is "http://identifiers.org/biomodels.db/MODEL1912160003",
+                                                                                 "http://identifiers.org/biomodels.db/BIOMD0000000894"
+Bose2011___Noise_assisted_interactions_of_tumor_and_immune_cells property "http://identifiers.org/mamo/MAMO_0000046"
+Bose2011___Noise_assisted_interactions_of_tumor_and_immune_cells taxon "http://identifiers.org/taxonomy/9606"

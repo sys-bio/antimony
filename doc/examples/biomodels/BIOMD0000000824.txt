@@ -1,0 +1,83 @@
+// Created by libAntimony v2.13.0
+function Function_for_export_of_mature_naive_T_cells(gamma_)
+  gamma_;
+end
+
+Function_for_export_of_mature_naive_T_cells is "Function for export of mature naive T-cells"
+
+function Function_for_cell_removal_due_to_death_or_phenotypic_changes(myu, N)
+  myu*N;
+end
+
+Function_for_cell_removal_due_to_death_or_phenotypic_changes is "Function for cell removal due to death or phenotypic changes"
+
+function Function_for_peripheral_proliefration(p, N)
+  p*N;
+end
+
+Function_for_peripheral_proliefration is "Function for peripheral proliefration"
+
+
+model *New_Model()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species $myu in compartment_, N in compartment_;
+
+  // Assignment Rules:
+  myu := myu_0 + myu_1*N^2/(N^2 + K^2);
+  gamma_ := gamma_0*exp(-a*time);
+
+  // Reactions:
+  export_of_mature_naive_T_cells:  => N; compartment_*Function_for_export_of_mature_naive_T_cells(gamma_);
+  peripheral_prolieferation:  => N; compartment_*Function_for_peripheral_proliefration(p, N);
+  cell_removal_due_to_death_or_phenotypic_changes: N => ; compartment_*Function_for_cell_removal_due_to_death_or_phenotypic_changes(myu, N);
+
+  // Species initializations:
+  N = 1;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  myu_0 = 0.18;
+  myu_1 = 0.04;
+  K = 10000000000;
+  gamma_0 = 18000000000;
+  a = 0.044;
+  p = 0.17;
+
+  // Other declarations:
+  var gamma_;
+  const compartment_, myu_0, myu_1, K, gamma_0, a, p;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  N is "Naive T-cells N";
+  gamma_ is "gamma";
+  export_of_mature_naive_T_cells is "export of mature naive T-cells";
+  peripheral_prolieferation is "peripheral prolieferation";
+  cell_removal_due_to_death_or_phenotypic_changes is "cell removal due to death or phenotypic changes";
+
+  // CV terms:
+  compartment_ hypernym "http://identifiers.org/ncit/C13413"
+  N hypernym "http://identifiers.org/ncit/C129906"
+  export_of_mature_naive_T_cells hypernym "http://identifiers.org/go/GO:0072678"
+  peripheral_prolieferation hypernym "http://identifiers.org/sbo/SBO:0000393"
+  cell_removal_due_to_death_or_phenotypic_changes hypernym "http://identifiers.org/sbo/SBO:0000179"
+end
+
+New_Model is "Lewkiewics2019 - effects of aging on naive T cell populations and diversity"
+
+New_Model model_entity_is "http://identifiers.org/biomodels.db/MODEL1909260001",
+                          "http://identifiers.org/biomodels.db/BIOMD0000000824"
+New_Model property "http://identifiers.org/ncit/C28159"
+New_Model property "http://identifiers.org/ncit/C129906"
+New_Model property "http://identifiers.org/mamo/MAMO_0000046"
+New_Model property "http://identifiers.org/ncit/C16269"
+New_Model taxon "http://identifiers.org/taxonomy/49990"
+New_Model description "http://identifiers.org/pubmed/31201663"

@@ -91,9 +91,9 @@ public:
   int    OpenFile(const std::string& filename, bool antOnly=false);
   int    OpenString(std::string model);
 #ifndef NSBML
-  int    CheckAndAddSBMLIfGood(SBMLDocument* document);
-  void   LoadSubmodelsFrom(const Model* model);
-  bool   LoadModelFrom(std::string modelname, const SBMLDocument* document);
+  int    CheckAndAddSBMLIfGood(libsbml::SBMLDocument* document);
+  void   LoadSubmodelsFrom(libsbml::Model* model);
+  bool   LoadModelFrom(std::string modelname, libsbml::SBMLDocument* document);
 #endif
 #ifndef NCELLML
   bool   LoadCellML(iface::cellml_api::Model* model);
@@ -219,7 +219,7 @@ public:
   void SetBareNumbersAreDimensionless(bool dimensionless);
   bool GetBareNumbersAreDimensionless();
 
-  int  ConvertDistribAnnotation(SBMLDocument* document);
+  int  ConvertDistribAnnotation(libsbml::SBMLDocument* document);
 };
 
 extern Registry g_registry;

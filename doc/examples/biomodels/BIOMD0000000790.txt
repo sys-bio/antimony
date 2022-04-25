@@ -1,0 +1,170 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function Function_for_Tumor_Growth_1(a, T_1, b)
+  a*T_1*(1 - b*T_1);
+end
+
+Function_for_Tumor_Growth_1 is "Function_for_Tumor_Growth_1"
+
+function Function_for_E1_Depletion(c_3, T_1, T_2, E_1)
+  c_3*(T_1 + T_2)*E_1;
+end
+
+Function_for_E1_Depletion is "Function_for_E1_Depletion"
+
+function Function_for_Tumor_Killing_T1_E1(mu, E_1, T_1)
+  mu*E_1*T_1;
+end
+
+Function_for_Tumor_Killing_T1_E1 is "Function_for_Tumor_Killing_T1_E1"
+
+function Function_for_E2_Recruitment(d_1, T_1, E_1)
+  d_1*T_1*E_1;
+end
+
+Function_for_E2_Recruitment is "Function_for_E2_Recruitment"
+
+function Function_for_E2_Depletion(d_2, T_1, E_2)
+  d_2*T_1*E_2;
+end
+
+Function_for_E2_Depletion is "Function_for_E2_Depletion"
+
+function Function_for_Tumor_Competition_1(nu, T_1, T_2)
+  nu*T_1*T_2;
+end
+
+Function_for_Tumor_Competition_1 is "Function_for_Tumor_Competition_1"
+
+function Function_for_E1_Recruitment(c_4, T_1, s, T_2, E_1, c_5)
+  c_4*(T_1 + s*T_2)*E_1/(c_5 + T_1 + T_2);
+end
+
+Function_for_E1_Recruitment is "Function_for_E1_Recruitment"
+
+function Function_for_Tumor_Killing_T1_E2(beta, E_2, T_1)
+  beta*E_2*T_1;
+end
+
+Function_for_Tumor_Killing_T1_E2 is "Function_for_Tumor_Killing_T1_E2"
+
+function Function_for_Tumor_Killing_T2_E1(q, E_1, T_2, mu)
+  mu*q*E_1*T_2;
+end
+
+Function_for_Tumor_Killing_T2_E1 is "Function_for_Tumor_Killing_T2_E1"
+
+function Function_for_Tumor_Competition_2(r, nu, T_1, T_2)
+  r*nu*T_1*T_2;
+end
+
+Function_for_Tumor_Competition_2 is "Function_for_Tumor_Competition_2"
+
+function Function_for_Tumor_Growth_2(a, p, T_2, b)
+  a*p*T_2*(1 - b*T_2);
+end
+
+Function_for_Tumor_Growth_2 is "Function_for_Tumor_Growth_2"
+
+
+model *Alvarez2019___A_nonlinear_mathematical_model_of_cell_mediated_immune_response_for_tumor_phenotypic_heterogeneity()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species T_1 in compartment_, T_2 in compartment_, E_1_Innate in compartment_;
+  species E_2_Adaptive in compartment_;
+
+  // Assignment Rules:
+  T_Total := T_1 + T_2;
+
+  // Reactions:
+  Tumor_Growth_1:  => T_1; compartment_*Function_for_Tumor_Growth_1(a, T_1, b);
+  Tumor_Growth_2:  => T_2; compartment_*Function_for_Tumor_Growth_2(a, p, T_2, b);
+  Tumor_Killing_T1_E1: T_1 => ; compartment_*Function_for_Tumor_Killing_T1_E1(mu, E_1_Innate, T_1);
+  Tumor_Killing_T1_E2: T_1 => ; compartment_*Function_for_Tumor_Killing_T1_E2(beta, E_2_Adaptive, T_1);
+  Tumor_Competition_1: T_1 => ; compartment_*Function_for_Tumor_Competition_1(nu, T_1, T_2);
+  Tumor_Competition_2: T_2 => ; compartment_*Function_for_Tumor_Competition_2(r, nu, T_1, T_2);
+  Tumor_Killing_T2_E1: T_2 => ; compartment_*Function_for_Tumor_Killing_T2_E1(q, E_1_Innate, T_2, mu);
+  E1_Production_Constant:  => E_1_Innate; compartment_*Constant_flux__irreversible(c_1);
+  E1_Death: E_1_Innate => ; compartment_*c_2*E_1_Innate;
+  E1_Depletion: E_1_Innate => ; compartment_*Function_for_E1_Depletion(c_3, T_1, T_2, E_1_Innate);
+  E1_Recruitment:  => E_1_Innate; compartment_*Function_for_E1_Recruitment(c_4, T_1, s, T_2, E_1_Innate, c_5);
+  E2_Recruitment:  => E_2_Adaptive; compartment_*Function_for_E2_Recruitment(d_1, T_1, E_1_Innate);
+  E2_Depletion: E_2_Adaptive => ; compartment_*Function_for_E2_Depletion(d_2, T_1, E_2_Adaptive);
+  E2_Death: E_2_Adaptive => ; compartment_*d_3*E_2_Adaptive;
+
+  // Species initializations:
+  T_1 = 80000000;
+  T_2 = 20000000;
+  E_1_Innate = 10500000;
+  E_2_Adaptive = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  a = 0.514;
+  b = 2e-09;
+  mu = 1.101e-07;
+  beta = 1.101e-10;
+  nu = 1.101e-09;
+  c_1 = 13000;
+  c_2 = 0.0412;
+  c_3 = 3.422e-10;
+  c_4 = 0.1245;
+  c_5 = 20193000;
+  d_1 = 1.1e-07;
+  d_2 = 3.42e-10;
+  d_3 = 0.02;
+  p = 0.35;
+  q = 1;
+  r = 1.5;
+  s = 1;
+
+  // Other declarations:
+  var T_Total;
+  const compartment_, a, b, mu, beta, nu, c_1, c_2, c_3, c_4, c_5, d_1, d_2;
+  const d_3, p, q, r, s;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = item;
+
+  // Display Names:
+  compartment_ is "compartment";
+
+  // CV terms:
+  compartment_ hypernym "http://identifiers.org/ncit/C94498"
+  T_1 identity "http://identifiers.org/cl/CL:0001063"
+  T_2 identity "http://identifiers.org/cl/CL:0001063"
+  E_1_Innate hypernym "http://identifiers.org/cl/CL:0000623"
+  E_1_Innate hypernym "http://identifiers.org/cl/CL:0001065"
+  E_2_Adaptive hypernym "http://identifiers.org/cl/CL:0000084"
+  Tumor_Growth_1 hypernym "http://identifiers.org/ncit/C18081"
+  Tumor_Growth_2 hypernym "http://identifiers.org/ncit/C18081"
+  Tumor_Killing_T1_E1 hypernym "http://identifiers.org/go/GO:0002420"
+  Tumor_Killing_T1_E2 hypernym "http://identifiers.org/go/GO:0002419"
+  Tumor_Competition_1 hypernym "http://identifiers.org/go/GO:0035212"
+  Tumor_Competition_2 hypernym "http://identifiers.org/go/GO:0035212"
+  Tumor_Killing_T2_E1 hypernym "http://identifiers.org/go/GO:0002420"
+  E1_Production_Constant hypernym "http://identifiers.org/ncit/C18081"
+  E1_Death hypernym "http://identifiers.org/go/GO:0008219"
+  E1_Depletion hypernym "http://identifiers.org/go/GO:0008219"
+  E1_Recruitment hypernym "http://identifiers.org/go/GO:0030101"
+  E2_Recruitment hypernym "http://identifiers.org/go/GO:0072683"
+  E2_Depletion hypernym "http://identifiers.org/go/GO:0008219"
+  E2_Death hypernym "http://identifiers.org/go/GO:0008219"
+end
+
+Alvarez2019___A_nonlinear_mathematical_model_of_cell_mediated_immune_response_for_tumor_phenotypic_heterogeneity is "Alvarez2019 - A nonlinear mathematical model of cell-mediated immune response for tumor phenotypic heterogeneity"
+
+Alvarez2019___A_nonlinear_mathematical_model_of_cell_mediated_immune_response_for_tumor_phenotypic_heterogeneity description "http://identifiers.org/pubmed/30930063"
+Alvarez2019___A_nonlinear_mathematical_model_of_cell_mediated_immune_response_for_tumor_phenotypic_heterogeneity model_entity_is "http://identifiers.org/biomodels.db/MODEL1908120003",
+                                                                                                                                 "http://identifiers.org/biomodels.db/BIOMD0000000790"
+Alvarez2019___A_nonlinear_mathematical_model_of_cell_mediated_immune_response_for_tumor_phenotypic_heterogeneity property "http://identifiers.org/mamo/MAMO_0000046"
+Alvarez2019___A_nonlinear_mathematical_model_of_cell_mediated_immune_response_for_tumor_phenotypic_heterogeneity property "http://identifiers.org/go/GO:0002418"

@@ -1,0 +1,113 @@
+// Created by libAntimony v2.13.0
+function Function_for_CD4_Uninfected_Growth(lambda, C_ast)
+  lambda*C_ast;
+end
+
+Function_for_CD4_Uninfected_Growth is "Function_for_CD4_Uninfected_Growth"
+
+function Function_for_CD4_Infected_Clearance_CTL(rho, F, I)
+  rho*F*I;
+end
+
+Function_for_CD4_Infected_Clearance_CTL is "Function_for_CD4_Infected_Clearance_CTL"
+
+function Function_for_CD4_Uninfected_Infection(beta, C, V)
+  beta*C*V;
+end
+
+Function_for_CD4_Uninfected_Infection is "Function_for_CD4_Uninfected_Infection"
+
+function Function_for_Virus_Production(a, N, I)
+  a*N*I;
+end
+
+Function_for_Virus_Production is "Function_for_Virus_Production"
+
+function Function_for_CTL_Stimulation(e, C, V, F, C_ast)
+  e*C*V*F/(C_ast + F);
+end
+
+Function_for_CTL_Stimulation is "Function_for_CTL_Stimulation"
+
+
+model *Aavani2019___The_role_of_CD4_T_cells_in_immune_system_activation_and_viral_reproduction_in_a_simple_model_for_HIV_infection()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species C_Uninfected_CD4 in compartment_, I_Infected_CD4 in compartment_;
+  species F_CTL in compartment_, V_Virus in compartment_;
+
+  // Reactions:
+  CD4_Uninfected_Growth:  => C_Uninfected_CD4; compartment_*Function_for_CD4_Uninfected_Growth(lambda, C_ast);
+  CD4_Uninfected_Death: C_Uninfected_CD4 => ; compartment_*lambda*C_Uninfected_CD4;
+  CD4_Infected_Death: I_Infected_CD4 => ; compartment_*a*I_Infected_CD4;
+  CTL_Death: F_CTL => ; compartment_*b*F_CTL;
+  Virus_Degradation: V_Virus => ; compartment_*k*V_Virus;
+  CD4_Uninfected_Infection: C_Uninfected_CD4 => I_Infected_CD4; compartment_*Function_for_CD4_Uninfected_Infection(beta, C_Uninfected_CD4, V_Virus);
+  CD4_Infected_Clearance_CTL: I_Infected_CD4 => ; compartment_*Function_for_CD4_Infected_Clearance_CTL(rho, F_CTL, I_Infected_CD4);
+  CTL_Stimulation:  => F_CTL; compartment_*Function_for_CTL_Stimulation(e, C_Uninfected_CD4, V_Virus, F_CTL, C_ast);
+  Virus_Production:  => V_Virus; compartment_*Function_for_Virus_Production(a, N, I_Infected_CD4);
+
+  // Species initializations:
+  C_Uninfected_CD4 = C_ast;
+  I_Infected_CD4 = 1;
+  F_CTL = 1;
+  V_Virus = 200;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  C_ast = 1000;
+  N = 2000;
+  beta = 5.75e-05;
+  lambda = 0.01;
+  a = 1;
+  k = 23;
+  d_0 = 0.001;
+  a_L = 0.1;
+  rho = 1;
+  b = 0.1;
+  e = 0.001;
+
+  // Other declarations:
+  const compartment_, C_ast, N, beta, lambda, a, k, d_0, a_L, rho, b, e;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = item;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/ncit/C13356"
+  C_Uninfected_CD4 identity "http://identifiers.org/ncit/C12537"
+  C_Uninfected_CD4 property "http://identifiers.org/efo/EFO:0001460"
+  I_Infected_CD4 identity "http://identifiers.org/ncit/C12537"
+  I_Infected_CD4 hypernym "http://identifiers.org/bto/BTO:0000152"
+  F_CTL identity "http://identifiers.org/cl/CL:0000910"
+  V_Virus identity "http://identifiers.org/ncit/C14219"
+  CD4_Uninfected_Growth identity "http://identifiers.org/ncit/C18081"
+  CD4_Uninfected_Death identity "http://identifiers.org/go/GO:0008219"
+  CD4_Infected_Death identity "http://identifiers.org/go/GO:0008219"
+  CTL_Death identity "http://identifiers.org/go/GO:0008219"
+  Virus_Degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+  CD4_Uninfected_Infection hypernym "http://identifiers.org/ncit/C128320"
+  CD4_Infected_Clearance_CTL hypernym "http://identifiers.org/go/GO:0001913"
+  CTL_Stimulation hypernym "http://identifiers.org/ncit/C61406"
+  Virus_Production identity "http://identifiers.org/go/GO:0019076"
+end
+
+Aavani2019___The_role_of_CD4_T_cells_in_immune_system_activation_and_viral_reproduction_in_a_simple_model_for_HIV_infection is "Aavani2019 - The role of CD4 T cells in immune system activation and viral reproduction in a simple model for HIV infection"
+
+Aavani2019___The_role_of_CD4_T_cells_in_immune_system_activation_and_viral_reproduction_in_a_simple_model_for_HIV_infection description "http://identifiers.org/doi/10.1016/j.apm.2019.05.028"
+Aavani2019___The_role_of_CD4_T_cells_in_immune_system_activation_and_viral_reproduction_in_a_simple_model_for_HIV_infection model_entity_is "http://identifiers.org/biomodels.db/MODEL1911270003",
+                                                                                                                                            "http://identifiers.org/biomodels.db/BIOMD0000000876"
+Aavani2019___The_role_of_CD4_T_cells_in_immune_system_activation_and_viral_reproduction_in_a_simple_model_for_HIV_infection property "http://identifiers.org/ncit/C14219"
+Aavani2019___The_role_of_CD4_T_cells_in_immune_system_activation_and_viral_reproduction_in_a_simple_model_for_HIV_infection property "http://identifiers.org/ncit/C12543"
+Aavani2019___The_role_of_CD4_T_cells_in_immune_system_activation_and_viral_reproduction_in_a_simple_model_for_HIV_infection property "http://identifiers.org/mamo/MAMO_0000046"
+Aavani2019___The_role_of_CD4_T_cells_in_immune_system_activation_and_viral_reproduction_in_a_simple_model_for_HIV_infection property "http://identifiers.org/ncit/C17930"
+Aavani2019___The_role_of_CD4_T_cells_in_immune_system_activation_and_viral_reproduction_in_a_simple_model_for_HIV_infection taxon "http://identifiers.org/taxonomy/9606"

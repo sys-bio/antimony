@@ -1,18 +1,3 @@
-#ifdef SBW_INTEGRATION
-#include "SBW/DataBlockReader.h"
-#include "SBW/DataBlockWriter.h"
-#include "SBW/SBW.h"
-#include "SBW/SBWC.h"
-#include "SBW/SBWApplicationException.h"
-#include "SBW/SBWLowLevel.h"
-#include <string>
-#include <vector>
-using namespace SystemsBiologyWorkbench;
-#undef SetCurrentDirectory
-
-#endif
-
-
 #include "Translator.h"
 #include "Tutorial.h"
 #include "TabManager.h"
@@ -45,8 +30,11 @@ using namespace SystemsBiologyWorkbench;
 #include <QTextStream>
 #include <QCloseEvent>
 #include <QImageReader>
+#include <QMimeData>
 
 using namespace std;
+using namespace libsbml;
+
 Translator::Translator(QTAntimony* app, QString filename)
         : QMainWindow(NULL),
         m_app(app),

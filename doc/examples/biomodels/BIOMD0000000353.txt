@@ -1,268 +1,338 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
+function Function_for_Maltose_formation_from_Starch(C00208_MW, R02112CS_G2C_KM, R02112CS_Gn_KM, R02112CS_Gn_kcat, R02112CS_Keq, conv_gm_umole, cpd_C00208_CS, cpd_C00369_CS, cpd_C00369db_CS, ec_3_2_1_2_CS, f_G2, f_bamylase)
+  R02112CS_Gn_kcat*ec_3_2_1_2_CS*(f_G2*(f_bamylase*cpd_C00369_CS + cpd_C00369db_CS) - (cpd_C00208_CS*C00208_MW)^2/R02112CS_Keq)/(conv_gm_umole*(f_G2*(f_bamylase*cpd_C00369_CS + cpd_C00369db_CS) + R02112CS_Gn_KM*(1 + (cpd_C00208_CS*C00208_MW)^2/R02112CS_G2C_KM)));
+end
+
+Function_for_Maltose_formation_from_Starch is "Function for Maltose formation from Starch"
+
+function Function_for_Maltopentaose_degradation(G00343_MW, R02112CS_G5_KM, R02112CS_G5_kcat, conv_gm_umole, cpd_G00343_CS, ec_3_2_1_2_CS)
+  R02112CS_G5_kcat*ec_3_2_1_2_CS*cpd_G00343_CS*G00343_MW/(conv_gm_umole*(cpd_G00343_CS*G00343_MW + R02112CS_G5_KM));
+end
+
+Function_for_Maltopentaose_degradation is "Function for Maltopentaose degradation"
+
+function Function_for_Plastidic_Glucose_transporter(ChloroplastStroma, TC_2_A_1_1_17_KM, TC_2_A_1_1_17_kcat, cpd_C00031_CS, tc_2_A_1_1_17_CIMS)
+  ChloroplastStroma*TC_2_A_1_1_17_kcat*tc_2_A_1_1_17_CIMS*cpd_C00031_CS/(TC_2_A_1_1_17_KM + cpd_C00031_CS);
+end
+
+Function_for_Plastidic_Glucose_transporter is "Function for Plastidic Glucose transporter"
+
+function Function_for_Cytosolic_glucan_phosphorylase(R06050CY_AG_KM, R06050CY_G1P_KM, R06050CY_G1P_Ki, R06050CY_GlcAG_KM, R06050CY_GlcAG_Ki, R06050CY_Keq, R06050CY_Pi_KM, R06050CY_kcat, cpd_C00009tot_CY, cpd_C00103tot_CY, cpd_C00569Glc_CY, cpd_C00569_CY, ec_2_4_1_1_CY)
+  R06050CY_kcat*ec_2_4_1_1_CY*(cpd_C00569Glc_CY*cpd_C00009tot_CY - cpd_C00103tot_CY*cpd_C00569_CY/R06050CY_Keq)/(R06050CY_GlcAG_Ki*R06050CY_Pi_KM + R06050CY_Pi_KM*cpd_C00569Glc_CY + R06050CY_GlcAG_KM*cpd_C00009tot_CY + cpd_C00569Glc_CY*cpd_C00009tot_CY + (R06050CY_GlcAG_Ki*R06050CY_Pi_KM/(R06050CY_G1P_Ki*R06050CY_AG_KM))*(R06050CY_AG_KM*cpd_C00103tot_CY + R06050CY_G1P_KM*cpd_C00569_CY + cpd_C00103tot_CY*cpd_C00569_CY));
+end
+
+Function_for_Cytosolic_glucan_phosphorylase is "Function for Cytosolic glucan phosphorylase"
+
+function Function_for_Maltose_exporter(ChloroplastStroma, TC_2_A_84_1_2_KM, TC_2_A_84_1_2_kcat, cpd_C00208_CS, tc_2_A_84_1_2_CIMS)
+  ChloroplastStroma*TC_2_A_84_1_2_kcat*tc_2_A_84_1_2_CIMS*cpd_C00208_CS/(TC_2_A_84_1_2_KM + cpd_C00208_CS);
+end
+
+Function_for_Maltose_exporter is "Function for Maltose exporter"
+
+function Function_for_Hexokinase(R00299CY_BPG_Kip, R00299CY_G16P_Kip, R00299CY_G6P_KM, R00299CY_G6P_Ki, R00299CY_G6P_Kip, R00299CY_GSH_Kip, R00299CY_Glc_Ki, R00299CY_MgADP_Ki, R00299CY_MgATP_KM, R00299CY_MgATP_Ki, R00299CY_kfor, R00299CY_krev, cpd_C00002tot_CY, cpd_C00008tot_CY, cpd_C00031_CY, cpd_C00051_CY, cpd_C00092tot_CY, cpd_C00660tot_CY, cpd_C03339tot_CY, ec_2_7_1_1_CY)
+  ec_2_7_1_1_CY*(R00299CY_kfor*cpd_C00002tot_CY*cpd_C00031_CY/(R00299CY_Glc_Ki*R00299CY_MgATP_KM) - R00299CY_krev*cpd_C00092tot_CY*cpd_C00008tot_CY/(R00299CY_MgADP_Ki*R00299CY_G6P_KM))/(1 + cpd_C00002tot_CY/R00299CY_MgATP_Ki + (cpd_C00031_CY/R00299CY_Glc_Ki)*(1 + cpd_C00092tot_CY/R00299CY_G6P_Kip + cpd_C00660tot_CY/R00299CY_G16P_Kip + cpd_C03339tot_CY/R00299CY_BPG_Kip + cpd_C00051_CY/R00299CY_GSH_Kip) + cpd_C00002tot_CY*cpd_C00031_CY/(R00299CY_Glc_Ki*R00299CY_MgATP_KM) + cpd_C00092tot_CY/R00299CY_G6P_Ki + cpd_C00008tot_CY/R00299CY_MgADP_Ki + cpd_C00092tot_CY*cpd_C00008tot_CY/(R00299CY_MgADP_Ki*R00299CY_G6P_KM));
+end
+
+Function_for_Hexokinase is "Function for Hexokinase"
+
+function Function_for_DPE1(R05196CS_G3_KM, R05196CS_G3_Ki, R05196CS_G5_KM, R05196CS_G5_Ki, R05196CS_Glc_KM, R05196CS_Keq, R05196CS_kcat, cpd_C00031_CS, cpd_C01835_CS, cpd_G00343_CS, ec_2_4_1_25_CS)
+  R05196CS_kcat*ec_2_4_1_25_CS*(cpd_C01835_CS^2 - cpd_C00031_CS*cpd_G00343_CS/R05196CS_Keq)/(R05196CS_G3_KM*cpd_C01835_CS + cpd_C01835_CS^2 + (R05196CS_G3_KM*R05196CS_G3_Ki/(R05196CS_Glc_KM*R05196CS_G5_Ki))*(R05196CS_G5_KM*cpd_C00031_CS*(1 + cpd_C01835_CS/R05196CS_G3_Ki) + R05196CS_Glc_KM*cpd_G00343_CS*(1 + cpd_C01835_CS/R05196CS_G3_Ki) + cpd_C00031_CS*cpd_G00343_CS));
+end
+
+Function_for_DPE1 is "Function for DPE1"
+
+function Function_for_Maltotriose_formation_from_Starch(R02112CS_Gn_KM, R02112CS_Gn_kcat, conv_gm_umole, cpd_C00369_CS, cpd_C00369db_CS, ec_3_2_1_2_CS, f_G3, f_bamylase)
+  R02112CS_Gn_kcat*ec_3_2_1_2_CS*f_G3*(f_bamylase*cpd_C00369_CS + cpd_C00369db_CS)/(conv_gm_umole*(f_G3*(f_bamylase*cpd_C00369_CS + cpd_C00369db_CS) + R02112CS_Gn_KM));
+end
+
+Function_for_Maltotriose_formation_from_Starch is "Function for Maltotriose formation from Starch"
+
+function Function_for_DPE2(AT2G40840CY_AG_KM, AT2G40840CY_AG_Ki, AT2G40840CY_G2_KM, AT2G40840CY_G2_Ki, AT2G40840CY_GlcAG_KM, AT2G40840CY_GlcAG_Ki, AT2G40840CY_Glc_KM, AT2G40840CY_Keq, AT2G40840CY_kcat, cpd_C00031_CY, cpd_C00208_CY, cpd_C00569Glc_CY, cpd_C00569_CY, ec_2_4_1_25_CY)
+  AT2G40840CY_kcat*ec_2_4_1_25_CY*(cpd_C00208_CY*cpd_C00569_CY - cpd_C00031_CY*cpd_C00569Glc_CY/AT2G40840CY_Keq)/(AT2G40840CY_AG_KM*cpd_C00208_CY + AT2G40840CY_G2_KM*cpd_C00569_CY + cpd_C00208_CY*cpd_C00569_CY + (AT2G40840CY_G2_KM*AT2G40840CY_AG_Ki/(AT2G40840CY_Glc_KM*AT2G40840CY_GlcAG_Ki))*(AT2G40840CY_GlcAG_KM*cpd_C00031_CY*(1 + cpd_C00208_CY/AT2G40840CY_G2_Ki) + AT2G40840CY_Glc_KM*cpd_C00569Glc_CY*(1 + cpd_C00569_CY/AT2G40840CY_AG_Ki) + cpd_C00031_CY*cpd_C00569Glc_CY));
+end
+
+Function_for_DPE2 is "Function for DPE2"
+
+
 model *Nag2011_ChloroplasticStarchDegradation()
 
   // Compartments and Species:
   compartment Cell, Cytosol, Chloroplast, ChloroplastOuterMembrane, ChloroplastIntermembraneSpace;
   compartment ChloroplastInnerMembrane, ChloroplastStroma;
-  species $cpd_C00080_CY in Cytosol, $cpd_C00369_CS in ChloroplastStroma;
-  species $cpd_C00369Glc_CS in ChloroplastStroma, $cpd_C00369db_CS in ChloroplastStroma;
-  species ec_3_2_1_68_CS in ChloroplastStroma, cpd_C00208_CY in Cytosol, cpd_C00208_CS in ChloroplastStroma;
-  species cpd_C01835_CS in ChloroplastStroma, cpd_G00343_CS in ChloroplastStroma;
-  species cpd_C00031_CS in ChloroplastStroma, cpd_C00031_CY in Cytosol, cpd_C00569_CY in Cytosol;
-  species cpd_C00569Glc_CY in Cytosol, $cpd_C00002tot_CY in Cytosol, $cpd_C00008tot_CY in Cytosol;
-  species $cpd_C00009tot_CY in Cytosol, cpd_C00051_CY in Cytosol, cpd_C00660tot_CY in Cytosol;
-  species cpd_C03339tot_CY in Cytosol, $cpd_C00103tot_CY in Cytosol, $cpd_C00092tot_CY in Cytosol;
-  species ec_3_2_1_2_CS in ChloroplastStroma, ec_2_4_1_25_CS in ChloroplastStroma;
-  species ec_2_4_1_25_CY in Cytosol, ec_2_4_1_1_CY in Cytosol, ec_2_7_1_1_CY in Cytosol;
-  species tc_2_A_84_1_2_CIMS in ChloroplastIntermembraneSpace, tc_2_A_1_1_17_CIMS in ChloroplastIntermembraneSpace;
+  substanceOnly species $cpd_C00080_CY in Cytosol, $cpd_C00369_CS in ChloroplastStroma;
+  substanceOnly species $cpd_C00369Glc_CS in ChloroplastStroma, $cpd_C00369db_CS in ChloroplastStroma;
+  substanceOnly species ec_3_2_1_68_CS in ChloroplastStroma, cpd_C00208_CY in Cytosol;
+  substanceOnly species cpd_C00208_CS in ChloroplastStroma, cpd_C01835_CS in ChloroplastStroma;
+  substanceOnly species cpd_G00343_CS in ChloroplastStroma, cpd_C00031_CS in ChloroplastStroma;
+  substanceOnly species cpd_C00031_CY in Cytosol, cpd_C00569_CY in Cytosol;
+  substanceOnly species cpd_C00569Glc_CY in Cytosol, $cpd_C00002tot_CY in Cytosol;
+  substanceOnly species $cpd_C00008tot_CY in Cytosol, $cpd_C00009tot_CY in Cytosol;
+  substanceOnly species cpd_C00051_CY in Cytosol, cpd_C00660tot_CY in Cytosol;
+  substanceOnly species cpd_C03339tot_CY in Cytosol, $cpd_C00103tot_CY in Cytosol;
+  substanceOnly species $cpd_C00092tot_CY in Cytosol, ec_3_2_1_2_CS in ChloroplastStroma;
+  substanceOnly species ec_2_4_1_25_CS in ChloroplastStroma, ec_2_4_1_25_CY in Cytosol;
+  substanceOnly species ec_2_4_1_1_CY in Cytosol, ec_2_7_1_1_CY in Cytosol;
+  substanceOnly species tc_2_A_84_1_2_CIMS in ChloroplastIntermembraneSpace;
+  substanceOnly species tc_2_A_1_1_17_CIMS in ChloroplastIntermembraneSpace;
 
   // Assignment Rules:
-  cpd_C00369_CS := (cpd_C00369Glc_CS*C00369_MW)/N_Glc_Starch;
-  R00299CY_krev := (R00299CY_kfor*R00299CY_MgADP_Ki*R00299CY_G6P_KM)/(R00299CY_Keq*R00299CY_Glc_Ki*R00299CY_MgATP_KM);
+  cpd_C00369_CS := ((cpd_C00369Glc_CS/ChloroplastStroma)*C00369_MW/N_Glc_Starch)*ChloroplastStroma;
+  R00299CY_krev := R00299CY_kfor*R00299CY_MgADP_Ki*R00299CY_G6P_KM/(R00299CY_Keq*R00299CY_Glc_Ki*R00299CY_MgATP_KM);
 
   // Rate Rules:
-  cpd_C00369db_CS' = ec_3_2_1_68_CS*ec_3_2_1_68_CS_kcat*(1 - 1/(1 + exp(-100*(cpd_C00369db_CS/(cpd_C00369_CS*(1 - f_bamylase)) - 0.3))) + 1/(1 + exp(-100*(cpd_C00369db_CS/(cpd_C00369_CS*(1 - f_bamylase)) - 0.3)))*(1 - 1.429*(cpd_C00369db_CS/(cpd_C00369_CS*(1 - f_bamylase)) - 0.3)));
+  cpd_C00369db_CS' = (ec_3_2_1_68_CS/ChloroplastStroma)*ec_3_2_1_68_CS_kcat*((1 - 1/(1 + exp(-100*(cpd_C00369db_CS/ChloroplastStroma/((cpd_C00369_CS/ChloroplastStroma)*(1 - f_bamylase)) - 0.3)))) + (1/(1 + exp(-100*(cpd_C00369db_CS/ChloroplastStroma/((cpd_C00369_CS/ChloroplastStroma)*(1 - f_bamylase)) - 0.3))))*(1 - 1.429*(cpd_C00369db_CS/ChloroplastStroma/((cpd_C00369_CS/ChloroplastStroma)*(1 - f_bamylase)) - 0.3)))*ChloroplastStroma;
 
   // Reactions:
-  rn_R02112CS_G2: 12345.7$cpd_C00369Glc_CS -> 2923.98cpd_C00208_CS; (ChloroplastStroma*R02112CS_Gn_kcat*ec_3_2_1_2_CS*(f_G2*(f_bamylase*cpd_C00369_CS + cpd_C00369db_CS) - (cpd_C00208_CS*C00208_MW)^2/R02112CS_Keq))/(conv_gm_umole*(f_G2*(f_bamylase*cpd_C00369_CS + cpd_C00369db_CS) + R02112CS_Gn_KM*(1 + (cpd_C00208_CS*C00208_MW)^2/R02112CS_G2C_KM)));
-  rn_R02112CS_G3: 18518.5$cpd_C00369Glc_CS => 1984.13cpd_C01835_CS; (ChloroplastStroma*R02112CS_Gn_kcat*ec_3_2_1_2_CS*f_G3*(f_bamylase*cpd_C00369_CS + cpd_C00369db_CS))/(conv_gm_umole*(f_G3*(f_bamylase*cpd_C00369_CS + cpd_C00369db_CS) + R02112CS_Gn_KM));
-  rn_R02112CS_G5: 1207.73cpd_G00343_CS => 2923.98cpd_C00208_CS + 1984.13cpd_C01835_CS; (ChloroplastStroma*R02112CS_G5_kcat*ec_3_2_1_2_CS*cpd_G00343_CS*G00343_MW)/(conv_gm_umole*(cpd_G00343_CS*G00343_MW + R02112CS_G5_KM));
-  tr_TC_2_A_84_1_2: cpd_C00208_CS => cpd_C00208_CY; (ChloroplastStroma*TC_2_A_84_1_2_kcat*tc_2_A_84_1_2_CIMS*cpd_C00208_CS)/(TC_2_A_84_1_2_KM + cpd_C00208_CS);
-  tr_TC_2_A_1_1_17: cpd_C00031_CS => cpd_C00031_CY; (ChloroplastStroma*TC_2_A_1_1_17_kcat*tc_2_A_1_1_17_CIMS*cpd_C00031_CS)/(TC_2_A_1_1_17_KM + cpd_C00031_CS);
-  rn_R00299CY: $cpd_C00002tot_CY + cpd_C00031_CY -> $cpd_C00092tot_CY + $cpd_C00008tot_CY + $cpd_C00080_CY; (ec_2_7_1_1_CY*Cytosol*((R00299CY_kfor*cpd_C00002tot_CY*cpd_C00031_CY)/(R00299CY_Glc_Ki*R00299CY_MgATP_KM) - (R00299CY_krev*cpd_C00092tot_CY*cpd_C00008tot_CY)/(R00299CY_MgADP_Ki*R00299CY_G6P_KM)))/(1 + cpd_C00002tot_CY/R00299CY_MgATP_Ki + cpd_C00031_CY/R00299CY_Glc_Ki*(1 + cpd_C00092tot_CY/R00299CY_G6P_Kip + cpd_C00660tot_CY/R00299CY_G16P_Kip + cpd_C03339tot_CY/R00299CY_BPG_Kip + cpd_C00051_CY/R00299CY_GSH_Kip) + (cpd_C00002tot_CY*cpd_C00031_CY)/(R00299CY_Glc_Ki*R00299CY_MgATP_KM) + cpd_C00092tot_CY/R00299CY_G6P_Ki + cpd_C00008tot_CY/R00299CY_MgADP_Ki + (cpd_C00092tot_CY*cpd_C00008tot_CY)/(R00299CY_MgADP_Ki*R00299CY_G6P_KM));
-  rn_R06050CY: cpd_C00569Glc_CY + $cpd_C00009tot_CY -> $cpd_C00103tot_CY + cpd_C00569_CY; (Cytosol*R06050CY_kcat*ec_2_4_1_1_CY*(cpd_C00569Glc_CY*cpd_C00009tot_CY - (cpd_C00103tot_CY*cpd_C00569_CY)/R06050CY_Keq))/(R06050CY_GlcAG_Ki*R06050CY_Pi_KM + R06050CY_Pi_KM*cpd_C00569Glc_CY + R06050CY_GlcAG_KM*cpd_C00009tot_CY + cpd_C00569Glc_CY*cpd_C00009tot_CY + (R06050CY_GlcAG_Ki*R06050CY_Pi_KM)/(R06050CY_G1P_Ki*R06050CY_AG_KM)*(R06050CY_AG_KM*cpd_C00103tot_CY + R06050CY_G1P_KM*cpd_C00569_CY + cpd_C00103tot_CY*cpd_C00569_CY));
-  rn_AT2G40840CY: cpd_C00208_CY + cpd_C00569_CY -> cpd_C00031_CY + cpd_C00569Glc_CY; (Cytosol*AT2G40840CY_kcat*ec_2_4_1_25_CY*(cpd_C00208_CY*cpd_C00569_CY - (cpd_C00031_CY*cpd_C00569Glc_CY)/AT2G40840CY_Keq))/(AT2G40840CY_AG_KM*cpd_C00208_CY + AT2G40840CY_G2_KM*cpd_C00569_CY + cpd_C00208_CY*cpd_C00569_CY + (AT2G40840CY_G2_KM*AT2G40840CY_AG_Ki)/(AT2G40840CY_Glc_KM*AT2G40840CY_GlcAG_Ki)*(AT2G40840CY_GlcAG_KM*cpd_C00031_CY*(1 + cpd_C00208_CY/AT2G40840CY_G2_Ki) + AT2G40840CY_Glc_KM*cpd_C00569Glc_CY*(1 + cpd_C00569_CY/AT2G40840CY_AG_Ki) + cpd_C00031_CY*cpd_C00569Glc_CY));
-  rn_R05196CS: 2cpd_C01835_CS -> cpd_C00031_CS + cpd_G00343_CS; (ChloroplastStroma*R05196CS_kcat*ec_2_4_1_25_CS*(cpd_C01835_CS^2 - (cpd_C00031_CS*cpd_G00343_CS)/R05196CS_Keq))/(R05196CS_G3_KM*cpd_C01835_CS + cpd_C01835_CS^2 + (R05196CS_G3_KM*R05196CS_G3_Ki)/(R05196CS_Glc_KM*R05196CS_G5_Ki)*(R05196CS_G5_KM*cpd_C00031_CS*(1 + cpd_C01835_CS/R05196CS_G3_Ki) + R05196CS_Glc_KM*cpd_G00343_CS*(1 + cpd_C01835_CS/R05196CS_G3_Ki) + cpd_C00031_CS*cpd_G00343_CS));
+  rn_R02112CS_G2: 12345.7 $cpd_C00369Glc_CS -> 2923.98 cpd_C00208_CS; ChloroplastStroma*Function_for_Maltose_formation_from_Starch(C00208_MW, R02112CS_G2C_KM, R02112CS_Gn_KM, R02112CS_Gn_kcat, R02112CS_Keq, conv_gm_umole, cpd_C00208_CS/ChloroplastStroma, cpd_C00369_CS/ChloroplastStroma, cpd_C00369db_CS/ChloroplastStroma, ec_3_2_1_2_CS/ChloroplastStroma, f_G2, f_bamylase);
+  rn_R02112CS_G3: 18518.5 $cpd_C00369Glc_CS => 1984.13 cpd_C01835_CS; ChloroplastStroma*Function_for_Maltotriose_formation_from_Starch(R02112CS_Gn_KM, R02112CS_Gn_kcat, conv_gm_umole, cpd_C00369_CS/ChloroplastStroma, cpd_C00369db_CS/ChloroplastStroma, ec_3_2_1_2_CS/ChloroplastStroma, f_G3, f_bamylase);
+  rn_R02112CS_G5: 1207.73 cpd_G00343_CS => 2923.98 cpd_C00208_CS + 1984.13 cpd_C01835_CS; ChloroplastStroma*Function_for_Maltopentaose_degradation(G00343_MW, R02112CS_G5_KM, R02112CS_G5_kcat, conv_gm_umole, cpd_G00343_CS/ChloroplastStroma, ec_3_2_1_2_CS/ChloroplastStroma);
+  tr_TC_2_A_84_1_2: cpd_C00208_CS => cpd_C00208_CY; Function_for_Maltose_exporter(ChloroplastStroma, TC_2_A_84_1_2_KM, TC_2_A_84_1_2_kcat, cpd_C00208_CS/ChloroplastStroma, tc_2_A_84_1_2_CIMS/ChloroplastIntermembraneSpace);
+  tr_TC_2_A_1_1_17: cpd_C00031_CS => cpd_C00031_CY; Function_for_Plastidic_Glucose_transporter(ChloroplastStroma, TC_2_A_1_1_17_KM, TC_2_A_1_1_17_kcat, cpd_C00031_CS/ChloroplastStroma, tc_2_A_1_1_17_CIMS/ChloroplastIntermembraneSpace);
+  rn_R00299CY: $cpd_C00002tot_CY + cpd_C00031_CY -> $cpd_C00092tot_CY + $cpd_C00008tot_CY + $cpd_C00080_CY; Cytosol*Function_for_Hexokinase(R00299CY_BPG_Kip, R00299CY_G16P_Kip, R00299CY_G6P_KM, R00299CY_G6P_Ki, R00299CY_G6P_Kip, R00299CY_GSH_Kip, R00299CY_Glc_Ki, R00299CY_MgADP_Ki, R00299CY_MgATP_KM, R00299CY_MgATP_Ki, R00299CY_kfor, R00299CY_krev, cpd_C00002tot_CY/Cytosol, cpd_C00008tot_CY/Cytosol, cpd_C00031_CY/Cytosol, cpd_C00051_CY/Cytosol, cpd_C00092tot_CY/Cytosol, cpd_C00660tot_CY/Cytosol, cpd_C03339tot_CY/Cytosol, ec_2_7_1_1_CY/Cytosol);
+  rn_R06050CY: cpd_C00569Glc_CY + $cpd_C00009tot_CY -> $cpd_C00103tot_CY + cpd_C00569_CY; Cytosol*Function_for_Cytosolic_glucan_phosphorylase(R06050CY_AG_KM, R06050CY_G1P_KM, R06050CY_G1P_Ki, R06050CY_GlcAG_KM, R06050CY_GlcAG_Ki, R06050CY_Keq, R06050CY_Pi_KM, R06050CY_kcat, cpd_C00009tot_CY/Cytosol, cpd_C00103tot_CY/Cytosol, cpd_C00569Glc_CY/Cytosol, cpd_C00569_CY/Cytosol, ec_2_4_1_1_CY/Cytosol);
+  rn_AT2G40840CY: cpd_C00208_CY + cpd_C00569_CY -> cpd_C00031_CY + cpd_C00569Glc_CY; Cytosol*Function_for_DPE2(AT2G40840CY_AG_KM, AT2G40840CY_AG_Ki, AT2G40840CY_G2_KM, AT2G40840CY_G2_Ki, AT2G40840CY_GlcAG_KM, AT2G40840CY_GlcAG_Ki, AT2G40840CY_Glc_KM, AT2G40840CY_Keq, AT2G40840CY_kcat, cpd_C00031_CY/Cytosol, cpd_C00208_CY/Cytosol, cpd_C00569Glc_CY/Cytosol, cpd_C00569_CY/Cytosol, ec_2_4_1_25_CY/Cytosol);
+  rn_R05196CS: 2 cpd_C01835_CS -> cpd_C00031_CS + cpd_G00343_CS; ChloroplastStroma*Function_for_DPE1(R05196CS_G3_KM, R05196CS_G3_Ki, R05196CS_G5_KM, R05196CS_G5_Ki, R05196CS_Glc_KM, R05196CS_Keq, R05196CS_kcat, cpd_C00031_CS/ChloroplastStroma, cpd_C01835_CS/ChloroplastStroma, cpd_G00343_CS/ChloroplastStroma, ec_2_4_1_25_CS/ChloroplastStroma);
 
   // Species initializations:
-  cpd_C00080_CY = 0.1;
-  cpd_C00080_CY has uM;
-  cpd_C00369_CS has gm_per_L;
-  cpd_C00369Glc_CS = 1000;
-  cpd_C00369Glc_CS has uM;
+  cpd_C00080_CY = 1.579698e-13/Cytosol;
+  cpd_C00080_CY has substance_per_volume;
+  cpd_C00369_CS has substance_per_volume;
+  cpd_C00369Glc_CS = 3.534e-10/ChloroplastStroma;
+  cpd_C00369Glc_CS has substance_per_volume;
   cpd_C00369db_CS = 0;
-  cpd_C00369db_CS has gm_per_L;
-  ec_3_2_1_68_CS = 0.0118;
-  ec_3_2_1_68_CS has gm_per_L;
-  cpd_C00208_CY = 10;
-  cpd_C00208_CY has uM;
-  cpd_C00208_CS = 10;
-  cpd_C00208_CS has uM;
-  cpd_C01835_CS = 100;
-  cpd_C01835_CS has uM;
-  cpd_G00343_CS = 1000;
-  cpd_G00343_CS has uM;
-  cpd_C00031_CS = 10;
-  cpd_C00031_CS has uM;
-  cpd_C00031_CY = 10;
-  cpd_C00031_CY has uM;
-  cpd_C00569_CY = 10000;
-  cpd_C00569_CY has uM;
-  cpd_C00569Glc_CY = 10000;
-  cpd_C00569Glc_CY has uM;
-  cpd_C00002tot_CY = 10000;
-  cpd_C00002tot_CY has uM;
-  cpd_C00008tot_CY = 10000;
-  cpd_C00008tot_CY has uM;
-  cpd_C00009tot_CY = 10000;
-  cpd_C00009tot_CY has uM;
-  cpd_C00051_CY = 1000;
-  cpd_C00051_CY has uM;
-  cpd_C00660tot_CY = 10000;
-  cpd_C00660tot_CY has uM;
-  cpd_C03339tot_CY = 10000;
-  cpd_C03339tot_CY has uM;
-  cpd_C00103tot_CY = 10000;
-  cpd_C00103tot_CY has uM;
-  cpd_C00092tot_CY = 10000;
-  cpd_C00092tot_CY has uM;
-  ec_3_2_1_2_CS = 0.00783;
-  ec_3_2_1_2_CS has gm_per_L;
-  ec_2_4_1_25_CS = 2;
-  ec_2_4_1_25_CS has uM;
-  ec_2_4_1_25_CY = 2;
-  ec_2_4_1_25_CY has uM;
-  ec_2_4_1_1_CY = 2;
-  ec_2_4_1_1_CY has uM;
-  ec_2_7_1_1_CY = 10;
-  ec_2_7_1_1_CY has uM;
-  tc_2_A_84_1_2_CIMS = 2;
-  tc_2_A_84_1_2_CIMS has uM;
-  tc_2_A_1_1_17_CIMS = 20;
-  tc_2_A_1_1_17_CIMS has uM;
+  cpd_C00369db_CS has substance_per_volume;
+  ec_3_2_1_68_CS = 4.17012e-15/ChloroplastStroma;
+  ec_3_2_1_68_CS has substance_per_volume;
+  cpd_C00208_CY = 1.579698e-11/Cytosol;
+  cpd_C00208_CY has substance_per_volume;
+  cpd_C00208_CS = 3.534e-12/ChloroplastStroma;
+  cpd_C00208_CS has substance_per_volume;
+  cpd_C01835_CS = 3.534e-11/ChloroplastStroma;
+  cpd_C01835_CS has substance_per_volume;
+  cpd_G00343_CS = 3.534e-10/ChloroplastStroma;
+  cpd_G00343_CS has substance_per_volume;
+  cpd_C00031_CS = 3.534e-12/ChloroplastStroma;
+  cpd_C00031_CS has substance_per_volume;
+  cpd_C00031_CY = 1.579698e-11/Cytosol;
+  cpd_C00031_CY has substance_per_volume;
+  cpd_C00569_CY = 1.579698e-08/Cytosol;
+  cpd_C00569_CY has substance_per_volume;
+  cpd_C00569Glc_CY = 1.579698e-08/Cytosol;
+  cpd_C00569Glc_CY has substance_per_volume;
+  cpd_C00002tot_CY = 1.579698e-08/Cytosol;
+  cpd_C00002tot_CY has substance_per_volume;
+  cpd_C00008tot_CY = 1.579698e-08/Cytosol;
+  cpd_C00008tot_CY has substance_per_volume;
+  cpd_C00009tot_CY = 1.579698e-08/Cytosol;
+  cpd_C00009tot_CY has substance_per_volume;
+  cpd_C00051_CY = 1.579698e-09/Cytosol;
+  cpd_C00051_CY has substance_per_volume;
+  cpd_C00660tot_CY = 1.579698e-08/Cytosol;
+  cpd_C00660tot_CY has substance_per_volume;
+  cpd_C03339tot_CY = 1.579698e-08/Cytosol;
+  cpd_C03339tot_CY has substance_per_volume;
+  cpd_C00103tot_CY = 1.579698e-08/Cytosol;
+  cpd_C00103tot_CY has substance_per_volume;
+  cpd_C00092tot_CY = 1.579698e-08/Cytosol;
+  cpd_C00092tot_CY has substance_per_volume;
+  ec_3_2_1_2_CS = 2.767122e-15/ChloroplastStroma;
+  ec_3_2_1_2_CS has substance_per_volume;
+  ec_2_4_1_25_CS = 7.068e-13/ChloroplastStroma;
+  ec_2_4_1_25_CS has substance_per_volume;
+  ec_2_4_1_25_CY = 3.159396e-12/Cytosol;
+  ec_2_4_1_25_CY has substance_per_volume;
+  ec_2_4_1_1_CY = 3.159396e-12/Cytosol;
+  ec_2_4_1_1_CY has substance_per_volume;
+  ec_2_7_1_1_CY = 1.579698e-11/Cytosol;
+  ec_2_7_1_1_CY has substance_per_volume;
+  tc_2_A_84_1_2_CIMS = 1.4136e-14/ChloroplastIntermembraneSpace;
+  tc_2_A_84_1_2_CIMS has substance_per_volume;
+  tc_2_A_1_1_17_CIMS = 1.4136e-13/ChloroplastIntermembraneSpace;
+  tc_2_A_1_1_17_CIMS has substance_per_volume;
 
   // Compartment initializations:
-  Cell = 3.534e-012;
+  Cell = 3.534e-12;
   Cell has volume;
   Cytosol = 0.447*Cell;
   Cytosol has volume;
   Chloroplast = 0.2*Cell;
   Chloroplast has volume;
   ChloroplastOuterMembrane = 1000;
-  ChloroplastOuterMembrane has area;
+  ChloroplastOuterMembrane has volume;
   ChloroplastIntermembraneSpace = 0.01*Chloroplast;
   ChloroplastIntermembraneSpace has volume;
   ChloroplastInnerMembrane = 1000;
-  ChloroplastInnerMembrane has area;
+  ChloroplastInnerMembrane has volume;
   ChloroplastStroma = 0.5*Chloroplast;
   ChloroplastStroma has volume;
 
   // Variable initializations:
   C00369_MW = 0.27;
-  C00369_MW has gm_per_umole;
+  C00369_MW has unit_0;
   N_Glc_Starch = 1667;
-  N_Glc_Starch has dimensionless;
+  N_Glc_Starch has unit_1;
   ec_3_2_1_68_CS_kcat = 0.0198;
-  ec_3_2_1_68_CS_kcat has per_s;
+  ec_3_2_1_68_CS_kcat has unit_2;
   f_bamylase = 0.582;
-  f_bamylase has dimensionless;
+  f_bamylase has unit_1;
   f_G2 = 0.87;
-  f_G2 has dimensionless;
+  f_G2 has unit_1;
   f_G3 = 0.13;
-  f_G3 has dimensionless;
+  f_G3 has unit_1;
   conv_gm_umole = 1;
-  conv_gm_umole has gm_per_umole;
+  conv_gm_umole has unit_0;
   ec_3_2_1_2_MW = 0.206;
-  ec_3_2_1_2_MW has gm_per_umole;
+  ec_3_2_1_2_MW has unit_0;
   G00343_MW = 0.000828;
-  G00343_MW has gm_per_umole;
+  G00343_MW has unit_0;
   C01835_MW = 0.000504;
-  C01835_MW has gm_per_umole;
+  C01835_MW has unit_0;
   C00208_MW = 0.000342;
-  C00208_MW has gm_per_umole;
+  C00208_MW has unit_0;
   R05196CS_kcat = 50;
-  R05196CS_kcat has per_s;
+  R05196CS_kcat has unit_2;
   R05196CS_Keq = 1;
-  R05196CS_Keq has dimensionless;
+  R05196CS_Keq has unit_1;
   R05196CS_G3_KM = 3300;
-  R05196CS_G3_KM has uM;
+  R05196CS_G3_KM has unit_3;
   R05196CS_Glc_KM = 11700;
-  R05196CS_Glc_KM has uM;
+  R05196CS_Glc_KM has unit_3;
   R05196CS_G5_KM = 210;
-  R05196CS_G5_KM has uM;
+  R05196CS_G5_KM has unit_3;
   R05196CS_G3_Ki = 746.42;
-  R05196CS_G3_Ki has uM;
+  R05196CS_G3_Ki has unit_3;
   R05196CS_Glc_Ki = 5571.429;
-  R05196CS_Glc_Ki has uM;
+  R05196CS_Glc_Ki has unit_3;
   R05196CS_G5_Ki = 100;
-  R05196CS_G5_Ki has uM;
+  R05196CS_G5_Ki has unit_3;
   AT2G40840CY_kcat = 50;
-  AT2G40840CY_kcat has per_s;
+  AT2G40840CY_kcat has unit_2;
   AT2G40840CY_Keq = 1;
-  AT2G40840CY_Keq has dimensionless;
+  AT2G40840CY_Keq has unit_1;
   AT2G40840CY_Glc_KM = 11700;
-  AT2G40840CY_Glc_KM has uM;
+  AT2G40840CY_Glc_KM has unit_3;
   AT2G40840CY_G2_KM = 4600;
-  AT2G40840CY_G2_KM has uM;
+  AT2G40840CY_G2_KM has unit_3;
   AT2G40840CY_AG_KM = 1100;
-  AT2G40840CY_AG_KM has uM;
+  AT2G40840CY_AG_KM has unit_3;
   AT2G40840CY_GlcAG_KM = 1100;
-  AT2G40840CY_GlcAG_KM has uM;
+  AT2G40840CY_GlcAG_KM has unit_3;
   AT2G40840CY_Glc_Ki = 5571.429;
-  AT2G40840CY_Glc_Ki has uM;
+  AT2G40840CY_Glc_Ki has unit_3;
   AT2G40840CY_G2_Ki = 2190.476;
-  AT2G40840CY_G2_Ki has uM;
+  AT2G40840CY_G2_Ki has unit_3;
   AT2G40840CY_AG_Ki = 1000;
-  AT2G40840CY_AG_Ki has uM;
+  AT2G40840CY_AG_Ki has unit_3;
   AT2G40840CY_GlcAG_Ki = 1000;
-  AT2G40840CY_GlcAG_Ki has uM;
+  AT2G40840CY_GlcAG_Ki has unit_3;
   R06050CY_kcat = 50;
-  R06050CY_kcat has per_s;
+  R06050CY_kcat has unit_2;
   R06050CY_GlcAG_KM = 2100;
-  R06050CY_GlcAG_KM has uM;
+  R06050CY_GlcAG_KM has unit_3;
   R06050CY_GlcAG_Ki = 3800;
-  R06050CY_GlcAG_Ki has uM;
+  R06050CY_GlcAG_Ki has unit_3;
   R06050CY_AG_KM = 3800;
-  R06050CY_AG_KM has uM;
+  R06050CY_AG_KM has unit_3;
   R06050CY_Pi_KM = 5900;
-  R06050CY_Pi_KM has uM;
+  R06050CY_Pi_KM has unit_3;
   R06050CY_G1P_KM = 2000;
-  R06050CY_G1P_KM has uM;
+  R06050CY_G1P_KM has unit_3;
   R06050CY_G1P_Ki = 3100;
-  R06050CY_G1P_Ki has uM;
+  R06050CY_G1P_Ki has unit_3;
   R06050CY_Keq = 0.000615;
-  R06050CY_Keq has dimensionless;
+  R06050CY_Keq has unit_1;
   TC_2_A_84_1_2_kcat = 5.963;
-  TC_2_A_84_1_2_kcat has per_s;
+  TC_2_A_84_1_2_kcat has unit_2;
   TC_2_A_84_1_2_KM = 4000;
-  TC_2_A_84_1_2_KM has uM;
+  TC_2_A_84_1_2_KM has unit_3;
   TC_2_A_1_1_17_kcat = 240.278;
-  TC_2_A_1_1_17_kcat has per_s;
+  TC_2_A_1_1_17_kcat has unit_2;
   TC_2_A_1_1_17_KM = 19300;
-  TC_2_A_1_1_17_KM has uM;
+  TC_2_A_1_1_17_KM has unit_3;
   R02112CS_Gn_KM = 0.5;
-  R02112CS_Gn_KM has gm_per_L;
+  R02112CS_Gn_KM has unit_4;
   R02112CS_G5_KM = 1.46;
-  R02112CS_G5_KM has gm_per_L;
+  R02112CS_G5_KM has unit_4;
   R02112CS_G2C_KM = 4.19;
-  R02112CS_G2C_KM has gm_per_L_2;
+  R02112CS_G2C_KM has unit_5;
   R02112CS_Keq = 18800;
-  R02112CS_Keq has gm_per_L;
+  R02112CS_Keq has unit_4;
   R02112CS_Gn_kcat = 0.073;
-  R02112CS_Gn_kcat has per_s;
+  R02112CS_Gn_kcat has unit_2;
   R02112CS_G5_kcat = 0.0913;
-  R02112CS_G5_kcat has per_s;
+  R02112CS_G5_kcat has unit_2;
   R00299CY_kfor = 180;
-  R00299CY_kfor has per_s;
-  R00299CY_krev has per_s;
+  R00299CY_kfor has unit_2;
+  R00299CY_krev has unit_2;
   R00299CY_MgADP_Ki = 1000;
-  R00299CY_MgADP_Ki has uM;
+  R00299CY_MgADP_Ki has unit_3;
   R00299CY_G6P_KM = 47;
-  R00299CY_G6P_KM has uM;
+  R00299CY_G6P_KM has unit_3;
   R00299CY_Keq = 155;
-  R00299CY_Keq has dimensionless;
+  R00299CY_Keq has unit_1;
   R00299CY_Glc_Ki = 47;
-  R00299CY_Glc_Ki has uM;
+  R00299CY_Glc_Ki has unit_3;
   R00299CY_MgATP_KM = 1000;
-  R00299CY_MgATP_KM has uM;
+  R00299CY_MgATP_KM has unit_3;
   R00299CY_MgATP_Ki = 1000;
-  R00299CY_MgATP_Ki has uM;
+  R00299CY_MgATP_Ki has unit_3;
   R00299CY_Glc_KM = 47;
-  R00299CY_Glc_KM has uM;
+  R00299CY_Glc_KM has unit_3;
   R00299CY_G6P_Ki = 47;
-  R00299CY_G6P_Ki has uM;
+  R00299CY_G6P_Ki has unit_3;
   R00299CY_MgADP_KM = 1000;
-  R00299CY_MgADP_KM has uM;
+  R00299CY_MgADP_KM has unit_3;
   R00299CY_G6P_Kip = 10;
-  R00299CY_G6P_Kip has uM;
+  R00299CY_G6P_Kip has unit_3;
   R00299CY_BPG_Kip = 4000;
-  R00299CY_BPG_Kip has uM;
+  R00299CY_BPG_Kip has unit_3;
   R00299CY_G16P_Kip = 30;
-  R00299CY_G16P_Kip has uM;
+  R00299CY_G16P_Kip has unit_3;
   R00299CY_GSH_Kip = 3000;
-  R00299CY_GSH_Kip has uM;
+  R00299CY_GSH_Kip has unit_3;
 
   // Other declarations:
-  var Cytosol, Chloroplast, R00299CY_krev;
-  const Cell, ChloroplastOuterMembrane, ChloroplastIntermembraneSpace, ChloroplastInnerMembrane;
-  const ChloroplastStroma, C00369_MW, N_Glc_Starch, ec_3_2_1_68_CS_kcat, f_bamylase;
-  const f_G2, f_G3, conv_gm_umole, ec_3_2_1_2_MW, G00343_MW, C01835_MW, C00208_MW;
-  const R05196CS_kcat, R05196CS_Keq, R05196CS_G3_KM, R05196CS_Glc_KM, R05196CS_G5_KM;
-  const R05196CS_G3_Ki, R05196CS_Glc_Ki, R05196CS_G5_Ki, AT2G40840CY_kcat;
-  const AT2G40840CY_Keq, AT2G40840CY_Glc_KM, AT2G40840CY_G2_KM, AT2G40840CY_AG_KM;
-  const AT2G40840CY_GlcAG_KM, AT2G40840CY_Glc_Ki, AT2G40840CY_G2_Ki, AT2G40840CY_AG_Ki;
-  const AT2G40840CY_GlcAG_Ki, R06050CY_kcat, R06050CY_GlcAG_KM, R06050CY_GlcAG_Ki;
-  const R06050CY_AG_KM, R06050CY_Pi_KM, R06050CY_G1P_KM, R06050CY_G1P_Ki;
-  const R06050CY_Keq, TC_2_A_84_1_2_kcat, TC_2_A_84_1_2_KM, TC_2_A_1_1_17_kcat;
-  const TC_2_A_1_1_17_KM, R02112CS_Gn_KM, R02112CS_G5_KM, R02112CS_G2C_KM;
-  const R02112CS_Keq, R02112CS_Gn_kcat, R02112CS_G5_kcat, R00299CY_kfor, R00299CY_MgADP_Ki;
-  const R00299CY_G6P_KM, R00299CY_Keq, R00299CY_Glc_Ki, R00299CY_MgATP_KM;
-  const R00299CY_MgATP_Ki, R00299CY_Glc_KM, R00299CY_G6P_Ki, R00299CY_MgADP_KM;
-  const R00299CY_G6P_Kip, R00299CY_BPG_Kip, R00299CY_G16P_Kip, R00299CY_GSH_Kip;
+  var R00299CY_krev;
+  const Cell, Cytosol, Chloroplast, ChloroplastOuterMembrane, ChloroplastIntermembraneSpace;
+  const ChloroplastInnerMembrane, ChloroplastStroma, C00369_MW, N_Glc_Starch;
+  const ec_3_2_1_68_CS_kcat, f_bamylase, f_G2, f_G3, conv_gm_umole, ec_3_2_1_2_MW;
+  const G00343_MW, C01835_MW, C00208_MW, R05196CS_kcat, R05196CS_Keq, R05196CS_G3_KM;
+  const R05196CS_Glc_KM, R05196CS_G5_KM, R05196CS_G3_Ki, R05196CS_Glc_Ki;
+  const R05196CS_G5_Ki, AT2G40840CY_kcat, AT2G40840CY_Keq, AT2G40840CY_Glc_KM;
+  const AT2G40840CY_G2_KM, AT2G40840CY_AG_KM, AT2G40840CY_GlcAG_KM, AT2G40840CY_Glc_Ki;
+  const AT2G40840CY_G2_Ki, AT2G40840CY_AG_Ki, AT2G40840CY_GlcAG_Ki, R06050CY_kcat;
+  const R06050CY_GlcAG_KM, R06050CY_GlcAG_Ki, R06050CY_AG_KM, R06050CY_Pi_KM;
+  const R06050CY_G1P_KM, R06050CY_G1P_Ki, R06050CY_Keq, TC_2_A_84_1_2_kcat;
+  const TC_2_A_84_1_2_KM, TC_2_A_1_1_17_kcat, TC_2_A_1_1_17_KM, R02112CS_Gn_KM;
+  const R02112CS_G5_KM, R02112CS_G2C_KM, R02112CS_Keq, R02112CS_Gn_kcat, R02112CS_G5_kcat;
+  const R00299CY_kfor, R00299CY_MgADP_Ki, R00299CY_G6P_KM, R00299CY_Keq, R00299CY_Glc_Ki;
+  const R00299CY_MgATP_KM, R00299CY_MgATP_Ki, R00299CY_Glc_KM, R00299CY_G6P_Ki;
+  const R00299CY_MgADP_KM, R00299CY_G6P_Kip, R00299CY_BPG_Kip, R00299CY_G16P_Kip;
+  const R00299CY_GSH_Kip;
 
   // Unit definitions:
-  unit per_s = 1 / second;
-  unit volume = litre;
+  unit length = metre;
   unit area = (1e-6 metre)^2;
-  unit umole = 1e-6 mole;
-  unit uM = 1e-6 mole / litre;
-  unit uM_per_s = 1e-6 mole / (litre * second);
-  unit per_uM_per_s = litre / (1e-6 mole * second);
-  unit gm_per_L = gram / litre;
-  unit gm_per_L_2 = gram^2 / litre^2;
-  unit gm_per_umole = gram / 1e-6 mole;
+  unit volume = litre;
+  unit time_unit = time_unit;
+  unit substance = mole;
+  unit unit_0 = gram / ((1e-6 dimensionless)^-0 * mole);
+  unit unit_1 = 1 / dimensionless^-0;
+  unit unit_2 = 1 / second;
+  unit unit_3 = item * avogadro / ((1e-6 dimensionless)^-0 * litre);
+  unit unit_4 = gram / litre;
+  unit unit_5 = gram^2 / litre^2;
+  unit extent = substance;
+  unit substance_per_volume = mole / litre;
 
   // Display Names:
+  time_unit is "time";
+  unit_0 is "µg/mol";
+  unit_1 is "1";
+  unit_2 is "1/s";
+  unit_3 is "µmol/l";
+  unit_4 is "g/l";
+  unit_5 is "g²/l²";
   ChloroplastOuterMembrane is "Chloroplast Outer Membrane";
   ChloroplastIntermembraneSpace is "Chloroplast Intermembrane Space";
   ChloroplastInnerMembrane is "Chloroplast Inner Membrane";
@@ -366,4 +436,208 @@ model *Nag2011_ChloroplasticStarchDegradation()
   rn_R06050CY is "Cytosolic glucan phosphorylase";
   rn_AT2G40840CY is "DPE2";
   rn_R05196CS is "DPE1";
+
+  // SBO terms:
+  Cell.sboTerm = 290
+  Cytosol.sboTerm = 290
+  Chloroplast.sboTerm = 290
+  ChloroplastOuterMembrane.sboTerm = 290
+  ChloroplastIntermembraneSpace.sboTerm = 290
+  ChloroplastInnerMembrane.sboTerm = 290
+  ChloroplastStroma.sboTerm = 290
+  cpd_C00080_CY.sboTerm = 327
+  cpd_C00369_CS.sboTerm = 247
+  cpd_C00369Glc_CS.sboTerm = 247
+  cpd_C00369db_CS.sboTerm = 247
+  cpd_C00208_CY.sboTerm = 247
+  cpd_C00208_CS.sboTerm = 247
+  cpd_C01835_CS.sboTerm = 247
+  cpd_G00343_CS.sboTerm = 247
+  cpd_C00031_CS.sboTerm = 247
+  cpd_C00031_CY.sboTerm = 247
+  cpd_C00569_CY.sboTerm = 247
+  cpd_C00569Glc_CY.sboTerm = 247
+  cpd_C00002tot_CY.sboTerm = 247
+  cpd_C00008tot_CY.sboTerm = 247
+  cpd_C00009tot_CY.sboTerm = 247
+  cpd_C00051_CY.sboTerm = 247
+  cpd_C00660tot_CY.sboTerm = 247
+  cpd_C03339tot_CY.sboTerm = 247
+  cpd_C00103tot_CY.sboTerm = 247
+  cpd_C00092tot_CY.sboTerm = 247
+
+  // CV terms:
+  Cell identity "http://identifiers.org/sbo/SBO:0000290"
+  Cell hypernym "http://identifiers.org/go/GO:0005623"
+  Cytosol identity "http://identifiers.org/sbo/SBO:0000290"
+  Cytosol hypernym "http://identifiers.org/go/GO:0005829"
+  Chloroplast identity "http://identifiers.org/sbo/SBO:0000290"
+  Chloroplast hypernym "http://identifiers.org/go/GO:0009507"
+  ChloroplastOuterMembrane identity "http://identifiers.org/sbo/SBO:0000290"
+  ChloroplastOuterMembrane hypernym "http://identifiers.org/go/GO:0009707"
+  ChloroplastIntermembraneSpace identity "http://identifiers.org/sbo/SBO:0000290"
+  ChloroplastIntermembraneSpace hypernym "http://identifiers.org/go/GO:0031972"
+  ChloroplastInnerMembrane identity "http://identifiers.org/sbo/SBO:0000290"
+  ChloroplastInnerMembrane hypernym "http://identifiers.org/go/GO:0009706"
+  ChloroplastStroma identity "http://identifiers.org/sbo/SBO:0000290"
+  ChloroplastStroma hypernym "http://identifiers.org/go/GO:0009570"
+  cpd_C00080_CY identity "http://identifiers.org/sbo/SBO:0000327"
+  cpd_C00080_CY hypernym "http://identifiers.org/kegg.compound/C00080"
+  cpd_C00080_CY hypernym "http://identifiers.org/chebi/CHEBI:24636"
+  cpd_C00369_CS identity "http://identifiers.org/sbo/SBO:0000247"
+  cpd_C00369_CS hypernym "http://identifiers.org/kegg.compound/C00369"
+  cpd_C00369_CS hypernym "http://identifiers.org/chebi/CHEBI:28017"
+  cpd_C00369Glc_CS identity "http://identifiers.org/sbo/SBO:0000247"
+  cpd_C00369Glc_CS hypernym "http://identifiers.org/psimod/MOD:00726"
+  cpd_C00369Glc_CS hypernym "http://identifiers.org/kegg.compound/C00369"
+  cpd_C00369Glc_CS hypernym "http://identifiers.org/chebi/CHEBI:28017"
+  C00369_MW model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000504"
+  N_Glc_Starch model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000503"
+  cpd_C00369db_CS identity "http://identifiers.org/sbo/SBO:0000247"
+  cpd_C00369db_CS hypernym "http://identifiers.org/kegg.compound/C00369"
+  cpd_C00369db_CS hypernym "http://identifiers.org/chebi/CHEBI:28017"
+  cpd_C00369db_CS hypernym "http://identifiers.org/psimod/MOD:00726"
+  ec_3_2_1_68_CS identity "http://identifiers.org/sbo/SBO:0000014"
+  ec_3_2_1_68_CS identity "http://identifiers.org/ec-code/3.2.1.68"
+  ec_3_2_1_68_CS_kcat model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000025"
+  f_bamylase model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000540"
+  cpd_C00208_CY identity "http://identifiers.org/sbo/SBO:0000247"
+  cpd_C00208_CY hypernym "http://identifiers.org/chebi/CHEBI:17306"
+  cpd_C00208_CY hypernym "http://identifiers.org/kegg.compound/C00208"
+  cpd_C00208_CS identity "http://identifiers.org/sbo/SBO:0000247"
+  cpd_C00208_CS hypernym "http://identifiers.org/chebi/CHEBI:17306"
+  cpd_C00208_CS hypernym "http://identifiers.org/kegg.compound/C00208"
+  cpd_C01835_CS identity "http://identifiers.org/sbo/SBO:0000247"
+  cpd_C01835_CS parthood "http://identifiers.org/chebi/CHEBI:61993"
+  cpd_C01835_CS parthood "http://identifiers.org/kegg.compound/C01835"
+  cpd_G00343_CS identity "http://identifiers.org/sbo/SBO:0000247"
+  cpd_G00343_CS hypernym "http://identifiers.org/chebi/CHEBI:62006"
+  cpd_C00031_CS identity "http://identifiers.org/sbo/SBO:0000247"
+  cpd_C00031_CS hypernym "http://identifiers.org/chebi/CHEBI:17634"
+  cpd_C00031_CY identity "http://identifiers.org/sbo/SBO:0000247"
+  cpd_C00031_CY hypernym "http://identifiers.org/kegg.compound/C00031"
+  cpd_C00031_CY hypernym "http://identifiers.org/chebi/CHEBI:17634"
+  cpd_C00569_CY identity "http://identifiers.org/sbo/SBO:0000247"
+  cpd_C00569_CY hypernym "http://identifiers.org/chebi/CHEBI:27569"
+  cpd_C00569_CY hypernym "http://identifiers.org/kegg.compound/C00569"
+  cpd_C00569Glc_CY identity "http://identifiers.org/sbo/SBO:0000247"
+  cpd_C00569Glc_CY hypernym "http://identifiers.org/chebi/CHEBI:27569"
+  cpd_C00569Glc_CY hypernym "http://identifiers.org/kegg.compound/C00569"
+  cpd_C00569Glc_CY hypernym "http://identifiers.org/psimod/MOD:00726"
+  cpd_C00002tot_CY identity "http://identifiers.org/sbo/SBO:0000247"
+  cpd_C00002tot_CY hypernym "http://identifiers.org/chebi/CHEBI:15422"
+  cpd_C00002tot_CY hypernym "http://identifiers.org/kegg.compound/C00002"
+  cpd_C00008tot_CY identity "http://identifiers.org/sbo/SBO:0000247"
+  cpd_C00008tot_CY hypernym "http://identifiers.org/kegg.compound/C00008"
+  cpd_C00008tot_CY hypernym "http://identifiers.org/chebi/CHEBI:16761"
+  cpd_C00009tot_CY identity "http://identifiers.org/sbo/SBO:0000247"
+  cpd_C00009tot_CY hypernym "http://identifiers.org/kegg.compound/C00009"
+  cpd_C00009tot_CY hypernym "http://identifiers.org/chebi/CHEBI:18367"
+  cpd_C00051_CY identity "http://identifiers.org/sbo/SBO:0000247"
+  cpd_C00051_CY hypernym "http://identifiers.org/chebi/CHEBI:16856"
+  cpd_C00051_CY hypernym "http://identifiers.org/kegg.compound/C00051"
+  cpd_C00660tot_CY identity "http://identifiers.org/sbo/SBO:0000247"
+  cpd_C00660tot_CY hypernym "http://identifiers.org/kegg.compound/C00660"
+  cpd_C00660tot_CY hypernym "http://identifiers.org/chebi/CHEBI:17680"
+  cpd_C03339tot_CY identity "http://identifiers.org/sbo/SBO:0000247"
+  cpd_C03339tot_CY hypernym "http://identifiers.org/kegg.compound/C03339"
+  cpd_C03339tot_CY hypernym "http://identifiers.org/chebi/CHEBI:19324"
+  cpd_C00103tot_CY identity "http://identifiers.org/sbo/SBO:0000247"
+  cpd_C00103tot_CY hypernym "http://identifiers.org/kegg.compound/C11450"
+  cpd_C00103tot_CY hypernym "http://identifiers.org/chebi/CHEBI:29042"
+  cpd_C00092tot_CY identity "http://identifiers.org/sbo/SBO:0000247"
+  cpd_C00092tot_CY hypernym "http://identifiers.org/kegg.compound/C00668"
+  cpd_C00092tot_CY hypernym "http://identifiers.org/chebi/CHEBI:17665"
+  ec_3_2_1_2_CS hypernym "http://identifiers.org/ec-code/3.2.1.2"
+  ec_3_2_1_2_CS hypernym "http://identifiers.org/sbo/SBO:0000014"
+  ec_2_4_1_25_CS identity "http://identifiers.org/sbo/SBO:0000014"
+  ec_2_4_1_25_CS identity "http://identifiers.org/ec-code/2.4.1.25"
+  ec_2_4_1_25_CY identity "http://identifiers.org/sbo/SBO:0000014"
+  ec_2_4_1_25_CY identity "http://identifiers.org/ec-code/2.4.1.25"
+  ec_2_4_1_1_CY identity "http://identifiers.org/ec-code/2.4.1.1"
+  ec_2_4_1_1_CY identity "http://identifiers.org/sbo/SBO:0000014"
+  ec_2_7_1_1_CY identity "http://identifiers.org/sbo/SBO:0000014"
+  ec_2_7_1_1_CY identity "http://identifiers.org/ec-code/2.7.1.1"
+  tc_2_A_84_1_2_CIMS identity "http://identifiers.org/tcdb/2.A.84.1.2"
+  tc_2_A_84_1_2_CIMS identity "http://identifiers.org/sbo/SBO:0000284"
+  tc_2_A_1_1_17_CIMS identity "http://identifiers.org/tcdb/2.A.1.1.17"
+  tc_2_A_1_1_17_CIMS identity "http://identifiers.org/sbo/SBO:0000284"
+  f_G2 model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000540"
+  f_G3 model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000540"
+  conv_gm_umole model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000565"
+  ec_3_2_1_2_MW model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000504"
+  G00343_MW model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000504"
+  C01835_MW model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000504"
+  C00208_MW model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000504"
+  R05196CS_kcat model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000025"
+  R05196CS_Keq model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000281"
+  R05196CS_G3_KM model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000027"
+  R05196CS_Glc_KM model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000027"
+  R05196CS_G5_KM model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000027"
+  R05196CS_G3_Ki model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000009"
+  R05196CS_Glc_Ki model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000009"
+  R05196CS_G5_Ki model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000009"
+  AT2G40840CY_kcat model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000025"
+  AT2G40840CY_Keq model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000281"
+  AT2G40840CY_Glc_KM model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000027"
+  AT2G40840CY_G2_KM model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000027"
+  AT2G40840CY_AG_KM model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000027"
+  AT2G40840CY_GlcAG_KM model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000027"
+  AT2G40840CY_Glc_Ki model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000009"
+  AT2G40840CY_G2_Ki model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000009"
+  AT2G40840CY_AG_Ki model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000009"
+  AT2G40840CY_GlcAG_Ki model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000009"
+  R06050CY_kcat model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000025"
+  R06050CY_GlcAG_KM model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000027"
+  R06050CY_GlcAG_Ki model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000009"
+  R06050CY_AG_KM model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000027"
+  R06050CY_Pi_KM model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000027"
+  R06050CY_G1P_KM model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000027"
+  R06050CY_G1P_Ki model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000009"
+  R06050CY_Keq model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000281"
+  TC_2_A_84_1_2_kcat model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000025"
+  TC_2_A_84_1_2_KM model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000027"
+  TC_2_A_1_1_17_kcat model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000025"
+  TC_2_A_1_1_17_KM model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000027"
+  R02112CS_Gn_KM model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000027"
+  R02112CS_G5_KM model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000027"
+  R02112CS_G2C_KM model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000027"
+  R02112CS_Keq model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000281"
+  R02112CS_Gn_kcat model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000025"
+  R02112CS_G5_kcat model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000025"
+  R00299CY_kfor model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000320"
+  R00299CY_krev model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000321"
+  R00299CY_MgADP_Ki model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000009"
+  R00299CY_G6P_KM model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000027"
+  R00299CY_Keq model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000281"
+  R00299CY_Glc_Ki model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000009"
+  R00299CY_MgATP_KM model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000027"
+  R00299CY_MgATP_Ki model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000009"
+  R00299CY_Glc_KM model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000027"
+  R00299CY_G6P_Ki model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000009"
+  R00299CY_MgADP_KM model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000027"
+  R00299CY_G6P_Kip model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000009"
+  R00299CY_BPG_Kip model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000009"
+  R00299CY_G16P_Kip model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000009"
+  R00299CY_GSH_Kip model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000009"
+  rn_R02112CS_G2 model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000393"
+  rn_R02112CS_G3 model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000393"
+  rn_R02112CS_G5 model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000179"
+  tr_TC_2_A_84_1_2 model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000185"
+  tr_TC_2_A_1_1_17 model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000185"
+  rn_R00299CY model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000559"
+  rn_R06050CY model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000559"
+  rn_AT2G40840CY model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000559"
+  rn_R05196CS model_entity_is "http://identifiers.org/biomodels.sbo/SBO:0000559"
 end
+
+Nag2011_ChloroplasticStarchDegradation is "Nag2011_ChloroplasticStarchDegradation"
+
+Nag2011_ChloroplasticStarchDegradation model_entity_is "http://identifiers.org/biomodels.db/MODEL1106030000",
+                                                       "http://identifiers.org/biomodels.db/BIOMD0000000353"
+Nag2011_ChloroplasticStarchDegradation identity "http://identifiers.org/biomodels.db/MODEL1106030000"
+Nag2011_ChloroplasticStarchDegradation identity "http://identifiers.org/biomodels.db/BIOMD0000000353"
+Nag2011_ChloroplasticStarchDegradation hypernym "http://identifiers.org/go/GO:0005983"
+Nag2011_ChloroplasticStarchDegradation property "http://identifiers.org/mamo/MAMO_0000046"
+Nag2011_ChloroplasticStarchDegradation taxon "http://identifiers.org/taxonomy/3701"
+Nag2011_ChloroplasticStarchDegradation description "http://identifiers.org/pubmed/21682905"

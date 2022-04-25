@@ -1,0 +1,191 @@
+// Created by libAntimony v2.13.0
+function Function_for_Tumor_DSB_Formation(alpha, radiation_Dose, tau, delta, U, TV)
+  TV*(alpha*radiation_Dose + (0.2*alpha/(tau*delta^2))*U^2);
+end
+
+Function_for_Tumor_DSB_Formation is "Function_for_Tumor_DSB_Formation"
+
+function Function_for_Tumor_Growth(r, TV, TVmax)
+  r*TV*(1 - TV/TVmax);
+end
+
+Function_for_Tumor_Growth is "Function_for_Tumor_Growth"
+
+function Function_for_Tumor_Elimination(paramE, dTeff, d0, TV)
+  (paramE*dTeff + d0)*TV;
+end
+
+Function_for_Tumor_Elimination is "Function_for_Tumor_Elimination"
+
+function Function_for_NonDiff_T_Cells_Influx(kLN, mu, TVd, TV, n_e, dTeff, d0, Ktcd, S_L)
+  kLN*(((mu*(TVd/(TV + TVd)) + n_e*dTeff + d0)^2/((mu*(TVd/(TV + TVd)) + n_e*dTeff + d0)^2 + Ktcd^2))*(TV + TVd)/(((mu*(TVd/(TV + TVd)) + n_e*dTeff + d0)^2/((mu*(TVd/(TV + TVd)) + n_e*dTeff + d0)^2 + Ktcd^2))*(TV + TVd) + S_L));
+end
+
+Function_for_NonDiff_T_Cells_Influx is "Function_for_NonDiff_T_Cells_Influx"
+
+function Function_for_NonDiff_T_Cells_Immune_Activation_Rate(PDL1, mAb, K_D, mu, TVd, TV, n_e, dTeff, d0, Ktcd, S_R, nTeff, kpro, kdif)
+  (1 - PDL1/(1 + mAb/K_D))*(1 - ((mu*(TVd/(TV + TVd)) + n_e*dTeff + d0)^2/((mu*(TVd/(TV + TVd)) + n_e*dTeff + d0)^2 + Ktcd^2))*(TV + TVd)/(((mu*(TVd/(TV + TVd)) + n_e*dTeff + d0)^2/((mu*(TVd/(TV + TVd)) + n_e*dTeff + d0)^2 + Ktcd^2))*(TV + TVd) + S_R))*nTeff*(kpro - kdif);
+end
+
+Function_for_NonDiff_T_Cells_Immune_Activation_Rate is "Function_for_NonDiff_T_Cells_Immune_Activation_Rate"
+
+function Function_for_DSB_Formation(rad, delta)
+  rad*delta;
+end
+
+Function_for_DSB_Formation is "Function_for_DSB_Formation"
+
+function Function_for_PDL1_Production(kpdl, dTeff, Kpdl)
+  kpdl*(dTeff/(Kpdl + dTeff));
+end
+
+Function_for_PDL1_Production is "Function_for_PDL1_Production"
+
+function Function_for_Diff_T_Cells_Immune_Activation_Rate(PDL1, mAb, K_D, mu, TVd, TV, n_e, dTeff, d0, Ktcd, S_R, kdif, nTeff)
+  (1 - PDL1/(1 + mAb/K_D))*(1 - ((mu*(TVd/(TV + TVd)) + n_e*dTeff + d0)^2/((mu*(TVd/(TV + TVd)) + n_e*dTeff + d0)^2 + Ktcd^2))*(TV + TVd)/(((mu*(TVd/(TV + TVd)) + n_e*dTeff + d0)^2/((mu*(TVd/(TV + TVd)) + n_e*dTeff + d0)^2 + Ktcd^2))*(TV + TVd) + S_R))*nTeff*kdif;
+end
+
+Function_for_Diff_T_Cells_Immune_Activation_Rate is "Function_for_Diff_T_Cells_Immune_Activation_Rate"
+
+
+model *New_Model()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species TV in compartment_, U in compartment_, nTeff in compartment_, dTeff in compartment_;
+  species PDL1 in compartment_, TVd in compartment_;
+
+  // Assignment Rules:
+  radiation_Dose := 0;
+
+  // Reactions:
+  Tumor_Growth:  => TV; compartment_*Function_for_Tumor_Growth(r, TV, TVmax);
+  Tumor_DSB_Formation: TV => TVd; compartment_*Function_for_Tumor_DSB_Formation(alpha, radiation_Dose, tau, delta, U, TV);
+  Tumor_DSB_Repair: TVd => ; compartment_*mu*TVd;
+  Tumor_Elimination: TV => ; compartment_*Function_for_Tumor_Elimination(n_e, dTeff, d0, TV);
+  DSB_Formation:  => U; compartment_*Function_for_DSB_Formation(radiation_Dose, delta);
+  DSB_Repair: U => ; compartment_*tau*U;
+  NonDiff_T_Cells_Influx:  => nTeff; compartment_*Function_for_NonDiff_T_Cells_Influx(kLN, mu, TVd, TV, n_e, dTeff, d0, Ktcd, S_L);
+  NonDiff_T_Cells_Activation:  => nTeff; compartment_*Function_for_NonDiff_T_Cells_Immune_Activation_Rate(PDL1, mAb, K_D, mu, TVd, TV, n_e, dTeff, d0, Ktcd, S_R, nTeff, kpro, kdif);
+  NonDiff_T_Cells_Elimination: nTeff => ; compartment_*k_el*nTeff;
+  Diff_T_Cells_Activation:  => dTeff; compartment_*Function_for_Diff_T_Cells_Immune_Activation_Rate(PDL1, mAb, K_D, mu, TVd, TV, n_e, dTeff, d0, Ktcd, S_R, kdif, nTeff);
+  Diff_T_Cells_Apoptosis: dTeff => ; compartment_*kapo*dTeff;
+  PDL1_Production:  => PDL1; compartment_*Function_for_PDL1_Production(kpdl, dTeff, Kpdl);
+  PDL1_Breakdown: PDL1 => ; compartment_*kpdl*PDL1;
+
+  // Species initializations:
+  TV = 15;
+  U = 0;
+  nTeff = 0;
+  dTeff = 0;
+  PDL1 = 0;
+  TVd = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  r = 0.4;
+  r has unit_0;
+  TVmax = 2500;
+  TVmax has unit_1;
+  d0 = 0.01;
+  d0 has unit_0;
+  kLN = 279;
+  kLN has unit_0;
+  S_L = 8.89;
+  omegaSL = 0.696;
+  kpro = 3;
+  kpro has unit_0;
+  kdif = 3.2;
+  kdif has unit_0;
+  k_el = 0.2;
+  k_el has unit_0;
+  kapo = 2;
+  kapo has unit_0;
+  n_e = 0.001;
+  n_e has unit_0;
+  Kpdl = 478;
+  kpdl = 1;
+  kpdl has unit_0;
+  Ktcd = 0.2;
+  Ktcd has unit_0;
+  S_R = 30.5;
+  alpha = 0.146;
+  delta = 19;
+  tau = 0.02;
+  tau has unit_2;
+  k_a = 0;
+  k_a has unit_0;
+  V_d = 0.003;
+  V_d has unit_3;
+  k_el_mAB = 0.15;
+  k_el_mAB has unit_0;
+  K_D = 30;
+  K_D has unit_4;
+  a = 21.2;
+  b = 0.176;
+  mu = 0.1725;
+  mu has unit_0;
+  mAb = 0;
+
+  // Other declarations:
+  var radiation_Dose;
+  const compartment_, r, TVmax, d0, kLN, S_L, omegaSL, kpro, kdif, k_el, kapo;
+  const n_e, Kpdl, kpdl, Ktcd, S_R, alpha, delta, tau, k_a, V_d, k_el_mAB;
+  const K_D, a, b, mu, mAb;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = 1e-9 mole;
+  unit unit_0 = 1 / 86400e-1 second;
+  unit unit_1 = metre^3 / (1e-9 dimensionless)^-0;
+  unit unit_2 = 86400e-1 second;
+  unit unit_3 = litre;
+  unit unit_4 = 1e-9 mole / litre;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1/d";
+  unit_1 is "ul";
+  unit_2 is "d";
+  unit_3 is "l";
+  unit_4 is "nmol/l";
+  compartment_ is "compartment";
+  U is "DSB";
+  nTeff is "TC_ND";
+  dTeff is "TC_D";
+  TVd is "TVD";
+
+  // CV terms:
+  TV hypernym "http://identifiers.org/ncit/C94515"
+  U hypernym "http://identifiers.org/ncit/C25832"
+  nTeff hypernym "http://identifiers.org/cl/CL:0002420"
+  dTeff hypernym "http://identifiers.org/cl/CL:0000911"
+  PDL1 hypernym "http://identifiers.org/ncit/C96024"
+  TVd part "http://identifiers.org/ncit/C25832"
+  TVd hypernym "http://identifiers.org/ncit/C94515"
+  Tumor_Growth hypernym "http://identifiers.org/sbo/SBO:0000393"
+  Tumor_DSB_Formation hypernym "http://identifiers.org/ncit/C25832"
+  Tumor_DSB_Repair hypernym "http://identifiers.org/go/GO:0006302"
+  Tumor_Elimination hypernym "http://identifiers.org/sbo/SBO:0000179"
+  DSB_Formation hypernym "http://identifiers.org/ncit/C25832"
+  DSB_Repair hypernym "http://identifiers.org/go/GO:0006302"
+  NonDiff_T_Cells_Influx hypernym "http://identifiers.org/go/GO:0072683"
+  NonDiff_T_Cells_Activation hypernym "http://identifiers.org/go/GO:0042110"
+  NonDiff_T_Cells_Elimination hypernym "http://identifiers.org/go/GO:0008219"
+  Diff_T_Cells_Activation hypernym "http://identifiers.org/go/GO:0042110"
+  Diff_T_Cells_Apoptosis hypernym "http://identifiers.org/go/GO:0070231"
+  PDL1_Production hypernym "http://identifiers.org/go/GO:0006412"
+  PDL1_Breakdown hypernym "http://identifiers.org/go/GO:0030163"
+end
+
+New_Model is "Kosinsky2018 - Radiation and PD-(L)1 treatment combinations"
+
+New_Model description "http://identifiers.org/pubmed/29486799"
+New_Model model_entity_is "http://identifiers.org/biomodels.db/MODEL1911140003",
+                          "http://identifiers.org/biomodels.db/BIOMD0000000863"
+New_Model hypernym "http://identifiers.org/ncit/C15313"
+New_Model property "http://identifiers.org/mamo/MAMO_0000046"
+New_Model taxon "http://identifiers.org/taxonomy/10090"

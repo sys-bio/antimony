@@ -1,0 +1,110 @@
+// Created by libAntimony v2.13.0
+function Function_for_production_of_Lysogens(r, L, p, alpha, U, V)
+  r*L + p*alpha*U*V;
+end
+
+Function_for_production_of_Lysogens is "Function for production of Lysogens"
+
+function Fucntion_for_removal_of_Lysogens(delta, L, phi)
+  delta*L + phi*L;
+end
+
+Fucntion_for_removal_of_Lysogens is "Fucntion for removal of Lysogens"
+
+function Function_for_production_of_uninfected_cells(g, U)
+  g*U;
+end
+
+Function_for_production_of_uninfected_cells is "Function for production of uninfected cells"
+
+function Function_for_removal_of_uninfected_cells(alpha, U, V, phi)
+  alpha*U*V + phi*U;
+end
+
+Function_for_removal_of_uninfected_cells is "Function for removal of uninfected cells"
+
+function Function_for_production_of_viruses(p, b, alpha, U, V, L, delta)
+  (1 - p)*b*alpha*U*V + b*delta*L;
+end
+
+Function_for_production_of_viruses is "Function for production of viruses"
+
+function Function_for_removal_of_viruses(gamma_, V, alpha, L)
+  gamma_*V + alpha*V*L;
+end
+
+Function_for_removal_of_viruses is "Function for removal of viruses"
+
+
+model *New_Model()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species L in compartment_, U in compartment_, V in compartment_;
+
+  // Assignment Rules:
+  phi := ((r - delta)*L + g*U - alpha*U*V*(1 - p))/K;
+  K := L + U;
+
+  // Reactions:
+  Production_of_Lysogens:  => L; compartment_*Function_for_production_of_Lysogens(r, L, p, alpha, U, V);
+  Removal_of_Lysogens: L => ; compartment_*Fucntion_for_removal_of_Lysogens(delta, L, phi);
+  Production_of_uninfected_cells:  => U; compartment_*Function_for_production_of_uninfected_cells(g, U);
+  Removal_of_uninfected_cells: U => ; compartment_*Function_for_removal_of_uninfected_cells(alpha, U, V, phi);
+  Production_of_viruses:  => V; compartment_*Function_for_production_of_viruses(p, b, alpha, U, V, L, delta);
+  Removal_of_viruses: V => ; compartment_*Function_for_removal_of_viruses(gamma_, V, alpha, L);
+
+  // Species initializations:
+  L = 10000;
+  U = 990000;
+  V = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  r = 0.99;
+  delta = 0.0001;
+  p = 0.3;
+  alpha = 1e-07;
+  g = 1;
+  b = 150;
+  gamma_ = 0.001;
+
+  // Other declarations:
+  var phi, K;
+  const compartment_, r, delta, p, alpha, g, b, gamma_;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  gamma_ is "gamma";
+  Production_of_Lysogens is "Production of Lysogens";
+  Removal_of_Lysogens is "Removal of Lysogens";
+  Production_of_uninfected_cells is "Production of uninfected cells";
+  Removal_of_uninfected_cells is "Removal of uninfected cells";
+  Production_of_viruses is "Production of viruses";
+  Removal_of_viruses is "Removal of viruses";
+
+  // CV terms:
+  L instance "http://identifiers.org/ncit/C14283"
+  V instance "http://identifiers.org/ncit/C14283"
+  Production_of_Lysogens class "http://identifiers.org/sbo/SBO:0000393"
+  Removal_of_Lysogens property "http://identifiers.org/ncit/C64914"
+  Production_of_uninfected_cells class "http://identifiers.org/sbo/SBO:0000393"
+  Removal_of_uninfected_cells property "http://identifiers.org/ncit/C64914"
+  Production_of_viruses class "http://identifiers.org/sbo/SBO:0000393"
+  Removal_of_viruses property "http://identifiers.org/ncit/C64914"
+end
+
+New_Model is "Cortes2019 - Optimality of the spontaneous prophage induction rate."
+
+New_Model description "http://identifiers.org/pubmed/31525321"
+New_Model model_entity_is "http://identifiers.org/biomodels.db/MODEL1912040001",
+                          "http://identifiers.org/biomodels.db/BIOMD0000000884"
+New_Model identity "http://identifiers.org/biomodels.db/MODEL1912040001"
+New_Model propertyBearer "http://identifiers.org/ncit/C61367"
+New_Model taxon "http://identifiers.org/taxonomy/9606"

@@ -1,95 +1,141 @@
-// Created by libAntimony v2.8.0
-function function_1(ICSmax, IC, ICt, IS_)
-  ICSmax/(1 + (IC/ICt)^IS_);
+// Created by libAntimony v2.13.0
+function function_1(ICSmax, IC, ICt, IS)
+  ICSmax/(1 + (IC/ICt)^IS);
 end
 
+function_1 is "Rate Law for Intestinal Cholesterol Synthesis"
+
 function function_2(k5, HFC, HBS)
-  (k5*HFC)/HBS;
+  k5*HFC/HBS;
 end
+
+function_2 is "Rate Law for Bile Salt Synthesis"
 
 function function_3(k6, IC, IBS)
   k6*IC*IBS;
 end
 
+function_3 is "Rate Law for Cholesterol Absorption"
+
 function function_4(k7, IC, IBS)
   k7*IC*IBS;
 end
+
+function_4 is "Rate Law for Cholesterol Excretion"
 
 function function_5(k8, PFC)
   k8*PFC;
 end
 
+function_5 is "Rate Law for Intestinal Nascent HDL Synthesis"
+
 function function_6(BCRmax, BCRt, HFC, BS)
   BCRmax/(1 + (BCRt/HFC)^BS);
 end
+
+function_6 is "Rate Law for Billary Cholesterol Release"
 
 function function_7(HCSmax, HFC, HCSt, HS)
   HCSmax/(1 + (HFC/HCSt)^HS);
 end
 
+function_7 is "Rate Law for Hepatic Cholesterol Synthesis"
+
 function function_8(k9, ACAT, HFC)
   k9*ACAT*HFC;
 end
+
+function_8 is "Rate Law for Hepatic Cholesterol Storage_1"
 
 function function_9(k10, CEH, HCE)
   k10*CEH*HCE;
 end
 
+function_9 is "Rate Law for Release of Stored Cholesterol"
+
 function function_10(k11, PFC)
   k11*PFC;
 end
 
+function_10 is "Rate Law for Hepatic Nascent HDL Synthesis"
+
 function function_11(khrs, HLDLRsS, HFC)
-  (khrs*HLDLRsS)/HFC;
+  khrs*HLDLRsS/HFC;
 end
+
+function_11 is "Rate Law for Hepatic LDLR Synthesis"
 
 function function_12(k15, VLDLC, LPL)
   k15*VLDLC*LPL;
 end
 
+function_12 is "Rate Law for IDL Cholesterol Formation"
+
 function function_13(k17, IDLC, HSL)
   k17*IDLC*HSL;
 end
+
+function_13 is "Rate Law for LDL Cholesterol Formation"
 
 function function_14(k18, LDLC, HLDLRs)
   k18*LDLC*HLDLRs;
 end
 
+function_14 is "Rate Law for Receptor Dependent Hepatic Uptake"
+
 function function_15(k20, PLDLRs, LDLC)
   k20*PLDLRs*LDLC;
 end
 
+function_15 is "Rate Law for Receptor Dependent Peripheral Uptake"
+
 function function_16(kprs, PLDLRsS, PFC)
-  (kprs*PLDLRsS)/PFC;
+  kprs*PLDLRsS/PFC;
 end
+
+function_16 is "Rate Law for Peripheral LDLR Synthesis"
 
 function function_17(k23, ACAT, PFC)
   k23*ACAT*PFC;
 end
 
+function_17 is "Rate Law for Peripheral Cholesterol Storage"
+
 function function_18(k24, CEH, PCE)
   k24*CEH*PCE;
 end
+
+function_18 is "Rate Law for Release of Stored Peripheral Cholesterol"
 
 function function_19(k26, PFC, NHDL, LCAT)
   k26*PFC*NHDL*LCAT;
 end
 
+function_19 is "Rate Law for HDL Cholesterol Formation"
+
 function function_20(PCSmax, PFC, PPCt, PCSS)
   PCSmax/(1 + (PFC/PPCt)^PCSS);
 end
+
+function_20 is "Rate Law for Peripheral Cholesterol Synthesis"
 
 function function_21(k27, HDLC, CETP)
   k27*HDLC*CETP;
 end
 
+function_21 is "Rate Law for CETP Mediated Transfer To VLDL"
+
 function function_22(k28, HDLC, CETP)
   k28*HDLC*CETP;
 end
 
+function_22 is "Rate Law for CETP Mediated TransferTo LDL"
+
 function function_23(k29, HDLC, SRB1)
   k29*HDLC*SRB1;
 end
+
+function_23 is "Rate Law for Reverse Cholesterol Transport"
 
 
 model *MODEL1206010000()
@@ -228,13 +274,13 @@ model *MODEL1206010000()
   reaction_22_k18 = 0.068;
   reaction_23_k1 = 0.005;
   reaction_24_k20 = 0.00675;
-  reaction_25_k1 = 5e-006;
+  reaction_25_k1 = 5e-06;
   reaction_26_kprs = 100;
   reaction_27_k1 = 0.01;
   reaction_28_k23 = 0.017386;
   reaction_29_k24 = 0.1068;
   reaction_30_k1 = 0.0005;
-  reaction_31_k26 = 1.5e-005;
+  reaction_31_k26 = 1.5e-05;
   reaction_32_PCSmax = 500;
   reaction_32_PPCt = 80342;
   reaction_32_PCSS = 5;
@@ -321,4 +367,70 @@ model *MODEL1206010000()
   reaction_33 is "CETP Mediated Transfer To VLDL";
   reaction_34 is "CETP Mediated TransferTo LDL";
   reaction_35 is "Reverse Cholesterol Transport";
+
+  // SBO terms:
+  species_3.sboTerm = 291
+  species_12.sboTerm = 291
+  species_16.sboTerm = 291
+  species_19.sboTerm = 291
+  species_20.sboTerm = 291
+  species_26.sboTerm = 291
+  species_27.sboTerm = 291
+  species_29.sboTerm = 291
+  species_32.sboTerm = 291
+
+  // CV terms:
+  Intestine hypernym "http://identifiers.org/bto/BTO:0000648"
+  HepaticTissue hypernym "http://identifiers.org/fma/FMA:15815"
+  PeripheralTissue hypernym "http://identifiers.org/fma/FMA:9637"
+  Plasma hypernym "http://identifiers.org/bto/BTO:0000131"
+  species_1 hypernym "http://identifiers.org/chebi/CHEBI:16113"
+  species_2 hypernym "http://identifiers.org/chebi/CHEBI:16113"
+  species_4 hypernym "http://identifiers.org/chebi/CHEBI:22868"
+  species_5 hypernym "http://identifiers.org/chebi/CHEBI:22868"
+  species_6 hypernym "http://identifiers.org/chebi/CHEBI:22868"
+  species_7 hypernym "http://identifiers.org/chebi/CHEBI:16113"
+  species_8 hypernym "http://identifiers.org/chebi/CHEBI:16113"
+  species_10 hypernym "http://identifiers.org/uniprot/Q00341"
+  species_11 hypernym "http://identifiers.org/chebi/CHEBI:16113"
+  species_13 hypernym "http://identifiers.org/chebi/CHEBI:17002"
+  species_14 part "http://identifiers.org/chebi/CHEBI:17984",
+                  "http://identifiers.org/uniprot/P04180"
+  species_15 hypernym "http://identifiers.org/uniprot/Q6PIU2"
+  species_17 hypernym "http://identifiers.org/uniprot/P98155"
+  species_18 hypernym "http://identifiers.org/uniprot/P01130"
+  species_21 hypernym "http://identifiers.org/uniprot/P01130"
+  species_22 hypernym "http://identifiers.org/uniprot/P06858"
+  species_23 hypernym "http://identifiers.org/uniprot/P01130"
+  species_24 hypernym "http://identifiers.org/uniprot/Q05469"
+  species_25 hypernym "http://identifiers.org/uniprot/P01130"
+  species_28 hypernym "http://identifiers.org/chebi/CHEBI:17002"
+  species_30 hypernym "http://identifiers.org/uniprot/Q00341"
+  species_31 part "http://identifiers.org/chebi/CHEBI:61995",
+                  "http://identifiers.org/uniprot/P04180"
+  species_33 hypernym "http://identifiers.org/uniprot/P11597"
+  species_34 hypernym "http://identifiers.org/uniprot/Q8WTV0"
+  reaction_1 hypernym "http://identifiers.org/go/GO:0070508"
+  reaction_2 hypernym "http://identifiers.org/go/GO:0006695"
+  reaction_3 hypernym "http://identifiers.org/go/GO:0015721"
+  reaction_4 hypernym "http://identifiers.org/go/GO:0015721"
+  reaction_5 hypernym "http://identifiers.org/go/GO:0015721"
+  reaction_6 hypernym "http://identifiers.org/go/GO:0006699"
+  reaction_7 version "http://identifiers.org/go/GO:0030299"
+  reaction_8 hypernym "http://identifiers.org/go/GO:0033344"
+  reaction_9 hypernym "http://identifiers.org/go/GO:0042158"
+  reaction_14 hypernym "http://identifiers.org/go/GO:0042158"
+  reaction_33 hypernym "http://identifiers.org/go/GO:0030301"
+  reaction_34 hypernym "http://identifiers.org/go/GO:0030301"
+  reaction_35 hypernym "http://identifiers.org/go/GO:0043691"
 end
+
+MODEL1206010000 is "McAuley2012 - Whole-body Cholesterol Metabolism"
+
+MODEL1206010000 model_entity_is "http://identifiers.org/biomodels.db/MODEL1206010000"
+MODEL1206010000 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000434"
+MODEL1206010000 description "http://identifiers.org/pubmed/23046614"
+MODEL1206010000 hypernym "http://identifiers.org/go/GO:0007571",
+                         "http://identifiers.org/go/GO:0008203"
+MODEL1206010000 taxon "http://identifiers.org/taxonomy/9606"
+MODEL1206010000 property "http://identifiers.org/doid/DOID:14502"

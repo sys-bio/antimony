@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *MODEL1501160000()
 
   // Compartments and Species:
@@ -6,11 +6,11 @@ model *MODEL1501160000()
   species $B in Brain, $A in Brain;
 
   // Assignment Rules:
-  B := A0 - (k1/k2 + A0)/(1 + k1/(k2*A0)*exp((k1 + k2*A0)*time));
+  B := A0 - (k1/k2 + A0)/(1 + (k1/(k2*A0))*exp((k1 + k2*A0)*time));
 
   // Reactions:
   Nucleation: $A => $B; Brain*k1*A;
-  Growth: $A + $B => 2$B; Brain*k2*A*B;
+  Growth: $A + $B => 2 $B; Brain*k2*A*B;
 
   // Species initializations:
   A = 1;
@@ -20,7 +20,7 @@ model *MODEL1501160000()
 
   // Variable initializations:
   A0 = 3.55;
-  k1 = 8e-006;
+  k1 = 8e-06;
   k2 = 0.034;
 
   // Other declarations:
@@ -33,4 +33,21 @@ model *MODEL1501160000()
 
   // Display Names:
   time_unit is "time";
+
+  // CV terms:
+  Brain identity "http://identifiers.org/bto/BTO:0000142"
+  B identity "http://identifiers.org/uniprot/P37840"
+  A identity "http://identifiers.org/uniprot/P37840"
 end
+
+MODEL1501160000 is "Morris2008 - Fitting protein aggregation data via F-W 2-step mechanism"
+
+MODEL1501160000 model_entity_is "http://identifiers.org/biomodels.db/MODEL1501160001"
+MODEL1501160000 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000566"
+MODEL1501160000 description "http://identifiers.org/pubmed/19101068"
+MODEL1501160000 origin "http://identifiers.org/biomodels.db/BIOMD0000000567",
+                       "http://identifiers.org/pubmed/11152691",
+                       "http://identifiers.org/doi/10.1021/ja9705102"
+MODEL1501160000 taxon "http://identifiers.org/taxonomy/9606"
+MODEL1501160000 hypernym "http://identifiers.org/go/GO:1990000"
+MODEL1501160000 property "http://identifiers.org/doid/DOID:14330"

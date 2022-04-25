@@ -1,0 +1,256 @@
+// Created by libAntimony v2.13.0
+function Function_for_PI3K_activation_deactivation_1(PI3K, aIRS, aPI3K, aRTK, k2f, k2fa, k2r)
+  (k2f*aIRS + k2fa*aRTK)*PI3K - k2r*aPI3K;
+end
+
+Function_for_PI3K_activation_deactivation_1 is "Function for PI3K activation/deactivation_1"
+
+function Function_for_mass_action_with_modifier_1(Akt, aAkt, aPI3K, k3f, k3r)
+  k3f*Akt*aPI3K - k3r*aAkt;
+end
+
+Function_for_mass_action_with_modifier_1 is "Function for mass action with modifier_1"
+
+function Function_for_mTOC1_acivation_deactivation_1(aAkt, amTORC1, k4f, k4r, mTORC1)
+  k4f*mTORC1*aAkt - k4r*amTORC1;
+end
+
+Function_for_mTOC1_acivation_deactivation_1 is "Function for mTOC1 acivation/deactivation_1"
+
+function Function_for_S6K_activation_deactivation_1(S6K, aS6K, amTORC1, k5f, k5r)
+  k5f*S6K*amTORC1 - k5r*aS6K;
+end
+
+Function_for_S6K_activation_deactivation_1 is "Function for S6K activation/deactivation_1"
+
+function Function_for_mass_action_with_modifier_2(IRS, aS6K, iIRS, k6f, k6r)
+  k6f*IRS*aS6K - k6r*iIRS;
+end
+
+Function_for_mass_action_with_modifier_2 is "Function for mass action with modifier_2"
+
+function Function_for_RTK_activation_deactivation_1(FOXO, RTK, aRTK, k7f, k7fa, k7r)
+  (k7f + k7fa*FOXO)*RTK - k7r*aRTK;
+end
+
+Function_for_RTK_activation_deactivation_1 is "Function for RTK activation/deactivation_1"
+
+function Function_for_mass_action_with_modifier_3(RasGDP, RasGTP, aRTK, k8f, k8r)
+  k8f*RasGDP*aRTK - k8r*RasGTP;
+end
+
+Function_for_mass_action_with_modifier_3 is "Function for mass action with modifier_3"
+
+function Function_for_mass_action_with_modifier_4(Raf, RasGTP, aRaf, k9f, k9r)
+  k9f*Raf*RasGTP - k9r*aRaf;
+end
+
+Function_for_mass_action_with_modifier_4 is "Function for mass action with modifier_4"
+
+function Function_for_mass_action_with_modifier_5(MEK, aMEK, aRaf, k10f, k10r)
+  k10f*MEK*aRaf - k10r*aMEK;
+end
+
+Function_for_mass_action_with_modifier_5 is "Function for mass action with modifier_5"
+
+function Function_for_mass_action_with_modifier_6(ERK, aERK, aMEK, k11f, k11r)
+  k11f*ERK*aMEK - k11r*aERK;
+end
+
+Function_for_mass_action_with_modifier_6 is "Function for mass action with modifier_6"
+
+function Function_for_mass_action_with_modifier_7(Raf, aERK, iRaf, k12f, k12r)
+  k12f*Raf*aERK - k12r*iRaf;
+end
+
+Function_for_mass_action_with_modifier_7 is "Function for mass action with modifier_7"
+
+function Function_for_mass_action_with_modifier_8(RTK, aERK, iRTK, k13f, k13r)
+  k13f*RTK*aERK - k13r*iRTK;
+end
+
+Function_for_mass_action_with_modifier_8 is "Function for mass action with modifier_8"
+
+function Function_for_mass_action_with_modifier_9(FOXO, aAkt, iFOXO, k14f, k14r)
+  k14f*FOXO*aAkt - k14r*iFOXO;
+end
+
+Function_for_mass_action_with_modifier_9 is "Function for mass action with modifier_9"
+
+
+model *Nguyen2016___Feedback_regulation_in_cell_signalling__Lessons_for_cancer_therapeutics()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species IRS in compartment_, aIRS in compartment_, iIRS in compartment_;
+  species PI3K in compartment_, aPI3K in compartment_, Akt in compartment_;
+  species aAkt in compartment_, mTORC1 in compartment_, amTORC1 in compartment_;
+  species S6K in compartment_, aS6K in compartment_, FOXO in compartment_;
+  species iFOXO in compartment_, RTK in compartment_, aRTK in compartment_;
+  species iRTK in compartment_, RasGDP in compartment_, RasGTP in compartment_;
+  species Raf in compartment_, aRaf in compartment_, iRaf in compartment_;
+  species MEK in compartment_, aMEK in compartment_, ERK in compartment_;
+  species aERK in compartment_, AktI in compartment_, iAkt in compartment_;
+  species MEKI in compartment_, iMEK in compartment_;
+
+  // Reactions:
+  IRS__activation_deactivation: IRS -> aIRS; compartment_*(k1f*IRS - k1r*aIRS);
+  PI3K_activation_deactivation: PI3K -> aPI3K; compartment_*Function_for_PI3K_activation_deactivation_1(PI3K, aIRS, aPI3K, aRTK, k2f, k2fa, k2r);
+  Akt_activation_deactivation: Akt -> aAkt; compartment_*Function_for_mass_action_with_modifier_1(Akt, aAkt, aPI3K, k3f, k3r);
+  mTOC1_acivation_deactivation: mTORC1 -> amTORC1; compartment_*Function_for_mTOC1_acivation_deactivation_1(aAkt, amTORC1, k4f, k4r, mTORC1);
+  S6K_activation_deactivation: S6K -> aS6K; compartment_*Function_for_S6K_activation_deactivation_1(S6K, aS6K, amTORC1, k5f, k5r);
+  IRS_inhibition: IRS => iIRS; compartment_*Function_for_mass_action_with_modifier_2(IRS, aS6K, iIRS, k6f, k6r);
+  RTK_activation_deactivation: RTK -> aRTK; compartment_*Function_for_RTK_activation_deactivation_1(FOXO, RTK, aRTK, k7f, k7fa, k7r);
+  RasGDP__activation_deactivation: RasGDP -> RasGTP; compartment_*Function_for_mass_action_with_modifier_3(RasGDP, RasGTP, aRTK, k8f, k8r);
+  Raf_activation_deactivation: Raf -> aRaf; compartment_*Function_for_mass_action_with_modifier_4(Raf, RasGTP, aRaf, k9f, k9r);
+  MEK_activation_deactivation: MEK -> aMEK; compartment_*Function_for_mass_action_with_modifier_5(MEK, aMEK, aRaf, k10f, k10r);
+  ERK_activation_deactivation: ERK -> aERK; compartment_*Function_for_mass_action_with_modifier_6(ERK, aERK, aMEK, k11f, k11r);
+  Raf_inhibition: Raf -> iRaf; compartment_*Function_for_mass_action_with_modifier_7(Raf, aERK, iRaf, k12f, k12r);
+  RTK_inhibition: RTK -> iRTK; compartment_*Function_for_mass_action_with_modifier_8(RTK, aERK, iRTK, k13f, k13r);
+  FOXO_inhibition: FOXO -> iFOXO; compartment_*Function_for_mass_action_with_modifier_9(FOXO, aAkt, iFOXO, k14f, k14r);
+  Akt_inhibition: Akt + AktI -> iAkt; compartment_*(k15f*Akt*AktI - k15r*iAkt);
+  MEK_inhibition: MEK + MEKI -> iMEK; compartment_*(k16f*MEK*MEKI - k16r*iMEK);
+
+  // Species initializations:
+  IRS = 100;
+  aIRS = 0;
+  iIRS = 0;
+  PI3K = 100;
+  aPI3K = 0;
+  Akt = 100;
+  aAkt = 0;
+  mTORC1 = 299.999999999999;
+  amTORC1 = 0;
+  S6K = 299.999999999999;
+  aS6K = 0;
+  FOXO = 200;
+  iFOXO = 0;
+  RTK = 200;
+  aRTK = 0;
+  iRTK = 0;
+  RasGDP = 100;
+  RasGTP = 0;
+  Raf = 100;
+  aRaf = 0;
+  iRaf = 0;
+  MEK = 299.999999999999;
+  aMEK = 0;
+  ERK = 899.999999999996;
+  aERK = 0;
+  AktI = 0;
+  iAkt = 0;
+  MEKI = 0;
+  iMEK = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  k1f = 0.01;
+  k1r = 0.01;
+  k2f = 0.001;
+  k2fa = 0.001;
+  k2r = 0.01;
+  k3f = 0.001;
+  k3r = 0.01;
+  k4f = 0.001;
+  k4r = 0.01;
+  k5f = 0.001;
+  k5r = 0.01;
+  k6f = 0.1;
+  k6r = 0.001;
+  k7f = 0.01;
+  k7fa = 0.01;
+  k7r = 0.01;
+  k8f = 0.001;
+  k8r = 0.01;
+  k9f = 0.001;
+  k9r = 0.01;
+  k10f = 0.001;
+  k10r = 0.01;
+  k11f = 0.001;
+  k11r = 0.01;
+  k12f = 0.01;
+  k12r = 0.001;
+  k13f = 0.1;
+  k13r = 0.001;
+  k14f = 0.1;
+  k14r = 0.001;
+  k15f = 0.01;
+  k15r = 0.001;
+  k16f = 0.01;
+  k16r = 0.001;
+
+  // Other declarations:
+  const compartment_, k1f, k1r, k2f, k2fa, k2r, k3f, k3r, k4f, k4r, k5f, k5r;
+  const k6f, k6r, k7f, k7fa, k7r, k8f, k8r, k9f, k9r, k10f, k10r, k11f, k11r;
+  const k12f, k12r, k13f, k13r, k14f, k14r, k15f, k15r, k16f, k16r;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  IRS__activation_deactivation is "IRS  activation/deactivation";
+  PI3K_activation_deactivation is "PI3K activation/deactivation";
+  Akt_activation_deactivation is "Akt activation/deactivation";
+  mTOC1_acivation_deactivation is "mTOC1 acivation/deactivation";
+  S6K_activation_deactivation is "S6K activation/deactivation";
+  IRS_inhibition is "IRS inhibition";
+  RTK_activation_deactivation is "RTK activation/deactivation";
+  RasGDP__activation_deactivation is "RasGDP  activation/deactivation";
+  Raf_activation_deactivation is "Raf activation/deactivation";
+  MEK_activation_deactivation is "MEK activation/deactivation";
+  ERK_activation_deactivation is "ERK activation/deactivation";
+  Raf_inhibition is "Raf inhibition";
+  RTK_inhibition is "RTK inhibition";
+  FOXO_inhibition is "FOXO inhibition";
+  Akt_inhibition is "Akt inhibition";
+  MEK_inhibition is "MEK inhibition";
+
+  // CV terms:
+  IRS hypernym "http://identifiers.org/uniprot/P35568"
+  aIRS hypernym "http://identifiers.org/uniprot/P35568"
+  iIRS hypernym "urn:miriam:sbo:SBO%3A0000015"
+  PI3K hypernym "urn:miriam:uniprot:C17270"
+  aPI3K hypernym "http://identifiers.org/ncit/C17270"
+  Akt hypernym "http://identifiers.org/uniprot/P31749"
+  aAkt hypernym "http://identifiers.org/uniprot/P31749"
+  mTORC1 hypernym "http://identifiers.org/uniprot/P42345"
+  amTORC1 encoder "http://identifiers.org/uniprot/P42345"
+  S6K hypernym "http://identifiers.org/uniprot/P23443"
+  aS6K hypernym "http://identifiers.org/uniprot/P23443"
+  FOXO hypernym "http://identifiers.org/uniprot/Q12778"
+  iFOXO hypernym "http://identifiers.org/uniprot/Q12778"
+  RTK hypernym "http://identifiers.org/uniprot/Q08345"
+  aRTK hypernym "http://identifiers.org/uniprot/Q08345"
+  iRTK hypernym "http://identifiers.org/uniprot/Q08345"
+  RasGDP hypernym "http://identifiers.org/uniprot/P01112"
+  RasGTP hypernym "http://identifiers.org/uniprot/P01112"
+  Raf hypernym "http://identifiers.org/uniprot/P04049"
+  aRaf hypernym "http://identifiers.org/uniprot/P04049"
+  iRaf hypernym "http://identifiers.org/uniprot/P04049"
+  MEK hypernym "http://identifiers.org/uniprot/Q02750"
+  aMEK hypernym "http://identifiers.org/uniprot/Q02750"
+  ERK hypernym "http://identifiers.org/uniprot/P27361"
+  aERK hypernym "http://identifiers.org/uniprot/P27361"
+  AktI property "http://identifiers.org/chebi/CHEBI:35222"
+  iAkt hypernym "http://identifiers.org/uniprot/P31749"
+  MEKI property "http://identifiers.org/chebi/CHEBI:35222"
+  iMEK hypernym "http://identifiers.org/uniprot/Q02750"
+end
+
+Nguyen2016___Feedback_regulation_in_cell_signalling__Lessons_for_cancer_therapeutics is "Nguyen2016 - Feedback regulation in cell signalling: Lessons for cancer therapeutics"
+
+Nguyen2016___Feedback_regulation_in_cell_signalling__Lessons_for_cancer_therapeutics model_entity_is "http://identifiers.org/biomodels.db/MODEL1708250003"
+Nguyen2016___Feedback_regulation_in_cell_signalling__Lessons_for_cancer_therapeutics model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000651"
+Nguyen2016___Feedback_regulation_in_cell_signalling__Lessons_for_cancer_therapeutics description "http://identifiers.org/pubmed/26481970"
+Nguyen2016___Feedback_regulation_in_cell_signalling__Lessons_for_cancer_therapeutics model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000651",
+                                                                                                     "http://identifiers.org/biomodels.db/MODEL1708250003"
+Nguyen2016___Feedback_regulation_in_cell_signalling__Lessons_for_cancer_therapeutics description "http://identifiers.org/pubmed/26481970"
+Nguyen2016___Feedback_regulation_in_cell_signalling__Lessons_for_cancer_therapeutics taxon "http://identifiers.org/taxonomy/9606"
+Nguyen2016___Feedback_regulation_in_cell_signalling__Lessons_for_cancer_therapeutics property "http://identifiers.org/mamo/MAMO_0000046"
+Nguyen2016___Feedback_regulation_in_cell_signalling__Lessons_for_cancer_therapeutics property "http://identifiers.org/ncit/C16212"
+Nguyen2016___Feedback_regulation_in_cell_signalling__Lessons_for_cancer_therapeutics part "http://identifiers.org/pw/PW:0000102"
+Nguyen2016___Feedback_regulation_in_cell_signalling__Lessons_for_cancer_therapeutics part "http://identifiers.org/pw/PW:0000180"

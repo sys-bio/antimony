@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *MODEL1306190001()
 
   // Compartments and Species:
@@ -15,10 +15,10 @@ model *MODEL1306190001()
   // Reactions:
   R0X: N0 => ; d0*N0;
   R01: N0 => N0 + N1; p01*f0;
-  R00: N0 => 2N0; p00*f0;
+  R00: N0 => 2 N0; p00*f0;
   R1X: N1 => ; d1*N1;
   R12: N1 => N1 + N2; p12*f1;
-  R11: N1 => 2N1; p11*f1;
+  R11: N1 => 2 N1; p11*f1;
   R2X: N2 => ; d2*N2;
 
   // Species initializations:
@@ -81,4 +81,22 @@ model *MODEL1306190001()
   R12 is "N1 differentiation";
   R11 is "N1 renewal";
   R2X is "N2 death";
+
+  // CV terms:
+  compartment_ hypernym "http://identifiers.org/bto/BTO:0000305"
+  N0 hypernym "http://identifiers.org/cl/CL:0000034"
+  N1 hypernym "http://identifiers.org/cl/CL:0000034"
+  N2 hypernym "http://identifiers.org/cl/CL:0000034"
 end
+
+MODEL1306190001 is "Smallbone2013 - Colon Crypt cycle - Version 1"
+
+MODEL1306190001 model_entity_is "http://identifiers.org/biomodels.db/MODEL1306190001"
+MODEL1306190001 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000519"
+MODEL1306190001 description "http://identifiers.org/pubmed/24354351"
+MODEL1306190001 model_entity_is "http://identifiers.org/biomodels.db/MODEL1306190001"
+MODEL1306190001 origin "http://identifiers.org/biomodels.db/BIOMD0000000520"
+MODEL1306190001 hypernym "http://identifiers.org/go/GO:0048863"
+MODEL1306190001 container "http://identifiers.org/bto/BTO:0000305"
+MODEL1306190001 taxon "http://identifiers.org/taxonomy/39107"
+MODEL1306190001 property "http://identifiers.org/mamo/MAMO_0000046"

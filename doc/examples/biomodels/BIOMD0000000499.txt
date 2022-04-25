@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Model_1()
 
   // Compartments and Species:
@@ -24,7 +24,7 @@ model *Model_1()
   species_9 := species_7*(parameter_21/(1 + parameter_21));
   species_10 := (parameter_13 + 1)*(parameter_14 - species_3) - parameter_13*species_6;
   species_25 := species_7*(1/(1 + parameter_21));
-  parameter_21 := parameter_16/(1 - parameter_16)*((parameter_4 + 1)/parameter_4);
+  parameter_21 := (parameter_16/(1 - parameter_16))*((parameter_4 + 1)/parameter_4);
   species_12 := (parameter_13 + 1)*parameter_15 - parameter_13*species_19;
   species_14 := (parameter_13 + 1)*species_3 - parameter_13*species_8;
   parameter_19 := parameter_3;
@@ -33,17 +33,17 @@ model *Model_1()
   parameter_20 := (species_10 + species_14)/Metabolite_9;
 
   // Rate Rules:
-  species_1' = 1/(1 + parameter_13)*(parameter_9*(parameter_13*species_20^2 + species_15^2) - parameter_8*(parameter_13*species_13 + species_11));
+  species_1' = (1/(1 + parameter_13))*(parameter_9*(parameter_13*species_20^2 + species_15^2) - parameter_8*(parameter_13*species_13 + species_11));
   species_13' = parameter_9*species_20^2 - (parameter_8 + parameter_3*parameter_11)*species_13;
-  species_2' = 1/(parameter_13 + 1)*(parameter_9*(parameter_13*species_18*species_20 + species_15*species_21) - parameter_8*(parameter_13*species_17 + species_16));
+  species_2' = (1/(parameter_13 + 1))*(parameter_9*(parameter_13*species_18*species_20 + species_15*species_21) - parameter_8*(parameter_13*species_17 + species_16));
   species_17' = parameter_9*species_18*species_20 - (parameter_8 + parameter_3*parameter_11)*species_17;
-  species_3' = 1/(1 + parameter_13)*(parameter_13*parameter_6*species_26*(parameter_17/(parameter_17 + species_22))*species_6 - parameter_7*species_15);
+  species_3' = (1/(1 + parameter_13))*(parameter_13*parameter_6*species_26*(parameter_17/(parameter_17 + species_22))*species_6 - parameter_7*species_15);
   species_26' = parameter_1*(parameter_22*species_24 - parameter_12*(1 - parameter_28)*species_26);
   species_6' = parameter_2*species_10 - (parameter_3 + parameter_6*species_26*(parameter_17/(parameter_17 + species_22)))*species_6;
-  species_4' = parameter_1*((parameter_27 + parameter_26*species_16) - (parameter_18*species_9 + parameter_25)*species_4);
+  species_4' = parameter_1*(parameter_27 + parameter_26*species_16 - (parameter_18*species_9 + parameter_25)*species_4);
   species_5' = parameter_1*((1 - parameter_5)*(1 - parameter_16) - (parameter_4 + (1 - parameter_28))*species_5);
   species_7' = parameter_1*(parameter_4*species_5 - (1 - parameter_28)*species_25 - parameter_18*species_4*species_9);
-  species_8' = (parameter_6*species_26*(parameter_17/(parameter_17 + species_22))*species_6 + parameter_2*species_15) - parameter_3*(species_20 + parameter_11*(species_17 + 2*species_13));
+  species_8' = parameter_6*species_26*(parameter_17/(parameter_17 + species_22))*species_6 + parameter_2*species_15 - parameter_3*(species_20 + parameter_11*(species_17 + 2*species_13));
   species_19' = parameter_19*species_21 - parameter_3*(species_18 + parameter_11*species_17);
   species_24' = parameter_1*(parameter_18*species_4*species_9 - (parameter_22 + parameter_12*(1 - parameter_28))*species_24);
 
@@ -55,7 +55,7 @@ model *Model_1()
   species_3 = 0;
   species_26 = 0;
   species_22 = 0;
-  species_6 = (parameter_14*parameter_2*(1 + parameter_13))/(parameter_3 + parameter_13*parameter_2);
+  species_6 = parameter_14*parameter_2*(1 + parameter_13)/(parameter_3 + parameter_13*parameter_2);
   species_4 = parameter_23*parameter_24;
   species_5 = (1 - parameter_16)/(parameter_4 + 1);
   species_7 = (parameter_16 + parameter_4)/(1 + parameter_4);
@@ -163,4 +163,106 @@ model *Model_1()
   parameter_10 is "KDiss";
   parameter_20 is "Total Nuc S2 for fit";
   Metabolite_9 is "Initial for S2n";
+
+  // SBO terms:
+  species_1.sboTerm = 297
+  parameter_13.sboTerm = 360
+  parameter_9.sboTerm = 337
+  parameter_8.sboTerm = 282
+  species_13.sboTerm = 297
+  species_11.sboTerm = 297
+  species_2.sboTerm = 297
+  species_17.sboTerm = 297
+  species_16.sboTerm = 297
+  parameter_6.sboTerm = 9
+  parameter_17.sboTerm = 282
+  species_22.sboTerm = 390
+  parameter_7.sboTerm = 9
+  parameter_23.sboTerm = 470
+  parameter_24.sboTerm = 470
+  parameter_1.sboTerm = 9
+  parameter_27.sboTerm = 9
+  parameter_26.sboTerm = 9
+  parameter_18.sboTerm = 9
+  parameter_25.sboTerm = 9
+  parameter_16.sboTerm = 540
+  parameter_4.sboTerm = 9
+  parameter_5.sboTerm = 390
+  parameter_28.sboTerm = 9
+  parameter_14.sboTerm = 361
+  parameter_2.sboTerm = 9
+  parameter_3.sboTerm = 9
+  parameter_11.sboTerm = 380
+  parameter_21.sboTerm = 281
+  parameter_15.sboTerm = 361
+  parameter_19.sboTerm = 9
+  parameter_22.sboTerm = 9
+  parameter_12.sboTerm = 360
+  parameter_10.sboTerm = 282
+  parameter_20.sboTerm = 360
+  Metabolite_9.sboTerm = 360
+
+  // CV terms:
+  compartment_1 hypernym "http://identifiers.org/go/GO:0005623"
+  species_1 part "http://identifiers.org/uniprot/Q15796"
+  species_20 hypernym "http://identifiers.org/uniprot/Q15796"
+  species_20 container "http://identifiers.org/go/GO:0005737"
+  species_15 hypernym "http://identifiers.org/uniprot/Q15796"
+  species_15 container "http://identifiers.org/go/GO:0005634"
+  species_13 part "http://identifiers.org/uniprot/Q15796"
+  species_13 container "http://identifiers.org/go/GO:0005737"
+  species_11 part "http://identifiers.org/uniprot/Q15796"
+  species_11 container "http://identifiers.org/go/GO:0005634"
+  species_2 part "http://identifiers.org/uniprot/Q15796",
+                 "http://identifiers.org/uniprot/Q13485"
+  species_18 hypernym "http://identifiers.org/uniprot/Q13485"
+  species_18 container "http://identifiers.org/go/GO:0005737"
+  species_21 hypernym "http://identifiers.org/uniprot/Q13485"
+  species_21 container "http://identifiers.org/go/GO:0005634"
+  species_17 part "http://identifiers.org/uniprot/Q15796",
+                  "http://identifiers.org/uniprot/Q13485"
+  species_17 container "http://identifiers.org/go/GO:0005737"
+  species_16 part "http://identifiers.org/uniprot/Q15796",
+                  "http://identifiers.org/uniprot/Q13485"
+  species_16 container "http://identifiers.org/go/GO:0005634"
+  species_3 part "http://identifiers.org/uniprot/Q15796",
+                 "http://identifiers.org/kegg.compound/C00562"
+  species_26 hypernym "http://identifiers.org/uniprot/P36897"
+  species_22 hypernym "http://identifiers.org/chebi/CHEBI:35222"
+  species_6 hypernym "http://identifiers.org/uniprot/Q15796"
+  species_6 container "http://identifiers.org/go/GO:0005737"
+  species_4 hypernym "http://identifiers.org/uniprot/P01137"
+  species_9 hypernym "http://identifiers.org/uniprot/P36897"
+  species_9 container "http://identifiers.org/go/GO:0016020"
+  species_5 hypernym "http://identifiers.org/uniprot/P36897"
+  species_5 container "http://identifiers.org/go/GO:0005622"
+  species_10 hypernym "http://identifiers.org/uniprot/Q15796"
+  species_10 container "http://identifiers.org/go/GO:0005634"
+  species_7 hypernym "http://identifiers.org/uniprot/P36897"
+  species_7 container "http://identifiers.org/go/GO:0005622"
+  species_25 hypernym "http://identifiers.org/uniprot/P36897"
+  species_8 part "http://identifiers.org/uniprot/Q15796",
+                 "http://identifiers.org/kegg.compound/C00562"
+  species_8 container "http://identifiers.org/go/GO:0005737"
+  species_12 hypernym "http://identifiers.org/uniprot/Q13485"
+  species_12 container "http://identifiers.org/go/GO:0005634"
+  species_19 part "http://identifiers.org/uniprot/Q13485"
+  species_19 container "http://identifiers.org/go/GO:0005737"
+  species_14 part "http://identifiers.org/uniprot/Q15796",
+                  "http://identifiers.org/kegg.compound/C00562"
+  species_14 container "http://identifiers.org/go/GO:0005634"
+  species_23 hypernym "http://identifiers.org/uniprot/P36897"
+  species_24 hypernym "http://identifiers.org/uniprot/P36897"
 end
+
+Model_1 is "Vizan2013 - TGF pathway long term signaling"
+
+Model_1 model_entity_is "http://identifiers.org/biomodels.db/MODEL1203120000"
+Model_1 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000499"
+Model_1 description "http://identifiers.org/pubmed/24327760"
+Model_1 model_entity_is "http://identifiers.org/biomodels.db/MODEL1203120000"
+Model_1 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000499"
+Model_1 origin "http://identifiers.org/biomodels.db/BIOMD0000000173"
+Model_1 taxon "http://identifiers.org/taxonomy/9606"
+Model_1 hypernym "http://identifiers.org/go/GO:0007179",
+                 "http://identifiers.org/go/GO:0060395"

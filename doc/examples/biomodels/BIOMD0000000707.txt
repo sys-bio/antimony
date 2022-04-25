@@ -1,0 +1,130 @@
+// Created by libAntimony v2.13.0
+function Function_for_the_infection_of_normal_cell(beta, x, v)
+  beta*x*v;
+end
+
+Function_for_the_infection_of_normal_cell is "Function for the infection of normal cell"
+
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function Funtion_for_the_infection_of_single_infected_cel(alpha, w, y)
+  alpha*w*y;
+end
+
+Funtion_for_the_infection_of_single_infected_cel is "Funtion for the infection of single infected cel"
+
+function Function_for_the_release_of_the_pathogen(k, y)
+  k*y;
+end
+
+Function_for_the_release_of_the_pathogen is "Function for the release of the pathogen"
+
+function Function_for_the_release_of_recombinant_virus(c, z)
+  c*z;
+end
+
+Function_for_the_release_of_recombinant_virus is "Function for the release of recombinant virus"
+
+
+model *New_Model()
+
+  // Compartments and Species:
+  compartment Plasma;
+  species Normal_Th_cells in Plasma, Pathogen_Virus in Plasma, Single_Infected_Th_Cells in Plasma;
+  species Recombinant_Virus in Plasma, Double_Infected_Th_Cells in Plasma;
+
+  // Reactions:
+  Production_of_Normal_cells:  => Normal_Th_cells; Plasma*Constant_flux__irreversible(lamda);
+  Degradation_of_Normal_cells: Normal_Th_cells => ; Plasma*d*Normal_Th_cells;
+  Infection_of_Normal_cells_with_Pathogen: Normal_Th_cells => Single_Infected_Th_Cells; Plasma*Function_for_the_infection_of_normal_cell(beta, Normal_Th_cells, Pathogen_Virus);
+  Degradation_of_Single_Infected_Cells: Single_Infected_Th_Cells => ; Plasma*a*Single_Infected_Th_Cells;
+  Infection_of_Single_Infeced_Cells_with_Recombinant_Virus: Single_Infected_Th_Cells => Double_Infected_Th_Cells; Plasma*Funtion_for_the_infection_of_single_infected_cel(alpha, Recombinant_Virus, Single_Infected_Th_Cells);
+  Release_of_Pathogen:  => Pathogen_Virus; Plasma*Function_for_the_release_of_the_pathogen(k, Single_Infected_Th_Cells);
+  Degradation_of_Double_Infected_Cells: Double_Infected_Th_Cells => ; Plasma*b*Double_Infected_Th_Cells;
+  Release_of_Recombinant_Virus:  => Recombinant_Virus; Plasma*Function_for_the_release_of_recombinant_virus(c, Double_Infected_Th_Cells);
+  Degradation_of_Pathogen_Virus: Pathogen_Virus => ; Plasma*u*Pathogen_Virus;
+  Degradation_of_Recombinant_Virus: Recombinant_Virus => ; Plasma*q*Recombinant_Virus;
+
+  // Species initializations:
+  Normal_Th_cells = 3;
+  Pathogen_Virus = 149;
+  Single_Infected_Th_Cells = 6;
+  Recombinant_Virus = 1;
+  Double_Infected_Th_Cells = 0;
+
+  // Compartment initializations:
+  Plasma = 1;
+
+  // Variable initializations:
+  d = 0.01;
+  lamda = 2;
+  beta = 0.004;
+  a = 0.33;
+  alpha = 0.004;
+  b = 2;
+  k = 50;
+  u = 2;
+  c = 2000;
+  q = 2;
+
+  // Other declarations:
+  const Plasma, d, lamda, beta, a, alpha, b, k, u, c, q;
+
+  // Unit definitions:
+  unit time_unit = 86400 second;
+
+  // Display Names:
+  time_unit is "time";
+  Normal_Th_cells is "Normal Th cells";
+  Pathogen_Virus is "Pathogen Virus";
+  Single_Infected_Th_Cells is "Single Infected Th Cells";
+  Recombinant_Virus is "Recombinant Virus";
+  Double_Infected_Th_Cells is "Double Infected Th Cells";
+  Production_of_Normal_cells is "Production of Normal cells";
+  Degradation_of_Normal_cells is "Degradation of Normal cells";
+  Infection_of_Normal_cells_with_Pathogen is "Infection of Normal cells with Pathogen";
+  Degradation_of_Single_Infected_Cells is "Degradation of Single Infected Cells";
+  Infection_of_Single_Infeced_Cells_with_Recombinant_Virus is "Infection of Single Infeced Cells with Recombinant Virus";
+  Release_of_Pathogen is "Release of Pathogen";
+  Degradation_of_Double_Infected_Cells is "Degradation of Double Infected Cells";
+  Release_of_Recombinant_Virus is "Release of Recombinant Virus";
+  Degradation_of_Pathogen_Virus is "Degradation of Pathogen Virus";
+  Degradation_of_Recombinant_Virus is "Degradation of Recombinant Virus";
+
+  // CV terms:
+  Plasma hypernym "http://identifiers.org/ncit/C13356"
+  Normal_Th_cells identity "http://identifiers.org/bto/BTO:0002417"
+  Pathogen_Virus hypernym "http://identifiers.org/taxonomy/11676"
+  Single_Infected_Th_Cells hypernym "http://identifiers.org/bto/BTO:0002417"
+  Single_Infected_Th_Cells hypernym "http://identifiers.org/bto/BTO:0000152"
+  Recombinant_Virus hypernym "http://identifiers.org/ncit/C97158"
+  Recombinant_Virus hypernym "http://identifiers.org/taxonomy/10239"
+  Double_Infected_Th_Cells hypernym "http://identifiers.org/bto/BTO:0000152"
+  Double_Infected_Th_Cells hypernym "http://identifiers.org/bto/BTO:0002417"
+  Production_of_Normal_cells hypernym "http://identifiers.org/ncit/C61408"
+  Degradation_of_Normal_cells hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Infection_of_Normal_cells_with_Pathogen hypernym "http://identifiers.org/ncit/C128320"
+  Degradation_of_Single_Infected_Cells hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Infection_of_Single_Infeced_Cells_with_Recombinant_Virus hypernym "http://identifiers.org/ncit/C128320"
+  Release_of_Pathogen hypernym "http://identifiers.org/go/GO:0019076"
+  Degradation_of_Double_Infected_Cells hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Release_of_Recombinant_Virus hypernym "http://identifiers.org/go/GO:0019076"
+  Degradation_of_Pathogen_Virus hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Degradation_of_Recombinant_Virus hypernym "http://identifiers.org/sbo/SBO:0000179"
+end
+
+New_Model is "Revilla2003 - Controlling HIV infection using recombinant viruses"
+
+New_Model model_entity_is "http://identifiers.org/biomodels.db/MODEL1006230047",
+                          "http://identifiers.org/biomodels.db/BIOMD0000000707"
+New_Model container "http://identifiers.org/bto/BTO:0002417"
+New_Model property "http://identifiers.org/efo/0000764"
+New_Model property "http://identifiers.org/efo/0000727"
+New_Model property "http://identifiers.org/mamo/MAMO_0000046"
+New_Model taxon "http://identifiers.org/taxonomy/9606"
+New_Model taxon "http://identifiers.org/taxonomy/11676"
+New_Model description "http://identifiers.org/pubmed/12941536"

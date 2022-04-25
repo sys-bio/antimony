@@ -1,0 +1,126 @@
+// Created by libAntimony v2.13.0
+model *Evans2005___Compartmental_model_for_antineoplastic_drug_topotecan_in_breast_cancer_cells()
+
+  // Compartments and Species:
+  compartment breast_cancer_cell;
+  species $L_m in breast_cancer_cell, $H_m in breast_cancer_cell, $L_e in breast_cancer_cell;
+  species $H_e in breast_cancer_cell, $L_c in breast_cancer_cell, $H_c in breast_cancer_cell;
+  species $L_n in breast_cancer_cell;
+
+  // Assignment Rules:
+  v1 := alpha*v0/(1 + v0);
+  v2 := V_n/V_c;
+  V_e := 2000000000000*v0/(1 + v0);
+  V_m := 2000000000000 - V_e;
+
+  // Rate Rules:
+  L_m' = -(k_om + k_mi)*L_m + k_cm*H_m + k_mo*v0*L_e;
+  H_m' = (k_om*L_m - (k_cm + k_mi)*H_m) + k_mo*v0*H_e;
+  L_e' = ((k_mi/v0)*L_m - (k_mo + k_om + k_i)*L_e) + k_cm*H_e + (k_e/v1)*L_c;
+  H_e' = (k_mi/v0)*H_m + k_om*L_e - (k_cm + k_mo)*H_e;
+  L_c' = (k_i*v1*L_e - (k_e + k_oc)*L_c) + k_cc*H_c + k_dl*v2*L_n - k_b*(B_T - L_n)*L_c;
+  H_c' = (k_oc*L_c - k_cc*H_c) + k_dh*v2*L_n;
+  L_n' = (k_b/v2)*(B_T - L_n)*L_c - (k_dl + k_dh)*L_n;
+
+  // Species initializations:
+  L_m = (1 + v0)*D;
+  H_m = 0;
+  L_e = 0;
+  H_e = 0;
+  L_c = 0;
+  H_c = 0;
+  L_n = 0;
+
+  // Compartment initializations:
+  breast_cancer_cell = 1;
+
+  // Variable initializations:
+  v0 = 1.5045e-05;
+  D = 10;
+  k_om = 0.00015599;
+  k_mi = 1.3974e-06;
+  k_cm = 0.00029553;
+  k_mo = 0.085551;
+  k_i = 0.02211;
+  k_e = 0.0078915;
+  k_oc = 0.00012913;
+  k_cc = 0.00031578;
+  k_dl = 0.055522;
+  k_b = 0.00038085;
+  B_T = 89.972;
+  k_dh = 1.5639e-07;
+  V_c = 829;
+  V_n = 326;
+  alpha = 24125;
+
+  // Other declarations:
+  var v1, v2, V_e, V_m;
+  const breast_cancer_cell, v0, D, k_om, k_mi, k_cm, k_mo, k_i, k_e, k_oc;
+  const k_cc, k_dl, k_b, B_T, k_dh, V_c, V_n, alpha;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  breast_cancer_cell is "breast cancer cell";
+
+  // CV terms:
+  breast_cancer_cell hypernym "http://identifiers.org/bto/BTO:0000093"
+  L_m part "http://identifiers.org/chebi/CHEBI:25000"
+  L_m hypernym "http://identifiers.org/kegg.compound/C11158"
+  L_m container "http://identifiers.org/bto/BTO:0000316"
+  L_m property "http://identifiers.org/chebi/CHEBI:35610"
+  D hypernym "http://identifiers.org/efo/EFO:0000428"
+  H_m part "http://identifiers.org/chebi/CHEBI:35868"
+  H_m hypernym "http://identifiers.org/kegg.compound/C11158"
+  H_m container "http://identifiers.org/bto/BTO:0000316"
+  H_m property "http://identifiers.org/pato/PATO:0002355"
+  L_e part "http://identifiers.org/chebi/CHEBI:25000"
+  L_e hypernym "http://identifiers.org/kegg.compound/C11158"
+  L_e container "http://identifiers.org/go/GO:0005576"
+  L_e property "http://identifiers.org/chebi/CHEBI:35610"
+  H_e part "http://identifiers.org/chebi/CHEBI:35868"
+  H_e hypernym "http://identifiers.org/kegg.compound/C11158"
+  H_e container "http://identifiers.org/go/GO:0005576"
+  H_e property "http://identifiers.org/chebi/PATO:0002355"
+  k_i encodement "http://identifiers.org/sbo/SBO:0000587"
+  k_e encodement "http://identifiers.org/go/GO:0015562"
+  L_c part "http://identifiers.org/chebi/CHEBI:25000"
+  L_c hypernym "http://identifiers.org/kegg.compound/C11158"
+  L_c container "http://identifiers.org/go/GO:0005737"
+  L_c property "http://identifiers.org/chebi/CHEBI:35610"
+  k_oc description "http://identifiers.org/pubmed/15094319"
+  k_cc description "http://identifiers.org/pubmed/15094319"
+  H_c part "http://identifiers.org/chebi/CHEBI:35868"
+  H_c hypernym "http://identifiers.org/kegg.compound/C11158"
+  H_c container "http://identifiers.org/go/GO:0005737"
+  H_c property "http://identifiers.org/pato/PATO:0002355"
+  k_dl hypernym "http://identifiers.org/sbo/SBO:0000338"
+  L_n part "http://identifiers.org/chebi/CHEBI:25000"
+  L_n part "http://identifiers.org/chebi/CHEBI:16991"
+  L_n hypernym "http://identifiers.org/kegg.compound/C11158"
+  L_n hypernym "http://identifiers.org/go/GO:0065004"
+  L_n container "http://identifiers.org/go/GO:0005634"
+  L_n property "http://identifiers.org/chebi/CHEBI:35610"
+  k_b encodement "http://identifiers.org/go/GO:0005488"
+  B_T hypernym "http://identifiers.org/sbo/SBO:0000189"
+  k_dh hypernym "http://identifiers.org/sbo/SBO:0000338"
+  V_c encodement "http://identifiers.org/sbo/SBO:0000468"
+  V_e encodement "http://identifiers.org/sbo/SBO:0000468"
+  V_m encodement "http://identifiers.org/sbo/SBO:0000468"
+  V_n encodement "http://identifiers.org/sbo/SBO:0000468"
+end
+
+Evans2005___Compartmental_model_for_antineoplastic_drug_topotecan_in_breast_cancer_cells is "Evans2005 - Compartmental model for antineoplastic drug topotecan in breast cancer cells"
+
+Evans2005___Compartmental_model_for_antineoplastic_drug_topotecan_in_breast_cancer_cells model_entity_is "http://identifiers.org/biomodels.db/MODEL1805210001",
+                                                                                                         "http://identifiers.org/biomodels.db/BIOMD0000000946"
+Evans2005___Compartmental_model_for_antineoplastic_drug_topotecan_in_breast_cancer_cells part "http://identifiers.org/chebi/CHEBI:63632"
+Evans2005___Compartmental_model_for_antineoplastic_drug_topotecan_in_breast_cancer_cells part "http://identifiers.org/chebi/CHEBI:70727"
+Evans2005___Compartmental_model_for_antineoplastic_drug_topotecan_in_breast_cancer_cells hypernym "http://identifiers.org/pw/PW:0002367"
+Evans2005___Compartmental_model_for_antineoplastic_drug_topotecan_in_breast_cancer_cells container "http://identifiers.org/bto/BTO:0000093"
+Evans2005___Compartmental_model_for_antineoplastic_drug_topotecan_in_breast_cancer_cells taxon "http://identifiers.org/taxonomy/9606"
+Evans2005___Compartmental_model_for_antineoplastic_drug_topotecan_in_breast_cancer_cells description "http://identifiers.org/doi/10.1002/acs.856"
+Evans2005___Compartmental_model_for_antineoplastic_drug_topotecan_in_breast_cancer_cells property "http://identifiers.org/obi/OBI:0001285",
+                                                                                                  "http://identifiers.org/mamo/MAMO_0000046"

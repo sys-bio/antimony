@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *BIOMD0000000037()
 
   // Compartments and Species:
@@ -6,7 +6,7 @@ model *BIOMD0000000037()
   species Pfr in compartment_, Pr in compartment_, Xi in compartment_, Xa in compartment_;
   species prepreS in compartment_, preS in compartment_, Ya in compartment_;
   species S in compartment_, $Gluc in compartment_, Yi in compartment_, V in compartment_;
-  species Pi_ in compartment_;
+  species Pi in compartment_;
 
   // Reactions:
   Photoreceptor_activation: Pfr => Pr; compartment_*Pfr*Photoreceptor_activation_IfrSfrPfr;
@@ -20,7 +20,7 @@ model *BIOMD0000000037()
   V_formation:  => V; compartment_*(V_formation_alpha2/(1 + S^3));
   S_degradation: S => ; S_degradation_kd_s*S*compartment_;
   V_degradation: V => ; compartment_*V*V_degradation_kd_v;
-  Photoreceptor_decay: Pr => Pi_; compartment_*Photoreceptor_decay_kd*Pr;
+  Photoreceptor_decay: Pr => Pi; compartment_*Photoreceptor_decay_kd*Pr;
 
   // Species initializations:
   Pfr = 10/compartment_;
@@ -34,7 +34,7 @@ model *BIOMD0000000037()
   Gluc = 0;
   Yi = 0;
   V = 30/compartment_;
-  Pi_ = 0;
+  Pi = 0;
 
   // Compartment initializations:
   compartment_ = 1;
@@ -61,4 +61,29 @@ model *BIOMD0000000037()
 
   // Display Names:
   time_unit is "hour";
+
+  // CV terms:
+  Pfr version "http://identifiers.org/chebi/CHEBI:35799",
+              "http://identifiers.org/interpro/IPR001294"
+  Pr version "http://identifiers.org/chebi/CHEBI:35799",
+             "http://identifiers.org/interpro/IPR001294"
+  Gluc identity "http://identifiers.org/chebi/CHEBI:17234",
+                "http://identifiers.org/kegg.compound/C00293"
+  Photoreceptor_activation hypernym "http://identifiers.org/go/GO:0031516"
+  Photoreceptor_inactivation hypernym "http://identifiers.org/go/GO:0031517"
+  S_formation hypernym "http://identifiers.org/go/GO:0009299",
+                       "http://identifiers.org/go/GO:0006412"
+  V_formation hypernym "http://identifiers.org/go/GO:0009299",
+                       "http://identifiers.org/go/GO:0006412"
+  S_degradation hypernym "http://identifiers.org/go/GO:0006402"
+  V_degradation hypernym "http://identifiers.org/go/GO:0006402"
 end
+
+BIOMD0000000037 is "Marwan2003 - Genetics, regulatory hierarchy between genes"
+
+BIOMD0000000037 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000037"
+BIOMD0000000037 model_entity_is "http://identifiers.org/biomodels.db/MODEL6621175859"
+BIOMD0000000037 description "http://identifiers.org/pubmed/12750324"
+BIOMD0000000037 hypernym "http://identifiers.org/go/GO:0010018",
+                         "http://identifiers.org/go/GO:0042173"
+BIOMD0000000037 taxon "http://identifiers.org/taxonomy/5791"

@@ -1,20 +1,20 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Ortega2006_bistability_doublePhosphorylation()
 
   // Compartments and Species:
   compartment cell;
-  species alpha in cell, beta in cell, gamma in cell;
+  species alpha in cell, beta in cell, gamma_ in cell;
 
   // Reactions:
-  v1: alpha -> beta; (Vm1*(alpha/Ks1))/(1 + alpha/Ks1 + beta/Ks3);
-  v2: beta -> alpha; (r24*(Vm1/Chi14)*(beta/Ks2))/(1 + gamma/Ks4 + beta/Ks2);
-  v3: beta -> gamma; (r31*Vm1*(beta/Ks3))/(1 + alpha/Ks1 + beta/Ks3);
-  v4: gamma => beta; (Vm1/Chi14*(gamma/Ks4))/(1 + gamma/Ks4 + beta/Ks2);
+  v1: alpha -> beta; Vm1*(alpha/Ks1)/(1 + alpha/Ks1 + beta/Ks3);
+  v2: beta -> alpha; r24*(Vm1/Chi14)*(beta/Ks2)/(1 + gamma_/Ks4 + beta/Ks2);
+  v3: beta -> gamma_; r31*Vm1*(beta/Ks3)/(1 + alpha/Ks1 + beta/Ks3);
+  v4: gamma_ => beta; (Vm1/Chi14)*(gamma_/Ks4)/(1 + gamma_/Ks4 + beta/Ks2);
 
   // Species initializations:
   alpha = 0.462;
   beta = 0.2;
-  gamma = 0.338;
+  gamma_ = 0.338;
 
   // Compartment initializations:
   cell = 1;
@@ -32,4 +32,26 @@ model *Ortega2006_bistability_doublePhosphorylation()
 
   // Other declarations:
   const cell, r31, r24, Chi14, Ks1, Ks2, Ks3, Ks4, Vm1, p;
+
+  // Display Names:
+  gamma_ is "gamma";
+
+  // SBO terms:
+  alpha.sboTerm = 252
+  beta.sboTerm = 252
+  gamma_.sboTerm = 252
+
+  // CV terms:
+  alpha hypernym "http://identifiers.org/kegg.compound/C00017",
+                 "http://identifiers.org/chebi/CHEBI:16541"
+  beta hypernym "http://identifiers.org/kegg.compound/C00562"
+  gamma_ hypernym "http://identifiers.org/kegg.compound/C00562"
 end
+
+Ortega2006_bistability_doublePhosphorylation is "Ortega2006 - bistability from double phosphorylation in signal transduction"
+
+Ortega2006_bistability_doublePhosphorylation model_entity_is "http://identifiers.org/biomodels.db/MODEL1008100000"
+Ortega2006_bistability_doublePhosphorylation model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000258"
+Ortega2006_bistability_doublePhosphorylation description "http://identifiers.org/pubmed/16934033"
+Ortega2006_bistability_doublePhosphorylation hypernym "http://identifiers.org/go/GO:0006468"
+Ortega2006_bistability_doublePhosphorylation taxon "http://identifiers.org/taxonomy/131567"

@@ -1,27 +1,39 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 function function_1(Ag, K1, Ifn_Prot, K2, a2)
   a2*(Ag/(K1 + Ag))*(Ifn_Prot/(K2 + Ifn_Prot));
 end
+
+function_1 is "Rate Law for Tbet IFNg dependent transcription"
 
 function function_3(a1)
   a1;
 end
 
+function_3 is "Rate Law for Tbet basal expression"
+
 function function_2(a3, Rec_Prot)
   a3*Rec_Prot;
 end
+
+function_2 is "Rate Law for Rec dependent transcription of TBet"
 
 function function_4(b, mRNA)
   b*mRNA;
 end
 
+function_4 is "Translation rate law"
+
 function function_5(a4, Tbet_Prot, K4, Ag)
   a4*Tbet_Prot*(K4/(K4 + Ag));
 end
 
+function_5 is "Rate Law for Rec Transcription"
+
 function function_6(a5, Tbet_Prot, K5, Rec_Prot, K6, Ag, K7)
   a5*(Tbet_Prot/(K5 + Tbet_Prot))*(Rec_Prot/(K6 + Rec_Prot))*(Ag/(K7 + Ag));
 end
+
+function_6 is "Rate Law for IFN transcription"
 
 
 model *Schulz2009_Th1_differentiation()
@@ -91,6 +103,7 @@ model *Schulz2009_Th1_differentiation()
   unit time_unit = 3600 second;
 
   // Display Names:
+  compartment_ is "compartment";
   vtrnldeg is "Tbet IFN dependend transcription";
   reaction_1 is "Tbet Receptor dependent transcription";
   reaction_2 is "Tbet basal expression";
@@ -105,4 +118,70 @@ model *Schulz2009_Th1_differentiation()
   reaction_11 is "Rec translation";
   reaction_12 is "Rec Transcription";
   reaction_13 is "IFN transcription";
+
+  // SBO terms:
+  compartment_.sboTerm = 290
+  Tbet_mRNA.sboTerm = 278
+  Ifn_mRNA.sboTerm = 278
+  Ifn_Prot.sboTerm = 252
+  Rec_Prot.sboTerm = 252
+  Tbet_Prot.sboTerm = 252
+  Rec_mRNA.sboTerm = 278
+  vtrnldeg.sboTerm = 183
+  vtrnldeg_K1.sboTerm = 363
+  vtrnldeg_K2.sboTerm = 363
+  vtrnldeg_a2.sboTerm = 48
+  reaction_1.sboTerm = 183
+  reaction_2.sboTerm = 183
+  reaction_3.sboTerm = 179
+  reaction_4.sboTerm = 179
+  reaction_5.sboTerm = 179
+  reaction_6.sboTerm = 179
+  reaction_7.sboTerm = 179
+  reaction_8.sboTerm = 179
+  reaction_9.sboTerm = 184
+  reaction_10.sboTerm = 184
+  reaction_11.sboTerm = 184
+  reaction_12.sboTerm = 183
+  reaction_13.sboTerm = 183
+
+  // CV terms:
+  compartment_ hypernym "http://identifiers.org/go/GO:0005623"
+  Tbet_mRNA hypernym "http://identifiers.org/chebi/CHEBI:33699",
+                     "http://identifiers.org/kegg.compound/C00046"
+  Tbet_mRNA encodement "http://identifiers.org/uniprot/Q9JKD8"
+  Ifn_mRNA hypernym "http://identifiers.org/chebi/CHEBI:33699",
+                    "http://identifiers.org/kegg.compound/C00046"
+  Ifn_mRNA encodement "http://identifiers.org/uniprot/P01580"
+  Ag hypernym "http://identifiers.org/go/GO:0050862"
+  Ifn_Prot hypernym "http://identifiers.org/uniprot/P01580"
+  Rec_Prot hypernym "http://identifiers.org/uniprot/P97378"
+  Tbet_Prot hypernym "http://identifiers.org/uniprot/Q9JKD8"
+  Rec_mRNA encodement "http://identifiers.org/uniprot/P97378"
+  Rec_mRNA hypernym "http://identifiers.org/chebi/CHEBI:33699",
+                    "http://identifiers.org/kegg.compound/C00046"
+  vtrnldeg hypernym "http://identifiers.org/go/GO:0003700",
+                    "http://identifiers.org/go/GO:0009299"
+  reaction_1 hypernym "http://identifiers.org/go/GO:0003700",
+                      "http://identifiers.org/go/GO:0009299"
+  reaction_2 hypernym "http://identifiers.org/go/GO:0009299"
+  reaction_3 hypernym "http://identifiers.org/go/GO:0006402"
+  reaction_4 hypernym "http://identifiers.org/go/GO:0030163"
+  reaction_5 hypernym "http://identifiers.org/go/GO:0006402"
+  reaction_6 hypernym "http://identifiers.org/go/GO:0030163"
+  reaction_7 hypernym "http://identifiers.org/go/GO:0006402"
+  reaction_8 hypernym "http://identifiers.org/go/GO:0030163"
+  reaction_9 hypernym "http://identifiers.org/go/GO:0006412"
+  reaction_10 hypernym "http://identifiers.org/go/GO:0006412"
+  reaction_11 hypernym "http://identifiers.org/go/GO:0006412"
+  reaction_12 hypernym "http://identifiers.org/go/GO:0006351"
+  reaction_13 hypernym "http://identifiers.org/go/GO:0006351"
 end
+
+Schulz2009_Th1_differentiation is "Schulz2009_Th1_differentiation"
+
+Schulz2009_Th1_differentiation model_entity_is "http://identifiers.org/biomodels.db/MODEL9284712021"
+Schulz2009_Th1_differentiation model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000215"
+Schulz2009_Th1_differentiation description "http://identifiers.org/pubmed/19409816"
+Schulz2009_Th1_differentiation taxon "http://identifiers.org/taxonomy/10090"
+Schulz2009_Th1_differentiation hypernym "http://identifiers.org/go/GO:0030217"

@@ -1,0 +1,72 @@
+// Created by libAntimony v2.13.0
+function Function_for_Normal_Cells_Growth(a, x, b, y)
+  a*x/(1 + b*(x + y));
+end
+
+Function_for_Normal_Cells_Growth is "Function_for_Normal_Cells_Growth"
+
+function Function_for_Leukemic_Cells_Growth(A, y, B, x)
+  A*y/(1 + B*(x + y));
+end
+
+Function_for_Leukemic_Cells_Growth is "Function_for_Leukemic_Cells_Growth"
+
+
+model *Cucuianu2010___A_hypothetical_mathematical_model_of_acute_myeloid_leukaemia_pathogenesis()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species x_Normal_Hematopoietic_Stem_Cell in compartment_, y_Leukemic_Cell in compartment_;
+
+  // Reactions:
+  Normal_Cells_Growth:  => x_Normal_Hematopoietic_Stem_Cell; compartment_*Function_for_Normal_Cells_Growth(a, x_Normal_Hematopoietic_Stem_Cell, b, y_Leukemic_Cell);
+  Normal_Cells_Removal: x_Normal_Hematopoietic_Stem_Cell => ; compartment_*c*x_Normal_Hematopoietic_Stem_Cell;
+  Leukemic_Cells_Growth:  => y_Leukemic_Cell; compartment_*Function_for_Leukemic_Cells_Growth(A, y_Leukemic_Cell, B, x_Normal_Hematopoietic_Stem_Cell);
+  Leukemic_Cells_Removal: y_Leukemic_Cell => ; compartment_*C*y_Leukemic_Cell;
+
+  // Species initializations:
+  x_Normal_Hematopoietic_Stem_Cell = 4.5;
+  y_Leukemic_Cell = 1.5;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  a = 0.3;
+  b = 0.5;
+  c = 0.1;
+  A = 0.3;
+  B = 0.5;
+  C = 0.1;
+
+  // Other declarations:
+  const compartment_, a, b, c, A, B, C;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = item;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/bto/BTO:0000141"
+  x_Normal_Hematopoietic_Stem_Cell identity "http://identifiers.org/cl/CL:0000037"
+  x_Normal_Hematopoietic_Stem_Cell container "http://identifiers.org/bto/BTO:0000141"
+  y_Leukemic_Cell hypernym "http://identifiers.org/bto/BTO:0004178"
+  y_Leukemic_Cell container "http://identifiers.org/bto/BTO:0000141"
+  Normal_Cells_Growth hypernym "http://identifiers.org/go/GO:0071425"
+  Normal_Cells_Removal hypernym "http://identifiers.org/go/GO:0035701"
+  Leukemic_Cells_Growth hypernym "http://identifiers.org/go/GO:0071425"
+  Leukemic_Cells_Removal hypernym "http://identifiers.org/go/GO:0035701"
+end
+
+Cucuianu2010___A_hypothetical_mathematical_model_of_acute_myeloid_leukaemia_pathogenesis is "Cucuianu2010 - A hypothetical-mathematical model of acute myeloid leukaemia pathogenesis"
+
+Cucuianu2010___A_hypothetical_mathematical_model_of_acute_myeloid_leukaemia_pathogenesis description "http://identifiers.org/doi/10.1080/17486700902973751"
+Cucuianu2010___A_hypothetical_mathematical_model_of_acute_myeloid_leukaemia_pathogenesis model_entity_is "http://identifiers.org/biomodels.db/MODEL1908190002",
+                                                                                                         "http://identifiers.org/biomodels.db/BIOMD0000000799"
+Cucuianu2010___A_hypothetical_mathematical_model_of_acute_myeloid_leukaemia_pathogenesis property "http://identifiers.org/ncit/C3171"
+Cucuianu2010___A_hypothetical_mathematical_model_of_acute_myeloid_leukaemia_pathogenesis property "http://identifiers.org/mamo/MAMO_0000046"

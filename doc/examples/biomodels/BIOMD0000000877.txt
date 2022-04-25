@@ -1,0 +1,119 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function Function_for_Tumor_Growth(r, U, I, K)
+  r*U*(1 - (U + I)/K);
+end
+
+Function_for_Tumor_Growth is "Function_for_Tumor_Growth"
+
+function Function_for_Uninfected_Tumor_Lysis_Drug(delta, U, C, K_c)
+  delta*U*C/(K_c + C);
+end
+
+Function_for_Uninfected_Tumor_Lysis_Drug is "Function_for_Uninfected_Tumor_Lysis_Drug"
+
+function Function_for_Tumor_Cell_Infection(beta, U, V, I, alpha)
+  beta*U*V/(U + I + alpha);
+end
+
+Function_for_Tumor_Cell_Infection is "Function_for_Tumor_Cell_Infection"
+
+function Function_for_Infected_Tumor_Lysis_Drug(delta_I, I, C, K_c)
+  delta_I*I*C/(K_c + C);
+end
+
+Function_for_Infected_Tumor_Lysis_Drug is "Function_for_Infected_Tumor_Lysis_Drug"
+
+function Function_for_Virus_Production(b, delta, I)
+  b*delta*I;
+end
+
+Function_for_Virus_Production is "Function_for_Virus_Production"
+
+
+model *Ontah2019___Dynamic_analysis_of_a_tumor_treatment_model_using_oncolytic_virus_and_chemotherapy_with_saturated_infection_rate()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species U in compartment_, I in compartment_, V in compartment_, C in compartment_;
+
+  // Reactions:
+  Tumor_Growth:  => U; compartment_*Function_for_Tumor_Growth(r, U, I, K);
+  Tumor_Cell_Infection: U + V => I; compartment_*Function_for_Tumor_Cell_Infection(beta, U, V, I, alpha);
+  Uninfected_Tumor_Lysis_Drug: U => ; compartment_*Function_for_Uninfected_Tumor_Lysis_Drug(delta_u, U, C, K_c);
+  Infected_Tumor_Lysis_Drug: I => ; compartment_*Function_for_Infected_Tumor_Lysis_Drug(delta_i, I, C, K_c);
+  Infected_Tumor_Death: I => ; compartment_*delta*I;
+  Virus_Production:  => V; compartment_*Function_for_Virus_Production(b, delta, I);
+  Virus_Decay: V => ; compartment_*gamma_*V;
+  Drug_Injection:  => C; compartment_*Constant_flux__irreversible(mu);
+  Drug_Decay: C => ; compartment_*psi*C;
+
+  // Species initializations:
+  U = 100;
+  I = 10;
+  V = 10;
+  C = 30;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  r = 0.1;
+  K = 2139;
+  beta = 0.01;
+  alpha = 0.5;
+  delta_u = 50;
+  K_c = 10000;
+  delta = 0.5;
+  delta_i = 60;
+  b = 0.5;
+  gamma_ = 0.1;
+  mu = 150;
+  psi = 4.17;
+
+  // Other declarations:
+  const compartment_, r, K, beta, alpha, delta_u, K_c, delta, delta_i, b;
+  const gamma_, mu, psi;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = item;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+  gamma_ is "gamma";
+
+  // CV terms:
+  compartment_ hypernym "http://identifiers.org/ncit/C94498"
+  U identity "http://identifiers.org/cl/CL:0001063"
+  I identity "http://identifiers.org/bto/BTO:0000152"
+  I identity "http://identifiers.org/cl/CL:0001063"
+  V identity "http://identifiers.org/ncit/C717"
+  C class "http://identifiers.org/ncit/C15681"
+  Tumor_Growth identity "http://identifiers.org/ncit/C36294"
+  Tumor_Cell_Infection hypernym "http://identifiers.org/ncit/C128320"
+  Uninfected_Tumor_Lysis_Drug identity "http://identifiers.org/go/GO:0008219"
+  Infected_Tumor_Lysis_Drug identity "http://identifiers.org/go/GO:0008219"
+  Infected_Tumor_Death identity "http://identifiers.org/go/GO:0044659"
+  Virus_Production identity "http://identifiers.org/go/GO:0019076"
+  Virus_Decay hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Drug_Injection identity "http://identifiers.org/ncit/C149592"
+  Drug_Decay hypernym "http://identifiers.org/sbo/SBO:0000179"
+end
+
+Ontah2019___Dynamic_analysis_of_a_tumor_treatment_model_using_oncolytic_virus_and_chemotherapy_with_saturated_infection_rate is "Ontah2019 - Dynamic analysis of a tumor treatment model using oncolytic virus and chemotherapy with saturated infection rate"
+
+Ontah2019___Dynamic_analysis_of_a_tumor_treatment_model_using_oncolytic_virus_and_chemotherapy_with_saturated_infection_rate description "http://identifiers.org/doi/10.1088/1757-899X/546/3/032025"
+Ontah2019___Dynamic_analysis_of_a_tumor_treatment_model_using_oncolytic_virus_and_chemotherapy_with_saturated_infection_rate model_entity_is "http://identifiers.org/biomodels.db/MODEL1911270004",
+                                                                                                                                             "http://identifiers.org/biomodels.db/BIOMD0000000877"
+Ontah2019___Dynamic_analysis_of_a_tumor_treatment_model_using_oncolytic_virus_and_chemotherapy_with_saturated_infection_rate property "http://identifiers.org/mamo/MAMO_0000046"
+Ontah2019___Dynamic_analysis_of_a_tumor_treatment_model_using_oncolytic_virus_and_chemotherapy_with_saturated_infection_rate property "http://identifiers.org/ncit/C62713"
+Ontah2019___Dynamic_analysis_of_a_tumor_treatment_model_using_oncolytic_virus_and_chemotherapy_with_saturated_infection_rate property "http://identifiers.org/ncit/C15632"
+Ontah2019___Dynamic_analysis_of_a_tumor_treatment_model_using_oncolytic_virus_and_chemotherapy_with_saturated_infection_rate taxon "http://identifiers.org/taxonomy/9606"

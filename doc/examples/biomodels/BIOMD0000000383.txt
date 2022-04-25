@@ -1,19 +1,27 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 function carboxylation(kc, S2, K, R, KI, E, S1)
-  (((kc*S2)/(S2 + K*(1 + R/KI))*E + (kc*S2)/(S2 + K*(1 + R/KI))*S1) - abs((kc*S2)/(S2 + K*(1 + R/KI))*E - (kc*S2)/(S2 + K*(1 + R/KI))*S1))/2;
+  ((kc*S2/(S2 + K*(1 + R/KI)))*E + (kc*S2/(S2 + K*(1 + R/KI)))*S1 - abs((kc*S2/(S2 + K*(1 + R/KI)))*E - (kc*S2/(S2 + K*(1 + R/KI)))*S1))/2;
 end
+
+carboxylation is "Carboxylation"
 
 function PGA_consumption(S1, Rp, Nt, kc, E, R)
-  S1/Rp*(R/Nt)*kc*E;
+  (S1/Rp)*(R/Nt)*kc*E;
 end
+
+PGA_consumption is "PGA consumption - Farquhar"
 
 function NADPH_production(j, S1, Nt)
-  j/2*(S1/Nt);
+  (j/2)*(S1/Nt);
 end
 
+NADPH_production is "NADPH production"
+
 function oxygenation(phi, kc, S2, K, R, KI, E, S1)
-  (phi*(((kc*S2)/(S2 + K*(1 + R/KI))*E + (kc*S2)/(S2 + K*(1 + R/KI))*S1) - abs((kc*S2)/(S2 + K*(1 + R/KI))*E - (kc*S2)/(S2 + K*(1 + R/KI))*S1)))/2;
+  phi*((kc*S2/(S2 + K*(1 + R/KI)))*E + (kc*S2/(S2 + K*(1 + R/KI)))*S1 - abs((kc*S2/(S2 + K*(1 + R/KI)))*E - (kc*S2/(S2 + K*(1 + R/KI)))*S1))/2;
 end
+
+oxygenation is "Oxygenation"
 
 
 model *Model_1()
@@ -25,13 +33,13 @@ model *Model_1()
 
   // Assignment Rules:
   NADP := Nt - NADPH;
-  jp := 1/2*(1 - f)*I;
+  jp := (1/2)*(1 - f)*I;
   j := (abs(jp + 467) - abs(jp - 467))/2/65;
-  phi := (0.21*(O2/Ko))/(CO2/Kc);
+  phi := 0.21*(O2/Ko)/(CO2/Kc);
 
   // Reactions:
-  PGA_prod_Vc: $RuBP + $CO2 + 2NADPH => 2PGA; chloroplast*carboxylation(kc, CO2, Kc, O2, Ko, E, RuBP);
-  PGA_prod_Vo: $RuBP + $CO2 + 2NADPH => 1.5PGA; chloroplast*oxygenation(phi, kc, CO2, Kc, O2, Ko, E, RuBP);
+  PGA_prod_Vc: $RuBP + $CO2 + 2 NADPH => 2 PGA; chloroplast*carboxylation(kc, CO2, Kc, O2, Ko, E, RuBP);
+  PGA_prod_Vo: $RuBP + $CO2 + 2 NADPH => 1.5 PGA; chloroplast*oxygenation(phi, kc, CO2, Kc, O2, Ko, E, RuBP);
   PGA_cons: PGA => $RuBP; chloroplast*PGA_consumption(PGA, Rp, Nt, kc, E, NADPH);
   NADPH_prod: $NADP => NADPH; chloroplast*NADPH_production(j, NADP, Nt);
 
@@ -67,4 +75,33 @@ model *Model_1()
   PGA_prod_Vo is "PGA production - v_o";
   PGA_cons is "PGA consumption";
   NADPH_prod is "NADPH production";
+
+  // SBO terms:
+  Nt.sboTerm = 9
+  E.sboTerm = 9
+  Rp.sboTerm = 9
+  f.sboTerm = 9
+  I.sboTerm = 9
+  jp.sboTerm = 9
+  j.sboTerm = 9
+  phi.sboTerm = 9
+  Ko.sboTerm = 9
+  Kc.sboTerm = 9
+  kc.sboTerm = 9
+
+  // CV terms:
+  RuBP hypernym "http://identifiers.org/obo.chebi/CHEBI:16710"
+  PGA hypernym "http://identifiers.org/obo.chebi/CHEBI:17050"
+  NADPH hypernym "http://identifiers.org/obo.chebi/CHEBI:16474"
+  CO2 hypernym "http://identifiers.org/obo.chebi/CHEBI:16526"
+  O2 hypernym "http://identifiers.org/obo.chebi/CHEBI:15379"
+  NADP hypernym "http://identifiers.org/obo.chebi/CHEBI:25523"
 end
+
+Model_1 is "Arnold2011_Farquhar1980_RuBisCO-CalvinCycle"
+
+Model_1 model_entity_is "http://identifiers.org/biomodels.db/MODEL1109210000"
+Model_1 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000383"
+Model_1 description "http://identifiers.org/pubmed/22001849"
+Model_1 encodement "http://identifiers.org/obo.go/GO:0019253"
+Model_1 taxon "http://identifiers.org/taxonomy/33090"

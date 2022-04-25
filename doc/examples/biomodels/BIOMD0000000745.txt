@@ -1,0 +1,214 @@
+// Created by libAntimony v2.13.0
+function t_d_1(I, T, ut)
+  ut*T*I;
+end
+
+t_d_1 is "t-d_1"
+
+function i__1(N, V, an, av)
+  av*V + an*N;
+end
+
+i__1 is "i+_1"
+
+function t_g_1(H, T, g, rho)
+  g*T*(rho*H + 1);
+end
+
+t_g_1 is "t-g_1"
+
+function i__1_0(I, N, T, V, an, av, ui)
+  av*V*I + an*N*I + ui*I*T;
+end
+
+i__1_0 is "i-_1"
+
+function v__1(I, T, ai, at_)
+  at_*T + ai*I;
+end
+
+v__1 is "v+_1"
+
+function v__1_0(I, T, V, ai, at_, uv)
+  at_*T*V + ai*I*V + uv*V*T;
+end
+
+v__1_0 is "v-_1"
+
+function n__1(N, V, beta)
+  beta + beta*V*N;
+end
+
+n__1 is "n+_1"
+
+function n__1_0(I, N, V, beta, un)
+  beta*V + beta*N + un*N*I;
+end
+
+n__1_0 is "n-_1"
+
+function h__1(H, V, delta, gamma_)
+  gamma_*delta*H + gamma_*V*H*H;
+end
+
+h__1 is "h+_1"
+
+function h__1_0(H, V, delta, gamma_)
+  gamma_*delta*H*H + gamma_*V*H;
+end
+
+h__1_0 is "h-_1"
+
+
+model *Jarrett2018___trastuzumab_induced_immune_response_in_murine_HER2__breast_cancer_model_1()
+
+  // Compartments and Species:
+  compartment tumor;
+  species T in tumor, I in tumor, V in tumor, N in tumor, H in tumor;
+
+  // Reactions:
+  tumor_death: T => ; tumor*t_d_1(I, T, ut);
+  tumor_growth:  => T; tumor*t_g_1(H, T, g, rho);
+  immune_stimulation:  => I; tumor*i__1(N, V, an, av);
+  immune_inhibition: I => ; tumor*i__1_0(I, N, T, V, an, av, ui);
+  vasc_increase:  => V; tumor*v__1(I, T, ai, at_);
+  vasc_decrease: V => ; tumor*v__1_0(I, T, V, ai, at_, uv);
+  necrotise:  => N; tumor*n__1(N, V, beta);
+  de_necrotise: N => ; tumor*n__1_0(I, N, V, beta, un);
+  hypoxia:  => H; tumor*h__1(H, V, delta, gamma_);
+  normoxia: H => ; tumor*h__1_0(H, V, delta, gamma_);
+
+  // Species initializations:
+  T = 0.2;
+  T has substance_per_volume;
+  I = 0.071;
+  I has substance_per_volume;
+  V = 0.12;
+  V has substance_per_volume;
+  N = 0.1;
+  N has substance_per_volume;
+  H = 0.18;
+  H has substance_per_volume;
+
+  // Compartment initializations:
+  tumor = 1;
+  tumor has volume;
+
+  // Variable initializations:
+  g = 0.044;
+  g has unit_0;
+  an = 0.2;
+  an has unit_0;
+  av = 0.199;
+  av has unit_0;
+  ut = 0.187;
+  ut has unit_0;
+  ui = 0.722;
+  ui has unit_0;
+  at_ = 0.101;
+  at_ has unit_0;
+  ai = 0.045;
+  ai has unit_0;
+  uv = 1.723;
+  uv has unit_0;
+  beta = 0.027;
+  beta has unit_0;
+  un = 0.911;
+  un has unit_0;
+  gamma_ = 0.743;
+  gamma_ has unit_0;
+  delta = 0.284;
+  delta has unit_1;
+  rho = 1.523;
+  rho has unit_1;
+
+  // Other declarations:
+  const tumor, g, an, av, ut, ui, at_, ai, uv, beta, un, gamma_, delta, rho;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = time_unit;
+  unit substance = 1e-3 mole;
+  unit unit_0 = 1 / 1e-3 second;
+  unit unit_1 = 1 / dimensionless^-0;
+  unit extent = substance;
+  unit substance_per_volume = 1e-3 mole / 1e-3 litre;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1/ms";
+  unit_1 is "1";
+  tumor is "breast tumor";
+  at_ is "at";
+  gamma_ is "gamma";
+  tumor_death is "tumor death";
+  tumor_growth is "tumor growth";
+  immune_stimulation is "immune stimulation";
+  immune_inhibition is "immune inhibition";
+  vasc_increase is "vasc increase";
+  vasc_decrease is "vasc decrease";
+  de_necrotise is "de-necrotise";
+
+  // CV terms:
+  tumor hypernym "http://identifiers.org/ncit/C94498"
+  T hypernym "http://identifiers.org/ncit/C94515"
+  I hypernym "http://identifiers.org/go/GO:0002418"
+  N hypernym "http://identifiers.org/go/GO:0070265"
+  H hypernym "http://identifiers.org/ncit/C3890"
+  g hypernym "http://identifiers.org/sbo/SBO:0000610"
+  g propertyBearer "http://identifiers.org/go/GO:0008283"
+  an hypernym "http://identifiers.org/ncit/C94967"
+  an propertyBearer "http://identifiers.org/go/GO:0050778"
+  av hypernym "http://identifiers.org/ncit/C94967"
+  av propertyBearer "http://identifiers.org/go/GO:0050778"
+  ut hypernym "http://identifiers.org/ncit/C94967"
+  ut propertyBearer "http://identifiers.org/go/GO:0002418"
+  ui hypernym "http://identifiers.org/ncit/C94967"
+  ui propertyBearer "http://identifiers.org/go/GO:0050777"
+  at_ hypernym "http://identifiers.org/ncit/C94967"
+  at_ propertyBearer "http://identifiers.org/go/GO:0010232"
+  ai hypernym "http://identifiers.org/ncit/C94967"
+  ai propertyBearer "http://identifiers.org/go/GO:0010232"
+  uv hypernym "http://identifiers.org/ncit/C94967"
+  beta hypernym "http://identifiers.org/ncit/C94967"
+  beta propertyBearer "http://identifiers.org/go/GO:0070265"
+  un hypernym "http://identifiers.org/ncit/C94967"
+  un propertyBearer "http://identifiers.org/go/GO:0070265"
+  gamma_ hypernym "http://identifiers.org/ncit/C94967"
+  gamma_ propertyBearer "http://identifiers.org/ncit/C3890"
+  delta hypernym "http://identifiers.org/ncit/C48228"
+  delta propertyBearer "http://identifiers.org/ncit/C3890"
+  tumor_death hypernym "http://identifiers.org/go/GO:0008219"
+  tumor_death hypernym "http://identifiers.org/sbo/SBO:0000179"
+  tumor_death container "http://identifiers.org/ncit/C94498"
+  tumor_growth hypernym "http://identifiers.org/sbo/SBO:0000393"
+  tumor_growth hypernym "http://identifiers.org/go/GO:0008283"
+  tumor_growth container "http://identifiers.org/ncit/C94498"
+  immune_stimulation hypernym "http://identifiers.org/go/GO:0050778"
+  immune_stimulation container "http://identifiers.org/ncit/C94498"
+  immune_inhibition hypernym "http://identifiers.org/go/GO:0050777"
+  immune_inhibition container "http://identifiers.org/ncit/C94498"
+  vasc_increase hypernym "http://identifiers.org/go/GO:0010232"
+  vasc_increase container "http://identifiers.org/ncit/C94498"
+  vasc_decrease container "http://identifiers.org/ncit/C94498"
+  necrotise hypernym "http://identifiers.org/go/GO:0070265"
+  necrotise container "http://identifiers.org/ncit/C94498"
+  de_necrotise origin "http://identifiers.org/ncit/C94498",
+                      "http://identifiers.org/go/GO:0070265"
+  de_necrotise container "http://identifiers.org/ncit/C94498"
+  hypoxia container "http://identifiers.org/ncit/C94498"
+  normoxia container "http://identifiers.org/ncit/C94498"
+end
+
+Jarrett2018___trastuzumab_induced_immune_response_in_murine_HER2__breast_cancer_model_1 is "Jarrett2018 - trastuzumab-induced immune response in murine HER2+ breast cancer model"
+
+Jarrett2018___trastuzumab_induced_immune_response_in_murine_HER2__breast_cancer_model_1 model_entity_is "http://identifiers.org/biomodels.db/MODEL1907050004",
+                                                                                                        "http://identifiers.org/biomodels.db/BIOMD0000000745"
+Jarrett2018___trastuzumab_induced_immune_response_in_murine_HER2__breast_cancer_model_1 description "http://identifiers.org/pubmed/30239754"
+Jarrett2018___trastuzumab_induced_immune_response_in_murine_HER2__breast_cancer_model_1 hypernym "http://identifiers.org/go/GO:0002418"
+Jarrett2018___trastuzumab_induced_immune_response_in_murine_HER2__breast_cancer_model_1 container "http://identifiers.org/bto/BTO:0000149"
+Jarrett2018___trastuzumab_induced_immune_response_in_murine_HER2__breast_cancer_model_1 property "http://identifiers.org/mamo/MAMO_0000046"
+Jarrett2018___trastuzumab_induced_immune_response_in_murine_HER2__breast_cancer_model_1 property "http://identifiers.org/efo/0000305"
+Jarrett2018___trastuzumab_induced_immune_response_in_murine_HER2__breast_cancer_model_1 taxon "http://identifiers.org/taxonomy/10090"

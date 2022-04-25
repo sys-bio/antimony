@@ -1,31 +1,45 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 function vAK(ADP, AMP, ATP, k1, k2)
   k1*ADP^2 - AMP*ATP*k2;
 end
 
+vAK is "vAK"
+
 function v2sub2prod(Vfmax, Keq, S1, Ks1, S2, Ks2, P1, Kp1, P2, Kp2)
-  (Vfmax*S1*S2*(1 - (P1*P2)/(Keq*S1*S2)))/(Ks1*Ks2*(1 + S1/Ks1 + P1/Kp1)*(1 + S2/Ks2 + P2/Kp2));
+  Vfmax*S1*S2*(1 - P1*P2/(Keq*S1*S2))/(Ks1*Ks2*(1 + S1/Ks1 + P1/Kp1)*(1 + S2/Ks2 + P2/Kp2));
 end
+
+v2sub2prod is "v2sub2prod"
 
 function v1sub(Vfmax, S, Ks)
-  (Vfmax*S)/(Ks*(1 + S/Ks));
+  Vfmax*S/(Ks*(1 + S/Ks));
 end
 
+v1sub is "v1sub"
+
 function v2sub2prod_compinhib(Vfmax, Keq, S1, Ks1, S2, Ks2, P1, Kp1, P2, Kp2, I1, Ki1, I2, Ki2)
-  (Vfmax*S1*S2*(1 - (P1*P2)/(Keq*S1*S2)))/(Ks1*Ks2*(1 + S1/Ks1 + P1/Kp1)*(1 + S2/Ks2 + P2/Kp2 + I1/Ki1 + I2/Ki2));
+  Vfmax*S1*S2*(1 - P1*P2/(Keq*S1*S2))/(Ks1*Ks2*(1 + S1/Ks1 + P1/Kp1)*(1 + S2/Ks2 + P2/Kp2 + I1/Ki1 + I2/Ki2));
 end
+
+v2sub2prod_compinhib is "v2sub2prod_compinhib"
 
 function mass_action_rev(k1, S, k2, P)
   k1*S - k2*P;
 end
 
+mass_action_rev is "mass_action_rev"
+
 function v1sub1prod(Vfmax, Keq, S, Ks, P, Kp)
-  (Vfmax*S*(1 - P/(Keq*S)))/(Ks*(1 + S/Ks + P/Kp));
+  Vfmax*S*(1 - P/(Keq*S))/(Ks*(1 + S/Ks + P/Kp));
 end
+
+v1sub1prod is "v1sub1prod"
 
 function mass_action_irrev(k, S)
   k*S;
 end
+
+mass_action_irrev is "mass_action_irrev"
 
 
 model *MODEL1401310000()
@@ -43,25 +57,25 @@ model *MODEL1401310000()
 
   // Reactions:
   TPI_g: DHAP_g -> GA3P_g; v1sub1prod(TPI_g_TPI_g_Vmax, TPI_g_TPI_g_Keq, DHAP_g, TPI_g_TPI_g_KmDHAP, GA3P_g, TPI_g_TPI_g_KmGA3P);
-  PYK_c: PEP_c + ADP_c -> Pyr_c + ATP_c; (PYK_c_PYK_c_Vmax*ADP_c*(1 - (Pyr_c*ATP_c)/(PYK_c_PYK_c_Keq*PEP_c*ADP_c))*(PEP_c/(PYK_c_PYK_c_KmPEP*(1 + ADP_c/PYK_c_PYK_c_KiADP + ATP_c/PYK_c_PYK_c_KiATP)))^PYK_c_PYK_c_n)/(PYK_c_PYK_c_KmADP*(1 + (PEP_c/(PYK_c_PYK_c_KmPEP*(1 + ADP_c/PYK_c_PYK_c_KiADP + ATP_c/PYK_c_PYK_c_KiATP)))^PYK_c_PYK_c_n + Pyr_c/PYK_c_PYK_c_KmPyr)*(1 + ADP_c/PYK_c_PYK_c_KmADP + ATP_c/PYK_c_PYK_c_KmATP));
-  PFK_g: ATP_g + Fru6P_g -> Fru16BP_g + ADP_g; (PFK_g_PFK_g_Vmax*PFK_g_PFK_g_Ki1*Fru6P_g*ATP_g*(1 - (Fru16BP_g*ADP_g)/(PFK_g_PFK_g_Keq*Fru6P_g*ATP_g)))/(PFK_g_PFK_g_KmFru6P*PFK_g_PFK_g_KmATP*(Fru16BP_g + PFK_g_PFK_g_Ki1)*(PFK_g_PFK_g_KsATP/PFK_g_PFK_g_KmATP + Fru6P_g/PFK_g_PFK_g_KmFru6P + ATP_g/PFK_g_PFK_g_KmATP + ADP_g/PFK_g_PFK_g_KmADP + (Fru16BP_g*ADP_g)/(PFK_g_PFK_g_KmADP*PFK_g_PFK_g_Ki2) + (Fru6P_g*ATP_g)/(PFK_g_PFK_g_KmFru6P*PFK_g_PFK_g_KmATP)));
+  PYK_c: PEP_c + ADP_c -> Pyr_c + ATP_c; PYK_c_PYK_c_Vmax*ADP_c*(1 - Pyr_c*ATP_c/(PYK_c_PYK_c_Keq*PEP_c*ADP_c))*(PEP_c/(PYK_c_PYK_c_KmPEP*(1 + ADP_c/PYK_c_PYK_c_KiADP + ATP_c/PYK_c_PYK_c_KiATP)))^PYK_c_PYK_c_n/(PYK_c_PYK_c_KmADP*(1 + (PEP_c/(PYK_c_PYK_c_KmPEP*(1 + ADP_c/PYK_c_PYK_c_KiADP + ATP_c/PYK_c_PYK_c_KiATP)))^PYK_c_PYK_c_n + Pyr_c/PYK_c_PYK_c_KmPyr)*(1 + ADP_c/PYK_c_PYK_c_KmADP + ATP_c/PYK_c_PYK_c_KmATP));
+  PFK_g: ATP_g + Fru6P_g -> Fru16BP_g + ADP_g; PFK_g_PFK_g_Vmax*PFK_g_PFK_g_Ki1*Fru6P_g*ATP_g*(1 - Fru16BP_g*ADP_g/(PFK_g_PFK_g_Keq*Fru6P_g*ATP_g))/(PFK_g_PFK_g_KmFru6P*PFK_g_PFK_g_KmATP*(Fru16BP_g + PFK_g_PFK_g_Ki1)*(PFK_g_PFK_g_KsATP/PFK_g_PFK_g_KmATP + Fru6P_g/PFK_g_PFK_g_KmFru6P + ATP_g/PFK_g_PFK_g_KmATP + ADP_g/PFK_g_PFK_g_KmADP + Fru16BP_g*ADP_g/(PFK_g_PFK_g_KmADP*PFK_g_PFK_g_Ki2) + Fru6P_g*ATP_g/(PFK_g_PFK_g_KmFru6P*PFK_g_PFK_g_KmATP)));
   GlcT_g: Glc_c -> Glc_g; mass_action_rev(GlcT_g_GlcT_g_k1, Glc_c, GlcT_g_GlcT_g_k2, Glc_g);
   PGAM_c: _3PGA_c -> _2PGA_c; v1sub1prod(PGAM_c_PGAM_c_Vmax, PGAM_c_PGAM_c_Keq, _3PGA_c, PGAM_c_PGAM_c_Km3PGA, _2PGA_c, PGAM_c_PGAM_c_Km2PGA);
   PyrT_c: Pyr_c => $Pyr_e; v1sub(PyrT_c_PyrT_c_Vmax, Pyr_c, PyrT_c_PyrT_c_KmPyr);
-  GlcT_c: $Glc_e -> Glc_c; (GlcT_c_GlcT_c_Vmax*(Glc_e - Glc_c))/(GlcT_c_GlcT_c_KmGlc + Glc_e + Glc_c + (GlcT_c_GlcT_c_alpha*Glc_e*Glc_c)/GlcT_c_GlcT_c_KmGlc);
-  ALD_g: Fru16BP_g -> GA3P_g + DHAP_g; (ALD_g_ALD_g_Vmax*Fru16BP_g*(1 - (GA3P_g*DHAP_g)/(Fru16BP_g*ALD_g_ALD_g_Keq)))/(ALD_g_ALD_g_KmFru16BP*(1 + ATP_g/ALD_g_ALD_g_KiATP + ADP_g/ALD_g_ALD_g_KiADP + AMP_g/ALD_g_ALD_g_KiAMP)*(1 + GA3P_g/ALD_g_ALD_g_KmGA3P + DHAP_g/ALD_g_ALD_g_KmDHAP + Fru16BP_g/(ALD_g_ALD_g_KmFru16BP*(1 + ATP_g/ALD_g_ALD_g_KiATP + ADP_g/ALD_g_ALD_g_KiADP + AMP_g/ALD_g_ALD_g_KiAMP)) + (GA3P_g*DHAP_g)/(ALD_g_ALD_g_KmGA3P*ALD_g_ALD_g_KmDHAP) + (Fru16BP_g*GA3P_g)/(ALD_g_ALD_g_KmFru16BP*ALD_g_ALD_g_KiGA3P*(1 + ATP_g/ALD_g_ALD_g_KiATP + ADP_g/ALD_g_ALD_g_KiADP + AMP_g/ALD_g_ALD_g_KiAMP))));
+  GlcT_c: $Glc_e -> Glc_c; GlcT_c_GlcT_c_Vmax*(Glc_e - Glc_c)/(GlcT_c_GlcT_c_KmGlc + Glc_e + Glc_c + GlcT_c_GlcT_c_alpha*Glc_e*Glc_c/GlcT_c_GlcT_c_KmGlc);
+  ALD_g: Fru16BP_g -> GA3P_g + DHAP_g; ALD_g_ALD_g_Vmax*Fru16BP_g*(1 - GA3P_g*DHAP_g/(Fru16BP_g*ALD_g_ALD_g_Keq))/(ALD_g_ALD_g_KmFru16BP*(1 + ATP_g/ALD_g_ALD_g_KiATP + ADP_g/ALD_g_ALD_g_KiADP + AMP_g/ALD_g_ALD_g_KiAMP)*(1 + GA3P_g/ALD_g_ALD_g_KmGA3P + DHAP_g/ALD_g_ALD_g_KmDHAP + Fru16BP_g/(ALD_g_ALD_g_KmFru16BP*(1 + ATP_g/ALD_g_ALD_g_KiATP + ADP_g/ALD_g_ALD_g_KiADP + AMP_g/ALD_g_ALD_g_KiAMP)) + GA3P_g*DHAP_g/(ALD_g_ALD_g_KmGA3P*ALD_g_ALD_g_KmDHAP) + Fru16BP_g*GA3P_g/(ALD_g_ALD_g_KmFru16BP*ALD_g_ALD_g_KiGA3P*(1 + ATP_g/ALD_g_ALD_g_KiATP + ADP_g/ALD_g_ALD_g_KiADP + AMP_g/ALD_g_ALD_g_KiAMP))));
   ENO_c: _2PGA_c -> PEP_c; v1sub1prod(ENO_c_ENO_c_Vmax, ENO_c_ENO_c_Keq, _2PGA_c, ENO_c_ENO_c_Km2PGA, PEP_c, ENO_c_ENO_c_KmPEP);
   HXK_g: ATP_g + Glc_g -> Glc6P_g + ADP_g; v2sub2prod(HXK_g_HXK_g_Vmax, HXK_g_HXK_g_Keq, Glc_g, HXK_g_HXK_g_KmGlc, ATP_g, HXK_g_HXK_g_KmATP, Glc6P_g, HXK_g_HXK_g_KmGlc6P, ADP_g, HXK_g_HXK_g_KmADP);
   _3PGAT_g: _3PGA_g -> _3PGA_c; mass_action_rev(_3PGAT_g__3PGAT_g_k, _3PGA_g, _3PGAT_g__3PGAT_g_k, _3PGA_c);
   PGK_g: _13BPGA_g + ADP_g -> _3PGA_g + ATP_g; v2sub2prod(PGK_g_PGK_g_Vmax, PGK_g_PGK_g_Keq, _13BPGA_g, PGK_g_PGK_g_Km13BPGA, ADP_g, PGK_g_PGK_g_KmADP, _3PGA_g, PGK_g_PGK_g_Km3PGA, ATP_g, PGK_g_PGK_g_KmATP);
   G3PDH_g: NADH_g + DHAP_g -> Gly3P_g + NAD_g; v2sub2prod(G3PDH_g_G3PDH_g_Vmax, G3PDH_g_G3PDH_g_Keq, DHAP_g, G3PDH_g_G3PDH_g_KmDHAP, NADH_g, G3PDH_g_G3PDH_g_KmNADH, Gly3P_g, G3PDH_g_G3PDH_g_KmGly3P, NAD_g, G3PDH_g_G3PDH_g_KmNAD);
   GPO_c: Gly3P_c => DHAP_c; v1sub(GPO_c_GPO_c_Vmax, Gly3P_c, GPO_c_GPO_c_KmGly3P);
-  ATPu_c: ATP_c => ADP_c; (ATPu_c_ATPu_c_k*ATP_c)/ADP_c;
+  ATPu_c: ATP_c => ADP_c; ATPu_c_ATPu_c_k*ATP_c/ADP_c;
   GK_g: Gly3P_g + ADP_g -> $Gly_e + ATP_g; v2sub2prod(GK_g_GK_g_Vmax, GK_g_GK_g_Keq, Gly3P_g, GK_g_GK_g_KmGly3P, ADP_g, GK_g_GK_g_KmADP, Gly_e, GK_g_GK_g_KmGly, ATP_g, GK_g_GK_g_KmATP);
-  AK_c: 2ADP_c -> AMP_c + ATP_c; vAK(ADP_c, AMP_c, ATP_c, AK_c_AK_c_k1, AK_c_AK_c_k2);
-  PGI_g: Glc6P_g -> Fru6P_g; (PGI_g_PGI_g_Vmax*Glc6P_g*(1 - Fru6P_g/(PGI_g_PGI_g_Keq*Glc6P_g)))/(PGI_g_PGI_g_KmGlc6P*(1 + Glc6P_g/PGI_g_PGI_g_KmGlc6P + Fru6P_g/PGI_g_PGI_g_KmFru6P + PGI_g__6PG_g/PGI_g_PGI_g_Ki6PG));
+  AK_c: 2 ADP_c -> AMP_c + ATP_c; vAK(ADP_c, AMP_c, ATP_c, AK_c_AK_c_k1, AK_c_AK_c_k2);
+  PGI_g: Glc6P_g -> Fru6P_g; PGI_g_PGI_g_Vmax*Glc6P_g*(1 - Fru6P_g/(PGI_g_PGI_g_Keq*Glc6P_g))/(PGI_g_PGI_g_KmGlc6P*(1 + Glc6P_g/PGI_g_PGI_g_KmGlc6P + Fru6P_g/PGI_g_PGI_g_KmFru6P + PGI_g__6PG_g/PGI_g_PGI_g_Ki6PG));
   GAPDH_g: GA3P_g + NAD_g + $Pi_g -> NADH_g + _13BPGA_g; v2sub2prod(GAPDH_g_GAPDH_g_Vmax, GAPDH_g_GAPDH_g_Keq, GA3P_g, GAPDH_g_GAPDH_g_KmGA3P, NAD_g, GAPDH_g_GAPDH_g_KmNAD, _13BPGA_g, GAPDH_g_GAPDH_g_Km13BPGA, NADH_g, GAPDH_g_GAPDH_g_KmNADH);
-  AK_g: 2ADP_g -> AMP_g + ATP_g; vAK(ADP_g, AMP_g, ATP_g, AK_g_AK_g_k1, AK_g_AK_g_k2);
+  AK_g: 2 ADP_g -> AMP_g + ATP_g; vAK(ADP_g, AMP_g, ATP_g, AK_g_AK_g_k1, AK_g_AK_g_k2);
   GDA_g: Gly3P_g + DHAP_c -> Gly3P_c + DHAP_g; Gly3P_g*GDA_g_GDA_g_k*DHAP_c - Gly3P_c*GDA_g_GDA_g_k*DHAP_g;
 
   // Species initializations:
@@ -203,4 +217,55 @@ model *MODEL1401310000()
   unit substance = 1e-9 mole;
   unit time_unit = 60 second;
   unit area = metre^2;
+
+  // SBO terms:
+  cytosol.sboTerm = 290
+  glycosome.sboTerm = 290
+  default.sboTerm = 290
+
+  // CV terms:
+  cytosol hypernym "http://identifiers.org/go/GO:0005829"
+  glycosome hypernym "http://identifiers.org/go/GO:0020015"
+  default hypernym "http://identifiers.org/go/GO:0005623"
+  _2PGA_c hypernym "http://identifiers.org/pubchem.compound/59"
+  DHAP_c hypernym "http://identifiers.org/chebi/CHEBI:57642"
+  ATP_g hypernym "http://identifiers.org/chebi/CHEBI:15422"
+  DHAP_g hypernym "http://identifiers.org/chebi/CHEBI:57642"
+  ADP_g hypernym "http://identifiers.org/chebi/CHEBI:16761"
+  Glc6P_g hypernym "http://identifiers.org/chebi/CHEBI:4170"
+  ADP_c hypernym "http://identifiers.org/chebi/CHEBI:16761"
+  _3PGA_c hypernym "http://identifiers.org/chebi/CHEBI:17794"
+  Fru6P_g hypernym "http://identifiers.org/pubchem.compound/444848"
+  Pi_g hypernym "http://identifiers.org/chebi/CHEBI:28874"
+  O2_c hypernym "http://identifiers.org/chebi/CHEBI:15379"
+  Gly_e hypernym "http://identifiers.org/chebi/CHEBI:17754"
+  ATP_c hypernym "http://identifiers.org/chebi/CHEBI:15422"
+  _13BPGA_g hypernym "http://identifiers.org/pubchem.compound/683"
+  Glc_c hypernym "http://identifiers.org/chebi/CHEBI:17234"
+  Glc_e hypernym "http://identifiers.org/chebi/CHEBI:17234"
+  Glc_g hypernym "http://identifiers.org/chebi/CHEBI:17234"
+  Pyr_c hypernym "http://identifiers.org/chebi/CHEBI:15361"
+  Pyr_e hypernym "http://identifiers.org/chebi/CHEBI:15361"
+  NAD_g hypernym "http://identifiers.org/chebi/CHEBI:13389"
+  Fru16BP_g hypernym "http://identifiers.org/chebi/CHEBI:40595"
+  GA3P_g hypernym "http://identifiers.org/chebi/CHEBI:17138"
+  CO2_c hypernym "http://identifiers.org/chebi/CHEBI:16526"
+  CO2_g hypernym "http://identifiers.org/chebi/CHEBI:16526"
+  Gly3P_c hypernym "http://identifiers.org/chebi/CHEBI:14336"
+  Gly3P_g hypernym "http://identifiers.org/chebi/CHEBI:14336"
+  PEP_c hypernym "http://identifiers.org/chebi/CHEBI:18021"
+  AMP_g hypernym "http://identifiers.org/chebi/CHEBI:16027"
+  _3PGA_g hypernym "http://identifiers.org/chebi/CHEBI:17794"
+  AMP_c hypernym "http://identifiers.org/chebi/CHEBI:16027"
+  NADH_g hypernym "http://identifiers.org/chebi/CHEBI:16908"
 end
+
+MODEL1401310000 is "Kerkhoven2013 - Glycolysis in T.brucei - MODEL A"
+
+MODEL1401310000 model_entity_is "http://identifiers.org/biomodels.db/MODEL1401310000"
+MODEL1401310000 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000513"
+MODEL1401310000 description "http://identifiers.org/pubmed/24339766"
+MODEL1401310000 origin "http://identifiers.org/biomodels.db/BIOMD0000000428"
+MODEL1401310000 property "http://identifiers.org/mamo/MAMO_0000046"
+MODEL1401310000 hypernym "http://identifiers.org/go/GO:0006096"
+MODEL1401310000 taxon "http://identifiers.org/taxonomy/5691"

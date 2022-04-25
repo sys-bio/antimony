@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 function activitycalc(x, slopea, yintercepta)
   yintercepta + x*slopea;
 end
@@ -23,9 +23,9 @@ model *BIOMD0000000436()
   r2: $FA => AA; k2*FA;
   r3: DG => AA; k3*DGactivity*DGperDNA*DNA_;
   r7: GPCho => AA; k7*GPChoratio*GPCho;
-  r5: GPCho => AA; (k5*DGactivity*GPChoratio*GPCho)/DNA_;
+  r5: GPCho => AA; k5*DGactivity*GPChoratio*GPCho/DNA_;
   r11: AA => PGH2; k11*AA;
-  r10: AA => PGH2; (k10*DGactivity*AA)/DNA_;
+  r10: AA => PGH2; k10*DGactivity*AA/DNA_;
   r8: AA => HETE; k8*AA;
   r4: AA => ; k4*AA;
   r9: HETE => ; k9*HETE;
@@ -181,17 +181,17 @@ model *BIOMD0000000436()
   GPChoslope6 has pmolperh;
   k1 = 355.637;
   k1 has perh;
-  k2 = 1e-015;
+  k2 = 1e-15;
   k2 has perh;
-  k3 = 1e-015;
+  k3 = 1e-15;
   k3 has perh;
-  k4 = 1e-015;
+  k4 = 1e-15;
   k4 has perh;
-  k5 = 1e-015;
+  k5 = 1e-15;
   k5 has ugDNAperh;
   k6 = 0.33;
   k6 has perh;
-  k7 = 1e-015;
+  k7 = 1e-15;
   k7 has perh;
   k8 = 0.007;
   k8 has perh;
@@ -205,11 +205,11 @@ model *BIOMD0000000436()
   k12 has perh;
   k13 = 0.204;
   k13 has perh;
-  k14 = 1e-015;
+  k14 = 1e-15;
   k14 has perh;
   k15 = 0.061;
   k15 has perh;
-  k16 = 1e-015;
+  k16 = 1e-15;
   k16 has perh;
   k17 = 3.116;
   k17 has perh;
@@ -260,4 +260,65 @@ model *BIOMD0000000436()
 
   // Display Names:
   AA is "Arachidonic acid";
+
+  // SBO terms:
+  k1.sboTerm = 9
+  k2.sboTerm = 9
+  k3.sboTerm = 9
+  k4.sboTerm = 9
+  k5.sboTerm = 9
+  k6.sboTerm = 9
+  k7.sboTerm = 9
+  k8.sboTerm = 9
+  k9.sboTerm = 9
+  k10.sboTerm = 9
+  k11.sboTerm = 9
+  k12.sboTerm = 9
+  k13.sboTerm = 9
+  k14.sboTerm = 9
+  k15.sboTerm = 9
+  k16.sboTerm = 9
+  k17.sboTerm = 9
+  k18.sboTerm = 9
+  k19.sboTerm = 9
+  k20.sboTerm = 9
+  k21.sboTerm = 9
+  k22.sboTerm = 9
+  DNA_.sboTerm = 2
+  DGperDNA.sboTerm = 2
+
+  // CV terms:
+  c1 hypernym "http://identifiers.org/obo.go/GO:0005623"
+  FA hypernym "http://identifiers.org/chebi/CHEBI:35366"
+  HETE identity "http://identifiers.org/lipidmaps/LMFA03060085"
+  PGH2 hypernym "http://identifiers.org/chebi/CHEBI:15554"
+  PGE2 identity "http://identifiers.org/lipidmaps/LMFA03010003"
+  PGF2a identity "http://identifiers.org/kegg.compound/C00639",
+                 "http://identifiers.org/lipidmaps/LMFA03010002",
+                 "http://identifiers.org/chebi/CHEBI:15553"
+  PGD2 identity "http://identifiers.org/kegg.compound/C00696",
+                "http://identifiers.org/lipidmaps/LMFA03010004",
+                "http://identifiers.org/chebi/CHEBI:15555"
+  PGJ2 identity "http://identifiers.org/kegg.compound/C05957",
+                "http://identifiers.org/lipidmaps/LMFA03010019",
+                "http://identifiers.org/chebi/CHEBI:27485"
+  dPGJ2 identity "http://identifiers.org/kegg.compound/C14717",
+                 "http://identifiers.org/lipidmaps/LMFA03010021",
+                 "http://identifiers.org/chebi/CHEBI:34159"
+  AA identity "http://identifiers.org/kegg.compound/C00219",
+              "http://identifiers.org/lipidmaps/LMFA01030001",
+              "http://identifiers.org/chebi/CHEBI:15843"
+  LPS hypernym "http://identifiers.org/chebi/CHEBI:16412"
+  DG hypernym "http://identifiers.org/chebi/CHEBI:49172"
+  GPCho hypernym "http://identifiers.org/chebi/CHEBI:49183"
+  dPGD2 identity "http://identifiers.org/lipidmaps/LMFA03010051"
 end
+
+BIOMD0000000436 is "Gupta2009 - Eicosanoid Metabolism"
+
+BIOMD0000000436 model_entity_is "http://identifiers.org/biomodels.db/MODEL1204240001"
+BIOMD0000000436 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000436"
+BIOMD0000000436 description "http://identifiers.org/pubmed/19486676"
+BIOMD0000000436 hypernym "http://identifiers.org/obo.go/GO:0006690",
+                         "http://identifiers.org/obo.pw/PW:0000565"
+BIOMD0000000436 taxon "http://identifiers.org/taxonomy/40674"

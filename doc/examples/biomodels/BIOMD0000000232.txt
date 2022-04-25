@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Nazaret2009_TCA_RC_ATP()
 
   // Compartments and Species:
@@ -10,11 +10,11 @@ model *Nazaret2009_TCA_RC_ATP()
   species Pyr in mitochondrion, $H2O in mitochondrion;
 
   // Assignment Rules:
-  ADP := At_ - ATP;
+  ADP := At - ATP;
   NADH := Nt - NAD;
-  ATPcrit := At_/(1 + exp((-3*DeltaGtransport)/(R*T))/(Kapp*iP));
+  ATPcrit := At/(1 + exp(-3*DeltaGtransport/(R*T))/(Kapp*iP));
   DeltaGtransport := 1.2*F*DeltaPsi;
-  Jresp := (kresp*((Nt - NAD)/((K + Nt) - NAD)))/(1 + exp(a*(DeltaPsi - DeltaPsim)));
+  Jresp := kresp*((Nt - NAD)/(K + Nt - NAD))/(1 + exp(a*(DeltaPsi - DeltaPsim)));
   JATP := kATP*(2/(1 + exp(b*(ATP - ATPcrit))) - 1);
   Jleak := kleak*DeltaPsi;
   JANT := kANT*ATP;
@@ -27,12 +27,12 @@ model *Nazaret2009_TCA_RC_ATP()
   v2: Pyr + NAD => AcCoA + $NADH; mitochondrion*v2_k2*Pyr*NAD;
   v3: OAA + AcCoA => Cit; mitochondrion*v3_k3*OAA*AcCoA;
   v4: Cit + NAD => KG + $NADH; mitochondrion*v4_k4*Cit*NAD;
-  v5: KG + $ADP + 2NAD => OAA + ATP + 2$NADH; mitochondrion*v5_k5*KG*NAD*(At_ - ATP);
+  v5: KG + $ADP + 2 NAD => OAA + ATP + 2 $NADH; mitochondrion*v5_k5*KG*NAD*(At - ATP);
   v6: OAA -> KG; mitochondrion*v6_k6*(OAA - KG/v6_Keq);
   v7: Pyr + ATP => OAA + $ADP; mitochondrion*v7_k7*Pyr*ATP;
   v8: OAA => ; mitochondrion*v8_k8*OAA;
-  vresp: $NADH + 0.5$O2 + 11$H => NAD + $H2O + 10$He; mitochondrion*Jresp;
-  vATP: $ADP + $iP + 3$He -> ATP + $H2O + 3$H; mitochondrion*JATP;
+  vresp: $NADH + 0.5 $O2 + 11 $H => NAD + $H2O + 10 $He; mitochondrion*Jresp;
+  vATP: $ADP + $iP + 3 $He -> ATP + $H2O + 3 $H; mitochondrion*JATP;
   vANT: ATP => $ADP; mitochondrion*JANT;
   vleak: $He => $H; mitochondrion*Jleak;
 
@@ -55,8 +55,8 @@ model *Nazaret2009_TCA_RC_ATP()
   mitochondrion = 1;
 
   // Variable initializations:
-  At_ = 4.16;
-  At_ has mM;
+  At = 4.16;
+  At has mM;
   Nt = 1.07;
   Nt has mM;
   ATPcrit has mM;
@@ -65,9 +65,9 @@ model *Nazaret2009_TCA_RC_ATP()
   R has mJ_per_mol_per_K;
   T = 298;
   T has kelvin;
-  Kapp = 4.4e-009;
+  Kapp = 4.4e-09;
   Kapp has per_mM;
-  C = 6.75e-006;
+  C = 6.75e-06;
   C has mM_per_mV;
   F = 96485;
   F has C_per_mol;
@@ -114,7 +114,7 @@ model *Nazaret2009_TCA_RC_ATP()
 
   // Other declarations:
   var ATPcrit, DeltaGtransport, DeltaPsi, Jresp, JATP, Jleak, JANT;
-  const cytoplasm, mitochondrion, At_, Nt, R, T, Kapp, C, F, DeltaPsim, kANT;
+  const cytoplasm, mitochondrion, At, Nt, R, T, Kapp, C, F, DeltaPsim, kANT;
   const kATP, b, kleak, kresp, K, a;
 
   // Unit definitions:
@@ -162,4 +162,92 @@ model *Nazaret2009_TCA_RC_ATP()
   R is "gas constant";
   T is "absolute temperature";
   F is "Faraday constant";
+
+  // SBO terms:
+  cytoplasm.sboTerm = 290
+  mitochondrion.sboTerm = 290
+  ADP.sboTerm = 247
+  ATP.sboTerm = 247
+  H.sboTerm = 327
+  He.sboTerm = 327
+  NAD.sboTerm = 247
+  NADH.sboTerm = 247
+  AcCoA.sboTerm = 247
+  KG.sboTerm = 247
+  Cit.sboTerm = 247
+  OAA.sboTerm = 247
+  O2.sboTerm = 247
+  iP.sboTerm = 327
+  Pyr.sboTerm = 247
+  H2O.sboTerm = 247
+  v1.sboTerm = 185
+  v2.sboTerm = 399
+  v3.sboTerm = 210
+  v4.sboTerm = 399
+  v5.sboTerm = 399
+  v6.sboTerm = 403
+  v6_Keq.sboTerm = 281
+  v7.sboTerm = 210
+  v8.sboTerm = 185
+  vresp.sboTerm = 201
+  vATP.sboTerm = 216
+  vANT.sboTerm = 330
+  vleak.sboTerm = 185
+
+  // CV terms:
+  cytoplasm hypernym "http://identifiers.org/obo.go/GO:0005737"
+  mitochondrion hypernym "http://identifiers.org/obo.go/GO:0005759"
+  ADP hypernym "http://identifiers.org/obo.chebi/CHEBI:16761",
+               "http://identifiers.org/kegg.compound/C00008"
+  ATP hypernym "http://identifiers.org/obo.chebi/CHEBI:15422",
+               "http://identifiers.org/kegg.compound/C00002"
+  H hypernym "http://identifiers.org/obo.chebi/CHEBI:24636",
+             "http://identifiers.org/kegg.compound/C00080"
+  He hypernym "http://identifiers.org/obo.chebi/CHEBI:24636",
+              "http://identifiers.org/kegg.compound/C00080"
+  NAD hypernym "http://identifiers.org/obo.chebi/CHEBI:15846",
+               "http://identifiers.org/kegg.compound/C00003"
+  NADH hypernym "http://identifiers.org/obo.chebi/CHEBI:16908",
+                "http://identifiers.org/kegg.compound/C00004"
+  AcCoA hypernym "http://identifiers.org/obo.chebi/CHEBI:15351",
+                 "http://identifiers.org/kegg.compound/C00024"
+  KG hypernym "http://identifiers.org/obo.chebi/CHEBI:16810",
+              "http://identifiers.org/kegg.compound/C00026"
+  Cit hypernym "http://identifiers.org/obo.chebi/CHEBI:16947",
+               "http://identifiers.org/kegg.compound/C00158"
+  OAA hypernym "http://identifiers.org/obo.chebi/CHEBI:16452",
+               "http://identifiers.org/kegg.compound/C00036"
+  O2 hypernym "http://identifiers.org/obo.chebi/CHEBI:15379",
+              "http://identifiers.org/kegg.compound/C00007"
+  iP hypernym "http://identifiers.org/obo.chebi/CHEBI:18367",
+              "http://identifiers.org/kegg.compound/C00009"
+  Pyr hypernym "http://identifiers.org/obo.chebi/CHEBI:15361",
+               "http://identifiers.org/kegg.compound/C00022"
+  H2O hypernym "http://identifiers.org/obo.chebi/CHEBI:15377",
+               "http://identifiers.org/kegg.compound/C00001"
+  v1 hypernym "http://identifiers.org/obo.go/GO:0006848"
+  v2 hypernym "http://identifiers.org/kegg.reaction/R00209"
+  v3 hypernym "http://identifiers.org/kegg.reaction/R00351"
+  v4 hypernym "http://identifiers.org/kegg.reaction/R00709"
+  v5 hypernym "http://identifiers.org/kegg.reaction/R00355"
+  v6 hypernym "http://identifiers.org/kegg.reaction/R00355"
+  v7 hypernym "http://identifiers.org/kegg.reaction/R00344"
+  v8 hypernym "http://identifiers.org/obo.go/GO:0015729"
+  vresp hypernym "http://identifiers.org/kegg.reaction/R07171"
+  vATP hypernym "http://identifiers.org/kegg.reaction/R05227"
+  vANT hypernym "http://identifiers.org/kegg.reaction/R00086"
 end
+
+Nazaret2009_TCA_RC_ATP is "Nazaret2009_TCA_RC_ATP"
+
+Nazaret2009_TCA_RC_ATP model_entity_is "http://identifiers.org/biomodels.db/MODEL2594602728"
+Nazaret2009_TCA_RC_ATP model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000232"
+Nazaret2009_TCA_RC_ATP description "http://identifiers.org/pubmed/19007794"
+Nazaret2009_TCA_RC_ATP taxon "http://identifiers.org/taxonomy/9606"
+Nazaret2009_TCA_RC_ATP version "http://identifiers.org/obo.go/GO:0006099",
+                               "http://identifiers.org/obo.go/GO:0070469",
+                               "http://identifiers.org/obo.go/GO:0006754"
+Nazaret2009_TCA_RC_ATP parthood "http://identifiers.org/reactome/REACT_6305",
+                                "http://identifiers.org/reactome/REACT_1785",
+                                "http://identifiers.org/reactome/REACT_2124"
+Nazaret2009_TCA_RC_ATP version "http://identifiers.org/kegg.pathway/hsa00020"

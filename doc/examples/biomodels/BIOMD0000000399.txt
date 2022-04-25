@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Jenkinson2011_EGF_MAPK()
 
   // Compartments and Species:
@@ -32,12 +32,12 @@ model *Jenkinson2011_EGF_MAPK()
   ERK_PP := x59 + x83;
   SHC_P_t := x33 + x34 + x35 + x36 + x37 + x38 + x39 + x40 + x91 + x92 + x93 + x94 + x64 + x65 + x66 + x67 + x68;
   EGF_EGFR_act := x5 + x7 + x15 + x23 + x25 + x27 + x29 + x32 + x33 + x34 + x35 + x36 + x37 + x88 + x89 + x90 + x91 + x92 + x93 + x94 + x8 + x11 + x17 + x18 + x19 + x20 + x21 + x63 + x64 + x65 + x66 + x67 + x68;
-  k5 := piecewise(1.55, C < 3100, 0.2, C > 100000, C*-1.350000e-005 + 1.55);
+  k5 := piecewise(1.55, C < 3100, 0.2, C > 100000, C*-1.35e-5 + 1.55);
   C := RT/(kr1/(k1*x1) + 1);
 
   // Reactions:
   v1: $x1 + x2 -> x3; k1*x1*x2 - kr1*x3;
-  v2: 2x3 -> x4; k2*x3*x3 - kr2*x4;
+  v2: 2 x3 -> x4; k2*x3*x3 - kr2*x4;
   v3: x4 -> x5; k3*x4 - kr3*x5;
   v4: x23 + x12 -> x7; k4*x23*x12 - kr4*x7;
   v5: x7 -> x18 + x9; k5*x7;
@@ -46,7 +46,7 @@ model *Jenkinson2011_EGF_MAPK()
   v8: x5 + x14 -> x15; k8*x5*x14 - kr8*x15;
   v9: x23 => x18; k7*x23;
   v10: x6 + x16 -> x10; k10*x6*x16 - kr10*x10;
-  v11: 2x10 -> x11; k2*x10*x10 - kr2*x11;
+  v11: 2 x10 -> x11; k2*x10*x10 - kr2*x11;
   v12: x11 -> x8; k3*x11 - kr3*x8;
   v13:  => x2; k13;
   v14: x8 + x14 -> x17; k14*x8*x14 - kr14*x17;
@@ -71,7 +71,7 @@ model *Jenkinson2011_EGF_MAPK()
   v33: x38 -> x40 + x30; k33*x38 - kr33*x40*x30;
   v34: x25 -> x15 + x30; k34*x25 - kr34*x15*x30;
   v35: x30 -> x24 + x22; k35*x30 - kr35*x24*x22;
-  v36: x40 => x31; (Vm36*x40)/(Km36 + x40);
+  v36: x40 => x31; Vm36*x40/(Km36 + x40);
   v37: x33 -> x15 + x40; k37*x33 - kr37*x15*x40;
   v38: x22 + x40 -> x39; k24*x22*x40 - kr24*x39;
   v39: x34 -> x15 + x39; k37*x34 - kr37*x15*x39;
@@ -261,7 +261,7 @@ model *Jenkinson2011_EGF_MAPK()
   // Compartment initializations:
   c1 = 1;
   c2 = 1;
-  c3 = 4.3e-006;
+  c3 = 4.3e-06;
 
   // Variable initializations:
   k1 = 0.002372521;
@@ -276,7 +276,7 @@ model *Jenkinson2011_EGF_MAPK()
   k3 has pmin;
   kr3 = 2.220991;
   kr3 has pmin;
-  k4 = 3.047285e-005;
+  k4 = 3.047285e-05;
   k4 has pipmin;
   kr4 = 0.1230832;
   kr4 has pmin;
@@ -305,7 +305,7 @@ model *Jenkinson2011_EGF_MAPK()
   k12 has pmin;
   k13 = 0.4545611;
   k13 has ipmin;
-  k14 = 6.370566e-007;
+  k14 = 6.370566e-07;
   k14 has pipmin;
   kr14 = 196.6479;
   kr14 has pmin;
@@ -323,17 +323,17 @@ model *Jenkinson2011_EGF_MAPK()
   kr18 has pmin;
   k18 = 0.004463938;
   k18 has pipmin;
-  kr19 = 5.84737e-006;
+  kr19 = 5.84737e-06;
   kr19 has pipmin;
   k19 = 349.772;
   k19 has pmin;
   kr20 = 12.816;
   kr20 has pmin;
-  k20 = 5.17656e-005;
+  k20 = 5.17656e-05;
   k20 has pipmin;
   k21 = 0.4722901;
   k21 has pmin;
-  kr21 = 1.714441e-005;
+  kr21 = 1.714441e-05;
   kr21 has pipmin;
   k22 = 0.0001445554;
   k22 has pipmin;
@@ -351,7 +351,7 @@ model *Jenkinson2011_EGF_MAPK()
   kr25 has pmin;
   k25 = 0.0006871213;
   k25 has pipmin;
-  k28 = 9.826084e-006;
+  k28 = 9.826084e-06;
   k28 has pipmin;
   kr28 = 0.9683624;
   kr28 has pmin;
@@ -359,13 +359,13 @@ model *Jenkinson2011_EGF_MAPK()
   k29 has pmin;
   kr29 = 0.0001096614;
   kr29 has pipmin;
-  kr32 = 5.54527e-005;
+  kr32 = 5.54527e-05;
   kr32 has pipmin;
   k32 = 14.19908;
   k32 has pmin;
   k33 = 10.96212;
   k33 has pmin;
-  kr33 = 1.788597e-005;
+  kr33 = 1.788597e-05;
   kr33 has pipmin;
   k34 = 0.2467995;
   k34 has pmin;
@@ -381,9 +381,9 @@ model *Jenkinson2011_EGF_MAPK()
   Km36 has substance;
   k37 = 29.34687;
   k37 has pmin;
-  kr37 = 5.477036e-006;
+  kr37 = 5.477036e-06;
   kr37 has pipmin;
-  k40 = 7.409959e-005;
+  k40 = 7.409959e-05;
   k40 has pipmin;
   kr40 = 2.748877;
   kr40 has pmin;
@@ -574,4 +574,458 @@ model *Jenkinson2011_EGF_MAPK()
   EGF_EGFR_act is "t_EGF_EGFR*";
   C is "C_internalization";
   RT is "total_Receptors";
+
+  // CV terms:
+  c1 identity "http://identifiers.org/go/GO:0005615"
+  c2 identity "http://identifiers.org/go/GO:0005737"
+  c3 identity "http://identifiers.org/go/GO:0005768"
+  x1 hypernym "http://identifiers.org/uniprot/P01133"
+  x2 hypernym "http://identifiers.org/uniprot/P00533"
+  x3 hypernym "http://identifiers.org/reactome/REACT_9893"
+  x3 part "http://identifiers.org/uniprot/P01133",
+          "http://identifiers.org/uniprot/P00533"
+  x4 hypernym "http://identifiers.org/reactome/REACT_9820"
+  x4 part "http://identifiers.org/uniprot/P01133",
+          "http://identifiers.org/uniprot/P00533"
+  x5 hypernym "http://identifiers.org/kegg.compound/C00562"
+  x5 part "http://identifiers.org/uniprot/P01133",
+          "http://identifiers.org/uniprot/P00533"
+  x6 hypernym "http://identifiers.org/uniprot/P00533"
+  x7 part "http://identifiers.org/uniprot/P01133",
+          "http://identifiers.org/uniprot/P00533",
+          "http://identifiers.org/uniprot/P62993",
+          "http://identifiers.org/uniprot/P20936",
+          "http://identifiers.org/go/GO:0030119"
+  x8 part "http://identifiers.org/uniprot/P00533",
+          "http://identifiers.org/uniprot/P01133"
+  x9 hypernym "http://identifiers.org/go/GO:0030119"
+  x10 part "http://identifiers.org/uniprot/P00533",
+           "http://identifiers.org/uniprot/P01133"
+  x11 part "http://identifiers.org/uniprot/P01133",
+           "http://identifiers.org/uniprot/P00533"
+  x12 hypernym "http://identifiers.org/go/GO:0030119"
+  x14 hypernym "http://identifiers.org/uniprot/P20936"
+  x14 hypernym "http://identifiers.org/interpro/IPR001936"
+  x14 description "http://identifiers.org/omim/139150"
+  x15 part "http://identifiers.org/uniprot/P01133",
+           "http://identifiers.org/uniprot/P00533",
+           "http://identifiers.org/uniprot/P20936"
+  x16 hypernym "http://identifiers.org/uniprot/P01133"
+  x17 part "http://identifiers.org/uniprot/P20936",
+           "http://identifiers.org/uniprot/P00533",
+           "http://identifiers.org/uniprot/P01133"
+  x18 part "http://identifiers.org/uniprot/P62993",
+           "http://identifiers.org/uniprot/P20936",
+           "http://identifiers.org/uniprot/P00533",
+           "http://identifiers.org/uniprot/P01133"
+  x19 part "http://identifiers.org/uniprot/Q07889",
+           "http://identifiers.org/uniprot/P62993",
+           "http://identifiers.org/uniprot/P20936",
+           "http://identifiers.org/uniprot/P00533",
+           "http://identifiers.org/uniprot/P01133"
+  x20 part "http://identifiers.org/chebi/CHEBI:17552",
+           "http://identifiers.org/uniprot/P01112",
+           "http://identifiers.org/uniprot/Q07889",
+           "http://identifiers.org/uniprot/P62993",
+           "http://identifiers.org/uniprot/P20936",
+           "http://identifiers.org/uniprot/P00533",
+           "http://identifiers.org/uniprot/P01133"
+  x21 part "http://identifiers.org/chebi/CHEBI:15996",
+           "http://identifiers.org/uniprot/P01112",
+           "http://identifiers.org/uniprot/Q07889",
+           "http://identifiers.org/uniprot/P62993",
+           "http://identifiers.org/uniprot/P20936",
+           "http://identifiers.org/uniprot/P00533",
+           "http://identifiers.org/uniprot/P01133"
+  x22 hypernym "http://identifiers.org/uniprot/P62993"
+  x22 description "http://identifiers.org/omim/108355"
+  x23 part "http://identifiers.org/uniprot/P62993",
+           "http://identifiers.org/uniprot/P20936",
+           "http://identifiers.org/uniprot/P00533",
+           "http://identifiers.org/uniprot/P01133"
+  x24 hypernym "http://identifiers.org/uniprot/Q07889"
+  x24 description "http://identifiers.org/omim/182530"
+  x25 part "http://identifiers.org/uniprot/Q07889",
+           "http://identifiers.org/uniprot/P62993",
+           "http://identifiers.org/uniprot/P20936",
+           "http://identifiers.org/uniprot/P00533",
+           "http://identifiers.org/uniprot/P01133"
+  x26 part "http://identifiers.org/chebi/CHEBI:17552",
+           "http://identifiers.org/uniprot/P01112"
+  x27 part "http://identifiers.org/chebi/CHEBI:17552",
+           "http://identifiers.org/uniprot/P01112",
+           "http://identifiers.org/uniprot/Q07889",
+           "http://identifiers.org/uniprot/P62993",
+           "http://identifiers.org/uniprot/P20936",
+           "http://identifiers.org/uniprot/P00533",
+           "http://identifiers.org/uniprot/P01133"
+  x28 part "http://identifiers.org/chebi/CHEBI:15996",
+           "http://identifiers.org/uniprot/P01112"
+  x29 part "http://identifiers.org/chebi/CHEBI:15996",
+           "http://identifiers.org/uniprot/P01112",
+           "http://identifiers.org/uniprot/Q07889",
+           "http://identifiers.org/uniprot/P62993",
+           "http://identifiers.org/uniprot/P20936",
+           "http://identifiers.org/uniprot/P00533",
+           "http://identifiers.org/uniprot/P01133"
+  x30 part "http://identifiers.org/uniprot/Q07889",
+           "http://identifiers.org/uniprot/P62993"
+  x31 hypernym "http://identifiers.org/uniprot/P98077"
+  x31 description "http://identifiers.org/omim/605217"
+  x32 part "http://identifiers.org/uniprot/P98077",
+           "http://identifiers.org/uniprot/P20936",
+           "http://identifiers.org/uniprot/P00533",
+           "http://identifiers.org/uniprot/P01133"
+  x33 part "http://identifiers.org/uniprot/P98077",
+           "http://identifiers.org/uniprot/P20936",
+           "http://identifiers.org/uniprot/P00533",
+           "http://identifiers.org/uniprot/P01133"
+  x34 part "http://identifiers.org/uniprot/P62993",
+           "http://identifiers.org/uniprot/P98077",
+           "http://identifiers.org/uniprot/P20936",
+           "http://identifiers.org/uniprot/P00533",
+           "http://identifiers.org/uniprot/P01133"
+  x35 part "http://identifiers.org/uniprot/Q07889",
+           "http://identifiers.org/uniprot/P62993",
+           "http://identifiers.org/uniprot/P98077",
+           "http://identifiers.org/uniprot/P20936",
+           "http://identifiers.org/uniprot/P00533",
+           "http://identifiers.org/uniprot/P01133"
+  x36 part "http://identifiers.org/chebi/CHEBI:17552",
+           "http://identifiers.org/uniprot/P01112",
+           "http://identifiers.org/uniprot/Q07889",
+           "http://identifiers.org/uniprot/P62993",
+           "http://identifiers.org/uniprot/P98077",
+           "http://identifiers.org/uniprot/P20936",
+           "http://identifiers.org/uniprot/P00533",
+           "http://identifiers.org/uniprot/P01133"
+  x37 part "http://identifiers.org/chebi/CHEBI:15996",
+           "http://identifiers.org/uniprot/P01112",
+           "http://identifiers.org/uniprot/Q07889",
+           "http://identifiers.org/uniprot/P62993",
+           "http://identifiers.org/uniprot/P98077",
+           "http://identifiers.org/uniprot/P20936",
+           "http://identifiers.org/uniprot/P00533",
+           "http://identifiers.org/uniprot/P01133"
+  x38 part "http://identifiers.org/uniprot/Q07889",
+           "http://identifiers.org/uniprot/P62993",
+           "http://identifiers.org/uniprot/P98077"
+  x39 part "http://identifiers.org/uniprot/P62993",
+           "http://identifiers.org/uniprot/P98077"
+  x40 part "http://identifiers.org/uniprot/P98077"
+  x41 part "http://identifiers.org/uniprot/P04049"
+  x42 part "http://identifiers.org/chebi/CHEBI:15996",
+           "http://identifiers.org/uniprot/P01112",
+           "http://identifiers.org/uniprot/P04049"
+  x43 part "http://identifiers.org/chebi/CHEBI:15996",
+           "http://identifiers.org/uniprot/P01112"
+  x44 hypernym "http://identifiers.org/psimi/MI:0501"
+  x45 hypernym "http://identifiers.org/uniprot/P04049"
+  x46 part "http://identifiers.org/uniprot/P04049"
+  x47 hypernym "http://identifiers.org/uniprot/Q02750",
+               "http://identifiers.org/uniprot/A4QPA9"
+  x47 description "http://identifiers.org/omim/176872"
+  x48 part "http://identifiers.org/uniprot/P04049",
+           "http://identifiers.org/uniprot/Q02750"
+  x49 hypernym "http://identifiers.org/uniprot/Q02750",
+               "http://identifiers.org/uniprot/A4QPA9",
+               "http://identifiers.org/kegg.compound/C00562"
+  x49 description "http://identifiers.org/omim/176872"
+  x50 hypernym "http://identifiers.org/kegg.compound/C00562"
+  x50 part "http://identifiers.org/uniprot/P04049",
+           "http://identifiers.org/uniprot/Q02750"
+  x51 hypernym "http://identifiers.org/uniprot/Q02750",
+               "http://identifiers.org/kegg.compound/C00562"
+  x52 hypernym "http://identifiers.org/kegg.compound/C00562"
+  x52 part "http://identifiers.org/uniprot/Q9BZL4",
+           "http://identifiers.org/uniprot/Q02750"
+  x53 hypernym "http://identifiers.org/psimi/MI:0501"
+  x54 hypernym "http://identifiers.org/kegg.compound/C00562"
+  x54 part "http://identifiers.org/uniprot/Q02750",
+           "http://identifiers.org/uniprot/Q9BZL4"
+  x55 hypernym "http://identifiers.org/uniprot/P28482"
+  x55 description "http://identifiers.org/omim/176948"
+  x56 hypernym "http://identifiers.org/kegg.compound/C00562"
+  x56 part "http://identifiers.org/uniprot/P28482",
+           "http://identifiers.org/uniprot/Q02750"
+  x57 hypernym "http://identifiers.org/uniprot/P28482",
+               "http://identifiers.org/kegg.compound/C00562"
+  x58 hypernym "http://identifiers.org/kegg.compound/C00562"
+  x58 part "http://identifiers.org/uniprot/P28482",
+           "http://identifiers.org/uniprot/Q02750"
+  x59 hypernym "http://identifiers.org/uniprot/P28482",
+               "http://identifiers.org/kegg.compound/C00562"
+  x60 hypernym "http://identifiers.org/psimi/MI:0501"
+  x61 hypernym "http://identifiers.org/kegg.compound/C00562"
+  x61 part "http://identifiers.org/uniprot/P28482",
+           "http://identifiers.org/psimi/MI:0501"
+  x62 hypernym "http://identifiers.org/kegg.compound/C00562"
+  x62 part "http://identifiers.org/uniprot/P28482",
+           "http://identifiers.org/psimi/MI:0501"
+  x63 part "http://identifiers.org/uniprot/P98077",
+           "http://identifiers.org/uniprot/P20936",
+           "http://identifiers.org/uniprot/P01133",
+           "http://identifiers.org/uniprot/P00533"
+  x64 part "http://identifiers.org/uniprot/P98077",
+           "http://identifiers.org/uniprot/P20936",
+           "http://identifiers.org/uniprot/P00533",
+           "http://identifiers.org/uniprot/P01133"
+  x65 part "http://identifiers.org/uniprot/P62993",
+           "http://identifiers.org/uniprot/P98077",
+           "http://identifiers.org/uniprot/P20936",
+           "http://identifiers.org/uniprot/P01133",
+           "http://identifiers.org/uniprot/P00533"
+  x66 part "http://identifiers.org/uniprot/Q07889",
+           "http://identifiers.org/uniprot/P62993",
+           "http://identifiers.org/uniprot/P98077",
+           "http://identifiers.org/uniprot/P20936",
+           "http://identifiers.org/uniprot/P00533",
+           "http://identifiers.org/uniprot/P01133"
+  x67 part "http://identifiers.org/chebi/CHEBI:17552",
+           "http://identifiers.org/uniprot/P01112",
+           "http://identifiers.org/uniprot/P62993",
+           "http://identifiers.org/uniprot/Q07889",
+           "http://identifiers.org/uniprot/P98077",
+           "http://identifiers.org/uniprot/P20936",
+           "http://identifiers.org/uniprot/P00533",
+           "http://identifiers.org/uniprot/P01133"
+  x68 part "http://identifiers.org/chebi/CHEBI:15996",
+           "http://identifiers.org/uniprot/P01112",
+           "http://identifiers.org/uniprot/Q07889",
+           "http://identifiers.org/uniprot/P62993",
+           "http://identifiers.org/uniprot/P20936",
+           "http://identifiers.org/uniprot/P98077",
+           "http://identifiers.org/uniprot/P00533",
+           "http://identifiers.org/uniprot/P01133"
+  x69 part "http://identifiers.org/chebi/CHEBI:15996",
+           "http://identifiers.org/uniprot/P01112"
+  x70 part "http://identifiers.org/chebi/CHEBI:15996",
+           "http://identifiers.org/uniprot/P01112",
+           "http://identifiers.org/uniprot/P04049"
+  x71 part "http://identifiers.org/chebi/CHEBI:15996",
+           "http://identifiers.org/uniprot/P01112"
+  x72 hypernym "http://identifiers.org/uniprot/P04049"
+  x73 part "http://identifiers.org/uniprot/P04049",
+           "http://identifiers.org/psimi/MI:0501"
+  x74 part "http://identifiers.org/uniprot/P04049",
+           "http://identifiers.org/uniprot/Q02750"
+  x75 hypernym "http://identifiers.org/uniprot/Q02750",
+               "http://identifiers.org/kegg.compound/C00562"
+  x76 hypernym "http://identifiers.org/kegg.compound/C00562"
+  x76 part "http://identifiers.org/uniprot/P04049",
+           "http://identifiers.org/uniprot/Q02750"
+  x77 hypernym "http://identifiers.org/uniprot/Q02750",
+               "http://identifiers.org/kegg.compound/C00562"
+  x78 hypernym "http://identifiers.org/kegg.compound/C00562"
+  x78 part "http://identifiers.org/uniprot/Q02750",
+           "http://identifiers.org/psimi/MI:0501"
+  x79 hypernym "http://identifiers.org/kegg.compound/C00562"
+  x79 part "http://identifiers.org/uniprot/Q02750",
+           "http://identifiers.org/psimi/MI:0501"
+  x80 hypernym "http://identifiers.org/kegg.compound/C00562"
+  x80 part "http://identifiers.org/uniprot/Q02750",
+           "http://identifiers.org/uniprot/P28482"
+  x81 hypernym "http://identifiers.org/uniprot/P28482",
+               "http://identifiers.org/kegg.compound/C00562"
+  x82 hypernym "http://identifiers.org/kegg.compound/C00562"
+  x82 part "http://identifiers.org/uniprot/P28482",
+           "http://identifiers.org/uniprot/Q02750"
+  x83 hypernym "http://identifiers.org/uniprot/P28482",
+               "http://identifiers.org/kegg.compound/C00562"
+  x84 hypernym "http://identifiers.org/kegg.compound/C00562"
+  x84 part "http://identifiers.org/uniprot/P28482",
+           "http://identifiers.org/psimi/MI:0501"
+  x85 hypernym "http://identifiers.org/kegg.compound/C00562"
+  x85 part "http://identifiers.org/uniprot/P28482",
+           "http://identifiers.org/psimi/MI:0501"
+  x88 part "http://identifiers.org/uniprot/P01133",
+           "http://identifiers.org/uniprot/P00533",
+           "http://identifiers.org/uniprot/P62993",
+           "http://identifiers.org/uniprot/P20936",
+           "http://identifiers.org/uniprot/Q07889",
+           "http://identifiers.org/go/GO:0030119"
+  x89 part "http://identifiers.org/chebi/CHEBI:17552",
+           "http://identifiers.org/uniprot/P01133",
+           "http://identifiers.org/uniprot/P00533",
+           "http://identifiers.org/uniprot/P20936",
+           "http://identifiers.org/uniprot/P62993",
+           "http://identifiers.org/uniprot/Q07889",
+           "http://identifiers.org/uniprot/P01112",
+           "http://identifiers.org/go/GO:0030119"
+  x90 part "http://identifiers.org/chebi/CHEBI:15996",
+           "http://identifiers.org/uniprot/P01133",
+           "http://identifiers.org/uniprot/P00533",
+           "http://identifiers.org/uniprot/P20936",
+           "http://identifiers.org/uniprot/P62993",
+           "http://identifiers.org/uniprot/Q07889",
+           "http://identifiers.org/uniprot/P01112",
+           "http://identifiers.org/go/GO:0030119"
+  x91 part "http://identifiers.org/uniprot/P01133",
+           "http://identifiers.org/uniprot/P00533",
+           "http://identifiers.org/uniprot/P20936",
+           "http://identifiers.org/uniprot/P98077",
+           "http://identifiers.org/uniprot/P62993",
+           "http://identifiers.org/go/GO:0030119"
+  x92 part "http://identifiers.org/uniprot/P01133",
+           "http://identifiers.org/uniprot/P00533",
+           "http://identifiers.org/uniprot/P20936",
+           "http://identifiers.org/uniprot/P98077",
+           "http://identifiers.org/uniprot/P62993",
+           "http://identifiers.org/uniprot/Q07889",
+           "http://identifiers.org/go/GO:0030119"
+  x93 part "http://identifiers.org/chebi/CHEBI:17552",
+           "http://identifiers.org/uniprot/P01133",
+           "http://identifiers.org/uniprot/P00533",
+           "http://identifiers.org/uniprot/P20936",
+           "http://identifiers.org/uniprot/P98077",
+           "http://identifiers.org/uniprot/P62993",
+           "http://identifiers.org/uniprot/Q07889",
+           "http://identifiers.org/uniprot/P01112",
+           "http://identifiers.org/go/GO:0030119"
+  x94 part "http://identifiers.org/chebi/CHEBI:15996",
+           "http://identifiers.org/uniprot/P01133",
+           "http://identifiers.org/uniprot/P00533",
+           "http://identifiers.org/uniprot/P20936",
+           "http://identifiers.org/uniprot/P98077",
+           "http://identifiers.org/uniprot/P62993",
+           "http://identifiers.org/uniprot/Q07889",
+           "http://identifiers.org/uniprot/P01112",
+           "http://identifiers.org/go/GO:0030119"
+  v1 hypernym "http://identifiers.org/go/GO:0006461"
+  v2 hypernym "http://identifiers.org/go/GO:0042803"
+  v3 hypernym "http://identifiers.org/psimod/MOD:00000"
+  v4 hypernym "http://identifiers.org/go/GO:0006461"
+  v5 hypernym "http://identifiers.org/go/GO:0043241"
+  v6 hypernym "http://identifiers.org/psimod/MOD:00000"
+  v7 hypernym "http://identifiers.org/psimod/MOD:00000"
+  v8 hypernym "http://identifiers.org/go/GO:0006461"
+  v9 hypernym "http://identifiers.org/psimod/MOD:00000"
+  v10 hypernym "http://identifiers.org/go/GO:0006461"
+  v11 hypernym "http://identifiers.org/go/GO:0042803"
+  v12 hypernym "http://identifiers.org/psimod/MOD:00000"
+  v13 hypernym "http://identifiers.org/go/GO:0032800"
+  v14 hypernym "http://identifiers.org/go/GO:0006461"
+  v15 hypernym "http://identifiers.org/psimod/MOD:00000"
+  v16 hypernym "http://identifiers.org/go/GO:0006461"
+  v17 hypernym "http://identifiers.org/go/GO:0006461"
+  v18 hypernym "http://identifiers.org/go/GO:0006461"
+  v19 hypernym "http://identifiers.org/go/GO:0043241"
+  v20 hypernym "http://identifiers.org/go/GO:0006461"
+  v21 hypernym "http://identifiers.org/go/GO:0043241"
+  v22 hypernym "http://identifiers.org/go/GO:0006461"
+  v23 hypernym "http://identifiers.org/go/GO:0006461"
+  v24 hypernym "http://identifiers.org/go/GO:0006461"
+  v25 hypernym "http://identifiers.org/go/GO:0006461"
+  v26 hypernym "http://identifiers.org/go/GO:0006461"
+  v27 hypernym "http://identifiers.org/go/GO:0043241"
+  v28 hypernym "http://identifiers.org/go/GO:0006461"
+  v29 hypernym "http://identifiers.org/go/GO:0043241"
+  v30 hypernym "http://identifiers.org/go/GO:0006461"
+  v31 hypernym "http://identifiers.org/go/GO:0043241"
+  v32 hypernym "http://identifiers.org/go/GO:0043241"
+  v33 hypernym "http://identifiers.org/go/GO:0043241"
+  v34 hypernym "http://identifiers.org/go/GO:0043241"
+  v35 hypernym "http://identifiers.org/go/GO:0043241"
+  v36 hypernym "http://identifiers.org/psimod/MOD:00000"
+  v37 hypernym "http://identifiers.org/go/GO:0043241"
+  v38 hypernym "http://identifiers.org/go/GO:0006461"
+  v39 hypernym "http://identifiers.org/go/GO:0043241"
+  v40 hypernym "http://identifiers.org/go/GO:0006461"
+  v41 hypernym "http://identifiers.org/go/GO:0006461"
+  v42 hypernym "http://identifiers.org/go/GO:0006461"
+  v43 hypernym "http://identifiers.org/go/GO:0006461"
+  v44 hypernym "http://identifiers.org/go/GO:0006461"
+  v45 hypernym "http://identifiers.org/go/GO:0043241"
+  v46 hypernym "http://identifiers.org/go/GO:0006461"
+  v47 hypernym "http://identifiers.org/go/GO:0043241"
+  v48 hypernym "http://identifiers.org/go/GO:0006461"
+  v49 hypernym "http://identifiers.org/go/GO:0043241"
+  v50 hypernym "http://identifiers.org/go/GO:0006461"
+  v51 hypernym "http://identifiers.org/go/GO:0043241"
+  v52 hypernym "http://identifiers.org/go/GO:0006461"
+  v53 hypernym "http://identifiers.org/go/GO:0043241"
+  v54 hypernym "http://identifiers.org/go/GO:0006461"
+  v55 hypernym "http://identifiers.org/go/GO:0043241"
+  v56 hypernym "http://identifiers.org/go/GO:0006461"
+  v57 hypernym "http://identifiers.org/go/GO:0043241"
+  v58 hypernym "http://identifiers.org/go/GO:0006461"
+  v59 hypernym "http://identifiers.org/go/GO:0043241"
+  v60 hypernym "http://identifiers.org/go/GO:0030163"
+  v61 hypernym "http://identifiers.org/go/GO:0030163"
+  v62 hypernym "http://identifiers.org/go/GO:0030163"
+  v63 hypernym "http://identifiers.org/go/GO:0006461"
+  v64 hypernym "http://identifiers.org/go/GO:0006461"
+  v65 hypernym "http://identifiers.org/go/GO:0006461"
+  v66 hypernym "http://identifiers.org/go/GO:0043241"
+  v67 hypernym "http://identifiers.org/go/GO:0006461"
+  v68 hypernym "http://identifiers.org/go/GO:0043241"
+  v69 hypernym "http://identifiers.org/go/GO:0006461"
+  v70 hypernym "http://identifiers.org/psimod/MOD:00000"
+  v71 hypernym "http://identifiers.org/go/GO:0006461"
+  v72 hypernym "http://identifiers.org/go/GO:0006461"
+  v73 hypernym "http://identifiers.org/go/GO:0006461"
+  v74 hypernym "http://identifiers.org/go/GO:0043241"
+  v75 hypernym "http://identifiers.org/go/GO:0006461"
+  v76 hypernym "http://identifiers.org/go/GO:0043241"
+  v77 hypernym "http://identifiers.org/go/GO:0006461"
+  v78 hypernym "http://identifiers.org/go/GO:0043241"
+  v79 hypernym "http://identifiers.org/go/GO:0043241"
+  v80 hypernym "http://identifiers.org/go/GO:0043241"
+  v81 hypernym "http://identifiers.org/go/GO:0043241"
+  v82 hypernym "http://identifiers.org/go/GO:0043241"
+  v83 hypernym "http://identifiers.org/go/GO:0006461"
+  v84 hypernym "http://identifiers.org/go/GO:0006461"
+  v85 hypernym "http://identifiers.org/go/GO:0043241"
+  v86 hypernym "http://identifiers.org/go/GO:0006461"
+  v87 hypernym "http://identifiers.org/go/GO:0043241"
+  v88 hypernym "http://identifiers.org/go/GO:0006461"
+  v89 hypernym "http://identifiers.org/go/GO:0043241"
+  v90 hypernym "http://identifiers.org/go/GO:0006461"
+  v91 hypernym "http://identifiers.org/go/GO:0043241"
+  v92 hypernym "http://identifiers.org/go/GO:0006461"
+  v93 hypernym "http://identifiers.org/go/GO:0043241"
+  v94 hypernym "http://identifiers.org/go/GO:0006461"
+  v95 hypernym "http://identifiers.org/go/GO:0043241"
+  v96 hypernym "http://identifiers.org/go/GO:0006461"
+  v97 hypernym "http://identifiers.org/go/GO:0043241"
+  v98 hypernym "http://identifiers.org/go/GO:0006461"
+  v99 hypernym "http://identifiers.org/go/GO:0043241"
+  v100 hypernym "http://identifiers.org/go/GO:0006461"
+  v101 hypernym "http://identifiers.org/go/GO:0043241"
+  v102 hypernym "http://identifiers.org/psimod/MOD:00000"
+  v103 hypernym "http://identifiers.org/psimod/MOD:00000"
+  v104 hypernym "http://identifiers.org/psimod/MOD:00000"
+  v105 hypernym "http://identifiers.org/psimod/MOD:00000"
+  v106 hypernym "http://identifiers.org/go/GO:0006461"
+  v107 hypernym "http://identifiers.org/go/GO:0043241"
+  v108 hypernym "http://identifiers.org/psimod/MOD:00000"
+  v109 hypernym "http://identifiers.org/go/GO:0006461"
+  v110 hypernym "http://identifiers.org/go/GO:0043241"
+  v111 hypernym "http://identifiers.org/psimod/MOD:00000"
+  v112 hypernym "http://identifiers.org/go/GO:0006461"
+  v113 hypernym "http://identifiers.org/go/GO:0043241"
+  v114 hypernym "http://identifiers.org/psimod/MOD:00000"
+  v115 hypernym "http://identifiers.org/go/GO:0006461"
+  v116 hypernym "http://identifiers.org/go/GO:0043241"
+  v117 hypernym "http://identifiers.org/psimod/MOD:00000"
+  v118 hypernym "http://identifiers.org/go/GO:0006461"
+  v119 hypernym "http://identifiers.org/go/GO:0043241"
+  v120 hypernym "http://identifiers.org/psimod/MOD:00000"
+  v121 hypernym "http://identifiers.org/go/GO:0006461"
+  v122 hypernym "http://identifiers.org/go/GO:0043241"
+  v123 hypernym "http://identifiers.org/psimod/MOD:00000"
+  v124 hypernym "http://identifiers.org/go/GO:0006461"
+  v125 hypernym "http://identifiers.org/go/GO:0043241"
 end
+
+Jenkinson2011_EGF_MAPK is "Jenkinson2011_EGF_MAPK"
+
+Jenkinson2011_EGF_MAPK model_entity_is "http://identifiers.org/biomodels.db/MODEL1105060003"
+Jenkinson2011_EGF_MAPK model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000399"
+Jenkinson2011_EGF_MAPK description "http://identifiers.org/pubmed/21548948"
+Jenkinson2011_EGF_MAPK origin "http://identifiers.org/biomodels.db/BIOMD0000000019"
+Jenkinson2011_EGF_MAPK taxon "http://identifiers.org/taxonomy/9606"
+Jenkinson2011_EGF_MAPK version "http://identifiers.org/go/GO:0000165",
+                               "http://identifiers.org/go/GO:0007265"
+Jenkinson2011_EGF_MAPK hypernym "http://identifiers.org/reactome/REACT_9417.3",
+                                "http://identifiers.org/go/GO:0007173"

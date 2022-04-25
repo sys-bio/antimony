@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Morris2002_CellCycle_CDK2Cyclin()
 
   // Compartments and Species:
@@ -6,7 +6,7 @@ model *Morris2002_CellCycle_CDK2Cyclin()
   species CDK2cycA in geometry, CyclinA in geometry, Cdk2 in geometry, CDK2cycA_star_ in geometry;
 
   // Assignment Rules:
-  total_fluorescence := (CDK2cycA*599990*1.000000e+006)/43200 + (CDK2cycA_star_*599990*1.000000e+006)/43200 + basal_fluorescence;
+  total_fluorescence := CDK2cycA*599990*1e6/43200 + CDK2cycA_star_*599990*1e6/43200 + basal_fluorescence;
 
   // Reactions:
   Binding: Cdk2 + CyclinA -> CDK2cycA; Binding_kf*Cdk2*CyclinA*geometry - Binding_kb*CDK2cycA*geometry;
@@ -14,12 +14,12 @@ model *Morris2002_CellCycle_CDK2Cyclin()
 
   // Species initializations:
   CDK2cycA = 0;
-  CyclinA = 4e-007;
-  Cdk2 = 1e-007;
+  CyclinA = 4e-07;
+  Cdk2 = 1e-07;
   CDK2cycA_star_ = 0;
 
   // Compartment initializations:
-  geometry = 1e-012;
+  geometry = 1e-12;
 
   // Variable initializations:
   basal_fluorescence = 1.21210648148148;
@@ -31,4 +31,25 @@ model *Morris2002_CellCycle_CDK2Cyclin()
   // Other declarations:
   var basal_fluorescence, total_fluorescence;
   const geometry;
+
+  // CV terms:
+  CDK2cycA part "http://identifiers.org/uniprot/P00546",
+                "http://identifiers.org/interpro/IPR015453"
+  CyclinA hypernym "http://identifiers.org/interpro/IPR015453"
+  Cdk2 identity "http://identifiers.org/uniprot/P00546"
+  CDK2cycA_star_ part "http://identifiers.org/uniprot/P00546",
+                      "http://identifiers.org/interpro/IPR015453"
+  Binding hypernym "http://identifiers.org/obo.go/GO:0006461",
+                   "http://identifiers.org/obo.go/GO:0030332"
+  Activation hypernym "http://identifiers.org/obo.go/GO:0004693"
 end
+
+Morris2002_CellCycle_CDK2Cyclin is "Morris2002_CellCycle_CDK2Cyclin"
+
+Morris2002_CellCycle_CDK2Cyclin model_entity_is "http://identifiers.org/biomodels.db/MODEL4821491663"
+Morris2002_CellCycle_CDK2Cyclin model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000150"
+Morris2002_CellCycle_CDK2Cyclin description "http://identifiers.org/pubmed/11959850"
+Morris2002_CellCycle_CDK2Cyclin hypernym "http://identifiers.org/kegg.pathway/ko04110",
+                                         "http://identifiers.org/obo.go/GO:0000278"
+Morris2002_CellCycle_CDK2Cyclin taxon "http://identifiers.org/taxonomy/4932"
+Morris2002_CellCycle_CDK2Cyclin homolog "http://identifiers.org/reactome/REACT_152"

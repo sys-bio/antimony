@@ -1,0 +1,114 @@
+// Created by libAntimony v2.13.0
+function t_0(b, r0, N, r1)
+  b*r0*N/(r1 + N);
+end
+
+t_0 is "t-"
+
+function stim(k, T, t)
+  k*T*(1 - T/t);
+end
+
+stim is "stim"
+
+function log_(r, C, k)
+  r*C*(1 - C/k);
+end
+
+log_ is "log"
+
+
+model *Feizabadi2011_1___immunodeficiency_in_cancer_core_model()
+
+  // Compartments and Species:
+  compartment tumor_microenvironment;
+  species T in tumor_microenvironment, N in tumor_microenvironment;
+
+  // Reactions:
+  tumor_growth:  => T; tumor_microenvironment*log_(rt, T, kt);
+  normal_cell_growth:  => N; tumor_microenvironment*log_(rn, N, kn);
+  tumor_inhibition: T => ; tumor_microenvironment*t_0(b, r0, N, r1);
+  normal_cell_stimulation:  => N; tumor_microenvironment*stim(k, T, t);
+
+  // Species initializations:
+  T = 1;
+  T has substance_per_volume;
+  N = 1;
+  N has substance_per_volume;
+
+  // Compartment initializations:
+  tumor_microenvironment = 1;
+  tumor_microenvironment has volume;
+
+  // Variable initializations:
+  rt = 0.3;
+  rt has unit_0;
+  kt = 1200000;
+  kt has unit_0;
+  b = 1;
+  b has unit_0;
+  r0 = 1;
+  r0 has unit_0;
+  r1 = 1000;
+  r1 has unit_0;
+  rn = 0.4;
+  rn has unit_0;
+  kn = 1000000;
+  kn has unit_0;
+  k = 0.028;
+  k has unit_0;
+  t = 300000;
+  t has unit_0;
+
+  // Other declarations:
+  const tumor_microenvironment, rt, kt, b, r0, r1, rn, kn, k, t;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = time_unit;
+  unit substance = 1e-3 mole;
+  unit unit_0 = 1 / dimensionless^-0;
+  unit extent = substance;
+  unit substance_per_volume = 1e-3 mole / 1e-3 litre;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1";
+  tumor_microenvironment is "tumor microenvironment";
+  tumor_growth is "tumor growth";
+  normal_cell_growth is "normal cell growth";
+  tumor_inhibition is "tumor inhibition";
+  normal_cell_stimulation is "normal cell stimulation";
+
+  // CV terms:
+  tumor_microenvironment hypernym "http://identifiers.org/ncit/C94498"
+  T hypernym "http://identifiers.org/cl/CL:0001064"
+  N hypernym "http://identifiers.org/cl/CL:0000000"
+  rt hypernym "http://identifiers.org/sbo/SBO:0000610"
+  kt hypernym "http://identifiers.org/sbo/SBO:0000661"
+  b hypernym "http://identifiers.org/ncit/C25636"
+  r0 hypernym "http://identifiers.org/ncit/C67363"
+  r1 hypernym "http://identifiers.org/sbo/SBO:0000281"
+  rn propertyBearer "http://identifiers.org/sbo/SBO:0000610"
+  kn hypernym "http://identifiers.org/sbo/SBO:0000661"
+  k hypernym "http://identifiers.org/sbo/SBO:0000610"
+  tumor_growth hypernym "http://identifiers.org/sbo/SBO:0000393"
+  tumor_growth hypernym "http://identifiers.org/go/GO:0008283"
+  normal_cell_growth hypernym "http://identifiers.org/go/GO:0008283"
+  normal_cell_growth hypernym "http://identifiers.org/sbo/SBO:0000393"
+  tumor_inhibition hypernym "http://identifiers.org/sbo/SBO:0000179"
+  tumor_inhibition hypernym "http://identifiers.org/go/GO:0008219"
+  normal_cell_stimulation hypernym "http://identifiers.org/sbo/SBO:0000393"
+  normal_cell_stimulation hypernym "http://identifiers.org/go/GO:0008283"
+end
+
+Feizabadi2011_1___immunodeficiency_in_cancer_core_model is "Feizabadi2011 - immunodeficiency in cancer core model"
+
+Feizabadi2011_1___immunodeficiency_in_cancer_core_model description "http://identifiers.org/pubmed/21647303"
+Feizabadi2011_1___immunodeficiency_in_cancer_core_model model_entity_is "http://identifiers.org/biomodels.db/MODEL1907250001",
+                                                                        "http://identifiers.org/biomodels.db/BIOMD0000000760"
+Feizabadi2011_1___immunodeficiency_in_cancer_core_model property "http://identifiers.org/mamo/MAMO_0000046"
+Feizabadi2011_1___immunodeficiency_in_cancer_core_model property "http://identifiers.org/go/GO:0002418"
+Feizabadi2011_1___immunodeficiency_in_cancer_core_model taxon "http://identifiers.org/taxonomy/9606"

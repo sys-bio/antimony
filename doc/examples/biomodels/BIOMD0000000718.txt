@@ -1,0 +1,408 @@
+// Created by libAntimony v2.13.0
+function function_2(k, J, S, M1, M2)
+  k*(J^2/(J^2 + S^2))*M1*M2;
+end
+
+function_2 is "function 2"
+
+function function_1(k, S, J, M1)
+  k*(S^2/(J^2 + S^2))*M1;
+end
+
+function_1 is "function 1"
+
+function function_4(k, J, S, M1)
+  k*(J^2/(J^2 + S^2))*M1;
+end
+
+function_4 is "function 4"
+
+function function_5(k, J1, M1, M2, J2, M3)
+  k*(J1^2/(J1^2 + M1^2))*(M2^2/(J2^2 + M2^2))*(2 - M3);
+end
+
+function_5 is "function 5"
+
+function function_6(k, M1, M2)
+  k*M1*M2;
+end
+
+function_6 is "function 6"
+
+function function_7(k, P, J)
+  k*((1 - P)/(J + 1 - P));
+end
+
+function_7 is "function 7"
+
+function function_8(k, P, J)
+  k*P/(J + P);
+end
+
+function_8 is "function 8"
+
+function function_9(k, M, J2, P, J1)
+  k*(M/J2)^4*(P/(J1 + P));
+end
+
+function_9 is "function 9"
+
+function function_10(k, M)
+  k*M;
+end
+
+function_10 is "function 10"
+
+function function_11(k, S, M)
+  k*S*(1 - M);
+end
+
+function_11 is "function 11"
+
+function function_12(k, M, J, S)
+  k*(M^4/(J^4 + M^4))*S;
+end
+
+function_12 is "function 12"
+
+function function_13(k, m1, Theta1, M2, Theta2, M3, Theta3, M4, Theta4)
+  k*((m1/Theta1)^4*(M2/Theta2)^4/(1 + (m1/Theta1)^4 + (M2/Theta2)^4 + (M3/Theta3)^4 + M4/Theta4));
+end
+
+function_13 is "function 13"
+
+function function_14(k, M, P, C)
+  k*(M^4/(M^4 + P^4))*C;
+end
+
+function_14 is "function 14"
+
+
+model *Li2008___Caulobacter_Cell_Cycle()
+
+  // Compartments and Species:
+  compartment Caulobacter;
+  species CtrA in Caulobacter, GcrA in Caulobacter, DnaA in Caulobacter, Fts in Caulobacter;
+  species Zring in Caulobacter, DivK in Caulobacter, DivK_P in Caulobacter;
+  species I in Caulobacter, CcrM in Caulobacter, hcori in Caulobacter, hctrA in Caulobacter;
+  species hccrM in Caulobacter, hfts in Caulobacter, Ini in Caulobacter, Elong in Caulobacter;
+  species DNA_ in Caulobacter;
+
+  // Reactions:
+  reaction_:  => CtrA; Caulobacter*function_1(ks_CtrA_P2, CtrA, Ja_CtrA_CtrA, hctrA);
+  reaction_1:  => CtrA; Caulobacter*function_2(ks_CtrA_P1, Ji_CtrA_CtrA, CtrA, hctrA, GcrA);
+  reaction_2: CtrA => ; Caulobacter*kd_CtrA1*CtrA;
+  reaction_3: CtrA => ; Caulobacter*function_1(kd_CtrA2, DivK_P, Jd_CtrA_Divk_P, CtrA);
+  reaction_4:  => GcrA; Caulobacter*function_4(ks_GcrA, Ji_GcrA_CtrA, CtrA, DnaA);
+  reaction_5: GcrA => ; Caulobacter*kd_GcrA*GcrA;
+  reaction_6:  => DnaA; Caulobacter*function_5(ks_DnaA, Ji_DnaA_GcrA, GcrA, CtrA, Ja_DnaA_CtrA, hcori);
+  reaction_7: DnaA => ; Caulobacter*kd_DnaA*DnaA;
+  reaction_8:  => Fts; Caulobacter*function_6(ks_Fts, CtrA, hfts);
+  reaction_9: Fts => ; Caulobacter*kd_Fts*Fts;
+  reaction_10:  => Zring; Caulobacter*function_7(kzring_open, Zring, Ja_open);
+  reaction_11: Zring => ; Caulobacter*function_8(kzring_closed1, Zring, Ja_closed);
+  reaction_12: Zring => ; Caulobacter*function_9(kzring_closed2, Fts, JZring_Fts, Zring, Ja_closed);
+  reaction_13:  => DivK; Caulobacter*function_10(ks_DivK, CtrA);
+  reaction_14: DivK_P => DivK; Caulobacter*ktrans_DivK_P*DivK_P;
+  reaction_15: DivK => DivK_P; Caulobacter*function_11(ktrans_DivK, DivK, Zring);
+  reaction_16: DivK => ; Caulobacter*kd_DivK*DivK;
+  reaction_17: DivK_P => ; Caulobacter*function_10(kd_Divk_P, DivK);
+  reaction_18:  => I; Caulobacter*function_6(ks_I, CtrA, hccrM);
+  reaction_19: I => ; Caulobacter*kd_I*I;
+  reaction_20:  => CcrM; Caulobacter*function_10(ks_CcrM, I);
+  reaction_21: CcrM => ; Caulobacter*kd_CcrM*CcrM;
+  reaction_22: hcori => ; Caulobacter*function_12(km_cori, CcrM, Jm_cori, hcori);
+  reaction_23: hctrA => ; Caulobacter*function_12(km_ctrA, CcrM, Jm_ctrA, hctrA);
+  reaction_24: hccrM => ; Caulobacter*function_12(km_ccrM, CcrM, Jm_ccrM, hccrM);
+  reaction_25: hfts => ; Caulobacter*function_12(km_fts, CcrM, Jm_fts, hfts);
+  reaction_26:  => Ini; Caulobacter*function_13(ka_Ini, DnaA, thetaDnaA, GcrA, thetaGcrA, CtrA, thetaCtrA, hcori, thetacori);
+  reaction_27:  => Elong; Caulobacter*function_14(kelong, Elong, Pelong, Count);
+  reaction_28:  => DNA_; Caulobacter*function_14(kelong, Elong, Pelong, Count);
+
+  // Events:
+  Pelong_threshold: at 0 after Elong == Pelong: hcori = 1;
+  PctrA_threshold: at 0 after Elong == PctrA: hctrA = 1;
+  PccrM_treshold: at 0 after Elong == PccrM: hccrM = 1;
+  Pfts_treshold: at 0 after Elong == Pfts: hfts = 1;
+  Ini_reset: at 0 after Ini > 0.05: Ini = 0;
+  Elong_reset_by_Ini: at 0 after Ini == 0.05: Elong = Elong + Count*0.05;
+  Elong_reset_by_Count: at Elong >= (Count/2): Elong = 0;
+  DNA_reset_by_Ini: at 0 after Ini == 0.05: DNA_ = DNA_ + Count*0.05;
+  DNA_reset_by_Z_ring: at 0 after Zring < 0.11: DNA_ = DNA_/2;
+  Count_assignment_by_Ini: at 0 after Ini >= 0.05, fromTrigger=false: Count = Count*2;
+  Count_reset_by_Z_ring: at 0 after Zring < 0.11: Count = Count/2;
+
+  // Species initializations:
+  CtrA = 0.11;
+  GcrA = 0.78;
+  DnaA = 0.6;
+  Fts = 0.29;
+  Zring = 1;
+  DivK = 0.66;
+  DivK_P = 0.34;
+  I = 0.11;
+  CcrM = 0.5;
+  hcori = 1;
+  hctrA = 0;
+  hccrM = 0;
+  hfts = 0;
+  Ini = 0;
+  Elong = 0.05;
+  DNA_ = 1.05;
+
+  // Compartment initializations:
+  Caulobacter = 1;
+
+  // Variable initializations:
+  Pelong = 0.05;
+  Pelong has unit_1;
+  PctrA = 0.375;
+  PctrA has unit_1;
+  PccrM = 0.2;
+  PccrM has unit_1;
+  Pfts = 0.625;
+  Pfts has unit_1;
+  Count = 2;
+  Count has unit_1;
+  ks_CtrA_P1 = 0.0083;
+  ks_CtrA_P1 has unit_0;
+  ks_CtrA_P2 = 0.073;
+  ks_CtrA_P2 has unit_0;
+  kd_CtrA1 = 0.002;
+  kd_CtrA1 has unit_0;
+  kd_CtrA2 = 0.15;
+  kd_CtrA2 has unit_0;
+  ks_GcrA = 0.045;
+  ks_GcrA has unit_0;
+  kd_GcrA = 0.022;
+  kd_GcrA has unit_0;
+  ks_DnaA = 0.0165;
+  ks_DnaA has unit_0;
+  kd_DnaA = 0.007;
+  kd_DnaA has unit_0;
+  ks_Fts = 0.063;
+  ks_Fts has unit_0;
+  kd_Fts = 0.035;
+  kd_Fts has unit_0;
+  kzring_open = 0.8;
+  kzring_open has unit_0;
+  kzring_closed1 = 0.0001;
+  kzring_closed1 has unit_0;
+  kzring_closed2 = 0.6;
+  kzring_closed2 has unit_0;
+  ks_DivK = 0.0054;
+  ks_DivK has unit_0;
+  kd_DivK = 0.002;
+  kd_DivK has unit_0;
+  kd_Divk_P = 0.002;
+  kd_Divk_P has unit_0;
+  ks_I = 0.08;
+  ks_I has unit_0;
+  kd_I = 0.04;
+  kd_I has unit_0;
+  ks_CcrM = 0.072;
+  ks_CcrM has unit_0;
+  kd_CcrM = 0.07;
+  kd_CcrM has unit_0;
+  km_cori = 0.4;
+  km_cori has unit_0;
+  km_ctrA = 0.4;
+  km_ctrA has unit_0;
+  km_ccrM = 0.4;
+  km_ccrM has unit_0;
+  km_fts = 0.4;
+  km_fts has unit_0;
+  ka_Ini = 0.01;
+  ka_Ini has unit_0;
+  kelong = 0.006;
+  kelong has unit_0;
+  ktrans_DivK = 0.5;
+  ktrans_DivK has unit_0;
+  ktrans_DivK_P = 0.0295;
+  ktrans_DivK_P has unit_0;
+  Ji_CtrA_CtrA = 0.4;
+  Ji_CtrA_CtrA has unit_1;
+  JZring_Fts = 0.78;
+  JZring_Fts has unit_1;
+  Jm_fts = 0.95;
+  Jm_fts has unit_1;
+  thetacori = 0.0002;
+  thetacori has unit_1;
+  Ja_CtrA_CtrA = 0.45;
+  Ja_CtrA_CtrA has unit_1;
+  Ja_DnaA_CtrA = 0.3;
+  Ja_DnaA_CtrA has unit_1;
+  Jm_cori = 0.95;
+  Jm_cori has unit_1;
+  thetaCtrA = 0.2;
+  thetaCtrA has unit_1;
+  Jd_CtrA_Divk_P = 0.55;
+  Jd_CtrA_Divk_P has unit_1;
+  Ja_open = 0.01;
+  Ja_open has unit_1;
+  Jm_ctrA = 0.95;
+  Jm_ctrA has unit_1;
+  thetaGcrA = 0.45;
+  thetaGcrA has unit_1;
+  Ji_GcrA_CtrA = 0.2;
+  Ji_GcrA_CtrA has unit_1;
+  Ja_closed = 0.1;
+  Ja_closed has unit_1;
+  Jm_ccrM = 0.95;
+  Jm_ccrM has unit_1;
+  thetaDnaA = 0.6;
+  thetaDnaA has unit_1;
+  Ji_DnaA_GcrA = 0.5;
+  Ji_DnaA_GcrA has unit_1;
+
+  // Other declarations:
+  var Count;
+  const Caulobacter, Pelong, PctrA, PccrM, Pfts, ks_CtrA_P1, ks_CtrA_P2, kd_CtrA1;
+  const kd_CtrA2, ks_GcrA, kd_GcrA, ks_DnaA, kd_DnaA, ks_Fts, kd_Fts, kzring_open;
+  const kzring_closed1, kzring_closed2, ks_DivK, kd_DivK, kd_Divk_P, ks_I;
+  const kd_I, ks_CcrM, kd_CcrM, km_cori, km_ctrA, km_ccrM, km_fts, ka_Ini;
+  const kelong, ktrans_DivK, ktrans_DivK_P, Ji_CtrA_CtrA, JZring_Fts, Jm_fts;
+  const thetacori, Ja_CtrA_CtrA, Ja_DnaA_CtrA, Jm_cori, thetaCtrA, Jd_CtrA_Divk_P;
+  const Ja_open, Jm_ctrA, thetaGcrA, Ji_GcrA_CtrA, Ja_closed, Jm_ccrM, thetaDnaA;
+  const Ji_DnaA_GcrA;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 60 second;
+  unit substance = 1e-3 mole;
+  unit unit_0 = 1 / 60e-3 second;
+  unit unit_1 = 1 / dimensionless^-0;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1/min";
+  unit_1 is "1";
+  DNA_ is "DNA";
+  Pelong_threshold is "Pelong threshold";
+  PctrA_threshold is "PctrA threshold";
+  PccrM_treshold is "PccrM treshold";
+  Pfts_treshold is "Pfts treshold";
+  Ini_reset is "Ini reset";
+  Elong_reset_by_Ini is "Elong reset by Ini";
+  Elong_reset_by_Count is "Elong reset by Count";
+  DNA_reset_by_Ini is "DNA reset by Ini";
+  DNA_reset_by_Z_ring is "DNA reset by Z-ring";
+  Count_assignment_by_Ini is "Count assignment by Ini";
+  Count_reset_by_Z_ring is "Count reset by Z-ring";
+  ks_CtrA_P1 is "ks,CtrA-P1";
+  ks_CtrA_P2 is "ks,CtrA-P2";
+  kd_CtrA1 is "kd,CtrA1";
+  kd_CtrA2 is "kd,CtrA2";
+  ks_GcrA is "ks,GcrA";
+  kd_GcrA is "kd,GcrA";
+  ks_DnaA is "ks,DnaA";
+  kd_DnaA is "kd,DnaA";
+  ks_Fts is "ks,Fts";
+  kd_Fts is "kd,Fts";
+  kzring_open is "kzring,open";
+  kzring_closed1 is "kzring,closed1";
+  kzring_closed2 is "kzring,closed2";
+  ks_DivK is "ks,DivK";
+  kd_DivK is "kd,DivK";
+  kd_Divk_P is "kd,Divk_P";
+  ks_I is "ks,I";
+  kd_I is "kd,I";
+  ks_CcrM is "ks,CcrM";
+  kd_CcrM is "kd,CcrM";
+  km_cori is "km,cori";
+  km_ctrA is "km,ctrA";
+  km_ccrM is "km,ccrM";
+  km_fts is "km,fts";
+  ka_Ini is "ka,Ini";
+  ktrans_DivK is "ktrans,DivK";
+  ktrans_DivK_P is "ktrans,DivK_P";
+  Ji_CtrA_CtrA is "Ji,CtrA-CtrA";
+  JZring_Fts is "JZring-Fts";
+  Jm_fts is "Jm,fts";
+  Ja_CtrA_CtrA is "Ja,CtrA-CtrA";
+  Ja_DnaA_CtrA is "Ja,DnaA-CtrA";
+  Jm_cori is "Jm,cori";
+  Jd_CtrA_Divk_P is "Jd,CtrA-Divk_P";
+  Ja_open is "Ja,open";
+  Jm_ctrA is "Jm,ctrA";
+  Ji_GcrA_CtrA is "Ji,GcrA-CtrA";
+  Ja_closed is "Ja,closed";
+  Jm_ccrM is "Jm,ccrM";
+  Ji_DnaA_GcrA is "Ji,DnaA-GcrA";
+  reaction_ is "reaction";
+
+  // CV terms:
+  Caulobacter taxon "http://identifiers.org/taxonomy/155892"
+  CtrA hypernym "http://identifiers.org/uniprot/P0CAW8"
+  GcrA hypernym "http://identifiers.org/uniprot/A0A0H3C9J4"
+  DnaA hypernym "http://identifiers.org/uniprot/P0CAU4"
+  Fts part "http://identifiers.org/uniprot/A0A0V2FFD6"
+  Fts part "http://identifiers.org/uniprot/A0A0V2FFH3"
+  Zring hypernym "http://identifiers.org/go/GO:0043226"
+  DivK hypernym "http://identifiers.org/uniprot/Q45976"
+  DivK_P hypernym "http://identifiers.org/uniprot/Q45976"
+  CcrM hypernym "http://identifiers.org/uniprot/P0CAW2"
+  Ini property "http://identifiers.org/go/GO:0006270"
+  Elong property "http://identifiers.org/go/GO:0022616"
+  DNA_ identity "http://identifiers.org/ncit/NCIT_C449"
+  Pelong property "http://identifiers.org/ncit/C104788"
+  PctrA property "http://identifiers.org/ncit/C104788"
+  PccrM property "http://identifiers.org/ncit/C104788"
+  Pfts property "http://identifiers.org/ncit/C104788"
+  Count property "http://identifiers.org/ncit/C13202"
+  ks_CtrA_P1 property "http://identifiers.org/ncit/C94967"
+  ks_CtrA_P2 property "http://identifiers.org/ncit/C94967"
+  kd_CtrA1 property "http://identifiers.org/ncit/C94967"
+  kd_CtrA2 property "http://identifiers.org/ncit/C94967"
+  ks_GcrA property "http://identifiers.org/ncit/C94967"
+  kd_GcrA property "http://identifiers.org/ncit/C94967"
+  ks_DnaA property "http://identifiers.org/ncit/C94967"
+  kd_DnaA property "http://identifiers.org/ncit/C94967"
+  ks_Fts property "http://identifiers.org/ncit/C94967"
+  kd_Fts property "http://identifiers.org/ncit/C94967"
+  kzring_open property "http://identifiers.org/ncit/C94967"
+  kzring_closed1 property "http://identifiers.org/ncit/C94967"
+  kzring_closed2 property "http://identifiers.org/ncit/C94967"
+  ks_DivK property "http://identifiers.org/ncit/C94967"
+  kd_DivK property "http://identifiers.org/ncit/C94967"
+  kd_Divk_P property "http://identifiers.org/ncit/C94967"
+  ks_I property "http://identifiers.org/ncit/C94967"
+  kd_I property "http://identifiers.org/ncit/C94967"
+  ks_CcrM property "http://identifiers.org/ncit/C94967"
+  kd_CcrM property "http://identifiers.org/ncit/C94967"
+  km_cori property "http://identifiers.org/ncit/C94967"
+  km_ctrA property "http://identifiers.org/ncit/C94967"
+  km_ccrM property "http://identifiers.org/ncit/C94967"
+  km_fts property "http://identifiers.org/ncit/C94967"
+  ka_Ini property "http://identifiers.org/ncit/C94967"
+  kelong property "http://identifiers.org/ncit/C94967"
+  ktrans_DivK property "http://identifiers.org/ncit/C94967"
+  ktrans_DivK_P property "http://identifiers.org/ncit/C94967"
+  Ji_CtrA_CtrA property "http://identifiers.org/obi/OBI:0001144"
+  JZring_Fts property "http://identifiers.org/obi/OBI:0001144"
+  Jm_fts property "http://identifiers.org/obi/OBI:0001144"
+  thetacori identity "http://identifiers.org/ncit/C48228"
+  Ja_CtrA_CtrA property "http://identifiers.org/obi/OBI:0001144"
+  Ja_DnaA_CtrA property "http://identifiers.org/obi/OBI:0001144"
+  Jm_cori property "http://identifiers.org/obi/OBI:0001144"
+  thetaCtrA identity "http://identifiers.org/ncit/C48228"
+  Jd_CtrA_Divk_P property "http://identifiers.org/obi/OBI:0001144"
+  Ja_open property "http://identifiers.org/obi/OBI:0001144"
+  Jm_ctrA property "http://identifiers.org/obi/OBI:0001144"
+  thetaGcrA identity "http://identifiers.org/ncit/C48228"
+  Ji_GcrA_CtrA property "http://identifiers.org/obi/OBI:0001144"
+  Ja_closed property "http://identifiers.org/obi/OBI:0001144"
+  Jm_ccrM property "http://identifiers.org/obi/OBI:0001144"
+  thetaDnaA identity "http://identifiers.org/ncit/C48228"
+  Ji_DnaA_GcrA property "http://identifiers.org/obi/OBI:0001144"
+end
+
+Li2008___Caulobacter_Cell_Cycle is "Li2008 - Caulobacter Cell Cycle"
+
+Li2008___Caulobacter_Cell_Cycle model_entity_is "http://identifiers.org/biomodels.db/MODEL1811070001",
+                                                "http://identifiers.org/biomodels.db/BIOMD0000000718"
+Li2008___Caulobacter_Cell_Cycle property "http://identifiers.org/go/GO:0051726"
+Li2008___Caulobacter_Cell_Cycle property "http://identifiers.org/go/GO:0007049"
+Li2008___Caulobacter_Cell_Cycle taxon "http://identifiers.org/taxonomy/155892"
+Li2008___Caulobacter_Cell_Cycle description "http://identifiers.org/pubmed/18225942"
+Li2008___Caulobacter_Cell_Cycle description "http://identifiers.org/doi/10.1371/journal.pcbi.0040009"

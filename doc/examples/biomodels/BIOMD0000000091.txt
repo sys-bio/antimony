@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Proctor2005_Hsp90()
 
   // Compartments and Species:
@@ -11,28 +11,28 @@ model *Proctor2005_Hsp90()
   substanceOnly species $source in compartment_;
 
   // Reactions:
-  proteinSynthesis: 0$source => NatP; k1;
+  proteinSynthesis: 0 $source => NatP; k1;
   misfolding: NatP + ROS => MisP + ROS; k2*NatP*ROS;
   Hsp90MisPBinding: MisP + Hsp90 => MCom; k3*MisP*Hsp90;
   unsuccessulRefolding: MCom => MisP + Hsp90; k4*MCom;
   refolding: MCom + ATP => Hsp90 + NatP + ADP; k5*MCom*ATP;
   proteinDegradation: MisP + ATP => ADP; k6*MisP*ATP;
-  proteinAggregation1: 2MisP => AggP; ((MisP - 1)*k7*MisP)/2;
-  proteinAggregation2: MisP + AggP => 2AggP; k7*MisP*AggP;
+  proteinAggregation1: 2 MisP => AggP; (MisP - 1)*k7*MisP/2;
+  proteinAggregation2: MisP + AggP => 2 AggP; k7*MisP*AggP;
   Hsp90HSF1Binding: Hsp90 + HSF1 => HCom; k8*Hsp90*HSF1;
   Hsp90HSF1Release: HCom => Hsp90 + HSF1; k9*HCom;
-  dimerisation: 2HSF1 => DiH; ((HSF1 - 1)*k10*HSF1)/2;
+  dimerisation: 2 HSF1 => DiH; (HSF1 - 1)*k10*HSF1/2;
   trimerisation: HSF1 + DiH => TriH; k11*HSF1*DiH;
   deTrimerisation: TriH => HSF1 + DiH; k12*TriH;
-  deDimerisation: DiH => 2HSF1; k13*DiH;
+  deDimerisation: DiH => 2 HSF1; k13*DiH;
   HSETriHBinding: TriH + HSE => HSETriH; k14*HSE*TriH;
   HSETriHRelease: HSETriH => HSE + TriH; k15*HSETriH;
   Hsp90Transcription: HSETriH => HSETriH + Hsp90; k16*HSETriH;
   Hsp90Degradation: Hsp90 + ATP => ADP; k17*Hsp90*ATP;
-  countTime: 0$source => X; 1;
+  countTime: 0 $source => X; 1;
   ATPformation: ADP => ATP; k18*ADP;
   ATPconsumption: ATP => ADP; k19*ATP;
-  radicalFormation: 0$source => ROS; k20;
+  radicalFormation: 0 $source => ROS; k20;
   radicalScavenging: ROS => ; k21*ROS;
 
   // Species initializations:
@@ -58,12 +58,12 @@ model *Proctor2005_Hsp90()
 
   // Variable initializations:
   k1 = 10;
-  k2 = 2e-005;
+  k2 = 2e-05;
   k3 = 50;
-  k4 = 1e-005;
-  k5 = 4e-006;
-  k6 = 6e-007;
-  k7 = 1e-007;
+  k4 = 1e-05;
+  k5 = 4e-06;
+  k6 = 6e-07;
+  k7 = 1e-07;
   k8 = 500;
   k9 = 1;
   k10 = 0.01;
@@ -73,7 +73,7 @@ model *Proctor2005_Hsp90()
   k14 = 0.05;
   k15 = 0.08;
   k16 = 1000;
-  k17 = 8.02e-009;
+  k17 = 8.02e-09;
   k18 = 12;
   k19 = 0.02;
   k20 = 0.1;
@@ -88,4 +88,57 @@ model *Proctor2005_Hsp90()
 
   // Display Names:
   unsuccessulRefolding is "unsuccessfulRefolding";
+
+  // CV terms:
+  compartment_ hypernym "http://identifiers.org/go/GO:0005623"
+  Hsp90 identity "http://identifiers.org/interpro/IPR001404"
+  HCom hypernym "http://identifiers.org/go/GO:0043234"
+  HSF1 hypernym "http://identifiers.org/interpro/IPR000232"
+  MCom hypernym "http://identifiers.org/go/GO:0043234"
+  TriH hypernym "http://identifiers.org/go/GO:0043234"
+  TriH part "http://identifiers.org/interpro/IPR000232"
+  DiH hypernym "http://identifiers.org/go/GO:0043234"
+  DiH part "http://identifiers.org/interpro/IPR000232"
+  ROS hypernym "http://identifiers.org/chebi/CHEBI:26523"
+  ATP identity "http://identifiers.org/chebi/CHEBI:15422",
+               "http://identifiers.org/kegg.compound/C00002"
+  ADP identity "http://identifiers.org/chebi/CHEBI:16761",
+               "http://identifiers.org/kegg.compound/C00008"
+  proteinSynthesis hypernym "http://identifiers.org/go/GO:0009059"
+  misfolding version "http://identifiers.org/go/GO:0022417"
+  Hsp90MisPBinding hypernym "http://identifiers.org/go/GO:0051879"
+  unsuccessulRefolding hypernym "http://identifiers.org/go/GO:0043624"
+  refolding hypernym "http://identifiers.org/go/GO:0042026",
+                     "http://identifiers.org/go/GO:0016887"
+  proteinDegradation hypernym "http://identifiers.org/go/GO:0016887"
+  proteinAggregation1 hypernym "http://identifiers.org/go/GO:0043623"
+  proteinAggregation2 hypernym "http://identifiers.org/go/GO:0043623"
+  Hsp90HSF1Binding hypernym "http://identifiers.org/go/GO:0051879"
+  Hsp90HSF1Release hypernym "http://identifiers.org/go/GO:0043624"
+  dimerisation hypernym "http://identifiers.org/go/GO:0043623"
+  trimerisation hypernym "http://identifiers.org/go/GO:0043623"
+  deTrimerisation hypernym "http://identifiers.org/go/GO:0043624"
+  deDimerisation hypernym "http://identifiers.org/go/GO:0043624"
+  HSETriHBinding hypernym "http://identifiers.org/go/GO:0043623"
+  HSETriHRelease hypernym "http://identifiers.org/go/GO:0043624"
+  Hsp90Transcription hypernym "http://identifiers.org/go/GO:0006351"
+  Hsp90Degradation hypernym "http://identifiers.org/go/GO:0044257",
+                            "http://identifiers.org/go/GO:0016887"
+  ATPformation hypernym "http://identifiers.org/go/GO:0006757"
+  ATPconsumption hypernym "http://identifiers.org/go/GO:0016887"
+  radicalFormation parthood "http://identifiers.org/go/GO:0006800"
+  radicalScavenging hypernym "http://identifiers.org/go/GO:0016209"
 end
+
+Proctor2005_Hsp90 is "Proctor2005 - Actions of chaperones and their role in ageing"
+
+Proctor2005_Hsp90 model_entity_is "http://identifiers.org/biomodels.db/MODEL2223638385"
+Proctor2005_Hsp90 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000091"
+Proctor2005_Hsp90 description "http://identifiers.org/pubmed/15610770"
+Proctor2005_Hsp90 hypernym "http://identifiers.org/go/GO:0051085",
+                           "http://identifiers.org/go/GO:0007569",
+                           "http://identifiers.org/go/GO:0009408"
+Proctor2005_Hsp90 taxon "http://identifiers.org/taxonomy/131567"
+Proctor2005_Hsp90 version "http://identifiers.org/doid/DOID:10652",
+                          "http://identifiers.org/doid/DOID:14330",
+                          "http://identifiers.org/doid/DOID:83"

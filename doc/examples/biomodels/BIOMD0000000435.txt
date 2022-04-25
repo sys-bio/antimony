@@ -1,11 +1,15 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 function function_1(theta, a, Xj, n)
   theta/(theta + a*Xj^n);
 end
 
+function_1 is "Lateral inhibition [1]"
+
 function function_2(theta, b, Yi, Yj, n, c, Xi)
   (theta + b*(Yi*Yj)^n)/(theta + c*Xi^n + b*(Yi*Yj)^n);
 end
+
+function_2 is "Lateral stabilisation [1]"
 
 
 model *MODEL1211010000()
@@ -77,4 +81,28 @@ model *MODEL1211010000()
   reaction_6 is "Xj degr";
   reaction_7 is "Yj expr";
   reaction_8 is "Yj degr";
+
+  // CV terms:
+  compartment_1 hypernym "http://identifiers.org/obo.go/GO:0005623"
+  species_1 hypernym "http://identifiers.org/uniprot/P70661"
+  species_2 hypernym "http://identifiers.org/uniprot/Q9QX98"
+  species_3 hypernym "http://identifiers.org/uniprot/P70661"
+  species_4 hypernym "http://identifiers.org/uniprot/Q9QX98"
+  reaction_1 hypernym "http://identifiers.org/obo.go/GO:0006412"
+  reaction_2 hypernym "http://identifiers.org/obo.go/GO:0030163"
+  reaction_3 hypernym "http://identifiers.org/obo.go/GO:0006412"
+  reaction_4 hypernym "http://identifiers.org/obo.go/GO:0030163"
+  reaction_5 hypernym "http://identifiers.org/obo.go/GO:0006412"
+  reaction_6 hypernym "http://identifiers.org/obo.go/GO:0030163"
+  reaction_7 hypernym "http://identifiers.org/obo.go/GO:0006412"
+  reaction_8 hypernym "http://identifiers.org/obo.go/GO:0030163"
 end
+
+MODEL1211010000 is "deBack2012 - Lineage Specification in Pancreas Development"
+
+MODEL1211010000 model_entity_is "http://identifiers.org/biomodels.db/MODEL1211010000"
+MODEL1211010000 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000435"
+MODEL1211010000 description "http://identifiers.org/pubmed/23193107"
+MODEL1211010000 parthood "http://identifiers.org/obo.go/GO:0031016"
+MODEL1211010000 taxon "http://identifiers.org/taxonomy/39107"
+MODEL1211010000 hypernym "http://identifiers.org/obo.go/GO:0007267"

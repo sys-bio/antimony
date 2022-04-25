@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Bakker2001_Glycolysis()
 
   // Compartments and Species:
@@ -14,33 +14,33 @@ model *Bakker2001_Glycolysis()
   // Assignment Rules:
   Gly3P := (Gly3Pc*cytosol + Gly3Pg*glycosome)/tot_cell;
   Gly3Pc := sumc5 - DHAPc;
-  Gly3Pg := (Gly3Pc*DHAPg)/(Keq_anti*DHAPc);
-  ATPc := (Pc*(1 - 4*KeqAK) - sumAc + ((sumAc - (1 - 4*KeqAK)*Pc)^2 + 4*(1 - 4*KeqAK)*KeqAK*Pc^2)^0.5)/(2*(1 - 4*KeqAK));
+  Gly3Pg := Gly3Pc*DHAPg/(Keq_anti*DHAPc);
+  ATPc := ((Pc*(1 - 4*KeqAK) - sumAc) + ((sumAc - (1 - 4*KeqAK)*Pc)^2 + 4*(1 - 4*KeqAK)*KeqAK*Pc^2)^0.5)/(2*(1 - 4*KeqAK));
   ADPc := Pc - 2*ATPc;
-  ATPg := (Pg*(1 - 4*KeqAK) - sumAg + ((sumAg - (1 - 4*KeqAK)*Pg)^2 + 4*(1 - 4*KeqAK)*KeqAK*Pg^2)^0.5)/(2*(1 - 4*KeqAK));
+  ATPg := ((Pg*(1 - 4*KeqAK) - sumAg) + ((sumAg - (1 - 4*KeqAK)*Pg)^2 + 4*(1 - 4*KeqAK)*KeqAK*Pg^2)^0.5)/(2*(1 - 4*KeqAK));
   ADPg := Pg - 2*ATPg;
   DHAPg := (DHAP*Vt - DHAPc*Vc)/Vg;
-  DHAPc := (sumc5*(1 + Vc/Vg)*DHAP)/((sumc4 + (sumc5*Vc)/Vg) - (BPGA13 + 2*Fru16BP + Fru6P + GAP + Glc6P + Pg));
-  Vc := (cytosol*Vt)/tot_cell;
-  Vg := (glycosome*Vt)/tot_cell;
-  PGAg := (Nb*(1 + Vc/Vg))/(1 + ((1 + Keq_PGM + Keq_PGM*Keq_ENO)*Vc)/Vg);
+  DHAPc := sumc5*(1 + Vc/Vg)*DHAP/(sumc4 + sumc5*Vc/Vg - (BPGA13 + 2*Fru16BP + Fru6P + GAP + Glc6P + Pg));
+  Vc := cytosol*Vt/tot_cell;
+  Vg := glycosome*Vt/tot_cell;
+  PGAg := Nb*(1 + Vc/Vg)/(1 + (1 + Keq_PGM + Keq_PGM*Keq_ENO)*Vc/Vg);
   PEPc := Keq_ENO*Keq_PGM*PGAg;
 
   // Reactions:
-  vGlcTr: $GlcE -> GlcI; (tot_cell/Vt*vGlcTr_Vm1*(GlcE - GlcI))/(vGlcTr_K1Glc + GlcE + GlcI + (vGlcTr_afac*GlcE*GlcI)/vGlcTr_K1Glc);
-  vHK: Pg + GlcI => Glc6P; (tot_cell/Vt*vHK_Vm2*GlcI*ATPg)/(vHK_K2ATPg*vHK_K2GlcI*(1 + Glc6P/vHK_K2Glc6P + GlcI/vHK_K2GlcI)*(1 + ATPg/vHK_K2ATPg + ADPg/vHK_K2ADPg));
-  vPGI: Glc6P -> Fru6P; (tot_cell/Vt*vPGI_Vm3*(Glc6P/vPGI_K3Glc6P - Fru6P/vPGI_K3Fru6P))/(1 + Glc6P/vPGI_K3Glc6P + Fru6P/vPGI_K3Fru6P);
-  vPFK: Pg + Fru6P => Fru16BP; (tot_cell/Vt*vPFK_K4i1Fru16BP*vPFK_Vm4*Fru6P*ATPg)/(vPFK_K4ATPg*vPFK_K4Fru6P*(vPFK_K4i1Fru16BP + Fru16BP)*(1 + Fru16BP/vPFK_K4i2Fru16BP + Fru6P/vPFK_K4Fru6P)*(1 + ATPg/vPFK_K4ATPg));
-  vALD: Fru16BP -> GAP + DHAP; (tot_cell/Vt*((vALD_Vm5f*Fru16BP)/(0.009*(1 + ATPg/0.68 + ADPg/1.51 + (sumAg - (ATPg + ADPg))/3.65)) - (vALD_Vm5r*GAP*DHAPg)/(vALD_K5DHAP*vALD_K5GAP)))/(1 + GAP/vALD_K5GAP + DHAPg/vALD_K5DHAP + (GAP*DHAPg)/(vALD_K5DHAP*vALD_K5GAP) + Fru16BP/(0.009*(1 + ATPg/0.68 + ADPg/1.51 + (sumAg - (ATPg + ADPg))/3.65)) + (Fru16BP*GAP)/(vALD_K5GAPi*0.009*(1 + ATPg/0.68 + ADPg/1.51 + (sumAg - (ATPg + ADPg))/3.65)));
-  vTPI: DHAP -> GAP; (tot_cell/Vt*TPIact*vTPI_Vm6*(DHAPg/vTPI_K6DHAPg - (5.7*GAP)/vTPI_K6GAP))/(1 + GAP/vTPI_K6GAP + DHAPg/vTPI_K6DHAPg);
-  vGAPdh: GAP + NAD -> NADH + BPGA13; tot_cell/Vt*vGAPdh_Vm7*((vGAPdh_Vm7f*(GAP*(NAD/vGAPdh_K7GAP/vGAPdh_K7NAD) - vGAPdh_Vm7r/vGAPdh_Vm7f*((BPGA13*NADH)/vGAPdh_K7BPGA13/vGAPdh_K7NADH)))/((1 + GAP/vGAPdh_K7GAP + BPGA13/vGAPdh_K7BPGA13)*(1 + NAD/vGAPdh_K7NAD + NADH/vGAPdh_K7NADH)));
-  vGDH: DHAP + NADH -> NAD + $Gly3P; (tot_cell/Vt*vGDH_Vm8*vGDH_Vm8f*((NADH*DHAPg)/(vGDH_K8DHAPg*vGDH_K8NADH) - (vGDH_Vm8r*NAD*Gly3Pg)/(vGDH_K8Gly3Pg*vGDH_K8NAD*vGDH_Vm8f)))/((1 + NAD/vGDH_K8NAD + NADH/vGDH_K8NADH)*(1 + DHAPg/vGDH_K8DHAPg + Gly3Pg/vGDH_K8Gly3Pg));
-  vGPO: $Gly3P => DHAP; (tot_cell/Vt*vGPO_Vm9*Gly3Pc)/(vGPO_K9Gly3Pc*1 + Gly3Pc);
-  vPyrTr: Pyr => $PyrE; (tot_cell/Vt*vPyrTr_Vm10*Pyr)/vPyrTr_K10Pyr/(1 + Pyr/vPyrTr_K10Pyr);
-  vPGK: BPGA13 -> Nb + Pg; (tot_cell/Vt*vPGK_Vm11*vPGK_Vm11f*((-vPGK_Vm11r*PGAg*ATPg)/(vPGK_K11ATPg*vPGK_K11PGA3*vPGK_Vm11f) + (BPGA13*ADPg)/(vPGK_K11ADPg*vPGK_K11BPGA13)))/((1 + BPGA13/vPGK_K11BPGA13 + PGAg/vPGK_K11PGA3)*(1 + ATPg/vPGK_K11ATPg + ADPg/vPGK_K11ADPg));
-  vPK: Nb => Pc + Pyr; (tot_cell/Vt*vPK_Vm12*(PEPc/(0.34*(1 + ADPc/0.57 + ATPc/0.64)))^vPK_n12*ADPc)/vPK_K12ADP/((1 + (PEPc/(0.34*(1 + ADPc/0.57 + ATPc/0.64)))^vPK_n12)*(1 + ADPc/vPK_K12ADP));
-  vATPase: Pc => ; (tot_cell/Vt*vATPase_K13*ATPc)/ADPc;
-  vGlyK: $Gly3P -> Pg + $Gly; (tot_cell/Vt*vGlyK_Vm14*((vGlyK_Vm14f*ADPg*Gly3Pg)/(vGlyK_K14ADPg*vGlyK_K14Gly3Pg) - (Gly*vGlyK_Vm14r*ATPg)/(vGlyK_K14ATPg*vGlyK_K14Gly)))/((1 + Gly/vGlyK_K14Gly + Gly3Pg/vGlyK_K14Gly3Pg)*(1 + ATPg/vGlyK_K14ATPg + ADPg/vGlyK_K14ADPg));
+  vGlcTr: $GlcE -> GlcI; (tot_cell/Vt)*vGlcTr_Vm1*(GlcE - GlcI)/(vGlcTr_K1Glc + GlcE + GlcI + vGlcTr_afac*GlcE*GlcI/vGlcTr_K1Glc);
+  vHK: Pg + GlcI => Glc6P; (tot_cell/Vt)*vHK_Vm2*GlcI*ATPg/(vHK_K2ATPg*vHK_K2GlcI*(1 + Glc6P/vHK_K2Glc6P + GlcI/vHK_K2GlcI)*(1 + ATPg/vHK_K2ATPg + ADPg/vHK_K2ADPg));
+  vPGI: Glc6P -> Fru6P; (tot_cell/Vt)*vPGI_Vm3*(Glc6P/vPGI_K3Glc6P - Fru6P/vPGI_K3Fru6P)/(1 + Glc6P/vPGI_K3Glc6P + Fru6P/vPGI_K3Fru6P);
+  vPFK: Pg + Fru6P => Fru16BP; (tot_cell/Vt)*vPFK_K4i1Fru16BP*vPFK_Vm4*Fru6P*ATPg/(vPFK_K4ATPg*vPFK_K4Fru6P*(vPFK_K4i1Fru16BP + Fru16BP)*(1 + Fru16BP/vPFK_K4i2Fru16BP + Fru6P/vPFK_K4Fru6P)*(1 + ATPg/vPFK_K4ATPg));
+  vALD: Fru16BP -> GAP + DHAP; (tot_cell/Vt)*(vALD_Vm5f*Fru16BP/(0.009*(1 + ATPg/0.68 + ADPg/1.51 + (sumAg - (ATPg + ADPg))/3.65)) - vALD_Vm5r*GAP*DHAPg/(vALD_K5DHAP*vALD_K5GAP))/(1 + GAP/vALD_K5GAP + DHAPg/vALD_K5DHAP + GAP*DHAPg/(vALD_K5DHAP*vALD_K5GAP) + Fru16BP/(0.009*(1 + ATPg/0.68 + ADPg/1.51 + (sumAg - (ATPg + ADPg))/3.65)) + Fru16BP*GAP/(vALD_K5GAPi*0.009*(1 + ATPg/0.68 + ADPg/1.51 + (sumAg - (ATPg + ADPg))/3.65)));
+  vTPI: DHAP -> GAP; (tot_cell/Vt)*TPIact*vTPI_Vm6*(DHAPg/vTPI_K6DHAPg - 5.7*GAP/vTPI_K6GAP)/(1 + GAP/vTPI_K6GAP + DHAPg/vTPI_K6DHAPg);
+  vGAPdh: GAP + NAD -> NADH + BPGA13; (tot_cell/Vt)*vGAPdh_Vm7*(vGAPdh_Vm7f*(GAP*(NAD/vGAPdh_K7GAP/vGAPdh_K7NAD) - (vGAPdh_Vm7r/vGAPdh_Vm7f)*(BPGA13*NADH/vGAPdh_K7BPGA13/vGAPdh_K7NADH))/((1 + GAP/vGAPdh_K7GAP + BPGA13/vGAPdh_K7BPGA13)*(1 + NAD/vGAPdh_K7NAD + NADH/vGAPdh_K7NADH)));
+  vGDH: DHAP + NADH -> NAD + $Gly3P; (tot_cell/Vt)*vGDH_Vm8*vGDH_Vm8f*(NADH*DHAPg/(vGDH_K8DHAPg*vGDH_K8NADH) - vGDH_Vm8r*NAD*Gly3Pg/(vGDH_K8Gly3Pg*vGDH_K8NAD*vGDH_Vm8f))/((1 + NAD/vGDH_K8NAD + NADH/vGDH_K8NADH)*(1 + DHAPg/vGDH_K8DHAPg + Gly3Pg/vGDH_K8Gly3Pg));
+  vGPO: $Gly3P => DHAP; (tot_cell/Vt)*vGPO_Vm9*Gly3Pc/(vGPO_K9Gly3Pc*1 + Gly3Pc);
+  vPyrTr: Pyr => $PyrE; (tot_cell/Vt)*vPyrTr_Vm10*Pyr/vPyrTr_K10Pyr/(1 + Pyr/vPyrTr_K10Pyr);
+  vPGK: BPGA13 -> Nb + Pg; (tot_cell/Vt)*vPGK_Vm11*vPGK_Vm11f*(-vPGK_Vm11r*PGAg*ATPg/(vPGK_K11ATPg*vPGK_K11PGA3*vPGK_Vm11f) + BPGA13*ADPg/(vPGK_K11ADPg*vPGK_K11BPGA13))/((1 + BPGA13/vPGK_K11BPGA13 + PGAg/vPGK_K11PGA3)*(1 + ATPg/vPGK_K11ATPg + ADPg/vPGK_K11ADPg));
+  vPK: Nb => Pc + Pyr; (tot_cell/Vt)*vPK_Vm12*(PEPc/(0.34*(1 + ADPc/0.57 + ATPc/0.64)))^vPK_n12*ADPc/vPK_K12ADP/((1 + (PEPc/(0.34*(1 + ADPc/0.57 + ATPc/0.64)))^vPK_n12)*(1 + ADPc/vPK_K12ADP));
+  vATPase: Pc => ; (tot_cell/Vt)*vATPase_K13*ATPc/ADPc;
+  vGlyK: $Gly3P -> Pg + $Gly; (tot_cell/Vt)*vGlyK_Vm14*(vGlyK_Vm14f*ADPg*Gly3Pg/(vGlyK_K14ADPg*vGlyK_K14Gly3Pg) - Gly*vGlyK_Vm14r*ATPg/(vGlyK_K14ATPg*vGlyK_K14Gly))/((1 + Gly/vGlyK_K14Gly + Gly3Pg/vGlyK_K14Gly3Pg)*(1 + ATPg/vGlyK_K14ATPg + ADPg/vGlyK_K14ADPg));
 
   // Species initializations:
   GlcI = 0.0340009;
@@ -268,4 +268,109 @@ model *Bakker2001_Glycolysis()
   vPK is "Pyruvate kinase";
   vATPase is "ATPase";
   vGlyK is "Glycerol kinase";
+
+  // CV terms:
+  glycosome identity "http://identifiers.org/go/GO:0020015"
+  cytosol identity "http://identifiers.org/go/GO:0005829"
+  extracellular identity "http://identifiers.org/go/GO:0005576"
+  GlcI hypernym "http://identifiers.org/chebi/CHEBI:17234",
+                "http://identifiers.org/kegg.compound/C00293"
+  Pg hypernym "http://identifiers.org/chebi/CHEBI:35780"
+  Glc6P identity "http://identifiers.org/chebi/CHEBI:17665",
+                 "http://identifiers.org/kegg.compound/C00668"
+  Fru6P identity "http://identifiers.org/chebi/CHEBI:16084",
+                 "http://identifiers.org/kegg.compound/C05345"
+  Fru16BP identity "http://identifiers.org/chebi/CHEBI:28013",
+                   "http://identifiers.org/kegg.compound/C05378"
+  DHAP identity "http://identifiers.org/chebi/CHEBI:16108",
+                "http://identifiers.org/kegg.compound/C00111"
+  GAP identity "http://identifiers.org/chebi/CHEBI:29052",
+               "http://identifiers.org/kegg.compound/C00118"
+  NAD identity "http://identifiers.org/chebi/CHEBI:15846",
+               "http://identifiers.org/kegg.compound/C00003"
+  BPGA13 identity "http://identifiers.org/chebi/CHEBI:16001",
+                  "http://identifiers.org/kegg.compound/C00236"
+  NADH identity "http://identifiers.org/chebi/CHEBI:16908",
+                "http://identifiers.org/kegg.compound/C00004"
+  Pyr identity "http://identifiers.org/chebi/CHEBI:15361",
+               "http://identifiers.org/kegg.compound/C00022"
+  Nb part "http://identifiers.org/kegg.compound/C00197",
+          "http://identifiers.org/kegg.compound/C00631",
+          "http://identifiers.org/kegg.compound/C00074"
+  Nb part "http://identifiers.org/chebi/CHEBI:18021",
+          "http://identifiers.org/chebi/CHEBI:17794",
+          "http://identifiers.org/chebi/CHEBI:17835"
+  Pc hypernym "http://identifiers.org/chebi/CHEBI:35780"
+  PyrE hypernym "http://identifiers.org/chebi/CHEBI:32816",
+                "http://identifiers.org/kegg.compound/C00022"
+  Gly identity "http://identifiers.org/chebi/CHEBI:17754",
+               "http://identifiers.org/kegg.compound/C00116"
+  GlcE hypernym "http://identifiers.org/chebi/CHEBI:17234",
+                "http://identifiers.org/kegg.compound/C00293"
+  Gly3P identity "http://identifiers.org/chebi/CHEBI:15978",
+                 "http://identifiers.org/kegg.compound/C00093"
+  Gly3Pc identity "http://identifiers.org/chebi/CHEBI:15978",
+                  "http://identifiers.org/kegg.compound/C00093"
+  Gly3Pg identity "http://identifiers.org/chebi/CHEBI:15978",
+                  "http://identifiers.org/kegg.compound/C00093"
+  ATPc identity "http://identifiers.org/chebi/CHEBI:15422",
+                "http://identifiers.org/kegg.compound/C00002"
+  ADPc identity "http://identifiers.org/chebi/CHEBI:16761",
+                "http://identifiers.org/kegg.compound/C00008"
+  ATPg identity "http://identifiers.org/chebi/CHEBI:15422",
+                "http://identifiers.org/kegg.compound/C00002"
+  ADPg identity "http://identifiers.org/chebi/CHEBI:16761",
+                "http://identifiers.org/kegg.compound/C00008"
+  DHAPg identity "http://identifiers.org/chebi/CHEBI:16108",
+                 "http://identifiers.org/kegg.compound/C00111"
+  DHAPc identity "http://identifiers.org/chebi/CHEBI:16108",
+                 "http://identifiers.org/kegg.compound/C00111"
+  PGAg identity "http://identifiers.org/chebi/CHEBI:18021",
+                "http://identifiers.org/kegg.compound/C00074"
+  PEPc identity "http://identifiers.org/chebi/CHEBI:18021",
+                "http://identifiers.org/kegg.compound/C00074"
+  vGlcTr hypernym "http://identifiers.org/go/GO:0046323"
+  vGlcTr homolog "http://identifiers.org/reactome/REACT_2092"
+  vHK identity "http://identifiers.org/kegg.reaction/R00299"
+  vHK hypernym "http://identifiers.org/ec-code/2.7.1.2"
+  vHK homolog "http://identifiers.org/reactome/REACT_1318"
+  vPGI identity "http://identifiers.org/kegg.reaction/R00771"
+  vPGI hypernym "http://identifiers.org/ec-code/5.3.1.9"
+  vPGI homolog "http://identifiers.org/reactome/REACT_1164"
+  vPFK identity "http://identifiers.org/kegg.reaction/R00756"
+  vPFK hypernym "http://identifiers.org/ec-code/2.7.1.11"
+  vPFK homolog "http://identifiers.org/reactome/REACT_736"
+  vALD identity "http://identifiers.org/kegg.reaction/R01070"
+  vALD hypernym "http://identifiers.org/ec-code/4.1.2.13"
+  vALD homolog "http://identifiers.org/reactome/REACT_1602"
+  vTPI identity "http://identifiers.org/kegg.reaction/R01015"
+  vTPI hypernym "http://identifiers.org/ec-code/5.3.1.1"
+  vTPI homolog "http://identifiers.org/reactome/REACT_775"
+  vGAPdh identity "http://identifiers.org/kegg.reaction/R01061"
+  vGAPdh hypernym "http://identifiers.org/ec-code/1.2.1.12"
+  vGAPdh homolog "http://identifiers.org/reactome/REACT_1847"
+  vGDH identity "http://identifiers.org/kegg.reaction/R00841"
+  vGDH hypernym "http://identifiers.org/ec-code/3.1.3.21"
+  vGDH homolog "http://identifiers.org/reactome/REACT_1146"
+  vGPO identity "http://identifiers.org/kegg.reaction/R00846"
+  vGPO hypernym "http://identifiers.org/ec-code/1.1.3.21"
+  vPGK hypernym "http://identifiers.org/ec-code/2.7.2.3"
+  vPK hypernym "http://identifiers.org/ec-code/2.7.1.40"
+  vPK identity "http://identifiers.org/kegg.reaction/R00200"
+  vPK homolog "http://identifiers.org/reactome/REACT_1911"
+  vATPase hypernym "http://identifiers.org/go/GO:0006200"
+  vGlyK identity "http://identifiers.org/kegg.reaction/R00847"
+  vGlyK hypernym "http://identifiers.org/ec-code/2.7.1.30"
 end
+
+Bakker2001_Glycolysis is "Bakker2001_Glycolysis"
+
+Bakker2001_Glycolysis model_entity_is "http://identifiers.org/biomodels.db/MODEL6624099213"
+Bakker2001_Glycolysis model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000071"
+Bakker2001_Glycolysis description "http://identifiers.org/pubmed/11415442"
+Bakker2001_Glycolysis origin "http://identifiers.org/biomodels.db/MODEL1101100000",
+                             "http://identifiers.org/pubmed/10468568"
+Bakker2001_Glycolysis taxon "http://identifiers.org/taxonomy/5691"
+Bakker2001_Glycolysis identity "http://identifiers.org/kegg.pathway/tbr00010"
+Bakker2001_Glycolysis hypernym "http://identifiers.org/go/GO:0006096"
+Bakker2001_Glycolysis homolog "http://identifiers.org/reactome/REACT_1383"

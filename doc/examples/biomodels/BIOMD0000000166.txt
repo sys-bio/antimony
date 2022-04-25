@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Zhu2007_TF_syn_modulated_by_Ca()
 
   // Compartments and Species:
@@ -6,17 +6,17 @@ model *Zhu2007_TF_syn_modulated_by_Ca()
   species X in cytoplasm, Y in store, Z in cytoplasm;
 
   // Assignment Rules:
-  kf := kf0*(1 + (gamma*Z^4)/(Ka^4 + Z^4));
+  kf := kf0*(1 + gamma_*Z^4/(Ka^4 + Z^4));
   Kd := Kd0/(1 + Z^4/Kb^4);
 
   // Reactions:
-  TF_synthesis:  -> X; (kf*X^2)/(X^2 + Kd);
+  TF_synthesis:  -> X; kf*X^2/(X^2 + Kd);
   TF_degradation: X -> ; TF_degradation_kd*X;
   TF_synthesis_basal:  -> X; TF_synthesis_basal_Rbas;
   Calcium_Influx:  -> Z; Calcium_Influx_v0;
   Calcium_Influx_stimulation:  -> Z; Calcium_Influx_stimulation_v1*Calcium_Influx_stimulation_beta;
-  Calcium_into_store: Z -> Y; (Calcium_into_store_Vm2*Z^Calcium_into_store_n)/(Calcium_into_store_K2^Calcium_into_store_n + Z^Calcium_into_store_n);
-  Calcium_into_cytoplasm: Y -> Z; ((Calcium_into_cytoplasm_Vm3*Y^Calcium_into_cytoplasm_m)/(Calcium_into_cytoplasm_Kr^Calcium_into_cytoplasm_m + Y^Calcium_into_cytoplasm_m)*Z^Calcium_into_cytoplasm_p)/(Calcium_into_cytoplasm_K_A^Calcium_into_cytoplasm_p + Z^Calcium_into_cytoplasm_p);
+  Calcium_into_store: Z -> Y; Calcium_into_store_Vm2*Z^Calcium_into_store_n/(Calcium_into_store_K2^Calcium_into_store_n + Z^Calcium_into_store_n);
+  Calcium_into_cytoplasm: Y -> Z; (Calcium_into_cytoplasm_Vm3*Y^Calcium_into_cytoplasm_m/(Calcium_into_cytoplasm_Kr^Calcium_into_cytoplasm_m + Y^Calcium_into_cytoplasm_m))*Z^Calcium_into_cytoplasm_p/(Calcium_into_cytoplasm_K_A^Calcium_into_cytoplasm_p + Z^Calcium_into_cytoplasm_p);
   Leakage: Y -> Z; Leakage_k1*Y;
   Leakage_from_cytoplasm: Z -> ; Leakage_from_cytoplasm_k*Z;
 
@@ -31,10 +31,10 @@ model *Zhu2007_TF_syn_modulated_by_Ca()
 
   // Variable initializations:
   kf0 = 6;
+  gamma_ = 9;
   Ka = 0.5;
   Kd0 = 10;
   Kb = 0.5;
-  gamma = 9;
   TF_degradation_kd = 1;
   TF_synthesis_basal_Rbas = 0.1;
   Calcium_Influx_v0 = 1;
@@ -53,7 +53,7 @@ model *Zhu2007_TF_syn_modulated_by_Ca()
 
   // Other declarations:
   var kf, Kd;
-  const cytoplasm, store, kf0, Ka, Kd0, Kb, gamma;
+  const cytoplasm, store, kf0, gamma_, Ka, Kd0, Kb;
 
   // Unit definitions:
   unit substance = 1e-6 mole;
@@ -72,4 +72,32 @@ model *Zhu2007_TF_syn_modulated_by_Ca()
   Calcium_into_cytoplasm is "Calcium influx to cytoplasm";
   Leakage is "Calcium Leakage";
   Leakage_from_cytoplasm is "Leakage from cytoplasm";
+
+  // CV terms:
+  cytoplasm identity "http://identifiers.org/go/GO:0005829"
+  Y identity "http://identifiers.org/chebi/CHEBI:22984",
+             "http://identifiers.org/kegg.compound/C00076"
+  Z identity "http://identifiers.org/chebi/CHEBI:22984",
+             "http://identifiers.org/kegg.compound/C00076"
+  TF_synthesis hypernym "http://identifiers.org/go/GO:0006412"
+  TF_degradation hypernym "http://identifiers.org/go/GO:0030163"
+  TF_synthesis_basal hypernym "http://identifiers.org/go/GO:0006412"
+  Calcium_Influx hypernym "http://identifiers.org/go/GO:0007204"
+  Calcium_Influx_stimulation hypernym "http://identifiers.org/go/GO:0007204"
+  Calcium_into_store hypernym "http://identifiers.org/go/GO:0051481"
+  Calcium_into_cytoplasm hypernym "http://identifiers.org/go/GO:0007204",
+                                  "http://identifiers.org/go/GO:0051209"
+  Leakage hypernym "http://identifiers.org/go/GO:0051209",
+                   "http://identifiers.org/go/GO:0007204"
+  Leakage_from_cytoplasm hypernym "http://identifiers.org/go/GO:0051481"
 end
+
+Zhu2007_TF_syn_modulated_by_Ca is "Zhu2007_TF_modulated_by_Calcium"
+
+Zhu2007_TF_syn_modulated_by_Ca model_entity_is "http://identifiers.org/biomodels.db/MODEL8262954331"
+Zhu2007_TF_syn_modulated_by_Ca model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000166"
+Zhu2007_TF_syn_modulated_by_Ca description "http://identifiers.org/pubmed/17560007"
+Zhu2007_TF_syn_modulated_by_Ca origin "http://identifiers.org/biomodels.db/BIOMD0000000098",
+                                      "http://identifiers.org/pubmed/9486144"
+Zhu2007_TF_syn_modulated_by_Ca hypernym "http://identifiers.org/go/GO:0019722"
+Zhu2007_TF_syn_modulated_by_Ca taxon "http://identifiers.org/taxonomy/131567"

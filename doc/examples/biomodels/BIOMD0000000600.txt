@@ -1,0 +1,289 @@
+// Created by libAntimony v2.13.0
+function Function_for_r25__1(Smad_P_CoSmad_N, h, k14, k15)
+  k14*Smad_P_CoSmad_N^h/(Smad_P_CoSmad_N^h + k15^h);
+end
+
+Function_for_r25__1 is "Function for r25 [1]"
+
+function Function_for_r16__1(Smad_P_Smad_P, k12, k8)
+  k12*k8*Smad_P_Smad_P;
+end
+
+Function_for_r16__1 is "Function for r16 [1]"
+
+function Function_for_r28__1(I_Smad_mRNA2, k18)
+  k18*I_Smad_mRNA2;
+end
+
+Function_for_r28__1 is "Function for r28 [1]"
+
+function Function_for_r7__1(k7, Smad, TGFb_TGFbR_P)
+  k7*Smad*TGFb_TGFbR_P;
+end
+
+Function_for_r7__1 is "Function for r7 [1]"
+
+
+model *Celli_re2011___Plasticity_of_TGF___Signalling()
+
+  // Compartments and Species:
+  compartment c, n, extracellular;
+  species TGFbR in c, TGFb_TGFbR in c, TGFb_TGFbR_P in c, I_Smad_TGFb_TGFbR_P in c;
+  species Smad in c, Smad_P in c, CoSmad in c, Smad_P_Smad_P in c, Smad_P_CoSmad in c;
+  species I_Smad_mRNA2 in c, I_Smad in c, Smad_N in n, Smad_P_Smad_P_N in n;
+  species Smad_P_N in n, Smad_P_CoSmad_N in n, CoSmad_N in n, I_Smad_mRNA1 in n;
+  species $TGFb in extracellular;
+
+  // Reactions:
+  r1: TGFb_TGFbR => TGFbR; c*k1*TGFb_TGFbR;
+  r2: TGFbR + $TGFb => TGFb_TGFbR; k2*TGFbR*TGFb;
+  r3: TGFb_TGFbR => TGFb_TGFbR_P; c*k3*TGFb_TGFbR;
+  r4: TGFb_TGFbR_P => TGFb_TGFbR; c*k4*TGFb_TGFbR_P;
+  r5: TGFb_TGFbR_P + I_Smad => I_Smad_TGFb_TGFbR_P; c*k5*TGFb_TGFbR_P*I_Smad;
+  r6: I_Smad_TGFb_TGFbR_P => TGFb_TGFbR + I_Smad; c*k6*I_Smad_TGFb_TGFbR_P;
+  r7: Smad => Smad_P; c*Function_for_r7__1(k7, Smad, TGFb_TGFbR_P);
+  r8: Smad => Smad_N; k8*Smad;
+  r9: Smad_N => Smad; k9*Smad_N;
+  r10: 2 Smad_P => Smad_P_Smad_P; c*k10*Smad_P^2;
+  r11: Smad_P_Smad_P => 2 Smad_P; c*k11*Smad_P_Smad_P;
+  r12: Smad_P + CoSmad => Smad_P_CoSmad; c*k10*Smad_P*CoSmad;
+  r13: Smad_P_CoSmad => Smad_P + CoSmad; c*k11*Smad_P_CoSmad;
+  r14: CoSmad => CoSmad_N; k8*CoSmad;
+  r15: CoSmad_N => CoSmad; k9*CoSmad_N;
+  r16: Smad_P_Smad_P => Smad_P_Smad_P_N; Function_for_r16__1(Smad_P_Smad_P, k12, k8);
+  r17: Smad_P => Smad_P_N; k8*Smad_P;
+  r18: Smad_P_N => Smad_P; k9*Smad_P_N;
+  r19: Smad_P_CoSmad => Smad_P_CoSmad_N; Function_for_r16__1(Smad_P_CoSmad, k12, k8);
+  r20: Smad_P_N => Smad_N; n*k13*Smad_P_N;
+  r21: 2 Smad_P_N => Smad_P_Smad_P_N; n*k10*Smad_P_N^2;
+  r22: Smad_P_Smad_P_N => 2 Smad_P_N; n*k11*Smad_P_Smad_P_N;
+  r23: Smad_P_N + CoSmad_N => Smad_P_CoSmad_N; n*k10*Smad_P_N*CoSmad_N;
+  r24: Smad_P_CoSmad_N => Smad_P_N + CoSmad_N; n*k11*Smad_P_CoSmad_N;
+  r25:  => I_Smad_mRNA1; n*Function_for_r25__1(Smad_P_CoSmad_N, h, k14, k15);
+  r26: I_Smad_mRNA1 => I_Smad_mRNA2; k16*I_Smad_mRNA1;
+  r27: I_Smad_mRNA2 => ; c*k17*I_Smad_mRNA2;
+  r28:  => I_Smad; c*Function_for_r28__1(I_Smad_mRNA2, k18);
+  r29: I_Smad => ; c*k19*I_Smad;
+
+  // Species initializations:
+  TGFbR = 1010;
+  TGFb_TGFbR = 0;
+  TGFb_TGFbR_P = 0;
+  I_Smad_TGFb_TGFbR_P = 0;
+  Smad = 7000;
+  Smad_P = 0;
+  CoSmad = 12000;
+  Smad_P_Smad_P = 0;
+  Smad_P_CoSmad = 0;
+  I_Smad_mRNA2 = 0;
+  I_Smad = 0;
+  Smad_N = 82000;
+  Smad_P_Smad_P_N = 0;
+  Smad_P_N = 0;
+  Smad_P_CoSmad_N = 0;
+  CoSmad_N = 135000;
+  I_Smad_mRNA1 = 0;
+  TGFb = 460;
+
+  // Compartment initializations:
+  c = 2.3;
+  n = 1;
+  extracellular = 1;
+
+  // Variable initializations:
+  h = 2.06;
+  k1 = 0.00446;
+  k2 = 4.39e-06;
+  k3 = 0.324;
+  k4 = 0.00192;
+  k7 = 9.35e-06;
+  k8 = 0.0104;
+  k9 = 0.00075;
+  k10 = 5.12e-08;
+  k11 = 0.00923;
+  k12 = 0.0513;
+  k13 = 0.00164;
+  k5 = 0.000549;
+  k6 = 1.29e-05;
+  k14 = 0.038;
+  k15 = 28.52;
+  k16 = 0.0214;
+  k17 = 8.05e-05;
+  k18 = 0.0434;
+  k19 = 0.000412;
+
+  // Other declarations:
+  const c, n, extracellular, h, k1, k2, k3, k4, k7, k8, k9, k10, k11, k12;
+  const k13, k5, k6, k14, k15, k16, k17, k18, k19;
+
+  // Unit definitions:
+  unit substance = 1e-12 mole;
+
+  // Display Names:
+  c is "cytoplasm";
+  n is "nucleus";
+
+  // SBO terms:
+  TGFb_TGFbR_P.sboTerm = 216
+  I_Smad_TGFb_TGFbR_P.sboTerm = 216
+
+  // CV terms:
+  c identity "http://identifiers.org/go/GO:0005737"
+  n identity "http://identifiers.org/go/GO:0005634"
+  extracellular identity "http://identifiers.org/go/GO:0005576"
+  TGFbR hypernym "http://identifiers.org/interpro/IPR000333"
+  TGFb_TGFbR part "http://identifiers.org/interpro/IPR000333",
+                  "http://identifiers.org/interpro/IPR016319"
+  TGFb_TGFbR_P part "http://identifiers.org/interpro/IPR000333",
+                    "http://identifiers.org/interpro/IPR016319"
+  I_Smad_TGFb_TGFbR_P part "http://identifiers.org/interpro/IPR017855",
+                           "http://identifiers.org/interpro/IPR016319",
+                           "http://identifiers.org/interpro/IPR000333"
+  Smad hypernym "http://identifiers.org/interpro/IPR008984"
+  Smad_P hypernym "http://identifiers.org/interpro/IPR008984"
+  CoSmad hypernym "http://identifiers.org/interpro/IPR008984"
+  Smad_P_Smad_P hypernym "http://identifiers.org/interpro/IPR008984"
+  Smad_P_CoSmad hypernym "http://identifiers.org/interpro/IPR008984"
+  Smad_P_CoSmad hypernym "http://identifiers.org/uniprot/Q13485"
+  I_Smad_mRNA2 hypernym "http://identifiers.org/interpro/IPR008984"
+  I_Smad hypernym "http://identifiers.org/interpro/IPR008984"
+  Smad_N hypernym "http://identifiers.org/interpro/IPR008984"
+  Smad_P_Smad_P_N hypernym "http://identifiers.org/interpro/IPR008984"
+  Smad_P_N hypernym "http://identifiers.org/interpro/IPR008984"
+  Smad_P_N hypernym "http://identifiers.org/uniprot/Q13485"
+  Smad_P_CoSmad_N hypernym "http://identifiers.org/interpro/IPR008984"
+  Smad_P_CoSmad_N hypernym "http://identifiers.org/uniprot/Q13485"
+  CoSmad_N hypernym "http://identifiers.org/interpro/IPR008984"
+  I_Smad_mRNA1 hypernym "http://identifiers.org/interpro/IPR008984"
+  TGFb hypernym "http://identifiers.org/interpro/P36897"
+  k1 description "http://identifiers.org/pubmed/18706811"
+  k1 description "http://identifiers.org/pubmed/19254534"
+  k2 description "http://identifiers.org/pubmed/18706811"
+  k2 description "http://identifiers.org/pubmed/19254534"
+  k7 description "http://identifiers.org/pubmed/18443295"
+  k7 description "http://identifiers.org/pubmed/19254534"
+  k8 description "http://identifiers.org/pubmed/18443295"
+  k8 description "http://identifiers.org/pubmed/17186703"
+  k8 description "http://identifiers.org/pubmed/19254534"
+  k9 description "http://identifiers.org/pubmed/18443295"
+  k9 description "http://identifiers.org/pubmed/19254534"
+  k9 description "http://identifiers.org/pubmed/17186703"
+  k10 description "http://identifiers.org/pubmed/17186703"
+  k10 description "http://identifiers.org/pubmed/18443295"
+  k10 description "http://identifiers.org/pubmed/19254534"
+  k11 description "http://identifiers.org/pubmed/19254534"
+  k11 description "http://identifiers.org/pubmed/17186703"
+  k11 description "http://identifiers.org/pubmed/18443295"
+  k12 description "http://identifiers.org/pubmed/18443295"
+  k13 description "http://identifiers.org/pubmed/19254534"
+  k14 encodement "http://identifiers.org/interpro/IPR008984"
+  k14 part "http://identifiers.org/go/GO:0071141"
+  k14 hypernym "http://identifiers.org/go/GO:0010468"
+  k14 description "http://identifiers.org/pubmed/18061509"
+  k15 part "http://identifiers.org/go/GO:0071141"
+  k15 parthood "http://identifiers.org/interpro/IPR008984"
+  k15 hypernym "http://identifiers.org/go/GO:0010468"
+  k15 description "http://identifiers.org/pubmed/18061509"
+  k16 encodement "http://identifiers.org/interpro/IPR008984"
+  k16 hypernym "http://identifiers.org/go/GO:0051168"
+  k16 description "http://identifiers.org/doi/10.1101/1350705"
+  k17 encodement "http://identifiers.org/interpro/IPR008984"
+  k17 hypernym "http://identifiers.org/go/GO:0006402"
+  k17 description "http://identifiers.org/doi/10.1101/gad.1350705"
+  k18 encodement "http://identifiers.org/interpro/IPR008984"
+  k18 hypernym "http://identifiers.org/go/GO:0006412"
+  k18 description "http://identifiers.org/doi/10.1101/gad.1350705"
+  r1 part "http://identifiers.org/interpro/IPR000333"
+  r1 part "http://identifiers.org/interpro/IPR016319"
+  r1 identity "http://identifiers.org/go/GO:0043241"
+  r2 part "http://identifiers.org/interpro/IPR016319"
+  r2 part "http://identifiers.org/interpro/IPR000333"
+  r2 identity "http://identifiers.org/go/GO:0005160"
+  r2 description "http://identifiers.org/pubmed/PMID:12729750"
+  r3 part "http://identifiers.org/interpro/IPR000333"
+  r3 part "http://identifiers.org/interpro/IPR016319"
+  r3 hypernym "http://identifiers.org/go/GO:0004674"
+  r4 version "http://identifiers.org/interpro/IPR016319"
+  r4 version "http://identifiers.org/interpro/IPR000333"
+  r4 hypernym "http://identifiers.org/go/GO:0016311"
+  r5 part "http://identifiers.org/interpro/IPR000333"
+  r5 part "http://identifiers.org/interpro/IPR008984"
+  r5 part "http://identifiers.org/interpro/IPR016319"
+  r5 version "http://identifiers.org/go/GO:0070411"
+  r5 version "http://identifiers.org/go/GO:0016311"
+  r5 version "http://identifiers.org/go/GO:0030617"
+  r6 part "http://identifiers.org/interpro/IPR000333"
+  r6 part "http://identifiers.org/interpro/IPR008984"
+  r6 part "http://identifiers.org/interpro/IPR016319"
+  r6 hypernym "http://identifiers.org/go/GO:0043241"
+  r7 part "http://identifiers.org/interpro/IPR000333"
+  r7 part "http://identifiers.org/interpro/IPR008984"
+  r7 part "http://identifiers.org/interpro/IPR016319"
+  r7 hypernym "http://identifiers.org/go/GO:0060389"
+  r8 part "http://identifiers.org/interpro/IPR008984"
+  r8 hypernym "http://identifiers.org/go/GO:0007184"
+  r9 part "http://identifiers.org/interpro/IPR008984"
+  r9 hypernym "http://identifiers.org/go/GO:0051168"
+  r10 part "http://identifiers.org/interpro/IPR008984"
+  r10 identity "http://identifiers.org/go/GO:0042803"
+  r11 part "http://identifiers.org/interpro/IPR008984"
+  r11 parthood "http://identifiers.org/go/GO:0043241"
+  r12 part "http://identifiers.org/interpro/IPR008984"
+  r12 identity "http://identifiers.org/go/GO:0070410"
+  r12 identity "http://identifiers.org/go/GO:0070412"
+  r12 identity "http://identifiers.org/go/GO:0042803"
+  r13 part "http://identifiers.org/interpro/IPR008984"
+  r13 identity "http://identifiers.org/go/GO:0043241"
+  r14 part "http://identifiers.org/interpro/IPR008984"
+  r14 identity "http://identifiers.org/go/GO:0007184"
+  r15 part "http://identifiers.org/interpro/IPR008984"
+  r15 identity "http://identifiers.org/go/GO:0051168"
+  r16 part "http://identifiers.org/interpro/IPR008984"
+  r16 hypernym "http://identifiers.org/go/GO:0007184"
+  r16 description "http://identifiers.org/pubmed/12809600"
+  r16 description "http://identifiers.org/doi/10.1038/cr.2008.325"
+  r17 part "http://identifiers.org/interpro/IPR008984"
+  r17 hypernym "http://identifiers.org/go/GO:0007184"
+  r17 description "http://identifiers.org/doi/10.1038/cr.2008.325"
+  r18 part "http://identifiers.org/interpro/IPR008984"
+  r18 hypernym "http://identifiers.org/go/GO:0051168"
+  r18 description "http://identifiers.org/doi/10.1038/cr.2008.325"
+  r19 part "http://identifiers.org/interpro/IPR008984"
+  r19 hypernym "http://identifiers.org/go/GO:0007184"
+  r19 description "http://identifiers.org/doi/10.1038/cr.2008.325"
+  r20 part "http://identifiers.org/interpro/IPR008984"
+  r20 hypernym "http://identifiers.org/go/GO:0006470"
+  r20 description "http://identifiers.org/doi/10.1007/978-1-60761-738-9_7"
+  r21 part "http://identifiers.org/interpro/IPR008984"
+  r21 hypernym "http://identifiers.org/go/GO:0007183"
+  r21 description "http://identifiers.org/doi/10.1016/j.bbrc.2008.08.143"
+  r22 part "http://identifiers.org/go/GO:0010862"
+  r22 version "http://identifiers.org/interpro/IPR008984"
+  r22 parthood "http://identifiers.org/go/GO:0043241"
+  r23 version "http://identifiers.org/interpro/IPR008984"
+  r23 version "http://identifiers.org/uniprot.isoform/Q13485"
+  r23 identity "http://identifiers.org/go/GO:0070410"
+  r23 identity "http://identifiers.org/go/GO:0010862"
+  r23 identity "http://identifiers.org/go/GO:0070412"
+  r24 version "http://identifiers.org/uniprot.isoform/Q13485"
+  r24 version "http://identifiers.org/interpro/IPR008984"
+  r24 identity "http://identifiers.org/go/GO:0070410"
+  r24 identity "http://identifiers.org/go/GO:0010862"
+  r24 identity "http://identifiers.org/go/GO:0043241"
+  r25 encodement "http://identifiers.org/interpro/IPR008984"
+  r26 encodement "http://identifiers.org/interpro/IPR008984"
+  r26 identity "http://identifiers.org/go/GO:0051168"
+  r27 encodement "http://identifiers.org/interpro/IPR008984"
+  r27 identity "http://identifiers.org/go/GO:0006401"
+  r28 version "http://identifiers.org/interpro/IPR008984"
+  r29 part "http://identifiers.org/interpro/IPR008984"
+  r29 hypernym "http://identifiers.org/go/GO:0030163"
+end
+
+Celli_re2011___Plasticity_of_TGF___Signalling is "Cellière2011 - Plasticity of TGF-β Signalling"
+
+Celli_re2011___Plasticity_of_TGF___Signalling model_entity_is "http://identifiers.org/biomodels.db/MODEL1208280000"
+Celli_re2011___Plasticity_of_TGF___Signalling model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000600"
+Celli_re2011___Plasticity_of_TGF___Signalling description "http://identifiers.org/pubmed/22051045"
+Celli_re2011___Plasticity_of_TGF___Signalling hypernym "http://identifiers.org/go/GO:0007179"
+Celli_re2011___Plasticity_of_TGF___Signalling description "http://identifiers.org/pubmed/22051045"

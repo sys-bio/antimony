@@ -1,0 +1,198 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible_0(v)
+  v;
+end
+
+Constant_flux__irreversible_0 is "Constant flux (irreversible)"
+
+function mod_1__CF_1(DDR, va3_k_0)
+  va3_k_0*DDR;
+end
+
+mod_1__CF_1 is "mod(1) CF_1"
+
+function pos__FB_inh_MA_1(CycECdk2, CycECdk2a, p21, vb1_Ki_0, vb1_Kma_0, vb1_Kmb_0, vb1_h_0, vb1_k0_0, vb1_k1_0, vb1_ka_0, vb1_kb_0)
+  CycECdk2*(vb1_k0_0 + vb1_k1_0*2*vb1_ka_0*CycECdk2a*vb1_Kmb_0/((vb1_kb_0 - vb1_ka_0*CycECdk2a) + vb1_kb_0*vb1_Kma_0 + vb1_ka_0*CycECdk2a*vb1_Kmb_0 + (((vb1_kb_0 - vb1_ka_0*CycECdk2a) + vb1_kb_0*vb1_Kma_0 + vb1_ka_0*CycECdk2a*vb1_Kmb_0)^2 - 4*(vb1_kb_0 - vb1_ka_0*CycECdk2a)*vb1_ka_0*CycECdk2a*vb1_Kmb_0)^(1/2)))/(1 + (vb1_Ki_0*p21)^vb1_h_0);
+end
+
+pos__FB_inh_MA_1 is "pos. FB inh MA_1"
+
+function mod_1__CF_2(p53, va5_k_0)
+  va5_k_0*p53;
+end
+
+mod_1__CF_2 is "mod(1) CF_2"
+
+
+model *MODEL1505080000()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species CycE in compartment_, Cdk2 in compartment_, CycECdk2 in compartment_;
+  species CycECdk2a in compartment_, p21 in compartment_, DNADamageC in compartment_;
+  species DNADamageS in compartment_, $DDR in compartment_, p53 in compartment_;
+
+  // Assignment Rules:
+  DDR := BaseDNAdamage + DNADamageC + DNADamageS + TAF;
+  DNAdamagefoci_0 := Gy*FociPerGy;
+  Cdk2_T := Cdk2 + CycECdk2 + CycECdk2a;
+  Cdk2_Thr160 := CycECdk2 + CycECdk2a;
+  Fit_Cdk2_Thr160 := (CycECdk2 + CycECdk2a)/(Metabolite_5_0 + Metabolite_7_0);
+  Fit_Cdk2_T := (Cdk2 + CycECdk2 + CycECdk2a)/(Metabolite_3_0 + Metabolite_5_0 + Metabolite_7_0);
+  Fit_CycE_T := (CycECdk2 + CycECdk2a + CycE)/(Metabolite_5_0 + Metabolite_7_0 + Metabolite_1_0);
+  CycE_T := CycECdk2 + CycECdk2a + CycE;
+  Fit_Cdk2a := CycECdk2a/Metabolite_7_0;
+
+  // Reactions:
+  vb5:  => CycE; compartment_*Constant_flux__irreversible_0(vb5_v_0);
+  vb6: CycE => ; compartment_*k6b*CycE;
+  vb3:  => Cdk2; compartment_*Constant_flux__irreversible_0(vb3_v_0);
+  vb4: Cdk2 => ; compartment_*k4b*Cdk2;
+  vb7: CycE + Cdk2 => CycECdk2; compartment_*vb7_k1_0*CycE*Cdk2;
+  vb8: CycECdk2 => CycE + Cdk2; compartment_*k8b*CycECdk2;
+  vb1: CycECdk2 => CycECdk2a; compartment_*pos__FB_inh_MA_1(CycECdk2, CycECdk2a, p21, vb1_Ki_0, vb1_Kma_0, vb1_Kmb_0, vb1_h_0, vb1_k0_0, vb1_k1_0, vb1_ka_0, vb1_kb_0);
+  vb2: CycECdk2a => CycECdk2; compartment_*k2b*CycECdk2a;
+  va3:  => p53; compartment_*mod_1__CF_1(DDR, va3_k_0);
+  va2: DNADamageC => ; compartment_*va2_k1*DNADamageC;
+  va1: DNADamageS => ; compartment_*va1_k1*DNADamageS;
+  va5:  => p21; compartment_*mod_1__CF_2(p53, va5_k_0);
+  va6: p21 => ; compartment_*k6a*p21;
+  va4: p53 => ; compartment_*k4a*p53;
+
+  // Events:
+  DNADamage: at 0 after time > 0: DNADamageS = (1 - prop_C)*DNAdamagefoci_0, DNADamageC = prop_C*DNAdamagefoci_0, TAF = ModelValue_9_0 + k_TAF*Gy^(1/2);
+
+  // Species initializations:
+  CycE = CycE_0;
+  Cdk2 = Cdk2_0;
+  CycECdk2 = CycECdk2_0;
+  CycECdk2a = CycECdk2a_0;
+  p21 = 1;
+  DNADamageC = 0;
+  DNADamageS = 0;
+  p53 = 1;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  CycE_0 = 9.2179813538304;
+  Cdk2_0 = 0.0166736;
+  CycECdk2_0 = 1.36697471606784;
+  CycECdk2a_0 = 2.28154;
+  BaseDNAdamage = 2.16068;
+  TAF = 0.506228;
+  ModelValue_9_0 = TAF;
+  k_TAF = 0.973822;
+  Gy = 0;
+  prop_C = 0.0905648;
+  FociPerGy = 28.9678;
+  Metabolite_5_0 = CycECdk2;
+  Metabolite_7_0 = CycECdk2a;
+  Metabolite_3_0 = Cdk2;
+  Metabolite_1_0 = CycE;
+  k4b = vb3_v_0/Cdk2;
+  vb3_v_0 = 99.84;
+  k6b = vb5_v_0/CycE;
+  vb5_v_0 = 9.99936;
+  k8b = vb7_k1_0*Cdk2*CycE/CycECdk2;
+  vb7_k1_0 = 10;
+  k2b = CycECdk2*(vb1_k0_0 + vb1_k1_0*2*vb1_ka_0*CycECdk2a*vb1_Kmb_0/((vb1_kb_0 - vb1_ka_0*CycECdk2a) + vb1_kb_0*vb1_Kma_0 + vb1_ka_0*CycECdk2a*vb1_Kmb_0 + (((vb1_kb_0 - vb1_ka_0*CycECdk2a) + vb1_kb_0*vb1_Kma_0 + vb1_ka_0*CycECdk2a*vb1_Kmb_0)^2 - 4*(vb1_kb_0 - vb1_ka_0*CycECdk2a)*vb1_ka_0*CycECdk2a*vb1_Kmb_0)^(1/2)))/(1 + (vb1_Ki_0*p21)^vb1_h_0)/CycECdk2a;
+  vb1_k0_0 = 0.10249;
+  vb1_k1_0 = 4.00486;
+  vb1_ka_0 = 3.40431;
+  vb1_Kmb_0 = 0.00842472;
+  vb1_kb_0 = 0.324616;
+  vb1_Kma_0 = 0.001143917344;
+  vb1_Ki_0 = 0.394586;
+  vb1_h_0 = 4.93142;
+  k6a = va5_k_0*p53/p21;
+  va5_k_0 = 193.258;
+  k4a = va3_k_0*DDR/p53;
+  va3_k_0 = 0.00547468;
+  va2_k1 = 0.0164994;
+  va1_k1 = 0.234805;
+
+  // Other declarations:
+  var TAF, DNAdamagefoci_0, Cdk2_T, Cdk2_Thr160, Fit_Cdk2_Thr160, Fit_Cdk2_T;
+  var Fit_CycE_T, CycE_T, Fit_Cdk2a;
+  const compartment_, CycE_0, Cdk2_0, CycECdk2_0, CycECdk2a_0, BaseDNAdamage;
+  const ModelValue_9_0, k_TAF, Gy, prop_C, FociPerGy, Metabolite_5_0, Metabolite_7_0;
+  const Metabolite_3_0, Metabolite_1_0, k4b, vb3_v_0, k6b, vb5_v_0, k8b, vb7_k1_0;
+  const k2b, vb1_k0_0, vb1_k1_0, vb1_ka_0, vb1_Kmb_0, vb1_kb_0, vb1_Kma_0;
+  const vb1_Ki_0, vb1_h_0, k6a, va5_k_0, k4a, va3_k_0;
+
+  // Unit definitions:
+  unit volume = 1e-6 litre;
+  unit time_unit = 3600 second;
+  unit substance = 1e-6 mole;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "MRC-5 cell";
+  ModelValue_9_0 is "Initial for TAF";
+  Metabolite_5_0 is "Initial for CycECdk2";
+  Metabolite_7_0 is "Initial for CycECdk2a";
+  Metabolite_3_0 is "Initial for Cdk2";
+  Metabolite_1_0 is "Initial for CycE";
+  vb3_v_0 is "vb3_v";
+  vb5_v_0 is "vb5_v";
+  vb7_k1_0 is "vb7_k1";
+  vb1_k0_0 is "vb1_k0";
+  vb1_k1_0 is "vb1_k1";
+  vb1_ka_0 is "vb1_ka";
+  vb1_Kmb_0 is "vb1_Kmb";
+  vb1_kb_0 is "vb1_kb";
+  vb1_Kma_0 is "vb1_Kma";
+  vb1_Ki_0 is "vb1_Ki";
+  vb1_h_0 is "vb1_h";
+  va5_k_0 is "va5_k";
+  va3_k_0 is "va3_k";
+
+  // SBO terms:
+  compartment_.sboTerm = 290
+  vb5.sboTerm = 291
+  vb6.sboTerm = 291
+  vb3.sboTerm = 291
+  vb4.sboTerm = 291
+  vb7.sboTerm = 526
+  vb8.sboTerm = 180
+  vb2.sboTerm = 216
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/bto/BTO:0001590"
+  CycE hypernym "http://identifiers.org/uniprot/P24864"
+  Cdk2 hypernym "http://identifiers.org/uniprot/P24941"
+  CycECdk2 part "http://identifiers.org/uniprot/P24941",
+                "http://identifiers.org/uniprot/P24864"
+  CycECdk2a part "http://identifiers.org/uniprot/P24941",
+                 "http://identifiers.org/uniprot/P24864"
+  p21 hypernym "http://identifiers.org/uniprot/P38936"
+  p53 hypernym "http://identifiers.org/uniprot/P04637"
+  vb5 hypernym "http://identifiers.org/go/GO:0006412",
+               "http://identifiers.org/go/GO:0006351"
+  vb6 hypernym "http://identifiers.org/go/GO:0043161"
+  vb3 hypernym "http://identifiers.org/go/GO:0006412",
+               "http://identifiers.org/go/GO:0006351"
+  vb4 hypernym "http://identifiers.org/go/GO:0043161"
+  vb7 identity "urn:miriam:reactome:R-HSA-69191"
+  vb1 identity "urn:miriam:reactome:R-HSA-188350"
+  vb2 identity "urn:miriam:reactome:R-HSA-69195"
+  va3 identity "http://identifiers.org/go/GO:0006974"
+  va2 identity "http://identifiers.org/go/GO:0006281"
+  va1 identity "http://identifiers.org/go/GO:0006281"
+  va5 identity "http://identifiers.org/go/GO:0006978"
+  va6 hypernym "http://identifiers.org/go/GO:0043161"
+  va4 hypernym "http://identifiers.org/go/GO:2001021"
+end
+
+MODEL1505080000 is "Kollarovic2016 - Cell fate decision at G1-S transition"
+
+MODEL1505080000 model_entity_is "http://identifiers.org/biomodels.db/MODEL1505080000"
+MODEL1505080000 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000632"
+MODEL1505080000 description "http://identifiers.org/pubmed/26830321"
+MODEL1505080000 part "http://identifiers.org/go/GO:0007050",
+                     "http://identifiers.org/go/GO:0006281"
+MODEL1505080000 container "http://identifiers.org/bto/BTO:0000452"
+MODEL1505080000 parthood "http://identifiers.org/go/GO:2000772"
+MODEL1505080000 property "http://identifiers.org/mamo/MAMO_0000046"

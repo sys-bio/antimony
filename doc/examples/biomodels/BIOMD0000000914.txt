@@ -1,0 +1,136 @@
+// Created by libAntimony v2.13.0
+function Function_for_removal_of_CyaA_E7_vaccine(k1, VAC)
+  k1*VAC;
+end
+
+Function_for_removal_of_CyaA_E7_vaccine is "Function for removal of CyaA-E7 vaccine"
+
+function Function_for_triggering_of_intermediate_transit_compartment(k1, VAC)
+  k1*VAC;
+end
+
+Function_for_triggering_of_intermediate_transit_compartment is "Function for triggering of intermediate transit compartment"
+
+function Function_for_increase_in_vaccine_signal_to_reduce_tumor_size(k1, TRAN)
+  k1*TRAN;
+end
+
+Function_for_increase_in_vaccine_signal_to_reduce_tumor_size is "Function for increase in vaccine signal to reduce tumor size"
+
+function Function_for_elimination_of_intermediate_transit_compartment(k1, TRAN)
+  k1*TRAN;
+end
+
+Function_for_elimination_of_intermediate_transit_compartment is "Function for elimination of intermediate transit compartment"
+
+function Function_for_reduction_of_vaccine_signal(k2, SVAC)
+  k2*SVAC;
+end
+
+Function_for_reduction_of_vaccine_signal is "Function for reduction of vaccine signal"
+
+function Function_for_increase_in_tumor_size(gamma_)
+  gamma_;
+end
+
+Function_for_increase_in_tumor_size is "Function for increase in tumor size"
+
+function Function_for_reglator_compartment_to_decrease_vaccine_response(k4, Ts)
+  k4*Ts;
+end
+
+Function_for_reglator_compartment_to_decrease_vaccine_response is "Function for reglator compartment to decrease vaccine response"
+
+function Function_for_reduction_of_tumor_size(k3, REG_50, gamma_, REG, Ts, SVAC)
+  k3*(REG_50^gamma_/(REG_50^gamma_ + REG^gamma_))*Ts*SVAC;
+end
+
+Function_for_reduction_of_tumor_size is "Function for reduction of tumor size"
+
+function Function_for_decrease_in_the_regulator_compartment(k4, REG)
+  k4*REG;
+end
+
+Function_for_decrease_in_the_regulator_compartment is "Function for decrease in the regulator compartment"
+
+
+model *Parra_Guillen2013____Mathematical_model_approach_to_describe_tumour_response_in_mice_after_vaccine_administration_model1()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species VAC in compartment_, TRAN in compartment_, SVAC in compartment_;
+  species Ts in compartment_, REG in compartment_;
+
+  // Reactions:
+  Removal_of_CyaA_E7_vaccine: VAC => ; compartment_*Function_for_removal_of_CyaA_E7_vaccine(k1, VAC);
+  Triggering_of_intermediate_transit_compartment_TRAN:  => TRAN; compartment_*Function_for_triggering_of_intermediate_transit_compartment(k1, VAC);
+  Elimination_of_intermeidate_transit_compartment: TRAN => ; compartment_*Function_for_elimination_of_intermediate_transit_compartment(k1, TRAN);
+  Increase_in_vaccine_signal_to_reduce_tumor_size:  => SVAC; compartment_*Function_for_increase_in_vaccine_signal_to_reduce_tumor_size(k1, TRAN);
+  Reduction_of_vaccine_signal: SVAC => ; compartment_*Function_for_reduction_of_vaccine_signal(k2_pop2, SVAC);
+  Increase_in_tumor_size:  => Ts; compartment_*Function_for_increase_in_tumor_size(gamma_);
+  Reduction_of_tumor_size: Ts => ; compartment_*Function_for_reduction_of_tumor_size(k3, REG_50, gamma_, REG, Ts, SVAC);
+  REguilator_compartment_to_decrease_vaccine_response:  => REG; compartment_*Function_for_reglator_compartment_to_decrease_vaccine_response(k4, Ts);
+  Decrease_in_the_regulator_comparment: REG => ; compartment_*Function_for_decrease_in_the_regulator_compartment(k4, REG);
+
+  // Species initializations:
+  VAC = 1;
+  TRAN = 0;
+  SVAC = 0;
+  Ts = 0.324;
+  REG = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  lamda = 0.354;
+  k1 = 0.0907;
+  P = 0.844;
+  k2_pop1 = 0;
+  k3 = 1.08;
+  k4 = 0.039;
+  REG_50 = 3.18;
+  gamma_ = 5.24;
+  Residual_error = 0.206;
+  k2_pop2 = 0.0907;
+
+  // Other declarations:
+  const compartment_, lamda, k1, P, k2_pop1, k3, k4, REG_50, gamma_, Residual_error;
+  const k2_pop2;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  gamma_ is "gamma";
+  Residual_error is "Residual error";
+  Removal_of_CyaA_E7_vaccine is "Removal of CyaA-E7 vaccine";
+  Triggering_of_intermediate_transit_compartment_TRAN is "Triggering of intermediate transit compartment TRAN";
+  Elimination_of_intermeidate_transit_compartment is "Elimination of intermeidate transit compartment";
+  Increase_in_vaccine_signal_to_reduce_tumor_size is "Increase in vaccine signal to reduce tumor size";
+  Reduction_of_vaccine_signal is "Reduction of vaccine signal";
+  Increase_in_tumor_size is "Increase in tumor size";
+  Reduction_of_tumor_size is "Reduction of tumor size";
+  REguilator_compartment_to_decrease_vaccine_response is "REguilator compartment to decrease vaccine response";
+  Decrease_in_the_regulator_comparment is "Decrease in the regulator comparment";
+
+  // CV terms:
+  VAC property "http://identifiers.org/ncit/C923"
+  SVAC instance "http://identifiers.org/ncit/C43382",
+                "http://identifiers.org/ncit/C923"
+  SVAC property "http://identifiers.org/ncit/C43382"
+  Ts property "http://identifiers.org/ncit/C98275"
+  REG property "http://identifiers.org/ncit/C48806"
+  Increase_in_tumor_size hypernym "http://identifiers.org/go/GO:0002355"
+  Reduction_of_tumor_size hypernym "http://identifiers.org/go/GO:0002347"
+end
+
+Parra_Guillen2013____Mathematical_model_approach_to_describe_tumour_response_in_mice_after_vaccine_administration_model1 is "Parra_Guillen2013 -  Mathematical model approach to describe tumour response in mice after vaccine administration_model1"
+
+Parra_Guillen2013____Mathematical_model_approach_to_describe_tumour_response_in_mice_after_vaccine_administration_model1 description "http://identifiers.org/pubmed/23605806"
+Parra_Guillen2013____Mathematical_model_approach_to_describe_tumour_response_in_mice_after_vaccine_administration_model1 model_entity_is "http://identifiers.org/biomodels.db/MODEL2001220002",
+                                                                                                                                         "http://identifiers.org/biomodels.db/BIOMD0000000914"
+Parra_Guillen2013____Mathematical_model_approach_to_describe_tumour_response_in_mice_after_vaccine_administration_model1 taxon "http://identifiers.org/taxonomy/10090"
+Parra_Guillen2013____Mathematical_model_approach_to_describe_tumour_response_in_mice_after_vaccine_administration_model1 property "http://identifiers.org/mamo/MAMO_0000046"

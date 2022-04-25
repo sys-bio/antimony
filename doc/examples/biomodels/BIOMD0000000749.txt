@@ -1,0 +1,179 @@
+// Created by libAntimony v2.13.0
+function effector_exhaustion_0(d1, E, R, f)
+  d1*E*R*R*R*f;
+end
+
+effector_exhaustion_0 is "effector exhaustion"
+
+function tumor_death_0(la, R)
+  la*R/3;
+end
+
+tumor_death_0 is "tumor death"
+
+function stimulation(r, R, E, k)
+  r*R*R*R*E/(k + R*R*R);
+end
+
+stimulation is "stimulation"
+
+function killing(c, E, R, f)
+  c*E*R*f;
+end
+
+killing is "killing"
+
+function tumor_growth_0(lm, B, R)
+  lm*B*R/3;
+end
+
+tumor_growth_0 is "tumor growth"
+
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function nutrience(lm, B, ld, R)
+  lm*(1 - B)*ld/tanh(R/ld);
+end
+
+nutrience is "nutrience+"
+
+function nutrience_0(lm, b, ld, R)
+  lm*(1 - b)*ld*ld/R;
+end
+
+nutrience_0 is "nutrience-"
+
+
+model *Reppas2015___tumor_control_via_alternating_immunostimulating_and_immunosuppressive_phases()
+
+  // Compartments and Species:
+  compartment tumor_microenvironment;
+  species E in tumor_microenvironment, R in tumor_microenvironment, $f in tumor_microenvironment;
+  species $E_0 in tumor_microenvironment;
+
+  // Assignment Rules:
+  f := R^(B - 1)/(R^(B - 1) + 1);
+  E_0 := E/100000;
+
+  // Reactions:
+  tumor_growth:  => R; tumor_microenvironment*tumor_growth_0(lm, B, R);
+  tumor_death: R => ; tumor_microenvironment*tumor_death_0(la, R);
+  tumor_killing: R => ; tumor_microenvironment*killing(c, E_0, R, f);
+  tumor_nutrient_supply:  => R; tumor_microenvironment*nutrience(lm, B, ld, R);
+  effector_stimulation:  => E; tumor_microenvironment*stimulation(r, R, E, k);
+  effector_exhaustion: E => ; tumor_microenvironment*effector_exhaustion_0(d1, E, R, f);
+  effector_death: E => ; tumor_microenvironment*d0*E;
+  effector_source:  => E; tumor_microenvironment*Constant_flux__irreversible(sigma);
+  tumor_nutrient_missuply: R => ; tumor_microenvironment*nutrience_0(lm, B, ld, R);
+
+  // Species initializations:
+  E = 1000000;
+  E has substance_per_volume;
+  R = 2;
+  R has substance_per_volume;
+  f has substance_per_volume;
+  E_0 has substance_per_volume;
+
+  // Compartment initializations:
+  tumor_microenvironment = 1;
+  tumor_microenvironment has volume;
+
+  // Variable initializations:
+  B = 0.5;
+  B has unit_0;
+  lm = 1.34;
+  lm has unit_1;
+  la = 0.14;
+  la has unit_1;
+  ld = 0.3;
+  ld has unit_0;
+  c = 0.03;
+  c has unit_1;
+  k = 2.72;
+  k has unit_0;
+  d1 = 0.01;
+  d1 has unit_1;
+  d0 = 0.37;
+  d0 has unit_1;
+  sigma = 13000;
+  sigma has unit_1;
+  r = 0.57;
+  r has unit_1;
+
+  // Other declarations:
+  const tumor_microenvironment, B, lm, la, ld, c, k, d1, d0, sigma, r;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = time_unit;
+  unit substance = 1e-3 mole;
+  unit unit_0 = 1 / dimensionless^-0;
+  unit unit_1 = 1 / 86400e-1 second;
+  unit extent = substance;
+  unit substance_per_volume = 1e-3 mole / 1e-3 litre;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1";
+  unit_1 is "1/d";
+  tumor_microenvironment is "tumor microenvironment";
+  E_0 is "E'";
+  tumor_growth is "tumor growth";
+  tumor_death is "tumor death";
+  tumor_killing is "tumor killing";
+  tumor_nutrient_supply is "tumor nutrient supply";
+  effector_stimulation is "effector stimulation";
+  effector_exhaustion is "effector exhaustion";
+  effector_death is "effector death";
+  effector_source is "effector source";
+  tumor_nutrient_missuply is "tumor nutrient missuply";
+
+  // CV terms:
+  tumor_microenvironment hypernym "http://identifiers.org/ncit/C94498"
+  E hypernym "http://identifiers.org/ncit/C28241"
+  R hypernym "http://identifiers.org/cl/CL:0001064"
+  f hypernym "http://identifiers.org/ncit/C54025"
+  E_0 hypernym "http://identifiers.org/ncit/C28241"
+  lm hypernym "http://identifiers.org/sbo/SBO:0000610"
+  la hypernym "http://identifiers.org/ncit/C53346"
+  ld hypernym "http://identifiers.org/sbo/SBO:0000466"
+  c hypernym "http://identifiers.org/ncit/C53346"
+  k hypernym "http://identifiers.org/sbo/SBO:0000193"
+  d1 hypernym "http://identifiers.org/ncit/C53346"
+  d0 hypernym "http://identifiers.org/ncit/C53346"
+  sigma hypernym "http://identifiers.org/sbo/SBO:0000610"
+  r hypernym "http://identifiers.org/sbo/SBO:0000610"
+  tumor_growth hypernym "http://identifiers.org/go/GO:0008283"
+  tumor_growth hypernym "http://identifiers.org/sbo/SBO:0000393"
+  tumor_death hypernym "http://identifiers.org/sbo/SBO:0000179"
+  tumor_death hypernym "http://identifiers.org/go/GO:0008219"
+  tumor_killing hypernym "http://identifiers.org/sbo/SBO:0000179"
+  tumor_killing hypernym "http://identifiers.org/go/GO:0001909"
+  tumor_nutrient_supply hypernym "http://identifiers.org/go/GO:0008283"
+  tumor_nutrient_supply hypernym "http://identifiers.org/sbo/SBO:0000393"
+  effector_stimulation hypernym "http://identifiers.org/sbo/SBO:0000393"
+  effector_stimulation hypernym "http://identifiers.org/go/GO:0070661"
+  effector_exhaustion hypernym "http://identifiers.org/go/GO:0008219"
+  effector_exhaustion hypernym "http://identifiers.org/sbo/SBO:0000179"
+  effector_death hypernym "http://identifiers.org/go/GO:0008219"
+  effector_death hypernym "http://identifiers.org/sbo/SBO:0000179"
+  effector_source hypernym "http://identifiers.org/sbo/SBO:0000393"
+  effector_source hypernym "http://identifiers.org/go/GO:0070661"
+  tumor_nutrient_missuply hypernym "http://identifiers.org/sbo/SBO:0000179"
+  tumor_nutrient_missuply hypernym "http://identifiers.org/go/GO:0008219"
+end
+
+Reppas2015___tumor_control_via_alternating_immunostimulating_and_immunosuppressive_phases is "Reppas2015 - tumor control via alternating immunostimulating and immunosuppressive phases"
+
+Reppas2015___tumor_control_via_alternating_immunostimulating_and_immunosuppressive_phases description "http://identifiers.org/pubmed/26305801"
+Reppas2015___tumor_control_via_alternating_immunostimulating_and_immunosuppressive_phases model_entity_is "http://identifiers.org/biomodels.db/MODEL1907110002",
+                                                                                                          "http://identifiers.org/biomodels.db/BIOMD0000000749"
+Reppas2015___tumor_control_via_alternating_immunostimulating_and_immunosuppressive_phases hypernym "http://identifiers.org/go/GO:0002418"
+Reppas2015___tumor_control_via_alternating_immunostimulating_and_immunosuppressive_phases property "http://identifiers.org/mamo/MAMO_0000046"
+Reppas2015___tumor_control_via_alternating_immunostimulating_and_immunosuppressive_phases taxon "http://identifiers.org/taxonomy/9606"

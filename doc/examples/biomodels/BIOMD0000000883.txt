@@ -1,0 +1,793 @@
+// Created by libAntimony v2.13.0
+function HMM_Modified_Inverted(species_14, Kcat, species_17, km)
+  piecewise(Kcat*species_14*species_17/(km + species_17), species_14 <= 1, 0);
+end
+
+HMM_Modified_Inverted is "HMM_Modified_Inverted"
+
+function HMM_Modified(Kcat, km, species_14, species_17)
+  Kcat*species_14*species_17/(km + species_17);
+end
+
+HMM_Modified is "HMM_Modified"
+
+
+model *Giani2019___Computational_modeling_to_predict_MAP3K8_effects_as_mediator_of_resistance_to_vemurafenib_in_thyroid_cancer_stem_cells()
+
+  // Compartments and Species:
+  compartment compartment_0;
+  species species_0 in compartment_0, species_1 in compartment_0, species_2 in compartment_0;
+  species species_3 in compartment_0, species_4 in compartment_0, species_5 in compartment_0;
+  species species_6 in compartment_0, species_7 in compartment_0, species_8 in compartment_0;
+  species species_9 in compartment_0, species_10 in compartment_0, species_11 in compartment_0;
+  species species_14 in compartment_0, species_15 in compartment_0, species_16 in compartment_0;
+  species species_17 in compartment_0, $species_25 in compartment_0, $species_30 in compartment_0;
+  species PIP3Active in compartment_0, PIP3Inactive in compartment_0, $PTENActive in compartment_0;
+  species PDK1Inactive in compartment_0, PDK1Active in compartment_0, $HSP90_Cdc37Active in compartment_0;
+  species $PHLPPActive in compartment_0, mTORC2Active in compartment_0, $TCL1Active in compartment_0;
+  species $CTMPActive in compartment_0, mTORC1Active in compartment_0, mTORC1Inactive in compartment_0;
+  species bRafMutated in compartment_0, PLX4032 in compartment_0, Grb2Active in compartment_0;
+  species Grb2Inactive in compartment_0, $FGF in compartment_0, freeFGFR in compartment_0;
+  species pFGFR in compartment_0, $proFGFR in compartment_0, $TNF in compartment_0;
+  species freeTNFR1 in compartment_0, pTNFR1 in compartment_0, freeTNFR2 in compartment_0;
+  species pTNFR2 in compartment_0, TRADD_TRAF2_TRAF5_RIP1_Active in compartment_0;
+  species TRADD_TRAF2_TRAF5_RIP1_Inactive in compartment_0, TRAF1_TRAF2_TRAF3_Active in compartment_0;
+  species TRAF1_TRAF2_TRAF3_Inactive in compartment_0, NIKActive in compartment_0;
+  species NIKInactive in compartment_0, IKKbeta_IKKalfa_IKKgamma_Active in compartment_0;
+  species IKKbeta_IKKalfa_IKKgamma_Inactive in compartment_0, TAB1_TAB2_TAB3_TAK1_Active in compartment_0;
+  species TAB1_TAB2_TAB3_TAK1_Inactive in compartment_0, Tpl2_NF_kB_Active in compartment_0;
+  species Tpl2_NF_kB_Inactive in compartment_0, $proTNFR1 in compartment_0;
+  species $proTNFR2 in compartment_0, bRafMutatedInactive in compartment_0;
+  species TRADD_TRAF2_TRAF5_RIP1_bRafINH_Active in compartment_0, TRADD_TRAF2_TRAF5_RIP1_bRafINH_Inactive in compartment_0;
+  species TAB1_TAB2_TAB3_TAK1_bRafINH_Inactive in compartment_0, TAB1_TAB2_TAB3_TAK1_bRafINH_Active in compartment_0;
+  species NIK_bRafINH_Active in compartment_0, NIK_bRafINH_Inactive in compartment_0;
+  species IKKbeta_IKKalfa_IKKgamma_bRafINH_Active in compartment_0, IKKbeta_IKKalfa_IKKgamma_bRafINH_Inactive in compartment_0;
+  species Tpl2_NF_kB_bRafINH_Active in compartment_0, Tpl2_NF_kB_bRafINH_Inactive in compartment_0;
+  species TRAF1_TRAF2_TRAF3_bRafINH_Active in compartment_0, TRAF1_TRAF2_TRAF3_bRafINH_Inactive in compartment_0;
+  species Tpl2_NF_kB_RasINH_Active in compartment_0, Tpl2_NF_kB_RasINH_Inactive in compartment_0;
+  species mTORC2Inactive in compartment_0, MAP3K8_inhibitor in compartment_0;
+  species MAP3K8_NF_kB_inhibited in compartment_0;
+
+  // Reactions:
+  reaction_3: species_5 => species_4; compartment_0*HMM_Modified(reaction_3_Kcat, reaction_3_km, species_2, species_5);
+  reaction_5: species_7 => species_6; compartment_0*HMM_Modified(reaction_5_Kcat, reaction_5_km, species_4, species_7);
+  reaction_7: species_9 => species_8; compartment_0*HMM_Modified(reaction_7_Kcat, reaction_7_km, species_6, species_9);
+  reaction_9: species_11 => species_10; compartment_0*HMM_Modified(reaction_9_Kcat, reaction_9_km, species_8, species_11);
+  reaction_14: species_15 => species_14; compartment_0*HMM_Modified(reaction_14_Kcat, reaction_14_km, species_0, species_15);
+  reaction_15: species_15 => species_14; compartment_0*HMM_Modified(reaction_15_Kcat, reaction_15_km, species_4, species_15);
+  reaction_16: species_14 => species_15; compartment_0*reaction_16_k1*species_14;
+  reaction_17: species_17 => species_16; compartment_0*HMM_Modified(reaction_17_Kcat, reaction_17_km, species_14, species_17);
+  reaction_19: species_6 => species_7; compartment_0*HMM_Modified(reaction_19_Kcat, reaction_19_km, species_16, species_6);
+  reaction_20: species_0 => ; compartment_0*reaction_20_k1*species_0;
+  reaction_27: species_9 => species_8; compartment_0*HMM_Modified(reaction_27_Kcat, reaction_27_km, bRafMutated, species_9);
+  reaction_28: $species_30 => species_1; compartment_0*reaction_28_k1*species_30;
+  PIP3_Activation_PIP3: PIP3Inactive => PIP3Active; compartment_0*HMM_Modified(PIP3_Activation_PIP3_Kcat, PIP3_Activation_PIP3_km, species_14, PIP3Inactive);
+  PIP3_Feedback_Deactivation_PTEN: PIP3Active => PIP3Inactive; compartment_0*HMM_Modified(PIP3_Feedback_Deactivation_PTEN_Kcat, PIP3_Feedback_Deactivation_PTEN_km, PTENActive, PIP3Active);
+  Akt_Activation_PIP3: species_17 => species_16; compartment_0*HMM_Modified(Akt_Activation_PIP3_Kcat, Akt_Activation_PIP3_km, PIP3Active, species_17);
+  PDK1_Activation: PDK1Inactive => PDK1Active; compartment_0*HMM_Modified(PDK1_Activation_Kcat, PDK1_Activation_km, PIP3Active, PDK1Inactive);
+  PDK1_Deactivation: PDK1Active => PDK1Inactive; compartment_0*PDK1_Deactivation_k1*PDK1Active;
+  Akt_Activation_PDK1: species_17 => species_16; compartment_0*HMM_Modified(Akt_Activation_PDK1_Kcat, Akt_Activation_PDK1_km, PDK1Active, species_17);
+  Akt_Feedback_Activation_HSP90_Cdc37: species_17 => species_16; compartment_0*HMM_Modified(Akt_Feedback_Activation_HSP90_Cdc37_Kcat, Akt_Feedback_Activation_HSP90_Cdc37_km, HSP90_Cdc37Active, species_17);
+  Akt_Feedback_Deactivation_PHLPP: species_16 => species_17; compartment_0*HMM_Modified(Akt_Feedback_Deactivation_PHLPP_Kcat, Akt_Feedback_Deactivation_PHLPP_km, PHLPPActive, species_16);
+  Akt_Feedback_Activation_mTORC2: species_17 => species_16; compartment_0*HMM_Modified(Akt_Feedback_Activation_mTORC2_Kcat, Akt_Feedback_Activation_mTORC2_km, mTORC2Active, species_17);
+  Akt_Feedback_Activation_TCL1: species_17 => species_16; compartment_0*HMM_Modified(Akt_Feedback_Activation_TCL1_Kcat, Akt_Feedback_Activation_TCL1_km, TCL1Active, species_17);
+  Akt_Feedback_Deactivation_CTMP: species_16 => species_17; compartment_0*HMM_Modified(Akt_Feedback_Deactivation_CTMP_Kcat, Akt_Feedback_Deactivation_CTMP_km, CTMPActive, species_16);
+  Erk_Feedback_Deactivation_Raf1: species_10 => species_11; compartment_0*HMM_Modified(Erk_Feedback_Deactivation_Raf1_Kcat, Erk_Feedback_Deactivation_Raf1_km, species_6, species_10);
+  Sos_Deactivation: species_2 => species_3; compartment_0*Sos_Deactivation_k1*species_2;
+  mTORC1_Activation_Akt: mTORC1Inactive => mTORC1Active; compartment_0*HMM_Modified(mTORC1_Activation_Akt_Kcat, mTORC1_Activation_Akt_km, species_16, mTORC1Inactive);
+  EGFR_Degradation_Free: species_1 => ; compartment_0*EGFR_Degradation_Free_k1*species_1;
+  Sos_Activation_Grb2: species_3 => species_2; compartment_0*HMM_Modified(Sos_Activation_Grb2_Kcat, Sos_Activation_Grb2_km, Grb2Active, species_3);
+  Grb2_Activation_pEGFR: Grb2Inactive => Grb2Active; compartment_0*HMM_Modified(Grb2_Activation_pEGFR_Kcat, Grb2_Activation_pEGFR_km, species_0, Grb2Inactive);
+  Grb2_Deactivation: Grb2Active => Grb2Inactive; compartment_0*Grb2_Deactivation_k1*Grb2Active;
+  FGFR_Production: $proFGFR => freeFGFR; compartment_0*FGFR_Production_k1*proFGFR;
+  FGFR_Degradation_Free: freeFGFR => ; compartment_0*FGFR_Degradation_Free_k1*freeFGFR;
+  FGFR_Degradation: pFGFR => ; compartment_0*FGFR_Degradation_k1*pFGFR;
+  Grb2_Activation_pFGFR: Grb2Inactive => Grb2Active; compartment_0*HMM_Modified(Grb2_Activation_pFGFR_Kcat, Grb2_Activation_pFGFR_km, pFGFR, Grb2Inactive);
+  TRADD_TRAF2_TRAF5_RIP1_Activation_pTNFR1: TRADD_TRAF2_TRAF5_RIP1_Inactive => TRADD_TRAF2_TRAF5_RIP1_Active; compartment_0*HMM_Modified(TRADD_TRAF2_TRAF5_RIP1_Activation_pTNFR1_Kcat, TRADD_TRAF2_TRAF5_RIP1_Activation_pTNFR1_km, pTNFR1, TRADD_TRAF2_TRAF5_RIP1_Inactive);
+  TRAF1_TRAF2_TRAF3_Activation_pTNFR2: TRAF1_TRAF2_TRAF3_Inactive => TRAF1_TRAF2_TRAF3_Active; compartment_0*HMM_Modified(TRAF1_TRAF2_TRAF3_Activation_pTNFR2_Kcat, TRAF1_TRAF2_TRAF3_Activation_pTNFR2_km, pTNFR2, TRAF1_TRAF2_TRAF3_Inactive);
+  PI3K_Activation_TRAF1_TRAF2_TRAF3: species_15 => species_14; compartment_0*HMM_Modified(PI3K_Activation_TRAF1_TRAF2_TRAF3_Kcat, PI3K_Activation_TRAF1_TRAF2_TRAF3_km, TRAF1_TRAF2_TRAF3_Active, species_15);
+  NIK_Activation_TRADD_TRAF2_TRAF5_RIP1: NIKInactive => NIKActive; compartment_0*HMM_Modified(NIK_Activation_TRADD_TRAF2_TRAF5_RIP1_Kcat, NIK_Activation_TRADD_TRAF2_TRAF5_RIP1_km, TRADD_TRAF2_TRAF5_RIP1_Active, NIKInactive);
+  TAB1_TAB2_TAB3_TAK1_Activation_TRADD_TRAF2_TRAF5_RIP1: TAB1_TAB2_TAB3_TAK1_Inactive => TAB1_TAB2_TAB3_TAK1_Active; compartment_0*HMM_Modified(TAB1_TAB2_TAB3_TAK1_Activation_TRADD_TRAF2_TRAF5_RIP1_Kcat, TAB1_TAB2_TAB3_TAK1_Activation_TRADD_TRAF2_TRAF5_RIP1_km, TRADD_TRAF2_TRAF5_RIP1_Active, TAB1_TAB2_TAB3_TAK1_Inactive);
+  IKKbeta_IKKalfa_IKKgamma_Activation_TRADD_TRAF2_TRAF5_RIP1: IKKbeta_IKKalfa_IKKgamma_Inactive => IKKbeta_IKKalfa_IKKgamma_Active; compartment_0*HMM_Modified(IKKbeta_IKKalfa_IKKgamma_Activation_TRADD_TRAF2_TRAF5_RIP1_Kcat, IKKbeta_IKKalfa_IKKgamma_Activation_TRADD_TRAF2_TRAF5_RIP1_km, TRADD_TRAF2_TRAF5_RIP1_Active, IKKbeta_IKKalfa_IKKgamma_Inactive);
+  IKKbeta_IKKalfa_IKKgamma_Activation_NIK: IKKbeta_IKKalfa_IKKgamma_Inactive => IKKbeta_IKKalfa_IKKgamma_Active; compartment_0*HMM_Modified(IKKbeta_IKKalfa_IKKgamma_Activation_NIK_Kcat, IKKbeta_IKKalfa_IKKgamma_Activation_NIK_km, NIKActive, IKKbeta_IKKalfa_IKKgamma_Inactive);
+  IKKbeta_IKKalfa_IKKgamma_Activation_TAB1_TAB2_TAB3_TAK1: IKKbeta_IKKalfa_IKKgamma_Inactive => IKKbeta_IKKalfa_IKKgamma_Active; compartment_0*HMM_Modified(IKKbeta_IKKalfa_IKKgamma_Activation_TAB1_TAB2_TAB3_TAK1_Kcat, IKKbeta_IKKalfa_IKKgamma_Activation_TAB1_TAB2_TAB3_TAK1_km, TAB1_TAB2_TAB3_TAK1_Active, IKKbeta_IKKalfa_IKKgamma_Inactive);
+  Tpl2_NF_kB_Activation_IKKbeta_IKKalfa: Tpl2_NF_kB_Inactive => Tpl2_NF_kB_Active; compartment_0*HMM_Modified(Tpl2_NF_kB_Activation_IKKbeta_IKKalfa_Kcat, Tpl2_NF_kB_Activation_IKKbeta_IKKalfa_km, IKKbeta_IKKalfa_IKKgamma_Active, Tpl2_NF_kB_Inactive);
+  Mek_Activation__Tpl2_NF_kB: species_9 => species_8; compartment_0*HMM_Modified(Mek_Activation__Tpl2_NF_kB_Kcat, Mek_Activation__Tpl2_NF_kB_km, Tpl2_NF_kB_Active, species_9);
+  TNFR1_Production: $proTNFR1 => freeTNFR1; compartment_0*TNFR1_Production_k1*proTNFR1;
+  TNFR2_Production: $proTNFR2 => freeTNFR2; compartment_0*TNFR2_Production_k1*proTNFR2;
+  TNFR1_Degradation_Free: freeTNFR1 => ; compartment_0*TNFR1_Degradation_Free_k1*freeTNFR1;
+  TNFR2_Degradation_Free: freeTNFR2 => ; compartment_0*TNFR2_Degradation_Free_k1*freeTNFR2;
+  TNFR1_Degradation: pTNFR1 => ; compartment_0*TNFR1_Degradation_k1*pTNFR1;
+  TNFR2_Degradation: pTNFR2 => ; compartment_0*TNFR2_Degradation_k1*pTNFR2;
+  IKKbeta_IKKalfa_IKKgamma_Deactivation: IKKbeta_IKKalfa_IKKgamma_Active => IKKbeta_IKKalfa_IKKgamma_Inactive; compartment_0*IKKbeta_IKKalfa_IKKgamma_Deactivation_k1*IKKbeta_IKKalfa_IKKgamma_Active;
+  Mek_Deactivation: species_8 => species_9; compartment_0*Mek_Deactivation_k1*species_8;
+  mTORC1_Deactivation: mTORC1Active => mTORC1Inactive; compartment_0*mTORC1_Deactivation_k1*mTORC1Active;
+  NIK_Deactivation: NIKActive => NIKInactive; compartment_0*NIK_Deactivation_k1*NIKActive;
+  Ras_Deactivation: species_4 => species_5; compartment_0*Ras_Deactivation_k1*species_4;
+  TAB1_TAB2_TAB3_TAK1_Deactivation: TAB1_TAB2_TAB3_TAK1_Active => TAB1_TAB2_TAB3_TAK1_Inactive; compartment_0*TAB1_TAB2_TAB3_TAK1_Deactivation_k1*TAB1_TAB2_TAB3_TAK1_Active;
+  Tpl2_NF_kB_Deactivation: Tpl2_NF_kB_Active => Tpl2_NF_kB_Inactive; compartment_0*Tpl2_NF_kB_Deactivation_k1*Tpl2_NF_kB_Active;
+  TRADD_TRAF2_TRAF5_RIP1_Deactivation: TRADD_TRAF2_TRAF5_RIP1_Active => TRADD_TRAF2_TRAF5_RIP1_Inactive; compartment_0*TRADD_TRAF2_TRAF5_RIP1_Deactivation_k1*TRADD_TRAF2_TRAF5_RIP1_Active;
+  TRAF1_TRAF2_TRAF3_Deactivation: TRAF1_TRAF2_TRAF3_Active => TRAF1_TRAF2_TRAF3_Inactive; compartment_0*TRAF1_TRAF2_TRAF3_Deactivation_k1*TRAF1_TRAF2_TRAF3_Active;
+  TRADDComplex_Activation_bRafINH: TRADD_TRAF2_TRAF5_RIP1_bRafINH_Inactive => TRADD_TRAF2_TRAF5_RIP1_bRafINH_Active; compartment_0*HMM_Modified(TRADDComplex_Activation_bRafINH_Kcat, TRADDComplex_Activation_bRafINH_km, TRADD_TRAF2_TRAF5_RIP1_Inactive, TRADD_TRAF2_TRAF5_RIP1_bRafINH_Inactive);
+  TABComplex_Activation_bRafINH: TAB1_TAB2_TAB3_TAK1_bRafINH_Inactive => TAB1_TAB2_TAB3_TAK1_bRafINH_Active; compartment_0*HMM_Modified(TABComplex_Activation_bRafINH_Kcat, TABComplex_Activation_bRafINH_km, TAB1_TAB2_TAB3_TAK1_Inactive, TAB1_TAB2_TAB3_TAK1_bRafINH_Inactive);
+  NIK_Activation_bRafINH: NIK_bRafINH_Inactive => NIK_bRafINH_Active; compartment_0*HMM_Modified(NIK_Activation_bRafINH_Kcat, NIK_Activation_bRafINH_km, NIKInactive, NIK_bRafINH_Inactive);
+  IKKComplex_Activation_bRafINH: IKKbeta_IKKalfa_IKKgamma_bRafINH_Inactive => IKKbeta_IKKalfa_IKKgamma_bRafINH_Active; compartment_0*HMM_Modified(IKKComplex_Activation_bRafINH_Kcat, IKKComplex_Activation_bRafINH_km, IKKbeta_IKKalfa_IKKgamma_Inactive, IKKbeta_IKKalfa_IKKgamma_bRafINH_Inactive);
+  Tpl2Complex_Activation_bRafINH: Tpl2_NF_kB_bRafINH_Inactive => Tpl2_NF_kB_bRafINH_Active; compartment_0*HMM_Modified(Tpl2Complex_Activation_bRafINH_Kcat, Tpl2Complex_Activation_bRafINH_km, Tpl2_NF_kB_Inactive, Tpl2_NF_kB_bRafINH_Inactive);
+  TRAFComplex_Activation_bRafINH: TRAF1_TRAF2_TRAF3_bRafINH_Inactive => TRAF1_TRAF2_TRAF3_bRafINH_Active; compartment_0*HMM_Modified(TRAFComplex_Activation_bRafINH_Kcat, TRAFComplex_Activation_bRafINH_km, TRAF1_TRAF2_TRAF3_Inactive, TRAF1_TRAF2_TRAF3_bRafINH_Inactive);
+  PLX4032_degradation: PLX4032 => ; compartment_0*PLX4032_degradation_k1*PLX4032;
+  bRafMutated_Deactivation_PLX4032: bRafMutated => bRafMutatedInactive; compartment_0*HMM_Modified(bRafMutated_Deactivation_PLX4032_Kcat, bRafMutated_Deactivation_PLX4032_km, PLX4032, bRafMutated);
+  bRafMutated_Reconstitution: bRafMutatedInactive => bRafMutated; compartment_0*bRafMutated_Reconstitution_k1*bRafMutatedInactive;
+  Tpl2Complex_Activation_RasINH: Tpl2_NF_kB_RasINH_Inactive => Tpl2_NF_kB_RasINH_Active; compartment_0*HMM_Modified(Tpl2Complex_Activation_RasINH_Kcat, Tpl2Complex_Activation_RasINH_km, Tpl2_NF_kB_Inactive, Tpl2_NF_kB_RasINH_Inactive);
+  mTORC2_Deactivation_bRafMutated: mTORC2Active => mTORC2Inactive; compartment_0*HMM_Modified(mTORC2_Deactivation_bRafMutated_Kcat, mTORC2_Deactivation_bRafMutated_km, bRafMutated, mTORC2Active);
+  mTORC2_Activation_PI3K: mTORC2Inactive => mTORC2Active; compartment_0*HMM_Modified(mTORC2_Activation_PI3K_Kcat, mTORC2_Activation_PI3K_km, species_14, mTORC2Inactive);
+  MAP3K8Complex_pERK_bRafINH: Tpl2_NF_kB_bRafINH_Active => species_10; compartment_0*HMM_Modified_Inverted(bRafMutated, MAP3K8Complex_pERK_bRafINH_Kcat, Tpl2_NF_kB_bRafINH_Active, MAP3K8Complex_pERK_bRafINH_km);
+  TRADDComplex_pERK_bRafINH: TRADD_TRAF2_TRAF5_RIP1_bRafINH_Active => species_10; compartment_0*HMM_Modified_Inverted(bRafMutated, TRADDComplex_pERK_bRafINH_Kcat, TRADD_TRAF2_TRAF5_RIP1_bRafINH_Active, TRADDComplex_pERK_bRafINH_km);
+  IKKComplex_pERK_bRafINH: IKKbeta_IKKalfa_IKKgamma_bRafINH_Active => species_10; compartment_0*HMM_Modified_Inverted(bRafMutated, IKKComplex_pERK_bRafINH_Kcat, IKKbeta_IKKalfa_IKKgamma_bRafINH_Active, IKKComplex_pERK_bRafINH_km);
+  NIK_pERK_bRafINH: NIK_bRafINH_Active => species_10; compartment_0*HMM_Modified_Inverted(bRafMutated, NIK_pERK_bRafINH_Kcat, NIK_bRafINH_Active, NIK_pERK_bRafINH_km);
+  TABComplex_pERK_bRafINH: TAB1_TAB2_TAB3_TAK1_bRafINH_Active => species_10; compartment_0*HMM_Modified_Inverted(bRafMutated, TABComplex_pERK_bRafINH_Kcat, TAB1_TAB2_TAB3_TAK1_bRafINH_Active, TABComplex_pERK_bRafINH_km);
+  EGF_Binding_Unbinding__forward: $species_25 + species_1 => species_0; compartment_0*EGF_Binding_Unbinding__forward_k1*species_25*species_1;
+  EGF_Binding_Unbinding__backward: species_0 => $species_25 + species_1; compartment_0*EGF_Binding_Unbinding__backward_k1*species_0;
+  FGF_Binding_Unbinding__forward: $FGF + freeFGFR => pFGFR; compartment_0*FGF_Binding_Unbinding__forward_k1*FGF*freeFGFR;
+  FGF_Binding_Unbinding__backward: pFGFR => $FGF + freeFGFR; compartment_0*FGF_Binding_Unbinding__backward_k1*pFGFR;
+  TNF_Binding_Unbinding_TNFR1__forward: $TNF + freeTNFR1 => pTNFR1; compartment_0*TNF_Binding_Unbinding_TNFR1__forward_k1*TNF*freeTNFR1;
+  TNF_Binding_Unbinding_TNFR1__backward: pTNFR1 => $TNF + freeTNFR1; compartment_0*TNF_Binding_Unbinding_TNFR1__backward_k1*pTNFR1;
+  TNF_Binding_Unbinding_TNFR2__forward: $TNF + freeTNFR2 => pTNFR2; compartment_0*TNF_Binding_Unbinding_TNFR2__forward_k1*TNF*freeTNFR2;
+  TNF_Binding_Unbinding_TNFR2__backward: pTNFR2 => $TNF + freeTNFR2; compartment_0*TNF_Binding_Unbinding_TNFR2__backward_k1*pTNFR2;
+  MAP3K8_NF_kB_Deactivation_MAP3K8_inhibitor: Tpl2_NF_kB_Inactive + MAP3K8_inhibitor => MAP3K8_NF_kB_inhibited; compartment_0*MAP3K8_NF_kB_Deactivation_MAP3K8_inhibitor_k1*Tpl2_NF_kB_Inactive*MAP3K8_inhibitor;
+
+  // Species initializations:
+  species_0 = 0;
+  species_1 = 10;
+  species_2 = 0;
+  species_3 = 10;
+  species_4 = 0;
+  species_5 = 10;
+  species_6 = 0;
+  species_7 = 10;
+  species_8 = 0;
+  species_9 = 10;
+  species_10 = 0;
+  species_11 = 10;
+  species_14 = 0;
+  species_15 = 10;
+  species_16 = 0;
+  species_17 = 10;
+  species_25 = 10000;
+  species_30 = 5;
+  PIP3Active = 0;
+  PIP3Inactive = 10;
+  PTENActive = 10;
+  PDK1Inactive = 10;
+  PDK1Active = 0;
+  HSP90_Cdc37Active = 10;
+  PHLPPActive = 10;
+  mTORC2Active = 0;
+  TCL1Active = 10;
+  CTMPActive = 10;
+  mTORC1Active = 0;
+  mTORC1Inactive = 10;
+  bRafMutated = 100;
+  PLX4032 = 1000;
+  Grb2Active = 0;
+  Grb2Inactive = 10;
+  FGF = 10000;
+  freeFGFR = 10;
+  pFGFR = 0;
+  proFGFR = 5;
+  TNF = 10000;
+  freeTNFR1 = 10;
+  pTNFR1 = 0;
+  freeTNFR2 = 10;
+  pTNFR2 = 0;
+  TRADD_TRAF2_TRAF5_RIP1_Active = 0;
+  TRADD_TRAF2_TRAF5_RIP1_Inactive = 10;
+  TRAF1_TRAF2_TRAF3_Active = 0;
+  TRAF1_TRAF2_TRAF3_Inactive = 10;
+  NIKActive = 0;
+  NIKInactive = 10;
+  IKKbeta_IKKalfa_IKKgamma_Active = 0;
+  IKKbeta_IKKalfa_IKKgamma_Inactive = 10;
+  TAB1_TAB2_TAB3_TAK1_Active = 0;
+  TAB1_TAB2_TAB3_TAK1_Inactive = 10;
+  Tpl2_NF_kB_Active = 0;
+  Tpl2_NF_kB_Inactive = 1;
+  proTNFR1 = 5;
+  proTNFR2 = 5;
+  bRafMutatedInactive = 0;
+  TRADD_TRAF2_TRAF5_RIP1_bRafINH_Active = 0;
+  TRADD_TRAF2_TRAF5_RIP1_bRafINH_Inactive = 1.5;
+  TAB1_TAB2_TAB3_TAK1_bRafINH_Inactive = 1.5;
+  TAB1_TAB2_TAB3_TAK1_bRafINH_Active = 0;
+  NIK_bRafINH_Active = 0;
+  NIK_bRafINH_Inactive = 1.5;
+  IKKbeta_IKKalfa_IKKgamma_bRafINH_Active = 0;
+  IKKbeta_IKKalfa_IKKgamma_bRafINH_Inactive = 1.5;
+  Tpl2_NF_kB_bRafINH_Active = 0;
+  Tpl2_NF_kB_bRafINH_Inactive = 1.5;
+  TRAF1_TRAF2_TRAF3_bRafINH_Active = 0;
+  TRAF1_TRAF2_TRAF3_bRafINH_Inactive = 4.5;
+  Tpl2_NF_kB_RasINH_Active = 0;
+  Tpl2_NF_kB_RasINH_Inactive = 2.25;
+  mTORC2Inactive = 10;
+  MAP3K8_inhibitor = 10;
+  MAP3K8_NF_kB_inhibited = 0;
+
+  // Compartment initializations:
+  compartment_0 = 1e-12;
+
+  // Variable initializations:
+  reaction_3_Kcat = 0.1;
+  reaction_3_km = 0.1;
+  reaction_5_Kcat = 0.12;
+  reaction_5_km = 0.1;
+  reaction_7_Kcat = 0.096;
+  reaction_7_km = 0.1;
+  reaction_9_Kcat = 0.1;
+  reaction_9_km = 0.1;
+  reaction_14_Kcat = 0.1;
+  reaction_14_km = 0.1;
+  reaction_15_Kcat = 0.1;
+  reaction_15_km = 0.1;
+  reaction_16_k1 = 0.1;
+  reaction_17_Kcat = 0.1;
+  reaction_17_km = 0.1;
+  reaction_19_Kcat = 0.1;
+  reaction_19_km = 0.1;
+  reaction_20_k1 = 0.1;
+  reaction_27_Kcat = 0.1;
+  reaction_27_km = 0.1;
+  reaction_28_k1 = 0.1;
+  PIP3_Activation_PIP3_Kcat = 0.1;
+  PIP3_Activation_PIP3_km = 0.1;
+  PIP3_Feedback_Deactivation_PTEN_Kcat = 0.1;
+  PIP3_Feedback_Deactivation_PTEN_km = 0.1;
+  Akt_Activation_PIP3_Kcat = 0.1;
+  Akt_Activation_PIP3_km = 0.1;
+  PDK1_Activation_Kcat = 0.1;
+  PDK1_Activation_km = 0.1;
+  PDK1_Deactivation_k1 = 0.1;
+  Akt_Activation_PDK1_Kcat = 0.1;
+  Akt_Activation_PDK1_km = 0.1;
+  Akt_Feedback_Activation_HSP90_Cdc37_Kcat = 0.1;
+  Akt_Feedback_Activation_HSP90_Cdc37_km = 0.1;
+  Akt_Feedback_Deactivation_PHLPP_Kcat = 0.1;
+  Akt_Feedback_Deactivation_PHLPP_km = 0.1;
+  Akt_Feedback_Activation_mTORC2_Kcat = 0.1;
+  Akt_Feedback_Activation_mTORC2_km = 0.1;
+  Akt_Feedback_Activation_TCL1_Kcat = 0.1;
+  Akt_Feedback_Activation_TCL1_km = 0.1;
+  Akt_Feedback_Deactivation_CTMP_Kcat = 0.1;
+  Akt_Feedback_Deactivation_CTMP_km = 0.1;
+  Erk_Feedback_Deactivation_Raf1_Kcat = 0.1;
+  Erk_Feedback_Deactivation_Raf1_km = 0.1;
+  Sos_Deactivation_k1 = 0.1;
+  mTORC1_Activation_Akt_Kcat = 0.1;
+  mTORC1_Activation_Akt_km = 0.1;
+  EGFR_Degradation_Free_k1 = 0.1;
+  Sos_Activation_Grb2_Kcat = 0.1;
+  Sos_Activation_Grb2_km = 0.1;
+  Grb2_Activation_pEGFR_Kcat = 0.1;
+  Grb2_Activation_pEGFR_km = 0.1;
+  Grb2_Deactivation_k1 = 0.1;
+  FGFR_Production_k1 = 0.1;
+  FGFR_Degradation_Free_k1 = 0.1;
+  FGFR_Degradation_k1 = 0.1;
+  Grb2_Activation_pFGFR_Kcat = 0.1;
+  Grb2_Activation_pFGFR_km = 0.1;
+  TRADD_TRAF2_TRAF5_RIP1_Activation_pTNFR1_Kcat = 0.1;
+  TRADD_TRAF2_TRAF5_RIP1_Activation_pTNFR1_km = 0.1;
+  TRAF1_TRAF2_TRAF3_Activation_pTNFR2_Kcat = 0.1;
+  TRAF1_TRAF2_TRAF3_Activation_pTNFR2_km = 0.1;
+  PI3K_Activation_TRAF1_TRAF2_TRAF3_Kcat = 0.1;
+  PI3K_Activation_TRAF1_TRAF2_TRAF3_km = 0.1;
+  NIK_Activation_TRADD_TRAF2_TRAF5_RIP1_Kcat = 0.1;
+  NIK_Activation_TRADD_TRAF2_TRAF5_RIP1_km = 0.1;
+  TAB1_TAB2_TAB3_TAK1_Activation_TRADD_TRAF2_TRAF5_RIP1_Kcat = 0.1;
+  TAB1_TAB2_TAB3_TAK1_Activation_TRADD_TRAF2_TRAF5_RIP1_km = 0.1;
+  IKKbeta_IKKalfa_IKKgamma_Activation_TRADD_TRAF2_TRAF5_RIP1_Kcat = 0.1;
+  IKKbeta_IKKalfa_IKKgamma_Activation_TRADD_TRAF2_TRAF5_RIP1_km = 0.1;
+  IKKbeta_IKKalfa_IKKgamma_Activation_NIK_Kcat = 0.1;
+  IKKbeta_IKKalfa_IKKgamma_Activation_NIK_km = 0.1;
+  IKKbeta_IKKalfa_IKKgamma_Activation_TAB1_TAB2_TAB3_TAK1_Kcat = 0.1;
+  IKKbeta_IKKalfa_IKKgamma_Activation_TAB1_TAB2_TAB3_TAK1_km = 0.1;
+  Tpl2_NF_kB_Activation_IKKbeta_IKKalfa_Kcat = 0.1;
+  Tpl2_NF_kB_Activation_IKKbeta_IKKalfa_km = 0.1;
+  Mek_Activation__Tpl2_NF_kB_Kcat = 0.1;
+  Mek_Activation__Tpl2_NF_kB_km = 0.1;
+  TNFR1_Production_k1 = 0.1;
+  TNFR2_Production_k1 = 0.1;
+  TNFR1_Degradation_Free_k1 = 0.1;
+  TNFR2_Degradation_Free_k1 = 0.1;
+  TNFR1_Degradation_k1 = 0.1;
+  TNFR2_Degradation_k1 = 0.1;
+  IKKbeta_IKKalfa_IKKgamma_Deactivation_k1 = 0.1;
+  Mek_Deactivation_k1 = 0.1;
+  mTORC1_Deactivation_k1 = 0.1;
+  NIK_Deactivation_k1 = 0.1;
+  Ras_Deactivation_k1 = 0.1;
+  TAB1_TAB2_TAB3_TAK1_Deactivation_k1 = 0.1;
+  Tpl2_NF_kB_Deactivation_k1 = 0.1;
+  TRADD_TRAF2_TRAF5_RIP1_Deactivation_k1 = 0.1;
+  TRAF1_TRAF2_TRAF3_Deactivation_k1 = 0.1;
+  TRADDComplex_Activation_bRafINH_Kcat = 0.1;
+  TRADDComplex_Activation_bRafINH_km = 0.1;
+  TABComplex_Activation_bRafINH_Kcat = 0.1;
+  TABComplex_Activation_bRafINH_km = 0.1;
+  NIK_Activation_bRafINH_Kcat = 0.1;
+  NIK_Activation_bRafINH_km = 0.1;
+  IKKComplex_Activation_bRafINH_Kcat = 0.1;
+  IKKComplex_Activation_bRafINH_km = 0.1;
+  Tpl2Complex_Activation_bRafINH_Kcat = 0.1;
+  Tpl2Complex_Activation_bRafINH_km = 0.1;
+  TRAFComplex_Activation_bRafINH_Kcat = 0.1;
+  TRAFComplex_Activation_bRafINH_km = 0.1;
+  PLX4032_degradation_k1 = 3.3779e-06;
+  bRafMutated_Deactivation_PLX4032_Kcat = 0.1;
+  bRafMutated_Deactivation_PLX4032_km = 0.1;
+  bRafMutated_Reconstitution_k1 = 0.1;
+  Tpl2Complex_Activation_RasINH_Kcat = 0.1;
+  Tpl2Complex_Activation_RasINH_km = 0.1;
+  mTORC2_Deactivation_bRafMutated_Kcat = 0.1;
+  mTORC2_Deactivation_bRafMutated_km = 0.1;
+  mTORC2_Activation_PI3K_Kcat = 0.1;
+  mTORC2_Activation_PI3K_km = 0.1;
+  MAP3K8Complex_pERK_bRafINH_Kcat = 0.1;
+  MAP3K8Complex_pERK_bRafINH_km = 0.1;
+  TRADDComplex_pERK_bRafINH_Kcat = 0.1;
+  TRADDComplex_pERK_bRafINH_km = 0.1;
+  IKKComplex_pERK_bRafINH_Kcat = 0.1;
+  IKKComplex_pERK_bRafINH_km = 0.1;
+  NIK_pERK_bRafINH_Kcat = 0.1;
+  NIK_pERK_bRafINH_km = 0.1;
+  TABComplex_pERK_bRafINH_Kcat = 0.1;
+  TABComplex_pERK_bRafINH_km = 0.1;
+  EGF_Binding_Unbinding__forward_k1 = 0.1;
+  EGF_Binding_Unbinding__backward_k1 = 0.1;
+  FGF_Binding_Unbinding__forward_k1 = 0.1;
+  FGF_Binding_Unbinding__backward_k1 = 0.1;
+  TNF_Binding_Unbinding_TNFR1__forward_k1 = 0.1;
+  TNF_Binding_Unbinding_TNFR1__backward_k1 = 0.1;
+  TNF_Binding_Unbinding_TNFR2__forward_k1 = 0.1;
+  TNF_Binding_Unbinding_TNFR2__backward_k1 = 0.1;
+  MAP3K8_NF_kB_Deactivation_MAP3K8_inhibitor_k1 = 0.015;
+
+  // Other declarations:
+  const compartment_0;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-9 mole;
+
+  // Display Names:
+  compartment_0 is "Sphere (thyroid cancer cell)";
+  species_0 is "pEGFR";
+  species_1 is "free_EGFR";
+  species_2 is "Sos_Active";
+  species_3 is "Sos_Inactive";
+  species_4 is "Ras_Active";
+  species_5 is "Ras_Inactive";
+  species_6 is "Raf1_Active";
+  species_7 is "Raf1_Inactive";
+  species_8 is "Mek_Active";
+  species_9 is "Mek_Inactive";
+  species_10 is "pERK";
+  species_11 is "ERK";
+  species_14 is "PI3K_Active";
+  species_15 is "PI3K_Inactive";
+  species_16 is "pAKT";
+  species_17 is "AKT";
+  species_25 is "EGF";
+  species_30 is "pro_EGFR";
+  PIP3Active is "PIP3";
+  PIP3Inactive is "PIP2";
+  PTENActive is "PTEN_Active";
+  PDK1Inactive is "PDK1_Inactive";
+  PDK1Active is "PDK1_Active";
+  HSP90_Cdc37Active is "HSP90-Cdc37_Active";
+  PHLPPActive is "PHLPP_Active";
+  mTORC2Active is "mTORC2_Active";
+  TCL1Active is "TCL1_Active";
+  CTMPActive is "CTMP_Active";
+  mTORC1Active is "mTORC1_Active";
+  mTORC1Inactive is "mTORC1_Inactive";
+  bRafMutated is "bRaf_Mutated";
+  Grb2Active is "Grb2_Active";
+  Grb2Inactive is "Grb2_Inactive";
+  freeFGFR is "free_FGFR";
+  proFGFR is "pro_FGFR";
+  freeTNFR1 is "free_TNFR1";
+  freeTNFR2 is "free_TNFR2";
+  TRADD_TRAF2_TRAF5_RIP1_Active is "TRADD:TRAF2:TRAF5:RIP1_Active";
+  TRADD_TRAF2_TRAF5_RIP1_Inactive is "TRADD:TRAF2:TRAF5:RIP1_Inactive";
+  TRAF1_TRAF2_TRAF3_Active is "TRAF1:TRAF2:TRAF3_Active";
+  TRAF1_TRAF2_TRAF3_Inactive is "TRAF1:TRAF2:TRAF3_Inactive";
+  NIKActive is "NIK_Active";
+  NIKInactive is "NIK_Inactive";
+  IKKbeta_IKKalfa_IKKgamma_Active is "IKKbeta:IKKalfa:IKKgamma_Active";
+  IKKbeta_IKKalfa_IKKgamma_Inactive is "IKKbeta:IKKalfa:IKKgamma_Inactive";
+  TAB1_TAB2_TAB3_TAK1_Active is "TAB1:TAB2:TAB3:TAK1_Active";
+  TAB1_TAB2_TAB3_TAK1_Inactive is "TAB1:TAB2:TAB3:TAK1_Inactive";
+  Tpl2_NF_kB_Active is "MAP3K8:NF-kB_Active";
+  Tpl2_NF_kB_Inactive is "MAP3K8:NF-kB_Inactive";
+  proTNFR1 is "pro_TNFR1";
+  proTNFR2 is "pro_TNFR2";
+  bRafMutatedInactive is "bRaf_Mutated_Inactive";
+  TRADD_TRAF2_TRAF5_RIP1_bRafINH_Active is "TRADD:TRAF2:TRAF5:RIP1_bRafINH_Active";
+  TRADD_TRAF2_TRAF5_RIP1_bRafINH_Inactive is "TRADD:TRAF2:TRAF5:RIP1_bRafINH_Inactive";
+  TAB1_TAB2_TAB3_TAK1_bRafINH_Inactive is "TAB1:TAB2:TAB3:TAK1_bRafINH_Inactive";
+  TAB1_TAB2_TAB3_TAK1_bRafINH_Active is "TAB1:TAB2:TAB3:TAK1_bRafINH_Active";
+  IKKbeta_IKKalfa_IKKgamma_bRafINH_Active is "IKKbeta:IKKalfa:IKKgamma_bRafINH_Active";
+  IKKbeta_IKKalfa_IKKgamma_bRafINH_Inactive is "IKKbeta:IKKalfa:IKKgamma_bRafINH_Inactive";
+  Tpl2_NF_kB_bRafINH_Active is "MAP3K8:NF-kB_bRafINH_Active";
+  Tpl2_NF_kB_bRafINH_Inactive is "MAP3K8:NF-kB_bRafINH_Inactive";
+  TRAF1_TRAF2_TRAF3_bRafINH_Active is "TRAF1:TRAF2:TRAF3_bRafINH_Active";
+  TRAF1_TRAF2_TRAF3_bRafINH_Inactive is "TRAF1:TRAF2:TRAF3_bRafINH_Inactive";
+  Tpl2_NF_kB_RasINH_Active is "MAP3K8:NF-kB_RasINH_Active";
+  Tpl2_NF_kB_RasINH_Inactive is "MAP3K8:NF-kB_RasINH_Inactive";
+  mTORC2Inactive is "mTORC2_Inactive";
+  MAP3K8_NF_kB_inhibited is "MAP3K8:NF-kB_inhibited";
+  reaction_3 is "Ras_Activation";
+  reaction_5 is "Raf1_Activation";
+  reaction_7 is "Mek_Activation_Raf1";
+  reaction_9 is "Erk_Activation";
+  reaction_14 is "PI3K_Activation_pEGFR";
+  reaction_15 is "PI3K_Activation_Ras";
+  reaction_16 is "PI3K_Deactivation";
+  reaction_17 is "Akt_Activation_PI3K";
+  reaction_19 is "Raf1_Deactivation_Akt";
+  reaction_20 is "EGFR_Degradation";
+  reaction_27 is "Mek_Activation_bRafMutated";
+  reaction_28 is "EGFR_Production";
+  Akt_Feedback_Activation_HSP90_Cdc37 is "Akt_Feedback_Activation_HSP90-Cdc37";
+  TRADD_TRAF2_TRAF5_RIP1_Activation_pTNFR1 is "TRADD:TRAF2:TRAF5:RIP1_Activation_pTNFR1";
+  TRAF1_TRAF2_TRAF3_Activation_pTNFR2 is "TRAF1:TRAF2:TRAF3_Activation_pTNFR2";
+  PI3K_Activation_TRAF1_TRAF2_TRAF3 is "PI3K_Activation_TRAF1:TRAF2:TRAF3";
+  NIK_Activation_TRADD_TRAF2_TRAF5_RIP1 is "NIK_Activation_TRADD:TRAF2:TRAF5:RIP1";
+  TAB1_TAB2_TAB3_TAK1_Activation_TRADD_TRAF2_TRAF5_RIP1 is "TAB1:TAB2:TAB3:TAK1_Activation_TRADD:TRAF2:TRAF5:RIP1";
+  IKKbeta_IKKalfa_IKKgamma_Activation_TRADD_TRAF2_TRAF5_RIP1 is "IKKbeta:IKKalfa:IKKgamma_Activation_TRADD:TRAF2:TRAF5:RIP1";
+  IKKbeta_IKKalfa_IKKgamma_Activation_NIK is "IKKbeta:IKKalfa:IKKgamma_Activation_NIK";
+  IKKbeta_IKKalfa_IKKgamma_Activation_TAB1_TAB2_TAB3_TAK1 is "IKKbeta:IKKalfa:IKKgamma_Activation_TAB1:TAB2:TAB3:TAK1";
+  Tpl2_NF_kB_Activation_IKKbeta_IKKalfa is "MAP3K8:NF-kB_Activation_IKKbeta:IKKalfa";
+  Mek_Activation__Tpl2_NF_kB is "Mek_Activation_MAP3K8:NF-kB";
+  IKKbeta_IKKalfa_IKKgamma_Deactivation is "IKKbeta:IKKalfa:IKKgamma_Deactivation";
+  TAB1_TAB2_TAB3_TAK1_Deactivation is "TAB1:TAB2:TAB3:TAK1_Deactivation";
+  Tpl2_NF_kB_Deactivation is "MAP3K8:NF-kB_Deactivation";
+  TRADD_TRAF2_TRAF5_RIP1_Deactivation is "TRADD:TRAF2:TRAF5:RIP1_Deactivation";
+  TRAF1_TRAF2_TRAF3_Deactivation is "TRAF1:TRAF2:TRAF3_Deactivation";
+  Tpl2Complex_Activation_bRafINH is "MAP3K8Complex_Activation_bRafINH";
+  bRafMutated_Reconstitution is "bRafMutated_Activation";
+  Tpl2Complex_Activation_RasINH is "MAP3K8Complex_Activation_RasINH";
+  EGF_Binding_Unbinding__forward is "EGF_Binding_Unbinding (forward)";
+  EGF_Binding_Unbinding__backward is "EGF_Binding_Unbinding (backward)";
+  FGF_Binding_Unbinding__forward is "FGF_Binding_Unbinding (forward)";
+  FGF_Binding_Unbinding__backward is "FGF_Binding_Unbinding (backward)";
+  TNF_Binding_Unbinding_TNFR1__forward is "TNF_Binding_Unbinding_TNFR1 (forward)";
+  TNF_Binding_Unbinding_TNFR1__backward is "TNF_Binding_Unbinding_TNFR1 (backward)";
+  TNF_Binding_Unbinding_TNFR2__forward is "TNF_Binding_Unbinding_TNFR2 (forward)";
+  TNF_Binding_Unbinding_TNFR2__backward is "TNF_Binding_Unbinding_TNFR2 (backward)";
+  MAP3K8_NF_kB_Deactivation_MAP3K8_inhibitor is "MAP3K8:NF-kB_Deactivation_MAP3K8_inhibitor";
+
+  // CV terms:
+  compartment_0 property "http://identifiers.org/bto/BTO:0001601"
+  species_0 identity "http://identifiers.org/uniprot/P00533"
+  species_0 property "http://identifiers.org/pato/PATO:0002220"
+  species_1 identity "http://identifiers.org/uniprot/P00533"
+  species_2 part "http://identifiers.org/ncit/C45329"
+  species_2 identity "http://identifiers.org/uniprot/Q07889"
+  species_3 identity "http://identifiers.org/uniprot/Q07889"
+  species_3 property "http://identifiers.org/pato/PATO:0002355"
+  species_4 identity "http://identifiers.org/uniprot/P01112"
+  species_4 property "http://identifiers.org/ncit/C45329"
+  species_5 identity "http://identifiers.org/uniprot/P01112"
+  species_5 property "http://identifiers.org/pato/PATO:0002355"
+  species_6 identity "http://identifiers.org/uniprot/P04049"
+  species_6 property "http://identifiers.org/ncit/C45329"
+  species_7 identity "http://identifiers.org/uniprot/P04049"
+  species_7 property "http://identifiers.org/pato/PATO:0002355"
+  species_8 hypernym "http://identifiers.org/uniprot/Q02750"
+  species_8 property "http://identifiers.org/ncit/C45329"
+  species_9 hypernym "http://identifiers.org/uniprot/Q02750"
+  species_9 property "http://identifiers.org/pato/PATO:0002355"
+  species_10 hypernym "http://identifiers.org/uniprot/P28482"
+  species_10 property "http://identifiers.org/pato/PATO:0002220"
+  species_11 hypernym "http://identifiers.org/uniprot/P28482"
+  species_14 hypernym "http://identifiers.org/uniprot/P27986"
+  species_14 property "http://identifiers.org/ncit/C45329"
+  species_15 hypernym "http://identifiers.org/uniprot/P27986"
+  species_15 property "http://identifiers.org/pato/PATO:0002355"
+  species_16 hypernym "http://identifiers.org/uniprot/P31749"
+  species_16 property "http://identifiers.org/pato/PATO:0002220"
+  species_17 hypernym "http://identifiers.org/uniprot/P31749"
+  species_25 identity "http://identifiers.org/uniprot/P01133"
+  species_30 hypernym "http://identifiers.org/uniprot/P00533"
+  PIP3Active hypernym "http://identifiers.org/chebi/CHEBI:16618"
+  PIP3Inactive hypernym "http://identifiers.org/chebi/CHEBI:18348"
+  PTENActive identity "http://identifiers.org/uniprot/P60484"
+  PTENActive property "http://identifiers.org/ncit/C45329"
+  PDK1Inactive identity "http://identifiers.org/uniprot/O15530"
+  PDK1Inactive property "http://identifiers.org/pato/PATO:0002355"
+  PDK1Active identity "http://identifiers.org/uniprot/O15530"
+  PDK1Active property "http://identifiers.org/ncit/C45329"
+  HSP90_Cdc37Active part "http://identifiers.org/uniprot/P07900"
+  HSP90_Cdc37Active part "http://identifiers.org/uniprot/Q16543"
+  HSP90_Cdc37Active property "http://identifiers.org/ncit/C45329"
+  PHLPPActive identity "http://identifiers.org/uniprot/O60346"
+  PHLPPActive property "http://identifiers.org/ncit/C45329"
+  mTORC2Active origin "http://identifiers.org/ncit/C45329",
+                      "http://identifiers.org/uniprot/Q6R327"
+  mTORC2Active origin "http://identifiers.org/uniprot/P42345"
+  mTORC2Active property "http://identifiers.org/ncit/C45329"
+  TCL1Active hypernym "http://identifiers.org/uniprot/P56279"
+  TCL1Active property "http://identifiers.org/ncit/C45329"
+  CTMPActive identity "http://identifiers.org/uniprot/Q5T1C6"
+  CTMPActive property "http://identifiers.org/pato/PATO:0002354"
+  mTORC1Active origin "http://identifiers.org/ncit/C45329",
+                      "http://identifiers.org/uniprot/Q8N122"
+  mTORC1Active origin "http://identifiers.org/uniprot/P42345"
+  mTORC1Active property "http://identifiers.org/ncit/C45329"
+  mTORC1Inactive origin "http://identifiers.org/pato/PATO:0002355",
+                        "http://identifiers.org/uniprot/Q8N122"
+  mTORC1Inactive origin "http://identifiers.org/uniprot/P42345"
+  mTORC1Inactive property "http://identifiers.org/pato/PATO:0002355"
+  bRafMutated identity "http://identifiers.org/uniprot/P15056"
+  bRafMutated property "http://identifiers.org/ncit/C45576"
+  PLX4032 identity "http://identifiers.org/chebi/CHEBI:63637"
+  Grb2Active identity "http://identifiers.org/uniprot/P62993"
+  Grb2Active property "http://identifiers.org/ncit/C45329"
+  Grb2Inactive identity "http://identifiers.org/uniprot/P62993"
+  Grb2Inactive property "http://identifiers.org/pato/PATO:0002355"
+  FGF hypernym "http://identifiers.org/uniprot/P05230"
+  freeFGFR hypernym "http://identifiers.org/uniprot/P11362"
+  pFGFR hypernym "http://identifiers.org/uniprot/P11362"
+  pFGFR property "http://identifiers.org/pato/PATO:0002220"
+  proFGFR hypernym "http://identifiers.org/uniprot/P11362"
+  TNF identity "http://identifiers.org/uniprot/Q5STB3"
+  freeTNFR1 identity "http://identifiers.org/uniprot/P19438"
+  pTNFR1 identity "http://identifiers.org/uniprot/P19438"
+  pTNFR1 property "http://identifiers.org/pato/PATO:0002220"
+  freeTNFR2 identity "http://identifiers.org/uniprot/P20333"
+  pTNFR2 identity "http://identifiers.org/uniprot/P20333"
+  pTNFR2 property "http://identifiers.org/pato/PATO:0002220"
+  TRADD_TRAF2_TRAF5_RIP1_Active part "http://identifiers.org/uniprot/O00463"
+  TRADD_TRAF2_TRAF5_RIP1_Active part "http://identifiers.org/uniprot/Q13546"
+  TRADD_TRAF2_TRAF5_RIP1_Active part "http://identifiers.org/uniprot/Q12933"
+  TRADD_TRAF2_TRAF5_RIP1_Active part "http://identifiers.org/uniprot/Q15628"
+  TRADD_TRAF2_TRAF5_RIP1_Active property "http://identifiers.org/ncit/C45329"
+  TRADD_TRAF2_TRAF5_RIP1_Inactive part "http://identifiers.org/uniprot/Q12933"
+  TRADD_TRAF2_TRAF5_RIP1_Inactive part "http://identifiers.org/uniprot/O00463"
+  TRADD_TRAF2_TRAF5_RIP1_Inactive part "http://identifiers.org/uniprot/Q13546"
+  TRADD_TRAF2_TRAF5_RIP1_Inactive part "http://identifiers.org/uniprot/Q15628"
+  TRADD_TRAF2_TRAF5_RIP1_Inactive property "http://identifiers.org/pato/PATO:0002355"
+  TRAF1_TRAF2_TRAF3_Active part "http://identifiers.org/uniprot/Q12933"
+  TRAF1_TRAF2_TRAF3_Active part "http://identifiers.org/uniprot/Q13114"
+  TRAF1_TRAF2_TRAF3_Active part "http://identifiers.org/uniprot/Q13077"
+  TRAF1_TRAF2_TRAF3_Active property "http://identifiers.org/ncit/C45329"
+  TRAF1_TRAF2_TRAF3_Inactive part "http://identifiers.org/uniprot/Q13114"
+  TRAF1_TRAF2_TRAF3_Inactive part "http://identifiers.org/uniprot/Q13077"
+  TRAF1_TRAF2_TRAF3_Inactive part "http://identifiers.org/uniprot/Q12933"
+  TRAF1_TRAF2_TRAF3_Inactive property "http://identifiers.org/pato/PATO:0002355"
+  NIKActive identity "http://identifiers.org/uniprot/Q99558"
+  NIKActive property "http://identifiers.org/ncit/C45329"
+  NIKInactive identity "http://identifiers.org/uniprot/Q99558"
+  NIKInactive property "http://identifiers.org/pato/PATO:0002355"
+  IKKbeta_IKKalfa_IKKgamma_Active part "http://identifiers.org/uniprot/O14920"
+  IKKbeta_IKKalfa_IKKgamma_Active part "http://identifiers.org/uniprot/Q9Y6K9"
+  IKKbeta_IKKalfa_IKKgamma_Active part "http://identifiers.org/uniprot/O15111"
+  IKKbeta_IKKalfa_IKKgamma_Active property "http://identifiers.org/ncit/C45329"
+  IKKbeta_IKKalfa_IKKgamma_Inactive part "http://identifiers.org/uniprot/O15111"
+  IKKbeta_IKKalfa_IKKgamma_Inactive part "http://identifiers.org/uniprot/O14920"
+  IKKbeta_IKKalfa_IKKgamma_Inactive part "http://identifiers.org/uniprot/Q9Y6K9"
+  IKKbeta_IKKalfa_IKKgamma_Inactive property "http://identifiers.org/pato/PATO:0002355"
+  TAB1_TAB2_TAB3_TAK1_Active part "http://identifiers.org/uniprot/Q8N5C8"
+  TAB1_TAB2_TAB3_TAK1_Active part "http://identifiers.org/uniprot/Q9NYJ8"
+  TAB1_TAB2_TAB3_TAK1_Active part "http://identifiers.org/uniprot/O43318"
+  TAB1_TAB2_TAB3_TAK1_Active part "http://identifiers.org/uniprot/Q15750"
+  TAB1_TAB2_TAB3_TAK1_Active property "http://identifiers.org/ncit/C45329"
+  TAB1_TAB2_TAB3_TAK1_Inactive part "http://identifiers.org/uniprot/Q9NYJ8"
+  TAB1_TAB2_TAB3_TAK1_Inactive part "http://identifiers.org/uniprot/Q15750"
+  TAB1_TAB2_TAB3_TAK1_Inactive part "http://identifiers.org/uniprot/O43318"
+  TAB1_TAB2_TAB3_TAK1_Inactive part "http://identifiers.org/uniprot/Q8N5C8"
+  TAB1_TAB2_TAB3_TAK1_Inactive property "http://identifiers.org/pato/PATO:0002355"
+  Tpl2_NF_kB_Active part "http://identifiers.org/uniprot/P41279"
+  Tpl2_NF_kB_Active part "http://identifiers.org/uniprot/P19838"
+  Tpl2_NF_kB_Active property "http://identifiers.org/ncit/C45329"
+  Tpl2_NF_kB_Inactive part "http://identifiers.org/uniprot/P19838"
+  Tpl2_NF_kB_Inactive part "http://identifiers.org/uniprot/P41279"
+  Tpl2_NF_kB_Inactive property "http://identifiers.org/pato/PATO:0002355"
+  proTNFR1 hypernym "http://identifiers.org/uniprot/P19438"
+  proTNFR2 hypernym "http://identifiers.org/uniprot/P20333"
+  bRafMutatedInactive identity "http://identifiers.org/uniprot/P15056"
+  bRafMutatedInactive property "http://identifiers.org/pato/PATO:0002355"
+  bRafMutatedInactive property "http://identifiers.org/ncit/C45576"
+  TRADD_TRAF2_TRAF5_RIP1_bRafINH_Active part "http://identifiers.org/uniprot/Q13546"
+  TRADD_TRAF2_TRAF5_RIP1_bRafINH_Active part "http://identifiers.org/uniprot/Q12933"
+  TRADD_TRAF2_TRAF5_RIP1_bRafINH_Active part "http://identifiers.org/uniprot/O00463"
+  TRADD_TRAF2_TRAF5_RIP1_bRafINH_Active part "http://identifiers.org/uniprot/Q15628"
+  TRADD_TRAF2_TRAF5_RIP1_bRafINH_Active part "http://identifiers.org/chebi/CHEBI:75047"
+  TRADD_TRAF2_TRAF5_RIP1_bRafINH_Active property "http://identifiers.org/ncit/C45329"
+  TRADD_TRAF2_TRAF5_RIP1_bRafINH_Inactive part "http://identifiers.org/uniprot/Q12933"
+  TRADD_TRAF2_TRAF5_RIP1_bRafINH_Inactive part "http://identifiers.org/uniprot/Q13546"
+  TRADD_TRAF2_TRAF5_RIP1_bRafINH_Inactive part "http://identifiers.org/uniprot/O00463"
+  TRADD_TRAF2_TRAF5_RIP1_bRafINH_Inactive part "http://identifiers.org/chebi/CHEBI:75047"
+  TRADD_TRAF2_TRAF5_RIP1_bRafINH_Inactive part "http://identifiers.org/uniprot/Q15628"
+  TRADD_TRAF2_TRAF5_RIP1_bRafINH_Inactive property "http://identifiers.org/pato/PATO:0002355"
+  TAB1_TAB2_TAB3_TAK1_bRafINH_Inactive part "http://identifiers.org/uniprot/O43318"
+  TAB1_TAB2_TAB3_TAK1_bRafINH_Inactive part "http://identifiers.org/chebi/CHEBI:75047"
+  TAB1_TAB2_TAB3_TAK1_bRafINH_Inactive part "http://identifiers.org/uniprot/Q8N6C8"
+  TAB1_TAB2_TAB3_TAK1_bRafINH_Inactive part "http://identifiers.org/uniprot/Q15750"
+  TAB1_TAB2_TAB3_TAK1_bRafINH_Inactive part "http://identifiers.org/uniprot/Q9NYJ8"
+  TAB1_TAB2_TAB3_TAK1_bRafINH_Inactive property "http://identifiers.org/pato/PATO:0002355"
+  TAB1_TAB2_TAB3_TAK1_bRafINH_Active part "http://identifiers.org/uniprot/Q9NYJ8"
+  TAB1_TAB2_TAB3_TAK1_bRafINH_Active part "http://identifiers.org/uniprot/Q8N5C8"
+  TAB1_TAB2_TAB3_TAK1_bRafINH_Active part "http://identifiers.org/uniprot/O43318"
+  TAB1_TAB2_TAB3_TAK1_bRafINH_Active part "http://identifiers.org/chebi/CHEBI:75047"
+  TAB1_TAB2_TAB3_TAK1_bRafINH_Active part "http://identifiers.org/uniprot/Q15750"
+  TAB1_TAB2_TAB3_TAK1_bRafINH_Active property "http://identifiers.org/ncit/C45329"
+  NIK_bRafINH_Active part "http://identifiers.org/chebi/CHEBI:75047"
+  NIK_bRafINH_Active part "http://identifiers.org/uniprot/Q99558"
+  NIK_bRafINH_Active property "http://identifiers.org/ncit/C45329"
+  NIK_bRafINH_Inactive part "http://identifiers.org/uniprot/Q99558"
+  NIK_bRafINH_Inactive part "http://identifiers.org/chebi/CHEBI:75047"
+  NIK_bRafINH_Inactive property "http://identifiers.org/pato/PATO:0002355"
+  IKKbeta_IKKalfa_IKKgamma_bRafINH_Active part "http://identifiers.org/uniprot/Q9Y6K9"
+  IKKbeta_IKKalfa_IKKgamma_bRafINH_Active part "http://identifiers.org/uniprot/O14920"
+  IKKbeta_IKKalfa_IKKgamma_bRafINH_Active part "http://identifiers.org/uniprot/O15111"
+  IKKbeta_IKKalfa_IKKgamma_bRafINH_Active part "http://identifiers.org/chebi/CHEBI:75047"
+  IKKbeta_IKKalfa_IKKgamma_bRafINH_Active property "http://identifiers.org/ncit/C45329"
+  IKKbeta_IKKalfa_IKKgamma_bRafINH_Inactive part "http://identifiers.org/uniprot/O15111"
+  IKKbeta_IKKalfa_IKKgamma_bRafINH_Inactive part "http://identifiers.org/uniprot/Q9Y6K9"
+  IKKbeta_IKKalfa_IKKgamma_bRafINH_Inactive part "http://identifiers.org/chebi/CHEBI:75047"
+  IKKbeta_IKKalfa_IKKgamma_bRafINH_Inactive part "http://identifiers.org/uniprot/O14920"
+  IKKbeta_IKKalfa_IKKgamma_bRafINH_Inactive property "http://identifiers.org/pato/PATO:0002355"
+  Tpl2_NF_kB_bRafINH_Active part "http://identifiers.org/uniprot/P19838"
+  Tpl2_NF_kB_bRafINH_Active part "http://identifiers.org/chebi/CHEBI:75047"
+  Tpl2_NF_kB_bRafINH_Active part "http://identifiers.org/uniprot/P41279"
+  Tpl2_NF_kB_bRafINH_Active property "http://identifiers.org/ncit/C45329"
+  Tpl2_NF_kB_bRafINH_Inactive part "http://identifiers.org/uniprot/P41279"
+  Tpl2_NF_kB_bRafINH_Inactive part "http://identifiers.org/chebi/CHEBI:75047"
+  Tpl2_NF_kB_bRafINH_Inactive part "http://identifiers.org/uniprot/P19838"
+  Tpl2_NF_kB_bRafINH_Inactive property "http://identifiers.org/pato/PATO:0002355"
+  TRAF1_TRAF2_TRAF3_bRafINH_Active part "http://identifiers.org/uniprot/Q12933"
+  TRAF1_TRAF2_TRAF3_bRafINH_Active part "http://identifiers.org/uniprot/Q13077"
+  TRAF1_TRAF2_TRAF3_bRafINH_Active part "http://identifiers.org/chebi/CHEBI:75047"
+  TRAF1_TRAF2_TRAF3_bRafINH_Active part "http://identifiers.org/uniprot/Q13114"
+  TRAF1_TRAF2_TRAF3_bRafINH_Active property "http://identifiers.org/ncit/C45329"
+  TRAF1_TRAF2_TRAF3_bRafINH_Inactive part "http://identifiers.org/chebi/CHEBI:75047"
+  TRAF1_TRAF2_TRAF3_bRafINH_Inactive part "http://identifiers.org/uniprot/Q13077"
+  TRAF1_TRAF2_TRAF3_bRafINH_Inactive part "http://identifiers.org/uniprot/Q13114"
+  TRAF1_TRAF2_TRAF3_bRafINH_Inactive part "http://identifiers.org/uniprot.isoform/Q12933"
+  TRAF1_TRAF2_TRAF3_bRafINH_Inactive property "http://identifiers.org/pato/PATO:0002355"
+  Tpl2_NF_kB_RasINH_Active part "http://identifiers.org/uniprot/P19838"
+  Tpl2_NF_kB_RasINH_Active part "http://identifiers.org/ncit/C1902"
+  Tpl2_NF_kB_RasINH_Active part "http://identifiers.org/uniprot/P41279"
+  Tpl2_NF_kB_RasINH_Active property "http://identifiers.org/ncit/C45329"
+  Tpl2_NF_kB_RasINH_Inactive part "http://identifiers.org/uniprot/P41279"
+  Tpl2_NF_kB_RasINH_Inactive part "http://identifiers.org/ncit/C1902"
+  Tpl2_NF_kB_RasINH_Inactive part "http://identifiers.org/uniprot/P19838"
+  Tpl2_NF_kB_RasINH_Inactive property "http://identifiers.org/pato/PATO:0002355"
+  mTORC2Inactive origin "http://identifiers.org/pato/PATO:0002355",
+                        "http://identifiers.org/uniprot/Q6R327"
+  mTORC2Inactive origin "http://identifiers.org/uniprot/P42345"
+  mTORC2Inactive property "http://identifiers.org/pato/PATO:0002355"
+  MAP3K8_inhibitor property "http://identifiers.org/chebi/CHEBI:79091"
+  MAP3K8_NF_kB_inhibited part "http://identifiers.org/uniprot/P19838"
+  MAP3K8_NF_kB_inhibited part "http://identifiers.org/uniprot/P41279"
+  MAP3K8_NF_kB_inhibited property "http://identifiers.org/sbo/SBO:0000642"
+  reaction_3 property "http://identifiers.org/sbo/SBO:0000656"
+  reaction_5 property "http://identifiers.org/sbo/SBO:0000656"
+  reaction_7 property "http://identifiers.org/sbo/SBO:0000656"
+  reaction_9 property "http://identifiers.org/sbo/SBO:0000656"
+  reaction_14 property "http://identifiers.org/sbo/SBO:0000656"
+  reaction_15 property "http://identifiers.org/sbo/SBO:0000656"
+  reaction_16 property "http://identifiers.org/sbo/SBO:0000665"
+  reaction_17 property "http://identifiers.org/sbo/SBO:0000656"
+  reaction_19 property "http://identifiers.org/sbo/SBO:0000665"
+  reaction_20 property "http://identifiers.org/sbo/SBO:0000179"
+  reaction_27 property "http://identifiers.org/sbo/SBO:0000656"
+  reaction_28 property "http://identifiers.org/sbo/SBO:0000393"
+  PIP3_Activation_PIP3 property "http://identifiers.org/sbo/SBO:0000656"
+  PIP3_Feedback_Deactivation_PTEN class "http://identifiers.org/sbo/SBO:0000665",
+                                        "http://identifiers.org/ncit/C82652"
+  PIP3_Feedback_Deactivation_PTEN property "http://identifiers.org/sbo/SBO:0000665"
+  Akt_Activation_PIP3 property "http://identifiers.org/sbo/SBO:0000656"
+  PDK1_Activation property "http://identifiers.org/sbo/SBO:0000656"
+  PDK1_Deactivation property "http://identifiers.org/sbo/SBO:0000665"
+  Akt_Activation_PDK1 property "http://identifiers.org/sbo/SBO:0000656"
+  Akt_Feedback_Activation_HSP90_Cdc37 class "http://identifiers.org/sbo/SBO:0000656",
+                                            "http://identifiers.org/ncit/C82652"
+  Akt_Feedback_Activation_HSP90_Cdc37 property "http://identifiers.org/sbo/SBO:0000656"
+  Akt_Feedback_Deactivation_PHLPP class "http://identifiers.org/sbo/SBO:0000665",
+                                        "http://identifiers.org/ncit/C82652"
+  Akt_Feedback_Deactivation_PHLPP property "http://identifiers.org/sbo/SBO:0000665"
+  Akt_Feedback_Activation_mTORC2 class "http://identifiers.org/sbo/SBO:0000656",
+                                       "http://identifiers.org/ncit/C82652"
+  Akt_Feedback_Activation_mTORC2 property "http://identifiers.org/sbo/SBO:0000656"
+  Akt_Feedback_Activation_TCL1 class "http://identifiers.org/sbo/SBO:0000656",
+                                     "http://identifiers.org/ncit/C82652"
+  Akt_Feedback_Activation_TCL1 property "http://identifiers.org/sbo/SBO:0000656"
+  Akt_Feedback_Deactivation_CTMP class "http://identifiers.org/sbo/SBO:0000665",
+                                       "http://identifiers.org/ncit/C82652"
+  Akt_Feedback_Deactivation_CTMP property "http://identifiers.org/sbo/SBO:0000665"
+  Erk_Feedback_Deactivation_Raf1 property "http://identifiers.org/sbo/SBO:0000665"
+  Sos_Deactivation property "http://identifiers.org/sbo/SBO:0000665"
+  mTORC1_Activation_Akt property "http://identifiers.org/sbo/SBO:0000656"
+  EGFR_Degradation_Free property "http://identifiers.org/sbo/SBO:0000179"
+  Sos_Activation_Grb2 property "http://identifiers.org/sbo/SBO:0000656"
+  Grb2_Activation_pEGFR property "http://identifiers.org/sbo/SBO:0000656"
+  Grb2_Deactivation property "http://identifiers.org/sbo/SBO:0000665"
+  FGFR_Production property "http://identifiers.org/sbo/SBO:0000393"
+  FGFR_Degradation_Free property "http://identifiers.org/sbo/SBO:0000179"
+  FGFR_Degradation property "http://identifiers.org/sbo/SBO:0000179"
+  Grb2_Activation_pFGFR class "http://identifiers.org/sbo/SBO:0000656"
+  TRADD_TRAF2_TRAF5_RIP1_Activation_pTNFR1 property "http://identifiers.org/sbo/SBO:0000656"
+  TRAF1_TRAF2_TRAF3_Activation_pTNFR2 property "http://identifiers.org/sbo/SBO:0000656"
+  PI3K_Activation_TRAF1_TRAF2_TRAF3 property "http://identifiers.org/sbo/SBO:0000656"
+  NIK_Activation_TRADD_TRAF2_TRAF5_RIP1 property "http://identifiers.org/sbo/SBO:0000656"
+  TAB1_TAB2_TAB3_TAK1_Activation_TRADD_TRAF2_TRAF5_RIP1 property "http://identifiers.org/sbo/SBO:0000656"
+  IKKbeta_IKKalfa_IKKgamma_Activation_TRADD_TRAF2_TRAF5_RIP1 property "http://identifiers.org/sbo/SBO:0000656"
+  IKKbeta_IKKalfa_IKKgamma_Activation_NIK property "http://identifiers.org/sbo/SBO:0000656"
+  IKKbeta_IKKalfa_IKKgamma_Activation_TAB1_TAB2_TAB3_TAK1 property "http://identifiers.org/sbo/SBO:0000656"
+  Tpl2_NF_kB_Activation_IKKbeta_IKKalfa property "http://identifiers.org/sbo/SBO:0000656"
+  Mek_Activation__Tpl2_NF_kB property "http://identifiers.org/sbo/SBO:0000656"
+  TNFR1_Production property "http://identifiers.org/sbo/SBO:0000393"
+  TNFR2_Production property "http://identifiers.org/sbo/SBO:0000393"
+  TNFR1_Degradation_Free property "http://identifiers.org/sbo/SBO:0000179"
+  TNFR2_Degradation_Free property "http://identifiers.org/sbo/SBO:0000179"
+  TNFR1_Degradation property "http://identifiers.org/sbo/SBO:0000179"
+  TNFR2_Degradation property "http://identifiers.org/sbo/SBO:0000179"
+  IKKbeta_IKKalfa_IKKgamma_Deactivation property "http://identifiers.org/sbo/SBO:0000665"
+  Mek_Deactivation property "http://identifiers.org/sbo/SBO:0000665"
+  mTORC1_Deactivation property "http://identifiers.org/sbo/SBO:0000665"
+  NIK_Deactivation property "http://identifiers.org/sbo/SBO:0000665"
+  Ras_Deactivation property "http://identifiers.org/sbo/SBO:0000665"
+  TAB1_TAB2_TAB3_TAK1_Deactivation property "http://identifiers.org/sbo/SBO:0000665"
+  Tpl2_NF_kB_Deactivation property "http://identifiers.org/sbo/SBO:0000665"
+  TRADD_TRAF2_TRAF5_RIP1_Deactivation property "http://identifiers.org/sbo/SBO:0000665"
+  TRAF1_TRAF2_TRAF3_Deactivation property "http://identifiers.org/sbo/SBO:0000665"
+  TRADDComplex_Activation_bRafINH property "http://identifiers.org/sbo/SBO:0000656"
+  TABComplex_Activation_bRafINH property "http://identifiers.org/sbo/SBO:0000656"
+  NIK_Activation_bRafINH property "http://identifiers.org/sbo/SBO:0000656"
+  IKKComplex_Activation_bRafINH property "http://identifiers.org/sbo/SBO:0000656"
+  Tpl2Complex_Activation_bRafINH property "http://identifiers.org/sbo/SBO:0000656"
+  TRAFComplex_Activation_bRafINH property "http://identifiers.org/sbo/SBO:0000656"
+  PLX4032_degradation property "http://identifiers.org/sbo/SBO:0000179"
+  bRafMutated_Deactivation_PLX4032 property "http://identifiers.org/sbo/SBO:0000665"
+  bRafMutated_Reconstitution property "http://identifiers.org/sbo/SBO:0000656"
+  Tpl2Complex_Activation_RasINH property "http://identifiers.org/sbo/SBO:0000656"
+  mTORC2_Deactivation_bRafMutated property "http://identifiers.org/sbo/SBO:0000665"
+  mTORC2_Activation_PI3K property "http://identifiers.org/sbo/SBO:0000656"
+  MAP3K8Complex_pERK_bRafINH property "http://identifiers.org/sbo/SBO:0000117"
+  TRADDComplex_pERK_bRafINH property "http://identifiers.org/sbo/SBO:0000656"
+  IKKComplex_pERK_bRafINH property "http://identifiers.org/sbo/SBO:0000117"
+  NIK_pERK_bRafINH property "http://identifiers.org/sbo/SBO:0000656"
+  TABComplex_pERK_bRafINH property "http://identifiers.org/sbo/SBO:0000656"
+  EGF_Binding_Unbinding__forward property "http://identifiers.org/sbo/SBO:0000177"
+  EGF_Binding_Unbinding__backward property "http://identifiers.org/sbo/SBO:0000177"
+  FGF_Binding_Unbinding__forward property "http://identifiers.org/sbo/SBO:0000177"
+  FGF_Binding_Unbinding__backward property "http://identifiers.org/sbo/SBO:0000177"
+  TNF_Binding_Unbinding_TNFR1__forward property "http://identifiers.org/sbo/SBO:0000177"
+  TNF_Binding_Unbinding_TNFR1__backward property "http://identifiers.org/sbo/SBO:0000177"
+  TNF_Binding_Unbinding_TNFR2__forward property "http://identifiers.org/sbo/SBO:0000177"
+  TNF_Binding_Unbinding_TNFR2__backward property "http://identifiers.org/sbo/SBO:0000177"
+  MAP3K8_NF_kB_Deactivation_MAP3K8_inhibitor property "http://identifiers.org/sbo/SBO:0000665"
+end
+
+Giani2019___Computational_modeling_to_predict_MAP3K8_effects_as_mediator_of_resistance_to_vemurafenib_in_thyroid_cancer_stem_cells is "Giani2019 - Computational modeling to predict MAP3K8 effects as mediator of resistance to vemurafenib in thyroid cancer stem cells"
+
+Giani2019___Computational_modeling_to_predict_MAP3K8_effects_as_mediator_of_resistance_to_vemurafenib_in_thyroid_cancer_stem_cells origin "http://identifiers.org/bto/BTO:0001610",
+                                                                                                                                          "http://identifiers.org/ncit/NCIT:C15632",
+                                                                                                                                          "http://identifiers.org/go.ref/GO:0035690",
+                                                                                                                                          "http://identifiers.org/mamo/MAMO:0000046",
+                                                                                                                                          "http://identifiers.org/go.ref/GO:0007173",
+                                                                                                                                          "http://identifiers.org/taxonomy/9606",
+                                                                                                                                          "http://identifiers.org/biomodels.db/MODEL1902140001"
+Giani2019___Computational_modeling_to_predict_MAP3K8_effects_as_mediator_of_resistance_to_vemurafenib_in_thyroid_cancer_stem_cells description "http://identifiers.org/biomodels.db/MODEL1902140001",
+                                                                                                                                               "http://identifiers.org/pubmed/30481266"
+Giani2019___Computational_modeling_to_predict_MAP3K8_effects_as_mediator_of_resistance_to_vemurafenib_in_thyroid_cancer_stem_cells model_entity_is "http://identifiers.org/biomodels.db/MODEL1902140001",
+                                                                                                                                                   "http://identifiers.org/biomodels.db/BIOMD0000000883"
+Giani2019___Computational_modeling_to_predict_MAP3K8_effects_as_mediator_of_resistance_to_vemurafenib_in_thyroid_cancer_stem_cells container "http://identifiers.org/bto/BTO:0001610"
+Giani2019___Computational_modeling_to_predict_MAP3K8_effects_as_mediator_of_resistance_to_vemurafenib_in_thyroid_cancer_stem_cells property "http://identifiers.org/ncit/NCIT:C15632"
+Giani2019___Computational_modeling_to_predict_MAP3K8_effects_as_mediator_of_resistance_to_vemurafenib_in_thyroid_cancer_stem_cells property "http://identifiers.org/go.ref/GO:0035690"
+Giani2019___Computational_modeling_to_predict_MAP3K8_effects_as_mediator_of_resistance_to_vemurafenib_in_thyroid_cancer_stem_cells property "http://identifiers.org/mamo/MAMO:0000046"
+Giani2019___Computational_modeling_to_predict_MAP3K8_effects_as_mediator_of_resistance_to_vemurafenib_in_thyroid_cancer_stem_cells property "http://identifiers.org/go.ref/GO:0007173"
+Giani2019___Computational_modeling_to_predict_MAP3K8_effects_as_mediator_of_resistance_to_vemurafenib_in_thyroid_cancer_stem_cells taxon "http://identifiers.org/taxonomy/9606"

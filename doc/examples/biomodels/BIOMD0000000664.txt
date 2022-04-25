@@ -1,0 +1,214 @@
+// Created by libAntimony v2.13.0
+function function_1_1(a1, b1, g1)
+  a1*(g1/(b1 + g1));
+end
+
+function_1_1 is "function 1_1"
+
+function function_1_2(a2, b2, g2)
+  a2*(g2/(b2 + g2));
+end
+
+function_1_2 is "function 1_2"
+
+function function_2_1(C_Raf, C_Raf_inactive, E, FGFR, f13)
+  f13*(E - C_Raf - C_Raf_inactive)*FGFR;
+end
+
+function_2_1 is "function 2_1"
+
+function function_3_1(C_Raf, C_Raf_inactive, E, MAPK, f53)
+  f53*(E - C_Raf - C_Raf_inactive)*MAPK;
+end
+
+function_3_1 is "function 3_1"
+
+function function_4_1(FGFR, f14)
+  f14*FGFR;
+end
+
+function_4_1 is "function 4_1"
+
+function function_4_2(MSH, f24)
+  f24*MSH;
+end
+
+function_4_2 is "function 4_2"
+
+function function_4_3(C_Raf, f35)
+  f35*C_Raf;
+end
+
+function_4_3 is "function 4_3"
+
+function function_4_4(B_Raf, f45)
+  f45*B_Raf;
+end
+
+function_4_4 is "function 4_4"
+
+function function_5_1(C_Raf, MSH, h36_y3)
+  h36_y3*MSH*C_Raf;
+end
+
+function_5_1 is "function 5_1"
+
+
+model *Muller2008_MAPKactivation_Dynamics()
+
+  // Compartments and Species:
+  compartment Compartment;
+  species FGFR in Compartment, MSH in Compartment, B_Raf in Compartment, MAPK in Compartment;
+  species C_Raf_inactive in Compartment, $g2_0 in Compartment, C_Raf in Compartment;
+  species $g1_0 in Compartment;
+
+  // Assignment Rules:
+  g2_0 := g2;
+  g2 := piecewise(1, (time >= 0) && (time < 5), 0);
+  g1_0 := g1;
+  g1 := piecewise(0, (time >= 0) && (time < 5), piecewise(1, (time >= 5) && (time < 10), 0));
+
+  // Reactions:
+  FGFR_Activation:  => FGFR; Compartment*function_1_1(a1, b1, g1);
+  FGFR_Degradation: FGFR => ; Compartment*d1*FGFR;
+  MSH_Activation:  => MSH; Compartment*function_1_2(a2, b2, g2);
+  MSH_Degradation: MSH => ; Compartment*d2*MSH;
+  C_Raf_Activation_1:  => C_Raf; Compartment*function_2_1(C_Raf, C_Raf_inactive, E, FGFR, f13);
+  C_Raf_Activation_2:  => C_Raf; Compartment*function_3_1(C_Raf, C_Raf_inactive, E, MAPK, f53);
+  C_Raf_Degradation: C_Raf => ; Compartment*d3*C_Raf;
+  B_Raf_Activation_1:  => B_Raf; Compartment*function_4_1(FGFR, f14);
+  B_Raf_Activation_2:  => B_Raf; Compartment*function_4_2(MSH, f24);
+  B_Raf_Degradation: B_Raf => ; Compartment*d4*B_Raf;
+  MAPK_Activation_1:  => MAPK; Compartment*function_4_3(C_Raf, f35);
+  MAPK_Activation_2:  => MAPK; Compartment*function_4_4(B_Raf, f45);
+  MAPK_Degradation: MAPK => ; Compartment*d5*MAPK;
+  C_Raf_Inactivation: C_Raf => C_Raf_inactive; Compartment*function_5_1(C_Raf, MSH, h36_y3);
+  Inactive_C_Raf_degradation: C_Raf_inactive => ; Compartment*d6*C_Raf_inactive;
+
+  // Species initializations:
+  FGFR = 0;
+  MSH = 0;
+  B_Raf = 0;
+  MAPK = 0;
+  C_Raf_inactive = 0;
+  C_Raf = 0;
+
+  // Compartment initializations:
+  Compartment = 1;
+
+  // Variable initializations:
+  a1 = 10;
+  a1 has unit_0;
+  b1 = 10;
+  d1 = 0.2;
+  d1 has unit_1;
+  a2 = 10;
+  a2 has unit_0;
+  b2 = 10;
+  d2 = 0.1;
+  d2 has unit_1;
+  f53 = 1.5;
+  f53 has unit_2;
+  f13 = 0.6;
+  f13 has unit_2;
+  h36_y3 = 0.1;
+  h36_y3 has unit_2;
+  d3 = 1;
+  d3 has unit_1;
+  E = 10;
+  f14 = 0.1;
+  f14 has unit_1;
+  f24 = 0.8;
+  f24 has unit_1;
+  d4 = 1.1;
+  d4 has unit_1;
+  f35 = 0.3;
+  f35 has unit_1;
+  f45 = 0.1;
+  f45 has unit_1;
+  d5 = 1;
+  d5 has unit_1;
+  d6 = 0.001;
+  d6 has unit_1;
+
+  // Other declarations:
+  var g2, g1;
+  const Compartment, a1, b1, d1, a2, b2, d2, f53, f13, h36_y3, d3, E, f14;
+  const f24, d4, f35, f45, d5, d6;
+
+  // Unit definitions:
+  unit time_unit = 60 second;
+  unit unit_0 = 0.06e-3 mole / (litre * second);
+  unit unit_1 = 1 / 59.9999 second;
+  unit unit_2 = 0.06e-3 litre / (mole * second);
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "0.06*mmol/(l*s)";
+  unit_1 is "1/(59.9999*s)";
+  unit_2 is "0.06*ml/(mol*s)";
+  B_Raf is "B-Raf";
+  C_Raf_inactive is "C-Raf inactive";
+  g2_0 is "g2";
+  C_Raf is "C-Raf";
+  g1_0 is "g1";
+  h36_y3 is "h36";
+  FGFR_Activation is "FGFR Stimulus";
+  FGFR_Degradation is "FGFR Degradation";
+  MSH_Activation is "MSH Stimulus";
+  MSH_Degradation is "MSH Degradation";
+  C_Raf_Activation_1 is "C-Raf Activation 1";
+  C_Raf_Activation_2 is "C_Raf Activation 2";
+  C_Raf_Degradation is "C-Raf Degradation";
+  B_Raf_Activation_1 is "B-Raf Activation 1";
+  B_Raf_Activation_2 is "B-Raf Activation 2";
+  B_Raf_Degradation is "B-Raf Degradation";
+  MAPK_Activation_1 is "MAPK Activation 1";
+  MAPK_Activation_2 is "MAPK Activation 2";
+  MAPK_Degradation is "MAPK Degradation";
+  C_Raf_Inactivation is "C-Raf Inactivation";
+  Inactive_C_Raf_degradation is "Inactive C-Raf degradation";
+
+  // CV terms:
+  FGFR hypernym "http://identifiers.org/uniprot/P11362"
+  MSH hypernym "http://identifiers.org/pr/PR:000001239"
+  B_Raf hypernym "http://identifiers.org/uniprot/P15056"
+  MAPK hypernym "http://identifiers.org/uniprot/P28482"
+  C_Raf_inactive hypernym "http://identifiers.org/uniprot/P04049"
+  g2_0 hypernym "http://identifiers.org/fma/FMA:74643"
+  g2_0 property "http://identifiers.org/ncit/C41210"
+  C_Raf hypernym "http://identifiers.org/uniprot/P04049"
+  g1_0 hypernym "http://identifiers.org/uniprot/P05230"
+  g1_0 property "http://identifiers.org/ncit/C41210"
+  FGFR_Activation hypernym "http://identifiers.org/sbo/SBO:0000170"
+  FGFR_Degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+  MSH_Activation hypernym "http://identifiers.org/sbo/SBO:0000170"
+  MSH_Degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+  C_Raf_Activation_1 parthood "http://identifiers.org/reactome/R-HSA-5673000"
+  C_Raf_Activation_1 hypernym "http://identifiers.org/reactome/R-HSA-442726"
+  C_Raf_Activation_2 parthood "http://identifiers.org/reactome/R-HSA-5673000"
+  C_Raf_Activation_2 hypernym "http://identifiers.org/reactome/R-HSA-442726"
+  C_Raf_Degradation hypernym "http://identifiers.org/reactome/SBO:0000179"
+  B_Raf_Activation_1 parthood "http://identifiers.org/reactome/R-HSA-5673000"
+  B_Raf_Activation_1 hypernym "http://identifiers.org/reactome/R-HSA-442726"
+  B_Raf_Activation_2 parthood "http://identifiers.org/reactome/R-HSA-5673000"
+  B_Raf_Activation_2 hypernym "http://identifiers.org/reactome/R-HSA-442726"
+  B_Raf_Degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+  MAPK_Activation_1 parthood "http://identifiers.org/reactome/R-HSA-5674135"
+  MAPK_Activation_1 hypernym "http://identifiers.org/reactome/R-HSA-442737"
+  MAPK_Activation_2 parthood "http://identifiers.org/reactome/R-HSA-5674135"
+  MAPK_Activation_2 hypernym "http://identifiers.org/reactome/R-HSA-442737"
+  MAPK_Degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Inactive_C_Raf_degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+end
+
+Muller2008_MAPKactivation_Dynamics is "Muller2008 - Simplified MAPK activation Dynamics (Model B)"
+
+Muller2008_MAPKactivation_Dynamics model_entity_is "http://identifiers.org/biomodels.db/MODEL8687732743"
+Muller2008_MAPKactivation_Dynamics description "http://identifiers.org/pubmed/18171696"
+Muller2008_MAPKactivation_Dynamics description "http://identifiers.org/pubmed/18171696"
+Muller2008_MAPKactivation_Dynamics model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000664"
+Muller2008_MAPKactivation_Dynamics container "http://identifiers.org/bto/BTO:0000848"
+Muller2008_MAPKactivation_Dynamics property "http://identifiers.org/go/GO:0043408"
+Muller2008_MAPKactivation_Dynamics property "http://identifiers.org/mamo/MAMO_0000046"
+Muller2008_MAPKactivation_Dynamics taxon "http://identifiers.org/taxonomy/9606"

@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Ataullahkhanov1996_Adenylate()
 
   // Compartments and Species:
@@ -6,12 +6,12 @@ model *Ataullahkhanov1996_Adenylate()
   species I in cell, E in cell, A in cell;
 
   // Assignment Rules:
-  T := ((A + 3*E) - (6*A*E - 3*E^2 + A^2)^0.5)/6;
-  M := (7*A - 3*E - (6*A*E - 3*E^2 + A^2)^0.5)/6;
+  T := (A + 3*E - ((6*A*E - 3*E^2) + A^2)^0.5)/6;
+  M := (7*A - 3*E - ((6*A*E - 3*E^2) + A^2)^0.5)/6;
 
   // Reactions:
   U1:  => I; cell*P*J;
-  U2: 3I + E => ; cell*W2*I*T;
+  U2: 3 I + E => ; cell*W2*I*T;
   U3:  => E; cell*W3*T^0.52*M^0.41;
   U6_plus_3U7: E => ; cell*2*U;
   U6_plus_U7_minus_U8:  => A; cell*U*(1 - W*T^n*M^k);
@@ -64,4 +64,43 @@ model *Ataullahkhanov1996_Adenylate()
   U3 is "ATP from glycolysis";
   U6_plus_3U7 is "AMP synthesis de novo";
   U6_plus_U7_minus_U8 is "Adenylate pool";
+
+  // CV terms:
+  cell identity "http://identifiers.org/obo.go/GO:0005623"
+  I identity "http://identifiers.org/obo.chebi/CHEBI:29101",
+             "http://identifiers.org/kegg.compound/C01330"
+  E version "http://identifiers.org/obo.chebi/CHEBI:15422",
+            "http://identifiers.org/obo.chebi/CHEBI:16761"
+  E version "http://identifiers.org/kegg.compound/C00008",
+            "http://identifiers.org/kegg.compound/C00002"
+  A version "http://identifiers.org/kegg.compound/C00020",
+            "http://identifiers.org/kegg.compound/C00008",
+            "http://identifiers.org/kegg.compound/C00002"
+  A version "http://identifiers.org/obo.chebi/CHEBI:16027",
+            "http://identifiers.org/obo.chebi/CHEBI:16761",
+            "http://identifiers.org/obo.chebi/CHEBI:15422"
+  U1 hypernym "http://identifiers.org/obo.go/GO:0006814"
+  U2 part "http://identifiers.org/obo.go/GO:0042623",
+          "http://identifiers.org/obo.go/GO:0006814"
+  U3 hypernym "http://identifiers.org/obo.go/GO:0006754"
+  U6_plus_3U7 part "http://identifiers.org/obo.go/GO:0003999",
+                   "http://identifiers.org/obo.go/GO:0004001"
+  U6_plus_3U7 part "http://identifiers.org/ec-code/2.7.1.20",
+                   "http://identifiers.org/ec-code/2.4.2.7"
+  U6_plus_U7_minus_U8 part "http://identifiers.org/ec-code/2.4.2.7",
+                           "http://identifiers.org/ec-code/3.5.4.6",
+                           "http://identifiers.org/ec-code/2.7.1.20"
+  U6_plus_U7_minus_U8 part "http://identifiers.org/obo.go/GO:0003876",
+                           "http://identifiers.org/obo.go/GO:0004001",
+                           "http://identifiers.org/obo.go/GO:0003999"
 end
+
+Ataullahkhanov1996_Adenylate is "Ataullahkhanov1996_Adenylate"
+
+Ataullahkhanov1996_Adenylate model_entity_is "http://identifiers.org/biomodels.db/MODEL4770526315"
+Ataullahkhanov1996_Adenylate model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000054"
+Ataullahkhanov1996_Adenylate description "http://identifiers.org/pubmed/8733433"
+Ataullahkhanov1996_Adenylate taxon "http://identifiers.org/taxonomy/9606"
+Ataullahkhanov1996_Adenylate part "http://identifiers.org/obo.go/GO:0002028",
+                                  "http://identifiers.org/obo.go/GO:0006167",
+                                  "http://identifiers.org/obo.go/GO:0006110"

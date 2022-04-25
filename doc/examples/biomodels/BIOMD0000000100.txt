@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Rozi2003_Glycogen_Phosphorylase_Activation()
 
   // Compartments and Species:
@@ -8,15 +8,15 @@ model *Rozi2003_Glycogen_Phosphorylase_Activation()
 
   // Reactions:
   vin: $EC => Z; extracellular*(v0 + v1*beta);
-  R2: Z => Y; cytosol*((Vm2*Z^2)/(K2^2 + Z^2));
-  R3: Y => Z; (intravesicular*Vm3*A^4*Y^2*Z^m)/((Ka^4 + A^4)*(Ky^2 + Y^2)*(Kz^m + Z^m));
+  R2: Z => Y; cytosol*(Vm2*Z^2/(K2^2 + Z^2));
+  R3: Y => Z; intravesicular*Vm3*A^4*Y^2*Z^m/((Ka^4 + A^4)*(Ky^2 + Y^2)*(Kz^m + Z^m));
   Rkf: Y => Z; intravesicular*Kf*Y;
   Rkz: Z => $EC; cytosol*K*Z;
   R4:  => A; cytosol*beta*V4;
-  R5: A => ; (cytosol*Vm5*A^p*Z^n)/((K5^p + A^p)*(Kd^n + Z^n));
+  R5: A => ; cytosol*Vm5*A^p*Z^n/((K5^p + A^p)*(Kd^n + Z^n));
   R6: A => ; cytosol*epsilon*A;
-  R7:  => GP; cytosol*((Vpm1*(1 + (gamma*Z^4)/(Ka5^4 + Z^4))*(1 - GP))/((K1/(1 + Z^4/Ka6^4) + 1) - GP));
-  R8: GP => ; cytosol*((Vpm2*(1 + (alpha*G)/(Ka1 + G))*GP)/(Kp2/(1 + G/Ka2) + GP));
+  R7:  => GP; cytosol*(Vpm1*(1 + gamma_*Z^4/(Ka5^4 + Z^4))*(1 - GP)/(K1/(1 + Z^4/Ka6^4) + 1 - GP));
+  R8: GP => ; cytosol*(Vpm2*(1 + alpha*G/(Ka1 + G))*GP/(Kp2/(1 + G/Ka2) + GP));
 
   // Species initializations:
   EC = 1000;
@@ -69,8 +69,8 @@ model *Rozi2003_Glycogen_Phosphorylase_Activation()
   epsilon has min_inv;
   Vpm1 = 1.5;
   Vpm1 has min_inv;
-  gamma = 9;
-  gamma has dimensionless;
+  gamma_ = 9;
+  gamma_ has dimensionless;
   Ka5 = 0.5;
   Ka5 has uM;
   K1 = 0.1;
@@ -92,7 +92,7 @@ model *Rozi2003_Glycogen_Phosphorylase_Activation()
 
   // Other declarations:
   const extracellular, cytosol, intravesicular, v0, v1, beta, Vm2, K2, Vm3;
-  const m, Ka, Ky, Kz, Kf, K, V4, Vm5, n, K5, Kd, epsilon, Vpm1, gamma, Ka5;
+  const m, Ka, Ky, Kz, Kf, K, V4, Vm5, n, K5, Kd, epsilon, Vpm1, gamma_, Ka5;
   const K1, Ka6, Vpm2, alpha, G, Ka1, Kp2, Ka2, p;
 
   // Unit definitions:
@@ -120,4 +120,45 @@ model *Rozi2003_Glycogen_Phosphorylase_Activation()
   R6 is "Ca independent IP3 degradation";
   R7 is "Phosphorylase kinase activity";
   R8 is "Phosphatase activity";
+
+  // CV terms:
+  extracellular identity "http://identifiers.org/go/GO:0005615"
+  cytosol identity "http://identifiers.org/go/GO:0005829"
+  intravesicular hypernym "http://identifiers.org/go/GO:0005783"
+  EC identity "http://identifiers.org/chebi/CHEBI:29108",
+              "http://identifiers.org/kegg.compound/C00076"
+  Z identity "http://identifiers.org/chebi/CHEBI:29108",
+             "http://identifiers.org/kegg.compound/C00076"
+  A identity "http://identifiers.org/chebi/CHEBI:16595",
+             "http://identifiers.org/kegg.compound/C01245"
+  Y identity "http://identifiers.org/chebi/CHEBI:29108",
+             "http://identifiers.org/kegg.compound/C00076"
+  GP hypernym "http://identifiers.org/uniprot/P11216"
+  vin hypernym "http://identifiers.org/go/GO:0007204",
+               "http://identifiers.org/go/GO:0006816"
+  R2 hypernym "http://identifiers.org/go/GO:0032470",
+              "http://identifiers.org/go/GO:0051481"
+  R3 hypernym "http://identifiers.org/go/GO:0007204"
+  Rkf hypernym "http://identifiers.org/go/GO:0007204"
+  Rkz hypernym "http://identifiers.org/go/GO:0051481"
+  R4 hypernym "http://identifiers.org/go/GO:0032959"
+  R5 hypernym "http://identifiers.org/go/GO:0032961"
+  R6 hypernym "http://identifiers.org/go/GO:0032961"
+  R7 identity "http://identifiers.org/ec-code/2.7.11.19",
+              "http://identifiers.org/go/GO:0004689"
+  R8 identity "http://identifiers.org/ec-code/3.1.3.17",
+              "http://identifiers.org/go/GO:0050196"
 end
+
+Rozi2003_Glycogen_Phosphorylase_Activation is "Rozi2003_GlycogenPhosphorylase_Activation"
+
+Rozi2003_Glycogen_Phosphorylase_Activation model_entity_is "http://identifiers.org/biomodels.db/MODEL4589754842"
+Rozi2003_Glycogen_Phosphorylase_Activation model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000100"
+Rozi2003_Glycogen_Phosphorylase_Activation description "http://identifiers.org/pubmed/14556891"
+Rozi2003_Glycogen_Phosphorylase_Activation origin "http://identifiers.org/pubmed/11093832",
+                                                  "http://identifiers.org/pubmed/17883229"
+Rozi2003_Glycogen_Phosphorylase_Activation taxon "http://identifiers.org/taxonomy/131567"
+Rozi2003_Glycogen_Phosphorylase_Activation part "http://identifiers.org/go/GO:0008607"
+Rozi2003_Glycogen_Phosphorylase_Activation part "http://identifiers.org/kegg.pathway/hsa04020"
+Rozi2003_Glycogen_Phosphorylase_Activation hypernym "http://identifiers.org/go/GO:0019722",
+                                                    "http://identifiers.org/go/GO:0048016"

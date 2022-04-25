@@ -1,0 +1,100 @@
+// Created by libAntimony v2.13.0
+function Function_for_a_constant_rate_of_influx_of_T_cells_generated_through_the_primary_organs(alpha)
+  alpha;
+end
+
+Function_for_a_constant_rate_of_influx_of_T_cells_generated_through_the_primary_organs is "Function for a constant rate of influx of T cells generated through the primary organs"
+
+function Function_for_elimination_of_effects_of_the_tumor_immune_interaction_on_the_cancer_volume(gamma_, x, y)
+  gamma_*x*y;
+end
+
+Function_for_elimination_of_effects_of_the_tumor_immune_interaction_on_the_cancer_volume is "Function for elimination of effects of the tumor immune interaction on the cancer volume"
+
+function Function_for_increase_in_tumor_volume(mu_C, x, x_inf, v)
+  mu_C*x*(1 - (x/x_inf)^v);
+end
+
+Function_for_increase_in_tumor_volume is "Function for increase in tumor volume"
+
+function Function_for_natural_death_of_T_cells(delta, y)
+  delta*y;
+end
+
+Function_for_natural_death_of_T_cells is "Function for natural death of T cells"
+
+function Function_for_tumor_immune_interaction_on_the_immune_system(mu_I, beta, x, y)
+  mu_I*(1 - beta*x)*x*y;
+end
+
+Function_for_tumor_immune_interaction_on_the_immune_system is "Function for tumor immune interaction on the immune system"
+
+
+model *Ledzewicz2013___On_optimal_chemotherapy_with_a_strongly_targeted_agent_for_a_model_of_tumor_immune_system_interactions_with_generalized_logistic_growth()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species y in compartment_, x in compartment_;
+
+  // Reactions:
+  a_constant_rate_of_influx_of_T_cells_generated_through_the_primary_organs:  => y; compartment_*Function_for_a_constant_rate_of_influx_of_T_cells_generated_through_the_primary_organs(alpha);
+  Natural_death_of_T_cells: y => ; compartment_*Function_for_natural_death_of_T_cells(delta, y);
+  Tumor_immune_interaction_on_the_immune_system:  => y; compartment_*Function_for_tumor_immune_interaction_on_the_immune_system(mu_I, beta, x, y);
+  Elimination_effect_of_the_tumor_immune_interaction_on_the_cancer_volume: x => ; compartment_*Function_for_elimination_of_effects_of_the_tumor_immune_interaction_on_the_cancer_volume(gamma_, x, y);
+  Increase_in_tumor_volume:  => x; compartment_*Function_for_increase_in_tumor_volume(mu_C, x, x_inf, v);
+
+  // Species initializations:
+  y = 0.1;
+  x = 600;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  alpha = 0.1181;
+  beta = 0.00264;
+  gamma_ = 1;
+  delta = 0.37451;
+  mu_C = 0.5599;
+  mu_I = 0.00484;
+  x_inf = 780;
+  kappa = 1;
+  v = 1;
+
+  // Other declarations:
+  const compartment_, alpha, beta, gamma_, delta, mu_C, mu_I, x_inf, kappa;
+  const v;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  gamma_ is "gamma";
+  a_constant_rate_of_influx_of_T_cells_generated_through_the_primary_organs is "a constant rate of influx of T cells generated through the primary organs";
+  Natural_death_of_T_cells is "Natural death of T cells";
+  Tumor_immune_interaction_on_the_immune_system is "Tumor immune interaction on the immune system";
+  Elimination_effect_of_the_tumor_immune_interaction_on_the_cancer_volume is "Elimination effect of the tumor immune interaction on the cancer volume";
+  Increase_in_tumor_volume is "Increase in tumor volume";
+
+  // CV terms:
+  x class "http://identifiers.org/ncit/C94515"
+  a_constant_rate_of_influx_of_T_cells_generated_through_the_primary_organs class "http://identifiers.org/go/GO:0045066"
+  Natural_death_of_T_cells hypernym "http://identifiers.org/go/GO:0006924"
+  Tumor_immune_interaction_on_the_immune_system class "http://identifiers.org/go/"
+  Elimination_effect_of_the_tumor_immune_interaction_on_the_cancer_volume class "http://identifiers.org/go/GO:0002418"
+  Increase_in_tumor_volume class "http://identifiers.org/go/GO:0002413"
+end
+
+Ledzewicz2013___On_optimal_chemotherapy_with_a_strongly_targeted_agent_for_a_model_of_tumor_immune_system_interactions_with_generalized_logistic_growth is "Ledzewicz2013 - On optimal chemotherapy with a strongly targeted agent for a model of tumor immune system interactions with generalized logistic growth"
+
+Ledzewicz2013___On_optimal_chemotherapy_with_a_strongly_targeted_agent_for_a_model_of_tumor_immune_system_interactions_with_generalized_logistic_growth class "http://identifiers.org/mamo/MAMO_0000046",
+                                                                                                                                                              "http://identifiers.org/taxonomy/9606",
+                                                                                                                                                              "http://identifiers.org/ncit/"
+Ledzewicz2013___On_optimal_chemotherapy_with_a_strongly_targeted_agent_for_a_model_of_tumor_immune_system_interactions_with_generalized_logistic_growth description "http://identifiers.org/ncit/",
+                                                                                                                                                                    "http://identifiers.org/pubmed/23906150"
+Ledzewicz2013___On_optimal_chemotherapy_with_a_strongly_targeted_agent_for_a_model_of_tumor_immune_system_interactions_with_generalized_logistic_growth model_entity_is "http://identifiers.org/biomodels.db/MODEL2003060003",
+                                                                                                                                                                        "http://identifiers.org/biomodels.db/BIOMD0000000919"
+Ledzewicz2013___On_optimal_chemotherapy_with_a_strongly_targeted_agent_for_a_model_of_tumor_immune_system_interactions_with_generalized_logistic_growth taxon "http://identifiers.org/taxonomy/9606"
+Ledzewicz2013___On_optimal_chemotherapy_with_a_strongly_targeted_agent_for_a_model_of_tumor_immune_system_interactions_with_generalized_logistic_growth property "http://identifiers.org/mamo/MAMO_0000046"

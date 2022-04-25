@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *BIOMD0000000188()
 
   // Compartments and Species:
@@ -76,7 +76,7 @@ model *BIOMD0000000188()
   kdegp53 has psec;
   kbinMdm2p53 = 0.001155;
   kbinMdm2p53 has pmolepsec;
-  krelMdm2p53 = 1.155e-005;
+  krelMdm2p53 = 1.155e-05;
   krelMdm2p53 has psec;
   ksynMdm2mRNA = 0.0001;
   ksynMdm2mRNA has psec;
@@ -98,7 +98,7 @@ model *BIOMD0000000188()
   kdephosMdm2 has psec;
   kdam = 0.08;
   kdam has molepsecpdGy;
-  krepair = 2e-005;
+  krepair = 2e-05;
   krepair has psec;
   kproteff = 1;
   kproteff has dimensionless;
@@ -125,4 +125,84 @@ model *BIOMD0000000188()
   decagray is "dGy";
   molepsec is "molpsec";
   pmolepsec is "pmolpsec";
+
+  // SBO terms:
+  Mdm2.sboTerm = 252
+  p53.sboTerm = 252
+  Mdm2_p53.sboTerm = 297
+  Mdm2_mRNA.sboTerm = 250
+  p53_mRNA.sboTerm = 250
+  ATMA.sboTerm = 252
+  ATMI.sboTerm = 252
+  p53_P.sboTerm = 252
+  Mdm2_P.sboTerm = 252
+  damDNA.sboTerm = 405
+  Sink.sboTerm = 291
+  Source.sboTerm = 291
+  p53deg.sboTerm = 291
+  p53syn.sboTerm = 291
+  mdm2deg.sboTerm = 291
+  mdm2syn.sboTerm = 291
+  Mdm2mRNAdeg.sboTerm = 291
+  Mdm2mRNAsyn.sboTerm = 291
+  totp53.sboTerm = 252
+  totMdm2.sboTerm = 252
+
+  // CV terms:
+  cell identity "http://identifiers.org/go/GO:0005623"
+  Mdm2 identity "http://identifiers.org/uniprot/Q00987"
+  Mdm2 encoder "http://identifiers.org/ensembl/ENSG00000135679"
+  p53 identity "http://identifiers.org/uniprot/P04637"
+  p53 encoder "http://identifiers.org/ensembl/ENSG00000141510"
+  Mdm2_p53 part "http://identifiers.org/uniprot/P04637",
+                "http://identifiers.org/uniprot/Q00987"
+  Mdm2_mRNA hypernym "http://identifiers.org/chebi/CHEBI:33699",
+                     "http://identifiers.org/kegg.compound/C00046"
+  p53_mRNA hypernym "http://identifiers.org/chebi/CHEBI:33699",
+                    "http://identifiers.org/kegg.compound/C00046"
+  ATMA identity "http://identifiers.org/uniprot/Q13315"
+  ATMI identity "http://identifiers.org/uniprot/Q13315"
+  p53_P encodement "http://identifiers.org/uniprot/P04637"
+  p53_P encoder "http://identifiers.org/ensembl/ENSG00000141510"
+  Mdm2_P encoder "http://identifiers.org/ensembl/ENSG00000135679"
+  Mdm2_P encodement "http://identifiers.org/uniprot/Q00987"
+  damDNA hypernym "http://identifiers.org/chebi/CHEBI:16991",
+                  "http://identifiers.org/go/GO:0006974"
+  p53deg hypernym "http://identifiers.org/go/GO:0043161"
+  p53syn hypernym "http://identifiers.org/go/GO:0006412"
+  mdm2deg hypernym "http://identifiers.org/go/GO:0043161"
+  mdm2syn hypernym "http://identifiers.org/go/GO:0006412"
+  Mdm2mRNAdeg hypernym "http://identifiers.org/go/GO:0006402"
+  Mdm2mRNAsyn hypernym "http://identifiers.org/go/GO:0003700"
+  p53mRNASynthesis hypernym "http://identifiers.org/go/GO:0003700"
+  p53mRNADegradation hypernym "http://identifiers.org/go/GO:0006402"
+  Mdm2Synthesis hypernym "http://identifiers.org/go/GO:0006412"
+  Mdm2mRNASynthesis1 hypernym "http://identifiers.org/go/GO:0003700"
+  Mdm2mRNASynthesis2 hypernym "http://identifiers.org/go/GO:0003700"
+  Mdm2mRNADegradation hypernym "http://identifiers.org/go/GO:0006402"
+  Mdm2Degradation hypernym "http://identifiers.org/go/GO:0043161"
+  p53Synthesis hypernym "http://identifiers.org/go/GO:0006412"
+  p53Degradation hypernym "http://identifiers.org/go/GO:0043161"
+  P53_Mdm2Binding hypernym "http://identifiers.org/go/GO:0002039"
+  P53_Mdm2Release hypernym "http://identifiers.org/go/GO:0043624"
+  DNAdamage hypernym "http://identifiers.org/go/GO:0006974"
+  DNArepair hypernym "http://identifiers.org/go/GO:0006281"
+  ATMactivation hypernym "http://identifiers.org/go/GO:0006468"
+  p53phoshorylation hypernym "http://identifiers.org/go/GO:0006468"
+  p53dephosorylation hypernym "http://identifiers.org/go/GO:0006470"
+  Mdm2phoshorylation hypernym "http://identifiers.org/go/GO:0006468"
+  Mdm2dephosorylation hypernym "http://identifiers.org/go/GO:0006470"
+  Mdm2Pdegradation hypernym "http://identifiers.org/go/GO:0043161"
+  ATMInactivation hypernym "http://identifiers.org/go/GO:0006470"
 end
+
+BIOMD0000000188 is "Proctor2008 - p53/Mdm2 circuit - p53 stabilisation by ATM"
+
+BIOMD0000000188 model_entity_is "http://identifiers.org/biomodels.db/MODEL5836973167"
+BIOMD0000000188 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000188"
+BIOMD0000000188 description "http://identifiers.org/pubmed/18706112"
+BIOMD0000000188 parthood "http://identifiers.org/reactome/REACT_85"
+BIOMD0000000188 parthood "http://identifiers.org/kegg.pathway/hsa04115"
+BIOMD0000000188 hypernym "http://identifiers.org/reactome/REACT_309"
+BIOMD0000000188 hypernym "http://identifiers.org/go/GO:0043516"
+BIOMD0000000188 taxon "http://identifiers.org/taxonomy/9606"

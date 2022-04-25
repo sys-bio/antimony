@@ -1,0 +1,384 @@
+// Created by libAntimony v2.13.0
+model *MODEL1610220001()
+
+  // Compartments and Species:
+  compartment PM, cyt;
+  species R in PM, LR in PM, G in PM, Gt in PM, Gd in PM, RG in PM, Gbg in PM;
+  species LRG in PM, LRGt in PM, RGd in PM, RGt in PM, LRGd in PM, LRrgs in PM;
+  species LRrgsG in PM, LRrgsGd in PM, LRrgsGt in PM, Rrgs in PM, RrgsG in PM;
+  species RrgsGd in PM, RrgsGt in PM, rgs in cyt;
+
+  // Assignment Rules:
+  k_Ef_G := k_Ef_Gd;
+  k_Af_Gd := 1.66*0.13;
+  k_Hf_LRGt := k_Hf_RGt;
+  k_Af_LRGd := k_Af_Gd;
+  k_Af_RGd := k_Af_Gd;
+  k_on_L_R := L*(k_off_L_R/K_d_L_R);
+  k_on_L_RG := L*(k_off_L_RG/(lambda*K_d_L_R));
+  k_off_L_RG := k_off_L_R;
+  k_on_L_RGt := L*(k_off_L_RGt/(lambda_t*K_d_L_R));
+  k_off_L_RGt := k_off_L_R;
+  k_on_L_RGd := L*(k_off_L_RGd/(lambda_d*K_d_L_R));
+  k_off_L_RGd := k_off_L_R;
+  k_on_R_G := k_off_R_G/(K_d_R_G/1.66);
+  k_on_LR_G := k_off_LR_G/(lambda*(K_d_R_G/1.66));
+  k_off_LR_G := k_off_R_G;
+  k_on_R_Gt := k_off_R_Gt/(eta*(K_d_R_G/1.66));
+  k_off_R_Gt := k_off_R_G;
+  k_on_LR_Gt := k_off_LR_Gt/(lambda_t*eta*(K_d_R_G/1.66));
+  k_off_LR_Gt := k_off_R_G;
+  k_on_R_Gd := k_off_R_Gd/(rho*(K_d_R_G/1.66));
+  k_off_R_Gd := k_off_R_G;
+  k_on_LR_Gd := k_off_LR_Gd/(lambda_d*rho*(K_d_R_G/1.66));
+  k_off_LR_Gd := k_off_R_G;
+  k_Ar_Gd := (k_Af_Gd/1.66)*K_d_Gd_Gbg;
+  k_Ar_RGd := (k_Af_RGd/1.66)*K_d_Gd_Gbg/rho;
+  k_Ar_LRGd := lambda*(k_Af_LRGd/1.66)*K_d_Gd_Gbg/(lambda_d*rho);
+  tot_LR := LRG + LRGd + LRGt + LR + LRrgsG + LRrgsGd + LRrgsGt + LRrgs;
+  tot_RG := RG + RGd + RGt + LRG + LRGd + LRGt + RrgsG + RrgsGd + RrgsGt + LRrgsG + LRrgsGd + LRrgsGt;
+  tot_G := G + LRG + RG + LRrgsG + RrgsG;
+  tot_Gd := Gd + LRGd + RGd + LRrgsGd + RrgsGd;
+  tot_Gt := Gt + LRGt + RGt + RrgsGt + LRrgsGt;
+  k_Ef_RGd := k_Ef_RG;
+  k_Ef_LRGd := k_Ef_LRG;
+  k_Hf_LRrgsGt := ModelValue_52;
+  k_on_R_rgs := ModelValue_55/(ModelValue_54/1.66);
+  tot_Rrgs := LRrgs + LRrgsG + LRrgsGd + LRrgsGt + Rrgs + RrgsG + RrgsGd + RrgsGt;
+
+  // Reactions:
+  binding_R_G: R + G -> RG; PM*(k_on_R_G*R*G - k_off_R_G*RG);
+  binding_L_R: R -> LR; PM*(k_on_L_R*R - k_off_L_R*LR);
+  binding_R_Gt: R + Gt -> RGt; PM*(k_on_R_Gt*R*Gt - k_off_R_Gt*RGt);
+  binding_R_Gd: R + Gd -> RGd; PM*(k_on_R_Gd*R*Gd - k_off_R_Gd*RGd);
+  binding_LR_G: LR + G -> LRG; PM*(k_on_LR_G*LR*G - k_off_LR_G*LRG);
+  binding_LR_Gt: LR + Gt -> LRGt; PM*(k_on_LR_Gt*LR*Gt - k_off_LR_Gt*LRGt);
+  binding_LR_Gd: LR + Gd -> LRGd; PM*(k_on_LR_Gd*LR*Gd - k_off_LR_Gd*LRGd);
+  binding_L_RG: RG -> LRG; PM*(k_on_L_RG*RG - k_off_L_RG*LRG);
+  binding_L_RGt: RGt -> LRGt; PM*(k_on_L_RGt*RGt - k_off_L_RGt*LRGt);
+  exchange_G: G => Gt + Gbg; PM*k_Ef_G*G;
+  hydrolysis_Gt: Gt => Gd; PM*k_Hf_Gt*Gt;
+  association_Gd: Gd + Gbg -> G; PM*(k_Af_Gd*Gd*Gbg - k_Ar_Gd*G);
+  exchange_RG: RG => RGt + Gbg; PM*k_Ef_RG*RG;
+  exchange_LRG: LRG => LRGt + Gbg; PM*k_Ef_LRG*LRG;
+  hydrolysis_RGt: RGt => RGd; PM*k_Hf_RGt*RGt;
+  hydrolysis_LRGt: LRGt => LRGd; PM*k_Hf_LRGt*LRGt;
+  association_RGd: RGd + Gbg -> RG; PM*(k_Af_RGd*RGd*Gbg - k_Ar_RGd*RG);
+  association_LRGd: LRGd + Gbg -> LRG; PM*(k_Af_LRGd*LRGd*Gbg - k_Ar_LRGd*LRG);
+  binding_L_RGd: RGd -> LRGd; PM*(k_on_L_RGd*RGd - k_off_L_RGd*LRGd);
+  exchange_Gd: Gd => Gt; PM*k_Ef_Gd*Gd;
+  exchange_RGd: RGd => RGt; PM*k_Ef_RGd*RGd;
+  exchange_LRGd: LRGd => LRGt; PM*k_Ef_LRGd*LRGd;
+  association_LRrgsGd: LRrgsGd + Gbg -> LRrgsG; PM*(k_Af_LRGd*LRrgsGd*Gbg - k_Ar_LRGd*LRrgsG);
+  association_RrgsGd: RrgsGd + Gbg -> RrgsG; PM*(k_Af_RGd*RrgsGd*Gbg - k_Ar_RGd*RrgsG);
+  binding_LRrgs_G: LRrgs + G -> LRrgsG; PM*(k_on_LR_G*LRrgs*G - k_off_LR_G*LRrgsG);
+  binding_LRrgs_Gd: LRrgs + Gd -> LRrgsGd; PM*(k_on_R_Gd*LRrgs*Gd - k_off_R_Gd*LRrgsGd);
+  binding_LRrgs_Gt: LRrgs + Gt -> LRrgsGt; PM*(k_on_LR_Gt*LRrgs*Gt - k_off_LR_Gt*LRrgsGt);
+  binding_L_Rrgs: Rrgs -> LRrgs; PM*(k_on_L_R*Rrgs - k_off_L_R*LRrgs);
+  binding_L_RrgsG: RG -> LRG; PM*(k_on_L_RG*RG - k_off_L_RG*LRG);
+  binding_L_RrgsGd: RrgsGd -> LRrgsGd; PM*(k_on_L_RGd*RrgsGd - k_off_L_RGd*LRrgsGd);
+  binding_L_RrgsGt: RrgsGt -> LRrgsGt; PM*(k_on_L_RGt*RrgsGt - k_off_L_RGt*LRrgsGt);
+  binding_Rrgs_G: Rrgs + G -> RrgsG; PM*(k_on_R_G*Rrgs*G - k_off_R_G*RrgsG);
+  binding_Rrgs_Gd: Rrgs + Gd -> RrgsGd; PM*(k_on_R_Gd*Rrgs*Gd - k_off_R_Gd*RrgsGd);
+  binding_Rrgs_Gt: Rrgs + Gt -> RrgsGt; PM*(k_on_R_Gt*Rrgs*Gt - k_off_R_Gt*RrgsGt);
+  exchange_LRrgsG: LRrgsG => LRrgsGt + Gbg; PM*k_Ef_LRG*LRrgsG;
+  exchange_LRrgsGd: LRrgsGd => LRrgsGt; PM*k_Ef_LRGd*LRrgsGd;
+  exchange_RrgsG: RrgsG => RrgsGt + Gbg; PM*k_Ef_RG*RrgsG;
+  exchange_RrgsGd: RrgsGd => RrgsGt; PM*k_Ef_RGd*RrgsGd;
+  binding_R_rgs: R + rgs -> Rrgs; k_on_R_rgs*R*rgs - k_off_R_rgs*Rrgs;
+  binding_LR_rgs: LR + rgs -> LRrgs; k_on_R_rgs*LR*rgs - k_off_R_rgs*LRrgs;
+  binding_RG_rgs: RG + rgs -> RrgsG; k_on_R_rgs*RG*rgs - k_off_R_rgs*RrgsG;
+  binding_LRG_rgs: LRG + rgs -> LRrgsG; k_on_R_rgs*LRG*rgs - k_off_R_rgs*LRrgsG;
+  binding_RGt_rgs: RGt + rgs -> RrgsGt; k_on_R_rgs*RGt*rgs - k_off_R_rgs*RrgsGt;
+  binding_LRGt_rgs: LRGt + rgs -> LRrgsGt; k_on_R_rgs*LRGt*rgs - k_off_R_rgs*LRrgsGt;
+  binding_RGd_rgs: RGd + rgs -> RrgsGd; k_on_R_rgs*RGd*rgs - k_off_R_rgs*RrgsGd;
+  binding_LRGd_rgs: LRGd + rgs -> LRrgsGd; k_on_R_rgs*LRGd*rgs - k_off_R_rgs*LRrgsGd;
+  hydrolysis_LRrgsGt: LRrgsGt => LRrgsGd; PM*k_Hf_LRrgsGt*LRrgsGt;
+  hydrolysis_RrgsGt: RrgsGt => RrgsGd; PM*k_Hf_RrgsGt*RrgsGt;
+
+  // Species initializations:
+  R = Rtot/PM;
+  R has substance_per_volume;
+  LR = 0;
+  LR has substance_per_volume;
+  G = Gtot/PM;
+  G has substance_per_volume;
+  Gt = 0;
+  Gt has substance_per_volume;
+  Gd = 0;
+  Gd has substance_per_volume;
+  RG = 0;
+  RG has substance_per_volume;
+  Gbg = 0;
+  Gbg has substance_per_volume;
+  LRG = 0;
+  LRG has substance_per_volume;
+  LRGt = 0;
+  LRGt has substance_per_volume;
+  RGd = 0;
+  RGd has substance_per_volume;
+  RGt = 0;
+  RGt has substance_per_volume;
+  LRGd = 0;
+  LRGd has substance_per_volume;
+  LRrgs = 0;
+  LRrgs has substance_per_volume;
+  LRrgsG = 0;
+  LRrgsG has substance_per_volume;
+  LRrgsGd = 0;
+  LRrgsGd has substance_per_volume;
+  LRrgsGt = 0;
+  LRrgsGt has substance_per_volume;
+  Rrgs = 0;
+  Rrgs has substance_per_volume;
+  RrgsG = 0;
+  RrgsG has substance_per_volume;
+  RrgsGd = 0;
+  RrgsGd has substance_per_volume;
+  RrgsGt = 0;
+  RrgsGt has substance_per_volume;
+  rgs = rgs_tot/cyt;
+  rgs has substance_per_volume;
+
+  // Compartment initializations:
+  PM = 3.92;
+  PM has volume;
+  cyt = 36.4;
+  cyt has volume;
+
+  // Variable initializations:
+  Rtot = 3308;
+  Gtot = 2042;
+  rgs_tot = 6000;
+  L = 0;
+  K_d_L_R = 5.6;
+  lambda = 1;
+  lambda_t = 1;
+  lambda_d = 1;
+  K_d_R_G = 36;
+  eta = 1;
+  rho = 1;
+  k_Ef_Gd = 0.00062;
+  k_Hf_Gt = 0.002;
+  k_Ef_RG = 0.00062;
+  k_Ef_LRG = 1.5;
+  k_Hf_RGt = 0.002;
+  k_off_L_R = 0.001;
+  k_off_R_G = 0.09;
+  K_d_Gd_Gbg = 0.01;
+  ModelValue_52 = k_Hf_RrgsGt;
+  k_Hf_RrgsGt = 0.28;
+  K_d_R_rgs = 328;
+  k_off_R_rgs = 3;
+  ModelValue_55 = k_off_R_rgs;
+  ModelValue_54 = K_d_R_rgs;
+
+  // Other declarations:
+  var k_Ef_G, k_Af_Gd, k_Hf_LRGt, k_Af_LRGd, k_Af_RGd, k_on_L_R, k_on_L_RG;
+  var k_off_L_RG, k_on_L_RGt, k_off_L_RGt, k_on_L_RGd, k_off_L_RGd, k_on_R_G;
+  var k_on_LR_G, k_off_LR_G, k_on_R_Gt, k_off_R_Gt, k_on_LR_Gt, k_off_LR_Gt;
+  var k_on_R_Gd, k_off_R_Gd, k_on_LR_Gd, k_off_LR_Gd, k_Ar_Gd, k_Ar_RGd, k_Ar_LRGd;
+  var tot_LR, tot_RG, tot_G, tot_Gd, tot_Gt, k_Ef_RGd, k_Ef_LRGd, k_Hf_LRrgsGt;
+  var k_on_R_rgs, tot_Rrgs;
+  const PM, cyt, Rtot, Gtot, rgs_tot, L, K_d_L_R, lambda, lambda_t, lambda_d;
+  const K_d_R_G, eta, rho, k_Ef_Gd, k_Hf_Gt, k_Ef_RG, k_Ef_LRG, k_Hf_RGt;
+  const k_off_L_R, k_off_R_G, K_d_Gd_Gbg, ModelValue_52, k_Hf_RrgsGt, K_d_R_rgs;
+  const k_off_R_rgs, ModelValue_55, ModelValue_54;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-15 litre;
+  unit time_unit = time_unit;
+  unit substance = item;
+  unit extent = substance;
+  unit substance_per_volume = item / 1e-15 litre;
+
+  // Display Names:
+  time_unit is "time";
+  K_d_L_R is "K_d_L·R";
+  K_d_R_G is "K_d_R·G";
+  k_on_L_R is "k_on_L·R";
+  k_off_L_R is "k_off_L·R";
+  k_on_L_RG is "k_on_L·RG";
+  k_off_L_RG is "k_off_L·RG";
+  k_on_L_RGt is "k_on_L·RGt";
+  k_off_L_RGt is "k_off_L·RGt";
+  k_on_L_RGd is "k_on_L·RGd";
+  k_off_L_RGd is "k_off_L·RGd";
+  k_on_R_G is "k_on_R·G";
+  k_off_R_G is "k_off_R·G";
+  k_on_LR_G is "k_on_LR·G";
+  k_off_LR_G is "k_off_LR·G";
+  k_on_R_Gt is "k_on_R·Gt";
+  k_off_R_Gt is "k_off_R·Gt";
+  k_on_LR_Gt is "k_on_LR·Gt";
+  k_off_LR_Gt is "k_off_LR·Gt";
+  k_on_R_Gd is "k_on_R·Gd";
+  k_off_R_Gd is "k_off_R·Gd";
+  k_on_LR_Gd is "k_on_LR·Gd";
+  k_off_LR_Gd is "k_off_LR·Gd";
+  K_d_Gd_Gbg is "K_d_Gd·Gbg";
+  ModelValue_52 is "Initial for k_Hf_RrgsGt";
+  K_d_R_rgs is "K_d_R·rgs";
+  k_off_R_rgs is "k_off_R·rgs";
+  k_on_R_rgs is "k_on_R.rgs";
+  ModelValue_55 is "Initial for k_off_R·rgs";
+  ModelValue_54 is "Initial for K_d_R·rgs";
+  binding_R_G is "binding_R·G";
+  binding_L_R is "binding_L·R";
+  binding_R_Gt is "binding_R·Gt";
+  binding_R_Gd is "binding_R·Gd";
+  binding_LR_G is "binding_LR·G";
+  binding_LR_Gt is "binding_LR·Gt";
+  binding_LR_Gd is "binding_LR·Gd";
+  binding_L_RG is "binding_L·RG";
+  binding_L_RGt is "binding_L·RGt";
+  binding_L_RGd is "binding_L·RGd";
+  binding_LRrgs_G is "binding_LRrgs·G";
+  binding_LRrgs_Gd is "binding_LRrgs·Gd";
+  binding_LRrgs_Gt is "binding_LRrgs·Gt";
+  binding_L_Rrgs is "binding_L·Rrgs";
+  binding_L_RrgsG is "binding_L·RrgsG";
+  binding_L_RrgsGd is "binding_L·RrgsGd";
+  binding_L_RrgsGt is "binding_L·RrgsGt";
+  binding_Rrgs_G is "binding_Rrgs·G";
+  binding_Rrgs_Gd is "binding_Rrgs·Gd";
+  binding_Rrgs_Gt is "binding_Rrgs·Gt";
+  binding_R_rgs is "binding_R·rgs";
+  binding_LR_rgs is "binding_LR·rgs";
+  binding_RG_rgs is "binding_RG·rgs";
+  binding_LRG_rgs is "binding_LRG·rgs";
+  binding_RGt_rgs is "binding_RGt·rgs";
+  binding_LRGt_rgs is "binding_LRGt·rgs";
+  binding_RGd_rgs is "binding_RGd·rgs";
+  binding_LRGd_rgs is "binding_LRGd·rgs";
+
+  // SBO terms:
+  PM.sboTerm = 290
+  cyt.sboTerm = 290
+  binding_R_G.sboTerm = 177
+  binding_L_R.sboTerm = 177
+  binding_R_Gt.sboTerm = 177
+  binding_R_Gd.sboTerm = 177
+  binding_LR_G.sboTerm = 177
+  binding_LR_Gt.sboTerm = 177
+  binding_L_RG.sboTerm = 177
+  binding_L_RGt.sboTerm = 177
+  exchange_G.sboTerm = 627
+  hydrolysis_Gt.sboTerm = 376
+  exchange_RG.sboTerm = 627
+  exchange_LRG.sboTerm = 627
+  hydrolysis_RGt.sboTerm = 376
+  hydrolysis_LRGt.sboTerm = 376
+  binding_L_RGd.sboTerm = 177
+  exchange_Gd.sboTerm = 627
+  exchange_RGd.sboTerm = 627
+  exchange_LRGd.sboTerm = 627
+  binding_LRrgs_G.sboTerm = 177
+  binding_LRrgs_Gd.sboTerm = 177
+  binding_LRrgs_Gt.sboTerm = 177
+  binding_L_Rrgs.sboTerm = 177
+  binding_L_RrgsG.sboTerm = 177
+  binding_L_RrgsGd.sboTerm = 177
+  binding_Rrgs_Gd.sboTerm = 177
+  binding_Rrgs_Gt.sboTerm = 177
+  exchange_LRrgsG.sboTerm = 627
+  exchange_LRrgsGd.sboTerm = 627
+  exchange_RrgsG.sboTerm = 627
+  exchange_RrgsGd.sboTerm = 627
+  binding_R_rgs.sboTerm = 177
+  binding_LR_rgs.sboTerm = 177
+  binding_RG_rgs.sboTerm = 177
+  binding_LRG_rgs.sboTerm = 177
+  binding_RGt_rgs.sboTerm = 177
+  binding_LRGt_rgs.sboTerm = 177
+  binding_RGd_rgs.sboTerm = 177
+  binding_LRGd_rgs.sboTerm = 177
+  hydrolysis_LRrgsGt.sboTerm = 376
+  hydrolysis_RrgsGt.sboTerm = 376
+
+  // CV terms:
+  PM property "http://identifiers.org/fma/FMA:63841"
+  cyt property "http://identifiers.org/fma/FMA:66835"
+  R hypernym "http://identifiers.org/uniprot/P0CI39"
+  Rtot origin "http://identifiers.org/pubmed/22114196"
+  LR part "http://identifiers.org/uniprot/P0CI39",
+          "http://identifiers.org/uniprot/P01149"
+  G property "http://identifiers.org/uniprot/P18851",
+             "http://identifiers.org/uniprot/P18852"
+  Gtot origin "http://identifiers.org/pubmed/22114196"
+  Gt part "http://identifiers.org/chebi/CHEBI:17552",
+          "http://identifiers.org/uniprot/P18851",
+          "http://identifiers.org/uniprot/P18852"
+  Gd part "http://identifiers.org/chebi/CHEBI:17552",
+          "http://identifiers.org/uniprot/P18852"
+  RG part "http://identifiers.org/uniprot/P0CI39",
+          "http://identifiers.org/uniprot/P18851",
+          "http://identifiers.org/uniprot/P18852"
+  Gbg part "http://identifiers.org/uniprot/P18851",
+           "http://identifiers.org/uniprot/P18852"
+  LRG part "http://identifiers.org/uniprot/P18851",
+           "http://identifiers.org/uniprot/P18852",
+           "http://identifiers.org/uniprot/P0CI39",
+           "http://identifiers.org/uniprot/P01149"
+  LRGt part "http://identifiers.org/chebi/CHEBI:15996",
+            "http://identifiers.org/uniprot/P0CI39",
+            "http://identifiers.org/uniprot/P01149"
+  RGd part "http://identifiers.org/chebi/CHEBI:17552",
+           "http://identifiers.org/uniprot/P0CI39",
+           "http://identifiers.org/uniprot/P18852"
+  RGt part "http://identifiers.org/chebi/CHEBI:17552",
+           "http://identifiers.org/uniprot/P0CI39",
+           "http://identifiers.org/uniprot/P18852"
+  LRGd part "http://identifiers.org/chebi/CHEBI:17552",
+            "http://identifiers.org/uniprot/P0CI39",
+            "http://identifiers.org/uniprot/P01149",
+            "http://identifiers.org/uniprot/P18852"
+  LRrgs part "http://identifiers.org/uniprot/P0CI39",
+             "http://identifiers.org/uniprot/P01149"
+  LRrgsG part "http://identifiers.org/uniprot/P0CI39",
+              "http://identifiers.org/uniprot/P01149"
+  LRrgsGd part "http://identifiers.org/uniprot/P0CI39",
+               "http://identifiers.org/uniprot/P01149"
+  LRrgsGt part "http://identifiers.org/chebi/CHEBI:15996",
+               "http://identifiers.org/uniprot/P0CI39",
+               "http://identifiers.org/uniprot/P01149",
+               "http://identifiers.org/uniprot/P18852"
+  Rrgs part "http://identifiers.org/uniprot/P0CI39"
+  RrgsG part "http://identifiers.org/uniprot/P0CI39",
+             "http://identifiers.org/uniprot/P18851",
+             "http://identifiers.org/uniprot/P18852"
+  RrgsGd part "http://identifiers.org/chebi/CHEBI:17552",
+              "http://identifiers.org/uniprot/P0CI39",
+              "http://identifiers.org/uniprot/P18852"
+  RrgsGt part "http://identifiers.org/uniprot/P0CI39",
+              "http://identifiers.org/uniprot/P01149",
+              "http://identifiers.org/uniprot/P18852"
+  K_d_L_R origin "urn:miriam:pubmed:11495900+",
+                 "http://identifiers.org/pubmed/9182592",
+                 "http://identifiers.org/pubmed/10866688",
+                 "http://identifiers.org/pubmed/8692892",
+                 "http://identifiers.org/pubmed/15491163",
+                 "http://identifiers.org/pubmed/14734536",
+                 "http://identifiers.org/pubmed/8385135",
+                 "http://identifiers.org/pubmed/6360378",
+                 "urn:miriam:pubmed:3023832+"
+  K_d_R_G origin "http://identifiers.org/pubmed/15501933"
+  k_Ef_G origin "http://identifiers.org/pubmed/9537998"
+  k_Hf_Gt origin "http://identifiers.org/pubmed/9537998"
+  k_Ef_LRG origin "http://identifiers.org/pubmed/8626481"
+  k_Hf_RGt origin "http://identifiers.org/pubchem.substance/12960402"
+  k_off_L_R origin "http://identifiers.org/pubmed/6360378"
+  k_off_R_G origin "urn:miriam:pubmed:16963443+"
+end
+
+MODEL1610220001 is "Bush2016 - Extended Carrousel model of GPCR-RGS"
+
+MODEL1610220001 model_entity_is "http://identifiers.org/biomodels.db/MODEL1610220001"
+MODEL1610220001 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000638"
+MODEL1610220001 description "http://identifiers.org/pubmed/28034910"
+MODEL1610220001 property "http://identifiers.org/go/GO:0000772",
+                         "http://identifiers.org/go/GO:0001664",
+                         "http://identifiers.org/mamo/MAMO_0000003"
+MODEL1610220001 taxon "http://identifiers.org/taxonomy/4932"

@@ -1,6 +1,6 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 function goldbeter_koshland(v1, v2, J1, J2)
-  (2*v1*J2)/(v2 - v1 + J1*v2 + J2*v1 + ((v2 - v1 + J1*v2 + J2*v1)^2 - 4*(v2 - v1)*v1*J2)^(1/2));
+  2*v1*J2/((v2 - v1) + J1*v2 + J2*v1 + (((v2 - v1) + J1*v2 + J2*v1)^2 - 4*(v2 - v1)*v1*J2)^(1/2));
 end
 
 
@@ -20,8 +20,8 @@ model *Tyson2003_Activator_Inhibitor()
   r0: X => R; env*(k0_prime + k0*Ep)*X;
   r1:  => X; env*k1*S;
   r2: R => ; env*k2*R;
-  r3: $E => $Ep; (env*k3*R*E)/(Km3 + E);
-  r4: $Ep => $E; (env*k4*Ep)/(Km4 + Ep);
+  r3: $E => $Ep; env*k3*R*E/(Km3 + E);
+  r4: $Ep => $E; env*k4*Ep/(Km4 + Ep);
 
   // Species initializations:
   R = 0;
@@ -68,4 +68,47 @@ model *Tyson2003_Activator_Inhibitor()
   // Display Names:
   time_unit is "s";
   substance is "mole";
+
+  // SBO terms:
+  env.sboTerm = 290
+  R.sboTerm = 285
+  X.sboTerm = 285
+  S.sboTerm = 285
+  Ep.sboTerm = 252
+  k3.sboTerm = 186
+  k4.sboTerm = 186
+  J3.sboTerm = 2
+  J4.sboTerm = 2
+  Et.sboTerm = 196
+  E.sboTerm = 252
+  k0_prime.sboTerm = 35
+  k0.sboTerm = 36
+  k1.sboTerm = 35
+  k2.sboTerm = 356
+  Km3.sboTerm = 27
+  Km4.sboTerm = 27
+  r0.sboTerm = 182
+  r1.sboTerm = 176
+  r2.sboTerm = 179
+  r3.sboTerm = 216
+  r4.sboTerm = 330
+
+  // CV terms:
+  env hypernym "http://identifiers.org/go/GO:0005623"
+  Ep hypernym "http://identifiers.org/kegg.compound/C00562"
+  Ep version "http://identifiers.org/psimod/MOD:00696"
+  E hypernym "http://identifiers.org/chebi/CHEBI:36080"
+  r1 hypernym "http://identifiers.org/go/GO:0009058"
+  r2 hypernym "http://identifiers.org/go/GO:0009056"
+  r3 hypernym "http://identifiers.org/go/GO:0006468"
+  r4 hypernym "http://identifiers.org/go/GO:0006470"
 end
+
+Tyson2003_Activator_Inhibitor is "Tyson2003_Substrate_Depletion_Osc"
+
+Tyson2003_Activator_Inhibitor model_entity_is "http://identifiers.org/biomodels.db/MODEL1102100006"
+Tyson2003_Activator_Inhibitor model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000307"
+Tyson2003_Activator_Inhibitor description "http://identifiers.org/pubmed/12648679"
+Tyson2003_Activator_Inhibitor property "http://identifiers.org/mamo/MAMO_0000046"
+Tyson2003_Activator_Inhibitor hypernym "http://identifiers.org/go/GO:0051098"
+Tyson2003_Activator_Inhibitor taxon "http://identifiers.org/taxonomy/131567"

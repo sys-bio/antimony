@@ -13,15 +13,9 @@ class QTAntimony : public QApplication
 private:
     Translator* m_original;
     bool m_opened;
-    bool m_usesbw;
     QString m_currentdir;
 
     QWidget* m_basewindow;
-
-protected:
-#ifdef SBW_INTEGRATION
-        bool eventFilter(QObject *obj, QEvent *oEvent);
-#endif
 
 public:
     QTAntimony(int& argc, char**& argv);
@@ -29,8 +23,6 @@ public:
     void OpenFiles(QStringList filenames);
     QString GetCurrentDir();
     void DisplayWindow(QMainWindow* t);
-    bool GetUseSBW() {return m_usesbw;}
-    void SetUseSBW(bool on);
 
 public slots:
     void OpenNewFile();

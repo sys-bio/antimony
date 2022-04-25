@@ -1,0 +1,93 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function function_for_APC_activation(a2, product, modifier, n2, k2)
+  a2*(1 - product)*modifier^n2/(k2^n2 + modifier^n2);
+end
+
+function_for_APC_activation is "function for APC activation"
+
+function function_for_cdk1_inactivation(b1, modifier, n1, k1, substrate)
+  b1*substrate*modifier^n1/(k1^n1 + modifier^n1);
+end
+
+function_for_cdk1_inactivation is "function for cdk1 inactivation"
+
+
+model *Ferrel2011___Autonomous_biochemical_oscillator_in_regulation_of_CDK1__Plk1__and_APC_in_Xenopus_Laevis_cell_cycle()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species CDK1_active in compartment_, APC_active in compartment_, Plk1_active in compartment_;
+
+  // Reactions:
+  R1_Cdk1_activation_by_cyclin_synthesis:  => CDK1_active; compartment_*Constant_flux__irreversible(a1);
+  R2_Cdk1_inactivation_by_APC_active: CDK1_active => ; compartment_*function_for_cdk1_inactivation(b1, APC_active, n1, k1, CDK1_active);
+  R3_APC_activation_by_Cdk1_active:  => APC_active; compartment_*function_for_APC_activation(a3, APC_active, Plk1_active, n3, k3);
+  R4_APC_Inactivation: APC_active => ; compartment_*b3*APC_active;
+  R5_Plk1_activation_by:  => Plk1_active; compartment_*function_for_APC_activation(a2, Plk1_active, CDK1_active, n2, k2);
+  R6_Plk1_inactivation: Plk1_active => ; compartment_*b2*Plk1_active;
+
+  // Species initializations:
+  CDK1_active = 0;
+  APC_active = 0;
+  Plk1_active = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  a1 = 0.1;
+  a2 = 3;
+  a3 = 3;
+  b1 = 3;
+  b2 = 1;
+  b3 = 1;
+  k1 = 0.5;
+  k2 = 0.5;
+  k3 = 0.5;
+  n1 = 8;
+  n2 = 8;
+  n3 = 8;
+
+  // Other declarations:
+  const compartment_, a1, a2, a3, b1, b2, b3, k1, k2, k3, n1, n2, n3;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "nuclear";
+  R1_Cdk1_activation_by_cyclin_synthesis is "R1 Cdk1 activation by cyclin synthesis";
+  R2_Cdk1_inactivation_by_APC_active is "R2 Cdk1 inactivation by APC_active";
+  R3_APC_activation_by_Cdk1_active is "R3 APC activation by Cdk1_active";
+  R4_APC_Inactivation is "R4 APC Inactivation";
+  R5_Plk1_activation_by is "R5 Plk1 activation by";
+  R6_Plk1_inactivation is "R6 Plk1 inactivation";
+
+  // CV terms:
+  compartment_ hypernym "http://identifiers.org/ncit/C13361"
+  CDK1_active hypernym "http://identifiers.org/uniprot/P35567"
+  CDK1_active property "http://identifiers.org/pato/PATO:0002354"
+  APC_active hypernym "http://identifiers.org/uniprot/P70039"
+  APC_active property "http://identifiers.org/pato/PATO:0002354"
+  Plk1_active hypernym "http://identifiers.org/uniprot/P70032"
+  Plk1_active property "http://identifiers.org/pato/PATO:0002354"
+  R1_Cdk1_activation_by_cyclin_synthesis hypernym "http://identifiers.org/ncit/C64382"
+  R3_APC_activation_by_Cdk1_active hypernym "http://identifiers.org/ncit/C64382"
+  R5_Plk1_activation_by hypernym "http://identifiers.org/ncit/C64382"
+end
+
+Ferrel2011___Autonomous_biochemical_oscillator_in_regulation_of_CDK1__Plk1__and_APC_in_Xenopus_Laevis_cell_cycle is "Ferrel2011 - Autonomous biochemical oscillator in regulation of CDK1, Plk1, and APC in Xenopus Laevis cell cycle"
+
+Ferrel2011___Autonomous_biochemical_oscillator_in_regulation_of_CDK1__Plk1__and_APC_in_Xenopus_Laevis_cell_cycle model_entity_is "http://identifiers.org/biomodels.db/MODEL1809040004",
+                                                                                                                                 "http://identifiers.org/biomodels.db/BIOMD0000000937"
+Ferrel2011___Autonomous_biochemical_oscillator_in_regulation_of_CDK1__Plk1__and_APC_in_Xenopus_Laevis_cell_cycle part "http://identifiers.org/go/GO:0051726"
+Ferrel2011___Autonomous_biochemical_oscillator_in_regulation_of_CDK1__Plk1__and_APC_in_Xenopus_Laevis_cell_cycle taxon "http://identifiers.org/taxonomy/8355"
+Ferrel2011___Autonomous_biochemical_oscillator_in_regulation_of_CDK1__Plk1__and_APC_in_Xenopus_Laevis_cell_cycle description "http://identifiers.org/pubmed/21414480"
+Ferrel2011___Autonomous_biochemical_oscillator_in_regulation_of_CDK1__Plk1__and_APC_in_Xenopus_Laevis_cell_cycle property "http://identifiers.org/mamo/MAMO_0000046"

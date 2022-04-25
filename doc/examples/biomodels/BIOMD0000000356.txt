@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Nyman2011_M3Hierarachical_InsulinGlucosedynamics()
 
   // Compartments and Species:
@@ -13,10 +13,10 @@ model *Nyman2011_M3Hierarachical_InsulinGlucosedynamics()
   species mTOR_ in default, GLUT4_C in default, GLUT4_M in default;
 
   // Assignment Rules:
-  vglucoseuptake := (k_glut1*G_t)/(KmG1 + G_t) + (k_glut4*GLUT4_M*G_t)/(KmG4 + G_t) + kbf*(INS + 5);
-  KD := 7.000000e-006;
+  vglucoseuptake := k_glut1*G_t/(KmG1 + G_t) + k_glut4*GLUT4_M*G_t/(KmG4 + G_t) + kbf*(INS + 5);
+  KD := 7e-6;
   S2 := 0;
-  S1 := (INS + 5)*1.000000e-012;
+  S1 := (INS + 5)*1e-12;
   K4 := 1400;
   K8 := 0.01;
   aa := 5/2/(1 - b)/D;
@@ -24,31 +24,31 @@ model *Nyman2011_M3Hierarachical_InsulinGlucosedynamics()
   EGP := k_p1 - k_p2*G_p - k_p3*I_d - k_p4*I_po;
   V_mmax := (1 - part)*(V_m0 + V_mX*INS);
   E := 0;
-  S := gamma*I_po;
+  S := gamma_*I_po;
   I := I_p/V_I;
   G := G_p/V_G;
   HE := -m_5*S + m_6;
-  m_3 := (HE*m_1)/(1 - HE);
+  m_3 := HE*m_1/(1 - HE);
   Q_sto := Q_sto1 + Q_sto2;
-  Ra := (f*k_abs*Q_gut)/BW;
-  k_empt := k_min + (k_max - k_min)/2*(tanh(aa*(Q_sto - b*D)) - tanh(cc*(Q_sto - d*D)) + 2);
-  U_idm := (V_mmax*G_t)/(K_m0 + G_t);
+  Ra := f*k_abs*Q_gut/BW;
+  k_empt := k_min + ((k_max - k_min)/2)*((tanh(aa*(Q_sto - b*D)) - tanh(cc*(Q_sto - d*D))) + 2);
+  U_idm := V_mmax*G_t/(K_m0 + G_t);
   U_id := U_idm + vglucoseuptake;
   U := U_ii + U_id;
-  S_po := Y + (K*((EGP + Ra) - E - U_ii - k_1*G_p + k_2*G_t))/V_G + S_b;
+  S_po := Y + K*((EGP + Ra - E - U_ii - k_1*G_p) + k_2*G_t)/V_G + S_b;
 
   // Rate Rules:
-  G_t' = (-U_id + k_1*G_p) - k_2*G_t;
+  G_t' = -U_id + k_1*G_p - k_2*G_t;
   INS' = -p_2U*INS + p_2U*(I - I_b);
-  G_p' = (EGP + Ra) - E - U_ii - k_1*G_p + k_2*G_t;
+  G_p' = (EGP + Ra - E - U_ii - k_1*G_p) + k_2*G_t;
   I_d' = -k_i*(I_d - I_1);
-  I_po' = -gamma*I_po + S_po;
-  I_p' = -m_2*I_p - m_4*I_p + m_1*I_l;
+  I_po' = -gamma_*I_po + S_po;
+  I_p' = (-m_2*I_p - m_4*I_p) + m_1*I_l;
   Q_sto1' = -k_gri*Q_sto1;
   Q_sto2' = -k_empt*Q_sto2 + k_gri*Q_sto1;
   Q_gut' = -k_abs*Q_gut + k_empt*Q_sto2;
   Y' = -alpha*(Y - beta*(G - G_b));
-  I_l' = -m_1*I_l - m_3*I_l + m_2*I_p + S;
+  I_l' = (-m_1*I_l - m_3*I_l) + m_2*I_p + S;
   I_1' = -k_i*(I_1 - I);
 
   // Reactions:
@@ -91,12 +91,12 @@ model *Nyman2011_M3Hierarachical_InsulinGlucosedynamics()
   R37: rend => r0; Kex*rend;
   R38: iend => ; Kex*iend;
   R39: r1x2 => rendP + iendIR; Kend*r1x2;
-  R40: r11x2 => rendP + 2iendIR; Kend*r11x2;
-  R41: r1x22 => rendP + 2iendIR; Kend*r1x22;
-  R42: r1x22d => rendP + 3iendIR; Kend*r1x22d;
-  R43: r11x22 => rendP + 3iendIR; Kend*r11x22;
-  R44: rendP => rend; (Kdp + (Kcat*X_P)/(Km + X_P))*rendP;
-  R45: iendIR => iend; (Kdp + (Kcat*X_P)/(Km + X_P))*iendIR;
+  R40: r11x2 => rendP + 2 iendIR; Kend*r11x2;
+  R41: r1x22 => rendP + 2 iendIR; Kend*r1x22;
+  R42: r1x22d => rendP + 3 iendIR; Kend*r1x22d;
+  R43: r11x22 => rendP + 3 iendIR; Kend*r11x22;
+  R44: rendP => rend; (Kdp + Kcat*X_P/(Km + X_P))*rendP;
+  R45: iendIR => iend; (Kdp + Kcat*X_P/(Km + X_P))*iendIR;
   R46: r0 => rPbasal; kfbasal*r0;
   R47: rPbasal => r0; krbasal*rPbasal;
   R48: rPbasal => rendP; Kend*rPbasal;
@@ -121,19 +121,19 @@ model *Nyman2011_M3Hierarachical_InsulinGlucosedynamics()
   r0 = 9.96820379306998/default;
   r1 = 0.0221366043399864/default;
   r2 = 0.00934921094738169/default;
-  r11 = 1.22886711962222e-005/default;
-  r12 = 1.0376421415741e-005/default;
-  r22 = 2.18683301945588e-006/default;
-  r1x2 = 1.36475817837692e-006/default;
-  r11x2 = 1.51513915390766e-009/default;
-  r1x22 = 6.39351849488596e-010/default;
-  r1x22d = 5.59231079319369e-020/default;
-  r11x22 = 1.78725515332219e-014/default;
-  rend = 3.31711803810961e-005/default;
+  r11 = 1.22886711962222e-05/default;
+  r12 = 1.0376421415741e-05/default;
+  r22 = 2.18683301945588e-06/default;
+  r1x2 = 1.36475817837692e-06/default;
+  r11x2 = 1.51513915390766e-09/default;
+  r1x22 = 6.39351849488596e-10/default;
+  r1x22d = 5.59231079319369e-20/default;
+  r11x22 = 1.78725515332219e-14/default;
+  rend = 3.31711803810961e-05/default;
   rendP = 0.000212533941418487/default;
-  iendIR = 7.25519178924707e-006/default;
-  iend = 1.13228497567934e-006/default;
-  rPbasal = 3.87230309356247e-005/default;
+  iendIR = 7.25519178924707e-06/default;
+  iend = 1.13228497567934e-06/default;
+  rPbasal = 3.87230309356247e-05/default;
   IRS = 9.99982253600007/default;
   IRSiP = 0.000177463999892648/default;
   X = 9.92463241634744/default;
@@ -142,7 +142,7 @@ model *Nyman2011_M3Hierarachical_InsulinGlucosedynamics()
   PI3K_ = 0.0242164303337614/default;
   PDK1 = 8.65876984730663/default;
   PDK1_ = 1.34123015269338/default;
-  PKC = 3.60283594102724e-005/default;
+  PKC = 3.60283594102724e-05/default;
   PKC_P = 9.99996397164059/default;
   PKB = 9.90193143617302/default;
   PKB_P = 0.0980685638269942/default;
@@ -184,11 +184,11 @@ model *Nyman2011_M3Hierarachical_InsulinGlucosedynamics()
   k7b = 565342.162392942;
   k8f = 1515762.41887571;
   k8b = 300.7511656484;
-  k91 = 8.14e-008;
+  k91 = 8.14e-08;
   k92 = 0.0280831426;
   k9b = 4.0297596909;
   k5Basic = 0.2040341054;
-  k5BasicWb = 2.34e-008;
+  k5BasicWb = 2.34e-08;
   k_glut4 = 31.4211308621;
   k_glut1 = 0.2966651081;
   KmG1 = 132.7704719106;
@@ -230,7 +230,7 @@ model *Nyman2011_M3Hierarachical_InsulinGlucosedynamics()
   K = 2.3;
   alpha = 0.05;
   beta = 0.11;
-  gamma = 0.5;
+  gamma_ = 0.5;
   k_e1 = 0.0005;
   k_e2 = 339;
   D = 78000;
@@ -257,5 +257,302 @@ model *Nyman2011_M3Hierarachical_InsulinGlucosedynamics()
   const KmG1, KmG4, kbf, V_G, k_1, k_2, G_b, V_I, m_1, m_2, m_4, m_5, m_6;
   const HE_b, I_b, S_b, S_b_minus, k_max, k_min, k_abs, k_gri, f, b, d, BW;
   const k_p1, k_p2, k_p3, k_p4, k_i, U_ii, V_m0, V_mX, K_m0, p_2U, part, K;
-  const alpha, beta, gamma, k_e1, k_e2, D;
+  const alpha, beta, gamma_, k_e1, k_e2, D;
+
+  // Display Names:
+  gamma_ is "gamma";
+
+  // SBO terms:
+  r0.sboTerm = 244
+  r1.sboTerm = 244
+  r2.sboTerm = 244
+  r11.sboTerm = 244
+  r12.sboTerm = 244
+  r22.sboTerm = 244
+  r1x2.sboTerm = 244
+  r11x2.sboTerm = 244
+  r1x22.sboTerm = 244
+  r1x22d.sboTerm = 244
+  r11x22.sboTerm = 244
+  rend.sboTerm = 240
+  rendP.sboTerm = 240
+  iendIR.sboTerm = 240
+  iend.sboTerm = 240
+  rPbasal.sboTerm = 240
+  IRS.sboTerm = 240
+  IRSiP.sboTerm = 240
+  X.sboTerm = 240
+  X_P.sboTerm = 240
+  PI3K.sboTerm = 240
+  PI3K_.sboTerm = 240
+  PDK1.sboTerm = 240
+  PDK1_.sboTerm = 240
+  PKC.sboTerm = 240
+  PKC_P.sboTerm = 240
+  PKB.sboTerm = 240
+  PKB_P.sboTerm = 240
+  mTOR.sboTerm = 244
+  mTOR_.sboTerm = 244
+  GLUT4_C.sboTerm = 284
+  GLUT4_M.sboTerm = 284
+  a1.sboTerm = 9
+  a2.sboTerm = 9
+  d1.sboTerm = 9
+  d2.sboTerm = 9
+  Kcr.sboTerm = 9
+  Kex.sboTerm = 9
+  Kend.sboTerm = 9
+  Kdp.sboTerm = 9
+  Kcat.sboTerm = 9
+  Km.sboTerm = 9
+  kfbasal.sboTerm = 9
+  krbasal.sboTerm = 9
+  k21.sboTerm = 9
+  k22.sboTerm = 9
+  k23.sboTerm = 9
+  k24.sboTerm = 9
+  k2b.sboTerm = 9
+  k3f.sboTerm = 9
+  k3b.sboTerm = 9
+  k4f.sboTerm = 9
+  k4b.sboTerm = 9
+  k5f.sboTerm = 9
+  k5b.sboTerm = 9
+  k6f.sboTerm = 9
+  k6b.sboTerm = 9
+  k7f.sboTerm = 9
+  k7b.sboTerm = 9
+  k8f.sboTerm = 9
+  k8b.sboTerm = 9
+  k91.sboTerm = 9
+  k92.sboTerm = 9
+  k9b.sboTerm = 9
+  k5Basic.sboTerm = 9
+  k5BasicWb.sboTerm = 9
+  k_glut4.sboTerm = 9
+  k_glut1.sboTerm = 9
+  KmG1.sboTerm = 9
+  KmG4.sboTerm = 9
+  kbf.sboTerm = 9
+  V_G.sboTerm = 468
+  k_1.sboTerm = 9
+  k_2.sboTerm = 9
+  G_b.sboTerm = 196
+  V_I.sboTerm = 468
+  m_1.sboTerm = 9
+  m_2.sboTerm = 9
+  m_4.sboTerm = 9
+  m_5.sboTerm = 9
+  m_6.sboTerm = 9
+  HE_b.sboTerm = 196
+  I_b.sboTerm = 196
+  S_b.sboTerm = 9
+  S_b_minus.sboTerm = 9
+  k_max.sboTerm = 9
+  k_min.sboTerm = 9
+  k_abs.sboTerm = 9
+  k_gri.sboTerm = 9
+  f.sboTerm = 540
+  BW.sboTerm = 2
+  k_p1.sboTerm = 9
+  k_p2.sboTerm = 9
+  k_p3.sboTerm = 9
+  k_p4.sboTerm = 9
+  k_i.sboTerm = 9
+  U_ii.sboTerm = 9
+  p_2U.sboTerm = 9
+  alpha.sboTerm = 9
+  beta.sboTerm = 9
+  gamma_.sboTerm = 9
+  k_e1.sboTerm = 9
+  k_e2.sboTerm = 9
+  G_t.sboTerm = 196
+  INS.sboTerm = 361
+  G_p.sboTerm = 196
+  I_po.sboTerm = 361
+  I_p.sboTerm = 196
+  I_l.sboTerm = 196
+  R1.sboTerm = 344
+  R2.sboTerm = 344
+  R3.sboTerm = 344
+  R4.sboTerm = 344
+  R5.sboTerm = 180
+  R6.sboTerm = 344
+  R7.sboTerm = 344
+  R8.sboTerm = 180
+  R9.sboTerm = 344
+  R10.sboTerm = 344
+  R11.sboTerm = 344
+  R12.sboTerm = 344
+  R13.sboTerm = 344
+  R14.sboTerm = 344
+  R15.sboTerm = 344
+  R16.sboTerm = 344
+  R17.sboTerm = 344
+  R18.sboTerm = 344
+  R19.sboTerm = 344
+  R20.sboTerm = 344
+  R21.sboTerm = 344
+  R22.sboTerm = 344
+  R23.sboTerm = 344
+  R24.sboTerm = 344
+  R25.sboTerm = 344
+  R26.sboTerm = 344
+  R27.sboTerm = 344
+  R28.sboTerm = 344
+  R29.sboTerm = 344
+  R30.sboTerm = 344
+  R31.sboTerm = 344
+  R32.sboTerm = 344
+  R33.sboTerm = 344
+  R34.sboTerm = 344
+  R35.sboTerm = 344
+  R36.sboTerm = 344
+  R37.sboTerm = 185
+  R38.sboTerm = 185
+  R39.sboTerm = 185
+  R40.sboTerm = 185
+  R41.sboTerm = 185
+  R42.sboTerm = 185
+  R43.sboTerm = 185
+  R44.sboTerm = 330
+  R46.sboTerm = 216
+  R47.sboTerm = 330
+  R48.sboTerm = 185
+  v2f.sboTerm = 216
+  v2b.sboTerm = 330
+  v3f.sboTerm = 216
+  v3b.sboTerm = 330
+  v4f.sboTerm = 216
+  v4b.sboTerm = 330
+  v5f.sboTerm = 216
+  v5b.sboTerm = 330
+  v6f.sboTerm = 216
+  v6b.sboTerm = 330
+  v7f.sboTerm = 216
+  v7b.sboTerm = 330
+  v8f.sboTerm = 216
+  v8b.sboTerm = 330
+  v9f.sboTerm = 344
+  v9b.sboTerm = 344
+
+  // CV terms:
+  r0 hypernym "http://identifiers.org/uniprot/P06213"
+  r1 hypernym "http://identifiers.org/uniprot/P06213"
+  r2 hypernym "http://identifiers.org/uniprot/P06213"
+  r11 hypernym "http://identifiers.org/uniprot/P06213"
+  r12 hypernym "http://identifiers.org/uniprot/P06213"
+  r22 hypernym "http://identifiers.org/uniprot/P06213"
+  r1x2 hypernym "http://identifiers.org/uniprot/P06213"
+  r11x2 hypernym "http://identifiers.org/uniprot/P06213"
+  r1x22 hypernym "http://identifiers.org/uniprot/P06213"
+  r1x22d hypernym "http://identifiers.org/uniprot/P06213"
+  r11x22 hypernym "http://identifiers.org/uniprot/P06213"
+  rend version "http://identifiers.org/reactome/REACT_3809.1"
+  rendP identity "http://identifiers.org/reactome/REACT_3809.1"
+  iendIR identity "http://identifiers.org/reactome/REACT_4836.1"
+  iend hypernym "http://identifiers.org/reactome/REACT_3655.2"
+  rPbasal homolog "http://identifiers.org/reactome/REACT_3057.1"
+  IRS hypernym "http://identifiers.org/uniprot/P35568",
+               "http://identifiers.org/reactome/REACT_2507.1"
+  IRSiP version "http://identifiers.org/uniprot/P35568",
+                "http://identifiers.org/reactome/REACT_3893.1"
+  X identity "http://identifiers.org/chebi/CHEBI:36080"
+  X_P identity "http://identifiers.org/chebi/CHEBI:36080"
+  PI3K identity "http://identifiers.org/interpro/IPR015433",
+                "http://identifiers.org/reactome/REACT_4240.1"
+  PI3K_ version "http://identifiers.org/reactome/REACT_4240.1"
+  PDK1 hypernym "http://identifiers.org/uniprot/O15530",
+                "http://identifiers.org/reactome/REACT_2603.3"
+  PDK1_ version "http://identifiers.org/uniprot/O15530"
+  PKC identity "http://identifiers.org/uniprot/P13678"
+  PKC_P version "http://identifiers.org/uniprot/P13678"
+  PKB hypernym "http://identifiers.org/uniprot/P31749"
+  PKB_P version "http://identifiers.org/uniprot/P31749"
+  mTOR hypernym "http://identifiers.org/uniprot/P42345",
+                "http://identifiers.org/reactome/REACT_7426.1"
+  mTOR_ version "http://identifiers.org/uniprot/P42345"
+  GLUT4_C hypernym "http://identifiers.org/uniprot/P14672"
+  GLUT4_M version "http://identifiers.org/uniprot/P14672"
+  R1 hypernym "http://identifiers.org/go/GO:0043559"
+  R2 hypernym "http://identifiers.org/go/GO:0043559"
+  R3 hypernym "http://identifiers.org/go/GO:0043559"
+  R4 hypernym "http://identifiers.org/go/GO:0043559"
+  R6 hypernym "http://identifiers.org/go/GO:0043559"
+  R7 identity "http://identifiers.org/go/GO:0043559"
+  R9 hypernym "http://identifiers.org/go/GO:0043559"
+  R10 hypernym "http://identifiers.org/go/GO:0043559"
+  R11 hypernym "http://identifiers.org/go/GO:0043559"
+  R12 hypernym "http://identifiers.org/go/GO:0043559"
+  R13 hypernym "http://identifiers.org/go/GO:0043559"
+  R14 hypernym "http://identifiers.org/go/GO:0043559"
+  R15 hypernym "http://identifiers.org/go/GO:0043559"
+  R16 hypernym "http://identifiers.org/go/GO:0043559"
+  R17 hypernym "http://identifiers.org/go/GO:0043559"
+  R18 hypernym "http://identifiers.org/go/GO:0043559"
+  R19 hypernym "http://identifiers.org/go/GO:0043559"
+  R20 hypernym "http://identifiers.org/go/GO:0043559"
+  R21 hypernym "http://identifiers.org/go/GO:0043559"
+  R22 hypernym "http://identifiers.org/go/GO:0043559"
+  R23 hypernym "http://identifiers.org/go/GO:0043559"
+  R24 hypernym "http://identifiers.org/go/GO:0043559"
+  R25 hypernym "http://identifiers.org/go/GO:0043559"
+  R26 hypernym "http://identifiers.org/go/GO:0043559"
+  R27 hypernym "http://identifiers.org/go/GO:0043559"
+  R28 hypernym "http://identifiers.org/go/GO:0043559"
+  R29 hypernym "http://identifiers.org/go/GO:0043559"
+  R30 hypernym "http://identifiers.org/go/GO:0043559"
+  R31 hypernym "http://identifiers.org/go/GO:0043559"
+  R32 hypernym "http://identifiers.org/go/GO:0043559"
+  R33 hypernym "http://identifiers.org/go/GO:0043559"
+  R34 hypernym "http://identifiers.org/go/GO:0043559"
+  R35 hypernym "http://identifiers.org/go/GO:0043559"
+  R36 hypernym "http://identifiers.org/go/GO:0043559"
+  R37 identity "http://identifiers.org/go/GO:0031623"
+  R38 hypernym "http://identifiers.org/reactome/REACT_3655.2"
+  R39 hypernym "http://identifiers.org/go/GO:0031623"
+  R40 hypernym "http://identifiers.org/go/GO:0031623"
+  R41 hypernym "http://identifiers.org/go/GO:0031623"
+  R42 hypernym "http://identifiers.org/go/GO:0031623"
+  R43 hypernym "http://identifiers.org/go/GO:0031623"
+  R44 hypernym "http://identifiers.org/go/GO:0016311"
+  R45 hypernym "http://identifiers.org/go/GO:0038020"
+  R46 hypernym "http://identifiers.org/go/GO:0016310"
+  R47 hypernym "http://identifiers.org/go/GO:0016311"
+  R48 hypernym "http://identifiers.org/go/GO:0031623"
+  v2f hypernym "http://identifiers.org/reactome/REACT_342.3",
+               "http://identifiers.org/go/GO:0006468"
+  v2b hypernym "http://identifiers.org/reactome/REACT_1810.2",
+               "http://identifiers.org/go/GO:0006470"
+  v3f identity "http://identifiers.org/go/GO:0006468"
+  v3b hypernym "http://identifiers.org/go/GO:0006470"
+  v4f identity "http://identifiers.org/go/GO:0005942",
+               "http://identifiers.org/go/GO:0006468"
+  v4b identity "http://identifiers.org/go/GO:0006470",
+               "http://identifiers.org/go/GO:0005942"
+  v5f hypernym "http://identifiers.org/go/GO:0016310"
+  v5b hypernym "http://identifiers.org/go/GO:0016311"
+  v6f identity "http://identifiers.org/go/GO:0016310",
+               "http://identifiers.org/go/GO:0007205"
+  v6b hypernym "http://identifiers.org/go/GO:0016311"
+  v7f hypernym "http://identifiers.org/go/GO:0016310"
+  v7b hypernym "http://identifiers.org/go/GO:0016311"
+  v8f hypernym "http://identifiers.org/go/GO:0016310"
+  v8b hypernym "http://identifiers.org/go/GO:0016311"
+  v9f identity "http://identifiers.org/go/GO:0006839"
+  v9b identity "http://identifiers.org/go/GO:0006839"
 end
+
+Nyman2011_M3Hierarachical_InsulinGlucosedynamics is "Nyman2011_M3Hierarachical_InsulinGlucosedynamics"
+
+Nyman2011_M3Hierarachical_InsulinGlucosedynamics model_entity_is "http://identifiers.org/biomodels.db/MODEL1108190000"
+Nyman2011_M3Hierarachical_InsulinGlucosedynamics model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000356"
+Nyman2011_M3Hierarachical_InsulinGlucosedynamics description "http://identifiers.org/pubmed/21572040"
+Nyman2011_M3Hierarachical_InsulinGlucosedynamics origin "http://identifiers.org/biomodels.db/BIOMD0000000137",
+                                                        "http://identifiers.org/biomodels.db/BIOMD0000000343",
+                                                        "http://identifiers.org/biomodels.db/BIOMD0000000379",
+                                                        "http://identifiers.org/pubmed/19225456"
+Nyman2011_M3Hierarachical_InsulinGlucosedynamics container "http://identifiers.org/bto/BTO:0000443"
+Nyman2011_M3Hierarachical_InsulinGlucosedynamics taxon "http://identifiers.org/taxonomy/9606"
+Nyman2011_M3Hierarachical_InsulinGlucosedynamics hypernym "http://identifiers.org/go/GO:0061178"
+Nyman2011_M3Hierarachical_InsulinGlucosedynamics property "http://identifiers.org/doid/DOID:9351"

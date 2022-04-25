@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Maree2006_DuCa_Type1DiabetesModel()
 
   // Compartments and Species:
@@ -11,9 +11,9 @@ model *Maree2006_DuCa_Type1DiabetesModel()
   parameter_1 := ((time - 9)/3)^2;
 
   // Rate Rules:
-  M' = (J + (k + b)*Ma) - c*M - f1*M*Ba - e1*M*(M + Ma);
+  M' = J + (k + b)*Ma - c*M - f1*M*Ba - e1*M*(M + Ma);
   Ma' = f1*M*Ba - k*Ma - e2*Ma*(M + Ma);
-  Ba' = (W + (Amax*Cy)/(kc + Cy)) - (f1*M + f2*Ma + d)*Ba;
+  Ba' = W + Amax*Cy/(kc + Cy) - (f1*M + f2*Ma + d)*Ba;
   Bn' = d*Ba - (f1*M + f2*Ma)*Bn;
   Cy' = alpha*Bn*Ma - delta*Cy;
 
@@ -32,16 +32,16 @@ model *Maree2006_DuCa_Type1DiabetesModel()
   k = 0.4;
   b = 0.09;
   c = 0.1;
-  f1 = 1e-005;
-  e1 = 1e-008;
-  e2 = 1e-008;
+  f1 = 1e-05;
+  e1 = 1e-08;
+  e2 = 1e-08;
   d = 0.5;
-  f2 = 1e-005;
+  f2 = 1e-05;
   Amax = 20000000;
   kc = 1;
-  alpha = 5e-009;
+  alpha = 5e-09;
   delta = 25;
-  g = 1e-005;
+  g = 1e-05;
   Wmax = 40000000;
 
   // Other declarations:
@@ -51,4 +51,41 @@ model *Maree2006_DuCa_Type1DiabetesModel()
 
   // Display Names:
   parameter_1 is "x";
+
+  // SBO terms:
+  J.sboTerm = 185
+  k.sboTerm = 9
+  b.sboTerm = 9
+  c.sboTerm = 9
+  f1.sboTerm = 9
+  e1.sboTerm = 9
+  e2.sboTerm = 9
+  d.sboTerm = 9
+  f2.sboTerm = 9
+  W.sboTerm = 9
+  Amax.sboTerm = 9
+  kc.sboTerm = 9
+  alpha.sboTerm = 9
+  delta.sboTerm = 9
+  g.sboTerm = 9
+  Wmax.sboTerm = 9
+  parameter_1.sboTerm = 9
+
+  // CV terms:
+  M hypernym "http://identifiers.org/bto/BTO:0000801"
+  Ma hypernym "http://identifiers.org/bto/BTO:0000801"
+  Ba hypernym "http://identifiers.org/bto/BTO:0000783"
+  Bn hypernym "http://identifiers.org/bto/BTO:0000783"
 end
+
+Maree2006_DuCa_Type1DiabetesModel is "Maree2006_DuCa_Type1DiabetesModel"
+
+Maree2006_DuCa_Type1DiabetesModel model_entity_is "http://identifiers.org/biomodels.db/MODEL1110070000"
+Maree2006_DuCa_Type1DiabetesModel model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000381"
+Maree2006_DuCa_Type1DiabetesModel description "http://identifiers.org/pubmed/16608707"
+Maree2006_DuCa_Type1DiabetesModel origin "http://identifiers.org/pubmed/10480594"
+Maree2006_DuCa_Type1DiabetesModel taxon "http://identifiers.org/taxonomy/10090"
+Maree2006_DuCa_Type1DiabetesModel hypernym "http://identifiers.org/go/GO:0071888",
+                                           "http://identifiers.org/go/GO:0006909",
+                                           "http://identifiers.org/go/GO:0042116"
+Maree2006_DuCa_Type1DiabetesModel hypernym "http://identifiers.org/doid/DOID:9744"

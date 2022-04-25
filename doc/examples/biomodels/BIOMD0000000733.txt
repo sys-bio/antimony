@@ -1,0 +1,130 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function naive_tcells_degradation(Dn, Tn, Kn, C, n)
+  Dn*Tn + Kn*Tn*(C/(C + n));
+end
+
+naive_tcells_degradation is "naive_tcells_degradation"
+
+function eff_tcells_production(An, Kn, Tn, C, n, Ae, Te)
+  An*Kn*Tn*(C/(C + n)) + Ae*Te*(C/(C + n));
+end
+
+eff_tcells_production is "eff_tcells_production"
+
+function eff_tcells_degradation(De, Te, gammaE, C)
+  De*Te + gammaE*C*Te;
+end
+
+eff_tcells_degradation is "eff_tcells_degradation"
+
+function Tumor_growth_equation(Rc, C, Cmax)
+  Rc*C*ln(Cmax/C);
+end
+
+Tumor_growth_equation is "Tumor_growth_equation"
+
+function Tumor_killing_equation(Dc, C, gammaC, Te)
+  Dc*C - gammaC*C*Te;
+end
+
+Tumor_killing_equation is "Tumor_killing_equation"
+
+
+model *Moore_2004()
+
+  // Compartments and Species:
+  compartment TumorMicroenvr;
+  species naive_Tcells in TumorMicroenvr, eff_Tcells in TumorMicroenvr, tumor_cells in TumorMicroenvr;
+
+  // Reactions:
+  Naive_Tcells_production:  => naive_Tcells; TumorMicroenvr*Constant_flux__irreversible(Sn);
+  Naive_Tcells_degradation: naive_Tcells => ; TumorMicroenvr*naive_tcells_degradation(Dn, naive_Tcells, Kn, tumor_cells, n);
+  eff_Tcells_production:  => eff_Tcells; TumorMicroenvr*eff_tcells_production(An, Kn, naive_Tcells, tumor_cells, n, Ae, eff_Tcells);
+  eff_Tcells_degradation: eff_Tcells => ; TumorMicroenvr*eff_tcells_degradation(De, eff_Tcells, gamma_E, tumor_cells);
+  Tumor_growth:  => tumor_cells; TumorMicroenvr*Tumor_growth_equation(Rc, tumor_cells, Cmax);
+  Tumor_killing: tumor_cells => ; TumorMicroenvr*Tumor_killing_equation(Dc, tumor_cells, gamma_C, eff_Tcells);
+
+  // Species initializations:
+  naive_Tcells = 1510;
+  eff_Tcells = 20;
+  tumor_cells = 10000;
+
+  // Compartment initializations:
+  TumorMicroenvr = 1;
+
+  // Variable initializations:
+  Sn = 0.37;
+  Sn has unit_0;
+  n = 720;
+  n has unit_1;
+  Kn = 0.062;
+  Kn has unit_2;
+  De = 0.3;
+  De has unit_2;
+  gamma_E = 0.057;
+  gamma_E has unit_3;
+  An = 0.14;
+  An has unit_4;
+  Ae = 0.98;
+  Ae has unit_2;
+  Dn = 0.23;
+  Dn has unit_2;
+  Rc = 0.0057;
+  Rc has unit_2;
+  Cmax = 230000;
+  Cmax has unit_1;
+  Dc = 0.024;
+  Dc has unit_2;
+  gamma_C = 0.0034;
+  gamma_C has unit_3;
+
+  // Other declarations:
+  const TumorMicroenvr, Sn, n, Kn, De, gamma_E, An, Ae, Dn, Rc, Cmax, Dc;
+  const gamma_C;
+
+  // Unit definitions:
+  unit time_unit = 86400 second;
+  unit substance = 1e-3 mole;
+  unit unit_0 = 1e-3 mole / (litre * 86400e-1 second);
+  unit unit_1 = 1e-3 mole / litre;
+  unit unit_2 = 1 / 86400e-1 second;
+  unit unit_3 = litre / (1e-3 mole * 86400e-1 second);
+  unit unit_4 = 1 / dimensionless^-0;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "mmol/(l*d)";
+  unit_1 is "mmol/l";
+  unit_2 is "1/d";
+  unit_3 is "l/(mmol*d)";
+  unit_4 is "dimensionless";
+
+  // CV terms:
+  TumorMicroenvr hypernym "http://identifiers.org/ncit/C94498"
+  naive_Tcells hypernym "http://identifiers.org/ncit/C104081"
+  eff_Tcells hypernym "http://identifiers.org/ncit/C104083"
+  tumor_cells hypernym "http://identifiers.org/efo/0000616"
+  Naive_Tcells_production property "http://identifiers.org/sbo/SBO:0000393"
+  Naive_Tcells_degradation property "http://identifiers.org/sbo/SBO:0000179"
+  eff_Tcells_production property "http://identifiers.org/sbo/SBO:0000393"
+  eff_Tcells_degradation property "http://identifiers.org/sbo/SBO:0000179"
+  Tumor_growth property "http://identifiers.org/sbo/SBO:0000610"
+  Tumor_killing property "http://identifiers.org/go.ref/GO:0001906"
+end
+
+Moore_2004 is "Moore_2004_Mathematical model for CML and T cell interaction"
+
+Moore_2004 model_entity_is "http://identifiers.org/biomodels.db/MODEL1902200001",
+                           "http://identifiers.org/biomodels.db/BIOMD0000000733"
+Moore_2004 property "http://identifiers.org/go/GO:0002424"
+Moore_2004 property "http://identifiers.org/ncit/C15262"
+Moore_2004 property "http://identifiers.org/ncit/C153548"
+Moore_2004 property "http://identifiers.org/go/GO:0002419"
+Moore_2004 propertyBearer "http://identifiers.org/mamo/MAMO_0000046"
+Moore_2004 taxon "http://identifiers.org/taxonomy/9606"

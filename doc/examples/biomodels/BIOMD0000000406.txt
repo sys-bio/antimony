@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Moriya2011_CellCycle_FissionYeast()
 
   // Compartments and Species:
@@ -20,22 +20,22 @@ model *Moriya2011_CellCycle_FissionYeast()
   // Assignment Rules:
   BB := oriT + s84 + (ko18r + Vdc18)/ko18;
   Vdc18 := kdc18 + kdc18c13*s56 + kdc18cig*s67 + kdc18cig_dash*s63;
-  chrom := (2*oriT*s84)/(BB + sqrt(BB^2 - 4*oriT*s84));
-  UDNA := Rad3*(k*s84 + (k_dash*s90*Cdc18)/((ko18r + Vdc18)/ko18 + Cdc18));
+  chrom := 2*oriT*s84/(BB + sqrt(BB^2 - 4*oriT*s84));
+  UDNA := Rad3*(k*s84 + k_dash*s90*Cdc18/((ko18r + Vdc18)/ko18 + Cdc18));
   Cdc18 := s84 - chrom;
   Vdrum := kdrum + kdrumpuc*Puc1 + kdrumci1*s75 + kdrumcig*s67 + kdrumcig_dash*s63 + kdrumc13*s56 + kdrumc13_dash*s60;
   Vdcyc := kdcyc + kdcycsrw*s47 + kdcycsrw_dash*Srw1T + kdcycslp*s48 + kdcycslp_dash*Slp1T;
   k25 := k25_dash*Cdc25T + (k25_dash2 - k25_dash)*s83;
-  preRC := ((oriT - s90 - s91)*Cdc18)/((ko18r + Vdc18)/ko18 + Cdc18);
+  preRC := (oriT - s90 - s91)*Cdc18/((ko18r + Vdc18)/ko18 + Cdc18);
   kwee := kwee_dash*Wee1T + (kwee_dash2 - kwee_dash)*s80;
 
   // Reactions:
-  re3: $s65 => s47; ((kasrw + kasrw_dash*s48)*(Srw1T - s47))/(Jasrw + (Srw1T - s47));
-  re4: s47 => $s65; ((kisrw + kisrw_dash*s67 + kisrw_dash2*s56 + kisrw_dash3*Puc1 + kisrw_dash4*s75)*s47)/(Jisrw + s47);
-  re5: $s51 => s50; ((kaie*s56 + kaie_dash*s75)*(1 - s50))/(Jaie + (1 - s50));
-  re6: s50 => $s51; (kiie*s50)/(Jiie + s50);
-  re7: $s66 => s48; (kaslp*s50*(Slp1T - s48))/(Jaslp + (Slp1T - s48));
-  re8: s48 => $s66; (kislp*s48)/(Jislp + s48);
+  re3: $s65 => s47; (kasrw + kasrw_dash*s48)*(Srw1T - s47)/(Jasrw + (Srw1T - s47));
+  re4: s47 => $s65; (kisrw + kisrw_dash*s67 + kisrw_dash2*s56 + kisrw_dash3*Puc1 + kisrw_dash4*s75)*s47/(Jisrw + s47);
+  re5: $s51 => s50; (kaie*s56 + kaie_dash*s75)*(1 - s50)/(Jaie + (1 - s50));
+  re6: s50 => $s51; kiie*s50/(Jiie + s50);
+  re7: $s66 => s48; kaslp*s50*(Slp1T - s48)/(Jaslp + (Slp1T - s48));
+  re8: s48 => $s66; kislp*s48/(Jislp + s48);
   re12: $s57 => s56; kscyc;
   re14: s137 => s60 + $s61; Vdrum*s137;
   re15: s161 => s166 + $s46; Vdcyc*s161;
@@ -44,32 +44,32 @@ model *Moriya2011_CellCycle_FissionYeast()
   re18: s137 => s161; (kpyp2 + k25)*s137;
   re19: $s55 => s67; kscig*Cdc10T + kscig_dash*s71;
   re20: s67 => s63; kmik_dash2*s72*s67;
-  re21: s63 => s67; k25*k255*s63 + (kpyp*s63)/(1 + beta*UDNA);
+  re21: s63 => s67; k25*k255*s63 + kpyp*s63/(1 + beta*UDNA);
   re22: s166 + s67 -> s149; lcp*s67*s166 - lcm*s149;
   re23: s149 => s166 + $s94; (kdcig + kdcig_dash*s48)*s149;
   re24: s166 + s63 -> s153; lcp*s63*s166 - lcm*s153;
   re25: s153 => s166 + $s94; (kdcig + kdcig_dash*s48)*s153;
-  re27: s153 => s149; k25*k255*s153 + (kpyp*s153)/(1 + beta*UDNA);
+  re27: s153 => s149; k25*k255*s153 + kpyp*s153/(1 + beta*UDNA);
   re28: s67 => $s94; (kdcig + kdcig_dash*s48)*s67;
   re29: s153 => s63; Vdrum*s153;
   re30: s149 => s67 + $s61; Vdrum*s149;
   re31: s63 => $s94; (kdcig + kdcig_dash*s48)*s63;
-  re32: s71 => $s70; ((kic10 + kic10_dash*s67)*s71)/(Jic10 + s71);
-  re33: $s70 => s71; (kac10*(Cdc10T - s71))/(Jac10 + (Cdc10T - s71));
+  re32: s71 => $s70; (kic10 + kic10_dash*s67)*s71/(Jic10 + s71);
+  re33: $s70 => s71; kac10*(Cdc10T - s71)/(Jac10 + (Cdc10T - s71));
   re34: $s73 => s72; Vamik*Cdc10T + Vamik_dash*s71;
   re35: s72 => $s74; (Vimik + Vimik_dash*s67 + Vimik_dash2*s56 + Vimik_dash3*s60)*s72;
   re36: $s76 => s75; ksci1;
   re37: s75 => $s77; (kdci1 + kdci1_dash*s48 + kdci1_dash2*s47)*s75;
   re38: $s78 => s81; ksflp + ksflp_dash*s48;
-  re39: $s79 => s80; ((Vawee_dash + Vawee_dash2*s81)*(Wee1T - s80))/(Jawee + (Wee1T - s80));
-  re40: s80 => $s79; ((Viwee_dash + Viwee_dash2*s56)*s80)/(Jiwee + s80);
+  re39: $s79 => s80; (Vawee_dash + Vawee_dash2*s81)*(Wee1T - s80)/(Jawee + (Wee1T - s80));
+  re40: s80 => $s79; (Viwee_dash + Viwee_dash2*s56)*s80/(Jiwee + s80);
   re41: s60 => $s46; Vdcyc*s60;
   re42: s56 => $s46; Vdcyc*s56;
   re43: s161 => s137; (kmik_dash*s72 + kwee)*s161;
   re44: s149 => s153; kmik_dash2*s72*s149;
-  re45: $s82 => s83; (Va25_dash2*s56*(Cdc25T - s83))/(Ja25 + (Cdc25T - s83));
-  re46: s83 => $s82; ((Vi25_dash + Vi25_dash2*s81 + Vi25*UDNA)*s83)/(Ji25 + s83);
-  re47: $s85 => s84; ksc18*(Cdc10T - s71 + s71) + ksc18_dash*s71;
+  re45: $s82 => s83; Va25_dash2*s56*(Cdc25T - s83)/(Ja25 + (Cdc25T - s83));
+  re46: s83 => $s82; (Vi25_dash + Vi25_dash2*s81 + Vi25*UDNA)*s83/(Ji25 + s83);
+  re47: $s85 => s84; ksc18*((Cdc10T - s71) + s71) + ksc18_dash*s71;
   re48: s84 => $s88; Vdc18*s84;
   re53: s81 => $s93; kdflp*s81;
   re54: s56 + s166 -> s161; lp*s56*s166 - lm*s161;
@@ -79,7 +79,7 @@ model *Moriya2011_CellCycle_FissionYeast()
   re60: s166 => $s61; Vdrum*s166;
   re62: $s52 => s166; ksrum;
   re66: $s89 => s90; (kini_dash*s56 + kini_dash2*s67 + kini_dash3*s63)*preRC;
-  re67: s91 => $s92; kori/(1 + ((kipre*s56 + kipre_dash*s67)/Jipre)^n)*s91;
+  re67: s91 => $s92; (kori/(1 + ((kipre*s56 + kipre_dash*s67)/Jipre)^n))*s91;
   re68: s90 => s91; krepl*s90;
 
   // Species initializations:
@@ -87,7 +87,7 @@ model *Moriya2011_CellCycle_FissionYeast()
   s9 = 0;
   s46 = 0;
   s47 = 0.00239076/default;
-  s48 = 6.33821e-005/default;
+  s48 = 6.33821e-05/default;
   s49 = 0;
   s50 = 0.00127807/default;
   s51 = 0;
@@ -370,4 +370,273 @@ model *Moriya2011_CellCycle_FissionYeast()
   re22 is "Rum1+Cdc13_association";
   re24 is "Rum1+Cdc13_association";
   re27 is "Cdc13_Dephosphorylation";
+
+  // SBO terms:
+  default.sboTerm = 290
+  s4.sboTerm = 252
+  s9.sboTerm = 252
+  s46.sboTerm = 291
+  s47.sboTerm = 252
+  s48.sboTerm = 252
+  s49.sboTerm = 252
+  s50.sboTerm = 14
+  s51.sboTerm = 14
+  s52.sboTerm = 252
+  s55.sboTerm = 252
+  s56.sboTerm = 252
+  s57.sboTerm = 252
+  s60.sboTerm = 252
+  s61.sboTerm = 291
+  s63.sboTerm = 252
+  s64.sboTerm = 252
+  s65.sboTerm = 252
+  s66.sboTerm = 252
+  s67.sboTerm = 252
+  s70.sboTerm = 252
+  s71.sboTerm = 252
+  s72.sboTerm = 252
+  s73.sboTerm = 252
+  s74.sboTerm = 291
+  s75.sboTerm = 252
+  s76.sboTerm = 252
+  s77.sboTerm = 291
+  s78.sboTerm = 252
+  s79.sboTerm = 252
+  s80.sboTerm = 252
+  s81.sboTerm = 252
+  s82.sboTerm = 252
+  s83.sboTerm = 252
+  s84.sboTerm = 252
+  s85.sboTerm = 252
+  s88.sboTerm = 291
+  s89.sboTerm = 297
+  s90.sboTerm = 297
+  s91.sboTerm = 251
+  s92.sboTerm = 251
+  s93.sboTerm = 291
+  s94.sboTerm = 291
+  s130.sboTerm = 252
+  s137.sboTerm = 297
+  s149.sboTerm = 297
+  s153.sboTerm = 297
+  s157.sboTerm = 251
+  s161.sboTerm = 297
+  s166.sboTerm = 252
+  ksc18_dash.sboTerm = 9
+  ksc18.sboTerm = 9
+  kdc18.sboTerm = 356
+  kdc18c13.sboTerm = 356
+  kdc18cig.sboTerm = 356
+  kdc18cig_dash.sboTerm = 356
+  krepl.sboTerm = 9
+  kini_dash.sboTerm = 9
+  kini_dash2.sboTerm = 9
+  kini_dash3.sboTerm = 9
+  ko18.sboTerm = 9
+  ko18r.sboTerm = 9
+  kori.sboTerm = 9
+  kipre.sboTerm = 261
+  kipre_dash.sboTerm = 261
+  Jipre.sboTerm = 261
+  n.sboTerm = 361
+  k.sboTerm = 9
+  k_dash.sboTerm = 9
+  kscyc.sboTerm = 9
+  kdcyc.sboTerm = 356
+  kdcycsrw.sboTerm = 356
+  kdcycsrw_dash.sboTerm = 356
+  kdcycslp.sboTerm = 356
+  kdcycslp_dash.sboTerm = 356
+  kasrw.sboTerm = 363
+  kasrw_dash.sboTerm = 363
+  kisrw.sboTerm = 261
+  kisrw_dash.sboTerm = 261
+  kisrw_dash2.sboTerm = 261
+  kisrw_dash3.sboTerm = 261
+  kisrw_dash4.sboTerm = 261
+  Jasrw.sboTerm = 363
+  Jisrw.sboTerm = 261
+  kaslp.sboTerm = 363
+  kislp.sboTerm = 261
+  Jaslp.sboTerm = 363
+  Jislp.sboTerm = 261
+  kaie.sboTerm = 363
+  kiie.sboTerm = 261
+  Jaie.sboTerm = 363
+  Jiie.sboTerm = 261
+  ksrum.sboTerm = 9
+  kdrum.sboTerm = 356
+  kdrumpuc.sboTerm = 356
+  kdrumci1.sboTerm = 356
+  kdrumcig.sboTerm = 356
+  kdrumcig_dash.sboTerm = 356
+  kdrumc13.sboTerm = 356
+  kdrumc13_dash.sboTerm = 356
+  lp.sboTerm = 361
+  lm.sboTerm = 361
+  kscig_dash.sboTerm = 9
+  kdcig.sboTerm = 356
+  kdcig_dash.sboTerm = 356
+  kac10.sboTerm = 363
+  kic10.sboTerm = 261
+  kic10_dash.sboTerm = 261
+  Jac10.sboTerm = 363
+  Jic10.sboTerm = 261
+  kwee_dash.sboTerm = 9
+  kwee_dash2.sboTerm = 9
+  Vawee_dash.sboTerm = 363
+  Vawee_dash2.sboTerm = 363
+  Viwee_dash.sboTerm = 261
+  Viwee_dash2.sboTerm = 261
+  Jawee.sboTerm = 363
+  Jiwee.sboTerm = 261
+  k25_dash.sboTerm = 9
+  k25_dash2.sboTerm = 9
+  Va25_dash2.sboTerm = 363
+  Vi25_dash2.sboTerm = 261
+  Vi25_dash.sboTerm = 261
+  Vi25.sboTerm = 261
+  Ja25.sboTerm = 363
+  Ji25.sboTerm = 261
+  lcp.sboTerm = 361
+  lcm.sboTerm = 361
+  kmik_dash.sboTerm = 9
+  kmik_dash2.sboTerm = 9
+  Vamik.sboTerm = 363
+  Vimik.sboTerm = 261
+  Vimik_dash.sboTerm = 261
+  Vimik_dash2.sboTerm = 261
+  Vimik_dash3.sboTerm = 261
+  kpyp.sboTerm = 9
+  ksflp.sboTerm = 9
+  ksflp_dash.sboTerm = 9
+  kdflp.sboTerm = 356
+  ksci1.sboTerm = 9
+  kdci1.sboTerm = 356
+  kdci1_dash.sboTerm = 356
+  kdci1_dash2.sboTerm = 356
+  k255.sboTerm = 9
+  kpyp2.sboTerm = 9
+  kscig.sboTerm = 9
+  oriT.sboTerm = 361
+  Rad3.sboTerm = 361
+  kmik.sboTerm = 9
+  Puc1.sboTerm = 196
+  Srw1T.sboTerm = 196
+  Slp1T.sboTerm = 196
+  Cdc25T.sboTerm = 196
+  Vamik_dash.sboTerm = 363
+  beta.sboTerm = 361
+  Cdc10T.sboTerm = 196
+  Wee1T.sboTerm = 196
+  kaie_dash.sboTerm = 363
+  re3.sboTerm = 344
+  re4.sboTerm = 344
+  re5.sboTerm = 344
+  re6.sboTerm = 344
+  re7.sboTerm = 344
+  re8.sboTerm = 344
+  re12.sboTerm = 393
+  re14.sboTerm = 180
+  re15.sboTerm = 180
+  re16.sboTerm = 180
+  re17.sboTerm = 180
+  re18.sboTerm = 330
+  re19.sboTerm = 393
+  re20.sboTerm = 216
+  re21.sboTerm = 330
+  re22.sboTerm = 526
+  re23.sboTerm = 180
+  re24.sboTerm = 526
+  re25.sboTerm = 180
+  re27.sboTerm = 330
+  re28.sboTerm = 179
+  re29.sboTerm = 180
+  re30.sboTerm = 180
+  re31.sboTerm = 179
+  re32.sboTerm = 344
+  re33.sboTerm = 344
+  re34.sboTerm = 344
+  re35.sboTerm = 179
+  re36.sboTerm = 344
+  re37.sboTerm = 179
+  re38.sboTerm = 344
+  re39.sboTerm = 344
+  re40.sboTerm = 344
+  re41.sboTerm = 179
+  re42.sboTerm = 179
+  re43.sboTerm = 216
+  re44.sboTerm = 216
+  re45.sboTerm = 344
+  re46.sboTerm = 344
+  re47.sboTerm = 344
+  re48.sboTerm = 179
+  re53.sboTerm = 179
+  re54.sboTerm = 526
+  re56.sboTerm = 330
+  re57.sboTerm = 216
+  re58.sboTerm = 526
+  re60.sboTerm = 179
+  re62.sboTerm = 344
+  re66.sboTerm = 344
+  re67.sboTerm = 204
+  re68.sboTerm = 204
+
+  // CV terms:
+  default hypernym "http://identifiers.org/obo.go/GO:0005623"
+  s4 hypernym "http://identifiers.org/uniprot/P40380"
+  s9 hypernym "http://identifiers.org/uniprot/P25009"
+  s47 hypernym "http://identifiers.org/uniprot/O13286"
+  s48 hypernym "http://identifiers.org/uniprot/P78972"
+  s49 hypernym "http://identifiers.org/uniprot/P25009"
+  s52 hypernym "http://identifiers.org/uniprot/P40380"
+  s55 hypernym "http://identifiers.org/uniprot/P36630"
+  s56 hypernym "http://identifiers.org/uniprot/P10815"
+  s57 hypernym "http://identifiers.org/uniprot/P10815"
+  s60 hypernym "http://identifiers.org/uniprot/P10815",
+               "http://identifiers.org/kegg.compound/C00562"
+  s63 hypernym "http://identifiers.org/uniprot/P36630",
+               "http://identifiers.org/kegg.compound/C00562"
+  s64 hypernym "http://identifiers.org/uniprot/P32587"
+  s65 hypernym "http://identifiers.org/uniprot/O13286"
+  s66 hypernym "http://identifiers.org/uniprot/P78972"
+  s67 hypernym "http://identifiers.org/uniprot/P36630"
+  s70 hypernym "http://identifiers.org/uniprot/P01129"
+  s71 hypernym "http://identifiers.org/uniprot/P01129"
+  s72 hypernym "http://identifiers.org/uniprot/P30290"
+  s73 hypernym "http://identifiers.org/uniprot/P30290"
+  s75 hypernym "http://identifiers.org/uniprot/P24865"
+  s76 hypernym "http://identifiers.org/uniprot/P24865"
+  s78 hypernym "http://identifiers.org/uniprot/Q10299"
+  s79 hypernym "http://identifiers.org/uniprot/P07527"
+  s80 hypernym "http://identifiers.org/uniprot/P07527"
+  s81 hypernym "http://identifiers.org/uniprot/Q10299"
+  s82 hypernym "http://identifiers.org/uniprot/P06652"
+  s83 hypernym "http://identifiers.org/uniprot/P06652"
+  s84 hypernym "http://identifiers.org/uniprot/P41411"
+  s85 hypernym "http://identifiers.org/uniprot/P41411"
+  s89 hypernym "http://identifiers.org/obo.go/GO:0005656"
+  s90 hypernym "http://identifiers.org/obo.go/GO:0000808"
+  s91 hypernym "http://identifiers.org/obo.chebi/CHEBI:16991"
+  s92 hypernym "http://identifiers.org/obo.chebi/CHEBI:16991"
+  s130 hypernym "http://identifiers.org/uniprot/P41411"
+  s137 part "http://identifiers.org/uniprot/P10815",
+            "http://identifiers.org/uniprot/P40380"
+  s149 part "http://identifiers.org/uniprot/P36630",
+            "http://identifiers.org/uniprot/P40380"
+  s153 part "http://identifiers.org/uniprot/P40380",
+            "http://identifiers.org/uniprot/P36630"
+  s157 hypernym "http://identifiers.org/obo.chebi/CHEBI:16991"
+  s161 part "http://identifiers.org/uniprot/P40380",
+            "http://identifiers.org/uniprot/P10815"
+  s166 hypernym "http://identifiers.org/uniprot/P40380"
 end
+
+Moriya2011_CellCycle_FissionYeast is "Moriya2011_CellCycle_FissionYeast"
+
+Moriya2011_CellCycle_FissionYeast model_entity_is "http://identifiers.org/biomodels.db/MODEL1111040000"
+Moriya2011_CellCycle_FissionYeast model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000406"
+Moriya2011_CellCycle_FissionYeast description "http://identifiers.org/pubmed/22146300"
+Moriya2011_CellCycle_FissionYeast origin "http://identifiers.org/biomodels.db/MODEL1011020000"
+Moriya2011_CellCycle_FissionYeast hypernym "http://identifiers.org/obo.go/GO:0051726"
+Moriya2011_CellCycle_FissionYeast taxon "http://identifiers.org/taxonomy/4896"

@@ -1,0 +1,111 @@
+// Created by libAntimony v2.13.0
+function Henri_Michaelis_Menten__irreversible(substrate, Km, V)
+  V*substrate/(Km + substrate);
+end
+
+Henri_Michaelis_Menten__irreversible is "Henri-Michaelis-Menten (irreversible)"
+
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function Function_for_Caffeoyl_Shikimate_Biosynthesis(a_3, X_2, X_3, K_3_2, K_3_3)
+  a_3*X_2*X_3/((K_3_2 + X_2)*(K_3_3 + X_3));
+end
+
+Function_for_Caffeoyl_Shikimate_Biosynthesis is "Function_for_Caffeoyl_Shikimate_Biosynthesis"
+
+function Function_for_Phenylalanine_Biosynthesis_Shikimate(a_1, X_1, K_1, b, X_2)
+  a_1*X_1/(K_1*(1 + b*X_2) + X_1);
+end
+
+Function_for_Phenylalanine_Biosynthesis_Shikimate is "Function_for_Phenylalanine_Biosynthesis_Shikimate"
+
+function Function_for_V_2_Shikimate_Transport(a2f, X_1, K2f, b2f, X_3, a2r, K2r, b2r)
+  a2f*X_1/(K2f*(1 + b2f*X_3) + X_1) - a2r*X_3/(K2r*(1 + b2r*X_1) + X_3);
+end
+
+Function_for_V_2_Shikimate_Transport is "Function_for_V_2_Shikimate_Transport"
+
+
+model *Adams2019___The_regulatory_role_of_shikimate_in_plant_phenylalanine_metabolism()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species X_1 in compartment_, X_2 in compartment_, X_3 in compartment_, X_4 in compartment_;
+
+  // Reactions:
+  a_0_Shikimate_Biosynthesis:  => X_1; compartment_*Constant_flux__irreversible(a_0);
+  V_1_Phenylalanine_Biosynthesis_Shikimate: X_1 => X_2; compartment_*Function_for_Phenylalanine_Biosynthesis_Shikimate(a_1, X_1, K_1, b, X_2);
+  V_3_Caffeoyl_Shikimate_Biosynthesis: X_2 + X_3 => X_4; compartment_*Function_for_Caffeoyl_Shikimate_Biosynthesis(a_3, X_2, X_3, K_3_2, K_3_3);
+  V_4_Mass_Release_Monolignol_Pathway: X_4 => X_3; compartment_*Henri_Michaelis_Menten__irreversible(X_4, K_4, a_4);
+  V_5_Phenylalanine_To_Protein: X_2 => ; compartment_*Henri_Michaelis_Menten__irreversible(X_2, K_5, a_5);
+  V_2_Shikimate_Transport: X_1 -> X_3; compartment_*Function_for_V_2_Shikimate_Transport(a_2_plus, X_1, K_2_plus, b2f, X_3, a_2_minus, K_2_minus, b2r);
+
+  // Species initializations:
+  X_1 = 0;
+  X_2 = 0;
+  X_3 = 0;
+  X_4 = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  a_1 = 100;
+  K_1 = 0.1;
+  b = 1;
+  a_2_plus = 2;
+  K_2_plus = 100;
+  a_2_minus = 1.5;
+  K_2_minus = 100;
+  a_3 = 75;
+  K_3_3 = 0.1;
+  a_4 = 75;
+  K_4 = 1;
+  a_5 = 5;
+  K_5 = 1;
+  K_3_2 = 1;
+  a_0 = 25;
+  b2f = 0;
+  b2r = 0;
+
+  // Other declarations:
+  const compartment_, a_1, K_1, b, a_2_plus, K_2_plus, a_2_minus, K_2_minus;
+  const a_3, K_3_3, a_4, K_4, a_5, K_5, K_3_2, a_0, b2f, b2r;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = item;
+
+  // Display Names:
+  compartment_ is "compartment";
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/po/PO:0009002"
+  X_1 identity "http://identifiers.org/chebi/CHEBI:36208"
+  X_1 container "http://identifiers.org/go/GO:0009536"
+  X_2 identity "http://identifiers.org/chebi/CHEBI:28044"
+  X_3 identity "http://identifiers.org/chebi/CHEBI:36208"
+  X_3 container "http://identifiers.org/go/GO:0005829"
+  X_4 version "http://identifiers.org/chebi/CHEBI:91005"
+  a_0_Shikimate_Biosynthesis property "http://identifiers.org/go/GO:0033587"
+  V_1_Phenylalanine_Biosynthesis_Shikimate property "http://identifiers.org/go/GO:0009094"
+  V_3_Caffeoyl_Shikimate_Biosynthesis property "http://identifiers.org/go/GO:0009058"
+  V_3_Caffeoyl_Shikimate_Biosynthesis property "http://identifiers.org/chebi/CHEBI:91005"
+  V_4_Mass_Release_Monolignol_Pathway property "http://identifiers.org/chebi/CHEBI:64477"
+  V_4_Mass_Release_Monolignol_Pathway property "http://identifiers.org/ncit/C18611"
+  V_5_Phenylalanine_To_Protein hypernym "http://identifiers.org/ncit/C18103"
+  V_2_Shikimate_Transport hypernym "http://identifiers.org/go/GO:0015733"
+end
+
+Adams2019___The_regulatory_role_of_shikimate_in_plant_phenylalanine_metabolism is "Adams2019 - The regulatory role of shikimate in plant phenylalanine metabolism"
+
+Adams2019___The_regulatory_role_of_shikimate_in_plant_phenylalanine_metabolism description "http://identifiers.org/pubmed/30412698"
+Adams2019___The_regulatory_role_of_shikimate_in_plant_phenylalanine_metabolism model_entity_is "http://identifiers.org/biomodels.db/MODEL1911100002",
+                                                                                               "http://identifiers.org/biomodels.db/BIOMD0000000847"
+Adams2019___The_regulatory_role_of_shikimate_in_plant_phenylalanine_metabolism property "http://identifiers.org/chebi/CHEBI:64477"
+Adams2019___The_regulatory_role_of_shikimate_in_plant_phenylalanine_metabolism property "http://identifiers.org/mamo/MAMO_0000046"
+Adams2019___The_regulatory_role_of_shikimate_in_plant_phenylalanine_metabolism property "http://identifiers.org/ncit/C20633"

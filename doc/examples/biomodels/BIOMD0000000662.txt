@@ -1,0 +1,157 @@
+// Created by libAntimony v2.13.0
+function function_for_naive_activation(naive, CML, eta, k)
+  k*naive*(CML/(CML + eta));
+end
+
+function_for_naive_activation is "function for naive activation"
+
+function function_for_T_cell_effector_death_by_CML(param, CML, effector)
+  param*CML*effector;
+end
+
+function_for_T_cell_effector_death_by_CML is "function for T_cell_effector death by CML"
+
+function function_for_CML_growth(r, C, Cmax)
+  r*C*ln(Cmax/C);
+end
+
+function_for_CML_growth is "function for CML growth"
+
+function function_for_CML_death_by_T_cell_effector(param, mod, substrate)
+  param*mod*substrate;
+end
+
+function_for_CML_death_by_T_cell_effector is "function for CML death by T_cell_effector"
+
+function function_for_T_cell_effector_production_from_T_cell_naive_activation(alpha, k, naive, CML, eta)
+  alpha*k*naive*(CML/(CML + eta));
+end
+
+function_for_T_cell_effector_production_from_T_cell_naive_activation is "function for T_cell_effector production from T_cell_naive activation"
+
+function function_for_T_cell_effector_recruitment(alpha, effector, CML, eta)
+  alpha*effector*(CML/(CML + eta));
+end
+
+function_for_T_cell_effector_recruitment is "function for T_cell_effector_recruitment"
+
+
+model *Moore2004_CML_TcellInteration()
+
+  // Compartments and Species:
+  compartment COMpartment;
+  species CML in COMpartment, T_cell_naive in COMpartment, T_cell_effector in COMpartment;
+  species $Source in COMpartment, $Sink in COMpartment;
+
+  // Reactions:
+  T_cell_naive_Source: $Source => T_cell_naive; COMpartment*sn*Source;
+  T_cell_naive_Natural_Death: T_cell_naive => $Sink; COMpartment*dn*T_cell_naive;
+  T_cell_naive_Activation: T_cell_naive => $Sink; COMpartment*function_for_naive_activation(T_cell_naive, CML, eta, kn);
+  T_cell_effector_Recruitment: $Source => T_cell_effector; COMpartment*function_for_T_cell_effector_recruitment(alpha_e, T_cell_effector, CML, eta);
+  T_cell_effector_Natural_Death: T_cell_effector => $Sink; COMpartment*de*T_cell_effector;
+  T_cell_effector_Death_by_CML: T_cell_effector => $Sink; COMpartment*function_for_T_cell_effector_death_by_CML(gamma_e, CML, T_cell_effector);
+  CML_Growth: $Source => CML; COMpartment*function_for_CML_growth(rc, CML, Cmax);
+  CML_death_by_T_cell_effector: CML => $Sink; COMpartment*function_for_CML_death_by_T_cell_effector(gamma_c, T_cell_effector, CML);
+  CML_natural_death: CML => $Sink; COMpartment*dc*CML;
+  T_cell_effector_Production_from_T_cell_Naive_activation: $Source => T_cell_effector; COMpartment*function_for_T_cell_effector_production_from_T_cell_naive_activation(alpha_n, kn, T_cell_naive, CML, eta);
+
+  // Species initializations:
+  CML = 10000;
+  T_cell_naive = 1510;
+  T_cell_effector = 20;
+  Source = 1;
+  Sink = 1;
+
+  // Compartment initializations:
+  COMpartment = 1;
+
+  // Variable initializations:
+  sn = 0.071;
+  sn has unit_0;
+  dn = 0.05;
+  dn has unit_1;
+  alpha_n = 0.56;
+  alpha_n has unit_2;
+  alpha_e = 0.53;
+  alpha_e has unit_1;
+  de = 0.12;
+  de has unit_1;
+  gamma_e = 0.0077;
+  gamma_e has unit_3;
+  Cmax = 190000;
+  Cmax has unit_4;
+  rc = 0.23;
+  rc has unit_1;
+  dc = 0.68;
+  dc has unit_1;
+  gamma_c = 0.047;
+  gamma_c has unit_3;
+  kn = 0.063;
+  kn has unit_1;
+  eta = 43;
+  eta has unit_4;
+
+  // Other declarations:
+  const COMpartment, sn, dn, alpha_n, alpha_e, de, gamma_e, Cmax, rc, dc;
+  const gamma_c, kn, eta;
+
+  // Unit definitions:
+  unit time_unit = 86400 second;
+  unit substance = item;
+  unit unit_0 = 1 / (11.5741 litre * second);
+  unit unit_1 = 1 / 0.0115741e-3 second;
+  unit unit_2 = 1 / dimensionless^-0;
+  unit unit_3 = 0.0864 litre / second;
+  unit unit_4 = 1 / 1e6 litre;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1/(11.5741*l*s)";
+  unit_1 is "1/(0.0115741*ms)";
+  unit_2 is "1";
+  unit_3 is "0.0864*l/s";
+  unit_4 is "1/Ml";
+  COMpartment is "Blood";
+  T_cell_naive_Source is "T_cell_naive Source";
+  T_cell_naive_Natural_Death is "T_cell_naive Natural Death";
+  T_cell_naive_Activation is "T_cell_naive Activation";
+  T_cell_effector_Recruitment is "T_cell_effector Recruitment";
+  T_cell_effector_Natural_Death is "T_cell_effector Natural Death";
+  T_cell_effector_Death_by_CML is "T_cell_effector Death by CML";
+  CML_Growth is "CML Growth";
+  CML_death_by_T_cell_effector is "CML death by T_cell_effector";
+  CML_natural_death is "CML natural death";
+  T_cell_effector_Production_from_T_cell_Naive_activation is "T_cell_effector Production from T_cell_Naive activation";
+
+  // CV terms:
+  COMpartment hypernym "http://identifiers.org/bto/BTO:0001102"
+  CML hypernym "http://identifiers.org/bto/BTO:0001271"
+  T_cell_naive hypernym "http://identifiers.org/ncit/C104081"
+  T_cell_effector hypernym "http://identifiers.org/ncit/C104083"
+  alpha_n description "http://identifiers.org/isbn/081533642X"
+  de description "http://identifiers.org/pubmed/8186756"
+  rc description "http://identifiers.org/pubmed/10812720"
+  dc description "http://identifiers.org/pubmed/5239861"
+  gamma_c description "http://identifiers.org/doi/10.1006/jtbi.1994.1199"
+  kn description "http://identifiers.org/doi/10.1006/jtbi.1994.1199"
+  T_cell_naive_Source hypernym "http://identifiers.org/ncit/C25683"
+  T_cell_naive_Natural_Death hypernym "http://identifiers.org/go/GO:0008219"
+  T_cell_naive_Activation hypernym "http://identifiers.org/go/GO:0042110"
+  T_cell_effector_Recruitment hypernym "http://identifiers.org/go/GO:0050778"
+  T_cell_effector_Natural_Death hypernym "http://identifiers.org/go/GO:0008219"
+  T_cell_effector_Death_by_CML hypernym "http://identifiers.org/ncit/GO:0070241"
+  CML_Growth hypernym "http://identifiers.org/ncit/C19387"
+  CML_death_by_T_cell_effector hypernym "http://identifiers.org/go/GO:0008219"
+  CML_natural_death hypernym "http://identifiers.org/go/GO:0008219"
+  T_cell_effector_Production_from_T_cell_Naive_activation hypernym "http://identifiers.org/go/GO:0042110"
+end
+
+Moore2004_CML_TcellInteration is "Moore2004 - Chronic Myeloid Leukemic cells and T-lymphocyte interaction"
+
+Moore2004_CML_TcellInteration model_entity_is "http://identifiers.org/biomodels.db/MODEL1006230057"
+Moore2004_CML_TcellInteration unknown_model_qual "http://identifiers.org/mamo/MAMO_0000046"
+Moore2004_CML_TcellInteration description "http://identifiers.org/pubmed/15038986"
+Moore2004_CML_TcellInteration model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000662"
+Moore2004_CML_TcellInteration hypernym "http://identifiers.org/efo/0000339"
+Moore2004_CML_TcellInteration property "http://identifiers.org/go/GO:0002262"
+Moore2004_CML_TcellInteration taxon "http://identifiers.org/taxonomy/9606"

@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Model_1()
 
   // Compartments and Species:
@@ -23,12 +23,34 @@ model *Model_1()
   // Variable initializations:
   r1_k1 = 0.005;
   r2_k1 = 0.01;
-  r3_k1 = 1e-005;
-  r4_k1 = 2.5e-005;
+  r3_k1 = 1e-05;
+  r4_k1 = 2.5e-05;
 
   // Other declarations:
   const compartment_;
 
   // Unit definitions:
   unit substance = 1e-6 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+
+  // SBO terms:
+  r1_k1.sboTerm = 35
+  r2_k1.sboTerm = 35
+  r3_k1.sboTerm = 35
+  r4_k1.sboTerm = 35
+
+  // CV terms:
+  II identity "http://identifiers.org/uniprot/P00734"
+  IIa identity "http://identifiers.org/uniprot/P00734"
 end
+
+Model_1 is "Lee2010_ThrombinActivation_OneForm_minimal"
+
+Model_1 model_entity_is "http://identifiers.org/biomodels.db/MODEL1108260004"
+Model_1 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000363"
+Model_1 description "http://identifiers.org/pubmed/20435402"
+Model_1 origin "http://identifiers.org/pubmed/17726029"
+Model_1 hypernym "http://identifiers.org/go/GO:0007596"
+Model_1 taxon "http://identifiers.org/taxonomy/2759"

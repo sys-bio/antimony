@@ -1,0 +1,114 @@
+// Created by libAntimony v2.13.0
+function func1_Cdk1_activation(Ks, Adeg, Cdk1CycB, Bdeg, APC, napc, EC50apc, Acdc, Bcdc, ncdc, EC50cdc, CycB, Awee, Bwee, EC50wee, nwee)
+  (Ks - Adeg*Cdk1CycB - Bdeg*APC^napc*Cdk1CycB/(EC50apc^napc + APC^napc)) + (Acdc + Bcdc*Cdk1CycB^ncdc/(EC50cdc^ncdc + Cdk1CycB^ncdc))*(CycB - Cdk1CycB) - (Awee + Bwee*EC50wee^nwee/(EC50wee^nwee + Cdk1CycB^nwee))*Cdk1CycB;
+end
+
+func1_Cdk1_activation is "func1 Cdk1 activation"
+
+function func2_CycB_regulation(Ks, Adeg, CycB, Bdeg, APC, napc, EC50apc)
+  Ks - Adeg*CycB - Bdeg*APC^napc*CycB/(EC50apc^napc + APC^napc);
+end
+
+func2_CycB_regulation is "func2 CycB regulation"
+
+function func3_APC_regulation(AK, BK, Cdk1CycB, nK, EC50K, APC, AP, BP, EC50P, nP)
+  (AK + BK*(Cdk1CycB/200)^nK/((Cdk1CycB/200)^nK + EC50K^nK))*(1 - APC) - (AP + BP*EC50P^nP/(APC^nP + EC50P^nP))*APC;
+end
+
+func3_APC_regulation is "func3 APC regulation"
+
+
+model *MODEL1710040001()
+
+  // Compartments and Species:
+  compartment Cell;
+  species Cdk1CycB in Cell, APC in Cell, CycB in Cell;
+
+  // Reactions:
+  R1:  -> Cdk1CycB; Cell*func1_Cdk1_activation(Ks, Adeg, Cdk1CycB, Bdeg, APC, n_apc, EC50apc, Acdc, Bcdc, n_cdc, EC50cdc, CycB, Awee, Bwee, EC50wee, n_wee);
+  R2:  -> CycB; Cell*func2_CycB_regulation(Ks, Adeg, CycB, Bdeg, APC, n_apc, EC50apc);
+  R3:  -> APC; Cell*func3_APC_regulation(AK, BK, Cdk1CycB, n_K, EC50K, APC, AP, BP, EC50P, n_P);
+
+  // Species initializations:
+  Cdk1CycB = 20;
+  APC = 0;
+  CycB = 59.9999999999999;
+
+  // Compartment initializations:
+  Cell = 1;
+
+  // Variable initializations:
+  Ks = 0.1;
+  Adeg = 0.001;
+  Bdeg = 0.02;
+  Acdc = 0.5;
+  Bcdc = 1.5;
+  EC50cdc = 30;
+  n_cdc = 10;
+  Awee = 0.5;
+  Bwee = 1;
+  EC50wee = 30;
+  n_wee = 10;
+  EC50apc = 0.5;
+  n_apc = 10;
+  AK = 0;
+  BK = 0.25;
+  EC50K = 0.18;
+  n_K = 5;
+  AP = 0.025;
+  BP = 0.5;
+  EC50P = 0.18;
+  n_P = 5;
+
+  // Other declarations:
+  const Cell, Ks, Adeg, Bdeg, Acdc, Bcdc, EC50cdc, n_cdc, Awee, Bwee, EC50wee;
+  const n_wee, EC50apc, n_apc, AK, BK, EC50K, n_K, AP, BP, EC50P, n_P;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 60 second;
+  unit substance = 1e-9 mole;
+
+  // Display Names:
+  time_unit is "time";
+
+  // SBO terms:
+  EC50cdc.sboTerm = 287
+  n_cdc.sboTerm = 191
+  EC50wee.sboTerm = 287
+  n_wee.sboTerm = 191
+  EC50apc.sboTerm = 287
+  n_apc.sboTerm = 191
+  EC50K.sboTerm = 287
+  n_K.sboTerm = 191
+  EC50P.sboTerm = 287
+  n_P.sboTerm = 191
+
+  // CV terms:
+  Cdk1CycB part "http://identifiers.org/uniprot/P06493"
+  Cdk1CycB hypernym "http://identifiers.org/go/GO:0097125"
+  Cdk1CycB part "http://identifiers.org/uniprot/P14635"
+  APC hypernym "http://identifiers.org/uniprot/P25054"
+  CycB hypernym "http://identifiers.org/uniprot/P14635"
+  EC50cdc identity "urn:miriam:sbo:SBO%3A0000287"
+  n_cdc identity "urn:miriam:sbo:SBO%3A0000191"
+  EC50wee identity "urn:miriam:sbo:SBO%3A0000287"
+  n_wee identity "urn:miriam:sbo:SBO%3A0000191"
+  EC50apc identity "urn:miriam:sbo:SBO%3A0000287"
+  n_apc identity "urn:miriam:sbo:SBO%3A0000191"
+  EC50K identity "urn:miriam:sbo:SBO%3A0000287"
+  n_K identity "urn:miriam:sbo:SBO%3A0000191"
+  EC50P identity "urn:miriam:sbo:SBO%3A0000287"
+  n_P identity "urn:miriam:sbo:SBO%3A0000191"
+end
+
+MODEL1710040001 is "Araujo2016 - Positive feedback in Cdk1 signalling keeps mitotic duration short and constant"
+
+MODEL1710040001 model_entity_is "http://identifiers.org/biomodels.db/MODEL1710040001"
+MODEL1710040001 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000657"
+MODEL1710040001 description "http://identifiers.org/pubmed/27768873"
+MODEL1710040001 unknown_model_qual "http://identifiers.org/mamo/MAMO_0000046"
+MODEL1710040001 part "http://identifiers.org/pw/PW:0000092"
+MODEL1710040001 property "http://identifiers.org/biomodels.teddy/TEDDY_0000035"
+MODEL1710040001 taxon "http://identifiers.org/taxonomy/9606"
+MODEL1710040001 description "http://identifiers.org/pubmed/27768873"

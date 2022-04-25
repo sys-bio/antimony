@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Lavrentovich2008_Ca_Oscillations()
 
   // Compartments and Species:
@@ -9,9 +9,9 @@ model *Lavrentovich2008_Ca_Oscillations()
   R1:  => X; compartment_*vin;
   R2: X => ; compartment_*kout*X;
   R3: Y => X; ER*4*vM3*k_CaA^n*(X^n/((X^n + k_CaA^n)*(X^n + k_CaI^n)))*(Z^m/(Z^m + kip3^m))*(Y - X);
-  R4: X => Y; (compartment_*vM2*X^2)/(X^2 + k2^2);
+  R4: X => Y; compartment_*vM2*X^2/(X^2 + k2^2);
   R5: Y => X; ER*kf*(Y - X);
-  R6:  => Z; (compartment_*vp*X^2)/(X^2 + kp^2);
+  R6:  => Z; compartment_*vp*X^2/(X^2 + kp^2);
   R7: Z => ; compartment_*kdeg*Z;
 
   // Species initializations:
@@ -77,4 +77,31 @@ model *Lavrentovich2008_Ca_Oscillations()
   R5 is "Leak flux";
   R6 is "PLC";
   R7 is "IP3 degradation";
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/obo.go/GO:0005737"
+  ER identity "http://identifiers.org/obo.go/GO:0005783"
+  X identity "http://identifiers.org/obo.chebi/CHEBI:29108",
+             "http://identifiers.org/kegg.compound/C00076"
+  Y identity "http://identifiers.org/obo.chebi/CHEBI:29108",
+             "http://identifiers.org/kegg.compound/C00076"
+  Z identity "http://identifiers.org/obo.chebi/CHEBI:16595",
+             "http://identifiers.org/kegg.compound/C01245"
+  R1 hypernym "http://identifiers.org/obo.go/GO:0007204",
+              "http://identifiers.org/obo.go/GO:0006816"
+  R2 hypernym "http://identifiers.org/obo.go/GO:0051481"
+  R3 hypernym "http://identifiers.org/obo.go/GO:0048763"
+  R4 hypernym "http://identifiers.org/obo.go/GO:0005388"
+  R5 hypernym "http://identifiers.org/obo.go/GO:0022840",
+              "http://identifiers.org/obo.go/GO:0007204"
+  R6 hypernym "http://identifiers.org/obo.go/GO:0004435"
+  R6 parthood "http://identifiers.org/obo.go/GO:0032957"
 end
+
+Lavrentovich2008_Ca_Oscillations is "Lavrentovich2008_Ca_Oscillations"
+
+Lavrentovich2008_Ca_Oscillations model_entity_is "http://identifiers.org/biomodels.db/MODEL9223106020"
+Lavrentovich2008_Ca_Oscillations model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000184"
+Lavrentovich2008_Ca_Oscillations description "http://identifiers.org/pubmed/18275973"
+Lavrentovich2008_Ca_Oscillations part "http://identifiers.org/obo.go/GO:0019722"
+Lavrentovich2008_Ca_Oscillations taxon "http://identifiers.org/taxonomy/40674"

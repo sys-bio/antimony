@@ -1,0 +1,121 @@
+// Created by libAntimony v2.13.0
+function Rate_Law_for_reaction_for_A(alpha_2, P, beta_2, I, mu_2, B, A, K_B)
+  alpha_2*P - (beta_2*I + mu_2*(1 - B/K_B))*A;
+end
+
+Rate_Law_for_reaction_for_A is "Rate Law for reaction for A"
+
+function Rate_Law_for_reaction_for_B(g, B, K_B, alpha_4, I, beta_4, P, gamma_, time_)
+  (g*(1 - B/K_B) + alpha_4*I - beta_4*P)*B + exp(-1*gamma_*time_);
+end
+
+Rate_Law_for_reaction_for_B is "Rate Law for reaction for B"
+
+function Rate_Law_for_reaction_for_I(alpha_3, P, rho_2, B, beta_3, A, mu_3, I)
+  alpha_3*P + rho_2*B - (beta_3*A + mu_3)*I;
+end
+
+Rate_Law_for_reaction_for_I is "Rate Law for reaction for I"
+
+function Rate_Law_for_reaction_for_P(alpha_1, I, rho_1, B, P, beta_1, A, mu_1, K_B)
+  (alpha_1*I + rho_1*B)*(1 - P) - (beta_1*A + mu_1*(1 - B/K_B))*P;
+end
+
+Rate_Law_for_reaction_for_P is "Rate Law for reaction for P"
+
+
+model *Jarrett2015___Modelling_the_interaction_between_immune_response__bacterial_dynamics_and_inflammatory_damage()
+
+  // Compartments and Species:
+  compartment BALB_c_Mouse;
+  species anti_inflammatory__A in BALB_c_Mouse, inflammation__I in BALB_c_Mouse;
+  species bacterial_infection__B in BALB_c_Mouse, pro_inflammatory__P in BALB_c_Mouse;
+
+  // Reactions:
+  reaction_for_A:  => anti_inflammatory__A; BALB_c_Mouse*Rate_Law_for_reaction_for_A(alpha_2, pro_inflammatory__P, beta_2, inflammation__I, mu_2, bacterial_infection__B, anti_inflammatory__A, K_B);
+  reaction_For_I:  => inflammation__I; BALB_c_Mouse*Rate_Law_for_reaction_for_I(alpha_3, pro_inflammatory__P, rho_2, bacterial_infection__B, beta_3, anti_inflammatory__A, mu_3, inflammation__I);
+  reaction_for_B:  => bacterial_infection__B; BALB_c_Mouse*Rate_Law_for_reaction_for_B(g, bacterial_infection__B, K_B, alpha_4, inflammation__I, beta_4, pro_inflammatory__P, gamma_, time);
+  reaction_For_P:  => pro_inflammatory__P; BALB_c_Mouse*Rate_Law_for_reaction_for_P(alpha_1, inflammation__I, rho_1, bacterial_infection__B, pro_inflammatory__P, beta_1, anti_inflammatory__A, mu_1, K_B);
+
+  // Species initializations:
+  anti_inflammatory__A = 3;
+  inflammation__I = 1;
+  bacterial_infection__B = 1;
+  pro_inflammatory__P = 1;
+
+  // Compartment initializations:
+  BALB_c_Mouse = 1;
+
+  // Variable initializations:
+  alpha_1 = 0.27;
+  rho_1 = 0.2;
+  beta_1 = 0.01;
+  mu_1 = 0.12;
+  K_B = 1;
+  alpha_2 = 0.11;
+  beta_2 = 0.135;
+  mu_2 = 0.25;
+  alpha_3 = 1.05;
+  beta_3 = 2;
+  rho_2 = 0.45;
+  mu_3 = 0.0174;
+  g = 0.9;
+  alpha_4 = 1.5;
+  beta_4 = 5;
+  gamma_ = 0.01;
+
+  // Other declarations:
+  const BALB_c_Mouse, alpha_1, rho_1, beta_1, mu_1, K_B, alpha_2, beta_2;
+  const mu_2, alpha_3, beta_3, rho_2, mu_3, g, alpha_4, beta_4, gamma_;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 3600 second;
+  unit substance = item;
+
+  // Display Names:
+  time_unit is "time";
+  BALB_c_Mouse is "BALB/c Mouse";
+  anti_inflammatory__A is "anti-inflammatory (A)";
+  inflammation__I is "inflammation (I)";
+  bacterial_infection__B is "bacterial infection (B)";
+  pro_inflammatory__P is "pro-inflammatory (P)";
+  gamma_ is "gamma";
+  reaction_for_A is "reaction for A";
+  reaction_For_I is "reaction For I";
+  reaction_for_B is "reaction for B";
+  reaction_For_P is "reaction For P";
+
+  // CV terms:
+  BALB_c_Mouse property "http://identifiers.org/efo/0000602"
+  anti_inflammatory__A property "http://identifiers.org/bto/BTO:0004520"
+  inflammation__I hypernym "http://identifiers.org/ncit/C3137"
+  bacterial_infection__B hypernym "http://identifiers.org/efo/0005681"
+  pro_inflammatory__P hypernym "http://identifiers.org/go/GO:0006954"
+  pro_inflammatory__P property "http://identifiers.org/bto/BTO:0005655"
+  pro_inflammatory__P property "http://identifiers.org/bto/BTO:0001678"
+  mu_1 encodement "http://identifiers.org/sbo/SBO:0000356"
+  K_B encodement "http://identifiers.org/ncit/C25443"
+  mu_2 encodement "http://identifiers.org/sbo/SBO:0000356"
+  mu_3 encodement "http://identifiers.org/sbo/SBO:0000356"
+  g encodement "http://identifiers.org/sbo/SBO:0000610"
+  beta_4 encodement "http://identifiers.org/go/GO:0006925"
+  gamma_ encodement "http://identifiers.org/sbo/SBO:0000356"
+  reaction_for_A hypernym "http://identifiers.org/go/GO:0006954"
+  reaction_for_A property "http://identifiers.org/go/GO:0050728"
+  reaction_For_I property "http://identifiers.org/ncit/C3137"
+  reaction_for_B property "http://identifiers.org/ncit/C2890"
+  reaction_For_P property "http://identifiers.org/go/GO:0050729"
+end
+
+Jarrett2015___Modelling_the_interaction_between_immune_response__bacterial_dynamics_and_inflammatory_damage is "Jarrett2015 - Modelling the interaction between immune response, bacterial dynamics and inflammatory damage"
+
+Jarrett2015___Modelling_the_interaction_between_immune_response__bacterial_dynamics_and_inflammatory_damage model_entity_is "http://identifiers.org/biomodels.db/MODEL1803200002",
+                                                                                                                            "http://identifiers.org/biomodels.db/BIOMD0000000920"
+Jarrett2015___Modelling_the_interaction_between_immune_response__bacterial_dynamics_and_inflammatory_damage identity "http://identifiers.org/biomodels.db/MODEL1803200002"
+Jarrett2015___Modelling_the_interaction_between_immune_response__bacterial_dynamics_and_inflammatory_damage hypernym "http://identifiers.org/go/GO:0050727"
+Jarrett2015___Modelling_the_interaction_between_immune_response__bacterial_dynamics_and_inflammatory_damage taxon "http://identifiers.org/taxonomy/10090"
+Jarrett2015___Modelling_the_interaction_between_immune_response__bacterial_dynamics_and_inflammatory_damage description "http://identifiers.org/pubmed/24814512"
+Jarrett2015___Modelling_the_interaction_between_immune_response__bacterial_dynamics_and_inflammatory_damage property "http://identifiers.org/efo/0005681",
+                                                                                                                     "http://identifiers.org/efo/0000602",
+                                                                                                                     "http://identifiers.org/mamo/MAMO_0000046"

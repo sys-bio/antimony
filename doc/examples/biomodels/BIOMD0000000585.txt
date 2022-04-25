@@ -1,0 +1,147 @@
+// Created by libAntimony v2.13.0
+model *MODEL1509240000()
+
+  // Compartments and Species:
+  compartment cell;
+  species $Ifng in cell, $Ir in cell, $II in cell, $d1 in cell, $d2 in cell;
+  species $d3 in cell, $d4 in cell, $Stat1Pd in cell, $Stat1U in cell, $j4 in cell;
+  species $Stat1Pdn in cell, $i1 in cell, $i2 in cell, $i3 in cell, $i4 in cell;
+  species $j1 in cell, $mRNA in cell, $j2 in cell, $j3 in cell, $Stat1Un in cell;
+  species $Stat1ex in cell, $Stat1cex in cell, $Stat1nex in cell, $Stat1Pex in cell;
+  species $Stat1Pcex in cell, $Stat1Pnex in cell, $Socs1ex in cell, $RSNCex in cell;
+
+  // Assignment Rules:
+  Stat1ex := (Stat1U + Stat1Pd + Stat1Un + Stat1Pdn)/2;
+  Stat1cex := (Stat1U + Stat1Pd)*scale_Stat1cex;
+  Stat1nex := (Stat1Un + Stat1Pdn)*scale_Stat1nex;
+  Stat1Pex := ((Stat1Pd + Stat1Pdn)/2)*scale_Stat1Pex;
+  Stat1Pcex := Stat1Pd*scale_Stat1Pcex;
+  Stat1Pnex := Stat1Pdn*scale_Stat1Pnex;
+  Socs1ex := mRNA;
+  RSNCex := (Stat1Un + Stat1Pdn)/(Stat1U + Stat1Pd);
+
+  // Rate Rules:
+  Ifng' = -(k1*Ifng*Ir);
+  Ir' = -(k1*Ifng*Ir);
+  II' = k1*Ifng*Ir;
+  d1' = 4*(II - d1)/taud;
+  d2' = 4*(d1 - d2)/taud;
+  d3' = 4*(d2 - d3)/taud;
+  d4' = 4*(d3 - d4)/taud;
+  Stat1Pd' = k4*II*Stat1U/(1 + k14*j4) - k6*Stat1Pd;
+  Stat1U' = k3*d4 + k12*Stat1Un - k11*Stat1U - k4*II*Stat1U/(1 + k14*j4);
+  j4' = 4*(j3 - j4)/tauj;
+  Stat1Pdn' = k6*Stat1Pd - k5*Stat1Pdn;
+  i1' = 4*(Stat1Pdn - i1)/tau;
+  i2' = 4*(i1 - i2)/tau;
+  i3' = 4*(i2 - i3)/tau;
+  i4' = 4*(i3 - i4)/tau;
+  j1' = 4*(mRNA - j1)/tauj;
+  mRNA' = k13 + k9*i4 - k10*mRNA;
+  j2' = 4*(j1 - j2)/tauj;
+  j3' = 4*(j2 - j3)/tauj;
+  Stat1Un' = (k11*Stat1U - k12*Stat1Un) + k5*Stat1Pdn;
+
+  // Species initializations:
+  Ifng = 100;
+  Ir = 0.05721;
+  II = 0;
+  d1 = 0;
+  d2 = 0;
+  d3 = 0;
+  d4 = 0;
+  Stat1Pd = 0;
+  Stat1U = 0.950418;
+  j4 = 0;
+  Stat1Pdn = 0;
+  i1 = 0;
+  i2 = 0;
+  i3 = 0;
+  i4 = 0;
+  j1 = 0;
+  mRNA = 0.108325;
+  j2 = 0;
+  j3 = 0;
+  Stat1Un = 0.661213;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  k1 = 0.00094915;
+  taud = 277.363;
+  k4 = 0.0997621;
+  k14 = 0.748449;
+  k6 = 0.0666851;
+  k5 = 298.763;
+  tau = 79.3354;
+  tauj = 451.937;
+  k3 = 0.0959796;
+  k12 = 12.2679;
+  k11 = 8.90244;
+  k13 = 0.00949819;
+  k9 = 4179.56;
+  k10 = 0.0583427;
+  scale_Stat1cex = 0.747697;
+  scale_Stat1nex = 1.21851;
+  scale_Stat1Pex = 34.4009;
+  scale_Stat1Pcex = 19.0574;
+  scale_Stat1Pnex = 91677.7;
+  scale_Stat1ex = 1;
+  scale_Socs1ex = 1;
+  scale_RSNCex = 1;
+
+  // Other declarations:
+  const cell, k1, taud, k4, k14, k6, k5, tau, tauj, k3, k12, k11, k13, k9;
+  const k10, scale_Stat1cex, scale_Stat1nex, scale_Stat1Pex, scale_Stat1Pcex;
+  const scale_Stat1Pnex, scale_Stat1ex, scale_Socs1ex, scale_RSNCex;
+
+  // Display Names:
+  taud is "tau_1";
+  Stat1Pd is "STAT1D";
+  Stat1U is "STAT1Uc";
+  k14 is "k12";
+  Stat1Pdn is "STAT1Dn";
+  tau is "tau_2";
+  mRNA is "SOCS1";
+  tauj is "tau_3";
+  k12 is "k10";
+  Stat1Un is "STAT1Un";
+  k11 is "k9";
+  k13 is "k11";
+  k9 is "k7";
+  k10 is "k8";
+  Stat1ex is "STAT1 (observed)";
+  Stat1cex is "STAT1c (observed)";
+  scale_Stat1cex is "WB_STAT1c";
+  Stat1nex is "STAT1n (observed)";
+  scale_Stat1nex is "WB_STAT1n";
+  Stat1Pex is "STAT1D (observed)";
+  scale_Stat1Pex is "WB_STAT1D";
+  Stat1Pcex is "STAT1Dc (observed)";
+  scale_Stat1Pcex is "WB_STAT1Dc";
+  Stat1Pnex is "STAT1Dn (observed)";
+  scale_Stat1Pnex is "WB_STAT1Dn";
+  Socs1ex is "SOCS1 (observed)";
+  RSNCex is "RSNC (observed)";
+  scale_Stat1ex is "WB_STAT1";
+  scale_Socs1ex is "PCR_SOCS1";
+
+  // CV terms:
+  Stat1ex encoder "http://identifiers.org/ensembl/ENSG00000115415"
+  Stat1ex encoder "http://identifiers.org/hgnc.symbol/STAT1"
+  Socs1ex encoder "http://identifiers.org/hgnc.symbol/SOCS1"
+  Socs1ex encoder "http://identifiers.org/ensembl/ENSG00000185338"
+end
+
+MODEL1509240000 is "Rateitschak2012 - Interferon-gamma (IFNγ) induced STAT1 signalling (PC_IFNg100)"
+
+MODEL1509240000 model_entity_is "http://identifiers.org/biomodels.db/MODEL1509240000"
+MODEL1509240000 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000585"
+MODEL1509240000 description "http://identifiers.org/pubmed/23284277"
+MODEL1509240000 property "http://identifiers.org/doid/DOID:1793"
+MODEL1509240000 hypernym "http://identifiers.org/go/GO:0007259",
+                         "http://identifiers.org/go/GO:0034341"
+MODEL1509240000 container "http://identifiers.org/cl/CL:0002410",
+                          "http://identifiers.org/bto/BTO:0000584"
+MODEL1509240000 taxon "http://identifiers.org/taxonomy/10114"

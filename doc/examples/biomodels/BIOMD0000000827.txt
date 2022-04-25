@@ -1,0 +1,181 @@
+// Created by libAntimony v2.13.0
+function EGFR_EGFR_formation_0(k_1, X_1, l_1, X_4)
+  0.5*k_1*X_1^2 - l_1*X_4;
+end
+
+EGFR_EGFR_formation_0 is "EGFR/EGFR formation"
+
+function ErbB3_ErbB3_formation_0(k_2, X_2, l_2, X_6)
+  0.5*k_2*X_2^2 - l_2*X_6;
+end
+
+ErbB3_ErbB3_formation_0 is "ErbB3/ErbB3 formation"
+
+function EGFR_ErbB3_formation_0(k_3, X_1, X_2, l_3, X_5)
+  k_3*X_1*X_2 - l_3*X_5;
+end
+
+EGFR_ErbB3_formation_0 is "EGFR/ErbB3 formation"
+
+function MET_MET_formation_0(k_4, X_3, l_4, X_7)
+  0.5*k_4*X_3^2 - l_4*X_7;
+end
+
+MET_MET_formation_0 is "MET/MET formation"
+
+function MET_MET_transformation_0(k_p1, X_7, l_p1, X_10)
+  k_p1*X_7 - l_p1*X_10;
+end
+
+MET_MET_transformation_0 is "MET/MET transformation"
+
+function Phosphorylation_1(k_p2, X_5, X_10)
+  k_p2*X_5*X_10;
+end
+
+Phosphorylation_1 is "Phosphorylation 1"
+
+function Phosphorylation_2(k_p3, X_6, X_10)
+  k_p3*X_6*X_10;
+end
+
+Phosphorylation_2 is "Phosphorylation 2"
+
+function gefitnib_1(l_p2, X_8)
+  l_p2*X_8;
+end
+
+gefitnib_1 is "gefitnib 1"
+
+function gefitnib_2_0(l_p3, X_9)
+  l_p3*X_9;
+end
+
+gefitnib_2_0 is "gefitnib 2"
+
+
+model *New_Model()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species X_1_EGFR in compartment_, X_4_EGFR_EGFR in compartment_, X_2_ErbB3 in compartment_;
+  species X_6_ErbB3_ErbB3 in compartment_, X_5_EGFR_ErbB3 in compartment_;
+  species X_3_MET in compartment_, X_7_MET_MET in compartment_, X_10_p_MET_MET in compartment_;
+  species X_8_p_EGFR_ErbB3 in compartment_, X_9_p_ErbB3_ErbB3 in compartment_;
+
+  // Reactions:
+  EGFR_EGFR_formation: 2 X_1_EGFR -> X_4_EGFR_EGFR; compartment_*EGFR_EGFR_formation_0(k_1, X_1_EGFR, l_1, X_4_EGFR_EGFR);
+  ErbB3_ErbB3_formation: 2 X_2_ErbB3 => X_6_ErbB3_ErbB3; compartment_*ErbB3_ErbB3_formation_0(k_2, X_2_ErbB3, l_2, X_6_ErbB3_ErbB3);
+  EGFR_ErbB3_formation: X_1_EGFR + X_2_ErbB3 => X_5_EGFR_ErbB3; compartment_*EGFR_ErbB3_formation_0(k_3, X_1_EGFR, X_2_ErbB3, l_3, X_5_EGFR_ErbB3);
+  MET_MET_formation: 2 X_3_MET => X_7_MET_MET; compartment_*MET_MET_formation_0(k_4, X_3_MET, l_4, X_7_MET_MET);
+  MET_MET_transformation: X_7_MET_MET => X_10_p_MET_MET; compartment_*MET_MET_transformation_0(k_p1, X_7_MET_MET, l_p1, X_10_p_MET_MET);
+  phosphorylation_1: X_10_p_MET_MET + X_5_EGFR_ErbB3 => X_10_p_MET_MET + X_8_p_EGFR_ErbB3; compartment_*Phosphorylation_1(k_p2, X_5_EGFR_ErbB3, X_10_p_MET_MET);
+  phosphorylation_2: X_10_p_MET_MET + X_6_ErbB3_ErbB3 => X_10_p_MET_MET + X_9_p_ErbB3_ErbB3; compartment_*Phosphorylation_2(k_p3, X_6_ErbB3_ErbB3, X_10_p_MET_MET);
+  gefitinib_1: X_8_p_EGFR_ErbB3 => X_5_EGFR_ErbB3; compartment_*gefitnib_1(l_p2, X_8_p_EGFR_ErbB3);
+  gefitnib_2: X_9_p_ErbB3_ErbB3 => X_6_ErbB3_ErbB3; compartment_*gefitnib_2_0(l_p3, X_9_p_ErbB3_ErbB3);
+
+  // Species initializations:
+  X_1_EGFR = 3.6e-12;
+  X_4_EGFR_EGFR = 0;
+  X_2_ErbB3 = 5.5e-14;
+  X_6_ErbB3_ErbB3 = 0;
+  X_5_EGFR_ErbB3 = 0;
+  X_3_MET = 7.4e-12;
+  X_7_MET_MET = 0;
+  X_10_p_MET_MET = 0;
+  X_8_p_EGFR_ErbB3 = 0;
+  X_9_p_ErbB3_ErbB3 = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  l_1 = 1.24;
+  k_1 = 23000000000;
+  l_2 = 1.08;
+  k_2 = 1900000000000;
+  l_3 = 1;
+  l_4 = 1;
+  k_3 = 240000000000;
+  k_4 = 2600000000000;
+  k_p1 = 0.045;
+  k_p2 = 10000000000;
+  k_p3 = 10000000000;
+  l_p1 = 0.028;
+  l_p2 = 0.028;
+  l_p3 = 0.028;
+
+  // Other declarations:
+  const compartment_, l_1, k_1, l_2, k_2, l_3, l_4, k_3, k_4, k_p1, k_p2;
+  const k_p3, l_p1, l_p2, l_p3;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  X_1_EGFR is "X_1(EGFR)";
+  X_4_EGFR_EGFR is "X_4(EGFR/EGFR)";
+  X_2_ErbB3 is "X_2(ErbB3)";
+  X_6_ErbB3_ErbB3 is "X_6(ErbB3/ErbB3)";
+  X_5_EGFR_ErbB3 is "X_5(EGFR/ErbB3)";
+  X_3_MET is "X_3(MET)";
+  X_7_MET_MET is "X_7(MET/MET)";
+  X_10_p_MET_MET is "X_10(p-MET/MET)";
+  X_8_p_EGFR_ErbB3 is "X_8(p-EGFR/ErbB3)";
+  X_9_p_ErbB3_ErbB3 is "X_9(p-ErbB3/ErbB3)";
+  EGFR_EGFR_formation is "EGFR/EGFR formation";
+  ErbB3_ErbB3_formation is "ErbB3/ErbB3 formation";
+  EGFR_ErbB3_formation is "EGFR/ErbB3 formation";
+  MET_MET_formation is "MET/MET formation";
+  MET_MET_transformation is "MET/MET transformation";
+  phosphorylation_1 is "phosphorylation 1";
+  phosphorylation_2 is "phosphorylation 2";
+  gefitinib_1 is "gefitinib 1";
+  gefitnib_2 is "gefitnib 2";
+
+  // CV terms:
+  compartment_ hypernym "http://identifiers.org/ncit/C13413"
+  compartment_ hypernym "http://identifiers.org/ncit/C12468"
+  compartment_ hypernym "http://identifiers.org/efo/0003137"
+  X_1_EGFR hypernym "http://identifiers.org/cco/CCO:1956"
+  X_4_EGFR_EGFR hypernym "http://identifiers.org/ncit/C61517"
+  X_4_EGFR_EGFR hypernym "http://identifiers.org/cco/CCO:1956"
+  X_2_ErbB3 hypernym "http://identifiers.org/cco/CCO:13867"
+  X_6_ErbB3_ErbB3 hypernym "http://identifiers.org/cco/CCO:13867"
+  X_6_ErbB3_ErbB3 hypernym "http://identifiers.org/ncit/C61517"
+  X_5_EGFR_ErbB3 hypernym "http://identifiers.org/ncit/C61517"
+  X_5_EGFR_ErbB3 hypernym "http://identifiers.org/cco/CCO:1956"
+  X_5_EGFR_ErbB3 hypernym "http://identifiers.org/cco/CCO:13867"
+  X_3_MET hypernym "http://identifiers.org/cco/CCO:2065"
+  X_7_MET_MET hypernym "http://identifiers.org/chebi/CHEBI:74707"
+  X_7_MET_MET hypernym "http://identifiers.org/ncit/C61517"
+  X_10_p_MET_MET hypernym "http://identifiers.org/ncit/C61517"
+  X_10_p_MET_MET hypernym "http://identifiers.org/chebi/CHEBI:74707"
+  X_8_p_EGFR_ErbB3 hypernym "http://identifiers.org/cco/CCO:13867"
+  X_8_p_EGFR_ErbB3 hypernym "http://identifiers.org/cco/CCO:1956"
+  X_8_p_EGFR_ErbB3 hypernym "http://identifiers.org/ncit/C61517"
+  X_9_p_ErbB3_ErbB3 hypernym "http://identifiers.org/cco/CCO:13867"
+  X_9_p_ErbB3_ErbB3 hypernym "http://identifiers.org/ncit/C61517"
+  EGFR_EGFR_formation hypernym "http://identifiers.org/sbo/SBO:0000393"
+  ErbB3_ErbB3_formation hypernym "http://identifiers.org/sbo/SBO:0000393"
+  EGFR_ErbB3_formation hypernym "http://identifiers.org/sbo/SBO:0000393"
+  MET_MET_formation hypernym "http://identifiers.org/sbo/SBO:0000393"
+  MET_MET_transformation hypernym "http://identifiers.org/sbo/SBO:0000393"
+  phosphorylation_1 hypernym "http://identifiers.org/sbo/SBO:0000216"
+  phosphorylation_2 hypernym "http://identifiers.org/sbo/SBO:0000216"
+  gefitinib_1 hypernym "http://identifiers.org/sbo/SBO:0000330"
+  gefitnib_2 hypernym "http://identifiers.org/sbo/SBO:0000330"
+end
+
+New_Model is "Ito2019 - gefitnib resistance of lung adenocarcinoma caused by MET amplification"
+
+New_Model model_entity_is "http://identifiers.org/biomodels.db/MODEL1909300001",
+                          "http://identifiers.org/biomodels.db/BIOMD0000000827"
+New_Model property "http://identifiers.org/ncit/C1855"
+New_Model property "http://identifiers.org/ncit/C12468"
+New_Model property "http://identifiers.org/ncit/C2852"
+New_Model propertyBearer "http://identifiers.org/mamo/MAMO_0000046"
+New_Model propertyBearer "http://identifiers.org/efo/0000311"
+New_Model description "http://identifiers.org/pubmed/30824185"

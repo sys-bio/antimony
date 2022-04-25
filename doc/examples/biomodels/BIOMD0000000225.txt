@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Westermark2003_Pancreatic_GlycOsc_basic()
 
   // Compartments and Species:
@@ -6,15 +6,15 @@ model *Westermark2003_Pancreatic_GlycOsc_basic()
   species $GLC in comp, G6P_F6P in comp, $F6P in comp, FBP in comp, $G3P in comp;
 
   // Assignment Rules:
-  F6P := (G6P_F6P*KeqGPI)/(1 + KeqGPI);
-  Vgk := (Vgk_min*dw_per_ml)/min_to_sec;
-  Vpfk := (Vpfk_min*dw_per_ml)/min_to_sec;
-  Vfba := (Vfba_min*dw_per_ml)/min_to_sec;
+  F6P := G6P_F6P*KeqGPI/(1 + KeqGPI);
+  Vgk := Vgk_min*dw_per_ml/min_to_sec;
+  Vpfk := Vpfk_min*dw_per_ml/min_to_sec;
+  Vfba := Vfba_min*dw_per_ml/min_to_sec;
 
   // Reactions:
-  vgk: $GLC => G6P_F6P; (comp*Vgk*(GLC/Sgk)^hGK)/(1 + (GLC/Sgk)^hGK);
-  vpfk: G6P_F6P => FBP; (comp*Vpfk*(F6P/Spfk)^(hpfk - (hpfk - hact)*(FBP/Sfba/(1 + FBP/Sfba))))/((F6P/Spfk)^(hpfk - (hpfk - hact)*(FBP/Sfba/(1 + FBP/Sfba))) + (1 + (FBP/Xpfk)^hx)/(1 + alpha^(hpfk - (hpfk - hact)*(FBP/Sfba/(1 + FBP/Sfba)))*(FBP/Xpfk)^hx));
-  vfba: FBP => $G3P; (comp*Vfba*(FBP/Sfba))/(FBP/Sfba + 1);
+  vgk: $GLC => G6P_F6P; comp*Vgk*(GLC/Sgk)^hGK/(1 + (GLC/Sgk)^hGK);
+  vpfk: G6P_F6P => FBP; comp*Vpfk*(F6P/Spfk)^(hpfk - (hpfk - hact)*(FBP/Sfba/(1 + FBP/Sfba)))/((F6P/Spfk)^(hpfk - (hpfk - hact)*(FBP/Sfba/(1 + FBP/Sfba))) + (1 + (FBP/Xpfk)^hx)/(1 + alpha^(hpfk - (hpfk - hact)*(FBP/Sfba/(1 + FBP/Sfba)))*(FBP/Xpfk)^hx));
+  vfba: FBP => $G3P; comp*Vfba*(FBP/Sfba)/(FBP/Sfba + 1);
 
   // Species initializations:
   GLC = 10;
@@ -81,4 +81,33 @@ model *Westermark2003_Pancreatic_GlycOsc_basic()
   mM_per_s is "mM per sec";
   mmole_per_min_g is "mmole per (min kg)";
   comp is "compartment";
+
+  // CV terms:
+  GLC hypernym "http://identifiers.org/chebi/CHEBI:17234",
+               "http://identifiers.org/kegg.compound/C00293"
+  G6P_F6P part "http://identifiers.org/kegg.compound/C00085",
+               "http://identifiers.org/kegg.compound/C00688",
+               "http://identifiers.org/chebi/CHEBI:15946"
+  G6P_F6P part "http://identifiers.org/chebi/CHEBI:15946",
+               "http://identifiers.org/chebi/CHEBI:17665"
+  F6P hypernym "http://identifiers.org/chebi/CHEBI:15946",
+               "http://identifiers.org/kegg.compound/C00085"
+  FBP hypernym "http://identifiers.org/chebi/CHEBI:16905",
+               "http://identifiers.org/kegg.compound/C00354"
+  G3P hypernym "http://identifiers.org/chebi/CHEBI:29052",
+               "http://identifiers.org/kegg.compound/C00118"
+  vgk version "http://identifiers.org/kegg.reaction/R00771",
+              "http://identifiers.org/kegg.reaction/R00725"
+  vpfk hypernym "http://identifiers.org/kegg.reaction/R00756"
+  vfba hypernym "http://identifiers.org/kegg.reaction/R01068"
 end
+
+Westermark2003_Pancreatic_GlycOsc_basic is "Westermark2003_Pancreatic_GlycOsc_basic"
+
+Westermark2003_Pancreatic_GlycOsc_basic model_entity_is "http://identifiers.org/biomodels.db/MODEL5950995486"
+Westermark2003_Pancreatic_GlycOsc_basic model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000225"
+Westermark2003_Pancreatic_GlycOsc_basic description "http://identifiers.org/pubmed/12829470"
+Westermark2003_Pancreatic_GlycOsc_basic origin "http://identifiers.org/pubmed/6271617"
+Westermark2003_Pancreatic_GlycOsc_basic hypernym "http://identifiers.org/go/GO:0006096"
+Westermark2003_Pancreatic_GlycOsc_basic parthood "http://identifiers.org/kegg.pathway/map00010"
+Westermark2003_Pancreatic_GlycOsc_basic taxon "http://identifiers.org/taxonomy/40674"

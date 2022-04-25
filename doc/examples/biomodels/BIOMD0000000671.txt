@@ -1,0 +1,65 @@
+// Created by libAntimony v2.13.0
+model *Murphy2016___Differences_in_predictions_of_ODE_models_of_tumor_growth()
+
+  // Compartments and Species:
+  compartment tumour;
+  species $V_exp in tumour, $V_mend in tumour, $V_log in tumour, $V_lin in tumour;
+  species $V_surf in tumour, $V_gomp in tumour, $V_bert in tumour;
+
+  // Rate Rules:
+  V_exp' = a_exp*V_exp;
+  V_mend' = a_mend*V_mend^b_mend;
+  V_log' = a_log*V_log*(1 - V_log/b_log);
+  V_lin' = a_lin*V_lin/(V_lin + b_lin);
+  V_surf' = a_surf*V_surf/(V_surf + b_surf)^(1/3);
+  V_gomp' = a_gomp*V_gomp*ln(b_gomp/(V_gomp + c_gomp));
+  V_bert' = a_bert*V_bert^(2/3) - b_bert*V_bert;
+
+  // Species initializations:
+  V_exp = 220;
+  V_mend = 220;
+  V_log = 220;
+  V_lin = 220;
+  V_surf = 220;
+  V_gomp = 220;
+  V_bert = 220;
+
+  // Compartment initializations:
+  tumour = 1;
+
+  // Variable initializations:
+  a_exp = 0.0246;
+  a_mend = 0.105;
+  b_mend = 0.785;
+  a_log = 0.0295;
+  b_log = 6920;
+  a_lin = 132;
+  b_lin = 4300;
+  a_surf = 0.291;
+  b_surf = 708;
+  a_gomp = 0.0919;
+  b_gomp = 15500;
+  c_gomp = 10700;
+  a_bert = 0.2344;
+  b_bert = 3.46e-19;
+
+  // Other declarations:
+  const tumour, a_exp, a_mend, b_mend, a_log, b_log, a_lin, b_lin, a_surf;
+  const b_surf, a_gomp, b_gomp, c_gomp, a_bert, b_bert;
+
+  // Display Names:
+  tumour is "compartment";
+
+  // CV terms:
+  V_exp hypernym "http://identifiers.org/ncit/C95157"
+end
+
+Murphy2016___Differences_in_predictions_of_ODE_models_of_tumor_growth is "Murphy2016 - Differences in predictions of ODE models of tumor growth"
+
+Murphy2016___Differences_in_predictions_of_ODE_models_of_tumor_growth model_entity_is "http://identifiers.org/biomodels.db/MODEL1708250001"
+Murphy2016___Differences_in_predictions_of_ODE_models_of_tumor_growth model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000671"
+Murphy2016___Differences_in_predictions_of_ODE_models_of_tumor_growth description "http://identifiers.org/pubmed/26921070"
+Murphy2016___Differences_in_predictions_of_ODE_models_of_tumor_growth propertyBearer "http://identifiers.org/efo/0000616"
+Murphy2016___Differences_in_predictions_of_ODE_models_of_tumor_growth taxon "http://identifiers.org/taxonomy/9606"
+Murphy2016___Differences_in_predictions_of_ODE_models_of_tumor_growth description "http://identifiers.org/pubmed/26921070"
+Murphy2016___Differences_in_predictions_of_ODE_models_of_tumor_growth property "http://identifiers.org/mamo/MAMO_0000046"

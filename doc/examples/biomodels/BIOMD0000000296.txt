@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *blub()
 
   // Compartments and Species:
@@ -12,9 +12,9 @@ model *blub()
 
   // Reactions:
   J0: $source => C1; environment*kc1*C1*(1 - (C1 + C2)/Cm);
-  J1: C1 => $sink; environment*(D + (d1*K1)/(K1 + A2^2))*C1;
+  J1: C1 => $sink; environment*(D + d1*K1/(K1 + A2^2))*C1;
   J2: $source => C2; environment*kc2*C2*(1 - (C1 + C2)/Cm);
-  J3: C2 => $sink; environment*(D + (d2*A1^2)/(K2 + A1^2))*C2;
+  J3: C2 => $sink; environment*(D + d2*A1^2/(K2 + A1^2))*C2;
   J4: $source => A1; environment*kA1*C1;
   J5: A1 => $sink; environment*(dAA1 + D)*A1;
   J6: $source => A2; environment*kA2*C2;
@@ -63,4 +63,63 @@ model *blub()
   J5 is "3OC12HSL removal";
   J6 is "3OC6HSL synthesis";
   J7 is "3OC6HSL removal";
+
+  // SBO terms:
+  environment.sboTerm = 290
+  IPTG.sboTerm = 247
+  C1.sboTerm = 240
+  C2.sboTerm = 240
+  A1.sboTerm = 247
+  A2.sboTerm = 247
+  sink.sboTerm = 291
+  source.sboTerm = 291
+  kc1.sboTerm = 35
+  kc2.sboTerm = 35
+  Cm.sboTerm = 196
+  D.sboTerm = 356
+  kA1.sboTerm = 35
+  kA2.sboTerm = 35
+  d2.sboTerm = 356
+  K2.sboTerm = 191
+  d1.sboTerm = 356
+  K1.sboTerm = 191
+  dAA1.sboTerm = 356
+  dAA2.sboTerm = 356
+  J0.sboTerm = 375
+  J1.sboTerm = 179
+  J2.sboTerm = 375
+  J3.sboTerm = 179
+  J4.sboTerm = 205
+  J5.sboTerm = 179
+  J6.sboTerm = 205
+  J7.sboTerm = 179
+
+  // CV terms:
+  environment identity "http://identifiers.org/go/GO:0005576"
+  IPTG identity "http://identifiers.org/chebi/CHEBI:61448",
+                "http://identifiers.org/pubchem.compound/656894"
+  C1 hypernym "http://identifiers.org/taxonomy/562"
+  C2 hypernym "http://identifiers.org/taxonomy/562"
+  A1 identity "http://identifiers.org/chebi/CHEBI:56080"
+  A2 identity "http://identifiers.org/chebi/CHEBI:55474",
+              "http://identifiers.org/kegg.compound/C18049"
+  J0 hypernym "http://identifiers.org/go/GO:0008283"
+  J1 hypernym "http://identifiers.org/go/GO:0008219"
+  J2 identity "http://identifiers.org/go/GO:0008283"
+  J3 hypernym "http://identifiers.org/go/GO:0008219"
+  J4 version "http://identifiers.org/ec-code/2.3.1.184"
+  J4 identity "http://identifiers.org/go/GO:0009058"
+  J5 hypernym "http://identifiers.org/go/GO:0009056"
+  J6 identity "http://identifiers.org/go/GO:0009058"
+  J6 version "http://identifiers.org/ec-code/2.3.1.184"
+  J7 hypernym "http://identifiers.org/go/GO:0009056"
 end
+
+blub is "Balagaddé2008_E_coli_Predator_Prey"
+
+blub model_entity_is "http://identifiers.org/biomodels.db/MODEL8305195207"
+blub model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000296"
+blub description "http://identifiers.org/pubmed/18414488"
+blub taxon "http://identifiers.org/taxonomy/562"
+blub version "http://identifiers.org/go/GO:0009372"
+blub hypernym "http://identifiers.org/go/GO:0002120"

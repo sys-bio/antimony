@@ -1,0 +1,121 @@
+// Created by libAntimony v2.13.0
+function Rate_Law_for_reaction_for_M_production(V1, M, K1)
+  V1*((1 - M)/(K1 + (1 - M)));
+end
+
+Rate_Law_for_reaction_for_M_production is "Rate Law for reaction for M production"
+
+function Rate_Law_for_reaction_for_C_production(vs)
+  vs;
+end
+
+Rate_Law_for_reaction_for_C_production is "Rate Law for reaction for C production"
+
+function Rate_Law_for_reaction_for_C_decay(vd, X, C, Kd, kd)
+  vd*X*(C/(Kd + C)) + kd*C;
+end
+
+Rate_Law_for_reaction_for_C_decay is "Rate Law for reaction for C decay"
+
+function Rate_Law_for_reaction_for_X_production(V3, X, K3)
+  V3*((1 - X)/(K3 + (1 - X)));
+end
+
+Rate_Law_for_reaction_for_X_production is "Rate Law for reaction for X production"
+
+function Rate_Law_for_reaction_for_M_decay(V2, M, K2)
+  V2*(M/(K2 + M));
+end
+
+Rate_Law_for_reaction_for_M_decay is "Rate Law for reaction for M decay"
+
+function Rate_Law_for_reaction_for_X_decay(V4, X, K4)
+  V4*(X/(K4 + X));
+end
+
+Rate_Law_for_reaction_for_X_decay is "Rate Law for reaction for X decay"
+
+
+model *Goldbeter2013_Oscillatory_activity_of_cyclin_dependent_kinases_in_the_cell_cycle()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species Cyclin in compartment_, Active_Cdc2_kinase in compartment_, Active_APC in compartment_;
+
+  // Assignment Rules:
+  K2 := K1;
+  V1 := (Cyclin/(Kc + Cyclin))*Vm1;
+  V3 := Active_Cdc2_kinase*Vm3;
+
+  // Reactions:
+  reaction_for_C_production:  => Cyclin; compartment_*Rate_Law_for_reaction_for_C_production(vs);
+  reaction_for_C_decay: Cyclin => ; compartment_*Rate_Law_for_reaction_for_C_decay(vd, Active_APC, Cyclin, Kd, kd);
+  reaction_for_M_production:  => Active_Cdc2_kinase; compartment_*Rate_Law_for_reaction_for_M_production(V1, Active_Cdc2_kinase, K1);
+  reaction_for_M_decay: Active_Cdc2_kinase => ; compartment_*Rate_Law_for_reaction_for_M_decay(V2, Active_Cdc2_kinase, K2);
+  reaction_for_X_production:  => Active_APC; compartment_*Rate_Law_for_reaction_for_X_production(V3, Active_APC, K3);
+  reaction_for_X_decay: Active_APC => ; compartment_*Rate_Law_for_reaction_for_X_decay(V4, Active_APC, K4);
+
+  // Species initializations:
+  Cyclin = 0.01;
+  Active_Cdc2_kinase = 0.01;
+  Active_APC = 0.01;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  K1 = 0.002;
+  K3 = 0.01;
+  K4 = 0.01;
+  Kc = 0.5;
+  Kd = 0.001;
+  kd = 0.046;
+  V2 = 2;
+  V4 = 0.7;
+  vs = 0.06;
+  vd = 0.25;
+  Vm1 = 4;
+  Vm3 = 1;
+
+  // Other declarations:
+  var K2, V1, V3;
+  const compartment_, K1, K3, K4, Kc, Kd, kd, V2, V4, vs, vd, Vm1, Vm3;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  Active_Cdc2_kinase is "Active Cdc2 kinase";
+  Active_APC is "Active APC";
+  reaction_for_C_production is "reaction for C production";
+  reaction_for_C_decay is "reaction for C decay";
+  reaction_for_M_production is "reaction for M production";
+  reaction_for_M_decay is "reaction for M decay";
+  reaction_for_X_production is "reaction for X production";
+  reaction_for_X_decay is "reaction for X decay";
+
+  // CV terms:
+  Cyclin property "http://identifiers.org/ncit/C17349"
+  Active_Cdc2_kinase property "http://identifiers.org/omit/0016746"
+  Active_APC property "http://identifiers.org/go/GO:0005680"
+  reaction_for_C_production property "http://identifiers.org/ncit/C112927"
+  reaction_for_C_decay property "http://identifiers.org/ncit/C75947"
+  reaction_for_M_production property "http://identifiers.org/ncit/C112927"
+  reaction_for_M_decay property "http://identifiers.org/ncit/C75947"
+  reaction_for_X_production property "http://identifiers.org/ncit/C112927"
+  reaction_for_X_decay property "http://identifiers.org/ncit/C75947"
+end
+
+Goldbeter2013_Oscillatory_activity_of_cyclin_dependent_kinases_in_the_cell_cycle is "Goldbeter2013-Oscillatory activity of cyclin-dependent kinases in the cell cycle"
+
+Goldbeter2013_Oscillatory_activity_of_cyclin_dependent_kinases_in_the_cell_cycle origin "http://identifiers.org/pubmed/1833774"
+Goldbeter2013_Oscillatory_activity_of_cyclin_dependent_kinases_in_the_cell_cycle description "http://identifiers.org/pubmed/23892075"
+Goldbeter2013_Oscillatory_activity_of_cyclin_dependent_kinases_in_the_cell_cycle model_entity_is "http://identifiers.org/biomodels.db/MODEL2005050002",
+                                                                                                 "http://identifiers.org/biomodels.db/BIOMD0000000944"
+Goldbeter2013_Oscillatory_activity_of_cyclin_dependent_kinases_in_the_cell_cycle container "http://identifiers.org/ncit/C13054"
+Goldbeter2013_Oscillatory_activity_of_cyclin_dependent_kinases_in_the_cell_cycle taxon "http://identifiers.org/omit/0002077"
+Goldbeter2013_Oscillatory_activity_of_cyclin_dependent_kinases_in_the_cell_cycle property "http://identifiers.org/biomodels.teddy/TEDDY_0000006",
+                                                                                          "http://identifiers.org/go/GO:0007049",
+                                                                                          "http://identifiers.org/mamo/MAMO_0000046"

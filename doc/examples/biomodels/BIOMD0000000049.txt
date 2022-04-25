@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Sasagawa2005_MAPK()
 
   // Compartments and Species:
@@ -34,7 +34,7 @@ model *Sasagawa2005_MAPK()
   // Reactions:
   re1: $pro_EGFR -> EGFR; compartment_*(re1_re1_k1*pro_EGFR - re1_re1_k2*EGFR);
   re2: $EGF + EGFR -> L_EGFR; compartment_*(re2_re2_k1*EGF*EGFR - re2_re2_k2*L_EGFR);
-  re8: 2L_EGFR -> L_EGFR_dimer; compartment_*(re8_re8_k1*L_EGFR*L_EGFR - re8_re8_k2*L_EGFR_dimer);
+  re8: 2 L_EGFR -> L_EGFR_dimer; compartment_*(re8_re8_k1*L_EGFR*L_EGFR - re8_re8_k2*L_EGFR_dimer);
   J3: SOS + Grb2 -> SOS_Grb2; c1*(J3_J3_k1*SOS*Grb2 - J3_J3_k2*SOS_Grb2);
   J4: Grb2 + pSOS -> pSOS_Grb2; c1*(J4_J4_k1*Grb2*pSOS - J4_J4_k2*pSOS_Grb2);
   J5: L_EGFR_dimer -> L_dpEGFR; compartment_*(J5_J5_k1*L_EGFR_dimer - J5_J5_k2*L_dpEGFR);
@@ -62,7 +62,7 @@ model *Sasagawa2005_MAPK()
   J28: Grb2_SOS_pShc_dpEGFR_c_Cbl => Grb2_SOS_pShc_dpEGFR_c_Cbl_ubiq; c1*J28_J28_k*Grb2_SOS_pShc_dpEGFR_c_Cbl;
   J29: Grb2_SOS_pShc_dpEGFR_c_Cbl_ubiq => proteosome + c_Cbl + Grb2_SOS_pShc; c1*J29_J29_k*Grb2_SOS_pShc_dpEGFR_c_Cbl_ubiq;
   J30: Grb2_SOS_pShc => Shc + SOS_Grb2; J30_J30_k*Grb2_SOS_pShc;
-  J31: Dok => pDok; c1*((J31_J31_Vmax*Dok*(L_dpEGFR + Shc_dpEGFR + pShc_dpEGFR + Grb2_SOS_pShc_dpEGFR + dpEGFR_c_Cbl + Shc_dpEGFR_c_Cbl + pShc_dpEGFR_c_Cbl + Grb2_SOS_pShc_dpEGFR_c_Cbl + FRS2_dpEGFR + pFRS2_dpEGFR + Crk_C3G_pFRS2_dpEGFR + FRS2_dpEGFR_c_Cbl + Crk_C3G_pFRS2_dpEGFR_c_Cbl))/(J31_J31_Km1 + Dok));
+  J31: Dok => pDok; c1*(J31_J31_Vmax*Dok*(L_dpEGFR + Shc_dpEGFR + pShc_dpEGFR + Grb2_SOS_pShc_dpEGFR + dpEGFR_c_Cbl + Shc_dpEGFR_c_Cbl + pShc_dpEGFR_c_Cbl + Grb2_SOS_pShc_dpEGFR_c_Cbl + FRS2_dpEGFR + pFRS2_dpEGFR + Crk_C3G_pFRS2_dpEGFR + FRS2_dpEGFR_c_Cbl + Crk_C3G_pFRS2_dpEGFR_c_Cbl)/(J31_J31_Km1 + Dok));
   J32: pShc => Shc; c1*J32_J32_k*pShc;
   J33: pFRS2 => FRS2; c1*J33_J33_k*pFRS2;
   J34: Crk + C3G -> Crk_C3G; c1*(J34_J34_k1*Crk*C3G - J34_J34_k2*Crk_C3G);
@@ -80,20 +80,20 @@ model *Sasagawa2005_MAPK()
   J46: FRS2_dpEGFR_c_Cbl_ubiq => proteosome + c_Cbl + FRS2; c1*J46_J46_k*FRS2_dpEGFR_c_Cbl_ubiq;
   J47: pFRS2_dpEGFR_c_Cbl_ubiq => proteosome + c_Cbl + pFRS2; c1*J47_J47_k*pFRS2_dpEGFR_c_Cbl_ubiq;
   J49: pDok + RasGAP -> pDok_RasGAP; c1*(J49_J49_k1*pDok*RasGAP - J49_J49_k2*pDok_RasGAP);
-  J50: SOS_Grb2 => pSOS_Grb2; c1*((J50_J50_Vmax*SOS_Grb2*dppERK)/(J50_J50_Km1 + SOS_Grb2));
-  J51: SOS => pSOS; c1*((J51_J51_Vmax*SOS*dppERK)/(J51_J51_Km1 + SOS));
+  J50: SOS_Grb2 => pSOS_Grb2; c1*(J50_J50_Vmax*SOS_Grb2*dppERK/(J50_J50_Km1 + SOS_Grb2));
+  J51: SOS => pSOS; c1*(J51_J51_Vmax*SOS*dppERK/(J51_J51_Km1 + SOS));
   J52: c_Raf + Ras_GTP -> c_Raf_Ras_GTP; c1*(J52_J52_k1*c_Raf*Ras_GTP - J52_J52_k2*c_Raf_Ras_GTP);
   J53: Rap1_GTP + B_Raf -> B_Raf_Rap1_GTP; c1*(J53_J53_k1*Rap1_GTP*B_Raf - J53_J53_k2*B_Raf_Rap1_GTP);
   J54: Ras_GTP + B_Raf -> B_Raf_Ras_GTP; c1*(J54_J54_k1*Ras_GTP*B_Raf - J54_J54_k2*B_Raf_Ras_GTP);
-  J57: ppMEK => pMEK; (J57_J57_Vmax*ppMEK*PP2A)/(J57_J57_Km1 + ppMEK);
-  J58: pMEK => MEK; c1*((J58_J58_Vmax*pMEK*PP2A)/(J58_J58_Km1 + pMEK));
-  J61: ppMEK_ERK => pMEK_ERK; c1*((J61_J61_Vmax*ppMEK_ERK*PP2A)/(J61_J61_Km1 + ppMEK_ERK));
-  J62: pMEK_ERK => MEK_ERK; c1*((J62_J62_Vmax*pMEK_ERK*PP2A)/(J62_J62_Km1 + pMEK_ERK));
-  J63: 2ppERK -> dppERK; c1*(J63_J63_k1*ppERK*ppERK - J63_J63_k2*dppERK);
+  J57: ppMEK => pMEK; J57_J57_Vmax*ppMEK*PP2A/(J57_J57_Km1 + ppMEK);
+  J58: pMEK => MEK; c1*(J58_J58_Vmax*pMEK*PP2A/(J58_J58_Km1 + pMEK));
+  J61: ppMEK_ERK => pMEK_ERK; c1*(J61_J61_Vmax*ppMEK_ERK*PP2A/(J61_J61_Km1 + ppMEK_ERK));
+  J62: pMEK_ERK => MEK_ERK; c1*(J62_J62_Vmax*pMEK_ERK*PP2A/(J62_J62_Km1 + pMEK_ERK));
+  J63: 2 ppERK -> dppERK; c1*(J63_J63_k1*ppERK*ppERK - J63_J63_k2*dppERK);
   J66: Ras_GTP => Ras_GDP; c1*J66_J66_k*Ras_GTP;
   J67: Rap1_GTP => Rap1_GDP; c1*J67_J67_k*Rap1_GTP;
-  J68: Rap1_GDP => Rap1_GTP; c1*((J68_J68_Vmax*Rap1_GDP*(Crk_C3G_pFRS2_dpEGFR + Crk_C3G_pFRS2_dpEGFR_c_Cbl + Crk_C3G_pFRS2_pTrkA_endo))/(J68_J68_Km1 + Rap1_GDP));
-  J69: Ras_GDP => Ras_GTP; c1*((J69_J69_Vmax*Ras_GDP*(Grb2_SOS_pShc_dpEGFR + Grb2_SOS_pShc_dpEGFR_c_Cbl + Grb2_SOS_pShc_pTrkA))/(J69_J69_Km1 + Ras_GDP));
+  J68: Rap1_GDP => Rap1_GTP; c1*(J68_J68_Vmax*Rap1_GDP*(Crk_C3G_pFRS2_dpEGFR + Crk_C3G_pFRS2_dpEGFR_c_Cbl + Crk_C3G_pFRS2_pTrkA_endo)/(J68_J68_Km1 + Rap1_GDP));
+  J69: Ras_GDP => Ras_GTP; c1*(J69_J69_Vmax*Ras_GDP*(Grb2_SOS_pShc_dpEGFR + Grb2_SOS_pShc_dpEGFR_c_Cbl + Grb2_SOS_pShc_pTrkA)/(J69_J69_Km1 + Ras_GDP));
   J70: $NGF + NGFR -> L_NGFR; compartment_*(J70_J70_k1*NGF*NGFR - J70_J70_k2*L_NGFR);
   J71: L_NGFR => pTrkA; compartment_*J71_J71_k*L_NGFR;
   J72: pTrkA => pTrkA_endo; c1*J72_J72_k*pTrkA;
@@ -142,17 +142,17 @@ model *Sasagawa2005_MAPK()
   J119: c_Cbl + Crk_C3G_pFRS2_dpEGFR -> Crk_C3G_pFRS2_dpEGFR_c_Cbl; c1*(J119_J119_k1*c_Cbl*Crk_C3G_pFRS2_dpEGFR - J119_J119_k2*Crk_C3G_pFRS2_dpEGFR_c_Cbl);
   J118: dpEGFR_c_Cbl + FRS2 -> FRS2_dpEGFR_c_Cbl; c1*(J118_J118_k1*dpEGFR_c_Cbl*FRS2 - J118_J118_k2*FRS2_dpEGFR_c_Cbl);
   J120: dpEGFR_c_Cbl + pFRS2 -> pFRS2_dpEGFR_c_Cbl; c1*(J120_J120_k1*dpEGFR_c_Cbl*pFRS2 - J120_J120_k2*pFRS2_dpEGFR_c_Cbl);
-  J121: Ras_GTP => Ras_GDP; c1*((J121_J121_Vmax*Ras_GTP*pDok_RasGAP)/(J121_J121_Km1 + Ras_GTP));
-  J122: Rap1_GTP => Rap1_GDP; c1*((J122_J122_Vmax*Rap1_GTP*Rap1GAP)/(J122_J122_Km1 + Rap1_GTP));
-  J123: Dok => pDok; c1*((J123_J123_Vmax*Dok*(pTrkA + Shc_pTrkA + pShc_pTrkA + Grb2_SOS_pShc_pTrkA + FRS2_pTrkA + pFRS2_pTrkA + Crk_C3G_pFRS2_pTrkA))/(J123_J123_Km1 + Dok));
-  J124: Grb2_SOS_pShc => pShc + pSOS_Grb2; c1*((J124_J124_Vmax*Grb2_SOS_pShc*dppERK)/(J124_J124_Km1 + Grb2_SOS_pShc));
+  J121: Ras_GTP => Ras_GDP; c1*(J121_J121_Vmax*Ras_GTP*pDok_RasGAP/(J121_J121_Km1 + Ras_GTP));
+  J122: Rap1_GTP => Rap1_GDP; c1*(J122_J122_Vmax*Rap1_GTP*Rap1GAP/(J122_J122_Km1 + Rap1_GTP));
+  J123: Dok => pDok; c1*(J123_J123_Vmax*Dok*(pTrkA + Shc_pTrkA + pShc_pTrkA + Grb2_SOS_pShc_pTrkA + FRS2_pTrkA + pFRS2_pTrkA + Crk_C3G_pFRS2_pTrkA)/(J123_J123_Km1 + Dok));
+  J124: Grb2_SOS_pShc => pShc + pSOS_Grb2; c1*(J124_J124_Vmax*Grb2_SOS_pShc*dppERK/(J124_J124_Km1 + Grb2_SOS_pShc));
   J133: ERK + MEK -> MEK_ERK; c1*(J133_J133_k1*ERK*MEK - J133_J133_k2*MEK_ERK);
   J134: ERK + pMEK -> pMEK_ERK; c1*(J134_J134_k1*ERK*pMEK - J134_J134_k2*pMEK_ERK);
   J135: ERK + ppMEK -> ppMEK_ERK; c1*(J135_J135_k1*ERK*ppMEK - J135_J135_k2*ppMEK_ERK);
   J136: ppMEK_ERK => ppERK + ppMEK; c1*J136_J136_k*ppMEK_ERK;
-  J137: c_Raf_Ras_GTP => c_Raf + Ras_GDP; c1*((J137_J137_Vmax*c_Raf_Ras_GTP*pDok_RasGAP)/(J137_J137_Km1 + c_Raf_Ras_GTP));
-  J138: B_Raf_Ras_GTP => B_Raf + Ras_GDP; c1*((J138_J138_Vmax*B_Raf_Ras_GTP*pDok_RasGAP)/(J138_J138_Km1 + B_Raf_Ras_GTP));
-  J139: B_Raf_Rap1_GTP => B_Raf + Rap1_GDP; c1*((J139_J139_Vmax*B_Raf_Rap1_GTP*Rap1GAP)/(J139_J139_Km1 + B_Raf_Rap1_GTP));
+  J137: c_Raf_Ras_GTP => c_Raf + Ras_GDP; c1*(J137_J137_Vmax*c_Raf_Ras_GTP*pDok_RasGAP/(J137_J137_Km1 + c_Raf_Ras_GTP));
+  J138: B_Raf_Ras_GTP => B_Raf + Ras_GDP; c1*(J138_J138_Vmax*B_Raf_Ras_GTP*pDok_RasGAP/(J138_J138_Km1 + B_Raf_Ras_GTP));
+  J139: B_Raf_Rap1_GTP => B_Raf + Rap1_GDP; c1*(J139_J139_Vmax*B_Raf_Rap1_GTP*Rap1GAP/(J139_J139_Km1 + B_Raf_Rap1_GTP));
   J140: c_Raf_Ras_GTP + MEK => c_Raf_Ras_GTP_MEK; c1*(J140_J140_k1*c_Raf_Ras_GTP*MEK - J140_J140_k2*c_Raf_Ras_GTP_MEK);
   J141: c_Raf_Ras_GTP + pMEK -> c_Raf_Ras_GTP_pMEK; c1*(J141_J141_k1*c_Raf_Ras_GTP*pMEK - J141_J141_k2*c_Raf_Ras_GTP_pMEK);
   J142: c_Raf_Ras_GTP + MEK_ERK -> c_Raf_Ras_GTP_MEK_ERK; c1*(J142_J142_k1*c_Raf_Ras_GTP*MEK_ERK - J142_J142_k2*c_Raf_Ras_GTP_MEK_ERK);
@@ -306,7 +306,7 @@ model *Sasagawa2005_MAPK()
   J7_J7_k1 = 10;
   J7_J7_k2 = 0.2;
   J8_J8_k1 = 0.002;
-  J8_J8_k2 = 1e-005;
+  J8_J8_k2 = 1e-05;
   J9_J9_k1 = 0.5;
   J9_J9_k2 = 0.2;
   J10_J10_k = 0.002;
@@ -390,7 +390,7 @@ model *Sasagawa2005_MAPK()
   J69_J69_Vmax = 2;
   J69_J69_Km1 = 0.02;
   J70_J70_k1 = 6.2;
-  J70_J70_k2 = 6.4e-005;
+  J70_J70_k2 = 6.4e-05;
   J71_J71_k = 1;
   J72_J72_k = 0.00063;
   J73_J73_k = 0.00042;
@@ -653,4 +653,450 @@ model *Sasagawa2005_MAPK()
   J137 is "c_Raf_Ras_GTP_dissociation";
   J138 is "B_Raf_Ras_GTP_dissociation";
   J139 is "B_Raf_Rap1_GTP_dissociation";
+
+  // CV terms:
+  compartment_ hypernym "http://identifiers.org/go/GO:0009898"
+  c1 hypernym "http://identifiers.org/go/GO:0005737"
+  EGFR parthood "http://identifiers.org/uniprot/Q9QX70"
+  L_EGFR part "http://identifiers.org/uniprot/P07522",
+              "http://identifiers.org/uniprot/Q9QX70"
+  L_EGFR_dimer part "http://identifiers.org/uniprot/P07522",
+                    "http://identifiers.org/uniprot/Q9QX70"
+  SOS hypernym "http://identifiers.org/uniprot/Q9Z1I1"
+  L_dpEGFR part "http://identifiers.org/uniprot/Q9QX70",
+                "http://identifiers.org/uniprot/P07522"
+  pSOS hypernym "http://identifiers.org/uniprot/Q9Z1I1"
+  SOS_Grb2 part "http://identifiers.org/uniprot/Q9Z1I1",
+                "http://identifiers.org/uniprot/P62994"
+  Grb2 identity "http://identifiers.org/uniprot/P62994"
+  Dok hypernym "http://identifiers.org/uniprot/Q4QQV2",
+               "http://identifiers.org/interpro/IPR002404"
+  pDok hypernym "http://identifiers.org/uniprot/Q4QQV2",
+                "http://identifiers.org/interpro/IPR002404"
+  pDok hypernym "http://identifiers.org/kegg.compound/C00562"
+  Crk identity "http://identifiers.org/uniprot/Q63768"
+  FRS2 hypernym "http://identifiers.org/uniprot/D4A244"
+  Shc hypernym "http://identifiers.org/uniprot/Q5M824"
+  pSOS_Grb2 part "http://identifiers.org/uniprot/Q9Z1I1",
+                 "http://identifiers.org/uniprot/P62994"
+  Rap1_GDP part "http://identifiers.org/chebi/CHEBI:17552",
+                "http://identifiers.org/uniprot/Q62636"
+  MEK version "http://identifiers.org/uniprot/Q01986"
+  MKP3 identity "http://identifiers.org/uniprot/Q64346"
+  pShc_dpEGFR part "http://identifiers.org/uniprot/P07522",
+                   "http://identifiers.org/uniprot/Q5M824",
+                   "http://identifiers.org/uniprot/Q9QX70"
+  dpEGFR_c_Cbl part "http://identifiers.org/uniprot/Q8K4S7",
+                    "http://identifiers.org/uniprot/Q9QX70"
+  B_Raf_Rap1_GTP part "http://identifiers.org/chebi/CHEBI:15996",
+                      "http://identifiers.org/uniprot/Q62636",
+                      "http://identifiers.org/uniprot/Q99MC6"
+  pShc_dpEGFR_c_Cbl part "http://identifiers.org/uniprot/Q8K4S7",
+                         "http://identifiers.org/uniprot/Q5M824",
+                         "http://identifiers.org/uniprot/Q9QX70"
+  pFRS2_dpEGFR_c_Cbl part "http://identifiers.org/uniprot/Q9QX70",
+                          "http://identifiers.org/uniprot/D4A244",
+                          "http://identifiers.org/uniprot/Q8K4S7"
+  Shc_dpEGFR part "http://identifiers.org/uniprot/Q5M824",
+                  "http://identifiers.org/uniprot/P07522",
+                  "http://identifiers.org/uniprot/Q9QX70"
+  c_Cbl homolog "http://identifiers.org/uniprot/Q8K4S7"
+  RasGAP identity "http://identifiers.org/interpro/IPR011575"
+  c_Raf identity "http://identifiers.org/uniprot/P11345"
+  B_Raf identity "http://identifiers.org/uniprot/Q99MC6"
+  ERK identity "http://identifiers.org/uniprot/P63086"
+  PP2A version "http://identifiers.org/uniprot/P62716",
+               "http://identifiers.org/uniprot/P63331"
+  Ras_GDP part "http://identifiers.org/chebi/CHEBI:17552",
+               "http://identifiers.org/interpro/IPR003577"
+  Rap1GAP version "http://identifiers.org/uniprot/P47736"
+  C3G identity "http://identifiers.org/uniprot/Q9QYV3"
+  NGFR identity "http://identifiers.org/uniprot/P35739"
+  pShc hypernym "http://identifiers.org/uniprot/Q5M824"
+  pFRS2_dpEGFR part "http://identifiers.org/uniprot/Q8C180",
+                    "http://identifiers.org/uniprot/P07522",
+                    "http://identifiers.org/uniprot/Q9QX70"
+  pTrkA_endo hypernym "http://identifiers.org/uniprot/P35739"
+  MEK_ERK part "http://identifiers.org/uniprot/P63086",
+               "http://identifiers.org/uniprot/Q01986"
+  pMEK_ERK part "http://identifiers.org/uniprot/P63086",
+                "http://identifiers.org/uniprot/Q01986"
+  FRS2_dpEGFR_c_Cbl_ubiq part "http://identifiers.org/uniprot/Q9QX70",
+                              "http://identifiers.org/uniprot/D4A244",
+                              "http://identifiers.org/uniprot/Q8K4S7"
+  Crk_C3G_pFRS2_dpEGFR_c_Cbl part "http://identifiers.org/uniprot/Q9QYV3",
+                                  "http://identifiers.org/uniprot/Q9QX70",
+                                  "http://identifiers.org/uniprot/Q63768",
+                                  "http://identifiers.org/uniprot/D4A244",
+                                  "http://identifiers.org/uniprot/Q8K4S7"
+  pShc_dpEGFR_c_Cbl_ubiq part "http://identifiers.org/uniprot/Q9QX70",
+                              "http://identifiers.org/uniprot/Q5M824",
+                              "http://identifiers.org/uniprot/Q8K4S7"
+  Crk_C3G_pFRS2_dpEGFR part "http://identifiers.org/uniprot/Q9QX70",
+                            "http://identifiers.org/uniprot/Q9QYV3",
+                            "http://identifiers.org/uniprot/Q63768",
+                            "http://identifiers.org/uniprot/D4A244"
+  Grb2_SOS_pShc_dpEGFR_c_Cbl_ubiq part "http://identifiers.org/uniprot/Q8K4S7",
+                                       "http://identifiers.org/uniprot/Q9QX70",
+                                       "http://identifiers.org/uniprot/Q5M824",
+                                       "http://identifiers.org/uniprot/P62994",
+                                       "http://identifiers.org/uniprot/Q9Z1I1"
+  Grb2_SOS_pShc_dpEGFR_c_Cbl part "http://identifiers.org/uniprot/Q8K4S7",
+                                  "http://identifiers.org/uniprot/Q9QX70",
+                                  "http://identifiers.org/uniprot/Q5M824",
+                                  "http://identifiers.org/uniprot/P62994",
+                                  "http://identifiers.org/uniprot/Q9Z1I1"
+  Shc_dpEGFR_c_Cbl_ubiq part "http://identifiers.org/uniprot/Q8K4S7",
+                             "http://identifiers.org/uniprot/Q9QX70",
+                             "http://identifiers.org/uniprot/Q5M824"
+  dpEGFR_c_Cbl_ubiq part "http://identifiers.org/uniprot/Q8K4S7",
+                         "http://identifiers.org/uniprot/Q9QX70"
+  proteosome hypernym "http://identifiers.org/go/GO:0000502"
+  Grb2_SOS_pShc part "http://identifiers.org/uniprot/P62994",
+                     "http://identifiers.org/uniprot/Q5M824",
+                     "http://identifiers.org/uniprot/Q9Z1I1"
+  Shc_dpEGFR_c_Cbl part "http://identifiers.org/uniprot/Q5M824",
+                        "http://identifiers.org/uniprot/Q8K4S7",
+                        "http://identifiers.org/uniprot/Q9QX70"
+  Grb2_SOS_pShc_dpEGFR part "http://identifiers.org/uniprot/Q9QX70",
+                            "http://identifiers.org/uniprot/Q9Z1I1",
+                            "http://identifiers.org/uniprot/Q5M824",
+                            "http://identifiers.org/uniprot/P62994"
+  pFRS2 hypernym "http://identifiers.org/uniprot/D4A244",
+                 "http://identifiers.org/kegg.compound/C00562"
+  FRS2_dpEGFR part "http://identifiers.org/uniprot/Q9QX70",
+                   "http://identifiers.org/uniprot/D4A244"
+  pDok_RasGAP part "http://identifiers.org/uniprot/Q4QQV2",
+                   "http://identifiers.org/interpro/IPR011575"
+  pMEK hypernym "http://identifiers.org/uniprot/Q01986"
+  FRS2_dpEGFR_c_Cbl part "http://identifiers.org/uniprot/Q9QX70",
+                         "http://identifiers.org/uniprot/D4A244",
+                         "http://identifiers.org/uniprot/Q8K4S7"
+  pFRS2_dpEGFR_c_Cbl_ubiq part "http://identifiers.org/uniprot/D4A244",
+                               "http://identifiers.org/uniprot/Q8K4S7",
+                               "http://identifiers.org/uniprot/Q9QX70"
+  Ras_GTP identity "http://identifiers.org/interpro/IPR003577"
+  Crk_C3G_pFRS2_dpEGFR_c_Cbl_ubiq part "http://identifiers.org/uniprot/D4A244",
+                                       "http://identifiers.org/uniprot/Q9QX70",
+                                       "http://identifiers.org/uniprot/Q9QYV3",
+                                       "http://identifiers.org/uniprot/Q63768",
+                                       "http://identifiers.org/uniprot/Q8K4S7"
+  c_Raf_Ras_GTP part "http://identifiers.org/uniprot/P11345",
+                     "http://identifiers.org/interpro/IPR003577"
+  B_Raf_Ras_GTP part "http://identifiers.org/uniprot/P28028",
+                     "http://identifiers.org/interpro/IPR003577"
+  ppMEK hypernym "http://identifiers.org/uniprot/Q01986"
+  ppERK hypernym "http://identifiers.org/uniprot/P63086"
+  pTrkA hypernym "http://identifiers.org/uniprot/P35739"
+  Crk_C3G part "http://identifiers.org/uniprot/Q63768",
+               "http://identifiers.org/uniprot/Q9QYV3"
+  Rap1_GTP hypernym "http://identifiers.org/uniprot/Q62636"
+  L_NGFR part "http://identifiers.org/uniprot/P35739",
+              "http://identifiers.org/uniprot/P25427"
+  ppMEK_ERK part "http://identifiers.org/uniprot/Q01986",
+                 "http://identifiers.org/uniprot/P63086"
+  dppERK hypernym "http://identifiers.org/uniprot/P63086"
+  Shc_pTrkA part "http://identifiers.org/uniprot/P35739",
+                 "http://identifiers.org/uniprot/Q5M824"
+  Shc_pTrkA_endo part "http://identifiers.org/uniprot/P35739",
+                      "http://identifiers.org/uniprot/Q5M824"
+  pShc_pTrkA part "http://identifiers.org/uniprot/P35739",
+                  "http://identifiers.org/uniprot/Q5M824"
+  pFRS2_pTrkA part "http://identifiers.org/uniprot/P35739",
+                   "http://identifiers.org/uniprot/D4A244"
+  FRS2_pTrkA part "http://identifiers.org/uniprot/D4A244",
+                  "http://identifiers.org/uniprot/P35739"
+  pShc_pTrkA_endo part "http://identifiers.org/uniprot/Q5M824",
+                       "http://identifiers.org/uniprot/P35739"
+  FRS2_pTrkA_endo part "http://identifiers.org/uniprot/D4A244",
+                       "http://identifiers.org/uniprot/P35739"
+  pFRS2_pTrkA_endo part "http://identifiers.org/uniprot/P35739",
+                        "http://identifiers.org/uniprot/D4A244"
+  Crk_C3G_pFRS2_pTrkA_endo part "http://identifiers.org/uniprot/P35739",
+                                "http://identifiers.org/uniprot/Q9QYV3",
+                                "http://identifiers.org/uniprot/Q63768",
+                                "http://identifiers.org/uniprot/D4A244"
+  Grb2_SOS_pShc_pTrkA part "http://identifiers.org/uniprot/Q5M824",
+                           "http://identifiers.org/uniprot/Q9Z1I1",
+                           "http://identifiers.org/uniprot/P62994",
+                           "http://identifiers.org/uniprot/P35739"
+  Crk_C3G_pFRS2_pTrkA part "http://identifiers.org/uniprot/P35739",
+                           "http://identifiers.org/uniprot/Q9QYV3",
+                           "http://identifiers.org/uniprot/Q63768",
+                           "http://identifiers.org/uniprot/D4A244"
+  Grb2_SOS_pShc_pTrkA_endo part "http://identifiers.org/uniprot/Q9Z1I1",
+                                "http://identifiers.org/uniprot/P35739",
+                                "http://identifiers.org/uniprot/Q5M824",
+                                "http://identifiers.org/uniprot/P62994"
+  c_Raf_Ras_GTP_MEK part "http://identifiers.org/uniprot/Q01986",
+                         "http://identifiers.org/uniprot/P11345",
+                         "http://identifiers.org/interpro/IPR003577"
+  c_Raf_Ras_GTP_pMEK part "http://identifiers.org/uniprot/P11345",
+                          "http://identifiers.org/uniprot/P36506",
+                          "http://identifiers.org/interpro/IPR003577"
+  c_Raf_Ras_GTP_MEK_ERK part "http://identifiers.org/uniprot/P63086",
+                             "http://identifiers.org/uniprot/P11345",
+                             "http://identifiers.org/uniprot/Q01986",
+                             "http://identifiers.org/interpro/IPR003577"
+  c_Raf_Ras_GTP_pMEK_ERK part "http://identifiers.org/uniprot/P63086",
+                              "http://identifiers.org/uniprot/Q01986",
+                              "http://identifiers.org/uniprot/P11345",
+                              "http://identifiers.org/interpro/IPR003577"
+  B_Raf_Ras_GTP_MEK part "http://identifiers.org/uniprot/Q01986",
+                         "http://identifiers.org/uniprot/Q99MC6",
+                         "http://identifiers.org/interpro/IPR003577"
+  B_Raf_Ras_GTP_pMEK part "http://identifiers.org/uniprot/Q01986",
+                          "http://identifiers.org/uniprot/Q99MC6",
+                          "http://identifiers.org/interpro/IPR003577"
+  B_Raf_Ras_GTP_MEK_ERK part "http://identifiers.org/uniprot/P63086",
+                             "http://identifiers.org/uniprot/Q01986",
+                             "http://identifiers.org/uniprot/Q99MC6",
+                             "http://identifiers.org/interpro/IPR003577"
+  B_Raf_Ras_GTP_pMEK_ERK part "http://identifiers.org/uniprot/Q01986",
+                              "http://identifiers.org/uniprot/P63086",
+                              "http://identifiers.org/uniprot/Q99MC6",
+                              "http://identifiers.org/interpro/IPR003577"
+  B_Raf_Rap1_GTP_MEK part "http://identifiers.org/chebi/CHEBI:15996",
+                          "http://identifiers.org/uniprot/Q01986",
+                          "http://identifiers.org/uniprot/Q99MC6",
+                          "http://identifiers.org/uniprot/Q62636"
+  B_Raf_Rap1_GTP_pMEK part "http://identifiers.org/chebi/CHEBI:15996",
+                           "http://identifiers.org/uniprot/Q01986",
+                           "http://identifiers.org/uniprot/Q62636",
+                           "http://identifiers.org/uniprot/Q99MC6"
+  B_Raf_Rap1_GTP_MEK_ERK part "http://identifiers.org/chebi/CHEBI:15996",
+                              "http://identifiers.org/uniprot/P63086",
+                              "http://identifiers.org/uniprot/Q01986",
+                              "http://identifiers.org/uniprot/Q62636",
+                              "http://identifiers.org/uniprot/Q99MC6"
+  B_Raf_Rap1_GTP_pMEK_ERK part "http://identifiers.org/chebi/CHEBI:15996",
+                               "http://identifiers.org/uniprot/P63086",
+                               "http://identifiers.org/uniprot/Q01986",
+                               "http://identifiers.org/uniprot/Q62636",
+                               "http://identifiers.org/uniprot/Q99MC6"
+  ppERK_MKP3 part "http://identifiers.org/uniprot/Q64346",
+                  "http://identifiers.org/uniprot/P63086"
+  dppERK_MKP3 part "http://identifiers.org/uniprot/Q64346",
+                   "http://identifiers.org/uniprot/Q01986"
+  pro_TrkA hypernym "http://identifiers.org/uniprot/P35739"
+  NGF identity "http://identifiers.org/uniprot/P25427"
+  EGF identity "http://identifiers.org/uniprot/P07522"
+  pro_EGFR hypernym "http://identifiers.org/uniprot/Q9QX70"
+  re1 parthood "http://identifiers.org/go/GO:0045741"
+  re2 parthood "http://identifiers.org/go/GO:0045741"
+  re2 identity "http://identifiers.org/go/GO:0005154",
+               "http://identifiers.org/go/GO:0048408"
+  re8 hypernym "http://identifiers.org/go/GO:0005154"
+  J3 hypernym "http://identifiers.org/go/GO:0005068",
+              "http://identifiers.org/go/GO:0005070",
+              "http://identifiers.org/go/GO:0017124"
+  J4 hypernym "http://identifiers.org/go/GO:0017124",
+              "http://identifiers.org/go/GO:0005070",
+              "http://identifiers.org/go/GO:0005068"
+  J5 hypernym "http://identifiers.org/go/GO:0004716"
+  J6 hypernym "http://identifiers.org/go/GO:0051425"
+  J7 hypernym "http://identifiers.org/go/GO:0051425",
+              "http://identifiers.org/go/GO:0042169"
+  J8 hypernym "http://identifiers.org/ec-code/3.1.3.16",
+              "http://identifiers.org/go/GO:0006470"
+  J9 identity "http://identifiers.org/go/GO:0031625",
+              "http://identifiers.org/go/GO:0017124"
+  J10 hypernym "http://identifiers.org/ec-code/3.1.3.16",
+               "http://identifiers.org/go/GO:0006470"
+  J11 hypernym "http://identifiers.org/ec-code/3.1.3.16",
+               "http://identifiers.org/go/GO:0006470"
+  J12 hypernym "http://identifiers.org/go/GO:0042169"
+  J13 hypernym "http://identifiers.org/go/GO:0006468",
+               "http://identifiers.org/go/GO:0004716"
+  J14 hypernym "http://identifiers.org/go/GO:0016567"
+  J15 identity "http://identifiers.org/go/GO:0043161"
+  J16 identity "http://identifiers.org/go/GO:0031625",
+               "http://identifiers.org/go/GO:0017124"
+  J17 hypernym "http://identifiers.org/go/GO:0016567"
+  J18 identity "http://identifiers.org/go/GO:0043161"
+  J19 hypernym "http://identifiers.org/go/GO:0016567"
+  J20 identity "http://identifiers.org/go/GO:0043161"
+  J21 hypernym "http://identifiers.org/go/GO:0004716",
+               "http://identifiers.org/go/GO:0006468"
+  J22 hypernym "http://identifiers.org/go/GO:0005070"
+  J23 hypernym "http://identifiers.org/go/GO:0042169"
+  J24 hypernym "http://identifiers.org/go/GO:0005070"
+  J25 identity "http://identifiers.org/go/GO:0031625",
+               "http://identifiers.org/go/GO:0017124"
+  J27 hypernym "http://identifiers.org/go/GO:0042169"
+  J28 hypernym "http://identifiers.org/go/GO:0016567"
+  J29 identity "http://identifiers.org/go/GO:0043161"
+  J30 hypernym "http://identifiers.org/go/GO:0043241"
+  J31 hypernym "http://identifiers.org/go/GO:0006468",
+               "http://identifiers.org/go/GO:0004716"
+  J32 hypernym "http://identifiers.org/ec-code/3.1.3.16",
+               "http://identifiers.org/go/GO:0006470"
+  J33 hypernym "http://identifiers.org/ec-code/3.1.3.16",
+               "http://identifiers.org/go/GO:0006470"
+  J34 hypernym "http://identifiers.org/go/GO:0006461"
+  J35 identity "http://identifiers.org/go/GO:0051425"
+  J36 identity "http://identifiers.org/go/GO:0051425"
+  J37 hypernym "http://identifiers.org/go/GO:0004716"
+  J38 hypernym "http://identifiers.org/go/GO:0042169"
+  J39 hypernym "http://identifiers.org/go/GO:0031625"
+  J40 hypernym "http://identifiers.org/go/GO:0031625"
+  J41 hypernym "http://identifiers.org/go/GO:0016567"
+  J42 hypernym "http://identifiers.org/go/GO:0016567"
+  J43 hypernym "http://identifiers.org/go/GO:0004716",
+               "http://identifiers.org/go/GO:0006468"
+  J44 hypernym "http://identifiers.org/go/GO:0042169"
+  J45 hypernym "http://identifiers.org/go/GO:0016567"
+  J46 hypernym "http://identifiers.org/go/GO:0043161"
+  J47 hypernym "http://identifiers.org/go/GO:0043161"
+  J49 parthood "http://identifiers.org/go/GO:0046580"
+  J50 hypernym "http://identifiers.org/go/GO:0006468"
+  J51 hypernym "http://identifiers.org/go/GO:0006468"
+  J52 hypernym "http://identifiers.org/go/GO:0000185"
+  J53 hypernym "http://identifiers.org/go/GO:0000185"
+  J54 hypernym "http://identifiers.org/go/GO:0000185"
+  J57 hypernym "http://identifiers.org/ec-code/3.1.3.16",
+               "http://identifiers.org/go/GO:0006470"
+  J57 parthood "http://identifiers.org/go/GO:0051389"
+  J58 hypernym "http://identifiers.org/ec-code/3.1.3.16",
+               "http://identifiers.org/go/GO:0006470"
+  J58 parthood "http://identifiers.org/go/GO:0051389"
+  J61 hypernym "http://identifiers.org/ec-code/3.1.3.16",
+               "http://identifiers.org/go/GO:0006470"
+  J61 parthood "http://identifiers.org/go/GO:0051389"
+  J62 hypernym "http://identifiers.org/ec-code/3.1.3.16",
+               "http://identifiers.org/go/GO:0006470"
+  J62 parthood "http://identifiers.org/go/GO:0051389"
+  J63 hypernym "http://identifiers.org/go/GO:0005154"
+  J66 hypernym "http://identifiers.org/ec-code/3.1.3.16",
+               "http://identifiers.org/go/GO:0006470"
+  J66 parthood "http://identifiers.org/go/GO:0046580"
+  J67 hypernym "http://identifiers.org/ec-code/3.1.3.16",
+               "http://identifiers.org/go/GO:0006470"
+  J68 hypernym "http://identifiers.org/go/GO:0005085",
+               "http://identifiers.org/go/GO:0006468"
+  J69 hypernym "http://identifiers.org/go/GO:0006468",
+               "http://identifiers.org/go/GO:0005085"
+  J70 hypernym "http://identifiers.org/go/GO:0048406",
+               "http://identifiers.org/go/GO:0051396"
+  J71 hypernym "http://identifiers.org/go/GO:0004716",
+               "http://identifiers.org/go/GO:0006468"
+  J72 hypernym "http://identifiers.org/go/GO:0031623"
+  J73 hypernym "http://identifiers.org/go/GO:0043241"
+  J74 hypernym "http://identifiers.org/go/GO:0043241"
+  J75 hypernym "http://identifiers.org/go/GO:0042169",
+               "http://identifiers.org/go/GO:0051425"
+  J76 hypernym "http://identifiers.org/go/GO:0051425",
+               "http://identifiers.org/go/GO:0042169"
+  J77 hypernym "http://identifiers.org/go/GO:0051425"
+  J78 hypernym "http://identifiers.org/go/GO:0051425"
+  J79 hypernym "http://identifiers.org/go/GO:0051425",
+               "http://identifiers.org/go/GO:0042169"
+  J80 hypernym "http://identifiers.org/go/GO:0042169",
+               "http://identifiers.org/go/GO:0051425"
+  J81 hypernym "http://identifiers.org/go/GO:0006468"
+  J82 hypernym "http://identifiers.org/go/GO:0006468"
+  J83 hypernym "http://identifiers.org/go/GO:0006468"
+  J84 hypernym "http://identifiers.org/go/GO:0051425"
+  J85 hypernym "http://identifiers.org/go/GO:0051425"
+  J86 hypernym "http://identifiers.org/go/GO:0006468"
+  J87 hypernym "http://identifiers.org/go/GO:0043241"
+  J88 hypernym "http://identifiers.org/go/GO:0043241"
+  J89 hypernym "http://identifiers.org/go/GO:0043241"
+  J90 hypernym "http://identifiers.org/go/GO:0043241"
+  J92 hypernym "http://identifiers.org/go/GO:0043241"
+  J93 hypernym "http://identifiers.org/go/GO:0043241"
+  J94 hypernym "http://identifiers.org/go/GO:0043241"
+  J95 hypernym "http://identifiers.org/go/GO:0005070"
+  J96 hypernym "http://identifiers.org/go/GO:0005070"
+  J97 hypernym "http://identifiers.org/go/GO:0016567"
+  J98 hypernym "http://identifiers.org/go/GO:0016567"
+  J99 hypernym "http://identifiers.org/go/GO:0016567"
+  J100 hypernym "http://identifiers.org/go/GO:0016567"
+  J101 hypernym "http://identifiers.org/go/GO:0016567"
+  J102 hypernym "http://identifiers.org/go/GO:0016567"
+  J103 hypernym "http://identifiers.org/go/GO:0042169"
+  J104 hypernym "http://identifiers.org/go/GO:0042169"
+  J105 hypernym "http://identifiers.org/go/GO:0051425",
+                "http://identifiers.org/go/GO:0042169"
+  J106 hypernym "http://identifiers.org/go/GO:0051425",
+                "http://identifiers.org/go/GO:0042169"
+  J107 hypernym "http://identifiers.org/go/GO:0043241"
+  J108 hypernym "http://identifiers.org/go/GO:0043241"
+  J109 hypernym "http://identifiers.org/go/GO:0043241"
+  J110 hypernym "http://identifiers.org/go/GO:0043241"
+  J112 hypernym "http://identifiers.org/go/GO:0043241"
+  J113 parthood "http://identifiers.org/go/GO:0051396"
+  J115 hypernym "http://identifiers.org/go/GO:0042169",
+                "http://identifiers.org/go/GO:0051425"
+  J116 hypernym "http://identifiers.org/go/GO:0042169",
+                "http://identifiers.org/go/GO:0051425"
+  J117 hypernym "http://identifiers.org/go/GO:0005070"
+  J119 hypernym "http://identifiers.org/go/GO:0031625"
+  J118 hypernym "http://identifiers.org/go/GO:0051425"
+  J120 hypernym "http://identifiers.org/go/GO:0051425"
+  J121 hypernym "http://identifiers.org/ec-code/3.1.3.16",
+                "http://identifiers.org/go/GO:0006470"
+  J122 hypernym "http://identifiers.org/ec-code/3.1.3.16",
+                "http://identifiers.org/go/GO:0006470"
+  J123 hypernym "http://identifiers.org/go/GO:0006468"
+  J124 hypernym "http://identifiers.org/go/GO:0043241"
+  J133 parthood "http://identifiers.org/go/GO:0000187"
+  J134 parthood "http://identifiers.org/go/GO:0000187"
+  J135 parthood "http://identifiers.org/go/GO:0000187"
+  J136 hypernym "http://identifiers.org/go/GO:0043241"
+  J137 hypernym "http://identifiers.org/go/GO:0043241"
+  J138 hypernym "http://identifiers.org/go/GO:0043241"
+  J139 hypernym "http://identifiers.org/go/GO:0043241"
+  J140 hypernym "http://identifiers.org/go/GO:0019899"
+  J141 hypernym "http://identifiers.org/go/GO:0019899"
+  J142 hypernym "http://identifiers.org/go/GO:0019899"
+  J143 hypernym "http://identifiers.org/go/GO:0019899"
+  J144 hypernym "http://identifiers.org/go/GO:0019899"
+  J145 hypernym "http://identifiers.org/go/GO:0019899"
+  J146 hypernym "http://identifiers.org/go/GO:0019899"
+  J147 hypernym "http://identifiers.org/go/GO:0019899"
+  J148 hypernym "http://identifiers.org/go/GO:0019899"
+  J149 hypernym "http://identifiers.org/go/GO:0019899"
+  J150 hypernym "http://identifiers.org/go/GO:0019899"
+  J151 hypernym "http://identifiers.org/go/GO:0019899"
+  J152 hypernym "http://identifiers.org/go/GO:0004709"
+  J153 hypernym "http://identifiers.org/go/GO:0004709"
+  J154 hypernym "http://identifiers.org/go/GO:0004709"
+  J155 hypernym "http://identifiers.org/go/GO:0004709"
+  J156 hypernym "http://identifiers.org/go/GO:0004709"
+  J157 hypernym "http://identifiers.org/go/GO:0004709"
+  J158 hypernym "http://identifiers.org/go/GO:0004709"
+  J159 hypernym "http://identifiers.org/go/GO:0004709"
+  J160 hypernym "http://identifiers.org/go/GO:0004709"
+  J161 hypernym "http://identifiers.org/go/GO:0004709"
+  J162 hypernym "http://identifiers.org/go/GO:0004709"
+  J163 hypernym "http://identifiers.org/go/GO:0004709"
+  J164 hypernym "http://identifiers.org/go/GO:0043241"
+  J165 parthood "http://identifiers.org/go/GO:0000188"
+  J166 parthood "http://identifiers.org/go/GO:0000188"
+  J167 parthood "http://identifiers.org/go/GO:0043241"
+  J167 parthood "http://identifiers.org/go/GO:0000188"
+  J168 parthood "http://identifiers.org/go/GO:0000188"
+  J168 parthood "http://identifiers.org/go/GO:0043241"
 end
+
+Sasagawa2005_MAPK is "Sasagawa2005_MAPK"
+
+Sasagawa2005_MAPK model_entity_is "http://identifiers.org/biomodels.db/MODEL6624243033"
+Sasagawa2005_MAPK model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000049"
+Sasagawa2005_MAPK description "http://identifiers.org/pubmed/15793571"
+Sasagawa2005_MAPK origin "http://identifiers.org/biomodels.db/MODEL9071122126",
+                         "http://identifiers.org/biomodels.db/BIOMD0000000019",
+                         "http://identifiers.org/biomodels.db/MODEL9070467164",
+                         "http://identifiers.org/biomodels.db/MODEL9079179924",
+                         "http://identifiers.org/biomodels.db/BIOMD0000000146",
+                         "http://identifiers.org/pubmed/11024454",
+                         "http://identifiers.org/pubmed/11832340",
+                         "http://identifiers.org/pubmed/14751248"
+Sasagawa2005_MAPK taxon "http://identifiers.org/taxonomy/10114"
+Sasagawa2005_MAPK part "http://identifiers.org/go/GO:0007173",
+                       "http://identifiers.org/go/GO:0007265",
+                       "http://identifiers.org/go/GO:0048011",
+                       "http://identifiers.org/go/GO:0000165"
+Sasagawa2005_MAPK property "http://identifiers.org/mamo/MAMO_0000046"
+Sasagawa2005_MAPK hypernym "http://identifiers.org/go/GO:0070371"

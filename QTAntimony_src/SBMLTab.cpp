@@ -11,6 +11,7 @@
 #define DEFAULTCOMP "default_compartment" //Also defined in module.cpp and antimony_api.cpp
 
 //using namespace std;
+using namespace libsbml;
 
 SBMLTab::SBMLTab(QWidget* parent)
         : ChangeableTextBox(parent),

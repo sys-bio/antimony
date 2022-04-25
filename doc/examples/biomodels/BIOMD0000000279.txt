@@ -1,16 +1,16 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Komarova2005_PTHaction_OsteoclastOsteoblastCoupling()
 
   // Compartments and Species:
-  compartment Compartment_;
-  species $x1 in Compartment_, $x2 in Compartment_, $z in Compartment_;
+  compartment Compartment;
+  species $x1 in Compartment, $x2 in Compartment, $z in Compartment;
 
   // Assignment Rules:
   y2 := piecewise(x2 - x2_bar, x2 > x2_bar, 0);
   y1 := piecewise(x1 - x1_bar, x1 > x1_bar, 0);
-  x1_bar := (beta1/alpha1)^((1 - g22)/gamma)*(beta2/alpha2)^(g21/gamma);
-  x2_bar := (beta1/alpha1)^(g12/gamma)*(beta2/alpha2)^((1 - g11)/gamma);
-  gamma := g12*g21 - (1 - g11)*(1 - g22);
+  x1_bar := (beta1/alpha1)^((1 - g22)/gamma_)*(beta2/alpha2)^(g21/gamma_);
+  x2_bar := (beta1/alpha1)^(g12/gamma_)*(beta2/alpha2)^((1 - g11)/gamma_);
+  gamma_ := g12*g21 - (1 - g11)*(1 - g22);
 
   // Rate Rules:
   x1' = alpha1*x1^g11*x2^g21 - beta1*x1;
@@ -23,7 +23,7 @@ model *Komarova2005_PTHaction_OsteoclastOsteoblastCoupling()
   z = 100;
 
   // Compartment initializations:
-  Compartment_ = 1;
+  Compartment = 1;
 
   // Variable initializations:
   alpha1 = 3;
@@ -38,12 +38,44 @@ model *Komarova2005_PTHaction_OsteoclastOsteoblastCoupling()
   k1 = 0.24;
 
   // Other declarations:
-  var y2, y1, x1_bar, x2_bar, gamma;
-  const Compartment_, alpha1, g11, g21, beta1, alpha2, g12, g22, beta2, k2;
+  var y2, y1, x1_bar, x2_bar, gamma_;
+  const Compartment, alpha1, g11, g21, beta1, alpha2, g12, g22, beta2, k2;
   const k1;
 
   // Display Names:
   x1 is "Osteoclasts";
   x2 is "Osteoblasts";
   z is "BoneMass";
+  gamma_ is "gamma";
+
+  // SBO terms:
+  Compartment.sboTerm = 290
+  alpha1.sboTerm = 9
+  g11.sboTerm = 9
+  g21.sboTerm = 9
+  beta1.sboTerm = 9
+  alpha2.sboTerm = 9
+  g12.sboTerm = 9
+  g22.sboTerm = 9
+  beta2.sboTerm = 9
+  k2.sboTerm = 9
+  k1.sboTerm = 9
+  gamma_.sboTerm = 9
+
+  // CV terms:
+  Compartment hypernym "http://identifiers.org/bto/BTO:0000140"
+  x1 hypernym "http://identifiers.org/bto/BTO:0000968"
+  x2 hypernym "http://identifiers.org/bto/BTO:0001593"
+  z hypernym "http://identifiers.org/pato/PATO:0000125"
 end
+
+Komarova2005_PTHaction_OsteoclastOsteoblastCoupling is "Komarova2005_PTHaction_OsteoclastOsteoblastCoupling"
+
+Komarova2005_PTHaction_OsteoclastOsteoblastCoupling model_entity_is "http://identifiers.org/biomodels.db/MODEL1011230000"
+Komarova2005_PTHaction_OsteoclastOsteoblastCoupling model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000279"
+Komarova2005_PTHaction_OsteoclastOsteoblastCoupling description "http://identifiers.org/pubmed/15860557"
+Komarova2005_PTHaction_OsteoclastOsteoblastCoupling origin "http://identifiers.org/biomodels.db/BIOMD0000000148"
+Komarova2005_PTHaction_OsteoclastOsteoblastCoupling hypernym "http://identifiers.org/go/GO:0046850",
+                                                             "http://identifiers.org/go/GO:0071107"
+Komarova2005_PTHaction_OsteoclastOsteoblastCoupling taxon "http://identifiers.org/taxonomy/7711"
+Komarova2005_PTHaction_OsteoclastOsteoblastCoupling property "http://identifiers.org/doid/DOID:14080"

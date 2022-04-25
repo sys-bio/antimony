@@ -1,0 +1,67 @@
+// Created by libAntimony v2.13.0
+model *MODEL1708250002()
+
+  // Compartments and Species:
+  compartment cell;
+  species $l in cell, $m in cell, $n in cell;
+
+  // Rate Rules:
+  l' = A*l*(m + F)*(N + 1)/(N + l + m + n) + I*(1 + S*(m + F)) - K_l*l*m*(m + F) - delta_l*l;
+  m' = xi*m*(N + 1)/(N + l + m + n) - m - K_m*l*m*(m + F);
+  n' = n*(N + 1)/(N + l + m + n) - n;
+
+  // Events:
+  treatment_start_0: at time >= treatment_start: F = 0.072;
+  treatment_end_0: at time >= treatment_end: F = 0;
+
+  // Species initializations:
+  l = 0.0999999999999994;
+  m = 0.899999999999994;
+  n = 0.899999999999994;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  A = 0.025;
+  F = 0;
+  N = 1;
+  I = 0.01;
+  S = 62.5;
+  K_l = 17.857;
+  delta_l = 0.1;
+  xi = 2;
+  K_m = 25;
+  treatment_start = 10;
+  treatment_end = 400;
+  sigma = 0.7823;
+  sink = 0;
+
+  // Other declarations:
+  var F;
+  const cell, A, N, I, S, K_l, delta_l, xi, K_m, treatment_start, treatment_end;
+  const sigma, sink;
+
+  // Display Names:
+  cell is "compartment";
+  l is "macrophage";
+  m is "mutated cell";
+  n is "normal cell";
+  treatment_start_0 is "treatment start";
+  treatment_end_0 is "treatment end";
+
+  // CV terms:
+  cell hypernym "urn:miriam:omit:OMIT%3A0027497"
+  l hypernym "http://identifiers.org/bto/BTO:0000801"
+  m hypernym "http://identifiers.org/cl/CL:0001063"
+  n hypernym "urn:miriam:go:G0%3A0005623"
+end
+
+MODEL1708250002 is "Owen1998 - Tumour  treatment model"
+
+MODEL1708250002 model_entity_is "http://identifiers.org/biomodels.db/MODEL1708250002"
+MODEL1708250002 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000650"
+MODEL1708250002 description "http://identifiers.org/pubmed/9661282"
+MODEL1708250002 property "http://identifiers.org/go/GO:0002837"
+MODEL1708250002 description "http://identifiers.org/pubmed/9661282"
+MODEL1708250002 property "urn:miriam:mamo:MAMO%3A0000046"

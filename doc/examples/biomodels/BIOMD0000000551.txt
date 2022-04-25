@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Das2010___Effect_of_a_gamma_secretase_inhibitor_on_Amyloid_beta_dynamics()
 
   // Compartments and Species:
@@ -6,11 +6,11 @@ model *Das2010___Effect_of_a_gamma_secretase_inhibitor_on_Amyloid_beta_dynamics(
   species $C in CSF, $P in Plasma;
 
   // Assignment Rules:
-  g_t := piecewise(time/tauCSF*aCSF*exp(-bCSF*tauCSF), time < tauCSF, aCSF*exp(-bCSF*time));
-  f_t := piecewise(time/tauplasma*aplasma*exp(-bplasma*tauplasma), time < tauplasma, aplasma*exp(-bplasma*time));
+  g_t := piecewise((time/tauCSF)*aCSF*exp(-bCSF*tauCSF), time < tauCSF, aCSF*exp(-bCSF*time));
+  f_t := piecewise((time/tauplasma)*aplasma*exp(-bplasma*tauplasma), time < tauplasma, aplasma*exp(-bplasma*time));
 
   // Rate Rules:
-  C' = Sc/(1 + g_t/Ki) - k1*C + J;
+  C' = (Sc/(1 + g_t/Ki) - k1*C) + J;
   P' = k1*r*C - J*r - deltap*P*l;
   l' = epsilon*(1/(1 + alpha*f_t) - l);
 
@@ -53,4 +53,19 @@ model *Das2010___Effect_of_a_gamma_secretase_inhibitor_on_Amyloid_beta_dynamics(
   time_unit is "time";
   g_t is "g(t)";
   f_t is "f(t)";
+
+  // CV terms:
+  CSF identity "http://identifiers.org/bto/BTO:0000237"
+  Plasma identity "http://identifiers.org/bto/BTO:0000131"
+  C hypernym "http://identifiers.org/uniprot/P05067"
+  P hypernym "http://identifiers.org/uniprot/P05067"
 end
+
+Das2010___Effect_of_a_gamma_secretase_inhibitor_on_Amyloid_beta_dynamics is "Das2010 - Effect of a gamma-secretase inhibitor on Amyloid-beta dynamics"
+
+Das2010___Effect_of_a_gamma_secretase_inhibitor_on_Amyloid_beta_dynamics model_entity_is "http://identifiers.org/biomodels.db/MODEL1409230000"
+Das2010___Effect_of_a_gamma_secretase_inhibitor_on_Amyloid_beta_dynamics model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000551"
+Das2010___Effect_of_a_gamma_secretase_inhibitor_on_Amyloid_beta_dynamics description "http://identifiers.org/pubmed/20411345"
+Das2010___Effect_of_a_gamma_secretase_inhibitor_on_Amyloid_beta_dynamics hypernym "http://identifiers.org/go/GO:0097242"
+Das2010___Effect_of_a_gamma_secretase_inhibitor_on_Amyloid_beta_dynamics property "http://identifiers.org/doid/DOID:10652"
+Das2010___Effect_of_a_gamma_secretase_inhibitor_on_Amyloid_beta_dynamics taxon "http://identifiers.org/taxonomy/9544"

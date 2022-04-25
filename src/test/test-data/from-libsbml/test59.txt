@@ -1,4 +1,4 @@
-// Created by libAntimony v2.12.0
+// Created by libAntimony v2.13.1
 
 // Warnings from automatic translation:
 //    Cannot replace stoichiometries in Antimony:  all replacedElements and replacedBy children of z in reaction J2 will be ignored.
@@ -9,10 +9,13 @@ model foo()
   species x;
 
   // Reactions:
-  J0: x -> ; ;
+  J0: x_stoich x -> ; ;
 
   // Species initializations:
   x = ;
+
+  // Variable initializations:
+  x_stoich = 1;
 end
 
 foo is "foo"
@@ -27,9 +30,13 @@ model *bar()
   species y, z;
 
   // Reactions:
-  J2:  -> z + z; ;
+  J2:  -> z_stoich z + z_stoich2 z; ;
 
   // Species initializations:
   y = ;
   z = ;
+
+  // Variable initializations:
+  z_stoich = 1;
+  z_stoich2 = 1;
 end

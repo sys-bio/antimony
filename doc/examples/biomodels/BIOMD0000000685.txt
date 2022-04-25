@@ -1,0 +1,85 @@
+// Created by libAntimony v2.13.0
+model *Wodarz2003_CTL_cross_priming()
+
+  // Compartments and Species:
+  compartment COMpartment;
+
+  // Assignment Rules:
+  R := C*A_star/(q*T);
+
+  // Rate Rules:
+  T' = r*T*(1 - T/k) - d*T - gamma_*T*C;
+  C' = eta*A_star*C/(epsilon*C + 1) - q*T*C - mu*C;
+  A' = lambda - delta_1*A - alpha*A*T;
+  A_star' = alpha*A*T - delta_2*A_star;
+
+  // Compartment initializations:
+  COMpartment = 1;
+
+  // Variable initializations:
+  T = 0.1;
+  r = 1;
+  k = 10;
+  d = 0.1;
+  gamma_ = 1;
+  C = 0.3;
+  A = 2;
+  lambda = 1;
+  delta_1 = 0.1;
+  alpha = 0.5;
+  A_star = 2;
+  delta_2 = 1.5;
+  eta = 2;
+  epsilon = 1;
+  q = 0.5;
+  mu = 0.1;
+
+  // Other declarations:
+  var T, C, A, A_star, R;
+  const COMpartment, r, k, d, gamma_, lambda, delta_1, alpha, delta_2, eta;
+  const epsilon, q, mu;
+
+  // Unit definitions:
+  unit time_unit = 86400 second;
+
+  // Display Names:
+  time_unit is "time";
+  gamma_ is "gamma";
+
+  // CV terms:
+  T hypernym "http://identifiers.org/ncit/C12922"
+  T hypernym "http://identifiers.org/bto/BTO:0000152"
+  r encodement "urn:miriam:sbo:SBO%3A0000610"
+  k encodement "http://identifiers.org/ncit/C25443"
+  d encodement "http://identifiers.org/go/GO:0008219"
+  gamma_ encodement "urn:miriam:obi:OBI%3A0302894"
+  C hypernym "http://identifiers.org/bto/BTO:0000289"
+  C hypernym "http://identifiers.org/cl/CL:0000910"
+  A hypernym "http://identifiers.org/cl/CL:0000145"
+  lambda encodement "urn:miriam:sbo:SBO%3A0000393"
+  delta_1 encodement "http://identifiers.org/go/GO:0008219"
+  alpha encodement "http://identifiers.org/chebi/CHEBI:59132"
+  alpha property "http://identifiers.org/go/GO:0019882"
+  alpha property "http://identifiers.org/ncit/C71688"
+  alpha property "http://identifiers.org/go/GO:0046903"
+  A_star hypernym "http://identifiers.org/cl/CL:0000145"
+  delta_2 encodement "http://identifiers.org/go/GO:0002578"
+  delta_2 encodement "http://identifiers.org/go/GO:0008219"
+  eta encodement "urn:miriam:sbo:SBO%3A0000610"
+  epsilon encodement "http://identifiers.org/ncit/C25443"
+  q encodement "http://identifiers.org/go/GO:0097300"
+  q encodement "http://identifiers.org/go/GO:0006924"
+  mu encodement "http://identifiers.org/go/GO:0008219"
+end
+
+Wodarz2003_CTL_cross_priming is "Wodarz2003 - Cytotoxic T lymphocyte cross-priming"
+
+Wodarz2003_CTL_cross_priming model_entity_is "http://identifiers.org/biomodels.db/MODEL1006230094"
+Wodarz2003_CTL_cross_priming model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000685"
+Wodarz2003_CTL_cross_priming description "http://identifiers.org/pubmed/12706524"
+Wodarz2003_CTL_cross_priming model_entity_is "http://identifiers.org/biomodels.db/MODEL1006230094"
+Wodarz2003_CTL_cross_priming part "http://identifiers.org/bto/BTO:0000289"
+Wodarz2003_CTL_cross_priming hypernym "http://identifiers.org/go/GO:0002250"
+Wodarz2003_CTL_cross_priming taxon "http://identifiers.org/taxonomy/9606"
+Wodarz2003_CTL_cross_priming description "http://identifiers.org/pubmed/12706524"
+Wodarz2003_CTL_cross_priming part "http://identifiers.org/cl/CL:0000145"

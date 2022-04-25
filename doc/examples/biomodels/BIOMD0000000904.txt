@@ -1,0 +1,131 @@
+// Created by libAntimony v2.13.0
+function Function_for_increase_in_the_population_of_tumor_cell_during_interphase(a4, Tm)
+  2*a4*Tm;
+end
+
+Function_for_increase_in_the_population_of_tumor_cell_during_interphase is "Function for increase in the population of tumor cell during interphase"
+
+function Function_for_decrease_in_the_population_of_tumor_cell_during_mitosis(d3, Tm, a4, c3, I, k1, k2, u)
+  d3*Tm + a4*Tm + c3*Tm*I + k1*-exp(-k2*u)*Tm;
+end
+
+Function_for_decrease_in_the_population_of_tumor_cell_during_mitosis is "Function for decrease in the population of tumor cell during mitosis"
+
+function Function_for_decrease_in_the_population_of_immune_response(c2, I, c4, Tm, d1, k3, k4, u, Ti)
+  c2*I*Ti + c4*Tm*I + d1*I + k3*(1 - exp(-k4*u))*I;
+end
+
+Function_for_decrease_in_the_population_of_immune_response is "Function for decrease in the population of immune response"
+
+function Function_for_decrease_in_the_population_of_tumor_cell_during_interphase(c1, I, d2, Ti, a1)
+  (c1*I + d2)*Ti + a1*Ti;
+end
+
+Function_for_decrease_in_the_population_of_tumor_cell_during_interphase is "Function for decrease in the population of tumor cell during interphase"
+
+function Function_for_increase_in_the_population_of_tumor_cell_during_mitosis(a1, Ti)
+  a1*Ti;
+end
+
+Function_for_increase_in_the_population_of_tumor_cell_during_mitosis is "Function for increase in the population of tumor cell during mitosis"
+
+function Function_for_formation_of_immune_response(k, p, I, Ti, Tm, n, alpha)
+  k + p*I*(Ti + Tm)^n/(alpha + (Ti + Tm)^n);
+end
+
+Function_for_formation_of_immune_response is "Function for formation of immune response"
+
+function Function_for_decrease_in_drug(gamma_, u)
+  gamma_*u;
+end
+
+Function_for_decrease_in_drug is "Function for decrease in drug"
+
+
+model *Admon2017___Modelling_tumor_growth_with_immune_response_and_drug_using_ordinary_differential_equations()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species Ti in compartment_, Tm in compartment_, I in compartment_, u in compartment_;
+
+  // Assignment Rules:
+  d := 2*a1*a4/(a1 + d2);
+
+  // Reactions:
+  Increase_in_the_population_of_tumor_cell_during_interphase:  => Ti; compartment_*Function_for_increase_in_the_population_of_tumor_cell_during_interphase(a4, Tm);
+  Decrease_in_the_population_of_tumor_cell_during_interphase: Ti => ; compartment_*Function_for_decrease_in_the_population_of_tumor_cell_during_interphase(c1, I, d2, Ti, a1);
+  Increase_in_population_of_tumor_cell_during_mitosis:  => Tm; compartment_*Function_for_increase_in_the_population_of_tumor_cell_during_mitosis(a1, Ti);
+  Decrease_in_the_population_of_tumor_cell_during_mitosis: Tm => ; compartment_*Function_for_decrease_in_the_population_of_tumor_cell_during_mitosis(d3, Tm, a4, c3, I, k1, k2, u);
+  induction_of_immune_response_due_to_tumor_cell_formation:  => I; compartment_*Function_for_formation_of_immune_response(k, p, I, Ti, Tm, n, alpha);
+  Decrease_in_the_popoulation_of_immune_response: I => ; compartment_*Function_for_decrease_in_the_population_of_immune_response(c2, I, c4, Tm, d1, k3, k4, u, Ti);
+  Decrease_in_drug: u => ; compartment_*Function_for_decrease_in_drug(gamma_, u);
+
+  // Species initializations:
+  Ti = 1.3;
+  Tm = 1.2;
+  I = 0.9;
+  u = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  a1 = 1;
+  a4 = 0.8;
+  d1 = 0.29;
+  d2 = 0.11;
+  d3 = 0.4;
+  c1 = 0.9;
+  c3 = 0.9;
+  c2 = 0.085;
+  c4 = 0.085;
+  k = 0.029;
+  k1 = 0;
+  k2 = 0.57;
+  k3 = 0;
+  k4 = 0.061;
+  alpha = 0.2;
+  p = 0.1;
+  n = 3;
+  gamma_ = 0;
+
+  // Other declarations:
+  var d;
+  const compartment_, a1, a4, d1, d2, d3, c1, c3, c2, c4, k, k1, k2, k3, k4;
+  const alpha, p, n, gamma_;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  gamma_ is "gamma";
+  Increase_in_the_population_of_tumor_cell_during_interphase is "Increase in the population of tumor cell during interphase";
+  Decrease_in_the_population_of_tumor_cell_during_interphase is "Decrease in the population of tumor cell during interphase";
+  Increase_in_population_of_tumor_cell_during_mitosis is "Increase in population of tumor cell during mitosis";
+  Decrease_in_the_population_of_tumor_cell_during_mitosis is "Decrease in the population of tumor cell during mitosis";
+  induction_of_immune_response_due_to_tumor_cell_formation is "induction of immune response due to tumor cell formation";
+  Decrease_in_the_popoulation_of_immune_response is "Decrease in the popoulation of immune response";
+  Decrease_in_drug is "Decrease in drug";
+
+  // CV terms:
+  Ti instance "http://identifiers.org/ncit/C12922"
+  Tm instance "http://identifiers.org/ncit/C12922"
+  I property "http://identifiers.org/go/GO:0006955"
+  Increase_in_the_population_of_tumor_cell_during_interphase instance "http://identifiers.org/ncit/C25533"
+  Decrease_in_the_population_of_tumor_cell_during_interphase instance "http://identifiers.org/ncit/C157203"
+  Increase_in_population_of_tumor_cell_during_mitosis instance "http://identifiers.org/ncit/C25533"
+  Decrease_in_the_population_of_tumor_cell_during_mitosis instance "http://identifiers.org/ncit/C157203"
+  induction_of_immune_response_due_to_tumor_cell_formation instance "http://identifiers.org/ncit/C25533"
+  Decrease_in_the_popoulation_of_immune_response instance "http://identifiers.org/ncit/C157203"
+  Decrease_in_drug instance "http://identifiers.org/ncit/C157203"
+end
+
+Admon2017___Modelling_tumor_growth_with_immune_response_and_drug_using_ordinary_differential_equations is "Admon2017 - Modelling tumor growth with immune response and drug using ordinary differential equations"
+
+Admon2017___Modelling_tumor_growth_with_immune_response_and_drug_using_ordinary_differential_equations description "http://identifiers.org/doi/10.11113/jt.v79.9791"
+Admon2017___Modelling_tumor_growth_with_immune_response_and_drug_using_ordinary_differential_equations model_entity_is "http://identifiers.org/biomodels.db/MODEL1912180006",
+                                                                                                                       "http://identifiers.org/biomodels.db/BIOMD0000000904"
+Admon2017___Modelling_tumor_growth_with_immune_response_and_drug_using_ordinary_differential_equations property "http://identifiers.org/mamo/MAMO_0000046"
+Admon2017___Modelling_tumor_growth_with_immune_response_and_drug_using_ordinary_differential_equations taxon "http://identifiers.org/taxonomy/9606"

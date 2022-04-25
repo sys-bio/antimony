@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *voit03()
 
   // Compartments and Species:
@@ -22,12 +22,19 @@ model *voit03()
   flux_X7_in := 1.0939*X6^0.2*X18;
   flux_X7_out := 1.2288*X7^0.3*X19;
   X8 := piecewise(8, heat_shock == 1, 1);
+  X9 := piecewise(1, heat_shock == 8, 1);
   X10 := piecewise(1, heat_shock == 1, 1);
+  X11 := piecewise(1, heat_shock == 6, 1);
   X12r := piecewise(16, heat_shock == 1, 1);
+  X12f := piecewise(1, heat_shock == 16, 1);
   X13 := piecewise(16, heat_shock == 1, 1);
+  X14 := piecewise(1, heat_shock == 16, 1);
   X15r := piecewise(50, heat_shock == 1, 1);
+  X15f := piecewise(1, heat_shock == 50, 1);
   X16 := piecewise(16, heat_shock == 1, 1);
+  X17 := piecewise(1, heat_shock == 12, 1);
   X18 := piecewise(18, heat_shock == 1, 1);
+  X19 := piecewise(1, heat_shock == 6, 1);
 
   // Rate Rules:
   X1' = flux_X1_in - flux_X1_out;
@@ -70,25 +77,18 @@ model *voit03()
   heat_shock = 0;
   heat_shock has dimensionless;
   X8 has dimensionless;
-  X9 = ;
   X9 has dimensionless;
   X10 has dimensionless;
-  X11 = ;
   X11 has dimensionless;
   X12r has dimensionless;
-  X12f = ;
   X12f has dimensionless;
   X13 has dimensionless;
-  X14 = ;
   X14 has dimensionless;
   X15r has dimensionless;
-  X15f = ;
   X15f has dimensionless;
   X16 has dimensionless;
-  X17 = ;
   X17 has dimensionless;
   X18 has dimensionless;
-  X19 = ;
   X19 has dimensionless;
 
   // Other declarations:
@@ -144,4 +144,52 @@ model *voit03()
   X17 is "alpha,alpha-T6P synthase";
   X18 is "alpha,alpha--T6P phosphatase";
   X19 is "trehalase";
+
+  // SBO terms:
+  cell.sboTerm = 290
+  X0.sboTerm = 247
+  X1.sboTerm = 247
+  X2.sboTerm = 247
+  X3.sboTerm = 247
+  X4.sboTerm = 247
+  X5.sboTerm = 247
+  X6.sboTerm = 247
+  X7.sboTerm = 247
+
+  // CV terms:
+  cell identity "http://identifiers.org/go/GO:0005622"
+  external identity "http://identifiers.org/go/GO:0005576"
+  X0 identity "http://identifiers.org/chebi/CHEBI:17925"
+  X1 identity "http://identifiers.org/chebi/CHEBI:17925"
+  X2 identity "http://identifiers.org/chebi/CHEBI:17665"
+  X3 identity "http://identifiers.org/chebi/CHEBI:16077"
+  X4 identity "http://identifiers.org/chebi/CHEBI:18066"
+  X5 identity "http://identifiers.org/chebi/CHEBI:28087"
+  X6 identity "http://identifiers.org/chebi/CHEBI:18283"
+  X7 identity "http://identifiers.org/chebi/CHEBI:16551"
+  heat_shock hypernym "http://identifiers.org/go/GO:0009408"
+  X8 hypernym "http://identifiers.org/go/GO:0046323"
+  X11 identity "http://identifiers.org/ec-code/1.1.1.49"
+  X12r hypernym "http://identifiers.org/ec-code/5.4.2.2"
+  X12f hypernym "http://identifiers.org/ec-code/5.4.2.2"
+  X13 identity "http://identifiers.org/ec-code/2.7.7.9"
+  X14 identity "http://identifiers.org/ec-code/2.4.1.11"
+  X15r hypernym "http://identifiers.org/ec-code/2.4.1.1"
+  X15f hypernym "http://identifiers.org/ec-code/2.4.1.1"
+  X16 hypernym "http://identifiers.org/go/GO:0005980"
+  X17 identity "http://identifiers.org/ec-code/2.4.1.15"
+  X18 identity "http://identifiers.org/ec-code/3.1.3.12"
+  X19 identity "http://identifiers.org/ec-code/3.2.1.28"
 end
+
+voit03 is "Voit2003_Trehalose_Cycle"
+
+voit03 model_entity_is "http://identifiers.org/biomodels.db/MODEL1007210000"
+voit03 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000266"
+voit03 description "http://identifiers.org/pubmed/12782117"
+voit03 version "http://identifiers.org/go/GO:0033638"
+voit03 part "http://identifiers.org/go/GO:0005978",
+            "http://identifiers.org/go/GO:0005992"
+voit03 parthood "http://identifiers.org/kegg.pathway/sce00500"
+voit03 hypernym "http://identifiers.org/go/GO:0005991"
+voit03 taxon "http://identifiers.org/taxonomy/4932"

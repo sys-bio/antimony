@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Clarke2006_Smad_signalling()
 
   // Compartments and Species:
@@ -6,7 +6,7 @@ model *Clarke2006_Smad_signalling()
   substanceOnly species receptor in cytoplasm, R_smad_cyt in cytoplasm, R_smad_P_cyt in cytoplasm;
   substanceOnly species smad4_cyt in cytoplasm, R_smad_P_smad4_cyt in cytoplasm;
   substanceOnly species R_smad_P_smad4_nuc in nucleus, R_smad_nuc in nucleus;
-  substanceOnly species R_smad_P_nuc in nucleus, smad4_nuc in nucleus, Pi_ in nucleus;
+  substanceOnly species R_smad_P_nuc in nucleus, smad4_nuc in nucleus, Pi in nucleus;
 
   // Assignment Rules:
   sum_R_smad_cyt := R_smad_cyt + R_smad_P_cyt + R_smad_P_smad4_cyt;
@@ -15,13 +15,13 @@ model *Clarke2006_Smad_signalling()
   sum_smad4_nuc := smad4_nuc + R_smad_P_smad4_nuc;
 
   // Reactions:
-  reaction_1: R_smad_cyt => R_smad_P_cyt; (reaction_1_KCAT*receptor*R_smad_cyt)/(reaction_1_K1 + R_smad_cyt);
+  reaction_1: R_smad_cyt => R_smad_P_cyt; reaction_1_KCAT*receptor*R_smad_cyt/(reaction_1_K1 + R_smad_cyt);
   reaction_5: R_smad_nuc -> R_smad_cyt; reaction_5_k5nc*R_smad_nuc - reaction_5_k5cn*R_smad_cyt;
   reaction_4: smad4_nuc -> smad4_cyt; reaction_4_k4nc*smad4_nuc - reaction_4_k4cn*smad4_cyt;
   reaction_2: R_smad_P_cyt + smad4_cyt -> R_smad_P_smad4_cyt; reaction_2_k2a*R_smad_P_cyt*smad4_cyt - reaction_2_k2d*R_smad_P_smad4_cyt;
   reaction_3: R_smad_P_smad4_cyt => R_smad_P_smad4_nuc; reaction_3_k3*R_smad_P_smad4_cyt;
   reaction_6: R_smad_P_smad4_nuc -> smad4_nuc + R_smad_P_nuc; reaction_6_k6d*R_smad_P_smad4_nuc - reaction_6_k6a*smad4_nuc*R_smad_P_nuc;
-  reaction_7: R_smad_P_nuc => R_smad_nuc + Pi_; (reaction_7_Vmax7*R_smad_P_nuc)/(reaction_7_K7 + R_smad_P_nuc);
+  reaction_7: R_smad_P_nuc => R_smad_nuc + Pi; reaction_7_Vmax7*R_smad_P_nuc/(reaction_7_K7 + R_smad_P_nuc);
   reaction_0: receptor => ; 100*exp(-time/90);
 
   // Species initializations:
@@ -34,7 +34,7 @@ model *Clarke2006_Smad_signalling()
   R_smad_nuc = 18000/nucleus;
   R_smad_P_nuc = 0;
   smad4_nuc = 30000/nucleus;
-  Pi_ = 0;
+  Pi = 0;
 
   // Compartment initializations:
   cytoplasm = 1;
@@ -53,7 +53,7 @@ model *Clarke2006_Smad_signalling()
   reaction_4_k4nc has min_inv;
   reaction_4_k4cn = 0.00497;
   reaction_4_k4cn has min_inv;
-  reaction_2_k2a = 6.5e-005;
+  reaction_2_k2a = 6.5e-05;
   reaction_2_k2a has per_item_min;
   reaction_2_k2d = 0.0399;
   reaction_2_k2d has min_inv;
@@ -102,4 +102,42 @@ model *Clarke2006_Smad_signalling()
   reaction_6 is "Complex in nucleus";
   reaction_7 is "Dephosphorylation";
   reaction_0 is "Receptor degradation";
+
+  // CV terms:
+  cytoplasm identity "http://identifiers.org/obo.go/GO:0005737"
+  nucleus identity "http://identifiers.org/obo.go/GO:0005634"
+  receptor part "http://identifiers.org/uniprot/P36897",
+                "http://identifiers.org/uniprot/P37173"
+  R_smad_cyt homolog "http://identifiers.org/uniprot/Q15796"
+  R_smad_P_cyt homolog "http://identifiers.org/uniprot/Q15796"
+  smad4_cyt homolog "http://identifiers.org/uniprot/Q13485"
+  R_smad_P_smad4_cyt part "http://identifiers.org/uniprot/Q13485",
+                          "http://identifiers.org/uniprot/Q15796"
+  R_smad_P_smad4_nuc part "http://identifiers.org/uniprot/Q15796",
+                          "http://identifiers.org/uniprot/Q13485"
+  R_smad_nuc homolog "http://identifiers.org/uniprot/Q15796"
+  R_smad_P_nuc homolog "http://identifiers.org/uniprot/Q15796"
+  smad4_nuc homolog "http://identifiers.org/uniprot/Q13485"
+  Pi identity "http://identifiers.org/obo.chebi/CHEBI:18367",
+              "http://identifiers.org/kegg.compound/C00009"
+  reaction_1 identity "http://identifiers.org/ec-code/2.7.11.30",
+                      "http://identifiers.org/obo.go/GO:0030618",
+                      "http://identifiers.org/obo.go/GO:0004674"
+  reaction_5 identity "http://identifiers.org/obo.go/GO:0007184"
+  reaction_4 identity "http://identifiers.org/obo.go/GO:0006611"
+  reaction_2 identity "http://identifiers.org/obo.go/GO:0030616",
+                      "http://identifiers.org/obo.go/GO:0007183"
+  reaction_3 identity "http://identifiers.org/obo.go/GO:0007184"
+  reaction_6 identity "http://identifiers.org/obo.go/GO:0043624"
+  reaction_7 identity "http://identifiers.org/obo.go/GO:0006470"
+  reaction_0 identity "http://identifiers.org/obo.go/GO:0032801"
 end
+
+Clarke2006_Smad_signalling is "Clarke2006_Smad_signalling"
+
+Clarke2006_Smad_signalling model_entity_is "http://identifiers.org/biomodels.db/MODEL4024559990"
+Clarke2006_Smad_signalling model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000112"
+Clarke2006_Smad_signalling description "http://identifiers.org/pubmed/17186703"
+Clarke2006_Smad_signalling taxon "http://identifiers.org/taxonomy/452646"
+Clarke2006_Smad_signalling parthood "http://identifiers.org/kegg.pathway/hsa04350"
+Clarke2006_Smad_signalling identity "http://identifiers.org/obo.go/GO:0007179"

@@ -1,0 +1,307 @@
+// Created by libAntimony v2.13.0
+function Function_for_STATP2n_Formation(k5, TJ, STAT, K_5)
+  k5*TJ*STAT/(2*(K_5 + STAT));
+end
+
+Function_for_STATP2n_Formation is "Function_for_STATP2n_Formation"
+
+function Function_for_TNFa_mRNA_Degradation(TNFam, t_9)
+  TNFam*(ln(2)/t_9);
+end
+
+Function_for_TNFa_mRNA_Degradation is "Function_for_TNFa_mRNA_Degradation"
+
+function Function_for_STAT_mRNA_Induction(r_4, IC1, k_26, STATP2n, IC2)
+  (r_4*IC1 + k_26*STATP2n)*IC2;
+end
+
+Function_for_STAT_mRNA_Induction is "Function_for_STAT_mRNA_Induction"
+
+function Function_for_IFNBenv_Turnover(gamma_, C, vmax2, IFNBm, K_2)
+  gamma_*C*vmax2*IFNBm/(K_2 + IFNBm);
+end
+
+Function_for_IFNBenv_Turnover is "Function_for_IFNBenv_Turnover"
+
+function Function_for_SOCS_mRNA_Degradation(SOCSm, t_4)
+  SOCSm*(ln(2)/t_4);
+end
+
+Function_for_SOCS_mRNA_Degradation is "Function_for_SOCS_mRNA_Degradation"
+
+function Function_for_IFNaenv_Translation_Secretion(gamma_, C, vmax_17, IFNam, K_17)
+  gamma_*C*vmax_17*IFNam/(K_17 + IFNam);
+end
+
+Function_for_IFNaenv_Translation_Secretion is "Function_for_IFNaenv_Translation_Secretion"
+
+function Function_for_STATP2n_Dephosphorylation(STATP2n, t3)
+  STATP2n*(ln(2)/t3);
+end
+
+Function_for_STATP2n_Dephosphorylation is "Function_for_STATP2n_Dephosphorylation"
+
+function Function_for_IFNb_mRNA_Turnover(r0, IC1, k15, IRF7Pn, IC2)
+  (r0*IC1 + k15*IRF7Pn)*IC2;
+end
+
+Function_for_IFNb_mRNA_Turnover is "Function_for_IFNb_mRNA_Turnover"
+
+function Function_for_SOCS_mRNA_Induction(r_3, IC1, k_8, STATP2n, IC2)
+  (r_3*IC1 + k_8*STATP2n)*IC2;
+end
+
+Function_for_SOCS_mRNA_Induction is "Function_for_SOCS_mRNA_Induction"
+
+function Function_for_IFNa_mRNA_Induction(k_16, IRF7Pn, IC2)
+  k_16*IRF7Pn*IC2;
+end
+
+Function_for_IFNa_mRNA_Induction is "Function_for_IFNa_mRNA_Induction"
+
+function Function_for_IFNb_mRNA_Degradation(IFNBm, t1)
+  IFNBm*(ln(2)/t1);
+end
+
+Function_for_IFNb_mRNA_Degradation is "Function_for_IFNb_mRNA_Degradation"
+
+function Function_for_STAT_Translation(k_26, STATm)
+  k_26*STATm;
+end
+
+Function_for_STAT_Translation is "Function_for_STAT_Translation"
+
+function Function_for_IRF7_Translation(k_12, IRF7m, IC1)
+  k_12*IRF7m*IC1;
+end
+
+Function_for_IRF7_Translation is "Function_for_IRF7_Translation"
+
+function Function_for_IFNa_mRNA_Degradation(IFNam, t_8)
+  IFNam*(ln(2)/t_8);
+end
+
+Function_for_IFNa_mRNA_Degradation is "Function_for_IFNa_mRNA_Degradation"
+
+function Function_for_TNFa_Translation_Secretion(gamma_, C, vmax_19, TFNam, K_19)
+  gamma_*C*vmax_19*TFNam/(K_19 + TFNam);
+end
+
+Function_for_TNFa_Translation_Secretion is "Function_for_TNFa_Translation_Secretion"
+
+function Function_for_STAT_mRNA_Degradation(STATm, t_12)
+  STATm*(ln(2)/t_12);
+end
+
+Function_for_STAT_mRNA_Degradation is "Function_for_STAT_mRNA_Degradation"
+
+function Function_for_TNFa_mRNA_Induction(IC2, r_1, IC1, r_20, TNFenv, K_20)
+  IC2*(r_1*IC1 + r_20*TNFenv/(K_20 + TNFenv));
+end
+
+Function_for_TNFa_mRNA_Induction is "Function_for_TNFa_mRNA_Induction"
+
+function Function_for_IRF7_mRNA_Degradation(IRF7m, t_6)
+  IRF7m*(ln(2)/t_6);
+end
+
+Function_for_IRF7_mRNA_Degradation is "Function_for_IRF7_mRNA_Degradation"
+
+function Function_for_IRF7_mRNA_Induction(k_11, STATP2n, k_14, IRF7Pn, IC2)
+  (k_11*STATP2n + k_14*IRF7Pn)*IC2;
+end
+
+Function_for_IRF7_mRNA_Induction is "Function_for_IRF7_mRNA_Induction"
+
+function Function_for_STAT_Degradation(STAT, t_13)
+  STAT*(ln(2)/t_13);
+end
+
+Function_for_STAT_Degradation is "Function_for_STAT_Degradation"
+
+
+model *Fribourg2014___Model_of_influenza_A_virus_infection_dynamics_of_viral_antagonism_and_innate_immune_response()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species IFNBm in compartment_, IFNBenv in compartment_, STATP2n in compartment_;
+  species SOCSm in compartment_, IRF7m in compartment_, IRF7Pn in compartment_;
+  species IFNam in compartment_, IFNaenv in compartment_, TNFam in compartment_;
+  species TFNenv in compartment_, STATm in compartment_, STAT in compartment_;
+
+  // Assignment Rules:
+  v_max217 := 20.1*3600;
+  k_14 := 3600*8.9e-11;
+  v_max19 := 46*3600;
+  k_26 := 3600*5e-6;
+  sv := 0.1/0.3;
+  TJ := (TJ_tot/(1 + K_9*SOCSm/delta))*((IFNBenv + IFNaenv)/(K_3 + IFNBenv + IFNaenv));
+  IC1 := (1 + sp*(NS/delta_1)^n_1)/(1 + (NS/delta_1)^n_1);
+  NS := r_5*time^n_3/(b_m^n_3 + time^n_3);
+  IC2 := (1 + sv*(NS/delta_2)^n_2)/(1 + (NS/delta_2)^n_2);
+  gamma_ := 1000000000/6.023e23;
+
+  // Reactions:
+  IFNb_mRNA_Induction:  => IFNBm; compartment_*Function_for_IFNb_mRNA_Turnover(r_0, IC1, k_15, IRF7Pn, IC2);
+  IFNb_mRNA_Degradation: IFNBm => ; compartment_*Function_for_IFNb_mRNA_Degradation(IFNBm, t_1);
+  IFNBenv_Translation_Secretion:  => IFNBenv; compartment_*Function_for_IFNBenv_Turnover(gamma_, C, v_max217, IFNBenv, K_217);
+  STATP2n_Formation:  => STATP2n; compartment_*Function_for_STATP2n_Formation(k_5, TJ, STAT, K_5);
+  STATP2n_Dephosphorylation: STATP2n => ; compartment_*Function_for_STATP2n_Dephosphorylation(STATP2n, t_3);
+  SOCS_mRNA_Induction:  => SOCSm; compartment_*Function_for_SOCS_mRNA_Induction(r_3, IC1, k_8, STATP2n, IC2);
+  SOCS_mRNA_Degradation: SOCSm => ; compartment_*Function_for_SOCS_mRNA_Degradation(SOCSm, t_4);
+  IRF7_mRNA_Induction:  => IRF7m; compartment_*Function_for_IRF7_mRNA_Induction(k_11, STATP2n, k_14, IRF7Pn, IC2);
+  IRF7_mRNA_Degradation: IRF7m => ; compartment_*Function_for_IRF7_mRNA_Degradation(IRF7m, t_6);
+  IRF7_Translation:  => IRF7Pn; compartment_*Function_for_IRF7_Translation(k_12, IRF7m, IC1);
+  IFNa_mRNA_Induction:  => IFNam; compartment_*Function_for_IFNa_mRNA_Induction(k_16, IRF7Pn, IC2);
+  IFNa_mRNA_Degradation: IFNam => ; compartment_*Function_for_IFNa_mRNA_Degradation(IFNam, t_8);
+  IFNaenv_Translation_Secretion:  => IFNaenv; compartment_*Function_for_IFNaenv_Translation_Secretion(gamma_, C, v_max217, IFNam, K_217);
+  TNFa_mRNA_Induction:  => TNFam; compartment_*Function_for_TNFa_mRNA_Induction(IC2, r_1, IC1, r_20, TFNenv, K_20);
+  TNFa_mRNA_Degradation: TNFam => ; compartment_*Function_for_TNFa_mRNA_Degradation(TNFam, t_9);
+  TNFa_Translation_Secretion:  => TFNenv; compartment_*Function_for_TNFa_Translation_Secretion(gamma_, C, v_max19, TNFam, K_19);
+  STAT_mRNA_Induction:  => STATm; compartment_*Function_for_STAT_mRNA_Induction(r_4, IC1, k_26, STATP2n, IC2);
+  STAT_mRNA_Degradation: STATm => ; compartment_*Function_for_STAT_mRNA_Degradation(STATm, t_12);
+  STAT_Translation:  => STAT; compartment_*Function_for_STAT_Translation(k_28, STATm);
+  STAT_Degradation: STAT => ; compartment_*Function_for_STAT_Degradation(STAT, t_13);
+
+  // Species initializations:
+  IFNBm = 1;
+  IFNBenv = 1;
+  STATP2n = 1;
+  SOCSm = 1;
+  IRF7m = 1;
+  IRF7Pn = 1;
+  IFNam = 1;
+  IFNaenv = 1;
+  TNFam = 1;
+  TFNenv = 1;
+  STATm = 1;
+  STAT = 1;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  r_0 = 0.001;
+  k_15 = 3.6e-05;
+  t_1 = 2.5;
+  K_217 = 0.002;
+  TJ_tot = 0.0001;
+  K_3 = 0.0043;
+  d = 0.0003;
+  K_9 = 780;
+  k_5 = 3600;
+  K_5 = 0.01;
+  t_3 = 0.56;
+  r_3 = 1e-07;
+  k_8 = 0.0036;
+  t_4 = 0.46;
+  k_11 = 0.00036;
+  t_6 = 1;
+  k_12 = 360;
+  k_16 = 0.36;
+  t_8 = 2;
+  r_1 = 0.0001;
+  r_20 = 0.001;
+  K_20 = 0.0006;
+  t_9 = 2;
+  K_19 = 0.004;
+  r_4 = 1e-06;
+  t_12 = 1;
+  k_28 = 360;
+  t_13 = 15;
+  r_5 = 1;
+  n_3 = 5;
+  b_m = 6;
+  sp = 0.3;
+  d_1 = 0.1;
+  n_1 = 1;
+  d_2 = 0.4;
+  n_2 = 5;
+  delta = 0.0003;
+  delta_1 = 0.1;
+  delta_2 = 0.4;
+  C = 500000;
+
+  // Other declarations:
+  var v_max217, k_14, v_max19, k_26, sv, TJ, IC1, NS, IC2, gamma_;
+  const compartment_, r_0, k_15, t_1, K_217, TJ_tot, K_3, d, K_9, k_5, K_5;
+  const t_3, r_3, k_8, t_4, k_11, t_6, k_12, k_16, t_8, r_1, r_20, K_20, t_9;
+  const K_19, r_4, t_12, k_28, t_13, r_5, n_3, b_m, sp, d_1, n_1, d_2, n_2;
+  const delta, delta_1, delta_2, C;
+
+  // Unit definitions:
+  unit time_unit = 3600 second;
+  unit substance = 1e-6 mole;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+  gamma_ is "gamma";
+
+  // SBO terms:
+  IFNb_mRNA_Induction.sboTerm = 183
+  IFNb_mRNA_Degradation.sboTerm = 179
+  IFNBenv_Translation_Secretion.sboTerm = 184
+  SOCS_mRNA_Induction.sboTerm = 183
+  SOCS_mRNA_Degradation.sboTerm = 179
+  IRF7_mRNA_Induction.sboTerm = 183
+  IRF7_mRNA_Degradation.sboTerm = 179
+  IRF7_Translation.sboTerm = 184
+  IFNa_mRNA_Induction.sboTerm = 183
+  IFNa_mRNA_Degradation.sboTerm = 179
+  IFNaenv_Translation_Secretion.sboTerm = 184
+  TNFa_mRNA_Induction.sboTerm = 183
+  TNFa_mRNA_Degradation.sboTerm = 179
+  TNFa_Translation_Secretion.sboTerm = 184
+  STAT_mRNA_Induction.sboTerm = 183
+  STAT_mRNA_Degradation.sboTerm = 179
+  STAT_Translation.sboTerm = 184
+  STAT_Degradation.sboTerm = 179
+
+  // CV terms:
+  compartment_ hypernym "http://identifiers.org/ncit/C13356"
+  IFNBm encodement "http://identifiers.org/ncit/C20495"
+  IFNBenv identity "http://identifiers.org/ncit/C20495"
+  STATP2n part "http://identifiers.org/ncit/C19618"
+  STATP2n property "http://identifiers.org/sbo/SBO:0000607"
+  SOCSm encodement "http://identifiers.org/ncit/C97796"
+  IRF7m encodement "http://identifiers.org/ncit/C128883"
+  IRF7Pn hypernym "http://identifiers.org/ncit/C128883"
+  IFNam encodement "http://identifiers.org/ncit/C20494"
+  IFNaenv identity "http://identifiers.org/ncit/C20494"
+  TNFam encodement "http://identifiers.org/pr/PR:000000134"
+  TFNenv identity "http://identifiers.org/pr/PR:000000134"
+  STATm encodement "http://identifiers.org/ncit/C19618"
+  STAT identity "http://identifiers.org/ncit/C19618"
+  IFNb_mRNA_Induction identity "http://identifiers.org/sbo/SBO:0000183"
+  IFNb_mRNA_Degradation identity "http://identifiers.org/sbo/SBO:0000179"
+  IFNBenv_Translation_Secretion identity "http://identifiers.org/sbo/SBO:0000184"
+  STATP2n_Formation hypernym "http://identifiers.org/ncit/C97201"
+  STATP2n_Dephosphorylation identity "http://identifiers.org/ncit/C20612"
+  SOCS_mRNA_Induction identity "http://identifiers.org/sbo/SBO:0000183"
+  SOCS_mRNA_Degradation identity "http://identifiers.org/sbo/SBO:0000179"
+  IRF7_mRNA_Induction identity "http://identifiers.org/sbo/SBO:0000183"
+  IRF7_mRNA_Degradation identity "http://identifiers.org/sbo/SBO:0000179"
+  IRF7_Translation identity "http://identifiers.org/sbo/SBO:0000184"
+  IFNa_mRNA_Induction identity "http://identifiers.org/sbo/SBO:0000183"
+  IFNa_mRNA_Degradation identity "http://identifiers.org/sbo/SBO:0000179"
+  IFNaenv_Translation_Secretion identity "http://identifiers.org/sbo/SBO:0000184"
+  TNFa_mRNA_Induction identity "http://identifiers.org/sbo/SBO:0000183"
+  TNFa_mRNA_Degradation identity "http://identifiers.org/sbo/SBO:0000179"
+  TNFa_Translation_Secretion identity "http://identifiers.org/sbo/SBO:0000184"
+  STAT_mRNA_Induction identity "http://identifiers.org/sbo/SBO:0000183"
+  STAT_mRNA_Degradation identity "http://identifiers.org/sbo/SBO:0000179"
+  STAT_Translation identity "http://identifiers.org/sbo/SBO:0000184"
+  STAT_Degradation identity "http://identifiers.org/sbo/SBO:0000179"
+end
+
+Fribourg2014___Model_of_influenza_A_virus_infection_dynamics_of_viral_antagonism_and_innate_immune_response is "Fribourg2014 - Model of influenza A virus infection dynamics of viral antagonism and innate immune response."
+
+Fribourg2014___Model_of_influenza_A_virus_infection_dynamics_of_viral_antagonism_and_innate_immune_response description "http://identifiers.org/pubmed/24594370"
+Fribourg2014___Model_of_influenza_A_virus_infection_dynamics_of_viral_antagonism_and_innate_immune_response model_entity_is "http://identifiers.org/biomodels.db/MODEL1912120001",
+                                                                                                                            "http://identifiers.org/biomodels.db/BIOMD0000000889"
+Fribourg2014___Model_of_influenza_A_virus_infection_dynamics_of_viral_antagonism_and_innate_immune_response property "http://identifiers.org/ncit/C18011"
+Fribourg2014___Model_of_influenza_A_virus_infection_dynamics_of_viral_antagonism_and_innate_immune_response property "http://identifiers.org/mamo/MAMO_0000046"
+Fribourg2014___Model_of_influenza_A_virus_infection_dynamics_of_viral_antagonism_and_innate_immune_response property "http://identifiers.org/pr/PR:000044797"
+Fribourg2014___Model_of_influenza_A_virus_infection_dynamics_of_viral_antagonism_and_innate_immune_response property "http://identifiers.org/ncit/C20493"
+Fribourg2014___Model_of_influenza_A_virus_infection_dynamics_of_viral_antagonism_and_innate_immune_response taxon "http://identifiers.org/taxonomy/9606"

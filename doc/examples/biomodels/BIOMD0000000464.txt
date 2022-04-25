@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *MODEL1302180003()
 
   // Compartments and Species:
@@ -9,15 +9,15 @@ model *MODEL1302180003()
 
   // Reactions:
   re3: s4 => s3; -k6*s3*(B_T - s4) + k7*s4;
-  re4: s5 => s2; k_CCE*((fracK*Cao)/(K3 + Cao) - s2)*(s1 - s2);
-  re5: s7 => s6; (k1*(R_T - half*R_T*(exp(-s12/tau_I) + exp(-s12/tau_II) + ((exp(-s12/tau_I) - exp(-s12/tau_II))*(tau_I + tau_II))/(tau_I - tau_II)))*s3)/(K1 + s3);
+  re4: s5 => s2; k_CCE*(fracK*Cao/(K3 + Cao) - s2)*(s1 - s2);
+  re5: s7 => s6; k1*(R_T - half*R_T*(exp(-s12/tau_I) + exp(-s12/tau_II) + (exp(-s12/tau_I) - exp(-s12/tau_II))*(tau_I + tau_II)/(tau_I - tau_II)))*s3/(K1 + s3);
   re6: s6 => s8; k2*s6;
-  re7: s2 => s3; k3*((k_CICR*s3)/(K_CICR + s3))*(s6/(K2 + s6))^3*s2 - k4*(s3/(K3 + s3))^2 + k5*s2*s2;
-  re8: s3 => s9; (dot_Vhi*s3^4)/(K_hi^4 + s3^4);
-  re9: s3 => s10; (dot_Vex*s3)/(K5 + s3);
+  re7: s2 => s3; (k3*(k_CICR*s3/(K_CICR + s3))*(s6/(K2 + s6))^3*s2 - k4*(s3/(K3 + s3))^2) + k5*s2*s2;
+  re8: s3 => s9; dot_Vhi*s3^4/(K_hi^4 + s3^4);
+  re9: s3 => s10; dot_Vex*s3/(K5 + s3);
   re10: s11 => s3; dot_q_inpass;
   re11: s13 => s12; re11_unisec;
-  re12: s3 => s9; (dot_Vp*s3^2)/(K4^2 + s3^2);
+  re12: s3 => s9; dot_Vp*s3^2/(K4^2 + s3^2);
 
   // Species initializations:
   s1 = 1500000/default;
@@ -68,7 +68,7 @@ model *MODEL1302180003()
   k3 has inv_sec;
   k4 = 2500;
   k4 has sub_sec;
-  k5 = 5e-011;
+  k5 = 5e-11;
   k5 has inv_sec_sub;
   k6 = 0.05;
   k6 has inv_sec_sub;
@@ -122,16 +122,16 @@ model *MODEL1302180003()
 
   // Unit definitions:
   unit time_unit = second;
-  unit substance = 1e-009 mole;
+  unit substance = 1e-09 mole;
   unit area = metre^2;
   unit length = metre;
   unit volume = litre;
-  unit sub_sec = 1e-009 mole / second;
+  unit sub_sec = 1e-09 mole / second;
   unit inv_sec = 1 / second;
-  unit inv_sec_sub = 1 / (1e-009 mole * second);
+  unit inv_sec_sub = 1 / (1e-09 mole * second);
   unit nM_inv_s = 1e-9 mole / second;
   unit inv_nM_s = 1 / (1e-9 mole * second);
-  unit substance_per_volume = 1e-009 mole / litre;
+  unit substance_per_volume = 1e-09 mole / litre;
 
   // Display Names:
   time_unit is "time";
@@ -145,4 +145,39 @@ model *MODEL1302180003()
   s12 is "TimeT";
   s119 is "Shear Stress";
   re3 is "re1";
+
+  // SBO terms:
+  s4.sboTerm = 297
+  s5.sboTerm = 291
+  s7.sboTerm = 291
+  s8.sboTerm = 291
+  s9.sboTerm = 291
+  s10.sboTerm = 291
+  s11.sboTerm = 291
+  s12.sboTerm = 331
+  s13.sboTerm = 291
+
+  // CV terms:
+  default identity "http://identifiers.org/go/GO:0005576"
+  c1 identity "http://identifiers.org/go/GO:0005623"
+  c2 identity "http://identifiers.org/go/GO:0005783"
+  s1 identity "http://identifiers.org/chebi/CHEBI:29108"
+  s1 container "http://identifiers.org/go/GO:0005576"
+  s2 identity "http://identifiers.org/chebi/CHEBI:29108"
+  s3 identity "http://identifiers.org/chebi/CHEBI:29108"
+  s3 container "http://identifiers.org/go/GO:0005623"
+  s4 container "http://identifiers.org/go/GO:0005623"
+  s4 part "http://identifiers.org/chebi/CHEBI:29108"
+  s6 hypernym "http://identifiers.org/chebi/CHEBI:203600"
 end
+
+MODEL1302180003 is "Koo2013 - Shear stress induced calcium influx and eNOS activation - Model 1"
+
+MODEL1302180003 model_entity_is "http://identifiers.org/biomodels.db/MODEL1302180003"
+MODEL1302180003 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000464"
+MODEL1302180003 description "http://identifiers.org/pubmed/23708369"
+MODEL1302180003 taxon "http://identifiers.org/taxonomy/9606"
+MODEL1302180003 part "http://identifiers.org/go/GO:0070509"
+MODEL1302180003 part "http://identifiers.org/reactome/REACT_12443.3"
+MODEL1302180003 hypernym "http://identifiers.org/go/GO:0006809",
+                         "http://identifiers.org/go/GO:0002537"

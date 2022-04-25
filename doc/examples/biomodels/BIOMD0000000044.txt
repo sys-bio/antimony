@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Goldbeter_Calcium_Oscillation_based_on_CICR_AND_CA_Activated_degradation_of_IP3()
 
   // Compartments and Species:
@@ -7,12 +7,12 @@ model *Goldbeter_Calcium_Oscillation_based_on_CICR_AND_CA_Activated_degradation_
 
   // Reactions:
   vin: EC => Z; cytosol*(vin_v0 + vin_v1*beta);
-  v2: Z => Y; intravesicular*((v2_Vm2*Z^2)/(v2_K2^2 + Z^2));
-  v3: Y => Z; (cytosol*v3_Vm3*A^4*Y^2*Z^4)/((v3_Ka^4 + A^4)*(v3_Ky^2 + Y^2)*(v3_Kz^4 + Z^4));
+  v2: Z => Y; intravesicular*(v2_Vm2*Z^2/(v2_K2^2 + Z^2));
+  v3: Y => Z; cytosol*v3_Vm3*A^4*Y^2*Z^4/((v3_Ka^4 + A^4)*(v3_Ky^2 + Y^2)*(v3_Kz^4 + Z^4));
   v4: Y => Z; cytosol*v4_Kf*Y;
   v5: Z => EC; extracellular*v5_K*Z;
   v6:  => A; cytosol*beta*v6_Vp;
-  v7: A => ; (cytosol*v7_Vd*A^2*Z^v7_n)/((v7_Kp^2 + A^2)*(v7_Kd^v7_n + Z^v7_n));
+  v7: A => ; cytosol*v7_Vd*A^2*Z^v7_n/((v7_Kp^2 + A^2)*(v7_Kd^v7_n + Z^v7_n));
   v8: A => ; cytosol*v8_epsilon*A;
 
   // Species initializations:
@@ -58,4 +58,72 @@ model *Goldbeter_Calcium_Oscillation_based_on_CICR_AND_CA_Activated_degradation_
   v6 is "Agonist stimulated production of IP3";
   v7 is "Ca dependent IP3 degradation";
   v8 is "Ca independent IP3 degradation";
+
+  // SBO terms:
+  extracellular.sboTerm = 290
+  cytosol.sboTerm = 290
+  intravesicular.sboTerm = 290
+  EC.sboTerm = 327
+  Z.sboTerm = 327
+  A.sboTerm = 327
+  Y.sboTerm = 327
+  beta.sboTerm = 498
+  vin.sboTerm = 185
+  vin_v0.sboTerm = 485
+  vin_v1.sboTerm = 162
+  v2.sboTerm = 185
+  v2_Vm2.sboTerm = 186
+  v2_K2.sboTerm = 424
+  v3.sboTerm = 185
+  v3_Vm3.sboTerm = 186
+  v3_Ka.sboTerm = 194
+  v3_Ky.sboTerm = 424
+  v3_Kz.sboTerm = 423
+  v4.sboTerm = 185
+  v4_Kf.sboTerm = 35
+  v5.sboTerm = 185
+  v5_K.sboTerm = 35
+  v6.sboTerm = 393
+  v6_Vp.sboTerm = 48
+  v7.sboTerm = 179
+  v7_Vd.sboTerm = 324
+  v7_Kp.sboTerm = 424
+  v7_Kd.sboTerm = 194
+  v7_n.sboTerm = 190
+  v8.sboTerm = 179
+  v8_epsilon.sboTerm = 498
+
+  // CV terms:
+  extracellular hypernym "http://identifiers.org/obo.go/GO:0005615"
+  cytosol hypernym "http://identifiers.org/obo.go/GO:0005829"
+  intravesicular hypernym "http://identifiers.org/obo.go/GO:0005790"
+  EC identity "http://identifiers.org/chebi/CHEBI:29108",
+              "http://identifiers.org/kegg.compound/C00076"
+  Z identity "http://identifiers.org/chebi/CHEBI:29108",
+             "http://identifiers.org/kegg.compound/C00076"
+  A identity "http://identifiers.org/chebi/CHEBI:16595",
+             "http://identifiers.org/kegg.compound/C01245"
+  Y identity "http://identifiers.org/chebi/CHEBI:29108",
+             "http://identifiers.org/kegg.compound/C00076"
+  vin hypernym "http://identifiers.org/obo.go/GO:0006816",
+               "http://identifiers.org/obo.go/GO:0007204"
+  v2 hypernym "http://identifiers.org/obo.go/GO:0051481"
+  v3 hypernym "http://identifiers.org/obo.go/GO:0006816",
+              "http://identifiers.org/obo.go/GO:0051482"
+  v4 hypernym "http://identifiers.org/obo.go/GO:0007204"
+  v5 hypernym "http://identifiers.org/obo.go/GO:0051481"
+  v6 hypernym "http://identifiers.org/obo.go/GO:0006021",
+              "http://identifiers.org/obo.go/GO:0007200"
+  v7 hypernym "http://identifiers.org/obo.go/GO:0019310"
+  v8 hypernym "http://identifiers.org/obo.go/GO:0019310"
 end
+
+Goldbeter_Calcium_Oscillation_based_on_CICR_AND_CA_Activated_degradation_of_IP3 is "Borghans1997 - Calcium Oscillation - Model 2"
+
+Goldbeter_Calcium_Oscillation_based_on_CICR_AND_CA_Activated_degradation_of_IP3 model_entity_is "http://identifiers.org/biomodels.db/MODEL6622948601"
+Goldbeter_Calcium_Oscillation_based_on_CICR_AND_CA_Activated_degradation_of_IP3 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000044"
+Goldbeter_Calcium_Oscillation_based_on_CICR_AND_CA_Activated_degradation_of_IP3 description "http://identifiers.org/pubmed/17029867"
+Goldbeter_Calcium_Oscillation_based_on_CICR_AND_CA_Activated_degradation_of_IP3 hypernym "http://identifiers.org/obo.go/GO:0019722",
+                                                                                         "http://identifiers.org/obo.go/GO:0048016"
+Goldbeter_Calcium_Oscillation_based_on_CICR_AND_CA_Activated_degradation_of_IP3 parthood "http://identifiers.org/kegg.pathway/rno04020"
+Goldbeter_Calcium_Oscillation_based_on_CICR_AND_CA_Activated_degradation_of_IP3 taxon "http://identifiers.org/taxonomy/10114"

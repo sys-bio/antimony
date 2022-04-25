@@ -5,7 +5,9 @@
 #include "stringx.h"
 
 using namespace std;
-extern bool CaselessStrCmp(const string& lhs, const string& rhs);
+using namespace libsbml;
+
+extern bool CaselessStrCmp(bool caseless, const string& lhs, const string& rhs);
 
 bool IsReaction(const var_type vtype)
 {
@@ -28,6 +30,7 @@ bool IsReaction(const var_type vtype)
   case varConstraint:
   case varSboTermWrapper:
   case varUncertWrapper:
+  case varStoichiometry:
     return false;
   }
   assert(false); //uncaught vtype
@@ -70,7 +73,8 @@ bool IsSpecies(const var_type vtype)
   case varConstraint:
   case varSboTermWrapper:
   case varUncertWrapper:
-    return false;
+  case varStoichiometry:
+      return false;
   }
   assert(false); //uncaught vtype
   return false;
@@ -97,7 +101,8 @@ bool IsDNA(const var_type vtype)
   case varConstraint:
   case varSboTermWrapper:
   case varUncertWrapper:
-    return false;
+  case varStoichiometry:
+      return false;
   }
   assert(false); //uncaught vtype
   return false;
@@ -112,7 +117,8 @@ bool CanHaveRateRule(const var_type vtype)
   case varSpeciesUndef:
   case varCompartment:
   case varUndefined:
-    return true;
+  case varStoichiometry:
+      return true;
   case varReactionUndef:
   case varReactionGene:
   case varInteraction:
@@ -142,7 +148,8 @@ bool CanHaveAssignmentRule(const var_type vtype)
   case varReactionUndef:
   case varReactionGene:
   case varInteraction:
-    return true;
+  case varStoichiometry:
+      return true;
   case varModule:
   case varEvent:
   case varStrand:
@@ -178,10 +185,39 @@ bool CanBeInReaction(const var_type vtype)
   case varConstraint:
   case varSboTermWrapper:
   case varUncertWrapper:
-    return false;
+  case varStoichiometry:
+      return false;
   }
   assert(false); //uncaught type
   return false;
+}
+
+bool CanBeStoichiometry(const var_type vtype)
+{
+    switch (vtype) {
+    case varFormulaUndef:
+    case varFormulaOperator:
+    case varUndefined:
+    case varStoichiometry:
+        return true;
+    case varReactionUndef:
+    case varReactionGene:
+    case varInteraction:
+    case varSpeciesUndef:
+    case varDNA:
+    case varCompartment:
+    case varModule:
+    case varEvent:
+    case varStrand:
+    case varUnitDefinition:
+    case varDeleted:
+    case varConstraint:
+    case varSboTermWrapper:
+    case varUncertWrapper:
+        return false;
+    }
+    assert(false); //uncaught type
+    return false;
 }
 
 bool HasOrIsFormula(const var_type vtype)
@@ -194,7 +230,8 @@ bool HasOrIsFormula(const var_type vtype)
   case varCompartment:
   case varUnitDefinition:
   case varConstraint:
-    return true;
+  case varStoichiometry:
+      return true;
   case varReactionGene:
   case varReactionUndef:
   case varInteraction:
@@ -227,7 +264,7 @@ bool IsSpan(const uncert_type utype)
   case unDistribution:
   case unExternalParameter:
   case unUnknown:
-    return false;
+      return false;
   case unConfidenceInterval:
   case unCredibleInterval:
   case unInterquartileRange:
@@ -288,6 +325,8 @@ string VarTypeToString(const var_type vtype)
     return "SBO Term";
   case varUncertWrapper:
     return "Uncertainty parameter";
+  case varStoichiometry:
+      return "Stoichiometry";
   }
   assert(false);
   return "";
@@ -325,7 +364,8 @@ string VarTypeToAntimony(const var_type vtype)
   case varUndefined:
   case varSboTermWrapper:
   case varUncertWrapper:
-    assert(false);
+  case varStoichiometry:
+      assert(false);
     return "undefinable_type";
     break;
   }
@@ -386,6 +426,8 @@ string ReturnTypeToString(const return_type rtype)
     return "deleted submodel elements";
   case allConstraints:
     return "constraints";
+  case allStoichiometries:
+    return "stoichiometries";
   }
   assert(false); //uncaught type
   return "Uncaught type";
@@ -453,55 +495,55 @@ string UncertTypeToString(const uncert_type utype)
 
 uncert_type UncertStringToType(const string& uncert)
 {
-  if (CaselessStrCmp(uncert, "coefficientOfVariation")) {
+  if (CaselessStrCmp(false, uncert, "coefficientOfVariation")) {
     return unCoefficientOfVariation;
   }
-  if (CaselessStrCmp(uncert, "kurtosis")) {
+  if (CaselessStrCmp(false, uncert, "kurtosis")) {
     return unKurtosis;
   }
-  if (CaselessStrCmp(uncert, "mean")) {
+  if (CaselessStrCmp(false, uncert, "mean")) {
     return unMean;
   }
-  if (CaselessStrCmp(uncert, "median")) {
+  if (CaselessStrCmp(false, uncert, "median")) {
     return unMedian;
   }
-  if (CaselessStrCmp(uncert, "mode")) {
+  if (CaselessStrCmp(false, uncert, "mode")) {
     return unMode;
   }
-  if (CaselessStrCmp(uncert, "sampleSize")) {
+  if (CaselessStrCmp(false, uncert, "sampleSize")) {
     return unSampleSize;
   }
-  if (CaselessStrCmp(uncert, "skewness")) {
+  if (CaselessStrCmp(false, uncert, "skewness")) {
     return unSkewness;
   }
-  if (CaselessStrCmp(uncert, "standardDeviation")) {
+  if (CaselessStrCmp(false, uncert, "standardDeviation")) {
     return unStandardDeviation;
   }
-  if (CaselessStrCmp(uncert, "stdev")) {
+  if (CaselessStrCmp(false, uncert, "stdev")) {
     return unStandardDeviation;
   }
-  if (CaselessStrCmp(uncert, "standardError")) {
+  if (CaselessStrCmp(false, uncert, "standardError")) {
     return unStandardError;
   }
-  if (CaselessStrCmp(uncert, "variance")) {
+  if (CaselessStrCmp(false, uncert, "variance")) {
     return unVariance;
   }
-  if (CaselessStrCmp(uncert, "confidenceInterval")) {
+  if (CaselessStrCmp(false, uncert, "confidenceInterval")) {
     return unConfidenceInterval;
   }
-  if (CaselessStrCmp(uncert, "credibleInterval")) {
+  if (CaselessStrCmp(false, uncert, "credibleInterval")) {
     return unCredibleInterval;
   }
-  if (CaselessStrCmp(uncert, "interquartileRange")) {
+  if (CaselessStrCmp(false, uncert, "interquartileRange")) {
     return unInterquartileRange;
   }
-  if (CaselessStrCmp(uncert, "range")) {
+  if (CaselessStrCmp(false, uncert, "range")) {
     return unRange;
   }
-  if (CaselessStrCmp(uncert, "distribution")) {
+  if (CaselessStrCmp(false, uncert, "distribution")) {
     return unDistribution;
   }
-  if (CaselessStrCmp(uncert, "externalParameter")) {
+  if (CaselessStrCmp(false, uncert, "externalParameter")) {
     return unExternalParameter;
   }
   return unUnknown;

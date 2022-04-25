@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *BIOMD0000000019()
 
   // Compartments and Species:
@@ -32,12 +32,12 @@ model *BIOMD0000000019()
   ERK_PP := x59 + x83;
   SHC_P_t := x33 + x34 + x35 + x36 + x37 + x38 + x39 + x40 + x91 + x92 + x93 + x94 + x64 + x65 + x66 + x67 + x68;
   EGF_EGFR_act := x5 + x7 + x15 + x23 + x25 + x27 + x29 + x32 + x33 + x34 + x35 + x36 + x37 + x88 + x89 + x90 + x91 + x92 + x93 + x94 + x8 + x11 + x17 + x18 + x19 + x20 + x21 + x63 + x64 + x65 + x66 + x67 + x68;
-  k5 := piecewise(1.55, C < 3100, 0.2, C > 100000, C*-1.350000e-005 + 1.55);
+  k5 := piecewise(1.55, C < 3100, 0.2, C > 100000, C*-1.35e-5 + 1.55);
   C := RT/(kr1/(k1*x1) + 1);
 
   // Reactions:
   v1: $x1 + x2 -> x3; k1*x1*x2 - kr1*x3;
-  v2: 2x3 -> x4; k2*x3*x3 - kr2*x4;
+  v2: 2 x3 -> x4; k2*x3*x3 - kr2*x4;
   v3: x4 -> x5; k3*x4 - kr3*x5;
   v4: x23 + x12 -> x7; k4*x23*x12 - kr4*x7;
   v5: x7 -> x18 + x9; k5*x7;
@@ -46,7 +46,7 @@ model *BIOMD0000000019()
   v8: x5 + x14 -> x15; k8*x5*x14 - kr8*x15;
   v9: x23 => x18; k7*x23;
   v10: x6 + x16 -> x10; k10*x6*x16 - kr10*x10;
-  v11: 2x10 -> x11; k2*x10*x10 - kr2*x11;
+  v11: 2 x10 -> x11; k2*x10*x10 - kr2*x11;
   v12: x11 -> x8; k3*x11 - kr3*x8;
   v13:  => x2; k13;
   v14: x8 + x14 -> x17; k14*x8*x14 - kr14*x17;
@@ -71,7 +71,7 @@ model *BIOMD0000000019()
   v33: x38 -> x40 + x30; k33*x38 - kr33*x40*x30;
   v34: x25 -> x15 + x30; k34*x25 - kr34*x15*x30;
   v35: x30 -> x24 + x22; k35*x30 - kr35*x24*x22;
-  v36: x40 => x31; (Vm36*x40)/(Km36 + x40);
+  v36: x40 => x31; Vm36*x40/(Km36 + x40);
   v37: x33 -> x15 + x40; k37*x33 - kr37*x15*x40;
   v38: x22 + x40 -> x39; k24*x22*x40 - kr24*x39;
   v39: x34 -> x15 + x39; k37*x34 - kr37*x15*x39;
@@ -261,7 +261,7 @@ model *BIOMD0000000019()
   // Compartment initializations:
   c1 = 1;
   c2 = 1;
-  c3 = 4.3e-006;
+  c3 = 4.3e-06;
 
   // Variable initializations:
   k1 = 0.003;
@@ -276,7 +276,7 @@ model *BIOMD0000000019()
   k3 has pmin;
   kr3 = 0.6;
   kr3 has pmin;
-  k4 = 1.038e-005;
+  k4 = 1.038e-05;
   k4 has pipmin;
   kr4 = 0.0996;
   kr4 has pmin;
@@ -323,7 +323,7 @@ model *BIOMD0000000019()
   kr18 has pmin;
   k18 = 0.0015;
   k18 has pipmin;
-  kr19 = 1e-005;
+  kr19 = 1e-05;
   kr19 has pipmin;
   k19 = 30;
   k19 has pmin;
@@ -333,7 +333,7 @@ model *BIOMD0000000019()
   k20 has pipmin;
   k21 = 1.38;
   k21 has pmin;
-  kr21 = 2.2e-005;
+  kr21 = 2.2e-05;
   kr21 has pipmin;
   k22 = 0.0021;
   k22 has pipmin;
@@ -357,9 +357,9 @@ model *BIOMD0000000019()
   kr28 has pmin;
   k29 = 60;
   k29 has pmin;
-  kr29 = 7e-005;
+  kr29 = 7e-05;
   kr29 has pipmin;
-  kr32 = 2.4e-005;
+  kr32 = 2.4e-05;
   kr32 has pipmin;
   k32 = 6;
   k32 has pmin;
@@ -381,7 +381,7 @@ model *BIOMD0000000019()
   Km36 has substance;
   k37 = 18;
   k37 has pmin;
-  kr37 = 9e-005;
+  kr37 = 9e-05;
   kr37 has pipmin;
   k40 = 0.003;
   k40 has pipmin;
@@ -413,7 +413,7 @@ model *BIOMD0000000019()
   k49 has pmin;
   kr50 = 30;
   kr50 has pmin;
-  k50 = 2.5e-005;
+  k50 = 2.5e-05;
   k50 has pipmin;
   k52 = 0.00534;
   k52 has pipmin;
@@ -574,4 +574,79 @@ model *BIOMD0000000019()
   EGF_EGFR_act is "t_EGF_EGFR*";
   C is "C_internalization";
   RT is "total_Receptors";
+
+  // CV terms:
+  c1 identity "http://identifiers.org/go/GO:0005615"
+  c2 identity "http://identifiers.org/go/GO:0005737"
+  c3 identity "http://identifiers.org/go/GO:0005768"
+  x3 hypernym "http://identifiers.org/reactome/REACT_9893"
+  x3 version "http://identifiers.org/uniprot/P01133",
+             "http://identifiers.org/uniprot/P00533"
+  x4 hypernym "http://identifiers.org/reactome/REACT_9820"
+  x4 version "http://identifiers.org/uniprot/P01133",
+             "http://identifiers.org/uniprot/P00533"
+  x5 hypernym "http://identifiers.org/kegg.compound/C00562"
+  x5 version "http://identifiers.org/uniprot/P00533",
+             "http://identifiers.org/uniprot/P01133"
+  x6 hypernym "http://identifiers.org/uniprot/P00533"
+  x7 version "http://identifiers.org/uniprot/P20936",
+             "http://identifiers.org/uniprot/P62993",
+             "http://identifiers.org/uniprot/P00533",
+             "http://identifiers.org/uniprot/P01133",
+             "http://identifiers.org/go/GO:0030119"
+  x8 version "http://identifiers.org/uniprot/P00533",
+             "http://identifiers.org/uniprot/P01133"
+  x9 hypernym "http://identifiers.org/go/GO:0030119"
+  x10 version "http://identifiers.org/uniprot/P01133",
+              "http://identifiers.org/uniprot/P00533"
+  x14 hypernym "http://identifiers.org/interpro/IPR001936"
+  x14 hypernym "http://identifiers.org/uniprot/P20936"
+  x14 description "http://identifiers.org/omim/139150"
+  x22 hypernym "http://identifiers.org/uniprot/P62993"
+  x22 description "http://identifiers.org/omim/108355"
+  x24 hypernym "http://identifiers.org/uniprot/Q07889"
+  x24 description "http://identifiers.org/omim/182530"
+  x26 part "http://identifiers.org/chebi/CHEBI:17552",
+           "http://identifiers.org/uniprot/P01112"
+  x28 part "http://identifiers.org/chebi/CHEBI:15996",
+           "http://identifiers.org/uniprot/P01112"
+  x31 hypernym "http://identifiers.org/uniprot/P98077"
+  x31 description "http://identifiers.org/omim/605217"
+  x41 hypernym "http://identifiers.org/uniprot/P04049"
+  x41 description "http://identifiers.org/omim/164760"
+  x47 hypernym "http://identifiers.org/uniprot/Q02750",
+               "http://identifiers.org/uniprot/A4QPA9"
+  x47 description "http://identifiers.org/omim/176872"
+  x49 hypernym "http://identifiers.org/uniprot/Q02750",
+               "http://identifiers.org/uniprot/A4QPA9",
+               "http://identifiers.org/kegg.compound/C00562"
+  x49 description "http://identifiers.org/omim/176872"
+  x55 hypernym "http://identifiers.org/uniprot/P28482"
+  x55 description "http://identifiers.org/omim/176948"
+  v1 hypernym "http://identifiers.org/go/GO:0005154",
+              "http://identifiers.org/go/GO:0048408"
+  v1 hypernym "http://identifiers.org/reactome/REACT_9481"
+  v2 hypernym "http://identifiers.org/go/GO:0007171",
+              "http://identifiers.org/go/GO:0046983"
+  v2 hypernym "http://identifiers.org/reactome/REACT_9397"
+  v3 hypernym "http://identifiers.org/go/GO:0007171",
+              "http://identifiers.org/go/GO:0046777",
+              "http://identifiers.org/go/GO:0004713"
+  v3 hypernym "http://identifiers.org/reactome/REACT_9388"
+  v6 hypernym "http://identifiers.org/go/GO:0031623"
+  v7 hypernym "http://identifiers.org/go/GO:0031623"
+  v10 hypernym "http://identifiers.org/go/GO:0031623"
+  v100 description "http://identifiers.org/omim/164760"
+  v101 description "http://identifiers.org/omim/164760"
 end
+
+BIOMD0000000019 is "Schoeberl2002 - EGF MAPK"
+
+BIOMD0000000019 model_entity_is "http://identifiers.org/biomodels.db/MODEL6617455076"
+BIOMD0000000019 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000019"
+BIOMD0000000019 description "http://identifiers.org/pubmed/11923843"
+BIOMD0000000019 taxon "http://identifiers.org/taxonomy/9606"
+BIOMD0000000019 hypernym "http://identifiers.org/reactome/REACT_9417.3",
+                         "http://identifiers.org/go/GO:0007173"
+BIOMD0000000019 version "http://identifiers.org/go/GO:0007265",
+                        "http://identifiers.org/go/GO:0000165"

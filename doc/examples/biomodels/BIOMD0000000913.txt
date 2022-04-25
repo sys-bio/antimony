@@ -1,0 +1,209 @@
+// Created by libAntimony v2.13.0
+function Function_for_formation_of_tumor_cell_population(a, T, b)
+  a*T*(1 - b*T);
+end
+
+Function_for_formation_of_tumor_cell_population is "Function for formation of tumor cell population"
+
+function Function_for_removal_of_circulating_lymphocyte_population(beta, C, K_C, M)
+  beta*C + K_C*M*C;
+end
+
+Function_for_removal_of_circulating_lymphocyte_population is "Function for removal of circulating lymphocyte population"
+
+function Function_for_increase_in_circulating_lymphocyte_population(alpha_2)
+  alpha_2;
+end
+
+Function_for_increase_in_circulating_lymphocyte_population is "Function for increase in circulating lymphocyte population"
+
+function Function_for_elimunation_of_non_specific_effector_cell_population(f, N, p, T, K_N, M)
+  f*N + p*N*T + K_N*M*N;
+end
+
+Function_for_elimunation_of_non_specific_effector_cell_population is "Function for elimunation of non specific effector cell population"
+
+function Function_for_elimination_of_tumor_cell(c1, N, T, D, K_T, M)
+  c1*N*T + D*T + K_T*M*T;
+end
+
+Function_for_elimination_of_tumor_cell is "Function for elimination of tumor cell"
+
+function Function_for_activation_and_transfer_of_CTL_at_site_of_tumor(r2, C, T, p_I, L, I, g_I, V_L)
+  r2*C*T + p_I*L*I/(g_I + I) + V_L;
+end
+
+Function_for_activation_and_transfer_of_CTL_at_site_of_tumor is "Function for activation and transfer of CTL at site of tumor"
+
+function Function_for_elimination_of_CTL(m, L, q, T, u, K_L, M)
+  m*L + q*L*T + u*L*L + K_L*M*L;
+end
+
+Function_for_elimination_of_CTL is "Function for elimination of CTL"
+
+function Function_for_increase_in_chemotherapy_drug_in_the_blood(V_M)
+  V_M;
+end
+
+Function_for_increase_in_chemotherapy_drug_in_the_blood is "Function for increase in chemotherapy drug in the blood"
+
+function Function_for_activation_of_non_specific_effector_cell_population(alpha_1, g, T, eta, h, N)
+  alpha_1 + g*(T^eta/(h + T^eta))*N;
+end
+
+Function_for_activation_of_non_specific_effector_cell_population is "Function for activation of non specific effector cell population"
+
+function Function_for_increase_in_IL_2_population(p_T, T, g_T, L, w, I, V_I)
+  (p_T*T/(g_T + T))*L + w*L*I + V_I;
+end
+
+Function_for_increase_in_IL_2_population is "Function for increase in IL-2 population"
+
+function Function_for_decrease_in_IL2_production(mu_I, I)
+  mu_I*I;
+end
+
+Function_for_decrease_in_IL2_production is "Function for decrease in IL2 production"
+
+function Function_for_decrease_in_chemotherapy_drug_in_the_blood(gamma_, M)
+  gamma_*M;
+end
+
+Function_for_decrease_in_chemotherapy_drug_in_the_blood is "Function for decrease in chemotherapy drug in the blood"
+
+
+model *dePillis2008___Optimal_control_of_mixed_immunotherapy_and_chemotherapy_of_tumors()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species T in compartment_, L in compartment_, N in compartment_, C in compartment_;
+  species I in compartment_, M in compartment_;
+
+  // Assignment Rules:
+  D := ModelValue_0*((L/T)^ModelValue_2/(ModelValue_1 + (L/T)^ModelValue_2));
+
+  // Reactions:
+  Detection_and_induction_of_tumor_cell_population:  => T; compartment_*Function_for_formation_of_tumor_cell_population(a, T, b);
+  Elimination_of_tumor_by_the_action_of_immune_response: T => ; compartment_*Function_for_elimination_of_tumor_cell(c1, N, T, D, K_T, M);
+  Activation_and_transfer_of_tumor_specific_CTL_at_the_site_of_tumor:  => L; compartment_*Function_for_activation_and_transfer_of_CTL_at_site_of_tumor(r2, C, T, p_I, L, I, g_I, Activation_and_transfer_of_tumor_specific_CTL_at_the_site_of_tumor_V_L);
+  Elimination_of_tumor_specific_CLT: L => ; compartment_*Function_for_elimination_of_CTL(m, L, q, T, u, K_L, M);
+  Activation_of_nonspecific_effector_immune_cell_population:  => N; compartment_*Function_for_activation_of_non_specific_effector_cell_population(alpha_1, g, T, eta, h, N);
+  Inactivation_and_elimination_of_non_specific_effector_immune_cell_population: N => ; compartment_*Function_for_elimunation_of_non_specific_effector_cell_population(f, N, p, T, K_N, M);
+  Activation_and_increase_of_circulating_lymphocyte_population:  => C; compartment_*Function_for_increase_in_circulating_lymphocyte_population(alpha_2);
+  Removal_of_ciruclating_lymphocyte_population: C => ; compartment_*Function_for_removal_of_circulating_lymphocyte_population(beta, C, K_C, M);
+  Increase_in_IL_2_concentration:  => I; compartment_*Function_for_increase_in_IL_2_population(p_T, T, g_T, L, w, I, Increase_in_IL_2_concentration_V_I);
+  Decrease_in_IL_2_production: I => ; compartment_*Function_for_decrease_in_IL2_production(mu_I, I);
+  Increase_of_chemotherapy_drug_in_the_blood:  => M; compartment_*Function_for_increase_in_chemotherapy_drug_in_the_blood(Increase_of_chemotherapy_drug_in_the_blood_V_M);
+  Decrease_in_chemotherapy_Drug_in_the_blood: M => ; compartment_*Function_for_decrease_in_chemotherapy_drug_in_the_blood(gamma_, M);
+
+  // Species initializations:
+  T = 10000000;
+  L = 2000;
+  N = 500000;
+  C = 41700000000;
+  I = 2000;
+  M = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  d = 5;
+  s = 0.3;
+  l = 2;
+  ModelValue_0 = d;
+  ModelValue_2 = l;
+  ModelValue_1 = s;
+  a = 0.002;
+  b = 1.02e-09;
+  c1 = 3.23e-07;
+  f = 0.0412;
+  g = 0.025;
+  g_I = 20000000;
+  g_T = 100000;
+  h = 600;
+  K_C = 0.6;
+  K_L = 0.6;
+  K_N = 0.6;
+  K_T = 0.8;
+  m = 0.02;
+  p = 1e-07;
+  p_I = 0.125;
+  p_T = 0.6;
+  q = 3.42e-10;
+  r2 = 3e-11;
+  s_1 = 0.3;
+  u = 3;
+  w = 0.0002;
+  alpha_1 = 13000;
+  alpha_2 = 500000000;
+  beta = 0.012;
+  gamma_ = 0.9;
+  eta = 1;
+  mu_I = 10;
+  Activation_and_transfer_of_tumor_specific_CTL_at_the_site_of_tumor_V_L = 0;
+  Increase_in_IL_2_concentration_V_I = 0;
+  Increase_of_chemotherapy_drug_in_the_blood_V_M = 0;
+
+  // Other declarations:
+  var D;
+  const compartment_, d, s, l, ModelValue_0, ModelValue_2, ModelValue_1, a;
+  const b, c1, f, g, g_I, g_T, h, K_C, K_L, K_N, K_T, m, p, p_I, p_T, q, r2;
+  const s_1, u, w, alpha_1, alpha_2, beta, gamma_, eta, mu_I;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  ModelValue_0 is "Initial for d";
+  ModelValue_2 is "Initial for l";
+  ModelValue_1 is "Initial for s";
+  gamma_ is "gamma";
+  Detection_and_induction_of_tumor_cell_population is "Detection and induction of tumor cell population";
+  Elimination_of_tumor_by_the_action_of_immune_response is "Elimination of tumor by the action of immune response";
+  Activation_and_transfer_of_tumor_specific_CTL_at_the_site_of_tumor is "Activation and transfer of tumor specific CTL at the site of tumor";
+  Elimination_of_tumor_specific_CLT is "Elimination of tumor specific CLT";
+  Activation_of_nonspecific_effector_immune_cell_population is "Activation of nonspecific effector immune cell population";
+  Inactivation_and_elimination_of_non_specific_effector_immune_cell_population is "Inactivation and elimination of non specific effector immune cell population";
+  Activation_and_increase_of_circulating_lymphocyte_population is "Activation and increase of circulating lymphocyte population";
+  Removal_of_ciruclating_lymphocyte_population is "Removal of ciruclating lymphocyte population";
+  Increase_in_IL_2_concentration is "Increase in IL-2 concentration";
+  Decrease_in_IL_2_production is "Decrease in IL-2 production";
+  Increase_of_chemotherapy_drug_in_the_blood is "Increase of chemotherapy drug in the blood";
+  Decrease_in_chemotherapy_Drug_in_the_blood is "Decrease in chemotherapy Drug in the blood";
+
+  // CV terms:
+  T property "http://identifiers.org/efo/0000616"
+  L hypernym "http://identifiers.org/bto/BTO:0000289"
+  N property "http://identifiers.org/ncit/C132890"
+  C property "http://identifiers.org/ncit/C120462"
+  I hypernym "http://identifiers.org/uniprot/P60568"
+  M property "http://identifiers.org/ncit/C191"
+  Detection_and_induction_of_tumor_cell_population hypernym "http://identifiers.org/go/GO:0002355"
+  Elimination_of_tumor_by_the_action_of_immune_response hypernym "http://identifiers.org/go/GO:0002418"
+  Activation_and_transfer_of_tumor_specific_CTL_at_the_site_of_tumor hypernym "http://identifiers.org/go/GO:0072676"
+  Elimination_of_tumor_specific_CLT hypernym "http://identifiers.org/go/GO:0045583"
+  Activation_of_nonspecific_effector_immune_cell_population hypernym "http://identifiers.org/go/GO:0002697"
+  Activation_of_nonspecific_effector_immune_cell_population hypernym "http://identifiers.org/go/GO:0002252"
+  Inactivation_and_elimination_of_non_specific_effector_immune_cell_population hypernym "http://identifiers.org/go/GO:0002697"
+  Activation_and_increase_of_circulating_lymphocyte_population hypernym "http://identifiers.org/go/GO:0046649"
+  Removal_of_ciruclating_lymphocyte_population hypernym "http://identifiers.org/go/"
+  Increase_in_IL_2_concentration hypernym "http://identifiers.org/go/GO:0070970"
+  Decrease_in_IL_2_production hypernym "http://identifiers.org/go/GO:0032663"
+  Increase_of_chemotherapy_drug_in_the_blood hypernym "http://identifiers.org/go/GO:0015893"
+  Decrease_in_chemotherapy_Drug_in_the_blood hypernym "http://identifiers.org/go/GO:0015893"
+end
+
+dePillis2008___Optimal_control_of_mixed_immunotherapy_and_chemotherapy_of_tumors is "dePillis2008 - Optimal control of mixed immunotherapy and chemotherapy of tumors"
+
+dePillis2008___Optimal_control_of_mixed_immunotherapy_and_chemotherapy_of_tumors origin "http://identifiers.org/mamo/MAMO_0000046",
+                                                                                        "http://identifiers.org/taxonomy/9606",
+                                                                                        "http://identifiers.org/biomodels.db/MODEL2001160001"
+dePillis2008___Optimal_control_of_mixed_immunotherapy_and_chemotherapy_of_tumors description "http://identifiers.org/biomodels.db/MODEL2001160001",
+                                                                                             "http://identifiers.org/doi/10.1142/S0218339008002435"
+dePillis2008___Optimal_control_of_mixed_immunotherapy_and_chemotherapy_of_tumors model_entity_is "http://identifiers.org/biomodels.db/MODEL2001200003",
+                                                                                                 "http://identifiers.org/biomodels.db/BIOMD0000000913"
+dePillis2008___Optimal_control_of_mixed_immunotherapy_and_chemotherapy_of_tumors taxon "http://identifiers.org/taxonomy/9606"
+dePillis2008___Optimal_control_of_mixed_immunotherapy_and_chemotherapy_of_tumors property "http://identifiers.org/mamo/MAMO_0000046"

@@ -1,0 +1,46 @@
+// Created by libAntimony v2.13.0
+model *Holmes2006___Muscle_Contraction()
+
+  // Compartments and Species:
+  compartment Compartment;
+
+  // Assignment Rules:
+  v_ce := b*(P - P_0)/(P + a);
+  L_se := L - L_ce;
+  L := piecewise(1, time < 2, 0.95);
+  P := alpha*(L_se - ModelValue_1);
+
+  // Rate Rules:
+  L_ce' = v_ce;
+
+  // Compartment initializations:
+  Compartment = 1;
+
+  // Variable initializations:
+  L_ce = 0.7;
+  alpha = 1449.027;
+  ModelValue_1 = L_se;
+  a = 37.24;
+  b = 0.325;
+  P_0 = 144.9;
+
+  // Other declarations:
+  var L_ce, v_ce, L_se, L, P;
+  const Compartment, alpha, ModelValue_1, a, b, P_0;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = item;
+
+  // Display Names:
+  ModelValue_1 is "Initial for L_se";
+end
+
+Holmes2006___Muscle_Contraction is "Holmes2006 - Hill's model of muscle contraction"
+
+Holmes2006___Muscle_Contraction model_entity_is "http://identifiers.org/biomodels.db/MODEL1006230007"
+Holmes2006___Muscle_Contraction model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000677"
+Holmes2006___Muscle_Contraction description "http://identifiers.org/pubmed/16709736"
+Holmes2006___Muscle_Contraction model_entity_is "http://identifiers.org/biomodels.db/MODEL1006230007"
+Holmes2006___Muscle_Contraction hypernym "http://identifiers.org/go/GO:0006936"
+Holmes2006___Muscle_Contraction description "http://identifiers.org/pubmed/16709736"

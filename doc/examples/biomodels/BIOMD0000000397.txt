@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Sivakumar2011_WntSignalingPathway()
 
   // Compartments and Species:
@@ -42,7 +42,7 @@ model *Sivakumar2011_WntSignalingPathway()
   re65: s260 => s232; kass_re65*s260;
   re64: s270 => s232; kass_re64*s270;
   r67: s188 + s172 -> s305; kass_r67*s188*s172 - kdiss_r67*s305;
-  r86: s245 + s32 + s32 + s32 -> s252 + s33 + s33 + s33; kI_r86_s304/(kI_r86_s304 + s304)*s37*(kass_r86_s37*s245*s32*s32*s32 - kdiss_r86_s37*s252*s33*s33*s33);
+  r86: s245 + s32 + s32 + s32 -> s252 + s33 + s33 + s33; (kI_r86_s304/(kI_r86_s304 + s304))*s37*(kass_r86_s37*s245*s32*s32*s32 - kdiss_r86_s37*s252*s33*s33*s33);
 
   // Species initializations:
   s5 = 0;
@@ -225,4 +225,39 @@ model *Sivakumar2011_WntSignalingPathway()
   s267 is "Complex_br_(_beta_TrCP/_Beta_-Catenin)";
   s304 is "6 bromoindirubin 3'oxime";
   s305 is "Complex_br_(Bcl9/Pygo/../Smad4)";
+
+  // CV terms:
+  s5 hypernym "http://identifiers.org/uniprot/P56704"
+  s1 hypernym "http://identifiers.org/uniprot/P18537"
+  s28 hypernym "http://identifiers.org/uniprot/O75581",
+               "http://identifiers.org/uniprot/O75197"
+  s30 hypernym "http://identifiers.org/uniprot/P54367"
+  s31 part "http://identifiers.org/uniprot/P67870",
+           "http://identifiers.org/uniprot/P68400"
+  s32 hypernym "http://identifiers.org/chebi/CHEBI:15422"
+  s33 hypernym "http://identifiers.org/chebi/CHEBI:16761"
+  s37 hypernym "http://identifiers.org/uniprot/P49841"
+  s46 homolog "http://identifiers.org/uniprot/Q8UVT6"
+  s102 hypernym "http://identifiers.org/uniprot/Q92837"
+  s171 hypernym "http://identifiers.org/uniprot/Q9V9W8"
+  s172 hypernym "http://identifiers.org/uniprot/P45481"
+  s173 hypernym "http://identifiers.org/uniprot/O60264"
+  s170 hypernym "http://identifiers.org/uniprot/O00512"
+  s239 homolog "http://identifiers.org/uniprot/A4F2Q1"
+  s36 hypernym "http://identifiers.org/uniprot/P35222"
+  s232 hypernym "http://identifiers.org/uniprot/P35222"
+  s260 hypernym "http://identifiers.org/uniprot/P35222"
+  s270 hypernym "http://identifiers.org/uniprot/P35222"
+  s61 homolog "http://identifiers.org/uniprot/Q91854"
+  s304 hypernym "http://identifiers.org/chebi/CHEBI:25750"
 end
+
+Sivakumar2011_WntSignalingPathway is "Sivakumar2011_WntSignalingPathway"
+
+Sivakumar2011_WntSignalingPathway model_entity_is "http://identifiers.org/biomodels.db/MODEL1101270002"
+Sivakumar2011_WntSignalingPathway model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000397"
+Sivakumar2011_WntSignalingPathway description "http://identifiers.org/pubmed/21978399"
+Sivakumar2011_WntSignalingPathway origin "http://identifiers.org/panther.pathway/P00057"
+Sivakumar2011_WntSignalingPathway hypernym "http://identifiers.org/go/GO:0060070"
+Sivakumar2011_WntSignalingPathway taxon "http://identifiers.org/taxonomy/40674"
+Sivakumar2011_WntSignalingPathway container "http://identifiers.org/cl/CL:0000047"

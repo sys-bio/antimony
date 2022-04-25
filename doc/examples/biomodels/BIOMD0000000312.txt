@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Tyson2003_Perfect_Adaption()
 
   // Compartments and Species:
@@ -15,7 +15,7 @@ model *Tyson2003_Perfect_Adaption()
   r4: X => ; env*k4*X;
 
   // Species initializations:
-  R = (k1*k4)/(k2*k3);
+  R = k1*k4/(k2*k3);
   X = 0;
 
   // Compartment initializations:
@@ -47,4 +47,37 @@ model *Tyson2003_Perfect_Adaption()
   // Display Names:
   time_unit is "s";
   substance is "mole";
+
+  // SBO terms:
+  env.sboTerm = 270
+  R.sboTerm = 252
+  k1.sboTerm = 35
+  k4.sboTerm = 356
+  k2.sboTerm = 36
+  k3.sboTerm = 35
+  X.sboTerm = 252
+  S.sboTerm = 285
+  tau.sboTerm = 2
+  r1.sboTerm = 176
+  r2.sboTerm = 179
+  r3.sboTerm = 176
+  r4.sboTerm = 179
+
+  // CV terms:
+  env hypernym "http://identifiers.org/go/GO:0005623"
+  R hypernym "http://identifiers.org/chebi/CHEBI:36080"
+  X hypernym "http://identifiers.org/chebi/CHEBI:36080"
+  r1 hypernym "http://identifiers.org/go/GO:0009058"
+  r2 hypernym "http://identifiers.org/go/GO:0009056"
+  r3 hypernym "http://identifiers.org/go/GO:0009058"
+  r4 hypernym "http://identifiers.org/go/GO:0009056"
 end
+
+Tyson2003_Perfect_Adaption is "Tyson2003_Perfect_Adaption"
+
+Tyson2003_Perfect_Adaption model_entity_is "http://identifiers.org/biomodels.db/MODEL1102100000"
+Tyson2003_Perfect_Adaption model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000312"
+Tyson2003_Perfect_Adaption description "http://identifiers.org/pubmed/12648679"
+Tyson2003_Perfect_Adaption property "http://identifiers.org/mamo/MAMO_0000046"
+Tyson2003_Perfect_Adaption taxon "http://identifiers.org/taxonomy/131567"
+Tyson2003_Perfect_Adaption hypernym "http://identifiers.org/go/GO:0051098"

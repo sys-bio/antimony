@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *MODEL1501160001()
 
   // Compartments and Species:
@@ -6,12 +6,12 @@ model *MODEL1501160001()
   species $B in Brain, $A in Brain;
 
   // Assignment Rules:
-  B := A0 - (k1/k2 + A0)/(1 + k1/(k2*A0)*exp((k1 + k2*A0)*time));
+  B := A0 - (k1/k2 + A0)/(1 + (k1/(k2*A0))*exp((k1 + k2*A0)*time));
   A0 := k2A0/k2;
 
   // Reactions:
   Nucleation: $A => $B; Brain*k1*A;
-  Growth: $A + $B => 2$B; Brain*k2*A*B;
+  Growth: $A + $B => 2 $B; Brain*k2*A*B;
 
   // Species initializations:
   A = 1;
@@ -20,8 +20,8 @@ model *MODEL1501160001()
   Brain = 1;
 
   // Variable initializations:
-  k1 = 4e-005;
-  k2 = 1.57e-006;
+  k1 = 4e-05;
+  k2 = 1.57e-06;
   k2A0 = 0.29;
 
   // Other declarations:
@@ -35,4 +35,32 @@ model *MODEL1501160001()
 
   // Display Names:
   time_unit is "time";
+
+  // CV terms:
+  Brain identity "http://identifiers.org/bto/BTO:0000142"
+  B identity "http://identifiers.org/pr/PR:P04156"
+  A identity "http://identifiers.org/pr/PR:P04156"
 end
+
+MODEL1501160001 is "Morris2009 - α-Synuclein aggregation variable temperature and pH"
+
+MODEL1501160001 model_entity_is "http://identifiers.org/biomodels.db/MODEL1501160000"
+MODEL1501160001 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000567"
+MODEL1501160001 description "http://identifiers.org/pubmed/18247636"
+MODEL1501160001 origin "http://identifiers.org/pubmed/15794636",
+                       "http://identifiers.org/pubmed/16117499",
+                       "http://identifiers.org/pubmed/12785778",
+                       "http://identifiers.org/pubmed/16536526",
+                       "http://identifiers.org/pubmed/16301322",
+                       "http://identifiers.org/pubmed/16981679",
+                       "http://identifiers.org/pubmed/16081040",
+                       "http://identifiers.org/pubmed/12186976",
+                       "http://identifiers.org/pubmed/16981684",
+                       "http://identifiers.org/pubmed/16981683",
+                       "http://identifiers.org/pubmed/16981676",
+                       "http://identifiers.org/doi/10.1021/ja9705102"
+MODEL1501160001 taxon "http://identifiers.org/taxonomy/9606"
+MODEL1501160001 hypernym "http://identifiers.org/go/GO:1990000"
+MODEL1501160001 property "http://identifiers.org/doid/DOID:10652",
+                         "http://identifiers.org/doid/DOID:14330",
+                         "http://identifiers.org/doid/DOID:12858"

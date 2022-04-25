@@ -1,0 +1,300 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function Function_for_PSC_Growth(k_p, f_p, C, mu_p, P, a_p)
+  (k_p + f_p*C/(mu_p + C))*P*(1 - a_p*P);
+end
+
+Function_for_PSC_Growth is "Function_for_PSC_Growth"
+
+function Function_for_Tumor_Removal_CD8(d_c, E, C, r_1, R, r_2, gamma_2_tau_3)
+  d_c*E*C/((1 + r_1*R)*(1 + r_2*gamma_2_tau_3*C));
+end
+
+Function_for_Tumor_Removal_CD8 is "Function_for_Tumor_Removal_CD8"
+
+function Function_for_CD8_Recruitment_NK(r_e, N, C)
+  r_e*N*C;
+end
+
+Function_for_CD8_Recruitment_NK is "Function_for_CD8_Recruitment_NK"
+
+function Function_for_Tumor_Interaction_NK(b_c, N, C)
+  b_c*N*C;
+end
+
+Function_for_Tumor_Interaction_NK is "Function_for_Tumor_Interaction_NK"
+
+function Function_for_CD8_Inactivation(c_e, E, C)
+  c_e*E*C;
+end
+
+Function_for_CD8_Inactivation is "Function_for_CD8_Inactivation"
+
+function Function_for_CD8_Proliferation_Stimulation_IL_2(p_e, H, E, g_e, tau_1_alpha_1)
+  p_e*H*E/(g_e*tau_1_alpha_1 + H);
+end
+
+Function_for_CD8_Proliferation_Stimulation_IL_2 is "Function_for_CD8_Proliferation_Stimulation_IL-2"
+
+function Function_for_CD8_Proliferation_Stimulation_IFNG(f_e, E, beta_1_tau_2, beta_2_tau_2, N, beta_3_tau_2, H, h_e)
+  f_e*E*(beta_1_tau_2*E + beta_2_tau_2*N + beta_3_tau_2*H)/(h_e + beta_1_tau_2*E + beta_2_tau_2*N + beta_3_tau_2*H);
+end
+
+Function_for_CD8_Proliferation_Stimulation_IFNG is "Function_for_CD8_Proliferation_Stimulation_IFNG"
+
+function Function_for_CD8_Death_Treg(delta_e, R, E)
+  delta_e*R*E;
+end
+
+Function_for_CD8_Death_Treg is "Function_for_CD8_Death_Treg"
+
+function Function_for_NK_Proliferation_Stimulation_IL_2(p_n, N, g_n, H, tau_1_alpha_1)
+  p_n*H*N/(g_n*tau_1_alpha_1 + H);
+end
+
+Function_for_NK_Proliferation_Stimulation_IL_2 is "Function_for_NK_Proliferation_Stimulation_IL-2"
+
+function Function_for_NK_Proliferation_Stimulation_IFNG(f_n, N, beta_1_tau_2, E, beta_2_tau_2, beta_3_tau_2, H, h_n)
+  f_n*N*(beta_1_tau_2*E + beta_2_tau_2*N + beta_3_tau_2*H)/(h_n + beta_1_tau_2*E + beta_2_tau_2*N + beta_3_tau_2*H);
+end
+
+Function_for_NK_Proliferation_Stimulation_IFNG is "Function_for_NK_Proliferation_Stimulation_IFNG"
+
+function Function_for_Thelp_Proliferation_Stimulation_IFNG(f_h, H, beta_1_tau_2, E, beta_2_tau_2, N, beta_3_tau_2, h_h)
+  f_h*H*(beta_1_tau_2*E + beta_2_tau_2*N + beta_3_tau_2*H)/(h_h + beta_1_tau_2*E + beta_2_tau_2*N + beta_3_tau_2*H);
+end
+
+Function_for_Thelp_Proliferation_Stimulation_IFNG is "Function_for_Thelp_Proliferation_Stimulation_IFNG"
+
+function Function_for_Thelp_Proliferation_Stimulation_IL_2(p_h, H, g_h, tau_1_alpha_1)
+  p_h*H*H/(g_h*tau_1_alpha_1 + H);
+end
+
+Function_for_Thelp_Proliferation_Stimulation_IL_2 is "Function_for_Thelp_Proliferation_Stimulation_IL-2"
+
+function Function_for_NK_Inactivation(c_n, N, C)
+  c_n*N*C;
+end
+
+Function_for_NK_Inactivation is "Function_for_NK_Inactivation"
+
+function Function_for_Treg_Origination_CD8(a_r, E)
+  a_r*E;
+end
+
+Function_for_Treg_Origination_CD8 is "Function_for_Treg_Origination_CD8"
+
+function Function_for_Tumor_Growth(k_c, mu_c, P, C, a_c)
+  (k_c + mu_c*P)*C*(1 - a_c*C);
+end
+
+Function_for_Tumor_Growth is "Function_for_Tumor_Growth"
+
+function Function_for_Thelp_Death_Treg(delta_h, R, H)
+  delta_h*R*H;
+end
+
+Function_for_Thelp_Death_Treg is "Function_for_Thelp_Death_Treg"
+
+function Function_for_Treg_Lysis_NK(r, N, R)
+  r*N*R;
+end
+
+Function_for_Treg_Lysis_NK is "Function_for_Treg_Lysis_NK"
+
+function Function_for_Treg_Proliferation_Stimulation_IL_2(p_r, H, R, g_r, tau_1_alpha_1)
+  p_r*H*R/(g_r*tau_1_alpha_1 + H);
+end
+
+Function_for_Treg_Proliferation_Stimulation_IL_2 is "Function_for_Treg_Proliferation_Stimulation_IL-2"
+
+function Function_for_Treg_Origination_Thelp(b_r, H)
+  b_r*H;
+end
+
+Function_for_Treg_Origination_Thelp is "Function_for_Treg_Origination_Thelp"
+
+
+model *He2017___A_mathematical_model_of_pancreatic_cancer_with_two_kinds_of_treatments()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species C_PCC in compartment_, P_PSC in compartment_, E_CD8 in compartment_;
+  species N_Killer in compartment_, H_T_Helper in compartment_, R_T_Regulatory in compartment_;
+
+  // Assignment Rules:
+  mu_c := 0.1*ModelValue_2*ModelValue_8;
+  k_p := 0.1*ModelValue_0;
+
+  // Reactions:
+  Tumor_Growth:  => C_PCC; compartment_*Function_for_Tumor_Growth(k_c, mu_c, P_PSC, C_PCC, a_c);
+  Tumor_Interaction_NK: C_PCC => ; compartment_*Function_for_Tumor_Interaction_NK(b_c, N_Killer, C_PCC);
+  Tumor_Removal_CD8: C_PCC => ; compartment_*Function_for_Tumor_Removal_CD8(d_c, E_CD8, C_PCC, r_1, R_T_Regulatory, r_2, gamma_2_tau_3);
+  PSC_Growth:  => P_PSC; compartment_*Function_for_PSC_Growth(k_p, f_p, C_PCC, mu_p, P_PSC, a_p);
+  PSC_Death: P_PSC => ; compartment_*lambda_p*P_PSC;
+  CD8_Growth_Constant:  => E_CD8; compartment_*Constant_flux__irreversible(a_e);
+  CD8_Death_Natural: E_CD8 => ; compartment_*b_e*E_CD8;
+  CD8_Inactivation: E_CD8 => ; compartment_*Function_for_CD8_Inactivation(c_e, E_CD8, C_PCC);
+  CD8_Recruitment_NK:  => E_CD8; compartment_*Function_for_CD8_Recruitment_NK(r_e, N_Killer, C_PCC);
+  CD8_Proliferation_Stimulation_IL_2:  => E_CD8; compartment_*Function_for_CD8_Proliferation_Stimulation_IL_2(p_e, H_T_Helper, E_CD8, g_e, tau_1_alpha_1);
+  CD8_Proliferation_Stimulation_IFNG:  => E_CD8; compartment_*Function_for_CD8_Proliferation_Stimulation_IFNG(f_e, E_CD8, beta_1_tau_2, beta_2_tau_2, N_Killer, beta_3_tau_2, H_T_Helper, h_e);
+  CD8_Death_Treg: E_CD8 => ; compartment_*Function_for_CD8_Death_Treg(delta_e, R_T_Regulatory, E_CD8);
+  NK_Growth_Constant:  => N_Killer; compartment_*Constant_flux__irreversible(a_n);
+  NK_Death: N_Killer => ; compartment_*b_n*N_Killer;
+  NK_Inactivation: N_Killer => ; compartment_*Function_for_NK_Inactivation(c_n, N_Killer, C_PCC);
+  NK_Proliferation_Stimulation_IL_2:  => N_Killer; compartment_*Function_for_NK_Proliferation_Stimulation_IL_2(p_n, N_Killer, g_n, H_T_Helper, tau_1_alpha_1);
+  NK_Proliferation_Stimulation_IFNG:  => N_Killer; compartment_*Function_for_NK_Proliferation_Stimulation_IFNG(f_n, N_Killer, beta_1_tau_2, E_CD8, beta_2_tau_2, beta_3_tau_2, H_T_Helper, h_n);
+  NK_Death_Treg: N_Killer => ; compartment_*delta_n*N_Killer;
+  Thelp_Growth_Constant:  => H_T_Helper; compartment_*Constant_flux__irreversible(a_h);
+  Thelp_Death_Natural: H_T_Helper => ; compartment_*b_h*H_T_Helper;
+  Thelp_Proliferation_Stimulation_IL_2:  => H_T_Helper; compartment_*Function_for_Thelp_Proliferation_Stimulation_IL_2(p_h, H_T_Helper, g_h, tau_1_alpha_1);
+  Thelp_Proliferation_Stimulation_IFNG:  => H_T_Helper; compartment_*Function_for_Thelp_Proliferation_Stimulation_IFNG(f_h, H_T_Helper, beta_1_tau_2, E_CD8, beta_2_tau_2, N_Killer, beta_3_tau_2, h_h);
+  Thelp_Death_Treg: H_T_Helper => ; compartment_*Function_for_Thelp_Death_Treg(delta_h, R_T_Regulatory, H_T_Helper);
+  Treg_Growth_Constant:  => R_T_Regulatory; compartment_*Constant_flux__irreversible(a);
+  Treg_Death_Natural: R_T_Regulatory => ; compartment_*delta_r*R_T_Regulatory;
+  Treg_Origination_Thelp:  => R_T_Regulatory; compartment_*Function_for_Treg_Origination_Thelp(b_r, H_T_Helper);
+  Treg_Origination_CD8:  => R_T_Regulatory; compartment_*Function_for_Treg_Origination_CD8(a_r, E_CD8);
+  Treg_Proliferation_Stimulation_IL_2:  => R_T_Regulatory; compartment_*Function_for_Treg_Proliferation_Stimulation_IL_2(p_r, H_T_Helper, R_T_Regulatory, g_r, tau_1_alpha_1);
+  Treg_Lysis_NK: R_T_Regulatory => ; compartment_*Function_for_Treg_Lysis_NK(r, N_Killer, R_T_Regulatory);
+
+  // Species initializations:
+  C_PCC = 1000000000;
+  P_PSC = 5600000;
+  E_CD8 = 873600000;
+  N_Killer = 481600000;
+  H_T_Helper = 2116800000;
+  R_T_Regulatory = 158760000;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  k_c = 0.0195;
+  ModelValue_2 = a_c;
+  ModelValue_8 = a_p;
+  a_c = 1.02e-11;
+  b_c = 1.5e-11;
+  d_c = 7.87e-05;
+  r_1 = 0.345;
+  r_2 = 0.286;
+  ModelValue_0 = k_c;
+  a_p = 1.7857e-09;
+  f_p = 0.125;
+  mu_p = 56000000;
+  lambda_p = 0.015;
+  a_e = 13000;
+  b_e = 0.02;
+  c_e = 3.42e-12;
+  r_e = 5e-12;
+  p_e = 0.125;
+  g_e = 0.3;
+  f_e = 0.125;
+  h_e = 0.3;
+  delta_e = 1e-10;
+  a_n = 130000;
+  b_n = 0.015;
+  c_n = 1e-13;
+  p_n = 0.125;
+  g_n = 0.3;
+  f_n = 0.125;
+  h_n = 0.3;
+  delta_n = 1e-10;
+  a_h = 360000;
+  b_h = 0.0012;
+  p_h = 0.125;
+  g_h = 0.3;
+  f_h = 0.125;
+  h_h = 0.3;
+  delta_h = 1e-10;
+  a = 560000;
+  delta_r = 0.023;
+  a_r = 0.0002;
+  b_r = 0.0004;
+  p_r = 0.125;
+  g_r = 0.3;
+  r = 1e-11;
+  tau_1_alpha_1 = 224830000000;
+  beta_1_tau_2 = 4.4691e-13;
+  beta_2_tau_2 = 4.4691e-13;
+  beta_3_tau_2 = 4.4691e-13;
+  gamma_2_tau_3 = 4.4691e-13;
+  k_R = 1.5e-11;
+
+  // Other declarations:
+  var mu_c, k_p;
+  const compartment_, k_c, ModelValue_2, ModelValue_8, a_c, b_c, d_c, r_1;
+  const r_2, ModelValue_0, a_p, f_p, mu_p, lambda_p, a_e, b_e, c_e, r_e, p_e;
+  const g_e, f_e, h_e, delta_e, a_n, b_n, c_n, p_n, g_n, f_n, h_n, delta_n;
+  const a_h, b_h, p_h, g_h, f_h, h_h, delta_h, a, delta_r, a_r, b_r, p_r;
+  const g_r, r, tau_1_alpha_1, beta_1_tau_2, beta_2_tau_2, beta_3_tau_2, gamma_2_tau_3;
+  const k_R;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = item;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+  ModelValue_2 is "Initial for a_c";
+  ModelValue_8 is "Initial for a_p";
+  ModelValue_0 is "Initial for k_c";
+  CD8_Proliferation_Stimulation_IL_2 is "CD8_Proliferation_Stimulation_IL-2";
+  NK_Proliferation_Stimulation_IL_2 is "NK_Proliferation_Stimulation_IL-2";
+  Thelp_Proliferation_Stimulation_IL_2 is "Thelp_Proliferation_Stimulation_IL-2";
+  Treg_Proliferation_Stimulation_IL_2 is "Treg_Proliferation_Stimulation_IL-2";
+
+  // CV terms:
+  compartment_ hypernym "http://identifiers.org/ncit/C94498"
+  C_PCC identity "http://identifiers.org/bto/BTO:0000584"
+  P_PSC identity "http://identifiers.org/cl/CL:0002410"
+  E_CD8 identity "http://identifiers.org/ncit/C12542"
+  N_Killer identity "http://identifiers.org/cl/CL:0000623"
+  H_T_Helper identity "http://identifiers.org/bto/BTO:0002417"
+  R_T_Regulatory identity "http://identifiers.org/bto/BTO:0004520"
+  Tumor_Growth hypernym "http://identifiers.org/ncit/C36294"
+  Tumor_Interaction_NK hypernym "http://identifiers.org/go/GO:0002420"
+  Tumor_Removal_CD8 hypernym "http://identifiers.org/go/GO:0002419"
+  PSC_Growth hypernym "http://identifiers.org/ncit/C18081"
+  PSC_Death hypernym "http://identifiers.org/go/GO:0008219"
+  CD8_Growth_Constant hypernym "http://identifiers.org/ncit/C18081"
+  CD8_Death_Natural hypernym "http://identifiers.org/go/GO:0008219"
+  CD8_Inactivation hypernym "http://identifiers.org/go/GO:0008219"
+  CD8_Recruitment_NK hypernym "http://identifiers.org/go/GO:0072683"
+  CD8_Proliferation_Stimulation_IL_2 hypernym "http://identifiers.org/ncit/C18081"
+  CD8_Proliferation_Stimulation_IFNG hypernym "http://identifiers.org/ncit/C18081"
+  CD8_Death_Treg hypernym "http://identifiers.org/go/GO:0001906"
+  NK_Growth_Constant hypernym "http://identifiers.org/ncit/"
+  NK_Death hypernym "http://identifiers.org/go/GO:0008219"
+  NK_Inactivation hypernym "http://identifiers.org/go/GO:0008219"
+  NK_Proliferation_Stimulation_IL_2 hypernym "http://identifiers.org/ncit/C18081"
+  NK_Proliferation_Stimulation_IFNG hypernym "http://identifiers.org/ncit/C18081"
+  NK_Death_Treg hypernym "http://identifiers.org/go/GO:0001906"
+  Thelp_Growth_Constant hypernym "http://identifiers.org/ncit/C18081"
+  Thelp_Death_Natural hypernym "http://identifiers.org/go/GO:0008219"
+  Thelp_Proliferation_Stimulation_IL_2 hypernym "http://identifiers.org/ncit/C18081"
+  Thelp_Proliferation_Stimulation_IFNG hypernym "http://identifiers.org/ncit/C18081"
+  Thelp_Death_Treg hypernym "http://identifiers.org/go/GO:0001906"
+  Treg_Growth_Constant hypernym "http://identifiers.org/ncit/C18081"
+  Treg_Death_Natural hypernym "http://identifiers.org/go/GO:0008219"
+  Treg_Origination_Thelp hypernym "http://identifiers.org/go/GO:0030217"
+  Treg_Origination_CD8 hypernym "http://identifiers.org/go/GO:0030217"
+  Treg_Proliferation_Stimulation_IL_2 hypernym "http://identifiers.org/ncit/C18081"
+  Treg_Lysis_NK hypernym "http://identifiers.org/go/GO:0001906"
+end
+
+He2017___A_mathematical_model_of_pancreatic_cancer_with_two_kinds_of_treatments is "He2017 - A mathematical model of pancreatic cancer with two kinds of treatments"
+
+He2017___A_mathematical_model_of_pancreatic_cancer_with_two_kinds_of_treatments description "http://identifiers.org/doi/10.1142/S021833901750005X"
+He2017___A_mathematical_model_of_pancreatic_cancer_with_two_kinds_of_treatments model_entity_is "http://identifiers.org/biomodels.db/MODEL1909120001",
+                                                                                                "http://identifiers.org/biomodels.db/BIOMD0000000811"
+He2017___A_mathematical_model_of_pancreatic_cancer_with_two_kinds_of_treatments property "http://identifiers.org/mamo/MAMO_0000046"
+He2017___A_mathematical_model_of_pancreatic_cancer_with_two_kinds_of_treatments property "http://identifiers.org/ncit/C71757"
+He2017___A_mathematical_model_of_pancreatic_cancer_with_two_kinds_of_treatments property "http://identifiers.org/ncit/C36294"
+He2017___A_mathematical_model_of_pancreatic_cancer_with_two_kinds_of_treatments property "http://identifiers.org/ncit/C3305"

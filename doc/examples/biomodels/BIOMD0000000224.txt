@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Meyer1991_CalciumSpike_ICC()
 
   // Compartments and Species:
@@ -6,9 +6,9 @@ model *Meyer1991_CalciumSpike_ICC()
   species CaI in cytosol, IP3 in cytosol, CaS in ER_store, g in cytosol;
 
   // Reactions:
-  JChannel: CaS => CaI; (1 - g)*((A*(IP3*0.5)^4)/(IP3*0.5 + k1)^4 + L)*CaS;
-  JPump: CaI => CaS; (B*(CaI*0.01)^2)/((CaI*0.01)^2 + k2^2);
-  kPLC:  => IP3; C*(1 - k3/(CaI*0.01 + k3)*(1/(1 + R)));
+  JChannel: CaS => CaI; (1 - g)*(A*(IP3*0.5)^4/(IP3*0.5 + k1)^4 + L)*CaS;
+  JPump: CaI => CaS; B*(CaI*0.01)^2/((CaI*0.01)^2 + k2^2);
+  kPLC:  => IP3; C*(1 - (k3/(CaI*0.01 + k3))*(1/(1 + R)));
   kPhosphatase: IP3 => ; D*IP3*0.5;
   inhibition_parameter1:  => g; E*(CaI*0.01)^4*(1 - g);
   inhibition_parameter2: g => ; F;
@@ -54,4 +54,35 @@ model *Meyer1991_CalciumSpike_ICC()
   unit microMpsec = 1e-6 mole / (second * litre);
   unit microM4 = 1 / ((1e-6 mole)^4 * second * litre);
   unit psec = 1 / second;
+
+  // SBO terms:
+  cytosol.sboTerm = 290
+  ER_store.sboTerm = 290
+  CaI.sboTerm = 247
+  IP3.sboTerm = 247
+  CaS.sboTerm = 247
+
+  // CV terms:
+  cytosol hypernym "http://identifiers.org/go/GO:0005829"
+  ER_store hypernym "http://identifiers.org/go/GO:0005783"
+  CaI hypernym "http://identifiers.org/chebi/CHEBI:29108",
+               "http://identifiers.org/kegg.compound/C00076"
+  IP3 hypernym "http://identifiers.org/chebi/CHEBI:16595",
+               "http://identifiers.org/kegg.compound/C01255"
+  CaS hypernym "http://identifiers.org/chebi/CHEBI:29108",
+               "http://identifiers.org/kegg.compound/C00076"
+  g hypernym "http://identifiers.org/go/GO:0019855"
+  JChannel hypernym "http://identifiers.org/go/GO:0051209"
+  JPump hypernym "http://identifiers.org/go/GO:0060401"
+  kPLC hypernym "http://identifiers.org/go/GO:0032959"
+  kPhosphatase hypernym "http://identifiers.org/go/GO:0032961"
 end
+
+Meyer1991_CalciumSpike_ICC is "Meyer1991_CalciumSpike_ICC"
+
+Meyer1991_CalciumSpike_ICC model_entity_is "http://identifiers.org/biomodels.db/MODEL9412103933"
+Meyer1991_CalciumSpike_ICC model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000224"
+Meyer1991_CalciumSpike_ICC description "http://identifiers.org/pubmed/1867714"
+Meyer1991_CalciumSpike_ICC origin "http://identifiers.org/pubmed/2455890"
+Meyer1991_CalciumSpike_ICC hypernym "http://identifiers.org/go/GO:0051279"
+Meyer1991_CalciumSpike_ICC taxon "http://identifiers.org/taxonomy/10117"

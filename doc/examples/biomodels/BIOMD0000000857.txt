@@ -1,0 +1,240 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function Henri_Michaelis_Menten__irreversible(substrate, Km, V)
+  V*substrate/(Km + substrate);
+end
+
+Henri_Michaelis_Menten__irreversible is "Henri-Michaelis-Menten (irreversible)"
+
+function Function_for_Sucrose_Consumption_Ephe(k9, sucr, Ephe, f_I_phe)
+  k9*sucr*Ephe*f_I_phe;
+end
+
+Function_for_Sucrose_Consumption_Ephe is "Function_for_Sucrose_Consumption_Ephe"
+
+function Function_for_Sucrose_Consumption_PCF_Lignin(k14, k15, sucr)
+  (k14 + k15)*sucr;
+end
+
+Function_for_Sucrose_Consumption_PCF_Lignin is "Function_for_Sucrose_Consumption_PCF_Lignin"
+
+function Function_for_Sucrose_Formation_Starch(k37, starch, Estarch)
+  k37*starch*Estarch;
+end
+
+Function_for_Sucrose_Formation_Starch is "Function_for_Sucrose_Formation_Starch"
+
+function Function_for_Sucrose_Formation_TrioseP(k4, EtrioseP, trioseP)
+  k4*EtrioseP*trioseP;
+end
+
+Function_for_Sucrose_Formation_TrioseP is "Function_for_Sucrose_Formation_TrioseP"
+
+function Function_for_EtrioseP_Consumption_Sucrose(k2, sucr, EtrioseP, k3)
+  k2*sucr*EtrioseP/(k3 + EtrioseP);
+end
+
+Function_for_EtrioseP_Consumption_Sucrose is "Function_for_EtrioseP_Consumption_Sucrose"
+
+function Function_for_Sucrose_Consumption_PCF(k5, sucr, f_act_pcf)
+  k5*sucr*f_act_pcf;
+end
+
+Function_for_Sucrose_Consumption_PCF is "Function_for_Sucrose_Consumption_PCF"
+
+function Function_for_Next_Consumption(g, k11, Next, Enitrate)
+  g*k11*Next*Enitrate;
+end
+
+Function_for_Next_Consumption is "Function_for_Next_Consumption"
+
+function Function_for_TrioseP_Formation(k29, f_act_trioseP, ECO2)
+  k29*f_act_trioseP*ECO2;
+end
+
+Function_for_TrioseP_Formation is "Function_for_TrioseP_Formation"
+
+function Function_for_Enitrate_Consumption(k27, N, Enitrate, k28)
+  k27*N*Enitrate/(k28 + Enitrate);
+end
+
+Function_for_Enitrate_Consumption is "Function_for_Enitrate_Consumption"
+
+function Function_for_ECO2_Consumption(k31, trioseP, ECO2, k32)
+  k31*trioseP*ECO2/(k32 + ECO2);
+end
+
+Function_for_ECO2_Consumption is "Function_for_ECO2_Consumption"
+
+function Function_for_N_Formation(k11, Next, Enitrate)
+  k11*Next*Enitrate;
+end
+
+Function_for_N_Formation is "Function_for_N_Formation"
+
+function Function_for_Estarch_Consumption(k35, sucr, Estarch, k36)
+  k35*sucr*Estarch/(k36 + Estarch);
+end
+
+Function_for_Estarch_Consumption is "Function_for_Estarch_Consumption"
+
+function Function_for_Ephe_Formation_Sucrose(k6, sucr, f_I_E_phe_outfl)
+  k6*sucr*f_I_E_phe_outfl;
+end
+
+Function_for_Ephe_Formation_Sucrose is "Function_for_Ephe_Formation_Sucrose"
+
+
+model *Larbat2016_1___Modeling_the_diversion_of_primary_carbon_flux_into_secondary_metabolism_under_variable_nitrate_and_light_or_dark_conditions__Base_Model()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species sucr in compartment_, EtrioseP in compartment_, Ephe in compartment_;
+  species N in compartment_, starch in compartment_, Next in compartment_;
+  species Enitrate in compartment_, trioseP in compartment_, $ECO2 in compartment_;
+  species Estarch in compartment_;
+
+  // Assignment Rules:
+  f_I_phe := k38/(k38 + N);
+  f_act_pcf := N/(k13 + N);
+  f_I_E_phe_outfl := k39/(k39 + N);
+  f_act_trioseP := N/(k33 + N);
+
+  // Reactions:
+  Sucrose_Formation_TrioseP: trioseP => sucr; compartment_*Function_for_Sucrose_Formation_TrioseP(k4, EtrioseP, trioseP);
+  Sucrose_Consumption_Ephe: sucr => ; compartment_*Function_for_Sucrose_Consumption_Ephe(k9, sucr, Ephe, f_I_phe);
+  Sucrose_Consumption_PCF: sucr => ; compartment_*Function_for_Sucrose_Consumption_PCF(k5, sucr, f_act_pcf);
+  Sucrose_Consumption_PCF_Lignin: sucr => ; compartment_*Function_for_Sucrose_Consumption_PCF_Lignin(k14, k15, sucr);
+  Sucrose_Formation_Starch: starch => sucr; compartment_*Function_for_Sucrose_Formation_Starch(k37, starch, Estarch);
+  EtrioseP_Formation_Constant:  => EtrioseP; compartment_*Constant_flux__irreversible(k1);
+  EtrioseP_Consumption_Sucrose: EtrioseP => ; compartment_*Function_for_EtrioseP_Consumption_Sucrose(k2, sucr, EtrioseP, k3);
+  Ephe_Formation_Sucrose:  => Ephe; compartment_*Function_for_Ephe_Formation_Sucrose(k6, sucr, f_I_E_phe_outfl);
+  Ephe_Consumption: Ephe => ; compartment_*Henri_Michaelis_Menten__irreversible(Ephe, k8, k7);
+  N_Formation:  => N; compartment_*Function_for_N_Formation(k11, Next, Enitrate);
+  N_Consumption: N => ; compartment_*k12*N;
+  Next_Consumption: Next => ; compartment_*Function_for_Next_Consumption(g, k11, Next, Enitrate);
+  Starch_Formation: trioseP => starch; compartment_*k10*trioseP;
+  Enitrate_Formation:  => Enitrate; compartment_*Constant_flux__irreversible(k26);
+  Enitrate_Consumption: Enitrate => ; compartment_*Function_for_Enitrate_Consumption(k27, N, Enitrate, k28);
+  TrioseP_Formation:  => trioseP; compartment_*Function_for_TrioseP_Formation(k29, f_act_trioseP, ECO2);
+  ECO2_Formation:  => $ECO2; compartment_*Constant_flux__irreversible(k30);
+  ECO2_Consumption: $ECO2 => ; compartment_*Function_for_ECO2_Consumption(k31, trioseP, ECO2, k32);
+  Estarch_Formation:  => Estarch; compartment_*Constant_flux__irreversible(k34);
+  Estarch_Consumption: Estarch => ; compartment_*Function_for_Estarch_Consumption(k35, sucr, Estarch, k36);
+
+  // Species initializations:
+  sucr = 0.7;
+  EtrioseP = 8.06;
+  Ephe = 1e-05;
+  N = 5;
+  starch = 0;
+  Next = 500;
+  Enitrate = 0.075;
+  trioseP = 1.1;
+  ECO2 = 1;
+  Estarch = 0.0001;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  k1 = 1;
+  k2 = 1;
+  k3 = 1e-05;
+  k4 = 1;
+  k5 = 8;
+  k6 = 10;
+  k7 = 9.8;
+  k8 = 1e-06;
+  k9 = 1;
+  k10 = 10;
+  k11 = 0.2;
+  k12 = 1.5;
+  k13 = 1;
+  k14 = 0.2;
+  k15 = 0.2;
+  k26 = 0.5;
+  k27 = 0.1;
+  k28 = 1e-06;
+  k29 = 10.1;
+  k30 = 0;
+  k31 = 0;
+  k32 = 1e-05;
+  k33 = 1e-11;
+  k34 = 9.8;
+  k35 = 10;
+  k36 = 0.0001;
+  k37 = 0.1;
+  k38 = 0.2;
+  k39 = 1000;
+  g = 1;
+
+  // Other declarations:
+  var f_I_phe, f_act_pcf, f_I_E_phe_outfl, f_act_trioseP;
+  const compartment_, k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11, k12, k13;
+  const k14, k15, k26, k27, k28, k29, k30, k31, k32, k33, k34, k35, k36, k37;
+  const k38, k39, g;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+
+  // CV terms:
+  compartment_ hypernym "http://identifiers.org/po/PO:0009002"
+  sucr identity "http://identifiers.org/chebi/CHEBI:17992"
+  EtrioseP property "http://identifiers.org/ncit/C49887"
+  EtrioseP property "http://identifiers.org/chebi/CHEBI:27137"
+  Ephe property "http://identifiers.org/ncit/C49887"
+  Ephe property "http://identifiers.org/chebi/CHEBI:15882"
+  N identity "http://identifiers.org/chebi/CHEBI:17632"
+  starch identity "http://identifiers.org/chebi/CHEBI:28017"
+  Next identity "http://identifiers.org/chebi/CHEBI:17632"
+  Next container "http://identifiers.org/go/GO:0005576"
+  Enitrate property "http://identifiers.org/chebi/CHEBI:17632"
+  Enitrate property "http://identifiers.org/ncit/C49887"
+  trioseP hypernym "http://identifiers.org/chebi/CHEBI:27137"
+  trioseP property "http://identifiers.org/pato/PATO:0002220"
+  ECO2 property "http://identifiers.org/ncit/C49887"
+  ECO2 property "http://identifiers.org/chebi/CHEBI:16526"
+  Estarch property "http://identifiers.org/chebi/CHEBI:28017"
+  Estarch property "http://identifiers.org/ncit/C49887"
+  Sucrose_Formation_TrioseP hypernym "http://identifiers.org/sbo/SBO:0000393"
+  Sucrose_Consumption_Ephe hypernym "http://identifiers.org/sbo/SBO:0000394"
+  Sucrose_Consumption_PCF hypernym "http://identifiers.org/sbo/SBO:0000394"
+  Sucrose_Consumption_PCF_Lignin hypernym "http://identifiers.org/sbo/SBO:0000394"
+  Sucrose_Formation_Starch hypernym "http://identifiers.org/sbo/SBO:0000393"
+  EtrioseP_Formation_Constant hypernym "http://identifiers.org/sbo/SBO:0000393"
+  EtrioseP_Consumption_Sucrose hypernym "http://identifiers.org/sbo/SBO:0000394"
+  Ephe_Formation_Sucrose hypernym "http://identifiers.org/sbo/SBO:0000393"
+  Ephe_Consumption hypernym "http://identifiers.org/sbo/SBO:0000394"
+  N_Formation hypernym "http://identifiers.org/sbo/SBO:0000393"
+  N_Consumption hypernym "http://identifiers.org/sbo/SBO:0000394"
+  Next_Consumption hypernym "http://identifiers.org/sbo/SBO:0000394"
+  Starch_Formation hypernym "http://identifiers.org/sbo/SBO:0000393"
+  Enitrate_Formation hypernym "http://identifiers.org/sbo/SBO:0000393"
+  Enitrate_Consumption hypernym "http://identifiers.org/sbo/SBO:0000394"
+  TrioseP_Formation hypernym "http://identifiers.org/sbo/SBO:0000393"
+  TrioseP_Formation description "http://identifiers.org/pubmed/27164436"
+  ECO2_Formation hypernym "http://identifiers.org/sbo/SBO:0000393"
+  ECO2_Consumption hypernym "http://identifiers.org/sbo/SBO:0000394"
+  Estarch_Formation hypernym "http://identifiers.org/sbo/SBO:0000393"
+  Estarch_Consumption hypernym "http://identifiers.org/sbo/SBO:0000394"
+end
+
+Larbat2016_1___Modeling_the_diversion_of_primary_carbon_flux_into_secondary_metabolism_under_variable_nitrate_and_light_or_dark_conditions__Base_Model is "Larbat2016.1 - Modeling the diversion of primary carbon flux into secondary metabolism under variable nitrate and light or dark conditions (Base Model)"
+
+Larbat2016_1___Modeling_the_diversion_of_primary_carbon_flux_into_secondary_metabolism_under_variable_nitrate_and_light_or_dark_conditions__Base_Model description "http://identifiers.org/pubmed/27164436"
+Larbat2016_1___Modeling_the_diversion_of_primary_carbon_flux_into_secondary_metabolism_under_variable_nitrate_and_light_or_dark_conditions__Base_Model model_entity_is "http://identifiers.org/biomodels.db/MODEL1911130004",
+                                                                                                                                                                       "http://identifiers.org/biomodels.db/BIOMD0000000857"
+Larbat2016_1___Modeling_the_diversion_of_primary_carbon_flux_into_secondary_metabolism_under_variable_nitrate_and_light_or_dark_conditions__Base_Model property "http://identifiers.org/go/GO:0005985"
+Larbat2016_1___Modeling_the_diversion_of_primary_carbon_flux_into_secondary_metabolism_under_variable_nitrate_and_light_or_dark_conditions__Base_Model property "http://identifiers.org/go/GO:0018958"
+Larbat2016_1___Modeling_the_diversion_of_primary_carbon_flux_into_secondary_metabolism_under_variable_nitrate_and_light_or_dark_conditions__Base_Model property "http://identifiers.org/go/GO:0005982"
+Larbat2016_1___Modeling_the_diversion_of_primary_carbon_flux_into_secondary_metabolism_under_variable_nitrate_and_light_or_dark_conditions__Base_Model property "http://identifiers.org/mamo/MAMO_0000046"

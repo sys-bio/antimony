@@ -1,0 +1,107 @@
+// Created by libAntimony v2.13.0
+function Rate_Law_for_R1(K3, X1)
+  K3*X1;
+end
+
+Rate_Law_for_R1 is "Rate Law for R1"
+
+function Rate_Law_for_R2(X4, K4, K5, X5)
+  K4*X4 - K5*X5;
+end
+
+Rate_Law_for_R2 is "Rate Law for R2"
+
+function Rate_Law_for_R3(K2, X5)
+  K2*X5;
+end
+
+Rate_Law_for_R3 is "Rate Law for R3"
+
+function Rate_Law_for_R4(K1, X4)
+  K1*X4;
+end
+
+Rate_Law_for_R4 is "Rate Law for R4"
+
+
+model *New_Model()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species The_FOD_in_the_circulation__X1 in compartment_, The_FOD_in_the_metabolizing_tissues__X4 in compartment_;
+  species The_cumulative_FOD_excreted_in_the_non_urinary_pool__X3 in compartment_;
+  species The_FOD_in_the_gallbladder___intestinal_lumen__X5 in compartment_;
+  species The_cumulative_FOD_excreted_in_the_urine__X2 in compartment_;
+
+  // Reactions:
+  R1: The_FOD_in_the_circulation__X1 => The_FOD_in_the_metabolizing_tissues__X4; compartment_*Rate_Law_for_R1(K3, The_FOD_in_the_circulation__X1);
+  R2: The_FOD_in_the_metabolizing_tissues__X4 -> The_FOD_in_the_gallbladder___intestinal_lumen__X5; compartment_*Rate_Law_for_R2(The_FOD_in_the_metabolizing_tissues__X4, K4, K5, The_FOD_in_the_gallbladder___intestinal_lumen__X5);
+  R3: The_FOD_in_the_gallbladder___intestinal_lumen__X5 => The_cumulative_FOD_excreted_in_the_non_urinary_pool__X3; compartment_*Rate_Law_for_R3(K2, The_FOD_in_the_gallbladder___intestinal_lumen__X5);
+  R4: The_FOD_in_the_metabolizing_tissues__X4 => The_cumulative_FOD_excreted_in_the_urine__X2; compartment_*Rate_Law_for_R4(K1, The_FOD_in_the_metabolizing_tissues__X4);
+
+  // Species initializations:
+  The_FOD_in_the_circulation__X1 = 1;
+  The_FOD_in_the_metabolizing_tissues__X4 = 0;
+  The_cumulative_FOD_excreted_in_the_non_urinary_pool__X3 = 0;
+  The_FOD_in_the_gallbladder___intestinal_lumen__X5 = 0;
+  The_cumulative_FOD_excreted_in_the_urine__X2 = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  K1 = 3.6;
+  K2 = 1.2;
+  K3 = 26.6;
+  K4 = 1.2;
+  K5 = 1.2;
+
+  // Other declarations:
+  const compartment_, K1, K2, K3, K4, K5;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+  unit time_unit = 86400 second;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+  The_FOD_in_the_circulation__X1 is "The FOD in the circulation (X1)";
+  The_FOD_in_the_metabolizing_tissues__X4 is "The FOD in the metabolizing tissues (X4)";
+  The_cumulative_FOD_excreted_in_the_non_urinary_pool__X3 is "The cumulative FOD excreted in the non-urinary pool (X3)";
+  The_FOD_in_the_gallbladder___intestinal_lumen__X5 is "The FOD in the gallbladder + intestinal lumen (X5)";
+  The_cumulative_FOD_excreted_in_the_urine__X2 is "The cumulative FOD excreted in the urine (X2)";
+
+  // CV terms:
+  compartment_ property "http://identifiers.org/bto/BTO:0003092"
+  The_FOD_in_the_circulation__X1 container "http://identifiers.org/bto/BTO:0003092"
+  The_FOD_in_the_metabolizing_tissues__X4 container "http://identifiers.org/bto/BTO:0003092"
+  The_FOD_in_the_metabolizing_tissues__X4 container "http://identifiers.org/bto/BTO:0000759"
+  The_FOD_in_the_metabolizing_tissues__X4 container "http://identifiers.org/bto/BTO:0005937"
+  The_cumulative_FOD_excreted_in_the_non_urinary_pool__X3 container "http://identifiers.org/bto/BTO:0003092"
+  The_FOD_in_the_gallbladder___intestinal_lumen__X5 container "http://identifiers.org/bto/BTO:0000647"
+  The_FOD_in_the_gallbladder___intestinal_lumen__X5 container "http://identifiers.org/bto/BTO:0000493"
+  The_cumulative_FOD_excreted_in_the_urine__X2 container "http://identifiers.org/bto/BTO:0003092"
+  K1 property "http://identifiers.org/sbo/SBO:0000012"
+  K2 property "http://identifiers.org/sbo/SBO:0000012"
+  K3 property "http://identifiers.org/sbo/SBO:0000012"
+  K4 property "http://identifiers.org/sbo/SBO:0000012"
+  K5 property "http://identifiers.org/sbo/SBO:0000012"
+  R1 property "http://identifiers.org/go/GO:0034650"
+  R2 property "http://identifiers.org/go/GO:0034650"
+  R3 property "http://identifiers.org/go/GO:0043400"
+  R4 property "http://identifiers.org/go/GO:0043400"
+end
+
+New_Model is "Kraan199_Kinetics of Cortisol Metabolism and Excretion."
+
+New_Model model_entity_is "http://identifiers.org/biomodels.db/MODEL2002280001",
+                          "http://identifiers.org/biomodels.db/BIOMD0000000916"
+New_Model container "http://identifiers.org/bto/BTO:0003092"
+New_Model taxon "http://identifiers.org/taxonomy/9606"
+New_Model description "http://identifiers.org/pubmed/1567783"
+New_Model description "http://identifiers.org/doi/10.1016/0960-0760(92)90025-E"
+New_Model property "http://identifiers.org/go/GO:0034650",
+                   "http://identifiers.org/ncit/C17054",
+                   "http://identifiers.org/mamo/MAMO_0000046"

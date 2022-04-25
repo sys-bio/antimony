@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *BeckerSchilling2010_EpoR_AuxiliaryMode()
 
   // Compartments and Species:
@@ -38,7 +38,7 @@ model *BeckerSchilling2010_EpoR_AuxiliaryMode()
   kt has per_minute;
   Bmax_SAv = 76;
   Bmax_SAv has pM;
-  kon_SAv = 2.29402e-006;
+  kon_SAv = 2.29402e-06;
   kon_SAv has per_minute_per_pM;
   koff_SAv = 0.00679946;
   koff_SAv has per_minute;
@@ -56,12 +56,70 @@ model *BeckerSchilling2010_EpoR_AuxiliaryMode()
 
   // Unit definitions:
   unit time_unit = 60 second;
-  unit substance = 1e-012 mole;
+  unit substance = 1e-12 mole;
   unit per_minute = 1 / 60 second;
-  unit pM = 1e-012 mole / litre;
-  unit per_minute_per_pM = litre / (60 second * 1e-012 mole);
+  unit pM = 1e-12 mole / litre;
+  unit per_minute_per_pM = litre / (60 second * 1e-12 mole);
 
   // Display Names:
   time_unit is "minute";
   substance is "picomole";
+
+  // SBO terms:
+  medium.sboTerm = 290
+  cellsurface.sboTerm = 290
+  cell.sboTerm = 290
+  EpoR.sboTerm = 244
+  SAv.sboTerm = 280
+  SAv_EpoR.sboTerm = 297
+  SAv_EpoRi.sboTerm = 297
+  dSAvi.sboTerm = 291
+  dSAve.sboTerm = 291
+  kt.sboTerm = 256
+  Bmax_SAv.sboTerm = 256
+  kon_SAv.sboTerm = 341
+  koff_SAv.sboTerm = 338
+  kex_SAv.sboTerm = 256
+  kdi.sboTerm = 356
+  kde.sboTerm = 356
+  reaction_1.sboTerm = 176
+  reaction_2.sboTerm = 179
+  reaction_3.sboTerm = 177
+  reaction_4.sboTerm = 180
+  reaction_5.sboTerm = 185
+  reaction_6.sboTerm = 180
+  reaction_7.sboTerm = 179
+  reaction_8.sboTerm = 179
+
+  // CV terms:
+  medium hypernym "http://identifiers.org/obo.bto/BTO:0000316"
+  cellsurface hypernym "http://identifiers.org/obo.go/GO:0009986"
+  cell hypernym "http://identifiers.org/obo.go/GO:0005623"
+  EpoR hypernym "http://identifiers.org/uniprot/P14753",
+                "http://identifiers.org/kegg.orthology/K05079"
+  SAv hypernym "http://identifiers.org/uniprot/P22629"
+  SAv_EpoR part "http://identifiers.org/uniprot/P14753",
+                "http://identifiers.org/uniprot/P22629"
+  SAv_EpoRi part "http://identifiers.org/uniprot/P14753",
+                 "http://identifiers.org/uniprot/P22629"
+  reaction_1 hypernym "http://identifiers.org/obo.go/GO:0032800"
+  reaction_2 hypernym "http://identifiers.org/obo.go/GO:0032801"
+  reaction_3 hypernym "http://identifiers.org/obo.go/GO:0005102",
+                      "http://identifiers.org/obo.go/GO:0005128"
+  reaction_4 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  reaction_5 hypernym "http://identifiers.org/obo.go/GO:0015031"
+  reaction_6 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  reaction_7 hypernym "http://identifiers.org/obo.go/GO:0030163"
+  reaction_8 hypernym "http://identifiers.org/obo.go/GO:0030163"
 end
+
+BeckerSchilling2010_EpoR_AuxiliaryMode is "Becker2010_EpoR_AuxiliaryModel"
+
+BeckerSchilling2010_EpoR_AuxiliaryMode model_entity_is "http://identifiers.org/biomodels.db/MODEL1005260001"
+BeckerSchilling2010_EpoR_AuxiliaryMode model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000272"
+BeckerSchilling2010_EpoR_AuxiliaryMode description "http://identifiers.org/pubmed/20488988"
+BeckerSchilling2010_EpoR_AuxiliaryMode taxon "http://identifiers.org/taxonomy/39107",
+                                             "http://identifiers.org/obo.bto/BTO:0001035"
+BeckerSchilling2010_EpoR_AuxiliaryMode hypernym "http://identifiers.org/obo.go/GO:0004900"
+BeckerSchilling2010_EpoR_AuxiliaryMode parthood "http://identifiers.org/kegg.pathway/ko04630",
+                                                "http://identifiers.org/kegg.pathway/ko04640"

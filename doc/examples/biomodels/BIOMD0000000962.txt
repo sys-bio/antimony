@@ -1,0 +1,208 @@
+// Created by libAntimony v2.13.0
+function Rate_Law_for_R1(alpha, S, U, N)
+  alpha*S*U/N;
+end
+
+Rate_Law_for_R1 is "Rate Law for R1"
+
+
+model *Zhao2020___SUQC_model_of_COVID_19_transmission_dynamics_in_Wuhan__Hubei__and_China()
+
+  // Compartments and Species:
+  compartment China;
+  species Susceptible in China, Unquarantined_Infected in China, Quarantined_Infected in China;
+  species Confirmed_Infected in China, $Cumulative_Infected in China;
+
+  // Assignment Rules:
+  Total_Pop := ModelValue_3*ModelValue_13 + ModelValue_4*ModelValue_14 + ModelValue_5*ModelValue_15;
+  Cumulative_Infected := Confirmed_Infected + Quarantined_Infected + Unquarantined_Infected;
+  R := ModelValue_3*(ModelValue_0*ModelValue_16 + ModelValue_1*ModelValue_19 + ModelValue_2*ModelValue_22) + ModelValue_4*(ModelValue_0*ModelValue_25 + ModelValue_1*ModelValue_28) + ModelValue_5*(ModelValue_0*ModelValue_31 + ModelValue_1*ModelValue_34);
+  gamma_1 := ModelValue_3*(ModelValue_0*ModelValue_17 + ModelValue_1*ModelValue_20 + ModelValue_2*ModelValue_23) + ModelValue_4*(ModelValue_0*ModelValue_26 + ModelValue_1*ModelValue_29) + ModelValue_5*(ModelValue_0*ModelValue_32 + ModelValue_1*ModelValue_35);
+  gamma_2 := ModelValue_3*(ModelValue_0*ModelValue_18 + ModelValue_1*ModelValue_21 + ModelValue_2*ModelValue_24) + ModelValue_4*(ModelValue_0*ModelValue_27 + ModelValue_1*ModelValue_30) + ModelValue_5*(ModelValue_0*ModelValue_33 + ModelValue_1*ModelValue_36);
+  alpha := ModelValue_6*ModelValue_7;
+  beta := ModelValue_8 + (1 - ModelValue_8)*ModelValue_9;
+
+  // Reactions:
+  Susceptible_to_Unquarantined: Susceptible => Unquarantined_Infected; China*Rate_Law_for_R1(alpha, Susceptible, Unquarantined_Infected, Total_Pop);
+  Unquarantined_to_Quarantined: Unquarantined_Infected => Quarantined_Infected; China*gamma_1*Unquarantined_Infected;
+  Quarantined_to_Confirmed: Quarantined_Infected => Confirmed_Infected; China*beta*Quarantined_Infected;
+
+  // Species initializations:
+  Susceptible = Total_Pop;
+  Unquarantined_Infected = 258;
+  Quarantined_Infected = 0;
+  Confirmed_Infected = 0;
+
+  // Compartment initializations:
+  China = 1;
+
+  // Variable initializations:
+  Trigger_Stage_I = 1;
+  Trigger_Stage_I has unit_0;
+  Trigger_Stage_II = 0;
+  Trigger_Stage_II has unit_0;
+  Trigger_Stage_III = 0;
+  Trigger_Stage_III has unit_0;
+  Trigger_Wuhan = 1;
+  Trigger_Wuhan has unit_0;
+  Trigger_Hubei = 0;
+  Trigger_Hubei has unit_0;
+  Trigger_China = 0;
+  Trigger_China has unit_0;
+  ModelValue_3 = Trigger_Wuhan;
+  ModelValue_0 = Trigger_Stage_I;
+  ModelValue_16 = R_Stage_I_Wuhan;
+  ModelValue_1 = Trigger_Stage_II;
+  ModelValue_19 = R_Stage_II_Wuhan;
+  ModelValue_2 = Trigger_Stage_III;
+  ModelValue_22 = R_Stage_III_Wuhan;
+  ModelValue_4 = Trigger_Hubei;
+  ModelValue_25 = R_Stage_I_Hubei;
+  ModelValue_28 = R_Stage_II_Hubei;
+  ModelValue_5 = Trigger_China;
+  ModelValue_31 = R_Stage_I_China;
+  ModelValue_34 = R_Stage_II_China;
+  ModelValue_17 = gamma_1_Stage_I_Wuhan;
+  ModelValue_20 = gamma_1_Stage_II_Wuhan;
+  ModelValue_23 = gamma_1_Stage_III_Wuhan;
+  ModelValue_26 = gamma_1_Stage_I_Hubei;
+  ModelValue_29 = gamma_1_Stage_II_Hubei;
+  ModelValue_32 = gamma_1_Stage_I_China;
+  ModelValue_35 = gamma_1_Stage_II_China;
+  ModelValue_18 = gamma_2_Stage_I_Wuhan;
+  ModelValue_21 = gamma_2_Stage_II_Wuhan;
+  ModelValue_24 = gamma_2_Stage_III_Wuhan;
+  ModelValue_27 = gamma_2_Stage_I_Hubei;
+  ModelValue_30 = gamma_2_Stage_II_Hubei;
+  ModelValue_33 = gamma_2_Stage_I_China;
+  ModelValue_36 = gamma_2_Stage_II_China;
+  sigma = 0;
+  ModelValue_6 = R;
+  ModelValue_7 = gamma_1;
+  ModelValue_8 = gamma_2;
+  ModelValue_9 = sigma;
+  ModelValue_13 = Total_Pop_Wuhan;
+  ModelValue_14 = Total_Pop_Hubei;
+  ModelValue_15 = Total_Pop_China;
+  Total_Pop_Wuhan = 9010000;
+  Total_Pop_Hubei = 48000000;
+  Total_Pop_China = 1335000000;
+  R_Stage_I_Wuhan = 4.7092;
+  gamma_1_Stage_I_Wuhan = 0.063;
+  gamma_2_Stage_I_Wuhan = 0.05;
+  R_Stage_II_Wuhan = 0.7575;
+  gamma_1_Stage_II_Wuhan = 0.3917;
+  gamma_2_Stage_II_Wuhan = 0.0643;
+  R_Stage_III_Wuhan = 0.4797;
+  gamma_1_Stage_III_Wuhan = 0.6185;
+  gamma_2_Stage_III_Wuhan = 0.322;
+  R_Stage_I_Hubei = 5.934;
+  gamma_1_Stage_I_Hubei = 0.05;
+  gamma_2_Stage_I_Hubei = 0.05;
+  R_Stage_II_Hubei = 0.6079;
+  gamma_1_Stage_II_Hubei = 0.488;
+  gamma_2_Stage_II_Hubei = 0.1914;
+  R_Stage_I_China = 1.5283;
+  gamma_1_Stage_I_China = 0.1941;
+  gamma_2_Stage_I_China = 0.05;
+  R_Stage_II_China = 0.5753;
+  gamma_1_Stage_II_China = 0.5157;
+  gamma_2_Stage_II_China = 0.2189;
+
+  // Other declarations:
+  var Total_Pop, R, gamma_1, gamma_2, alpha, beta;
+  const China, Trigger_Stage_I, Trigger_Stage_II, Trigger_Stage_III, Trigger_Wuhan;
+  const Trigger_Hubei, Trigger_China, ModelValue_3, ModelValue_0, ModelValue_16;
+  const ModelValue_1, ModelValue_19, ModelValue_2, ModelValue_22, ModelValue_4;
+  const ModelValue_25, ModelValue_28, ModelValue_5, ModelValue_31, ModelValue_34;
+  const ModelValue_17, ModelValue_20, ModelValue_23, ModelValue_26, ModelValue_29;
+  const ModelValue_32, ModelValue_35, ModelValue_18, ModelValue_21, ModelValue_24;
+  const ModelValue_27, ModelValue_30, ModelValue_33, ModelValue_36, sigma;
+  const ModelValue_6, ModelValue_7, ModelValue_8, ModelValue_9, ModelValue_13;
+  const ModelValue_14, ModelValue_15, Total_Pop_Wuhan, Total_Pop_Hubei, Total_Pop_China;
+  const R_Stage_I_Wuhan, gamma_1_Stage_I_Wuhan, gamma_2_Stage_I_Wuhan, R_Stage_II_Wuhan;
+  const gamma_1_Stage_II_Wuhan, gamma_2_Stage_II_Wuhan, R_Stage_III_Wuhan;
+  const gamma_1_Stage_III_Wuhan, gamma_2_Stage_III_Wuhan, R_Stage_I_Hubei;
+  const gamma_1_Stage_I_Hubei, gamma_2_Stage_I_Hubei, R_Stage_II_Hubei, gamma_1_Stage_II_Hubei;
+  const gamma_2_Stage_II_Hubei, R_Stage_I_China, gamma_1_Stage_I_China, gamma_2_Stage_I_China;
+  const R_Stage_II_China, gamma_1_Stage_II_China, gamma_2_Stage_II_China;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = item;
+  unit unit_0 = 1 / dimensionless^-0;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "dimensionless";
+  ModelValue_3 is "Initial for Trigger_Wuhan";
+  ModelValue_0 is "Initial for Trigger_Stage_I";
+  ModelValue_16 is "Initial for R_Stage_I_Wuhan";
+  ModelValue_1 is "Initial for Trigger_Stage_II";
+  ModelValue_19 is "Initial for R_Stage_II_Wuhan";
+  ModelValue_2 is "Initial for Trigger_Stage_III";
+  ModelValue_22 is "Initial for R_Stage_III_Wuhan";
+  ModelValue_4 is "Initial for Trigger_Hubei";
+  ModelValue_25 is "Initial for R_Stage_I_Hubei";
+  ModelValue_28 is "Initial for R_Stage_II_Hubei";
+  ModelValue_5 is "Initial for Trigger_China";
+  ModelValue_31 is "Initial for R_Stage_I_China";
+  ModelValue_34 is "Initial for R_Stage_II_China";
+  ModelValue_17 is "Initial for gamma_1_Stage_I_Wuhan";
+  ModelValue_20 is "Initial for gamma_1_Stage_II_Wuhan";
+  ModelValue_23 is "Initial for gamma_1_Stage_III_Wuhan";
+  ModelValue_26 is "Initial for gamma_1_Stage_I_Hubei";
+  ModelValue_29 is "Initial for gamma_1_Stage_II_Hubei";
+  ModelValue_32 is "Initial for gamma_1_Stage_I_China";
+  ModelValue_35 is "Initial for gamma_1_Stage_II_China";
+  ModelValue_18 is "Initial for gamma_2_Stage_I_Wuhan";
+  ModelValue_21 is "Initial for gamma_2_Stage_II_Wuhan";
+  ModelValue_24 is "Initial for gamma_2_Stage_III_Wuhan";
+  ModelValue_27 is "Initial for gamma_2_Stage_I_Hubei";
+  ModelValue_30 is "Initial for gamma_2_Stage_II_Hubei";
+  ModelValue_33 is "Initial for gamma_2_Stage_I_China";
+  ModelValue_36 is "Initial for gamma_2_Stage_II_China";
+  ModelValue_6 is "Initial for R";
+  ModelValue_7 is "Initial for gamma_1";
+  ModelValue_8 is "Initial for gamma_2";
+  ModelValue_9 is "Initial for sigma";
+  ModelValue_13 is "Initial for Total_Pop_Wuhan";
+  ModelValue_14 is "Initial for Total_Pop_Hubei";
+  ModelValue_15 is "Initial for Total_Pop_China";
+
+  // CV terms:
+  China hypernym "http://identifiers.org/ncit/C25632"
+  China hypernym "http://identifiers.org/ncit/C16428"
+  Susceptible hypernym "http://identifiers.org/ido/0000514"
+  Susceptible hypernym "http://identifiers.org/ncit/C171133"
+  Unquarantined_Infected hypernym "http://identifiers.org/ncit/C171133"
+  Unquarantined_Infected hypernym "http://identifiers.org/ido/0000511"
+  Quarantined_Infected hypernym "http://identifiers.org/ido/0000511"
+  Quarantined_Infected hypernym "http://identifiers.org/ncit/C171133"
+  Quarantined_Infected hypernym "http://identifiers.org/ncit/C25549"
+  Confirmed_Infected hypernym "http://identifiers.org/ncit/C72159"
+  Confirmed_Infected hypernym "http://identifiers.org/ido/0000511"
+  Confirmed_Infected hypernym "http://identifiers.org/ncit/C25297"
+  Confirmed_Infected hypernym "http://identifiers.org/ncit/C171133"
+  Cumulative_Infected hypernym "http://identifiers.org/ncit/C171133"
+  Cumulative_Infected hypernym "http://identifiers.org/ido/0000511"
+  Susceptible_to_Unquarantined hypernym "http://identifiers.org/ncit/C171133"
+  Susceptible_to_Unquarantined hypernym "http://identifiers.org/ncit/C128320"
+  Unquarantined_to_Quarantined hypernym "http://identifiers.org/ncit/C171133"
+  Unquarantined_to_Quarantined hypernym "http://identifiers.org/ncit/C25458"
+  Quarantined_to_Confirmed hypernym "http://identifiers.org/ncit/C25458"
+  Quarantined_to_Confirmed hypernym "http://identifiers.org/ncit/C171133"
+end
+
+Zhao2020___SUQC_model_of_COVID_19_transmission_dynamics_in_Wuhan__Hubei__and_China is "Zhao2020 - SUQC model of COVID-19 transmission dynamics in Wuhan, Hubei, and China"
+
+Zhao2020___SUQC_model_of_COVID_19_transmission_dynamics_in_Wuhan__Hubei__and_China description "http://identifiers.org/pubmed/32219006"
+Zhao2020___SUQC_model_of_COVID_19_transmission_dynamics_in_Wuhan__Hubei__and_China model_entity_is "http://identifiers.org/biomodels.db/MODEL2008260001",
+                                                                                                   "http://identifiers.org/biomodels.db/BIOMD0000000962"
+Zhao2020___SUQC_model_of_COVID_19_transmission_dynamics_in_Wuhan__Hubei__and_China hypernym "http://identifiers.org/doid/DOID:0080600"
+Zhao2020___SUQC_model_of_COVID_19_transmission_dynamics_in_Wuhan__Hubei__and_China taxon "http://identifiers.org/taxonomy/9606",
+                                                                                         "http://identifiers.org/taxonomy/2697049"
+Zhao2020___SUQC_model_of_COVID_19_transmission_dynamics_in_Wuhan__Hubei__and_China property "http://identifiers.org/mamo/MAMO_0000046"

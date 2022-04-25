@@ -1,0 +1,168 @@
+// Created by libAntimony v2.13.0
+function removal(pn, v, e)
+  pn*v*e;
+end
+
+removal is "removal"
+
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function H_antiport(f1, Hi, He)
+  f1*(Hi - He)*piecewise(1, Hi > He, 0);
+end
+
+H_antiport is "H antiport"
+
+function mct(k3, f, Hi, Li, He, Le)
+  k3*f*(Hi*Li - He*Le);
+end
+
+mct is "mct"
+
+function glycolysis_H_0(fg, Hi, v, vv, p)
+  p*(2*fg/(Hi + 1))*piecewise(1, v > vv, 0);
+end
+
+glycolysis_H_0 is "glycolysis-H"
+
+function glycolysis_L_0(fg, Hi, v, vv)
+  (2*fg/(Hi + 1))*piecewise(1, v > vv, 0);
+end
+
+glycolysis_L_0 is "glycolysis-L"
+
+
+model *Al_Husari2013___pH_and_lactate_in_tumor()
+
+  // Compartments and Species:
+  compartment tme;
+  species Hi in tme, He in tme, Li in tme, Le in tme;
+
+  // Assignment Rules:
+  pHe := -log10(He) + 7;
+  pHi := -log10(Hi) + 7;
+
+  // Reactions:
+  H_leak: He -> Hi; tme*(lh*He - lh*Hi);
+  H_antiporter: Hi => He; tme*H_antiport(f1, Hi, He);
+  MCT: Hi + Li => He + Le; tme*mct(k3, p, Hi, Li, He, Le);
+  glycolysis_H:  => Hi; tme*glycolysis_H_0(fg, Hi, v, vv, p);
+  H__source:  => Hi; tme*Constant_flux__irreversible(d1);
+  removal_of_H: He => ; tme*removal(p1, v, He);
+  lactate_source:  => Li; tme*Constant_flux__irreversible(lactate_source_v);
+  lactate_degradation: Li => ; tme*lactate_degradation_k1*Li;
+  removal_of_lactate: Le => ; tme*removal(p2, v, Le);
+  glycolysis_L:  => Li; tme*glycolysis_L_0(fg, Hi, v, vv);
+
+  // Species initializations:
+  Hi = 10^-0.3;
+  Hi has substance_per_volume;
+  He = 10^0;
+  He has substance_per_volume;
+  Li = 0.00125;
+  Li has substance_per_volume;
+  Le = 0.00125;
+  Le has substance_per_volume;
+
+  // Compartment initializations:
+  tme = 1;
+  tme has volume;
+
+  // Variable initializations:
+  lh = 0.017174;
+  lh has unit_0;
+  f1 = 17174;
+  f1 has unit_0;
+  k3 = 5.4316;
+  k3 has unit_0;
+  d1 = 7999.6;
+  d1 has unit_0;
+  p1 = 20095;
+  p1 has unit_0;
+  p2 = 0.2857;
+  p2 has unit_0;
+  fg = 0.2823;
+  fg has unit_0;
+  p = 14000;
+  p has unit_0;
+  vv = 0.5;
+  vv has unit_0;
+  pHe has unit_0;
+  pHi has unit_0;
+  v = 1.49968483550237;
+  v has unit_0;
+  lactate_source_v = 1;
+  lactate_degradation_k1 = 1;
+
+  // Other declarations:
+  var pHe, pHi;
+  const tme, lh, f1, k3, d1, p1, p2, fg, p, vv, v;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = time_unit;
+  unit substance = 1e-3 mole;
+  unit unit_0 = 1 / dimensionless^-0;
+  unit extent = substance;
+  unit substance_per_volume = 1e-3 mole / 1e-3 litre;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1";
+  H_leak is "H leak";
+  H_antiporter is "H antiporter";
+  glycolysis_H is "glycolysis-H";
+  H__source is "H+ source";
+  removal_of_H is "removal of H+";
+  lactate_source is "lactate source";
+  lactate_degradation is "lactate degradation";
+  removal_of_lactate is "removal of lactate";
+  glycolysis_L is "glycolysis-L";
+
+  // CV terms:
+  tme hypernym "http://identifiers.org/ncit/C94498"
+  Hi hypernym "http://identifiers.org/ncit/C45997"
+  He hypernym "http://identifiers.org/ncit/C45997"
+  Li hypernym "http://identifiers.org/chebi/CHEBI:24996"
+  Le hypernym "http://identifiers.org/chebi/CHEBI:24996"
+  lh hypernym "http://identifiers.org/ncit/C25636"
+  f1 hypernym "http://identifiers.org/ncit/C25636"
+  k3 hypernym "http://identifiers.org/ncit/C25636"
+  d1 hypernym "http://identifiers.org/ncit/C25636"
+  p1 hypernym "http://identifiers.org/ncit/C25636"
+  p2 hypernym "http://identifiers.org/ncit/C25636"
+  fg hypernym "http://identifiers.org/ncit/C25636"
+  p hypernym "http://identifiers.org/ncit/C48922"
+  vv hypernym "http://identifiers.org/bto/BTO:0003718"
+  vv hypernym "http://identifiers.org/ncit/C48228"
+  pHe hypernym "http://identifiers.org/ncit/C45997"
+  pHi hypernym "http://identifiers.org/ncit/C45997"
+  v hypernym "http://identifiers.org/bto/BTO:0003718"
+  H_leak hypernym "http://identifiers.org/go/GO:0034220"
+  H_antiporter hypernym "http://identifiers.org/go/GO:0034220"
+  MCT hypernym "http://identifiers.org/go/GO:0034220"
+  glycolysis_H hypernym "http://identifiers.org/sbo/SBO:0000393"
+  glycolysis_H hypernym "http://identifiers.org/go/GO:0061621"
+  H__source hypernym "http://identifiers.org/sbo/SBO:0000393"
+  removal_of_H hypernym "http://identifiers.org/sbo/SBO:0000179"
+  lactate_source hypernym "http://identifiers.org/sbo/SBO:0000393"
+  lactate_degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+  lactate_degradation hypernym "http://identifiers.org/go/GO:1903457"
+  removal_of_lactate hypernym "http://identifiers.org/sbo/SBO:0000179"
+  glycolysis_L hypernym "http://identifiers.org/sbo/SBO:0000393"
+  glycolysis_L hypernym "http://identifiers.org/go/GO:0061621"
+end
+
+Al_Husari2013___pH_and_lactate_in_tumor is "Al-Husari2013 - pH and lactate in tumor"
+
+Al_Husari2013___pH_and_lactate_in_tumor description "http://identifiers.org/pubmed/23340437"
+Al_Husari2013___pH_and_lactate_in_tumor model_entity_is "http://identifiers.org/biomodels.db/MODEL1909030001",
+                                                        "http://identifiers.org/biomodels.db/BIOMD0000000805"
+Al_Husari2013___pH_and_lactate_in_tumor property "http://identifiers.org/mamo/MAMO_0000046"
+Al_Husari2013___pH_and_lactate_in_tumor taxon "http://identifiers.org/taxonomy/9606"

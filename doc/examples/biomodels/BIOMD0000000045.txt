@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Goldbeter_Calcium_Oscillation_based_onCICR_AND_two_pool_model()
 
   // Compartments and Species:
@@ -7,13 +7,13 @@ model *Goldbeter_Calcium_Oscillation_based_onCICR_AND_two_pool_model()
 
   // Reactions:
   vin: EC => Z; cytosol*(vin_v0 + vin_v1*beta);
-  v2i: Z => Y; (intravesicular2*v2i_Vm2i*Z^2)/(v2i_K2i^2 + Z^2);
-  v3i: Y => Z; (cytosol*v3i_Vm3i*Y^2*Z^2)/((v3i_K3y^2 + Y^2)*(v3i_K3z^2 + Z^2));
+  v2i: Z => Y; intravesicular2*v2i_Vm2i*Z^2/(v2i_K2i^2 + Z^2);
+  v3i: Y => Z; cytosol*v3i_Vm3i*Y^2*Z^2/((v3i_K3y^2 + Y^2)*(v3i_K3z^2 + Z^2));
   v4: Y => Z; cytosol*v4_Kf*Y;
   v5: Z => EC; extracellular*v5_K*Z;
   v6: X => Z; cytosol*v6_Kf*X;
-  v2s: Z => X; (intravesicular1*v2s_Vm2s*Z^2)/(v2s_K2s^2 + Z^2);
-  v3s: X => Z; (cytosol*beta*v3s_Vm3s*X^2)/(v3s_K3s^2 + X^2);
+  v2s: Z => X; intravesicular1*v2s_Vm2s*Z^2/(v2s_K2s^2 + Z^2);
+  v3s: X => Z; cytosol*beta*v3s_Vm3s*X^2/(v3s_K3s^2 + X^2);
 
   // Species initializations:
   EC = 0;
@@ -54,4 +54,44 @@ model *Goldbeter_Calcium_Oscillation_based_onCICR_AND_two_pool_model()
   // Display Names:
   substance is "micromole (default)";
   time_unit is "minute (default)";
+
+  // CV terms:
+  extracellular hypernym "http://identifiers.org/obo.go/GO:0005615"
+  cytosol hypernym "http://identifiers.org/obo.go/GO:0005829"
+  intravesicular1 hypernym "http://identifiers.org/obo.go/GO:0005790"
+  EC identity "http://identifiers.org/chebi/CHEBI:29108",
+              "http://identifiers.org/kegg.compound/C00076"
+  Z identity "http://identifiers.org/chebi/CHEBI:29108",
+             "http://identifiers.org/kegg.compound/C00076"
+  Y identity "http://identifiers.org/chebi/CHEBI:29108",
+             "http://identifiers.org/kegg.compound/C00076"
+  X identity "http://identifiers.org/chebi/CHEBI:29108",
+             "http://identifiers.org/kegg.compound/C00076"
+  vin hypernym "http://identifiers.org/obo.go/GO:0006816",
+               "http://identifiers.org/obo.go/GO:0007204"
+  v2i hypernym "http://identifiers.org/obo.go/GO:0051481",
+               "http://identifiers.org/obo.go/GO:0006816"
+  v3i hypernym "http://identifiers.org/obo.go/GO:0005219",
+               "http://identifiers.org/obo.go/GO:0006816",
+               "http://identifiers.org/obo.go/GO:0007204"
+  v4 hypernym "http://identifiers.org/obo.go/GO:0006816",
+              "http://identifiers.org/obo.go/GO:0007204"
+  v5 hypernym "http://identifiers.org/obo.go/GO:0051481",
+              "http://identifiers.org/obo.go/GO:0006816"
+  v6 hypernym "http://identifiers.org/obo.go/GO:0006816",
+              "http://identifiers.org/obo.go/GO:0007204"
+  v2s hypernym "http://identifiers.org/obo.go/GO:0006816",
+               "http://identifiers.org/obo.go/GO:0051481"
+  v3s hypernym "http://identifiers.org/obo.go/GO:0006816",
+               "http://identifiers.org/obo.go/GO:0051482"
 end
+
+Goldbeter_Calcium_Oscillation_based_onCICR_AND_two_pool_model is "Borghans1997 - Calcium Oscillation - Model 3"
+
+Goldbeter_Calcium_Oscillation_based_onCICR_AND_two_pool_model model_entity_is "http://identifiers.org/biomodels.db/MODEL6623009547"
+Goldbeter_Calcium_Oscillation_based_onCICR_AND_two_pool_model model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000045"
+Goldbeter_Calcium_Oscillation_based_onCICR_AND_two_pool_model description "http://identifiers.org/pubmed/17029867"
+Goldbeter_Calcium_Oscillation_based_onCICR_AND_two_pool_model hypernym "http://identifiers.org/obo.go/GO:0048016",
+                                                                       "http://identifiers.org/obo.go/GO:0019722"
+Goldbeter_Calcium_Oscillation_based_onCICR_AND_two_pool_model taxon "http://identifiers.org/taxonomy/10114"
+Goldbeter_Calcium_Oscillation_based_onCICR_AND_two_pool_model identity "http://identifiers.org/kegg.pathway/rno04020"

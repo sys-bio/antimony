@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Vinod2011_MitoticExit()
 
   // Compartments and Species:
@@ -18,12 +18,12 @@ model *Vinod2011_MitoticExit()
   Vacdh_1 := kdcdh_1*Cdc14n_1 + kdcdh_2*Cdc14c_1;
   Vicdh_1 := kpcdh_1 + kpcdh_2*Clb2_2 + kpcdh_3*Clb5_1;
   Vdsic_1 := kdsic_3 + kdsic_1*Clb5_1 + kdsic_2*Clb2_2 + kdsic_4*Cln_1;
-  Clb2_2 := (Clb2T_1 + Clb2nd_1) - Trim2_1;
+  Clb2_2 := Clb2T_1 + Clb2nd_1 - Trim2_1;
   Sic1_1 := Sic1T_1 - Trim2_1 - Trim5_1;
   Clb5_1 := Clb5T_1 - Trim5_1;
   Vaswi_1 := kaswi_1*Cdc14n_1 + kaswi_2*Cdc14c_1;
   Viswi_1 := kiswi_1 + kiswi_2*Clb2_2 + kiswi_3*Clb5_1;
-  Vd_1 := (kd_2*PP_1 + kd_1*Cdc14n_1)/((Jnet_1 + Net1T_1) - Net1dep_1);
+  Vd_1 := (kd_2*PP_1 + kd_1*Cdc14n_1)/(Jnet_1 + Net1T_1 - Net1dep_1);
   Vp_1 := (kp_3*Clb2_2 + kp_4*MEN_1)/(Jnet_1 + Net1dep_1);
   Vexp_1 := kexp_1 + kexp_2*MEN_1;
   Cdc14c_1 := Cdc14T_1 - Cdc14n_1 - RENT_1;
@@ -33,29 +33,29 @@ model *Vinod2011_MitoticExit()
   PP_1 := PPT_1*((1 + kpp_1*ki_1*Esp1_1)/(1 + ki_1 + Esp1_1));
 
   // Rate Rules:
-  Clb2T_1' = (ksclb2_1 + ksclb2_2*Mcm_1) - V2_1*Clb2T_1;
-  Mcm_1' = ((ksmcm_3 + ksmcm_1*Clb2_2)*(1 - Mcm_1))/((Jmcm_1 + 1) - Mcm_1) - (kdmcm_1*Mcm_1)/(Jmcm_1 + Mcm_1);
-  Clb5T_1' = (ksclb5_2 + ksclb5_1*MBF_1) - V6_1*Clb5T_1;
-  MBF_1' = (kambf_1*(1 - MBF_1))/((Jmbf_1 + 1) - MBF_1) - ((kimbf_1*Clb2_2 + kimbf_3*Clb5_1)*MBF_1)/(Jmbf_1 + MBF_1);
-  Cln_1' = (kscln_2 + kscln_1*MBF_1) - kdcln_1*Cln_1;
-  Cdc20_1' = (ks20_2 + ks20_1*Mcm_1) - (kd20_1 + kd20_2*Cdh1_1)*Cdc20_1;
-  Cdh1_1' = (Vacdh_1*(1 - Cdh1_1))/((Jcdh_1 + 1) - Cdh1_1) - (Vicdh_1*Cdh1_1)/(Jcdh_1 + Cdh1_1);
-  Sic1T_1' = (kssic_2 + kssic_1*Swi5_1) - Vdsic_1*Sic1T_1;
-  Swi5_1' = (Vaswi_1*(Swi5T_1 - Swi5_1))/((Jswi_1 + Swi5T_1) - Swi5_1) - (Viswi_1*Swi5_1)/(Jswi_1 + Swi5_1);
+  Clb2T_1' = ksclb2_1 + ksclb2_2*Mcm_1 - V2_1*Clb2T_1;
+  Mcm_1' = (ksmcm_3 + ksmcm_1*Clb2_2)*(1 - Mcm_1)/(Jmcm_1 + 1 - Mcm_1) - kdmcm_1*Mcm_1/(Jmcm_1 + Mcm_1);
+  Clb5T_1' = ksclb5_2 + ksclb5_1*MBF_1 - V6_1*Clb5T_1;
+  MBF_1' = kambf_1*(1 - MBF_1)/(Jmbf_1 + 1 - MBF_1) - (kimbf_1*Clb2_2 + kimbf_3*Clb5_1)*MBF_1/(Jmbf_1 + MBF_1);
+  Cln_1' = kscln_2 + kscln_1*MBF_1 - kdcln_1*Cln_1;
+  Cdc20_1' = ks20_2 + ks20_1*Mcm_1 - (kd20_1 + kd20_2*Cdh1_1)*Cdc20_1;
+  Cdh1_1' = Vacdh_1*(1 - Cdh1_1)/(Jcdh_1 + 1 - Cdh1_1) - Vicdh_1*Cdh1_1/(Jcdh_1 + Cdh1_1);
+  Sic1T_1' = kssic_2 + kssic_1*Swi5_1 - Vdsic_1*Sic1T_1;
+  Swi5_1' = Vaswi_1*(Swi5T_1 - Swi5_1)/(Jswi_1 + Swi5T_1 - Swi5_1) - Viswi_1*Swi5_1/(Jswi_1 + Swi5_1);
   Trim2_1' = kasic2_1*Clb2_2*Sic1_1 - (kdsic2_1 + V2_1 + Vdsic_1)*Trim2_1;
   Trim5_1' = kasic5_1*Clb5_1*Sic1_1 - (kdsic5_1 + V6_1 + Vdsic_1)*Trim5_1;
-  Pds1T_1' = (kspds_2 + kspds_1*MBF_1) - (kdpds_1 + kdpds_2*Cdc20_1)*Pds1T_1;
+  Pds1T_1' = kspds_2 + kspds_1*MBF_1 - (kdpds_1 + kdpds_2*Cdc20_1)*Pds1T_1;
   Esp1T_1' = ksesp_1 - kdesp_1*Esp1T_1;
-  PoloT_1' = (kspolo_2 + kspolo_1*Mcm_1) - (kdpolo_1 + kdpolo_2*Cdh1_1)*PoloT_1;
-  Polo_1' = ((kapolo_1 + kapolo_2*Clb2_2)*(PoloT_1 - Polo_1))/((Jpolo_1 + PoloT_1) - Polo_1) - (kipolo_1*Polo_1)/(Jpolo_1 + Polo_1) - (kdpolo_1 + kdpolo_2*Cdh1_1)*Polo_1;
+  PoloT_1' = kspolo_2 + kspolo_1*Mcm_1 - (kdpolo_1 + kdpolo_2*Cdh1_1)*PoloT_1;
+  Polo_1' = (kapolo_1 + kapolo_2*Clb2_2)*(PoloT_1 - Polo_1)/(Jpolo_1 + PoloT_1 - Polo_1) - kipolo_1*Polo_1/(Jpolo_1 + Polo_1) - (kdpolo_1 + kdpolo_2*Cdh1_1)*Polo_1;
   Net1dep_1' = Vd_1*(Net1T_1 - Net1dep_1) - Vp_1*Net1dep_1;
   Net1pp_1' = kp_1*Polo_1*(Net1T_1 - Net1dep_1 - Net1pp_1) - Vd_1*Net1pp_1;
   RENT_1' = lanet_1*(Net1T_1 - Net1pp_1 - RENT_1)*Cdc14n_1 - ldnet_1*RENT_1 - kp_1*Polo_1*RENTp_1;
-  Cdc14n_1' = (kp_1*Polo_1*RENTp_1 - lanet_1*(Net1T_1 - Net1pp_1 - RENT_1)*Cdc14n_1 + ldnet_1*RENT_1) - Vexp_1*Cdc14n_1 + kimp_1*Cdc14c_1;
-  RENTp_1' = (Vp_1*(RENT_1 - RENTp_1) - Vd_1*RENTp_1 + lanet_1*(Net1T_1 - Net1dep_1 - Net1pp_1 - RENTp_1)*Cdc14n_1) - ldnet_1*RENTp_1 - kp_1*Polo_1*RENTp_1;
-  Tem1_1' = ((katem_1 + katem_2*Polo_1)*(1 - Tem1_1))/((Jtem1_1 + 1) - Tem1_1) - (kitem_3 + kitem_2/(1 + kitem_1*Esp1_1))/(Jtem1_1 + Tem1_1)*Tem1_1;
-  Cdc15_1' = ((kac15_1 + kac15_2*Cdc14c_1)*(1 - Cdc15_1))/((Jcdc15_1 + 1) - Cdc15_1) - ((kic15_1 + kic15_2*Clb2_2)*Cdc15_1)/(Jcdc15_1 + Cdc15_1);
-  MEN_1' = lamen_1*(Tem1_1 - MEN_1)*(Cdc15_1 - MEN_1) - ldmen_1*MEN_1 - (kitem_3 + kitem_2/(1 + kitem_3*Esp1_1))/(Jtem1_1 + Tem1_1)*MEN_1 - (kic15_1 + kic15_2*Clb2_2)/(Jcdc15_1 + Cdc15_1)*MEN_1;
+  Cdc14n_1' = ((kp_1*Polo_1*RENTp_1 - lanet_1*(Net1T_1 - Net1pp_1 - RENT_1)*Cdc14n_1) + ldnet_1*RENT_1 - Vexp_1*Cdc14n_1) + kimp_1*Cdc14c_1;
+  RENTp_1' = (Vp_1*(RENT_1 - RENTp_1) - Vd_1*RENTp_1) + lanet_1*(Net1T_1 - Net1dep_1 - Net1pp_1 - RENTp_1)*Cdc14n_1 - ldnet_1*RENTp_1 - kp_1*Polo_1*RENTp_1;
+  Tem1_1' = (katem_1 + katem_2*Polo_1)*(1 - Tem1_1)/(Jtem1_1 + 1 - Tem1_1) - ((kitem_3 + kitem_2/(1 + kitem_1*Esp1_1))/(Jtem1_1 + Tem1_1))*Tem1_1;
+  Cdc15_1' = (kac15_1 + kac15_2*Cdc14c_1)*(1 - Cdc15_1)/(Jcdc15_1 + 1 - Cdc15_1) - (kic15_1 + kic15_2*Clb2_2)*Cdc15_1/(Jcdc15_1 + Cdc15_1);
+  MEN_1' = lamen_1*(Tem1_1 - MEN_1)*(Cdc15_1 - MEN_1) - ldmen_1*MEN_1 - ((kitem_3 + kitem_2/(1 + kitem_3*Esp1_1))/(Jtem1_1 + Tem1_1))*MEN_1 - ((kic15_1 + kic15_2*Clb2_2)/(Jcdc15_1 + Cdc15_1))*MEN_1;
   Esp1b_1' = lapds_1*Pds1_1*Esp1_1 - (ldpds_1 + kdesp_1 + kdpds_1 + kdpds_2*Cdc20_1)*Esp1b_1;
 
   // Species initializations:
@@ -351,4 +351,95 @@ model *Vinod2011_MitoticExit()
   kexp_1 is "kexp";
   kexp_2 is "kexp'";
   kimbf_2 is "kimbf";
+
+  // SBO terms:
+  cell_1.sboTerm = 290
+  Clb2T_1.sboTerm = 252
+  Mcm_1.sboTerm = 297
+  Clb5T_1.sboTerm = 252
+  MBF_1.sboTerm = 252
+  Cln_1.sboTerm = 252
+  Cdc20_1.sboTerm = 252
+  Cdh1_1.sboTerm = 252
+  Sic1T_1.sboTerm = 252
+  Swi5_1.sboTerm = 252
+  Trim2_1.sboTerm = 297
+  Clb2_2.sboTerm = 252
+  Sic1_1.sboTerm = 252
+  Trim5_1.sboTerm = 297
+  Clb5_1.sboTerm = 252
+  Pds1T_1.sboTerm = 252
+  Esp1T_1.sboTerm = 252
+  PoloT_1.sboTerm = 252
+  Polo_1.sboTerm = 252
+  Net1dep_1.sboTerm = 252
+  Net1pp_1.sboTerm = 252
+  RENT_1.sboTerm = 297
+  Cdc14n_1.sboTerm = 252
+  RENTp_1.sboTerm = 297
+  Cdc14c_1.sboTerm = 252
+  Tem1_1.sboTerm = 252
+  Esp1_1.sboTerm = 252
+  Cdc15_1.sboTerm = 252
+  MEN_1.sboTerm = 297
+  Pds1_1.sboTerm = 252
+  Esp1b_1.sboTerm = 252
+  Net1p_1.sboTerm = 252
+  Net1_2.sboTerm = 252
+
+  // CV terms:
+  cell_1 hypernym "http://identifiers.org/obo.go/GO:0005623"
+  Clb2T_1 hypernym "http://identifiers.org/uniprot/P24869"
+  Mcm_1 part "http://identifiers.org/uniprot/Q08887",
+             "http://identifiers.org/uniprot/P41813",
+             "http://identifiers.org/uniprot/P11746"
+  Clb5T_1 hypernym "http://identifiers.org/uniprot/P30283"
+  MBF_1 hypernym "http://identifiers.org/uniprot/O14467"
+  Cln_1 hypernym "http://identifiers.org/uniprot/P20438"
+  Cdc20_1 hypernym "http://identifiers.org/uniprot/P26309"
+  Cdh1_1 hypernym "http://identifiers.org/uniprot/P53197"
+  Sic1T_1 hypernym "http://identifiers.org/uniprot/P38634"
+  Swi5_1 hypernym "http://identifiers.org/uniprot/P08153"
+  Trim2_1 part "http://identifiers.org/uniprot/P00546",
+               "http://identifiers.org/uniprot/P24869",
+               "http://identifiers.org/uniprot/P38634"
+  Clb2_2 hypernym "http://identifiers.org/uniprot/P24869"
+  Sic1_1 hypernym "http://identifiers.org/uniprot/P38634"
+  Trim5_1 part "http://identifiers.org/uniprot/P00546",
+               "http://identifiers.org/uniprot/P30283",
+               "http://identifiers.org/uniprot/P38634"
+  Clb5_1 hypernym "http://identifiers.org/uniprot/P30283"
+  Pds1T_1 hypernym "http://identifiers.org/uniprot/P40316"
+  Esp1T_1 hypernym "http://identifiers.org/uniprot/Q03018"
+  PoloT_1 hypernym "http://identifiers.org/uniprot/P32562"
+  Polo_1 hypernym "http://identifiers.org/uniprot/P32562"
+  Net1dep_1 hypernym "http://identifiers.org/uniprot/P47035"
+  Net1pp_1 hypernym "http://identifiers.org/uniprot/P47035",
+                    "http://identifiers.org/kegg.compound/C00562"
+  RENT_1 part "http://identifiers.org/uniprot/Q00684",
+              "http://identifiers.org/uniprot/P47035"
+  Cdc14n_1 hypernym "http://identifiers.org/uniprot/Q00684"
+  RENTp_1 hypernym "http://identifiers.org/kegg.compound/C00562"
+  RENTp_1 part "http://identifiers.org/uniprot/Q00684",
+               "http://identifiers.org/uniprot/P47035"
+  Cdc14c_1 hypernym "http://identifiers.org/uniprot/Q00684"
+  Tem1_1 hypernym "http://identifiers.org/uniprot/P38987"
+  Esp1_1 hypernym "http://identifiers.org/uniprot/Q03018"
+  Cdc15_1 hypernym "http://identifiers.org/uniprot/P27636"
+  MEN_1 part "http://identifiers.org/uniprot/P27636",
+             "http://identifiers.org/uniprot/P38987"
+  Pds1_1 hypernym "http://identifiers.org/uniprot/P40316"
+  Esp1b_1 hypernym "http://identifiers.org/uniprot/Q03018"
+  Net1p_1 hypernym "http://identifiers.org/uniprot/P47035"
+  Net1_2 hypernym "http://identifiers.org/uniprot/P47035"
 end
+
+Vinod2011_MitoticExit is "Vinod2011_MitoticExit"
+
+Vinod2011_MitoticExit model_entity_is "http://identifiers.org/biomodels.db/MODEL1111030000"
+Vinod2011_MitoticExit model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000370"
+Vinod2011_MitoticExit description "http://identifiers.org/pubmed/21288956"
+Vinod2011_MitoticExit origin "http://identifiers.org/biomodels.db/BIOMD0000000409"
+Vinod2011_MitoticExit taxon "http://identifiers.org/taxonomy/4932"
+Vinod2011_MitoticExit hypernym "http://identifiers.org/obo.go/GO:0000278",
+                               "http://identifiers.org/cco/CCO:P0000038"

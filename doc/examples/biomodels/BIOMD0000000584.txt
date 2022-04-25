@@ -1,0 +1,131 @@
+// Created by libAntimony v2.13.0
+model *MODEL1507170000()
+
+  // Compartments and Species:
+  compartment DefaultCompartment;
+  species $AUR1 in DefaultCompartment, $rs1 in DefaultCompartment, IPTG in DefaultCompartment;
+  species $LACI in DefaultCompartment, $rs4 in DefaultCompartment, $LAMDAR in DefaultCompartment;
+  species $rs6 in DefaultCompartment, $SLS1 in DefaultCompartment, $as1 in DefaultCompartment;
+  species $ope1 in DefaultCompartment, $rs3 in DefaultCompartment, $SLS4 in DefaultCompartment;
+  species $rs2 in DefaultCompartment, $TETR in DefaultCompartment, $rs5 in DefaultCompartment;
+  species proSLS4 in DefaultCompartment, ia1_ActiveTF in DefaultCompartment;
+  species ia1_InactiveTF in DefaultCompartment, p1 in DefaultCompartment;
+  species p2 in DefaultCompartment, p3 in DefaultCompartment, pAUR1 in DefaultCompartment;
+  species pSLS1 in DefaultCompartment, pSLS4 in DefaultCompartment, proAUR1 in DefaultCompartment;
+  species proLACI in DefaultCompartment, proLAMDAR in DefaultCompartment;
+  species proSLS1 in DefaultCompartment, proTETR in DefaultCompartment, ter1 in DefaultCompartment;
+  species ter2 in DefaultCompartment, ter3 in DefaultCompartment, ter4 in DefaultCompartment;
+  species ter5 in DefaultCompartment, ter6 in DefaultCompartment;
+
+  // Assignment Rules:
+  AUR1 := pAUR1_strength*rs1;
+  rs1 := 1/(1 + (proSLS1/tr1_Kd)^tr1_h);
+  LACI := p2_strength*rs4;
+  rs4 := 1/(1 + (proLAMDAR/tr5_Kd)^tr5_h);
+  LAMDAR := p1_strength*rs6;
+  rs6 := 1/(1 + (proTETR/tr4_Kd)^tr4_h);
+  SLS1 := pSLS1_strength*as1*ope1*rs3;
+  as1 := (1 + (proSLS4/ta1_Kd)^ta1_h - 1)/(1 + (proSLS4/ta1_Kd)^ta1_h);
+  ope1 := 1/(1 + (ia1_ActiveTF/ia1_repression_Kd)^ia1_repression_h);
+  rs3 := 1/(1 + (proLACI/tr6_Kd)^tr6_h);
+  SLS4 := pSLS4_strength*rs2;
+  rs2 := 1/(1 + (proAUR1/tr2_Kd)^tr2_h);
+  TETR := p3_strength*rs5;
+  rs5 := 1/(1 + (proLACI/tr3_Kd)^tr3_h);
+
+  // Reactions:
+  pp1_v1:  => proSLS1; 1;
+  pp1_v2: proSLS1 => ; proSLS1_degradation_rate*proSLS1;
+  pp5_v1:  => proLAMDAR; pp5_translation_rate*p1_strength*LAMDAR;
+  pp5_v2: proLAMDAR => ; proLAMDAR_degradation_rate*proLAMDAR;
+  ia1_bind_forward: IPTG + ia1_ActiveTF => ia1_InactiveTF; IPTG*ia1_ActiveTF;
+  ia1_bind_reverse: ia1_InactiveTF => IPTG + ia1_ActiveTF; ia1_Kd*ia1_InactiveTF;
+  pp2_v1:  => proAUR1; pp2_translation_rate*pAUR1_strength*AUR1;
+  pp2_v2: proAUR1 => ; proAUR1_degradation_rate*proAUR1;
+  pp6_v1:  => proTETR; pp6_translation_rate*p3_strength*TETR;
+  pp6_v2: proTETR => ; proTETR_degradation_rate*proTETR;
+  pp3_v1:  => proSLS4; pp3_translation_rate*pSLS4_strength*SLS4;
+  pp3_v2: proSLS4 => ; proSLS4_degradation_rate*proSLS4;
+  pp4_v1:  => proLACI; pp4_translation_rate*p2_strength*LACI;
+  pp4_v2: proLACI => ; proLACI_degradation_rate*proLACI;
+
+  // Species initializations:
+  IPTG = 10000;
+  proSLS4 = 0;
+  ia1_ActiveTF = 100;
+  ia1_InactiveTF = 100;
+  p1 = 10;
+  p2 = 10;
+  p3 = 10;
+  pAUR1 = 10;
+  pSLS1 = 10;
+  pSLS4 = 10;
+  proAUR1 = 0;
+  proLACI = 0;
+  proLAMDAR = 0;
+  proSLS1 = 0;
+  proTETR = 0;
+  ter1 = 10;
+  ter2 = 10;
+  ter3 = 10;
+  ter4 = 10;
+  ter5 = 10;
+  ter6 = 10;
+
+  // Compartment initializations:
+  DefaultCompartment = 1;
+
+  // Variable initializations:
+  pAUR1_strength = 2.014;
+  p2_strength = 2.4;
+  p1_strength = 2.5;
+  pSLS1_strength = 2.5;
+  pSLS4_strength = 2.57;
+  p3_strength = 2.5;
+  ta1_Kd = 1;
+  ta1_h = 2;
+  ia1_repression_Kd = 1;
+  ia1_repression_h = 2;
+  tr1_Kd = 1;
+  tr1_h = 2;
+  tr2_Kd = 1;
+  tr2_h = 2;
+  tr6_Kd = 1;
+  tr6_h = 2;
+  tr5_Kd = 1;
+  tr5_h = 2;
+  tr3_Kd = 1;
+  tr3_h = 2;
+  tr4_Kd = 1;
+  tr4_h = 2;
+  proLACI_degradation_rate = 0.07;
+  proSLS1_degradation_rate = 0.07;
+  proSLS4_degradation_rate = 0.04;
+  proLAMDAR_degradation_rate = 0.0415;
+  proAUR1_degradation_rate = 0.1;
+  ia1_Kd = 0.001;
+  proTETR_degradation_rate = 0.08;
+  pp2_translation_rate = 1;
+  pp3_translation_rate = 1;
+  pp4_translation_rate = 1;
+  pp5_translation_rate = 1;
+  pp6_translation_rate = 1;
+
+  // Other declarations:
+  const DefaultCompartment, pAUR1_strength, p2_strength, p1_strength, pSLS1_strength;
+  const pSLS4_strength, p3_strength, ta1_Kd, ta1_h, ia1_repression_Kd, ia1_repression_h;
+  const tr1_Kd, tr1_h, tr2_Kd, tr2_h, tr6_Kd, tr6_h, tr5_Kd, tr5_h, tr3_Kd;
+  const tr3_h, tr4_Kd, tr4_h, proLACI_degradation_rate, proSLS1_degradation_rate;
+  const proSLS4_degradation_rate, proLAMDAR_degradation_rate, proAUR1_degradation_rate;
+  const ia1_Kd, proTETR_degradation_rate, pp2_translation_rate, pp3_translation_rate;
+  const pp4_translation_rate, pp5_translation_rate, pp6_translation_rate;
+end
+
+MODEL1507170000 is "Mandlik2015 - Tristable genetic circuit of Leishmania"
+
+MODEL1507170000 model_entity_is "http://identifiers.org/biomodels.db/MODEL1507170000"
+MODEL1507170000 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000584"
+MODEL1507170000 description "http://identifiers.org/pubmed/26264745"
+MODEL1507170000 hypernym "http://identifiers.org/go/GO:0006665"
+MODEL1507170000 taxon "http://identifiers.org/taxonomy/5658"
+MODEL1507170000 property "http://identifiers.org/doid/DOID:9065"

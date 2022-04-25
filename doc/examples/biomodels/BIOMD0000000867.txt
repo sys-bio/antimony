@@ -1,0 +1,293 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function Function_for_STAT3_Activation(a8, k8, y3, k6, rho4, D, y1, rho3, S3)
+  (a8 + k8*y3 + k6*(1 - rho4*D)*y1)*(1 - rho3*S3);
+end
+
+Function_for_STAT3_Activation is "Function_for_STAT3_Activation"
+
+function Function_for_AKT_Activation_STAT3(kS, y8, n2, xi28)
+  kS*y8^n2/(xi28^n2 + y8^n2);
+end
+
+Function_for_AKT_Activation_STAT3 is "Function_for_AKT_Activation_STAT3"
+
+function Function_for_mTOR_Activation(a3, k2, y2, alpha1, alpha2, y6, R)
+  (a3 + k2*y2)*alpha1*(1 - R)/(alpha2*y6);
+end
+
+Function_for_mTOR_Activation is "Function_for_mTOR_Activation"
+
+function Function_for_HIF_1a_Hydroxylation_PHD(k13, K_O2, y4, delta, y6, a11, xi44, rho6, D)
+  k13*K_O2*y4*(delta*y6 + a11)*(1 - rho6*D)/(xi44 + y4);
+end
+
+Function_for_HIF_1a_Hydroxylation_PHD is "Function_for_HIF-1a_Hydroxylation_PHD"
+
+function Function_for_AKT_Activation_IL_15(k1, y1)
+  k1*y1;
+end
+
+Function_for_AKT_Activation_IL_15 is "Function_for_AKT_Activation_IL-15"
+
+function Function_for_HIF_1a_Hydroxylation_FIH(k10, K_O2, phi, y4, xi4, rho6, D)
+  k10*K_O2*phi*y4*(1 - rho6*D)/(xi4 + y4);
+end
+
+Function_for_HIF_1a_Hydroxylation_FIH is "Function_for_HIF-1a_Hydroxylation_FIH"
+
+function Function_for_HIF_1a_aOH_Hydroxylation_PHD(k12, K_O2, y10, delta, y6, a11, xi10)
+  k12*K_O2*y10*(delta*y6 + a11)/(xi10 + y10);
+end
+
+Function_for_HIF_1a_aOH_Hydroxylation_PHD is "Function_for_HIF-1a-aOH_Hydroxylation_PHD"
+
+
+model *Coulibaly2019___Interleukin_15_Signaling_in_HIF_1a_Regulation_in_Natural_Killer_Cells()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species y1_IL_15 in compartment_, y2_Akt in compartment_, y3_mTOR in compartment_;
+  species y4_HIF_1a in compartment_, y5_HIF_1b in compartment_, y6_HIF_1_Complex in compartment_;
+  species y7_NF_KB in compartment_, y8_STAT3 in compartment_, y9_HIF_1a_mRNA in compartment_;
+  species y10_HIF_1a_aOH in compartment_;
+
+  // Assignment Rules:
+  d8 := k8;
+  IL_15_Fold_Change := y1_IL_15/Metabolite_0;
+  HIF_1a_Total_Fold_Change := (y4_HIF_1a + y6_HIF_1_Complex + y10_HIF_1a_aOH)/(Metabolite_3 + Metabolite_5 + Metabolite_9);
+
+  // Reactions:
+  IL_15_External_Regulation:  => y1_IL_15; compartment_*Constant_flux__irreversible(a1);
+  IL_15_Basal_Decay: y1_IL_15 => ; compartment_*d1*y1_IL_15;
+  AKT_Basal_Activation:  => y2_Akt; compartment_*Constant_flux__irreversible(a2);
+  AKT_Activation_IL_15:  => y2_Akt; compartment_*Function_for_AKT_Activation_IL_15(k1, y1_IL_15);
+  AKT_Activation_STAT3:  => y2_Akt; compartment_*Function_for_AKT_Activation_STAT3(kS, y8_STAT3, n2, xi28);
+  AKT_Decay: y2_Akt => ; compartment_*d2*y2_Akt;
+  mTOR_Activation:  => y3_mTOR; compartment_*Function_for_mTOR_Activation(a3, k2, y2_Akt, alpha1, alpha2, y6_HIF_1_Complex, R);
+  mTOR_Decay: y3_mTOR => ; compartment_*d3*y3_mTOR;
+  STAT3_Decay: y8_STAT3 => ; compartment_*d8*y8_STAT3;
+  NF_KB_Basal_Activation:  => y7_NF_KB; compartment_*Constant_flux__irreversible(a7);
+  NF_KB_Decay: y7_NF_KB => ; compartment_*d7*y7_NF_KB;
+  NF_KB_Activation_IL_15:  => y7_NF_KB; compartment_*Function_for_AKT_Activation_IL_15(k7, y1_IL_15);
+  NF_KB_Activation_mTOR:  => y7_NF_KB; compartment_*Function_for_AKT_Activation_IL_15(k15, y3_mTOR);
+  NF_KB_Activation_HIF_1_Complex:  => y7_NF_KB; compartment_*Function_for_AKT_Activation_IL_15(k14, y6_HIF_1_Complex);
+  HIF_1a_mRNA_Synthesis_Basal:  => y9_HIF_1a_mRNA; compartment_*Constant_flux__irreversible(a9);
+  HIF_1a_mRNA_Degradation: y9_HIF_1a_mRNA => ; compartment_*d9*y9_HIF_1a_mRNA;
+  HIF_1a_mRNA_Regulation_NF_KB:  => y9_HIF_1a_mRNA; compartment_*Function_for_AKT_Activation_IL_15(k9, y7_NF_KB);
+  HIF_1a_mRNA_Regulation_STAT3:  => y9_HIF_1a_mRNA; compartment_*Function_for_AKT_Activation_IL_15(k3, y8_STAT3);
+  HIF_1a_Translation:  => y4_HIF_1a; compartment_*Function_for_AKT_Activation_IL_15(kalpha, y9_HIF_1a_mRNA);
+  HIF_1a_Decay: y4_HIF_1a => ; compartment_*d4*y4_HIF_1a;
+  HIF_1a_Association_HIF_1b: y4_HIF_1a + y5_HIF_1b => y6_HIF_1_Complex; compartment_*k4*y4_HIF_1a*y5_HIF_1b;
+  HIF_1_Complex_Dissociation: y6_HIF_1_Complex => y4_HIF_1a + y5_HIF_1b; compartment_*k5*y6_HIF_1_Complex;
+  HIF_1a_Hydroxylation_PHD: y4_HIF_1a => ; compartment_*Function_for_HIF_1a_Hydroxylation_PHD(k13, K_O2, y4_HIF_1a, delta, y6_HIF_1_Complex, a11, xi44, rho6, D);
+  HIF_1a_Hydroxylation_FIH: y4_HIF_1a => y10_HIF_1a_aOH; compartment_*Function_for_HIF_1a_Hydroxylation_FIH(k10, K_O2, phi, y4_HIF_1a, xi4, rho6, D);
+  HIF_1a_aOH_Dehydroxylation: y10_HIF_1a_aOH => y4_HIF_1a; compartment_*k11*y10_HIF_1a_aOH;
+  HIF_1a_aOH_Hydroxylation_PHD: y10_HIF_1a_aOH => ; compartment_*Function_for_HIF_1a_aOH_Hydroxylation_PHD(k12, K_O2, y10_HIF_1a_aOH, delta, y6_HIF_1_Complex, a11, xi10);
+  HIF_1a_aOH_Decay: y10_HIF_1a_aOH => ; compartment_*d10*y10_HIF_1a_aOH;
+  HIF_1b_Expression_Constitutive:  => y5_HIF_1b; compartment_*Constant_flux__irreversible(a5);
+  HIF_1b_Decay: y5_HIF_1b => ; compartment_*d5*y5_HIF_1b;
+  HIF_1_Complex_Decay: y6_HIF_1_Complex => ; compartment_*d6*y6_HIF_1_Complex;
+  STAT3_Activation:  => y8_STAT3; compartment_*Function_for_STAT3_Activation(a8, k8, y3_mTOR, k6, rho4, D, y1_IL_15, rho3, S3);
+
+  // Species initializations:
+  y1_IL_15 = 1;
+  y2_Akt = 1;
+  y3_mTOR = 1;
+  y4_HIF_1a = 0.05;
+  y5_HIF_1b = 1;
+  y6_HIF_1_Complex = 0.05;
+  y7_NF_KB = 1;
+  y8_STAT3 = 1;
+  y9_HIF_1a_mRNA = 1;
+  y10_HIF_1a_aOH = 0.9;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  a1 = 0;
+  a2 = 0.848;
+  a3 = 0.037;
+  a7 = 0;
+  a8 = 0;
+  a9 = 0;
+  a11 = 4.17;
+  k8 = 0.577;
+  rho6 = 0.99;
+  K_O2 = 0.96;
+  k1 = 2e-05;
+  k2 = 0.307;
+  k5 = 75.895;
+  k10 = 421.353;
+  k11 = 0.211;
+  k12 = 0.061;
+  k15 = 0.088;
+  kS = 0.0009;
+  n2 = 2;
+  xi28 = 38.44;
+  delta = 200;
+  xi4 = 15.018;
+  xi44 = 128.022;
+  a5 = 0.211;
+  d1 = 0.062;
+  d2 = 0.848;
+  d3 = 0.919;
+  d4 = 0.623;
+  d5 = 0.196;
+  d6 = 0.301;
+  d7 = 0.914;
+  d9 = 0.934;
+  d10 = 0.935;
+  rho3 = 1;
+  rho4 = 0.863;
+  k3 = 0.181;
+  k4 = 76.196;
+  k6 = 25.001;
+  k7 = 2.903;
+  k9 = 0.753;
+  k13 = 12.152;
+  k14 = 16.528;
+  kalpha = 1.034;
+  xi10 = 8.127;
+  phi = 0.829;
+  alpha1 = 1.163;
+  alpha2 = 0.386;
+  Metabolite_0 = y1_IL_15;
+  D = 1;
+  R = 0;
+  S3 = 0;
+  Metabolite_3 = y4_HIF_1a;
+  Metabolite_5 = y6_HIF_1_Complex;
+  Metabolite_9 = y10_HIF_1a_aOH;
+
+  // Other declarations:
+  var d8, IL_15_Fold_Change, HIF_1a_Total_Fold_Change;
+  const compartment_, a1, a2, a3, a7, a8, a9, a11, k8, rho6, K_O2, k1, k2;
+  const k5, k10, k11, k12, k15, kS, n2, xi28, delta, xi4, xi44, a5, d1, d2;
+  const d3, d4, d5, d6, d7, d9, d10, rho3, rho4, k3, k4, k6, k7, k9, k13;
+  const k14, kalpha, xi10, phi, alpha1, alpha2, Metabolite_0, D, R, S3, Metabolite_3;
+  const Metabolite_5, Metabolite_9;
+
+  // Unit definitions:
+  unit time_unit = 3600 second;
+  unit substance = 1e-9 mole;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+  y1_IL_15 is "y1_IL-15";
+  y4_HIF_1a is "y4_HIF-1a";
+  y5_HIF_1b is "y5_HIF-1b";
+  y6_HIF_1_Complex is "y6_HIF-1_Complex";
+  y7_NF_KB is "y7_NF-KB";
+  y9_HIF_1a_mRNA is "y9_HIF-1a_mRNA";
+  y10_HIF_1a_aOH is "y10_HIF-1a-aOH";
+  IL_15_Fold_Change is "IL-15_Fold_Change";
+  Metabolite_0 is "Initial for y1_IL-15";
+  HIF_1a_Total_Fold_Change is "HIF-1a_Total_Fold_Change";
+  Metabolite_3 is "Initial for y4_HIF-1a";
+  Metabolite_5 is "Initial for y6_HIF-1_Complex";
+  Metabolite_9 is "Initial for y10_HIF-1a-aOH";
+  IL_15_External_Regulation is "IL-15_External_Regulation";
+  IL_15_Basal_Decay is "IL-15_Basal_Decay";
+  AKT_Activation_IL_15 is "AKT_Activation_IL-15";
+  NF_KB_Basal_Activation is "NF-KB_Basal_Activation";
+  NF_KB_Decay is "NF-KB_Decay";
+  NF_KB_Activation_IL_15 is "NF-KB_Activation_IL-15";
+  NF_KB_Activation_mTOR is "NF-KB_Activation_mTOR";
+  NF_KB_Activation_HIF_1_Complex is "NF-KB_Activation_HIF-1_Complex";
+  HIF_1a_mRNA_Synthesis_Basal is "HIF-1a_mRNA_Synthesis_Basal";
+  HIF_1a_mRNA_Degradation is "HIF-1a_mRNA_Degradation";
+  HIF_1a_mRNA_Regulation_NF_KB is "HIF-1a_mRNA_Regulation_NF-KB";
+  HIF_1a_mRNA_Regulation_STAT3 is "HIF-1a_mRNA_Regulation_STAT3";
+  HIF_1a_Translation is "HIF-1a_Translation";
+  HIF_1a_Decay is "HIF-1a_Decay";
+  HIF_1a_Association_HIF_1b is "HIF-1a_Association_HIF-1b";
+  HIF_1_Complex_Dissociation is "HIF-1_Complex_Dissociation";
+  HIF_1a_Hydroxylation_PHD is "HIF-1a_Hydroxylation_PHD";
+  HIF_1a_Hydroxylation_FIH is "HIF-1a_Hydroxylation_FIH";
+  HIF_1a_aOH_Dehydroxylation is "HIF-1a-aOH_Dehydroxylation";
+  HIF_1a_aOH_Hydroxylation_PHD is "HIF-1a-aOH_Hydroxylation_PHD";
+  HIF_1a_aOH_Decay is "HIF-1a-aOH_Decay";
+  HIF_1b_Expression_Constitutive is "HIF-1b_Expression_Constitutive";
+  HIF_1b_Decay is "HIF-1b_Decay";
+  HIF_1_Complex_Decay is "HIF-1_Complex_Decay";
+
+  // SBO terms:
+  HIF_1a_mRNA_Synthesis_Basal.sboTerm = 183
+  HIF_1a_Translation.sboTerm = 184
+  HIF_1_Complex_Dissociation.sboTerm = 180
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/cl/CL:0000623"
+  y1_IL_15 identity "http://identifiers.org/ncit/C20517"
+  y2_Akt identity "http://identifiers.org/ncit/C41625"
+  y3_mTOR identity "http://identifiers.org/pr/PR:000003041"
+  y4_HIF_1a identity "http://identifiers.org/ncit/C20214"
+  y5_HIF_1b identity "http://identifiers.org/ncit/C28553"
+  y6_HIF_1_Complex part "http://identifiers.org/ncit/C28553"
+  y6_HIF_1_Complex part "http://identifiers.org/ncit/C20214"
+  y6_HIF_1_Complex hypernym "http://identifiers.org/ncit/C19398"
+  y7_NF_KB identity "http://identifiers.org/ncit/C17380"
+  y8_STAT3 identity "http://identifiers.org/ncit/C28664"
+  y9_HIF_1a_mRNA encodement "http://identifiers.org/ncit/C20214"
+  y9_HIF_1a_mRNA identity "http://identifiers.org/ncit/C813"
+  y10_HIF_1a_aOH hypernym "http://identifiers.org/ncit/C20214"
+  y10_HIF_1a_aOH property "http://identifiers.org/mod/MOD:00677"
+  IL_15_External_Regulation hypernym "http://identifiers.org/sbo/SBO:0000393"
+  IL_15_Basal_Decay hypernym "http://identifiers.org/sbo/SBO:0000179"
+  AKT_Basal_Activation hypernym "http://identifiers.org/ncit/C64382"
+  AKT_Activation_IL_15 hypernym "http://identifiers.org/ncit/C64382"
+  AKT_Activation_IL_15 property "http://identifiers.org/ncit/C20517"
+  AKT_Activation_STAT3 hypernym "http://identifiers.org/ncit/C64382"
+  AKT_Activation_STAT3 property "http://identifiers.org/ncit/C28664"
+  AKT_Decay hypernym "http://identifiers.org/sbo/SBO:0000179"
+  mTOR_Activation hypernym "http://identifiers.org/ncit/C64382"
+  mTOR_Decay hypernym "http://identifiers.org/sbo/SBO:0000179"
+  STAT3_Decay hypernym "http://identifiers.org/sbo/SBO:0000179"
+  NF_KB_Basal_Activation hypernym "http://identifiers.org/ncit/C64382"
+  NF_KB_Decay hypernym "http://identifiers.org/sbo/SBO:0000179"
+  NF_KB_Activation_IL_15 hypernym "http://identifiers.org/ncit/C64382"
+  NF_KB_Activation_IL_15 property "http://identifiers.org/ncit/C20517"
+  NF_KB_Activation_mTOR hypernym "http://identifiers.org/ncit/C64382"
+  NF_KB_Activation_HIF_1_Complex hypernym "http://identifiers.org/ncit/C64382"
+  HIF_1a_mRNA_Synthesis_Basal identity "http://identifiers.org/sbo/SBO:0000183"
+  HIF_1a_mRNA_Degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+  HIF_1a_mRNA_Regulation_NF_KB hypernym "http://identifiers.org/ncit/C64382"
+  HIF_1a_mRNA_Regulation_STAT3 hypernym "http://identifiers.org/ncit/C64382"
+  HIF_1a_mRNA_Regulation_STAT3 property "http://identifiers.org/ncit/C28664"
+  HIF_1a_Translation identity "http://identifiers.org/sbo/SBO:0000184"
+  HIF_1a_Decay hypernym "http://identifiers.org/sbo/SBO:0000179"
+  HIF_1a_Association_HIF_1b hypernym "http://identifiers.org/sbo/SBO:0000177"
+  HIF_1_Complex_Dissociation identity "http://identifiers.org/sbo/SBO:0000180"
+  HIF_1a_Hydroxylation_PHD identity "http://identifiers.org/ncit/C157205"
+  HIF_1a_Hydroxylation_FIH identity "http://identifiers.org/ncit/C157205"
+  HIF_1a_aOH_Dehydroxylation property "http://identifiers.org/ncit/C64914"
+  HIF_1a_aOH_Dehydroxylation property "http://identifiers.org/ncit/C64370"
+  HIF_1a_aOH_Hydroxylation_PHD identity "http://identifiers.org/ncit/C157205"
+  HIF_1a_aOH_Decay hypernym "http://identifiers.org/sbo/SBO:0000179"
+  HIF_1b_Expression_Constitutive hypernym "http://identifiers.org/sbo/SBO:0000184"
+  HIF_1b_Decay hypernym "http://identifiers.org/sbo/SBO:0000179"
+  HIF_1_Complex_Decay hypernym "http://identifiers.org/sbo/SBO:0000179"
+  STAT3_Activation hypernym "http://identifiers.org/ncit/C64382"
+end
+
+Coulibaly2019___Interleukin_15_Signaling_in_HIF_1a_Regulation_in_Natural_Killer_Cells is "Coulibaly2019 - Interleukin-15 Signaling in HIF-1a Regulation in Natural Killer Cells"
+
+Coulibaly2019___Interleukin_15_Signaling_in_HIF_1a_Regulation_in_Natural_Killer_Cells description "http://identifiers.org/pubmed/31681292"
+Coulibaly2019___Interleukin_15_Signaling_in_HIF_1a_Regulation_in_Natural_Killer_Cells model_entity_is "http://identifiers.org/biomodels.db/MODEL1911180002",
+                                                                                                      "http://identifiers.org/biomodels.db/BIOMD0000000867"
+Coulibaly2019___Interleukin_15_Signaling_in_HIF_1a_Regulation_in_Natural_Killer_Cells property "http://identifiers.org/ncit/C17380"
+Coulibaly2019___Interleukin_15_Signaling_in_HIF_1a_Regulation_in_Natural_Killer_Cells property "http://identifiers.org/ncit/C12536"
+Coulibaly2019___Interleukin_15_Signaling_in_HIF_1a_Regulation_in_Natural_Killer_Cells property "http://identifiers.org/mamo/MAMO_0000046"
+Coulibaly2019___Interleukin_15_Signaling_in_HIF_1a_Regulation_in_Natural_Killer_Cells property "http://identifiers.org/ncit/C20214"
+Coulibaly2019___Interleukin_15_Signaling_in_HIF_1a_Regulation_in_Natural_Killer_Cells property "http://identifiers.org/ncit/C20517"
+Coulibaly2019___Interleukin_15_Signaling_in_HIF_1a_Regulation_in_Natural_Killer_Cells property "http://identifiers.org/pr/PR:000003041"
+Coulibaly2019___Interleukin_15_Signaling_in_HIF_1a_Regulation_in_Natural_Killer_Cells property "http://identifiers.org/ncit/C28664"
+Coulibaly2019___Interleukin_15_Signaling_in_HIF_1a_Regulation_in_Natural_Killer_Cells taxon "http://identifiers.org/taxonomy/9606"

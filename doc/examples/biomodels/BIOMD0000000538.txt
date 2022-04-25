@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *MODEL1408070000()
 
   // Compartments and Species:
@@ -6,7 +6,7 @@ model *MODEL1408070000()
   species $ONLnr in Brain, $ONLpcd in Brain, $ONLrom in Brain;
 
   // Assignment Rules:
-  ONLrom := (ONLrom_0*exp(((exp(-Rrom*time) - 1)*Murom)/Rrom)*100)/ONLrom_0;
+  ONLrom := ONLrom_0*exp((exp(-Rrom*time) - 1)*Murom/Rrom)*100/ONLrom_0;
 
   // Rate Rules:
   ONLnr' = -Munr*ONLnr;
@@ -37,4 +37,29 @@ model *MODEL1408070000()
   // Display Names:
   time_unit is "time";
   ONLrom_0 is "ONLrom";
+
+  // CV terms:
+  Brain identity "http://identifiers.org/bto/BTO:0000142"
+  ONLnr identity "http://identifiers.org/bto/BTO:0005600"
+  ONLpcd identity "http://identifiers.org/bto/BTO:0005600"
+  ONLrom identity "http://identifiers.org/bto/BTO:0005600"
 end
+
+MODEL1408070000 is "Clarke2000 - One-hit model of cell death in neuronal degenerations"
+
+MODEL1408070000 model_entity_is "http://identifiers.org/biomodels.db/MODEL1408070000"
+MODEL1408070000 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000538"
+MODEL1408070000 description "http://identifiers.org/pubmed/10910361"
+MODEL1408070000 taxon "http://identifiers.org/taxonomy/9606",
+                      "http://identifiers.org/taxonomy/10090",
+                      "http://identifiers.org/taxonomy/9685",
+                      "http://identifiers.org/taxonomy/9615",
+                      "http://identifiers.org/taxonomy/10116"
+MODEL1408070000 version "http://identifiers.org/doid/DOID:8466",
+                        "http://identifiers.org/doid/DOID:1443",
+                        "http://identifiers.org/doid/DOID:5327",
+                        "http://identifiers.org/doid/DOID:5679",
+                        "http://identifiers.org/doid/DOID:0050633",
+                        "http://identifiers.org/doid/DOID:14330",
+                        "http://identifiers.org/doid/DOID:12858"
+MODEL1408070000 hypernym "http://identifiers.org/go/GO:0051402"

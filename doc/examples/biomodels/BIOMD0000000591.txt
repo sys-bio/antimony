@@ -1,0 +1,82 @@
+// Created by libAntimony v2.13.0
+model *MODEL1501220000()
+
+  // Compartments and Species:
+  compartment cyt, nuc;
+  species STAT5A in cyt, STAT5B in cyt, pApB in cyt, pApA in cyt, pBpB in cyt;
+  species nucpApA in nuc, nucpApB in nuc, nucpBpB in nuc;
+
+  // Reactions:
+  reaction1: 2 STAT5A => pApA; 1.25e-7*STAT5A^2*k_phos*exp(-Epo_degradation_BaF3*time);
+  reaction2: STAT5A + STAT5B => pApB; 1.25e-7*STAT5A*STAT5B*k_phos*exp(-Epo_degradation_BaF3*time);
+  reaction3: 2 STAT5B => pBpB; 1.25e-7*STAT5B^2*k_phos*exp(-Epo_degradation_BaF3*time);
+  reaction4: pApA => nucpApA; k_imp_homo*pApA;
+  reaction5: pApB => nucpApB; k_imp_hetero*pApB;
+  reaction6: pBpB => nucpBpB; k_imp_homo*pBpB;
+  reaction7: nucpApA => 2 STAT5A; k_exp_homo*nucpApA;
+  reaction8: nucpApB => STAT5A + STAT5B; k_exp_hetero*nucpApB;
+  reaction9: nucpBpB => 2 STAT5B; k_exp_homo*nucpBpB;
+
+  // Species initializations:
+  STAT5A = 207.6*ratio;
+  STAT5B = 207.6 - 207.6*ratio;
+  pApB = 0;
+  pApA = 0;
+  pBpB = 0;
+  nucpApA = 0;
+  nucpApB = 0;
+  nucpBpB = 0;
+
+  // Compartment initializations:
+  cyt = 1.4;
+  nuc = 0.45;
+
+  // Variable initializations:
+  ratio = 0.693;
+  Epo_degradation_BaF3 = 0.0269765368088175;
+  k_exp_hetero = 1.00097114635938e-05;
+  k_exp_homo = 0.0061723799618614;
+  k_imp_hetero = 0.0163701561812467;
+  k_imp_homo = 96807.6817909446;
+  k_phos = 15767.6469913504;
+
+  // Other declarations:
+  const cyt, nuc, ratio, Epo_degradation_BaF3, k_exp_hetero, k_exp_homo, k_imp_hetero;
+  const k_imp_homo, k_phos;
+
+  // SBO terms:
+  cyt.sboTerm = 290
+  nuc.sboTerm = 290
+  STAT5A.sboTerm = 252
+  STAT5B.sboTerm = 252
+  pApB.sboTerm = 609
+  pApA.sboTerm = 608
+  pBpB.sboTerm = 608
+  nucpApA.sboTerm = 608
+  nucpApB.sboTerm = 609
+  nucpBpB.sboTerm = 608
+
+  // CV terms:
+  cyt model_entity_is "http://identifiers.org/go/GO:0005737"
+  nuc model_entity_is "http://identifiers.org/go/GO:0005634"
+  STAT5A hypernym "http://identifiers.org/uniprot/P42230"
+  STAT5B hypernym "http://identifiers.org/uniprot/P42232"
+  pApB part "http://identifiers.org/uniprot/P42232",
+            "http://identifiers.org/uniprot/P42230"
+  pApA part "http://identifiers.org/uniprot/P42230"
+  pBpB part "http://identifiers.org/uniprot/P42232"
+  nucpApA part "http://identifiers.org/uniprot/P42230"
+  nucpApB part "http://identifiers.org/uniprot/P42230",
+               "http://identifiers.org/uniprot/P42232"
+  nucpBpB part "http://identifiers.org/uniprot/P42232"
+end
+
+MODEL1501220000 is "Boehm2014 - isoform-specific dimerization of pSTAT5A and pSTAT5B"
+
+MODEL1501220000 model_entity_is "http://identifiers.org/biomodels.db/MODEL1501220000"
+MODEL1501220000 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000591"
+MODEL1501220000 description "http://identifiers.org/pubmed/25333863"
+MODEL1501220000 container "http://identifiers.org/bto/BTO:0001516"
+MODEL1501220000 taxon "http://identifiers.org/taxonomy/10090"
+MODEL1501220000 hypernym "http://identifiers.org/go/GO:0038162",
+                         "http://identifiers.org/go/GO:0042522"

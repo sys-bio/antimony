@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *MODEL1311290001()
 
   // Compartments and Species:
@@ -27,37 +27,37 @@ model *MODEL1311290001()
   NADP := sum_NADP - NADPH;
 
   // Reactions:
-  ADH: AcAld + $NADH -> $EtOH + NAD; cell*((ADH1*ADH_kcat*((AcAld*NADH)/(ADH_Kacald*ADH_Kinadh) - (EtOH*NAD)/(ADH_Kacald*ADH_Kinadh*ADH_Keq)))/(1 + NADH/ADH_Kinadh + (AcAld*ADH_Knadh)/(ADH_Kinadh*ADH_Kacald) + (EtOH*ADH_Knad)/(ADH_Kinad*ADH_Ketoh) + NAD/ADH_Kinad + (AcAld*NADH)/(ADH_Kinadh*ADH_Kacald) + (NADH*EtOH*ADH_Knad)/(ADH_Kinadh*ADH_Kinad*ADH_Ketoh) + (AcAld*NAD*ADH_Knadh)/(ADH_Kinadh*ADH_Kinad*ADH_Kacald) + (EtOH*NAD)/(ADH_Ketoh*ADH_Kinad) + (AcAld*NADH*EtOH)/(ADH_Kinadh*ADH_Kietoh*ADH_Kacald) + (AcAld*EtOH*NAD)/(ADH_Kiacald*ADH_Kinad*ADH_Ketoh)));
-  AK: 2ADP -> ATP + $AMP; cell*AK_k*(ADP*ADP - (AMP*ATP)/AK_Keq);
-  ATPase: ATP => ADP; cell*((ATPase_Vmax*ATP)/ATPase_Katp/(1 + ATP/ATPase_Katp));
-  ENO: P2G -> PEP; cell*((ENO1*ENO_kcat_ENO1*(P2G/ENO_Kp2g_ENO1 - PEP/(ENO_Kp2g_ENO1*ENO_Keq)))/(1 + P2G/ENO_Kp2g_ENO1 + PEP/ENO_Kpep_ENO1)) + cell*((ENO2*ENO_kcat_ENO2*(P2G/ENO_Kp2g_ENO2 - PEP/(ENO_Kp2g_ENO2*ENO_Keq)))/(1 + P2G/ENO_Kp2g_ENO2 + PEP/ENO_Kpep_ENO2));
-  FBA: F16bP -> DHAP + GAP; cell*((FBA1*FBA_kcat*(F16bP/FBA_Kf16bp - (DHAP*GAP)/(FBA_Kf16bp*FBA_Keq)))/(1 + F16bP/FBA_Kf16bp + DHAP/FBA_Kdhap + GAP/FBA_Kgap + (F16bP*GAP)/(FBA_Kf16bp*FBA_Kigap) + (DHAP*GAP)/(FBA_Kdhap*FBA_Kgap)));
-  GPD: DHAP + $NADH -> G3P + NAD; cell*((GPD_Vmax/(GPD_Kdhap*GPD_Knadh)*(DHAP*NADH - (G3P*NAD)/GPD_Keq))/((1 + F16bP/GPD_Kfbp + ATP/GPD_Katp + ADP/GPD_Kadp)*(1 + DHAP/GPD_Kdhap + G3P/GPD_Kg3p)*(1 + NADH/GPD_Knadh + NAD/GPD_Knad)));
-  GPM: P3G -> P2G; cell*((GPM1*GPM_kcat*(P3G/GPM_Kp3g - P2G/(GPM_Kp3g*GPM_Keq)))/(1 + P3G/GPM_Kp3g + P2G/GPM_Kp2g));
-  GPP: G3P => $GLY; cell*((GPP_Vmax*G3P)/GPP_Kg3p/(1 + G3P/GPP_Kg3p));
-  HXK: GLC + ATP -> G6P + ADP; cell*((HXK1*HXK_kcat_HXK1*((GLC*ATP)/(HXK_Kglc_HXK1*HXK_Katp_HXK1) - (G6P*ADP)/(HXK_Kglc_HXK1*HXK_Katp_HXK1*HXK_Keq)))/((1 + GLC/HXK_Kglc_HXK1 + G6P/HXK_Kg6p_HXK1 + T6P/HXK_Kit6p_HXK1)*(1 + ATP/HXK_Katp_HXK1 + ADP/HXK_Kadp_HXK1))) + cell*((HXK2*HXK_kcat_HXK2*((GLC*ATP)/(HXK_Kglc_HXK2*HXK_Katp_HXK2) - (G6P*ADP)/(HXK_Kglc_HXK2*HXK_Katp_HXK2*HXK_Keq)))/((1 + GLC/HXK_Kglc_HXK2 + G6P/HXK_Kg6p_HXK2 + T6P/HXK_Kit6p_HXK2)*(1 + ATP/HXK_Katp_HXK2 + ADP/HXK_Kadp_HXK2))) + cell*((GLK1*HXK_kcat_GLK1*((GLC*ATP)/(HXK_Kglc_GLK1*HXK_Katp_GLK1) - (G6P*ADP)/(HXK_Kglc_GLK1*HXK_Katp_GLK1*HXK_Keq)))/((1 + GLC/HXK_Kglc_GLK1 + G6P/HXK_Kg6p_GLK1)*(1 + ATP/HXK_Katp_GLK1 + ADP/HXK_Kadp_GLK1)));
-  PDC: PYR => AcAld; cell*((PDC1*PDC_kcat_PDC1*PYR)/PDC_Kpyr_PDC1/(1 + PYR/PDC_Kpyr_PDC1)) + cell*((PDC5*PDC_kcat_PDC5*PYR)/PDC_Kpyr_PDC5/(1 + PYR/PDC_Kpyr_PDC5)) + cell*((PDC6*PDC_kcat_PDC6*PYR)/PDC_Kpyr_PDC6/(1 + PYR/PDC_Kpyr_PDC6));
-  PFK: ATP + F6P => ADP + F16bP; cell*PFK2*PFK_kcat*((PFK_gR*(F6P/PFK_Kf6p)*(ATP/PFK_Katp)*(1 - (F16bP*ADP)/(F6P*ATP)/PFK_Keq)*(1 + F6P/PFK_Kf6p + ATP/PFK_Katp + ((PFK_gR*F6P)/PFK_Kf6p*ATP)/PFK_Katp + F16bP/PFK_Kf16 + ADP/PFK_Kadp + ((PFK_gR*F16bP)/PFK_Kf16*ADP)/PFK_Kadp))/((1 + F6P/PFK_Kf6p + ATP/PFK_Katp + ((PFK_gR*F6P)/PFK_Kf6p*ATP)/PFK_Katp + F16bP/PFK_Kf16 + ADP/PFK_Kadp + ((PFK_gR*F16bP)/PFK_Kf16*ADP)/PFK_Kadp)^2 + PFK_L0*((1 + (PFK_Ciatp*ATP)/PFK_Kiatp)/(1 + ATP/PFK_Kiatp))^2*((1 + (PFK_Camp*AMP)/PFK_Kamp)/(1 + AMP/PFK_Kamp))^2*((1 + (PFK_Cf26*F26bP)/PFK_Kf26 + (PFK_Cf16*F16bP)/PFK_Kf16)/(1 + F26bP/PFK_Kf26 + F16bP/PFK_Kf16))^2*(1 + (PFK_Catp*ATP)/PFK_Katp)^2));
-  PGI: G6P -> F6P; cell*((PGI1*PGI_kcat*(G6P/PGI_Kg6p - F6P/(PGI_Kg6p*PGI_Keq)))/(1 + G6P/PGI_Kg6p + F6P/PGI_Kf6p));
-  PGK: ADP + BPG -> ATP + P3G; cell*((PGK1*PGK_kcat*(ADP/PGK_Kadp)^(PGK_nHadp - 1)*((BPG*ADP)/(PGK_Kbpg*PGK_Kadp) - (P3G*ATP)/(PGK_Kbpg*PGK_Kadp*PGK_Keq)))/((1 + BPG/PGK_Kbpg + P3G/PGK_Kp3g)*(1 + (ADP/PGK_Kadp)^PGK_nHadp + ATP/PGK_Katp)));
-  PGM: G6P -> G1P; cell*((PGM_Vmax*(G6P/PGM_Kg6p - G1P/(PGM_Kg6p*PGM_Keq)))/(1 + G6P/PGM_Kg6p + G1P/PGM_Kg1p));
-  PYK: ADP + PEP -> ATP + PYR; cell*((CDC19*PYK_kcat*(PEP*ADP - (PYR*ATP)/PYK_Keq))/(PYK_Kpep*PYK_Kadp)/((1 + PEP/PYK_Kpep + PYR/PYK_Kpyr + PYK_L0*((ATP/PYK_Kiatp + 1)/(F16bP/PYK_Kf16p + 1)))*(1 + ADP/PYK_Kadp + ATP/PYK_Katp)));
-  TDH: GAP + NAD -> BPG + $NADH; cell*((TDH1*TDH_kcat_TDH1*((GAP*NAD)/(TDH_Kgap_TDH1*TDH_Knad_TDH1) - (BPG*NADH)/(TDH_Kgap_TDH1*TDH_Knad_TDH1*TDH_Keq)))/((1 + GAP/TDH_Kgap_TDH1 + BPG/TDH_Kbpg_TDH1)*(1 + NAD/TDH_Knad_TDH1 + NADH/TDH_Knadh_TDH1))) + cell*((TDH3*TDH_kcat_TDH3*((GAP*NAD)/(TDH_Kgap_TDH3*TDH_Knad_TDH3) - (BPG*NADH)/(TDH_Kgap_TDH3*TDH_Knad_TDH3*TDH_Keq)))/((1 + GAP/TDH_Kgap_TDH3 + BPG/TDH_Kbpg_TDH3)*(1 + NAD/TDH_Knad_TDH3 + NADH/TDH_Knadh_TDH3)));
-  TPI: DHAP -> GAP; cell*(((TPI1*TPI_kcat)/TPI_Kdhap*(DHAP - GAP/TPI_Keq))/(1 + DHAP/TPI_Kdhap + GAP/TPI_Kgap*(1 + (GAP/TPI_Kigap)^4)));
-  TPP: T6P => $TRH; cell*((TPP_Vmax*T6P)/TPP_Kt6p/(1 + T6P/TPP_Kt6p));
-  TPS: G6P + $UDG => T6P + UDP; cell*((TPS_Vmax*G6P*UDG)/(TPS_Kg6p*TPS_Kudg)/((1 + G6P/TPS_Kg6p)*(1 + UDG/TPS_Kudg)));
-  UGP: G1P + UTP => $UDG; cell*((UGP_Vmax*UTP*G1P)/(UGP_Kutp*UGP_Kg1p)/(UGP_Kiutp/UGP_Kutp + UTP/UGP_Kutp + G1P/UGP_Kg1p + (UTP*G1P)/(UGP_Kutp*UGP_Kg1p) + (UGP_Kiutp/UGP_Kutp*UDG)/UGP_Kiudg + (G1P*UDG)/(UGP_Kg1p*UGP_Kiudg)));
+  ADH: AcAld + $NADH -> $EtOH + NAD; cell*(ADH1*ADH_kcat*(AcAld*NADH/(ADH_Kacald*ADH_Kinadh) - EtOH*NAD/(ADH_Kacald*ADH_Kinadh*ADH_Keq))/(1 + NADH/ADH_Kinadh + AcAld*ADH_Knadh/(ADH_Kinadh*ADH_Kacald) + EtOH*ADH_Knad/(ADH_Kinad*ADH_Ketoh) + NAD/ADH_Kinad + AcAld*NADH/(ADH_Kinadh*ADH_Kacald) + NADH*EtOH*ADH_Knad/(ADH_Kinadh*ADH_Kinad*ADH_Ketoh) + AcAld*NAD*ADH_Knadh/(ADH_Kinadh*ADH_Kinad*ADH_Kacald) + EtOH*NAD/(ADH_Ketoh*ADH_Kinad) + AcAld*NADH*EtOH/(ADH_Kinadh*ADH_Kietoh*ADH_Kacald) + AcAld*EtOH*NAD/(ADH_Kiacald*ADH_Kinad*ADH_Ketoh)));
+  AK: 2 ADP -> ATP + $AMP; cell*AK_k*(ADP*ADP - AMP*ATP/AK_Keq);
+  ATPase: ATP => ADP; cell*(ATPase_Vmax*ATP/ATPase_Katp/(1 + ATP/ATPase_Katp));
+  ENO: P2G -> PEP; cell*(ENO1*ENO_kcat_ENO1*(P2G/ENO_Kp2g_ENO1 - PEP/(ENO_Kp2g_ENO1*ENO_Keq))/(1 + P2G/ENO_Kp2g_ENO1 + PEP/ENO_Kpep_ENO1)) + cell*(ENO2*ENO_kcat_ENO2*(P2G/ENO_Kp2g_ENO2 - PEP/(ENO_Kp2g_ENO2*ENO_Keq))/(1 + P2G/ENO_Kp2g_ENO2 + PEP/ENO_Kpep_ENO2));
+  FBA: F16bP -> DHAP + GAP; cell*(FBA1*FBA_kcat*(F16bP/FBA_Kf16bp - DHAP*GAP/(FBA_Kf16bp*FBA_Keq))/(1 + F16bP/FBA_Kf16bp + DHAP/FBA_Kdhap + GAP/FBA_Kgap + F16bP*GAP/(FBA_Kf16bp*FBA_Kigap) + DHAP*GAP/(FBA_Kdhap*FBA_Kgap)));
+  GPD: DHAP + $NADH -> G3P + NAD; cell*((GPD_Vmax/(GPD_Kdhap*GPD_Knadh))*(DHAP*NADH - G3P*NAD/GPD_Keq)/((1 + F16bP/GPD_Kfbp + ATP/GPD_Katp + ADP/GPD_Kadp)*(1 + DHAP/GPD_Kdhap + G3P/GPD_Kg3p)*(1 + NADH/GPD_Knadh + NAD/GPD_Knad)));
+  GPM: P3G -> P2G; cell*(GPM1*GPM_kcat*(P3G/GPM_Kp3g - P2G/(GPM_Kp3g*GPM_Keq))/(1 + P3G/GPM_Kp3g + P2G/GPM_Kp2g));
+  GPP: G3P => $GLY; cell*(GPP_Vmax*G3P/GPP_Kg3p/(1 + G3P/GPP_Kg3p));
+  HXK: GLC + ATP -> G6P + ADP; cell*(HXK1*HXK_kcat_HXK1*(GLC*ATP/(HXK_Kglc_HXK1*HXK_Katp_HXK1) - G6P*ADP/(HXK_Kglc_HXK1*HXK_Katp_HXK1*HXK_Keq))/((1 + GLC/HXK_Kglc_HXK1 + G6P/HXK_Kg6p_HXK1 + T6P/HXK_Kit6p_HXK1)*(1 + ATP/HXK_Katp_HXK1 + ADP/HXK_Kadp_HXK1))) + cell*(HXK2*HXK_kcat_HXK2*(GLC*ATP/(HXK_Kglc_HXK2*HXK_Katp_HXK2) - G6P*ADP/(HXK_Kglc_HXK2*HXK_Katp_HXK2*HXK_Keq))/((1 + GLC/HXK_Kglc_HXK2 + G6P/HXK_Kg6p_HXK2 + T6P/HXK_Kit6p_HXK2)*(1 + ATP/HXK_Katp_HXK2 + ADP/HXK_Kadp_HXK2))) + cell*(GLK1*HXK_kcat_GLK1*(GLC*ATP/(HXK_Kglc_GLK1*HXK_Katp_GLK1) - G6P*ADP/(HXK_Kglc_GLK1*HXK_Katp_GLK1*HXK_Keq))/((1 + GLC/HXK_Kglc_GLK1 + G6P/HXK_Kg6p_GLK1)*(1 + ATP/HXK_Katp_GLK1 + ADP/HXK_Kadp_GLK1)));
+  PDC: PYR => AcAld; cell*(PDC1*PDC_kcat_PDC1*PYR/PDC_Kpyr_PDC1/(1 + PYR/PDC_Kpyr_PDC1)) + cell*(PDC5*PDC_kcat_PDC5*PYR/PDC_Kpyr_PDC5/(1 + PYR/PDC_Kpyr_PDC5)) + cell*(PDC6*PDC_kcat_PDC6*PYR/PDC_Kpyr_PDC6/(1 + PYR/PDC_Kpyr_PDC6));
+  PFK: ATP + F6P => ADP + F16bP; cell*PFK2*PFK_kcat*(PFK_gR*(F6P/PFK_Kf6p)*(ATP/PFK_Katp)*(1 - F16bP*ADP/(F6P*ATP)/PFK_Keq)*(1 + F6P/PFK_Kf6p + ATP/PFK_Katp + (PFK_gR*F6P/PFK_Kf6p)*ATP/PFK_Katp + F16bP/PFK_Kf16 + ADP/PFK_Kadp + (PFK_gR*F16bP/PFK_Kf16)*ADP/PFK_Kadp)/((1 + F6P/PFK_Kf6p + ATP/PFK_Katp + (PFK_gR*F6P/PFK_Kf6p)*ATP/PFK_Katp + F16bP/PFK_Kf16 + ADP/PFK_Kadp + (PFK_gR*F16bP/PFK_Kf16)*ADP/PFK_Kadp)^2 + PFK_L0*((1 + PFK_Ciatp*ATP/PFK_Kiatp)/(1 + ATP/PFK_Kiatp))^2*((1 + PFK_Camp*AMP/PFK_Kamp)/(1 + AMP/PFK_Kamp))^2*((1 + PFK_Cf26*F26bP/PFK_Kf26 + PFK_Cf16*F16bP/PFK_Kf16)/(1 + F26bP/PFK_Kf26 + F16bP/PFK_Kf16))^2*(1 + PFK_Catp*ATP/PFK_Katp)^2));
+  PGI: G6P -> F6P; cell*(PGI1*PGI_kcat*(G6P/PGI_Kg6p - F6P/(PGI_Kg6p*PGI_Keq))/(1 + G6P/PGI_Kg6p + F6P/PGI_Kf6p));
+  PGK: ADP + BPG -> ATP + P3G; cell*(PGK1*PGK_kcat*(ADP/PGK_Kadp)^(PGK_nHadp - 1)*(BPG*ADP/(PGK_Kbpg*PGK_Kadp) - P3G*ATP/(PGK_Kbpg*PGK_Kadp*PGK_Keq))/((1 + BPG/PGK_Kbpg + P3G/PGK_Kp3g)*(1 + (ADP/PGK_Kadp)^PGK_nHadp + ATP/PGK_Katp)));
+  PGM: G6P -> G1P; cell*(PGM_Vmax*(G6P/PGM_Kg6p - G1P/(PGM_Kg6p*PGM_Keq))/(1 + G6P/PGM_Kg6p + G1P/PGM_Kg1p));
+  PYK: ADP + PEP -> ATP + PYR; cell*(CDC19*PYK_kcat*(PEP*ADP - PYR*ATP/PYK_Keq)/(PYK_Kpep*PYK_Kadp)/((1 + PEP/PYK_Kpep + PYR/PYK_Kpyr + PYK_L0*((ATP/PYK_Kiatp + 1)/(F16bP/PYK_Kf16p + 1)))*(1 + ADP/PYK_Kadp + ATP/PYK_Katp)));
+  TDH: GAP + NAD -> BPG + $NADH; cell*(TDH1*TDH_kcat_TDH1*(GAP*NAD/(TDH_Kgap_TDH1*TDH_Knad_TDH1) - BPG*NADH/(TDH_Kgap_TDH1*TDH_Knad_TDH1*TDH_Keq))/((1 + GAP/TDH_Kgap_TDH1 + BPG/TDH_Kbpg_TDH1)*(1 + NAD/TDH_Knad_TDH1 + NADH/TDH_Knadh_TDH1))) + cell*(TDH3*TDH_kcat_TDH3*(GAP*NAD/(TDH_Kgap_TDH3*TDH_Knad_TDH3) - BPG*NADH/(TDH_Kgap_TDH3*TDH_Knad_TDH3*TDH_Keq))/((1 + GAP/TDH_Kgap_TDH3 + BPG/TDH_Kbpg_TDH3)*(1 + NAD/TDH_Knad_TDH3 + NADH/TDH_Knadh_TDH3)));
+  TPI: DHAP -> GAP; cell*((TPI1*TPI_kcat/TPI_Kdhap)*(DHAP - GAP/TPI_Keq)/(1 + DHAP/TPI_Kdhap + (GAP/TPI_Kgap)*(1 + (GAP/TPI_Kigap)^4)));
+  TPP: T6P => $TRH; cell*(TPP_Vmax*T6P/TPP_Kt6p/(1 + T6P/TPP_Kt6p));
+  TPS: G6P + $UDG => T6P + UDP; cell*(TPS_Vmax*G6P*UDG/(TPS_Kg6p*TPS_Kudg)/((1 + G6P/TPS_Kg6p)*(1 + UDG/TPS_Kudg)));
+  UGP: G1P + UTP => $UDG; cell*(UGP_Vmax*UTP*G1P/(UGP_Kutp*UGP_Kg1p)/(UGP_Kiutp/UGP_Kutp + UTP/UGP_Kutp + G1P/UGP_Kg1p + UTP*G1P/(UGP_Kutp*UGP_Kg1p) + (UGP_Kiutp/UGP_Kutp)*UDG/UGP_Kiudg + G1P*UDG/(UGP_Kg1p*UGP_Kiudg)));
   acetate_branch: AcAld + NAD => $ACE + $NADH; cell*acetate_branch_k*AcAld*NAD;
   udp_to_utp: UDP + ATP => UTP + ADP; cell*udp_to_utp_k*UDP*ATP;
-  HXT: $GLCx -> GLC; cell*((HXT_Vmax*(GLCx - GLC))/HXT_Kglc/(1 + GLCx/HXT_Kglc + GLC/HXT_Kglc + ((HXT_Ki*GLCx)/HXT_Kglc*GLC)/HXT_Kglc));
-  GND: P6G + $NADP => Ru5P + NADPH; cell*((GND1*GND_kcat_GND1*P6G*NADP)/(GND_Kp6g_GND1*GND_Knadp_GND1)/((1 + P6G/GND_Kp6g_GND1 + Ru5P/GND_Kru5p_GND1)*(1 + NADP/GND_Knadp_GND1 + NADPH/GND_Knadph_GND1)) + (GND2*GND_kcat_GND2*P6G*NADP)/((1 + P6G/GND_Kp6g_GND2 + Ru5P/GND_Kru5p_GND2)*(1 + NADP/GND_Knadp_GND2 + NADPH/GND_Knadph_GND2)));
-  RKI: Ru5P -> R5P; (cell*RKI1*RKI_kcat*(Ru5P - R5P/RKI_Keq))/RKI_Kru5p/(1 + Ru5P/RKI_Kru5p + R5P/RKI_Kr5p);
-  RPE: Ru5P -> X5P; (cell*RPE1*RPE_kcat*(Ru5P - X5P/RPE_Keq))/RPE_Kru5p/(1 + Ru5P/RPE_Kru5p + X5P/RPE_Kx5p);
-  SOL: G6L => P6G; (cell*SOL3*SOL_kcat*G6L)/SOL_Kg6l/(1 + G6L/SOL_Kg6l + P6G/SOL_Kp6g);
-  TAL: GAP + S7P -> F6P + E4P; cell*((TAL1*TAL_kcat_TAL1*(GAP*S7P - (F6P*E4P)/TAL_Keq))/(TAL_Kgap_TAL1*TAL_Ks7p_TAL1)/((1 + GAP/TAL_Kgap_TAL1 + F6P/TAL_Kf6p_TAL1)*(1 + S7P/TAL_Ks7p_TAL1 + E4P/TAL_Ke4p_TAL1)) + (NQM1*TAL_kcat_NQM1*(GAP*S7P - (F6P*E4P)/TAL_Keq))/(TAL_Kgap_NQM1*TAL_Ks7p_NQM1)/((1 + GAP/TAL_Kgap_NQM1 + F6P/TAL_Kf6p_NQM1)*(1 + S7P/TAL_Ks7p_NQM1 + E4P/TAL_Ke4p_NQM1)));
-  TKL_E4P: X5P + E4P -> GAP + F6P; (cell*TKL1*TKL_E4P_kcat*(X5P*E4P - (GAP*F6P)/TKL_E4P_Keq))/(Kx5p_TAL*Ke4p_TAL)/((1 + X5P/Kx5p_TAL + GAP/Kgap_TAL)*(1 + E4P/Ke4p_TAL + F6P/Kf6p_TAL + R5P/Kr5p_TAL + S7P/Ks7p_TAL));
-  TKL_R5P: X5P + R5P -> GAP + S7P; (cell*TKL1*TKL_R5P_kcat*(X5P*R5P - (GAP*S7P)/TKL_R5P_Keq))/(Kx5p_TAL*Kr5p_TAL)/((1 + X5P/Kx5p_TAL + GAP/Kgap_TAL)*(1 + E4P/Ke4p_TAL + F6P/Kf6p_TAL + R5P/Kr5p_TAL + S7P/Ks7p_TAL));
-  ZWF: G6P + $NADP => G6L + NADPH; (cell*ZWF1*ZWF_kcat*G6P*NADP)/(ZWF_Kg6p*ZWF_Knadp)/((1 + G6P/ZWF_Kg6p + G6L/ZWF_Kg6l)*(1 + NADP/ZWF_Knadp + NADPH/ZWF_Knadph));
+  HXT: $GLCx -> GLC; cell*(HXT_Vmax*(GLCx - GLC)/HXT_Kglc/(1 + GLCx/HXT_Kglc + GLC/HXT_Kglc + (HXT_Ki*GLCx/HXT_Kglc)*GLC/HXT_Kglc));
+  GND: P6G + $NADP => Ru5P + NADPH; cell*(GND1*GND_kcat_GND1*P6G*NADP/(GND_Kp6g_GND1*GND_Knadp_GND1)/((1 + P6G/GND_Kp6g_GND1 + Ru5P/GND_Kru5p_GND1)*(1 + NADP/GND_Knadp_GND1 + NADPH/GND_Knadph_GND1)) + GND2*GND_kcat_GND2*P6G*NADP/((1 + P6G/GND_Kp6g_GND2 + Ru5P/GND_Kru5p_GND2)*(1 + NADP/GND_Knadp_GND2 + NADPH/GND_Knadph_GND2)));
+  RKI: Ru5P -> R5P; cell*RKI1*RKI_kcat*(Ru5P - R5P/RKI_Keq)/RKI_Kru5p/(1 + Ru5P/RKI_Kru5p + R5P/RKI_Kr5p);
+  RPE: Ru5P -> X5P; cell*RPE1*RPE_kcat*(Ru5P - X5P/RPE_Keq)/RPE_Kru5p/(1 + Ru5P/RPE_Kru5p + X5P/RPE_Kx5p);
+  SOL: G6L => P6G; cell*SOL3*SOL_kcat*G6L/SOL_Kg6l/(1 + G6L/SOL_Kg6l + P6G/SOL_Kp6g);
+  TAL: GAP + S7P -> F6P + E4P; cell*(TAL1*TAL_kcat_TAL1*(GAP*S7P - F6P*E4P/TAL_Keq)/(TAL_Kgap_TAL1*TAL_Ks7p_TAL1)/((1 + GAP/TAL_Kgap_TAL1 + F6P/TAL_Kf6p_TAL1)*(1 + S7P/TAL_Ks7p_TAL1 + E4P/TAL_Ke4p_TAL1)) + NQM1*TAL_kcat_NQM1*(GAP*S7P - F6P*E4P/TAL_Keq)/(TAL_Kgap_NQM1*TAL_Ks7p_NQM1)/((1 + GAP/TAL_Kgap_NQM1 + F6P/TAL_Kf6p_NQM1)*(1 + S7P/TAL_Ks7p_NQM1 + E4P/TAL_Ke4p_NQM1)));
+  TKL_E4P: X5P + E4P -> GAP + F6P; cell*TKL1*TKL_E4P_kcat*(X5P*E4P - GAP*F6P/TKL_E4P_Keq)/(Kx5p_TAL*Ke4p_TAL)/((1 + X5P/Kx5p_TAL + GAP/Kgap_TAL)*(1 + E4P/Ke4p_TAL + F6P/Kf6p_TAL + R5P/Kr5p_TAL + S7P/Ks7p_TAL));
+  TKL_R5P: X5P + R5P -> GAP + S7P; cell*TKL1*TKL_R5P_kcat*(X5P*R5P - GAP*S7P/TKL_R5P_Keq)/(Kx5p_TAL*Kr5p_TAL)/((1 + X5P/Kx5p_TAL + GAP/Kgap_TAL)*(1 + E4P/Ke4p_TAL + F6P/Kf6p_TAL + R5P/Kr5p_TAL + S7P/Ks7p_TAL));
+  ZWF: G6P + $NADP => G6L + NADPH; cell*ZWF1*ZWF_kcat*G6P*NADP/(ZWF_Kg6p*ZWF_Knadp)/((1 + G6P/ZWF_Kg6p + G6L/ZWF_Kg6l)*(1 + NADP/ZWF_Knadp + NADPH/ZWF_Knadph));
   NADPH_oxidase: NADPH => $NADP; cell*NADPH_oxidase_k*NADPH;
   E4P_sink: E4P => ; cell*E4P_sink_k*E4P;
   R5P_sink: R5P => ; cell*R5P_sink_k*R5P;
@@ -546,4 +546,345 @@ model *MODEL1311290001()
   NADPH_oxidase is "NADPH oxidase";
   E4P_sink is "E4P sink";
   R5P_sink is "R5P sink";
+
+  // SBO terms:
+  ADP.sboTerm = 247
+  ATP.sboTerm = 247
+  AcAld.sboTerm = 247
+  BPG.sboTerm = 247
+  DHAP.sboTerm = 247
+  F16bP.sboTerm = 247
+  F6P.sboTerm = 247
+  G1P.sboTerm = 247
+  G3P.sboTerm = 247
+  G6P.sboTerm = 247
+  GAP.sboTerm = 247
+  GLC.sboTerm = 247
+  NAD.sboTerm = 247
+  P2G.sboTerm = 247
+  P3G.sboTerm = 247
+  PEP.sboTerm = 247
+  PYR.sboTerm = 247
+  T6P.sboTerm = 247
+  UDP.sboTerm = 247
+  UTP.sboTerm = 247
+  AMP.sboTerm = 247
+  NADH.sboTerm = 247
+  UDG.sboTerm = 247
+  ACE.sboTerm = 247
+  EtOH.sboTerm = 247
+  F26bP.sboTerm = 247
+  GLCx.sboTerm = 247
+  GLY.sboTerm = 247
+  SUC.sboTerm = 247
+  TRH.sboTerm = 247
+  ADH1.sboTerm = 252
+  CDC19.sboTerm = 252
+  ENO1.sboTerm = 252
+  ENO2.sboTerm = 252
+  FBA1.sboTerm = 252
+  GLK1.sboTerm = 252
+  GPD1.sboTerm = 252
+  GPD2.sboTerm = 252
+  GPM1.sboTerm = 252
+  HOR2.sboTerm = 252
+  HXK1.sboTerm = 252
+  HXK2.sboTerm = 252
+  PDC1.sboTerm = 252
+  PDC5.sboTerm = 252
+  PDC6.sboTerm = 252
+  PFK1.sboTerm = 252
+  PFK2.sboTerm = 252
+  PGI1.sboTerm = 252
+  PGK1.sboTerm = 252
+  PGM1.sboTerm = 252
+  PGM2.sboTerm = 252
+  RHR2.sboTerm = 252
+  TDH1.sboTerm = 252
+  TDH3.sboTerm = 252
+  TPI1.sboTerm = 252
+  TPS1.sboTerm = 252
+  TPS2.sboTerm = 252
+  UGP1.sboTerm = 252
+  E4P.sboTerm = 247
+  G6L.sboTerm = 247
+  NADPH.sboTerm = 247
+  P6G.sboTerm = 247
+  R5P.sboTerm = 247
+  Ru5P.sboTerm = 247
+  S7P.sboTerm = 247
+  X5P.sboTerm = 247
+  NADP.sboTerm = 247
+  GND1.sboTerm = 252
+  GND2.sboTerm = 252
+  NQM1.sboTerm = 252
+  RKI1.sboTerm = 252
+  RPE1.sboTerm = 252
+  SOL3.sboTerm = 252
+  TAL1.sboTerm = 252
+  TKL1.sboTerm = 252
+  ZWF1.sboTerm = 252
+  ADH.sboTerm = 176
+  AK.sboTerm = 176
+  ATPase.sboTerm = 176
+  ENO.sboTerm = 176
+  FBA.sboTerm = 176
+  GPD.sboTerm = 176
+  GPM.sboTerm = 176
+  GPP.sboTerm = 176
+  HXK.sboTerm = 176
+  PDC.sboTerm = 176
+  PFK.sboTerm = 176
+  PGI.sboTerm = 176
+  PGK.sboTerm = 176
+  PGM.sboTerm = 176
+  PYK.sboTerm = 176
+  TDH.sboTerm = 176
+  TPI.sboTerm = 176
+  TPP.sboTerm = 176
+  TPS.sboTerm = 176
+  UGP.sboTerm = 176
+  acetate_branch.sboTerm = 176
+  udp_to_utp.sboTerm = 176
+  HXT.sboTerm = 185
+  GND.sboTerm = 176
+  RKI.sboTerm = 176
+  RPE.sboTerm = 176
+  SOL.sboTerm = 176
+  TAL.sboTerm = 176
+  TKL_E4P.sboTerm = 176
+  TKL_R5P.sboTerm = 176
+  ZWF.sboTerm = 176
+  NADPH_oxidase.sboTerm = 176
+  E4P_sink.sboTerm = 176
+  R5P_sink.sboTerm = 176
+
+  // CV terms:
+  cell identity "http://identifiers.org/go/GO:0005829"
+  extracellular identity "http://identifiers.org/go/GO:0005576"
+  ADP identity "http://identifiers.org/chebi/CHEBI:16761",
+               "http://identifiers.org/kegg.compound/C00008"
+  ATP identity "http://identifiers.org/chebi/CHEBI:15422",
+               "http://identifiers.org/kegg.compound/C00002"
+  AcAld identity "http://identifiers.org/chebi/CHEBI:15343",
+                 "http://identifiers.org/kegg.compound/C00084"
+  BPG identity "http://identifiers.org/chebi/CHEBI:16001",
+               "http://identifiers.org/kegg.compound/C00236"
+  DHAP identity "http://identifiers.org/chebi/CHEBI:16108",
+                "http://identifiers.org/kegg.compound/C00111"
+  F16bP identity "http://identifiers.org/chebi/CHEBI:28013",
+                 "http://identifiers.org/kegg.compound/C05378"
+  F6P identity "http://identifiers.org/chebi/CHEBI:16084",
+               "http://identifiers.org/kegg.compound/C05345"
+  G1P identity "http://identifiers.org/chebi/CHEBI:16077"
+  G3P identity "http://identifiers.org/chebi/CHEBI:15978",
+               "http://identifiers.org/kegg.compound/C00093"
+  G6P identity "http://identifiers.org/chebi/CHEBI:17665",
+               "http://identifiers.org/kegg.compound/C00668"
+  GAP identity "http://identifiers.org/chebi/CHEBI:29052",
+               "http://identifiers.org/kegg.compound/C00118"
+  GLC identity "http://identifiers.org/chebi/CHEBI:4167",
+               "http://identifiers.org/kegg.compound/C00031"
+  NAD identity "http://identifiers.org/chebi/CHEBI:15846",
+               "http://identifiers.org/kegg.compound/C00003"
+  P2G identity "http://identifiers.org/chebi/CHEBI:17835",
+               "http://identifiers.org/kegg.compound/C00631"
+  P3G identity "http://identifiers.org/chebi/CHEBI:17794",
+               "http://identifiers.org/kegg.compound/C00197"
+  PEP identity "http://identifiers.org/chebi/CHEBI:18021",
+               "http://identifiers.org/kegg.compound/C00074"
+  PYR identity "http://identifiers.org/chebi/CHEBI:15361",
+               "http://identifiers.org/kegg.compound/C00022"
+  T6P identity "http://identifiers.org/chebi/CHEBI:18283"
+  UDP identity "http://identifiers.org/chebi/CHEBI:17659"
+  UTP identity "http://identifiers.org/chebi/CHEBI:46398"
+  AMP identity "http://identifiers.org/chebi/CHEBI:16027",
+               "http://identifiers.org/kegg.compound/C00020"
+  NADH identity "http://identifiers.org/chebi/CHEBI:16908",
+                "http://identifiers.org/kegg.compound/C00004"
+  UDG identity "http://identifiers.org/chebi/CHEBI:18066"
+  ACE identity "http://identifiers.org/chebi/CHEBI:30089"
+  EtOH identity "http://identifiers.org/chebi/CHEBI:16236",
+                "http://identifiers.org/kegg.compound/C00469"
+  F26bP identity "http://identifiers.org/chebi/CHEBI:28602",
+                 "http://identifiers.org/kegg.compound/C00665"
+  GLCx identity "http://identifiers.org/chebi/CHEBI:4167",
+                "http://identifiers.org/kegg.compound/C00031"
+  GLY identity "http://identifiers.org/chebi/CHEBI:17754",
+               "http://identifiers.org/kegg.compound/C00116"
+  SUC identity "http://identifiers.org/chebi/CHEBI:30031",
+               "http://identifiers.org/kegg.compound/C00042"
+  TRH identity "http://identifiers.org/chebi/CHEBI:16551",
+               "http://identifiers.org/kegg.compound/C01083"
+  ADH1 encoder "http://identifiers.org/sgd/S000005446"
+  ADH1 identity "http://identifiers.org/uniprot/P00330"
+  CDC19 encoder "http://identifiers.org/sgd/S000000036"
+  CDC19 identity "http://identifiers.org/uniprot/P00549"
+  ENO1 encoder "http://identifiers.org/sgd/S000003486"
+  ENO1 identity "http://identifiers.org/uniprot/P00924"
+  ENO2 encoder "http://identifiers.org/sgd/S000001217"
+  ENO2 identity "http://identifiers.org/uniprot/P00925"
+  FBA1 encoder "http://identifiers.org/sgd/S000001543"
+  FBA1 identity "http://identifiers.org/uniprot/P14540"
+  GLK1 encoder "http://identifiers.org/sgd/S000000545"
+  GLK1 identity "http://identifiers.org/uniprot/P17709"
+  GPD1 encoder "http://identifiers.org/sgd/S000002180"
+  GPD1 identity "http://identifiers.org/uniprot/A5YWB0"
+  GPD2 encoder "http://identifiers.org/sgd/S000005420"
+  GPD2 identity "http://identifiers.org/uniprot/P41911"
+  GPM1 encoder "http://identifiers.org/sgd/S000001635"
+  GPM1 identity "http://identifiers.org/uniprot/P00950"
+  HOR2 encoder "http://identifiers.org/sgd/S000000864"
+  HOR2 identity "http://identifiers.org/uniprot/P40106"
+  HXK1 encoder "http://identifiers.org/sgd/S000001949"
+  HXK1 identity "http://identifiers.org/uniprot/P04806"
+  HXK2 encoder "http://identifiers.org/sgd/S000003222"
+  HXK2 identity "http://identifiers.org/uniprot/P04807"
+  PDC1 encoder "http://identifiers.org/sgd/S000004034"
+  PDC1 identity "http://identifiers.org/uniprot/P06169"
+  PDC5 encoder "http://identifiers.org/sgd/S000004124"
+  PDC5 identity "http://identifiers.org/uniprot/P16467"
+  PDC6 encoder "http://identifiers.org/sgd/S000003319"
+  PDC6 identity "http://identifiers.org/uniprot/P26263"
+  PFK1 encoder "http://identifiers.org/sgd/S000003472"
+  PFK1 identity "http://identifiers.org/uniprot/P16861"
+  PFK2 encoder "http://identifiers.org/sgd/S000004818"
+  PFK2 identity "http://identifiers.org/uniprot/P16862"
+  PGI1 encoder "http://identifiers.org/sgd/S000000400"
+  PGI1 identity "http://identifiers.org/uniprot/P12709"
+  PGK1 encoder "http://identifiers.org/sgd/S000000605"
+  PGK1 identity "http://identifiers.org/uniprot/P00560"
+  PGM1 identity "http://identifiers.org/uniprot/P33401"
+  PGM1 encoder "http://identifiers.org/sgd/S000001610"
+  PGM2 identity "http://identifiers.org/uniprot/P37012"
+  PGM2 encoder "http://identifiers.org/sgd/S000004711"
+  RHR2 encoder "http://identifiers.org/sgd/S000001315"
+  RHR2 identity "http://identifiers.org/uniprot/P41277"
+  TDH1 encoder "http://identifiers.org/sgd/S000003588"
+  TDH1 identity "http://identifiers.org/uniprot/P00360"
+  TDH3 encoder "http://identifiers.org/sgd/S000003424"
+  TDH3 identity "http://identifiers.org/uniprot/P00359"
+  TPI1 encoder "http://identifiers.org/sgd/S000002457"
+  TPI1 identity "http://identifiers.org/uniprot/P00942"
+  TPS1 identity "http://identifiers.org/uniprot/Q00764"
+  TPS1 encoder "http://identifiers.org/sgd/S000000330"
+  TPS2 identity "http://identifiers.org/uniprot/P31688"
+  TPS2 encoder "http://identifiers.org/sgd/S000002481"
+  UGP1 identity "http://identifiers.org/uniprot/P32861"
+  UGP1 encoder "http://identifiers.org/sgd/S000001518"
+  E4P identity "http://identifiers.org/chebi/CHEBI:16897",
+               "http://identifiers.org/kegg.compound/C00279"
+  G6L identity "http://identifiers.org/chebi/CHEBI:57955",
+               "http://identifiers.org/kegg.compound/C01236"
+  NADPH identity "http://identifiers.org/chebi/CHEBI:57783",
+                 "http://identifiers.org/kegg.compound/C00005"
+  P6G identity "http://identifiers.org/chebi/CHEBI:58759",
+               "http://identifiers.org/kegg.compound/C00345"
+  R5P identity "http://identifiers.org/chebi/CHEBI:18189",
+               "http://identifiers.org/kegg.compound/C03736"
+  Ru5P identity "http://identifiers.org/chebi/CHEBI:58121",
+                "http://identifiers.org/kegg.compound/C00199"
+  S7P identity "http://identifiers.org/chebi/CHEBI:57483",
+               "http://identifiers.org/kegg.compound/C05382"
+  X5P identity "http://identifiers.org/chebi/CHEBI:57737",
+               "http://identifiers.org/kegg.compound/C00231"
+  NADP identity "http://identifiers.org/chebi/CHEBI:58349",
+                "http://identifiers.org/kegg.compound/C00006"
+  GND1 identity "http://identifiers.org/uniprot/P38720"
+  GND1 encoder "http://identifiers.org/sgd/S000001226",
+               "http://identifiers.org/kegg.genes/sce:YHR183W"
+  GND2 identity "http://identifiers.org/uniprot/P53319"
+  GND2 encoder "http://identifiers.org/sgd/S000003488",
+               "http://identifiers.org/kegg.genes/sce:YGR256W"
+  NQM1 identity "http://identifiers.org/uniprot/P53228"
+  NQM1 encoder "http://identifiers.org/sgd/S000003275",
+               "http://identifiers.org/kegg.genes/sce:YGR043C"
+  RKI1 identity "http://identifiers.org/uniprot/Q12189"
+  RKI1 encoder "http://identifiers.org/sgd/S000005621",
+               "http://identifiers.org/kegg.genes/sce:YOR095C"
+  RPE1 identity "http://identifiers.org/uniprot/P46969"
+  RPE1 encoder "http://identifiers.org/sgd/S000003657",
+               "http://identifiers.org/kegg.genes/sce:YJL121C"
+  SOL3 identity "http://identifiers.org/uniprot/P38858"
+  SOL3 encoder "http://identifiers.org/sgd/S000001206",
+               "http://identifiers.org/kegg.genes/sce:YHR163W"
+  TAL1 identity "http://identifiers.org/uniprot/P15019"
+  TAL1 encoder "http://identifiers.org/sgd/S000004346",
+               "http://identifiers.org/kegg.genes/sce:YLR354C"
+  TKL1 identity "http://identifiers.org/uniprot/P23254"
+  TKL1 encoder "http://identifiers.org/sgd/S000006278",
+               "http://identifiers.org/kegg.genes/sce:YPR074C"
+  ZWF1 identity "http://identifiers.org/uniprot/P11412"
+  ZWF1 encoder "http://identifiers.org/sgd/S000005185",
+               "http://identifiers.org/kegg.genes/sce:YNL241C"
+  ADH hypernym "http://identifiers.org/ec-code/1.1.1.1",
+               "http://identifiers.org/go/GO:0004022"
+  ADH identity "http://identifiers.org/kegg.reaction/R00754"
+  AK identity "http://identifiers.org/kegg.reaction/R00127"
+  AK hypernym "http://identifiers.org/ec-code/2.7.4.3",
+              "http://identifiers.org/go/GO:0004017"
+  ATPase hypernym "http://identifiers.org/go/GO:0016887"
+  ENO identity "http://identifiers.org/kegg.reaction/R00658"
+  ENO hypernym "http://identifiers.org/ec-code/4.2.1.11",
+               "http://identifiers.org/go/GO:0004634"
+  FBA identity "http://identifiers.org/kegg.reaction/R01068"
+  FBA hypernym "http://identifiers.org/ec-code/4.1.2.13",
+               "http://identifiers.org/go/GO:0004332"
+  GPD identity "http://identifiers.org/ec-code/1.1.1.94",
+               "http://identifiers.org/kegg.reaction/R00842"
+  GPM hypernym "http://identifiers.org/ec-code/5.4.2.1",
+               "http://identifiers.org/go/GO:0004619"
+  GPM identity "http://identifiers.org/kegg.reaction/R01518"
+  GPP identity "http://identifiers.org/ec-code/3.1.3.21",
+               "http://identifiers.org/kegg.reaction/R00841"
+  HXK identity "http://identifiers.org/kegg.reaction/R02848"
+  HXK hypernym "http://identifiers.org/ec-code/2.7.1.1",
+               "http://identifiers.org/go/GO:0004396"
+  PDC identity "http://identifiers.org/kegg.reaction/R00636"
+  PDC hypernym "http://identifiers.org/ec-code/4.1.1.1",
+               "http://identifiers.org/go/GO:0004737"
+  PFK hypernym "http://identifiers.org/ec-code/2.7.1.11",
+               "http://identifiers.org/go/GO:0003872"
+  PFK identity "http://identifiers.org/kegg.reaction/R00756"
+  PGI identity "http://identifiers.org/kegg.reaction/R00771"
+  PGI hypernym "http://identifiers.org/ec-code/5.3.1.9",
+               "http://identifiers.org/go/GO:0004347"
+  PGK identity "http://identifiers.org/kegg.reaction/R01512"
+  PGK hypernym "http://identifiers.org/ec-code/2.7.2.3",
+               "http://identifiers.org/go/GO:0004618"
+  PGM hypernym "http://identifiers.org/ec-code/5.4.2.2"
+  PYK identity "http://identifiers.org/kegg.reaction/R00200"
+  PYK hypernym "http://identifiers.org/ec-code/2.7.1.40",
+               "http://identifiers.org/go/GO:0004743"
+  TDH identity "http://identifiers.org/kegg.reaction/R01061"
+  TDH hypernym "http://identifiers.org/ec-code/1.2.1.12",
+               "http://identifiers.org/go/GO:0004365"
+  TPI identity "http://identifiers.org/kegg.reaction/R01015"
+  TPI hypernym "http://identifiers.org/ec-code/5.3.1.1",
+               "http://identifiers.org/go/GO:0004807"
+  TPP hypernym "http://identifiers.org/ec-code/3.1.3.12"
+  TPS hypernym "http://identifiers.org/ec-code/2.4.1.15"
+  UGP hypernym "http://identifiers.org/ec-code/2.7.7.9"
+  acetate_branch hypernym "http://identifiers.org/go/GO:0006105"
+  HXT hypernym "http://identifiers.org/go/GO:0015758"
+  GND identity "http://identifiers.org/ec-code/1.1.1.44"
+  RKI identity "http://identifiers.org/ec-code/5.3.1.6"
+  RPE identity "http://identifiers.org/ec-code/5.1.3.1"
+  SOL identity "http://identifiers.org/ec-code/3.1.1.31"
+  TAL identity "http://identifiers.org/ec-code/2.2.1.2"
+  TKL_E4P identity "http://identifiers.org/ec-code/2.2.1.1"
+  TKL_R5P identity "http://identifiers.org/ec-code/2.2.1.1"
+  ZWF identity "http://identifiers.org/ec-code/1.1.1.49"
 end
+
+MODEL1311290001 is "Messiha2013 - combined glycolysis and pentose phosphate pathway model"
+
+MODEL1311290001 model_entity_is "http://identifiers.org/biomodels.db/MODEL1311290001"
+MODEL1311290001 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000503"
+MODEL1311290001 description "http://identifiers.org/doi/10.7287/peerj.preprints.146v2"
+MODEL1311290001 origin "http://identifiers.org/biomodels.db/BIOMD0000000502",
+                       "http://identifiers.org/biomodels.db/MODEL1303260018"
+MODEL1311290001 part "http://identifiers.org/go/GO:0006098",
+                     "http://identifiers.org/go/GO:0006096"
+MODEL1311290001 property "http://identifiers.org/mamo/MAMO_0000046"
+MODEL1311290001 taxon "http://identifiers.org/taxonomy/4932"

@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Atorvastatin_Metabolism()
 
   // Compartments and Species:
@@ -12,12 +12,12 @@ model *Atorvastatin_Metabolism()
   // Reactions:
   Import_AS: AS_m => AS_c; Import_AS_k*AS_m;
   Import_ASL: ASL_m => ASL_c; Import_ASL_k*ASL_m;
-  CYP3A4_ASpOH: AS_c => ASpOH_c; (CYP3A4_ASpOH_Vmax/CYP3A4_ASpOH_Km1*AS_c)/(1 + AS_c/CYP3A4_ASpOH_Km1 + AS_c/CYP3A4_ASoOH_Km1 + ASL_c/CYP3A4_ASLpOH_Km1 + ASL_c/CYP3A4_ASLoOH_Km1);
-  CYP3A4_ASoOH: AS_c => ASoOH_c; (CYP3A4_ASoOH_Vmax/CYP3A4_ASoOH_Km1*AS_c)/(1 + AS_c/CYP3A4_ASpOH_Km1 + AS_c/CYP3A4_ASoOH_Km1 + ASL_c/CYP3A4_ASLpOH_Km1 + ASL_c/CYP3A4_ASLoOH_Km1);
-  CYP3A4_ASLpOH: ASL_c => ASLpOH_c; (CYP3A4_ASLpOH_Vmax/CYP3A4_ASLpOH_Km1*ASL_c)/(1 + AS_c/CYP3A4_ASpOH_Km1 + AS_c/CYP3A4_ASoOH_Km1 + ASL_c/CYP3A4_ASLpOH_Km1 + ASL_c/CYP3A4_ASLoOH_Km1);
-  CYP3A4_ASLoOH: ASL_c => ASLoOH_c; (CYP3A4_ASLoOH_Vmax/CYP3A4_ASLoOH_Km1*ASL_c)/(1 + AS_c/CYP3A4_ASpOH_Km1 + AS_c/CYP3A4_ASoOH_Km1 + ASL_c/CYP3A4_ASLpOH_Km1 + ASL_c/CYP3A4_ASLoOH_Km1);
+  CYP3A4_ASpOH: AS_c => ASpOH_c; (CYP3A4_ASpOH_Vmax/CYP3A4_ASpOH_Km1)*AS_c/(1 + AS_c/CYP3A4_ASpOH_Km1 + AS_c/CYP3A4_ASoOH_Km1 + ASL_c/CYP3A4_ASLpOH_Km1 + ASL_c/CYP3A4_ASLoOH_Km1);
+  CYP3A4_ASoOH: AS_c => ASoOH_c; (CYP3A4_ASoOH_Vmax/CYP3A4_ASoOH_Km1)*AS_c/(1 + AS_c/CYP3A4_ASpOH_Km1 + AS_c/CYP3A4_ASoOH_Km1 + ASL_c/CYP3A4_ASLpOH_Km1 + ASL_c/CYP3A4_ASLoOH_Km1);
+  CYP3A4_ASLpOH: ASL_c => ASLpOH_c; (CYP3A4_ASLpOH_Vmax/CYP3A4_ASLpOH_Km1)*ASL_c/(1 + AS_c/CYP3A4_ASpOH_Km1 + AS_c/CYP3A4_ASoOH_Km1 + ASL_c/CYP3A4_ASLpOH_Km1 + ASL_c/CYP3A4_ASLoOH_Km1);
+  CYP3A4_ASLoOH: ASL_c => ASLoOH_c; (CYP3A4_ASLoOH_Vmax/CYP3A4_ASLoOH_Km1)*ASL_c/(1 + AS_c/CYP3A4_ASpOH_Km1 + AS_c/CYP3A4_ASoOH_Km1 + ASL_c/CYP3A4_ASLpOH_Km1 + ASL_c/CYP3A4_ASLoOH_Km1);
   Export_ASoOH: ASoOH_c => ASoOH_m; Export_ASoOH_k*ASoOH_c;
-  UGT1A3_AS: AS_c => ASL_c; (UGT1A3_AS_Vmax*AS_c)/(UGT1A3_AS_Km1 + AS_c + (AS_c*AS_c)/UGT1A3_AS_KI1);
+  UGT1A3_AS: AS_c => ASL_c; UGT1A3_AS_Vmax*AS_c/(UGT1A3_AS_Km1 + AS_c + AS_c*AS_c/UGT1A3_AS_KI1);
   R_ASASL_c: ASL_c => AS_c; (k_CR_ASL_c + k_PON_ASL_c)*ASL_c;
   CR_oOH: ASLoOH_c => ASoOH_c; (k_CR_ASL_c + k_PON_OH_c)*ASLoOH_c;
   CR_pOH: ASLpOH_c => ASpOH_c; (k_CR_ASL_c + k_PON_OH_c)*ASLpOH_c;
@@ -25,12 +25,12 @@ model *Atorvastatin_Metabolism()
   Export_ASL: ASL_c => ASL_m; Export_ASL_k*ASL_c;
   Import_ASLpOH: ASLpOH_m => ASLpOH_c; Import_ASLpOH_k*ASLpOH_m;
   Import_ASLoOH: ASLoOH_m => ASLoOH_c; Import_ASLoOH_k*ASLoOH_m;
-  ASpOH_Prot: ASpOH_c => ASpOH_b; Prot_k1*((1 - fu_AS)/fu_AS*ASpOH_c - ASpOH_b);
-  ASoOH_Prot: ASoOH_c => ASoOH_b; Prot_k1*((1 - fu_AS)/fu_AS*ASoOH_c - ASoOH_b);
-  ASLpOH_Prot: ASLpOH_c => ASLpOH_b; Prot_k1*((1 - fu_ASL)/fu_ASL*ASLpOH_c - ASLpOH_b);
-  ASLoOH_Prot: ASLoOH_c => ASLoOH_b; Prot_k1*((1 - fu_ASL)/fu_ASL*ASLoOH_c - ASLoOH_b);
-  AS_Prot: AS_c => AS_b; Prot_k1*((1 - fu_AS)/fu_AS*AS_c - AS_b);
-  ASL_Prot: ASL_c => ASL_b; Prot_k1*((1 - fu_ASL)/fu_ASL*ASL_c - ASL_b);
+  ASpOH_Prot: ASpOH_c => ASpOH_b; Prot_k1*(((1 - fu_AS)/fu_AS)*ASpOH_c - ASpOH_b);
+  ASoOH_Prot: ASoOH_c => ASoOH_b; Prot_k1*(((1 - fu_AS)/fu_AS)*ASoOH_c - ASoOH_b);
+  ASLpOH_Prot: ASLpOH_c => ASLpOH_b; Prot_k1*(((1 - fu_ASL)/fu_ASL)*ASLpOH_c - ASLpOH_b);
+  ASLoOH_Prot: ASLoOH_c => ASLoOH_b; Prot_k1*(((1 - fu_ASL)/fu_ASL)*ASLoOH_c - ASLoOH_b);
+  AS_Prot: AS_c => AS_b; Prot_k1*(((1 - fu_AS)/fu_AS)*AS_c - AS_b);
+  ASL_Prot: ASL_c => ASL_b; Prot_k1*(((1 - fu_ASL)/fu_ASL)*ASL_c - ASL_b);
   Import_ASpOH: ASpOH_m => ASpOH_c; Import_ASpOH_k*ASpOH_m;
   R_ASASL_m: ASL_m => AS_m; k_CR_ASL_m*ASL_m;
   R_pOH_m: ASLpOH_m => ASpOH_m; k_CR_ASL_m*ASLpOH_m;
@@ -90,7 +90,7 @@ model *Atorvastatin_Metabolism()
   Export_ASLpOH_k has ml_per_min;
   Export_ASLoOH_k = 0.0026674;
   Export_ASLoOH_k has ml_per_min;
-  k_CR_ASL_c = 3.55e-005;
+  k_CR_ASL_c = 3.55e-05;
   k_CR_ASL_c has ml_per_min;
   k_CR_ASL_m = 0.005;
   k_CR_ASL_m has ml_per_min;
@@ -151,4 +151,122 @@ model *Atorvastatin_Metabolism()
   nM is "pmole per ml";
   pmole_per_min is "pmole per minute";
   ml_per_min is "ml per minute";
+
+  // SBO terms:
+  compartment_.sboTerm = 290
+  medium.sboTerm = 290
+  cell.sboTerm = 290
+  AS_m.sboTerm = 298
+  ASL_m.sboTerm = 298
+  ASoOH_m.sboTerm = 298
+  ASLpOH_m.sboTerm = 298
+  ASpOH_m.sboTerm = 298
+  ASLoOH_m.sboTerm = 298
+  AS_c.sboTerm = 298
+  ASL_c.sboTerm = 298
+  ASpOH_c.sboTerm = 298
+  ASoOH_c.sboTerm = 298
+  ASLpOH_c.sboTerm = 298
+  ASLoOH_c.sboTerm = 298
+  ASpOH_b.sboTerm = 298
+  ASoOH_b.sboTerm = 298
+  ASLpOH_b.sboTerm = 298
+  ASLoOH_b.sboTerm = 298
+  AS_b.sboTerm = 298
+  ASL_b.sboTerm = 298
+  CYP3A4_ASLpOH_Km1.sboTerm = 27
+  CYP3A4_ASLoOH_Km1.sboTerm = 27
+  CYP3A4_ASpOH_Km1.sboTerm = 27
+  CYP3A4_ASoOH_Km1.sboTerm = 27
+  Import_ASLpOH_k.sboTerm = 9
+  Import_ASLoOH_k.sboTerm = 9
+  Import_ASL_k.sboTerm = 9
+  fu_ASL.sboTerm = 540
+  fu_AS.sboTerm = 540
+  Import_ASpOH_k.sboTerm = 9
+  Export_ASLpOH_k.sboTerm = 9
+  Export_ASLoOH_k.sboTerm = 9
+  k_CR_ASL_c.sboTerm = 9
+  k_CR_ASL_m.sboTerm = 9
+  k_PON_OH_c.sboTerm = 9
+  Export_ASoOH_k.sboTerm = 9
+  Prot_k1.sboTerm = 9
+  CYP3A4_ASoOH_Vmax.sboTerm = 186
+  CYP3A4_ASLpOH_Vmax.sboTerm = 186
+  CYP3A4_ASLoOH_Vmax.sboTerm = 186
+  UGT1A3_AS_Vmax.sboTerm = 186
+  UGT1A3_AS_Km1.sboTerm = 27
+  UGT1A3_AS_KI1.sboTerm = 9
+  k_PON_ASL_c.sboTerm = 9
+  Export_AS_k.sboTerm = 9
+  Export_ASL_k.sboTerm = 9
+  Import_AS_k.sboTerm = 9
+  Import_ASoOH_k.sboTerm = 9
+  Export_ASpOH_k.sboTerm = 9
+  CYP3A4_ASpOH_Vmax.sboTerm = 186
+  Import_AS.sboTerm = 185
+  Import_ASL.sboTerm = 185
+  CYP3A4_ASpOH.sboTerm = 176
+  CYP3A4_ASoOH.sboTerm = 176
+  CYP3A4_ASLpOH.sboTerm = 176
+  CYP3A4_ASLoOH.sboTerm = 176
+  Export_ASoOH.sboTerm = 185
+  UGT1A3_AS.sboTerm = 176
+  R_ASASL_c.sboTerm = 176
+  CR_oOH.sboTerm = 176
+  CR_pOH.sboTerm = 176
+  Export_AS.sboTerm = 185
+  Export_ASL.sboTerm = 185
+  Import_ASLpOH.sboTerm = 185
+  Import_ASLoOH.sboTerm = 185
+  ASpOH_Prot.sboTerm = 176
+  ASoOH_Prot.sboTerm = 176
+  ASLpOH_Prot.sboTerm = 176
+  ASLoOH_Prot.sboTerm = 176
+  AS_Prot.sboTerm = 176
+  ASL_Prot.sboTerm = 176
+  Import_ASpOH.sboTerm = 185
+  R_ASASL_m.sboTerm = 176
+  R_pOH_m.sboTerm = 176
+  R_oOH_m.sboTerm = 176
+  Export_ASLpOH.sboTerm = 185
+  Export_ASLoOH.sboTerm = 185
+  Export_ASpOH.sboTerm = 185
+  Import_ASoOH.sboTerm = 185
+
+  // CV terms:
+  medium identity "http://identifiers.org/bto/BTO:0000316"
+  cell identity "http://identifiers.org/go/GO:0005623"
+  AS_m hypernym "http://identifiers.org/chebi/CHEBI:39548",
+                "http://identifiers.org/pubchem.compound/60823"
+  ASL_m hypernym "http://identifiers.org/pubchem.compound/6483036"
+  ASoOH_m version "http://identifiers.org/chebi/CHEBI:39548"
+  ASLpOH_m version "http://identifiers.org/pubchem.compound/6483036"
+  ASpOH_m version "http://identifiers.org/chebi/CHEBI:39548"
+  ASLoOH_m version "http://identifiers.org/pubchem.compound/6483036"
+  AS_c hypernym "http://identifiers.org/chebi/CHEBI:39548"
+  ASL_c hypernym "http://identifiers.org/pubchem.compound/6483036"
+  ASpOH_c version "http://identifiers.org/chebi/CHEBI:39548"
+  ASoOH_c version "http://identifiers.org/chebi/CHEBI:39548"
+  ASLpOH_c version "http://identifiers.org/pubchem.compound/6483036"
+  ASLoOH_c version "http://identifiers.org/pubchem.compound/6483036"
+  ASpOH_b version "http://identifiers.org/chebi/CHEBI:39548"
+  ASoOH_b version "http://identifiers.org/chebi/CHEBI:39548"
+  ASLpOH_b version "http://identifiers.org/pubchem.compound/6483036"
+  ASLoOH_b version "http://identifiers.org/pubchem.compound/6483036"
+  AS_b version "http://identifiers.org/chebi/CHEBI:39548"
+  ASL_b version "http://identifiers.org/pubchem.compound/6483036"
 end
+
+Atorvastatin_Metabolism is "Bucher2011_Atorvastatin_Metabolism"
+
+Atorvastatin_Metabolism model_entity_is "http://identifiers.org/biomodels.db/MODEL1103200000"
+Atorvastatin_Metabolism model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000328"
+Atorvastatin_Metabolism description "http://identifiers.org/pubmed/21548957"
+Atorvastatin_Metabolism property "http://identifiers.org/mamo/MAMO_0000046"
+Atorvastatin_Metabolism container "http://identifiers.org/bto/BTO:0000575"
+Atorvastatin_Metabolism hypernym "http://identifiers.org/go/GO:0036273",
+                                 "http://identifiers.org/go/GO:0006707"
+Atorvastatin_Metabolism taxon "http://identifiers.org/taxonomy/9606"
+Atorvastatin_Metabolism property "http://identifiers.org/doid/DOID:114",
+                                 "http://identifiers.org/doid/DOID:1461"

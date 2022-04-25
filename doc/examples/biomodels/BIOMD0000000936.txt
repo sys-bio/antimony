@@ -1,0 +1,62 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function function_for_cdk1_inactivation_1(CDK1_active, b1, k1, n1)
+  b1*CDK1_active^(n1 + 1)/(k1^n1 + CDK1_active^n1);
+end
+
+function_for_cdk1_inactivation_1 is "function for cdk1 inactivation_1"
+
+
+model *ferrel2011___autonomous_biochemical_oscillator_in_cell_cycle_in_Xenopus_laevis_v2()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species CDK1_active in compartment_;
+
+  // Reactions:
+  R1_Cdk1_activation_by_cyclin_synthesis:  => CDK1_active; compartment_*Constant_flux__irreversible(a1);
+  R2_Cdk1_inactivation_by_APC_active: CDK1_active => ; compartment_*function_for_cdk1_inactivation_1(CDK1_active, b1, k1, n1);
+
+  // Species initializations:
+  CDK1_active = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  a1 = 0.1;
+  b1 = 1;
+  k1 = 0.5;
+  n1 = 8;
+
+  // Other declarations:
+  const compartment_, a1, b1, k1, n1;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  R1_Cdk1_activation_by_cyclin_synthesis is "R1 Cdk1 activation by cyclin synthesis";
+  R2_Cdk1_inactivation_by_APC_active is "R2 Cdk1 inactivation by APC_active";
+
+  // CV terms:
+  CDK1_active hypernym "http://identifiers.org/uniprot/P35567"
+  CDK1_active property "http://identifiers.org/pato/PATO:0002354"
+  R1_Cdk1_activation_by_cyclin_synthesis hypernym "http://identifiers.org/ncit/C64382"
+end
+
+ferrel2011___autonomous_biochemical_oscillator_in_cell_cycle_in_Xenopus_laevis_v2 is "ferrel2011 - autonomous biochemical oscillator in cell cycle in Xenopus laevis v2"
+
+ferrel2011___autonomous_biochemical_oscillator_in_cell_cycle_in_Xenopus_laevis_v2 model_entity_is "http://identifiers.org/biomodels.db/MODEL1809040002",
+                                                                                                  "http://identifiers.org/biomodels.db/BIOMD0000000936"
+ferrel2011___autonomous_biochemical_oscillator_in_cell_cycle_in_Xenopus_laevis_v2 part "http://identifiers.org/go/GO:0051726"
+ferrel2011___autonomous_biochemical_oscillator_in_cell_cycle_in_Xenopus_laevis_v2 taxon "http://identifiers.org/taxonomy/8355"
+ferrel2011___autonomous_biochemical_oscillator_in_cell_cycle_in_Xenopus_laevis_v2 description "http://identifiers.org/pubmed/21414480"
+ferrel2011___autonomous_biochemical_oscillator_in_cell_cycle_in_Xenopus_laevis_v2 property "http://identifiers.org/mamo/MAMO_0000046"

@@ -1,0 +1,105 @@
+// Created by libAntimony v2.13.0
+model *Waugh2006___Diabetic_Wound_Healing___Treated_and_Untreated_Macrophage_Dynamics()
+
+  // Compartments and Species:
+  compartment COMpartment;
+  species $K_T in COMpartment, $T in COMpartment, $phi_I in COMpartment, $phi_R in COMpartment;
+
+  // Assignment Rules:
+  K_T := tau1*T^3 + tau2*T^2 + tau3*T + tau4;
+  total_M := 0*K_T + phi_I + phi_R;
+
+  // Rate Rules:
+  T' = k4*phi_I - d2*T;
+  phi_I' = alpha*K_T + k1*k2*phi_I*(1 - k3*(phi_I + phi_R)) - d1*phi_I;
+  phi_R' = (1 - alpha)*K_T + k1*k2*phi_R*(1 - k3*(phi_I + phi_R)) - d1*phi_R;
+
+  // Events:
+  event_: at time > 22: alpha = 0.2 + 0.6*dummy_variable;
+
+  // Species initializations:
+  T = 6;
+  phi_I = 200;
+  phi_R = 200;
+
+  // Compartment initializations:
+  COMpartment = 1;
+
+  // Variable initializations:
+  tau1 = -2.47;
+  tau1 has unit_0;
+  tau2 = 21.94;
+  tau2 has unit_1;
+  tau3 = 6.41;
+  tau3 has unit_2;
+  tau4 = 1.75;
+  tau4 has unit_3;
+  alpha = 0.8;
+  alpha has unit_4;
+  k1 = 0.05;
+  k1 has unit_4;
+  k2 = 0.693;
+  k2 has unit_5;
+  k3 = 0.002;
+  k3 has unit_6;
+  d1 = 0.2;
+  d1 has unit_5;
+  k4 = 0.07;
+  k4 has unit_7;
+  d2 = 9.1;
+  d2 has unit_5;
+  dummy_variable = 0;
+
+  // Other declarations:
+  var alpha, total_M;
+  const COMpartment, tau1, tau2, tau3, tau4, k1, k2, k3, d1, k4, d2, dummy_variable;
+
+  // Unit definitions:
+  unit time_unit = 86400 second;
+  unit unit_0 = (8.64e-11 metre)^6 / (gram^3 * second);
+  unit unit_1 = (0.0864e-3 metre)^3 / (gram^2 * second);
+  unit unit_2 = 1 / (11.5741e6 gram * second);
+  unit unit_3 = 1 / ((0.0115741 metre)^3 * second);
+  unit unit_4 = 1 / dimensionless^-0;
+  unit unit_5 = 1 / 0.0115741e-3 second;
+  unit unit_6 = (0.001 metre)^3;
+  unit unit_7 = 0.0864 gram / ((0.0864e-6 dimensionless)^-0 * second);
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "8.64e-11*m^6/(g³*s)";
+  unit_1 is "0.0864*mm³/(g²*s)";
+  unit_2 is "1/(11.5741*Mg*s)";
+  unit_3 is "1/(0.0115741*m³*s)";
+  unit_4 is "1";
+  unit_5 is "1/(0.0115741*ms)";
+  unit_6 is "0.001*m³";
+  unit_7 is "0.0864*µg/s";
+  COMpartment is "Wound";
+  event_ is "event";
+
+  // CV terms:
+  COMpartment hypernym "http://identifiers.org/efo/0005756"
+  K_T class "http://identifiers.org/bto/BTO:0000876",
+            "http://identifiers.org/go/GO:0035703"
+  K_T hypernym "http://identifiers.org/bto/BTO:0000876"
+  T hypernym "http://identifiers.org/pr/PR:000000046"
+  phi_I hypernym "http://identifiers.org/bto/BTO:0000801"
+  phi_I hypernym "http://identifiers.org/cl/CL:0000863"
+  k1 encodement "http://identifiers.org/ncit/C16864"
+  k2 encodement "http://identifiers.org/sbo/SBO:0000610"
+  phi_R hypernym "http://identifiers.org/bto/BTO:0000801"
+  phi_R property "http://identifiers.org/ncit/C17260"
+  d1 encodement "http://identifiers.org/sbo/SBO:0000179"
+  d2 encodement "http://identifiers.org/sbo/SBO:0000179"
+end
+
+Waugh2006___Diabetic_Wound_Healing___Treated_and_Untreated_Macrophage_Dynamics is "Waugh2006 - Diabetic Wound Healing - Treated and Untreated Macrophage Dynamics"
+
+Waugh2006___Diabetic_Wound_Healing___Treated_and_Untreated_Macrophage_Dynamics model_entity_is "http://identifiers.org/biomodels.db/MODEL1006230098"
+Waugh2006___Diabetic_Wound_Healing___Treated_and_Untreated_Macrophage_Dynamics description "http://identifiers.org/pubmed/16794927"
+Waugh2006___Diabetic_Wound_Healing___Treated_and_Untreated_Macrophage_Dynamics model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000681"
+Waugh2006___Diabetic_Wound_Healing___Treated_and_Untreated_Macrophage_Dynamics hypernym "http://identifiers.org/go/GO:0061041"
+Waugh2006___Diabetic_Wound_Healing___Treated_and_Untreated_Macrophage_Dynamics property "http://identifiers.org/efo/0000400"
+Waugh2006___Diabetic_Wound_Healing___Treated_and_Untreated_Macrophage_Dynamics taxon "http://identifiers.org/taxonomy/9606"
+Waugh2006___Diabetic_Wound_Healing___Treated_and_Untreated_Macrophage_Dynamics description "http://identifiers.org/pubmed/16794927"

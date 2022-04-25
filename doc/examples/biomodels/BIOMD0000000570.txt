@@ -1,55 +1,81 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 function Constant_flux__irreversible(v)
   v;
 end
 
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
 function v_pump(S_V, k_pump, ATP, NA, Km_pump)
-  (S_V*k_pump*ATP*NA)/(1 + ATP/Km_pump);
+  S_V*k_pump*ATP*NA/(1 + ATP/Km_pump);
 end
+
+v_pump is "v_pump"
 
 function function_1(S_V, gNA, F, RT_F, Na_e, Na, Vm)
   S_V*(gNA/F)*(RT_F*ln(Na_e/Na) - Vm);
 end
 
+function_1 is "v_Leak-Na"
+
 function v_GLC_m(Tmax, GLC_c, Kt_GLC, GLC_i)
   Tmax*(GLC_c/(GLC_c + Kt_GLC) - GLC_i/(GLC_i + Kt_GLC));
 end
 
+v_GLC_m is "v_GLC_m"
+
 function function_2(ATP, GLC_i, Kg, KI_ATP, nH, kHK_PFK)
-  (kHK_PFK*ATP*(GLC_i/(GLC_i + Kg)))/(1 + (ATP/KI_ATP)^nH);
+  kHK_PFK*ATP*(GLC_i/(GLC_i + Kg))/(1 + (ATP/KI_ATP)^nH);
 end
+
+function_2 is "v_HK-PFK"
 
 function v_PGK(kPGK, GAP, ADP, NAD, NADH)
   kPGK*GAP*ADP*(NAD/NADH);
 end
 
+v_PGK is "v_PGK"
+
 function v_LAC_m(Tmax, LAC_i, Kt_LAC, LAC_c)
   Tmax*(LAC_i/(LAC_i + Kt_LAC) - LAC_c/(LAC_c + Kt_LAC));
 end
+
+v_LAC_m is "v_LAC_m"
 
 function v_O2_m(PS_V, KO2, HbOP, O2_c, nh, O2_i)
   PS_V*(KO2*(HbOP/O2_c - 1)^(-1/nh) - O2_i);
 end
 
+v_O2_m is "v_O2_m"
+
 function v_O2_c(F_in, V_cap, O2_a, O2_c)
-  (2*F_in)/V_cap*(O2_a - O2_c);
+  (2*F_in/V_cap)*(O2_a - O2_c);
 end
+
+v_O2_c is "v_O2_c"
 
 function v_GLC_c(F_in, V_cap, GLC_a, GLC_c)
-  (2*F_in)/V_cap*(GLC_a - GLC_c);
+  (2*F_in/V_cap)*(GLC_a - GLC_c);
 end
 
+v_GLC_c is "v_GLC_c"
+
 function v_LAC_c(F_in, V_cap, LAC_a, LAC_c)
-  (2*F_in)/V_cap*(LAC_a - LAC_c);
+  (2*F_in/V_cap)*(LAC_a - LAC_c);
 end
+
+v_LAC_c is "v_LAC_c"
 
 function v_dHb_in(F_in, O2_a, O2_c)
   F_in*2*(O2_a - O2_c);
 end
 
+v_dHb_in is "v_dHb_in"
+
 function v_dHb_out(F_out, dHb, V_v)
-  (F_out*dHb)/V_v;
+  F_out*dHb/V_v;
 end
+
+v_dHb_out is "v_dHb_out"
 
 
 model *Aubert2002()
@@ -69,18 +95,18 @@ model *Aubert2002()
 
   // Assignment Rules:
   parameter_37 := parameter_36 + is_rising*slope_up + is_maximum*maximum + is_falling*slope_down;
-  F_out := (parameter_36*((compartment_4/Compartment_7)^2 + (compartment_4/Compartment_7)^-0.5*35*(1/Compartment_7)*parameter_37))/(1 + parameter_36*(compartment_4/Compartment_7)^-0.5*35*(1/Compartment_7));
+  F_out := parameter_36*((compartment_4/Compartment_7)^2 + (compartment_4/Compartment_7)^-0.5*35*(1/Compartment_7)*parameter_37)/(1 + parameter_36*(compartment_4/Compartment_7)^-0.5*35*(1/Compartment_7));
   species_2 := parameter_7*compartment_1;
   species_3 := parameter_10*compartment_1;
-  parameter_10 := parameter_7/2*(-parameter_11 + (parameter_11^2 + 4*parameter_11*(parameter_12/parameter_7 - 1))^0.5);
+  parameter_10 := (parameter_7/2)*(-parameter_11 + (parameter_11^2 + 4*parameter_11*(parameter_12/parameter_7 - 1))^0.5);
   species_6 := parameter_22*compartment_1;
   parameter_22 := parameter_21 - species_7/compartment_1;
   species_12 := (parameter_31 - species_11/compartment_1)*compartment_1;
-  dAMP_dATP := (-1 + parameter_11/2) - 1/2*(parameter_11^2 + 4*parameter_11*(parameter_12/parameter_7 - 1))^(1/2) + (parameter_11*parameter_12)/(parameter_7*(parameter_11^2 + 4*parameter_11*(parameter_12/parameter_7 - 1))^(1/2));
+  dAMP_dATP := (-1 + parameter_11/2 - (1/2)*(parameter_11^2 + 4*parameter_11*(parameter_12/parameter_7 - 1))^(1/2)) + parameter_11*parameter_12/(parameter_7*(parameter_11^2 + 4*parameter_11*(parameter_12/parameter_7 - 1))^(1/2));
   parameter_13 := parameter_12 - parameter_7 - parameter_10;
-  slope_up := ModelValue_51/ModelValue_52*time;
+  slope_up := (ModelValue_51/ModelValue_52)*time;
   maximum := ModelValue_35*ModelValue_50;
-  slope_down := (maximum*((t_on + t_end) - time))/t_on;
+  slope_down := maximum*(t_on + t_end - time)/t_on;
   v_Mito_H3 := V_max_Mito*(species_8/compartment_1/(Km_Mito + species_8/compartment_1))*(1/(1 + (parameter_7/(parameter_10*KI_Mito))^n_Mito))*(species_13/compartment_1/(K_O2_Mito + species_13/compartment_1));
   rCBF := parameter_37/ModelValue_35;
   rCMRO2 := mitochondrial_respiration/0.0192;
@@ -90,21 +116,21 @@ model *Aubert2002()
 
   // Rate Rules:
   compartment_4' = parameter_37 - F_out;
-  parameter_7' = (((-2*reaction_4 + reaction_5 + reaction_6) - reaction_2 + 15*mitochondrial_respiration + reaction_9) - ATPases)*(1 - dAMP_dATP)^-1;
+  parameter_7' = ((-2*reaction_4 + reaction_5 + reaction_6 - reaction_2) + 15*mitochondrial_respiration + reaction_9 - ATPases)*(1 - dAMP_dATP)^-1;
 
   // Reactions:
-  reaction_4: species_4 + $species_2 => 2species_5 + $species_3; compartment_1*function_2(species_2/compartment_1, species_4/compartment_1, parameter_19, parameter_17, parameter_18, parameter_16);
+  reaction_4: species_4 + $species_2 => 2 species_5 + $species_3; compartment_1*function_2(species_2/compartment_1, species_4/compartment_1, parameter_19, parameter_17, parameter_18, parameter_16);
   reaction_5: species_5 + $species_6 => species_7 + species_9; compartment_1*v_PGK(parameter_20, species_5/compartment_1, species_3/compartment_1, species_6/compartment_1, species_7/compartment_1);
   reaction_6: $species_3 + species_9 => $species_2 + species_8; parameter_23*species_3*(species_9/compartment_1);
-  reaction_2: 3species_1 + $species_2 => $species_3; compartment_1*v_pump(parameter_1, parameter_8, species_2/compartment_1, species_1/compartment_1, parameter_9);
-  mitochondrial_respiration: species_8 + species_7 + 3species_13 => $species_2; compartment_1*Constant_flux__irreversible(v_Mito_H3);
+  reaction_2: 3 species_1 + $species_2 => $species_3; compartment_1*v_pump(parameter_1, parameter_8, species_2/compartment_1, species_1/compartment_1, parameter_9);
+  mitochondrial_respiration: species_8 + species_7 + 3 species_13 => $species_2; compartment_1*Constant_flux__irreversible(v_Mito_H3);
   reaction_9: species_11 + $species_3 -> $species_12 + $species_2; compartment_1*(parameter_29*(species_11/compartment_1)*(species_3/compartment_1) - parameter_30*(species_12/compartment_1)*(species_2/compartment_1));
   ATPases: $species_2 => ; compartment_1*Constant_flux__irreversible(ATPases_v);
   reaction_1:  => species_1; compartment_1*function_1(parameter_1, parameter_2, parameter_3, parameter_4, parameter_6, species_1/compartment_1, parameter_5);
-  reaction_3: 100species_17 => species_4; v_GLC_m(parameter_14, species_17/compartment_3, parameter_15, species_4/compartment_1);
+  reaction_3: 100 species_17 => species_4; v_GLC_m(parameter_14, species_17/compartment_3, parameter_15, species_4/compartment_1);
   reaction_7: species_8 + species_7 -> species_10 + $species_6; compartment_1*(parameter_24*(species_8/compartment_1)*(species_7/compartment_1) - parameter_25*(species_10/compartment_1)*(species_6/compartment_1));
-  reaction_8: species_10 => 100species_18; v_LAC_m(parameter_26, species_10/compartment_1, parameter_27, species_18/compartment_3);
-  reaction_10: 100species_19 => species_13; v_O2_m(parameter_32, parameter_33, parameter_34, species_19/compartment_3, parameter_35, species_13/compartment_1);
+  reaction_8: species_10 => 100 species_18; v_LAC_m(parameter_26, species_10/compartment_1, parameter_27, species_18/compartment_3);
+  reaction_10: 100 species_19 => species_13; v_O2_m(parameter_32, parameter_33, parameter_34, species_19/compartment_3, parameter_35, species_13/compartment_1);
   reaction_11: $species_14 => species_19; v_O2_c(parameter_37, parameter_38, species_14/compartment_2, species_19/compartment_3);
   reaction_12: $species_15 => species_17; v_GLC_c(parameter_37, parameter_38, species_15/compartment_2, species_17/compartment_3);
   reaction_13: $species_16 => species_18; v_LAC_c(parameter_37, parameter_38, species_16/compartment_2, species_18/compartment_3);
@@ -115,7 +141,7 @@ model *Aubert2002()
   // Events:
   from_increase_to_stable: at time == ModelValue_52: is_rising = 0, is_maximum = 1;
   from_stable_to_decrease__end_of_stimulation: at time == ModelValue_53: v_stim_constant = 0, is_falling = 1, is_maximum = 0;
-  from_decrease_to_at_rest: at time == ModelValue_53 + ModelValue_52: is_falling = 0;
+  from_decrease_to_at_rest: at time == (ModelValue_53 + ModelValue_52): is_falling = 0;
 
   // Species initializations:
   species_1 = 15/compartment_1;
@@ -156,7 +182,7 @@ model *Aubert2002()
   parameter_4 = 26.73;
   parameter_5 = -70;
   parameter_6 = 150;
-  parameter_8 = 2.9e-007;
+  parameter_8 = 2.9e-07;
   parameter_9 = 0.5;
   parameter_11 = 0.92;
   parameter_12 = 2.212;
@@ -311,4 +337,38 @@ model *Aubert2002()
   Na__inflow_after_stimulation is "Na+ inflow after stimulation";
   inflow_of_dHb is "inflow of dHb";
   outflow_of_dHb is "outflow of dHb";
+
+  // CV terms:
+  compartment_1 identity "http://identifiers.org/fma/FMA:9637"
+  compartment_2 identity "http://identifiers.org/fma/FMA:63812"
+  compartment_3 identity "http://identifiers.org/fma/FMA:63194"
+  compartment_4 identity "http://identifiers.org/fma/FMA:67319"
+  species_1 identity "http://identifiers.org/chebi/CHEBI:29101"
+  species_2 identity "http://identifiers.org/chebi/CHEBI:15422"
+  species_3 identity "http://identifiers.org/chebi/CHEBI:16761"
+  species_4 identity "http://identifiers.org/chebi/CHEBI:4167"
+  species_5 identity "http://identifiers.org/chebi/CHEBI:29052"
+  species_6 identity "http://identifiers.org/chebi/CHEBI:15846"
+  species_7 identity "http://identifiers.org/chebi/CHEBI:16908"
+  species_8 identity "http://identifiers.org/chebi/CHEBI:15361"
+  species_9 identity "http://identifiers.org/chebi/CHEBI:18021"
+  species_10 identity "http://identifiers.org/chebi/CHEBI:422"
+  species_11 identity "http://identifiers.org/chebi/CHEBI:17287"
+  species_12 identity "http://identifiers.org/chebi/CHEBI:16919"
+  species_13 identity "http://identifiers.org/chebi/CHEBI:15379"
+  species_14 identity "http://identifiers.org/chebi/CHEBI:15379"
+  species_15 identity "http://identifiers.org/chebi/CHEBI:4167"
+  species_16 identity "http://identifiers.org/chebi/CHEBI:422"
+  species_17 identity "http://identifiers.org/chebi/CHEBI:4167"
+  species_18 identity "http://identifiers.org/chebi/CHEBI:422"
+  species_19 identity "http://identifiers.org/chebi/CHEBI:15379"
+  dHb identity "http://identifiers.org/chebi/CHEBI:5656"
 end
+
+Aubert2002 is "Aubert2002 - Coupling between Brain electrical activity, Metabolism and Hemodynamics"
+
+Aubert2002 model_entity_is "http://identifiers.org/biomodels.db/MODEL1503020000"
+Aubert2002 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000570"
+Aubert2002 description "http://identifiers.org/pubmed/12414257"
+Aubert2002 hypernym "http://identifiers.org/go/GO:0006091"
+Aubert2002 taxon "http://identifiers.org/taxonomy/9606"

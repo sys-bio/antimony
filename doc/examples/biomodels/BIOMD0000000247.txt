@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *ralser()
 
   // Compartments and Species:
@@ -17,31 +17,31 @@ model *ralser()
   ratio_NADPH_NADP := NADPH/NADP;
 
   // Reactions:
-  vGLK: GLCi + P -> G6P; cytoplasm*((vGLK_VmGLK*(-((G6P*(SUMAXP - ((SUMAXP^2 - 2*SUMAXP*P + 8*vGLK_KeqAK*SUMAXP*P + P^2) - 4*vGLK_KeqAK*P^2)^0.5))/((1 - 4*vGLK_KeqAK)*vGLK_KeqGLK)) + (GLCi*((-SUMAXP + P) - 4*vGLK_KeqAK*P + ((SUMAXP^2 - 2*SUMAXP*P + 8*vGLK_KeqAK*SUMAXP*P + P^2) - 4*vGLK_KeqAK*P^2)^0.5))/(2 - 8*vGLK_KeqAK)))/(vGLK_KmGLKATP*vGLK_KmGLKGLCi*(1 + G6P/vGLK_KmGLKG6P + GLCi/vGLK_KmGLKGLCi)*(1 + (SUMAXP - ((SUMAXP^2 - 2*SUMAXP*P + 8*vGLK_KeqAK*SUMAXP*P + P^2) - 4*vGLK_KeqAK*P^2)^0.5)/((1 - 4*vGLK_KeqAK)*vGLK_KmGLKADP) + ((-SUMAXP + P) - 4*vGLK_KeqAK*P + ((SUMAXP^2 - 2*SUMAXP*P + 8*vGLK_KeqAK*SUMAXP*P + P^2) - 4*vGLK_KeqAK*P^2)^0.5)/((2 - 8*vGLK_KeqAK)*vGLK_KmGLKATP))));
-  vPGI: G6P -> F6P; cytoplasm*((vPGI_VmPGI/vPGI_KmPGIG6P*(G6P - F6P/vPGI_KeqPGI))/(1 + G6P/vPGI_KmPGIG6P + F6P/vPGI_KmPGIF6P));
-  vPFK: F6P + P -> F16P; cytoplasm*((vPFK_gR*vPFK_VmPFK*F6P*((-SUMAXP + P) - 4*vPFK_KeqAK*P + ((SUMAXP^2 - 2*SUMAXP*P + 8*vPFK_KeqAK*SUMAXP*P + P^2) - 4*vPFK_KeqAK*P^2)^0.5)*(1 + F6P/vPFK_KmPFKF6P + ((-SUMAXP + P) - 4*vPFK_KeqAK*P + ((SUMAXP^2 - 2*SUMAXP*P + 8*vPFK_KeqAK*SUMAXP*P + P^2) - 4*vPFK_KeqAK*P^2)^0.5)/((2 - 8*vPFK_KeqAK)*vPFK_KmPFKATP) + (vPFK_gR*F6P*((-SUMAXP + P) - 4*vPFK_KeqAK*P + ((SUMAXP^2 - 2*SUMAXP*P + 8*vPFK_KeqAK*SUMAXP*P + P^2) - 4*vPFK_KeqAK*P^2)^0.5))/((2 - 8*vPFK_KeqAK)*vPFK_KmPFKATP*vPFK_KmPFKF6P)))/((2 - 8*vPFK_KeqAK)*vPFK_KmPFKATP*vPFK_KmPFKF6P*((vPFK_L0*(1 + (vPFK_CPFKF26BP*F26BP)/vPFK_KPFKF26BP + (vPFK_CPFKF16BP*F16P)/vPFK_KPFKF16BP)^2*(1 + (2*vPFK_CPFKAMP*vPFK_KeqAK*(SUMAXP - ((SUMAXP^2 - 2*SUMAXP*P + 8*vPFK_KeqAK*SUMAXP*P + P^2) - 4*vPFK_KeqAK*P^2)^0.5)^2)/((-1 + 4*vPFK_KeqAK)*vPFK_KPFKAMP*((SUMAXP - P + 4*vPFK_KeqAK*P) - ((SUMAXP^2 - 2*SUMAXP*P + 8*vPFK_KeqAK*SUMAXP*P + P^2) - 4*vPFK_KeqAK*P^2)^0.5)))^2*(1 + (vPFK_CiPFKATP*((-SUMAXP + P) - 4*vPFK_KeqAK*P + ((SUMAXP^2 - 2*SUMAXP*P + 8*vPFK_KeqAK*SUMAXP*P + P^2) - 4*vPFK_KeqAK*P^2)^0.5))/((2 - 8*vPFK_KeqAK)*vPFK_KiPFKATP))^2*(1 + (vPFK_CPFKATP*((-SUMAXP + P) - 4*vPFK_KeqAK*P + ((SUMAXP^2 - 2*SUMAXP*P + 8*vPFK_KeqAK*SUMAXP*P + P^2) - 4*vPFK_KeqAK*P^2)^0.5))/((2 - 8*vPFK_KeqAK)*vPFK_KmPFKATP))^2)/((1 + F26BP/vPFK_KPFKF26BP + F16P/vPFK_KPFKF16BP)^2*(1 + (2*vPFK_KeqAK*(SUMAXP - ((SUMAXP^2 - 2*SUMAXP*P + 8*vPFK_KeqAK*SUMAXP*P + P^2) - 4*vPFK_KeqAK*P^2)^0.5)^2)/((-1 + 4*vPFK_KeqAK)*vPFK_KPFKAMP*((SUMAXP - P + 4*vPFK_KeqAK*P) - ((SUMAXP^2 - 2*SUMAXP*P + 8*vPFK_KeqAK*SUMAXP*P + P^2) - 4*vPFK_KeqAK*P^2)^0.5)))^2*(1 + ((-SUMAXP + P) - 4*vPFK_KeqAK*P + ((SUMAXP^2 - 2*SUMAXP*P + 8*vPFK_KeqAK*SUMAXP*P + P^2) - 4*vPFK_KeqAK*P^2)^0.5)/((2 - 8*vPFK_KeqAK)*vPFK_KiPFKATP))^2) + (1 + F6P/vPFK_KmPFKF6P + ((-SUMAXP + P) - 4*vPFK_KeqAK*P + ((SUMAXP^2 - 2*SUMAXP*P + 8*vPFK_KeqAK*SUMAXP*P + P^2) - 4*vPFK_KeqAK*P^2)^0.5)/((2 - 8*vPFK_KeqAK)*vPFK_KmPFKATP) + (vPFK_gR*F6P*((-SUMAXP + P) - 4*vPFK_KeqAK*P + ((SUMAXP^2 - 2*SUMAXP*P + 8*vPFK_KeqAK*SUMAXP*P + P^2) - 4*vPFK_KeqAK*P^2)^0.5))/((2 - 8*vPFK_KeqAK)*vPFK_KmPFKATP*vPFK_KmPFKF6P))^2)));
-  vALD: F16P -> DHAP + GA3P; cytoplasm*(((vALD_VmALD*F16P)/vALD_KmALDF16P*(1 - (DHAP*GA3P)/(F16P*vALD_KeqALD)))/(1 + F16P/vALD_KmALDF16P + DHAP/vALD_KmALDDHAP + GA3P/vALD_KmALDGAP + (F16P*GA3P)/(vALD_KmALDF16P*vALD_KmALDGAPi) + (DHAP*GA3P)/(vALD_KmALDDHAP*vALD_KmALDGAP)));
-  vG3PDH: DHAP + NADH -> $GLY + NAD; cytoplasm*((vG3PDH_VmG3PDH*(-((GLY*NAD)/vG3PDH_KeqG3PDH) + (NADH*DHAP)/(1 + vG3PDH_KeqTPI)))/(vG3PDH_KmG3PDHDHAP*vG3PDH_KmG3PDHNADH*(1 + NAD/vG3PDH_KmG3PDHNAD + NADH/vG3PDH_KmG3PDHNADH)*(1 + GLY/vG3PDH_KmG3PDHGLY + DHAP/((1 + vG3PDH_KeqTPI)*vG3PDH_KmG3PDHDHAP))));
-  vGAPDH: GA3P + NAD -> BPG + NADH; cytoplasm*(((k_rel_GAPDH*vGAPDH_VmGAPDHf*GA3P*NAD)/(vGAPDH_KmGAPDHGAP*vGAPDH_KmGAPDHNAD)*(1 - (BPG*NADH)/(GA3P*NAD*vGAPDH_KeqGAPDH)))/((1 + GA3P/vGAPDH_KmGAPDHGAP + BPG/vGAPDH_KmGAPDHBPG)*(1 + NAD/vGAPDH_KmGAPDHNAD + NADH/vGAPDH_KmGAPDHNADH)));
-  vPGK: BPG -> P3G + P; cytoplasm*((vPGK_VmPGK*((vPGK_KeqPGK*BPG*(SUMAXP - ((SUMAXP^2 - 2*SUMAXP*P + 8*vPGK_KeqAK*SUMAXP*P + P^2) - 4*vPGK_KeqAK*P^2)^0.5))/(1 - 4*vPGK_KeqAK) - (((-SUMAXP + P) - 4*vPGK_KeqAK*P + ((SUMAXP^2 - 2*SUMAXP*P + 8*vPGK_KeqAK*SUMAXP*P + P^2) - 4*vPGK_KeqAK*P^2)^0.5)*P3G)/(2 - 8*vPGK_KeqAK)))/(vPGK_KmPGKATP*vPGK_KmPGKP3G*(1 + (SUMAXP - ((SUMAXP^2 - 2*SUMAXP*P + 8*vPGK_KeqAK*SUMAXP*P + P^2) - 4*vPGK_KeqAK*P^2)^0.5)/((1 - 4*vPGK_KeqAK)*vPGK_KmPGKADP) + ((-SUMAXP + P) - 4*vPGK_KeqAK*P + ((SUMAXP^2 - 2*SUMAXP*P + 8*vPGK_KeqAK*SUMAXP*P + P^2) - 4*vPGK_KeqAK*P^2)^0.5)/((2 - 8*vPGK_KeqAK)*vPGK_KmPGKATP))*(1 + BPG/vPGK_KmPGKBPG + P3G/vPGK_KmPGKP3G)));
-  vPGM: P3G -> P2G; cytoplasm*((vPGM_VmPGM/vPGM_KmPGMP3G*(P3G - P2G/vPGM_KeqPGM))/(1 + P3G/vPGM_KmPGMP3G + P2G/vPGM_KmPGMP2G));
-  vENO: P2G -> PEP; cytoplasm*((vENO_VmENO/vENO_KmENOP2G*(P2G - PEP/vENO_KeqENO))/(1 + P2G/vENO_KmENOP2G + PEP/vENO_KmENOPEP));
-  vPYK: PEP -> PYR + P; cytoplasm*((vPYK_VmPYK/(vPYK_KmPYKPEP*vPYK_KmPYKADP)*((PEP*(SUMAXP - (P^2 - 4*vPYK_KeqAK*P^2 - 2*P*SUMAXP + 8*vPYK_KeqAK*P*SUMAXP + SUMAXP^2)^0.5))/(1 - 4*vPYK_KeqAK) - (PYR*(P - 4*vPYK_KeqAK*P - SUMAXP + (P^2 - 4*vPYK_KeqAK*P^2 - 2*P*SUMAXP + 8*vPYK_KeqAK*P*SUMAXP + SUMAXP^2)^0.5))/(2 - 8*vPYK_KeqAK)/vPYK_KeqPYK))/((1 + PEP/vPYK_KmPYKPEP + PYR/vPYK_KmPYKPYR)*(1 + (P - 4*vPYK_KeqAK*P - SUMAXP + (P^2 - 4*vPYK_KeqAK*P^2 - 2*P*SUMAXP + 8*vPYK_KeqAK*P*SUMAXP + SUMAXP^2)^0.5)/(2 - 8*vPYK_KeqAK)/vPYK_KmPYKATP + (SUMAXP - (P^2 - 4*vPYK_KeqAK*P^2 - 2*P*SUMAXP + 8*vPYK_KeqAK*P*SUMAXP + SUMAXP^2)^0.5)/(1 - 4*vPYK_KeqAK)/vPYK_KmPYKADP)));
-  vPDC: PYR -> ACE + $CO2; cytoplasm*((vPDC_VmPDC*PYR^vPDC_nPDC)/vPDC_KmPDCPYR^vPDC_nPDC/(1 + PYR^vPDC_nPDC/vPDC_KmPDCPYR^vPDC_nPDC));
-  vSUC: 2ACE + 3NAD -> 3NADH + $SUCC; cytoplasm*vSUC_KSUCC*ACE;
-  vADH: ACE + NADH -> $ETOH + NAD; cytoplasm*-((vADH_VmADH/(vADH_KiADHNAD*vADH_KmADHETOH)*(NAD*ETOH - (NADH*ACE)/vADH_KeqADH))/(1 + NAD/vADH_KiADHNAD + (vADH_KmADHNAD*ETOH)/(vADH_KiADHNAD*vADH_KmADHETOH) + (vADH_KmADHNADH*ACE)/(vADH_KiADHNADH*vADH_KmADHACE) + NADH/vADH_KiADHNADH + (NAD*ETOH)/(vADH_KiADHNAD*vADH_KmADHETOH) + (vADH_KmADHNADH*NAD*ACE)/(vADH_KiADHNAD*vADH_KiADHNADH*vADH_KmADHACE) + (vADH_KmADHNAD*ETOH*NADH)/(vADH_KiADHNAD*vADH_KmADHETOH*vADH_KiADHNADH) + (NADH*ACE)/(vADH_KiADHNADH*vADH_KmADHACE) + (NAD*ETOH*ACE)/(vADH_KiADHNAD*vADH_KmADHETOH*vADH_KiADHACE) + (ETOH*NADH*ACE)/(vADH_KiADHETOH*vADH_KiADHNADH*vADH_KmADHACE)));
-  vATP: P -> $X; cytoplasm*((vATP_KATPASE*(P - 4*vATP_KeqAK*P - SUMAXP + (P^2 - 4*vATP_KeqAK*P^2 - 2*P*SUMAXP + 8*vATP_KeqAK*P*SUMAXP + SUMAXP^2)^0.5))/(2 - 8*vATP_KeqAK));
-  vTPI: GA3P -> DHAP; cytoplasm*((k_rel_TPI*((vTPI_VmDHAP*GA3P)/vTPI_KmGA3P - (vTPI_VmGA3P*DHAP)/vTPI_KmDHAP))/(1 + GA3P/vTPI_KmGA3P + DHAP/vTPI_KmDHAP));
-  vG6PDH: G6P + NADP => D6PGluconoLactone + NADPH; cytoplasm*((vG6PDH_VmG6PDH*G6P*NADP)/(vG6PDH_KmG6P*vG6PDH_KmNADP)/((1 + G6P/vG6PDH_KmG6P + NADPH/vG6PDH_KiNADPH)*(1 + NADP/vG6PDH_KmNADP)));
-  v6PGL: D6PGluconoLactone => D6PGluconate; cytoplasm*((v6PGL_Vm6PGL*D6PGluconoLactone)/(v6PGL_Km6PGL + D6PGluconoLactone));
-  vGluDH: D6PGluconate + NADP => Ribulose5P + NADPH; cytoplasm*((vGluDH_VmGluDH*D6PGluconate*NADP)/(vGluDH_KmGluconate*vGluDH_KmNADP)/((1 + D6PGluconate/vGluDH_KmGluconate + NADPH/vGluDH_KiNADPH)*(1 + NADP/vGluDH_KmNADP)));
-  vPPI: Ribulose5P -> Ribose5P; cytoplasm*(((vPPI_VmPPIf*Ribulose5P)/vPPI_KmRibu5P - (vPPI_VmPPIr*Ribose5P)/vPPI_KmRibo5P)/(1 + Ribulose5P/vPPI_KmRibu5P + Ribose5P/vPPI_KmRibo5P));
-  vTransk1: Ribose5P + Xyl5P -> GA3P + Seduhept7P; cytoplasm*(((vTransk1_VmTransk1f*Ribose5P*Xyl5P)/(vTransk1_KmRibose5P*vTransk1_KmXyl5P) - (vTransk1_VmTransk1r*GA3P*Seduhept7P)/(vTransk1_KmGA3P*vTransk1_KmSeduhept))/((1 + Ribose5P/vTransk1_KmRibose5P + GA3P/vTransk1_KmGA3P)*(1 + Xyl5P/vTransk1_KmXyl5P + Seduhept7P/vTransk1_KmSeduhept)));
-  vR5PI: Ribulose5P -> Xyl5P; cytoplasm*(((vR5PI_VmR5PIf*Ribulose5P)/vR5PI_KmRibu5P - (vR5PI_VmR5PIr*Xyl5P)/vR5PI_KmXyl)/(1 + Ribulose5P/vR5PI_KmRibu5P + Xyl5P/vR5PI_KmXyl));
-  vTransald: Seduhept7P + GA3P -> F6P + Erythrose4P; cytoplasm*(((vTransald_VmTransaldf*GA3P*Seduhept7P)/(vTransald_KmGA3P*vTransald_KmSeduhept) - (vTransald_VmTransaldr*F6P*Erythrose4P)/(vTransald_KmF6P*vTransald_KmEry4P))/((1 + GA3P/vTransald_KmGA3P + F6P/vTransald_KmF6P)*(1 + Seduhept7P/vTransald_KmSeduhept + Erythrose4P/vTransald_KmEry4P)));
-  vTransk2: Xyl5P + Erythrose4P -> GA3P + F6P; cytoplasm*(((vTransk2_VmTransk2f*Erythrose4P*Xyl5P)/(vTransk2_KmEry4P*vTransk2_KmXyl5P) - (vTransk2_VmTransk2r*F6P*GA3P)/(vTransk2_KmF6P*vTransk2_KmGA3P))/((1 + Xyl5P/vTransk2_KmXyl5P + GA3P/vTransk2_KmGA3P)*(1 + Erythrose4P/vTransk2_KmEry4P + F6P/vTransk2_KmF6P)));
+  vGLK: GLCi + P -> G6P; cytoplasm*(vGLK_VmGLK*(-(G6P*(SUMAXP - ((SUMAXP^2 - 2*SUMAXP*P) + 8*vGLK_KeqAK*SUMAXP*P + P^2 - 4*vGLK_KeqAK*P^2)^0.5)/((1 - 4*vGLK_KeqAK)*vGLK_KeqGLK)) + GLCi*((-SUMAXP + P - 4*vGLK_KeqAK*P) + ((SUMAXP^2 - 2*SUMAXP*P) + 8*vGLK_KeqAK*SUMAXP*P + P^2 - 4*vGLK_KeqAK*P^2)^0.5)/(2 - 8*vGLK_KeqAK))/(vGLK_KmGLKATP*vGLK_KmGLKGLCi*(1 + G6P/vGLK_KmGLKG6P + GLCi/vGLK_KmGLKGLCi)*(1 + (SUMAXP - ((SUMAXP^2 - 2*SUMAXP*P) + 8*vGLK_KeqAK*SUMAXP*P + P^2 - 4*vGLK_KeqAK*P^2)^0.5)/((1 - 4*vGLK_KeqAK)*vGLK_KmGLKADP) + ((-SUMAXP + P - 4*vGLK_KeqAK*P) + ((SUMAXP^2 - 2*SUMAXP*P) + 8*vGLK_KeqAK*SUMAXP*P + P^2 - 4*vGLK_KeqAK*P^2)^0.5)/((2 - 8*vGLK_KeqAK)*vGLK_KmGLKATP))));
+  vPGI: G6P -> F6P; cytoplasm*((vPGI_VmPGI/vPGI_KmPGIG6P)*(G6P - F6P/vPGI_KeqPGI)/(1 + G6P/vPGI_KmPGIG6P + F6P/vPGI_KmPGIF6P));
+  vPFK: F6P + P -> F16P; cytoplasm*(vPFK_gR*vPFK_VmPFK*F6P*((-SUMAXP + P - 4*vPFK_KeqAK*P) + ((SUMAXP^2 - 2*SUMAXP*P) + 8*vPFK_KeqAK*SUMAXP*P + P^2 - 4*vPFK_KeqAK*P^2)^0.5)*(1 + F6P/vPFK_KmPFKF6P + ((-SUMAXP + P - 4*vPFK_KeqAK*P) + ((SUMAXP^2 - 2*SUMAXP*P) + 8*vPFK_KeqAK*SUMAXP*P + P^2 - 4*vPFK_KeqAK*P^2)^0.5)/((2 - 8*vPFK_KeqAK)*vPFK_KmPFKATP) + vPFK_gR*F6P*((-SUMAXP + P - 4*vPFK_KeqAK*P) + ((SUMAXP^2 - 2*SUMAXP*P) + 8*vPFK_KeqAK*SUMAXP*P + P^2 - 4*vPFK_KeqAK*P^2)^0.5)/((2 - 8*vPFK_KeqAK)*vPFK_KmPFKATP*vPFK_KmPFKF6P))/((2 - 8*vPFK_KeqAK)*vPFK_KmPFKATP*vPFK_KmPFKF6P*(vPFK_L0*(1 + vPFK_CPFKF26BP*F26BP/vPFK_KPFKF26BP + vPFK_CPFKF16BP*F16P/vPFK_KPFKF16BP)^2*(1 + 2*vPFK_CPFKAMP*vPFK_KeqAK*(SUMAXP - ((SUMAXP^2 - 2*SUMAXP*P) + 8*vPFK_KeqAK*SUMAXP*P + P^2 - 4*vPFK_KeqAK*P^2)^0.5)^2/((-1 + 4*vPFK_KeqAK)*vPFK_KPFKAMP*((SUMAXP - P) + 4*vPFK_KeqAK*P - ((SUMAXP^2 - 2*SUMAXP*P) + 8*vPFK_KeqAK*SUMAXP*P + P^2 - 4*vPFK_KeqAK*P^2)^0.5)))^2*(1 + vPFK_CiPFKATP*((-SUMAXP + P - 4*vPFK_KeqAK*P) + ((SUMAXP^2 - 2*SUMAXP*P) + 8*vPFK_KeqAK*SUMAXP*P + P^2 - 4*vPFK_KeqAK*P^2)^0.5)/((2 - 8*vPFK_KeqAK)*vPFK_KiPFKATP))^2*(1 + vPFK_CPFKATP*((-SUMAXP + P - 4*vPFK_KeqAK*P) + ((SUMAXP^2 - 2*SUMAXP*P) + 8*vPFK_KeqAK*SUMAXP*P + P^2 - 4*vPFK_KeqAK*P^2)^0.5)/((2 - 8*vPFK_KeqAK)*vPFK_KmPFKATP))^2/((1 + F26BP/vPFK_KPFKF26BP + F16P/vPFK_KPFKF16BP)^2*(1 + 2*vPFK_KeqAK*(SUMAXP - ((SUMAXP^2 - 2*SUMAXP*P) + 8*vPFK_KeqAK*SUMAXP*P + P^2 - 4*vPFK_KeqAK*P^2)^0.5)^2/((-1 + 4*vPFK_KeqAK)*vPFK_KPFKAMP*((SUMAXP - P) + 4*vPFK_KeqAK*P - ((SUMAXP^2 - 2*SUMAXP*P) + 8*vPFK_KeqAK*SUMAXP*P + P^2 - 4*vPFK_KeqAK*P^2)^0.5)))^2*(1 + ((-SUMAXP + P - 4*vPFK_KeqAK*P) + ((SUMAXP^2 - 2*SUMAXP*P) + 8*vPFK_KeqAK*SUMAXP*P + P^2 - 4*vPFK_KeqAK*P^2)^0.5)/((2 - 8*vPFK_KeqAK)*vPFK_KiPFKATP))^2) + (1 + F6P/vPFK_KmPFKF6P + ((-SUMAXP + P - 4*vPFK_KeqAK*P) + ((SUMAXP^2 - 2*SUMAXP*P) + 8*vPFK_KeqAK*SUMAXP*P + P^2 - 4*vPFK_KeqAK*P^2)^0.5)/((2 - 8*vPFK_KeqAK)*vPFK_KmPFKATP) + vPFK_gR*F6P*((-SUMAXP + P - 4*vPFK_KeqAK*P) + ((SUMAXP^2 - 2*SUMAXP*P) + 8*vPFK_KeqAK*SUMAXP*P + P^2 - 4*vPFK_KeqAK*P^2)^0.5)/((2 - 8*vPFK_KeqAK)*vPFK_KmPFKATP*vPFK_KmPFKF6P))^2)));
+  vALD: F16P -> DHAP + GA3P; cytoplasm*((vALD_VmALD*F16P/vALD_KmALDF16P)*(1 - DHAP*GA3P/(F16P*vALD_KeqALD))/(1 + F16P/vALD_KmALDF16P + DHAP/vALD_KmALDDHAP + GA3P/vALD_KmALDGAP + F16P*GA3P/(vALD_KmALDF16P*vALD_KmALDGAPi) + DHAP*GA3P/(vALD_KmALDDHAP*vALD_KmALDGAP)));
+  vG3PDH: DHAP + NADH -> $GLY + NAD; cytoplasm*(vG3PDH_VmG3PDH*(-(GLY*NAD/vG3PDH_KeqG3PDH) + NADH*DHAP/(1 + vG3PDH_KeqTPI))/(vG3PDH_KmG3PDHDHAP*vG3PDH_KmG3PDHNADH*(1 + NAD/vG3PDH_KmG3PDHNAD + NADH/vG3PDH_KmG3PDHNADH)*(1 + GLY/vG3PDH_KmG3PDHGLY + DHAP/((1 + vG3PDH_KeqTPI)*vG3PDH_KmG3PDHDHAP))));
+  vGAPDH: GA3P + NAD -> BPG + NADH; cytoplasm*((k_rel_GAPDH*vGAPDH_VmGAPDHf*GA3P*NAD/(vGAPDH_KmGAPDHGAP*vGAPDH_KmGAPDHNAD))*(1 - BPG*NADH/(GA3P*NAD*vGAPDH_KeqGAPDH))/((1 + GA3P/vGAPDH_KmGAPDHGAP + BPG/vGAPDH_KmGAPDHBPG)*(1 + NAD/vGAPDH_KmGAPDHNAD + NADH/vGAPDH_KmGAPDHNADH)));
+  vPGK: BPG -> P3G + P; cytoplasm*(vPGK_VmPGK*(vPGK_KeqPGK*BPG*(SUMAXP - ((SUMAXP^2 - 2*SUMAXP*P) + 8*vPGK_KeqAK*SUMAXP*P + P^2 - 4*vPGK_KeqAK*P^2)^0.5)/(1 - 4*vPGK_KeqAK) - ((-SUMAXP + P - 4*vPGK_KeqAK*P) + ((SUMAXP^2 - 2*SUMAXP*P) + 8*vPGK_KeqAK*SUMAXP*P + P^2 - 4*vPGK_KeqAK*P^2)^0.5)*P3G/(2 - 8*vPGK_KeqAK))/(vPGK_KmPGKATP*vPGK_KmPGKP3G*(1 + (SUMAXP - ((SUMAXP^2 - 2*SUMAXP*P) + 8*vPGK_KeqAK*SUMAXP*P + P^2 - 4*vPGK_KeqAK*P^2)^0.5)/((1 - 4*vPGK_KeqAK)*vPGK_KmPGKADP) + ((-SUMAXP + P - 4*vPGK_KeqAK*P) + ((SUMAXP^2 - 2*SUMAXP*P) + 8*vPGK_KeqAK*SUMAXP*P + P^2 - 4*vPGK_KeqAK*P^2)^0.5)/((2 - 8*vPGK_KeqAK)*vPGK_KmPGKATP))*(1 + BPG/vPGK_KmPGKBPG + P3G/vPGK_KmPGKP3G)));
+  vPGM: P3G -> P2G; cytoplasm*((vPGM_VmPGM/vPGM_KmPGMP3G)*(P3G - P2G/vPGM_KeqPGM)/(1 + P3G/vPGM_KmPGMP3G + P2G/vPGM_KmPGMP2G));
+  vENO: P2G -> PEP; cytoplasm*((vENO_VmENO/vENO_KmENOP2G)*(P2G - PEP/vENO_KeqENO)/(1 + P2G/vENO_KmENOP2G + PEP/vENO_KmENOPEP));
+  vPYK: PEP -> PYR + P; cytoplasm*((vPYK_VmPYK/(vPYK_KmPYKPEP*vPYK_KmPYKADP))*(PEP*(SUMAXP - ((P^2 - 4*vPYK_KeqAK*P^2 - 2*P*SUMAXP) + 8*vPYK_KeqAK*P*SUMAXP + SUMAXP^2)^0.5)/(1 - 4*vPYK_KeqAK) - PYR*((P - 4*vPYK_KeqAK*P - SUMAXP) + ((P^2 - 4*vPYK_KeqAK*P^2 - 2*P*SUMAXP) + 8*vPYK_KeqAK*P*SUMAXP + SUMAXP^2)^0.5)/(2 - 8*vPYK_KeqAK)/vPYK_KeqPYK)/((1 + PEP/vPYK_KmPYKPEP + PYR/vPYK_KmPYKPYR)*(1 + ((P - 4*vPYK_KeqAK*P - SUMAXP) + ((P^2 - 4*vPYK_KeqAK*P^2 - 2*P*SUMAXP) + 8*vPYK_KeqAK*P*SUMAXP + SUMAXP^2)^0.5)/(2 - 8*vPYK_KeqAK)/vPYK_KmPYKATP + (SUMAXP - ((P^2 - 4*vPYK_KeqAK*P^2 - 2*P*SUMAXP) + 8*vPYK_KeqAK*P*SUMAXP + SUMAXP^2)^0.5)/(1 - 4*vPYK_KeqAK)/vPYK_KmPYKADP)));
+  vPDC: PYR -> ACE + $CO2; cytoplasm*(vPDC_VmPDC*PYR^vPDC_nPDC/vPDC_KmPDCPYR^vPDC_nPDC/(1 + PYR^vPDC_nPDC/vPDC_KmPDCPYR^vPDC_nPDC));
+  vSUC: 2 ACE + 3 NAD -> 3 NADH + $SUCC; cytoplasm*vSUC_KSUCC*ACE;
+  vADH: ACE + NADH -> $ETOH + NAD; cytoplasm*-((vADH_VmADH/(vADH_KiADHNAD*vADH_KmADHETOH))*(NAD*ETOH - NADH*ACE/vADH_KeqADH)/(1 + NAD/vADH_KiADHNAD + vADH_KmADHNAD*ETOH/(vADH_KiADHNAD*vADH_KmADHETOH) + vADH_KmADHNADH*ACE/(vADH_KiADHNADH*vADH_KmADHACE) + NADH/vADH_KiADHNADH + NAD*ETOH/(vADH_KiADHNAD*vADH_KmADHETOH) + vADH_KmADHNADH*NAD*ACE/(vADH_KiADHNAD*vADH_KiADHNADH*vADH_KmADHACE) + vADH_KmADHNAD*ETOH*NADH/(vADH_KiADHNAD*vADH_KmADHETOH*vADH_KiADHNADH) + NADH*ACE/(vADH_KiADHNADH*vADH_KmADHACE) + NAD*ETOH*ACE/(vADH_KiADHNAD*vADH_KmADHETOH*vADH_KiADHACE) + ETOH*NADH*ACE/(vADH_KiADHETOH*vADH_KiADHNADH*vADH_KmADHACE)));
+  vATP: P -> $X; cytoplasm*(vATP_KATPASE*((P - 4*vATP_KeqAK*P - SUMAXP) + ((P^2 - 4*vATP_KeqAK*P^2 - 2*P*SUMAXP) + 8*vATP_KeqAK*P*SUMAXP + SUMAXP^2)^0.5)/(2 - 8*vATP_KeqAK));
+  vTPI: GA3P -> DHAP; cytoplasm*(k_rel_TPI*(vTPI_VmDHAP*GA3P/vTPI_KmGA3P - vTPI_VmGA3P*DHAP/vTPI_KmDHAP)/(1 + GA3P/vTPI_KmGA3P + DHAP/vTPI_KmDHAP));
+  vG6PDH: G6P + NADP => D6PGluconoLactone + NADPH; cytoplasm*(vG6PDH_VmG6PDH*G6P*NADP/(vG6PDH_KmG6P*vG6PDH_KmNADP)/((1 + G6P/vG6PDH_KmG6P + NADPH/vG6PDH_KiNADPH)*(1 + NADP/vG6PDH_KmNADP)));
+  v6PGL: D6PGluconoLactone => D6PGluconate; cytoplasm*(v6PGL_Vm6PGL*D6PGluconoLactone/(v6PGL_Km6PGL + D6PGluconoLactone));
+  vGluDH: D6PGluconate + NADP => Ribulose5P + NADPH; cytoplasm*(vGluDH_VmGluDH*D6PGluconate*NADP/(vGluDH_KmGluconate*vGluDH_KmNADP)/((1 + D6PGluconate/vGluDH_KmGluconate + NADPH/vGluDH_KiNADPH)*(1 + NADP/vGluDH_KmNADP)));
+  vPPI: Ribulose5P -> Ribose5P; cytoplasm*((vPPI_VmPPIf*Ribulose5P/vPPI_KmRibu5P - vPPI_VmPPIr*Ribose5P/vPPI_KmRibo5P)/(1 + Ribulose5P/vPPI_KmRibu5P + Ribose5P/vPPI_KmRibo5P));
+  vTransk1: Ribose5P + Xyl5P -> GA3P + Seduhept7P; cytoplasm*((vTransk1_VmTransk1f*Ribose5P*Xyl5P/(vTransk1_KmRibose5P*vTransk1_KmXyl5P) - vTransk1_VmTransk1r*GA3P*Seduhept7P/(vTransk1_KmGA3P*vTransk1_KmSeduhept))/((1 + Ribose5P/vTransk1_KmRibose5P + GA3P/vTransk1_KmGA3P)*(1 + Xyl5P/vTransk1_KmXyl5P + Seduhept7P/vTransk1_KmSeduhept)));
+  vR5PI: Ribulose5P -> Xyl5P; cytoplasm*((vR5PI_VmR5PIf*Ribulose5P/vR5PI_KmRibu5P - vR5PI_VmR5PIr*Xyl5P/vR5PI_KmXyl)/(1 + Ribulose5P/vR5PI_KmRibu5P + Xyl5P/vR5PI_KmXyl));
+  vTransald: Seduhept7P + GA3P -> F6P + Erythrose4P; cytoplasm*((vTransald_VmTransaldf*GA3P*Seduhept7P/(vTransald_KmGA3P*vTransald_KmSeduhept) - vTransald_VmTransaldr*F6P*Erythrose4P/(vTransald_KmF6P*vTransald_KmEry4P))/((1 + GA3P/vTransald_KmGA3P + F6P/vTransald_KmF6P)*(1 + Seduhept7P/vTransald_KmSeduhept + Erythrose4P/vTransald_KmEry4P)));
+  vTransk2: Xyl5P + Erythrose4P -> GA3P + F6P; cytoplasm*((vTransk2_VmTransk2f*Erythrose4P*Xyl5P/(vTransk2_KmEry4P*vTransk2_KmXyl5P) - vTransk2_VmTransk2r*F6P*GA3P/(vTransk2_KmF6P*vTransk2_KmGA3P))/((1 + Xyl5P/vTransk2_KmXyl5P + GA3P/vTransk2_KmGA3P)*(1 + Erythrose4P/vTransk2_KmEry4P + F6P/vTransk2_KmF6P)));
   vNADPH: NADPH => NADP; cytoplasm*vNADPH_kNADPH*NADPH;
-  vGLT: $GLCo -> GLCi; cytoplasm*((vGLT_VmGLT*(GLCo - GLCi/vGLT_KeqGLT))/(vGLT_KmGLTGLCo*(1 + GLCo/vGLT_KmGLTGLCo + GLCi/vGLT_KmGLTGLCi + (0.91*GLCo*GLCi)/(vGLT_KmGLTGLCi*vGLT_KmGLTGLCo))));
+  vGLT: $GLCo -> GLCi; cytoplasm*(vGLT_VmGLT*(GLCo - GLCi/vGLT_KeqGLT)/(vGLT_KmGLTGLCo*(1 + GLCo/vGLT_KmGLTGLCo + GLCi/vGLT_KmGLTGLCi + 0.91*GLCo*GLCi/(vGLT_KmGLTGLCi*vGLT_KmGLTGLCo))));
 
   // Species initializations:
   P = 5;
@@ -241,7 +241,7 @@ model *ralser()
   vADH_KiADHNAD has mM;
   vADH_KmADHETOH = 17;
   vADH_KmADHETOH has mM;
-  vADH_KeqADH = 6.9e-005;
+  vADH_KeqADH = 6.9e-05;
   vADH_KeqADH has dimensionless;
   vADH_KmADHNAD = 0.17;
   vADH_KmADHNAD has mM;
@@ -406,4 +406,195 @@ model *ralser()
   vADH is "Alcohol dehydrogenase";
   vATP is "ATPase activity";
   vGLT is "Glucose transport";
+
+  // SBO terms:
+  extracellular.sboTerm = 290
+  P.sboTerm = 247
+  G6P.sboTerm = 247
+  F6P.sboTerm = 247
+  F16P.sboTerm = 247
+  NADH.sboTerm = 247
+  NAD.sboTerm = 247
+  BPG.sboTerm = 247
+  P3G.sboTerm = 247
+  P2G.sboTerm = 247
+  PEP.sboTerm = 247
+  PYR.sboTerm = 247
+  ACE.sboTerm = 247
+  CO2.sboTerm = 247
+  ETOH.sboTerm = 247
+  SUCC.sboTerm = 247
+  X.sboTerm = 291
+  GA3P.sboTerm = 247
+  DHAP.sboTerm = 247
+  GLY.sboTerm = 247
+  D6PGluconoLactone.sboTerm = 247
+  D6PGluconate.sboTerm = 247
+  NADP.sboTerm = 247
+  NADPH.sboTerm = 247
+  Ribulose5P.sboTerm = 247
+  Ribose5P.sboTerm = 247
+  Xyl5P.sboTerm = 247
+  Seduhept7P.sboTerm = 247
+  Erythrose4P.sboTerm = 247
+  GLCo.sboTerm = 247
+  GLCi.sboTerm = 247
+  F26BP.sboTerm = 247
+  vGLK.sboTerm = 216
+  vPGI.sboTerm = 377
+  vPFK.sboTerm = 216
+  vALD.sboTerm = 182
+  vG3PDH.sboTerm = 200
+  vGAPDH.sboTerm = 200
+  vPGK.sboTerm = 216
+  vPGM.sboTerm = 377
+  vENO.sboTerm = 211
+  vPYK.sboTerm = 216
+  vPDC.sboTerm = 399
+  vSUC.sboTerm = 205
+  vADH.sboTerm = 200
+  vATP.sboTerm = 376
+  vTPI.sboTerm = 377
+  vG6PDH.sboTerm = 200
+  v6PGL.sboTerm = 376
+  vGluDH.sboTerm = 200
+  vPPI.sboTerm = 377
+  vTransk1.sboTerm = 182
+  vR5PI.sboTerm = 377
+  vTransald.sboTerm = 182
+  vTransk2.sboTerm = 182
+  vNADPH.sboTerm = 201
+  vGLT.sboTerm = 185
+
+  // CV terms:
+  extracellular identity "http://identifiers.org/go/GO:0005576"
+  cytoplasm identity "http://identifiers.org/go/GO:0005829"
+  P part "http://identifiers.org/kegg.compound/C00008",
+         "http://identifiers.org/kegg.compound/C00002",
+         "http://identifiers.org/chebi/CHEBI:16761"
+  P part "http://identifiers.org/chebi/CHEBI:16761",
+         "http://identifiers.org/chebi/CHEBI:15422"
+  G6P identity "http://identifiers.org/chebi/CHEBI:17665",
+               "http://identifiers.org/kegg.compound/C00668"
+  F6P identity "http://identifiers.org/chebi/CHEBI:15946",
+               "http://identifiers.org/kegg.compound/C05345"
+  F16P identity "http://identifiers.org/chebi/CHEBI:16905",
+                "http://identifiers.org/kegg.compound/C00354"
+  NADH identity "http://identifiers.org/chebi/CHEBI:16908",
+                "http://identifiers.org/kegg.compound/C00004"
+  NAD identity "http://identifiers.org/chebi/CHEBI:15846",
+               "http://identifiers.org/kegg.compound/C00003"
+  BPG identity "http://identifiers.org/chebi/CHEBI:16001",
+               "http://identifiers.org/kegg.compound/C00236"
+  P3G identity "http://identifiers.org/chebi/CHEBI:17794",
+               "http://identifiers.org/kegg.compound/C00197"
+  P2G identity "http://identifiers.org/chebi/CHEBI:17835",
+               "http://identifiers.org/kegg.compound/C00631"
+  PEP identity "http://identifiers.org/chebi/CHEBI:18021",
+               "http://identifiers.org/kegg.compound/C00074"
+  PYR identity "http://identifiers.org/chebi/CHEBI:15361",
+               "http://identifiers.org/kegg.compound/C00022"
+  ACE identity "http://identifiers.org/chebi/CHEBI:15343",
+               "http://identifiers.org/kegg.compound/C00084"
+  CO2 identity "http://identifiers.org/chebi/CHEBI:16526",
+               "http://identifiers.org/kegg.compound/C00011"
+  ETOH identity "http://identifiers.org/chebi/CHEBI:16236",
+                "http://identifiers.org/kegg.compound/C00469"
+  SUCC identity "http://identifiers.org/chebi/CHEBI:30031"
+  GA3P identity "http://identifiers.org/chebi/CHEBI:17138"
+  DHAP identity "http://identifiers.org/chebi/CHEBI:16108"
+  GLY identity "http://identifiers.org/chebi/CHEBI:17754",
+               "http://identifiers.org/kegg.compound/C00116"
+  D6PGluconoLactone identity "http://identifiers.org/chebi/CHEBI:16938"
+  D6PGluconate identity "http://identifiers.org/chebi/CHEBI:16863"
+  NADP identity "http://identifiers.org/chebi/CHEBI:18009"
+  NADPH identity "http://identifiers.org/chebi/CHEBI:16474"
+  Ribulose5P identity "http://identifiers.org/chebi/CHEBI:17363"
+  Ribose5P identity "http://identifiers.org/chebi/CHEBI:17797"
+  Xyl5P identity "http://identifiers.org/chebi/CHEBI:16332"
+  Seduhept7P identity "http://identifiers.org/chebi/CHEBI:15721"
+  Erythrose4P identity "http://identifiers.org/chebi/CHEBI:48153"
+  GLCo identity "http://identifiers.org/chebi/CHEBI:17234",
+                "http://identifiers.org/kegg.compound/C00293"
+  GLCi identity "http://identifiers.org/chebi/CHEBI:17234",
+                "http://identifiers.org/kegg.compound/C00293"
+  F26BP identity "http://identifiers.org/chebi/CHEBI:28602",
+                 "http://identifiers.org/kegg.compound/C00665"
+  SUMAXP part "http://identifiers.org/kegg.compound/C00020",
+              "http://identifiers.org/kegg.compound/C00008",
+              "http://identifiers.org/kegg.compound/C00002"
+  SUMAXP part "http://identifiers.org/chebi/CHEBI:16027",
+              "http://identifiers.org/chebi/CHEBI:16761",
+              "http://identifiers.org/chebi/CHEBI:15422"
+  vGLK homolog "http://identifiers.org/reactome/REACT_1318"
+  vGLK identity "http://identifiers.org/ec-code/2.7.1.2",
+                "http://identifiers.org/kegg.reaction/R00299"
+  vPGI homolog "http://identifiers.org/reactome/REACT_116"
+  vPGI identity "http://identifiers.org/ec-code/5.3.1.9",
+                "http://identifiers.org/kegg.reaction/R00771"
+  vPFK homolog "http://identifiers.org/reactome/REACT_736"
+  vPFK identity "http://identifiers.org/ec-code/2.7.1.11",
+                "http://identifiers.org/kegg.reaction/R00756"
+  vALD homolog "http://identifiers.org/reactome/REACT_1602"
+  vALD identity "http://identifiers.org/ec-code/4.1.2.13",
+                "http://identifiers.org/kegg.reaction/R01070"
+  vG3PDH hypernym "http://identifiers.org/ec-code/1.1.1.8"
+  vGAPDH homolog "http://identifiers.org/reactome/REACT_1847"
+  vGAPDH identity "http://identifiers.org/ec-code/1.2.1.12",
+                  "http://identifiers.org/kegg.reaction/R01061"
+  vPGK homolog "http://identifiers.org/reactome/REACT_1771"
+  vPGK identity "http://identifiers.org/ec-code/2.7.2.3",
+                "http://identifiers.org/kegg.reaction/R01512"
+  vPGM homolog "http://identifiers.org/reactome/REACT_576"
+  vPGM identity "http://identifiers.org/ec-code/5.4.2.1",
+                "http://identifiers.org/kegg.reaction/R01518"
+  vENO homolog "http://identifiers.org/reactome/REACT_1400"
+  vENO identity "http://identifiers.org/ec-code/4.2.1.11",
+                "http://identifiers.org/kegg.reaction/R00658"
+  vPYK homolog "http://identifiers.org/reactome/REACT_1911"
+  vPYK identity "http://identifiers.org/ec-code/2.7.1.40",
+                "http://identifiers.org/kegg.reaction/R00200"
+  vPDC identity "http://identifiers.org/ec-code/4.1.1.1",
+                "http://identifiers.org/kegg.reaction/R00224"
+  vSUC hypernym "http://identifiers.org/go/GO:0006105"
+  vADH homolog "http://identifiers.org/reactome/REACT_799"
+  vADH hypernym "http://identifiers.org/ec-code/1.1.1.2",
+                "http://identifiers.org/kegg.reaction/R00746"
+  vATP hypernym "http://identifiers.org/ec-code/3.6.1.3",
+                "http://identifiers.org/go/GO:0016887"
+  vTPI hypernym "http://identifiers.org/kegg.reaction/R01015"
+  vTPI hypernym "http://identifiers.org/go/GO:0004807"
+  vTPI hypernym "http://identifiers.org/ec-code/5.3.1.1"
+  vG6PDH hypernym "http://identifiers.org/kegg.reaction/R00835"
+  vG6PDH hypernym "http://identifiers.org/ec-code/1.1.1.49"
+  vG6PDH hypernym "http://identifiers.org/go/GO:0004345"
+  v6PGL hypernym "http://identifiers.org/go/GO:0017057"
+  v6PGL hypernym "http://identifiers.org/kegg.reaction/R02035"
+  vGluDH hypernym "http://identifiers.org/kegg.reaction/R01528"
+  vGluDH hypernym "http://identifiers.org/go/GO:0004616"
+  vPPI hypernym "http://identifiers.org/kegg.reaction/R01056"
+  vPPI hypernym "http://identifiers.org/go/GO:0004751"
+  vTransk1 hypernym "http://identifiers.org/go/GO:0004802"
+  vTransk1 hypernym "http://identifiers.org/kegg.reaction/R01641"
+  vTransald hypernym "http://identifiers.org/go/GO:0004801"
+  vTransald hypernym "http://identifiers.org/kegg.reaction/R01827"
+  vTransk2 hypernym "http://identifiers.org/kegg.reaction/R01830"
+  vTransk2 hypernym "http://identifiers.org/go/GO:0004802"
+  vNADPH hypernym "http://identifiers.org/go/GO:0070995"
+  vGLT hypernym "http://identifiers.org/go/GO:0046323"
+  vGLT homolog "http://identifiers.org/reactome/REACT_2092"
 end
+
+ralser is "Ralser2007_Carbohydrate_Rerouting_ROS"
+
+ralser model_entity_is "http://identifiers.org/biomodels.db/MODEL1003300000"
+ralser model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000247"
+ralser description "http://identifiers.org/pubmed/18154684"
+ralser origin "http://identifiers.org/biomodels.db/BIOMD0000000064"
+ralser version "http://identifiers.org/kegg.pathway/sce00030",
+               "http://identifiers.org/kegg.pathway/sce00010"
+ralser version "http://identifiers.org/go/GO:0006098",
+               "http://identifiers.org/go/GO:0006096",
+               "http://identifiers.org/go/GO:0006739"
+ralser hypernym "http://identifiers.org/go/GO:0034599"
+ralser taxon "http://identifiers.org/taxonomy/4932"

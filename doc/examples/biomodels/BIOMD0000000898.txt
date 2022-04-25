@@ -1,0 +1,131 @@
+// Created by libAntimony v2.13.0
+function Function_for_LSC_Differentiation(p_30, v_30, L)
+  (1 - p_30)*v_30*L;
+end
+
+Function_for_LSC_Differentiation is "Function_for_LSC_Differentiation"
+
+function Function_for_PC_Differentiation(p_2_D, v_2_D, A)
+  (1 - p_2_D)*v_2_D*A;
+end
+
+Function_for_PC_Differentiation is "Function_for_PC_Differentiation"
+
+function Function_for_HSC_Self_Renewal(p_1_D, K_1, Z_1, v_1_D, S)
+  p_1_D*(K_1 - Z_1)*v_1_D*S;
+end
+
+Function_for_HSC_Self_Renewal is "Function_for_HSC_Self_Renewal"
+
+function Function_for_HSC_Differentiation(p_1_D, v_1_D, S)
+  (1 - p_1_D)*v_1_D*S;
+end
+
+Function_for_HSC_Differentiation is "Function_for_HSC_Differentiation"
+
+function Function_for_PC_Self_Renewal(p_2_D, K_2, Z_2, v_2_D, A)
+  p_2_D*(K_2 - Z_2)*v_2_D*A;
+end
+
+Function_for_PC_Self_Renewal is "Function_for_PC_Self_Renewal"
+
+function Function_for_LSC_Self_Renewal(p_30, K_2, Z_2, v_30, L)
+  p_30*(K_2 - Z_2)*v_30*L;
+end
+
+Function_for_LSC_Self_Renewal is "Function_for_LSC_Self_Renewal"
+
+
+model *Jiao2018___Feedback_regulation_in_a_stem_cell_model_with_acute_myeloid_leukaemia()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species S_HSC in compartment_, A_PC in compartment_, D_TDSC in compartment_;
+  species L_LSC in compartment_, T_TDLC in compartment_;
+
+  // Assignment Rules:
+  p_1_D := p_10/(1 + g_1*D_TDSC^n);
+  p_2_D := p_20/(1 + g_2*D_TDSC^n);
+  v_1_D := v_10/(1 + h_1*D_TDSC^n);
+  v_2_D := v_20/(1 + h_2*D_TDSC^n);
+  Z_1 := S_HSC;
+  Z_2 := A_PC + L_LSC;
+
+  // Reactions:
+  HSC_Self_Renewal:  => S_HSC; compartment_*Function_for_HSC_Self_Renewal(p_1_D, K_1, Z_1, v_1_D, S_HSC);
+  HSC_Differentiation: S_HSC => 2 A_PC; compartment_*Function_for_HSC_Differentiation(p_1_D, v_1_D, S_HSC);
+  PC_Self_Renewal:  => A_PC; compartment_*Function_for_PC_Self_Renewal(p_2_D, K_2, Z_2, v_2_D, A_PC);
+  PC_Differentiation: A_PC => 2 D_TDSC; compartment_*Function_for_PC_Differentiation(p_2_D, v_2_D, A_PC);
+  TDC_Apoptosis: D_TDSC => ; compartment_*d_1*D_TDSC;
+  LSC_Self_Renewal:  => L_LSC; compartment_*Function_for_LSC_Self_Renewal(p_30, K_2, Z_2, v_30, L_LSC);
+  LSC_Differentiation: L_LSC => 2 T_TDLC; compartment_*Function_for_LSC_Differentiation(p_30, v_30, L_LSC);
+  TDL_Apoptosis: T_TDLC => ; compartment_*d_2*T_TDLC;
+
+  // Species initializations:
+  S_HSC = 10;
+  A_PC = 0;
+  D_TDSC = 0;
+  L_LSC = 10;
+  T_TDLC = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  p_10 = 0.45;
+  p_20 = 0.68;
+  p_30 = 0.8;
+  v_10 = 0.5;
+  v_20 = 0.72;
+  v_30 = 0.7;
+  d_1 = 0.275;
+  d_2 = 0.3;
+  g_1 = 0.03;
+  g_2 = 0.025;
+  h_1 = 0.2;
+  h_2 = 0.11;
+  m = 1;
+  n = 1;
+  K_1 = 1;
+  K_2 = 1;
+
+  // Other declarations:
+  var p_1_D, p_2_D, v_1_D, v_2_D, Z_1, Z_2;
+  const compartment_, p_10, p_20, p_30, v_10, v_20, v_30, d_1, d_2, g_1, g_2;
+  const h_1, h_2, m, n, K_1, K_2;
+
+  // Unit definitions:
+  unit substance = item;
+
+  // Display Names:
+  compartment_ is "compartment";
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/ncit/C12431"
+  S_HSC identity "http://identifiers.org/ncit/C12551"
+  A_PC hypernym "http://identifiers.org/ncit/C12662"
+  D_TDSC hypernym "http://identifiers.org/ncit/C12551"
+  D_TDSC property "http://identifiers.org/efo/EFO:0002954"
+  L_LSC identity "http://identifiers.org/ncit/C41069"
+  T_TDLC property "http://identifiers.org/efo/EFO:0002954"
+  T_TDLC propertyBearer "http://identifiers.org/ncit/C41069"
+  HSC_Self_Renewal hypernym "http://identifiers.org/ncit/C18081"
+  HSC_Differentiation hypernym "http://identifiers.org/ncit/C19045"
+  PC_Self_Renewal hypernym "http://identifiers.org/ncit/C18081"
+  PC_Differentiation hypernym "http://identifiers.org/ncit/C19045"
+  TDC_Apoptosis identity "http://identifiers.org/ncit/C17557"
+  LSC_Self_Renewal hypernym "http://identifiers.org/ncit/C18081"
+  LSC_Differentiation hypernym "http://identifiers.org/ncit/C19045"
+  TDL_Apoptosis identity "http://identifiers.org/ncit/C17557"
+end
+
+Jiao2018___Feedback_regulation_in_a_stem_cell_model_with_acute_myeloid_leukaemia is "Jiao2018 - Feedback regulation in a stem cell model with acute myeloid leukaemia"
+
+Jiao2018___Feedback_regulation_in_a_stem_cell_model_with_acute_myeloid_leukaemia description "http://identifiers.org/pubmed/29745850"
+Jiao2018___Feedback_regulation_in_a_stem_cell_model_with_acute_myeloid_leukaemia model_entity_is "http://identifiers.org/biomodels.db/MODEL1912170002",
+                                                                                                 "http://identifiers.org/biomodels.db/BIOMD0000000898"
+Jiao2018___Feedback_regulation_in_a_stem_cell_model_with_acute_myeloid_leukaemia property "http://identifiers.org/ncit/C82652"
+Jiao2018___Feedback_regulation_in_a_stem_cell_model_with_acute_myeloid_leukaemia property "http://identifiers.org/ncit/C3171"
+Jiao2018___Feedback_regulation_in_a_stem_cell_model_with_acute_myeloid_leukaemia property "http://identifiers.org/ncit/C12551"
+Jiao2018___Feedback_regulation_in_a_stem_cell_model_with_acute_myeloid_leukaemia property "http://identifiers.org/mamo/MAMO_0000046"
+Jiao2018___Feedback_regulation_in_a_stem_cell_model_with_acute_myeloid_leukaemia taxon "http://identifiers.org/taxonomy/9606"

@@ -1,0 +1,129 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function Function_for_Reaction_1(r_a, S_a, M_a, m_a)
+  r_a*S_a*(1 - S_a/M_a)*(S_a/m_a - 1);
+end
+
+Function_for_Reaction_1 is "Function for Reaction 1"
+
+function Function_for_Reaction_2(beta_a, S_a, I_a)
+  beta_a*S_a*I_a;
+end
+
+Function_for_Reaction_2 is "Function for Reaction 2 [1]"
+
+function Function_for_Reaction_6(beta_h, I_a, S_h)
+  beta_h*I_a*S_h;
+end
+
+Function_for_Reaction_6 is "Function for Reaction 6 [2]"
+
+
+model *Liu2017___Dynamics_of_Avian_Influenza_with_Allee_Growth_Effect()
+
+  // Compartments and Species:
+  compartment compartment_, Avian_population;
+  species S_a in Avian_population, I_a in Avian_population, S_h in compartment_;
+  species I_h in compartment_, R_h in compartment_;
+
+  // Reactions:
+  reaction_1:  => S_a; Avian_population*Function_for_Reaction_1(r_a, S_a, M_a, m_a);
+  reaction_2: S_a => I_a; Avian_population*Function_for_Reaction_2(beta_a, S_a, I_a);
+  reaction_3: I_a => ; Avian_population*mu_a*I_a;
+  reaction_4: I_a => ; Avian_population*delta_a*I_a;
+  reaction_5:  => S_h; compartment_*Constant_flux__irreversible(pi_h);
+  reaction_6: S_h => I_h; Function_for_Reaction_6(beta_h, I_a, S_h);
+  reaction_7: S_h => ; compartment_*mu_h*S_h;
+  reaction_8: I_h => ; compartment_*mu_h*I_h;
+  reaction_9: I_h => ; compartment_*delta_h*I_h;
+  reaction_10: I_h => R_h; compartment_*gamma_*I_h;
+  reaction_11: R_h => ; compartment_*mu_h*R_h;
+
+  // Species initializations:
+  S_a = 100000;
+  I_a = 1000;
+  S_h = 1000000;
+  I_h = 0;
+  R_h = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+  Avian_population = 1;
+
+  // Variable initializations:
+  r_a = 0.005;
+  K_a = 50000;
+  beta_a = 1.8e-08;
+  mu_a = 0.00034246;
+  delta_a = 0.0004;
+  pi_h = 30;
+  beta_h = 6e-09;
+  mu_h = 3.91e-05;
+  gamma_ = 0.1;
+  delta_h = 0.3445;
+  M_a = 50000;
+  m_a = 800;
+
+  // Other declarations:
+  const compartment_, Avian_population, r_a, K_a, beta_a, mu_a, delta_a, pi_h;
+  const beta_h, mu_h, gamma_, delta_h, M_a, m_a;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "Human Population";
+  Avian_population is "Avian population";
+  S_a is "Susceptible Avian (S_a)";
+  I_a is "Infected Avian (I_a)";
+  S_h is "Susceptible Human (S_h)";
+  I_h is "Infected Human (I_h)";
+  R_h is "Recovered Human (R_h)";
+  gamma_ is "gamma";
+  reaction_1 is "Allee effect growth of Susceptible Avian";
+  reaction_2 is "Infection of Susceptible Avian";
+  reaction_3 is "Natural death of Infected Avian";
+  reaction_4 is "Disease related death of Infected Avian";
+  reaction_5 is "Population growth of Susceptible Human";
+  reaction_6 is "Infection of Susceptible Human";
+  reaction_7 is "Natural death of susceptible Human";
+  reaction_8 is "Natural death of Infected Human";
+  reaction_9 is "Disease related death of Infected human";
+  reaction_10 is "Recovery of infected human";
+  reaction_11 is "Natural death of recovered human";
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/obi/OBI:0000181"
+  compartment_ taxon "http://identifiers.org/taxonomy/9606"
+  Avian_population identity "http://identifiers.org/obi/OBI:0000181"
+  Avian_population taxon "http://identifiers.org/taxonomy/8782"
+  S_a hypernym "http://identifiers.org/ido/0000514"
+  S_a taxon "http://identifiers.org/taxonomy/8782"
+  I_a hypernym "http://identifiers.org/ido/0000511"
+  I_a taxon "http://identifiers.org/taxonomy/8782"
+  S_h hypernym "http://identifiers.org/ido/0000514"
+  S_h taxon "http://identifiers.org/taxonomy/9606"
+  I_h hypernym "http://identifiers.org/ido/0000511"
+  I_h taxon "http://identifiers.org/taxonomy/9606"
+  R_h property "http://identifiers.org/ncit/C49498"
+  R_h taxon "http://identifiers.org/taxonomy/9606"
+  reaction_2 hypernym "http://identifiers.org/ncit/C128320"
+  reaction_6 hypernym "http://identifiers.org/ncit/C128320"
+end
+
+Liu2017___Dynamics_of_Avian_Influenza_with_Allee_Growth_Effect is "Liu2017 - Dynamics of Avian Influenza with Allee Growth Effect"
+
+Liu2017___Dynamics_of_Avian_Influenza_with_Allee_Growth_Effect model_entity_is "http://identifiers.org/biomodels.db/MODEL1808240003",
+                                                                               "http://identifiers.org/biomodels.db/BIOMD0000000709"
+Liu2017___Dynamics_of_Avian_Influenza_with_Allee_Growth_Effect property "http://identifiers.org/mamo/MAMO_0000046"
+Liu2017___Dynamics_of_Avian_Influenza_with_Allee_Growth_Effect property "http://identifiers.org/efo/0005222"
+Liu2017___Dynamics_of_Avian_Influenza_with_Allee_Growth_Effect taxon "http://identifiers.org/taxonomy/8782"
+Liu2017___Dynamics_of_Avian_Influenza_with_Allee_Growth_Effect taxon "http://identifiers.org/taxonomy/9606"
+Liu2017___Dynamics_of_Avian_Influenza_with_Allee_Growth_Effect description "http://identifiers.org/pubmed/27887851"

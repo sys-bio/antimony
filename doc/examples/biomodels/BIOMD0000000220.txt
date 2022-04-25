@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *untitled()
 
   // Compartments and Species:
@@ -53,17 +53,17 @@ model *untitled()
   re24: tBid + Bax -> Bax_tBid; cell*(tBid*Bax*k12 - Bax_tBid*k_12);
   re25: Bax_tBid => tBid + Bax_hash; cell*Bax_tBid*kc12;
   re26: Bax_hash -> Baxm; cell*(Bax_hash*k13 - Baxm*k_13);
-  re27: Baxm + Bcl2 -> Baxm_Bcl2; mitochondrion*((Baxm*Bcl2*k14)/v - Baxm_Bcl2*k_14);
-  re29: Baxm + Baxm -> Bax2; mitochondrion*((Baxm*Baxm*k15)/v - Bax2*k_15);
-  re30: Bax2 + Bax2 -> Bax4; mitochondrion*((Bax2*Bax2*k17)/v - Bax4*k_17);
-  re31: Bcl2 + Bax2 -> Bax2_Bcl2; mitochondrion*((Bcl2*Bax2*k16)/v - Bax2_Bcl2*k_16);
-  re32: Bcl2 + Bax4 -> Bax4_Bcl2; mitochondrion*((Bcl2*Bax4*k18)/v - Bax4_Bcl2*k_18);
-  re33: Bax4 + M -> Bax4_M; mitochondrion*((Bax4*M*k19)/v - Bax4_M*k_19);
+  re27: Baxm + Bcl2 -> Baxm_Bcl2; mitochondrion*(Baxm*Bcl2*k14/v - Baxm_Bcl2*k_14);
+  re29: Baxm + Baxm -> Bax2; mitochondrion*(Baxm*Baxm*k15/v - Bax2*k_15);
+  re30: Bax2 + Bax2 -> Bax4; mitochondrion*(Bax2*Bax2*k17/v - Bax4*k_17);
+  re31: Bcl2 + Bax2 -> Bax2_Bcl2; mitochondrion*(Bcl2*Bax2*k16/v - Bax2_Bcl2*k_16);
+  re32: Bcl2 + Bax4 -> Bax4_Bcl2; mitochondrion*(Bcl2*Bax4*k18/v - Bax4_Bcl2*k_18);
+  re33: Bax4 + M -> Bax4_M; mitochondrion*(Bax4*M*k19/v - Bax4_M*k_19);
   re34: Bax4_M => M_hash; mitochondrion*Bax4_M*kc19;
-  re35: M_hash + Smacm -> M_hash_Smacm; mitochondrion*((M_hash*Smacm*k21)/v - M_hash_Smacm*k_21);
+  re35: M_hash + Smacm -> M_hash_Smacm; mitochondrion*(M_hash*Smacm*k21/v - M_hash_Smacm*k_21);
   re36: M_hash_Smacm => M_hash + Smacr; mitochondrion*M_hash_Smacm*kc21;
   re37: Smacr -> Smac; cell*(Smacr*k26 - Smac*k_26);
-  re38: M_hash + CytoCm -> M_hash_CytoCm; mitochondrion*((M_hash*CytoCm*k20)/v - M_hash_CytoCm*k_20);
+  re38: M_hash + CytoCm -> M_hash_CytoCm; mitochondrion*(M_hash*CytoCm*k20/v - M_hash_CytoCm*k_20);
   re39: M_hash_CytoCm => CytoCr + M_hash; mitochondrion*M_hash_CytoCm*kc20;
   re40: CytoCr -> CytoC; cell*(CytoCr*k22 - CytoC*k_22);
   re41: CytoC + Apaf -> CytoC_Apaf; cell*(CytoC*Apaf*k23 - CytoC_Apaf*k_23);
@@ -135,74 +135,74 @@ model *untitled()
   mitochondrion = 1;
 
   // Variable initializations:
-  k1 = 4e-007;
+  k1 = 4e-07;
   k_1 = 0.001;
-  kc1 = 1e-005;
-  k2 = 1e-006;
+  kc1 = 1e-05;
+  k2 = 1e-06;
   k_2 = 0.001;
-  k3 = 1e-006;
+  k3 = 1e-06;
   k_3 = 0.001;
   kc3 = 1;
-  k4 = 1e-006;
+  k4 = 1e-06;
   k_4 = 0.001;
-  k5 = 1e-007;
+  k5 = 1e-07;
   k_5 = 0.001;
   kc5 = 1;
-  k6 = 1e-006;
+  k6 = 1e-06;
   k_6 = 0.001;
   kc6 = 1;
-  k7 = 3e-008;
+  k7 = 3e-08;
   k_7 = 0.001;
-  k8 = 2e-006;
+  k8 = 2e-06;
   k_8 = 0.001;
   kc8 = 0.1;
-  k9 = 1e-006;
+  k9 = 1e-06;
   k_9 = 0.01;
   kc9 = 1;
-  k10 = 1e-007;
+  k10 = 1e-07;
   k_10 = 0.001;
   kc10 = 1;
-  k11 = 1e-006;
+  k11 = 1e-06;
   k_11 = 0.001;
-  k12 = 1e-007;
+  k12 = 1e-07;
   k_12 = 0.001;
   kc12 = 1;
   k13 = 0.01;
   k_13 = 0.01;
-  k14 = 1e-006;
+  k14 = 1e-06;
   k_14 = 0.001;
-  k15 = 1e-006;
+  k15 = 1e-06;
   k_15 = 0.001;
-  k16 = 1e-006;
+  k16 = 1e-06;
   k_16 = 0.001;
-  k17 = 1e-006;
+  k17 = 1e-06;
   k_17 = 0.001;
-  k18 = 1e-006;
+  k18 = 1e-06;
   k_18 = 0.001;
-  k19 = 1e-006;
+  k19 = 1e-06;
   k_19 = 0.001;
   kc19 = 1;
-  k20 = 2e-006;
+  k20 = 2e-06;
   k_20 = 0.001;
   kc20 = 10;
-  k21 = 2e-006;
+  k21 = 2e-06;
   k_21 = 0.001;
   kc21 = 10;
   k22 = 0.01;
   k_22 = 0.01;
-  k23 = 5e-007;
+  k23 = 5e-07;
   k_23 = 0.001;
   kc23 = 1;
-  k24 = 5e-008;
+  k24 = 5e-08;
   k_24 = 0.001;
-  k25 = 5e-009;
+  k25 = 5e-09;
   k_25 = 0.001;
   kc25 = 1;
   k26 = 0.01;
   k_26 = 0.01;
-  k27 = 2e-006;
+  k27 = 2e-06;
   k_27 = 0.001;
-  k28 = 7e-006;
+  k28 = 7e-06;
   k_28 = 0.001;
   kc7 = 1;
   v = 0.07;
@@ -264,4 +264,83 @@ model *untitled()
   C3_UB_frac is "degraded C3 fraction";
   cPARP_frac is "cPARP fraction";
   fC3_fract is "free C3 fraction";
+
+  // CV terms:
+  cell identity "http://identifiers.org/go/GO:0005829"
+  mitochondrion identity "http://identifiers.org/go/GO:0005739"
+  L hypernym "http://identifiers.org/uniprot/P50591",
+             "http://identifiers.org/reactome/REACT_3803"
+  R hypernym "http://identifiers.org/uniprot/O14763",
+             "http://identifiers.org/reactome/REACT_2540"
+  flip hypernym "http://identifiers.org/uniprot/O15519",
+                "http://identifiers.org/reactome/REACT_2438"
+  flip description "http://identifiers.org/omim/603599"
+  pC8 hypernym "http://identifiers.org/uniprot/Q14790",
+               "http://identifiers.org/reactome/REACT_4998.1"
+  C8 hypernym "http://identifiers.org/reactome/REACT_4185"
+  pC3 hypernym "http://identifiers.org/uniprot/P42574"
+  Bid hypernym "http://identifiers.org/uniprot/P55957",
+               "http://identifiers.org/reactome/REACT_3224"
+  Bid description "http://identifiers.org/omim/601997"
+  tBid hypernym "http://identifiers.org/uniprot/P55957",
+                "http://identifiers.org/reactome/REACT_385"
+  pC6 hypernym "http://identifiers.org/uniprot/P55212"
+  XIAP hypernym "http://identifiers.org/uniprot/P98170",
+                "http://identifiers.org/reactome/REACT_5246"
+  C3_Ub version "http://identifiers.org/uniprot/P42574",
+                "http://identifiers.org/uniprot/P62988"
+  PARP hypernym "http://identifiers.org/uniprot/P09874"
+  CPARP hypernym "http://identifiers.org/uniprot/P09874"
+  Smac hypernym "http://identifiers.org/uniprot/Q9NR28",
+                "http://identifiers.org/reactome/REACT_5375"
+  Bcl2c hypernym "http://identifiers.org/uniprot/P10415",
+                 "http://identifiers.org/reactome/REACT_3598"
+  Bax hypernym "http://identifiers.org/uniprot/Q07812"
+  Bax_hash hypernym "http://identifiers.org/uniprot/Q07812"
+  Bcl2 hypernym "http://identifiers.org/uniprot/P10415"
+  L_R hypernym "http://identifiers.org/reactome/REACT_5556"
+  L_R version "http://identifiers.org/uniprot/P50591",
+              "http://identifiers.org/uniprot/O14763"
+  R_hash hypernym "http://identifiers.org/uniprot/O14763"
+  Apop part "http://identifiers.org/uniprot/P99999",
+            "http://identifiers.org/uniprot/O14727",
+            "http://identifiers.org/uniprot/P55211"
+  Apop hypernym "http://identifiers.org/reactome/REACT_5647",
+                "http://identifiers.org/go/GO:0043293"
+  Baxm_Bcl2 part "http://identifiers.org/uniprot/P10415",
+                 "http://identifiers.org/uniprot/Q07812"
+  Bax4 part "http://identifiers.org/uniprot/Q07812"
+  Bax2_Bcl2 part "http://identifiers.org/uniprot/Q07812",
+                 "http://identifiers.org/uniprot/P10415"
+  Bax4_Bcl2 part "http://identifiers.org/uniprot/P10415",
+                 "http://identifiers.org/uniprot/Q07812"
+  Bax4_M part "http://identifiers.org/uniprot/Q07812"
+  Smacm hypernym "http://identifiers.org/uniprot/Q9NR28",
+                 "http://identifiers.org/reactome/REACT_5499"
+  Smacr hypernym "http://identifiers.org/uniprot/Q9NR28",
+                 "http://identifiers.org/reactome/REACT_5375"
+  CytoCm hypernym "http://identifiers.org/uniprot/P99999",
+                  "http://identifiers.org/reactome/REACT_14114"
+  CytoCr hypernym "http://identifiers.org/uniprot/P99999",
+                  "http://identifiers.org/reactome/REACT_3942"
+  CytoC hypernym "http://identifiers.org/uniprot/P99999"
+  Apaf hypernym "http://identifiers.org/uniprot/O14727"
+  pC9 hypernym "http://identifiers.org/uniprot/P55211"
+  Baxm hypernym "http://identifiers.org/uniprot/Q07812"
+  Bax2 part "http://identifiers.org/uniprot/Q07812"
+  re1 hypernym "http://identifiers.org/go/GO:0045569"
+  re4 parthood "http://identifiers.org/reactome/REACT_961"
+  re5 parthood "http://identifiers.org/reactome/REACT_961"
+  re10 hypernym "http://identifiers.org/ec-code/3.4.22.61"
+  re12 hypernym "http://identifiers.org/ec-code/3.4.22.61"
 end
+
+untitled is "Albeck2008_extrinsic_apoptosis"
+
+untitled model_entity_is "http://identifiers.org/biomodels.db/MODEL6964793701"
+untitled model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000220"
+untitled description "http://identifiers.org/pubmed/18406323"
+untitled hypernym "http://identifiers.org/kegg.pathway/hsa04210",
+                  "http://identifiers.org/reactome/REACT_1059",
+                  "http://identifiers.org/go/GO:0008624"
+untitled taxon "http://identifiers.org/taxonomy/9606"

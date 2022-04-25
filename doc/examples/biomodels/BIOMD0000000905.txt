@@ -1,0 +1,157 @@
+// Created by libAntimony v2.13.0
+function Function_for_betterment_of_the_relative_characteristics_of_the_damaged_part_of_the_organ(alpha, P)
+  alpha*P;
+end
+
+Function_for_betterment_of_the_relative_characteristics_of_the_damaged_part_of_the_organ is "Function for betterment of the relative characteristics of the damaged part of the organ"
+
+function Function_for_increase_in_the_uptake_of_toxicant_by_the_body(theta_0, T)
+  theta_0*T;
+end
+
+Function_for_increase_in_the_uptake_of_toxicant_by_the_body is "Function for increase in the uptake of toxicant by the body"
+
+function Function_for_decrease_in_the_uptake_of_toxicant_by_the_body(delta_1, U, k1, I)
+  delta_1*U + k1*U*I;
+end
+
+Function_for_decrease_in_the_uptake_of_toxicant_by_the_body is "Function for decrease in the uptake of toxicant by the body"
+
+function Function_for_increase_in_the_amount_of_pathogenic_micro_organism(beta, P)
+  beta*P;
+end
+
+Function_for_increase_in_the_amount_of_pathogenic_micro_organism is "Function for increase in the amount of pathogenic micro-organism"
+
+function Function_for_decrease_in_the_amount_of_pathogenic_micro_organism(gamma_, I, P, beta0)
+  gamma_*I*P + beta0*P*P;
+end
+
+Function_for_decrease_in_the_amount_of_pathogenic_micro_organism is "Function for decrease in the amount of pathogenic micro-organism"
+
+function Function_for_increase_in_the_immune_response(mu, b, I, P)
+  mu + b*I*P;
+end
+
+Function_for_increase_in_the_immune_response is "Function for increase in the immune response"
+
+function Function_for_decrease_in_the_relative_characteeristics_of_damaged_part_of_the_organ(alpha0, M)
+  alpha0*M;
+end
+
+Function_for_decrease_in_the_relative_characteeristics_of_damaged_part_of_the_organ is "Function for decrease in the relative characteeristics of damaged part of the organ"
+
+function Function_for_reduction_of_immune_response(a, I, n, gamma_, P, n1, k1, U)
+  a*I + n*gamma_*I*P + n1*k1*U*I;
+end
+
+Function_for_reduction_of_immune_response is "Function for reduction of immune response"
+
+function Function_for_decrease_in_the_concentration_of_toxicant_in_the_environment(delta_0, T)
+  delta_0*T;
+end
+
+Function_for_decrease_in_the_concentration_of_toxicant_in_the_environment is "Function for decrease in the concentration of toxicant in the environment"
+
+function Function_for_increase_in_the_concentration_of_toxicant_in_the_environment(Q0)
+  Q0;
+end
+
+Function_for_increase_in_the_concentration_of_toxicant_in_the_environment is "Function for increase in the concentration of toxicant in the environment"
+
+
+model *Dubey2007___A_mathematical_model_for_the_effect_of_toxicant_on_the_immune_system__without_toxicant_effect__Model1()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species P in compartment_, I in compartment_, M in compartment_, T in compartment_;
+  species U in compartment_;
+
+  // Reactions:
+  increase_in_the_amount_of_pathogenic_micro_organism:  => P; compartment_*Function_for_increase_in_the_amount_of_pathogenic_micro_organism(beta, P);
+  Decrease_in_the_amount_of_pathogenic_micro_organism: P => ; compartment_*Function_for_decrease_in_the_amount_of_pathogenic_micro_organism(gamma_, I, P, beta0);
+  Increase_of_appropriate_immune_response_with_respect_to_pathogen:  => I; compartment_*Function_for_increase_in_the_immune_response(mu, b, I, P);
+  Reduction_of_immune_response: I => ; compartment_*Function_for_reduction_of_immune_response(a, I, n, gamma_, P, n1, k1, U);
+  betterment_of_relative_characteristics_of_the_damaged_part_of_the_organ:  => M; compartment_*Function_for_betterment_of_the_relative_characteristics_of_the_damaged_part_of_the_organ(alpha, P);
+  removal_of_relative_characteristics_of_the_damaged_part_of_the_organ: M => ; compartment_*Function_for_decrease_in_the_relative_characteeristics_of_damaged_part_of_the_organ(alpha0, M);
+  Increase_in_the_concentration_of_toxicant_in_the_environment:  => T; compartment_*Function_for_increase_in_the_concentration_of_toxicant_in_the_environment(Q0);
+  Decrease_in_the_concentration_of_toxicant_in_the_environment: T => ; compartment_*Function_for_decrease_in_the_concentration_of_toxicant_in_the_environment(delta_0, T);
+  Increase_in_the_uptake_concentration_of_toxicant_by_the_body:  => U; compartment_*Function_for_increase_in_the_uptake_of_toxicant_by_the_body(theta_0, T);
+  Decrease_in_the_uptake_concentration_of_toxcant_by_the_body: U => ; compartment_*Function_for_decrease_in_the_uptake_of_toxicant_by_the_body(delta_1, U, k1, I);
+
+  // Species initializations:
+  P = 1;
+  I = 1;
+  M = 1;
+  T = 1;
+  U = 1;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  beta = 0.5;
+  gamma_ = 0.05;
+  beta0 = 0.2;
+  mu = 0.04;
+  a = 0.8;
+  b = 0.3;
+  n = 0.1;
+  alpha = 2.4;
+  alpha0 = 0.1;
+  Q0 = 5;
+  delta_0 = 0.4;
+  theta_0 = 1.2;
+  delta_1 = 0.02;
+  k1 = 0.6;
+  n1 = 0.5;
+
+  // Other declarations:
+  const compartment_, beta, gamma_, beta0, mu, a, b, n, alpha, alpha0, Q0;
+  const delta_0, theta_0, delta_1, k1, n1;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  gamma_ is "gamma";
+  increase_in_the_amount_of_pathogenic_micro_organism is "increase in the amount of pathogenic micro-organism";
+  Decrease_in_the_amount_of_pathogenic_micro_organism is "Decrease in the amount of pathogenic micro-organism";
+  Increase_of_appropriate_immune_response_with_respect_to_pathogen is "Increase of appropriate immune response with respect to pathogen";
+  Reduction_of_immune_response is "Reduction of immune response";
+  betterment_of_relative_characteristics_of_the_damaged_part_of_the_organ is "betterment of relative characteristics of the damaged part of the organ";
+  removal_of_relative_characteristics_of_the_damaged_part_of_the_organ is "removal of relative characteristics of the damaged part of the organ";
+  Increase_in_the_concentration_of_toxicant_in_the_environment is "Increase in the concentration of toxicant in the environment";
+  Decrease_in_the_concentration_of_toxicant_in_the_environment is "Decrease in the concentration of toxicant in the environment";
+  Increase_in_the_uptake_concentration_of_toxicant_by_the_body is "Increase in the uptake concentration of toxicant by the body";
+  Decrease_in_the_uptake_concentration_of_toxcant_by_the_body is "Decrease in the uptake concentration of toxcant by the body";
+
+  // CV terms:
+  P instance "http://identifiers.org/ncit/C14329"
+  I instance "http://identifiers.org/bto/BTO:0005810"
+  T instance "http://identifiers.org/ncit/C894"
+  increase_in_the_amount_of_pathogenic_micro_organism instance "http://identifiers.org/ncit/C25533"
+  Decrease_in_the_amount_of_pathogenic_micro_organism instance "http://identifiers.org/ncit/C157203"
+  Increase_of_appropriate_immune_response_with_respect_to_pathogen instance "http://identifiers.org/ncit/C25533"
+  Reduction_of_immune_response instance "http://identifiers.org/ncit/C157203"
+  betterment_of_relative_characteristics_of_the_damaged_part_of_the_organ instance "http://identifiers.org/ncit/C25533"
+  removal_of_relative_characteristics_of_the_damaged_part_of_the_organ instance "http://identifiers.org/ncit/C157203"
+  Increase_in_the_concentration_of_toxicant_in_the_environment instance "http://identifiers.org/ncit/C25533"
+  Decrease_in_the_concentration_of_toxicant_in_the_environment instance "http://identifiers.org/ncit/C157203"
+  Increase_in_the_uptake_concentration_of_toxicant_by_the_body instance "http://identifiers.org/ncit/C25533"
+  Decrease_in_the_uptake_concentration_of_toxcant_by_the_body instance "http://identifiers.org/ncit/C157203"
+end
+
+Dubey2007___A_mathematical_model_for_the_effect_of_toxicant_on_the_immune_system__without_toxicant_effect__Model1 is "Dubey2007 - A mathematical model for the effect of toxicant on the immune system (with toxicant effect) Model2"
+
+Dubey2007___A_mathematical_model_for_the_effect_of_toxicant_on_the_immune_system__without_toxicant_effect__Model1 instance "http://identifiers.org/mamo/MAMO_0000046",
+                                                                                                                           "http://identifiers.org/taxonomy/9606",
+                                                                                                                           "http://identifiers.org/bto/BTO:0005810"
+Dubey2007___A_mathematical_model_for_the_effect_of_toxicant_on_the_immune_system__without_toxicant_effect__Model1 description "http://identifiers.org/bto/BTO:0005810",
+                                                                                                                              "http://identifiers.org/doi/10.1142/S0218339007002301"
+Dubey2007___A_mathematical_model_for_the_effect_of_toxicant_on_the_immune_system__without_toxicant_effect__Model1 model_entity_is "http://identifiers.org/biomodels.db/MODEL1912190001",
+                                                                                                                                  "http://identifiers.org/biomodels.db/BIOMD0000000905"
+Dubey2007___A_mathematical_model_for_the_effect_of_toxicant_on_the_immune_system__without_toxicant_effect__Model1 property "http://identifiers.org/mamo/MAMO_0000046"
+Dubey2007___A_mathematical_model_for_the_effect_of_toxicant_on_the_immune_system__without_toxicant_effect__Model1 taxon "http://identifiers.org/taxonomy/9606"

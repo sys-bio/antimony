@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *MODEL1402030000()
 
   // Compartments and Species:
@@ -13,50 +13,50 @@ model *MODEL1402030000()
   species S_p in PLASMA, PFM_gut in Default, PFM_p in Default, PFM_r in Default;
 
   // Assignment Rules:
-  F_PFM := (Emax_PFM*Dose)/(ED50 + Dose);
-  MD := PFM_gut + 1.000000e+006*Dose*F_PFM;
-  PF_p := (1.000000e+000/M_PF*PFM_p)/Vss_PFM;
+  F_PFM := Emax_PFM*Dose/(ED50 + Dose);
+  MD := PFM_gut + 1e6*Dose*F_PFM;
+  PF_p := (1e0/M_PF)*PFM_p/Vss_PFM;
   PF_b := PF_p*Kp_b_PF;
   PF_r := PF_p*Kp_r_PF;
   PF_m := PF_p*Kp_m_PF;
-  FAAH_D_b := 1.000000e+000 + A_b/Km_FAAH_A + O_b/Km_FAAH_O + P_b/Km_FAAH_P + L_b/Km_FAAH_L + S_b/Km_FAAH_S;
+  FAAH_D_b := 1e0 + A_b/Km_FAAH_A + O_b/Km_FAAH_O + P_b/Km_FAAH_P + L_b/Km_FAAH_L + S_b/Km_FAAH_S;
   slag1_b := NAPE_b/Km_NA_PE + NOPE_b/Km_NO_PE + NPPE_b/Km_NP_PE + NLPE_b/Km_NL_PE + NSPE_b/Km_NS_PE;
   slag2_b := A_b/Ki_A + O_b/Ki_O + P_b/Ki_P + L_b/Ki_L + S_b/Ki_S;
-  den_b := 1.000000e+000 + slag1_b + slag2_b;
-  FAAH_D_r := 1.000000e+000 + A_r/Km_FAAH_A + O_r/Km_FAAH_O + P_r/Km_FAAH_P + L_r/Km_FAAH_L + S_r/Km_FAAH_S;
+  den_b := 1e0 + slag1_b + slag2_b;
+  FAAH_D_r := 1e0 + A_r/Km_FAAH_A + O_r/Km_FAAH_O + P_r/Km_FAAH_P + L_r/Km_FAAH_L + S_r/Km_FAAH_S;
   c_NAT_ROB := Pancreas*b_NAT_Pancreas + Kidney*b_NAT_Kidney + Heart*b_NAT_Heart + Lungs*b_NAT_Lungs + Muscles*b_NAT_Muscles + Testis*b_NAT_Testis + Leucocytes*b_NAT_Leucocytes;
   slag1_r := NAPE_r/Km_NA_PE + NOPE_r/Km_NO_PE + NPPE_r/Km_NP_PE + NLPE_r/Km_NL_PE + NSPE_r/Km_NS_PE;
   slag2_r := A_r/Ki_A + O_r/Ki_O + P_r/Ki_P + L_r/Ki_L + S_r/Ki_S;
-  den_r := 1.000000e+000 + slag1_r + slag2_r;
+  den_r := 1e0 + slag1_r + slag2_r;
   c_FAAH_ROB := LIVER*b_FAAH_Liver + Gut*b_FAAH_Gut + Spleen*b_FAAH_Spleen + Kidney*b_FAAH_Kidney + Lungs*b_FAAH_Lungs + Testis*b_FAAH_Testis + Leucocytes*b_FAAH_Leucocytes;
   c_NAAA_ROB := LIVER*b_NAAA_Liver + Gut*b_NAAA_Gut + Spleen*b_NAAA_Spleen + Kidney*b_NAAA_Kidney + Heart*b_NAAA_Heart + Lungs*b_NAAA_Lungs + Thymus*b_NAAA_Thymus + Testis*b_NAAA_Thymus*Testis;
-  FAAH_D_m := 1.000000e+000 + A_m/Km_FAAH_A + O_m/Km_FAAH_O + P_m/Km_FAAH_P + L_m/Km_FAAH_L + S_m/Km_FAAH_S;
-  F_r := (1.500000e+003*FAAH_r)/(FAAHinh_r + FAAH_r);
-  PFG_p := (1.000000e-003*PFM_p)/Vss_PFM;
-  AG_p := 1.000000e-003*A_p*M_A;
-  OG_p := 1.000000e-003*O_p*M_O;
-  PG_p := 1.000000e-003*P_p*M_P;
-  LG_p := 1.000000e-003*L_p*M_L;
-  SG_p := 1.000000e-003*S_p*M_S;
-  CB1_b := (A_b/Kd_CB1_A + AG2_b/Kd_AG2)/(1.000000e+000 + A_b/Kd_CB1_A + AG2_b/Kd_AG2);
-  tid := t/2.400000e+001;
+  FAAH_D_m := 1e0 + A_m/Km_FAAH_A + O_m/Km_FAAH_O + P_m/Km_FAAH_P + L_m/Km_FAAH_L + S_m/Km_FAAH_S;
+  F_r := 1.5e3*FAAH_r/(FAAHinh_r + FAAH_r);
+  PFG_p := 1e-3*PFM_p/Vss_PFM;
+  AG_p := 1e-3*A_p*M_A;
+  OG_p := 1e-3*O_p*M_O;
+  PG_p := 1e-3*P_p*M_P;
+  LG_p := 1e-3*L_p*M_L;
+  SG_p := 1e-3*S_p*M_S;
+  CB1_b := (A_b/Kd_CB1_A + AG2_b/Kd_AG2)/(1e0 + A_b/Kd_CB1_A + AG2_b/Kd_AG2);
+  tid := t/2.4e1;
 
   // Reactions:
-  vA_degr_b: A_b => ; (BRAIN*FAAH_b*kcat_FAAH*a_FAAH_A*A_b)/(Km_FAAH_A*FAAH_D_b);
-  vO_degr_b: O_b => ; (BRAIN*FAAH_b*kcat_FAAH*a_FAAH_O*O_b)/(Km_FAAH_O*FAAH_D_b);
-  vP_degr_b: P_b => ; (BRAIN*FAAH_b*kcat_FAAH*a_FAAH_P*P_b)/(Km_FAAH_P*FAAH_D_b);
-  vL_degr_b: L_b => ; (BRAIN*FAAH_b*kcat_FAAH*a_FAAH_L*L_b)/(Km_FAAH_L*FAAH_D_b);
-  vS_degr_b: S_b => ; (BRAIN*FAAH_b*kcat_FAAH*a_FAAH_S*S_b)/(Km_FAAH_S*FAAH_D_b);
+  vA_degr_b: A_b => ; BRAIN*FAAH_b*kcat_FAAH*a_FAAH_A*A_b/(Km_FAAH_A*FAAH_D_b);
+  vO_degr_b: O_b => ; BRAIN*FAAH_b*kcat_FAAH*a_FAAH_O*O_b/(Km_FAAH_O*FAAH_D_b);
+  vP_degr_b: P_b => ; BRAIN*FAAH_b*kcat_FAAH*a_FAAH_P*P_b/(Km_FAAH_P*FAAH_D_b);
+  vL_degr_b: L_b => ; BRAIN*FAAH_b*kcat_FAAH*a_FAAH_L*L_b/(Km_FAAH_L*FAAH_D_b);
+  vS_degr_b: S_b => ; BRAIN*FAAH_b*kcat_FAAH*a_FAAH_S*S_b/(Km_FAAH_S*FAAH_D_b);
   vNAPE_syn_b:  => NAPE_b; BRAIN*Vmax_NAT*p_A*a_NAT_A*b_NAT_Brain;
   vNOPE_syn_b:  => NOPE_b; BRAIN*Vmax_NAT*p_O*a_NAT_O*b_NAT_Brain;
   vNPPE_syn_b:  => NPPE_b; BRAIN*Vmax_NAT*p_P*a_NAT_P*b_NAT_Brain;
   vNLPE_syn_b:  => NLPE_b; BRAIN*Vmax_NAT*p_L*a_NAT_L*b_NAT_Brain;
   vNSPE_syn_b:  => NSPE_b; BRAIN*Vmax_NAT*p_S*a_NAT_S*b_NAT_Brain;
-  vA_syn_b: NAPE_b => A_b; (BRAIN*PLD_b*k_NA_PE*NAPE_b)/Km_NA_PE/den_b;
-  vO_syn_b: NOPE_b => O_b; (BRAIN*PLD_b*k_NO_PE*NOPE_b)/Km_NO_PE/den_b;
-  vP_syn_b: NPPE_b => P_b; (BRAIN*PLD_b*k_NP_PE*NPPE_b)/Km_NP_PE/den_b;
-  vL_syn_b: NLPE_b => L_b; (BRAIN*PLD_b*k_NL_PE*NLPE_b)/Km_NL_PE/den_b;
-  vS_syn_b: NSPE_b => S_b; (BRAIN*PLD_b*k_NS_PE*NSPE_b)/Km_NS_PE/den_b;
+  vA_syn_b: NAPE_b => A_b; BRAIN*PLD_b*k_NA_PE*NAPE_b/Km_NA_PE/den_b;
+  vO_syn_b: NOPE_b => O_b; BRAIN*PLD_b*k_NO_PE*NOPE_b/Km_NO_PE/den_b;
+  vP_syn_b: NPPE_b => P_b; BRAIN*PLD_b*k_NP_PE*NPPE_b/Km_NP_PE/den_b;
+  vL_syn_b: NLPE_b => L_b; BRAIN*PLD_b*k_NL_PE*NLPE_b/Km_NL_PE/den_b;
+  vS_syn_b: NSPE_b => S_b; BRAIN*PLD_b*k_NS_PE*NSPE_b/Km_NS_PE/den_b;
   vFAAH_syn_b:  => FAAH_b; BRAIN*FAAH_t*b_FAAH_Brain*k_deg_FAAH;
   vFAAH_degr_b: FAAH_b => ; BRAIN*k_deg_FAAH*FAAH_b;
   vFAAH_inh_b: FAAH_b => FAAHinh_b; BRAIN*k_inh*FAAH_b*PF_b;
@@ -66,21 +66,21 @@ model *MODEL1402030000()
   vP_UE_b: P_b => ; BRAIN*b_FAAH_Brain*kcl_P*P_b;
   vL_UE_b: L_b => ; BRAIN*b_FAAH_Brain*kcl_L*L_b;
   vS_UE_b: S_b => ; BRAIN*b_FAAH_Brain*kcl_S*S_b;
-  vA_degr_r: A_r => ; (ROB*FAAH_r*kcat_FAAH*a_FAAH_A*A_r)/(Km_FAAH_A*FAAH_D_r);
-  vO_degr_r: O_r => ; (ROB*FAAH_r*kcat_FAAH*a_FAAH_O*O_r)/(Km_FAAH_O*FAAH_D_r);
-  vP_degr_r: P_r => ; (ROB*FAAH_r*kcat_FAAH*a_FAAH_P*P_r)/(Km_FAAH_P*FAAH_D_r);
-  vL_degr_r: L_r => ; (ROB*FAAH_r*kcat_FAAH*a_FAAH_L*L_r)/(Km_FAAH_L*FAAH_D_r);
-  vS_degr_r: S_r => ; (ROB*FAAH_r*kcat_FAAH*a_FAAH_S*S_r)/(Km_FAAH_S*FAAH_D_r);
+  vA_degr_r: A_r => ; ROB*FAAH_r*kcat_FAAH*a_FAAH_A*A_r/(Km_FAAH_A*FAAH_D_r);
+  vO_degr_r: O_r => ; ROB*FAAH_r*kcat_FAAH*a_FAAH_O*O_r/(Km_FAAH_O*FAAH_D_r);
+  vP_degr_r: P_r => ; ROB*FAAH_r*kcat_FAAH*a_FAAH_P*P_r/(Km_FAAH_P*FAAH_D_r);
+  vL_degr_r: L_r => ; ROB*FAAH_r*kcat_FAAH*a_FAAH_L*L_r/(Km_FAAH_L*FAAH_D_r);
+  vS_degr_r: S_r => ; ROB*FAAH_r*kcat_FAAH*a_FAAH_S*S_r/(Km_FAAH_S*FAAH_D_r);
   vNAPE_syn_r:  => NAPE_r; Vmax_NAT*p_A*a_NAT_A*c_NAT_ROB;
   vNOPE_syn_r:  => NOPE_r; Vmax_NAT*p_O*a_NAT_O*c_NAT_ROB;
   vNPPE_syn_r:  => NPPE_r; Vmax_NAT*p_P*a_NAT_P*c_NAT_ROB;
   vNLPE_syn_r:  => NLPE_r; Vmax_NAT*p_L*a_NAT_L*c_NAT_ROB;
   vNSPE_syn_r:  => NSPE_r; Vmax_NAT*p_S*a_NAT_S*c_NAT_ROB;
-  vA_syn_r: NAPE_r => A_r; (ROB*PLD_r*k_NA_PE*NAPE_r)/Km_NA_PE/den_r;
-  vO_syn_r: NOPE_r => O_r; (ROB*PLD_r*k_NO_PE*NOPE_r)/Km_NO_PE/den_r;
-  vP_syn_r: NPPE_r => P_r; (ROB*PLD_r*k_NP_PE*NPPE_r)/Km_NP_PE/den_r;
-  vL_syn_r: NLPE_r => L_r; (ROB*PLD_r*k_NL_PE*NLPE_r)/Km_NL_PE/den_r;
-  vS_syn_r: NSPE_r => S_r; (ROB*PLD_r*k_NS_PE*NSPE_r)/Km_NS_PE/den_r;
+  vA_syn_r: NAPE_r => A_r; ROB*PLD_r*k_NA_PE*NAPE_r/Km_NA_PE/den_r;
+  vO_syn_r: NOPE_r => O_r; ROB*PLD_r*k_NO_PE*NOPE_r/Km_NO_PE/den_r;
+  vP_syn_r: NPPE_r => P_r; ROB*PLD_r*k_NP_PE*NPPE_r/Km_NP_PE/den_r;
+  vL_syn_r: NLPE_r => L_r; ROB*PLD_r*k_NL_PE*NLPE_r/Km_NL_PE/den_r;
+  vS_syn_r: NSPE_r => S_r; ROB*PLD_r*k_NS_PE*NSPE_r/Km_NS_PE/den_r;
   vFAAH_syn_r:  => FAAH_r; FAAH_t*c_FAAH_ROB*k_deg_FAAH;
   vFAAH_degr_r: FAAH_r => ; ROB*k_deg_FAAH*FAAH_r;
   vFAAH_inh_r: FAAH_r => FAAHinh_r; ROB*k_inh*FAAH_r*PF_r;
@@ -90,33 +90,33 @@ model *MODEL1402030000()
   vP_UE_r: P_r => ; c_NAAA_ROB*kcl_P*P_r;
   vL_UE_r: L_r => ; c_NAAA_ROB*kcl_L*L_r;
   vS_UE_r: S_r => ; c_NAAA_ROB*kcl_S*S_r;
-  vA_degr_m: A_m => ; (MEC*FAAH_m*kcat_FAAH*a_FAAH_A*A_m)/(Km_FAAH_A*FAAH_D_m);
-  vO_degr_m: O_m => ; (MEC*FAAH_m*kcat_FAAH*a_FAAH_O*O_m)/(Km_FAAH_O*FAAH_D_m);
-  vP_degr_m: P_m => ; (MEC*FAAH_m*kcat_FAAH*a_FAAH_P*P_m)/(Km_FAAH_P*FAAH_D_m);
-  vL_degr_m: L_m => ; (MEC*FAAH_m*kcat_FAAH*a_FAAH_L*L_m)/(Km_FAAH_L*FAAH_D_m);
-  vS_degr_m: S_m => ; (MEC*FAAH_m*kcat_FAAH*a_FAAH_S*S_m)/(Km_FAAH_S*FAAH_D_m);
+  vA_degr_m: A_m => ; MEC*FAAH_m*kcat_FAAH*a_FAAH_A*A_m/(Km_FAAH_A*FAAH_D_m);
+  vO_degr_m: O_m => ; MEC*FAAH_m*kcat_FAAH*a_FAAH_O*O_m/(Km_FAAH_O*FAAH_D_m);
+  vP_degr_m: P_m => ; MEC*FAAH_m*kcat_FAAH*a_FAAH_P*P_m/(Km_FAAH_P*FAAH_D_m);
+  vL_degr_m: L_m => ; MEC*FAAH_m*kcat_FAAH*a_FAAH_L*L_m/(Km_FAAH_L*FAAH_D_m);
+  vS_degr_m: S_m => ; MEC*FAAH_m*kcat_FAAH*a_FAAH_S*S_m/(Km_FAAH_S*FAAH_D_m);
   vFAAH_syn_m:  => FAAH_m; MEC*FAAH_t*b_FAAH_MEC*k_deg_FAAH;
   vFAAH_degr_m: FAAH_m => ; MEC*k_deg_FAAH*FAAH_m;
   vFAAH_inh_m: FAAH_m => FAAHinh_m; MEC*k_inh*FAAH_m*PF_m;
   vFAAH_inh_degr_m: FAAHinh_m => ; MEC*k_deg_FAAH*FAAHinh_m;
-  vA_m_p: A_m => A_p; (MEC*ktr_m_p_A*(A_m - A_p*Ktr_p_m_A))/(A_m + A_p + Km_p_m_A);
+  vA_m_p: A_m => A_p; MEC*ktr_m_p_A*(A_m - A_p*Ktr_p_m_A)/(A_m + A_p + Km_p_m_A);
   vo_m_p: O_m => O_p; MEC*ktr_m_p_O*(O_m - O_p*Ktr_p_m_O);
   vP_m_p: P_m => P_p; MEC*ktr_m_p_P*(P_m - P_p*Ktr_p_m_P);
   vL_m_p: L_m => L_p; MEC*ktr_m_p_L*(L_m - L_p*Ktr_p_m_L);
   vS_m_p: S_m => S_p; MEC*ktr_m_p_S*(S_m - S_p*Ktr_p_m_S);
-  vA_b_m: A_b => A_m; (MEC*ktr_m_p_A*(A_b - A_m))/(A_m + A_b + Km_p_m_A);
+  vA_b_m: A_b => A_m; MEC*ktr_m_p_A*(A_b - A_m)/(A_m + A_b + Km_p_m_A);
   vO_b_m: O_b => O_m; MEC*ktr_m_p_O*(O_b - O_m);
   vP_b_m: P_b => P_m; MEC*ktr_m_p_P*(P_b - P_m);
   vL_b_m: L_b => L_m; MEC*ktr_m_p_L*(L_b - L_m);
   vS_b_m: S_b => S_m; MEC*ktr_m_p_S*(S_b - S_m);
-  vA_r_p: A_r => A_p; (PLASMA*ktr_r_p*(A_r - A_p*Ktr_p_r_A))/(A_r + A_p + Km_p_m_A);
+  vA_r_p: A_r => A_p; PLASMA*ktr_r_p*(A_r - A_p*Ktr_p_r_A)/(A_r + A_p + Km_p_m_A);
   vO_r_p: O_r => O_p; PLASMA*ktr_r_p*(O_r - O_p*Ktr_p_r_O);
   vP_r_p: P_r => P_p; PLASMA*ktr_r_p*(P_r - P_p*Ktr_p_r_P);
   vL_r_p: L_r => L_p; PLASMA*ktr_r_p*(L_r - L_p*Ktr_p_r_L);
   vS_r_p: S_r => S_p; PLASMA*ktr_r_p*(S_r - S_p*Ktr_p_r_S);
   absorp: PFM_gut => PFM_p; kabs_PFM*MD;
   dist: PFM_p => PFM_r; kout_PFM*PFM_p - kin_PFM*PFM_r;
-  elim: PFM_p => ; klinear_PFM*PFM_p + (Vm_PFM*PFM_p)/(Km_PFM + PFM_p/Vss_PFM)/Vss_PFM;
+  elim: PFM_p => ; klinear_PFM*PFM_p + Vm_PFM*PFM_p/(Km_PFM + PFM_p/Vss_PFM)/Vss_PFM;
 
   // Species initializations:
   A_b = 0.7493309;
@@ -124,10 +124,10 @@ model *MODEL1402030000()
   P_b = 6.541209;
   L_b = 2.319571;
   S_b = 3.427807;
-  NAPE_b = 3.879041e-005;
+  NAPE_b = 3.879041e-05;
   NOPE_b = 0.0008814287;
   NPPE_b = 0.0001732296;
-  NLPE_b = 7.550331e-005;
+  NLPE_b = 7.550331e-05;
   NSPE_b = 0.0001272629;
   FAAH_b = 15.366;
   FAAHinh_b = 0;
@@ -136,11 +136,11 @@ model *MODEL1402030000()
   P_r = 4.121915;
   L_r = 1.705466;
   S_r = 2.515968;
-  NAPE_r = 4.241633e-006;
-  NOPE_r = 9.638198e-005;
-  NPPE_r = 1.894222e-005;
-  NLPE_r = 8.256095e-006;
-  NSPE_r = 1.391587e-005;
+  NAPE_r = 4.241633e-06;
+  NOPE_r = 9.638198e-05;
+  NPPE_r = 1.894222e-05;
+  NLPE_r = 8.256095e-06;
+  NSPE_r = 1.391587e-05;
   FAAH_r = 2.165868;
   FAAHinh_r = 0;
   A_m = 0.97761;
@@ -164,7 +164,7 @@ model *MODEL1402030000()
   BRAIN = 1.45000004768372;
   PLASMA = 2.6489999294281;
   ROB = 65.3000030517578;
-  MEC = 1.49999996210681e-005;
+  MEC = 1.49999996210681e-05;
 
   // Variable initializations:
   AG2_b = 0;
@@ -318,4 +318,68 @@ model *MODEL1402030000()
   var c_NAT_ROB, slag1_r, slag2_r, den_r, c_FAAH_ROB, c_NAAA_ROB, FAAH_D_m;
   var F_r, PFG_p, AG_p, OG_p, PG_p, LG_p, SG_p, CB1_b, tid;
   const Default, BRAIN, PLASMA, ROB, MEC, e1, t;
+
+  // SBO terms:
+  Default.sboTerm = 290
+  BRAIN.sboTerm = 290
+  PLASMA.sboTerm = 290
+  ROB.sboTerm = 290
+  MEC.sboTerm = 290
+
+  // CV terms:
+  BRAIN hypernym "http://identifiers.org/bto/BTO:0000142"
+  PLASMA hypernym "http://identifiers.org/bto/BTO:0000131"
+  ROB hypernym "http://identifiers.org/fma/FMA:76445",
+               "http://identifiers.org/fma/FMA:70779"
+  MEC hypernym "http://identifiers.org/bto/BTO:0003123"
+  A_b hypernym "http://identifiers.org/chebi/CHEBI:2700"
+  O_b hypernym "http://identifiers.org/chebi/CHEBI:71466"
+  P_b hypernym "http://identifiers.org/chebi/CHEBI:71464"
+  L_b hypernym "http://identifiers.org/chebi/CHEBI:64032"
+  S_b hypernym "http://identifiers.org/pubchem.compound/27902"
+  NAPE_b hypernym "http://identifiers.org/chebi/CHEBI:2700"
+  NOPE_b hypernym "http://identifiers.org/chebi/CHEBI:71466"
+  NPPE_b hypernym "http://identifiers.org/chebi/CHEBI:71464"
+  NLPE_b hypernym "http://identifiers.org/chebi/CHEBI:64032"
+  NSPE_b hypernym "http://identifiers.org/pubchem.compound/27902"
+  FAAH_b hypernym "http://identifiers.org/uniprot/O00519"
+  FAAHinh_b hypernym "http://identifiers.org/chebi/CHEBI:64033"
+  A_r hypernym "http://identifiers.org/chebi/CHEBI:2700"
+  O_r hypernym "http://identifiers.org/chebi/CHEBI:71466"
+  P_r hypernym "http://identifiers.org/chebi/CHEBI:71464"
+  L_r hypernym "http://identifiers.org/chebi/CHEBI:64032"
+  S_r hypernym "http://identifiers.org/pubchem.compound/27902"
+  NAPE_r hypernym "http://identifiers.org/chebi/CHEBI:2700"
+  NOPE_r hypernym "http://identifiers.org/chebi/CHEBI:71466"
+  NPPE_r hypernym "http://identifiers.org/chebi/CHEBI:71464"
+  NLPE_r hypernym "http://identifiers.org/chebi/CHEBI:64032"
+  NSPE_r hypernym "http://identifiers.org/pubchem.compound/27902"
+  FAAH_r hypernym "http://identifiers.org/uniprot/O00519"
+  FAAHinh_r hypernym "http://identifiers.org/chebi/CHEBI:64033"
+  A_m hypernym "http://identifiers.org/chebi/CHEBI:2700"
+  O_m hypernym "http://identifiers.org/chebi/CHEBI:71466"
+  P_m hypernym "http://identifiers.org/chebi/CHEBI:71464"
+  L_m hypernym "http://identifiers.org/chebi/CHEBI:64032"
+  S_m hypernym "http://identifiers.org/pubchem.compound/27902"
+  FAAH_m hypernym "http://identifiers.org/uniprot/O00519"
+  FAAHinh_m hypernym "http://identifiers.org/chebi/CHEBI:64033"
+  A_p hypernym "http://identifiers.org/chebi/CHEBI:2700"
+  O_p hypernym "http://identifiers.org/chebi/CHEBI:71466"
+  P_p hypernym "http://identifiers.org/chebi/CHEBI:71464"
+  L_p hypernym "http://identifiers.org/chebi/CHEBI:64032"
+  S_p hypernym "http://identifiers.org/pubchem.compound/27902"
+  PFM_gut hypernym "http://identifiers.org/chembl.compound/CHEMBL1651534"
+  PFM_p hypernym "http://identifiers.org/chembl.compound/CHEMBL1651534"
+  PFM_r hypernym "http://identifiers.org/chembl.compound/CHEMBL1651534"
 end
+
+MODEL1402030000 is "Benson2014 - FAAH inhibitors for the treatment of osteoarthritic pain"
+
+MODEL1402030000 model_entity_is "http://identifiers.org/biomodels.db/MODEL1402030000"
+MODEL1402030000 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000512"
+MODEL1402030000 description "http://identifiers.org/pubmed/24429592"
+MODEL1402030000 property "http://identifiers.org/mamo/MAMO_0000046"
+MODEL1402030000 taxon "http://identifiers.org/taxonomy/9606"
+MODEL1402030000 hypernym "http://identifiers.org/go/GO:0071926",
+                         "http://identifiers.org/go/GO:0017064"
+MODEL1402030000 version "http://identifiers.org/doid/DOID:8398"

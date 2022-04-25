@@ -1,32 +1,32 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Cooling2007_IP3transients_CardiacMyocyte()
 
   // Compartments and Species:
-  compartment Compartment_;
-  species $Gd in Compartment_, $Gt_ in Compartment_, $R in Compartment_, $Rl in Compartment_;
-  species $Rg in Compartment_, $Rlg in Compartment_, $Rlgp in Compartment_;
-  species $IP3 in Compartment_, $Pc in Compartment_, $Pcg in Compartment_;
-  species $P in Compartment_, $Pg in Compartment_, $Ca in Compartment_;
+  compartment Compartment;
+  species $Gd in Compartment, $Gt in Compartment, $R in Compartment, $Rl in Compartment;
+  species $Rg in Compartment, $Rlg in Compartment, $Rlgp in Compartment, $IP3 in Compartment;
+  species $Pc in Compartment, $Pcg in Compartment, $P in Compartment, $Pg in Compartment;
+  species $Ca in Compartment;
 
   // Assignment Rules:
-  J7 := kf7*Gt_;
+  J7 := kf7*Gt;
   J13 := kf13*Pg;
   J12 := kf12*Pcg;
   J2 := kf2*R*Gd - kr2*Rg;
   J3 := kf3*Rl*Gd - kr3*Rlg;
   J6 := kf6*Rlg;
-  J9 := kf9*P*Gt_ - kr9*Pg;
-  J10 := kf10*Pc*Gt_ - kr10*Pcg;
+  J9 := kf9*P*Gt - kr9*Pg;
+  J10 := kf10*Pc*Gt - kr10*Pcg;
   J1 := kf1*R*L - kr1*Rl;
   J4 := kf4*L*Rg - kr4*Rlg;
   J5 := kf5*Rlg;
   Cpc := Cc/Cp;
-  J14 := (kf14*Pc*PIP2)/(Km14/Cpc + PIP2);
-  J15 := (kf15*Pcg*PIP2)/(Km15/Cpc + PIP2);
+  J14 := kf14*Pc*PIP2/(Km14/Cpc + PIP2);
+  J15 := kf15*Pcg*PIP2/(Km15/Cpc + PIP2);
   J16 := kf16*IP3;
   J8 := kf8*P*Ca - kr8*Pc;
   J11 := kf11*Pg*Ca - kr11*Pcg;
-  L := piecewise(Ls/(1 + exp(-80*(time - ts - 0.05))), time < ts + 0.15 && time >= ts, Ls, time >= ts + 0.15, 0);
+  L := piecewise(Ls/(1 + exp(-80*(time - ts - 0.05))), (time < (ts + 0.15)) && (time >= ts), Ls, time >= (ts + 0.15), 0);
   kr1 := kf1*Kd1;
   kr2 := kf2*Kd2;
   kr4 := kf4*Kd4;
@@ -35,23 +35,23 @@ model *Cooling2007_IP3transients_CardiacMyocyte()
   Cp := 1/(Vc*Rpc);
 
   // Rate Rules:
-  Gd' = (J7 + J13 + J12) - (J2 + J3);
-  Gt_' = J6 - (J7 + J9 + J10);
+  Gd' = J7 + J13 + J12 - (J2 + J3);
+  Gt' = J6 - (J7 + J9 + J10);
   R' = -1*(J1 + J2);
-  Rl' = (J1 + J6) - J3;
+  Rl' = J1 + J6 - J3;
   Rg' = J2 - J4;
-  Rlg' = (J3 - J5 + J4) - J6;
+  Rlg' = (J3 - J5) + J4 - J6;
   Rlgp' = J5;
   IP3' = Cpc*(J14 + J15) - J16;
-  Pc' = (J8 + J12) - J10;
-  Pcg' = (J10 + J11) - J12;
+  Pc' = J8 + J12 - J10;
+  Pcg' = J10 + J11 - J12;
   P' = J13 - (J9 + J8);
   Pg' = J9 - (J11 + J13);
   Ca' = Cpc*-1*(J8 + J11);
 
   // Species initializations:
   Gd = 10000;
-  Gt_ = 0;
+  Gt = 0;
   R = 13.9;
   Rl = 0;
   Rg = 5.06;
@@ -65,20 +65,20 @@ model *Cooling2007_IP3transients_CardiacMyocyte()
   Ca = 0.1;
 
   // Compartment initializations:
-  Compartment_ = 1;
+  Compartment = 1;
 
   // Variable initializations:
   Ls = 0.1;
   ts = 30;
   PIP2 = 4000;
   kf1 = 0.0003;
-  Kd1 = 3e-005;
+  Kd1 = 3e-05;
   kf2 = 0.000275;
   Kd2 = 27500;
   kf3 = 1;
   kr3 = 0.001;
   kf4 = 0.3;
-  Kd4 = 3e-005;
+  Kd4 = 3e-05;
   kf5 = 0.0004;
   kf6 = 1;
   kf7 = 0.15;
@@ -103,7 +103,104 @@ model *Cooling2007_IP3transients_CardiacMyocyte()
   // Other declarations:
   var J7, J13, J12, J2, J3, J6, J9, J10, J1, J4, J5, Cpc, J14, J15, J16, J8;
   var J11, L, kr1, kr2, kr4, kr11, Cc, Cp;
-  const Compartment_, Ls, ts, PIP2, kf1, Kd1, kf2, Kd2, kf3, kr3, kf4, Kd4;
+  const Compartment, Ls, ts, PIP2, kf1, Kd1, kf2, Kd2, kf3, kr3, kf4, Kd4;
   const kf5, kf6, kf7, kf8, kr8, kf9, kr9, kf10, kr10, kf11, Kd11, kf12, kf13;
   const kf14, Km14, kf15, Km15, kf16, Vc, Rpc;
+
+  // SBO terms:
+  Compartment.sboTerm = 290
+  Gd.sboTerm = 296
+  Gt.sboTerm = 296
+  R.sboTerm = 244
+  Rl.sboTerm = 297
+  Rg.sboTerm = 296
+  Rlg.sboTerm = 296
+  Rlgp.sboTerm = 296
+  IP3.sboTerm = 252
+  Pc.sboTerm = 296
+  Pcg.sboTerm = 296
+  P.sboTerm = 252
+  Pg.sboTerm = 296
+  Ca.sboTerm = 247
+  Ls.sboTerm = 515
+  ts.sboTerm = 9
+  PIP2.sboTerm = 196
+  kf1.sboTerm = 153
+  kr1.sboTerm = 156
+  Kd1.sboTerm = 356
+  kf2.sboTerm = 153
+  kr2.sboTerm = 156
+  Kd2.sboTerm = 356
+  kf3.sboTerm = 153
+  kr3.sboTerm = 156
+  kf4.sboTerm = 153
+  kr4.sboTerm = 156
+  Kd4.sboTerm = 356
+  kf5.sboTerm = 153
+  kf6.sboTerm = 153
+  kf7.sboTerm = 153
+  kf8.sboTerm = 153
+  kr8.sboTerm = 156
+  kf9.sboTerm = 153
+  kr9.sboTerm = 156
+  kf10.sboTerm = 153
+  kr10.sboTerm = 156
+  kf11.sboTerm = 153
+  kr11.sboTerm = 156
+  Kd11.sboTerm = 356
+  kf12.sboTerm = 153
+  kf13.sboTerm = 153
+  kf14.sboTerm = 153
+  Km14.sboTerm = 27
+  kf15.sboTerm = 153
+  Km15.sboTerm = 27
+  kf16.sboTerm = 153
+  Vc.sboTerm = 468
+  Rpc.sboTerm = 468
+
+  // CV terms:
+  Compartment identity "http://identifiers.org/go/GO:0005623"
+  Gd part "http://identifiers.org/chebi/CHEBI:17552",
+          "http://identifiers.org/uniprot/P27600"
+  Gt part "http://identifiers.org/chebi/CHEBI:15996",
+          "http://identifiers.org/uniprot/P27600"
+  R hypernym "http://identifiers.org/uniprot/P35412"
+  Rl part "http://identifiers.org/uniprot/P35412",
+          "http://identifiers.org/cco/CCO:F0001633"
+  Rg part "http://identifiers.org/chebi/CHEBI:17552",
+          "http://identifiers.org/uniprot/P35412",
+          "http://identifiers.org/uniprot/P27600"
+  Rlg part "http://identifiers.org/chebi/CHEBI:17552",
+           "http://identifiers.org/uniprot/P35412",
+           "http://identifiers.org/uniprot/P27600",
+           "http://identifiers.org/cco/CCO:F0001633"
+  Rlgp part "http://identifiers.org/chebi/CHEBI:17552",
+            "http://identifiers.org/uniprot/P35412",
+            "http://identifiers.org/uniprot/P27600",
+            "http://identifiers.org/cco/CCO:F0001633"
+  Rlgp hypernym "urn:miriam:mod:MOD%3A00696"
+  IP3 hypernym "http://identifiers.org/uniprot/Q8R071"
+  Pc part "http://identifiers.org/chebi/CHEBI:29108",
+          "http://identifiers.org/uniprot/Q9Z1B3"
+  Pcg part "http://identifiers.org/chebi/CHEBI:29108",
+           "http://identifiers.org/chebi/CHEBI:15996",
+           "http://identifiers.org/uniprot/Q9Z1B3",
+           "http://identifiers.org/uniprot/P27600"
+  P hypernym "http://identifiers.org/uniprot/Q9Z1B3"
+  Pg part "http://identifiers.org/chebi/CHEBI:15996",
+          "http://identifiers.org/uniprot/Q9Z1B3",
+          "http://identifiers.org/uniprot/P27600"
+  Ca hypernym "http://identifiers.org/chebi/CHEBI:29108"
 end
+
+Cooling2007_IP3transients_CardiacMyocyte is "Cooling2007_IP3transients_CardiacMyocyte"
+
+Cooling2007_IP3transients_CardiacMyocyte model_entity_is "http://identifiers.org/biomodels.db/MODEL0913194523"
+Cooling2007_IP3transients_CardiacMyocyte model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000400"
+Cooling2007_IP3transients_CardiacMyocyte description "http://identifiers.org/pubmed/17693463"
+Cooling2007_IP3transients_CardiacMyocyte taxon "http://identifiers.org/taxonomy/10090"
+Cooling2007_IP3transients_CardiacMyocyte hypernym "http://identifiers.org/fma/FMA:83108"
+Cooling2007_IP3transients_CardiacMyocyte hypernym "http://identifiers.org/go/GO:0003300",
+                                                  "http://identifiers.org/go/GO:0048016",
+                                                  "http://identifiers.org/go/GO:0003015"
+Cooling2007_IP3transients_CardiacMyocyte property "http://identifiers.org/mamo/MAMO_0000046"

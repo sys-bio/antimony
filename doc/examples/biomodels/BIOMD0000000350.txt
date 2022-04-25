@@ -1,87 +1,129 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 function LD1212(tod)
-  ceil(sin((pi*tod)/12)/2);
+  ceil(sin(pi*tod/12)/2);
 end
+
+LD1212 is "LD1212"
 
 function function_2(acc_rate, acc)
   acc_rate*acc;
 end
 
+function_2 is "Light accumulator decrease"
+
 function light(tod)
   LD1212(tod);
 end
+
+light is "light"
 
 function transcription(t)
   1 + 0*t;
 end
 
+transcription is "transcription"
+
 function ox_toc1(t)
   0*t;
 end
+
+ox_toc1 is "ox_toc1"
 
 function copies_toc1(t)
   1 + 0*t;
 end
 
+copies_toc1 is "copies_toc1"
+
 function copies_cca1(t)
   1 + 0*t;
 end
+
+copies_cca1 is "copies_cca1"
 
 function ox_cca1(t)
   0*t;
 end
 
+ox_cca1 is "ox_cca1"
+
 function translation(t)
   1 + 0*t;
 end
+
+translation is "translation"
 
 function proteasome(t)
   1 + 0*t;
 end
 
+proteasome is "proteasome"
+
 function Translation(t, T, mrna)
   translation(t)*T*mrna;
 end
+
+Translation is "Translation"
 
 function function_4(t, D_l, D_d, level)
   proteasome(t)*(light(t)*D_l + (1 - light(t))*D_d)*level;
 end
 
+function_4 is "Light-dependent protein decay"
+
 function function_5(t, Di_l, Di_d, level)
   (light(t)*Di_l + (1 - light(t))*Di_d)*level;
 end
 
+function_5 is "Light-dependent transport"
+
 function function_7(t, R_toc1_acc, acc, R_toc1_cca1, cca1_n, H_toc1_cca1, rep_pTOC1, L_toc1)
-  (rep_pTOC1*transcription(t)*(L_toc1 + R_toc1_acc*acc))/(1 + L_toc1 + R_toc1_acc*acc + (R_toc1_cca1*cca1_n)^H_toc1_cca1);
+  rep_pTOC1*transcription(t)*(L_toc1 + R_toc1_acc*acc)/(1 + L_toc1 + R_toc1_acc*acc + (R_toc1_cca1*cca1_n)^H_toc1_cca1);
 end
+
+function_7 is "LUC transcription for pTOC1"
 
 function function_8(t, R_toc1_acc, acc, R_toc1_cca1, cca1_n, H_toc1_cca1, rep_TOC1, L_toc1)
-  (rep_TOC1*transcription(t)*copies_toc1(t)*(L_toc1 + R_toc1_acc*acc))/(1 + L_toc1 + R_toc1_acc*acc + (R_toc1_cca1*cca1_n)^H_toc1_cca1);
+  rep_TOC1*transcription(t)*copies_toc1(t)*(L_toc1 + R_toc1_acc*acc)/(1 + L_toc1 + R_toc1_acc*acc + (R_toc1_cca1*cca1_n)^H_toc1_cca1);
 end
+
+function_8 is "TOC1-LUC transcription"
 
 function function_9(t, toc1_2, R_cca1_toc1_2_l, R_cca1_toc1_2_d, H_cca1_toc1, rep_pCCA1)
-  (rep_pCCA1*transcription(t)*(toc1_2*(light(t)*R_cca1_toc1_2_l + (1 - light(t))*R_cca1_toc1_2_d))^H_cca1_toc1)/((toc1_2*(light(t)*R_cca1_toc1_2_l + (1 - light(t))*R_cca1_toc1_2_d))^H_cca1_toc1 + 1);
+  rep_pCCA1*transcription(t)*(toc1_2*(light(t)*R_cca1_toc1_2_l + (1 - light(t))*R_cca1_toc1_2_d))^H_cca1_toc1/((toc1_2*(light(t)*R_cca1_toc1_2_l + (1 - light(t))*R_cca1_toc1_2_d))^H_cca1_toc1 + 1);
 end
 
+function_9 is "LUC transcription for pCCA1"
+
 function function_10(t, toc1_2, R_cca1_toc1_2_l, R_cca1_toc1_2_d, H_cca1_toc1, rep_CCA1)
-  (rep_CCA1*transcription(t)*copies_cca1(t)*(toc1_2*(light(t)*R_cca1_toc1_2_l + (1 - light(t))*R_cca1_toc1_2_d))^H_cca1_toc1)/((toc1_2*(light(t)*R_cca1_toc1_2_l + (1 - light(t))*R_cca1_toc1_2_d))^H_cca1_toc1 + 1);
+  rep_CCA1*transcription(t)*copies_cca1(t)*(toc1_2*(light(t)*R_cca1_toc1_2_l + (1 - light(t))*R_cca1_toc1_2_d))^H_cca1_toc1/((toc1_2*(light(t)*R_cca1_toc1_2_l + (1 - light(t))*R_cca1_toc1_2_d))^H_cca1_toc1 + 1);
 end
+
+function_10 is "CCA1-LUC transcription"
 
 function tf_output(reporter, effcopies, tf)
   (1 + reporter*(effcopies - 1))*tf;
 end
 
+tf_output is "tf_output"
+
 function function_1(acc_rate, t)
   acc_rate*light(t);
 end
 
+function_1 is "Light accumulator increase"
+
 function function_3(R_toc1_acc, acc, R_toc1_cca1, H_toc1_cca1, cca1_n, t, L_toc1, rep_CCA1, effcopies_cca1_LHY7)
-  transcription(t)*(ox_toc1(t) + (copies_toc1(t)*(L_toc1 + R_toc1_acc*acc))/(1 + L_toc1 + R_toc1_acc*acc + (R_toc1_cca1*tf_output(rep_CCA1, effcopies_cca1_LHY7, cca1_n))^H_toc1_cca1));
+  transcription(t)*(ox_toc1(t) + copies_toc1(t)*(L_toc1 + R_toc1_acc*acc)/(1 + L_toc1 + R_toc1_acc*acc + (R_toc1_cca1*tf_output(rep_CCA1, effcopies_cca1_LHY7, cca1_n))^H_toc1_cca1));
 end
 
+function_3 is "TOC1 transcription"
+
 function function_6(t, toc1_2, R_cca1_toc1_2_l, R_cca1_toc1_2_d, H_cca1_toc1, rep_TOC1, effcopies_toc1_TOC8)
-  transcription(t)*(ox_cca1(t) + (copies_cca1(t)*(tf_output(rep_TOC1, effcopies_toc1_TOC8, toc1_2)*(light(t)*R_cca1_toc1_2_l + (1 - light(t))*R_cca1_toc1_2_d))^H_cca1_toc1)/((tf_output(rep_TOC1, effcopies_toc1_TOC8, toc1_2)*(light(t)*R_cca1_toc1_2_l + (1 - light(t))*R_cca1_toc1_2_d))^H_cca1_toc1 + 1));
+  transcription(t)*(ox_cca1(t) + copies_cca1(t)*(tf_output(rep_TOC1, effcopies_toc1_TOC8, toc1_2)*(light(t)*R_cca1_toc1_2_l + (1 - light(t))*R_cca1_toc1_2_d))^H_cca1_toc1/((tf_output(rep_TOC1, effcopies_toc1_TOC8, toc1_2)*(light(t)*R_cca1_toc1_2_l + (1 - light(t))*R_cca1_toc1_2_d))^H_cca1_toc1 + 1));
 end
+
+function_6 is "CCA1 transcription"
 
 
 model *Model_1()
@@ -192,6 +234,7 @@ model *Model_1()
   unit substance = 1e-9 mole;
 
   // Display Names:
+  compartment_ is "compartment";
   parameter_1 is "T_luc";
   parameter_2 is "rep_TOC1";
   parameter_3 is "rep_pTOC1";
@@ -227,4 +270,134 @@ model *Model_1()
   reaction_28 is "CCA1-LUC translation";
   reaction_30 is "CCA1-LUC degradation";
   reaction_32 is "CCA1-LUC deactivation";
+
+  // SBO terms:
+  compartment_.sboTerm = 290
+  acc.sboTerm = 236
+  toc1_mrna.sboTerm = 278
+  toc1_1.sboTerm = 252
+  toc1_2.sboTerm = 252
+  cca1_mrna.sboTerm = 278
+  cca1_c.sboTerm = 252
+  cca1_n.sboTerm = 252
+  toc1luc_mrna.sboTerm = 278
+  toc1luc_1.sboTerm = 252
+  toc1luc_2.sboTerm = 252
+  cca1luc_mrna.sboTerm = 278
+  cca1luc.sboTerm = 252
+  luc_mrna.sboTerm = 278
+  luc.sboTerm = 247
+  D_luc.sboTerm = 349
+  D_mrna_luc.sboTerm = 356
+  acc_rate.sboTerm = 9
+  R_toc1_cca1.sboTerm = 9
+  H_toc1_cca1.sboTerm = 9
+  L_toc1.sboTerm = 153
+  R_toc1_acc.sboTerm = 153
+  D_mrna_toc1.sboTerm = 356
+  T_toc1.sboTerm = 153
+  Di_toc1_12_l.sboTerm = 153
+  Di_toc1_12_d.sboTerm = 153
+  D_toc1_2_l.sboTerm = 356
+  D_toc1_2_d.sboTerm = 356
+  H_cca1_toc1.sboTerm = 153
+  R_cca1_toc1_2_l.sboTerm = 153
+  R_cca1_toc1_2_d.sboTerm = 153
+  D_mrna_cca1.sboTerm = 356
+  T_cca1.sboTerm = 153
+  Di_cca1_cn.sboTerm = 9
+  D_cca1_l.sboTerm = 356
+  D_cca1_d.sboTerm = 356
+  effcopies_cca1_LHY7.sboTerm = 9
+  effcopies_toc1_TOC8.sboTerm = 9
+  parameter_1.sboTerm = 9
+  parameter_2.sboTerm = 9
+  parameter_3.sboTerm = 9
+  parameter_4.sboTerm = 9
+  parameter_5.sboTerm = 9
+  reaction_1.sboTerm = 393
+  reaction_2.sboTerm = 179
+  reaction_3.sboTerm = 183
+  reaction_4.sboTerm = 179
+  reaction_5.sboTerm = 184
+  reaction_6.sboTerm = 182
+  reaction_7.sboTerm = 179
+  reaction_8.sboTerm = 183
+  reaction_9.sboTerm = 179
+  reaction_10.sboTerm = 184
+  reaction_11.sboTerm = 185
+  reaction_12.sboTerm = 179
+  reaction_13.sboTerm = 179
+  reaction_14.sboTerm = 183
+  reaction_15.sboTerm = 179
+  reaction_16.sboTerm = 184
+  reaction_17.sboTerm = 179
+  reaction_18.sboTerm = 183
+  reaction_19.sboTerm = 179
+  reaction_20.sboTerm = 184
+  reaction_21.sboTerm = 182
+  reaction_22.sboTerm = 179
+  reaction_23.sboTerm = 176
+  reaction_24.sboTerm = 176
+  reaction_25.sboTerm = 183
+  reaction_26.sboTerm = 183
+  reaction_27.sboTerm = 179
+  reaction_28.sboTerm = 184
+  reaction_30.sboTerm = 179
+  reaction_32.sboTerm = 176
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/go/GO:0005623"
+  toc1_mrna homolog "http://identifiers.org/chebi/CHEBI:33699"
+  toc1_1 hypernym "http://identifiers.org/uniprot/Q9LKL2"
+  toc1_2 hypernym "http://identifiers.org/uniprot/Q9LKL2"
+  cca1_mrna hypernym "http://identifiers.org/chebi/CHEBI:33699"
+  cca1_c homolog "http://identifiers.org/uniprot/P92973"
+  cca1_n homolog "http://identifiers.org/uniprot/P92973"
+  toc1luc_mrna hypernym "http://identifiers.org/chebi/CHEBI:33699"
+  toc1luc_1 part "http://identifiers.org/uniprot/Q9LKL2"
+  toc1luc_2 hypernym "http://identifiers.org/uniprot/Q9LKL2"
+  cca1luc_mrna hypernym "http://identifiers.org/chebi/CHEBI:33699"
+  cca1luc hypernym "http://identifiers.org/uniprot/P92973"
+  luc_mrna hypernym "http://identifiers.org/chebi/CHEBI:33699"
+  luc hypernym "http://identifiers.org/chebi/CHEBI:25078"
+  reaction_1 hypernym "http://identifiers.org/go/GO:0009058"
+  reaction_2 hypernym "http://identifiers.org/go/GO:0009056"
+  reaction_3 hypernym "http://identifiers.org/go/GO:0006351"
+  reaction_4 hypernym "http://identifiers.org/go/GO:0009056"
+  reaction_5 hypernym "http://identifiers.org/go/GO:0006412"
+  reaction_6 hypernym "http://identifiers.org/psimod/MOD:00000"
+  reaction_7 hypernym "http://identifiers.org/go/GO:0009056"
+  reaction_8 hypernym "http://identifiers.org/go/GO:0006351"
+  reaction_9 hypernym "http://identifiers.org/go/GO:0009056"
+  reaction_10 hypernym "http://identifiers.org/go/GO:0006412"
+  reaction_11 hypernym "http://identifiers.org/go/GO:0051169"
+  reaction_12 hypernym "http://identifiers.org/go/GO:0009056"
+  reaction_13 hypernym "http://identifiers.org/go/GO:0009056"
+  reaction_14 hypernym "http://identifiers.org/go/GO:0006351"
+  reaction_15 hypernym "http://identifiers.org/go/GO:0009056"
+  reaction_16 hypernym "http://identifiers.org/go/GO:0006412"
+  reaction_17 hypernym "http://identifiers.org/go/GO:0030163"
+  reaction_18 hypernym "http://identifiers.org/go/GO:0006351"
+  reaction_19 hypernym "http://identifiers.org/go/GO:0009056"
+  reaction_20 hypernym "http://identifiers.org/go/GO:0006412"
+  reaction_21 hypernym "http://identifiers.org/psimod/MOD:00000"
+  reaction_22 hypernym "http://identifiers.org/go/GO:0009056"
+  reaction_23 hypernym "http://identifiers.org/go/GO:0030163"
+  reaction_24 version "http://identifiers.org/go/GO:0030163"
+  reaction_25 hypernym "http://identifiers.org/go/GO:0006351"
+  reaction_26 hypernym "http://identifiers.org/go/GO:0006351"
+  reaction_27 hypernym "http://identifiers.org/go/GO:0009056"
+  reaction_28 hypernym "http://identifiers.org/go/GO:0006412"
+  reaction_30 hypernym "http://identifiers.org/go/GO:0009056"
+  reaction_32 hypernym "http://identifiers.org/go/GO:0030163"
 end
+
+Model_1 is "Troein2011_ClockCircuit_OstreococcusTauri"
+
+Model_1 model_entity_is "http://identifiers.org/biomodels.db/MODEL1107230000"
+Model_1 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000350"
+Model_1 description "http://identifiers.org/pubmed/21219507"
+Model_1 hypernym "http://identifiers.org/kegg.pathway/map04710",
+                 "http://identifiers.org/go/GO:0042752"
+Model_1 taxon "http://identifiers.org/taxonomy/70448"

@@ -1,0 +1,259 @@
+// Created by libAntimony v2.13.0
+function kill(d, K, T)
+  d*K*T;
+end
+
+kill is "kill"
+
+function Tn_stim(rmn, Tn, M2)
+  rmn*Tn*M2;
+end
+
+Tn_stim is "Tn stim"
+
+function m_growth(a1, T, a2, Th, P, M, bm)
+  (a1*T + a2*Th)*P*(1 - (P + M)/bm);
+end
+
+m_growth is "m growth"
+
+function stim_Th(ah, M)
+  ah*M;
+end
+
+stim_Th is "stim Th"
+
+function M_transition(k, S, P)
+  k*S*P;
+end
+
+M_transition is "M transition"
+
+function Th_growth(rh, M, P, Mod, bth)
+  rh*M*P*(1 - (P + Mod)/bth);
+end
+
+Th_growth is "Th growth"
+
+function tumor_growth(r, X, Y, bt)
+  r*X*(1 - (X + Y)/bt);
+end
+
+tumor_growth is "tumor growth"
+
+
+model *den_Breems2015___macrophage_in_cancer()
+
+  // Compartments and Species:
+  compartment tumor_microenvironment;
+  species Tn in tumor_microenvironment, Ts in tumor_microenvironment, M1 in tumor_microenvironment;
+  species M2 in tumor_microenvironment, Th1 in tumor_microenvironment, Th2 in tumor_microenvironment;
+
+  // Assignment Rules:
+  Tumor := Tn + Ts;
+
+  // Reactions:
+  Tn_growth:  => Tn; tumor_microenvironment*tumor_growth(r, Tn, Ts, bt);
+  Ts_Tn_transition: Ts => Tn; tumor_microenvironment*ksn*Ts;
+  Tn_killing: Tn => ; tumor_microenvironment*kill(dmn, M1, Tn);
+  Tn_stimulation:  => Tn; tumor_microenvironment*Tn_stim(rmn, Tn, M2);
+  Ts_growth:  => Ts; tumor_microenvironment*tumor_growth(r, Ts, Tn, bt);
+  Ts_killing_M1: Ts => ; tumor_microenvironment*kill(dms, M1, Ts);
+  Ts_killing_Th1: Ts => ; tumor_microenvironment*kill(dts, Th1, Ts);
+  M1_growth:  => M1; tumor_microenvironment*m_growth(as, Ts, am1, Th1, M1, M2, bm);
+  M1_death: M1 => ; tumor_microenvironment*dm1*M1;
+  M1_M2_transition: M1 => M2; tumor_microenvironment*M_transition(k12, M1, M2);
+  M2_M1_transition: M2 => M1; tumor_microenvironment*M_transition(k21, M2, M1);
+  M2_growth:  => M2; tumor_microenvironment*m_growth(an, Tn, am2, Th2, M2, M1, bm);
+  M2_death: M2 => ; tumor_microenvironment*dm2*M2;
+  Th1_growth:  => Th1; tumor_microenvironment*Th_growth(rh1, M1, Th1, Th2, bth);
+  Th1_death: Th1 => ; tumor_microenvironment*dh1*Th1;
+  Th1_stimulation:  => Th1; tumor_microenvironment*stim_Th(ah1, M1);
+  Th2_growth:  => Th2; tumor_microenvironment*Th_growth(rh2, M2, Th2, Th1, bth);
+  Th2_death: Th2 => ; tumor_microenvironment*dh2*Th2;
+  Th2_stimulation:  => Th2; tumor_microenvironment*stim_Th(ah2, M2);
+
+  // Species initializations:
+  Tn = 1000;
+  Tn has substance_per_volume;
+  Ts = 1000000;
+  Ts has substance_per_volume;
+  M1 = 100;
+  M1 has substance_per_volume;
+  M2 = 100;
+  M2 has substance_per_volume;
+  Th1 = 0;
+  Th1 has substance_per_volume;
+  Th2 = 0;
+  Th2 has substance_per_volume;
+
+  // Compartment initializations:
+  tumor_microenvironment = 1;
+  tumor_microenvironment has volume;
+
+  // Variable initializations:
+  r = 0.565;
+  r has unit_0;
+  bt = 2000000000;
+  bt has unit_1;
+  ksn = 0.1;
+  ksn has unit_0;
+  dmn = 2e-06;
+  dmn has unit_0;
+  dms = 2e-06;
+  dms has unit_0;
+  rmn = 1e-07;
+  rmn has unit_0;
+  dts = 5.3e-08;
+  dts has unit_0;
+  as = 1e-06;
+  as has unit_0;
+  an = 5e-08;
+  an has unit_0;
+  am1 = 5e-08;
+  am1 has unit_0;
+  am2 = 5e-08;
+  am2 has unit_0;
+  bm = 100000;
+  bm has unit_1;
+  dm1 = 0.2;
+  dm1 has unit_0;
+  dm2 = 0.2;
+  dm2 has unit_0;
+  k12 = 5e-05;
+  k12 has unit_0;
+  k21 = 4e-05;
+  k21 has unit_0;
+  ah1 = 0.008;
+  ah1 has unit_0;
+  ah2 = 0.008;
+  ah2 has unit_0;
+  rh1 = 9e-06;
+  rh1 has unit_0;
+  rh2 = 9e-06;
+  rh2 has unit_0;
+  dh1 = 0.05;
+  dh1 has unit_0;
+  dh2 = 0.05;
+  dh2 has unit_0;
+  bth = 100000000;
+  bth has unit_1;
+  Tumor has unit_1;
+
+  // Other declarations:
+  var Tumor;
+  const tumor_microenvironment, r, bt, ksn, dmn, dms, rmn, dts, as, an, am1;
+  const am2, bm, dm1, dm2, k12, k21, ah1, ah2, rh1, rh2, dh1, dh2, bth;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = time_unit;
+  unit substance = 1e-3 mole;
+  unit unit_0 = 1 / 86400e-1 second;
+  unit unit_1 = 1 / dimensionless^-0;
+  unit extent = substance;
+  unit substance_per_volume = 1e-3 mole / 1e-3 litre;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1/d";
+  unit_1 is "1";
+  tumor_microenvironment is "tumor microenvironment";
+  Tn_growth is "Tn growth";
+  Ts_Tn_transition is "Ts-Tn transition";
+  Tn_killing is "Tn killing";
+  Tn_stimulation is "Tn stimulation";
+  Ts_growth is "Ts growth";
+  Ts_killing_M1 is "Ts killing-M1";
+  Ts_killing_Th1 is "Ts killing-Th1";
+  M1_growth is "M1 growth";
+  M1_death is "M1 death";
+  M1_M2_transition is "M1-M2 transition";
+  M2_M1_transition is "M2-M1 transition";
+  M2_growth is "M2 growth";
+  M2_death is "M2 death";
+  Th1_growth is "Th1 growth";
+  Th1_death is "Th1 death";
+  Th1_stimulation is "Th1 stimulation";
+  Th2_growth is "Th2 growth";
+  Th2_death is "Th2 death";
+  Th2_stimulation is "Th2 stimulation";
+
+  // CV terms:
+  tumor_microenvironment hypernym "http://identifiers.org/ncit/C94498"
+  Tn hypernym "http://identifiers.org/cl/CL:0001064"
+  Ts hypernym "http://identifiers.org/cl/CL:0001064"
+  M1 hypernym "http://identifiers.org/ncit/C156004"
+  M2 hypernym "http://identifiers.org/ncit/C123783"
+  Th1 hypernym "http://identifiers.org/cl/CL:0000545"
+  Th2 hypernym "http://identifiers.org/cl/CL:0000546"
+  r hypernym "http://identifiers.org/sbo/SBO:0000610"
+  bt hypernym "http://identifiers.org/sbo/SBO:0000661"
+  ksn hypernym "http://identifiers.org/ncit/C25636"
+  dmn hypernym "http://identifiers.org/ncit/C25636"
+  dms hypernym "http://identifiers.org/ncit/C25636"
+  rmn hypernym "http://identifiers.org/sbo/SBO:0000610"
+  dts hypernym "http://identifiers.org/ncit/C25636"
+  as hypernym "http://identifiers.org/sbo/SBO:0000610"
+  an hypernym "http://identifiers.org/sbo/SBO:0000610"
+  am1 hypernym "http://identifiers.org/sbo/SBO:0000610"
+  am2 hypernym "http://identifiers.org/sbo/SBO:0000610"
+  bm hypernym "http://identifiers.org/sbo/SBO:0000661"
+  dm1 hypernym "http://identifiers.org/ncit/C25636"
+  dm2 hypernym "http://identifiers.org/ncit/C25636"
+  k12 hypernym "http://identifiers.org/ncit/C25636"
+  k21 hypernym "http://identifiers.org/ncit/C25636"
+  ah1 hypernym "http://identifiers.org/sbo/SBO:0000610"
+  ah2 hypernym "http://identifiers.org/sbo/SBO:0000610"
+  rh1 hypernym "http://identifiers.org/sbo/SBO:0000610"
+  rh2 hypernym "http://identifiers.org/sbo/SBO:0000610"
+  dh1 hypernym "http://identifiers.org/ncit/C25636"
+  dh2 hypernym "http://identifiers.org/ncit/C25636"
+  bth hypernym "http://identifiers.org/sbo/SBO:0000661"
+  Tn_growth hypernym "http://identifiers.org/go/GO:0008283"
+  Tn_growth hypernym "http://identifiers.org/sbo/SBO:0000393"
+  Ts_Tn_transition hypernym "http://identifiers.org/ncit/C75958"
+  Tn_killing hypernym "http://identifiers.org/go/GO:0006909"
+  Tn_killing hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Tn_stimulation hypernym "http://identifiers.org/go/GO:0008283"
+  Tn_stimulation hypernym "http://identifiers.org/sbo/SBO:0000393"
+  Ts_growth hypernym "http://identifiers.org/sbo/SBO:0000393"
+  Ts_growth hypernym "http://identifiers.org/go/GO:0008283"
+  Ts_killing_M1 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Ts_killing_M1 hypernym "http://identifiers.org/go/GO:0006909"
+  Ts_killing_Th1 hypernym "http://identifiers.org/go/GO:0002419"
+  Ts_killing_Th1 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  M1_growth hypernym "http://identifiers.org/sbo/SBO:0000393"
+  M1_growth hypernym "http://identifiers.org/go/GO:0008283"
+  M1_death hypernym "http://identifiers.org/go/GO:0008219"
+  M1_death hypernym "http://identifiers.org/sbo/SBO:0000179"
+  M1_M2_transition hypernym "http://identifiers.org/ncit/C75958"
+  M2_M1_transition hypernym "http://identifiers.org/ncit/C75958"
+  M2_growth hypernym "http://identifiers.org/sbo/SBO:0000393"
+  M2_growth hypernym "http://identifiers.org/go/GO:0008283"
+  M2_death hypernym "http://identifiers.org/go/GO:0008219"
+  M2_death hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Th1_growth hypernym "http://identifiers.org/go/GO:0008283"
+  Th1_growth hypernym "http://identifiers.org/sbo/SBO:0000393"
+  Th1_death hypernym "http://identifiers.org/go/GO:0008219"
+  Th1_death hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Th1_stimulation hypernym "http://identifiers.org/sbo/SBO:0000393"
+  Th1_stimulation hypernym "http://identifiers.org/go/GO:0008283"
+  Th2_growth hypernym "http://identifiers.org/sbo/SBO:0000393"
+  Th2_growth hypernym "http://identifiers.org/go/GO:0008283"
+  Th2_death hypernym "http://identifiers.org/go/GO:0008219"
+  Th2_death hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Th2_stimulation hypernym "http://identifiers.org/sbo/SBO:0000393"
+  Th2_stimulation hypernym "http://identifiers.org/go/GO:0008283"
+end
+
+den_Breems2015___macrophage_in_cancer is "den Breems2015 - macrophage in cancer"
+
+den_Breems2015___macrophage_in_cancer description "http://identifiers.org/pubmed/26551154"
+den_Breems2015___macrophage_in_cancer model_entity_is "http://identifiers.org/biomodels.db/MODEL1907240004",
+                                                      "http://identifiers.org/biomodels.db/BIOMD0000000759"
+den_Breems2015___macrophage_in_cancer property "http://identifiers.org/go/GO:0002418"
+den_Breems2015___macrophage_in_cancer property "http://identifiers.org/mamo/MAMO_0000046"
+den_Breems2015___macrophage_in_cancer taxon "http://identifiers.org/taxonomy/9606"

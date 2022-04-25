@@ -1,0 +1,281 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function Mass_action_modifier_1(k1, substrate, modifier, const_)
+  k1*substrate*modifier*const_;
+end
+
+Mass_action_modifier_1.sboTerm = 163
+
+Mass_action_modifier_1 identity "http://identifiers.org/sbo/SBO:0000163"
+
+Mass_action_modifier_1 is "Mass_action_modifier_1"
+
+function Mass_action_modifier(k1, substrate, modifier)
+  k1*substrate*modifier;
+end
+
+Mass_action_modifier.sboTerm = 163
+
+Mass_action_modifier identity "http://identifiers.org/sbo/SBO:0000163"
+
+Mass_action_modifier is "Mass_action_modifier"
+
+function Linear_modi(k, M)
+  k*M;
+end
+
+Linear_modi is "Linear_modi"
+
+
+model *Tang2019___Pharmacology_modelling_of_AURKB_and_ZAK_interaction_in_TNBC()
+
+  // Compartments and Species:
+  compartment Cell;
+  species PKN1 in Cell, ZAK in Cell, MAP2K3 in Cell, MAPK14 in Cell, MAP2K4 in Cell;
+  species TP53 in Cell, ATM in Cell, MAPK13 in Cell, PRKACA in Cell, SRC in Cell;
+  species BAD in Cell, PTEN in Cell, SHC1 in Cell, PIK3R1 in Cell, PARP1 in Cell;
+  species AURKB in Cell, BRCA1 in Cell, YWHAZ in Cell, TGFBR1 in Cell, CSF1R in Cell;
+
+  // Reactions:
+  PKN1_Prod:  => PKN1; Cell*Constant_flux__irreversible(k_pkn1);
+  PKN1_Degrad: PKN1 => ; Cell*kd_pkn1*PKN1;
+  ZAK_Prod:  => ZAK; Cell*Linear_modi(k_zak, PKN1);
+  ZAK_Degrad: ZAK => ; Cell*kd_zak*ZAK;
+  MAP2K3_Prod:  => MAP2K3; Cell*Linear_modi(k_map2k3, PKN1);
+  MAP2K3_Degrad: MAP2K3 => ; Cell*kd_map2k3*MAP2K3;
+  MAPK14_Prod:  => MAPK14; Cell*Linear_modi(k_mapk14, MAP2K3);
+  MAPK14_Degrad: MAPK14 => ; Cell*kd_mapk14*MAPK14;
+  MAP2K4_Prod:  => MAP2K4; Cell*Linear_modi(k_map2k4, MAP2K3);
+  MAP2K4_Degrad: MAP2K4 => ; Cell*kd_map2k4*MAP2K4;
+  TP53_Prod:  => TP53; Cell*Linear_modi(k_tp53, MAPK14);
+  TP53_Degrad: TP53 => ; Cell*kd_tp53*TP53;
+  ATM_Prod:  => ATM; Cell*Linear_modi(k_atm, MAPK14);
+  ATM_Degrad: ATM => ; Cell*kd_atm*ATM;
+  MAPK14_Prod2:  => MAPK14; Cell*Linear_modi(k_mapk14, MAP2K4);
+  MAPK13_Prod:  => MAPK13; Cell*Linear_modi(k_mapk13, MAP2K4);
+  MAPK13_Degrad: MAPK13 => ; Cell*kd_mapk13*MAPK13;
+  PRKACA_Prod:  => PRKACA; Cell*Linear_modi(k_prkaca, MAPK13);
+  PRKACA_Degrad: PRKACA => ; Cell*kd_prkaca*PRKACA;
+  SRC_Prod:  => SRC; Cell*Linear_modi(k_src, PRKACA);
+  SRC_Degrad: SRC => ; Cell*kd_src*SRC;
+  BAD_Prod:  => BAD; Cell*Constant_flux__irreversible(k_bad);
+  BAD_Degrad: BAD => ; Cell*kd_bad*BAD;
+  TP53_Prod2:  => TP53; Cell*Linear_modi(k_tp53, SRC);
+  TP53_Prod3:  => TP53; Cell*Linear_modi(k_tp53, BAD);
+  PTEN_Prod:  => PTEN; Cell*Linear_modi(k_pten, TP53);
+  PTEN_Degrad: PTEN => ; Cell*kd_pten*PTEN;
+  SHC1_Prod:  => SHC1; Cell*Linear_modi(k_shc1, TGFBR1);
+  SHC1_Degrad: SHC1 => ; Cell*Mass_action_modifier(kd_shc1, SHC1, PTEN);
+  PIK3R1_Degrad: PIK3R1 => ; Cell*Mass_action_modifier(kd_pik3r1, PIK3R1, PTEN);
+  PARP1_Prod:  => PARP1; Cell*Constant_flux__irreversible(k_parp1);
+  PARP1_Degrad: PARP1 => ; Cell*kd_parp1*PARP1;
+  AURKB_Prod:  => AURKB; Cell*Linear_modi(k_aurkb, PARP1);
+  AURKB_Degrad: AURKB => ; Cell*kd_aurkb*AURKB;
+  ATM_Prod2:  => ATM; Cell*Linear_modi(k_atm, PARP1);
+  TP53_Prod4:  => TP53; Cell*Linear_modi(k_tp53, PARP1);
+  BRCA1_Prod:  => BRCA1; Cell*Linear_modi(k_brca1, PARP1);
+  BRCA1_Degrad: BRCA1 => ; Cell*kd_brca1*BRCA1;
+  TP53_Prod5:  => TP53; Cell*Linear_modi(k_tp53, ATM);
+  TP53_Prod6:  => TP53; Cell*Linear_modi(k_tp53, BRCA1);
+  BRCA1_Prod2:  => BRCA1; Cell*Linear_modi(k_brca1, ATM);
+  SRC_Prod2:  => SRC; Cell*Linear_modi(k_src, CSF1R);
+  YWHAZ_Prod:  => YWHAZ; Cell*Linear_modi(k_ywhaz, ZAK);
+  YWHAZ_Degrad: YWHAZ => ; Cell*kd_ywhaz*YWHAZ;
+  MAP2K3_Prod2:  => MAP2K3; Cell*Linear_modi(k_map2k3, ZAK);
+  MAP2K4_Prod2:  => MAP2K4; Cell*Linear_modi(k_map2k4, ZAK);
+  TGFBR1_Prod:  => TGFBR1; Cell*Linear_modi(k_tgfbr1, ZAK);
+  TGFBR1_Degrad: TGFBR1 => ; Cell*kd_tgfbr1*TGFBR1;
+  BAD_Degrad2: BAD => ; Cell*Mass_action_modifier_1(kd_bad, BAD, YWHAZ, BAD_Degrad2_const);
+  PIK3R1_Prod:  => PIK3R1; Cell*Linear_modi(k_pik3r1, YWHAZ);
+  CSF1R_Prod:  => CSF1R; Cell*Linear_modi(k_csf1r, PIK3R1);
+  TGFBR1_Prod2:  => TGFBR1; Cell*Linear_modi(k_tgfbr1, PIK3R1);
+  MAPK14_Prod3:  => MAPK14; Cell*Linear_modi(k_mapk14, TGFBR1);
+  MAPK14_Prod4:  => MAPK14; Cell*Linear_modi(k_mapk14, SHC1);
+  PIK3R1_Prod2:  => PIK3R1; Cell*Linear_modi(k_pik3r1, SHC1);
+  CSF1R_Prod2:  => CSF1R; Cell*Linear_modi(k_csf1r, SHC1);
+  CSF1R_Degrad: CSF1R => ; Cell*kd_csf1r*CSF1R;
+  ATM_Prod3:  => ATM; Cell*Linear_modi(k_atm, AURKB);
+  PRKACA_Prod2:  => PRKACA; Cell*Linear_modi(k_prkaca, AURKB);
+  TP53_Degrad2: TP53 => ; Cell*Mass_action_modifier_1(kd_tp53, TP53, AURKB, TP53_Degrad2_const);
+
+  // Species initializations:
+  PKN1 = 0;
+  ZAK = 0;
+  MAP2K3 = 0;
+  MAPK14 = 0;
+  MAP2K4 = 0;
+  TP53 = 0;
+  ATM = 1;
+  MAPK13 = 1;
+  PRKACA = 1;
+  SRC = 1;
+  BAD = 1;
+  PTEN = 1;
+  SHC1 = 1;
+  PIK3R1 = 1;
+  PARP1 = 1;
+  AURKB = 1;
+  BRCA1 = 1;
+  YWHAZ = 1;
+  TGFBR1 = 1;
+  CSF1R = 1;
+
+  // Compartment initializations:
+  Cell = 1;
+
+  // Variable initializations:
+  k_pkn1 = 0.5;
+  kd_pkn1 = 0.005;
+  k_zak = 0.1;
+  kd_zak = 0.5;
+  k_map2k3 = 0.2;
+  kd_map2k3 = 0.6;
+  k_mapk14 = 2;
+  kd_mapk14 = 5;
+  k_map2k4 = 0.2;
+  kd_map2k4 = 0.6;
+  k_tp53 = 0.6;
+  k_atm = 0.1;
+  kd_tp53 = 2;
+  kd_atm = 3;
+  k_mapk13 = 2;
+  kd_mapk13 = 1.4;
+  k_prkaca = 2;
+  kd_prkaca = 6;
+  k_src = 0.2;
+  kd_src = 1;
+  k_bad = 5;
+  kd_bad = 0.04;
+  k_pik3r1 = 2;
+  kd_pik3r1 = 10;
+  k_csf1r = 2;
+  kd_csf1r = 30;
+  k_shc1 = 2;
+  kd_shc1 = 0.06;
+  k_pten = 0.2;
+  kd_pten = 0.5;
+  k_parp1 = 0.5;
+  kd_parp1 = 0.005;
+  k_aurkb = 3;
+  kd_aurkb = 4.5;
+  k_brca1 = 2;
+  kd_brca1 = 20;
+  k_ywhaz = 0.9;
+  kd_ywhaz = 0.072;
+  k_tgfbr1 = 0.5;
+  kd_tgfbr1 = 0.45;
+  BAD_Degrad2_const = 0.0133;
+  TP53_Degrad2_const = 0.0067;
+
+  // Other declarations:
+  const Cell, k_pkn1, kd_pkn1, k_zak, kd_zak, k_map2k3, kd_map2k3, k_mapk14;
+  const kd_mapk14, k_map2k4, kd_map2k4, k_tp53, k_atm, kd_tp53, kd_atm, k_mapk13;
+  const kd_mapk13, k_prkaca, kd_prkaca, k_src, kd_src, k_bad, kd_bad, k_pik3r1;
+  const kd_pik3r1, k_csf1r, kd_csf1r, k_shc1, kd_shc1, k_pten, kd_pten, k_parp1;
+  const kd_parp1, k_aurkb, kd_aurkb, k_brca1, kd_brca1, k_ywhaz, kd_ywhaz;
+  const k_tgfbr1, kd_tgfbr1;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // CV terms:
+  Cell identity "http://identifiers.org/ncit/NCIT:C48694"
+  PKN1 identity "http://identifiers.org/uniprot/Q16512"
+  ZAK hypernym "http://identifiers.org/uniprot/Q75JK0"
+  MAP2K3 identity "http://identifiers.org/uniprot/P46734"
+  MAPK14 identity "http://identifiers.org/uniprot/Q16539"
+  MAP2K4 identity "http://identifiers.org/uniprot/P45985"
+  TP53 identity "http://identifiers.org/uniprot/P04637"
+  ATM identity "http://identifiers.org/uniprot/Q13315"
+  MAPK13 identity "http://identifiers.org/uniprot/O15264"
+  PRKACA identity "http://identifiers.org/uniprot/P17612"
+  SRC identity "http://identifiers.org/uniprot/P12931"
+  BAD identity "http://identifiers.org/uniprot/Q92934"
+  PTEN identity "http://identifiers.org/uniprot/P60484"
+  SHC1 identity "http://identifiers.org/uniprot/P29353"
+  PIK3R1 identity "http://identifiers.org/uniprot/P27986"
+  PARP1 identity "http://identifiers.org/uniprot/P09874"
+  AURKB identity "http://identifiers.org/uniprot/Q96GD4"
+  BRCA1 identity "http://identifiers.org/uniprot/P38398"
+  YWHAZ identity "http://identifiers.org/uniprot/P63104"
+  TGFBR1 identity "http://identifiers.org/uniprot/P36897"
+  CSF1R identity "http://identifiers.org/unipathway.compound/P07333"
+  PKN1_Prod property "http://identifiers.org/sbo/SBO:0000393"
+  PKN1_Degrad property "http://identifiers.org/sbo/SBO:0000179"
+  ZAK_Prod property "http://identifiers.org/sbo/SBO:0000393"
+  ZAK_Degrad property "http://identifiers.org/sbo/SBO:0000179"
+  MAP2K3_Prod property "http://identifiers.org/sbo/SBO:0000393"
+  MAP2K3_Degrad property "http://identifiers.org/sbo/SBO:0000179"
+  MAPK14_Prod property "http://identifiers.org/sbo/SBO:0000393"
+  MAPK14_Degrad property "http://identifiers.org/sbo/SBO:0000179"
+  MAP2K4_Prod property "http://identifiers.org/sbo/SBO:0000393"
+  MAP2K4_Degrad property "http://identifiers.org/sbo/SBO:0000179"
+  TP53_Prod property "http://identifiers.org/sbo/SBO:0000393"
+  TP53_Degrad property "http://identifiers.org/sbo/SBO:0000179"
+  ATM_Prod property "http://identifiers.org/sbo/SBO:0000393"
+  ATM_Degrad property "http://identifiers.org/sbo/SBO:0000179"
+  MAPK14_Prod2 property "http://identifiers.org/sbo/SBO:0000393"
+  MAPK13_Prod property "http://identifiers.org/sbo/SBO:0000393"
+  MAPK13_Degrad property "http://identifiers.org/sbo/SBO:0000179"
+  PRKACA_Prod property "http://identifiers.org/sbo/SBO:0000393"
+  PRKACA_Degrad property "http://identifiers.org/sbo/SBO:0000179"
+  SRC_Prod property "http://identifiers.org/sbo/SBO:0000393"
+  SRC_Degrad property "http://identifiers.org/sbo/SBO:0000179"
+  BAD_Prod property "http://identifiers.org/sbo/SBO:0000393"
+  BAD_Degrad property "http://identifiers.org/sbo/SBO:0000179"
+  TP53_Prod2 property "http://identifiers.org/sbo/SBO:0000393"
+  TP53_Prod3 property "http://identifiers.org/sbo/SBO:0000393"
+  PTEN_Prod property "http://identifiers.org/sbo/SBO:0000393"
+  PTEN_Degrad property "http://identifiers.org/sbo/SBO:0000179"
+  SHC1_Prod property "http://identifiers.org/sbo/SBO:0000393"
+  SHC1_Degrad property "http://identifiers.org/sbo/SBO:0000179"
+  PIK3R1_Degrad property "http://identifiers.org/sbo/SBO:0000179"
+  PARP1_Prod property "http://identifiers.org/sbo/SBO:0000393"
+  PARP1_Degrad property "http://identifiers.org/sbo/SBO:0000179"
+  AURKB_Prod property "http://identifiers.org/sbo/SBO:0000393"
+  AURKB_Degrad property "http://identifiers.org/sbo/SBO:0000179"
+  ATM_Prod2 property "http://identifiers.org/sbo/SBO:0000393"
+  TP53_Prod4 property "http://identifiers.org/sbo/SBO:0000393"
+  BRCA1_Prod property "http://identifiers.org/sbo/SBO:0000393"
+  BRCA1_Degrad part "http://identifiers.org/sbo/SBO:0000179"
+  TP53_Prod5 property "http://identifiers.org/sbo/SBO:0000393"
+  TP53_Prod6 property "http://identifiers.org/sbo/SBO:0000393"
+  BRCA1_Prod2 property "http://identifiers.org/sbo/SBO:0000393"
+  SRC_Prod2 property "http://identifiers.org/sbo/SBO:0000393"
+  YWHAZ_Prod property "http://identifiers.org/sbo/SBO:0000393"
+  YWHAZ_Degrad property "http://identifiers.org/sbo/SBO:0000179"
+  MAP2K3_Prod2 property "http://identifiers.org/sbo/SBO:0000393"
+  MAP2K4_Prod2 property "http://identifiers.org/sbo/SBO:0000393"
+  TGFBR1_Prod property "http://identifiers.org/sbo/SBO:0000393"
+  TGFBR1_Degrad property "http://identifiers.org/sbo/SBO:0000179"
+  BAD_Degrad2 property "http://identifiers.org/sbo/SBO:0000179"
+  PIK3R1_Prod property "http://identifiers.org/sbo/SBO:0000393"
+  CSF1R_Prod property "http://identifiers.org/sbo/SBO:0000393"
+  TGFBR1_Prod2 property "http://identifiers.org/sbo/SBO:0000393"
+  MAPK14_Prod3 property "http://identifiers.org/sbo/SBO:0000393"
+  MAPK14_Prod4 property "http://identifiers.org/sbo/SBO:0000393"
+  PIK3R1_Prod2 property "http://identifiers.org/sbo/SBO:0000393"
+  CSF1R_Prod2 property "http://identifiers.org/sbo/SBO:0000393"
+  CSF1R_Degrad property "http://identifiers.org/sbo/SBO:0000179"
+  ATM_Prod3 property "http://identifiers.org/sbo/SBO:0000393"
+  PRKACA_Prod2 property "http://identifiers.org/sbo/SBO:0000393"
+  TP53_Degrad2 property "http://identifiers.org/sbo/SBO:0000179"
+end
+
+Tang2019___Pharmacology_modelling_of_AURKB_and_ZAK_interaction_in_TNBC is "Tang2019 - Pharmacology modelling of AURKB and ZAK interaction in TNBC"
+
+Tang2019___Pharmacology_modelling_of_AURKB_and_ZAK_interaction_in_TNBC description "http://identifiers.org/pubmed/31312514"
+Tang2019___Pharmacology_modelling_of_AURKB_and_ZAK_interaction_in_TNBC model_entity_is "http://identifiers.org/biomodels.db/MODEL2004230001",
+                                                                                       "http://identifiers.org/biomodels.db/BIOMD0000000940"
+Tang2019___Pharmacology_modelling_of_AURKB_and_ZAK_interaction_in_TNBC encoder "http://identifiers.org/biomodels.db/MODEL2004230001"
+Tang2019___Pharmacology_modelling_of_AURKB_and_ZAK_interaction_in_TNBC container "http://identifiers.org/bto/BTO:0000356"
+Tang2019___Pharmacology_modelling_of_AURKB_and_ZAK_interaction_in_TNBC taxon "http://identifiers.org/taxonomy/9606"
+Tang2019___Pharmacology_modelling_of_AURKB_and_ZAK_interaction_in_TNBC property "http://identifiers.org/go/GO:0023052",
+                                                                                "http://identifiers.org/ncit/NCIT:C16974",
+                                                                                "http://identifiers.org/mamo/MAMO_0000046"

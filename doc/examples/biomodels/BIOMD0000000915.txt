@@ -1,0 +1,175 @@
+// Created by libAntimony v2.13.0
+model *Sun2018___Instantaneous_mutation_rate_in_cancer_initiation_and_progression_1()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species p_0 in compartment_, p_1 in compartment_, p_2 in compartment_, p_3 in compartment_;
+  species p_4 in compartment_, p_5 in compartment_, p_6 in compartment_, p_7 in compartment_;
+  species p_8 in compartment_;
+
+  // Assignment Rules:
+  myu := a_0*exp(b_0*time);
+  c := a*time/(K + time);
+  DT1 := (Mo_1/M0_AVG)*exp((b1 - b_AVG)*time)*(a*time/(K + time));
+  M0_AVG := (Mo_1 + M0_2 + M0_3 + M0_4 + M0_5 + M0_6 + M0_7)/7;
+  b_AVG := (b1 + b2 + b3 + b4 + b5 + b6 + b7)/7;
+  DT2 := (M0_2/M0_AVG)*exp((b2 - b_AVG)*time)*(a*time/(K + time));
+  DT3 := (M0_3/M0_AVG)*exp((b3 - b_AVG)*time)*(a*time/(K + time));
+  DT4 := (M0_4/M0_AVG)*exp((b4 - b_AVG)*time)*(a*time/(K + time));
+  DT5 := (M0_5/M0_AVG)*exp((b5 - b_AVG)*time)*(a*time/(K + time));
+  DT6 := (M0_6/M0_AVG)*exp((b6 - b_AVG)*time)*(a*time/(K + time));
+  DT7 := (M0_7/M0_AVG)*exp((b7 - b_AVG)*time)*(a*time/(K + time));
+
+  // Reactions:
+  mutation_1_2: p_1 => p_2; compartment_*myu*p_1;
+  mutation_2_3: p_2 => p_3; compartment_*myu*p_2;
+  mutation_3_4: p_3 => p_4; compartment_*myu*p_3;
+  mutation_4_5: p_4 => p_5; compartment_*myu*p_4;
+  mutation_5_6: p_5 => p_6; compartment_*myu*p_5;
+  mutation_6_7: p_6 => p_7; compartment_*myu*p_6;
+  mutation_7_8: p_7 => p_8; compartment_*myu*p_7;
+  mutation_0_1: p_0 => p_1; compartment_*myu*p_0;
+
+  // Species initializations:
+  p_0 = 1;
+  p_1 = 0;
+  p_2 = 0;
+  p_3 = 0;
+  p_4 = 0;
+  p_5 = 0;
+  p_6 = 0;
+  p_7 = 0;
+  p_8 = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  a_0 = 0.001;
+  b_0 = 0;
+  a = 40.74;
+  b = 0;
+  K = 62.04;
+  Mo_1 = 49;
+  b1 = 1e-05;
+  M0_2 = 35;
+  M0_3 = 28;
+  M0_4 = 34;
+  M0_5 = 28;
+  M0_6 = 50;
+  M0_7 = 35;
+  b2 = 1.8e-05;
+  b3 = 3e-05;
+  b4 = 1.9e-05;
+  b5 = 2.9e-05;
+  b6 = 1e-05;
+  b7 = 1.8e-05;
+
+  // Other declarations:
+  var myu, c, DT1, M0_AVG, b_AVG, DT2, DT3, DT4, DT5, DT6, DT7;
+  const compartment_, a_0, b_0, a, b, K, Mo_1, b1, M0_2, M0_3, M0_4, M0_5;
+  const M0_6, M0_7, b2, b3, b4, b5, b6, b7;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "Cell";
+  p_0 is "patient_0";
+  p_1 is "patient_1";
+  p_2 is "patient_2";
+  p_3 is "patient_3";
+  p_4 is "patient_4";
+  p_5 is "patient_5";
+  p_6 is "patient_6";
+  p_7 is "patient_7";
+  p_8 is "patient_8";
+  a_0 is "a";
+  b_0 is "b";
+  a is "a*";
+  b is "b*";
+  c is "DB";
+  b1 is "b1*";
+  b_AVG is "b_AVG*";
+  b2 is "b2*";
+  b3 is "b3*";
+  b4 is "b4*";
+  b5 is "b5*";
+  b6 is "b6*";
+  b7 is "b7*";
+  mutation_1_2 is "mutation 1-2";
+  mutation_2_3 is "mutation 2-3";
+  mutation_3_4 is "mutation 3-4";
+  mutation_4_5 is "mutation 4-5";
+  mutation_5_6 is "mutation 5-6";
+  mutation_6_7 is "mutation 6-7";
+  mutation_7_8 is "mutation 7-8";
+  mutation_0_1 is "mutation 0-1";
+
+  // CV terms:
+  compartment_ hypernym "http://identifiers.org/ncit/C12917"
+  p_0 version "http://identifiers.org/efo/0002618"
+  p_0 identity "http://identifiers.org/ncit/C19700"
+  p_1 version "http://identifiers.org/efo/0002618"
+  p_1 identity "http://identifiers.org/ncit/C19700"
+  p_2 identity "http://identifiers.org/ncit/C19700"
+  p_2 hypernym "http://identifiers.org/efo/0002618"
+  p_3 identity "http://identifiers.org/ncit/C19700"
+  p_3 hypernym "http://identifiers.org/efo/0002618"
+  p_4 identity "http://identifiers.org/ncit/C19700"
+  p_4 hypernym "http://identifiers.org/efo/0002618"
+  p_5 identity "http://identifiers.org/ncit/C19700"
+  p_5 hypernym "http://identifiers.org/efo/0002618"
+  p_6 identity "http://identifiers.org/ncit/C19700"
+  p_6 hypernym "http://identifiers.org/efo/0002618"
+  p_7 identity "http://identifiers.org/ncit/C19700"
+  p_7 hypernym "http://identifiers.org/efo/0002618"
+  p_8 identity "http://identifiers.org/ncit/C19700"
+  p_8 hypernym "http://identifiers.org/efo/0002618"
+  myu property "http://identifiers.org/ncit/C25636"
+  myu property "http://identifiers.org/vario/VariO:0139"
+  myu property "http://identifiers.org/sbo/SBO:0000001"
+  c property "http://identifiers.org/ncit/C94346"
+  DT1 property "http://identifiers.org/ncit/C94346"
+  DT2 property "http://identifiers.org/ncit/C94346"
+  DT3 property "http://identifiers.org/ncit/C94346"
+  DT4 property "http://identifiers.org/ncit/C94346"
+  DT5 property "http://identifiers.org/ncit/C94346"
+  DT6 property "http://identifiers.org/ncit/C94346"
+  DT7 property "http://identifiers.org/ncit/C94346"
+  mutation_1_2 property "http://identifiers.org/vario/VariO:0139"
+  mutation_2_3 property "http://identifiers.org/vario/VariO:0139"
+  mutation_3_4 property "http://identifiers.org/vario/VariO:0139"
+  mutation_4_5 property "http://identifiers.org/vario/VariO:0139"
+  mutation_5_6 property "http://identifiers.org/vario/VariO:0139"
+  mutation_6_7 property "http://identifiers.org/vario/VariO:0139"
+  mutation_7_8 property "http://identifiers.org/vario/VariO:0139"
+  mutation_0_1 property "http://identifiers.org/vario/VariO:0139"
+end
+
+Sun2018___Instantaneous_mutation_rate_in_cancer_initiation_and_progression_1 is "Sun2018 - Instantaneous mutation rate in cancer initiation and progression"
+
+Sun2018___Instantaneous_mutation_rate_in_cancer_initiation_and_progression_1 origin "http://identifiers.org/biomodels.db/MODEL1909300002",
+                                                                                    "http://identifiers.org/ncit/C12393",
+                                                                                    "http://identifiers.org/vario/VariO:0139",
+                                                                                    "http://identifiers.org/ncit/C94346",
+                                                                                    "http://identifiers.org/mamo/MAMO_0000046",
+                                                                                    "http://identifiers.org/efo/0002618",
+                                                                                    "http://identifiers.org/efo/0000311",
+                                                                                    "http://identifiers.org/taxonomy/9606",
+                                                                                    "http://identifiers.org/DOI/10.1109/BIBM.2017.8217639"
+Sun2018___Instantaneous_mutation_rate_in_cancer_initiation_and_progression_1 description "http://identifiers.org/DOI/10.1109/BIBM.2017.8217639",
+                                                                                         "http://identifiers.org/pubmed/30463617"
+Sun2018___Instantaneous_mutation_rate_in_cancer_initiation_and_progression_1 model_entity_is "http://identifiers.org/biomodels.db/MODEL1909300002",
+                                                                                             "http://identifiers.org/biomodels.db/BIOMD0000000915"
+Sun2018___Instantaneous_mutation_rate_in_cancer_initiation_and_progression_1 identity "http://identifiers.org/biomodels.db/MODEL1909300002"
+Sun2018___Instantaneous_mutation_rate_in_cancer_initiation_and_progression_1 container "http://identifiers.org/ncit/C12393"
+Sun2018___Instantaneous_mutation_rate_in_cancer_initiation_and_progression_1 taxon "http://identifiers.org/taxonomy/9606"
+Sun2018___Instantaneous_mutation_rate_in_cancer_initiation_and_progression_1 property "http://identifiers.org/vario/VariO:0139",
+                                                                                      "http://identifiers.org/ncit/C94346",
+                                                                                      "http://identifiers.org/efo/0002618",
+                                                                                      "http://identifiers.org/efo/0000311",
+                                                                                      "http://identifiers.org/mamo/MAMO_0000046"

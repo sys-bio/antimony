@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *YeastWTmodel2()
 
   // Compartments and Species:
@@ -25,7 +25,7 @@ model *YeastWTmodel2()
   // Reactions:
   Capping: Cdc13 + Utelo => Ctelo; Capping_k1*Cdc13*Utelo*kalive;
   Uncapping: Ctelo => Cdc13 + Utelo; Uncapping_k2*Ctelo*kalive;
-  Rad17binding: Utelo + Rad17 + Rad24 + ATP => Rad17Utelo + Rad24 + ADP; (Rad17binding_k3*Utelo*Rad17*Rad24*ATP*kalive)/(5000 + ATP);
+  Rad17binding: Utelo + Rad17 + Rad24 + ATP => Rad17Utelo + Rad24 + ADP; Rad17binding_k3*Utelo*Rad17*Rad24*ATP*kalive/(5000 + ATP);
   ExoXactivation: ExoXI + Rad17Utelo => ExoXA + Rad17Utelo; ExoXactivation_k4*ExoXI*Rad17Utelo*kalive;
   ExoXactivity: ExoXA + Rad17Utelo => ExoXA + Rad17Utelo + ssDNA; ExoXactivity_k5*ExoXA*Rad17Utelo*kalive;
   Exo1activation: Exo1I => Exo1A; Exo1activation_k6a*Exo1I*kalive;
@@ -45,8 +45,8 @@ model *YeastWTmodel2()
   Dun1activation: Dun1I + Rad53A => Dun1A + Rad53A; Dun1I*Dun1activation_k14*Rad53A*kalive;
   Chk1cellArrest: Chk1A + G2Mon => Chk1A + G2Moff; Chk1A*G2Mon*Chk1cellArrest_k15*kalive;
   Dun1cellArrest: Dun1A + G2Mon => Dun1A + G2Moff; Dun1A*G2Mon*Dun1cellArrest_k16*kalive;
-  SDNArepair1: Mec1RPAssDNA + S => Mec1 + RPA + S + 3ssDNA; SDNArepair1_k17a*Mec1RPAssDNA*S*kalive;
-  G2DNArepair1: G2 + G2Moff + Mec1RPAssDNA => G2 + G2Moff + Mec1 + RPA + 3ssDNA; G2*G2Moff*G2DNArepair1_k17b*Mec1RPAssDNA*kalive;
+  SDNArepair1: Mec1RPAssDNA + S => Mec1 + RPA + S + 3 ssDNA; SDNArepair1_k17a*Mec1RPAssDNA*S*kalive;
+  G2DNArepair1: G2 + G2Moff + Mec1RPAssDNA => G2 + G2Moff + Mec1 + RPA + 3 ssDNA; G2*G2Moff*G2DNArepair1_k17b*Mec1RPAssDNA*kalive;
   SDNArepair2: S + ssDNA => S; SDNArepair2_k18a*S*ssDNA*kalive;
   G2DNArepair2: G2 + G2Moff + ssDNA => G2 + G2Moff; G2*G2Moff*G2DNArepair2_k18b*ssDNA*kalive;
   Recovery: Cdc13 + Rad17Utelo + recovery => Ctelo + Rad17 + recovery; Cdc13*Recovery_k19*Rad17Utelo*recovery*kalive;
@@ -69,14 +69,14 @@ model *YeastWTmodel2()
 
   // Events:
   Rad9KinaseActivation: at Mec1RPAssDNA >= 800: Rad9Kin = 1;
-  ssDNAremoval: at Mec1RPAssDNA + RPAssDNA + ssDNA <= 1: ssDNA = 0, RPAssDNA = 0, Mec1RPAssDNA = 0, recovery = 1;
-  G2MRecoveryCompleted: at G2 == 1 && Rad17Utelo == 0: Rad53A = 0, Rad53I = 6900, ExoXI = 70, ExoXA = 0, Exo1I = 670, Exo1A = 0, Dun1I = 3000, Dun1A = 0, Chk1I = 60, Chk1A = 0, Rad9I = 20, Rad9A = 0, recovery = 0, G2Moff = 0, G2Mon = 1;
+  ssDNAremoval: at (Mec1RPAssDNA + RPAssDNA + ssDNA) <= 1: ssDNA = 0, RPAssDNA = 0, Mec1RPAssDNA = 0, recovery = 1;
+  G2MRecoveryCompleted: at (G2 == 1) && (Rad17Utelo == 0): Rad53A = 0, Rad53I = 6900, ExoXI = 70, ExoXA = 0, Exo1I = 670, Exo1A = 0, Dun1I = 3000, Dun1A = 0, Chk1I = 60, Chk1A = 0, Rad9I = 20, Rad9A = 0, recovery = 0, G2Moff = 0, G2Mon = 1;
   SphaseRecoveryCompleted: at Rad17Utelo == 0: recovery = 0;
   G1CdkActivation: at G1cyclin > 100: G1CdkI = 0, G1CdkA = 1;
   SCdkActivation: at Scyclin > 100: SCdkI = 0, SCdkA = 1;
   G2CdkActivation: at G2cyclin > 100: G2CdkI = 0, G2CdkA = 1;
   MCdkActivation: at Mcyclin > 100: MCdkI = 0, MCdkA = 1;
-  CellDeath: at Mec1RPAssDNA + RPAssDNA + ssDNA >= 2000: kalive = 0;
+  CellDeath: at (Mec1RPAssDNA + RPAssDNA + ssDNA) >= 2000: kalive = 0;
 
   // Species initializations:
   Ctelo = 64/nucleus;
@@ -143,13 +143,13 @@ model *YeastWTmodel2()
   kalive = 1;
   Capping_k1 = 0.0005;
   Uncapping_k2 = 0.000385;
-  Rad17binding_k3 = 1.5e-008;
+  Rad17binding_k3 = 1.5e-08;
   ExoXactivation_k4 = 0.01;
   ExoXactivity_k5 = 0.0003;
-  Exo1activation_k6a = 5e-005;
+  Exo1activation_k6a = 5e-05;
   Exo1Rad24dependentActivation_k6b = 0.0005;
-  Exo1Rad17independentActivity_k7a = 3e-005;
-  Exo1Rad17dependentActivity_k7b = 3e-005;
+  Exo1Rad17independentActivity_k7a = 3e-05;
+  Exo1Rad17dependentActivity_k7b = 3e-05;
   RPAbinding1_k8a = 0.001;
   RPAbinding2_k8b = 100;
   RPAbinding_k8c = 100;
@@ -157,16 +157,16 @@ model *YeastWTmodel2()
   Rad9activation_k9 = 100;
   ExoXinhibition_k10a = 0.05;
   ExoXinhibition2_k10b = 0.05;
-  Rad53activation_k11 = 1e-005;
+  Rad53activation_k11 = 1e-05;
   Chk1Activation_k12 = 0.00017;
   Exo1inhibition_k13 = 1;
-  Dun1activation_k14 = 3.3e-006;
+  Dun1activation_k14 = 3.3e-06;
   Chk1cellArrest_k15 = 0.2;
   Dun1cellArrest_k16 = 0.1;
   SDNArepair1_k17a = 0.05;
   G2DNArepair1_k17b = 0.05;
   SDNArepair2_k18a = 0.001;
-  G2DNArepair2_k18b = 1e-005;
+  G2DNArepair2_k18b = 1e-05;
   Recovery_k19 = 0.001;
   G1cyclinSynthesis_kc1 = 0.16;
   ScyclinSynthesis_kc1 = 0.16;
@@ -200,4 +200,129 @@ model *YeastWTmodel2()
   RPAbinding1 is "RPAbinding-stage1";
   RPAbinding2 is "RPAbinding-stage2";
   RPAbinding is "RPAbinding-completed";
+
+  // CV terms:
+  cellMembrane hypernym "http://identifiers.org/obo.go/GO:0016020"
+  nucleus hypernym "http://identifiers.org/obo.go/GO:0005634"
+  Ctelo part "http://identifiers.org/obo.go/GO:0000782"
+  Ctelo hypernym "http://identifiers.org/obo.go/GO:0000781"
+  Utelo hypernym "http://identifiers.org/obo.go/GO:0000781"
+  Cdc13 identity "http://identifiers.org/uniprot/P32797"
+  Rad17Utelo part "http://identifiers.org/uniprot/P48581",
+                  "http://identifiers.org/obo.go/GO:0000781"
+  Rad17 identity "http://identifiers.org/uniprot/P48581"
+  Rad24 identity "http://identifiers.org/uniprot/P32641"
+  RPA hypernym "http://identifiers.org/pirsf/PIRSF002091"
+  Mec1 identity "http://identifiers.org/uniprot/P38111"
+  ssDNA hypernym "http://identifiers.org/obo.chebi/CHEBI:09160",
+                 "http://identifiers.org/kegg.compound/C00271"
+  RPAssDNA part "http://identifiers.org/kegg.compound/C00271",
+                "http://identifiers.org/pirsf/PIRSF002091",
+                "http://identifiers.org/chebi/CHEBI:9160"
+  RPAssDNA1 part "http://identifiers.org/kegg.compound/C00271",
+                 "http://identifiers.org/pirsf/PIRSF002091",
+                 "http://identifiers.org/chebi/CHEBI:9160"
+  RPAssDNA2 part "http://identifiers.org/kegg.compound/C00271",
+                 "http://identifiers.org/pirsf/PIRSF002091",
+                 "http://identifiers.org/chebi/CHEBI:9160"
+  Mec1RPAssDNA part "http://identifiers.org/uniprot/P38111",
+                    "http://identifiers.org/kegg.compound/C00271",
+                    "http://identifiers.org/pirsf/PIRSF002091",
+                    "http://identifiers.org/chebi/CHEBI:9160"
+  ExoXI homolog "http://identifiers.org/uniprot/P0AEK1"
+  ExoXA homolog "http://identifiers.org/uniprot/P0AEK1"
+  Exo1I identity "http://identifiers.org/uniprot/P39875"
+  Exo1A hypernym "http://identifiers.org/uniprot/P39875"
+  Rad9I hypernym "http://identifiers.org/uniprot/P14737"
+  Rad9A identity "http://identifiers.org/uniprot/P14737"
+  Rad53I identity "http://identifiers.org/uniprot/P22216"
+  Rad53A hypernym "http://identifiers.org/uniprot/P22216"
+  Chk1I identity "http://identifiers.org/uniprot/P38147"
+  Chk1A identity "http://identifiers.org/uniprot/P38147"
+  Dun1I identity "http://identifiers.org/uniprot/P39009"
+  Dun1A identity "http://identifiers.org/uniprot/P39009"
+  ATP identity "http://identifiers.org/obo.chebi/CHEBI:15422"
+  ADP identity "http://identifiers.org/obo.chebi/CHEBI:16761"
+  G1 hypernym "http://identifiers.org/obo.go/GO:0051318"
+  S hypernym "http://identifiers.org/obo.go/GO:0000084"
+  G2 hypernym "http://identifiers.org/obo.go/GO:0051319"
+  M hypernym "http://identifiers.org/obo.go/GO:0000279"
+  G1cyclin version "http://identifiers.org/uniprot/P20437"
+  Scyclin version "http://identifiers.org/uniprot/P30283"
+  G2cyclin version "http://identifiers.org/uniprot/P24868"
+  Mcyclin homolog "http://identifiers.org/uniprot/O14332"
+  G1CdkI hypernym "http://identifiers.org/obo.go/GO:0019908"
+  G1CdkA hypernym "http://identifiers.org/obo.go/GO:0019908"
+  SCdkI hypernym "http://identifiers.org/obo.go/GO:0019908"
+  SCdkA hypernym "http://identifiers.org/obo.go/GO:0019908"
+  G2CdkI hypernym "http://identifiers.org/obo.go/GO:0019908"
+  G2CdkA hypernym "http://identifiers.org/obo.go/GO:0019908"
+  MCdkI hypernym "http://identifiers.org/obo.go/GO:0019908"
+  MCdkA hypernym "http://identifiers.org/obo.go/GO:0019908"
+  G1Soff hypernym "http://identifiers.org/obo.go/GO:0031575"
+  G1Son hypernym "http://identifiers.org/obo.go/GO:0000082"
+  SG2off hypernym "http://identifiers.org/obo.go/GO:0000115"
+  SG2on hypernym "http://identifiers.org/obo.go/GO:0000115"
+  G2Moff hypernym "http://identifiers.org/obo.go/GO:0031572"
+  G2Mon hypernym "http://identifiers.org/obo.go/GO:0000086"
+  MG1on hypernym "http://identifiers.org/obo.go/GO:0000087"
+  budscar hypernym "http://identifiers.org/obo.go/GO:0005621"
+  Capping hypernym "http://identifiers.org/obo.go/GO:0016233"
+  Uncapping hypernym "http://identifiers.org/obo.go/GO:0043241"
+  Rad17binding hypernym "http://identifiers.org/obo.go/GO:0005515",
+                        "http://identifiers.org/obo.go/GO:0016887"
+  ExoXactivation hypernym "http://identifiers.org/obo.go/GO:0032075"
+  ExoXactivity hypernym "http://identifiers.org/obo.go/GO:0008856"
+  ExoXactivity hypernym "http://identifiers.org/ec-code/3.1.11.1"
+  Exo1activation hypernym "http://identifiers.org/obo.go/GO:0032075"
+  Exo1Rad24dependentActivation hypernym "http://identifiers.org/obo.go/GO:0032075"
+  Exo1Rad17independentActivity hypernym "http://identifiers.org/obo.go/GO:0008856"
+  Exo1Rad17dependentActivity hypernym "http://identifiers.org/obo.go/GO:0008856"
+  RPAbinding1 hypernym "http://identifiers.org/obo.go/GO:0003676",
+                       "http://identifiers.org/obo.go/GO:0005515"
+  RPAbinding2 hypernym "http://identifiers.org/obo.go/GO:0003676",
+                       "http://identifiers.org/obo.go/GO:0032403"
+  RPAbinding hypernym "http://identifiers.org/obo.go/GO:0003676",
+                      "http://identifiers.org/obo.go/GO:0032403"
+  Mec1binding hypernym "http://identifiers.org/obo.go/GO:0005515"
+  Mec1binding hypernym "http://identifiers.org/obo.go/GO:0006461"
+  Rad9activation hypernym "http://identifiers.org/obo.go/GO:0030295"
+  ExoXinhibition hypernym "http://identifiers.org/obo.go/GO:0004860"
+  ExoXinhibition2 hypernym "http://identifiers.org/obo.go/GO:0004860"
+  Rad53activation hypernym "http://identifiers.org/obo.go/GO:0030295"
+  Chk1Activation hypernym "http://identifiers.org/obo.go/GO:0030295"
+  Exo1inhibition hypernym "http://identifiers.org/obo.go/GO:0004860"
+  Dun1activation hypernym "http://identifiers.org/obo.go/GO:0030295"
+  Chk1cellArrest hypernym "http://identifiers.org/obo.go/GO:0007050"
+  Dun1cellArrest hypernym "http://identifiers.org/obo.go/GO:0007050"
+  SDNArepair1 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  SDNArepair1 hypernym "http://identifiers.org/obo.go/GO:0006281"
+  G2DNArepair1 hypernym "http://identifiers.org/obo.go/GO:0043241"
+  G2DNArepair1 hypernym "http://identifiers.org/obo.go/GO:0006281"
+  SDNArepair2 hypernym "http://identifiers.org/obo.go/GO:0006308"
+  G2DNArepair2 hypernym "http://identifiers.org/obo.go/GO:0006308"
+  Recovery hypernym "http://identifiers.org/obo.go/GO:0005515",
+                    "http://identifiers.org/obo.go/GO:0016233"
+  G1cyclinSynthesis hypernym "http://identifiers.org/obo.go/GO:0006412"
+  ScyclinSynthesis hypernym "http://identifiers.org/obo.go/GO:0006412"
+  G2cyclinSynthesis hypernym "http://identifiers.org/obo.go/GO:0006412"
+  McyclinSynthesis hypernym "http://identifiers.org/obo.go/GO:0006412"
+  G1toSGenesOn hypernym "http://identifiers.org/obo.go/GO:0007089"
+  G2toMGenesOn hypernym "http://identifiers.org/obo.go/GO:0031572"
+  G1cyclinDegradation hypernym "http://identifiers.org/obo.go/GO:0008054"
+  ScyclinDegradation hypernym "http://identifiers.org/obo.go/GO:0008054"
+  G2cyclinDegradation hypernym "http://identifiers.org/obo.go/GO:0008054"
+  McyclinDegradation hypernym "http://identifiers.org/obo.go/GO:0008054"
+  G1toSProgession hypernym "http://identifiers.org/obo.go/GO:0000082"
+  G2toMProgession hypernym "http://identifiers.org/obo.go/GO:0000086"
+  MtoG1Progession hypernym "http://identifiers.org/obo.go/GO:0000216"
 end
+
+YeastWTmodel2 is "Proctor2006_telomere"
+
+YeastWTmodel2 model_entity_is "http://identifiers.org/biomodels.db/MODEL8679489165"
+YeastWTmodel2 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000087"
+YeastWTmodel2 description "http://identifiers.org/pubmed/17015293"
+YeastWTmodel2 taxon "http://identifiers.org/taxonomy/4932"
+YeastWTmodel2 parthood "http://identifiers.org/kegg.pathway/sce04111"
+YeastWTmodel2 hypernym "http://identifiers.org/obo.go/GO:0000075"

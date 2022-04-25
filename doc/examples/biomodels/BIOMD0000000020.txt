@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *hhsa_1952()
 
   // Compartments and Species:
@@ -13,11 +13,11 @@ model *hhsa_1952()
   V_Na := E_Na - E_R;
   V_K := E_K - E_R;
   V_L := E_L - E_R;
-  alpha_m := (0.1*(V + 25))/(exp((V + 25)/10) - 1);
+  alpha_m := 0.1*(V + 25)/(exp((V + 25)/10) - 1);
   beta_m := 4*exp(V/18);
   alpha_h := 0.07*exp(V/20);
   beta_h := 1/(exp((V + 30)/10) + 1);
-  alpha_n := (0.01*(V + 10))/(exp((V + 10)/10) - 1);
+  alpha_n := 0.01*(V + 10)/(exp((V + 10)/10) - 1);
   beta_n := 0.125*exp(V/80);
 
   // Rate Rules:
@@ -66,4 +66,36 @@ model *hhsa_1952()
   // Display Names:
   time_unit is "millisecond";
   alpha_h is "auxiliary alpha_h";
+
+  // SBO terms:
+  V.sboTerm = 259
+  Cm.sboTerm = 258
+  V_neg.sboTerm = 259
+  E.sboTerm = 259
+  E_R.sboTerm = 259
+  g_Na.sboTerm = 257
+  V_Na.sboTerm = 259
+  g_K.sboTerm = 257
+  V_K.sboTerm = 259
+  g_L.sboTerm = 257
+  V_L.sboTerm = 259
+  E_Na.sboTerm = 259
+  E_K.sboTerm = 259
+  E_L.sboTerm = 259
+
+  // CV terms:
+  i_Na hypernym "http://identifiers.org/obo.go/GO:0005248"
+  i_K hypernym "http://identifiers.org/obo.go/GO:0008076"
+  i_L hypernym "http://identifiers.org/obo.go/GO:0022840"
 end
+
+hhsa_1952 is "hodgkin-huxley squid-axon 1952"
+
+hhsa_1952 model_entity_is "http://identifiers.org/biomodels.db/MODEL6617668482"
+hhsa_1952 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000020"
+hhsa_1952 description "http://identifiers.org/pubmed/12991237"
+hhsa_1952 hypernym "http://identifiers.org/obo.go/GO:0019227",
+                   "http://identifiers.org/obo.go/GO:0005248",
+                   "http://identifiers.org/obo.go/GO:0005249"
+hhsa_1952 taxon "http://identifiers.org/taxonomy/6618",
+                "http://identifiers.org/obo.go/GO:0042757"

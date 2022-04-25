@@ -1,0 +1,166 @@
+// Created by libAntimony v2.13.0
+model *Wang2008___Mimicking_the_inhibitory_effect_of_riluzole_on_membrane_conductance_in_skeletal_fibres()
+
+  // Compartments and Species:
+  compartment Skeletal_Muscle_Cells;
+  species $Vm in Skeletal_Muscle_Cells, $Stimulus in Skeletal_Muscle_Cells;
+  species $INa in Skeletal_Muscle_Cells, $ICa in Skeletal_Muscle_Cells, $IK in Skeletal_Muscle_Cells;
+  species $IL in Skeletal_Muscle_Cells, $IT in Skeletal_Muscle_Cells, $IKCa in Skeletal_Muscle_Cells;
+  species $m in Skeletal_Muscle_Cells, $alpha_m in Skeletal_Muscle_Cells;
+  species $beta_m in Skeletal_Muscle_Cells, $h in Skeletal_Muscle_Cells, $alpha_h in Skeletal_Muscle_Cells;
+  species $beta_h in Skeletal_Muscle_Cells, $n in Skeletal_Muscle_Cells, $alpha_n in Skeletal_Muscle_Cells;
+  species $beta_n in Skeletal_Muscle_Cells, $Vt in Skeletal_Muscle_Cells;
+  species $d in Skeletal_Muscle_Cells, $o in Skeletal_Muscle_Cells, $c in Skeletal_Muscle_Cells;
+  species $jmem in Skeletal_Muscle_Cells, $jer in Skeletal_Muscle_Cells, $cer in Skeletal_Muscle_Cells;
+  species $w in Skeletal_Muscle_Cells, $jleak in Skeletal_Muscle_Cells, $jserca in Skeletal_Muscle_Cells;
+
+  // Assignment Rules:
+  Stimulus := piecewise(Stimulus_Magnitude, (time >= Stimulus_Start) && ((time - Stimulus_Start - floor((time - Stimulus_Start)/Stimulus_Period)*Stimulus_Period) < Stimulus_Duration), 0);
+  INa := gNa_max*m^3*h*(Vm - ENa);
+  ICa := gca*d^2;
+  IK := gk_max*n^4*(Vm - EK);
+  IL := gL_max*(Vm - EL);
+  IT := (Vm - Vt)/Rs;
+  IKCa := gKca*o*w*(Vm - EK);
+  alpha_m := alpha_m_max*(Vm - Em)/(1 - exp((Em - Vm)/v_alpha_m));
+  beta_m := beta_m_max*exp((Em - Vm)/v_beta_m);
+  alpha_h := alpha_h_max*exp((Eh - Vm)/v_alpha_m);
+  beta_h := beta_h_max/(1 + exp((Eh - Vm)/v_beta_h));
+  alpha_n := alpha_n_max*(Vm - En)/(1 - exp((En - Vm)/v_alpha_n));
+  beta_n := beta_n_max*exp((En - Vm)/v_beta_n);
+  alphad := dinf/taud;
+  betad := (1 - dinf)/taud;
+  ooinf := alp*tau;
+  tau := 1/(alp + beta);
+  jmem := -(alpha*ICa + kpmca*c);
+  jer := jleak - jserca;
+  w := c^5/(c^5 + kd^5);
+  gca := -gcabar*Vm/(exp(0.117*Vm) - 1);
+  jleak := pleak*(cer - c);
+  jserca := kserca*c;
+  alp := abar/(1 + k1*exp(-2*d1*96.485*Vm/8.313424/310)/c);
+  beta := bbar/(1 + c/(k2*exp(-2*d2*96.485*Vm/8.313424/310)));
+  dinf := 1/(1 + exp((-24.6 - Vm)/11.3));
+  taud := 80/(1/cosh(-0.031*(Vm + 37.1)));
+
+  // Rate Rules:
+  Vm' = (Stimulus - (INa + ICa + IK + IL + IT + IKCa))/Cm;
+  m' = alpha_m*(1 - m) - beta_m*m;
+  h' = alpha_h*(1 - h) - beta_h*h;
+  n' = alpha_n*(1 - n) - beta_n*n;
+  Vt' = (Vm - Vt)/(Rs*Ct);
+  d' = (1 - d)*alphad - d*betad;
+  o' = (ooinf - o)/tau;
+  c' = fcyt*(jmem + jer);
+  cer' = -fer*vcytver*jer;
+
+  // Species initializations:
+  Vm = -75;
+  m = 0;
+  h = 1;
+  n = 0.1;
+  Vt = -70;
+  d = 0;
+  o = 0.1;
+  c = 0.15;
+  cer = 200;
+
+  // Compartment initializations:
+  Skeletal_Muscle_Cells = 1;
+
+  // Variable initializations:
+  Cm = 0.009;
+  Rs = 15;
+  Ct = 0.04;
+  fcyt = 0.01;
+  fer = 0.01;
+  vcytver = 5;
+  gNa_max = 0.9;
+  ENa = 50;
+  gKca = 0.5;
+  EK = -70;
+  gL_max = 0.0024;
+  EL = -75;
+  gk_max = 0.42;
+  Stimulus_Magnitude = 2;
+  Stimulus_Start = 5;
+  Stimulus_Period = 50;
+  Stimulus_Duration = 1;
+  beta_n_max = 0.09616;
+  En = -40;
+  v_beta_n = 40;
+  beta_m_max = 2.081;
+  Em = -42;
+  v_beta_m = 18;
+  beta_h_max = 3.382;
+  Eh = -41;
+  v_beta_h = 7.6;
+  alpha_n_max = 0.0229;
+  v_alpha_n = 7;
+  alpha_m_max = 0.208;
+  v_alpha_m = 10;
+  alpha_h_max = 0.0156;
+  kd = 0.18;
+  alpha = 4.5e-06;
+  kpmca = 0.2;
+  pleak = 0.0005;
+  kserca = 0.4;
+  gcabar = 0.05;
+  ECa = 50;
+  Am = 200;
+  v_alpha_h = 14.7;
+  d1 = 0.84;
+  d2 = 1;
+  k1 = 0.18;
+  k2 = 0.011;
+  bbar = 0.28;
+  abar = 0.48;
+
+  // Other declarations:
+  var alphad, betad, ooinf, tau, gca, alp, beta, dinf, taud;
+  const Skeletal_Muscle_Cells, Cm, Rs, Ct, fcyt, fer, vcytver, gNa_max, ENa;
+  const gKca, EK, gL_max, EL, gk_max, Stimulus_Magnitude, Stimulus_Start;
+  const Stimulus_Period, Stimulus_Duration, beta_n_max, En, v_beta_n, beta_m_max;
+  const Em, v_beta_m, beta_h_max, Eh, v_beta_h, alpha_n_max, v_alpha_n, alpha_m_max;
+  const v_alpha_m, alpha_h_max, kd, alpha, kpmca, pleak, kserca, gcabar, ECa;
+  const Am, v_alpha_h, d1, d2, k1, k2, bbar, abar;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 1e-3 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+  Skeletal_Muscle_Cells is "Skeletal Muscle Cells";
+
+  // CV terms:
+  Skeletal_Muscle_Cells hypernym "http://identifiers.org/bto/BTO:0001103"
+  Vm hypernym "http://identifiers.org/ncit/C82324"
+  Stimulus hypernym "http://identifiers.org/ncit/C41210"
+  IKCa hypernym "http://identifiers.org/go/GO:0015269"
+end
+
+Wang2008___Mimicking_the_inhibitory_effect_of_riluzole_on_membrane_conductance_in_skeletal_fibres is "Wang2008 - Mimicking the inhibitory effect of riluzole on membrane conductance in skeletal fibres"
+
+Wang2008___Mimicking_the_inhibitory_effect_of_riluzole_on_membrane_conductance_in_skeletal_fibres model_entity_is "http://identifiers.org/biomodels.db/MODEL7817907010"
+Wang2008___Mimicking_the_inhibitory_effect_of_riluzole_on_membrane_conductance_in_skeletal_fibres instance "http://identifiers.org/kegg.drug/D00775",
+                                                                                                           "http://identifiers.org/biomodels.db/MODEL7817907010",
+                                                                                                           "http://identifiers.org/modeldb/105528",
+                                                                                                           "http://identifiers.org/go/GO:0022832",
+                                                                                                           "http://identifiers.org/go/GO:0042493",
+                                                                                                           "http://identifiers.org/doid/DOID:332",
+                                                                                                           "http://identifiers.org/bto/BTO:0001103",
+                                                                                                           "http://identifiers.org/taxonomy/9606",
+                                                                                                           "http://identifiers.org/go/GO:0001508"
+Wang2008___Mimicking_the_inhibitory_effect_of_riluzole_on_membrane_conductance_in_skeletal_fibres description "http://identifiers.org/pubmed/18068197"
+Wang2008___Mimicking_the_inhibitory_effect_of_riluzole_on_membrane_conductance_in_skeletal_fibres model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000693"
+Wang2008___Mimicking_the_inhibitory_effect_of_riluzole_on_membrane_conductance_in_skeletal_fibres part "http://identifiers.org/kegg.drug/D00775"
+Wang2008___Mimicking_the_inhibitory_effect_of_riluzole_on_membrane_conductance_in_skeletal_fibres identity "http://identifiers.org/modeldb/105528"
+Wang2008___Mimicking_the_inhibitory_effect_of_riluzole_on_membrane_conductance_in_skeletal_fibres hypernym "http://identifiers.org/go/GO:0022832"
+Wang2008___Mimicking_the_inhibitory_effect_of_riluzole_on_membrane_conductance_in_skeletal_fibres hypernym "http://identifiers.org/go/GO:0042493"
+Wang2008___Mimicking_the_inhibitory_effect_of_riluzole_on_membrane_conductance_in_skeletal_fibres hypernym "http://identifiers.org/doid/DOID:332"
+Wang2008___Mimicking_the_inhibitory_effect_of_riluzole_on_membrane_conductance_in_skeletal_fibres container "http://identifiers.org/bto/BTO:0001103"
+Wang2008___Mimicking_the_inhibitory_effect_of_riluzole_on_membrane_conductance_in_skeletal_fibres taxon "http://identifiers.org/taxonomy/9606"
+Wang2008___Mimicking_the_inhibitory_effect_of_riluzole_on_membrane_conductance_in_skeletal_fibres description "http://identifiers.org/go/GO:0001508",
+                                                                                                              "http://identifiers.org/pubmed/18068197"

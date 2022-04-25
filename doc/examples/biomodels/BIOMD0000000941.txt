@@ -1,0 +1,182 @@
+// Created by libAntimony v2.13.0
+function Function_for_R1(v_sd, GF, K_gf)
+  v_sd*GF/(K_gf + GF);
+end
+
+Function_for_R1 is "Function for R1"
+
+function Function_for_R2(Vdd, Md, K_dd)
+  Vdd*Md/(K_dd + Md);
+end
+
+Function_for_R2 is "Function for R2"
+
+function Function_for_R3(V_le2f, E2F_total, E2F, Kle2f, Md, Me)
+  V_le2f*((E2F_total - E2F)/(Kle2f + E2F_total - E2F))*(Md + Me);
+end
+
+Function_for_R3 is "Function for R3"
+
+function Function_for_R12(V2cdc20, Cdc20, K_2cdc20)
+  V2cdc20*Cdc20/(K_2cdc20 + Cdc20);
+end
+
+Function_for_R12 is "Function for R12"
+
+function Function_for_R5_7_9(v, modifier)
+  v*modifier;
+end
+
+Function_for_R5_7_9 is "Function for R5_7_9"
+
+function Function_for_R4(V2e2f, E2F, K2e2f, Ma)
+  (V2e2f*E2F/(K2e2f + E2F))*Ma;
+end
+
+Function_for_R4 is "Function for R4"
+
+function Function_for_R6_8_10(V, modifier, substrate, K)
+  V*modifier*substrate/(K + substrate);
+end
+
+Function_for_R6_8_10 is "Function for R6_8_10"
+
+function Function_for_R11(V1cdc20, Mb, Cdc20_total, Cdc20, K1cdc20)
+  V1cdc20*Mb*(Cdc20_total - Cdc20)/(K1cdc20 + (Cdc20_total - Cdc20));
+end
+
+Function_for_R11 is "Function for R11"
+
+
+model *Gerard2010___Progression_of_mammalian_cell_cycle_by_successive_activation_of_various_cyclin_cdk_complexes()
+
+  // Compartments and Species:
+  compartment nuclear;
+  species cyclin_D_Cdk4_6 in nuclear, transcription_factor_E2F_active in nuclear;
+  species cyclin_E_Cdk2 in nuclear, cyclin_A_Cdk2 in nuclear, cyclin_B_Cdk1 in nuclear;
+  species Cdc20_active in nuclear, E2F_total in nuclear, Cdc20_total in nuclear;
+
+  // Reactions:
+  R1_Synthesis_of_cyclin_D_Cdk4_6:  => cyclin_D_Cdk4_6; nuclear*Function_for_R1(vsd, GF, Kgf);
+  R2_Degradation_of_cyclin_D_Cdk4_6: cyclin_D_Cdk4_6 => ; nuclear*Function_for_R2(Vdd, cyclin_D_Cdk4_6, Kdd);
+  R3_E2F_activation:  => transcription_factor_E2F_active; nuclear*Function_for_R3(V1e2f, E2F_total, transcription_factor_E2F_active, K1e2f, cyclin_D_Cdk4_6, cyclin_E_Cdk2);
+  R4_E2F_inactivation: transcription_factor_E2F_active => ; nuclear*Function_for_R4(V2e2f, transcription_factor_E2F_active, K2e2f, cyclin_A_Cdk2);
+  R5_Synthesis_of_cyclin_E_Cdk2:  => cyclin_E_Cdk2; nuclear*Function_for_R5_7_9(vse, transcription_factor_E2F_active);
+  R6_Degradation_of_cyclin_E_Cdk2: cyclin_E_Cdk2 => ; nuclear*Function_for_R6_8_10(Vde, cyclin_A_Cdk2, cyclin_E_Cdk2, Kde);
+  R7_Synthesis_of_cyclin_A_Cdk2:  => cyclin_A_Cdk2; nuclear*Function_for_R5_7_9(vsa, transcription_factor_E2F_active);
+  R8_Degradation_of_cyclin_A_Cdk2: cyclin_A_Cdk2 => ; nuclear*Function_for_R6_8_10(Vda, Cdc20_active, cyclin_A_Cdk2, Kda);
+  R9_Synthesis_of_cyclin_B_Cdk1:  => cyclin_B_Cdk1; nuclear*Function_for_R5_7_9(vsb, cyclin_A_Cdk2);
+  R10_Degradation_of_cyclin_B_Cdk1: cyclin_B_Cdk1 => ; nuclear*Function_for_R6_8_10(Vdb, Cdc20_active, cyclin_B_Cdk1, Kdb);
+  R11_Phosphorylation_and_activation_of_Cdc20:  => Cdc20_active; nuclear*Function_for_R11(V1cdc20, cyclin_B_Cdk1, Cdc20_total, Cdc20_active, K1cdc20);
+  R12_Dephosphorylation_and_inactivation_of_Cdc20: Cdc20_active => ; nuclear*Function_for_R12(V2cdc20, Cdc20_active, K2cdc20);
+
+  // Species initializations:
+  cyclin_D_Cdk4_6 = 0.7205;
+  transcription_factor_E2F_active = 2.4855;
+  cyclin_E_Cdk2 = 2;
+  cyclin_A_Cdk2 = 2.6;
+  cyclin_B_Cdk1 = 1;
+  Cdc20_active = 0.5;
+  E2F_total = 3;
+  Cdc20_total = 5;
+
+  // Compartment initializations:
+  nuclear = 1;
+
+  // Variable initializations:
+  GF = 1;
+  Kda = 0.1;
+  Kdb = 0.005;
+  Kdd = 0.1;
+  Kde = 0.1;
+  Kgf = 0.1;
+  K1cdc20 = 1;
+  K2cdc20 = 1;
+  K1e2f = 0.01;
+  K2e2f = 0.01;
+  Vda = 0.245;
+  Vdb = 0.28;
+  Vdd = 0.245;
+  Vde = 0.35;
+  vsa = 0.175;
+  vsb = 0.21;
+  vsd = 0.175;
+  vse = 0.21;
+  V1cdc20 = 0.21;
+  V2cdc20 = 0.35;
+  V1e2f = 0.805;
+  V2e2f = 0.7;
+
+  // Other declarations:
+  const nuclear, GF, Kda, Kdb, Kdd, Kde, Kgf, K1cdc20, K2cdc20, K1e2f, K2e2f;
+  const Vda, Vdb, Vdd, Vde, vsa, vsb, vsd, vse, V1cdc20, V2cdc20, V1e2f, V2e2f;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 3600 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+  cyclin_D_Cdk4_6 is "cyclin D Cdk4-6";
+  transcription_factor_E2F_active is "transcription factor E2F active";
+  cyclin_E_Cdk2 is "cyclin E Cdk2";
+  cyclin_A_Cdk2 is "cyclin A Cdk2";
+  cyclin_B_Cdk1 is "cyclin B Cdk1";
+  Cdc20_active is "Cdc20 active";
+  R1_Synthesis_of_cyclin_D_Cdk4_6 is "R1 Synthesis of cyclin D Cdk4-6";
+  R2_Degradation_of_cyclin_D_Cdk4_6 is "R2 Degradation of cyclin D Cdk4-6";
+  R3_E2F_activation is "R3 E2F activation";
+  R4_E2F_inactivation is "R4 E2F inactivation";
+  R5_Synthesis_of_cyclin_E_Cdk2 is "R5 Synthesis of cyclin E Cdk2";
+  R6_Degradation_of_cyclin_E_Cdk2 is "R6 Degradation of cyclin E Cdk2";
+  R7_Synthesis_of_cyclin_A_Cdk2 is "R7 Synthesis of cyclin A Cdk2";
+  R8_Degradation_of_cyclin_A_Cdk2 is "R8 Degradation of cyclin A Cdk2";
+  R9_Synthesis_of_cyclin_B_Cdk1 is "R9 Synthesis of cyclin B Cdk1";
+  R10_Degradation_of_cyclin_B_Cdk1 is "R10 Degradation of cyclin B Cdk1";
+  R11_Phosphorylation_and_activation_of_Cdc20 is "R11 Phosphorylation and activation of Cdc20";
+  R12_Dephosphorylation_and_inactivation_of_Cdc20 is "R12 Dephosphorylation and inactivation of Cdc20";
+
+  // CV terms:
+  nuclear identity "http://identifiers.org/ncit/C13361"
+  cyclin_D_Cdk4_6 part "http://identifiers.org/uniprot/P24385"
+  cyclin_D_Cdk4_6 part "http://identifiers.org/uniprot/P11802"
+  cyclin_D_Cdk4_6 property "http://identifiers.org/go/GO:0032991"
+  transcription_factor_E2F_active hypernym "http://identifiers.org/uniprot/Q01094"
+  transcription_factor_E2F_active property "http://identifiers.org/pato/PATO:0002354"
+  cyclin_E_Cdk2 part "http://identifiers.org/uniprot/P24864"
+  cyclin_E_Cdk2 part "http://identifiers.org/uniprot/P24941"
+  cyclin_E_Cdk2 property "http://identifiers.org/go/GO:0032991"
+  cyclin_A_Cdk2 part "http://identifiers.org/uniprot/P24941"
+  cyclin_A_Cdk2 part "http://identifiers.org/uniprot/P20248"
+  cyclin_A_Cdk2 property "http://identifiers.org/go/GO:0032991"
+  cyclin_B_Cdk1 part "http://identifiers.org/uniprot/P06493"
+  cyclin_B_Cdk1 part "http://identifiers.org/uniprot/P14635"
+  cyclin_B_Cdk1 property "http://identifiers.org/go/GO:0032991"
+  Cdc20_active hypernym "http://identifiers.org/uniprot/Q12834"
+  Cdc20_active property "http://identifiers.org/pato/PATO:0002354"
+  Cdc20_active property "http://identifiers.org/pato/PATO:0002220"
+  E2F_total hypernym "http://identifiers.org/uniprot/Q01094"
+  Cdc20_total hypernym "http://identifiers.org/uniprot/Q12834"
+  R1_Synthesis_of_cyclin_D_Cdk4_6 hypernym "http://identifiers.org/ncit/C61408"
+  R2_Degradation_of_cyclin_D_Cdk4_6 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  R3_E2F_activation hypernym "http://identifiers.org/sbo/SBO:0000656"
+  R5_Synthesis_of_cyclin_E_Cdk2 hypernym "http://identifiers.org/ncit/C61408"
+  R6_Degradation_of_cyclin_E_Cdk2 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  R7_Synthesis_of_cyclin_A_Cdk2 hypernym "http://identifiers.org/ncit/C61408"
+  R9_Synthesis_of_cyclin_B_Cdk1 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  R10_Degradation_of_cyclin_B_Cdk1 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  R11_Phosphorylation_and_activation_of_Cdc20 hypernym "http://identifiers.org/sbo/SBO:0000656"
+  R11_Phosphorylation_and_activation_of_Cdc20 hypernym "http://identifiers.org/pato/PATO:0002262"
+  R12_Dephosphorylation_and_inactivation_of_Cdc20 hypernym "http://identifiers.org/sbo/SBO:0000330"
+end
+
+Gerard2010___Progression_of_mammalian_cell_cycle_by_successive_activation_of_various_cyclin_cdk_complexes is "Gerard2010 - Progression of mammalian cell cycle by successive activation of various cyclin cdk complexes"
+
+Gerard2010___Progression_of_mammalian_cell_cycle_by_successive_activation_of_various_cyclin_cdk_complexes model_entity_is "http://identifiers.org/biomodels.db/MODEL1809060001",
+                                                                                                                          "http://identifiers.org/biomodels.db/BIOMD0000000941"
+Gerard2010___Progression_of_mammalian_cell_cycle_by_successive_activation_of_various_cyclin_cdk_complexes part "http://identifiers.org/go/GO:0051726"
+Gerard2010___Progression_of_mammalian_cell_cycle_by_successive_activation_of_various_cyclin_cdk_complexes taxon "http://identifiers.org/taxonomy/40674"
+Gerard2010___Progression_of_mammalian_cell_cycle_by_successive_activation_of_various_cyclin_cdk_complexes description "http://identifiers.org/doi/10.1098/rsfs.2010.0008"
+Gerard2010___Progression_of_mammalian_cell_cycle_by_successive_activation_of_various_cyclin_cdk_complexes description "http://identifiers.org/pubmed/22419972"
+Gerard2010___Progression_of_mammalian_cell_cycle_by_successive_activation_of_various_cyclin_cdk_complexes property "http://identifiers.org/mamo/MAMO_0000046"

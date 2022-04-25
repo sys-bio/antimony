@@ -1,0 +1,82 @@
+// Created by libAntimony v2.13.0
+model *New_Model()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species TF in compartment_, X in compartment_, Xa_Va in compartment_, II in compartment_;
+  species IIa in compartment_, Xa_Va_II in compartment_, mIIa in compartment_;
+  species mIIa_ATIII in compartment_, IIa_ATIII in compartment_;
+
+  // Reactions:
+  reaction_1: TF + X => Xa_Va; compartment_*reaction_1_k1*TF*X;
+  reaction_2: TF + X + II => TF + X + IIa; compartment_*reaction_2_k1*TF*X*II;
+  reaction_3: Xa_Va + II => Xa_Va_II; compartment_*reaction_3_k1*Xa_Va*II;
+  reaction_4: Xa_Va_II => Xa_Va + mIIa; compartment_*reaction_4_k1*Xa_Va_II;
+  reaction_5: Xa_Va + mIIa => Xa_Va + IIa; compartment_*reaction_5_k1*Xa_Va*mIIa;
+  reaction_6: mIIa => mIIa_ATIII; compartment_*reaction_6_k1*mIIa;
+  reaction_7: IIa => IIa_ATIII; compartment_*reaction_7_k1*IIa;
+
+  // Species initializations:
+  TF = 1e-09;
+  X = 1.6e-07;
+  Xa_Va = 0;
+  II = 1.4e-06;
+  IIa = 0;
+  Xa_Va_II = 0;
+  mIIa = 0;
+  mIIa_ATIII = 0;
+  IIa_ATIII = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  reaction_1_k1 = 121.267;
+  reaction_2_k1 = 4.74645e-16;
+  reaction_3_k1 = 2569840000000;
+  reaction_4_k1 = 77540.2;
+  reaction_5_k1 = 69679400000;
+  reaction_6_k1 = 0.00472749;
+  reaction_7_k1 = 0.0201671;
+
+  // Other declarations:
+  const compartment_;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+
+  // Display Names:
+  compartment_ is "compartment";
+  reaction_1 is "reaction 1";
+  reaction_2 is "reaction 2";
+  reaction_3 is "reaction 3";
+  reaction_4 is "reaction 4";
+  reaction_5 is "reaction 5";
+  reaction_6 is "reaction 6";
+  reaction_7 is "reaction 7";
+
+  // CV terms:
+  TF identity "http://identifiers.org/uniprot.isoform/P13726"
+  X identity "http://identifiers.org/uniprot.isoform/P00742"
+  Xa_Va part "http://identifiers.org/uniprot/P00742"
+  Xa_Va part "http://identifiers.org/uniprot/P12259"
+  II identity "http://identifiers.org/uniprot/P00734"
+  IIa hypernym "http://identifiers.org/uniprot/P00734"
+  Xa_Va_II part "http://identifiers.org/uniprot/P12259"
+  Xa_Va_II part "http://identifiers.org/uniprot/P00742"
+  Xa_Va_II part "http://identifiers.org/unists/P00734"
+  mIIa hypernym "http://identifiers.org/uniprot.isoform/P00734"
+  mIIa_ATIII part "http://identifiers.org/uniprot/P00734"
+  mIIa_ATIII part "http://identifiers.org/uniprot/P01008"
+  IIa_ATIII part "http://identifiers.org/uniprot/P01008"
+  IIa_ATIII part "http://identifiers.org/uniprot/P00734"
+end
+
+New_Model is "Hansen2019 - Nine species reduced model of blood coagulation"
+
+New_Model description "http://identifiers.org/pubmed/31161687"
+New_Model model_entity_is "http://identifiers.org/biomodels.db/MODEL1907180004",
+                          "http://identifiers.org/biomodels.db/BIOMD0000000755"
+New_Model property "http://identifiers.org/go/GO:0007596"
+New_Model property "http://identifiers.org/mamo/MAMO_0000046"
+New_Model taxon "http://identifiers.org/taxonomy/9606"

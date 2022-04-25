@@ -1,0 +1,113 @@
+// Created by libAntimony v2.13.0
+function Function_for_formation_of_cancer_cell(alpha_1, C, beta_1)
+  alpha_1*C*(1 - C/beta_1);
+end
+
+Function_for_formation_of_cancer_cell is "Function for formation of cancer cell"
+
+function Function_for_removal_of_B_cell(delta_1, B)
+  delta_1*B;
+end
+
+Function_for_removal_of_B_cell is "Function for removal of B cell"
+
+function Function_for_removal_of_cancer_cell(gamma_1, C, B, gamma_2, T)
+  (gamma_1/(1 + gamma_1*C))*C*B + (gamma_2/(1 + gamma_2*C))*C*T;
+end
+
+Function_for_removal_of_cancer_cell is "Function for removal of cancer cell"
+
+function Function_for_activation_of_B_cell_induced_by_cancer_cell(alpha_2, C, B, bata_2, gamma_1)
+  alpha_2*C*B*(1 - B/bata_2)*(gamma_1/(1 + gamma_1*C));
+end
+
+Function_for_activation_of_B_cell_induced_by_cancer_cell is "Function for activation of B cell induced by cancer cell"
+
+function Function_for_activation_of_T_cell_induced_by_cancer_cell(alpha_3, C, T, beta_3, gamma_2)
+  alpha_3*C*T*(1 - T/beta_3)*(gamma_2/(1 + gamma_2*C));
+end
+
+Function_for_activation_of_T_cell_induced_by_cancer_cell is "Function for activation of T cell induced by cancer cell"
+
+function Function_for_removal_of_T_cell(delta_2, T)
+  delta_2*T;
+end
+
+Function_for_removal_of_T_cell is "Function for removal of T cell"
+
+
+model *New_Model()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species C in compartment_, B in compartment_, T in compartment_;
+
+  // Assignment Rules:
+  delta_1 := ln(2)/7;
+  delta_2 := ln(2)/4;
+
+  // Reactions:
+  Formation_of_cancer_cell:  => C; compartment_*Function_for_formation_of_cancer_cell(alpha_1, C, beta_1);
+  Removal_of_cancer_cell_by_the_action_of_B_cell_and_T_cell: C => ; compartment_*Function_for_removal_of_cancer_cell(gamma_1, C, B, gamma_2, T);
+  activation_of_B_cell_induced_by_cancer_cell:  => B; compartment_*Function_for_activation_of_B_cell_induced_by_cancer_cell(alpha_2, C, B, beta_2, gamma_1);
+  Removal_of_B_cell: B => ; compartment_*Function_for_removal_of_B_cell(delta_1, B);
+  Activation_of_T_cell_induced_by_cancer_cell:  => T; compartment_*Function_for_activation_of_T_cell_induced_by_cancer_cell(alpha_3, C, T, beta_3, gamma_2);
+  Removal_of_T_cell: T => ; compartment_*Function_for_removal_of_T_cell(delta_2, T);
+
+  // Species initializations:
+  C = 1;
+  B = 1;
+  T = 1;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  alpha_1 = 0.05;
+  alpha_2 = 0.31;
+  alpha_3 = 0.5;
+  gamma_1 = 0.5;
+  gamma_2 = 0.65;
+  beta_1 = 10;
+  beta_2 = 3;
+  beta_3 = 3;
+
+  // Other declarations:
+  var delta_1, delta_2;
+  const compartment_, alpha_1, alpha_2, alpha_3, gamma_1, gamma_2, beta_1;
+  const beta_2, beta_3;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  Formation_of_cancer_cell is "Formation of cancer cell";
+  Removal_of_cancer_cell_by_the_action_of_B_cell_and_T_cell is "Removal of cancer cell by the action of B cell and T cell";
+  activation_of_B_cell_induced_by_cancer_cell is "activation of B cell induced by cancer cell";
+  Removal_of_B_cell is "Removal of B cell";
+  Activation_of_T_cell_induced_by_cancer_cell is "Activation of T cell induced by cancer cell";
+  Removal_of_T_cell is "Removal of T cell";
+
+  // CV terms:
+  C instance "http://identifiers.org/efo/0000311"
+  B property "http://identifiers.org/bto/BTO:0000776"
+  T property "http://identifiers.org/bto/BTO:0000782"
+  Formation_of_cancer_cell instance "http://identifiers.org/ncit/C25513"
+  Removal_of_cancer_cell_by_the_action_of_B_cell_and_T_cell property "http://identifiers.org/ncit/C64914"
+  activation_of_B_cell_induced_by_cancer_cell property "http://identifiers.org/ncit/C64382"
+  Removal_of_B_cell property "http://identifiers.org/ncit/C64914"
+  Activation_of_T_cell_induced_by_cancer_cell property "http://identifiers.org/ncit/C64382"
+  Removal_of_T_cell property "http://identifiers.org/ncit/C64914"
+end
+
+New_Model is "Bianca2013 - Persistence analysis in a Kolmogorov-type model for cancer-immune system competition"
+
+New_Model description "http://identifiers.org/doi/10.1063/1.4825874"
+New_Model origin "http://identifiers.org/doi.org/10.4039/entm9745fv"
+New_Model model_entity_is "http://identifiers.org/biomodels.db/MODEL1912180002",
+                          "http://identifiers.org/biomodels.db/BIOMD0000000900"
+New_Model property "http://identifiers.org/mamo/MAMO_0000046"
+New_Model property "http://identifiers.org/go/GO:0006955"
+New_Model taxon "http://identifiers.org/taxonomy/9606"

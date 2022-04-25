@@ -10,6 +10,7 @@
 #ifndef NSBML
 #include <sbml/SBMLTypes.h>
 #include <sbml/xml/XMLOutputStream.h>
+#include <sbml/Model.h>
 #endif
 
 #ifndef NCELLML
@@ -25,6 +26,8 @@
 #define DEFAULTCOMP "default_compartment" //Also defined in module.cpp
 
 using namespace std;
+using namespace libsbml;
+
 extern int antimony_yyparse();
 extern int antimony_yylloc_first_line;
 
@@ -301,11 +304,11 @@ LIB_EXTERN long loadAntimonyFile(const char* filename)
 }
 
 #ifndef NSBML
-void LoadSBML(const SBMLDocument* doc)
+void LoadSBML(SBMLDocument* doc)
 {
 #ifdef USE_COMP
   string mainsbmlname = getNameFromSBMLObject(doc->getModel(), "doc");
-  const CompSBMLDocumentPlugin* compdoc = static_cast<const CompSBMLDocumentPlugin*>(doc->getPlugin("comp"));
+  CompSBMLDocumentPlugin* compdoc = static_cast<CompSBMLDocumentPlugin*>(doc->getPlugin("comp"));
   if (compdoc!=NULL) {
     int numext = compdoc->getNumExternalModelDefinitions();
     for (int emd=0; emd<numext; emd++) {
@@ -326,7 +329,7 @@ void LoadSBML(const SBMLDocument* doc)
     }
     int nummodels = compdoc->getNumModelDefinitions();
     for (int md=0; md<nummodels; md++) {
-      const ModelDefinition* modeldef = compdoc->getModelDefinition(md);
+      ModelDefinition* modeldef = compdoc->getModelDefinition(md);
       g_registry.LoadSubmodelsFrom(modeldef);
       string sbmlname = getNameFromSBMLObject(modeldef, "model");
       if (g_registry.GetModule(sbmlname)==NULL) {
@@ -1724,6 +1727,8 @@ LIB_EXTERN return_type getTypeOfSymbol(const char* moduleName, const char* symbo
     return allDeleted;
   case varConstraint:
       return allConstraints;
+  case varStoichiometry:
+      return allStoichiometries;
   }
   assert(false); //uncaught var_type
   g_registry.SetError("Coding error:  Didn't include a return type for variable type " + VarTypeToString(vtype) + " in getTypeOfSymbol; antimony_api.cpp.  Email the author to fix.");

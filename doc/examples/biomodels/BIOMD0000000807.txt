@@ -1,0 +1,258 @@
+// Created by libAntimony v2.13.0
+function function_for_normal_cell_growth_1(K, r_N)
+  r_N/K;
+end
+
+function_for_normal_cell_growth_1 is "function for normal cell growth_1"
+
+function function_for_cancer_cell_death_tissue_repair_system_1(K, beta_3, normalized_cancer_cell_a, normalized_normal_cell_n)
+  beta_3*K*normalized_normal_cell_n*normalized_cancer_cell_a;
+end
+
+function_for_cancer_cell_death_tissue_repair_system_1 is "function for cancer cell death;tissue repair system_1"
+
+function function_for_negative_effect_on_G_A_1(beta_5, normalized_cancer_cell_a, normalized_pre_cancer_cell_g)
+  beta_5*normalized_cancer_cell_a*normalized_pre_cancer_cell_g;
+end
+
+function_for_negative_effect_on_G_A_1 is "function for negative effect on G;A_1"
+
+function function_for_transition_to_cancer_cell_1(K, delta, normalized_pre_cancer_cell_g, xi)
+  delta*normalized_pre_cancer_cell_g^2/(xi/K + normalized_pre_cancer_cell_g);
+end
+
+function_for_transition_to_cancer_cell_1 is "function for transition to cancer cell_1"
+
+function function_for_normal_cell_damage_A_1(K, beta_1, normalized_cancer_cell_a, normalized_normal_cell_n)
+  beta_1*K*normalized_normal_cell_n*normalized_cancer_cell_a;
+end
+
+function_for_normal_cell_damage_A_1 is "function for normal cell damage;A_1"
+
+function function_for_negative_effect_on_A_G_1(beta_6, normalized_cancer_cell_a, normalized_pre_cancer_cell_g)
+  beta_6*normalized_cancer_cell_a*normalized_pre_cancer_cell_g;
+end
+
+function_for_negative_effect_on_A_G_1 is "function for negative effect on A;G_1"
+
+function function_for_normal_cell_damage_G_1(beta_4, normalized_normal_cell_n, normalized_pre_cancer_cell_g)
+  beta_4*normalized_normal_cell_n*normalized_pre_cancer_cell_g;
+end
+
+function_for_normal_cell_damage_G_1 is "function for normal cell damage;G_1"
+
+function function_for_pre_cancer_cell_logistic_growth_1(normalized_pre_cancer_cell_g, r_G)
+  r_G*normalized_pre_cancer_cell_g;
+end
+
+function_for_pre_cancer_cell_logistic_growth_1 is "function for pre-cancer cell logistic growth_1"
+
+function function_for_pre_cancer_cell_death_tissue_repair_system_1(K, beta_2, normalized_normal_cell_n, normalized_pre_cancer_cell_g)
+  beta_2*K*normalized_normal_cell_n*normalized_pre_cancer_cell_g;
+end
+
+function_for_pre_cancer_cell_death_tissue_repair_system_1 is "function for pre-cancer cell death;tissue repair system_1"
+
+function function_for_cancer_cell_logistic_growth_1(K, K_A, normalized_cancer_cell_a, r_A)
+  r_A*normalized_cancer_cell_a*(1 - normalized_cancer_cell_a/(K_A/K));
+end
+
+function_for_cancer_cell_logistic_growth_1 is "function for cancer cell logistic growth_1"
+
+
+model *New_Model()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species normalized_normal_cell_n in compartment_, normalized_pre_cancer_cell_g in compartment_;
+  species normalized_cancer_cell_a in compartment_;
+
+  // Assignment Rules:
+  n0 := N0/K;
+  g0 := G0/K;
+  a0 := A0/K;
+  A := normalized_cancer_cell_a*K;
+  G := normalized_pre_cancer_cell_g*K;
+  N := normalized_normal_cell_n*K;
+  N0 := r_N/mu_N - 1;
+  a := normalized_cancer_cell_a*10;
+
+  // Reactions:
+  normal_cell_growth:  => normalized_normal_cell_n; compartment_*function_for_normal_cell_growth_1(K, r_N);
+  normal_cell_death: normalized_normal_cell_n => ; compartment_*mu_N*normalized_normal_cell_n;
+  normal_cell_damage_A: normalized_normal_cell_n => ; compartment_*function_for_normal_cell_damage_A_1(K, beta_1, normalized_cancer_cell_a, normalized_normal_cell_n);
+  normal_cell_damage_G: normalized_normal_cell_n => ; compartment_*function_for_normal_cell_damage_G_1(beta_4, normalized_normal_cell_n, normalized_pre_cancer_cell_g);
+  pre_cancer_cell_logistic_growth:  => normalized_pre_cancer_cell_g; compartment_*function_for_pre_cancer_cell_logistic_growth_1(normalized_pre_cancer_cell_g, r_G);
+  pre_cancer_cell_natural_death: normalized_pre_cancer_cell_g => ; compartment_*mu_G*normalized_pre_cancer_cell_g;
+  pre_cancer_cell_death_tissue_repair_system: normalized_pre_cancer_cell_g => ; compartment_*function_for_pre_cancer_cell_death_tissue_repair_system_1(K, beta_2, normalized_normal_cell_n, normalized_pre_cancer_cell_g);
+  pre_cancer_cell_death_apoptosis: normalized_pre_cancer_cell_g => ; compartment_*xi_G*normalized_pre_cancer_cell_g;
+  negative_effect_on_G_A: normalized_pre_cancer_cell_g => ; compartment_*function_for_negative_effect_on_G_A_1(beta_5, normalized_cancer_cell_a, normalized_pre_cancer_cell_g);
+  negative_effect_on_A_G: normalized_cancer_cell_a => ; compartment_*function_for_negative_effect_on_A_G_1(beta_6, normalized_cancer_cell_a, normalized_pre_cancer_cell_g);
+  cancer_cell_natural_death: normalized_cancer_cell_a => ; compartment_*mu_A*normalized_cancer_cell_a;
+  cancer_cell_logistic_growth:  => normalized_cancer_cell_a; compartment_*function_for_cancer_cell_logistic_growth_1(K, K_A, normalized_cancer_cell_a, r_A);
+  cancer_cell_death_tissue_repair_system: normalized_cancer_cell_a => ; compartment_*function_for_cancer_cell_death_tissue_repair_system_1(K, beta_3, normalized_cancer_cell_a, normalized_normal_cell_n);
+  cancer_cell_death_apoptosis: normalized_cancer_cell_a => ; compartment_*xi_A*normalized_cancer_cell_a;
+  transition_to_cancer_cell: normalized_pre_cancer_cell_g => normalized_cancer_cell_a; compartment_*function_for_transition_to_cancer_cell_1(K, delta, normalized_pre_cancer_cell_g, xi);
+
+  // Species initializations:
+  normalized_normal_cell_n = n0;
+  normalized_normal_cell_n has substance_per_volume;
+  normalized_pre_cancer_cell_g = g0;
+  normalized_pre_cancer_cell_g has substance_per_volume;
+  normalized_cancer_cell_a = a0;
+  normalized_cancer_cell_a has substance_per_volume;
+
+  // Compartment initializations:
+  compartment_ = 1;
+  compartment_ has volume;
+
+  // Variable initializations:
+  r_N = 1000000;
+  r_N has unit_2;
+  mu_N = 0.01;
+  mu_N has unit_2;
+  beta_1 = 3.5e-10;
+  beta_1 has unit_2;
+  beta_4 = 0;
+  beta_4 has unit_2;
+  r_G = 0.05;
+  r_G has unit_2;
+  mu_G = 0.01;
+  mu_G has unit_2;
+  xi_G = 0.01;
+  xi_G has unit_2;
+  beta_2 = 3.5e-10;
+  beta_2 has unit_2;
+  beta_5 = 0;
+  beta_5 has unit_2;
+  delta = 1e-05;
+  delta has unit_2;
+  xi = 1000;
+  xi has unit_1;
+  r_A = 0.05;
+  r_A has unit_2;
+  K_A = 10000000;
+  K_A has unit_1;
+  mu_A = 0.01;
+  mu_A has unit_2;
+  xi_A = 0.006;
+  xi_A has unit_2;
+  beta_3 = 3.5e-10;
+  beta_3 has unit_2;
+  beta_6 = 0;
+  beta_6 has unit_2;
+  K = 100000000;
+  G0 = 1;
+  A0 = 0;
+
+  // Other declarations:
+  var n0, g0, a0, A, G, N, N0, a;
+  const compartment_, r_N, mu_N, beta_1, beta_4, r_G, mu_G, xi_G, beta_2;
+  const beta_5, delta, xi, r_A, K_A, mu_A, xi_A, beta_3, beta_6, K, G0, A0;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = time_unit;
+  unit substance = 1e-3 mole;
+  unit unit_0 = 1 / 86400e-1 second;
+  unit unit_1 = 1 / dimensionless^-0;
+  unit unit_2 = 1 / 1e-3 second;
+  unit extent = substance;
+  unit substance_per_volume = 1e-3 mole / 1e-3 litre;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1/d";
+  unit_1 is "1";
+  unit_2 is "1/ms";
+  compartment_ is "compartment";
+  normalized_normal_cell_n is "normalized normal cell n";
+  normalized_pre_cancer_cell_g is "normalized pre-cancer cell g";
+  normalized_cancer_cell_a is "normalized cancer cell a";
+  a is "a'";
+  normal_cell_growth is "normal cell growth";
+  normal_cell_death is "normal cell death";
+  normal_cell_damage_A is "normal cell damage;A";
+  normal_cell_damage_G is "normal cell damage;G";
+  pre_cancer_cell_logistic_growth is "pre-cancer cell logistic growth";
+  pre_cancer_cell_natural_death is "pre-cancer cell natural death";
+  pre_cancer_cell_death_tissue_repair_system is "pre-cancer cell death;tissue repair system";
+  pre_cancer_cell_death_apoptosis is "pre-cancer cell death;apoptosis";
+  negative_effect_on_G_A is "negative effect on G;A";
+  negative_effect_on_A_G is "negative effect on A;G";
+  cancer_cell_natural_death is "cancer cell natural death";
+  cancer_cell_logistic_growth is "cancer cell logistic growth";
+  cancer_cell_death_tissue_repair_system is "cancer cell death;tissue repair system";
+  cancer_cell_death_apoptosis is "cancer cell death;apoptosis";
+  transition_to_cancer_cell is "transition to cancer cell";
+
+  // CV terms:
+  compartment_ hypernym "http://identifiers.org/ncit/C13413"
+  normalized_normal_cell_n property "http://identifiers.org/ncit/C12508"
+  normalized_normal_cell_n property "http://identifiers.org/ncit/C115935"
+  n0 property "http://identifiers.org/ncit/C115935"
+  n0 property "http://identifiers.org/ncit/C12508"
+  normalized_pre_cancer_cell_g property "http://identifiers.org/ncit/C12959"
+  normalized_pre_cancer_cell_g property "http://identifiers.org/ncit/C25629"
+  g0 property "http://identifiers.org/ncit/C12959"
+  g0 property "http://identifiers.org/ncit/C25629"
+  normalized_cancer_cell_a property "http://identifiers.org/ncit/C12959"
+  a0 property "http://identifiers.org/ncit/C12959"
+  r_N property "http://identifiers.org/sbo/SBO:0000610"
+  mu_N property "http://identifiers.org/ncit/C53346"
+  mu_N property "http://identifiers.org/ncit/C85060"
+  r_G property "http://identifiers.org/sbo/SBO:0000610"
+  mu_G property "http://identifiers.org/ncit/C85060"
+  mu_G property "http://identifiers.org/ncit/C53346"
+  xi_G property "http://identifiers.org/ncit/C53346"
+  delta property "http://identifiers.org/ncit/C25564"
+  delta property "http://identifiers.org/go/GO:0000492"
+  delta property "http://identifiers.org/ncit/C25636"
+  xi property "http://identifiers.org/ncit/C48228"
+  r_A property "http://identifiers.org/sbo/SBO:0000610"
+  K_A property "http://identifiers.org/sbo/SBO:0000661"
+  K_A property "http://identifiers.org/ncit/C81005"
+  mu_A property "http://identifiers.org/ncit/C53346"
+  mu_A property "http://identifiers.org/ncit/C85060"
+  xi_A property "http://identifiers.org/ncit/C53346"
+  A property "http://identifiers.org/ncit/C12959"
+  G property "http://identifiers.org/ncit/C12959"
+  G property "http://identifiers.org/ncit/C25629"
+  N property "http://identifiers.org/ncit/C12508"
+  N property "http://identifiers.org/ncit/C115935"
+  G0 property "http://identifiers.org/ncit/C25629"
+  G0 property "http://identifiers.org/ncit/C12959"
+  A0 property "http://identifiers.org/ncit/C12959"
+  N0 property "http://identifiers.org/ncit/C115935"
+  N0 property "http://identifiers.org/ncit/C12508"
+  a property "http://identifiers.org/ncit/C12959"
+  normal_cell_growth property "http://identifiers.org/sbo/SBO:0000629"
+  normal_cell_death property "http://identifiers.org/sbo/SBO:0000179"
+  normal_cell_damage_A property "http://identifiers.org/sbo/SBO:0000202"
+  normal_cell_damage_G property "http://identifiers.org/sbo/SBO:0000202"
+  pre_cancer_cell_logistic_growth property "http://identifiers.org/go/GO:0040007"
+  pre_cancer_cell_natural_death property "http://identifiers.org/sbo/SBO:0000179"
+  pre_cancer_cell_death_tissue_repair_system property "http://identifiers.org/sbo/SBO:0000179"
+  pre_cancer_cell_death_apoptosis property "http://identifiers.org/sbo/SBO:0000179"
+  negative_effect_on_G_A property "http://identifiers.org/sbo/SBO:0000202"
+  negative_effect_on_A_G property "http://identifiers.org/sbo/SBO:0000202"
+  cancer_cell_natural_death property "http://identifiers.org/sbo/SBO:0000179"
+  cancer_cell_logistic_growth property "http://identifiers.org/go/GO:0040007"
+  cancer_cell_death_tissue_repair_system property "http://identifiers.org/sbo/SBO:0000179"
+  cancer_cell_death_apoptosis property "http://identifiers.org/sbo/SBO:0000179"
+  transition_to_cancer_cell property "http://identifiers.org/sbo/SBO:0000181"
+end
+
+New_Model is "Fassoni2019 - Oncogenesis encompassing mutations and genetic instability"
+
+New_Model model_entity_is "http://identifiers.org/biomodels.db/MODEL1909050003",
+                          "http://identifiers.org/biomodels.db/BIOMD0000000807"
+New_Model property "http://identifiers.org/ncit/C18121"
+New_Model property "http://identifiers.org/ncit/C19320"
+New_Model property "http://identifiers.org/mamo/MAMO_0000046"
+New_Model property "http://identifiers.org/ncit/C17938"
+New_Model property "http://identifiers.org/ncit/C45576"
+New_Model property "http://identifiers.org/ncit/C16870"
+New_Model description "http://identifiers.org/pubmed/29947770"

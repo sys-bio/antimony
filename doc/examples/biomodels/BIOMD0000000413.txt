@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *DIIVENUS_fullmodel()
 
   // Compartments and Species:
@@ -41,4 +41,56 @@ model *DIIVENUS_fullmodel()
 
   // Other declarations:
   const cell, kd, ka, mu, ld, lm, la, delta, lambda, TIR1T, alpha_tr;
+
+  // SBO terms:
+  cell.sboTerm = 290
+  auxin.sboTerm = 252
+  TIR1.sboTerm = 252
+  auxinTIR1.sboTerm = 297
+  auxinTIR1VENUS.sboTerm = 297
+  VENUS.sboTerm = 297
+  auxin_TIR1association.sboTerm = 526
+  auxin_TIR1dissociation.sboTerm = 180
+  auxin_TIR1_VENUSassociation.sboTerm = 526
+  auxin_TIR1_VENUSdissociation.sboTerm = 180
+  auxin_TIR1_VENUSdissociationleadingtoubiquitination.sboTerm = 180
+  auxinproduction.sboTerm = 393
+  auxindecay.sboTerm = 179
+  VENUSproduction.sboTerm = 393
+  VENUSphotobleachingdecay.sboTerm = 179
+
+  // CV terms:
+  cell hypernym "http://identifiers.org/go/GO:0005623"
+  auxin hypernym "http://identifiers.org/uniprot/P49677"
+  TIR1 hypernym "http://identifiers.org/uniprot/Q570C0",
+                "http://identifiers.org/uniprot/Q9ZR12",
+                "http://identifiers.org/uniprot/Q9LW29",
+                "http://identifiers.org/uniprot/Q9LPW7"
+  auxinTIR1 part "http://identifiers.org/uniprot/P49677",
+                 "http://identifiers.org/uniprot/Q570C0"
+  auxinTIR1VENUS part "http://identifiers.org/uniprot/P49677",
+                      "http://identifiers.org/uniprot/Q570C0",
+                      "http://identifiers.org/uniprot/Q9XFM0",
+                      "http://identifiers.org/uniprot/Q940U6"
+  VENUS part "http://identifiers.org/uniprot/Q940U6",
+             "http://identifiers.org/uniprot/Q9XFM0"
+  auxin_TIR1association hypernym "http://identifiers.org/go/GO:0006461"
+  auxin_TIR1dissociation hypernym "http://identifiers.org/go/GO:0043241"
+  auxin_TIR1_VENUSassociation hypernym "http://identifiers.org/go/GO:0006461"
+  auxin_TIR1_VENUSdissociation hypernym "http://identifiers.org/go/GO:0043241"
+  auxin_TIR1_VENUSdissociationleadingtoubiquitination hypernym "http://identifiers.org/go/GO:0043241"
+  auxinproduction hypernym "http://identifiers.org/go/GO:0006412"
+  auxindecay hypernym "http://identifiers.org/go/GO:0030163"
+  VENUSproduction hypernym "http://identifiers.org/go/GO:0006412"
+  VENUSphotobleachingdecay hypernym "http://identifiers.org/go/GO:0030163"
 end
+
+DIIVENUS_fullmodel is "Band2012_DII-Venus_FullModel"
+
+DIIVENUS_fullmodel model_entity_is "http://identifiers.org/biomodels.db/MODEL1203230002"
+DIIVENUS_fullmodel model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000413"
+DIIVENUS_fullmodel description "http://identifiers.org/pubmed/22393022"
+DIIVENUS_fullmodel taxon "http://identifiers.org/taxonomy/3701"
+DIIVENUS_fullmodel hypernym "http://identifiers.org/go/GO:0090354",
+                            "http://identifiers.org/go/GO:0009958"
+DIIVENUS_fullmodel property "http://identifiers.org/mamo/MAMO_0000046"

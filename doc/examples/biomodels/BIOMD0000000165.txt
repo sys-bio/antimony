@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Saucerman2006_PKA()
 
   // Compartments and Species:
@@ -16,7 +16,7 @@ model *Saucerman2006_PKA()
 
   // Assignment Rules:
   Vmax_cAMP_synthesis_GsAC := k_ac_gsa_cAMP_synthesis_GsAC*GsAC_cell;
-  light_cAMP_photolysis := piecewise(1, time > ton_global_light_cAMP_photolysis && time < toff_global_light_cAMP_photolysis, 0) + piecewise(light_spot_cell, time > ton_local_light_cAMP_photolysis && time < toff_local_light_cAMP_photolysis, 0);
+  light_cAMP_photolysis := piecewise(1, (time > ton_global_light_cAMP_photolysis) && (time < toff_global_light_cAMP_photolysis), 0) + piecewise(light_spot_cell, (time > ton_local_light_cAMP_photolysis) && (time < toff_local_light_cAMP_photolysis), 0);
   Vmax_cAMP_synthesis_FskAC := kfsk_cAMP_synthesis_FskAC*FskAC_cell;
   Kf_inhibit_PDE := piecewise(1000, time > 1000, 0);
   Kr_inhibit_PDE := piecewise(30000, time > 1000, 0);
@@ -272,4 +272,68 @@ model *Saucerman2006_PKA()
   PP_AKARp_cell is "PP_AKARp";
   DMNB_cAMP_cell is "DMNB_cAMP";
   L_b1AR_Gs_cell is "L_b1AR_Gs";
+
+  // CV terms:
+  ec identity "http://identifiers.org/go/GO:0005576"
+  cell identity "http://identifiers.org/go/GO:0005623"
+  membrane identity "http://identifiers.org/go/GO:0016020"
+  Gsbg_cell identity "http://identifiers.org/go/GO:0031680"
+  Gsa_gdp_cell part "http://identifiers.org/chebi/CHEBI:17552",
+                    "http://identifiers.org/interpro/IPR001019"
+  Gsa_gdp_cell part "http://identifiers.org/interpro/IPR001019",
+                    "http://identifiers.org/kegg.compound/C00035"
+  Gsa_gtp_cell part "http://identifiers.org/chebi/CHEBI:15996",
+                    "http://identifiers.org/interpro/IPR001019"
+  Gsa_gtp_cell part "http://identifiers.org/interpro/IPR001019",
+                    "http://identifiers.org/kegg.compound/C00044"
+  b1AR_S464_cell part "http://identifiers.org/uniprot/Q5T5Y4"
+  PDE_cell hypernym "http://identifiers.org/uniprot/P54750"
+  ATP_cell identity "http://identifiers.org/chebi/CHEBI:15422",
+                    "http://identifiers.org/kegg.compound/C00002"
+  b1AR_cell hypernym "http://identifiers.org/uniprot/Q5T5Y4"
+  Gs_cell hypernym "http://identifiers.org/uniprot/P63092"
+  PKAC_AKAR_cell part "http://identifiers.org/uniprot/P17612"
+  AC_cell hypernym "http://identifiers.org/uniprot/Q08828"
+  b1AR_Gs_cell part "http://identifiers.org/uniprot/P63092",
+                    "http://identifiers.org/uniprot/Q5T5Y4"
+  cAMP_cell identity "http://identifiers.org/chebi/CHEBI:17489",
+                     "http://identifiers.org/kegg.compound/C00575"
+  GsAC_cell part "http://identifiers.org/uniprot/Q08828",
+                 "http://identifiers.org/uniprot/P63092"
+  b1AR_p_cell hypernym "http://identifiers.org/uniprot/Q5T5Y4"
+  L_b1AR_cell part "http://identifiers.org/uniprot/Q5T5Y4"
+  DMNB_cAMP_cell identity "http://identifiers.org/chebi/CHEBI:17489",
+                          "http://identifiers.org/kegg.compound/C00575"
+  L_b1AR_Gs_cell part "http://identifiers.org/uniprot/P63092",
+                      "http://identifiers.org/uniprot/Q5T5Y4"
+  cAMP_synthesis_GsAC hypernym "http://identifiers.org/go/GO:0006171"
+  bind_b1AR_propranolol hypernym "http://identifiers.org/go/GO:0031690"
+  LRG_activation hypernym "http://identifiers.org/go/GO:0004939"
+  bind_Lb1AR_Gs hypernym "http://identifiers.org/go/GO:0004939"
+  bind_cAMP_ARC hypernym "http://identifiers.org/go/GO:0030552"
+  bind_b1AR_Gs hypernym "http://identifiers.org/go/GO:0004939"
+  bind_PDEcAMP hypernym "http://identifiers.org/go/GO:0030552"
+  Gs_gtp_hydrolysis hypernym "http://identifiers.org/go/GO:0003924"
+  Gs_reassociation parthood "http://identifiers.org/go/GO:0031684"
+  bind_L_b1ARGs hypernym "http://identifiers.org/go/GO:0004939"
+  bind_L_b1AR hypernym "http://identifiers.org/go/GO:0031690"
+  inhib_PKAC hypernym "http://identifiers.org/go/GO:0004862"
+  bind_RC_cAMP hypernym "http://identifiers.org/go/GO:0030552"
+  cAMP_synthesis_FskAC hypernym "http://identifiers.org/go/GO:0006171"
+  bind_Gs_AC hypernym "http://identifiers.org/go/GO:0008179"
+  RG_activation hypernym "http://identifiers.org/go/GO:0004939"
+  cAMP_degradation hypernym "http://identifiers.org/go/GO:0006198"
 end
+
+Saucerman2006_PKA is "Saucerman2006_PKA"
+
+Saucerman2006_PKA model_entity_is "http://identifiers.org/biomodels.db/MODEL8003201958"
+Saucerman2006_PKA model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000165"
+Saucerman2006_PKA description "http://identifiers.org/pubmed/16905651"
+Saucerman2006_PKA origin "http://identifiers.org/biomodels.db/MODEL1006230118"
+Saucerman2006_PKA taxon "http://identifiers.org/taxonomy/10116"
+Saucerman2006_PKA hypernym "http://identifiers.org/go/GO:0007188",
+                           "http://identifiers.org/go/GO:0034199"
+Saucerman2006_PKA property "http://identifiers.org/mamo/MAMO_0000046"
+Saucerman2006_PKA container "http://identifiers.org/cl/CL:0002495"
+Saucerman2006_PKA property "http://identifiers.org/doid/DOID:114"

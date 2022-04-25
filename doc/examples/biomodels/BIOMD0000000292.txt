@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Rovers1995_Photsynthetic_Oscillations()
 
   // Compartments and Species:
@@ -11,7 +11,7 @@ model *Rovers1995_Photsynthetic_Oscillations()
 
   // Reactions:
   v4: $NADP => NADPH; c*k4*NADP;
-  v3: 2$ADP => 2ATP; c*k3*ADP*NADP;
+  v3: 2 $ADP => 2 ATP; c*k3*ADP*NADP;
   v2: $Y + NADPH + ATP => X + $ADP + $NADP; c*k2*ATP;
   v1: X + ATP => $Y + $ADP; c*k1*X;
 
@@ -56,4 +56,82 @@ model *Rovers1995_Photsynthetic_Oscillations()
   substance is "mmole";
   time_unit is "time";
   NADP is "NADP_super_+";
+
+  // SBO terms:
+  c.sboTerm = 290
+  NADPH.sboTerm = 247
+  ADP.sboTerm = 247
+  A0.sboTerm = 472
+  ATP.sboTerm = 247
+  X.sboTerm = 247
+  Y.sboTerm = 247
+  NADP.sboTerm = 247
+  N0.sboTerm = 472
+  k1.sboTerm = 35
+  k2.sboTerm = 35
+  k3.sboTerm = 36
+  k4.sboTerm = 35
+  v4.sboTerm = 202
+  v3.sboTerm = 216
+  v2.sboTerm = 182
+  v1.sboTerm = 216
+
+  // CV terms:
+  c identity "http://identifiers.org/go/GO:0009570"
+  NADPH identity "http://identifiers.org/chebi/CHEBI:16474"
+  NADPH identity "http://identifiers.org/kegg.compound/C00005"
+  ADP identity "http://identifiers.org/kegg.compound/C00008"
+  ADP identity "http://identifiers.org/chebi/CHEBI:16761"
+  A0 model_entity_is "http://identifiers.org/chebi/CHEBI:16761",
+                     "http://identifiers.org/chebi/CHEBI:15422"
+  A0 part "http://identifiers.org/kegg.compound/C00002",
+          "http://identifiers.org/kegg.compound/C00008"
+  ATP identity "http://identifiers.org/chebi/CHEBI:15422"
+  ATP identity "http://identifiers.org/kegg.compound/C00002"
+  X part "http://identifiers.org/chebi/CHEBI:16108",
+         "http://identifiers.org/chebi/CHEBI:17797",
+         "http://identifiers.org/chebi/CHEBI:17363",
+         "http://identifiers.org/chebi/CHEBI:16905",
+         "http://identifiers.org/chebi/CHEBI:15946",
+         "http://identifiers.org/chebi/CHEBI:48153",
+         "http://identifiers.org/chebi/CHEBI:17969",
+         "http://identifiers.org/chebi/CHEBI:15721",
+         "http://identifiers.org/chebi/CHEBI:29052"
+  X part "http://identifiers.org/kegg.compound/C00111",
+         "http://identifiers.org/kegg.compound/C00117",
+         "http://identifiers.org/kegg.compound/C00199",
+         "http://identifiers.org/kegg.compound/C05382",
+         "http://identifiers.org/kegg.compound/C00447",
+         "http://identifiers.org/kegg.compound/C00279",
+         "http://identifiers.org/kegg.compound/C00085",
+         "http://identifiers.org/kegg.compound/C00354",
+         "http://identifiers.org/kegg.compound/C00118"
+  Y part "http://identifiers.org/chebi/CHEBI:17794",
+         "http://identifiers.org/chebi/CHEBI:16710"
+  Y part "http://identifiers.org/kegg.compound/C00197",
+         "http://identifiers.org/kegg.compound/C01182"
+  NADP identity "http://identifiers.org/chebi/CHEBI:18009"
+  NADP identity "http://identifiers.org/kegg.compound/C00006"
+  N0 part "http://identifiers.org/chebi/CHEBI:16474",
+          "http://identifiers.org/chebi/CHEBI:18009"
+  N0 part "http://identifiers.org/kegg.compound/C00005",
+          "http://identifiers.org/kegg.compound/C00006"
+  v4 hypernym "http://identifiers.org/go/GO:0009780"
+  v3 hypernym "http://identifiers.org/go/GO:0009777"
+  v2 version "http://identifiers.org/kegg.reaction/R01512",
+             "http://identifiers.org/kegg.reaction/R01063"
+  v2 version "http://identifiers.org/ec-code/2.7.2.3",
+             "http://identifiers.org/ec-code/1.2.1.13",
+             "http://identifiers.org/ec-code/1.2.1.59"
+  v1 hypernym "http://identifiers.org/ec-code/2.7.1.19"
+  v1 hypernym "http://identifiers.org/kegg.reaction/R01523"
 end
+
+Rovers1995_Photsynthetic_Oscillations is "Rovers1995_Photsynthetic_Oscillations"
+
+Rovers1995_Photsynthetic_Oscillations model_entity_is "http://identifiers.org/biomodels.db/MODEL1101060001"
+Rovers1995_Photsynthetic_Oscillations model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000292"
+Rovers1995_Photsynthetic_Oscillations description "http://identifiers.org/pubmed/7772723"
+Rovers1995_Photsynthetic_Oscillations hypernym "http://identifiers.org/kegg.pathway/rn00710"
+Rovers1995_Photsynthetic_Oscillations hypernym "http://identifiers.org/go/GO:0019253"
+Rovers1995_Photsynthetic_Oscillations taxon "http://identifiers.org/taxonomy/33090"

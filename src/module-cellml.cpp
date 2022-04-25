@@ -560,7 +560,8 @@ void Module::CreateCellMLComponent(Module* topmod)
     case varStrand:
     case varUncertWrapper:
     case varSboTermWrapper:
-      //These all have no CellML equivalent (except Module, which is taken care of separately).
+    case varStoichiometry:
+        //These all have no CellML equivalent (except Module, which is taken care of separately).
       break;
     }
     if (used) {

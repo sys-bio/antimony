@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Akman2008_Circadian_Clock_Model2()
 
   // Compartments and Species:
@@ -15,24 +15,24 @@ model *Akman2008_Circadian_Clock_Model2()
   WC1_tot := PW + PWL + E1W + E2W;
 
   // Reactions:
-  MFtrn:  => MF; (a1*PWL^n)/((1 + (PF + PFp)/b1)*(PWL^n + b2^n)) + (a2*PW^m)/((1 + (PF + PFp)/b3)*(PW^m + b4^m));
-  MFdeg: MF => ; (d1*MF)/(MF + b5);
+  MFtrn:  => MF; a1*PWL^n/((1 + (PF + PFp)/b1)*(PWL^n + b2^n)) + a2*PW^m/((1 + (PF + PFp)/b3)*(PW^m + b4^m));
+  MFdeg: MF => ; d1*MF/(MF + b5);
   E1Ftrl:  => E1F; a3*MF;
   E1Fdeg: E1F => ; gam1*E1F;
   E2Ftrl: E1F => E2F; f1*E1F;
   E2Fdeg: E2F => ; gam1*E2F;
   PFtrl: E2F => PF; f1*E2F;
   PFdeg: PF => ; d2*PF;
-  MWtrn:  => MW; a4 + (a5*PWL^k)/(PWL^k + b7^k);
-  MWdeg: MW => ; (d3*MW)/(MW + b8);
+  MWtrn:  => MW; a4 + a5*PWL^k/(PWL^k + b7^k);
+  MWdeg: MW => ; d3*MW/(MW + b8);
   E1Wtrl:  => E1W; (a6 + a7*(PF + PFp))*MW;
   E1Wdeg: E1W => ; gam2*E1W;
   E2Wtrl: E1W => E2W; f2*E1W;
   E2Wdeg: E2W => ; gam2*E2W;
   PWtrl: E2W => PW; f2*E2W;
-  PWdeg: PW => ; (d4*PW)/(PW + b9);
-  PWtrs: PW -> PWL; (r1*amp*PW*(1 + tanh(24*(time - 24*floor(time/24) - dawn)))*(1 - tanh(24*(time - 24*floor(time/24) - dusk))))/4 - r2*PWL;
-  PWLdeg: PWL => ; (d5*PWL)/(PWL + b10);
+  PWdeg: PW => ; d4*PW/(PW + b9);
+  PWtrs: PW -> PWL; r1*amp*PW*(1 + tanh(24*(time - 24*floor(time/24) - dawn)))*(1 - tanh(24*(time - 24*floor(time/24) - dusk)))/4 - r2*PWL;
+  PWLdeg: PWL => ; d5*PWL/(PWL + b10);
   E1Fptrl:  => E1Fp; a3p*MF;
   E1Fpdeg: E1Fp => ; gam1p*E1Fp;
   E2Fptrl: E1Fp => E2Fp; f1p*E1Fp;
@@ -126,4 +126,106 @@ model *Akman2008_Circadian_Clock_Model2()
   lFrq_tot is "tot l-Frq";
   Frq_tot is "tot Frq";
   WC1_tot is "tot WC-1";
+
+  // SBO terms:
+  cytosol.sboTerm = 290
+  nucleus.sboTerm = 290
+  E1F.sboTerm = 252
+  E1Fp.sboTerm = 252
+  E1W.sboTerm = 252
+  E2F.sboTerm = 252
+  E2Fp.sboTerm = 252
+  E2W.sboTerm = 252
+  MF.sboTerm = 250
+  MW.sboTerm = 250
+  PF.sboTerm = 252
+  PFp.sboTerm = 252
+  PW.sboTerm = 252
+  PWL.sboTerm = 252
+  sFrq_tot.sboTerm = 252
+  lFrq_tot.sboTerm = 252
+  Frq_tot.sboTerm = 252
+  WC1_tot.sboTerm = 252
+  MFtrn.sboTerm = 183
+  MFdeg.sboTerm = 179
+  E1Ftrl.sboTerm = 184
+  E1Fdeg.sboTerm = 179
+  E2Ftrl.sboTerm = 181
+  E2Fdeg.sboTerm = 179
+  PFtrl.sboTerm = 185
+  PFdeg.sboTerm = 179
+  MWtrn.sboTerm = 183
+  MWdeg.sboTerm = 179
+  E1Wtrl.sboTerm = 184
+  E1Wdeg.sboTerm = 179
+  E2Wtrl.sboTerm = 181
+  E2Wdeg.sboTerm = 179
+  PWtrl.sboTerm = 185
+  PWdeg.sboTerm = 179
+  PWtrs.sboTerm = 181
+  PWLdeg.sboTerm = 179
+  E1Fptrl.sboTerm = 184
+  E1Fpdeg.sboTerm = 179
+  E2Fptrl.sboTerm = 181
+  E2Fpdeg.sboTerm = 179
+  PFptrl.sboTerm = 185
+  PFpdeg.sboTerm = 179
+
+  // CV terms:
+  cytosol identity "http://identifiers.org/go/GO:0005829"
+  nucleus identity "http://identifiers.org/go/GO:0005634"
+  E1F hypernym "http://identifiers.org/uniprot/P19970"
+  E1Fp hypernym "http://identifiers.org/uniprot/P19970"
+  E1W hypernym "http://identifiers.org/uniprot/Q01371"
+  E2F hypernym "http://identifiers.org/uniprot/P19970"
+  E2Fp hypernym "http://identifiers.org/uniprot/P19970"
+  E2W hypernym "http://identifiers.org/uniprot/Q01371"
+  MF hypernym "http://identifiers.org/chebi/CHEBI:33699",
+              "http://identifiers.org/kegg.compound/C00046"
+  MF encodement "http://identifiers.org/uniprot/P19970"
+  MW hypernym "http://identifiers.org/chebi/CHEBI:33699",
+              "http://identifiers.org/kegg.compound/C00046"
+  MW encodement "http://identifiers.org/uniprot/Q01371"
+  PF hypernym "http://identifiers.org/uniprot/P19970"
+  PFp hypernym "http://identifiers.org/uniprot/P19970"
+  PW hypernym "http://identifiers.org/uniprot/Q01371"
+  PWL hypernym "http://identifiers.org/uniprot/Q01371"
+  sFrq_tot hypernym "http://identifiers.org/uniprot/P19970"
+  lFrq_tot hypernym "http://identifiers.org/uniprot/P19970"
+  Frq_tot hypernym "http://identifiers.org/uniprot/P19970"
+  WC1_tot hypernym "http://identifiers.org/uniprot/Q01371"
+  MFtrn hypernym "http://identifiers.org/go/GO:0006351"
+  MFdeg hypernym "http://identifiers.org/go/GO:0006402"
+  E1Ftrl hypernym "http://identifiers.org/go/GO:0006412"
+  E1Fdeg hypernym "http://identifiers.org/go/GO:0030163"
+  E2Ftrl hypernym "http://identifiers.org/go/GO:0016485"
+  E2Fdeg hypernym "http://identifiers.org/go/GO:0030163"
+  PFtrl hypernym "http://identifiers.org/go/GO:0006606"
+  PFdeg hypernym "http://identifiers.org/go/GO:0030163"
+  MWtrn hypernym "http://identifiers.org/go/GO:0006351"
+  MWdeg hypernym "http://identifiers.org/go/GO:0006402"
+  E1Wtrl hypernym "http://identifiers.org/go/GO:0006412"
+  E1Wdeg hypernym "http://identifiers.org/go/GO:0030163"
+  E2Wtrl hypernym "http://identifiers.org/go/GO:0016485"
+  E2Wdeg hypernym "http://identifiers.org/go/GO:0030163"
+  PWtrl hypernym "http://identifiers.org/go/GO:0006606"
+  PWdeg hypernym "http://identifiers.org/go/GO:0030163"
+  PWtrs hypernym "http://identifiers.org/go/GO:0051091",
+                 "http://identifiers.org/go/GO:0016037"
+  PWLdeg hypernym "http://identifiers.org/go/GO:0030163"
+  E1Fptrl hypernym "http://identifiers.org/go/GO:0006412"
+  E1Fpdeg hypernym "http://identifiers.org/go/GO:0030163"
+  E2Fptrl hypernym "http://identifiers.org/go/GO:0016485"
+  E2Fpdeg hypernym "http://identifiers.org/go/GO:0030163"
+  PFptrl hypernym "http://identifiers.org/go/GO:0006606"
+  PFpdeg hypernym "http://identifiers.org/go/GO:0030163"
 end
+
+Akman2008_Circadian_Clock_Model2 is "Akman2008_Circadian_Clock_Model2"
+
+Akman2008_Circadian_Clock_Model2 model_entity_is "http://identifiers.org/biomodels.db/MODEL8306015773"
+Akman2008_Circadian_Clock_Model2 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000214"
+Akman2008_Circadian_Clock_Model2 description "http://identifiers.org/pubmed/18277380"
+Akman2008_Circadian_Clock_Model2 origin "http://identifiers.org/biomodels.db/BIOMD0000000299"
+Akman2008_Circadian_Clock_Model2 taxon "http://identifiers.org/taxonomy/5141"
+Akman2008_Circadian_Clock_Model2 hypernym "http://identifiers.org/go/GO:0042752"

@@ -1,11 +1,19 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 function function_1(V, substrate, Km)
-  (V*substrate)/(Km + substrate);
+  V*substrate/(Km + substrate);
 end
 
+function_1.sboTerm = 29
+
+function_1 is "degradation (Michaelis_Menten_Equation)"
+
 function LightFunction(t, lightOffset, lightAmplitude, phase, photoPeriod, cyclePeriod, twilightPeriod)
-  (lightOffset + 0.5*lightAmplitude*(1 + tanh((cyclePeriod*((t + phase)/cyclePeriod - floor(floor(t + phase)/cyclePeriod)))/twilightPeriod))) - 0.5*lightAmplitude*(1 + tanh((cyclePeriod*((t + phase)/cyclePeriod - floor(floor(t + phase)/cyclePeriod)) - photoPeriod)/twilightPeriod)) + 0.5*lightAmplitude*(1 + tanh((cyclePeriod*((t + phase)/cyclePeriod - floor(floor(t + phase)/cyclePeriod)) - cyclePeriod)/twilightPeriod));
+  (lightOffset + 0.5*lightAmplitude*(1 + tanh(cyclePeriod*((t + phase)/cyclePeriod - floor(floor(t + phase)/cyclePeriod))/twilightPeriod)) - 0.5*lightAmplitude*(1 + tanh((cyclePeriod*((t + phase)/cyclePeriod - floor(floor(t + phase)/cyclePeriod)) - photoPeriod)/twilightPeriod))) + 0.5*lightAmplitude*(1 + tanh((cyclePeriod*((t + phase)/cyclePeriod - floor(floor(t + phase)/cyclePeriod)) - cyclePeriod)/twilightPeriod));
 end
+
+LightFunction.sboTerm = 475
+
+LightFunction is "tanh() light function"
 
 
 model *MODEL1001130000()
@@ -18,13 +26,13 @@ model *MODEL1001130000()
   species cPn in compartment_, cAm in compartment_, cAc in compartment_, cAn in compartment_;
 
   // Reactions:
-  reaction_1:  => cLm; (compartment_*g0^alpha)/(g0^alpha + cAn^alpha)*(LightFunction(time, lightOffset, lightAmplitude, phase, photoPeriod, cyclePeriod, twilightPeriod)*(q1*cPn + n0) + (n1*cXn^a)/(g1^a + cXn^a));
+  reaction_1:  => cLm; (compartment_*g0^alpha/(g0^alpha + cAn^alpha))*(LightFunction(time, lightOffset, lightAmplitude, phase, photoPeriod, cyclePeriod, twilightPeriod)*(q1*cPn + n0) + n1*cXn^a/(g1^a + cXn^a));
   reaction_0: cLm => ; compartment_*function_1(m1, cLm, k1);
   reaction_2:  => cLc; compartment_*p1*cLm;
   reaction_3: cLc -> cLn; compartment_*(r1*cLc - r2*cLn);
   reaction_4: cLc => ; compartment_*function_1(m2, cLc, k2);
   reaction_5: cLn => ; compartment_*function_1(m3, cLn, k3);
-  reaction_6:  => cTm; (compartment_*n2*cYn^b)/(g2^b + cYn^b)*(g3^c/(g3^c + cLn^c));
+  reaction_6:  => cTm; (compartment_*n2*cYn^b/(g2^b + cYn^b))*(g3^c/(g3^c + cLn^c));
   reaction_7: cTm => ; compartment_*function_1(m4, cTm, k4);
   reaction_9: cYc -> cYn; compartment_*(r7*cYc - r8*cYn);
   reaction_10: cYn => ; compartment_*function_1(m14, cYn, k12);
@@ -40,20 +48,20 @@ model *MODEL1001130000()
   reaction_20: cAn => ; compartment_*function_1(m18, cAn, k16);
   reaction_21:  => cPn; (1 - LightFunction(time, lightOffset, lightAmplitude, phase, photoPeriod, cyclePeriod, twilightPeriod))*p5*compartment_;
   reaction_22: cPn => ; LightFunction(time, lightOffset, lightAmplitude, phase, photoPeriod, cyclePeriod, twilightPeriod)*q3*cPn*compartment_;
-  reaction_23: cPn => ; (compartment_*m15*cPn)/(k13 + cPn);
+  reaction_23: cPn => ; compartment_*m15*cPn/(k13 + cPn);
   reaction_25:  => cAm; LightFunction(time, lightOffset, lightAmplitude, phase, photoPeriod, cyclePeriod, twilightPeriod)*q4*cPn*compartment_;
-  reaction_26:  => cAm; (compartment_*n6*cLn^g)/(g7^g + cLn^g);
-  reaction_27: cAm => ; (compartment_*m16*cAm)/(k14 + cAm);
-  reaction_28:  => cXm; (compartment_*n3*cTn^d)/(g4^d + cTn^d);
-  reaction_29: cXm => ; (compartment_*m9*cXm)/(k7 + cXm);
+  reaction_26:  => cAm; compartment_*n6*cLn^g/(g7^g + cLn^g);
+  reaction_27: cAm => ; compartment_*m16*cAm/(k14 + cAm);
+  reaction_28:  => cXm; compartment_*n3*cTn^d/(g4^d + cTn^d);
+  reaction_29: cXm => ; compartment_*m9*cXm/(k7 + cXm);
   reaction_30:  => cTc; p2*compartment_*cTm;
   reaction_31: cTc -> cTn; compartment_*(-r4*cTn + r3*cTc);
-  reaction_32: cTc => ; (compartment_*(1 - LightFunction(time, lightOffset, lightAmplitude, phase, photoPeriod, cyclePeriod, twilightPeriod))*m5*cTc)/(k5 + cTc);
-  reaction_33: cTc => ; (m6*compartment_*cTc)/(k5 + cTc);
-  reaction_34: cTn => ; (compartment_*(1 - LightFunction(time, lightOffset, lightAmplitude, phase, photoPeriod, cyclePeriod, twilightPeriod))*m7*cTn)/(k6 + cTn);
-  reaction_38: cTn => ; (m8*compartment_*cTn)/(k6 + cTn);
-  reaction_39:  => cYm; compartment_*(LightFunction(time, lightOffset, lightAmplitude, phase, photoPeriod, cyclePeriod, twilightPeriod)*q2*cPn + ((LightFunction(time, lightOffset, lightAmplitude, phase, photoPeriod, cyclePeriod, twilightPeriod)*n4 + n5)*g5^e)/(g5^e + cTn^e))*(g6^f/(g6^f + cLn^f));
-  reaction_40: cYm => ; (compartment_*m12*cYm)/(k10 + cYm);
+  reaction_32: cTc => ; compartment_*(1 - LightFunction(time, lightOffset, lightAmplitude, phase, photoPeriod, cyclePeriod, twilightPeriod))*m5*cTc/(k5 + cTc);
+  reaction_33: cTc => ; m6*compartment_*cTc/(k5 + cTc);
+  reaction_34: cTn => ; compartment_*(1 - LightFunction(time, lightOffset, lightAmplitude, phase, photoPeriod, cyclePeriod, twilightPeriod))*m7*cTn/(k6 + cTn);
+  reaction_38: cTn => ; m8*compartment_*cTn/(k6 + cTn);
+  reaction_39:  => cYm; compartment_*(LightFunction(time, lightOffset, lightAmplitude, phase, photoPeriod, cyclePeriod, twilightPeriod)*q2*cPn + (LightFunction(time, lightOffset, lightAmplitude, phase, photoPeriod, cyclePeriod, twilightPeriod)*n4 + n5)*g5^e/(g5^e + cTn^e))*(g6^f/(g6^f + cLn^f));
+  reaction_40: cYm => ; compartment_*m12*cYm/(k10 + cYm);
 
   // Species initializations:
   cLm = 0.4625;
@@ -228,4 +236,205 @@ model *MODEL1001130000()
   reaction_38 is "light independent degradation cTn";
   reaction_39 is "cYm transcription";
   reaction_40 is "cYm degradation";
+
+  // SBO terms:
+  compartment_.sboTerm = 290
+  cLm.sboTerm = 278
+  cLc.sboTerm = 245
+  cLn.sboTerm = 245
+  cTm.sboTerm = 278
+  cTc.sboTerm = 245
+  cTn.sboTerm = 245
+  cXm.sboTerm = 278
+  cXc.sboTerm = 245
+  cXn.sboTerm = 245
+  cYm.sboTerm = 278
+  cYc.sboTerm = 245
+  cYn.sboTerm = 245
+  cPn.sboTerm = 245
+  cAm.sboTerm = 278
+  cAc.sboTerm = 245
+  cAn.sboTerm = 245
+  q1.sboTerm = 337
+  n0.sboTerm = 186
+  g0.sboTerm = 186
+  alpha.sboTerm = 261
+  n1.sboTerm = 186
+  a.sboTerm = 190
+  g1.sboTerm = 363
+  m1.sboTerm = 324
+  k1.sboTerm = 27
+  p1.sboTerm = 153
+  r1.sboTerm = 153
+  r2.sboTerm = 156
+  m2.sboTerm = 324
+  k2.sboTerm = 26
+  m3.sboTerm = 324
+  k3.sboTerm = 27
+  n2.sboTerm = 186
+  b.sboTerm = 190
+  g2.sboTerm = 363
+  g3.sboTerm = 261
+  c.sboTerm = 190
+  m4.sboTerm = 324
+  k4.sboTerm = 27
+  p2.sboTerm = 153
+  r3.sboTerm = 153
+  r4.sboTerm = 156
+  m5.sboTerm = 324
+  m6.sboTerm = 324
+  k5.sboTerm = 27
+  m7.sboTerm = 324
+  m8.sboTerm = 324
+  k6.sboTerm = 27
+  n3.sboTerm = 186
+  d.sboTerm = 190
+  g4.sboTerm = 363
+  m9.sboTerm = 324
+  k7.sboTerm = 27
+  p3.sboTerm = 153
+  r5.sboTerm = 153
+  r6.sboTerm = 156
+  m10.sboTerm = 324
+  k8.sboTerm = 27
+  m11.sboTerm = 324
+  k9.sboTerm = 27
+  q2.sboTerm = 337
+  n4.sboTerm = 186
+  n5.sboTerm = 186
+  g5.sboTerm = 261
+  g6.sboTerm = 261
+  e.sboTerm = 190
+  f.sboTerm = 190
+  m12.sboTerm = 324
+  k10.sboTerm = 27
+  p4.sboTerm = 153
+  r7.sboTerm = 153
+  r8.sboTerm = 156
+  m13.sboTerm = 324
+  k11.sboTerm = 27
+  m14.sboTerm = 324
+  k12.sboTerm = 27
+  p5.sboTerm = 153
+  k13.sboTerm = 27
+  m15.sboTerm = 324
+  q3.sboTerm = 337
+  q4.sboTerm = 337
+  g.sboTerm = 190
+  n6.sboTerm = 186
+  g7.sboTerm = 363
+  m16.sboTerm = 324
+  k14.sboTerm = 27
+  p6.sboTerm = 153
+  r9.sboTerm = 153
+  r10.sboTerm = 156
+  m17.sboTerm = 324
+  k15.sboTerm = 27
+  m18.sboTerm = 324
+  k16.sboTerm = 27
+  lightOffset.sboTerm = 477
+  cyclePeriod.sboTerm = 447
+  photoPeriod.sboTerm = 447
+  phase.sboTerm = 476
+  twilightPeriod.sboTerm = 347
+  reaction_1.sboTerm = 183
+  reaction_0.sboTerm = 179
+  reaction_2.sboTerm = 184
+  reaction_3.sboTerm = 185
+  reaction_4.sboTerm = 179
+  reaction_5.sboTerm = 179
+  reaction_6.sboTerm = 183
+  reaction_7.sboTerm = 179
+  reaction_9.sboTerm = 185
+  reaction_10.sboTerm = 179
+  reaction_11.sboTerm = 184
+  reaction_12.sboTerm = 179
+  reaction_13.sboTerm = 185
+  reaction_14.sboTerm = 179
+  reaction_15.sboTerm = 184
+  reaction_16.sboTerm = 179
+  reaction_17.sboTerm = 184
+  reaction_18.sboTerm = 185
+  reaction_19.sboTerm = 179
+  reaction_20.sboTerm = 179
+  reaction_21.sboTerm = 393
+  reaction_22.sboTerm = 179
+  reaction_23.sboTerm = 179
+  reaction_25.sboTerm = 183
+  reaction_26.sboTerm = 183
+  reaction_27.sboTerm = 179
+  reaction_28.sboTerm = 183
+  reaction_29.sboTerm = 179
+  reaction_30.sboTerm = 184
+  reaction_31.sboTerm = 185
+  reaction_32.sboTerm = 179
+  reaction_33.sboTerm = 179
+  reaction_34.sboTerm = 179
+  reaction_38.sboTerm = 179
+  reaction_39.sboTerm = 183
+  reaction_40.sboTerm = 179
+
+  // CV terms:
+  compartment_ hypernym "http://identifiers.org/go/GO:0005623"
+  cLm hypernym "http://identifiers.org/chebi/CHEBI:33699"
+  cLc identity "http://identifiers.org/uniprot/O81713"
+  cLn identity "http://identifiers.org/uniprot/O81713"
+  cTm hypernym "http://identifiers.org/chebi/CHEBI:33699"
+  cTc identity "http://identifiers.org/uniprot/Q9LKL2"
+  cTn identity "http://identifiers.org/uniprot/Q9LKL2"
+  cXm hypernym "http://identifiers.org/chebi/CHEBI:33699"
+  cYm hypernym "http://identifiers.org/chebi/CHEBI:33699"
+  cYc version "http://identifiers.org/uniprot/Q9SQI2"
+  cYn version "http://identifiers.org/uniprot/Q9SQI2"
+  cAm hypernym "http://identifiers.org/chebi/CHEBI:33699"
+  cAc part "http://identifiers.org/uniprot/Q8L500",
+           "http://identifiers.org/uniprot/Q93WK5"
+  cAn part "http://identifiers.org/uniprot/Q8L500",
+           "http://identifiers.org/uniprot/Q93WK5"
+  reaction_1 hypernym "http://identifiers.org/go/GO:0006351"
+  reaction_0 hypernym "http://identifiers.org/go/GO:0006402"
+  reaction_2 hypernym "http://identifiers.org/go/GO:0006412"
+  reaction_3 hypernym "http://identifiers.org/go/GO:0000060"
+  reaction_4 hypernym "http://identifiers.org/go/GO:0030163"
+  reaction_5 hypernym "http://identifiers.org/go/GO:0030163"
+  reaction_6 hypernym "http://identifiers.org/go/GO:0006351"
+  reaction_7 hypernym "http://identifiers.org/go/GO:0006402"
+  reaction_9 hypernym "http://identifiers.org/go/GO:0000060"
+  reaction_10 hypernym "http://identifiers.org/go/GO:0030163"
+  reaction_11 hypernym "http://identifiers.org/go/GO:0006412"
+  reaction_12 hypernym "http://identifiers.org/go/GO:0030163"
+  reaction_13 hypernym "http://identifiers.org/go/GO:0000060"
+  reaction_14 hypernym "http://identifiers.org/go/GO:0030163"
+  reaction_15 hypernym "http://identifiers.org/go/GO:0006412"
+  reaction_16 hypernym "http://identifiers.org/go/GO:0030163"
+  reaction_17 hypernym "http://identifiers.org/go/GO:0006412"
+  reaction_18 hypernym "http://identifiers.org/go/GO:0000060"
+  reaction_19 hypernym "http://identifiers.org/go/GO:0030163"
+  reaction_20 hypernym "http://identifiers.org/go/GO:0030163"
+  reaction_21 hypernym "http://identifiers.org/go/GO:0045727"
+  reaction_22 hypernym "http://identifiers.org/go/GO:0030163"
+  reaction_23 hypernym "http://identifiers.org/go/GO:0030163"
+  reaction_25 hypernym "http://identifiers.org/go/GO:0006351"
+  reaction_26 hypernym "http://identifiers.org/go/GO:0006351"
+  reaction_27 hypernym "http://identifiers.org/go/GO:0006402"
+  reaction_28 hypernym "http://identifiers.org/go/GO:0006351"
+  reaction_29 hypernym "http://identifiers.org/go/GO:0006402"
+  reaction_30 hypernym "http://identifiers.org/go/GO:0006412"
+  reaction_31 hypernym "http://identifiers.org/go/GO:0000060"
+  reaction_32 hypernym "http://identifiers.org/go/GO:0045732"
+  reaction_32 hypernym "http://identifiers.org/go/GO:0030163"
+  reaction_33 hypernym "http://identifiers.org/go/GO:0030163"
+  reaction_34 hypernym "http://identifiers.org/go/GO:0030163"
+  reaction_38 hypernym "http://identifiers.org/go/GO:0030163"
+  reaction_39 hypernym "http://identifiers.org/go/GO:0006351"
+  reaction_40 hypernym "http://identifiers.org/go/GO:0006402"
 end
+
+MODEL1001130000 is "Adams2012 - Locke2006 Circadian Rhythm model refined with Input Signal Light Function"
+
+MODEL1001130000 model_entity_is "http://identifiers.org/biomodels.db/MODEL1001130000"
+MODEL1001130000 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000476"
+MODEL1001130000 description "http://identifiers.org/pubmed/22855577"
+MODEL1001130000 origin "http://identifiers.org/biomodels.db/BIOMD0000000089"
+MODEL1001130000 hypernym "http://identifiers.org/go/GO:0042752"
+MODEL1001130000 taxon "http://identifiers.org/taxonomy/3702"

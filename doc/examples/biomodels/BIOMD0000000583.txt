@@ -1,0 +1,290 @@
+// Created by libAntimony v2.13.0
+function KSA(K, S, A)
+  K*S*A;
+end
+
+KSA is "KSA"
+
+function Rate_Law_for_E_damage(v, S, k1, a1, k2, a2, k3, a3)
+  v*S*(k1*a1 + k2*a2 + k3*a3);
+end
+
+Rate_Law_for_E_damage is "Rate Law for E damage"
+
+function Rate_Law_for_Th17plas(k1, s, k2, m2, p)
+  k1*s - k2*m2*p;
+end
+
+Rate_Law_for_Th17plas is "Rate Law for Th17plas"
+
+function Rate_Law_for_Effector_DC_Production_1(k, S)
+  k*S;
+end
+
+Rate_Law_for_Effector_DC_Production_1 is "Rate Law for Effector DC Production_1"
+
+function Rate_Law_for_eDC(K, S, M1, M2, k2, M3, k1)
+  K*S*M1/(k1*M2 + k2*M3);
+end
+
+Rate_Law_for_eDC is "Rate Law for eDC"
+
+function Rate_Law_for_CD_Lumen_death(K, S, A1, m2, A2, m3, A3)
+  K*S*(A1 + m2*A2 - m3*A3);
+end
+
+Rate_Law_for_CD_Lumen_death is "Rate Law for CD_Lumen death"
+
+function Rate_Law_for_tDC_Production(K, S, k1, M1, M2, k2, M3, M4)
+  K*S*(k1*M1/M2 + k2*M3/(M4 + 100));
+end
+
+Rate_Law_for_tDC_Production is "Rate Law for tDC Production"
+
+function Rate_Law_for_M_Activation(K, S, e1, A1, A2, e2, I1)
+  K*S*(e1*A1 + A2 - e2*I1);
+end
+
+Rate_Law_for_M_Activation is "Rate Law for M Activation"
+
+function Rate_Law_for_N_Activation_Migration(v, S, m, k1, A1, k2, A2, k3, I1)
+  v*S*(m*(k1*A1 + k2*A2) - k3*I1);
+end
+
+Rate_Law_for_N_Activation_Migration is "Rate Law for N Activation/Migration"
+
+function Rate_Law_for_Commensal_Regrowth(k1, S, m1, m2, k2, P)
+  k1*S*m1*m2 - k2*P;
+end
+
+Rate_Law_for_Commensal_Regrowth is "Rate Law for Commensal Regrowth"
+
+function Rate_Law_for_Commensal_Harmful_Death_1(K, S, m1, A1, m2, A2)
+  K*S*(m1*A1 + m2*A2);
+end
+
+Rate_Law_for_Commensal_Harmful_Death_1 is "Rate Law for Commensal Harmful Death_1"
+
+
+model *C__difficile_Host_Interactions_Model()
+
+  // Compartments and Species:
+  compartment Lumen, Epithelium, LP, MLN;
+  species Cdiff in Lumen, Commensal_Beneficial in Lumen, Commensal_Dead in Lumen;
+  species tDC_LP in Lumen, tDC_MLN in Lumen, Commensal_Harmful in Lumen, N_Lum in Lumen;
+  species E in Epithelium, E_d in Epithelium, $iDC_E in Epithelium, E_i in Epithelium;
+  species M_LP in Epithelium, eDC_LP in LP, $M0 in LP, $N_LP in LP, Th17_LP in LP;
+  species Th1_LP in LP, iTreg_LP in LP, eDC_MLN in MLN, iTreg_MLN in MLN;
+  species $nT in MLN, Th17_MLN in MLN, Th1_MLN in MLN;
+
+  // Reactions:
+  Treg_Degradation: iTreg_LP => ; LP*Treg_Degradation_k1*iTreg_LP;
+  eDC_Degradation: eDC_MLN => ; MLN*eDC_Degradation_k1*eDC_MLN;
+  Th17_Degradation: Th17_LP => ; LP*Th17_Degradation_k1*Th17_LP;
+  Th1_Degradation: Th1_LP => ; LP*Th1_Degradation_k1*Th1_LP;
+  N_Degradation: N_Lum => ; Lumen*KSA(N_Degradation_K, N_Lum, Commensal_Beneficial);
+  E_Damage: E => E_d; Epithelium*Rate_Law_for_E_damage(E_Damage_v, E, E_Damage_k1, N_Lum, E_Damage_k2, Th17_LP, E_Damage_k3, M_LP);
+  eDC_Migration: eDC_LP => eDC_MLN; eDC_Migration_k1*eDC_LP;
+  eDC_Production: $iDC_E + Cdiff => eDC_LP; Rate_Law_for_Effector_DC_Production_1(eDC_Production_k, Cdiff);
+  Cdiff_Death: Cdiff => ; Lumen*Rate_Law_for_CD_Lumen_death(Cdiff_Death_K, Cdiff, M_LP, Cdiff_Death_m2, N_Lum, Cdiff_Death_m3, Commensal_Harmful);
+  N_Activation_Migration: $N_LP => N_Lum; Rate_Law_for_N_Activation_Migration(N_Activation_Migration_v, N_LP, Cdiff, N_Activation_Migration_k1, E_d, N_Activation_Migration_k2, Th17_LP, N_Activation_Migration_k3, iTreg_LP);
+  Cdiff_Growth: Cdiff => 2 Cdiff; Lumen*KSA(Cdiff_Growth_K, Cdiff, Commensal_Harmful);
+  Treg_Migration: iTreg_MLN => iTreg_LP; Treg_Migration_k1*iTreg_MLN;
+  Th1_Migration: Th1_MLN => Th1_LP; Th1_Migration_k1*Th1_MLN;
+  Th17_Plasticity: Th17_LP -> iTreg_LP; LP*Rate_Law_for_Th17plas(Th17_Plasticity_k1, Th17_LP, Th17_Plasticity_k2, Cdiff, iTreg_LP);
+  Th17_Migration: Th17_MLN => Th17_LP; Th17_Migration_k1*Th17_MLN;
+  E_Inflame: E => E_i; Epithelium*KSA(E_Inflame_K, E, Cdiff);
+  E_i_Damage: E_i => E_d; Epithelium*Rate_Law_for_E_damage(E_i_Damage_v, E_i, E_i_Damage_k1, N_Lum, E_i_Damage_k2, Th17_LP, E_i_Damage_k3, M_LP);
+  M_Activation: $M0 => M_LP; Rate_Law_for_M_Activation(M_Activation_K, M0, M_Activation_e1, Th17_LP, Cdiff, M_Activation_e2, iTreg_LP);
+  M_Death: M_LP => ; Epithelium*M_Death_k1*M_LP;
+  Commensal_Regrowth: Commensal_Beneficial -> Commensal_Dead; Lumen*Rate_Law_for_Commensal_Regrowth(Commensal_Regrowth_k1, Commensal_Beneficial, N_Lum, E_i, Commensal_Regrowth_k2, Commensal_Dead);
+  E_Heal: E_d => E; Epithelium*E_Heal_k1*E_d;
+  tDC_Production: $iDC_E + Cdiff => tDC_LP; Rate_Law_for_tDC_Production(tDC_Production_K, Cdiff, tDC_Production_k1, Commensal_Beneficial, Commensal_Dead, tDC_Production_k2, E, E_i);
+  tDC_Migration: tDC_LP => tDC_MLN; Lumen*tDC_Migration_k1*tDC_LP;
+  tDC_Degradation: tDC_MLN => ; Lumen*Rate_Law_for_Effector_DC_Production_1(tDC_Degradation_k, tDC_MLN);
+  Th17_Differentiation: eDC_MLN => Th17_MLN; MLN*Th17_Differentiation_k1*eDC_MLN;
+  Th1_Differentiation: eDC_MLN => Th1_MLN; MLN*Rate_Law_for_eDC(Th1_Differentiation_K, eDC_MLN, Commensal_Dead, Commensal_Beneficial, Th1_Differentiation_k2, E, Th1_Differentiation_k1);
+  Treg_Differentiation: tDC_MLN => iTreg_MLN; Treg_Differentiation_k1*tDC_MLN;
+  Commensal_Harmful_Death: Commensal_Harmful => ; Lumen*Rate_Law_for_Commensal_Harmful_Death_1(Commensal_Harmful_Death_K, Commensal_Harmful, N_LP, Commensal_Harmful_Death_A1, E_i, Commensal_Harmful_Death_A2);
+  Commensal_Death: Commensal_Dead => ; Lumen*Commensal_Death_k1*Commensal_Dead;
+  E_i_Natural_Death: E_i => E_d; Epithelium*E_i_Natural_Death_k1*E_i;
+
+  // Species initializations:
+  Cdiff = 484;
+  Commensal_Beneficial = 1;
+  Commensal_Dead = 50000000000;
+  tDC_LP = 0;
+  tDC_MLN = 0;
+  Commensal_Harmful = 15000000000;
+  N_Lum = 0;
+  E = 1052500;
+  E_d = 0;
+  iDC_E = 500000;
+  E_i = 0;
+  M_LP = 3250;
+  eDC_LP = 0;
+  M0 = 1714285.71428571;
+  N_LP = 714285.714285714;
+  Th17_LP = 0;
+  Th1_LP = 0;
+  iTreg_LP = 0;
+  eDC_MLN = 0;
+  iTreg_MLN = 0;
+  nT = 12000000;
+  Th17_MLN = 0;
+  Th1_MLN = 0;
+
+  // Compartment initializations:
+  Lumen = 1;
+  Epithelium = 4;
+  LP = 0.07;
+  MLN = 1;
+
+  // Variable initializations:
+  Treg_Degradation_k1 = 0.5069887;
+  eDC_Degradation_k1 = 1.72495199303666e-05;
+  Th17_Degradation_k1 = 2.39665140586358;
+  Th1_Degradation_k1 = 0.99505694359;
+  N_Degradation_K = 2.35932924820229e-07;
+  E_Damage_v = 1.59920673150176e-06;
+  E_Damage_k1 = 1.1e-05;
+  E_Damage_k2 = 2.3381277077344e-06;
+  E_Damage_k3 = 62.5911647602982;
+  eDC_Migration_k1 = 10.5;
+  eDC_Production_k = 0.55;
+  Cdiff_Death_K = 6.27092296294148e-10;
+  Cdiff_Death_m2 = 594.896546415159;
+  Cdiff_Death_m3 = 0.102702503781515;
+  N_Activation_Migration_v = 5.29827880572231e-05;
+  N_Activation_Migration_k1 = 0.120935308788409;
+  N_Activation_Migration_k2 = 0.171190728888258;
+  N_Activation_Migration_k3 = 0.129717307334483;
+  Cdiff_Growth_K = 5e-11;
+  Treg_Migration_k1 = 5.5;
+  Th1_Migration_k1 = 1.459;
+  Th17_Plasticity_k1 = 1.27393226093773;
+  Th17_Plasticity_k2 = 0.0020401460213434;
+  Th17_Migration_k1 = 2.50454427171444;
+  E_Inflame_K = 0.000171079818745428;
+  E_i_Damage_v = 0.065;
+  E_i_Damage_k1 = 0.006;
+  E_i_Damage_k2 = 0.0106698310809694;
+  E_i_Damage_k3 = 1.16013457036959e-06;
+  M_Activation_K = 4.5e-05;
+  M_Activation_e1 = 2;
+  M_Activation_e2 = 0.092308585205372;
+  M_Death_k1 = 20;
+  Commensal_Regrowth_k1 = 4.5e-10;
+  Commensal_Regrowth_k2 = 0.156287382551622;
+  E_Heal_k1 = 4000;
+  tDC_Production_K = 0.0002;
+  tDC_Production_k1 = 559.297141527983;
+  tDC_Production_k2 = 26.8747332769592;
+  tDC_Migration_k1 = 3.65;
+  tDC_Degradation_k = 0.00095;
+  Th17_Differentiation_k1 = 2255.80469507059;
+  Th1_Differentiation_K = 0.0430096;
+  Th1_Differentiation_k2 = 9.65568121975566e-05;
+  Th1_Differentiation_k1 = 0.0648415756801505;
+  Treg_Differentiation_k1 = 53.9130568911728;
+  Commensal_Harmful_Death_K = 2.33225e-05;
+  Commensal_Harmful_Death_A1 = 0.00478;
+  Commensal_Harmful_Death_A2 = 0.18;
+  Commensal_Death_k1 = 0.0933277452272273;
+  E_i_Natural_Death_k1 = 2.5;
+
+  // Other declarations:
+  const Lumen, Epithelium, LP, MLN;
+
+  // Unit definitions:
+  unit volume = dimensionless;
+  unit time_unit = 86400 second;
+  unit substance = item;
+
+  // Display Names:
+  time_unit is "time";
+  Treg_Degradation is "Treg Degradation";
+  eDC_Degradation is "eDC Degradation";
+  Th17_Degradation is "Th17 Degradation";
+  Th1_Degradation is "Th1 Degradation";
+  N_Degradation is "N Degradation";
+  E_Damage is "E Damage";
+  eDC_Migration is "eDC Migration";
+  eDC_Production is "eDC Production";
+  Cdiff_Death is "Cdiff Death";
+  N_Activation_Migration is "N Activation/Migration";
+  Cdiff_Growth is "Cdiff Growth";
+  Treg_Migration is "Treg Migration";
+  Th1_Migration is "Th1 Migration";
+  Th17_Plasticity is "Th17 Plasticity";
+  Th17_Migration is "Th17 Migration";
+  E_Inflame is "E Inflame";
+  E_i_Damage is "E_i Damage";
+  M_Activation is "M Activation";
+  M_Death is "M Death";
+  Commensal_Regrowth is "Commensal Regrowth";
+  E_Heal is "E Heal";
+  tDC_Production is "tDC Production";
+  tDC_Migration is "tDC Migration";
+  tDC_Degradation is "tDC Degradation";
+  Th17_Differentiation is "Th17 Differentiation";
+  Th1_Differentiation is "Th1 Differentiation";
+  Treg_Differentiation is "Treg Differentiation";
+  Commensal_Harmful_Death is "Commensal Harmful Death";
+  Commensal_Death is "Commensal Death";
+  E_i_Natural_Death is "E_i Natural Death";
+
+  // CV terms:
+  Lumen identity "http://identifiers.org/fma/FMA:14586"
+  Epithelium hypernym "http://identifiers.org/bto/BTO:0000416"
+  LP hypernym "http://identifiers.org/bto/BTO:0002330"
+  MLN hypernym "http://identifiers.org/bto/BTO:0000767"
+  Cdiff identity "http://identifiers.org/taxonomy/1496"
+  Commensal_Beneficial hypernym "http://identifiers.org/taxonomy/2"
+  Commensal_Dead hypernym "http://identifiers.org/taxonomy/2"
+  tDC_LP hypernym "http://identifiers.org/bto/BTO:0002042"
+  tDC_LP container "http://identifiers.org/bto/BTO:0002330"
+  tDC_MLN hypernym "http://identifiers.org/bto/BTO:0002042"
+  tDC_MLN container "http://identifiers.org/bto/BTO:0000767"
+  Commensal_Harmful hypernym "http://identifiers.org/taxonomy/2"
+  N_Lum hypernym "http://identifiers.org/bto/BTO:0000130"
+  N_Lum container "http://identifiers.org/fma/FMA:14586"
+  E hypernym "http://identifiers.org/bto/BTO:0000414"
+  E_d hypernym "http://identifiers.org/bto/BTO:0000414"
+  iDC_E hypernym "http://identifiers.org/bto/BTO:0002042"
+  iDC_E container "http://identifiers.org/bto/BTO:0000416"
+  E_i hypernym "http://identifiers.org/bto/BTO:0000414"
+  M_LP container "http://identifiers.org/bto/BTO:0002330"
+  M_LP hypernym "http://identifiers.org/bto/BTO:0000801"
+  eDC_LP hypernym "http://identifiers.org/bto/BTO:0002042"
+  eDC_LP container "http://identifiers.org/bto/BTO:0002330"
+  M0 hypernym "http://identifiers.org/bto/BTO:0000801"
+  N_LP container "http://identifiers.org/bto/BTO:0002330"
+  N_LP hypernym "http://identifiers.org/bto/BTO:0000130"
+  Th17_LP hypernym "http://identifiers.org/bto/BTO:0005655"
+  Th17_LP container "http://identifiers.org/bto/BTO:0002330"
+  Th1_LP hypernym "http://identifiers.org/bto/BTO:0001678"
+  Th1_LP container "http://identifiers.org/bto/BTO:0002330"
+  iTreg_LP hypernym "http://identifiers.org/bto/BTO:0004520"
+  iTreg_LP container "http://identifiers.org/bto/BTO:0002330"
+  eDC_MLN container "http://identifiers.org/bto/BTO:0000767"
+  eDC_MLN hypernym "http://identifiers.org/bto/BTO:0002042"
+  iTreg_MLN container "http://identifiers.org/bto/BTO:0000767"
+  iTreg_MLN hypernym "http://identifiers.org/bto/BTO:0004520"
+  nT hypernym "http://identifiers.org/bto/BTO:000782"
+  Th17_MLN container "http://identifiers.org/bto/BTO:0000767"
+  Th17_MLN hypernym "http://identifiers.org/bto/BTO:0005655"
+  Th1_MLN container "http://identifiers.org/bto/BTO:0000767"
+  Th1_MLN hypernym "http://identifiers.org/bto/BTO:0001678"
+end
+
+C__difficile_Host_Interactions_Model is "Leber2015 - Mucosal immunity and gut microbiome interaction during C. difficile infection"
+
+C__difficile_Host_Interactions_Model model_entity_is "http://identifiers.org/biomodels.db/MODEL1507200000"
+C__difficile_Host_Interactions_Model model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000583"
+C__difficile_Host_Interactions_Model description "http://identifiers.org/pubmed/26230099"
+C__difficile_Host_Interactions_Model hypernym "http://identifiers.org/go/GO:0030383",
+                                              "http://identifiers.org/go/GO:0006955"
+C__difficile_Host_Interactions_Model taxon "http://identifiers.org/taxonomy/10090",
+                                           "http://identifiers.org/taxonomy/1496"
+C__difficile_Host_Interactions_Model property "http://identifiers.org/doid/DOID:0060185"

@@ -1,0 +1,161 @@
+// Created by libAntimony v2.13.0
+function Rate_Law_for_for_RE__1__1__1(CycD, CycE, KCD, KCE, Rb_E2F_complex, dRE, kP1, kP2, kRE)
+  (kRE - kP1*CycD*Rb_E2F_complex/(KCD + Rb_E2F_complex)) + kP2*CycE*Rb_E2F_complex/(KCE + Rb_E2F_complex) - dRE*Rb_E2F_complex;
+end
+
+Rate_Law_for_for_RE__1__1__1 is "Rate Law for for RE [1]_1 [1]"
+
+function Rate_Law_for_For_E__1__1(CycD, CycE, E2F, KCD, KCE, KE, KM, Myc, Rb, Rb_E2F_complex, dE, kE, kP1, kP2, kRE, kb, kpfb)
+  kE*(kpfb + Myc/(KM + Myc))*(E2F/(KE + E2F)) + kb*Myc/(KM + Myc) + kP1*CycD*Rb_E2F_complex/(KCD + Rb_E2F_complex) + kP2*CycE*Rb_E2F_complex/(KCE + Rb_E2F_complex) - dE*E2F - kRE*Rb*E2F;
+end
+
+Rate_Law_for_For_E__1__1 is "Rate Law for For E [1]_1"
+
+function Rate_Law_for_for_CE_1(CycE, E2F, KE, dCE, kCE)
+  kCE*E2F/(KE + E2F) - dCE*CycE;
+end
+
+Rate_Law_for_for_CE_1 is "Rate Law for for CE_1"
+
+function Rate_Law_for_For_CD_1(CycD, KM, KS, Myc, dCD, kCD, kCDS, serum)
+  kCD*Myc/(KM + Myc) + kCDS*serum/(KS + serum) - dCD*CycD;
+end
+
+Rate_Law_for_For_CD_1 is "Rate Law for For CD_1"
+
+function Rate_Law_for_For_R_1(CycD, CycE, E2F, KCD, KCE, KRP, Phosphorylated_Rb, Rb, dR, kDP, kP1, kP2, kR, kRE)
+  kR + kDP*Phosphorylated_Rb/(KRP + Phosphorylated_Rb) - kRE*Rb*E2F - kP1*CycD*Rb/(KCD + Rb) - kP2*CycE*Rb/(KCE + Rb) - dR*Rb;
+end
+
+Rate_Law_for_For_R_1 is "Rate Law for For R_1"
+
+function Rate_Law_for_for_RP__1__1__1(CycD, CycE, KCD, KCE, Phosphorylated_Rb, Rb, Rb_E2F_complex, dRP, kP1, kP2)
+  kP1*CycD*Rb/(KCD + Rb) + kP2*CycE*Rb/(KCE + Rb_E2F_complex) + kP1*CycD*Rb_E2F_complex/(KCD + Rb_E2F_complex) + kP2*CycE*Rb_E2F_complex/(KCE + Rb_E2F_complex) - dRP*Phosphorylated_Rb;
+end
+
+Rate_Law_for_for_RP__1__1__1 is "Rate Law for for RP [1]_1 [1]"
+
+function Rate_Law_for_For_M__1__1__1(KS, Myc, dM, kM, serum)
+  kM*Myc/(KS + serum) - dM*Myc;
+end
+
+Rate_Law_for_For_M__1__1__1 is "Rate Law for For M [1]_1 [1]"
+
+
+model *Schwarz2018_Cdk_Activity_Threshold_Determines_Passage_through_the_Restriction_Point()
+
+  // Compartments and Species:
+  compartment Cell;
+  species Myc in Cell, E2F in Cell, CycD in Cell, CycE in Cell, Rb in Cell;
+  species Phosphorylated_Rb in Cell, Rb_E2F_complex in Cell, serum in Cell;
+
+  // Reactions:
+  For_Myc:  => Myc; Cell*Rate_Law_for_For_M__1__1__1(KS, Myc, dM, kM, serum);
+  For_E2F:  => E2F; Cell*Rate_Law_for_For_E__1__1(CycD, CycE, E2F, KCD, KCE, KE, KM, Myc, Rb, Rb_E2F_complex, dE, kE, kP1, kP2, kRE, kb, kpfb);
+  For_CycD:  => CycD; Cell*Rate_Law_for_For_CD_1(CycD, KM, KS, Myc, dCD, kCD, kCDS, serum);
+  for_CycE:  => CycE; Cell*Rate_Law_for_for_CE_1(CycE, E2F, KE, dCE, kCE);
+  For_Rb:  => Rb; Cell*Rate_Law_for_For_R_1(CycD, CycE, E2F, KCD, KCE, KRP, Phosphorylated_Rb, Rb, dR, kDP, kP1, kP2, kR, kRE);
+  for_Phosphorylated_Rb:  => Phosphorylated_Rb; Cell*Rate_Law_for_for_RP__1__1__1(CycD, CycE, KCD, KCE, Phosphorylated_Rb, Rb, Rb_E2F_complex, dRP, kP1, kP2);
+  for_Rb_E2F_complex:  => Rb_E2F_complex; Cell*Rate_Law_for_for_RE__1__1__1(CycD, CycE, KCD, KCE, Rb_E2F_complex, dRE, kP1, kP2, kRE);
+
+  // Events:
+  Serum_Pulse: at 0 after time > 10: serum = 0;
+
+  // Species initializations:
+  Myc = 0;
+  E2F = 0;
+  CycD = 0;
+  CycE = 0;
+  Rb = 55;
+  Phosphorylated_Rb = 0;
+  Rb_E2F_complex = 0;
+  serum = 2;
+
+  // Compartment initializations:
+  Cell = 1;
+
+  // Variable initializations:
+  kE = 0.4;
+  kM = 1;
+  kCD = 0.03;
+  kCDS = 0.45;
+  kR = 0.18;
+  kRE = 180;
+  kb = 0.003;
+  KS = 0.5;
+  kCE = 0.35;
+  dM = 0.7;
+  dE = 0.25;
+  dCD = 1.5;
+  dCE = 1.5;
+  dR = 0.06;
+  dRP = 0.06;
+  dRE = 0.03;
+  kP1 = 18;
+  kP2 = 18;
+  kDP = 3.6;
+  KM = 0.15;
+  KE = 0.15;
+  KCD = 0.92;
+  KCE = 0.92;
+  KRP = 0.01;
+  kpfb = 4;
+
+  // Other declarations:
+  const Cell, kE, kM, kCD, kCDS, kR, kRE, kb, KS, kCE, dM, dE, dCD, dCE, dR;
+  const dRP, dRE, kP1, kP2, kDP, KM, KE, KCD, KCE, KRP, kpfb;
+
+  // Unit definitions:
+  unit time_unit = 3600 second;
+  unit substance = 1e-6 mole;
+
+  // Display Names:
+  time_unit is "time";
+  Phosphorylated_Rb is "Phosphorylated Rb";
+  Rb_E2F_complex is "Rb-E2F complex";
+  Serum_Pulse is "Serum Pulse";
+  For_Myc is "For Myc";
+  For_E2F is "For E2F";
+  For_CycD is "For CycD";
+  for_CycE is "for CycE";
+  For_Rb is "For Rb";
+  for_Phosphorylated_Rb is "for Phosphorylated Rb";
+  for_Rb_E2F_complex is "for Rb-E2F complex";
+
+  // CV terms:
+  Myc property "http://identifiers.org/ncit/C18538"
+  E2F property "http://identifiers.org/ncit/C129647"
+  CycD property "http://identifiers.org/ncit/C104194"
+  CycE property "http://identifiers.org/ncit/C104197"
+  Rb property "http://identifiers.org/omit/0016708"
+  Phosphorylated_Rb property "http://identifiers.org/omit/0016708"
+  Phosphorylated_Rb property "http://identifiers.org/bao/0002007"
+  Rb_E2F_complex property "http://identifiers.org/go/GO:0035189"
+  serum property "http://identifiers.org/ncit/C13325"
+  For_Myc property "http://identifiers.org/ncit/C75947"
+  For_Myc property "http://identifiers.org/ncit/C61408"
+  For_E2F property "http://identifiers.org/ncit/C75947"
+  For_E2F property "http://identifiers.org/ncit/C61408"
+  For_CycD property "http://identifiers.org/ncit/C61408"
+  For_CycD property "http://identifiers.org/ncit/C75947"
+  for_CycE property "http://identifiers.org/ncit/C61408"
+  for_CycE property "http://identifiers.org/ncit/C75947"
+  For_Rb property "http://identifiers.org/ncit/C61408"
+  For_Rb property "http://identifiers.org/ncit/C75947"
+  for_Phosphorylated_Rb property "http://identifiers.org/go/GO:0016311"
+  for_Phosphorylated_Rb property "http://identifiers.org/go/GO:0016310"
+  for_Phosphorylated_Rb property "http://identifiers.org/ncit/C75947"
+  for_Rb_E2F_complex property "http://identifiers.org/ncit/C75947"
+  for_Rb_E2F_complex property "http://identifiers.org/sbo/SBO:0000526"
+end
+
+Schwarz2018_Cdk_Activity_Threshold_Determines_Passage_through_the_Restriction_Point is "Schwarz2018-Cdk Activity Threshold Determines Passage through the Restriction Point"
+
+Schwarz2018_Cdk_Activity_Threshold_Determines_Passage_through_the_Restriction_Point model_entity_is "http://identifiers.org/biomodels.db/MODEL2003030001",
+                                                                                                    "http://identifiers.org/biomodels.db/BIOMD0000000918"
+Schwarz2018_Cdk_Activity_Threshold_Determines_Passage_through_the_Restriction_Point identity "http://identifiers.org/biomodels.db/MODEL2003030001"
+Schwarz2018_Cdk_Activity_Threshold_Determines_Passage_through_the_Restriction_Point container "http://identifiers.org/ncit/C12958"
+Schwarz2018_Cdk_Activity_Threshold_Determines_Passage_through_the_Restriction_Point taxon "http://identifiers.org/bao/0000362"
+Schwarz2018_Cdk_Activity_Threshold_Determines_Passage_through_the_Restriction_Point description "http://identifiers.org/pubmed/29351845"
+Schwarz2018_Cdk_Activity_Threshold_Determines_Passage_through_the_Restriction_Point property "http://identifiers.org/ncit/C18689",
+                                                                                             "http://identifiers.org/mamo/MAMO_0000046"

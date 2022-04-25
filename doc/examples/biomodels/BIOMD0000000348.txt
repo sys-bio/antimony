@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Fridlyand2010_GlucoseSensitivity_A()
 
   // Compartments and Species:
@@ -13,7 +13,7 @@ model *Fridlyand2010_GlucoseSensitivity_A()
   JPYR := Vmpdh*FPNAD*FPCa*FPYR;
   JLDH := Vmldh*FLNADc*PYR*(1/(KmLD + PYR));
   Cac := CaR + kACa*(ATP*(1/ADP))^hCa*(1/(KAD^hCa + (ATP*(1/ADP))^hCa));
-  Jph := Vmph*AD*AT_*ACa;
+  Jph := Vmph*AD*AT*ACa;
   Jhres := Vme*FTe*FDe;
   Jtnadh := Tnadh*FNADc*NADm*(1/(KTNm + NADm*(1/NADHm)))*(1/NADHm);
   Jhl := (Plb + Plr)*exp(klp*Vm);
@@ -23,7 +23,7 @@ model *Fridlyand2010_GlucoseSensitivity_A()
   AD := MgADP*MgADP*(1/(MgADP*MgADP + Kmadp*Kmadp));
   MgADP := 0.055*ADP;
   ADP := Ao + -ATP;
-  AT_ := Vm^hp*(1/(Kmph^hp + Vm^hp));
+  AT := Vm^hp*(1/(Kmph^hp + Vm^hp));
   DelJNCa := 1 + Ni^3*(1/KNaj^3) + Cam*(1/KCaj) + Ni^3*Cam*(1/(KNaj^3*KCaj)) + Nam^3*(1/KNaj^3) + Cac*(1/KCaj) + Nam^3*Cac*(1/(KNaj^3*KCaj));
   FDe := NADHm*(1/(KmNh + NADHm));
   FLNADc := NADHc*(1/(Klnc + NADHc*(1/NADc)))*(1/NADc);
@@ -61,12 +61,12 @@ model *Fridlyand2010_GlucoseSensitivity_A()
   // Variable initializations:
   G3P_init = 30;
   Vi = 0.53;
-  kgpd = 1e-005;
+  kgpd = 1e-05;
   PYR_init = 10;
   Vmmit = 0.0144;
   ATP_init = 3700;
-  kATP = 4e-005;
-  kATPCa = 9e-005;
+  kATP = 4e-05;
+  kATPCa = 9e-05;
   NADHm_init = 50;
   knadhm = 0.0001;
   NADHc_init = 10;
@@ -131,7 +131,7 @@ model *Fridlyand2010_GlucoseSensitivity_A()
 
   // Other declarations:
   var JGlu, Jgpd, JPYR, JLDH, Cac, Jph, Jhres, Jtnadh, Jhl, Juni, JNCa, ACa;
-  var AD, MgADP, ADP, AT_, DelJNCa, FDe, FLNADc, NADc, FNADc, FPCa, FPNAD;
+  var AD, MgADP, ADP, AT, DelJNCa, FDe, FLNADc, NADc, FNADc, FPCa, FPNAD;
   var NADm, FPYR, FTe, JO2, ID;
   const compartment_, G3P_init, Vi, kgpd, PYR_init, Vmmit, ATP_init, kATP;
   const kATPCa, NADHm_init, knadhm, NADHc_init, knadhc, Vm_init, F, Cmit;
@@ -140,4 +140,106 @@ model *Fridlyand2010_GlucoseSensitivity_A()
   const Kmgl, KmLD, KmNh, Kmph, Kmpyr, KNaj, KpCam, KPNm, KTNc, KTNm, Nam;
   const Ni, Ntc, Ntm, PCa, Plb, Plr, Tnadh, Tv, u1, u2, Vme, Vmglu, Vmgpd;
   const Vmldh, Vmnc, Vmpdh, Vmph, ZCa;
+
+  // SBO terms:
+  G3P.sboTerm = 247
+  G3P_init.sboTerm = 196
+  Vi.sboTerm = 468
+  kgpd.sboTerm = 9
+  PYR.sboTerm = 247
+  PYR_init.sboTerm = 196
+  Vmmit.sboTerm = 468
+  ATP.sboTerm = 248
+  ATP_init.sboTerm = 196
+  kATP.sboTerm = 9
+  kATPCa.sboTerm = 9
+  NADHm.sboTerm = 248
+  NADHm_init.sboTerm = 196
+  knadhm.sboTerm = 9
+  NADHc.sboTerm = 248
+  NADHc_init.sboTerm = 196
+  knadhc.sboTerm = 9
+  Vm.sboTerm = 2
+  Vm_init.sboTerm = 196
+  F.sboTerm = 568
+  Cmit.sboTerm = 258
+  Cam.sboTerm = 240
+  Cam_init.sboTerm = 196
+  fm.sboTerm = 540
+  ai.sboTerm = 9
+  am.sboTerm = 9
+  Ao.sboTerm = 196
+  Cac_init.sboTerm = 196
+  CaR.sboTerm = 196
+  fi.sboTerm = 540
+  Glu.sboTerm = 196
+  hCa.sboTerm = 190
+  hgl.sboTerm = 190
+  hp.sboTerm = 190
+  kACa.sboTerm = 380
+  KAD.sboTerm = 9
+  kat.sboTerm = 9
+  kbt.sboTerm = 9
+  kCaA.sboTerm = 9
+  KCaj.sboTerm = 9
+  KCam.sboTerm = 9
+  KgNc.sboTerm = 540
+  Klnc.sboTerm = 540
+  klp.sboTerm = 9
+  Kmadp.sboTerm = 27
+  KmATP.sboTerm = 27
+  Kmg3p.sboTerm = 27
+  Kmgl.sboTerm = 27
+  KmLD.sboTerm = 27
+  KmNh.sboTerm = 27
+  Kmph.sboTerm = 27
+  Kmpyr.sboTerm = 27
+  KNaj.sboTerm = 9
+  KpCam.sboTerm = 9
+  KPNm.sboTerm = 540
+  KTNc.sboTerm = 231
+  KTNm.sboTerm = 231
+  Nam.sboTerm = 196
+  Ni.sboTerm = 196
+  Ntc.sboTerm = 196
+  Ntm.sboTerm = 196
+  PCa.sboTerm = 538
+  Plb.sboTerm = 380
+  Plr.sboTerm = 380
+  Tnadh.sboTerm = 9
+  Tv.sboTerm = 259
+  u1.sboTerm = 9
+  u2.sboTerm = 9
+  Vme.sboTerm = 9
+  Vmglu.sboTerm = 9
+  Vmgpd.sboTerm = 9
+  Vmldh.sboTerm = 9
+  Vmnc.sboTerm = 9
+  Vmpdh.sboTerm = 9
+  Vmph.sboTerm = 9
+  ZCa.sboTerm = 545
+
+  // CV terms:
+  G3P hypernym "http://identifiers.org/chebi/CHEBI:17138"
+  PYR hypernym "http://identifiers.org/chebi/CHEBI:15361"
+  ATP hypernym "http://identifiers.org/chebi/CHEBI:15422"
+  NADHm hypernym "http://identifiers.org/chebi/CHEBI:16908"
+  NADHc hypernym "http://identifiers.org/chebi/CHEBI:16908"
+  Vm hypernym "http://identifiers.org/pato/PATO:0001462"
+  Cam hypernym "http://identifiers.org/chebi/CHEBI:29108"
+  CaR model_entity_is "http://identifiers.org/chebi/CHEBI:29108"
+  Glu model_entity_is "http://identifiers.org/chebi/CHEBI:17234"
 end
+
+Fridlyand2010_GlucoseSensitivity_A is "Fridlyand2010_GlucoseSensitivity_A"
+
+Fridlyand2010_GlucoseSensitivity_A model_entity_is "http://identifiers.org/biomodels.db/MODEL1108090000"
+Fridlyand2010_GlucoseSensitivity_A model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000348"
+Fridlyand2010_GlucoseSensitivity_A description "http://identifiers.org/pubmed/20497556"
+Fridlyand2010_GlucoseSensitivity_A origin "http://identifiers.org/pubmed/9575813",
+                                          "http://identifiers.org/pubmed/9575814"
+Fridlyand2010_GlucoseSensitivity_A taxon "http://identifiers.org/taxonomy/9606"
+Fridlyand2010_GlucoseSensitivity_A container "http://identifiers.org/bto/BTO:0000783"
+Fridlyand2010_GlucoseSensitivity_A hypernym "http://identifiers.org/go/GO:0061178",
+                                            "http://identifiers.org/go/GO:0044342"
+Fridlyand2010_GlucoseSensitivity_A property "http://identifiers.org/doid/DOID:9351"

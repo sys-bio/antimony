@@ -1,0 +1,371 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function extra_growth(mod, k1, k2, pro)
+  mod*pro/(k1 + k2*mod);
+end
+
+extra_growth is "extra growth"
+
+function t_d_agm(dt, delta, A, Tp)
+  dt*(1 + delta*A)*Tp;
+end
+
+t_d_agm is "t-d-agm"
+
+function t_g_ngf(Tp, rtp, G, t1, t2, kt, ONn)
+  (7/8)*Tp*(rtp + G/(t1 + t2*G))*(1 - Tp/kt)*(Tp/ONn - 1);
+end
+
+t_g_ngf is "t-g-ngf"
+
+function uptake(y, Tp, n)
+  y*Tp*n;
+end
+
+uptake is "uptake"
+
+function migration(u0, u1, A, u2, Na, Tp)
+  (u0 + u1*A + u2*Na)*Tp;
+end
+
+migration is "migration"
+
+function _1nd_growth(const_, product)
+  const_*product;
+end
+
+_1nd_growth is "1nd growth"
+
+function _1par_growth(const_, mod)
+  const_*mod;
+end
+
+_1par_growth is "1par growth"
+
+function internalisation(k1, Tp, k2, S, P, sub)
+  (k1*Tp + k2*(S + P))*sub;
+end
+
+internalisation is "internalisation"
+
+function n_g(r, n, k)
+  r*(1 - n/k)*n;
+end
+
+n_g is "n-g"
+
+
+model *Lolas2016___tumour_induced_neoneurogenesis_and_perineural_tumour_growth()
+
+  // Compartments and Species:
+  compartment tumor_microenvironment;
+  species Tp in tumor_microenvironment, Tm in tumor_microenvironment, G in tumor_microenvironment;
+  species A in tumor_microenvironment, S in tumor_microenvironment, P in tumor_microenvironment;
+  species Nn in tumor_microenvironment, Na in tumor_microenvironment;
+
+  // Assignment Rules:
+  ONn := theta1/(1 + theta2*Nn);
+
+  // Reactions:
+  tumor_growth_NGF__logistic:  => Tp; tumor_microenvironment*t_g_ngf(Tp, rtp, G, t1, t2, kt, ONn);
+  tumor_death_AGM: Tp => ; tumor_microenvironment*t_d_agm(dt, delta, A, Tp);
+  tumor_migration: Tp => Tm; tumor_microenvironment*migration(u0, u1, A, u2, Na, Tp);
+  migrating_tumor_cell_growth:  => Tm; tumor_microenvironment*_1nd_growth(rtm, Tm);
+  migrating_cell_death: Tm => ; tumor_microenvironment*dt*Tm;
+  NGF_production:  => G; tumor_microenvironment*_1par_growth(sg, Tp);
+  NGF_decay: G => ; tumor_microenvironment*dg*G;
+  NGF_internalisation: G => ; tumor_microenvironment*internalisation(y1, Tp, y2, S, P, G);
+  AGM_production:  => A; tumor_microenvironment*_1par_growth(sA, Tp);
+  AGM_decay: A => ; tumor_microenvironment*dA*A;
+  AGM_internalisation: A => ; tumor_microenvironment*internalisation(y3, Tp, y4, S, P, A);
+  sympathetic_neuron_growth:  => S; tumor_microenvironment*n_g(rs, S, ks);
+  sympathetic_neuron_growth_NGF:  => S; tumor_microenvironment*extra_growth(G, sigma1, sigma2, S);
+  sympathetic_neuron_growth_AGM:  => S; tumor_microenvironment*extra_growth(A, sigma3, sigma4, S);
+  parasym_neuron_growth:  => P; tumor_microenvironment*n_g(rp, P, kp);
+  parasym_neuron_growth_NGF:  => P; tumor_microenvironment*extra_growth(G, p1, p2, P);
+  parasym_neuron_growth_AGM:  => P; tumor_microenvironment*extra_growth(A, p3, p4, P);
+  norepinephrine_source:  => Nn; tumor_microenvironment*Constant_flux__irreversible(cn);
+  norepinephrine_by_SNC:  => Nn; tumor_microenvironment*_1par_growth(sn, S);
+  norepinephrine_decay: Nn => ; tumor_microenvironment*dn*Nn;
+  norepinephrine_uptake_tumor: Nn => ; tumor_microenvironment*uptake(y5, Tp, Nn);
+  ACh_source:  => Na; tumor_microenvironment*Constant_flux__irreversible(ca);
+  ACh_by_PNC:  => Na; tumor_microenvironment*_1par_growth(sa, P);
+  ACh_decay: Na => ; tumor_microenvironment*da*Na;
+  ACh_uptake_tumor: Na => ; tumor_microenvironment*uptake(y6, Tp, Na);
+
+  // Species initializations:
+  Tp = 100000;
+  Tp has substance_per_volume;
+  Tm = 0;
+  Tm has substance_per_volume;
+  G = 0;
+  G has substance_per_volume;
+  A = 0;
+  A has substance_per_volume;
+  S = 0.26;
+  S has substance_per_volume;
+  P = 0.03;
+  P has substance_per_volume;
+  Nn = 0.5;
+  Nn has substance_per_volume;
+  Na = 80;
+  Na has substance_per_volume;
+
+  // Compartment initializations:
+  tumor_microenvironment = 1;
+  tumor_microenvironment has volume;
+
+  // Variable initializations:
+  rtp = 0.000481;
+  rtp has unit_0;
+  rtm = 0.0001;
+  rtm has unit_0;
+  t1 = 134.27;
+  t1 has unit_1;
+  t2 = 2.39;
+  t2 has unit_2;
+  kt = 1000000;
+  kt has unit_3;
+  theta1 = 10000;
+  theta1 has unit_3;
+  theta2 = 1;
+  theta2 has unit_4;
+  dt = 0.0127;
+  dt has unit_0;
+  delta = 0.0129;
+  delta has unit_4;
+  u0 = 0.22;
+  u0 has unit_0;
+  u1 = 9.8e-06;
+  u1 has unit_5;
+  u2 = 0.002;
+  u2 has unit_5;
+  sg = 0.00222;
+  sg has unit_0;
+  dg = 22.18;
+  dg has unit_0;
+  y1 = 5.57e-05;
+  y1 has unit_5;
+  y2 = 0.05;
+  y2 has unit_5;
+  sA = 0.00542;
+  sA has unit_0;
+  dA = 2.4;
+  dA has unit_0;
+  y3 = 1e-05;
+  y3 has unit_5;
+  y4 = 1.47e-05;
+  y4 has unit_5;
+  rs = 0.06;
+  rs has unit_0;
+  ks = 0.26;
+  ks has unit_3;
+  sigma1 = 129;
+  sigma1 has unit_1;
+  sigma2 = 50;
+  sigma2 has unit_2;
+  sigma3 = 7.79;
+  sigma3 has unit_1;
+  sigma4 = 0.01;
+  sigma4 has unit_2;
+  rp = 7;
+  rp has unit_0;
+  kp = 0.03;
+  kp has unit_3;
+  p1 = 0.33;
+  p1 has unit_0;
+  p2 = 0.1;
+  p2 has unit_2;
+  p3 = 1;
+  p3 has unit_1;
+  p4 = 0.01;
+  p4 has unit_2;
+  cn = 0.41;
+  cn has unit_6;
+  sn = 1.6;
+  sn has unit_0;
+  dn = 1.66;
+  dn has unit_0;
+  y5 = 0.002;
+  y5 has unit_5;
+  ca = 3990;
+  ca has unit_6;
+  sa = 0.73;
+  sa has unit_0;
+  da = 49.91;
+  da has unit_0;
+  y6 = 0.001;
+  y6 has unit_5;
+  ONn has unit_3;
+
+  // Other declarations:
+  var ONn;
+  const tumor_microenvironment, rtp, rtm, t1, t2, kt, theta1, theta2, dt;
+  const delta, u0, u1, u2, sg, dg, y1, y2, sA, dA, y3, y4, rs, ks, sigma1;
+  const sigma2, sigma3, sigma4, rp, kp, p1, p2, p3, p4, cn, sn, dn, y5, ca;
+  const sa, da, y6;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = time_unit;
+  unit substance = 1e-3 mole;
+  unit unit_0 = 1 / 86400e-1 second;
+  unit unit_1 = 86400e-1 second / (1e-3 metre)^3;
+  unit unit_2 = 86400e-1 second;
+  unit unit_3 = 1 / (1e-3 metre)^3;
+  unit unit_4 = (1e-3 metre)^3;
+  unit unit_5 = (1e-3 metre)^3 / 86400e-1 second;
+  unit unit_6 = 1 / ((1e-3 metre)^3 * 86400e-1 second);
+  unit extent = substance;
+  unit substance_per_volume = 1e-3 mole / 1e-3 litre;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1/d";
+  unit_1 is "d/mm^3";
+  unit_2 is "d";
+  unit_3 is "1/mm^3";
+  unit_4 is "mm^3";
+  unit_5 is "mm^3/d";
+  unit_6 is "1/(mm^3*d)";
+  tumor_microenvironment is "tumor microenvironment";
+  tumor_growth_NGF__logistic is "tumor growth-NGF, logistic";
+  tumor_death_AGM is "tumor death-AGM";
+  tumor_migration is "tumor migration";
+  migrating_tumor_cell_growth is "migrating tumor cell growth";
+  migrating_cell_death is "migrating cell death";
+  NGF_production is "NGF production";
+  NGF_decay is "NGF decay";
+  NGF_internalisation is "NGF internalisation";
+  AGM_production is "AGM production";
+  AGM_decay is "AGM decay";
+  AGM_internalisation is "AGM internalisation";
+  sympathetic_neuron_growth is "sympathetic neuron growth";
+  sympathetic_neuron_growth_NGF is "sympathetic neuron growth-NGF";
+  sympathetic_neuron_growth_AGM is "sympathetic neuron growth-AGM";
+  parasym_neuron_growth is "parasym neuron growth";
+  parasym_neuron_growth_NGF is "parasym neuron growth-NGF";
+  parasym_neuron_growth_AGM is "parasym neuron growth-AGM";
+  norepinephrine_source is "norepinephrine source";
+  norepinephrine_by_SNC is "norepinephrine by SNC";
+  norepinephrine_decay is "norepinephrine decay";
+  norepinephrine_uptake_tumor is "norepinephrine uptake-tumor";
+  ACh_source is "ACh source";
+  ACh_by_PNC is "ACh by PNC";
+  ACh_decay is "ACh decay";
+  ACh_uptake_tumor is "ACh uptake-tumor";
+
+  // CV terms:
+  tumor_microenvironment hypernym "http://identifiers.org/ncit/C94498"
+  Tp hypernym "http://identifiers.org/cl/CL:0001063"
+  Tm hypernym "http://identifiers.org/cl/CL:0001063"
+  G hypernym "http://identifiers.org/ncit/C20424"
+  A class "http://identifiers.org/go/GO:0007411"
+  S hypernym "http://identifiers.org/cl/CL:0011103"
+  P hypernym "http://identifiers.org/cl/CL:0011102"
+  Nn identity "http://identifiers.org/chebi/CHEBI:33569"
+  Na identity "http://identifiers.org/chebi/CHEBI:15355"
+  rtp hypernym "http://identifiers.org/sbo/SBO:0000610"
+  rtm hypernym "http://identifiers.org/sbo/SBO:0000610"
+  t1 hypernym "http://identifiers.org/ncit/C67363"
+  t2 hypernym "http://identifiers.org/ncit/C67363"
+  kt hypernym "http://identifiers.org/sbo/SBO:0000661"
+  theta1 hypernym "http://identifiers.org/ncit/C48228"
+  theta2 hypernym "http://identifiers.org/ncit/C48228"
+  dt hypernym "http://identifiers.org/ncit/C53346"
+  delta hypernym "http://identifiers.org/ncit/C67363"
+  u0 hypernym "http://identifiers.org/ncit/C25636"
+  u1 hypernym "http://identifiers.org/ncit/C67363"
+  u2 hypernym "http://identifiers.org/ncit/C67363"
+  sg hypernym "http://identifiers.org/sbo/SBO:0000610"
+  dg hypernym "http://identifiers.org/ncit/C25636"
+  y1 hypernym "http://identifiers.org/ncit/C25636"
+  y2 hypernym "http://identifiers.org/ncit/C25636"
+  sA hypernym "http://identifiers.org/sbo/SBO:0000610"
+  dA hypernym "http://identifiers.org/ncit/C25636"
+  y3 hypernym "http://identifiers.org/ncit/C25636"
+  y4 hypernym "http://identifiers.org/ncit/C25636"
+  rs hypernym "http://identifiers.org/sbo/SBO:0000610"
+  ks hypernym "http://identifiers.org/sbo/SBO:0000661"
+  sigma1 hypernym "http://identifiers.org/ncit/C67363"
+  sigma2 hypernym "http://identifiers.org/ncit/C67363"
+  sigma3 hypernym "http://identifiers.org/ncit/C67363"
+  sigma4 hypernym "http://identifiers.org/ncit/C67363"
+  rp hypernym "http://identifiers.org/sbo/SBO:0000610"
+  kp hypernym "http://identifiers.org/sbo/SBO:0000661"
+  p1 hypernym "http://identifiers.org/ncit/C67363"
+  p2 hypernym "http://identifiers.org/ncit/C67363"
+  p3 hypernym "http://identifiers.org/ncit/C67363"
+  p4 hypernym "http://identifiers.org/ncit/C67363"
+  cn hypernym "http://identifiers.org/ncit/C25636"
+  sn hypernym "http://identifiers.org/sbo/SBO:0000610"
+  dn hypernym "http://identifiers.org/ncit/C25636"
+  y5 hypernym "http://identifiers.org/ncit/C25636"
+  ca hypernym "http://identifiers.org/ncit/C25636"
+  sa hypernym "http://identifiers.org/sbo/SBO:0000610"
+  da hypernym "http://identifiers.org/ncit/C25636"
+  y6 hypernym "http://identifiers.org/ncit/C25636"
+  ONn hypernym "http://identifiers.org/ncit/C44175"
+  tumor_growth_NGF__logistic hypernym "http://identifiers.org/go/GO:0008283"
+  tumor_growth_NGF__logistic hypernym "http://identifiers.org/sbo/SBO:0000393"
+  tumor_death_AGM hypernym "http://identifiers.org/sbo/SBO:0000179"
+  tumor_death_AGM hypernym "http://identifiers.org/go/GO:0008219"
+  tumor_migration hypernym "http://identifiers.org/sbo/SBO:0000185"
+  tumor_migration hypernym "http://identifiers.org/go/GO:0016477"
+  migrating_tumor_cell_growth hypernym "http://identifiers.org/sbo/SBO:0000393"
+  migrating_tumor_cell_growth hypernym "http://identifiers.org/go/GO:0008283"
+  migrating_cell_death hypernym "http://identifiers.org/sbo/SBO:0000179"
+  migrating_cell_death hypernym "http://identifiers.org/go/GO:0008219"
+  NGF_production hypernym "http://identifiers.org/go/GO:0023061"
+  NGF_production hypernym "http://identifiers.org/sbo/SBO:0000393"
+  NGF_decay hypernym "http://identifiers.org/sbo/SBO:0000179"
+  NGF_internalisation hypernym "http://identifiers.org/sbo/SBO:0000587"
+  NGF_internalisation hypernym "http://identifiers.org/go/GO:0098657"
+  AGM_production hypernym "http://identifiers.org/go/GO:0023061"
+  AGM_production hypernym "http://identifiers.org/sbo/SBO:0000393"
+  AGM_decay hypernym "http://identifiers.org/sbo/SBO:0000179"
+  AGM_internalisation hypernym "http://identifiers.org/go/GO:0098657"
+  AGM_internalisation hypernym "http://identifiers.org/sbo/SBO:0000587"
+  sympathetic_neuron_growth hypernym "http://identifiers.org/sbo/SBO:0000393"
+  sympathetic_neuron_growth hypernym "http://identifiers.org/go/GO:0008283"
+  sympathetic_neuron_growth_NGF hypernym "http://identifiers.org/sbo/SBO:0000393"
+  sympathetic_neuron_growth_NGF hypernym "http://identifiers.org/go/GO:0008283"
+  sympathetic_neuron_growth_AGM hypernym "http://identifiers.org/sbo/SBO:0000393"
+  sympathetic_neuron_growth_AGM hypernym "http://identifiers.org/go/GO:0008283"
+  parasym_neuron_growth hypernym "http://identifiers.org/go/GO:0008283"
+  parasym_neuron_growth hypernym "http://identifiers.org/sbo/SBO:0000393"
+  parasym_neuron_growth_NGF hypernym "http://identifiers.org/go/GO:0008283"
+  parasym_neuron_growth_NGF hypernym "http://identifiers.org/sbo/SBO:0000393"
+  parasym_neuron_growth_AGM hypernym "http://identifiers.org/sbo/SBO:0000393"
+  parasym_neuron_growth_AGM hypernym "http://identifiers.org/go/GO:0008283"
+  norepinephrine_source hypernym "http://identifiers.org/sbo/SBO:0000393"
+  norepinephrine_by_SNC hypernym "http://identifiers.org/go/GO:0023061"
+  norepinephrine_by_SNC hypernym "http://identifiers.org/sbo/SBO:0000393"
+  norepinephrine_decay hypernym "http://identifiers.org/sbo/SBO:0000179"
+  norepinephrine_uptake_tumor hypernym "http://identifiers.org/sbo/SBO:0000587"
+  norepinephrine_uptake_tumor hypernym "http://identifiers.org/go/GO:0098657"
+  ACh_source hypernym "http://identifiers.org/sbo/SBO:0000393"
+  ACh_by_PNC hypernym "http://identifiers.org/sbo/SBO:0000393"
+  ACh_by_PNC hypernym "http://identifiers.org/go/GO:0023061"
+  ACh_decay hypernym "http://identifiers.org/sbo/SBO:0000179"
+  ACh_uptake_tumor hypernym "http://identifiers.org/sbo/SBO:0000587"
+  ACh_uptake_tumor hypernym "http://identifiers.org/go/GO:0098657"
+end
+
+Lolas2016___tumour_induced_neoneurogenesis_and_perineural_tumour_growth is "Lolas2016 - tumour-induced neoneurogenesis and perineural tumour growth"
+
+Lolas2016___tumour_induced_neoneurogenesis_and_perineural_tumour_growth description "http://identifiers.org/pubmed/26861829"
+Lolas2016___tumour_induced_neoneurogenesis_and_perineural_tumour_growth model_entity_is "http://identifiers.org/biomodels.db/MODEL1907160001",
+                                                                                        "http://identifiers.org/biomodels.db/BIOMD0000000750"
+Lolas2016___tumour_induced_neoneurogenesis_and_perineural_tumour_growth hypernym "http://identifiers.org/go/GO:0022008"
+Lolas2016___tumour_induced_neoneurogenesis_and_perineural_tumour_growth hypernym "http://identifiers.org/ncit/C19365"
+Lolas2016___tumour_induced_neoneurogenesis_and_perineural_tumour_growth hypernym "http://identifiers.org/ncit/C48260"
+Lolas2016___tumour_induced_neoneurogenesis_and_perineural_tumour_growth property "http://identifiers.org/mamo/MAMO_0000046"
+Lolas2016___tumour_induced_neoneurogenesis_and_perineural_tumour_growth taxon "http://identifiers.org/taxonomy/9606"

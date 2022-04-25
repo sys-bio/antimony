@@ -49,6 +49,7 @@ public:
   bool LeftIsEmpty() const;
 
   bool Matches(const AntimonyReaction* newrxn) const;
+  bool HasReactantFor(const Variable* species) const;
   std::string ToDelimitedStringWithStrands(std::string cc, std::vector<std::pair<Variable*, size_t> > strands) const;
   std::string ToDelimitedStringWithEllipses(std::string cc) const;
   double GetStoichiometryFor(const Variable* var) const;

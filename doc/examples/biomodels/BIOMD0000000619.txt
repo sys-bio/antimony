@@ -1,0 +1,244 @@
+// Created by libAntimony v2.13.0
+model *MODEL1509230010()
+
+  // Compartments and Species:
+  compartment VArt, VGut, VGutLumen, VLung, VVen, VRest, VKidney, VLiver;
+  compartment VKidneyTubules;
+  substanceOnly species CArt in VArt, CGut in VGut, AGutlumen in VGutLumen;
+  substanceOnly species CLung in VLung, CVen in VVen, CRest in VRest, CLiver in VLiver;
+  substanceOnly species CMetabolized in VLiver, CKidney in VKidney, CTubules in VKidneyTubules;
+
+  // Reactions:
+  J1: CArt => CGut; (QGut/VArt)*CArt;
+  J2: AGutlumen => CGut; kGutabs*AGutlumen;
+  J3: CLung => CArt; (QCardiac/VLung)*CLung;
+  J4: CVen => CLung; (QCardiac/VVen)*CVen;
+  J5: CArt => CRest; QRest*(CArt/VArt);
+  J6: CRest => CVen; (QRest/VRest)*CRest*Ratioblood2plasma/(KRest2plasma*Fraction_unbound_plasma);
+  J7: CArt => CLiver; (QLiver/VArt)*CArt;
+  J8: CLiver => CMetabolized; CLmetabolism*CLiver/(Kliver2plasma*Fraction_unbound_plasma);
+  J9: CGut => CLiver; (QGut/VGut)*CGut;
+  J10: CLiver => CVen; ((QLiver + QGut)/VLiver)*CLiver*Ratioblood2plasma/(Kliver2plasma*Fraction_unbound_plasma);
+  J11: CArt => CKidney; (QKidney/VArt)*CArt;
+  J12: CKidney => CTubules; (Qgfr/VKidney)*CKidney/Kkidney2plasma;
+  J13: CKidney => CVen; (QKidney/VKidney)*CKidney*Ratioblood2plasma/(Kkidney2plasma*Fraction_unbound_plasma);
+
+  // Species initializations:
+  CArt = 0;
+  CArt has substance_per_volume;
+  CGut = 0;
+  CGut has substance_per_volume;
+  AGutlumen = APAP_Dose;
+  AGutlumen has substance_per_volume;
+  CLung = 0;
+  CLung has substance_per_volume;
+  CVen = 0;
+  CVen has substance_per_volume;
+  CRest = 0;
+  CRest has substance_per_volume;
+  CLiver = 0;
+  CLiver has substance_per_volume;
+  CMetabolized = 0;
+  CMetabolized has substance_per_volume;
+  CKidney = 0;
+  CKidney has substance_per_volume;
+  CTubules = 0;
+  CTubules has substance_per_volume;
+
+  // Compartment initializations:
+  VArt = VTotal*VArt_fraction_VTotal;
+  VArt has volume;
+  VGut = VTotal*VGut_fraction_VTotal;
+  VGut has volume;
+  VGutLumen = 1;
+  VGutLumen has volume;
+  VLung = VTotal*VLung_fraction_VTotal;
+  VLung has volume;
+  VVen = VTotal*VVen_fraction_VTotal;
+  VVen has volume;
+  VRest = VTotal - VArt - VGut - VKidney - VLiver - VLung - VVen;
+  VRest has volume;
+  VKidney = VTotal*VKidney_fraction_VTotal;
+  VKidney has volume;
+  VLiver = VTotal*VLiver_fraction_VTotal;
+  VLiver has volume;
+  VKidneyTubules = 1;
+  VKidneyTubules has volume;
+
+  // Variable initializations:
+  VTotal = VTotal_ref*(BW/BW_ref);
+  VTotal has volume;
+  VArt_fraction_VTotal = 0.0357;
+  VArt_fraction_VTotal has dimensionless;
+  VGut_fraction_VTotal = 0.0263;
+  VGut_fraction_VTotal has dimensionless;
+  VLung_fraction_VTotal = 0.0121;
+  VLung_fraction_VTotal has dimensionless;
+  VVen_fraction_VTotal = 0.0812;
+  VVen_fraction_VTotal has dimensionless;
+  VLiver_fraction_VTotal = 0.0408;
+  VLiver_fraction_VTotal has dimensionless;
+  VKidney_fraction_VTotal = 0.007;
+  VKidney_fraction_VTotal has dimensionless;
+  APAP_Dose = APAP_Dose_grams/APAP_MW;
+  APAP_Dose has substance;
+  APAP_Dose_grams = 1.4;
+  APAP_Dose_grams has gram;
+  APAP_MW = 151.2;
+  APAP_MW has grams2mol;
+  BW = 70;
+  BW has kilogram;
+  BW_ref = 1;
+  BW_ref has BW_ref_unit;
+  Cardiac_flow_ref = 15;
+  Cardiac_flow_ref has Volumetric_Flow;
+  QCardiac = Cardiac_flow_ref*(BW/BW_ref)^0.75;
+  QCardiac has Volumetric_Flow;
+  QGut_fraction_QCardiac = 0.205;
+  QGut_fraction_QCardiac has dimensionless;
+  QGut = QCardiac*QGut_fraction_QCardiac;
+  QGut has Volumetric_Flow;
+  QLiver_fraction_QCardiac = 0.0535;
+  QLiver_fraction_QCardiac has dimensionless;
+  QLiver = QCardiac*QLiver_fraction_QCardiac;
+  QLiver has Volumetric_Flow;
+  QKidney_fraction_QCardiac = 0.2214;
+  QKidney_fraction_QCardiac has dimensionless;
+  QKidney = QCardiac*QKidney_fraction_QCardiac;
+  QKidney has Volumetric_Flow;
+  QRest = QCardiac - QGut - QKidney - QLiver;
+  QRest has Volumetric_Flow;
+  QGFR_ref = 0.039;
+  QGFR_ref has Volumetric_Flow;
+  Qgfr = QGFR_ref*(BW/BW_ref)^0.75;
+  Qgfr has Volumetric_Flow;
+  kGutabs = 1.5;
+  kGutabs has first_order_rate_constant;
+  CLmetabolism = 9.5;
+  CLmetabolism has first_order_rate_constant;
+  Fraction_unbound_plasma = 0.8;
+  Fraction_unbound_plasma has dimensionless;
+  Ratioblood2plasma = 1.09;
+  Ratioblood2plasma has dimensionless;
+  Kliver2plasma = 1;
+  Kliver2plasma has dimensionless;
+  Kkidney2plasma = 1;
+  Kkidney2plasma has dimensionless;
+  KRest2plasma = 1.6;
+  KRest2plasma has dimensionless;
+  VTotal_ref = 0.6;
+  VTotal_ref has volume;
+
+  // Other declarations:
+  var VTotal, QCardiac, QGut, QLiver, QKidney, QRest, Qgfr;
+  const VArt, VArt_fraction_VTotal, VGut, VGut_fraction_VTotal, VGutLumen;
+  const VLung, VLung_fraction_VTotal, VVen, VVen_fraction_VTotal, VRest, VKidney;
+  const VLiver, VLiver_fraction_VTotal, VKidney_fraction_VTotal, VKidneyTubules;
+  const APAP_Dose, APAP_Dose_grams, APAP_MW, BW, BW_ref, Cardiac_flow_ref;
+  const QGut_fraction_QCardiac, QLiver_fraction_QCardiac, QKidney_fraction_QCardiac;
+  const QGFR_ref, kGutabs, CLmetabolism, Fraction_unbound_plasma, Ratioblood2plasma;
+  const Kliver2plasma, Kkidney2plasma, KRest2plasma, VTotal_ref;
+
+  // Unit definitions:
+  unit time_unit = 3600 second;
+  unit first_order_rate_constant = 1 / 3600 second;
+  unit Volumetric_Flow = litre / 3600 second;
+  unit volume = litre;
+  unit substance = mole;
+  unit grams2mol = gram / mole;
+  unit BW_ref_unit = kilogram;
+  unit substance_per_volume = mole / litre;
+
+  // Display Names:
+  time_unit is "hour";
+  volume is "litre";
+  substance is "mole";
+  BW_ref_unit is "BW_ref";
+  J1 is "J01";
+  J2 is "J02";
+  J3 is "J03";
+  J4 is "J04";
+  J5 is "J05";
+  J6 is "J06";
+  J7 is "J07";
+  J8 is "J08";
+  J9 is "J09";
+
+  // SBO terms:
+  VArt.sboTerm = 290
+  VTotal.sboTerm = 468
+  VArt_fraction_VTotal.sboTerm = 380
+  VGut.sboTerm = 290
+  VGut_fraction_VTotal.sboTerm = 380
+  VGutLumen.sboTerm = 290
+  VLung.sboTerm = 290
+  VLung_fraction_VTotal.sboTerm = 380
+  VVen.sboTerm = 290
+  VVen_fraction_VTotal.sboTerm = 380
+  VRest.sboTerm = 290
+  VKidney.sboTerm = 290
+  VLiver.sboTerm = 290
+  VLiver_fraction_VTotal.sboTerm = 380
+  VKidney_fraction_VTotal.sboTerm = 380
+  VKidneyTubules.sboTerm = 290
+  CArt.sboTerm = 247
+  CGut.sboTerm = 247
+  AGutlumen.sboTerm = 247
+  APAP_Dose.sboTerm = 2
+  CLung.sboTerm = 247
+  CVen.sboTerm = 247
+  CRest.sboTerm = 247
+  CLiver.sboTerm = 247
+  CMetabolized.sboTerm = 247
+  CKidney.sboTerm = 247
+  CTubules.sboTerm = 247
+  APAP_Dose_grams.sboTerm = 504
+  APAP_MW.sboTerm = 2
+  BW.sboTerm = 2
+  BW_ref.sboTerm = 381
+  Cardiac_flow_ref.sboTerm = 380
+  QCardiac.sboTerm = 16
+  QGut_fraction_QCardiac.sboTerm = 380
+  QGut.sboTerm = 16
+  QLiver_fraction_QCardiac.sboTerm = 380
+  QLiver.sboTerm = 16
+  QKidney_fraction_QCardiac.sboTerm = 380
+  QKidney.sboTerm = 16
+  QRest.sboTerm = 16
+  QGFR_ref.sboTerm = 380
+  Qgfr.sboTerm = 16
+  kGutabs.sboTerm = 16
+  CLmetabolism.sboTerm = 16
+  Fraction_unbound_plasma.sboTerm = 470
+  Ratioblood2plasma.sboTerm = 470
+  Kliver2plasma.sboTerm = 281
+  Kkidney2plasma.sboTerm = 281
+  KRest2plasma.sboTerm = 281
+  VTotal_ref.sboTerm = 380
+  J1.sboTerm = 185
+  J2.sboTerm = 185
+  J3.sboTerm = 185
+  J4.sboTerm = 185
+  J5.sboTerm = 185
+  J6.sboTerm = 185
+  J7.sboTerm = 185
+  J8.sboTerm = 182
+  J9.sboTerm = 185
+  J10.sboTerm = 185
+  J11.sboTerm = 185
+  J12.sboTerm = 185
+  J13.sboTerm = 185
+end
+
+MODEL1509230010 is "Sluka2016  - Acetaminophen PBPK"
+
+MODEL1509230010.sboTerm = 167
+
+MODEL1509230010 model_entity_is "http://identifiers.org/biomodels.db/MODEL1509230010"
+MODEL1509230010 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000619"
+MODEL1509230010 description "http://identifiers.org/pubmed/27636091"
+MODEL1509230010 origin "http://identifiers.org/pubmed/20421935"
+MODEL1509230010 hypernym "http://identifiers.org/go/GO:0042910",
+                         "http://identifiers.org/go/GO:0017144"
+MODEL1509230010 taxon "http://identifiers.org/taxonomy/9606"
+MODEL1509230010 property "http://identifiers.org/mamo/MAMO_0000203"

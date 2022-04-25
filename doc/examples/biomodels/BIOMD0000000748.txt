@@ -1,0 +1,191 @@
+// Created by libAntimony v2.13.0
+function t_g(r, x)
+  r*x;
+end
+
+t_g is "t-g"
+
+function t_k(c, y, z)
+  c*y*z;
+end
+
+t_k is "t-k"
+
+function inft_d(y)
+  y;
+end
+
+inft_d is "inft-d"
+
+function t_d(r, x)
+  r*x*x;
+end
+
+t_d is "t-d"
+
+function t_cross(r, x, y)
+  r*x*y;
+end
+
+t_cross is "t-cross"
+
+function v_rep(b, y)
+  b*y;
+end
+
+v_rep is "v-rep"
+
+function infection_0(a, x, v)
+  a*x*v;
+end
+
+infection_0 is "infection"
+
+function v_k(d, v, z)
+  d*v*z;
+end
+
+v_k is "v-k"
+
+function v_clear(e, v)
+  e*v;
+end
+
+v_clear is "v-clear"
+
+function imm_s(m, y, z)
+  m*y*z;
+end
+
+imm_s is "imm-s"
+
+function imm_d(n, z)
+  n*z;
+end
+
+imm_d is "imm-d"
+
+
+model *Phan2017___innate_immune_in_oncolytic_virotherapy()
+
+  // Compartments and Species:
+  compartment tumor_microenvironment;
+  species x in tumor_microenvironment, y in tumor_microenvironment, v in tumor_microenvironment;
+  species z in tumor_microenvironment;
+
+  // Reactions:
+  tumor_growth:  => x; tumor_microenvironment*t_g(r, x);
+  tumor_death: x => ; tumor_microenvironment*t_d(r, x);
+  tumor_cross_infection: x => ; tumor_microenvironment*t_cross(r, x, y);
+  infected_tumor_killing: y => ; tumor_microenvironment*t_k(c, y, z);
+  infected_tumor_death: y => ; tumor_microenvironment*inft_d(y);
+  virus_multiplication_in_infected_tumor:  => v; tumor_microenvironment*v_rep(b, y);
+  virus_clearing: v => ; tumor_microenvironment*v_clear(e, v);
+  virus_killing_by_immune: v => ; tumor_microenvironment*v_k(d, v, z);
+  immune_stimulation:  => z; tumor_microenvironment*imm_s(m, y, z);
+  immune_cell_death: z => ; tumor_microenvironment*imm_d(n, z);
+  infection: x + v => y; tumor_microenvironment*infection_0(a, x, v);
+
+  // Species initializations:
+  x = 0.99;
+  x has substance_per_volume;
+  y = 0.01;
+  y has substance_per_volume;
+  v = 0.01;
+  v has substance_per_volume;
+  z = 0.01;
+  z has substance_per_volume;
+
+  // Compartment initializations:
+  tumor_microenvironment = 1;
+  tumor_microenvironment has volume;
+
+  // Variable initializations:
+  r = 0.36;
+  r has unit_0;
+  a = 0.11;
+  a has unit_0;
+  c = 0.48;
+  c has unit_0;
+  d = 0.16;
+  d has unit_0;
+  e = 0.2;
+  e has unit_0;
+  m = 0.6;
+  m has unit_0;
+  n = 0.036;
+  n has unit_0;
+  b = 9;
+  b has unit_0;
+
+  // Other declarations:
+  const tumor_microenvironment, r, a, c, d, e, m, n, b;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = time_unit;
+  unit substance = 1e-3 mole;
+  unit unit_0 = 1 / dimensionless^-0;
+  unit extent = substance;
+  unit substance_per_volume = 1e-3 mole / 1e-3 litre;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1";
+  tumor_microenvironment is "tumor microenvironment";
+  tumor_growth is "tumor growth";
+  tumor_death is "tumor death";
+  tumor_cross_infection is "tumor cross-infection";
+  infected_tumor_killing is "infected tumor killing";
+  infected_tumor_death is "infected tumor death";
+  virus_multiplication_in_infected_tumor is "virus multiplication in infected tumor";
+  virus_clearing is "virus clearing";
+  virus_killing_by_immune is "virus killing by immune";
+  immune_stimulation is "immune stimulation";
+  immune_cell_death is "immune cell death";
+
+  // CV terms:
+  tumor_microenvironment hypernym "http://identifiers.org/ncit/C94498"
+  x hypernym "http://identifiers.org/cl/CL:0001063"
+  y hypernym "http://identifiers.org/cl/CL:0001063"
+  v hypernym "http://identifiers.org/ncit/C717"
+  z hypernym "http://identifiers.org/ncit/C28241"
+  r hypernym "http://identifiers.org/sbo/SBO:0000610"
+  a hypernym "http://identifiers.org/ncit/C94967"
+  c hypernym "http://identifiers.org/ncit/C94967"
+  d hypernym "http://identifiers.org/ncit/C94967"
+  e hypernym "http://identifiers.org/ncit/C94967"
+  m hypernym "http://identifiers.org/sbo/SBO:0000610"
+  n hypernym "http://identifiers.org/ncit/C94967"
+  b propertyBearer "http://identifiers.org/go/GO:0019058"
+  tumor_growth hypernym "http://identifiers.org/go/GO:0008283"
+  tumor_growth hypernym "http://identifiers.org/sbo/SBO:0000393"
+  tumor_death hypernym "http://identifiers.org/go/GO:0008219"
+  tumor_death hypernym "http://identifiers.org/sbo/SBO:0000179"
+  tumor_cross_infection hypernym "http://identifiers.org/sbo/SBO:0000179"
+  infected_tumor_killing hypernym "http://identifiers.org/sbo/SBO:0000179"
+  infected_tumor_killing hypernym "http://identifiers.org/go/GO:0002418"
+  infected_tumor_death hypernym "http://identifiers.org/sbo/SBO:0000179"
+  infected_tumor_death hypernym "http://identifiers.org/go/GO:0008219"
+  virus_multiplication_in_infected_tumor hypernym "http://identifiers.org/sbo/SBO:0000393"
+  virus_multiplication_in_infected_tumor hypernym "http://identifiers.org/ncit/C94345"
+  virus_clearing hypernym "http://identifiers.org/sbo/SBO:0000179"
+  virus_killing_by_immune hypernym "http://identifiers.org/sbo/SBO:0000179"
+  virus_killing_by_immune hypernym "http://identifiers.org/go/GO:0006955"
+  immune_stimulation hypernym "http://identifiers.org/sbo/SBO:0000393"
+  immune_stimulation hypernym "http://identifiers.org/go/GO:0070661"
+  immune_cell_death hypernym "http://identifiers.org/go/GO:0008219"
+  immune_cell_death hypernym "http://identifiers.org/sbo/SBO:0000179"
+  infection hypernym "http://identifiers.org/ncit/C3439"
+end
+
+Phan2017___innate_immune_in_oncolytic_virotherapy is "Phan2017 - innate immune in oncolytic virotherapy"
+
+Phan2017___innate_immune_in_oncolytic_virotherapy description "http://identifiers.org/pubmed/29379572"
+Phan2017___innate_immune_in_oncolytic_virotherapy model_entity_is "http://identifiers.org/biomodels.db/MODEL1907110001",
+                                                                  "http://identifiers.org/biomodels.db/BIOMD0000000748"
+Phan2017___innate_immune_in_oncolytic_virotherapy hypernym "http://identifiers.org/ncit/C62713"
+Phan2017___innate_immune_in_oncolytic_virotherapy property "http://identifiers.org/mamo/MAMO_0000046"
+Phan2017___innate_immune_in_oncolytic_virotherapy taxon "http://identifiers.org/taxonomy/9606"

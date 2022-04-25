@@ -1,0 +1,197 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function Function_for_Reaction_3(sigma, gamma_, E_d)
+  sigma*(1 - gamma_)*E_d;
+end
+
+Function_for_Reaction_3 is "Function for Reaction 3"
+
+function Function_for_Reaction_4(beta, S_d, I_d)
+  beta*S_d*I_d;
+end
+
+Function_for_Reaction_4 is "Function for Reaction 4"
+
+function Function_for_Reaction_6(sigma, gamma_, E_d)
+  sigma*gamma_*E_d;
+end
+
+Function_for_Reaction_6 is "Function for Reaction 6"
+
+function Function_for_Reaction_15(sigma_h, gamma_h, E_h)
+  sigma_h*(1 - gamma_h)*E_h;
+end
+
+Function_for_Reaction_15 is "Function for Reaction 15"
+
+function Function_for_Reaction_17(beta_dh, S_h, I_d)
+  beta_dh*S_h*I_d;
+end
+
+Function_for_Reaction_17 is "Function for Reaction 17"
+
+function Function_for_Reaction_18(sigma_h, gamma_h, E_h)
+  sigma_h*gamma_h*E_h;
+end
+
+Function_for_Reaction_18 is "Function for Reaction 18"
+
+
+model *Ruan2017___Transmission_dynamics_and_control_of_rabies_in_China()
+
+  // Compartments and Species:
+  compartment compartment_, Human_Population;
+  species S_d in compartment_, E_d in compartment_, I_d in compartment_, R_d in compartment_;
+  species S_h in Human_Population, E_h in Human_Population, I_h in Human_Population;
+  species R_h in Human_Population;
+
+  // Reactions:
+  reaction_1:  => S_d; compartment_*Constant_flux__irreversible(A);
+  reaction_2: R_d => S_d; compartment_*lambda*R_d;
+  reaction_3: E_d => S_d; compartment_*Function_for_Reaction_3(sigma, gamma_, E_d);
+  reaction_4: S_d => E_d; compartment_*Function_for_Reaction_4(beta, S_d, I_d);
+  reaction_5: S_d => ; compartment_*m*S_d;
+  reaction_6: E_d => I_d; compartment_*Function_for_Reaction_6(sigma, gamma_, E_d);
+  reaction_7: E_d => ; compartment_*m*E_d;
+  reaction_8: I_d => ; compartment_*m*I_d;
+  reaction_9: S_d => R_d; compartment_*k*S_d;
+  reaction_10: E_d => R_d; compartment_*k*E_d;
+  reaction_11: I_d => ; compartment_*mu*I_d;
+  reaction_12: R_d => ; compartment_*m*R_d;
+  reaction_13:  => S_h; Human_Population*Constant_flux__irreversible(B);
+  reaction_14: R_h => S_h; Human_Population*lambda_h*R_h;
+  reaction_15: E_h => S_h; Human_Population*Function_for_Reaction_15(sigma_h, gamma_h, E_h);
+  reaction_16: S_h => ; Human_Population*m_h*S_h;
+  reaction_17: S_h => E_h; Function_for_Reaction_17(beta_dh, S_h, I_d);
+  reaction_18: E_h => I_h; Human_Population*Function_for_Reaction_18(sigma_h, gamma_h, E_h);
+  reaction_19: E_h => ; Human_Population*m_h*E_h;
+  reaction_20: E_h => R_h; Human_Population*k_h*E_h;
+  reaction_21: I_h => ; Human_Population*m_h*I_h;
+  reaction_22: I_h => ; Human_Population*mu_h*I_h;
+  reaction_23: R_h => ; Human_Population*m_h*R_h;
+
+  // Species initializations:
+  S_d = 35000000;
+  E_d = 200000;
+  I_d = 100000;
+  R_d = 200000;
+  S_h = 1290000000;
+  E_h = 250;
+  I_h = 89;
+  R_h = 200000;
+
+  // Compartment initializations:
+  compartment_ = 1;
+  Human_Population = 1;
+
+  // Variable initializations:
+  A = 3000000;
+  lambda = 1;
+  gamma_ = 0.4;
+  sigma = 6;
+  m = 0.08;
+  beta = 1.58e-07;
+  k = 0.09;
+  mu = 1;
+  B = 15400000;
+  lambda_h = 1;
+  gamma_h = 0.4;
+  sigma_h = 6;
+  m_h = 0.003;
+  beta_dh = 2.29e-12;
+  k_h = 0.54;
+  mu_h = 1.34;
+
+  // Other declarations:
+  const compartment_, Human_Population, A, lambda, gamma_, sigma, m, beta;
+  const k, mu, B, lambda_h, gamma_h, sigma_h, m_h, beta_dh, k_h, mu_h;
+
+  // Unit definitions:
+  unit time_unit = 86400 second;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "Dog Population";
+  Human_Population is "Human Population";
+  S_d is "Susceptible dogs (S_d)";
+  E_d is "Exposed dogs (E_d)";
+  I_d is "Infectious dogs (I_d)";
+  R_d is "Recovered dogs (R_d)";
+  S_h is "Susceptible humans (S_h)";
+  E_h is "Exposed humans (E_h)";
+  I_h is "Infectious humans (I_h)";
+  R_h is "Recovered humans (R_h)";
+  gamma_ is "gamma";
+  reaction_1 is "Birth of susceptible dogs";
+  reaction_2 is "Loss of immunity in recovered dogs";
+  reaction_3 is "Exposed dogs that do not get infected";
+  reaction_4 is "Exposure of virus to susceptible dogs";
+  reaction_5 is "Natural death of susceptible dogs";
+  reaction_6 is "Infection of exposed dogs";
+  reaction_7 is "Natural death of exposed dogs";
+  reaction_8 is "Natural death of infected dogs";
+  reaction_9 is "Vaccination of susceptible dogs";
+  reaction_10 is "Vaccination of exposed dogs";
+  reaction_11 is "Disease related death of infected dogs";
+  reaction_12 is "Natural death of recovered dogs";
+  reaction_13 is "Birth of susceptible humans";
+  reaction_14 is "Loss of immunity in recovered humans";
+  reaction_15 is "Exposure humans that were not infected";
+  reaction_16 is "Natural death of susceptible humans";
+  reaction_17 is "Exposure of virus to susceptible humans";
+  reaction_18 is "Infection of exposed humans";
+  reaction_19 is "Natural death of exposed humans";
+  reaction_20 is "Vaccination of exposed humans";
+  reaction_21 is "Natural death of infected humans";
+  reaction_22 is "Disease related death of infected humans";
+  reaction_23 is "Natural death of recovered humans";
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/obi/OBI:0000181"
+  compartment_ taxon "http://identifiers.org/taxonomy/9615"
+  Human_Population identity "http://identifiers.org/obi/OBI:0000181"
+  Human_Population taxon "http://identifiers.org/taxonomy/9606"
+  S_d hypernym "http://identifiers.org/ido/0000514"
+  S_d taxon "http://identifiers.org/taxonomy/9615"
+  E_d property "http://identifiers.org/efo/0000487"
+  E_d taxon "http://identifiers.org/taxonomy/9615"
+  I_d hypernym "http://identifiers.org/ido/0000511"
+  I_d taxon "http://identifiers.org/taxonomy/9615"
+  R_d property "http://identifiers.org/ncit/C49498"
+  R_d taxon "http://identifiers.org/taxonomy/9615"
+  S_h hypernym "http://identifiers.org/ido/0000514"
+  S_h taxon "http://identifiers.org/taxonomy/9606"
+  E_h property "http://identifiers.org/efo/0000487"
+  E_h taxon "http://identifiers.org/taxonomy/9606"
+  I_h hypernym "http://identifiers.org/ido/0000511"
+  I_h taxon "http://identifiers.org/taxonomy/9606"
+  R_h property "http://identifiers.org/ncit/C49498"
+  R_h taxon "http://identifiers.org/taxonomy/9606"
+  reaction_5 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  reaction_7 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  reaction_8 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  reaction_9 parthood "http://identifiers.org/efo/0004292"
+  reaction_10 parthood "http://identifiers.org/efo/0004292"
+  reaction_12 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  reaction_16 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  reaction_19 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  reaction_20 parthood "http://identifiers.org/efo/0004292"
+  reaction_21 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  reaction_23 hypernym "http://identifiers.org/sbo/SBO:0000179"
+end
+
+Ruan2017___Transmission_dynamics_and_control_of_rabies_in_China is "Ruan2017 - Transmission dynamics and control of rabies in China"
+
+Ruan2017___Transmission_dynamics_and_control_of_rabies_in_China model_entity_is "http://identifiers.org/biomodels.db/MODEL1808280012",
+                                                                                "http://identifiers.org/biomodels.db/BIOMD0000000726"
+Ruan2017___Transmission_dynamics_and_control_of_rabies_in_China property "http://identifiers.org/mamo/MAMO_0000046"
+Ruan2017___Transmission_dynamics_and_control_of_rabies_in_China property "http://identifiers.org/ncit/C28182"
+Ruan2017___Transmission_dynamics_and_control_of_rabies_in_China taxon "http://identifiers.org/taxonomy/11292"
+Ruan2017___Transmission_dynamics_and_control_of_rabies_in_China taxon "http://identifiers.org/taxonomy/9606"
+Ruan2017___Transmission_dynamics_and_control_of_rabies_in_China taxon "http://identifiers.org/taxonomy/9615"
+Ruan2017___Transmission_dynamics_and_control_of_rabies_in_China description "http://identifiers.org/pubmed/28188732"

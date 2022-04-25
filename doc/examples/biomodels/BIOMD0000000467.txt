@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *MODEL1302180006()
 
   // Compartments and Species:
@@ -18,10 +18,10 @@ model *MODEL1302180006()
   re52: s58 -> s61; k5*s58 - k2*s3*s61;
   re53: s61 => s50 + s57; k7*s61;
   re54: s60 -> s62; k5*s60 - k2*s3*s62;
-  re55: s58 -> s60; (k10*s58*s27)/(s58 + Km10) - (V10r*s60)/(s60 + Km10r);
-  re56: s61 -> s62; (k10*s61*s27)/(s61 + Km10) - (V10r*s62)/(s62 + Km10r);
+  re55: s58 -> s60; k10*s58*s27/(s58 + Km10) - V10r*s60/(s60 + Km10r);
+  re56: s61 -> s62; k10*s61*s27/(s61 + Km10) - V10r*s62/(s62 + Km10r);
   re69: s63 => s64; re69_kCaM*(s45 + s58) + re69_kp*(s62 + s65) + re69_kpCaM*s60;
-  re70: s65 => s66; (V10r*s65)/(s65 + Km10r);
+  re70: s65 => s66; V10r*s65/(s65 + Km10r);
   re71: s66 => s51 + s57; k7*s66;
   re72: s62 -> s65 + s48; k3r*s62 - k3*s65*s48;
   re131: s51 => s116; kD*s51;
@@ -109,7 +109,7 @@ model *MODEL1302180006()
   k6 has inv_sec_sub;
   k7 = 1.5;
   k7 has inv_sec;
-  kD = 9.45e-005;
+  kD = 9.45e-05;
   kD has inv_sec;
   k5 = 115.2;
   k5 has inv_sec;
@@ -126,16 +126,16 @@ model *MODEL1302180006()
 
   // Unit definitions:
   unit time_unit = second;
-  unit substance = 1e-009 mole;
+  unit substance = 1e-09 mole;
   unit area = metre^2;
   unit length = metre;
   unit volume = litre;
-  unit sub_sec = 1e-009 mole / second;
+  unit sub_sec = 1e-09 mole / second;
   unit inv_sec = 1 / second;
-  unit inv_sec_sub = 1 / (1e-009 mole * second);
+  unit inv_sec_sub = 1 / (1e-09 mole * second);
   unit nM_inv_s = 1e-9 mole / second;
   unit inv_nM_s = 1 / (1e-9 mole * second);
-  unit substance_per_volume = 1e-009 mole / litre;
+  unit substance_per_volume = 1e-09 mole / litre;
 
   // Display Names:
   time_unit is "time";
@@ -158,4 +158,70 @@ model *MODEL1302180006()
   s65 is "Hsp90-p-eNOS";
   s66 is "Hsp90-eNOS";
   s116 is "sa49_degraded";
+
+  // SBO terms:
+  s45.sboTerm = 297
+  s47.sboTerm = 297
+  s48.sboTerm = 297
+  s50.sboTerm = 297
+  s51.sboTerm = 297
+  s58.sboTerm = 297
+  s60.sboTerm = 297
+  s61.sboTerm = 297
+  s62.sboTerm = 297
+  s63.sboTerm = 291
+  s65.sboTerm = 297
+  s66.sboTerm = 297
+  s116.sboTerm = 291
+  s117.sboTerm = 291
+  s118.sboTerm = 291
+
+  // CV terms:
+  c1 identity "http://identifiers.org/go/GO:0005623"
+  s3 identity "http://identifiers.org/chebi/CHEBI:29108"
+  s3 container "http://identifiers.org/go/GO:0005623"
+  s27 part "http://identifiers.org/uniprot/P31749",
+           "http://identifiers.org/pubchem.compound/53480352"
+  s27 property "http://identifiers.org/psimod/MOD:00696"
+  s45 part "http://identifiers.org/chebi/CHEBI:29108",
+           "http://identifiers.org/uniprot/P62158"
+  s47 part "http://identifiers.org/chebi/CHEBI:29108",
+           "http://identifiers.org/uniprot/P62158"
+  s48 part "http://identifiers.org/chebi/CHEBI:29108",
+           "http://identifiers.org/uniprot/P62158"
+  s50 part "http://identifiers.org/chebi/CHEBI:29108",
+           "http://identifiers.org/uniprot/P62158"
+  s51 part "http://identifiers.org/uniprot/Q03135"
+  s51 hypernym "http://identifiers.org/go/GO:0051001"
+  s52 hypernym "http://identifiers.org/uniprot/P62158"
+  s57 hypernym "http://identifiers.org/uniprot/P08238"
+  s58 part "http://identifiers.org/chebi/CHEBI:29108",
+           "http://identifiers.org/uniprot/P08238",
+           "http://identifiers.org/uniprot/P62158"
+  s60 property "http://identifiers.org/chebi/CHEBI:29108",
+               "http://identifiers.org/uniprot/P08238",
+               "http://identifiers.org/uniprot/P62158"
+  s60 property "http://identifiers.org/psimod/MOD:00696"
+  s61 part "http://identifiers.org/chebi/CHEBI:29108",
+           "http://identifiers.org/uniprot/P08238",
+           "http://identifiers.org/uniprot/P62158"
+  s62 property "http://identifiers.org/psimod/MOD:00696"
+  s62 part "http://identifiers.org/chebi/CHEBI:29108",
+           "http://identifiers.org/uniprot/P08238",
+           "http://identifiers.org/uniprot/P62158"
+  s63 hypernym "http://identifiers.org/chebi/CHEBI:16467"
+  s64 hypernym "http://identifiers.org/chebi/CHEBI:16480"
+  s65 part "http://identifiers.org/uniprot/P08238"
+  s65 property "http://identifiers.org/psimod/MOD:00696"
+  s66 part "http://identifiers.org/uniprot/P08238"
 end
+
+MODEL1302180006 is "Koo2013 - Shear stress induced NO production - Model 4"
+
+MODEL1302180006 model_entity_is "http://identifiers.org/biomodels.db/MODEL1302180006"
+MODEL1302180006 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000467"
+MODEL1302180006 description "http://identifiers.org/pubmed/23708369"
+MODEL1302180006 taxon "http://identifiers.org/taxonomy/9606"
+MODEL1302180006 hypernym "http://identifiers.org/reactome/REACT_12443.3"
+MODEL1302180006 hypernym "http://identifiers.org/go/GO:0006809",
+                         "http://identifiers.org/go/GO:0002537"

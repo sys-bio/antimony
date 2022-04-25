@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Faratian2009_PTENrole_TrastuzumabResistance()
 
   // Compartments and Species:
@@ -21,29 +21,29 @@ model *Faratian2009_PTENrole_TrastuzumabResistance()
   R1: E3 + HRG => E3H; k1*(E3*HRG - Kd_1*E3H);
   R2: E2 + E3H => E23H; k2*(E3H*E2 - Kd_2*E23H);
   R3: E23H => E23HP; k3*(E23H - Kd_3*E23HP);
-  R4: E23HP => E23H; (V4*E23HP)/(K4 + E23HP);
+  R4: E23HP => E23H; V4*E23HP/(K4 + E23HP);
   R5: E23HP + Shc => E23HP_Shc; k5*(E23HP*Shc - Kd_5*E23HP_Shc);
   R6: E23HP_Shc => E23HP_ShcP; k6*E23HP_Shc - k_6*E23HP_ShcP;
   R7: E23HP_ShcP + GS => E23HP_ShGS; k7*(E23HP_ShcP*GS - Kd_7*E23HP_ShGS);
   R8: E23HP_ShGS => E23HP + ShGS; k8*(E23HP_ShGS - Kd_8*E23HP*ShGS);
   R9: ShGS => GS + ShcP; k9*(ShGS - k_9*ShcP*GS);
-  R10: ShcP => Shc; (V10*ShcP)/(K10 + ShcP);
-  R11: RasGDP => RasGTP; (k11*RasGDP*ShGS)/(K11 + RasGDP);
-  R12: RasGTP => RasGDP; (V12*RasGTP)/(K12 + RasGTP);
-  R13: Raf => Rafa; (k13*Raf*RasGTP)/(K13 + Raf);
-  R14: Rafa => Raf; (k14*Rafa*(Akt_PI_PP + E_raf))/(Rafa + K14);
-  R15: MEK => MEKP; (k15*MEK*Rafa)/(K15 + MEK);
+  R10: ShcP => Shc; V10*ShcP/(K10 + ShcP);
+  R11: RasGDP => RasGTP; k11*RasGDP*ShGS/(K11 + RasGDP);
+  R12: RasGTP => RasGDP; V12*RasGTP/(K12 + RasGTP);
+  R13: Raf => Rafa; k13*Raf*RasGTP/(K13 + Raf);
+  R14: Rafa => Raf; k14*Rafa*(Akt_PI_PP + E_raf)/(Rafa + K14);
+  R15: MEK => MEKP; k15*MEK*Rafa/(K15 + MEK);
   R16_1: MEKP + PP2A => MEKP_PP2A; k16*MEKP*PP2A;
   R16_2: MEKP_PP2A => MEK_PP2A; k16_kat*MEKP_PP2A;
   R16_3: MEK_PP2A => MEK + PP2A; k18*MEK_PP2A;
-  R17_1: MEKP => MEKPP; (k15*MEKP*Rafa)/(K15 + MEKP);
+  R17_1: MEKP => MEKPP; k15*MEKP*Rafa/(K15 + MEKP);
   R18_1: MEKPP + PP2A => MEKPP_PP2A; k16*(PP2A*MEKPP - Kd_16*MEKPP_PP2A);
   R18_2: MEKPP_PP2A => MEKP_PP2A; k16_kat*MEKPP_PP2A;
   R18_3: MEKP_PP2A => MEKP + PP2A; k22*MEKP_PP2A;
-  R19: ERK => ERKP; (k23*ERK*MEKPP)/(K23 + ERK);
-  R20: ERKP => ERK; (V24*ERKP)/(K24 + ERKP);
-  R21: ERKP => ERKPP; (k23*ERKP*MEKPP)/(K23 + ERKP);
-  R22: ERKPP => ERKP; (V24*ERKPP)/(K24 + ERKPP);
+  R19: ERK => ERKP; k23*ERK*MEKPP/(K23 + ERK);
+  R20: ERKP => ERK; V24*ERKP/(K24 + ERKP);
+  R21: ERKP => ERKPP; k23*ERKP*MEKPP/(K23 + ERKP);
+  R22: ERKPP => ERKP; V24*ERKPP/(K24 + ERKPP);
   R23: E23HP + PI3K => E23HP_PI3K; k27*(E23HP*PI3K - Kd_27*E23HP_PI3K);
   R24: E23HP_PI3K => E23HP_PI3Ka; k28*(E23HP_PI3K - k_28*E23HP_PI3Ka);
   R25: E23HP_PI3Ka => E23HP + PI3Ka; k29*E23HP_PI3Ka - k_29*E23HP*PI3Ka;
@@ -52,16 +52,16 @@ model *Faratian2009_PTENrole_TrastuzumabResistance()
   R28_1: PIP3 + PTEN => PTEN_PIP3; k32*(PIP3*PTEN - Kd_32*PTEN_PIP3);
   R28_2: PTEN_PIP3 => PTEN_PI; k33*PTEN_PIP3;
   R28_3: PTEN_PI => PI2 + PTEN; k34*PTEN_PI;
-  R28_4: PTEN => PTENP; (V35*PTEN)/(K35 + PTEN);
+  R28_4: PTEN => PTENP; V35*PTEN/(K35 + PTEN);
   R28_5: PTEN + PTENP => PTENP_PTEN; k36*(PTEN*PTENP - Kd_36*PTENP_PTEN);
   R28_6: PTENP_PTEN => PTEN_PTEN; k37*PTENP_PTEN;
-  R28_7: PTEN_PTEN => 2PTEN; k38*PTEN_PTEN;
+  R28_7: PTEN_PTEN => 2 PTEN; k38*PTEN_PTEN;
   R29: Akt + PIP3 => Akt_PIP3; k39*(PIP3*Akt - Kd_39*Akt_PIP3);
-  R30: Akt_PIP3 => Akt_PI_P; (V40*Akt_PIP3)/(K40 + Akt_PIP3);
+  R30: Akt_PIP3 => Akt_PI_P; V40*Akt_PIP3/(K40 + Akt_PIP3);
   R31_1: Akt_PI_P + PP2A => Akt_PI_P_PP2A; k41*Akt_PI_P*PP2A;
   R31_2: Akt_PI_P_PP2A => Akt_PIP3_PP2A; k42*Akt_PI_P_PP2A;
   R31_3: Akt_PIP3_PP2A => Akt_PIP3 + PP2A; k43*Akt_PIP3_PP2A;
-  R32: Akt_PI_P => Akt_PI_PP; (V40*Akt_PI_P)/(K40 + Akt_PI_P);
+  R32: Akt_PI_P => Akt_PI_PP; V40*Akt_PI_P/(K40 + Akt_PI_P);
   R33_1: Akt_PI_PP + PP2A => Akt_PI_PP_PP2A; k41*(Akt_PI_PP*PP2A - Kd_41*Akt_PI_PP_PP2A);
   R33_2: Akt_PI_PP_PP2A => Akt_PI_P_PP2A; k42*Akt_PI_PP_PP2A;
   R33_3: Akt_PI_P_PP2A => Akt_PI_P + PP2A; k47*Akt_PI_P_PP2A;
@@ -112,9 +112,9 @@ model *Faratian2009_PTENrole_TrastuzumabResistance()
   PI2 = 300;
   Akt_PI_P_PP2A = 0;
   PTEN = 42.7798;
-  PIP3 = 8.05772e-012;
-  PTEN_PIP3 = 3.14554e-008;
-  PTEN_PI = 5.02914e-008;
+  PIP3 = 8.05772e-12;
+  PTEN_PIP3 = 3.14554e-08;
+  PTEN_PI = 5.02914e-08;
   PTENP = 3.39885;
   PTENP_PTEN = 0.955337;
   Akt_PI_P = 0;
@@ -256,4 +256,171 @@ model *Faratian2009_PTENrole_TrastuzumabResistance()
   var k57, Kd_57, k58, Kd_58, tPTEN, sens, pAkt, tE3P, tERKP, tPTENP, Pool_1_;
   var Pool_2_, Pool_3_, Pool_4_, Pool_5_, Pool_6_, Pool_7_, Pool_8_, Pool_9_;
   var Pool_10_, Pool_11_, Pool_12_, Pool_13_, Pool_14_;
+
+  // CV terms:
+  E3 hypernym "http://identifiers.org/ec-code/2.7.10.1",
+              "http://identifiers.org/uniprot/P21860"
+  PI3K_LY part "http://identifiers.org/go/GO:0005942",
+               "http://identifiers.org/chembl.compound/CHEMBL98350"
+  E3H part "http://identifiers.org/ec-code/2.7.10.1",
+           "http://identifiers.org/uniprot/Q02297",
+           "http://identifiers.org/uniprot/P21860"
+  E2 hypernym "http://identifiers.org/ec-code/2.7.10.1",
+              "http://identifiers.org/uniprot/P04626"
+  E23H part "http://identifiers.org/ec-code/2.7.10.1",
+            "http://identifiers.org/uniprot/P21860",
+            "http://identifiers.org/uniprot/Q02297",
+            "http://identifiers.org/uniprot/P04626"
+  E23HP part "http://identifiers.org/ec-code/2.7.10.1",
+             "http://identifiers.org/uniprot/P04626",
+             "http://identifiers.org/uniprot/Q02297",
+             "http://identifiers.org/uniprot/P21860"
+  E23HP hypernym "http://identifiers.org/kegg.compound/C00562"
+  Shc identity "http://identifiers.org/uniprot/P29353"
+  E23HP_Shc hypernym "http://identifiers.org/kegg.compound/C00562"
+  E23HP_Shc part "http://identifiers.org/ec-code/2.7.10.1",
+                 "http://identifiers.org/uniprot/P21860",
+                 "http://identifiers.org/uniprot/Q02297",
+                 "http://identifiers.org/uniprot/P04626",
+                 "http://identifiers.org/uniprot/P29353"
+  E23HP_ShcP part "http://identifiers.org/ec-code/2.7.10.1",
+                  "http://identifiers.org/uniprot/P29353",
+                  "http://identifiers.org/uniprot/P04626",
+                  "http://identifiers.org/uniprot/Q02297",
+                  "http://identifiers.org/uniprot/P21860"
+  E23HP_ShcP hypernym "http://identifiers.org/kegg.compound/C00562"
+  GS part "http://identifiers.org/uniprot/P62993",
+          "http://identifiers.org/uniprot/Q07889",
+          "http://identifiers.org/uniprot/Q07890"
+  E23HP_ShGS part "http://identifiers.org/ec-code/2.7.10.1",
+                  "http://identifiers.org/uniprot/P29353",
+                  "http://identifiers.org/uniprot/P04626",
+                  "http://identifiers.org/uniprot/Q02297",
+                  "http://identifiers.org/uniprot/P21860",
+                  "http://identifiers.org/uniprot/Q07890",
+                  "http://identifiers.org/uniprot/Q07889",
+                  "http://identifiers.org/uniprot/P62993"
+  E23HP_ShGS hypernym "http://identifiers.org/kegg.compound/C00562"
+  E2_Per hypernym "http://identifiers.org/ec-code/2.7.10.1"
+  E2_Per part "http://identifiers.org/uniprot/P04626",
+              "http://identifiers.org/insdc/AAC37531.1",
+              "http://identifiers.org/chembl.compound/CHEMBL2007641"
+  PTEN_bpV part "http://identifiers.org/uniprot/P60484",
+                "http://identifiers.org/insdc/AAH05821.1",
+                "http://identifiers.org/pubchem.compound/16760324"
+  RasGDP part "http://identifiers.org/chebi/CHEBI:17552",
+              "http://identifiers.org/uniprot/P01116"
+  PI3Ka_PIP3 part "http://identifiers.org/go/GO:0005942",
+                  "http://identifiers.org/pubchem.compound/24755492"
+  Raf hypernym "http://identifiers.org/uniprot/P04049"
+  E23H_C part "http://identifiers.org/ec-code/2.7.10.1",
+              "http://identifiers.org/uniprot/P04626",
+              "http://identifiers.org/uniprot/Q02297",
+              "http://identifiers.org/uniprot/P21860"
+  E23H_C container "http://identifiers.org/go/GO:0005737"
+  MEK hypernym "http://identifiers.org/uniprot/Q02750"
+  MEKP hypernym "http://identifiers.org/uniprot/Q02750",
+                "http://identifiers.org/kegg.compound/C00562"
+  PP2A hypernym "http://identifiers.org/uniprot/P63151"
+  MEKP_PP2A part "http://identifiers.org/uniprot/P63151",
+                 "http://identifiers.org/uniprot/Q02750"
+  MEKP_PP2A hypernym "http://identifiers.org/kegg.compound/C00562"
+  MEK_PP2A part "http://identifiers.org/uniprot/P63151",
+                "http://identifiers.org/uniprot/Q02750"
+  Akt_PIP3_PP2A part "http://identifiers.org/uniprot/P31749",
+                     "http://identifiers.org/uniprot/P63151",
+                     "http://identifiers.org/pubchem.compound/24755492"
+  MEKPP_PP2A part "http://identifiers.org/uniprot/P63151",
+                  "http://identifiers.org/uniprot/Q02750"
+  MEKPP_PP2A hypernym "http://identifiers.org/kegg.compound/C00562"
+  ERK hypernym "http://identifiers.org/uniprot/P27361"
+  ERKP hypernym "http://identifiers.org/uniprot/P27361",
+                "http://identifiers.org/kegg.compound/C00562"
+  E3H_C container "http://identifiers.org/go/GO:0005737"
+  E3H_C part "http://identifiers.org/ec-code/2.7.10.1",
+             "http://identifiers.org/uniprot/P21860",
+             "http://identifiers.org/uniprot/Q02297"
+  PI3K hypernym "http://identifiers.org/go/GO:0005942"
+  E23HP_PI3K hypernym "http://identifiers.org/kegg.compound/C00562",
+                      "http://identifiers.org/go/GO:0005942"
+  E23HP_PI3K part "http://identifiers.org/ec-code/2.7.10.1",
+                  "http://identifiers.org/uniprot/P21860",
+                  "http://identifiers.org/uniprot/Q02297",
+                  "http://identifiers.org/uniprot/P04626"
+  Akt_PIP3 part "http://identifiers.org/uniprot/P31749",
+                "http://identifiers.org/pubchem.compound/24755492"
+  PI3Ka hypernym "http://identifiers.org/go/GO:0005942"
+  PI2 hypernym "http://identifiers.org/chebi/CHEBI:15552",
+               "http://identifiers.org/kegg.compound/C01312"
+  Akt_PI_P_PP2A part "http://identifiers.org/uniprot/P63151",
+                     "http://identifiers.org/uniprot/P31749",
+                     "http://identifiers.org/pubchem.compound/24755492"
+  Akt_PI_P_PP2A hypernym "http://identifiers.org/kegg.compound/C00562"
+  PTEN hypernym "http://identifiers.org/ec-code/3.1.3.16",
+                "http://identifiers.org/uniprot/P60484",
+                "http://identifiers.org/kegg.compound/C05981"
+  PIP3 hypernym "http://identifiers.org/chebi/CHEBI:16618",
+                "http://identifiers.org/kegg.compound/C05981",
+                "http://identifiers.org/pubchem.compound/24755492"
+  PTEN_PIP3 part "http://identifiers.org/uniprot/P60484",
+                 "http://identifiers.org/pubchem.compound/24755492"
+  PTEN_PI part "http://identifiers.org/chebi/CHEBI:15552",
+               "http://identifiers.org/uniprot/P60484"
+  PTENP hypernym "http://identifiers.org/uniprot/P60484",
+                 "http://identifiers.org/kegg.compound/C00562"
+  PTENP_PTEN hypernym "http://identifiers.org/uniprot/P60484",
+                      "http://identifiers.org/kegg.compound/C00562",
+                      "http://identifiers.org/go/GO:0043234"
+  Akt_PI_P hypernym "http://identifiers.org/kegg.compound/C00562"
+  Akt_PI_P part "http://identifiers.org/uniprot/P31749",
+                "http://identifiers.org/pubchem.compound/24755492"
+  Akt hypernym "http://identifiers.org/uniprot/P31749"
+  E23HP_PI3Ka hypernym "http://identifiers.org/kegg.compound/C00562",
+                       "http://identifiers.org/go/GO:0005942"
+  E23HP_PI3Ka part "http://identifiers.org/uniprot/P21860",
+                   "http://identifiers.org/uniprot/Q02297",
+                   "http://identifiers.org/uniprot/P04626"
+  PTEN_PTEN hypernym "http://identifiers.org/uniprot/P60484",
+                     "http://identifiers.org/go/GO:0043234"
+  PI3Ka_PI part "http://identifiers.org/chebi/CHEBI:15552",
+                "http://identifiers.org/chebi/CHEBI:16618"
+  MEKPP hypernym "http://identifiers.org/uniprot/Q02750",
+                 "http://identifiers.org/kegg.compound/C00562"
+  Akt_PI_PP part "http://identifiers.org/uniprot/P31749",
+                 "http://identifiers.org/pubchem.compound/24755492"
+  Akt_PI_PP hypernym "http://identifiers.org/kegg.compound/C00562"
+  Akt_PI_PP_PP2A part "http://identifiers.org/uniprot/P31749",
+                      "http://identifiers.org/uniprot/P63151",
+                      "http://identifiers.org/pubchem.compound/24755492"
+  Akt_PI_PP_PP2A hypernym "http://identifiers.org/kegg.compound/C00562"
+  Per hypernym "http://identifiers.org/chembl.compound/CHEMBL2007641"
+  ShGS part "http://identifiers.org/uniprot/Q07890",
+            "http://identifiers.org/uniprot/Q07889",
+            "http://identifiers.org/uniprot/P62993",
+            "http://identifiers.org/uniprot/P29353"
+  E2Per part "http://identifiers.org/uniprot/P04626",
+             "http://identifiers.org/chembl.compound/CHEMBL2007641"
+  E2Per container "http://identifiers.org/go/GO:0005737"
+  ERKPP hypernym "http://identifiers.org/uniprot/P27361",
+                 "http://identifiers.org/kegg.compound/C00562"
+  Rafa hypernym "http://identifiers.org/uniprot/P04049"
+  RasGTP part "http://identifiers.org/chebi/CHEBI:15996",
+              "http://identifiers.org/uniprot/P01116"
+  ShcP hypernym "http://identifiers.org/uniprot/P29353",
+                "http://identifiers.org/kegg.compound/C00562"
+  HRG hypernym "http://identifiers.org/uniprot/Q02297"
 end
+
+Faratian2009_PTENrole_TrastuzumabResistance is "Faratian2009 - Role of PTEN in Trastuzumab resistance"
+
+Faratian2009_PTENrole_TrastuzumabResistance model_entity_is "http://identifiers.org/biomodels.db/MODEL1108180000"
+Faratian2009_PTENrole_TrastuzumabResistance model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000424"
+Faratian2009_PTENrole_TrastuzumabResistance description "http://identifiers.org/pubmed/19638581"
+Faratian2009_PTENrole_TrastuzumabResistance origin "http://identifiers.org/biomodels.db/BIOMD0000000146",
+                                                   "http://identifiers.org/biomodels.db/BIOMD0000000048"
+Faratian2009_PTENrole_TrastuzumabResistance hypernym "http://identifiers.org/go/GO:0014065",
+                                                     "http://identifiers.org/go/GO:0042493"
+Faratian2009_PTENrole_TrastuzumabResistance container "http://identifiers.org/bto/BTO:0000356"
+Faratian2009_PTENrole_TrastuzumabResistance taxon "http://identifiers.org/taxonomy/9606"
+Faratian2009_PTENrole_TrastuzumabResistance property "http://identifiers.org/mamo/MAMO_0000046"
+Faratian2009_PTENrole_TrastuzumabResistance property "http://identifiers.org/doid/DOID:162"

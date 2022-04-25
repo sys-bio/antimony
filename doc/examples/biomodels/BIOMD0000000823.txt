@@ -1,0 +1,186 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function Henri_Michaelis_Menten__irreversible(substrate, Km, V)
+  V*substrate/(Km + substrate);
+end
+
+Henri_Michaelis_Menten__irreversible is "Henri-Michaelis-Menten (irreversible)"
+
+function HMM_Mod(V, s, m, Km)
+  V*s*m/(Km + s);
+end
+
+HMM_Mod is "HMM_Mod"
+
+function Function_for_v11(k11ca, pmTORC1, DEPTOR, Km11a, pDEPTOR, k11cb, pmTORC2, Km11b)
+  k11ca*pmTORC1*DEPTOR/(Km11a + pDEPTOR) + k11cb*pmTORC2*DEPTOR/(Km11b + DEPTOR);
+end
+
+Function_for_v11 is "Function_for_v11"
+
+function Function_for_v5(k5ca, pIRS, Akt, Km5a, k5cb, pmTORC2, Km5b)
+  k5ca*pIRS*Akt/(Km5a + Akt) + k5cb*pmTORC2*Akt/(Km5b + Akt);
+end
+
+Function_for_v5 is "Function_for_v5"
+
+
+model *Varusai2018___Dynamic_modelling_of_the_mTOR_signalling_network_reveals_complex_emergent_behaviours_conferred_by_DEPTOR()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species IR in compartment_, pIR in compartment_, IRS in compartment_, pIRS in compartment_;
+  species iIRS in compartment_, Akt in compartment_, pAkt in compartment_;
+  species mTORC1 in compartment_, pmTORC1 in compartment_, mTORC2 in compartment_;
+  species pmTORC2 in compartment_, imTORC2 in compartment_, mTORC1_DEPTOR in compartment_;
+  species mTORC2_DEPTOR in compartment_, DEPTOR in compartment_, pDEPTOR in compartment_;
+
+  // Reactions:
+  v1: IR => pIR; compartment_*Henri_Michaelis_Menten__irreversible(IR, Km1, V1);
+  v2: pIR => IR; compartment_*Henri_Michaelis_Menten__irreversible(pIR, Km2, V2);
+  v3: IRS => pIRS; compartment_*HMM_Mod(k3c, IRS, pIR, Km3);
+  v4: pIRS => IRS; compartment_*Henri_Michaelis_Menten__irreversible(pIRS, Km4, V4);
+  v5: Akt => pAkt; compartment_*Function_for_v5(k5ca, pIRS, Akt, Km5a, k5cb, pmTORC2, Km5b);
+  v6: pAkt => Akt; compartment_*Henri_Michaelis_Menten__irreversible(pAkt, Km6, V6);
+  v7: mTORC1 => pmTORC1; compartment_*HMM_Mod(k7c, mTORC1, pAkt, Km7);
+  v8: pmTORC1 => mTORC1; compartment_*Henri_Michaelis_Menten__irreversible(pmTORC1, Km8, V8);
+  v9: mTORC2 => pmTORC2; compartment_*HMM_Mod(k9c, mTORC2, pIR, Km9);
+  v10: pmTORC2 => mTORC2; compartment_*Henri_Michaelis_Menten__irreversible(pmTORC2, Km10, V10);
+  v11: DEPTOR => pDEPTOR; compartment_*Function_for_v11(k11ca, pmTORC1, DEPTOR, Km11a, pDEPTOR, k11cb, pmTORC2, Km11b);
+  v12: pDEPTOR => DEPTOR; compartment_*Henri_Michaelis_Menten__irreversible(pDEPTOR, Km12, V12);
+  v13: mTORC1 + DEPTOR -> mTORC1_DEPTOR; compartment_*(k13f*mTORC1*DEPTOR - k13r*mTORC1_DEPTOR);
+  v14: mTORC2 + DEPTOR -> mTORC2_DEPTOR; compartment_*(k14f*mTORC2*DEPTOR - k14r*mTORC2_DEPTOR);
+  v15: IRS => iIRS; compartment_*HMM_Mod(k15c, IRS, pmTORC1, Km15);
+  v16: iIRS => IRS; compartment_*Henri_Michaelis_Menten__irreversible(iIRS, Km16, V16);
+  v17:  => DEPTOR; compartment_*Constant_flux__irreversible(ks17);
+  v18: pDEPTOR => ; compartment_*kd18*pDEPTOR;
+
+  // Species initializations:
+  IR = 50;
+  pIR = 0;
+  IRS = 100;
+  pIRS = 0;
+  iIRS = 0;
+  Akt = 100;
+  pAkt = 0;
+  mTORC1 = 250;
+  pmTORC1 = 0;
+  mTORC2 = 200;
+  pmTORC2 = 0;
+  imTORC2 = 0;
+  mTORC1_DEPTOR = 0;
+  mTORC2_DEPTOR = 0;
+  DEPTOR = 350;
+  pDEPTOR = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  V1 = 1;
+  Km1 = 95;
+  V2 = 1;
+  Km2 = 35;
+  k3c = 0.1;
+  Km3 = 50;
+  V4 = 1;
+  Km4 = 50;
+  k5ca = 0.05;
+  Km5a = 7;
+  k5cb = 1.5;
+  Km5b = 4;
+  V6 = 2;
+  Km6 = 34;
+  k7c = 0.1;
+  Km7 = 2;
+  V8 = 6;
+  Km8 = 1;
+  k9c = 0.3;
+  Km9 = 160;
+  V10 = 3;
+  Km10 = 7;
+  k11ca = 0.1;
+  Km11a = 120;
+  k11cb = 0.13;
+  Km11b = 11;
+  V12 = 4;
+  Km12 = 7;
+  k13f = 0.001;
+  k13r = 0.006;
+  k14f = 0.007;
+  k14r = 0.006;
+  k15c = 0.1;
+  Km15 = 50;
+  V16 = 1;
+  Km16 = 50;
+  ks17 = 0;
+  kd18 = 0;
+
+  // Other declarations:
+  const compartment_, V1, Km1, V2, Km2, k3c, Km3, V4, Km4, k5ca, Km5a, k5cb;
+  const Km5b, V6, Km6, k7c, Km7, V8, Km8, k9c, Km9, V10, Km10, k11ca, Km11a;
+  const k11cb, Km11b, V12, Km12, k13f, k13r, k14f, k14r, k15c, Km15, V16;
+  const Km16, ks17, kd18;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+
+  // CV terms:
+  compartment_ hypernym "http://identifiers.org/ncit/C48694"
+  IR identity "http://identifiers.org/pr/PR:000009064"
+  pIR hypernym "http://identifiers.org/pr/PR:000009064"
+  IRS identity "http://identifiers.org/ncit/C28474"
+  pIRS hypernym "http://identifiers.org/ncit/C28474"
+  iIRS hypernym "http://identifiers.org/ncit/C28474"
+  Akt identity "http://identifiers.org/pr/PR:000029189"
+  pAkt hypernym "http://identifiers.org/pr/PR:000029189"
+  mTORC1 hypernym "http://identifiers.org/ncit/C96314"
+  pmTORC1 hypernym "http://identifiers.org/ncit/C96314"
+  mTORC2 identity "http://identifiers.org/ncit/C96315"
+  pmTORC2 hypernym "http://identifiers.org/ncit/C96315"
+  imTORC2 hypernym "http://identifiers.org/ncit/C96315"
+  mTORC1_DEPTOR part "http://identifiers.org/ncit/C96314"
+  mTORC1_DEPTOR part "http://identifiers.org/ncit/C101595"
+  mTORC2_DEPTOR part "http://identifiers.org/ncit/C101595"
+  mTORC2_DEPTOR part "http://identifiers.org/ncit/mTORC2"
+  DEPTOR identity "http://identifiers.org/ncit/C101595"
+  pDEPTOR hypernym "http://identifiers.org/ncit/C101595"
+  v1 hypernym "http://identifiers.org/go/GO:0016310"
+  v2 hypernym "http://identifiers.org/go/GO:0016311"
+  v3 hypernym "http://identifiers.org/go/GO:0016310"
+  v4 hypernym "http://identifiers.org/go/GO:0016311"
+  v5 hypernym "http://identifiers.org/go/GO:0016310"
+  v6 hypernym "http://identifiers.org/go/GO:0016311"
+  v7 hypernym "http://identifiers.org/go/GO:0016310"
+  v8 hypernym "http://identifiers.org/go/GO:0016311"
+  v9 hypernym "http://identifiers.org/go/GO:0016310"
+  v10 hypernym "http://identifiers.org/go/GO:0016311"
+  v11 hypernym "http://identifiers.org/go/GO:0016310"
+  v12 hypernym "http://identifiers.org/go/GO:0016311"
+  v13 hypernym "http://identifiers.org/ncit/C18469"
+  v14 hypernym "http://identifiers.org/ncit/C18469"
+  v15 hypernym "http://identifiers.org/ncit/C16983"
+  v15 hypernym "http://identifiers.org/sbo/SBO:0000169"
+  v16 hypernym "http://identifiers.org/ncit/C21018"
+  v17 hypernym "http://identifiers.org/ncit/C80450"
+  v18 hypernym "http://identifiers.org/ncit/C61559"
+end
+
+Varusai2018___Dynamic_modelling_of_the_mTOR_signalling_network_reveals_complex_emergent_behaviours_conferred_by_DEPTOR is "Varusai2018 - Dynamic modelling of the mTOR signalling network reveals complex emergent behaviours conferred by DEPTOR"
+
+Varusai2018___Dynamic_modelling_of_the_mTOR_signalling_network_reveals_complex_emergent_behaviours_conferred_by_DEPTOR description "http://identifiers.org/pubmed/29330362"
+Varusai2018___Dynamic_modelling_of_the_mTOR_signalling_network_reveals_complex_emergent_behaviours_conferred_by_DEPTOR model_entity_is "http://identifiers.org/biomodels.db/MODEL1909250003",
+                                                                                                                                       "http://identifiers.org/biomodels.db/BIOMD0000000823"
+Varusai2018___Dynamic_modelling_of_the_mTOR_signalling_network_reveals_complex_emergent_behaviours_conferred_by_DEPTOR property "http://identifiers.org/mamo/MAMO_0000046"
+Varusai2018___Dynamic_modelling_of_the_mTOR_signalling_network_reveals_complex_emergent_behaviours_conferred_by_DEPTOR property "http://identifiers.org/pw/PW:0000180"
+Varusai2018___Dynamic_modelling_of_the_mTOR_signalling_network_reveals_complex_emergent_behaviours_conferred_by_DEPTOR property "http://identifiers.org/ncit/C101595"
+Varusai2018___Dynamic_modelling_of_the_mTOR_signalling_network_reveals_complex_emergent_behaviours_conferred_by_DEPTOR taxon "http://identifiers.org/taxonomy/9606"

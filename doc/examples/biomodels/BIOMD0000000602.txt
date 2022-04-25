@@ -1,0 +1,628 @@
+// Created by libAntimony v2.13.0
+model *Stavrum2013___Tryptophan_Metabolism_in_Liver()
+
+  // Compartments and Species:
+  compartment Cytosol;
+  species M_3hanthrn_c in Cytosol, M_5hoxnfkyn_c in Cytosol, M_5htrp_c in Cytosol;
+  species $M_5hxkyn_c in Cytosol, M_Lfmkynr_c in Cytosol, M_Lkynr_c in Cytosol;
+  species $M_ahcys_c in Cytosol, $M_akg_c in Cytosol, $M_ala_DASH_L_c in Cytosol;
+  species $M_amet_c in Cytosol, $M_anth_c in Cytosol, M_cmusa_c in Cytosol;
+  species $M_dhbpt_c in Cytosol, $M_for_c in Cytosol, $M_glu_DASH_L_c in Cytosol;
+  species M_hLkynr_c in Cytosol, $M_id3acald_c in Cytosol, $M_indpyr_c in Cytosol;
+  species M_nmtrpta_c in Cytosol, M_quln_c in Cytosol, M_srtn_c in Cytosol;
+  species $M_thbpt in Cytosol, $M_trna_trp_c in Cytosol, M_trp_DASH_L_c in Cytosol;
+  species $M_trp_L_trna_c in Cytosol, M_trypta_c in Cytosol, $M_amp_c in Cytosol;
+  species $M_atp_c in Cytosol, $M_co2_c in Cytosol, $M_h2o2_c in Cytosol;
+  species $M_h2o_c in Cytosol, $M_h_c in Cytosol, $M_nadp_c in Cytosol, $M_nadph_c in Cytosol;
+  species $M_nh4_c in Cytosol, $M_o2_c in Cytosol, $M_o2s_c in Cytosol, $M_ppi_c in Cytosol;
+  species $M_Cinnavalininate_c in Cytosol, $M_kynate_c in Cytosol, $TRP_ex in Cytosol;
+  species M_nicrnt_c in Cytosol, $M_prpp_c in Cytosol, M_nformanth_c in Cytosol;
+  species $M_dnad_c in Cytosol, $M_am6sa_c in Cytosol, $M_5hoxindact_c in Cytosol;
+  species $M_Nacsertn_c in Cytosol, $M_accoa_c in Cytosol, $M_coa_c in Cytosol;
+  species $M_Xanthurenate in Cytosol, $M_f5hoxkyn_c in Cytosol, $M_nndmtrpta_c in Cytosol;
+  species $M_nmsrtn_c in Cytosol, $M_Nactrypta_c in Cytosol, $M_Lkynr_ex in Cytosol;
+
+  // Reactions:
+  R00677: M_trp_DASH_L_c + $M_h2o_c + $M_o2_c => $M_indpyr_c + $M_nh4_c + $M_h2o2_c; Cytosol*(R00677_kcat*R00677_E_T*M_trp_DASH_L_c*M_o2_c*M_h2o_c*scaling/(R00677_Ka*R00677_Kb + R00677_Kb*M_trp_DASH_L_c + R00677_Ka*M_o2_c + M_trp_DASH_L_c*M_o2_c));
+  R00678_Tdo: M_trp_DASH_L_c + $M_o2_c => M_Lfmkynr_c; Cytosol*(R00678_Tdo_kcat*R00678_Tdo_E_T*M_trp_DASH_L_c*M_o2_c*scaling/(R00678_Tdo_Ka*R00678_Tdo_Kb + R00678_Tdo_Ka*M_o2_c + R00678_Tdo_Kb*M_trp_DASH_L_c + M_trp_DASH_L_c*M_o2_c));
+  R00685: M_trp_DASH_L_c => M_trypta_c + $M_co2_c; Cytosol*(DDC_E_T*R00685_kcat_B*scaling*M_trp_DASH_L_c*DDC_Km_5htrp/(DDC_Km_trp_DASH_L*DDC_Km_5htrp + DDC_Km_trp_DASH_L*M_5htrp_c + DDC_Km_5htrp*M_trp_DASH_L_c));
+  R00987: M_Lkynr_c + $M_h2o_c => $M_anth_c + $M_ala_DASH_L_c; Cytosol*(KYNU_E_T*R00987_kcat_A*scaling*M_Lkynr_c*KYNU_Km_hLkynr*KYNU_Km_Lfmkynr/(KYNU_Km_Lkynr*KYNU_Km_hLkynr*KYNU_Km_Lfmkynr + KYNU_Km_hLkynr*KYNU_Km_Lfmkynr*M_Lkynr_c + KYNU_Km_Lkynr*KYNU_Km_Lfmkynr*M_hLkynr_c + KYNU_Km_Lkynr*KYNU_Km_hLkynr*M_Lfmkynr_c));
+  R01814_Tph1: $M_thbpt + M_trp_DASH_L_c + $M_o2_c => M_5htrp_c + $M_dhbpt_c + $M_h2o_c; Cytosol*(R01814_Tph1_kcat*R01814_Tph1_E_T*M_trp_DASH_L_c*M_o2_c*M_thbpt*scaling/(R01814_Tph1_Ka*R01814_Tph1_Kb + R01814_Tph1_Kb*M_trp_DASH_L_c + R01814_Tph1_Ka*M_o2_c + M_trp_DASH_L_c*M_o2_c));
+  R01956_Kat1: M_Lkynr_c + $M_akg_c => $M_kynate_c + $M_glu_DASH_L_c; Cytosol*(AADAT_E_T_kat1*AADAT_kcat_Lkynr*scaling*M_Lkynr_c*AADAT_Km_hLkynr/(AADAT_Km_Lkynr*AADAT_Km_hLkynr + AADAT_Km_Lkynr*M_hLkynr_c + AADAT_Km_hLkynr*M_Lkynr_c));
+  R01959: M_Lfmkynr_c + $M_h2o_c => $M_for_c + M_Lkynr_c; Cytosol*(AFMID_E_T*R01959_kcat_A*scaling*M_Lfmkynr_c*AFMID_Km_5hoxnfky*AFMID_Km_nformanth/(AFMID_Km_Lfmkynr*AFMID_Km_5hoxnfky*AFMID_Km_nformanth + AFMID_Km_5hoxnfky*AFMID_Km_nformanth*M_Lfmkynr_c + AFMID_Km_Lfmkynr*AFMID_Km_nformanth*M_5hoxnfkyn_c + AFMID_Km_Lfmkynr*AFMID_Km_5hoxnfky*M_nformanth_c));
+  R01960: M_Lkynr_c + $M_o2_c + $M_nadph_c + $M_h_c => M_hLkynr_c + $M_nadp_c + $M_h2o_c; Cytosol*(R01960_kcat*R01960_E_T*M_Lkynr_c*M_o2_c*M_nadph_c*M_h_c*scaling/(R01960_Ka*R01960_Kb*R01960_Kc + M_Lkynr_c*R01960_Kb*R01960_Kc + M_o2_c*R01960_Ka*R01960_Kc + M_nadph_c*R01960_Ka*R01960_Kb + M_Lkynr_c*M_o2_c*R01960_Kc + M_o2_c*M_nadph_c*R01960_Ka + M_Lkynr_c*M_nadph_c*R01960_Kb + M_Lkynr_c*M_o2_c*M_nadph_c));
+  R02174: $M_amet_c + M_trypta_c => $M_ahcys_c + M_nmtrpta_c; Cytosol*(IMNT_E_T*R02174_kcat_A*scaling*M_trypta_c*IMNT_Km_nmtrpta*IMNT_Km_srtn/(IMNT_Km_trypta*IMNT_Km_nmtrpta*IMNT_Km_srtn + IMNT_Km_nmtrpta*IMNT_Km_srtn*M_trypta_c + IMNT_Km_trypta*IMNT_Km_srtn*M_nmtrpta_c + IMNT_Km_trypta*IMNT_Km_nmtrpta*M_srtn_c));
+  R02665: M_3hanthrn_c + $M_o2_c => M_cmusa_c; Cytosol*(R02665_kcat*R02665_E_T*M_3hanthrn_c*M_o2_c*scaling/(R02665_Ka*R02665_Kb + R02665_Ka*M_o2_c + R02665_Kb*M_3hanthrn_c + M_3hanthrn_c*M_o2_c));
+  R02668: M_hLkynr_c + $M_h2o_c => M_3hanthrn_c + $M_ala_DASH_L_c; Cytosol*(KYNU_E_T*R02668_kcat_A*scaling*M_hLkynr_c*KYNU_Km_Lkynr*KYNU_Km_Lfmkynr/(KYNU_Km_hLkynr*KYNU_Km_Lkynr*KYNU_Km_Lfmkynr + KYNU_Km_Lkynr*KYNU_Km_Lfmkynr*M_hLkynr_c + KYNU_Km_hLkynr*KYNU_Km_Lfmkynr*M_Lkynr_c + KYNU_Km_hLkynr*KYNU_Km_Lkynr*M_Lfmkynr_c));
+  R02701: M_5htrp_c => M_srtn_c + $M_co2_c; Cytosol*(DDC_E_T*R02701_kcat_B*scaling*M_5htrp_c*DDC_Km_trp_DASH_L/(DDC_Km_5htrp*DDC_Km_trp_DASH_L + DDC_Km_5htrp*M_trp_DASH_L_c + DDC_Km_trp_DASH_L*M_5htrp_c));
+  R02702: M_5htrp_c + $M_o2_c => M_5hoxnfkyn_c; Cytosol*(R02702_kcat*IDO_E_T*M_5htrp_c*M_o2_c*IDO_Km_trp_DASH_L*IDO_Km_srtn*scaling/(IDO_Km_5htrp*IDO_Km_O2*IDO_Km_trp_DASH_L*IDO_Km_srtn + M_5htrp_c*IDO_Km_O2*IDO_Km_trp_DASH_L*IDO_Km_srtn + M_o2_c*IDO_Km_5htrp*IDO_Km_trp_DASH_L*IDO_Km_srtn + M_trp_DASH_L_c*IDO_Km_5htrp*IDO_Km_O2*IDO_Km_srtn + M_srtn_c*IDO_Km_5htrp*IDO_Km_O2*IDO_Km_trp_DASH_L + M_5htrp_c*M_o2_c*IDO_Km_trp_DASH_L*IDO_Km_srtn + M_trp_DASH_L_c*M_o2_c*IDO_Km_5htrp*IDO_Km_srtn + M_srtn_c*M_o2_c*IDO_Km_5htrp*IDO_Km_trp_DASH_L));
+  R03664: $M_atp_c + M_trp_DASH_L_c + $M_trna_trp_c => $M_amp_c + $M_ppi_c + $M_trp_L_trna_c; Cytosol*(R03664_kcat*R03664_E_T*M_trp_DASH_L_c*M_trna_trp_c*M_atp_c*scaling/(R03664_Ka*R03664_Kb + R03664_Kb*M_trp_DASH_L_c + R03664_Ka*M_trna_trp_c + M_trp_DASH_L_c*M_trna_trp_c));
+  R04911: M_5hoxnfkyn_c + $M_h2o_c => $M_5hxkyn_c + $M_for_c; Cytosol*(AFMID_E_T*R04911_kcat_A*scaling*M_5hoxnfkyn_c*AFMID_Km_Lfmkynr*AFMID_Km_nformanth/(AFMID_Km_5hoxnfky*AFMID_Km_Lfmkynr*AFMID_Km_nformanth + AFMID_Km_Lfmkynr*AFMID_Km_nformanth*M_5hoxnfkyn_c + AFMID_Km_5hoxnfky*AFMID_Km_nformanth*M_Lfmkynr_c + AFMID_Km_5hoxnfky*AFMID_Km_Lfmkynr*M_nformanth_c));
+  quin_form: M_cmusa_c => M_quln_c; Cytosol*quin_form_k1*M_cmusa_c;
+  R02173_Maoa: M_trypta_c + $M_h2o_c + $M_o2_c => $M_id3acald_c + $M_nh4_c + $M_h2o2_c; Cytosol*(MAOA_E_T*R02173_Maoa_kcat_B*scaling*M_trypta_c*MAO_Km_srtn/(MAO_Km_trypta*MAO_Km_srtn + MAO_Km_trypta*M_srtn_c + MAO_Km_srtn*M_trypta_c));
+  R02670: 2 M_3hanthrn_c + 4 $M_o2_c => $M_Cinnavalininate_c + 2 $M_o2s_c + 2 $M_h2o2_c + 2 $M_h_c; Cytosol*R02670_k1*M_3hanthrn_c^R02670_e1*M_o2_c^R02670_e2;
+  TRPtrans_Slc7a5: $TRP_ex -> M_trp_DASH_L_c; Cytosol*(scaling*(Transporter_E_T_Slc7a5*Transporter_kcat_Trp*TRP_ex/Transporter_Km_Trp_Slc7a5 - Transporter_E_T_Slc7a5*Transporter_kcat_Trp*M_trp_DASH_L_c/Transporter_Km_Trp_Slc7a5)/(1 + TRP_ex/Transporter_Km_Trp_Slc7a5 + M_Lkynr_ex/Transporter_Km_Lkynr + M_trp_DASH_L_c/Transporter_Km_Trp_Slc7a5 + M_Lkynr_c/Transporter_Km_Lkynr));
+  R00678_Indo: M_trp_DASH_L_c + $M_o2_c => M_Lfmkynr_c; Cytosol*(R00678_Indo_kcat*IDO_E_T*M_trp_DASH_L_c*M_o2_c*IDO_Km_5htrp*IDO_Km_srtn*scaling/(IDO_Km_trp_DASH_L*IDO_Km_O2*IDO_Km_5htrp*IDO_Km_srtn + M_trp_DASH_L_c*IDO_Km_O2*IDO_Km_5htrp*IDO_Km_srtn + M_o2_c*IDO_Km_trp_DASH_L*IDO_Km_5htrp*IDO_Km_srtn + M_5htrp_c*IDO_Km_trp_DASH_L*IDO_Km_O2*IDO_Km_srtn + M_srtn_c*IDO_Km_trp_DASH_L*IDO_Km_O2*IDO_Km_5htrp + M_trp_DASH_L_c*M_o2_c*IDO_Km_5htrp*IDO_Km_srtn + M_5htrp_c*M_o2_c*IDO_Km_trp_DASH_L*IDO_Km_srtn + M_srtn_c*M_o2_c*IDO_Km_trp_DASH_L*IDO_Km_5htrp));
+  R03348: $M_h_c + $M_prpp_c + M_quln_c => $M_co2_c + M_nicrnt_c + $M_ppi_c; Cytosol*(R03348_kcat*R03348_E_T*M_quln_c*M_prpp_c*M_h_c*scaling/(R03348_Ka*R03348_Kb + R03348_Kb*M_quln_c + R03348_Ka*M_prpp_c + M_quln_c*M_prpp_c));
+  R03936: M_Lfmkynr_c + $M_h2o_c => M_nformanth_c + $M_ala_DASH_L_c; Cytosol*(KYNU_E_T*R03936_kcat_A*scaling*M_Lfmkynr_c*KYNU_Km_Lkynr*KYNU_Km_hLkynr/(KYNU_Km_Lfmkynr*KYNU_Km_Lkynr*KYNU_Km_hLkynr + KYNU_Km_Lkynr*KYNU_Km_hLkynr*M_Lfmkynr_c + KYNU_Km_Lfmkynr*KYNU_Km_hLkynr*M_Lkynr_c + KYNU_Km_Lfmkynr*KYNU_Km_Lkynr*M_hLkynr_c));
+  R00988: M_nformanth_c + $M_h2o_c => $M_for_c + $M_anth_c; Cytosol*(AFMID_E_T*R00988_kcat_A*scaling*M_nformanth_c*AFMID_Km_Lfmkynr*AFMID_Km_5hoxnfky/(AFMID_Km_nformanth*AFMID_Km_Lfmkynr*AFMID_Km_5hoxnfky + AFMID_Km_Lfmkynr*AFMID_Km_5hoxnfky*M_nformanth_c + AFMID_Km_nformanth*AFMID_Km_5hoxnfky*M_Lfmkynr_c + AFMID_Km_nformanth*AFMID_Km_Lfmkynr*M_5hoxnfkyn_c));
+  R03005: $M_atp_c + $M_h_c + M_nicrnt_c => $M_dnad_c + $M_ppi_c; Cytosol*(R03005_E_T*R03005_kcat*M_nicrnt_c*M_h_c*M_atp_c*scaling/(R03005_Km + M_nicrnt_c));
+  R04323: M_cmusa_c => $M_am6sa_c + $M_co2_c; Cytosol*(R04323_E_T*R04323_kcat*M_cmusa_c*scaling/(R04323_Km + M_cmusa_c));
+  R02908_Maoa: M_srtn_c + $M_h2o_c + $M_o2_c => $M_5hoxindact_c + $M_h2o2_c + $M_nh4_c; Cytosol*(MAOA_E_T*R02908_Maoa_kcat_B*scaling*M_srtn_c*MAO_Km_trypta/(MAO_Km_srtn*MAO_Km_trypta + MAO_Km_srtn*M_trypta_c + MAO_Km_trypta*M_srtn_c));
+  R02911: $M_accoa_c + M_srtn_c => $M_Nacsertn_c + $M_coa_c + $M_h_c; Cytosol*(AANAT_E_T*R02911_kcat_B*scaling*M_srtn_c*AANAT_Km_trypta/(AANAT_Km_Srtn*AANAT_Km_trypta + AANAT_Km_Srtn*M_trypta_c + AANAT_Km_trypta*M_srtn_c));
+  R04171_Kat1: M_hLkynr_c + $M_akg_c => $M_Xanthurenate + $M_glu_DASH_L_c; Cytosol*(AADAT_E_T_kat1*AADAT_kcat_hLkynr*scaling*M_hLkynr_c*AADAT_Km_Lkynr/(AADAT_Km_hLkynr*AADAT_Km_Lkynr + AADAT_Km_hLkynr*M_Lkynr_c + AADAT_Km_Lkynr*M_hLkynr_c));
+  R02909: M_srtn_c + $M_o2_c => $M_f5hoxkyn_c; Cytosol*(R02909_kcat*IDO_E_T*M_srtn_c*M_o2_c*IDO_Km_5htrp*IDO_Km_trp_DASH_L*scaling/(IDO_Km_srtn*IDO_Km_O2*IDO_Km_5htrp*IDO_Km_trp_DASH_L + M_srtn_c*IDO_Km_O2*IDO_Km_5htrp*IDO_Km_trp_DASH_L + M_o2_c*IDO_Km_srtn*IDO_Km_5htrp*IDO_Km_trp_DASH_L + M_5htrp_c*IDO_Km_srtn*IDO_Km_O2*IDO_Km_trp_DASH_L + M_trp_DASH_L_c*IDO_Km_srtn*IDO_Km_O2*IDO_Km_5htrp + M_srtn_c*M_o2_c*IDO_Km_5htrp*IDO_Km_trp_DASH_L + M_5htrp_c*M_o2_c*IDO_Km_srtn*IDO_Km_trp_DASH_L + M_trp_DASH_L_c*M_o2_c*IDO_Km_srtn*IDO_Km_5htrp));
+  R02174_metTrypta: $M_amet_c + M_nmtrpta_c => $M_ahcys_c + $M_nndmtrpta_c; Cytosol*(IMNT_E_T*R02174_metTrypta_kcat_A*scaling*M_nmtrpta_c*IMNT_Km_srtn*IMNT_Km_trypta/(IMNT_Km_nmtrpta*IMNT_Km_srtn*IMNT_Km_trypta + IMNT_Km_srtn*IMNT_Km_trypta*M_nmtrpta_c + IMNT_Km_nmtrpta*IMNT_Km_trypta*M_srtn_c + IMNT_Km_nmtrpta*IMNT_Km_srtn*M_trypta_c));
+  R02910: $M_amet_c + M_srtn_c => $M_ahcys_c + $M_nmsrtn_c; Cytosol*(IMNT_E_T*R02910_kcat_A*scaling*M_srtn_c*IMNT_Km_nmtrpta*IMNT_Km_trypta/(IMNT_Km_srtn*IMNT_Km_nmtrpta*IMNT_Km_trypta + IMNT_Km_nmtrpta*IMNT_Km_trypta*M_srtn_c + IMNT_Km_srtn*IMNT_Km_trypta*M_nmtrpta_c + IMNT_Km_srtn*IMNT_Km_nmtrpta*M_trypta_c));
+  R01956_Kat2: M_hLkynr_c + $M_akg_c => $M_Xanthurenate + $M_glu_DASH_L_c; Cytosol*(AADAT_E_T_kat2*AADAT_kcat_hLkynr*scaling*M_hLkynr_c*AADAT_Km_Lkynr/(AADAT_Km_hLkynr*AADAT_Km_Lkynr + AADAT_Km_hLkynr*M_Lkynr_c + AADAT_Km_Lkynr*M_hLkynr_c));
+  R01956_Kat3: M_hLkynr_c + $M_akg_c => $M_Xanthurenate + $M_glu_DASH_L_c; Cytosol*(AADAT_E_T_kat3*AADAT_kcat_hLkynr*scaling*M_hLkynr_c*AADAT_Km_Lkynr/(AADAT_Km_hLkynr*AADAT_Km_Lkynr + AADAT_Km_hLkynr*M_Lkynr_c + AADAT_Km_Lkynr*M_hLkynr_c));
+  R04171_Kat2: M_Lkynr_c + $M_akg_c => $M_kynate_c + $M_glu_DASH_L_c; Cytosol*(AADAT_E_T_kat2*AADAT_kcat_Lkynr*scaling*M_Lkynr_c*AADAT_Km_hLkynr/(AADAT_Km_Lkynr*AADAT_Km_hLkynr + AADAT_Km_Lkynr*M_hLkynr_c + AADAT_Km_hLkynr*M_Lkynr_c));
+  R04171_Kat3: M_Lkynr_c + $M_akg_c => $M_kynate_c + $M_glu_DASH_L_c; Cytosol*(AADAT_E_T_kat3*AADAT_kcat_Lkynr*scaling*M_Lkynr_c*AADAT_Km_hLkynr/(AADAT_Km_Lkynr*AADAT_Km_hLkynr + AADAT_Km_Lkynr*M_hLkynr_c + AADAT_Km_hLkynr*M_Lkynr_c));
+  R02908_Maob: M_srtn_c + $M_h2o_c + $M_o2_c => $M_5hoxindact_c + $M_h2o2_c + $M_nh4_c; Cytosol*(MAOB_E_T*R02908_Maob_kcat_B*scaling*M_srtn_c*MAO_Km_trypta/(MAO_Km_srtn*MAO_Km_trypta + MAO_Km_srtn*M_trypta_c + MAO_Km_trypta*M_srtn_c));
+  R02173_Maob: M_trypta_c + $M_h2o_c + $M_o2_c => $M_id3acald_c + $M_nh4_c + $M_h2o2_c; Cytosol*(MAOB_E_T*R02173_Maob_kcat_B*scaling*M_trypta_c*MAO_Km_srtn/(MAO_Km_trypta*MAO_Km_srtn + MAO_Km_trypta*M_srtn_c + MAO_Km_srtn*M_trypta_c));
+  AANAT_Trypta: $M_accoa_c + M_trypta_c => $M_Nactrypta_c + $M_coa_c + $M_h_c; Cytosol*(AANAT_E_T*AANAT_Trypta_kcat_B*scaling*M_trypta_c*AANAT_Km_Srtn/(AANAT_Km_trypta*AANAT_Km_Srtn + AANAT_Km_trypta*M_srtn_c + AANAT_Km_Srtn*M_trypta_c));
+  R01814_Tph2: $M_thbpt + M_trp_DASH_L_c + $M_o2_c => M_5htrp_c + $M_dhbpt_c + $M_h2o_c; Cytosol*(R01814_Tph2_kcat*R01814_Tph2_E_T*M_trp_DASH_L_c*M_o2_c*M_thbpt*scaling/(R01814_Tph2_Ka*R01814_Tph2_Kb + R01814_Tph2_Kb*M_trp_DASH_L_c + R01814_Tph2_Ka*M_o2_c + M_trp_DASH_L_c*M_o2_c));
+  TRPtrans_Slc7a8: $TRP_ex -> M_trp_DASH_L_c; Cytosol*(scaling*(Transporter_E_T_Slc7a8*Transporter_kcat_Trp*TRP_ex/Transporter_Km_Trp_Slc7a8 - Transporter_E_T_Slc7a8*Transporter_kcat_Trp*M_trp_DASH_L_c/Transporter_Km_Trp_Slc7a8)/(1 + TRP_ex/Transporter_Km_Trp_Slc7a8 + M_Lkynr_ex/Transporter_Km_Lkynr + M_trp_DASH_L_c/Transporter_Km_Trp_Slc7a8 + M_Lkynr_c/Transporter_Km_Lkynr));
+  Lkynr_trans_Slc7a5: M_Lkynr_c -> $M_Lkynr_ex; Cytosol*(scaling*(Transporter_E_T_Slc7a5*Transporter_kcat_Lkynr*M_Lkynr_c/Transporter_Km_Lkynr - Transporter_E_T_Slc7a5*Transporter_kcat_Lkynr*M_Lkynr_ex/Transporter_Km_Lkynr)/(1 + M_Lkynr_c/Transporter_Km_Lkynr + M_trp_DASH_L_c/Transporter_Km_Trp_Slc7a5 + M_Lkynr_ex/Transporter_Km_Lkynr + TRP_ex/Transporter_Km_Trp_Slc7a5));
+  Lkynr_trans_Slc7a8: M_Lkynr_c -> $M_Lkynr_ex; Cytosol*(scaling*(Transporter_E_T_Slc7a8*Transporter_kcat_Lkynr*M_Lkynr_c/Transporter_Km_Lkynr - Transporter_E_T_Slc7a8*Transporter_kcat_Lkynr*M_Lkynr_ex/Transporter_Km_Lkynr)/(1 + M_Lkynr_c/Transporter_Km_Lkynr + M_trp_DASH_L_c/Transporter_Km_Trp_Slc7a8 + M_Lkynr_ex/Transporter_Km_Lkynr + TRP_ex/Transporter_Km_Trp_Slc7a8));
+
+  // Species initializations:
+  M_3hanthrn_c = 3.29767682642125e-06;
+  M_5hoxnfkyn_c = 2.3285262897484e-10;
+  M_5htrp_c = 9.86485434437397e-07;
+  M_5hxkyn_c = 0;
+  M_Lfmkynr_c = 2.18400152663056e-05;
+  M_Lkynr_c = 0.00263243682881056;
+  M_ahcys_c = 1;
+  M_akg_c = 0.9999999518;
+  M_ala_DASH_L_c = 1;
+  M_amet_c = 0.9999999518;
+  M_anth_c = 0;
+  M_cmusa_c = 1.12181722190904e-05;
+  M_dhbpt_c = 1;
+  M_for_c = 0;
+  M_glu_DASH_L_c = 0;
+  M_hLkynr_c = 1.1966020248522e-05;
+  M_id3acald_c = 0;
+  M_indpyr_c = 0;
+  M_nmtrpta_c = 2.5994745417821e-09;
+  M_quln_c = 1.78449610733141e-15;
+  M_srtn_c = 7.76306594979262e-08;
+  M_thbpt = 1;
+  M_trna_trp_c = 1e-05;
+  M_trp_DASH_L_c = 0.000120064386474403;
+  M_trp_L_trna_c = 0;
+  M_trypta_c = 3.59090204143853e-09;
+  M_amp_c = 0.999999951844375;
+  M_atp_c = 0.999999951844375;
+  M_co2_c = 0.999999951844375;
+  M_h2o2_c = 0;
+  M_h2o_c = 1;
+  M_h_c = 1;
+  M_nadp_c = 0;
+  M_nadph_c = 0.03;
+  M_nh4_c = 0;
+  M_o2_c = 1;
+  M_o2s_c = 0;
+  M_ppi_c = 0;
+  M_Cinnavalininate_c = 1;
+  M_kynate_c = 1;
+  TRP_ex = 0.005;
+  M_nicrnt_c = 9.50021481464022e-16;
+  M_prpp_c = 1;
+  M_nformanth_c = 7.14152660211118e-09;
+  M_dnad_c = 0;
+  M_am6sa_c = 1;
+  M_5hoxindact_c = 1;
+  M_Nacsertn_c = 0;
+  M_accoa_c = 0.999999951844375;
+  M_coa_c = 1;
+  M_Xanthurenate = 0;
+  M_f5hoxkyn_c = 0;
+  M_nndmtrpta_c = 0;
+  M_nmsrtn_c = 0;
+  M_Nactrypta_c = 0;
+  M_Lkynr_ex = 0;
+
+  // Compartment initializations:
+  Cytosol = 1;
+
+  // Variable initializations:
+  scaling = 1;
+  AADAT_E_T_kat1 = 9455.1357421875;
+  AADAT_E_T_kat2 = 7744.3154296875;
+  AADAT_E_T_kat3 = 15588.2099609375;
+  AADAT_Km_hLkynr = 3.8;
+  AADAT_Km_Lkynr = 4.7;
+  AANAT_E_T = 2770.9680175781;
+  AANAT_Km_Srtn = 1.35;
+  AANAT_Km_trypta = 0.88;
+  AFMID_E_T = 15820.2158203125;
+  AFMID_Km_5hoxnfky = 0.4;
+  AFMID_Km_Lfmkynr = 0.05;
+  AFMID_Km_nformanth = 0.211;
+  DDC_E_T = 36074.9140625;
+  DDC_Km_5htrp = 0.049;
+  DDC_Km_trp_DASH_L = 10;
+  IDO_E_T = 453.4833679199;
+  IDO_Km_trp_DASH_L = 0.045;
+  IDO_Km_5htrp = 0.02;
+  IDO_Km_srtn = 0.1;
+  IMNT_E_T = 4186.5874023438;
+  IMNT_Km_srtn = 1.38;
+  IMNT_Km_trypta = 0.27;
+  IMNT_Km_nmtrpta = 0.086;
+  KYNU_Km_hLkynr = 0.028;
+  Transporter_E_T_Slc7a8 = 2226.3728027344;
+  KYNU_E_T = 56601.7578125;
+  KYNU_Km_Lfmkynr = 2.2;
+  KYNU_Km_Lkynr = 0.495;
+  Transporter_Km_Lkynr = 0.032;
+  Transporter_Km_Trp_Slc7a8 = 0.0573;
+  Transporter_E_T_Slc7a5 = 1961.5135498047;
+  Transporter_Km_Trp_Slc7a5 = 0.019;
+  MAOA_E_T = 137204.8125;
+  MAOB_E_T = 294114.875;
+  MAO_Km_srtn = 0.43;
+  MAO_Km_trypta = 0.033;
+  IDO_Km_O2 = 0.042;
+  AADAT_kcat_hLkynr = 1.7;
+  AADAT_kcat_Lkynr = 9.76;
+  Transporter_kcat_Trp = 1.3;
+  Transporter_kcat_Lkynr = 1.3;
+  R00677_E_T = 2046.74;
+  R00677_Ka = 6.5;
+  R00677_Kb = 1.2;
+  R00677_kcat = 1;
+  R00678_Tdo_E_T = 943912;
+  R00678_Tdo_Ka = 0.222;
+  R00678_Tdo_Kb = 0.037;
+  R00678_Tdo_kcat = 1.4;
+  R00685_kcat_B = 0.38;
+  R00987_kcat_A = 0.23;
+  R01814_Tph1_E_T = 503.141;
+  R01814_Tph1_Ka = 0.0228;
+  R01814_Tph1_Kb = 0.109;
+  R01814_Tph1_kcat = 0.57;
+  R01959_kcat_A = 100;
+  R01960_E_T = 9766.18;
+  R01960_Ka = 0.1;
+  R01960_Kb = 0.071;
+  R01960_Kc = 0.153;
+  R01960_kcat = 2.2;
+  R02174_kcat_A = 0.4;
+  R02665_E_T = 10308.4;
+  R02665_Ka = 0.016;
+  R02665_Kb = 0.615;
+  R02665_kcat = 64;
+  R02668_kcat_A = 3.5;
+  R02701_kcat_B = 2;
+  R02702_kcat = 0.043;
+  R03664_E_T = 15961.5;
+  R03664_Ka = 0.0074;
+  R03664_Kb = 0.0011;
+  R03664_kcat = 1.1;
+  R04911_kcat_A = 100;
+  quin_form_k1 = 0.00025;
+  R02173_Maoa_kcat_B = 3.5;
+  R02670_e1 = 2;
+  R02670_e2 = 4;
+  R02670_k1 = 5.6667e-05;
+  R00678_Indo_kcat = 1.65;
+  R03348_E_T = 138709;
+  R03348_Ka = 0.022;
+  R03348_Kb = 0.023;
+  R03348_kcat = 0.255;
+  R03936_kcat_A = 0.013;
+  R00988_kcat_A = 13.57;
+  R03005_E_T = 4658.65;
+  R03005_Km = 0.0677;
+  R03005_kcat = 42.9;
+  R04323_E_T = 48858.2;
+  R04323_Km = 0.0065;
+  R04323_kcat = 1;
+  R02908_Maoa_kcat_B = 18.6;
+  R02911_kcat_B = 25.9;
+  R02909_kcat = 0.002;
+  R02174_metTrypta_kcat_A = 0.176;
+  R02910_kcat_A = 0.044;
+  R02908_Maob_kcat_B = 18.6;
+  R02173_Maob_kcat_B = 3.5;
+  AANAT_Trypta_kcat_B = 25.9;
+  R01814_Tph2_E_T = 235.128;
+  R01814_Tph2_Ka = 0.0403;
+  R01814_Tph2_Kb = 0.273;
+  R01814_Tph2_kcat = 0.18;
+
+  // Other declarations:
+  const Cytosol, scaling, AADAT_E_T_kat1, AADAT_E_T_kat2, AADAT_E_T_kat3;
+  const AADAT_Km_hLkynr, AADAT_Km_Lkynr, AANAT_E_T, AANAT_Km_Srtn, AANAT_Km_trypta;
+  const AFMID_E_T, AFMID_Km_5hoxnfky, AFMID_Km_Lfmkynr, AFMID_Km_nformanth;
+  const DDC_E_T, DDC_Km_5htrp, DDC_Km_trp_DASH_L, IDO_E_T, IDO_Km_trp_DASH_L;
+  const IDO_Km_5htrp, IDO_Km_srtn, IMNT_E_T, IMNT_Km_srtn, IMNT_Km_trypta;
+  const IMNT_Km_nmtrpta, KYNU_Km_hLkynr, Transporter_E_T_Slc7a8, KYNU_E_T;
+  const KYNU_Km_Lfmkynr, KYNU_Km_Lkynr, Transporter_Km_Lkynr, Transporter_Km_Trp_Slc7a8;
+  const Transporter_E_T_Slc7a5, Transporter_Km_Trp_Slc7a5, MAOA_E_T, MAOB_E_T;
+  const MAO_Km_srtn, MAO_Km_trypta, IDO_Km_O2, AADAT_kcat_hLkynr, AADAT_kcat_Lkynr;
+  const Transporter_kcat_Trp, Transporter_kcat_Lkynr;
+
+  // Unit definitions:
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  M_3hanthrn_c is "M_3HAA";
+  M_5hoxnfkyn_c is "M_5HFKyn";
+  M_5htrp_c is "M_5HTrp";
+  M_5hxkyn_c is "M_5HKyn";
+  M_Lfmkynr_c is "M_FKyn";
+  M_Lkynr_c is "M_L-Kyn";
+  M_ahcys_c is "M_AHCys";
+  M_akg_c is "M_Ketoglutarate";
+  M_ala_DASH_L_c is "M_L_ALA";
+  M_amet_c is "M_AMet";
+  M_anth_c is "M_AA";
+  M_cmusa_c is "M_Acms";
+  M_dhbpt_c is "M_Dhbpt";
+  M_for_c is "M_Formate";
+  M_glu_DASH_L_c is "M_LGlu";
+  M_hLkynr_c is "M_3HKyn";
+  M_id3acald_c is "M_IndolAc";
+  M_indpyr_c is "M_IndolP";
+  M_nmtrpta_c is "M_MTrypta";
+  M_quln_c is "M_Quin";
+  M_srtn_c is "M_Serotonin";
+  M_thbpt is "M_Thbpt";
+  M_trna_trp_c is "M_tRNA";
+  M_trp_DASH_L_c is "M_Trp";
+  M_trp_L_trna_c is "M_Trp_tRNA";
+  M_trypta_c is "M_Trypta";
+  M_amp_c is "M_AMP";
+  M_atp_c is "M_ATP";
+  M_co2_c is "M_CO2";
+  M_h2o2_c is "M_H2O2";
+  M_h2o_c is "M_H2O";
+  M_h_c is "M_H";
+  M_nadp_c is "M_NADP";
+  M_nadph_c is "M_NADPH";
+  M_nh4_c is "M_NH4";
+  M_o2_c is "M_O2";
+  M_o2s_c is "M_O2s";
+  M_ppi_c is "M_PPi";
+  M_Cinnavalininate_c is "M_Cin";
+  M_kynate_c is "M_Kyna";
+  TRP_ex is "Trp_ex";
+  M_nicrnt_c is "M_NaMN";
+  M_prpp_c is "M_PRPP";
+  M_nformanth_c is "M_FAA";
+  M_dnad_c is "M_NAAD";
+  M_am6sa_c is "M_Am6sa";
+  M_5hoxindact_c is "M_5HAc";
+  M_Nacsertn_c is "M_NAcSet";
+  M_accoa_c is "M_AcetylCoA";
+  M_coa_c is "M_CoA";
+  M_Xanthurenate is "M_Xanth";
+  M_f5hoxkyn_c is "M_F5HKyn";
+  M_nndmtrpta_c is "M_MMTrypta";
+  M_nmsrtn_c is "M_NMSer";
+  M_Nactrypta_c is "M_Nactrypta";
+  M_Lkynr_ex is "M_LKyn_ex";
+  AADAT_E_T_kat1 is "KAT1_E_T";
+  AADAT_E_T_kat2 is "KAT2_E_T";
+  AADAT_E_T_kat3 is "KAT3_E_T";
+  AADAT_Km_hLkynr is "KAT_Km_3HKyn";
+  AADAT_Km_Lkynr is "KAT_Km_L-kyn";
+  AANAT_Km_Srtn is "AANAT_Km_Serotonin";
+  AANAT_Km_trypta is "AANAT_Km_Trypta";
+  AFMID_Km_5hoxnfky is "AFMID_Km_5HFKyn";
+  AFMID_Km_Lfmkynr is "AFMID_Km_FKyn";
+  AFMID_Km_nformanth is "AFMID_Km_FAA";
+  DDC_Km_trp_DASH_L is "DDC_Km_Trp";
+  IDO_Km_trp_DASH_L is "IDO_Km_Trp";
+  IDO_Km_srtn is "IDO_Km_Serotonin";
+  IMNT_Km_srtn is "IMNT_Km_Serotonin";
+  IMNT_Km_trypta is "IMNT_Km_Trypta";
+  IMNT_Km_nmtrpta is "IMNT_Km_MTrypta";
+  KYNU_Km_hLkynr is "KYNU_Km_3HKyn";
+  KYNU_Km_Lfmkynr is "KYNU_Km_FKyn";
+  KYNU_Km_Lkynr is "KYNU_Km_L-kyn";
+  Transporter_Km_Lkynr is "Transporter_Km_L-kyn";
+  MAO_Km_srtn is "MAO_Km_Serotonin";
+  MAO_Km_trypta is "MAO_Km_Trypta";
+  AADAT_kcat_hLkynr is "KAT_kcat_3HKyn";
+  AADAT_kcat_Lkynr is "KAT_kcat_L-kyn";
+  Transporter_kcat_Lkynr is "Transporter_kcat_L-kyn";
+  R00677 is "IL4I1";
+  R00678_Tdo is "TDO";
+  R00685 is "DDC_Trypta";
+  R00987 is "KYNU_L-Kyn";
+  R01814_Tph1 is "TPH1";
+  R01956_Kat1 is "KAT1_L-Kyn";
+  R01959 is "AFMID_FKyn";
+  R01960 is "KMO";
+  R02174 is "INMT_Trypta";
+  R02665 is "HAAO";
+  R02668 is "KYNU_3HKyn";
+  R02701 is "DDC_5HTrp";
+  R02702 is "IDO_5HTrp";
+  R03664 is "WARS";
+  R04911 is "AFMID_5HFKyn";
+  quin_form is "Quinolic Acid formation (spontaneous)";
+  R02173_Maoa is "MAOA_Trypta";
+  R02670 is "Cinnavalinate formation";
+  TRPtrans_Slc7a5 is "Tryptophan_Transport Slc7a5";
+  R00678_Indo is "IDO";
+  R03348 is "QPRT";
+  R03936 is "KYNU_FKyn";
+  R00988 is "AFMID_FAA";
+  R03005 is "NMNAT1";
+  R04323 is "ACMSD";
+  R02908_Maoa is "MAOA_Serotonin";
+  R02911 is "AANAT_Serotonin";
+  R04171_Kat1 is "KAT1_3HKyn";
+  R02909 is "IDO_Serotonin";
+  R02174_metTrypta is "INMT_MTrypta";
+  R02910 is "INMT_Serotonin";
+  R01956_Kat2 is "KAT2_3HKyn";
+  R01956_Kat3 is "KAT3_3HKyn";
+  R04171_Kat2 is "KAT2_L-Kyn";
+  R04171_Kat3 is "KAT3_L-Kyn";
+  R02908_Maob is "MAOB_Serotonin";
+  R02173_Maob is "MAOB_Trypta";
+  R01814_Tph2 is "TPH2";
+  TRPtrans_Slc7a8 is "Tryptophan_Transport Slc7a8";
+  Lkynr_trans_Slc7a5 is "Lkynr_Transporter_Slc7a5";
+  Lkynr_trans_Slc7a8 is "Lkynr_Transporter_Slc7a8";
+
+  // CV terms:
+  M_3hanthrn_c identity "http://identifiers.org/chebi/CHEBI:15793"
+  M_5hoxnfkyn_c identity "http://identifiers.org/chebi/CHEBI:2065"
+  M_5htrp_c identity "http://identifiers.org/chebi/CHEBI:28171"
+  M_5hxkyn_c identity "http://identifiers.org/chebi/CHEBI:36408"
+  M_Lfmkynr_c identity "http://identifiers.org/chebi/CHEBI:18377"
+  M_Lkynr_c identity "http://identifiers.org/chebi/CHEBI:16946"
+  M_Lkynr_c identity "http://identifiers.org/kegg.compound/C00328"
+  M_ahcys_c identity "http://identifiers.org/chebi/CHEBI:16680"
+  M_akg_c identity "http://identifiers.org/chebi/CHEBI:16810"
+  M_ala_DASH_L_c identity "http://identifiers.org/chebi/CHEBI:16977"
+  M_amet_c identity "http://identifiers.org/chebi/CHEBI:15414"
+  M_anth_c identity "http://identifiers.org/chebi/CHEBI:30754"
+  M_cmusa_c identity "http://identifiers.org/chebi/CHEBI:995"
+  M_dhbpt_c identity "http://identifiers.org/chebi/CHEBI:43120",
+                     "http://identifiers.org/kegg.compound/C00268"
+  M_for_c identity "http://identifiers.org/chebi/CHEBI:15740"
+  M_glu_DASH_L_c identity "http://identifiers.org/chebi/CHEBI:29985"
+  M_hLkynr_c identity "http://identifiers.org/chebi/CHEBI:36408"
+  M_id3acald_c identity "http://identifiers.org/chebi/CHEBI:28311"
+  M_indpyr_c identity "http://identifiers.org/chebi/CHEBI:29750"
+  M_nmtrpta_c identity "http://identifiers.org/chebi/CHEBI:28136"
+  M_quln_c identity "http://identifiers.org/chebi/CHEBI:16675"
+  M_srtn_c identity "http://identifiers.org/chebi/CHEBI:28790"
+  M_thbpt identity "http://identifiers.org/chebi/CHEBI:15372"
+  M_trna_trp_c identity "http://identifiers.org/chebi/CHEBI:17843"
+  M_trp_DASH_L_c identity "http://identifiers.org/chebi/CHEBI:27897"
+  M_trp_L_trna_c identity "http://identifiers.org/chebi/CHEBI:29181"
+  M_trypta_c identity "http://identifiers.org/chebi/CHEBI:16765"
+  M_amp_c identity "http://identifiers.org/chebi/CHEBI:16027"
+  M_atp_c identity "http://identifiers.org/chebi/CHEBI:15422"
+  M_co2_c identity "http://identifiers.org/chebi/CHEBI:16526"
+  M_h2o2_c identity "http://identifiers.org/chebi/CHEBI:16240"
+  M_h2o_c identity "http://identifiers.org/chebi/CHEBI:15377"
+  M_h_c identity "http://identifiers.org/chebi/CHEBI:29235"
+  M_nadp_c identity "http://identifiers.org/chebi/CHEBI:18009"
+  M_nadph_c identity "http://identifiers.org/chebi/CHEBI:16474"
+  M_nh4_c identity "http://identifiers.org/chebi/CHEBI:28938"
+  M_o2_c identity "http://identifiers.org/chebi/CHEBI:15379"
+  M_o2s_c identity "http://identifiers.org/chebi/CHEBI:18422"
+  M_ppi_c identity "http://identifiers.org/chebi/CHEBI:18361"
+  M_Cinnavalininate_c identity "http://identifiers.org/chebi/CHEBI:3715"
+  M_kynate_c identity "http://identifiers.org/chebi/CHEBI:18344"
+  TRP_ex identity "http://identifiers.org/chebi/CHEBI:27897"
+  M_nicrnt_c identity "http://identifiers.org/chebi/CHEBI:15763"
+  M_prpp_c identity "http://identifiers.org/chebi/CHEBI:17111"
+  M_nformanth_c identity "http://identifiers.org/chebi/CHEBI:36575"
+  M_dnad_c identity "http://identifiers.org/chebi/CHEBI:18304"
+  M_am6sa_c identity "http://identifiers.org/chebi/CHEBI:15745"
+  M_5hoxindact_c identity "http://identifiers.org/chebi/CHEBI:50157"
+  M_Nacsertn_c identity "http://identifiers.org/chebi/CHEBI:28136"
+  M_accoa_c identity "http://identifiers.org/chebi/CHEBI:15351"
+  M_coa_c identity "http://identifiers.org/chebi/CHEBI:15346"
+  M_Xanthurenate identity "http://identifiers.org/chebi/CHEBI:10072"
+  M_f5hoxkyn_c identity "http://identifiers.org/chebi/CHEBI:28736"
+  M_nndmtrpta_c identity "http://identifiers.org/chebi/CHEBI:28969"
+  M_nmsrtn_c identity "http://identifiers.org/chebi/CHEBI:48294"
+  M_Nactrypta_c identity "http://identifiers.org/chebi/CHEBI:55469"
+  M_Lkynr_ex identity "http://identifiers.org/chebi/CHEBI:16946"
+  AADAT_Km_hLkynr description "http://identifiers.org/pubmed/18620547"
+  AADAT_Km_Lkynr description "http://identifiers.org/pubmed/18620547"
+  AADAT_kcat_hLkynr description "http://identifiers.org/pubmed/18620547"
+  AADAT_kcat_Lkynr description "http://identifiers.org/pubmed/18620547"
+  R00677 description "http://identifiers.org/pubmed/15383589"
+  R00677 encoder "http://identifiers.org/ncbigene/259307"
+  R00677 identity "http://identifiers.org/ec-code/1.4.3.2"
+  R00677 identity "http://identifiers.org/kegg.reaction/R00677"
+  R00678_Tdo description "http://identifiers.org/pubmed/18370401"
+  R00678_Tdo encoder "http://identifiers.org/ncbigene/6999"
+  R00678_Tdo identity "http://identifiers.org/ec-code/1.13.11.11"
+  R00678_Tdo identity "http://identifiers.org/kegg.reaction/R00678"
+  R00685 description "http://identifiers.org/pubmed/4991409"
+  R00685 encoder "http://identifiers.org/ncbigene/1644"
+  R00685 identity "http://identifiers.org/ec-code/4.1.1.28"
+  R00685 identity "http://identifiers.org/kegg.reaction/R00685"
+  R00987 description "http://identifiers.org/pubmed/19143568"
+  R00987 description "http://identifiers.org/pubmed/457635"
+  R00987 identity "http://identifiers.org/kegg.reaction/R00987"
+  R00987 description "http://identifiers.org/pubmed/17300176"
+  R00987 encoder "http://identifiers.org/ncbigene/8942"
+  R00987 identity "http://identifiers.org/ec-code/3.7.1.3"
+  R01814_Tph1 description "http://identifiers.org/pubmed/15663479"
+  R01814_Tph1 identity "http://identifiers.org/ec-code/1.14.16.4"
+  R01814_Tph1 description "http://identifiers.org/pubmed/19816759"
+  R01814_Tph1 encoder "http://identifiers.org/ncbigene/7166"
+  R01814_Tph1 identity "http://identifiers.org/kegg.reaction/R01814"
+  R01956_Kat1 description "http://identifiers.org/pubmed/18620547"
+  R01956_Kat1 encoder "http://identifiers.org/ncbigene/883"
+  R01956_Kat1 identity "http://identifiers.org/kegg.reaction/R01956"
+  R01956_Kat1 identity "http://identifiers.org/ec-code/2.6.1.7"
+  R01959 description "http://identifiers.org/pubmed/4190298"
+  R01959 container "urn:miriam:brenda:209258"
+  R01959 encoder "http://identifiers.org/ncbigene/125061"
+  R01959 identity "http://identifiers.org/kegg.reaction/R01959"
+  R01959 identity "http://identifiers.org/ec-code/3.5.1.9"
+  R01960 description "http://identifiers.org/pubmed/16973376"
+  R01960 identity "http://identifiers.org/ec-code/1.14.13.9"
+  R01960 description "urn:miriam:pubmed:10672018+"
+  R01960 encoder "http://identifiers.org/ncbigene/8564"
+  R01960 identity "http://identifiers.org/kegg.reaction/R01960"
+  R02174 description "http://identifiers.org/pubmed/3949799"
+  R02174 identity "http://identifiers.org/ec-code/2.1.1.49"
+  R02174 description "http://identifiers.org/pubmed/9852119"
+  R02174 container "urn:miriam:brenda:441354"
+  R02174 encoder "http://identifiers.org/ncbigene/11185"
+  R02174 identity "http://identifiers.org/kegg.reaction/R02174"
+  R02665 description "urn:miriam:pubmed:3112306+"
+  R02665 identity "http://identifiers.org/ec-code/1.13.11.6"
+  R02665 description "http://identifiers.org/pubmed/12672479"
+  R02665 container "urn:miriam:brenda:439367"
+  R02665 encoder "http://identifiers.org/ncbigene/23498"
+  R02665 identity "http://identifiers.org/kegg.reaction/R02665"
+  R02668 description "http://identifiers.org/pubmed/19143568"
+  R02668 encoder "http://identifiers.org/ncbigene/8942"
+  R02668 identity "http://identifiers.org/kegg.reaction/R02668"
+  R02668 identity "http://identifiers.org/ec-code/3.7.1.3"
+  R02701 description "http://identifiers.org/pubmed/18547057"
+  R02701 encoder "http://identifiers.org/ncbigene/1644"
+  R02701 identity "http://identifiers.org/ec-code/4.1.1.28"
+  R02701 identity "http://identifiers.org/kegg.reaction/R02701"
+  R02702 description "http://identifiers.org/pubmed/26687"
+  R02702 identity "http://identifiers.org/kegg.reaction/R02702"
+  R02702 container "urn:miriam:brenda:685239"
+  R02702 description "http://identifiers.org/pubmed/19737010"
+  R02702 encoder "http://identifiers.org/ncbigene/3620"
+  R02702 identity "http://identifiers.org/ec-code/1.13.11.52"
+  R03664 description "http://identifiers.org/pubmed/11676605"
+  R03664 container "urn:miriam:brenda:653740"
+  R03664 encoder "http://identifiers.org/ncbigene/7453"
+  R03664 identity "http://identifiers.org/kegg.reaction/R03664"
+  R03664 identity "http://identifiers.org/ec-code/6.1.1.2"
+  R04911 description "http://identifiers.org/pubmed/4135014"
+  R04911 container "urn:miriam:brenda:209255"
+  R04911 encoder "http://identifiers.org/ncbigene/125061"
+  R04911 identity "http://identifiers.org/ec-code/3.5.1.9"
+  R04911 identity "http://identifiers.org/kegg.reaction/R04911"
+  quin_form description "http://identifiers.org/pubmed/15656614"
+  R02173_Maoa description "http://identifiers.org/pubmed/11754741"
+  R02173_Maoa encoder "http://identifiers.org/ncbigene/4128"
+  R02173_Maoa identity "http://identifiers.org/kegg.reaction/R02173"
+  R02173_Maoa identity "http://identifiers.org/ec-code/1.4.3.4"
+  R02670 description "http://identifiers.org/pubmed/2949752"
+  R02670 identity "http://identifiers.org/kegg.reaction/R02670"
+  R02670 identity "http://identifiers.org/ec-code/1.11.1.6"
+  TRPtrans_Slc7a5 encoder "http://identifiers.org/ncbigene/8140"
+  TRPtrans_Slc7a5 description "http://identifiers.org/pubmed/2872885"
+  TRPtrans_Slc7a5 identity "http://identifiers.org/uniprot/Q01650"
+  R00678_Indo description "http://identifiers.org/pubmed/26687"
+  R00678_Indo identity "http://identifiers.org/ec-code/1.13.11.52"
+  R00678_Indo encoder "http://identifiers.org/ncbigene/3620"
+  R00678_Indo description "http://identifiers.org/pubmed/19737010"
+  R00678_Indo identity "http://identifiers.org/kegg.reaction/R00678"
+  R03348 description "http://identifiers.org/pubmed/17868694"
+  R03348 container "urn:miriam:brenda:693620"
+  R03348 encoder "http://identifiers.org/ncbigene/23475"
+  R03348 identity "http://identifiers.org/ec-code/2.4.2.19"
+  R03348 identity "http://identifiers.org/kegg.reaction/R03348"
+  R03936 description "http://identifiers.org/pubmed/118164"
+  R03936 encoder "http://identifiers.org/ncbigene/8942"
+  R03936 identity "http://identifiers.org/kegg.reaction/R03936"
+  R03936 identity "http://identifiers.org/ec-code/3.7.1.3"
+  R00988 description "http://identifiers.org/pubmed/4190298"
+  R00988 encoder "http://identifiers.org/ncbigene/125061"
+  R00988 identity "http://identifiers.org/ec-code/3.5.1.9"
+  R00988 identity "http://identifiers.org/kegg.reaction/R00988"
+  R03005 description "http://identifiers.org/pubmed/17402747"
+  R03005 encoder "http://identifiers.org/ncbigene/64802"
+  R03005 identity "http://identifiers.org/ec-code/2.7.7.1"
+  R03005 identity "http://identifiers.org/kegg.reaction/R03005"
+  R04323 description "http://identifiers.org/pubmed/17288562"
+  R04323 encoder "http://identifiers.org/ncbigene/130013"
+  R04323 container "urn:miriam:brenda:679800"
+  R04323 identity "http://identifiers.org/ec-code/4.1.1.45"
+  R04323 identity "http://identifiers.org/kegg.reaction/R04323"
+  R02908_Maoa description "http://identifiers.org/pubmed/15848762"
+  R02908_Maoa encoder "http://identifiers.org/ncbigene/4128"
+  R02908_Maoa identity "http://identifiers.org/ec-code/1.4.3.4"
+  R02908_Maoa identity "http://identifiers.org/kegg.reaction/R02908"
+  R02911 description "http://identifiers.org/pubmed/15477086"
+  R02911 encoder "http://identifiers.org/ncbigene/15"
+  R02911 identity "http://identifiers.org/kegg.reaction/R02911"
+  R02911 identity "http://identifiers.org/ec-code/2.3.1.87"
+  R04171_Kat1 description "http://identifiers.org/pubmed/18620547"
+  R04171_Kat1 encoder "http://identifiers.org/ncbigene/883"
+  R04171_Kat1 identity "http://identifiers.org/ec-code/2.6.1.7"
+  R04171_Kat1 identity "http://identifiers.org/kegg.reaction/R04171"
+  R02909 description "http://identifiers.org/pubmed/19737010"
+  R02909 identity "http://identifiers.org/ec-code/1.13.11.52"
+  R02909 description "http://identifiers.org/pubmed/26687"
+  R02909 encoder "http://identifiers.org/ncbigene/3620"
+  R02909 identity "http://identifiers.org/kegg.reaction/R02909"
+  R02174_metTrypta encoder "http://identifiers.org/ncbigene/11185"
+  R02174_metTrypta description "http://identifiers.org/pubmed/9852119"
+  R02174_metTrypta identity "http://identifiers.org/ec-code/2.1.1.49"
+  R02910 encoder "http://identifiers.org/ncbigene/11185"
+  R02910 description "http://identifiers.org/pubmed/9852119"
+  R02910 identity "http://identifiers.org/kegg.reaction/R02910"
+  R02910 identity "http://identifiers.org/ec-code/2.1.1.49"
+  R01956_Kat2 encoder "http://identifiers.org/ncbigene/51166"
+  R01956_Kat2 description "http://identifiers.org/pubmed/18620547"
+  R01956_Kat2 identity "http://identifiers.org/ec-code/2.6.1.7"
+  R01956_Kat2 identity "http://identifiers.org/kegg.reaction/R04171"
+  R01956_Kat3 description "http://identifiers.org/pubmed/18620547"
+  R01956_Kat3 encoder "http://identifiers.org/ncbigene/56267"
+  R01956_Kat3 identity "http://identifiers.org/kegg.reaction/R04171"
+  R01956_Kat3 identity "http://identifiers.org/ec-code/2.6.1.7"
+  R04171_Kat2 description "http://identifiers.org/pubmed/18620547"
+  R04171_Kat2 encoder "http://identifiers.org/ncbigene/51166"
+  R04171_Kat2 identity "http://identifiers.org/kegg.reaction/R01956"
+  R04171_Kat2 identity "http://identifiers.org/ec-code/2.6.1.7"
+  R04171_Kat3 description "http://identifiers.org/pubmed/18620547"
+  R04171_Kat3 encoder "http://identifiers.org/ncbigene/56267"
+  R04171_Kat3 identity "http://identifiers.org/kegg.reaction/R01956"
+  R04171_Kat3 identity "http://identifiers.org/ec-code/2.6.1.7"
+  R02908_Maob description "http://identifiers.org/pubmed/15848762"
+  R02908_Maob encoder "http://identifiers.org/ncbigene/4129"
+  R02908_Maob identity "http://identifiers.org/kegg.reaction/R02908"
+  R02908_Maob identity "http://identifiers.org/ec-code/1.4.3.4"
+  R02173_Maob description "http://identifiers.org/pubmed/11754741"
+  R02173_Maob encoder "http://identifiers.org/ncbigene/4129"
+  R02173_Maob identity "http://identifiers.org/ec-code/1.4.3.4"
+  R02173_Maob identity "http://identifiers.org/kegg.reaction/R02173"
+  AANAT_Trypta description "http://identifiers.org/pubmed/15477086"
+  AANAT_Trypta description "http://identifiers.org/pubmed/18771288"
+  AANAT_Trypta identity "http://identifiers.org/ec-code/2.3.1.87"
+  AANAT_Trypta encoder "http://identifiers.org/ncbigene/15"
+  R01814_Tph2 description "http://identifiers.org/pubmed/15663479"
+  R01814_Tph2 identity "http://identifiers.org/kegg.reaction/R01814"
+  R01814_Tph2 description "http://identifiers.org/pubmed/19816759"
+  R01814_Tph2 encoder "http://identifiers.org/ncbigene/121278"
+  R01814_Tph2 identity "http://identifiers.org/ec-code/1.14.16.4"
+  TRPtrans_Slc7a8 description "http://identifiers.org/pubmed/2872885"
+  TRPtrans_Slc7a8 encoder "http://identifiers.org/ncbigene/23428"
+  TRPtrans_Slc7a8 identity "http://identifiers.org/uniprot/Q9UHI5"
+  Lkynr_trans_Slc7a5 identity "http://identifiers.org/ncbigene/8140"
+  Lkynr_trans_Slc7a5 description "http://identifiers.org/pubmed/2723766"
+  Lkynr_trans_Slc7a5 identity "http://identifiers.org/uniprot/Q01650"
+  Lkynr_trans_Slc7a5 description "http://identifiers.org/pubmed/2872885"
+  Lkynr_trans_Slc7a8 identity "http://identifiers.org/uniprot/Q9UHI5"
+  Lkynr_trans_Slc7a8 encoder "http://identifiers.org/ncbigene/23428"
+  Lkynr_trans_Slc7a8 description "http://identifiers.org/pubmed/2723766"
+  Lkynr_trans_Slc7a8 description "http://identifiers.org/pubmed/2872885"
+end
+
+Stavrum2013___Tryptophan_Metabolism_in_Liver is "Stavrum2013 - Tryptophan Metabolism in Liver"
+
+Stavrum2013___Tryptophan_Metabolism_in_Liver model_entity_is "http://identifiers.org/biomodels.db/MODEL1310160000"
+Stavrum2013___Tryptophan_Metabolism_in_Liver model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000602"
+Stavrum2013___Tryptophan_Metabolism_in_Liver description "http://identifiers.org/pubmed/24129579"
+Stavrum2013___Tryptophan_Metabolism_in_Liver taxon "http://identifiers.org/taxonomy/9606"
+Stavrum2013___Tryptophan_Metabolism_in_Liver container "urn:miriam:brenda:BTO%3A0000759"
+Stavrum2013___Tryptophan_Metabolism_in_Liver hypernym "http://identifiers.org/go/GO:0006587",
+                                                      "http://identifiers.org/go/GO:0006568"

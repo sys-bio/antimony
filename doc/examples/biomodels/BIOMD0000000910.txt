@@ -1,0 +1,100 @@
+// Created by libAntimony v2.13.0
+function Function_for_activation_and_transfer_of_cytotoxic_T_lymphocyte_at_the_site_of_tumor(Vl, alpha_L, L, I2)
+  Vl + alpha_L*L*I2;
+end
+
+Function_for_activation_and_transfer_of_cytotoxic_T_lymphocyte_at_the_site_of_tumor is "Function for activation and transfer of cytotoxic T lymphocyte at the site of tumor"
+
+function Function_for_secretion_of_interleukin_2(alpha_I2, T, K_T)
+  alpha_I2*T/(T + K_T);
+end
+
+Function_for_secretion_of_interleukin_2 is "Function for secretion of interleukin 2"
+
+function Function_for_removal_of_interleukin2_from_site_of_tumor(alpha_bar_L, L, I2, gama_T, T)
+  alpha_bar_L*L*I2 + gama_T*T*I2;
+end
+
+Function_for_removal_of_interleukin2_from_site_of_tumor is "Function for removal of interleukin2 from site of tumor"
+
+function Function_for_Deactivation_and_removal_of_cytotoxic_T_lymphocyte_from_the_site_of_action(beta_L, L)
+  beta_L*L;
+end
+
+Function_for_Deactivation_and_removal_of_cytotoxic_T_lymphocyte_from_the_site_of_action is "Function for Deactivation and removal of cytotoxic T lymphocyte from the site of action"
+
+function Function_for_formation_and_removal_of_tumor(alpha_T, T, beta_T, gama_prime_L, L)
+  alpha_T*T*ln(beta_T*T/alpha_T) + gama_prime_L*L*T;
+end
+
+Function_for_formation_and_removal_of_tumor is "Function for formation and removal of tumor"
+
+
+model *Isaeva2008___Modelling_of_Anti_Tumour_Immune_Response_Immunocorrective_Effect_of_Weak_Centimetre_Electromagnetic_Waves()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species L in compartment_, T in compartment_, I2 in compartment_;
+
+  // Reactions:
+  Activation_and_transfer_of_cytotoxic_T_lymphocyte_at_the_site_of_tumor:  => L; compartment_*Function_for_activation_and_transfer_of_cytotoxic_T_lymphocyte_at_the_site_of_tumor(VL, alpha_L, L, I2);
+  Deactivation_and_removal_of_cytotoxic_T_lymphocyte_from_the_site_of_action: L => ; compartment_*Function_for_Deactivation_and_removal_of_cytotoxic_T_lymphocyte_from_the_site_of_action(beta_L, L);
+  Formation_and_removal_of_tumor: T => ; compartment_*Function_for_formation_and_removal_of_tumor(alpha_T, T, beta_T, gama_prime_L, L);
+  Secretion_of_interleukin_2:  => I2; compartment_*Function_for_secretion_of_interleukin_2(alpha_I2, T, K_T);
+  Removal_of_interleukin_2_from_site_of_tumor: I2 => ; compartment_*Function_for_removal_of_interleukin2_from_site_of_tumor(alpha_bar_L, L, I2, gama_T, T);
+
+  // Species initializations:
+  L = 240000;
+  T = 200000;
+  I2 = 36000000;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  alpha_T = 0.22;
+  beta_T = 8.4e-08;
+  gama_prime_L = 4e-07;
+  VL = 79000;
+  alpha_L = 9.9e-09;
+  beta_L = 0.33;
+  alpha_I2 = 12500000;
+  alpha_bar_L = 6.6e-08;
+  gama_T = 6.6e-07;
+  K_T = 52000;
+
+  // Other declarations:
+  const compartment_, alpha_T, beta_T, gama_prime_L, VL, alpha_L, beta_L;
+  const alpha_I2, alpha_bar_L, gama_T, K_T;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  Activation_and_transfer_of_cytotoxic_T_lymphocyte_at_the_site_of_tumor is "Activation and transfer of cytotoxic T lymphocyte at the site of tumor";
+  Deactivation_and_removal_of_cytotoxic_T_lymphocyte_from_the_site_of_action is "Deactivation and removal of cytotoxic T lymphocyte from the site of action";
+  Formation_and_removal_of_tumor is "Formation and removal of tumor";
+  Secretion_of_interleukin_2 is "Secretion of interleukin 2";
+  Removal_of_interleukin_2_from_site_of_tumor is "Removal of interleukin 2 from site of tumor";
+
+  // CV terms:
+  L property "http://identifiers.org/ncit/C12543"
+  T instance "http://identifiers.org/ncit/C12922"
+  I2 class "http://identifiers.org/uniprot/P60568"
+  Activation_and_transfer_of_cytotoxic_T_lymphocyte_at_the_site_of_tumor hypernym "http://identifiers.org/go/GO:2000404"
+  Deactivation_and_removal_of_cytotoxic_T_lymphocyte_from_the_site_of_action hypernym "http://identifiers.org/go/GO:2000404"
+  Formation_and_removal_of_tumor hypernym "http://identifiers.org/go/GO:0002357"
+  Secretion_of_interleukin_2 hypernym "http://identifiers.org/go/GO:0072631"
+  Removal_of_interleukin_2_from_site_of_tumor hypernym "http://identifiers.org/go/GO:1900040"
+end
+
+Isaeva2008___Modelling_of_Anti_Tumour_Immune_Response_Immunocorrective_Effect_of_Weak_Centimetre_Electromagnetic_Waves is "Isaeva2008 - Modelling of Anti-Tumour Immune Response Immunocorrective Effect of Weak Centimetre Electromagnetic Waves"
+
+Isaeva2008___Modelling_of_Anti_Tumour_Immune_Response_Immunocorrective_Effect_of_Weak_Centimetre_Electromagnetic_Waves description "http://identifiers.org/doi/10.1080/17486700802373540"
+Isaeva2008___Modelling_of_Anti_Tumour_Immune_Response_Immunocorrective_Effect_of_Weak_Centimetre_Electromagnetic_Waves model_entity_is "http://identifiers.org/biomodels.db/MODEL2001140001",
+                                                                                                                                       "http://identifiers.org/biomodels.db/BIOMD0000000910"
+Isaeva2008___Modelling_of_Anti_Tumour_Immune_Response_Immunocorrective_Effect_of_Weak_Centimetre_Electromagnetic_Waves hypernym "http://identifiers.org/ncit/C17050"
+Isaeva2008___Modelling_of_Anti_Tumour_Immune_Response_Immunocorrective_Effect_of_Weak_Centimetre_Electromagnetic_Waves taxon "http://identifiers.org/taxonomy/9606"
+Isaeva2008___Modelling_of_Anti_Tumour_Immune_Response_Immunocorrective_Effect_of_Weak_Centimetre_Electromagnetic_Waves property "http://identifiers.org/mamo/MAMO_0000046"

@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *model_0000001()
 
   // Compartments and Species:
@@ -7,15 +7,15 @@ model *model_0000001()
 
   // Assignment Rules:
   ik := Gk*o*(v - vk);
-  Gk := 1.350000e-002*ko^0.59;
-  vk := (R*Temp)/F*ln(ko/ki);
-  a := 5.550000e-002*exp(0.05547153*(v - 12));
-  b := 2.357000e-003*exp(-0.036588*v);
-  aa := 6.550000e-002*exp(0.05547153*(v - 36));
-  bb := 2.935700e-003*exp(-0.02158*v);
-  ai := (0.439*exp(-0.02352*(v + 25))*4.5)/ko;
+  Gk := 1.35e-2*ko^0.59;
+  vk := (R*Temp/F)*ln(ko/ki);
+  a := 5.55e-2*exp(0.05547153*(v - 12));
+  b := 2.357e-3*exp(-0.036588*v);
+  aa := 6.55e-2*exp(0.05547153*(v - 36));
+  bb := 2.9357e-3*exp(-0.02158*v);
+  ai := 0.439*exp(-0.02352*(v + 25))*4.5/ko;
   bi := 0.656*exp(0.000942*v)*(4.5/ko)^0.3;
-  u := (ai*bb*aa)/(aa*bi);
+  u := ai*bb*aa/(aa*bi);
 
   // Reactions:
   reaction_0000001: c3 -> c2; (a*c3 - b*c2)*cell;
@@ -25,7 +25,7 @@ model *model_0000001()
   reaction_0000005: c1 -> i; (aa*c1 - u*i)*cell;
 
   // Events:
-  event_0000001: at time > 50 && time <= 300: v = vtest;
+  event_0000001: at (time > 50) && (time <= 300): v = vtest;
   event_0000002: at time > 300: v = vhold;
 
   // Species initializations:
@@ -83,4 +83,44 @@ model *model_0000001()
   reaction_0000003 is "c1-o transition";
   reaction_0000004 is "o-i transition";
   reaction_0000005 is "c1-i transition";
+
+  // CV terms:
+  cell hypernym "http://identifiers.org/go/GO:0005623"
+  c3 hypernym "http://identifiers.org/interpro/IPR003967",
+              "http://identifiers.org/go/GO:0008076"
+  c2 hypernym "http://identifiers.org/interpro/IPR003967",
+              "http://identifiers.org/go/GO:0008076"
+  c1 hypernym "http://identifiers.org/interpro/IPR003967",
+              "http://identifiers.org/go/GO:0008076"
+  o hypernym "http://identifiers.org/interpro/IPR003967",
+             "http://identifiers.org/go/GO:0008076"
+  i hypernym "http://identifiers.org/interpro/IPR003967",
+             "http://identifiers.org/go/GO:0008076"
+  reaction_0000001 hypernym "http://identifiers.org/go/GO:0015459",
+                            "http://identifiers.org/go/GO:0043266"
+  reaction_0000002 hypernym "http://identifiers.org/go/GO:0015459",
+                            "http://identifiers.org/go/GO:0043266"
+  reaction_0000003 hypernym "http://identifiers.org/go/GO:0015459",
+                            "http://identifiers.org/go/GO:0043266"
+  reaction_0000004 hypernym "http://identifiers.org/go/GO:0015459",
+                            "http://identifiers.org/go/GO:0043266"
+  reaction_0000005 hypernym "http://identifiers.org/go/GO:0043266",
+                            "http://identifiers.org/go/GO:0015459"
 end
+
+model_0000001 is "Clancy2001_Kchannel"
+
+model_0000001 model_entity_is "http://identifiers.org/biomodels.db/MODEL2898180293"
+model_0000001 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000121"
+model_0000001 description "http://identifiers.org/pubmed/11334834"
+model_0000001 origin "http://identifiers.org/pubmed/7514509",
+                     "http://identifiers.org/pubmed/7788872",
+                     "http://identifiers.org/pubmed/10318671",
+                     "http://identifiers.org/pubmed/10448858"
+model_0000001 homolog "http://identifiers.org/omim/152427"
+model_0000001 taxon "http://identifiers.org/taxonomy/10141"
+model_0000001 hypernym "http://identifiers.org/go/GO:0005251",
+                       "http://identifiers.org/go/GO:0043266",
+                       "http://identifiers.org/go/GO:0003015"
+model_0000001 version "http://identifiers.org/doid/DOID:0050434"
+model_0000001 property "http://identifiers.org/mamo/MAMO_0000046"

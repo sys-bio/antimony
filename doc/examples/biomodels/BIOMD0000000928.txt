@@ -1,0 +1,192 @@
+// Created by libAntimony v2.13.0
+function Function_for_R_4(Mbp, compartmentOne)
+  Mbp/compartmentOne;
+end
+
+Function_for_R_4 is "Function for R_4"
+
+function Function_for_R_1(Fdam, compartmentOne)
+  Fdam/compartmentOne;
+end
+
+Function_for_R_1 is "Function for R_1"
+
+function Function_for_R_13(Gamma_p, compartmentOne, solution0)
+  Gamma_p*solution0/compartmentOne;
+end
+
+Function_for_R_13 is "Function for R_13"
+
+function Function_for_R_12(Pfp, compartmentOne, solution1, solution3)
+  (1/(1 + solution1^2))*(Pfp/(1 + solution3^2))*solution3^2/compartmentOne;
+end
+
+Function_for_R_12 is "Function for R_12"
+
+function Function_for_R_6(Gamma_m, compartmentOne, solution2)
+  Gamma_m*solution2/compartmentOne;
+end
+
+Function_for_R_6 is "Function for R_6"
+
+function Function_for_R_3(Gamma_f, compartmentOne, solution3)
+  Gamma_f*solution3/compartmentOne;
+end
+
+Function_for_R_3 is "Function for R_3"
+
+function Function_for_R_7(Aph, App, compartmentOne, solution0)
+  App*(1/(Aph^2 + solution0^2))*solution0^2/compartmentOne;
+end
+
+Function_for_R_7 is "Function for R_7"
+
+function Function_for_R_9(compartmentOne, solution1)
+  solution1/compartmentOne;
+end
+
+Function_for_R_9 is "Function for R_9"
+
+function Function_for_R_10(Pbp, compartmentOne, solution1)
+  Pbp/(1 + solution1^2)/compartmentOne;
+end
+
+Function_for_R_10 is "Function for R_10"
+
+function Function_for_R_8(Afh, Afp, compartmentOne, solution3)
+  Afp*(1/(Afh^2 + solution3^2))*solution3^2/compartmentOne;
+end
+
+Function_for_R_8 is "Function for R_8"
+
+function Function_for_R_11(Ppp, compartmentOne, solution0, solution1)
+  (1/(1 + solution1^2))*(Ppp/(1 + solution0^2))*solution0^2/compartmentOne;
+end
+
+Function_for_R_11 is "Function for R_11"
+
+function Function_for_R_5(Mph, Mpp, compartmentOne, solution0)
+  Mpp*(1/(Mph^2 + solution0^2))*solution0^2/compartmentOne;
+end
+
+Function_for_R_5 is "Function for R_5"
+
+function Function_for_R_2(compartmentOne, solution2)
+  solution2/compartmentOne;
+end
+
+Function_for_R_2 is "Function for R_2"
+
+
+model *Baker2017___The_role_of_cytokines__MMPs_and_fibronectin_fragments_osteoarthritis()
+
+  // Compartments and Species:
+  compartment compartmentOne;
+  species solution0 in compartmentOne, solution1 in compartmentOne, solution2 in compartmentOne;
+  species solution3 in compartmentOne;
+
+  // Reactions:
+  R_1:  => solution3; compartmentOne*Function_for_R_1(Fdam, compartmentOne);
+  R_2: solution2 => solution2 + solution3; compartmentOne*Function_for_R_2(compartmentOne, solution2);
+  R_3: solution3 => ; compartmentOne*Function_for_R_3(Gamma_f, compartmentOne, solution3);
+  R_4:  => solution2; compartmentOne*Function_for_R_4(Mbp, compartmentOne);
+  R_5: solution0 => solution0 + solution2; compartmentOne*Function_for_R_5(Mph, Mpp, compartmentOne, solution0);
+  R_6: solution2 => ; compartmentOne*Function_for_R_6(Gamma_m, compartmentOne, solution2);
+  R_7: solution0 => solution0 + solution1; compartmentOne*Function_for_R_7(Aph, App, compartmentOne, solution0);
+  R_8: solution3 => solution1 + solution3; compartmentOne*Function_for_R_8(Afh, Afp, compartmentOne, solution3);
+  R_9: solution1 => ; compartmentOne*Function_for_R_9(compartmentOne, solution1);
+  R_10: solution1 => solution0 + solution1; compartmentOne*Function_for_R_10(Pbp, compartmentOne, solution1);
+  R_11: solution0 + solution1 => 2 solution0 + solution1; compartmentOne*Function_for_R_11(Ppp, compartmentOne, solution0, solution1);
+  R_12: solution1 + solution3 => solution0 + solution1 + solution3; compartmentOne*Function_for_R_12(Pfp, compartmentOne, solution1, solution3);
+  R_13: solution0 => ; compartmentOne*Function_for_R_13(Gamma_p, compartmentOne, solution0);
+
+  // Events:
+  event_: at 0 after time == 20: solution0 = 0.1*solution0;
+
+  // Species initializations:
+  solution0 = 0.18;
+  solution1 = 5;
+  solution2 = 0.55;
+  solution3 = 0.75;
+
+  // Compartment initializations:
+  compartmentOne = 1;
+
+  // Variable initializations:
+  Afh = 1;
+  Afp = 10;
+  Aph = 1;
+  App = 10;
+  Fdam = 0;
+  Gamma_f = 1;
+  Gamma_m = 1;
+  Gamma_p = 1;
+  Mbp = 0.01;
+  Mph = 1;
+  Mpp = 10;
+  Pbp = 0.01;
+  Pfp = 10;
+  Ppp = 10;
+
+  // Other declarations:
+  const compartmentOne, Afh, Afp, Aph, App, Fdam, Gamma_f, Gamma_m, Gamma_p;
+  const Mbp, Mph, Mpp, Pbp, Pfp, Ppp;
+
+  // Display Names:
+  compartmentOne is "Cartilage";
+  solution0 is "p-Cytokines";
+  solution1 is "a-Cytokines";
+  solution2 is "MMP";
+  solution3 is "Fragments";
+  event_ is "event";
+
+  // CV terms:
+  compartmentOne hypernym "http://identifiers.org/bto/BTO:0000206"
+  solution0 hypernym "http://identifiers.org/ncit/C20464"
+  solution0 property "http://identifiers.org/ncit/C3137"
+  solution1 hypernym "http://identifiers.org/ncit/C20464"
+  solution1 property "http://identifiers.org/ncit/C28347"
+  solution2 hypernym "http://identifiers.org/ncit/C18164"
+  solution3 hypernym "http://identifiers.org/ncit/C16581"
+  R_1 class "http://identifiers.org/sbo/SBO:0000393",
+            "http://identifiers.org/ncit/C41580"
+  R_1 hypernym "http://identifiers.org/sbo/SBO:0000393"
+  R_2 class "http://identifiers.org/sbo/SBO:0000393",
+            "http://identifiers.org/ncit/C41580"
+  R_2 hypernym "http://identifiers.org/sbo/SBO:0000393"
+  R_3 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  R_4 hypernym "http://identifiers.org/sbo/SBO:0000393"
+  R_5 class "http://identifiers.org/sbo/SBO:0000393",
+            "urn:miriam:unknown:urn:miriam:unknown:SIO:010295"
+  R_5 hypernym "http://identifiers.org/sbo/SBO:0000393"
+  R_6 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  R_7 class "http://identifiers.org/sbo/SBO:0000393",
+            "urn:miriam:unknown:urn:miriam:unknown:SIO:010295"
+  R_7 hypernym "http://identifiers.org/sbo/SBO:0000393"
+  R_8 class "http://identifiers.org/sbo/SBO:0000393",
+            "urn:miriam:unknown:urn:miriam:unknown:SIO:010295"
+  R_8 hypernym "http://identifiers.org/sbo/SBO:0000393"
+  R_9 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  R_10 class "http://identifiers.org/sbo/SBO:0000393",
+             "http://identifiers.org/ncit/C61559"
+  R_10 hypernym "http://identifiers.org/sbo/SBO:0000393"
+  R_11 class "http://identifiers.org/sbo/SBO:0000393",
+             "http://identifiers.org/go/GO:0001819"
+  R_11 hypernym "http://identifiers.org/sbo/SBO:0000393"
+  R_12 class "http://identifiers.org/sbo/SBO:0000393",
+             "http://identifiers.org/go/GO:0001819"
+  R_12 hypernym "http://identifiers.org/sbo/SBO:0000393"
+  R_13 class "http://identifiers.org/sbo/SBO:0000179",
+             "http://identifiers.org/ncit/C40678"
+  R_13 hypernym "http://identifiers.org/sbo/SBO:0000179"
+end
+
+Baker2017___The_role_of_cytokines__MMPs_and_fibronectin_fragments_osteoarthritis is "Baker2017 - The role of cytokines, MMPs and fibronectin fragments osteoarthritis"
+
+Baker2017___The_role_of_cytokines__MMPs_and_fibronectin_fragments_osteoarthritis model_entity_is "http://identifiers.org/biomodels.db/MODEL1704120000",
+                                                                                                 "http://identifiers.org/biomodels.db/BIOMD0000000928"
+Baker2017___The_role_of_cytokines__MMPs_and_fibronectin_fragments_osteoarthritis identity "http://identifiers.org/biomodels.db/MODEL1704120000"
+Baker2017___The_role_of_cytokines__MMPs_and_fibronectin_fragments_osteoarthritis hypernym "http://identifiers.org/ncit/C39129"
+Baker2017___The_role_of_cytokines__MMPs_and_fibronectin_fragments_osteoarthritis description "http://identifiers.org/pubmed/28213682"
+Baker2017___The_role_of_cytokines__MMPs_and_fibronectin_fragments_osteoarthritis property "http://identifiers.org/ncit/C3293",
+                                                                                          "http://identifiers.org/mamo/MAMO_0000046"

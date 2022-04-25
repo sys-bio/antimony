@@ -1,0 +1,277 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function function_for_r014___C_translation(KmCCgC, x4, Beta1, gamma4, x6, Beta2, gamma5, gamma2, gamma3)
+  KmCCgC*((x4 + Beta1*gamma4*x6 + Beta2*gamma5*x4*x6)/(gamma2 + gamma3*x4 + gamma4*x6 + gamma5*x4*x6));
+end
+
+function_for_r014___C_translation is "function for r014 - C_translation"
+
+function function_for_r020___AI2_dim_4(k3, M)
+  k3*M*M;
+end
+
+function_for_r020___AI2_dim_4 is "function for r020 - AI2_dim_4"
+
+function function_for_r019___AI2_dim_3(k_2r, M)
+  k_2r*M;
+end
+
+function_for_r019___AI2_dim_3 is "function for r019 - AI2_dim_3"
+
+function function_for_r006d(Kcells, kd, x3)
+  Kcells*kd*x3;
+end
+
+function_for_r006d is "function for r006d"
+
+function function_for_r010___x5_transcription(K_mbC_gB, x4, gamma1)
+  K_mbC_gB*(x4/(gamma1 + x4));
+end
+
+function_for_r010___x5_transcription is "function for r010 - x5 transcription"
+
+function function_for_r006c(Kcells, kd, x9)
+  Kcells*kd*x9;
+end
+
+function_for_r006c is "function for r006c"
+
+
+model *Boada2016___Incoherent_type_1_feed_forward_loop__I1_FFL()
+
+  // Compartments and Species:
+  compartment Cell, Extracellular;
+  species x1 in Cell, x2 in Cell, x3 in Cell, x4 in Cell, x5 in Cell, x6 in Cell;
+  species x7 in Cell, x8 in Cell, x9 in Extracellular;
+
+  // Assignment Rules:
+  M := -((d_AI + k_2r)/(4*k_3f)) + (1/(4*k_3f))*sqrt((d_AI + k_2r)^2 + 8*k_3f*(k_2f*x2*x3 + 2*k_3r*x4));
+  K_cells := V_cell*N_cells/V_medium;
+  J1 := 2*abs(x9 - Metabolite_17)/sum_abs_dx8;
+  J2 := (x8 - Metabolite_16)/(x9 - Metabolite_17);
+  Sensitivity := 1/J1;
+  Precision := 1/J2;
+
+  // Rate Rules:
+  sum_abs_dx8' = abs(rateOf(x8));
+  P_theta' = abs(rateOf(x6));
+
+  // Reactions:
+  r001___mA_transcription:  => x1; Cell*Constant_flux__irreversible(k_mA_C_gA);
+  r002___A_translation: x1 => x1 + x2; Cell*k_pA*x1;
+  r003___mA_degradation: x1 => ; Cell*d_mA*x1;
+  r004___A_degradation: x2 => ; Cell*d_A*x2;
+  r005___AI2_dim_1: x2 + x3 => ; Cell*k_2f*x2*x3;
+  r006a___I_transport: x3 => ; Cell*k_d*x3;
+  r007___I_degradation: x3 => ; Cell*d_I*x3;
+  r008___Ie_degradation: x9 => ; Extracellular*d_Ie*x9;
+  r009___AI2_degradation: x4 => ; Cell*d_AI2*x4;
+  r010___mB_transcription:  => x5; Cell*function_for_r010___x5_transcription(k_mB_C_gB, x4, gamma_1);
+  r011___B_translation: x5 => x5 + x6; Cell*k_pB*x5;
+  r012___B_degradation: x6 => ; Cell*d_B*x6;
+  r013___mB_degradation: x5 => ; Cell*d_mB*x5;
+  r014___mC_transcription:  => x7; Cell*function_for_r014___C_translation(k_mC_C_gC, x4, Beta_1, gamma_4, x6, Beta_2, gamma_5, gamma_2, gamma_3);
+  r015___C_translation: x7 => x7 + x8; Cell*k_pC*x7;
+  r016___C_degradation: x8 => ; Cell*d_C*x8;
+  r017___mC_degradation: x7 => ; Cell*d_mC*x7;
+  r018___AI2_dim_2: x4 => ; Cell*k_3r*x4;
+  r019___AI2_dim_3:  => x2 + x3; Cell*function_for_r019___AI2_dim_3(k_2r, M);
+  r020___AI2_dim_4:  => x4; Cell*function_for_r020___AI2_dim_4(k_3f, M);
+  r006b___I_transport: x9 => x9 + x3; k_d*x9;
+  r006c___I_transport: x9 => ; Extracellular*function_for_r006c(K_cells, k_d, x9);
+  r006d___I_transport:  => x9; function_for_r006d(K_cells, k_d, x3);
+
+  // Species initializations:
+  x1 = 0.0432*104/0.3624;
+  x1 has substance_per_volume;
+  x2 = 0.0432*104*80/(0.3624*0.035);
+  x2 has substance_per_volume;
+  x3 = 0;
+  x3 has substance_per_volume;
+  x4 = 0;
+  x4 has substance_per_volume;
+  x5 = 0;
+  x5 has substance_per_volume;
+  x6 = 0;
+  x6 has substance_per_volume;
+  x7 = 0;
+  x7 has substance_per_volume;
+  x8 = 0;
+  x8 has substance_per_volume;
+  x9 = 50*180;
+  x9 has substance_per_volume;
+
+  // Compartment initializations:
+  Cell = 1;
+  Cell has volume;
+  Extracellular = 1;
+  Extracellular has volume;
+
+  // Variable initializations:
+  k_mA_C_gA = 104;
+  k_mB_C_gB = 1;
+  k_mC_C_gC = 1;
+  d_mA = 0.3624;
+  d_mB = 0.3624;
+  d_mC = 0.3624;
+  k_pA = 80;
+  k_pB = 1;
+  k_pC = 11.42;
+  d_A = 0.035;
+  d_B = 0.016;
+  d_C = 0.2784;
+  k_d = 0.06;
+  k_2f = 0.1;
+  k_3f = 0.1;
+  k_2r = 20;
+  k_3r = 1;
+  gamma_1 = 107.4;
+  gamma_2 = 0.2;
+  gamma_3 = 0.01;
+  gamma_4 = 1.15;
+  gamma_5 = 8.56;
+  Beta_1 = 0.05;
+  Beta_2 = 0.05;
+  d_I = 0.0164;
+  d_Ie = 0.0164;
+  d_AI = 0.035;
+  d_AI2 = 0.035;
+  V_cell = 1e-15;
+  N_cells = 240000000;
+  V_medium = 180;
+  sum_abs_dx8 = 0;
+  Metabolite_17 = x9;
+  Metabolite_16 = x8;
+  P_theta = 0;
+
+  // Other declarations:
+  var M, K_cells, sum_abs_dx8, J1, J2, Sensitivity, Precision, P_theta;
+  const Cell, Extracellular, k_mA_C_gA, k_mB_C_gB, k_mC_C_gC, d_mA, d_mB;
+  const d_mC, k_pA, k_pB, k_pC, d_A, d_B, d_C, k_d, k_2f, k_3f, k_2r, k_3r;
+  const gamma_1, gamma_2, gamma_3, gamma_4, gamma_5, Beta_1, Beta_2, d_I;
+  const d_Ie, d_AI, d_AI2, V_cell, N_cells, V_medium, Metabolite_17, Metabolite_16;
+
+  // Unit definitions:
+  unit volume = 1e-6 litre;
+  unit substance = 1e-9 mole;
+  unit area = metre^2;
+  unit length = metre;
+  unit extent = substance;
+  unit time_unit = second;
+  unit substance_per_volume = 1e-9 mole / 1e-6 litre;
+
+  // Display Names:
+  k_mA_C_gA is "k_mA*C_gA";
+  k_mB_C_gB is "k_mB*C_gB";
+  k_mC_C_gC is "k_mC*C_gC";
+  sum_abs_dx8 is "sum(abs_dx8)";
+  Metabolite_17 is "Initial for x9";
+  Metabolite_16 is "Initial for x8";
+  r001___mA_transcription is "r001 - mA_transcription";
+  r002___A_translation is "r002 - A_translation";
+  r003___mA_degradation is "r003 - mA_degradation";
+  r004___A_degradation is "r004 - A_degradation";
+  r005___AI2_dim_1 is "r005 - AI2_dim_1";
+  r006a___I_transport is "r006a - I_transport";
+  r007___I_degradation is "r007 - I_degradation";
+  r008___Ie_degradation is "r008 - Ie_degradation";
+  r009___AI2_degradation is "r009 - AI2_degradation";
+  r010___mB_transcription is "r010 - mB_transcription";
+  r011___B_translation is "r011 - B_translation";
+  r012___B_degradation is "r012 - B_degradation";
+  r013___mB_degradation is "r013 - mB_degradation";
+  r014___mC_transcription is "r014 - mC_transcription";
+  r015___C_translation is "r015 - C_translation";
+  r016___C_degradation is "r016 - C_degradation";
+  r017___mC_degradation is "r017 - mC_degradation";
+  r018___AI2_dim_2 is "r018 - AI2_dim_2";
+  r019___AI2_dim_3 is "r019 - AI2_dim_3";
+  r020___AI2_dim_4 is "r020 - AI2_dim_4";
+  r006b___I_transport is "r006b - I_transport";
+  r006c___I_transport is "r006c - I_transport";
+  r006d___I_transport is "r006d - I_transport";
+
+  // CV terms:
+  Cell hypernym "http://identifiers.org/cl/CL:0000000"
+  Extracellular hypernym "http://identifiers.org/go/GO:0005576"
+  x1 hypernym "http://identifiers.org/so/SO:0000234"
+  x2 hypernym "http://identifiers.org/pr/PR:000000001"
+  x3 hypernym "http://identifiers.org/ncit/C120268"
+  x4 hypernym "urn:miriam:sbo:SBO%3A0000607"
+  x5 hypernym "http://identifiers.org/so/SO:0000234"
+  x6 hypernym "http://identifiers.org/pr/PR:000000001"
+  x7 hypernym "http://identifiers.org/so/SO:0000234"
+  x8 hypernym "http://identifiers.org/pr/PR:000000001"
+  x9 hypernym "http://identifiers.org/ncit/C120268"
+  k_mA_C_gA encodement "http://identifiers.org/ncit/C49142"
+  k_mA_C_gA encodement "urn:miriam:sbo:SBO%3A0000183"
+  k_mB_C_gB encodement "http://identifiers.org/ncit/C49142"
+  k_mB_C_gB encodement "urn:miriam:sbo:SBO%3A0000183"
+  k_mC_C_gC encodement "http://identifiers.org/ncit/C49142"
+  k_mC_C_gC encodement "urn:miriam:sbo:SBO%3A0000183"
+  d_mA encodement "urn:miriam:sbo:SBO%3A0000179"
+  d_mB encodement "urn:miriam:sbo:SBO%3A0000179"
+  d_mC encodement "urn:miriam:sbo:SBO%3A0000179"
+  k_pA encodement "http://identifiers.org/go/GO:0006412"
+  k_pB encodement "http://identifiers.org/go/GO:0006412"
+  k_pC encodement "http://identifiers.org/go/GO:0006412"
+  d_A encodement "urn:miriam:sbo:SBO%3A0000179"
+  d_B encodement "urn:miriam:sbo:SBO%3A0000179"
+  d_C encodement "urn:miriam:sbo:SBO%3A0000179"
+  k_d encodement "http://identifiers.org/ncit/C82333"
+  k_2f encodement "urn:miriam:sbo:SBO%3A0000341"
+  k_3f encodement "urn:miriam:sbo:SBO%3A0000341"
+  k_2r encodement "urn:miriam:sbo:SBO%3A0000338"
+  k_3r encodement "urn:miriam:sbo:SBO%3A0000338"
+  gamma_1 encodement "urn:miriam:obi:OBI%3A0001180"
+  Beta_1 encodement "urn:miriam:sbo:SBO%3A0000485"
+  Beta_2 encodement "urn:miriam:sbo:SBO%3A0000485"
+  d_I encodement "urn:miriam:sbo:SBO%3A0000179"
+  d_Ie encodement "urn:miriam:sbo:SBO%3A0000179"
+  d_AI encodement "urn:miriam:sbo:SBO%3A0000179"
+  d_AI2 encodement "urn:miriam:sbo:SBO%3A0000179"
+  M hypernym "http://identifiers.org/ncit/C63845"
+  K_cells encodement "urn:miriam:sbo:SBO%3A0000468"
+  V_cell encodement "urn:miriam:sbo:SBO%3A0000468"
+  N_cells hypernym "urn:miriam:obi:OBI%3A0100060"
+  V_medium encodement "urn:miriam:sbo:SBO%3A0000468"
+  sum_abs_dx8 encodement "http://identifiers.org/ncit/C94928"
+  P_theta encodement "http://identifiers.org/ncit/C48918"
+  r001___mA_transcription hypernym "urn:miriam:sbo:SBO%3A0000183"
+  r002___A_translation hypernym "http://identifiers.org/go/GO:0006412"
+  r003___mA_degradation hypernym "urn:miriam:sbo:SBO%3A0000179"
+  r004___A_degradation hypernym "urn:miriam:sbo:SBO%3A0000179"
+  r005___AI2_dim_1 hypernym "http://identifiers.org/ncit/C97201"
+  r006a___I_transport hypernym "http://identifiers.org/go/GO:0006810"
+  r007___I_degradation hypernym "urn:miriam:sbo:SBO%3A0000179"
+  r008___Ie_degradation hypernym "urn:miriam:sbo:SBO%3A0000179"
+  r009___AI2_degradation hypernym "urn:miriam:sbo:SBO%3A0000179"
+  r010___mB_transcription hypernym "urn:miriam:sbo:SBO%3A0000183"
+  r011___B_translation hypernym "http://identifiers.org/go/GO:0006412"
+  r012___B_degradation hypernym "urn:miriam:sbo:SBO%3A0000179"
+  r013___mB_degradation hypernym "urn:miriam:sbo:SBO%3A0000179"
+  r014___mC_transcription hypernym "urn:miriam:sbo:SBO%3A0000183"
+  r015___C_translation hypernym "http://identifiers.org/go/GO:0006412"
+  r016___C_degradation hypernym "urn:miriam:sbo:SBO%3A0000179"
+  r017___mC_degradation hypernym "urn:miriam:sbo:SBO%3A0000179"
+  r020___AI2_dim_4 hypernym "http://identifiers.org/ncit/C97201"
+  r006b___I_transport hypernym "http://identifiers.org/go/GO:0006810"
+  r006c___I_transport hypernym "http://identifiers.org/go/GO:0006810"
+  r006d___I_transport hypernym "http://identifiers.org/go/GO:0006810"
+end
+
+Boada2016___Incoherent_type_1_feed_forward_loop__I1_FFL is "Boada2016 - Incoherent type 1 feed-forward loop (I1-FFL)"
+
+Boada2016___Incoherent_type_1_feed_forward_loop__I1_FFL model_entity_is "http://identifiers.org/biomodels.db/MODEL1511290000"
+Boada2016___Incoherent_type_1_feed_forward_loop__I1_FFL model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000696"
+Boada2016___Incoherent_type_1_feed_forward_loop__I1_FFL description "http://identifiers.org/pubmed/26968941"
+Boada2016___Incoherent_type_1_feed_forward_loop__I1_FFL model_entity_is "http://identifiers.org/biomodels.db/MODEL1511290000"
+Boada2016___Incoherent_type_1_feed_forward_loop__I1_FFL hypernym "urn:miriam:sbo:SBO%3A0000004"
+Boada2016___Incoherent_type_1_feed_forward_loop__I1_FFL description "http://identifiers.org/pubmed/26968941"
+Boada2016___Incoherent_type_1_feed_forward_loop__I1_FFL hypernym "http://identifiers.org/ncit/C19061"
+Boada2016___Incoherent_type_1_feed_forward_loop__I1_FFL hypernym "urn:miriam:efo:EFO%3A0001773"

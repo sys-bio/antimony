@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *MODEL1302180005()
 
   // Compartments and Species:
@@ -18,28 +18,28 @@ model *MODEL1302180005()
   re105: s110 -> s112; re105_k4*s110*s92 - re105_kr4*s112;
   re106: s112 + s111 -> s113; re106_k5*s111*s112 - re106_kr5*s113;
   re107: s113 -> s114 + s93; re107_k6*s113 - re107_kr6*s93*s114;
-  re108: s98 => s91; (re108_V8*s98)/(re108_Km8 + s98);
+  re108: s98 => s91; re108_V8*s98/(re108_Km8 + s98);
   re109: s114 => s98 + s111; re109_k7*s114;
   re110: s115 => s106; re110_k25*s115;
   re111: s108 => s115; re111_k24t1*s107 + re111_k24t2*s49;
-  re112: s103 => s102; (re112_k9*s114*s103)/(s103 + re112_Km9);
-  re113: s102 => s103; (re113_V10*s102)/(re113_Km10 + s102);
-  re114: s97 => s101; (re114_k11*s102*s97)/(re114_Km11 + s97);
-  re115: s101 => s97; (re115_V12*s101)/(re115_Km12 + s101);
-  re116: s96 => s100; (re116_k13*s101*s96)/(re116_Km13 + s96);
-  re117: s100 => s96; (re117_V14*s100)/(s100 + re117_Km14);
-  re118: s99 => s104; (re118_k17*s99*s43)/(s99 + re118_Km17);
-  re119: s104 => s99; (re119_V18*s104)/(s104 + re119_Km18);
+  re112: s103 => s102; re112_k9*s114*s103/(s103 + re112_Km9);
+  re113: s102 => s103; re113_V10*s102/(re113_Km10 + s102);
+  re114: s97 => s101; re114_k11*s102*s97/(re114_Km11 + s97);
+  re115: s101 => s97; re115_V12*s101/(re115_Km12 + s101);
+  re116: s96 => s100; re116_k13*s101*s96/(re116_Km13 + s96);
+  re117: s100 => s96; re117_V14*s100/(s100 + re117_Km14);
+  re118: s99 => s104; re118_k17*s99*s43/(s99 + re118_Km17);
+  re119: s104 => s99; re119_V18*s104/(s104 + re119_Km18);
   re120: s106 => s35; re120_k26*s106;
-  re121: s37 => s51; (re121_V27*s106)/(s106 + re121_Km27);
+  re121: s37 => s51; re121_V27*s106/(s106 + re121_Km27);
   re122: s38 => s39; re122_unitime;
-  re123: s43 => s100; (re123_V16*s43)/(s43 + re123_Km16);
-  re124: s100 => s43; (re124_k15*s100*s101)/(re124_Km15 + s100);
-  re125: s44 => s104; (re125_V20*s44)/(re125_Km20 + s44);
-  re126: s104 => s44; (re126_k19*s104*s43)/(re126_Km19 + s104);
-  re127: s42 => s107; (s44*s42*re127_k21)/(re127_Km21 + s42);
-  re128: s107 => s42; (re128_V22*s107)/(s107 + re128_Km22);
-  re129: s105 => s49; exp(re129_tau*(re129_delay - s39/re129_tc))/(1 + 2*exp(re129_tau*(re129_delay - s39/re129_tc)) + exp(2*re129_tau*(re129_delay - s39/re129_tc)))/re129_uc*29.256;
+  re123: s43 => s100; re123_V16*s43/(s43 + re123_Km16);
+  re124: s100 => s43; re124_k15*s100*s101/(re124_Km15 + s100);
+  re125: s44 => s104; re125_V20*s44/(re125_Km20 + s44);
+  re126: s104 => s44; re126_k19*s104*s43/(re126_Km19 + s104);
+  re127: s42 => s107; s44*s42*re127_k21/(re127_Km21 + s42);
+  re128: s107 => s42; re128_V22*s107/(s107 + re128_Km22);
+  re129: s105 => s49; (exp(re129_tau*(re129_delay - s39/re129_tc))/(1 + 2*exp(re129_tau*(re129_delay - s39/re129_tc)) + exp(2*re129_tau*(re129_delay - s39/re129_tc)))/re129_uc)*29.256;
 
   // Species initializations:
   s35 = 0;
@@ -128,7 +128,7 @@ model *MODEL1302180005()
   re102_unity has dimensionless;
   re102_unimol = 1;
   re102_unimol has substance;
-  re102_tiny_num = 1e-006;
+  re102_tiny_num = 1e-06;
   re102_tiny_num has substance;
   re103_normal = 0.026;
   re103_normal has nM_inv_s;
@@ -164,7 +164,7 @@ model *MODEL1302180005()
   re110_k25 has inv_sec;
   re111_k24t1 = 0.00012;
   re111_k24t1 has nM_inv_s;
-  re111_k24t2 = 9e-006;
+  re111_k24t2 = 9e-06;
   re111_k24t2 has nM_inv_s;
   re112_k9 = 0.222;
   re112_k9 has inv_sec;
@@ -198,7 +198,7 @@ model *MODEL1302180005()
   re119_Km18 has substance;
   re119_V18 = 0.05;
   re119_V18 has nM_inv_s;
-  re120_k26 = 2.8e-005;
+  re120_k26 = 2.8e-05;
   re120_k26 has inv_sec;
   re121_V27 = 0.02824;
   re121_V27 has nM_inv_s;
@@ -224,7 +224,7 @@ model *MODEL1302180005()
   re126_Km19 has substance;
   re127_Km21 = 25;
   re127_Km21 has substance;
-  re127_k21 = 4e-005;
+  re127_k21 = 4e-05;
   re127_k21 has inv_sec;
   re128_Km22 = 5;
   re128_Km22 has substance;
@@ -246,16 +246,16 @@ model *MODEL1302180005()
 
   // Unit definitions:
   unit time_unit = second;
-  unit substance = 1e-009 mole;
+  unit substance = 1e-09 mole;
   unit area = metre^2;
   unit length = metre;
   unit volume = litre;
-  unit sub_sec = 1e-009 mole / second;
+  unit sub_sec = 1e-09 mole / second;
   unit inv_sec = 1 / second;
-  unit inv_sec_sub = 1 / (1e-009 mole * second);
+  unit inv_sec_sub = 1 / (1e-09 mole * second);
   unit nM_inv_s = 1e-9 mole / second;
   unit inv_nM_s = 1 / (1e-9 mole * second);
-  unit substance_per_volume = 1e-009 mole / litre;
+  unit substance_per_volume = 1e-09 mole / litre;
 
   // Display Names:
   time_unit is "time";
@@ -293,4 +293,85 @@ model *MODEL1302180005()
   s114 is "p-Shc:Grb2:Sos";
   s115 is "eNOS";
   s119 is "Shear Stress";
+
+  // SBO terms:
+  s35.sboTerm = 291
+  s37.sboTerm = 291
+  s38.sboTerm = 347
+  s49.sboTerm = 252
+  s105.sboTerm = 278
+  s106.sboTerm = 278
+  s108.sboTerm = 243
+  s110.sboTerm = 297
+  s111.sboTerm = 344
+  s112.sboTerm = 297
+  s113.sboTerm = 297
+  s115.sboTerm = 278
+
+  // CV terms:
+  c1 identity "http://identifiers.org/go/GO:0005623"
+  c3 hypernym "http://identifiers.org/go/GO:0005634"
+  s43 hypernym "http://identifiers.org/uniprot/O14733"
+  s43 property "http://identifiers.org/psimod/MOD:00696"
+  s44 hypernym "http://identifiers.org/uniprot/P45983"
+  s44 property "http://identifiers.org/psimod/MOD:00696"
+  s49 hypernym "http://identifiers.org/uniprot/Q9Y5W3"
+  s51 part "http://identifiers.org/ensembl/ENST00000297494",
+           "http://identifiers.org/uniprot/Q03135"
+  s91 hypernym "http://identifiers.org/uniprot/P29353"
+  s92 hypernym "http://identifiers.org/uniprot/P12931"
+  s92 property "http://identifiers.org/psimod/MOD:00696"
+  s93 hypernym "http://identifiers.org/uniprot/Q05397"
+  s93 property "http://identifiers.org/psimod/MOD:00696"
+  s94 hypernym "http://identifiers.org/uniprot/P12931"
+  s95 hypernym "http://identifiers.org/uniprot/Q05397"
+  s96 hypernym "http://identifiers.org/uniprot/O14733"
+  s97 hypernym "http://identifiers.org/uniprot/Q13233"
+  s98 hypernym "http://identifiers.org/uniprot/P29353"
+  s98 property "http://identifiers.org/psimod/MOD:00696"
+  s99 hypernym "http://identifiers.org/uniprot/P45983"
+  s100 hypernym "http://identifiers.org/uniprot/O14733"
+  s100 property "http://identifiers.org/psimod/MOD:00696"
+  s101 hypernym "http://identifiers.org/uniprot/Q13233"
+  s101 property "http://identifiers.org/psimod/MOD:00696"
+  s102 part "http://identifiers.org/chebi/CHEBI:57600",
+            "http://identifiers.org/uniprot/P01112"
+  s103 part "http://identifiers.org/chebi/CHEBI:17552",
+            "http://identifiers.org/uniprot/P01112"
+  s104 hypernym "http://identifiers.org/uniprot/P45983"
+  s104 property "http://identifiers.org/psimod/MOD:00696"
+  s105 encodement "http://identifiers.org/uniprot/Q9Y5W3"
+  s106 encoder "http://identifiers.org/ncbigene/4846"
+  s107 property "http://identifiers.org/psimod/MOD:00000"
+  s108 hypernym "http://identifiers.org/ncbigene/4846"
+  s110 part "http://identifiers.org/uniprot/Q05397",
+            "http://identifiers.org/uniprot/P29353"
+  s110 property "http://identifiers.org/psimod/MOD:00696"
+  s111 part "http://identifiers.org/uniprot/Q07889",
+            "http://identifiers.org/uniprot/P62993"
+  s112 part "http://identifiers.org/uniprot/Q05397",
+            "http://identifiers.org/uniprot/P29353"
+  s112 property "http://identifiers.org/psimod/MOD:00696"
+  s113 part "http://identifiers.org/uniprot/Q05397",
+            "http://identifiers.org/uniprot/P29353",
+            "http://identifiers.org/uniprot/Q07889",
+            "http://identifiers.org/uniprot/P62993"
+  s113 property "http://identifiers.org/psimod/MOD:00696"
+  s114 part "http://identifiers.org/uniprot/Q07889",
+            "http://identifiers.org/uniprot/P62993",
+            "http://identifiers.org/uniprot/P29353"
+  s114 property "http://identifiers.org/psimod/MOD:00696"
+  s115 encoder "http://identifiers.org/ncbigene/4846"
+  s119 container "http://identifiers.org/go/GO:0005576"
 end
+
+MODEL1302180005 is "Koo2013 - Shear stress induced eNOS expression - Model 3"
+
+MODEL1302180005 model_entity_is "http://identifiers.org/biomodels.db/MODEL1302180005"
+MODEL1302180005 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000466"
+MODEL1302180005 description "http://identifiers.org/pubmed/23708369"
+MODEL1302180005 taxon "http://identifiers.org/taxonomy/9606"
+MODEL1302180005 hypernym "http://identifiers.org/reactome/REACT_12443.3"
+MODEL1302180005 hypernym "http://identifiers.org/go/GO:0034405"
+MODEL1302180005 hypernym "http://identifiers.org/go/GO:0006809",
+                         "http://identifiers.org/go/GO:0002537"

@@ -1,0 +1,113 @@
+// Created by libAntimony v2.13.0
+function Function_for_R3(Compartment_, H1, K2s, S, V1s)
+  Compartment_*V1s*(S^H1/(S^H1 + K2s^H1));
+end
+
+Function_for_R3 is "Function for R3"
+
+function Function_for_R4(Compartment_, H2, K3s, S, V2s)
+  Compartment_*V2s*(S^H2/(S^H2 + K3s^H2));
+end
+
+Function_for_R4 is "Function for R4"
+
+function Function_for_R1(Compartment_, K1s, S, V1s)
+  Compartment_*V1s*(S/(S + K1s));
+end
+
+Function_for_R1 is "Function for R1"
+
+function Function_for_R2(Compartment_, H1, K2s, S, V2s)
+  Compartment_*V2s*(S^H1/(S^H1 + K2s^H1));
+end
+
+Function_for_R2 is "Function for R2"
+
+
+model *MODEL1609120000()
+
+  // Compartments and Species:
+  compartment default_compartment;
+  species v;
+
+  // Assignment Rules:
+  V1s := (V1 - (V1 - V1is)*(Ii^Hx1/(Ii^Hx1 + Kx1^Hx1))) + (V1 - V1is)*(Ii^Hx2/(Ii^Hx2 + Kx2^Hx2)) - (V1 - V1ii)*(Ii^Hx2/(Ii^Hx2 + Kx2^Hx2));
+  K1s := (K1 - (K1 - K1is)*(Ii^Hx1/(Ii^Hx1 + Kx1^Hx1))) + (K1 - K1is)*(Ii^Hx2/(Ii^Hx2 + Kx2^Hx2)) - (K1 - K1ii)*(Ii^Hx2/(Ii^Hx2 + Kx2^Hx2));
+  V2s := V2 - (V2 - V2i)*(Ii^Hxx/(Ii^Hxx + Kxx1^Hxx));
+  K2s := K2 - (K2 - K2i)*(Ii^Hxx/(Ii^Hxx + Kxx1^Hxx));
+
+  // Reactions:
+  R1:  => v; default_compartment*Function_for_R1(Compartment_, K1s, S, V1s);
+  R2:  => v; default_compartment*Function_for_R2(Compartment_, H1, K2s, S, V2s);
+  R3: v => ; default_compartment*Function_for_R3(Compartment_, H1, K2s, S, V1s);
+  R4: v => ; default_compartment*Function_for_R4(Compartment_, H2, K3s, S, V2s);
+
+  // Species initializations:
+  v = 1;
+  v has substance_per_volume;
+
+  // Compartment initializations:
+  default_compartment = 1;
+
+  // Variable initializations:
+  V1 = 20.06;
+  V1is = 451.78;
+  Ii = 1000;
+  Hx1 = 1.02;
+  Kx1 = 30.18;
+  Hx2 = 2.69;
+  Kx2 = 553.64;
+  V1ii = 0;
+  S = 61;
+  K1 = 177.76;
+  K1is = 29.52;
+  K1ii = 34.05;
+  V2 = 443.68;
+  V2i = 0;
+  Hxx = 0.96;
+  Kxx1 = 70.93;
+  H1 = 1.71;
+  K2 = 225.49;
+  K2i = 118.41;
+  H2 = 2.69;
+  K3s = 605.01;
+  V3 = 0;
+  Compartment_ = ;
+
+  // Other declarations:
+  var V1s, K1s, V2s, K2s;
+  const V1, V1is, Ii, Hx1, Kx1, Hx2, Kx2, V1ii, S, K1, K1is, K1ii, V2, V2i;
+  const Hxx, Kxx1, H1, K2, K2i, H2, K3s, V3, default_compartment;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+  unit length = metre;
+  unit area = metre^2;
+  unit time_unit = time_unit;
+  unit extent = substance;
+  unit substance_per_volume = 1e-3 mole / 1e-3 litre;
+  unit substance_per_volume_litre = 1e-3 mole * litre / 1e-3 litre;
+
+  // Display Names:
+  time_unit is "time";
+
+  // SBO terms:
+  v.sboTerm = 268
+  default_compartment.sboTerm = 410
+
+  // CV terms:
+  v version "http://identifiers.org/chebi/CHEBI:86193",
+            "http://identifiers.org/uniprot/Q9NZ42"
+  Ii model_entity_is "http://identifiers.org/chebi/CHEBI:86193"
+  S hypernym "http://identifiers.org/uniprot/P05067"
+end
+
+MODEL1609120000 is "Walsh2014 - Inhibition kinetics of DAPT on APP Cleavage"
+
+MODEL1609120000 model_entity_is "http://identifiers.org/biomodels.db/MODEL1609120000"
+MODEL1609120000 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000617"
+MODEL1609120000 description "http://identifiers.org/pubmed/25374788"
+MODEL1609120000 hypernym "http://identifiers.org/go/GO:0042987"
+MODEL1609120000 taxon "http://identifiers.org/taxonomy/9606"
+MODEL1609120000 property "http://identifiers.org/doid/DOID:10652"

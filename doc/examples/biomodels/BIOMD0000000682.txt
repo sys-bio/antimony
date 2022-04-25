@@ -1,0 +1,130 @@
+// Created by libAntimony v2.13.0
+model *Wierschem2004_PancreaticIslets_ActionPotentials()
+
+  // Compartments and Species:
+  compartment COMpartment;
+
+  // Assignment Rules:
+  phi := ATP*(1 + k*ADP)^2;
+  I_Ca := g_Ca_*m_infinity*(V_membrane - V_Ca);
+  I_K := g_K_*n*(V_membrane - V_K);
+  I_KCa := g_KCa_*omega*(V_membrane - V_K);
+  I_KATP := (V_membrane - V_K)*g_KATP_/ATP;
+  m_infinity := 1/(1 + exp((v_m - V_membrane)/s_m));
+  omega := 1/(1 + k_D/c);
+  n_infinity := 1/(1 + exp((v_n - V_membrane)/s_n));
+  J_mem := -f*(alpha*I_Ca + k_c*c);
+
+  // Rate Rules:
+  ATP' = (v - phi)/(1000*tau_c);
+  ADP' = (phi - eta*ADP)/(1000*tau_c);
+  V_membrane' = -(I_Ca + I_K + I_KCa + I_KATP)/C_m;
+  n' = (n_infinity - n)/tau_n;
+  c' = J_mem;
+
+  // Compartment initializations:
+  COMpartment = 1;
+  COMpartment has litre;
+
+  // Variable initializations:
+  tau_c = 1200;
+  eta = 185;
+  v = 10;
+  k = 20;
+  ATP = 2.1047;
+  ADP = 0.085817;
+  C_m = 5300;
+  V_membrane = -67.018;
+  g_Ca_ = 1200;
+  V_Ca = 25;
+  v_m = -20;
+  s_m = 12;
+  g_K_ = 3000;
+  V_K = -75;
+  n = 0.00011;
+  g_KCa_ = 300;
+  k_D = 0.3;
+  c = 0.15666;
+  g_KATP_ = 350;
+  tau_n = 16;
+  v_n = -16;
+  s_n = 5.6;
+  f = 0.001;
+  alpha = 2.25e-06;
+  k_c = 0.1;
+
+  // Other declarations:
+  var phi, ATP, ADP, V_membrane, I_Ca, I_K, I_KCa, I_KATP, m_infinity, n;
+  var omega, c, n_infinity, J_mem;
+  const COMpartment, tau_c, eta, v, k, C_m, g_Ca_, V_Ca, v_m, s_m, g_K_, V_K;
+  const g_KCa_, k_D, g_KATP_, tau_n, v_n, s_n, f, alpha, k_c;
+
+  // Unit definitions:
+  unit millisecond = 1e-3 second;
+  unit per_millisecond = 1 / 1e-3 second;
+  unit millivolt = 1e-3 volt;
+  unit picosiemens = 1e-12 siemens;
+  unit per_litre = 1 / litre;
+  unit micromolar = 1e-6 mole / litre;
+  unit femtoampere = 1e-15 ampere;
+  unit micromolar_per_fA_m = 1e-6 mole / (litre * 1e-15 ampere * 1e-3 second);
+  unit micromolar_per_m = 1e-6 mole / (litre * 1e-3 second);
+  unit femtofarad = 1e-15 farad;
+  unit time_unit = 1e-3 second;
+
+  // Display Names:
+  micromolar_per_fA_m is "micromolar_per_fA_ms";
+  micromolar_per_m is "micromolar_per_ms";
+  time_unit is "time";
+  COMpartment is "Pancreatic Islet Cell";
+  V_membrane is "V";
+
+  // CV terms:
+  COMpartment hypernym "http://identifiers.org/bto/BTO:0000991"
+  tau_c propertyBearer "http://identifiers.org/go/GO:0008443"
+  eta encodement "urn:miriam:sbo:SBO%3A0000179"
+  k encodement "urn:miriam:sbo:SBO%3A0000281"
+  phi unknown_model_qual "http://identifiers.org/go/GO:0008443"
+  ATP hypernym "http://identifiers.org/kegg.compound/C00002"
+  ATP hypernym "http://identifiers.org/chebi/CHEBI:15422"
+  ADP hypernym "http://identifiers.org/kegg.compound/C00008"
+  ADP hypernym "http://identifiers.org/chebi/CHEBI:16761"
+  V_membrane hypernym "urn:miriam:sbo:SBO%3A0000259"
+  I_Ca part "http://identifiers.org/chebi/CHEBI:22984"
+  I_Ca hypernym "http://identifiers.org/ncit/C48434"
+  I_K part "http://identifiers.org/chebi/CHEBI:26216"
+  I_K hypernym "http://identifiers.org/ncit/C48434"
+  I_KCa unknown_model_qual "http://identifiers.org/chebi/CHEBI:26216",
+                           "http://identifiers.org/go/GO:0015269",
+                           "http://identifiers.org/ncit/C48434"
+  I_KCa part "http://identifiers.org/chebi/CHEBI:26216"
+  I_KCa hypernym "http://identifiers.org/ncit/C48434"
+  I_KATP part "http://identifiers.org/chebi/CHEBI:26216"
+  I_KATP hypernym "http://identifiers.org/ncit/C48434"
+  g_Ca_ encodement "urn:miriam:sbo:SBO%3A0000257"
+  m_infinity encodement "urn:miriam:sbo:SBO%3A0000391"
+  g_K_ encodement "urn:miriam:sbo:SBO%3A0000257"
+  n encodement "http://identifiers.org/go/GO:0005267"
+  g_KCa_ encodement "urn:miriam:sbo:SBO%3A0000257"
+  omega encodement "urn:miriam:sbo:SBO%3A0000488"
+  c hypernym "http://identifiers.org/chebi/CHEBI:22984"
+  c container "http://identifiers.org/go/GO:0005829"
+  g_KATP_ encodement "urn:miriam:sbo:SBO%3A0000257"
+  tau_n propertyBearer "http://identifiers.org/go/GO:0005267"
+  n_infinity encodement "urn:miriam:sbo:SBO%3A0000391"
+  J_mem hypernym "http://identifiers.org/go/GO:0070509"
+  k_c encodement "http://identifiers.org/go/GO:1901660"
+end
+
+Wierschem2004_PancreaticIslets_ActionPotentials is "Wierschem2004 - Electrical bursting activity in Pancreatic Islets"
+
+Wierschem2004_PancreaticIslets_ActionPotentials model_entity_is "http://identifiers.org/biomodels.db/MODEL1006230006"
+Wierschem2004_PancreaticIslets_ActionPotentials model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000682"
+Wierschem2004_PancreaticIslets_ActionPotentials description "http://identifiers.org/pubmed/15178199"
+Wierschem2004_PancreaticIslets_ActionPotentials origin "http://identifiers.org/pubmed/6305437"
+Wierschem2004_PancreaticIslets_ActionPotentials origin "http://identifiers.org/pubmed/4263005"
+Wierschem2004_PancreaticIslets_ActionPotentials model_entity_is "http://identifiers.org/biomodels.db/MODEL1006230006"
+Wierschem2004_PancreaticIslets_ActionPotentials hypernym "http://identifiers.org/go/GO:0098900"
+Wierschem2004_PancreaticIslets_ActionPotentials container "http://identifiers.org/bto/BTO:0000991"
+Wierschem2004_PancreaticIslets_ActionPotentials taxon "http://identifiers.org/taxonomy/9606"
+Wierschem2004_PancreaticIslets_ActionPotentials description "http://identifiers.org/pubmed/15178199"

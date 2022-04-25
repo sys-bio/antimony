@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Veening2008_DegU_Regulation()
 
   // Compartments and Species:
@@ -14,18 +14,18 @@ model *Veening2008_DegU_Regulation()
   // Reactions:
   AprEdeg: AprE => ; kdeg*AprE;
   AprEsyn:  => AprE; ksyn*mAprE*univ;
-  DimerAss: 2DegUP => Dim; ka*DegUP^2;
-  DimerDis: Dim => 2DegUP; kd*Dim;
+  DimerAss: 2 DegUP => Dim; ka*DegUP^2;
+  DimerDis: Dim => 2 DegUP; kd*Dim;
   degradation1: DegU => ; kdeg*DegU*univ;
   degradation2: DegUP => ; kdeg*DegUP*univ;
   degradation3: Dim => ; kdeg*Dim*univ;
   degradationmRNA: mDegU => ; kdegm*mDegU;
   dephosphorylation: DegUP => DegU; kdephos*DegUP;
   mRNAAprEdeg: mAprE => ; kdegm*mAprE;
-  mRNAAprEsyn:  => mAprE; Kr1/(R + Kr1)*((Iro*((Dim*univ)/Kdim + 1))/(1 + (Dim*univ)/Kdim + (Dim*univ)^2/Kdim^2 + R/Kr) + (Irmax*(Dim*univ)^2)/(Kdim^2*(1 + (Dim*univ)/Kdim + (Dim*univ)^2/Kdim^2 + R/Kr)));
+  mRNAAprEsyn:  => mAprE; (Kr1/(R + Kr1))*(Iro*(Dim*univ/Kdim + 1)/(1 + Dim*univ/Kdim + (Dim*univ)^2/Kdim^2 + R/Kr) + Irmax*(Dim*univ)^2/(Kdim^2*(1 + Dim*univ/Kdim + (Dim*univ)^2/Kdim^2 + R/Kr)));
   phosphorylation: DegU => DegUP; kphos*DegU;
   synthesisDegU:  => DegU; ksyn1*mDegU*univ;
-  synthesismRNA:  => mDegU; (Io*K)/(Dim*univ + K) + (Imax*Dim*univ)/(Dim*univ + K);
+  synthesismRNA:  => mDegU; Io*K/(Dim*univ + K) + Imax*Dim*univ/(Dim*univ + K);
 
   // Species initializations:
   AprE = 0;
@@ -73,4 +73,78 @@ model *Veening2008_DegU_Regulation()
   volume is "femtolitre";
   substance is "molecules";
   ratio is "kphosratiokdephos";
+
+  // SBO terms:
+  univ.sboTerm = 290
+  AprE.sboTerm = 245
+  DegU.sboTerm = 245
+  DegUP.sboTerm = 245
+  Dim.sboTerm = 420
+  mAprE.sboTerm = 278
+  mDegU.sboTerm = 278
+  Imax.sboTerm = 186
+  Io.sboTerm = 186
+  Irmax.sboTerm = 186
+  Iro.sboTerm = 186
+  K.sboTerm = 281
+  Kdim.sboTerm = 281
+  Kr.sboTerm = 282
+  Kr1.sboTerm = 282
+  ka.sboTerm = 341
+  kd.sboTerm = 282
+  kdeg.sboTerm = 9
+  kdegA.sboTerm = 9
+  kdegm.sboTerm = 9
+  kdephos.sboTerm = 9
+  kphos.sboTerm = 9
+  ksyn.sboTerm = 9
+  ksyn1.sboTerm = 9
+  AprEdeg.sboTerm = 179
+  AprEsyn.sboTerm = 184
+  DimerAss.sboTerm = 412
+  DimerDis.sboTerm = 180
+  degradation1.sboTerm = 179
+  degradation2.sboTerm = 179
+  degradation3.sboTerm = 179
+  degradationmRNA.sboTerm = 179
+  dephosphorylation.sboTerm = 330
+  mRNAAprEdeg.sboTerm = 179
+  mRNAAprEsyn.sboTerm = 183
+  phosphorylation.sboTerm = 216
+  synthesisDegU.sboTerm = 184
+  synthesismRNA.sboTerm = 183
+
+  // CV terms:
+  univ hypernym "http://identifiers.org/go/GO:0005623"
+  AprE hypernym "http://identifiers.org/uniprot/P04189"
+  DegU hypernym "http://identifiers.org/uniprot/P13800"
+  DegUP hypernym "http://identifiers.org/uniprot/P13800"
+  Dim hypernym "http://identifiers.org/go/GO:0042803"
+  mAprE encodement "http://identifiers.org/uniprot/P04189"
+  mDegU encodement "http://identifiers.org/uniprot/P13800"
+  AprEdeg hypernym "http://identifiers.org/go/GO:0030163"
+  AprEsyn hypernym "http://identifiers.org/go/GO:0006412"
+  DimerAss hypernym "http://identifiers.org/go/GO:0042803"
+  DimerDis hypernym "http://identifiers.org/go/GO:0043241"
+  degradation1 hypernym "http://identifiers.org/go/GO:0030163"
+  degradation2 hypernym "http://identifiers.org/go/GO:0030163"
+  degradation3 hypernym "http://identifiers.org/go/GO:0030163"
+  degradationmRNA hypernym "http://identifiers.org/go/GO:0006402"
+  dephosphorylation hypernym "http://identifiers.org/go/GO:0006470"
+  mRNAAprEdeg hypernym "http://identifiers.org/go/GO:0006402"
+  mRNAAprEsyn hypernym "http://identifiers.org/go/GO:0009299"
+  phosphorylation hypernym "http://identifiers.org/go/GO:0006468"
+  synthesisDegU hypernym "http://identifiers.org/go/GO:0006412"
+  synthesismRNA hypernym "http://identifiers.org/go/GO:0006412"
 end
+
+Veening2008_DegU_Regulation is "Veening2008_DegU_Regulation"
+
+Veening2008_DegU_Regulation model_entity_is "http://identifiers.org/biomodels.db/MODEL8237240421"
+Veening2008_DegU_Regulation model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000240"
+Veening2008_DegU_Regulation description "http://identifiers.org/pubmed/18414485"
+Veening2008_DegU_Regulation taxon "http://identifiers.org/taxonomy/1423"
+Veening2008_DegU_Regulation taxon "http://identifiers.org/taxonomy/10160"
+Veening2008_DegU_Regulation hypernym "http://identifiers.org/go/GO:0035635",
+                                     "http://identifiers.org/go/GO:0034301"
+Veening2008_DegU_Regulation property "http://identifiers.org/mamo/MAMO_0000046"

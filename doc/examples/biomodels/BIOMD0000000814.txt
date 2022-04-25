@@ -1,0 +1,144 @@
+// Created by libAntimony v2.13.0
+function Function_for_Tumor_Cell_P_delayed_death(alpha_2, P, C)
+  alpha_2*P*C;
+end
+
+Function_for_Tumor_Cell_P_delayed_death is "Function for Tumor Cell P delayed death"
+
+function Function_for_Tumor_Cell_P_early_death(alpha_1, P, C)
+  alpha_1*P*C;
+end
+
+Function_for_Tumor_Cell_P_early_death is "Function for Tumor Cell P early death"
+
+function Function_for_Damaged_Tumor_Cell_D_death(rho, D, P, K, kappa)
+  rho*D*(1 - (P + D)/K)/kappa;
+end
+
+Function_for_Damaged_Tumor_Cell_D_death is "Function for Damaged Tumor Cell D death"
+
+function Function_for_Elimination_of_Chemotherapy(lambda, C)
+  lambda*C;
+end
+
+Function_for_Elimination_of_Chemotherapy is "Function for Elimination of Chemotherapy"
+
+function Function_for_Tumor_Cell_P_logistic_growth(P, D, K, rho)
+  rho*P*(1 - (P + D)/K);
+end
+
+Function_for_Tumor_Cell_P_logistic_growth is "Function for Tumor Cell P logistic growth"
+
+
+model *New_Model()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species Drug_Concentration_C in compartment_, Tumor_Cell_Population_P in compartment_;
+  species Damaged_Tumor_Cells_D in compartment_;
+
+  // Reactions:
+  Tumor_Cell_P_logistic_growth:  => Tumor_Cell_Population_P; compartment_*Function_for_Tumor_Cell_P_logistic_growth(Tumor_Cell_Population_P, Damaged_Tumor_Cells_D, K, rho);
+  Tumor_Cell_P_early_death: Tumor_Cell_Population_P => Damaged_Tumor_Cells_D; compartment_*Function_for_Tumor_Cell_P_early_death(alpha_1, Tumor_Cell_Population_P, Drug_Concentration_C);
+  Tumor_Cell_P_delayed_death: Tumor_Cell_Population_P => ; compartment_*Function_for_Tumor_Cell_P_delayed_death(alpha_2, Tumor_Cell_Population_P, Drug_Concentration_C);
+  Damaged_Tumor_Cell_D_death: Damaged_Tumor_Cells_D => ; compartment_*Function_for_Damaged_Tumor_Cell_D_death(rho, Damaged_Tumor_Cells_D, Tumor_Cell_Population_P, K, kappa);
+  Elimination_of_Chemotherapy: Drug_Concentration_C => ; compartment_*Function_for_Elimination_of_Chemotherapy(lambda, Drug_Concentration_C);
+
+  // Events:
+  injection_1: at (((time%28) == 27) && (time > 54)) && (time < 608): Drug_Concentration_C = Drug_Concentration_C + beta*b*d, dose1 = dose1 + 1;
+  injection_2: at (((time%28) == 0) && (time > 54)) && (time < 608): dose2 = dose2 + 1, Drug_Concentration_C = Drug_Concentration_C + beta*d*b;
+  injection_3: at (((((((((((((((((((time == 57) || (time == 85)) || (time == 113)) || (time == 141)) || (time == 169)) || (time == 197)) || (time == 225)) || (time == 253)) || (time == 281)) || (time == 309)) || (time == 337)) || (time == 365)) || (time == 393)) || (time == 421)) || (time == 449)) || (time == 477)) || (time == 505)) || (time == 533)) || (time == 561)) || (time == 589): dose3 = dose3 + 1, Drug_Concentration_C = Drug_Concentration_C + beta*b*d;
+  injection_4: at (((((((((((((((((((time == 58) || (time == 86)) || (time == 114)) || (time == 142)) || (time == 170)) || (time == 198)) || (time == 226)) || (time == 254)) || (time == 282)) || (time == 310)) || (time == 338)) || (time == 366)) || (time == 394)) || (time == 422)) || (time == 450)) || (time == 478)) || (time == 506)) || (time == 534)) || (time == 562)) || (time == 590): dose_4 = dose_4 + 1, Drug_Concentration_C = Drug_Concentration_C + beta*b*d;
+  injection_5: at (((((((((((((((((((time == 59) || (time == 87)) || (time == 115)) || (time == 143)) || (time == 171)) || (time == 199)) || (time == 227)) || (time == 255)) || (time == 283)) || (time == 311)) || (time == 339)) || (time == 367)) || (time == 395)) || (time == 423)) || (time == 451)) || (time == 479)) || (time == 507)) || (time == 535)) || (time == 563)) || (time == 591): dose_5 = dose_5 + 1, Drug_Concentration_C = Drug_Concentration_C + beta*b*d;
+
+  // Species initializations:
+  Drug_Concentration_C = 0;
+  Tumor_Cell_Population_P = 144.952075141053;
+  Damaged_Tumor_Cells_D = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  dose1 = 0;
+  beta = 0.0021;
+  beta has unit_4;
+  b = 1.9;
+  b has unit_3;
+  d = 150;
+  d has unit_2;
+  dose2 = 0;
+  dose3 = 0;
+  dose_4 = 0;
+  dose_5 = 0;
+  alpha_1 = 0.1027971308;
+  alpha_2 = 0.1396877593;
+  lambda = 8.3184;
+  lambda has unit_0;
+  K = 261.799;
+  K has unit_1;
+  kappa = 1;
+  rho = 0.002931927433;
+  rho has unit_0;
+
+  // Other declarations:
+  var dose1, dose2, dose3, dose_4, dose_5;
+  const compartment_, beta, b, d, alpha_1, alpha_2, lambda, K, kappa, rho;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit unit_0 = 1 / 86400e-1 second;
+  unit unit_1 = metre^3;
+  unit unit_2 = 1e-3 gram / metre^2;
+  unit unit_3 = metre^2;
+  unit unit_4 = 1 / 1e-3 litre;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1/d";
+  unit_1 is "m^3";
+  unit_2 is "mg/m^2";
+  unit_3 is "m^2";
+  unit_4 is "1/ml";
+  compartment_ is "compartment";
+  Drug_Concentration_C is "Drug Concentration C";
+  Tumor_Cell_Population_P is "Tumor Cell Population P";
+  Damaged_Tumor_Cells_D is "Damaged Tumor Cells D";
+  injection_1 is "injection 1";
+  injection_2 is "injection 2";
+  injection_3 is "injection 3";
+  injection_4 is "injection 4";
+  dose_4 is "dose 4";
+  injection_5 is "injection 5";
+  dose_5 is "dose 5";
+  Tumor_Cell_P_logistic_growth is "Tumor Cell P logistic growth";
+  Tumor_Cell_P_early_death is "Tumor Cell P early death";
+  Tumor_Cell_P_delayed_death is "Tumor Cell P delayed death";
+  Damaged_Tumor_Cell_D_death is "Damaged Tumor Cell D death";
+  Elimination_of_Chemotherapy is "Elimination of Chemotherapy";
+
+  // CV terms:
+  compartment_ hypernym "http://identifiers.org/ncit/C13413"
+  Drug_Concentration_C hypernym "http://identifiers.org/ncit/C15632"
+  Drug_Concentration_C hypernym "http://identifiers.org/ncit/C41185"
+  Tumor_Cell_Population_P hypernym "http://identifiers.org/efo/0000311"
+  Damaged_Tumor_Cells_D hypernym "http://identifiers.org/efo/0000311"
+  Damaged_Tumor_Cells_D propertyBearer "http://identifiers.org/ncit/C25401"
+  Tumor_Cell_P_logistic_growth hypernym "http://identifiers.org/go/GO:0040007"
+  Tumor_Cell_P_early_death hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Tumor_Cell_P_delayed_death hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Damaged_Tumor_Cell_D_death hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Elimination_of_Chemotherapy hypernym "http://identifiers.org/sbo/SBO:0000179"
+end
+
+New_Model is "Perez-Garcia19 - Computational design of improved standardized chemotherapy protocols for grade 2 oligodendrogliomas"
+
+New_Model model_entity_is "http://identifiers.org/biomodels.db/MODEL1909170002",
+                          "http://identifiers.org/biomodels.db/BIOMD0000000814"
+New_Model property "http://identifiers.org/efo/0000632"
+New_Model property "http://identifiers.org/ncit/C1244"
+New_Model property "http://identifiers.org/mamo/MAMO_0000046"
+New_Model property "http://identifiers.org/ncit/C15632"
+New_Model property "http://identifiers.org/efo/0000311"
+New_Model description "http://identifiers.org/pubmed/31306418"

@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Wolf2001_Respiratory_Oscillations()
 
   // Compartments and Species:
@@ -16,25 +16,25 @@ model *Wolf2001_Respiratory_Oscillations()
   A2m := Am - A3m;
 
   // Reactions:
-  v1: $sul_ex => sul; (c0*k_v0)/(1 + (cys/Kc)^n);
+  v1: $sul_ex => sul; c0*k_v0/(1 + (cys/Kc)^n);
   v13: $eth_ex => eth; c0*k_v13;
   v2: sul + A3c => aps + $PPi; c1*k2*sul*A3c;
   v10: $oxy_ex => oxy; c0*k_v10;
   v14: oxy => $oxy_ex; c2*k14*oxy;
   v3: aps + A3c => pap + $A2c; c1*k3*aps*A3c;
-  v4: pap + 3N2 => hyd + 3$N1; c1*k4*pap*N2;
+  v4: pap + 3 N2 => hyd + 3 $N1; c1*k4*pap*N2;
   v5: hyd + oah => cys; c1*k5*hyd*oah;
   v6: cys => ; c1*k6*cys;
-  v7: eth + 2$N1 => aco + 2N2; c1*k7*eth*N1;
+  v7: eth + 2 $N1 => aco + 2 N2; c1*k7*eth*N1;
   v15: aco => oah; c1*k15*aco;
   v17: hyd => ; c1*k17*hyd;
   v18: oah => ; c1*k18*oah;
   v8: $S2 + aco => S1; c2*k8*aco*S2;
-  v9: S1 + 4$N1 => $S2 + 4N2; c2*k9*S1*N1;
-  v11a: $C1 + $Hm + N2 => $C2 + $Ho + $N1; (c2*k11*N2*oxy)/((a*N2 + oxy)*(1 + (hyd/Kh)^m));
-  v11a2: $C2 + oxy => $C1 + $H2O; (c2*k11*N2*oxy)/((a*N2 + oxy)*(1 + (hyd/Kh)^m));
+  v9: S1 + 4 $N1 => $S2 + 4 N2; c2*k9*S1*N1;
+  v11a: $C1 + $Hm + N2 => $C2 + $Ho + $N1; c2*k11*N2*oxy/((a*N2 + oxy)*(1 + (hyd/Kh)^m));
+  v11a2: $C2 + oxy => $C1 + $H2O; c2*k11*N2*oxy/((a*N2 + oxy)*(1 + (hyd/Kh)^m));
   v16: $A2c + A3m => $A2m + A3c; c2*k16*A3m*A2c;
-  v11b: $Ho + $A2m => $Hm + A3m; ((c2*3*k11*N2*oxy)/((a*N2 + oxy)*(1 + (hyd/Kh)^m))*A2m)/(Ka + A2m);
+  v11b: $Ho + $A2m => $Hm + A3m; (c2*3*k11*N2*oxy/((a*N2 + oxy)*(1 + (hyd/Kh)^m)))*A2m/(Ka + A2m);
   vLEAK: $Ho => $Hm; 0;
   v12: A3c => $A2c; c1*k12*A3c;
 
@@ -147,4 +147,71 @@ model *Wolf2001_Respiratory_Oscillations()
   v11a is "vET1";
   v11a2 is "vET2";
   v11b is "vSYNT";
+
+  // CV terms:
+  c0 hypernym "http://identifiers.org/obo.go/GO:0005576"
+  c1 hypernym "http://identifiers.org/obo.go/GO:0005829"
+  c2 hypernym "http://identifiers.org/obo.go/GO:0005739"
+  sul_ex identity "http://identifiers.org/obo.chebi/CHEBI:16189"
+  eth_ex identity "http://identifiers.org/obo.chebi/CHEBI:16236"
+  oxy_ex identity "http://identifiers.org/obo.chebi/CHEBI:15379"
+  oxy identity "http://identifiers.org/obo.chebi/CHEBI:15379"
+  H2O identity "http://identifiers.org/obo.chebi/CHEBI:15377"
+  A3c identity "http://identifiers.org/obo.chebi/CHEBI:15422"
+  aps identity "http://identifiers.org/obo.chebi/CHEBI:17709"
+  PPi identity "http://identifiers.org/obo.chebi/CHEBI:18361"
+  pap identity "http://identifiers.org/obo.chebi/CHEBI:17980"
+  sul identity "http://identifiers.org/obo.chebi/CHEBI:16189"
+  eth identity "http://identifiers.org/obo.chebi/CHEBI:16236"
+  A2c identity "http://identifiers.org/obo.chebi/CHEBI:16761"
+  hyd identity "http://identifiers.org/obo.chebi/CHEBI:16136"
+  cys identity "http://identifiers.org/obo.chebi/CHEBI:17561"
+  N2 identity "http://identifiers.org/obo.chebi/CHEBI:16908"
+  N1 identity "http://identifiers.org/obo.chebi/CHEBI:15846"
+  aco identity "http://identifiers.org/obo.chebi/CHEBI:15351"
+  oah identity "http://identifiers.org/obo.chebi/CHEBI:16288"
+  S1 parthood "http://identifiers.org/obo.go/GO:0030062"
+  S2 parthood "http://identifiers.org/obo.go/GO:0030062"
+  C1 hypernym "http://identifiers.org/obo.go/GO:0005746"
+  C2 hypernym "http://identifiers.org/obo.go/GO:0005746"
+  A2m identity "http://identifiers.org/obo.chebi/CHEBI:16761"
+  A3m identity "http://identifiers.org/obo.chebi/CHEBI:15422"
+  Ho identity "http://identifiers.org/obo.chebi/CHEBI:24636"
+  Hm identity "http://identifiers.org/obo.chebi/CHEBI:24636"
+  v1 hypernym "http://identifiers.org/obo.go/GO:0015381"
+  v13 hypernym "http://identifiers.org/obo.go/GO:0015850"
+  v2 identity "http://identifiers.org/ec-code/2.7.7.4"
+  v3 identity "http://identifiers.org/ec-code/2.7.1.25"
+  v3 hypernym "http://identifiers.org/obo.go/GO:0004020"
+  v4 version "http://identifiers.org/ec-code/1.8.4.8",
+             "http://identifiers.org/ec-code/1.8.1.2"
+  v5 version "http://identifiers.org/ec-code/4.4.1.1",
+             "http://identifiers.org/ec-code/4.2.1.22",
+             "http://identifiers.org/ec-code/2.5.1.49"
+  v7 version "http://identifiers.org/ec-code/6.2.1.1",
+             "http://identifiers.org/ec-code/1.2.1.3",
+             "http://identifiers.org/ec-code/1.1.1.1"
+  v15 identity "http://identifiers.org/ec-code/2.3.1.31"
+  v8 parthood "http://identifiers.org/obo.go/GO:0006099"
+  v9 parthood "http://identifiers.org/obo.go/GO:0006099"
+  v11a identity "http://identifiers.org/obo.go/GO:0015990"
+  v11a parthood "http://identifiers.org/obo.go/GO:0042775"
+  v11a version "http://identifiers.org/obo.go/GO:0002082"
+  v11a2 parthood "http://identifiers.org/obo.go/GO:0042775"
+  v11a2 version "http://identifiers.org/obo.go/GO:0002082"
+  v11a2 identity "http://identifiers.org/obo.go/GO:0006123"
+  v16 identity "http://identifiers.org/obo.go/GO:0005471"
+  v11b parthood "http://identifiers.org/obo.go/GO:0042775"
+  v11b hypernym "http://identifiers.org/obo.go/GO:0006119"
+  v11b version "http://identifiers.org/obo.go/GO:0002082"
+  vLEAK hypernym "http://identifiers.org/obo.go/GO:0006810"
+  v12 hypernym "http://identifiers.org/obo.go/GO:0006200"
 end
+
+Wolf2001_Respiratory_Oscillations is "Wolf2001_Respiratory_Oscillations"
+
+Wolf2001_Respiratory_Oscillations model_entity_is "http://identifiers.org/biomodels.db/MODEL9728951048"
+Wolf2001_Respiratory_Oscillations model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000090"
+Wolf2001_Respiratory_Oscillations description "http://identifiers.org/pubmed/11423122"
+Wolf2001_Respiratory_Oscillations taxon "http://identifiers.org/taxonomy/4932"
+Wolf2001_Respiratory_Oscillations hypernym "http://identifiers.org/obo.go/GO:0019379"

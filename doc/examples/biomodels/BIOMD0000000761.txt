@@ -1,0 +1,221 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function Function_for_IL_21_Production_by_Tumor_1(Z, h)
+  h*Z^(3/2);
+end
+
+Function_for_IL_21_Production_by_Tumor_1 is "Function_for_IL-21_Production_by_Tumor_1"
+
+function Function_for_NK_Cell_Population_Growth_1(X, r1)
+  r1*X;
+end
+
+Function_for_NK_Cell_Population_Growth_1 is "Function_for_NK_Cell_Population_Growth_1"
+
+function Function_for_NK_Cell_Population_Growth_3(U, a)
+  a*U;
+end
+
+Function_for_NK_Cell_Population_Growth_3 is "Function_for_NK_Cell_Population_Growth_3"
+
+function Function_for_CD8_Population_Growth_Inhibition_1(M, Y, h2zero, r2, sigma, nD)
+  r2*Y^2/(h2zero + sigma*M/(1 + M/nD));
+end
+
+Function_for_CD8_Population_Growth_Inhibition_1 is "Function_for_CD8_Population_Growth_Inhibition_1"
+
+function Function_for_Cytotoxic_Protein_Secretion(b1, varU, b2)
+  b1*varU/(b2 + varU);
+end
+
+Function_for_Cytotoxic_Protein_Secretion is "Function_for_Cytotoxic_Protein_Secretion"
+
+function Function_for_NK_Cell_Population_Growth_IL_21_Inhibition_1(U, X, p1, p2, q1, r1)
+  r1*X^2/((p1*U + p2)/(U + q1));
+end
+
+Function_for_NK_Cell_Population_Growth_IL_21_Inhibition_1 is "Function_for_NK_Cell_Population_Growth_IL-21_Inhibition_1"
+
+function Function_for_Cytotoxic_Tumor_Killing(param1, mod1, mod2, sub1)
+  param1*mod1*mod2*sub1;
+end
+
+Function_for_Cytotoxic_Tumor_Killing is "Function_for_Cytotoxic_Tumor_Killing"
+
+function Function_for_NK_Cell_Population_Growth_2(Y, r2)
+  r2*Y;
+end
+
+Function_for_NK_Cell_Population_Growth_2 is "Function_for_NK_Cell_Population_Growth_2"
+
+function Function_for_Tumor_Growth_Exponential(varZ)
+  varZ^(-1/2)*varZ^(3/2)*10^-6;
+end
+
+Function_for_Tumor_Growth_Exponential is "Function_for_Tumor_Growth_Exponential"
+
+
+model *New_Model_1()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species U in compartment_, X in compartment_, Y in compartment_, M in compartment_;
+  species P in compartment_, Z in compartment_;
+
+  // Reactions:
+  IL_21_Clearance_Rate: U => ; compartment_*mu1*U;
+  IL_21_Production_by_Tumor:  => U; compartment_*Function_for_IL_21_Production_by_Tumor_1(Z, h);
+  NK_Cell_Population_Growth:  => X; compartment_*Function_for_NK_Cell_Population_Growth_1(X, r1);
+  NK_Cell_Population_Growth_IL_21_Inhibition: X => ; compartment_*Function_for_NK_Cell_Population_Growth_IL_21_Inhibition_1(U, X, p1, p2, q1, r1);
+  CD8_Population_Growth:  => Y; compartment_*Function_for_NK_Cell_Population_Growth_2(Y, r2);
+  CD8_Population_Growth_Inhibition: Y => ; compartment_*Function_for_CD8_Population_Growth_Inhibition_1(M, Y, h2zero, r2, sigma, D);
+  CD8_Memory_Formation:  => M; compartment_*Function_for_NK_Cell_Population_Growth_3(U, a);
+  CD8_Memory_Loss: M => ; compartment_*mu2*M;
+  Cytotoxic_Protein_Secretion:  => P; compartment_*Function_for_Cytotoxic_Protein_Secretion(b1, U, b2);
+  Cytotoxic_Protein_Degradation: P => ; compartment_*mu3*P;
+  Tumor_Killing_By_NK_Cells: Z => ; compartment_*Function_for_Cytotoxic_Tumor_Killing(k1, P, X, Z);
+  Tumor_Killing_By_CD8_Cells: Z => ; compartment_*Function_for_Cytotoxic_Tumor_Killing(k2, P, Y, Z);
+  Tumor_Growth:  => Z; compartment_*Constant_flux__irreversible(c);
+  Tumor_Growth_Exponential:  => Z; compartment_*Function_for_Tumor_Growth_Exponential(Z);
+
+  // Species initializations:
+  U = 0;
+  X = 1.95185;
+  Y = 0.066;
+  M = 0;
+  P = 0;
+  Z = 2;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  mu1 = 10;
+  mu1 has unit_0;
+  h = 634;
+  h has unit_1;
+  r1 = 0.095;
+  r1 has unit_0;
+  p1 = 0.01;
+  p2 = 1.054;
+  q1 = 0.54;
+  a = 0.58;
+  a has unit_2;
+  mu2 = 0.014;
+  mu2 has unit_0;
+  r2 = 0.26;
+  r2 has unit_0;
+  sigma = 0.003;
+  h2zero = 0.066;
+  D = 1418.4;
+  b1 = 1;
+  b1 has unit_3;
+  b2 = 0.1;
+  b2 has unit_4;
+  mu3 = 0.08;
+  mu3 has unit_0;
+  r3 = 0.48;
+  r3 has unit_0;
+  K = 400;
+  K has unit_5;
+  c = 5.1;
+  c has unit_6;
+  d = 0.145;
+  k1 = 0.05;
+  k1 has unit_7;
+  k2 = 0.0485;
+  k2 has unit_7;
+  z0 = 2;
+
+  // Other declarations:
+  const compartment_, mu1, h, r1, p1, p2, q1, a, mu2, r2, sigma, h2zero, D;
+  const b1, b2, mu3, r3, K, c, d, k1, k2, z0;
+
+  // Unit definitions:
+  unit length = 1e-3 metre;
+  unit area = (1e-3 metre)^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = 1e-9 mole;
+  unit unit_0 = 1 / 86400e-1 second;
+  unit unit_1 = 1e-12 mole / ((1e-3 metre)^4 * 86400e-1 second);
+  unit unit_2 = 1e-3 litre / (1e-9 mole * 86400e-1 second);
+  unit unit_3 = 1e-9 mole / (1e-3 litre * 86400e-1 second);
+  unit unit_4 = 1e-9 mole / 1e-3 litre;
+  unit unit_5 = (0.793701e-3 metre)^3;
+  unit unit_6 = (1e-3 metre)^2 / 86400e-1 second;
+  unit unit_7 = 1e-3 litre / (1e-9 mole * 86400e-1 second);
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1/d";
+  unit_1 is "nmol/(mm*ml*d)";
+  unit_2 is "ml/(nmol*d)";
+  unit_3 is "nmol/(d*ml)";
+  unit_4 is "nmol/ml";
+  unit_5 is "mm^3/2";
+  unit_6 is "(mm^2)/d";
+  unit_7 is "ml/(d*nmol)";
+  compartment_ is "compartment";
+  U is "U_IL-21";
+  X is "X_NK_T_Cells";
+  Y is "Y_CD8_T_Cells";
+  M is "M_CD8_Memory_Factor";
+  P is "P_Cytotoxic_Protein";
+  Z is "Z_Tumor_SA";
+  D is "nD";
+  IL_21_Clearance_Rate is "IL-21_Clearance";
+  IL_21_Production_by_Tumor is "IL-21_Production_by_Tumor";
+  NK_Cell_Population_Growth_IL_21_Inhibition is "NK_Cell_Population_Growth_IL-21_Inhibition";
+  Tumor_Killing_By_CD8_Cells is "Tumor_Killing_By_CD8_TCells";
+
+  // CV terms:
+  compartment_ hypernym "http://identifiers.org/ncit/C13041"
+  U identity "http://identifiers.org/uniprot/Q9ES17"
+  X hypernym "http://identifiers.org/bto/BTO:0000914"
+  X container "http://identifiers.org/bto/BTO:0001281"
+  Y hypernym "http://identifiers.org/ncit/C12542"
+  Y hypernym "http://identifiers.org/cl/CL:0000811"
+  Y container "http://identifiers.org/bto/BTO:0000784"
+  M hypernym "http://identifiers.org/ncit/C48806"
+  P version "http://identifiers.org/uniprot/A2RSY7"
+  P version "http://identifiers.org/uniprot/C4NUM1"
+  Z hypernym "http://identifiers.org/ncit/C25245"
+  Z propertyBearer "http://identifiers.org/ncit/C98275"
+  IL_21_Clearance_Rate hypernym "http://identifiers.org/sbo/SBO:0000179"
+  IL_21_Production_by_Tumor hypernym "http://identifiers.org/ncit/C18971"
+  IL_21_Production_by_Tumor hypernym "http://identifiers.org/sbo/SBO:0000393"
+  NK_Cell_Population_Growth hypernym "http://identifiers.org/sbo/SBO:0000393"
+  NK_Cell_Population_Growth_IL_21_Inhibition hypernym "http://identifiers.org/ncit/C20751"
+  NK_Cell_Population_Growth_IL_21_Inhibition hypernym "http://identifiers.org/sbo/SBO:0000179"
+  CD8_Population_Growth hypernym "http://identifiers.org/sbo/SBO:0000393"
+  CD8_Population_Growth_Inhibition hypernym "http://identifiers.org/sbo/SBO:0000179"
+  CD8_Population_Growth_Inhibition hypernym "http://identifiers.org/ncit/C20751"
+  CD8_Memory_Formation hypernym "http://identifiers.org/sbo/SBO:0000393"
+  CD8_Memory_Loss hypernym "http://identifiers.org/go/GO:0008219"
+  CD8_Memory_Loss hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Cytotoxic_Protein_Secretion hypernym "http://identifiers.org/sbo/SBO:0000393"
+  Cytotoxic_Protein_Degradation hypernym "http://identifiers.org/ncit/C18104"
+  Cytotoxic_Protein_Degradation hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Tumor_Killing_By_NK_Cells hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Tumor_Killing_By_CD8_Cells hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Tumor_Growth hypernym "http://identifiers.org/sbo/SBO:0000393"
+  Tumor_Growth_Exponential hypernym "http://identifiers.org/sbo/SBO:0000393"
+end
+
+New_Model_1 is "Cappuccio2006 - Cancer immunotherapy by interleukin-21"
+
+New_Model_1 description "http://identifiers.org/pubmed/16849579"
+New_Model_1 model_entity_is "http://identifiers.org/biomodels.db/MODEL1907230001",
+                            "http://identifiers.org/biomodels.db/BIOMD0000000761"
+New_Model_1 part "http://identifiers.org/go/GO:0002420"
+New_Model_1 part "http://identifiers.org/go/GO:0002419"
+New_Model_1 property "http://identifiers.org/ncit/C15438"
+New_Model_1 property "http://identifiers.org/mamo/MAMO_0000046"
+New_Model_1 property "http://identifiers.org/ncit/C15543"
+New_Model_1 taxon "http://identifiers.org/taxonomy/10090"

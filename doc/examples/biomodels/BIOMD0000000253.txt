@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Teusink1998_Glycolysis_TurboDesign()
 
   // Compartments and Species:
@@ -13,14 +13,14 @@ model *Teusink1998_Glycolysis_TurboDesign()
   lambda2 := ATP/KRATP;
   lambda3 := ATP/KiATP;
   R := 1 + lambda1 + lambda2 + gR*lambda1*lambda2;
-  T := 1 + c1*lambda1 + c2*lambda2 + gT_*c1*lambda1*c2*lambda2;
+  T := 1 + c1*lambda1 + c2*lambda2 + gT*c1*lambda1*c2*lambda2;
   L := L0*((1 + ci*lambda3)/(1 + lambda3))^2;
 
   // Reactions:
-  HK: $Glc + ATP => HMP; (cell*HK_VHK*Glc*ATP)/(HK_KGlc*HK_KATP)/((1 + Glc/HK_KGlc + (HK_wild_type*Tre6P)/HK_KiTre6P)*(1 + ATP/HK_KATP));
-  PFK: HMP + ATP => Fru16P2; (cell*PFK_VPFK*gR*lambda1*lambda2*R)/(R^2 + L*T^2);
-  lower: Fru16P2 + 4$ADP => 4ATP; (cell*lower_Vlower*Fru16P2*ADP)/(lower_KFru16P2*lower_KADP)/((1 + Fru16P2/lower_KFru16P2)*(1 + ADP/lower_KADP));
-  ATPase: ATP => $ADP; (cell*ATPase_VATPase*ATP)/(ATPase_KATP + ATP);
+  HK: $Glc + ATP => HMP; cell*HK_VHK*Glc*ATP/(HK_KGlc*HK_KATP)/((1 + Glc/HK_KGlc + HK_wild_type*Tre6P/HK_KiTre6P)*(1 + ATP/HK_KATP));
+  PFK: HMP + ATP => Fru16P2; cell*PFK_VPFK*gR*lambda1*lambda2*R/(R^2 + L*T^2);
+  lower: Fru16P2 + 4 $ADP => 4 ATP; cell*lower_Vlower*Fru16P2*ADP/(lower_KFru16P2*lower_KADP)/((1 + Fru16P2/lower_KFru16P2)*(1 + ADP/lower_KADP));
+  ATPase: ATP => $ADP; cell*ATPase_VATPase*ATP/(ATPase_KATP + ATP);
 
   // Species initializations:
   HMP = 0.1;
@@ -41,7 +41,7 @@ model *Teusink1998_Glycolysis_TurboDesign()
   gR = 10;
   c1 = 0.0005;
   c2 = 1;
-  gT_ = 1;
+  gT = 1;
   L0 = 1000;
   ci = 10;
   HK_VHK = 68;
@@ -69,7 +69,7 @@ model *Teusink1998_Glycolysis_TurboDesign()
 
   // Other declarations:
   var lambda1, lambda2, lambda3, R, T, L;
-  const cell, KRHMP, KRATP, KiATP, gR, c1, c2, gT_, L0, ci;
+  const cell, KRHMP, KRATP, KiATP, gR, c1, c2, gT, L0, ci;
 
   // Unit definitions:
   unit substance = 1e-3 mole;
@@ -87,4 +87,73 @@ model *Teusink1998_Glycolysis_TurboDesign()
   Tre6P is "trehalose 6-phosphate";
   HK is "hexokinase";
   PFK is "phosphofructokinase";
+
+  // SBO terms:
+  HMP.sboTerm = 247
+  Fru16P2.sboTerm = 247
+  ATP.sboTerm = 247
+  Glc.sboTerm = 247
+  Tre6P.sboTerm = 247
+  ADP.sboTerm = 247
+  KRHMP.sboTerm = 194
+  KRATP.sboTerm = 194
+  KiATP.sboTerm = 261
+  HK.sboTerm = 176
+  HK_VHK.sboTerm = 324
+  HK_KATP.sboTerm = 322
+  HK_KGlc.sboTerm = 322
+  HK_KiTre6P.sboTerm = 261
+  PFK.sboTerm = 176
+  PFK_VPFK.sboTerm = 324
+  lower.sboTerm = 176
+  lower_Vlower.sboTerm = 324
+  lower_KFru16P2.sboTerm = 322
+  lower_KADP.sboTerm = 322
+  ATPase.sboTerm = 176
+  ATPase_VATPase.sboTerm = 324
+  ATPase_KATP.sboTerm = 322
+
+  // CV terms:
+  cell identity "http://identifiers.org/obo.go/GO:0005622"
+  HMP part "http://identifiers.org/obo.chebi/CHEBI:16084",
+           "http://identifiers.org/obo.chebi/CHEBI:17665"
+  Fru16P2 identity "http://identifiers.org/obo.chebi/CHEBI:16905"
+  ATP identity "http://identifiers.org/obo.chebi/CHEBI:15422"
+  Glc identity "http://identifiers.org/obo.chebi/CHEBI:17925"
+  Tre6P identity "http://identifiers.org/obo.chebi/CHEBI:18283"
+  ADP identity "http://identifiers.org/obo.chebi/CHEBI:16761"
+  HK homolog "http://identifiers.org/reactome/REACT_1318"
+  HK hypernym "http://identifiers.org/obo.go/GO:0004396"
+  HK hypernym "http://identifiers.org/kegg.reaction/R02848"
+  HK hypernym "http://identifiers.org/ec-code/2.7.1.1"
+  PFK homolog "http://identifiers.org/reactome/REACT_1840"
+  PFK hypernym "http://identifiers.org/obo.go/GO:0008662"
+  PFK hypernym "http://identifiers.org/ec-code/2.7.1.11"
+  PFK hypernym "http://identifiers.org/kegg.reaction/R00756"
+  lower version "http://identifiers.org/ec-code/4.1.2.13",
+                "http://identifiers.org/ec-code/5.3.1.1",
+                "http://identifiers.org/ec-code/4.2.1.11",
+                "http://identifiers.org/ec-code/5.4.2.1",
+                "http://identifiers.org/ec-code/2.7.2.3",
+                "http://identifiers.org/ec-code/2.7.1.40",
+                "http://identifiers.org/ec-code/1.2.1.12"
+  lower version "http://identifiers.org/kegg.reaction/R01070",
+                "http://identifiers.org/kegg.reaction/R01061",
+                "http://identifiers.org/kegg.reaction/R01015",
+                "http://identifiers.org/kegg.reaction/R01512",
+                "http://identifiers.org/kegg.reaction/R01518",
+                "http://identifiers.org/kegg.reaction/R00658",
+                "http://identifiers.org/kegg.reaction/R00200"
+  ATPase hypernym "http://identifiers.org/obo.go/GO:0016887"
+  ATPase hypernym "http://identifiers.org/ec-code/3.6.1.3"
 end
+
+Teusink1998_Glycolysis_TurboDesign is "Teusink1998_Glycolysis_TurboDesign"
+
+Teusink1998_Glycolysis_TurboDesign model_entity_is "http://identifiers.org/biomodels.db/MODEL1007200002"
+Teusink1998_Glycolysis_TurboDesign model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000253"
+Teusink1998_Glycolysis_TurboDesign description "http://identifiers.org/pubmed/9612078"
+Teusink1998_Glycolysis_TurboDesign taxon "http://identifiers.org/taxonomy/4932"
+Teusink1998_Glycolysis_TurboDesign homolog "http://identifiers.org/reactome/REACT_1383"
+Teusink1998_Glycolysis_TurboDesign hypernym "http://identifiers.org/kegg.pathway/sce00010"
+Teusink1998_Glycolysis_TurboDesign hypernym "http://identifiers.org/obo.go/GO:0006096"

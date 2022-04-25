@@ -1,0 +1,313 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function Function_for_1_modifier_1_substrate(k, substrate, modifier)
+  k*substrate*modifier;
+end
+
+Function_for_1_modifier_1_substrate is "Function for 1 modifier 1 substrate"
+
+function function_for_reaction_14(k14, k14_, p53)
+  k14/(1 + k14_*p53);
+end
+
+function_for_reaction_14 is "function for reaction 14"
+
+function function_for_R15_MPF_degradation(k15, MPF)
+  k15*MPF*MPF;
+end
+
+function_for_R15_MPF_degradation is "function for R15 MPF degradation"
+
+function function_for_R18(k18, MPF, iCdc25Ps216, k_Plk1_)
+  k18*MPF*iCdc25Ps216 + k_Plk1_*iCdc25Ps216;
+end
+
+function_for_R18 is "function for R18"
+
+function function_for_R20(modifier, k)
+  k*modifier;
+end
+
+function_for_R20 is "function for R20"
+
+function function_for_R9(k9, aCdc25, aCdc25Ps216, preMPF, k9_)
+  k9*(aCdc25 + aCdc25Ps216)*preMPF + k9_*preMPF;
+end
+
+function_for_R9 is "function for R9"
+
+function function_for_R8(k8, MPF, Wee1, k8_)
+  k8*MPF*Wee1 + k8_*Wee1;
+end
+
+function_for_R8 is "function for R8"
+
+
+model *Aguda1999___G2_DNA_damage_checkpoint()
+
+  // Compartments and Species:
+  compartment nucleus;
+  species Cdc25_active in nucleus, Cdc25Ps216_active in nucleus, Cdc25_inactive in nucleus;
+  species Cdc25Ps216_inactive in nucleus, Chk1P in nucleus, protein_14_3_3 in nucleus;
+  species Cdc25Ps216_14_3_3_inactive in nucleus, p53 in nucleus, p21 in nucleus;
+  species MPF in nucleus, p21_MPF in nucleus, preMPF in nucleus, Wee1 in nucleus;
+  species Chk1 in nucleus, Rad3_ATM in nucleus, Wee1_phosphorylated in nucleus;
+  species $Cdc25_active_total in nucleus;
+
+  // Assignment Rules:
+  Cdc25_active_total := Cdc25_active + Cdc25Ps216_active;
+
+  // Reactions:
+  R2_Cdc25_Phosphorylation: Cdc25_active => Cdc25Ps216_active; nucleus*function_for_R18(k2, Chk1P, Cdc25_active, k_ctak1);
+  R2__Cdc25_Dephosphorylation: Cdc25Ps216_active => Cdc25_active; nucleus*k2_0*Cdc25Ps216_active;
+  R7__Cdc25_inactivation: Cdc25_active => Cdc25_inactive; nucleus*k7_0*Cdc25_active;
+  R7_Cdc25_Activation: Cdc25_inactive => Cdc25_active; nucleus*function_for_R18(k7, MPF, Cdc25_inactive, k_Plk1);
+  R18_Cdc25Ps216_activation: Cdc25Ps216_inactive => Cdc25Ps216_active; nucleus*function_for_R18(k18, MPF, Cdc25Ps216_inactive, k_Plk1_0);
+  R18__Cdc25Ps216_inactivation: Cdc25Ps216_active => Cdc25Ps216_inactive; nucleus*k18_0*Cdc25Ps216_active;
+  R2__Cdc25_Phosphorylation: Cdc25_inactive => Cdc25Ps216_inactive; nucleus*function_for_R18(k2_1, Chk1P, Cdc25_inactive, k_ctak1_0);
+  R3___Cdc25_protein_14_3_3_unbinding: Cdc25Ps216_14_3_3_inactive => protein_14_3_3 + Cdc25_inactive; nucleus*k_3*Cdc25Ps216_14_3_3_inactive;
+  R12_14_3_3_degradation: protein_14_3_3 => ; nucleus*k12*protein_14_3_3;
+  R13_14_3_3_synthesis:  => protein_14_3_3; nucleus*Constant_flux__irreversible(k13);
+  R6_14_3_3_synthesis_mediated_by_p53:  => protein_14_3_3; nucleus*function_for_R20(p53, k6);
+  R3___protein_14_3_3_Cdc25_binding: protein_14_3_3 + Cdc25Ps216_inactive => Cdc25Ps216_14_3_3_inactive; nucleus*k3*protein_14_3_3*Cdc25Ps216_inactive;
+  R20_p21_synthesis_mediated_by_p53:  => p21; nucleus*function_for_R20(p53, k20);
+  R21_p21_natural_synthesis:  => p21; nucleus*Constant_flux__irreversible(k21);
+  R22_p21_degradation: p21 => ; nucleus*k22*p21;
+  R23_p21_MPF_complex_formation: p21 + MPF => p21_MPF; nucleus*k23*p21*MPF;
+  R23__p21_MPF_unbinding: p21_MPF => p21 + MPF; nucleus*k_23*p21_MPF;
+  R9_MPF_activation: preMPF => MPF; nucleus*function_for_R9(k9, Cdc25_active, Cdc25Ps216_active, preMPF, k9_0);
+  R9__MPF_inactivation: MPF => preMPF; nucleus*Function_for_1_modifier_1_substrate(k9_1, MPF, Wee1);
+  R15_MPF_degradation: MPF => ; nucleus*function_for_R15_MPF_degradation(k15, MPF);
+  R14_preMPF_synthesis:  => preMPF; nucleus*function_for_reaction_14(k14, k14_0, p53);
+  R1_Chk1_Phosphorylation: Chk1 => Chk1P; nucleus*Function_for_1_modifier_1_substrate(k1, Chk1, Rad3_ATM);
+  R1__Chk1_Dephosphorylation: Chk1P => Chk1; nucleus*k1_0*Chk1P;
+  R4_Rad3_ATM_natural_synthesis:  => Rad3_ATM; nucleus*Constant_flux__irreversible(k4);
+  R5_Rad3_ATM_degradation: Rad3_ATM => ; nucleus*k5*Rad3_ATM;
+  R10_p53_synthesis:  => p53; nucleus*Constant_flux__irreversible(k10);
+  R11_p53_degradation: p53 => ; nucleus*k11*p53;
+  R16_Wee1_synthesis:  => Wee1; nucleus*Constant_flux__irreversible(k16);
+  R8_Wee1_Phosphorylation: Wee1 => Wee1_phosphorylated; nucleus*function_for_R8(k8, MPF, Wee1, k8_0);
+  R8__Wee1_Dephosphorylation: Wee1_phosphorylated => Wee1; nucleus*k8_1*Wee1_phosphorylated;
+  R17_Wee1P_degradation: Wee1_phosphorylated => ; nucleus*k17*Wee1_phosphorylated;
+  Rex_Nuclear_export_of_iCdc25Ps216_14_3_3: Cdc25Ps216_14_3_3_inactive => ; nucleus*kex*Cdc25Ps216_14_3_3_inactive;
+  Rin_nuclear_import_of_iCdc25:  => Cdc25_inactive; nucleus*Constant_flux__irreversible(kin);
+
+  // Species initializations:
+  Cdc25_active = 1e-06;
+  Cdc25Ps216_active = 0;
+  Cdc25_inactive = 1e-06;
+  Cdc25Ps216_inactive = 2e-05;
+  Chk1P = 1e-06;
+  protein_14_3_3 = 2;
+  Cdc25Ps216_14_3_3_inactive = 0.03;
+  p53 = 0;
+  p21 = 0;
+  MPF = 1e-08;
+  p21_MPF = 0;
+  preMPF = 1e-06;
+  Wee1 = 0.001;
+  Chk1 = 0.999999;
+  Rad3_ATM = 0;
+  Wee1_phosphorylated = 0;
+
+  // Compartment initializations:
+  nucleus = 1;
+
+  // Variable initializations:
+  k1 = 1;
+  k1_0 = 10;
+  k2 = 0.1;
+  k2_0 = 0.01;
+  k2_1 = 0.1;
+  k_ctak1 = 0;
+  k_ctak1_0 = 0;
+  k3 = 100;
+  k_3 = 0;
+  k4 = 0;
+  k5 = 1;
+  k6 = 0.01;
+  k7 = 1;
+  k_Plk1 = 0;
+  k7_0 = 0.01;
+  k8 = 0.1;
+  k8_0 = 0;
+  k8_1 = 0.01;
+  k9 = 1;
+  k9_0 = 0;
+  k9_1 = 1;
+  k10 = 0;
+  k11 = 1;
+  k12 = 0.1;
+  k13 = 1;
+  k14 = 0.0005;
+  k14_0 = 1;
+  k15 = 0.01;
+  k16 = 0.0002;
+  k17 = 0.1;
+  k18 = 1;
+  k_Plk1_0 = 0;
+  k18_0 = 0.01;
+  k20 = 0.1;
+  k21 = 0.01;
+  k22 = 0.1;
+  k23 = 0.1;
+  k_23 = 1;
+  kex = 1;
+  kin = 1e-05;
+
+  // Other declarations:
+  const nucleus, k1, k1_0, k2, k2_0, k2_1, k_ctak1, k_ctak1_0, k3, k_3, k4;
+  const k5, k6, k7, k_Plk1, k7_0, k8, k8_0, k8_1, k9, k9_0, k9_1, k10, k11;
+  const k12, k13, k14, k14_0, k15, k16, k17, k18, k_Plk1_0, k18_0, k20, k21;
+  const k22, k23, k_23, kex, kin;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 60 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+  protein_14_3_3 is "protein 14-3-3";
+  Cdc25Ps216_14_3_3_inactive is "Cdc25Ps216_14-3-3_inactive";
+  p21_MPF is "p21/MPF";
+  Rad3_ATM is "Rad3/ATM";
+  k1_0 is "k1-";
+  k2_0 is "k2-";
+  k2_1 is "k2_";
+  k_ctak1_0 is "k_ctak1_";
+  k3 is "k3_";
+  k_3 is "k-3_";
+  k7_0 is "k7-";
+  k8_0 is "k8_";
+  k8_1 is "k8-";
+  k9_0 is "k9_";
+  k9_1 is "k9-";
+  k14_0 is "k14_";
+  k_Plk1_0 is "k_Plk1_";
+  k18_0 is "k18-";
+  k_23 is "k-23";
+  R2_Cdc25_Phosphorylation is "R2 Cdc25 Phosphorylation";
+  R2__Cdc25_Dephosphorylation is "R2- Cdc25 Dephosphorylation";
+  R7__Cdc25_inactivation is "R7- Cdc25 inactivation";
+  R7_Cdc25_Activation is "R7 Cdc25 Activation";
+  R18_Cdc25Ps216_activation is "R18 Cdc25Ps216 activation";
+  R18__Cdc25Ps216_inactivation is "R18- Cdc25Ps216 inactivation";
+  R2__Cdc25_Phosphorylation is "R2_ Cdc25 Phosphorylation";
+  R3___Cdc25_protein_14_3_3_unbinding is "R3-_ Cdc25 protein 14-3-3 unbinding";
+  R12_14_3_3_degradation is "R12 14-3-3 degradation";
+  R13_14_3_3_synthesis is "R13 14-3-3 synthesis";
+  R6_14_3_3_synthesis_mediated_by_p53 is "R6 14-3-3 synthesis mediated by p53";
+  R3___protein_14_3_3_Cdc25_binding is "R3_  protein 14-3-3 Cdc25 binding";
+  R20_p21_synthesis_mediated_by_p53 is "R20 p21 synthesis mediated by p53";
+  R21_p21_natural_synthesis is "R21 p21 natural synthesis";
+  R22_p21_degradation is "R22 p21 degradation";
+  R23_p21_MPF_complex_formation is "R23 p21/MPF complex formation";
+  R23__p21_MPF_unbinding is "R23- p21 MPF unbinding";
+  R9_MPF_activation is "R9 MPF activation";
+  R9__MPF_inactivation is "R9- MPF inactivation";
+  R15_MPF_degradation is "R15 MPF degradation";
+  R14_preMPF_synthesis is "R14 preMPF synthesis";
+  R1_Chk1_Phosphorylation is "R1 Chk1 Phosphorylation";
+  R1__Chk1_Dephosphorylation is "R1- Chk1 Dephosphorylation";
+  R4_Rad3_ATM_natural_synthesis is "R4 Rad3/ATM natural synthesis";
+  R5_Rad3_ATM_degradation is "R5 Rad3/ATM degradation";
+  R10_p53_synthesis is "R10 p53 synthesis";
+  R11_p53_degradation is "R11 p53 degradation";
+  R16_Wee1_synthesis is "R16 Wee1 synthesis";
+  R8_Wee1_Phosphorylation is "R8 Wee1 Phosphorylation";
+  R8__Wee1_Dephosphorylation is "R8- Wee1 Dephosphorylation";
+  R17_Wee1P_degradation is "R17 Wee1P degradation";
+  Rex_Nuclear_export_of_iCdc25Ps216_14_3_3 is "Rex Nuclear export of iCdc25Ps216_14–3–3";
+  Rin_nuclear_import_of_iCdc25 is "Rin nuclear import of iCdc25";
+
+  // CV terms:
+  nucleus hypernym "http://identifiers.org/ncit/C13197"
+  Cdc25_active homolog "http://identifiers.org/uniprot/P30304"
+  Cdc25_active property "http://identifiers.org/ncit/C45329"
+  Cdc25Ps216_active homolog "http://identifiers.org/uniprot/P30304"
+  Cdc25Ps216_active property "http://identifiers.org/pato/PATO:0002220"
+  Cdc25Ps216_active property "http://identifiers.org/ncit/C45329"
+  Cdc25_inactive homolog "http://identifiers.org/uniprot/P30304"
+  Cdc25_inactive property "http://identifiers.org/ncit/C118254"
+  Cdc25Ps216_inactive homolog "http://identifiers.org/uniprot/P30304"
+  Cdc25Ps216_inactive property "http://identifiers.org/ncit/C118254"
+  Cdc25Ps216_inactive property "http://identifiers.org/pato/PATO:0002220"
+  Chk1P homolog "http://identifiers.org/uniprot/O14757"
+  Chk1P property "http://identifiers.org/pato/PATO:0002220"
+  protein_14_3_3 homolog "http://identifiers.org/uniprot/P31947"
+  Cdc25Ps216_14_3_3_inactive part "http://identifiers.org/uniprot/P30304"
+  Cdc25Ps216_14_3_3_inactive property "http://identifiers.org/go/GO:0032991"
+  Cdc25Ps216_14_3_3_inactive part "http://identifiers.org/uniprot/P31947"
+  Cdc25Ps216_14_3_3_inactive property "http://identifiers.org/ncit/C118254"
+  p53 homolog "http://identifiers.org/uniprot/P04637"
+  p21 homolog "http://identifiers.org/uniprot/P38936"
+  MPF part "http://identifiers.org/uniprot/P06493"
+  MPF property "http://identifiers.org/ncit/C45329"
+  MPF part "http://identifiers.org/uniprot/P14635"
+  MPF property "http://identifiers.org/go/GO:0032991"
+  p21_MPF part "http://identifiers.org/uniprot/P38936"
+  p21_MPF property "http://identifiers.org/go/GO:0032991"
+  p21_MPF part "http://identifiers.org/uniprot/P06493"
+  p21_MPF part "http://identifiers.org/uniprot/P14635"
+  preMPF part "http://identifiers.org/uniprot/P14635"
+  preMPF property "http://identifiers.org/ncit/C118254"
+  preMPF part "http://identifiers.org/uniprot/P06493"
+  preMPF property "http://identifiers.org/go/GO:0032991"
+  Wee1 homolog "http://identifiers.org/uniprot/P30291"
+  Chk1 homolog "http://identifiers.org/uniprot/O14757"
+  Rad3_ATM homolog "http://identifiers.org/uniprot/Q13535"
+  Wee1_phosphorylated homolog "http://identifiers.org/uniprot/P30291"
+  Wee1_phosphorylated property "http://identifiers.org/pato/PATO:0002220"
+  Cdc25_active_total homolog "http://identifiers.org/uniprot/P30304"
+  Cdc25_active_total property "http://identifiers.org/ncit/C45329"
+  R2_Cdc25_Phosphorylation hypernym "http://identifiers.org/go/GO:0016310"
+  R2__Cdc25_Dephosphorylation hypernym "http://identifiers.org/go/GO:0016311"
+  R7__Cdc25_inactivation hypernym "http://identifiers.org/go/GO:0016311"
+  R7_Cdc25_Activation hypernym "urn:miriam:sbo:SBO%3A0000656"
+  R7_Cdc25_Activation hypernym "http://identifiers.org/go/GO:0016310"
+  R18_Cdc25Ps216_activation hypernym "urn:miriam:sbo:SBO%3A0000656"
+  R18_Cdc25Ps216_activation hypernym "http://identifiers.org/go/GO:0016310"
+  R18__Cdc25Ps216_inactivation hypernym "http://identifiers.org/go/GO:0016311"
+  R2__Cdc25_Phosphorylation hypernym "http://identifiers.org/go/GO:0016310"
+  R3___Cdc25_protein_14_3_3_unbinding hypernym "urn:miriam:sbo:SBO%3A0000180"
+  R12_14_3_3_degradation hypernym "urn:miriam:sbo:SBO%3A0000179"
+  R13_14_3_3_synthesis hypernym "http://identifiers.org/ncit/C61408"
+  R6_14_3_3_synthesis_mediated_by_p53 hypernym "http://identifiers.org/ncit/C61408"
+  R3___protein_14_3_3_Cdc25_binding hypernym "http://identifiers.org/go/GO:0005515"
+  R20_p21_synthesis_mediated_by_p53 hypernym "http://identifiers.org/ncit/C61408"
+  R21_p21_natural_synthesis hypernym "http://identifiers.org/ncit/C61408"
+  R22_p21_degradation hypernym "urn:miriam:sbo:SBO%3A0000179"
+  R23_p21_MPF_complex_formation hypernym "http://identifiers.org/go/GO:0005515"
+  R23__p21_MPF_unbinding hypernym "urn:miriam:sbo:SBO%3A0000180"
+  R9_MPF_activation hypernym "urn:miriam:sbo:SBO%3A0000656"
+  R15_MPF_degradation hypernym "urn:miriam:sbo:SBO%3A0000179"
+  R14_preMPF_synthesis hypernym "http://identifiers.org/ncit/C61408"
+  R1_Chk1_Phosphorylation hypernym "http://identifiers.org/go/GO:0016310"
+  R1__Chk1_Dephosphorylation hypernym "http://identifiers.org/go/GO:0016311"
+  R4_Rad3_ATM_natural_synthesis hypernym "http://identifiers.org/ncit/C61408"
+  R5_Rad3_ATM_degradation hypernym "urn:miriam:sbo:SBO%3A0000179"
+  R10_p53_synthesis hypernym "http://identifiers.org/ncit/C61408"
+  R11_p53_degradation hypernym "urn:miriam:sbo:SBO%3A0000179"
+  R16_Wee1_synthesis hypernym "http://identifiers.org/ncit/C61408"
+  R8_Wee1_Phosphorylation hypernym "http://identifiers.org/go/GO:0016310"
+  R8__Wee1_Dephosphorylation hypernym "http://identifiers.org/go/GO:0016311"
+  R17_Wee1P_degradation hypernym "urn:miriam:sbo:SBO%3A0000179"
+  Rex_Nuclear_export_of_iCdc25Ps216_14_3_3 hypernym "http://identifiers.org/go/GO:0051168"
+  Rin_nuclear_import_of_iCdc25 hypernym "http://identifiers.org/go/GO:0051170"
+end
+
+Aguda1999___G2_DNA_damage_checkpoint is "Aguda1999 - G2 DNA damage checkpoint"
+
+Aguda1999___G2_DNA_damage_checkpoint model_entity_is "http://identifiers.org/biomodels.db/MODEL6960055446"
+Aguda1999___G2_DNA_damage_checkpoint model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000704"
+Aguda1999___G2_DNA_damage_checkpoint description "http://identifiers.org/pubmed/10500180"
+Aguda1999___G2_DNA_damage_checkpoint part "http://identifiers.org/go/GO:0031572"
+Aguda1999___G2_DNA_damage_checkpoint property "http://identifiers.org/mamo/MAMO_0000046"
+Aguda1999___G2_DNA_damage_checkpoint taxon "http://identifiers.org/taxonomy/7742"
+Aguda1999___G2_DNA_damage_checkpoint description "http://identifiers.org/pubmed/10500180"

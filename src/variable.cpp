@@ -14,6 +14,7 @@
 #endif
 
 using namespace std;
+using namespace libsbml;
 
 Variable::Variable(const string name, const Module* module)
   : Annotated(),
@@ -144,6 +145,7 @@ formula_type Variable::GetFormulaType() const
   case varSpeciesUndef:
   case varCompartment:
   case varUndefined:
+  case varStoichiometry:
     return m_formulatype;
   case varFormulaOperator:
   case varDNA:
@@ -183,6 +185,7 @@ const Formula* Variable::GetFormula() const
   case varDNA:
   case varUnitDefinition:
   case varUncertWrapper:
+  case varStoichiometry:
     return &(m_valFormula);
   case varReactionUndef:
   case varReactionGene:
@@ -221,6 +224,7 @@ Formula* Variable::GetFormula()
   case varUndefined:
   case varUnitDefinition:
   case varUncertWrapper:
+  case varStoichiometry:
     return &(m_valFormula);
   case varReactionUndef:
   case varReactionGene:
@@ -255,6 +259,7 @@ const Formula* Variable::GetInitialAssignment() const
   case varSpeciesUndef:
   case varCompartment:
   case varUndefined:
+  case varStoichiometry:
     if (m_formulatype == formulaINITIAL || m_formulatype==formulaRATE) {
       return &(m_valFormula);
     }
@@ -294,6 +299,7 @@ const Formula* Variable::GetAssignmentRuleOrKineticLaw() const
   case varSpeciesUndef:
   case varCompartment:
   case varUndefined:
+  case varStoichiometry:
     if (m_formulatype == formulaASSIGNMENT) {
       return &(m_valFormula);
     }
@@ -332,6 +338,7 @@ Formula* Variable::GetAssignmentRuleOrKineticLaw()
   case varSpeciesUndef:
   case varCompartment:
   case varUndefined:
+  case varStoichiometry:
     if (GetFormulaType() == formulaASSIGNMENT) {
       return &(m_valFormula);
     }
@@ -484,7 +491,7 @@ Variable* Variable::GetSubVariable(const string* name)
     Variable* var = m_valModule[0].GetSubVariable(name);
     if (var != NULL) return var;
   }
-  if (name && CaselessStrCmp(*name, "sboTerm")) {
+  if (name && CaselessStrCmp(true, *name, "sboTerm")) {
     if (!m_sboTermWrapper)
       m_sboTermWrapper = new SboTermWrapper(this);
     return m_sboTermWrapper;
@@ -570,6 +577,7 @@ bool Variable::GetIsConst() const
   case varFormulaOperator:
   case varDNA:
   case varCompartment:
+  case varStoichiometry:
     if (m_const == constDEFAULT) {
       if (GetFormula() != NULL) {
         if (GetFormula()->GetIsConst()) {
@@ -811,6 +819,7 @@ bool Variable::SetType(var_type newtype)
     case varConstraint:
     case varSboTermWrapper:
     case varUncertWrapper:
+    case varStoichiometry:
       g_registry.SetError(error); return true;
     }
   case varFormulaUndef:
@@ -826,6 +835,7 @@ bool Variable::SetType(var_type newtype)
     case varEvent:
     case varDeleted:
     case varConstraint:
+    case varStoichiometry:
       m_type = newtype;
       return false;
     case varUnitDefinition:
@@ -869,6 +879,7 @@ bool Variable::SetType(var_type newtype)
     case varConstraint:
     case varSboTermWrapper:
     case varUncertWrapper:
+    case varStoichiometry:
       g_registry.SetError(error); return true;
     }
   case varFormulaOperator:
@@ -891,6 +902,7 @@ bool Variable::SetType(var_type newtype)
     case varConstraint:
     case varSboTermWrapper:
     case varUncertWrapper:
+    case varStoichiometry:
       g_registry.SetError(error); return true;
     }
   case varReactionGene:
@@ -913,6 +925,7 @@ bool Variable::SetType(var_type newtype)
     case varConstraint:
     case varSboTermWrapper:
     case varUncertWrapper:
+    case varStoichiometry:
       g_registry.SetError(error); return true;
     }
   case varReactionUndef:
@@ -937,12 +950,14 @@ bool Variable::SetType(var_type newtype)
     case varConstraint:
     case varSboTermWrapper:
     case varUncertWrapper:
+    case varStoichiometry:
       g_registry.SetError(error); return true;
     }
   case varInteraction:
   case varEvent:
   case varCompartment:
   case varUnitDefinition:
+  case varStoichiometry:
     if (newtype == varFormulaUndef || newtype == varUndefined) return false;
     g_registry.SetError(error); return true; //the already-identical cases handled above.
   case varUndefined:
@@ -1026,6 +1041,7 @@ bool Variable::SetFormula(Formula* formula, bool isObjective)
   case varCompartment:
   case varSpeciesUndef:
   case varUncertWrapper:
+  case varStoichiometry:
     if (m_formulatype == formulaASSIGNMENT) {
       g_registry.SetError("Cannot set '" + GetNameDelimitedBy(".") + "' to have the initial value '" + formula->ToDelimitedStringWithEllipses(".") + "' because it already has an assignment rule, which applies at all times, including time=0.");
       return true;
@@ -1352,6 +1368,7 @@ bool Variable::SetIsConst(bool constant)
   case varSpeciesUndef:
   case varUndefined:
   case varCompartment:
+  case varStoichiometry:
     //These types can always be set const or non-const, even if they have assignment rules.
     break;
   case varReactionUndef:
@@ -1480,6 +1497,7 @@ bool Variable::SetSuperCompartment(Variable* var, var_type supertype)
   case varSboTermWrapper:
   case varUncertWrapper:
   case varConstraint:
+  case varStoichiometry:
     assert(false); // Those things don't have components
     return false;
   case varStrand:
@@ -1527,6 +1545,7 @@ void Variable::SetComponentCompartments(bool frommodule)
   case varSboTermWrapper:
   case varUncertWrapper:
   case varConstraint:
+  case varStoichiometry:
     return; //No components to set
   case varReactionUndef:
   case varReactionGene:
@@ -1701,6 +1720,7 @@ bool Variable::DeleteFromSubmodel(Variable* deletedvar)
  case varFormulaUndef:
  case varUndefined:
  case varCompartment:
+ case varStoichiometry:
    switch (deletedvar->GetFormulaType()) {
    case formulaRATE:
      if (!rform->IsEmpty()) {
@@ -2241,6 +2261,7 @@ bool Variable::AllowedInFormulas() const
   case varUndefined:
   case varCompartment:
   case varUnitDefinition:
+  case varStoichiometry:
     return true;
 
   case varInteraction:
@@ -2307,6 +2328,7 @@ void Variable::ReadAnnotationFrom(const SBase * sbmlobj)
   if (dsbp == NULL || dsbp->getNumUncertainties() == 0) {
     return;
   }
+  g_registry.GetModule(m_module)->setUsedDistrib(true);
   const Uncertainty* uncertainty = dsbp->getUncertainty(0);
   for (unsigned long u = 0; u < uncertainty->getNumUncertParameters(); u++) {
     const UncertParameter* up = uncertainty->getUncertParameter(u);

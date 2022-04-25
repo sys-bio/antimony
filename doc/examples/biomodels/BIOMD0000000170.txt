@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Weimann2004_CircadianOscillator()
 
   // Compartments and Species:
@@ -7,8 +7,8 @@ model *Weimann2004_CircadianOscillator()
   species y5 in Cytoplasm, y6 in Nucleus, y7 in Nucleus;
 
   // Assignment Rules:
-  trans_per2_cry := (v1b*(y7 + c))/(k1b*(1 + (y3/k1i)^hill_coeff) + y7 + c);
-  trans_Bmal1 := (v4b*y3^r)/(k4b^r + y3^r);
+  trans_per2_cry := v1b*(y7 + c)/(k1b*(1 + (y3/k1i)^hill_coeff) + y7 + c);
+  trans_Bmal1 := v4b*y3^r/(k4b^r + y3^r);
   y5_y6_y7 := y5 + y6 + y7;
 
   // Reactions:
@@ -121,4 +121,46 @@ model *Weimann2004_CircadianOscillator()
   y5 is "BMAL1_cytoplasm";
   y6 is "BMAL1_nucleus";
   y7 is "Active BMAL1";
+
+  // CV terms:
+  y1 encodement "http://identifiers.org/uniprot/O15055",
+                "http://identifiers.org/uniprot/Q16526"
+  y1 hypernym "http://identifiers.org/obo.chebi/CHEBI:33699",
+              "http://identifiers.org/kegg.compound/C00046"
+  y2 part "http://identifiers.org/uniprot/O15055",
+          "http://identifiers.org/uniprot/Q16526"
+  y3 part "http://identifiers.org/uniprot/O15055",
+          "http://identifiers.org/uniprot/Q16526"
+  y4 hypernym "http://identifiers.org/obo.chebi/CHEBI:33699",
+              "http://identifiers.org/kegg.compound/C00046"
+  y4 encodement "http://identifiers.org/uniprot/Q8IUT4"
+  y5 hypernym "http://identifiers.org/uniprot/Q8IUT4"
+  y6 hypernym "http://identifiers.org/uniprot/Q8IUT4"
+  y7 hypernym "http://identifiers.org/uniprot/Q8IUT4"
+  per2_cry_transcription hypernym "http://identifiers.org/obo.go/GO:0006351"
+  per2_cry_mRNA_degradation hypernym "http://identifiers.org/obo.go/GO:0006402"
+  per2_cry_complex_formation hypernym "http://identifiers.org/obo.go/GO:0046982"
+  cytoplasmic_per2_cry_complex_degradation hypernym "http://identifiers.org/obo.go/GO:0044257"
+  per2_cry_nuclear_import hypernym "http://identifiers.org/obo.go/GO:0051170"
+  per2_cry_nuclear_export hypernym "http://identifiers.org/obo.go/GO:0051168"
+  nuclear_per2_cry_complex_degradation hypernym "http://identifiers.org/obo.go/GO:0044257"
+  Bmal1_transcription hypernym "http://identifiers.org/obo.go/GO:0006351"
+  Bmal1_mRNA_degradation hypernym "http://identifiers.org/obo.go/GO:0006402"
+  BMAL1_translation hypernym "http://identifiers.org/obo.go/GO:0006412"
+  cytoplasmic_BMAL1_degradation hypernym "http://identifiers.org/obo.go/GO:0044257"
+  BMAL1_nuclear_import hypernym "http://identifiers.org/obo.go/GO:0051170"
+  BMAL1_nuclear_export hypernym "http://identifiers.org/obo.go/GO:0051168"
+  nuclear_BMAL1_degradation hypernym "http://identifiers.org/obo.go/GO:0044257"
+  BMAL1_activation hypernym "http://identifiers.org/obo.go/GO:0051091"
+  BMAL1_deactivation hypernym "http://identifiers.org/obo.go/GO:0043433"
+  Active_BMAL1_degradation hypernym "http://identifiers.org/obo.go/GO:0044257"
 end
+
+Weimann2004_CircadianOscillator is "Weimann2004_CircadianOscillator"
+
+Weimann2004_CircadianOscillator model_entity_is "http://identifiers.org/biomodels.db/MODEL8378813456"
+Weimann2004_CircadianOscillator model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000170"
+Weimann2004_CircadianOscillator description "http://identifiers.org/pubmed/15347590"
+Weimann2004_CircadianOscillator parthood "http://identifiers.org/kegg.pathway/hsa04710"
+Weimann2004_CircadianOscillator identity "http://identifiers.org/obo.go/GO:0007623"
+Weimann2004_CircadianOscillator taxon "http://identifiers.org/taxonomy/40674"

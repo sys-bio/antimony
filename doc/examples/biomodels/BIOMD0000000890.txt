@@ -1,0 +1,97 @@
+// Created by libAntimony v2.13.0
+function Function_for_HMGCR_Translation(m)
+  m;
+end
+
+Function_for_HMGCR_Translation is "Function_for_HMGCR_Translation"
+
+function Function_for_HMGCR_Transcription(mu_m, kappa_m, c, kappa_c, y, x)
+  mu_m/(1 + (kappa_m*(1 + (c/kappa_c)^y))^x);
+end
+
+Function_for_HMGCR_Transcription is "Function_for_HMGCR_Transcription"
+
+function Function_for_Cholesterol_Synthesis(mu_c, h)
+  mu_c*h;
+end
+
+Function_for_Cholesterol_Synthesis is "Function_for_Cholesterol_Synthesis"
+
+
+model *Bhattacharya2014___A_mathematical_model_of_the_sterol_regulatory_element_binding_protein_2_cholesterol_biosynthesis_pathway()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species m in compartment_, h in compartment_, c in compartment_;
+
+  // Assignment Rules:
+  HMGCR_Rescaled := h/0.001;
+  mRNA_Rescaled := m/2e-6;
+
+  // Reactions:
+  HMGCR_Transcription:  => m; compartment_*Function_for_HMGCR_Transcription(mu_m, kappa_m, c, kappa_c, y, x);
+  HMGCR_mRNA_Degradation: m => ; compartment_*delta_m*m;
+  HMGCR_Translation:  => h; compartment_*Function_for_HMGCR_Translation(m);
+  HMGCR_Degradation: h => ; compartment_*delta_h*h;
+  Cholesterol_Synthesis:  => c; compartment_*Function_for_Cholesterol_Synthesis(mu_c, h);
+  Cholesterol_Utilisation: c => ; compartment_*delta_c*c;
+
+  // Species initializations:
+  m = 3.65e-08;
+  h = 1.1e-05;
+  c = 0.023;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  mu_c = 0.462;
+  mu_m = 1.9e-10;
+  delta_m = 0.00135;
+  delta_h = 0.00193;
+  delta_c = 0.0036;
+  kappa_m = 0.0001;
+  kappa_c = 0.001;
+  x = 3;
+  y = 4;
+
+  // Other declarations:
+  var HMGCR_Rescaled, mRNA_Rescaled;
+  const compartment_, mu_c, mu_m, delta_m, delta_h, delta_c, kappa_m, kappa_c;
+  const x, y;
+
+  // Unit definitions:
+  unit substance = item;
+
+  // Display Names:
+  compartment_ is "compartment";
+
+  // SBO terms:
+  HMGCR_Transcription.sboTerm = 183
+  HMGCR_mRNA_Degradation.sboTerm = 179
+  HMGCR_Translation.sboTerm = 184
+  HMGCR_Degradation.sboTerm = 179
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/cl/CL:0000182"
+  m encodement "http://identifiers.org/ncit/C54701"
+  h identity "http://identifiers.org/ncit/C54701"
+  c identity "http://identifiers.org/chebi/CHEBI:16113"
+  HMGCR_Transcription identity "http://identifiers.org/sbo/SBO:0000183"
+  HMGCR_mRNA_Degradation identity "http://identifiers.org/sbo/SBO:0000179"
+  HMGCR_Translation identity "http://identifiers.org/sbo/SBO:0000184"
+  HMGCR_Degradation identity "http://identifiers.org/sbo/SBO:0000179"
+  Cholesterol_Synthesis identity "http://identifiers.org/go/GO:0006695"
+  Cholesterol_Utilisation hypernym "http://identifiers.org/sbo/SBO:0000179"
+end
+
+Bhattacharya2014___A_mathematical_model_of_the_sterol_regulatory_element_binding_protein_2_cholesterol_biosynthesis_pathway is "Bhattacharya2014 - A mathematical model of the sterol regulatory element binding protein 2 cholesterol biosynthesis pathway"
+
+Bhattacharya2014___A_mathematical_model_of_the_sterol_regulatory_element_binding_protein_2_cholesterol_biosynthesis_pathway description "http://identifiers.org/pubmed/24444765"
+Bhattacharya2014___A_mathematical_model_of_the_sterol_regulatory_element_binding_protein_2_cholesterol_biosynthesis_pathway model_entity_is "http://identifiers.org/biomodels.db/MODEL1912120004",
+                                                                                                                                            "http://identifiers.org/biomodels.db/BIOMD0000000890"
+Bhattacharya2014___A_mathematical_model_of_the_sterol_regulatory_element_binding_protein_2_cholesterol_biosynthesis_pathway property "http://identifiers.org/ncit/C17207"
+Bhattacharya2014___A_mathematical_model_of_the_sterol_regulatory_element_binding_protein_2_cholesterol_biosynthesis_pathway property "http://identifiers.org/mamo/MAMO_0000046"
+Bhattacharya2014___A_mathematical_model_of_the_sterol_regulatory_element_binding_protein_2_cholesterol_biosynthesis_pathway property "http://identifiers.org/pr/PR:000015612"
+Bhattacharya2014___A_mathematical_model_of_the_sterol_regulatory_element_binding_protein_2_cholesterol_biosynthesis_pathway property "http://identifiers.org/ncit/C21050"
+Bhattacharya2014___A_mathematical_model_of_the_sterol_regulatory_element_binding_protein_2_cholesterol_biosynthesis_pathway taxon "http://identifiers.org/taxonomy/9606"

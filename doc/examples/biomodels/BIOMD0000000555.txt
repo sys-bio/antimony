@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *MODEL1411100000()
 
   // Compartments and Species:
@@ -9,7 +9,7 @@ model *MODEL1411100000()
   Amyloid := 1 - exp(-(time/omega)^n);
   a := n*exp(-(n - 1)/n) - 1;
   ka := k/e;
-  t1 := (ln(1/C) - e + 1)*(1/k);
+  t1 := ((ln(1/C) - e) + 1)*(1/k);
 
   // Compartment initializations:
   Brain = 1;
@@ -33,4 +33,19 @@ model *MODEL1411100000()
   // Display Names:
   time_unit is "time";
   C is "C+";
+
+  // CV terms:
+  Brain identity "http://identifiers.org/bto/BTO:0000142"
+  Amyloid hypernym "http://identifiers.org/chebi/CHEBI:60425"
+  Amyloid property "http://identifiers.org/pato/PATO:0001629"
 end
+
+MODEL1411100000 is "Auer2010 - Correlation between lag time and aggregation rate in protein aggregation"
+
+MODEL1411100000 model_entity_is "http://identifiers.org/biomodels.db/MODEL1411100000"
+MODEL1411100000 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000555"
+MODEL1411100000 description "http://identifiers.org/pubmed/20602358"
+MODEL1411100000 taxon "http://identifiers.org/taxonomy/9606"
+MODEL1411100000 hypernym "http://identifiers.org/go/GO:1990000"
+MODEL1411100000 property "http://identifiers.org/doid/DOID:10652",
+                         "http://identifiers.org/doid/DOID:14330"

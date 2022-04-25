@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Yamada2003_JAK_STAT_Pathway()
 
   // Compartments and Species:
@@ -19,12 +19,12 @@ model *Yamada2003_JAK_STAT_Pathway()
   // Reactions:
   v1: JAK + R => RJ; cytoplasm*(v1_kf*R*JAK - v1_kb*RJ);
   v2: RJ + $IFN => IFNRJ; cytoplasm*(v2_kf*IFN*RJ - v2_kb*IFNRJ);
-  v3: 2IFNRJ => IFNRJ2; cytoplasm*(v3_kf*IFNRJ*IFNRJ - v3_kb*IFNRJ2);
+  v3: 2 IFNRJ => IFNRJ2; cytoplasm*(v3_kf*IFNRJ*IFNRJ - v3_kb*IFNRJ2);
   v4: IFNRJ2 => IFNRJ2_star; cytoplasm*v4_kf*IFNRJ2;
   v5: IFNRJ2_star + STAT1c => IFNRJ2_star_STAT1c; cytoplasm*(v5_kf*STAT1c*IFNRJ2_star - v5_kb*IFNRJ2_star_STAT1c);
   v6: IFNRJ2_star_STAT1c => STAT1c_star + IFNRJ2_star; cytoplasm*v6_kf*IFNRJ2_star_STAT1c;
   v7: STAT1c_star + IFNRJ2_star => IFNRJ2_star_STAT1c_star; cytoplasm*(v7_kf*IFNRJ2_star*STAT1c_star - v7_kb*IFNRJ2_star_STAT1c_star);
-  v8: 2STAT1c_star => STAT1c_star_STAT1c_star; cytoplasm*(v8_kf*STAT1c_star*STAT1c_star - v8_kb*STAT1c_star_STAT1c_star);
+  v8: 2 STAT1c_star => STAT1c_star_STAT1c_star; cytoplasm*(v8_kf*STAT1c_star*STAT1c_star - v8_kb*STAT1c_star_STAT1c_star);
   v9: SHP2 + IFNRJ2_star => IFNRJ2_star_SHP2; cytoplasm*(v9_kf*IFNRJ2_star*SHP2 - v9_kb*IFNRJ2_star_SHP2);
   v10: IFNRJ2_star_SHP2 => SHP2 + IFNRJ2; cytoplasm*v10_kf*IFNRJ2_star_SHP2;
   v11: STAT1c_star + PPX => STAT1c_star_PPX; cytoplasm*(v11_kf*PPX*STAT1c_star - v11_kb*STAT1c_star_PPX);
@@ -33,14 +33,14 @@ model *Yamada2003_JAK_STAT_Pathway()
   v14: STAT1c_star_STAT1c_star_PPX => STAT1c_STAT1c_star + PPX; cytoplasm*v14_kf*STAT1c_star_STAT1c_star_PPX;
   v15: STAT1c_star + STAT1c => STAT1c_STAT1c_star; cytoplasm*(v15_kf*STAT1c*STAT1c_star - v15_kb*STAT1c_STAT1c_star);
   v16: STAT1c_star_STAT1c_star => STAT1n_star_STAT1n_star; cytoplasm*v16_kf*STAT1c_star_STAT1c_star;
-  v17: 2STAT1n_star => STAT1n_star_STAT1n_star; nucleus*(v17_kf*STAT1n_star*STAT1n_star - v17_kb*STAT1n_star_STAT1n_star);
+  v17: 2 STAT1n_star => STAT1n_star_STAT1n_star; nucleus*(v17_kf*STAT1n_star*STAT1n_star - v17_kb*STAT1n_star_STAT1n_star);
   v18: STAT1n_star + PPN => STAT1n_star_PPN; nucleus*(v18_kf*PPN*STAT1n_star - v18_kb*STAT1n_star_PPN);
   v19: STAT1n_star_PPN => STAT1n + PPN; nucleus*v19_kf*STAT1n_star_PPN;
   v20: STAT1n_star_STAT1n_star + PPN => STAT1n_star_STAT1n_star_PPN; nucleus*(v20_kf*PPN*STAT1n_star_STAT1n_star - v20_kb*STAT1n_star_STAT1n_star_PPN);
   v21: STAT1n_star_STAT1n_star_PPN => STAT1n_STAT1n_star + PPN; nucleus*v21_kf*STAT1n_star_STAT1n_star_PPN;
   v22: STAT1n_star + STAT1n => STAT1n_STAT1n_star; nucleus*(v22_kf*STAT1n*STAT1n_star - v22_kb*STAT1n_STAT1n_star);
   v23: STAT1n => STAT1c; nucleus*v23_kf*STAT1n;
-  v24:  => mRNAn; (nucleus*v24_ka*STAT1n_star_STAT1n_star)/(v24_kb + STAT1n_star_STAT1n_star);
+  v24:  => mRNAn; nucleus*v24_ka*STAT1n_star_STAT1n_star/(v24_kb + STAT1n_star_STAT1n_star);
   v25: mRNAn => mRNAc; nucleus*v25_kf*mRNAn;
   v26:  => SOCS1; cytoplasm*v26_kf*mRNAc;
   v27: mRNAc => ; cytoplasm*v27_kf*mRNAc;
@@ -151,7 +151,7 @@ model *Yamada2003_JAK_STAT_Pathway()
   v13_kb has sec_inv;
   v14_kf = 0.003;
   v14_kf has sec_inv;
-  v15_kf = 2e-007;
+  v15_kf = 2e-07;
   v15_kf has nM_inv_sec_inv;
   v15_kb = 0.2;
   v15_kb has sec_inv;
@@ -173,7 +173,7 @@ model *Yamada2003_JAK_STAT_Pathway()
   v20_kb has sec_inv;
   v21_kf = 0.005;
   v21_kf has sec_inv;
-  v22_kf = 2e-007;
+  v22_kf = 2e-07;
   v22_kf has nM_inv_sec_inv;
   v22_kb = 0.2;
   v22_kb has sec_inv;
@@ -312,4 +312,147 @@ model *Yamada2003_JAK_STAT_Pathway()
   v44 is "SOCS1 binding";
   v45 is "Interferon-receptor binding";
   v46 is "IFNR-JAK binding";
+
+  // CV terms:
+  cytoplasm identity "http://identifiers.org/obo.go/GO:0005737"
+  nucleus identity "http://identifiers.org/obo.go/GO:0005634"
+  R identity "http://identifiers.org/uniprot/O88507"
+  JAK identity "http://identifiers.org/uniprot/P52332",
+               "http://identifiers.org/interpro/IPR009127"
+  RJ part "http://identifiers.org/uniprot/P52332",
+          "http://identifiers.org/uniprot/O88507"
+  IFNRJ part "http://identifiers.org/uniprot/P52332",
+             "http://identifiers.org/uniprot/O88507",
+             "http://identifiers.org/uniprot/P01572"
+  IFNRJ2 part "http://identifiers.org/uniprot/P52332",
+              "http://identifiers.org/uniprot/O88507",
+              "http://identifiers.org/uniprot/P01572"
+  IFNRJ2_star part "http://identifiers.org/uniprot/P52332",
+                   "http://identifiers.org/uniprot/O88507",
+                   "http://identifiers.org/uniprot/P01572"
+  STAT1c identity "http://identifiers.org/uniprot/P42225",
+                  "http://identifiers.org/interpro/IPR001217"
+  IFNRJ2_star_STAT1c part "http://identifiers.org/uniprot/P42225",
+                          "http://identifiers.org/uniprot/P52332",
+                          "http://identifiers.org/uniprot/O88507",
+                          "http://identifiers.org/uniprot/P01572"
+  STAT1c_star identity "http://identifiers.org/uniprot/P42225"
+  IFNRJ2_star_STAT1c_star part "http://identifiers.org/uniprot/P42225",
+                               "http://identifiers.org/uniprot/P52332",
+                               "http://identifiers.org/uniprot/O88507",
+                               "http://identifiers.org/uniprot/P01572"
+  STAT1c_star_STAT1c_star identity "http://identifiers.org/uniprot/P42225"
+  SHP2 identity "http://identifiers.org/uniprot/P35235",
+                "http://identifiers.org/interpro/IPR000980"
+  IFNRJ2_star_SHP2 part "http://identifiers.org/uniprot/P35235",
+                        "http://identifiers.org/uniprot/P52332",
+                        "http://identifiers.org/uniprot/O88507",
+                        "http://identifiers.org/uniprot/P01572"
+  STAT1c_star_PPX part "http://identifiers.org/uniprot/P42225"
+  STAT1c_STAT1c_star identity "http://identifiers.org/uniprot/P42225"
+  STAT1n_star_STAT1n_star identity "http://identifiers.org/uniprot/P42225"
+  STAT1n_star identity "http://identifiers.org/uniprot/P42225"
+  STAT1n_star_PPN part "http://identifiers.org/uniprot/P42225"
+  STAT1n identity "http://identifiers.org/uniprot/P42225"
+  STAT1n_STAT1n_star identity "http://identifiers.org/uniprot/P42225"
+  mRNAn identity "http://identifiers.org/obo.chebi/CHEBI:33699",
+                 "http://identifiers.org/kegg.compound/C00046"
+  mRNAc identity "http://identifiers.org/obo.chebi/CHEBI:33699",
+                 "http://identifiers.org/kegg.compound/C00046"
+  SOCS1 identity "http://identifiers.org/uniprot/O35716",
+                 "http://identifiers.org/interpro/IPR001496"
+  IFNRJ2_star_SOCS1 part "http://identifiers.org/uniprot/O35716",
+                         "http://identifiers.org/uniprot/P52332",
+                         "http://identifiers.org/uniprot/O88507",
+                         "http://identifiers.org/uniprot/P01572"
+  IFNRJ2_star_SHP2_SOCS1_STAT1c part "http://identifiers.org/uniprot/P42225",
+                                     "http://identifiers.org/uniprot/O35716",
+                                     "http://identifiers.org/uniprot/P35235",
+                                     "http://identifiers.org/uniprot/P52332",
+                                     "http://identifiers.org/uniprot/O88507",
+                                     "http://identifiers.org/uniprot/P01572"
+  STAT1c_star_STAT1c_star_PPX part "http://identifiers.org/uniprot/P42225"
+  STAT1n_star_STAT1n_star_PPN part "http://identifiers.org/uniprot/P42225"
+  IFNRJ2_star_SOCS1_STAT1c part "http://identifiers.org/uniprot/P42225",
+                                "http://identifiers.org/uniprot/O35716",
+                                "http://identifiers.org/uniprot/P52332",
+                                "http://identifiers.org/uniprot/O88507",
+                                "http://identifiers.org/uniprot/P01572"
+  IFN identity "http://identifiers.org/uniprot/P01572"
+  IFNRJ2_star_SHP2_STAT1c part "http://identifiers.org/uniprot/P42225",
+                               "http://identifiers.org/uniprot/P35235",
+                               "http://identifiers.org/uniprot/P52332",
+                               "http://identifiers.org/uniprot/O88507",
+                               "http://identifiers.org/uniprot/P01572"
+  IFNRJ2_star_SHP2_SOCS1 part "http://identifiers.org/uniprot/O35716",
+                              "http://identifiers.org/uniprot/P35235",
+                              "http://identifiers.org/uniprot/P52332",
+                              "http://identifiers.org/uniprot/O88507",
+                              "http://identifiers.org/uniprot/P01572"
+  IFNR identity "http://identifiers.org/uniprot/O88507",
+                "http://identifiers.org/uniprot/P01572"
+  v1 identity "http://identifiers.org/obo.go/GO:0005133",
+              "http://identifiers.org/obo.go/GO:0005515"
+  v2 identity "http://identifiers.org/obo.go/GO:0004906",
+              "http://identifiers.org/obo.go/GO:0019964"
+  v3 identity "http://identifiers.org/obo.go/GO:0007171"
+  v4 identity "http://identifiers.org/ec-code/2.7.10.2",
+              "http://identifiers.org/kegg.reaction/R02584",
+              "http://identifiers.org/obo.go/GO:0004713"
+  v5 identity "http://identifiers.org/obo.go/GO:0005515"
+  v6 identity "http://identifiers.org/ec-code/2.7.10.2",
+              "http://identifiers.org/obo.go/GO:0007260"
+  v7 identity "http://identifiers.org/obo.go/GO:0005515"
+  v8 identity "http://identifiers.org/obo.go/GO:0007261"
+  v9 identity "http://identifiers.org/obo.go/GO:0019902",
+              "http://identifiers.org/obo.go/GO:0005515"
+  v10 identity "http://identifiers.org/ec-code/3.1.3.48",
+               "http://identifiers.org/kegg.reaction/R02585",
+               "http://identifiers.org/obo.go/GO:0005001"
+  v11 identity "http://identifiers.org/obo.go/GO:0019902",
+               "http://identifiers.org/obo.go/GO:0005515"
+  v12 identity "http://identifiers.org/obo.go/GO:0042512"
+  v13 identity "http://identifiers.org/obo.go/GO:0019902"
+  v14 identity "http://identifiers.org/obo.go/GO:0042512"
+  v15 identity "http://identifiers.org/obo.go/GO:0005515"
+  v16 identity "http://identifiers.org/obo.go/GO:0007262"
+  v17 identity "http://identifiers.org/obo.go/GO:0007261"
+  v18 identity "http://identifiers.org/obo.go/GO:0019902"
+  v19 identity "http://identifiers.org/obo.go/GO:0042512"
+  v20 identity "http://identifiers.org/obo.go/GO:0019902"
+  v21 identity "http://identifiers.org/obo.go/GO:0042512"
+  v22 identity "http://identifiers.org/obo.go/GO:0007261"
+  v23 identity "http://identifiers.org/obo.go/GO:0065002"
+  v24 identity "http://identifiers.org/obo.go/GO:0006351"
+  v25 identity "http://identifiers.org/obo.go/GO:0006406"
+  v26 identity "http://identifiers.org/obo.go/GO:0006412"
+  v27 identity "http://identifiers.org/obo.go/GO:0006402"
+  v28 identity "http://identifiers.org/obo.go/GO:0044257"
+  v29 identity "http://identifiers.org/obo.go/GO:0005515"
+  v30 identity "http://identifiers.org/obo.go/GO:0005515"
+  v31 identity "http://identifiers.org/obo.go/GO:0005515",
+               "http://identifiers.org/obo.go/GO:0019902"
+  v32 identity "http://identifiers.org/obo.go/GO:0005001"
+  v34 identity "http://identifiers.org/obo.go/GO:0019902"
+  v35 identity "http://identifiers.org/obo.go/GO:0005515"
+  v36 identity "http://identifiers.org/obo.go/GO:0019902"
+  v37 identity "http://identifiers.org/obo.go/GO:0043624"
+  v40 identity "http://identifiers.org/obo.go/GO:0005001",
+               "http://identifiers.org/obo.go/GO:0043624"
+  v42 identity "http://identifiers.org/obo.go/GO:0005515"
+  v43 identity "http://identifiers.org/obo.go/GO:0005515"
+  v44 identity "http://identifiers.org/obo.go/GO:0005515"
+  v45 identity "http://identifiers.org/obo.go/GO:0019964",
+               "http://identifiers.org/obo.go/GO:0004906"
+  v46 identity "http://identifiers.org/obo.go/GO:0005515",
+               "http://identifiers.org/obo.go/GO:0005133"
 end
+
+Yamada2003_JAK_STAT_Pathway is "Yamada2003_JAK_STAT_pathway"
+
+Yamada2003_JAK_STAT_Pathway model_entity_is "http://identifiers.org/biomodels.db/MODEL4879478021"
+Yamada2003_JAK_STAT_Pathway model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000093"
+Yamada2003_JAK_STAT_Pathway description "http://identifiers.org/pubmed/12527385"
+Yamada2003_JAK_STAT_Pathway identity "http://identifiers.org/kegg.pathway/mmu04630",
+                                     "http://identifiers.org/obo.go/GO:0007259"
+Yamada2003_JAK_STAT_Pathway taxon "http://identifiers.org/taxonomy/10090"

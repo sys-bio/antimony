@@ -1,0 +1,113 @@
+// Created by libAntimony v2.13.0
+function Function_for_increase_in_density_of_glioma_cell(r_1, u)
+  r_1*u*(1 - u);
+end
+
+Function_for_increase_in_density_of_glioma_cell is "Function for increase in density of glioma cell"
+
+function Function_for_decrease_in_density_of_glioma_specific_CD8__T_cell(mu_1, w, alpha_4, u, k_4)
+  mu_1*w + alpha_4*(u*w/(u + k_4));
+end
+
+Function_for_decrease_in_density_of_glioma_specific_CD8__T_cell is "Function for decrease in density of glioma specific CD8+ T cell"
+
+function Function_for_decrease_in_density_of_glioma_cell(alpha_1, v, alpha_2, w, u, k_1)
+  ((alpha_1*v + alpha_2*w)/(u + k_1))*u;
+end
+
+Function_for_decrease_in_density_of_glioma_cell is "Function for decrease in density of glioma cell"
+
+function Function_for_decrease_in_population_of_macrophage(alpha_3, u, v, k_2)
+  alpha_3*(u*v/(u + k_2));
+end
+
+Function_for_decrease_in_population_of_macrophage is "Function for decrease in population of macrophage"
+
+function Function_for_increase_in_population_of_macrophage(r_2, v)
+  r_2*v*(1 - v);
+end
+
+Function_for_increase_in_population_of_macrophage is "Function for increase in population of macrophage"
+
+function Function_for_increase_in_density_of_glioma_specific_CD8__T_cell(gamma_1, u, w, k_3)
+  gamma_1*u*w/(k_3 + u);
+end
+
+Function_for_increase_in_density_of_glioma_specific_CD8__T_cell is "Function for increase in density of glioma specific CD8+ T cell"
+
+
+model *New_Model()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species u in compartment_, v in compartment_, w in compartment_;
+
+  // Reactions:
+  Increase_in_density_of_glioma_cells:  => u; compartment_*Function_for_increase_in_density_of_glioma_cell(r_1, u);
+  Decrease_in_density_of_glioma_cell: u => ; compartment_*Function_for_decrease_in_density_of_glioma_cell(alpha_1, v, alpha_2, w, u, k_1);
+  Increase_in_density_of_macrophage_population:  => v; compartment_*Function_for_increase_in_population_of_macrophage(r_2, v);
+  Decrease_in_the_density_of_macrophage_population: v => ; compartment_*Function_for_decrease_in_population_of_macrophage(alpha_3, u, v, k_2);
+  Increase_in_density_of_glioma_specific_CD8__T_cell:  => w; compartment_*Function_for_increase_in_density_of_glioma_specific_CD8__T_cell(gamma_1, u, w, k_3);
+  decrease_in_density_of_glioma_specific_CD8__T_cell: w => ; compartment_*Function_for_decrease_in_density_of_glioma_specific_CD8__T_cell(mu_1, w, alpha_4, u, k_4);
+
+  // Species initializations:
+  u = 0.1;
+  v = 0.55;
+  w = 0.2;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  r_1 = 0.4822;
+  alpha_1 = 0.069943;
+  alpha_2 = 2.74492;
+  k_1 = 0.90305;
+  r_2 = 0.3307;
+  alpha_3 = 0.0194;
+  k_2 = 0.030584;
+  gamma_1 = 0.1245;
+  k_3 = 2.8743;
+  mu_1 = 0.0074;
+  alpha_4 = 0.01694;
+  k_4 = 0.378918;
+
+  // Other declarations:
+  const compartment_, r_1, alpha_1, alpha_2, k_1, r_2, alpha_3, k_2, gamma_1;
+  const k_3, mu_1, alpha_4, k_4;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  Increase_in_density_of_glioma_cells is "Increase in density of glioma cells";
+  Decrease_in_density_of_glioma_cell is "Decrease in density of glioma cell";
+  Increase_in_density_of_macrophage_population is "Increase in density of macrophage population";
+  Decrease_in_the_density_of_macrophage_population is "Decrease in the density of macrophage population";
+  Increase_in_density_of_glioma_specific_CD8__T_cell is "Increase in density of glioma specific CD8+ T cell";
+  decrease_in_density_of_glioma_specific_CD8__T_cell is "decrease in density of glioma specific CD8+ T cell";
+
+  // CV terms:
+  u instance "http://identifiers.org/bto/BTO:0000526"
+  v instance "http://identifiers.org/bto/BTO:0000801"
+  w instance "http://identifiers.org/bto/BTO:0000782"
+  Increase_in_density_of_glioma_cells instance "http://identifiers.org/ncit/C25533"
+  Decrease_in_density_of_glioma_cell instance "http://identifiers.org/ncit/C64914"
+  Increase_in_density_of_macrophage_population instance "http://identifiers.org/ncit/C25533"
+  Decrease_in_the_density_of_macrophage_population instance "http://identifiers.org/ncit/C64914"
+  Increase_in_density_of_glioma_specific_CD8__T_cell instance "http://identifiers.org/ncit/C25533"
+  decrease_in_density_of_glioma_specific_CD8__T_cell instance "http://identifiers.org/ncit/C64914"
+end
+
+New_Model is "Khajanchi2019 - Stability Analysis of a Mathematical Model forGlioma-Immune Interaction under OptimalTherapy"
+
+New_Model description "http://identifiers.org/doi/10.1515/ijnsns-2017-0206"
+New_Model origin "http://identifiers.org/doi/10.1007/s00262-007-0387-z",
+                 "http://identifiers.org/doi/10.1371/journal.pone.0123611",
+                 "http://identifiers.org/doi/10.1016/S0092-8240(05)80260-5"
+New_Model model_entity_is "http://identifiers.org/biomodels.db/MODEL1912130001",
+                          "http://identifiers.org/biomodels.db/BIOMD0000000891"
+New_Model property "http://identifiers.org/mamo/MAMO_0000046"
+New_Model taxon "http://identifiers.org/taxonomy/9606"

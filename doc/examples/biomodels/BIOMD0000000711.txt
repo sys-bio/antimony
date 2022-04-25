@@ -1,0 +1,313 @@
+// Created by libAntimony v2.13.0
+function Function_for_Reaction_1__2(gammaV, I)
+  gammaV*I;
+end
+
+Function_for_Reaction_1__2 is "Function for Reaction 1 [2]"
+
+function Function_for_Reaction_2__2(gammaVA, S, A, V)
+  gammaVA*S*A*V;
+end
+
+Function_for_Reaction_2__2 is "Function for Reaction 2 [2]"
+
+function Function_for_Reaction_3__2(gammaVH, H, V)
+  gammaVH*H*V;
+end
+
+Function_for_Reaction_3__2 is "Function for Reaction 3 [2]"
+
+function Function_for_Reaction_5__1(aV1, V, aV2)
+  aV1*V/(1 + aV2*V);
+end
+
+Function_for_Reaction_5__1 is "Function for Reaction 5 [1]"
+
+function Function_for_Reaction_6__1(bHD, D, H, R)
+  bHD*D*(H + R);
+end
+
+Function_for_Reaction_6__1 is "Function for Reaction 6 [1]"
+
+function Function_for_Reaction_8(V, H, gammaHV)
+  gammaHV*V*H;
+end
+
+Function_for_Reaction_8 is "Function for Reaction 8"
+
+function Function_for_Reaction_9__1(bHF, F, H)
+  bHF*F*H;
+end
+
+Function_for_Reaction_9__1 is "Function for Reaction 9 [1]"
+
+function Function_for_Reaction_10(bIE, E, I)
+  bIE*E*I;
+end
+
+Function_for_Reaction_10 is "Function for Reaction 10"
+
+function Function_for_Reaction_12(bMD, D, bMV, V, M)
+  (bMD*D + bMV*V)*(1 - M);
+end
+
+Function_for_Reaction_12 is "Function for Reaction 12"
+
+function Function_for_Reaction_14(bF, M)
+  bF*M;
+end
+
+Function_for_Reaction_14 is "Function for Reaction 14"
+
+function Function_for_Reaction_15(cF, I)
+  cF*I;
+end
+
+Function_for_Reaction_15 is "Function for Reaction 15"
+
+function Function_for_Reaction_16(bFH, H, F)
+  bFH*H*F;
+end
+
+Function_for_Reaction_16 is "Function for Reaction 16"
+
+function Function_for_Reaction_18(bEM, M, E)
+  bEM*M*E;
+end
+
+Function_for_Reaction_18 is "Function for Reaction 18"
+
+function Function_for_Reaction_19(bEI, I, E)
+  bEI*I*E;
+end
+
+Function_for_Reaction_19 is "Function for Reaction 19"
+
+function Function_for_Reaction_20(aE, E)
+  aE*(E - 1);
+end
+
+Function_for_Reaction_20 is "Function for Reaction 20"
+
+function Function_for_Reaction_21(M, P, bPM)
+  bPM*M*P;
+end
+
+Function_for_Reaction_21 is "Function for Reaction 21"
+
+function Function_for_Reaction_22(aP, P)
+  aP*(P - 1);
+end
+
+Function_for_Reaction_22 is "Function for Reaction 22"
+
+function Function_for_Reaction_23(bA, P)
+  bA*P;
+end
+
+Function_for_Reaction_23 is "Function for Reaction 23"
+
+function Function_for_Reaction_24(gammaAV, S, A, V)
+  gammaAV*S*A*V;
+end
+
+Function_for_Reaction_24 is "Function for Reaction 24"
+
+function Function_for_Reaction_26(r, P, S)
+  r*P*(1 - S);
+end
+
+Function_for_Reaction_26 is "Function for Reaction 26"
+
+
+model *Hancioglu2007___Human_Immune_Response_to_Influenza_A_virus_Infection()
+
+  // Compartments and Species:
+  compartment Respiratory_tract_mucosa;
+  species Viral_Load__V in Respiratory_tract_mucosa, Healthy_Epithelial_cells__H in Respiratory_tract_mucosa;
+  species Infected_Epithelial_cells__I in Respiratory_tract_mucosa, APC_cells__M in Respiratory_tract_mucosa;
+  species Interferons__F in Respiratory_tract_mucosa, Resistant_cells__R in Respiratory_tract_mucosa;
+  species Effector_cells__E in Respiratory_tract_mucosa, Plasma_cells__P in Respiratory_tract_mucosa;
+  species Antibodies__A in Respiratory_tract_mucosa, Antigenic_compatibility__S in Respiratory_tract_mucosa;
+  species $Dead_cells__D in Respiratory_tract_mucosa;
+
+  // Assignment Rules:
+  Dead_cells__D := 1 - Healthy_Epithelial_cells__H - Resistant_cells__R - Infected_Epithelial_cells__I;
+
+  // Reactions:
+  Secretion_of_Virus__V__by_Infected_epithelial_cells__I:  => Viral_Load__V; Respiratory_tract_mucosa*Function_for_Reaction_1__2(gammaV, Infected_Epithelial_cells__I);
+  Neutralization_of_Virus__V__by_Antibody__A: Viral_Load__V => ; Respiratory_tract_mucosa*Function_for_Reaction_2__2(gammaVA, Antigenic_compatibility__S, Antibodies__A, Viral_Load__V);
+  Adsorption_of_Virus__V__by_Healthy_epithelial_cells__H: Viral_Load__V => ; Respiratory_tract_mucosa*Function_for_Reaction_3__2(gammaVH, Healthy_Epithelial_cells__H, Viral_Load__V);
+  Non_Specific_Removal_of_Virus__V___alphaV: Viral_Load__V => ; Respiratory_tract_mucosa*alphaV*Viral_Load__V;
+  Non_Specific_Removal_of_Virus__V___aV1_aV2: Viral_Load__V => ; Respiratory_tract_mucosa*Function_for_Reaction_5__1(aV1, Viral_Load__V, aV2);
+  Regeneration_of_Healthy_Epithelial_cells__H:  => Healthy_Epithelial_cells__H; Respiratory_tract_mucosa*Function_for_Reaction_6__1(bHD, Dead_cells__D, Healthy_Epithelial_cells__H, Resistant_cells__R);
+  R_virus_resistant_state_decay: Resistant_cells__R => Healthy_Epithelial_cells__H; Respiratory_tract_mucosa*aR*Resistant_cells__R;
+  Infection_of_Healthy_Epithelial_cells_by__V: Healthy_Epithelial_cells__H => Infected_Epithelial_cells__I; Respiratory_tract_mucosa*Function_for_Reaction_8(Viral_Load__V, Healthy_Epithelial_cells__H, gammaHV);
+  H_virus_resistant_state_induction: Healthy_Epithelial_cells__H => Resistant_cells__R; Respiratory_tract_mucosa*Function_for_Reaction_9__1(bHF, Interferons__F, Healthy_Epithelial_cells__H);
+  Degradation_of_Infected_Epithelial_cells___E: Infected_Epithelial_cells__I => ; Respiratory_tract_mucosa*Function_for_Reaction_10(bIE, Effector_cells__E, Infected_Epithelial_cells__I);
+  Degradation_of_Infected_Epithelial_cells___Cytopathicity_of_V: Infected_Epithelial_cells__I => ; Respiratory_tract_mucosa*aI*Infected_Epithelial_cells__I;
+  Stimulation_of_APC_cells__M__by_Dead_cells__D__and_Virus__V:  => APC_cells__M; Respiratory_tract_mucosa*Function_for_Reaction_12(bMD, Dead_cells__D, bMV, Viral_Load__V, APC_cells__M);
+  Stimulates_State_loss_of_APC_cells__M: APC_cells__M => ; Respiratory_tract_mucosa*aM*APC_cells__M;
+  Synthesis_of_Interferons__F___M:  => Interferons__F; Respiratory_tract_mucosa*Function_for_Reaction_14(bF, APC_cells__M);
+  Synthesis_of_Interferons__F___I:  => Interferons__F; Respiratory_tract_mucosa*Function_for_Reaction_15(cF, Infected_Epithelial_cells__I);
+  Binding_of_Healthy_epithelial_cells__H__and_Interferons__F: Interferons__F => ; Respiratory_tract_mucosa*Function_for_Reaction_16(bFH, Healthy_Epithelial_cells__H, Interferons__F);
+  Degradation_of_Interferons__F: Interferons__F => ; Respiratory_tract_mucosa*aF*Interferons__F;
+  Stimulation_of_Effector_cells__E___M:  => Effector_cells__E; Respiratory_tract_mucosa*Function_for_Reaction_18(bEM, APC_cells__M, Effector_cells__E);
+  Degradation_of_Effector_cells__E___Mod_I: Effector_cells__E => ; Respiratory_tract_mucosa*Function_for_Reaction_19(bEI, Infected_Epithelial_cells__I, Effector_cells__E);
+  Degradation_of_Effector_cells__E: Effector_cells__E => ; Respiratory_tract_mucosa*Function_for_Reaction_20(Degradation_of_Effector_cells__E_aE, Effector_cells__E);
+  Synthesis_of_Plasma_cells__P___Mod_M:  => Plasma_cells__P; Respiratory_tract_mucosa*Function_for_Reaction_21(APC_cells__M, Plasma_cells__P, bPM);
+  Degradation_of_Plasma_cells__P: Plasma_cells__P => ; Respiratory_tract_mucosa*Function_for_Reaction_22(aP, Plasma_cells__P);
+  Synthesis_of_Antibody__A___Mod_P:  => Antibodies__A; Respiratory_tract_mucosa*Function_for_Reaction_23(bA, Plasma_cells__P);
+  Binding_of_Antibody__A__and_Virus__V: Antibodies__A => ; Respiratory_tract_mucosa*Function_for_Reaction_24(gammaAV, Antigenic_compatibility__S, Antibodies__A, Viral_Load__V);
+  Degradation_of_Antibody__A: Antibodies__A => ; Respiratory_tract_mucosa*aA*Antibodies__A;
+  Antigenic_Compatibility_variable:  => Antigenic_compatibility__S; Respiratory_tract_mucosa*Function_for_Reaction_26(r, Plasma_cells__P, Antigenic_compatibility__S);
+
+  // Events:
+  Event_to_keep_viral_load_non_negative: at Viral_Load__V < 0: Viral_Load__V = 0;
+
+  // Species initializations:
+  Viral_Load__V = 0.01;
+  Healthy_Epithelial_cells__H = 1;
+  Infected_Epithelial_cells__I = 0;
+  APC_cells__M = 0;
+  Interferons__F = 0;
+  Resistant_cells__R = 0;
+  Effector_cells__E = 1;
+  Plasma_cells__P = 1;
+  Antibodies__A = 1;
+  Antigenic_compatibility__S = 0.1;
+
+  // Compartment initializations:
+  Respiratory_tract_mucosa = 1;
+
+  // Variable initializations:
+  gammaV = 510;
+  gammaVA = 619.2;
+  gammaVH = 1.02;
+  alphaV = 1.7;
+  aV1 = 100;
+  aV2 = 23000;
+  bHD = 4;
+  aR = 1;
+  gammaHV = 0.34;
+  bHF = 0.01;
+  bIE = 0.066;
+  aI = 1.5;
+  bMD = 1;
+  bMV = 0.0037;
+  aM = 1;
+  bF = 250000;
+  cF = 2000;
+  bFH = 17;
+  aF = 8;
+  bEM = 8.3;
+  bEI = 2.72;
+  aE = 0.4;
+  bPM = 11.5;
+  aP = 0.4;
+  bA = 0.043;
+  gammaAV = 146.25;
+  aA = 0.043;
+  r = 3e-05;
+  Degradation_of_Effector_cells__E_aE = 0.1;
+
+  // Other declarations:
+  const Respiratory_tract_mucosa, gammaV, gammaVA, gammaVH, alphaV, aV1, aV2;
+  const bHD, aR, gammaHV, bHF, bIE, aI, bMD, bMV, aM, bF, cF, bFH, aF, bEM;
+  const bEI, aE, bPM, aP, bA, gammaAV, aA, r;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+  Respiratory_tract_mucosa is "Respiratory tract mucosa";
+  Viral_Load__V is "Viral Load (V)";
+  Healthy_Epithelial_cells__H is "Healthy Epithelial cells (H)";
+  Infected_Epithelial_cells__I is "Infected Epithelial cells (I)";
+  APC_cells__M is "APC cells (M)";
+  Interferons__F is "Interferons (F)";
+  Resistant_cells__R is "Resistant cells (R)";
+  Effector_cells__E is "Effector cells (E)";
+  Plasma_cells__P is "Plasma cells (P)";
+  Antibodies__A is "Antibodies (A)";
+  Antigenic_compatibility__S is "Antigenic compatibility (S)";
+  Dead_cells__D is "Dead cells (D)";
+  Event_to_keep_viral_load_non_negative is "Event to keep viral load non-negative";
+  Secretion_of_Virus__V__by_Infected_epithelial_cells__I is "Secretion of Virus (V) by Infected epithelial cells (I)";
+  Neutralization_of_Virus__V__by_Antibody__A is "Neutralization of Virus (V) by Antibody (A)";
+  Adsorption_of_Virus__V__by_Healthy_epithelial_cells__H is "Adsorption of Virus (V) by Healthy epithelial cells (H)";
+  Non_Specific_Removal_of_Virus__V___alphaV is "Non-Specific Removal of Virus (V) [alphaV]";
+  Non_Specific_Removal_of_Virus__V___aV1_aV2 is "Non-Specific Removal of Virus (V) [aV1 aV2]";
+  Regeneration_of_Healthy_Epithelial_cells__H is "Regeneration of Healthy Epithelial cells (H)";
+  R_virus_resistant_state_decay is "R virus resistant state decay";
+  Infection_of_Healthy_Epithelial_cells_by__V is "Infection of Healthy Epithelial cells by (V)";
+  H_virus_resistant_state_induction is "H virus resistant state induction";
+  Degradation_of_Infected_Epithelial_cells___E is "Degradation of Infected Epithelial cells  [E]";
+  Degradation_of_Infected_Epithelial_cells___Cytopathicity_of_V is "Degradation of Infected Epithelial cells  [Cytopathicity of V]";
+  Stimulation_of_APC_cells__M__by_Dead_cells__D__and_Virus__V is "Stimulation of APC cells (M) by Dead cells (D) and Virus (V)";
+  Stimulates_State_loss_of_APC_cells__M is "Stimulates State loss of APC cells (M)";
+  Synthesis_of_Interferons__F___M is "Synthesis of Interferons (F) [M]";
+  Synthesis_of_Interferons__F___I is "Synthesis of Interferons (F) [I]";
+  Binding_of_Healthy_epithelial_cells__H__and_Interferons__F is "Binding of Healthy epithelial cells (H) and Interferons (F)";
+  Degradation_of_Interferons__F is "Degradation of Interferons (F)";
+  Stimulation_of_Effector_cells__E___M is "Stimulation of Effector cells (E) [M]";
+  Degradation_of_Effector_cells__E___Mod_I is "Degradation of Effector cells (E) [Mod=I]";
+  Degradation_of_Effector_cells__E is "Degradation of Effector cells (E)";
+  Synthesis_of_Plasma_cells__P___Mod_M is "Synthesis of Plasma cells (P) [Mod=M]";
+  Degradation_of_Plasma_cells__P is "Degradation of Plasma cells (P)";
+  Synthesis_of_Antibody__A___Mod_P is "Synthesis of Antibody (A) [Mod=P]";
+  Binding_of_Antibody__A__and_Virus__V is "Binding of Antibody (A) and Virus (V)";
+  Degradation_of_Antibody__A is "Degradation of Antibody (A)";
+  Antigenic_Compatibility_variable is "Antigenic Compatibility variable";
+
+  // CV terms:
+  Respiratory_tract_mucosa hypernym "http://identifiers.org/bto/BTO:0000973"
+  Viral_Load__V identity "http://identifiers.org/ncit/C53454"
+  Viral_Load__V taxon "http://identifiers.org/taxonomy/11320"
+  Healthy_Epithelial_cells__H hypernym "http://identifiers.org/ncit/C12578"
+  Infected_Epithelial_cells__I hypernym "http://identifiers.org/ncit/C12578"
+  Infected_Epithelial_cells__I hypernym "http://identifiers.org/bto/BTO:0000152"
+  APC_cells__M hypernym "http://identifiers.org/ncit/C12621"
+  Interferons__F hypernym "http://identifiers.org/ncit/C20493"
+  Resistant_cells__R hypernym "http://identifiers.org/ncit/C12578"
+  Resistant_cells__R property "http://identifiers.org/mp/MP:0002410"
+  Effector_cells__E hypernym "http://identifiers.org/ncit/C104083"
+  Effector_cells__E hypernym "http://identifiers.org/bto/BTO:0000289"
+  Plasma_cells__P hypernym "http://identifiers.org/ncit/C12486"
+  Antibodies__A identity "http://identifiers.org/efo/0000264"
+  Antibodies__A hypernym "http://identifiers.org/ncit/C118191"
+  Antigenic_compatibility__S hypernym "http://identifiers.org/omit/0002315"
+  Dead_cells__D hypernym "http://identifiers.org/ncit/C12578"
+  Dead_cells__D property "http://identifiers.org/go/GO:0008219"
+  Dead_cells__D property "http://identifiers.org/ncit/C28554"
+  Secretion_of_Virus__V__by_Infected_epithelial_cells__I hypernym "http://identifiers.org/go/GO:0019076"
+  Infection_of_Healthy_Epithelial_cells_by__V hypernym "http://identifiers.org/ncit/C128320"
+  Degradation_of_Infected_Epithelial_cells___E hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Degradation_of_Infected_Epithelial_cells___Cytopathicity_of_V hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Synthesis_of_Interferons__F___M hypernym "http://identifiers.org/ncit/C61408"
+  Synthesis_of_Interferons__F___I hypernym "http://identifiers.org/ncit/C61408"
+  Binding_of_Healthy_epithelial_cells__H__and_Interferons__F hypernym "http://identifiers.org/go/GO:0005488"
+  Degradation_of_Interferons__F hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Degradation_of_Effector_cells__E___Mod_I hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Degradation_of_Effector_cells__E hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Synthesis_of_Plasma_cells__P___Mod_M hypernym "http://identifiers.org/ncit/C61408"
+  Degradation_of_Plasma_cells__P hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Synthesis_of_Antibody__A___Mod_P hypernym "http://identifiers.org/ncit/C61408"
+  Binding_of_Antibody__A__and_Virus__V hypernym "http://identifiers.org/go/GO:0005488"
+  Degradation_of_Antibody__A hypernym "http://identifiers.org/sbo/SBO:0000179"
+end
+
+Hancioglu2007___Human_Immune_Response_to_Influenza_A_virus_Infection is "Hancioglu2007 - Human Immune Response to Influenza A virus Infection"
+
+Hancioglu2007___Human_Immune_Response_to_Influenza_A_virus_Infection model_entity_is "http://identifiers.org/biomodels.db/MODEL1808280004",
+                                                                                     "http://identifiers.org/biomodels.db/BIOMD0000000711"
+Hancioglu2007___Human_Immune_Response_to_Influenza_A_virus_Infection property "http://identifiers.org/go/GO:0006955"
+Hancioglu2007___Human_Immune_Response_to_Influenza_A_virus_Infection property "http://identifiers.org/go/GO:0002250"
+Hancioglu2007___Human_Immune_Response_to_Influenza_A_virus_Infection property "http://identifiers.org/go/GO:0045087"
+Hancioglu2007___Human_Immune_Response_to_Influenza_A_virus_Infection property "http://identifiers.org/mamo/MAMO_0000046"
+Hancioglu2007___Human_Immune_Response_to_Influenza_A_virus_Infection taxon "http://identifiers.org/taxonomy/11320"
+Hancioglu2007___Human_Immune_Response_to_Influenza_A_virus_Infection taxon "http://identifiers.org/taxonomy/9606"
+Hancioglu2007___Human_Immune_Response_to_Influenza_A_virus_Infection description "http://identifiers.org/pubmed/17266989"

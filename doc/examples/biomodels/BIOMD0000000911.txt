@@ -1,0 +1,106 @@
+// Created by libAntimony v2.13.0
+function Function_for_removal_of_tumor_cell(alpha, M, N)
+  alpha*M*N;
+end
+
+Function_for_removal_of_tumor_cell is "Function for removal of tumor cell"
+
+function Function_for_formation_of_resting_predator_cell(s, Z, k2)
+  s*Z*(1 - Z/k2);
+end
+
+Function_for_formation_of_resting_predator_cell is "Function for formation of resting predator cell"
+
+function Function_for_removal_hunting_predator_cell(d1, N)
+  d1*N;
+end
+
+Function_for_removal_hunting_predator_cell is "Function for removal hunting predator cell"
+
+function Function_for_removal_of_resting_predator_cells(beta, N, Z, d2)
+  beta*N*Z + d2*Z;
+end
+
+Function_for_removal_of_resting_predator_cells is "Function for removal of resting predator cells"
+
+function Function_for_increase_in_the_density_of_tumor_cell(q, r, M, k1)
+  q + r*M*(1 - M/k1);
+end
+
+Function_for_increase_in_the_density_of_tumor_cell is "Function for increase in the density of tumor cell"
+
+function Function_for_actiation_and_tranfer_of_hunting_predator_cells(beta, N, Z)
+  beta*N*Z;
+end
+
+Function_for_actiation_and_tranfer_of_hunting_predator_cells is "Function for actiation and tranfer of hunting predator cells"
+
+
+model *Merola2008___An_insight_into_tumor_dormancy_equilibrium_via_the_analysis_of_its_domain_of_attraction()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species M in compartment_, N in compartment_, Z in compartment_;
+
+  // Reactions:
+  Increase_in_the_density_of_tumor_cel:  => M; compartment_*Function_for_increase_in_the_density_of_tumor_cell(q, r, M, k1);
+  Removal_of_tumor_cell_from_the_system: M => ; compartment_*Function_for_removal_of_tumor_cell(alpha, M, N);
+  Activation_and_transfer_of_predator_cells_like_CTL_NK_and_macrophage:  => N; compartment_*Function_for_actiation_and_tranfer_of_hunting_predator_cells(beta, N, Z);
+  Removal_of_hunting_predator_cell: N => ; compartment_*Function_for_removal_hunting_predator_cell(d1, N);
+  Converstion_of_hunting_to_resting_predator_cell:  => Z; compartment_*Function_for_formation_of_resting_predator_cell(s, Z, k2);
+  Removal_of_resting_predator_cells: Z => ; compartment_*Function_for_removal_of_resting_predator_cells(beta, N, Z, d2);
+
+  // Species initializations:
+  M = 2.5;
+  N = 1.5;
+  Z = 0.5;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  q = 10;
+  r = 0.9;
+  alpha = 0.3;
+  k1 = 0.8;
+  beta = 0.1;
+  d1 = 0.02;
+  s = 0.8;
+  k2 = 0.7;
+  d2 = 0.03;
+
+  // Other declarations:
+  const compartment_, q, r, alpha, k1, beta, d1, s, k2, d2;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  Increase_in_the_density_of_tumor_cel is "Increase in the density of tumor cel";
+  Removal_of_tumor_cell_from_the_system is "Removal of tumor cell from the system";
+  Activation_and_transfer_of_predator_cells_like_CTL_NK_and_macrophage is "Activation and transfer of predator cells like CTL NK and macrophage";
+  Removal_of_hunting_predator_cell is "Removal of hunting predator cell";
+  Converstion_of_hunting_to_resting_predator_cell is "Converstion of hunting to resting predator cell";
+  Removal_of_resting_predator_cells is "Removal of resting predator cells";
+
+  // CV terms:
+  M property "http://identifiers.org/ncit/C12922"
+  Increase_in_the_density_of_tumor_cel hypernym "http://identifiers.org/go/GO:0002355"
+  Removal_of_tumor_cell_from_the_system hypernym "http://identifiers.org/go/"
+  Activation_and_transfer_of_predator_cells_like_CTL_NK_and_macrophage hypernym "http://identifiers.org/go/GO:0072676"
+  Removal_of_hunting_predator_cell hypernym "http://identifiers.org/go/GO:0072676"
+  Converstion_of_hunting_to_resting_predator_cell hypernym "http://identifiers.org/go/GO:0046013"
+  Removal_of_resting_predator_cells hypernym "http://identifiers.org/go/GO:0072676"
+end
+
+Merola2008___An_insight_into_tumor_dormancy_equilibrium_via_the_analysis_of_its_domain_of_attraction is "Merola2008 - An insight into tumor dormancy equilibrium via the analysis of its domain of attraction"
+
+Merola2008___An_insight_into_tumor_dormancy_equilibrium_via_the_analysis_of_its_domain_of_attraction description "http://identifiers.org/doi/10.1016/j.bspc.2008.02.001"
+Merola2008___An_insight_into_tumor_dormancy_equilibrium_via_the_analysis_of_its_domain_of_attraction origin "http://identifiers.org/doi/10.1016/j.mbs.2005.04.001"
+Merola2008___An_insight_into_tumor_dormancy_equilibrium_via_the_analysis_of_its_domain_of_attraction model_entity_is "http://identifiers.org/biomodels.db/MODEL2001150001",
+                                                                                                                     "http://identifiers.org/biomodels.db/BIOMD0000000911"
+Merola2008___An_insight_into_tumor_dormancy_equilibrium_via_the_analysis_of_its_domain_of_attraction hypernym "http://identifiers.org/ncit/C48686"
+Merola2008___An_insight_into_tumor_dormancy_equilibrium_via_the_analysis_of_its_domain_of_attraction taxon "http://identifiers.org/taxonomy/9606"
+Merola2008___An_insight_into_tumor_dormancy_equilibrium_via_the_analysis_of_its_domain_of_attraction property "http://identifiers.org/mamo/MAMO_0000046"

@@ -1,0 +1,184 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function Function_for_Reaction_2(k_I, U_H, V)
+  k_I*U_H*V;
+end
+
+Function_for_Reaction_2 is "Function for Reaction 2"
+
+function Function_for_Reaction_3(k_R, U_H, IFN)
+  k_R*U_H*IFN;
+end
+
+Function_for_Reaction_3 is "Function for Reaction 3"
+
+function Function_for_Reaction_6(q_K, U_E, K)
+  q_K*U_E*K;
+end
+
+Function_for_Reaction_6 is "Function for Reaction 6"
+
+function Function_for_Reaction_8(q_K, U_I, K)
+  q_K*U_I*K;
+end
+
+Function_for_Reaction_8 is "Function for Reaction 8 [1]"
+
+function Function_for_Reaction_10(p_V, U_I)
+  p_V*U_I;
+end
+
+Function_for_Reaction_10 is "Function for Reaction 10 [1]"
+
+function Function_for_Reaction_12(a_I, U_I)
+  a_I*U_I;
+end
+
+Function_for_Reaction_12 is "Function for Reaction 12 [1]"
+
+function Function_for_Reaction_15(phi_K, U_I)
+  phi_K*U_I;
+end
+
+Function_for_Reaction_15 is "Function for Reaction 15 [1]"
+
+
+model *Hernandez_Vargas2012___Innate_Immune_System_ynamics_to_Influenza_virus()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species U_H in compartment_, U_E in compartment_, U_I in compartment_, U_R in compartment_;
+  species V in compartment_, IFN in compartment_, K in compartment_;
+
+  // Assignment Rules:
+  S_H := Metabolite_0_0*delta_H;
+  S_K := Metabolite_6_0*delta_K;
+
+  // Reactions:
+  reaction_1:  => U_H; compartment_*Constant_flux__irreversible(S_H);
+  reaction_2: U_H => U_E; compartment_*Function_for_Reaction_2(k_I, U_H, V);
+  reaction_3: U_H => U_R; compartment_*Function_for_Reaction_3(k_R, U_H, IFN);
+  reaction_4: U_H => ; compartment_*delta_H*U_H;
+  reaction_5: U_E => U_I; compartment_*k_E*U_E;
+  reaction_6: U_E => ; compartment_*Function_for_Reaction_6(q_K, U_E, K);
+  reaction_7: U_I => ; compartment_*delta_I*U_I;
+  reaction_8: U_I => ; compartment_*Function_for_Reaction_8(q_K, U_I, K);
+  reaction_9: U_R => ; compartment_*delta_R*U_R;
+  reaction_10:  => V; compartment_*Function_for_Reaction_10(p_V, U_I);
+  reaction_11: V => ; compartment_*delta_V*V;
+  reaction_12:  => IFN; compartment_*Function_for_Reaction_12(a_I, U_I);
+  reaction_13: IFN => ; compartment_*delta_IFN*IFN;
+  reaction_14:  => K; compartment_*Constant_flux__irreversible(S_K);
+  reaction_15:  => K; compartment_*Function_for_Reaction_15(phi_K, U_I);
+  reaction_16: K => ; compartment_*delta_K*K;
+
+  // Species initializations:
+  U_H = 500000000;
+  U_E = 0;
+  U_I = 0;
+  U_R = 0;
+  V = 0.001;
+  IFN = 0;
+  K = 800000;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  k_I = 0.003;
+  k_R = 7;
+  k_E = 0.5;
+  q_K = 3e-06;
+  phi_K = 0.001;
+  a_I = 3e-06;
+  p_V = 0.01;
+  delta_H = 0.01;
+  delta_I = 0.01;
+  delta_R = 0.01;
+  delta_IFN = 4;
+  delta_K = 0.04;
+  delta_V = 5.2;
+  Metabolite_0_0 = U_H;
+  Metabolite_6_0 = K;
+
+  // Other declarations:
+  var S_H, S_K;
+  const compartment_, k_I, k_R, k_E, q_K, phi_K, a_I, p_V, delta_H, delta_I;
+  const delta_R, delta_IFN, delta_K, delta_V, Metabolite_0_0, Metabolite_6_0;
+
+  // Unit definitions:
+  unit time_unit = 86400 second;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "Lung";
+  U_H is "Healthy Epithelial cells (U_H)";
+  U_E is "Partially infected Epithelial cells (U_E)";
+  U_I is "Infected Epithelial cells (U_I)";
+  U_R is "Resistant Epithelial cells (U_R)";
+  V is "Viral Load (V)";
+  IFN is "Interferon (IFN)";
+  K is "Natural Killers (K)";
+  Metabolite_0_0 is "Initial for Healthy Epithelial cells (U_H)";
+  Metabolite_6_0 is "Initial for Natural Killers (K)";
+  reaction_1 is "Proliferation of Healthy Epithelial cells";
+  reaction_2 is "Partial infection of Healthy Epithelial cells";
+  reaction_3 is "Healthy Epithelial cells becoming resistant";
+  reaction_4 is "Death of Healthy Epithelial cells";
+  reaction_5 is "Infection of partially infected Epithelial cells";
+  reaction_6 is "Death of partially infected Epithelial cells caused by Natural Killers";
+  reaction_7 is "Death of Infected Epithelial cells";
+  reaction_8 is "Death of infected Epithelial cells caused by Natural Killers";
+  reaction_9 is "Death of Resistant Epithelial cells";
+  reaction_10 is "Release of Virus from Infected Epithelial cells";
+  reaction_11 is "Degradation of Virus";
+  reaction_12 is "Production of Interferons";
+  reaction_13 is "Degradation of Interferons";
+  reaction_14 is "Proliferation of Natural KIllers";
+  reaction_15 is "Recruitment of Natural Killers from the Blood to the lungs";
+  reaction_16 is "Death of Natural Killers";
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/bto/BTO:0000763"
+  U_H hypernym "http://identifiers.org/bto/BTO:0000414"
+  U_E hypernym "http://identifiers.org/bto/BTO:0000152"
+  U_E hypernym "http://identifiers.org/bto/BTO:0000414"
+  U_I hypernym "http://identifiers.org/bto/BTO:0000152"
+  U_I hypernym "http://identifiers.org/bto/BTO:0000414"
+  U_R hypernym "http://identifiers.org/bto/BTO:0000414"
+  U_R property "http://identifiers.org/mp/MP:0002410"
+  V taxon "http://identifiers.org/taxonomy/11320"
+  IFN hypernym "http://identifiers.org/uniprot/P01562"
+  IFN hypernym "http://identifiers.org/uniprot/P01574"
+  K hypernym "http://identifiers.org/bto/BTO:0000914"
+  reaction_1 hypernym "http://identifiers.org/ncit/C61408"
+  reaction_2 hypernym "http://identifiers.org/ncit/C128320"
+  reaction_4 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  reaction_5 hypernym "http://identifiers.org/ncit/C128320"
+  reaction_6 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  reaction_7 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  reaction_8 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  reaction_9 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  reaction_10 hypernym "http://identifiers.org/go/GO:0019076"
+  reaction_11 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  reaction_12 hypernym "http://identifiers.org/ncit/C61408"
+  reaction_13 hypernym "http://identifiers.org/sbo/SBO:0000179"
+  reaction_14 hypernym "http://identifiers.org/ncit/C61408"
+  reaction_16 hypernym "http://identifiers.org/sbo/SBO:0000179"
+end
+
+Hernandez_Vargas2012___Innate_Immune_System_ynamics_to_Influenza_virus is "Hernandez-Vargas2012 - Innate immune system dynamics to Influenza virus"
+
+Hernandez_Vargas2012___Innate_Immune_System_ynamics_to_Influenza_virus model_entity_is "http://identifiers.org/biomodels.db/MODEL1808280005",
+                                                                                       "http://identifiers.org/biomodels.db/BIOMD0000000710"
+Hernandez_Vargas2012___Innate_Immune_System_ynamics_to_Influenza_virus property "http://identifiers.org/mamo/MAMO_0000046"
+Hernandez_Vargas2012___Innate_Immune_System_ynamics_to_Influenza_virus property "http://identifiers.org/efo/0001669"
+Hernandez_Vargas2012___Innate_Immune_System_ynamics_to_Influenza_virus property "http://identifiers.org/pw/PW:0000234"
+Hernandez_Vargas2012___Innate_Immune_System_ynamics_to_Influenza_virus taxon "http://identifiers.org/taxonomy/9606"
+Hernandez_Vargas2012___Innate_Immune_System_ynamics_to_Influenza_virus taxon "http://identifiers.org/taxonomy/11320"
+Hernandez_Vargas2012___Innate_Immune_System_ynamics_to_Influenza_virus description "http://identifiers.org/doi/10.3182/20120829-3-hu-2029.00029"

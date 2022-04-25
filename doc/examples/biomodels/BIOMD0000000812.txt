@@ -1,0 +1,125 @@
+// Created by libAntimony v2.13.0
+function Function_for_T_Growth(k, T)
+  k*T;
+end
+
+Function_for_T_Growth is "Function_for_T_Growth"
+
+function Function_for_X_Complex_Formation(k1, C, E)
+  k1*C*E;
+end
+
+Function_for_X_Complex_Formation is "Function_for_X_Complex_Formation"
+
+function Function_for_C_Carrying_Capacity_Limit(k_5, C)
+  k_5*C^2;
+end
+
+Function_for_C_Carrying_Capacity_Limit is "Function_for_C_Carrying_Capacity_Limit"
+
+function Function_for_P_Production(k_p, E, k_m_1, k_m_2, C)
+  k_p*E/((k_m_1 + E)*k_m_2*C);
+end
+
+Function_for_P_Production is "Function_for_P_Production"
+
+function Function_for_C_Growth(k, C)
+  k*C;
+end
+
+Function_for_C_Growth is "Function_for_C_Growth"
+
+
+model *Galante2012___B7_H1_and_a_Mathematical_Model_for_Cytotoxic_T_Cell_and_Tumor_Cell_Interaction()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species X_Complex in compartment_, P_Perforin in compartment_, C_Cancer_Uncomplexed in compartment_;
+  species T_ast in compartment_, $E_CTL in compartment_, $T_Cancer_Cell_Total in compartment_;
+
+  // Assignment Rules:
+  E_CTL := ModelValue_11 - X_Complex;
+  T_Cancer_Cell_Total := C_Cancer_Uncomplexed + X_Complex;
+  Perc_Lysis := 100*((T_ast - T_Cancer_Cell_Total)/T_ast);
+  P_10 := 10*P_Perforin;
+  X_1000 := X_Complex*1000;
+
+  // Reactions:
+  X_Complex_Formation: C_Cancer_Uncomplexed => X_Complex; compartment_*Function_for_X_Complex_Formation(k_1, C_Cancer_Uncomplexed, E_CTL);
+  X_Complex_Dissociation: X_Complex => C_Cancer_Uncomplexed; compartment_*k_2*X_Complex;
+  X_Complex_Apoptosis: X_Complex => ; compartment_*k_3*X_Complex;
+  P_Production:  => P_Perforin; compartment_*Function_for_P_Production(k_p, E_CTL, k_m_1, k_m_2, C_Cancer_Uncomplexed);
+  P_Apoptosis_Perforin: P_Perforin + C_Cancer_Uncomplexed => ; compartment_*k_4*P_Perforin*C_Cancer_Uncomplexed;
+  C_Growth:  => C_Cancer_Uncomplexed; compartment_*Function_for_C_Growth(k, C_Cancer_Uncomplexed);
+  C_Carrying_Capacity_Limit: C_Cancer_Uncomplexed => ; compartment_*Function_for_C_Carrying_Capacity_Limit(k_5, C_Cancer_Uncomplexed);
+  T_Growth:  => T_ast; compartment_*Function_for_T_Growth(k, T_ast);
+  T_Carrying_Capacity_Limit: T_ast => ; compartment_*Function_for_C_Carrying_Capacity_Limit(k_5, T_ast);
+
+  // Species initializations:
+  X_Complex = 0;
+  P_Perforin = 0.315;
+  C_Cancer_Uncomplexed = 1;
+  T_ast = 1;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  ModelValue_11 = E_init;
+  k = 0.035;
+  k_1 = 0.0001;
+  k_2 = 0.0001;
+  k_3 = 0.0001;
+  k_4 = 3;
+  k_5 = 0.003;
+  k_6 = 0.63;
+  k_p = 0.097;
+  k_m = 1;
+  k_m_1 = 2.2;
+  k_m_2 = 80;
+  E_init = 1;
+
+  // Other declarations:
+  var Perc_Lysis, P_10, X_1000;
+  const compartment_, ModelValue_11, k, k_1, k_2, k_3, k_4, k_5, k_6, k_p;
+  const k_m, k_m_1, k_m_2, E_init;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 3600 second;
+  unit substance = item;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+  ModelValue_11 is "Initial for E_init";
+
+  // CV terms:
+  compartment_ hypernym "http://identifiers.org/ncit/C94498"
+  X_Complex part "http://identifiers.org/cl/CL:0000910"
+  X_Complex part "http://identifiers.org/cl/CL:0001063"
+  X_Complex hypernym "http://identifiers.org/ncit/C47881"
+  P_Perforin identity "http://identifiers.org/uniprot/S5S2F2"
+  C_Cancer_Uncomplexed hypernym "http://identifiers.org/cl/CL:0001063"
+  T_ast hypernym "http://identifiers.org/cl/CL:0001063"
+  E_CTL identity "http://identifiers.org/cl/CL:0000910"
+  T_Cancer_Cell_Total hypernym "http://identifiers.org/cl/CL:0001063"
+  X_Complex_Formation hypernym "http://identifiers.org/sbo/SBO:0000177"
+  X_Complex_Dissociation hypernym "http://identifiers.org/sbo/SBO:0000180"
+  X_Complex_Apoptosis hypernym "http://identifiers.org/ncit/C17557"
+  P_Production hypernym "http://identifiers.org/sbo/SBO:0000184"
+  P_Apoptosis_Perforin hypernym "http://identifiers.org/ncit/C17557"
+  C_Growth hypernym "http://identifiers.org/ncit/C18081"
+  C_Carrying_Capacity_Limit hypernym "http://identifiers.org/go/GO:0035212"
+  T_Growth hypernym "http://identifiers.org/ncit/C18081"
+  T_Carrying_Capacity_Limit hypernym "http://identifiers.org/go/GO:0035212"
+end
+
+Galante2012___B7_H1_and_a_Mathematical_Model_for_Cytotoxic_T_Cell_and_Tumor_Cell_Interaction is "Galante2012 - B7-H1 and a Mathematical Model for Cytotoxic T Cell and Tumor Cell Interaction"
+
+Galante2012___B7_H1_and_a_Mathematical_Model_for_Cytotoxic_T_Cell_and_Tumor_Cell_Interaction description "http://identifiers.org/pubmed/21656310"
+Galante2012___B7_H1_and_a_Mathematical_Model_for_Cytotoxic_T_Cell_and_Tumor_Cell_Interaction model_entity_is "http://identifiers.org/biomodels.db/MODEL1909160001",
+                                                                                                             "http://identifiers.org/biomodels.db/BIOMD0000000812"
+Galante2012___B7_H1_and_a_Mathematical_Model_for_Cytotoxic_T_Cell_and_Tumor_Cell_Interaction property "http://identifiers.org/taxonomy/9606"
+Galante2012___B7_H1_and_a_Mathematical_Model_for_Cytotoxic_T_Cell_and_Tumor_Cell_Interaction property "http://identifiers.org/go/GO:0012501"
+Galante2012___B7_H1_and_a_Mathematical_Model_for_Cytotoxic_T_Cell_and_Tumor_Cell_Interaction property "http://identifiers.org/mamo/MAMO_0000046"

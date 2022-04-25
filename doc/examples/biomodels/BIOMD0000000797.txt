@@ -1,0 +1,151 @@
+// Created by libAntimony v2.13.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+Constant_flux__irreversible is "Constant flux (irreversible)"
+
+function Function_for_CD4T_Production(beta_1, x, z, alpha_1)
+  beta_1*x*z/(alpha_1 + x);
+end
+
+Function_for_CD4T_Production is "Function_for_CD4T_Production"
+
+function Function_for_Normal_Tissue_Growth(r_2, w, b_2)
+  r_2*w*(1 - b_2*w);
+end
+
+Function_for_Normal_Tissue_Growth is "Function_for_Normal_Tissue_Growth"
+
+function Function_for_Tumor_Competition_Normal_Cells(delta_1, x, w)
+  delta_1*x*w;
+end
+
+Function_for_Tumor_Competition_Normal_Cells is "Function_for_Tumor_Competition_Normal_Cells"
+
+function Function_for_Normal_Tissue_Competition_Tumor_Cells(delta_3, x, w)
+  delta_3*x*w;
+end
+
+Function_for_Normal_Tissue_Competition_Tumor_Cells is "Function_for_Normal_Tissue_Competition_Tumor_Cells"
+
+function Function_for_CD4T_Depletion(delta_2, x, y)
+  delta_2*x*y;
+end
+
+Function_for_CD4T_Depletion is "Function_for_CD4T_Depletion"
+
+function Function_for_Tumor_Growth(r_1, x, b_1)
+  r_1*x*(1 - b_1*x);
+end
+
+Function_for_Tumor_Growth is "Function_for_Tumor_Growth"
+
+function Function_for_Cytokine_Production(beta_2, x, y, alpha_2)
+  beta_2*x*y/(alpha_2 + x);
+end
+
+Function_for_Cytokine_Production is "Function_for_Cytokine_Production"
+
+function Function_for_Tumor_Killing_Cytokine(c_1, x, z, a_1)
+  c_1*x*z/(a_1 + x);
+end
+
+Function_for_Tumor_Killing_Cytokine is "Function_for_Tumor_Killing_Cytokine"
+
+
+model *Hu2018___Dynamics_of_tumor_CD4__cytokine_host_cells_interactions_with_treatments()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species x_Tumor_Cells in compartment_, y_CD4_T_Cells in compartment_, z_Cytokine in compartment_;
+  species w_Healthy_Tissue in compartment_;
+
+  // Assignment Rules:
+  Tumor_Cells_1e8 := x_Tumor_Cells/100000000;
+  Host_Cells_1e8 := w_Healthy_Tissue/100000000;
+
+  // Reactions:
+  Tumor_Growth:  => x_Tumor_Cells; compartment_*Function_for_Tumor_Growth(r_1, x_Tumor_Cells, b_1);
+  Tumor_Killing_Cytokine: x_Tumor_Cells => ; compartment_*Function_for_Tumor_Killing_Cytokine(c_1, x_Tumor_Cells, z_Cytokine, a_1);
+  Tumor_Competition_Normal_Cells: x_Tumor_Cells => ; compartment_*Function_for_Tumor_Competition_Normal_Cells(delta_1, x_Tumor_Cells, w_Healthy_Tissue);
+  CD4T_Production:  => y_CD4_T_Cells; compartment_*Function_for_CD4T_Production(beta_1, x_Tumor_Cells, z_Cytokine, alpha_1);
+  CD4T_Natural_Death: y_CD4_T_Cells => ; compartment_*mu_1*y_CD4_T_Cells;
+  CD4T_Depletion: y_CD4_T_Cells => ; compartment_*Function_for_CD4T_Depletion(delta_2, x_Tumor_Cells, y_CD4_T_Cells);
+  CD4T_Treatment:  => y_CD4_T_Cells; compartment_*Constant_flux__irreversible(I_1);
+  Cytokine_Production:  => z_Cytokine; compartment_*Function_for_Cytokine_Production(beta_2, x_Tumor_Cells, y_CD4_T_Cells, alpha_2);
+  Cytokine_Decay: z_Cytokine => ; compartment_*mu_2*z_Cytokine;
+  Cytokine_Treatment:  => z_Cytokine; compartment_*Constant_flux__irreversible(I_2);
+  Normal_Tissue_Growth:  => w_Healthy_Tissue; compartment_*Function_for_Normal_Tissue_Growth(r_2, w_Healthy_Tissue, b_2);
+  Normal_Tissue_Competition_Tumor_Cells: w_Healthy_Tissue => ; compartment_*Function_for_Normal_Tissue_Competition_Tumor_Cells(delta_3, x_Tumor_Cells, w_Healthy_Tissue);
+
+  // Species initializations:
+  x_Tumor_Cells = 67700;
+  y_CD4_T_Cells = 1000000;
+  z_Cytokine = 100000;
+  w_Healthy_Tissue = 1000000000;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  r_1 = 0.514;
+  b_1 = 1.02e-09;
+  c_1 = 0.2;
+  a_1 = 100000;
+  delta_1 = 1.1e-10;
+  beta_1 = 0.835;
+  alpha_1 = 1000;
+  mu_1 = 0.1;
+  delta_2 = 1e-07;
+  beta_2 = 5.4;
+  alpha_2 = 1000;
+  mu_2 = 34;
+  r_2 = 0.2822;
+  b_2 = 1e-09;
+  delta_3 = 5.8e-11;
+  I_2 = 0;
+  I_1 = 0;
+
+  // Other declarations:
+  var Tumor_Cells_1e8, Host_Cells_1e8;
+  const compartment_, r_1, b_1, c_1, a_1, delta_1, beta_1, alpha_1, mu_1;
+  const delta_2, beta_2, alpha_2, mu_2, r_2, b_2, delta_3, I_2, I_1;
+
+  // Unit definitions:
+  unit time_unit = 86400 second;
+  unit substance = item;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+
+  // CV terms:
+  compartment_ hypernym "http://identifiers.org/ncit/C94498"
+  x_Tumor_Cells hypernym "http://identifiers.org/cl/CL:0001063"
+  y_CD4_T_Cells identity "http://identifiers.org/cl/CL:0000492"
+  z_Cytokine part "http://identifiers.org/uniprot/Q0GK43"
+  z_Cytokine identity "http://identifiers.org/ncit/C20464"
+  w_Healthy_Tissue hypernym "http://identifiers.org/ncit/C12801"
+  Tumor_Growth hypernym "http://identifiers.org/ncit/C18081"
+  Tumor_Killing_Cytokine hypernym "http://identifiers.org/go/GO:0008219"
+  Tumor_Killing_Cytokine hypernym "http://identifiers.org/go/GO:0002418"
+  Tumor_Competition_Normal_Cells hypernym "http://identifiers.org/go/GO:0035212"
+  CD4T_Production hypernym "#"
+  CD4T_Natural_Death hypernym "http://identifiers.org/go/GO:0008219"
+  CD4T_Depletion hypernym "http://identifiers.org/go/GO:0008219"
+  CD4T_Treatment hypernym "http://identifiers.org/ncit/C15351"
+  Cytokine_Production identity "http://identifiers.org/go/GO:0001816"
+  Cytokine_Decay hypernym "http://identifiers.org/sbo/SBO:0000179"
+  Cytokine_Treatment hypernym "http://identifiers.org/ncit/C15411"
+  Normal_Tissue_Growth hypernym "http://identifiers.org/ncit/C18081"
+  Normal_Tissue_Competition_Tumor_Cells hypernym "http://identifiers.org/go/GO:0035212"
+end
+
+Hu2018___Dynamics_of_tumor_CD4__cytokine_host_cells_interactions_with_treatments is "Hu2018 - Dynamics of tumor-CD4+-cytokine-host cells interactions with treatments"
+
+Hu2018___Dynamics_of_tumor_CD4__cytokine_host_cells_interactions_with_treatments description "http://identifiers.org/doi/10.1016/j.amc.2017.11.009"
+Hu2018___Dynamics_of_tumor_CD4__cytokine_host_cells_interactions_with_treatments model_entity_is "http://identifiers.org/biomodels.db/MODEL1908150001",
+                                                                                                 "http://identifiers.org/biomodels.db/BIOMD0000000797"
+Hu2018___Dynamics_of_tumor_CD4__cytokine_host_cells_interactions_with_treatments property "http://identifiers.org/mamo/MAMO_0000046"
+Hu2018___Dynamics_of_tumor_CD4__cytokine_host_cells_interactions_with_treatments property "http://identifiers.org/go/GO:0002418"

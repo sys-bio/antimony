@@ -392,6 +392,7 @@ def writeFunctions(libfile, functions):
       libfile.write(")")
       if hasret:
          libfile.write("\n")
+         libfile.write(iblock + "freeAll()\n")
          libfile.write(iblock + "if ret==None:\n")
          libfile.write(iblock + iblock + "return ret\n")
          libfile.write(iblock + "return ret.decode('utf-8')\n")

@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 function F(X, T)
   piecewise(1, X >= T, 0);
 end
@@ -49,4 +49,37 @@ model *shenorr02()
   unit substance = dimensionless;
   unit time_unit = dimensionless;
   unit volume = dimensionless;
+
+  // SBO terms:
+  cell.sboTerm = 290
+  X.sboTerm = 252
+  Y.sboTerm = 252
+  Z.sboTerm = 252
+  r1.sboTerm = 183
+  r2.sboTerm = 179
+  r3.sboTerm = 183
+  r4.sboTerm = 179
+
+  // CV terms:
+  cell identity "http://identifiers.org/obo.go/GO:0005622"
+  X hypernym "http://identifiers.org/obo.chebi/CHEBI:36080"
+  X property "http://identifiers.org/obo.go/GO:0016563"
+  Y hypernym "http://identifiers.org/obo.chebi/CHEBI:36080"
+  Y property "http://identifiers.org/obo.go/GO:0016563"
+  Z hypernym "http://identifiers.org/obo.chebi/CHEBI:36080"
+  r1 hypernym "http://identifiers.org/obo.go/GO:0010467"
+  r1 property "http://identifiers.org/obo.go/GO:0045893"
+  r2 hypernym "http://identifiers.org/obo.go/GO:0030163"
+  r3 hypernym "http://identifiers.org/obo.go/GO:0010467"
+  r3 version "http://identifiers.org/obo.go/GO:0045893"
+  r4 hypernym "http://identifiers.org/obo.go/GO:0030163"
 end
+
+shenorr02 is "Shen-Orr2002_FeedForward_AND_gate"
+
+shenorr02 model_entity_is "http://identifiers.org/biomodels.db/MODEL1102140000"
+shenorr02 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000316"
+shenorr02 description "http://identifiers.org/pubmed/11967538"
+shenorr02 taxon "http://identifiers.org/taxonomy/562"
+shenorr02 version "http://identifiers.org/obo.go/GO:0016563"
+shenorr02 hypernym "http://identifiers.org/obo.go/GO:0010628"

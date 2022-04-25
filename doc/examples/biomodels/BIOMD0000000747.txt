@@ -1,0 +1,227 @@
+// Created by libAntimony v2.13.0
+model *Nagashima2002___Simulating_blood_coagulation_inhibitory_effects()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species IX in compartment_, TF_VIIa_IX in compartment_, TF_VIIa in compartment_;
+  species IXa in compartment_, TF_VIIa_X in compartment_, X in compartment_;
+  species Xa in compartment_, VIII in compartment_, Xa_VIII in compartment_;
+  species VIIIa in compartment_, IIa in compartment_, IIa_VIII in compartment_;
+  species VIIIa_IXa in compartment_, VIIIa_IXa_X in compartment_, V in compartment_;
+  species Xa_V in compartment_, Va in compartment_, IIa_V in compartment_;
+  species Va_Xa in compartment_, II in compartment_, Va_Xa_II in compartment_;
+  species Fibrinogen in compartment_, Fibrinogen_IIa in compartment_, Fibrin in compartment_;
+  species VIIIa_inact in compartment_, IXa_inact in compartment_, Xa_inact in compartment_;
+  species IIa_inact in compartment_, Xa_Xa_Inhibitor in compartment_, Xa_Inhibitor in compartment_;
+  species Va_Xa_Xa_Inhibitor in compartment_, IIa_IIa_Inhibitor in compartment_;
+  species IIa_Inhibitor in compartment_;
+
+  // Assignment Rules:
+  k37 := 3;
+  k41 := 3;
+  k43 := 3;
+
+  // Reactions:
+  R01a: TF_VIIa + IX -> TF_VIIa_IX; compartment_*(k01*TF_VIIa*IX - k02*TF_VIIa_IX);
+  R01b: TF_VIIa_IX => TF_VIIa + IXa; compartment_*k03*TF_VIIa_IX;
+  R02a: TF_VIIa + X -> TF_VIIa_X; compartment_*(k04*TF_VIIa*X - k05*TF_VIIa_X);
+  R02b: TF_VIIa_X => TF_VIIa + Xa; compartment_*k06*TF_VIIa_X;
+  R03a: Xa + VIII -> Xa_VIII; compartment_*(k07*Xa*VIII - k08*Xa_VIII);
+  R03b: Xa_VIII => Xa + VIIIa; compartment_*k09*Xa_VIII;
+  R04a: IIa + VIII -> IIa_VIII; compartment_*(k10*IIa*VIII - k11*IIa_VIII);
+  R04b: IIa_VIII => IIa + VIIIa; compartment_*k12*IIa_VIII;
+  R05: VIIIa + IXa -> VIIIa_IXa; compartment_*(k13*VIIIa*IXa - k14*VIIIa_IXa);
+  R06a: VIIIa_IXa + X -> VIIIa_IXa_X; compartment_*(k15*VIIIa_IXa*X - k16*VIIIa_IXa_X);
+  R06b: VIIIa_IXa_X => VIIIa_IXa + Xa; compartment_*k17*VIIIa_IXa_X;
+  R07a: Xa + V -> Xa_V; compartment_*(k18*Xa*V - k19*Xa_V);
+  R07b: Xa_V => Xa + Va; compartment_*k20*Xa_V;
+  R08a: IIa + V -> IIa_V; compartment_*(k21*IIa*V - k22*IIa_V);
+  R08b: IIa_V => IIa + Va; compartment_*k23*IIa_V;
+  R09: Xa + Va -> Va_Xa; compartment_*(k24*Xa*Va - k25*Va_Xa);
+  R10a: Va_Xa + II -> Va_Xa_II; compartment_*(k26*Va_Xa*II - k27*Va_Xa_II);
+  R10b: Va_Xa_II => Va_Xa + IIa; compartment_*k28*Va_Xa_II;
+  R11a: Fibrinogen + IIa -> Fibrinogen_IIa; compartment_*(k29*Fibrinogen*IIa - k30*Fibrinogen_IIa);
+  R11b: Fibrinogen_IIa => Fibrin + IIa; compartment_*k31*Fibrinogen_IIa;
+  R12: VIIIa => VIIIa_inact; compartment_*k32*VIIIa;
+  R13: IXa => IXa_inact; compartment_*k33*IXa;
+  R14: Xa => Xa_inact; compartment_*k34*Xa;
+  R15: IIa => IIa_inact; compartment_*k35*IIa;
+  R16: Xa + Xa_Inhibitor -> Xa_Xa_Inhibitor; compartment_*(k36*Xa*Xa_Inhibitor - k37*Xa_Xa_Inhibitor);
+  R17: Va + Xa_Xa_Inhibitor -> Va_Xa_Xa_Inhibitor; compartment_*(k38*Va*Xa_Xa_Inhibitor - k39*Va_Xa_Xa_Inhibitor);
+  R18: Va_Xa + Xa_Inhibitor -> Va_Xa_Xa_Inhibitor; compartment_*(k40*Va_Xa*Xa_Inhibitor - k41*Va_Xa_Xa_Inhibitor);
+  R19: IIa + IIa_Inhibitor -> IIa_IIa_Inhibitor; compartment_*(k42*IIa*IIa_Inhibitor - k43*IIa_IIa_Inhibitor);
+
+  // Species initializations:
+  IX = 90;
+  TF_VIIa_IX = 0;
+  TF_VIIa = 0.005;
+  IXa = 0;
+  TF_VIIa_X = 0;
+  X = 170;
+  Xa = 0;
+  VIII = 0.7;
+  Xa_VIII = 0;
+  VIIIa = 0;
+  IIa = 0;
+  IIa_VIII = 0;
+  VIIIa_IXa = 0;
+  VIIIa_IXa_X = 0;
+  V = 20;
+  Xa_V = 0;
+  Va = 0;
+  IIa_V = 0;
+  Va_Xa = 0;
+  II = 1400;
+  Va_Xa_II = 0;
+  Fibrinogen = 7900;
+  Fibrinogen_IIa = 0;
+  Fibrin = 0;
+  VIIIa_inact = 0;
+  IXa_inact = 0;
+  Xa_inact = 0;
+  IIa_inact = 0;
+  Xa_Xa_Inhibitor = 0;
+  Xa_Inhibitor = 0;
+  Va_Xa_Xa_Inhibitor = 0;
+  IIa_IIa_Inhibitor = 0;
+  IIa_Inhibitor = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  k01 = 0.1;
+  k02 = 2.2;
+  k03 = 0.47;
+  k04 = 0.1;
+  k05 = 5.5;
+  k06 = 1.4;
+  k07 = 0.1;
+  k08 = 2.1;
+  k09 = 0.023;
+  k10 = 0.1;
+  k11 = 15;
+  k12 = 0.9;
+  k13 = 0.1;
+  k14 = 0.17;
+  k15 = 0.1;
+  k16 = 19;
+  k17 = 29;
+  k18 = 0.1;
+  k19 = 1;
+  k20 = 0.043;
+  k21 = 0.1;
+  k22 = 7.2;
+  k23 = 0.26;
+  k24 = 0.1;
+  k25 = 0.1;
+  k26 = 0.1;
+  k27 = 100;
+  k28 = 35;
+  k29 = 0.1;
+  k30 = 720;
+  k31 = 84;
+  k32 = 0.0011;
+  k33 = 0.0017;
+  k34 = 0.011;
+  k35 = 0.024;
+  k36 = 0.1;
+  k38 = 0.1;
+  k39 = 0.1;
+  k40 = 0.1;
+  k42 = 0.1;
+  Dummy_variable_inhibitor = 0;
+
+  // Other declarations:
+  var k37, k41, k43;
+  const compartment_, k01, k02, k03, k04, k05, k06, k07, k08, k09, k10, k11;
+  const k12, k13, k14, k15, k16, k17, k18, k19, k20, k21, k22, k23, k24, k25;
+  const k26, k27, k28, k29, k30, k31, k32, k33, k34, k35, k36, k38, k39, k40;
+  const k42, Dummy_variable_inhibitor;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-9 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  TF_VIIa_IX is "TF:VIIa:IX";
+  TF_VIIa is "TF:VIIa";
+  TF_VIIa_X is "TF:VIIa:X";
+  Xa_VIII is "Xa:VIII";
+  IIa_VIII is "IIa:VIII";
+  VIIIa_IXa is "VIIIa:IXa";
+  VIIIa_IXa_X is "VIIIa:IXa:X";
+  Xa_V is "Xa:V";
+  IIa_V is "IIa:V";
+  Va_Xa is "Va:Xa";
+  Va_Xa_II is "Va:Xa:II";
+  Fibrinogen_IIa is "Fibrinogen:IIa";
+  Xa_Xa_Inhibitor is "Xa:Xa_Inhibitor";
+  Va_Xa_Xa_Inhibitor is "Va:Xa:Xa_Inhibitor";
+  IIa_IIa_Inhibitor is "IIa:IIa_Inhibitor";
+
+  // CV terms:
+  IX identity "http://identifiers.org/ncit/C82269"
+  TF_VIIa_IX part "http://identifiers.org/ncit/C82269"
+  TF_VIIa_IX part "http://identifiers.org/ncit/C17197"
+  TF_VIIa_IX part "http://identifiers.org/ncit/C82271"
+  TF_VIIa part "http://identifiers.org/ncit/C82271"
+  TF_VIIa part "http://identifiers.org/ncit/C17197"
+  IXa hypernym "http://identifiers.org/ncit/C82269"
+  TF_VIIa_X part "http://identifiers.org/ncit/C82272"
+  TF_VIIa_X part "http://identifiers.org/ncit/C82271"
+  TF_VIIa_X part "http://identifiers.org/ncit/C17197"
+  X identity "http://identifiers.org/ncit/C82272"
+  Xa hypernym "http://identifiers.org/ncit/C82272"
+  VIII identity "http://identifiers.org/ncit/C16571"
+  Xa_VIII part "http://identifiers.org/ncit/C16571"
+  Xa_VIII part "http://identifiers.org/ncit/C82272"
+  VIIIa hypernym "http://identifiers.org/ncit/C16571"
+  IIa identity "http://identifiers.org/ncit/C87773"
+  IIa_VIII part "http://identifiers.org/ncit/C16571"
+  IIa_VIII part "http://identifiers.org/ncit/C87773"
+  VIIIa_IXa part "http://identifiers.org/ncit/C82269"
+  VIIIa_IXa part "http://identifiers.org/ncit/C16571"
+  VIIIa_IXa_X part "http://identifiers.org/ncit/C82272"
+  VIIIa_IXa_X part "http://identifiers.org/ncit/C82269"
+  VIIIa_IXa_X part "http://identifiers.org/ncit/C16571"
+  V identity "http://identifiers.org/ncit/C91335"
+  Xa_V part "http://identifiers.org/ncit/C91335"
+  Xa_V part "http://identifiers.org/ncit/C82272"
+  Va hypernym "http://identifiers.org/ncit/C91335"
+  IIa_V part "http://identifiers.org/ncit/C91335"
+  IIa_V part "http://identifiers.org/ncit/C87773"
+  Va_Xa part "http://identifiers.org/ncit/C82272"
+  Va_Xa part "http://identifiers.org/ncit/C91335"
+  II identity "http://identifiers.org/ncit/C82273"
+  Va_Xa_II part "http://identifiers.org/ncit/C82272"
+  Va_Xa_II part "http://identifiers.org/ncit/C82273"
+  Va_Xa_II part "http://identifiers.org/ncit/C91335"
+  Fibrinogen identity "http://identifiers.org/ncit/C25736"
+  Fibrinogen_IIa part "http://identifiers.org/ncit/C87773"
+  Fibrinogen_IIa part "http://identifiers.org/ncit/C25736"
+  Fibrin identity "http://identifiers.org/ncit/C32598"
+  VIIIa_inact hypernym "http://identifiers.org/ncit/C16571"
+  IXa_inact hypernym "http://identifiers.org/ncit/C82269"
+  Xa_inact hypernym "http://identifiers.org/ncit/C82272"
+  IIa_inact hypernym "http://identifiers.org/ncit/C87773"
+  Xa_Xa_Inhibitor part "http://identifiers.org/chebi/CHEBI:65232"
+  Xa_Xa_Inhibitor part "http://identifiers.org/ncit/C82272"
+  Xa_Inhibitor homolog "http://identifiers.org/chebi/CHEBI:68581"
+  Va_Xa_Xa_Inhibitor part "http://identifiers.org/ncit/C82272"
+  Va_Xa_Xa_Inhibitor part "http://identifiers.org/ncit/C91335"
+  Va_Xa_Xa_Inhibitor part "http://identifiers.org/chebi/CHEBI:68581"
+  IIa_IIa_Inhibitor part "http://identifiers.org/chebi/CHEBI:65232"
+  IIa_IIa_Inhibitor part "http://identifiers.org/ncit/C87773"
+  IIa_Inhibitor homolog "http://identifiers.org/chebi/CHEBI:65232"
+end
+
+Nagashima2002___Simulating_blood_coagulation_inhibitory_effects is "Nagashima2002 - Simulating blood coagulation inhibitory effects"
+
+Nagashima2002___Simulating_blood_coagulation_inhibitory_effects description "http://identifiers.org/pubmed/12496240"
+Nagashima2002___Simulating_blood_coagulation_inhibitory_effects model_entity_is "http://identifiers.org/biomodels.db/MODEL1807230003",
+                                                                                "http://identifiers.org/biomodels.db/BIOMD0000000747"
+Nagashima2002___Simulating_blood_coagulation_inhibitory_effects hypernym "http://identifiers.org/go/GO:0007596"
+Nagashima2002___Simulating_blood_coagulation_inhibitory_effects property "http://identifiers.org/mamo/MAMO_0000046"
+Nagashima2002___Simulating_blood_coagulation_inhibitory_effects property "http://identifiers.org/taxonomy/9606"

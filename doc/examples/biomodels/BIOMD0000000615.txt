@@ -1,0 +1,193 @@
+// Created by libAntimony v2.13.0
+function Function_for_R8(As, Bs, ModelValue_2, default_compartment)
+  ModelValue_2*As*Bs/default_compartment;
+end
+
+Function_for_R8 is "Function for R8"
+
+function Function_for_R17(Bsyn, ModelValue_7, default_compartment)
+  Bsyn*ln(2)/ModelValue_7/default_compartment;
+end
+
+Function_for_R17 is "Function for R17"
+
+function Function_for_R1(ModelValue_3, default_compartment)
+  ModelValue_3/default_compartment;
+end
+
+Function_for_R1 is "Function for R1"
+
+function Function_for_R5(As, ModelValue_0, ModelValue_8, default_compartment)
+  ModelValue_0*As/ModelValue_8/default_compartment;
+end
+
+Function_for_R5 is "Function for R5"
+
+function Function_for_R9(Bs, ModelValue_7, default_compartment)
+  Bs*ln(2)/ModelValue_7/default_compartment;
+end
+
+Function_for_R9 is "Function for R9"
+
+function Function_for_R2(As, ModelValue_1, default_compartment)
+  ModelValue_1*As/default_compartment;
+end
+
+Function_for_R2 is "Function for R2"
+
+function Function_for_R16(Asyn, Bsyn, ModelValue_2, default_compartment)
+  ModelValue_2*Asyn*Bsyn/default_compartment;
+end
+
+Function_for_R16 is "Function for R16"
+
+function Function_for_R15(Asyn, ModelValue_1, default_compartment)
+  ModelValue_1*Asyn/default_compartment;
+end
+
+Function_for_R15 is "Function for R15"
+
+function Function_for_R4(As, ModelValue_6, default_compartment)
+  As*ln(2)/ModelValue_6/default_compartment;
+end
+
+Function_for_R4 is "Function for R4"
+
+function Function_for_R11(Asyn, ModelValue_1, default_compartment)
+  ModelValue_1*Asyn/default_compartment;
+end
+
+Function_for_R11 is "Function for R11"
+
+function Function_for_R6(ModelValue_4, default_compartment)
+  ModelValue_4/default_compartment;
+end
+
+Function_for_R6 is "Function for R6"
+
+function Function_for_R12(Asyn, Bsyn, ModelValue_2, default_compartment)
+  ModelValue_2*Asyn*Bsyn/default_compartment;
+end
+
+Function_for_R12 is "Function for R12"
+
+function Function_for_R7(As, ModelValue_1, default_compartment)
+  ModelValue_1*As/default_compartment;
+end
+
+Function_for_R7 is "Function for R7"
+
+function Function_for_R13(Asyn, ModelValue_6, default_compartment)
+  Asyn*ln(2)/ModelValue_6/default_compartment;
+end
+
+Function_for_R13 is "Function for R13"
+
+function Function_for_R14(ModelValue_5, default_compartment)
+  ModelValue_5/default_compartment;
+end
+
+Function_for_R14 is "Function for R14"
+
+function Function_for_R3(As, Bs, ModelValue_2, default_compartment)
+  ModelValue_2*As*Bs/default_compartment;
+end
+
+Function_for_R3 is "Function for R3"
+
+function Function_for_R10(As, ModelValue_0, ModelValue_9, default_compartment)
+  ModelValue_0*As/ModelValue_9/default_compartment;
+end
+
+Function_for_R10 is "Function for R10"
+
+
+model *MODEL1608150000()
+
+  // Compartments and Species:
+  compartment default_compartment;
+  species As, Bs, Asyn, Bsyn;
+
+  // Reactions:
+  R1:  -> As; default_compartment*Function_for_R1(qA, default_compartment);
+  R2: As -> ; default_compartment*Function_for_R2(As, k1, default_compartment);
+  R3: As -> ; default_compartment*Function_for_R3(As, Bs, k2, default_compartment);
+  R4: As -> ; default_compartment*Function_for_R4(As, TAh1, default_compartment);
+  R5: As -> ; default_compartment*Function_for_R5(As, nA, Vs, default_compartment);
+  R6:  -> Bs; default_compartment*Function_for_R6(QBs, default_compartment);
+  R7:  -> Bs; default_compartment*Function_for_R7(As, k1, default_compartment);
+  R8:  -> Bs; default_compartment*Function_for_R8(As, Bs, k2, default_compartment);
+  R9: Bs -> ; default_compartment*Function_for_R9(Bs, TBh1, default_compartment);
+  R10:  -> Asyn; default_compartment*Function_for_R10(As, nA, Vsyn, default_compartment);
+  R11: Asyn -> ; default_compartment*Function_for_R11(Asyn, k1, default_compartment);
+  R12: Asyn -> ; default_compartment*Function_for_R12(Asyn, Bsyn, k2, default_compartment);
+  R13: Asyn -> ; default_compartment*Function_for_R13(Asyn, TAh1, default_compartment);
+  R14:  -> Bsyn; default_compartment*Function_for_R14(QBsyn, default_compartment);
+  R15:  -> Bsyn; default_compartment*Function_for_R15(Asyn, k1, default_compartment);
+  R16:  -> Bsyn; default_compartment*Function_for_R16(Asyn, Bsyn, k2, default_compartment);
+  R17: Bsyn -> ; default_compartment*Function_for_R17(Bsyn, TBh1, default_compartment);
+
+  // Species initializations:
+  As = 0.006;
+  As has mole_per_volume;
+  Bs = 0;
+  Bs has mole_per_volume;
+  Asyn = 0;
+  Asyn has mole_per_volume;
+  Bsyn = 0;
+  Bsyn has mole_per_volume;
+
+  // Compartment initializations:
+  default_compartment = 1;
+
+  // Variable initializations:
+  nA = 2.91e-20;
+  k1 = 3e-07;
+  k2 = 2e-09;
+  qA = 4.17e-08;
+  QBs = 0;
+  QBsyn = 0;
+  TAh1 = 72000;
+  TBh1 = 720000;
+  Vs = 4.19e-15;
+  Vsyn = 4.19e-15;
+  t1 = 0;
+  t2 = 0;
+
+  // Other declarations:
+  const nA, k1, k2, qA, QBs, QBsyn, TAh1, TBh1, Vs, Vsyn, t1, t2, default_compartment;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = litre;
+  unit time_unit = time_unit;
+  unit substance = mole;
+  unit extent = substance;
+  unit mole_per_volume = mole / litre;
+
+  // Display Names:
+  time_unit is "time";
+
+  // SBO terms:
+  As.sboTerm = 245
+  Bs.sboTerm = 543
+  Asyn.sboTerm = 245
+  Bsyn.sboTerm = 543
+  default_compartment.sboTerm = 410
+
+  // CV terms:
+  As hypernym "http://identifiers.org/uniprot/P37840"
+  Bs hypernym "http://identifiers.org/uniprot/P37840"
+  Asyn hypernym "http://identifiers.org/uniprot/P37840"
+  Bsyn hypernym "http://identifiers.org/uniprot/P37840"
+end
+
+MODEL1608150000 is "Kuznetsov2016(II) - α-syn aggregation kinetics in Parkinson's Disease"
+
+MODEL1608150000 model_entity_is "http://identifiers.org/biomodels.db/MODEL1608150000"
+MODEL1608150000 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000615"
+MODEL1608150000 description "http://identifiers.org/pubmed/27211070"
+MODEL1608150000 hypernym "http://identifiers.org/go/GO:0070841"
+MODEL1608150000 taxon "http://identifiers.org/taxonomy/9606"
+MODEL1608150000 property "http://identifiers.org/doid/DOID:14330"

@@ -2,12 +2,14 @@
  * This file is designed to be compiled by the 'bison' program with the
  * command:
  *
- * bison -v antimony.ypp
+ * bison -v antimony.ypp --update -Wcounterexamples
  *
  * The '-v' creates a file called 'antimony.output' which can be examined
  * to piece together the explicit logic of the parser.  The fact that no
  * '-o' option is used means that the default output file (antimony.tab.cpp)
- * will be produced.
+ * will be produced.  --update will update the file as bison changes,
+ * and -Wcounterexamples will show shift/reduce or reduce/reduce conflicts
+ * with examples.
  *
  * This command produces the file 'antimony.tab.cpp' which is included
  * explicitly in the antimony distribution.  Automatic creation of this
@@ -40,6 +42,8 @@
 #include "module.h"
 #include "unitdef.h"
 #include "stringx.h"
+
+using namespace libsbml;
 
   class Formula;
   class ReactantList;
@@ -144,9 +148,9 @@
 %token  <word> VARWORD "'var'"
 //                      %token  <word> DELETEWORD "'delete'"
 
-%name-prefix "antimony_yy"
+%define api.prefix {antimony_yy}
 %debug
-%error-verbose
+%define parse.error verbose
 %% /* The grammar: */
 
 input:          /* empty */
@@ -330,8 +334,10 @@ reaction:       varmaybein ':' reactantList reactionDivider reactantList ';' for
 
 reactantList:   variable {$$ = g_registry.NewBlankReactantList(); if($$->AddReactant($1)) YYABORT; }
         |       NUM variable {$$ = g_registry.NewBlankReactantList(); if($$->AddReactant($2, $1)) YYABORT; }
+        |       variable variable {$$ = g_registry.NewBlankReactantList(); if($$->AddReactant($2, $1)) YYABORT; }
         |       reactantList '+' variable {$$ = $1; if($1->AddReactant($3)) YYABORT; }
         |       reactantList '+' NUM variable {$$ = $1; if($1->AddReactant($4, $3)) YYABORT; }
+        |       reactantList '+' variable variable {$$ = $1; if($1->AddReactant($4, $3)) YYABORT; }
         ;
 
 reactionDivider:
@@ -415,12 +421,12 @@ variableimportlist:
 
 submodifications:
                 /* empty */ {}
-        |       submodifications ',' ANTWORD '=' variable {if (CaselessStrCmp(*$3, "extentconv")) {g_registry.GetCurrentSubmodel()->SetExtentConversionFactor($5);}
-                else if (CaselessStrCmp(*$3, "timeconv")) {if (g_registry.GetCurrentSubmodel()->SetTimeConversionFactor($5)) YYABORT;}
+        |       submodifications ',' ANTWORD '=' variable {if (CaselessStrCmp(false, *$3, "extentconv")) {g_registry.GetCurrentSubmodel()->SetExtentConversionFactor($5);}
+                else if (CaselessStrCmp(false, *$3, "timeconv")) {if (g_registry.GetCurrentSubmodel()->SetTimeConversionFactor($5)) YYABORT;}
                 else { g_registry.SetError("Illegal term '" + *$3 + "' in submodel declaration.  You may use the terms 'extentconv' and 'timeconv' to set the extent and time conversion factors for this submodel, respectively."); YYABORT;}}
         ;
-        |       submodifications ',' ANTWORD '=' NUM {if (CaselessStrCmp(*$3, "extentconv")) {g_registry.GetCurrentSubmodel()->SetExtentConversionFactor($5);}
-                else if (CaselessStrCmp(*$3, "timeconv")) {if (g_registry.GetCurrentSubmodel()->SetTimeConversionFactor($5)) YYABORT;}
+        |       submodifications ',' ANTWORD '=' NUM {if (CaselessStrCmp(false, *$3, "extentconv")) {g_registry.GetCurrentSubmodel()->SetExtentConversionFactor($5);}
+                else if (CaselessStrCmp(false, *$3, "timeconv")) {if (g_registry.GetCurrentSubmodel()->SetTimeConversionFactor($5)) YYABORT;}
                 else { g_registry.SetError("Illegal term '" + *$3 + "' in submodel declaration.  You may use the terms 'extentconv' and 'timeconv' to set the extent and time conversion factors for this submodel, respectively."); YYABORT;}}
         ;
 varinitialize:  specinit { }
@@ -518,10 +524,10 @@ colonret:       ':' {}
         ;
 
 eventmodifications:  /* empty */ {}
-        |       eventmodifications ',' ANTWORD '=' formula {if (CaselessStrCmp(*$3, "priority")) {g_registry.GetCurrentEvent()->SetPriority(*$5);}
-                else if (CaselessStrCmp(*$3, "t0")) {if (g_registry.GetCurrentEvent()->SetInitialValue(*$5)) YYABORT;}
-                else if (CaselessStrCmp(*$3, "fromTrigger")) {if (g_registry.GetCurrentEvent()->SetUseValuesFromTriggerTime(*$5)) YYABORT;}
-                else if (CaselessStrCmp(*$3, "persistent")) {if (g_registry.GetCurrentEvent()->SetPersistent(*$5)) YYABORT;}
+        |       eventmodifications ',' ANTWORD '=' formula {if (CaselessStrCmp(false, *$3, "priority")) {g_registry.GetCurrentEvent()->SetPriority(*$5);}
+                else if (CaselessStrCmp(false, *$3, "t0")) {if (g_registry.GetCurrentEvent()->SetInitialValue(*$5)) YYABORT;}
+                else if (CaselessStrCmp(false, *$3, "fromTrigger")) {if (g_registry.GetCurrentEvent()->SetUseValuesFromTriggerTime(*$5)) YYABORT;}
+                else if (CaselessStrCmp(false, *$3, "persistent")) {if (g_registry.GetCurrentEvent()->SetPersistent(*$5)) YYABORT;}
                 else { g_registry.SetError("Illegal term '" + *$3 + "' in event defintion.  You may use the terms 'priority', 't0', 'fromTrigger', and 'persistent' here to set those properties of an event."); YYABORT;}}
         ;
 
@@ -576,7 +582,7 @@ cvterm:         variable ANTWORD stringlist {if (g_registry.CurrentModule()->Pro
 // JKM setting an SBO term for a module (outside the body of the module)
 toplevel_sbo:     MODNAME '.' ANTWORD '=' NUM
                   { Module* module = g_registry.GetModule(*$1);
-                    if (module && $3 && CaselessStrCmp(*($3), "sboTerm")) {
+                    if (module && $3 && CaselessStrCmp(true, *($3), "sboTerm")) {
                       module->SetSBOTerm(lround($5));
                     }
                     else {
@@ -587,7 +593,7 @@ toplevel_sbo:     MODNAME '.' ANTWORD '=' NUM
 // JKM setting an SBO term for a function (outside the body of the function)
         |         FUNCTION '.' ANTWORD '=' NUM
                   { Module* function = g_registry.GetModule(*$1);
-                    if (function && $3 &&  CaselessStrCmp(*($3), "sboTerm")) {
+                    if (function && $3 &&  CaselessStrCmp(true, *($3), "sboTerm")) {
                       function->SetSBOTerm(lround($5));
                     }
                     else {
@@ -684,88 +690,88 @@ int antimony_yylex(void)
     if (!g_registry.input->eof()) {
       g_registry.input->unget();
     }
-    if (CaselessStrCmp(word, "module")) {
+    if (CaselessStrCmp(false, word, "module")) {
       return MODULE;
     }
-    if (CaselessStrCmp(word, "model")) {
+    if (CaselessStrCmp(false, word, "model")) {
       return MODULE;
     }
-    if (CaselessStrCmp(word, "end")) {
+    if (CaselessStrCmp(false, word, "end")) {
       return END;
     }
-    if (CaselessStrCmp(word, "species")) {
+    if (CaselessStrCmp(false, word, "species")) {
       return SPECIES;
     }
-    if (CaselessStrCmp(word, "formula")) {
+    if (CaselessStrCmp(false, word, "formula")) {
       return FORMULA;
     }
-    if (CaselessStrCmp(word, "reaction")) {
+    if (CaselessStrCmp(false, word, "reaction")) {
       return REACTION;
     }
-    if (CaselessStrCmp(word, "DNA")) {
+    if (CaselessStrCmp(false, word, "DNA")) {
       return DNA;
     }
-    if (CaselessStrCmp(word, "gene")) {
+    if (CaselessStrCmp(false, word, "gene")) {
       return GENE;
     }
-    if (CaselessStrCmp(word, "operator")) {
+    if (CaselessStrCmp(false, word, "operator")) {
       return OPERATOR;
     }
-    if (CaselessStrCmp(word, "compartment")) {
+    if (CaselessStrCmp(false, word, "compartment")) {
       return COMPARTMENT;
     }
-    if (CaselessStrCmp(word, "has")) {
+    if (CaselessStrCmp(false, word, "has")) {
       return HASWORD;
     }
-    if (CaselessStrCmp(word, "in")) {
+    if (CaselessStrCmp(false, word, "in")) {
       return INWORD;
     }
-    if (CaselessStrCmp(word, "is")) {
+    if (CaselessStrCmp(false, word, "is")) {
       return IS;
     }
-    if (CaselessStrCmp(word, "var")) {
+    if (CaselessStrCmp(false, word, "var")) {
       return VARWORD;
     }
-    if (CaselessStrCmp(word, "const")) {
+    if (CaselessStrCmp(false, word, "const")) {
       return CONSTWORD;
     }
-    if (CaselessStrCmp(word, "substanceOnly")) {
+    if (CaselessStrCmp(false, word, "substanceOnly")) {
       return SUBSTONLY;
     }
-    if (CaselessStrCmp(word, "ext")) {
+    if (CaselessStrCmp(false, word, "ext")) {
       return CONSTWORD;
     }
-    if (CaselessStrCmp(word, "import")) {
+    if (CaselessStrCmp(false, word, "import")) {
       return IMPORT;
     }
-    if (CaselessStrCmp(word, "event")) {
+    if (CaselessStrCmp(false, word, "event")) {
       return EVENT;
     }
-    if (CaselessStrCmp(word, "at")) {
+    if (CaselessStrCmp(false, word, "at")) {
       return AT;
     }
-    if (CaselessStrCmp(word, "after")) {
+    if (CaselessStrCmp(false, word, "after")) {
       return AFTER;
     }
-    if (CaselessStrCmp(word, "function")) {
+    if (CaselessStrCmp(false, word, "function")) {
       return FUNCTIONWORD;
     }
-    if (CaselessStrCmp(word, "unit")) {
+    if (CaselessStrCmp(false, word, "unit")) {
       return UNITWORD;
     }
-    if (CaselessStrCmp(word, "delete")) {
+    if (CaselessStrCmp(false, word, "delete")) {
       return DELETEWORD;
     }
-    if (CaselessStrCmp(word, "constraint")) {
+    if (CaselessStrCmp(false, word, "constraint")) {
       return CONSTRAINTWORD;
     }
-    if (CaselessStrCmp(word, "maximize")) {
+    if (CaselessStrCmp(false, word, "maximize")) {
       return MAXIMIZEWORD;
     }
-    if (CaselessStrCmp(word, "minimize")) {
+    if (CaselessStrCmp(false, word, "minimize")) {
       return MINIMIZEWORD;
     }
-    if (CaselessStrCmp(word, "sbo") && (g_registry.input->peek() == ':')) {
+    if (CaselessStrCmp(true, word, "sbo") && (g_registry.input->peek() == ':')) {
       // try to parse an SBO term
       g_registry.input->get();
       cc = g_registry.input->peek();

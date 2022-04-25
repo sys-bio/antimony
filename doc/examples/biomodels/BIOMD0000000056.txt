@@ -1,23 +1,33 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 function BB_218(A1, A2, A3, A4)
-  A2 - A1 + A3*A2 + A4*A1;
+  (A2 - A1) + A3*A2 + A4*A1;
 end
+
+BB_218 is "BB"
 
 function GK_219(A1, A2, A3, A4)
-  (2*A4*A1)/(A2 - A1 + A3*A2 + A4*A1 + root(2, (A2 - A1 + A3*A2 + A4*A1)^2 - 4*(A2 - A1)*A4*A1));
+  2*A4*A1/((A2 - A1) + A3*A2 + A4*A1 + root(2, ((A2 - A1) + A3*A2 + A4*A1)^2 - 4*(A2 - A1)*A4*A1));
 end
 
+GK_219 is "GK"
+
 function MichaelisMenten_220(M1, J1, k1, S1)
-  (k1*S1*M1)/(J1 + S1);
+  k1*S1*M1/(J1 + S1);
 end
+
+MichaelisMenten_220 is "Michaelis-Menten"
 
 function Mass_Action_2_221(k1, S1, S2)
   k1*S1*S2;
 end
 
+Mass_Action_2_221 is "Mass_Action_2"
+
 function Mass_Action_1_222(k1, S1)
   k1*S1;
 end
+
+Mass_Action_1_222 is "Mass_Action_1"
 
 
 model *BIOMD0000000056()
@@ -48,7 +58,7 @@ model *BIOMD0000000056()
   SIC1T := SIC1 + C2 + C5 + SIC1P + C2P + C5P;
   CLB2T := CLB2 + C2 + C2P + F2 + F2P;
   CLB5T := CLB5 + C5 + C5P + F5 + F5P;
-  CLN3 := (C0*Dn3*MASS)/(Jn3 + Dn3*MASS);
+  CLN3 := C0*Dn3*MASS/(Jn3 + Dn3*MASS);
   IE := IET - IEP;
   MCM1 := GK_219(kamcm*CLB2, kimcm, Jamcm, Jimcm);
   NET1T := NET1 + NET1P + RENT + RENTP;
@@ -70,7 +80,7 @@ model *BIOMD0000000056()
   Vicdh := kicdh_p + kicdh_p_p*(eicdhn3*CLN3 + eicdhn2*CLN2 + eicdhb5*CLB5 + eicdhb2*CLB2);
   Vppnet := kppnet_p + kppnet_p_p*PPX;
   Vkpnet := (kkpnet_p + kkpnet_p_p*CDC15)*MASS;
-  Vdppx := kdppx_p + (kdppx_p_p*(J20ppx + CDC20)*Jpds)/(Jpds + PDS1);
+  Vdppx := kdppx_p + kdppx_p_p*(J20ppx + CDC20)*Jpds/(Jpds + PDS1);
   Vdpds := kd1pds_p + kd2pds_p_p*CDC20 + kd3pds_p_p*CDH1;
   Vaiep := kaiep*CLB2;
   Vppc1 := kppc1*CDC14;
@@ -169,14 +179,14 @@ model *BIOMD0000000056()
   Negative_regulation_of_DNA_synthesis: ORI => ; Mass_Action_1_222(kdori, ORI);
   Budding:  => BUD; ksbud*(ebudn2*CLN2 + ebudn3*CLN3 + ebudb5*CLB5);
   Negative_regulation_of_Cell_budding: BUD => ; Mass_Action_1_222(kdbud, BUD);
-  Spindle_formation:  => SPN; (ksspn*CLB2)/(Jspn + CLB2);
+  Spindle_formation:  => SPN; ksspn*CLB2/(Jspn + CLB2);
   Spindle_disassembly: SPN => ; Mass_Action_1_222(kdspn, SPN);
 
   // Events:
-  reset_ORI: at (CLB2 + CLB5) - KEZ2 < 0: ORI = 0;
-  start_S: at ORI - 1 > 0: BUB2 = bub2h, MAD2 = mad2h;
-  spindle_checkpoint: at SPN - 1 > 0: BUB2 = bub2l, LTE1 = lte1h, MAD2 = mad2l;
-  cell_division: at CLB2 - KEZ < 0: SPN = 0, BUD = 0, LTE1 = lte1l, MASS = F*MASS;
+  reset_ORI: at (CLB2 + CLB5 - KEZ2) < 0: ORI = 0;
+  start_S: at (ORI - 1) > 0: BUB2 = bub2h, MAD2 = mad2h;
+  spindle_checkpoint: at (SPN - 1) > 0: BUB2 = bub2l, LTE1 = lte1h, MAD2 = mad2l;
+  cell_division: at (CLB2 - KEZ) < 0: SPN = 0, BUD = 0, LTE1 = lte1l, MASS = F*MASS;
 
   // Species initializations:
   MASS = 1.206019/cell;
@@ -195,9 +205,9 @@ model *BIOMD0000000056()
   CDC6 = 0.10758/cell;
   CDC6P = 0.015486/cell;
   F2 = 0.236058/cell;
-  F5 = 7.24e-005/cell;
+  F5 = 7.24e-05/cell;
   F2P = 0.0273938/cell;
-  F5P = 7.91e-005/cell;
+  F5P = 7.91e-05/cell;
   CDH1 = 0.930499/cell;
   CDH1i = 0.0695/cell;
   CLB2 = 0.1469227/cell;
@@ -531,4 +541,277 @@ model *BIOMD0000000056()
   Negative_regulation_of_Cell_budding is "Negative regulation of Cell budding";
   Spindle_formation is "Spindle formation";
   Spindle_disassembly is "Spindle disassembly";
+
+  // CV terms:
+  cell hypernym "http://identifiers.org/obo.go/GO:0005623"
+  BCK2 identity "http://identifiers.org/uniprot/P33306"
+  MASS hypernym "http://identifiers.org/obo.fma/FMA:86557"
+  BUB2 identity "http://identifiers.org/uniprot/P26448"
+  BUD hypernym "http://identifiers.org/cco/CCO:C0000485"
+  C2 part "http://identifiers.org/uniprot/P38634",
+          "http://identifiers.org/uniprot/P24869",
+          "http://identifiers.org/uniprot/P24868"
+  C2P part "http://identifiers.org/uniprot/P24868",
+           "http://identifiers.org/uniprot/P24869",
+           "http://identifiers.org/uniprot/P38634"
+  C5 part "http://identifiers.org/uniprot/P38634",
+          "http://identifiers.org/uniprot/P32943",
+          "http://identifiers.org/uniprot/P30283"
+  C5P part "http://identifiers.org/uniprot/P38634",
+           "http://identifiers.org/uniprot/P32943",
+           "http://identifiers.org/uniprot/P30283"
+  CDC14 identity "http://identifiers.org/uniprot/Q00684"
+  CDC14T identity "http://identifiers.org/uniprot/Q00684"
+  RENT identity "http://identifiers.org/obo.go/GO:0030869"
+  RENT part "http://identifiers.org/uniprot/P47035",
+            "http://identifiers.org/uniprot/P06700",
+            "http://identifiers.org/uniprot/Q00684"
+  RENTP identity "http://identifiers.org/obo.go/GO:0030869"
+  RENTP part "http://identifiers.org/uniprot/P06700",
+             "http://identifiers.org/uniprot/P47035",
+             "http://identifiers.org/uniprot/Q00684"
+  CDC15 identity "http://identifiers.org/uniprot/P27636"
+  CDC15i identity "http://identifiers.org/uniprot/P27636"
+  CDC20 identity "http://identifiers.org/uniprot/P26309"
+  CDC20i identity "http://identifiers.org/uniprot/P26309"
+  CDC6 identity "http://identifiers.org/uniprot/P09119"
+  CDC6P identity "http://identifiers.org/uniprot/P09119"
+  CDC6T identity "http://identifiers.org/uniprot/P09119"
+  F2 part "http://identifiers.org/uniprot/P09119",
+          "http://identifiers.org/uniprot/P24868",
+          "http://identifiers.org/uniprot/P24869"
+  F5 part "http://identifiers.org/uniprot/P32943",
+          "http://identifiers.org/uniprot/P30283",
+          "http://identifiers.org/uniprot/P09119"
+  F2P part "http://identifiers.org/uniprot/P09119",
+           "http://identifiers.org/uniprot/P24868",
+           "http://identifiers.org/uniprot/P24869"
+  F5P part "http://identifiers.org/uniprot/P09119",
+           "http://identifiers.org/uniprot/P30283",
+           "http://identifiers.org/uniprot/P32943"
+  CDH1 identity "http://identifiers.org/uniprot/P53197"
+  CDH1i identity "http://identifiers.org/uniprot/P53197"
+  CKIT part "http://identifiers.org/uniprot/P38634",
+            "http://identifiers.org/uniprot/P09119"
+  SIC1T identity "http://identifiers.org/uniprot/P38634"
+  CLB2 part "http://identifiers.org/uniprot/P24869",
+            "http://identifiers.org/uniprot/P24868"
+  CLB2T part "http://identifiers.org/uniprot/P24869",
+             "http://identifiers.org/uniprot/P24868"
+  CLB5 part "http://identifiers.org/uniprot/P32943",
+            "http://identifiers.org/uniprot/P30283"
+  CLB5T part "http://identifiers.org/uniprot/P32943",
+             "http://identifiers.org/uniprot/P30283"
+  CLN2 part "http://identifiers.org/uniprot/P20438",
+            "http://identifiers.org/uniprot/P20437"
+  CLN3 identity "http://identifiers.org/uniprot/P13365"
+  ESP1 identity "http://identifiers.org/uniprot/Q03018"
+  IE identity "http://identifiers.org/obo.go/GO:0005680"
+  IEP identity "http://identifiers.org/obo.go/GO:0005680"
+  LTE1 identity "http://identifiers.org/uniprot/P07866"
+  MAD2 identity "http://identifiers.org/uniprot/P40958"
+  MCM1 identity "http://identifiers.org/uniprot/P11746"
+  NET1 identity "http://identifiers.org/uniprot/P47035"
+  NET1P identity "http://identifiers.org/uniprot/P47035"
+  NET1T identity "http://identifiers.org/uniprot/P47035"
+  PDS1 identity "http://identifiers.org/uniprot/P40316"
+  PE identity "http://identifiers.org/uniprot/Q03018"
+  PPX identity "http://identifiers.org/uniprot/P38698"
+  SBF identity "http://identifiers.org/uniprot/P11938"
+  SIC1 identity "http://identifiers.org/uniprot/P38634"
+  SIC1P identity "http://identifiers.org/uniprot/P38634"
+  SPN hypernym "http://identifiers.org/cco/CCO:P0000392"
+  SWI5 identity "http://identifiers.org/uniprot/P08153"
+  SWI5P identity "http://identifiers.org/uniprot/P08153"
+  TEM1GDP identity "http://identifiers.org/uniprot/P38987"
+  TEM1GTP identity "http://identifiers.org/uniprot/P38987"
+  Growth hypernym "http://identifiers.org/obo.go/GO:0016049"
+  Synthesis_of_CLN2 hypernym "http://identifiers.org/kegg.pathway/sce04110",
+                             "http://identifiers.org/obo.go/GO:0006412"
+  Degradation_of_CLN2 hypernym "http://identifiers.org/obo.go/GO:0008054"
+  Synthesis_of_CLB2 hypernym "http://identifiers.org/obo.go/GO:0006412"
+  Degradation_of_CLB2 hypernym "http://identifiers.org/obo.go/GO:0051437",
+                               "http://identifiers.org/obo.go/GO:0008054"
+  Synthesis_of_CLB5 hypernym "http://identifiers.org/obo.go/GO:0006412"
+  Degradation_of_CLB5 hypernym "http://identifiers.org/obo.go/GO:0008054",
+                               "http://identifiers.org/obo.go/GO:0051437"
+  Synthesis_of_SIC1 hypernym "http://identifiers.org/obo.go/GO:0006412"
+  Phosphorylation_of_SIC1 hypernym "http://identifiers.org/ec-code/2.7.11.22",
+                                   "http://identifiers.org/obo.go/GO:0004693",
+                                   "http://identifiers.org/obo.go/GO:0006468"
+  Dephosphorylation_of_SIC1 hypernym "http://identifiers.org/ec-code/3.1.3.48",
+                                     "http://identifiers.org/obo.go/GO:0004721",
+                                     "http://identifiers.org/obo.go/GO:0006470"
+  Fast_Degradation_of_SIC1P hypernym "http://identifiers.org/obo.go/GO:0030163"
+  Assoc_of_CLB2_and_SIC1 hypernym "http://identifiers.org/obo.go/GO:0005515",
+                                  "http://identifiers.org/obo.go/GO:0043623"
+  Dissoc_of_CLB2SIC1_complex hypernym "http://identifiers.org/obo.go/GO:0043624"
+  Assoc_of_CLB5_and_SIC1 hypernym "http://identifiers.org/obo.go/GO:0043623",
+                                  "http://identifiers.org/obo.go/GO:0005515"
+  Dissoc_of_CLB5SIC1 hypernym "http://identifiers.org/obo.go/GO:0043624"
+  Phosphorylation_of_C2 hypernym "http://identifiers.org/ec-code/2.7.11.22",
+                                 "http://identifiers.org/obo.go/GO:0006468",
+                                 "http://identifiers.org/obo.go/GO:0004693"
+  Dephosphorylation_of_C2P hypernym "http://identifiers.org/ec-code/3.1.3.48",
+                                    "http://identifiers.org/obo.go/GO:0006470",
+                                    "http://identifiers.org/obo.go/GO:0004721"
+  Phosphorylation_of_C5 hypernym "http://identifiers.org/ec-code/2.7.11.22",
+                                 "http://identifiers.org/obo.go/GO:0006468",
+                                 "http://identifiers.org/obo.go/GO:0004693"
+  Dephosphorylation_of_C5P hypernym "http://identifiers.org/ec-code/3.1.3.48",
+                                    "http://identifiers.org/obo.go/GO:0006470",
+                                    "http://identifiers.org/obo.go/GO:0004721"
+  Degradation_of_CLB2_in_C2 hypernym "http://identifiers.org/obo.go/GO:0051437",
+                                     "http://identifiers.org/obo.go/GO:0008054"
+  Degradation_of_CLB5_in_C5 hypernym "http://identifiers.org/obo.go/GO:0008054",
+                                     "http://identifiers.org/obo.go/GO:0051437"
+  Degradation_of_SIC1_in_C2P hypernym "http://identifiers.org/obo.go/GO:0030163"
+  Degradation_of_SIC1P_in_C5P_ hypernym "http://identifiers.org/obo.go/GO:0030163"
+  Degradation_of_CLB2_in_C2P hypernym "http://identifiers.org/obo.go/GO:0051437",
+                                      "http://identifiers.org/obo.go/GO:0008054"
+  Degradation_of_CLB5_in_C5P hypernym "http://identifiers.org/obo.go/GO:0051437",
+                                      "http://identifiers.org/obo.go/GO:0008054"
+  CDC6_synthesis hypernym "http://identifiers.org/obo.go/GO:0006412"
+  Phosphorylation_of_CDC6 hypernym "http://identifiers.org/ec-code/2.7.11.22",
+                                   "http://identifiers.org/obo.go/GO:0004693",
+                                   "http://identifiers.org/obo.go/GO:0006468"
+  Dephosphorylation_of_CDC6 hypernym "http://identifiers.org/ec-code/3.1.3.48",
+                                     "http://identifiers.org/obo.go/GO:0004721",
+                                     "http://identifiers.org/obo.go/GO:0006470"
+  Degradation_of_CDC6P hypernym "http://identifiers.org/obo.go/GO:0030163"
+  CLB2CDC6_complex_formation hypernym "http://identifiers.org/obo.go/GO:0043623",
+                                      "http://identifiers.org/obo.go/GO:0005515"
+  CLB2CDC6_dissociation hypernym "http://identifiers.org/obo.go/GO:0043624"
+  CLB5CDC6_complex_formation hypernym "http://identifiers.org/obo.go/GO:0043623",
+                                      "http://identifiers.org/obo.go/GO:0005515"
+  CLB5CDC6_dissociation hypernym "http://identifiers.org/obo.go/GO:0043624"
+  F2_phosphorylation hypernym "http://identifiers.org/ec-code/2.7.11.22",
+                              "http://identifiers.org/obo.go/GO:0006468",
+                              "http://identifiers.org/obo.go/GO:0004693"
+  F2P_dephosphorylation hypernym "http://identifiers.org/ec-code/3.1.3.48",
+                                 "http://identifiers.org/obo.go/GO:0006470",
+                                 "http://identifiers.org/obo.go/GO:0004721"
+  F5_phosphorylation hypernym "http://identifiers.org/ec-code/2.7.11.22",
+                              "http://identifiers.org/obo.go/GO:0006468",
+                              "http://identifiers.org/obo.go/GO:0004693"
+  F5P_dephosphorylation hypernym "http://identifiers.org/ec-code/3.1.3.48",
+                                 "http://identifiers.org/obo.go/GO:0006470",
+                                 "http://identifiers.org/obo.go/GO:0004721"
+  CLB2_degradation_in_F2 hypernym "http://identifiers.org/obo.go/GO:0051437",
+                                  "http://identifiers.org/obo.go/GO:0008054"
+  CLB5_degradation_in_F5 hypernym "http://identifiers.org/obo.go/GO:0051437",
+                                  "http://identifiers.org/obo.go/GO:0008054"
+  CDC6_degradation_in_F2P hypernym "http://identifiers.org/obo.go/GO:0030163"
+  CDC6_degradation_in_F5P hypernym "http://identifiers.org/obo.go/GO:0030163"
+  CLB2_degradation_in_F2P hypernym "http://identifiers.org/obo.go/GO:0051437",
+                                   "http://identifiers.org/obo.go/GO:0008054"
+  CLB5_degradation_in_F5P hypernym "http://identifiers.org/obo.go/GO:0051437",
+                                   "http://identifiers.org/obo.go/GO:0008054"
+  Synthesis_of_SWI5 hypernym "http://identifiers.org/obo.go/GO:0006412"
+  Degradation_of_SWI5 hypernym "http://identifiers.org/obo.go/GO:0030163"
+  Degradation_of_SWI5P hypernym "http://identifiers.org/obo.go/GO:0030163"
+  Activation_of_SWI5 hypernym "http://identifiers.org/ec-code/3.1.3.48",
+                              "http://identifiers.org/obo.go/GO:0006470",
+                              "http://identifiers.org/obo.go/GO:0051091",
+                              "http://identifiers.org/obo.go/GO:0004721"
+  Inactivation_of_SWI5 hypernym "http://identifiers.org/ec-code/2.7.11.22",
+                                "http://identifiers.org/obo.go/GO:0006468",
+                                "http://identifiers.org/obo.go/GO:0004693",
+                                "http://identifiers.org/obo.go/GO:0043433"
+  Activation_of_IEP hypernym "http://identifiers.org/ec-code/2.7.11.22",
+                             "http://identifiers.org/obo.go/GO:0006468",
+                             "http://identifiers.org/obo.go/GO:0004693"
+  Inactivation_1 hypernym "http://identifiers.org/obo.go/GO:0001100",
+                          "http://identifiers.org/obo.go/GO:0006470"
+  Synthesis_of_inactive_CDC20 hypernym "http://identifiers.org/obo.go/GO:0006412"
+  Degradation_of_inactiveCDC20 hypernym "http://identifiers.org/obo.go/GO:0030163"
+  Degradation_of_active_CDC20 hypernym "http://identifiers.org/obo.go/GO:0030163"
+  Activation_of_CDC20 hypernym "http://identifiers.org/obo.go/GO:0031536"
+  Inactivation_2 hypernym "http://identifiers.org/obo.go/GO:0001100"
+  CDH1_synthesis hypernym "http://identifiers.org/obo.go/GO:0006412"
+  CDH1_degradation hypernym "http://identifiers.org/obo.go/GO:0030163"
+  CDH1i_degradation hypernym "http://identifiers.org/obo.go/GO:0030163"
+  CDH1i_activation hypernym "http://identifiers.org/ec-code/3.1.3.48",
+                            "http://identifiers.org/obo.go/GO:0004721",
+                            "http://identifiers.org/obo.go/GO:0006470",
+                            "http://identifiers.org/obo.go/GO:0031536"
+  Inactivation_3 hypernym "http://identifiers.org/ec-code/2.7.11.22",
+                          "http://identifiers.org/obo.go/GO:0004693",
+                          "http://identifiers.org/obo.go/GO:0001100",
+                          "http://identifiers.org/obo.go/GO:0006468"
+  CDC14_synthesis hypernym "http://identifiers.org/obo.go/GO:0006412"
+  CDC14_degradation hypernym "http://identifiers.org/obo.go/GO:0030163"
+  Assoc_with_NET1_to_form_RENT hypernym "http://identifiers.org/obo.go/GO:0030869",
+                                        "http://identifiers.org/obo.go/GO:0005515",
+                                        "http://identifiers.org/obo.go/GO:0043623"
+  Dissoc_from_RENT hypernym "http://identifiers.org/obo.go/GO:0043624"
+  Assoc_with_NET1P_to_form_RENTP part "http://identifiers.org/kegg.pathway/ko04111"
+  Assoc_with_NET1P_to_form_RENTP hypernym "http://identifiers.org/obo.go/GO:0043623",
+                                          "http://identifiers.org/obo.go/GO:0005515"
+  Dissoc_from_RENP hypernym "http://identifiers.org/obo.go/GO:0043624"
+  Net1_synthesis hypernym "http://identifiers.org/obo.go/GO:0006412"
+  Net1_degradation hypernym "http://identifiers.org/obo.go/GO:0030163"
+  Net1P_degradation hypernym "http://identifiers.org/obo.go/GO:0030163"
+  NET1_phosphorylation hypernym "http://identifiers.org/ec-code/2.7.11.1",
+                                "http://identifiers.org/obo.go/GO:0004672",
+                                "http://identifiers.org/obo.go/GO:0006468",
+                                "http://identifiers.org/obo.go/GO:0031536"
+  dephosphorylation_1 hypernym "http://identifiers.org/ec-code/3.6.1.11",
+                               "http://identifiers.org/obo.go/GO:0004309",
+                               "http://identifiers.org/obo.go/GO:0006470"
+  RENT_phosphorylation hypernym "http://identifiers.org/ec-code/2.7.11.1",
+                                "http://identifiers.org/obo.go/GO:0031536",
+                                "http://identifiers.org/obo.go/GO:0006468",
+                                "http://identifiers.org/obo.go/GO:0004672"
+  dephosphorylation_2 hypernym "http://identifiers.org/ec-code/3.6.1.11",
+                               "http://identifiers.org/obo.go/GO:0006470",
+                               "http://identifiers.org/obo.go/GO:0004309"
+  Degradation_of_NET1_in_RENT hypernym "http://identifiers.org/obo.go/GO:0030163"
+  Degradation_of_NET1P_in_RENTP hypernym "http://identifiers.org/obo.go/GO:0030163"
+  Degradation_of_CDC14_in_RENT hypernym "http://identifiers.org/obo.go/GO:0030163"
+  Degradation_of_CDC14_in_RENTP hypernym "http://identifiers.org/obo.go/GO:0030163"
+  TEM1_activation hypernym "http://identifiers.org/obo.go/GO:0005525",
+                           "http://identifiers.org/obo.go/GO:0031536",
+                           "http://identifiers.org/obo.go/GO:0005515"
+  inactivation_1 hypernym "http://identifiers.org/obo.go/GO:0005096",
+                          "http://identifiers.org/obo.go/GO:0007094",
+                          "http://identifiers.org/obo.go/GO:0005515"
+  CDC15_activation hypernym "http://identifiers.org/ec-code/2.7.11.1",
+                            "http://identifiers.org/ec-code/3.1.3.48",
+                            "http://identifiers.org/obo.go/GO:0004721",
+                            "http://identifiers.org/obo.go/GO:0031536",
+                            "http://identifiers.org/obo.go/GO:0006470"
+  inactivation_2 hypernym "http://identifiers.org/ec-code/2.7.11.1",
+                          "http://identifiers.org/obo.go/GO:0006469",
+                          "http://identifiers.org/obo.go/GO:0001100"
+  PPX_synthesis hypernym "http://identifiers.org/ec-code/3.6.1.11",
+                         "http://identifiers.org/obo.go/GO:0006412"
+  degradation_1 hypernym "http://identifiers.org/obo.go/GO:0030163"
+  PDS1_synthesis hypernym "http://identifiers.org/obo.go/GO:0006412"
+  degradation_2 hypernym "http://identifiers.org/obo.go/GO:0051437",
+                         "http://identifiers.org/obo.go/GO:0030163"
+  Degradation_of_PDS1_in_PE hypernym "http://identifiers.org/obo.go/GO:0030163",
+                                     "http://identifiers.org/obo.go/GO:0051437"
+  Assoc_with_ESP1_to_form_PE hypernym "http://identifiers.org/obo.go/GO:0043623",
+                                      "http://identifiers.org/obo.go/GO:0005515",
+                                      "http://identifiers.org/obo.go/GO:0043027"
+  Disso_from_PE hypernym "http://identifiers.org/obo.go/GO:0043280",
+                         "http://identifiers.org/obo.go/GO:0043624"
+  DNA_synthesis hypernym "http://identifiers.org/obo.go/GO:0006261",
+                         "http://identifiers.org/obo.go/GO:0000082"
+  Negative_regulation_of_DNA_synthesis hypernym "http://identifiers.org/obo.go/GO:0008156"
+  Budding hypernym "http://identifiers.org/obo.go/GO:0045782"
+  Negative_regulation_of_Cell_budding hypernym "http://identifiers.org/obo.go/GO:0045781"
+  Spindle_formation hypernym "http://identifiers.org/obo.go/GO:0051225"
+  Spindle_disassembly hypernym "http://identifiers.org/obo.go/GO:0051228"
 end
+
+BIOMD0000000056 is "Chen2004 - Cell Cycle Regulation"
+
+BIOMD0000000056 model_entity_is "http://identifiers.org/biomodels.db/MODEL6624073334"
+BIOMD0000000056 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000056"
+BIOMD0000000056 description "http://identifiers.org/pubmed/15169868"
+BIOMD0000000056 identity "http://identifiers.org/kegg.pathway/sce04111"
+BIOMD0000000056 hypernym "http://identifiers.org/obo.go/GO:0000278"
+BIOMD0000000056 homolog "http://identifiers.org/reactome/REACT_152"
+BIOMD0000000056 taxon "http://identifiers.org/taxonomy/4932"

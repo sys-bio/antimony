@@ -1,39 +1,39 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *Tolic2000_InsulinGlucoseFeedback()
 
   // Compartments and Species:
-  compartment COMpartment_;
-  species $x1 in COMpartment_, $Ip in COMpartment_, $x2 in COMpartment_, $x3 in COMpartment_;
-  species $G in COMpartment_, $Ii in COMpartment_;
+  compartment COMpartment;
+  species $x1 in COMpartment, $Ip in COMpartment, $x2 in COMpartment, $x3 in COMpartment;
+  species $G in COMpartment, $Ii in COMpartment;
 
   // Assignment Rules:
-  f5_x3 := Rg/(1 + exp(alpha*((x3*1)/Vp - C5)));
+  f5_x3 := Rg/(1 + exp(alpha*(x3*1/Vp - C5)));
   f2_G := Ub*(1 - exp(-G/(C2*Vg)));
   f3_G := G/(C3*Vg);
-  f4_Ii := U0 + (Um - U0)/(1 + exp(-beta*ln(Ii/C4*(1/Vi + 1/(E*ti)))));
+  f4_Ii := U0 + (Um - U0)/(1 + exp(-beta*ln((Ii/C4)*(1/Vi + 1/(E*ti)))));
   f1_G := Rm/(1 + exp((C1 - G/Vg)/a1));
   Ip_conc := Ip/Vp;
   Ii_conc := Ii/Vi;
   G_conc := G/(Vg*10);
 
   // Rate Rules:
-  x1' = 3/td*(Ip/1 - x1);
+  x1' = (3/td)*(Ip/1 - x1);
   Ip' = f1_G - (E*(Ip/Vp - Ii/Vi) + Ip/tp);
-  x2' = 3/td*(x1 - x2);
-  x3' = 3/td*(x2 - x3);
+  x2' = (3/td)*(x1 - x2);
+  x3' = (3/td)*(x2 - x3);
   G' = Gin + f5_x3 + -(f2_G + f3_G*f4_Ii);
   Ii' = E*(Ip/Vp - Ii/Vi) - Ii/ti;
 
   // Species initializations:
-  x1 = 110.420253/COMpartment_;
-  Ip = 93.36441699/COMpartment_;
-  x2 = 112.7601171/COMpartment_;
-  x3 = 104.5878705/COMpartment_;
-  G = 12342.61665/COMpartment_;
-  Ii = 243.2865183/COMpartment_;
+  x1 = 110.420253/COMpartment;
+  Ip = 93.36441699/COMpartment;
+  x2 = 112.7601171/COMpartment;
+  x3 = 104.5878705/COMpartment;
+  G = 12342.61665/COMpartment;
+  Ii = 243.2865183/COMpartment;
 
   // Compartment initializations:
-  COMpartment_ = 1;
+  COMpartment = 1;
 
   // Variable initializations:
   td = 36;
@@ -60,6 +60,49 @@ model *Tolic2000_InsulinGlucoseFeedback()
 
   // Other declarations:
   var f5_x3, f2_G, f3_G, f4_Ii, f1_G, Ip_conc, Ii_conc, G_conc;
-  const COMpartment_, td, Gin, E, Vp, Vi, ti, tp, Vg, Rm, C1, a1, Ub, C2;
-  const C3, U0, Um, beta, C4, Rg, alpha, C5;
+  const COMpartment, td, Gin, E, Vp, Vi, ti, tp, Vg, Rm, C1, a1, Ub, C2, C3;
+  const U0, Um, beta, C4, Rg, alpha, C5;
+
+  // SBO terms:
+  x1.sboTerm = 225
+  td.sboTerm = 345
+  x2.sboTerm = 225
+  x3.sboTerm = 225
+  Gin.sboTerm = 9
+  E.sboTerm = 9
+  Vp.sboTerm = 468
+  Vi.sboTerm = 468
+  ti.sboTerm = 345
+  tp.sboTerm = 345
+  Vg.sboTerm = 468
+  Ip_conc.sboTerm = 196
+  Rm.sboTerm = 9
+  C1.sboTerm = 9
+  a1.sboTerm = 9
+  Ub.sboTerm = 9
+  C2.sboTerm = 9
+  C3.sboTerm = 9
+  U0.sboTerm = 9
+  Um.sboTerm = 9
+  beta.sboTerm = 9
+  C4.sboTerm = 9
+  Rg.sboTerm = 9
+  alpha.sboTerm = 9
+  C5.sboTerm = 9
+
+  // CV terms:
+  Ip hypernym "http://identifiers.org/uniprot/P01308"
+  G hypernym "http://identifiers.org/chebi/CHEBI:17234"
+  Ii hypernym "http://identifiers.org/uniprot/P01308"
 end
+
+Tolic2000_InsulinGlucoseFeedback is "Tolic2000_InsulinGlucoseFeedback"
+
+Tolic2000_InsulinGlucoseFeedback model_entity_is "http://identifiers.org/biomodels.db/MODEL1006230109"
+Tolic2000_InsulinGlucoseFeedback model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000372"
+Tolic2000_InsulinGlucoseFeedback description "http://identifiers.org/pubmed/11082306"
+Tolic2000_InsulinGlucoseFeedback origin "http://identifiers.org/biomodels.db/BIOMD0000000382"
+Tolic2000_InsulinGlucoseFeedback taxon "http://identifiers.org/taxonomy/9606"
+Tolic2000_InsulinGlucoseFeedback hypernym "http://identifiers.org/go/GO:0061178"
+Tolic2000_InsulinGlucoseFeedback container "http://identifiers.org/bto/BTO:0000783"
+Tolic2000_InsulinGlucoseFeedback property "http://identifiers.org/doid/DOID:9351"

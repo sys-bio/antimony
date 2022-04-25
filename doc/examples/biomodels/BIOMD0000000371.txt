@@ -1,9 +1,9 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *DeVries2000_PancreaticBetaCells_InsulinSecretion()
 
   // Compartments and Species:
-  compartment Compartment_;
-  species $V_membrane in Compartment_, $n in Compartment_, $s in Compartment_;
+  compartment Compartment;
+  species $V_membrane in Compartment, $n in Compartment, $s in Compartment;
 
   // Assignment Rules:
   i_Ca := g_Ca*m_infinity*(V_membrane - V_Ca);
@@ -16,16 +16,16 @@ model *DeVries2000_PancreaticBetaCells_InsulinSecretion()
 
   // Rate Rules:
   V_membrane' = -(i_Ca + i_K + i_K_ATP + i_s)/tau_membrane;
-  n' = (lamda*(n_infinity - n))/tau_potassium_current_n_gate;
+  n' = lamda*(n_infinity - n)/tau_potassium_current_n_gate;
   s' = (s_infinity - s)/tau_s;
 
   // Species initializations:
-  V_membrane = -65/Compartment_;
-  n = 0.05/Compartment_;
-  s = 0.025/Compartment_;
+  V_membrane = -65/Compartment;
+  n = 0.05/Compartment;
+  s = 0.025/Compartment;
 
   // Compartment initializations:
-  Compartment_ = 1;
+  Compartment = 1;
 
   // Variable initializations:
   tau_membrane = 20;
@@ -48,11 +48,47 @@ model *DeVries2000_PancreaticBetaCells_InsulinSecretion()
 
   // Other declarations:
   var i_Ca, i_K, i_K_ATP, i_s, n_infinity, s_infinity, m_infinity;
-  const Compartment_, tau_membrane, lamda, tau_potassium_current_n_gate, tau_s;
+  const Compartment, tau_membrane, lamda, tau_potassium_current_n_gate, tau_s;
   const g_Ca, V_Ca, V_m, theta_m, g_K, V_K, V_n, theta_n, g_s, V_s, theta_s;
   const g_K_ATP, p;
 
   // Display Names:
   tau_membrane is "tau";
   tau_potassium_current_n_gate is "tau_2";
+
+  // SBO terms:
+  tau_membrane.sboTerm = 345
+  lamda.sboTerm = 9
+  tau_potassium_current_n_gate.sboTerm = 345
+  tau_s.sboTerm = 345
+  g_Ca.sboTerm = 9
+  V_Ca.sboTerm = 9
+  V_m.sboTerm = 9
+  theta_m.sboTerm = 9
+  g_K.sboTerm = 9
+  V_K.sboTerm = 9
+  V_n.sboTerm = 9
+  theta_n.sboTerm = 9
+  g_s.sboTerm = 9
+  V_s.sboTerm = 9
+  theta_s.sboTerm = 9
+  p.sboTerm = 9
+
+  // CV terms:
+  V_membrane identity "http://identifiers.org/pato/PATO:0001462"
+  n hypernym "http://identifiers.org/go/GO:0005251"
+  s identity "http://identifiers.org/pato/PATO:0001227"
 end
+
+DeVries2000_PancreaticBetaCells_InsulinSecretion is "DeVries2000_PancreaticBetaCells_InsulinSecretion"
+
+DeVries2000_PancreaticBetaCells_InsulinSecretion model_entity_is "http://identifiers.org/biomodels.db/MODEL0911270002"
+DeVries2000_PancreaticBetaCells_InsulinSecretion model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000371"
+DeVries2000_PancreaticBetaCells_InsulinSecretion description "http://identifiers.org/pubmed/11093836"
+DeVries2000_PancreaticBetaCells_InsulinSecretion origin "http://identifiers.org/pubmed/2850029"
+DeVries2000_PancreaticBetaCells_InsulinSecretion hypernym "http://identifiers.org/go/GO:0061469",
+                                                          "http://identifiers.org/go/GO:0044342",
+                                                          "http://identifiers.org/go/GO:0030073"
+DeVries2000_PancreaticBetaCells_InsulinSecretion taxon "http://identifiers.org/taxonomy/9606"
+DeVries2000_PancreaticBetaCells_InsulinSecretion container "http://identifiers.org/bto/BTO:0000783"
+DeVries2000_PancreaticBetaCells_InsulinSecretion property "http://identifiers.org/doid/DOID:9351"

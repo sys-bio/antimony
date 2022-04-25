@@ -1,0 +1,321 @@
+// Created by libAntimony v2.13.0
+function rPhWhip(kPhWhipCln3, CLN3, kPhWhipCln, CLN, Substrate)
+  (kPhWhipCln3*CLN3 + kPhWhipCln*CLN)*Substrate;
+end
+
+rPhWhip is "rPhWhip"
+
+function rInCdc(kInCdc, Substrate, jCdc)
+  kInCdc*Substrate/(jCdc + Substrate);
+end
+
+rInCdc is "rInCdc"
+
+function rDeClb(kDeClb, kDeClbCdh, CDHa, Substrate)
+  (kDeClb + kDeClbCdh*CDHa)*Substrate;
+end
+
+rDeClb is "rDeClb"
+
+function rAcCdh(kAcCdh, kAcCdhCdc, CDCa, Substrate, jCdh)
+  (kAcCdh + kAcCdhCdc*CDCa)*(Substrate/(jCdh + Substrate));
+end
+
+rAcCdh is "rAcCdh"
+
+function rSyClb(kSyClb, kSyClbClb, CLB, jSyClb, GDTM, GCN, GDt)
+  (kSyClb + kSyClbClb*CLB/(jSyClb + CLB))*GDTM*(GCN/GDt);
+end
+
+rSyClb is "rSyClb"
+
+function rInCdh(kInCdhCln, CLN, kInCdhClb, CLB, Substrate, jCdh)
+  (kInCdhCln*CLN + kInCdhClb*CLB)*(Substrate/(jCdh + Substrate));
+end
+
+rInCdh is "rInCdh"
+
+function rAcCdc(kAcCdcClb, CLB, Substrate, jCdc)
+  kAcCdcClb*CLB*(Substrate/(jCdc + Substrate));
+end
+
+rAcCdc is "rAcCdc"
+
+function rSyWhi(GRd, kSyWhi, GITM, GWt, GIt)
+  GRd*kSyWhi*GITM*(GWt/GIt);
+end
+
+rSyWhi is "rSyWhi"
+
+function rPhSbf(kPhSbfClb, CLB, SBFu)
+  kPhSbfClb*CLB*SBFu;
+end
+
+rPhSbf is "rPhSbf"
+
+function Expression_of_size_dependent_gene(kSy, GDTM, GCN, GDt)
+  kSy*GDTM*(GCN/GDt);
+end
+
+Expression_of_size_dependent_gene is "Expression of size-dependent gene"
+
+function rPhWhi(kPhWhiCln, CLN, Substrate)
+  kPhWhiCln*CLN*Substrate;
+end
+
+rPhWhi is "rPhWhi"
+
+function rSyCln(kSyCln, GDTM, GCN, GDt, SBF, SBFt, SBFu)
+  kSyCln*GDTM*(GCN/GDt)*(SBF/SBFt)*(SBFu/SBFt);
+end
+
+rSyCln is "rSyCln"
+
+
+model *Budding_yeast_size_control_by_titration_of_nuclear_sites()
+
+  // Compartments and Species:
+  compartment tV, mV, dV;
+  substanceOnly species GDTM in tV, TM in tV, $GI in tV, GITM in tV, $GD in tV;
+  substanceOnly species CLN3 in tV, WHI in tV, WHIp in tV, $SBF in tV, WHISBF in tV;
+  substanceOnly species CLN3WHISBF in tV, WHIpSBF in tV, WHIn in tV, $WHIt in tV;
+  substanceOnly species $SBFt in tV, SBFu in tV, SBFp in tV, CLN in tV, CLB in tV;
+  substanceOnly species CDHa in tV, CDHi in tV, CDCa in tV, CDCi in tV, $TMt in tV;
+  substanceOnly species $active_SBF in tV, $CLN3t in tV;
+
+  // Assignment Rules:
+  tV := mV + dV;
+  GI := GIt - GITM;
+  GD := GDt - GDTM;
+  SBF := ((NSt/tV - WHISBF/tV - CLN3WHISBF/tV - WHIpSBF/tV) + 1e-12)*tV;
+  WHIt := (WHI/tV + WHIp/tV + CLN3WHISBF/tV + WHISBF/tV + WHIpSBF/tV + WHIn/tV)*tV;
+  SBFt := (SBF/tV + WHISBF/tV + CLN3WHISBF/tV + WHIpSBF/tV)*tV;
+  TMt := (TM/tV + GDTM/tV + GITM/tV)*tV;
+  active_SBF := (SBF/tV)*(SBFu/tV/(SBFt/tV))*tV;
+  CLN3t := (CLN3/tV + CLN3WHISBF/tV)*tV;
+  rV := dV/tV;
+  kSySbf := 1*kSyVo;
+  kSyCdh := 1*kSyVo;
+  kSyCdc := 1*kSyVo;
+
+  // Rate Rules:
+  mV' = GRm*kSyVo*GDTM*(GCN/GDt);
+  dV' = GRd*kSyVo*GDTM*(GCN/GDt);
+
+  // Reactions:
+  Synthesis_of_transcription_machninery:  => TM; tV*Expression_of_size_dependent_gene(kSyTm, GDTM/tV, GCN, GDt);
+  Association_dissociation_of_TM_and_size_independent_genes: TM + $GI -> GITM; tV*(kAsGiTm*(TM/tV)*(GI/tV) - kDsGiTm*(GITM/tV));
+  Association_dissociation_of_TM_and_size_dependent_genes: TM + $GD -> GDTM; tV*(kAsGdTm*(TM/tV)*(GD/tV) - kDsGdTm*(GDTM/tV));
+  Synthesis_of_Cln3:  => CLN3; tV*Expression_of_size_dependent_gene(kSyCln3, GDTM/tV, GCt, GDt);
+  Degradation_of_Cln3: CLN3 => ; kDeCln3*CLN3;
+  Phosphorylation_of_SBF: SBFu => SBFp; tV*rPhSbf(kPhSbfClb, CLB/tV, SBFu/tV);
+  Dephosphorylation_of_SBF: SBFp => SBFu; kDpSbf*SBFp;
+  Synthesis_of_Cln1_2:  => CLN; tV*rSyCln(kSyCln, GDTM/tV, GCN, GDt, SBF/tV, SBFt/tV, SBFu/tV);
+  Degradation_of_Cln1_2: CLN => ; kDeCln*CLN;
+  Synthesis_of_Cdh1:  => CDHi; tV*Expression_of_size_dependent_gene(kSyCdh, GDTM/tV, GCN, GDt);
+  Synthesis_of_Cdc20:  => CDCi; tV*Expression_of_size_dependent_gene(kSyCdc, GDTM/tV, GCN, GDt);
+  Activation_of_APC_Cdc20: CDCi => CDCa; tV*rAcCdc(kAcCdcClb, CLB/tV, CDCi/tV, jCdc);
+  Inactivation_of_APC_C_Cdc20: CDCa => CDCi; tV*rInCdc(kInCdc, CDCa/tV, jCdc);
+  Activation_of_APC_C_Cdh1: CDHi => CDHa; tV*rAcCdh(kAcCdh, kAcCdhCdc, CDCa/tV, CDHi/tV, jCdh);
+  Inactivation_of_APC_C_Cdh1: CDHa => CDHi; tV*rInCdh(kInCdhCln, CLN/tV, kInCdhClb, CLB/tV, CDHa/tV, jCdh);
+  Synthesis_of_Clb1_2:  => CLB; tV*rSyClb(kSyClb, kSyClbClb, CLB/tV, jSyClb, GDTM/tV, GCN, GDt);
+  Degradation_of_Clb1_2: CLB => ; tV*rDeClb(kDeClb, kDeClbCdh, CDHa/tV, CLB/tV);
+  Synthesis_of_Whi5:  => WHIn; tV*rSyWhi(GRd, kSyWhi, GITM/tV, GWt, GIt);
+  Association_dissociation_of_Cln3_and_Whi5_SBF: CLN3 + WHISBF -> CLN3WHISBF; tV*(kAsCln3Whi*(CLN3/tV)*(WHISBF/tV) - kDsCln3Whi*(CLN3WHISBF/tV));
+  Association_of_Whi5_and_SBF: WHI + $SBF => WHISBF; kAsWhiSbf*WHI*(SBF/tV);
+  Phosphorylation_of_free_Whi5: WHI => WHIp; tV*rPhWhi(kPhWhiCln, CLN/tV, WHI/tV);
+  Dephosphorylation_of_free_Whi5: WHIp => WHI; kDpWhi*WHIp;
+  Phosphorylation_of_Whi5_in_Cln3_Whi5_SBF_complexes: CLN3WHISBF => CLN3 + WHIpSBF; kPhWhiCln3*CLN3WHISBF;
+  Degradation_of_Cln3_in_Cln3_Whi5_SBF_complexes: CLN3WHISBF => WHISBF; kDeCln3*CLN3WHISBF;
+  Dephosphorylation_of_hypo_phosphorylated_Whi5_in_Whi5_SBF_complexes: WHIpSBF => WHISBF; kDpWhi*WHIpSBF;
+  Hyper_phosphorylation_of_Whi5_in_hypo_phosphorylated_Whi5_SBF_complexes: WHIpSBF => $SBF + WHIp; tV*rPhWhip(kPhWhipCln3, CLN3/tV, kPhWhipCln, CLN/tV, WHIpSBF/tV);
+
+  // Events:
+  Start: at (CLN/tV) >= StartThr: SBFu = (SBFu/tV)*2*tV, SBFp = (SBFp/tV)*2*tV, NSt = NSt*2, GDt = GDt*2, GIt = GIt*2, GWt = GWt*2, GCt = GCt*2, GCN = GCN*2, GRd = 1, GRm = 0;
+  Division: at (CLN/tV + CLB/tV) <= MitosisThr: WHIpSBF = (WHIpSBF/tV)*rV*tV, CLN3WHISBF = (CLN3WHISBF/tV)*rV*tV, NSt = NSt/2, CDHi = (CDHi/tV)*rV*tV, CDHa = (CDHa/tV)*rV*tV, CDCi = (CDCi/tV)*rV*tV, CDCa = (CDCa/tV)*rV*tV, SBFu = (SBFu/tV/2)*tV, SBFp = (SBFp/tV/2)*tV, WHIn = 0*tV, WHISBF = (WHISBF/tV)*rV*tV, WHIp = (WHIp/tV)*rV*tV, WHI = ((WHI/tV)*rV + WHIn/tV)*tV, TM = (TM/tV)*rV*tV, GIt = GIt/2, GITM = (GITM/tV)*rV*tV, GDt = GDt/2, GDTM = (GDTM/tV)*rV*tV, dV = 0, CLN3 = (CLN3/tV)*rV*tV, CLB = (CLB/tV)*rV*tV, CLN = (CLN/tV)*rV*tV, mV = dV, GWt = GWt/2, GCt = GCt/2, GCN = GCN/2, GRd = 0, GRm = 1;
+
+  // Species initializations:
+  GDTM = 60/tV;
+  TM = 0;
+  GITM = 1/tV;
+  CLN3 = 0;
+  WHI = 4/tV;
+  WHIp = 0.1/tV;
+  WHISBF = 0.66*NSt;
+  CLN3WHISBF = 0.17*NSt;
+  WHIpSBF = 0.17*NSt;
+  WHIn = 0;
+  SBFu = (SBFt/tV - SBFp/tV)*tV;
+  SBFp = 0;
+  CLN = 0;
+  CLB = 0;
+  CDHa = 1.2/tV;
+  CDHi = 0;
+  CDCa = 0;
+  CDCi = 1.2/tV;
+
+  // Compartment initializations:
+  mV = 1.2;
+  dV = 0;
+
+  // Variable initializations:
+  GRm = 1;
+  kSyVo = 0.042;
+  kSyVo has unit_2;
+  GCN = 1;
+  GCN has unit_0;
+  GDt = 500;
+  GDt has unit_0;
+  GRd = 0;
+  GIt = GWt;
+  GIt has unit_0;
+  NSt = 1;
+  NSt has unit_7;
+  StartThr = 0.3;
+  StartThr has unit_1;
+  GCt = 1;
+  GCt has unit_0;
+  GWt = 1;
+  GWt has unit_0;
+  MitosisThr = 0.2;
+  MitosisThr has unit_1;
+  kSyTm = 2.1;
+  kSyTm has unit_3;
+  kAsGiTm = 10;
+  kAsGiTm has unit_2;
+  kAsGdTm = 1;
+  kAsGdTm has unit_2;
+  kDsGiTm = 0.1;
+  kDsGiTm has unit_3;
+  kDsGdTm = 1;
+  kDsGdTm has unit_3;
+  kSyCln3 = 1.5;
+  kSyCln3 has unit_4;
+  kDeCln3 = 1;
+  kDeCln3 has unit_3;
+  kSyCln = 8;
+  kSyCln has unit_4;
+  kDeCln = 1;
+  kDeCln has unit_3;
+  kSyClb = 0.01;
+  kSyClb has unit_4;
+  kSyClbClb = 0.3;
+  kSyClbClb has unit_4;
+  jSyClb = 0.3;
+  jSyClb has unit_1;
+  kDeClb = 0.01;
+  kDeClb has unit_3;
+  kDeClbCdh = 2;
+  kDeClbCdh has unit_5;
+  kSyWhi = 0.02;
+  kSyWhi has unit_4;
+  kPhWhiCln3 = 1;
+  kPhWhiCln3 has unit_3;
+  kPhWhiCln = 100;
+  kPhWhiCln has unit_5;
+  kDpWhi = 1;
+  kDpWhi has unit_3;
+  kAsWhiSbf = 1;
+  kAsWhiSbf has unit_5;
+  kPhSbfClb = 5;
+  kPhSbfClb has unit_5;
+  kDpSbf = 0.2;
+  kDpSbf has unit_3;
+  kAcCdh = 0.01;
+  kAcCdh has unit_6;
+  kAcCdhCdc = 2;
+  kAcCdhCdc has unit_3;
+  kInCdhCln = 0.125;
+  kInCdhCln has unit_3;
+  kInCdhClb = 2;
+  kInCdhClb has unit_3;
+  jCdh = 0.001;
+  jCdh has unit_1;
+  kAcCdcClb = 0.5;
+  kAcCdcClb has unit_3;
+  kInCdc = 0.25;
+  kInCdc has unit_6;
+  jCdc = 0.001;
+  jCdc has unit_1;
+  kSySbf has unit_4;
+  kSyCdh has unit_4;
+  kSyCdc has unit_4;
+  kPhWhipCln3 = 1;
+  kPhWhipCln3 has unit_5;
+  kPhWhipCln = 3;
+  kPhWhipCln has unit_5;
+  kAsCln3Whi = 100;
+  kAsCln3Whi has unit_5;
+  kDsCln3Whi = 0.1;
+  kDsCln3Whi has unit_3;
+
+  // Other declarations:
+  var tV, mV, dV, GRm, GCN, GDt, GRd, GIt, NSt, GCt, GWt, rV, kSySbf, kSyCdh;
+  var kSyCdc;
+  const kSyVo, StartThr, MitosisThr, kSyTm, kAsGiTm, kAsGdTm, kDsGiTm, kDsGdTm;
+  const kSyCln3, kDeCln3, kSyCln, kDeCln, kSyClb, kSyClbClb, jSyClb, kDeClb;
+  const kDeClbCdh, kSyWhi, kPhWhiCln3, kPhWhiCln, kDpWhi, kAsWhiSbf, kPhSbfClb;
+  const kDpSbf, kAcCdh, kAcCdhCdc, kInCdhCln, kInCdhClb, jCdh, kAcCdcClb;
+  const kInCdc, jCdc, kPhWhipCln3, kPhWhipCln, kAsCln3Whi, kDsCln3Whi;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 60 second;
+  unit substance = item;
+  unit unit_0 = item;
+  unit unit_1 = item / (volt * (0.01 dimensionless)^-0);
+  unit unit_2 = volt / (60e-3 second * item);
+  unit unit_3 = 1 / 60e-3 second;
+  unit unit_4 = 1 / 6000e-3 second;
+  unit unit_5 = volt / (60e-3 second * (0.01 dimensionless)^-0 * item);
+  unit unit_6 = item / (60e-3 second * volt * (0.01 dimensionless)^-0);
+  unit unit_7 = item / (0.01 dimensionless)^-0;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "#";
+  unit_1 is "AU/AV";
+  unit_2 is "AV/(#*min)";
+  unit_3 is "1/min";
+  unit_4 is "AU/(#*min)";
+  unit_5 is "AV/(AU*min)";
+  unit_6 is "AU/(AV*min)";
+  unit_7 is "AU";
+  active_SBF is "active SBF";
+  Synthesis_of_transcription_machninery is "Synthesis of transcription machninery";
+  Association_dissociation_of_TM_and_size_independent_genes is "Association/dissociation of TM and size-independent genes";
+  Association_dissociation_of_TM_and_size_dependent_genes is "Association/dissociation of TM and size-dependent genes";
+  Synthesis_of_Cln3 is "Synthesis of Cln3";
+  Degradation_of_Cln3 is "Degradation of Cln3";
+  Phosphorylation_of_SBF is "Phosphorylation of SBF";
+  Dephosphorylation_of_SBF is "Dephosphorylation of SBF";
+  Synthesis_of_Cln1_2 is "Synthesis of Cln1/2";
+  Degradation_of_Cln1_2 is "Degradation of Cln1/2";
+  Synthesis_of_Cdh1 is "Synthesis of Cdh1";
+  Synthesis_of_Cdc20 is "Synthesis of Cdc20";
+  Activation_of_APC_Cdc20 is "Activation of APC^Cdc20";
+  Inactivation_of_APC_C_Cdc20 is "Inactivation of APC/C^Cdc20";
+  Activation_of_APC_C_Cdh1 is "Activation of APC/C^Cdh1";
+  Inactivation_of_APC_C_Cdh1 is "Inactivation of APC/C^Cdh1";
+  Synthesis_of_Clb1_2 is "Synthesis of Clb1/2";
+  Degradation_of_Clb1_2 is "Degradation of Clb1/2";
+  Synthesis_of_Whi5 is "Synthesis of Whi5";
+  Association_dissociation_of_Cln3_and_Whi5_SBF is "Association/dissociation of Cln3 and Whi5:SBF";
+  Association_of_Whi5_and_SBF is "Association of Whi5 and SBF";
+  Phosphorylation_of_free_Whi5 is "Phosphorylation of free Whi5";
+  Dephosphorylation_of_free_Whi5 is "Dephosphorylation of free Whi5";
+  Phosphorylation_of_Whi5_in_Cln3_Whi5_SBF_complexes is "Phosphorylation of Whi5 in Cln3:Whi5:SBF complexes";
+  Degradation_of_Cln3_in_Cln3_Whi5_SBF_complexes is "Degradation of Cln3 in Cln3:Whi5:SBF complexes";
+  Dephosphorylation_of_hypo_phosphorylated_Whi5_in_Whi5_SBF_complexes is "Dephosphorylation of hypo-phosphorylated Whi5 in Whi5:SBF complexes";
+  Hyper_phosphorylation_of_Whi5_in_hypo_phosphorylated_Whi5_SBF_complexes is "Hyper-phosphorylation of Whi5 in hypo-phosphorylated Whi5:SBF complexes";
+end
+
+Budding_yeast_size_control_by_titration_of_nuclear_sites is "Budding yeast size control by titration of nuclear sites"
+
+Budding_yeast_size_control_by_titration_of_nuclear_sites description "http://identifiers.org/pubmed/30356259"
+Budding_yeast_size_control_by_titration_of_nuclear_sites model_entity_is "http://identifiers.org/biomodels.db/MODEL1803220001",
+                                                                         "http://identifiers.org/biomodels.db/BIOMD0000000856"
+Budding_yeast_size_control_by_titration_of_nuclear_sites property "http://identifiers.org/go/GO:0051726"
+Budding_yeast_size_control_by_titration_of_nuclear_sites property "http://identifiers.org/go/GO:0007049"
+Budding_yeast_size_control_by_titration_of_nuclear_sites property "http://identifiers.org/biomodels.db/MODEL1803220001"
+Budding_yeast_size_control_by_titration_of_nuclear_sites taxon "http://identifiers.org/taxonomy/41870"

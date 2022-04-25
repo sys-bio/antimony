@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *model_0000001()
 
   // Compartments and Species:
@@ -121,10 +121,10 @@ model *model_0000001()
   voff33: PP2A_PKA => PP2A + PKA; Spine*PP2A_PKA*voff33_koff33;
   vcat33: PP2A_PKA => PP2AP + PKA; Spine*PP2A_PKA*vcat33_kcat33;
   vcat34: PP2AP => PP2A; Spine*PP2AP*vcat34_kcat34;
-  von35: PP2Binactive + 2Ca => PP2BinactiveCa2; Spine*PP2Binactive*Ca*Ca*von35_kon35;
-  von36: PP2BinactiveCa2 + 2Ca => PP2B; Spine*PP2BinactiveCa2*Ca*Ca*von36_kon36;
-  voff35: PP2BinactiveCa2 => PP2Binactive + 2Ca; Spine*PP2BinactiveCa2*voff35_koff35;
-  voff36: PP2B => PP2BinactiveCa2 + 2Ca; Spine*PP2B*voff36_koff36;
+  von35: PP2Binactive + 2 Ca => PP2BinactiveCa2; Spine*PP2Binactive*Ca*Ca*von35_kon35;
+  von36: PP2BinactiveCa2 + 2 Ca => PP2B; Spine*PP2BinactiveCa2*Ca*Ca*von36_kon36;
+  voff35: PP2BinactiveCa2 => PP2Binactive + 2 Ca; Spine*PP2BinactiveCa2*voff35_koff35;
+  voff36: PP2B => PP2BinactiveCa2 + 2 Ca; Spine*PP2B*voff36_koff36;
   von37: R2C2 + cAMP => cAMP_R2C2; Spine*R2C2*cAMP*von37_kon37;
   von38: cAMP_R2C2 + cAMP => cAMP2_R2C2; Spine*cAMP_R2C2*cAMP*von38_kon38;
   von39: cAMP2_R2C2 + cAMP => cAMP3_R2C2; Spine*cAMP2_R2C2*cAMP*von39_kon39;
@@ -179,34 +179,34 @@ model *model_0000001()
   voff55: PP2ACa_PKA => PP2ACa + PKA; Spine*PP2ACa_PKA*voff55_koff55;
 
   // Events:
-  cAMP_pulse: at time >= cAMP_delay: cAMP = 6.600000e-006;
-  ca_on1: at time >= cAMP_delay + cAMP_Ca_delay: k57 = kon_high;
-  ca_on2: at time >= cAMP_delay + cAMP_Ca_delay + 1*(spike_duration + spike_interval): k57 = kon_high;
-  ca_off1: at time >= cAMP_delay + cAMP_Ca_delay + spike_duration: k57 = kon_low;
-  Ca_on3: at time >= cAMP_delay + cAMP_Ca_delay + 2*(spike_duration + spike_interval): k57 = kon_high;
-  ca_on4: at time >= cAMP_delay + cAMP_Ca_delay + 3*(spike_duration + spike_interval): k57 = kon_high;
-  ca_on5: at time >= cAMP_delay + cAMP_Ca_delay + 4*(spike_duration + spike_interval): k57 = kon_high;
-  ca_on6: at time >= cAMP_delay + cAMP_Ca_delay + 5*(spike_duration + spike_interval): k57 = kon_high;
-  ca_on7: at time >= cAMP_delay + cAMP_Ca_delay + 6*(spike_duration + spike_interval): k57 = kon_high;
-  ca_on8: at time >= cAMP_delay + cAMP_Ca_delay + 7*(spike_duration + spike_interval): k57 = kon_high;
-  ca_on9: at time >= cAMP_delay + cAMP_Ca_delay + 8*(spike_duration + spike_interval): k57 = kon_high;
-  ca_on10: at time >= cAMP_delay + cAMP_Ca_delay + 9*(spike_duration + spike_interval): k57 = kon_high;
-  ca_off2: at time >= cAMP_delay + cAMP_Ca_delay + spike_duration + 1*(spike_interval + spike_duration): k57 = kon_low;
-  ca_off3: at time >= cAMP_delay + cAMP_Ca_delay + spike_duration + 2*(spike_interval + spike_duration): k57 = kon_low;
-  ca_off4: at time >= cAMP_delay + cAMP_Ca_delay + spike_duration + 3*(spike_interval + spike_duration): k57 = kon_low;
-  ca_off5: at time >= cAMP_delay + cAMP_Ca_delay + spike_duration + 4*(spike_interval + spike_duration): k57 = kon_low;
-  ca_off6: at time >= cAMP_delay + cAMP_Ca_delay + spike_duration + 5*(spike_interval + spike_duration): k57 = kon_low;
-  ca_off7: at time >= cAMP_delay + cAMP_Ca_delay + spike_duration + 6*(spike_interval + spike_duration): k57 = kon_low;
-  ca_off8: at time >= cAMP_delay + cAMP_Ca_delay + spike_duration + 7*(spike_interval + spike_duration): k57 = kon_low;
-  ca_off9: at time >= cAMP_delay + cAMP_Ca_delay + spike_duration + 8*(spike_interval + spike_duration): k57 = kon_low;
-  ca_off10: at time >= cAMP_delay + cAMP_Ca_delay + spike_duration + 9*(spike_interval + spike_duration): k57 = kon_low;
+  cAMP_pulse: at time >= cAMP_delay: cAMP = 6.6e-6;
+  ca_on1: at time >= (cAMP_delay + cAMP_Ca_delay): k57 = kon_high;
+  ca_on2: at time >= (cAMP_delay + cAMP_Ca_delay + 1*(spike_duration + spike_interval)): k57 = kon_high;
+  ca_off1: at time >= (cAMP_delay + cAMP_Ca_delay + spike_duration): k57 = kon_low;
+  Ca_on3: at time >= (cAMP_delay + cAMP_Ca_delay + 2*(spike_duration + spike_interval)): k57 = kon_high;
+  ca_on4: at time >= (cAMP_delay + cAMP_Ca_delay + 3*(spike_duration + spike_interval)): k57 = kon_high;
+  ca_on5: at time >= (cAMP_delay + cAMP_Ca_delay + 4*(spike_duration + spike_interval)): k57 = kon_high;
+  ca_on6: at time >= (cAMP_delay + cAMP_Ca_delay + 5*(spike_duration + spike_interval)): k57 = kon_high;
+  ca_on7: at time >= (cAMP_delay + cAMP_Ca_delay + 6*(spike_duration + spike_interval)): k57 = kon_high;
+  ca_on8: at time >= (cAMP_delay + cAMP_Ca_delay + 7*(spike_duration + spike_interval)): k57 = kon_high;
+  ca_on9: at time >= (cAMP_delay + cAMP_Ca_delay + 8*(spike_duration + spike_interval)): k57 = kon_high;
+  ca_on10: at time >= (cAMP_delay + cAMP_Ca_delay + 9*(spike_duration + spike_interval)): k57 = kon_high;
+  ca_off2: at time >= (cAMP_delay + cAMP_Ca_delay + spike_duration + 1*(spike_interval + spike_duration)): k57 = kon_low;
+  ca_off3: at time >= (cAMP_delay + cAMP_Ca_delay + spike_duration + 2*(spike_interval + spike_duration)): k57 = kon_low;
+  ca_off4: at time >= (cAMP_delay + cAMP_Ca_delay + spike_duration + 3*(spike_interval + spike_duration)): k57 = kon_low;
+  ca_off5: at time >= (cAMP_delay + cAMP_Ca_delay + spike_duration + 4*(spike_interval + spike_duration)): k57 = kon_low;
+  ca_off6: at time >= (cAMP_delay + cAMP_Ca_delay + spike_duration + 5*(spike_interval + spike_duration)): k57 = kon_low;
+  ca_off7: at time >= (cAMP_delay + cAMP_Ca_delay + spike_duration + 6*(spike_interval + spike_duration)): k57 = kon_low;
+  ca_off8: at time >= (cAMP_delay + cAMP_Ca_delay + spike_duration + 7*(spike_interval + spike_duration)): k57 = kon_low;
+  ca_off9: at time >= (cAMP_delay + cAMP_Ca_delay + spike_duration + 8*(spike_interval + spike_duration)): k57 = kon_low;
+  ca_off10: at time >= (cAMP_delay + cAMP_Ca_delay + spike_duration + 9*(spike_interval + spike_duration)): k57 = kon_low;
 
   // Species initializations:
-  D = 4.98e-006;
-  CDK5 = 2e-007;
+  D = 4.98e-06;
+  CDK5 = 2e-07;
   D_CDK5 = 0;
   D75 = 0;
-  CK1 = 1.66e-007;
+  CK1 = 1.66e-07;
   D_CK1 = 0;
   D137 = 0;
   PKA = 0;
@@ -220,7 +220,7 @@ model *model_0000001()
   D34_137 = 0;
   D75CK1 = 0;
   D75_PKA = 0;
-  PP2A = 2e-007;
+  PP2A = 2e-07;
   D75_PP2A = 0;
   PP2AP = 0;
   D75_PP2AP = 0;
@@ -228,7 +228,7 @@ model *model_0000001()
   D137_CDK5 = 0;
   D137_PKA = 0;
   D137_PP2C = 0;
-  PP2C = 1.33e-007;
+  PP2C = 1.33e-07;
   D34_75_CK1 = 0;
   D34_137_CDK5 = 0;
   D34_75_137 = 0;
@@ -244,8 +244,8 @@ model *model_0000001()
   D34_75_137_PP2AP = 0;
   D34_137_PP2C = 0;
   D75_137_PP2C = 0;
-  PDE = 2e-006;
-  PP2Binactive = 3.32e-007;
+  PDE = 2e-06;
+  PP2Binactive = 3.32e-07;
   D34_75_137_PP2C = 0;
   CK1P = 0;
   CK1P_PP2B = 0;
@@ -254,7 +254,7 @@ model *model_0000001()
   PP2A_PKA = 0;
   Ca = 0;
   PP2BinactiveCa2 = 0;
-  R2C2 = 6.64e-006;
+  R2C2 = 6.64e-06;
   cAMP = 0;
   cAMP_R2C2 = 0;
   cAMP2_R2C2 = 0;
@@ -279,16 +279,16 @@ model *model_0000001()
   Empty = 0;
 
   // Compartment initializations:
-  Spine = 1e-015;
+  Spine = 1e-15;
 
   // Variable initializations:
   cAMP_delay = 400;
   cAMP_Ca_delay = 50;
-  k57 = 2.5e-008;
-  kon_high = 6.6e-006;
+  k57 = 2.5e-08;
+  kon_high = 6.6e-06;
   spike_duration = 2;
   spike_interval = 2;
-  kon_low = 2.5e-008;
+  kon_low = 2.5e-08;
   von1_kon1 = 5600000;
   voff1_koff1 = 12;
   vcat1_kcat1 = 3;
@@ -385,8 +385,8 @@ model *model_0000001()
   voff33_koff33 = 16;
   vcat33_kcat33 = 4;
   vcat34_kcat34 = 5;
-  von35_kon35 = 1e+015;
-  von36_kon36 = 3e+015;
+  von35_kon35 = 1e+15;
+  von36_kon36 = 3e+15;
   voff35_koff35 = 1;
   voff36_koff36 = 1;
   von37_kon37 = 54000000;
@@ -627,4 +627,160 @@ model *model_0000001()
   voff56 is "PP2APCa_unbinding";
   vcat56 is "PP2APCa_dephospho";
   voff55 is "PP2ACa_PKA_unbinding";
+
+  // CV terms:
+  Spine hypernym "http://identifiers.org/obo.go/GO:0043197"
+  D hypernym "http://identifiers.org/uniprot/Q9UD71"
+  CDK5 identity "http://identifiers.org/uniprot/Q03114"
+  D_CDK5 part "http://identifiers.org/uniprot/Q03114",
+              "http://identifiers.org/uniprot/Q9UD71"
+  D75 hypernym "http://identifiers.org/uniprot/Q9UD71"
+  CK1 hypernym "http://identifiers.org/uniprot/Q99PS2"
+  D_CK1 part "http://identifiers.org/uniprot/Q99PS2",
+             "http://identifiers.org/uniprot/Q9UD71"
+  D137 hypernym "http://identifiers.org/uniprot/Q9UD71"
+  PKA hypernym "http://identifiers.org/pirsf/PIRSF000582"
+  D_PKA part "http://identifiers.org/uniprot/Q9UD71",
+             "http://identifiers.org/pirsf/PIRSF000582"
+  D34 hypernym "http://identifiers.org/uniprot/Q9UD71"
+  D34_CDK5 part "http://identifiers.org/uniprot/Q03114",
+                "http://identifiers.org/uniprot/Q9UD71"
+  D34_CK1 part "http://identifiers.org/uniprot/Q99PS2",
+               "http://identifiers.org/uniprot/Q9UD71"
+  PP2B part "http://identifiers.org/obo.chebi/CHEBI:29108",
+            "http://identifiers.org/pirsf/PIRSF000911"
+  D34_PP2B part "http://identifiers.org/obo.chebi/CHEBI:29108",
+                "http://identifiers.org/uniprot/Q9UD71",
+                "http://identifiers.org/pirsf/PIRSF000911"
+  D34_75 hypernym "http://identifiers.org/uniprot/Q9UD71"
+  D34_137 hypernym "http://identifiers.org/uniprot/Q9UD71"
+  D75CK1 part "http://identifiers.org/uniprot/Q99PS2",
+              "http://identifiers.org/uniprot/Q9UD71"
+  D75_PKA part "http://identifiers.org/uniprot/Q9UD71",
+               "http://identifiers.org/pirsf/PIRSF000582"
+  PP2A hypernym "http://identifiers.org/interpro/IPR006186"
+  D75_PP2A part "http://identifiers.org/uniprot/Q9UD71",
+                "http://identifiers.org/interpro/IPR006186"
+  PP2AP hypernym "http://identifiers.org/interpro/IPR006186"
+  D75_PP2AP part "http://identifiers.org/uniprot/Q9UD71",
+                 "http://identifiers.org/interpro/IPR006186"
+  D75_137 hypernym "http://identifiers.org/uniprot/Q9UD71"
+  D137_CDK5 part "http://identifiers.org/uniprot/Q03114",
+                 "http://identifiers.org/uniprot/Q9UD71"
+  D137_PKA part "http://identifiers.org/uniprot/Q9UD71",
+                "http://identifiers.org/pirsf/PIRSF000582"
+  D137_PP2C part "http://identifiers.org/uniprot/Q9UD71",
+                 "http://identifiers.org/interpro/IPR015655"
+  PP2C hypernym "http://identifiers.org/interpro/IPR015655"
+  D34_75_CK1 part "http://identifiers.org/uniprot/Q99PS2",
+                  "http://identifiers.org/uniprot/Q9UD71"
+  D34_137_CDK5 part "http://identifiers.org/uniprot/Q03114",
+                    "http://identifiers.org/uniprot/Q9UD71"
+  D34_75_137 hypernym "http://identifiers.org/uniprot/Q9UD71"
+  D75_137_PKA part "http://identifiers.org/uniprot/Q9UD71",
+                   "http://identifiers.org/pirsf/PIRSF000582"
+  D34_75_PP2B part "http://identifiers.org/obo.chebi/CHEBI:29108",
+                   "http://identifiers.org/uniprot/Q9UD71",
+                   "http://identifiers.org/pirsf/PIRSF000911"
+  D34_137_PP2B part "http://identifiers.org/obo.chebi/CHEBI:29108",
+                    "http://identifiers.org/uniprot/Q9UD71",
+                    "http://identifiers.org/pirsf/PIRSF000911"
+  D34_75_137_PP2B part "http://identifiers.org/obo.chebi/CHEBI:29108",
+                       "http://identifiers.org/uniprot/Q9UD71",
+                       "http://identifiers.org/pirsf/PIRSF000911"
+  D34_75_PP2A part "http://identifiers.org/uniprot/Q9UD71",
+                   "http://identifiers.org/interpro/IPR006186"
+  D75_137_PP2A part "http://identifiers.org/uniprot/Q9UD71",
+                    "http://identifiers.org/interpro/IPR006186"
+  D34_75_137_PP2A part "http://identifiers.org/uniprot/Q9UD71",
+                       "http://identifiers.org/interpro/IPR006186"
+  D34_75_PP2AP part "http://identifiers.org/uniprot/Q9UD71",
+                    "http://identifiers.org/interpro/IPR006186"
+  D75_137_PP2AP part "http://identifiers.org/uniprot/Q9UD71",
+                     "http://identifiers.org/interpro/IPR006186"
+  D34_75_137_PP2AP part "http://identifiers.org/uniprot/Q9UD71",
+                        "http://identifiers.org/interpro/IPR006186"
+  D34_137_PP2C part "http://identifiers.org/uniprot/Q9UD71",
+                    "http://identifiers.org/interpro/IPR015655"
+  D75_137_PP2C part "http://identifiers.org/uniprot/Q9UD71",
+                    "http://identifiers.org/interpro/IPR015655"
+  PDE hypernym "http://identifiers.org/interpro/IPR000396"
+  PP2Binactive hypernym "http://identifiers.org/pirsf/PIRSF000911"
+  D34_75_137_PP2C part "http://identifiers.org/uniprot/Q9UD71",
+                       "http://identifiers.org/interpro/IPR015655"
+  CK1P hypernym "http://identifiers.org/uniprot/Q99PS2"
+  CK1P_PP2B part "http://identifiers.org/uniprot/Q99PS2",
+                 "http://identifiers.org/pirsf/PIRSF000911"
+  PDE_PKA part "http://identifiers.org/interpro/IPR000396",
+               "http://identifiers.org/pirsf/PIRSF000582"
+  PDEP hypernym "http://identifiers.org/interpro/IPR000396"
+  PP2A_PKA part "http://identifiers.org/interpro/IPR006186",
+                "http://identifiers.org/pirsf/PIRSF000582"
+  Ca identity "http://identifiers.org/obo.chebi/CHEBI:29108"
+  PP2BinactiveCa2 part "http://identifiers.org/obo.chebi/CHEBI:29108",
+                       "http://identifiers.org/pirsf/PIRSF000911"
+  R2C2 part "http://identifiers.org/pirsf/PIRSF000548",
+            "http://identifiers.org/pirsf/PIRSF000582"
+  cAMP identity "http://identifiers.org/obo.chebi/CHEBI:17489"
+  cAMP_R2C2 part "http://identifiers.org/obo.chebi/CHEBI:17489",
+                 "http://identifiers.org/pirsf/PIRSF000548",
+                 "http://identifiers.org/pirsf/PIRSF000582"
+  cAMP2_R2C2 part "http://identifiers.org/obo.chebi/CHEBI:17489",
+                  "http://identifiers.org/pirsf/PIRSF000548",
+                  "http://identifiers.org/pirsf/PIRSF000582"
+  cAMP3_R2C2 part "http://identifiers.org/obo.chebi/CHEBI:17489",
+                  "http://identifiers.org/pirsf/PIRSF000548",
+                  "http://identifiers.org/pirsf/PIRSF000582"
+  cAMP4_R2C2 part "http://identifiers.org/obo.chebi/CHEBI:17489",
+                  "http://identifiers.org/pirsf/PIRSF000548",
+                  "http://identifiers.org/pirsf/PIRSF000582"
+  cAMP4_R2C part "http://identifiers.org/obo.chebi/CHEBI:17489",
+                 "http://identifiers.org/pirsf/PIRSF000548",
+                 "http://identifiers.org/pirsf/PIRSF000582"
+  cAMP4_R2 part "http://identifiers.org/obo.chebi/CHEBI:17489",
+                "http://identifiers.org/pirsf/PIRSF000548"
+  cAMP_PDE part "http://identifiers.org/obo.chebi/CHEBI:17489",
+                "http://identifiers.org/interpro/IPR000396"
+  AMP identity "http://identifiers.org/obo.chebi/CHEBI:16027"
+  cAMP_PDEP part "http://identifiers.org/obo.chebi/CHEBI:17489",
+                 "http://identifiers.org/interpro/IPR000396"
+  PP2ACa hypernym "http://identifiers.org/interpro/IPR006186"
+  D34_75_PP2ACa part "http://identifiers.org/obo.chebi/CHEBI:29108",
+                     "http://identifiers.org/uniprot/Q9UD71",
+                     "http://identifiers.org/interpro/IPR006186"
+  D34_75_137_PP2ACa part "http://identifiers.org/obo.chebi/CHEBI:29108",
+                         "http://identifiers.org/uniprot/Q9UD71",
+                         "http://identifiers.org/interpro/IPR006186"
+  D75_PP2ACa part "http://identifiers.org/obo.chebi/CHEBI:29108",
+                  "http://identifiers.org/uniprot/Q9UD71",
+                  "http://identifiers.org/interpro/IPR006186"
+  D75_137_PP2ACa part "http://identifiers.org/obo.chebi/CHEBI:29108",
+                      "http://identifiers.org/uniprot/Q9UD71",
+                      "http://identifiers.org/interpro/IPR006186"
+  D34_75_PP2APCa part "http://identifiers.org/obo.chebi/CHEBI:29108",
+                      "http://identifiers.org/uniprot/Q9UD71",
+                      "http://identifiers.org/interpro/IPR006186"
+  PP2APCa part "http://identifiers.org/obo.chebi/CHEBI:29108",
+               "http://identifiers.org/interpro/IPR006186"
+  D34_75_137_PP2APCa part "http://identifiers.org/obo.chebi/CHEBI:29108",
+                          "http://identifiers.org/uniprot/Q9UD71",
+                          "http://identifiers.org/interpro/IPR006186"
+  D75_PP2APCa part "http://identifiers.org/obo.chebi/CHEBI:29108",
+                   "http://identifiers.org/uniprot/Q9UD71",
+                   "http://identifiers.org/interpro/IPR006186"
+  D75_137_PP2APCa part "http://identifiers.org/obo.chebi/CHEBI:29108",
+                       "http://identifiers.org/uniprot/Q9UD71",
+                       "http://identifiers.org/interpro/IPR006186"
+  PP2ACa_PKA part "http://identifiers.org/obo.chebi/CHEBI:29108",
+                  "http://identifiers.org/interpro/IPR006186",
+                  "http://identifiers.org/pirsf/PIRSF000582"
 end
+
+model_0000001 is "Fernandez2006_ModelB"
+
+model_0000001 model_entity_is "http://identifiers.org/biomodels.db/MODEL3492674214"
+model_0000001 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000153"
+model_0000001 description "http://identifiers.org/pubmed/17194217"
+model_0000001 hypernym "http://identifiers.org/obo.go/GO:0007212",
+                       "http://identifiers.org/obo.go/GO:0035235"
+model_0000001 taxon "http://identifiers.org/taxonomy/9606"

@@ -1,7 +1,9 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 function function_4_VIIIa_IXa_degradation_2(I, VIIIa_IXa, compartment_1)
   (compartment_1*abs(I - VIIIa_IXa) + (I - VIIIa_IXa))/compartment_1;
 end
+
+function_4_VIIIa_IXa_degradation_2 is "function_4_VIIIa_IXa_degradation_2"
 
 
 model *Model_1()
@@ -44,21 +46,21 @@ model *Model_1()
   VIIIa_IXa_degradation: VIIIa_IXa => ; compartment_1*function_4_VIIIa_IXa_degradation_2(I, VIIIa_IXa, compartment_1);
 
   // Species initializations:
-  IX = 9e-008;
+  IX = 9e-08;
   IX_TF_VIIa = 0;
-  TF_VIIa = 5e-009;
+  TF_VIIa = 5e-09;
   IXa = 0;
-  X = 1.7e-007;
+  X = 1.7e-07;
   X_TF_VIIa = 0;
   Xa = 0;
   VIIIa_IXa = 0;
   X_VIIIa_IXa = 0;
-  V = 2e-008;
+  V = 2e-08;
   Va = 0;
-  VIII = 7e-010;
+  VIII = 7e-10;
   VIIIa = 0;
   IIa = 0;
-  II = 1.4e-006;
+  II = 1.4e-06;
   II_Va_Xa = 0;
   Va_Xa = 0;
   mIIa = 0;
@@ -96,4 +98,60 @@ model *Model_1()
 
   // Display Names:
   IIa_plus_1_2mIIa is "IIa+1.2mIIa";
+
+  // SBO terms:
+  k1.sboTerm = 36
+  k2.sboTerm = 36
+  k3.sboTerm = 36
+  k4.sboTerm = 36
+  k5.sboTerm = 36
+  k6.sboTerm = 36
+  k7.sboTerm = 36
+  k9.sboTerm = 38
+  k10.sboTerm = 38
+  k11.sboTerm = 35
+  k12.sboTerm = 35
+  k13.sboTerm = 35
+  k14.sboTerm = 35
+  k15.sboTerm = 36
+  k16.sboTerm = 38
+  k17.sboTerm = 38
+  k18.sboTerm = 38
+  k19.sboTerm = 38
+
+  // CV terms:
+  IX identity "http://identifiers.org/uniprot/P00740"
+  IX_TF_VIIa part "http://identifiers.org/uniprot/P13726",
+                  "http://identifiers.org/uniprot/P00740"
+  TF_VIIa part "http://identifiers.org/uniprot/P13726"
+  IXa hypernym "http://identifiers.org/uniprot/P00740"
+  X identity "http://identifiers.org/uniprot/P00742"
+  X_TF_VIIa part "http://identifiers.org/uniprot/P13726",
+                 "http://identifiers.org/uniprot/P00742"
+  Xa hypernym "http://identifiers.org/uniprot/P00742"
+  VIIIa_IXa part "http://identifiers.org/uniprot/P00740",
+                 "http://identifiers.org/uniprot/P00451"
+  X_VIIIa_IXa part "http://identifiers.org/uniprot/P00742",
+                   "http://identifiers.org/uniprot/P00740",
+                   "http://identifiers.org/uniprot/P00451"
+  V identity "http://identifiers.org/uniprot/P12259"
+  Va hypernym "http://identifiers.org/uniprot/P12259"
+  VIII identity "http://identifiers.org/uniprot/P00451"
+  VIIIa hypernym "http://identifiers.org/uniprot/P00451"
+  IIa hypernym "http://identifiers.org/uniprot/P00734"
+  II identity "http://identifiers.org/uniprot/P00734"
+  II_Va_Xa part "http://identifiers.org/uniprot/P00734",
+                "http://identifiers.org/uniprot/P12259",
+                "http://identifiers.org/uniprot/P00742"
+  Va_Xa part "http://identifiers.org/uniprot/P12259",
+             "http://identifiers.org/uniprot/P00742"
+  mIIa hypernym "http://identifiers.org/uniprot/P00734"
 end
+
+Model_1 is "Jones1994_BloodCoagulation"
+
+Model_1 model_entity_is "http://identifiers.org/biomodels.db/MODEL1106060000"
+Model_1 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000336"
+Model_1 description "http://identifiers.org/pubmed/8083242"
+Model_1 hypernym "http://identifiers.org/go/GO:0007596"
+Model_1 taxon "http://identifiers.org/taxonomy/9606"

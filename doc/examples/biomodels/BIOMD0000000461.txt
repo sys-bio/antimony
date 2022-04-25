@@ -1,4 +1,4 @@
-// Created by libAntimony v2.8.0
+// Created by libAntimony v2.13.0
 model *MODEL1212180000()
 
   // Compartments and Species:
@@ -8,8 +8,8 @@ model *MODEL1212180000()
 
   // Reactions:
   v1: $IPTG -> sigb; IPTG*kbs - kbd*sigb;
-  v2: sigb -> lacz; -(kzd*lacz) + (kzs*sigb)/(1 + x);
-  v3: sigb -> x; -(kxd*x) + (kxs*sigb)/(1 + x);
+  v2: sigb -> lacz; -(kzd*lacz) + kzs*sigb/(1 + x);
+  v3: sigb -> x; -(kxd*x) + kxs*sigb/(1 + x);
 
   // Species initializations:
   IPTG = 100;
@@ -30,4 +30,35 @@ model *MODEL1212180000()
 
   // Other declarations:
   const compartment_, kbd, kbs, kxd, kxs, kzd, kzs;
+
+  // Display Names:
+  compartment_ is "compartment";
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/go/GO:0005623"
+  IPTG identity "http://identifiers.org/chebi/CHEBI:61448"
+  sigb identity "http://identifiers.org/interpro/IPR006288"
+  lacz identity "http://identifiers.org/ec-code/3.2.1.23",
+                "http://identifiers.org/go/GO:0004565"
+  x identity "http://identifiers.org/chebi/CHEBI:35222"
+  kbd identity "http://identifiers.org/go/GO:0006508"
+  kbs identity "http://identifiers.org/go/GO:0009058"
+  kxd identity "http://identifiers.org/go/GO:0006508"
+  kxs identity "http://identifiers.org/go/GO:0009058"
+  kzd identity "http://identifiers.org/go/GO:0006508"
+  kzs identity "http://identifiers.org/go/GO:0009058"
+  v1 identity "http://identifiers.org/go/GO:0006508",
+              "http://identifiers.org/go/GO:0009058"
+  v2 identity "http://identifiers.org/go/GO:0009058",
+              "http://identifiers.org/go/GO:0006508"
+  v3 identity "http://identifiers.org/go/GO:0006508",
+              "http://identifiers.org/go/GO:0009058"
 end
+
+MODEL1212180000 is "Liebal2012 - B.subtilis transcription inhibition model"
+
+MODEL1212180000 model_entity_is "http://identifiers.org/biomodels.db/MODEL1212180000"
+MODEL1212180000 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000461"
+MODEL1212180000 description "http://identifiers.org/pubmed/22511268"
+MODEL1212180000 taxon "http://identifiers.org/taxonomy/1423"
+MODEL1212180000 identity "http://identifiers.org/go/GO:0030162"

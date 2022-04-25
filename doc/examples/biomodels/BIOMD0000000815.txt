@@ -1,0 +1,102 @@
+// Created by libAntimony v2.13.0
+function Function_for_Immune_Growth(d, y)
+  d*y;
+end
+
+Function_for_Immune_Growth is "Function_for_Immune_Growth"
+
+function Function_for_Tumor_Growth(a, x)
+  a*x;
+end
+
+Function_for_Tumor_Growth is "Function_for_Tumor_Growth"
+
+function Function_for_Tumor_Killing(b, x, y)
+  b*x*y;
+end
+
+Function_for_Tumor_Killing is "Function_for_Tumor_Killing"
+
+function Function_for_Immune_Loss_Tumor(e, x, y)
+  e*x*y;
+end
+
+Function_for_Immune_Loss_Tumor is "Function_for_Immune_Loss_Tumor"
+
+function Function_for_Tumor_Competition(c, x)
+  c*x^2;
+end
+
+Function_for_Tumor_Competition is "Function_for_Tumor_Competition"
+
+function Function_for_Immune_Growth_Control(f, y)
+  f*y^2;
+end
+
+Function_for_Immune_Growth_Control is "Function_for_Immune_Growth_Control"
+
+
+model *Chrobak2011___A_mathematical_model_of_induced_cancer_adaptive_immune_system_competition()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species x_Cancer in compartment_, y_Immune_System in compartment_;
+
+  // Assignment Rules:
+  a := 1/16;
+  b := 1/8;
+  c := 1/32;
+  d := 1/32;
+  e := 275/3200;
+  f := 1/32;
+
+  // Reactions:
+  Tumor_Growth:  => x_Cancer; compartment_*Function_for_Tumor_Growth(a, x_Cancer);
+  Tumor_Killing: x_Cancer => ; compartment_*Function_for_Tumor_Killing(b, x_Cancer, y_Immune_System);
+  Tumor_Competition: x_Cancer => ; compartment_*Function_for_Tumor_Competition(c, x_Cancer);
+  Immune_Growth:  => y_Immune_System; compartment_*Function_for_Immune_Growth(d, y_Immune_System);
+  Immune_Loss_Tumor: y_Immune_System => ; compartment_*Function_for_Immune_Loss_Tumor(e, x_Cancer, y_Immune_System);
+  Immune_Growth_Control: y_Immune_System => ; compartment_*Function_for_Immune_Growth_Control(f, y_Immune_System);
+
+  // Species initializations:
+  x_Cancer = 0.0005;
+  y_Immune_System = 0.01;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Other declarations:
+  var a, b, c, d, e, f;
+  const compartment_;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = item;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+
+  // CV terms:
+  compartment_ hypernym "http://identifiers.org/ncit/C94498"
+  x_Cancer hypernym "http://identifiers.org/cl/CL:0001063"
+  y_Immune_System hypernym "http://identifiers.org/ncit/C132890"
+  Tumor_Growth identity "http://identifiers.org/ncit/C36294"
+  Tumor_Killing hypernym "http://identifiers.org/go/GO:0002418"
+  Tumor_Competition hypernym "http://identifiers.org/go/GO:0035212"
+  Immune_Growth hypernym "http://identifiers.org/ncit/C18081"
+  Immune_Loss_Tumor hypernym "http://identifiers.org/go/GO:0008219"
+  Immune_Growth_Control hypernym "http://identifiers.org/go/GO:0050672"
+end
+
+Chrobak2011___A_mathematical_model_of_induced_cancer_adaptive_immune_system_competition is "Chrobak2011 - A mathematical model of induced cancer-adaptive immune system competition"
+
+Chrobak2011___A_mathematical_model_of_induced_cancer_adaptive_immune_system_competition description "http://identifiers.org/doi/10.1142/S0218339011004111"
+Chrobak2011___A_mathematical_model_of_induced_cancer_adaptive_immune_system_competition model_entity_is "http://identifiers.org/biomodels.db/MODEL1909170003",
+                                                                                                        "http://identifiers.org/biomodels.db/BIOMD0000000815"
+Chrobak2011___A_mathematical_model_of_induced_cancer_adaptive_immune_system_competition property "http://identifiers.org/go/GO:0002418"
+Chrobak2011___A_mathematical_model_of_induced_cancer_adaptive_immune_system_competition property "http://identifiers.org/go/GO:0035212"
+Chrobak2011___A_mathematical_model_of_induced_cancer_adaptive_immune_system_competition property "http://identifiers.org/mamo/MAMO_0000046"
+Chrobak2011___A_mathematical_model_of_induced_cancer_adaptive_immune_system_competition property "http://identifiers.org/ncit/C36294"
+Chrobak2011___A_mathematical_model_of_induced_cancer_adaptive_immune_system_competition taxon "http://identifiers.org/taxonomy/10090"
