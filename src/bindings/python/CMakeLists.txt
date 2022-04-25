@@ -31,6 +31,12 @@ set(SETUP_PY    "${CMAKE_CURRENT_BINARY_DIR}/setup.py")
 
 configure_file(${SETUP_PY_IN} ${SETUP_PY})
 
+#Create init.py from __init__.py.in
+set(INIT_PY_IN "${CMAKE_CURRENT_SOURCE_DIR}/__init__.py.in")
+set(INIT_PY    "${CMAKE_CURRENT_BINARY_DIR}/__init__.py")
+
+configure_file(${SETUP_PY_IN} ${SETUP_PY})
+
 
 
 ####################################################################
@@ -45,7 +51,7 @@ file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/libantimony.pth" "antimony\n")
 
 #All the files that need to be installed in the python library directory.
 file (GLOB antimony_python_files
-    ${CMAKE_SOURCE_DIR}/src/bindings/python/__init__.py
+    ${INIT_PY}
     ${CMAKE_CURRENT_BINARY_DIR}/antimony.py
     ${CMAKE_CURRENT_BINARY_DIR}/libantimony.pth
     ${CPACK_PACKAGE_DESCRIPTION_FILE}
