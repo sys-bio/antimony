@@ -752,6 +752,34 @@ file(GLOB QTANTIMONY_RESOURCES
         ${QTANTIMONY_SRC_DIR}antimonyicon.rc
         ${QTANTIMONY_SRC_DIR}antimony.qrc
         )
+
+## https://stackoverflow.com/questions/32183975/how-to-print-all-the-properties-of-a-target-in-cmake/56738858#56738858
+## https://stackoverflow.com/a/56738858/3743145
+
+## Get all properties that cmake supports
+execute_process(COMMAND cmake --help-property-list OUTPUT_VARIABLE CMAKE_PROPERTY_LIST)
+## Convert command output into a CMake list
+STRING(REGEX REPLACE ";" "\\\\;" CMAKE_PROPERTY_LIST "${CMAKE_PROPERTY_LIST}")
+STRING(REGEX REPLACE "\n" ";" CMAKE_PROPERTY_LIST "${CMAKE_PROPERTY_LIST}")
+
+list(REMOVE_DUPLICATES CMAKE_PROPERTY_LIST)
+
+function(print_target_properties tgt)
+    if(NOT TARGET ${tgt})
+      message("There is no target named '${tgt}'")
+      return()
+    endif()
+
+    foreach (prop ${CMAKE_PROPERTY_LIST})
+        string(REPLACE "<CONFIG>" "${CMAKE_BUILD_TYPE}" prop ${prop})
+        get_target_property(propval ${tgt} ${prop})
+        if (propval)
+            message ("${tgt} ${prop} = ${propval}")
+        endif()
+    endforeach(prop)
+endfunction(print_target_properties)
+
+
 if (WITH_QTANTIMONY)
         set(CMAKE_AUTOMOC ON)
         set(CMAKE_AUTORCC ON)
@@ -778,6 +806,26 @@ if (WITH_QTANTIMONY)
         set(MACOSX_BUNDLE_ICON_FILE ${QTANTIMONY_SRC_DIR}antimony.icns)
         install(TARGETS QTAntimony DESTINATION bin)
         install(FILES ${QTANTIMONY_SRC_DIR}antimony.ico ${QTANTIMONY_SRC_DIR}antimony_ico.png DESTINATION bin)
+
+        set_target_properties(QTAntimony PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/QTAntimony/$<0:>")
+
+        message(STATUS "QT dir: ${Qt5_DIR}")
+        message(STATUS "Binary dir: ${CMAKE_BINARY_DIR}")
+        message(STATUS "Runtime output dir: ${RUNTIME_OUTPUT_DIRECTORY}")
+        message(STATUS "CMake install dir: ${CMAKE_INSTALL_PREFIX}")
+        #print_target_properties(QTAntimony)
+        if (WIN32)
+           add_custom_command(TARGET QTAntimony POST_BUILD
+                                     COMMAND dir
+                                     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+                                     COMMENT "get directory contents.")
+           add_custom_command(TARGET QTAntimony POST_BUILD
+                                     COMMAND ${Qt5_DIR}/../../../bin/windeployqt.exe QTAntimony.exe
+                                     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/QTAntimony
+                                     COMMENT "Running windeployqt on QTAntimony to copy DLLs.")
+           install(CODE "execute_process(COMMAND ${Qt5_DIR}/../../../bin/windeployqt.exe ${CMAKE_INSTALL_PREFIX}/bin/QTAntimony.exe)")
+        endif(WIN32)
+
 
 endif(WITH_QTANTIMONY)
 
@@ -831,14 +879,14 @@ endif(UNIX)
 #
 # Install win32 dependencies
 #
-if (NOT UNIX)
-   file(GLOB win_dependencies "${CMAKE_SOURCE_DIR}/win32/*.dll" "${CMAKE_CURRENT_SOURCE_DIR}/win32/README.txt")
-   if (NOT WITH_STATIC_SBML)
-      list(APPEND win_dependencies ${LIBSBML_DLL})
-   endif()
-   install(FILES ${win_dependencies} DESTINATION bin/)
-   install(FILES "${CMAKE_SOURCE_DIR}/win32/platforms/qwindows.dll" DESTINATION bin/platforms/)
-endif()
+#if (NOT UNIX)
+#   file(GLOB win_dependencies "${CMAKE_SOURCE_DIR}/win32/*.dll" "${CMAKE_CURRENT_SOURCE_DIR}/win32/README.txt")
+#   if (NOT WITH_STATIC_SBML)
+#      list(APPEND win_dependencies ${LIBSBML_DLL})
+#   endif()
+#   install(FILES ${win_dependencies} DESTINATION bin/)
+#   install(FILES "${CMAKE_SOURCE_DIR}/win32/platforms/qwindows.dll" DESTINATION bin/platforms/)
+#endif()
 
 if(WIN32 AND INSTALL_SYSTEM_RUNTIMES)
   include(InstallRequiredSystemLibraries)
