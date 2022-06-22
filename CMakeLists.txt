@@ -337,18 +337,8 @@ if(WITH_SWIG)
         PATHS
               "c:/Program Files (x86)/Swig"
               c:/Program Files/Swig
-              c:/swigwin-2.0.11
-              c:/swigwin-2.0.10
-              c:/swigwin-2.0.9
-              c:/swigwin-2.0.8
-              c:/swigwin-2.0.7
-              c:/swigwin-2.0.6
-              c:/swigwin-2.0.5
-              c:/swigwin-2.0.4
-              c:/swigwin-2.0.3
-              c:/swigwin-2.0.2
-              c:/swigwin-2.0.1
-              c:/swigwin-2.0.0
+              c:/Program Files/swigwin-3.0.10
+              c:/Program Files/swigwin-4.0.2
               /usr/local/bin
               /opt/local/bin
               /usr/bin
