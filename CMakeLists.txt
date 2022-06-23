@@ -273,6 +273,7 @@ if(WITH_LIBSBML_LIBXML)
               ${CMAKE_SOURCE_DIR}
               ${CMAKE_SOURCE_DIR}/dependencies/lib
               ${LIBSBML_INCLUDE_DIR}/../lib
+              ${LIBSBML_INSTALL_DIR}/lib
         )
     set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${ZDLL_LIBRARY} )
 
@@ -309,20 +310,22 @@ endif()
 
 if(WITH_LIBSBML_COMPRESSION)
     find_library(ZDLL_LIBRARY
-        NAMES zdll.lib zdll.so zdll.dylib zdll z
+        NAMES zdll.lib zdll.so zdll.dylib zdll z zlibd.lib zlibstaticd.lib zlibmd.lib zlibstatic.lib
 	PATHS /usr/lib /usr/local/lib
               ${CMAKE_SOURCE_DIR}
               ${CMAKE_SOURCE_DIR}/dependencies/lib
               ${LIBSBML_INCLUDE_DIR}/../lib
+              ${LIBSBML_INSTALL_DIR}/lib
         )
     set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${ZDLL_LIBRARY} )
 
     find_library(BZIP_LIBRARY
-        NAMES bzip2.lib bzip2.so bzip2.dylib bzip2 bz2 bz2d
+        NAMES bzip2.lib bzip2.so bzip2.dylib bzip2 bz2 bz2d bz2md bz2mdd
 	PATHS /usr/lib /usr/local/lib
               ${CMAKE_SOURCE_DIR}
               ${CMAKE_SOURCE_DIR}/dependencies/lib
               ${LIBSBML_INCLUDE_DIR}/../lib
+              ${LIBSBML_INSTALL_DIR}/lib
         )
     set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${BZIP_LIBRARY} )
 endif()
