@@ -74,7 +74,7 @@ endif()
 # which language bindings should be build
 option(WITH_SBML            "Generate SBML translations"      ON )
 if (WITH_SBML)
-    option(WITH_STATIC_SBML     "Use the static version of the libsbml library"      OFF )
+    option(WITH_STATIC_SBML     "Use the static version of the libsbml library"      ON )
     option(WITH_COMP_SBML       "Use the hierarchical composition package API"      ON )
     OPTION(WITH_LIBSBML_EXPAT   "Set if libsbml was compiled with a separate expat library."  ON)
     OPTION(WITH_LIBSBML_LIBXML  "Set if libsbml was compiled with a separate libxml library." OFF)
