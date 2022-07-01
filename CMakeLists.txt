@@ -12,7 +12,7 @@ project(libantimony)
 #
 SET(LIBANTIMONY_VERSION_MAJOR 2)
 SET(LIBANTIMONY_VERSION_MINOR 13)
-SET(LIBANTIMONY_VERSION_PATCH ".1")
+SET(LIBANTIMONY_VERSION_PATCH ".2")
 SET(LIBANTIMONY_VERSION_RELEASE "")
 
 
@@ -53,9 +53,18 @@ SET(CPACK_PACKAGE_VERSION_PATCH "${LIBANTIMONY_VERSION_PATCH}")
 SET(CPACK_PACKAGE_VERSION_RELEASE "${LIBANTIMONY_VERSION_RELEASE}")
 INCLUDE(CPack)
 
+SET(LIBANTIMONY_VERSION_STRING "v${LIBANTIMONY_VERSION_MAJOR}.${LIBANTIMONY_VERSION_MINOR}${LIBANTIMONY_VERSION_PATCH}${LIBANTIMONY_VERSION_RELEASE}")
+
+
 option(BUILD_SHARED_LIBS  "Build shared library (Set to OFF to build static libraries)" ON)
 set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Choose the type of build, options are: None (CMAKE_CXX_FLAGS or CMAKE_C_FLAGS are used), Debug, Release, RelWithDebInfo, MinSizeRel" )
 
+set(USE_UNIVERSAL_BINARIES "ON" CACHE BOOL "Build and link to universal binaries on MacOS")
+
+if (USE_UNIVERSAL_BINARIES)
+    set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64" CACHE INTERNAL "Compile for intel and M1 chips on apple" FORCE)
+    message(STATUS "building on mac with universal binaries")
+endif()
 
 ####################################################################
 #
@@ -65,10 +74,10 @@ set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Choose the type of build, op
 # which language bindings should be build
 option(WITH_SBML            "Generate SBML translations"      ON )
 if (WITH_SBML)
-    option(WITH_STATIC_SBML     "Use the static version of the libsbml library"      OFF )
+    option(WITH_STATIC_SBML     "Use the static version of the libsbml library"      ON )
     option(WITH_COMP_SBML       "Use the hierarchical composition package API"      ON )
-    OPTION(WITH_LIBSBML_EXPAT   "Set if libsbml was compiled with a separate expat library."  OFF)
-    OPTION(WITH_LIBSBML_LIBXML  "Set if libsbml was compiled with a separate libxml library." ON)
+    OPTION(WITH_LIBSBML_EXPAT   "Set if libsbml was compiled with a separate expat library."  ON)
+    OPTION(WITH_LIBSBML_LIBXML  "Set if libsbml was compiled with a separate libxml library." OFF)
     OPTION(WITH_LIBSBML_XERCES  "Set if libsbml was compiled with a separate xerces library." OFF)
     OPTION(WITH_LIBSBML_COMPRESSION "Set if libsbml was compiled with separate zdll and bzip libraries." ON)
 endif()
@@ -98,7 +107,6 @@ endif()
 
 
 
-SET(LIBANTIMONY_VERSION_STRING "v${LIBANTIMONY_VERSION_MAJOR}.${LIBANTIMONY_VERSION_MINOR}${LIBANTIMONY_VERSION_PATCH}${LIBANTIMONY_VERSION_RELEASE}")
 add_definitions( -DLIBANTIMONY_VERSION_STRING="${LIBANTIMONY_VERSION_STRING}" )
 
 
@@ -273,6 +281,7 @@ if(WITH_LIBSBML_LIBXML)
               ${CMAKE_SOURCE_DIR}
               ${CMAKE_SOURCE_DIR}/dependencies/lib
               ${LIBSBML_INCLUDE_DIR}/../lib
+              ${LIBSBML_INSTALL_DIR}/lib
         )
     set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${ZDLL_LIBRARY} )
 
@@ -309,20 +318,22 @@ endif()
 
 if(WITH_LIBSBML_COMPRESSION)
     find_library(ZDLL_LIBRARY
-        NAMES zdll.lib zdll.so zdll.dylib zdll z
+        NAMES zdll.lib zdll.so zdll.dylib zdll z zlibd.lib zlibstaticd.lib zlibmd.lib zlibstatic.lib
 	PATHS /usr/lib /usr/local/lib
               ${CMAKE_SOURCE_DIR}
               ${CMAKE_SOURCE_DIR}/dependencies/lib
               ${LIBSBML_INCLUDE_DIR}/../lib
+              ${LIBSBML_INSTALL_DIR}/lib
         )
     set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${ZDLL_LIBRARY} )
 
     find_library(BZIP_LIBRARY
-        NAMES bzip2.lib bzip2.so bzip2.dylib bzip2 bz2 bz2d
+        NAMES bzip2.lib bzip2.so bzip2.dylib bzip2 bz2 bz2d bz2md bz2mdd
 	PATHS /usr/lib /usr/local/lib
               ${CMAKE_SOURCE_DIR}
               ${CMAKE_SOURCE_DIR}/dependencies/lib
               ${LIBSBML_INCLUDE_DIR}/../lib
+              ${LIBSBML_INSTALL_DIR}/lib
         )
     set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${BZIP_LIBRARY} )
 endif()
@@ -337,18 +348,8 @@ if(WITH_SWIG)
         PATHS
               "c:/Program Files (x86)/Swig"
               c:/Program Files/Swig
-              c:/swigwin-2.0.11
-              c:/swigwin-2.0.10
-              c:/swigwin-2.0.9
-              c:/swigwin-2.0.8
-              c:/swigwin-2.0.7
-              c:/swigwin-2.0.6
-              c:/swigwin-2.0.5
-              c:/swigwin-2.0.4
-              c:/swigwin-2.0.3
-              c:/swigwin-2.0.2
-              c:/swigwin-2.0.1
-              c:/swigwin-2.0.0
+              c:/Program Files/swigwin-3.0.10
+              c:/Program Files/swigwin-4.0.2
               /usr/local/bin
               /opt/local/bin
               /usr/bin
@@ -762,6 +763,34 @@ file(GLOB QTANTIMONY_RESOURCES
         ${QTANTIMONY_SRC_DIR}antimonyicon.rc
         ${QTANTIMONY_SRC_DIR}antimony.qrc
         )
+
+## https://stackoverflow.com/questions/32183975/how-to-print-all-the-properties-of-a-target-in-cmake/56738858#56738858
+## https://stackoverflow.com/a/56738858/3743145
+
+## Get all properties that cmake supports
+execute_process(COMMAND cmake --help-property-list OUTPUT_VARIABLE CMAKE_PROPERTY_LIST)
+## Convert command output into a CMake list
+STRING(REGEX REPLACE ";" "\\\\;" CMAKE_PROPERTY_LIST "${CMAKE_PROPERTY_LIST}")
+STRING(REGEX REPLACE "\n" ";" CMAKE_PROPERTY_LIST "${CMAKE_PROPERTY_LIST}")
+
+list(REMOVE_DUPLICATES CMAKE_PROPERTY_LIST)
+
+function(print_target_properties tgt)
+    if(NOT TARGET ${tgt})
+      message("There is no target named '${tgt}'")
+      return()
+    endif()
+
+    foreach (prop ${CMAKE_PROPERTY_LIST})
+        string(REPLACE "<CONFIG>" "${CMAKE_BUILD_TYPE}" prop ${prop})
+        get_target_property(propval ${tgt} ${prop})
+        if (propval)
+            message ("${tgt} ${prop} = ${propval}")
+        endif()
+    endforeach(prop)
+endfunction(print_target_properties)
+
+
 if (WITH_QTANTIMONY)
         set(CMAKE_AUTOMOC ON)
         set(CMAKE_AUTORCC ON)
@@ -789,6 +818,26 @@ if (WITH_QTANTIMONY)
         install(TARGETS QTAntimony DESTINATION bin)
         install(FILES ${QTANTIMONY_SRC_DIR}antimony.ico ${QTANTIMONY_SRC_DIR}antimony_ico.png DESTINATION bin)
 
+        set_target_properties(QTAntimony PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/QTAntimony/$<0:>")
+
+        message(STATUS "QT dir: ${Qt5_DIR}")
+        message(STATUS "Binary dir: ${CMAKE_BINARY_DIR}")
+        message(STATUS "Runtime output dir: ${RUNTIME_OUTPUT_DIRECTORY}")
+        message(STATUS "CMake install dir: ${CMAKE_INSTALL_PREFIX}")
+        #print_target_properties(QTAntimony)
+        if (WIN32)
+           add_custom_command(TARGET QTAntimony POST_BUILD
+                                     COMMAND dir
+                                     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+                                     COMMENT "get directory contents.")
+           add_custom_command(TARGET QTAntimony POST_BUILD
+                                     COMMAND ${Qt5_DIR}/../../../bin/windeployqt.exe QTAntimony.exe
+                                     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/QTAntimony
+                                     COMMENT "Running windeployqt on QTAntimony to copy DLLs.")
+           install(CODE "execute_process(COMMAND ${Qt5_DIR}/../../../bin/windeployqt.exe ${CMAKE_INSTALL_PREFIX}/bin/QTAntimony.exe)")
+        endif(WIN32)
+
+
 endif(WITH_QTANTIMONY)
 
 
@@ -796,27 +845,9 @@ endif(WITH_QTANTIMONY)
 #
 # Set up remaining variables, add option for universal binaries
 #
-if(UNIX)
-    if(APPLE)
-        add_definitions(-DMACOSX)
-        #create universal binaries
-                option(ENABLE_UNIVERSAL "Create Universal Binaries" OFF)
 
-                set(CMAKE_OSX_ARCHITECTURES "${CMAKE_OSX_ARCHITECTURES}" CACHE STRING "A semicolon separated list of build architectures to be used")
-                if(ENABLE_UNIVERSAL)
-                  # if universal binaries are requested and none defined so far
-                  # overwrite them with all three common architectures. If the user
-                  # specified their own list of architectures do not touch!
-                  if (CMAKE_OSX_ARCHITECTURES STREQUAL "")
-                    set(CMAKE_OSX_ARCHITECTURES "i386;ppc;x86_64" CACHE STRING "A semicolon separated list of build architectures to be used" FORCE)
-                  endif()
-                endif(ENABLE_UNIVERSAL)
-    else(APPLE)
-        add_definitions(-DLINUX)
-    endif(APPLE)
-   # add_definitions( -DPACKAGE_VERSION=\"${PACKAGE_VERSION}\"  -DPACKAGE_NAME="${PROJECT_NAME}")
 
-else(UNIX)
+if(NOT UNIX)
     add_definitions(-DWIN32 -DLIBANTIMONY_EXPORTS -DLIBLAX_EXPORTS)
     if(MSVC)
       add_definitions(-D_CRT_SECURE_NO_WARNINGS)
@@ -841,14 +872,14 @@ endif(UNIX)
 #
 # Install win32 dependencies
 #
-if (NOT UNIX)
-   file(GLOB win_dependencies "${CMAKE_SOURCE_DIR}/win32/*.dll" "${CMAKE_CURRENT_SOURCE_DIR}/win32/README.txt")
-   if (NOT WITH_STATIC_SBML)
-      list(APPEND win_dependencies ${LIBSBML_DLL})
-   endif()
-   install(FILES ${win_dependencies} DESTINATION bin/)
-   install(FILES "${CMAKE_SOURCE_DIR}/win32/platforms/qwindows.dll" DESTINATION bin/platforms/)
-endif()
+#if (NOT UNIX)
+#   file(GLOB win_dependencies "${CMAKE_SOURCE_DIR}/win32/*.dll" "${CMAKE_CURRENT_SOURCE_DIR}/win32/README.txt")
+#   if (NOT WITH_STATIC_SBML)
+#      list(APPEND win_dependencies ${LIBSBML_DLL})
+#   endif()
+#   install(FILES ${win_dependencies} DESTINATION bin/)
+#   install(FILES "${CMAKE_SOURCE_DIR}/win32/platforms/qwindows.dll" DESTINATION bin/platforms/)
+#endif()
 
 if(WIN32 AND INSTALL_SYSTEM_RUNTIMES)
   include(InstallRequiredSystemLibraries)
