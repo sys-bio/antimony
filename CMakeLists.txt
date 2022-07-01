@@ -53,9 +53,18 @@ SET(CPACK_PACKAGE_VERSION_PATCH "${LIBANTIMONY_VERSION_PATCH}")
 SET(CPACK_PACKAGE_VERSION_RELEASE "${LIBANTIMONY_VERSION_RELEASE}")
 INCLUDE(CPack)
 
+SET(LIBANTIMONY_VERSION_STRING "v${LIBANTIMONY_VERSION_MAJOR}.${LIBANTIMONY_VERSION_MINOR}${LIBANTIMONY_VERSION_PATCH}${LIBANTIMONY_VERSION_RELEASE}")
+
+
 option(BUILD_SHARED_LIBS  "Build shared library (Set to OFF to build static libraries)" ON)
 set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Choose the type of build, options are: None (CMAKE_CXX_FLAGS or CMAKE_C_FLAGS are used), Debug, Release, RelWithDebInfo, MinSizeRel" )
 
+set(USE_UNIVERSAL_BINARIES "ON" CACHE BOOL "Build and link to universal binaries on MacOS")
+
+if (USE_UNIVERSAL_BINARIES)
+    set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64" CACHE INTERNAL "Compile for intel and M1 chips on apple" FORCE)
+    message(STATUS "building on mac with universal binaries")
+endif()
 
 ####################################################################
 #
@@ -98,7 +107,6 @@ endif()
 
 
 
-SET(LIBANTIMONY_VERSION_STRING "v${LIBANTIMONY_VERSION_MAJOR}.${LIBANTIMONY_VERSION_MINOR}${LIBANTIMONY_VERSION_PATCH}${LIBANTIMONY_VERSION_RELEASE}")
 add_definitions( -DLIBANTIMONY_VERSION_STRING="${LIBANTIMONY_VERSION_STRING}" )
 
 
@@ -837,27 +845,9 @@ endif(WITH_QTANTIMONY)
 #
 # Set up remaining variables, add option for universal binaries
 #
-if(UNIX)
-    if(APPLE)
-        add_definitions(-DMACOSX)
-        #create universal binaries
-                option(ENABLE_UNIVERSAL "Create Universal Binaries" OFF)
 
-                set(CMAKE_OSX_ARCHITECTURES "${CMAKE_OSX_ARCHITECTURES}" CACHE STRING "A semicolon separated list of build architectures to be used")
-                if(ENABLE_UNIVERSAL)
-                  # if universal binaries are requested and none defined so far
-                  # overwrite them with all three common architectures. If the user
-                  # specified their own list of architectures do not touch!
-                  if (CMAKE_OSX_ARCHITECTURES STREQUAL "")
-                    set(CMAKE_OSX_ARCHITECTURES "i386;ppc;x86_64" CACHE STRING "A semicolon separated list of build architectures to be used" FORCE)
-                  endif()
-                endif(ENABLE_UNIVERSAL)
-    else(APPLE)
-        add_definitions(-DLINUX)
-    endif(APPLE)
-   # add_definitions( -DPACKAGE_VERSION=\"${PACKAGE_VERSION}\"  -DPACKAGE_NAME="${PROJECT_NAME}")
 
-else(UNIX)
+if(NOT UNIX)
     add_definitions(-DWIN32 -DLIBANTIMONY_EXPORTS -DLIBLAX_EXPORTS)
     if(MSVC)
       add_definitions(-D_CRT_SECURE_NO_WARNINGS)
