@@ -162,7 +162,7 @@ extern int antimony_yydebug;
     NUM = 260,                     /* "number"  */
     AFTER = 261,                   /* "'after'"  */
     ANTWORD = 262,                 /* "element name"  */
-    AT = 263,                      /* "'@' or 'at'"  */
+    AT = 263,                      /* "'at'"  */
     BECOMESREV = 264,              /* "->"  */
     BECOMESINH = 265,              /* "-|"  */
     BECOMESMOD2 = 266,             /* "-o"  */
@@ -269,7 +269,7 @@ enum yysymbol_kind_t
   YYSYMBOL_NUM = 15,                       /* "number"  */
   YYSYMBOL_AFTER = 16,                     /* "'after'"  */
   YYSYMBOL_ANTWORD = 17,                   /* "element name"  */
-  YYSYMBOL_AT = 18,                        /* "'@' or 'at'"  */
+  YYSYMBOL_AT = 18,                        /* "'at'"  */
   YYSYMBOL_BECOMESREV = 19,                /* "->"  */
   YYSYMBOL_BECOMESINH = 20,                /* "-|"  */
   YYSYMBOL_BECOMESMOD2 = 21,               /* "-o"  */
@@ -816,7 +816,7 @@ static const char *const yytname[] =
   "\"end of file\"", "error", "\"invalid token\"",
   "\"mathematical symbol\"", "'&'", "'|'", "'-'", "'+'", "'*'", "'/'",
   "'%'", "'^'", "'$'", "'.'", "\"end of line\"", "\"number\"",
-  "\"'after'\"", "\"element name\"", "\"'@' or 'at'\"", "\"->\"", "\"-|\"",
+  "\"'after'\"", "\"element name\"", "\"'at'\"", "\"->\"", "\"-|\"",
   "\"-o\"", "\"=>\"", "\"'compartment'\"",
   "\"name of a pre-defined constant\"", "\"'constraint'\"", "\"'const'\"",
   "\"--\"", "\"'delete'\"", "\"'DNA'\"", "\"...\"", "\"'end'\"",
@@ -3192,7 +3192,7 @@ yyreduce:
 #line 3193 "antimony.tab.cpp"
     break;
 
-  case 184: /* event: "'@' or 'at'" formula $@6 eventmodifications colonret assignmentlist  */
+  case 184: /* event: "'at'" formula $@6 eventmodifications colonret assignmentlist  */
 #line 516 "antimony.ypp"
                                                                                                                         {}
 #line 3199 "antimony.tab.cpp"
@@ -3204,7 +3204,7 @@ yyreduce:
 #line 3205 "antimony.tab.cpp"
     break;
 
-  case 186: /* event: "'@' or 'at'" formula "'after'" formula $@7 eventmodifications colonret assignmentlist  */
+  case 186: /* event: "'at'" formula "'after'" formula $@7 eventmodifications colonret assignmentlist  */
 #line 517 "antimony.ypp"
                                                                                                                                           {}
 #line 3211 "antimony.tab.cpp"
@@ -3216,7 +3216,7 @@ yyreduce:
 #line 3217 "antimony.tab.cpp"
     break;
 
-  case 188: /* event: varmaybein ':' "'@' or 'at'" formula $@8 eventmodifications colonret assignmentlist  */
+  case 188: /* event: varmaybein ':' "'at'" formula $@8 eventmodifications colonret assignmentlist  */
 #line 518 "antimony.ypp"
                                                                                                                                             {}
 #line 3223 "antimony.tab.cpp"
@@ -3228,7 +3228,7 @@ yyreduce:
 #line 3229 "antimony.tab.cpp"
     break;
 
-  case 190: /* event: varmaybein ':' "'@' or 'at'" formula "'after'" formula $@9 eventmodifications colonret assignmentlist  */
+  case 190: /* event: varmaybein ':' "'at'" formula "'after'" formula $@9 eventmodifications colonret assignmentlist  */
 #line 519 "antimony.ypp"
                                                                                                                                                              {}
 #line 3235 "antimony.tab.cpp"
@@ -4065,9 +4065,9 @@ int antimony_yylex(void)
   }
 
   //Parse '@'
-  if (cc == '@') {
-    return AT;
-  }
+//  if (cc == '@') {
+//    return AT;
+//  }
 
   //This converts PC and Mac end-of-line characters to \n:
   if (cc == '\r') {
