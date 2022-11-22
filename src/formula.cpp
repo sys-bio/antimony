@@ -616,6 +616,11 @@ string Formula::ToDelimitedStringWithEllipses(string cc) const
     retval.replace(pos, 3, "||");
     pos = retval.find("| |", pos+2);
   }
+  pos = retval.find("-o");
+  while (pos != string::npos) {
+      retval.replace(pos, 2, "- o");
+      pos = retval.find("-o", pos + 2);
+  }
   return retval;
 }
 
