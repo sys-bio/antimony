@@ -3930,7 +3930,12 @@ int antimony_yylex(void)
     } else if (cc == '|') {
       return BECOMESINH;
     } else if (cc == 'o') {
-      return BECOMESMOD2;
+      char nextchar;
+      g_registry.input->get(nextchar);
+      g_registry.input->unget();
+      if (nextchar == ' ' || nextchar == ';') {
+        return BECOMESMOD2;
+      }
     }
     g_registry.input->unget();
     cc = '-';
