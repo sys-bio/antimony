@@ -262,6 +262,10 @@ string Annotated::CreateCVTermsAntimonySyntax(const string& elt_id, const string
   for(ModelQualsType::const_iterator i(m_model_quals.begin()); i!=m_model_quals.end(); ++i) {
     string term = indent+elt_id+" "+EncodeModelQualifier(i->first)+" ";
     string subindent = indent;
+    if (i->first == BQM_UNKNOWN) {
+        subindent = "//" + subindent;
+        term = "//" + term;
+    }
     while(subindent.size() < term.size())
       subindent += " ";
     for(vector<string>::const_iterator j(i->second.begin()); j!=i->second.end(); ++j) {
@@ -275,6 +279,10 @@ string Annotated::CreateCVTermsAntimonySyntax(const string& elt_id, const string
   for(BiolQualsType::const_iterator i(m_biol_quals.begin()); i!=m_biol_quals.end(); ++i) {
     string term = indent+elt_id+" "+EncodeBiolQualifier(i->first)+" ";
     string subindent = indent;
+    if (i->first == BQB_UNKNOWN) {
+        subindent = "//" + subindent;
+        term = "//" + term;
+    }
     while(subindent.size() < term.size())
       subindent += " ";
     for(vector<string>::const_iterator j(i->second.begin()); j!=i->second.end(); ++j) {
