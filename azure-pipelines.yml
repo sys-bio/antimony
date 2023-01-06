@@ -166,8 +166,8 @@ stages:
           - script: |
               echo "cd to build dir $(BUILD_DIR)"
               cd $(BUILD_DIR)
-              cp $(DEPS_INSTALL_PREFIX)/bin/zlib* ${BuildType}/
-              cp $(DEPS_INSTALL_PREFIX)/bin/zlib* src/test/${BuildType}/
+              cp $(DEPS_INSTALL_PREFIX)/bin/zlib* $(BuildType)/
+              cp $(DEPS_INSTALL_PREFIX)/bin/zlib* src/test/$(BuildType)/
             #condition: eq(variables.BuildType, 'Debug')
             displayName: copy zlib library to build directories
           - script: |
