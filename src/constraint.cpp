@@ -87,6 +87,9 @@ void AntimonyConstraint::SetFormula(Formula* formula, bool onlyformula)
 #ifndef NSBML
 void AntimonyConstraint::SetWithASTNode(const ASTNode* constnode)
 {
+  if (constnode == NULL) {
+    return;
+  }
   string formulastring;
   ASTNode astnode = *constnode;
   unsigned int numchildren = astnode.getNumChildren();
@@ -396,6 +399,10 @@ void AntimonyConstraint::calculateASTNode()
   if (m_astnode != NULL) return;
 
   ASTNode* rhs = parseStringToASTNode(m_formula.ToSBMLString());
+  if (rhs == NULL) {
+      //A problem here hopefully will be caught earlier, but just in case.
+      return;
+  }
   if (m_type != constNONE) {
     if (rhs->getType() == ConstraintTypeToASTType(m_type) && rhs->getType() != AST_RELATIONAL_NEQ) {
       if (IsSetInitialValue()) {
