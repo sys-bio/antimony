@@ -1119,6 +1119,10 @@ bool Formula::IsValidObjectiveFunction(const ASTNode* astn) const
 void Formula::GetObjectivesFromAST(const ASTNode* astn, vector<pair<string, double> >& objectives) const
 {
   size_t numobjectives; //For the 'minus' case, below.
+  if (astn == NULL) {
+      //Probably should have been caught earlier, but at least we won't crash.
+      return;
+  }
   switch(astn->getType()) {
   case AST_NAME:
     //Just the name with a stoichiometry of 1

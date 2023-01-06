@@ -278,6 +278,9 @@ void makeUnitlessNumbersDimensionless(ASTNode* node)
 
 void caratToPower(ASTNode* node)
 {
+  if (node == NULL) {
+    return;
+  }
   if (node->getType() == AST_POWER) {
     node->setType(AST_FUNCTION_POWER);
   }
