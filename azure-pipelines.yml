@@ -181,10 +181,10 @@ stages:
               targetFolder: $(Build.ArtifactStagingDirectory)
             displayName: Copy to Staging Area
           - script: |
-              echo "cp $(BUILD_DIR)/bin/Debug/zlibd.dll $(Build.ArtifactStagingDirectory)/bin/"
-              cp $(BUILD_DIR)/Debug/zlibd.dll $(Build.ArtifactStagingDirectory)/antimony-$(Agent.OS)/bin/
-            condition: eq(variables.BuildType, 'Debug')
-            displayName: copy zlibd.dll to install
+              echo "cp $(BUILD_DIR)/bin/$(BuildType)/zlib* $(Build.ArtifactStagingDirectory)/bin/"
+              cp $(BUILD_DIR)/$(BuildType)/zlib* $(Build.ArtifactStagingDirectory)/antimony-$(Agent.OS)/bin/
+            #condition: eq(variables.BuildType, 'Debug')
+            displayName: copy zlib library to install
           - publish: $(Build.ArtifactStagingDirectory)
             artifact: antimony-Windows-$(BuildType)
             displayName: Publish
