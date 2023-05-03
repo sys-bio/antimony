@@ -47,7 +47,7 @@ Module::Module(string name)
     m_currentexportvar(0),
     m_ismain(false),
     m_sbmllevel(3),
-    m_sbmlversion(1),
+    m_sbmlversion(2),
     m_varmap(),
 #ifndef NSBML
 #ifdef USE_COMP
