@@ -177,11 +177,11 @@ START_TEST (test_getStrings)
   char* model = getAntimonyString(NULL);
   fail_unless(string(model) == (string)"// Created by libAntimony " + LIBANTIMONY_VERSION_STRING + "\n// Variable initializations:\na = 3;\n");
   char* sbml = getSBMLString(NULL);
-  fail_unless(string(sbml) == "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sbml xmlns=\"http://www.sbml.org/sbml/level3/version1/core\" level=\"3\" version=\"1\">\n  <model metaid=\"__main\" id=\"__main\">\n    <listOfParameters>\n      <parameter id=\"a\" value=\"3\" constant=\"true\"/>\n    </listOfParameters>\n  </model>\n</sbml>\n");
+  fail_unless(string(sbml) == "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sbml xmlns=\"http://www.sbml.org/sbml/level3/version2/core\" level=\"3\" version=\"2\">\n  <model metaid=\"__main\" id=\"__main\">\n    <listOfParameters>\n      <parameter id=\"a\" value=\"3\" constant=\"true\"/>\n    </listOfParameters>\n  </model>\n</sbml>\n");
   sbml = getCompSBMLString(NULL);
-  fail_unless(string(sbml) == "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sbml xmlns=\"http://www.sbml.org/sbml/level3/version1/core\" xmlns:comp=\"http://www.sbml.org/sbml/level3/version1/comp/version1\" level=\"3\" version=\"1\" comp:required=\"true\">\n  <model metaid=\"__main\" id=\"__main\">\n    <listOfParameters>\n      <parameter id=\"a\" value=\"3\" constant=\"true\"/>\n    </listOfParameters>\n  </model>\n</sbml>\n");
+  fail_unless(string(sbml) == "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sbml xmlns=\"http://www.sbml.org/sbml/level3/version2/core\" xmlns:comp=\"http://www.sbml.org/sbml/level3/version1/comp/version1\" level=\"3\" version=\"2\" comp:required=\"true\">\n  <model metaid=\"__main\" id=\"__main\">\n    <listOfParameters>\n      <parameter id=\"a\" value=\"3\" constant=\"true\"/>\n    </listOfParameters>\n  </model>\n</sbml>\n");
   sbml = getSBMLString(NULL);
-  fail_unless(string(sbml) == "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sbml xmlns=\"http://www.sbml.org/sbml/level3/version1/core\" level=\"3\" version=\"1\">\n  <model metaid=\"__main\" id=\"__main\">\n    <listOfParameters>\n      <parameter id=\"a\" value=\"3\" constant=\"true\"/>\n    </listOfParameters>\n  </model>\n</sbml>\n");
+  fail_unless(string(sbml) == "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sbml xmlns=\"http://www.sbml.org/sbml/level3/version2/core\" level=\"3\" version=\"2\">\n  <model metaid=\"__main\" id=\"__main\">\n    <listOfParameters>\n      <parameter id=\"a\" value=\"3\" constant=\"true\"/>\n    </listOfParameters>\n  </model>\n</sbml>\n");
 
   freeAll();
   clearPreviousLoads();
@@ -196,7 +196,7 @@ START_TEST (test_getCellML)
 #ifndef NCELLML
   //This function crashes for NO REASON.  I use exactly the same 
   char* cellml = getCellMLString(NULL);
-  fail_unless(string(cellml) == "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sbml xmlns=\"http://www.sbml.org/sbml/level3/version1/core\" level=\"3\" version=\"1\">\n  <model id=\"__main\" name=\"__main\">\n    <listOfParameters>\n      <parameter id=\"a\" value=\"3\" constant=\"true\"/>\n    </listOfParameters>\n  </model>\n</sbml>\n");
+  fail_unless(string(cellml) == "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sbml xmlns=\"http://www.sbml.org/sbml/level3/version2/core\" level=\"3\" version=\"2\">\n  <model id=\"__main\" name=\"__main\">\n    <listOfParameters>\n      <parameter id=\"a\" value=\"3\" constant=\"true\"/>\n    </listOfParameters>\n  </model>\n</sbml>\n");
 #endif
   freeAll();
   clearPreviousLoads();
@@ -229,7 +229,7 @@ END_TEST
 
 START_TEST (test_loadAntimonyStringErrSBML)
 {
-  long ret = loadAntimonyString("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sbml xmlns=\"http://www.sbml.org/sbml/level3/version1/core\" level=\"3\" version=\"1\">\n  <model id=\"__main\" name=\"__main\">\n    <listOfParameters>\n      <parameter id=\"a\" value=\"3\" constant=\"true\"/>\n    </listOfParameters>\n  </model>\n</sbml>\n");
+  long ret = loadAntimonyString("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sbml xmlns=\"http://www.sbml.org/sbml/level3/version2/core\" level=\"3\" version=\"2\">\n  <model id=\"__main\" name=\"__main\">\n    <listOfParameters>\n      <parameter id=\"a\" value=\"3\" constant=\"true\"/>\n    </listOfParameters>\n  </model>\n</sbml>\n");
   fail_unless (ret == -1);
   string err = "The provided string is actually an SBML model, and is not in the Antimony format.  Use 'loadString' or 'loadSBMLString' to correctly parse it.";
   fail_unless (string(getLastError()) == err);
@@ -284,7 +284,7 @@ END_TEST
 
 START_TEST (test_loadSBMLString)
 {
-  long ret = loadSBMLString("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sbml xmlns=\"http://www.sbml.org/sbml/level3/version1/core\" level=\"3\" version=\"1\">\n  <model id=\"__main\" name=\"__main\">\n    <listOfParameters>\n      <parameter id=\"a\" value=\"3\" constant=\"true\"/>\n    </listOfParameters>\n  </model>\n</sbml>\n");
+  long ret = loadSBMLString("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sbml xmlns=\"http://www.sbml.org/sbml/level3/version2/core\" level=\"3\" version=\"2\">\n  <model id=\"__main\" name=\"__main\">\n    <listOfParameters>\n      <parameter id=\"a\" value=\"3\" constant=\"true\"/>\n    </listOfParameters>\n  </model>\n</sbml>\n");
   char* model = getAntimonyString(NULL);
   fail_unless(string(model) == (string)"// Created by libAntimony " + LIBANTIMONY_VERSION_STRING + "\n// Variable initializations:\na = 3;\n\n// Other declarations:\nconst a;\n");
 
@@ -324,7 +324,7 @@ START_TEST (test_loadSBMLStringWithLocation)
   dir += "from-libsbml/";
   long ret = loadSBMLStringWithLocation("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
 "<!-- The file 'new_aggregate.xml' is actually in the subdirectory 'subdir', so you have to tell the converter to look there, or this model cannot be flattened.-->"
-"<sbml xmlns=\"http://www.sbml.org/sbml/level3/version1/core\" xmlns:comp=\"http://www.sbml.org/sbml/level3/version1/comp/version1\" level=\"3\" version=\"1\" comp:required=\"true\">"
+"<sbml xmlns=\"http://www.sbml.org/sbml/level3/version2/core\" xmlns:comp=\"http://www.sbml.org/sbml/level3/version1/comp/version1\" level=\"3\" version=\"2\" comp:required=\"true\">"
 "  <model>"
 "    <comp:listOfSubmodels>"
 "      <comp:submodel comp:id=\"A\" comp:modelRef=\"EM1\"/>"
@@ -676,7 +676,7 @@ START_TEST (test_dimensionless)
   setBareNumbersAreDimensionless(true);
 
   char* sbml = getSBMLString(NULL);
-  fail_unless(string(sbml) == "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sbml xmlns=\"http://www.sbml.org/sbml/level3/version1/core\" level=\"3\" version=\"1\">\n  <model metaid=\"__main\" id=\"__main\">\n    <listOfParameters>\n      <parameter id=\"a\" constant=\"true\"/>\n    </listOfParameters>\n    <listOfInitialAssignments>\n      <initialAssignment symbol=\"a\">\n        <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:sbml=\"http://www.sbml.org/sbml/level3/version1/core\">\n          <apply>\n            <plus/>\n            <cn sbml:units=\"dimensionless\" type=\"integer\"> 3 </cn>\n            <cn sbml:units=\"dimensionless\" type=\"integer\"> 2 </cn>\n          </apply>\n        </math>\n      </initialAssignment>\n    </listOfInitialAssignments>\n  </model>\n</sbml>\n");
+  fail_unless(string(sbml) == "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sbml xmlns=\"http://www.sbml.org/sbml/level3/version2/core\" level=\"3\" version=\"2\">\n  <model metaid=\"__main\" id=\"__main\">\n    <listOfParameters>\n      <parameter id=\"a\" constant=\"true\"/>\n    </listOfParameters>\n    <listOfInitialAssignments>\n      <initialAssignment symbol=\"a\">\n        <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:sbml=\"http://www.sbml.org/sbml/level3/version2/core\">\n          <apply>\n            <plus/>\n            <cn sbml:units=\"dimensionless\" type=\"integer\"> 3 </cn>\n            <cn sbml:units=\"dimensionless\" type=\"integer\"> 2 </cn>\n          </apply>\n        </math>\n      </initialAssignment>\n    </listOfInitialAssignments>\n  </model>\n</sbml>\n");
   setBareNumbersAreDimensionless(false);
 
   freeAll();
