@@ -40,6 +40,7 @@ void elideMetaIds(libsbml::SBMLDocument* doc);
 /// Same thing using sbml string as input / output
 std::string elideMetaIdsFromSBMLstring(std::string sbml);
 
+void unlistEmptyLists(libsbml::SBMLDocument* doc);
 
 constraint_type getConstraintTypeFrom(libsbml::ASTNodeType_t asttype);
 #ifdef LIBSBML_HAS_PACKAGE_FBC
