@@ -51,6 +51,7 @@ void compareFileHierarchy(const string& base)
   // fail if conversion was not valid
   fail_unless(result == LIBSBML_OPERATION_SUCCESS);
   elideMetaIds(doc);
+  unlistEmptyLists(doc);
   string sbmlFlat = writeSBMLToStdString(doc);
   string atosbml_nometa = elideMetaIdsFromSBMLstring(atosbml);
   fail_unless(atosbml_nometa == sbmlFlat);

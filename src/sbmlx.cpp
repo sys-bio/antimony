@@ -645,6 +645,27 @@ void elideMetaIds(SBMLDocument* doc)
   delete elts;
 }
 
+void unlistEmptyLists(SBMLDocument* doc)
+{
+    Model* model = doc->getModel();
+    model->getListOfCompartments()->setExplicitlyListed(false);
+    model->getListOfSpecies()->setExplicitlyListed(false);
+    model->getListOfReactions()->setExplicitlyListed(false);
+    model->getListOfParameters()->setExplicitlyListed(false);
+    model->getListOfFunctionDefinitions()->setExplicitlyListed(false);
+    model->getListOfUnitDefinitions()->setExplicitlyListed(false);
+    model->getListOfInitialAssignments()->setExplicitlyListed(false);
+    model->getListOfRules()->setExplicitlyListed(false);
+    model->getListOfConstraints()->setExplicitlyListed(false);
+    model->getListOfEvents()->setExplicitlyListed(false);
+    for (unsigned int r = 0; r < model->getNumReactions(); r++) {
+        Reaction* rxn = model->getReaction(r);
+        rxn->getListOfModifiers()->setExplicitlyListed(false);
+        rxn->getListOfProducts()->setExplicitlyListed(false);
+        rxn->getListOfReactants()->setExplicitlyListed(false);
+    }
+}
+
 std::string elideMetaIdsFromSBMLstring(std::string sbml)
 {
   SBMLReader reader;
