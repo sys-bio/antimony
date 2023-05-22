@@ -12,7 +12,7 @@ project(libantimony)
 #
 SET(LIBANTIMONY_VERSION_MAJOR 2)
 SET(LIBANTIMONY_VERSION_MINOR 13)
-SET(LIBANTIMONY_VERSION_PATCH ".2")
+SET(LIBANTIMONY_VERSION_PATCH ".3")
 SET(LIBANTIMONY_VERSION_RELEASE "")
 
 
@@ -404,9 +404,7 @@ if(WITH_CHECK)
               )
 
     if(NOT EXISTS "${LIBCHECK_INCLUDE_DIR}/check.h")
-        message(FATAL_ERROR
-"The include directory specified for the 'check' library appears to be
-invalid. It should contain the file check.h, but it does not.")
+        message(FATAL_ERROR "The 'check' include directory appears to be invalid. It should contain the file check.h, but it does not.")
     endif()
 
     if(${CMAKE_GENERATOR} MATCHES "Visual Studio 6" OR ${CMAKE_GENERATOR} MATCHES "Visual Studio 7")
@@ -866,7 +864,7 @@ if(NOT UNIX)
     endif(MSVC)
 
 
-endif(UNIX)
+endif(NOT UNIX)
 
 ###############################################################################
 #

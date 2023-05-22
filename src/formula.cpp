@@ -616,6 +616,11 @@ string Formula::ToDelimitedStringWithEllipses(string cc) const
     retval.replace(pos, 3, "||");
     pos = retval.find("| |", pos+2);
   }
+  pos = retval.find("-o");
+  while (pos != string::npos) {
+      retval.replace(pos, 2, "- o");
+      pos = retval.find("-o", pos + 2);
+  }
   return retval;
 }
 
@@ -1114,6 +1119,10 @@ bool Formula::IsValidObjectiveFunction(const ASTNode* astn) const
 void Formula::GetObjectivesFromAST(const ASTNode* astn, vector<pair<string, double> >& objectives) const
 {
   size_t numobjectives; //For the 'minus' case, below.
+  if (astn == NULL) {
+      //Probably should have been caught earlier, but at least we won't crash.
+      return;
+  }
   switch(astn->getType()) {
   case AST_NAME:
     //Just the name with a stoichiometry of 1

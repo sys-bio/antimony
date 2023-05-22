@@ -108,7 +108,7 @@ using namespace libsbml;
 %token  <num> NUM "number"
 %token  <word> AFTER "'after'"
 %token  <word> ANTWORD "element name"
-%token  <word> AT "'@' or 'at'"
+%token  <word> AT "'at'"
 %token  <word> BECOMESREV "->"
 %token  <word> BECOMESINH "-|"
 %token  <word> BECOMESMOD2 "-o"
@@ -864,7 +864,12 @@ int antimony_yylex(void)
     } else if (cc == '|') {
       return BECOMESINH;
     } else if (cc == 'o') {
-      return BECOMESMOD2;
+      char nextchar;
+      g_registry.input->get(nextchar);
+      g_registry.input->unget();
+      if (nextchar == ' ' || nextchar == ';') {
+        return BECOMESMOD2;
+      }
     }
     g_registry.input->unget();
     cc = '-';
@@ -999,9 +1004,9 @@ int antimony_yylex(void)
   }
 
   //Parse '@'
-  if (cc == '@') {
-    return AT;
-  }
+//  if (cc == '@') {
+//    return AT;
+//  }
 
   //This converts PC and Mac end-of-line characters to \n:
   if (cc == '\r') {

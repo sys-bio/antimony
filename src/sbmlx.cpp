@@ -278,6 +278,9 @@ void makeUnitlessNumbersDimensionless(ASTNode* node)
 
 void caratToPower(ASTNode* node)
 {
+  if (node == NULL) {
+    return;
+  }
   if (node->getType() == AST_POWER) {
     node->setType(AST_FUNCTION_POWER);
   }
@@ -526,6 +529,13 @@ bool FixName(string& name)
   , "laplace"
   , "lognormal"
   , "rayleigh"
+
+  , "length"
+  , "area"
+  , "volume"
+  , "substance"
+  , "extent"
+  , "time_unit"
   };
   for (size_t kw=0; kw<126; kw++) {
     if (CaselessStrCmp(false, name, keywords[kw])) {

@@ -166,10 +166,10 @@ stages:
           - script: |
               echo "cd to build dir $(BUILD_DIR)"
               cd $(BUILD_DIR)
-              cp $(DEPS_INSTALL_PREFIX)/bin/zlibd.dll Debug/
-              cp $(DEPS_INSTALL_PREFIX)/bin/zlibd.dll src/test/Debug/
-            condition: eq(variables.BuildType, 'Debug')
-            displayName: copy zlibd.dll to build directories
+              cp $(DEPS_INSTALL_PREFIX)/bin/zlib* $(BuildType)/
+              cp $(DEPS_INSTALL_PREFIX)/bin/zlib* src/test/$(BuildType)/
+            #condition: eq(variables.BuildType, 'Debug')
+            displayName: copy zlib library to build directories
           - script: |
               echo "cd to build dir $(BUILD_DIR)"
               cd $(BUILD_DIR)
@@ -181,10 +181,10 @@ stages:
               targetFolder: $(Build.ArtifactStagingDirectory)
             displayName: Copy to Staging Area
           - script: |
-              echo "cp $(BUILD_DIR)/bin/Debug/zlibd.dll $(Build.ArtifactStagingDirectory)/bin/"
-              cp $(BUILD_DIR)/Debug/zlibd.dll $(Build.ArtifactStagingDirectory)/antimony-$(Agent.OS)/bin/
-            condition: eq(variables.BuildType, 'Debug')
-            displayName: copy zlibd.dll to install
+              echo "cp $(BUILD_DIR)/bin/$(BuildType)/zlib* $(Build.ArtifactStagingDirectory)/bin/"
+              cp $(BUILD_DIR)/$(BuildType)/zlib* $(Build.ArtifactStagingDirectory)/antimony-$(Agent.OS)/bin/
+            #condition: eq(variables.BuildType, 'Debug')
+            displayName: copy zlib library to install
           - publish: $(Build.ArtifactStagingDirectory)
             artifact: antimony-Windows-$(BuildType)
             displayName: Publish
@@ -231,7 +231,7 @@ stages:
         displayName: MacBuildAntimonyCpp
         continueOnError: "false"
         pool:
-          vmImage: 'macOS-10.15'
+          vmImage: 'macOS-11'
         strategy:
           matrix:
             64-bit Mac Release:
@@ -423,8 +423,8 @@ stages:
         displayName: LinuxBuildAntimonyCpp
         continueOnError: "false"
         pool:
-          vmImage: 'ubuntu-18.04'
-        container: sysbiouw/roadrunner-manylinux2014-base:latest
+          vmImage: 'ubuntu-latest'
+        container: sysbiouw/roadrunner-manylinux2014:latest
         variables:
           CCACHE_DIR: '$(Pipeline.Workspace)/ccache'
           BUILD_DIRECTORY: '$(System.DefaultWorkingDirectory)/build'
@@ -516,7 +516,7 @@ stages:
               mkdir $(BUILD_DIR)
               echo "CD to build dir: $(BUILD_DIR)"
               cd $(BUILD_DIR)
-              cmake -DCMAKE_PREFIX_PATH=/usr/local/opt/qt@5/lib  -DLIBSBML_INSTALL_DIR=$(DEPS_INSTALL_PREFIX) -DWITH_LIBSBML_EXPAT=ON -DWITH_LIBSBML_LIBXML=OFF  -DLIBEXPAT_LIBRARY=${DEPS_INSTALL_PREFIX}/lib64/libexpat.a -DWITH_QTANTIMONY=OFF -DWITH_STATIC_SBML=ON -DCMAKE_INSTALL_PREFIX=$(INSTALL_DIR) -DCMAKE_BUILD_TYPE=$(BuildType) -DWITH_CHECK=OFF -DWITH_PYTHON=ON -DPython_ROOT_DIR=$(PythonRoot) ..
+              cmake -DCMAKE_PREFIX_PATH=/usr/local/opt/qt@5/lib  -DLIBSBML_INSTALL_DIR=$(DEPS_INSTALL_PREFIX) -DWITH_LIBSBML_EXPAT=ON -DWITH_LIBSBML_LIBXML=OFF  -DLIBEXPAT_LIBRARY=${DEPS_INSTALL_PREFIX}/lib64/libexpat.a -DWITH_QTANTIMONY=OFF -DWITH_STATIC_SBML=ON -DCMAKE_INSTALL_PREFIX=$(INSTALL_DIR) -DCMAKE_BUILD_TYPE=$(BuildType) -DWITH_CHECK=ON -DWITH_PYTHON=ON -DPython_ROOT_DIR=$(PythonRoot) ..
             displayName: Run CMake Configure Command
           - script: |
               echo "less -N $(BUILD_DIR)/source/CMakeFiles/antimony.dir/build.make"
