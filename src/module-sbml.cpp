@@ -2864,6 +2864,15 @@ void Module::FixNames(Model* model)
     , "notanumber"
     };
 
+    const char* units[] = {
+    "length"
+    , "area"
+    , "volume"
+    , "substance"
+    , "extent"
+    , "time_unit"
+    };
+
     //At some point, it would be nice to allow keywords that are functions as 
     // variable names, and visa versa.  But today is not that day.
     for (size_t kw = 0; kw < 21; kw++) {
@@ -2879,6 +2888,11 @@ void Module::FixNames(Model* model)
     for (size_t c = 0; c < 18; c++) {
         FixConstants(constants[c], model);
         FixFunctions(constants[c], model);
+    }
+
+    for (size_t u = 0; u < 6; u++) {
+        FixConstants(units[u], model);
+        FixFunctions(units[u], model);
     }
 
     FixUnitNames(model);

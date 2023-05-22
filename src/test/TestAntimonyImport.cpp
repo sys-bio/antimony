@@ -66,6 +66,12 @@ START_TEST(test_import_default_compartment)
 }
 END_TEST
 
+START_TEST(test_import_volume)
+{
+    compareFileImport("volume");
+}
+END_TEST
+
 
 
 
@@ -79,6 +85,7 @@ create_suite_Import (void)
   tcase_add_test(tcase, test_import_GAMMA);
   tcase_add_test(tcase, test_import_RateOf);
   tcase_add_test(tcase, test_import_same_unit_name);
+  tcase_add_test(tcase, test_import_volume);
 
   suite_add_tcase(suite, tcase);
 
