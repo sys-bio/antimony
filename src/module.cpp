@@ -14,6 +14,7 @@
 #include "sboTermWrapper.h"
 #include "typex.h"
 #include "unitdef.h"
+#include "stringx.h"
 #ifndef NCELLML
 #include <wchar.h>
 #include <CellMLBootstrap.hpp>
@@ -833,35 +834,49 @@ void Module::AddDefaultInitialValues()
 
 bool Module::ProcessCVTerm(Annotated* a, const string* qual, vector<string>* resources)
 {
-  if (qual && resources) {
-    // qual can be a model or biology qualifier
-    // is/identity is used by both - give priority to biology
-    // to eliminate guesswork explicitly use one of:
-    //   var_name model_entity_is     "resource"
-    //   var_name biologcal_entity_is "resource"
-    BiolQualifierType_t bq = DecodeBiolQualifier(*qual);
-    if (bq != BQB_UNKNOWN) {
-      a->AppendBiolQualifiers(bq, *resources);
-    } else {
-      // try a model qualifier
-      ModelQualifierType_t mq = DecodeModelQualifier(*qual);
-      if (mq != BQM_UNKNOWN) {
-        a->AppendModelQualifiers(mq, *resources);
-      } else {
+    if (qual && resources) {
+        // qual can be a model or biology qualifier
+        // is/identity is used by both - give priority to biology
+        // to eliminate guesswork explicitly use one of:
+        //   var_name model_entity_is     "resource"
+        //   var_name biologcal_entity_is "resource"
+        BiolQualifierType_t bq = DecodeBiolQualifier(*qual);
+        ModelQualifierType_t mq = DecodeModelQualifier(*qual);
         stringstream ss;
-        ss << "Unrecognized qualifier \"" << *qual << "\"";
-        g_registry.SetError(ss.str());
+        if (bq != BQB_UNKNOWN) {
+            a->AppendBiolQualifiers(bq, *resources);
+        }
+        else if (mq != BQM_UNKNOWN) {
+            a->AppendModelQualifiers(mq, *resources);
+        }
+        else if (CaselessStrCmp(true, *qual, "notes")) {
+            a->AppendNotes(*resources);
+        }
+        else if (CaselessStrCmp(true, *qual, "created")) {
+            if (resources->size() > 1) {
+                g_registry.SetError("Cannot set mulitple 'created' dates.");
+                return true;
+            }
+            a->SetCreated((*resources)[0]);
+        }
+        else if (CaselessStrCmp(true, *qual, "modified")) {
+            a->AppendModified(resources);
+        }
+        else {
+            ss << "Unrecognized qualifier \"" << *qual << "\"";
+            g_registry.SetError(ss.str());
+            delete resources;
+            return true;
+        }
+
+        delete resources;
+        return false;
+    }
+    else {
+        g_registry.SetError("CV qualifier encountered but not enough arguments - pass qualifier and at least one resource");
         delete resources;
         return true;
-      }
     }
-    delete resources;
-    return false;
-  } else {
-    g_registry.SetError("CV qualifier encountered but not enough arguments - pass qualifier and at least one resource");
-    delete resources;
-    return true;
-  }
 }
 
 void PrintVarMap(map<vector<string>, Variable* > varmap)
@@ -2155,76 +2170,118 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
 
   //Deleted elements:
   if (delnames.size()) {
-    retval += "\n" + indent + "// Deleted elements from submodels:\n";
-    retval += ListIn80Cols("delete", delnames, indent);
+      retval += "\n" + indent + "// Deleted elements from submodels:\n";
+      retval += ListIn80Cols("delete", delnames, indent);
   }
 
   if (DNAnames.size() || operatornames.size() || genenames.size() || varnames.size() || constnames.size() || innames.size()) {
-    retval += "\n" + indent + "// Other declarations:\n";
-    retval += ListIn80Cols("DNA", DNAnames, indent);
-    retval += ListIn80Cols("operator", operatornames, indent);
-    retval += ListIn80Cols("gene", genenames, indent);
-    retval += ListIn80Cols("var", varnames, indent);
-    retval += ListIn80Cols("const", constnames, indent);
-    retval += ListIn80Cols("", innames, indent);
+      retval += "\n" + indent + "// Other declarations:\n";
+      retval += ListIn80Cols("DNA", DNAnames, indent);
+      retval += ListIn80Cols("operator", operatornames, indent);
+      retval += ListIn80Cols("gene", genenames, indent);
+      retval += ListIn80Cols("var", varnames, indent);
+      retval += ListIn80Cols("const", constnames, indent);
+      retval += ListIn80Cols("", innames, indent);
   }
 
   //Units
   firstone = true;
-  for (size_t vnum=0; vnum<m_variables.size(); vnum++) {
-    const Variable* var = m_variables[vnum];
-    if (var->IsPointer()) continue;
-    if (var->GetType()==varUnitDefinition) {
-      const UnitDef* ud = var->GetUnitDef();
-      string unitdef = ud->ToStringDelimitedBy(cc);
-      if (OrigIsAlreadyUnitDef(var, origmap, unitdef)) continue;
-      UnitDef* canonical = ud->GetCanonical();
-      if (canonical!=NULL && canonical->IsOnlyCanonicalKind()) {
-        delete canonical;
-        continue;
+  for (size_t vnum = 0; vnum < m_variables.size(); vnum++) {
+      const Variable* var = m_variables[vnum];
+      if (var->IsPointer()) continue;
+      if (var->GetType() == varUnitDefinition) {
+          const UnitDef* ud = var->GetUnitDef();
+          string unitdef = ud->ToStringDelimitedBy(cc);
+          if (OrigIsAlreadyUnitDef(var, origmap, unitdef)) continue;
+          UnitDef* canonical = ud->GetCanonical();
+          if (canonical != NULL && canonical->IsOnlyCanonicalKind()) {
+              delete canonical;
+              continue;
+          }
+          delete canonical;
+          if (firstone) {
+              retval += "\n" + indent + "// Unit definitions:\n";
+              firstone = false;
+          }
+          retval += indent + "unit " + var->GetNameDelimitedBy(cc) + " = " + unitdef + ";\n";
       }
-      delete canonical;
-      if (firstone) {
-        retval += "\n" + indent + "// Unit definitions:\n";
-        firstone = false;
-      }
-      retval += indent + "unit " + var->GetNameDelimitedBy(cc) + " = " + unitdef + ";\n";
-    }
   }
 
   //Display names
   bool anydisplay = false;
-  for (size_t var=0; var<m_uniquevars.size(); var++) {
-    if (OrigDisplayNameIsAlready(m_uniquevars[var], origmap)) continue;
-    if (anydisplay == false) {
-      retval += "\n" + indent + "// Display Names:\n";
-      anydisplay = true;
-    }
-    retval += indent + m_uniquevars[var]->GetNameDelimitedBy(cc) + " is \"" + m_uniquevars[var]->GetDisplayName() + "\";\n";
+  for (size_t var = 0; var < m_uniquevars.size(); var++) {
+      if (OrigDisplayNameIsAlready(m_uniquevars[var], origmap)) continue;
+      if (anydisplay == false) {
+          retval += "\n" + indent + "// Display Names:\n";
+          anydisplay = true;
+      }
+      retval += indent + m_uniquevars[var]->GetNameDelimitedBy(cc) + " is \"" + m_uniquevars[var]->GetDisplayName() + "\";\n";
   }
 
   if (enableAnnotations) {
-    // SBO terms
-    bool anysboterm = false;
-    for (size_t var=0; var<m_uniquevars.size(); var++) {
-      string sboterms = m_uniquevars[var]->CreateSBOTermsAntimonySyntax(m_uniquevars[var]->GetNameDelimitedBy(cc),indent, "sboTerm");
-      if (anysboterm == false && sboterms.size()>0) {
-        retval += "\n" + indent + "// SBO terms:\n";
-        anysboterm = true;
+      // Notes
+      bool anynotes = false;
+      for (size_t var = 0; var < m_uniquevars.size(); var++) {
+          if (m_uniquevars[var]->hasNotes()) {
+              if (anynotes == false) {
+                  retval += "\n" + indent + "// Notes:\n";
+                  anynotes = true;
+              }
+              string notes = m_uniquevars[var]->getNotesString();
+              retval += indent + m_uniquevars[var]->GetNameDelimitedBy(cc) + " notes ";
+              if (notes.find_first_of('\n') != string::npos ||
+                  notes.find_first_of('"') != string::npos) {
+                  retval += "\"\"\"\n";
+                  retval += notes;
+                  retval += "\n\"\"\"\n";
+              }
+              else {
+                  trim(notes);
+                  retval += "\"" + notes + "\"\n";
+              }
+          }
       }
-      retval += sboterms;
-    }
 
-    // CV terms
-    bool anycvterm = false;
-    for (size_t var=0; var<m_uniquevars.size(); var++) {
-      string cvterms = m_uniquevars[var]->CreateCVTermsAntimonySyntax(m_uniquevars[var]->GetNameDelimitedBy(cc),indent);
-      if (anycvterm == false && cvterms.size()>0) {
-        retval += "\n" + indent + "// CV terms:\n";
-        anycvterm = true;
+      // SBO terms
+      bool anysboterm = false;
+      for (size_t var = 0; var < m_uniquevars.size(); var++) {
+          string sboterms = m_uniquevars[var]->CreateSBOTermsAntimonySyntax(m_uniquevars[var]->GetNameDelimitedBy(cc), indent, "sboTerm");
+          if (anysboterm == false && sboterms.size() > 0) {
+              retval += "\n" + indent + "// SBO terms:\n";
+              anysboterm = true;
+          }
+          retval += sboterms;
       }
-      retval += cvterms;
-    }
+
+      // CV terms
+      bool anycvterm = false;
+      for (size_t var = 0; var < m_uniquevars.size(); var++) {
+          string cvterms = m_uniquevars[var]->CreateCVTermsAntimonySyntax(m_uniquevars[var]->GetNameDelimitedBy(cc), indent);
+          if (anycvterm == false && cvterms.size() > 0) {
+              retval += "\n" + indent + "// CV terms:\n";
+              anycvterm = true;
+          }
+          retval += cvterms;
+      }
+
+      // Dates and creator
+      string dates_plus = "";
+      for (size_t v = 0; v < m_uniquevars.size(); v++) {
+          Variable* var = m_uniquevars[v];
+          if (var->isSetCreated()) {
+              dates_plus += indent + var->GetNameDelimitedBy(cc) + " created \"" + var->getCreatedString() + "\"\n";
+          }
+          if (var->isSetModifiedTimes()) {
+              string added = indent + var->GetNameDelimitedBy(cc) + " modified ";
+              string bigindent(added.length(), ' ');
+              added += var->getModifiedString(bigindent);
+              dates_plus += added;
+          }
+      }
+      if (!dates_plus.empty()) {
+          retval += "\n" + indent + "// Other annotations:\n";
+          retval += dates_plus;
+      }
   }
 
   // Uncertainty parameters
@@ -2247,6 +2304,21 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
   }
 
   if (enableAnnotations) {
+    // Notes
+    string notes = getNotesString();
+    if (!notes.empty()) {
+        retval += m_modulename + " notes ";
+        if (notes.find_first_of('\n') != string::npos ||
+            notes.find_first_of('"') != string::npos) {
+            retval += "\"\"\"\n";
+            retval += notes;
+            retval += "\n\"\"\"\n";
+        }
+        else {
+            trim(notes);
+            retval += "\"" + notes + "\"\n";
+        }
+    }
     // SBO terms for model
     string sboterm = CreateSBOTermsAntimonySyntax(m_modulename,"", "sboTerm");
     if (sboterm.size()>0)
@@ -2256,6 +2328,17 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
     string cvterms = CreateCVTermsAntimonySyntax(m_modulename,"");
     if (cvterms.size()>0)
       retval += "\n"+cvterms;
+
+    // Dates and creator
+    if (isSetCreated()) {
+        retval += m_modulename + " created \"" + getCreatedString() + "\"\n";
+    }
+    if (isSetModifiedTimes()) {
+        string added = m_modulename + " modified ";
+        string bigindent(added.length(), ' ');
+        added += getModifiedString(bigindent);
+        retval += added;
+    }
   }
 
   return retval;

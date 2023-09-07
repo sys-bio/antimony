@@ -17,20 +17,30 @@ typedef std::vector< std::pair<libsbml::ModelQualifierType_t, std::vector<std::s
 ModelQualsType m_model_quals;
 typedef std::vector< std::pair<libsbml::BiolQualifierType_t,  std::vector<std::string> > > BiolQualsType;
 BiolQualsType m_biol_quals;
+std::vector < std::string> m_notes;
+libsbml::Date m_created;
+std::vector<libsbml::Date> m_modified;
+libsbml::ModelHistory m_history;
+int m_sboTerm;
 
 // convert the URIs in resources to a vector of strings
 std::vector<std::string> ResourcesToVector(const libsbml::CVTerm* t) const;
 
-int m_sboTerm;
-
 public:
-  Annotated() : m_sboTerm(0) {};
+  Annotated();
   ~Annotated() {};
 
   virtual bool Synchronize(Variable * clone, const Variable * conversionFactor);
 
 #ifndef NSBML
   virtual bool TransferAnnotationTo(libsbml::SBase* sbmlobj, std::string metaid) const;
+  std::string getNotesString() const;
+  bool hasNotes() const;
+  bool isSetCreated() const;
+  std::string getCreatedString() const;
+  bool isSetModifiedTimes() const;
+  std::string getModifiedString(std::string indent) const;
+
   void ReadAnnotationFrom(const libsbml::SBase* sbmlobj);
   void ClearAnnotation();
   bool HasAnnotation() const;
@@ -48,6 +58,14 @@ public:
   void AppendModelQualifiers(const libsbml::ModelQualifierType_t qual, const std::vector<std::string>& resources);
   // appends a biological qualifier to the end of the cv list
   void AppendBiolQualifiers(const libsbml::BiolQualifierType_t qual, const std::vector<std::string>& resources);
+  // appends notes (just strings)
+  void AppendNotes(const std::vector<std::string>& resources);
+  void SetCreated(libsbml::Date* date);
+  bool SetCreated(const std::string& date);
+  void AppendModified(std::vector<std::string>* dates);
+  void AppendModified(libsbml::Date* date);
+  bool AppendModified(std::string* datestr);
+  void ClearModified(libsbml::Date* date);
   // return true if there are CV terms stored
   bool HasCVTerms() const;
   // read the CV terms from an SBML object and add them to this

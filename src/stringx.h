@@ -36,5 +36,14 @@ bool CaselessStrCmp(bool caseless, const std::string& lhs, const std::string& rh
 std::string escapeDoubleQuotes(std::string s);
 // JKM performs a git diff of the two strings (used in debugging, not in production code)
 void gitdiffit(const std::string& before, const std::string& after);
+//From https://stackoverflow.com/questions/216823/how-to-trim-an-stdstring
+// trim from start (in place)
+void ltrim(std::string& s);
+// trim from end (in place)
+void rtrim(std::string& s);
+// trim from both ends (in place)
+void trim(std::string& s);
+
+
 
 #endif //STRINGX_h

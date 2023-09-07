@@ -163,6 +163,7 @@ input:          /* empty */
         |       input modulecvterm {}
         |       input functioncvterm {}
         |       input toplevel_sbo {}
+        |       input annotationBlock {}
         |       input error {YYABORT;}
         |       input ERROR {YYABORT;}
         ;
@@ -322,14 +323,6 @@ reaction:       varmaybein ':' reactantList reactionDivider reactantList ';' for
                     if ($1->SetCompartment($7)) YYABORT;
                   }
                 }
-//        |       reactionDivider reactantList ';' formula maybein
-//                {
-//                  Variable* var = g_registry.AddNewReactionToCurrent($1, $4);
-//                  if (var == NULL) YYABORT;
-//                  if ($5 != NULL) {
-//                    if (var->SetCompartment($5)) YYABORT;
-//                  }
-//                }
         ;
 
 reactantList:   variable {$$ = g_registry.NewBlankReactantList(); if($$->AddReactant($1)) YYABORT; }
@@ -346,7 +339,6 @@ reactionDivider:
         |       '-' '(' {$$ = rdInfluences;}
         |       BECOMESMOD2 {$$ = rdInfluences;}
         |       BECOMESIRREV {$$ = rdBecomesIrreversibly;}
-//         |       '-' ANTWORD {if (*$2 != "o") {g_registry.SetError("'-" + *$2 + "' is not a valid set of characters to demark reactions.  Try '->' for reactions, and '-|', '-o', and '-(' for interactions."); YYABORT;} $$ = rdActivates;}
         ;
 
 formula:        /* empty */ {$$ = g_registry.NewBlankFormula(); }
@@ -362,12 +354,6 @@ formula:        /* empty */ {$$ = g_registry.NewBlankFormula(); }
         |       formula '=' '=' {$$ = $1; $1->AddMathThing('='); $1->AddMathThing('='); }
         |       formula '&' '&' {$$ = $1; $1->AddMathThing('&'); $1->AddMathThing('&'); }
         |       formula '|' '|' {$$ = $1; $1->AddMathThing('|'); $1->AddMathThing('|'); }
-//        |       formula '{' unitdef '}'
-//                {
-//                  //Need to create a variable to be this unit definition, or find one that already has this unit definition, and then use that name.
-//                  $$ = $1;
-//                  $$->AddVariable($3);
-//                }
         ;
 
 commaformula:   formula {$$ = $1;}
@@ -435,7 +421,6 @@ varinitialize:  specinit { }
         |       dnainit { }
         |       geneinit { }
         |       operatorinit { }
-//        |       eventinit { }
         |       compartmentinit { }
         |       varconstinit { }
         ;
@@ -575,6 +560,14 @@ maxormin:       MAXIMIZEWORD {$$ = true;}
 stringlist:     TEXTSTRING { $$ = new std::vector<std::string>(); $$->push_back(*($1)); } // need to free $1?
         |       stringlist ',' TEXTSTRING { $$ = $1; $$->push_back(*$3); } // need to free $3?
         |       stringlist ',' '\n' TEXTSTRING { $$ = $1; $$->push_back(*$4); } // eat newlines
+
+annotationBlock:    ANTWORD MODNAME {if (g_registry.SetCurrentModuleIf($2, $1)) YYABORT;} annotations END {g_registry.RevertToPreviousModule();}
+        ;
+
+annotations:    /* empty */ {}
+        |       ANTWORD ':' stringlist {g_registry.ProcessGlobalCVTerm(&(g_registry.CurrentModuleName()), $1, $3);}
+//        |       ANTWORD ':' NUM {g_registry.CurrentModule()->SetAnnotation($1, $3);}
+        ;
 
 // JKM cvterm accepts multiple URIs in the stringlist
 cvterm:         variable ANTWORD stringlist {if (g_registry.CurrentModule()->ProcessCVTerm($1,$2,$3)) YYABORT;}
@@ -984,6 +977,35 @@ int antimony_yylex(void)
   //Parse text strings
   if (cc == '"') {
     string textstring;
+    // First check if we're a three-quote block.
+    if (g_registry.input->peek() == '"') {
+      g_registry.input->get(cc);
+      if (g_registry.input->peek() == '"') {
+        g_registry.input->get(cc);
+        g_registry.input->get(cc);
+        while (cc != '"' && !g_registry.input->eof()) {
+          textstring += cc;
+          g_registry.input->get(cc);
+          if (cc=='"') {
+            g_registry.input->get(cc);
+            if (cc=='"') {
+              g_registry.input->get(cc);
+              if (cc=='"') {
+                antimony_yylval.word = g_registry.AddWord(textstring);
+                return TEXTSTRING;
+              }
+              else {
+                textstring += '"';
+                textstring += '"';
+              }
+            }
+            else {
+              textstring += '"';
+            }
+          }
+        }
+      }
+    }
     long ccount = 0;
     g_registry.input->get(cc);
     while (cc != '"' && cc != '\r' && cc != '\n' && !g_registry.input->eof()) {

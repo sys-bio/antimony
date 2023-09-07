@@ -117,6 +117,8 @@ public:
   //Modules
   bool NewCurrentModule(const std::string* name, const std::string* displayname=NULL, bool ismain=false);
   Module* CurrentModule();
+  std::string CurrentModuleName();
+  bool SetCurrentModuleIf(const std::string* modname, const std::string* annotation);
   void RevertToPreviousModule();
 
   //Functions

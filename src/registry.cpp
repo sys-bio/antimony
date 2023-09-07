@@ -924,6 +924,21 @@ Module* Registry::CurrentModule()
   return GetModule(m_currentModules.back());
 }
 
+string Registry::CurrentModuleName()
+{
+    assert(m_currentModules.size() > 0);
+    return m_currentModules.back();
+}
+
+bool Registry::SetCurrentModuleIf(const string* modname, const string* annotation)
+{
+    if (*annotation != "annotate") {
+        g_registry.SetError("Invalid syntax: '" + *annotation + " " + *modname + "'.  If you are trying to annotate a model, try 'annotate " + *modname + "'.");
+        return true;
+    }
+    m_currentModules.push_back(*modname);
+}
+
 void Registry::RevertToPreviousModule()
 {
   m_currentModules.pop_back();
@@ -1446,22 +1461,36 @@ bool Registry::ProcessGlobalCVTerm(const string* name, const string* qual, vecto
     //   var_name model_entity_is     "resource"
     //   var_name biologcal_entity_is "resource"
     BiolQualifierType_t bq = module->DecodeBiolQualifier(*qual);
+    ModelQualifierType_t mq = module->DecodeModelQualifier(*qual);
     if (bq != BQB_UNKNOWN) {
-      module->AppendBiolQualifiers(bq, *resources);
-    } 
-    else {
-      // try a model qualifier
-      ModelQualifierType_t mq = module->DecodeModelQualifier(*qual);
-      if (mq != BQM_UNKNOWN) {
+        module->AppendBiolQualifiers(bq, *resources);
+    }
+    else if (mq != BQM_UNKNOWN) {
         module->AppendModelQualifiers(mq, *resources);
-      }
-      else {
+    }
+    else if (CaselessStrCmp(true, *qual, "notes")) {
+        module->AppendNotes(*resources);
+    }
+    else if (CaselessStrCmp(true, *qual, "created")) {
+        if (resources->size() > 1) {
+            g_registry.SetError("Cannot set mulitple 'created' dates.");
+            return true;
+        }
+        bool ret = module->SetCreated((*resources)[0]);
+        if (ret) {
+            g_registry.SetError("Invalid date format '" + (*resources)[0] + "': the format must match 'YYYY-MM-DDThh:mm:ssTZD' where TZD is either Z or +/ -HH:MM");
+            return true;
+        }
+    }
+    else if (CaselessStrCmp(true, *qual, "modified")) {
+        module->AppendModified(resources);
+    }
+    else {
         stringstream ss;
         ss << "Unrecognized qualifier \"" << *qual << "\"";
         g_registry.SetError(ss.str());
         delete resources;
         return true;
-      }
     }
     delete resources;
     return false;
