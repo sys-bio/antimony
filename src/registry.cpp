@@ -3,6 +3,7 @@
 #include <string>
 #include <cstdlib>
 #include <sys/stat.h>
+#include <regex>
 
 #include "formula.h"
 #include "module.h"
@@ -1462,6 +1463,8 @@ bool Registry::ProcessGlobalCVTerm(const string* name, const string* qual, vecto
     //   var_name biologcal_entity_is "resource"
     BiolQualifierType_t bq = module->DecodeBiolQualifier(*qual);
     ModelQualifierType_t mq = module->DecodeModelQualifier(*qual);
+    int creator_number = 0;
+    string creator_substr = "";
     if (bq != BQB_UNKNOWN) {
         module->AppendBiolQualifiers(bq, *resources);
     }
@@ -1493,6 +1496,7 @@ bool Registry::ProcessGlobalCVTerm(const string* name, const string* qual, vecto
         return true;
     }
     delete resources;
+    module->TransferAnnotationToModel(module->GetModelIfCreated());
     return false;
   } 
   else {
@@ -1500,6 +1504,62 @@ bool Registry::ProcessGlobalCVTerm(const string* name, const string* qual, vecto
     delete resources;
     return true;
   }
+}
+
+bool Registry::ProcessCreatorTerm(Annotated* a, const string* creator, const string* cterm, vector<string>* resources)
+{
+    int creator_number = 0;
+    if (CheckCreatorString(*creator, creator_number)) {
+        return true;
+    }
+    if (a->addCreatorInfo(creator_number, *cterm, *resources)) {
+        return true;
+    }
+    return false;
+}
+
+bool Registry::ProcessGlobalCreatorTerm(const string* name, const string* creator, const string* cterm, vector<string>* resources)
+{
+    if (name && resources) {
+        Module* module = GetModule(*name);
+        if (!module) {
+            stringstream ss;
+            ss << "Cannot find module for \"" << *name << "\"";
+            SetError(ss.str());
+            delete resources;
+            return true;
+        }
+        int creator_number = 0;
+        if (CheckCreatorString(*creator, creator_number)) {
+            return true;
+        }
+        if (module->addCreatorInfo(creator_number, *cterm, *resources)) {
+            return true;
+        }
+        module->TransferAnnotationToModel(module->GetModelIfCreated());
+        return false;
+    }
+    else {
+        SetError("Global CV qualifier encountered but not enough arguments - pass qualifier and at least one resource");
+        delete resources;
+        return true;
+    }
+}
+
+bool Registry::CheckCreatorString(const string& qualifier, int& creator_number)
+{
+    if (qualifier == "creator") {
+        creator_number = 1;
+        return false;
+    }
+    regex creatorNum("^creator([0-9]+)");
+    std::smatch m;
+    if (regex_search(qualifier, m, creatorNum)) {
+        creator_number = stoi(m[1].str());
+        return false;
+    }
+    g_registry.SetError("Unknown qualifier string '" + qualifier + "'.  The only legal qualifiers of the form 'x.y' start with 'creator#' where '#' is an optional number (for when there are multiple creators).");
+    return true;
 }
 
 void Registry::FreeAll()

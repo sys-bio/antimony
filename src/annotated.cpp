@@ -2,6 +2,7 @@
 #include "registry.h"
 #include "stringx.h"
 #include "sbml/annotation/Date.h"
+#include <string>
 
 using namespace std;
 using namespace libsbml;
@@ -21,26 +22,32 @@ Annotated::Annotated()
     m_created.setYear(1000);
 }
 
+bool Annotated::TransferAnnotationToModel(Model* model)
+{
+    if (model == NULL) {
+        return true;
+    }
+    return TransferAnnotationTo(model, model->getMetaId());
+}
+
 bool Annotated::TransferAnnotationTo(SBase* sbmlobj, string metaid) const
 {
   if (m_sboTerm != 0) {
     sbmlobj->setSBOTerm(m_sboTerm);
   }
-  if (!m_metaid.empty() || HasCVTerms()) {
-    if (!m_metaid.empty()) {
+  if (!m_metaid.empty()) {
+      metaid = m_metaid;
       sbmlobj->setMetaId(m_metaid);
-    }
-    else {
-      sbmlobj->setMetaId(metaid);
-    }
   }
   if (HasCVTerms()) {
+    sbmlobj->setMetaId(metaid);
     // convert the stored list of CV terms to an annotation node
     if (BuildCVTerms(sbmlobj)) {
       return true;
     }
   }
   if (!m_notes.empty()) {
+      sbmlobj->setMetaId(metaid);
       string notes = getNotesString();
       int ret = sbmlobj->setNotes(notes, false);
       if (ret != libsbml::LIBSBML_OPERATION_SUCCESS) {
@@ -51,10 +58,17 @@ bool Annotated::TransferAnnotationTo(SBase* sbmlobj, string metaid) const
           assert(ret == libsbml::LIBSBML_OPERATION_SUCCESS);
       }
   }
+  ModelHistory* mh = const_cast<ModelHistory*>(&m_history);
+  if (mh->getNumCreators() > 0) {
+      sbmlobj->setMetaId(metaid);
+      sbmlobj->setModelHistory(mh);
+  }
   if (const_cast<Date*>(&m_created)->getYear() != 1000) {
+      sbmlobj->setMetaId(metaid);
       sbmlobj->setCreatedDate(const_cast<Date*>(&m_created));
   }
   for (size_t i = 0; i < m_modified.size(); i++) {
+      sbmlobj->setMetaId(metaid);
       sbmlobj->addModifiedDate(const_cast<Date*>(&m_modified[i]));
   }
   return false;
@@ -70,6 +84,32 @@ string Annotated::getNotesString() const
         notes += m_notes[n];
     }
     return notes;
+}
+
+string Annotated::GetCreatorStringFor(const string& id) const
+{
+    string ret = "";
+    ModelHistory* mh = const_cast<ModelHistory*>(&m_history);
+    for (size_t v = 0; v < mh->getNumCreators(); v++) {
+        string left = id + " creator" + to_string(v+1) + ".";
+        ModelCreator* mc = mh->getCreator(v);
+        if (mc->isSetName()) {
+            ret += left + "name \"" + mc->getName() + "\"\n";
+        }
+        if (mc->isSetGivenName()) {
+            ret += left + "givenName \"" + mc->getGivenName() + "\"\n";
+        }
+        if (mc->isSetFamilyName()) {
+            ret += left + "familyName \"" + mc->getFamilyName() + "\"\n";
+        }
+        if (mc->isSetOrganisation()) {
+            ret += left + "organization \"" + mc->getOrganisation() + "\"\n";
+        }
+        if (mc->isSetEmail()) {
+            ret += left + "email \"" + mc->getEmail() + "\"\n";
+        }
+    }
+    return ret;
 }
 
 bool Annotated::hasNotes() const
@@ -101,7 +141,7 @@ string Annotated::getModifiedString(string indent) const
         }
         ret += "\"" + const_cast<Date*>(&m_modified[i])->getDateAsString() + "\"";
     }
-    return ret;
+    return ret + "\n";
 }
 
 void Annotated::ReadAnnotationFrom(const SBase* sbmlobj)
@@ -119,8 +159,9 @@ void Annotated::ReadAnnotationFrom(const SBase* sbmlobj)
       size_t end_p = notes.rfind("</p>");
       size_t end_body = notes.rfind("/body>");
       if (xmlns > 5 && xmlns < 30) {
-          if (end_p == notes.size() - 63) {
-              notes = notes.substr(xmlns + 30, notes.size() - xmlns - end_p - 30);
+          if (end_p == notes.size() - 13) {
+              notes = notes.substr(xmlns + 37, end_p - xmlns - 37);
+              ltrim(notes);
           }
           else if (end_body > notes.size() - 20  &&
               end_body < notes.size()-5) {
@@ -129,6 +170,9 @@ void Annotated::ReadAnnotationFrom(const SBase* sbmlobj)
       }
       rtrim(notes);
       m_notes.push_back(notes);
+  }
+  if (sbmlobj->isSetModelHistory()) {
+      m_history = *sbmlobj->getModelHistory();
   }
 }
 
@@ -268,6 +312,68 @@ void Annotated::AppendNotes(const std::vector<std::string>& resources)
             m_notes.push_back(resources[r]);
         }
     }
+}
+
+bool Annotated::addCreatorInfo(int creator_number, const string& creator_substr, const vector<string>& resources)
+{
+    ModelCreator* creator = NULL;
+    if (creator_number <= m_history.getNumCreators()) {
+        creator = m_history.getCreator(creator_number - 1);
+    }
+    else if (creator_number == m_history.getNumCreators() + 1) {
+        ModelCreator newcreator;
+        newcreator.setName(" ");
+        m_history.addCreator(&newcreator);
+        creator = m_history.getCreator(creator_number - 1);
+    }
+    else {
+        g_registry.SetError("Unable to set 'creator" + to_string(creator_number) + "." + creator_substr + "' because no creator" + to_string(creator_number-1) + " exists.");
+        return true;
+    }
+    if (CaselessStrCmp(true, creator_substr, "name")) {
+        if (resources.size() > 1) {
+            g_registry.SetError("Unable to set multiple names for creator" + to_string(creator_number));
+            return true;
+        }
+        creator->setName(resources[0]);
+    }
+    else if (CaselessStrCmp(true, creator_substr, "givenName")) {
+        if (resources.size() > 1) {
+            g_registry.SetError("Unable to set multiple given names for creator" + to_string(creator_number));
+            return true;
+        }
+        creator->setGivenName(resources[0]);
+        creator->setUseSingleName(false);
+    }
+    else if (CaselessStrCmp(true, creator_substr, "familyName")) {
+        if (resources.size() > 1) {
+            g_registry.SetError("Unable to set multiple family names for creator" + to_string(creator_number));
+            return true;
+        }
+        creator->setFamilyName(resources[0]);
+        creator->setUseSingleName(false);
+    }
+    else if (CaselessStrCmp(true, creator_substr, "organization") || 
+        CaselessStrCmp(true, creator_substr, "organisation") ||
+        CaselessStrCmp(true, creator_substr, "org")) {
+        if (resources.size() > 1) {
+            g_registry.SetError("Unable to set multiple organizations for creator" + to_string(creator_number));
+            return true;
+        }
+        creator->setOrganisation(resources[0]);
+    }
+    else if (CaselessStrCmp(true, creator_substr, "email")) {
+        if (resources.size() > 1) {
+            g_registry.SetError("Unable to set multiple emails for creator" + to_string(creator_number));
+            return true;
+        }
+        creator->setEmail(resources[0]);
+    }
+    else {
+        g_registry.SetError("Unrecognized creator attribute '" + creator_substr + "'.  Valid options are creator.name, creator.givenName, creator.familyName, creator.organization, and creator.email.");
+        return true;
+    }
+    return false;
 }
 
 void Annotated::SetCreated(Date* date)
@@ -468,6 +574,12 @@ bool Annotated::Synchronize(Variable * clone, const Variable * conversionFactor)
   if (!m_notes.empty()) {
       if (clone->m_notes.empty()) {
           clone->m_notes = m_notes;
+      }
+  }
+
+  if (!(m_history.getNumCreators() > 0)) {
+      if (clone->m_history.getNumCreators() == 0) {
+          clone->m_history = m_history;
       }
   }
 

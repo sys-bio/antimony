@@ -571,7 +571,7 @@ annotations:    /* empty */ {}
 
 // JKM cvterm accepts multiple URIs in the stringlist
 cvterm:         variable ANTWORD stringlist {if (g_registry.CurrentModule()->ProcessCVTerm($1,$2,$3)) YYABORT;}
-
+        |       variable ANTWORD '.' ANTWORD stringlist {if (g_registry.ProcessCreatorTerm($1, $2, $4, $5)) YYABORT;}
 // JKM setting an SBO term for a module (outside the body of the module)
 toplevel_sbo:     MODNAME '.' ANTWORD '=' NUM
                   { Module* module = g_registry.GetModule(*$1);
@@ -603,6 +603,7 @@ functionname:   FUNCTION IS TEXTSTRING lineend
 
 // JKM for parsing cv terms for modules and functions
 modulecvterm:   MODNAME ANTWORD stringlist lineend {if (g_registry.ProcessGlobalCVTerm($1,$2,$3)) YYABORT;}
+        |       MODNAME ANTWORD '.' ANTWORD stringlist lineend {if (g_registry.ProcessGlobalCreatorTerm($1, $2, $4, $5)) YYABORT;}
 functioncvterm: FUNCTION ANTWORD stringlist lineend {if (g_registry.ProcessGlobalCVTerm($1,$2,$3)) YYABORT;}
 
 %%

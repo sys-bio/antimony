@@ -5,6 +5,7 @@
 #include <sstream>
 #include <ostream>
 #include <set>
+#include <string>
 
 #include "module.h"
 #include "variable.h"
@@ -2277,6 +2278,7 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
               added += var->getModifiedString(bigindent);
               dates_plus += added;
           }
+          dates_plus += var->GetCreatorStringFor(indent + var->GetNameDelimitedBy(cc));
       }
       if (!dates_plus.empty()) {
           retval += "\n" + indent + "// Other annotations:\n";
@@ -2339,6 +2341,7 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
         added += getModifiedString(bigindent);
         retval += added;
     }
+    retval += GetCreatorStringFor(m_modulename);
   }
 
   return retval;

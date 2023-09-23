@@ -199,6 +199,12 @@ public:
   // CV terms
   bool ProcessGlobalCVTerm(const std::string* name, const std::string* qual, std::vector<std::string>* resources);
 
+  bool ProcessCreatorTerm(Annotated* a, const std::string* creator, const std::string* cterm, std::vector<std::string>* resources);
+
+  bool ProcessGlobalCreatorTerm(const std::string* name, const std::string* creator, const std::string* cterm, std::vector<std::string>* resources);
+
+  bool CheckCreatorString(const std::string& qualifier, int& creator_number);
+
   //Keeping track of malloc'd stuff so we can free it ourselves if need be.
   std::vector<char*>    m_charstars;
   std::vector<char**>   m_charstarstars;

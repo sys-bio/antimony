@@ -1615,6 +1615,11 @@ const SBMLDocument* Module::GetSBML(bool comp)
   return &m_sbml;
 }
 
+Model* Module::GetModelIfCreated()
+{
+    return m_sbml.getModel();
+}
+
 void Module::CreateSBMLModel(bool comp)
 {
 #ifndef USE_COMP
