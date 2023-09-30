@@ -565,7 +565,7 @@ annotationBlock:    ANTWORD MODNAME {if (g_registry.SetCurrentModuleIf($2, $1)) 
         ;
 
 annotations:    /* empty */ {}
-        |       ANTWORD ':' stringlist {g_registry.ProcessGlobalCVTerm(&(g_registry.CurrentModuleName()), $1, $3);}
+        |       ANTWORD ':' stringlist {string modname = g_registry.CurrentModuleName(); g_registry.ProcessGlobalCVTerm(&modname, $1, $3);}
 //        |       ANTWORD ':' NUM {g_registry.CurrentModule()->SetAnnotation($1, $3);}
         ;
 

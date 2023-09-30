@@ -3433,7 +3433,7 @@ yyreduce:
 
   case 219: /* annotations: "element name" ':' stringlist  */
 #line 568 "antimony.ypp"
-                                       {g_registry.ProcessGlobalCVTerm(&(g_registry.CurrentModuleName()), (yyvsp[-2].word), (yyvsp[0].stringlist));}
+                                       {string modname = g_registry.CurrentModuleName(); g_registry.ProcessGlobalCVTerm(&modname, (yyvsp[-2].word), (yyvsp[0].stringlist));}
 #line 3438 "antimony.tab.cpp"
     break;
 
