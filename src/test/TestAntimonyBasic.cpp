@@ -457,6 +457,13 @@ START_TEST (test_global_units_txt)
 }
 END_TEST
 
+START_TEST(test_autopromoted_units)
+{
+    compareFileTranslation("autopromoted_units");
+    compareStringTranslation("model foo(p);unit mM = 10e-3 meter;p = 1 mM;end;F : foo(P)", "autopromoted_units.xml");
+}
+END_TEST
+
 START_TEST (test_parameter_inf)
 {
   compareFileTranslation("parameter_inf");
@@ -644,6 +651,7 @@ create_suite_Basic (void)
   tcase_add_test( tcase, test_compound_units4_txt);
   tcase_add_test( tcase, test_global_units);
   tcase_add_test( tcase, test_global_units_txt);
+  tcase_add_test( tcase, test_autopromoted_units);
   tcase_add_test( tcase, test_parameter_inf);
   tcase_add_test( tcase, test_parameter_inf_txt);
   tcase_add_test( tcase, test_parameter_neginf);

@@ -724,8 +724,8 @@ Variable* Module::AddOrFindUnitDef(const UnitDef& unitdef)
     }
   }
   //Need a new variable;
-  string udname = unitdef.GetNameDelimitedBy(".");
-  Variable* var = AddOrFindVariable(&udname); //Since this unitdef was never a part of a variable, it will always have a simple name.
+  string udname = unitdef.GetNameDelimitedBy("_");
+  Variable* var = AddOrFindVariable(&udname); //Units that need to be created because of submodel variable promotion will have submodel-style names.
   if (var->SetUnitDef(&unitdef)) return NULL;
   return var;
 }
@@ -1248,6 +1248,28 @@ bool Module::Finalize()
     }
   }
 #endif
+  //Need to check for the units of promoted parameters whose units might now live in submodels, which would be illegal SBML.
+  for (size_t var = 0; var < m_variables.size(); var++) {
+      Variable* v = m_variables[var];
+      Variable* unitvar = v->GetUnitVariable();
+      if (unitvar != NULL) {
+          if (v->GetName().size() < unitvar->GetName().size()) {
+              //We need to make a local unit
+              UnitDef ud(*unitvar->GetUnitDef());
+              vector<string> ud_name = ud.GetName();
+              while (ud_name.size() > 1) {
+                  ud_name.erase(ud_name.begin());
+              }
+              ud.SetName(ud_name);
+
+              Variable* newunit = AddOrFindUnitDef(ud);
+              v->SetUnit(newunit);
+              if (!ud.IsOnlyCanonicalKind()) {
+                  unitvar->Synchronize(newunit, NULL);
+              }
+          }
+      }
+  }
 
   //Phase 5: Store a list of unique variable names.
   set<Variable*> uniquevarset;  //Can't have m_uniquevars be a set because order matters (bah).

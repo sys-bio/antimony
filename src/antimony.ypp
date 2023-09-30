@@ -1006,6 +1006,11 @@ int antimony_yylex(void)
           }
         }
       }
+      else {
+        // Just two quotes (i.e. empty string)
+        antimony_yylval.word = g_registry.AddWord("");
+        return TEXTSTRING;
+      }
     }
     long ccount = 0;
     g_registry.input->get(cc);
