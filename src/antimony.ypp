@@ -171,21 +171,6 @@ input:          /* empty */
 import:         IMPORT TEXTSTRING { if (g_registry.OpenFile(*($2))==0) YYABORT;}
         ;
 
-        // causes too much trouble
-        // JKM set module name in declaration
-// module:         MODULE maybemain ANTWORD IS TEXTSTRING {g_registry.NewCurrentModule($3, $5, $2);} '(' variableexportlist ')' lineend modulebody END
-//                 {
-//                   $$ = g_registry.CurrentModule();
-//                   if ($$->Finalize()) YYABORT;
-//                   g_registry.RevertToPreviousModule();
-//                 }
-//         // JKM set module name in declaration
-//         |       MODULE maybemain ANTWORD IS TEXTSTRING {g_registry.NewCurrentModule($3, $5, $2);} lineend modulebody END
-//                 {
-//                   $$ = g_registry.CurrentModule();
-//                   if ($$->Finalize()) YYABORT;
-//                   g_registry.RevertToPreviousModule();
-//                 }
 module:         MODULE maybemain ANTWORD {g_registry.NewCurrentModule($3, NULL, $2);} '(' variableexportlist ')' modulebody END
                 {
                   $$ = g_registry.CurrentModule();
@@ -257,7 +242,23 @@ maybein:        /* empty */ {$$ = NULL;}
         ;
 
 modulebody:     modulepart {}
+        |       moduleannotation {}
         |       modulebody modulepart {}
+        |       modulebody moduleannotation{}
+        ;
+
+moduleannotation: MODULE ANTWORD stringlist lineend {if (g_registry.ProcessGlobalCVTerm(&g_registry.CurrentModuleName(),$2,$3)) YYABORT;}
+        |       MODULE ANTWORD '.' ANTWORD stringlist lineend {if (g_registry.ProcessGlobalCreatorTerm(&g_registry.CurrentModuleName(),$2, $4, $5)) YYABORT;}
+        |       MODULE '.' ANTWORD '=' NUM
+                  { Module* module = g_registry.CurrentModule();
+                    if (module && $3 && CaselessStrCmp(true, *($3), "sboTerm")) {
+                      module->SetSBOTerm(lround($5));
+                    }
+                    else {
+                      g_registry.SetError("Invalid syntax 'model." + *($3) + "'. The only thing that can be set on the model this way is 'sboTerm'.");
+                      YYABORT;
+                    }
+                  }
         ;
 
 modulepart:     reaction lineend {}
@@ -572,6 +573,7 @@ annotations:    /* empty */ {}
 // JKM cvterm accepts multiple URIs in the stringlist
 cvterm:         variable ANTWORD stringlist {if (g_registry.CurrentModule()->ProcessCVTerm($1,$2,$3)) YYABORT;}
         |       variable ANTWORD '.' ANTWORD stringlist {if (g_registry.ProcessCreatorTerm($1, $2, $4, $5)) YYABORT;}
+
 // JKM setting an SBO term for a module (outside the body of the module)
 toplevel_sbo:     MODNAME '.' ANTWORD '=' NUM
                   { Module* module = g_registry.GetModule(*$1);

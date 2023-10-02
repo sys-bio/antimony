@@ -276,6 +276,12 @@ START_TEST(test_created_model)
 }
 END_TEST
 
+START_TEST(test_created_model_internal)
+{
+    compareStringTranslation("model foo(); a=3; model created \"2019-07-29T10:53:09Z\"; end", "created_model.xml");
+}
+END_TEST
+
 START_TEST(test_created_element)
 {
     compareFileTranslation("created_element");
@@ -287,6 +293,12 @@ START_TEST(test_notes_model_noxml)
 {
     compareFileTranslation("notes_model_noxml");
     compareStringTranslation("model foo(); a=3; end; foo notes \"Just text, no XML\"", "notes_model_noxml.xml");
+}
+END_TEST
+
+START_TEST(test_notes_model_noxml_internal)
+{
+    compareStringTranslation("model foo(); a=3; model notes \"Just text, no XML\"; end", "notes_model_noxml.xml");
 }
 END_TEST
 
@@ -303,6 +315,12 @@ START_TEST(test_notes_model_xml)
 }
 END_TEST
 
+START_TEST(test_notes_model_xml_internal)
+{
+    compareFileTranslation("notes_model_xml_internal");
+}
+END_TEST
+
 START_TEST(test_notes_element_xml)
 {
     compareFileTranslation("notes_element_xml");
@@ -313,6 +331,12 @@ START_TEST(test_modified_model)
 {
     compareFileTranslation("modified_model");
     compareStringTranslation("model foo(); a=3; end; foo modified \"2019-07-29T10:53:09Z\"", "modified_model.xml");
+}
+END_TEST
+
+START_TEST(test_modified_model_internal)
+{
+    compareStringTranslation("model foo(); a=3; model modified \"2019-07-29T10:53:09Z\"; end", "modified_model.xml");
 }
 END_TEST
 
@@ -330,6 +354,12 @@ START_TEST(test_creator_one_model)
 }
 END_TEST
 
+START_TEST(test_creator_one_model_internal)
+{
+    compareStringTranslation("model foo(); a=3; model creator1.givenName \"Lucian\"; model creator1.familyName \"Smith\"; model creator1.organization \"UW\"; model creator1.email \"lpsmith@uw.edu\"; end", "creator_one_model.xml");
+}
+END_TEST
+
 START_TEST(test_creator_one_element)
 {
     compareFileTranslation("creator_one_element");
@@ -344,10 +374,22 @@ START_TEST(test_creator_blank_model)
 }
 END_TEST
 
+START_TEST(test_creator_blank_model_internal)
+{
+    compareStringTranslation("model foo(); a=3; model creator.givenName \"Lucian\"; model creator.familyName \"Smith\"; model creator.organization \"UW\"; model creator.email \"lpsmith@uw.edu\"; end", "creator_blank_model.xml");
+}
+END_TEST
+
 START_TEST(test_creator_two_model)
 {
     compareFileTranslation("creator_two_model");
     compareStringTranslation("model foo(); a=3; end; foo creator.givenName \"Lucian\"; foo creator.familyName \"Smith\"; foo creator.organization \"UW\"; foo creator.email \"lpsmith@uw.edu\";foo creator2.name \"George Holtzour\"; foo creator2.organization \"Family lore\"; foo creator2.email \"george@theholtz.net\"", "creator_two_model.xml");
+}
+END_TEST
+
+START_TEST(test_creator_two_model_internal)
+{
+    compareStringTranslation("model foo(); a=3; model creator.givenName \"Lucian\"; model creator.familyName \"Smith\"; model creator.organization \"UW\"; model creator.email \"lpsmith@uw.edu\";model creator2.name \"George Holtzour\"; model creator2.organization \"Family lore\"; model creator2.email \"george@theholtz.net\"; end", "creator_two_model.xml");
 }
 END_TEST
 
@@ -361,14 +403,19 @@ create_suite_CVTerms (void)
   TCase *tcase = tcase_create("Antimony CV Terms");
 
   tcase_add_test(tcase, test_created_model);
+  tcase_add_test(tcase, test_created_model_internal);
   tcase_add_test(tcase, test_created_element);
   tcase_add_test(tcase, test_notes_model_noxml);
+  tcase_add_test(tcase, test_notes_model_noxml_internal);
   tcase_add_test(tcase, test_notes_element_noxml);
   tcase_add_test(tcase, test_notes_model_xml);
+  tcase_add_test(tcase, test_notes_model_xml_internal);
   tcase_add_test(tcase, test_notes_element_xml);
   tcase_add_test(tcase, test_modified_model);
+  tcase_add_test(tcase, test_modified_model_internal);
   tcase_add_test(tcase, test_modified_element);
   tcase_add_test(tcase, test_creator_one_model);
+  tcase_add_test(tcase, test_creator_one_model_internal);
   tcase_add_test(tcase, test_creator_one_element);
 
   tcase_add_test(tcase, test_identity);

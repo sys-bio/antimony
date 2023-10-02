@@ -2242,29 +2242,6 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
   }
 
   if (enableAnnotations) {
-      // Notes
-      bool anynotes = false;
-      for (size_t var = 0; var < m_uniquevars.size(); var++) {
-          if (m_uniquevars[var]->hasNotes()) {
-              if (anynotes == false) {
-                  retval += "\n" + indent + "// Notes:\n";
-                  anynotes = true;
-              }
-              string notes = m_uniquevars[var]->getNotesString();
-              retval += indent + m_uniquevars[var]->GetNameDelimitedBy(cc) + " notes ";
-              if (notes.find_first_of('\n') != string::npos ||
-                  notes.find_first_of('"') != string::npos) {
-                  retval += "\"\"\"\n";
-                  retval += notes;
-                  retval += "\n\"\"\"\n";
-              }
-              else {
-                  trim(notes);
-                  retval += "\"" + notes + "\"\n";
-              }
-          }
-      }
-
       // SBO terms
       bool anysboterm = false;
       for (size_t var = 0; var < m_uniquevars.size(); var++) {
@@ -2275,6 +2252,10 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
           }
           retval += sboterms;
       }
+      // SBO terms for model
+      string sboterm = CreateSBOTermsAntimonySyntax("model", indent, "sboTerm");
+      if (sboterm.size() > 0)
+          retval += "\n" + sboterm;
 
       // CV terms
       bool anycvterm = false;
@@ -2286,6 +2267,10 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
           }
           retval += cvterms;
       }
+      // CV terms for model
+      string cvterms = CreateCVTermsAntimonySyntax("model", indent);
+      if (cvterms.size() > 0)
+          retval += "\n" + cvterms;
 
       // Dates and creator
       string dates_plus = "";
@@ -2306,6 +2291,58 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
           retval += "\n" + indent + "// Other annotations:\n";
           retval += dates_plus;
       }
+      //Dates and creator for model itself
+      if (isSetCreated()) {
+          retval += indent + "model created \"" + getCreatedString() + "\"\n";
+      }
+      if (isSetModifiedTimes()) {
+          string added = indent + "model modified ";
+          string bigindent(added.length(), ' ');
+          added += getModifiedString(bigindent);
+          retval += added;
+      }
+      retval += GetCreatorStringFor(indent + "model");
+
+      // Notes
+      bool anynotes = false;
+      //First check for notes from the model itself:
+      string notes = getNotesString();
+      if (!notes.empty()) {
+          retval += "\n" + indent + "// Notes:\n";
+          anynotes = true;
+          retval += indent + "model notes ";
+          if (notes.find_first_of('\n') != string::npos ||
+              notes.find_first_of('"') != string::npos) {
+              retval += "\"\"\"\n";
+              retval += notes;
+              retval += "\n\"\"\"\n";
+          }
+          else {
+              trim(notes);
+              retval += "\"" + notes + "\"\n";
+          }
+      }
+
+      for (size_t var = 0; var < m_uniquevars.size(); var++) {
+          if (m_uniquevars[var]->hasNotes()) {
+              if (anynotes == false) {
+                  retval += "\n" + indent + "// Notes:\n";
+                  anynotes = true;
+              }
+              string notes = m_uniquevars[var]->getNotesString();
+              retval += indent + m_uniquevars[var]->GetNameDelimitedBy(cc) + " notes ";
+              if (notes.find_first_of('\n') != string::npos ||
+                  notes.find_first_of('"') != string::npos) {
+                  retval += "\"\"\"\n";
+                  retval += notes;
+                  retval += "\n\"\"\"\n";
+              }
+              else {
+                  trim(notes);
+                  retval += "\"" + notes + "\"\n";
+              }
+          }
+      }
   }
 
   // Uncertainty parameters
@@ -2325,45 +2362,6 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
     if (HasDisplayName()) {
       retval += "\n" + m_modulename + " is \"" + GetDisplayName() + "\"\n";
     }
-  }
-
-  if (enableAnnotations) {
-    // Notes
-    string notes = getNotesString();
-    if (!notes.empty()) {
-        retval += m_modulename + " notes ";
-        if (notes.find_first_of('\n') != string::npos ||
-            notes.find_first_of('"') != string::npos) {
-            retval += "\"\"\"\n";
-            retval += notes;
-            retval += "\n\"\"\"\n";
-        }
-        else {
-            trim(notes);
-            retval += "\"" + notes + "\"\n";
-        }
-    }
-    // SBO terms for model
-    string sboterm = CreateSBOTermsAntimonySyntax(m_modulename,"", "sboTerm");
-    if (sboterm.size()>0)
-      retval += "\n"+sboterm;
-
-    // CV terms for model
-    string cvterms = CreateCVTermsAntimonySyntax(m_modulename,"");
-    if (cvterms.size()>0)
-      retval += "\n"+cvterms;
-
-    // Dates and creator
-    if (isSetCreated()) {
-        retval += m_modulename + " created \"" + getCreatedString() + "\"\n";
-    }
-    if (isSetModifiedTimes()) {
-        string added = m_modulename + " modified ";
-        string bigindent(added.length(), ' ');
-        added += getModifiedString(bigindent);
-        retval += added;
-    }
-    retval += GetCreatorStringFor(m_modulename);
   }
 
   return retval;
