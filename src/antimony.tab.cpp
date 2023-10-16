@@ -75,7 +75,7 @@
 #define yychar          antimony_yychar
 
 /* First part of user prologue.  */
-#line 28 "antimony.ypp"
+#line 32 "antimony.ypp"
 
   //#define YYSTYPE double
 #include <cassert>
@@ -208,7 +208,7 @@ extern int antimony_yydebug;
 #if ! defined ANTIMONY_YYSTYPE && ! defined ANTIMONY_YYSTYPE_IS_DECLARED
 union ANTIMONY_YYSTYPE
 {
-#line 63 "antimony.ypp"
+#line 67 "antimony.ypp"
 
   char character;
   const string* word;
@@ -779,30 +779,30 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,   156,   156,   157,   158,   159,   160,   161,   162,   163,
-     164,   165,   166,   167,   168,   171,   174,   174,   180,   180,
-     186,   187,   190,   191,   194,   194,   195,   196,   199,   200,
-     201,   211,   212,   213,   216,   217,   223,   226,   229,   230,
-     233,   234,   235,   236,   237,   240,   241,   244,   245,   246,
-     247,   250,   251,   252,   264,   265,   266,   267,   268,   269,
-     270,   271,   272,   273,   274,   275,   276,   279,   287,   295,
-     303,   311,   319,   329,   330,   331,   332,   333,   334,   338,
-     339,   340,   341,   342,   345,   346,   347,   348,   349,   350,
-     351,   352,   353,   354,   355,   356,   357,   360,   361,   364,
-     365,   366,   367,   368,   369,   370,   373,   374,   375,   376,
-     377,   380,   381,   382,   385,   386,   387,   388,   389,   390,
-     391,   392,   393,   397,   397,   398,   398,   402,   403,   404,
-     405,   406,   410,   411,   415,   419,   420,   421,   422,   423,
-     424,   425,   426,   429,   430,   431,   432,   433,   434,   435,
-     436,   439,   440,   441,   442,   445,   446,   447,   448,   451,
-     452,   453,   454,   457,   458,   459,   460,   463,   464,   465,
-     466,   470,   471,   472,   473,   476,   477,   478,   481,   484,
-     487,   488,   491,   492,   493,   494,   495,   498,   499,   502,
-     502,   503,   503,   504,   504,   505,   505,   508,   509,   512,
-     513,   520,   521,   522,   523,   524,   527,   528,   531,   546,
-     547,   548,   549,   550,   551,   554,   557,   558,   561,   562,
-     563,   565,   565,   568,   569,   574,   575,   578,   589,   601,
-     603,   607,   608,   609
+       0,   160,   160,   161,   162,   163,   164,   165,   166,   167,
+     168,   169,   170,   171,   172,   175,   178,   178,   184,   184,
+     190,   191,   194,   195,   198,   198,   199,   200,   203,   204,
+     205,   215,   216,   217,   220,   221,   227,   230,   233,   234,
+     237,   238,   239,   240,   241,   244,   245,   248,   249,   250,
+     251,   254,   255,   256,   268,   269,   270,   271,   272,   273,
+     274,   275,   276,   277,   278,   279,   280,   283,   291,   299,
+     307,   315,   323,   333,   334,   335,   336,   337,   338,   342,
+     343,   344,   345,   346,   349,   350,   351,   352,   353,   354,
+     355,   356,   357,   358,   359,   360,   361,   364,   365,   368,
+     369,   370,   371,   372,   373,   374,   377,   378,   379,   380,
+     381,   384,   385,   386,   389,   390,   391,   392,   393,   394,
+     395,   396,   397,   401,   401,   402,   402,   406,   407,   408,
+     409,   410,   414,   415,   419,   423,   424,   425,   426,   427,
+     428,   429,   430,   433,   434,   435,   436,   437,   438,   439,
+     440,   443,   444,   445,   446,   449,   450,   451,   452,   455,
+     456,   457,   458,   461,   462,   463,   464,   467,   468,   469,
+     470,   474,   475,   476,   477,   480,   481,   482,   485,   488,
+     491,   492,   495,   496,   497,   498,   499,   502,   503,   506,
+     506,   507,   507,   508,   508,   509,   509,   512,   513,   516,
+     517,   524,   525,   526,   527,   528,   531,   532,   535,   550,
+     551,   552,   553,   554,   555,   558,   561,   562,   565,   566,
+     567,   569,   569,   572,   573,   578,   579,   582,   593,   605,
+     607,   611,   612,   613
 };
 #endif
 
@@ -2072,91 +2072,91 @@ yyreduce:
   switch (yyn)
     {
   case 3: /* input: input import  */
-#line 157 "antimony.ypp"
+#line 161 "antimony.ypp"
                              {}
 #line 2078 "antimony.tab.cpp"
     break;
 
   case 4: /* input: input module  */
-#line 158 "antimony.ypp"
+#line 162 "antimony.ypp"
                              { /*cout << endl << $2->ToString() << endl << endl;*/ }
 #line 2084 "antimony.tab.cpp"
     break;
 
   case 5: /* input: input modulepart  */
-#line 159 "antimony.ypp"
+#line 163 "antimony.ypp"
                                  {}
 #line 2090 "antimony.tab.cpp"
     break;
 
   case 6: /* input: input function  */
-#line 160 "antimony.ypp"
+#line 164 "antimony.ypp"
                                {}
 #line 2096 "antimony.tab.cpp"
     break;
 
   case 7: /* input: input modulename  */
-#line 161 "antimony.ypp"
+#line 165 "antimony.ypp"
                                  {}
 #line 2102 "antimony.tab.cpp"
     break;
 
   case 8: /* input: input functionname  */
-#line 162 "antimony.ypp"
+#line 166 "antimony.ypp"
                                    {}
 #line 2108 "antimony.tab.cpp"
     break;
 
   case 9: /* input: input modulecvterm  */
-#line 163 "antimony.ypp"
+#line 167 "antimony.ypp"
                                    {}
 #line 2114 "antimony.tab.cpp"
     break;
 
   case 10: /* input: input functioncvterm  */
-#line 164 "antimony.ypp"
+#line 168 "antimony.ypp"
                                      {}
 #line 2120 "antimony.tab.cpp"
     break;
 
   case 11: /* input: input toplevel_sbo  */
-#line 165 "antimony.ypp"
+#line 169 "antimony.ypp"
                                    {}
 #line 2126 "antimony.tab.cpp"
     break;
 
   case 12: /* input: input annotationBlock  */
-#line 166 "antimony.ypp"
+#line 170 "antimony.ypp"
                                       {}
 #line 2132 "antimony.tab.cpp"
     break;
 
   case 13: /* input: input error  */
-#line 167 "antimony.ypp"
+#line 171 "antimony.ypp"
                             {YYABORT;}
 #line 2138 "antimony.tab.cpp"
     break;
 
   case 14: /* input: input "an error"  */
-#line 168 "antimony.ypp"
+#line 172 "antimony.ypp"
                             {YYABORT;}
 #line 2144 "antimony.tab.cpp"
     break;
 
   case 15: /* import: "'import'" "text string"  */
-#line 171 "antimony.ypp"
+#line 175 "antimony.ypp"
                                   { if (g_registry.OpenFile(*((yyvsp[0].word)))==0) YYABORT;}
 #line 2150 "antimony.tab.cpp"
     break;
 
   case 16: /* $@1: %empty  */
-#line 174 "antimony.ypp"
+#line 178 "antimony.ypp"
                                          {g_registry.NewCurrentModule((yyvsp[0].word), NULL, (yyvsp[-1].maybemain));}
 #line 2156 "antimony.tab.cpp"
     break;
 
   case 17: /* module: "'model' or 'module'" maybemain "element name" $@1 '(' variableexportlist ')' modulebody "'end'"  */
-#line 175 "antimony.ypp"
+#line 179 "antimony.ypp"
                 {
                   (yyval.module) = g_registry.CurrentModule();
                   if ((yyval.module)->Finalize()) YYABORT;
@@ -2166,13 +2166,13 @@ yyreduce:
     break;
 
   case 18: /* $@2: %empty  */
-#line 180 "antimony.ypp"
+#line 184 "antimony.ypp"
                                          {g_registry.NewCurrentModule((yyvsp[0].word), NULL, (yyvsp[-1].maybemain));}
 #line 2172 "antimony.tab.cpp"
     break;
 
   case 19: /* module: "'model' or 'module'" maybemain "element name" $@2 modulebody "'end'"  */
-#line 181 "antimony.ypp"
+#line 185 "antimony.ypp"
                 {
                   (yyval.module) = g_registry.CurrentModule();
                   if ((yyval.module)->Finalize()) YYABORT;
@@ -2182,97 +2182,97 @@ yyreduce:
     break;
 
   case 20: /* module: "'model' or 'module'" "name of an existing module"  */
-#line 186 "antimony.ypp"
+#line 190 "antimony.ypp"
                                {g_registry.SetError("module '" + *((yyvsp[0].word)) + "' already defined."); YYABORT;}
 #line 2188 "antimony.tab.cpp"
     break;
 
   case 21: /* module: "'model' or 'module'" "name of an existing function"  */
-#line 187 "antimony.ypp"
+#line 191 "antimony.ypp"
                                 {g_registry.SetError("Cannot define '" + *((yyvsp[0].word)) + "' as a module because it is already a defined function."); YYABORT;}
 #line 2194 "antimony.tab.cpp"
     break;
 
   case 22: /* maybemain: %empty  */
-#line 190 "antimony.ypp"
+#line 194 "antimony.ypp"
                             {(yyval.maybemain) = false;}
 #line 2200 "antimony.tab.cpp"
     break;
 
   case 23: /* maybemain: '*'  */
-#line 191 "antimony.ypp"
+#line 195 "antimony.ypp"
                     {(yyval.maybemain) = true;}
 #line 2206 "antimony.tab.cpp"
     break;
 
   case 24: /* $@3: %empty  */
-#line 194 "antimony.ypp"
+#line 198 "antimony.ypp"
                                      {g_registry.NewUserFunction((yyvsp[0].word));}
 #line 2212 "antimony.tab.cpp"
     break;
 
   case 25: /* function: "'function'" "element name" $@3 '(' variableexportlist ')' spacedformula "'end'"  */
-#line 194 "antimony.ypp"
+#line 198 "antimony.ypp"
                                                                                                                     {if (g_registry.SetUserFunction((yyvsp[-1].formula))) YYABORT;}
 #line 2218 "antimony.tab.cpp"
     break;
 
   case 26: /* function: "'function'" "name of an existing module"  */
-#line 195 "antimony.ypp"
+#line 199 "antimony.ypp"
                                      {g_registry.SetError("Cannot use '" + *((yyvsp[0].word)) +"' as a function name because it is already the name of a module."); YYABORT;}
 #line 2224 "antimony.tab.cpp"
     break;
 
   case 27: /* function: "'function'" "name of an existing function"  */
-#line 196 "antimony.ypp"
+#line 200 "antimony.ypp"
                                       {g_registry.SetError("Cannot define '" + *((yyvsp[0].word)) + "' as a new function because it is already a defined function."); YYABORT;}
 #line 2230 "antimony.tab.cpp"
     break;
 
   case 28: /* spacedformula: formula  */
-#line 199 "antimony.ypp"
+#line 203 "antimony.ypp"
                         {(yyval.formula) = (yyvsp[0].formula);}
 #line 2236 "antimony.tab.cpp"
     break;
 
   case 29: /* spacedformula: lineend spacedformula  */
-#line 200 "antimony.ypp"
+#line 204 "antimony.ypp"
                                       {(yyval.formula) = (yyvsp[0].formula);}
 #line 2242 "antimony.tab.cpp"
     break;
 
   case 30: /* spacedformula: spacedformula lineend  */
-#line 201 "antimony.ypp"
+#line 205 "antimony.ypp"
                                       {(yyval.formula) = (yyvsp[-1].formula);}
 #line 2248 "antimony.tab.cpp"
     break;
 
   case 31: /* variableexportlist: %empty  */
-#line 211 "antimony.ypp"
+#line 215 "antimony.ypp"
                             {}
 #line 2254 "antimony.tab.cpp"
     break;
 
   case 32: /* variableexportlist: variable  */
-#line 212 "antimony.ypp"
+#line 216 "antimony.ypp"
                          {if (g_registry.AddVariableToCurrentExportList((yyvsp[0].variable))) YYABORT; }
 #line 2260 "antimony.tab.cpp"
     break;
 
   case 33: /* variableexportlist: variableexportlist ',' variable  */
-#line 213 "antimony.ypp"
+#line 217 "antimony.ypp"
                                                 { if (g_registry.AddVariableToCurrentExportList((yyvsp[0].variable))) YYABORT; }
 #line 2266 "antimony.tab.cpp"
     break;
 
   case 34: /* variable: "element name"  */
-#line 216 "antimony.ypp"
+#line 220 "antimony.ypp"
                         {(yyval.variable) = g_registry.AddVariableToCurrent((yyvsp[0].word)); }
 #line 2272 "antimony.tab.cpp"
     break;
 
   case 35: /* variable: variable '.' "element name"  */
-#line 217 "antimony.ypp"
+#line 221 "antimony.ypp"
                                      {(yyval.variable) = (yyvsp[-2].variable)->GetSubVariable((yyvsp[0].word));
                   if ((yyval.variable) == NULL) {
                     g_registry.SetError("'" + *((yyvsp[0].word)) + "' is not a subvariable of '" + (yyvsp[-2].variable)->GetNameDelimitedBy(".") + "'.");
@@ -2283,109 +2283,109 @@ yyreduce:
     break;
 
   case 36: /* variable: '$' variable  */
-#line 223 "antimony.ypp"
+#line 227 "antimony.ypp"
                              {(yyval.variable) = (yyvsp[0].variable); if ((yyval.variable)->SetIsConst(true)) YYABORT;}
 #line 2289 "antimony.tab.cpp"
     break;
 
   case 37: /* variablein: variable "'in'" variable  */
-#line 226 "antimony.ypp"
+#line 230 "antimony.ypp"
                                          {if ((yyvsp[-2].variable)->SetCompartment((yyvsp[0].variable))) YYABORT; (yyval.variable) = (yyvsp[-2].variable);}
 #line 2295 "antimony.tab.cpp"
     break;
 
   case 38: /* varmaybein: variable  */
-#line 229 "antimony.ypp"
+#line 233 "antimony.ypp"
                          {(yyval.variable) = (yyvsp[0].variable);}
 #line 2301 "antimony.tab.cpp"
     break;
 
   case 39: /* varmaybein: variablein  */
-#line 230 "antimony.ypp"
+#line 234 "antimony.ypp"
                            {(yyval.variable) = (yyvsp[0].variable);}
 #line 2307 "antimony.tab.cpp"
     break;
 
   case 40: /* varmaybeis: varmaybein  */
-#line 233 "antimony.ypp"
+#line 237 "antimony.ypp"
                            {(yyval.variable) = (yyvsp[0].variable);}
 #line 2313 "antimony.tab.cpp"
     break;
 
   case 41: /* varmaybeis: varmaybein '=' formula  */
-#line 234 "antimony.ypp"
+#line 238 "antimony.ypp"
                                        {(yyval.variable) = (yyvsp[-2].variable); if ((yyvsp[-2].variable)->SetFormula((yyvsp[0].formula))) YYABORT; }
 #line 2319 "antimony.tab.cpp"
     break;
 
   case 42: /* varmaybeis: varmaybein ':' '=' formula  */
-#line 235 "antimony.ypp"
+#line 239 "antimony.ypp"
                                            {(yyval.variable) = (yyvsp[-3].variable); if ((yyvsp[-3].variable)->SetAssignmentRule((yyvsp[0].formula))) YYABORT; }
 #line 2325 "antimony.tab.cpp"
     break;
 
   case 43: /* varmaybeis: varmaybein '\'' '=' formula  */
-#line 236 "antimony.ypp"
+#line 240 "antimony.ypp"
                                             {(yyval.variable) = (yyvsp[-3].variable); if ((yyvsp[-3].variable)->SetRateRule((yyvsp[0].formula))) YYABORT; }
 #line 2331 "antimony.tab.cpp"
     break;
 
   case 44: /* varmaybeis: varmaybein "'has'" unitdef  */
-#line 237 "antimony.ypp"
+#line 241 "antimony.ypp"
                                            {(yyval.variable) = (yyvsp[-2].variable); if ((yyvsp[-2].variable)->SetUnit((yyvsp[0].variable))) YYABORT; }
 #line 2337 "antimony.tab.cpp"
     break;
 
   case 45: /* maybein: %empty  */
-#line 240 "antimony.ypp"
+#line 244 "antimony.ypp"
                             {(yyval.variable) = NULL;}
 #line 2343 "antimony.tab.cpp"
     break;
 
   case 46: /* maybein: "'in'" variable  */
-#line 241 "antimony.ypp"
+#line 245 "antimony.ypp"
                                 {(yyval.variable) = (yyvsp[0].variable);}
 #line 2349 "antimony.tab.cpp"
     break;
 
   case 47: /* modulebody: modulepart  */
-#line 244 "antimony.ypp"
+#line 248 "antimony.ypp"
                            {}
 #line 2355 "antimony.tab.cpp"
     break;
 
   case 48: /* modulebody: moduleannotation  */
-#line 245 "antimony.ypp"
+#line 249 "antimony.ypp"
                                  {}
 #line 2361 "antimony.tab.cpp"
     break;
 
   case 49: /* modulebody: modulebody modulepart  */
-#line 246 "antimony.ypp"
+#line 250 "antimony.ypp"
                                       {}
 #line 2367 "antimony.tab.cpp"
     break;
 
   case 50: /* modulebody: modulebody moduleannotation  */
-#line 247 "antimony.ypp"
+#line 251 "antimony.ypp"
                                            {}
 #line 2373 "antimony.tab.cpp"
     break;
 
   case 51: /* moduleannotation: "'model' or 'module'" "element name" stringlist lineend  */
-#line 250 "antimony.ypp"
+#line 254 "antimony.ypp"
                                                     {if (g_registry.ProcessGlobalCVTerm(&g_registry.CurrentModuleName(),(yyvsp[-2].word),(yyvsp[-1].stringlist))) YYABORT;}
 #line 2379 "antimony.tab.cpp"
     break;
 
   case 52: /* moduleannotation: "'model' or 'module'" "element name" '.' "element name" stringlist lineend  */
-#line 251 "antimony.ypp"
+#line 255 "antimony.ypp"
                                                               {if (g_registry.ProcessGlobalCreatorTerm(&g_registry.CurrentModuleName(),(yyvsp[-4].word), (yyvsp[-2].word), (yyvsp[-1].stringlist))) YYABORT;}
 #line 2385 "antimony.tab.cpp"
     break;
 
   case 53: /* moduleannotation: "'model' or 'module'" '.' "element name" '=' "number"  */
-#line 253 "antimony.ypp"
+#line 257 "antimony.ypp"
                   { Module* module = g_registry.CurrentModule();
                     if (module && (yyvsp[-2].word) && CaselessStrCmp(true, *((yyvsp[-2].word)), "sboTerm")) {
                       module->SetSBOTerm(lround((yyvsp[0].num)));
@@ -2399,85 +2399,85 @@ yyreduce:
     break;
 
   case 54: /* modulepart: reaction lineend  */
-#line 264 "antimony.ypp"
+#line 268 "antimony.ypp"
                                  {}
 #line 2405 "antimony.tab.cpp"
     break;
 
   case 55: /* modulepart: assignment lineend  */
-#line 265 "antimony.ypp"
+#line 269 "antimony.ypp"
                                    {}
 #line 2411 "antimony.tab.cpp"
     break;
 
   case 56: /* modulepart: submodule lineend  */
-#line 266 "antimony.ypp"
+#line 270 "antimony.ypp"
                                   {}
 #line 2417 "antimony.tab.cpp"
     break;
 
   case 57: /* modulepart: varinitialize lineend  */
-#line 267 "antimony.ypp"
+#line 271 "antimony.ypp"
                                       {}
 #line 2423 "antimony.tab.cpp"
     break;
 
   case 58: /* modulepart: dnadef lineend  */
-#line 268 "antimony.ypp"
+#line 272 "antimony.ypp"
                                {}
 #line 2429 "antimony.tab.cpp"
     break;
 
   case 59: /* modulepart: event lineend  */
-#line 269 "antimony.ypp"
+#line 273 "antimony.ypp"
                               {}
 #line 2435 "antimony.tab.cpp"
     break;
 
   case 60: /* modulepart: unitinit lineend  */
-#line 270 "antimony.ypp"
+#line 274 "antimony.ypp"
                                  {}
 #line 2441 "antimony.tab.cpp"
     break;
 
   case 61: /* modulepart: deletion lineend  */
-#line 271 "antimony.ypp"
+#line 275 "antimony.ypp"
                                  {}
 #line 2447 "antimony.tab.cpp"
     break;
 
   case 62: /* modulepart: cvterm lineend  */
-#line 272 "antimony.ypp"
+#line 276 "antimony.ypp"
                                {}
 #line 2453 "antimony.tab.cpp"
     break;
 
   case 63: /* modulepart: variablein  */
-#line 273 "antimony.ypp"
+#line 277 "antimony.ypp"
                            {}
 #line 2459 "antimony.tab.cpp"
     break;
 
   case 64: /* modulepart: constraint lineend  */
-#line 274 "antimony.ypp"
+#line 278 "antimony.ypp"
                                    {}
 #line 2465 "antimony.tab.cpp"
     break;
 
   case 65: /* modulepart: objective lineend  */
-#line 275 "antimony.ypp"
+#line 279 "antimony.ypp"
                                   {}
 #line 2471 "antimony.tab.cpp"
     break;
 
   case 66: /* modulepart: lineend  */
-#line 276 "antimony.ypp"
+#line 280 "antimony.ypp"
                         {}
 #line 2477 "antimony.tab.cpp"
     break;
 
   case 67: /* reaction: varmaybein ':' reactantList reactionDivider reactantList ';' formula maybein  */
-#line 280 "antimony.ypp"
+#line 284 "antimony.ypp"
                 {
                   Variable* var = g_registry.AddNewReactionToCurrent((yyvsp[-4].reactionDivider), (yyvsp[-1].formula), (yyvsp[-7].variable), 0);
                   if (var == NULL) YYABORT;
@@ -2489,7 +2489,7 @@ yyreduce:
     break;
 
   case 68: /* reaction: reactantList reactionDivider reactantList ';' formula maybein  */
-#line 288 "antimony.ypp"
+#line 292 "antimony.ypp"
                 {
                   Variable* var = g_registry.AddNewReactionToCurrent((yyvsp[-4].reactionDivider), (yyvsp[-1].formula), 0);
                   if (var == NULL) YYABORT;
@@ -2501,7 +2501,7 @@ yyreduce:
     break;
 
   case 69: /* reaction: reactantList reactionDivider ';' formula maybein  */
-#line 296 "antimony.ypp"
+#line 300 "antimony.ypp"
                 {
                   Variable* var = g_registry.AddNewReactionToCurrent((yyvsp[-3].reactionDivider), (yyvsp[-1].formula), 1);
                   if (var == NULL) YYABORT;
@@ -2513,7 +2513,7 @@ yyreduce:
     break;
 
   case 70: /* reaction: varmaybein ':' reactantList reactionDivider ';' formula maybein  */
-#line 304 "antimony.ypp"
+#line 308 "antimony.ypp"
                 {
                   Variable* var = g_registry.AddNewReactionToCurrent((yyvsp[-3].reactionDivider), (yyvsp[-1].formula), (yyvsp[-6].variable), 1);
                   if (var == NULL) YYABORT;
@@ -2525,7 +2525,7 @@ yyreduce:
     break;
 
   case 71: /* reaction: reactionDivider reactantList ';' formula maybein  */
-#line 312 "antimony.ypp"
+#line 316 "antimony.ypp"
                 {
                   Variable* var = g_registry.AddNewReactionToCurrent((yyvsp[-4].reactionDivider), (yyvsp[-1].formula), 2);
                   if (var == NULL) YYABORT;
@@ -2537,7 +2537,7 @@ yyreduce:
     break;
 
   case 72: /* reaction: varmaybein ':' reactionDivider reactantList ';' formula maybein  */
-#line 320 "antimony.ypp"
+#line 324 "antimony.ypp"
                 {
                   Variable* var = g_registry.AddNewReactionToCurrent((yyvsp[-4].reactionDivider), (yyvsp[-1].formula), (yyvsp[-6].variable), 2);
                   if (var == NULL) YYABORT;
@@ -2549,367 +2549,367 @@ yyreduce:
     break;
 
   case 73: /* reactantList: variable  */
-#line 329 "antimony.ypp"
+#line 333 "antimony.ypp"
                          {(yyval.reactantList) = g_registry.NewBlankReactantList(); if((yyval.reactantList)->AddReactant((yyvsp[0].variable))) YYABORT; }
 #line 2555 "antimony.tab.cpp"
     break;
 
   case 74: /* reactantList: "number" variable  */
-#line 330 "antimony.ypp"
+#line 334 "antimony.ypp"
                              {(yyval.reactantList) = g_registry.NewBlankReactantList(); if((yyval.reactantList)->AddReactant((yyvsp[0].variable), (yyvsp[-1].num))) YYABORT; }
 #line 2561 "antimony.tab.cpp"
     break;
 
   case 75: /* reactantList: variable variable  */
-#line 331 "antimony.ypp"
+#line 335 "antimony.ypp"
                                   {(yyval.reactantList) = g_registry.NewBlankReactantList(); if((yyval.reactantList)->AddReactant((yyvsp[0].variable), (yyvsp[-1].variable))) YYABORT; }
 #line 2567 "antimony.tab.cpp"
     break;
 
   case 76: /* reactantList: reactantList '+' variable  */
-#line 332 "antimony.ypp"
+#line 336 "antimony.ypp"
                                           {(yyval.reactantList) = (yyvsp[-2].reactantList); if((yyvsp[-2].reactantList)->AddReactant((yyvsp[0].variable))) YYABORT; }
 #line 2573 "antimony.tab.cpp"
     break;
 
   case 77: /* reactantList: reactantList '+' "number" variable  */
-#line 333 "antimony.ypp"
+#line 337 "antimony.ypp"
                                               {(yyval.reactantList) = (yyvsp[-3].reactantList); if((yyvsp[-3].reactantList)->AddReactant((yyvsp[0].variable), (yyvsp[-1].num))) YYABORT; }
 #line 2579 "antimony.tab.cpp"
     break;
 
   case 78: /* reactantList: reactantList '+' variable variable  */
-#line 334 "antimony.ypp"
+#line 338 "antimony.ypp"
                                                    {(yyval.reactantList) = (yyvsp[-3].reactantList); if((yyvsp[-3].reactantList)->AddReactant((yyvsp[0].variable), (yyvsp[-1].variable))) YYABORT; }
 #line 2585 "antimony.tab.cpp"
     break;
 
   case 79: /* reactionDivider: "->"  */
-#line 338 "antimony.ypp"
+#line 342 "antimony.ypp"
                            {(yyval.reactionDivider) = rdBecomes;}
 #line 2591 "antimony.tab.cpp"
     break;
 
   case 80: /* reactionDivider: "-|"  */
-#line 339 "antimony.ypp"
+#line 343 "antimony.ypp"
                            {(yyval.reactionDivider) = rdInhibits;}
 #line 2597 "antimony.tab.cpp"
     break;
 
   case 81: /* reactionDivider: '-' '('  */
-#line 340 "antimony.ypp"
+#line 344 "antimony.ypp"
                         {(yyval.reactionDivider) = rdInfluences;}
 #line 2603 "antimony.tab.cpp"
     break;
 
   case 82: /* reactionDivider: "-o"  */
-#line 341 "antimony.ypp"
+#line 345 "antimony.ypp"
                             {(yyval.reactionDivider) = rdInfluences;}
 #line 2609 "antimony.tab.cpp"
     break;
 
   case 83: /* reactionDivider: "=>"  */
-#line 342 "antimony.ypp"
+#line 346 "antimony.ypp"
                              {(yyval.reactionDivider) = rdBecomesIrreversibly;}
 #line 2615 "antimony.tab.cpp"
     break;
 
   case 84: /* formula: %empty  */
-#line 345 "antimony.ypp"
+#line 349 "antimony.ypp"
                             {(yyval.formula) = g_registry.NewBlankFormula(); }
 #line 2621 "antimony.tab.cpp"
     break;
 
   case 85: /* formula: formula "..."  */
-#line 346 "antimony.ypp"
+#line 350 "antimony.ypp"
                                  {(yyval.formula) = (yyvsp[-1].formula); (yyvsp[-1].formula)->AddEllipses();}
 #line 2627 "antimony.tab.cpp"
     break;
 
   case 86: /* formula: formula variable  */
-#line 347 "antimony.ypp"
+#line 351 "antimony.ypp"
                                  {(yyval.formula) = (yyvsp[-1].formula); if((yyvsp[-1].formula)->AddVariable((yyvsp[0].variable))) YYABORT; }
 #line 2633 "antimony.tab.cpp"
     break;
 
   case 87: /* formula: formula "number"  */
-#line 348 "antimony.ypp"
+#line 352 "antimony.ypp"
                              {(yyval.formula) = (yyvsp[-1].formula); (yyvsp[-1].formula)->AddNum((yyvsp[0].num)); }
 #line 2639 "antimony.tab.cpp"
     break;
 
   case 88: /* formula: formula "name of a pre-defined constant"  */
-#line 349 "antimony.ypp"
+#line 353 "antimony.ypp"
                                   {(yyval.formula) = (yyvsp[-1].formula); (yyvsp[-1].formula)->AddText((yyvsp[0].word)); }
 #line 2645 "antimony.tab.cpp"
     break;
 
   case 89: /* formula: formula "name of an existing function"  */
-#line 350 "antimony.ypp"
+#line 354 "antimony.ypp"
                                  {(yyval.formula) = (yyvsp[-1].formula); (yyvsp[-1].formula)->AddText((yyvsp[0].word)); }
 #line 2651 "antimony.tab.cpp"
     break;
 
   case 90: /* formula: formula '(' commaformula ')'  */
-#line 351 "antimony.ypp"
+#line 355 "antimony.ypp"
                                              {(yyval.formula) = (yyvsp[-3].formula); (yyvsp[-1].formula)->AddParentheses(); (yyval.formula)->AddFormula((yyvsp[-1].formula)); }
 #line 2657 "antimony.tab.cpp"
     break;
 
   case 91: /* formula: formula '{' commaformula '}'  */
-#line 352 "antimony.ypp"
+#line 356 "antimony.ypp"
                                              {(yyval.formula) = (yyvsp[-3].formula); (yyvsp[-1].formula)->AddCurlyBrackets(); (yyval.formula)->AddFormula((yyvsp[-1].formula)); }
 #line 2663 "antimony.tab.cpp"
     break;
 
   case 92: /* formula: formula mathThing  */
-#line 353 "antimony.ypp"
+#line 357 "antimony.ypp"
                                   {(yyval.formula) = (yyvsp[-1].formula); (yyvsp[-1].formula)->AddMathThing((yyvsp[0].character)); }
 #line 2669 "antimony.tab.cpp"
     break;
 
   case 93: /* formula: formula inequality  */
-#line 354 "antimony.ypp"
+#line 358 "antimony.ypp"
                                    {(yyval.formula) = (yyvsp[-1].formula); (yyvsp[-1].formula)->AddInequality((yyvsp[0].inequality)); }
 #line 2675 "antimony.tab.cpp"
     break;
 
   case 94: /* formula: formula '=' '='  */
-#line 355 "antimony.ypp"
+#line 359 "antimony.ypp"
                                 {(yyval.formula) = (yyvsp[-2].formula); (yyvsp[-2].formula)->AddMathThing('='); (yyvsp[-2].formula)->AddMathThing('='); }
 #line 2681 "antimony.tab.cpp"
     break;
 
   case 95: /* formula: formula '&' '&'  */
-#line 356 "antimony.ypp"
+#line 360 "antimony.ypp"
                                 {(yyval.formula) = (yyvsp[-2].formula); (yyvsp[-2].formula)->AddMathThing('&'); (yyvsp[-2].formula)->AddMathThing('&'); }
 #line 2687 "antimony.tab.cpp"
     break;
 
   case 96: /* formula: formula '|' '|'  */
-#line 357 "antimony.ypp"
+#line 361 "antimony.ypp"
                                 {(yyval.formula) = (yyvsp[-2].formula); (yyvsp[-2].formula)->AddMathThing('|'); (yyvsp[-2].formula)->AddMathThing('|'); }
 #line 2693 "antimony.tab.cpp"
     break;
 
   case 97: /* commaformula: formula  */
-#line 360 "antimony.ypp"
+#line 364 "antimony.ypp"
                         {(yyval.formula) = (yyvsp[0].formula);}
 #line 2699 "antimony.tab.cpp"
     break;
 
   case 98: /* commaformula: commaformula ',' formula  */
-#line 361 "antimony.ypp"
+#line 365 "antimony.ypp"
                                          {(yyval.formula) = (yyvsp[-2].formula); (yyval.formula)->AddMathThing(','); (yyval.formula)->AddFormula((yyvsp[0].formula)); }
 #line 2705 "antimony.tab.cpp"
     break;
 
   case 99: /* mathThing: '+'  */
-#line 364 "antimony.ypp"
+#line 368 "antimony.ypp"
                     {(yyval.character) = '+';}
 #line 2711 "antimony.tab.cpp"
     break;
 
   case 100: /* mathThing: '-'  */
-#line 365 "antimony.ypp"
+#line 369 "antimony.ypp"
                     {(yyval.character) = '-';}
 #line 2717 "antimony.tab.cpp"
     break;
 
   case 101: /* mathThing: '*'  */
-#line 366 "antimony.ypp"
+#line 370 "antimony.ypp"
                     {(yyval.character) = '*';}
 #line 2723 "antimony.tab.cpp"
     break;
 
   case 102: /* mathThing: '/'  */
-#line 367 "antimony.ypp"
+#line 371 "antimony.ypp"
                     {(yyval.character) = '/';}
 #line 2729 "antimony.tab.cpp"
     break;
 
   case 103: /* mathThing: '^'  */
-#line 368 "antimony.ypp"
+#line 372 "antimony.ypp"
                     {(yyval.character) = '^';}
 #line 2735 "antimony.tab.cpp"
     break;
 
   case 104: /* mathThing: '!'  */
-#line 369 "antimony.ypp"
+#line 373 "antimony.ypp"
                     {(yyval.character) = '!';}
 #line 2741 "antimony.tab.cpp"
     break;
 
   case 105: /* mathThing: '%'  */
-#line 370 "antimony.ypp"
+#line 374 "antimony.ypp"
                     {(yyval.character) = '%';}
 #line 2747 "antimony.tab.cpp"
     break;
 
   case 106: /* inequality: '<'  */
-#line 373 "antimony.ypp"
+#line 377 "antimony.ypp"
                     {(yyval.inequality) = constLT;}
 #line 2753 "antimony.tab.cpp"
     break;
 
   case 107: /* inequality: "<="  */
-#line 374 "antimony.ypp"
+#line 378 "antimony.ypp"
                     {(yyval.inequality) = constLEQ;}
 #line 2759 "antimony.tab.cpp"
     break;
 
   case 108: /* inequality: '>'  */
-#line 375 "antimony.ypp"
+#line 379 "antimony.ypp"
                     {(yyval.inequality) = constGT;}
 #line 2765 "antimony.tab.cpp"
     break;
 
   case 109: /* inequality: ">="  */
-#line 376 "antimony.ypp"
+#line 380 "antimony.ypp"
                     {(yyval.inequality) = constGEQ;}
 #line 2771 "antimony.tab.cpp"
     break;
 
   case 110: /* inequality: "!="  */
-#line 377 "antimony.ypp"
+#line 381 "antimony.ypp"
                     {(yyval.inequality) = constNEQ;}
 #line 2777 "antimony.tab.cpp"
     break;
 
   case 111: /* lineend: ';'  */
-#line 380 "antimony.ypp"
+#line 384 "antimony.ypp"
                     {}
 #line 2783 "antimony.tab.cpp"
     break;
 
   case 112: /* lineend: '\n'  */
-#line 381 "antimony.ypp"
+#line 385 "antimony.ypp"
                      {}
 #line 2789 "antimony.tab.cpp"
     break;
 
   case 113: /* lineend: "end of line"  */
-#line 382 "antimony.ypp"
+#line 386 "antimony.ypp"
                     {}
 #line 2795 "antimony.tab.cpp"
     break;
 
   case 114: /* assignment: varmaybein ':' maxormin formula  */
-#line 385 "antimony.ypp"
+#line 389 "antimony.ypp"
                                                 {if (g_registry.CurrentModule()->AddObjective((yyvsp[-3].variable), (yyvsp[0].formula), (yyvsp[-1].maxormin))) YYABORT;}
 #line 2801 "antimony.tab.cpp"
     break;
 
   case 115: /* assignment: varmaybein '=' formula  */
-#line 386 "antimony.ypp"
+#line 390 "antimony.ypp"
                                        {if ((yyvsp[-2].variable)->SetFormula((yyvsp[0].formula))) YYABORT; }
 #line 2807 "antimony.tab.cpp"
     break;
 
   case 116: /* assignment: varmaybein "'is'" variable  */
-#line 387 "antimony.ypp"
+#line 391 "antimony.ypp"
                                        {if ((yyvsp[-2].variable)->Synchronize((yyvsp[0].variable), NULL)) YYABORT;}
 #line 2813 "antimony.tab.cpp"
     break;
 
   case 117: /* assignment: varmaybein "'is'" variable '/' variable  */
-#line 388 "antimony.ypp"
+#line 392 "antimony.ypp"
                                                     {if ((yyvsp[-4].variable)->Synchronize((yyvsp[-2].variable), (yyvsp[0].variable))) YYABORT;}
 #line 2819 "antimony.tab.cpp"
     break;
 
   case 118: /* assignment: varmaybein '*' variable "'is'" variable  */
-#line 389 "antimony.ypp"
+#line 393 "antimony.ypp"
                                                     {if ((yyvsp[-4].variable)->Synchronize((yyvsp[0].variable), (yyvsp[-2].variable))) YYABORT;}
 #line 2825 "antimony.tab.cpp"
     break;
 
   case 119: /* assignment: varmaybein "'is'" "text string"  */
-#line 390 "antimony.ypp"
+#line 394 "antimony.ypp"
                                          {if ((yyvsp[-2].variable)->SetDisplayName(*((yyvsp[0].word)))) YYABORT;}
 #line 2831 "antimony.tab.cpp"
     break;
 
   case 120: /* assignment: varmaybein ':' '=' formula  */
-#line 391 "antimony.ypp"
+#line 395 "antimony.ypp"
                                            {if ((yyvsp[-3].variable)->SetAssignmentRule((yyvsp[0].formula))) YYABORT;}
 #line 2837 "antimony.tab.cpp"
     break;
 
   case 121: /* assignment: varmaybein '\'' '=' formula  */
-#line 392 "antimony.ypp"
+#line 396 "antimony.ypp"
                                             {if ((yyvsp[-3].variable)->SetRateRule((yyvsp[0].formula))) YYABORT;}
 #line 2843 "antimony.tab.cpp"
     break;
 
   case 122: /* assignment: varmaybein "'has'" unitdef  */
-#line 393 "antimony.ypp"
+#line 397 "antimony.ypp"
                                            {if ((yyvsp[-2].variable)->SetUnit((yyvsp[0].variable))) YYABORT; }
 #line 2849 "antimony.tab.cpp"
     break;
 
   case 123: /* $@4: %empty  */
-#line 397 "antimony.ypp"
+#line 401 "antimony.ypp"
                                            {if ((yyvsp[-3].variable)->SetModule((yyvsp[-1].word))) YYABORT;}
 #line 2855 "antimony.tab.cpp"
     break;
 
   case 124: /* submodule: varmaybein ':' "name of an existing module" '(' $@4 variableimportlist ')' submodifications maybein  */
-#line 397 "antimony.ypp"
+#line 401 "antimony.ypp"
                                                                                                                              {if ((yyvsp[0].variable) != NULL) {if ((yyvsp[-8].variable)->SetCompartment((yyvsp[0].variable))) YYABORT;}}
 #line 2861 "antimony.tab.cpp"
     break;
 
   case 125: /* $@5: %empty  */
-#line 398 "antimony.ypp"
+#line 402 "antimony.ypp"
                             {if(g_registry.CurrentModule()->SetModule((yyvsp[-1].word))) YYABORT;}
 #line 2867 "antimony.tab.cpp"
     break;
 
   case 126: /* submodule: "name of an existing module" '(' $@5 variableimportlist ')' submodifications maybein  */
-#line 398 "antimony.ypp"
+#line 402 "antimony.ypp"
                                                                                                                                      {if ((yyvsp[0].variable) != NULL) {if (g_registry.GetCurrentSubmodel()->SetCompartment((yyvsp[0].variable))) YYABORT;}}
 #line 2873 "antimony.tab.cpp"
     break;
 
   case 127: /* variableimportlist: %empty  */
-#line 402 "antimony.ypp"
+#line 406 "antimony.ypp"
                             {}
 #line 2879 "antimony.tab.cpp"
     break;
 
   case 128: /* variableimportlist: variable  */
-#line 403 "antimony.ypp"
+#line 407 "antimony.ypp"
                          {if (g_registry.AddVariableToCurrentImportList((yyvsp[0].variable))) YYABORT; }
 #line 2885 "antimony.tab.cpp"
     break;
 
   case 129: /* variableimportlist: variableimportlist ',' variable  */
-#line 404 "antimony.ypp"
+#line 408 "antimony.ypp"
                                                 { if (g_registry.AddVariableToCurrentImportList((yyvsp[0].variable))) YYABORT; }
 #line 2891 "antimony.tab.cpp"
     break;
 
   case 130: /* variableimportlist: "number"  */
-#line 405 "antimony.ypp"
+#line 409 "antimony.ypp"
                     {if (g_registry.AddNumberToCurrentImportList((yyvsp[0].num))) YYABORT; }
 #line 2897 "antimony.tab.cpp"
     break;
 
   case 131: /* variableimportlist: variableimportlist ',' "number"  */
-#line 406 "antimony.ypp"
+#line 410 "antimony.ypp"
                                            { if (g_registry.AddNumberToCurrentImportList((yyvsp[0].num))) YYABORT; }
 #line 2903 "antimony.tab.cpp"
     break;
 
   case 132: /* submodifications: %empty  */
-#line 410 "antimony.ypp"
+#line 414 "antimony.ypp"
                             {}
 #line 2909 "antimony.tab.cpp"
     break;
 
   case 133: /* submodifications: submodifications ',' "element name" '=' variable  */
-#line 411 "antimony.ypp"
+#line 415 "antimony.ypp"
                                                           {if (CaselessStrCmp(false, *(yyvsp[-2].word), "extentconv")) {g_registry.GetCurrentSubmodel()->SetExtentConversionFactor((yyvsp[0].variable));}
                 else if (CaselessStrCmp(false, *(yyvsp[-2].word), "timeconv")) {if (g_registry.GetCurrentSubmodel()->SetTimeConversionFactor((yyvsp[0].variable))) YYABORT;}
                 else { g_registry.SetError("Illegal term '" + *(yyvsp[-2].word) + "' in submodel declaration.  You may use the terms 'extentconv' and 'timeconv' to set the extent and time conversion factors for this submodel, respectively."); YYABORT;}}
@@ -2917,7 +2917,7 @@ yyreduce:
     break;
 
   case 134: /* submodifications: submodifications ',' "element name" '=' "number"  */
-#line 415 "antimony.ypp"
+#line 419 "antimony.ypp"
                                                      {if (CaselessStrCmp(false, *(yyvsp[-2].word), "extentconv")) {g_registry.GetCurrentSubmodel()->SetExtentConversionFactor((yyvsp[0].num));}
                 else if (CaselessStrCmp(false, *(yyvsp[-2].word), "timeconv")) {if (g_registry.GetCurrentSubmodel()->SetTimeConversionFactor((yyvsp[0].num))) YYABORT;}
                 else { g_registry.SetError("Illegal term '" + *(yyvsp[-2].word) + "' in submodel declaration.  You may use the terms 'extentconv' and 'timeconv' to set the extent and time conversion factors for this submodel, respectively."); YYABORT;}}
@@ -2925,265 +2925,265 @@ yyreduce:
     break;
 
   case 135: /* varinitialize: specinit  */
-#line 419 "antimony.ypp"
+#line 423 "antimony.ypp"
                          { }
 #line 2931 "antimony.tab.cpp"
     break;
 
   case 136: /* varinitialize: formulainit  */
-#line 420 "antimony.ypp"
+#line 424 "antimony.ypp"
                             { }
 #line 2937 "antimony.tab.cpp"
     break;
 
   case 137: /* varinitialize: reactioninit  */
-#line 421 "antimony.ypp"
+#line 425 "antimony.ypp"
                              { }
 #line 2943 "antimony.tab.cpp"
     break;
 
   case 138: /* varinitialize: dnainit  */
-#line 422 "antimony.ypp"
+#line 426 "antimony.ypp"
                         { }
 #line 2949 "antimony.tab.cpp"
     break;
 
   case 139: /* varinitialize: geneinit  */
-#line 423 "antimony.ypp"
+#line 427 "antimony.ypp"
                          { }
 #line 2955 "antimony.tab.cpp"
     break;
 
   case 140: /* varinitialize: operatorinit  */
-#line 424 "antimony.ypp"
+#line 428 "antimony.ypp"
                              { }
 #line 2961 "antimony.tab.cpp"
     break;
 
   case 141: /* varinitialize: compartmentinit  */
-#line 425 "antimony.ypp"
+#line 429 "antimony.ypp"
                                 { }
 #line 2967 "antimony.tab.cpp"
     break;
 
   case 142: /* varinitialize: varconstinit  */
-#line 426 "antimony.ypp"
+#line 430 "antimony.ypp"
                              { }
 #line 2973 "antimony.tab.cpp"
     break;
 
   case 143: /* specinit: "'species'" varmaybeis  */
-#line 429 "antimony.ypp"
+#line 433 "antimony.ypp"
                                    {g_registry.SetConstness(constDEFAULT); g_registry.SetSubstOnly(false); (yyvsp[0].variable)->SetRegSpecVals(); if ((yyvsp[0].variable)->SetType(varSpeciesUndef)) YYABORT; }
 #line 2979 "antimony.tab.cpp"
     break;
 
   case 144: /* specinit: "'var'" "'species'" varmaybeis  */
-#line 430 "antimony.ypp"
+#line 434 "antimony.ypp"
                                            {g_registry.SetConstness(constVAR); g_registry.SetSubstOnly(false); (yyvsp[0].variable)->SetRegSpecVals(); if ((yyvsp[0].variable)->SetType(varSpeciesUndef)) YYABORT; }
 #line 2985 "antimony.tab.cpp"
     break;
 
   case 145: /* specinit: "'const'" "'species'" varmaybeis  */
-#line 431 "antimony.ypp"
+#line 435 "antimony.ypp"
                                              {g_registry.SetConstness(constCONST); g_registry.SetSubstOnly(false); (yyvsp[0].variable)->SetRegSpecVals(); if ((yyvsp[0].variable)->SetType(varSpeciesUndef)) YYABORT; }
 #line 2991 "antimony.tab.cpp"
     break;
 
   case 146: /* specinit: "'substanceOnly'" "'species'" varmaybeis  */
-#line 432 "antimony.ypp"
+#line 436 "antimony.ypp"
                                              {g_registry.SetConstness(constDEFAULT); g_registry.SetSubstOnly(true); (yyvsp[0].variable)->SetRegSpecVals(); if ((yyvsp[0].variable)->SetType(varSpeciesUndef)) YYABORT; }
 #line 2997 "antimony.tab.cpp"
     break;
 
   case 147: /* specinit: "'substanceOnly'" varmaybeis  */
-#line 433 "antimony.ypp"
+#line 437 "antimony.ypp"
                                      {g_registry.SetConstness(constDEFAULT); g_registry.SetSubstOnly(true); (yyvsp[0].variable)->SetRegSpecVals(); if ((yyvsp[0].variable)->SetType(varSpeciesUndef)) YYABORT; }
 #line 3003 "antimony.tab.cpp"
     break;
 
   case 148: /* specinit: "'var'" "'substanceOnly'" "'species'" varmaybeis  */
-#line 434 "antimony.ypp"
+#line 438 "antimony.ypp"
                                                      {g_registry.SetConstness(constVAR); g_registry.SetSubstOnly(true); (yyvsp[0].variable)->SetRegSpecVals(); if ((yyvsp[0].variable)->SetType(varSpeciesUndef)) YYABORT; }
 #line 3009 "antimony.tab.cpp"
     break;
 
   case 149: /* specinit: "'const'" "'substanceOnly'" "'species'" varmaybeis  */
-#line 435 "antimony.ypp"
+#line 439 "antimony.ypp"
                                                        {g_registry.SetConstness(constCONST); g_registry.SetSubstOnly(true); (yyvsp[0].variable)->SetRegSpecVals(); if ((yyvsp[0].variable)->SetType(varSpeciesUndef)) YYABORT; }
 #line 3015 "antimony.tab.cpp"
     break;
 
   case 150: /* specinit: specinit ',' varmaybeis  */
-#line 436 "antimony.ypp"
+#line 440 "antimony.ypp"
                                         {(yyvsp[0].variable)->SetRegSpecVals(); if ((yyvsp[0].variable)->SetType(varSpeciesUndef)) YYABORT; }
 #line 3021 "antimony.tab.cpp"
     break;
 
   case 151: /* formulainit: "'formula'" varmaybeis  */
-#line 439 "antimony.ypp"
+#line 443 "antimony.ypp"
                                    {g_registry.SetConstness(constDEFAULT); (yyvsp[0].variable)->SetRegConst(); if ((yyvsp[0].variable)->SetType(varFormulaUndef)) YYABORT; }
 #line 3027 "antimony.tab.cpp"
     break;
 
   case 152: /* formulainit: "'var'" "'formula'" varmaybeis  */
-#line 440 "antimony.ypp"
+#line 444 "antimony.ypp"
                                            {g_registry.SetConstness(constVAR); (yyvsp[0].variable)->SetRegConst(); if ((yyvsp[0].variable)->SetType(varFormulaUndef)) YYABORT; }
 #line 3033 "antimony.tab.cpp"
     break;
 
   case 153: /* formulainit: "'const'" "'formula'" varmaybeis  */
-#line 441 "antimony.ypp"
+#line 445 "antimony.ypp"
                                              {g_registry.SetConstness(constCONST); (yyvsp[0].variable)->SetRegConst(); if ((yyvsp[0].variable)->SetType(varFormulaUndef)) YYABORT; }
 #line 3039 "antimony.tab.cpp"
     break;
 
   case 154: /* formulainit: formulainit ',' varmaybeis  */
-#line 442 "antimony.ypp"
+#line 446 "antimony.ypp"
                                            {(yyvsp[0].variable)->SetRegConst(); if ((yyvsp[0].variable)->SetType(varFormulaUndef)) YYABORT; }
 #line 3045 "antimony.tab.cpp"
     break;
 
   case 155: /* reactioninit: "'reaction'" varmaybeis  */
-#line 445 "antimony.ypp"
+#line 449 "antimony.ypp"
                                     {g_registry.SetConstness(constDEFAULT); (yyvsp[0].variable)->SetRegConst(); if ((yyvsp[0].variable)->SetType(varReactionUndef)) YYABORT; }
 #line 3051 "antimony.tab.cpp"
     break;
 
   case 156: /* reactioninit: "'var'" "'reaction'" varmaybeis  */
-#line 446 "antimony.ypp"
+#line 450 "antimony.ypp"
                                             {g_registry.SetConstness(constVAR); (yyvsp[0].variable)->SetRegConst(); if ((yyvsp[0].variable)->SetType(varReactionUndef)) YYABORT; }
 #line 3057 "antimony.tab.cpp"
     break;
 
   case 157: /* reactioninit: "'const'" "'reaction'"  */
-#line 447 "antimony.ypp"
+#line 451 "antimony.ypp"
                                    {g_registry.SetError("Reactions may not be set 'const'."); YYABORT; }
 #line 3063 "antimony.tab.cpp"
     break;
 
   case 158: /* reactioninit: reactioninit ',' varmaybeis  */
-#line 448 "antimony.ypp"
+#line 452 "antimony.ypp"
                                             {(yyvsp[0].variable)->SetRegConst(); if ((yyvsp[0].variable)->SetType(varReactionUndef)) YYABORT; }
 #line 3069 "antimony.tab.cpp"
     break;
 
   case 159: /* dnainit: "'DNA'" varmaybeis  */
-#line 451 "antimony.ypp"
+#line 455 "antimony.ypp"
                                {g_registry.SetConstness(constDEFAULT); (yyvsp[0].variable)->SetRegConst(); if ((yyvsp[0].variable)->SetType(varDNA)) YYABORT; }
 #line 3075 "antimony.tab.cpp"
     break;
 
   case 160: /* dnainit: "'var'" "'DNA'" varmaybeis  */
-#line 452 "antimony.ypp"
+#line 456 "antimony.ypp"
                                        {g_registry.SetConstness(constVAR); (yyvsp[0].variable)->SetRegConst(); if ((yyvsp[0].variable)->SetType(varDNA)) YYABORT; }
 #line 3081 "antimony.tab.cpp"
     break;
 
   case 161: /* dnainit: "'const'" "'DNA'" varmaybeis  */
-#line 453 "antimony.ypp"
+#line 457 "antimony.ypp"
                                          {g_registry.SetConstness(constCONST); (yyvsp[0].variable)->SetRegConst(); if ((yyvsp[0].variable)->SetType(varDNA)) YYABORT; }
 #line 3087 "antimony.tab.cpp"
     break;
 
   case 162: /* dnainit: dnainit ',' varmaybeis  */
-#line 454 "antimony.ypp"
+#line 458 "antimony.ypp"
                                        {(yyvsp[0].variable)->SetRegConst(); if ((yyvsp[0].variable)->SetType(varDNA)) YYABORT; }
 #line 3093 "antimony.tab.cpp"
     break;
 
   case 163: /* geneinit: "'gene'" varmaybeis  */
-#line 457 "antimony.ypp"
+#line 461 "antimony.ypp"
                                 {g_registry.SetConstness(constDEFAULT); (yyvsp[0].variable)->SetRegConst(); if ((yyvsp[0].variable)->SetType(varReactionGene)) YYABORT; }
 #line 3099 "antimony.tab.cpp"
     break;
 
   case 164: /* geneinit: "'var'" "'gene'" varmaybeis  */
-#line 458 "antimony.ypp"
+#line 462 "antimony.ypp"
                                         {g_registry.SetConstness(constVAR); (yyvsp[0].variable)->SetRegConst(); if ((yyvsp[0].variable)->SetType(varReactionGene)) YYABORT; }
 #line 3105 "antimony.tab.cpp"
     break;
 
   case 165: /* geneinit: "'const'" "'gene'" varmaybeis  */
-#line 459 "antimony.ypp"
+#line 463 "antimony.ypp"
                                           {g_registry.SetError("Genes may not be set 'const'."); YYABORT; }
 #line 3111 "antimony.tab.cpp"
     break;
 
   case 166: /* geneinit: geneinit ',' varmaybeis  */
-#line 460 "antimony.ypp"
+#line 464 "antimony.ypp"
                                         {(yyvsp[0].variable)->SetRegConst(); if ((yyvsp[0].variable)->SetType(varReactionGene)) YYABORT; }
 #line 3117 "antimony.tab.cpp"
     break;
 
   case 167: /* operatorinit: "'operator'" varmaybeis  */
-#line 463 "antimony.ypp"
+#line 467 "antimony.ypp"
                                     {g_registry.SetConstness(constDEFAULT); (yyvsp[0].variable)->SetRegConst(); if ((yyvsp[0].variable)->SetType(varFormulaOperator)) YYABORT; }
 #line 3123 "antimony.tab.cpp"
     break;
 
   case 168: /* operatorinit: "'var'" "'operator'" varmaybeis  */
-#line 464 "antimony.ypp"
+#line 468 "antimony.ypp"
                                             {g_registry.SetConstness(constVAR); (yyvsp[0].variable)->SetRegConst(); if ((yyvsp[0].variable)->SetType(varFormulaOperator)) YYABORT; }
 #line 3129 "antimony.tab.cpp"
     break;
 
   case 169: /* operatorinit: "'const'" "'operator'" varmaybeis  */
-#line 465 "antimony.ypp"
+#line 469 "antimony.ypp"
                                               {g_registry.SetConstness(constCONST); (yyvsp[0].variable)->SetRegConst(); if ((yyvsp[0].variable)->SetType(varFormulaOperator)) YYABORT; }
 #line 3135 "antimony.tab.cpp"
     break;
 
   case 170: /* operatorinit: operatorinit ',' varmaybeis  */
-#line 466 "antimony.ypp"
+#line 470 "antimony.ypp"
                                             {(yyvsp[0].variable)->SetRegConst(); if ((yyvsp[0].variable)->SetType(varFormulaOperator)) YYABORT; }
 #line 3141 "antimony.tab.cpp"
     break;
 
   case 171: /* compartmentinit: "'compartment'" varmaybeis  */
-#line 470 "antimony.ypp"
+#line 474 "antimony.ypp"
                                        {g_registry.SetConstness(constDEFAULT); (yyvsp[0].variable)->SetRegConst(); if ((yyvsp[0].variable)->SetType(varCompartment)) YYABORT; }
 #line 3147 "antimony.tab.cpp"
     break;
 
   case 172: /* compartmentinit: "'var'" "'compartment'" varmaybeis  */
-#line 471 "antimony.ypp"
+#line 475 "antimony.ypp"
                                                {g_registry.SetConstness(constVAR); (yyvsp[0].variable)->SetRegConst(); if ((yyvsp[0].variable)->SetType(varCompartment)) YYABORT; }
 #line 3153 "antimony.tab.cpp"
     break;
 
   case 173: /* compartmentinit: "'const'" "'compartment'" varmaybeis  */
-#line 472 "antimony.ypp"
+#line 476 "antimony.ypp"
                                                  {g_registry.SetConstness(constCONST); (yyvsp[0].variable)->SetRegConst(); if ((yyvsp[0].variable)->SetType(varCompartment)) YYABORT; }
 #line 3159 "antimony.tab.cpp"
     break;
 
   case 174: /* compartmentinit: compartmentinit ',' varmaybeis  */
-#line 473 "antimony.ypp"
+#line 477 "antimony.ypp"
                                                {(yyvsp[0].variable)->SetRegConst(); if ((yyvsp[0].variable)->SetType(varCompartment)) YYABORT; }
 #line 3165 "antimony.tab.cpp"
     break;
 
   case 175: /* varconstinit: "'var'" varmaybeis  */
-#line 476 "antimony.ypp"
+#line 480 "antimony.ypp"
                                    {g_registry.SetConstness(constVAR); (yyvsp[0].variable)->SetRegConst();}
 #line 3171 "antimony.tab.cpp"
     break;
 
   case 176: /* varconstinit: "'const'" varmaybeis  */
-#line 477 "antimony.ypp"
+#line 481 "antimony.ypp"
                                      {g_registry.SetConstness(constCONST); (yyvsp[0].variable)->SetRegConst();}
 #line 3177 "antimony.tab.cpp"
     break;
 
   case 177: /* varconstinit: varconstinit ',' varmaybeis  */
-#line 478 "antimony.ypp"
+#line 482 "antimony.ypp"
                                             {(yyvsp[0].variable)->SetRegConst();}
 #line 3183 "antimony.tab.cpp"
     break;
 
   case 178: /* unitinit: "'unit'" variable '=' formula  */
-#line 481 "antimony.ypp"
+#line 485 "antimony.ypp"
                                               {if ((yyvsp[-2].variable)->SetType(varUnitDefinition)) YYABORT;
                                                if ((yyvsp[0].formula)->MakeAllVariablesUnits()) YYABORT;
                                                if ((yyvsp[-2].variable)->GetUnitDef()->SetFromFormula((yyvsp[0].formula))) YYABORT;}
@@ -3191,133 +3191,133 @@ yyreduce:
     break;
 
   case 179: /* unitinit: "'unit'" variable  */
-#line 484 "antimony.ypp"
+#line 488 "antimony.ypp"
                                   {if ((yyvsp[0].variable)->SetType(varUnitDefinition)) YYABORT;}
 #line 3197 "antimony.tab.cpp"
     break;
 
   case 180: /* dnadef: dnastrand  */
-#line 487 "antimony.ypp"
+#line 491 "antimony.ypp"
                           {if (g_registry.SaveWorkingStrand()) YYABORT;}
 #line 3203 "antimony.tab.cpp"
     break;
 
   case 181: /* dnadef: varmaybein ':' dnastrand  */
-#line 488 "antimony.ypp"
+#line 492 "antimony.ypp"
                                          {if (g_registry.SetStrandAs((yyvsp[-2].variable))) YYABORT;}
 #line 3209 "antimony.tab.cpp"
     break;
 
   case 182: /* dnastrand: "--" variable  */
-#line 491 "antimony.ypp"
+#line 495 "antimony.ypp"
                                 {if (g_registry.SetNewUpstreamOpen((yyvsp[0].variable))) YYABORT;}
 #line 3215 "antimony.tab.cpp"
     break;
 
   case 183: /* dnastrand: "--" dnamiddle  */
-#line 492 "antimony.ypp"
+#line 496 "antimony.ypp"
                                  {g_registry.SetOpenUpstream(); }
 #line 3221 "antimony.tab.cpp"
     break;
 
   case 184: /* dnastrand: dnamiddle variable  */
-#line 493 "antimony.ypp"
+#line 497 "antimony.ypp"
                                    {if (g_registry.SetDownstreamEnd((yyvsp[0].variable))) YYABORT;}
 #line 3227 "antimony.tab.cpp"
     break;
 
   case 185: /* dnastrand: "--" dnamiddle variable  */
-#line 494 "antimony.ypp"
+#line 498 "antimony.ypp"
                                           {g_registry.SetOpenUpstream(); if(g_registry.SetDownstreamEnd((yyvsp[0].variable))) YYABORT;}
 #line 3233 "antimony.tab.cpp"
     break;
 
   case 186: /* dnastrand: dnamiddle  */
-#line 495 "antimony.ypp"
+#line 499 "antimony.ypp"
                           { }
 #line 3239 "antimony.tab.cpp"
     break;
 
   case 187: /* dnamiddle: variable "--"  */
-#line 498 "antimony.ypp"
+#line 502 "antimony.ypp"
                                 {if (g_registry.SetNewDownstreamOpen((yyvsp[-1].variable))) YYABORT;}
 #line 3245 "antimony.tab.cpp"
     break;
 
   case 188: /* dnamiddle: dnamiddle variable "--"  */
-#line 499 "antimony.ypp"
+#line 503 "antimony.ypp"
                                           {if (g_registry.SetDownstreamOpen((yyvsp[-1].variable))) YYABORT;}
 #line 3251 "antimony.tab.cpp"
     break;
 
   case 189: /* $@6: %empty  */
-#line 502 "antimony.ypp"
+#line 506 "antimony.ypp"
                            {if (g_registry.SetNewCurrentEvent((yyvsp[0].formula))) YYABORT;}
 #line 3257 "antimony.tab.cpp"
     break;
 
   case 190: /* event: "'at'" formula $@6 eventmodifications colonret assignmentlist  */
-#line 502 "antimony.ypp"
+#line 506 "antimony.ypp"
                                                                                                                         {}
 #line 3263 "antimony.tab.cpp"
     break;
 
   case 191: /* $@7: %empty  */
-#line 503 "antimony.ypp"
+#line 507 "antimony.ypp"
                                          {if (g_registry.SetNewCurrentEvent((yyvsp[-2].formula), (yyvsp[0].formula))) YYABORT;}
 #line 3269 "antimony.tab.cpp"
     break;
 
   case 192: /* event: "'at'" formula "'after'" formula $@7 eventmodifications colonret assignmentlist  */
-#line 503 "antimony.ypp"
+#line 507 "antimony.ypp"
                                                                                                                                           {}
 #line 3275 "antimony.tab.cpp"
     break;
 
   case 193: /* $@8: %empty  */
-#line 504 "antimony.ypp"
+#line 508 "antimony.ypp"
                                           {if (g_registry.SetNewCurrentEvent((yyvsp[0].formula), (yyvsp[-3].variable))) YYABORT;}
 #line 3281 "antimony.tab.cpp"
     break;
 
   case 194: /* event: varmaybein ':' "'at'" formula $@8 eventmodifications colonret assignmentlist  */
-#line 504 "antimony.ypp"
+#line 508 "antimony.ypp"
                                                                                                                                             {}
 #line 3287 "antimony.tab.cpp"
     break;
 
   case 195: /* $@9: %empty  */
-#line 505 "antimony.ypp"
+#line 509 "antimony.ypp"
                                                         {if (g_registry.SetNewCurrentEvent((yyvsp[-2].formula), (yyvsp[0].formula), (yyvsp[-5].variable))) YYABORT;}
 #line 3293 "antimony.tab.cpp"
     break;
 
   case 196: /* event: varmaybein ':' "'at'" formula "'after'" formula $@9 eventmodifications colonret assignmentlist  */
-#line 505 "antimony.ypp"
+#line 509 "antimony.ypp"
                                                                                                                                                              {}
 #line 3299 "antimony.tab.cpp"
     break;
 
   case 197: /* colonret: ':'  */
-#line 508 "antimony.ypp"
+#line 512 "antimony.ypp"
                     {}
 #line 3305 "antimony.tab.cpp"
     break;
 
   case 198: /* colonret: colonret '\n'  */
-#line 509 "antimony.ypp"
+#line 513 "antimony.ypp"
                               {}
 #line 3311 "antimony.tab.cpp"
     break;
 
   case 199: /* eventmodifications: %empty  */
-#line 512 "antimony.ypp"
+#line 516 "antimony.ypp"
                                  {}
 #line 3317 "antimony.tab.cpp"
     break;
 
   case 200: /* eventmodifications: eventmodifications ',' "element name" '=' formula  */
-#line 513 "antimony.ypp"
+#line 517 "antimony.ypp"
                                                            {if (CaselessStrCmp(false, *(yyvsp[-2].word), "priority")) {g_registry.GetCurrentEvent()->SetPriority(*(yyvsp[0].formula));}
                 else if (CaselessStrCmp(false, *(yyvsp[-2].word), "t0")) {if (g_registry.GetCurrentEvent()->SetInitialValue(*(yyvsp[0].formula))) YYABORT;}
                 else if (CaselessStrCmp(false, *(yyvsp[-2].word), "fromTrigger")) {if (g_registry.GetCurrentEvent()->SetUseValuesFromTriggerTime(*(yyvsp[0].formula))) YYABORT;}
@@ -3327,49 +3327,49 @@ yyreduce:
     break;
 
   case 201: /* assignmentlist: variable '=' formula  */
-#line 520 "antimony.ypp"
+#line 524 "antimony.ypp"
                                      {if (g_registry.GetCurrentEvent()->AddResult((yyvsp[-2].variable), (yyvsp[0].formula))) YYABORT;}
 #line 3333 "antimony.tab.cpp"
     break;
 
   case 202: /* assignmentlist: variable '=' formula ':' assignmentlist  */
-#line 521 "antimony.ypp"
+#line 525 "antimony.ypp"
                                                         {if (g_registry.GetCurrentEvent()->AddResult((yyvsp[-4].variable), (yyvsp[-2].formula))) YYABORT;}
 #line 3339 "antimony.tab.cpp"
     break;
 
   case 203: /* assignmentlist: variable '=' formula ':' '\n' assignmentlist  */
-#line 522 "antimony.ypp"
+#line 526 "antimony.ypp"
                                                              {if (g_registry.GetCurrentEvent()->AddResult((yyvsp[-5].variable), (yyvsp[-3].formula))) YYABORT;}
 #line 3345 "antimony.tab.cpp"
     break;
 
   case 204: /* assignmentlist: variable '=' formula ',' assignmentlist  */
-#line 523 "antimony.ypp"
+#line 527 "antimony.ypp"
                                                         {if (g_registry.GetCurrentEvent()->AddResult((yyvsp[-4].variable), (yyvsp[-2].formula))) YYABORT;}
 #line 3351 "antimony.tab.cpp"
     break;
 
   case 205: /* assignmentlist: variable '=' formula ',' '\n' assignmentlist  */
-#line 524 "antimony.ypp"
+#line 528 "antimony.ypp"
                                                              {if (g_registry.GetCurrentEvent()->AddResult((yyvsp[-5].variable), (yyvsp[-3].formula))) YYABORT;}
 #line 3357 "antimony.tab.cpp"
     break;
 
   case 206: /* deletion: "'delete'" variable  */
-#line 527 "antimony.ypp"
+#line 531 "antimony.ypp"
                                     {if (g_registry.CurrentModule()->AddDeletion((yyvsp[0].variable))) YYABORT;}
 #line 3363 "antimony.tab.cpp"
     break;
 
   case 207: /* deletion: deletion ',' variable  */
-#line 528 "antimony.ypp"
+#line 532 "antimony.ypp"
                                       {if (g_registry.CurrentModule()->AddDeletion((yyvsp[0].variable))) YYABORT;}
 #line 3369 "antimony.tab.cpp"
     break;
 
   case 208: /* unitdef: formula  */
-#line 531 "antimony.ypp"
+#line 535 "antimony.ypp"
                         {
                     if ((yyvsp[0].formula)->MakeAllVariablesUnits()) YYABORT;
                     if ((yyvsp[0].formula)->IsSingleVariable()) {
@@ -3387,115 +3387,115 @@ yyreduce:
     break;
 
   case 209: /* constraint: "number" inequality formula  */
-#line 546 "antimony.ypp"
+#line 550 "antimony.ypp"
                                        {if (g_registry.CurrentModule()->AddConstraint((yyvsp[-2].num), (yyvsp[0].formula), (yyvsp[-1].inequality))) YYABORT;}
 #line 3393 "antimony.tab.cpp"
     break;
 
   case 210: /* constraint: '-' "number" inequality formula  */
-#line 547 "antimony.ypp"
+#line 551 "antimony.ypp"
                                            {if (g_registry.CurrentModule()->AddConstraint(-(yyvsp[-2].num), (yyvsp[0].formula), (yyvsp[-1].inequality))) YYABORT;}
 #line 3399 "antimony.tab.cpp"
     break;
 
   case 211: /* constraint: "name of a pre-defined constant" inequality formula  */
-#line 548 "antimony.ypp"
+#line 552 "antimony.ypp"
                                             {if (g_registry.CurrentModule()->AddConstraint((yyvsp[-2].word), (yyvsp[0].formula), (yyvsp[-1].inequality))) YYABORT;}
 #line 3405 "antimony.tab.cpp"
     break;
 
   case 212: /* constraint: "element name" inequality formula  */
-#line 549 "antimony.ypp"
+#line 553 "antimony.ypp"
                                            {if (g_registry.CurrentModule()->AddConstraint((yyvsp[-2].word), (yyvsp[0].formula), (yyvsp[-1].inequality))) YYABORT;}
 #line 3411 "antimony.tab.cpp"
     break;
 
   case 213: /* constraint: "'constraint'" ':' formula  */
-#line 550 "antimony.ypp"
+#line 554 "antimony.ypp"
                                            {if (g_registry.CurrentModule()->AddConstraint((yyvsp[0].formula))) YYABORT;}
 #line 3417 "antimony.tab.cpp"
     break;
 
   case 214: /* constraint: "'constraint'" variable ':' formula  */
-#line 551 "antimony.ypp"
+#line 555 "antimony.ypp"
                                                     {if (g_registry.CurrentModule()->AddConstraint((yyvsp[-2].variable), (yyvsp[0].formula))) YYABORT;}
 #line 3423 "antimony.tab.cpp"
     break;
 
   case 215: /* objective: maxormin formula  */
-#line 554 "antimony.ypp"
+#line 558 "antimony.ypp"
                                               {if (g_registry.CurrentModule()->AddObjective((yyvsp[0].formula), (yyvsp[-1].maxormin))) YYABORT;}
 #line 3429 "antimony.tab.cpp"
     break;
 
   case 216: /* maxormin: "'maximize'"  */
-#line 557 "antimony.ypp"
+#line 561 "antimony.ypp"
                              {(yyval.maxormin) = true;}
 #line 3435 "antimony.tab.cpp"
     break;
 
   case 217: /* maxormin: "'minimize'"  */
-#line 558 "antimony.ypp"
+#line 562 "antimony.ypp"
                              {(yyval.maxormin) = false;}
 #line 3441 "antimony.tab.cpp"
     break;
 
   case 218: /* stringlist: "text string"  */
-#line 561 "antimony.ypp"
+#line 565 "antimony.ypp"
                            { (yyval.stringlist) = new std::vector<std::string>(); (yyval.stringlist)->push_back(*((yyvsp[0].word))); }
 #line 3447 "antimony.tab.cpp"
     break;
 
   case 219: /* stringlist: stringlist ',' "text string"  */
-#line 562 "antimony.ypp"
+#line 566 "antimony.ypp"
                                           { (yyval.stringlist) = (yyvsp[-2].stringlist); (yyval.stringlist)->push_back(*(yyvsp[0].word)); }
 #line 3453 "antimony.tab.cpp"
     break;
 
   case 220: /* stringlist: stringlist ',' '\n' "text string"  */
-#line 563 "antimony.ypp"
+#line 567 "antimony.ypp"
                                                { (yyval.stringlist) = (yyvsp[-3].stringlist); (yyval.stringlist)->push_back(*(yyvsp[0].word)); }
 #line 3459 "antimony.tab.cpp"
     break;
 
   case 221: /* $@10: %empty  */
-#line 565 "antimony.ypp"
+#line 569 "antimony.ypp"
                                     {if (g_registry.SetCurrentModuleIf((yyvsp[0].word), (yyvsp[-1].word))) YYABORT;}
 #line 3465 "antimony.tab.cpp"
     break;
 
   case 222: /* annotationBlock: "element name" "name of an existing module" $@10 annotations "'end'"  */
-#line 565 "antimony.ypp"
+#line 569 "antimony.ypp"
                                                                                                           {g_registry.RevertToPreviousModule();}
 #line 3471 "antimony.tab.cpp"
     break;
 
   case 223: /* annotations: %empty  */
-#line 568 "antimony.ypp"
+#line 572 "antimony.ypp"
                             {}
 #line 3477 "antimony.tab.cpp"
     break;
 
   case 224: /* annotations: "element name" ':' stringlist  */
-#line 569 "antimony.ypp"
+#line 573 "antimony.ypp"
                                        {string modname = g_registry.CurrentModuleName(); g_registry.ProcessGlobalCVTerm(&modname, (yyvsp[-2].word), (yyvsp[0].stringlist));}
 #line 3483 "antimony.tab.cpp"
     break;
 
   case 225: /* cvterm: variable "element name" stringlist  */
-#line 574 "antimony.ypp"
+#line 578 "antimony.ypp"
                                             {if (g_registry.CurrentModule()->ProcessCVTerm((yyvsp[-2].variable),(yyvsp[-1].word),(yyvsp[0].stringlist))) YYABORT;}
 #line 3489 "antimony.tab.cpp"
     break;
 
   case 226: /* cvterm: variable "element name" '.' "element name" stringlist  */
-#line 575 "antimony.ypp"
+#line 579 "antimony.ypp"
                                                         {if (g_registry.ProcessCreatorTerm((yyvsp[-4].variable), (yyvsp[-3].word), (yyvsp[-1].word), (yyvsp[0].stringlist))) YYABORT;}
 #line 3495 "antimony.tab.cpp"
     break;
 
   case 227: /* toplevel_sbo: "name of an existing module" '.' "element name" '=' "number"  */
-#line 579 "antimony.ypp"
+#line 583 "antimony.ypp"
                   { Module* module = g_registry.GetModule(*(yyvsp[-4].word));
                     if (module && (yyvsp[-2].word) && CaselessStrCmp(true, *((yyvsp[-2].word)), "sboTerm")) {
                       module->SetSBOTerm(lround((yyvsp[0].num)));
@@ -3509,7 +3509,7 @@ yyreduce:
     break;
 
   case 228: /* toplevel_sbo: "name of an existing function" '.' "element name" '=' "number"  */
-#line 590 "antimony.ypp"
+#line 594 "antimony.ypp"
                   { Module* function = g_registry.GetModule(*(yyvsp[-4].word));
                     if (function && (yyvsp[-2].word) &&  CaselessStrCmp(true, *((yyvsp[-2].word)), "sboTerm")) {
                       function->SetSBOTerm(lround((yyvsp[0].num)));
@@ -3523,31 +3523,31 @@ yyreduce:
     break;
 
   case 229: /* modulename: "name of an existing module" "'is'" "text string" lineend  */
-#line 602 "antimony.ypp"
+#line 606 "antimony.ypp"
                 { g_registry.GetModule(*(yyvsp[-3].word))->SetDisplayName(*(yyvsp[-1].word)); }
 #line 3529 "antimony.tab.cpp"
     break;
 
   case 230: /* functionname: "name of an existing function" "'is'" "text string" lineend  */
-#line 604 "antimony.ypp"
+#line 608 "antimony.ypp"
                 { g_registry.GetModule(*(yyvsp[-3].word))->SetDisplayName(*(yyvsp[-1].word)); }
 #line 3535 "antimony.tab.cpp"
     break;
 
   case 231: /* modulecvterm: "name of an existing module" "element name" stringlist lineend  */
-#line 607 "antimony.ypp"
+#line 611 "antimony.ypp"
                                                    {if (g_registry.ProcessGlobalCVTerm((yyvsp[-3].word),(yyvsp[-2].word),(yyvsp[-1].stringlist))) YYABORT;}
 #line 3541 "antimony.tab.cpp"
     break;
 
   case 232: /* modulecvterm: "name of an existing module" "element name" '.' "element name" stringlist lineend  */
-#line 608 "antimony.ypp"
+#line 612 "antimony.ypp"
                                                                {if (g_registry.ProcessGlobalCreatorTerm((yyvsp[-5].word), (yyvsp[-4].word), (yyvsp[-2].word), (yyvsp[-1].stringlist))) YYABORT;}
 #line 3547 "antimony.tab.cpp"
     break;
 
   case 233: /* functioncvterm: "name of an existing function" "element name" stringlist lineend  */
-#line 609 "antimony.ypp"
+#line 613 "antimony.ypp"
                                                     {if (g_registry.ProcessGlobalCVTerm((yyvsp[-3].word),(yyvsp[-2].word),(yyvsp[-1].stringlist))) YYABORT;}
 #line 3553 "antimony.tab.cpp"
     break;
@@ -3777,7 +3777,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 611 "antimony.ypp"
+#line 615 "antimony.ypp"
 
 
 
@@ -3847,7 +3847,7 @@ int antimony_yylex(void)
  }
 
   // Parse words
-  if (cc > 0 && (isalpha(cc) || cc == '_')) {
+  if (cc > 0 && (isalpha(cc) || cc == '_') && cc != '`') {
     string word;
     while (cc > 0 && (isalpha(cc) || isdigit(cc) || cc == '_') && !g_registry.input->eof()) {
       word += cc;
@@ -4148,42 +4148,46 @@ int antimony_yylex(void)
   }
 
   //Parse text strings
-  if (cc == '"') {
+  if (cc == '`') {
     string textstring;
-    // First check if we're a three-quote block.
-    if (g_registry.input->peek() == '"') {
+    // Check if we're a three-tick block.
+    if (g_registry.input->peek() == '`') {
       g_registry.input->get(cc);
-      if (g_registry.input->peek() == '"') {
+      if (g_registry.input->peek() == '`') {
         g_registry.input->get(cc);
         g_registry.input->get(cc);
-        while (cc != '"' && !g_registry.input->eof()) {
+        while (cc != '`' && !g_registry.input->eof()) {
           textstring += cc;
           g_registry.input->get(cc);
-          if (cc=='"') {
+          if (cc=='`') {
             g_registry.input->get(cc);
-            if (cc=='"') {
+            if (cc=='`') {
               g_registry.input->get(cc);
-              if (cc=='"') {
+              if (cc=='`') {
                 antimony_yylval.word = g_registry.AddWord(textstring);
                 return TEXTSTRING;
               }
               else {
-                textstring += '"';
-                textstring += '"';
+                textstring += '`';
+                textstring += '`';
               }
             }
             else {
-              textstring += '"';
+              textstring += '`';
             }
           }
         }
       }
       else {
-        // Just two quotes (i.e. empty string)
+        // Just two ticks (i.e. empty string)
         antimony_yylval.word = g_registry.AddWord("");
         return TEXTSTRING;
       }
     }
+    else return '`';
+  }
+  if (cc == '"') {
+    string textstring;
     long ccount = 0;
     g_registry.input->get(cc);
     while (cc != '"' && cc != '\r' && cc != '\n' && !g_registry.input->eof()) {

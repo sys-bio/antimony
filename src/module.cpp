@@ -2313,9 +2313,9 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
           retval += indent + "model notes ";
           if (notes.find_first_of('\n') != string::npos ||
               notes.find_first_of('"') != string::npos) {
-              retval += "\"\"\"\n";
+              retval += "```\n";
               retval += notes;
-              retval += "\n\"\"\"\n";
+              retval += "\n```\n";
           }
           else {
               trim(notes);
@@ -2333,9 +2333,9 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
               retval += indent + m_uniquevars[var]->GetNameDelimitedBy(cc) + " notes ";
               if (notes.find_first_of('\n') != string::npos ||
                   notes.find_first_of('"') != string::npos) {
-                  retval += "\"\"\"\n";
+                  retval += "```\n";
                   retval += notes;
-                  retval += "\n\"\"\"\n";
+                  retval += "\n```\n";
               }
               else {
                   trim(notes);

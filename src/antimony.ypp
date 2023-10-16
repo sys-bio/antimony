@@ -2,6 +2,10 @@
  * This file is designed to be compiled by the 'bison' program with the
  * command:
  *
+ * bison -v antimony.ypp --update
+ *
+ * To see counterexamples, use:
+ *
  * bison -v antimony.ypp --update -Wcounterexamples
  *
  * The '-v' creates a file called 'antimony.output' which can be examined
@@ -677,7 +681,7 @@ int antimony_yylex(void)
  }
 
   // Parse words
-  if (cc > 0 && (isalpha(cc) || cc == '_')) {
+  if (cc > 0 && (isalpha(cc) || cc == '_') && cc != '`') {
     string word;
     while (cc > 0 && (isalpha(cc) || isdigit(cc) || cc == '_') && !g_registry.input->eof()) {
       word += cc;
@@ -978,42 +982,46 @@ int antimony_yylex(void)
   }
 
   //Parse text strings
-  if (cc == '"') {
+  if (cc == '`') {
     string textstring;
-    // First check if we're a three-quote block.
-    if (g_registry.input->peek() == '"') {
+    // Check if we're a three-tick block.
+    if (g_registry.input->peek() == '`') {
       g_registry.input->get(cc);
-      if (g_registry.input->peek() == '"') {
+      if (g_registry.input->peek() == '`') {
         g_registry.input->get(cc);
         g_registry.input->get(cc);
-        while (cc != '"' && !g_registry.input->eof()) {
+        while (cc != '`' && !g_registry.input->eof()) {
           textstring += cc;
           g_registry.input->get(cc);
-          if (cc=='"') {
+          if (cc=='`') {
             g_registry.input->get(cc);
-            if (cc=='"') {
+            if (cc=='`') {
               g_registry.input->get(cc);
-              if (cc=='"') {
+              if (cc=='`') {
                 antimony_yylval.word = g_registry.AddWord(textstring);
                 return TEXTSTRING;
               }
               else {
-                textstring += '"';
-                textstring += '"';
+                textstring += '`';
+                textstring += '`';
               }
             }
             else {
-              textstring += '"';
+              textstring += '`';
             }
           }
         }
       }
       else {
-        // Just two quotes (i.e. empty string)
+        // Just two ticks (i.e. empty string)
         antimony_yylval.word = g_registry.AddWord("");
         return TEXTSTRING;
       }
     }
+    else return '`';
+  }
+  if (cc == '"') {
+    string textstring;
     long ccount = 0;
     g_registry.input->get(cc);
     while (cc != '"' && cc != '\r' && cc != '\n' && !g_registry.input->eof()) {
