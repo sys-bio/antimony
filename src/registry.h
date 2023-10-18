@@ -199,7 +199,11 @@ public:
   // CV terms
   bool ProcessGlobalCVTerm(const std::string* name, const std::string* qual, std::vector<std::string>* resources);
 
+  bool ProcessCreatorTerm(Annotated* a, const std::string* creator, const std::string* cterm, int resource);
+
   bool ProcessCreatorTerm(Annotated* a, const std::string* creator, const std::string* cterm, std::vector<std::string>* resources);
+
+  bool ProcessGlobalCreatorTerm(const std::string* name, const std::string* creator, const std::string* cterm, int resource);
 
   bool ProcessGlobalCreatorTerm(const std::string* name, const std::string* creator, const std::string* cterm, std::vector<std::string>* resources);
 

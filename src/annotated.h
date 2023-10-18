@@ -65,6 +65,9 @@ public:
   bool addCreatorInfo(int creator_number, const std::string& creator_substr, const std::vector<std::string>& resources);
   void SetCreated(libsbml::Date* date);
   bool SetCreated(const std::string& date);
+  bool SetCreated(const std::string& qual, const std::string& date);
+  bool ResetLastModified(const std::string& qual, const std::string& date);
+  bool SetDate(const std::string& qual, const std::string& date, libsbml::Date& stored);
   void AppendModified(std::vector<std::string>* dates);
   void AppendModified(libsbml::Date* date);
   bool AppendModified(std::string* datestr);

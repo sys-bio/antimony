@@ -276,9 +276,22 @@ START_TEST(test_created_model)
 }
 END_TEST
 
+START_TEST(test_created_model_parts)
+{
+    compareFileTranslation("created_model_parts");
+    compareStringTranslation("model foo(); a=3; end; foo created.year 2019; foo created.month 07; foo created.day 29; foo created.hour 10; foo created.minute 53; foo created.second 09", "created_model_parts.xml");
+}
+END_TEST
+
 START_TEST(test_created_model_internal)
 {
     compareStringTranslation("model foo(); a=3; model created \"2019-07-29T10:53:09Z\"; end", "created_model.xml");
+}
+END_TEST
+
+START_TEST(test_created_model_internal_parts)
+{
+    compareStringTranslation("model foo(); a=3; model created.year 2019; model created.month 07; model created.day 29; model created.hour 10; model created.minute 53; model created.second 09; end", "created_model.xml");
 }
 END_TEST
 
@@ -334,9 +347,22 @@ START_TEST(test_modified_model)
 }
 END_TEST
 
+START_TEST(test_modified_model_parts)
+{
+    compareFileTranslation("modified_model_parts");
+    compareStringTranslation("model foo(); a=3; end; foo modified.year 2019; foo modified.month 07; foo modified.day 29; foo modified.hour 10; foo modified.minute 53; foo modified.second 09", "modified_model_parts.xml");
+}
+END_TEST
+
 START_TEST(test_modified_model_internal)
 {
     compareStringTranslation("model foo(); a=3; model modified \"2019-07-29T10:53:09Z\"; end", "modified_model.xml");
+}
+END_TEST
+
+START_TEST(test_modified_model_internal_parts)
+{
+    compareStringTranslation("model foo(); a=3; model modified.year 2019; model modified.month 07; model modified.day 29; model modified.hour 10; model modified.minute 53; model modified.second 09; end", "modified_model.xml");
 }
 END_TEST
 
@@ -403,7 +429,9 @@ create_suite_CVTerms (void)
   TCase *tcase = tcase_create("Antimony CV Terms");
 
   tcase_add_test(tcase, test_created_model);
+  tcase_add_test(tcase, test_created_model_parts);
   tcase_add_test(tcase, test_created_model_internal);
+  tcase_add_test(tcase, test_created_model_internal_parts);
   tcase_add_test(tcase, test_created_element);
   tcase_add_test(tcase, test_notes_model_noxml);
   tcase_add_test(tcase, test_notes_model_noxml_internal);
@@ -412,7 +440,9 @@ create_suite_CVTerms (void)
   tcase_add_test(tcase, test_notes_model_xml_internal);
   tcase_add_test(tcase, test_notes_element_xml);
   tcase_add_test(tcase, test_modified_model);
+  tcase_add_test(tcase, test_modified_model_parts);
   tcase_add_test(tcase, test_modified_model_internal);
+  tcase_add_test(tcase, test_modified_model_internal_parts);
   tcase_add_test(tcase, test_modified_element);
   tcase_add_test(tcase, test_creator_one_model);
   tcase_add_test(tcase, test_creator_one_model_internal);

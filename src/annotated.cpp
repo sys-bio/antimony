@@ -67,6 +67,7 @@ bool Annotated::TransferAnnotationTo(SBase* sbmlobj, string metaid) const
       sbmlobj->setMetaId(metaid);
       sbmlobj->setCreatedDate(const_cast<Date*>(&m_created));
   }
+  sbmlobj->unsetModifiedDates();
   for (size_t i = 0; i < m_modified.size(); i++) {
       sbmlobj->setMetaId(metaid);
       sbmlobj->addModifiedDate(const_cast<Date*>(&m_modified[i]));
@@ -384,6 +385,57 @@ void Annotated::SetCreated(Date* date)
 bool Annotated::SetCreated(const string& date)
 {
     return (m_created.setDateAsString(date) != libsbml::LIBSBML_OPERATION_SUCCESS);
+}
+
+bool Annotated::SetCreated(const string& qual, const string& date)
+{
+    return SetDate(qual, date, m_created);
+}
+
+bool Annotated::ResetLastModified(const string& qual, const string& date)
+{
+    if (m_modified.size() == 0) {
+        libsbml::Date newDate;
+        m_modified.push_back(newDate);
+    }
+    return SetDate(qual, date, m_modified[m_modified.size() - 1]);
+}
+
+bool Annotated::SetDate(const string& qual, const string& date, libsbml::Date& stored)
+{
+    if (qual == "year") {
+        return stored.setYear(stoi(date));
+    }
+    else if (qual == "month") {
+        return stored.setMonth(stoi(date));
+    }
+    else if (qual == "day") {
+        return stored.setDay(stoi(date));
+    }
+    else if (qual == "hour") {
+        return stored.setHour(stoi(date));
+    }
+    else if (qual == "minute") {
+        return stored.setMinute(stoi(date));
+    }
+    else if (qual == "second") {
+        return stored.setSecond(stoi(date));
+    }
+    else if (qual == "time") {
+        stringstream datestream(date);
+        string subs;
+        getline(datestream, subs, ':');
+        stored.setHour(stoi(subs));
+        getline(datestream, subs, ':');
+        stored.setMinute(stoi(subs));
+        if (datestream) {
+            getline(datestream, subs, ':');
+            stored.setSecond(stoi(subs));
+        }
+        return false;
+    }
+    g_registry.SetError("Unknown date element '" + qual + "'.  Allowed elements are 'year', 'month', 'day', 'hour', 'minute', 'second', or 'time'.");
+    return true;
 }
 
 void Annotated::AppendModified(vector<string>* dates)

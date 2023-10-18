@@ -253,6 +253,7 @@ modulebody:     modulepart {}
 
 moduleannotation: MODULE ANTWORD stringlist lineend {if (g_registry.ProcessGlobalCVTerm(&g_registry.CurrentModuleName(),$2,$3)) YYABORT;}
         |       MODULE ANTWORD '.' ANTWORD stringlist lineend {if (g_registry.ProcessGlobalCreatorTerm(&g_registry.CurrentModuleName(),$2, $4, $5)) YYABORT;}
+        |       MODULE ANTWORD '.' ANTWORD NUM lineend {if (g_registry.ProcessGlobalCreatorTerm(&g_registry.CurrentModuleName(),$2, $4, $5)) YYABORT;}
         |       MODULE '.' ANTWORD '=' NUM
                   { Module* module = g_registry.CurrentModule();
                     if (module && $3 && CaselessStrCmp(true, *($3), "sboTerm")) {
@@ -577,6 +578,7 @@ annotations:    /* empty */ {}
 // JKM cvterm accepts multiple URIs in the stringlist
 cvterm:         variable ANTWORD stringlist {if (g_registry.CurrentModule()->ProcessCVTerm($1,$2,$3)) YYABORT;}
         |       variable ANTWORD '.' ANTWORD stringlist {if (g_registry.ProcessCreatorTerm($1, $2, $4, $5)) YYABORT;}
+        |       variable ANTWORD '.' ANTWORD NUM {if (g_registry.ProcessCreatorTerm($1, $2, $4, $5)) YYABORT;}
 
 // JKM setting an SBO term for a module (outside the body of the module)
 toplevel_sbo:     MODNAME '.' ANTWORD '=' NUM
@@ -610,6 +612,7 @@ functionname:   FUNCTION IS TEXTSTRING lineend
 // JKM for parsing cv terms for modules and functions
 modulecvterm:   MODNAME ANTWORD stringlist lineend {if (g_registry.ProcessGlobalCVTerm($1,$2,$3)) YYABORT;}
         |       MODNAME ANTWORD '.' ANTWORD stringlist lineend {if (g_registry.ProcessGlobalCreatorTerm($1, $2, $4, $5)) YYABORT;}
+        |       MODNAME ANTWORD '.' ANTWORD NUM lineend {if (g_registry.ProcessGlobalCreatorTerm($1, $2, $4, $5)) YYABORT;}
 functioncvterm: FUNCTION ANTWORD stringlist lineend {if (g_registry.ProcessGlobalCVTerm($1,$2,$3)) YYABORT;}
 
 %%

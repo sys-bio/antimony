@@ -855,7 +855,7 @@ bool Module::ProcessCVTerm(Annotated* a, const string* qual, vector<string>* res
         }
         else if (CaselessStrCmp(true, *qual, "created")) {
             if (resources->size() > 1) {
-                g_registry.SetError("Cannot set mulitple 'created' dates.");
+                g_registry.SetError("Cannot set multiple 'created' dates.");
                 return true;
             }
             a->SetCreated((*resources)[0]);

@@ -1476,7 +1476,7 @@ bool Registry::ProcessGlobalCVTerm(const string* name, const string* qual, vecto
     }
     else if (CaselessStrCmp(true, *qual, "created")) {
         if (resources->size() > 1) {
-            g_registry.SetError("Cannot set mulitple 'created' dates.");
+            g_registry.SetError("Cannot set multiple 'created' dates.");
             return true;
         }
         bool ret = module->SetCreated((*resources)[0]);
@@ -1506,9 +1506,34 @@ bool Registry::ProcessGlobalCVTerm(const string* name, const string* qual, vecto
   }
 }
 
+bool Registry::ProcessCreatorTerm(Annotated* a, const string* creator, const string* cterm, int resource)
+{
+    string val = to_string(resource);
+    vector<string> vals;
+    vals.push_back(val);
+    return ProcessCreatorTerm(a, creator, cterm, &vals);
+}
+
 bool Registry::ProcessCreatorTerm(Annotated* a, const string* creator, const string* cterm, vector<string>* resources)
 {
     int creator_number = 0;
+
+    if (*creator == "created") {
+        if (resources->size() > 1) {
+            SetError("Unable to set multiple date elements at once.");
+            return true;
+        }
+        a->SetCreated(*cterm, (*resources)[0]);
+        return false;
+    }
+    if (*creator == "modified") {
+        if (resources->size() > 1) {
+            SetError("Unable to set multiple date elements at once.");
+            return true;
+        }
+        a->ResetLastModified(*cterm, (*resources)[0]);
+        return false;
+    }
     if (CheckCreatorString(*creator, creator_number)) {
         return true;
     }
@@ -1516,6 +1541,14 @@ bool Registry::ProcessCreatorTerm(Annotated* a, const string* creator, const str
         return true;
     }
     return false;
+}
+
+bool Registry::ProcessGlobalCreatorTerm(const string* name, const string* creator, const string* cterm, int resource)
+{
+    string val = to_string(resource);
+    vector<string> vals;
+    vals.push_back(val);
+    return ProcessGlobalCreatorTerm(name, creator, cterm, &vals);
 }
 
 bool Registry::ProcessGlobalCreatorTerm(const string* name, const string* creator, const string* cterm, vector<string>* resources)
@@ -1530,10 +1563,24 @@ bool Registry::ProcessGlobalCreatorTerm(const string* name, const string* creato
             return true;
         }
         int creator_number = 0;
-        if (CheckCreatorString(*creator, creator_number)) {
+        if (*creator == "created") {
+            if (resources->size() > 1) {
+                SetError("Unable to set multiple date elements at once.");
+                return true;
+            }
+            module->SetCreated(*cterm, (*resources)[0]);
+        }
+        else if (*creator == "modified") {
+            if (resources->size() > 1) {
+                SetError("Unable to set multiple date elements at once.");
+                return true;
+            }
+            module->ResetLastModified(*cterm, (*resources)[0]);
+        }
+        else if (CheckCreatorString(*creator, creator_number)) {
             return true;
         }
-        if (module->addCreatorInfo(creator_number, *cterm, *resources)) {
+        else if (module->addCreatorInfo(creator_number, *cterm, *resources)) {
             return true;
         }
         module->TransferAnnotationToModel(module->GetModelIfCreated());
