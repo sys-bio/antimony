@@ -938,6 +938,7 @@ bool Registry::SetCurrentModuleIf(const string* modname, const string* annotatio
         return true;
     }
     m_currentModules.push_back(*modname);
+    return false;
 }
 
 void Registry::RevertToPreviousModule()
