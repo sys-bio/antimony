@@ -251,9 +251,21 @@ modulebody:     modulepart {}
         |       modulebody moduleannotation{}
         ;
 
-moduleannotation: MODULE ANTWORD stringlist lineend {if (g_registry.ProcessGlobalCVTerm(&g_registry.CurrentModuleName(),$2,$3)) YYABORT;}
-        |       MODULE ANTWORD '.' ANTWORD stringlist lineend {if (g_registry.ProcessGlobalCreatorTerm(&g_registry.CurrentModuleName(),$2, $4, $5)) YYABORT;}
-        |       MODULE ANTWORD '.' ANTWORD NUM lineend {if (g_registry.ProcessGlobalCreatorTerm(&g_registry.CurrentModuleName(),$2, $4, $5)) YYABORT;}
+moduleannotation: MODULE ANTWORD stringlist lineend
+                {
+                  string modname = g_registry.CurrentModuleName();
+                  if (g_registry.ProcessGlobalCVTerm(&modname,$2,$3)) YYABORT;
+                }
+        |       MODULE ANTWORD '.' ANTWORD stringlist lineend
+                {
+                  string modname = g_registry.CurrentModuleName();
+                  if (g_registry.ProcessGlobalCreatorTerm(&modname, $2, $4, $5)) YYABORT;
+                }
+        |       MODULE ANTWORD '.' ANTWORD NUM lineend
+                {
+                  string modname = g_registry.CurrentModuleName();
+                  if (g_registry.ProcessGlobalCreatorTerm(&modname, $2, $4, $5)) YYABORT;
+                }
         |       MODULE '.' ANTWORD '=' NUM
                   { Module* module = g_registry.CurrentModule();
                     if (module && $3 && CaselessStrCmp(true, *($3), "sboTerm")) {
