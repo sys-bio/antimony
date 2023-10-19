@@ -186,6 +186,7 @@ public:
   //void  LoadSBML(const SBMLDocument* sbmldoc);
   void  LoadSBML(libsbml::Model* sbml);
   const libsbml::SBMLDocument* GetSBML(bool comp);
+  libsbml::Model* GetModelIfCreated();
   void  CreateSBMLModel(bool comp);
   void  SetAssignmentFor(libsbml::Model* sbmlmod, const Variable* var, const std::map<const Variable*, Variable>& syncmap, bool comp, std::set<std::pair<std::string, const Variable*> > referencedVars);
   void  FindOrCreateLocalVersionOf(const Variable* var, libsbml::Model* sbmlmod);

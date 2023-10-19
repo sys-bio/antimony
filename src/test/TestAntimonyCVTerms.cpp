@@ -19,107 +19,8 @@ BEGIN_C_DECLS
 extern char *TestDataDirectory;
 
 extern void compareFileTranslation(const string& base);
-//{
-//  clearPreviousLoads();
-//  // load document
-//  string dir(TestDataDirectory);
-//  string filename = dir + base + ".txt";
-//  long ret = loadAntimonyFile(filename.c_str());
-//  fail_unless(ret != -1);
-//  char* atosbml = getCompSBMLString(NULL);
-//  fail_unless(atosbml != NULL);
-//
-//  string sbmlfile = dir + base + ".xml";
-//  SBMLDocument* doc = readSBMLFromFile(sbmlfile.c_str());
-//  string matching = writeSBMLToStdString(doc);
-//  fail_unless(string(atosbml) == matching);
-//
-//  //Now check the roundtripped version:
-//  ret = loadSBMLString(matching.c_str());
-//  char* roundtrip = getAntimonyString(NULL);
-//  fail_unless(roundtrip != NULL);
-//  string rtfilename = dir + base + "_rt.txt";
-//  ret = loadAntimonyFile(rtfilename.c_str());
-//  fail_unless(ret != -1);
-//  matching = getAntimonyString(NULL);
-//  fail_unless(string(roundtrip) == string(matching));
-//
-//  delete doc;
-//  freeAll();
-//}
-
 extern void compareFileTranslationWithRenaming(const string& base);
-//{
-//  clearPreviousLoads();
-//  // load document
-//  string dir(TestDataDirectory);
-//  string filename = dir + base + ".xml";
-//  long ret = loadSBMLFile(filename.c_str());
-//  fail_unless(ret != -1);
-//  char* sbmltoa = getAntimonyString(NULL);
-//  fail_unless(sbmltoa != NULL);
-//  char* sbmlrt = getSBMLString(NULL);
-//  fail_unless(sbmlrt != NULL);
-//
-//
-//  filename = dir + base + ".txt";
-//  ret = loadAntimonyFile(filename.c_str());
-//  fail_unless(ret != -1);
-//  char* matching = getAntimonyString(NULL);
-//  fail_unless(string(sbmltoa) == string(matching));
-//
-//  //Now check the roundtripped version:
-//  char* roundtrip = getSBMLString(NULL);
-//  fail_unless(roundtrip != NULL);
-//  fail_unless(string(roundtrip) == string(sbmlrt));
-//
-//  freeAll();
-//}
-
 extern void compareStringTranslation(const string& antimony, const string& sbml);
-//{
-//  clearPreviousLoads();
-//  long ret = loadAntimonyString(antimony.c_str());
-//  fail_unless(ret != -1);
-//  char* atosbml = getCompSBMLString(NULL);
-//  fail_unless(atosbml != NULL);
-//
-//  string dir(TestDataDirectory);
-//  string sbmlfile = dir + sbml;
-//  SBMLDocument* doc = readSBMLFromFile(sbmlfile.c_str());
-//  string matchingdoc = writeSBMLToStdString(doc);
-//
-//  fail_unless(string(atosbml) == matchingdoc);
-//  delete doc;
-//  freeAll();
-//}
-
-//if(qual == "is" || qual == "identity" || qual == "biological_entity_is")
-//return BQB_IS;
-//else if(qual == "hasPart" || qual == "part")
-//return BQB_HAS_PART;
-//else if(qual == "isPartOf" || qual == "parthood")
-//return BQB_IS_PART_OF;
-//else if(qual == "isVersionOf" || qual == "hypernym")
-//return BQB_IS_VERSION_OF;
-//else if(qual == "hasVersion" || qual == "version")
-//return BQB_HAS_VERSION;
-//else if(qual == "isHomologTo" || qual == "homolog")
-//return BQB_IS_HOMOLOG_TO;
-//else if(qual == "isDescribedBy" || qual == "description")
-//return BQB_IS_DESCRIBED_BY;
-//else if(qual == "isEncodedBy" || qual == "encoder")
-//return BQB_IS_ENCODED_BY;
-//else if(qual == "encodes" || qual == "encodement")
-//return BQB_ENCODES;
-//else if(qual == "occursIn" || qual == "container")
-//return BQB_OCCURS_IN;
-//else if(qual == "hasProperty" || qual == "property")
-//return BQB_HAS_PROPERTY;
-//else if(qual == "isPropertyOf" || qual == "propertyBearer")
-//return BQB_IS_PROPERTY_OF;
-//else if(qual == "hasTaxon" || qual == "taxon")
-//return BQB_HAS_TAXON;
 
 START_TEST (test_identity)
 {
@@ -368,6 +269,156 @@ START_TEST (test_hasTaxon_txt2)
 }
 END_TEST
 
+START_TEST(test_created_model)
+{
+    compareFileTranslation("created_model");
+    compareStringTranslation("model foo(); a=3; end; foo created \"2019-07-29T10:53:09Z\"", "created_model.xml");
+}
+END_TEST
+
+START_TEST(test_created_model_parts)
+{
+    compareFileTranslation("created_model_parts");
+    compareStringTranslation("model foo(); a=3; end; foo created.year 2019; foo created.month 07; foo created.day 29; foo created.hour 10; foo created.minute 53; foo created.second 09", "created_model_parts.xml");
+}
+END_TEST
+
+START_TEST(test_created_model_internal)
+{
+    compareStringTranslation("model foo(); a=3; model created \"2019-07-29T10:53:09Z\"; end", "created_model.xml");
+}
+END_TEST
+
+START_TEST(test_created_model_internal_parts)
+{
+    compareStringTranslation("model foo(); a=3; model created.year 2019; model created.month 07; model created.day 29; model created.hour 10; model created.minute 53; model created.second 09; end", "created_model.xml");
+}
+END_TEST
+
+START_TEST(test_created_element)
+{
+    compareFileTranslation("created_element");
+    compareStringTranslation("a=3; a created \"2019-07-29T10:53:09Z\"", "created_element.xml");
+}
+END_TEST
+
+START_TEST(test_notes_model_noxml)
+{
+    compareFileTranslation("notes_model_noxml");
+    compareStringTranslation("model foo(); a=3; end; foo notes \"Just text, no XML\"", "notes_model_noxml.xml");
+}
+END_TEST
+
+START_TEST(test_notes_model_noxml_internal)
+{
+    compareStringTranslation("model foo(); a=3; model notes \"Just text, no XML\"; end", "notes_model_noxml.xml");
+}
+END_TEST
+
+START_TEST(test_notes_element_noxml)
+{
+    compareFileTranslation("notes_element_noxml");
+    compareStringTranslation("a notes \"Just text, no XML\"", "notes_element_noxml.xml");
+}
+END_TEST
+
+START_TEST(test_notes_model_xml)
+{
+    compareFileTranslation("notes_model_xml");
+}
+END_TEST
+
+START_TEST(test_notes_model_xml_internal)
+{
+    compareFileTranslation("notes_model_xml_internal");
+}
+END_TEST
+
+START_TEST(test_notes_element_xml)
+{
+    compareFileTranslation("notes_element_xml");
+}
+END_TEST
+
+START_TEST(test_modified_model)
+{
+    compareFileTranslation("modified_model");
+    compareStringTranslation("model foo(); a=3; end; foo modified \"2019-07-29T10:53:09Z\"", "modified_model.xml");
+}
+END_TEST
+
+START_TEST(test_modified_model_parts)
+{
+    compareFileTranslation("modified_model_parts");
+    compareStringTranslation("model foo(); a=3; end; foo modified.year 2019; foo modified.month 07; foo modified.day 29; foo modified.hour 10; foo modified.minute 53; foo modified.second 09", "modified_model_parts.xml");
+}
+END_TEST
+
+START_TEST(test_modified_model_internal)
+{
+    compareStringTranslation("model foo(); a=3; model modified \"2019-07-29T10:53:09Z\"; end", "modified_model.xml");
+}
+END_TEST
+
+START_TEST(test_modified_model_internal_parts)
+{
+    compareStringTranslation("model foo(); a=3; model modified.year 2019; model modified.month 07; model modified.day 29; model modified.hour 10; model modified.minute 53; model modified.second 09; end", "modified_model.xml");
+}
+END_TEST
+
+START_TEST(test_modified_element)
+{
+    compareFileTranslation("modified_element");
+    compareStringTranslation("a=3; a modified \"2019-07-29T10:53:09Z\"", "modified_element.xml");
+}
+END_TEST
+
+START_TEST(test_creator_one_model)
+{
+    compareFileTranslation("creator_one_model");
+    compareStringTranslation("model foo(); a=3; end; foo creator1.givenName \"Lucian\"; foo creator1.familyName \"Smith\"; foo creator1.organization \"UW\"; foo creator1.email \"lpsmith@uw.edu\"", "creator_one_model.xml");
+}
+END_TEST
+
+START_TEST(test_creator_one_model_internal)
+{
+    compareStringTranslation("model foo(); a=3; model creator1.givenName \"Lucian\"; model creator1.familyName \"Smith\"; model creator1.organization \"UW\"; model creator1.email \"lpsmith@uw.edu\"; end", "creator_one_model.xml");
+}
+END_TEST
+
+START_TEST(test_creator_one_element)
+{
+    compareFileTranslation("creator_one_element");
+    compareStringTranslation("a=3; a creator1.givenName \"Lucian\"; a creator1.familyName \"Smith\"; a creator1.organization \"UW\"; a creator1.email \"lpsmith@uw.edu\"", "creator_one_element.xml");
+}
+END_TEST
+
+START_TEST(test_creator_blank_model)
+{
+    compareFileTranslation("creator_blank_model");
+    compareStringTranslation("model foo(); a=3; end; foo creator.givenName \"Lucian\"; foo creator.familyName \"Smith\"; foo creator.organization \"UW\"; foo creator.email \"lpsmith@uw.edu\"", "creator_blank_model.xml");
+}
+END_TEST
+
+START_TEST(test_creator_blank_model_internal)
+{
+    compareStringTranslation("model foo(); a=3; model creator.givenName \"Lucian\"; model creator.familyName \"Smith\"; model creator.organization \"UW\"; model creator.email \"lpsmith@uw.edu\"; end", "creator_blank_model.xml");
+}
+END_TEST
+
+START_TEST(test_creator_two_model)
+{
+    compareFileTranslation("creator_two_model");
+    compareStringTranslation("model foo(); a=3; end; foo creator.givenName \"Lucian\"; foo creator.familyName \"Smith\"; foo creator.organization \"UW\"; foo creator.email \"lpsmith@uw.edu\";foo creator2.name \"George Holtzour\"; foo creator2.organization \"Family lore\"; foo creator2.email \"george@theholtz.net\"", "creator_two_model.xml");
+}
+END_TEST
+
+START_TEST(test_creator_two_model_internal)
+{
+    compareStringTranslation("model foo(); a=3; model creator.givenName \"Lucian\"; model creator.familyName \"Smith\"; model creator.organization \"UW\"; model creator.email \"lpsmith@uw.edu\";model creator2.name \"George Holtzour\"; model creator2.organization \"Family lore\"; model creator2.email \"george@theholtz.net\"; end", "creator_two_model.xml");
+}
+END_TEST
+
 
 
 
@@ -377,7 +428,27 @@ create_suite_CVTerms (void)
   Suite *suite = suite_create("Antimony CV Terms");
   TCase *tcase = tcase_create("Antimony CV Terms");
 
-  tcase_add_test( tcase, test_identity);
+  tcase_add_test(tcase, test_created_model);
+  tcase_add_test(tcase, test_created_model_parts);
+  tcase_add_test(tcase, test_created_model_internal);
+  tcase_add_test(tcase, test_created_model_internal_parts);
+  tcase_add_test(tcase, test_created_element);
+  tcase_add_test(tcase, test_notes_model_noxml);
+  tcase_add_test(tcase, test_notes_model_noxml_internal);
+  tcase_add_test(tcase, test_notes_element_noxml);
+  tcase_add_test(tcase, test_notes_model_xml);
+  tcase_add_test(tcase, test_notes_model_xml_internal);
+  tcase_add_test(tcase, test_notes_element_xml);
+  tcase_add_test(tcase, test_modified_model);
+  tcase_add_test(tcase, test_modified_model_parts);
+  tcase_add_test(tcase, test_modified_model_internal);
+  tcase_add_test(tcase, test_modified_model_internal_parts);
+  tcase_add_test(tcase, test_modified_element);
+  tcase_add_test(tcase, test_creator_one_model);
+  tcase_add_test(tcase, test_creator_one_model_internal);
+  tcase_add_test(tcase, test_creator_one_element);
+
+  tcase_add_test(tcase, test_identity);
   tcase_add_test( tcase, test_identity_txt);
   tcase_add_test( tcase, test_identity_txt2);
   tcase_add_test( tcase, test_hasPart);
