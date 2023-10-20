@@ -117,6 +117,8 @@ public:
   //Modules
   bool NewCurrentModule(const std::string* name, const std::string* displayname=NULL, bool ismain=false);
   Module* CurrentModule();
+  std::string CurrentModuleName();
+  bool SetCurrentModuleIf(const std::string* modname, const std::string* annotation);
   void RevertToPreviousModule();
 
   //Functions
@@ -196,6 +198,16 @@ public:
 
   // CV terms
   bool ProcessGlobalCVTerm(const std::string* name, const std::string* qual, std::vector<std::string>* resources);
+
+  bool ProcessCreatorTerm(Annotated* a, const std::string* creator, const std::string* cterm, int resource);
+
+  bool ProcessCreatorTerm(Annotated* a, const std::string* creator, const std::string* cterm, std::vector<std::string>* resources);
+
+  bool ProcessGlobalCreatorTerm(const std::string* name, const std::string* creator, const std::string* cterm, int resource);
+
+  bool ProcessGlobalCreatorTerm(const std::string* name, const std::string* creator, const std::string* cterm, std::vector<std::string>* resources);
+
+  bool CheckCreatorString(const std::string& qualifier, int& creator_number);
 
   //Keeping track of malloc'd stuff so we can free it ourselves if need be.
   std::vector<char*>    m_charstars;
