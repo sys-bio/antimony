@@ -1729,6 +1729,8 @@ LIB_EXTERN return_type getTypeOfSymbol(const char* moduleName, const char* symbo
       return allConstraints;
   case varStoichiometry:
       return allStoichiometries;
+  case varAlgebraicRule:
+      return allAlgebraicRules;
   }
   assert(false); //uncaught var_type
   g_registry.SetError("Coding error:  Didn't include a return type for variable type " + VarTypeToString(vtype) + " in getTypeOfSymbol; antimony_api.cpp.  Email the author to fix.");

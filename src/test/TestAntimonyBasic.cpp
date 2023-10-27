@@ -584,6 +584,27 @@ START_TEST (test_negparen_txt)
 }
 END_TEST
 
+START_TEST(test_algrule)
+{
+    compareFileTranslation("algrule");
+    compareStringTranslation("0=x-2", "algrule.xml");
+}
+END_TEST
+
+START_TEST(test_algrule_id)
+{
+    compareFileTranslation("algrule_id");
+    compareStringTranslation("alg1: 0=x-2", "algrule_id.xml");
+}
+END_TEST
+
+START_TEST(test_algrule_idname)
+{
+    compareFileTranslation("algrule_idname");
+    compareStringTranslation("alg1: 0=x-2; alg1 is \"algebraic rule 1\"", "algrule_idname.xml");
+}
+END_TEST
+
 
 
 

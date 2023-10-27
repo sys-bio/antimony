@@ -146,6 +146,7 @@ formula_type Variable::GetFormulaType() const
   case varCompartment:
   case varUndefined:
   case varStoichiometry:
+  case varAlgebraicRule:
     return m_formulatype;
   case varFormulaOperator:
   case varDNA:
@@ -186,6 +187,7 @@ const Formula* Variable::GetFormula() const
   case varUnitDefinition:
   case varUncertWrapper:
   case varStoichiometry:
+  case varAlgebraicRule:
     return &(m_valFormula);
   case varReactionUndef:
   case varReactionGene:
@@ -225,6 +227,7 @@ Formula* Variable::GetFormula()
   case varUnitDefinition:
   case varUncertWrapper:
   case varStoichiometry:
+  case varAlgebraicRule:
     return &(m_valFormula);
   case varReactionUndef:
   case varReactionGene:
@@ -260,6 +263,7 @@ const Formula* Variable::GetInitialAssignment() const
   case varCompartment:
   case varUndefined:
   case varStoichiometry:
+  case varAlgebraicRule:
     if (m_formulatype == formulaINITIAL || m_formulatype==formulaRATE) {
       return &(m_valFormula);
     }
@@ -594,6 +598,7 @@ bool Variable::GetIsConst() const
   case varReactionUndef:
   case varReactionGene:
   case varInteraction:
+  case varAlgebraicRule:
     return false;
   case varSpeciesUndef:
     if (m_const == constDEFAULT) return false;
@@ -1194,6 +1199,66 @@ bool Variable::SetRateRule(Formula* formula)
   m_formulatype = formulaRATE;
 
   return false;
+}
+
+bool Variable::SetAlgebraicRule(int val, Formula* formula)
+{
+    if (IsPointer()) {
+        return GetSameVariable()->SetAlgebraicRule(val, formula);
+    }
+    if (val != 0) {
+        formula->AddParentheses();
+        formula->AddMathThing('-');
+        formula->AddNum(val);
+    }
+#ifndef NSBML
+    string formstring = formula->ToSBMLString(GetStrandVars());
+    if (formstring.size() > 0) {
+        ASTNode_t* ASTform = parseStringToASTNode(formstring);
+        if (ASTform == NULL) {
+            char* l3err = SBML_getLastParseL3Error();
+            g_registry.SetError("In the formula \"" + formstring + "\" for '" + GetNameDelimitedBy(".") + "':  " + l3err);
+            free(l3err);
+            return true;
+        }
+        else {
+            delete ASTform;
+        }
+    }
+#endif
+    if (!CanHaveAlgebraicRule(m_type)) {
+        g_registry.SetError("The variable '" + GetNameDelimitedBy(".") + "' is the type " + VarTypeToString(m_type) + ", and may not have an algebraic rule associated with it.");
+        return true;
+    }
+    if (m_type == varUndefined) {
+        m_type = varAlgebraicRule;
+    }
+    if (formula->MakeUnitVariablesUnits()) return true;
+
+    //If nothing is set variable explicitly, set all default variables to non-const
+    vector<vector<string> > formvars = formula->GetVariables();
+    Module* thismod = g_registry.GetModule(m_module);
+    vector<Variable*> algvars;
+    bool anyNonConst = false;
+    for (size_t fv = 0; fv < formvars.size(); fv++) {
+        Variable* var = thismod->GetVariable(formvars[fv]);
+        algvars.push_back(var);
+        if (var->GetConstType() == constVAR) {
+            anyNonConst = true;
+        }
+    }
+    if (!anyNonConst) {
+        for (size_t v = 0; v < algvars.size(); v++) {
+            Variable* var = algvars[v];
+            if (var->GetConstType() == constDEFAULT) {
+                algvars[v]->SetIsConst(false);
+            }
+        }
+    }
+
+    m_formulatype = formulaALGEBRAIC;
+    m_valFormula = *formula;
+    return false;
 }
 
 bool Variable::SetReaction(AntimonyReaction* rxn)
