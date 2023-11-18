@@ -965,7 +965,7 @@ const Variable* Module::GetVariableFromSymbol(string varname) const
       return m_uniquevars[v];
     }
   }
-  g_registry.SetError("Unknown variable " + varname + " in module " + m_modulename + ".");
+  //It's fine if the symbol doesn't exist; it could be any number of predefined symbols.
   return NULL;
 }
 
