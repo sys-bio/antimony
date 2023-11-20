@@ -34,8 +34,8 @@ stages:
         variables:
           LLVM_CACHE: 'false'
           MinicondaRoot : 'C:\Miniconda'
-          PythonName: 'py39'
-          PythonVersion: '3.9'
+          PythonName: 'py311'
+          PythonVersion: '3.11'
           PythonRoot: '$(MinicondaRoot)\envs\$(PythonName)'
           PythonLibDir: '$(PythonRoot)\Lib'
           PythonScriptsDir: '$(PythonRoot)\Scripts'
@@ -231,7 +231,7 @@ stages:
         displayName: MacBuildAntimonyCpp
         continueOnError: "false"
         pool:
-          vmImage: 'macOS-11'
+          vmImage: 'macOS-12'
         strategy:
           matrix:
             64-bit Mac Release:
@@ -239,8 +239,8 @@ stages:
             64-bit Mac Debug:
               BuildType: Debug
         variables:
-          PythonVersion: 3.9
-          PythonName: py39
+          PythonVersion: 3.11
+          PythonName: py311
           MinicondaRoot : '/usr/local/miniconda'
           PythonRoot: '$(MinicondaRoot)/envs/$(PythonName)'
           PythonLibDir: '$(PythonRoot)/lib'
@@ -375,7 +375,7 @@ stages:
               targetFolder: $(Build.ArtifactStagingDirectory)
             displayName: Copy to Staging Area
           - publish: $(Build.ArtifactStagingDirectory)
-            artifact: antimony-MacOS10.15-$(BuildType)
+            artifact: antimony-MacOS12-$(BuildType)
             displayName: Publish
           - script: |
               rm -r $(Build.ArtifactStagingDirectory)/*
@@ -397,7 +397,7 @@ stages:
           - task: CopyFiles@2
             inputs:
               contents: '$(INSTALL_DIR)/**'
-              targetFolder: $(Build.ArtifactStagingDirectory)/antimony-MacOS10.15-python
+              targetFolder: $(Build.ArtifactStagingDirectory)/antimony-MacOS12-python
             condition: eq(variables.BuildType, 'Release')
             displayName: Copy Install Tree to Staging Area
           - task: CopyFiles@2
@@ -408,7 +408,7 @@ stages:
             condition: eq(variables.BuildType, 'Release')
             displayName: Copy Pip Wheels to Staging Area
           - publish: $(Build.ArtifactStagingDirectory)
-            artifact: antimony-MacOS10.15-python
+            artifact: antimony-MacOS12-python
             condition: eq(variables.BuildType, 'Release')
             displayName: Publish Pip Wheels Artifacts
 
@@ -431,7 +431,7 @@ stages:
           SOURCE_DIRECTORY: '$(System.DefaultWorkingDirectory)'
           INSTALL_DIRECTORY: '$(System.DefaultWorkingDirectory)/install-azure'
           MinicondaRoot: '/Miniconda3'
-          PythonRoot: '$(MinicondaRoot)/envs/py39'
+          PythonRoot: '$(MinicondaRoot)/envs/py311'
           CondaExecutable: '$(MinicondaRoot)/bin/conda'
           PythonExecutable: '$(PythonRoot)/bin/python'
           PythonLibDir: '$(PythonRoot)/lib'
