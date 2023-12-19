@@ -11,6 +11,9 @@ model moddef1()
   // Rate Rules:
   t1' = time/t1 + 3;
 
+  // Algebraic Rules:
+  _alg0: 0 = t4 - delay(t3, time/2);
+
   // Reactions:
   J0:  -> s1; t3*time/(s1*delay(t5, 2e-1));
 
@@ -48,6 +51,9 @@ model *doc0()
   sub1.t3 is t3;
   sub1.t4 is t4;
   sub1.t5 is t5;
+
+  // Algebraic Rules:
+  sub1._alg0: 0 = t4 - delay(t3, timeconv*(time/timeconv)/2);
 
   // Variable initializations:
   timeconv = 60;

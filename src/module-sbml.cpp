@@ -232,6 +232,7 @@ void Module::FindOrCreateLocalVersionOf(const Variable* var, libsbml::Model* sbm
   case varUncertWrapper:
   case varConstraint:
   case varStoichiometry:
+  case varAlgebraicRule:
     assert(false); //Unhandled type
     break;
   }
@@ -851,7 +852,8 @@ void Module::LoadSBML(Model* sbml)
           case SBML_EVENT:
           case SBML_UNIT_DEFINITION:
           case SBML_COMP_SUBMODEL:
-            if (!target->isSetId()) {
+          case SBML_ALGEBRAIC_RULE:
+              if (!target->isSetId()) {
               g_registry.AddWarning("Unable to process deletion " + delname + "from submodel " + submodname + " in model " + GetModuleName() + ", because the target " + SBMLTypeCode_toString(target->getTypeCode(), target->getPackageName().c_str()) + " element did not have an ID.");
               continue;
             }
@@ -903,8 +905,6 @@ void Module::LoadSBML(Model* sbml)
               m_variables.pop_back();
             }
             break;
-          case SBML_ALGEBRAIC_RULE:
-            g_registry.AddWarning("Unable to process deletion " + delname + "from submodel " + submodname + " in model " + GetModuleName() + ".  " + SBMLTypeCode_toString(target->getTypeCode(), "core") + " elements cannot be expressed in Antimony at all.  (Deleting them is therefore safe, because they are automatically dropped anyway.)");
           case SBML_CONSTRAINT:
             g_registry.AddWarning("Unable to process deletion " + delname + "from submodel " + submodname + " in model " + GetModuleName() + ", because Constraints do not have IDs in SBML.");
             break;
@@ -1312,7 +1312,25 @@ void Module::LoadSBML(Model* sbml)
     TranslateRulesAndAssignmentsTo(parameter, var);
   }
 
-  //If we ever get algebraic rules, we will need to set them up here, for both comp and non-comp (and check their replacements).
+  //Algebraic rules
+  for (unsigned int r = 0; r < sbml->getNumRules(); r++) {
+      Rule* rule = sbml->getRule(r);
+      if (rule->isAlgebraic()) {
+          sbmlname = getNameFromSBMLObject(rule, "_alg");
+          Variable* var = AddOrFindVariable(&sbmlname);
+          var->PopulateCVTerms((SBase*)rule);
+          var->ReadAnnotationFrom(rule);
+          if (rule->isSetName()) {
+              var->SetDisplayName(rule->getName());
+          }
+          const ASTNode* astn = rule->getMath();
+          string formulastring = parseASTNodeToString(astn);
+          Formula formula;
+          setFormulaWithString(formulastring, &formula, this);
+          var->SetAlgebraicRule(0, &formula);
+      }
+  }
+  
 
   //Reactions
   for (unsigned int rxn=0; rxn<sbml->getNumReactions(); rxn++) {
@@ -2070,6 +2088,23 @@ void Module::CreateSBMLModel(bool comp)
     if (ftype != formulaINITIAL) {
       param->setConstant(false);
     }
+  }
+
+  //Algebraic rules
+  size_t numars = GetNumVariablesOfType(allAlgebraicRules, comp);
+  for (size_t ar = 0; ar < numars; ar++) {
+      const Variable* arvar = GetNthVariableOfType(allAlgebraicRules, ar, comp);
+      const Formula* formula = arvar->GetFormula();
+      Rule* algrule = sbmlmod->createAlgebraicRule();
+      ASTNode* astnode = parseStringToASTNode(formula->ToSBMLString());
+      algrule->setMath(astnode);
+      delete astnode;
+      algrule->setIdAttribute(arvar->GetNameDelimitedBy(cc));
+      arvar->TransferAnnotationTo(algrule, GetModuleName() + "." + arvar->GetNameDelimitedBy(cc));
+      if (arvar->GetDisplayName() != "") {
+          algrule->setName(arvar->GetDisplayName());
+      }
+      assert(arvar->GetFormulaType() == formulaALGEBRAIC);
   }
 
   //Reactions

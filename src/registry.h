@@ -154,8 +154,11 @@ public:
   bool SetNewCurrentEvent(Formula* trigger, Variable* var);
   bool SetNewCurrentEvent(Formula* delay, Formula* trigger, Variable* var);
   AntimonyEvent* GetCurrentEvent();
-  Variable* GetCurrentSubmodel();
 
+  //Algebraic rules
+  bool AddNewAlgebraicRuleToCurrent(int val, Formula* formula);
+
+  Variable* GetCurrentSubmodel();
   void SetError(std::string error) {m_error = error;};
   void AddErrorPrefix(std::string error) {m_error = error + m_error;};
   void AddWarning(std::string warning) {m_warnings.push_back(warning);};

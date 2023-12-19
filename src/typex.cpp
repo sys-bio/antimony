@@ -31,7 +31,8 @@ bool IsReaction(const var_type vtype)
   case varSboTermWrapper:
   case varUncertWrapper:
   case varStoichiometry:
-    return false;
+  case varAlgebraicRule:
+      return false;
   }
   assert(false); //uncaught vtype
   return false;
@@ -74,6 +75,7 @@ bool IsSpecies(const var_type vtype)
   case varSboTermWrapper:
   case varUncertWrapper:
   case varStoichiometry:
+  case varAlgebraicRule:
       return false;
   }
   assert(false); //uncaught vtype
@@ -102,6 +104,7 @@ bool IsDNA(const var_type vtype)
   case varSboTermWrapper:
   case varUncertWrapper:
   case varStoichiometry:
+  case varAlgebraicRule:
       return false;
   }
   assert(false); //uncaught vtype
@@ -130,7 +133,8 @@ bool CanHaveRateRule(const var_type vtype)
   case varConstraint:
   case varSboTermWrapper:
   case varUncertWrapper:
-    return false;
+  case varAlgebraicRule:
+      return false;
   }
   assert(false); //uncaught type
   return false;
@@ -158,10 +162,40 @@ bool CanHaveAssignmentRule(const var_type vtype)
   case varConstraint:
   case varSboTermWrapper:
   case varUncertWrapper:
+  case varAlgebraicRule:
     return false;
   }
   assert(false); //uncaught type
   return false;
+}
+
+bool CanHaveAlgebraicRule(const var_type vtype)
+{
+    switch (vtype) {
+    case varAlgebraicRule:
+    case varUndefined:
+        return true;
+    case varFormulaUndef:
+    case varFormulaOperator:
+    case varDNA:
+    case varSpeciesUndef:
+    case varCompartment:
+    case varStoichiometry:
+    case varReactionUndef:
+    case varReactionGene:
+    case varInteraction:
+    case varModule:
+    case varEvent:
+    case varStrand:
+    case varUnitDefinition:
+    case varDeleted:
+    case varConstraint:
+    case varSboTermWrapper:
+    case varUncertWrapper:
+        return false;
+    }
+    assert(false); //uncaught type
+    return false;
 }
 
 bool CanBeInReaction(const var_type vtype)
@@ -186,6 +220,7 @@ bool CanBeInReaction(const var_type vtype)
   case varSboTermWrapper:
   case varUncertWrapper:
   case varStoichiometry:
+  case varAlgebraicRule:
       return false;
   }
   assert(false); //uncaught type
@@ -214,6 +249,7 @@ bool CanBeStoichiometry(const var_type vtype)
     case varConstraint:
     case varSboTermWrapper:
     case varUncertWrapper:
+    case varAlgebraicRule:
         return false;
     }
     assert(false); //uncaught type
@@ -242,7 +278,8 @@ bool HasOrIsFormula(const var_type vtype)
   case varDeleted:
   case varSboTermWrapper:
   case varUncertWrapper:
-    return false;
+  case varAlgebraicRule: //Again, not for Jarnac, which doesn't do algebraic rules.
+      return false;
   }
   assert(false); //uncaught vtype
   return false;
@@ -327,50 +364,11 @@ string VarTypeToString(const var_type vtype)
     return "Uncertainty parameter";
   case varStoichiometry:
       return "Stoichiometry";
+  case varAlgebraicRule:
+      return "Algebraic Rule";
   }
   assert(false);
   return "";
-}
-
-string VarTypeToAntimony(const var_type vtype)
-{
-  switch(vtype) {
-  case varSpeciesUndef:
-    return "species ";
-  case varFormulaUndef:
-    return "formula ";
-  case varReactionUndef:
-    return "reaction ";
-  case varReactionGene:
-    return "gene ";
-  case varInteraction:
-    return "reaction ";
-  case varFormulaOperator:
-    return "operator ";
-  case varDNA:
-    return "DNA ";
-  case varEvent:
-    return "event ";
-  case varCompartment:
-    return "compartment ";
-  case varUnitDefinition:
-    return "unit ";
-  case varDeleted:
-    return "delete ";
-  case varConstraint:
-    return "constraint ";
-  case varStrand:
-  case varModule:
-  case varUndefined:
-  case varSboTermWrapper:
-  case varUncertWrapper:
-  case varStoichiometry:
-      assert(false);
-    return "undefinable_type";
-    break;
-  }
-  assert(false); //uncaught type
-  return "undeclared_type";
 }
 
 string ReturnTypeToString(const return_type rtype)

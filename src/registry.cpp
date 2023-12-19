@@ -1160,6 +1160,11 @@ AntimonyEvent* Registry::GetCurrentEvent() {
   return CurrentModule()->GetVariable(m_currentEvent)->GetEvent();
 }
 
+bool Registry::AddNewAlgebraicRuleToCurrent(int val, Formula* formula)
+{
+    return CurrentModule()->AddNewAlgebraicRule(val, formula);
+}
+
 Variable* Registry::GetCurrentSubmodel()
 {
   return CurrentModule()->GetVariable(m_currentImportedModule);

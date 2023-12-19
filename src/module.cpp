@@ -352,6 +352,12 @@ Variable* Module::AddNewReaction(const ReactantList& left, rd_type divider, cons
   return var;
 }
 
+bool Module::AddNewAlgebraicRule(int num, Formula* formula)
+{
+    Variable* newalgrule = AddNewNumberedVariable("_alg");
+    return newalgrule->SetAlgebraicRule(num, formula);
+}
+
 bool Module::SetFormula(Formula* formula)
 {
   Variable* retvar = GetVariable(m_returnvalue);
@@ -828,6 +834,7 @@ void Module::AddDefaultInitialValues()
     case varSboTermWrapper:
     case varUncertWrapper:
     case varConstraint:
+    case varAlgebraicRule:
       break;
     }
   }
@@ -958,7 +965,7 @@ const Variable* Module::GetVariableFromSymbol(string varname) const
       return m_uniquevars[v];
     }
   }
-  g_registry.SetError("Unknown variable " + varname + " in module " + m_modulename + ".");
+  //It's fine if the symbol doesn't exist; it could be any number of predefined symbols.
   return NULL;
 }
 
@@ -1654,6 +1661,11 @@ bool Module::AreEquivalent(return_type rtype, var_type vtype) const
             return true;
         }
         return false;
+    case allAlgebraicRules:
+        if (vtype == varAlgebraicRule) {
+            return true;
+        }
+        return false;
     }
   //This is just to to get compiler warnings if we switch vtype later, so
   // we remember to change the rest of this function:
@@ -1676,6 +1688,7 @@ bool Module::AreEquivalent(return_type rtype, var_type vtype) const
   case varUncertWrapper:
   case varConstraint:
   case varStoichiometry:
+  case varAlgebraicRule:
     break;
   }
   assert(false); //uncaught return type
@@ -1713,6 +1726,7 @@ bool Module::AreEquivalent(return_type rtype, bool isconst) const
   case subModules:
   case allDeleted:
   case allConstraints:
+  case allAlgebraicRules:
     return true;
   }
   assert(false); //uncaught return_type
@@ -2006,6 +2020,21 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
     }
   }
 
+  //Any algebraic rules:
+  firstone = true;
+  for (size_t vnum = 0; vnum < m_uniquevars.size(); vnum++) {
+      const Variable* var = m_uniquevars[vnum];
+      if (var->GetFormulaType() == formulaALGEBRAIC) {
+          const Formula* algrule = var->GetFormula();
+          if (OrigFormulaIsAlready(var, origmap, algrule)) continue;
+          if (firstone) {
+              retval += "\n" + indent + "// Algebraic Rules:\n";
+              firstone = false;
+          }
+          retval += indent + var->GetNameDelimitedBy(cc) + ": 0 = " + algrule->ToDelimitedStringWithEllipses(cc) + ";\n";
+      }
+  }
+
   //Then reactions:
   firstone = true;
   for (size_t vnum=0; vnum<m_uniquevars.size(); vnum++) {
@@ -2187,6 +2216,7 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
     case varUncertWrapper:
     case varConstraint:
     case varStoichiometry:
+    case varAlgebraicRule:
         break;
     }
   }
@@ -2794,6 +2824,7 @@ void Module::Convert(Variable* conv, Variable* cf, string modulename)
     case varInteraction:
     case varConstraint:
     case varStoichiometry:
+    case varAlgebraicRule:
       form = subvar->GetFormula();
       origform = *origsubvar->GetFormula();
       for (size_t vn=m_variablename.size() - origsubvar->GetName().size() + 1; vn > 0; vn--) {
@@ -2849,6 +2880,7 @@ void Module::ConvertTime(Variable* tcf)
     case varInteraction:
     case varConstraint:
     case varStoichiometry:
+    case varAlgebraicRule:
       subvar->GetFormula()->ConvertTime(tcf);
       if (subvar->GetFormulaType() == formulaRATE) {
         subvar->GetRateRule()->AddInvTimeConversionFactor(tcf);
@@ -2900,7 +2932,8 @@ void Module::ConvertExtent(Variable* xcf)
     case varUncertWrapper:
     case varConstraint:
     case varStoichiometry:
-      break;
+    case varAlgebraicRule:
+        break;
     }
   }
 }
@@ -2922,6 +2955,7 @@ void Module::UndoTimeExtentConversions(Variable* tcf, Variable* xcf)
     case varInteraction:
     case varConstraint:
     case varStoichiometry:
+    case varAlgebraicRule:
       subvar->GetFormula()->UnConvertTimeExtent(tcf, xcf);
       if (subvar->GetFormulaType() == formulaRATE) {
         subvar->GetRateRule()->UnConvertTimeExtent(tcf, xcf);

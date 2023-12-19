@@ -94,6 +94,7 @@ public:
   bool AddVariableToExportList(Variable* var);
   Variable* AddNewReaction(const ReactantList& left, rd_type divider, const ReactantList& right, Formula* formula);
   Variable* AddNewReaction(const ReactantList& left, rd_type divider, const ReactantList& right, Formula* formula, Variable* var);
+  bool AddNewAlgebraicRule(int val, Formula* formula);
   bool SetFormula(Formula* formula);
   void SetNewTopName(std::string newmodname, std::string newtopname);
   bool SetModule(const std::string* modname);

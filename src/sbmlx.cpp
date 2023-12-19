@@ -27,7 +27,7 @@ string getNameFromSBMLObject(const SBase* sbml, string basename)
   if (sbml == NULL) {
     return "";
   }
-  string name = sbml->getId();
+  string name = sbml->getIdAttribute();
   if (name == "") {
     name = sbml->getName();
     //Names can have spaces, so...

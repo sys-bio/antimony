@@ -53,7 +53,8 @@ enum var_type {varSpeciesUndef = 0,
                varConstraint,
                varSboTermWrapper,
                varUncertWrapper,
-               varStoichiometry
+               varStoichiometry,
+               varAlgebraicRule,
                };
 /**
  * return_types are used in the API when requesting information about different symbols.  Each return_type refers to a different group of symbols, and are overlapping--i.e. a single symbol can be included in 'allGenes' and 'allReactions'. 
@@ -82,6 +83,7 @@ enum var_type {varSpeciesUndef = 0,
   * - allUnits:          All unit definitions.
   * - allDeleted:        All submodel elements that have been deleted from the containing model.
   * - allStoichiometries: All reaction stoichiometries (aka 'species references') in the model.
+  * - allAlgebraicRules: All algebraic rules in the model.
   */
 enum return_type {allSymbols = 0,
                   allSpecies,
@@ -108,7 +110,8 @@ enum return_type {allSymbols = 0,
                   allUnits,
                   allDeleted,
                   allConstraints,
-                  allStoichiometries
+                  allStoichiometries,
+                  allAlgebraicRules
 };
 
 /**
@@ -119,7 +122,7 @@ enum const_type {constDEFAULT = 0, constVAR, constCONST};
 /**
  * rule_type values are not used in the API, but are used internally in libAntimony.  Every symbol starts off with a default type based on its type (most things are formINITIAL; reactions are formKINETIC, and events are formTRIGGER), and those symbols that aren't reactions, events, or modules may be formASSIGNMENT (for those symbols that have assignment rules) or formRATE (for those symbols that have rate rules).  formASSIGNMENT symbols have only one formula, but formRATE have two: one for their initial condition, and one for how it changes with time.
  */
-enum formula_type {formulaINITIAL = 0, formulaASSIGNMENT, formulaRATE, formulaKINETIC, formulaTRIGGER};
+enum formula_type {formulaINITIAL = 0, formulaASSIGNMENT, formulaRATE, formulaKINETIC, formulaTRIGGER, formulaALGEBRAIC};
 
 /**
  * deletion_type values are not used in the API, but are used internally in libAntimony.  When a variable is deleted in Antimony, the elements it appears in may also need to be deleted.  This allows 'partial' deletion of SBML elements, so (for example) if a species is deleted, it disappears from all reactions it used to appear in.

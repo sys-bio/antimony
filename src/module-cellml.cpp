@@ -563,6 +563,10 @@ void Module::CreateCellMLComponent(Module* topmod)
     case varStoichiometry:
         //These all have no CellML equivalent (except Module, which is taken care of separately).
       break;
+    case varAlgebraicRule:
+        //Need to figure out what to do with these.
+        assert(false);
+        break;
     }
     if (used) {
       //Create a list of synchronized variables
