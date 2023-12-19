@@ -54,7 +54,7 @@
 <li><a href="#interactions">Interactions</a></li>
 <li><a href="#predefined-function-definitions">Predefined Function Definitions</a></li>
 <li><a href="#uncertainty-information">Uncertainty Information</a></li>
-<li><a href="#sbo-and-cvterms">SBO and CVTerms</a></li>
+<li><a href="#annotation-keywords">Annotation Keywords</a></li>
 <li><a href="#flux-balance-constraints">Flux Balance Constraints</a></li>
 <li><a href="#other-files">Other files</a></li>
 <li><a href="#importing-and-exporting-antimony-models">Importing and Exporting Antimony Models</a></li>
@@ -71,6 +71,11 @@
 <li>Package and re-use models as modules with defined or implied interfaces.</li>
 </ul>
 <h2 id="change-log">Change Log</h2>
+<p>The 2.14.0 release added the ability to encode algebraic rules, and added ways to add annotations and notes to objects and the model.</p>
+<p>The 2.13.4 release changed the default SBML output to L3v2, and added basic unit names as reserved words for better import.</p>
+<p>The 2.13.3 release removed the '@' for parsing events, and fixed '-o' interaction parsing.</p>
+<p>The 2.13.2 release changed some maintenance features.</p>
+<p>The 2.13.1 release added named stoichiometries, the 'rateOf' function, and instituted case senstitivity for predefined elements.</p>
 <p>The 2.12 release added the ability to save extra ‘annotation-like’ elements from the ‘distributions’ SBML package, and fixed numerous bugs in cvterm/SBOterm setting.</p>
 <p>The 2.11 release quashed all known memory leaks, and added the ability to define synthesis reactions with no id (i.e. ’ -&gt; S1; k1’)</p>
 <p>The 2.10 release updated support for distributions to the latest SBML release of that package, updated the default version of SBML to Level 3 version 2, added support for setting cvterms and the SBOterm,</p>
@@ -209,6 +214,18 @@ end</code></pre>
   S2 -&gt; S3; k2*S2
   S3 -&gt; S4; k3*S3
 end</code></pre>
+
+<h3 id="substance-only species">Substance-only Species</h3>
+
+<p>When a species ID shows up in math, it usually means 'the concentration of
+the species'.  If instead it should be 'the amount of the species', you can
+indicate this by using the 'substanceOnly' keyword:</p>
+
+<pre><code>  substanceOnly species S1 in C
+  S1 -> S2; k1*S1/C</code></pre>
+
+<p>In the produced SBML, these species will be flagged hasOnlySubstanceUnits="true"</p>
+
 <h3 id="compartments">Compartments</h3>
 <p>For multi-compartment models, or models where the compartment size changes over time, you can define the compartments in Antimony by using the <code>compartment</code> keyword, and designate species as being in particular compartments with the <code>in</code> keyword:</p>
 <pre><code>model pathway()
@@ -300,7 +317,7 @@ model quad1
 end</code></pre>
 <p>This effectively defines S3 to always equal the equation <code>k1*s1^2 + k2*s1 + k3</code>.</p>
 <h3 id="annotation">Annotation</h3>
-<p>Antimony elements can be annotated with URNs using annotation keywords You can see the <a href="#sbo-and-cvterms">full list</a> below, but in general, you annotate in the following way:</p>
+<p>Antimony elements can be annotated with URNs using annotation keywords You can see the <a href="#annotation-keywords">full list</a> below, but in general, you annotate in the following way:</p>
 <pre><code>//Species
 species Glcin in comp, MgATP in comp
 
@@ -310,7 +327,38 @@ Glcin identity &quot;http://identifiers.org/chebi/CHEBI:17234&quot;,
                &quot;http://identifiers.org/kegg.compound/C00293&quot;
 MgATP part &quot;http://identifiers.org/chebi/CHEBI:25107&quot;,
            &quot;http://identifiers.org/chebi/CHEBI:15422&quot;</code></pre>
-<p>Any Antimony element with an id may be annotated in this way, including the model itself.</p>
+
+<p>Any Antimony element with an id may be annotated in this way, including 
+the model itself.  Inside a model definition, the model itself may be 
+annotated using the 'model' keyword:</p>
+
+<pre><code>  model foo()
+    model model_entity_is &quot;http://identifiers.org/biomodels.db/BIOMD0000000004&quot;
+    model description &quot;http://identifiers.org/pubmed/1833774&quot;
+    model origin &quot;http://identifiers.org/biomodels.db/BIOMD0000000003&quot;
+    model taxon &quot;http://identifiers.org/taxonomy/8292&quot;
+    model created &quot;2005-02-08T17:34:02Z&quot;
+    model modified &quot;2012-12-11T15:30:15Z&quot;
+  end</code></pre>
+
+You can also define an element's 'notes', using the 'notes' keyword.  If
+the notes take more than one line, you can group them together using three
+tick marks '\`\`\`':
+
+<pre><code>  model notes ```
+      &lt;p&gt;This model represents the inactive forms of CDC-2 Kinase and Cyclin 
+      Protease as separate species, unlike the ODEs in the published paper, in 
+      which the equations for the inactive forms are substituted into the 
+      equations for the active forms using a mass conservation rule 
+      M+MI=1,X+XI=1. Mass is still conserved in this model through the 
+      explicit reactions M&lt;-&gt;MI and X&lt;-&gt;XI. The terms in the 
+      kinetic laws are identical to the corresponding terms in the kinetic 
+      laws in the published paper.&lt;/p&gt;</code></pre>
+  ```
+
+
+
+
 <h3 id="modular-models">Modular Models</h3>
 <p>Antimony was actually originally designed to allow the modular creation of models, and has a basic syntax set up to do so. For a full discussion of Antimony modularity, see <a href="#modules">below</a>, but at the most basic level, you define a re-usable module with the ‘model’ syntax, followed by parentheses where you define the elements you wish to expose, then import it by using the model’s name, and the local variables you want to connect to that module</p>
 <pre><code># This creates a model &#39;side_reaction&#39;, exposing the variables &#39;S&#39; and &#39;k1&#39;:
@@ -731,6 +779,24 @@ E2: at ((x&gt;5) &amp;&amp; (q&gt;7)), priority=0: y=5: x=r+6;</code></pre>
 <pre><code>S1&#39; =  V1*(1 - S1)/(K1 + (1 - S1)) - V2*S1/(K2 + S1)</code></pre>
 <p>Note that unlike initializations and assignment rules, formulas in rate rules may be self-referential, either directly or indirectly.</p>
 <p>Any symbol may have only one rate rule or assignment rule associated with it. Should it find more than one, only the last will be saved.</p>
+
+<h3 id="algebraic-rules">Algebraic Rules</h3>
+
+<p>Algebraic rules are defined as equations that are always true, but do
+not declare which variable or variables should be adjusted to ensure that
+they are true.  Algebraic rules have somewhat limited support in some 
+simulators, and are not supported by Tellurium, so they are provide by
+Antimony solely for users who wish to export the model and use it in
+other systems.</p>
+
+<p>To declare an algebraic rule, optionally give it a name, and then declare
+&quot;0 = [formula]&quot;:</p>
+
+<pre><code>   0 =  S1*k1 - 10
+   alg2: 0 = S2*k2 - 20
+
+
+
 <h3 id="display-names">Display Names</h3>
 <p>When some tools visualize models, they make a distinction between the ‘id’ of an element, which must be unique to the model and which must conform to certain naming conventions, and the ‘name’ of an element, which does not have to be unique and which has much less stringent naming requirements. In Antimony, it is the id of elements which is used everywhere. However, you may also set the ‘display name’ of an element by using the ‘is’ keyword and putting the name in quotes:</p>
 <pre><code>A.k1 is &quot;reaction rate k1&quot;;
@@ -884,7 +950,7 @@ A.distribution is &quot;http://uri&quot;
 A.externalParameter = x || {x,y} || function()
 A.externalParameter is &quot;http://uri&quot;</code></pre>
 <p>Where <code>A</code> may be any symbol in Antimony with mathematical meaning; <code>x</code> and <code>y</code> may both be either a symbol or a value (i.e. <code>A.mean=2.4</code>; <code>A.confidenceInterval={S1, 8.2}</code>); <code>function()</code> may be any mathematical formula; and <code>"http://uri"</code> is a URI that defines the given distribution or externalParameter.</p>
-<h3 id="sbo-and-cvterms">SBO and cvterms</h3>
+<h3 id="annotation-keywords">Annotation Keywords</h3>
 <p>Antimony model elements may also be annotated with their SBO terms and cvterms, using the following syntax:</p>
 <pre><code>A.sboTerm = 236 or A.sboTerm = SBO:00000236
 A identity &quot;cvterm&quot; or A biological_entity_is &quot;cvterm&quot;
@@ -899,8 +965,37 @@ A encodes &quot;cvterm&quot; or A encodement &quot;cvterm&quot;
 A occursIn &quot;cvterm&quot; or A container &quot;cvterm&quot;
 A hasProperty &quot;cvterm&quot; or A property &quot;cvterm&quot;
 A isPropertyOf &quot;cvterm&quot; or A propertyBearer &quot;cvterm&quot;
-A hasTaxon &quot;cvterm&quot; or A taxon &quot;cvterm&quot;</code></pre>
-<p>Where <code>A</code> is any model element, model name, or function name, and <code>cvterm</code> is a URI like <code>"http://identifiers.org/uniprot/P12999"</code>.</p>
+A hasTaxon &quot;cvterm&quot; or A taxon &quot;cvterm&quot;
+A created &quot;YYYY-MM-DDThh:mm:ssTZD&quot; where TZD is either Z or +/- HH:MM
+A modified &quot;YYYY-MM-DDThh:mm:ssTZD&quot; where TZD is either Z or +/- HH:MM
+A creator &quot;creator&quot;
+A creator.name &quot;full name&quot;
+A creator.givenName &quot;given name&quot;
+A creator.familyName &quot;family name&quot;
+A creator.organization &quot;organization&quot;
+A creator.email &quot;email address&quot;
+A notes &quot;notes&quot;</code></pre>
+<p>Where <code>A</code> is any model ID or the word 'model' for the model itself, and <code>cvterm</code> is a URI like <code>"http://identifiers.org/uniprot/P12999"</code>.    If 
+there are multiple creators, or multiple modification times, you can 
+distinguish between them by adding a number:</p>
+
+<pre><code>A creator1.name &quot;Hugh Barrett&quot;
+A creator2.name &quot;Nancy Smalls&quot;
+A modified1 &quot;2012-12-11T15:30:15Z&quot;
+A modified2 &quot;2013-01-15T12:25:55Z&quot;</code></pre>
+
+<p>You can also set the individual components of the 'created' or 'modified'
+date by keyword:</p>
+
+<pre><code>A created.year &quot;YYYY&quot;
+A created.month &quot;MM&quot;
+A created.day &quot;DD&quot;
+A created.hour &quot;hh&quot;
+A created.minute &quot;mm&quot;
+A created.second &quot;ss&quot;
+A created.time &quot;hh:mm:ss&quot;</code></pre>
+
+
 <h3 id="flux-balance-constraints">Flux Balance Constraints</h3>
 <p>In some models, reaction rates are not known specifically, but one can place certain constraints on those reactions, and then apply an objective function (such as ‘maximize growth’) to try to discern a likely set of reaction rates. In SBML, the package that lets you define these constraints and objective functions is known as the ‘Flux Balance Constraints’ package. As of v2.8.0 of Antimony, these constraints can now be defined in Antimony as well, using equalities and inequalities <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code>, and <code>==</code>. If we assume that all <code>J</code> variables are reactions, the following definitions are all Flux Balance constraints:</p>
 <pre><code>0 &lt;= J0
