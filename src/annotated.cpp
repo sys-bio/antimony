@@ -55,6 +55,9 @@ bool Annotated::TransferAnnotationTo(SBase* sbmlobj, string metaid) const
       }
       if (ret != libsbml::LIBSBML_OPERATION_SUCCESS) {
           ret = sbmlobj->setNotes("<notes><body xmlns=\"http://www.w3.org/1999/xhtml\"> " + notes + " </body></notes>");
+      }
+      if (ret != libsbml::LIBSBML_OPERATION_SUCCESS) {
+          ret = sbmlobj->setNotes("<notes><p xmlns=\"http://www.w3.org/1999/xhtml\"> " + notes + " </p></notes>");
           assert(ret == libsbml::LIBSBML_OPERATION_SUCCESS);
       }
   }
