@@ -18,17 +18,27 @@ jobs:
           - name: macos-11-release
             os_type: macos
             os_name: macos-11
-            arch: x86_64
             build_type: Release
             build_python: ON
             build_qt_antimony: ON
           - name: macos-11-debug
             os_type: macos
             os_name: macos-11
-            arch: x86_64
             build_type: Debug
             build_python: ON
             build_qt_antimony: ON
+          - name: macos-latest-release
+            os_type: macos
+            os_name: macos-latest
+            build_type: Release
+            build_python: ON
+            build_qt_antimony: OFF
+          - name: macos-latest-debug
+            os_type: macos
+            os_name: macos-latest
+            build_type: Debug
+            build_python: ON
+            build_qt_antimony: OFF
           - name: ubuntu-latest-release
             os_type: ubuntu
             os_name: ubuntu-latest
@@ -71,6 +81,7 @@ jobs:
             build_qt_antimony: OFF
         libroadrunner_deps_owner: [ "sys-bio" ]
         libroadrunner_deps_repo: [ "libroadrunner-deps" ]
+        libroadrunner_deps_name: [ "libroadrunner-deps" ]
         libroadrunner_deps_release_version: [ "v2.1.1" ]
         python_version: [ "3.11" ]
 
@@ -86,17 +97,36 @@ jobs:
         if: matrix.platform.os_type == 'windows'
         uses: ilammy/msvc-dev-cmd@v1.6.0
 
-      - name: Upgrade gcc on ManyLinux
+      - name: Upgrade gcc on Linux
         if: matrix.platform.os_type == 'manylinux'
         shell: bash
         run: |
-          yum install -y centos-release-scl
-          yum install -y devtoolset-11
-          scl enable devtoolset-11 bash
-          echo "/opt/rh/devtoolset-11/root/usr/bin" >> $GITHUB_PATH
+          if [ "${{ matrix.platform.os_type }}" == 'ubuntu' ]; then
+            apt-get update
+            apt-get install -y software-properties-common
+            add-apt-repository -y ppa:ubuntu-toolchain-r/test
+            apt-get update
+            apt-get install -y gcc-11 g++-11
+            update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 90
+            update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-11 90
+          elif [ "${{ matrix.platform.os_type }}" == 'manylinux' ]; then
+            yum install -y centos-release-scl
+            yum install -y devtoolset-11
+            scl enable devtoolset-11 bash
+            echo "/opt/rh/devtoolset-11/root/usr/bin" >> "${GITHUB_PATH}"
+          fi
 
       - name: Setup Ninja
         uses: seanmiddleditch/gha-setup-ninja@master
+
+      - name: Get Host Architecture
+        shell: bash
+        run: |
+          architecture=$(uname -m)
+          echo "host_architecture=$architecture" >> "${GITHUB_ENV}"
+          if [ "${{ matrix.platform.os_type }}" == 'macos' ]; then
+            echo "OSX_ARCHITECTURES=$architecture" >> "${GITHUB_ENV}"
+          fi
 
       - name: Install ccache
         shell: bash
@@ -183,14 +213,28 @@ jobs:
         shell: bash
         run: |
           cd ${RUNNER_WORKSPACE}
-          mkdir -p libroadrunner-deps-binaries
-          cd libroadrunner-deps-binaries
-          curl -L "https://github.com/${{ matrix.libroadrunner_deps_owner }}/${{ matrix.libroadrunner_deps_repo }}/releases/download/${{ matrix.libroadrunner_deps_release_version }}/${{ matrix.libroadrunner_deps_repo }}-${{ matrix.platform.name }}.zip" > libroadrunner-deps-${{ matrix.platform.name }}.zip
-          unzip -q libroadrunner-deps-${{ matrix.platform.name }}.zip -d libroadrunner-deps-${{ matrix.platform.name }}
-          rm libroadrunner-deps-${{ matrix.platform.name }}.zip
-          echo LIBSBML_INSTALL_DIR="-DLIBSBML_INSTALL_DIR=${RUNNER_WORKSPACE}/libroadrunner-deps-binaries/libroadrunner-deps-${{ matrix.platform.name }}" >> "${GITHUB_ENV}"
+          mkdir -p ${{ matrix.libroadrunner_deps_name }}-binaries
+          cd ${{ matrix.libroadrunner_deps_name }}-binaries
           if [ "${{ matrix.platform.os_type }}" == 'windows' ]; then
-            echo EXPAT_LIBRARY="-DEXPAT_LIBRARY=${RUNNER_WORKSPACE}/libroadrunner-deps-binaries/libroadrunner-deps-${{ matrix.platform.name }}/lib/${{ matrix.platform.expat_lib_name }}" >> "${GITHUB_ENV}"
+            compiler_version=$(ls "C:\Program Files\Microsoft Visual Studio")
+            binary_file_name=${{ matrix.libroadrunner_deps_name }}-${{ matrix.platform.os_type }}-msvc${compiler_version}-${host_architecture}-${{ matrix.platform.build_type }}
+          elif [ "${{ matrix.platform.os_type }}" == 'macos' ]; then
+            os_version=$(sw_vers -productVersion | cut -d '.' -f 1)
+            binary_file_name=${{ matrix.libroadrunner_deps_name }}-${{ matrix.platform.os_type }}-${os_version}-${host_architecture}-${{ matrix.platform.build_type }}
+          elif [ "${{ matrix.platform.os_type }}" == 'ubuntu' ]; then
+            os_version=$(lsb_release -rs | cut -d '.' -f 1)
+            binary_file_name=${{ matrix.libroadrunner_deps_name }}-${{ matrix.platform.os_type }}-${os_version}-${host_architecture}-${{ matrix.platform.build_type }}
+          elif [ "${{ matrix.platform.os_type }}" == 'manylinux' ]; then
+            os_name="${{ matrix.platform.name }}"
+            os_name_without_build_type="${os_name%%-*}"
+            binary_file_name=${{ matrix.libroadrunner_deps_name }}-${os_name_without_build_type}-${host_architecture}-${{ matrix.platform.build_type }}
+          fi
+          curl -LO "https://github.com/${{ matrix.libroadrunner_deps_owner }}/${{ matrix.libroadrunner_deps_repo }}/releases/download/${{ matrix.libroadrunner_deps_release_version }}/$binary_file_name.zip"
+          unzip -q $binary_file_name.zip
+          rm $binary_file_name.zip
+          echo LIBSBML_INSTALL_DIR="-DLIBSBML_INSTALL_DIR=${RUNNER_WORKSPACE}/${{ matrix.libroadrunner_deps_name }}-binaries" >> "${GITHUB_ENV}"
+          if [ "${{ matrix.platform.os_type }}" == 'windows' ]; then
+            echo EXPAT_LIBRARY="-DEXPAT_LIBRARY=${RUNNER_WORKSPACE}/${{ matrix.libroadrunner_deps_name }}-binaries/lib/${{ matrix.platform.expat_lib_name }}" >> "${GITHUB_ENV}"
           fi
 
       - name: Install libcheck
@@ -298,18 +342,32 @@ jobs:
             python${{ matrix.python_version }} setup.py bdist_wheel
           fi
 
+      - name: Rename Python wheel artifacts
+        if: matrix.platform.build_type == 'Release' && matrix.platform.build_python == 'ON'
+        shell: bash
+        run: |
+          cd ${RUNNER_WORKSPACE}/install-antimony/bindings/python/dist
+          if [ "${{ matrix.platform.os_type }}" == 'macos' ]; then
+            mv antimony*.whl $(echo antimony*.whl | sed "s/universal2/${host_architecture}/g")
+          elif [ "${{ matrix.platform.os_type }}" == 'manylinux' ]; then
+            mv antimony*.whl $(echo antimony*.whl | sed "s/linux/manylinux2014/g")
+          fi
+          python_version_number=$(echo "${{ matrix.python_version }}" | tr -d '.')
+          mv antimony*.whl $(echo antimony*.whl | sed "s/cp${python_version_number}-cp${python_version_number}/py3-none/g")
+
       - name: Set Python wheel artifacts path and name
         if: matrix.platform.build_type == 'Release' && matrix.platform.build_python == 'ON'
         shell: bash
         run: |
           cd ${RUNNER_WORKSPACE}
-          echo "python_wheel_artifacts_name=antimony-${{ matrix.platform.name }}-py3-none-wheel-file" >> "${GITHUB_ENV}"
+          python_wheel_file_name=$(ls install-antimony/bindings/python/dist | grep '^antimony')
+          echo "python_wheel_artifacts_name=${python_wheel_file_name}" >> "${GITHUB_ENV}"
           # we need to use relative path as actions/upload-artifact@v1 cannot find it on containerized runners
-          echo "python_wheel_artifacts_path=../install-antimony/bindings/python/dist" >> "${GITHUB_ENV}"
+          echo "python_wheel_artifacts_file=../install-antimony/bindings/python/dist/$python_wheel_file_name" >> "${GITHUB_ENV}"
 
       - name: Upload Python wheel artifacts
         if: matrix.platform.build_type == 'Release' && matrix.platform.build_python == 'ON'
         uses: actions/upload-artifact@v1
         with:
           name: ${{env.python_wheel_artifacts_name}}
-          path: ${{env.python_wheel_artifacts_path}}
+          path: ${{env.python_wheel_artifacts_file}}
