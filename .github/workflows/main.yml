@@ -1,0 +1,373 @@
+name: BuildAntimony
+
+on:
+  push:
+    branches:
+      - develop
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  build_on_OSs:
+    name: Build Antimony on ${{ matrix.platform.name }}
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+          - name: macos-11-release
+            os_type: macos
+            os_name: macos-11
+            build_type: Release
+            build_python: ON
+            build_qt_antimony: ON
+          - name: macos-11-debug
+            os_type: macos
+            os_name: macos-11
+            build_type: Debug
+            build_python: ON
+            build_qt_antimony: ON
+          - name: macos-latest-release
+            os_type: macos
+            os_name: macos-latest
+            build_type: Release
+            build_python: ON
+            build_qt_antimony: OFF
+          - name: macos-latest-debug
+            os_type: macos
+            os_name: macos-latest
+            build_type: Debug
+            build_python: ON
+            build_qt_antimony: OFF
+          - name: ubuntu-latest-release
+            os_type: ubuntu
+            os_name: ubuntu-latest
+            build_type: Release
+            build_python: ON
+            build_qt_antimony: ON
+          - name: ubuntu-latest-debug
+            os_type: ubuntu
+            os_name: ubuntu-latest
+            build_type: Debug
+            build_python: ON
+            build_qt_antimony: ON
+          - name: windows-latest-release
+            os_type: windows
+            os_name: windows-latest
+            expat_lib_name: libexpatmd.lib
+            build_type: Release
+            build_python: ON
+            build_qt_antimony: ON
+          - name: windows-latest-debug
+            os_type: windows
+            os_name: windows-latest
+            expat_lib_name: libexpatdMD.lib
+            build_type: Debug
+            build_python: OFF
+            build_qt_antimony: ON
+          - name: manylinux2014-release
+            os_type: manylinux
+            os_name: ubuntu-latest
+            container_image: quay.io/pypa/manylinux2014_x86_64
+            build_type: Release
+            build_python: ON
+            build_qt_antimony: OFF
+          - name: manylinux2014-debug
+            os_type: manylinux
+            os_name: ubuntu-latest
+            container_image: quay.io/pypa/manylinux2014_x86_64
+            build_type: Debug
+            build_python: ON
+            build_qt_antimony: OFF
+        libroadrunner_deps_owner: [ "sys-bio" ]
+        libroadrunner_deps_repo: [ "libroadrunner-deps" ]
+        libroadrunner_deps_name: [ "libroadrunner-deps" ]
+        libroadrunner_deps_release_version: [ "v2.1.1" ]
+        python_version: [ "3.11" ]
+
+    runs-on: ${{ matrix.platform.os_name }}
+    container:
+      image: ${{ matrix.platform.container_image || '' }}
+
+    steps:
+      - name: Checkout Antimony
+        uses: actions/checkout@v3
+
+      - name: Set MSVC as the default compiler on Windows
+        if: matrix.platform.os_type == 'windows'
+        uses: ilammy/msvc-dev-cmd@v1.6.0
+
+      - name: Upgrade gcc on Linux
+        if: matrix.platform.os_type == 'manylinux'
+        shell: bash
+        run: |
+          if [ "${{ matrix.platform.os_type }}" == 'ubuntu' ]; then
+            apt-get update
+            apt-get install -y software-properties-common
+            add-apt-repository -y ppa:ubuntu-toolchain-r/test
+            apt-get update
+            apt-get install -y gcc-11 g++-11
+            update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 90
+            update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-11 90
+          elif [ "${{ matrix.platform.os_type }}" == 'manylinux' ]; then
+            yum install -y centos-release-scl
+            yum install -y devtoolset-11
+            scl enable devtoolset-11 bash
+            echo "/opt/rh/devtoolset-11/root/usr/bin" >> "${GITHUB_PATH}"
+          fi
+
+      - name: Setup Ninja
+        uses: seanmiddleditch/gha-setup-ninja@master
+
+      - name: Get Host Architecture
+        shell: bash
+        run: |
+          architecture=$(uname -m)
+          echo "host_architecture=$architecture" >> "${GITHUB_ENV}"
+          if [ "${{ matrix.platform.os_type }}" == 'macos' ]; then
+            echo "OSX_ARCHITECTURES=$architecture" >> "${GITHUB_ENV}"
+          fi
+
+      - name: Install ccache
+        shell: bash
+        run: |
+          cd ${RUNNER_WORKSPACE}
+          if [ "${{ matrix.platform.os_type }}" == 'macos' ]; then
+            brew install ccache
+          elif [ "${{ matrix.platform.os_type }}" == 'ubuntu' ]; then
+            sudo apt-get update
+            sudo apt-get install -y ccache
+          elif [ "${{ matrix.platform.os_type }}" == 'manylinux' ]; then
+            mkdir -p ccache
+            cd ccache
+            curl -L https://github.com/ccache/ccache/releases/download/v4.9.1/ccache-4.9.1.tar.gz > ccache.tar.gz
+            tar -zxf ccache.tar.gz
+            rm ccache.tar.gz
+            mkdir -p build-ccache
+            mkdir -p install-ccache
+            cd build-ccache
+            cmake -DCMAKE_INSTALL_PREFIX="$RUNNER_WORKSPACE/ccache/install-ccache" -DCMAKE_BUILD_TYPE=Release ../ccache-4.9.1
+            cmake --build . --target install
+            echo "$RUNNER_WORKSPACE/ccache/install-ccache/bin" >> $GITHUB_PATH
+          fi
+
+      - name: Prepare ccache timestamp on non-Windows platforms
+        if: matrix.platform.os_type != 'windows'
+        id: ccache_cache_timestamp
+        shell: cmake -P {0}
+        run: |
+          string(TIMESTAMP current_date "%Y-%m-%d-%H;%M;%S" UTC)
+          message("::set-output name=timestamp::${current_date}")
+
+      - name: Set ccache cache directory on non-Windows
+        if: matrix.platform.os_type != 'windows'
+        shell: bash
+        run: |
+          cd ${RUNNER_WORKSPACE}
+          echo "CCACHE_DIR=${RUNNER_WORKSPACE}/.ccache" >> "${GITHUB_ENV}"
+          echo "COMPILER_LAUNCHER=ccache" >> "${GITHUB_ENV}"
+
+      - name: Cache ccache files on non-Windows
+        if: matrix.platform.os_type != 'windows'
+        uses: actions/cache@v3
+        with:
+          path: ${RUNNER_WORKSPACE}/.ccache
+          key:
+            ${{ runner.os }}-${{ steps.ccache_cache_timestamp.outputs.timestamp
+            }}
+          restore-keys: |
+            ${{ runner.os }}-${{ steps.ccache_cache_timestamp.outputs.timestamp }}
+            ${{ runner.os }}-
+
+      - name: Setup Python for non-Manylinux platforms
+        if: matrix.platform.build_python == 'ON' && matrix.platform.os_type != 'manylinux'
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python_version }}
+
+      - name: Setup Python for Manylinux platforms
+        if: matrix.platform.build_python == 'ON' && matrix.platform.os_type == 'manylinux'
+        shell: bash
+        run: |
+          cd ${RUNNER_WORKSPACE}
+          yum update -y
+          yum install -y gcc openssl-devel bzip2-devel libffi-devel epel-release openssl11-devel
+          mkdir -p python${{ matrix.python_version }}
+          cd python${{ matrix.python_version }}
+          curl -L https://www.python.org/ftp/python/${{ matrix.python_version }}.0/Python-${{ matrix.python_version }}.0.tgz > python.tgz
+          tar -zxf python.tgz
+          rm python.tgz
+          cd Python-${{ matrix.python_version }}.0
+          sed -i 's/PKG_CONFIG openssl /PKG_CONFIG openssl11 /g' configure
+          mkdir -p install-python
+          if [ -z "$CFLAGS" ]; then
+            export CFLAGS="-fPIC"
+          else
+            export CFLAGS="$CFLAGS -fPIC"
+          fi
+          ./configure --enable-optimizations --prefix=${RUNNER_WORKSPACE}/python${{ matrix.python_version }}/install-python
+          make install
+          echo "${RUNNER_WORKSPACE}/python${{ matrix.python_version }}/install-python/bin" >> "${GITHUB_PATH}"
+
+      - name: Download dependencies binaries
+        shell: bash
+        run: |
+          cd ${RUNNER_WORKSPACE}
+          mkdir -p ${{ matrix.libroadrunner_deps_name }}-binaries
+          cd ${{ matrix.libroadrunner_deps_name }}-binaries
+          if [ "${{ matrix.platform.os_type }}" == 'windows' ]; then
+            compiler_version=$(ls "C:\Program Files\Microsoft Visual Studio")
+            binary_file_name=${{ matrix.libroadrunner_deps_name }}-${{ matrix.platform.os_type }}-msvc${compiler_version}-${host_architecture}-${{ matrix.platform.build_type }}
+          elif [ "${{ matrix.platform.os_type }}" == 'macos' ]; then
+            os_version=$(sw_vers -productVersion | cut -d '.' -f 1)
+            binary_file_name=${{ matrix.libroadrunner_deps_name }}-${{ matrix.platform.os_type }}-${os_version}-${host_architecture}-${{ matrix.platform.build_type }}
+          elif [ "${{ matrix.platform.os_type }}" == 'ubuntu' ]; then
+            os_version=$(lsb_release -rs | cut -d '.' -f 1)
+            binary_file_name=${{ matrix.libroadrunner_deps_name }}-${{ matrix.platform.os_type }}-${os_version}-${host_architecture}-${{ matrix.platform.build_type }}
+          elif [ "${{ matrix.platform.os_type }}" == 'manylinux' ]; then
+            os_name="${{ matrix.platform.name }}"
+            os_name_without_build_type="${os_name%%-*}"
+            binary_file_name=${{ matrix.libroadrunner_deps_name }}-${os_name_without_build_type}-${host_architecture}-${{ matrix.platform.build_type }}
+          fi
+          curl -LO "https://github.com/${{ matrix.libroadrunner_deps_owner }}/${{ matrix.libroadrunner_deps_repo }}/releases/download/${{ matrix.libroadrunner_deps_release_version }}/$binary_file_name.zip"
+          unzip -q $binary_file_name.zip
+          rm $binary_file_name.zip
+          echo LIBSBML_INSTALL_DIR="-DLIBSBML_INSTALL_DIR=${RUNNER_WORKSPACE}/${{ matrix.libroadrunner_deps_name }}-binaries" >> "${GITHUB_ENV}"
+          if [ "${{ matrix.platform.os_type }}" == 'windows' ]; then
+            echo EXPAT_LIBRARY="-DEXPAT_LIBRARY=${RUNNER_WORKSPACE}/${{ matrix.libroadrunner_deps_name }}-binaries/lib/${{ matrix.platform.expat_lib_name }}" >> "${GITHUB_ENV}"
+          fi
+
+      - name: Install libcheck
+        shell: bash
+        run: |
+          cd ${RUNNER_WORKSPACE}
+          mkdir -p check
+          cd check
+          if [ "${{ matrix.platform.os_type }}" == 'windows' ]; then
+            curl -L https://github.com/sys-bio/antimony/releases/download/libcheck/check-${{ matrix.platform.build_type }}.zip > check.zip
+            unzip -q check.zip -d check
+            rm check.zip
+            echo LIBCHECK_INCLUDE_DIR="-DLIBCHECK_INCLUDE_DIR=${RUNNER_WORKSPACE}/check/check/include" >> "${GITHUB_ENV}"
+            echo LIBCHECK_LIBRARY="-DLIBCHECK_LIBRARY=${RUNNER_WORKSPACE}/check/check/lib/libcheck.lib" >> "${GITHUB_ENV}"
+          else
+            curl -L https://github.com/libcheck/check/releases/download/0.15.2/check-0.15.2.tar.gz > check.tar.gz
+            tar -zxf check.tar.gz
+            rm check.tar.gz
+            mkdir -p build-check
+            mkdir -p install-check
+            cd build-check
+            cmake -G "Ninja" -DCMAKE_INSTALL_PREFIX="${RUNNER_WORKSPACE}/check/install-check" -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES=${{ matrix.platform.arch }} ../check-0.15.2
+            cmake --build . --target install
+            echo LIBCHECK_INCLUDE_DIR="-DLIBCHECK_INCLUDE_DIR=${RUNNER_WORKSPACE}/check/install-check/include" >> "${GITHUB_ENV}"
+            if [ "${{ matrix.platform.os_type }}" == 'manylinux' ]; then
+              echo LIBCHECK_LIBRARY="-DLIBCHECK_LIBRARY=${RUNNER_WORKSPACE}/check/install-check/lib64/libcheck.so" >> "${GITHUB_ENV}"
+            else
+              echo LIBCHECK_LIBRARY="-DLIBCHECK_LIBRARY=${RUNNER_WORKSPACE}/check/install-check/lib/libcheck.a" >> "${GITHUB_ENV}"
+            fi
+          fi
+
+      - name: Install Qt
+        if : matrix.platform.build_qt_antimony == 'ON'
+        uses: jurplel/install-qt-action@v3
+        with:
+          version: '5.15.2'
+
+      - name: Create build directory
+        shell: bash
+        run: mkdir -p ${RUNNER_WORKSPACE}/build-antimony
+
+      - name: Configure CMake for Antimony
+        shell: bash
+        run: |
+          cd ${RUNNER_WORKSPACE}/build-antimony
+          cmake $GITHUB_WORKSPACE \
+          -G "Ninja" \
+          -DCMAKE_C_COMPILER_LAUNCHER=${COMPILER_LAUNCHER} \
+          -DCMAKE_CXX_COMPILER_LAUNCHER=${COMPILER_LAUNCHER} \
+          -DCMAKE_BUILD_TYPE=${{ matrix.platform.build_type }} \
+          -DUSE_UNIVERSAL_BINARIES=OFF \
+          -DCMAKE_OSX_ARCHITECTURES=${{ matrix.platform.arch }} \
+          -DCMAKE_INSTALL_PREFIX="${RUNNER_WORKSPACE}/install-antimony" \
+          -DWITH_STATIC_SBML=ON \
+          ${LIBSBML_INSTALL_DIR} \
+          -DWITH_QTANTIMONY=${{ matrix.platform.build_qt_antimony }} \
+          -DWITH_LIBSBML_EXPAT=ON \
+          ${EXPAT_LIBRARY} \
+          -DWITH_LIBSBML_LIBXML=OFF \
+          -DWITH_CHECK=ON \
+          ${LIBCHECK_INCLUDE_DIR} \
+          ${LIBCHECK_LIBRARY} \
+          -DWITH_PYTHON=${{ matrix.platform.build_python }}
+
+      - name: Build and install Antimony
+        shell: bash
+        run: |
+          cd ${RUNNER_WORKSPACE}/build-antimony
+          cmake --build . --target install --config ${{ matrix.platform.build_type }}
+
+      - name: Run Antimony tests
+        if : matrix.platform.build_type == 'Release'
+        shell: bash
+        run: |
+          cd ${RUNNER_WORKSPACE}/build-antimony
+          ctest -C ${{ matrix.platform.build_type }} --output-on-failure --verbose --extra-verbose --progress
+
+      - name: Set artifacts path and name
+        shell: bash
+        run: |
+          cd ${RUNNER_WORKSPACE}
+          echo "artifacts_name=antimony-${{ matrix.platform.name }}" >> "${GITHUB_ENV}"
+          # we need to use relative path as actions/upload-artifact@v1 cannot find it on containerized runners
+          echo "artifacts_path=../install-antimony" >> "${GITHUB_ENV}"
+
+      - name: Upload Antimony binaries
+        uses: actions/upload-artifact@v1
+        with:
+          name: ${{env.artifacts_name}}
+          path: ${{env.artifacts_path}}
+
+      - name: Create Python wheel artifacts
+        if: matrix.platform.build_type == 'Release' && matrix.platform.build_python == 'ON'
+        shell: bash
+        run: |
+          cd ${RUNNER_WORKSPACE}/install-antimony/bindings/python
+          if [ "${{ matrix.platform.os_type }}" == 'windows' ]; then
+            python -m pip install setuptools wheel
+            python setup.py bdist_wheel
+          elif [ "${{ matrix.platform.os_type }}" == 'manylinux' ]; then
+            python${{ matrix.python_version }} -m pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org setuptools wheel
+            python${{ matrix.python_version }} setup.py bdist_wheel
+          else
+            python${{ matrix.python_version }} -m pip install setuptools wheel
+            python${{ matrix.python_version }} setup.py bdist_wheel
+          fi
+
+      - name: Rename Python wheel artifacts
+        if: matrix.platform.build_type == 'Release' && matrix.platform.build_python == 'ON'
+        shell: bash
+        run: |
+          cd ${RUNNER_WORKSPACE}/install-antimony/bindings/python/dist
+          if [ "${{ matrix.platform.os_type }}" == 'macos' ]; then
+            mv antimony*.whl $(echo antimony*.whl | sed "s/universal2/${host_architecture}/g")
+          elif [ "${{ matrix.platform.os_type }}" == 'manylinux' ]; then
+            mv antimony*.whl $(echo antimony*.whl | sed "s/linux/manylinux2014/g")
+          fi
+          python_version_number=$(echo "${{ matrix.python_version }}" | tr -d '.')
+          mv antimony*.whl $(echo antimony*.whl | sed "s/cp${python_version_number}-cp${python_version_number}/py3-none/g")
+
+      - name: Set Python wheel artifacts path and name
+        if: matrix.platform.build_type == 'Release' && matrix.platform.build_python == 'ON'
+        shell: bash
+        run: |
+          cd ${RUNNER_WORKSPACE}
+          python_wheel_file_name=$(ls install-antimony/bindings/python/dist | grep '^antimony')
+          echo "python_wheel_artifacts_name=${python_wheel_file_name}" >> "${GITHUB_ENV}"
+          # we need to use relative path as actions/upload-artifact@v1 cannot find it on containerized runners
+          echo "python_wheel_artifacts_file=../install-antimony/bindings/python/dist/$python_wheel_file_name" >> "${GITHUB_ENV}"
+
+      - name: Upload Python wheel artifacts
+        if: matrix.platform.build_type == 'Release' && matrix.platform.build_python == 'ON'
+        uses: actions/upload-artifact@v1
+        with:
+          name: ${{env.python_wheel_artifacts_name}}
+          path: ${{env.python_wheel_artifacts_file}}
