@@ -207,7 +207,7 @@ jobs:
           cd ${{ env.pythonLocation }}
           $pattern = '[\\]'
 
-          $pythonWinExecutable = ${{env.pythonLocation }} -replace $pattern, '/'
+          $pythonWinExecutable = "${{env.pythonLocation }}" -replace $pattern, '/'
           echo "python_exe=$pythonWinExecutable/python.exe" | Out-File -FilePath $env:GITHUB_ENV -Append
           echo "python_v1_dir=$pythonWinExecutable" | Out-File -FilePath $env:GITHUB_ENV -Append
 
