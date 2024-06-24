@@ -83,7 +83,7 @@ jobs:
         libroadrunner_deps_repo: [ "libroadrunner-deps" ]
         libroadrunner_deps_name: [ "libroadrunner-deps" ]
         libroadrunner_deps_release_version: [ "v2.1.1" ]
-        python_version: [ "3.11" ]
+        python_version: [ "3.12" ]
 
     runs-on: ${{ matrix.platform.os_name }}
     container:
@@ -181,7 +181,7 @@ jobs:
 
       - name: Setup Python for non-Manylinux platforms
         if: matrix.platform.build_python == 'ON' && matrix.platform.os_type != 'manylinux'
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python_version }}
 
@@ -189,25 +189,17 @@ jobs:
         if: matrix.platform.build_python == 'ON' && matrix.platform.os_type == 'manylinux'
         shell: bash
         run: |
-          cd ${RUNNER_WORKSPACE}
-          yum update -y
-          yum install -y gcc openssl-devel bzip2-devel libffi-devel epel-release openssl11-devel
-          mkdir -p python${{ matrix.python_version }}
-          cd python${{ matrix.python_version }}
-          curl -L https://www.python.org/ftp/python/${{ matrix.python_version }}.0/Python-${{ matrix.python_version }}.0.tgz > python.tgz
-          tar -zxf python.tgz
-          rm python.tgz
-          cd Python-${{ matrix.python_version }}.0
-          sed -i 's/PKG_CONFIG openssl /PKG_CONFIG openssl11 /g' configure
-          mkdir -p install-python
-          if [ -z "$CFLAGS" ]; then
-            export CFLAGS="-fPIC"
-          else
-            export CFLAGS="$CFLAGS -fPIC"
-          fi
-          ./configure --enable-optimizations --prefix=${RUNNER_WORKSPACE}/python${{ matrix.python_version }}/install-python
-          make install
-          echo "${RUNNER_WORKSPACE}/python${{ matrix.python_version }}/install-python/bin" >> "${GITHUB_PATH}"
+          yum install -y wget
+          wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+          bash Miniconda3-latest-Linux-x86_64.sh -b -p /Miniconda3
+
+          /Miniconda3/bin/conda create -y --name py3 python=${{ matrix.python_version }}
+           
+          /Miniconda3/bin/conda init && bash ~/.bashrc && . ~/.bashrc          cd ${RUNNER_WORKSPACE}
+          # sed -i 's/PKG_CONFIG openssl /PKG_CONFIG openssl11 /g' configure
+
+          echo "python_exe=/Miniconda3/envs/py3/bin/python" >> $GITHUB_ENV
+          echo "python_dir=/Miniconda3/envs/py3"  >> $GITHUB_ENV
 
       - name: Download dependencies binaries
         shell: bash
@@ -318,10 +310,10 @@ jobs:
           cd ${RUNNER_WORKSPACE}
           echo "artifacts_name=antimony-${{ matrix.platform.name }}" >> "${GITHUB_ENV}"
           # we need to use relative path as actions/upload-artifact@v1 cannot find it on containerized runners
-          echo "artifacts_path=../install-antimony" >> "${GITHUB_ENV}"
+          echo "artifacts_path=${RUNNER_WORKSPACE}/install-antimony" >> "${GITHUB_ENV}"
 
       - name: Upload Antimony binaries
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v3
         with:
           name: ${{env.artifacts_name}}
           path: ${{env.artifacts_path}}
