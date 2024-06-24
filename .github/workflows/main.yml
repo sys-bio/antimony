@@ -201,6 +201,13 @@ jobs:
           echo "python_exe=/Miniconda3/envs/py3/bin/python" >> $GITHUB_ENV
           echo "python_dir=/Miniconda3/envs/py3"  >> $GITHUB_ENV
 
+      - name: Save Python executable for Windows
+        if: matrix.platform.build_python == 'ON' && matrix.platform.os_type == 'windows'
+        shell: bash
+        run: |
+          echo "python_exe=${{env.pythonLocation }}/python" >> $GITHUB_ENV
+          echo "python_dir=${{env.pythonLocation }}" >> $GITHUB_ENV
+
       - name: Download dependencies binaries
         shell: bash
         run: |
@@ -324,8 +331,8 @@ jobs:
         run: |
           cd ${RUNNER_WORKSPACE}/install-antimony/bindings/python
           if [ "${{ matrix.platform.os_type }}" == 'windows' ]; then
-            python -m pip install setuptools wheel
-            python setup.py bdist_wheel
+            ${{env.python_exe}} -m pip install setuptools wheel
+            ${{env.python_exe}} setup.py bdist_wheel
           elif [ "${{ matrix.platform.os_type }}" == 'manylinux' ]; then
             python${{ matrix.python_version }} -m pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org setuptools wheel
             python${{ matrix.python_version }} setup.py bdist_wheel
