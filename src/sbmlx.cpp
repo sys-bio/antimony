@@ -15,6 +15,7 @@ extern bool CaselessStrCmp(bool caseless, const string& lhs, const string& rhs);
 #ifndef NSBML
 #include "sbmlx.h"
 #include "sbml/math/FormulaFormatter.h"
+#include "libsbmlnetwork_sbmldocument.h"
 #if LIBSBML_VERSION >= 50900
 #include "sbml/math/L3FormulaFormatter.h"
 #endif

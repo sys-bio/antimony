@@ -1,5 +1,6 @@
 #include "module.h"
 #include "sbml/Model.h"
+#include "libsbmlnetwork_sbmldocument.h"
 
 using namespace libsbml;
 
@@ -2438,6 +2439,10 @@ void Module::CreateSBMLModel(bool comp)
     FixPortReferencesIn(sbmlmod);
   }
 #endif //USE_COMP
+  LIBSBMLNETWORK_CPP_NAMESPACE::autolayout(&m_sbml); 
+  //LIBSBMLNETWORK_CPP_NAMESPACE::updateLayoutCurves(&m_sbml, NULL);
+  LIBSBMLNETWORK_CPP_NAMESPACE::getSBMLObject(&m_sbml, "S1");
+  //compareChar('b', 'c');
 }
 
 void Module::SetAssignmentFor(Model* sbmlmod, const Variable* var, const map<const Variable*, Variable>& syncmap, bool comp, set<pair<string, const Variable*> > referencedVars)

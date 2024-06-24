@@ -338,6 +338,27 @@ if(WITH_LIBSBML_COMPRESSION)
     set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${BZIP_LIBRARY} )
 endif()
 
+if(WITH_SBML)
+    find_library(SBMLNETWORK_LIBRARY
+        NAMES libsbmlnetwork-static.lib sbmlnetwork-static.lib libsbmlnetwork-static sbmlnetwork-static
+	PATHS /usr/lib /usr/local/lib
+              ${CMAKE_SOURCE_DIR}
+              ${CMAKE_SOURCE_DIR}/dependencies/lib
+              ${LIBSBML_INCLUDE_DIR}/../lib
+        )
+    set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${SBMLNETWORK_LIBRARY} )
+
+    find_path(SBMLNETWORK_INCLUDE_DIR
+        NAMES libsbmlnetwork_common.h
+        PATHS /usr/include /usr/local/include  ${LIBSBML_DEPENDENCY_DIR}/include
+        DOC "The directory containing the SBMLNetwork include files."
+              )
+
+    INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${SBMLNETWORK_INCLUDE_DIR} )
+endif()
+
+message(STATUS "Antimony libs: ${LIBANTIMONY_LIBS}")
+
 ###############################################################################
 #
 # If WITH_SWIG is selected, we need to find swig
