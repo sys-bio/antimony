@@ -203,10 +203,13 @@ jobs:
 
       - name: Save Python executable for Windows
         if: matrix.platform.build_python == 'ON' && matrix.platform.os_type == 'windows'
-        shell: bash
         run: |
-          echo "python_exe=${{env.pythonLocation }}/python" >> $GITHUB_ENV
-          echo "python_dir=${{env.pythonLocation }}" >> $GITHUB_ENV
+          cd ${{ env.pythonLocation }}
+          $pattern = '[\\]'
+
+          $pythonWinExecutable = ${{env.pythonLocation }} -replace $pattern, '/'
+          echo "python_exe=$pythonWinExecutable/python.exe" | Out-File -FilePath $env:GITHUB_ENV -Append
+          echo "python_v1_dir=$pythonWinExecutable" | Out-File -FilePath $env:GITHUB_ENV -Append
 
       - name: Download dependencies binaries
         shell: bash
