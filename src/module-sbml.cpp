@@ -2439,10 +2439,12 @@ void Module::CreateSBMLModel(bool comp)
     FixPortReferencesIn(sbmlmod);
   }
 #endif //USE_COMP
-  LIBSBMLNETWORK_CPP_NAMESPACE::autolayout(&m_sbml); 
-  //LIBSBMLNETWORK_CPP_NAMESPACE::updateLayoutCurves(&m_sbml, NULL);
-  LIBSBMLNETWORK_CPP_NAMESPACE::getSBMLObject(&m_sbml, "S1");
-  //compareChar('b', 'c');
+  if (m_autolayout.use) {
+      LIBSBMLNETWORK_CPP_NAMESPACE::autolayout(&m_sbml, m_autolayout.stiffness, m_autolayout.gravity, m_autolayout.useMagnetism, m_autolayout.useBoundary, m_autolayout.useGrid, m_autolayout.useNameAsTextLabel, m_autolayout.lockedNodeIds);
+      //LIBSBMLNETWORK_CPP_NAMESPACE::updateLayoutCurves(&m_sbml, NULL);
+      //LIBSBMLNETWORK_CPP_NAMESPACE::getSBMLObject(&m_sbml, "S1");
+      //compareChar('b', 'c');
+  }
 }
 
 void Module::SetAssignmentFor(Model* sbmlmod, const Variable* var, const map<const Variable*, Variable>& syncmap, bool comp, set<pair<string, const Variable*> > referencedVars)
@@ -3055,5 +3057,4 @@ void Module::UpdateRateOf(Model* model)
         }
     }
 }
-
 #endif //NSBML

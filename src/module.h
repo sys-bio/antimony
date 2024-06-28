@@ -28,6 +28,32 @@ enum tree_direction {td_UP, td_DOWN, td_SIDEWAYS};
 
 class ReactionList;
 
+struct autolayout {
+    bool use = false;
+    double stiffness = 10.0;
+    double gravity = 15.0;
+    bool useMagnetism = false;
+    bool useBoundary = false;
+    bool useGrid = false;
+    bool useNameAsTextLabel = true;
+    std::vector <std::string> lockedNodeIds = std::vector<std::string>();
+};
+
+struct layout {
+    std::vector <std::string> align_top      = std::vector<std::string>();
+    std::vector <std::string> align_center   = std::vector<std::string>();
+    std::vector <std::string> align_bottom   = std::vector<std::string>();
+    std::vector <std::string> align_left     = std::vector<std::string>();
+    std::vector <std::string> align_middle   = std::vector<std::string>();
+    std::vector <std::string> align_right    = std::vector<std::string>();
+    std::vector <std::string> align_circular = std::vector<std::string>();
+    double height = 0.0;
+    double width  = 0.0;
+    double depth  = 0.0;
+    std::string background = "";
+};
+
+
 class Module  : public Annotated
 {
 protected:
@@ -66,6 +92,8 @@ private:
   std::string m_libsbml_info;
   std::string m_libsbml_warnings;
   bool m_hasFBC;
+  autolayout m_autolayout;
+  layout m_layout;
 #endif
 
 #ifndef NCELLML
@@ -159,6 +187,17 @@ public:
 
   bool GetNeedDefaultCompartment() const;
   virtual void SetSBOTerm(int sboTerm);
+
+  virtual bool SetAutoLayout(const std::string* isset);
+  virtual bool SetAutoLayout(const std::string* argument, const std::string* value);
+  virtual bool SetAutoLayout(const std::string* argument, const double& value);
+  virtual bool SetAutoLayout(const std::string* argument, const std::vector<Variable*> values);
+  virtual bool SetAutoLayout(const std::string* argument, const std::vector<double> values);
+
+  virtual bool SetLayout(const std::string* argument, const std::string* value);
+  virtual bool SetLayout(const std::string* argument, const double& value);
+  virtual bool SetLayout(const std::string* argument, const std::vector<Variable*> values);
+  virtual bool SetLayout(const std::string* argument, const std::vector<double> values);
 
 
   //Output for the API
@@ -284,6 +323,8 @@ private:
   void FixFunctions(const std::string& name, libsbml::Model* model);
   void FixUnitNames(libsbml::Model* model);
   void UpdateRateOf(libsbml::Model* model);
+  std::string ValidateAutoLayoutArgument(const std::string* argument);
+  std::string ValidateLayoutArgument(const std::string* argument);
 #endif
 #endif
 };

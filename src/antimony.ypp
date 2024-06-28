@@ -81,10 +81,11 @@ using namespace libsbml;
   Variable* varmaybeis;
   Variable* maybein;
   Variable* unitdef;
-  bool maybemain;
   bool maxormin;
   constraint_type inequality;
   std::vector<std::string>* stringlist;
+  std::vector<Variable*> variablelist;
+  std::vector<double> numlist;
 }
 
 %type <character>       mathThing "mathematical symbol"
@@ -94,9 +95,10 @@ using namespace libsbml;
 %type <reactionDivider> reactionDivider
 %type <inequality>      inequality
 %type <variable>        variable variablein varmaybein varmaybeis maybein unitdef
-%type <maybemain>       maybemain
 %type <maxormin>        maxormin
 %type <stringlist>      stringlist
+%type <variablelist>    variablelist
+%type <numlist>         numlist
 
 %left '&' '|' /* Boolean functions and, or */
 %left '-' '+'
@@ -168,6 +170,7 @@ input:          /* empty */
         |       input functioncvterm {}
         |       input toplevel_sbo {}
         |       input annotationBlock {}
+        |       input moduleannotation{}
         |       input error {YYABORT;}
         |       input ERROR {YYABORT;}
         ;
@@ -175,24 +178,31 @@ input:          /* empty */
 import:         IMPORT TEXTSTRING { if (g_registry.OpenFile(*($2))==0) YYABORT;}
         ;
 
-module:         MODULE maybemain ANTWORD {g_registry.NewCurrentModule($3, NULL, $2);} '(' variableexportlist ')' modulebody END
+module:         MODULE ANTWORD {g_registry.NewCurrentModule($2, NULL, false);} '(' variableexportlist ')' modulebody END
                 {
                   $$ = g_registry.CurrentModule();
                   if ($$->Finalize()) YYABORT;
                   g_registry.RevertToPreviousModule();
                 }
-        |       MODULE maybemain ANTWORD {g_registry.NewCurrentModule($3, NULL, $2);} modulebody END
+        |       MODULE ANTWORD {g_registry.NewCurrentModule($2, NULL, false);} modulebody END
                 {
                   $$ = g_registry.CurrentModule();
                   if ($$->Finalize()) YYABORT;
                   g_registry.RevertToPreviousModule();
                 }
-        |       MODULE MODNAME {g_registry.SetError("module '" + *($2) + "' already defined."); YYABORT;}
+        |       MODULE '*' ANTWORD {g_registry.NewCurrentModule($3, NULL, true);} '(' variableexportlist ')' modulebody END
+                {
+                  $$ = g_registry.CurrentModule();
+                  if ($$->Finalize()) YYABORT;
+                  g_registry.RevertToPreviousModule();
+                }
+        |       MODULE '*' ANTWORD {g_registry.NewCurrentModule($3, NULL, true);} modulebody END
+                {
+                  $$ = g_registry.CurrentModule();
+                  if ($$->Finalize()) YYABORT;
+                  g_registry.RevertToPreviousModule();
+                }        |       MODULE MODNAME {g_registry.SetError("module '" + *($2) + "' already defined."); YYABORT;}
         |       MODULE FUNCTION {g_registry.SetError("Cannot define '" + *($2) + "' as a module because it is already a defined function."); YYABORT;}
-        ;
-
-maybemain:      /* empty */ {$$ = false;}
-        |       '*' {$$ = true;}
         ;
 
 function:       FUNCTIONWORD ANTWORD {g_registry.NewUserFunction($2);} '(' variableexportlist ')' spacedformula END {if (g_registry.SetUserFunction($7)) YYABORT;}
@@ -272,10 +282,82 @@ moduleannotation: MODULE ANTWORD stringlist lineend
                       module->SetSBOTerm(lround($5));
                     }
                     else {
-                      g_registry.SetError("Invalid syntax 'model." + *($3) + "'. The only thing that can be set on the model this way is 'sboTerm'.");
+                      g_registry.SetError("Invalid syntax 'model." + *($3) + "'. The only thing that can be set on the model to a number is 'sboTerm'.");
                       YYABORT;
                     }
                   }
+        |       MODULE '.' ANTWORD '=' ANTWORD
+                  { Module* module = g_registry.CurrentModule();
+                    if (module && $3 && CaselessStrCmp(true, *($3), "autolayout")) {
+                      if (module->SetAutoLayout($5)) YYABORT;
+                    }
+                    else {
+                      g_registry.SetError("Invalid syntax 'model." + *($3) + "'. The only thing that can be set on the model to a string is 'autolayout'.");
+                      YYABORT;
+                    }
+                  }
+        |       MODULE '.' ANTWORD '.' ANTWORD '=' NUM
+                  { Module* module = g_registry.CurrentModule();
+                    if (module && $3 && CaselessStrCmp(true, *($3), "autolayout")) {
+                      if (module->SetAutoLayout($5, $7)) YYABORT;
+                    }
+                    else if (module && $3 && CaselessStrCmp(true, *($3), "layout")) {
+                      if (module->SetLayout($5, $7)) YYABORT;
+                    }
+                    else {
+                      g_registry.SetError("Invalid syntax 'model." + *($3) + "'.*:  The core word here must be 'layout' or 'autolayout'.");
+                      YYABORT;
+                    }
+                  }
+        |       MODULE '.' ANTWORD '.' ANTWORD '=' ANTWORD
+                  { Module* module = g_registry.CurrentModule();
+                    if (module && $3 && CaselessStrCmp(true, *($3), "autolayout")) {
+                      if (module->SetAutoLayout($5, $7)) YYABORT;
+                    }
+                    else if (module && $3 && CaselessStrCmp(true, *($3), "layout")) {
+                      if (module->SetLayout($5, $7)) YYABORT;
+                    }
+                    else {
+                      g_registry.SetError("Invalid syntax 'model." + *($3) + "'.*:  The core word here must be 'layout' or 'autolayout'.");
+                      YYABORT;
+                    }
+                  }
+        |       MODULE '.' ANTWORD '.' ANTWORD '=' '[' variablelist ']'
+                  { Module* module = g_registry.CurrentModule();
+                    if (module && $3 && CaselessStrCmp(true, *($3), "autolayout")) {
+                      if (module->SetAutoLayout($5, $8)) YYABORT;
+                    }
+                    else if (module && $3 && CaselessStrCmp(true, *($3), "layout")) {
+                      if (module->SetLayout($5, $8)) YYABORT;
+                    }
+                    else {
+                      g_registry.SetError("Invalid syntax 'model." + *($3) + "'.*:  The core word here must be 'layout' or 'autolayout'.");
+                      YYABORT;
+                    }
+                  }
+        |       MODULE '.' ANTWORD '.' ANTWORD '=' '[' numlist ']'
+                  { Module* module = g_registry.CurrentModule();
+                    if (module && $3 && CaselessStrCmp(true, *($3), "autolayout")) {
+                      if (module->SetAutoLayout($5, $8)) YYABORT;
+                    }
+                    else if (module && $3 && CaselessStrCmp(true, *($3), "layout")) {
+                      if (module->SetLayout($5, $8)) YYABORT;
+                    }
+                    else {
+                      g_registry.SetError("Invalid syntax 'model." + *($3) + "'.*:  The core word here must be 'layout' or 'autolayout'.");
+                      YYABORT;
+                    }
+                  }
+        ;
+
+variablelist:   variable { std::vector<Variable*> ret; $$ = ret; $$.push_back($1);} // need to free $1?
+        |       variablelist ',' variable { $$ = $1; $$.push_back($3); } // need to free $3?
+        |       variablelist ',' '\n' variable { $$ = $1; $$.push_back($4); } // eat newlines
+        ;
+
+numlist:        NUM { std::vector<double> ret; $$ = ret; $$.push_back($1); }
+        |       numlist ',' NUM { $$ = $1; $$.push_back($3); } 
+        |       numlist ',' '\n' NUM { $$ = $1; $$.push_back($4); } // eat newlines
         ;
 
 modulepart:     reaction lineend {}
@@ -615,7 +697,69 @@ toplevel_sbo:     MODNAME '.' ANTWORD '=' NUM
                       function->SetSBOTerm(lround($5));
                     }
                     else {
-                      g_registry.SetError("Invalid syntax '" + *($1) + "." + *($3) + "'. The only thing that can be set on '" + *($1) + "' this way is 'sboTerm'.");
+                      g_registry.SetError("Invalid syntax '" + *($1) + "." + *($3) + "'. The only thing that can set '" + *($1) + "' to a number is 'sboTerm'.");
+                      YYABORT;
+                    }
+                  }
+        |         MODNAME '.' ANTWORD '=' ANTWORD
+                  { Module* function = g_registry.GetModule(*$1);
+                    if (function && $3 &&  CaselessStrCmp(true, *($3), "autolayout")) {
+                      if (function->SetAutoLayout($5)) YYABORT;
+                    }
+                    else {
+                      g_registry.SetError("Invalid syntax '" + *($1) + "." + *($3) + "'. The only thing that can set on '" + *($1) + "' to a string is 'autolayout'.");
+                      YYABORT;
+                    }
+                  }
+        |       MODNAME '.' ANTWORD '.' ANTWORD '=' NUM
+                  { Module* module = g_registry.CurrentModule();
+                    if (module && $3 && CaselessStrCmp(true, *($3), "autolayout")) {
+                      if (module->SetAutoLayout($5, $7)) YYABORT;
+                    }
+                    else if (module && $3 && CaselessStrCmp(true, *($3), "layout")) {
+                      if (module->SetLayout($5, $7)) YYABORT;
+                    }
+                    else {
+                      g_registry.SetError("Invalid syntax 'model." + *($3) + "'.*:  The core word here must be 'layout' or 'autolayout'.");
+                      YYABORT;
+                    }
+                  }
+        |       MODNAME '.' ANTWORD '.' ANTWORD '=' ANTWORD
+                  { Module* module = g_registry.CurrentModule();
+                    if (module && $3 && CaselessStrCmp(true, *($3), "autolayout")) {
+                      if (module->SetAutoLayout($5, $7)) YYABORT;
+                    }
+                    else if (module && $3 && CaselessStrCmp(true, *($3), "layout")) {
+                      if (module->SetLayout($5, $7)) YYABORT;
+                    }
+                    else {
+                      g_registry.SetError("Invalid syntax 'model." + *($3) + "'.*:  The core word here must be 'layout' or 'autolayout'.");
+                      YYABORT;
+                    }
+                  }
+        |       MODNAME '.' ANTWORD '.' ANTWORD '=' '[' variablelist ']'
+                  { Module* module = g_registry.CurrentModule();
+                    if (module && $3 && CaselessStrCmp(true, *($3), "autolayout")) {
+                      if (module->SetAutoLayout($5, $8)) YYABORT;
+                    }
+                    else if (module && $3 && CaselessStrCmp(true, *($3), "layout")) {
+                      if (module->SetLayout($5, $8)) YYABORT;
+                    }
+                    else {
+                      g_registry.SetError("Invalid syntax 'model." + *($3) + "'.*:  The core word here must be 'layout' or 'autolayout'.");
+                      YYABORT;
+                    }
+                  }
+        |       MODNAME '.' ANTWORD '.' ANTWORD '=' '[' numlist ']'
+                  { Module* module = g_registry.CurrentModule();
+                    if (module && $3 && CaselessStrCmp(true, *($3), "autolayout")) {
+                      if (module->SetAutoLayout($5, $8)) YYABORT;
+                    }
+                    else if (module && $3 && CaselessStrCmp(true, *($3), "layout")) {
+                      if (module->SetLayout($5, $8)) YYABORT;
+                    }
+                    else {
+                      g_registry.SetError("Invalid syntax 'model." + *($3) + "'.*:  The core word here must be 'layout' or 'autolayout'.");
                       YYABORT;
                     }
                   }
