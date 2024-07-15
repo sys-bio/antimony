@@ -8,6 +8,7 @@
 
 #ifndef NSBML
 #include <sbml/SBMLTypes.h>
+#include <sbml/packages/layout/sbml/Layout.h>
 #endif
 
 #ifdef USE_COMP
@@ -36,7 +37,7 @@ struct autolayout {
     bool useBoundary = false;
     bool useGrid = false;
     bool useNameAsTextLabel = true;
-    std::vector <std::string> lockedNodeIds = std::vector<std::string>();
+    std::set <std::string> lockedNodeIds = std::set<std::string>();
 };
 
 struct layout {
@@ -49,7 +50,7 @@ struct layout {
     std::vector <std::string> align_circular = std::vector<std::string>();
     double height = 0.0;
     double width  = 0.0;
-    double depth  = 0.0;
+    //double depth  = 0.0;
     std::string background = "";
 };
 
@@ -189,15 +190,16 @@ public:
   virtual void SetSBOTerm(int sboTerm);
 
   virtual bool SetAutoLayout(const std::string* isset);
+  virtual bool SetAutoLayout(const std::string& isset);
   virtual bool SetAutoLayout(const std::string* argument, const std::string* value);
   virtual bool SetAutoLayout(const std::string* argument, const double& value);
-  virtual bool SetAutoLayout(const std::string* argument, const std::vector<Variable*> values);
-  virtual bool SetAutoLayout(const std::string* argument, const std::vector<double> values);
+  virtual bool SetAutoLayout(const std::string* argument, const std::vector<Variable*>* values);
+  virtual bool SetAutoLayout(const std::string* argument, const std::vector<double>* values);
 
   virtual bool SetLayout(const std::string* argument, const std::string* value);
   virtual bool SetLayout(const std::string* argument, const double& value);
-  virtual bool SetLayout(const std::string* argument, const std::vector<Variable*> values);
-  virtual bool SetLayout(const std::string* argument, const std::vector<double> values);
+  virtual bool SetLayout(const std::string* argument, const std::vector<Variable*>* values);
+  virtual bool SetLayout(const std::string* argument, const std::vector<double>* values);
 
 
   //Output for the API
@@ -236,6 +238,8 @@ public:
   void AddVarToSyncMap(const Variable* var, std::map<const Variable*, Variable >& syncmap) const;
 
   void setUsedDistrib(bool useddistrib);
+
+  void fixLayoutPositionOf(const std::string& id);
 
 #ifndef NCELLML
   //Reading:

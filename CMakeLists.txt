@@ -555,9 +555,9 @@ file(GLOB LIBANTIMONY_SOURCES
     ${ANTIMONY_SRC_DIR}cellmlx.cpp
     ${ANTIMONY_SRC_DIR}constraint.cpp
     ${ANTIMONY_SRC_DIR}dnastrand.cpp
-    ${ANTIMONY_SRC_DIR}uncertWrapper.cpp
     ${ANTIMONY_SRC_DIR}event.cpp
     ${ANTIMONY_SRC_DIR}formula.cpp
+    ${ANTIMONY_SRC_DIR}layoutWrapper.cpp
     ${ANTIMONY_SRC_DIR}module.cpp
     ${ANTIMONY_SRC_DIR}reactantlist.cpp
     ${ANTIMONY_SRC_DIR}reaction.cpp
@@ -569,6 +569,7 @@ file(GLOB LIBANTIMONY_SOURCES
     ${ANTIMONY_SRC_DIR}unitdef.cpp
     ${ANTIMONY_SRC_DIR}unitelement.cpp
     ${ANTIMONY_SRC_DIR}userfunction.cpp
+    ${ANTIMONY_SRC_DIR}uncertWrapper.cpp
     ${ANTIMONY_SRC_DIR}unitdef.cpp
     ${ANTIMONY_SRC_DIR}unitelement.cpp
     ${ANTIMONY_SRC_DIR}variable.cpp
@@ -591,10 +592,10 @@ file(GLOB LIBANTIMONY_HEADERS
         ${ANTIMONY_SRC_DIR}cellmlx.h
         ${ANTIMONY_SRC_DIR}constraint.h
         ${ANTIMONY_SRC_DIR}dnastrand.h
-        ${ANTIMONY_SRC_DIR}uncertWrapper.h
         ${ANTIMONY_SRC_DIR}enums.h
         ${ANTIMONY_SRC_DIR}event.h
         ${ANTIMONY_SRC_DIR}formula.h
+        ${ANTIMONY_SRC_DIR}layoutWrapper.h
         ${ANTIMONY_SRC_DIR}libutil.h
         ${ANTIMONY_SRC_DIR}module.h
         ${ANTIMONY_SRC_DIR}reactantlist.h
@@ -604,6 +605,7 @@ file(GLOB LIBANTIMONY_HEADERS
         ${ANTIMONY_SRC_DIR}sboTermWrapper.h
         ${ANTIMONY_SRC_DIR}stringx.h
         ${ANTIMONY_SRC_DIR}typex.h
+        ${ANTIMONY_SRC_DIR}uncertWrapper.h
         ${ANTIMONY_SRC_DIR}unitdef.h
         ${ANTIMONY_SRC_DIR}unitelement.h
         ${ANTIMONY_SRC_DIR}userfunction.h

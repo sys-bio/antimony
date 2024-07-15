@@ -1,6 +1,8 @@
 #include "module.h"
 #include "sbml/Model.h"
 #include "libsbmlnetwork_sbmldocument.h"
+#include "libsbmlnetwork_sbmldocument_layout.h"
+#include "libsbmlnetwork_sbmldocument_render.h"
 
 using namespace libsbml;
 
@@ -231,10 +233,12 @@ void Module::FindOrCreateLocalVersionOf(const Variable* var, libsbml::Model* sbm
   case varDeleted:
   case varSboTermWrapper:
   case varUncertWrapper:
+  case varLayoutWrapper:
   case varConstraint:
   case varStoichiometry:
   case varAlgebraicRule:
-    assert(false); //Unhandled type
+  case varLayoutColorEtc:
+      assert(false); //Unhandled type
     break;
   }
   vector<string> varname = var->GetName();
@@ -2439,11 +2443,58 @@ void Module::CreateSBMLModel(bool comp)
     FixPortReferencesIn(sbmlmod);
   }
 #endif //USE_COMP
+
+  // Layout/Render!
   if (m_autolayout.use) {
-      LIBSBMLNETWORK_CPP_NAMESPACE::autolayout(&m_sbml, m_autolayout.stiffness, m_autolayout.gravity, m_autolayout.useMagnetism, m_autolayout.useBoundary, m_autolayout.useGrid, m_autolayout.useNameAsTextLabel, m_autolayout.lockedNodeIds);
-      //LIBSBMLNETWORK_CPP_NAMESPACE::updateLayoutCurves(&m_sbml, NULL);
-      //LIBSBMLNETWORK_CPP_NAMESPACE::getSBMLObject(&m_sbml, "S1");
-      //compareChar('b', 'c');
+      LIBSBMLNETWORK_CPP_NAMESPACE::autolayout(&m_sbml, m_autolayout.stiffness, m_autolayout.gravity, m_autolayout.useMagnetism, m_autolayout.useBoundary, m_autolayout.useGrid, m_autolayout.useNameAsTextLabel); // , m_autolayout.lockedNodeIds);
+      LIBSBMLNETWORK_CPP_NAMESPACE::getSBMLObject(&m_sbml, "S1");
+      if (m_layout.width != 0) {
+          LIBSBMLNETWORK_CPP_NAMESPACE::setDimensionWidth(&m_sbml, m_layout.width);
+      }
+      if (m_layout.height != 0) {
+          LIBSBMLNETWORK_CPP_NAMESPACE::setDimensionHeight(&m_sbml, m_layout.height);
+      }
+      //if (m_layout.depth != 0) {
+      //    LIBSBMLNETWORK_CPP_NAMESPACE::setDimensionDepth(m_layout.sbmllayout, m_layout.depth);
+      //}
+      if (m_layout.background != "") {
+          //The background name has already been validated when set.
+          LIBSBMLNETWORK_CPP_NAMESPACE::setBackgroundColor(&m_sbml, m_layout.background);
+      }
+      if (m_layout.align_bottom.size()) {
+          LIBSBMLNETWORK_CPP_NAMESPACE::align(&m_sbml, m_layout.align_bottom, "bottom");
+      }
+      if (m_layout.align_center.size()) {
+          LIBSBMLNETWORK_CPP_NAMESPACE::align(&m_sbml, m_layout.align_center, "center");
+      }
+      if (m_layout.align_circular.size()) {
+          LIBSBMLNETWORK_CPP_NAMESPACE::align(&m_sbml, m_layout.align_circular, "circular");
+      }
+      if (m_layout.align_left.size()) {
+          LIBSBMLNETWORK_CPP_NAMESPACE::align(&m_sbml, m_layout.align_left, "left");
+      }
+      if (m_layout.align_middle.size()) {
+          LIBSBMLNETWORK_CPP_NAMESPACE::align(&m_sbml, m_layout.align_middle, "middle");
+      }
+      if (m_layout.align_right.size()) {
+          LIBSBMLNETWORK_CPP_NAMESPACE::align(&m_sbml, m_layout.align_right, "right");
+      }
+      if (m_layout.align_top.size()) {
+          LIBSBMLNETWORK_CPP_NAMESPACE::align(&m_sbml, m_layout.align_top, "top");
+      }
+      for (size_t v = 0; v < m_uniquevars.size(); v++) {
+          if (m_uniquevars[v]->TransferLayoutInformationTo(&m_sbml)) {
+              assert(false);
+              //return true;
+          }
+      }
+      if (m_autolayout.lockedNodeIds.size() > 0) {
+          vector<string> lockedids;
+          for (auto node = m_autolayout.lockedNodeIds.begin(); node != m_autolayout.lockedNodeIds.end(); node++) {
+              lockedids.push_back(*node);
+          }
+          LIBSBMLNETWORK_CPP_NAMESPACE::autolayout(&m_sbml, m_autolayout.stiffness, m_autolayout.gravity, m_autolayout.useMagnetism, m_autolayout.useBoundary, m_autolayout.useGrid, m_autolayout.useNameAsTextLabel, lockedids);
+      }
   }
 }
 

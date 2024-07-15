@@ -18,6 +18,7 @@ bool CanBeInReaction(const var_type vtype);
 bool CanBeStoichiometry(const var_type vtype);
 bool HasOrIsFormula(const var_type vtype);
 bool IsSpan(const uncert_type utype);
+bool IsPair(const layout_type ltype);
 std::string RDToString(rd_type type);
 std::string VarTypeToString(const var_type vtype);
 //std::string VarTypeToAntimony(const var_type vtype);
@@ -25,6 +26,9 @@ std::string ReturnTypeToString(const return_type rtype);
 std::string FormulaTypeToString(const formula_type ftype);
 std::string UncertTypeToString(const uncert_type utype);
 uncert_type UncertStringToType(const std::string& uncert);
+std::string LayoutTypeToString(const layout_type utype);
+layout_type LayoutStringToType(const std::string& ltype);
+bool isValidFontStyle(const std::string& ftype);
 #ifdef LIBSBML_HAS_PACKAGE_DISTRIB
 libsbml::UncertType_t UncertTypeToSBML(const uncert_type utype);
 uncert_type SBMLToUncertType(const libsbml::UncertType_t utype);

@@ -1711,7 +1711,9 @@ LIB_EXTERN return_type getTypeOfSymbol(const char* moduleName, const char* symbo
   case varUndefined:
   case varSboTermWrapper:
   case varUncertWrapper:
-    return allUnknown;
+  case varLayoutWrapper:
+  case varLayoutColorEtc:
+      return allUnknown;
   case varModule:
     return subModules;
   case varEvent:

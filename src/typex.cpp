@@ -30,8 +30,10 @@ bool IsReaction(const var_type vtype)
   case varConstraint:
   case varSboTermWrapper:
   case varUncertWrapper:
+  case varLayoutWrapper:
   case varStoichiometry:
   case varAlgebraicRule:
+  case varLayoutColorEtc:
       return false;
   }
   assert(false); //uncaught vtype
@@ -74,8 +76,10 @@ bool IsSpecies(const var_type vtype)
   case varConstraint:
   case varSboTermWrapper:
   case varUncertWrapper:
+  case varLayoutWrapper:
   case varStoichiometry:
   case varAlgebraicRule:
+  case varLayoutColorEtc:
       return false;
   }
   assert(false); //uncaught vtype
@@ -103,8 +107,10 @@ bool IsDNA(const var_type vtype)
   case varConstraint:
   case varSboTermWrapper:
   case varUncertWrapper:
+  case varLayoutWrapper:
   case varStoichiometry:
   case varAlgebraicRule:
+  case varLayoutColorEtc:
       return false;
   }
   assert(false); //uncaught vtype
@@ -121,6 +127,7 @@ bool CanHaveRateRule(const var_type vtype)
   case varCompartment:
   case varUndefined:
   case varStoichiometry:
+  case varLayoutColorEtc:
       return true;
   case varReactionUndef:
   case varReactionGene:
@@ -133,6 +140,7 @@ bool CanHaveRateRule(const var_type vtype)
   case varConstraint:
   case varSboTermWrapper:
   case varUncertWrapper:
+  case varLayoutWrapper:
   case varAlgebraicRule:
       return false;
   }
@@ -153,6 +161,7 @@ bool CanHaveAssignmentRule(const var_type vtype)
   case varReactionGene:
   case varInteraction:
   case varStoichiometry:
+  case varLayoutColorEtc:
       return true;
   case varModule:
   case varEvent:
@@ -162,6 +171,7 @@ bool CanHaveAssignmentRule(const var_type vtype)
   case varConstraint:
   case varSboTermWrapper:
   case varUncertWrapper:
+  case varLayoutWrapper:
   case varAlgebraicRule:
     return false;
   }
@@ -174,6 +184,7 @@ bool CanHaveAlgebraicRule(const var_type vtype)
     switch (vtype) {
     case varAlgebraicRule:
     case varUndefined:
+    case varLayoutColorEtc:
         return true;
     case varFormulaUndef:
     case varFormulaOperator:
@@ -192,6 +203,7 @@ bool CanHaveAlgebraicRule(const var_type vtype)
     case varConstraint:
     case varSboTermWrapper:
     case varUncertWrapper:
+    case varLayoutWrapper:
         return false;
     }
     assert(false); //uncaught type
@@ -209,7 +221,8 @@ bool CanBeInReaction(const var_type vtype)
   case varReactionUndef:
   case varReactionGene:
   case varInteraction:
-    return true;
+  case varLayoutColorEtc:
+      return true;
   case varCompartment:
   case varModule:
   case varEvent:
@@ -219,6 +232,7 @@ bool CanBeInReaction(const var_type vtype)
   case varConstraint:
   case varSboTermWrapper:
   case varUncertWrapper:
+  case varLayoutWrapper:
   case varStoichiometry:
   case varAlgebraicRule:
       return false;
@@ -234,6 +248,7 @@ bool CanBeStoichiometry(const var_type vtype)
     case varFormulaOperator:
     case varUndefined:
     case varStoichiometry:
+    case varLayoutColorEtc:
         return true;
     case varReactionUndef:
     case varReactionGene:
@@ -249,6 +264,7 @@ bool CanBeStoichiometry(const var_type vtype)
     case varConstraint:
     case varSboTermWrapper:
     case varUncertWrapper:
+    case varLayoutWrapper:
     case varAlgebraicRule:
         return false;
     }
@@ -267,6 +283,7 @@ bool HasOrIsFormula(const var_type vtype)
   case varUnitDefinition:
   case varConstraint:
   case varStoichiometry:
+  case varLayoutColorEtc:
       return true;
   case varReactionGene:
   case varReactionUndef:
@@ -278,6 +295,7 @@ bool HasOrIsFormula(const var_type vtype)
   case varDeleted:
   case varSboTermWrapper:
   case varUncertWrapper:
+  case varLayoutWrapper:
   case varAlgebraicRule: //Again, not for Jarnac, which doesn't do algebraic rules.
       return false;
   }
@@ -310,6 +328,32 @@ bool IsSpan(const uncert_type utype)
   }
   assert(false);
   return false;
+}
+
+bool IsPair(const layout_type ltype)
+{
+    switch (ltype) {
+    case lt_x:
+    case lt_y:
+    case lt_height:
+    case lt_width:
+    case lt_color:
+    case lt_font:
+    case lt_fontsize:
+    case lt_fontcolor:
+    case lt_fontstyle:
+    case lt_fontweight:
+    case lt_linewidth:
+    case lt_linecolor:
+    case lt_shape:
+    case lt_unknown:
+        return false;
+    case lt_position:
+    case lt_size:
+        return true;
+    }
+    assert(false);
+    return false;
 }
 
 string RDToString(rd_type type)
@@ -362,10 +406,14 @@ string VarTypeToString(const var_type vtype)
     return "SBO Term";
   case varUncertWrapper:
     return "Uncertainty parameter";
+  case varLayoutWrapper:
+      return "Layout or render parameter";
   case varStoichiometry:
       return "Stoichiometry";
   case varAlgebraicRule:
       return "Algebraic Rule";
+  case varLayoutColorEtc:
+      return "Color or shape name";
   }
   assert(false);
   return "";
@@ -545,6 +593,123 @@ uncert_type UncertStringToType(const string& uncert)
     return unExternalParameter;
   }
   return unUnknown;
+}
+
+string LayoutTypeToString(const layout_type ltype)
+{
+    switch (ltype) {
+    case lt_position:
+        return "position";
+    case lt_x:
+        return "x";
+    case lt_y:
+        return "y";
+    case lt_size:
+        return "size";
+    case lt_height:
+        return "height";
+    case lt_width:
+        return "width";
+    case lt_color:
+        return "color";
+    case lt_font:
+        return "font";
+    case lt_fontsize:
+        return "fontSize";
+    case lt_fontcolor:
+        return "fontColor";
+    case lt_fontstyle:
+        return "fontStyle";
+    case lt_fontweight:
+        return "fontWeight";
+    case lt_linewidth:
+        return "lineWidth";
+    case lt_linecolor:
+        return "lineColor";
+    case lt_shape:
+        return "shape";
+    case lt_unknown:
+        return "unknown";
+    }
+    assert(false); //uncaught type
+    return "uncaught type";
+}
+
+layout_type LayoutStringToType(const string& ltype)
+{
+    if (CaselessStrCmp(false, ltype, "position") ||
+        CaselessStrCmp(false, ltype, "pos")) {
+        return lt_position;
+    }
+    if (CaselessStrCmp(false, ltype, "x")) {
+        return lt_x;
+    }
+    if (CaselessStrCmp(false, ltype, "y")) {
+        return lt_y;
+    }
+    if (CaselessStrCmp(false, ltype, "size")) {
+        return lt_size;
+    }
+    if (CaselessStrCmp(false, ltype, "height")) {
+        return lt_height;
+    }
+    if (CaselessStrCmp(false, ltype, "width")) {
+        return lt_width;
+    }
+    if (CaselessStrCmp(false, ltype, "color")) {
+        return lt_color;
+    }
+    if (CaselessStrCmp(false, ltype, "font")) {
+        return lt_font;
+    }
+    if (CaselessStrCmp(false, ltype, "fontsize")) {
+        return lt_fontsize;
+    }
+    if (CaselessStrCmp(false, ltype, "fontcolor")) {
+        return lt_fontcolor;
+    }
+    if (CaselessStrCmp(false, ltype, "fontweight")) {
+        return lt_fontweight;
+    }
+    if (CaselessStrCmp(false, ltype, "fontstyle")) {
+        return lt_fontstyle;
+    }
+    if (CaselessStrCmp(false, ltype, "linethickness")) {
+        return lt_linewidth;
+    }
+    if (CaselessStrCmp(false, ltype, "linewidth")) {
+        return lt_linewidth;
+    }
+    if (CaselessStrCmp(false, ltype, "strokewidth")) {
+        return lt_linewidth;
+    }
+    if (CaselessStrCmp(false, ltype, "borderwidth")) {
+        return lt_linewidth;
+    }
+    if (CaselessStrCmp(false, ltype, "linecolor")) {
+        return lt_linecolor;
+    }
+    if (CaselessStrCmp(false, ltype, "shape")) {
+        return lt_shape;
+    }
+    return lt_unknown;
+}
+
+bool isValidFontStyle(const std::string& ftype)
+{
+    if (CaselessStrCmp(false, ftype, "bold")) {
+        return true;
+    }
+    if (CaselessStrCmp(false, ftype, "italic")) {
+        return true;
+    }
+    if (CaselessStrCmp(false, ftype, "normal")) {
+        return true;
+    }
+    if (CaselessStrCmp(false, ftype, "bold_italic")) {
+        return true;
+    }
+    return false;
 }
 
 #ifdef LIBSBML_HAS_PACKAGE_DISTRIB

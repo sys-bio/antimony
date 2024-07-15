@@ -23,6 +23,16 @@ using namespace std;
 using namespace libsbml;
 extern bool CaselessStrCmp(bool caseless, const string& lhs, const string& rhs);
 
+Formula::Formula()
+    : m_components()
+    , m_conversionFactors()
+    , m_timeConversionFactors()
+    , m_convertedVariables()
+    , m_module()
+    , m_setWithLiteralStrings(false)
+{
+}
+
 bool Formula::AddVariable(const Variable* var)
 {
   if (!var->AllowedInFormulas()) {
@@ -66,12 +76,15 @@ void Formula::AddNum(double num)
   m_components.push_back(newvar);
 }
 
-void Formula::AddText(const string* function)
+void Formula::AddText(const string* function, bool literalString)
 {
   vector<string> novar;
   pair<string, vector<string> > newvar;
   newvar = make_pair(*function, novar);
   m_components.push_back(newvar);
+  if (literalString) {
+      m_setWithLiteralStrings = literalString;
+  }
 }
 
 void Formula::AddMathThing(char maththing)
@@ -329,6 +342,11 @@ bool Formula::IsSingleVariable() const
   return false;
 }
 
+bool Formula::IsOneComponent() const
+{
+    return m_components.size() == 1;
+}
+
 bool Formula::GetIsConst() const
 {
   for (size_t comp=0; comp<m_components.size(); comp++) {
@@ -347,6 +365,8 @@ bool Formula::GetIsConst() const
   }
   return true;
 }
+
+//bool 
 
 bool Formula::CheckIncludes(string modname, const ReactantList* rlist) const
 {
@@ -444,6 +464,10 @@ bool Formula::ContainsCurlyBrackets() const
   return false;
 }
 
+bool Formula::SetWithLiteralStrings() const
+{
+    return m_setWithLiteralStrings;
+}
 
 void Formula::Clear()
 {
@@ -723,7 +747,19 @@ vector<const Variable*> Formula::GetVariablesFrom(string formula, string module)
   return retval;
 }
 
-vector<vector<string> > Formula::GetVariables() const
+vector<Variable*> Formula::GetVariables()
+{
+    vector<Variable*> retval;
+
+    for (size_t comp = 0; comp < m_components.size(); comp++) {
+        if (m_components[comp].second.size() > 0) {
+            retval.push_back(g_registry.GetModule(m_module)->GetVariable(m_components[comp].second));
+        }
+    }
+    return retval;
+}
+
+vector<vector<string> > Formula::GetVariableStrings() const
 {
   vector<vector<string> > vars;
   for (size_t comp=0; comp<m_components.size(); comp++) {

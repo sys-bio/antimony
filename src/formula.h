@@ -26,16 +26,17 @@ private:
   std::vector<std::pair<std::string, std::vector<std::string> > > m_timeConversionFactors;
   std::vector<std::pair<std::vector<std::string>, std::vector<std::string> > > m_convertedVariables;
   std::string m_module;
+  bool m_setWithLiteralStrings;
 
 public:
-  Formula() {};
+  Formula();
   ~Formula() {};
 
   bool AddVariable(const Variable* var);
   void AddNum(double num);
   void AddMathThing(char maththing);
   void AddInequality(constraint_type ineq);
-  void AddText(const std::string* function);
+  void AddText(const std::string* function, bool literalString = false);
   void AddFormula(const Formula* form2);
   void AddEllipses();
   void AddParentheses();
@@ -54,6 +55,7 @@ public:
   bool IsOne() const;
   bool IsEllipsesOnly() const;
   bool IsSingleVariable() const;
+  bool IsOneComponent() const;
   bool GetIsConst() const;
   bool CheckIncludes(std::string modname, const ReactantList* rlist) const;
   bool ContainsVar(std::string modname, std::vector<std::string> vname) const;
@@ -62,6 +64,7 @@ public:
   bool ContainsFunction(const std::string& function) const;
   bool ContainsName(const std::string& name) const;
   bool ContainsCurlyBrackets() const;
+  bool SetWithLiteralStrings() const;
 
   void Clear();
 
@@ -72,7 +75,8 @@ public:
   double      ToAmount() const;
   std::string ConvertOneSymbolToFunction(std::string formula) const;
   std::vector<const Variable*> GetVariablesFrom(std::string formula, std::string module) const;
-  std::vector<std::vector<std::string> > GetVariables() const;
+  std::vector<Variable*> GetVariables();
+  std::vector<std::vector<std::string> > GetVariableStrings() const;
 
   void FixNames(std::string modname);
   void ChangeTimeTo(const Variable* timeref);

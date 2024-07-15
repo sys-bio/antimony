@@ -30,7 +30,7 @@ bool UserFunction::SetFormula(const Formula& formula)
 #endif
   m_formula = formula;
   formstring = formula.ToDelimitedStringWithEllipses(".");
-  vector<vector<string> > formvars = formula.GetVariables();
+  vector<vector<string> > formvars = formula.GetVariableStrings();
   for (size_t fv=0; fv<formvars.size(); fv++) {
     bool foundvar = false;
     for (size_t ufv=0; ufv<m_exportlist.size(); ufv++) {

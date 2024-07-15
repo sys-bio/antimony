@@ -619,7 +619,7 @@ bool Module::AddConstraint(Variable* newcon, Formula* formula)
 bool Module::AddObjective(Formula* formula, bool maximize)
 {
   if (formula->IsSingleVariable()) {
-    const Variable* referenced = GetVariable(formula->GetVariables()[0]);
+    const Variable* referenced = GetVariable(formula->GetVariableStrings()[0]);
     if (referenced != NULL &&
        (referenced->GetType()==varFormulaUndef || referenced->GetType()==varUndefined)
        ) {
@@ -843,9 +843,11 @@ void Module::AddDefaultInitialValues()
     case varDeleted:
     case varSboTermWrapper:
     case varUncertWrapper:
+    case varLayoutWrapper:
     case varConstraint:
     case varAlgebraicRule:
-      break;
+    case varLayoutColorEtc:
+        break;
     }
   }
 }
@@ -1227,11 +1229,50 @@ bool Module::Finalize()
     }
   }
   //Or if any variable has uncertainties
-  for (size_t var = 0; var < m_variables.size(); var++) {
-    if (m_variables[var]->GetNumUncertWrappers() > 0) {
-      m_usedDistributions = true;
-    }
+  if (!m_usedDistributions) {
+      for (size_t var = 0; var < m_variables.size(); var++) {
+          if (m_variables[var]->GetNumUncertWrappers() > 0) {
+              m_usedDistributions = true;
+          }
+      }
   }
+  //Or if any variable has layout information
+  // Also, check to make sure the variable is allowed to have layout/render info.
+    for (size_t var = 0; var < m_variables.size(); var++) {
+        if (m_variables[var]->GetNumLayoutWrappers() > 0) {
+            switch (m_variables[var]->GetType()) {
+            case varReactionUndef:
+            case varReactionGene:
+            case varInteraction:
+            case varSpeciesUndef:
+            case varDNA:
+            case varCompartment:
+            case varStrand:
+                // These are all allowed to have layout information.
+                break;
+            case varFormulaUndef:
+            case varFormulaOperator:
+            case varModule:
+            case varEvent:
+            case varUndefined:
+            case varUnitDefinition:
+            case varDeleted:
+            case varConstraint:
+            case varSboTermWrapper:
+            case varUncertWrapper:
+            case varLayoutWrapper:
+            case varStoichiometry:
+            case varAlgebraicRule:
+            case varLayoutColorEtc:
+                g_registry.SetError("Unable to add layout or render information to " + m_variables[var]->GetNameDelimitedBy(".") + ":  only species, reactions, and compartments can be visualized, and this element is of type '" + VarTypeToString(m_variables[var]->GetType()) + "'.");
+                return true;
+            }
+            m_autolayout.use = true;
+            if (m_variables[var]->HasLayoutPositionInfo()) {
+                m_autolayout.lockedNodeIds.insert(m_variables[var]->GetNameDelimitedBy("_"));
+            }
+        }
+    }
 
 #endif
 
@@ -1696,10 +1737,12 @@ bool Module::AreEquivalent(return_type rtype, var_type vtype) const
   case varDeleted:
   case varSboTermWrapper:
   case varUncertWrapper:
+  case varLayoutWrapper:
   case varConstraint:
   case varStoichiometry:
   case varAlgebraicRule:
-    break;
+  case varLayoutColorEtc:
+      break;
   }
   assert(false); //uncaught return type
   return false;
@@ -2224,9 +2267,11 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
     case varUnitDefinition:
     case varSboTermWrapper:
     case varUncertWrapper:
+    case varLayoutWrapper:
     case varConstraint:
     case varStoichiometry:
     case varAlgebraicRule:
+    case varLayoutColorEtc:
         break;
     }
   }
@@ -2811,6 +2856,11 @@ void Module::setUsedDistrib(bool useddistrib)
     m_usedDistributions = useddistrib;
 }
 
+void Module::fixLayoutPositionOf(const std::string& id)
+{
+    m_autolayout.lockedNodeIds.insert(id);
+}
+
 void Module::Convert(Variable* conv, Variable* cf, string modulename)
 {
   Module* origmod = g_registry.GetModule(m_modulename);
@@ -2867,7 +2917,9 @@ void Module::Convert(Variable* conv, Variable* cf, string modulename)
     case varDeleted:
     case varSboTermWrapper:
     case varUncertWrapper:
-      break;
+    case varLayoutWrapper:
+    case varLayoutColorEtc:
+        break;
     }
   }
 }
@@ -2908,7 +2960,8 @@ void Module::ConvertTime(Variable* tcf)
     case varDeleted:
     case varSboTermWrapper:
     case varUncertWrapper:
-      break;
+    case varLayoutWrapper:
+        break;
     }
   }
 }
@@ -2940,9 +2993,11 @@ void Module::ConvertExtent(Variable* xcf)
     case varDeleted:
     case varSboTermWrapper:
     case varUncertWrapper:
+    case varLayoutWrapper:
     case varConstraint:
     case varStoichiometry:
     case varAlgebraicRule:
+    case varLayoutColorEtc:
         break;
     }
   }
@@ -2982,7 +3037,8 @@ void Module::UndoTimeExtentConversions(Variable* tcf, Variable* xcf)
     case varDeleted:
     case varSboTermWrapper:
     case varUncertWrapper:
-      break;
+    case varLayoutWrapper:
+        break;
     }
   }
 }
@@ -2999,18 +3055,23 @@ void Module::SetSBOTerm(int sboTerm)
 
 bool Module::SetAutoLayout(const string* isset)
 {
-    if (CaselessStrCmp(true, *isset, "yes") ||
+    if (CaselessStrCmp(true, *isset, "on") ||
         CaselessStrCmp(true, *isset, "true")) {
         m_autolayout.use = true;
         return false;
     }
-    else if (CaselessStrCmp(true, *isset, "no") ||
+    else if (CaselessStrCmp(true, *isset, "off") ||
         CaselessStrCmp(true, *isset, "false")) {
         m_autolayout.use = false;
         return false;
     }
-    g_registry.SetError("Unable to set autolayout to '" + *isset + "': the only valid options are 'true' or 'false' (or 'yes' or 'no').");
+    g_registry.SetError("Unable to set autolayout to '" + *isset + "': the only valid options are 'true' or 'false' (or 'on' or 'off').");
     return true;
+}
+
+bool Module::SetAutoLayout(const std::string& isset)
+{
+    return SetAutoLayout(&isset);
 }
 
 bool Module::SetAutoLayout(const std::string* argument, const std::string* value)
@@ -3028,16 +3089,16 @@ bool Module::SetAutoLayout(const std::string* argument, const std::string* value
         return true;
     }
     bool arg = true;
-    if (CaselessStrCmp(true, *value, "yes") ||
+    if (CaselessStrCmp(true, *value, "on") ||
         CaselessStrCmp(true, *value, "true")) {
         arg = true;
     }
-    else if (CaselessStrCmp(true, *value, "no") ||
+    else if (CaselessStrCmp(true, *value, "off") ||
         CaselessStrCmp(true, *value, "false")) {
         arg  = false;
     }
     else {
-        g_registry.SetError("Unable to set autolayout." + *argument + " to '" + *value + "': the only valid options are 'true' or 'false' (or 'yes' or 'no').");
+        g_registry.SetError("Unable to set autolayout." + *argument + " to '" + *value + "': the only valid options are 'true' or 'false' (or 'on' or 'off').");
         return true;
     }
     if (CaselessStrCmp(true, *argument, "useMagnetism")) {
@@ -3088,49 +3149,46 @@ bool Module::SetAutoLayout(const string* argument, const double& value)
     return false;
 }
 
-bool Module::SetAutoLayout(const std::string* argument, const std::vector<Variable*> values)
+bool Module::SetAutoLayout(const std::string* argument, const std::vector<Variable*>* values)
 {
     string type = ValidateAutoLayoutArgument(argument);
+    bool ret = true;
     if (type == "none") {
-        return true;
+        ret = true;
     }
-    if (type == "bool") {
+    else if (type == "bool") {
         g_registry.SetError("Unable to set autolayout." + *argument + " to a list of IDs: you must set it to 'true' or 'false'.");
-        return true;
     }
-    if (type == "double") {
+    else if (type == "double") {
         g_registry.SetError("Unable to set autolayout." + *argument + " to a list of IDs:  you must set it to a number.");
-        return true;
     }
-    vector<string> ids;
-    for (size_t i = 0; i < values.size(); i++) {
-        string id = values[i]->GetNameDelimitedBy(g_registry.GetCC());
-        ids.push_back(id);
+    else {
+        set<string> ids;
+        for (size_t i = 0; i < values->size(); i++) {
+            string id = (*values)[i]->GetNameDelimitedBy(g_registry.GetCC());
+            ids.insert(id);
+        }
+        m_autolayout.lockedNodeIds = ids;
+        ret = false;
     }
-    m_autolayout.lockedNodeIds = ids;
-    return false;
+    delete values;
+    return ret;
 }
 
 
-bool Module::SetAutoLayout(const std::string* argument, const std::vector<double> values)
+bool Module::SetAutoLayout(const std::string* argument, const std::vector<double>* values)
 {
     string type = ValidateAutoLayoutArgument(argument);
-    if (type == "none") {
-        return true;
-    }
     if (type == "bool") {
         g_registry.SetError("Unable to set autolayout." + *argument + " to a list of numbers: you must set it to 'true' or 'false'.");
-        return true;
     }
-    if (type == "double") {
+    else if (type == "double") {
         g_registry.SetError("Unable to set autolayout." + *argument + " to a list of numbers:  you must set it to a number.");
-        return true;
     }
-    if (type == "idlist") {
+    else if (type == "idlist") {
         g_registry.SetError("Unable to set autolayout." + *argument + " to a list of numbers:  you must set it to a list of IDs.");
-        return true;
     }
-    assert(false);
+    delete values;
     return true;
 }
 
@@ -3184,7 +3242,7 @@ bool Module::SetLayout(const std::string* argument, const std::string* value)
         return true;
     }
     bool arg = true;
-    if (!LIBSBMLNETWORK_CPP_NAMESPACE::isValidBackgroundColorValue(*value)) {
+    if (!LIBSBMLNETWORK_CPP_NAMESPACE::isValidColorValue(*value)) {
         g_registry.SetError("Unable to set layout." + *argument + " to '" + *value + "': that's not a valid color.  Try something like 'red' or 'blue' or a hex color of the form '#FF0000'.");
         return true;
     }
@@ -3221,17 +3279,17 @@ bool Module::SetLayout(const string* argument, const double& value)
         m_layout.width = value;
     }
     else if (CaselessStrCmp(true, *argument, "depth")) {
-        m_layout.depth = value;
+        //m_layout.depth = value;
+        g_registry.SetError("Unable to set layout." + *argument + " to '" + val.str() + "': Antimony does not currently support 3D layouts.");
+        return true;
     }
     return false;
 }
 
-bool Module::SetLayout(const std::string* argument, const std::vector<Variable*> values)
+bool Module::SetLayout(const std::string* argument, const std::vector<Variable*>* values)
 {
     string type = ValidateLayoutArgument(argument);
-    if (type == "none") {
-        return true;
-    }
+    bool ret = true;
     if (type == "color") {
         g_registry.SetError("Unable to set layout." + *argument + " to a list of IDs: you must set it to a color.");
         return true;
@@ -3244,64 +3302,71 @@ bool Module::SetLayout(const std::string* argument, const std::vector<Variable*>
         g_registry.SetError("Unable to set layout." + *argument + " to a list of IDs:  you must set it to a list of numbers in brackets (i.e. '[500, 800]').");
         return true;
     }
-    vector<string> ids;
-    for (size_t i = 0; i < values.size(); i++) {
-        string id = values[i]->GetNameDelimitedBy(g_registry.GetCC());
-        ids.push_back(id);
+    else if (type == "idlist") {
+        vector<string> ids;
+        for (size_t i = 0; i < values->size(); i++) {
+            string id = (*values)[i]->GetNameDelimitedBy(g_registry.GetCC());
+            ids.push_back(id);
+            m_autolayout.lockedNodeIds.insert(id);
+        }
+        if (CaselessStrCmp(true, *argument, "align_top")) {
+            m_layout.align_top = ids;
+        }
+        else if (CaselessStrCmp(true, *argument, "align_center")) {
+            m_layout.align_center = ids;
+        }
+        else if (CaselessStrCmp(true, *argument, "align_bottom")) {
+            m_layout.align_bottom = ids;
+        }
+        else if (CaselessStrCmp(true, *argument, "align_left")) {
+            m_layout.align_left = ids;
+        }
+        else if (CaselessStrCmp(true, *argument, "align_middle")) {
+            m_layout.align_middle = ids;
+        }
+        else if (CaselessStrCmp(true, *argument, "align_right")) {
+            m_layout.align_right = ids;
+        }
+        else if (CaselessStrCmp(true, *argument, "align_circular")) {
+            m_layout.align_circular = ids;
+        }
+        ret = false;
     }
-    if (CaselessStrCmp(true, *argument, "align_top")) {
-        m_layout.align_top = ids;
-    }
-    else if (CaselessStrCmp(true, *argument, "align_center")) {
-        m_layout.align_center = ids;
-    }
-    else if (CaselessStrCmp(true, *argument, "align_bottom")) {
-        m_layout.align_bottom = ids;
-    }
-    else if (CaselessStrCmp(true, *argument, "align_left")) {
-        m_layout.align_left = ids;
-    }
-    else if (CaselessStrCmp(true, *argument, "align_middle")) {
-        m_layout.align_middle = ids;
-    }
-    else if (CaselessStrCmp(true, *argument, "align_right")) {
-        m_layout.align_right = ids;
-    }
-    else if (CaselessStrCmp(true, *argument, "align_circular")) {
-        m_layout.align_circular = ids;
-    }
-    return false;
+    delete values;
+    return ret;
 }
 
 
-bool Module::SetLayout(const std::string* argument, const std::vector<double> values)
+bool Module::SetLayout(const std::string* argument, const std::vector<double>* values)
 {
     string type = ValidateLayoutArgument(argument);
-    if (type == "none") {
-        return true;
-    }
+    bool ret = true;
     if (type == "color") {
         g_registry.SetError("Unable to set layout." + *argument + " to a list of numbers: you must set it to a color.");
-        return true;
     }
-    if (type == "double") {
+    else if (type == "double") {
         g_registry.SetError("Unable to set layout." + *argument + " to a list of numbers:  you must set it to a number.");
-        return true;
     }
-    if (type == "idlist") {
+    else if (type == "idlist") {
         g_registry.SetError("Unable to set layout." + *argument + " to a list of numbers:  you must set it to a list of IDs.");
-        return true;
     }
-    if (values.size() < 2 || values.size() > 3) {
-        g_registry.SetError("Unable to set layout." + *argument + ": the list must contain exactly two or three entries, for height/width, or height/width/depth.");
-        return true;
+    else if (type == "numlist") {
+        if (values->size() < 2 || values->size() > 3) {
+            //g_registry.SetError("Unable to set layout." + *argument + ": the list must contain exactly two or three entries, for height/width, or height/width/depth.");
+            g_registry.SetError("Unable to set layout." + *argument + ": the list must contain exactly two entries, for height/width.");
+        }
+        else {
+            m_layout.height = (*values)[0];
+            m_layout.width = (*values)[1];
+            if (values->size() == 3) {
+                //m_layout.depth = (*values)[2];
+                g_registry.SetError("Unable to set layout." + *argument + ": Antimony does not currently support 3D layouts.");
+            }
+            ret = false;
+        }
     }
-    m_layout.height = values[0];
-    m_layout.width = values[1];
-    if (values.size() == 3) {
-        m_layout.depth = values[2];
-    }
-    return true;
+    delete values;
+    return ret;
 }
 
 
