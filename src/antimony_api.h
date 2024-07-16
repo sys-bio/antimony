@@ -221,6 +221,11 @@ LIB_EXTERN void   addDirectory(const char* directory);
  */
 LIB_EXTERN void   clearDirectories();
 
+/**
+ * Sets whether to remove function definitions on import from SBML.
+ */
+LIB_EXTERN void   setRemoveFunctionDefinitions(bool removeFunctionDefinitions);
+
 
 /** \} */
 

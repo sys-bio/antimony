@@ -120,6 +120,7 @@ main (int argc, char* argv[])
 { 
   int num_failed;
   g_registry.SetWriteNameToSBML(false);
+  g_registry.SetRemoveFunctionDefinitions(false);
 
   setTestDataDirectory();
 
