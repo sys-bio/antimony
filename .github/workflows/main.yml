@@ -351,7 +351,9 @@ jobs:
           if [ "${{ matrix.platform.os_type }}" == 'macos' ]; then
             mv antimony*.whl $(echo antimony*.whl | sed "s/universal2/${host_architecture}/g")
           elif [ "${{ matrix.platform.os_type }}" == 'manylinux' ]; then
-            mv antimony*.whl $(echo antimony*.whl | sed "s/linux/manylinux2014/g")
+            mv antimony*.whl $(echo antimony*.whl | sed "s/linux/manylinux_2_28/g")
+          elif [ "${{ matrix.platform.os_type }}" == 'ubuntu' ]; then
+            mv antimony*.whl $(echo antimony*.whl | sed "s/linux/ubuntu/g")
           fi
           python_version_number=$(echo "${{ matrix.python_version }}" | tr -d '.')
           mv antimony*.whl $(echo antimony*.whl | sed "s/cp${python_version_number}-cp${python_version_number}/py3-none/g")
