@@ -70,6 +70,8 @@ private:
   bool m_bareNumbersAreDimensionless;
   bool m_eof;
 
+  bool m_removeFunctionDefinitions;
+
 public:
   Registry();
   ~Registry();
@@ -198,6 +200,9 @@ public:
   UserFunction* GetNthUserFunction(size_t n);
   UserFunction* GetUserFunction(std::string name);
   void FixTimeInFunctions();
+
+  void SetRemoveFunctionDefinitions(bool removeFunctionDefinitions);
+  bool GetRemoveFunctionDefinitions();
 
   // CV terms
   bool ProcessGlobalCVTerm(const std::string* name, const std::string* qual, std::vector<std::string>* resources);

@@ -11,6 +11,7 @@
 #include <sbml/SBMLTypes.h>
 #include <sbml/xml/XMLOutputStream.h>
 #include <sbml/Model.h>
+#include <sbml/conversion/SBMLFunctionDefinitionConverter.h>
 #endif
 
 #ifndef NCELLML
@@ -306,6 +307,12 @@ LIB_EXTERN long loadAntimonyFile(const char* filename)
 #ifndef NSBML
 void LoadSBML(SBMLDocument* doc)
 {
+    if (g_registry.GetRemoveFunctionDefinitions()) {
+        SBMLConverter* converter = new SBMLFunctionDefinitionConverter();
+        converter->setDocument(doc);
+        int cret = converter->convert();
+
+    }
 #ifdef USE_COMP
   string mainsbmlname = getNameFromSBMLObject(doc->getModel(), "doc");
   CompSBMLDocumentPlugin* compdoc = static_cast<CompSBMLDocumentPlugin*>(doc->getPlugin("comp"));
@@ -556,14 +563,19 @@ LIB_EXTERN void clearPreviousLoads()
   g_registry.ClearAll();
 }
 
-LIB_EXTERN void   addDirectory(const char* directory)
+LIB_EXTERN void addDirectory(const char* directory)
 {
   g_registry.AddDirectory(directory);
 }
 
-LIB_EXTERN void   clearDirectories()
+LIB_EXTERN void clearDirectories()
 {
   g_registry.ClearDirectories();
+}
+
+LIB_EXTERN void setRemoveFunctionDefinitions(bool removeFunctionDefinitions)
+{
+    g_registry.SetRemoveFunctionDefinitions(removeFunctionDefinitions);
 }
 
 LIB_EXTERN char* getLastError()
