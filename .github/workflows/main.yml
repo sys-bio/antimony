@@ -365,7 +365,7 @@ jobs:
           cd ${RUNNER_WORKSPACE}
           python_wheel_file_name=$(ls install-antimony/bindings/python/dist | grep '^antimony')
           echo "python_wheel_artifacts_name=${python_wheel_file_name}" >> "${GITHUB_ENV}"
-          echo "artifacts_path=${RUNNER_WORKSPACE}/install-antimony/bindings/python/dist/$python_wheel_file_name" >> "${GITHUB_ENV}"
+          echo "python_wheel_artifacts_file=${RUNNER_WORKSPACE}/install-antimony/bindings/python/dist/$python_wheel_file_name" >> "${GITHUB_ENV}"
 
       - name: Upload Python wheel artifacts
         if: matrix.platform.build_type == 'Release' && matrix.platform.build_python == 'ON'
