@@ -91,11 +91,11 @@ jobs:
 
     steps:
       - name: Checkout Antimony
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set MSVC as the default compiler on Windows
         if: matrix.platform.os_type == 'windows'
-        uses: ilammy/msvc-dev-cmd@v1.6.0
+        uses: ilammy/msvc-dev-cmd@v1
 
       - name: Upgrade gcc on Linux
         if: matrix.platform.os_type == 'manylinux'
@@ -116,7 +116,7 @@ jobs:
           fi
 
       - name: Setup Ninja
-        uses: seanmiddleditch/gha-setup-ninja@v4
+        uses: seanmiddleditch/gha-setup-ninja@v5
 
       - name: Get Host Architecture
         shell: bash
@@ -168,7 +168,7 @@ jobs:
 
       - name: Cache ccache files on non-Windows
         if: matrix.platform.os_type != 'windows'
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ${RUNNER_WORKSPACE}/.ccache
           key:
@@ -322,7 +322,7 @@ jobs:
           echo "artifacts_path=${RUNNER_WORKSPACE}/install-antimony" >> "${GITHUB_ENV}"
 
       - name: Upload Antimony binaries
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{env.artifacts_name}}
           path: ${{env.artifacts_path}}
