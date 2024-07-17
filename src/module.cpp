@@ -16,6 +16,7 @@
 #include "typex.h"
 #include "unitdef.h"
 #include "stringx.h"
+#include "layoutWrapper.h"
 #ifndef NCELLML
 #include <wchar.h>
 #include <CellMLBootstrap.hpp>
@@ -1272,6 +1273,10 @@ bool Module::Finalize()
                 m_autolayout.lockedNodeIds.insert(m_variables[var]->GetNameDelimitedBy("_"));
             }
         }
+    }
+
+    if (m_speciesLayouts.size() || m_compartmentLayouts.size() || m_reactionLayouts.size()) {
+        m_autolayout.use = true;
     }
 
 #endif
@@ -3367,6 +3372,70 @@ bool Module::SetLayout(const std::string* argument, const std::vector<double>* v
     }
     delete values;
     return ret;
+}
+
+LayoutWrapper* CreateAndCheckLayoutWrapper(const std::string* type, Formula* formula, const string& group)
+{
+    layout_type ltype = LayoutStringToType(*type);
+    switch (ltype) {
+    case lt_x:
+    case lt_y:
+    case lt_position:
+        g_registry.SetError("Unable to set " + group + "." + *type + ": the position of each " + group + " is unique, so cannot collectively have a single position.");
+        return NULL;
+    case lt_unknown:
+        g_registry.SetError("Unable to set " + group + "." + *type + ": the allowed options here are 'height', 'width', 'size', 'color', 'font', 'fontsize', 'fontcolor' 'fontstyle', 'linewidth', 'linecolor', and 'shape'.");
+        return NULL;
+    case lt_height:
+    case lt_width:
+    case lt_size:
+    case lt_color:
+    case lt_font:
+    case lt_fontsize:
+    case lt_fontcolor:
+    case lt_fontstyle:
+    case lt_fontweight:
+    case lt_linewidth:
+    case lt_linecolor:
+    case lt_shape:
+        break;
+    }
+    LayoutWrapper* lw = new LayoutWrapper(ltype);
+    if (lw->SetFormula(formula)) {
+        delete lw;
+        return NULL;
+    }
+    return lw;
+}
+
+bool Module::AddSpeciesLayoutInfo(const std::string* type, Formula* formula)
+{
+    LayoutWrapper* lw = CreateAndCheckLayoutWrapper(type, formula, "species");
+    if (lw == NULL) {
+        return true;
+    }
+    m_speciesLayouts.push_back(lw);
+    return false;
+}
+
+bool Module::AddCompartmentLayoutInfo(const std::string* type, Formula* formula)
+{
+    LayoutWrapper* lw = CreateAndCheckLayoutWrapper(type, formula, "compartment");
+    if (lw == NULL) {
+        return true;
+    }
+    m_compartmentLayouts.push_back(lw);
+    return false;
+}
+
+bool Module::AddReactionLayoutInfo(const std::string* type, Formula* formula)
+{
+    LayoutWrapper* lw = CreateAndCheckLayoutWrapper(type, formula, "reaction");
+    if (lw == NULL) {
+        return true;
+    }
+    m_reactionLayouts.push_back(lw);
+    return false;
 }
 
 

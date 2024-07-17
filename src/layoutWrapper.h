@@ -13,6 +13,7 @@ protected:
   layout_type m_layout_type;
 public:
   LayoutWrapper(Variable* parent, layout_type type);
+  LayoutWrapper(layout_type type);
   ~LayoutWrapper();
 
   bool IsPointer() const;
@@ -27,6 +28,7 @@ public:
   virtual bool Synchronize(Variable* clone, const Variable* conversionFactor);
   virtual std::string CreatelayoutParamsAntimonySyntax(const std::string& indent) const;
   virtual bool TransferLayoutInformationTo(libsbml::SBMLDocument* sbml) const;
+  bool TransferLayoutInformationTo(libsbml::SBMLDocument* sbml, const std::string& group) const;
   virtual bool HasLayoutPositionInfo() const;
 };
 

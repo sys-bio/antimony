@@ -553,6 +553,7 @@ specinit:       SPECIES varmaybeis {g_registry.SetConstness(constDEFAULT); g_reg
         |       VARWORD SUBSTONLY SPECIES varmaybeis {g_registry.SetConstness(constVAR); g_registry.SetSubstOnly(true); $4->SetRegSpecVals(); if ($4->SetType(varSpeciesUndef)) YYABORT; }
         |       CONSTWORD SUBSTONLY SPECIES varmaybeis {g_registry.SetConstness(constCONST); g_registry.SetSubstOnly(true); $4->SetRegSpecVals(); if ($4->SetType(varSpeciesUndef)) YYABORT; }
         |       specinit ',' varmaybeis {$3->SetRegSpecVals(); if ($3->SetType(varSpeciesUndef)) YYABORT; }
+        |       SPECIES '.' ANTWORD '=' formula {if (g_registry.CurrentModule()->AddSpeciesLayoutInfo($3, $5)) YYABORT;}
         ;
 
 formulainit:    FORMULA varmaybeis {g_registry.SetConstness(constDEFAULT); $2->SetRegConst(); if ($2->SetType(varFormulaUndef)) YYABORT; }
@@ -565,6 +566,7 @@ reactioninit:   REACTION varmaybeis {g_registry.SetConstness(constDEFAULT); $2->
         |       VARWORD REACTION varmaybeis {g_registry.SetConstness(constVAR); $3->SetRegConst(); if ($3->SetType(varReactionUndef)) YYABORT; }
         |       CONSTWORD REACTION {g_registry.SetError("Reactions may not be set 'const'."); YYABORT; }
         |       reactioninit ',' varmaybeis {$3->SetRegConst(); if ($3->SetType(varReactionUndef)) YYABORT; }
+        |       REACTION '.' ANTWORD '=' formula {if (g_registry.CurrentModule()->AddReactionLayoutInfo($3, $5)) YYABORT;}
         ;
 
 dnainit:        DNA varmaybeis {g_registry.SetConstness(constDEFAULT); $2->SetRegConst(); if ($2->SetType(varDNA)) YYABORT; }
@@ -590,6 +592,7 @@ compartmentinit:
         |       VARWORD COMPARTMENT varmaybeis {g_registry.SetConstness(constVAR); $3->SetRegConst(); if ($3->SetType(varCompartment)) YYABORT; }
         |       CONSTWORD COMPARTMENT varmaybeis {g_registry.SetConstness(constCONST); $3->SetRegConst(); if ($3->SetType(varCompartment)) YYABORT; }
         |       compartmentinit ',' varmaybeis {$3->SetRegConst(); if ($3->SetType(varCompartment)) YYABORT; }
+        |       COMPARTMENT '.' ANTWORD '=' formula {if (g_registry.CurrentModule()->AddCompartmentLayoutInfo($3, $5)) YYABORT;}
         ;
 
 varconstinit:   VARWORD varmaybeis {g_registry.SetConstness(constVAR); $2->SetRegConst();}

@@ -33,6 +33,21 @@ LayoutWrapper::LayoutWrapper(Variable* parent, layout_type type)
     SetNamespace(parent->GetNamespace());
 }
 
+LayoutWrapper::LayoutWrapper(layout_type type)
+    : Variable()
+    , m_layout_type(type)
+{
+    m_displayname = "";
+    m_formulatype = formulaINITIAL;
+    m_supercomptype = varUndefined;
+    m_deletedunit = false;
+    m_replacedformrxn = false;
+    m_const = constDEFAULT;
+    m_substOnly = false;
+    m_sboTermWrapper = NULL;
+    m_type = varLayoutWrapper;
+}
+
 LayoutWrapper::~LayoutWrapper()
 {
 }
@@ -293,6 +308,226 @@ bool LayoutWrapper::TransferLayoutInformationTo(SBMLDocument* sbml) const
             break;
         case lt_shape:
             ret = LIBSBMLNETWORK_CPP_NAMESPACE::setGeometricShapeType(sbml, sid, formstring);
+            break;
+        case lt_unknown:
+            break;
+        }
+    }
+
+
+    return false;
+}
+
+bool LayoutWrapper::TransferLayoutInformationTo(SBMLDocument* sbml, const string& group) const
+{
+    assert(group == "species" || group == "reaction" || group == "compartment");
+    string formstring = m_valFormula.ToSBMLString();
+    ASTNode* astn = parseStringToASTNode(formstring);
+    string error = "Unable to set " + group + "." + LayoutTypeToString(m_layout_type) + " to " + formstring + ".";
+    if (IsPair(m_layout_type)) {
+        //The content should already be checked.
+        assert(astn->getNumChildren() == 2);
+        double xval = astn->getChild(0)->getValue();
+        double yval = astn->getChild(1)->getValue();
+        int ret1 = 0;
+        int ret2 = 0;
+        assert(m_layout_type == lt_size);
+        if (group == "species") {
+            //ret1 = LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesDimensionWidth(sbml, xval);
+            //ret2 = LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesDimensionHeight(sbml, yval);
+        }
+        else if (group == "compartment") {
+            //ret1 = LIBSBMLNETWORK_CPP_NAMESPACE::setCompartmentDimensionWidth(sbml, xval);
+            //ret2 = LIBSBMLNETWORK_CPP_NAMESPACE::setCompartmentDimensionHeight(sbml, yval);
+        }
+        else if (group == "reaction") {
+            //ret1 = LIBSBMLNETWORK_CPP_NAMESPACE::setReactionDimensionWidth(sbml, xval);
+            //ret2 = LIBSBMLNETWORK_CPP_NAMESPACE::setReactionDimensionHeight(sbml, yval);
+        }
+        if (ret1 == -1 || ret2 == -1) {
+            g_registry.SetError(error);
+            return true;
+        }
+    }
+    else {
+        double lval = astn->getValue();
+        int ret = 0;
+        switch (m_layout_type) {
+        case lt_x:
+        case lt_y:
+            assert(false);
+            return true;
+        case lt_height:
+            //if (group == "species") {
+            //    ret = LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesDimensionHeight(sbml, lval);
+            //}
+            //else if (group == "compartment") {
+            //    ret = LIBSBMLNETWORK_CPP_NAMESPACE::setCompartmentDimensionHeight(sbml, lval);
+            //}
+            //else if (group == "reaction") {
+            //    ret = LIBSBMLNETWORK_CPP_NAMESPACE::setReactionDimensionHeight(sbml, lval);
+            //}
+            break;
+        case lt_width:
+            //if (group == "species") {
+            //    ret = LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesDimensionWidth(sbml, lval);
+            //}
+            //else if (group == "compartment") {
+            //    ret = LIBSBMLNETWORK_CPP_NAMESPACE::setCompartmentDimensionWidth(sbml, lval);
+            //}
+            //else if (group == "reaction") {
+            //    ret = LIBSBMLNETWORK_CPP_NAMESPACE::setReactionDimensionWidth(sbml, lval);
+            //}
+            break;
+        case lt_color:
+            if (group == "species") {
+                ret = LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesFillColor(sbml, 0, formstring);
+            }
+            else if (group == "compartment") {
+                ret = LIBSBMLNETWORK_CPP_NAMESPACE::setCompartmentFillColor(sbml, 0, formstring);
+            }
+            else if (group == "reaction") {
+                ret = LIBSBMLNETWORK_CPP_NAMESPACE::setReactionFillColor(sbml, 0, formstring);
+            }
+            break;
+        case lt_font:
+        {
+            std::regex underscore_re("_");
+            formstring = std::regex_replace(formstring, underscore_re, "-");
+            if (group == "species") {
+                ret = LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesFontFamily(sbml, 0, formstring);
+            }
+            else if (group == "compartment") {
+                ret = LIBSBMLNETWORK_CPP_NAMESPACE::setCompartmentFontFamily(sbml, 0, formstring);
+            }
+            else if (group == "reaction") {
+                ret = LIBSBMLNETWORK_CPP_NAMESPACE::setReactionFontFamily(sbml, 0, formstring);
+            }
+            break;
+        }
+        case lt_fontsize:
+            if (group == "species") {
+                ret = LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesFontSize(sbml, 0, formstring);
+            }
+            else if (group == "compartment") {
+                ret = LIBSBMLNETWORK_CPP_NAMESPACE::setCompartmentFontSize(sbml, 0, formstring);
+            }
+            else if (group == "reaction") {
+                ret = LIBSBMLNETWORK_CPP_NAMESPACE::setReactionFontSize(sbml, 0, formstring);
+            }
+            break;
+        case lt_fontcolor:
+            if (group == "species") {
+                ret = LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesFontColor(sbml, 0, formstring);
+            }
+            else if (group == "compartment") {
+                ret = LIBSBMLNETWORK_CPP_NAMESPACE::setCompartmentFontColor(sbml, 0, formstring);
+            }
+            else if (group == "reaction") {
+                ret = LIBSBMLNETWORK_CPP_NAMESPACE::setReactionFontColor(sbml, 0, formstring);
+            }
+            break;
+        case lt_fontstyle:
+        case lt_fontweight:
+            if (CaselessStrCmp(false, formstring, "bold")) {
+                if (group == "species") {
+                    ret = LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesFontWeight(sbml, 0, formstring);
+                }
+                else if (group == "compartment") {
+                    ret = LIBSBMLNETWORK_CPP_NAMESPACE::setCompartmentFontWeight(sbml, 0, formstring);
+                }
+                else if (group == "reaction") {
+                    ret = LIBSBMLNETWORK_CPP_NAMESPACE::setReactionFontWeight(sbml, 0, formstring);
+                }
+            }
+            if (CaselessStrCmp(false, formstring, "italic")) {
+                if (group == "species") {
+                    ret = LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesFontStyle(sbml, 0, formstring);
+                }
+                else if (group == "compartment") {
+                    ret = LIBSBMLNETWORK_CPP_NAMESPACE::setCompartmentFontStyle(sbml, 0, formstring);
+                }
+                else if (group == "reaction") {
+                    ret = LIBSBMLNETWORK_CPP_NAMESPACE::setReactionFontStyle(sbml, 0, formstring);
+                }
+            }
+            if (CaselessStrCmp(false, formstring, "normal")) {
+                if (group == "species") {
+                    ret = LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesFontWeight(sbml, 0, formstring);
+                }
+                else if (group == "compartment") {
+                    ret = LIBSBMLNETWORK_CPP_NAMESPACE::setCompartmentFontWeight(sbml, 0, formstring);
+                }
+                else if (group == "reaction") {
+                    ret = LIBSBMLNETWORK_CPP_NAMESPACE::setReactionFontWeight(sbml, 0, formstring);
+                }
+                if (ret == 0) {
+                    if (group == "species") {
+                        ret = LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesFontStyle(sbml, 0, formstring);
+                    }
+                    else if (group == "compartment") {
+                        ret = LIBSBMLNETWORK_CPP_NAMESPACE::setCompartmentFontStyle(sbml, 0, formstring);
+                    }
+                    else if (group == "reaction") {
+                        ret = LIBSBMLNETWORK_CPP_NAMESPACE::setReactionFontStyle(sbml, 0, formstring);
+                    }
+                }
+            }
+            if (CaselessStrCmp(false, formstring, "bold_italic")) {
+                if (group == "species") {
+                    ret = LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesFontWeight(sbml, 0, formstring);
+                }
+                else if (group == "compartment") {
+                    ret = LIBSBMLNETWORK_CPP_NAMESPACE::setCompartmentFontWeight(sbml, 0, formstring);
+                }
+                else if (group == "reaction") {
+                    ret = LIBSBMLNETWORK_CPP_NAMESPACE::setReactionFontWeight(sbml, 0, formstring);
+                }
+                if (ret == 0) {
+                    if (group == "species") {
+                        ret = LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesFontStyle(sbml, 0, formstring);
+                    }
+                    else if (group == "compartment") {
+                        ret = LIBSBMLNETWORK_CPP_NAMESPACE::setCompartmentFontStyle(sbml, 0, formstring);
+                    }
+                    else if (group == "reaction") {
+                        ret = LIBSBMLNETWORK_CPP_NAMESPACE::setReactionFontStyle(sbml, 0, formstring);
+                    }
+                }
+            }
+            break;
+        case lt_linewidth:
+            if (group == "species") {
+                ret = LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesStrokeWidth(sbml, 0, lval);
+            }
+            else if (group == "compartment") {
+                ret = LIBSBMLNETWORK_CPP_NAMESPACE::setCompartmentStrokeWidth(sbml, 0, lval);
+            }
+            else if (group == "reaction") {
+                ret = LIBSBMLNETWORK_CPP_NAMESPACE::setReactionStrokeWidth(sbml, 0, lval);
+            }
+            break;
+        case lt_linecolor:
+            if (group == "species") {
+                ret = LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesStrokeColor(sbml, 0, formstring);
+            }
+            else if (group == "compartment") {
+                ret = LIBSBMLNETWORK_CPP_NAMESPACE::setCompartmentStrokeColor(sbml, 0, formstring);
+            }
+            else if (group == "reaction") {
+                ret = LIBSBMLNETWORK_CPP_NAMESPACE::setReactionStrokeColor(sbml, 0, formstring);
+            }
+            break;
+        case lt_shape:
+            if (group == "species") {
+                ret = LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesGeometricShapeType(sbml, 0, formstring);
+            }
+            else if (group == "compartment") {
+                ret = LIBSBMLNETWORK_CPP_NAMESPACE::setCompartmentGeometricShapeType(sbml, 0, formstring);
+            }
+            else if (group == "reaction") {
+                ret = LIBSBMLNETWORK_CPP_NAMESPACE::setReactionGeometricShapeType(sbml, 0, formstring);
+            }
             break;
         case lt_unknown:
             break;

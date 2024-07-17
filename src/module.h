@@ -28,6 +28,7 @@ enum tree_direction {td_UP, td_DOWN, td_SIDEWAYS};
 #include "sboTermWrapper.h"
 
 class ReactionList;
+class LayoutWrapper;
 
 struct autolayout {
     bool use = false;
@@ -95,6 +96,9 @@ private:
   bool m_hasFBC;
   autolayout m_autolayout;
   layout m_layout;
+  std::vector<LayoutWrapper*>  m_speciesLayouts;
+  std::vector<LayoutWrapper*>  m_compartmentLayouts;
+  std::vector<LayoutWrapper*>  m_reactionLayouts;
 #endif
 
 #ifndef NCELLML
@@ -200,6 +204,10 @@ public:
   virtual bool SetLayout(const std::string* argument, const double& value);
   virtual bool SetLayout(const std::string* argument, const std::vector<Variable*>* values);
   virtual bool SetLayout(const std::string* argument, const std::vector<double>* values);
+
+  virtual bool AddSpeciesLayoutInfo(const std::string* type, Formula* formula);
+  virtual bool AddCompartmentLayoutInfo(const std::string* type, Formula* formula);
+  virtual bool AddReactionLayoutInfo(const std::string* type, Formula* formula);
 
 
   //Output for the API

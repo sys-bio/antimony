@@ -2482,6 +2482,15 @@ void Module::CreateSBMLModel(bool comp)
       if (m_layout.align_top.size()) {
           LIBSBMLNETWORK_CPP_NAMESPACE::align(&m_sbml, m_layout.align_top, "top");
       }
+      for (size_t sl = 0; sl < m_speciesLayouts.size(); sl++) {
+          m_speciesLayouts[sl]->TransferLayoutInformationTo(&m_sbml, "species");
+      }
+      for (size_t sl = 0; sl < m_compartmentLayouts.size(); sl++) {
+          m_compartmentLayouts[sl]->TransferLayoutInformationTo(&m_sbml, "compartment");
+      }
+      for (size_t sl = 0; sl < m_reactionLayouts.size(); sl++) {
+          m_reactionLayouts[sl]->TransferLayoutInformationTo(&m_sbml, "reaction");
+      }
       for (size_t v = 0; v < m_uniquevars.size(); v++) {
           if (m_uniquevars[v]->TransferLayoutInformationTo(&m_sbml)) {
               assert(false);
