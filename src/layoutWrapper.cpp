@@ -33,8 +33,9 @@ LayoutWrapper::LayoutWrapper(Variable* parent, layout_type type)
     SetNamespace(parent->GetNamespace());
 }
 
-LayoutWrapper::LayoutWrapper(layout_type type)
+LayoutWrapper::LayoutWrapper(layout_type type, const string& group)
     : Variable()
+    , m_parent(NULL)
     , m_layout_type(type)
 {
     m_displayname = "";
@@ -45,6 +46,8 @@ LayoutWrapper::LayoutWrapper(layout_type type)
     m_const = constDEFAULT;
     m_substOnly = false;
     m_sboTermWrapper = NULL;
+    m_name.push_back(group);
+    m_name.push_back(LayoutTypeToString(type));
     m_type = varLayoutWrapper;
 }
 
@@ -191,7 +194,12 @@ Variable* LayoutWrapper::GetParent()
 
 string LayoutWrapper::GetNameDelimitedBy(string cc) const
 {
-    return m_parent->GetNameDelimitedBy(cc) + cc + LayoutTypeToString(m_layout_type);
+    if (m_parent) {
+        return m_parent->GetNameDelimitedBy(cc) + cc + LayoutTypeToString(m_layout_type);
+    }
+    else {
+        return Variable::GetNameDelimitedBy(cc);
+    }
 }
 
 bool LayoutWrapper::Synchronize(Variable* clone, const Variable* conversionFactor)

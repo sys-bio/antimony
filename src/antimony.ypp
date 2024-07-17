@@ -506,7 +506,6 @@ assignment:     varmaybein ':' maxormin formula {if (g_registry.CurrentModule()-
         |       varmaybein ':' '=' formula {if ($1->SetAssignmentRule($4)) YYABORT;}
         |       varmaybein '\'' '=' formula {if ($1->SetRateRule($4)) YYABORT;}
         |       varmaybein HASWORD unitdef {if ($1->SetUnit($3)) YYABORT; }
-//        |       NUM '=' formula {if (g_registry.CurrentModule()->SetAlgRule($1, $3)) YYABORT; }
         ;
 
 algrule:        NUM '=' formula {if (g_registry.AddNewAlgebraicRuleToCurrent($1, $3)) YYABORT; }

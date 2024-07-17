@@ -13,7 +13,7 @@ protected:
   layout_type m_layout_type;
 public:
   LayoutWrapper(Variable* parent, layout_type type);
-  LayoutWrapper(layout_type type);
+  LayoutWrapper(layout_type type, const std::string& group);
   ~LayoutWrapper();
 
   bool IsPointer() const;

@@ -3400,7 +3400,7 @@ LayoutWrapper* CreateAndCheckLayoutWrapper(const std::string* type, Formula* for
     case lt_shape:
         break;
     }
-    LayoutWrapper* lw = new LayoutWrapper(ltype);
+    LayoutWrapper* lw = new LayoutWrapper(ltype, group);
     if (lw->SetFormula(formula)) {
         delete lw;
         return NULL;
