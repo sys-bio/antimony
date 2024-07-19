@@ -106,6 +106,7 @@ def parse_function(line, comment, functions):
    args = []
    for onearg in argvec:
       onearg = onearg.strip()
+      onearg = onearg.replace(" = false", "")
       if len(onearg)==0:
          continue
       lastspace = onearg.rfind(" ")

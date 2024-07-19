@@ -55,6 +55,9 @@ bool Annotated::TransferAnnotationTo(SBase* sbmlobj, string metaid) const
       }
       if (ret != libsbml::LIBSBML_OPERATION_SUCCESS) {
           ret = sbmlobj->setNotes("<notes><body xmlns=\"http://www.w3.org/1999/xhtml\"> " + notes + " </body></notes>");
+      }
+      if (ret != libsbml::LIBSBML_OPERATION_SUCCESS) {
+          ret = sbmlobj->setNotes("<notes><p xmlns=\"http://www.w3.org/1999/xhtml\"> " + notes + " </p></notes>");
           assert(ret == libsbml::LIBSBML_OPERATION_SUCCESS);
       }
   }
@@ -192,9 +195,9 @@ bool Annotated::HasAnnotation() const
 
 ModelQualifierType_t Annotated::DecodeModelQualifier(const string& qual) const
 {
-  if(qual == "is" || qual == "identity" || qual == "model_entity_is")
+  if (qual == "is" || qual == "identity" || qual == "model_entity_is" || qual=="model_source")
     return BQM_IS;
-  else if(qual == "isDescribedBy" || qual == "description")
+  else if(qual == "isDescribedBy" || qual == "description" || qual == "publication")
     return BQM_IS_DESCRIBED_BY;
   else if(qual == "isDerivedFrom" || qual == "origin")
     return BQM_IS_DERIVED_FROM;
@@ -210,9 +213,9 @@ string Annotated::EncodeModelQualifier(ModelQualifierType_t q) const
 {
   switch(q) {
     case BQM_IS:
-      return "model_entity_is";
+      return "model_source";
     case BQM_IS_DESCRIBED_BY:
-      return "description";
+      return "publication";
     case BQM_IS_DERIVED_FROM:
       return "origin";
     case BQM_IS_INSTANCE_OF:
@@ -233,7 +236,7 @@ BiolQualifierType_t Annotated::DecodeBiolQualifier(const string& qual) const
     return BQB_HAS_PART;
   else if(qual == "isPartOf" || qual == "parthood")
     return BQB_IS_PART_OF;
-  else if(qual == "isVersionOf" || qual == "hypernym")
+  else if(qual == "isVersionOf" || qual == "hypernym" || qual == "biological_system")
     return BQB_IS_VERSION_OF;
   else if(qual == "hasVersion" || qual == "version")
     return BQB_HAS_VERSION;
@@ -267,7 +270,7 @@ string Annotated::EncodeBiolQualifier(BiolQualifierType_t q) const
     case BQB_IS_PART_OF:
       return "parthood";
     case BQB_IS_VERSION_OF:
-      return "hypernym";
+      return "biological_system";
     case BQB_HAS_VERSION:
       return "version";
     case BQB_IS_HOMOLOG_TO:

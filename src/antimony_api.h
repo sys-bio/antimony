@@ -127,10 +127,12 @@ LIB_EXTERN long   loadAntimonyString(const char* model);
  * Loads a file and parses it (using libSBML) as an SBML file.  On an error, the error is saved, -1 is returned, and no information is stored.
  * @return a long integer indicating the index of the file read and stored.  On an error, returns -1 and no information is stored.
  * NOTE:  This function is unavailable when libAntimony is compiled with the '-NSBML' flag.
+ * Also note that by default, function definitions are removed.
  *
  * @param filename The filename as a character string.  May be either absolute or relative to the directory the executable is being run from.
  *
  * @see getLastError()
+ * @see setRemoveFunctionDefinitions()
  */
 LIB_EXTERN long   loadSBMLFile(const char* filename);
 
@@ -140,10 +142,12 @@ LIB_EXTERN long   loadSBMLFile(const char* filename);
  * Loads a string and parses it (using libSBML) as an SBML file.  On an error, the error is saved, -1 is returned, and no information is stored.
  * @return a long integer indicating the index of the string read and stored.  On an error, returns -1 and no information is stored.
  * NOTE:  This function is unavailable when libAntimony is compiled with the '-NSBML' flag.
+ * Also note that by default, function definitions are removed.
  *
  * @param model The model, in SBML format.
  *
  * @see getLastError()
+ * @see setRemoveFunctionDefinitions()
  */
 LIB_EXTERN long   loadSBMLString(const char* model);
 
@@ -153,11 +157,13 @@ LIB_EXTERN long   loadSBMLString(const char* model);
  * Loads a string and parses it (using libSBML) as an SBML file.  On an error, the error is saved, -1 is returned, and no information is stored.  This function additionally allows you to set the location of the string, in case there are relative file references in the file (as there can be in some hierarchical models).
  * @return a long integer indicating the index of the string read and stored.  On an error, returns -1 and no information is stored.
  * NOTE:  This function is unavailable when libAntimony is compiled with the '-NSBML' flag.
+ * Also note that by default, function definitions are removed.
  *
  * @param model The model, in SBML format.
  * @param location The location of the file (i.e. "file1.xml" or "/home/user/sbml/models/file.xml")
  *
  * @see getLastError()
+ * @see setRemoveFunctionDefinitions()
  */
 LIB_EXTERN long   loadSBMLStringWithLocation(const char* model, const char* location);
 #endif
@@ -220,6 +226,12 @@ LIB_EXTERN void   addDirectory(const char* directory);
  * Clears the list of directories added with the 'addDirectory' function.
  */
 LIB_EXTERN void   clearDirectories();
+
+/**
+ * Sets whether to remove function definitions on import from SBML.
+ * By default, is set to 'true'.
+ */
+LIB_EXTERN void   setRemoveFunctionDefinitions(bool removeFunctionDefinitions);
 
 
 /** \} */
