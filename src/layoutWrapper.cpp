@@ -375,6 +375,10 @@ bool LayoutWrapper::TransferLayoutInformationTo(SBMLDocument* sbml, const string
             else if (group == "reaction") {
                 ret = LIBSBMLNETWORK_CPP_NAMESPACE::setReactionDimensionHeight(sbml, 0, lval);
             }
+            else if (group == "layout") {
+                int zero = 0;
+                ret = LIBSBMLNETWORK_CPP_NAMESPACE::setDimensionHeight(sbml, zero, lval);
+            }
             else {
                 assert(false);
             }
@@ -388,6 +392,10 @@ bool LayoutWrapper::TransferLayoutInformationTo(SBMLDocument* sbml, const string
             }
             else if (group == "reaction") {
                 ret = LIBSBMLNETWORK_CPP_NAMESPACE::setReactionDimensionWidth(sbml, 0, lval);
+            }
+            else if (group == "layout") {
+                int zero = 0;
+                ret = LIBSBMLNETWORK_CPP_NAMESPACE::setDimensionWidth(sbml, zero, lval);
             }
             else {
                 assert(false);

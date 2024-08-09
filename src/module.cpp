@@ -3337,6 +3337,16 @@ bool Module::SetLayout(const string* argument, const double& value)
         g_registry.SetError("Unable to set layout." + *argument + " to '" + val.str() + "': Antimony does not currently support 3D layouts.");
         return true;
     }
+    //Otherwise, it's a legal layout_type
+    layout_type lt = LayoutStringToType(*argument);
+
+    LayoutWrapper* wrapper = new LayoutWrapper(lt, "layout");
+    Formula form;
+    form.AddNum(value);
+    if (wrapper->SetFormula(&form)) {
+        return true;
+    }
+    m_defaultLayouts.push_back(wrapper);
     return false;
 }
 
@@ -3384,6 +3394,9 @@ bool Module::SetLayout(const std::string* argument, const std::vector<Variable*>
         else if (CaselessStrCmp(true, *argument, "align_circular")) {
             m_layout.align_circular = ids;
         }
+        else {
+            assert(false); //Shouldn't be any other setting that takes a list of IDs.
+        }
         ret = false;
     }
     delete values;
@@ -3418,6 +3431,9 @@ bool Module::SetLayout(const std::string* argument, const std::vector<double>* v
             }
             ret = false;
         }
+    }
+    else {
+        assert(false); //Shouldn't be any other setting that takes a list of values.
     }
     delete values;
     return ret;
