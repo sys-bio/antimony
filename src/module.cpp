@@ -1180,6 +1180,41 @@ string Module::GetVariableNameDelimitedBy(string cc) const
   return retval;
 }
 
+vector<string> getIntersection(set<string> set1, set<string> set2)
+{
+    vector<string> overlap;
+    for (auto s1 = set1.begin(); s1 != set1.end(); s1++) {
+        if (set2.find(*s1) != set2.end()) {
+            overlap.push_back(*s1);
+        }
+    }
+    return overlap;
+}
+
+bool checkOverlapAndInsert(set<string>& fixed, set<string> check, string label)
+{
+    vector<string> intersection = getIntersection(fixed, check);
+    if (intersection.size() >= 2) {
+        string err = "Unable to set the alignment " + label + " because only one element is allowed in an alignment whose position is already known.  In addition, adding an element to an alignment then establishes that element's position, so two such elements cannot be used in another alignment.  In this case, the positions of elements ";
+        for (size_t i = 0; i < intersection.size(); i++) {
+            if (i > 0) {
+                err += ", ";
+            }
+            if (i == intersection.size() - 1) {
+                err += "and ";
+            }
+            err += "'";
+            err += intersection[i];
+            err += "'";
+        }
+        err += " are already known.";
+        g_registry.SetError(err);
+        return true;
+    }
+    fixed.insert(check.begin(), check.end());
+    return false;
+}
+
 bool Module::Finalize()
 {
   m_uniquevars.clear();
@@ -1279,6 +1314,31 @@ bool Module::Finalize()
     if (m_speciesLayouts.size() || m_compartmentLayouts.size() || m_reactionLayouts.size()) {
         m_autolayout.use = true;
     }
+
+    //Now check if the layout align lists are OK, i.e. don't have 2+ already-fixed nodes in them.
+    set<string> combo = m_autolayout.lockedNodeIds;
+    if (checkOverlapAndInsert(combo, m_layout.align_top, "align_top")) {
+        return true;
+    }
+    if (checkOverlapAndInsert(combo, m_layout.align_center, "align_center")) {
+        return true;
+    }
+    if (checkOverlapAndInsert(combo, m_layout.align_bottom, "align_bottom")) {
+        return true;
+    }
+    if (checkOverlapAndInsert(combo, m_layout.align_left, "align_left")) {
+        return true;
+    }
+    if (checkOverlapAndInsert(combo, m_layout.align_middle, "align_middle")) {
+        return true;
+    }
+    if (checkOverlapAndInsert(combo, m_layout.align_right, "align_right")) {
+        return true;
+    }
+    if (checkOverlapAndInsert(combo, m_layout.align_circular, "align_circular")) {
+        return true;
+    }
+
 
 #endif
 
@@ -3419,14 +3479,12 @@ bool Module::SetLayout(const std::string* argument, const std::vector<double>* v
     }
     else if (type == "numlist") {
         if (values->size() < 2 || values->size() > 3) {
-            //g_registry.SetError("Unable to set layout." + *argument + ": the list must contain exactly two or three entries, for height/width, or height/width/depth.");
             g_registry.SetError("Unable to set layout." + *argument + ": the list must contain exactly two entries, for height/width.");
         }
         else {
             m_layout.width = (*values)[0];
             m_layout.height = (*values)[1];
             if (values->size() == 3) {
-                //m_layout.depth = (*values)[2];
                 g_registry.SetError("Unable to set layout." + *argument + ": Antimony does not currently support 3D layouts.");
             }
             ret = false;
