@@ -6,6 +6,7 @@
 #include <ostream>
 #include <set>
 #include <string>
+#include <regex>
 
 #include "module.h"
 #include "variable.h"
@@ -3148,8 +3149,11 @@ bool Module::SetAutoLayout(const string* argument, const double& value)
     if (CaselessStrCmp(true, *argument, "stiffness")) {
         m_autolayout.stiffness = value;
     }
-    if (CaselessStrCmp(true, *argument, "gravity")) {
+    else if (CaselessStrCmp(true, *argument, "gravity")) {
         m_autolayout.gravity = value;
+    }
+    else if (CaselessStrCmp(true, *argument, "maxNumConnectedEdges")) {
+        m_autolayout.maxNumConnectedEdges = round(value);
     }
     return false;
 }
@@ -3168,6 +3172,7 @@ bool Module::SetAutoLayout(const std::string* argument, const std::vector<Variab
         g_registry.SetError("Unable to set autolayout." + *argument + " to a list of IDs:  you must set it to a number.");
     }
     else {
+        assert(false); //'idlist' is not an option for any autolayout keyword (any more)
         set<string> ids;
         for (size_t i = 0; i < values->size(); i++) {
             string id = (*values)[i]->GetNameDelimitedBy(g_registry.GetCC());
@@ -3206,6 +3211,9 @@ string Module::ValidateAutoLayoutArgument(const string* argument)
     if (CaselessStrCmp(true, *argument, "gravity")) {
         return "double";
     }
+    if (CaselessStrCmp(true, *argument, "maxNumConnectedEdges")) {
+        return "double";
+    }
     if (CaselessStrCmp(true, *argument, "useMagnetism")) {
         return "bool";
     }
@@ -3218,10 +3226,10 @@ string Module::ValidateAutoLayoutArgument(const string* argument)
     if (CaselessStrCmp(true, *argument, "useNameAsTextLabel")) {
         return "bool";
     }
-    if (CaselessStrCmp(true, *argument, "locked")) {
-        return "idlist";
-    }
-    g_registry.SetError("No such setting 'autolayout." + *argument+ "': the valid autolayout settings are 'stiffness', 'gravity', 'useMagnetism', 'useBoundary', 'useGrid', 'useNameAsTextLabel', and 'locked'.");
+    //if (CaselessStrCmp(true, *argument, "locked")) {
+    //    return "idlist";
+    //}
+    g_registry.SetError("No such setting 'autolayout." + *argument+ "': the valid autolayout settings are 'stiffness', 'gravity', 'maxNumConnectedEdges', 'useMagnetism', 'useBoundary', 'useGrid', and 'useNameAsTextLabel'.");
 
     return "none";
 }
@@ -3246,14 +3254,55 @@ bool Module::SetLayout(const std::string* argument, const std::string* value)
         g_registry.SetError("Unable to set layout." + *argument + " to '" + *value + "':  you must set it to a list of IDs in brackets (i.e. '[S1, S2]').");
         return true;
     }
-    bool arg = true;
-    if (!LIBSBMLNETWORK_CPP_NAMESPACE::isValidColorValue(*value)) {
-        g_registry.SetError("Unable to set layout." + *argument + " to '" + *value + "': that's not a valid color.  Try something like 'red' or 'blue' or a hex color of the form '#FF0000'.");
+
+    if (type == "color") {
+        if (!LIBSBMLNETWORK_CPP_NAMESPACE::isValidColorValue(*value)) {
+            g_registry.SetError("Unable to set layout." + *argument + " to '" + *value + "': that's not a valid color.  Try something like 'red' or 'blue' or a hex color of the form '#FF0000'.");
+            return true;
+        }
+    }
+    else if (type == "style") {
+        std::regex underscore_re("_");
+        string spaces_not_underscores = std::regex_replace(*value, underscore_re, " ");
+        //if (!LIBSBMLNETWORK_CPP_NAMESPACE::isValidstyle(spaces_not_underscores)) {
+        //    g_registry.SetError("Unable to set layout." + *argument + " to '" + *value + "': that's not a valid predefined style.  Try something like 'blue_ombre', 'sunset', or 'black_and_white'.");
+        //    return true;
+        //}
+    }
+    else if(type == "font") {
+        //All font names are legal
+    }
+    else if (type == "fontEmphasis") {
+        if (!(CaselessStrCmp(true, *value, "italic") || CaselessStrCmp(true, *value, "bold") || CaselessStrCmp(true, *value, "normal") || CaselessStrCmp(true, *value, "bold_italic"))) {
+            g_registry.SetError("Unable to set layout." + *argument + " to '" + *value + "': the valid font emphases are 'normal', 'bold', 'italic', or 'bold_italic'.");
+            return true;
+        }
+    }
+    else {
+        assert(false);
+    }
+
+
+    if (CaselessStrCmp(true, *argument, "background")) {
+        m_layout.background = *value;
+        return false;
+    }
+
+    else if (CaselessStrCmp(true, *argument, "style")) {
+        m_layout.style = *value;
+        return false;
+    }
+
+    //Otherwise, it's a legal layout_type
+    layout_type lt = LayoutStringToType(*argument);
+
+    LayoutWrapper* wrapper = new LayoutWrapper(lt, "layout");
+    Formula form;
+    form.AddText(value);
+    if (wrapper->SetFormula(&form)) {
         return true;
     }
-    assert(type == "color");
-    assert(CaselessStrCmp(true, *argument, "background"));
-    m_layout.background = *value;
+    m_defaultLayouts.push_back(wrapper);
     return false;
 }
 
@@ -3308,11 +3357,11 @@ bool Module::SetLayout(const std::string* argument, const std::vector<Variable*>
         return true;
     }
     else if (type == "idlist") {
-        vector<string> ids;
+        set<string> ids;
         for (size_t i = 0; i < values->size(); i++) {
             string id = (*values)[i]->GetNameDelimitedBy(g_registry.GetCC());
-            ids.push_back(id);
-            m_autolayout.lockedNodeIds.insert(id);
+            ids.insert(id);
+            //m_autolayout.lockedNodeIds.insert(id);
         }
         if (CaselessStrCmp(true, *argument, "align_top")) {
             m_layout.align_top = ids;
@@ -3361,8 +3410,8 @@ bool Module::SetLayout(const std::string* argument, const std::vector<double>* v
             g_registry.SetError("Unable to set layout." + *argument + ": the list must contain exactly two entries, for height/width.");
         }
         else {
-            m_layout.height = (*values)[0];
-            m_layout.width = (*values)[1];
+            m_layout.width = (*values)[0];
+            m_layout.height = (*values)[1];
             if (values->size() == 3) {
                 //m_layout.depth = (*values)[2];
                 g_registry.SetError("Unable to set layout." + *argument + ": Antimony does not currently support 3D layouts.");
@@ -3477,8 +3526,42 @@ string Module::ValidateLayoutArgument(const string* argument)
     if (CaselessStrCmp(true, *argument, "background")) {
         return "color";
     }
-    g_registry.SetError("No such setting 'layout." + *argument + "': the valid layout settings are 'align_top', 'align_center', 'align_bottom', 'align_left', 'align_middle', 'align_right', 'align_circular', 'size', 'height', 'width', 'depth' and 'background'.");
-
+    if (CaselessStrCmp(true, *argument, "style")) {
+        return "style";
+    }
+    layout_type lt = LayoutStringToType(*argument);
+    switch (lt) {
+    case lt_position:
+    case lt_x:
+    case lt_y:
+        g_registry.SetError("Cannot set 'layout." + *argument + "': every element has a different location, so it cannot be set for everything at once.");
+        return "none";
+    case lt_size:
+    case lt_height:
+    case lt_width:
+        g_registry.SetError("Cannot set 'layout." + *argument + "': the sizes of compartments, species, and reactions should be different from each other.");
+        return "none";
+    case lt_color:
+    case lt_linecolor:
+    case lt_fontcolor:
+        return "color";
+    case lt_font:
+        return "font";
+    case lt_fontsize:
+        return "double";
+    case lt_fontstyle:
+    case lt_fontweight:
+        return "fontEmphasis";
+    case lt_linewidth:
+        return "double";
+    case lt_shape:
+        g_registry.SetError("Cannot set 'layout." + *argument + "': the sizes of compartments, species, and reactions should be different from each other.");
+        return "none";
+    case lt_unknown:
+        g_registry.SetError("No such setting 'layout." + *argument + "': the valid layout settings are 'align_top', 'align_center', 'align_bottom', 'align_left', 'align_middle', 'align_right', 'align_circular', 'size', 'height', 'width', 'depth' and 'background', plus 'color', 'font', 'fontsize', 'fontstyle', 'linewidth', and 'linecolor' for setting those features for everything at once.");
+        return "none";
+    }
+    assert(false); //Should be caught above.
     return "none";
 }
 

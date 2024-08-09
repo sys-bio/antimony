@@ -34,6 +34,7 @@ struct autolayout {
     bool use = false;
     double stiffness = 10.0;
     double gravity = 15.0;
+    int maxNumConnectedEdges = 3;
     bool useMagnetism = false;
     bool useBoundary = false;
     bool useGrid = false;
@@ -42,17 +43,18 @@ struct autolayout {
 };
 
 struct layout {
-    std::vector <std::string> align_top      = std::vector<std::string>();
-    std::vector <std::string> align_center   = std::vector<std::string>();
-    std::vector <std::string> align_bottom   = std::vector<std::string>();
-    std::vector <std::string> align_left     = std::vector<std::string>();
-    std::vector <std::string> align_middle   = std::vector<std::string>();
-    std::vector <std::string> align_right    = std::vector<std::string>();
-    std::vector <std::string> align_circular = std::vector<std::string>();
+    std::set <std::string> align_top      = std::set<std::string>();
+    std::set <std::string> align_center   = std::set<std::string>();
+    std::set <std::string> align_bottom   = std::set<std::string>();
+    std::set <std::string> align_left     = std::set<std::string>();
+    std::set <std::string> align_middle   = std::set<std::string>();
+    std::set <std::string> align_right    = std::set<std::string>();
+    std::set <std::string> align_circular = std::set<std::string>();
     double height = 0.0;
     double width  = 0.0;
     //double depth  = 0.0;
     std::string background = "";
+    std::string style = "";
 };
 
 
@@ -96,6 +98,7 @@ private:
   bool m_hasFBC;
   autolayout m_autolayout;
   layout m_layout;
+  std::vector<LayoutWrapper*>  m_defaultLayouts;
   std::vector<LayoutWrapper*>  m_speciesLayouts;
   std::vector<LayoutWrapper*>  m_compartmentLayouts;
   std::vector<LayoutWrapper*>  m_reactionLayouts;

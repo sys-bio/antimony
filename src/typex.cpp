@@ -659,6 +659,9 @@ layout_type LayoutStringToType(const string& ltype)
     if (CaselessStrCmp(false, ltype, "color")) {
         return lt_color;
     }
+    if (CaselessStrCmp(false, ltype, "fillcolor")) {
+        return lt_color;
+    }
     if (CaselessStrCmp(false, ltype, "font")) {
         return lt_font;
     }

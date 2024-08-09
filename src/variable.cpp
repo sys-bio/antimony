@@ -2427,6 +2427,7 @@ bool Variable::AllowedInFormulas() const
   case varCompartment:
   case varUnitDefinition:
   case varStoichiometry:
+  case varLayoutColorEtc:
     return true;
 
   case varInteraction:

@@ -2446,13 +2446,16 @@ void Module::CreateSBMLModel(bool comp)
 
   // Layout/Render!
   if (m_autolayout.use) {
-      LIBSBMLNETWORK_CPP_NAMESPACE::autolayout(&m_sbml, m_autolayout.stiffness, m_autolayout.gravity, m_autolayout.useMagnetism, m_autolayout.useBoundary, m_autolayout.useGrid, m_autolayout.useNameAsTextLabel); // , m_autolayout.lockedNodeIds);
+      LIBSBMLNETWORK_CPP_NAMESPACE::autolayout(&m_sbml, m_autolayout.stiffness, m_autolayout.gravity, m_autolayout.maxNumConnectedEdges, m_autolayout.useMagnetism, m_autolayout.useBoundary, m_autolayout.useGrid, m_autolayout.useNameAsTextLabel); // , m_autolayout.lockedNodeIds);
       LIBSBMLNETWORK_CPP_NAMESPACE::getSBMLObject(&m_sbml, "S1");
       if (m_layout.width != 0) {
           LIBSBMLNETWORK_CPP_NAMESPACE::setDimensionWidth(&m_sbml, m_layout.width);
       }
       if (m_layout.height != 0) {
           LIBSBMLNETWORK_CPP_NAMESPACE::setDimensionHeight(&m_sbml, m_layout.height);
+      }
+      if (m_layout.style != "") {
+          LIBSBMLNETWORK_CPP_NAMESPACE::setStyle(&m_sbml, 0, m_layout.style);
       }
       //if (m_layout.depth != 0) {
       //    LIBSBMLNETWORK_CPP_NAMESPACE::setDimensionDepth(m_layout.sbmllayout, m_layout.depth);
@@ -2461,26 +2464,8 @@ void Module::CreateSBMLModel(bool comp)
           //The background name has already been validated when set.
           LIBSBMLNETWORK_CPP_NAMESPACE::setBackgroundColor(&m_sbml, m_layout.background);
       }
-      if (m_layout.align_bottom.size()) {
-          LIBSBMLNETWORK_CPP_NAMESPACE::align(&m_sbml, m_layout.align_bottom, "bottom");
-      }
-      if (m_layout.align_center.size()) {
-          LIBSBMLNETWORK_CPP_NAMESPACE::align(&m_sbml, m_layout.align_center, "center");
-      }
-      if (m_layout.align_circular.size()) {
-          LIBSBMLNETWORK_CPP_NAMESPACE::align(&m_sbml, m_layout.align_circular, "circular");
-      }
-      if (m_layout.align_left.size()) {
-          LIBSBMLNETWORK_CPP_NAMESPACE::align(&m_sbml, m_layout.align_left, "left");
-      }
-      if (m_layout.align_middle.size()) {
-          LIBSBMLNETWORK_CPP_NAMESPACE::align(&m_sbml, m_layout.align_middle, "middle");
-      }
-      if (m_layout.align_right.size()) {
-          LIBSBMLNETWORK_CPP_NAMESPACE::align(&m_sbml, m_layout.align_right, "right");
-      }
-      if (m_layout.align_top.size()) {
-          LIBSBMLNETWORK_CPP_NAMESPACE::align(&m_sbml, m_layout.align_top, "top");
+      for (size_t sl = 0; sl < m_defaultLayouts.size(); sl++) {
+          m_defaultLayouts[sl]->TransferLayoutInformationTo(&m_sbml, "layout");
       }
       for (size_t sl = 0; sl < m_speciesLayouts.size(); sl++) {
           m_speciesLayouts[sl]->TransferLayoutInformationTo(&m_sbml, "species");
@@ -2494,15 +2479,42 @@ void Module::CreateSBMLModel(bool comp)
       for (size_t v = 0; v < m_uniquevars.size(); v++) {
           if (m_uniquevars[v]->TransferLayoutInformationTo(&m_sbml)) {
               assert(false);
-              //return true;
           }
       }
+      if (m_layout.align_bottom.size()) {
+          LIBSBMLNETWORK_CPP_NAMESPACE::align(&m_sbml, m_layout.align_bottom, "bottom");
+          m_autolayout.lockedNodeIds.insert(m_layout.align_bottom.begin(), m_layout.align_bottom.end());
+      }
+      if (m_layout.align_center.size()) {
+          LIBSBMLNETWORK_CPP_NAMESPACE::align(&m_sbml, m_layout.align_center, "center");
+          m_autolayout.lockedNodeIds.insert(m_layout.align_center.begin(), m_layout.align_center.end());
+      }
+      if (m_layout.align_circular.size()) {
+          LIBSBMLNETWORK_CPP_NAMESPACE::align(&m_sbml, m_layout.align_circular, "circular");
+          m_autolayout.lockedNodeIds.insert(m_layout.align_circular.begin(), m_layout.align_circular.end());
+      }
+      if (m_layout.align_left.size()) {
+          LIBSBMLNETWORK_CPP_NAMESPACE::align(&m_sbml, m_layout.align_left, "left");
+          m_autolayout.lockedNodeIds.insert(m_layout.align_left.begin(), m_layout.align_left.end());
+      }
+      if (m_layout.align_middle.size()) {
+          LIBSBMLNETWORK_CPP_NAMESPACE::align(&m_sbml, m_layout.align_middle, "middle");
+          m_autolayout.lockedNodeIds.insert(m_layout.align_middle.begin(), m_layout.align_middle.end());
+      }
+      if (m_layout.align_right.size()) {
+          LIBSBMLNETWORK_CPP_NAMESPACE::align(&m_sbml, m_layout.align_right, "right");
+          m_autolayout.lockedNodeIds.insert(m_layout.align_right.begin(), m_layout.align_right.end());
+      }
+      if (m_layout.align_top.size()) {
+          LIBSBMLNETWORK_CPP_NAMESPACE::align(&m_sbml, m_layout.align_top, "top");
+          m_autolayout.lockedNodeIds.insert(m_layout.align_top.begin(), m_layout.align_top.end());
+      }
       if (m_autolayout.lockedNodeIds.size() > 0) {
-          vector<string> lockedids;
-          for (auto node = m_autolayout.lockedNodeIds.begin(); node != m_autolayout.lockedNodeIds.end(); node++) {
-              lockedids.push_back(*node);
-          }
-          LIBSBMLNETWORK_CPP_NAMESPACE::autolayout(&m_sbml, m_autolayout.stiffness, m_autolayout.gravity, m_autolayout.useMagnetism, m_autolayout.useBoundary, m_autolayout.useGrid, m_autolayout.useNameAsTextLabel, lockedids);
+          //double S1width = LIBSBMLNETWORK_CPP_NAMESPACE::getDimensionWidth(&m_sbml, "S1");
+          double S1x = LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(&m_sbml, "S1");
+          LIBSBMLNETWORK_CPP_NAMESPACE::autolayout(&m_sbml, m_autolayout.stiffness, m_autolayout.gravity, m_autolayout.maxNumConnectedEdges, m_autolayout.useMagnetism, m_autolayout.useBoundary, m_autolayout.useGrid, m_autolayout.useNameAsTextLabel, true, m_autolayout.lockedNodeIds);
+          //S1width = LIBSBMLNETWORK_CPP_NAMESPACE::getDimensionWidth(&m_sbml, "S1");
+          S1x = LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(&m_sbml, "S1");
       }
   }
 }
