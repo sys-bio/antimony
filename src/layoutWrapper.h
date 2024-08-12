@@ -26,7 +26,7 @@ public:
   Variable* GetParent();
   virtual std::string GetNameDelimitedBy(std::string cc) const;
   virtual bool Synchronize(Variable* clone, const Variable* conversionFactor);
-  virtual std::string CreatelayoutParamsAntimonySyntax(const std::string& indent) const;
+  virtual std::string CreateLayoutParamsAntimonySyntax(const std::string& indent) const;
   virtual bool TransferLayoutInformationTo(libsbml::SBMLDocument* sbml) const;
   bool TransferLayoutInformationTo(libsbml::SBMLDocument* sbml, const std::string& group) const;
   virtual bool HasLayoutPositionInfo() const;

@@ -2392,6 +2392,20 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
       retval += indent + m_uniquevars[var]->GetNameDelimitedBy(cc) + " is \"" + m_uniquevars[var]->GetDisplayName() + "\";\n";
   }
 
+  if (m_autolayout.use) {
+      retval += GetAntimonyAutolayout(indent);
+      retval += GetAntimonyGeneralLayout(indent);
+      retval += GetAntimonyTypeLayouts(indent);
+      string individual_layouts = "";
+      for (size_t var = 0; var < m_uniquevars.size(); var++) {
+          individual_layouts += m_uniquevars[var]->CreateLayoutParamsAntimonySyntax(indent);
+      }
+      if (!individual_layouts.empty()) {
+          retval += indent + "// Individual element layout information\n";
+          retval += individual_layouts;
+      }
+  }
+
   if (enableAnnotations) {
       // SBO terms
       bool anysboterm = false;
@@ -3128,10 +3142,10 @@ bool Module::SetAutoLayout(const string* isset)
     }
     else if (CaselessStrCmp(true, *isset, "off") ||
         CaselessStrCmp(true, *isset, "false")) {
-        m_autolayout.use = false;
-        return false;
+        g_registry.SetError("The only way to turn off autolayout to not include any layout information in the Antimony model.  Do not try to set model.autolayout to '" + *isset + "'.");
+        return true;
     }
-    g_registry.SetError("Unable to set autolayout to '" + *isset + "': the only valid options are 'true' or 'false' (or 'on' or 'off').");
+    g_registry.SetError("Unable to set autolayout to '" + *isset + "': it can only be used to turn on autolayout by setting it to 'true' or 'on'.");
     return true;
 }
 
@@ -3637,5 +3651,115 @@ string Module::ValidateLayoutArgument(const string* argument)
     }
     assert(false); //Should be caught above.
     return "none";
+}
+
+string Module::GetAntimonyAutolayout(const string& indent) const
+{
+    stringstream ret;
+    ret << indent << "# Autolayout options" << endl;
+    ret << indent << "model.autolayout = on" << endl;
+    if (m_autolayout.stiffness != 10) {
+        ret << indent << "model.autolayout.stiffness = " << m_autolayout.stiffness << endl;
+    }
+    if (m_autolayout.gravity != 15) {
+        ret << indent << "model.autolayout.gravity = " << m_autolayout.gravity << endl;
+    }
+    if (m_autolayout.maxNumConnectedEdges != 3) {
+        ret << indent << "model.autolayout.maxNumConnectedEdges = " << m_autolayout.maxNumConnectedEdges << endl;
+    }
+    if (m_autolayout.useMagnetism) {
+        ret << indent << "model.autolayout.useMagnetism = on" << endl;
+    }
+    if (!m_autolayout.useBoundary) {
+        ret << indent << "model.autolayout.useBoundary = off" << endl;
+    }
+    if (m_autolayout.useGrid) {
+        ret << indent << "model.autolayout.useGrid = on" << endl;
+    }
+    if (!m_autolayout.useNameAsTextLabel) {
+        ret << indent << "model.autolayout.useNameAsTextLabel = off" << endl;
+    }
+
+
+    return ret.str();
+}
+
+string getSetString(set<string> list)
+{
+    string ret = "{";
+    for (auto li = list.begin(); li != list.end(); li++) {
+        ret += " " +  *li + ",";
+    }
+    ret[ret.size() - 1] = ' ';
+    ret += "}";
+    return ret;
+}
+
+string Module::GetAntimonyGeneralLayout(const string& indent) const
+{
+    stringstream ret;
+    ret << indent << "# General layout defaults" << endl;
+    if (m_layout.height && m_layout.width) {
+        ret << indent << "model.layout.size = {" << m_layout.width << ", " << m_layout.height << "}" << endl;
+    }
+    else if (m_layout.height) {
+        ret << indent << "model.layout.height = " << m_layout.height << endl;
+    }
+    else if (m_layout.width) {
+        ret << indent << "model.layout.width = " << m_layout.width << endl;
+    }
+    if (m_layout.style != "") {
+        ret << indent << "model.layout.style = " << m_layout.style << endl;
+    }
+    if (m_layout.background != "") {
+        ret << indent << "model.layout.background = " << m_layout.background << endl;
+    }
+    if (m_layout.align_top.size()) {
+        ret << indent << getSetString(m_layout.align_top);
+    }
+    if (m_layout.align_center.size()) {
+        ret << indent << getSetString(m_layout.align_center);
+    }
+    if (m_layout.align_bottom.size()) {
+        ret << indent << getSetString(m_layout.align_bottom);
+    }
+    if (m_layout.align_left.size()) {
+        ret << indent << getSetString(m_layout.align_left);
+    }
+    if (m_layout.align_middle.size()) {
+        ret << indent << getSetString(m_layout.align_middle);
+    }
+    if (m_layout.align_right.size()) {
+        ret << indent << getSetString(m_layout.align_right);
+    }
+    if (m_layout.align_circular.size()) {
+        ret << indent << getSetString(m_layout.align_circular);
+    }
+
+    return ret.str();
+}
+
+std::string Module::GetAntimonyTypeLayouts(const std::string& indent) const
+{
+    string ret = "";
+    if (m_compartmentLayouts.size()) {
+        ret += indent + "// Compartment layout defaults\n";
+        for (size_t c = 0; c < m_compartmentLayouts.size(); c++) {
+            ret += m_compartmentLayouts[c]->CreateLayoutParamsAntimonySyntax(indent);
+        }
+    }
+    if (m_speciesLayouts.size()) {
+        ret += indent + "// Species layout defaults\n";
+        for (size_t s = 0; s < m_speciesLayouts.size(); s++) {
+            ret += m_speciesLayouts[s]->CreateLayoutParamsAntimonySyntax(indent);
+        }
+    }
+    if (m_reactionLayouts.size()) {
+        ret += indent + "// Reaction layout defaults\n";
+        for (size_t r = 0; r < m_reactionLayouts.size(); r++) {
+            ret += m_reactionLayouts[r]->CreateLayoutParamsAntimonySyntax(indent);
+        }
+    }
+    return std::string();
 }
 

@@ -36,7 +36,7 @@ struct autolayout {
     double gravity = 15.0;
     int maxNumConnectedEdges = 3;
     bool useMagnetism = false;
-    bool useBoundary = false;
+    bool useBoundary = true;
     bool useGrid = false;
     bool useNameAsTextLabel = true;
     std::set <std::string> lockedNodeIds = std::set<std::string>();
@@ -340,6 +340,9 @@ private:
   void UpdateRateOf(libsbml::Model* model);
   std::string ValidateAutoLayoutArgument(const std::string* argument);
   std::string ValidateLayoutArgument(const std::string* argument);
+  std::string GetAntimonyAutolayout(const std::string& indent) const;
+  std::string GetAntimonyGeneralLayout(const std::string& indent) const;
+  std::string GetAntimonyTypeLayouts(const std::string& indent) const;
 #endif
 #endif
 };

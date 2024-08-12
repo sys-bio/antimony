@@ -2510,11 +2510,7 @@ void Module::CreateSBMLModel(bool comp)
           m_autolayout.lockedNodeIds.insert(m_layout.align_top.begin(), m_layout.align_top.end());
       }
       if (m_autolayout.lockedNodeIds.size() > 0) {
-          //double S1width = LIBSBMLNETWORK_CPP_NAMESPACE::getDimensionWidth(&m_sbml, "S1");
-          double S1x = LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(&m_sbml, "S1");
-          LIBSBMLNETWORK_CPP_NAMESPACE::autolayout(&m_sbml, m_autolayout.stiffness, m_autolayout.gravity, m_autolayout.maxNumConnectedEdges, m_autolayout.useMagnetism, m_autolayout.useBoundary, m_autolayout.useGrid, m_autolayout.useNameAsTextLabel, true, m_autolayout.lockedNodeIds);
-          //S1width = LIBSBMLNETWORK_CPP_NAMESPACE::getDimensionWidth(&m_sbml, "S1");
-          S1x = LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(&m_sbml, "S1");
+          LIBSBMLNETWORK_CPP_NAMESPACE::autolayout(&m_sbml, m_autolayout.stiffness, m_autolayout.gravity, m_autolayout.maxNumConnectedEdges, m_autolayout.useMagnetism, m_autolayout.useBoundary, m_autolayout.useGrid, m_autolayout.useNameAsTextLabel, false, m_autolayout.lockedNodeIds);
       }
   }
 }

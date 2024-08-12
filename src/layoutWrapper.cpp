@@ -208,7 +208,7 @@ bool LayoutWrapper::Synchronize(Variable* clone, const Variable* conversionFacto
     return true;
 }
 
-string LayoutWrapper::CreatelayoutParamsAntimonySyntax(const string& indent) const
+string LayoutWrapper::CreateLayoutParamsAntimonySyntax(const string& indent) const
 {
     string ret = "";
     if (!m_valFormula.IsEmpty()) {
