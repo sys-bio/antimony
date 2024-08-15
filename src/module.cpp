@@ -1320,7 +1320,7 @@ bool Module::Finalize()
     if (checkOverlapAndInsert(combo, m_layout.align_top, "align_top")) {
         return true;
     }
-    if (checkOverlapAndInsert(combo, m_layout.align_center, "align_center")) {
+    if (checkOverlapAndInsert(combo, m_layout.align_hCenter, "align_hCenter")) {
         return true;
     }
     if (checkOverlapAndInsert(combo, m_layout.align_bottom, "align_bottom")) {
@@ -1329,7 +1329,7 @@ bool Module::Finalize()
     if (checkOverlapAndInsert(combo, m_layout.align_left, "align_left")) {
         return true;
     }
-    if (checkOverlapAndInsert(combo, m_layout.align_middle, "align_middle")) {
+    if (checkOverlapAndInsert(combo, m_layout.align_vCenter, "align_vCenter")) {
         return true;
     }
     if (checkOverlapAndInsert(combo, m_layout.align_right, "align_right")) {
@@ -2394,7 +2394,9 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
 
   if (m_autolayout.use) {
       retval += GetAntimonyAutolayout(indent);
+      retval += "\n";
       retval += GetAntimonyGeneralLayout(indent);
+      retval += "\n";
       retval += GetAntimonyTypeLayouts(indent);
       string individual_layouts = "";
       for (size_t var = 0; var < m_uniquevars.size(); var++) {
@@ -3181,13 +3183,13 @@ bool Module::SetAutoLayout(const std::string* argument, const std::string* value
         g_registry.SetError("Unable to set autolayout." + *argument + " to '" + *value + "': the only valid options are 'true' or 'false' (or 'on' or 'off').");
         return true;
     }
-    if (CaselessStrCmp(true, *argument, "useMagnetism")) {
-        m_autolayout.useMagnetism = arg;
-    }
-    else if (CaselessStrCmp(true, *argument, "useBoundary")) {
-        m_autolayout.useBoundary = arg;
-    }
-    else if (CaselessStrCmp(true, *argument, "useGrid")) {
+    //if (CaselessStrCmp(true, *argument, "useMagnetism")) {
+    //    m_autolayout.useMagnetism = arg;
+    //}
+    //else if (CaselessStrCmp(true, *argument, "useBoundary")) {
+    //    m_autolayout.useBoundary = arg;
+    //}
+    if (CaselessStrCmp(true, *argument, "useGrid")) {
         m_autolayout.useGrid = arg;
     }
     else if (CaselessStrCmp(true, *argument, "useNameAsTextLabel")) {
@@ -3220,12 +3222,12 @@ bool Module::SetAutoLayout(const string* argument, const double& value)
         g_registry.SetError("Unable to set autolayout." + *argument + " to '" + val.str() + "':  you must set it to a list of IDs in brackets (i.e. '[S1, S2]').");
         return true;
     }
-    if (CaselessStrCmp(true, *argument, "stiffness")) {
-        m_autolayout.stiffness = value;
-    }
-    else if (CaselessStrCmp(true, *argument, "gravity")) {
-        m_autolayout.gravity = value;
-    }
+    //if (CaselessStrCmp(true, *argument, "stiffness")) {
+    //    m_autolayout.stiffness = value;
+    //}
+    //else if (CaselessStrCmp(true, *argument, "gravity")) {
+    //    m_autolayout.gravity = value;
+    //}
     else if (CaselessStrCmp(true, *argument, "maxNumConnectedEdges")) {
         m_autolayout.maxNumConnectedEdges = round(value);
     }
@@ -3279,21 +3281,21 @@ bool Module::SetAutoLayout(const std::string* argument, const std::vector<double
 
 string Module::ValidateAutoLayoutArgument(const string* argument)
 {
-    if (CaselessStrCmp(true, *argument, "stiffness")) {
-        return "double";
-    }
-    if (CaselessStrCmp(true, *argument, "gravity")) {
-        return "double";
-    }
+    //if (CaselessStrCmp(true, *argument, "stiffness")) {
+    //    return "double";
+    //}
+    //if (CaselessStrCmp(true, *argument, "gravity")) {
+    //    return "double";
+    //}
     if (CaselessStrCmp(true, *argument, "maxNumConnectedEdges")) {
         return "double";
     }
-    if (CaselessStrCmp(true, *argument, "useMagnetism")) {
-        return "bool";
-    }
-    if (CaselessStrCmp(true, *argument, "useBoundary")) {
-        return "bool";
-    }
+    //if (CaselessStrCmp(true, *argument, "useMagnetism")) {
+    //    return "bool";
+    //}
+    //if (CaselessStrCmp(true, *argument, "useBoundary")) {
+    //    return "bool";
+    //}
     if (CaselessStrCmp(true, *argument, "useGrid")) {
         return "bool";
     }
@@ -3303,7 +3305,7 @@ string Module::ValidateAutoLayoutArgument(const string* argument)
     //if (CaselessStrCmp(true, *argument, "locked")) {
     //    return "idlist";
     //}
-    g_registry.SetError("No such setting 'autolayout." + *argument+ "': the valid autolayout settings are 'stiffness', 'gravity', 'maxNumConnectedEdges', 'useMagnetism', 'useBoundary', 'useGrid', and 'useNameAsTextLabel'.");
+    g_registry.SetError("No such setting 'autolayout." + *argument+ "': the valid autolayout settings are 'maxNumConnectedEdges', 'useGrid', and 'useNameAsTextLabel'.");
 
     return "none";
 }
@@ -3450,8 +3452,8 @@ bool Module::SetLayout(const std::string* argument, const std::vector<Variable*>
         if (CaselessStrCmp(true, *argument, "align_top")) {
             m_layout.align_top = ids;
         }
-        else if (CaselessStrCmp(true, *argument, "align_center")) {
-            m_layout.align_center = ids;
+        else if (CaselessStrCmp(true, *argument, "align_hCenter")) {
+            m_layout.align_hCenter = ids;
         }
         else if (CaselessStrCmp(true, *argument, "align_bottom")) {
             m_layout.align_bottom = ids;
@@ -3459,8 +3461,8 @@ bool Module::SetLayout(const std::string* argument, const std::vector<Variable*>
         else if (CaselessStrCmp(true, *argument, "align_left")) {
             m_layout.align_left = ids;
         }
-        else if (CaselessStrCmp(true, *argument, "align_middle")) {
-            m_layout.align_middle = ids;
+        else if (CaselessStrCmp(true, *argument, "align_vCenter")) {
+            m_layout.align_vCenter = ids;
         }
         else if (CaselessStrCmp(true, *argument, "align_right")) {
             m_layout.align_right = ids;
@@ -3581,7 +3583,7 @@ string Module::ValidateLayoutArgument(const string* argument)
     if (CaselessStrCmp(true, *argument, "align_top")) {
         return "idlist";
     }
-    if (CaselessStrCmp(true, *argument, "align_center")) {
+    if (CaselessStrCmp(true, *argument, "align_hCenter")) {
         return "idlist";
     }
     if (CaselessStrCmp(true, *argument, "align_bottom")) {
@@ -3590,7 +3592,7 @@ string Module::ValidateLayoutArgument(const string* argument)
     if (CaselessStrCmp(true, *argument, "align_left")) {
         return "idlist";
     }
-    if (CaselessStrCmp(true, *argument, "align_middle")) {
+    if (CaselessStrCmp(true, *argument, "align_vCenter")) {
         return "idlist";
     }
     if (CaselessStrCmp(true, *argument, "align_right")) {
@@ -3646,7 +3648,7 @@ string Module::ValidateLayoutArgument(const string* argument)
         g_registry.SetError("Cannot set 'layout." + *argument + "': the sizes of compartments, species, and reactions should be different from each other.");
         return "none";
     case lt_unknown:
-        g_registry.SetError("No such setting 'layout." + *argument + "': the valid layout settings are 'align_top', 'align_center', 'align_bottom', 'align_left', 'align_middle', 'align_right', 'align_circular', 'size', 'height', 'width', 'depth' and 'background', plus 'color', 'font', 'fontsize', 'fontstyle', 'linewidth', and 'linecolor' for setting those features for everything at once.");
+        g_registry.SetError("No such setting 'layout." + *argument + "': the valid layout settings are 'align_top', 'align_hCenter', 'align_bottom', 'align_left', 'align_vCenter', 'align_right', 'align_circular', 'size', 'height', 'width', 'depth' and 'background', plus 'color', 'font', 'fontsize', 'fontstyle', 'linewidth', and 'linecolor' for setting those features for everything at once.");
         return "none";
     }
     assert(false); //Should be caught above.
@@ -3658,21 +3660,21 @@ string Module::GetAntimonyAutolayout(const string& indent) const
     stringstream ret;
     ret << indent << "# Autolayout options" << endl;
     ret << indent << "model.autolayout = on" << endl;
-    if (m_autolayout.stiffness != 10) {
-        ret << indent << "model.autolayout.stiffness = " << m_autolayout.stiffness << endl;
-    }
-    if (m_autolayout.gravity != 15) {
-        ret << indent << "model.autolayout.gravity = " << m_autolayout.gravity << endl;
-    }
+    //if (m_autolayout.stiffness != 10) {
+    //    ret << indent << "model.autolayout.stiffness = " << m_autolayout.stiffness << endl;
+    //}
+    //if (m_autolayout.gravity != 15) {
+    //    ret << indent << "model.autolayout.gravity = " << m_autolayout.gravity << endl;
+    //}
     if (m_autolayout.maxNumConnectedEdges != 3) {
         ret << indent << "model.autolayout.maxNumConnectedEdges = " << m_autolayout.maxNumConnectedEdges << endl;
     }
-    if (m_autolayout.useMagnetism) {
-        ret << indent << "model.autolayout.useMagnetism = on" << endl;
-    }
-    if (!m_autolayout.useBoundary) {
-        ret << indent << "model.autolayout.useBoundary = off" << endl;
-    }
+    //if (m_autolayout.useMagnetism) {
+    //    ret << indent << "model.autolayout.useMagnetism = on" << endl;
+    //}
+    //if (!m_autolayout.useBoundary) {
+    //    ret << indent << "model.autolayout.useBoundary = off" << endl;
+    //}
     if (m_autolayout.useGrid) {
         ret << indent << "model.autolayout.useGrid = on" << endl;
     }
@@ -3717,8 +3719,8 @@ string Module::GetAntimonyGeneralLayout(const string& indent) const
     if (m_layout.align_top.size()) {
         ret << indent << getSetString(m_layout.align_top);
     }
-    if (m_layout.align_center.size()) {
-        ret << indent << getSetString(m_layout.align_center);
+    if (m_layout.align_hCenter.size()) {
+        ret << indent << getSetString(m_layout.align_hCenter);
     }
     if (m_layout.align_bottom.size()) {
         ret << indent << getSetString(m_layout.align_bottom);
@@ -3726,8 +3728,8 @@ string Module::GetAntimonyGeneralLayout(const string& indent) const
     if (m_layout.align_left.size()) {
         ret << indent << getSetString(m_layout.align_left);
     }
-    if (m_layout.align_middle.size()) {
-        ret << indent << getSetString(m_layout.align_middle);
+    if (m_layout.align_vCenter.size()) {
+        ret << indent << getSetString(m_layout.align_vCenter);
     }
     if (m_layout.align_right.size()) {
         ret << indent << getSetString(m_layout.align_right);
@@ -3762,4 +3764,3 @@ std::string Module::GetAntimonyTypeLayouts(const std::string& indent) const
     }
     return std::string();
 }
-

@@ -32,11 +32,11 @@ class LayoutWrapper;
 
 struct autolayout {
     bool use = false;
-    double stiffness = 10.0;
-    double gravity = 15.0;
+    //double stiffness = 10.0;
+    //double gravity = 15.0;
     int maxNumConnectedEdges = 3;
-    bool useMagnetism = false;
-    bool useBoundary = true;
+    //bool useMagnetism = false;
+    //bool useBoundary = true;
     bool useGrid = false;
     bool useNameAsTextLabel = true;
     std::set <std::string> lockedNodeIds = std::set<std::string>();
@@ -44,10 +44,10 @@ struct autolayout {
 
 struct layout {
     std::set <std::string> align_top      = std::set<std::string>();
-    std::set <std::string> align_center   = std::set<std::string>();
+    std::set <std::string> align_hCenter  = std::set<std::string>();
     std::set <std::string> align_bottom   = std::set<std::string>();
     std::set <std::string> align_left     = std::set<std::string>();
-    std::set <std::string> align_middle   = std::set<std::string>();
+    std::set <std::string> align_vCenter  = std::set<std::string>();
     std::set <std::string> align_right    = std::set<std::string>();
     std::set <std::string> align_circular = std::set<std::string>();
     double height = 0.0;
@@ -343,6 +343,7 @@ private:
   std::string GetAntimonyAutolayout(const std::string& indent) const;
   std::string GetAntimonyGeneralLayout(const std::string& indent) const;
   std::string GetAntimonyTypeLayouts(const std::string& indent) const;
+  void  LoadLayout(libsbml::Model* sbml);
 #endif
 #endif
 };

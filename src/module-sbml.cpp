@@ -3,6 +3,7 @@
 #include "libsbmlnetwork_sbmldocument.h"
 #include "libsbmlnetwork_sbmldocument_layout.h"
 #include "libsbmlnetwork_sbmldocument_render.h"
+#include "sbml/packages/layout/extension/LayoutModelPlugin.h"
 
 using namespace libsbml;
 
@@ -1626,6 +1627,7 @@ void Module::LoadSBML(Model* sbml)
 
   //Finally, fix the fact that 'time' used to be OK in functions (l2v1), but is no longer (l2v2).
   g_registry.FixTimeInFunctions();
+  LoadLayout(sbml);
 }
 
 const SBMLDocument* Module::GetSBML(bool comp)
@@ -2446,7 +2448,7 @@ void Module::CreateSBMLModel(bool comp)
 
   // Layout/Render!
   if (m_autolayout.use) {
-      LIBSBMLNETWORK_CPP_NAMESPACE::autolayout(&m_sbml, m_autolayout.stiffness, m_autolayout.gravity, m_autolayout.maxNumConnectedEdges, m_autolayout.useMagnetism, m_autolayout.useBoundary, m_autolayout.useGrid, m_autolayout.useNameAsTextLabel); // , m_autolayout.lockedNodeIds);
+      LIBSBMLNETWORK_CPP_NAMESPACE::autolayout(&m_sbml, m_autolayout.maxNumConnectedEdges, m_autolayout.useNameAsTextLabel, true); // , m_autolayout.lockedNodeIds);
       LIBSBMLNETWORK_CPP_NAMESPACE::getSBMLObject(&m_sbml, "S1");
       if (m_layout.width != 0) {
           LIBSBMLNETWORK_CPP_NAMESPACE::setDimensionWidth(&m_sbml, m_layout.width);
@@ -2481,36 +2483,45 @@ void Module::CreateSBMLModel(bool comp)
               assert(false);
           }
       }
-      if (m_layout.align_bottom.size()) {
-          LIBSBMLNETWORK_CPP_NAMESPACE::align(&m_sbml, m_layout.align_bottom, "bottom");
-          m_autolayout.lockedNodeIds.insert(m_layout.align_bottom.begin(), m_layout.align_bottom.end());
-      }
-      if (m_layout.align_center.size()) {
-          LIBSBMLNETWORK_CPP_NAMESPACE::align(&m_sbml, m_layout.align_center, "center");
-          m_autolayout.lockedNodeIds.insert(m_layout.align_center.begin(), m_layout.align_center.end());
-      }
-      if (m_layout.align_circular.size()) {
-          LIBSBMLNETWORK_CPP_NAMESPACE::align(&m_sbml, m_layout.align_circular, "circular");
-          m_autolayout.lockedNodeIds.insert(m_layout.align_circular.begin(), m_layout.align_circular.end());
+      if (m_layout.align_top.size()) {
+          LIBSBMLNETWORK_CPP_NAMESPACE::align(&m_sbml, m_layout.align_top, "top");
+          m_autolayout.lockedNodeIds.insert(m_layout.align_top.begin(), m_layout.align_top.end());
+          //LIBSBMLNETWORK_CPP_NAMESPACE::autolayout(&m_sbml, m_autolayout.maxNumConnectedEdges, m_autolayout.useNameAsTextLabel, true, m_autolayout.lockedNodeIds);
       }
       if (m_layout.align_left.size()) {
           LIBSBMLNETWORK_CPP_NAMESPACE::align(&m_sbml, m_layout.align_left, "left");
           m_autolayout.lockedNodeIds.insert(m_layout.align_left.begin(), m_layout.align_left.end());
+          //LIBSBMLNETWORK_CPP_NAMESPACE::autolayout(&m_sbml, m_autolayout.maxNumConnectedEdges, m_autolayout.useNameAsTextLabel, true, m_autolayout.lockedNodeIds);
       }
-      if (m_layout.align_middle.size()) {
-          LIBSBMLNETWORK_CPP_NAMESPACE::align(&m_sbml, m_layout.align_middle, "middle");
-          m_autolayout.lockedNodeIds.insert(m_layout.align_middle.begin(), m_layout.align_middle.end());
+      if (m_layout.align_hCenter.size()) {
+          LIBSBMLNETWORK_CPP_NAMESPACE::align(&m_sbml, m_layout.align_hCenter, "hCenter");
+          m_autolayout.lockedNodeIds.insert(m_layout.align_hCenter.begin(), m_layout.align_hCenter.end());
+          //LIBSBMLNETWORK_CPP_NAMESPACE::autolayout(&m_sbml, m_autolayout.maxNumConnectedEdges, m_autolayout.useNameAsTextLabel, true, m_autolayout.lockedNodeIds);
+      }
+      if (m_layout.align_vCenter.size()) {
+          LIBSBMLNETWORK_CPP_NAMESPACE::align(&m_sbml, m_layout.align_vCenter, "vCenter");
+          m_autolayout.lockedNodeIds.insert(m_layout.align_vCenter.begin(), m_layout.align_vCenter.end());
+          //LIBSBMLNETWORK_CPP_NAMESPACE::autolayout(&m_sbml, m_autolayout.maxNumConnectedEdges, m_autolayout.useNameAsTextLabel, true, m_autolayout.lockedNodeIds);
       }
       if (m_layout.align_right.size()) {
           LIBSBMLNETWORK_CPP_NAMESPACE::align(&m_sbml, m_layout.align_right, "right");
           m_autolayout.lockedNodeIds.insert(m_layout.align_right.begin(), m_layout.align_right.end());
+          //LIBSBMLNETWORK_CPP_NAMESPACE::autolayout(&m_sbml, m_autolayout.maxNumConnectedEdges, m_autolayout.useNameAsTextLabel, true, m_autolayout.lockedNodeIds);
       }
-      if (m_layout.align_top.size()) {
-          LIBSBMLNETWORK_CPP_NAMESPACE::align(&m_sbml, m_layout.align_top, "top");
-          m_autolayout.lockedNodeIds.insert(m_layout.align_top.begin(), m_layout.align_top.end());
+      if (m_layout.align_bottom.size()) {
+          LIBSBMLNETWORK_CPP_NAMESPACE::align(&m_sbml, m_layout.align_bottom, "bottom");
+          m_autolayout.lockedNodeIds.insert(m_layout.align_bottom.begin(), m_layout.align_bottom.end());
+          //LIBSBMLNETWORK_CPP_NAMESPACE::autolayout(&m_sbml, m_autolayout.maxNumConnectedEdges, m_autolayout.useNameAsTextLabel, true, m_autolayout.lockedNodeIds);
+      }
+      if (m_layout.align_circular.size()) {
+          LIBSBMLNETWORK_CPP_NAMESPACE::align(&m_sbml, m_layout.align_circular, "circular");
+          m_autolayout.lockedNodeIds.insert(m_layout.align_circular.begin(), m_layout.align_circular.end());
+          //LIBSBMLNETWORK_CPP_NAMESPACE::autolayout(&m_sbml, m_autolayout.maxNumConnectedEdges, m_autolayout.useNameAsTextLabel, true, m_autolayout.lockedNodeIds);
       }
       if (m_autolayout.lockedNodeIds.size() > 0) {
-          LIBSBMLNETWORK_CPP_NAMESPACE::autolayout(&m_sbml, m_autolayout.stiffness, m_autolayout.gravity, m_autolayout.maxNumConnectedEdges, m_autolayout.useMagnetism, m_autolayout.useBoundary, m_autolayout.useGrid, m_autolayout.useNameAsTextLabel, false, m_autolayout.lockedNodeIds);
+          double J0x = LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(&m_sbml, "J0");
+          LIBSBMLNETWORK_CPP_NAMESPACE::autolayout(&m_sbml, m_autolayout.maxNumConnectedEdges, m_autolayout.useNameAsTextLabel, true, m_autolayout.lockedNodeIds);
+          J0x = LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(&m_sbml, "J0");
       }
   }
 }
@@ -3125,4 +3136,255 @@ void Module::UpdateRateOf(Model* model)
         }
     }
 }
+
+struct layoutInfo {
+    double width = -1;
+    double height = -1;
+    string color = "";
+    string linecolor = "";
+    double linewidth = -1;
+    string font = "";
+    string fontcolor = "";
+    double fontsize = -1;
+    string fontstyle = "";
+    string shape = "";
+};
+
+layoutInfo getDefaultLayoutInfo()
+{
+    layoutInfo ret;
+    ret.color = "white";
+    ret.linecolor = "black";
+    ret.linewidth = 2;
+    ret.font = "sans-serif";
+    ret.fontcolor = "black";
+    ret.fontsize = 10;
+    ret.fontstyle = "normal";
+    ret.shape = "rectangle";
+    return ret;
+}
+
+layoutInfo getDefaultSpeciesLayoutInfo()
+{
+    layoutInfo ret = getDefaultLayoutInfo();
+    ret.width = 60;
+    ret.height = 36;
+    ret.fontsize = 24;
+    return ret;
+}
+
+layoutInfo getDefaultCompartmentLayoutInfo()
+{
+    layoutInfo ret = getDefaultLayoutInfo();
+    ret.fontsize = 10;
+    ret.color = "lightgray";
+    ret.linecolor = "darkcyan";
+    ret.fontcolor = "darkcyan";
+    return ret;
+}
+
+layoutInfo getDefaultReactionLayoutInfo()
+{
+    layoutInfo ret = getDefaultLayoutInfo();
+    ret.fontsize = 12;
+    ret.fontcolor = "darkslategray";
+    ret.shape = "ellipse";
+    return ret;
+}
+
+
+void Module::LoadLayout(Model* sbml)
+{
+    const LayoutModelPlugin* lplugin = static_cast<const LayoutModelPlugin*>(sbml->getPlugin("layout"));
+    if (lplugin != NULL) {
+        m_autolayout.use = true;
+        //Use SBMLNetwork to read stuff instead of reading from the document directly.
+        SBMLDocument* doc = sbml->getSBMLDocument();
+        layoutInfo gendefault = getDefaultLayoutInfo();
+        m_layout.height = LIBSBMLNETWORK_CPP_NAMESPACE::getDimensionHeight(doc);
+        m_layout.width = LIBSBMLNETWORK_CPP_NAMESPACE::getDimensionWidth(doc);
+
+        //Background color
+        string background = LIBSBMLNETWORK_CPP_NAMESPACE::getBackgroundColor(doc);
+        if (background != gendefault.color) {
+            m_layout.background = background;
+        }
+
+        //LS DEBUG:  Figure out how to get the style, and to get the general defaults
+        map<var_type, layoutInfo> defaults;
+        defaults[varSpeciesUndef] = getDefaultSpeciesLayoutInfo();
+        defaults[varReactionUndef] = getDefaultReactionLayoutInfo();
+        defaults[varCompartment] = getDefaultCompartmentLayoutInfo();
+
+        Formula form;
+        for (size_t v = 0; v < m_variables.size(); v++) {
+            Variable* var = m_variables[v];
+            var_type type = var->GetType();
+            switch (type) {
+            case varSpeciesUndef:
+            case varCompartment:
+            case varReactionUndef:
+                break;
+            case varDNA:
+            case varReactionGene:
+                type = varReactionUndef;
+                break;
+            case varFormulaUndef:
+            case varFormulaOperator:
+            case varInteraction:
+            case varUndefined:
+            case varSboTermWrapper:
+            case varUncertWrapper:
+            case varLayoutWrapper:
+            case varLayoutColorEtc:
+            case varModule:
+            case varEvent:
+            case varStrand:
+            case varUnitDefinition:
+            case varDeleted:
+            case varConstraint:
+            case varStoichiometry:
+            case varAlgebraicRule:
+                continue;
+            }
+            string varid = var->GetNameDelimitedBy("_");
+            double val = 0.0;
+            string sval = "";
+
+            // Position
+            val = LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(doc, varid);
+            double valy = LIBSBMLNETWORK_CPP_NAMESPACE::getPositionY(doc, varid);
+            if (val || valy) {
+                LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_position);
+                string text = "{";
+                form.AddText(&text, true);
+                form.AddNum(val);
+                text = ",";
+                form.AddText(&text, true);
+                form.AddNum(valy);
+                text = "}";
+                form.AddText(&text, true);
+
+                lw->SetFormula(&form);
+                form.Clear();
+            }
+
+            // Width
+            val = LIBSBMLNETWORK_CPP_NAMESPACE::getDimensionWidth(doc, varid);
+            if (val && val != defaults[type].width) {
+                LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_width);
+                form.AddNum(val);
+                lw->SetFormula(&form);
+                form.Clear();
+            }
+
+            // Height
+            val = LIBSBMLNETWORK_CPP_NAMESPACE::getDimensionHeight(doc, varid);
+            if (val && val != defaults[type].height) {
+                LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_height);
+                form.AddNum(val);
+                lw->SetFormula(&form);
+                form.Clear();
+            }
+
+            // Fill color
+            sval = LIBSBMLNETWORK_CPP_NAMESPACE::getFillColor(doc, varid);
+            if (!sval.empty() && sval != defaults[type].color) {
+                LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_color);
+                form.AddText(&sval, true);
+                lw->SetFormula(&form);
+                form.Clear();
+            }
+
+            // Line color
+            sval = LIBSBMLNETWORK_CPP_NAMESPACE::getStrokeColor(doc, varid);
+            if (!sval.empty() && sval != defaults[type].linecolor) {
+                LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_linecolor);
+                form.AddText(&sval, true);
+                lw->SetFormula(&form);
+                form.Clear();
+            }
+
+            // Linewidth
+            val = LIBSBMLNETWORK_CPP_NAMESPACE::getStrokeWidth(doc, varid);
+            if (val && val != defaults[type].linewidth) {
+                LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_linewidth);
+                form.AddNum(val);
+                lw->SetFormula(&form);
+                form.Clear();
+            }
+
+            // Font
+            sval = LIBSBMLNETWORK_CPP_NAMESPACE::getFontFamily(doc, varid);
+            if (!sval.empty() && sval != defaults[type].font) {
+                LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_font);
+                form.AddText(&sval, true);
+                lw->SetFormula(&form);
+                form.Clear();
+            }
+
+            // Font color
+            sval = LIBSBMLNETWORK_CPP_NAMESPACE::getFontColor(doc, varid);
+            if (!sval.empty() && sval != defaults[type].fontcolor) {
+                LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_fontcolor);
+                form.AddText(&sval, true);
+                lw->SetFormula(&form);
+                form.Clear();
+            }
+
+            // Font size
+            //val = LIBSBMLNETWORK_CPP_NAMESPACE::getFontSize(doc, varid);
+            //if (val && val != defaults[type].fontsize) {
+            //    LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_fontsize);
+            //    form.AddNum(val);
+            //    lw->SetFormula(&form);
+            //    form.Clear();
+            //}
+
+            // Font style
+            sval = LIBSBMLNETWORK_CPP_NAMESPACE::getFontStyle(doc, varid);
+            string isbold = LIBSBMLNETWORK_CPP_NAMESPACE::getFontWeight(doc, varid);
+            if (isbold == "bold") {
+                if (sval == "italic") {
+                    sval = "bold_italic";
+                }
+                else {
+                    sval = "bold";
+                }
+            }
+            if (!sval.empty() && sval != defaults[type].fontstyle) {
+                LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_fontstyle);
+                form.AddText(&sval, true);
+                lw->SetFormula(&form);
+                form.Clear();
+            }
+
+            // Shape
+            sval = LIBSBMLNETWORK_CPP_NAMESPACE::getGeometricShapeType(doc, varid);
+            if (!sval.empty() && sval != defaults[type].shape) {
+                LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_shape);
+                form.AddText(&sval, true);
+                lw->SetFormula(&form);
+                form.Clear();
+            }
+
+
+
+
+            //S1.size = { 55, 66 }      # The size(width, height) of S1.
+            //    S1.width = 55           # (alt for size).The width of S1.
+            //    S1.height = 66          # (alt for size).The height of S1.
+            //    S1.color = magenta      # (or 'fillcolor')  The fill color for S1
+            //    S1.linecolor = yellow   # (or 'strokecolor')  The line color for S1
+            //    S1.linewidth = 18       # (or 'strokewidth')  The linewidth for S1
+            //    S1.fontcolor = gray     # The font color for S1
+            //    S1.font = serif         # The font for S1(predefined options are 'serif' (default), 'sans_serif', and 'monospace', but arbitrary font names are also legal.)
+            //    S1.fontsize = 19        # The font size for S1(default 10)
+            //    S1.fontstyle = bold     # (or 'fontweight')  The font style for S1(options are 'normal' (default), 'bold', 'italic', and 'bold_italic').
+            //    S1.shape = ellipse      # The shape for S1(options are 'rectangle' (default), 'square', 'ellipse', 'circle', 'triangle', 'diamond', 'pentagon', 'hexagon', and 'octagon').
+        }
+    }
+}
+
+
 #endif //NSBML

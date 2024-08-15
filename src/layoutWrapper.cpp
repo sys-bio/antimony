@@ -674,4 +674,6 @@ bool LayoutWrapper::HasLayoutPositionInfo() const
     case lt_unknown:
         return false;
     }
+    assert(false);
+    return false;
 }
