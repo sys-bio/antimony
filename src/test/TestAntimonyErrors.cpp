@@ -301,13 +301,13 @@ END_TEST
 
 START_TEST (no_function_subelements)
 {
-  testError("function foo();3;end;foo.x = 3", "Error in model string, line 1:  Invalid syntax 'foo.x'. The only thing that can be set on 'foo' this way is 'sboTerm'.");
+  testError("function foo();3;end;foo.x = 3", "Error in model string, line 1:  Invalid syntax 'foo.x'. The only thing that can set 'foo' to a number is 'sboTerm'.");
 }
 END_TEST
 
 START_TEST (no_vectors1)
 {
-  testError("a = {3, 4}", "Error in model string, line 1:  Curly brackets detected in formula: '{3, 4}': vectors are not supported in the current version of Antimony apart from their use in setting certain uncertainty parameters.");
+  testError("a = {3, 4}", "Error in model string, line 1:  Curly brackets detected in formula: '{3, 4}': vectors are not supported in the current version of Antimony apart from their use in setting certain uncertainty or layout parameters.");
 }
 END_TEST
 
