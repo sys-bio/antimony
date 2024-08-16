@@ -355,6 +355,7 @@ if(WITH_SBML)
               )
 
     INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${SBMLNETWORK_INCLUDE_DIR} )
+    # SBMLNETWORK uses stuff from the 'dl' library on some platforms.  CMake defines CMAKE_DL_LIBS if so.
     set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${CMAKE_DL_LIBS} )
 
 endif()

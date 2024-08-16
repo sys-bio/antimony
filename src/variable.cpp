@@ -887,6 +887,7 @@ bool Variable::SetType(var_type newtype)
     case varStrand:
     case varSboTermWrapper:
     case varUncertWrapper:
+    case varLayoutWrapper:
         g_registry.SetError(error); return true;
     case varLayoutColorEtc:
     case varUndefined:
@@ -1025,6 +1026,7 @@ bool Variable::SetType(var_type newtype)
   case varSboTermWrapper:
   case varUncertWrapper:
   case varLayoutWrapper:
+  case varAlgebraicRule:
       g_registry.SetError(error); return true; //the already-identical cases handled above.
     return true;
   }
@@ -1112,6 +1114,9 @@ bool Variable::SetFormula(Formula* formula, bool isObjective)
     }
     m_valFormula = *formula;
     break;
+  case varAlgebraicRule:
+      g_registry.SetError("Cannot set '" + GetNameDelimitedBy(".") + "' to have the initial value '" + formula->ToDelimitedStringWithEllipses(".") + "' because it is an algebraic rule, which applies at all times, including time=0.");
+      return true;
   case varUnitDefinition:
     if (formula->MakeAllVariablesUnits()) return true;
     if (m_valUnitDef.SetFromFormula(formula)) return true;
@@ -1512,6 +1517,12 @@ bool Variable::SetIsConst(bool constant)
       return true;
     }
     break;
+  case varAlgebraicRule:
+      if (!constant) {
+          g_registry.SetError(error + ", as 'constantness' is undefined for algebraic rules.");
+          return true;
+      }
+      break;
   case varStrand:
     if (!constant) {
       g_registry.SetError(error + ", as 'constantness' is undefined for DNA strands.");
@@ -1533,6 +1544,12 @@ bool Variable::SetIsConst(bool constant)
   case varLayoutWrapper:
       if (!constant) {
           g_registry.SetError(error + ", as 'constantness' is undefined for layout and render parameters.");
+          return true;
+      }
+      break;
+  case varLayoutColorEtc:
+      if (!constant) {
+          g_registry.SetError(error + ", as 'constantness' is undefined for things like colors.");
           return true;
       }
       break;
@@ -1677,6 +1694,8 @@ void Variable::SetComponentCompartments(bool frommodule)
   case varLayoutWrapper:
   case varConstraint:
   case varStoichiometry:
+  case varAlgebraicRule:
+  case varLayoutColorEtc:
     return; //No components to set
   case varReactionUndef:
   case varReactionGene:
@@ -1892,6 +1911,7 @@ bool Variable::DeleteFromSubmodel(Variable* deletedvar)
   case varUncertWrapper:
   case varLayoutWrapper:
   case varConstraint:
+  case varLayoutColorEtc:
     //These types can't have rules to them.
     break;
   }
@@ -2121,6 +2141,12 @@ bool Variable::Synchronize(Variable* clone, const Variable* conversionFactor)
           return true;
         }
         break;
+      case formulaALGEBRAIC:
+          if (clone->SetAlgebraicRule(0, &m_valFormula)) {
+              g_registry.AddErrorPrefix("Cannot synchronize " + GetNameDelimitedBy(".") + " with " + clone->GetNameDelimitedBy(".") + ":  ");
+              return true;
+          }
+          break;
       case formulaKINETIC:
       case formulaTRIGGER:
         assert(false); //How did a reaction or trigger have a m_valFormula?
@@ -2451,6 +2477,7 @@ bool Variable::AllowedInFormulas() const
   case varUncertWrapper:
   case varLayoutWrapper:
   case varConstraint:
+  case varAlgebraicRule:
     return false;
 
   }

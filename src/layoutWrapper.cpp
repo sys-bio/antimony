@@ -250,12 +250,9 @@ bool LayoutWrapper::TransferLayoutInformationTo(SBMLDocument* sbml) const
             ret1 = LIBSBMLNETWORK_CPP_NAMESPACE::setDimensionWidth(sbml, sid, xval);
             ret2 = LIBSBMLNETWORK_CPP_NAMESPACE::setDimensionHeight(sbml, sid, yval);
             break;
-        //case lt_start:
-        //case lt_end:
-        //case lt_mid1:
-        //case lt_mid2:
-        //    assert(false); //Probably don't actually set these.
-        //    break;
+        default:
+            assert(false); //Only the above two are 'IsPair' true
+            break;
         }
         if (ret1 == -1 || ret2 == -1) {
             g_registry.SetError(error);
@@ -373,6 +370,8 @@ bool LayoutWrapper::TransferLayoutInformationTo(SBMLDocument* sbml, const string
         double lval = astn->getValue();
         int ret = 0;
         switch (m_layout_type) {
+        case lt_position:
+        case lt_size:
         case lt_x:
         case lt_y:
             assert(false);

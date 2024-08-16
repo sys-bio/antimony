@@ -3043,6 +3043,7 @@ void Module::ConvertTime(Variable* tcf)
     case varSboTermWrapper:
     case varUncertWrapper:
     case varLayoutWrapper:
+    case varLayoutColorEtc:
         break;
     }
   }
@@ -3120,6 +3121,7 @@ void Module::UndoTimeExtentConversions(Variable* tcf, Variable* xcf)
     case varSboTermWrapper:
     case varUncertWrapper:
     case varLayoutWrapper:
+    case varLayoutColorEtc:
         break;
     }
   }
