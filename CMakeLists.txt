@@ -255,7 +255,7 @@ endif(WITH_CELLML)
 
 if(WITH_LIBSBML_EXPAT)
     find_library(EXPAT_LIBRARY
-        NAMES libexpat.lib libexpat.so libexpat.dylib libexpat expat.lib expat.so expat.dylib expat
+        NAMES libexpat.lib libexpat.so libexpat.dylib libexpat expat.lib expat.so expat.dylib expat libexpatdMD libexpatMD
 	PATHS /usr/lib /usr/local/lib
               ${CMAKE_SOURCE_DIR}
               ${CMAKE_SOURCE_DIR}/dependencies/lib
@@ -340,7 +340,7 @@ endif()
 
 if(WITH_SBML)
     find_library(SBMLNETWORK_LIBRARY
-        NAMES libsbmlnetwork-static.lib sbmlnetwork-static.lib libsbmlnetwork-static sbmlnetwork-static
+        NAMES libsbmlnetwork-static.lib sbmlnetwork-static.lib libsbmlnetwork-static sbmlnetwork-static libsbmlnetwork-staticmdd libsbmlnetwork-staticmd
 	PATHS /usr/lib /usr/local/lib
               ${CMAKE_SOURCE_DIR}
               ${CMAKE_SOURCE_DIR}/dependencies/lib
@@ -350,7 +350,7 @@ if(WITH_SBML)
 
     find_path(SBMLNETWORK_INCLUDE_DIR
         NAMES libsbmlnetwork_common.h
-        PATHS /usr/include /usr/local/include  ${LIBSBML_DEPENDENCY_DIR}/include
+        PATHS /usr/include /usr/local/include  ${LIBSBML_INSTALL_DIR}/include
         DOC "The directory containing the SBMLNetwork include files."
               )
 
