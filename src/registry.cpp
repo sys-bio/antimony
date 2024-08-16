@@ -52,6 +52,7 @@ Registry::Registry()
     m_writeTimestampToSBML(false),
     m_bareNumbersAreDimensionless(false),
     m_eof(false),
+    m_removeFunctionDefinitions(true),
     input(NULL)
 {
   string main = MAINMODULE;
@@ -1448,6 +1449,16 @@ void Registry::FixTimeInFunctions()
       }
     }
   }
+}
+
+void Registry::SetRemoveFunctionDefinitions(bool removeFunctionDefinitions)
+{
+    m_removeFunctionDefinitions = removeFunctionDefinitions;
+}
+
+bool Registry::GetRemoveFunctionDefinitions()
+{
+    return m_removeFunctionDefinitions;
 }
 
 bool Registry::ProcessGlobalCVTerm(const string* name, const string* qual, vector<string>* resources)

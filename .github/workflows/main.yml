@@ -65,17 +65,17 @@ jobs:
             build_type: Debug
             build_python: OFF
             build_qt_antimony: ON
-          - name: manylinux2014-release
+          - name: manylinux_2_28-release
             os_type: manylinux
             os_name: ubuntu-latest
-            container_image: quay.io/pypa/manylinux2014_x86_64
+            container_image: quay.io/pypa/manylinux_2_28_x86_64
             build_type: Release
             build_python: ON
             build_qt_antimony: OFF
-          - name: manylinux2014-debug
+          - name: manylinux_2_28-debug
             os_type: manylinux
             os_name: ubuntu-latest
-            container_image: quay.io/pypa/manylinux2014_x86_64
+            container_image: quay.io/pypa/manylinux_2_28_x86_64
             build_type: Debug
             build_python: ON
             build_qt_antimony: OFF
@@ -91,11 +91,11 @@ jobs:
 
     steps:
       - name: Checkout Antimony
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set MSVC as the default compiler on Windows
         if: matrix.platform.os_type == 'windows'
-        uses: ilammy/msvc-dev-cmd@v1.6.0
+        uses: ilammy/msvc-dev-cmd@v1
 
       - name: Upgrade gcc on Linux
         if: matrix.platform.os_type == 'manylinux'
@@ -110,14 +110,13 @@ jobs:
             update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 90
             update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-11 90
           elif [ "${{ matrix.platform.os_type }}" == 'manylinux' ]; then
-            yum install -y centos-release-scl
-            yum install -y devtoolset-11
-            scl enable devtoolset-11 bash
-            echo "/opt/rh/devtoolset-11/root/usr/bin" >> "${GITHUB_PATH}"
+            dnf install -y gcc-toolset-11
+            scl enable gcc-toolset-11 bash
+            echo "/opt/rh/gcc-toolset-11/root/usr/bin" >> "${GITHUB_PATH}"
           fi
 
       - name: Setup Ninja
-        uses: seanmiddleditch/gha-setup-ninja@v4
+        uses: seanmiddleditch/gha-setup-ninja@v5
 
       - name: Get Host Architecture
         shell: bash
@@ -157,7 +156,7 @@ jobs:
         shell: cmake -P {0}
         run: |
           string(TIMESTAMP current_date "%Y-%m-%d-%H;%M;%S" UTC)
-          message("::set-output name=timestamp::${current_date}")
+          message("timestamp=${current_date}" >> $GITHUB_OUTPUT)
 
       - name: Set ccache cache directory on non-Windows
         if: matrix.platform.os_type != 'windows'
@@ -169,7 +168,7 @@ jobs:
 
       - name: Cache ccache files on non-Windows
         if: matrix.platform.os_type != 'windows'
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ${RUNNER_WORKSPACE}/.ccache
           key:
@@ -189,7 +188,7 @@ jobs:
         if: matrix.platform.build_python == 'ON' && matrix.platform.os_type == 'manylinux'
         shell: bash
         run: |
-          yum install -y wget
+          dnf install -y wget
           wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
           bash Miniconda3-latest-Linux-x86_64.sh -b -p /Miniconda3
 
@@ -200,6 +199,16 @@ jobs:
 
           echo "python_exe=/Miniconda3/envs/py3/bin/python" >> $GITHUB_ENV
           echo "python_dir=/Miniconda3/envs/py3"  >> $GITHUB_ENV
+
+      - name: Save Python executable for Windows
+        if: matrix.platform.build_python == 'ON' && matrix.platform.os_type == 'windows'
+        run: |
+          cd ${{ env.pythonLocation }}
+          $pattern = '[\\]'
+
+          $pythonWinExecutable = "${{env.pythonLocation }}" -replace $pattern, '/'
+          echo "python_exe=$pythonWinExecutable/python.exe" | Out-File -FilePath $env:GITHUB_ENV -Append
+          echo "python_v1_dir=$pythonWinExecutable" | Out-File -FilePath $env:GITHUB_ENV -Append
 
       - name: Download dependencies binaries
         shell: bash
@@ -313,7 +322,7 @@ jobs:
           echo "artifacts_path=${RUNNER_WORKSPACE}/install-antimony" >> "${GITHUB_ENV}"
 
       - name: Upload Antimony binaries
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{env.artifacts_name}}
           path: ${{env.artifacts_path}}
@@ -324,8 +333,8 @@ jobs:
         run: |
           cd ${RUNNER_WORKSPACE}/install-antimony/bindings/python
           if [ "${{ matrix.platform.os_type }}" == 'windows' ]; then
-            python -m pip install setuptools wheel
-            python setup.py bdist_wheel
+            ${{env.python_exe}} -m pip install setuptools wheel
+            ${{env.python_exe}} setup.py bdist_wheel
           elif [ "${{ matrix.platform.os_type }}" == 'manylinux' ]; then
             python${{ matrix.python_version }} -m pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org setuptools wheel
             python${{ matrix.python_version }} setup.py bdist_wheel
@@ -342,7 +351,9 @@ jobs:
           if [ "${{ matrix.platform.os_type }}" == 'macos' ]; then
             mv antimony*.whl $(echo antimony*.whl | sed "s/universal2/${host_architecture}/g")
           elif [ "${{ matrix.platform.os_type }}" == 'manylinux' ]; then
-            mv antimony*.whl $(echo antimony*.whl | sed "s/linux/manylinux2014/g")
+            mv antimony*.whl $(echo antimony*.whl | sed "s/linux/manylinux_2_28/g")
+          elif [ "${{ matrix.platform.os_type }}" == 'ubuntu' ]; then
+            mv antimony*.whl $(echo antimony*.whl | sed "s/linux/ubuntu/g")
           fi
           python_version_number=$(echo "${{ matrix.python_version }}" | tr -d '.')
           mv antimony*.whl $(echo antimony*.whl | sed "s/cp${python_version_number}-cp${python_version_number}/py3-none/g")
@@ -354,12 +365,11 @@ jobs:
           cd ${RUNNER_WORKSPACE}
           python_wheel_file_name=$(ls install-antimony/bindings/python/dist | grep '^antimony')
           echo "python_wheel_artifacts_name=${python_wheel_file_name}" >> "${GITHUB_ENV}"
-          # we need to use relative path as actions/upload-artifact@v1 cannot find it on containerized runners
-          echo "python_wheel_artifacts_file=../install-antimony/bindings/python/dist/$python_wheel_file_name" >> "${GITHUB_ENV}"
+          echo "python_wheel_artifacts_file=${RUNNER_WORKSPACE}/install-antimony/bindings/python/dist/$python_wheel_file_name" >> "${GITHUB_ENV}"
 
       - name: Upload Python wheel artifacts
         if: matrix.platform.build_type == 'Release' && matrix.platform.build_python == 'ON'
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v4
         with:
           name: ${{env.python_wheel_artifacts_name}}
           path: ${{env.python_wheel_artifacts_file}}
