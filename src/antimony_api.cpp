@@ -2066,7 +2066,7 @@ LIB_EXTERN char* printAllDataFor(const char* moduleName)
       break;
     case formulaALGEBRAIC:
         if (string(symbolequations[var]) != "") {
-            ret << "\Algebraic rule: " << symbolequations[var] << endl;
+            ret << "\tAlgebraic rule: " << symbolequations[var] << endl;
         }
         break;
     }
