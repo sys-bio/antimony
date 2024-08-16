@@ -474,6 +474,8 @@ string ReturnTypeToString(const return_type rtype)
     return "constraints";
   case allStoichiometries:
     return "stoichiometries";
+  case allAlgebraicRules:
+      return "algebraic rules";
   }
   assert(false); //uncaught type
   return "Uncaught type";
@@ -492,6 +494,8 @@ string FormulaTypeToString(const formula_type ftype)
     return "Kinetic law";
   case formulaTRIGGER:
     return "Trigger";
+  case formulaALGEBRAIC:
+    return "Algebraic rule";
   }
   assert(false); //uncaught type
   return "uncaught type";
@@ -604,30 +608,6 @@ string LayoutTypeToString(const layout_type ltype)
         return "x";
     case lt_y:
         return "y";
-    case lt_start:
-        return "start";
-    case lt_startx:
-        return "startx";
-    case lt_starty:
-        return "starty";
-    case lt_end:
-        return "end";
-    case lt_endx:
-        return "end_x";
-    case lt_endy:
-        return "end_y";
-    case lt_mid1:
-        return "mid1";
-    case lt_mid1x:
-        return "mid1_x";
-    case lt_mid1y:
-        return "mid1_y";
-    case lt_mid2:
-        return "mid2";
-    case lt_mid2x:
-        return "mid2_x";
-    case lt_mid2y:
-        return "mid2_y";
     case lt_size:
         return "size";
     case lt_height:
@@ -670,42 +650,6 @@ layout_type LayoutStringToType(const string& ltype)
     }
     if (CaselessStrCmp(false, ltype, "y")) {
         return lt_y;
-    }
-    if (CaselessStrCmp(false, ltype, "start")) {
-        return lt_start;
-    }
-    if (CaselessStrCmp(false, ltype, "start_x")) {
-        return lt_startx;
-    }
-    if (CaselessStrCmp(false, ltype, "start_y")) {
-        return lt_starty;
-    }
-    if (CaselessStrCmp(false, ltype, "end")) {
-        return lt_end;
-    }
-    if (CaselessStrCmp(false, ltype, "end_x")) {
-        return lt_endx;
-    }
-    if (CaselessStrCmp(false, ltype, "end_y")) {
-        return lt_endy;
-    }
-    if (CaselessStrCmp(false, ltype, "mid1")) {
-        return lt_mid1;
-    }
-    if (CaselessStrCmp(false, ltype, "mid1_x")) {
-        return lt_mid1x;
-    }
-    if (CaselessStrCmp(false, ltype, "mid1_y")) {
-        return lt_mid1y;
-    }
-    if (CaselessStrCmp(false, ltype, "mid2")) {
-        return lt_mid2;
-    }
-    if (CaselessStrCmp(false, ltype, "mid2_x")) {
-        return lt_mid2x;
-    }
-    if (CaselessStrCmp(false, ltype, "mid2_y")) {
-        return lt_mid2y;
     }
     if (CaselessStrCmp(false, ltype, "size")) {
         return lt_size;

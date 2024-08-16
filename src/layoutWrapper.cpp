@@ -157,6 +157,10 @@ bool LayoutWrapper::SetFormula(Formula* formula, bool isObjective)
                     return true;
                 }
                 return false;
+            case lt_position:
+            case lt_size:
+                assert(false); //Should be pairs
+                break;
             case lt_unknown:
                 break;
             }
@@ -224,6 +228,10 @@ bool LayoutWrapper::TransferLayoutInformationTo(SBMLDocument* sbml) const
 {
     string sid = m_parent->GetNameDelimitedBy("_");
     string formstring = m_valFormula.ToSBMLString();
+    if (formstring.empty()) {
+        assert(false);
+        return true;
+    }
     ASTNode* astn = parseStringToASTNode(formstring);
     string error = "Unable to set " + sid + "." + LayoutTypeToString(m_layout_type) + " to " + formstring + ".";
     if (IsPair(m_layout_type)) {
@@ -258,6 +266,10 @@ bool LayoutWrapper::TransferLayoutInformationTo(SBMLDocument* sbml) const
         double lval = astn->getValue();
         int ret = 0;
         switch (m_layout_type) {
+        case lt_position:
+        case lt_size:
+            assert(false); //Should be IsPair, above
+            break;
         case lt_x:
             ret = LIBSBMLNETWORK_CPP_NAMESPACE::setPositionX(sbml, sid, lval);
             break;

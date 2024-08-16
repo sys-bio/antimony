@@ -338,6 +338,7 @@ const Formula* Variable::GetAssignmentRuleOrKineticLaw() const
   case varUncertWrapper:
   case varLayoutWrapper:
   case varLayoutColorEtc:
+  case varAlgebraicRule:
       return &(g_registry.m_blankform);
   }
   assert(false); //uncaught type
@@ -379,6 +380,7 @@ Formula* Variable::GetAssignmentRuleOrKineticLaw()
   case varUncertWrapper:
   case varLayoutWrapper:
   case varLayoutColorEtc:
+  case varAlgebraicRule:
       return &(g_registry.m_blankform);
   }
   assert(false); //uncaught type
@@ -852,7 +854,8 @@ bool Variable::SetType(var_type newtype)
     case varUncertWrapper:
     case varLayoutWrapper:
     case varStoichiometry:
-      g_registry.SetError(error); return true;
+    case varAlgebraicRule:
+        g_registry.SetError(error); return true;
     }
   case varFormulaUndef:
     switch(newtype) {
@@ -868,6 +871,7 @@ bool Variable::SetType(var_type newtype)
     case varDeleted:
     case varConstraint:
     case varStoichiometry:
+    case varAlgebraicRule:
         m_type = newtype;
       return false;
     case varUnitDefinition:
@@ -915,7 +919,8 @@ bool Variable::SetType(var_type newtype)
     case varUncertWrapper:
     case varLayoutWrapper:
     case varStoichiometry:
-      g_registry.SetError(error); return true;
+    case varAlgebraicRule:
+        g_registry.SetError(error); return true;
     }
   case varFormulaOperator:
     switch(newtype) {
@@ -940,7 +945,8 @@ bool Variable::SetType(var_type newtype)
     case varUncertWrapper:
     case varStoichiometry:
     case varLayoutWrapper:
-      g_registry.SetError(error); return true;
+    case varAlgebraicRule:
+        g_registry.SetError(error); return true;
     }
   case varReactionGene:
     switch(newtype) {
@@ -965,7 +971,8 @@ bool Variable::SetType(var_type newtype)
     case varUncertWrapper:
     case varLayoutWrapper:
     case varStoichiometry:
-      g_registry.SetError(error); return true;
+    case varAlgebraicRule:
+        g_registry.SetError(error); return true;
     }
   case varReactionUndef:
     switch(newtype) {
@@ -992,7 +999,8 @@ bool Variable::SetType(var_type newtype)
     case varUncertWrapper:
     case varLayoutWrapper:
     case varStoichiometry:
-      g_registry.SetError(error); return true;
+    case varAlgebraicRule:
+        g_registry.SetError(error); return true;
     }
   case varInteraction:
   case varEvent:
@@ -1618,6 +1626,8 @@ bool Variable::SetSuperCompartment(Variable* var, var_type supertype)
   case varLayoutWrapper:
   case varConstraint:
   case varStoichiometry:
+  case varAlgebraicRule:
+  case varLayoutColorEtc:
     assert(false); // Those things don't have components
     return false;
   case varStrand:
@@ -1842,6 +1852,7 @@ bool Variable::DeleteFromSubmodel(Variable* deletedvar)
  case varUndefined:
  case varCompartment:
  case varStoichiometry:
+ case varAlgebraicRule:
    switch (deletedvar->GetFormulaType()) {
    case formulaRATE:
      if (!rform->IsEmpty()) {
@@ -1862,6 +1873,7 @@ bool Variable::DeleteFromSubmodel(Variable* deletedvar)
      break;
    case formulaKINETIC:
    case formulaTRIGGER:
+   case formulaALGEBRAIC:
      //Nothing extra needed.
      break;
    }

@@ -3229,7 +3229,7 @@ bool Module::SetAutoLayout(const string* argument, const double& value)
     //    m_autolayout.gravity = value;
     //}
     else if (CaselessStrCmp(true, *argument, "maxNumConnectedEdges")) {
-        m_autolayout.maxNumConnectedEdges = round(value);
+        m_autolayout.maxNumConnectedEdges = int(round(value));
     }
     return false;
 }
