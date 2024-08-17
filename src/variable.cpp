@@ -1262,7 +1262,7 @@ bool Variable::SetRateRule(Formula* formula)
   return false;
 }
 
-bool Variable::SetAlgebraicRule(int val, Formula* formula)
+bool Variable::SetAlgebraicRule(double val, Formula* formula)
 {
     if (IsPointer()) {
         return GetSameVariable()->SetAlgebraicRule(val, formula);

@@ -153,7 +153,7 @@ public:
   virtual bool SetFormula(Formula* formula, bool isObjective=false);
   bool SetAssignmentRule(Formula* formula);
   bool SetRateRule(Formula* formula);
-  bool SetAlgebraicRule(int val, Formula* formula);
+  bool SetAlgebraicRule(double val, Formula* formula);
   bool SetReaction(AntimonyReaction* rxn);
   bool SetModule(const std::string* modname);
   bool SetEvent(const AntimonyEvent* event);

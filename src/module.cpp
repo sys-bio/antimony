@@ -364,7 +364,7 @@ Variable* Module::AddNewReaction(const ReactantList& left, rd_type divider, cons
   return var;
 }
 
-bool Module::AddNewAlgebraicRule(int num, Formula* formula)
+bool Module::AddNewAlgebraicRule(double num, Formula* formula)
 {
     Variable* newalgrule = AddNewNumberedVariable("_alg");
     return newalgrule->SetAlgebraicRule(num, formula);
