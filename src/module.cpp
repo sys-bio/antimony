@@ -312,11 +312,11 @@ Variable* Module::AddNewNumberedVariable(const string name)
   string newvarname;
   Variable* foundvar = NULL;
   do {
-    char charnum[50];
-    sprintf(charnum, "%li", num);
+    stringstream charnum;
+    charnum << num;
     num++;
     newvarname = name;
-    newvarname += charnum;
+    newvarname += charnum.str();
     vector<string> fullname;
     fullname.push_back(newvarname);
     foundvar = GetVariable(fullname);

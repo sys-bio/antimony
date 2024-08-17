@@ -40,11 +40,11 @@ string getNameFromSBMLObject(const SBase* sbml, string basename)
     long num=0;
     Variable* foundvar = NULL;
     do {
-      char charnum[50];
-      sprintf(charnum, "%li", num);
+      stringstream charnum;
+      charnum << num;
       num++;
       name = basename;
-      name += charnum;
+      name += charnum.str();
       vector<string> fullname;
       fullname.push_back(name);
       foundvar = g_registry.CurrentModule()->GetVariable(fullname);

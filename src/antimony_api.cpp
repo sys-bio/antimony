@@ -2124,10 +2124,8 @@ LIB_EXTERN char* printAllDataFor(const char* moduleName)
       if (var > 0) {
         ret << " + ";
       }
-      if (leftrxnstoichs[rxn][var] > 1) {
-        char lnum[50];
-        sprintf(lnum, "%g", leftrxnstoichs[rxn][var]);
-        ret << lnum;
+      if (leftrxnstoichs[rxn][var] != 1) {
+        ret << leftrxnstoichs[rxn][var];
       }
       ret << leftrxnnames[rxn][var];
     }
@@ -2136,10 +2134,8 @@ LIB_EXTERN char* printAllDataFor(const char* moduleName)
       if (var > 0) {
         ret << " + ";
       }
-      if (rightrxnstoichs[rxn][var] > 1) {
-        char rnum[50];
-        sprintf(rnum, "%g", rightrxnstoichs[rxn][var]);
-        ret << rnum;
+      if (rightrxnstoichs[rxn][var] != 1) {
+        ret << rightrxnstoichs[rxn][var];
       }
       ret << rightrxnnames[rxn][var];
     }

@@ -142,9 +142,9 @@ string ReactantList::ToStringDelimitedBy(std::string cc) const
         retval += " ";
     }
     else if (get<0>(m_components[component]) != 1) {
-      char charnum[50];
-      sprintf(charnum, "%g", get<0>(m_components[component]));
-      retval += charnum;
+      stringstream charnum;
+      charnum << get<0>(m_components[component]);
+      retval += charnum.str();
       retval += ' ';
     }
     //Species reference:
