@@ -141,9 +141,9 @@ def readHeaderFiles(headerfile):
             cline = line.strip();
             if "@name" in line:
                continue
-            if "\{" in line:
+            if "{" in line:
                continue
-            if "\}" in line:
+            if "}" in line:
                continue
             cline = cline.replace("/**", "")
             cline = cline.replace("*/", "")
