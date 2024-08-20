@@ -3269,20 +3269,20 @@ void Module::LoadLayout(Model* sbml)
                 form.Clear();
             }
 
-            // Width
+            // Size
             val = LIBSBMLNETWORK_CPP_NAMESPACE::getDimensionWidth(doc, varid);
-            if (val && val != defaults[type].width) {
-                LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_width);
+            double valh = LIBSBMLNETWORK_CPP_NAMESPACE::getDimensionHeight(doc, varid);
+            if ((val && val != defaults[type].width) || (valh && valh != defaults[type].height)) {
+                LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_size);
+                string text = "{";
+                form.AddText(&text, true);
                 form.AddNum(val);
-                lw->SetFormula(&form);
-                form.Clear();
-            }
+                text = ",";
+                form.AddText(&text, true);
+                form.AddNum(valh);
+                text = "}";
+                form.AddText(&text, true);
 
-            // Height
-            val = LIBSBMLNETWORK_CPP_NAMESPACE::getDimensionHeight(doc, varid);
-            if (val && val != defaults[type].height) {
-                LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_height);
-                form.AddNum(val);
                 lw->SetFormula(&form);
                 form.Clear();
             }

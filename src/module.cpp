@@ -2393,6 +2393,7 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
   }
 
   if (m_autolayout.use) {
+      retval += "\n";
       retval += GetAntimonyAutolayout(indent);
       retval += "\n";
       retval += GetAntimonyGeneralLayout(indent);
