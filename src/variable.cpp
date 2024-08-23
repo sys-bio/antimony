@@ -1044,11 +1044,13 @@ bool Variable::SetFormula(Formula* formula, bool isObjective)
   string formstring = formula->ToSBMLString(GetStrandVars());
   if (formstring.size() > 0) {
     ASTNode_t* ASTform = parseStringToASTNode(formstring);
-    char* err = SBML_getLastParseL3Error();
-    string errstring(err);
-    free(err);
-    if (ASTform == NULL && !errstring.empty()) {
-      g_registry.SetError("In the formula \"" + formula->ToDelimitedStringWithEllipses(".") + "\":  " + errstring);
+    if (ASTform == NULL) {
+        char* err = SBML_getLastParseL3Error();
+        string errstring(err);
+        free(err);
+        if (!errstring.empty()) {
+            g_registry.SetError("In the formula \"" + formula->ToDelimitedStringWithEllipses(".") + "\":  " + errstring);
+        }
       return true;
     }
     delete ASTform;

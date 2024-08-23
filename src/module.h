@@ -196,8 +196,8 @@ public:
   bool GetNeedDefaultCompartment() const;
   virtual void SetSBOTerm(int sboTerm);
 
-  virtual bool SetAutoLayout(const std::string* isset);
-  virtual bool SetAutoLayout(const std::string& isset);
+  virtual bool SetLayout(const std::string* isset);
+  virtual bool SetLayout(const std::string& isset);
   virtual bool SetAutoLayout(const std::string* argument, const std::string* value);
   virtual bool SetAutoLayout(const std::string* argument, const double& value);
   virtual bool SetAutoLayout(const std::string* argument, const std::vector<Variable*>* values);

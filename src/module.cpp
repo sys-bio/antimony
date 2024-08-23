@@ -3138,7 +3138,7 @@ void Module::SetSBOTerm(int sboTerm)
   }
 }
 
-bool Module::SetAutoLayout(const string* isset)
+bool Module::SetLayout(const string* isset)
 {
     if (CaselessStrCmp(true, *isset, "on") ||
         CaselessStrCmp(true, *isset, "true")) {
@@ -3147,16 +3147,16 @@ bool Module::SetAutoLayout(const string* isset)
     }
     else if (CaselessStrCmp(true, *isset, "off") ||
         CaselessStrCmp(true, *isset, "false")) {
-        g_registry.SetError("The only way to turn off autolayout to not include any layout information in the Antimony model.  Do not try to set model.autolayout to '" + *isset + "'.");
+        g_registry.SetError("The only way to turn off layout to not include any layout information in the Antimony model.  Do not try to set model.layout to '" + *isset + "'.");
         return true;
     }
-    g_registry.SetError("Unable to set autolayout to '" + *isset + "': it can only be used to turn on autolayout by setting it to 'true' or 'on'.");
+    g_registry.SetError("Unable to set layout to '" + *isset + "': it can only be used to turn on layout by setting it to 'true' or 'on'.");
     return true;
 }
 
-bool Module::SetAutoLayout(const std::string& isset)
+bool Module::SetLayout(const std::string& isset)
 {
-    return SetAutoLayout(&isset);
+    return SetLayout(&isset);
 }
 
 bool Module::SetAutoLayout(const std::string* argument, const std::string* value)
@@ -3335,7 +3335,7 @@ bool Module::SetLayout(const std::string* argument, const std::string* value)
     }
 
     if (type == "color") {
-        if (!LIBSBMLNETWORK_CPP_NAMESPACE::isValidColorValue(*value)) {
+        if (!isValidColorValue(*value)) {
             g_registry.SetError("Unable to set layout." + *argument + " to '" + *value + "': that's not a valid color.  Try something like 'red' or 'blue' or a hex color of the form '#FF0000'.");
             return true;
         }
@@ -3662,7 +3662,7 @@ string Module::GetAntimonyAutolayout(const string& indent) const
 {
     stringstream ret;
     ret << indent << "# Autolayout options" << endl;
-    ret << indent << "model.autolayout = on" << endl;
+    ret << indent << "model.layout = on" << endl;
     //if (m_autolayout.stiffness != 10) {
     //    ret << indent << "model.autolayout.stiffness = " << m_autolayout.stiffness << endl;
     //}
@@ -3704,7 +3704,7 @@ string Module::GetAntimonyGeneralLayout(const string& indent) const
 {
     stringstream ret;
     ret << indent << "# General layout defaults" << endl;
-    if (m_layout.height && m_layout.width) {
+    if (m_layout.height || m_layout.width) {
         ret << indent << "model.layout.size = {" << m_layout.width << ", " << m_layout.height << "}" << endl;
     }
     else if (m_layout.height) {
@@ -3717,7 +3717,14 @@ string Module::GetAntimonyGeneralLayout(const string& indent) const
         ret << indent << "model.layout.style = " << m_layout.style << endl;
     }
     if (m_layout.background != "") {
-        ret << indent << "model.layout.background = " << m_layout.background << endl;
+        string colorstring;
+        if (m_layout.background[0] == '#') {
+            colorstring = '"' + m_layout.background + '"';
+        }
+        else {
+            colorstring = m_layout.background;
+        }
+        ret << indent << "model.layout.background = " << colorstring << endl;
     }
     if (m_layout.align_top.size()) {
         ret << indent << getSetString(m_layout.align_top);

@@ -641,62 +641,62 @@ string LayoutTypeToString(const layout_type ltype)
 
 layout_type LayoutStringToType(const string& ltype)
 {
-    if (CaselessStrCmp(false, ltype, "position") ||
-        CaselessStrCmp(false, ltype, "pos")) {
+    if (CaselessStrCmp(true, ltype, "position") ||
+        CaselessStrCmp(true, ltype, "pos")) {
         return lt_position;
     }
-    if (CaselessStrCmp(false, ltype, "x")) {
+    if (CaselessStrCmp(true, ltype, "x")) {
         return lt_x;
     }
-    if (CaselessStrCmp(false, ltype, "y")) {
+    if (CaselessStrCmp(true, ltype, "y")) {
         return lt_y;
     }
-    if (CaselessStrCmp(false, ltype, "size")) {
+    if (CaselessStrCmp(true, ltype, "size")) {
         return lt_size;
     }
-    if (CaselessStrCmp(false, ltype, "height")) {
+    if (CaselessStrCmp(true, ltype, "height")) {
         return lt_height;
     }
-    if (CaselessStrCmp(false, ltype, "width")) {
+    if (CaselessStrCmp(true, ltype, "width")) {
         return lt_width;
     }
-    if (CaselessStrCmp(false, ltype, "color")) {
+    if (CaselessStrCmp(true, ltype, "color")) {
         return lt_color;
     }
-    if (CaselessStrCmp(false, ltype, "fillcolor")) {
+    if (CaselessStrCmp(true, ltype, "fillcolor")) {
         return lt_color;
     }
-    if (CaselessStrCmp(false, ltype, "font")) {
+    if (CaselessStrCmp(true, ltype, "font")) {
         return lt_font;
     }
-    if (CaselessStrCmp(false, ltype, "fontsize")) {
+    if (CaselessStrCmp(true, ltype, "fontsize")) {
         return lt_fontsize;
     }
-    if (CaselessStrCmp(false, ltype, "fontcolor")) {
+    if (CaselessStrCmp(true, ltype, "fontcolor")) {
         return lt_fontcolor;
     }
-    if (CaselessStrCmp(false, ltype, "fontweight")) {
+    if (CaselessStrCmp(true, ltype, "fontweight")) {
         return lt_fontweight;
     }
-    if (CaselessStrCmp(false, ltype, "fontstyle")) {
+    if (CaselessStrCmp(true, ltype, "fontstyle")) {
         return lt_fontstyle;
     }
-    if (CaselessStrCmp(false, ltype, "linethickness")) {
+    if (CaselessStrCmp(true, ltype, "linethickness")) {
         return lt_linewidth;
     }
-    if (CaselessStrCmp(false, ltype, "linewidth")) {
+    if (CaselessStrCmp(true, ltype, "linewidth")) {
         return lt_linewidth;
     }
-    if (CaselessStrCmp(false, ltype, "strokewidth")) {
+    if (CaselessStrCmp(true, ltype, "strokewidth")) {
         return lt_linewidth;
     }
-    if (CaselessStrCmp(false, ltype, "borderwidth")) {
+    if (CaselessStrCmp(true, ltype, "borderwidth")) {
         return lt_linewidth;
     }
-    if (CaselessStrCmp(false, ltype, "linecolor")) {
+    if (CaselessStrCmp(true, ltype, "linecolor")) {
         return lt_linecolor;
     }
-    if (CaselessStrCmp(false, ltype, "shape")) {
+    if (CaselessStrCmp(true, ltype, "shape")) {
         return lt_shape;
     }
     return lt_unknown;
@@ -704,16 +704,16 @@ layout_type LayoutStringToType(const string& ltype)
 
 bool isValidFontStyle(const std::string& ftype)
 {
-    if (CaselessStrCmp(false, ftype, "bold")) {
+    if (CaselessStrCmp(true, ftype, "bold")) {
         return true;
     }
-    if (CaselessStrCmp(false, ftype, "italic")) {
+    if (CaselessStrCmp(true, ftype, "italic")) {
         return true;
     }
-    if (CaselessStrCmp(false, ftype, "normal")) {
+    if (CaselessStrCmp(true, ftype, "normal")) {
         return true;
     }
-    if (CaselessStrCmp(false, ftype, "bold_italic")) {
+    if (CaselessStrCmp(true, ftype, "bold_italic")) {
         return true;
     }
     return false;

@@ -73,7 +73,22 @@ const Variable* LayoutWrapper::GetSameVariable() const
 bool LayoutWrapper::SetFormula(Formula* formula, bool isObjective)
 {
     if (Variable::SetFormula(formula, isObjective)) {
-        return true;
+        string formstring = formula->ToSBMLString();
+        ColorDefinition cd;
+        if (!cd.setColorValue(formstring)) {
+            formstring = "#" + formstring;
+            if (!cd.setColorValue(formstring)) {
+                return true;
+            }
+            formula->Clear();
+            formula->AddText(&formstring, true);
+        }
+        //If it's a valid color definition, we can use it
+        m_valFormula = *formula;
+    }
+
+    if (formula->IsEmpty()) {
+        assert(false);
     }
 
     if (IsPair(m_layout_type)) {
@@ -106,9 +121,12 @@ bool LayoutWrapper::SetFormula(Formula* formula, bool isObjective)
     else {
         string formstring = m_valFormula.ToSBMLString();
         ASTNode* astn = parseStringToASTNode(formstring);
-        double lval = astn->getValue();
+        double lval = util_NaN();
+        if (astn) {
+            lval = astn->getValue();
+        }
         string strval = "";
-        if (astn->getType() == AST_NAME) {
+        if (astn && astn->getType() == AST_NAME) {
             strval = astn->getName();
         }
         if (formula->IsOneComponent()) {
@@ -133,7 +151,7 @@ bool LayoutWrapper::SetFormula(Formula* formula, bool isObjective)
             case lt_color:
             case lt_fontcolor:
             case lt_linecolor:
-                if (!LIBSBMLNETWORK_CPP_NAMESPACE::isValidColorValue(formstring)) {
+                if (!isValidColorValue(formstring)) {
                     g_registry.SetError("Unable to set the value of '" + GetNameDelimitedBy(".") + "'.  '" + formula->ToDelimitedStringWithEllipses(".") + "' is not a valid color value.  Try standard color names like 'red' or 'blue', or use an RGB value of the form \"#000000\" (including the quotation marks).");
                     return true;
                 }
@@ -216,7 +234,11 @@ string LayoutWrapper::CreateLayoutParamsAntimonySyntax(const string& indent) con
 {
     string ret = "";
     if (!m_valFormula.IsEmpty()) {
-        ret = indent + GetNameDelimitedBy(".") + " = " + m_valFormula.ToDelimitedStringWithEllipses(".") + "\n";
+        string strval = m_valFormula.ToDelimitedStringWithEllipses(".");
+        if (strval[0] == '#') {
+            strval = '"' + strval + '"';
+        }
+        ret = indent + GetNameDelimitedBy(".") + " = " + strval + "\n";
     }
     if (!m_displayname.empty()) {
         ret += indent + GetNameDelimitedBy(".") + " is \"" + m_displayname + "\"\n";
@@ -256,11 +278,15 @@ bool LayoutWrapper::TransferLayoutInformationTo(SBMLDocument* sbml) const
         }
         if (ret1 == -1 || ret2 == -1) {
             g_registry.SetError(error);
+            delete astn;
             return true;
         }
     }
     else {
-        double lval = astn->getValue();
+        double lval = util_NaN();
+        if (astn) {
+            lval = astn->getValue();
+        }
         int ret = 0;
         switch (m_layout_type) {
         case lt_position:
@@ -297,19 +323,19 @@ bool LayoutWrapper::TransferLayoutInformationTo(SBMLDocument* sbml) const
             break;
         case lt_fontstyle:
         case lt_fontweight:
-            if (CaselessStrCmp(false, formstring, "bold")) {
+            if (CaselessStrCmp(true, formstring, "bold")) {
                 ret = LIBSBMLNETWORK_CPP_NAMESPACE::setFontWeight(sbml, sid, formstring);
             }
-            if (CaselessStrCmp(false, formstring, "italic")) {
+            if (CaselessStrCmp(true, formstring, "italic")) {
                 ret = LIBSBMLNETWORK_CPP_NAMESPACE::setFontStyle(sbml, sid, formstring);
             }
-            if (CaselessStrCmp(false, formstring, "normal")) {
+            if (CaselessStrCmp(true, formstring, "normal")) {
                 ret = LIBSBMLNETWORK_CPP_NAMESPACE::setFontWeight(sbml, sid, formstring);
                 if (ret == 0) {
                     ret = LIBSBMLNETWORK_CPP_NAMESPACE::setFontStyle(sbml, sid, formstring);
                 }
             }
-            if (CaselessStrCmp(false, formstring, "bold_italic")) {
+            if (CaselessStrCmp(true, formstring, "bold_italic")) {
                 ret = LIBSBMLNETWORK_CPP_NAMESPACE::setFontWeight(sbml, sid, "bold");
                 if (ret == 0) {
                     ret = LIBSBMLNETWORK_CPP_NAMESPACE::setFontStyle(sbml, sid, "italic");
@@ -490,7 +516,7 @@ bool LayoutWrapper::TransferLayoutInformationTo(SBMLDocument* sbml, const string
             break;
         case lt_fontstyle:
         case lt_fontweight:
-            if (CaselessStrCmp(false, formstring, "bold")) {
+            if (CaselessStrCmp(true, formstring, "bold")) {
                 if (group == "species") {
                     ret = LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesFontWeight(sbml, 0, formstring);
                 }
@@ -508,7 +534,7 @@ bool LayoutWrapper::TransferLayoutInformationTo(SBMLDocument* sbml, const string
                     assert(false);
                 }
             }
-            if (CaselessStrCmp(false, formstring, "italic")) {
+            if (CaselessStrCmp(true, formstring, "italic")) {
                 if (group == "species") {
                     ret = LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesFontStyle(sbml, 0, formstring);
                 }
@@ -526,7 +552,7 @@ bool LayoutWrapper::TransferLayoutInformationTo(SBMLDocument* sbml, const string
                     assert(false);
                 }
             }
-            if (CaselessStrCmp(false, formstring, "normal")) {
+            if (CaselessStrCmp(true, formstring, "normal")) {
                 if (group == "species") {
                     ret = LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesFontWeight(sbml, 0, formstring);
                 }
@@ -562,7 +588,7 @@ bool LayoutWrapper::TransferLayoutInformationTo(SBMLDocument* sbml, const string
                     }
                 }
             }
-            if (CaselessStrCmp(false, formstring, "bold_italic")) {
+            if (CaselessStrCmp(true, formstring, "bold_italic")) {
                 if (group == "species") {
                     ret = LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesFontWeight(sbml, 0, "bold");
                 }

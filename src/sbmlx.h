@@ -51,4 +51,6 @@ constraint_type getConstraintTypeFrom(libsbml::FluxBoundOperation_t fbtype);
 bool FluxesMatch(const libsbml::FluxBound* fb1, const libsbml::FluxBound* fb2);
 #endif
 
+bool isValidColorValue(std::string formstring);
+
 #endif

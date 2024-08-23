@@ -6,6 +6,7 @@
 #include "formula.h"
 #include "registry.h"
 #include "typex.h"
+#include <libsbmlnetwork_render_helpers.h>
 
 using namespace std;
 using namespace libsbml;
@@ -804,5 +805,17 @@ bool FluxesMatch(const FluxBound* fb1, const FluxBound* fb2)
   if (fb1->getValue() != fb2->getValue()) return false;
   return true;
 }
+
+bool isValidColorValue(string formstring)
+{
+    if (!LIBSBMLNETWORK_CPP_NAMESPACE::isValidColorValue(formstring)) {
+        ColorDefinition cd;
+        if (!cd.setColorValue(formstring)) {
+            return false;
+        }
+    }
+    return true;
+}
+
 
 #endif
