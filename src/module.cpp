@@ -2394,8 +2394,6 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
 
   if (m_autolayout.use) {
       retval += "\n";
-      retval += GetAntimonyAutolayout(indent);
-      retval += "\n";
       retval += GetAntimonyGeneralLayout(indent);
       retval += "\n";
       retval += GetAntimonyTypeLayouts(indent);
@@ -3658,10 +3656,21 @@ string Module::ValidateLayoutArgument(const string* argument)
     return "none";
 }
 
-string Module::GetAntimonyAutolayout(const string& indent) const
+string getSetString(set<string> list)
+{
+    string ret = "{";
+    for (auto li = list.begin(); li != list.end(); li++) {
+        ret += " " +  *li + ",";
+    }
+    ret[ret.size() - 1] = ' ';
+    ret += "}";
+    return ret;
+}
+
+string Module::GetAntimonyGeneralLayout(const string& indent) const
 {
     stringstream ret;
-    ret << indent << "# Autolayout options" << endl;
+    ret << indent << "# General layout options" << endl;
     ret << indent << "model.layout = on" << endl;
     //if (m_autolayout.stiffness != 10) {
     //    ret << indent << "model.autolayout.stiffness = " << m_autolayout.stiffness << endl;
@@ -3685,25 +3694,6 @@ string Module::GetAntimonyAutolayout(const string& indent) const
         ret << indent << "model.autolayout.useNameAsTextLabel = off" << endl;
     }
 
-
-    return ret.str();
-}
-
-string getSetString(set<string> list)
-{
-    string ret = "{";
-    for (auto li = list.begin(); li != list.end(); li++) {
-        ret += " " +  *li + ",";
-    }
-    ret[ret.size() - 1] = ' ';
-    ret += "}";
-    return ret;
-}
-
-string Module::GetAntimonyGeneralLayout(const string& indent) const
-{
-    stringstream ret;
-    ret << indent << "# General layout defaults" << endl;
     if (m_layout.height || m_layout.width) {
         ret << indent << "model.layout.size = {" << m_layout.width << ", " << m_layout.height << "}" << endl;
     }
@@ -3754,12 +3744,6 @@ string Module::GetAntimonyGeneralLayout(const string& indent) const
 std::string Module::GetAntimonyTypeLayouts(const std::string& indent) const
 {
     string ret = "";
-    if (m_compartmentLayouts.size()) {
-        ret += indent + "// Compartment layout defaults\n";
-        for (size_t c = 0; c < m_compartmentLayouts.size(); c++) {
-            ret += m_compartmentLayouts[c]->CreateLayoutParamsAntimonySyntax(indent);
-        }
-    }
     if (m_speciesLayouts.size()) {
         ret += indent + "// Species layout defaults\n";
         for (size_t s = 0; s < m_speciesLayouts.size(); s++) {
@@ -3767,10 +3751,25 @@ std::string Module::GetAntimonyTypeLayouts(const std::string& indent) const
         }
     }
     if (m_reactionLayouts.size()) {
+        if (!ret.empty()) {
+            ret += "\n";
+        }
         ret += indent + "// Reaction layout defaults\n";
         for (size_t r = 0; r < m_reactionLayouts.size(); r++) {
             ret += m_reactionLayouts[r]->CreateLayoutParamsAntimonySyntax(indent);
         }
     }
-    return std::string();
+    if (m_compartmentLayouts.size()) {
+        if (!ret.empty()) {
+            ret += "\n";
+        }
+        ret += indent + "// Compartment layout defaults\n";
+        for (size_t c = 0; c < m_compartmentLayouts.size(); c++) {
+            ret += m_compartmentLayouts[c]->CreateLayoutParamsAntimonySyntax(indent);
+        }
+    }
+    if (!ret.empty()) {
+        ret += "\n";
+    }
+    return ret;
 }

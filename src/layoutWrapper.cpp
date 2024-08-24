@@ -235,7 +235,7 @@ string LayoutWrapper::CreateLayoutParamsAntimonySyntax(const string& indent) con
     string ret = "";
     if (!m_valFormula.IsEmpty()) {
         string strval = m_valFormula.ToDelimitedStringWithEllipses(".");
-        if (strval[0] == '#') {
+        if (strval[0] == '#' || (strval.find('-') != string::npos) || (strval.find(' ') != string::npos)) {
             strval = '"' + strval + '"';
         }
         ret = indent + GetNameDelimitedBy(".") + " = " + strval + "\n";

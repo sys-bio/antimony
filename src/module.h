@@ -340,7 +340,6 @@ private:
   void UpdateRateOf(libsbml::Model* model);
   std::string ValidateAutoLayoutArgument(const std::string* argument);
   std::string ValidateLayoutArgument(const std::string* argument);
-  std::string GetAntimonyAutolayout(const std::string& indent) const;
   std::string GetAntimonyGeneralLayout(const std::string& indent) const;
   std::string GetAntimonyTypeLayouts(const std::string& indent) const;
   void  LoadLayout(libsbml::Model* sbml);
