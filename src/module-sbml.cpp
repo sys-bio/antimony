@@ -3164,6 +3164,34 @@ struct layoutInfo {
     string shape = "";
 };
 
+string convertColorIfNeeded(string sval, SBMLDocument* doc)
+{
+    if (sval.empty()) {
+        return sval;
+    }
+    if (sval[0] != '#') {
+        if (LIBSBMLNETWORK_CPP_NAMESPACE::isValidColorValue(sval)) {
+            return sval;
+        }
+        ColorDefinition* cd = LIBSBMLNETWORK_CPP_NAMESPACE::getColorDefinition(doc, sval);
+        if (cd) {
+            sval = cd->getValue();
+        }
+    }
+    if (sval[0] == '#') {
+        string cname = LIBSBMLNETWORK_CPP_NAMESPACE::getHtmlColorNameFromHexColorCode(sval);
+        if (!cname.empty()) {
+            return cname;
+        }
+        return sval;
+    }
+    if (sval == "none") {
+        return "";
+    }
+    assert(false);
+    return sval;
+}
+
 layoutInfo getDefaultSpeciesLayoutInfo(map<string, string> style, std::vector<LayoutWrapper*>& speciesLayouts, SBMLDocument* doc)
 {
     layoutInfo ret;
@@ -3172,7 +3200,8 @@ layoutInfo getDefaultSpeciesLayoutInfo(map<string, string> style, std::vector<La
 
     ret.color = style["species-fill-color"];
     string color = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesFillColor(doc);
-    if (color != ret.color) {
+    color = convertColorIfNeeded(color, doc);
+    if (!color.empty() && color != ret.color) {
         ret.color = color;
         LayoutWrapper* lw = new LayoutWrapper(lt_color, "species");
         Formula form;
@@ -3183,7 +3212,8 @@ layoutInfo getDefaultSpeciesLayoutInfo(map<string, string> style, std::vector<La
 
     ret.linecolor = style["species-border-color"];
     string linecolor = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesStrokeColor(doc);
-    if (linecolor != ret.linecolor) {
+    linecolor = convertColorIfNeeded(linecolor, doc);
+    if (!linecolor.empty() && linecolor != ret.linecolor) {
         ret.linecolor = linecolor;
         LayoutWrapper* lw = new LayoutWrapper(lt_linecolor, "species");
         Formula form;
@@ -3194,7 +3224,7 @@ layoutInfo getDefaultSpeciesLayoutInfo(map<string, string> style, std::vector<La
 
     ret.linewidth = atof(style["species-border-width"].c_str());
     double linewidth = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesStrokeWidth(doc);
-    if (linewidth != ret.linewidth) {
+    if (linewidth && !isnan(linewidth) && linewidth != ret.linewidth) {
         ret.linewidth = linewidth;
         LayoutWrapper* lw = new LayoutWrapper(lt_linewidth, "species");
         Formula form;
@@ -3205,7 +3235,7 @@ layoutInfo getDefaultSpeciesLayoutInfo(map<string, string> style, std::vector<La
 
     ret.font = "sans-serif"; // style["species-font-style"];
     string font = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesFontFamily(doc);
-    if (font != ret.font) {
+    if (!font.empty() && font != ret.font) {
         ret.font = font;
         LayoutWrapper* lw = new LayoutWrapper(lt_font, "species");
         Formula form;
@@ -3216,7 +3246,8 @@ layoutInfo getDefaultSpeciesLayoutInfo(map<string, string> style, std::vector<La
 
     ret.fontcolor = style["species-font-color"];
     string fontcolor = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesFontColor(doc);
-    if (fontcolor != ret.fontcolor) {
+    fontcolor = convertColorIfNeeded(fontcolor, doc);
+    if (!fontcolor.empty() && fontcolor != ret.fontcolor) {
         ret.fontcolor = fontcolor;
         LayoutWrapper* lw = new LayoutWrapper(lt_fontcolor, "species");
         Formula form;
@@ -3227,7 +3258,7 @@ layoutInfo getDefaultSpeciesLayoutInfo(map<string, string> style, std::vector<La
 
     ret.fontsize = atof(style["species-font-size"].c_str());
     double fontsize = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesFontSizeAsDouble(doc);
-    if (fontsize != ret.fontsize) {
+    if (fontsize && !isnan(fontsize) && fontsize != ret.fontsize) {
         ret.fontsize = fontsize;
         LayoutWrapper* lw = new LayoutWrapper(lt_fontsize, "species");
         Formula form;
@@ -3238,7 +3269,7 @@ layoutInfo getDefaultSpeciesLayoutInfo(map<string, string> style, std::vector<La
 
     ret.fontstyle = getFontStyleFrom(style["species-font-style"], style["species-font-weight"]);
     string fontstyle = getFontStyleFrom(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesFontStyle(doc), LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesFontWeight(doc));
-    if (fontstyle != ret.fontstyle) {
+    if (!fontstyle.empty() && fontstyle != ret.fontstyle) {
         ret.fontstyle = fontstyle;
         LayoutWrapper* lw = new LayoutWrapper(lt_fontstyle, "species");
         Formula form;
@@ -3249,7 +3280,7 @@ layoutInfo getDefaultSpeciesLayoutInfo(map<string, string> style, std::vector<La
     
     ret.shape = style["species-geometric-shape"];
     string shape = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesGeometricShapeType(doc);
-    if (shape != ret.shape) {
+    if (!shape.empty() && shape != ret.shape) {
         ret.shape = shape;
         LayoutWrapper* lw = new LayoutWrapper(lt_shape, "species");
         Formula form;
@@ -3269,7 +3300,8 @@ layoutInfo getDefaultCompartmentLayoutInfo(map<string, string> style, std::vecto
 
     ret.color = style["compartment-fill-color"];
     string color = LIBSBMLNETWORK_CPP_NAMESPACE::getCompartmentFillColor(doc);
-    if (color != ret.color) {
+    color = convertColorIfNeeded(color, doc);
+    if (!color.empty() && color != ret.color) {
         ret.color = color;
         LayoutWrapper* lw = new LayoutWrapper(lt_color, "compartment");
         Formula form;
@@ -3280,7 +3312,8 @@ layoutInfo getDefaultCompartmentLayoutInfo(map<string, string> style, std::vecto
 
     ret.linecolor = style["compartment-border-color"];
     string linecolor = LIBSBMLNETWORK_CPP_NAMESPACE::getCompartmentStrokeColor(doc);
-    if (linecolor != ret.linecolor) {
+    linecolor = convertColorIfNeeded(linecolor, doc);
+    if (!linecolor.empty() && linecolor != ret.linecolor) {
         ret.linecolor = linecolor;
         LayoutWrapper* lw = new LayoutWrapper(lt_linecolor, "compartment");
         Formula form;
@@ -3291,7 +3324,7 @@ layoutInfo getDefaultCompartmentLayoutInfo(map<string, string> style, std::vecto
 
     ret.linewidth = atof(style["compartment-border-width"].c_str());
     double linewidth = LIBSBMLNETWORK_CPP_NAMESPACE::getCompartmentStrokeWidth(doc);
-    if (linewidth != ret.linewidth) {
+    if (linewidth && !isnan(linewidth) && linewidth != ret.linewidth) {
         ret.linewidth = linewidth;
         LayoutWrapper* lw = new LayoutWrapper(lt_linewidth, "compartment");
         Formula form;
@@ -3302,7 +3335,7 @@ layoutInfo getDefaultCompartmentLayoutInfo(map<string, string> style, std::vecto
 
     ret.font = "sans-serif"; // style["compartment-font-style"];
     string font = LIBSBMLNETWORK_CPP_NAMESPACE::getCompartmentFontFamily(doc);
-    if (font != ret.font) {
+    if (!font.empty() && font != ret.font) {
         ret.font = font;
         LayoutWrapper* lw = new LayoutWrapper(lt_font, "compartment");
         Formula form;
@@ -3313,7 +3346,8 @@ layoutInfo getDefaultCompartmentLayoutInfo(map<string, string> style, std::vecto
 
     ret.fontcolor = style["compartment-font-color"];
     string fontcolor = LIBSBMLNETWORK_CPP_NAMESPACE::getCompartmentFontColor(doc);
-    if (fontcolor != ret.fontcolor) {
+    fontcolor = convertColorIfNeeded(fontcolor, doc);
+    if (!fontcolor.empty() && fontcolor != ret.fontcolor) {
         ret.fontcolor = fontcolor;
         LayoutWrapper* lw = new LayoutWrapper(lt_fontcolor, "compartment");
         Formula form;
@@ -3324,7 +3358,7 @@ layoutInfo getDefaultCompartmentLayoutInfo(map<string, string> style, std::vecto
 
     ret.fontsize = atof(style["compartment-font-size"].c_str());
     double fontsize = LIBSBMLNETWORK_CPP_NAMESPACE::getCompartmentFontSizeAsDouble(doc);
-    if (fontsize != ret.fontsize) {
+    if (fontsize && !isnan(fontsize) && fontsize != ret.fontsize) {
         ret.fontsize = fontsize;
         LayoutWrapper* lw = new LayoutWrapper(lt_fontsize, "compartment");
         Formula form;
@@ -3335,7 +3369,7 @@ layoutInfo getDefaultCompartmentLayoutInfo(map<string, string> style, std::vecto
 
     ret.fontstyle = getFontStyleFrom(style["compartment-font-style"], style["compartment-font-weight"]);
     string fontstyle = getFontStyleFrom(LIBSBMLNETWORK_CPP_NAMESPACE::getCompartmentFontStyle(doc), LIBSBMLNETWORK_CPP_NAMESPACE::getCompartmentFontWeight(doc));
-    if (fontstyle != ret.fontstyle) {
+    if (!fontstyle.empty() && fontstyle != ret.fontstyle) {
         ret.fontstyle = fontstyle;
         LayoutWrapper* lw = new LayoutWrapper(lt_fontstyle, "compartment");
         Formula form;
@@ -3346,7 +3380,7 @@ layoutInfo getDefaultCompartmentLayoutInfo(map<string, string> style, std::vecto
 
     ret.shape = style["compartment-geometric-shape"];
     string shape = LIBSBMLNETWORK_CPP_NAMESPACE::getCompartmentGeometricShapeType(doc);
-    if (shape != ret.shape) {
+    if (!shape.empty() && shape != ret.shape) {
         ret.shape = shape;
         LayoutWrapper* lw = new LayoutWrapper(lt_shape, "compartment");
         Formula form;
@@ -3369,7 +3403,8 @@ layoutInfo getDefaultReactionLayoutInfo(map<string, string> style, std::vector<L
 
     ret.color = "white"; //LS DEBUG style["reaction-fill-color"];
     string color = LIBSBMLNETWORK_CPP_NAMESPACE::getReactionFillColor(doc);
-    if (color != ret.color) {
+    color = convertColorIfNeeded(color, doc);
+    if (!color.empty() && color != ret.color) {
         ret.color = color;
         LayoutWrapper* lw = new LayoutWrapper(lt_color, "reaction");
         Formula form;
@@ -3380,7 +3415,8 @@ layoutInfo getDefaultReactionLayoutInfo(map<string, string> style, std::vector<L
 
     ret.linecolor = style["reaction-line-color"];
     string linecolor = LIBSBMLNETWORK_CPP_NAMESPACE::getReactionStrokeColor(doc);
-    if (linecolor != ret.linecolor) {
+    linecolor = convertColorIfNeeded(linecolor, doc);
+    if (!linecolor.empty() && linecolor != ret.linecolor) {
         ret.linecolor = linecolor;
         LayoutWrapper* lw = new LayoutWrapper(lt_linecolor, "reaction");
         Formula form;
@@ -3391,7 +3427,7 @@ layoutInfo getDefaultReactionLayoutInfo(map<string, string> style, std::vector<L
 
     ret.linewidth = atof(style["reaction-line-width"].c_str());
     double linewidth = LIBSBMLNETWORK_CPP_NAMESPACE::getReactionStrokeWidth(doc);
-    if (linewidth != ret.linewidth) {
+    if (linewidth && !isnan(linewidth) && linewidth != ret.linewidth) {
         ret.linewidth = linewidth;
         LayoutWrapper* lw = new LayoutWrapper(lt_linewidth, "reaction");
         Formula form;
@@ -3402,7 +3438,7 @@ layoutInfo getDefaultReactionLayoutInfo(map<string, string> style, std::vector<L
 
     ret.font = "sans-serif"; // style["reaction-font-style"];
     string font = LIBSBMLNETWORK_CPP_NAMESPACE::getReactionFontFamily(doc);
-    if (font != ret.font) {
+    if (!font.empty() && font != ret.font) {
         ret.font = font;
         LayoutWrapper* lw = new LayoutWrapper(lt_font, "reaction");
         Formula form;
@@ -3413,7 +3449,8 @@ layoutInfo getDefaultReactionLayoutInfo(map<string, string> style, std::vector<L
 
     ret.fontcolor = style["reaction-font-color"];
     string fontcolor = LIBSBMLNETWORK_CPP_NAMESPACE::getReactionFontColor(doc);
-    if (fontcolor != ret.fontcolor) {
+    fontcolor = convertColorIfNeeded(fontcolor, doc);
+    if (!fontcolor.empty() && fontcolor != ret.fontcolor) {
         ret.fontcolor = fontcolor;
         LayoutWrapper* lw = new LayoutWrapper(lt_fontcolor, "reaction");
         Formula form;
@@ -3424,7 +3461,7 @@ layoutInfo getDefaultReactionLayoutInfo(map<string, string> style, std::vector<L
 
     ret.fontsize = atof(style["reaction-font-size"].c_str());
     double fontsize = LIBSBMLNETWORK_CPP_NAMESPACE::getReactionFontSizeAsDouble(doc);
-    if (fontsize != ret.fontsize) {
+    if (fontsize && !isnan(fontsize) && fontsize != ret.fontsize) {
         ret.fontsize = fontsize;
         LayoutWrapper* lw = new LayoutWrapper(lt_fontsize, "reaction");
         Formula form;
@@ -3435,7 +3472,7 @@ layoutInfo getDefaultReactionLayoutInfo(map<string, string> style, std::vector<L
 
     ret.fontstyle = getFontStyleFrom(style["reaction-font-style"], style["reaction-font-weight"]);
     string fontstyle = getFontStyleFrom(LIBSBMLNETWORK_CPP_NAMESPACE::getReactionFontStyle(doc), LIBSBMLNETWORK_CPP_NAMESPACE::getReactionFontWeight(doc));
-    if (fontstyle != ret.fontstyle) {
+    if (!fontstyle.empty() && fontstyle != ret.fontstyle) {
         ret.fontstyle = fontstyle;
         LayoutWrapper* lw = new LayoutWrapper(lt_fontstyle, "reaction");
         Formula form;
@@ -3446,7 +3483,7 @@ layoutInfo getDefaultReactionLayoutInfo(map<string, string> style, std::vector<L
 
     ret.shape = "ellipse"; //LS DEBUG: style["reaction-geometric-shape"];
     string shape = LIBSBMLNETWORK_CPP_NAMESPACE::getReactionGeometricShapeType(doc);
-    if (shape != ret.shape) {
+    if (!shape.empty() && shape != ret.shape) {
         ret.shape = shape;
         LayoutWrapper* lw = new LayoutWrapper(lt_shape, "reaction");
         Formula form;
@@ -3456,23 +3493,6 @@ layoutInfo getDefaultReactionLayoutInfo(map<string, string> style, std::vector<L
     }
     return ret;
 }
-
-string convertColorIfNeeded(string sval, SBMLDocument* doc)
-{
-    if (sval.empty() || sval[0] == '#' || LIBSBMLNETWORK_CPP_NAMESPACE::isValidColorValue(sval)) {
-        return sval;
-    }
-    ColorDefinition* cd = LIBSBMLNETWORK_CPP_NAMESPACE::getColorDefinition(doc, sval);
-    if (cd) {
-        return cd->getValue();
-    }
-    if (sval == "none") {
-        return "";
-    }
-    assert(false);
-    return sval;
-}
-
 
 
 void Module::LoadLayout(Model* sbml)
@@ -3496,6 +3516,7 @@ void Module::LoadLayout(Model* sbml)
 
         //Background color
         string background = LIBSBMLNETWORK_CPP_NAMESPACE::getBackgroundColor(doc);
+        background = convertColorIfNeeded(background, doc);
         if (background != new_style["background-color"]) {
             m_layout.background = background;
         }
@@ -3562,7 +3583,7 @@ void Module::LoadLayout(Model* sbml)
             // Size
             val = LIBSBMLNETWORK_CPP_NAMESPACE::getDimensionWidth(doc, varid);
             double valh = LIBSBMLNETWORK_CPP_NAMESPACE::getDimensionHeight(doc, varid);
-            if ((val && val != defaults[type].width) || (valh && valh != defaults[type].height)) {
+            if ((val && !isnan(val) && !isnan(val) && val != defaults[type].width) || (valh && valh != defaults[type].height)) {
                 LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_size);
                 string text = "{";
                 form.AddText(&text, true);
@@ -3599,7 +3620,7 @@ void Module::LoadLayout(Model* sbml)
 
             // Linewidth
             val = LIBSBMLNETWORK_CPP_NAMESPACE::getStrokeWidth(doc, varid);
-            if (val && val != defaults[type].linewidth) {
+            if (val && !isnan(val) && val != defaults[type].linewidth) {
                 LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_linewidth);
                 form.AddNum(val);
                 lw->SetFormula(&form);
@@ -3627,7 +3648,7 @@ void Module::LoadLayout(Model* sbml)
 
             // Font size
             val = LIBSBMLNETWORK_CPP_NAMESPACE::getFontSizeAsDouble(doc, varid);
-            if (val && val != defaults[type].fontsize) {
+            if (val && !isnan(val) && val != defaults[type].fontsize) {
                 LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_fontsize);
                 form.AddNum(val);
                 lw->SetFormula(&form);

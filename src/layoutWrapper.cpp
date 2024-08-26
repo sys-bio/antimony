@@ -393,7 +393,10 @@ bool LayoutWrapper::TransferLayoutInformationTo(SBMLDocument* sbml, const string
         }
     }
     else {
-        double lval = astn->getValue();
+        double lval = util_NaN();
+        if (astn) {
+            lval = astn->getValue();
+        }
         int ret = 0;
         switch (m_layout_type) {
         case lt_position:
