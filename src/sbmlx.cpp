@@ -7,6 +7,7 @@
 #include "registry.h"
 #include "typex.h"
 #include <libsbmlnetwork_render_helpers.h>
+#include "colors/libsbmlnetwork_colors.h"
 
 using namespace std;
 using namespace libsbml;

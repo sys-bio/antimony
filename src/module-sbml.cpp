@@ -3,6 +3,8 @@
 #include "libsbmlnetwork_sbmldocument.h"
 #include "libsbmlnetwork_sbmldocument_layout.h"
 #include "libsbmlnetwork_sbmldocument_render.h"
+#include "colors/libsbmlnetwork_colors.h"
+#include "styles/libsbmlnetwork_styles.h"
 #include "sbml/packages/layout/extension/LayoutModelPlugin.h"
 
 using namespace libsbml;
@@ -3233,7 +3235,7 @@ layoutInfo getDefaultSpeciesLayoutInfo(map<string, string> style, std::vector<La
         speciesLayouts.push_back(lw);
     }
 
-    ret.font = "sans-serif"; // style["species-font-style"];
+    ret.font = "sans-serif"; // style["species-font-family"];
     string font = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesFontFamily(doc);
     if (!font.empty() && font != ret.font) {
         ret.font = font;
@@ -3333,7 +3335,7 @@ layoutInfo getDefaultCompartmentLayoutInfo(map<string, string> style, std::vecto
         compartmentLayouts.push_back(lw);
     }
 
-    ret.font = "sans-serif"; // style["compartment-font-style"];
+    ret.font = "sans-serif"; // style["compartment-font-family"];
     string font = LIBSBMLNETWORK_CPP_NAMESPACE::getCompartmentFontFamily(doc);
     if (!font.empty() && font != ret.font) {
         ret.font = font;
@@ -3401,7 +3403,7 @@ layoutInfo getDefaultReactionLayoutInfo(map<string, string> style, std::vector<L
 {
     layoutInfo ret;
 
-    ret.color = "white"; //LS DEBUG style["reaction-fill-color"];
+    ret.color = style["reaction-fill-color"];
     string color = LIBSBMLNETWORK_CPP_NAMESPACE::getReactionFillColor(doc);
     color = convertColorIfNeeded(color, doc);
     if (!color.empty() && color != ret.color) {
@@ -3436,7 +3438,7 @@ layoutInfo getDefaultReactionLayoutInfo(map<string, string> style, std::vector<L
         reactionLayouts.push_back(lw);
     }
 
-    ret.font = "sans-serif"; // style["reaction-font-style"];
+    ret.font = "sans-serif"; // style["reaction-font-family"];
     string font = LIBSBMLNETWORK_CPP_NAMESPACE::getReactionFontFamily(doc);
     if (!font.empty() && font != ret.font) {
         ret.font = font;
@@ -3481,7 +3483,7 @@ layoutInfo getDefaultReactionLayoutInfo(map<string, string> style, std::vector<L
         reactionLayouts.push_back(lw);
     }
 
-    ret.shape = "ellipse"; //LS DEBUG: style["reaction-geometric-shape"];
+    ret.shape = style["reaction-geometric-shape"];
     string shape = LIBSBMLNETWORK_CPP_NAMESPACE::getReactionGeometricShapeType(doc);
     if (!shape.empty() && shape != ret.shape) {
         ret.shape = shape;
@@ -3507,7 +3509,7 @@ void Module::LoadLayout(Model* sbml)
 
         //Get default style and more-specific style
         map<string, string> default_style = LIBSBMLNETWORK_CPP_NAMESPACE::getPredefinedStyleFeatures("default");
-        string style = "default"; //LS DEBUG:  change to getDefaultStyle when Adel implements that.
+        string style = LIBSBMLNETWORK_CPP_NAMESPACE::getStyle(doc);
         map<string, string> new_style = LIBSBMLNETWORK_CPP_NAMESPACE::getPredefinedStyleFeatures(style);
         if (style != "default") {
             m_layout.style = style;
