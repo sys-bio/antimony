@@ -265,12 +265,20 @@ bool LayoutWrapper::TransferLayoutInformationTo(SBMLDocument* sbml) const
         int ret2 = 0;
         switch (m_layout_type) {
         case lt_position:
-            ret1 = LIBSBMLNETWORK_CPP_NAMESPACE::setPositionX(sbml, sid, xval);
-            ret2 = LIBSBMLNETWORK_CPP_NAMESPACE::setPositionY(sbml, sid, yval);
+            if (!isnan(xval)) {
+                ret1 = LIBSBMLNETWORK_CPP_NAMESPACE::setPositionX(sbml, sid, xval);
+            }
+            if (!isnan(yval)) {
+                ret2 = LIBSBMLNETWORK_CPP_NAMESPACE::setPositionY(sbml, sid, yval);
+            }
             break;
         case lt_size:
-            ret1 = LIBSBMLNETWORK_CPP_NAMESPACE::setDimensionWidth(sbml, sid, xval);
-            ret2 = LIBSBMLNETWORK_CPP_NAMESPACE::setDimensionHeight(sbml, sid, yval);
+            if (!isnan(xval)) {
+                ret1 = LIBSBMLNETWORK_CPP_NAMESPACE::setDimensionWidth(sbml, sid, xval);
+            }
+            if (!isnan(yval)) {
+                ret2 = LIBSBMLNETWORK_CPP_NAMESPACE::setDimensionHeight(sbml, sid, yval);
+            }
             break;
         default:
             assert(false); //Only the above two are 'IsPair' true

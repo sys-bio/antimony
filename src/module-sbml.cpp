@@ -3567,7 +3567,7 @@ void Module::LoadLayout(Model* sbml)
             // Position
             val = LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(doc, varid);
             double valy = LIBSBMLNETWORK_CPP_NAMESPACE::getPositionY(doc, varid);
-            if (val || valy) {
+            if ((val || valy) && (!isnan(val) || !isnan(valy)) ) {
                 LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_position);
                 string text = "{";
                 form.AddText(&text, true);
@@ -3585,7 +3585,7 @@ void Module::LoadLayout(Model* sbml)
             // Size
             val = LIBSBMLNETWORK_CPP_NAMESPACE::getDimensionWidth(doc, varid);
             double valh = LIBSBMLNETWORK_CPP_NAMESPACE::getDimensionHeight(doc, varid);
-            if ((val && !isnan(val) && !isnan(val) && val != defaults[type].width) || (valh && valh != defaults[type].height)) {
+            if (((val || valh) && (!isnan(val) || !isnan(valh)) && (val != defaults[type].width || valh != defaults[type].height))) {
                 LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_size);
                 string text = "{";
                 form.AddText(&text, true);
