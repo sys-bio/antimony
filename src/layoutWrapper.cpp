@@ -694,6 +694,7 @@ bool LayoutWrapper::TransferLayoutInformationTo(SBMLDocument* sbml, const string
         case lt_unknown:
             break;
         }
+        //assert(ret != -1);
     }
 
 

@@ -2450,7 +2450,7 @@ void Module::CreateSBMLModel(bool comp)
 
   // Layout/Render!
   if (m_autolayout.use) {
-      LIBSBMLNETWORK_CPP_NAMESPACE::autolayout(&m_sbml, m_autolayout.maxNumConnectedEdges, m_autolayout.useNameAsTextLabel, true); // , m_autolayout.lockedNodeIds);
+      LIBSBMLNETWORK_CPP_NAMESPACE::autorender(&m_sbml);// , m_autolayout.maxNumConnectedEdges, m_autolayout.useNameAsTextLabel, true); // , m_autolayout.lockedNodeIds);
       //For some reason, the following line is REQUIRED; otherwise I get linking errors(!) about how 'autolayout' is missing.  WTF?? LS DEBUG
       LIBSBMLNETWORK_CPP_NAMESPACE::getSBMLObject(&m_sbml, "S1");
       if (m_layout.width != 0) {
@@ -2521,12 +2521,11 @@ void Module::CreateSBMLModel(bool comp)
           m_autolayout.lockedNodeIds.insert(m_layout.align_circular.begin(), m_layout.align_circular.end());
           //LIBSBMLNETWORK_CPP_NAMESPACE::autolayout(&m_sbml, m_autolayout.maxNumConnectedEdges, m_autolayout.useNameAsTextLabel, true, m_autolayout.lockedNodeIds);
       }
-      if (m_autolayout.lockedNodeIds.size() > 0) {
-          double S1x = LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(&m_sbml, "S1");
-          LIBSBMLNETWORK_CPP_NAMESPACE::autolayout(&m_sbml, m_autolayout.maxNumConnectedEdges, m_autolayout.useNameAsTextLabel, true, m_autolayout.lockedNodeIds);
-          S1x = LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(&m_sbml, "S1");
-          S1x = S1x;
-      }
+      //double S1x = LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(&m_sbml, "S1");
+      LIBSBMLNETWORK_CPP_NAMESPACE::autolayout(&m_sbml, m_autolayout.maxNumConnectedEdges, m_autolayout.useNameAsTextLabel, true, m_autolayout.lockedNodeIds);
+      //S1x = LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(&m_sbml, "S1");
+      //S1x = S1x;
+
   }
 }
 
