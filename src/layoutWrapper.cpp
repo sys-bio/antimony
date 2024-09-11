@@ -120,14 +120,16 @@ bool LayoutWrapper::SetFormula(Formula* formula, bool isObjective)
     }
     else {
         string formstring = m_valFormula.ToSBMLString();
-        ASTNode* astn = parseStringToASTNode(formstring);
-        double lval = util_NaN();
-        if (astn) {
-            lval = astn->getValue();
+        ASTNode* astn_ptr = parseStringToASTNode(formstring);
+        ASTNode astn;
+        if (astn_ptr) {
+            astn = *astn_ptr;
         }
+        delete astn_ptr;
+        double lval = astn.getValue();
         string strval = "";
-        if (astn && astn->getType() == AST_NAME) {
-            strval = astn->getName();
+        if (astn.getType() == AST_NAME) {
+            strval = astn.getName();
         }
         if (formula->IsOneComponent()) {
             vector<Variable*> varvec = formula->GetVariables();
@@ -143,7 +145,7 @@ bool LayoutWrapper::SetFormula(Formula* formula, bool isObjective)
             case lt_width:
             case lt_fontsize:
             case lt_linewidth:
-                if (astn == NULL || !astn->isNumber()) {
+                if (!astn.isNumber()) {
                     g_registry.SetError("Unable to set the value of '" + GetNameDelimitedBy(".") + "' to '" + formula->ToDelimitedStringWithEllipses(".") + "'.  It may only be set to a numerical value.");
                     return true;
                 }
@@ -364,7 +366,7 @@ bool LayoutWrapper::TransferLayoutInformationTo(SBMLDocument* sbml) const
         }
     }
 
-
+    delete astn;
     return false;
 }
 
@@ -397,6 +399,7 @@ bool LayoutWrapper::TransferLayoutInformationTo(SBMLDocument* sbml, const string
         }
         if (ret1 == -1 || ret2 == -1) {
             g_registry.SetError(error);
+            delete astn;
             return true;
         }
     }
@@ -412,6 +415,7 @@ bool LayoutWrapper::TransferLayoutInformationTo(SBMLDocument* sbml, const string
         case lt_x:
         case lt_y:
             assert(false);
+            delete astn;
             return true;
         case lt_height:
             if (group == "species") {
@@ -697,7 +701,7 @@ bool LayoutWrapper::TransferLayoutInformationTo(SBMLDocument* sbml, const string
         //assert(ret != -1);
     }
 
-
+    delete astn;
     return false;
 }
 

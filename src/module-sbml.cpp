@@ -3510,7 +3510,7 @@ void Module::LoadLayout(Model* sbml)
         map<string, string> default_style = LIBSBMLNETWORK_CPP_NAMESPACE::getPredefinedStyleFeatures("default");
         string style = LIBSBMLNETWORK_CPP_NAMESPACE::getStyle(doc);
         map<string, string> new_style = LIBSBMLNETWORK_CPP_NAMESPACE::getPredefinedStyleFeatures(style);
-        if (style != "default") {
+        if (!style.empty()  && style != "default") {
             m_layout.style = style;
         }
         new_style.insert(default_style.begin(), default_style.end());

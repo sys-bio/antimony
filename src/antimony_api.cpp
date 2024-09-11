@@ -311,7 +311,7 @@ void LoadSBML(SBMLDocument* doc)
         SBMLConverter* converter = new SBMLFunctionDefinitionConverter();
         converter->setDocument(doc);
         int cret = converter->convert();
-
+        delete converter;
     }
 #ifdef USE_COMP
   string mainsbmlname = getNameFromSBMLObject(doc->getModel(), "doc");
