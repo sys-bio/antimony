@@ -267,6 +267,18 @@ Module& Module::operator=(const Module& src)
 
 Module::~Module()
 {
+    for (size_t l = 0; l < m_defaultLayouts.size(); l++) {
+        delete m_defaultLayouts[l];
+    }
+    for (size_t l = 0; l < m_compartmentLayouts.size(); l++) {
+        delete m_compartmentLayouts[l];
+    }
+    for (size_t l = 0; l < m_speciesLayouts.size(); l++) {
+        delete m_speciesLayouts[l];
+    }
+    for (size_t l = 0; l < m_reactionLayouts.size(); l++) {
+        delete m_reactionLayouts[l];
+    }
 }
 
 Variable* Module::AddOrFindVariable(const string* name)
