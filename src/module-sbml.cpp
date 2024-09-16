@@ -1,5 +1,6 @@
 #include "module.h"
 #include "sbml/Model.h"
+#include "libsbmlnetwork_layout_helpers.h"
 #include "libsbmlnetwork_sbmldocument.h"
 #include "libsbmlnetwork_sbmldocument_layout.h"
 #include "libsbmlnetwork_sbmldocument_render.h"
@@ -2526,6 +2527,8 @@ void Module::CreateSBMLModel(bool comp)
       //S1x = LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(&m_sbml, "S1");
       //S1x = S1x;
 
+      LIBSBMLNETWORK_CPP_NAMESPACE::freeUserData(&m_sbml);
+
   }
 }
 
@@ -3499,7 +3502,7 @@ layoutInfo getDefaultReactionLayoutInfo(map<string, string> style, std::vector<L
 void Module::LoadLayout(Model* sbml)
 {
     const LayoutModelPlugin* lplugin = static_cast<const LayoutModelPlugin*>(sbml->getPlugin("layout"));
-    if (lplugin != NULL) {
+    if (lplugin && lplugin->getNumLayouts() > 0) {
         m_autolayout.use = true;
         //Use SBMLNetwork to read stuff instead of reading from the document directly.
         SBMLDocument* doc = sbml->getSBMLDocument();
