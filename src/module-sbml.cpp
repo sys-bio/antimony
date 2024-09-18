@@ -2451,7 +2451,7 @@ void Module::CreateSBMLModel(bool comp)
 
   // Layout/Render!
   if (m_autolayout.use) {
-      LIBSBMLNETWORK_CPP_NAMESPACE::autorender(&m_sbml);// , m_autolayout.maxNumConnectedEdges, m_autolayout.useNameAsTextLabel, true); // , m_autolayout.lockedNodeIds);
+      LIBSBMLNETWORK_CPP_NAMESPACE::autorender(&m_sbml);// , m_autolayout.maxNumConnectedEdges);
       //For some reason, the following line is REQUIRED; otherwise I get linking errors(!) about how 'autolayout' is missing.  WTF?? LS DEBUG
       LIBSBMLNETWORK_CPP_NAMESPACE::getSBMLObject(&m_sbml, "S1");
       if (m_layout.width != 0) {
@@ -2463,9 +2463,6 @@ void Module::CreateSBMLModel(bool comp)
       if (m_layout.style != "") {
           LIBSBMLNETWORK_CPP_NAMESPACE::setStyle(&m_sbml, 0, m_layout.style);
       }
-      //if (m_layout.depth != 0) {
-      //    LIBSBMLNETWORK_CPP_NAMESPACE::setDimensionDepth(m_layout.sbmllayout, m_layout.depth);
-      //}
       if (m_layout.background != "") {
           //The background name has already been validated when set.
           LIBSBMLNETWORK_CPP_NAMESPACE::setBackgroundColor(&m_sbml, m_layout.background);
@@ -2490,37 +2487,30 @@ void Module::CreateSBMLModel(bool comp)
       if (m_layout.align_top.size()) {
           LIBSBMLNETWORK_CPP_NAMESPACE::align(&m_sbml, m_layout.align_top, "top");
           m_autolayout.lockedNodeIds.insert(m_layout.align_top.begin(), m_layout.align_top.end());
-          //LIBSBMLNETWORK_CPP_NAMESPACE::autolayout(&m_sbml, m_autolayout.maxNumConnectedEdges, m_autolayout.useNameAsTextLabel, true, m_autolayout.lockedNodeIds);
       }
       if (m_layout.align_left.size()) {
           LIBSBMLNETWORK_CPP_NAMESPACE::align(&m_sbml, m_layout.align_left, "left");
           m_autolayout.lockedNodeIds.insert(m_layout.align_left.begin(), m_layout.align_left.end());
-          //LIBSBMLNETWORK_CPP_NAMESPACE::autolayout(&m_sbml, m_autolayout.maxNumConnectedEdges, m_autolayout.useNameAsTextLabel, true, m_autolayout.lockedNodeIds);
       }
       if (m_layout.align_hCenter.size()) {
           LIBSBMLNETWORK_CPP_NAMESPACE::align(&m_sbml, m_layout.align_hCenter, "hCenter");
           m_autolayout.lockedNodeIds.insert(m_layout.align_hCenter.begin(), m_layout.align_hCenter.end());
-          //LIBSBMLNETWORK_CPP_NAMESPACE::autolayout(&m_sbml, m_autolayout.maxNumConnectedEdges, m_autolayout.useNameAsTextLabel, true, m_autolayout.lockedNodeIds);
       }
       if (m_layout.align_vCenter.size()) {
           LIBSBMLNETWORK_CPP_NAMESPACE::align(&m_sbml, m_layout.align_vCenter, "vCenter");
           m_autolayout.lockedNodeIds.insert(m_layout.align_vCenter.begin(), m_layout.align_vCenter.end());
-          //LIBSBMLNETWORK_CPP_NAMESPACE::autolayout(&m_sbml, m_autolayout.maxNumConnectedEdges, m_autolayout.useNameAsTextLabel, true, m_autolayout.lockedNodeIds);
       }
       if (m_layout.align_right.size()) {
           LIBSBMLNETWORK_CPP_NAMESPACE::align(&m_sbml, m_layout.align_right, "right");
           m_autolayout.lockedNodeIds.insert(m_layout.align_right.begin(), m_layout.align_right.end());
-          //LIBSBMLNETWORK_CPP_NAMESPACE::autolayout(&m_sbml, m_autolayout.maxNumConnectedEdges, m_autolayout.useNameAsTextLabel, true, m_autolayout.lockedNodeIds);
       }
       if (m_layout.align_bottom.size()) {
           LIBSBMLNETWORK_CPP_NAMESPACE::align(&m_sbml, m_layout.align_bottom, "bottom");
           m_autolayout.lockedNodeIds.insert(m_layout.align_bottom.begin(), m_layout.align_bottom.end());
-          //LIBSBMLNETWORK_CPP_NAMESPACE::autolayout(&m_sbml, m_autolayout.maxNumConnectedEdges, m_autolayout.useNameAsTextLabel, true, m_autolayout.lockedNodeIds);
       }
       if (m_layout.align_circular.size()) {
           LIBSBMLNETWORK_CPP_NAMESPACE::align(&m_sbml, m_layout.align_circular, "circular");
           m_autolayout.lockedNodeIds.insert(m_layout.align_circular.begin(), m_layout.align_circular.end());
-          //LIBSBMLNETWORK_CPP_NAMESPACE::autolayout(&m_sbml, m_autolayout.maxNumConnectedEdges, m_autolayout.useNameAsTextLabel, true, m_autolayout.lockedNodeIds);
       }
       //double S1x = LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(&m_sbml, "S1");
       LIBSBMLNETWORK_CPP_NAMESPACE::autolayout(&m_sbml, m_autolayout.maxNumConnectedEdges, m_autolayout.useNameAsTextLabel, true, m_autolayout.lockedNodeIds);
