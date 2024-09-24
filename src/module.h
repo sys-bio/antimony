@@ -39,17 +39,17 @@ struct autolayout {
     //bool useBoundary = true;
     bool useGrid = false;
     bool useNameAsTextLabel = true;
-    std::set <std::string> lockedNodeIds = std::set<std::string>();
+    //std::set <std::string> lockedNodeIds = std::set<std::string>();
 };
 
 struct layout {
-    std::set <std::string> align_top      = std::set<std::string>();
-    std::set <std::string> align_hCenter  = std::set<std::string>();
-    std::set <std::string> align_bottom   = std::set<std::string>();
-    std::set <std::string> align_left     = std::set<std::string>();
-    std::set <std::string> align_vCenter  = std::set<std::string>();
-    std::set <std::string> align_right    = std::set<std::string>();
-    std::set <std::string> align_circular = std::set<std::string>();
+    std::set <std::pair<std::string, int> > align_top      = std::set <std::pair<std::string, int> >();
+    std::set <std::pair<std::string, int> > align_hCenter  = std::set <std::pair<std::string, int> >();
+    std::set <std::pair<std::string, int> > align_bottom   = std::set <std::pair<std::string, int> >();
+    std::set <std::pair<std::string, int> > align_left     = std::set <std::pair<std::string, int> >();
+    std::set <std::pair<std::string, int> > align_vCenter  = std::set <std::pair<std::string, int> >();
+    std::set <std::pair<std::string, int> > align_right    = std::set <std::pair<std::string, int> >();
+    std::set <std::pair<std::string, int> > align_circular = std::set <std::pair<std::string, int> >();
     double height = 0.0;
     double width  = 0.0;
     //double depth  = 0.0;
@@ -249,8 +249,6 @@ public:
   void AddVarToSyncMap(const Variable* var, std::map<const Variable*, Variable >& syncmap) const;
 
   void setUsedDistrib(bool useddistrib);
-
-  void fixLayoutPositionOf(const std::string& id);
 
 #ifndef NCELLML
   //Reading:

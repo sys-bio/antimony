@@ -1192,9 +1192,9 @@ string Module::GetVariableNameDelimitedBy(string cc) const
   return retval;
 }
 
-vector<string> getIntersection(set<string> set1, set<string> set2)
+vector<pair<string, int> > getIntersection(set<pair<string, int> > set1, set<pair<string, int> > set2)
 {
-    vector<string> overlap;
+    vector<pair<string, int> > overlap;
     for (auto s1 = set1.begin(); s1 != set1.end(); s1++) {
         if (set2.find(*s1) != set2.end()) {
             overlap.push_back(*s1);
@@ -1203,9 +1203,9 @@ vector<string> getIntersection(set<string> set1, set<string> set2)
     return overlap;
 }
 
-bool checkOverlapAndInsert(set<string>& fixed, set<string> check, string label)
+bool checkOverlapAndInsert(set<pair<string, int> >& fixed, set <pair<string, int> > check, string label)
 {
-    vector<string> intersection = getIntersection(fixed, check);
+    vector<pair<string, int> > intersection = getIntersection(fixed, check);
     if (intersection.size() >= 2) {
         string err = "Unable to set the alignment " + label + " because only one element is allowed in an alignment whose position is already known.  In addition, adding an element to an alignment then establishes that element's position, so two such elements cannot be used in another alignment.  In this case, the positions of elements ";
         for (size_t i = 0; i < intersection.size(); i++) {
@@ -1216,7 +1216,7 @@ bool checkOverlapAndInsert(set<string>& fixed, set<string> check, string label)
                 err += "and ";
             }
             err += "'";
-            err += intersection[i];
+            err += intersection[i].first;
             err += "'";
         }
         err += " are already known.";
@@ -1328,7 +1328,7 @@ bool Module::Finalize()
     }
 
     //Now check if the layout align lists are OK, i.e. don't have 2+ already-fixed nodes in them.
-    set<string> combo = m_autolayout.lockedNodeIds;
+    std::set <std::pair<std::string, int> > combo;
     if (checkOverlapAndInsert(combo, m_layout.align_top, "align_top")) {
         return true;
     }
@@ -2949,11 +2949,6 @@ void Module::setUsedDistrib(bool useddistrib)
     m_usedDistributions = useddistrib;
 }
 
-void Module::fixLayoutPositionOf(const std::string& id)
-{
-    m_autolayout.lockedNodeIds.insert(id);
-}
-
 void Module::Convert(Variable* conv, Variable* cf, string modulename)
 {
   Module* origmod = g_registry.GetModule(m_modulename);
@@ -3267,7 +3262,6 @@ bool Module::SetAutoLayout(const std::string* argument, const std::vector<Variab
             string id = (*values)[i]->GetNameDelimitedBy(g_registry.GetCC());
             ids.insert(id);
         }
-        m_autolayout.lockedNodeIds = ids;
         ret = false;
     }
     delete values;
@@ -3456,10 +3450,10 @@ bool Module::SetLayout(const std::string* argument, const std::vector<Variable*>
         return true;
     }
     else if (type == "idlist") {
-        set<string> ids;
+        set<pair<string, int> > ids;
         for (size_t i = 0; i < values->size(); i++) {
             string id = (*values)[i]->GetNameDelimitedBy(g_registry.GetCC());
-            ids.insert(id);
+            ids.insert(make_pair(id, 0));
             //m_autolayout.lockedNodeIds.insert(id);
         }
         if (CaselessStrCmp(true, *argument, "align_top")) {
@@ -3668,15 +3662,26 @@ string Module::ValidateLayoutArgument(const string* argument)
     return "none";
 }
 
-string getSetString(set<string> list)
+string getSetString(set<pair<string, int> > list)
 {
-    string ret = "{";
-    for (auto li = list.begin(); li != list.end(); li++) {
-        ret += " " +  *li + ",";
+    stringstream ret;
+    ret << "{";
+    auto li = list.begin();
+    if (li != list.end()) {
+        ret << " " << li->first;
+        if (li->second != 0) {
+            ret << "." << li->second;
+        }
     }
-    ret[ret.size() - 1] = ' ';
-    ret += "}";
-    return ret;
+    li++;
+    for (; li != list.end(); li++) {
+        ret << ", " <<  li->first;
+        if (li->second != 0) {
+            ret << "." << li->second;
+        }
+    }
+    ret << "}";
+    return ret.str();
 }
 
 string Module::GetAntimonyGeneralLayout(const string& indent) const
