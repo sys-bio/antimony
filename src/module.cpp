@@ -1287,67 +1287,67 @@ bool Module::Finalize()
   }
   //Or if any variable has layout information
   // Also, check to make sure the variable is allowed to have layout/render info.
-    for (size_t var = 0; var < m_variables.size(); var++) {
-        if (m_variables[var]->GetNumLayoutWrappers() > 0) {
-            switch (m_variables[var]->GetType()) {
-            case varReactionUndef:
-            case varReactionGene:
-            case varInteraction:
-            case varSpeciesUndef:
-            case varDNA:
-            case varCompartment:
-            case varStrand:
-                // These are all allowed to have layout information.
-                break;
-            case varFormulaUndef:
-            case varFormulaOperator:
-            case varModule:
-            case varEvent:
-            case varUndefined:
-            case varUnitDefinition:
-            case varDeleted:
-            case varConstraint:
-            case varSboTermWrapper:
-            case varUncertWrapper:
-            case varLayoutWrapper:
-            case varStoichiometry:
-            case varAlgebraicRule:
-            case varLayoutColorEtc:
-                g_registry.SetError("Unable to add layout or render information to " + m_variables[var]->GetNameDelimitedBy(".") + ":  only species, reactions, and compartments can be visualized, and this element is of type '" + VarTypeToString(m_variables[var]->GetType()) + "'.");
-                return true;
-            }
-            m_autolayout.use = true;
-            if (m_variables[var]->HasLayoutPositionInfo()) {
-                m_autolayout.lockedNodeIds.insert(m_variables[var]->GetNameDelimitedBy("_"));
-            }
-        }
-    }
+  std::set <std::pair<std::string, int> > setloc;
+  for (size_t var = 0; var < m_variables.size(); var++) {
+      if (m_variables[var]->GetNumLayoutWrappers() > 0) {
+          switch (m_variables[var]->GetType()) {
+          case varReactionUndef:
+          case varReactionGene:
+          case varInteraction:
+          case varSpeciesUndef:
+          case varDNA:
+          case varCompartment:
+          case varStrand:
+              // These are all allowed to have layout information.
+              break;
+          case varFormulaUndef:
+          case varFormulaOperator:
+          case varModule:
+          case varEvent:
+          case varUndefined:
+          case varUnitDefinition:
+          case varDeleted:
+          case varConstraint:
+          case varSboTermWrapper:
+          case varUncertWrapper:
+          case varLayoutWrapper:
+          case varStoichiometry:
+          case varAlgebraicRule:
+          case varLayoutColorEtc:
+              g_registry.SetError("Unable to add layout or render information to " + m_variables[var]->GetNameDelimitedBy(".") + ":  only species, reactions, and compartments can be visualized, and this element is of type '" + VarTypeToString(m_variables[var]->GetType()) + "'.");
+              return true;
+          }
+          m_autolayout.use = true;
+          if (m_variables[var]->HasLayoutPositionInfo()) {
+              setloc.insert(make_pair(m_variables[var]->GetNameDelimitedBy("_"), 0));
+          }
+      }
+  }
 
     if (m_speciesLayouts.size() || m_compartmentLayouts.size() || m_reactionLayouts.size()) {
         m_autolayout.use = true;
     }
 
     //Now check if the layout align lists are OK, i.e. don't have 2+ already-fixed nodes in them.
-    std::set <std::pair<std::string, int> > combo;
-    if (checkOverlapAndInsert(combo, m_layout.align_top, "align_top")) {
+    if (checkOverlapAndInsert(setloc, m_layout.align_top, "align_top")) {
         return true;
     }
-    if (checkOverlapAndInsert(combo, m_layout.align_hCenter, "align_hCenter")) {
+    if (checkOverlapAndInsert(setloc, m_layout.align_hCenter, "align_hCenter")) {
         return true;
     }
-    if (checkOverlapAndInsert(combo, m_layout.align_bottom, "align_bottom")) {
+    if (checkOverlapAndInsert(setloc, m_layout.align_bottom, "align_bottom")) {
         return true;
     }
-    if (checkOverlapAndInsert(combo, m_layout.align_left, "align_left")) {
+    if (checkOverlapAndInsert(setloc, m_layout.align_left, "align_left")) {
         return true;
     }
-    if (checkOverlapAndInsert(combo, m_layout.align_vCenter, "align_vCenter")) {
+    if (checkOverlapAndInsert(setloc, m_layout.align_vCenter, "align_vCenter")) {
         return true;
     }
-    if (checkOverlapAndInsert(combo, m_layout.align_right, "align_right")) {
+    if (checkOverlapAndInsert(setloc, m_layout.align_right, "align_right")) {
         return true;
     }
-    if (checkOverlapAndInsert(combo, m_layout.align_circular, "align_circular")) {
+    if (checkOverlapAndInsert(setloc, m_layout.align_circular, "align_circular")) {
         return true;
     }
 
