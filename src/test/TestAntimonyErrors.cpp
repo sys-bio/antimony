@@ -359,6 +359,138 @@ START_TEST (uncertval_must_be_single2)
 }
 END_TEST
 
+START_TEST(no_aligning_set_species)
+{
+    testError("species S1, S2, S3; S1.x = 3; S2.x = 5; model.layout.align_top = {S1, S2}", "Error in model string, line 1:  Unable to set the alignment align_top because only one element is allowed in an alignment whose position is already known.  In addition, adding an element to an alignment then establishes that element's position, so two such elements cannot be used in another alignment.  In this case, the positions of elements 'S1', and 'S2' are already known.");
+}
+END_TEST
+
+START_TEST(no_aligning_already_aligned)
+{
+    testError("species S1, S2, S3; model.layout.align_bottom = {S1, S2}; model.layout.align_top = {S1, S2}", "Error in model string, line 1:  Unable to set the alignment align_bottom because only one element is allowed in an alignment whose position is already known.  In addition, adding an element to an alignment then establishes that element's position, so two such elements cannot be used in another alignment.  In this case, the positions of elements 'S1', and 'S2' are already known.");
+}
+END_TEST
+
+START_TEST(no_aligning_alignment_set_mix)
+{
+    testError("species S1, S2, S3; S3.x = 5; model.layout.align_bottom = {S3, S2}; model.layout.align_top = {S1, S2}", "Error in model string, line 1:  Unable to set the alignment align_bottom because only one element is allowed in an alignment whose position is already known.  In addition, adding an element to an alignment then establishes that element's position, so two such elements cannot be used in another alignment.  In this case, the positions of elements 'S2', and 'S3' are already known.");
+}
+END_TEST
+
+START_TEST(no_aligning_alignment_set_mix_more_species)
+{
+    testError("species S1, S2, S3, S4, S5, S6; S3.x = 5; model.layout.align_top = {S1, S2}; model.layout.align_bottom = {S1, S4, S6, S3}; ", "Error in model string, line 1:  Unable to set the alignment align_bottom because only one element is allowed in an alignment whose position is already known.  In addition, adding an element to an alignment then establishes that element's position, so two such elements cannot be used in another alignment.  In this case, the positions of elements 'S1', and 'S3' are already known.");
+}
+END_TEST
+
+START_TEST(no_layout_for_events)
+{
+    testError("E0: at time>3:x=4; E0.color = red", "Error in model string, line 1:  Unable to add layout or render information to E0:  only species, reactions, and compartments can be visualized, and this element is of type 'Event'.");
+}
+END_TEST
+
+START_TEST(pos_must_be_vector)
+{
+    testError("species S1;S1.pos = 5", "Error in model string, line 1:  Unable to set the value of 'S1.position' to be '5':  a layout parameter of type position must be a vector of length two, marked with curly brackets (i.e. '{150, 200}').");
+}
+END_TEST
+
+START_TEST(size_must_be_vector)
+{
+    testError("species S1;S1.size = 5", "Error in model string, line 1:  Unable to set the value of 'S1.size' to be '5':  a layout parameter of type size must be a vector of length two, marked with curly brackets (i.e. '{150, 200}').");
+}
+END_TEST
+
+START_TEST(pos_must_be_len2_vectorA)
+{
+    testError("species S1;S1.pos = {5}", "Error in model string, line 1:  Unable to set the value of 'S1.position' to be '{5}':  a layout parameter of type position must be a vector of length two, marked with curly brackets (i.e. '{150, 200}').");
+}
+END_TEST
+
+START_TEST(pos_must_be_len2_vectorB)
+{
+    testError("species S1;S1.pos = {5, 4, 4}", "Error in model string, line 1:  Unable to set the value of 'S1.position' to be '{5, 4, 4}':  a layout parameter of type position must be a vector of length two, marked with curly brackets (i.e. '{150, 200}').");
+}
+END_TEST
+
+START_TEST(no_unit_in_position)
+{
+    testError("species S1;S1.pos = {5 cm, 4 mm}", "Error in model string, line 1:  Unable to set the value of 'S1.position' to be '{5 cm, 4 mm}':  units may not be used for layout positions.");
+}
+END_TEST
+
+START_TEST(only_nums_in_position)
+{
+    testError("species S1;S1.pos = {5, red}", "Error in model string, line 1:  Unable to set the value of 'S1.position' to be '{5, red}':  a layout parameter of type position must be a vector of length two, and each element of the vector may only be a value (i.e. '{150, 200}').");
+}
+END_TEST
+
+START_TEST(x_only_number)
+{
+    testError("species S1;S1.x = red", "Error in model string, line 1:  Unable to set the value of 'S1.x' to 'red'.  It may only be set to a numerical value.");
+}
+END_TEST
+
+START_TEST(color_not_number)
+{
+    testError("species S1;S1.color = 5", "Error in model string, line 1:  Unable to set the value of 'S1.color'.  '5' is not a valid color value.  Try standard color names like 'red' or 'blue', or use an RGB value of the form \"#000000\" (including the quotation marks).");
+}
+END_TEST
+
+START_TEST(color_not_variable)
+{
+    testError("species S1;S1.color = S2", "Error in model string, line 1:  Unable to set the value of 'S1.color'.  'S2' is not a valid color value.  Try standard color names like 'red' or 'blue', or use an RGB value of the form \"#000000\" (including the quotation marks).");
+}
+END_TEST
+
+START_TEST(fontstyle_not_number)
+{
+    testError("species S1;S1.fontstyle = 43", "Error in model string, line 1:  Unable to set the value of 'S1.fontStyle'.  '43' is not a valid font style.  The valid font styles and weights are 'normal', 'bold', 'italic', and 'bold_italic'.");
+}
+END_TEST
+
+START_TEST(fontstyle_not_variable)
+{
+    testError("species S1;S1.fontstyle = S2", "Error in model string, line 1:  Unable to set the value of 'S1.fontStyle'.  'S2' is not a valid font style.  The valid font styles and weights are 'normal', 'bold', 'italic', and 'bold_italic'.");
+}
+END_TEST
+
+START_TEST(shape_not_number)
+{
+    testError("species S1;S1.shape = 43", "Error in model string, line 1:  Unable to set the value of 'S1.shape'.  '43' is not a valid shape name.  The valid shape names are 'rectangle', 'square', 'ellipse', 'circle', 'triangle', 'diamond', 'pentagon', 'hexagon', and 'octagon'.");
+}
+END_TEST
+
+START_TEST(x_not_vector)
+{
+    testError("species S1;S1.x = {43, 44}", "Error in model string, line 1:  Unable to set the value of 'S1.x' to be '{43, 44}':  this layout parameter must only be a single value or a single variable.");
+}
+END_TEST
+
+START_TEST(layout_not_reactant)
+{
+    testError("S1.x->;", "Error in model string, line 1:  The variable 'S1.x' cannot be used in a reaction or interaction, as it is the wrong type ('Layout or render parameter').");
+}
+END_TEST
+
+START_TEST(layout_not_species)
+{
+    testError("species S1.x", "Error in model string, line 1:  Unable to use the symbol 'S1.x' in any context other than setting its value.");
+}
+END_TEST
+
+START_TEST(no_sync_layout_stuff)
+{
+    testError("species S1, S2; S2 is S1.x", "Error in model string, line 1:  Unable to synchronize two symbols when one of them ('S1.x') is a layout term.");
+}
+END_TEST
+
+START_TEST(no_negative_size)
+{
+    testError("s1->; ;species.size = {-5, 5}", "Error in model string, line 1:  Unable to set the value of 'species.size' to be '{ - 5, 5}':  size may not be negative.");
+}
+END_TEST
+
 /*
 START_TEST (no_replace_ar_with_ia)
 {
@@ -372,6 +504,13 @@ create_suite_Errors (void)
 {
   Suite *suite = suite_create("Antimony Errors");
   TCase *tcase = tcase_create("Antimony Errors");
+
+  tcase_add_test(tcase, layout_not_species);
+  tcase_add_test(tcase, no_sync_layout_stuff);
+  tcase_add_test(tcase, no_negative_size);
+  tcase_add_test(tcase, unknown_file1);
+  tcase_add_test(tcase, unknown_file1);
+  tcase_add_test(tcase, unknown_file1);
 
   tcase_add_test( tcase, unknown_file1);
   tcase_add_test( tcase, unknown_file2);
@@ -413,6 +552,26 @@ create_suite_Errors (void)
   tcase_add_test( tcase, wrong_uncertspan_units);
   tcase_add_test( tcase, uncertval_must_be_single1);
   tcase_add_test( tcase, uncertval_must_be_single2);
+
+  tcase_add_test(tcase, no_aligning_set_species);
+  tcase_add_test(tcase, no_aligning_already_aligned);
+  tcase_add_test(tcase, no_aligning_alignment_set_mix);
+  tcase_add_test(tcase, no_aligning_alignment_set_mix_more_species);
+  tcase_add_test(tcase, no_layout_for_events);
+  tcase_add_test(tcase, pos_must_be_vector);
+  tcase_add_test(tcase, size_must_be_vector);
+  tcase_add_test(tcase, pos_must_be_len2_vectorA);
+  tcase_add_test(tcase, pos_must_be_len2_vectorB);
+  tcase_add_test(tcase, no_unit_in_position);
+  tcase_add_test(tcase, only_nums_in_position);
+  tcase_add_test(tcase, x_only_number);
+  tcase_add_test(tcase, color_not_number);
+  tcase_add_test(tcase, color_not_variable);
+  tcase_add_test(tcase, fontstyle_not_number);
+  tcase_add_test(tcase, fontstyle_not_variable);
+  tcase_add_test(tcase, shape_not_number);
+  tcase_add_test(tcase, x_not_vector);
+  tcase_add_test(tcase, layout_not_reactant);
 
   suite_add_tcase(suite, tcase);
 

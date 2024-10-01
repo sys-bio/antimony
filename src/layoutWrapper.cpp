@@ -97,14 +97,14 @@ bool LayoutWrapper::SetFormula(Formula* formula, bool isObjective)
 #ifndef NSBML
         ASTNode* astn = parseStringToASTNode(formula->ToSBMLString());
         if (!astn || astn->getType() != AST_LINEAR_ALGEBRA_VECTOR || astn->getNumChildren() != 2) {
-            g_registry.SetError("Unable to set the value of '" + GetNameDelimitedBy(".") + "' to be '" + formula->ToDelimitedStringWithEllipses(".") + "':  an layout parameter of type " + LayoutTypeToString(m_layout_type) + " must be a vector of length two, marked with curly brackets (i.e. '{150, 200}').");
+            g_registry.SetError("Unable to set the value of '" + GetNameDelimitedBy(".") + "' to be '" + formula->ToDelimitedStringWithEllipses(".") + "':  a layout parameter of type " + LayoutTypeToString(m_layout_type) + " must be a vector of length two, marked with curly brackets (i.e. '{150, 200}').");
             delete astn;
             return true;
         }
         for (unsigned int c = 0; c < 2; c++) {
             ASTNodeType_t ctype = astn->getChild(c)->getType();
             if (!astn->getChild(c)->isNumber()) {
-                g_registry.SetError("Unable to set the value of '" + GetNameDelimitedBy(".") + "' to be '" + formula->ToDelimitedStringWithEllipses(".") + "':  an layout parameter of type " + LayoutTypeToString(m_layout_type) + " must be a vector of length two, and each element of the vector may only be a value (i.e. '{150, 200}').");
+                g_registry.SetError("Unable to set the value of '" + GetNameDelimitedBy(".") + "' to be '" + formula->ToDelimitedStringWithEllipses(".") + "':  a layout parameter of type " + LayoutTypeToString(m_layout_type) + " must be a vector of length two, and each element of the vector may only be a value (i.e. '{150, 200}').");
                 delete astn;
                 return true;
             }
@@ -114,8 +114,12 @@ bool LayoutWrapper::SetFormula(Formula* formula, bool isObjective)
             delete astn;
             return true;
         }
+        if (m_layout_type == lt_size && (astn->getChild(0)->getValue() < 0 || astn->getChild(1)->getValue() < 0)) {
+            g_registry.SetError("Unable to set the value of '" + GetNameDelimitedBy(".") + "' to be '" + formula->ToDelimitedStringWithEllipses(".") + "':  size may not be negative.");
+            delete astn;
+            return true;
+        }
         delete astn;
-#endif
         return false;
     }
     else {
@@ -189,6 +193,7 @@ bool LayoutWrapper::SetFormula(Formula* formula, bool isObjective)
         g_registry.SetError("Unable to set the value of '" + GetNameDelimitedBy(".") + "' to be '" + formula->ToDelimitedStringWithEllipses(".") + "':  this layout parameter must only be a single value or a single variable.");
         return true;
     }
+#endif
     return false;
 }
 
@@ -228,7 +233,7 @@ string LayoutWrapper::GetNameDelimitedBy(string cc) const
 
 bool LayoutWrapper::Synchronize(Variable* clone, const Variable* conversionFactor)
 {
-    g_registry.SetError("Unable to synchronize two symbols when one of them ('" + GetNameDelimitedBy(".") + "') is an layout term.");
+    g_registry.SetError("Unable to synchronize two symbols when one of them ('" + GetNameDelimitedBy(".") + "') is a layout term.");
     return true;
 }
 
@@ -386,7 +391,6 @@ bool LayoutWrapper::TransferLayoutInformationTo(SBMLDocument* sbml, const string
         assert(m_layout_type == lt_size);
         if (group == "species") {
             ret1 = LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesDimensionWidth(sbml, 0, xval);
-            //double S1width = LIBSBMLNETWORK_CPP_NAMESPACE::getDimensionWidth(sbml, "S1");
             ret2 = LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesDimensionHeight(sbml, 0, yval);
         }
         else if (group == "compartment") {

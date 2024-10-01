@@ -3202,6 +3202,7 @@ bool Module::SetAutoLayout(const std::string* argument, const std::string* value
     }
     else if (CaselessStrCmp(true, *argument, "useNameAsTextLabel")) {
         m_autolayout.useNameAsTextLabel = arg;
+        m_autolayout.use = true;
     }
     return false;
 }
@@ -3238,6 +3239,7 @@ bool Module::SetAutoLayout(const string* argument, const double& value)
     //}
     else if (CaselessStrCmp(true, *argument, "maxNumConnectedEdges")) {
         m_autolayout.maxNumConnectedEdges = int(round(value));
+        m_autolayout.use = true;
     }
     return false;
 }
