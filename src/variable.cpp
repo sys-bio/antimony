@@ -526,7 +526,20 @@ Variable* Variable::GetSubVariable(const string* name)
   if (name && ltype != lt_unknown) {
       return AddOrGetLayoutWrapper(ltype);
   }
+  if (IsReaction(m_type)) {
+      Module* mod = g_registry.GetModule(m_module);
+      Variable* var = mod->GetSubVariable(name);
+      if (var != NULL && var->GetType() == varSpeciesUndef) {
+          return GetReactionArcLayoutWrapper(name);
+      }
+  }
   return NULL;
+}
+
+Variable* Variable::GetSubVariable(double val)
+{
+    //Only LayoutWrapper IDs have numeric subvariables.
+    return NULL;
 }
 
 Variable* Variable::GetSameVariable()
@@ -2397,11 +2410,20 @@ UncertWrapper * Variable::AddOrGetUncertWrapper(uncert_type type)
 LayoutWrapper* Variable::AddOrGetLayoutWrapper(layout_type type)
 {
     for (size_t uw = 0; uw < m_layoutWrappers.size(); uw++) {
-        if (m_layoutWrappers[uw]->GetLayoutType() == type) {
+        //A single variable can have multiple reaction arcs, but only one of everything else.
+        if (type != lt_reactionArc && m_layoutWrappers[uw]->GetLayoutType() == type) {
             return m_layoutWrappers[uw];
         }
     }
     LayoutWrapper* layoutWrapper = new LayoutWrapper(this, type);
+    m_layoutWrappers.push_back(layoutWrapper);
+    return layoutWrapper;
+}
+
+LayoutWrapper* Variable::GetReactionArcLayoutWrapper(const string* name)
+{
+    LayoutWrapper* layoutWrapper = new LayoutWrapper(this, lt_reactionArc);
+    layoutWrapper->setSpeciesId(name);
     m_layoutWrappers.push_back(layoutWrapper);
     return layoutWrapper;
 }

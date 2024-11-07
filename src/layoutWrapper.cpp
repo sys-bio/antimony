@@ -3,14 +3,15 @@
 #include "registry.h"
 #include "stringx.h"
 #include "regex"
+#include "reaction.h"
 #ifdef LIBSBML_HAS_PACKAGE_DISTRIB
 #include <sbml/packages/layout/sbml/Layout.h>
 #include <sbml/packages/layout/extension/LayoutModelPlugin.h>
 #endif
-#include <libsbmlnetwork_sbmldocument.h>
-#include <libsbmlnetwork_sbmldocument_layout.h>
-#include <libsbmlnetwork_sbmldocument_render.h>
-#include <libsbmlnetwork_render_helpers.h>
+#include <sbmlnetwork/libsbmlnetwork_sbmldocument.h>
+#include <sbmlnetwork/libsbmlnetwork_sbmldocument_layout.h>
+#include <sbmlnetwork/libsbmlnetwork_sbmldocument_render.h>
+#include <sbmlnetwork/libsbmlnetwork_render_helpers.h>
 
 using namespace std;
 using namespace libsbml;
@@ -19,6 +20,9 @@ LayoutWrapper::LayoutWrapper(Variable* parent, layout_type type)
     : Variable()
     , m_parent(parent)
     , m_layout_type(type)
+    , m_speciesId("")
+    , m_speciesIndex(-1)
+    , m_arctype(at_none)
 {
     m_module = parent->GetNamespace();
     m_displayname = "";
@@ -37,6 +41,9 @@ LayoutWrapper::LayoutWrapper(layout_type type, const string& group)
     : Variable()
     , m_parent(NULL)
     , m_layout_type(type)
+    , m_speciesId("")
+    , m_speciesIndex(-1)
+    , m_arctype(at_none)
 {
     m_displayname = "";
     m_formulatype = formulaINITIAL;
@@ -224,7 +231,18 @@ Variable* LayoutWrapper::GetParent()
 string LayoutWrapper::GetNameDelimitedBy(string cc) const
 {
     if (m_parent) {
-        return m_parent->GetNameDelimitedBy(cc) + cc + LayoutTypeToString(m_layout_type);
+        if (m_layout_type == lt_reactionArc) {
+            stringstream ret;
+            ret << m_parent->GetNameDelimitedBy(cc) << cc << m_speciesId;
+            if (m_speciesIndex > 0) {
+                ret << cc << m_speciesIndex;
+            }
+            ret << cc << ArcTypeToString(m_arctype);
+            return ret.str();
+        }
+        else {
+            return m_parent->GetNameDelimitedBy(cc) + cc + LayoutTypeToString(m_layout_type);
+        }
     }
     else {
         return Variable::GetNameDelimitedBy(cc);
@@ -242,7 +260,7 @@ string LayoutWrapper::CreateLayoutParamsAntimonySyntax(const string& indent) con
     string ret = "";
     if (!m_valFormula.IsEmpty()) {
         string strval = m_valFormula.ToDelimitedStringWithEllipses(".");
-        if (strval[0] == '#' || (strval.find('-') != string::npos) || (strval.find(' ') != string::npos)) {
+        if (strval[0] == '#' || (strval[0] != '{' && ((strval.find('-') != string::npos) || (strval.find(' ') != string::npos)))) {
             strval = '"' + strval + '"';
         }
         ret = indent + GetNameDelimitedBy(".") + " = " + strval + "\n";
@@ -287,6 +305,98 @@ bool LayoutWrapper::TransferLayoutInformationTo(SBMLDocument* sbml) const
                 ret2 = LIBSBMLNETWORK_CPP_NAMESPACE::setDimensionHeight(sbml, sid, yval, false);
             }
             break;
+        case lt_reactionArc:
+        {
+            bool reactant = true;
+            int curveIndex = 0;
+            int speciesIndex = -1;
+            AntimonyReaction* rxn = m_parent->GetReaction();
+            ReactantList* rlist = rxn->GetLeft();
+            for (size_t i = 0; i < rlist->Size(); i++) {
+                const Variable* element = rlist->GetNthReactant(i);
+                double stoich = rlist->GetStoichiometryFor(i);
+                if (element->GetNameDelimitedBy(".") == m_speciesId) {
+                    speciesIndex = curveIndex;
+                    if (m_speciesIndex > 0) {
+                        speciesIndex += m_speciesIndex;
+                    }
+                    break;
+                }
+                curveIndex += int(floor(stoich)) - 1;
+            }
+            rlist = rxn->GetRight();
+            for (size_t i = 0; i < rlist->Size(); i++) {
+                const Variable* element = rlist->GetNthReactant(i);
+                double stoich = rlist->GetStoichiometryFor(i);
+                if (element->GetNameDelimitedBy(".") == m_speciesId) {
+                    speciesIndex = curveIndex;
+                    if (m_speciesIndex > 0) {
+                        speciesIndex += m_speciesIndex;
+                    }
+                    break;
+                }
+                curveIndex += int(floor(stoich)) - 1;
+            }
+            assert(speciesIndex != -1);
+            string role = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceRole(sbml, sid, 0, speciesIndex);
+            switch (m_arctype) {
+            case at_spec:
+                if (startsAtReaction(role)) {
+                    if (!isnan(xval)) {
+                        LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentStartPointX(sbml, sid, speciesIndex, 0, xval);
+                    }
+                    if (!isnan(yval)) {
+                        LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentStartPointY(sbml, sid, speciesIndex, 0, yval);
+                    }
+                }
+                else {
+                    assert(!startsAtReaction(role));
+                    if (!isnan(xval)) {
+                        LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentEndPointX(sbml, sid, speciesIndex, 0, xval);
+                    }
+                    if (!isnan(yval)) {
+                        LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentEndPointY(sbml, sid, speciesIndex, 0, yval);
+                    }
+                }
+                break;
+            case at_rxn:
+                if (startsAtReaction(role)) {
+                    if (!isnan(xval)) {
+                        LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentEndPointX(sbml, sid, speciesIndex, 0, xval);
+                    }
+                    if (!isnan(yval)) {
+                        LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentEndPointY(sbml, sid, speciesIndex, 0, yval);
+                    }
+                }
+                else {
+                    assert(!startsAtReaction(role));
+                    if (!isnan(xval)) {
+                        LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentStartPointX(sbml, sid, speciesIndex, 0, xval);
+                    }
+                    if (!isnan(yval)) {
+                        LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentStartPointY(sbml, sid, speciesIndex, 0, yval);
+                    }
+                }
+                break;
+            case at_b1:
+                if (!isnan(xval)) {
+                    LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentBasePoint1X(sbml, sid, speciesIndex, 0, xval);
+                }
+                if (!isnan(yval)) {
+                    LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentBasePoint1Y(sbml, sid, speciesIndex, 0, yval);
+                }
+                break;
+            case at_b2:
+                if (!isnan(xval)) {
+                    LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentBasePoint2X(sbml, sid, speciesIndex, 0, xval);
+                }
+                if (!isnan(yval)) {
+                    LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentBasePoint2Y(sbml, sid, speciesIndex, 0, yval);
+                }
+                break;
+            }
+            break;
+        }
         default:
             assert(false); //Only the above two are 'IsPair' true
             break;
@@ -715,6 +825,7 @@ bool LayoutWrapper::HasLayoutPositionInfo() const
     case lt_position:
     case lt_x:
     case lt_y:
+    case lt_reactionArc:
         return true;
     case lt_size:
     case lt_height:
@@ -733,4 +844,75 @@ bool LayoutWrapper::HasLayoutPositionInfo() const
     }
     assert(false);
     return false;
+}
+
+bool LayoutWrapper::setSpeciesId(const std::string* name)
+{
+    if (name) {
+        m_speciesId = *name;
+        return false;
+    }
+    return true;
+}
+
+void LayoutWrapper::setSpeciesIndex(int index)
+{
+    m_speciesIndex = index;
+}
+
+bool LayoutWrapper::setArcType(const std::string* type)
+{
+    if (CaselessStrCmp(true, *type, "pos")) {
+        m_arctype = at_spec;
+        return false;
+    }
+    if (CaselessStrCmp(true, *type, "position")) {
+        m_arctype = at_spec;
+        return false;
+    }
+    if (CaselessStrCmp(true, *type, "b1")) {
+        m_arctype = at_b1;
+        return false;
+    }
+    if (CaselessStrCmp(true, *type, "b2")) {
+        m_arctype = at_b2;
+        return false;
+    }
+    if (CaselessStrCmp(true, *type, "rxn")) {
+        m_arctype = at_rxn;
+        return false;
+    }
+
+    return true;
+}
+
+bool LayoutWrapper::setArcType(arc_type type)
+{
+    m_arctype = type;
+    return false;
+}
+
+Variable* LayoutWrapper::GetSubVariable(const std::string* name)
+{
+    if (m_layout_type != lt_reactionArc) {
+        //No subvariables of any other layout wrapper type.
+        return NULL;
+    }
+    if (setArcType(name)) {
+        return NULL;
+    }
+    return this;
+}
+
+Variable* LayoutWrapper::GetSubVariable(double val)
+{
+    if (m_speciesIndex != -1) {
+        return NULL;
+    }
+    if (val < 0) {
+        return NULL;
+    }
+    m_speciesIndex = round(val);
+
+    return this;
 }

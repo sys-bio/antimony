@@ -41,6 +41,7 @@ public:
   void AddEllipses();
   void AddParentheses();
   void AddCurlyBrackets();
+  void AddVectorOfTwoValues(double x, double y);
   void AddConversionFactor(const Variable* cf);
   void AddInvTimeConversionFactor(const Variable* tcf);
 

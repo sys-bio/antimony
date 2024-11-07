@@ -350,6 +350,7 @@ bool IsPair(const layout_type ltype)
         return false;
     case lt_position:
     case lt_size:
+    case lt_reactionArc:
         return true;
     }
     assert(false);
@@ -632,6 +633,8 @@ string LayoutTypeToString(const layout_type ltype)
         return "lineColor";
     case lt_shape:
         return "shape";
+    case lt_reactionArc:
+        return "reaction arc";
     case lt_unknown:
         return "unknown";
     }
@@ -699,6 +702,7 @@ layout_type LayoutStringToType(const string& ltype)
     if (CaselessStrCmp(true, ltype, "shape")) {
         return lt_shape;
     }
+    //NOTE:  no way to convert any string to 'reaction arc'; that's defined by RXNID.SPECID
     return lt_unknown;
 }
 
@@ -804,3 +808,22 @@ uncert_type SBMLToUncertType(const UncertType_t utype)
   return unUnknown;
 }
 #endif
+
+string ArcTypeToString(const arc_type type)
+{
+    switch (type) {
+    case at_spec:
+        return "position";
+    case at_rxn:
+        return "rxn";
+    case at_b1:
+        return "b1";
+    case at_b2:
+        return "b2";
+    case at_none:
+        return "position";
+    }
+    assert(false); //uncaught type
+    return "unknown_type";
+}
+

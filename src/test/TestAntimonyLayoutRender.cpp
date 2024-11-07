@@ -8,10 +8,10 @@
 #include "antimony_api.h"
 #include "registry.h"
 #include <sbml/SBMLTypes.h>
-#include "libsbmlnetwork_layout_helpers.h"
-#include "libsbmlnetwork_sbmldocument.h"
-#include "libsbmlnetwork_sbmldocument_layout.h"
-#include "libsbmlnetwork_sbmldocument_render.h"
+#include "sbmlnetwork/libsbmlnetwork_layout_helpers.h"
+#include "sbmlnetwork/libsbmlnetwork_sbmldocument.h"
+#include "sbmlnetwork/libsbmlnetwork_sbmldocument_layout.h"
+#include "sbmlnetwork/libsbmlnetwork_sbmldocument_render.h"
 
 
 #include <string>

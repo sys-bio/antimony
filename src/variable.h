@@ -126,7 +126,8 @@ public:
   AntimonyConstraint* GetConstraint();
   const AntimonyConstraint* GetConstraint() const;
 
-  Variable* GetSubVariable(const std::string* name);
+  virtual Variable* GetSubVariable(const std::string* name);
+  virtual Variable* GetSubVariable(double val);
   virtual Variable* GetSameVariable();
   virtual const Variable* GetSameVariable() const;
   const DNAStrand* GetDNAStrand() const;
@@ -219,6 +220,8 @@ public:
   Variable* GetParentVariable();
   UncertWrapper* AddOrGetUncertWrapper(uncert_type type);
   LayoutWrapper* AddOrGetLayoutWrapper(layout_type type);
+
+  LayoutWrapper* GetReactionArcLayoutWrapper(const std::string* name);
 
   bool IsReplacedFormRxn() const;
   virtual std::string CreateSBOTermsAntimonySyntax(const std::string& elt_id, const std::string& indent, std::string sboStr) const;

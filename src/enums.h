@@ -229,7 +229,16 @@ enum layout_type {
     lt_linewidth,
     lt_linecolor,
     lt_shape,
+    lt_reactionArc,
     lt_unknown
+};
+
+enum arc_type {
+    at_rxn = 0,
+    at_spec,
+    at_b1,
+    at_b2,
+    at_none
 };
 
 #endif // ENUMS_H

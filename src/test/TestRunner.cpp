@@ -51,7 +51,7 @@ Suite *create_suite_Hierarchy(void);
 Suite *create_suite_Flattening(void);
 Suite *create_suite_Distrib(void);
 Suite *create_suite_FBC(void);
-Suite* create_suite_LayoutRender(void);
+Suite *create_suite_LayoutRender(void);
 Suite *create_suite_Constraints(void);
 Suite *create_suite_CVTerms(void);
 Suite *create_suite_SBO(void);

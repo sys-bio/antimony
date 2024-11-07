@@ -1,11 +1,13 @@
 #include "module.h"
 #include "sbml/Model.h"
-#include "libsbmlnetwork_layout_helpers.h"
-#include "libsbmlnetwork_sbmldocument.h"
-#include "libsbmlnetwork_sbmldocument_layout.h"
-#include "libsbmlnetwork_sbmldocument_render.h"
-#include "colors/libsbmlnetwork_colors.h"
-#include "styles/libsbmlnetwork_styles.h"
+#include <sbmlnetwork/libsbmlnetwork_sbmldocument.h>
+#include <sbmlnetwork/libsbmlnetwork_sbmldocument_helpers.h>
+#include <sbmlnetwork/libsbmlnetwork_sbmldocument_layout.h>
+#include <sbmlnetwork/libsbmlnetwork_sbmldocument_render.h>
+#include <sbmlnetwork/libsbmlnetwork_render_helpers.h>
+#include <sbmlnetwork/libsbmlnetwork_layout_helpers.h>
+#include "sbmlnetwork/colors/libsbmlnetwork_colors.h"
+#include "sbmlnetwork/styles/libsbmlnetwork_styles.h"
 #include "sbml/packages/layout/extension/LayoutModelPlugin.h"
 
 using namespace libsbml;
@@ -3517,7 +3519,6 @@ void Module::LoadLayout(Model* sbml)
             m_layout.background = background;
         }
 
-        //LS DEBUG:  Figure out how to get the style, and to get the general defaults
         map<var_type, layoutInfo> defaults;
         defaults[varSpeciesUndef] = getDefaultSpeciesLayoutInfo(new_style, m_speciesLayouts, doc);
         defaults[varReactionUndef] = getDefaultReactionLayoutInfo(new_style, m_reactionLayouts, doc);
@@ -3669,20 +3670,93 @@ void Module::LoadLayout(Model* sbml)
                 form.Clear();
             }
 
+            if (IsReaction(type)) {
+                unsigned int nSpecRefs = LIBSBMLNETWORK_CPP_NAMESPACE::getNumSpeciesReferences(doc, varid, 0);
+                double rxnX = LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(doc, varid);
+                double rxnY = LIBSBMLNETWORK_CPP_NAMESPACE::getPositionY(doc, varid);
+                set<string> involvedSpecies;
+                for (unsigned int sr = 1; sr < nSpecRefs; sr++) {
+                    //string sr_id = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReference(doc, varid, 0, specRef);
+                    SpeciesReferenceGlyph* srg = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReference(doc, varid, 0, sr);
+                    string sr_id = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceGlyphSpeciesId(const_cast<Layout*>(lplugin->getLayout(0)), srg);
+                    if (involvedSpecies.find(sr_id) != involvedSpecies.end()) {
+                        continue;
+                    }
+                    involvedSpecies.insert(sr_id);
+                    int nrefs = LIBSBMLNETWORK_CPP_NAMESPACE::getNumSpeciesReferencesAssociatedWithSpecies(doc, sr_id, varid);
+                    for (int ref = 0; ref < nrefs; ref++) {
+                        int sr_index = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceIndexAssociatedWithSpecies(doc, sr_id, varid, 0, ref);
+                        string role = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceRole(doc, varid, 0, sr_index);
 
+                        //Start
+                        double x = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointX(doc, varid, 0, sr_index, 0);
+                        double y = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointY(doc, varid, 0, sr_index, 0);
+                        if (!(isnan(x) || isnan(y))) {
+                            if (x != rxnX && y != rxnY) {
+                                LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_reactionArc);
+                                form.AddVectorOfTwoValues(x, y);
+                                lw->SetFormula(&form);
+                                form.Clear();
+                                lw->setSpeciesId(&sr_id);
+                                if (startsAtReaction(role)) {
+                                    lw->setArcType(at_rxn);
+                                }
+                                else {
+                                    lw->setArcType(at_spec);
+                                }
 
+                                lw->setSpeciesIndex(sr_index);
+                            }
+                        }
 
-            //S1.size = { 55, 66 }      # The size(width, height) of S1.
-            //    S1.width = 55           # (alt for size).The width of S1.
-            //    S1.height = 66          # (alt for size).The height of S1.
-            //    S1.color = magenta      # (or 'fillcolor')  The fill color for S1
-            //    S1.linecolor = yellow   # (or 'strokecolor')  The line color for S1
-            //    S1.linewidth = 18       # (or 'strokewidth')  The linewidth for S1
-            //    S1.fontcolor = gray     # The font color for S1
-            //    S1.font = serif         # The font for S1(predefined options are 'serif' (default), 'sans_serif', and 'monospace', but arbitrary font names are also legal.)
-            //    S1.fontsize = 19        # The font size for S1(default 10)
-            //    S1.fontstyle = bold     # (or 'fontweight')  The font style for S1(options are 'normal' (default), 'bold', 'italic', and 'bold_italic').
-            //    S1.shape = ellipse      # The shape for S1(options are 'rectangle' (default), 'square', 'ellipse', 'circle', 'triangle', 'diamond', 'pentagon', 'hexagon', and 'octagon').
+                        //End
+                        x = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointX(doc, varid, 0, sr_index, 0);
+                        y = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointY(doc, varid, 0, sr_index, 0);
+                        if (!(isnan(x) || isnan(y))) {
+                            if (x != rxnX && y != rxnY) {
+                                LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_reactionArc);
+                                form.AddVectorOfTwoValues(x, y);
+                                lw->SetFormula(&form);
+                                form.Clear();
+                                lw->setSpeciesId(&sr_id);
+                                if (startsAtReaction(role)) {
+                                    lw->setArcType(at_spec);
+                                }
+                                else {
+                                    lw->setArcType(at_rxn);
+                                }
+                                lw->setSpeciesIndex(sr_index);
+                            }
+                        }
+
+                        //Base point 1
+                        x = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1X(doc, varid, 0, sr_index, 0);
+                        y = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1Y(doc, varid, 0, sr_index, 0);
+                        if (!(isnan(x) || isnan(y))) {
+                            LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_reactionArc);
+                            form.AddVectorOfTwoValues(x, y);
+                            lw->SetFormula(&form);
+                            form.Clear();
+                            lw->setSpeciesId(&sr_id);
+                            lw->setArcType(at_b1);
+                            lw->setSpeciesIndex(sr_index);
+                        }
+
+                        //Base point 2
+                        x = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint2X(doc, varid, 0, sr_index, 0);
+                        y = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint2Y(doc, varid, 0, sr_index, 0);
+                        if (!(isnan(x) || isnan(y))) {
+                            LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_reactionArc);
+                            form.AddVectorOfTwoValues(x, y);
+                            lw->SetFormula(&form);
+                            form.Clear();
+                            lw->setSpeciesId(&sr_id);
+                            lw->setArcType(at_b2);
+                            lw->setSpeciesIndex(sr_index);
+                        }
+                    }
+                }
+            }
         }
     }
 }

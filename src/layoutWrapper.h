@@ -11,6 +11,9 @@ class LayoutWrapper : public Variable
 protected:
   Variable* m_parent;
   layout_type m_layout_type;
+  std::string m_speciesId;
+  int m_speciesIndex;
+  arc_type m_arctype;
 public:
   LayoutWrapper(Variable* parent, layout_type type);
   LayoutWrapper(layout_type type, const std::string& group);
@@ -28,8 +31,14 @@ public:
   virtual bool Synchronize(Variable* clone, const Variable* conversionFactor);
   virtual std::string CreateLayoutParamsAntimonySyntax(const std::string& indent) const;
   virtual bool TransferLayoutInformationTo(libsbml::SBMLDocument* sbml) const;
-  bool TransferLayoutInformationTo(libsbml::SBMLDocument* sbml, const std::string& group) const;
+  virtual bool TransferLayoutInformationTo(libsbml::SBMLDocument* sbml, const std::string& group) const;
   virtual bool HasLayoutPositionInfo() const;
+  virtual bool setSpeciesId(const std::string* name);
+  virtual void setSpeciesIndex(int index);
+  virtual bool setArcType(const std::string* type);
+  virtual bool setArcType(arc_type type);
+  virtual Variable* GetSubVariable(const std::string* name);
+  virtual Variable* GetSubVariable(double val);
 };
 
 

@@ -6,8 +6,8 @@
 #include "formula.h"
 #include "registry.h"
 #include "typex.h"
-#include <libsbmlnetwork_render_helpers.h>
-#include "colors/libsbmlnetwork_colors.h"
+#include <sbmlnetwork/libsbmlnetwork_render_helpers.h>
+#include <sbmlnetwork/colors/libsbmlnetwork_colors.h>
 
 using namespace std;
 using namespace libsbml;
@@ -17,7 +17,7 @@ extern bool CaselessStrCmp(bool caseless, const string& lhs, const string& rhs);
 #ifndef NSBML
 #include "sbmlx.h"
 #include "sbml/math/FormulaFormatter.h"
-#include "libsbmlnetwork_sbmldocument.h"
+#include "sbmlnetwork/libsbmlnetwork_sbmldocument.h"
 #if LIBSBML_VERSION >= 50900
 #include "sbml/math/L3FormulaFormatter.h"
 #endif
@@ -815,6 +815,18 @@ bool isValidColorValue(string formstring)
             return false;
         }
     }
+    return true;
+}
+
+bool startsAtReaction(std::string role)
+{
+    if (role == "substrate" || role == "sidesubstrate" || role == "product" || role == "sideproduct" || role == "undefined") {
+        return true;
+    }
+    else if (role == "modifier" || role == "activator" || role == "inhibitor") {
+        return false;
+    }
+    assert(false); //All roles should be accounted for above
     return true;
 }
 

@@ -27,7 +27,7 @@
 #include "sbml/packages/distrib/common/DistribExtensionTypes.h"
 #endif
 
-#include "libsbmlnetwork_render_helpers.h"
+#include "sbmlnetwork/libsbmlnetwork_render_helpers.h"
 
 extern Registry g_registry;
 

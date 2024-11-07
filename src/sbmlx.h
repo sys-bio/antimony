@@ -52,5 +52,6 @@ bool FluxesMatch(const libsbml::FluxBound* fb1, const libsbml::FluxBound* fb2);
 #endif
 
 bool isValidColorValue(std::string formstring);
+bool startsAtReaction(std::string role);
 
 #endif

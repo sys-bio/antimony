@@ -32,6 +32,7 @@ bool isValidFontStyle(const std::string& ftype);
 #ifdef LIBSBML_HAS_PACKAGE_DISTRIB
 libsbml::UncertType_t UncertTypeToSBML(const uncert_type utype);
 uncert_type SBMLToUncertType(const libsbml::UncertType_t utype);
+std::string ArcTypeToString(const arc_type type);
 #endif
 
 #endif

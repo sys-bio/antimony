@@ -167,6 +167,14 @@ void Formula::AddCurlyBrackets()
   m_components.push_back(newvar);
 }
 
+void Formula::AddVectorOfTwoValues(double x, double y)
+{
+    AddNum(x);
+    AddMathThing(',');
+    AddNum(y);
+    AddCurlyBrackets();
+}
+
 void Formula::AddConversionFactor(const Variable* cf)
 {
   if (IsEmpty()) return;
