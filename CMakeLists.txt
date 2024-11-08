@@ -349,7 +349,7 @@ if(WITH_SBML)
     set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${SBMLNETWORK_LIBRARY} )
 
     find_path(SBMLNETWORK_INCLUDE_DIR
-        NAMES libsbmlnetwork_common.h
+        NAMES sbmlnetwork/libsbmlnetwork_common.h
         PATHS /usr/include /usr/local/include  ${LIBSBML_INSTALL_DIR}/include
         DOC "The directory containing the SBMLNetwork include files."
               )
