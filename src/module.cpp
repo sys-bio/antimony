@@ -3529,6 +3529,7 @@ LayoutWrapper* CreateAndCheckLayoutWrapper(const std::string* type, Formula* for
     case lt_x:
     case lt_y:
     case lt_position:
+    case lt_reactionArc:
         g_registry.SetError("Unable to set " + group + "." + *type + ": the position of each " + group + " is unique, so cannot collectively have a single position.");
         return NULL;
     case lt_unknown:
@@ -3633,6 +3634,7 @@ string Module::ValidateLayoutArgument(const string* argument)
     case lt_position:
     case lt_x:
     case lt_y:
+    case lt_reactionArc:
         g_registry.SetError("Cannot set 'layout." + *argument + "': every element has a different location, so it cannot be set for everything at once.");
         return "none";
     case lt_size:
