@@ -529,8 +529,10 @@ Variable* Variable::GetSubVariable(const string* name)
   if (IsReaction(m_type)) {
       Module* mod = g_registry.GetModule(m_module);
       Variable* var = mod->GetSubVariable(name);
-      if (var != NULL && var->GetType() == varSpeciesUndef) {
-          return GetReactionArcLayoutWrapper(name);
+      if (var != NULL && IsSpecies(var->GetType())) {
+          LayoutWrapper* lw = GetReactionArcLayoutWrapper(name);
+          lw->setSpeciesIndex(0);
+          return lw;
       }
   }
   return NULL;
