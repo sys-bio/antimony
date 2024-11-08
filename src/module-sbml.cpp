@@ -3675,10 +3675,8 @@ void Module::LoadLayout(Model* sbml)
                 double rxnX = LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(doc, varid);
                 double rxnY = LIBSBMLNETWORK_CPP_NAMESPACE::getPositionY(doc, varid);
                 set<string> involvedSpecies;
-                for (unsigned int sr = 1; sr < nSpecRefs; sr++) {
-                    //string sr_id = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReference(doc, varid, 0, specRef);
-                    SpeciesReferenceGlyph* srg = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReference(doc, varid, 0, sr);
-                    string sr_id = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceGlyphSpeciesId(const_cast<Layout*>(lplugin->getLayout(0)), srg);
+                for (unsigned int sr = 0; sr < nSpecRefs; sr++) {
+                    string sr_id = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceSpeciesId(doc, 0, varid, 0, sr);
                     if (involvedSpecies.find(sr_id) != involvedSpecies.end()) {
                         continue;
                     }
@@ -3705,7 +3703,7 @@ void Module::LoadLayout(Model* sbml)
                                     lw->setArcType(at_spec);
                                 }
 
-                                lw->setSpeciesIndex(sr_index);
+                                lw->setSpeciesIndex(ref);
                             }
                         }
 
@@ -3725,7 +3723,7 @@ void Module::LoadLayout(Model* sbml)
                                 else {
                                     lw->setArcType(at_rxn);
                                 }
-                                lw->setSpeciesIndex(sr_index);
+                                lw->setSpeciesIndex(ref);
                             }
                         }
 
@@ -3739,7 +3737,7 @@ void Module::LoadLayout(Model* sbml)
                             form.Clear();
                             lw->setSpeciesId(&sr_id);
                             lw->setArcType(at_b1);
-                            lw->setSpeciesIndex(sr_index);
+                            lw->setSpeciesIndex(ref);
                         }
 
                         //Base point 2
@@ -3752,7 +3750,7 @@ void Module::LoadLayout(Model* sbml)
                             form.Clear();
                             lw->setSpeciesId(&sr_id);
                             lw->setArcType(at_b2);
-                            lw->setSpeciesIndex(sr_index);
+                            lw->setSpeciesIndex(ref);
                         }
                     }
                 }
