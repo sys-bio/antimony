@@ -4,6 +4,8 @@
 #include "stringx.h"
 #include "regex"
 #include "reaction.h"
+#include <iostream>
+#include <string>
 #ifdef LIBSBML_HAS_PACKAGE_DISTRIB
 #include <sbml/packages/layout/sbml/Layout.h>
 #include <sbml/packages/layout/extension/LayoutModelPlugin.h>
@@ -190,6 +192,7 @@ bool LayoutWrapper::SetFormula(Formula* formula, bool isObjective)
                 return false;
             case lt_position:
             case lt_size:
+            case lt_reactionArc:
                 assert(false); //Should be pairs
                 break;
             case lt_unknown:
@@ -235,7 +238,7 @@ string LayoutWrapper::GetNameDelimitedBy(string cc) const
             stringstream ret;
             ret << m_parent->GetNameDelimitedBy(cc) << cc << m_speciesId;
             if (m_speciesIndex > 0) {
-                ret << cc << m_speciesIndex;
+                ret << cc << "arc" << m_speciesIndex + 1;
             }
             ret << cc << ArcTypeToString(m_arctype);
             return ret.str();
@@ -307,92 +310,65 @@ bool LayoutWrapper::TransferLayoutInformationTo(SBMLDocument* sbml) const
             break;
         case lt_reactionArc:
         {
-            bool reactant = true;
-            int curveIndex = 0;
-            int speciesIndex = -1;
-            AntimonyReaction* rxn = m_parent->GetReaction();
-            ReactantList* rlist = rxn->GetLeft();
-            for (size_t i = 0; i < rlist->Size(); i++) {
-                const Variable* element = rlist->GetNthReactant(i);
-                double stoich = rlist->GetStoichiometryFor(i);
-                if (element->GetNameDelimitedBy(".") == m_speciesId) {
-                    speciesIndex = curveIndex;
-                    if (m_speciesIndex > 0) {
-                        speciesIndex += m_speciesIndex;
-                    }
-                    break;
-                }
-                curveIndex += int(floor(stoich)) - 1;
-            }
-            rlist = rxn->GetRight();
-            for (size_t i = 0; i < rlist->Size(); i++) {
-                const Variable* element = rlist->GetNthReactant(i);
-                double stoich = rlist->GetStoichiometryFor(i);
-                if (element->GetNameDelimitedBy(".") == m_speciesId) {
-                    speciesIndex = curveIndex;
-                    if (m_speciesIndex > 0) {
-                        speciesIndex += m_speciesIndex;
-                    }
-                    break;
-                }
-                curveIndex += int(floor(stoich)) - 1;
-            }
-            assert(speciesIndex != -1);
+            int speciesIndex = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceIndexAssociatedWithSpecies(sbml, m_speciesId, sid, 0, m_speciesIndex);
             string role = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceRole(sbml, sid, 0, speciesIndex);
             switch (m_arctype) {
             case at_spec:
                 if (startsAtReaction(role)) {
                     if (!isnan(xval)) {
-                        LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentStartPointX(sbml, sid, speciesIndex, 0, xval);
+                        LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentEndPointX(sbml, sid, 0, speciesIndex, 0, xval);
                     }
                     if (!isnan(yval)) {
-                        LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentStartPointY(sbml, sid, speciesIndex, 0, yval);
+                        LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentEndPointY(sbml, sid, 0, speciesIndex, 0, yval);
                     }
                 }
                 else {
                     assert(!startsAtReaction(role));
                     if (!isnan(xval)) {
-                        LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentEndPointX(sbml, sid, speciesIndex, 0, xval);
+                        LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentStartPointX(sbml, sid, 0, speciesIndex, 0, xval);
                     }
                     if (!isnan(yval)) {
-                        LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentEndPointY(sbml, sid, speciesIndex, 0, yval);
+                        LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentStartPointY(sbml, sid, 0, speciesIndex, 0, yval);
                     }
                 }
                 break;
             case at_rxn:
                 if (startsAtReaction(role)) {
                     if (!isnan(xval)) {
-                        LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentEndPointX(sbml, sid, speciesIndex, 0, xval);
+                        LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentStartPointX(sbml, sid, 0, speciesIndex, 0, xval);
                     }
                     if (!isnan(yval)) {
-                        LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentEndPointY(sbml, sid, speciesIndex, 0, yval);
+                        LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentStartPointY(sbml, sid, 0, speciesIndex, 0, yval);
                     }
                 }
                 else {
                     assert(!startsAtReaction(role));
                     if (!isnan(xval)) {
-                        LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentStartPointX(sbml, sid, speciesIndex, 0, xval);
+                        LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentEndPointX(sbml, sid, 0, speciesIndex, 0, xval);
                     }
                     if (!isnan(yval)) {
-                        LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentStartPointY(sbml, sid, speciesIndex, 0, yval);
+                        LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentEndPointY(sbml, sid, 0, speciesIndex, 0, yval);
                     }
                 }
                 break;
             case at_b1:
                 if (!isnan(xval)) {
-                    LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentBasePoint1X(sbml, sid, speciesIndex, 0, xval);
+                    LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentBasePoint1X(sbml, sid, 0, speciesIndex, 0, xval);
                 }
                 if (!isnan(yval)) {
-                    LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentBasePoint1Y(sbml, sid, speciesIndex, 0, yval);
+                    LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentBasePoint1Y(sbml, sid, 0, speciesIndex, 0, yval);
                 }
                 break;
             case at_b2:
                 if (!isnan(xval)) {
-                    LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentBasePoint2X(sbml, sid, speciesIndex, 0, xval);
+                    LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentBasePoint2X(sbml, sid, 0, speciesIndex, 0, xval);
                 }
                 if (!isnan(yval)) {
-                    LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentBasePoint2Y(sbml, sid, speciesIndex, 0, yval);
+                    LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentBasePoint2Y(sbml, sid, 0, speciesIndex, 0, yval);
                 }
+                break;
+            case at_none:
+                assert(false);
                 break;
             }
             break;
@@ -416,6 +392,7 @@ bool LayoutWrapper::TransferLayoutInformationTo(SBMLDocument* sbml) const
         switch (m_layout_type) {
         case lt_position:
         case lt_size:
+        case lt_reactionArc:
             assert(false); //Should be IsPair, above
             break;
         case lt_x:
@@ -528,6 +505,7 @@ bool LayoutWrapper::TransferLayoutInformationTo(SBMLDocument* sbml, const string
         case lt_size:
         case lt_x:
         case lt_y:
+        case lt_reactionArc:
             assert(false);
             delete astn;
             return true;
@@ -886,6 +864,18 @@ bool LayoutWrapper::setArcType(const std::string* type)
     return true;
 }
 
+bool LayoutWrapper::setArcNumber(const std::string* type)
+{
+    std::regex arc_number("arc[0-9]*");
+    string removed = std::regex_replace(*type, arc_number, "");
+    if (removed.size() > 0) {
+        return true;
+    }
+    string num = type->substr(3);
+    m_speciesIndex = std::stoi(num) - 1;
+    return false;
+}
+
 bool LayoutWrapper::setArcType(arc_type type)
 {
     m_arctype = type;
@@ -899,20 +889,9 @@ Variable* LayoutWrapper::GetSubVariable(const std::string* name)
         return NULL;
     }
     if (setArcType(name)) {
-        return NULL;
+        if (setArcNumber(name)) {
+            return NULL;
+        }
     }
-    return this;
-}
-
-Variable* LayoutWrapper::GetSubVariable(double val)
-{
-    if (m_speciesIndex != -1) {
-        return NULL;
-    }
-    if (val < 0) {
-        return NULL;
-    }
-    m_speciesIndex = round(val);
-
     return this;
 }

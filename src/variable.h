@@ -127,7 +127,6 @@ public:
   const AntimonyConstraint* GetConstraint() const;
 
   virtual Variable* GetSubVariable(const std::string* name);
-  virtual Variable* GetSubVariable(double val);
   virtual Variable* GetSameVariable();
   virtual const Variable* GetSameVariable() const;
   const DNAStrand* GetDNAStrand() const;

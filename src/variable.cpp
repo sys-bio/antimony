@@ -10,6 +10,7 @@
 #include "typex.h"
 #include "unitdef.h"
 #include "uncertWrapper.h"
+#include <sbmlnetwork/libsbmlnetwork_sbmldocument_layout.h>
 #ifdef LIBSBML_HAS_PACKAGE_DISTRIB
 #include <sbml/packages/distrib/extension/DistribSBasePlugin.h>
 #endif
@@ -536,12 +537,6 @@ Variable* Variable::GetSubVariable(const string* name)
       }
   }
   return NULL;
-}
-
-Variable* Variable::GetSubVariable(double val)
-{
-    //Only LayoutWrapper IDs have numeric subvariables.
-    return NULL;
 }
 
 Variable* Variable::GetSameVariable()
@@ -2560,6 +2555,41 @@ bool Variable::TransferLayoutInformationTo(SBMLDocument* sbml) const
     for (size_t uw = 0; uw < m_layoutWrappers.size(); uw++) {
         if (m_layoutWrappers[uw]->TransferLayoutInformationTo(sbml)) {
             return true;
+        }
+    }
+    if (IsReaction(m_type) && m_layoutWrappers.size() > 0) {
+        string id = GetNameDelimitedBy("__");
+        double xval = LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(sbml, id);
+        double yval = LIBSBMLNETWORK_CPP_NAMESPACE::getPositionY(sbml, id);
+
+        unsigned int narcs = LIBSBMLNETWORK_CPP_NAMESPACE::getNumSpeciesReferences(sbml, id, 0);
+        for (unsigned int speciesIndex = 0; speciesIndex < narcs; speciesIndex++) {
+            string role = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceRole(sbml, id, 0, speciesIndex);
+            if (!startsAtReaction(role)) {
+                if (!isnan(xval)) {
+                    if (LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointX(sbml, id, 0, speciesIndex, 0) != 0) {
+                        LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentEndPointX(sbml, id, 0, speciesIndex, 0, xval);
+                    }
+                }
+                if (!isnan(yval)) {
+                    if (LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointY(sbml, id, 0, speciesIndex, 0) != 0) {
+                        LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentEndPointY(sbml, id, 0, speciesIndex, 0, yval);
+                    }
+                }
+            }
+            else {
+                assert(startsAtReaction(role));
+                if (!isnan(xval)) {
+                    if (LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointX(sbml, id, 0, speciesIndex, 0) != 0) {
+                        LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentStartPointX(sbml, id, 0, speciesIndex, 0, xval);
+                    }
+                }
+                if (!isnan(yval)) {
+                    if (LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointY(sbml, id, 0, speciesIndex, 0) != 0) {
+                        LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentStartPointY(sbml, id, 0, speciesIndex, 0, yval);
+                    }
+                }
+            }
         }
     }
     return false;
