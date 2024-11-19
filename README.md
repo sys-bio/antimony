@@ -1,8 +1,30 @@
-Thank you for using Antimony, a human-readable, human-writable modular model definition language.
+# libRoadRunner
+[![GitHub version](https://badge.fury.io/gh/sys-bio%2Froadrunner.svg)](http://badge.fury.io/gh/sys-bio%2Froadrunner)
+[![Build Status](https://dev.azure.com/TheRoadrunnerProject/roadrunner/_apis/build/status/sys-bio.roadrunner?branchName=develop)](https://dev.azure.com/TheRoadrunnerProject/roadrunner/_build/latest?definitionId=8&branchName=develop)
+[![Documentation Status](https://readthedocs.org/projects/libroadrunner/badge/?version=latest)](https://libroadrunner.readthedocs.io/en/latest/?badge=latest)
+[![PyPI version](https://badge.fury.io/py/libroadrunner.svg)](https://badge.fury.io/py/libroadrunner)
+
+ <table style="width:100%">
+  <tr>
+    <td><img alt="Licence", src="https://img.shields.io/badge/License-Apache%202.0-yellowgreen"</td>
+    <td><img alt="PyPI - Downloads", src="https://img.shields.io/pypi/dm/roadrunner"></td>
+    <td><img alt="Funding", src="https://img.shields.io/badge/Funding-NIH%20(GM123032)-blue"></td>
+    <td><img alt="Funding", src="https://img.shields.io/badge/Funding-NIBIB%20(EB028887)-blue"></td>    
+   </tr>
+</table> 
+
+# Summary
+Antimony is a human-readable, human-writable modular model definition language.
 
 The documentation for this project is in the doc/ subdirectory, and was created with Doxygen.  Described there is information about the Antimony model language and the libAntimony library, including compilation instructions.
 
-To enable full functionality in libAntimony, you first need to install libSBML, available from http://sbml.org/Software/libSBML/.  Both libSBML and libAntimony now use CMake as their build systems.  For full functionality, be sure to enable the 'comp' package in libsbml, as this enables full hierarchical modeling support.  As of antimony v2.4, all binary releases of the library and executables use the 'comp' package by default.
+Python bindings are available via pypi, and can be installed with pip:
+
+```pip install antimony```
+
+Other binaries are available from 
+
+Antimony depends on To enable full functionality in libAntimony, you first need to install libSBML, available from http://sbml.org/Software/libSBML/.  Both libSBML and libAntimony now use CMake as their build systems.  For full functionality, be sure to enable the 'comp' package in libsbml, as this enables full hierarchical modeling support.  As of antimony v2.4, all binary releases of the library and executables use the 'comp' package by default.
 
 For CellML:
 
