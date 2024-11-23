@@ -1,13 +1,12 @@
 #include "module.h"
 #include "sbml/Model.h"
 #include <sbmlnetwork/libsbmlnetwork_sbmldocument.h>
-#include <sbmlnetwork/libsbmlnetwork_sbmldocument_helpers.h>
 #include <sbmlnetwork/libsbmlnetwork_sbmldocument_layout.h>
 #include <sbmlnetwork/libsbmlnetwork_sbmldocument_render.h>
 #include <sbmlnetwork/libsbmlnetwork_render_helpers.h>
 #include <sbmlnetwork/libsbmlnetwork_layout_helpers.h>
-#include "sbmlnetwork/colors/libsbmlnetwork_colors.h"
-#include "sbmlnetwork/styles/libsbmlnetwork_styles.h"
+#include "sbmlnetwork/features/colors/libsbmlnetwork_colors.h"
+#include "sbmlnetwork/features/styles/libsbmlnetwork_styles.h"
 #include "sbml/packages/layout/extension/LayoutModelPlugin.h"
 
 using namespace libsbml;
@@ -2455,7 +2454,7 @@ void Module::CreateSBMLModel(bool comp)
   if (m_autolayout.use) {
       LIBSBMLNETWORK_CPP_NAMESPACE::autorender(&m_sbml, m_autolayout.maxNumConnectedEdges);
       //For some reason, the following line is REQUIRED; otherwise I get linking errors(!) about how 'autolayout' is missing.  WTF?? LS DEBUG
-      LIBSBMLNETWORK_CPP_NAMESPACE::getSBMLObject(&m_sbml, "S1");
+      //LIBSBMLNETWORK_CPP_NAMESPACE::getSBMLObject(&m_sbml, "S1");
       if (m_layout.width != 0) {
           LIBSBMLNETWORK_CPP_NAMESPACE::setDimensionWidth(&m_sbml, m_layout.width);
       }
