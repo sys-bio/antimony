@@ -2565,28 +2565,34 @@ bool Variable::TransferLayoutInformationTo(SBMLDocument* sbml) const
         unsigned int narcs = LIBSBMLNETWORK_CPP_NAMESPACE::getNumSpeciesReferences(sbml, id, 0);
         for (unsigned int speciesIndex = 0; speciesIndex < narcs; speciesIndex++) {
             string role = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceRole(sbml, id, 0, speciesIndex);
-            if (!startsAtReaction(role)) {
-                if (!isnan(xval)) {
-                    if (LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointX(sbml, id, 0, speciesIndex, 0) == 0.0) {
-                        LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentEndPointX(sbml, id, 0, speciesIndex, 0, xval);
+            bool anySet = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointX(sbml, id, 0, speciesIndex, 0) != 0.0 ||
+                LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointY(sbml, id, 0, speciesIndex, 0) != 0.0 ||
+                LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointX(sbml, id, 0, speciesIndex, 0) != 0.0 ||
+                LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointY(sbml, id, 0, speciesIndex, 0) != 0.0;
+            if (anySet) {
+                if (!startsAtReaction(role)) {
+                    if (!isnan(xval)) {
+                        if (LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointX(sbml, id, 0, speciesIndex, 0) == 0.0) {
+                            LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentEndPointX(sbml, id, 0, speciesIndex, 0, xval);
+                        }
+                    }
+                    if (!isnan(yval)) {
+                        if (LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointY(sbml, id, 0, speciesIndex, 0) == 0.0) {
+                            LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentEndPointY(sbml, id, 0, speciesIndex, 0, yval);
+                        }
                     }
                 }
-                if (!isnan(yval)) {
-                    if (LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointY(sbml, id, 0, speciesIndex, 0) == 0.0) {
-                        LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentEndPointY(sbml, id, 0, speciesIndex, 0, yval);
+                else {
+                    assert(startsAtReaction(role));
+                    if (!isnan(xval)) {
+                        if (LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointX(sbml, id, 0, speciesIndex, 0) == 0.0) {
+                            LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentStartPointX(sbml, id, 0, speciesIndex, 0, xval);
+                        }
                     }
-                }
-            }
-            else {
-                assert(startsAtReaction(role));
-                if (!isnan(xval)) {
-                    if (LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointX(sbml, id, 0, speciesIndex, 0) == 0.0) {
-                        LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentStartPointX(sbml, id, 0, speciesIndex, 0, xval);
-                    }
-                }
-                if (!isnan(yval)) {
-                    if (LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointY(sbml, id, 0, speciesIndex, 0) == 0.0) {
-                        LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentStartPointY(sbml, id, 0, speciesIndex, 0, yval);
+                    if (!isnan(yval)) {
+                        if (LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointY(sbml, id, 0, speciesIndex, 0) == 0.0) {
+                            LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentStartPointY(sbml, id, 0, speciesIndex, 0, yval);
+                        }
                     }
                 }
             }

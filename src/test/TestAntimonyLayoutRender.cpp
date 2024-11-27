@@ -137,7 +137,7 @@ START_TEST(test_useNameAsTextLabel)
         ;
 
     libsbml::SBMLDocument* doc = translateAntimony(model);
-    //fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getText(doc, "S1") == "S1");
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getText(doc, "S1") == "S1");
     delete doc;
 
     string model2 =
@@ -163,7 +163,7 @@ START_TEST(test_setLayoutStyle)
     libsbml::SBMLDocument* doc = translateAntimony(model);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getBackgroundColor(doc) == "white");
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getCompartmentGeometricShapeType(doc) == "rectangle");
-    //fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getCompartmentStrokeColor(doc) == "mandy");
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getCompartmentStrokeColor(doc) == "mandy");
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getCompartmentStrokeWidth(doc) == 3.0);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getCompartmentFillColor(doc) == "pewter");
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getCompartmentFontColor(doc) == "gondola");
@@ -178,9 +178,9 @@ START_TEST(test_setLayoutStyle)
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getReactionStrokeWidth(doc) == 3.0);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getReactionFontColor(doc) == "gondola");
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getReactionFontSizeAsDouble(doc) == 12.0);
-    //fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getLineEndingStrokeColor(doc) == "gondola");
-    //fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getLineEndingStrokeWidth(doc) == 3.0);
-    //fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getLineEndingFillColor(doc) == "gondola");
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getLineEndingStrokeColor(doc, 0) == "gondola");
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getLineEndingStrokeWidth(doc) == 3.0);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getLineEndingFillColor(doc) == "gondola");
 
     delete doc;
 }
@@ -340,9 +340,9 @@ START_TEST(test_whole_model_settings)
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getCompartmentFillColor(doc) == "khaki");
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesFillColor(doc) == "khaki");
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getReactionFillColor(doc) == "khaki");
-    //fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getCompartmentStrokeColor(doc) == "azure");
-    //fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesStrokeColor(doc) == "azure");
-    //fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getReactionStrokeColor(doc) == "azure");
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getCompartmentStrokeColor(doc) == "azure");
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesStrokeColor(doc) == "azure");
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getReactionStrokeColor(doc) == "azure");
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getCompartmentFontColor(doc) == "coral");
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesFontColor(doc) == "coral");
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getReactionFontColor(doc) == "coral");
@@ -385,7 +385,7 @@ START_TEST(test_species_settings)
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getDimensionWidth(doc, "S2") == 42.0);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getDimensionHeight(doc, "S2") == 55.0);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesFillColor(doc) == "khaki");
-    //fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesStrokeColor(doc) == "azure");
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesStrokeColor(doc) == "azure");
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesFontColor(doc) == "coral");
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesStrokeWidth(doc) == 32.0);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesFontFamily(doc) == "monospace");
@@ -412,10 +412,10 @@ START_TEST(test_compartment_settings)
         ;
 
     libsbml::SBMLDocument* doc = translateAntimony(model);
-    //fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getDimensionWidth(doc, "C") == 420.0);
-    //fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getDimensionHeight(doc, "C") == 550.0);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getDimensionWidth(doc, "C") == 420.0);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getDimensionHeight(doc, "C") == 550.0);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getCompartmentFillColor(doc) == "khaki");
-    //fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getCompartmentStrokeColor(doc) == "azure");
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getCompartmentStrokeColor(doc) == "azure");
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getCompartmentFontColor(doc) == "coral");
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getCompartmentStrokeWidth(doc) == 32.0);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getCompartmentFontFamily(doc) == "monospace");
@@ -444,7 +444,7 @@ START_TEST(test_reaction_settings)
     //fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getDimensionWidth(doc, "J0") == 420.0);
     //fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getDimensionHeight(doc, "J0") == 550.0);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getReactionFillColor(doc) == "khaki");
-    //fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getReactionStrokeColor(doc) == "azure");
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getReactionStrokeColor(doc) == "azure");
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getReactionFontColor(doc) == "coral");
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getReactionStrokeWidth(doc) == 32.0);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getReactionFontFamily(doc) == "monospace");
@@ -499,6 +499,241 @@ START_TEST(test_locations_xy)
 END_TEST
 
 
+START_TEST(test_control_points)
+{
+    string model =
+        "J0: S1->S2;\n"
+        "S1.position = { 560, 0 }\n"
+        "S2.position = { 30, 37.5 }\n"
+        "J0.position = { 318.13, 29.25 }\n"
+        "J0.S1.position = { 550.02, 20.83 }\n"
+        "J0.S1.b1 = { 364.9, 33.93 }\n"
+        "J0.S1.b2 = { 350, 35 }\n"
+        "J0.S2.position = { 99.98, 52.67 }\n"
+        "J0.S2.b1 = { 285.1, 39.57 }\n"
+        "J0.S2.b2 = { 290, 40 }\n";
+
+    libsbml::SBMLDocument* doc = translateAntimony(model);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(doc, "S1") == 560);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionY(doc, "S1") == 0.0);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(doc, "S2") == 30.0);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionY(doc, "S2") == 37.5);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(doc, "J0") == 318.13);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionY(doc, "J0") == 29.25);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointX(doc, "J0", 0, 0, 0) == 550.02);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointY(doc, "J0", 0, 0, 0) == 20.83);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointX(doc, "J0", 0, 0, 0) == 318.13);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointY(doc, "J0", 0, 0, 0) == 29.25);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1X(doc, "J0", 0, 0, 0) == 364.9);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1Y(doc, "J0", 0, 0, 0) == 33.93);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint2X(doc, "J0", 0, 0, 0) == 350);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint2Y(doc, "J0", 0, 0, 0) == 35);
+
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointX(doc, "J0", 0, 1, 0) == 99.98);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointY(doc, "J0", 0, 1, 0) == 52.67);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointX(doc, "J0", 0, 1, 0) == 318.13);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointY(doc, "J0", 0, 1, 0) == 29.25);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1X(doc, "J0", 0, 1, 0) == 285.1);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1Y(doc, "J0", 0, 1, 0) == 39.57);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint2X(doc, "J0", 0, 1, 0) == 290);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint2Y(doc, "J0", 0, 1, 0) == 40);
+
+    delete doc;
+}
+END_TEST
+
+
+START_TEST(test_control_points_off_reaction)
+{
+    string model =
+        "J0: S1->S2;\n"
+        "S1.position = { 560, 0 }\n"
+        "S2.position = { 30, 37.5 }\n"
+        "J0.position = { 318.13, 29.25 }\n"
+        "J0.S1.position = { 550.02, 20.83 }\n"
+        "J0.S1.rxn = { 320, 30 }\n"
+        "J0.S1.b1 = { 364.9, 33.93 }\n"
+        "J0.S1.b2 = { 350, 35 }\n"
+        "J0.S2.position = { 99.98, 52.67 }\n"
+        "J0.S2.rxn = { 330, 20 }\n"
+        "J0.S2.b1 = { 285.1, 39.57 }\n"
+        "J0.S2.b2 = { 290, 40 }\n";
+
+    libsbml::SBMLDocument* doc = translateAntimony(model);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(doc, "S1") == 560);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionY(doc, "S1") == 0.0);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(doc, "S2") == 30.0);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionY(doc, "S2") == 37.5);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(doc, "J0") == 318.13);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionY(doc, "J0") == 29.25);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointX(doc, "J0", 0, 0, 0) == 550.02);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointY(doc, "J0", 0, 0, 0) == 20.83);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointX(doc, "J0", 0, 0, 0) == 320);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointY(doc, "J0", 0, 0, 0) == 30);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1X(doc, "J0", 0, 0, 0) == 364.9);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1Y(doc, "J0", 0, 0, 0) == 33.93);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint2X(doc, "J0", 0, 0, 0) == 350);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint2Y(doc, "J0", 0, 0, 0) == 35);
+
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointX(doc, "J0", 0, 1, 0) == 99.98);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointY(doc, "J0", 0, 1, 0) == 52.67);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointX(doc, "J0", 0, 1, 0) == 330);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointY(doc, "J0", 0, 1, 0) == 20);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1X(doc, "J0", 0, 1, 0) == 285.1);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1Y(doc, "J0", 0, 1, 0) == 39.57);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint2X(doc, "J0", 0, 1, 0) == 290);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint2Y(doc, "J0", 0, 1, 0) == 40);
+
+    delete doc;
+}
+END_TEST
+
+
+START_TEST(test_control_points_unset)
+{
+    string model =
+        "J0: S1->S2;\n"
+        "S1.position = { 560, 0 }\n"
+        "S2.position = { 30, 37.5 }\n"
+        "J0.position = { 318.13, 29.25 }\n";
+
+    libsbml::SBMLDocument* doc = translateAntimony(model);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(doc, "S1") == 560);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionY(doc, "S1") == 0.0);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(doc, "S2") == 30.0);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionY(doc, "S2") == 37.5);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(doc, "J0") == 318.13);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionY(doc, "J0") == 29.25);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointX(doc, "J0", 0, 0, 0) != 0.0);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointY(doc, "J0", 0, 0, 0) != 0.0);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointX(doc, "J0", 0, 0, 0) == 318.13);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointY(doc, "J0", 0, 0, 0) == 29.25);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1X(doc, "J0", 0, 0, 0) != 0.0);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1Y(doc, "J0", 0, 0, 0) != 0.0);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint2X(doc, "J0", 0, 0, 0) != 0.0);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint2Y(doc, "J0", 0, 0, 0) != 0.0);
+
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointX(doc, "J0", 0, 1, 0) != 0.0);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointY(doc, "J0", 0, 1, 0) != 0.0);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointX(doc, "J0", 0, 1, 0) == 318.13);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointY(doc, "J0", 0, 1, 0) == 29.25);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1X(doc, "J0", 0, 1, 0) != 0.0);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1Y(doc, "J0", 0, 1, 0) != 0.0);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint2X(doc, "J0", 0, 1, 0) != 0.0);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint2Y(doc, "J0", 0, 1, 0) != 0.0);
+
+    delete doc;
+}
+END_TEST
+
+
+START_TEST(test_control_points_double_arcs)
+{
+    string model =
+        "J0: 2 S1->S2;\n"
+        "S1.position = { 560, 0 }\n"
+        "S2.position = { 30, 37.5 }\n"
+        "J0.position = { 318.13, 29.25 }\n"
+        "J0.S1.position = { 550.02, 20.83 }\n"
+        "J0.S1.b1 = { 364.9, 33.93 }\n"
+        "J0.S1.b2 = { 350, 35 }\n"
+        "J0.S1.arc2.position = { 550.01, 18.38 }\n"
+        "J0.S1.arc2.b1 = { 342.95, 26.25 }\n"
+        "J0.S1.arc2.b2 = { 490.02, 18.95 }\n"
+        "J0.S2.position = { 99.98, 52.67 }\n"
+        "J0.S2.b1 = { 285.1, 39.57 }\n"
+        "J0.S2.b2 = { 290, 40 }\n";
+
+    libsbml::SBMLDocument* doc = translateAntimony(model);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(doc, "S1") == 560);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionY(doc, "S1") == 0.0);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(doc, "S2") == 30.0);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionY(doc, "S2") == 37.5);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(doc, "J0") == 318.13);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionY(doc, "J0") == 29.25);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointX(doc, "J0", 0, 0, 0) == 550.02);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointY(doc, "J0", 0, 0, 0) == 20.83);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointX(doc, "J0", 0, 0, 0) == 318.13);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointY(doc, "J0", 0, 0, 0) == 29.25);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1X(doc, "J0", 0, 0, 0) == 364.9);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1Y(doc, "J0", 0, 0, 0) == 33.93);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint2X(doc, "J0", 0, 0, 0) == 350);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint2Y(doc, "J0", 0, 0, 0) == 35);
+
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointX(doc, "J0", 0, 1, 0) == 550.01);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointY(doc, "J0", 0, 1, 0) == 18.38);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointX(doc, "J0", 0, 1, 0) == 318.13);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointY(doc, "J0", 0, 1, 0) == 29.25);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1X(doc, "J0", 0, 1, 0) == 342.95);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1Y(doc, "J0", 0, 1, 0) == 26.25);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint2X(doc, "J0", 0, 1, 0) == 490.02);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint2Y(doc, "J0", 0, 1, 0) == 18.95);
+
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointX(doc, "J0", 0, 2, 0) == 99.98);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointY(doc, "J0", 0, 2, 0) == 52.67);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointX(doc, "J0", 0, 2, 0) == 318.13);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointY(doc, "J0", 0, 2, 0) == 29.25);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1X(doc, "J0", 0, 2, 0) == 285.1);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1Y(doc, "J0", 0, 2, 0) == 39.57);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint2X(doc, "J0", 0, 2, 0) == 290);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint2Y(doc, "J0", 0, 2, 0) == 40);
+
+    delete doc;
+}
+END_TEST
+
+
+START_TEST(test_control_points_second_arc_unset)
+{
+    string model =
+        "J0: 2 S1->S2;\n"
+        "S1.position = { 560, 0 }\n"
+        "S2.position = { 30, 37.5 }\n"
+        "J0.position = { 318.13, 29.25 }\n"
+        "J0.S1.position = { 550.02, 20.83 }\n"
+        "J0.S1.b1 = { 364.9, 33.93 }\n"
+        "J0.S1.b2 = { 350, 35 }\n"
+        "J0.S2.position = { 99.98, 52.67 }\n"
+        "J0.S2.b1 = { 285.1, 39.57 }\n"
+        "J0.S2.b2 = { 290, 40 }\n";
+
+    libsbml::SBMLDocument* doc = translateAntimony(model);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(doc, "S1") == 560);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionY(doc, "S1") == 0.0);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(doc, "S2") == 30.0);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionY(doc, "S2") == 37.5);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(doc, "J0") == 318.13);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionY(doc, "J0") == 29.25);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointX(doc, "J0", 0, 0, 0) == 550.02);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointY(doc, "J0", 0, 0, 0) == 20.83);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointX(doc, "J0", 0, 0, 0) == 318.13);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointY(doc, "J0", 0, 0, 0) == 29.25);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1X(doc, "J0", 0, 0, 0) == 364.9);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1Y(doc, "J0", 0, 0, 0) == 33.93);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint2X(doc, "J0", 0, 0, 0) == 350);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint2Y(doc, "J0", 0, 0, 0) == 35);
+
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointX(doc, "J0", 0, 1, 0) != 0.0);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointY(doc, "J0", 0, 1, 0) != 0.0);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointX(doc, "J0", 0, 1, 0) == 318.13);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointY(doc, "J0", 0, 1, 0) == 29.25);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1X(doc, "J0", 0, 1, 0) != 0.0);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1Y(doc, "J0", 0, 1, 0) != 0.0);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint2X(doc, "J0", 0, 1, 0) != 0.0);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint2Y(doc, "J0", 0, 1, 0) != 0.0);
+
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointX(doc, "J0", 0, 2, 0) == 99.98);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointY(doc, "J0", 0, 2, 0) == 52.67);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointX(doc, "J0", 0, 2, 0) == 318.13);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointY(doc, "J0", 0, 2, 0) == 29.25);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1X(doc, "J0", 0, 2, 0) == 285.1);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1Y(doc, "J0", 0, 2, 0) == 39.57);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint2X(doc, "J0", 0, 2, 0) == 290);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint2Y(doc, "J0", 0, 2, 0) == 40);
+
+    delete doc;
+}
+END_TEST
 
 
 
@@ -528,9 +763,11 @@ create_suite_LayoutRender(void)
   tcase_add_test( tcase, test_reaction_settings);
   tcase_add_test( tcase, test_locations_pos);
   tcase_add_test( tcase, test_locations_xy);
-  //tcase_add_test( tcase, test_compartment_settings);
-  //tcase_add_test( tcase, test_compartment_settings);
-  //tcase_add_test( tcase, test_compartment_settings);
+  tcase_add_test( tcase, test_control_points);
+  tcase_add_test( tcase, test_control_points_off_reaction);
+  tcase_add_test( tcase, test_control_points_unset);
+  tcase_add_test( tcase, test_control_points_double_arcs);
+  tcase_add_test( tcase, test_control_points_second_arc_unset);
   //tcase_add_test( tcase, test_compartment_settings);
   //tcase_add_test( tcase, test_compartment_settings);
   //tcase_add_test( tcase, test_compartment_settings);
