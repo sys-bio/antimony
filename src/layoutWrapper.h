@@ -13,6 +13,7 @@ protected:
   layout_type m_layout_type;
   std::string m_speciesId;
   int m_speciesIndex;
+  int m_segmentIndex;
   arc_type m_arctype;
 public:
   LayoutWrapper(Variable* parent, layout_type type);
@@ -35,8 +36,10 @@ public:
   virtual bool HasLayoutPositionInfo() const;
   virtual bool setSpeciesId(const std::string* name);
   virtual void setSpeciesIndex(int index);
+  virtual void setSegmentIndex(int index);
   virtual bool setArcType(const std::string* type);
   virtual bool setArcNumber(const std::string* type);
+  virtual bool setSegmentNumber(const std::string* type);
   virtual bool setArcType(arc_type type);
   virtual Variable* GetSubVariable(const std::string* name);
 };

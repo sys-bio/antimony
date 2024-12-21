@@ -37,8 +37,8 @@ struct autolayout {
     int maxNumConnectedEdges = 3;
     //bool useMagnetism = false;
     //bool useBoundary = true;
-    bool useGrid = false;
-    bool useNameAsTextLabel = true;
+    //bool useGrid = false;
+    //bool useNameAsTextLabel = true;
     //std::set <std::string> lockedNodeIds = std::set<std::string>();
 };
 

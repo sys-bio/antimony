@@ -2453,6 +2453,7 @@ void Module::CreateSBMLModel(bool comp)
   // Layout/Render!
   if (m_autolayout.use) {
       LIBSBMLNETWORK_CPP_NAMESPACE::autorender(&m_sbml, m_autolayout.maxNumConnectedEdges);
+      //LIBSBMLNETWORK_CPP_NAMESPACE::setUseNameAsTextLabel(&m_sbml, 0, m_autolayout.useNameAsTextLabel);
       //For some reason, the following line is REQUIRED; otherwise I get linking errors(!) about how 'autolayout' is missing.  WTF?? LS DEBUG
       //LIBSBMLNETWORK_CPP_NAMESPACE::getSBMLObject(&m_sbml, "S1");
       if (m_layout.width != 0) {
@@ -2486,7 +2487,7 @@ void Module::CreateSBMLModel(bool comp)
           }
       }
 
-      LIBSBMLNETWORK_CPP_NAMESPACE::autolayout(&m_sbml, m_autolayout.maxNumConnectedEdges, m_autolayout.useNameAsTextLabel);
+      LIBSBMLNETWORK_CPP_NAMESPACE::autolayout(&m_sbml, m_autolayout.maxNumConnectedEdges);
 
       bool any_align = false;
       if (m_layout.align_top.size()) {
@@ -2518,10 +2519,9 @@ void Module::CreateSBMLModel(bool comp)
           any_align = true;
       }
       if (any_align) {
-          LIBSBMLNETWORK_CPP_NAMESPACE::autolayout(&m_sbml, m_autolayout.maxNumConnectedEdges, m_autolayout.useNameAsTextLabel);
+          LIBSBMLNETWORK_CPP_NAMESPACE::autolayout(&m_sbml, m_autolayout.maxNumConnectedEdges);
       }
       LIBSBMLNETWORK_CPP_NAMESPACE::freeUserData(&m_sbml);
-
   }
 }
 
@@ -3684,72 +3684,78 @@ void Module::LoadLayout(Model* sbml)
                     for (int ref = 0; ref < nrefs; ref++) {
                         int sr_index = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceIndexAssociatedWithSpecies(doc, sr_id, varid, 0, ref);
                         string role = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceRole(doc, varid, 0, sr_index);
+                        int nsegs = LIBSBMLNETWORK_CPP_NAMESPACE::getNumSpeciesReferenceCurveSegments(doc, varid, 0, sr_index);
+                        for (int segment = 0; segment < nsegs; segment++) {
+                            //Start
+                            double x = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointX(doc, varid, 0, sr_index, segment);
+                            double y = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointY(doc, varid, 0, sr_index, segment);
+                            if (!(isnan(x) || isnan(y))) {
+                                if (x != rxnX && y != rxnY) {
+                                    LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_reactionArc);
+                                    form.AddVectorOfTwoValues(x, y);
+                                    lw->SetFormula(&form);
+                                    form.Clear();
+                                    lw->setSpeciesId(&sr_id);
+                                    if (startsAtReaction(role)) {
+                                        lw->setArcType(at_rxn);
+                                    }
+                                    else {
+                                        lw->setArcType(at_spec);
+                                    }
 
-                        //Start
-                        double x = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointX(doc, varid, 0, sr_index, 0);
-                        double y = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointY(doc, varid, 0, sr_index, 0);
-                        if (!(isnan(x) || isnan(y))) {
-                            if (x != rxnX && y != rxnY) {
+                                    lw->setSpeciesIndex(ref);
+                                    lw->setSegmentIndex(segment);
+                                }
+                            }
+
+                            //End
+                            x = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointX(doc, varid, 0, sr_index, segment);
+                            y = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointY(doc, varid, 0, sr_index, segment);
+                            if (!(isnan(x) || isnan(y))) {
+                                if (x != rxnX && y != rxnY) {
+                                    LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_reactionArc);
+                                    form.AddVectorOfTwoValues(x, y);
+                                    lw->SetFormula(&form);
+                                    form.Clear();
+                                    lw->setSpeciesId(&sr_id);
+                                    if (startsAtReaction(role)) {
+                                        lw->setArcType(at_spec);
+                                    }
+                                    else {
+                                        lw->setArcType(at_rxn);
+                                    }
+                                    lw->setSpeciesIndex(ref);
+                                    lw->setSegmentIndex(segment);
+                                }
+                            }
+
+                            //Base point 1
+                            x = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1X(doc, varid, 0, sr_index, segment);
+                            y = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1Y(doc, varid, 0, sr_index, segment);
+                            if (!(isnan(x) || isnan(y))) {
                                 LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_reactionArc);
                                 form.AddVectorOfTwoValues(x, y);
                                 lw->SetFormula(&form);
                                 form.Clear();
                                 lw->setSpeciesId(&sr_id);
-                                if (startsAtReaction(role)) {
-                                    lw->setArcType(at_rxn);
-                                }
-                                else {
-                                    lw->setArcType(at_spec);
-                                }
-
+                                lw->setArcType(at_b1);
                                 lw->setSpeciesIndex(ref);
+                                lw->setSegmentIndex(segment);
                             }
-                        }
 
-                        //End
-                        x = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointX(doc, varid, 0, sr_index, 0);
-                        y = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointY(doc, varid, 0, sr_index, 0);
-                        if (!(isnan(x) || isnan(y))) {
-                            if (x != rxnX && y != rxnY) {
+                            //Base point 2
+                            x = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint2X(doc, varid, 0, sr_index, segment);
+                            y = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint2Y(doc, varid, 0, sr_index, segment);
+                            if (!(isnan(x) || isnan(y))) {
                                 LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_reactionArc);
                                 form.AddVectorOfTwoValues(x, y);
                                 lw->SetFormula(&form);
                                 form.Clear();
                                 lw->setSpeciesId(&sr_id);
-                                if (startsAtReaction(role)) {
-                                    lw->setArcType(at_spec);
-                                }
-                                else {
-                                    lw->setArcType(at_rxn);
-                                }
+                                lw->setArcType(at_b2);
                                 lw->setSpeciesIndex(ref);
+                                lw->setSegmentIndex(segment);
                             }
-                        }
-
-                        //Base point 1
-                        x = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1X(doc, varid, 0, sr_index, 0);
-                        y = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1Y(doc, varid, 0, sr_index, 0);
-                        if (!(isnan(x) || isnan(y))) {
-                            LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_reactionArc);
-                            form.AddVectorOfTwoValues(x, y);
-                            lw->SetFormula(&form);
-                            form.Clear();
-                            lw->setSpeciesId(&sr_id);
-                            lw->setArcType(at_b1);
-                            lw->setSpeciesIndex(ref);
-                        }
-
-                        //Base point 2
-                        x = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint2X(doc, varid, 0, sr_index, 0);
-                        y = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint2Y(doc, varid, 0, sr_index, 0);
-                        if (!(isnan(x) || isnan(y))) {
-                            LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_reactionArc);
-                            form.AddVectorOfTwoValues(x, y);
-                            lw->SetFormula(&form);
-                            form.Clear();
-                            lw->setSpeciesId(&sr_id);
-                            lw->setArcType(at_b2);
-                            lw->setSpeciesIndex(ref);
                         }
                     }
                 }

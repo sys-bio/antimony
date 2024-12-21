@@ -28,6 +28,7 @@
 #endif
 
 #include "sbmlnetwork/libsbmlnetwork_render_helpers.h"
+#include "sbmlnetwork/libsbmlnetwork_sbmldocument_layout.h"
 
 extern Registry g_registry;
 
@@ -3197,13 +3198,13 @@ bool Module::SetAutoLayout(const std::string* argument, const std::string* value
     //else if (CaselessStrCmp(true, *argument, "useBoundary")) {
     //    m_autolayout.useBoundary = arg;
     //}
-    if (CaselessStrCmp(true, *argument, "useGrid")) {
-        m_autolayout.useGrid = arg;
-    }
-    else if (CaselessStrCmp(true, *argument, "useNameAsTextLabel")) {
-        m_autolayout.useNameAsTextLabel = arg;
-        m_autolayout.use = true;
-    }
+    //if (CaselessStrCmp(true, *argument, "useGrid")) {
+    //    m_autolayout.useGrid = arg;
+    //}
+    //else if (CaselessStrCmp(true, *argument, "useNameAsTextLabel")) {
+    //    m_autolayout.useNameAsTextLabel = arg;
+    //    m_autolayout.use = true;
+    //}
     return false;
 }
 
@@ -3305,16 +3306,16 @@ string Module::ValidateAutoLayoutArgument(const string* argument)
     //if (CaselessStrCmp(true, *argument, "useBoundary")) {
     //    return "bool";
     //}
-    if (CaselessStrCmp(true, *argument, "useGrid")) {
-        return "bool";
-    }
-    if (CaselessStrCmp(true, *argument, "useNameAsTextLabel")) {
-        return "bool";
-    }
+    //if (CaselessStrCmp(true, *argument, "useGrid")) {
+    //    return "bool";
+    //}
+    //if (CaselessStrCmp(true, *argument, "useNameAsTextLabel")) {
+    //    return "bool";
+    //}
     //if (CaselessStrCmp(true, *argument, "locked")) {
     //    return "idlist";
     //}
-    g_registry.SetError("No such setting 'autolayout." + *argument+ "': the valid autolayout settings are 'maxNumConnectedEdges', 'useGrid', and 'useNameAsTextLabel'.");
+    g_registry.SetError("No such setting 'autolayout." + *argument + "': the only valid autolayout setting is 'maxNumConnectedEdges'.");// , 'useGrid', and 'useNameAsTextLabel'.");
 
     return "none";
 }
@@ -3708,12 +3709,12 @@ string Module::GetAntimonyGeneralLayout(const string& indent) const
     //if (!m_autolayout.useBoundary) {
     //    ret << indent << "model.autolayout.useBoundary = off" << endl;
     //}
-    if (m_autolayout.useGrid) {
-        ret << indent << "model.autolayout.useGrid = on" << endl;
-    }
-    if (!m_autolayout.useNameAsTextLabel) {
-        ret << indent << "model.autolayout.useNameAsTextLabel = off" << endl;
-    }
+    //if (m_autolayout.useGrid) {
+    //    ret << indent << "model.autolayout.useGrid = on" << endl;
+    //}
+    //if (!m_autolayout.useNameAsTextLabel) {
+    //    ret << indent << "model.autolayout.useNameAsTextLabel = off" << endl;
+    //}
 
     if (m_layout.height || m_layout.width) {
         ret << indent << "model.layout.size = {" << m_layout.width << ", " << m_layout.height << "}" << endl;

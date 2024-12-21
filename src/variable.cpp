@@ -533,6 +533,7 @@ Variable* Variable::GetSubVariable(const string* name)
       if (var != NULL && IsSpecies(var->GetType())) {
           LayoutWrapper* lw = GetReactionArcLayoutWrapper(name);
           lw->setSpeciesIndex(0);
+          lw->setSegmentIndex(0);
           return lw;
       }
   }
