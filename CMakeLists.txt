@@ -318,7 +318,7 @@ endif()
 
 if(WITH_LIBSBML_COMPRESSION)
     find_library(ZDLL_LIBRARY
-    NAMES zlibstatic.lib zlibstaticd.lib zlibstaticmd.lib zlibstatic zlibstaticd zlibstaticmd libz.a zdll.lib zdll.so zdll.dylib zdll z
+    NAMES zlibstatic.lib zlibstaticd.lib zlibstaticmd.lib zlibstatic zlibstaticd zlibstaticmd zdll.lib zdll.so zdll.dylib zdll z libz.a 
 	PATHS /usr/lib /usr/local/lib
               ${CMAKE_SOURCE_DIR}
               ${CMAKE_SOURCE_DIR}/dependencies/lib
