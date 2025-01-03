@@ -326,7 +326,7 @@ bool LayoutWrapper::TransferLayoutInformationTo(SBMLDocument* sbml) const
             assert(speciesIndex != -1);
             string role = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceRole(sbml, sid, 0, speciesIndex);
             if (m_segmentIndex > 0) {
-                while (m_segmentIndex >= LIBSBMLNETWORK_CPP_NAMESPACE::getNumSpeciesReferenceCurveSegments(sbml, sid, 0, speciesIndex)) {
+                while (m_segmentIndex >= (int)LIBSBMLNETWORK_CPP_NAMESPACE::getNumSpeciesReferenceCurveSegments(sbml, sid, 0, speciesIndex)) {
                     LIBSBMLNETWORK_CPP_NAMESPACE::addSpeciesReferenceCubicBezierCurveSegment(sbml, sid, 0, speciesIndex);
                 }
             }

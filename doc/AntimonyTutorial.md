@@ -56,6 +56,13 @@ This guide will show you the intricacies of working with Antimony.
     - [Flux Balance Constraints](#flux-balance-constraints)
     - [Other files](#other-files)
     - [Importing and Exporting Antimony Models](#importing-and-exporting-antimony-models)
+  - [Layout and Render](#layout-and-render)
+    - [Basic layout information](#basic-layout-information)
+    - [Positioning model elements](#positioning-model-elements)
+    - [Sizing model elements](#sizing-model-elements)
+    - [Reaction arcs](#reaction-arcs)
+    - [General styles](#general-styles)
+    - [Style settings](#style-settings)
   - [Appendix: Converting between SBML and Antimony](#appendix-converting-between-sbml-and-antimony)
   - [Further reading](#further-reading)
 
@@ -1891,7 +1898,7 @@ Antimony supports a single Layout, which can be turned on with the directive:
  model.layout = on
 ```
 
-This will call the autolayout function and apply all default colors and styles.  The line is not necessary if any other visualization options are set; it is only needed when using nothing but defaults.  Setting this value to 'off' does nothing; a model with any layout or render 
+This will call the autolayout function and apply all default colors and styles.  The line is not necessary if any other visualization options are set; it is only needed when using nothing but defaults.  Setting this value to 'off' is an error; if you don't want layout or render, simply avoid adding those elements.
 
 There is a single option for the autolayout function: setting the maximum number of connected edges for a single species.  Whatever value this is set at, the autolayout function will create alias nodes for connections more than this number.  It can be set:
 
@@ -1925,7 +1932,7 @@ The size of model elements can be set with the 'size' keyword, or with 'width' a
  S1.height = 66
 ```
 
-By default, the size of a species is {60, 36}, and the size of a reaction is {0, 0}, meaning that no central box or other shape is shown for reactions, just arcs going to the species from a single point).  A compartment has no default size; it will be large enough to contain the species and reactions within.
+By default, the size of a species is {60, 36}, and the size of a reaction is {0, 0}, meaning that no central box or other shape is shown for reactions, just arcs going to the species from a single point.  A compartment has no default size; it will be large enough to contain the species and reactions within.
 
 One can also resize all species or reactions at once:
 
@@ -2054,7 +2061,7 @@ The full list of possible styles is:
 
 default, blue ombre, green ombre, gray ombre, red ombre, orange ombre, brown ombre, purple ombre, purple ombre 2, black and white, orange and blue, purple and yellow, green and red, power, calm, sunset, electric, midnight, vibrance, ocean, forest, warm tone, cool tone, and escher
 
-### General settings
+### Style settings
 
 Specific settings for the visualization as a whole can be set with
 
@@ -2071,14 +2078,15 @@ compartment.[setting] = [value]
 ```
 
 Values can be:
-* [number]: a number
-* [color]: Any 'web color' name (standard names like 'red', 'blue', etc. up to somewhat obscure names like 'palegoldenrod' or 'papayawhip'), or an RGB color in quotation marks, like "#FF0000" (red), or "#C77434" (ochre).  Transparency can be set with an eight-digit RGB color, like "#C7743455" (somewhat transparent ochre).
-* [font]: Either one of three predefined fonts ('serif', 'sans_serif', or 'monospace') or the name of any font ('arial').
-* [font style]: 'normal', 'bold', 'italic', or 'bolditalic'.
-* [shape]: One of rectangle, square, ellipse, circle, triangle, diamond, pentagon, hexagon, or octagon.
+
+  - \[number\]: a number
+  - \[color\]: Any 'web color' name (standard names like 'red', 'blue', etc. up to somewhat obscure names like 'palegoldenrod' or 'papayawhip'), or an RGB color in quotation marks, like "#FF0000" (red), or "#C77434" (ochre).  Transparency can be set with an eight-digit RGB color, like "#C7743455" (somewhat transparent ochre).
+  - \[font\]: Either one of three predefined fonts ('serif', 'sans_serif', or 'monospace') or the name of any font ('arial').
+  - \[font style\]: 'normal', 'bold', 'italic', or 'bolditalic'.
+  - \[shape\]: One of rectangle, square, ellipse, circle, triangle, diamond, pentagon, hexagon, or octagon.
 
 
-One setting can only be applied to the overall layout:  the background color:
+The background color can only be applied to the overall layout:
 
 ```
 model.layout.background = [color]
@@ -2110,9 +2118,6 @@ will set the fill color of species S1 to that particular semi-transparent color,
 Note that 'shape' cannot be set for 'model.layout', only for species, reactions, compartments, or individual elements.
 
 The 'shape' of a reaction refers to the shape at the centroid of the arc between the reactants and the products.  By default, the size of this shape is {0, 0}, meaning that no shape is possible; it's just a single point.
-
-
-### 
 
 
 ## Appendix: Converting between SBML and Antimony
