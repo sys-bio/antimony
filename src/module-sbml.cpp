@@ -3506,7 +3506,7 @@ void Module::AddEmptyGlyphsFromReaction(Variable* reaction, const std::string& r
         if (LIBSBMLNETWORK_CPP_NAMESPACE::isSetSpeciesReferenceEmptySpeciesGlyph(origdoc, 0, rxnid, 0, sr)) {
             string sr_id = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceEmptySpeciesGlyphId(origdoc, rxnid, 0, sr);
             LayoutWrapper* lw = new LayoutWrapper(reaction, lt_sourceSink, sr_id, this);
-            lw->setSpeciesId(&LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceEmptySpeciesGlyphId(origdoc, rxnid, 0, sr));
+            lw->setSpeciesId(&sr_id);
             m_variables.push_back(lw);
             StoreVariable(lw);
             break;
