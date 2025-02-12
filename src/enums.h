@@ -230,6 +230,7 @@ enum layout_type {
     lt_linecolor,
     lt_shape,
     lt_reactionArc,
+    lt_sourceSink,
     lt_unknown
 };
 

@@ -14,9 +14,32 @@
 #include <sbmlnetwork/libsbmlnetwork_sbmldocument_layout.h>
 #include <sbmlnetwork/libsbmlnetwork_sbmldocument_render.h>
 #include <sbmlnetwork/libsbmlnetwork_render_helpers.h>
+#include <sbmlnetwork/libsbmlnetwork_layout.h>
 
 using namespace std;
 using namespace libsbml;
+
+LayoutWrapper::LayoutWrapper(Variable* parent, layout_type type, string name, const Module* module)
+    : Variable(name, module)
+    , m_parent(parent)
+    , m_layout_type(type)
+    , m_speciesId("")
+    , m_speciesIndex(-1)
+    , m_segmentIndex(-1)
+    , m_arctype(at_none)
+{
+    m_module = parent->GetNamespace();
+    m_displayname = "";
+    m_formulatype = formulaINITIAL;
+    m_supercomptype = varUndefined;
+    m_deletedunit = false;
+    m_replacedformrxn = false;
+    m_const = constDEFAULT;
+    m_substOnly = false;
+    m_sboTermWrapper = NULL;
+    m_type = varLayoutWrapper;
+    SetNamespace(parent->GetNamespace());
+}
 
 LayoutWrapper::LayoutWrapper(Variable* parent, layout_type type)
     : Variable()
@@ -71,16 +94,16 @@ bool LayoutWrapper::IsPointer() const
     return false;
 }
 
-Variable* LayoutWrapper::GetSameVariable()
-{
-    return m_parent;
-}
-
-const Variable* LayoutWrapper::GetSameVariable() const
-{
-    return m_parent;
-}
-
+//Variable* LayoutWrapper::GetSameVariable()
+//{
+//    return m_parent;
+//}
+//
+//const Variable* LayoutWrapper::GetSameVariable() const
+//{
+//    return m_parent;
+//}
+//
 bool LayoutWrapper::SetFormula(Formula* formula, bool isObjective)
 {
     if (Variable::SetFormula(formula, isObjective)) {
@@ -197,6 +220,9 @@ bool LayoutWrapper::SetFormula(Formula* formula, bool isObjective)
             case lt_reactionArc:
                 assert(false); //Should be pairs
                 break;
+            case lt_sourceSink:
+                assert(false); //Should be base variable, not child.
+                break;
             case lt_unknown:
                 break;
             }
@@ -235,10 +261,19 @@ Variable* LayoutWrapper::GetParent()
 
 string LayoutWrapper::GetNameDelimitedBy(string cc) const
 {
+    if (m_layout_type == lt_sourceSink && cc == "_") {
+        return m_speciesId;
+    }
     if (m_parent) {
         if (m_layout_type == lt_reactionArc) {
             stringstream ret;
-            ret << m_parent->GetNameDelimitedBy(cc) << cc << m_speciesId;
+            ret << m_parent->GetNameDelimitedBy(cc) << cc;
+            if (m_speciesId.empty()) {
+                ret << LayoutTypeToString(lt_sourceSink);
+            }
+            else {
+                ret << m_speciesId;
+            }
             if (m_speciesIndex > 0) {
                 ret << cc << "arc" << m_speciesIndex + 1;
             }
@@ -276,12 +311,38 @@ string LayoutWrapper::CreateLayoutParamsAntimonySyntax(const string& indent) con
     if (!m_displayname.empty()) {
         ret += indent + GetNameDelimitedBy(".") + " is \"" + m_displayname + "\"\n";
     }
+    for (size_t lw = 0; lw < m_layoutWrappers.size(); lw++) {
+        ret += m_layoutWrappers[lw]->CreateLayoutParamsAntimonySyntax(indent);
+    }
     return ret;
 }
 
-bool LayoutWrapper::TransferLayoutInformationTo(SBMLDocument* sbml) const
+bool LayoutWrapper::TransferLayoutInformationTo(SBMLDocument* sbml)
 {
+    if (m_layout_type == lt_sourceSink) {
+        bool ret = false;
+        //We need to find the ID that SBMLNetwork has given to the source/sink glyph:
+        int nreactants = m_parent->GetReaction()->GetLeft()->Size();
+        int nproducts = m_parent->GetReaction()->GetRight()->Size();
+        string rxnid = m_parent->GetNameDelimitedBy("_");
+        if (nreactants != 0 && nproducts != 0) {
+            g_registry.AddWarning("Attempted to set a source/sink for the reaction " + rxnid + ", but that reaction has both reactants and products.");
+            return true;
+        }
+        for (int i = 0; i < nreactants + nproducts + 2; i++) {
+            string id = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceEmptySpeciesGlyphId(sbml, rxnid, 0, i);
+            if (!id.empty()) {
+                m_speciesId = id;
+                break;
+            }
+        }
+        for (size_t lw = 0; lw < m_layoutWrappers.size(); lw++) {
+            ret = ret || m_layoutWrappers[lw]->TransferLayoutInformationTo(sbml);
+        }
+        return ret;
+    }
     string sid = m_parent->GetNameDelimitedBy("_");
+
     string formstring = m_valFormula.ToSBMLString();
     if (formstring.empty()) {
         assert(false);
@@ -471,6 +532,9 @@ bool LayoutWrapper::TransferLayoutInformationTo(SBMLDocument* sbml) const
         case lt_shape:
             ret = LIBSBMLNETWORK_CPP_NAMESPACE::setGeometricShapeType(sbml, sid, formstring);
             break;
+        case lt_sourceSink:
+            assert(false); // Should only be parent object, not child.
+            break;
         case lt_unknown:
             break;
         }
@@ -480,7 +544,7 @@ bool LayoutWrapper::TransferLayoutInformationTo(SBMLDocument* sbml) const
     return false;
 }
 
-bool LayoutWrapper::TransferLayoutInformationTo(SBMLDocument* sbml, const string& group) const
+bool LayoutWrapper::TransferLayoutInformationTo(SBMLDocument* sbml, const string& group)
 {
     assert(group == "species" || group == "reaction" || group == "compartment" || group == "layout");
     string formstring = m_valFormula.ToSBMLString();
@@ -526,6 +590,7 @@ bool LayoutWrapper::TransferLayoutInformationTo(SBMLDocument* sbml, const string
         case lt_x:
         case lt_y:
         case lt_reactionArc:
+        case lt_sourceSink:
             assert(false);
             delete astn;
             return true;
@@ -828,6 +893,7 @@ bool LayoutWrapper::HasLayoutPositionInfo() const
     case lt_x:
     case lt_y:
     case lt_reactionArc:
+    case lt_sourceSink:
         return true;
     case lt_size:
     case lt_height:
@@ -869,11 +935,7 @@ void LayoutWrapper::setSegmentIndex(int index)
 
 bool LayoutWrapper::setArcType(const std::string* type)
 {
-    if (CaselessStrCmp(true, *type, "pos")) {
-        m_arctype = at_spec;
-        return false;
-    }
-    if (CaselessStrCmp(true, *type, "position")) {
+    if (CaselessStrCmp(true, *type, "species_pos")) {
         m_arctype = at_spec;
         return false;
     }
@@ -885,7 +947,7 @@ bool LayoutWrapper::setArcType(const std::string* type)
         m_arctype = at_b2;
         return false;
     }
-    if (CaselessStrCmp(true, *type, "rxn")) {
+    if (CaselessStrCmp(true, *type, "rxn_pos")) {
         m_arctype = at_rxn;
         return false;
     }
@@ -929,8 +991,13 @@ Variable* LayoutWrapper::GetSubVariable(const std::string* name)
         //No subvariables of any other layout wrapper type.
         return NULL;
     }
+    layout_type ltype = LayoutStringToType(*name);
+    if (ltype != lt_unknown) {
+        m_layout_type = lt_sourceSink;
+        return AddOrGetLayoutWrapper(ltype);
+    }
     if (setArcType(name)) {
-        // It wasn't 'position', 'rxn', 'b1', or 'b2', so try 'arc#':
+        // It wasn't 'species_pos', 'rxn_pos', 'b1', or 'b2', so try 'arc#':
         if (setArcNumber(name)) {
             // It wasn't 'arc#', so try 'seg#':
             if (setSegmentNumber(name)) {

@@ -1500,6 +1500,7 @@ void Module::LoadSBML(Model* sbml)
 
       }
     TranslateRulesAndAssignmentsTo(reaction, var);
+    AddEmptyGlyphsFromReaction(var, reaction->getId(), sbml->getSBMLDocument());
   }
 
   //FBC Constraints:
@@ -3291,6 +3292,13 @@ layoutInfo getDefaultSpeciesLayoutInfo(map<string, string> style, std::vector<La
     return ret;
 }
 
+void updateEmptySpeciesLayoutInfo(layoutInfo& empties)
+{
+    empties.width = 30;
+    empties.height = 30;
+    empties.shape = "ellipse";
+}
+
 layoutInfo getDefaultCompartmentLayoutInfo(map<string, string> style, std::vector<LayoutWrapper*>& compartmentLayouts, SBMLDocument* doc)
 {
     layoutInfo ret;
@@ -3491,6 +3499,141 @@ layoutInfo getDefaultReactionLayoutInfo(map<string, string> style, std::vector<L
     return ret;
 }
 
+void Module::AddEmptyGlyphsFromReaction(Variable* reaction, const std::string& rxnid, SBMLDocument* origdoc)
+{
+    unsigned int nSpecRefs = LIBSBMLNETWORK_CPP_NAMESPACE::getNumSpeciesReferences(origdoc, rxnid, 0);
+    for (unsigned int sr = 0; sr < nSpecRefs; sr++) {
+        if (LIBSBMLNETWORK_CPP_NAMESPACE::isSetSpeciesReferenceEmptySpeciesGlyph(origdoc, 0, rxnid, 0, sr)) {
+            string sr_id = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceEmptySpeciesGlyphId(origdoc, rxnid, 0, sr);
+            LayoutWrapper* lw = new LayoutWrapper(reaction, lt_sourceSink, sr_id, this);
+            lw->setSpeciesId(&LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceEmptySpeciesGlyphId(origdoc, rxnid, 0, sr));
+            m_variables.push_back(lw);
+            StoreVariable(lw);
+            break;
+        }
+    }
+}
+
+void loadOneVariable(Variable* var, SBMLDocument* doc, string varid, const layoutInfo& defaults)
+{
+    Formula form;
+    double val = 0.0;
+    string sval = "";
+
+    // Position
+    val = LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(doc, varid);
+    double valy = LIBSBMLNETWORK_CPP_NAMESPACE::getPositionY(doc, varid);
+    if ((val || valy) && (!isnan(val) || !isnan(valy))) {
+        LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_position);
+        string text = "{";
+        form.AddText(&text, true);
+        form.AddNum(val);
+        text = ",";
+        form.AddText(&text, true);
+        form.AddNum(valy);
+        text = "}";
+        form.AddText(&text, true);
+
+        lw->SetFormula(&form);
+        form.Clear();
+    }
+
+    // Size
+    val = LIBSBMLNETWORK_CPP_NAMESPACE::getDimensionWidth(doc, varid);
+    double valh = LIBSBMLNETWORK_CPP_NAMESPACE::getDimensionHeight(doc, varid);
+    if (((val || valh) && (!isnan(val) || !isnan(valh)) && (val != defaults.width || valh != defaults.height))) {
+        LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_size);
+        string text = "{";
+        form.AddText(&text, true);
+        form.AddNum(val);
+        text = ",";
+        form.AddText(&text, true);
+        form.AddNum(valh);
+        text = "}";
+        form.AddText(&text, true);
+
+        lw->SetFormula(&form);
+        form.Clear();
+    }
+
+    // Fill color
+    sval = LIBSBMLNETWORK_CPP_NAMESPACE::getFillColor(doc, varid);
+    sval = convertColorIfNeeded(sval, doc);
+    if (!sval.empty() && sval != defaults.color) {
+        LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_color);
+        form.AddText(&sval, true);
+        lw->SetFormula(&form);
+        form.Clear();
+    }
+
+    // Line color
+    sval = LIBSBMLNETWORK_CPP_NAMESPACE::getStrokeColor(doc, varid);
+    sval = convertColorIfNeeded(sval, doc);
+    if (!sval.empty() && sval != defaults.linecolor) {
+        LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_linecolor);
+        form.AddText(&sval, true);
+        lw->SetFormula(&form);
+        form.Clear();
+    }
+
+    // Linewidth
+    val = LIBSBMLNETWORK_CPP_NAMESPACE::getStrokeWidth(doc, varid);
+    if (val && !isnan(val) && val != defaults.linewidth) {
+        LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_linewidth);
+        form.AddNum(val);
+        lw->SetFormula(&form);
+        form.Clear();
+    }
+
+    // Font
+    sval = LIBSBMLNETWORK_CPP_NAMESPACE::getFontFamily(doc, varid);
+    if (!sval.empty() && sval != defaults.font) {
+        LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_font);
+        form.AddText(&sval, true);
+        lw->SetFormula(&form);
+        form.Clear();
+    }
+
+    // Font color
+    sval = LIBSBMLNETWORK_CPP_NAMESPACE::getFontColor(doc, varid);
+    sval = convertColorIfNeeded(sval, doc);
+    if (!sval.empty() && sval != defaults.fontcolor) {
+        LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_fontcolor);
+        form.AddText(&sval, true);
+        lw->SetFormula(&form);
+        form.Clear();
+    }
+
+    // Font size
+    val = LIBSBMLNETWORK_CPP_NAMESPACE::getFontSizeAsDouble(doc, varid);
+    if (val && !isnan(val) && val != defaults.fontsize) {
+        LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_fontsize);
+        form.AddNum(val);
+        lw->SetFormula(&form);
+        form.Clear();
+    }
+
+    // Font style
+    sval = getFontStyleFrom(LIBSBMLNETWORK_CPP_NAMESPACE::getFontStyle(doc, varid), LIBSBMLNETWORK_CPP_NAMESPACE::getFontWeight(doc, varid));
+    if (!sval.empty() && sval != defaults.fontstyle) {
+        LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_fontstyle);
+        form.AddText(&sval, true);
+        lw->SetFormula(&form);
+        form.Clear();
+    }
+
+    // Shape
+    sval = LIBSBMLNETWORK_CPP_NAMESPACE::getGeometricShapeType(doc, varid);
+    if (!sval.empty() && sval != defaults.shape) {
+        LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_shape);
+        form.AddText(&sval, true);
+        lw->SetFormula(&form);
+        form.Clear();
+    }
+
+
+}
+
 
 void Module::LoadLayout(Model* sbml)
 {
@@ -3522,8 +3665,9 @@ void Module::LoadLayout(Model* sbml)
         defaults[varSpeciesUndef] = getDefaultSpeciesLayoutInfo(new_style, m_speciesLayouts, doc);
         defaults[varReactionUndef] = getDefaultReactionLayoutInfo(new_style, m_reactionLayouts, doc);
         defaults[varCompartment] = getDefaultCompartmentLayoutInfo(new_style, m_compartmentLayouts, doc);
+        defaults[varLayoutWrapper] = defaults[varSpeciesUndef];
+        updateEmptySpeciesLayoutInfo(defaults[varLayoutWrapper]);
 
-        Formula form;
         for (size_t v = 0; v < m_variables.size(); v++) {
             Variable* var = m_variables[v];
             var_type type = var->GetType();
@@ -3531,6 +3675,7 @@ void Module::LoadLayout(Model* sbml)
             case varSpeciesUndef:
             case varCompartment:
             case varReactionUndef:
+            case varLayoutWrapper:
                 break;
             case varDNA:
             case varReactionGene:
@@ -3542,7 +3687,6 @@ void Module::LoadLayout(Model* sbml)
             case varUndefined:
             case varSboTermWrapper:
             case varUncertWrapper:
-            case varLayoutWrapper:
             case varLayoutColorEtc:
             case varModule:
             case varEvent:
@@ -3555,119 +3699,8 @@ void Module::LoadLayout(Model* sbml)
                 continue;
             }
             string varid = var->GetNameDelimitedBy("_");
-            double val = 0.0;
-            string sval = "";
 
-            // Position
-            val = LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(doc, varid);
-            double valy = LIBSBMLNETWORK_CPP_NAMESPACE::getPositionY(doc, varid);
-            if ((val || valy) && (!isnan(val) || !isnan(valy)) ) {
-                LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_position);
-                string text = "{";
-                form.AddText(&text, true);
-                form.AddNum(val);
-                text = ",";
-                form.AddText(&text, true);
-                form.AddNum(valy);
-                text = "}";
-                form.AddText(&text, true);
-
-                lw->SetFormula(&form);
-                form.Clear();
-            }
-
-            // Size
-            val = LIBSBMLNETWORK_CPP_NAMESPACE::getDimensionWidth(doc, varid);
-            double valh = LIBSBMLNETWORK_CPP_NAMESPACE::getDimensionHeight(doc, varid);
-            if (((val || valh) && (!isnan(val) || !isnan(valh)) && (val != defaults[type].width || valh != defaults[type].height))) {
-                LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_size);
-                string text = "{";
-                form.AddText(&text, true);
-                form.AddNum(val);
-                text = ",";
-                form.AddText(&text, true);
-                form.AddNum(valh);
-                text = "}";
-                form.AddText(&text, true);
-
-                lw->SetFormula(&form);
-                form.Clear();
-            }
-
-            // Fill color
-            sval = LIBSBMLNETWORK_CPP_NAMESPACE::getFillColor(doc, varid);
-            sval = convertColorIfNeeded(sval, doc);
-            if (!sval.empty() && sval != defaults[type].color) {
-                LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_color);
-                form.AddText(&sval, true);
-                lw->SetFormula(&form);
-                form.Clear();
-            }
-
-            // Line color
-            sval = LIBSBMLNETWORK_CPP_NAMESPACE::getStrokeColor(doc, varid);
-            sval = convertColorIfNeeded(sval, doc);
-            if (!sval.empty() && sval != defaults[type].linecolor) {
-                LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_linecolor);
-                form.AddText(&sval, true);
-                lw->SetFormula(&form);
-                form.Clear();
-            }
-
-            // Linewidth
-            val = LIBSBMLNETWORK_CPP_NAMESPACE::getStrokeWidth(doc, varid);
-            if (val && !isnan(val) && val != defaults[type].linewidth) {
-                LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_linewidth);
-                form.AddNum(val);
-                lw->SetFormula(&form);
-                form.Clear();
-            }
-
-            // Font
-            sval = LIBSBMLNETWORK_CPP_NAMESPACE::getFontFamily(doc, varid);
-            if (!sval.empty() && sval != defaults[type].font) {
-                LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_font);
-                form.AddText(&sval, true);
-                lw->SetFormula(&form);
-                form.Clear();
-            }
-
-            // Font color
-            sval = LIBSBMLNETWORK_CPP_NAMESPACE::getFontColor(doc, varid);
-            sval = convertColorIfNeeded(sval, doc);
-            if (!sval.empty() && sval != defaults[type].fontcolor) {
-                LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_fontcolor);
-                form.AddText(&sval, true);
-                lw->SetFormula(&form);
-                form.Clear();
-            }
-
-            // Font size
-            val = LIBSBMLNETWORK_CPP_NAMESPACE::getFontSizeAsDouble(doc, varid);
-            if (val && !isnan(val) && val != defaults[type].fontsize) {
-                LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_fontsize);
-                form.AddNum(val);
-                lw->SetFormula(&form);
-                form.Clear();
-            }
-
-            // Font style
-            sval = getFontStyleFrom(LIBSBMLNETWORK_CPP_NAMESPACE::getFontStyle(doc, varid), LIBSBMLNETWORK_CPP_NAMESPACE::getFontWeight(doc, varid));
-            if (!sval.empty() && sval != defaults[type].fontstyle) {
-                LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_fontstyle);
-                form.AddText(&sval, true);
-                lw->SetFormula(&form);
-                form.Clear();
-            }
-
-            // Shape
-            sval = LIBSBMLNETWORK_CPP_NAMESPACE::getGeometricShapeType(doc, varid);
-            if (!sval.empty() && sval != defaults[type].shape) {
-                LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_shape);
-                form.AddText(&sval, true);
-                lw->SetFormula(&form);
-                form.Clear();
-            }
+            loadOneVariable(var, doc, varid, defaults[type]);
 
             if (IsReaction(type)) {
                 unsigned int nSpecRefs = LIBSBMLNETWORK_CPP_NAMESPACE::getNumSpeciesReferences(doc, varid, 0);
@@ -3681,6 +3714,7 @@ void Module::LoadLayout(Model* sbml)
                     }
                     involvedSpecies.insert(sr_id);
                     int nrefs = LIBSBMLNETWORK_CPP_NAMESPACE::getNumSpeciesReferencesAssociatedWithSpecies(doc, sr_id, varid);
+                    Formula form;
                     for (int ref = 0; ref < nrefs; ref++) {
                         int sr_index = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceIndexAssociatedWithSpecies(doc, sr_id, varid, 0, ref);
                         string role = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceRole(doc, varid, 0, sr_index);

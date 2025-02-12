@@ -340,6 +340,7 @@ private:
   std::string ValidateLayoutArgument(const std::string* argument);
   std::string GetAntimonyGeneralLayout(const std::string& indent) const;
   std::string GetAntimonyTypeLayouts(const std::string& indent) const;
+  void AddEmptyGlyphsFromReaction(Variable* reaction, const std::string& rxnid, libsbml::SBMLDocument* origdoc);
   void  LoadLayout(libsbml::Model* sbml);
 #endif
 #endif

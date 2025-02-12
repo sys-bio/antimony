@@ -530,7 +530,7 @@ Variable* Variable::GetSubVariable(const string* name)
   if (IsReaction(m_type)) {
       Module* mod = g_registry.GetModule(m_module);
       Variable* var = mod->GetSubVariable(name);
-      if (var != NULL && IsSpecies(var->GetType())) {
+      if ((var != NULL && IsSpecies(var->GetType())) || *name == "--") {
           LayoutWrapper* lw = GetReactionArcLayoutWrapper(name);
           lw->setSpeciesIndex(0);
           lw->setSegmentIndex(0);
@@ -2548,7 +2548,7 @@ bool Variable::TransferAnnotationTo(SBase * sbmlobj, string metaid) const
   return Annotated::TransferAnnotationTo(sbmlobj, metaid);
 }
 
-bool Variable::TransferLayoutInformationTo(SBMLDocument* sbml) const
+bool Variable::TransferLayoutInformationTo(SBMLDocument* sbml)
 {
     if (IsPointer()) {
         return GetSameVariable()->TransferLayoutInformationTo(sbml);

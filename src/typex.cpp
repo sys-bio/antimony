@@ -351,6 +351,7 @@ bool IsPair(const layout_type ltype)
     case lt_position:
     case lt_size:
     case lt_reactionArc:
+    case lt_sourceSink:
         return true;
     }
     assert(false);
@@ -635,6 +636,8 @@ string LayoutTypeToString(const layout_type ltype)
         return "shape";
     case lt_reactionArc:
         return "reaction arc";
+    case lt_sourceSink:
+        return "--";
     case lt_unknown:
         return "unknown";
     }
@@ -813,9 +816,9 @@ string ArcTypeToString(const arc_type type)
 {
     switch (type) {
     case at_spec:
-        return "position";
+        return "species_pos";
     case at_rxn:
-        return "rxn";
+        return "rxn_pos";
     case at_b1:
         return "b1";
     case at_b2:

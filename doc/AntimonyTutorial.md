@@ -61,6 +61,7 @@ This guide will show you the intricacies of working with Antimony.
     - [Positioning model elements](#positioning-model-elements)
     - [Sizing model elements](#sizing-model-elements)
     - [Reaction arcs](#reaction-arcs)
+    - [Reaction source/sinks](#reaction-source-sinks)
     - [General styles](#general-styles)
     - [Style settings](#style-settings)
   - [Appendix: Converting between SBML and Antimony](#appendix-converting-between-sbml-and-antimony)
@@ -1960,18 +1961,18 @@ Each arc is defined by three points:  the start, the end, and two 'base points' 
 
 ```
  J0.position = {80.54, 153.07}
- J0.S1.position = {50.89, 74.02}
+ J0.S1.species_pos = {50.89, 74.02}
  J0.S1.b1 = {71.04, 129.94}
  J0.S1.b2 = {47.91, 124.31}
 ```
 
-The arc is specified by the reaction and the species it goes to, hence 'J0.S1'.  'position' in this case means 'the position of the species end of the line'.
+The arc is specified by the reaction and the species it goes to, hence 'J0.S1'.  'species_pos' in this case means 'the position of the species end of the line'.
 
-If the reaction side of the line does not end at the reaction itself (for example, when a species suppresses or activates a reaction), the reaction end point is defined with the keyword 'rxn':
+If the reaction side of the line does not end at the reaction itself (for example, when a species suppresses or activates a reaction), the reaction end point is defined with the keyword 'rxn_pos':
 
 ```
- J0.S3.position = {61.17, 259.07}
- J0.S3.rxn = {72.09, 165.65}
+ J0.S3.species_pos = {61.17, 259.07}
+ J0.S3.rxn_pos = {72.09, 165.65}
  J0.S3.b1 = {62.93, 215.94}
  J0.S3.b2 = {71.6, 170.62}
 ```
@@ -1979,15 +1980,15 @@ If the reaction side of the line does not end at the reaction itself (for exampl
 When a species has a non-unit stoichiometry, there are two or more lines that go from the reaction to that species.  These can be defined by adding 'arc#' to the ID:
 
 ```
- J0.S1.arc1.position = {183.1, 295.73}
+ J0.S1.arc1.species_pos = {183.1, 295.73}
  J0.S1.arc1.b1 = {84.54, 173.18}
  J0.S1.arc1.b2 = {177.02, 245.98}
- J0.S1.arc2.position = {162.46, 300.81}
+ J0.S1.arc2.species_pos = {162.46, 300.81}
  J0.S1.arc2.b1 = {84.54, 173.18}
  J0.S1.arc2.b2 = {144.73, 253.94}
 ```
 
-The 'arc1' isn't required, as an id like "J0.S1.position" is assumed to be 'the first arc from J0 to S1'.
+The 'arc1' isn't required, as an id like "J0.S1.species_pos" is assumed to be 'the first arc from J0 to S1'.
 
 Here is a fully-defined Antimony layout that illustrates all of the above.  It was generated with the input:
 
@@ -2010,17 +2011,17 @@ Translated to SBML with the use of the autolayout algorithm, then translated bac
  S2.position = {286.19, 30}
  S3.position = {30, 318.49}
  J0.position = {245.06, 262.71}
- J0.S1.position = {373.71, 391.49}
+ J0.S1.species_pos = {373.71, 391.49}
  J0.S1.b1 = {262.59, 280.54}
  J0.S1.b2 = {311.8, 369.76}
- J0.S1.arc2.position = {367.84, 418.65}
+ J0.S1.arc2.species_pos = {367.84, 418.65}
  J0.S1.arc2.b1 = {262.59, 280.54}
  J0.S1.arc2.b2 = {302.49, 412.92}
- J0.S2.position = {311.57, 74.96}
+ J0.S2.species_pos = {311.57, 74.96}
  J0.S2.b1 = {227.53, 244.88}
  J0.S2.b2 = {304.63, 115.41}
- J0.S3.position = {99.01, 331.65}
- J0.S3.rxn = {231.12, 268.26}
+ J0.S3.species_pos = {99.01, 331.65}
+ J0.S3.rxn_pos = {231.12, 268.26}
  J0.S3.b1 = {157.51, 324.39}
  J0.S3.b2 = {226.48, 270.12}
 ```
@@ -2028,15 +2029,15 @@ Translated to SBML with the use of the autolayout algorithm, then translated bac
 For layouts not generated with the autolayout algorithm, it is possible for a line between a reaction and a species to be defined with multiple segments, one after the next.  For these, we introduce the keyword 'seg#'.  As with the 'arc#' keyword, the first segment does not need to be defined with a 'seg1', but a second must be defined with 'seg2'.  Here we define a line between J0 and S1 with three straight lines:
 
 ```
-J0.S1.seg1.position = {740, 992.6}
- J0.S1.seg1.rxn = {685, 1008}
+J0.S1.seg1.species_pos = {740, 992.6}
+ J0.S1.seg1.rxn_pos = {685, 1008}
  J0.S1.seg1.b1 = {740, 992.6}
  J0.S1.seg1.b2 = {685, 1008}
- J0.S1.seg2.position = {685, 1008}
- J0.S1.seg2.rxn = {685, 1092}
+ J0.S1.seg2.species_pos = {685, 1008}
+ J0.S1.seg2.rxn_pos = {685, 1092}
  J0.S1.seg2.b1 = {685, 1008}
  J0.S1.seg2.b2 = {685, 1092}
- J0.S1.seg3.position = {685, 1092}
+ J0.S1.seg3.species_pos = {685, 1092}
  J0.S1.seg3.b1 = {685, 1092}
  J0.S1.seg3.b2 = {685, 1118}
 ```
@@ -2046,7 +2047,24 @@ Note that to preserve continuity, the 'position' side of each segment is the sam
 If multiple arcs and segments exist, they can be combined:
 
 ```
-J0.S1.arc2.seg3.position = {740, 992}
+J0.S1.arc2.seg3.species_pos = {740, 992}
+```
+
+### Reaction source/sinks
+
+If a reaction has no reactants or if it has no products, SBMLNetwork will add a 'null' species glyph for that reaction.  This is translated to Antimony as the reaction ID followed by the string '.--', and you can set its position and other features with that ID:
+
+```
+   J0.--.position = {520, 483}
+   J0.--.color = blue
+```
+
+There will be a reaction arc going to that null glyph as well, which also uses the same ID:
+
+```
+   J0.--.species_pos = {373.71, 391.49}
+   J0.--.b1 = {262.59, 280.54}
+   J0.--.b2 = {311.8, 369.76}
 ```
 
 ### General styles

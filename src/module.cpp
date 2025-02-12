@@ -1299,6 +1299,7 @@ bool Module::Finalize()
           case varDNA:
           case varCompartment:
           case varStrand:
+          case varLayoutWrapper:
               // These are all allowed to have layout information.
               break;
           case varFormulaUndef:
@@ -1311,7 +1312,6 @@ bool Module::Finalize()
           case varConstraint:
           case varSboTermWrapper:
           case varUncertWrapper:
-          case varLayoutWrapper:
           case varStoichiometry:
           case varAlgebraicRule:
           case varLayoutColorEtc:
@@ -3534,6 +3534,7 @@ LayoutWrapper* CreateAndCheckLayoutWrapper(const std::string* type, Formula* for
         g_registry.SetError("Unable to set " + group + "." + *type + ": the position of each " + group + " is unique, so cannot collectively have a single position.");
         return NULL;
     case lt_unknown:
+    case lt_sourceSink:
         g_registry.SetError("Unable to set " + group + "." + *type + ": the allowed options here are 'height', 'width', 'size', 'color', 'font', 'fontsize', 'fontcolor' 'fontstyle', 'linewidth', 'linecolor', and 'shape'.");
         return NULL;
     case lt_height:
@@ -3636,6 +3637,7 @@ string Module::ValidateLayoutArgument(const string* argument)
     case lt_x:
     case lt_y:
     case lt_reactionArc:
+    case lt_sourceSink:
         g_registry.SetError("Cannot set 'layout." + *argument + "': every element has a different location, so it cannot be set for everything at once.");
         return "none";
     case lt_size:

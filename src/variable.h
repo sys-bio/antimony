@@ -201,7 +201,7 @@ public:
   //bool Synchronize(Variable* clone, SBase* foo);
   void SetWithRule(const libsbml::Rule* rule);
   virtual bool TransferAnnotationTo(libsbml::SBase* sbmlobj, std::string metaid) const;
-  virtual bool TransferLayoutInformationTo(libsbml::SBMLDocument* sbml) const;
+  virtual bool TransferLayoutInformationTo(libsbml::SBMLDocument* sbml);
   void ReadAnnotationFrom(const libsbml::SBase* sbmlobj);
   virtual size_t GetNumUncertWrappers() const;
   virtual size_t GetNumLayoutWrappers() const;
