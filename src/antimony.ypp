@@ -118,7 +118,7 @@ using namespace libsbml;
 %token  <word> AT "'at'"
 %token  <word> BECOMESREV "->"
 %token  <word> BECOMESINH "-|"
-%token  <word> BECOMESMOD2 "-o"
+%token  <word> BECOMESACT "-o"
 %token  <word> BECOMESIRREV "=>"
 %token  <word> COMPARTMENT "'compartment'"
 %token  <word> CONSTANT "name of a pre-defined constant"
@@ -456,7 +456,7 @@ reactionDivider:
                 BECOMESREV {$$ = rdBecomes;}
         |       BECOMESINH {$$ = rdInhibits;}
         |       '-' '(' {$$ = rdInfluences;}
-        |       BECOMESMOD2 {$$ = rdInfluences;}
+        |       BECOMESACT {$$ = rdActivates;}
         |       BECOMESIRREV {$$ = rdBecomesIrreversibly;}
         ;
 
@@ -1057,7 +1057,7 @@ int antimony_yylex(void)
       g_registry.input->get(nextchar);
       g_registry.input->unget();
       if (nextchar == ' ' || nextchar == ';') {
-        return BECOMESMOD2;
+        return BECOMESACT;
       }
     }
     g_registry.input->unget();

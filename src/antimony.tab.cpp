@@ -165,7 +165,7 @@ extern int antimony_yydebug;
     AT = 263,                      /* "'at'"  */
     BECOMESREV = 264,              /* "->"  */
     BECOMESINH = 265,              /* "-|"  */
-    BECOMESMOD2 = 266,             /* "-o"  */
+    BECOMESACT = 266,              /* "-o"  */
     BECOMESIRREV = 267,            /* "=>"  */
     COMPARTMENT = 268,             /* "'compartment'"  */
     CONSTANT = 269,                /* "name of a pre-defined constant"  */
@@ -273,7 +273,7 @@ enum yysymbol_kind_t
   YYSYMBOL_AT = 18,                        /* "'at'"  */
   YYSYMBOL_BECOMESREV = 19,                /* "->"  */
   YYSYMBOL_BECOMESINH = 20,                /* "-|"  */
-  YYSYMBOL_BECOMESMOD2 = 21,               /* "-o"  */
+  YYSYMBOL_BECOMESACT = 21,                /* "-o"  */
   YYSYMBOL_BECOMESIRREV = 22,              /* "=>"  */
   YYSYMBOL_COMPARTMENT = 23,               /* "'compartment'"  */
   YYSYMBOL_CONSTANT = 24,                  /* "name of a pre-defined constant"  */
@@ -2893,7 +2893,7 @@ yyreduce:
 
   case 103: /* reactionDivider: "-o"  */
 #line 459 "antimony.ypp"
-                            {(yyval.reactionDivider) = rdInfluences;}
+                           {(yyval.reactionDivider) = rdActivates;}
 #line 2898 "antimony.tab.cpp"
     break;
 
@@ -4457,7 +4457,7 @@ int antimony_yylex(void)
       g_registry.input->get(nextchar);
       g_registry.input->unget();
       if (nextchar == ' ' || nextchar == ';') {
-        return BECOMESMOD2;
+        return BECOMESACT;
       }
     }
     g_registry.input->unget();

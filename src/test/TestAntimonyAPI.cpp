@@ -591,7 +591,7 @@ START_TEST (test_printAll)
 "k2*S2*S3\n"
 "\n"
 "Interactions:\n"
-"_J1: S3 -( J1 ; \n"
+"_J1: S3 -o J1 ; \n"
 "\n"
 "Events\n"
 "E0: at (time > 2): a=0\n"

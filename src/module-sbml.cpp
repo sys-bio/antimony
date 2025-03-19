@@ -1473,10 +1473,28 @@ void Module::LoadSBML(Model* sbml)
         sbmlname = getNameFromSBMLObject(msr, "_I");
         rd_type itype = rdInfluences;
         if (msr->isSetSBOTerm()) {
-          if (msr->getSBOTerm() == 20) {
+            int sboterm = msr->getSBOTerm();
+          if ((sboterm == 20) ||
+              (sboterm == 206) ||
+              (sboterm == 207) ||
+              (sboterm == 597) ||
+              (sboterm == 638) ||
+              (sboterm == 639) ||
+              (sboterm == 640)) {
             itype = rdInhibits;
           }
-          else if (msr->getSBOTerm() == 459) {
+          else if ((sboterm == 459) || //459 is the 'root' term for this family.
+              (sboterm == 13) ||
+              (sboterm == 21) ||
+              (sboterm == 460) ||
+              (sboterm == 461) ||
+              (sboterm == 462) ||
+              (sboterm == 533) ||
+              (sboterm == 534) ||
+              (sboterm == 535) ||
+              (sboterm == 636) ||
+              (sboterm == 637) ||
+              (sboterm == 671) ) {
             itype = rdActivates;
           }
         }

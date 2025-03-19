@@ -324,7 +324,7 @@ END_TEST
 
 START_TEST(test_interactionActivationDashO_txt)
 {
-    compareStringTranslation("J0: S1->;- o*S2;Ji: S2 -o J0;", "interactionActivationDashO.xml");
+    compareStringTranslation("J0: S1->; -o*S2;Ji: S2 -o J0;", "interactionActivationDashO.xml");
 }
 END_TEST
 
