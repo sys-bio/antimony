@@ -3728,7 +3728,7 @@ string Module::GetAntimonyGeneralLayout(const string& indent) const
         ret << indent << "model.layout.width = " << m_layout.width << endl;
     }
     if (m_layout.style != "") {
-        ret << indent << "model.layout.style = " << m_layout.style << endl;
+        ret << indent << "model.layout.style = \"" << m_layout.style << "\"" << endl;
     }
     if (m_layout.background != "") {
         string colorstring;
