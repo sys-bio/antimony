@@ -2473,7 +2473,7 @@ void Module::CreateSBMLModel(bool comp)
   if (m_autolayout.use) {
       LIBSBMLNETWORK_CPP_NAMESPACE::autorender(&m_sbml, m_autolayout.maxNumConnectedEdges);
       //LIBSBMLNETWORK_CPP_NAMESPACE::setUseNameAsTextLabel(&m_sbml, 0, m_autolayout.useNameAsTextLabel);
-      //For some reason, the following line is REQUIRED; otherwise I get linking errors(!) about how 'autolayout' is missing.  WTF?? LS DEBUG
+      //For some reason, the following line is REQUIRED; otherwise I get linking errors(!) about how 'autolayout' is missing.  WTF?? LS DEBUG  //...and now it's fine?
       //LIBSBMLNETWORK_CPP_NAMESPACE::getSBMLObject(&m_sbml, "S1");
       if (m_layout.width != 0) {
           LIBSBMLNETWORK_CPP_NAMESPACE::setDimensionWidth(&m_sbml, m_layout.width);
@@ -3211,8 +3211,8 @@ string convertColorIfNeeded(string sval, SBMLDocument* doc)
 layoutInfo getDefaultSpeciesLayoutInfo(map<string, string> style, std::vector<LayoutWrapper*>& speciesLayouts, SBMLDocument* doc)
 {
     layoutInfo ret;
-    ret.width = 60;
-    ret.height = 36;
+    ret.width = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesDimensionWidth();
+    ret.height = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesDimensionHeight();
 
     ret.color = style["species-fill-color"];
     string color = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesFillColor(doc);
@@ -3423,6 +3423,8 @@ layoutInfo getDefaultCompartmentLayoutInfo(map<string, string> style, std::vecto
 layoutInfo getDefaultReactionLayoutInfo(map<string, string> style, std::vector<LayoutWrapper*>& reactionLayouts, SBMLDocument* doc)
 {
     layoutInfo ret;
+    ret.width = LIBSBMLNETWORK_CPP_NAMESPACE::getReactionDimensionWidth();
+    ret.height = LIBSBMLNETWORK_CPP_NAMESPACE::getReactionDimensionHeight();
 
     ret.color = style["reaction-fill-color"];
     string color = LIBSBMLNETWORK_CPP_NAMESPACE::getReactionFillColor(doc);
@@ -3531,6 +3533,15 @@ void Module::AddEmptyGlyphsFromReaction(Variable* reaction, const std::string& r
         }
     }
 }
+vector<string> getConnectedReactionsForAgain(SBMLDocument* sbml, const string& sid, unsigned int alias)
+{
+    vector<string> ret;
+    if (alias > 0) {
+        ret.push_back("J1");
+    }
+    return ret;
+}
+
 
 void loadOneVariable(Variable* var, SBMLDocument* doc, string varid, const layoutInfo& defaults)
 {
@@ -3538,117 +3549,124 @@ void loadOneVariable(Variable* var, SBMLDocument* doc, string varid, const layou
     double val = 0.0;
     string sval = "";
 
-    // Position
-    val = LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(doc, varid);
-    double valy = LIBSBMLNETWORK_CPP_NAMESPACE::getPositionY(doc, varid);
-    if ((val || valy) && (!isnan(val) || !isnan(valy))) {
-        LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_position);
-        string text = "{";
-        form.AddText(&text, true);
-        form.AddNum(val);
-        text = ",";
-        form.AddText(&text, true);
-        form.AddNum(valy);
-        text = "}";
-        form.AddText(&text, true);
+    int naliases = LIBSBMLNETWORK_CPP_NAMESPACE::getNumGraphicalObjects(doc, varid);
+    for (int alias = 0; alias < naliases; alias++) {
+        string glyphId = LIBSBMLNETWORK_CPP_NAMESPACE::getId(doc, 0, varid, alias);
+        vector<string> rxnIDs;
+        if (alias > 0 && IsSpecies(var->GetType())) {
+            rxnIDs = getConnectedReactionsForAgain(doc, varid, alias);
+        }
+        // Position
+        val = LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(doc, glyphId);
+        double valy = LIBSBMLNETWORK_CPP_NAMESPACE::getPositionY(doc, glyphId);
+        if ((val || valy) && (!isnan(val) || !isnan(valy))) {
+            LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_position, alias, rxnIDs);
+            string text = "{";
+            form.AddText(&text, true);
+            form.AddNum(val);
+            text = ",";
+            form.AddText(&text, true);
+            form.AddNum(valy);
+            text = "}";
+            form.AddText(&text, true);
 
-        lw->SetFormula(&form);
-        form.Clear();
+            lw->SetFormula(&form);
+            form.Clear();
+        }
+
+        // Size
+        val = LIBSBMLNETWORK_CPP_NAMESPACE::getDimensionWidth(doc, glyphId);
+        double valh = LIBSBMLNETWORK_CPP_NAMESPACE::getDimensionHeight(doc, glyphId);
+        if (((val || valh) && (!isnan(val) || !isnan(valh)) && (val != defaults.width || valh != defaults.height))) {
+            LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_size, alias, rxnIDs);
+            string text = "{";
+            form.AddText(&text, true);
+            form.AddNum(val);
+            text = ",";
+            form.AddText(&text, true);
+            form.AddNum(valh);
+            text = "}";
+            form.AddText(&text, true);
+
+            lw->SetFormula(&form);
+            form.Clear();
+        }
+
+        // Fill color
+        sval = LIBSBMLNETWORK_CPP_NAMESPACE::getFillColor(doc, glyphId);
+        sval = convertColorIfNeeded(sval, doc);
+        if (!sval.empty() && sval != defaults.color) {
+            LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_color, alias, rxnIDs);
+            form.AddText(&sval, true);
+            lw->SetFormula(&form);
+            form.Clear();
+        }
+
+        // Line color
+        sval = LIBSBMLNETWORK_CPP_NAMESPACE::getStrokeColor(doc, glyphId);
+        sval = convertColorIfNeeded(sval, doc);
+        if (!sval.empty() && sval != defaults.linecolor) {
+            LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_linecolor, alias, rxnIDs);
+            form.AddText(&sval, true);
+            lw->SetFormula(&form);
+            form.Clear();
+        }
+
+        // Linewidth
+        val = LIBSBMLNETWORK_CPP_NAMESPACE::getStrokeWidth(doc, glyphId);
+        if (val && !isnan(val) && val != defaults.linewidth) {
+            LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_linewidth, alias, rxnIDs);
+            form.AddNum(val);
+            lw->SetFormula(&form);
+            form.Clear();
+        }
+
+        // Font
+        sval = LIBSBMLNETWORK_CPP_NAMESPACE::getFontFamily(doc, glyphId);
+        if (!sval.empty() && sval != defaults.font) {
+            LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_font, alias, rxnIDs);
+            form.AddText(&sval, true);
+            lw->SetFormula(&form);
+            form.Clear();
+        }
+
+        // Font color
+        sval = LIBSBMLNETWORK_CPP_NAMESPACE::getFontColor(doc, glyphId);
+        sval = convertColorIfNeeded(sval, doc);
+        if (!sval.empty() && sval != defaults.fontcolor) {
+            LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_fontcolor, alias, rxnIDs);
+            form.AddText(&sval, true);
+            lw->SetFormula(&form);
+            form.Clear();
+        }
+
+        // Font size
+        val = LIBSBMLNETWORK_CPP_NAMESPACE::getFontSizeAsDouble(doc, glyphId);
+        if (val && !isnan(val) && val != defaults.fontsize) {
+            LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_fontsize, alias, rxnIDs);
+            form.AddNum(val);
+            lw->SetFormula(&form);
+            form.Clear();
+        }
+
+        // Font style
+        sval = getFontStyleFrom(LIBSBMLNETWORK_CPP_NAMESPACE::getFontStyle(doc, glyphId), LIBSBMLNETWORK_CPP_NAMESPACE::getFontWeight(doc, glyphId));
+        if (!sval.empty() && sval != defaults.fontstyle) {
+            LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_fontstyle, alias, rxnIDs);
+            form.AddText(&sval, true);
+            lw->SetFormula(&form);
+            form.Clear();
+        }
+
+        // Shape
+        sval = LIBSBMLNETWORK_CPP_NAMESPACE::getGeometricShapeType(doc, glyphId);
+        if (!sval.empty() && sval != defaults.shape) {
+            LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_shape, alias, rxnIDs);
+            form.AddText(&sval, true);
+            lw->SetFormula(&form);
+            form.Clear();
+        }
     }
-
-    // Size
-    val = LIBSBMLNETWORK_CPP_NAMESPACE::getDimensionWidth(doc, varid);
-    double valh = LIBSBMLNETWORK_CPP_NAMESPACE::getDimensionHeight(doc, varid);
-    if (((val || valh) && (!isnan(val) || !isnan(valh)) && (val != defaults.width || valh != defaults.height))) {
-        LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_size);
-        string text = "{";
-        form.AddText(&text, true);
-        form.AddNum(val);
-        text = ",";
-        form.AddText(&text, true);
-        form.AddNum(valh);
-        text = "}";
-        form.AddText(&text, true);
-
-        lw->SetFormula(&form);
-        form.Clear();
-    }
-
-    // Fill color
-    sval = LIBSBMLNETWORK_CPP_NAMESPACE::getFillColor(doc, varid);
-    sval = convertColorIfNeeded(sval, doc);
-    if (!sval.empty() && sval != defaults.color) {
-        LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_color);
-        form.AddText(&sval, true);
-        lw->SetFormula(&form);
-        form.Clear();
-    }
-
-    // Line color
-    sval = LIBSBMLNETWORK_CPP_NAMESPACE::getStrokeColor(doc, varid);
-    sval = convertColorIfNeeded(sval, doc);
-    if (!sval.empty() && sval != defaults.linecolor) {
-        LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_linecolor);
-        form.AddText(&sval, true);
-        lw->SetFormula(&form);
-        form.Clear();
-    }
-
-    // Linewidth
-    val = LIBSBMLNETWORK_CPP_NAMESPACE::getStrokeWidth(doc, varid);
-    if (val && !isnan(val) && val != defaults.linewidth) {
-        LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_linewidth);
-        form.AddNum(val);
-        lw->SetFormula(&form);
-        form.Clear();
-    }
-
-    // Font
-    sval = LIBSBMLNETWORK_CPP_NAMESPACE::getFontFamily(doc, varid);
-    if (!sval.empty() && sval != defaults.font) {
-        LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_font);
-        form.AddText(&sval, true);
-        lw->SetFormula(&form);
-        form.Clear();
-    }
-
-    // Font color
-    sval = LIBSBMLNETWORK_CPP_NAMESPACE::getFontColor(doc, varid);
-    sval = convertColorIfNeeded(sval, doc);
-    if (!sval.empty() && sval != defaults.fontcolor) {
-        LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_fontcolor);
-        form.AddText(&sval, true);
-        lw->SetFormula(&form);
-        form.Clear();
-    }
-
-    // Font size
-    val = LIBSBMLNETWORK_CPP_NAMESPACE::getFontSizeAsDouble(doc, varid);
-    if (val && !isnan(val) && val != defaults.fontsize) {
-        LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_fontsize);
-        form.AddNum(val);
-        lw->SetFormula(&form);
-        form.Clear();
-    }
-
-    // Font style
-    sval = getFontStyleFrom(LIBSBMLNETWORK_CPP_NAMESPACE::getFontStyle(doc, varid), LIBSBMLNETWORK_CPP_NAMESPACE::getFontWeight(doc, varid));
-    if (!sval.empty() && sval != defaults.fontstyle) {
-        LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_fontstyle);
-        form.AddText(&sval, true);
-        lw->SetFormula(&form);
-        form.Clear();
-    }
-
-    // Shape
-    sval = LIBSBMLNETWORK_CPP_NAMESPACE::getGeometricShapeType(doc, varid);
-    if (!sval.empty() && sval != defaults.shape) {
-        LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_shape);
-        form.AddText(&sval, true);
-        lw->SetFormula(&form);
-        form.Clear();
-    }
-
 
 }
 
@@ -3721,92 +3739,97 @@ void Module::LoadLayout(Model* sbml)
             loadOneVariable(var, doc, varid, defaults[type]);
 
             if (IsReaction(type)) {
-                unsigned int nSpecRefs = LIBSBMLNETWORK_CPP_NAMESPACE::getNumSpeciesReferences(doc, varid, 0);
-                double rxnX = LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(doc, varid);
-                double rxnY = LIBSBMLNETWORK_CPP_NAMESPACE::getPositionY(doc, varid);
-                set<string> involvedSpecies;
-                for (unsigned int sr = 0; sr < nSpecRefs; sr++) {
-                    string sr_id = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceSpeciesId(doc, 0, varid, 0, sr);
-                    if (involvedSpecies.find(sr_id) != involvedSpecies.end()) {
-                        continue;
-                    }
-                    involvedSpecies.insert(sr_id);
-                    int nrefs = LIBSBMLNETWORK_CPP_NAMESPACE::getNumSpeciesReferencesAssociatedWithSpecies(doc, sr_id, varid);
-                    Formula form;
-                    for (int ref = 0; ref < nrefs; ref++) {
-                        int sr_index = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceIndexAssociatedWithSpecies(doc, sr_id, varid, 0, ref);
-                        string role = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceRole(doc, varid, 0, sr_index);
-                        int nsegs = LIBSBMLNETWORK_CPP_NAMESPACE::getNumSpeciesReferenceCurveSegments(doc, varid, 0, sr_index);
-                        for (int segment = 0; segment < nsegs; segment++) {
-                            //Start
-                            double x = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointX(doc, varid, 0, sr_index, segment);
-                            double y = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointY(doc, varid, 0, sr_index, segment);
-                            if (!(isnan(x) || isnan(y))) {
-                                if (x != rxnX && y != rxnY) {
-                                    LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_reactionArc);
+                vector<string> noRxnIds;
+                int naliases = LIBSBMLNETWORK_CPP_NAMESPACE::getNumGraphicalObjects(doc, varid);
+                for (int alias = 0; alias < naliases; alias++) {
+                    string glyphId = LIBSBMLNETWORK_CPP_NAMESPACE::getId(doc, 0, varid, alias);
+                    unsigned int nSpecRefs = LIBSBMLNETWORK_CPP_NAMESPACE::getNumSpeciesReferences(doc, varid, alias);
+                    double rxnX = LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(doc, glyphId);
+                    double rxnY = LIBSBMLNETWORK_CPP_NAMESPACE::getPositionY(doc, glyphId);
+                    set<string> involvedSpecies;
+                    for (unsigned int sr = 0; sr < nSpecRefs; sr++) {
+                        string sr_id = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceSpeciesId(doc, 0, varid, alias, sr);
+                        if (involvedSpecies.find(sr_id) != involvedSpecies.end()) {
+                            continue;
+                        }
+                        involvedSpecies.insert(sr_id);
+                        int nrefs = LIBSBMLNETWORK_CPP_NAMESPACE::getNumSpeciesReferencesAssociatedWithSpecies(doc, sr_id, varid, alias);
+                        Formula form;
+                        for (int ref = 0; ref < nrefs; ref++) {
+                            int sr_index = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceIndexAssociatedWithSpecies(doc, sr_id, varid, alias, ref);
+                            string role = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceRole(doc, varid, alias, sr_index);
+                            int nsegs = LIBSBMLNETWORK_CPP_NAMESPACE::getNumSpeciesReferenceCurveSegments(doc, varid, alias, sr_index);
+                            for (int segment = 0; segment < nsegs; segment++) {
+                                //Start
+                                double x = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointX(doc, varid, alias, sr_index, segment);
+                                double y = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointY(doc, varid, alias, sr_index, segment);
+                                if (!(isnan(x) || isnan(y))) {
+                                    if (x != rxnX && y != rxnY) {
+                                        LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_reactionArc, alias, noRxnIds);
+                                        form.AddVectorOfTwoValues(x, y);
+                                        lw->SetFormula(&form);
+                                        form.Clear();
+                                        lw->setSpeciesId(&sr_id);
+                                        if (startsAtReaction(role)) {
+                                            lw->setArcType(at_rxn);
+                                        }
+                                        else {
+                                            lw->setArcType(at_spec);
+                                        }
+
+                                        lw->setSpeciesIndex(ref);
+                                        lw->setSegmentIndex(segment);
+                                    }
+                                }
+
+                                //End
+                                x = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointX(doc, varid, alias, sr_index, segment);
+                                y = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointY(doc, varid, alias, sr_index, segment);
+                                if (!(isnan(x) || isnan(y))) {
+                                    if (x != rxnX && y != rxnY) {
+                                        LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_reactionArc, alias, noRxnIds);
+                                        form.AddVectorOfTwoValues(x, y);
+                                        lw->SetFormula(&form);
+                                        form.Clear();
+                                        lw->setSpeciesId(&sr_id);
+                                        if (startsAtReaction(role)) {
+                                            lw->setArcType(at_spec);
+                                        }
+                                        else {
+                                            lw->setArcType(at_rxn);
+                                        }
+                                        lw->setSpeciesIndex(ref);
+                                        lw->setSegmentIndex(segment);
+                                    }
+                                }
+
+                                //Base point 1
+                                x = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1X(doc, varid, alias, sr_index, segment);
+                                y = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1Y(doc, varid, alias, sr_index, segment);
+                                if (!(isnan(x) || isnan(y))) {
+                                    LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_reactionArc, alias, noRxnIds);
                                     form.AddVectorOfTwoValues(x, y);
                                     lw->SetFormula(&form);
                                     form.Clear();
                                     lw->setSpeciesId(&sr_id);
-                                    if (startsAtReaction(role)) {
-                                        lw->setArcType(at_rxn);
-                                    }
-                                    else {
-                                        lw->setArcType(at_spec);
-                                    }
-
+                                    lw->setArcType(at_b1);
                                     lw->setSpeciesIndex(ref);
                                     lw->setSegmentIndex(segment);
                                 }
-                            }
 
-                            //End
-                            x = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointX(doc, varid, 0, sr_index, segment);
-                            y = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointY(doc, varid, 0, sr_index, segment);
-                            if (!(isnan(x) || isnan(y))) {
-                                if (x != rxnX && y != rxnY) {
-                                    LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_reactionArc);
+                                //Base point 2
+                                x = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint2X(doc, varid, alias, sr_index, segment);
+                                y = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint2Y(doc, varid, alias, sr_index, segment);
+                                if (!(isnan(x) || isnan(y))) {
+                                    LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_reactionArc, alias, noRxnIds);
                                     form.AddVectorOfTwoValues(x, y);
                                     lw->SetFormula(&form);
                                     form.Clear();
                                     lw->setSpeciesId(&sr_id);
-                                    if (startsAtReaction(role)) {
-                                        lw->setArcType(at_spec);
-                                    }
-                                    else {
-                                        lw->setArcType(at_rxn);
-                                    }
+                                    lw->setArcType(at_b2);
                                     lw->setSpeciesIndex(ref);
                                     lw->setSegmentIndex(segment);
                                 }
-                            }
-
-                            //Base point 1
-                            x = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1X(doc, varid, 0, sr_index, segment);
-                            y = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1Y(doc, varid, 0, sr_index, segment);
-                            if (!(isnan(x) || isnan(y))) {
-                                LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_reactionArc);
-                                form.AddVectorOfTwoValues(x, y);
-                                lw->SetFormula(&form);
-                                form.Clear();
-                                lw->setSpeciesId(&sr_id);
-                                lw->setArcType(at_b1);
-                                lw->setSpeciesIndex(ref);
-                                lw->setSegmentIndex(segment);
-                            }
-
-                            //Base point 2
-                            x = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint2X(doc, varid, 0, sr_index, segment);
-                            y = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint2Y(doc, varid, 0, sr_index, segment);
-                            if (!(isnan(x) || isnan(y))) {
-                                LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_reactionArc);
-                                form.AddVectorOfTwoValues(x, y);
-                                lw->SetFormula(&form);
-                                form.Clear();
-                                lw->setSpeciesId(&sr_id);
-                                lw->setArcType(at_b2);
-                                lw->setSpeciesIndex(ref);
-                                lw->setSegmentIndex(segment);
                             }
                         }
                     }

@@ -15,6 +15,8 @@ protected:
   int m_speciesIndex;
   int m_segmentIndex;
   arc_type m_arctype;
+  int m_aliasNum;
+  std::vector<std::string> m_aliasReactionConnections;
 public:
   LayoutWrapper(Variable* parent, layout_type type, std::string name, const Module* module);
   LayoutWrapper(Variable* parent, layout_type type);
@@ -28,6 +30,7 @@ public:
   virtual bool SetType(var_type newtype);
   //virtual bool SetlayoutType(layout_type newtype);
   virtual layout_type GetLayoutType();
+  virtual int GetAliasNum();
   Variable* GetParent();
   virtual std::string GetNameDelimitedBy(std::string cc) const;
   virtual bool Synchronize(Variable* clone, const Variable* conversionFactor);
@@ -42,6 +45,8 @@ public:
   virtual bool setArcNumber(const std::string* type);
   virtual bool setSegmentNumber(const std::string* type);
   virtual bool setArcType(arc_type type);
+  virtual bool setAliasNum(int aliasNum);
+  virtual bool setAliasReactionConnections(std::vector<std::string> rxnids);
   virtual Variable* GetSubVariable(const std::string* name);
 };
 

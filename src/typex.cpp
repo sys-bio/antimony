@@ -2,6 +2,7 @@
 
 #include "enums.h"
 #include "typex.h"
+#include "regex"
 #include "stringx.h"
 
 using namespace std;
@@ -707,6 +708,27 @@ layout_type LayoutStringToType(const string& ltype)
     }
     //NOTE:  no way to convert any string to 'reaction arc'; that's defined by RXNID.SPECID
     return lt_unknown;
+}
+
+void GetLayoutTypeAndNumFromString(const std::string& tid, layout_type& ltype, int& aliasNum)
+{
+    ltype = LayoutStringToType(tid);
+    if (ltype != lt_unknown) {
+        aliasNum = 0;
+        return;
+    }
+    //Otherwise, it might be a type appended with a number.
+    std::regex arc_number("[0-9]*");
+    string removed = std::regex_replace(tid, arc_number, "");
+    if (removed.size() == tid.size()) {
+        // It's just an unknown type
+        aliasNum = -1;
+        return;
+    }
+    string num = tid.substr(removed.size());
+    aliasNum = std::stoi(num) - 1;
+    ltype = LayoutStringToType(removed);
+    return;
 }
 
 bool isValidFontStyle(const std::string& ftype)

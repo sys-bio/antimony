@@ -218,7 +218,7 @@ public:
   const Variable* GetOriginal() const;
   Variable* GetParentVariable();
   UncertWrapper* AddOrGetUncertWrapper(uncert_type type);
-  LayoutWrapper* AddOrGetLayoutWrapper(layout_type type);
+  LayoutWrapper* AddOrGetLayoutWrapper(layout_type type, int aliasNum, std::vector<std::string> rxnIDs);
 
   LayoutWrapper* GetReactionArcLayoutWrapper(const std::string* name);
 

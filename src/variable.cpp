@@ -523,9 +523,12 @@ Variable* Variable::GetSubVariable(const string* name)
   if (name && utype != unUnknown) {
     return AddOrGetUncertWrapper(utype);
   }
-  layout_type ltype = LayoutStringToType(*name);
+  layout_type ltype = lt_unknown;
+  int aliasNum = -1;
+  GetLayoutTypeAndNumFromString(*name, ltype, aliasNum);
+  vector<string> noRxnIds;
   if (name && ltype != lt_unknown) {
-      return AddOrGetLayoutWrapper(ltype);
+      return AddOrGetLayoutWrapper(ltype, aliasNum, noRxnIds);
   }
   if (IsReaction(m_type)) {
       Module* mod = g_registry.GetModule(m_module);
@@ -2405,15 +2408,17 @@ UncertWrapper * Variable::AddOrGetUncertWrapper(uncert_type type)
   return uncertWrapper;
 }
 
-LayoutWrapper* Variable::AddOrGetLayoutWrapper(layout_type type)
+LayoutWrapper* Variable::AddOrGetLayoutWrapper(layout_type type, int aliasNum, vector<string> rxnIDs)
 {
     for (size_t uw = 0; uw < m_layoutWrappers.size(); uw++) {
         //A single variable can have multiple reaction arcs, but only one of everything else.
-        if (type != lt_reactionArc && m_layoutWrappers[uw]->GetLayoutType() == type) {
+        if (type != lt_reactionArc && m_layoutWrappers[uw]->GetLayoutType() == type && m_layoutWrappers[uw]->GetAliasNum() == aliasNum) {
             return m_layoutWrappers[uw];
         }
     }
     LayoutWrapper* layoutWrapper = new LayoutWrapper(this, type);
+    layoutWrapper->setAliasNum(aliasNum);
+    layoutWrapper->setAliasReactionConnections(rxnIDs);
     m_layoutWrappers.push_back(layoutWrapper);
     return layoutWrapper;
 }
@@ -2553,9 +2558,10 @@ bool Variable::TransferLayoutInformationTo(SBMLDocument* sbml)
     if (IsPointer()) {
         return GetSameVariable()->TransferLayoutInformationTo(sbml);
     }
+    bool retval = false;
     for (size_t uw = 0; uw < m_layoutWrappers.size(); uw++) {
         if (m_layoutWrappers[uw]->TransferLayoutInformationTo(sbml)) {
-            return true;
+            retval = true;
         }
     }
     if (IsReaction(m_type) && m_layoutWrappers.size() > 0) {
@@ -2599,7 +2605,7 @@ bool Variable::TransferLayoutInformationTo(SBMLDocument* sbml)
             }
         }
     }
-    return false;
+    return retval;
 }
 
 void Variable::ReadAnnotationFrom(const SBase * sbmlobj)

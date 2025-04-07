@@ -28,6 +28,8 @@ std::string UncertTypeToString(const uncert_type utype);
 uncert_type UncertStringToType(const std::string& uncert);
 std::string LayoutTypeToString(const layout_type utype);
 layout_type LayoutStringToType(const std::string& ltype);
+void GetLayoutTypeAndNumFromString(const std::string& tid, layout_type& ltype, int& aliasNum);
+
 bool isValidFontStyle(const std::string& ftype);
 #ifdef LIBSBML_HAS_PACKAGE_DISTRIB
 libsbml::UncertType_t UncertTypeToSBML(const uncert_type utype);

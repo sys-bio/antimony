@@ -27,6 +27,8 @@ LayoutWrapper::LayoutWrapper(Variable* parent, layout_type type, string name, co
     , m_speciesIndex(-1)
     , m_segmentIndex(-1)
     , m_arctype(at_none)
+    , m_aliasNum(0)
+    , m_aliasReactionConnections()
 {
     m_module = parent->GetNamespace();
     m_displayname = "";
@@ -49,6 +51,8 @@ LayoutWrapper::LayoutWrapper(Variable* parent, layout_type type)
     , m_speciesIndex(-1)
     , m_segmentIndex(-1)
     , m_arctype(at_none)
+    , m_aliasNum(0)
+    , m_aliasReactionConnections()
 {
     m_module = parent->GetNamespace();
     m_displayname = "";
@@ -254,6 +258,11 @@ layout_type LayoutWrapper::GetLayoutType()
     return m_layout_type;
 }
 
+int LayoutWrapper::GetAliasNum()
+{
+    return m_aliasNum;
+}
+
 Variable* LayoutWrapper::GetParent()
 {
     return m_parent;
@@ -264,9 +273,9 @@ string LayoutWrapper::GetNameDelimitedBy(string cc) const
     if (m_layout_type == lt_sourceSink && cc == "_") {
         return m_speciesId;
     }
+    stringstream ret;
     if (m_parent) {
         if (m_layout_type == lt_reactionArc) {
-            stringstream ret;
             ret << m_parent->GetNameDelimitedBy(cc) << cc;
             if (m_speciesId.empty()) {
                 ret << LayoutTypeToString(lt_sourceSink);
@@ -281,11 +290,17 @@ string LayoutWrapper::GetNameDelimitedBy(string cc) const
                 ret << cc << "seg" << m_segmentIndex + 1;
             }
             ret << cc << ArcTypeToString(m_arctype);
-            return ret.str();
         }
         else {
-            return m_parent->GetNameDelimitedBy(cc) + cc + LayoutTypeToString(m_layout_type);
+            ret << m_parent->GetNameDelimitedBy(cc) << cc << LayoutTypeToString(m_layout_type);
         }
+        if (m_aliasNum > 0 && m_aliasReactionConnections.size() == 0) {
+            ret << m_aliasNum+1;
+        }
+        for (size_t rxn = 0; rxn < m_aliasReactionConnections.size(); rxn++) {
+            ret << "." << m_aliasReactionConnections[rxn];
+        }
+        return ret.str();
     }
     else {
         return Variable::GetNameDelimitedBy(cc);
@@ -317,20 +332,69 @@ string LayoutWrapper::CreateLayoutParamsAntimonySyntax(const string& indent) con
     return ret;
 }
 
+vector<string> getConnectedReactionsFor(SBMLDocument* sbml, const string& sid, unsigned int alias)
+{
+    vector<string> ret;
+    if (alias == 2) {
+        ret.push_back("J1");
+    }
+    return ret;
+}
+
 bool LayoutWrapper::TransferLayoutInformationTo(SBMLDocument* sbml)
 {
+    //g_registry.SetError("The variable " + sid + " is a species, so its alias nodes are set by listing the reactions for which it is an alias (i.e. 'S1.position.J2.J3' for an alias of S1 that is used in reactions J2 and J3).");
+    string sid = m_parent->GetNameDelimitedBy("_");
+    if (m_aliasReactionConnections.size()) {
+        if (m_aliasNum > 0) {
+            if (!(m_aliasReactionConnections == getConnectedReactionsFor(sbml, sid, m_aliasNum))) {
+                stringstream err;
+                err << "The alias node " << m_aliasNum << " for species " << sid + " does not connect to the reaction(s) ";
+                for (size_t rxn = 0; rxn < m_aliasReactionConnections.size(); rxn++) {
+                    err << m_aliasReactionConnections[rxn] << ".";
+                    g_registry.SetError(err.str());
+                    return true;
+                }
+            }
+        }
+        m_aliasNum = -1;
+        for (unsigned int a = 0; a < LIBSBMLNETWORK_CPP_NAMESPACE::getNumGraphicalObjects(sbml, sid); a++) {
+            if (m_aliasReactionConnections == getConnectedReactionsFor(sbml, sid, a)) {
+                m_aliasNum = a;
+            }
+        }
+        if (m_aliasNum == -1) {
+            m_aliasNum = LIBSBMLNETWORK_CPP_NAMESPACE::getNumGraphicalObjects(sbml, sid);
+        }
+    }
+    while (m_aliasNum > 0 && m_aliasNum >= int(LIBSBMLNETWORK_CPP_NAMESPACE::getNumGraphicalObjects(sbml, sid))) {
+        var_type parentType = m_parent->GetType();
+        if (IsReaction(parentType)) {
+            LIBSBMLNETWORK_CPP_NAMESPACE::createAliasReactionGlyph(sbml, sid);
+        }
+        else if (IsSpecies(parentType)) {
+            LIBSBMLNETWORK_CPP_NAMESPACE::createAliasSpeciesGlyph(sbml, sid, m_aliasReactionConnections[0], 0);
+            for (size_t rxn = 1; rxn < m_aliasReactionConnections.size(); rxn++) {
+                LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesGlyphIndexInReactionGlyph(sbml, 0, sid, m_aliasNum, m_aliasReactionConnections[rxn], 0);
+            }
+        }
+        else {
+            g_registry.SetError("The variable " + sid + " is not a species or a reaction, so cannot have an alias node.  Unable to set a second " + LayoutTypeToString(m_layout_type) + " for this variable.");
+            return true;
+        }
+    }
+    string glyphId = LIBSBMLNETWORK_CPP_NAMESPACE::getId(sbml, 0, sid, m_aliasNum);
     if (m_layout_type == lt_sourceSink) {
         bool ret = false;
         //We need to find the ID that SBMLNetwork has given to the source/sink glyph:
-        int nreactants = m_parent->GetReaction()->GetLeft()->Size();
-        int nproducts = m_parent->GetReaction()->GetRight()->Size();
-        string rxnid = m_parent->GetNameDelimitedBy("_");
+        size_t nreactants = m_parent->GetReaction()->GetLeft()->Size();
+        size_t nproducts = m_parent->GetReaction()->GetRight()->Size();
         if (nreactants != 0 && nproducts != 0) {
-            g_registry.AddWarning("Attempted to set a source/sink for the reaction " + rxnid + ", but that reaction has both reactants and products.");
+            g_registry.AddWarning("Attempted to set a source/sink for the reaction " + sid + ", but that reaction has both reactants and products.");
             return true;
         }
         for (int i = 0; i < nreactants + nproducts + 2; i++) {
-            string id = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceEmptySpeciesGlyphId(sbml, rxnid, 0, i);
+            string id = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceEmptySpeciesGlyphId(sbml, sid, m_aliasNum, i);
             if (!id.empty()) {
                 m_speciesId = id;
                 break;
@@ -341,7 +405,6 @@ bool LayoutWrapper::TransferLayoutInformationTo(SBMLDocument* sbml)
         }
         return ret;
     }
-    string sid = m_parent->GetNameDelimitedBy("_");
 
     string formstring = m_valFormula.ToSBMLString();
     if (formstring.empty()) {
@@ -360,23 +423,23 @@ bool LayoutWrapper::TransferLayoutInformationTo(SBMLDocument* sbml)
         switch (m_layout_type) {
         case lt_position:
             if (!isnan(xval)) {
-                ret1 = LIBSBMLNETWORK_CPP_NAMESPACE::setPositionX(sbml, sid, xval, false);
+                ret1 = LIBSBMLNETWORK_CPP_NAMESPACE::setPositionX(sbml, glyphId, xval, false);
             }
             if (!isnan(yval)) {
-                ret2 = LIBSBMLNETWORK_CPP_NAMESPACE::setPositionY(sbml, sid, yval, false);
+                ret2 = LIBSBMLNETWORK_CPP_NAMESPACE::setPositionY(sbml, glyphId, yval, false);
             }
             break;
         case lt_size:
             if (!isnan(xval)) {
-                ret1 = LIBSBMLNETWORK_CPP_NAMESPACE::setDimensionWidth(sbml, sid, xval, false);
+                ret1 = LIBSBMLNETWORK_CPP_NAMESPACE::setDimensionWidth(sbml, glyphId, xval, false);
             }
             if (!isnan(yval)) {
-                ret2 = LIBSBMLNETWORK_CPP_NAMESPACE::setDimensionHeight(sbml, sid, yval, false);
+                ret2 = LIBSBMLNETWORK_CPP_NAMESPACE::setDimensionHeight(sbml, glyphId, yval, false);
             }
             break;
         case lt_reactionArc:
         {
-            int speciesIndex = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceIndexAssociatedWithSpecies(sbml, m_speciesId, sid, 0, m_speciesIndex);
+            int speciesIndex = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceIndexAssociatedWithSpecies(sbml, m_speciesId, sid, m_aliasNum, m_speciesIndex);
             if (speciesIndex == -1) {
                 if (m_arctype == at_spec || m_arctype == at_rxn) {
                     g_registry.AddWarning("Layout error in model:  unable to draw an arc between the species '" + m_speciesId + "' and the reaction '" + sid + "': '" + m_speciesId + "' is not a participant in that reaction.");
@@ -385,65 +448,65 @@ bool LayoutWrapper::TransferLayoutInformationTo(SBMLDocument* sbml)
                 return false;
             }
             assert(speciesIndex != -1);
-            string role = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceRole(sbml, sid, 0, speciesIndex);
+            string role = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceRole(sbml, sid, m_aliasNum, speciesIndex);
             if (m_segmentIndex > 0) {
-                while (m_segmentIndex >= (int)LIBSBMLNETWORK_CPP_NAMESPACE::getNumSpeciesReferenceCurveSegments(sbml, sid, 0, speciesIndex)) {
-                    LIBSBMLNETWORK_CPP_NAMESPACE::addSpeciesReferenceCubicBezierCurveSegment(sbml, sid, 0, speciesIndex);
+                while (m_segmentIndex >= (int)LIBSBMLNETWORK_CPP_NAMESPACE::getNumSpeciesReferenceCurveSegments(sbml, sid, m_aliasNum, speciesIndex)) {
+                    LIBSBMLNETWORK_CPP_NAMESPACE::addSpeciesReferenceCubicBezierCurveSegment(sbml, sid, m_aliasNum, speciesIndex);
                 }
             }
             switch (m_arctype) {
             case at_spec:
                 if (startsAtReaction(role)) {
                     if (!isnan(xval)) {
-                        LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentEndPointX(sbml, sid, 0, speciesIndex, m_segmentIndex, xval);
+                        LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentEndPointX(sbml, sid, m_aliasNum, speciesIndex, m_segmentIndex, xval);
                     }
                     if (!isnan(yval)) {
-                        LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentEndPointY(sbml, sid, 0, speciesIndex, m_segmentIndex, yval);
+                        LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentEndPointY(sbml, sid, m_aliasNum, speciesIndex, m_segmentIndex, yval);
                     }
                 }
                 else {
                     assert(!startsAtReaction(role));
                     if (!isnan(xval)) {
-                        LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentStartPointX(sbml, sid, 0, speciesIndex, m_segmentIndex, xval);
+                        LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentStartPointX(sbml, sid, m_aliasNum, speciesIndex, m_segmentIndex, xval);
                     }
                     if (!isnan(yval)) {
-                        LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentStartPointY(sbml, sid, 0, speciesIndex, m_segmentIndex, yval);
+                        LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentStartPointY(sbml, sid, m_aliasNum, speciesIndex, m_segmentIndex, yval);
                     }
                 }
                 break;
             case at_rxn:
                 if (startsAtReaction(role)) {
                     if (!isnan(xval)) {
-                        LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentStartPointX(sbml, sid, 0, speciesIndex, m_segmentIndex, xval);
+                        LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentStartPointX(sbml, sid, m_aliasNum, speciesIndex, m_segmentIndex, xval);
                     }
                     if (!isnan(yval)) {
-                        LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentStartPointY(sbml, sid, 0, speciesIndex, m_segmentIndex, yval);
+                        LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentStartPointY(sbml, sid, m_aliasNum, speciesIndex, m_segmentIndex, yval);
                     }
                 }
                 else {
                     assert(!startsAtReaction(role));
                     if (!isnan(xval)) {
-                        LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentEndPointX(sbml, sid, 0, speciesIndex, m_segmentIndex, xval);
+                        LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentEndPointX(sbml, sid, m_aliasNum, speciesIndex, m_segmentIndex, xval);
                     }
                     if (!isnan(yval)) {
-                        LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentEndPointY(sbml, sid, 0, speciesIndex, m_segmentIndex, yval);
+                        LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentEndPointY(sbml, sid, m_aliasNum, speciesIndex, m_segmentIndex, yval);
                     }
                 }
                 break;
             case at_b1:
                 if (!isnan(xval)) {
-                    LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentBasePoint1X(sbml, sid, 0, speciesIndex, m_segmentIndex, xval);
+                    LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentBasePoint1X(sbml, sid, m_aliasNum, speciesIndex, m_segmentIndex, xval);
                 }
                 if (!isnan(yval)) {
-                    LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentBasePoint1Y(sbml, sid, 0, speciesIndex, m_segmentIndex, yval);
+                    LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentBasePoint1Y(sbml, sid, m_aliasNum, speciesIndex, m_segmentIndex, yval);
                 }
                 break;
             case at_b2:
                 if (!isnan(xval)) {
-                    LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentBasePoint2X(sbml, sid, 0, speciesIndex, m_segmentIndex, xval);
+                    LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentBasePoint2X(sbml, sid, m_aliasNum, speciesIndex, m_segmentIndex, xval);
                 }
                 if (!isnan(yval)) {
-                    LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentBasePoint2Y(sbml, sid, 0, speciesIndex, m_segmentIndex, yval);
+                    LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentBasePoint2Y(sbml, sid, m_aliasNum, speciesIndex, m_segmentIndex, yval);
                 }
                 break;
             case at_none:
@@ -475,62 +538,62 @@ bool LayoutWrapper::TransferLayoutInformationTo(SBMLDocument* sbml)
             assert(false); //Should be IsPair, above
             break;
         case lt_x:
-            ret = LIBSBMLNETWORK_CPP_NAMESPACE::setPositionX(sbml, sid, lval, false);
+            ret = LIBSBMLNETWORK_CPP_NAMESPACE::setPositionX(sbml, glyphId, lval, false);
             break;
         case lt_y:
-            ret = LIBSBMLNETWORK_CPP_NAMESPACE::setPositionY(sbml, sid, lval, false);
+            ret = LIBSBMLNETWORK_CPP_NAMESPACE::setPositionY(sbml, glyphId, lval, false);
             break;
         case lt_height:
-            ret = LIBSBMLNETWORK_CPP_NAMESPACE::setDimensionHeight(sbml, sid, lval, false);
+            ret = LIBSBMLNETWORK_CPP_NAMESPACE::setDimensionHeight(sbml, glyphId, lval, false);
             break;
         case lt_width:
-            ret = LIBSBMLNETWORK_CPP_NAMESPACE::setDimensionWidth(sbml, sid, lval, false);
+            ret = LIBSBMLNETWORK_CPP_NAMESPACE::setDimensionWidth(sbml, glyphId, lval, false);
             break;
         case lt_color:
-            ret = LIBSBMLNETWORK_CPP_NAMESPACE::setFillColor(sbml, sid, formstring);
+            ret = LIBSBMLNETWORK_CPP_NAMESPACE::setFillColor(sbml, glyphId, formstring);
             break;
         case lt_font:
         {
             std::regex underscore_re("_");
             formstring = std::regex_replace(formstring, underscore_re, "-");
-            ret = LIBSBMLNETWORK_CPP_NAMESPACE::setFontFamily(sbml, sid, formstring);
+            ret = LIBSBMLNETWORK_CPP_NAMESPACE::setFontFamily(sbml, glyphId, formstring);
             break;
         }
         case lt_fontsize:
-            ret = LIBSBMLNETWORK_CPP_NAMESPACE::setFontSize(sbml, sid, lval);
+            ret = LIBSBMLNETWORK_CPP_NAMESPACE::setFontSize(sbml, glyphId, lval);
             break;
         case lt_fontcolor:
-            ret = LIBSBMLNETWORK_CPP_NAMESPACE::setFontColor(sbml, sid, formstring);
+            ret = LIBSBMLNETWORK_CPP_NAMESPACE::setFontColor(sbml, glyphId, formstring);
             break;
         case lt_fontstyle:
         case lt_fontweight:
             if (CaselessStrCmp(true, formstring, "bold")) {
-                ret = LIBSBMLNETWORK_CPP_NAMESPACE::setFontWeight(sbml, sid, formstring);
+                ret = LIBSBMLNETWORK_CPP_NAMESPACE::setFontWeight(sbml, glyphId, formstring);
             }
             if (CaselessStrCmp(true, formstring, "italic")) {
-                ret = LIBSBMLNETWORK_CPP_NAMESPACE::setFontStyle(sbml, sid, formstring);
+                ret = LIBSBMLNETWORK_CPP_NAMESPACE::setFontStyle(sbml, glyphId, formstring);
             }
             if (CaselessStrCmp(true, formstring, "normal")) {
-                ret = LIBSBMLNETWORK_CPP_NAMESPACE::setFontWeight(sbml, sid, formstring);
+                ret = LIBSBMLNETWORK_CPP_NAMESPACE::setFontWeight(sbml, glyphId, formstring);
                 if (ret == 0) {
-                    ret = LIBSBMLNETWORK_CPP_NAMESPACE::setFontStyle(sbml, sid, formstring);
+                    ret = LIBSBMLNETWORK_CPP_NAMESPACE::setFontStyle(sbml, glyphId, formstring);
                 }
             }
             if (CaselessStrCmp(true, formstring, "bold_italic")) {
-                ret = LIBSBMLNETWORK_CPP_NAMESPACE::setFontWeight(sbml, sid, "bold");
+                ret = LIBSBMLNETWORK_CPP_NAMESPACE::setFontWeight(sbml, glyphId, "bold");
                 if (ret == 0) {
-                    ret = LIBSBMLNETWORK_CPP_NAMESPACE::setFontStyle(sbml, sid, "italic");
+                    ret = LIBSBMLNETWORK_CPP_NAMESPACE::setFontStyle(sbml, glyphId, "italic");
                 }
             }
             break;
         case lt_linewidth:
-            ret = LIBSBMLNETWORK_CPP_NAMESPACE::setStrokeWidth(sbml, sid, lval);
+            ret = LIBSBMLNETWORK_CPP_NAMESPACE::setStrokeWidth(sbml, glyphId, lval);
             break;
         case lt_linecolor:
-            ret = LIBSBMLNETWORK_CPP_NAMESPACE::setStrokeColor(sbml, sid, formstring);
+            ret = LIBSBMLNETWORK_CPP_NAMESPACE::setStrokeColor(sbml, glyphId, formstring);
             break;
         case lt_shape:
-            ret = LIBSBMLNETWORK_CPP_NAMESPACE::setGeometricShapeType(sbml, sid, formstring);
+            ret = LIBSBMLNETWORK_CPP_NAMESPACE::setGeometricShapeType(sbml, glyphId, formstring);
             break;
         case lt_sourceSink:
             assert(false); // Should only be parent object, not child.
@@ -985,25 +1048,64 @@ bool LayoutWrapper::setArcType(arc_type type)
     return false;
 }
 
+bool LayoutWrapper::setAliasNum(int aliasNum)
+{
+    if (aliasNum < 0) {
+        return true;
+    }
+    m_aliasNum = aliasNum;
+    return false;
+}
+
+bool LayoutWrapper::setAliasReactionConnections(std::vector<std::string> rxnids)
+{
+    m_aliasReactionConnections = rxnids;
+    return false;
+}
+
 Variable* LayoutWrapper::GetSubVariable(const std::string* name)
 {
-    if (m_layout_type != lt_reactionArc) {
-        //No subvariables of any other layout wrapper type.
-        return NULL;
-    }
-    layout_type ltype = LayoutStringToType(*name);
+    layout_type ltype = lt_unknown;
+    int aliasNum = -1;
+    GetLayoutTypeAndNumFromString(*name, ltype, aliasNum);
     if (ltype != lt_unknown) {
         m_layout_type = lt_sourceSink;
-        return AddOrGetLayoutWrapper(ltype);
+        return AddOrGetLayoutWrapper(ltype, aliasNum, m_aliasReactionConnections);
     }
-    if (setArcType(name)) {
-        // It wasn't 'species_pos', 'rxn_pos', 'b1', or 'b2', so try 'arc#':
-        if (setArcNumber(name)) {
-            // It wasn't 'arc#', so try 'seg#':
-            if (setSegmentNumber(name)) {
-                return NULL;
+    if (m_layout_type == lt_reactionArc) {
+        if (setArcType(name)) {
+            // It wasn't 'species_pos', 'rxn_pos', 'b1', or 'b2', so try 'arc#':
+            if (setArcNumber(name)) {
+                // It wasn't 'arc#', so try 'seg#':
+                if (setSegmentNumber(name)) {
+                    g_registry.SetError("Unable to define a reaction arc for " + m_parent->GetNameDelimitedBy(".") + " with the term '" + *name + "'.");
+                    return NULL;
+                }
             }
         }
+        return this;
     }
-    return this;
+    if (IsSpecies(m_parent->GetType())) {
+        vector<string> id = m_parent->GetName();
+        id.pop_back();
+        id.push_back(*name);
+        Module* mod = g_registry.CurrentModule();
+        if (!mod) {
+            g_registry.SetError("Unable to find the module of the variable " + m_parent->GetNameDelimitedBy(".") + ".");
+            return NULL;
+        }
+        Variable* subvar = mod->GetVariable(id);
+        if (!subvar) {
+            g_registry.SetError("Unable to find a reaction with the id '" + *name + "' in the same module as " + m_parent->GetNameDelimitedBy(".") + ".");
+            return NULL;
+        }
+        if (!IsReaction(subvar->GetType())) {
+            g_registry.SetError("The variable '" + *name + "' is not a reaction.  To create an alias species of " + m_parent->GetNameDelimitedBy(".") + ", it must be defined by the reactions it connects to.");
+            return NULL;
+        }
+        m_aliasReactionConnections.push_back(*name);
+        return this;
+    }
+    g_registry.SetError("Only species and reaction layouts are defined by subvariables.  Reaction arcs are defined by the reaction and species they connect, as in 'J0.S1.species_pos', and species alias nodes are defined with the list of reactions they connect to, as in 'S1.position.J0.J1'.  The variable '" + m_parent->GetNameDelimitedBy(".") + "' is not a species, .");
+    return NULL;
 }

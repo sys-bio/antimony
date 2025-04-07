@@ -500,6 +500,34 @@ START_TEST(test_locations_xy)
 END_TEST
 
 
+START_TEST(test_individual_render)
+{
+    string model =
+        "J0: S1->S2;\n"
+        "S2.color = khaki\n"
+        "S2.linecolor = azure\n"
+        "S2.fontcolor = coral\n"
+        "S2.linewidth = 32\n"
+        "S2.font = monospace\n"
+        "S2.fontsize = 4\n"
+        "S2.fontstyle = italic\n"
+        ;
+
+    libsbml::SBMLDocument* doc = translateAntimony(model);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getFillColor(doc, "S2") == "khaki");
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getStrokeColor(doc, "S2") == "azure");
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getFontColor(doc, "S2") == "coral");
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getStrokeWidth(doc, "S2") == 32.0);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getFontFamily(doc, "S2") == "monospace");
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getFontSizeAsDouble(doc, "S2") == 4.0);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getFontStyle(doc, "S2") == "italic");
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getFontWeight(doc, "S2") == "normal");
+
+    delete doc;
+}
+END_TEST
+
+
 START_TEST(test_control_points)
 {
     string model =
@@ -763,6 +791,7 @@ create_suite_LayoutRender(void)
   tcase_add_test( tcase, test_reaction_settings);
   tcase_add_test( tcase, test_locations_pos);
   tcase_add_test( tcase, test_locations_xy);
+  tcase_add_test( tcase, test_individual_render);
   tcase_add_test( tcase, test_control_points);
   tcase_add_test( tcase, test_control_points_off_reaction);
   tcase_add_test( tcase, test_control_points_unset);
@@ -770,7 +799,6 @@ create_suite_LayoutRender(void)
   tcase_add_test( tcase, test_control_points_second_arc_unset);
 
 
-  //tcase_add_test( tcase, test_compartment_settings);
   //tcase_add_test( tcase, test_compartment_settings);
   //tcase_add_test( tcase, test_compartment_settings);
   //tcase_add_test( tcase, test_compartment_settings);
