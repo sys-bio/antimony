@@ -95,25 +95,6 @@ string ToThinString(wstring in)
   return out;
 }
 
-string Trim(string in)
-{
-  string out = in;
-  while (out.size() && out[0] == ' ') {
-    out.erase(0,1);
-  }
-  while (out.size() && out[out.size()-1] == ' ') {
-    out.erase(out.size()-1, 1);
-  }
-  size_t retpos;
-  while ((retpos = out.find('\n')) != string::npos) {
-    out.replace(retpos, 1, " ");
-  }
-  while ((retpos = out.find('\r')) != string::npos) {
-    out.replace(retpos, 1, " ");
-  }
-  return out;
-}
-
 string AndsAndOrs(string& in)
 {
   string out = in;
@@ -347,4 +328,19 @@ void rtrim(std::string& s) {
 void trim(std::string& s) {
     rtrim(s);
     ltrim(s);
+}
+
+void trimAndRemoveDoubleSpaces(std::string& s) {
+    trim(s);
+    std::string::size_type pos = s.find("  ");
+
+    while (pos != std::string::npos) {
+
+        // replace BOTH spaces with one space
+        s.replace(pos, 2, " ");
+
+        // start searching again, where you left off
+        // rather than going back to the beginning
+        pos = s.find("  ", pos);
+    }
 }

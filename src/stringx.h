@@ -44,6 +44,9 @@ void rtrim(std::string& s);
 // trim from both ends (in place)
 void trim(std::string& s);
 
+//trim and also remove internal double spaces.
+void trimAndRemoveDoubleSpaces(std::string& s);
+
 
 
 #endif //STRINGX_h
