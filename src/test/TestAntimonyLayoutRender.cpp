@@ -39,6 +39,20 @@ libsbml::SBMLDocument* translateAntimony(const string& model)
 }
 
 
+string translateAntimonyFromDoc(libsbml::SBMLDocument* doc)
+{
+    g_registry.SetCC("__");
+    // load document
+    string dir(TestDataDirectory);
+    long ret = loadSBMLString(writeSBMLToStdString(doc).c_str());
+    fail_unless(ret != -1);
+    char* sbml2a = getAntimonyString(NULL);
+    fail_unless(sbml2a != NULL);
+    clearPreviousLoads();
+    return sbml2a;
+}
+
+
 START_TEST(test_basic_autolayout)
 {
     string model =
@@ -463,6 +477,7 @@ START_TEST(test_locations_pos)
         "S1.pos= {120, 250}\n"
         "S2.pos= {420, 550}\n"
         "J0.pos= {270, 400}\n"
+        "J0.size = {22, 33}\n"
         ;
 
     libsbml::SBMLDocument* doc = translateAntimony(model);
@@ -472,6 +487,8 @@ START_TEST(test_locations_pos)
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionY(doc, "S2") == 550.0);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(doc, "J0") == 270.0);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionY(doc, "J0") == 400.0);
+    //fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getDimensionWidth(doc, "J0") == 22.0);
+    //fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getDimensionHeight(doc, "J0") == 33.0);
     delete doc;
 }
 END_TEST
@@ -535,10 +552,10 @@ START_TEST(test_control_points)
         "S1.position = { 560, 0 }\n"
         "S2.position = { 30, 37.5 }\n"
         "J0.position = { 318.13, 29.25 }\n"
-        "J0.S1.species_pos = { 550.02, 20.83 }\n"
+        "J0.S1.species_end = { 550.02, 20.83 }\n"
         "J0.S1.b1 = { 364.9, 33.93 }\n"
         "J0.S1.b2 = { 350, 35 }\n"
-        "J0.S2.species_pos = { 99.98, 52.67 }\n"
+        "J0.S2.species_end = { 99.98, 52.67 }\n"
         "J0.S2.b1 = { 285.1, 39.57 }\n"
         "J0.S2.b2 = { 290, 40 }\n";
 
@@ -579,12 +596,12 @@ START_TEST(test_control_points_off_reaction)
         "S1.position = { 560, 0 }\n"
         "S2.position = { 30, 37.5 }\n"
         "J0.position = { 318.13, 29.25 }\n"
-        "J0.S1.species_pos = { 550.02, 20.83 }\n"
-        "J0.S1.rxn_pos = { 320, 30 }\n"
+        "J0.S1.species_end = { 550.02, 20.83 }\n"
+        "J0.S1.rxn_end = { 320, 30 }\n"
         "J0.S1.b1 = { 364.9, 33.93 }\n"
         "J0.S1.b2 = { 350, 35 }\n"
-        "J0.S2.species_pos = { 99.98, 52.67 }\n"
-        "J0.S2.rxn_pos = { 330, 20 }\n"
+        "J0.S2.species_end = { 99.98, 52.67 }\n"
+        "J0.S2.rxn_end = { 330, 20 }\n"
         "J0.S2.b1 = { 285.1, 39.57 }\n"
         "J0.S2.b2 = { 290, 40 }\n";
 
@@ -663,13 +680,13 @@ START_TEST(test_control_points_double_arcs)
         "S1.position = { 560, 0 }\n"
         "S2.position = { 30, 37.5 }\n"
         "J0.position = { 318.13, 29.25 }\n"
-        "J0.S1.species_pos = { 550.02, 20.83 }\n"
+        "J0.S1.species_end = { 550.02, 20.83 }\n"
         "J0.S1.b1 = { 364.9, 33.93 }\n"
         "J0.S1.b2 = { 350, 35 }\n"
-        "J0.S1.arc2.species_pos = { 550.01, 18.38 }\n"
+        "J0.S1.arc2.species_end = { 550.01, 18.38 }\n"
         "J0.S1.arc2.b1 = { 342.95, 26.25 }\n"
         "J0.S1.arc2.b2 = { 490.02, 18.95 }\n"
-        "J0.S2.species_pos = { 99.98, 52.67 }\n"
+        "J0.S2.species_end = { 99.98, 52.67 }\n"
         "J0.S2.b1 = { 285.1, 39.57 }\n"
         "J0.S2.b2 = { 290, 40 }\n";
 
@@ -719,10 +736,10 @@ START_TEST(test_control_points_second_arc_unset)
         "S1.position = { 560, 0 }\n"
         "S2.position = { 30, 37.5 }\n"
         "J0.position = { 318.13, 29.25 }\n"
-        "J0.S1.species_pos = { 550.02, 20.83 }\n"
+        "J0.S1.species_end = { 550.02, 20.83 }\n"
         "J0.S1.b1 = { 364.9, 33.93 }\n"
         "J0.S1.b2 = { 350, 35 }\n"
-        "J0.S2.species_pos = { 99.98, 52.67 }\n"
+        "J0.S2.species_end = { 99.98, 52.67 }\n"
         "J0.S2.b1 = { 285.1, 39.57 }\n"
         "J0.S2.b2 = { 290, 40 }\n";
 
@@ -766,6 +783,45 @@ END_TEST
 
 
 
+START_TEST(test_export_auto_aliased_nodes)
+{
+    string model =
+        "J0: S1->S2 + S3; ;\n"
+        "J1: S2 + S1->S0; ;\n"
+        "J2: S2->S3 + S1; ;\n"
+        "J3: S1 + S2->S3 + S0; ;\n"
+        "J4: S2 + S0 -> 2 S1;\n"
+        "model.layout = on";
+
+    libsbml::SBMLDocument* doc = translateAntimony(model);
+
+    int nS1s = LIBSBMLNETWORK_CPP_NAMESPACE::getNumGraphicalObjects(doc, "S1");
+    int nS2s = LIBSBMLNETWORK_CPP_NAMESPACE::getNumGraphicalObjects(doc, "S2");
+    int nS3s = LIBSBMLNETWORK_CPP_NAMESPACE::getNumGraphicalObjects(doc, "S3");
+    fail_unless(nS1s == 2);
+    fail_unless(nS2s == 2);
+    fail_unless(nS3s == 1);
+
+    string rt = translateAntimonyFromDoc(doc);
+    libsbml::SBMLDocument* doc2 = translateAntimony(rt);
+
+    vector<string> ids = { "S1", "S2" };
+    for (int s = 0; s < 2; s++) {
+        string id = ids[s];
+        for (int alias = 0; alias < 2; alias++) {
+            string glyphId = LIBSBMLNETWORK_CPP_NAMESPACE::getId(doc, 0, id, alias);
+            fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(doc, glyphId) == LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(doc2, glyphId));
+            fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionY(doc, glyphId) == LIBSBMLNETWORK_CPP_NAMESPACE::getPositionY(doc2, glyphId));
+        }
+    }
+    
+    delete doc;
+    delete doc2;
+}
+END_TEST
+
+
+
 Suite *
 create_suite_LayoutRender(void)
 {
@@ -797,6 +853,7 @@ create_suite_LayoutRender(void)
   tcase_add_test( tcase, test_control_points_unset);
   tcase_add_test( tcase, test_control_points_double_arcs);
   tcase_add_test( tcase, test_control_points_second_arc_unset);
+  tcase_add_test( tcase, test_export_auto_aliased_nodes);
 
 
   //tcase_add_test( tcase, test_compartment_settings);

@@ -2410,12 +2410,12 @@ UncertWrapper * Variable::AddOrGetUncertWrapper(uncert_type type)
 
 LayoutWrapper* Variable::AddOrGetLayoutWrapper(layout_type type, int aliasNum, vector<string> rxnIDs)
 {
-    for (size_t uw = 0; uw < m_layoutWrappers.size(); uw++) {
-        //A single variable can have multiple reaction arcs, but only one of everything else.
-        if (type != lt_reactionArc && m_layoutWrappers[uw]->GetLayoutType() == type && m_layoutWrappers[uw]->GetAliasNum() == aliasNum) {
-            return m_layoutWrappers[uw];
-        }
-    }
+    //for (size_t uw = 0; uw < m_layoutWrappers.size(); uw++) {
+    //    //A single variable can have multiple reaction arcs, but only one of everything else.
+    //    if (type != lt_reactionArc && m_layoutWrappers[uw]->GetLayoutType() == type && m_layoutWrappers[uw]->GetAliasNum() == aliasNum) {
+    //        return m_layoutWrappers[uw];
+    //    }
+    //}
     LayoutWrapper* layoutWrapper = new LayoutWrapper(this, type);
     layoutWrapper->setAliasNum(aliasNum);
     layoutWrapper->setAliasReactionConnections(rxnIDs);

@@ -838,9 +838,9 @@ string ArcTypeToString(const arc_type type)
 {
     switch (type) {
     case at_spec:
-        return "species_pos";
+        return "species_end";
     case at_rxn:
-        return "rxn_pos";
+        return "rxn_end";
     case at_b1:
         return "b1";
     case at_b2:

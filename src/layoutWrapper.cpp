@@ -332,22 +332,13 @@ string LayoutWrapper::CreateLayoutParamsAntimonySyntax(const string& indent) con
     return ret;
 }
 
-vector<string> getConnectedReactionsFor(SBMLDocument* sbml, const string& sid, unsigned int alias)
-{
-    vector<string> ret;
-    if (alias == 2) {
-        ret.push_back("J1");
-    }
-    return ret;
-}
-
 bool LayoutWrapper::TransferLayoutInformationTo(SBMLDocument* sbml)
 {
     //g_registry.SetError("The variable " + sid + " is a species, so its alias nodes are set by listing the reactions for which it is an alias (i.e. 'S1.position.J2.J3' for an alias of S1 that is used in reactions J2 and J3).");
     string sid = m_parent->GetNameDelimitedBy("_");
     if (m_aliasReactionConnections.size()) {
         if (m_aliasNum > 0) {
-            if (!(m_aliasReactionConnections == getConnectedReactionsFor(sbml, sid, m_aliasNum))) {
+            if (!(m_aliasReactionConnections == LIBSBMLNETWORK_CPP_NAMESPACE::getConnectedReactionsFor(sbml, 0, sid, m_aliasNum))) {
                 stringstream err;
                 err << "The alias node " << m_aliasNum << " for species " << sid + " does not connect to the reaction(s) ";
                 for (size_t rxn = 0; rxn < m_aliasReactionConnections.size(); rxn++) {
@@ -359,7 +350,7 @@ bool LayoutWrapper::TransferLayoutInformationTo(SBMLDocument* sbml)
         }
         m_aliasNum = -1;
         for (unsigned int a = 0; a < LIBSBMLNETWORK_CPP_NAMESPACE::getNumGraphicalObjects(sbml, sid); a++) {
-            if (m_aliasReactionConnections == getConnectedReactionsFor(sbml, sid, a)) {
+            if (m_aliasReactionConnections == LIBSBMLNETWORK_CPP_NAMESPACE::getConnectedReactionsFor(sbml, 0, sid, a)) {
                 m_aliasNum = a;
             }
         }
@@ -998,7 +989,7 @@ void LayoutWrapper::setSegmentIndex(int index)
 
 bool LayoutWrapper::setArcType(const std::string* type)
 {
-    if (CaselessStrCmp(true, *type, "species_pos")) {
+    if (CaselessStrCmp(true, *type, "species_end")) {
         m_arctype = at_spec;
         return false;
     }
@@ -1010,7 +1001,7 @@ bool LayoutWrapper::setArcType(const std::string* type)
         m_arctype = at_b2;
         return false;
     }
-    if (CaselessStrCmp(true, *type, "rxn_pos")) {
+    if (CaselessStrCmp(true, *type, "rxn_end")) {
         m_arctype = at_rxn;
         return false;
     }
@@ -1074,7 +1065,7 @@ Variable* LayoutWrapper::GetSubVariable(const std::string* name)
     }
     if (m_layout_type == lt_reactionArc) {
         if (setArcType(name)) {
-            // It wasn't 'species_pos', 'rxn_pos', 'b1', or 'b2', so try 'arc#':
+            // It wasn't 'species_end', 'rxn_end', 'b1', or 'b2', so try 'arc#':
             if (setArcNumber(name)) {
                 // It wasn't 'arc#', so try 'seg#':
                 if (setSegmentNumber(name)) {
@@ -1106,6 +1097,6 @@ Variable* LayoutWrapper::GetSubVariable(const std::string* name)
         m_aliasReactionConnections.push_back(*name);
         return this;
     }
-    g_registry.SetError("Only species and reaction layouts are defined by subvariables.  Reaction arcs are defined by the reaction and species they connect, as in 'J0.S1.species_pos', and species alias nodes are defined with the list of reactions they connect to, as in 'S1.position.J0.J1'.  The variable '" + m_parent->GetNameDelimitedBy(".") + "' is not a species, .");
+    g_registry.SetError("Only species and reaction layouts are defined by subvariables.  Reaction arcs are defined by the reaction and species they connect, as in 'J0.S1.species_end', and species alias nodes are defined with the list of reactions they connect to, as in 'S1.position.J0.J1'.  The variable '" + m_parent->GetNameDelimitedBy(".") + "' is not a species, .");
     return NULL;
 }

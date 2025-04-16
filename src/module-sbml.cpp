@@ -3533,15 +3533,6 @@ void Module::AddEmptyGlyphsFromReaction(Variable* reaction, const std::string& r
         }
     }
 }
-vector<string> getConnectedReactionsForAgain(SBMLDocument* sbml, const string& sid, unsigned int alias)
-{
-    vector<string> ret;
-    if (alias > 0) {
-        ret.push_back("J1");
-    }
-    return ret;
-}
-
 
 void loadOneVariable(Variable* var, SBMLDocument* doc, string varid, const layoutInfo& defaults)
 {
@@ -3554,7 +3545,7 @@ void loadOneVariable(Variable* var, SBMLDocument* doc, string varid, const layou
         string glyphId = LIBSBMLNETWORK_CPP_NAMESPACE::getId(doc, 0, varid, alias);
         vector<string> rxnIDs;
         if (alias > 0 && IsSpecies(var->GetType())) {
-            rxnIDs = getConnectedReactionsForAgain(doc, varid, alias);
+            rxnIDs = LIBSBMLNETWORK_CPP_NAMESPACE::getConnectedReactionsFor(doc, 0, varid, alias);
         }
         // Position
         val = LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(doc, glyphId);
