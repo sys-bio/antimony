@@ -519,6 +519,16 @@ Variable* Variable::GetSubVariable(const string* name)
       m_sboTermWrapper = new SboTermWrapper(this);
     return m_sboTermWrapper;
   }
+  if (IsReaction(m_type)) {
+      Module* mod = g_registry.GetModule(m_module);
+      Variable* var = mod->GetSubVariable(name);
+      if ((var != NULL && IsSpecies(var->GetType())) || *name == "--") {
+          LayoutWrapper* lw = GetReactionArcLayoutWrapper(name);
+          lw->setSpeciesIndex(0);
+          lw->setSegmentIndex(0);
+          return lw;
+      }
+  }
   uncert_type utype = UncertStringToType(*name);
   if (name && utype != unUnknown) {
     return AddOrGetUncertWrapper(utype);
@@ -529,16 +539,6 @@ Variable* Variable::GetSubVariable(const string* name)
   vector<string> noRxnIds;
   if (name && ltype != lt_unknown) {
       return AddOrGetLayoutWrapper(ltype, aliasNum, noRxnIds);
-  }
-  if (IsReaction(m_type)) {
-      Module* mod = g_registry.GetModule(m_module);
-      Variable* var = mod->GetSubVariable(name);
-      if ((var != NULL && IsSpecies(var->GetType())) || *name == "--") {
-          LayoutWrapper* lw = GetReactionArcLayoutWrapper(name);
-          lw->setSpeciesIndex(0);
-          lw->setSegmentIndex(0);
-          return lw;
-      }
   }
   return NULL;
 }
