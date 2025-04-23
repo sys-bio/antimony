@@ -140,19 +140,19 @@ main (int argc, char* argv[])
   //SRunner* runner = srunner_create(create_suite_Import());
   //SRunner* runner = srunner_create(create_suite_NamedStoich());
 
-  //srunner_add_suite(runner, create_suite_NamedStoich());
-  //srunner_add_suite(runner, create_suite_Import());
-  //srunner_add_suite( runner, create_suite_Errors() );
-  //srunner_add_suite( runner, create_suite_Basic() );
-  //srunner_add_suite( runner, create_suite_SBO());
-  //srunner_add_suite( runner, create_suite_Distrib() );
-  //srunner_add_suite( runner, create_suite_FBC() );
+  srunner_add_suite(runner, create_suite_NamedStoich());
+  srunner_add_suite(runner, create_suite_Import());
+  srunner_add_suite( runner, create_suite_Errors() );
+  srunner_add_suite( runner, create_suite_Basic() );
+  srunner_add_suite( runner, create_suite_SBO());
+  srunner_add_suite( runner, create_suite_Distrib() );
+  srunner_add_suite( runner, create_suite_FBC() );
   srunner_add_suite( runner, create_suite_LayoutRender() );
-  //srunner_add_suite( runner, create_suite_Constraints() );
-  //srunner_add_suite( runner, create_suite_CVTerms() );
-  //srunner_add_suite( runner, create_suite_Uncert() );
-  //srunner_add_suite( runner, create_suite_Hierarchy());
-  //srunner_add_suite( runner, create_suite_Flattening());
+  srunner_add_suite( runner, create_suite_Constraints() );
+  srunner_add_suite( runner, create_suite_CVTerms() );
+  srunner_add_suite( runner, create_suite_Uncert() );
+  srunner_add_suite( runner, create_suite_Hierarchy());
+  srunner_add_suite( runner, create_suite_Flattening());
 
 
 #ifdef TRACE_MEMORY
