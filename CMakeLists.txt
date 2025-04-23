@@ -59,12 +59,13 @@ SET(LIBANTIMONY_VERSION_STRING "v${LIBANTIMONY_VERSION_MAJOR}.${LIBANTIMONY_VERS
 option(BUILD_SHARED_LIBS  "Build shared library (Set to OFF to build static libraries)" ON)
 set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Choose the type of build, options are: None (CMAKE_CXX_FLAGS or CMAKE_C_FLAGS are used), Debug, Release, RelWithDebInfo, MinSizeRel" )
 
-set(USE_UNIVERSAL_BINARIES "ON" CACHE BOOL "Build and link to universal binaries on MacOS")
+#Turn off:  could never get universal binaries to work.
+#set(USE_UNIVERSAL_BINARIES "ON" CACHE BOOL "Build and link to universal binaries on MacOS")
 
-if (USE_UNIVERSAL_BINARIES)
-    set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64" CACHE INTERNAL "Compile for intel and M1 chips on apple" FORCE)
-    message(STATUS "building on mac with universal binaries")
-endif()
+#if (USE_UNIVERSAL_BINARIES)
+#    set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64" CACHE INTERNAL "Compile for intel and M1 chips on apple" FORCE)
+#    message(STATUS "building on mac with universal binaries")
+#endif()
 
 ####################################################################
 #
