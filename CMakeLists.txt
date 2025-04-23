@@ -407,7 +407,7 @@ set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${EXTRA_LIBS})
 if(WITH_CHECK)
 
     # we do use tests, that require 2.8.4
-    cmake_minimum_required(VERSION 2.8.4)
+    # cmake_minimum_required(VERSION 2.8.4)
 
     # set test timeout to 3000 as the normal time limit is not sufficient
     # for the comp tests
