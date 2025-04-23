@@ -3736,7 +3736,9 @@ void Module::LoadLayout(Model* sbml)
                     string glyphId = LIBSBMLNETWORK_CPP_NAMESPACE::getId(doc, 0, varid, alias);
                     unsigned int nSpecRefs = LIBSBMLNETWORK_CPP_NAMESPACE::getNumSpeciesReferences(doc, varid, alias);
                     double rxnX = LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(doc, glyphId);
+                    rxnX = rxnX + LIBSBMLNETWORK_CPP_NAMESPACE::getDimensionWidth(doc, glyphId) / 2;
                     double rxnY = LIBSBMLNETWORK_CPP_NAMESPACE::getPositionY(doc, glyphId);
+                    rxnY = rxnY + LIBSBMLNETWORK_CPP_NAMESPACE::getDimensionHeight(doc, glyphId) / 2;
                     set<string> involvedSpecies;
                     for (unsigned int sr = 0; sr < nSpecRefs; sr++) {
                         string sr_id = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceSpeciesId(doc, 0, varid, alias, sr);

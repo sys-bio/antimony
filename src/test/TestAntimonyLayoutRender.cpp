@@ -456,8 +456,8 @@ START_TEST(test_reaction_settings)
         ;
 
     libsbml::SBMLDocument* doc = translateAntimony(model);
-    //fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getDimensionWidth(doc, "J0") == 420.0);
-    //fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getDimensionHeight(doc, "J0") == 550.0);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getDimensionWidth(doc, "J0") == 420.0);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getDimensionHeight(doc, "J0") == 550.0);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getReactionFillColor(doc) == "khaki");
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getReactionStrokeColor(doc) == "azure");
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getReactionFontColor(doc) == "coral");
@@ -487,8 +487,8 @@ START_TEST(test_locations_pos)
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionY(doc, "S2") == 550.0);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(doc, "J0") == 270.0);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionY(doc, "J0") == 400.0);
-    //fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getDimensionWidth(doc, "J0") == 22.0);
-    //fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getDimensionHeight(doc, "J0") == 33.0);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getDimensionWidth(doc, "J0") == 22.0);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getDimensionHeight(doc, "J0") == 33.0);
     delete doc;
 }
 END_TEST
@@ -568,8 +568,8 @@ START_TEST(test_control_points)
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionY(doc, "J0") == 29.25);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointX(doc, "J0", 0, 0, 0) == 550.02);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointY(doc, "J0", 0, 0, 0) == 20.83);
-    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointX(doc, "J0", 0, 0, 0) == 318.13);
-    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointY(doc, "J0", 0, 0, 0) == 29.25);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointX(doc, "J0", 0, 0, 0) == 318.13 + 10);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointY(doc, "J0", 0, 0, 0) == 29.25 + 10);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1X(doc, "J0", 0, 0, 0) == 364.9);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1Y(doc, "J0", 0, 0, 0) == 33.93);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint2X(doc, "J0", 0, 0, 0) == 350);
@@ -577,8 +577,8 @@ START_TEST(test_control_points)
 
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointX(doc, "J0", 0, 1, 0) == 99.98);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointY(doc, "J0", 0, 1, 0) == 52.67);
-    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointX(doc, "J0", 0, 1, 0) == 318.13);
-    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointY(doc, "J0", 0, 1, 0) == 29.25);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointX(doc, "J0", 0, 1, 0) == 318.13 + 10);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointY(doc, "J0", 0, 1, 0) == 29.25 + 10);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1X(doc, "J0", 0, 1, 0) == 285.1);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1Y(doc, "J0", 0, 1, 0) == 39.57);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint2X(doc, "J0", 0, 1, 0) == 290);
@@ -652,8 +652,8 @@ START_TEST(test_control_points_unset)
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionY(doc, "J0") == 29.25);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointX(doc, "J0", 0, 0, 0) != 0.0);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointY(doc, "J0", 0, 0, 0) != 0.0);
-    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointX(doc, "J0", 0, 0, 0) == 318.13);
-    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointY(doc, "J0", 0, 0, 0) == 29.25);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointX(doc, "J0", 0, 0, 0) == 318.13 + 10);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointY(doc, "J0", 0, 0, 0) == 29.25 + 10);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1X(doc, "J0", 0, 0, 0) != 0.0);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1Y(doc, "J0", 0, 0, 0) != 0.0);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint2X(doc, "J0", 0, 0, 0) != 0.0);
@@ -661,8 +661,8 @@ START_TEST(test_control_points_unset)
 
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointX(doc, "J0", 0, 1, 0) != 0.0);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointY(doc, "J0", 0, 1, 0) != 0.0);
-    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointX(doc, "J0", 0, 1, 0) == 318.13);
-    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointY(doc, "J0", 0, 1, 0) == 29.25);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointX(doc, "J0", 0, 1, 0) == 318.13 + 10);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointY(doc, "J0", 0, 1, 0) == 29.25 + 10);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1X(doc, "J0", 0, 1, 0) != 0.0);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1Y(doc, "J0", 0, 1, 0) != 0.0);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint2X(doc, "J0", 0, 1, 0) != 0.0);
@@ -699,8 +699,8 @@ START_TEST(test_control_points_double_arcs)
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionY(doc, "J0") == 29.25);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointX(doc, "J0", 0, 0, 0) == 550.02);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointY(doc, "J0", 0, 0, 0) == 20.83);
-    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointX(doc, "J0", 0, 0, 0) == 318.13);
-    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointY(doc, "J0", 0, 0, 0) == 29.25);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointX(doc, "J0", 0, 0, 0) == 318.13 + 10);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointY(doc, "J0", 0, 0, 0) == 29.25 + 10);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1X(doc, "J0", 0, 0, 0) == 364.9);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1Y(doc, "J0", 0, 0, 0) == 33.93);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint2X(doc, "J0", 0, 0, 0) == 350);
@@ -708,8 +708,8 @@ START_TEST(test_control_points_double_arcs)
 
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointX(doc, "J0", 0, 1, 0) == 550.01);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointY(doc, "J0", 0, 1, 0) == 18.38);
-    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointX(doc, "J0", 0, 1, 0) == 318.13);
-    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointY(doc, "J0", 0, 1, 0) == 29.25);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointX(doc, "J0", 0, 1, 0) == 318.13 + 10);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointY(doc, "J0", 0, 1, 0) == 29.25 + 10);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1X(doc, "J0", 0, 1, 0) == 342.95);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1Y(doc, "J0", 0, 1, 0) == 26.25);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint2X(doc, "J0", 0, 1, 0) == 490.02);
@@ -717,8 +717,8 @@ START_TEST(test_control_points_double_arcs)
 
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointX(doc, "J0", 0, 2, 0) == 99.98);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointY(doc, "J0", 0, 2, 0) == 52.67);
-    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointX(doc, "J0", 0, 2, 0) == 318.13);
-    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointY(doc, "J0", 0, 2, 0) == 29.25);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointX(doc, "J0", 0, 2, 0) == 318.13 + 10);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointY(doc, "J0", 0, 2, 0) == 29.25 + 10);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1X(doc, "J0", 0, 2, 0) == 285.1);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1Y(doc, "J0", 0, 2, 0) == 39.57);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint2X(doc, "J0", 0, 2, 0) == 290);
@@ -752,8 +752,8 @@ START_TEST(test_control_points_second_arc_unset)
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionY(doc, "J0") == 29.25);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointX(doc, "J0", 0, 0, 0) == 550.02);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointY(doc, "J0", 0, 0, 0) == 20.83);
-    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointX(doc, "J0", 0, 0, 0) == 318.13);
-    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointY(doc, "J0", 0, 0, 0) == 29.25);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointX(doc, "J0", 0, 0, 0) == 318.13 + 10);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointY(doc, "J0", 0, 0, 0) == 29.25 + 10);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1X(doc, "J0", 0, 0, 0) == 364.9);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1Y(doc, "J0", 0, 0, 0) == 33.93);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint2X(doc, "J0", 0, 0, 0) == 350);
@@ -761,8 +761,8 @@ START_TEST(test_control_points_second_arc_unset)
 
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointX(doc, "J0", 0, 1, 0) != 0.0);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointY(doc, "J0", 0, 1, 0) != 0.0);
-    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointX(doc, "J0", 0, 1, 0) == 318.13);
-    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointY(doc, "J0", 0, 1, 0) == 29.25);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointX(doc, "J0", 0, 1, 0) == 318.13 + 10);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointY(doc, "J0", 0, 1, 0) == 29.25 + 10);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1X(doc, "J0", 0, 1, 0) != 0.0);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1Y(doc, "J0", 0, 1, 0) != 0.0);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint2X(doc, "J0", 0, 1, 0) != 0.0);
@@ -770,8 +770,8 @@ START_TEST(test_control_points_second_arc_unset)
 
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointX(doc, "J0", 0, 2, 0) == 99.98);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointY(doc, "J0", 0, 2, 0) == 52.67);
-    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointX(doc, "J0", 0, 2, 0) == 318.13);
-    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointY(doc, "J0", 0, 2, 0) == 29.25);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointX(doc, "J0", 0, 2, 0) == 318.13 + 10);
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointY(doc, "J0", 0, 2, 0) == 29.25 + 10);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1X(doc, "J0", 0, 2, 0) == 285.1);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1Y(doc, "J0", 0, 2, 0) == 39.57);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint2X(doc, "J0", 0, 2, 0) == 290);

@@ -2567,7 +2567,9 @@ bool Variable::TransferLayoutInformationTo(SBMLDocument* sbml)
     if (IsReaction(m_type) && m_layoutWrappers.size() > 0) {
         string id = GetNameDelimitedBy("__");
         double xval = LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(sbml, id);
+        xval = xval + LIBSBMLNETWORK_CPP_NAMESPACE::getDimensionWidth(sbml, id)/2;
         double yval = LIBSBMLNETWORK_CPP_NAMESPACE::getPositionY(sbml, id);
+        yval = yval + LIBSBMLNETWORK_CPP_NAMESPACE::getDimensionHeight(sbml, id) / 2;
 
         unsigned int narcs = LIBSBMLNETWORK_CPP_NAMESPACE::getNumSpeciesReferences(sbml, id, 0);
         for (unsigned int speciesIndex = 0; speciesIndex < narcs; speciesIndex++) {

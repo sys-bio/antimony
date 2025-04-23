@@ -613,16 +613,16 @@ bool LayoutWrapper::TransferLayoutInformationTo(SBMLDocument* sbml, const string
         int ret2 = 0;
         assert(m_layout_type == lt_size);
         if (group == "species") {
-            ret1 = LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesDimensionWidth(sbml, 0, xval);
-            ret2 = LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesDimensionHeight(sbml, 0, yval);
+            ret1 = LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesDimensionWidth(sbml, 0, xval, false);
+            ret2 = LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesDimensionHeight(sbml, 0, yval, false);
         }
         else if (group == "compartment") {
-            ret1 = LIBSBMLNETWORK_CPP_NAMESPACE::setCompartmentDimensionWidth(sbml, 0, xval);
-            ret2 = LIBSBMLNETWORK_CPP_NAMESPACE::setCompartmentDimensionHeight(sbml, 0, yval);
+            ret1 = LIBSBMLNETWORK_CPP_NAMESPACE::setCompartmentDimensionWidth(sbml, 0, xval, false);
+            ret2 = LIBSBMLNETWORK_CPP_NAMESPACE::setCompartmentDimensionHeight(sbml, 0, yval, false);
         }
         else if (group == "reaction") {
-            ret1 = LIBSBMLNETWORK_CPP_NAMESPACE::setReactionDimensionWidth(sbml, 0, xval);
-            ret2 = LIBSBMLNETWORK_CPP_NAMESPACE::setReactionDimensionHeight(sbml, 0, yval);
+            ret1 = LIBSBMLNETWORK_CPP_NAMESPACE::setReactionDimensionWidth(sbml, 0, xval, false);
+            ret2 = LIBSBMLNETWORK_CPP_NAMESPACE::setReactionDimensionHeight(sbml, 0, yval, false);
             double width = LIBSBMLNETWORK_CPP_NAMESPACE::getDimensionWidth(sbml, "J0");
             width = width;
         }
