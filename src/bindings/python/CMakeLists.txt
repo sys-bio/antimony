@@ -5,7 +5,7 @@
 #
 ###############################################################################
 
-find_package(PythonInterp)
+find_package(Python)
 # specify that the same python library should be found
 # as the one the selected interpreter uses
 set (Python_ADDITIONAL_VERSIONS ${PYTHON_VERSION_STRING})
@@ -23,7 +23,7 @@ ADD_CUSTOM_COMMAND(
 
 ADD_CUSTOM_TARGET(python_ctypes_lib ALL DEPENDS ${PYTHON_CTYPES_FILE})
 
-set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/antimony.py PROPERTIES GENERATED TRUE)
+set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/antimony.py PROPERTIES GENERATED TRUE PUBLIC TRUE)
 
 #Create setup.py from setup.py.in
 set(SETUP_PY_IN "${CMAKE_CURRENT_SOURCE_DIR}/setup.py.in")
