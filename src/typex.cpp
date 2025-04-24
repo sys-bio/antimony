@@ -718,7 +718,7 @@ void GetLayoutTypeAndNumFromString(const std::string& tid, layout_type& ltype, i
         return;
     }
     //Otherwise, it might be a type appended with a number.
-    regex endNum("^([a-zA-Z]*)([0-9]+)");
+    regex endNum("^([a-zA-Z_]*)([0-9]+)$");
     string tid_shorter = tid;
     std::smatch m;
     if (regex_search(tid, m, endNum)) {

@@ -1628,7 +1628,7 @@ bool Registry::CheckCreatorString(const string& qualifier, unsigned int& creator
         creator_number = 1;
         return false;
     }
-    regex creatorNum("^creator([0-9]+)");
+    regex creatorNum("^creator([0-9]+)$");
     std::smatch m;
     if (regex_search(qualifier, m, creatorNum)) {
         creator_number = stoi(m[1].str());

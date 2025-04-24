@@ -1012,7 +1012,7 @@ bool LayoutWrapper::setArcType(const std::string* type)
 
 bool LayoutWrapper::setArcNumber(const std::string* type)
 {
-    regex arcNum("^arc([0-9]+)");
+    regex arcNum("^arc([0-9]+)$");
     std::smatch m;
     if (regex_search(*type, m, arcNum)) {
         m_speciesIndex = stoi(m[1].str()) - 1;
@@ -1023,7 +1023,7 @@ bool LayoutWrapper::setArcNumber(const std::string* type)
 
 bool LayoutWrapper::setSegmentNumber(const std::string* type)
 {
-    regex segNum("^seg([0-9]+)");
+    regex segNum("^seg([0-9]+)$");
     std::smatch m;
     if (regex_search(*type, m, segNum)) {
         m_speciesIndex = stoi(m[1].str()) - 1;
