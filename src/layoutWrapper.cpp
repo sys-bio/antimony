@@ -6,6 +6,7 @@
 #include "reaction.h"
 #include <iostream>
 #include <string>
+#include <regex>
 #ifdef LIBSBML_HAS_PACKAGE_DISTRIB
 #include <sbml/packages/layout/sbml/Layout.h>
 #include <sbml/packages/layout/extension/LayoutModelPlugin.h>
@@ -1011,26 +1012,24 @@ bool LayoutWrapper::setArcType(const std::string* type)
 
 bool LayoutWrapper::setArcNumber(const std::string* type)
 {
-    std::regex arc_number("arc[0-9]*");
-    string removed = std::regex_replace(*type, arc_number, "");
-    if (removed.size() > 0) {
-        return true;
+    regex arcNum("^arc([0-9]+)");
+    std::smatch m;
+    if (regex_search(*type, m, arcNum)) {
+        m_speciesIndex = stoi(m[1].str()) - 1;
+        return false;
     }
-    string num = type->substr(3);
-    m_speciesIndex = std::stoi(num) - 1;
-    return false;
+    return true;
 }
 
 bool LayoutWrapper::setSegmentNumber(const std::string* type)
 {
-    std::regex seg_number("seg[0-9]*");
-    string removed = std::regex_replace(*type, seg_number, "");
-    if (removed.size() > 0) {
-        return true;
+    regex segNum("^seg([0-9]+)");
+    std::smatch m;
+    if (regex_search(*type, m, segNum)) {
+        m_speciesIndex = stoi(m[1].str()) - 1;
+        return false;
     }
-    string num = type->substr(3);
-    m_segmentIndex = std::stoi(num) - 1;
-    return false;
+    return true;
 }
 
 bool LayoutWrapper::setArcType(arc_type type)

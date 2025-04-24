@@ -1,8 +1,8 @@
 #include <assert.h>
+#include <regex>
 
 #include "enums.h"
 #include "typex.h"
-#include "regex"
 #include "stringx.h"
 
 using namespace std;
@@ -718,16 +718,15 @@ void GetLayoutTypeAndNumFromString(const std::string& tid, layout_type& ltype, i
         return;
     }
     //Otherwise, it might be a type appended with a number.
-    std::regex arc_number("[0-9]*");
-    string removed = std::regex_replace(tid, arc_number, "");
-    if (removed.size() == tid.size()) {
-        // It's just an unknown type
-        aliasNum = -1;
-        return;
+    regex endNum("^([a-zA-Z]*)([0-9]+)");
+    string tid_shorter = tid;
+    std::smatch m;
+    if (regex_search(tid, m, endNum)) {
+        aliasNum = stoi(m[2].str()) - 1;
+        tid_shorter = m[1].str();
     }
-    string num = tid.substr(removed.size());
-    aliasNum = std::stoi(num) - 1;
-    ltype = LayoutStringToType(removed);
+
+    ltype = LayoutStringToType(tid_shorter);
     return;
 }
 
