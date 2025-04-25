@@ -8,6 +8,7 @@
 
 #ifndef NSBML
 #include <sbml/SBMLTypes.h>
+#include <sbml/packages/layout/sbml/Layout.h>
 #endif
 
 #ifdef USE_COMP
@@ -27,6 +28,35 @@ enum tree_direction {td_UP, td_DOWN, td_SIDEWAYS};
 #include "sboTermWrapper.h"
 
 class ReactionList;
+class LayoutWrapper;
+
+struct autolayout {
+    bool use = false;
+    //double stiffness = 10.0;
+    //double gravity = 15.0;
+    int maxNumConnectedEdges = 3;
+    //bool useMagnetism = false;
+    //bool useBoundary = true;
+    //bool useGrid = false;
+    //bool useNameAsTextLabel = true;
+    //std::set <std::string> lockedNodeIds = std::set<std::string>();
+};
+
+struct layout {
+    std::set <std::pair<std::string, int> > align_top      = std::set <std::pair<std::string, int> >();
+    std::set <std::pair<std::string, int> > align_hCenter  = std::set <std::pair<std::string, int> >();
+    std::set <std::pair<std::string, int> > align_bottom   = std::set <std::pair<std::string, int> >();
+    std::set <std::pair<std::string, int> > align_left     = std::set <std::pair<std::string, int> >();
+    std::set <std::pair<std::string, int> > align_vCenter  = std::set <std::pair<std::string, int> >();
+    std::set <std::pair<std::string, int> > align_right    = std::set <std::pair<std::string, int> >();
+    std::set <std::pair<std::string, int> > align_circular = std::set <std::pair<std::string, int> >();
+    double height = 0.0;
+    double width  = 0.0;
+    //double depth  = 0.0;
+    std::string background = "";
+    std::string style = "";
+};
+
 
 class Module  : public Annotated
 {
@@ -66,6 +96,12 @@ private:
   std::string m_libsbml_info;
   std::string m_libsbml_warnings;
   bool m_hasFBC;
+  autolayout m_autolayout;
+  layout m_layout;
+  std::vector<LayoutWrapper*>  m_defaultLayouts;
+  std::vector<LayoutWrapper*>  m_speciesLayouts;
+  std::vector<LayoutWrapper*>  m_compartmentLayouts;
+  std::vector<LayoutWrapper*>  m_reactionLayouts;
 #endif
 
 #ifndef NCELLML
@@ -94,7 +130,7 @@ public:
   bool AddVariableToExportList(Variable* var);
   Variable* AddNewReaction(const ReactantList& left, rd_type divider, const ReactantList& right, Formula* formula);
   Variable* AddNewReaction(const ReactantList& left, rd_type divider, const ReactantList& right, Formula* formula, Variable* var);
-  bool AddNewAlgebraicRule(int val, Formula* formula);
+  bool AddNewAlgebraicRule(double val, Formula* formula);
   bool SetFormula(Formula* formula);
   void SetNewTopName(std::string newmodname, std::string newtopname);
   bool SetModule(const std::string* modname);
@@ -159,6 +195,22 @@ public:
 
   bool GetNeedDefaultCompartment() const;
   virtual void SetSBOTerm(int sboTerm);
+
+  virtual bool SetLayout(const std::string* isset);
+  virtual bool SetLayout(const std::string& isset);
+  virtual bool SetAutoLayout(const std::string* argument, const std::string* value);
+  virtual bool SetAutoLayout(const std::string* argument, const double& value);
+  virtual bool SetAutoLayout(const std::string* argument, const std::vector<Variable*>* values);
+  virtual bool SetAutoLayout(const std::string* argument, const std::vector<double>* values);
+
+  virtual bool SetLayout(const std::string* argument, const std::string* value);
+  virtual bool SetLayout(const std::string* argument, const double& value);
+  virtual bool SetLayout(const std::string* argument, const std::vector<Variable*>* values);
+  virtual bool SetLayout(const std::string* argument, const std::vector<double>* values);
+
+  virtual bool AddSpeciesLayoutInfo(const std::string* type, Formula* formula);
+  virtual bool AddCompartmentLayoutInfo(const std::string* type, Formula* formula);
+  virtual bool AddReactionLayoutInfo(const std::string* type, Formula* formula);
 
 
   //Output for the API
@@ -284,6 +336,12 @@ private:
   void FixFunctions(const std::string& name, libsbml::Model* model);
   void FixUnitNames(libsbml::Model* model);
   void UpdateRateOf(libsbml::Model* model);
+  std::string ValidateAutoLayoutArgument(const std::string* argument);
+  std::string ValidateLayoutArgument(const std::string* argument);
+  std::string GetAntimonyGeneralLayout(const std::string& indent) const;
+  std::string GetAntimonyTypeLayouts(const std::string& indent) const;
+  void AddEmptyGlyphsFromReaction(Variable* reaction, const std::string& rxnid, libsbml::SBMLDocument* origdoc);
+  void  LoadLayout(libsbml::Model* sbml);
 #endif
 #endif
 };

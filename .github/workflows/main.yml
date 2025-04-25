@@ -15,18 +15,18 @@ jobs:
       fail-fast: false
       matrix:
         platform:
-          - name: macos-12-release
+          - name: macos-13-release
             os_type: macos
-            os_name: macos-12
+            os_name: macos-13
             build_type: Release
             build_python: ON
-            build_qt_antimony: ON
-          - name: macos-12-debug
+            build_qt_antimony: OFF
+          - name: macos-13-debug
             os_type: macos
-            os_name: macos-12
+            os_name: macos-13
             build_type: Debug
             build_python: ON
-            build_qt_antimony: ON
+            build_qt_antimony: OFF
           - name: macos-14-release
             os_type: macos
             os_name: macos-14
@@ -44,27 +44,27 @@ jobs:
             os_name: ubuntu-latest
             build_type: Release
             build_python: ON
-            build_qt_antimony: ON
+            build_qt_antimony: OFF
           - name: ubuntu-latest-debug
             os_type: ubuntu
             os_name: ubuntu-latest
             build_type: Debug
             build_python: ON
-            build_qt_antimony: ON
+            build_qt_antimony: OFF
           - name: windows-latest-release
             os_type: windows
             os_name: windows-latest
             expat_lib_name: libexpatmd.lib
             build_type: Release
             build_python: ON
-            build_qt_antimony: ON
+            build_qt_antimony: OFF
           - name: windows-latest-debug
             os_type: windows
             os_name: windows-latest
             expat_lib_name: libexpatdMD.lib
             build_type: Debug
             build_python: OFF
-            build_qt_antimony: ON
+            build_qt_antimony: OFF
           - name: manylinux_2_28-release
             os_type: manylinux
             os_name: ubuntu-latest
@@ -82,7 +82,7 @@ jobs:
         libroadrunner_deps_owner: [ "sys-bio" ]
         libroadrunner_deps_repo: [ "libroadrunner-deps" ]
         libroadrunner_deps_name: [ "libroadrunner-deps" ]
-        libroadrunner_deps_release_version: [ "v2.1.2" ]
+        libroadrunner_deps_release_version: [ "v2.2.16" ]
         python_version: [ "3.12" ]
 
     runs-on: ${{ matrix.platform.os_name }}
@@ -269,9 +269,9 @@ jobs:
 
       - name: Install Qt
         if : matrix.platform.build_qt_antimony == 'ON'
-        uses: jurplel/install-qt-action@v3
+        uses: jurplel/install-qt-action@v4
         with:
-          version: '5.15.2'
+          version: '5.15.16'
 
       - name: Create build directory
         shell: bash

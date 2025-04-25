@@ -62,7 +62,7 @@ public:
   void AppendBiolQualifiers(const libsbml::BiolQualifierType_t qual, const std::vector<std::string>& resources);
   // appends notes (just strings)
   void AppendNotes(const std::vector<std::string>& resources);
-  bool addCreatorInfo(int creator_number, const std::string& creator_substr, const std::vector<std::string>& resources);
+  bool addCreatorInfo(unsigned int creator_number, const std::string& creator_substr, const std::vector<std::string>& resources);
   void SetCreated(libsbml::Date* date);
   bool SetCreated(const std::string& date);
   bool SetCreated(const std::string& qual, const std::string& date);

@@ -94,7 +94,7 @@ string Annotated::GetCreatorStringFor(const string& id) const
 {
     string ret = "";
     ModelHistory* mh = const_cast<ModelHistory*>(&m_history);
-    for (size_t v = 0; v < mh->getNumCreators(); v++) {
+    for (unsigned int v = 0; v < mh->getNumCreators(); v++) {
         string left = id + " creator" + to_string(v+1) + ".";
         ModelCreator* mc = mh->getCreator(v);
         if (mc->isSetName()) {
@@ -318,7 +318,7 @@ void Annotated::AppendNotes(const std::vector<std::string>& resources)
     }
 }
 
-bool Annotated::addCreatorInfo(int creator_number, const string& creator_substr, const vector<string>& resources)
+bool Annotated::addCreatorInfo(unsigned int creator_number, const string& creator_substr, const vector<string>& resources)
 {
     ModelCreator* creator = NULL;
     if (creator_number <= m_history.getNumCreators()) {
@@ -518,7 +518,7 @@ void Annotated::PopulateCVTerms(SBase* sbmlobj)
   if (sbmlobj->isSetCreatedDate()) {
       SetCreated(sbmlobj->getCreatedDate());
   }
-  for (size_t i = 0; i < sbmlobj->getNumModifiedDates(); i++) {
+  for (unsigned int i = 0; i < sbmlobj->getNumModifiedDates(); i++) {
       AppendModified(sbmlobj->getModifiedDate(i));
   }
   if (sbmlobj->isSetModelHistory()) {

@@ -25,6 +25,7 @@ class Module;
 class UnitDef;
 class SboTermWrapper;
 class UncertWrapper;
+class LayoutWrapper;
 
 class Variable : public Annotated
 {
@@ -66,6 +67,7 @@ protected:
   // Subclass which is used as a wrapper for setting SBO terms
   SboTermWrapper* m_sboTermWrapper;
   std::vector<UncertWrapper*> m_uncertWrappers;
+  std::vector<LayoutWrapper*> m_layoutWrappers;
   //If we've set the compartment we're in, this tells us where we are.
   std::vector<std::string> m_compartment;
   std::vector<std::string> m_supercompartment;
@@ -124,7 +126,7 @@ public:
   AntimonyConstraint* GetConstraint();
   const AntimonyConstraint* GetConstraint() const;
 
-  Variable* GetSubVariable(const std::string* name);
+  virtual Variable* GetSubVariable(const std::string* name);
   virtual Variable* GetSameVariable();
   virtual const Variable* GetSameVariable() const;
   const DNAStrand* GetDNAStrand() const;
@@ -151,7 +153,7 @@ public:
   virtual bool SetFormula(Formula* formula, bool isObjective=false);
   bool SetAssignmentRule(Formula* formula);
   bool SetRateRule(Formula* formula);
-  bool SetAlgebraicRule(int val, Formula* formula);
+  bool SetAlgebraicRule(double val, Formula* formula);
   bool SetReaction(AntimonyReaction* rxn);
   bool SetModule(const std::string* modname);
   bool SetEvent(const AntimonyEvent* event);
@@ -199,8 +201,11 @@ public:
   //bool Synchronize(Variable* clone, SBase* foo);
   void SetWithRule(const libsbml::Rule* rule);
   virtual bool TransferAnnotationTo(libsbml::SBase* sbmlobj, std::string metaid) const;
+  virtual bool TransferLayoutInformationTo(libsbml::SBMLDocument* sbml);
   void ReadAnnotationFrom(const libsbml::SBase* sbmlobj);
   virtual size_t GetNumUncertWrappers() const;
+  virtual size_t GetNumLayoutWrappers() const;
+  virtual bool HasLayoutPositionInfo() const;
 #endif
 
   bool IncludesSelf();
@@ -213,10 +218,14 @@ public:
   const Variable* GetOriginal() const;
   Variable* GetParentVariable();
   UncertWrapper* AddOrGetUncertWrapper(uncert_type type);
+  LayoutWrapper* AddOrGetLayoutWrapper(layout_type type, int aliasNum, std::vector<std::string> rxnIDs);
+
+  LayoutWrapper* GetReactionArcLayoutWrapper(const std::string* name);
 
   bool IsReplacedFormRxn() const;
   virtual std::string CreateSBOTermsAntimonySyntax(const std::string& elt_id, const std::string& indent, std::string sboStr) const;
   virtual std::string CreateUncertParamsAntimonySyntax(const std::string& indent) const;
+  virtual std::string CreateLayoutParamsAntimonySyntax(const std::string& indent) const;
 
   bool AllowedInFormulas() const;
 

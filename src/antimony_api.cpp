@@ -311,7 +311,7 @@ void LoadSBML(SBMLDocument* doc)
         SBMLConverter* converter = new SBMLFunctionDefinitionConverter();
         converter->setDocument(doc);
         int cret = converter->convert();
-
+        delete converter;
     }
 #ifdef USE_COMP
   string mainsbmlname = getNameFromSBMLObject(doc->getModel(), "doc");
@@ -1723,7 +1723,9 @@ LIB_EXTERN return_type getTypeOfSymbol(const char* moduleName, const char* symbo
   case varUndefined:
   case varSboTermWrapper:
   case varUncertWrapper:
-    return allUnknown;
+  case varLayoutWrapper:
+  case varLayoutColorEtc:
+      return allUnknown;
   case varModule:
     return subModules;
   case varEvent:
@@ -2062,6 +2064,11 @@ LIB_EXTERN char* printAllDataFor(const char* moduleName)
         ret << "\tEvent Trigger: " << symbolequations[var] << endl;
       }
       break;
+    case formulaALGEBRAIC:
+        if (string(symbolequations[var]) != "") {
+            ret << "\tAlgebraic rule: " << symbolequations[var] << endl;
+        }
+        break;
     }
   }
   if (getNumDNAStrands(moduleName) > 0) {
@@ -2117,10 +2124,8 @@ LIB_EXTERN char* printAllDataFor(const char* moduleName)
       if (var > 0) {
         ret << " + ";
       }
-      if (leftrxnstoichs[rxn][var] > 1) {
-        char lnum[50];
-        sprintf(lnum, "%g", leftrxnstoichs[rxn][var]);
-        ret << lnum;
+      if (leftrxnstoichs[rxn][var] != 1) {
+        ret << leftrxnstoichs[rxn][var];
       }
       ret << leftrxnnames[rxn][var];
     }
@@ -2129,10 +2134,8 @@ LIB_EXTERN char* printAllDataFor(const char* moduleName)
       if (var > 0) {
         ret << " + ";
       }
-      if (rightrxnstoichs[rxn][var] > 1) {
-        char rnum[50];
-        sprintf(rnum, "%g", rightrxnstoichs[rxn][var]);
-        ret << rnum;
+      if (rightrxnstoichs[rxn][var] != 1) {
+        ret << rightrxnstoichs[rxn][var];
       }
       ret << rightrxnnames[rxn][var];
     }

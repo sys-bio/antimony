@@ -5,7 +5,7 @@
 #
 ###############################################################################
 
-find_package(PythonInterp)
+find_package(Python REQUIRED)
 # specify that the same python library should be found
 # as the one the selected interpreter uses
 set (Python_ADDITIONAL_VERSIONS ${PYTHON_VERSION_STRING})
@@ -17,13 +17,13 @@ SET(PYTHON_CTYPES_FILE "${CMAKE_CURRENT_BINARY_DIR}/antimony.py")
 #Create the 'antimony.py' ctypes-based library from 'createAntimonyLib.py'.
 ADD_CUSTOM_COMMAND(
     OUTPUT   ${PYTHON_CTYPES_FILE}
-    COMMAND "${PYTHON_EXECUTABLE}"
-    ARGS    "${CMAKE_SOURCE_DIR}/src/bindings/python/createAntimonyLib.py" "${CMAKE_SOURCE_DIR}/src/"
-    COMMENT "Convert header file to ctypes Python bindings.")
+    COMMAND "${Python_EXECUTABLE}"
+    ARGS    "${CMAKE_SOURCE_DIR}/src/bindings/python/createAntimonyLib.py" "${CMAKE_SOURCE_DIR}/src/" "${PYTHON_CTYPES_FILE}"
+    COMMENT "Convert header file to ctypes Python bindings.  Should run ${Python_EXECUTABLE} ${CMAKE_SOURCE_DIR}/src/bindings/python/createAntimonyLib.py ${CMAKE_SOURCE_DIR}/src/ ${PYTHON_CTYPES_FILE}")
 
 ADD_CUSTOM_TARGET(python_ctypes_lib ALL DEPENDS ${PYTHON_CTYPES_FILE})
 
-set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/antimony.py PROPERTIES GENERATED TRUE)
+set_source_files_properties(${PYTHON_CTYPES_FILE} PROPERTIES GENERATED TRUE PUBLIC TRUE)
 
 #Create setup.py from setup.py.in
 set(SETUP_PY_IN "${CMAKE_CURRENT_SOURCE_DIR}/setup.py.in")
@@ -52,7 +52,7 @@ file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/libantimony.pth" "antimony\n")
 #All the files that need to be installed in the python library directory.
 file (GLOB antimony_python_files
     ${INIT_PY}
-    ${CMAKE_CURRENT_BINARY_DIR}/antimony.py
+    ${PYTHON_CTYPES_FILE}
     ${CMAKE_CURRENT_BINARY_DIR}/libantimony.pth
     ${CPACK_PACKAGE_DESCRIPTION_FILE}
     ${CPACK_RESOURCE_FILE_LICENSE}
@@ -77,7 +77,7 @@ set(PYTHON_PACKAGE_INSTALL_DIR "bindings/python")
 if (PYTHON_LOCAL_INSTALL)
 
    INSTALL(FILES ${antimony_python_files}  DESTINATION ${PYTHON_PACKAGE_INSTALL_DIR}/antimony)
-   INSTALL(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/antimony.py DESTINATION ${PYTHON_PACKAGE_INSTALL_DIR}/antimony)
+   INSTALL(PROGRAMS ${PYTHON_CTYPES_FILE}  DESTINATION ${PYTHON_PACKAGE_INSTALL_DIR}/antimony)
 #   install(TARGETS ${LIBANTIMONY_LIBRARY}  DESTINATION ${PYTHON_PACKAGE_INSTALL_DIR}/antimony)
    INSTALL(FILES ${SETUP_PY}  DESTINATION ${PYTHON_PACKAGE_INSTALL_DIR})
 

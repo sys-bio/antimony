@@ -1161,7 +1161,7 @@ AntimonyEvent* Registry::GetCurrentEvent() {
   return CurrentModule()->GetVariable(m_currentEvent)->GetEvent();
 }
 
-bool Registry::AddNewAlgebraicRuleToCurrent(int val, Formula* formula)
+bool Registry::AddNewAlgebraicRuleToCurrent(double val, Formula* formula)
 {
     return CurrentModule()->AddNewAlgebraicRule(val, formula);
 }
@@ -1523,9 +1523,15 @@ bool Registry::ProcessGlobalCVTerm(const string* name, const string* qual, vecto
   }
 }
 
-bool Registry::ProcessCreatorTerm(Annotated* a, const string* creator, const string* cterm, int resource)
+bool Registry::ProcessCreatorTerm(Annotated* a, const string* creator, const string* cterm, double resource)
 {
-    string val = to_string(resource);
+    if (abs(resource - round(resource)) > 0.000001) {
+        stringstream err;
+        err << "Unable to use " << resource << " as a creator term resource; only non-decimal numbers are allowed.";
+        g_registry.SetError(err.str());
+        return true;
+    }
+    string val = to_string(round(resource));
     vector<string> vals;
     vals.push_back(val);
     return ProcessCreatorTerm(a, creator, cterm, &vals);
@@ -1533,7 +1539,7 @@ bool Registry::ProcessCreatorTerm(Annotated* a, const string* creator, const str
 
 bool Registry::ProcessCreatorTerm(Annotated* a, const string* creator, const string* cterm, vector<string>* resources)
 {
-    int creator_number = 0;
+    unsigned int creator_number = 0;
 
     if (*creator == "created") {
         if (resources->size() > 1) {
@@ -1560,9 +1566,15 @@ bool Registry::ProcessCreatorTerm(Annotated* a, const string* creator, const str
     return false;
 }
 
-bool Registry::ProcessGlobalCreatorTerm(const string* name, const string* creator, const string* cterm, int resource)
+bool Registry::ProcessGlobalCreatorTerm(const string* name, const string* creator, const string* cterm, double resource)
 {
-    string val = to_string(resource);
+    if (abs(resource - round(resource)) > 0.000001) {
+        stringstream err;
+        err << "Unable to use " << resource << " as a creator term resource; only non-decimal numbers are allowed.";
+        g_registry.SetError(err.str());
+        return true;
+    }
+    string val = to_string(round(resource));
     vector<string> vals;
     vals.push_back(val);
     return ProcessGlobalCreatorTerm(name, creator, cterm, &vals);
@@ -1579,7 +1591,7 @@ bool Registry::ProcessGlobalCreatorTerm(const string* name, const string* creato
             delete resources;
             return true;
         }
-        int creator_number = 0;
+        unsigned int creator_number = 0;
         if (*creator == "created") {
             if (resources->size() > 1) {
                 SetError("Unable to set multiple date elements at once.");
@@ -1610,13 +1622,13 @@ bool Registry::ProcessGlobalCreatorTerm(const string* name, const string* creato
     }
 }
 
-bool Registry::CheckCreatorString(const string& qualifier, int& creator_number)
+bool Registry::CheckCreatorString(const string& qualifier, unsigned int& creator_number)
 {
     if (qualifier == "creator") {
         creator_number = 1;
         return false;
     }
-    regex creatorNum("^creator([0-9]+)");
+    regex creatorNum("^creator([0-9]+)$");
     std::smatch m;
     if (regex_search(qualifier, m, creatorNum)) {
         creator_number = stoi(m[1].str());

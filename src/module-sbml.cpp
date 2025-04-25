@@ -1,5 +1,13 @@
 #include "module.h"
 #include "sbml/Model.h"
+#include <sbmlnetwork/libsbmlnetwork_sbmldocument.h>
+#include <sbmlnetwork/libsbmlnetwork_sbmldocument_layout.h>
+#include <sbmlnetwork/libsbmlnetwork_sbmldocument_render.h>
+#include <sbmlnetwork/libsbmlnetwork_render_helpers.h>
+#include <sbmlnetwork/libsbmlnetwork_layout_helpers.h>
+#include "sbmlnetwork/features/colors/libsbmlnetwork_colors.h"
+#include "sbmlnetwork/features/styles/libsbmlnetwork_styles.h"
+#include "sbml/packages/layout/extension/LayoutModelPlugin.h"
 
 using namespace libsbml;
 
@@ -230,10 +238,12 @@ void Module::FindOrCreateLocalVersionOf(const Variable* var, libsbml::Model* sbm
   case varDeleted:
   case varSboTermWrapper:
   case varUncertWrapper:
+  case varLayoutWrapper:
   case varConstraint:
   case varStoichiometry:
   case varAlgebraicRule:
-    assert(false); //Unhandled type
+  case varLayoutColorEtc:
+      assert(false); //Unhandled type
     break;
   }
   vector<string> varname = var->GetName();
@@ -1463,10 +1473,28 @@ void Module::LoadSBML(Model* sbml)
         sbmlname = getNameFromSBMLObject(msr, "_I");
         rd_type itype = rdInfluences;
         if (msr->isSetSBOTerm()) {
-          if (msr->getSBOTerm() == 20) {
+            int sboterm = msr->getSBOTerm();
+          if ((sboterm == 20) ||
+              (sboterm == 206) ||
+              (sboterm == 207) ||
+              (sboterm == 597) ||
+              (sboterm == 638) ||
+              (sboterm == 639) ||
+              (sboterm == 640)) {
             itype = rdInhibits;
           }
-          else if (msr->getSBOTerm() == 459) {
+          else if ((sboterm == 459) || //459 is the 'root' term for this family.
+              (sboterm == 13) ||
+              (sboterm == 21) ||
+              (sboterm == 460) ||
+              (sboterm == 461) ||
+              (sboterm == 462) ||
+              (sboterm == 533) ||
+              (sboterm == 534) ||
+              (sboterm == 535) ||
+              (sboterm == 636) ||
+              (sboterm == 637) ||
+              (sboterm == 671) ) {
             itype = rdActivates;
           }
         }
@@ -1490,6 +1518,7 @@ void Module::LoadSBML(Model* sbml)
 
       }
     TranslateRulesAndAssignmentsTo(reaction, var);
+    AddEmptyGlyphsFromReaction(var, reaction->getId(), sbml->getSBMLDocument());
   }
 
   //FBC Constraints:
@@ -1621,6 +1650,7 @@ void Module::LoadSBML(Model* sbml)
 
   //Finally, fix the fact that 'time' used to be OK in functions (l2v1), but is no longer (l2v2).
   g_registry.FixTimeInFunctions();
+  LoadLayout(sbml);
 }
 
 const SBMLDocument* Module::GetSBML(bool comp)
@@ -2438,6 +2468,80 @@ void Module::CreateSBMLModel(bool comp)
     FixPortReferencesIn(sbmlmod);
   }
 #endif //USE_COMP
+
+  // Layout/Render!
+  if (m_autolayout.use) {
+      LIBSBMLNETWORK_CPP_NAMESPACE::autorender(&m_sbml, m_autolayout.maxNumConnectedEdges);
+      //LIBSBMLNETWORK_CPP_NAMESPACE::setUseNameAsTextLabel(&m_sbml, 0, m_autolayout.useNameAsTextLabel);
+      //For some reason, the following line is REQUIRED; otherwise I get linking errors(!) about how 'autolayout' is missing.  WTF?? LS DEBUG  //...and now it's fine?
+      //LIBSBMLNETWORK_CPP_NAMESPACE::getSBMLObject(&m_sbml, "S1");
+      if (m_layout.width != 0) {
+          LIBSBMLNETWORK_CPP_NAMESPACE::setDimensionWidth(&m_sbml, m_layout.width);
+      }
+      if (m_layout.height != 0) {
+          LIBSBMLNETWORK_CPP_NAMESPACE::setDimensionHeight(&m_sbml, m_layout.height);
+      }
+      if (m_layout.style != "") {
+          LIBSBMLNETWORK_CPP_NAMESPACE::setStyle(&m_sbml, 0, m_layout.style);
+      }
+      if (m_layout.background != "") {
+          //The background name has already been validated when set.
+          LIBSBMLNETWORK_CPP_NAMESPACE::setBackgroundColor(&m_sbml, m_layout.background);
+      }
+      for (size_t sl = 0; sl < m_defaultLayouts.size(); sl++) {
+          m_defaultLayouts[sl]->TransferLayoutInformationTo(&m_sbml, "layout");
+      }
+      for (size_t sl = 0; sl < m_speciesLayouts.size(); sl++) {
+          m_speciesLayouts[sl]->TransferLayoutInformationTo(&m_sbml, "species");
+      }
+      for (size_t sl = 0; sl < m_compartmentLayouts.size(); sl++) {
+          m_compartmentLayouts[sl]->TransferLayoutInformationTo(&m_sbml, "compartment");
+      }
+      for (size_t sl = 0; sl < m_reactionLayouts.size(); sl++) {
+          m_reactionLayouts[sl]->TransferLayoutInformationTo(&m_sbml, "reaction");
+      }
+      for (size_t v = 0; v < m_uniquevars.size(); v++) {
+          if (m_uniquevars[v]->TransferLayoutInformationTo(&m_sbml)) {
+              assert(false);
+          }
+      }
+
+      LIBSBMLNETWORK_CPP_NAMESPACE::autolayout(&m_sbml, m_autolayout.maxNumConnectedEdges);
+
+      bool any_align = false;
+      if (m_layout.align_top.size()) {
+          LIBSBMLNETWORK_CPP_NAMESPACE::align(&m_sbml, m_layout.align_top, "top", false);
+          any_align = true;
+      }
+      if (m_layout.align_left.size()) {
+          LIBSBMLNETWORK_CPP_NAMESPACE::align(&m_sbml, m_layout.align_left, "left");
+          any_align = true;
+      }
+      if (m_layout.align_hCenter.size()) {
+          LIBSBMLNETWORK_CPP_NAMESPACE::align(&m_sbml, m_layout.align_hCenter, "hCenter");
+          any_align = true;
+      }
+      if (m_layout.align_vCenter.size()) {
+          LIBSBMLNETWORK_CPP_NAMESPACE::align(&m_sbml, m_layout.align_vCenter, "vCenter");
+          any_align = true;
+      }
+      if (m_layout.align_right.size()) {
+          LIBSBMLNETWORK_CPP_NAMESPACE::align(&m_sbml, m_layout.align_right, "right");
+          any_align = true;
+      }
+      if (m_layout.align_bottom.size()) {
+          LIBSBMLNETWORK_CPP_NAMESPACE::align(&m_sbml, m_layout.align_bottom, "bottom");
+          any_align = true;
+      }
+      if (m_layout.align_circular.size()) {
+          LIBSBMLNETWORK_CPP_NAMESPACE::align(&m_sbml, m_layout.align_circular, "circular");
+          any_align = true;
+      }
+      if (any_align) {
+          LIBSBMLNETWORK_CPP_NAMESPACE::autolayout(&m_sbml, m_autolayout.maxNumConnectedEdges);
+      }
+      LIBSBMLNETWORK_CPP_NAMESPACE::freeUserData(&m_sbml);
+  }
 }
 
 void Module::SetAssignmentFor(Model* sbmlmod, const Variable* var, const map<const Variable*, Variable>& syncmap, bool comp, set<pair<string, const Variable*> > referencedVars)
@@ -3050,5 +3154,683 @@ void Module::UpdateRateOf(Model* model)
         }
     }
 }
+
+string getFontStyleFrom(string ital, string weight)
+{
+    if (weight == "bold") {
+        if (ital == "italic") {
+            return "bold_italic";
+        }
+        return weight;
+    }
+    return ital;
+}
+
+
+struct layoutInfo {
+    double width = -1;
+    double height = -1;
+    string color = "";
+    string linecolor = "";
+    double linewidth = -1;
+    string font = "";
+    string fontcolor = "";
+    double fontsize = -1;
+    string fontstyle = "";
+    string shape = "";
+};
+
+string convertColorIfNeeded(string sval, SBMLDocument* doc)
+{
+    if (sval.empty()) {
+        return sval;
+    }
+    if (sval[0] != '#') {
+        if (LIBSBMLNETWORK_CPP_NAMESPACE::isValidColorValue(sval)) {
+            return sval;
+        }
+        ColorDefinition* cd = LIBSBMLNETWORK_CPP_NAMESPACE::getColorDefinition(doc, sval);
+        if (cd) {
+            sval = cd->getValue();
+        }
+    }
+    if (sval[0] == '#') {
+        string cname = LIBSBMLNETWORK_CPP_NAMESPACE::getHtmlColorNameFromHexColorCode(sval);
+        if (!cname.empty()) {
+            return cname;
+        }
+        return sval;
+    }
+    if (sval == "none") {
+        return "";
+    }
+    assert(false);
+    return sval;
+}
+
+layoutInfo getDefaultSpeciesLayoutInfo(map<string, string> style, std::vector<LayoutWrapper*>& speciesLayouts, SBMLDocument* doc)
+{
+    layoutInfo ret;
+    ret.width = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesDimensionWidth();
+    ret.height = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesDimensionHeight();
+
+    ret.color = style["species-fill-color"];
+    string color = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesFillColor(doc);
+    color = convertColorIfNeeded(color, doc);
+    if (!color.empty() && color != ret.color) {
+        ret.color = color;
+        LayoutWrapper* lw = new LayoutWrapper(lt_color, "species");
+        Formula form;
+        form.AddText(&color, true);
+        lw->SetFormula(&form);
+        speciesLayouts.push_back(lw);
+    }
+
+    ret.linecolor = style["species-border-color"];
+    string linecolor = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesStrokeColor(doc);
+    linecolor = convertColorIfNeeded(linecolor, doc);
+    if (!linecolor.empty() && linecolor != ret.linecolor) {
+        ret.linecolor = linecolor;
+        LayoutWrapper* lw = new LayoutWrapper(lt_linecolor, "species");
+        Formula form;
+        form.AddText(&linecolor, true);
+        lw->SetFormula(&form);
+        speciesLayouts.push_back(lw);
+    }
+
+    ret.linewidth = atof(style["species-border-width"].c_str());
+    double linewidth = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesStrokeWidth(doc);
+    if (linewidth && !isnan(linewidth) && linewidth != ret.linewidth) {
+        ret.linewidth = linewidth;
+        LayoutWrapper* lw = new LayoutWrapper(lt_linewidth, "species");
+        Formula form;
+        form.AddNum(linewidth);
+        lw->SetFormula(&form);
+        speciesLayouts.push_back(lw);
+    }
+
+    ret.font = "sans-serif"; // style["species-font-family"];
+    string font = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesFontFamily(doc);
+    if (!font.empty() && font != ret.font) {
+        ret.font = font;
+        LayoutWrapper* lw = new LayoutWrapper(lt_font, "species");
+        Formula form;
+        form.AddText(&font, true);
+        lw->SetFormula(&form);
+        speciesLayouts.push_back(lw);
+    }
+
+    ret.fontcolor = style["species-font-color"];
+    string fontcolor = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesFontColor(doc);
+    fontcolor = convertColorIfNeeded(fontcolor, doc);
+    if (!fontcolor.empty() && fontcolor != ret.fontcolor) {
+        ret.fontcolor = fontcolor;
+        LayoutWrapper* lw = new LayoutWrapper(lt_fontcolor, "species");
+        Formula form;
+        form.AddText(&fontcolor, true);
+        lw->SetFormula(&form);
+        speciesLayouts.push_back(lw);
+    }
+
+    ret.fontsize = atof(style["species-font-size"].c_str());
+    double fontsize = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesFontSizeAsDouble(doc);
+    if (fontsize && !isnan(fontsize) && fontsize != ret.fontsize) {
+        ret.fontsize = fontsize;
+        LayoutWrapper* lw = new LayoutWrapper(lt_fontsize, "species");
+        Formula form;
+        form.AddNum(fontsize);
+        lw->SetFormula(&form);
+        speciesLayouts.push_back(lw);
+    }
+
+    ret.fontstyle = getFontStyleFrom(style["species-font-style"], style["species-font-weight"]);
+    string fontstyle = getFontStyleFrom(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesFontStyle(doc), LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesFontWeight(doc));
+    if (!fontstyle.empty() && fontstyle != ret.fontstyle) {
+        ret.fontstyle = fontstyle;
+        LayoutWrapper* lw = new LayoutWrapper(lt_fontstyle, "species");
+        Formula form;
+        form.AddText(&fontstyle, true);
+        lw->SetFormula(&form);
+        speciesLayouts.push_back(lw);
+    }
+    
+    ret.shape = style["species-geometric-shape"];
+    string shape = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesGeometricShapeType(doc);
+    if (!shape.empty() && shape != ret.shape) {
+        ret.shape = shape;
+        LayoutWrapper* lw = new LayoutWrapper(lt_shape, "species");
+        Formula form;
+        form.AddText(&shape, true);
+        lw->SetFormula(&form);
+        speciesLayouts.push_back(lw);
+    }
+
+    //{ "species-border-radius-x", "6" },
+    //{ "species-border-radius-y", "3.6" },
+    return ret;
+}
+
+void updateEmptySpeciesLayoutInfo(layoutInfo& empties)
+{
+    empties.width = 30;
+    empties.height = 30;
+    empties.shape = "ellipse";
+}
+
+layoutInfo getDefaultCompartmentLayoutInfo(map<string, string> style, std::vector<LayoutWrapper*>& compartmentLayouts, SBMLDocument* doc)
+{
+    layoutInfo ret;
+
+    ret.color = style["compartment-fill-color"];
+    string color = LIBSBMLNETWORK_CPP_NAMESPACE::getCompartmentFillColor(doc);
+    color = convertColorIfNeeded(color, doc);
+    if (!color.empty() && color != ret.color) {
+        ret.color = color;
+        LayoutWrapper* lw = new LayoutWrapper(lt_color, "compartment");
+        Formula form;
+        form.AddText(&color, true);
+        lw->SetFormula(&form);
+        compartmentLayouts.push_back(lw);
+    }
+
+    ret.linecolor = style["compartment-border-color"];
+    string linecolor = LIBSBMLNETWORK_CPP_NAMESPACE::getCompartmentStrokeColor(doc);
+    linecolor = convertColorIfNeeded(linecolor, doc);
+    if (!linecolor.empty() && linecolor != ret.linecolor) {
+        ret.linecolor = linecolor;
+        LayoutWrapper* lw = new LayoutWrapper(lt_linecolor, "compartment");
+        Formula form;
+        form.AddText(&linecolor, true);
+        lw->SetFormula(&form);
+        compartmentLayouts.push_back(lw);
+    }
+
+    ret.linewidth = atof(style["compartment-border-width"].c_str());
+    double linewidth = LIBSBMLNETWORK_CPP_NAMESPACE::getCompartmentStrokeWidth(doc);
+    if (linewidth && !isnan(linewidth) && linewidth != ret.linewidth) {
+        ret.linewidth = linewidth;
+        LayoutWrapper* lw = new LayoutWrapper(lt_linewidth, "compartment");
+        Formula form;
+        form.AddNum(linewidth);
+        lw->SetFormula(&form);
+        compartmentLayouts.push_back(lw);
+    }
+
+    ret.font = "sans-serif"; // style["compartment-font-family"];
+    string font = LIBSBMLNETWORK_CPP_NAMESPACE::getCompartmentFontFamily(doc);
+    if (!font.empty() && font != ret.font) {
+        ret.font = font;
+        LayoutWrapper* lw = new LayoutWrapper(lt_font, "compartment");
+        Formula form;
+        form.AddText(&font, true);
+        lw->SetFormula(&form);
+        compartmentLayouts.push_back(lw);
+    }
+
+    ret.fontcolor = style["compartment-font-color"];
+    string fontcolor = LIBSBMLNETWORK_CPP_NAMESPACE::getCompartmentFontColor(doc);
+    fontcolor = convertColorIfNeeded(fontcolor, doc);
+    if (!fontcolor.empty() && fontcolor != ret.fontcolor) {
+        ret.fontcolor = fontcolor;
+        LayoutWrapper* lw = new LayoutWrapper(lt_fontcolor, "compartment");
+        Formula form;
+        form.AddText(&fontcolor, true);
+        lw->SetFormula(&form);
+        compartmentLayouts.push_back(lw);
+    }
+
+    ret.fontsize = atof(style["compartment-font-size"].c_str());
+    double fontsize = LIBSBMLNETWORK_CPP_NAMESPACE::getCompartmentFontSizeAsDouble(doc);
+    if (fontsize && !isnan(fontsize) && fontsize != ret.fontsize) {
+        ret.fontsize = fontsize;
+        LayoutWrapper* lw = new LayoutWrapper(lt_fontsize, "compartment");
+        Formula form;
+        form.AddNum(fontsize);
+        lw->SetFormula(&form);
+        compartmentLayouts.push_back(lw);
+    }
+
+    ret.fontstyle = getFontStyleFrom(style["compartment-font-style"], style["compartment-font-weight"]);
+    string fontstyle = getFontStyleFrom(LIBSBMLNETWORK_CPP_NAMESPACE::getCompartmentFontStyle(doc), LIBSBMLNETWORK_CPP_NAMESPACE::getCompartmentFontWeight(doc));
+    if (!fontstyle.empty() && fontstyle != ret.fontstyle) {
+        ret.fontstyle = fontstyle;
+        LayoutWrapper* lw = new LayoutWrapper(lt_fontstyle, "compartment");
+        Formula form;
+        form.AddText(&fontstyle, true);
+        lw->SetFormula(&form);
+        compartmentLayouts.push_back(lw);
+    }
+
+    ret.shape = style["compartment-geometric-shape"];
+    string shape = LIBSBMLNETWORK_CPP_NAMESPACE::getCompartmentGeometricShapeType(doc);
+    if (!shape.empty() && shape != ret.shape) {
+        ret.shape = shape;
+        LayoutWrapper* lw = new LayoutWrapper(lt_shape, "compartment");
+        Formula form;
+        form.AddText(&shape, true);
+        lw->SetFormula(&form);
+        compartmentLayouts.push_back(lw);
+    }
+
+    return ret;
+
+    //{ "compartment-border-radius-x", "25" },
+    //{ "compartment-border-radius-y", "25" },
+    //{ "compartment-text-horizontal-alignment", "middle" },
+    //{ "compartment-text-vertical-alignment", "bottom" },
+}
+
+layoutInfo getDefaultReactionLayoutInfo(map<string, string> style, std::vector<LayoutWrapper*>& reactionLayouts, SBMLDocument* doc)
+{
+    layoutInfo ret;
+    ret.width = LIBSBMLNETWORK_CPP_NAMESPACE::getReactionDimensionWidth();
+    ret.height = LIBSBMLNETWORK_CPP_NAMESPACE::getReactionDimensionHeight();
+
+    ret.color = style["reaction-fill-color"];
+    string color = LIBSBMLNETWORK_CPP_NAMESPACE::getReactionFillColor(doc);
+    color = convertColorIfNeeded(color, doc);
+    if (!color.empty() && color != ret.color) {
+        ret.color = color;
+        LayoutWrapper* lw = new LayoutWrapper(lt_color, "reaction");
+        Formula form;
+        form.AddText(&color, true);
+        lw->SetFormula(&form);
+        reactionLayouts.push_back(lw);
+    }
+
+    ret.linecolor = style["reaction-line-color"];
+    string linecolor = LIBSBMLNETWORK_CPP_NAMESPACE::getReactionStrokeColor(doc);
+    linecolor = convertColorIfNeeded(linecolor, doc);
+    if (!linecolor.empty() && linecolor != ret.linecolor) {
+        ret.linecolor = linecolor;
+        LayoutWrapper* lw = new LayoutWrapper(lt_linecolor, "reaction");
+        Formula form;
+        form.AddText(&linecolor, true);
+        lw->SetFormula(&form);
+        reactionLayouts.push_back(lw);
+    }
+
+    ret.linewidth = atof(style["reaction-line-width"].c_str());
+    double linewidth = LIBSBMLNETWORK_CPP_NAMESPACE::getReactionStrokeWidth(doc);
+    if (linewidth && !isnan(linewidth) && linewidth != ret.linewidth) {
+        ret.linewidth = linewidth;
+        LayoutWrapper* lw = new LayoutWrapper(lt_linewidth, "reaction");
+        Formula form;
+        form.AddNum(linewidth);
+        lw->SetFormula(&form);
+        reactionLayouts.push_back(lw);
+    }
+
+    ret.font = "sans-serif"; // style["reaction-font-family"];
+    string font = LIBSBMLNETWORK_CPP_NAMESPACE::getReactionFontFamily(doc);
+    if (!font.empty() && font != ret.font) {
+        ret.font = font;
+        LayoutWrapper* lw = new LayoutWrapper(lt_font, "reaction");
+        Formula form;
+        form.AddText(&font, true);
+        lw->SetFormula(&form);
+        reactionLayouts.push_back(lw);
+    }
+
+    ret.fontcolor = style["reaction-font-color"];
+    string fontcolor = LIBSBMLNETWORK_CPP_NAMESPACE::getReactionFontColor(doc);
+    fontcolor = convertColorIfNeeded(fontcolor, doc);
+    if (!fontcolor.empty() && fontcolor != ret.fontcolor) {
+        ret.fontcolor = fontcolor;
+        LayoutWrapper* lw = new LayoutWrapper(lt_fontcolor, "reaction");
+        Formula form;
+        form.AddText(&fontcolor, true);
+        lw->SetFormula(&form);
+        reactionLayouts.push_back(lw);
+    }
+
+    ret.fontsize = atof(style["reaction-font-size"].c_str());
+    double fontsize = LIBSBMLNETWORK_CPP_NAMESPACE::getReactionFontSizeAsDouble(doc);
+    if (fontsize && !isnan(fontsize) && fontsize != ret.fontsize) {
+        ret.fontsize = fontsize;
+        LayoutWrapper* lw = new LayoutWrapper(lt_fontsize, "reaction");
+        Formula form;
+        form.AddNum(fontsize);
+        lw->SetFormula(&form);
+        reactionLayouts.push_back(lw);
+    }
+
+    ret.fontstyle = getFontStyleFrom(style["reaction-font-style"], style["reaction-font-weight"]);
+    string fontstyle = getFontStyleFrom(LIBSBMLNETWORK_CPP_NAMESPACE::getReactionFontStyle(doc), LIBSBMLNETWORK_CPP_NAMESPACE::getReactionFontWeight(doc));
+    if (!fontstyle.empty() && fontstyle != ret.fontstyle) {
+        ret.fontstyle = fontstyle;
+        LayoutWrapper* lw = new LayoutWrapper(lt_fontstyle, "reaction");
+        Formula form;
+        form.AddText(&fontstyle, true);
+        lw->SetFormula(&form);
+        reactionLayouts.push_back(lw);
+    }
+
+    ret.shape = style["reaction-geometric-shape"];
+    string shape = LIBSBMLNETWORK_CPP_NAMESPACE::getReactionGeometricShapeType(doc);
+    if (!shape.empty() && shape != ret.shape) {
+        ret.shape = shape;
+        LayoutWrapper* lw = new LayoutWrapper(lt_shape, "reaction");
+        Formula form;
+        form.AddText(&shape, true);
+        lw->SetFormula(&form);
+        reactionLayouts.push_back(lw);
+    }
+    return ret;
+}
+
+void Module::AddEmptyGlyphsFromReaction(Variable* reaction, const std::string& rxnid, SBMLDocument* origdoc)
+{
+    unsigned int nSpecRefs = LIBSBMLNETWORK_CPP_NAMESPACE::getNumSpeciesReferences(origdoc, rxnid, 0);
+    for (unsigned int sr = 0; sr < nSpecRefs; sr++) {
+        if (LIBSBMLNETWORK_CPP_NAMESPACE::isSetSpeciesReferenceEmptySpeciesGlyph(origdoc, 0, rxnid, 0, sr)) {
+            string sr_id = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceEmptySpeciesGlyphId(origdoc, rxnid, 0, sr);
+            LayoutWrapper* lw = new LayoutWrapper(reaction, lt_sourceSink, sr_id, this);
+            lw->setSpeciesId(&sr_id);
+            m_variables.push_back(lw);
+            StoreVariable(lw);
+            break;
+        }
+    }
+}
+
+void loadOneVariable(Variable* var, SBMLDocument* doc, string varid, const layoutInfo& defaults)
+{
+    Formula form;
+    double val = 0.0;
+    string sval = "";
+
+    int naliases = LIBSBMLNETWORK_CPP_NAMESPACE::getNumGraphicalObjects(doc, varid);
+    for (int alias = 0; alias < naliases; alias++) {
+        string glyphId = LIBSBMLNETWORK_CPP_NAMESPACE::getId(doc, 0, varid, alias);
+        vector<string> rxnIDs;
+        if (alias > 0 && IsSpecies(var->GetType())) {
+            rxnIDs = LIBSBMLNETWORK_CPP_NAMESPACE::getConnectedReactionsFor(doc, 0, varid, alias);
+        }
+        // Position
+        val = LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(doc, glyphId);
+        double valy = LIBSBMLNETWORK_CPP_NAMESPACE::getPositionY(doc, glyphId);
+        if ((val || valy) && (!isnan(val) || !isnan(valy))) {
+            LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_position, alias, rxnIDs);
+            string text = "{";
+            form.AddText(&text, true);
+            form.AddNum(val);
+            text = ",";
+            form.AddText(&text, true);
+            form.AddNum(valy);
+            text = "}";
+            form.AddText(&text, true);
+
+            lw->SetFormula(&form);
+            form.Clear();
+        }
+
+        // Size
+        val = LIBSBMLNETWORK_CPP_NAMESPACE::getDimensionWidth(doc, glyphId);
+        double valh = LIBSBMLNETWORK_CPP_NAMESPACE::getDimensionHeight(doc, glyphId);
+        if (((val || valh) && (!isnan(val) || !isnan(valh)) && (val != defaults.width || valh != defaults.height))) {
+            LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_size, alias, rxnIDs);
+            string text = "{";
+            form.AddText(&text, true);
+            form.AddNum(val);
+            text = ",";
+            form.AddText(&text, true);
+            form.AddNum(valh);
+            text = "}";
+            form.AddText(&text, true);
+
+            lw->SetFormula(&form);
+            form.Clear();
+        }
+
+        // Fill color
+        sval = LIBSBMLNETWORK_CPP_NAMESPACE::getFillColor(doc, glyphId);
+        sval = convertColorIfNeeded(sval, doc);
+        if (!sval.empty() && sval != defaults.color) {
+            LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_color, alias, rxnIDs);
+            form.AddText(&sval, true);
+            lw->SetFormula(&form);
+            form.Clear();
+        }
+
+        // Line color
+        sval = LIBSBMLNETWORK_CPP_NAMESPACE::getStrokeColor(doc, glyphId);
+        sval = convertColorIfNeeded(sval, doc);
+        if (!sval.empty() && sval != defaults.linecolor) {
+            LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_linecolor, alias, rxnIDs);
+            form.AddText(&sval, true);
+            lw->SetFormula(&form);
+            form.Clear();
+        }
+
+        // Linewidth
+        val = LIBSBMLNETWORK_CPP_NAMESPACE::getStrokeWidth(doc, glyphId);
+        if (val && !isnan(val) && val != defaults.linewidth) {
+            LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_linewidth, alias, rxnIDs);
+            form.AddNum(val);
+            lw->SetFormula(&form);
+            form.Clear();
+        }
+
+        // Font
+        sval = LIBSBMLNETWORK_CPP_NAMESPACE::getFontFamily(doc, glyphId);
+        if (!sval.empty() && sval != defaults.font) {
+            LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_font, alias, rxnIDs);
+            form.AddText(&sval, true);
+            lw->SetFormula(&form);
+            form.Clear();
+        }
+
+        // Font color
+        sval = LIBSBMLNETWORK_CPP_NAMESPACE::getFontColor(doc, glyphId);
+        sval = convertColorIfNeeded(sval, doc);
+        if (!sval.empty() && sval != defaults.fontcolor) {
+            LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_fontcolor, alias, rxnIDs);
+            form.AddText(&sval, true);
+            lw->SetFormula(&form);
+            form.Clear();
+        }
+
+        // Font size
+        val = LIBSBMLNETWORK_CPP_NAMESPACE::getFontSizeAsDouble(doc, glyphId);
+        if (val && !isnan(val) && val != defaults.fontsize) {
+            LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_fontsize, alias, rxnIDs);
+            form.AddNum(val);
+            lw->SetFormula(&form);
+            form.Clear();
+        }
+
+        // Font style
+        sval = getFontStyleFrom(LIBSBMLNETWORK_CPP_NAMESPACE::getFontStyle(doc, glyphId), LIBSBMLNETWORK_CPP_NAMESPACE::getFontWeight(doc, glyphId));
+        if (!sval.empty() && sval != defaults.fontstyle) {
+            LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_fontstyle, alias, rxnIDs);
+            form.AddText(&sval, true);
+            lw->SetFormula(&form);
+            form.Clear();
+        }
+
+        // Shape
+        sval = LIBSBMLNETWORK_CPP_NAMESPACE::getGeometricShapeType(doc, glyphId);
+        if (!sval.empty() && sval != defaults.shape) {
+            LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_shape, alias, rxnIDs);
+            form.AddText(&sval, true);
+            lw->SetFormula(&form);
+            form.Clear();
+        }
+    }
+
+}
+
+
+void Module::LoadLayout(Model* sbml)
+{
+    const LayoutModelPlugin* lplugin = static_cast<const LayoutModelPlugin*>(sbml->getPlugin("layout"));
+    if (lplugin && lplugin->getNumLayouts() > 0) {
+        m_autolayout.use = true;
+        //Use SBMLNetwork to read stuff instead of reading from the document directly.
+        SBMLDocument* doc = sbml->getSBMLDocument();
+        m_layout.height = LIBSBMLNETWORK_CPP_NAMESPACE::getDimensionHeight(doc);
+        m_layout.width = LIBSBMLNETWORK_CPP_NAMESPACE::getDimensionWidth(doc);
+
+        //Get default style and more-specific style
+        map<string, string> default_style = LIBSBMLNETWORK_CPP_NAMESPACE::getPredefinedStyleFeatures("default");
+        string style = LIBSBMLNETWORK_CPP_NAMESPACE::getStyle(doc);
+        map<string, string> new_style = LIBSBMLNETWORK_CPP_NAMESPACE::getPredefinedStyleFeatures(style);
+        if (!style.empty()  && style != "default") {
+            m_layout.style = style;
+        }
+        new_style.insert(default_style.begin(), default_style.end());
+
+        //Background color
+        string background = LIBSBMLNETWORK_CPP_NAMESPACE::getBackgroundColor(doc);
+        background = convertColorIfNeeded(background, doc);
+        if (background != new_style["background-color"]) {
+            m_layout.background = background;
+        }
+
+        map<var_type, layoutInfo> defaults;
+        defaults[varSpeciesUndef] = getDefaultSpeciesLayoutInfo(new_style, m_speciesLayouts, doc);
+        defaults[varReactionUndef] = getDefaultReactionLayoutInfo(new_style, m_reactionLayouts, doc);
+        defaults[varCompartment] = getDefaultCompartmentLayoutInfo(new_style, m_compartmentLayouts, doc);
+        defaults[varLayoutWrapper] = defaults[varSpeciesUndef];
+        updateEmptySpeciesLayoutInfo(defaults[varLayoutWrapper]);
+
+        for (size_t v = 0; v < m_variables.size(); v++) {
+            Variable* var = m_variables[v];
+            var_type type = var->GetType();
+            switch (type) {
+            case varSpeciesUndef:
+            case varCompartment:
+            case varReactionUndef:
+            case varLayoutWrapper:
+                break;
+            case varDNA:
+            case varReactionGene:
+                type = varReactionUndef;
+                break;
+            case varFormulaUndef:
+            case varFormulaOperator:
+            case varInteraction:
+            case varUndefined:
+            case varSboTermWrapper:
+            case varUncertWrapper:
+            case varLayoutColorEtc:
+            case varModule:
+            case varEvent:
+            case varStrand:
+            case varUnitDefinition:
+            case varDeleted:
+            case varConstraint:
+            case varStoichiometry:
+            case varAlgebraicRule:
+                continue;
+            }
+            string varid = var->GetNameDelimitedBy("_");
+
+            loadOneVariable(var, doc, varid, defaults[type]);
+
+            if (IsReaction(type)) {
+                vector<string> noRxnIds;
+                int naliases = LIBSBMLNETWORK_CPP_NAMESPACE::getNumGraphicalObjects(doc, varid);
+                for (int alias = 0; alias < naliases; alias++) {
+                    string glyphId = LIBSBMLNETWORK_CPP_NAMESPACE::getId(doc, 0, varid, alias);
+                    unsigned int nSpecRefs = LIBSBMLNETWORK_CPP_NAMESPACE::getNumSpeciesReferences(doc, varid, alias);
+                    double rxnX = LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(doc, glyphId);
+                    rxnX = rxnX + LIBSBMLNETWORK_CPP_NAMESPACE::getDimensionWidth(doc, glyphId) / 2;
+                    double rxnY = LIBSBMLNETWORK_CPP_NAMESPACE::getPositionY(doc, glyphId);
+                    rxnY = rxnY + LIBSBMLNETWORK_CPP_NAMESPACE::getDimensionHeight(doc, glyphId) / 2;
+                    set<string> involvedSpecies;
+                    for (unsigned int sr = 0; sr < nSpecRefs; sr++) {
+                        string sr_id = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceSpeciesId(doc, 0, varid, alias, sr);
+                        if (involvedSpecies.find(sr_id) != involvedSpecies.end()) {
+                            continue;
+                        }
+                        involvedSpecies.insert(sr_id);
+                        int nrefs = LIBSBMLNETWORK_CPP_NAMESPACE::getNumSpeciesReferencesAssociatedWithSpecies(doc, sr_id, varid, alias);
+                        Formula form;
+                        for (int ref = 0; ref < nrefs; ref++) {
+                            int sr_index = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceIndexAssociatedWithSpecies(doc, sr_id, varid, alias, ref);
+                            string role = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceRole(doc, varid, alias, sr_index);
+                            int nsegs = LIBSBMLNETWORK_CPP_NAMESPACE::getNumSpeciesReferenceCurveSegments(doc, varid, alias, sr_index);
+                            for (int segment = 0; segment < nsegs; segment++) {
+                                //Start
+                                double x = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointX(doc, varid, alias, sr_index, segment);
+                                double y = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointY(doc, varid, alias, sr_index, segment);
+                                if (!(isnan(x) || isnan(y))) {
+                                    if (x != rxnX && y != rxnY) {
+                                        LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_reactionArc, alias, noRxnIds);
+                                        form.AddVectorOfTwoValues(x, y);
+                                        lw->SetFormula(&form);
+                                        form.Clear();
+                                        lw->setSpeciesId(&sr_id);
+                                        if (startsAtReaction(role)) {
+                                            lw->setArcType(at_rxn);
+                                        }
+                                        else {
+                                            lw->setArcType(at_spec);
+                                        }
+
+                                        lw->setSpeciesIndex(ref);
+                                        lw->setSegmentIndex(segment);
+                                    }
+                                }
+
+                                //End
+                                x = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointX(doc, varid, alias, sr_index, segment);
+                                y = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointY(doc, varid, alias, sr_index, segment);
+                                if (!(isnan(x) || isnan(y))) {
+                                    if (x != rxnX && y != rxnY) {
+                                        LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_reactionArc, alias, noRxnIds);
+                                        form.AddVectorOfTwoValues(x, y);
+                                        lw->SetFormula(&form);
+                                        form.Clear();
+                                        lw->setSpeciesId(&sr_id);
+                                        if (startsAtReaction(role)) {
+                                            lw->setArcType(at_spec);
+                                        }
+                                        else {
+                                            lw->setArcType(at_rxn);
+                                        }
+                                        lw->setSpeciesIndex(ref);
+                                        lw->setSegmentIndex(segment);
+                                    }
+                                }
+
+                                //Base point 1
+                                x = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1X(doc, varid, alias, sr_index, segment);
+                                y = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1Y(doc, varid, alias, sr_index, segment);
+                                if (!(isnan(x) || isnan(y))) {
+                                    LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_reactionArc, alias, noRxnIds);
+                                    form.AddVectorOfTwoValues(x, y);
+                                    lw->SetFormula(&form);
+                                    form.Clear();
+                                    lw->setSpeciesId(&sr_id);
+                                    lw->setArcType(at_b1);
+                                    lw->setSpeciesIndex(ref);
+                                    lw->setSegmentIndex(segment);
+                                }
+
+                                //Base point 2
+                                x = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint2X(doc, varid, alias, sr_index, segment);
+                                y = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint2Y(doc, varid, alias, sr_index, segment);
+                                if (!(isnan(x) || isnan(y))) {
+                                    LayoutWrapper* lw = var->AddOrGetLayoutWrapper(lt_reactionArc, alias, noRxnIds);
+                                    form.AddVectorOfTwoValues(x, y);
+                                    lw->SetFormula(&form);
+                                    form.Clear();
+                                    lw->setSpeciesId(&sr_id);
+                                    lw->setArcType(at_b2);
+                                    lw->setSpeciesIndex(ref);
+                                    lw->setSegmentIndex(segment);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 
 #endif //NSBML

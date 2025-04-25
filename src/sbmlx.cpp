@@ -6,6 +6,8 @@
 #include "formula.h"
 #include "registry.h"
 #include "typex.h"
+#include <sbmlnetwork/libsbmlnetwork_render_helpers.h>
+#include <sbmlnetwork/features/colors/libsbmlnetwork_colors.h>
 
 using namespace std;
 using namespace libsbml;
@@ -15,6 +17,7 @@ extern bool CaselessStrCmp(bool caseless, const string& lhs, const string& rhs);
 #ifndef NSBML
 #include "sbmlx.h"
 #include "sbml/math/FormulaFormatter.h"
+#include "sbmlnetwork/libsbmlnetwork_sbmldocument.h"
 #if LIBSBML_VERSION >= 50900
 #include "sbml/math/L3FormulaFormatter.h"
 #endif
@@ -39,11 +42,11 @@ string getNameFromSBMLObject(const SBase* sbml, string basename)
     long num=0;
     Variable* foundvar = NULL;
     do {
-      char charnum[50];
-      sprintf(charnum, "%li", num);
+      stringstream charnum;
+      charnum << num;
       num++;
       name = basename;
-      name += charnum;
+      name += charnum.str();
       vector<string> fullname;
       fullname.push_back(name);
       foundvar = g_registry.CurrentModule()->GetVariable(fullname);
@@ -803,5 +806,29 @@ bool FluxesMatch(const FluxBound* fb1, const FluxBound* fb2)
   if (fb1->getValue() != fb2->getValue()) return false;
   return true;
 }
+
+bool isValidColorValue(string formstring)
+{
+    if (!LIBSBMLNETWORK_CPP_NAMESPACE::isValidColorValue(formstring)) {
+        ColorDefinition cd;
+        if (!cd.setColorValue(formstring)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool startsAtReaction(std::string role)
+{
+    if (role == "substrate" || role == "sidesubstrate" || role == "product" || role == "sideproduct" || role == "undefined") {
+        return true;
+    }
+    else if (role == "modifier" || role == "activator" || role == "inhibitor") {
+        return false;
+    }
+    assert(false); //All roles should be accounted for above
+    return true;
+}
+
 
 #endif
