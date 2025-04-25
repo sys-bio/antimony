@@ -128,8 +128,8 @@ void Module::LoadCellMLComponent(iface::cellml_api::CellMLComponent* component)
         string variable, equation;
         variable.assign(infix, 0, infix.find('='));
         equation.assign(infix, infix.find('=')+1, infix.size());
-        variable = Trim(variable);
-        equation = Trim(equation);
+        variable = trim(variable);
+        equation = trim(equation);
         string origeq = equation;
 
         //Remove all the '{id: ...}' bits
@@ -172,8 +172,8 @@ void Module::LoadCellMLComponent(iface::cellml_api::CellMLComponent* component)
           continue;
         }
         Formula* formula = g_registry.NewBlankFormula();
-        //cout << "final infix: "  << Trim(equation) << endl;
-        setFormulaWithString(Trim(equation), formula, this);
+        //cout << "final infix: "  << trim(equation) << endl;
+        setFormulaWithString(trim(equation), formula, this);
 
         //Find out what variable we're assigning to, and how we're assigning to it.
         //Remove '{unit: ...}' bits (for now)
@@ -208,7 +208,7 @@ void Module::LoadCellMLComponent(iface::cellml_api::CellMLComponent* component)
             continue;
           }
           variable.assign(variable, 2, timepos-6);
-          variable = Trim(variable);
+          variable = trim(variable);
           var = AddOrFindVariable(&variable);
           if (var->SetRateRule(formula)) {
             string warning = "Unable to use the formula \"" + formula->ToDelimitedStringWithEllipses(".") + "\" to set the rate rule for " + var->GetNameDelimitedBy(".") + ":  " + getLastError();

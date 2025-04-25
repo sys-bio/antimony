@@ -340,6 +340,20 @@ START_TEST(test_notes_element_xml)
 }
 END_TEST
 
+START_TEST(test_notes_model_markdown)
+{
+    compareFileTranslation("notes_model_markdown");
+    compareStringTranslation("model foo(); a=3; end; foo notes ```# Header\n\nHere is a list:\n\n- First\n- Second```", "notes_model_markdown.xml");
+}
+END_TEST
+
+START_TEST(test_notes_model_markdown_link)
+{
+    compareFileTranslation("notes_model_markdown_link");
+    compareStringTranslation("model foo(); a=3; end; foo notes ```Please refer to [CC0  Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ \"Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication\") for more information.```", "notes_model_markdown_link.xml");
+}
+END_TEST
+
 START_TEST(test_modified_model)
 {
     compareFileTranslation("modified_model");
@@ -439,6 +453,8 @@ create_suite_CVTerms (void)
   tcase_add_test(tcase, test_notes_model_xml);
   tcase_add_test(tcase, test_notes_model_xml_internal);
   tcase_add_test(tcase, test_notes_element_xml);
+  tcase_add_test(tcase, test_notes_model_markdown);
+  tcase_add_test(tcase, test_notes_model_markdown_link);
   tcase_add_test(tcase, test_modified_model);
   tcase_add_test(tcase, test_modified_model_parts);
   tcase_add_test(tcase, test_modified_model_internal);

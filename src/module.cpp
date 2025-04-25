@@ -2497,7 +2497,6 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
               retval += "\n```\n";
           }
           else {
-              trim(notes);
               retval += "\"" + notes + "\"\n";
           }
       }
@@ -2517,7 +2516,6 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
                   retval += "\n```\n";
               }
               else {
-                  trim(notes);
                   retval += "\"" + notes + "\"\n";
               }
           }

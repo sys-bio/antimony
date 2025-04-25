@@ -49,16 +49,21 @@ bool Annotated::TransferAnnotationTo(SBase* sbmlobj, string metaid) const
   if (!m_notes.empty()) {
       sbmlobj->setMetaId(metaid);
       string notes = getNotesString();
-      int ret = sbmlobj->setNotes(notes, false);
-      if (ret != libsbml::LIBSBML_OPERATION_SUCCESS) {
-          ret = sbmlobj->setNotes(notes, true);
+      if (notes[0] == '<') {
+          int ret = sbmlobj->setNotes(notes, false);
+          if (ret != libsbml::LIBSBML_OPERATION_SUCCESS) {
+              ret = sbmlobj->setNotes(notes, true);
+          }
+          if (ret != libsbml::LIBSBML_OPERATION_SUCCESS) {
+              ret = sbmlobj->setNotes("<notes><body xmlns=\"http://www.w3.org/1999/xhtml\"> " + notes + " </body></notes>");
+          }
+          if (ret != libsbml::LIBSBML_OPERATION_SUCCESS) {
+              ret = sbmlobj->setNotes("<notes><p xmlns=\"http://www.w3.org/1999/xhtml\"> " + notes + " </p></notes>");
+              assert(ret == libsbml::LIBSBML_OPERATION_SUCCESS);
+          }
       }
-      if (ret != libsbml::LIBSBML_OPERATION_SUCCESS) {
-          ret = sbmlobj->setNotes("<notes><body xmlns=\"http://www.w3.org/1999/xhtml\"> " + notes + " </body></notes>");
-      }
-      if (ret != libsbml::LIBSBML_OPERATION_SUCCESS) {
-          ret = sbmlobj->setNotes("<notes><p xmlns=\"http://www.w3.org/1999/xhtml\"> " + notes + " </p></notes>");
-          assert(ret == libsbml::LIBSBML_OPERATION_SUCCESS);
+      else {
+          sbmlobj->setNotesFromMarkdown(notes);
       }
   }
   ModelHistory* mh = const_cast<ModelHistory*>(&m_history);
@@ -87,6 +92,7 @@ string Annotated::getNotesString() const
         }
         notes += m_notes[n];
     }
+    trimAndRemoveDoubleSpaces(notes);
     return notes;
 }
 
@@ -158,21 +164,8 @@ void Annotated::ReadAnnotationFrom(const SBase* sbmlobj)
     m_sboTerm = sbmlobj->getSBOTerm();
   }
   if (sbmlobj->isSetNotes()) {
-      string notes = sbmlobj->getNotesString();
-      size_t xmlns = notes.find("xmlns=\"http://www.w3.org/1999/xhtml\">");
-      size_t end_p = notes.rfind("</p>");
-      size_t end_body = notes.rfind("/body>");
-      if (xmlns > 5 && xmlns < 30) {
-          if (end_p == notes.size() - 13) {
-              notes = notes.substr(xmlns + 37, end_p - xmlns - 37);
-              ltrim(notes);
-          }
-          else if (end_body > notes.size() - 20  &&
-              end_body < notes.size()-5) {
-              notes = notes.substr(xmlns + 39, end_body - xmlns - 40);
-          }
-      }
-      rtrim(notes);
+      string notes = sbmlobj->getNotesMarkdown();
+      trimAndRemoveDoubleSpaces(notes);
       m_notes.push_back(notes);
   }
   if (sbmlobj->isSetModelHistory()) {
