@@ -3546,6 +3546,12 @@ void loadOneVariable(Variable* var, SBMLDocument* doc, string varid, const layou
         vector<string> rxnIDs;
         if (alias > 0 && IsSpecies(var->GetType())) {
             rxnIDs = LIBSBMLNETWORK_CPP_NAMESPACE::getConnectedReactionsFor(doc, 0, varid, alias);
+            if (rxnIDs.size() == 0) {
+                std::stringstream warning;
+                warning << "Layout error:  unable to add alias #" << alias << " for species '" << varid << "' to model, because it is not connected to any reactions.  Antimony requires that all species and species aliases connect to some reaction.";
+                g_registry.AddWarning(warning.str());
+                continue;
+            }
         }
         // Position
         val = LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(doc, glyphId);
