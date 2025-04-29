@@ -3053,6 +3053,7 @@ void Module::FixConstants(const string& name, Model* model)
             SBase* element = static_cast<SBase*>(elements->get(el));
             element->renameSIdRefs(name, newname);
         }
+        delete elements;
     }
 }
 
@@ -3074,6 +3075,7 @@ void Module::FixFunctions(const string& name, Model* model)
                 astn->renameSIdRefs(name, newname);
             }
         }
+        delete elements;
     }
     else {
 
@@ -3117,6 +3119,7 @@ void Module::FixUnitNames(Model* model)
                 SBase* element = static_cast<SBase*>(elements->get(el));
                 element->renameUnitSIdRefs(unitid, newunitid);
             }
+            delete elements;
         }
     }
 }
@@ -3152,6 +3155,7 @@ void Module::UpdateRateOf(Model* model)
             ASTNode* astn = const_cast<ASTNode*>(element->getMath());
             changeRateOf(astn);
         }
+        delete elements;
     }
 }
 
