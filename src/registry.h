@@ -163,7 +163,7 @@ public:
   Variable* GetCurrentSubmodel();
   void SetError(std::string error) {m_error = error;};
   void AddErrorPrefix(std::string error) {m_error = error + m_error;};
-  void AddWarning(std::string warning) {m_warnings.push_back(warning);};
+  void AddWarning(std::string warning);
   void ClearWarnings() {m_warnings.clear();};
 
   std::string GetLastFile();

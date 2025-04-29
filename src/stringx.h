@@ -32,10 +32,6 @@ void FixUnitName(std::string& name);
 
 bool CaselessStrCmp(bool caseless, const std::string& lhs, const std::string& rhs);
 
-// JKM escapes double quotes for use with gitdiffit
-std::string escapeDoubleQuotes(std::string s);
-// JKM performs a git diff of the two strings (used in debugging, not in production code)
-void gitdiffit(const std::string& before, const std::string& after);
 //From https://stackoverflow.com/questions/216823/how-to-trim-an-stdstring
 // trim from start (in place)
 void ltrim(std::string& s);

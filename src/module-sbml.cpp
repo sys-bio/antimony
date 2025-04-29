@@ -3543,6 +3543,9 @@ void loadOneVariable(Variable* var, SBMLDocument* doc, string varid, const layou
     int naliases = LIBSBMLNETWORK_CPP_NAMESPACE::getNumGraphicalObjects(doc, varid);
     for (int alias = 0; alias < naliases; alias++) {
         string glyphId = LIBSBMLNETWORK_CPP_NAMESPACE::getId(doc, 0, varid, alias);
+        if (alias > 0 && glyphId == varid) {
+            continue;
+        }
         vector<string> rxnIDs;
         if (alias > 0 && IsSpecies(var->GetType())) {
             rxnIDs = LIBSBMLNETWORK_CPP_NAMESPACE::getConnectedReactionsFor(doc, 0, varid, alias);
