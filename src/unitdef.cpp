@@ -216,10 +216,7 @@ UnitDef*  UnitDef::GetUnitDefFromASTNode(ASTNode* astn)
       astn->removeChild(0);
       astn->removeChild(0);
       udch1 = GetUnitDefFromASTNode(astn);
-      if (udch1 == NULL) {
-        udch1->MultiplyBy(GetValueFrom(astn->getChild(0)));
-      }
-      else {
+      if (udch1 != NULL) {
         ret->MultiplyUnitDef(udch1);
         delete udch1;
       }
