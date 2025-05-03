@@ -290,25 +290,6 @@ void FixUnitName(string& name)
   }
 }
 
-string escapeDoubleQuotes(string s)
-{
-  string::size_type n=0;
-  while((n=s.find("\"",n)) < string::npos) {
-    s.insert(n, "\\");
-    n+=2;
-  }
-  return s;
-}
-
-void gitdiffit(const std::string& before, const std::string& after)
-{
-  system(("git -c color.ui=always diff $(echo \"" +
-    escapeDoubleQuotes(before) +
-    "\" | git hash-object -w --stdin) $(echo \"" +
-    escapeDoubleQuotes(after) +
-    "\" | git hash-object -w --stdin) --color-words | tail -n +6").c_str());
-}
-
 //From https://stackoverflow.com/questions/216823/how-to-trim-an-stdstring
 // trim from start (in place)
 void ltrim(std::string& s) {

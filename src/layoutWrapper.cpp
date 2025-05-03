@@ -339,14 +339,25 @@ bool LayoutWrapper::TransferLayoutInformationTo(SBMLDocument* sbml)
     string sid = m_parent->GetNameDelimitedBy("_");
     if (m_aliasReactionConnections.size()) {
         if (m_aliasNum > 0) {
-            if (!(m_aliasReactionConnections == LIBSBMLNETWORK_CPP_NAMESPACE::getConnectedReactionsFor(sbml, 0, sid, m_aliasNum))) {
+            vector<string> connectedRxns = LIBSBMLNETWORK_CPP_NAMESPACE::getConnectedReactionsFor(sbml, 0, sid, m_aliasNum);
+            if (!(m_aliasReactionConnections == connectedRxns)) {
                 stringstream err;
                 err << "The alias node " << m_aliasNum << " for species " << sid + " does not connect to the reaction(s) ";
                 for (size_t rxn = 0; rxn < m_aliasReactionConnections.size(); rxn++) {
-                    err << m_aliasReactionConnections[rxn] << ".";
-                    g_registry.SetError(err.str());
-                    return true;
+                    if (rxn > 0) {
+                        err << ", ";
+                    }
+                    err << m_aliasReactionConnections[rxn];
                 }
+                err << ", but instead connects to ";
+                for (size_t rxn = 0; rxn < connectedRxns.size(); rxn++) {
+                    if (rxn > 0) {
+                        err << ", ";
+                    }
+                    err << connectedRxns[rxn];
+                }
+                g_registry.AddWarning(err.str());
+                //return true;
             }
         }
         m_aliasNum = -1;
@@ -365,7 +376,11 @@ bool LayoutWrapper::TransferLayoutInformationTo(SBMLDocument* sbml)
             LIBSBMLNETWORK_CPP_NAMESPACE::createAliasReactionGlyph(sbml, sid);
         }
         else if (IsSpecies(parentType)) {
-            LIBSBMLNETWORK_CPP_NAMESPACE::createAliasSpeciesGlyph(sbml, sid, m_aliasReactionConnections[0], 0);
+            int ret = LIBSBMLNETWORK_CPP_NAMESPACE::createAliasSpeciesGlyph(sbml, sid, m_aliasReactionConnections[0], 0, false);
+            if (ret == -1) {
+                g_registry.AddWarning("Unable to add an alias of '" + sid + "' to the reaction '" + m_aliasReactionConnections[0] + "'.  It seems to already connect to that species.");
+                break;
+            }
             for (size_t rxn = 1; rxn < m_aliasReactionConnections.size(); rxn++) {
                 LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesGlyphIndexInReactionGlyph(sbml, 0, sid, m_aliasNum, m_aliasReactionConnections[rxn], 0);
             }
@@ -383,7 +398,7 @@ bool LayoutWrapper::TransferLayoutInformationTo(SBMLDocument* sbml)
         size_t nproducts = m_parent->GetReaction()->GetRight()->Size();
         if (nreactants != 0 && nproducts != 0) {
             g_registry.AddWarning("Attempted to set a source/sink for the reaction " + sid + ", but that reaction has both reactants and products.");
-            return true;
+            return false;
         }
         for (int i = 0; i < nreactants + nproducts + 2; i++) {
             string id = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceEmptySpeciesGlyphId(sbml, sid, m_aliasNum, i);
@@ -512,7 +527,7 @@ bool LayoutWrapper::TransferLayoutInformationTo(SBMLDocument* sbml)
             break;
         }
         if (ret1 == -1 || ret2 == -1) {
-            g_registry.SetError(error);
+            g_registry.AddWarning(error);
             delete astn;
             return false;
         }

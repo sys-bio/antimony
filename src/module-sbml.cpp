@@ -3053,6 +3053,7 @@ void Module::FixConstants(const string& name, Model* model)
             SBase* element = static_cast<SBase*>(elements->get(el));
             element->renameSIdRefs(name, newname);
         }
+        delete elements;
     }
 }
 
@@ -3074,6 +3075,7 @@ void Module::FixFunctions(const string& name, Model* model)
                 astn->renameSIdRefs(name, newname);
             }
         }
+        delete elements;
     }
     else {
 
@@ -3117,6 +3119,7 @@ void Module::FixUnitNames(Model* model)
                 SBase* element = static_cast<SBase*>(elements->get(el));
                 element->renameUnitSIdRefs(unitid, newunitid);
             }
+            delete elements;
         }
     }
 }
@@ -3152,6 +3155,7 @@ void Module::UpdateRateOf(Model* model)
             ASTNode* astn = const_cast<ASTNode*>(element->getMath());
             changeRateOf(astn);
         }
+        delete elements;
     }
 }
 
@@ -3543,9 +3547,18 @@ void loadOneVariable(Variable* var, SBMLDocument* doc, string varid, const layou
     int naliases = LIBSBMLNETWORK_CPP_NAMESPACE::getNumGraphicalObjects(doc, varid);
     for (int alias = 0; alias < naliases; alias++) {
         string glyphId = LIBSBMLNETWORK_CPP_NAMESPACE::getId(doc, 0, varid, alias);
+        if (alias > 0 && glyphId == varid) {
+            continue;
+        }
         vector<string> rxnIDs;
         if (alias > 0 && IsSpecies(var->GetType())) {
             rxnIDs = LIBSBMLNETWORK_CPP_NAMESPACE::getConnectedReactionsFor(doc, 0, varid, alias);
+            if (rxnIDs.size() == 0) {
+                std::stringstream warning;
+                warning << "Layout error:  unable to add alias #" << alias << " for species '" << varid << "' to model, because it is not connected to any reactions.  Antimony requires that all species and species aliases connect to some reaction.";
+                g_registry.AddWarning(warning.str());
+                continue;
+            }
         }
         // Position
         val = LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(doc, glyphId);

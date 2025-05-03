@@ -1171,6 +1171,16 @@ Variable* Registry::GetCurrentSubmodel()
   return CurrentModule()->GetVariable(m_currentImportedModule);
 }
 
+void Registry::AddWarning(std::string warning)
+{
+    for (size_t w = 0; w < m_warnings.size(); w++) {
+        if (m_warnings[w] == warning) {
+            return;
+        }
+    }
+    m_warnings.push_back(warning);
+}
+
 Formula* Registry::NewBlankFormula()
 {
   Formula* form = new Formula();
