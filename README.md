@@ -7,6 +7,7 @@
  <table style="width:100%">
   <tr>
     <td><img alt="PyPI - Downloads", src="https://img.shields.io/pypi/dm/antimony"></td>
+    <td><img alt="Funding", src="https://img.shields.io/badge/Funding-NIH%20(GM081070)-blue"></td>
     <td><img alt="Funding", src="https://img.shields.io/badge/Funding-NIH%20(GM123032)-blue"></td>
     <td><img alt="Funding", src="https://img.shields.io/badge/Funding-NIBIB%20(EB028887)-blue"></td>    
    </tr>
@@ -31,4 +32,4 @@ Other binaries are available from https://github.com/sys-bio/antimony/releases
 
 Antimony depends on the libSBML and SBMLNetwork libraries.  The currently-used versions of each will always be available from https://github.com/sys-bio/libroadrunner-deps/.
 
-Antimony was supported by NIH/NIGMS Grant # GM081070.
+Antimony has been supported by NIH/NIGMS Grants GM081070, GM123032, and NIBIB EB028887.
