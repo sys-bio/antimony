@@ -373,7 +373,7 @@ START_TEST(test_whole_model_settings)
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getCompartmentFontStyle(doc) == "italic");
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesFontStyle(doc) == "italic");
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getReactionFontStyle(doc) == "italic");
-    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getCompartmentFontWeight(doc) == "normal");
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getCompartmentFontWeight(doc) == "bold");
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesFontWeight(doc) == "normal");
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getReactionFontWeight(doc) == "normal");
     delete doc;
@@ -436,7 +436,7 @@ START_TEST(test_compartment_settings)
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getCompartmentFontFamily(doc) == "monospace");
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getCompartmentFontSizeAsDouble(doc) == 4.0);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getCompartmentFontStyle(doc) == "italic");
-    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getCompartmentFontWeight(doc) == "normal");
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getCompartmentFontWeight(doc) == "bold");
     delete doc;
 }
 END_TEST

@@ -113,6 +113,7 @@ void Registry::ClearAll()
   m_oldmodules.clear();
   m_oldmodulemaps.clear();
   m_olduserfunctions.clear();
+  m_warnings.clear();
   FreeVariables();
   FreeFormulas();
   ClearModules();
