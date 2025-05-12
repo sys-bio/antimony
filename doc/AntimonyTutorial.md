@@ -62,6 +62,7 @@ This guide will show you the intricacies of working with Antimony.
     - [Sizing model elements](#sizing-model-elements)
     - [Reaction arcs](#reaction-arcs)
     - [Reaction source/sinks](#reaction-source-sinks)
+    - [Species alias nodes](#species-alias-nodes)
     - [General styles](#general-styles)
     - [Style settings](#style-settings)
   - [Appendix: Converting between SBML and Antimony](#appendix-converting-between-sbml-and-antimony)
@@ -2056,7 +2057,7 @@ If a reaction has no reactants or if it has no products, SBMLNetwork will add a 
 
 ```
    J0.--.position = {520, 483}
-   J0.--.color = blue
+   J0.--.size = {30, 30}
 ```
 
 There will be a reaction arc going to that null glyph as well, which also uses the same ID:
@@ -2065,6 +2066,15 @@ There will be a reaction arc going to that null glyph as well, which also uses t
    J0.--.species_pos = {373.71, 391.49}
    J0.--.b1 = {262.59, 280.54}
    J0.--.b2 = {311.8, 369.76}
+```
+
+### Species alias nodes
+
+If a species participates in more than three reactions, it will be divided into multiple glyphs on the page by the autolayout algorithm.  To set species aliases explicitly, you must list what reactions should be attached to the duplicate glyph.
+
+```
+   S1.position.J3.J4 = {349.69, 1024.82}
+   S1.size.J3.J4 = {80, 50}
 ```
 
 ### General styles
@@ -2135,7 +2145,7 @@ will set the fill color of species S1 to that particular semi-transparent color,
 
 Note that 'shape' cannot be set for 'model.layout', only for species, reactions, compartments, or individual elements.
 
-The 'shape' of a reaction refers to the shape at the centroid of the arc between the reactants and the products.  By default, the size of this shape is {0, 0}, meaning that no shape is possible; it's just a single point.
+The 'shape' of a reaction refers to the shape at the centroid of the arc between the reactants and the products.  By default, this is a square of size {20, 20}.
 
 
 ## Appendix: Converting between SBML and Antimony

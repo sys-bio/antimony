@@ -3530,7 +3530,7 @@ void Module::AddEmptyGlyphsFromReaction(Variable* reaction, const std::string& r
         if (LIBSBMLNETWORK_CPP_NAMESPACE::isSetSpeciesReferenceEmptySpeciesGlyph(origdoc, 0, rxnid, 0, sr)) {
             string sr_id = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceEmptySpeciesGlyphId(origdoc, rxnid, 0, sr);
             LayoutWrapper* lw = new LayoutWrapper(reaction, lt_sourceSink, sr_id, this);
-            lw->setSpeciesId(&sr_id);
+            lw->setSpeciesId(sr_id);
             m_variables.push_back(lw);
             StoreVariable(lw);
             break;
@@ -3775,7 +3775,7 @@ void Module::LoadLayout(Model* sbml)
                                         form.AddVectorOfTwoValues(x, y);
                                         lw->SetFormula(&form);
                                         form.Clear();
-                                        lw->setSpeciesId(&sr_id);
+                                        lw->setSpeciesId(sr_id);
                                         if (startsAtReaction(role)) {
                                             lw->setArcType(at_rxn);
                                         }
@@ -3797,7 +3797,7 @@ void Module::LoadLayout(Model* sbml)
                                         form.AddVectorOfTwoValues(x, y);
                                         lw->SetFormula(&form);
                                         form.Clear();
-                                        lw->setSpeciesId(&sr_id);
+                                        lw->setSpeciesId(sr_id);
                                         if (startsAtReaction(role)) {
                                             lw->setArcType(at_spec);
                                         }
@@ -3817,7 +3817,7 @@ void Module::LoadLayout(Model* sbml)
                                     form.AddVectorOfTwoValues(x, y);
                                     lw->SetFormula(&form);
                                     form.Clear();
-                                    lw->setSpeciesId(&sr_id);
+                                    lw->setSpeciesId(sr_id);
                                     lw->setArcType(at_b1);
                                     lw->setSpeciesIndex(ref);
                                     lw->setSegmentIndex(segment);
@@ -3831,7 +3831,7 @@ void Module::LoadLayout(Model* sbml)
                                     form.AddVectorOfTwoValues(x, y);
                                     lw->SetFormula(&form);
                                     form.Clear();
-                                    lw->setSpeciesId(&sr_id);
+                                    lw->setSpeciesId(sr_id);
                                     lw->setArcType(at_b2);
                                     lw->setSpeciesIndex(ref);
                                     lw->setSegmentIndex(segment);

@@ -438,9 +438,15 @@ bool LayoutWrapper::TransferLayoutInformationTo(SBMLDocument* sbml)
             break;
         case lt_size:
             if (!isnan(xval)) {
+                if (xval == 0.0) {
+                    xval = 0.0001;
+                }
                 ret1 = LIBSBMLNETWORK_CPP_NAMESPACE::setDimensionWidth(sbml, glyphId, xval, false);
             }
             if (!isnan(yval)) {
+                if (yval == 0.0) {
+                    yval = 0.0001;
+                }
                 ret2 = LIBSBMLNETWORK_CPP_NAMESPACE::setDimensionHeight(sbml, glyphId, yval, false);
             }
             break;
@@ -607,6 +613,13 @@ bool LayoutWrapper::TransferLayoutInformationTo(SBMLDocument* sbml)
             break;
         case lt_unknown:
             break;
+        }
+        if (ret != 0) {
+            //g_registry.AddWarning(error);
+            delete astn;
+            assert(false);
+            return false;
+
         }
     }
 
@@ -984,13 +997,10 @@ bool LayoutWrapper::HasLayoutPositionInfo() const
     return false;
 }
 
-bool LayoutWrapper::setSpeciesId(const std::string* name)
+bool LayoutWrapper::setSpeciesId(const std::string& name)
 {
-    if (name) {
-        m_speciesId = *name;
-        return false;
-    }
-    return true;
+    m_speciesId = name;
+    return false;
 }
 
 void LayoutWrapper::setSpeciesIndex(int index)

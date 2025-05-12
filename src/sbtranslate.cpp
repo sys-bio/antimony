@@ -438,6 +438,7 @@ int main(int argc, char** argv)
     cerr << "No models successfully read!" << endl;
     retval = 1;
   }
+  clearPreviousLoads();
   return retval;
 }
 

@@ -21,7 +21,7 @@ public:
   LayoutWrapper(Variable* parent, layout_type type, std::string name, const Module* module);
   LayoutWrapper(Variable* parent, layout_type type);
   LayoutWrapper(layout_type type, const std::string& group);
-  ~LayoutWrapper();
+  virtual ~LayoutWrapper();
 
   bool IsPointer() const;
   //virtual Variable* GetSameVariable();
@@ -38,7 +38,7 @@ public:
   virtual bool TransferLayoutInformationTo(libsbml::SBMLDocument* sbml);
   virtual bool TransferLayoutInformationTo(libsbml::SBMLDocument* sbml, const std::string& group);
   virtual bool HasLayoutPositionInfo() const;
-  virtual bool setSpeciesId(const std::string* name);
+  virtual bool setSpeciesId(const std::string& name);
   virtual void setSpeciesIndex(int index);
   virtual void setSegmentIndex(int index);
   virtual bool setArcType(const std::string* type);

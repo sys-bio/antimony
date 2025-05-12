@@ -61,6 +61,10 @@ bool Annotated::TransferAnnotationTo(SBase* sbmlobj, string metaid) const
               ret = sbmlobj->setNotes("<notes><p xmlns=\"http://www.w3.org/1999/xhtml\"> " + notes + " </p></notes>");
               assert(ret == libsbml::LIBSBML_OPERATION_SUCCESS);
           }
+          if (ret != libsbml::LIBSBML_OPERATION_SUCCESS) {
+              ret = sbmlobj->setNotesFromMarkdown(notes);
+              assert(ret == libsbml::LIBSBML_OPERATION_SUCCESS);
+          }
       }
       else {
           sbmlobj->setNotesFromMarkdown(notes);

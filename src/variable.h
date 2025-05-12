@@ -98,7 +98,7 @@ protected:
 public:
   Variable(const std::string name, const Module* module);
   Variable(const Variable& other);
-  ~Variable();
+  virtual ~Variable();
 
 
   virtual bool IsPointer() const;

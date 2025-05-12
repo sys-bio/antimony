@@ -2426,7 +2426,9 @@ LayoutWrapper* Variable::AddOrGetLayoutWrapper(layout_type type, int aliasNum, v
 LayoutWrapper* Variable::GetReactionArcLayoutWrapper(const string* name)
 {
     LayoutWrapper* layoutWrapper = new LayoutWrapper(this, lt_reactionArc);
-    layoutWrapper->setSpeciesId(name);
+    if (name) {
+        layoutWrapper->setSpeciesId(*name);
+    }
     m_layoutWrappers.push_back(layoutWrapper);
     return layoutWrapper;
 }

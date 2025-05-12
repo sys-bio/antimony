@@ -373,7 +373,7 @@ START_TEST(test_whole_model_settings)
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getCompartmentFontStyle(doc) == "italic");
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesFontStyle(doc) == "italic");
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getReactionFontStyle(doc) == "italic");
-    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getCompartmentFontWeight(doc) == "normal");
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getCompartmentFontWeight(doc) == "bold");
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesFontWeight(doc) == "normal");
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getReactionFontWeight(doc) == "normal");
     delete doc;
@@ -436,7 +436,7 @@ START_TEST(test_compartment_settings)
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getCompartmentFontFamily(doc) == "monospace");
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getCompartmentFontSizeAsDouble(doc) == 4.0);
     fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getCompartmentFontStyle(doc) == "italic");
-    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getCompartmentFontWeight(doc) == "normal");
+    fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getCompartmentFontWeight(doc) == "bold");
     delete doc;
 }
 END_TEST
@@ -821,6 +821,41 @@ START_TEST(test_export_auto_aliased_nodes)
 END_TEST
 
 
+START_TEST(test_export_explicit_aliased_nodes)
+{
+    string model =
+        "J0: S1->S2;\n"
+        "J1: S1->S3; \n"
+        "J2: S1->S4; \n"
+        "S1.color.J2 = red\n"
+        "";
+
+    libsbml::SBMLDocument* doc = translateAntimony(model);
+
+    int nS1s = LIBSBMLNETWORK_CPP_NAMESPACE::getNumGraphicalObjects(doc, "S1");
+    int nS2s = LIBSBMLNETWORK_CPP_NAMESPACE::getNumGraphicalObjects(doc, "S2");
+    fail_unless(nS1s == 2);
+    fail_unless(nS2s == 1);
+
+    string rt = translateAntimonyFromDoc(doc);
+    libsbml::SBMLDocument* doc2 = translateAntimony(rt);
+
+    string id = "S1";
+    for (int alias = 0; alias < 2; alias++) {
+        string glyphId = LIBSBMLNETWORK_CPP_NAMESPACE::getId(doc, 0, id, alias);
+        fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(doc, glyphId) == LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(doc2, glyphId));
+        fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionY(doc, glyphId) == LIBSBMLNETWORK_CPP_NAMESPACE::getPositionY(doc2, glyphId));
+        if (alias == 1) {
+            fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getFillColor(doc, glyphId) == "red");
+        }
+    }
+
+    delete doc;
+    delete doc2;
+}
+END_TEST
+
+
 
 Suite *
 create_suite_LayoutRender(void)
@@ -854,9 +889,8 @@ create_suite_LayoutRender(void)
   tcase_add_test( tcase, test_control_points_double_arcs);
   tcase_add_test( tcase, test_control_points_second_arc_unset);
   tcase_add_test( tcase, test_export_auto_aliased_nodes);
+  tcase_add_test( tcase, test_export_explicit_aliased_nodes);
 
-
-  //tcase_add_test( tcase, test_compartment_settings);
   //tcase_add_test( tcase, test_compartment_settings);
   //tcase_add_test( tcase, test_compartment_settings);
   //tcase_add_test( tcase, test_compartment_settings);

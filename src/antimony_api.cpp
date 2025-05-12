@@ -241,6 +241,7 @@ long ParseFile(string oldlocale)
 LIB_EXTERN long loadString(const char* model)
 {
   long retval = -1;
+  g_registry.ClearWarnings();
 #ifndef NSBML
   retval = loadSBMLString(model);
   if (retval != -1) return retval;
@@ -256,6 +257,7 @@ LIB_EXTERN long loadString(const char* model)
 LIB_EXTERN long loadFile(const char* filename)
 {
   long retval = -1;
+  g_registry.ClearWarnings();
 #ifndef NSBML
   retval = loadSBMLFile(filename);
   if (retval != -1) return retval;
@@ -272,6 +274,7 @@ LIB_EXTERN long loadAntimonyString(const char* model)
   string oldlocale = setlocale(LC_ALL, NULL);
   setlocale(LC_ALL, "C");
   g_registry.ClearModules();
+  g_registry.ClearWarnings();
   int ofreturn = g_registry.OpenString(model);
   if (ofreturn==0) return -1; //file read failure
   if (ofreturn==2) {
@@ -290,6 +293,7 @@ LIB_EXTERN long loadAntimonyFile(const char* filename)
   string oldlocale = setlocale(LC_ALL, NULL);
   setlocale(LC_ALL, "C");
   g_registry.ClearModules();
+  g_registry.ClearWarnings();
   int ofreturn = g_registry.OpenFile(filename, true);
   if (ofreturn==0) return -1; //file read failure
   if (ofreturn==2) {
