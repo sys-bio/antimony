@@ -1,13 +1,12 @@
-# libRoadRunner
-[![GitHub version](https://badge.fury.io/gh/sys-bio%2Froadrunner.svg)](http://badge.fury.io/gh/sys-bio%2Froadrunner)
-[![Build Status](https://dev.azure.com/TheRoadrunnerProject/roadrunner/_apis/build/status/sys-bio.roadrunner?branchName=develop)](https://dev.azure.com/TheRoadrunnerProject/roadrunner/_build/latest?definitionId=8&branchName=develop)
-[![Documentation Status](https://readthedocs.org/projects/libroadrunner/badge/?version=latest)](https://libroadrunner.readthedocs.io/en/latest/?badge=latest)
-[![PyPI version](https://badge.fury.io/py/libroadrunner.svg)](https://badge.fury.io/py/libroadrunner)
+# libAntimony
+[![GitHub version](https://badge.fury.io/gh/sys-bio%2Fantimony.svg)](http://badge.fury.io/gh/sys-bio%2Fantimony)
+[![Build Status](https://github.com/sys-bio/antimony/actions/workflows/main.yml/badge.svg)](https://github.com/sys-bio/antimony/actions/workflows/main.yml/badge.svg)
+[![PyPI version](https://badge.fury.io/py/antimony.svg)](https://badge.fury.io/py/antimony)
+[![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 
  <table style="width:100%">
   <tr>
-    <td><img alt="Licence", src="https://img.shields.io/badge/License-Apache%202.0-yellowgreen"</td>
-    <td><img alt="PyPI - Downloads", src="https://img.shields.io/pypi/dm/roadrunner"></td>
+    <td><img alt="PyPI - Downloads", src="https://img.shields.io/pypi/dm/antimony"></td>
     <td><img alt="Funding", src="https://img.shields.io/badge/Funding-NIH%20(GM123032)-blue"></td>
     <td><img alt="Funding", src="https://img.shields.io/badge/Funding-NIBIB%20(EB028887)-blue"></td>    
    </tr>
@@ -16,132 +15,20 @@
 # Summary
 Antimony is a human-readable, human-writable modular model definition language.
 
-The documentation for this project is in the doc/ subdirectory, and was created with Doxygen.  Described there is information about the Antimony model language and the libAntimony library, including compilation instructions.
+[The documentation is in the doc/ subdirectory](https://github.com/sys-bio/antimony/blob/develop/doc/AntimonyTutorial.md) 
+
+Documentation can also be found as part of the [Tellurium Antimony documentation](https://tellurium.readthedocs.io/en/latest/antimony.html)
+
+(Since Antimony is used within Tellurium, the general [Tellurium documentation](https://tellurium.readthedocs.io/en/latest/index.html) may also be of interest.)
 
 Python bindings are available via pypi, and can be installed with pip:
 
 ```pip install antimony```
 
-Other binaries are available from 
+Other binaries are available from https://github.com/sys-bio/antimony/releases
 
-Antimony depends on To enable full functionality in libAntimony, you first need to install libSBML, available from http://sbml.org/Software/libSBML/.  Both libSBML and libAntimony now use CMake as their build systems.  For full functionality, be sure to enable the 'comp' package in libsbml, as this enables full hierarchical modeling support.  As of antimony v2.4, all binary releases of the library and executables use the 'comp' package by default.
 
-For CellML:
 
-The CellML API v1.11 SDK was used in this version of Antimony (and QTAntimony) and seems to work OK (despite producing 2.33 billion warnings during compile).  As of this writing, the URL to download the SDK was http://www.cellml.org/tools/downloads/cellml_api/releases/1.11  All that is needed in CMake is to set CELLML_API_INSTALL_DIR to this SDK, and the other CELLML_* variables will be set automatically.
-
-If downloading the SDK does not work (or if it is unavailable for your operating system) it too now uses CMake as its build system, and we have had reasonable success using this on linux-based systems.
+Antimony depends on the libSBML and SBMLNetwork libraries.  The currently-used versions of each will always be available from https://github.com/sys-bio/libroadrunner-deps/.
 
 Antimony was supported by NIH/NIGMS Grant # GM081070.
-
-What's new in v2.7.0
-  - Fixed a bug with QTAntimony and linux systems with German or other languages that use '.' and ',' in numbers opposite to how they are used in American Math.
-  - Added find/replace functionality to QTAntimony
-  - Added 'go to line' functionality to QTAntimony
-  - Added the ability to define submodels with implied parameters:
-          A: foo(1,2)
-    is now the same as declaring
-          A: foo(x,y)
-          x=1
-          y=2
-  - Added the ability to concisely define elements and their assignment rules:
-          const species S1 in C := 1+x
-
-
-What's new in v2.6.1
-  - Fixed a bug that prevented the new distributions from being properly exported to SBML when used in event constructs.
-
-What's new in v2.6.0
-  - Built-in distribution functions that round-trip to SBML and SBML-distrib:
-     * normal(mean, stddev), truncatedNormal(mean, stddev, min, max)
-     * uniform(min, max)
-     * exponential(rate), truncatedExponential(rate, min, max)
-     * gamma(shape, scale), truncatedGamma(shape, scale, min, max)
-     * poisson(rate), truncatedPoisson(rate, min, max)
-  - New function 'rateOf'/'rate' that uses the custom annotaition of Copasi/roadrunner to define a function that returns the rate of change of a variable.
-  - Default libsbml bindings now static.
-  - Better error handling for miscoded models.
-  - Better python installer
-  - Fix to add 'arcsinh' and 'sec' back in as built-in functions.
-  - Allow python-style 'and', 'or' and 'not' functions instead of '&&', '||' and '!'.
-  - Allow shorthand use of function definitions that uses global variables if present.
-  - Add ability to define and import model-wide units for SBML.
-  - No longer allow export of invalid SBML, for any reason.
-  - Various bug fixes for more robust round-tripping of models involving deletions and other hierarchical features.
-
-What's new in v2.5.1
-  - Fix installers, particularly for python.
-
-What's new in v2.5:
-  - Better support for Python bindings
-  - Various fixes for QTAntimony, including better support for turning on/off CellML visualization.
-  - Better suite of unit tests, along with fixes for the problems they uncovered.
-  - More compact and consistent spacing in produced math infix.
-
-
-What's new in v2.4:
-  - Because the SBML 'Hierarchical Model Composition' package has been accepted and is now officially part of SBML (yay!), support for it is now on by default, and has moved out of beta.  Models created using this package should be fully compatible with other programs who also support SBML hierarchy.  Support for 'flattened' models also remains, so core SBML L3v1 models as well as SBML L2 and L1 models can still be exported and imported.)
-  - The Tutorial has been updated to include information on all the most recent features.
-
-What's new in v2.3-beta:
-  - The ability to import and export SBML models with all the new 2.2 capabilities to 'hierarchical model composition' package constructs.
-
-What's new in v2.2:
-  - The ability to define units and use them in mathematical equations.
-  - The ability to define conversion factors when synchronizing elements between submodels.
-  - The ability to define time and extent conversion factors when importing submodels.
-  - The ability to delete submodel elements.
-
-The syntax for each is:
-
-Deletions:
-  
-  delete A1.x;
-  
-which will delete the variable 'x' from submodel A1, and will clear any
-equations or reactions that had 'x' in it:  if a reaction rate was 'p1*x',
-that reaction rate will be cleared entirely (and may be reset using normal
-Antimony constructs).
-
-Time and extent conversion factors in submodels:
-
-  A1: submodel(), timeconv=60, extentconv=100;
-  
-or
-  
-  A1: submodel(), timeconv=tc, extentconv=xc;
-  
-(where 'tc' and 'xc' are parameters that may be defined elsewhere) may be
-used.
-
-Conversion factors for synchronized variables:
-
-  A1.y * cf is x;
-  
-or
-  
-  A1.y is x / cf;
-
-
-
-
-What's new in v2.0:
-  - The ability to translate to and from CellML
-  - The ability to define events more specifically (following their modification for SBML Level 3)
-  - The ability to define irreversible reactions with '=>' instead of '->'.
-
-What's new in v2.1-beta:
-  - The ability to import and export SBML models with 'hierarchical model composition' package constructs.
-
-
-By default, libAntimony will compile as version 2.0.  To compile v2.1-beta from source, you will need the working SVN version of libSBML:
-
-https://sbml.svn.sourceforge.net/svnroot/sbml/trunk/libsbml
-
-plus the working SVN version of the 'comp' package, from:
-
-https://sbml.svn.sourceforge.net/svnroot/sbml/branches/libsbml-packages/comp/
-
-both of which use CMake.  Check out both, then run CMake on the comp package first, telling it where the libsbml source is.  Then make the 'integrate' target, which will copy the source code from the comp package into the libsbml source.  Then run CMake on the libsbml source, making sure to turn on 'ENABLE_COMP', and build the library.
-
-Finally, run CMake on this Antimony distribution, pointing it at your newly-built libsbml-with-comp library, and checking 'WITH_COMP_SBML'.  Assuming everything compiles for you, the library that is then built should call itself 'v2.1-beta', and will be able to read and write comp-enabled SBML models.
