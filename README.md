@@ -26,11 +26,11 @@ Antimony is a human-readable, human-writable modular model definition language, 
 
 For a working online example, see [MakeSBML](https://sys-bio.github.io/makesbml/)
 
+Antimony is free to use in any application: a simple API is provided to allow Antimony strings to be converted to and from SBML, so the application's users can interact with their models in an easy-to-comprehend format.  C/C++ applications can use the library directly, and Python applications can use the Python bindings.
+
 Documentation can be found:
 * [In the doc/ subdirectory](https://github.com/sys-bio/antimony/blob/develop/doc/AntimonyTutorial.md) 
 * As part of the [Tellurium Antimony documentation](https://tellurium.readthedocs.io/en/latest/antimony.html)
-
-Antimony is free to use in any application: a simple API is provided to allow Antimony strings to be converted to and from SBML, so the application's users can interact with their models in an easy-to-comprehend format.  C/C++ applications can use the library directly, and Python applications can use the Python bindings.
 
 Since Antimony is used within Tellurium, the general [Tellurium documentation](https://tellurium.readthedocs.io/en/latest/index.html) may also be of interest.
 
