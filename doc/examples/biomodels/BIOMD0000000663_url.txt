@@ -1,0 +1,140 @@
+// Created by libAntimony v3.0.0
+model *New_Model()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species x in compartment_, y in compartment_, v in compartment_;
+
+  // Reactions:
+  reaction_:  => x; compartment_*(r*v*x);
+  reaction_1: x => ; compartment_*(r*x*v*(x + y)/k);
+  reaction_2: x => ; compartment_*d*x;
+  reaction_3: x => y; compartment_*(Beta*v*x);
+  reaction_4:  => y; compartment_*(r*v*y);
+  reaction_5: y => ; compartment_*(r*y*v*(x + y)/k);
+  reaction_6: y => ; compartment_*a*y;
+  reaction_7:  => v; compartment_*(eta*y);
+  reaction_8: v => ; compartment_*u*v;
+
+  // Species initializations:
+  x = 0.1;
+  y = 0;
+  v = 1;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  r = 1;
+  k = 10;
+  d = 0.1;
+  Beta = 0.2;
+  a = 0.2;
+  eta = 1;
+  u = 0.5;
+
+  // Other declarations:
+  const compartment_, r, k, d, Beta, a, eta, u;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  x is "x_Tcell_infected";
+  y is "y_Tcell_uninfected";
+  v is "v_free_virus";
+  reaction_ is "Uninfected Tcell proliferation";
+  reaction_1 is "Reduction in x-proliferation due to carry capacity";
+  reaction_2 is "Uninfected T cell death";
+  reaction_3 is "Tcell Infection 1";
+  reaction_4 is "Tcell Infection 2";
+  reaction_5 is "Reduction in y-proliferation due to carry capacity";
+  reaction_6 is "Infected T cell death";
+  reaction_7 is "HIV proliferation";
+  reaction_8 is "HIV degradation";
+
+  // CV terms:
+  x part "http://identifiers.org/ncit/C14219"
+  x biological_system "http://identifiers.org/bto/BTO:0000152"
+  x biological_system "http://identifiers.org/bto/BTO:0000782"
+  y biological_system "http://identifiers.org/bto/BTO:0000782"
+  v biological_system "http://identifiers.org/ncit/C14219"
+  reaction_ biological_system "http://identifiers.org/ncit/C18081"
+  reaction_1 biological_system "http://identifiers.org/ncit/C25443"
+  reaction_2 biological_system "http://identifiers.org/go/GO:0008219"
+  reaction_3 biological_system "http://identifiers.org/ncit/C3439"
+  reaction_4 biological_system "http://identifiers.org/ncit/C3439"
+  reaction_6 biological_system "http://identifiers.org/go/GO:0008219"
+  reaction_7 biological_system "http://identifiers.org/ncit/C18081"
+  reaction_8 biological_system "http://identifiers.org/sbo/SBO:0000179"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL0911270008"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000663"
+  model publication "http://identifiers.org/pubmed/17379260"
+  model biological_system "http://identifiers.org/efo/0000764"
+  model biological_system "http://identifiers.org/go/GO:0046718"
+  model container "http://identifiers.org/bto/BTO:0000782"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model taxon "http://identifiers.org/taxonomy/11676"
+  model created "2018-01-22T16:17:56Z"
+  model modified "2018-01-22T16:17:56Z"
+  model creator1.givenName "Matthew"
+  model creator1.familyName "Roberts"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "mroberts@ebi.ac.uk"
+  model creator2.givenName "Rahuman"
+  model creator2.familyName "Sheriff"
+  model creator2.organization "EMBL-EBI"
+  model creator2.email "sheriff@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+Wodarz2007 - HIV/CD4 T-cell interaction 
+
+A deterministic model illustrating howCD4 T-cells can influence HIV infection. 
+
+
+This model is described in the article:
+
+
+[Infection dynamics in HIV-specific CD4 T cells: does a CD4 T cell boost benefit the host or the virus?](http://identifiers.org/pubmed/17379260 "Access to this publication") 
+
+
+Wodarz D, Hamer DH. 
+
+Math Biosci 2007 Sep; 209(1): 14-29 
+Abstract:
+
+
+Recent experimental data have shown that HIV-specific CD4 T cells provide a very
+important target for HIV replication. We use mathematical models to explore the
+effect of specific CD4 T cell infection on the dynamics of virus spread and immune
+responses. Infected CD4 T cells can provide antigen for their own stimulation.
+We show that such autocatalytic cell division can significantly enhance virus
+spread, and can also provide an additional reservoir for virus persistence during
+anti-viral drug therapy. In addition, the initial number of HIV-specific CD4
+T cells is an important determinant of acute infection dynamics. A high initial
+number of HIV-specific CD4 T cells can lead to a sudden and fast drop of the population
+of HIV-specific CD4 T cells which results quickly in their extinction. On the
+other hand, a low initial number of HIV-specific CD4 T cells can lead to a prolonged
+persistence of HIV-specific CD4 T cell help at higher levels. The model suggests
+that boosting the population of HIV-specific CD4 T cells can increase the amount
+of virus-induced immune impairment, lead to less efficient anti-viral effector
+responses, and thus speed up disease progression, especially if effector responses
+such as CTL have not been sufficiently boosted at the same time.
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identified by: [BIOMD0000000663](http://identifiers.org/biomodels.db/BIOMD0000000663).
+
+To cite BioModels Database, please use: [Chelliah V et al. BioModels: ten-year anniversary. Nucl. Acids Res. 2015, 43(Database issue):D542-8](http://identifiers.org/pubmed/25414348).
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+end
+
+New_Model is "Wodarz2007 - HIV/CD4 T-cell interaction"

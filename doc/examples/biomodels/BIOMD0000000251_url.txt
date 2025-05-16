@@ -1,0 +1,215 @@
+// Created by libAntimony v3.0.0
+model *Nakakuki2010_CellFateDecision_Core()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species x1 in compartment_, x2 in compartment_, ppERKn in compartment_;
+  species DUSP in compartment_, pRSKn in compartment_, cFOSp in compartment_;
+  species cFOS in compartment_, pcFOS in compartment_, cFOSm in compartment_;
+  species $ppERKc in compartment_;
+
+  // Assignment Rules:
+  ppERKc := x1 - x2;
+
+  // Reactions:
+  reaction_1:  => x1; compartment_*(-x1/tau1 + K1*L/tau1);
+  reaction_2:  => x2; compartment_*(-x2/tau2 + K2*L/tau2);
+  reaction_3:  => ppERKn; compartment_*(reaction_3_k1*ppERKc - reaction_3_k2*ppERKn - reaction_3_k3*DUSP*ppERKn);
+  reaction_4:  => DUSP; compartment_*reaction_4_k*ppERKn;
+  reaction_5:  => pRSKn; compartment_*(reaction_5_k4*ppERKn - reaction_5_k5*pRSKn);
+  reaction_6:  => cFOSp; compartment_*((ppERKn*pRSKn)^reaction_6_n/(reaction_6_k6^reaction_6_n + (ppERKn*pRSKn)^reaction_6_n) - k7*cFOSp);
+  reaction_7:  => cFOSm; compartment_*(k7*cFOSp - reaction_7_k8*cFOSm);
+  reaction_8:  => cFOS; compartment_*((reaction_8_k9*cFOSm - reaction_8_k10*cFOS - k11*cFOS*ppERKc) + k13*pcFOS);
+  reaction_9:  => pcFOS; compartment_*(k11*cFOS*ppERKc - reaction_9_k12*pcFOS - k13*pcFOS);
+
+  // Species initializations:
+  x1 = 0;
+  x2 = 0;
+  ppERKn = 0;
+  DUSP = 0;
+  pRSKn = 0;
+  cFOSp = 0;
+  cFOS = 0;
+  pcFOS = 0;
+  cFOSm = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  k7 = 0.5;
+  k11 = 0.11;
+  k13 = 0.06;
+  L = 1;
+  K1 = 1.09;
+  tau1 = 3.07;
+  K2 = 2.89;
+  tau2 = 472;
+  reaction_3_k1 = 15;
+  reaction_3_k2 = 50;
+  reaction_3_k3 = 14;
+  reaction_4_k = 1;
+  reaction_5_k4 = 0.1;
+  reaction_5_k5 = 0.15;
+  reaction_6_k6 = 0.13;
+  reaction_6_n = 1.1;
+  reaction_7_k8 = 0.08;
+  reaction_8_k10 = 0.3;
+  reaction_8_k9 = 0.3;
+  reaction_9_k12 = 0.001;
+
+  // Other declarations:
+  const compartment_, k7, k11, k13, L, K1, tau1, K2, tau2;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 60 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  ppERKn is "ppERK(nucleus)";
+  cFOSp is "cFOS preRNA";
+  pcFOS is "pc-FOS";
+  cFOSm is "cFOSmRNA";
+  ppERKc is "ppERK(cytosol)";
+  K2 is "K";
+  tau2 is "tau";
+  reaction_1 is "1 PhIM 1";
+  reaction_2 is "1 PhIM 2";
+  reaction_3 is "2a ppERKn";
+  reaction_4 is "2b DUSP";
+  reaction_5 is "3 pRSKn";
+  reaction_6 is "4 cFOSp";
+  reaction_7 is "5 cFOSm";
+  reaction_8 is "6 cFOS";
+  reaction_9 is "7 pcFOS";
+
+  // SBO terms:
+  compartment_.sboTerm = 290
+  x1.sboTerm = 236
+  x2.sboTerm = 236
+  ppERKn.sboTerm = 252
+  DUSP.sboTerm = 252
+  pRSKn.sboTerm = 252
+  cFOSp.sboTerm = 250
+  cFOS.sboTerm = 252
+  pcFOS.sboTerm = 252
+  cFOSm.sboTerm = 250
+  ppERKc.sboTerm = 252
+
+  // CV terms:
+  compartment_ biological_system "http://identifiers.org/go/GO:0005623"
+  ppERKn biological_system "http://identifiers.org/kegg.compound/C00562"
+  ppERKn biological_system "http://identifiers.org/uniprot/P28482",
+                           "http://identifiers.org/uniprot/P27361"
+  ppERKn biological_system "http://identifiers.org/reactome/REACT_13301.1"
+  DUSP homolog "http://identifiers.org/kegg.orthology/K04459"
+  DUSP biological_system "http://identifiers.org/interpro/IPR014393"
+  DUSP biological_system "http://identifiers.org/reactome/REACT_12976.1"
+  DUSP biological_system "http://identifiers.org/uniprot/Q13202",
+                         "http://identifiers.org/uniprot/Q9Y6W6",
+                         "http://identifiers.org/uniprot/Q16690",
+                         "http://identifiers.org/uniprot/Q13115",
+                         "http://identifiers.org/uniprot/Q05923",
+                         "http://identifiers.org/uniprot/P28562"
+  pRSKn identity "http://identifiers.org/reactome/REACT_13229.1"
+  cFOSp encodement "http://identifiers.org/reactome/REACT_21788.1"
+  cFOSp encoder "http://identifiers.org/kegg.genes/hsa:2353"
+  cFOS biological_system "http://identifiers.org/uniprot/P01100"
+  cFOS biological_system "http://identifiers.org/reactome/REACT_21788.1"
+  pcFOS biological_system "http://identifiers.org/uniprot/P01100"
+  pcFOS identity "http://identifiers.org/reactome/REACT_21988.1"
+  cFOSm encodement "http://identifiers.org/reactome/REACT_21788.1"
+  cFOSm encodement "http://identifiers.org/uniprot/P01100"
+  ppERKc biological_system "http://identifiers.org/kegg.compound/C00562"
+  ppERKc biological_system "http://identifiers.org/reactome/REACT_2640",
+                           "http://identifiers.org/reactome/REACT_3037"
+  reaction_1 biological_system "http://identifiers.org/go/GO:0000187"
+  reaction_2 biological_system "http://identifiers.org/go/GO:0043407"
+  reaction_3 part "http://identifiers.org/reactome/REACT_12439",
+                  "http://identifiers.org/reactome/REACT_487",
+                  "http://identifiers.org/reactome/REACT_1866"
+  reaction_3 part "http://identifiers.org/go/GO:0017017",
+                  "http://identifiers.org/go/GO:0000189"
+  reaction_4 biological_system "http://identifiers.org/go/GO:0004707"
+  reaction_5 biological_system "http://identifiers.org/reactome/REACT_20510.1"
+  reaction_5 biological_system "http://identifiers.org/reactome/REACT_20562"
+  reaction_6 biological_system "http://identifiers.org/go/GO:0009299"
+  reaction_7 biological_system "http://identifiers.org/go/GO:0006397"
+  reaction_8 biological_system "http://identifiers.org/go/GO:0006412"
+  reaction_9 biological_system "http://identifiers.org/reactome/REACT_21251"
+  reaction_9 biological_system "http://identifiers.org/ec-code/2.7.11.24"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1003170000"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000251"
+  model publication "http://identifiers.org/pubmed/20493519"
+  model origin "http://identifiers.org/biomodels.db/BIOMD0000000175",
+               "http://identifiers.org/pubmed/12242336"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model version "http://identifiers.org/go/GO:0035559",
+                "http://identifiers.org/go/GO:0038029"
+  model biological_system "http://identifiers.org/reactome/REACT_9417"
+  model parthood "http://identifiers.org/kegg.pathway/hsa04010"
+  model version "http://identifiers.org/reactome/REACT_634"
+  model created "2010-05-24T11:49:05Z"
+  model modified "2014-06-03T15:00:12Z"
+  model creator1.givenName "Lukas"
+  model creator1.familyName "Endler"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "lukas@ebi.ac.uk"
+  model creator2.givenName "Lutz"
+  model creator2.familyName "Brusch"
+  model creator2.organization "Dresden University of Technology"
+  model creator2.email "lutz.brusch@tu-dresden.de"
+
+  // Notes:
+  model notes ```
+This model describes the activation of immediate early genes such as cFos after EGF
+or heregulin (HRG) stimulation of the MAPK pathway. Phosphorylated cFos is a key
+transcription factor triggering downstream cascades of cell fate determination. The
+model can explain how the switch-like response of p-cFos emerges from the spatiotemporal
+dynamics. The model comprises lumped reaction kinetics of the signal transduction
+pathway, the transcriptional and the posttranslational feedback and feedforward loops.
+The parameter set implemented here corresponds to that used for generating Figs.
+4 B,C,D (red curves for 10nM HRG) of the below article in Cell (2010). Moreover,
+we found that the same model described well the dynamics in different cell types
+(MCF-7 and PC-12), of different ligands (EGF and HRG) and at different doses (0.1nM,
+1nM, 10nM) for a unique set of parameter values (as implemented here and reported
+in Table SD4_1 of the article) except for four parameters characterising the input,
+cytoplasmic ppERK. These four parameters K1, K2, tau1 and tau2 are used in the two
+equations involving species x1 and x2. These two equations define a phenomenological
+input module to describe the ligand-, dose- and cell type-dependent dynamics of ppERKc
+which are not modelled in mechanistic detail here. The four parameter values can
+be adjusted to model a specific ligand, dose and cell type. 8 parameter sets for
+different experiments are given in Table SD4_2 of the article. This SBML file, however,
+carries just one such parameter set. We have chosen that of MCF-7 cells stimulated
+by 10nM of HRG. To reproduce all simulations from the article, please replace the
+parameter values for K1, K2, tau1, tau2 as needed. 
+
+**Ligand-specific c-Fos expression emerges from the spatiotemporal control
+of ErbB network dynamics.** 
+Takashi Nakakuki(1), Marc R. Birtwistle(2,3,4), Yuko Saeki(1,5), Noriko Yumoto(1,5),
+Kaori Ide(1), Takeshi Nagashima(1,5), Lutz Brusch(6), Babatunde A. Ogunnaike(3),
+Mariko Hatakeyama(1,5), and Boris N. Kholodenko(2,4); Cell *In Press, online 20
+May* 2010, doi:[10.1016/j.cell.2010.03.054 ](http://doi.dx.org/10.1016/j.cell.2010.03.054 ) 
+(1) RIKEN Advanced Science Institute, Computational Systems Biology Research
+Group, Advanced Computational Sciences Department, 1-7-22 Tsurumi-ku, Yokohama, Kanagawa,
+230-0045, Japan (2) Systems Biology Ireland, University College Dublin,
+Belfield, Dublin 4, Ireland (3) University of Delaware, Department of
+Chemical Engineering, 150 Academy St., Newark, DE 19716, USA (4) Thomas
+Jefferson University, Department of Pathology, Anatomy, and Cell Biology, 1020 Locust
+Street, Philadelphia, PA 19107, USA (5) RIKEN Research Center for Allergy
+and Immunology, Laboratory for Cellular Systems Modeling, 1-7-22 Tsurumi-ku, Yokohama,
+230-0045, Japan (6) Dresden University of Technology, Center for Information
+Services and High Performance Computing, 01062 Dresden, Germany
+
+This model originates from BioModels Database: A Database of Annotated Published
+Models (http://www.ebi.ac.uk/biomodels/). It is copyright (c) 2005-2011 The BioModels.net
+Team. 
+For more information see the [terms of use](http://www.ebi.ac.uk/biomodels/legal.html). 
+To cite BioModels Database, please use: [Li C, Donizelli M, Rodriguez N, Dharuri H, Endler L, Chelliah V, Li L, He E, Henry A, Stefan MI, Snoep JL, Hucka M, Le Novère N, Laibe C (2010) BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models. BMC Syst Biol., 4:92.](http://www.ncbi.nlm.nih.gov/pubmed/20587024)
+```
+end
+
+Nakakuki2010_CellFateDecision_Core is "Nakakuki2010_CellFateDecision_Core"

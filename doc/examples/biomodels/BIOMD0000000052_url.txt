@@ -1,0 +1,138 @@
+// Created by libAntimony v3.0.0
+model *MODEL8177704759()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species Glu in compartment_, Fru in compartment_, Formic_acid in compartment_;
+  species Triose in compartment_, Acetic_acid in compartment_, Cn in compartment_;
+  species Amadori in compartment_, AMP in compartment_, C5 in compartment_;
+  species lys_R in compartment_, Melanoidin in compartment_;
+
+  // Reactions:
+  _J1: Glu => Fru; _J1_K1*Glu;
+  _J2: Fru => Glu; _J2_K2*Fru;
+  _J3: Glu => C5 + Formic_acid; _J3_K3*Glu;
+  _J4: Fru => C5 + Formic_acid; _J4_K4*Fru;
+  _J5: Fru => 2 Triose; _J5_K5*Fru;
+  _J6: Triose => Cn + Acetic_acid; _J6_K6*Triose;
+  _J7: lys_R + Glu => Amadori; _J7_K7*Glu*lys_R;
+  _J8: Amadori => Acetic_acid + lys_R; _J8_K8*Amadori;
+  _J9: Amadori => AMP; _J9_K9*Amadori;
+  _J10: lys_R + Fru => AMP; _J10_K10*Fru*lys_R;
+  _J11: AMP => Melanoidin; _J11_K11*AMP;
+
+  // Species initializations:
+  Glu = 160;
+  Fru = 0;
+  Formic_acid = 0;
+  Triose = 0;
+  Acetic_acid = 0;
+  Cn = 0;
+  Amadori = 0;
+  AMP = 0;
+  C5 = 0;
+  lys_R = 15;
+  Melanoidin = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  _J1_K1 = 0.01;
+  _J2_K2 = 0.00509;
+  _J3_K3 = 0.00047;
+  _J4_K4 = 0.0011;
+  _J5_K5 = 0.00712;
+  _J6_K6 = 0.00439;
+  _J7_K7 = 0.00018;
+  _J8_K8 = 0.11134;
+  _J9_K9 = 0.14359;
+  _J10_K10 = 0.00015;
+  _J11_K11 = 0.12514;
+
+  // Other declarations:
+  const compartment_;
+
+  // Unit definitions:
+  unit substance = 1e-3 mole;
+  unit time_unit = 60 second;
+
+  // Display Names:
+  substance is "millimole (default)";
+  time_unit is "minute (default)";
+
+  // CV terms:
+  Glu identity "http://identifiers.org/chebi/CHEBI:17234",
+               "http://identifiers.org/kegg.compound/C00293"
+  Fru identity "http://identifiers.org/chebi/CHEBI:28757",
+               "http://identifiers.org/kegg.compound/C01496"
+  Formic_acid identity "http://identifiers.org/chebi/CHEBI:30751",
+                       "http://identifiers.org/kegg.compound/C00058"
+  Acetic_acid identity "http://identifiers.org/chebi/CHEBI:15366",
+                       "http://identifiers.org/kegg.compound/C00033"
+  lys_R identity "http://identifiers.org/chebi/CHEBI:32568"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL8177704759"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000052"
+  model publication "http://identifiers.org/pubmed/12405768"
+  model origin "http://identifiers.org/pubmed/11600005"
+  model taxon "http://identifiers.org/taxonomy/131567"
+  model biological_system "http://identifiers.org/go/GO:0046364",
+                          "http://identifiers.org/go/GO:0048029"
+  model property "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2006-01-25T22:00:14Z"
+  model modified "2014-04-04T12:30:26Z"
+  model creator1.givenName "Harish"
+  model creator1.familyName "Dharuri"
+  model creator1.organization "Keck Graduate Institute"
+  model creator1.email "Harish_Dharuri@kgi.edu"
+
+  // Notes:
+  model notes ```
+Brands2002 - Monosaccharide-casein systems 
+
+
+A kinetic model of the Maillard reaction occurring in heated monosaccharide-casein
+system.
+
+
+This model is described in the article:
+
+
+[Kinetic modeling of reactions in heated monosaccharide-casein systems.](http://identifiers.org/pubmed/12405768 "Access to this publication") 
+
+
+Brands CM, van Boekel MA 
+
+Journal of Agricultural and Food Chemistry. 2002, 50(23):6725-6739 
+Abstract:
+
+
+In the present study, a kinetic model of the Maillard reaction occurring in heated
+monosaccharide-casein systems was proposed. Its parameters, the reaction rate constants,
+were estimated via multiresponse modeling. The determinant criterion was used as
+the statistical fit criterion instead of the familiar least squares to avoid statistical
+problems. The kinetic model was extensively tested by varying the reaction conditions.
+Different sugars (glucose, fructose, galactose, and tagatose) were studied regarding
+their effect on the reaction kinetics. This study has shown the power of multiresponse
+modeling for the unraveling of complicated reaction routes as occur in the Maillard
+reaction. The iterative process of proposing a model, confronting it with experiments,
+and criticizing the model was passed through four times to arrive at a model that
+was largely consistent with all results obtained. A striking difference was found
+between aldose and ketose sugars as suggested by the modeling results: not the ketoses
+themselves but only their reaction products were found to be reactive in the Maillard
+reaction.
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identifiedby: [MODEL8177704759](http://identifiers.org/biomodels.db/MODEL8177704759) . 
+
+To cite BioModels Database, please use: [BioModels Database: An enhanced, curated and annotated resourcefor published quantitative kinetic models](http://identifiers.org/pubmed/20587024 "Latest BioModels Database publication") . 
+
+
+To the extent possible under law, all copyright and related orneighbouring rights
+to this encoded model have been dedicated to the publicdomain worldwide. Please refer
+to [CC0 Public DomainDedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+end
+
+MODEL8177704759 is "Brands2002 - Monosaccharide-casein systems"

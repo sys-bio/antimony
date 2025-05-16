@@ -1,0 +1,77 @@
+// Created by libAntimony v3.0.0
+model *Frascoli2014___A_dynamical_model_of_tumour_immunotherapy()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species V_Tumor_Volume in compartment_, C_Cytotoxic_T_Lymphocytes_Coverage in compartment_;
+
+  // Assignment Rules:
+  rho := (36*pi)^(1/3);
+  min_C := piecewise(1, C_Cytotoxic_T_Lymphocytes_Coverage >= 1, C_Cytotoxic_T_Lymphocytes_Coverage);
+
+  // Reactions:
+  Tumor_Growth:  => V_Tumor_Volume; compartment_*(rho*r_t*V_Tumor_Volume^(2/3));
+  Tumor_Killing_CTL: V_Tumor_Volume => ; compartment_*(rho*k*V_Tumor_Volume^(2/3)*min_C);
+  CTL_Recruitment:  => C_Cytotoxic_T_Lymphocytes_Coverage; compartment_*(rho*r_c*V_Tumor_Volume^(2/3)*C_Cytotoxic_T_Lymphocytes_Coverage);
+  CTL_Death: C_Cytotoxic_T_Lymphocytes_Coverage => ; compartment_*d_c*C_Cytotoxic_T_Lymphocytes_Coverage;
+
+  // Species initializations:
+  V_Tumor_Volume = 1;
+  C_Cytotoxic_T_Lymphocytes_Coverage = 0.1;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  r_t = 0.1;
+  k = 0.2;
+  d_c = 0.2;
+  r_c = 0.001;
+
+  // Other declarations:
+  var rho, min_C;
+  const compartment_, r_t, k, d_c, r_c;
+
+  // Unit definitions:
+  unit volume = metre^3;
+  unit time_unit = 86400 second;
+  unit substance = item;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+
+  // CV terms:
+  compartment_ biological_system "http://identifiers.org/ncit/C94498"
+  V_Tumor_Volume identity "http://identifiers.org/ncit/C94515"
+  C_Cytotoxic_T_Lymphocytes_Coverage part "http://identifiers.org/cl/CL:0000910"
+  C_Cytotoxic_T_Lymphocytes_Coverage biological_system "http://identifiers.org/go/GO:0002419"
+  Tumor_Growth biological_system "http://identifiers.org/ncit/C18081"
+  Tumor_Killing_CTL biological_system "http://identifiers.org/go/GO:0002419"
+  Tumor_Killing_CTL biological_system "http://identifiers.org/go/GO:0001906"
+  CTL_Recruitment biological_system "http://identifiers.org/go/GO:0035698"
+  CTL_Death biological_system "http://identifiers.org/go/GO:0008219"
+
+  model publication "http://identifiers.org/pubmed/24759513"
+  model model_source "http://identifiers.org/biomodels.db/MODEL1908120001",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000787"
+  model property "http://identifiers.org/go/GO:0002347"
+  model property "http://identifiers.org/go/GO:0001913"
+  model property "http://identifiers.org/mamo/MAMO_0000046"
+  model property "http://identifiers.org/go/GO:0002419"
+  model created "2019-08-12T09:15:48Z"
+  model modified "2019-08-12T09:15:48Z"
+  model creator1.givenName "Johannes"
+  model creator1.familyName "Meyer"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "johannes.p.meyer@gmail.com"
+
+  // Notes:
+  model notes ```
+```This is a coupled ordinary differential equation model of tumour-immune dynamics, 
+accounting for biological and clinical factors which regulate the interaction rates 
+of cytotoxic T lymphocytes on the surface of the tumour mass.```
+```
+end
+
+Frascoli2014___A_dynamical_model_of_tumour_immunotherapy is "Frascoli2014 - A dynamical model of tumour immunotherapy"

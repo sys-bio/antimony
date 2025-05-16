@@ -1,0 +1,547 @@
+// Created by libAntimony v3.0.0
+model *MODEL1209110001()
+
+  // Compartments and Species:
+  compartment compartment_1, compartment_2, compartment_3, compartment_4;
+  substanceOnly species species_1 in compartment_1, species_2 in compartment_1;
+  substanceOnly species species_9 in compartment_1, species_3 in compartment_1;
+  substanceOnly species species_4 in compartment_1, species_5 in compartment_1;
+  substanceOnly species species_11 in compartment_1, species_6 in compartment_1;
+  substanceOnly species species_7 in compartment_1, species_8 in compartment_1;
+  substanceOnly species species_10 in compartment_1, $species_12 in compartment_1;
+  substanceOnly species species_13 in compartment_2, species_14 in compartment_4;
+  substanceOnly species species_15 in compartment_4;
+
+  // Assignment Rules:
+  parameter_16 := (36*pi)^(1/3)*compartment_3^(2/3);
+  parameter_21 := piecewise(parameter_9*ln(compartment_3/parameter_15), compartment_3 > parameter_15, 0);
+  parameter_44 := parameter_49 + species_13/compartment_2;
+  parameter_45 := species_1/compartment_1 + parameter_20*parameter_46/compartment_1;
+  compartment_3 := parameter_13 + compartment_1;
+  species_12 := parameter_69*(species_3/compartment_1)*compartment_1;
+  parameter_69 := piecewise(piecewise(parameter_67, time > parameter_68, 1), parameter_70 == 1, 1);
+  parameter_22 := piecewise((parameter_47 - parameter_16)/parameter_47 - parameter_24, ((parameter_47 - parameter_16)/parameter_47) > parameter_24, 0);
+  parameter_27 := (parameter_86*parameter_51*(1 + parameter_87*parameter_54)/(parameter_88 + parameter_51*(1 + parameter_87*parameter_54)))*parameter_46/(0.5*parameter_47*(parameter_53 - parameter_50));
+  parameter_28 := species_14/compartment_4/parameter_59;
+  parameter_29 := 100*compartment_3/parameter_12;
+  parameter_30 := 100*(species_3/compartment_1)*compartment_1/(parameter_14*parameter_37*parameter_46);
+  parameter_31 := 19.9*(species_7/compartment_1)*compartment_1/(parameter_51*parameter_46);
+  parameter_32 := 17*(species_1/compartment_1)*compartment_1/(parameter_53*parameter_46);
+  parameter_33 := parameter_21/(parameter_1*parameter_2*parameter_5);
+  parameter_36 := 3.4*(species_8/compartment_1)*compartment_1/(parameter_52*parameter_46);
+  parameter_49 := piecewise((parameter_11 - parameter_50) + (1 - exp((parameter_48 - time)/parameter_6))*2*parameter_4*parameter_23*10^6, time > parameter_48, parameter_11 - parameter_50);
+  parameter_56 := piecewise((parameter_47 - parameter_16)/parameter_47 - parameter_55, ((parameter_47 - parameter_16)/parameter_47) > parameter_55, 0);
+  parameter_60 := species_14/compartment_4 + species_15/compartment_4;
+  parameter_62 := parameter_21^parameter_61/(parameter_8^parameter_61 + parameter_21^parameter_61);
+  parameter_63 := 1 - parameter_21^parameter_61/(parameter_8^parameter_61 + parameter_21^parameter_61);
+
+  // Rate Rules:
+  compartment_1' = -parameter_7*parameter_16*(parameter_21 + parameter_5*parameter_1*parameter_2*(parameter_44 - parameter_45));
+
+  // Reactions:
+  reaction_1: species_4 => species_5; compartment_1*(parameter_58*parameter_75*parameter_22*(species_4/compartment_1)/(1 + (species_12/compartment_1/parameter_73)^parameter_74));
+  reaction_2: species_5 => species_4; compartment_1*(parameter_72*(species_6/compartment_1)*(species_5/compartment_1));
+  reaction_3: species_2 => species_9; compartment_1*(parameter_25*(species_5/compartment_1)*(species_2/compartment_1) + parameter_41*(species_11/compartment_1)*(species_2/compartment_1));
+  reaction_4: species_9 => species_2; compartment_1*(parameter_26*(species_6/compartment_1)*(species_9/compartment_1));
+  reaction_5:  => species_7; compartment_1*(parameter_76*(species_8/compartment_1));
+  reaction_6: species_7 => ; parameter_35*species_7;
+  reaction_7:  => species_1; compartment_1*(parameter_86*(species_7/compartment_1)*(1 + parameter_87*(species_12/compartment_1))/(parameter_88 + (species_7/compartment_1)*(1 + parameter_87*(species_12/compartment_1))));
+  reaction_8: species_1 -> species_13; parameter_28*parameter_27*parameter_16*(species_1/compartment_1 - species_13/compartment_2);
+  reaction_9:  => species_8; compartment_1*(parameter_77*(species_12/compartment_1)/(parameter_78 + species_12/compartment_1));
+  reaction_10: species_8 => ; parameter_39*species_8;
+  reaction_11: species_9 => species_3; compartment_1*(parameter_25*(species_5/compartment_1)*(species_9/compartment_1) + parameter_41*(species_11/compartment_1)*(species_9/compartment_1));
+  reaction_12: species_3 => species_9; compartment_1*(parameter_26*(species_6/compartment_1)*(species_3/compartment_1));
+  reaction_13: species_11 => species_10 + species_4; parameter_79*species_11;
+  reaction_14: species_4 + species_10 => species_11; compartment_1*(parameter_57*parameter_82*parameter_56*(species_4/compartment_1)*(species_10/compartment_1)/(1 + (species_12/compartment_1/parameter_80)^parameter_81));
+  reaction_15: species_14 => species_15; compartment_4*(parameter_71*parameter_83*parameter_63*(species_14/compartment_4));
+  reaction_16: species_15 => species_14; compartment_4*(parameter_71*parameter_65*(species_15/compartment_4)/(1 + (species_12/compartment_1/parameter_84)^parameter_85));
+
+  // Species initializations:
+  species_1 = parameter_53*compartment_1;
+  species_2 = (parameter_37 - species_9/compartment_1 - species_3/compartment_1)*compartment_1;
+  species_9 = piecewise((1/2)*(-(species_3/compartment_1) + sqrt((species_3/compartment_1)*(4*parameter_37 - 3*(species_3/compartment_1)))), (parameter_58 == 1) && (parameter_57 == 1), piecewise((-parameter_25*parameter_26*(species_6/compartment_1)*(species_3/compartment_1) + sqrt((parameter_25*parameter_26*(species_6/compartment_1))^2*(species_3/compartment_1)*(4*parameter_37 - 3*(species_3/compartment_1))))/(2*parameter_25*parameter_26*(species_6/compartment_1)), (parameter_58 == 1) && (parameter_57 == 0), (-parameter_41*parameter_26*(species_6/compartment_1)*(species_3/compartment_1) + sqrt((parameter_41*parameter_26*(species_6/compartment_1))^2*(species_3/compartment_1)*(4*parameter_37 - 3*(species_3/compartment_1))))/(2*parameter_41*parameter_26*(species_6/compartment_1))))*compartment_1;
+  species_3 = parameter_54*compartment_1;
+  species_4 = (parameter_38 - species_5/compartment_1 - species_11/compartment_1)*compartment_1;
+  species_5 = piecewise(-(parameter_26*(species_6/compartment_1)*(species_3/compartment_1 + sqrt((species_3/compartment_1)*(4*parameter_37 - 3*(species_3/compartment_1))))/(4*parameter_25*(species_3/compartment_1 - parameter_37))), (parameter_58 == 1) && (parameter_57 == 1), piecewise(-((parameter_25*parameter_26*(species_6/compartment_1)*(species_3/compartment_1) + sqrt((parameter_25*parameter_26*(species_6/compartment_1))^2*(species_3/compartment_1)*(4*parameter_37 - 3*(species_3/compartment_1))))/(2*parameter_25^2*(species_3/compartment_1 - parameter_37))), (parameter_58 == 1) && (parameter_57 == 0), 0))*compartment_1;
+  species_11 = piecewise(-(parameter_26*(species_6/compartment_1)*(species_3/compartment_1 + sqrt((species_3/compartment_1)*(4*parameter_37 - 3*(species_3/compartment_1))))/(4*parameter_41*(species_3/compartment_1 - parameter_37))), (parameter_58 == 1) && (parameter_57 == 1), piecewise(-((parameter_41*parameter_26*(species_6/compartment_1)*(species_3/compartment_1) + sqrt((parameter_41*parameter_26*(species_6/compartment_1))^2*(species_3/compartment_1)*(4*parameter_37 - 3*(species_3/compartment_1))))/(2*parameter_41^2*(species_3/compartment_1 - parameter_37))), (parameter_58 == 0) && (parameter_57 == 1), 0))*compartment_1;
+  species_6 = 769*parameter_18*compartment_1;
+  species_7 = parameter_51*compartment_1;
+  species_8 = parameter_52*compartment_1;
+  species_10 = (parameter_40 - species_11/compartment_1)*compartment_1;
+  species_13 = (species_1/compartment_1/100)*compartment_2;
+  species_14 = (parameter_59/2)*compartment_4;
+  species_15 = (parameter_59/2)*compartment_4;
+
+  // Compartment initializations:
+  compartment_1 = parameter_46;
+  compartment_2 = 1000*compartment_3;
+  compartment_4 = 1;
+
+  // Variable initializations:
+  parameter_46 = parameter_12*(1 - parameter_10);
+  parameter_7 = 0.013;
+  parameter_5 = 1e-09;
+  parameter_1 = 8.314;
+  parameter_2 = 303.15;
+  parameter_13 = parameter_12*parameter_10;
+  parameter_53 = 180000;
+  parameter_37 = 6788*parameter_18;
+  parameter_54 = piecewise(parameter_37*parameter_17*parameter_14/100, (parameter_58 == 1) && (parameter_57 == 1), piecewise(parameter_37*parameter_42*parameter_14/100, (parameter_58 == 1) && (parameter_57 == 0), parameter_37*parameter_43*parameter_14/100));
+  parameter_38 = 2160*parameter_18;
+  parameter_26 = 1.78587;
+  parameter_25 = 42.6396538263077;
+  parameter_58 = 1;
+  parameter_57 = 1;
+  parameter_18 = 1e21/(parameter_3*compartment_1);
+  parameter_51 = 807*parameter_18;
+  parameter_52 = 0.034;
+  parameter_41 = 48.0003902091319;
+  parameter_40 = 2330*parameter_18;
+  parameter_59 = 907*parameter_18;
+  parameter_3 = 6.022e+23;
+  parameter_4 = 0.93;
+  parameter_6 = 10;
+  parameter_8 = 0.61;
+  parameter_9 = 14.3;
+  parameter_10 = 0.41;
+  parameter_11 = 260000;
+  parameter_12 = 50;
+  parameter_14 = 0.8;
+  parameter_15 = parameter_12*exp(-parameter_8/parameter_9);
+  parameter_17 = 2.23;
+  parameter_19 = parameter_11 + parameter_8/(parameter_5*parameter_1*parameter_2);
+  parameter_20 = parameter_19 - species_1/compartment_1;
+  parameter_47 = (36*pi)^(1/3)*parameter_12^(2/3);
+  parameter_24 = -parameter_72*(species_6/compartment_1)*(species_5/compartment_1)*(1 + (species_3/compartment_1/parameter_73)^parameter_74)/(parameter_75*(species_4/compartment_1));
+  parameter_23 = 0.4;
+  parameter_72 = 0.607124;
+  parameter_73 = 0.00940584;
+  parameter_74 = 0.345701;
+  parameter_75 = 0.075474;
+  parameter_86 = 680.818;
+  parameter_87 = 46.8363;
+  parameter_88 = 0.420741;
+  parameter_50 = parameter_53/100;
+  parameter_34 = 0.128378897200866;
+  parameter_35 = parameter_76*(species_8/compartment_1)/(species_7/compartment_1);
+  parameter_76 = 9.06781e-05;
+  parameter_39 = parameter_77*(species_3/compartment_1)/(parameter_78 + species_3/compartment_1)/(species_8/compartment_1);
+  parameter_77 = 18.1824;
+  parameter_78 = 0.506878;
+  parameter_42 = 2.23;
+  parameter_43 = 2.23;
+  parameter_48 = 600;
+  parameter_55 = -parameter_79*(species_11/compartment_1)*(1 + (species_3/compartment_1/parameter_80)^parameter_81)/(parameter_82*(species_4/compartment_1)*(species_10/compartment_1));
+  parameter_79 = 0.00226722;
+  parameter_80 = 0.297524;
+  parameter_81 = 2.0793;
+  parameter_82 = 0.00459138;
+  parameter_61 = 2;
+  parameter_64 = parameter_83*(species_14/compartment_4)*parameter_63/(species_15/compartment_4);
+  parameter_83 = 0.00529124;
+  parameter_65 = parameter_83*(species_14/compartment_4)*parameter_63*(1 + (species_3/compartment_1/parameter_84)^parameter_85)/(species_15/compartment_4);
+  parameter_84 = 0.0811033;
+  parameter_85 = 0.628719;
+  parameter_66 = parameter_83*(species_14/compartment_4)*parameter_63/((species_15/compartment_4)*parameter_62);
+  parameter_67 = 0.001;
+  parameter_68 = 600;
+  parameter_70 = 0;
+  parameter_71 = 1;
+
+  // Other declarations:
+  var compartment_1, parameter_16, parameter_21, parameter_44, parameter_45;
+  var compartment_3, parameter_69, parameter_22, parameter_27, parameter_28;
+  var parameter_29, parameter_30, parameter_31, parameter_32, parameter_33;
+  var parameter_36, parameter_49, parameter_56, parameter_60, parameter_62;
+  var parameter_63;
+  const parameter_46, parameter_7, parameter_5, parameter_1, parameter_2;
+  const compartment_2, parameter_13, compartment_4, parameter_53, parameter_37;
+  const parameter_54, parameter_38, parameter_26, parameter_25, parameter_58;
+  const parameter_57, parameter_18, parameter_51, parameter_52, parameter_41;
+  const parameter_40, parameter_59, parameter_3, parameter_4, parameter_6;
+  const parameter_8, parameter_9, parameter_10, parameter_11, parameter_12;
+  const parameter_14, parameter_15, parameter_17, parameter_19, parameter_20;
+  const parameter_47, parameter_24, parameter_23, parameter_72, parameter_73;
+  const parameter_74, parameter_75, parameter_86, parameter_87, parameter_88;
+  const parameter_50, parameter_34, parameter_35, parameter_76, parameter_39;
+  const parameter_77, parameter_78, parameter_42, parameter_43, parameter_48;
+  const parameter_55, parameter_79, parameter_80, parameter_81, parameter_82;
+  const parameter_61, parameter_64, parameter_83, parameter_65, parameter_84;
+  const parameter_85, parameter_66, parameter_67, parameter_68, parameter_70;
+  const parameter_71;
+
+  // Unit definitions:
+  unit substance = 1e-6 mole;
+
+  // Display Names:
+  compartment_1 is "Vos";
+  parameter_46 is "Vos_0";
+  parameter_7 is "Lp";
+  parameter_16 is "Area";
+  parameter_21 is "Turgor";
+  parameter_5 is "c2p";
+  parameter_1 is "R";
+  parameter_2 is "T";
+  parameter_44 is "Osmex";
+  parameter_45 is "Osmin";
+  compartment_2 is "Vex";
+  compartment_3 is "V";
+  parameter_13 is "Vb";
+  compartment_4 is "M";
+  species_1 is "Glyin";
+  parameter_53 is "Glyin_0";
+  species_2 is "Hog1";
+  parameter_37 is "Hog1Total";
+  species_9 is "Hog1P";
+  species_3 is "Hog1PP";
+  parameter_54 is "Hog1PP_0";
+  species_4 is "Pbs2";
+  parameter_38 is "Pbs2Total";
+  species_5 is "Pbs2P";
+  species_11 is "Sho1Pbs2P";
+  parameter_26 is "kHog1dephos";
+  species_6 is "Phosphatase";
+  parameter_25 is "kHog1phos1";
+  parameter_58 is "Sln1BranchActive";
+  parameter_57 is "Sho1BranchActive";
+  parameter_18 is "N2uM";
+  species_7 is "Protein";
+  parameter_51 is "Protein_0";
+  species_8 is "RNA";
+  parameter_52 is "RNA_0";
+  parameter_41 is "kHog1phos2";
+  species_10 is "Sho1";
+  parameter_40 is "Sho1Total";
+  species_12 is "Hog1PPActive";
+  parameter_69 is "Hog1Inhibition";
+  species_13 is "Glyex";
+  species_14 is "Fps1";
+  parameter_59 is "Fps1TotalIni";
+  species_15 is "Fps1P";
+  parameter_3 is "mol";
+  parameter_4 is "phi";
+  parameter_6 is "tm";
+  parameter_8 is "P0";
+  parameter_9 is "eps";
+  parameter_10 is "minf";
+  parameter_11 is "ce_0";
+  parameter_12 is "V_0";
+  parameter_14 is "maxHog1nucf";
+  parameter_15 is "VP_0";
+  parameter_17 is "Hog1PPrelIniwt";
+  parameter_19 is "ci_0";
+  parameter_20 is "cin_0";
+  parameter_22 is "ActivationSln1_nlfb";
+  parameter_47 is "A_0";
+  parameter_24 is "ActivOffsetSln1_nlfb";
+  parameter_23 is "NaCl";
+  parameter_72 is "v2_k";
+  parameter_73 is "v1_fb_Ki";
+  parameter_74 is "v1_fb_h";
+  parameter_75 is "v1_fb_k";
+  parameter_27 is "ks";
+  parameter_86 is "v13_k1";
+  parameter_87 is "v13_k2";
+  parameter_88 is "v13_Km";
+  parameter_50 is "Glyex_0";
+  parameter_28 is "Fps1TransportCapacitty";
+  parameter_29 is "FitVrel";
+  parameter_30 is "FitHog1PPrel";
+  parameter_31 is "FitProteinrel";
+  parameter_32 is "FitGlyinrel";
+  parameter_33 is "Turgor2Osm";
+  parameter_34 is "Fps1ClosureRate";
+  parameter_35 is "Protein_deg_k";
+  parameter_76 is "v11_k";
+  parameter_36 is "FitRNArel";
+  parameter_39 is "RNA_deg_k_MM";
+  parameter_77 is "v9_k";
+  parameter_78 is "v9_Km";
+  parameter_42 is "Hog1PPrelIniSln1";
+  parameter_43 is "Hog1PPrelIniSho1";
+  parameter_49 is "cen";
+  parameter_48 is "ts";
+  parameter_55 is "ActivOffsetSho1_nlfb";
+  parameter_79 is "v4_k1";
+  parameter_80 is "v3_fb_Ki";
+  parameter_81 is "v3_fb_h";
+  parameter_82 is "v3_fb_k";
+  parameter_56 is "ActivationSho1_nlfb";
+  parameter_60 is "Fps1TotalTrans";
+  parameter_61 is "TurgorActiv_h";
+  parameter_62 is "TurgorActivation";
+  parameter_63 is "TurgorDeactivation";
+  parameter_64 is "v16_5_k";
+  parameter_83 is "v15_5_k";
+  parameter_65 is "v16_6_k";
+  parameter_84 is "v16_6_Ki";
+  parameter_85 is "v16_6_h";
+  parameter_66 is "v16_7_k";
+  parameter_67 is "Hog1Activity";
+  parameter_68 is "tinh";
+  parameter_70 is "Inhibition";
+  parameter_71 is "Fps1Delta";
+  reaction_1 is "v1_fb";
+  reaction_2 is "v2";
+  reaction_3 is "v5";
+  reaction_4 is "v6";
+  reaction_5 is "v11";
+  reaction_6 is "v12";
+  reaction_7 is "v13";
+  reaction_8 is "v14";
+  reaction_9 is "v9";
+  reaction_10 is "v10";
+  reaction_11 is "v7";
+  reaction_12 is "v8";
+  reaction_13 is "v4";
+  reaction_14 is "v3_fb";
+  reaction_15 is "v15_5";
+  reaction_16 is "v16_6";
+
+  // CV terms:
+  compartment_1 biological_system "http://identifiers.org/go/GO:0005623"
+  compartment_2 biological_system "http://identifiers.org/go/GO:0005576"
+  compartment_3 biological_system "http://identifiers.org/go/GO:0005623"
+  compartment_4 biological_system "http://identifiers.org/go/GO:0005886"
+  species_1 biological_system "http://identifiers.org/chebi/CHEBI:17754"
+  species_2 biological_system "http://identifiers.org/uniprot/P32485"
+  species_2 encoder "http://identifiers.org/sgd/S000004103"
+  species_9 biological_system "http://identifiers.org/uniprot/P32485",
+                              "http://identifiers.org/kegg.compound/C00562"
+  species_3 biological_system "http://identifiers.org/uniprot/P32485",
+                              "http://identifiers.org/kegg.compound/C00562"
+  species_4 encodement "http://identifiers.org/sgd/S000003664"
+  species_5 biological_system "http://identifiers.org/uniprot/P08018"
+  species_11 part "http://identifiers.org/uniprot/P40073",
+                  "http://identifiers.org/uniprot/P08018"
+  species_6 parthood "http://identifiers.org/uniprot/P40048"
+  species_7 biological_system "http://identifiers.org/chebi/CHEBI:36080"
+  species_8 biological_system "http://identifiers.org/chebi/CHEBI:33699"
+  species_10 biological_system "http://identifiers.org/uniprot/P40073"
+  species_10 encoder "http://identifiers.org/sgd/S000000920"
+  species_12 biological_system "http://identifiers.org/uniprot/P32485"
+  species_13 biological_system "http://identifiers.org/chebi/CHEBI:17754"
+  species_14 biological_system "http://identifiers.org/uniprot/P23900"
+  species_14 encoder "http://identifiers.org/sgd/S000003966"
+  species_15 biological_system "http://identifiers.org/uniprot/P23900"
+  species_15 encoder "http://identifiers.org/sgd/S000003966"
+  reaction_1 biological_system "http://identifiers.org/go/GO:0016310"
+  reaction_2 biological_system "http://identifiers.org/go/GO:0016311"
+  reaction_3 biological_system "http://identifiers.org/go/GO:0016310"
+  reaction_4 biological_system "http://identifiers.org/go/GO:0016311"
+  reaction_5 biological_system "http://identifiers.org/go/GO:0006412"
+  reaction_6 biological_system "http://identifiers.org/go/GO:0030163"
+  reaction_7 biological_system "http://identifiers.org/go/GO:0006114"
+  reaction_8 biological_system "http://identifiers.org/go/GO:0015793"
+  reaction_9 biological_system "http://identifiers.org/go/GO:0006351"
+  reaction_10 biological_system "http://identifiers.org/go/GO:0006402"
+  reaction_11 biological_system "http://identifiers.org/go/GO:0016310"
+  reaction_12 biological_system "http://identifiers.org/go/GO:0016311"
+  reaction_13 biological_system "http://identifiers.org/go/GO:0043241"
+  reaction_14 biological_system "http://identifiers.org/go/GO:0006461"
+  reaction_15 biological_system "http://identifiers.org/go/GO:0016310"
+  reaction_16 biological_system "http://identifiers.org/go/GO:0016311"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1209110001"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000429"
+  model publication "http://identifiers.org/pubmed/23149687"
+  model biological_system "http://identifiers.org/go/GO:0000161"
+  model taxon "http://identifiers.org/taxonomy/4932"
+  model created "2012-11-22T18:31:29Z"
+  model modified "2012-12-14T14:24:40Z"
+  model creator1.givenName "Vijayalakshmi"
+  model creator1.familyName "Chelliah"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "viji@ebi.ac.uk"
+  model creator2.givenName "Joerg"
+  model creator2.familyName "Schaber"
+  model creator2.organization "OvGU"
+  model creator2.email "schaber@med.ovgu.de"
+
+  // Notes:
+  model notes ```
+Schaber2012 - Hog pathway in yeast 
+
+
+The high osmolarity glycerol (HOG) pathway in the yeast Saccharomyces cerevisiae
+is one of the best-studied mitogen-activated protein kinase (MAPK) pathways and serves
+as a prototype signalling system for eukaryotes. This pathway is necessary and sufficient
+to adapt to high external osmolarity. A key component of this pathway is the stress-activated
+protein kinase (SAPK) Hog1, which is rapidly phosphorylated by the SAPK kinase Pbs2
+upon hyper-osmotic shock, and which is the terminal kinase of two parallel signalling
+pathways, subsequently called the Sho1 branch and the Sln1 branch, respectively.
+Ensemble modelling (192 models) is used to study the yeast HOG pathway, a prototype
+for eukaryotic mitogen-activated kinase signalling systems. The best fit model (Model
+Nr.22: described here) provides new insights into the function of this system, some
+of which are then experimentally validated.
+
+
+This model is described in the article:
+
+
+[Modelling reveals novel roles of two parallel signalling pathways and homeostatic feedbacks in yeast.](http://identifiers.org/pubmed/23149687 "Access to this publication") 
+
+
+Schaber J, Baltanas R, Bush A, Klipp E, Colman-Lerner A. 
+
+Mol Syst Biol. 2012 Nov 13;8:622. 
+Abstract:
+
+
+The high osmolarity glycerol (HOG) pathway in yeast serves as a prototype signalling
+system for eukaryotes. We used an unprecedented amount of data to parameterise 192
+models capturing different hypotheses about molecular mechanisms underlying osmo-adaptation
+and selected a best approximating model. This model implied novel mechanisms regulating
+osmo-adaptation in yeast. The model suggested that (i) the main mechanism for osmo-adaptation
+is a fast and transient non-transcriptional Hog1-mediated activation of glycerol
+production, (ii) the transcriptional response serves to maintain an increased steady-state
+glycerol production with low steady-state Hog1 activity, and (iii) fast negative
+feedbacks of activated Hog1 on upstream signalling branches serves to stabilise adaptation
+response. The best approximating model also indicated that homoeostatic adaptive
+systems with two parallel redundant signalling branches show a more robust and faster
+response than single-branch systems. We corroborated this notion to a large extent
+by dedicated measurements of volume recovery in single cells. Our study also demonstrates
+that systematically testing a model ensemble against data has the potential to achieve
+a better and unbiased understanding of molecular mechanisms.
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identified by: [MODEL1209110001](http://identifiers.org/biomodels.db/MODEL1209110001) . 
+
+To cite BioModels Database, please use: [BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models](http://identifiers.org/pubmed/20587024 "Latest BioModels Database publication") . 
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+  compartment_1 notes ```
+```Osmolytically active volume, derived from a total cell volume of 50 fl and a solid 
+base volume of 41%.```
+```
+  parameter_46 notes "```Initial osmotically active volume.```"
+  parameter_7 notes "```Hydraulic conductivity (estimate from data from (Eriksson, et al., 2007)).```"
+  parameter_16 notes "```Total cell surface area.```"
+  parameter_21 notes "```Turgor pressure [MPa].```"
+  parameter_5 notes "```Factor converting concentrations in  to pressures in MPa.```"
+  parameter_1 notes "```Gas constant.```"
+  parameter_2 notes "```Temperature, corresponds to 30oC.```"
+  parameter_44 notes "```Extracellular osmolytically active concentration.```"
+  parameter_45 notes "```Intracellular osmolytically active concentration.```"
+  compartment_3 notes "```Total cell volume.```"
+  parameter_13 notes "```Solid or minimal volume of the cell.```"
+  species_1 notes ```
+```Intracellular glycerol, approximated by assuming a measured value of 0.1 mM/OD 
+in 1 ml sample (Klipp, et al., 2005) and assuming18•106 cells per ml sample culture 
+and an average osmotic cell volume of 29.5 fl, i.e. 1/18/29.5•108.```
+```
+  species_2 notes "```MAP kinase```"
+  parameter_37 notes "```〖6788f〗_n2μM: molecule numbers from http://yeastgfp.yeastgenome.org/```"
+  species_9 notes ```
+```Single phosphorylated MAP kinase. Initial condition set such that a steady state 
+of Hog1 phosphorylation is maintained.```
+```
+  species_3 notes ```
+```Double phosphorylated, i.e. active, MAP kinase. It was derived from data that 
+2.23 % of the maximal phosphorylation is the steady state activation. f_n is the 
+fraction in the nucleus at maximal phohsporylation.```
+```
+  species_4 notes "```MAP kinase kinase```"
+  parameter_38 notes "```〖2160f〗_n2μM: molecule numbers from http://yeastgfp.yeastgenome.org/```"
+  species_5 notes ```
+```Activated MAP kinase kinase (Sln1 branch). Initial condition set such that a steady 
+state of Hog1 phosphorylation is maintained.```
+```
+  species_11 notes ```
+```Active scaffold complex (Sho1 branch). Initial condition set such that a steady 
+state of Hog1 phosphorylation is maintained.```
+```
+  species_6 notes ```
+```Placeholder for phosphatases like Ppt1/2/3 and others. Initial value derived from 
+measured number of Ptp3 molecules (769, http://yeastgfp.yeastgenome.org)```
+```
+  parameter_58 notes "```Linear activation function for the Sln1 branch.```"
+  parameter_18 notes "```Factor converting number of molecules in M concentrations per cell.```"
+  species_7 notes ```
+```Placeholder for Hog1-dependent proteins, especially Gpd1. Initial value derived 
+from measured number of Gpd1 molecules (807, http://yeastgfp.yeastgenome.org)```
+```
+  species_8 notes ```
+```Placeholder for transcribed genes. Initial value derived from data, i.e. initial 
+percentage of maximum.```
+```
+  species_10 notes "```One of the putative upstream sensors```"
+  parameter_40 notes "```〖2330f〗_n2μM: molecule numbers from http://yeastgfp.yeastgenome.org/```"
+  species_13 notes "```Extracellular glycerol, assumed to be 100 times lower than 〖Gly〗_in.```"
+  species_14 notes ```
+```Membrane bound open form of aquaglyceroporin Fps1 (assumed to be independent from 
+volume change). Initially half of the channels is assumed to be open.```
+```
+  parameter_59 notes "```〖907f〗_n2μM: molecule numbers from http://yeastgfp.yeastgenome.org/```"
+  species_15 notes ```
+```Membrane bound closed form of aquaglyceroporin Fps1 (assumed to be independent 
+from volume change) . Initially half of the channels is assumed to be closed.```
+```
+  parameter_3 notes "```Mole number```"
+  parameter_4 notes "```Osmotic coefficient for salt.```"
+  parameter_6 notes "```Mixing time [s] of salt in the medium.```"
+  parameter_8 notes "```Initial turgor pressure (Schaber, et al., 2010)```"
+  parameter_9 notes "```Membrane rigidity (Schaber, et al., 2010)```"
+  parameter_10 notes "```Minimal cell volume (as fraction of total) (Schaber, et al., 2010)```"
+  parameter_11 notes "```Initial osmolarity of the medium (Schaber, et al., 2010)```"
+  parameter_12 notes "```Initial total cell volume.```"
+  parameter_14 notes "```Fraction of activated Hog1 molecule in the nucleous upon maximal activation.```"
+  parameter_15 notes "```Non-turgid volume.```"
+  parameter_19 notes "```Initial total cellular osmolyte concentration.```"
+  parameter_20 notes "```Initial non-permeable cellular osmolyte concentration.```"
+  parameter_22 notes "```Linear activation function for the Sln1 branch with feedback.```"
+  parameter_24 notes "```Steady state activation of the Sln1 branch with feedback.```"
+  parameter_27 notes "```Maximal Fps1 glycerol transport capacity.```"
+  parameter_28 notes "```Fps1 channel closure.```"
+  parameter_35 notes "```Protein degradation rate.```"
+  parameter_39 notes "```RNA degradation rate.```"
+  parameter_49 notes "```Osmotic salt shock. Starts at time t_s and has a certain mixing time t_m.```"
+  parameter_55 notes "```Steady state activation of the Sln1 branch with feedback.```"
+  parameter_56 notes "```Linear activation function for the Sln1 branch with feedback.```"
+  parameter_61 notes "```Hill parameter of the turgor-activate Fps1 closure.```"
+  reaction_1 notes ```
+```Simple cell surface area dependent linear activation of Pbs2 through the Sln1 
+branch, with transient inhibition by activated Hog1.```
+```
+  reaction_2 notes "```Constitutive phosphatase dependent deactivation.```"
+  reaction_3 notes ```
+```Linear phosphorylation of Hog1 by either the scaffold complex (Sho1-branch) or 
+activated Pbs2 (Sln1-branch).```
+```
+  reaction_4 notes "```Constitutive phosphatase dependent de-phosphorylation.```"
+  reaction_5 notes "```Protein/enzyme production/synthesis```"
+  reaction_6 notes "```Protein/enzyme degradation```"
+  reaction_7 notes ```
+```Glycerol production. As glycerol concentration also involves other proteins and 
+cofactors that are potentially limiting a saturation kinetic is assumed. In addition, 
+effective enzyme concentration can be enhanced as a function of activated Hog1.```
+```
+  reaction_8 notes ```
+```Gradient driven glycerol flow out of the cell, where k_tr characterises the state 
+of the aquaglyceroporin channel Fps1 and k_s the maximal transport capacity of the 
+channel.```
+```
+  reaction_9 notes ```
+```Gene transcription. Hog1 mediated transcription also involves other proteins that 
+are potentially limiting a saturation kinetic is assumed.```
+```
+  reaction_10 notes "```mRNA degradation```"
+  reaction_11 notes ```
+```Linear phosphorylation of Hog1 by either the scaffold complex (Sho1-branch) or 
+activated Pbs2 (Sln1-branch).```
+```
+  reaction_12 notes "```Constitutive phosphatase dependent de-phosphorylation.```"
+  reaction_13 notes "```Constitutive dissociation of the scaffold complex.```"
+  reaction_14 notes ```
+```Simple cell surface area dependent binding of Pbs2 to Sho1. The complex is supposed 
+to be the active form. With transient inhibition by activated Hog1.```
+```
+  reaction_15 notes "```Turgor dependent closure of Fps1, in conjunction with v16_5, v16_6, v16_7, v16_8.```"
+  reaction_16 notes "```Activated Hog1 inhibited channel opening, in conjunction with v15_5.```"
+end
+
+MODEL1209110001 is "Schaber2012 - Hog pathway in yeast"

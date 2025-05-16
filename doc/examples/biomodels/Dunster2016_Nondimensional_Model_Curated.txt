@@ -1,0 +1,494 @@
+// Created by libAntimony v3.0.0
+
+// Warnings from automatic translation:
+//    Layout error in model:  unable to draw an arc between the species 'Factor_Xa' and the reaction 'reaction_for_Inactivation_of_prothrombinase_2': 'Factor_Xa' is not a participant in that reaction.
+//    Layout error in model:  unable to draw an arc between the species 'Thrombin__IIa' and the reaction 'reaction_for_Generation_of_thrombin': 'Thrombin__IIa' is not a participant in that reaction.
+//    Layout error in model:  unable to draw an arc between the species 'Va_Xa_L' and the reaction 'reaction_for_Generation_of_thrombin': 'Va_Xa_L' is not a participant in that reaction.
+
+model *Dunster2016___Nondimensional_Coagulation_Model()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species Factor_Xa in compartment_, Thrombin__IIa in compartment_, Factor_V in compartment_;
+  species Factor_Va in compartment_, APC in compartment_, VInactive in compartment_;
+  species Prothrombinase__Va_Xa in compartment_, Prothrombin__II in compartment_;
+  species $Xa_L in compartment_, $Va_Xa_L in compartment_, Protein_C in compartment_;
+  species Inactive_protein_C in compartment_, Fibrin in compartment_, Fibrinogen in compartment_;
+  species Inactive_Thrombin in compartment_, Factor_Xi in compartment_;
+
+  // Assignment Rules:
+  Xa_L := 0.5*(kx + Ix + Factor_Xa - ((kx + Ix + Factor_Xa)^2 - 4*Ix*Factor_Xa)^(1/2));
+  Va_Xa_L := 0.5*(kb + Ib + Prothrombinase__Va_Xa - ((kb + Ib + Prothrombinase__Va_Xa)^2 - 4*Ib*Prothrombinase__Va_Xa)^(1/2));
+  log_time := log10(time)/log10(10)/(log10(10)/log10(10));
+
+  // Reactions:
+  Reaction_for_Generation_of_Xa:  => Factor_Xa; compartment_*(k1a*gamma1a*exp(-gamma1a*time));
+  Reaction_for_Generation_of_Va:  => Factor_Va; compartment_*(Thrombin__IIa*Factor_V/(Factor_V + k2am*(1 + Fibrinogen)) + k2b*Factor_Xa*Factor_V/(Factor_V + 1 + Prothrombin__II) + (k3b/q3a)*Prothrombinase__Va_Xa - Factor_Xa*Factor_Va);
+  Reaction_for_Inactivation_of_Xa: Factor_Xa => ; compartment_*k1b*Factor_Xa;
+  Reaction_for_Inactivation_of_Va: Factor_Va => VInactive; compartment_*(APC*Factor_Va/(Factor_Va + 1));
+  Reaction_for_Formation_of_Prothrombinase: Factor_Xa => ; compartment_*(k3a*Factor_Xa*Factor_Va - k3c*k3a*APC*Prothrombinase__Va_Xa/(Prothrombinase__Va_Xa + 1));
+  Reaction_for_Inactivation_of_prothrombinase_1: Prothrombinase__Va_Xa => ; compartment_*(k3b*Prothrombinase__Va_Xa - q3a*Factor_Xa*Factor_Va);
+  reaction_for_Inactivation_of_prothrombinase_2: Prothrombinase__Va_Xa => VInactive; compartment_*(k3c*q3a*APC*Prothrombinase__Va_Xa/(Prothrombinase__Va_Xa + 1));
+  reaction_for_Generation_of_thrombin: Prothrombin__II => Thrombin__IIa; compartment_*(q4a*Xa_L*Prothrombin__II/(Factor_V + 1 + Prothrombin__II));
+  reaction_for_Generation_of_protein_C: Protein_C => APC; compartment_*k5a*Protein_C;
+  Reaction_for_Inactivation_of_protein_C: APC => Inactive_protein_C; compartment_*k5b*APC;
+  reaction_for_Generation_of__Fibrin: Fibrinogen => Fibrin; compartment_*k6*Fibrinogen;
+  Reaction_of_V_Inactivation: Factor_V => ; compartment_*(k2a*Thrombin__IIa*Factor_V/(Factor_V + k2a*k2am*(1 + Fibrinogen)) + k2a*k2b*Factor_Xa*Factor_V/(Factor_V + 1 + Prothrombinase__Va_Xa));
+  Reaction_for_Thrombin_Generation: Thrombin__IIa => Inactive_Thrombin; compartment_*Thrombin__IIa;
+  Reaction_for_Thrombin_Inactivation:  => Thrombin__IIa; compartment_*(q4a*k4b*Va_Xa_L*Prothrombin__II/(q4a*(Prothrombin__II + k4bm)));
+  Reaction_for_Prothrombin_inactivation: Prothrombin__II => ; compartment_*(k4b*Va_Xa_L*Prothrombin__II/(Prothrombin__II + k4bm));
+  Reaction_for_Inactive_Xa:  => Factor_Xi; compartment_*(k1b*Factor_Xa + (k2a*k3b/q3a)*Prothrombinase__Va_Xa);
+
+  // Species initializations:
+  Factor_Xa = 0;
+  Thrombin__IIa = 0;
+  Factor_V = 3;
+  Factor_Va = 0;
+  APC = 0;
+  VInactive = 0;
+  Prothrombinase__Va_Xa = 0;
+  Prothrombin__II = 17;
+  Protein_C = 92;
+  Inactive_protein_C = 0;
+  Fibrin = 0;
+  Fibrinogen = 5;
+  Inactive_Thrombin = 0;
+  Factor_Xi = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  kx = 385;
+  Ix = 7.69;
+  kb = 0.0005;
+  Ib = 0.05;
+  k1a = 150;
+  gamma1a = 0.77;
+  k1b = 0.19;
+  k2a = 2;
+  k2am = 7.2;
+  k2b = 0.013;
+  k3a = 150;
+  q3a = 1;
+  k3b = 0.038;
+  k3c = 1;
+  k4a = 0.12;
+  q4a = 0.004;
+  k4b = 530;
+  k4bm = 3.6;
+  k5a = 0.0011;
+  k5b = 0.27;
+  k6 = 1500;
+
+  // Other declarations:
+  var log_time;
+  const compartment_, kx, Ix, kb, Ib, k1a, gamma1a, k1b, k2a, k2am, k2b, k3a;
+  const q3a, k3b, k3c, k4a, q4a, k4b, k4bm, k5a, k5b, k6;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  Factor_Xa is "Factor Xa";
+  Thrombin__IIa is "Thrombin (IIa)";
+  Factor_V is "Factor V";
+  Factor_Va is "Factor Va";
+  Prothrombinase__Va_Xa is "Prothrombinase (Va:Xa)";
+  Prothrombin__II is "Prothrombin (II)";
+  Xa_L is "Xa:L";
+  Va_Xa_L is "Va:Xa:L";
+  Protein_C is "Protein C";
+  Inactive_protein_C is "Inactive protein C";
+  Inactive_Thrombin is "Inactive Thrombin";
+  Factor_Xi is "Factor Xi";
+  Reaction_for_Generation_of_Xa is "Reaction for Generation of Xa";
+  Reaction_for_Generation_of_Va is "Reaction for Generation of Va";
+  Reaction_for_Inactivation_of_Xa is "Reaction for Inactivation of Xa";
+  Reaction_for_Inactivation_of_Va is "Reaction for Inactivation of Va";
+  Reaction_for_Formation_of_Prothrombinase is "Reaction for Formation of Prothrombinase";
+  Reaction_for_Inactivation_of_prothrombinase_1 is "Reaction for Inactivation of prothrombinase_1";
+  reaction_for_Inactivation_of_prothrombinase_2 is "reaction for Inactivation of prothrombinase_2";
+  reaction_for_Generation_of_thrombin is "reaction for Generation of thrombin";
+  reaction_for_Generation_of_protein_C is "reaction for Generation of protein C";
+  Reaction_for_Inactivation_of_protein_C is "Reaction for Inactivation of protein C";
+  reaction_for_Generation_of__Fibrin is "reaction for Generation of  Fibrin";
+  Reaction_of_V_Inactivation is "Reaction of V Inactivation";
+  Reaction_for_Thrombin_Generation is "Reaction for Thrombin Generation";
+  Reaction_for_Thrombin_Inactivation is "Reaction for Thrombin Inactivation";
+  Reaction_for_Prothrombin_inactivation is "Reaction for Prothrombin inactivation";
+  Reaction_for_Inactive_Xa is "Reaction for Inactive Xa production";
+
+  # General layout options
+  model.layout = on
+  model.layout.size = {10, 10}
+  model.layout.background = "#FFFFFFFF"
+
+  // Species layout defaults
+  species.color = "#a0e0a030"
+
+  // Reaction layout defaults
+  reaction.lineColor = "#000000a0"
+  reaction.lineWidth = 3
+  reaction.fontColor = "#000000a0"
+
+  // Compartment layout defaults
+  compartment.lineColor = "#e69600b0"
+  compartment.lineWidth = 7
+  compartment.fontColor = "#e69600b0"
+  compartment.fontStyle = normal
+
+  // Individual element layout information
+  Factor_Xa.position = {369.76, 435.19}
+  Factor_Xa.size = {36, 28}
+  Factor_Xa.font = Verdana
+  Factor_Xa.fontColor = black
+  Factor_Xa.fontSize = 12
+  Thrombin__IIa.position = {478.07, 577.4}
+  Thrombin__IIa.size = {52, 28}
+  Thrombin__IIa.font = Verdana
+  Thrombin__IIa.fontColor = black
+  Thrombin__IIa.fontSize = 12
+  Factor_V.position = {593.8, 503.18}
+  Factor_V.size = {28, 28}
+  Factor_V.font = Verdana
+  Factor_V.fontColor = black
+  Factor_V.fontSize = 12
+  Factor_Va.position = {451.22, 378.92}
+  Factor_Va.size = {36, 28}
+  Factor_Va.font = Verdana
+  Factor_Va.fontColor = black
+  Factor_Va.fontSize = 12
+  APC.position = {352.44, 211.22}
+  APC.size = {52, 28}
+  APC.font = Verdana
+  APC.fontColor = black
+  APC.fontSize = 12
+  VInactive.position = {284.13, 293.87}
+  VInactive.size = {148, 28}
+  VInactive.font = Verdana
+  VInactive.fontColor = black
+  VInactive.fontSize = 12
+  Prothrombinase__Va_Xa.position = {467.94, 353.37}
+  Prothrombinase__Va_Xa.size = {84, 28}
+  Prothrombinase__Va_Xa.font = Verdana
+  Prothrombinase__Va_Xa.fontColor = black
+  Prothrombinase__Va_Xa.fontSize = 12
+  Prothrombin__II.position = {533.5, 651.18}
+  Prothrombin__II.size = {36, 28}
+  Prothrombin__II.font = Verdana
+  Prothrombin__II.fontColor = black
+  Prothrombin__II.fontSize = 12
+  Xa_L.position = {673.02, 617.71}
+  Xa_L.size = {68, 28}
+  Xa_L.font = Verdana
+  Xa_L.fontColor = black
+  Xa_L.fontSize = 12
+  Va_Xa_L.position = {553.64, 687.88}
+  Va_Xa_L.size = {116, 28}
+  Va_Xa_L.font = Verdana
+  Va_Xa_L.fontColor = black
+  Va_Xa_L.fontSize = 12
+  Protein_C.position = {209.31, 154.26}
+  Protein_C.size = {28, 28}
+  Protein_C.font = Verdana
+  Protein_C.fontColor = black
+  Protein_C.fontSize = 12
+  Inactive_protein_C.position = {391.86, 73.38}
+  Inactive_protein_C.size = {148, 28}
+  Inactive_protein_C.font = Verdana
+  Inactive_protein_C.fontColor = black
+  Inactive_protein_C.fontSize = 12
+  Fibrin.position = {760.23, 445.95}
+  Fibrin.size = {100, 28}
+  Fibrin.font = Verdana
+  Fibrin.fontColor = black
+  Fibrin.fontSize = 12
+  Fibrinogen.position = {570.49, 443.22}
+  Fibrinogen.size = {164, 28}
+  Fibrinogen.font = Verdana
+  Fibrinogen.fontColor = black
+  Fibrinogen.fontSize = 12
+  Inactive_Thrombin.position = {258.57, 631.8}
+  Inactive_Thrombin.size = {180, 28}
+  Inactive_Thrombin.font = Verdana
+  Inactive_Thrombin.fontColor = black
+  Inactive_Thrombin.fontSize = 12
+  Reaction_for_Generation_of_Xa.position = {303.16, 418.82}
+  Reaction_for_Generation_of_Xa.--.rxn_end = {295.25, 415.56}
+  Reaction_for_Generation_of_Xa.--.species_end = {235.04, 386.69}
+  Reaction_for_Generation_of_Xa.--.b1 = {279.43, 409.03}
+  Reaction_for_Generation_of_Xa.--.b2 = {253.28, 396.23}
+  Reaction_for_Generation_of_Xa.Factor_Xa.rxn_end = {311.07, 422.09}
+  Reaction_for_Generation_of_Xa.Factor_Xa.species_end = {364.76, 441.41}
+  Reaction_for_Generation_of_Xa.Factor_Xa.b1 = {326.89, 428.61}
+  Reaction_for_Generation_of_Xa.Factor_Xa.b2 = {349.78, 436.65}
+  Reaction_for_Generation_of_Xa.--.position = {229.04, 383.42}
+  Reaction_for_Generation_of_Xa.--.size = {1, 1}
+  Reaction_for_Generation_of_Va.position = {509.58, 487.62}
+  Reaction_for_Generation_of_Va.--.rxn_end = {513.48, 495.33}
+  Reaction_for_Generation_of_Va.--.species_end = {543.36, 541.72}
+  Reaction_for_Generation_of_Va.--.b1 = {521.29, 510.76}
+  Reaction_for_Generation_of_Va.--.b2 = {534.27, 530.1}
+  Reaction_for_Generation_of_Va.Factor_Va.rxn_end = {505.68, 479.9}
+  Reaction_for_Generation_of_Va.Factor_Va.species_end = {476.83, 411.92}
+  Reaction_for_Generation_of_Va.Factor_Va.b1 = {497.87, 464.47}
+  Reaction_for_Generation_of_Va.Factor_Va.b2 = {485.4, 434.34}
+  Reaction_for_Generation_of_Va.Thrombin__IIa.species_end = {503.42, 572.4}
+  Reaction_for_Generation_of_Va.Thrombin__IIa.rxn_end = {500.66, 492.13}
+  Reaction_for_Generation_of_Va.Thrombin__IIa.b1 = {502.04, 532.26}
+  Reaction_for_Generation_of_Va.Thrombin__IIa.b2 = {491.73, 496.64}
+  Reaction_for_Generation_of_Va.Factor_V.species_end = {588.8, 509.93}
+  Reaction_for_Generation_of_Va.Factor_V.rxn_end = {518.5, 483.1}
+  Reaction_for_Generation_of_Va.Factor_V.b1 = {553.65, 496.52}
+  Reaction_for_Generation_of_Va.Factor_V.b2 = {527.43, 478.59}
+  Reaction_for_Generation_of_Va.Fibrinogen.species_end = {565.49, 474.03}
+  Reaction_for_Generation_of_Va.Fibrinogen.rxn_end = {518.5, 483.1}
+  Reaction_for_Generation_of_Va.Fibrinogen.b1 = {542, 478.56}
+  Reaction_for_Generation_of_Va.Fibrinogen.b2 = {527.43, 478.59}
+  Reaction_for_Generation_of_Va.Factor_Xa.species_end = {410.76, 457.94}
+  Reaction_for_Generation_of_Va.Factor_Xa.rxn_end = {500.66, 492.13}
+  Reaction_for_Generation_of_Va.Factor_Xa.b1 = {455.71, 475.03}
+  Reaction_for_Generation_of_Va.Factor_Xa.b2 = {491.73, 496.64}
+  Reaction_for_Generation_of_Va.Prothrombin__II.species_end = {545.92, 646.18}
+  Reaction_for_Generation_of_Va.Prothrombin__II.rxn_end = {500.66, 492.13}
+  Reaction_for_Generation_of_Va.Prothrombin__II.b1 = {523.29, 569.16}
+  Reaction_for_Generation_of_Va.Prothrombin__II.b2 = {491.73, 496.64}
+  Reaction_for_Generation_of_Va.Prothrombinase__Va_Xa.species_end = {511.35, 386.37}
+  Reaction_for_Generation_of_Va.Prothrombinase__Va_Xa.rxn_end = {518.5, 483.1}
+  Reaction_for_Generation_of_Va.Prothrombinase__Va_Xa.b1 = {514.93, 434.74}
+  Reaction_for_Generation_of_Va.Prothrombinase__Va_Xa.b2 = {527.43, 478.59}
+  Reaction_for_Generation_of_Va.--.position = {546.78, 546.72}
+  Reaction_for_Generation_of_Va.--.size = {1, 1}
+  Reaction_for_Inactivation_of_Xa.position = {322.15, 508.17}
+  Reaction_for_Inactivation_of_Xa.Factor_Xa.rxn_end = {329.08, 503.45}
+  Reaction_for_Inactivation_of_Xa.Factor_Xa.species_end = {368.75, 468.19}
+  Reaction_for_Inactivation_of_Xa.Factor_Xa.b1 = {342.93, 494}
+  Reaction_for_Inactivation_of_Xa.Factor_Xa.b2 = {359.3, 478.73}
+  Reaction_for_Inactivation_of_Xa.--.rxn_end = {315.23, 512.9}
+  Reaction_for_Inactivation_of_Xa.--.species_end = {254.76, 541.44}
+  Reaction_for_Inactivation_of_Xa.--.b1 = {301.38, 522.35}
+  Reaction_for_Inactivation_of_Xa.--.b2 = {274.61, 534.25}
+  Reaction_for_Inactivation_of_Xa.--.position = {248.76, 543.19}
+  Reaction_for_Inactivation_of_Xa.--.size = {1, 1}
+  Reaction_for_Inactivation_of_Va.position = {438.07, 301.12}
+  Reaction_for_Inactivation_of_Va.Factor_Va.rxn_end = {443.63, 305.37}
+  Reaction_for_Inactivation_of_Va.Factor_Va.species_end = {465.74, 373.92}
+  Reaction_for_Inactivation_of_Va.Factor_Va.b1 = {454.74, 313.88}
+  Reaction_for_Inactivation_of_Va.Factor_Va.b2 = {463.02, 346.03}
+  Reaction_for_Inactivation_of_Va.VInactive.rxn_end = {432.52, 296.87}
+  Reaction_for_Inactivation_of_Va.VInactive.species_end = {419.77, 288.87}
+  Reaction_for_Inactivation_of_Va.VInactive.b1 = {421.41, 288.36}
+  Reaction_for_Inactivation_of_Va.VInactive.b2 = {417.81, 286.49}
+  Reaction_for_Inactivation_of_Va.APC.species_end = {396.81, 244.22}
+  Reaction_for_Inactivation_of_Va.APC.rxn_end = {444.15, 293.18}
+  Reaction_for_Inactivation_of_Va.APC.b1 = {420.48, 268.7}
+  Reaction_for_Inactivation_of_Va.APC.b2 = {450.23, 285.24}
+  Reaction_for_Formation_of_Prothrombinase.position = {459.12, 446.57}
+  Reaction_for_Formation_of_Prothrombinase.Factor_Xa.rxn_end = {453.01, 450.66}
+  Reaction_for_Formation_of_Prothrombinase.Factor_Xa.species_end = {410.76, 453.37}
+  Reaction_for_Formation_of_Prothrombinase.Factor_Xa.b1 = {440.8, 458.84}
+  Reaction_for_Formation_of_Prothrombinase.Factor_Xa.b2 = {422.72, 458.15}
+  Reaction_for_Formation_of_Prothrombinase.Prothrombinase__Va_Xa.rxn_end = {465.23, 442.48}
+  Reaction_for_Formation_of_Prothrombinase.Prothrombinase__Va_Xa.species_end = {500.72, 386.37}
+  Reaction_for_Formation_of_Prothrombinase.Prothrombinase__Va_Xa.b1 = {477.45, 434.3}
+  Reaction_for_Formation_of_Prothrombinase.Prothrombinase__Va_Xa.b2 = {492.14, 408.29}
+  Reaction_for_Formation_of_Prothrombinase.Factor_Va.species_end = {462.66, 411.92}
+  Reaction_for_Formation_of_Prothrombinase.Factor_Va.rxn_end = {453.56, 438.26}
+  Reaction_for_Formation_of_Prothrombinase.Factor_Va.b1 = {458.11, 425.09}
+  Reaction_for_Formation_of_Prothrombinase.Factor_Va.b2 = {448, 429.95}
+  Reaction_for_Inactivation_of_prothrombinase_1.position = {562.2, 294.21}
+  Reaction_for_Inactivation_of_prothrombinase_1.Prothrombinase__Va_Xa.rxn_end = {557.33, 301.14}
+  Reaction_for_Inactivation_of_prothrombinase_1.Prothrombinase__Va_Xa.species_end = {523.59, 348.37}
+  Reaction_for_Inactivation_of_prothrombinase_1.Prothrombinase__Va_Xa.b1 = {547.58, 314.99}
+  Reaction_for_Inactivation_of_prothrombinase_1.Prothrombinase__Va_Xa.b2 = {533.15, 335.15}
+  Reaction_for_Inactivation_of_prothrombinase_1.--.rxn_end = {567.08, 287.29}
+  Reaction_for_Inactivation_of_prothrombinase_1.--.species_end = {603.67, 234.33}
+  Reaction_for_Inactivation_of_prothrombinase_1.--.b1 = {576.83, 273.43}
+  Reaction_for_Inactivation_of_prothrombinase_1.--.b2 = {592.69, 250.42}
+  Reaction_for_Inactivation_of_prothrombinase_1.--.position = {606.95, 228.33}
+  Reaction_for_Inactivation_of_prothrombinase_1.--.size = {1, 1}
+  reaction_for_Inactivation_of_prothrombinase_2.position = {412.54, 359.57}
+  reaction_for_Inactivation_of_prothrombinase_2.Prothrombinase__Va_Xa.rxn_end = {419.39, 359.01}
+  reaction_for_Inactivation_of_prothrombinase_2.Prothrombinase__Va_Xa.species_end = {462.94, 361.58}
+  reaction_for_Inactivation_of_prothrombinase_2.Prothrombinase__Va_Xa.b1 = {433.09, 357.89}
+  reaction_for_Inactivation_of_prothrombinase_2.Prothrombinase__Va_Xa.b2 = {451.44, 359.46}
+  reaction_for_Inactivation_of_prothrombinase_2.VInactive.rxn_end = {405.69, 360.12}
+  reaction_for_Inactivation_of_prothrombinase_2.VInactive.species_end = {370.18, 326.87}
+  reaction_for_Inactivation_of_prothrombinase_2.VInactive.b1 = {391.99, 361.24}
+  reaction_for_Inactivation_of_prothrombinase_2.VInactive.b2 = {377.66, 344.33}
+  reaction_for_Inactivation_of_prothrombinase_2.Factor_Xa.rxn_end = {405.69, 360.12}
+  reaction_for_Inactivation_of_prothrombinase_2.Factor_Xa.species_end = {388.67, 430.19}
+  reaction_for_Inactivation_of_prothrombinase_2.Factor_Xa.b1 = {391.99, 361.24}
+  reaction_for_Inactivation_of_prothrombinase_2.Factor_Xa.b2 = {386.91, 395.99}
+  reaction_for_Inactivation_of_prothrombinase_2.APC.species_end = {383.52, 244.22}
+  reaction_for_Inactivation_of_prothrombinase_2.APC.rxn_end = {411.73, 349.6}
+  reaction_for_Inactivation_of_prothrombinase_2.APC.b1 = {397.63, 296.91}
+  reaction_for_Inactivation_of_prothrombinase_2.APC.b2 = {410.92, 339.63}
+  reaction_for_Generation_of_thrombin.position = {596.21, 608.88}
+  reaction_for_Generation_of_thrombin.Prothrombin__II.rxn_end = {598.58, 612.57}
+  reaction_for_Generation_of_thrombin.Prothrombin__II.species_end = {573.27, 646.18}
+  reaction_for_Generation_of_thrombin.Prothrombin__II.b1 = {603.32, 619.95}
+  reaction_for_Generation_of_thrombin.Prothrombin__II.b2 = {589.48, 634.91}
+  reaction_for_Generation_of_thrombin.Thrombin__IIa.rxn_end = {593.84, 605.19}
+  reaction_for_Generation_of_thrombin.Thrombin__IIa.species_end = {535.07, 593.74}
+  reaction_for_Generation_of_thrombin.Thrombin__IIa.b1 = {589.1, 597.81}
+  reaction_for_Generation_of_thrombin.Thrombin__IIa.b2 = {560.9, 593.93}
+  reaction_for_Generation_of_thrombin.Thrombin__IIa.arc2.species_end = {535.07, 599.87}
+  reaction_for_Generation_of_thrombin.Thrombin__IIa.arc2.rxn_end = {587.8, 614.28}
+  reaction_for_Generation_of_thrombin.Thrombin__IIa.arc2.b1 = {561.43, 607.08}
+  reaction_for_Generation_of_thrombin.Thrombin__IIa.arc2.b2 = {579.39, 619.69}
+  reaction_for_Generation_of_thrombin.Xa_L.species_end = {668.02, 620.95}
+  reaction_for_Generation_of_thrombin.Xa_L.rxn_end = {604.62, 603.47}
+  reaction_for_Generation_of_thrombin.Xa_L.b1 = {636.32, 612.21}
+  reaction_for_Generation_of_thrombin.Xa_L.b2 = {613.03, 598.06}
+  reaction_for_Generation_of_thrombin.Factor_V.species_end = {607.1, 536.18}
+  reaction_for_Generation_of_thrombin.Factor_V.rxn_end = {604.62, 603.47}
+  reaction_for_Generation_of_thrombin.Factor_V.b1 = {605.86, 569.82}
+  reaction_for_Generation_of_thrombin.Factor_V.b2 = {613.03, 598.06}
+  reaction_for_Generation_of_thrombin.Va_Xa_L.species_end = {606.47, 682.88}
+  reaction_for_Generation_of_thrombin.Va_Xa_L.rxn_end = {587.8, 614.28}
+  reaction_for_Generation_of_thrombin.Va_Xa_L.b1 = {597.13, 648.58}
+  reaction_for_Generation_of_thrombin.Va_Xa_L.b2 = {579.39, 619.69}
+  reaction_for_Generation_of_protein_C.position = {298.05, 195.53}
+  reaction_for_Generation_of_protein_C.Protein_C.rxn_end = {290.29, 192.68}
+  reaction_for_Generation_of_protein_C.Protein_C.species_end = {242.31, 175.17}
+  reaction_for_Generation_of_protein_C.Protein_C.b1 = {274.78, 186.98}
+  reaction_for_Generation_of_protein_C.Protein_C.b2 = {254.66, 179.65}
+  reaction_for_Generation_of_protein_C.APC.rxn_end = {305.8, 198.37}
+  reaction_for_Generation_of_protein_C.APC.species_end = {347.44, 213.74}
+  reaction_for_Generation_of_protein_C.APC.b1 = {321.32, 204.07}
+  reaction_for_Generation_of_protein_C.APC.b2 = {338.25, 210.33}
+  Reaction_for_Inactivation_of_protein_C.position = {422.01, 152.82}
+  Reaction_for_Inactivation_of_protein_C.APC.rxn_end = {417.64, 159.71}
+  Reaction_for_Inactivation_of_protein_C.APC.species_end = {389.62, 206.22}
+  Reaction_for_Inactivation_of_protein_C.APC.b1 = {408.89, 173.49}
+  Reaction_for_Inactivation_of_protein_C.APC.b2 = {397.07, 193.3}
+  Reaction_for_Inactivation_of_protein_C.Inactive_protein_C.rxn_end = {426.38, 145.93}
+  Reaction_for_Inactivation_of_protein_C.Inactive_protein_C.species_end = {452.81, 106.38}
+  Reaction_for_Inactivation_of_protein_C.Inactive_protein_C.b1 = {435.12, 132.14}
+  Reaction_for_Inactivation_of_protein_C.Inactive_protein_C.b2 = {446.15, 115.82}
+  reaction_for_Generation_of__Fibrin.position = {734.49, 439.72}
+  reaction_for_Generation_of__Fibrin.Fibrinogen.rxn_end = {726.6, 439.58}
+  reaction_for_Generation_of__Fibrin.Fibrinogen.species_end = {714.37, 438.22}
+  reaction_for_Generation_of__Fibrin.Fibrinogen.b1 = {710.83, 439.31}
+  reaction_for_Generation_of__Fibrin.Fibrinogen.b2 = {708.66, 438.69}
+  reaction_for_Generation_of__Fibrin.Fibrin.rxn_end = {742.38, 439.85}
+  reaction_for_Generation_of__Fibrin.Fibrin.species_end = {760.32, 440.95}
+  reaction_for_Generation_of__Fibrin.Fibrin.b1 = {758.15, 440.13}
+  reaction_for_Generation_of__Fibrin.Fibrin.b2 = {763.18, 440.61}
+  Reaction_of_V_Inactivation.position = {555.04, 454.64}
+  Reaction_of_V_Inactivation.Factor_V.rxn_end = {554.76, 461.08}
+  Reaction_of_V_Inactivation.Factor_V.species_end = {588.8, 501.85}
+  Reaction_of_V_Inactivation.Factor_V.b1 = {554.21, 473.96}
+  Reaction_of_V_Inactivation.Factor_V.b2 = {571.36, 491.12}
+  Reaction_of_V_Inactivation.--.rxn_end = {555.32, 448.2}
+  Reaction_of_V_Inactivation.--.species_end = {607.9, 392.9}
+  Reaction_of_V_Inactivation.--.b1 = {555.88, 435.32}
+  Reaction_of_V_Inactivation.--.b2 = {582.03, 410.89}
+  Reaction_of_V_Inactivation.Thrombin__IIa.species_end = {509.75, 572.4}
+  Reaction_of_V_Inactivation.Thrombin__IIa.rxn_end = {545.05, 454.21}
+  Reaction_of_V_Inactivation.Thrombin__IIa.b1 = {527.4, 513.3}
+  Reaction_of_V_Inactivation.Thrombin__IIa.b2 = {535.06, 453.77}
+  Reaction_of_V_Inactivation.Fibrinogen.species_end = {565.49, 455.09}
+  Reaction_of_V_Inactivation.Fibrinogen.rxn_end = {565.04, 455.07}
+  Reaction_of_V_Inactivation.Fibrinogen.b1 = {565.26, 455.08}
+  Reaction_of_V_Inactivation.Fibrinogen.b2 = {575.03, 455.51}
+  Reaction_of_V_Inactivation.Factor_Xa.species_end = {410.76, 449.92}
+  Reaction_of_V_Inactivation.Factor_Xa.rxn_end = {545.05, 454.21}
+  Reaction_of_V_Inactivation.Factor_Xa.b1 = {477.91, 452.06}
+  Reaction_of_V_Inactivation.Factor_Xa.b2 = {535.06, 453.77}
+  Reaction_of_V_Inactivation.Prothrombinase__Va_Xa.species_end = {517.63, 386.37}
+  Reaction_of_V_Inactivation.Prothrombinase__Va_Xa.rxn_end = {545.05, 454.21}
+  Reaction_of_V_Inactivation.Prothrombinase__Va_Xa.b1 = {531.34, 420.29}
+  Reaction_of_V_Inactivation.Prothrombinase__Va_Xa.b2 = {535.06, 453.77}
+  Reaction_of_V_Inactivation.--.position = {612.9, 387.91}
+  Reaction_of_V_Inactivation.--.size = {1, 1}
+  Reaction_for_Thrombin_Generation.position = {419.31, 608.89}
+  Reaction_for_Thrombin_Generation.Thrombin__IIa.rxn_end = {427.09, 606.17}
+  Reaction_for_Thrombin_Generation.Thrombin__IIa.species_end = {473.07, 596.11}
+  Reaction_for_Thrombin_Generation.Thrombin__IIa.b1 = {442.64, 600.73}
+  Reaction_for_Thrombin_Generation.Thrombin__IIa.b2 = {461.74, 597.06}
+  Reaction_for_Thrombin_Generation.Inactive_Thrombin.rxn_end = {411.54, 611.61}
+  Reaction_for_Thrombin_Generation.Inactive_Thrombin.species_end = {379.9, 626.8}
+  Reaction_for_Thrombin_Generation.Inactive_Thrombin.b1 = {395.99, 617.05}
+  Reaction_for_Thrombin_Generation.Inactive_Thrombin.b2 = {384.06, 623.28}
+  Reaction_for_Thrombin_Inactivation.position = {485.31, 680.65}
+  Reaction_for_Thrombin_Inactivation.--.rxn_end = {481.45, 688.13}
+  Reaction_for_Thrombin_Inactivation.--.species_end = {432.43, 736.46}
+  Reaction_for_Thrombin_Inactivation.--.b1 = {473.74, 703.08}
+  Reaction_for_Thrombin_Inactivation.--.b2 = {451.16, 723.51}
+  Reaction_for_Thrombin_Inactivation.Thrombin__IIa.rxn_end = {489.16, 673.18}
+  Reaction_for_Thrombin_Inactivation.Thrombin__IIa.species_end = {502.03, 610.4}
+  Reaction_for_Thrombin_Inactivation.Thrombin__IIa.b1 = {496.88, 658.23}
+  Reaction_for_Thrombin_Inactivation.Thrombin__IIa.b2 = {501.38, 630.57}
+  Reaction_for_Thrombin_Inactivation.Va_Xa_L.species_end = {548.64, 692.95}
+  Reaction_for_Thrombin_Inactivation.Va_Xa_L.rxn_end = {494.19, 685.24}
+  Reaction_for_Thrombin_Inactivation.Va_Xa_L.b1 = {521.42, 689.09}
+  Reaction_for_Thrombin_Inactivation.Va_Xa_L.b2 = {503.08, 689.82}
+  Reaction_for_Thrombin_Inactivation.Prothrombin__II.species_end = {528.5, 673.23}
+  Reaction_for_Thrombin_Inactivation.Prothrombin__II.rxn_end = {494.19, 685.24}
+  Reaction_for_Thrombin_Inactivation.Prothrombin__II.b1 = {511.35, 679.23}
+  Reaction_for_Thrombin_Inactivation.Prothrombin__II.b2 = {503.08, 689.82}
+  Reaction_for_Thrombin_Inactivation.--.position = {426.43, 740.41}
+  Reaction_for_Thrombin_Inactivation.--.size = {1, 1}
+  Reaction_for_Prothrombin_inactivation.position = {559.17, 757.03}
+  Reaction_for_Prothrombin_inactivation.Prothrombin__II.rxn_end = {557.38, 748.63}
+  Reaction_for_Prothrombin_inactivation.Prothrombin__II.species_end = {552.16, 684.18}
+  Reaction_for_Prothrombin_inactivation.Prothrombin__II.b1 = {553.81, 731.84}
+  Reaction_for_Prothrombin_inactivation.Prothrombin__II.b2 = {552.09, 703.81}
+  Reaction_for_Prothrombin_inactivation.--.rxn_end = {560.96, 765.42}
+  Reaction_for_Prothrombin_inactivation.--.species_end = {584.81, 827.61}
+  Reaction_for_Prothrombin_inactivation.--.b1 = {564.54, 782.22}
+  Reaction_for_Prothrombin_inactivation.--.b2 = {575.57, 809.11}
+  Reaction_for_Prothrombin_inactivation.Va_Xa_L.species_end = {596.35, 720.88}
+  Reaction_for_Prothrombin_inactivation.Va_Xa_L.rxn_end = {568.95, 754.94}
+  Reaction_for_Prothrombin_inactivation.Va_Xa_L.b1 = {582.65, 737.91}
+  Reaction_for_Prothrombin_inactivation.Va_Xa_L.b2 = {578.73, 752.86}
+  Reaction_for_Prothrombin_inactivation.--.position = {586.77, 832.61}
+  Reaction_for_Prothrombin_inactivation.--.size = {1, 1}
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1808140001",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000925"
+  model identity "http://identifiers.org/biomodels.db/MODEL1808140001"
+  model biological_system "http://identifiers.org/go/GO:0007596"
+  model container "http://identifiers.org/bto/BTO:0000089"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model description "http://identifiers.org/doi/10.1093/imamat/hxw007"
+  model property "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2020-03-20T13:00:10Z"
+  model modified "2020-03-23T13:05:42Z"
+  model creator1.givenName "Ahmad"
+  model creator1.familyName "Zyoud"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "ahmad.azd@hotmail.com"
+  model creator2.givenName "William"
+  model creator2.familyName "McDermott"
+  model creator2.organization "University of Nottingham"
+  model creator3.givenName "Matthew Grant"
+  model creator3.familyName "Roberts"
+  model creator3.organization "EMBL-EBI"
+  model creator3.email "mroberts@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+```We undertake a mathematical investigation of a model for the generation of thrombin, 
+an enzyme central to haemostatic blood coagulation, as well as to thrombotic disorders, 
+that is the end product of a complicated protein cascade with multiple feedbacks 
+that ensures its production in the right place at the right time. In a laboratory 
+setting, its central role is reflected in thrombin evolution over time being used 
+as a measure of the ability of a patient&apos;s blood to clot. Here, we present a 
+model for the generation of thrombin (based on earlier work) and analyse it using 
+the method of matched asymptotic expansions to derive a sequence of simplified models 
+that characterize the roles of distinct interactions over various timescales. In 
+particular, we are able through the asymptotic analysis to provide simplified models 
+that are an excellent substitute for the full model (capturing the explosive growth 
+and decay of thrombin) and approximations for the key experimental measurements used 
+to describe thrombin&apos;s characteristic evolution over time. The asymptotic results 
+are validated against numerical simulations.```
+```
+end
+
+Dunster2016___Nondimensional_Coagulation_Model is "Dunster2016 - Nondimensional Coagulation Model"

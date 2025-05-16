@@ -1,0 +1,142 @@
+// Created by libAntimony v3.0.0
+model *Chaudhury2020___EC50_expansion_and_killing_mathematical_model_of_CAR_T_cell_and_tumour_kinetics()
+
+  // Compartments and Species:
+  compartment Whole_organism_blood;
+  species $Expanding_CAR_T_cells in Whole_organism_blood, Tumor_cells in Whole_organism_blood;
+  species $Persistent_CAR_T_cells in Whole_organism_blood, $CAR_T_cells in Whole_organism_blood;
+
+  // Assignment Rules:
+  CAR_T_cells := Expanding_CAR_T_cells + Persistent_CAR_T_cells;
+  F_cure := 1/(1 + (U_crit/Tumor_cells)^h);
+
+  // Rate Rules:
+  Expanding_CAR_T_cells' = piecewise(rho*(Expanding_CAR_T_cells*Tumor_cells/(EC_50_rho + Expanding_CAR_T_cells + Tumor_cells)), time <= T_max, -(k_EP + k_E)*Expanding_CAR_T_cells);
+  Persistent_CAR_T_cells' = piecewise(0, time <= T_max, k_EP*Expanding_CAR_T_cells - beta*Persistent_CAR_T_cells);
+
+  // Reactions:
+  Tumor_cell_growth:  => Tumor_cells; Whole_organism_blood*(F_cure*g*Tumor_cells*((log10(U_max) - log10(Tumor_cells))/log10(U_max)));
+  Tumor_cell_death: Tumor_cells => ; Whole_organism_blood*(d*(Expanding_CAR_T_cells*Tumor_cells/(EC_50_d + Expanding_CAR_T_cells + Tumor_cells)));
+
+  // Species initializations:
+  Expanding_CAR_T_cells = 10;
+  Tumor_cells = 900;
+  Persistent_CAR_T_cells = 0;
+
+  // Compartment initializations:
+  Whole_organism_blood = 1;
+
+  // Variable initializations:
+  rho = 8.8;
+  rho has unit_0;
+  EC_50_rho = 1;
+  EC_50_rho has unit_1;
+  T_max = 9.3;
+  T_max has unit_2;
+  k_EP = 0.0012;
+  k_EP has unit_0;
+  k_E = 0.16;
+  k_E has unit_0;
+  beta = 0.0032;
+  beta has unit_0;
+  g = 0.2;
+  g has unit_0;
+  d = 0.35;
+  d has unit_0;
+  U_crit = 0.1;
+  U_crit has unit_1;
+  U_max = 1000;
+  U_max has unit_1;
+  h = 3;
+  EC_50_d = 10;
+  EC_50_d has unit_1;
+  h_T = 3;
+
+  // Other declarations:
+  var F_cure;
+  const Whole_organism_blood, rho, EC_50_rho, T_max, k_EP, k_E, beta, g, d;
+  const U_crit, U_max, h, EC_50_d, h_T;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-6 litre;
+  unit time_unit = 86400 second;
+  unit substance = item;
+  unit unit_0 = 1 / 86400 second;
+  unit unit_1 = item / 1e-6 litre;
+  unit unit_2 = 86400 second;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1/d";
+  unit_1 is "#/ul";
+  unit_2 is "d";
+  Expanding_CAR_T_cells is "Expanding_CAR-T_cells";
+  EC_50_rho is "EC_50,rho";
+  Persistent_CAR_T_cells is "Persistent_CAR-T_cells";
+  CAR_T_cells is "CAR-T_cells";
+  EC_50_d is "EC_50,d";
+
+  // CV terms:
+  Whole_organism_blood biological_system "http://identifiers.org/bto/BTO:0000089"
+  Whole_organism_blood biological_system "http://identifiers.org/ncit/C13413"
+  Whole_organism_blood property "http://identifiers.org/pato/PATO:0001993"
+  Expanding_CAR_T_cells biological_system "http://identifiers.org/cl/CL:0000084"
+  Expanding_CAR_T_cells biological_system "http://identifiers.org/ncit/C137999"
+  Expanding_CAR_T_cells property "http://identifiers.org/pato/PATO:0002102"
+  Tumor_cells biological_system "http://identifiers.org/cl/CL:0001063"
+  Tumor_cells biological_system "http://identifiers.org/cl/CL:0001201"
+  Tumor_cells property "http://identifiers.org/chebi/CHEBI:144829"
+  Persistent_CAR_T_cells biological_system "http://identifiers.org/ncit/C137999"
+  Persistent_CAR_T_cells biological_system "http://identifiers.org/cl/CL:0000084"
+  Persistent_CAR_T_cells property "http://identifiers.org/ncit/C43623"
+  CAR_T_cells biological_system "http://identifiers.org/cl/CL:0000084"
+  CAR_T_cells biological_system "http://identifiers.org/ncit/C137999"
+  Tumor_cell_growth biological_system "http://identifiers.org/go/GO:0008283"
+  Tumor_cell_growth biological_system "http://identifiers.org/sbo/SBO:0000393"
+  Tumor_cell_death biological_system "http://identifiers.org/sbo/SBO:0000394"
+  Tumor_cell_death biological_system "http://identifiers.org/go/GO:0008219"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL2108050002",
+                     "http://identifiers.org/biomodels.db/BIOMD0000001025"
+  model part "http://identifiers.org/doid/DOID:1240"
+  model propertyBearer "http://identifiers.org/ncit/C126102"
+  model propertyBearer "http://identifiers.org/ncit/C15438"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model description "http://identifiers.org/pubmed/33205434"
+  model property "http://identifiers.org/go/GO:0002837",
+                 "http://identifiers.org/doid/DOID:0060058",
+                 "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2021-08-02T15:51:03Z"
+  model modified "2021-08-02T15:51:03Z"
+  model creator1.givenName "Emilia"
+  model creator1.familyName "Chen"
+  model creator1.organization "University of Cambridge"
+  model creator1.email "eblc2@cam.ac.uk"
+  model creator2.givenName "Rahuman"
+  model creator2.familyName "Sheriff"
+  model creator2.organization "EMBL-EBI"
+  model creator2.email "sheriff@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+```This ordinary differential equation model of the cellular kinetics and pharmacodynamics 
+of CAR-T cell therapy is described in the publication:Chaudhury, A., Zhu, X., Chu, 
+L., Goliaei, A., June, C., Kearns, J. and Stein, A., 2020. Chimeric Antigen Receptor 
+T Cell Therapies: A Review of Cellular Kinetic‐Pharmacodynamic Modeling Approaches. 
+The Journal of Clinical Pharmacology, 60(S1).DOI: 10.1002/jcph.1691Comment:This model 
+is based on equations 7-9 from the manuscript.Abstract:Chimeric antigen receptor 
+T cell (CAR-T cell) therapies have shown significant efficacy in CD19+ leukemias 
+and lymphomas. There remain many challenges and questions for improving next-generation 
+CAR-T cell therapies, and mathematical modeling of CAR-T cells may play a role in 
+supporting further development. In this review, we introduce a mathematical modeling 
+taxonomy for a set of relatively simple cellular kinetic-pharmacodynamic models that 
+describe the in vivo dynamics of CAR-T cell and their interactions with cancer cells. 
+We then discuss potential extensions of this model to include target binding, tumor 
+distribution, cytokine-release syndrome, immunophenotype differentiation, and genotypic 
+heterogeneity.```
+```
+end
+
+Chaudhury2020___EC50_expansion_and_killing_mathematical_model_of_CAR_T_cell_and_tumour_kinetics is "Chaudhury2020 - EC50 expansion and killing mathematical model of CAR-T cell and tumour kinetics"

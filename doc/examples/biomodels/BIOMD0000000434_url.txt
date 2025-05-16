@@ -1,0 +1,385 @@
+// Created by libAntimony v3.0.0
+model *MODEL1206010000()
+
+  // Compartments and Species:
+  compartment Intake, Intestine, HepaticTissue, PeripheralTissue, Plasma;
+  compartment Excreted;
+  species $species_1 in Intake, species_2 in Intestine, $species_3 in Intestine;
+  species species_4 in HepaticTissue, species_5 in Intestine, species_6 in Excreted;
+  species species_7 in HepaticTissue, species_8 in Excreted, $species_9 in Plasma;
+  species species_10 in Plasma, species_11 in PeripheralTissue, $species_12 in HepaticTissue;
+  species species_13 in HepaticTissue, species_14 in HepaticTissue, species_15 in HepaticTissue;
+  species $species_16 in HepaticTissue, species_17 in Plasma, species_18 in HepaticTissue;
+  species $species_19 in HepaticTissue, species_20 in HepaticTissue, species_21 in Plasma;
+  species species_22 in Plasma, species_23 in Plasma, species_24 in Plasma;
+  species species_25 in PeripheralTissue, $species_26 in PeripheralTissue;
+  species species_27 in PeripheralTissue, species_28 in PeripheralTissue;
+  species species_29 in PeripheralTissue, species_30 in Plasma, species_31 in Plasma;
+  species $species_32 in PeripheralTissue, species_33 in Plasma, species_34 in HepaticTissue;
+
+  // Reactions:
+  reaction_1: $species_1 => species_2; reaction_1_k1*species_1;
+  reaction_2: $species_3 => species_2; reaction_2_ICSmax/(1 + (species_2/reaction_2_ICt)^reaction_2_IS);
+  reaction_3: species_4 => species_5; reaction_3_k1*species_4;
+  reaction_4: species_5 => species_4; reaction_4_k1*species_5;
+  reaction_5: species_5 => species_6; reaction_5_k1*species_5;
+  reaction_6: species_7 => species_4; reaction_6_k5*species_7/species_4;
+  reaction_7: species_2 => species_7; reaction_7_k6*species_2*species_5;
+  reaction_8: species_2 => species_8; reaction_8_k7*species_2*species_5;
+  reaction_9: $species_9 => species_10; reaction_9_k8*species_11;
+  reaction_10: species_7 => species_2; reaction_10_BCRmax/(1 + (reaction_10_BCRt/species_7)^reaction_10_BS);
+  reaction_11: $species_12 => species_7; reaction_11_HCSmax/(1 + (species_7/reaction_11_HCSt)^reaction_11_HS);
+  reaction_12: species_7 => species_13; reaction_12_k9*species_14*species_7;
+  reaction_13: species_13 => species_7; reaction_13_k10*species_15*species_13;
+  reaction_14: $species_16 => species_10; reaction_14_k11*species_11;
+  reaction_15: species_7 => species_17; reaction_15_k1*species_7;
+  reaction_16: $species_19 => species_18; reaction_16_khrs*species_19/species_7;
+  reaction_17: species_18 => species_20; reaction_17_k1*species_18;
+  reaction_18: species_17 => species_7; reaction_18_k1*species_17;
+  reaction_19: species_17 => species_21; reaction_19_k15*species_17*species_22;
+  reaction_20: species_21 => species_7; reaction_20_k1*species_21;
+  reaction_21: species_21 => species_23; reaction_21_k17*species_21*species_24;
+  reaction_22: species_23 => species_7; reaction_22_k18*species_23*species_18;
+  reaction_23: species_23 => species_7; reaction_23_k1*species_23;
+  reaction_24: species_23 => species_11; reaction_24_k20*species_25*species_23;
+  reaction_25: species_23 => species_11; reaction_25_k1*species_23;
+  reaction_26: $species_26 => species_25; reaction_26_kprs*species_26/species_11;
+  reaction_27: species_25 => species_27; reaction_27_k1*species_25;
+  reaction_28: species_11 => species_28; reaction_28_k23*species_14*species_11;
+  reaction_29: species_28 => species_11; reaction_29_k24*species_15*species_28;
+  reaction_30: species_11 => species_29; reaction_30_k1*species_11;
+  reaction_31: species_11 + species_10 => species_30; reaction_31_k26*species_11*species_10*species_31;
+  reaction_32: $species_32 => species_11; reaction_32_PCSmax/(1 + (species_11/reaction_32_PPCt)^reaction_32_PCSS);
+  reaction_33: species_30 => species_17; reaction_33_k27*species_30*species_33;
+  reaction_34: species_30 => species_23; reaction_34_k28*species_30*species_33;
+  reaction_35: species_30 => species_7; reaction_35_k29*species_30*species_34;
+
+  // Species initializations:
+  species_1 = 304;
+  species_2 = 3150;
+  species_3 = 0;
+  species_4 = 400;
+  species_5 = 467;
+  species_6 = 0;
+  species_7 = 60000;
+  species_8 = 0;
+  species_9 = 0;
+  species_10 = 100;
+  species_11 = 57516;
+  species_12 = 0;
+  species_13 = 10000;
+  species_14 = 100;
+  species_15 = 100;
+  species_16 = 0;
+  species_17 = 20;
+  species_18 = 100;
+  species_19 = 600;
+  species_20 = 0;
+  species_21 = 20;
+  species_22 = 100;
+  species_23 = 100;
+  species_24 = 100;
+  species_25 = 100;
+  species_26 = 575.16;
+  species_27 = 0;
+  species_28 = 9363;
+  species_29 = 0;
+  species_30 = 45;
+  species_31 = 100;
+  species_32 = 0;
+  species_33 = 100;
+  species_34 = 100;
+
+  // Compartment initializations:
+  Intake = 1;
+  Intake has volume;
+  Intestine = 1;
+  Intestine has volume;
+  HepaticTissue = 1;
+  HepaticTissue has volume;
+  PeripheralTissue = 1;
+  PeripheralTissue has volume;
+  Plasma = 1;
+  Plasma has volume;
+  Excreted = 1;
+  Excreted has volume;
+
+  // Variable initializations:
+  reaction_1_k1 = 1;
+  reaction_2_ICSmax = 100;
+  reaction_2_ICt = 3120;
+  reaction_2_IS = 5;
+  reaction_3_k1 = 6;
+  reaction_4_k1 = 4.29;
+  reaction_5_k1 = 0.856;
+  reaction_6_k5 = 2.66;
+  reaction_7_k6 = 0.0005286;
+  reaction_8_k7 = 0.0005286;
+  reaction_9_k8 = 0.0005;
+  reaction_10_BCRmax = 2000;
+  reaction_10_BCRt = 55326;
+  reaction_10_BS = 5;
+  reaction_11_HCSmax = 500;
+  reaction_11_HCSt = 93925;
+  reaction_11_HS = 5;
+  reaction_12_k9 = 1;
+  reaction_13_k10 = 5.998;
+  reaction_14_k11 = 0.005;
+  reaction_15_k1 = 0.016;
+  reaction_16_khrs = 100;
+  reaction_17_k1 = 0.01;
+  reaction_18_k1 = 0.0496;
+  reaction_19_k15 = 0.43;
+  reaction_20_k1 = 0.054;
+  reaction_21_k17 = 0.38;
+  reaction_22_k18 = 0.068;
+  reaction_23_k1 = 0.005;
+  reaction_24_k20 = 0.00675;
+  reaction_25_k1 = 5e-06;
+  reaction_26_kprs = 100;
+  reaction_27_k1 = 0.01;
+  reaction_28_k23 = 0.017386;
+  reaction_29_k24 = 0.1068;
+  reaction_30_k1 = 0.0005;
+  reaction_31_k26 = 1.5e-05;
+  reaction_32_PCSmax = 500;
+  reaction_32_PPCt = 80342;
+  reaction_32_PCSS = 5;
+  reaction_33_k27 = 0.01;
+  reaction_34_k28 = 0.001;
+  reaction_35_k29 = 0.05;
+
+  // Other declarations:
+  const Intake, Intestine, HepaticTissue, PeripheralTissue, Plasma, Excreted;
+
+  // Unit definitions:
+  unit volume = dimensionless;
+  unit time_unit = 86400 second;
+  unit substance = dimensionless;
+
+  // Display Names:
+  time_unit is "time";
+  species_1 is "DC";
+  species_2 is "IC";
+  species_3 is "ICS";
+  species_4 is "HBS";
+  species_5 is "IBS";
+  species_6 is "EBS";
+  species_7 is "HFC";
+  species_8 is "EC";
+  species_9 is "INHDLS";
+  species_10 is "NHDL";
+  species_11 is "PFC";
+  species_12 is "HCS";
+  species_13 is "HCE";
+  species_14 is "ACAT";
+  species_15 is "CEH";
+  species_16 is "HNHDLS";
+  species_17 is "VLDLC";
+  species_18 is "HLDLRs";
+  species_19 is "HLDLRsS";
+  species_20 is "HLDLRD";
+  species_21 is "IDLC";
+  species_22 is "LPL";
+  species_23 is "LDLC";
+  species_24 is "HSL";
+  species_25 is "PLDLRs";
+  species_26 is "PLDLRsS";
+  species_27 is "PLDLRD";
+  species_28 is "PCE";
+  species_29 is "PSS";
+  species_30 is "HDLC";
+  species_31 is "LCAT";
+  species_32 is "PCS";
+  species_33 is "CETP";
+  species_34 is "SRB1";
+  reaction_1 is "Ingestion";
+  reaction_2 is "Intestinal Cholesterol Synthesis";
+  reaction_3 is "Bile Salt Release";
+  reaction_4 is "Bile Salt Return";
+  reaction_5 is "Bile Salt Excretion";
+  reaction_6 is "Bile Salt Synthesis";
+  reaction_7 is "Cholesterol Absorption";
+  reaction_8 is "Cholesterol Excretion";
+  reaction_9 is "Intestinal Nascent HDL Synthesis";
+  reaction_10 is "Billary Cholesterol Release";
+  reaction_11 is "Hepatic Cholesterol Synthesis";
+  reaction_12 is "Hepatic Cholesterol Storage";
+  reaction_13 is "Release of Stored Cholesterol";
+  reaction_14 is "Hepatic Nascent HDL Synthesis";
+  reaction_15 is "VLDL Cholesterol Formation";
+  reaction_16 is "Hepatic LDLR Synthesis";
+  reaction_17 is "Hepatic LDL Receptor Degradation";
+  reaction_18 is "VLDL Cholesterol ReUptake";
+  reaction_19 is "IDL Cholesterol Formation";
+  reaction_20 is "IDL Cholesterol ReUptake";
+  reaction_21 is "LDL Cholesterol Formation";
+  reaction_22 is "Receptor Dependent Hepatic Uptake";
+  reaction_23 is "Receptor Independent Hepatic Uptake";
+  reaction_24 is "Receptor Dependent Peripheral Uptake";
+  reaction_25 is "Receptor Independent Peripheral Uptake";
+  reaction_26 is "Peripheral LDLR Synthesis";
+  reaction_27 is "Peripheral LDL Receptor Degradation";
+  reaction_28 is "Peripheral Cholesterol Storage";
+  reaction_29 is "Release of Stored Peripheral Cholesterol";
+  reaction_30 is "Peripheral Steroid Production";
+  reaction_31 is "HDL Cholesterol Formation";
+  reaction_32 is "Peripheral Cholesterol Synthesis";
+  reaction_33 is "CETP Mediated Transfer To VLDL";
+  reaction_34 is "CETP Mediated TransferTo LDL";
+  reaction_35 is "Reverse Cholesterol Transport";
+
+  // SBO terms:
+  species_3.sboTerm = 291
+  species_12.sboTerm = 291
+  species_16.sboTerm = 291
+  species_19.sboTerm = 291
+  species_20.sboTerm = 291
+  species_26.sboTerm = 291
+  species_27.sboTerm = 291
+  species_29.sboTerm = 291
+  species_32.sboTerm = 291
+
+  // CV terms:
+  Intestine biological_system "http://identifiers.org/bto/BTO:0000648"
+  HepaticTissue biological_system "http://identifiers.org/fma/FMA:15815"
+  PeripheralTissue biological_system "http://identifiers.org/fma/FMA:9637"
+  Plasma biological_system "http://identifiers.org/bto/BTO:0000131"
+  species_1 biological_system "http://identifiers.org/chebi/CHEBI:16113"
+  species_2 biological_system "http://identifiers.org/chebi/CHEBI:16113"
+  species_4 biological_system "http://identifiers.org/chebi/CHEBI:22868"
+  species_5 biological_system "http://identifiers.org/chebi/CHEBI:22868"
+  species_6 biological_system "http://identifiers.org/chebi/CHEBI:22868"
+  species_7 biological_system "http://identifiers.org/chebi/CHEBI:16113"
+  species_8 biological_system "http://identifiers.org/chebi/CHEBI:16113"
+  species_10 biological_system "http://identifiers.org/uniprot/Q00341"
+  species_11 biological_system "http://identifiers.org/chebi/CHEBI:16113"
+  species_13 biological_system "http://identifiers.org/chebi/CHEBI:17002"
+  species_14 part "http://identifiers.org/chebi/CHEBI:17984",
+                  "http://identifiers.org/uniprot/P04180"
+  species_15 biological_system "http://identifiers.org/uniprot/Q6PIU2"
+  species_17 biological_system "http://identifiers.org/uniprot/P98155"
+  species_18 biological_system "http://identifiers.org/uniprot/P01130"
+  species_21 biological_system "http://identifiers.org/uniprot/P01130"
+  species_22 biological_system "http://identifiers.org/uniprot/P06858"
+  species_23 biological_system "http://identifiers.org/uniprot/P01130"
+  species_24 biological_system "http://identifiers.org/uniprot/Q05469"
+  species_25 biological_system "http://identifiers.org/uniprot/P01130"
+  species_28 biological_system "http://identifiers.org/chebi/CHEBI:17002"
+  species_30 biological_system "http://identifiers.org/uniprot/Q00341"
+  species_31 part "http://identifiers.org/chebi/CHEBI:61995",
+                  "http://identifiers.org/uniprot/P04180"
+  species_33 biological_system "http://identifiers.org/uniprot/P11597"
+  species_34 biological_system "http://identifiers.org/uniprot/Q8WTV0"
+  reaction_1 biological_system "http://identifiers.org/go/GO:0070508"
+  reaction_2 biological_system "http://identifiers.org/go/GO:0006695"
+  reaction_3 biological_system "http://identifiers.org/go/GO:0015721"
+  reaction_4 biological_system "http://identifiers.org/go/GO:0015721"
+  reaction_5 biological_system "http://identifiers.org/go/GO:0015721"
+  reaction_6 biological_system "http://identifiers.org/go/GO:0006699"
+  reaction_7 version "http://identifiers.org/go/GO:0030299"
+  reaction_8 biological_system "http://identifiers.org/go/GO:0033344"
+  reaction_9 biological_system "http://identifiers.org/go/GO:0042158"
+  reaction_14 biological_system "http://identifiers.org/go/GO:0042158"
+  reaction_33 biological_system "http://identifiers.org/go/GO:0030301"
+  reaction_34 biological_system "http://identifiers.org/go/GO:0030301"
+  reaction_35 biological_system "http://identifiers.org/go/GO:0043691"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1206010000"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000434"
+  model publication "http://identifiers.org/pubmed/23046614"
+  model biological_system "http://identifiers.org/go/GO:0007571",
+                          "http://identifiers.org/go/GO:0008203"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model property "http://identifiers.org/doid/DOID:14502"
+  model created "2012-11-27T16:32:48Z"
+  model modified "2014-10-09T15:44:25Z"
+  model creator1.givenName "Vijayalakshmi"
+  model creator1.familyName "Chelliah"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "viji@ebi.ac.uk"
+  model creator2.givenName "Mark"
+  model creator2.familyName "Mc Auley"
+  model creator2.organization "Liverpool Hope University"
+  model creator2.email "mcaulem@hope.ac.uk"
+
+  // Notes:
+  model notes ```
+McAuley2012 - Whole-body Cholesterol Metabolism 
+
+
+Lipid metabolism has a key role to play in human longevity and healthy aging. A whole-body
+mathematical model of cholesterol metabolism that explores the changes in both the
+rate of intestinal cholesterol absorption and the hepatic rate of clearance of LDL-C
+from the plasma, has been presented here. The model showed that of these two mechanisms,
+changes to the rate of LDL-C removal from the plasma with age had the most significant
+effect on cholesterol metabolism.
+
+
+The original SBML model file was generated using MathSBML 2.5.1.
+
+
+This model is described in the article:
+
+
+[A whole-body mathematical model of cholesterol metabolism and its age-associated dysregulation.](http://identifiers.org/pubmed/23046614 "Access to this publication") 
+
+
+Mc Auley MM, Wilkinson DJ, Jones JJ, Kirkwood TT. 
+
+BMC Syst Biol. 2012 Oct 10;6(1):130. 
+Abstract:
+
+
+BACKGROUND: Global demographic changes have stimulated marked interest in the process
+of ageing. There has been, and will continue to be, an unrelenting rise in the number
+of the oldest old ( >85 years of age). Together with an ageing population there
+comes an increase in the prevalence of age related disease. Of the diseases of ageing,
+cardiovascular disease (CVD) has by far the highest prevalence. It is regarded that
+a finely tuned lipid profile may help to prevent CVD as there is a long established
+relationship between alterations to lipid metabolism and CVD risk. In fact elevated
+plasma cholesterol, particularly Low Density Lipoprotein Cholesterol (LDL-C) has
+consistently stood out as a risk factor for having a cardiovascular event. Moreover
+it is widely acknowledged that LDL-C may rise with age in both sexes in a wide variety
+of groups. The aim of this work was to use a whole-body mathematical model to investigate
+why LDL-C rises with age, and to test the hypothesis that mechanistic changes to
+cholesterol absorption and LDL-C removal from the plasma are responsible for the
+rise. The whole-body mechanistic nature of the model differs from previous models
+of cholesterol metabolism which have either focused on intracellular cholesterol
+homeostasis or have concentrated on an isolated area of lipoprotein dynamics. The
+model integrates both current and previously published data relating to molecular
+biology, physiology, ageing and nutrition in an integrated fashion.
+
+RESULTS: The model was used to test the hypothesis that alterations to the rate of
+cholesterol absorption and changes to the rate of removal of LDL-C from the plasma
+are integral to understanding why LDL-C rises with age. The model demonstrates that
+increasing the rate of intestinal cholesterol absorption from 50% to 80% by age 65
+years can result in an increase of LDL-C by as much as 34mg/dL in a hypothetical
+male subject. The model also shows that decreasing the rate of hepatic clearance
+of LDL-C gradually to 50% by age 65 years can result in an increase of LDL-C by as
+much as 116mg/dL.
+
+CONCLUSIONS: Our model clearly demonstrates that of the two putative mechanisms that
+have been implicated in the dysregulation of cholesterol metabolism with age, alterations
+to the removal rate of plasma LDL-C has the most significant impact on cholesterol
+metabolism and small changes to the number of hepatic LDL receptors can result in
+a significant rise in LDL-C. This first whole-body systems based model of cholesterol
+balance could potentially be used as a tool to further improve our understanding
+of whole-body cholesterol metabolism and its dysregulation with age. Furthermore,
+given further fine tuning the model may help to investigate potential dietary and
+lifestyle regimes that have the potential to mitigate the effects aging has on cholesterol
+metabolism.
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels) and identified by: [MODEL1206010000](http://identifiers.org/biomodels.db/MODEL1206010000) . 
+
+To cite BioModels Database, please use: [BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models](http://identifiers.org/pubmed/20587024 "Latest BioModels Database publication") . 
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+end
+
+MODEL1206010000 is "McAuley2012 - Whole-body Cholesterol Metabolism"

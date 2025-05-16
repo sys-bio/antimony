@@ -1,0 +1,125 @@
+// Created by libAntimony v3.0.0
+model *New_Model()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species T in compartment_, N in compartment_, D in compartment_, L in compartment_;
+
+  // Reactions:
+  Growth_of_tumor_cell:  => T; compartment_*(a*T*(1 - b*T));
+  Impact_on_the_growth_of_tumor_cell_by_dendritic_cell__natural_killer_cell__CD8__cell: T => ; compartment_*((c_1*N + j*D + k*L)*T);
+  Production_of_Natural_killer_cell:  => N; compartment_*(s_1 + g_1*N*T*T/(h_1 + T*T));
+  Removal_of_natural_killer_cell: N => ; compartment_*((c_2*T + d_1*D)*N + e*N);
+  Formation_of_Dendritic_cell:  => D; compartment_*s_2;
+  Impact_on_the_formation_of_dendritic_cell: D => ; compartment_*((f_1*L + d_2*N - d_3*T)*D - g*D);
+  Formation_of_cytotoxic_CD8__T_cell:  => L; compartment_*(f_2*D*T + r_1*N*T);
+  Removal_of_cytotoxic_CD8__T_cell: L => ; compartment_*(h*L*T + u*N*L*L + i*L);
+
+  // Species initializations:
+  T = 100;
+  N = 1;
+  D = 1;
+  L = 1;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  a = 0.431;
+  b = 2.17e-08;
+  c_1 = 3.5e-06;
+  c_2 = 1e-07;
+  d_1 = 1e-06;
+  d_2 = 4e-06;
+  d_3 = 0.0001;
+  e = 0.0412;
+  f_1 = 1e-08;
+  f_2 = 0.01;
+  g = 0.024;
+  h = 3.42e-10;
+  i = 0.02;
+  j = 1e-07;
+  k = 1e-07;
+  s_1 = 13000;
+  s_2 = 480;
+  u = 1.8e-08;
+  r_1 = 0;
+  g_1 = 0;
+  h_1 = 0;
+
+  // Other declarations:
+  const compartment_, a, b, c_1, c_2, d_1, d_2, d_3, e, f_1, f_2, g, h, i;
+  const j, k, s_1, s_2, u, r_1, g_1, h_1;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+  Growth_of_tumor_cell is "Growth of tumor cell";
+  Impact_on_the_growth_of_tumor_cell_by_dendritic_cell__natural_killer_cell__CD8__cell is "Impact on the growth of tumor cell by dendritic cell, natural killer cell, CD8+ cell";
+  Production_of_Natural_killer_cell is "Production of Natural killer cell";
+  Removal_of_natural_killer_cell is "Removal of natural killer cell";
+  Formation_of_Dendritic_cell is "Formation of Dendritic cell";
+  Impact_on_the_formation_of_dendritic_cell is "Impact on the formation of dendritic cell";
+  Formation_of_cytotoxic_CD8__T_cell is "Formation of cytotoxic CD8+ T cell";
+  Removal_of_cytotoxic_CD8__T_cell is "Removal of cytotoxic CD8+ T cell";
+
+  // CV terms:
+  T instance "http://identifiers.org/ncit/C98275"
+  N instance "http://identifiers.org/bto/BTO:0000914"
+  D instance "http://identifiers.org/bto/BTO:0002042"
+  L instance "http://identifiers.org/bto/BTO:0000782"
+  Growth_of_tumor_cell property "http://identifiers.org/go/GO:0040007"
+  Impact_on_the_growth_of_tumor_cell_by_dendritic_cell__natural_killer_cell__CD8__cell instance "http://identifiers.org/go/GO:0040007"
+  Production_of_Natural_killer_cell instance "http://identifiers.org/ncit/C25513"
+  Formation_of_Dendritic_cell property "http://identifiers.org/ncit/C25513"
+  Impact_on_the_formation_of_dendritic_cell instance "http://identifiers.org/ncit/C25513"
+  Formation_of_cytotoxic_CD8__T_cell instance "http://identifiers.org/ncit/C25513"
+  Removal_of_cytotoxic_CD8__T_cell instance "http://identifiers.org/ncit/C64914"
+
+  model instance "http://identifiers.org/taxonomy/9606",
+                 "http://identifiers.org/ncit/C25218",
+                 "http://identifiers.org/mamo/MAMO_0000046"
+  model publication "http://identifiers.org/mamo/MAMO_0000046",
+                    "http://identifiers.org/pubmed/31687042"
+  model model_source "http://identifiers.org/biomodels.db/MODEL1912100006",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000888"
+  model property "http://identifiers.org/taxonomy/9606"
+  model property "http://identifiers.org/ncit/C25218"
+  model created "2019-12-10T20:30:01Z"
+  model modified "2019-12-10T20:30:01Z"
+  model creator1.givenName "Mohammad Umer"
+  model creator1.familyName "Sharif Shohan"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "msharifshohan@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+```Mathematical Modeling, Analysis, and Simulation of Tumor Dynamics with Drug InterventionsPranav 
+Unni 1 and Padmanabhan SeshaiyerAbstractOver the last few decades, there have been 
+significant developments in theoretical, experimental, and clinical approaches to 
+understand the dynamics of cancer cells and their interactions with the immune system. 
+These have led to the development of important methods for cancer therapy including 
+virotherapy, immunotherapy, chemotherapy, targeted drug therapy, and many others. 
+Along with this, there have also been some developments on analytical and computational 
+models to help provide insights into clinical observations. This work develops a 
+new mathematical model that combines important interactions between tumor cells and 
+cells in the immune systems including natural killer cells, dendritic cells, and 
+cytotoxic CD8+ T cells combined with drug delivery to these cell sites. These interactions 
+are described via a system of ordinary differential equations that are solved numerically. 
+A stability analysis of this model is also performed to determine conditions for 
+tumor-free equilibrium to be stable. We also study the influence of proliferation 
+rates and drug interventions in the dynamics of all the cells involved. Another contribution 
+is the development of a novel parameter estimation methodology to determine optimal 
+parameters in the model that can reproduce a given dataset. Our results seem to suggest 
+that the model employed is a robust candidate for studying the dynamics of tumor 
+cells and it helps to provide the dynamic interactions between the tumor cells, immune 
+system, and drug-response systems.```
+```
+end
+
+New_Model is "Unni2019 - Mathematical Modeling, Analysis, and Simulation of Tumor Dynamics with Drug Interventions"

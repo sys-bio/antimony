@@ -1,0 +1,215 @@
+// Created by libAntimony v3.0.0
+model *Sturrock2015__glioma_growth()
+
+  // Compartments and Species:
+  compartment tme;
+  species T in tme, B in tme, I in tme, S in tme;
+
+  // Assignment Rules:
+  F := piecewise(oo*sin(6*pi*time), omin < (oo*sin(6*pi*time)), omin);
+  F2 := piecewise(oo*sin(6*pi*time)*c, omin < (oo*sin(6*pi*time)*c), omin);
+  c := piecewise(piecewise(2, time < 4745, 1), 1095 < time, 1);
+
+  // Reactions:
+  tumor_growth:  => T; tme*(at_*B*T*(1 - T/kt));
+  tumor_death: T => ; tme*dt*T;
+  tumor_immune: T => ; tme*(dti*I*T);
+  glucose_b_s: B => S; tme*ao*B;
+  glioma_consumption: B => ; tme*(dto*T*B);
+  glucose_consumption_b: B => ; tme*((do + as*(v + I))*B);
+  immune_growth:  => I; tme*(as*(v + I)*B);
+  immune_recruitment:  => I; tme*(ati*T*I);
+  immune_cell_death: I => ; tme*di*I;
+  glioma_response: I => ; tme*(dtt*T*I);
+  glucose_intake:  => S; tme*F;
+  glucose_consumption_s: S => ; tme*do*S;
+  glucose_s_b: S => B; tme*ao*S;
+
+  // Species initializations:
+  T = 0.14;
+  T has substance_per_volume;
+  B = 0.000392;
+  B has substance_per_volume;
+  I = 0.000284;
+  I has substance_per_volume;
+  S = 0.000439;
+  S has substance_per_volume;
+
+  // Compartment initializations:
+  tme = 1;
+  tme has volume;
+
+  // Variable initializations:
+  at_ = 1.575;
+  at_ has unit_0;
+  kt = 2;
+  kt has unit_1;
+  dti = 0.072;
+  dti has unit_0;
+  ati = 0.0003;
+  ati has unit_0;
+  dt = 0.0001;
+  dt has unit_0;
+  di = 0.01;
+  di has unit_0;
+  as = 0.7;
+  as has unit_0;
+  v = 0.7;
+  v has unit_1;
+  dto = 1;
+  dto has unit_0;
+  ao = 20;
+  ao has unit_0;
+  omin = 0.0008;
+  omin has unit_1;
+  oo = 0.0016;
+  oo has unit_1;
+  do = 0.01;
+  do has unit_0;
+  dtt = 0.72;
+  dtt has unit_0;
+  F has unit_0;
+  F2 has unit_0;
+  c has unit_1;
+
+  // Other declarations:
+  var F, F2, c;
+  const tme, at_, kt, dti, ati, dt, di, as, v, dto, ao, omin, oo, do, dtt;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = time_unit;
+  unit substance = 1e-3 mole;
+  unit unit_0 = 1 / 86400e-1 second;
+  unit unit_1 = 1 / dimensionless^-0;
+  unit extent = substance;
+  unit substance_per_volume = 1e-3 mole / 1e-3 litre;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1/d";
+  unit_1 is "1";
+  at_ is "at";
+  tumor_growth is "tumor growth";
+  tumor_death is "tumor death";
+  tumor_immune is "tumor immune";
+  glucose_b_s is "glucose b-s";
+  glioma_consumption is "glioma consumption";
+  glucose_consumption_b is "glucose consumption-b";
+  immune_growth is "immune growth";
+  immune_recruitment is "immune recruitment";
+  immune_cell_death is "immune cell death";
+  glioma_response is "glioma response";
+  glucose_intake is "glucose intake";
+  glucose_consumption_s is "glucose consumption-s";
+  glucose_s_b is "glucose s-b";
+
+  // CV terms:
+  tme biological_system "http://identifiers.org/ncit/C94498"
+  T biological_system "http://identifiers.org/bto/BTO:0000526"
+  B biological_system "http://identifiers.org/chebi/CHEBI:17234"
+  I biological_system "http://identifiers.org/cl/CL:0000738"
+  S biological_system "http://identifiers.org/chebi/CHEBI:17234"
+  at_ biological_system "http://identifiers.org/sbo/SBO:0000610"
+  kt biological_system "http://identifiers.org/sbo/SBO:0000661"
+  dti biological_system "http://identifiers.org/ncit/C25636"
+  ati biological_system "http://identifiers.org/sbo/SBO:0000610"
+  dt biological_system "http://identifiers.org/ncit/C25636"
+  di biological_system "http://identifiers.org/ncit/C25636"
+  as biological_system "http://identifiers.org/sbo/SBO:0000610"
+  v biological_system "http://identifiers.org/sbo/SBO:0000610"
+  dto biological_system "http://identifiers.org/ncit/C25636"
+  ao biological_system "http://identifiers.org/ncit/C25636"
+  omin biological_system "http://identifiers.org/ncit/C25636"
+  oo biological_system "http://identifiers.org/ncit/C25636"
+  do biological_system "http://identifiers.org/ncit/C25636"
+  dtt biological_system "http://identifiers.org/ncit/C25636"
+  F biological_system "http://identifiers.org/ncit/C25636"
+  F2 biological_system "http://identifiers.org/ncit/C25636"
+  c biological_system "http://identifiers.org/ncit/C48922"
+  tumor_growth biological_system "http://identifiers.org/go/GO:0008283"
+  tumor_growth biological_system "http://identifiers.org/sbo/SBO:0000393"
+  tumor_death biological_system "http://identifiers.org/sbo/SBO:0000179"
+  tumor_death biological_system "http://identifiers.org/go/GO:0008219"
+  tumor_immune biological_system "http://identifiers.org/go/GO:0008219"
+  tumor_immune biological_system "http://identifiers.org/sbo/SBO:0000179"
+  glioma_consumption biological_system "http://identifiers.org/go/GO:0046323"
+  glioma_consumption biological_system "http://identifiers.org/sbo/SBO:0000394"
+  glucose_consumption_b biological_system "http://identifiers.org/sbo/SBO:0000394"
+  glucose_consumption_b biological_system "http://identifiers.org/go/GO:0046323"
+  immune_growth biological_system "http://identifiers.org/go/GO:0008283"
+  immune_growth biological_system "http://identifiers.org/sbo/SBO:0000393"
+  immune_recruitment biological_system "http://identifiers.org/sbo/SBO:0000393"
+  immune_recruitment biological_system "http://identifiers.org/go/GO:0008283"
+  immune_cell_death biological_system "http://identifiers.org/go/GO:0008219"
+  immune_cell_death biological_system "http://identifiers.org/sbo/SBO:0000179"
+  glioma_response biological_system "http://identifiers.org/sbo/SBO:0000179"
+  glioma_response biological_system "http://identifiers.org/go/GO:0008219"
+  glucose_intake biological_system "http://identifiers.org/sbo/SBO:0000393"
+  glucose_consumption_s biological_system "http://identifiers.org/go/GO:0046323"
+  glucose_consumption_s biological_system "http://identifiers.org/sbo/SBO:0000394"
+
+  model publication "http://identifiers.org/pubmed/26073722"
+  model model_source "http://identifiers.org/biomodels.db/MODEL1908200001",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000801"
+  model property "http://identifiers.org/efo/0005543"
+  model property "http://identifiers.org/mamo/MAMO_0000046"
+  model property "http://identifiers.org/go/GO:0002418"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model created "2019-08-20T09:53:29Z"
+  model modified "2019-08-20T09:53:29Z"
+  model creator1.givenName "Jinghao"
+  model creator1.familyName "Men"
+  model creator1.organization "University of Cambridge"
+  model creator1.email "jm2187@cam.ac.uk"
+
+  // Notes:
+  model notes ```
+The paper describes a model of glioma. Created by COPASI 4.26 (Build 213) This model
+is described in the article: A mathematical model of pre-diagnostic glioma growth
+Marc Sturrock, Wenrui Hao, Judith Schwartzbaum, Grzegorz A. Rempala J Theor Biol.
+2015 September 7; 380: 299–308 Abstract: Due to their location, the malignant gliomas
+of the brain in humans are very difficult to treat in advanced stages. Blood-based
+biomarkers for glioma are needed for more accurate evaluation of treatment response
+as well as early diagnosis. However, biomarker research in primary brain tumors is
+challenging given their relative rarity and genetic diversity. It is further complicated
+by variations in the permeability of the blood brain barrier that affects the amount
+of marker released into the bloodstream. Inspired by recent temporal data indicating
+a possible decrease in serum glucose levels in patients with gliomas yet to be diagnosed,
+we present an ordinary differential equation model to capture early stage glioma
+growth. The model contains glioma-glucose-immune interactions and poses a potential
+mechanism by which this glucose drop can be explained. We present numerical simulations,
+parameter sensitivity analysis, linear stability analysis and a numerical experiment
+whereby we show how a dormant glioma can become malignant.To cite BioModels Database,
+please use: BioModels Database: An enhanced, curated and annotated resource for published
+quantitative kinetic models . To the extent possible under law, all copyright and
+related or neighbouring rights to this encoded model have been dedicated to the public
+domain worldwide. Please refer to CC0 Public Domain Dedication for more information.
+```
+  T notes "```tumor cell g/ml0.14/0.0498/0```"
+  B notes "```brain glucose g/ml3.92e-4/8.28e-4/8.45e-4```"
+  I notes "```immune cell g/ml2.84e-4/0.016/0.061```"
+  S notes "```glucose in serum g/ml4.39e-4/8,86e-4/8.81e-4```"
+  at_ notes "```Growth rate of glioma```"
+  kt notes "```Carrying capacity of glioma```"
+  dti notes "```Decay rate of glioma due to immune response```"
+  ati notes "```Recruitment rate of immune systems cells due to glioma```"
+  dt notes "```Natural decay rate of glioma```"
+  di notes "```Natural decay rate of immune system cells```"
+  as notes "```Immune system cell recruitment rate```"
+  v notes "```Baseline immune system cell production rate```"
+  dto notes "```Glucose consumption rate by glioma```"
+  ao notes "```Transfer rate of glucose from serum to brain```"
+  omin notes "```Minimum glucose intake rate to serum```"
+  oo notes "```Maximum variation in glucose intake rate```"
+  do notes "```Glucose consumption in brain by healthy cells```"
+  dtt notes "```Rate of glioma cells killing immune cells```"
+  F notes "```glucose intase```"
+  F2 notes "```glucose intake-alternate```"
+  c notes "```coefficient for F2```"
+  glucose_intake notes "```=F or F2```"
+end
+
+Sturrock2015__glioma_growth is "Sturrock2015 - glioma growth"

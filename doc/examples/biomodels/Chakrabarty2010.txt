@@ -1,0 +1,85 @@
+// Created by libAntimony v3.0.0
+model *Chakrabarty2010___A_control_theory_approach_to_cancer_remission_aided_by_an_optimal_therapy()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species M_Tumor_Cells in compartment_, N_CTL in compartment_, Z_THL in compartment_;
+
+  // Reactions:
+  Tumor_Growth:  => M_Tumor_Cells; compartment_*(r_1*M_Tumor_Cells*(1 - M_Tumor_Cells/k_1));
+  Tumor_Killing_T_Cells: M_Tumor_Cells => ; compartment_*(alpha_1*M_Tumor_Cells*N_CTL);
+  CTL_Recruitment:  => N_CTL; compartment_*(mu_2*N_CTL*Z_THL);
+  CTL_Death: N_CTL => ; compartment_*d_1*N_CTL;
+  CTL_Decay: N_CTL => ; compartment_*(alpha_2*M_Tumor_Cells*N_CTL);
+  THL_Growth:  => Z_THL; compartment_*(r_2*Z_THL*(1 - Z_THL/k_2));
+  THL_Decay_IL_2: Z_THL => ; compartment_*(mu_2*N_CTL*Z_THL);
+  Tumor_Killing_ACI: M_Tumor_Cells => ; compartment_*mu_1*M_Tumor_Cells;
+
+  // Species initializations:
+  M_Tumor_Cells = 2750000;
+  N_CTL = 200000;
+  Z_THL = 7200000;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  r_1 = 0.18;
+  k_1 = 5000000;
+  alpha_1 = 1.101e-07;
+  d_1 = 0.0412;
+  alpha_2 = 3.422e-10;
+  r_2 = 0.0245;
+  k_2 = 10000000;
+  mu_1 = 0.05;
+  mu_2 = 0;
+
+  // Other declarations:
+  const compartment_, r_1, k_1, alpha_1, d_1, alpha_2, r_2, k_2, mu_1, mu_2;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = item;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+  THL_Decay_IL_2 is "THL_Decay_IL-2";
+
+  // CV terms:
+  compartment_ biological_system "http://identifiers.org/ncit/C94498"
+  M_Tumor_Cells biological_system "http://identifiers.org/ncit/C12922"
+  N_CTL biological_system "http://identifiers.org/cl/CL:0000910"
+  Z_THL biological_system "http://identifiers.org/cl/CL:0000912"
+  Tumor_Growth biological_system "http://identifiers.org/ncit/C18081"
+  Tumor_Killing_T_Cells biological_system "http://identifiers.org/go/GO:0001906"
+  CTL_Recruitment biological_system "http://identifiers.org/go/GO:0072683"
+  CTL_Death biological_system "http://identifiers.org/go/GO:0008219"
+  CTL_Decay biological_system "http://identifiers.org/ncit/C15351"
+  THL_Growth biological_system "http://identifiers.org/ncit/C18081"
+  THL_Decay_IL_2 biological_system "http://identifiers.org/ncit/C15543"
+  Tumor_Killing_ACI biological_system "http://identifiers.org/ncit/C15351"
+
+  model publication "http://identifiers.org/doi/10.1142/S0218339010003226"
+  model origin "http://identifiers.org/pubmed/18083299"
+  model model_source "http://identifiers.org/biomodels.db/MODEL1908040001",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000777"
+  model property "http://identifiers.org/ncit/C18246"
+  model property "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2019-08-01T13:57:16Z"
+  model modified "2019-08-01T13:57:16Z"
+  model creator1.givenName "Johannes"
+  model creator1.familyName "Meyer"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "johannes.p.meyer@gmail.com"
+
+  // Notes:
+  model notes ```
+```This is a reinvestigation of a previous model depicting cancer remission. It involves 
+application of mathematical tools from control theory to assess the optimal approach 
+during the use of Adaptive Cellular Immunotherapy and interleukin-2 treatment.```
+```
+end
+
+Chakrabarty2010___A_control_theory_approach_to_cancer_remission_aided_by_an_optimal_therapy is "Chakrabarty2010 - A control theory approach to cancer remission aided by an optimal therapy"

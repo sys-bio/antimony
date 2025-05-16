@@ -1,0 +1,105 @@
+// Created by libAntimony v3.0.0
+model *PPToP_Model12()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species Pu in compartment_, Pp in compartment_, $Pu_new in compartment_;
+  species $Pp_new in compartment_;
+
+  // Assignment Rules:
+  Pu_total := ModelValue_3_0*(ModelValue_9_0 + ModelValue_8_0)/(ModelValue_9_0*ModelValue_7_0 + ModelValue_7_0*ModelValue_8_0 + ModelValue_9_0*ModelValue_6_0);
+  Pp_total := ModelValue_3_0*ModelValue_6_0/(ModelValue_9_0*ModelValue_7_0 + ModelValue_7_0*ModelValue_8_0 + ModelValue_9_0*ModelValue_6_0);
+  Pu_new := ModelValue_5_0 - Pu;
+  Pp_new := ModelValue_4_0 - Pp;
+  Pu_observable := Pu/ModelValue_5_0;
+  Pp_observable := Pp/ModelValue_4_0;
+  EntProt_observable := (Pp + Pu)/(ModelValue_4_0 + ModelValue_5_0);
+  Pu_old_clearance := ln(Pu_observable);
+  Pp_old_clearance := ln(Pp_observable);
+  P_old_clearance := ln(EntProt_observable);
+
+  // Reactions:
+  Pu_degradation: Pu => ; compartment_*kdegu*Pu;
+  PTM_writing: Pu => Pp; compartment_*kw*Pu;
+  PTM_erasing: Pp => Pu; compartment_*ke*Pp;
+  Pp_degradation: Pp => ; compartment_*kdegp*Pp;
+
+  // Species initializations:
+  Pu = Pu_total;
+  Pp = Pp_total;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  ModelValue_5_0 = Pu_total;
+  ModelValue_4_0 = Pp_total;
+  kdegu = 0.5;
+  kdegp = 0.1;
+  ke = 0.8;
+  kw = 0.1;
+  ModelValue_3_0 = ksyn;
+  ModelValue_9_0 = kdegp;
+  ModelValue_8_0 = ke;
+  ModelValue_7_0 = kdegu;
+  ModelValue_6_0 = kw;
+  ksyn = 0.1;
+
+  // Other declarations:
+  var Pu_total, Pp_total, Pu_observable, Pp_observable, EntProt_observable;
+  var Pu_old_clearance, Pp_old_clearance, P_old_clearance;
+  const compartment_, ModelValue_5_0, ModelValue_4_0, kdegu, kdegp, ke, kw;
+  const ModelValue_3_0, ModelValue_9_0, ModelValue_8_0, ModelValue_7_0, ModelValue_6_0;
+  const ksyn;
+
+  // Unit definitions:
+  unit substance = mole;
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = litre;
+  unit time_unit = second;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+  Pu is "Pu_old";
+  Pu_total is "Pu_old+new";
+  Pp is "Pp_old";
+  Pp_total is "Pp_old+new";
+  ModelValue_5_0 is "Initial for Pu_old+new";
+  ModelValue_4_0 is "Initial for Pp_old+new";
+  ModelValue_3_0 is "Initial for ksyn";
+  ModelValue_9_0 is "Initial for kdegp";
+  ModelValue_8_0 is "Initial for ke";
+  ModelValue_7_0 is "Initial for kdegu";
+  ModelValue_6_0 is "Initial for kw";
+  Pu_observable is "Ou_Pu_old_observable";
+  Pp_observable is "Op_Pp_old_observable";
+  EntProt_observable is "O_P_observable";
+  Pu_degradation is "Pu degradation";
+  PTM_writing is "PTM writing";
+  PTM_erasing is "PTM erasing";
+  Pp_degradation is "Pp degradation";
+
+  model description "http://identifiers.org/doi/10.1038/s41467-022-35054-2"
+  model description "http://identifiers.org/pubmed/36460637"
+  model property "http://identifiers.org/mamo/MAMO_0000045"
+  model created "2022-12-16T08:59:27Z"
+  model modified "2022-12-16T08:59:27Z"
+  model creator1.givenName "Eva-Maria"
+  model creator1.familyName "Geissen"
+  model creator1.organization "EMBL"
+  model creator1.email "eva.geissen@embl.de"
+
+  // Notes:
+  model notes ```
+The model encodes the general biological process of protein synthesis and post-translational
+modification (PTM, such as protein phosphorylation), viewed through the eyes of a
+specific, widely-used experimental method. Specifically, we model measurements of
+pulsed stable isotope labelling of amino acids in cell culture (pSILAC), which is
+a method often used to quantify protein turnover (i.e. the degradation of old and
+replacement with new) of proteins in a cell.
+```
+end
+
+PPToP_Model12 is "Hammaren_Geissen_2022_Model12"

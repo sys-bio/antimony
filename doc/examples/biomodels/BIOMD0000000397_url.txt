@@ -1,0 +1,691 @@
+// Created by libAntimony v3.0.0
+model *Sivakumar2011_WntSignalingPathway()
+
+  // Compartments and Species:
+  compartment default, c1, c3, c4;
+  species s5 in default, s16 in c1, s1 in c1, s27 in c1, s28 in c1, s30 in c1;
+  species s31 in c1, s32 in c1, s33 in c1, s37 in c1, s46 in c1, s75 in c1;
+  species s101 in c1, s102 in c1, s107 in c1, s121 in c1, s155 in c1, s164 in c1;
+  species s171 in c3, s172 in c3, s173 in c3, s170 in c3, s195 in c3, s174 in c3;
+  species s239 in c4, s36 in c1, s123 in c1, s129 in c1, s159 in c1, s232 in c3;
+  species s176 in c3, s179 in c3, s183 in c3, s188 in c3, s245 in c1, s252 in c1;
+  species s268 in c1, s260 in c1, s270 in c1, s275 in c1, s278 in c1, s286 in c1;
+  species s288 in c1, s292 in c1, s61 in c1, s259 in c1, s266 in c1, s267 in c1;
+  species s304 in c1, s305 in c3;
+
+  // Reactions:
+  r68: s305 => s195; kass_r68*s305;
+  r1: s5 + s1 -> s16; kass_r1*s5*s1 - kdiss_r1*s16;
+  r5: s28 + s16 -> s27; kass_r5*s28*s16 - kdiss_r5*s27;
+  r47: s121 + s36 -> s123; kass_r47*s121*s36 - kdiss_r47*s123;
+  r48: s123 + s46 -> s129; kass_r48*s123*s46 - kdiss_r48*s129;
+  r54: s123 + s75 -> s159; kass_r54*s123*s75 - kdiss_r54*s159;
+  r58: s36 -> s232; kass_r58*s36 - kdiss_r58*s232;
+  r63: s174 + s232 -> s176; kass_r63*s174*s232 - kdiss_r63*s176;
+  r66: s183 + s173 -> s188; kass_r66*s183*s173 - kdiss_r66*s188;
+  r88: s252 + s61 -> s259; kass_r88*s252*s61 - kdiss_r88*s259;
+  r90: s259 + s268 -> s266; kass_r90*s259*s268 - kdiss_r90*s266;
+  r91: s266 -> s155 + s267; kass_r91*s266 - kdiss_r91*s155*s267;
+  r92: s267 -> s61 + s260; kass_r92*s267 - kdiss_r92*s61*s260;
+  r96: s159 + s268 -> s275; kass_r96*s159*s268 - kdiss_r96*s275;
+  r98: s275 -> s101 + s278; kass_r98*s275 - kdiss_r98*s101*s278;
+  r99: s278 -> s164 + s270; kass_r99*s278 - kdiss_r99*s164*s270;
+  r102: s286 + s31 -> s288; kass_r102*s286*s31 - kdiss_r102*s288;
+  r103: s288 + s102 -> s292; kass_r103*s288*s102 - kdiss_r103*s292;
+  r105: s292 -> s37; kass_r105*s292 - kdiss_r105*s37;
+  r106: s286 -> s30; kass_r106*s286 - kdiss_r106*s30;
+  r107: s239 -> s5; kass_r107*s239 - kdiss_r107*s5;
+  r104: s107 + s32 -> s286 + s33; s30*(kass_r104_s30*s107*s32 - kdiss_r104_s30*s286*s33);
+  r85: s129 + s32 -> s245 + s33; s30*(kass_r85_s30*s129*s32 - kdiss_r85_s30*s245*s33);
+  r65: s179 + s171 -> s183; kass_r65*s179*s171 - kdiss_r65*s183;
+  r64: s176 + s170 -> s179; kass_r64*s176*s170 - kdiss_r64*s179;
+  re65: s260 => s232; kass_re65*s260;
+  re64: s270 => s232; kass_re64*s270;
+  r67: s188 + s172 -> s305; kass_r67*s188*s172 - kdiss_r67*s305;
+  r86: s245 + s32 + s32 + s32 -> s252 + s33 + s33 + s33; (kI_r86_s304/(kI_r86_s304 + s304))*s37*(kass_r86_s37*s245*s32*s32*s32 - kdiss_r86_s37*s252*s33*s33*s33);
+
+  // Species initializations:
+  s5 = 0;
+  s16 = 0;
+  s1 = 3/c1;
+  s27 = 0;
+  s28 = 3/c1;
+  s30 = 1/c1;
+  s31 = 3/c1;
+  s32 = 1/c1;
+  s33 = 0;
+  s37 = 0;
+  s46 = 1/c1;
+  s75 = 3/c1;
+  s101 = 0;
+  s102 = 3/c1;
+  s107 = 3/c1;
+  s121 = 4/c1;
+  s155 = 0;
+  s164 = 0;
+  s171 = 2/c3;
+  s172 = 2/c3;
+  s173 = 2/c3;
+  s170 = 2/c3;
+  s195 = 0;
+  s174 = 4/c3;
+  s239 = 5/c4;
+  s36 = 5/c1;
+  s123 = 0;
+  s129 = 0;
+  s159 = 0;
+  s232 = 0;
+  s176 = 0;
+  s179 = 0;
+  s183 = 0;
+  s188 = 0;
+  s245 = 0;
+  s252 = 5/c1;
+  s268 = 1/c1;
+  s260 = 0;
+  s270 = 0;
+  s275 = 0;
+  s278 = 0;
+  s286 = 0;
+  s288 = 0;
+  s292 = 0;
+  s61 = 2/c1;
+  s259 = 0;
+  s266 = 0;
+  s267 = 0;
+  s304 = 0.5/c1;
+  s305 = 0;
+
+  // Compartment initializations:
+  default = 1;
+  c1 = 1;
+  c3 = 1;
+  c4 = 1;
+
+  // Variable initializations:
+  kass_r1 = 0.784;
+  kdiss_r1 = 0.82;
+  kass_r5 = 1.15;
+  kdiss_r5 = 0.92;
+  kass_r47 = 1.31;
+  kdiss_r47 = 0.81;
+  kass_r48 = 0.85;
+  kdiss_r48 = 1.36;
+  kass_r54 = 0.8;
+  kdiss_r54 = 1.7;
+  kass_r58 = 1.74;
+  kdiss_r58 = 0.25;
+  kass_r63 = 1.77;
+  kdiss_r63 = 0.61;
+  kass_r64 = 1.29;
+  kdiss_r64 = 0.72;
+  kass_r65 = 1.8;
+  kdiss_r65 = 0.004;
+  kass_r66 = 1.99;
+  kdiss_r66 = 0.036;
+  kass_r68 = 2;
+  kass_r88 = 0.2;
+  kdiss_r88 = 1.09;
+  kass_r90 = 0.27;
+  kdiss_r90 = 1.028;
+  kass_r91 = 0.36;
+  kdiss_r91 = 1.16;
+  kass_r92 = 0.58;
+  kdiss_r92 = 0.92;
+  kass_r96 = 1.45;
+  kdiss_r96 = 0.183;
+  kass_r98 = 1.97;
+  kdiss_r98 = 1.09;
+  kass_r99 = 0.51;
+  kdiss_r99 = 0.854;
+  kass_r102 = 0.163;
+  kdiss_r102 = 1.65;
+  kass_r103 = 0.45;
+  kdiss_r103 = 1.277;
+  kass_r105 = 0.48;
+  kdiss_r105 = 1.62;
+  kass_r106 = 0.05;
+  kdiss_r106 = 1.13;
+  kass_r107 = 0.91;
+  kdiss_r107 = 1.056;
+  kass_r104_s30 = 0.39;
+  kdiss_r104_s30 = 1.278;
+  kass_r85_s30 = 0.7;
+  kdiss_r85_s30 = 0.649;
+  kass_re65 = 1.68;
+  kass_re64 = 0.83;
+  kass_r86_s37 = 0.87;
+  kdiss_r86_s37 = 1.32;
+  kass_r67 = 0.86;
+  kdiss_r67 = 0.7;
+  kI_r86_s304 = 1.43;
+
+  // Other declarations:
+  const default, c1, c3, c4, kass_r1, kdiss_r1, kass_r5, kdiss_r5, kass_r47;
+  const kdiss_r47, kass_r48, kdiss_r48, kass_r54, kdiss_r54, kass_r58, kdiss_r58;
+  const kass_r63, kdiss_r63, kass_r64, kdiss_r64, kass_r65, kdiss_r65, kass_r66;
+  const kdiss_r66, kass_r68, kass_r88, kdiss_r88, kass_r90, kdiss_r90, kass_r91;
+  const kdiss_r91, kass_r92, kdiss_r92, kass_r96, kdiss_r96, kass_r98, kdiss_r98;
+  const kass_r99, kdiss_r99, kass_r102, kdiss_r102, kass_r103, kdiss_r103;
+  const kass_r105, kdiss_r105, kass_r106, kdiss_r106, kass_r107, kdiss_r107;
+  const kass_r104_s30, kdiss_r104_s30, kass_r85_s30, kdiss_r85_s30, kass_re65;
+  const kass_re64, kass_r86_s37, kdiss_r86_s37, kass_r67, kdiss_r67, kI_r86_s304;
+
+  // Display Names:
+  c1 is "Plasma Membrane";
+  c3 is "Nucleus";
+  c4 is "Cell Membrane";
+  s5 is "Wnt";
+  s16 is "Complex_br_(Wnt/Frizzled)";
+  s1 is "Frizzled";
+  s27 is "Complex_br_(Frizzled/Wnt/_br_LRP5/6)";
+  s28 is "LRP5/6";
+  s30 is "Casein Kinase 1";
+  s31 is "Casein Kinase 2";
+  s32 is "ATP";
+  s33 is "ADP";
+  s37 is "Glycogen Synthase Kinase-3_Beta_";
+  s46 is "Diversin";
+  s75 is "Complex_br_(Ebi/Siah-1)";
+  s101 is "Complex_br_(Siah-1/Ebi)";
+  s102 is "FRAT";
+  s107 is "Complex_br_(Dishevelled/Beta-Arrestin/_br_Frodo)";
+  s121 is "Complex_br_(Axin/PP2A/_br_Adenomatous Polyposis Coli)";
+  s155 is "Complex_br_(Adenomatous Polyposis Coli/Axin/_br_Diversin/Casein Kinase 1/_br_Glycogen Synthase Kinase-3_Beta_/PP2A)";
+  s164 is "Complex_br_(Adenomatous Polyposis Coli/Axin/_br_PP2A)";
+  s171 is "Pygo";
+  s172 is "CBP";
+  s173 is "SWI/SNF";
+  s170 is "Bcl9";
+  s195 is "Wnt Target Genes";
+  s174 is "Complex_br_(TCF/Smad4)";
+  s239 is "Wnt";
+  s36 is "_Beta_-Catenin";
+  s123 is "Complex_br_(Adenomatous Polyposis Coli/Axin/_br__Beta_-Catenin/PP2A)";
+  s129 is "Complex_br_(Adenomatous Polyposis Coli/Axin/_br_Diversin/_Beta_-Catenin/_br_PP2A)";
+  s159 is "Complex_br_(Adenomatous Polyposis Coli/Axin/_br_PP2A/_Beta_-Catenin/_br_Siah-1/Ebi)";
+  s232 is "_Beta_-Catenin";
+  s176 is "Complex_br_(TCF/Smad4/_br__Beta_-Catenin)";
+  s179 is "Complex_br_(TCF/_Beta_-Catenin/_br_Smad4/Bcl9)";
+  s183 is "Complex_br_(Bcl9/_Beta_-Catenin/_br_TCF/Smad4/_br_Pygo)";
+  s188 is "Complex_br_(_Beta_-Catenin/TCF/_br_Smad4/Bcl9/_br_Pygo/SWI/_br_SNF)";
+  s245 is "Complex_br_(Adenomatous Polyposis Coli/_Beta_-Catenin/_br_Axin/PP2A/_br_Diversin/Casein Kinase 1)";
+  s252 is "Complex_br_(Adenomatous Polyposis Coli/_Beta_-Catenin/_br_Glycogen Synthase Kinase-3_Beta_/Axin/_br_PP2A/Diversin/_br_Casein Kinase 1)";
+  s268 is "Ubiquitin";
+  s260 is "_Beta_-Catenin";
+  s270 is "_Beta_-Catenin";
+  s275 is "Complex_br_(Adenomatous Polyposis Coli/_Beta_-Catenin/_br_Siah-1/Ebi/_br_Axin/PP2A)";
+  s278 is "Complex_br_(Adenomatous Polyposis Coli/_Beta_-Catenin/_br_Axin/PP2A)";
+  s286 is "Complex_br_(Dishevelled/Beta-Arrestin/_br_Frodo)";
+  s288 is "Complex_br_(Dishevelled/Beta-Arrestin/_br_Frodo/Casein Kinase 2)";
+  s292 is "Complex_br_(Dishevelled/Casein Kinase 2/_br_Beta-Arrestin/Frodo/_br_FRAT)";
+  s61 is "_beta_TrCP";
+  s259 is "Complex_br_(Adenomatous Polyposis Coli/Axin/_br_PP2A/Diversin/_br_Casein Kinase 1/_Beta_-Catenin/_br__beta_TrCP/Glycogen Synthase Kinase-3_Beta_)";
+  s266 is "Complex_br_(Adenomatous Polyposis Coli/Axin/_br_PP2A/Diversin/_br_Casein Kinase 1/_Beta_-Catenin/_br__beta_TrCP/Glycogen Synthase Kinase-3_Beta_)";
+  s267 is "Complex_br_(_beta_TrCP/_Beta_-Catenin)";
+  s304 is "6 bromoindirubin 3'oxime";
+  s305 is "Complex_br_(Bcl9/Pygo/../Smad4)";
+
+  // CV terms:
+  s5 biological_system "http://identifiers.org/uniprot/P56704"
+  s1 biological_system "http://identifiers.org/uniprot/P18537"
+  s28 biological_system "http://identifiers.org/uniprot/O75581",
+                        "http://identifiers.org/uniprot/O75197"
+  s30 biological_system "http://identifiers.org/uniprot/P54367"
+  s31 part "http://identifiers.org/uniprot/P67870",
+           "http://identifiers.org/uniprot/P68400"
+  s32 biological_system "http://identifiers.org/chebi/CHEBI:15422"
+  s33 biological_system "http://identifiers.org/chebi/CHEBI:16761"
+  s37 biological_system "http://identifiers.org/uniprot/P49841"
+  s46 homolog "http://identifiers.org/uniprot/Q8UVT6"
+  s102 biological_system "http://identifiers.org/uniprot/Q92837"
+  s171 biological_system "http://identifiers.org/uniprot/Q9V9W8"
+  s172 biological_system "http://identifiers.org/uniprot/P45481"
+  s173 biological_system "http://identifiers.org/uniprot/O60264"
+  s170 biological_system "http://identifiers.org/uniprot/O00512"
+  s239 homolog "http://identifiers.org/uniprot/A4F2Q1"
+  s36 biological_system "http://identifiers.org/uniprot/P35222"
+  s232 biological_system "http://identifiers.org/uniprot/P35222"
+  s260 biological_system "http://identifiers.org/uniprot/P35222"
+  s270 biological_system "http://identifiers.org/uniprot/P35222"
+  s61 homolog "http://identifiers.org/uniprot/Q91854"
+  s304 biological_system "http://identifiers.org/chebi/CHEBI:25750"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1101270002"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000397"
+  model publication "http://identifiers.org/pubmed/21978399"
+  model origin "http://identifiers.org/panther.pathway/P00057"
+  model biological_system "http://identifiers.org/go/GO:0060070"
+  model taxon "http://identifiers.org/taxonomy/40674"
+  model container "http://identifiers.org/cl/CL:0000047"
+  model created "2011-11-02T14:46:25Z"
+  model modified "2014-06-02T14:12:35Z"
+  model creator1.givenName "Vijayalakshmi"
+  model creator1.familyName "Chelliah"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "viji@ebi.ac.uk"
+  model creator2.givenName "KC"
+  model creator2.familyName "Sivakumar"
+  model creator2.organization "Rajiv Gandhi Centre for Biotechnology"
+  model creator2.email "sivakumar.kc@gmail.com"
+
+  // Notes:
+  model notes ```
+Sivakumar2011_WntSignalingPathway 
+
+The secreted protein Wnt activates theheptahelical receptor Frizzled on nieghboring
+cells. Activation ofFrizzled causes the recruitment of additional membrane proteinswhich
+in turn result in 1) the activation of the proteinDishevelled via phosphorylation
+and 2) the activation of aheterotrimeric G protein of unknown type. Activation of
+Dishevelledresults in the down-regulation of the Beta-Catenin destructioncomplex
+which causes ubiquitination of Beta-Catenin and itsultimate degradation via the proteasome.
+Inhibition of theBeta-Catenin destruction complex yields a higher cytosolicconcentration
+of Beta-Catenin, which enters the nucleus, bindsvarious transcriptional regulatory
+molecules including the TCF/LEFclass of proteins, and results in the transcription
+of TCF/LEFtarget genes. Activation of the heterotrimeric G-protein pathway inturn
+activates Phospholipase C which in turn catalyzes thecatalysis of PI(4,5)P2 into
+DAG and IP3. 
+
+Reference: 
+
+- [The Wnt signalling pathway.](http://www.ncbi.nlm.nih.gov/pubmed/12356903) 
+- [You Wnt some, you lose some: oncogenes in the Wnt signaling pathway.](http://www.ncbi.nlm.nih.gov/pubmed/12573432) 
+- [Wnt signaling pathway.](http://www.biocarta.com/pathfiles/h_wntPathway.asp) 
+
+
+This model is described in the article:
+
+
+[A systems biology approach to model neural stem cell regulation by notch, shh, wnt, and EGF signaling pathways.](http://identifiers.org/pubmed/21978399 "Access to this publication") 
+
+
+Sivakumar KC, Dhanesh SB, Shobana S, James J, Mundayoor S. 
+
+OMICS 2011 Oct; 15(10): 729-737 
+Abstract:
+
+
+The Notch, Sonic Hedgehog (Shh), Wnt, and EGF pathways have long been known to
+influence cell fate specification in the developing nervous system. Here we attempted
+to evaluate the contemporary knowledge about neural stem cell differentiation
+promoted by various drug-based regulations through a systems biology approach.
+Our model showed the phenomenon of DAPT-mediated antagonism of Enhancer of split
+[E(spl)] genes and enhancement of Shh target genes by a SAG agonist that were
+effectively demonstrated computationally and were consistent with experimental
+studies. However, in the case of model simulation of Wnt and EGF pathways, the
+model network did not supply any concurrent results with experimental data despite
+the fact that drugs were added at the appropriate positions. This paves insight
+into the potential of crosstalks between pathways considered in our study. Therefore,
+we manually developed a map of signaling crosstalk, which included the species
+connected by representatives from Notch, Shh, Wnt, and EGF pathways and highlighted
+the regulation of a single target gene, Hes-1, based on drug-induced simulations.
+These simulations provided results that matched with experimental studies.
+Therefore, these signaling crosstalk models complement as a tool toward the discovery
+of novel regulatory processes involved in neural stem cell maintenance, proliferation,
+and differentiation during mammalian central nervous system development. To
+our knowledge, this is the first report of a simple crosstalk map that highlights
+the differential regulation of neural stem cell differentiation and underscores
+the flow of positive and negative regulatory signals modulated by drugs.
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identified by: [BIOMD0000000397](http://identifiers.org/biomodels.db/BIOMD0000000397).
+
+To cite BioModels Database, please use: [BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models](http://identifiers.org/pubmed/20587024 "Latest BioModels Database publication").
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+  s5 notes ```
+Long Name: Wingless-type MMTV integration site family memberSynonym: WinglessAccession:
+P01444
+```
+  s16 notes ```
+Long Name: Long Name: Long name not specifiedSynonym: Synonym not specifiedAccession:
+U05624Heterodimer Member Info: Frizzled#PROTEIN#Frizzled#P01428##;Wnt#PROTEIN#Wingless-type
+MMTV integration site family member#P01444#Wingless#
+```
+  s1 notes "Long Name: FrizzledSynonym: Synonym not specifiedAccession: P01428"
+  s27 notes ```
+Long Name: Long Name: Long name not specifiedSynonym: Synonym not specifiedAccession:
+U05626Heterodimer Member Info: Frizzled#PROTEIN#Frizzled#P01428##;LRP5/6#PROTEIN#Low
+density lipoprotein receptor related protein#P01431#Arrow#;Wnt#PROTEIN#Wingless-type
+MMTV integration site family member#P01444#Wingless#
+```
+  s28 notes ```
+Long Name: Low density lipoprotein receptor related proteinSynonym: ArrowAccession:
+P01431
+```
+  s30 notes "Long Name: Casein Kinase 1Synonym: CK1Accession: P01460"
+  s31 notes ```
+Long Name: Casein Kinase 2Synonym: Casein Kinase II,Protein Kinase CK2Accession:
+P01459
+```
+  s32 notes "Long Name: ATPSynonym: Synonym not specifiedAccession: S01878"
+  s33 notes "Long Name: ADPSynonym: Synonym not specifiedAccession: S01880"
+  s37 notes ```
+Long Name: Glycogen Synthase Kinase-3BetaSynonym: GSK3B,GSK3Beta,Sgg,Shaggy,Zeste
+White 3,Zw3Accession: P01441
+```
+  s46 notes "Long Name: DiversinSynonym: Ankrd6Accession: P01466"
+  s75 notes ```
+Long Name: Long Name: Long name not specifiedSynonym: Synonym not specifiedAccession:
+U05622Heterodimer Member Info: Siah-1#PROTEIN#Seven in absentia homolog 1#P01433#seven
+in absentia|seven in absentia homolog|siah|sina#;Ebi#PROTEIN#Ebi#P01453#IRA1#
+```
+  s101 notes ```
+Long Name: Long Name: Long name not specifiedSynonym: Synonym not specifiedAccession:
+U05612Heterodimer Member Info: Siah-1#PROTEIN#Seven in absentia homolog 1#P01433#seven
+in absentia|seven in absentia homolog|siah|sina#;Ebi#PROTEIN#Ebi#P01453#IRA1#
+```
+  s102 notes ```
+Long Name: Frequently rearranged in advanced T-cell lymphomasSynonym: Frequently
+rearranged in advanced T-cell lymphomasAccession: P01467
+```
+  s107 notes ```
+Long Name: Long Name: Long name not specifiedSynonym: Synonym not specifiedAccession:
+U05637Heterodimer Member Info:
+Dishevelled#PROTEIN#Dishevelled#P01447#Dvl#;Beta-Arrestin#PROTEIN#Beta-Arrestin#P01456#BetaArr1|BetaArr2#;Frodo#PROTEIN#Frodo#P01470#frd#
+```
+  s121 notes ```
+Long Name: Long Name: Long name not specifiedSynonym: Synonym not specifiedAccession:
+U05614Heterodimer Member Info: Axin#PROTEIN#Axin#P01429#Axis Inhibitor
+Protein|Conductin#;PP2A#PROTEIN#Protein phosphatase 2A#P01438#PP2A|PP2A B56 subunit|Protein
+Phosphatase 2A#;Adenomatous Polyposis Coli#PROTEIN#Adenomatous Polyposis Coli#P01468#APC#
+```
+  s155 notes ```
+Long Name: Long Name: Long name not specifiedSynonym: Synonym not specifiedAccession:
+U05615Heterodimer Member Info: Axin#PROTEIN#Axin#P01429#Axis Inhibitor
+Protein|Conductin#;PP2A#PROTEIN#Protein phosphatase 2A#P01438#PP2A|PP2A B56 subunit|Protein
+Phosphatase 2A#;Glycogen Synthase Kinase-3Beta#PROTEIN#Glycogen Synthase
+Kinase-3Beta#P01441#GSK3B|GSK3Beta|Sgg|Shaggy|Zeste White 3|Zw3#;Casein Kinase 1#PROTEIN#Casein
+Kinase 1#P01460#CK1#;Diversin#PROTEIN#Diversin#P01466#Ankrd6#;Adenomatous Polyposis
+Coli#PROTEIN#Adenomatous Polyposis Coli#P01468#APC#
+```
+  s164 notes ```
+Long Name: Long Name: Long name not specifiedSynonym: Synonym not specifiedAccession:
+U05611Heterodimer Member Info: Axin#PROTEIN#Axin#P01429#Axis Inhibitor
+Protein|Conductin#;PP2A#PROTEIN#Protein phosphatase 2A#P01438#PP2A|PP2A B56 subunit|Protein
+Phosphatase 2A#;Adenomatous Polyposis Coli#PROTEIN#Adenomatous Polyposis Coli#P01468#APC#
+```
+  s171 notes "Long Name: PygopusSynonym: PygopusAccession: P01464"
+  s172 notes "Long Name: CREB binding proteinSynonym: CREB binding proteinAccession: P01448"
+  s173 notes ```
+Long Name: Switched/Sucrose Non FermentationSynonym: Switched/Sucrose Non
+FermentationAccession: P01435
+```
+  s170 notes ```
+Long Name: B-cell lymphoma 9Synonym: B-cell lymphoma 9,Legless,LgsAccession:
+P01450
+```
+  s195 notes ```
+Long Name: Wnt Target GenesSynonym: Axin,Conductin,CyclinD1,En-2,ID2,MMP7,Myc,Naked,Nkd,PPAR
+Delta,Siamois,TCF-1,Twin,Ubx,Xbra,Xnr3Accession: G01558
+```
+  s174 notes ```
+Long Name: Long Name: Long name not specifiedSynonym: Synonym not specifiedAccession:
+U05613Heterodimer Member Info: TCF#PROTEIN#T cell factor#P01437#LEF|Lymphocyte
+Enhance Binding Factor|Pangolin|T Cell Factor#;Smad4#PROTEIN#Mothers against decapentaplegic
+homolog 4#P01455#MAD homolog 1|MAD homolog 4|Mothers against decapentaplegic homolog
+1|Mothers against decapentaplegic homolog 4|Smad1#
+```
+  s239 notes ```
+Long Name: Wingless-type MMTV integration site family memberSynonym: WinglessAccession:
+P01444
+```
+  s36 notes "Long Name: Beta-CateninSynonym: ArmadilloAccession: P01432"
+  s123 notes ```
+Long Name: Long Name: Long name not specifiedSynonym: Synonym not specifiedAccession:
+U05633Heterodimer Member Info: Axin#PROTEIN#Axin#P01429#Axis Inhibitor
+Protein|Conductin#;Beta-Catenin#PROTEIN#Beta-Catenin#P01432#Armadillo#;PP2A#PROTEIN#Protein
+phosphatase 2A#P01438#PP2A|PP2A B56 subunit|Protein Phosphatase 2A#;Adenomatous Polyposis
+Coli#PROTEIN#Adenomatous Polyposis Coli#P01468#APC#
+```
+  s129 notes ```
+Long Name: Long Name: Long name not specifiedSynonym: Synonym not specifiedAccession:
+U05625Heterodimer Member Info: Axin#PROTEIN#Axin#P01429#Axis Inhibitor
+Protein|Conductin#;Beta-Catenin#PROTEIN#Beta-Catenin#P01432#Armadillo#;PP2A#PROTEIN#Protein
+phosphatase 2A#P01438#PP2A|PP2A B56 subunit|Protein Phosphatase
+2A#;Diversin#PROTEIN#Diversin#P01466#Ankrd6#;Adenomatous Polyposis Coli#PROTEIN#Adenomatous
+Polyposis Coli#P01468#APC#
+```
+  s159 notes ```
+Long Name: Long Name: Long name not specifiedSynonym: Synonym not specifiedAccession:
+U05617Heterodimer Member Info: Axin#PROTEIN#Axin#P01429#Axis Inhibitor
+Protein|Conductin#;Beta-Catenin#PROTEIN#Beta-Catenin#P01432#Armadillo#;Siah-1#PROTEIN#Seven
+in absentia homolog 1#P01433#seven in absentia|seven in absentia
+homolog|siah|sina#;PP2A#PROTEIN#Protein phosphatase 2A#P01438#PP2A|PP2A B56 subunit|Protein
+Phosphatase 2A#;Ebi#PROTEIN#Ebi#P01453#IRA1#;Adenomatous Polyposis Coli#PROTEIN#Adenomatous
+Polyposis Coli#P01468#APC#
+```
+  s232 notes "Long Name: Beta-CateninSynonym: ArmadilloAccession: P01432"
+  s176 notes ```
+Long Name: Long Name: Long name not specifiedSynonym: Synonym not specifiedAccession:
+U05606Heterodimer Member Info: Beta-Catenin#PROTEIN#Beta-Catenin#P01432#Armadillo#;TCF#PROTEIN#T
+cell factor#P01437#LEF|Lymphocyte Enhance Binding Factor|Pangolin|T Cell
+Factor#;Smad4#PROTEIN#Mothers against decapentaplegic homolog 4#P01455#MAD homolog
+1|MAD homolog 4|Mothers against decapentaplegic homolog 1|Mothers against decapentaplegic
+homolog 4|Smad1#
+```
+  s179 notes ```
+Long Name: Long Name: Long name not specifiedSynonym: Synonym not specifiedAccession:
+U05636Heterodimer Member Info: Beta-Catenin#PROTEIN#Beta-Catenin#P01432#Armadillo#;TCF#PROTEIN#T
+cell factor#P01437#LEF|Lymphocyte Enhance Binding Factor|Pangolin|T Cell Factor#;Bcl9#PROTEIN#B-cell
+lymphoma 9#P01450#B-cell lymphoma 9|Legless|Lgs#;Smad4#PROTEIN#Mothers against decapentaplegic
+homolog 4#P01455#MAD homolog 1|MAD homolog 4|Mothers against decapentaplegic homolog
+1|Mothers against decapentaplegic homolog 4|Smad1#
+```
+  s183 notes ```
+Long Name: Long Name: Long name not specifiedSynonym: Synonym not specifiedAccession:
+U05619Heterodimer Member Info: Beta-Catenin#PROTEIN#Beta-Catenin#P01432#Armadillo#;TCF#PROTEIN#T
+cell factor#P01437#LEF|Lymphocyte Enhance Binding Factor|Pangolin|T Cell Factor#;Bcl9#PROTEIN#B-cell
+lymphoma 9#P01450#B-cell lymphoma 9|Legless|Lgs#;Smad4#PROTEIN#Mothers against decapentaplegic
+homolog 4#P01455#MAD homolog 1|MAD homolog 4|Mothers against decapentaplegic homolog
+1|Mothers against decapentaplegic homolog 4|Smad1#;Pygo#PROTEIN#Pygopus#P01464#Pygopus#
+```
+  s188 notes ```
+Long Name: Long Name: Long name not specifiedSynonym: Synonym not specifiedAccession:
+U05623Heterodimer Member Info:
+Beta-Catenin#PROTEIN#Beta-Catenin#P01432#Armadillo#;SWI/SNF#PROTEIN#Switched/Sucrose
+Non Fermentation#P01435#Switched/Sucrose Non Fermentation#;TCF#PROTEIN#T cell
+factor#P01437#LEF|Lymphocyte Enhance Binding Factor|Pangolin|T Cell Factor#;Bcl9#PROTEIN#B-cell
+lymphoma 9#P01450#B-cell lymphoma 9|Legless|Lgs#;Smad4#PROTEIN#Mothers against decapentaplegic
+homolog 4#P01455#MAD homolog 1|MAD homolog 4|Mothers against decapentaplegic homolog
+1|Mothers against decapentaplegic homolog 4|Smad1#;Pygo#PROTEIN#Pygopus#P01464#Pygopus#
+```
+  s245 notes ```
+Long Name: Long Name: Long name not specifiedSynonym: Synonym not specifiedAccession:
+U05616Heterodimer Member Info: Axin#PROTEIN#Axin#P01429#Axis Inhibitor
+Protein|Conductin#;Beta-Catenin#PROTEIN#Beta-Catenin#P01432#Armadillo#;PP2A#PROTEIN#Protein
+phosphatase 2A#P01438#PP2A|PP2A B56 subunit|Protein Phosphatase 2A#;Casein Kinase
+1#PROTEIN#Casein Kinase 1#P01460#CK1#;Diversin#PROTEIN#Diversin#P01466#Ankrd6#;Adenomatous
+Polyposis Coli#PROTEIN#Adenomatous Polyposis Coli#P01468#APC#
+```
+  s252 notes ```
+Long Name: Long Name: Long name not specifiedSynonym: Synonym not specifiedAccession:
+U05639Heterodimer Member Info: Axin#PROTEIN#Axin#P01429#Axis Inhibitor
+Protein|Conductin#;Beta-Catenin#PROTEIN#Beta-Catenin#P01432#Armadillo#;PP2A#PROTEIN#Protein
+phosphatase 2A#P01438#PP2A|PP2A B56 subunit|Protein Phosphatase 2A#;Glycogen Synthase
+Kinase-3Beta#PROTEIN#Glycogen Synthase Kinase-3Beta#P01441#GSK3B|GSK3Beta|Sgg|Shaggy|Zeste
+White 3|Zw3#;Casein Kinase 1#PROTEIN#Casein Kinase
+1#P01460#CK1#;Diversin#PROTEIN#Diversin#P01466#Ankrd6#;Adenomatous Polyposis
+Coli#PROTEIN#Adenomatous Polyposis Coli#P01468#APC#
+```
+  s268 notes "Long Name: UbiquitinSynonym: Synonym not specifiedAccession: S01883"
+  s260 notes "Long Name: Beta-CateninSynonym: ArmadilloAccession: P01432"
+  s270 notes "Long Name: Beta-CateninSynonym: ArmadilloAccession: P01432"
+  s275 notes ```
+Long Name: Long Name: Long name not specifiedSynonym: Synonym not specifiedAccession:
+U05609Heterodimer Member Info: Axin#PROTEIN#Axin#P01429#Axis Inhibitor
+Protein|Conductin#;Beta-Catenin#PROTEIN#Beta-Catenin#P01432#Armadillo#;Siah-1#PROTEIN#Seven
+in absentia homolog 1#P01433#seven in absentia|seven in absentia
+homolog|siah|sina#;PP2A#PROTEIN#Protein phosphatase 2A#P01438#PP2A|PP2A B56 subunit|Protein
+Phosphatase 2A#;Ebi#PROTEIN#Ebi#P01453#IRA1#;Adenomatous Polyposis Coli#PROTEIN#Adenomatous
+Polyposis Coli#P01468#APC#
+```
+  s278 notes ```
+Long Name: Long Name: Long name not specifiedSynonym: Synonym not specifiedAccession:
+U05635Heterodimer Member Info: Axin#PROTEIN#Axin#P01429#Axis Inhibitor
+Protein|Conductin#;Beta-Catenin#PROTEIN#Beta-Catenin#P01432#Armadillo#;PP2A#PROTEIN#Protein
+phosphatase 2A#P01438#PP2A|PP2A B56 subunit|Protein Phosphatase 2A#;Adenomatous Polyposis
+Coli#PROTEIN#Adenomatous Polyposis Coli#P01468#APC#
+```
+  s286 notes ```
+Long Name: Long Name: Long name not specifiedSynonym: Synonym not specifiedAccession:
+U05629Heterodimer Member Info:
+Dishevelled#PROTEIN#Dishevelled#P01447#Dvl#;Beta-Arrestin#PROTEIN#Beta-Arrestin#P01456#BetaArr1|BetaArr2#;Frodo#PROTEIN#Frodo#P01470#frd#
+```
+  s288 notes ```
+Long Name: Long Name: Long name not specifiedSynonym: Synonym not specifiedAccession:
+U05641Heterodimer Member Info:
+Dishevelled#PROTEIN#Dishevelled#P01447#Dvl#;Beta-Arrestin#PROTEIN#Beta-Arrestin#P01456#BetaArr1|BetaArr2#;Casein
+Kinase 2#PROTEIN#Casein Kinase 2#P01459#Casein Kinase II|Protein Kinase
+CK2#;Frodo#PROTEIN#Frodo#P01470#frd#
+```
+  s292 notes ```
+Long Name: Long Name: Long name not specifiedSynonym: Synonym not specifiedAccession:
+U05620Heterodimer Member Info:
+Dishevelled#PROTEIN#Dishevelled#P01447#Dvl#;Beta-Arrestin#PROTEIN#Beta-Arrestin#P01456#BetaArr1|BetaArr2#;Casein
+Kinase 2#PROTEIN#Casein Kinase 2#P01459#Casein Kinase II|Protein Kinase CK2#;FRAT#PROTEIN#Frequently
+rearranged in advanced T-cell lymphomas#P01467#Frequently rearranged in advanced
+T-cell lymphomas#;Frodo#PROTEIN#Frodo#P01470#frd#
+```
+  s61 notes ```
+Long Name: betaTransducin repeat-containing proteinSynonym: BTrCP,Beta Transducin
+Repeat-Containing Protein,SlimbAccession: P01454
+```
+  s259 notes ```
+Long Name: Long Name: Long name not specifiedSynonym: Synonym not specifiedAccession:
+U05608Heterodimer Member Info: Axin#PROTEIN#Axin#P01429#Axis Inhibitor
+Protein|Conductin#;Beta-Catenin#PROTEIN#Beta-Catenin#P01432#Armadillo#;PP2A#PROTEIN#Protein
+phosphatase 2A#P01438#PP2A|PP2A B56 subunit|Protein Phosphatase 2A#;Glycogen Synthase
+Kinase-3Beta#PROTEIN#Glycogen Synthase Kinase-3Beta#P01441#GSK3B|GSK3Beta|Sgg|Shaggy|Zeste
+White 3|Zw3#;betaTrCP#PROTEIN#betaTransducin repeat-containing protein#P01454#BTrCP|Beta
+Transducin Repeat-Containing Protein|Slimb#;Casein Kinase 1#PROTEIN#Casein Kinase
+1#P01460#CK1#;Diversin#PROTEIN#Diversin#P01466#Ankrd6#;Adenomatous Polyposis
+Coli#PROTEIN#Adenomatous Polyposis Coli#P01468#APC#
+```
+  s266 notes ```
+Long Name: Long Name: Long name not specifiedSynonym: Synonym not specifiedAccession:
+U05607Heterodimer Member Info: Axin#PROTEIN#Axin#P01429#Axis Inhibitor
+Protein|Conductin#;Beta-Catenin#PROTEIN#Beta-Catenin#P01432#Armadillo#;PP2A#PROTEIN#Protein
+phosphatase 2A#P01438#PP2A|PP2A B56 subunit|Protein Phosphatase 2A#;Glycogen Synthase
+Kinase-3Beta#PROTEIN#Glycogen Synthase Kinase-3Beta#P01441#GSK3B|GSK3Beta|Sgg|Shaggy|Zeste
+White 3|Zw3#;betaTrCP#PROTEIN#betaTransducin repeat-containing protein#P01454#BTrCP|Beta
+Transducin Repeat-Containing Protein|Slimb#;Casein Kinase 1#PROTEIN#Casein Kinase
+1#P01460#CK1#;Diversin#PROTEIN#Diversin#P01466#Ankrd6#;Adenomatous Polyposis
+Coli#PROTEIN#Adenomatous Polyposis Coli#P01468#APC#
+```
+  s267 notes ```
+Long Name: Long Name: Long name not specifiedSynonym: Synonym not specifiedAccession:
+U05627Heterodimer Member Info:
+Beta-Catenin#PROTEIN#Beta-Catenin#P01432#Armadillo#;betaTrCP#PROTEIN#betaTransducin
+repeat-containing protein#P01454#BTrCP|Beta Transducin Repeat-Containing Protein|Slimb#
+```
+  r1 notes ```
+mass action rate law for second order forward, first order reverse, reversible
+reactions, two reactants, continuous scheme
+```
+  r5 notes ```
+mass action rate law for second order forward, first order reverse, reversible
+reactions, two reactants, continuous scheme
+```
+  r47 notes ```
+mass action rate law for second order forward, first order reverse, reversible
+reactions, two reactants, continuous scheme
+```
+  r48 notes ```
+mass action rate law for second order forward, first order reverse, reversible
+reactions, two reactants, continuous scheme
+```
+  r54 notes ```
+mass action rate law for second order forward, first order reverse, reversible
+reactions, two reactants, continuous scheme
+```
+  r58 notes ```
+mass action rate law for first order forward, first order reverse, reversible
+reactions, continuous scheme
+```
+  r63 notes ```
+mass action rate law for second order forward, first order reverse, reversible
+reactions, two reactants, continuous scheme
+```
+  r66 notes ```
+mass action rate law for second order forward, first order reverse, reversible
+reactions, two reactants, continuous scheme
+```
+  r88 notes ```
+mass action rate law for second order forward, first order reverse, reversible
+reactions, two reactants, continuous scheme
+```
+  r90 notes ```
+mass action rate law for second order forward, first order reverse, reversible
+reactions, two reactants, continuous scheme
+```
+  r91 notes ```
+mass action rate law for first order forward, second order reverse, reversible
+reactions, two products, continuous scheme
+```
+  r92 notes ```
+mass action rate law for first order forward, second order reverse, reversible
+reactions, two products, continuous scheme
+```
+  r96 notes ```
+mass action rate law for second order forward, first order reverse, reversible
+reactions, two reactants, continuous scheme
+```
+  r98 notes ```
+mass action rate law for first order forward, second order reverse, reversible
+reactions, two products, continuous scheme
+```
+  r99 notes ```
+mass action rate law for first order forward, second order reverse, reversible
+reactions, two products, continuous scheme
+```
+  r102 notes ```
+mass action rate law for second order forward, first order reverse, reversible
+reactions, two reactants, continuous scheme
+```
+  r103 notes ```
+mass action rate law for second order forward, first order reverse, reversible
+reactions, two reactants, continuous scheme
+```
+  r105 notes ```
+mass action rate law for first order forward, first order reverse, reversible
+reactions, continuous scheme
+```
+  r106 notes ```
+mass action rate law for first order forward, first order reverse, reversible
+reactions, continuous scheme
+```
+  r107 notes ```
+mass action rate law for first order forward, first order reverse, reversible
+reactions, continuous scheme
+```
+  r104 notes ```
+reversible rapid-equilibrium random order ternary-complex mechanism with two
+products
+```
+  r85 notes ```
+reversible rapid-equilibrium random order ternary-complex mechanism with two
+products
+```
+  r65 notes ```
+mass action rate law for second order forward, first order reverse, reversible
+reactions, two reactants, continuous scheme
+```
+  r64 notes ```
+mass action rate law for second order forward, first order reverse, reversible
+reactions, two reactants, continuous scheme
+```
+  re65 notes "mass action rate law for first order irreversible reactions, continuous scheme"
+  re64 notes "mass action rate law for first order irreversible reactions, continuous scheme"
+  r67 notes ```
+mass action rate law for second order forward, first order reverse, reversible
+reactions, two reactants, continuous scheme
+```
+  r86 notes "reversible thermodynamically independent convenience kinetics"
+end
+
+Sivakumar2011_WntSignalingPathway is "Sivakumar2011_WntSignalingPathway"

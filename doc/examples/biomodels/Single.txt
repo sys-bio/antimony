@@ -1,0 +1,90 @@
+// Created by libAntimony v3.0.0
+model *Metformin_partitioning_between_plasma_and_RBC_with_a_single_K_diffusion_transport_rate_coefficient()
+
+  // Compartments and Species:
+  compartment RBC;
+  species Mrbc in RBC;
+
+  // Assignment Rules:
+  Mpl := ModelValue_1*exp(ModelValue_4*time) - ModelValue_2*exp(ModelValue_3*time);
+  B := ModelValue_1;
+  Summary_flux_to_RBC := Vin - Vout;
+
+  // Reactions:
+  Vin:  => Mrbc; RBC*(K*Mpl);
+  Vout: Mrbc => ; RBC*K*Mrbc;
+
+  // Species initializations:
+  Mrbc = 0;
+
+  // Compartment initializations:
+  RBC = 2198;
+
+  // Variable initializations:
+  ModelValue_1 = A;
+  ModelValue_4 = c;
+  ModelValue_2 = B;
+  ModelValue_3 = d;
+  A = 1242.79795390575;
+  d = -0.844820241465918;
+  c = -0.197523878546384;
+  K = 0.0445312568342959;
+
+  // Other declarations:
+  var Mpl, B, Summary_flux_to_RBC;
+  const RBC, ModelValue_1, ModelValue_4, ModelValue_2, ModelValue_3, A, d;
+  const c, K;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = 3600e2 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+  ModelValue_1 is "Initial for A";
+  ModelValue_4 is "Initial for c";
+  ModelValue_2 is "Initial for B";
+  ModelValue_3 is "Initial for d";
+  Summary_flux_to_RBC is "Summary flux to RBC";
+
+  model property "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2020-11-16T09:49:03Z"
+  model modified "2020-11-16T09:49:03Z"
+  model creator1.givenName "Zaharenko"
+  model creator1.familyName "Linda"
+  model creator1.organization "Latvian Biomedical Research and Study Centre, Riga, Latvia"
+  model creator2.givenName "Klovins"
+  model creator2.familyName "Janis"
+  model creator2.organization "Latvian Biomedical Research and Study Centre, Riga, Latvia"
+  model creator3.givenName "Janis"
+  model creator3.familyName "Kurlovics"
+  model creator3.organization "Institute of Microbiology and Biotechnology, University of Latvia, Riga, Latvia; 
+2 Division of Pharmaceutical Chemistry and Technology, University of Helsinki, Helsinki, Finland"
+  model creator3.email "janis.kurlovics@lu.lv"
+  model creator4.givenName "Stalidzans"
+  model creator4.familyName "Egils"
+  model creator4.organization "Institute of Microbiology and Biotechnology, University of Latvia, Riga, Latvia; Latvian Biomedical Research and Study Centre, Riga, Latvia"
+  model creator4.email "egils.stalidzans@gmail.com"
+  model creator5.givenName "Darta Maija"
+  model creator5.familyName "Zake"
+  model creator5.organization "Institute of Microbiology and Biotechnology, University of Latvia, Riga, Latvia; Latvian Biomedical Research and Study Centre, Riga, Latvia"
+  model creator6.givenName "Berzins"
+  model creator6.familyName "Kristaps"
+  model creator6.organization "Institute of Microbiology and Biotechnology, University of Latvia, Riga, Latvia;"
+
+  // Notes:
+  model notes ```
+```This model is a supplementary material of a manuscript"Diffusion driven metformin 
+exchange transport rates between plasma and red blood cells"by Janis Kurlovics, 
+Darta Maija Zake, Linda Zaharenko, Kristaps Berzins, Janis Klovins, Egils StalidzansThe 
+setting of the model correspond to Fig.2 for the case with a single coefficient for 
+experimental values of average concentration curve. Parameter estimation can be executed 
+using experimental data file "average_exp_data.txt".A=B if metformin concentration 
+is 0 at t=0.```
+```
+end
+
+Metformin_partitioning_between_plasma_and_RBC_with_a_single_K_diffusion_transport_rate_coefficient is "Kurlovics2021 - metformin partitioning from plasma to RBC, single coefficient"

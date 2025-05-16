@@ -1,0 +1,332 @@
+// Created by libAntimony v3.0.0
+model *Westerhoff_Nat2020()
+
+  // Compartments and Species:
+  compartment default;
+  species infected_nontested_0 in default, infected_tested_0 in default, uninfected_nontested_0 in default;
+  species uninfected_tested_0 in default, symptoms_tested_0 in default, symptoms_nontested_0 in default;
+  species recovered_tested_0 in default, recovered_nontested_0 in default;
+  species $susceptible_0 in default, dead_corona_tested_0 in default, dead_corona_nontested_0 in default;
+  species dead_noncorona_0 in default, $total_population_0 in default, $registered_corona_0 in default;
+  species $dead_corona_perc_0 in default, $recovered_corona_perc_0 in default;
+  species $dead_noncorona_perc_0 in default, $frac_coronaDeadOfAllDead_0 in default;
+  species $epidemic_extinguished_bool_0 in default, $infected_tested_div10 in default;
+
+  // Assignment Rules:
+  total_population_0 := infected_nontested_0 + infected_tested_0 + uninfected_nontested_0 + uninfected_tested_0 + recovered_nontested_0 + recovered_tested_0 + symptoms_nontested_0 + symptoms_tested_0;
+  registered_corona_0 := infected_tested_0 + symptoms_tested_0 + recovered_tested_0 + dead_corona_tested_0;
+  dead_corona_perc_0 := (dead_corona_nontested_0 + dead_corona_tested_0)*100/total_population_0;
+  recovered_corona_perc_0 := (recovered_nontested_0 + recovered_tested_0)*100/total_population_0;
+  dead_noncorona_perc_0 := dead_noncorona_0*100/total_population_0;
+  frac_coronaDeadOfAllDead_0 := 100*dead_corona_perc_0/max(1e-15, dead_corona_perc_0 + dead_noncorona_perc_0);
+  epidemic_extinguished_bool_0 := piecewise(1, (infected_nontested_0 + infected_tested_0 + symptoms_nontested_0 + symptoms_tested_0) < number_cutoff, 0);
+  infected_tested_div10 := infected_tested_0*default/10;
+  Total_Infection_coefficient := (infected_nontested_0*Infection_from_non_tested_no_symptoms_0 + symptoms_nontested_0*Infection_from_non_tested_symptoms + infected_tested_0*Infection_from_tested_no_symptoms_0 + symptoms_tested_0*Infection_from_tested_symptoms)*(1 - epidemic_extinguished_bool_0)/Social_Distance;
+  Social_Distance := piecewise(Social_Distance_base*Government_induced_isolation_factor_0, (time > Time_government_action_0) && (intermittent_time < (Time_government_action_0 - lockdown_duration*(1 - timeFraction_lockdown_0))), Social_Distance_base);
+  Government_induced_isolation_factor_0 := social_distancing_factor*(1 + (2.5*symptoms_tested_0/symptomatic_numberTolerance_0)*piecewise(0, time < Time_government_action_0, governmentResponseFactorToDiagnosedInfected_0));
+  intermittent_time := time - n_lockdowns*lockdown_duration - n_pauses*lockdownPause_duration_0;
+  n_lockdowns := piecewise(1, (time - Time_government_action_0) > (0*lockdown_duration), 0) + piecewise(1, (time - Time_government_action_0) > (1*lockdown_duration), 0) + piecewise(1, (time - Time_government_action_0) > (2*lockdown_duration), 0) + piecewise(1, (time - Time_government_action_0) > (3*lockdown_duration), 0) + piecewise(1, (time - Time_government_action_0) > (4*lockdown_duration), 0) + piecewise(1, (time - Time_government_action_0) > (5*lockdown_duration), 0) + piecewise(1, (time - Time_government_action_0) > (6*lockdown_duration), 0) + piecewise(1, (time - Time_government_action_0) > (7*lockdown_duration), 0) + piecewise(1, (time - Time_government_action_0) > (8*lockdown_duration), 0) + piecewise(1, (time - Time_government_action_0) > (9*lockdown_duration), 0) + piecewise(1, (time - Time_government_action_0) > (10*lockdown_duration), 0) + piecewise(1, (time - Time_government_action_0) > (11*lockdown_duration), 0) + piecewise(1, (time - Time_government_action_0) > (12*lockdown_duration), 0) + piecewise(1, (time - Time_government_action_0) > (13*lockdown_duration), 0) + piecewise(1, (time - Time_government_action_0) > (14*lockdown_duration), 0) + piecewise(1, (time - Time_government_action_0) > (15*lockdown_duration), 0) + piecewise(1, (time - Time_government_action_0) > (16*lockdown_duration), 0) + piecewise(1, (time - Time_government_action_0) > (17*lockdown_duration), 0) + piecewise(1, (time - Time_government_action_0) > (18*lockdown_duration), 0) + piecewise(1, (time - Time_government_action_0) > (19*lockdown_duration), 0) + piecewise(1, (time - Time_government_action_0) > (20*lockdown_duration), 0) + piecewise(1, (time - Time_government_action_0) > (21*lockdown_duration), 0) + piecewise(1, (time - Time_government_action_0) > (22*lockdown_duration), 0) + piecewise(1, (time - Time_government_action_0) > (23*lockdown_duration), 0) + piecewise(1, (time - Time_government_action_0) > (24*lockdown_duration), 0) + piecewise(1, (time - Time_government_action_0) > (25*lockdown_duration), 0) + piecewise(1, (time - Time_government_action_0) > (26*lockdown_duration), 0) + piecewise(1, (time - Time_government_action_0) > (27*lockdown_duration), 0) + piecewise(1, (time - Time_government_action_0) > (28*lockdown_duration), 0) + piecewise(1, (time - Time_government_action_0) > (29*lockdown_duration), 0) + piecewise(1, (time - Time_government_action_0) > (30*lockdown_duration), 0) + piecewise(1, (time - Time_government_action_0) > (31*lockdown_duration), 0) + piecewise(1, (time - Time_government_action_0) > (32*lockdown_duration), 0) + piecewise(1, (time - Time_government_action_0) > (33*lockdown_duration), 0) + piecewise(1, (time - Time_government_action_0) > (34*lockdown_duration), 0) + piecewise(1, (time - Time_government_action_0) > (35*lockdown_duration), 0) + piecewise(1, (time - Time_government_action_0) > (36*lockdown_duration), 0) + piecewise(1, (time - Time_government_action_0) > (37*lockdown_duration), 0) + piecewise(1, (time - Time_government_action_0) > (38*lockdown_duration), 0) + piecewise(1, (time - Time_government_action_0) > (39*lockdown_duration), 0) + piecewise(1, (time - Time_government_action_0) > (40*lockdown_duration), 0) + piecewise(1, (time - Time_government_action_0) > (41*lockdown_duration), 0) + piecewise(1, (time - Time_government_action_0) > (42*lockdown_duration), 0) + piecewise(1, (time - Time_government_action_0) > (43*lockdown_duration), 0) + piecewise(1, (time - Time_government_action_0) > (44*lockdown_duration), 0) + piecewise(1, (time - Time_government_action_0) > (45*lockdown_duration), 0) + piecewise(1, (time - Time_government_action_0) > (46*lockdown_duration), 0) + piecewise(1, (time - Time_government_action_0) > (47*lockdown_duration), 0) + piecewise(1, (time - Time_government_action_0) > (48*lockdown_duration), 0) + piecewise(1, (time - Time_government_action_0) > (49*lockdown_duration), 0) + piecewise(1, (time - Time_government_action_0) > (50*lockdown_duration), 0) + piecewise(1, (time - Time_government_action_0) > (51*lockdown_duration), 0);
+
+  // Reactions:
+  re1: uninfected_nontested_0 => infected_nontested_0; default*Total_Infection_coefficient*uninfected_nontested_0;
+  re2: uninfected_nontested_0 => uninfected_tested_0; default*Testing_Randome*uninfected_nontested_0;
+  re3: uninfected_tested_0 => infected_nontested_0; default*Total_Infection_coefficient*uninfected_tested_0;
+  re4: infected_nontested_0 => infected_tested_0; default*Testing_Randome*infected_nontested_0;
+  re5: infected_nontested_0 => symptoms_nontested_0; default*Symptoms_appear*infected_nontested_0;
+  re6: infected_tested_0 => symptoms_tested_0; default*Symptoms_appear*infected_tested_0;
+  re7: symptoms_nontested_0 => symptoms_tested_0; default*Testing_for_Symptoms*symptoms_nontested_0;
+  re8: symptoms_tested_0 => dead_corona_tested_0; default*Corona_death_rate_constant*symptoms_tested_0;
+  re9: symptoms_tested_0 => recovered_tested_0; default*Corona_recover*symptoms_tested_0;
+  re10: symptoms_nontested_0 => recovered_nontested_0; default*Corona_recover*symptoms_nontested_0;
+  re11: $susceptible_0 => uninfected_nontested_0; default*(susceptible_0*total_population_0*Birth_rate);
+  re12: uninfected_nontested_0 => dead_noncorona_0; default*Normal_death_rate_constant_0*uninfected_nontested_0;
+  re13: recovered_tested_0 => dead_noncorona_0; default*Normal_death_rate_constant_0*recovered_tested_0;
+  re14: recovered_nontested_0 => dead_noncorona_0; default*Normal_death_rate_constant_0*recovered_nontested_0;
+  re15: infected_tested_0 => dead_corona_tested_0; default*Corona_death_rate_constant*infected_tested_0;
+  re16: infected_nontested_0 => dead_corona_nontested_0; default*Corona_death_rate_constant*infected_nontested_0;
+  re17: uninfected_tested_0 => dead_noncorona_0; default*Normal_death_rate_constant_0*uninfected_tested_0;
+  re18: symptoms_nontested_0 => dead_corona_nontested_0; default*Corona_death_rate_constant*symptoms_nontested_0;
+
+  // Species initializations:
+  infected_nontested_0 = 2;
+  infected_nontested_0 has substance_per_volume;
+  infected_tested_0 = 1;
+  infected_tested_0 has substance_per_volume;
+  uninfected_nontested_0 = 630000;
+  uninfected_nontested_0 has substance_per_volume;
+  uninfected_tested_0 = 0;
+  uninfected_tested_0 has substance_per_volume;
+  symptoms_tested_0 = 0;
+  symptoms_tested_0 has substance_per_volume;
+  symptoms_nontested_0 = 0;
+  symptoms_nontested_0 has substance_per_volume;
+  recovered_tested_0 = 0;
+  recovered_tested_0 has substance_per_volume;
+  recovered_nontested_0 = 0;
+  recovered_nontested_0 has substance_per_volume;
+  susceptible_0 = 1;
+  susceptible_0 has substance_per_volume;
+  dead_corona_tested_0 = 0;
+  dead_corona_tested_0 has substance_per_volume;
+  dead_corona_nontested_0 = 0;
+  dead_corona_nontested_0 has substance_per_volume;
+  dead_noncorona_0 = 0;
+  dead_noncorona_0 has substance_per_volume;
+  total_population_0 has substance_per_volume;
+  registered_corona_0 has substance_per_volume;
+  dead_corona_perc_0 has substance_per_volume;
+  recovered_corona_perc_0 has substance_per_volume;
+  dead_noncorona_perc_0 has substance_per_volume;
+  frac_coronaDeadOfAllDead_0 has substance_per_volume;
+  epidemic_extinguished_bool_0 has substance_per_volume;
+  infected_tested_div10 has substance_per_volume;
+
+  // Compartment initializations:
+  default = 1;
+  default has volume;
+
+  // Variable initializations:
+  number_cutoff = 0;
+  number_cutoff has unit_1;
+  Testing_Randome = 0.0008;
+  Infection_from_non_tested_no_symptoms_0 = 0.508;
+  Infection_from_non_tested_symptoms = 0.25;
+  Infection_from_tested_no_symptoms_0 = 0.025;
+  Infection_from_tested_symptoms = 0.025;
+  Normal_death_rate_constant_0 = 3.29e-05;
+  Corona_death_rate_constant = 0.002;
+  Birth_rate = 3.29e-05;
+  Testing_for_Symptoms = 500;
+  Corona_recover = 0.067;
+  Symptoms_appear = 0.30165;
+  Social_Distance_base = 534700;
+  Time_government_action_0 = 15;
+  intermittent_time has unit_0;
+  lockdown_duration = 7;
+  lockdown_duration has unit_0;
+  timeFraction_lockdown_0 = 0.55;
+  social_distancing_factor = 10;
+  symptomatic_numberTolerance_0 = 141;
+  governmentResponseFactorToDiagnosedInfected_0 = 0;
+  lockdownPause_duration_0 = 7;
+  lockdownPause_duration_0 has unit_0;
+  n_lockdowns has unit_1;
+  n_pauses = 0;
+  n_pauses has unit_1;
+
+  // Other declarations:
+  var Total_Infection_coefficient, Social_Distance, Government_induced_isolation_factor_0;
+  var intermittent_time, n_lockdowns;
+  const default, number_cutoff, Testing_Randome, Infection_from_non_tested_no_symptoms_0;
+  const Infection_from_non_tested_symptoms, Infection_from_tested_no_symptoms_0;
+  const Infection_from_tested_symptoms, Normal_death_rate_constant_0, Corona_death_rate_constant;
+  const Birth_rate, Testing_for_Symptoms, Corona_recover, Symptoms_appear;
+  const Social_Distance_base, Time_government_action_0, lockdown_duration;
+  const timeFraction_lockdown_0, social_distancing_factor, symptomatic_numberTolerance_0;
+  const governmentResponseFactorToDiagnosedInfected_0, lockdownPause_duration_0;
+  const n_pauses;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = time_unit;
+  unit substance = item;
+  unit unit_0 = 86400 second;
+  unit unit_1 = 1 / dimensionless^-0;
+  unit extent = substance;
+  unit substance_per_volume = item / 1e-3 litre;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "d";
+  unit_1 is "1";
+  infected_nontested_0 is "infected_nontested";
+  infected_tested_0 is "infected_tested";
+  uninfected_nontested_0 is "uninfected_nontested";
+  uninfected_tested_0 is "uninfected_tested";
+  symptoms_tested_0 is "symptoms_tested";
+  symptoms_nontested_0 is "symptoms_nontested";
+  recovered_tested_0 is "recovered_tested";
+  recovered_nontested_0 is "recovered_nontested";
+  susceptible_0 is "susceptible";
+  dead_corona_tested_0 is "dead_corona_tested";
+  dead_corona_nontested_0 is "dead_corona_nontested";
+  dead_noncorona_0 is "dead_noncorona";
+  total_population_0 is "total_population";
+  registered_corona_0 is "registered_corona";
+  dead_corona_perc_0 is "dead_corona_perc";
+  recovered_corona_perc_0 is "recovered_corona_perc";
+  dead_noncorona_perc_0 is "dead_noncorona_perc";
+  frac_coronaDeadOfAllDead_0 is "frac_coronaDeadOfAllDead";
+  epidemic_extinguished_bool_0 is "epidemic_extinguished_bool";
+  Testing_Randome is "test_random";
+  Total_Infection_coefficient is "infection_rate";
+  Infection_from_non_tested_no_symptoms_0 is "iota_ntns";
+  Infection_from_non_tested_symptoms is "iota_nts";
+  Infection_from_tested_no_symptoms_0 is "iota_tns";
+  Infection_from_tested_symptoms is "iota_ts";
+  Social_Distance is "social_distance";
+  Normal_death_rate_constant_0 is "death_rate_natural";
+  Corona_death_rate_constant is "death_rate_corona";
+  Birth_rate is "birth_rate";
+  Testing_for_Symptoms is "test_symptoms";
+  Corona_recover is "recovery_rate";
+  Symptoms_appear is "symptoms_rate";
+  Social_Distance_base is "social_distance_base";
+  Government_induced_isolation_factor_0 is "lockdown_severity";
+  Time_government_action_0 is "t_government_action";
+  intermittent_time is "t_intermittent";
+  lockdown_duration is "t_lockdown";
+  timeFraction_lockdown_0 is "t_lockdown_effective";
+  symptomatic_numberTolerance_0 is "symptoms_tolerance";
+  governmentResponseFactorToDiagnosedInfected_0 is "bool_adaptive_lockdown";
+  lockdownPause_duration_0 is "t_lockdown_pause";
+  re1 is "infection_uninfected_nt";
+  re2 is "test_uninfected";
+  re3 is "infection_uninfected_t";
+  re4 is "test_infected";
+  re5 is "symptoms_infected_nt";
+  re6 is "symptoms_infected_t";
+  re7 is "test_symptoms";
+  re8 is "death_c_symptoms_t";
+  re9 is "recovery_symptoms_t";
+  re10 is "recovery_symptoms_nt";
+  re11 is "population_growth";
+  re12 is "death_nc_uninfected_nt";
+  re13 is "death_recovered_t";
+  re14 is "death_nc_recovered_nt";
+  re15 is "death_c_infected_t";
+  re16 is "death_c_infected_nt";
+  re17 is "death_nc_uninfected_t";
+  re18 is "death_c_symptoms_nt";
+
+  // CV terms:
+  default identity "http://identifiers.org/ncit/C48156"
+  infected_nontested_0 identity "http://identifiers.org/ido/0000511"
+  infected_nontested_0 identity "http://identifiers.org/ncit/C171133"
+  infected_nontested_0 property "http://identifiers.org/ncit/C101887"
+  infected_tested_0 identity "http://identifiers.org/ido/0000511"
+  infected_tested_0 identity "http://identifiers.org/ncit/C171133"
+  infected_tested_0 property "http://identifiers.org/ncit/C47891"
+  uninfected_nontested_0 identity "http://identifiers.org/efo/0001460"
+  uninfected_nontested_0 property "http://identifiers.org/ncit/C101887"
+  uninfected_tested_0 identity "http://identifiers.org/efo/0001460"
+  uninfected_tested_0 property "http://identifiers.org/ncit/C47891"
+  symptoms_tested_0 identity "http://identifiers.org/ido/0000511"
+  symptoms_tested_0 identity "http://identifiers.org/ncit/C171133"
+  symptoms_tested_0 property "http://identifiers.org/ncit/C47891"
+  symptoms_tested_0 property "http://identifiers.org/ncit/C173069"
+  symptoms_nontested_0 identity "http://identifiers.org/ido/0000511"
+  symptoms_nontested_0 identity "http://identifiers.org/ncit/C171133"
+  symptoms_nontested_0 property "http://identifiers.org/ncit/C101887"
+  symptoms_nontested_0 property "http://identifiers.org/ncit/C173069"
+  recovered_tested_0 property "http://identifiers.org/ido/0000621"
+  recovered_tested_0 property "http://identifiers.org/ncit/C47891"
+  recovered_nontested_0 property "http://identifiers.org/ncit/C101887"
+  recovered_nontested_0 property "http://identifiers.org/ncit/C101887"
+  susceptible_0 identity "http://identifiers.org/ido/0000514"
+  dead_corona_tested_0 identity "http://identifiers.org/ncit/C171133"
+  dead_corona_tested_0 identity "http://identifiers.org/ncit/C28554"
+  dead_corona_tested_0 property "http://identifiers.org/ncit/C47891"
+  dead_corona_nontested_0 identity "http://identifiers.org/ncit/C171133"
+  dead_corona_nontested_0 identity "http://identifiers.org/ncit/C28554"
+  dead_corona_nontested_0 property "http://identifiers.org/ncit/C101887"
+  dead_noncorona_0 identity "http://identifiers.org/ncit/C28554"
+  re1 identity "http://identifiers.org/ncit/C171133"
+  re1 identity "http://identifiers.org/ncit/C128320"
+  re1 property "http://identifiers.org/ncit/C101887"
+  re2 identity "http://identifiers.org/efo/0001460"
+  re2 identity "http://identifiers.org/ncit/C47891"
+  re3 identity "http://identifiers.org/ncit/C171133"
+  re3 identity "http://identifiers.org/ncit/C128320"
+  re3 property "http://identifiers.org/ncit/C47891"
+  re4 identity "http://identifiers.org/ncit/C47891"
+  re4 identity "http://identifiers.org/ncit/C128320"
+  re5 identity "http://identifiers.org/ncit/C171133"
+  re5 identity "http://identifiers.org/ncit/C173069"
+  re5 property "http://identifiers.org/ncit/C101887"
+  re6 identity "http://identifiers.org/ncit/C173069"
+  re6 identity "http://identifiers.org/ncit/C171133"
+  re6 property "http://identifiers.org/ncit/C47891"
+  re7 identity "http://identifiers.org/ncit/C47891"
+  re7 identity "http://identifiers.org/ncit/C173069"
+  re8 identity "http://identifiers.org/ncit/C28554"
+  re9 identity "http://identifiers.org/ncit/C25746"
+  re9 property "http://identifiers.org/ncit/C47891"
+  re9 property "http://identifiers.org/ncit/C173069"
+  re10 identity "http://identifiers.org/ncit/C25746"
+  re10 property "http://identifiers.org/ncit/C101887"
+  re10 property "http://identifiers.org/ncit/C173069"
+  re12 identity "http://identifiers.org/ncit/C28554"
+  re13 identity "http://identifiers.org/ncit/C28554"
+  re14 identity "http://identifiers.org/ncit/C28554"
+  re15 identity "http://identifiers.org/ncit/C28554"
+  re16 identity "http://identifiers.org/ncit/C28554"
+  re17 identity "http://identifiers.org/ncit/C28554"
+  re18 identity "http://identifiers.org/ncit/C28554"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL2102120001",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000988"
+  model identity "http://identifiers.org/doid/DOID:0080600"
+  model taxon "http://identifiers.org/taxonomy/2697049"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model description "http://identifiers.org/pubmed/32532983"
+  model property "http://identifiers.org/mamo/MAMO_0000028"
+  model created "2020-03-19T13:58:08Z"
+  model modified "2020-03-19T13:58:08Z"
+  model creator1.givenName "Paul Jonas"
+  model creator1.familyName "Jost"
+  model creator1.organization "University of Bonn"
+  model creator1.email "s6pajost@uni-bonn.de"
+  model creator2.givenName "Dilan"
+  model creator2.familyName "Pathirana"
+  model creator2.organization "University of Bonn"
+  model creator2.email "dilan.pathirana@outlook.com"
+
+  // Notes:
+  model notes ```
+Using standard systems biology methodologies a 14-compartment dynamic model was developed
+for the Corona virus epidemic. The model predicts that: (i) it will be impossible
+to limit lockdown intensity such that sufficient herd immunity develops for this
+epidemic to die down, (ii) the death toll from the SARS-CoV-2 virus decreases very
+strongly with increasing intensity of the lockdown, but (iii) the duration of the
+epidemic increases at first with that intensity and then decreases again, such that
+(iv) it may be best to begin with selecting a lockdown intensity beyond the intensity
+that leads to the maximum duration, (v) an intermittent lockdown strategy should
+also work and might be more acceptable socially and economically, (vi) an initially
+intensive but adaptive lockdown strategy should be most efficient, both in terms
+of its low number of casualties and shorter duration, (vii) such an adaptive lockdown
+strategy offers the advantage of being robust to unexpected imports of the virus,
+e.g. due to international travel, (viii) the eradication strategy may still be superior
+as it leads to even fewer deaths and a shorter period of economic downturn, but should
+have the adaptive strategy as backup in case of unexpected infection imports, (ix)
+earlier detection of infections is the most effective way in which the epidemic can
+be controlled, whilst waiting for vaccines.
+```
+  Infection_from_non_tested_no_symptoms_0 notes "```Infection_from_non-tested_no-symptoms```"
+  Infection_from_non_tested_symptoms notes "```Infection_from_non-tested_symptoms```"
+  Infection_from_tested_no_symptoms_0 notes "```Infection_from_tested_no-symptoms```"
+  Infection_from_tested_symptoms notes "```Infection_from_tested_symptoms```"
+  governmentResponseFactorToDiagnosedInfected_0 notes "```governmentResponseFactorToDiagnosedInfected in article```"
+  re1 notes "```re1 in article```"
+  re2 notes "```re3 in article```"
+  re3 notes "```re3 in article```"
+  re4 notes "```re4 in article```"
+  re5 notes "```re5 in article```"
+  re6 notes "```re6 in article```"
+  re7 notes "```re7 in article```"
+  re8 notes "```re8 in article```"
+  re9 notes "```re9 in article```"
+  re10 notes "```re10 in article```"
+  re11 notes "```re11 in article```"
+  re12 notes "```re12 in article```"
+  re13 notes "```re13 in article```"
+  re14 notes "```re14 in article```"
+  re15 notes "```re15 in article```"
+  re16 notes "```re16 in article```"
+  re17 notes "```re17 in article```"
+  re18 notes "```re18 in article```"
+end
+
+Westerhoff_Nat2020 is "Westerhoff2020 - systems biology model of the coronavirus pandemic 2020"

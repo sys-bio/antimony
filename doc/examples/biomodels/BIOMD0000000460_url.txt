@@ -1,0 +1,140 @@
+// Created by libAntimony v3.0.0
+model *MODEL1302080000()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species $IPTG in compartment_, sigb in compartment_, lacz in compartment_;
+  species x in compartment_;
+
+  // Reactions:
+  v1: $IPTG -> sigb; IPTG*kbs - sigb*(kbd + kbx*x);
+  v2: sigb -> lacz; -(kzd*lacz) + kzs*sigb;
+  v3: sigb -> x; kxs*sigb - kxd*x;
+
+  // Species initializations:
+  IPTG = 100;
+  sigb = 0;
+  lacz = 0;
+  x = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  kbd = 5.8e-09;
+  kbs = 100;
+  kbx = 8.4e-05;
+  kxd = 1.2e-13;
+  kxs = 2e-06;
+  kzd = 0.052;
+  kzs = 1.7e-06;
+
+  // Other declarations:
+  const compartment_, kbd, kbs, kbx, kxd, kxs, kzd, kzs;
+
+  // Display Names:
+  compartment_ is "compartment";
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/go/GO:0005623"
+  IPTG identity "http://identifiers.org/chebi/CHEBI:61448"
+  sigb identity "http://identifiers.org/interpro/IPR006288"
+  lacz identity "http://identifiers.org/go/GO:0015925"
+  x identity "http://identifiers.org/chebi/CHEBI:35222"
+  kbd identity "http://identifiers.org/go/GO:0006508"
+  kbs identity "http://identifiers.org/go/GO:0009058"
+  kbx identity "http://identifiers.org/chebi/CHEBI:35222"
+  kxd identity "http://identifiers.org/go/GO:0006508"
+  kxs identity "http://identifiers.org/go/GO:0009058"
+  kzd identity "http://identifiers.org/go/GO:0006508"
+  kzs identity "http://identifiers.org/go/GO:0009058"
+  v1 identity "http://identifiers.org/go/GO:0009058",
+              "http://identifiers.org/go/GO:0006508"
+  v2 identity "http://identifiers.org/go/GO:0009058",
+              "http://identifiers.org/go/GO:0006508"
+  v3 identity "http://identifiers.org/go/GO:0009058",
+              "http://identifiers.org/go/GO:0006508"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1302080000"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000460"
+  model publication "http://identifiers.org/pubmed/22511268"
+  model property "http://identifiers.org/go/GO:0030162"
+  model taxon "http://identifiers.org/taxonomy/1423"
+  model created "2013-06-06T19:30:32Z"
+  model modified "2013-06-10T13:46:42Z"
+  model creator1.givenName "Vijayalakshmi"
+  model creator1.familyName "Chelliah"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "viji@ebi.ac.uk"
+  model creator2.givenName "Ulf"
+  model creator2.familyName "Liebal"
+  model creator2.organization "The University of Rostock"
+  model creator2.email "ulf.liebal@uni-rostock.de"
+
+  // Notes:
+  model notes ```
+Liebal2012 - B.subtilis sigB proteolysis model 
+
+
+An important transcription factor of B.subsilis is sigma B . Liebal
+et al. (2012) have performed experiments in B.subtilis wild type and mutant straits
+to test and validate a mathematical model of the dynamics of sigma B 
+activity. The following three models were constructed and their ability to
+fit the experimental data were tested. 1) Transcription inhibition model (MODEL1212180000),
+2) sigma B proteolysis model (MODEL1302080000) and 3) Post-transcriptional
+instability model (MODEL1302080001). This model corresponds to the sigma B
+proteolysis model (MODEL1302080000). 
+
+
+This model is described in the article:
+
+
+[Proteolysis of beta-galactosidase following SigmaB activation in Bacillus subtilis.](http://identifiers.org/pubmed/22511268 "Access to this publication") 
+
+
+Liebal UW, Sappa PK, Millat T, Steil L, Homuth G, Völker U, Wolkenhauer O. 
+
+2012 Jun;8(6):1806-14. 
+Abstract:
+
+
+In Bacillus subtilis the σ(B) mediated general stress response provides protection
+against various environmental and energy related stress conditions. To better understand
+the general stress response, we need to explore the mechanism by which the components
+interact. Here, we performed experiments in B. subtilis wild type and mutant strains
+to test and validate a mathematical model of the dynamics of σ(B) activity. In the
+mutant strain BSA115, σ(B) transcription is inducible by the addition of IPTG and
+negative control of σ(B) activity by the anti-sigma factor RsbW is absent. In contrast
+to our expectations of a continuous β-galactosidase activity from a ctc::lacZ fusion,
+we observed a transient activity in the mutant. To explain this experimental finding,
+we constructed mathematical models reflecting different hypotheses regarding the
+regulation of σ(B) and β-galactosidase dynamics. Only the model assuming instability
+of either ctc::lacZ mRNA or β-galactosidase protein is able to reproduce the experiments
+in silico. Subsequent Northern blot experiments revealed stable high-level ctc::lacZ
+mRNA concentrations after the induction of the σ(B) response. Therefore, we conclude
+that protein instability following σ(B) activation is the most likely explanation
+for the experimental observations. Our results thus support the idea that B. subtilis
+increases the cytoplasmic proteolytic degradation to adapt the proteome in face of
+environmental challenges following activation of the general stress response. The
+findings also have practical implications for the analysis of stress response dynamics
+using lacZ reporter gene fusions, a frequently used strategy for the σ(B) response.
+
+
+Figure 3a of the reference article has been reproduced. beta-galactosidase (lacz
+in model) activity at different concentrations of IPTG (100M, 200M and 1000M) has
+been reproduced. SED-ML (Simulation Experiment Description Markup Language) file
+is available for this model (see curation tab).
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identifiedby: [MODEL1302080000](http://identifiers.org/biomodels.db/MODEL1302080000) . 
+
+To cite BioModels Database, please use: [BioModels Database: An enhanced, curated and annotated resourcefor published quantitative kinetic models](http://identifiers.org/pubmed/20587024 "Latest BioModels Database publication") . 
+
+
+To the extent possible under law, all copyright and related orneighbouring rights
+to this encoded model have been dedicated to the publicdomain worldwide. Please refer
+to [CC0 Public DomainDedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+end
+
+MODEL1302080000 is "Liebal2012 - B.subtilis sigB proteolysis model"

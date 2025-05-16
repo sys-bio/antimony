@@ -1,0 +1,1042 @@
+// Created by libAntimony v3.0.0
+model *Csikasz_Nagy2006___Mammalian_Cell_Cycle_model()
+
+  // Compartments and Species:
+  compartment cell;
+  species $APC in cell, APCP in cell, BCKI in cell, $Cdc14 in cell, Cdc20A in cell;
+  species Cdc20i in cell, $Cdc20T in cell, $Cdc25P in cell, CycB in cell;
+  species Cdh1 in cell, $Cdh1i in cell, CKI in cell, $CKIT in cell, pBCKI in cell;
+  species TriA in cell, TriE in cell, CycA in cell, $CycAT in cell, $CycBT in cell;
+  species pB in cell, $CycD in cell, Mass in cell, CycE in cell, $CycET in cell;
+  species $preMPF in cell, $TFB in cell, $TFE in cell, $TFI in cell, $TriB in cell;
+  species $Wee1 in cell;
+
+  // Assignment Rules:
+  APC := APCT - APCP;
+  Cdc14 := Cdc20A;
+  Cdc20T := Cdc20i + Cdc20A;
+  Cdc25P := 2*Ji25*(ka25a + ka25b*CycB)/((ki25a + ki25b*Cdc14 - (ka25a + ka25b*CycB)) + Ja25*(ki25a + ki25b*Cdc14) + Ji25*(ka25a + ka25b*CycB) + (((ki25a + ki25b*Cdc14 - (ka25a + ka25b*CycB)) + Ja25*(ki25a + ki25b*Cdc14) + Ji25*(ka25a + ka25b*CycB))^2 - 4*(ki25a + ki25b*Cdc14 - (ka25a + ka25b*CycB))*Ji25*(ka25a + ka25b*CycB))^(1/2));
+  Cdh1i := Cdh1T - Cdh1;
+  CKIT := CKI + BCKI + pBCKI + TriA + TriE;
+  CycAT := CycA + TriA;
+  CycBT := CycB + pB + BCKI + pBCKI;
+  CycD := CycD0*Mass;
+  CycET := CycE + TriE;
+  preMPF := pB + pBCKI;
+  TFB := 2*Jifb*(kafb*CycB)/((kifb - kafb*CycB) + Jafb*kifb + Jifb*(kafb*CycB) + (((kifb - kafb*CycB) + Jafb*kifb + Jifb*(kafb*CycB))^2 - 4*(kifb - kafb*CycB)*Jifb*(kafb*CycB))^(1/2));
+  TFE := 2*Jitf*Vatf/((Vitf - Vatf) + Jatf*Vitf + Jitf*Vatf + (((Vitf - Vatf) + Jatf*Vitf + Jitf*Vatf)^2 - 4*(Vitf - Vatf)*Jitf*Vatf)^(1/2));
+  Vatf := katf + katfa*CycA + katfe*CycE + katfd*CycD;
+  Vitf := kitf + kitfa*CycA + kitfb*CycB;
+  TFI := 2*Jifi*(kafi*Cdc14)/((kifi + kifib*CycB - kafi*Cdc14) + Jafi*(kifi + kifib*CycB) + Jifi*(kafi*Cdc14) + (((kifi + kifib*CycB - kafi*Cdc14) + Jafi*(kifi + kifib*CycB) + Jifi*(kafi*Cdc14))^2 - 4*(kifi + kifib*CycB - kafi*Cdc14)*Jifi*(kafi*Cdc14))^(1/2));
+  TriB := BCKI + pBCKI;
+  Wee1 := 2*Jiwee*(kaweea + kaweeb*Cdc14)/((kiweea + kiweeb*CycB - (kaweea + kaweeb*Cdc14)) + Jawee*(kiweea + kiweeb*CycB) + Jiwee*(kaweea + kaweeb*Cdc14) + (((kiweea + kiweeb*CycB - (kaweea + kaweeb*Cdc14)) + Jawee*(kiweea + kiweeb*CycB) + Jiwee*(kaweea + kaweeb*Cdc14))^2 - 4*(kiweea + kiweeb*CycB - (kaweea + kaweeb*Cdc14))*Jiwee*(kaweea + kaweeb*Cdc14))^(1/2));
+  V25 := k25a + k25b*Cdc25P;
+  Vah1 := kah1a + kah1b*Cdc14;
+  Vda := kdaa + (kdab + kdac)*Cdc20A + kdac*Cdc20i;
+  Vdb := kdb + kdbh*Cdh1 + kdbc*Cdc20A;
+  Vde := kde + kdee*CycE + kdea*CycA + kdeb*CycB;
+  Vdi := (kdi + kdia*CycA + kdib*CycB + kdie*CycE + kdid*CycD)/(1 + k14di*Cdc14);
+  Vih1 := kih1 + kih1a*CycA + kih1b*CycB + kih1e*CycE + kih1d*CycD;
+  Vsa := (ksaa + ksab*TFE)*Mass;
+  Vsb := (ksba + ksbb*TFB)*Mass;
+  Vse := (ksea + kseb*TFE)*Mass;
+  Vsi := ksia + ksib*TFI;
+  Vwee := kweea + kweeb*Wee1;
+
+  // Reactions:
+  Mass_accumulation:  => Mass; cell*(mu*Mass*(1 - Mass/MaxMass)/cell);
+  Synthesis_of_MPF:  => CycB; cell*(Vsb/cell);
+  Deg_of_MPF: CycB => ; cell*(Vdb*CycB/cell);
+  activation_of_MPF_from_pB_by_Cdc25: pB => CycB; cell*(V25*pB/cell);
+  inactivation_of_MPFby_Wee1: CycB => pB; cell*(Vwee*CycB/cell);
+  assoc_of_MPF_with_CKI: CycB + CKI => BCKI; cell*(kassb*CycB*CKI/cell);
+  dissoc_1: BCKI => CycB + CKI; cell*(kdissb*BCKI/cell);
+  deg_of_pB: pB => ; cell*(Vdb*pB/cell);
+  assoc_of_pB_with_CKI: pB + CKI => pBCKI; cell*(kassb*pB*CKI/cell);
+  dissoc_2: pBCKI => pB + CKI; cell*(kdissb*pBCKI/cell);
+  Cdc25_action: pBCKI => BCKI; cell*(V25*pBCKI/cell);
+  Wee1_action: BCKI => pBCKI; cell*(Vwee*BCKI/cell);
+  Deg_of_CycB_moeity__in_BCKI: BCKI => CKI; cell*(Vdb*BCKI/cell);
+  Deg_of_CKI_moeity_in_BCKI: BCKI => CycB; cell*(Vdi*BCKI/cell);
+  Deg_of_pB_moeity_in_pBCKI: pBCKI => CKI; cell*(Vdb*pBCKI/cell);
+  Deg_of_CKI_moeity_in_pBCKI: pBCKI => pB; cell*(Vdi*pBCKI/cell);
+  Synthesis_of_CKI:  => CKI; cell*(Vsi/cell);
+  Deg_of_CKI: CKI => ; cell*(Vdi*CKI/cell);
+  Assoc_of_CKI_with_CycA: CKI + CycA => TriA; cell*(kassa*CKI*CycA/cell);
+  dissoc_3: TriA => CKI + CycA; cell*(kdissa*TriA/cell);
+  Deg_of_CKI_moeity_in_TriA: TriA => CycA; cell*(Vdi*TriA/cell);
+  Deg_of_CycA_moeity_in_TriA: TriA => CKI; cell*(Vda*TriA/cell);
+  Assoc_of_CKI_with_CycE: CKI + CycE => TriE; cell*(kasse*CKI*CycE/cell);
+  dissoc_4: TriE => CKI + CycE; cell*(kdisse*TriE/cell);
+  Deg_of_CKI_moeity_in_TriE: TriE => CycE; cell*(Vdi*TriE/cell);
+  Deg_of_CycE_moeity_in_TriE: TriE => CKI; cell*(Vde*TriE/cell);
+  Synthesis_of_CycA_by_TFE:  => CycA; cell*(Vsa/cell);
+  Deg_of_CycA: CycA => ; cell*(Vda*CycA/cell);
+  Synthesis_of_CycE_by_TFE:  => CycE; cell*(Vse/cell);
+  Deg_of_CycE: CycE => ; cell*(Vde*CycE/cell);
+  activation_of_APCP: $APC => APCP; cell*(kaie*APC*CycB/(Jaie + APC)/cell);
+  inactivation_1: APCP => $APC; cell*(kiie*APCP*1/(Jiie + APCP)/cell);
+  Synthesis_of_Cdc20i:  => Cdc20i; cell*((ks20a + ks20b*CycB^n20/(J20^n20 + CycB^n20))/cell);
+  Deg_of_Cdc20i: Cdc20i => ; cell*(kd20*Cdc20i/cell);
+  activation_of_Cdc20i: Cdc20i => Cdc20A; cell*(ka20*Cdc20i*APCP/(Ja20 + Cdc20i)/cell);
+  inactivation_2: Cdc20A => Cdc20i; cell*(ki20*Cdc20A*1/(Ji20 + Cdc20A)/cell);
+  degradation: Cdc20A => ; cell*(kd20*Cdc20A/cell);
+  activation_of_Cdh1: $Cdh1i => Cdh1; cell*(1*Cdh1i*Vah1/(Jah1 + Cdh1i)/cell);
+  inactivation__of_Cdh1: Cdh1 => $Cdh1i; cell*(1*Cdh1*Vih1/(Jih1 + Cdh1)/cell);
+
+  // Events:
+  Event: at 0 after (CycB - KEZ) < 0: Mass = 0.5*Mass;
+
+  // Species initializations:
+  APCP = 0.671626567840576;
+  BCKI = 0;
+  Cdc20A = 0.660586714744568;
+  Cdc20i = 0.018553527072072;
+  CycB = 0.166841372847557;
+  Cdh1 = 0.99923574924469;
+  CKI = 0.295407682657242;
+  pBCKI = 0;
+  TriA = 0.017153799533844;
+  TriE = 0.311726331710815;
+  CycA = 0.00994044542312622;
+  pB = 0.00981487054377794;
+  Mass = 1.17421686649323;
+  CycE = 0.077605128288269;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  APCT = 1;
+  Ji25 = 0.1;
+  ka25a = 0;
+  ka25b = 1;
+  ki25a = 0.3;
+  ki25b = 0;
+  Ja25 = 0.1;
+  Cdh1T = 1;
+  CycD0 = 0.05;
+  Jifb = 0.1;
+  kafb = 1;
+  kifb = 0.1;
+  Jafb = 0.1;
+  Jitf = 0.01;
+  Jatf = 0.01;
+  Jifi = 88;
+  kafi = 88;
+  kifi = 88;
+  kifib = 88;
+  Jafi = 88;
+  Jiwee = 0.05;
+  kaweea = 0.3;
+  kaweeb = 0;
+  kiweea = 0;
+  kiweeb = 1;
+  Jawee = 0.05;
+  KEZ = 0.2;
+  k25a = 0.01;
+  k25b = 5;
+  kah1a = 0.18;
+  kah1b = 3.5;
+  katf = 0;
+  katfa = 0.3;
+  katfe = 0.5;
+  katfd = 3;
+  kdaa = 0.02;
+  kdab = 2;
+  kdac = 0;
+  kdb = 0.005;
+  kdbh = 2;
+  kdbc = 0.1;
+  kde = 0.01;
+  kdee = 0.1;
+  kdea = 0.5;
+  kdeb = 0.5;
+  kdi = 0.8;
+  kdia = 5;
+  kdib = 5;
+  kdie = 5;
+  kdid = 0;
+  k14di = 0;
+  kih1 = 0;
+  kih1a = 0.2;
+  kih1b = 1;
+  kih1e = 0.1;
+  kih1d = 0;
+  kitf = 0.25;
+  kitfa = 0.1;
+  kitfb = 0.1;
+  ksaa = 0;
+  ksab = 0.025;
+  ksba = 0.01;
+  ksbb = 0.03;
+  ksea = 0.01;
+  kseb = 0.18;
+  ksia = 1.8;
+  ksib = 0;
+  kweea = 0.02;
+  kweeb = 0.2;
+  J20 = 1;
+  Ja20 = 0.005;
+  Jah1 = 0.01;
+  Jaie = 0.01;
+  Ji20 = 0.005;
+  Jih1 = 0.01;
+  Jiie = 0.01;
+  ka20 = 0.5;
+  kaie = 0.07;
+  kassa = 25;
+  kassb = 0;
+  kasse = 50;
+  kd20 = 0.15;
+  kdissa = 1;
+  kdissb = 0;
+  kdisse = 1;
+  ki20 = 0.25;
+  kiie = 0.18;
+  ks20b = 0.15;
+  ks20a = 0;
+  MaxMass = 10000;
+  mu = 0.005;
+  n20 = 1;
+
+  // Other declarations:
+  var Vatf, Vitf, V25, Vah1, Vda, Vdb, Vde, Vdi, Vih1, Vsa, Vsb, Vse, Vsi;
+  var Vwee;
+  const cell, APCT, Ji25, ka25a, ka25b, ki25a, ki25b, Ja25, Cdh1T, CycD0;
+  const Jifb, kafb, kifb, Jafb, Jitf, Jatf, Jifi, kafi, kifi, kifib, Jafi;
+  const Jiwee, kaweea, kaweeb, kiweea, kiweeb, Jawee, KEZ, k25a, k25b, kah1a;
+  const kah1b, katf, katfa, katfe, katfd, kdaa, kdab, kdac, kdb, kdbh, kdbc;
+  const kde, kdee, kdea, kdeb, kdi, kdia, kdib, kdie, kdid, k14di, kih1, kih1a;
+  const kih1b, kih1e, kih1d, kitf, kitfa, kitfb, ksaa, ksab, ksba, ksbb, ksea;
+  const kseb, ksia, ksib, kweea, kweeb, J20, Ja20, Jah1, Jaie, Ji20, Jih1;
+  const Jiie, ka20, kaie, kassa, kassb, kasse, kd20, kdissa, kdissb, kdisse;
+  const ki20, kiie, ks20b, ks20a, MaxMass, mu, n20;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = litre;
+  unit time_unit = second;
+  unit substance = item;
+
+  // Display Names:
+  time_unit is "time";
+  APCP is "APCp";
+  Cdc25P is "Cdc25p";
+  Mass_accumulation is "Mass accumulation";
+  Synthesis_of_MPF is "Synthesis of CycB";
+  Deg_of_MPF is "Deg. of MPF";
+  activation_of_MPF_from_pB_by_Cdc25 is "activation of MPF from pB by Cdc25";
+  inactivation_of_MPFby_Wee1 is "inactivation of MPFby Wee1";
+  assoc_of_MPF_with_CKI is "Assoc. of MPF with CKI";
+  dissoc_1 is "dissoc1 of BCKI";
+  deg_of_pB is "Deg. of pB";
+  assoc_of_pB_with_CKI is "Assoc. of pB with CKI";
+  dissoc_2 is "dissoc2 of pBCKI";
+  Cdc25_action is "Cdc25 action";
+  Wee1_action is "BCKI phosphophorylation by Wee1";
+  Deg_of_CycB_moeity__in_BCKI is "Deg. of CycB moeity  in BCKI";
+  Deg_of_CKI_moeity_in_BCKI is "Deg. of CKI moeity in BCKI";
+  Deg_of_pB_moeity_in_pBCKI is "Deg. of pB moeity in pBCKI";
+  Deg_of_CKI_moeity_in_pBCKI is "Deg. of CKI moeity in pBCKI";
+  Synthesis_of_CKI is "Synthesis of CKI";
+  Deg_of_CKI is "Deg. of CKI";
+  Assoc_of_CKI_with_CycA is "Assoc. of CKI with CycA";
+  dissoc_3 is "dissoc3 of TriA";
+  Deg_of_CKI_moeity_in_TriA is "Deg. of CKI moeity in TriA";
+  Deg_of_CycA_moeity_in_TriA is "Deg. of CycA moeity in TriA";
+  Assoc_of_CKI_with_CycE is "Assoc. of CKI with CycE";
+  dissoc_4 is "dissoc4 of TriE";
+  Deg_of_CKI_moeity_in_TriE is "Deg. of CKI moeity in TriE";
+  Deg_of_CycE_moeity_in_TriE is "Deg. of CycE moeity in TriE";
+  Synthesis_of_CycA_by_TFE is "Synthesis of CycA by TFE";
+  Deg_of_CycA is "Deg. of CycA";
+  Synthesis_of_CycE_by_TFE is "Synthesis of CycE by TFE";
+  Deg_of_CycE is "Deg. of CycE";
+  activation_of_APCP is "activation of APCP";
+  inactivation_1 is "inactivation of APCp";
+  Synthesis_of_Cdc20i is "Synthesis of Cdc20i";
+  Deg_of_Cdc20i is "Deg. of Cdc20i";
+  activation_of_Cdc20i is "activation of Cdc20i";
+  inactivation_2 is "inactivation of Cdc20A";
+  degradation is "Deg.of CDC20A";
+  activation_of_Cdh1 is "activation of Cdh1";
+  inactivation__of_Cdh1 is "inactivation  of Cdh1";
+
+  # General layout options
+  model.layout = on
+  model.layout.size = {10, 10}
+  model.layout.background = "#FFFFFFFF"
+
+  // Species layout defaults
+  species.color = "#a0e0a030"
+
+  // Reaction layout defaults
+  reaction.lineColor = "#000000a0"
+  reaction.lineWidth = 3
+  reaction.fontColor = "#000000a0"
+
+  // Compartment layout defaults
+  compartment.lineColor = "#e69600b0"
+  compartment.lineWidth = 7
+  compartment.fontColor = "#e69600b0"
+  compartment.fontStyle = normal
+
+  // Individual element layout information
+  APC.position = {757.62, 944.54}
+  APC.size = {52, 28}
+  APC.font = Verdana
+  APC.fontColor = black
+  APC.fontSize = 12
+  APCP.position = {406.09, 607.2}
+  APCP.size = {68, 28}
+  APCP.font = Verdana
+  APCP.fontColor = black
+  APCP.fontSize = 12
+  BCKI.position = {415.64, 1022.49}
+  BCKI.size = {68, 28}
+  BCKI.font = Verdana
+  BCKI.fontColor = black
+  BCKI.fontSize = 12
+  Cdc14.position = {642.58, 877}
+  Cdc14.size = {84, 28}
+  Cdc14.font = Verdana
+  Cdc14.fontColor = black
+  Cdc14.fontSize = 12
+  Cdc20A.position = {819.51, 126.38}
+  Cdc20A.size = {100, 28}
+  Cdc20A.font = Verdana
+  Cdc20A.fontColor = black
+  Cdc20A.fontSize = 12
+  Cdc20i.position = {1025.79, 58.51}
+  Cdc20i.size = {100, 28}
+  Cdc20i.font = Verdana
+  Cdc20i.fontColor = black
+  Cdc20i.fontSize = 12
+  Cdc20T.position = {413.93, 534.55}
+  Cdc20T.size = {100, 28}
+  Cdc20T.font = Verdana
+  Cdc20T.fontColor = black
+  Cdc20T.fontSize = 12
+  Cdc25P.position = {382.75, 41.06}
+  Cdc25P.size = {100, 28}
+  Cdc25P.font = Verdana
+  Cdc25P.fontColor = black
+  Cdc25P.fontSize = 12
+  CycB.position = {774.96, 897.53}
+  CycB.size = {68, 28}
+  CycB.font = Verdana
+  CycB.fontColor = black
+  CycB.fontSize = 12
+  Cdh1.position = {1079.83, 973.91}
+  Cdh1.size = {68, 28}
+  Cdh1.font = Verdana
+  Cdh1.fontColor = black
+  Cdh1.fontSize = 12
+  Cdh1i.position = {859.04, 414.47}
+  Cdh1i.size = {84, 28}
+  Cdh1i.font = Verdana
+  Cdh1i.fontColor = black
+  Cdh1i.fontSize = 12
+  CKI.position = {577.7, 856.73}
+  CKI.size = {52, 28}
+  CKI.font = Verdana
+  CKI.fontColor = black
+  CKI.fontSize = 12
+  CKIT.position = {423.72, 87.77}
+  CKIT.size = {68, 28}
+  CKIT.font = Verdana
+  CKIT.fontColor = black
+  CKIT.fontSize = 12
+  pBCKI.position = {810.78, 1088.07}
+  pBCKI.size = {84, 28}
+  pBCKI.font = Verdana
+  pBCKI.fontColor = black
+  pBCKI.fontSize = 12
+  TriA.position = {203.63, 1105.26}
+  TriA.size = {68, 28}
+  TriA.font = Verdana
+  TriA.fontColor = black
+  TriA.fontSize = 12
+  TriE.position = {583.9, 1041.32}
+  TriE.size = {68, 28}
+  TriE.font = Verdana
+  TriE.fontColor = black
+  TriE.fontSize = 12
+  CycA.position = {717.53, 243.84}
+  CycA.size = {68, 28}
+  CycA.font = Verdana
+  CycA.fontColor = black
+  CycA.fontSize = 12
+  CycAT.position = {262.48, 26.35}
+  CycAT.size = {84, 28}
+  CycAT.font = Verdana
+  CycAT.fontColor = black
+  CycAT.fontSize = 12
+  CycBT.position = {912.73, 928.88}
+  CycBT.size = {84, 28}
+  CycBT.font = Verdana
+  CycBT.fontColor = black
+  CycBT.fontSize = 12
+  pB.position = {204.61, 256.75}
+  pB.size = {36, 28}
+  pB.font = Verdana
+  pB.fontColor = black
+  pB.fontSize = 12
+  CycD.position = {300, 566.66}
+  CycD.size = {68, 28}
+  CycD.font = Verdana
+  CycD.fontColor = black
+  CycD.fontSize = 12
+  Mass.position = {1026.18, 331.28}
+  Mass.size = {68, 28}
+  Mass.font = Verdana
+  Mass.fontColor = black
+  Mass.fontSize = 12
+  CycE.position = {82.55, 228.01}
+  CycE.size = {68, 28}
+  CycE.font = Verdana
+  CycE.fontColor = black
+  CycE.fontSize = 12
+  CycET.position = {126.52, 469.4}
+  CycET.size = {84, 28}
+  CycET.font = Verdana
+  CycET.fontColor = black
+  CycET.fontSize = 12
+  preMPF.position = {371.98, 1006.7}
+  preMPF.size = {100, 28}
+  preMPF.font = Verdana
+  preMPF.fontColor = black
+  preMPF.fontSize = 12
+  TFB.position = {54.91, 104.26}
+  TFB.size = {52, 28}
+  TFB.font = Verdana
+  TFB.fontColor = black
+  TFB.fontSize = 12
+  TFE.position = {584.71, 92.47}
+  TFE.size = {52, 28}
+  TFE.font = Verdana
+  TFE.fontColor = black
+  TFE.fontSize = 12
+  TFI.position = {94.01, 601.53}
+  TFI.size = {52, 28}
+  TFI.font = Verdana
+  TFI.fontColor = black
+  TFI.fontSize = 12
+  TriB.position = {615.02, 28.21}
+  TriB.size = {68, 28}
+  TriB.font = Verdana
+  TriB.fontColor = black
+  TriB.fontSize = 12
+  Wee1.position = {305.12, 581.47}
+  Wee1.size = {68, 28}
+  Wee1.font = Verdana
+  Wee1.fontColor = black
+  Wee1.fontSize = 12
+  Mass_accumulation.position = {544.62, 683.73}
+  Mass_accumulation.--.rxn_end = {493.28, 717.71}
+  Mass_accumulation.--.species_end = {38.95, 1021.08}
+  Mass_accumulation.--.b1 = {390.61, 785.66}
+  Mass_accumulation.--.b2 = {189.11, 920.35}
+  Mass_accumulation.Mass.rxn_end = {595.95, 649.76}
+  Mass_accumulation.Mass.species_end = {1031.14, 364.28}
+  Mass_accumulation.Mass.b1 = {698.63, 581.81}
+  Mass_accumulation.Mass.b2 = {890.55, 456.06}
+  Mass_accumulation.--.position = {32.95, 1024.26}
+  Mass_accumulation.--.size = {1, 1}
+  Synthesis_of_MPF.position = {809.44, 945.13}
+  Synthesis_of_MPF.--.rxn_end = {810, 948.16}
+  Synthesis_of_MPF.--.species_end = {817.38, 966.64}
+  Synthesis_of_MPF.--.b1 = {811.12, 954.22}
+  Synthesis_of_MPF.--.b2 = {814.53, 961.95}
+  Synthesis_of_MPF.CycB.rxn_end = {808.88, 942.1}
+  Synthesis_of_MPF.CycB.species_end = {808.03, 930.53}
+  Synthesis_of_MPF.CycB.b1 = {807.77, 936.04}
+  Synthesis_of_MPF.CycB.b2 = {807.62, 931.77}
+  Synthesis_of_MPF.--.position = {819.65, 971.64}
+  Synthesis_of_MPF.--.size = {1, 1}
+  Deg_of_MPF.position = {767.34, 974.79}
+  Deg_of_MPF.CycB.rxn_end = {771.88, 968.42}
+  Deg_of_MPF.CycB.species_end = {796.91, 930.53}
+  Deg_of_MPF.CycB.b1 = {780.96, 955.67}
+  Deg_of_MPF.CycB.b2 = {791.21, 939.91}
+  Deg_of_MPF.--.rxn_end = {762.8, 981.17}
+  Deg_of_MPF.--.species_end = {722.47, 1033.53}
+  Deg_of_MPF.--.b1 = {753.72, 993.92}
+  Deg_of_MPF.--.b2 = {735.82, 1016.91}
+  Deg_of_MPF.--.position = {717.63, 1038.53}
+  Deg_of_MPF.--.size = {1, 1}
+  activation_of_MPF_from_pB_by_Cdc25.position = {510.76, 599.06}
+  activation_of_MPF_from_pB_by_Cdc25.pB.rxn_end = {481.44, 567.02}
+  activation_of_MPF_from_pB_by_Cdc25.pB.species_end = {238.99, 289.75}
+  activation_of_MPF_from_pB_by_Cdc25.pB.b1 = {422.81, 502.94}
+  activation_of_MPF_from_pB_by_Cdc25.pB.b2 = {316.24, 380.33}
+  activation_of_MPF_from_pB_by_Cdc25.CycB.rxn_end = {540.08, 631.09}
+  activation_of_MPF_from_pB_by_Cdc25.CycB.species_end = {790.5, 892.53}
+  activation_of_MPF_from_pB_by_Cdc25.CycB.b1 = {598.71, 695.17}
+  activation_of_MPF_from_pB_by_Cdc25.CycB.b2 = {709.26, 809.87}
+  inactivation_of_MPFby_Wee1.position = {516.66, 594.1}
+  inactivation_of_MPFby_Wee1.CycB.rxn_end = {545.97, 626.14}
+  inactivation_of_MPFby_Wee1.CycB.species_end = {791.42, 892.53}
+  inactivation_of_MPFby_Wee1.CycB.b1 = {604.61, 690.22}
+  inactivation_of_MPFby_Wee1.CycB.b2 = {712.67, 807.39}
+  inactivation_of_MPFby_Wee1.pB.rxn_end = {487.34, 562.06}
+  inactivation_of_MPFby_Wee1.pB.species_end = {239.84, 289.75}
+  inactivation_of_MPFby_Wee1.pB.b1 = {428.7, 497.98}
+  inactivation_of_MPFby_Wee1.pB.b2 = {319.61, 377.85}
+  assoc_of_MPF_with_CKI.position = {617.73, 945.88}
+  assoc_of_MPF_with_CKI.CycB.rxn_end = {630.57, 938.61}
+  assoc_of_MPF_with_CKI.CycB.species_end = {769.96, 914.74}
+  assoc_of_MPF_with_CKI.CycB.b1 = {656.24, 924.08}
+  assoc_of_MPF_with_CKI.CycB.b2 = {719.51, 915.77}
+  assoc_of_MPF_with_CKI.CKI.rxn_end = {630.57, 938.61}
+  assoc_of_MPF_with_CKI.CKI.species_end = {622.41, 889.73}
+  assoc_of_MPF_with_CKI.CKI.b1 = {656.24, 924.08}
+  assoc_of_MPF_with_CKI.CKI.b2 = {645.74, 903.27}
+  assoc_of_MPF_with_CKI.BCKI.rxn_end = {604.9, 953.15}
+  assoc_of_MPF_with_CKI.BCKI.species_end = {485.43, 1017.49}
+  assoc_of_MPF_with_CKI.BCKI.b1 = {579.23, 967.68}
+  assoc_of_MPF_with_CKI.BCKI.b2 = {525.91, 996.22}
+  dissoc_1.position = {619.06, 947.44}
+  dissoc_1.BCKI.rxn_end = {606.22, 954.71}
+  dissoc_1.BCKI.species_end = {486.63, 1017.49}
+  dissoc_1.BCKI.b1 = {580.56, 969.25}
+  dissoc_1.BCKI.b2 = {527.18, 997}
+  dissoc_1.CycB.rxn_end = {631.89, 940.18}
+  dissoc_1.CycB.species_end = {769.96, 915.17}
+  dissoc_1.CycB.b1 = {657.56, 925.64}
+  dissoc_1.CycB.b2 = {720.18, 916.77}
+  dissoc_1.CKI.rxn_end = {631.89, 940.18}
+  dissoc_1.CKI.species_end = {622.34, 889.73}
+  dissoc_1.CKI.b1 = {657.56, 925.64}
+  dissoc_1.CKI.b2 = {646.37, 904.05}
+  deg_of_pB.position = {361.33, 611.66}
+  deg_of_pB.pB.rxn_end = {348.43, 576.9}
+  deg_of_pB.pB.species_end = {230.64, 289.75}
+  deg_of_pB.pB.b1 = {322.64, 507.4}
+  deg_of_pB.pB.b2 = {270.19, 381.2}
+  deg_of_pB.--.rxn_end = {374.23, 646.41}
+  deg_of_pB.--.species_end = {478.81, 960.28}
+  deg_of_pB.--.b1 = {400.03, 715.91}
+  deg_of_pB.--.b2 = {445.87, 855.47}
+  deg_of_pB.--.position = {480.08, 965.28}
+  deg_of_pB.--.size = {1, 1}
+  assoc_of_pB_with_CKI.position = {567.35, 743.77}
+  assoc_of_pB_with_CKI.pB.rxn_end = {545.37, 717.2}
+  assoc_of_pB_with_CKI.pB.species_end = {236.08, 289.75}
+  assoc_of_pB_with_CKI.pB.b1 = {501.4, 664.07}
+  assoc_of_pB_with_CKI.pB.b2 = {357.75, 463.63}
+  assoc_of_pB_with_CKI.CKI.rxn_end = {545.37, 717.2}
+  assoc_of_pB_with_CKI.CKI.species_end = {594.3, 851.73}
+  assoc_of_pB_with_CKI.CKI.b1 = {501.4, 664.07}
+  assoc_of_pB_with_CKI.CKI.b2 = {536.86, 744.62}
+  assoc_of_pB_with_CKI.pBCKI.rxn_end = {589.33, 770.34}
+  assoc_of_pB_with_CKI.pBCKI.species_end = {837.81, 1083.07}
+  assoc_of_pB_with_CKI.pBCKI.b1 = {633.29, 823.47}
+  assoc_of_pB_with_CKI.pBCKI.b2 = {746.54, 966.55}
+  dissoc_2.position = {552.85, 740.49}
+  dissoc_2.pBCKI.rxn_end = {574.83, 767.06}
+  dissoc_2.pBCKI.species_end = {837.01, 1083.07}
+  dissoc_2.pBCKI.b1 = {618.8, 820.19}
+  dissoc_2.pBCKI.b2 = {738.89, 964.91}
+  dissoc_2.pB.rxn_end = {530.87, 713.93}
+  dissoc_2.pB.species_end = {235.48, 289.75}
+  dissoc_2.pB.b1 = {486.91, 660.8}
+  dissoc_2.pB.b2 = {350.21, 461.99}
+  dissoc_2.CKI.rxn_end = {530.87, 713.93}
+  dissoc_2.CKI.species_end = {593.13, 851.73}
+  dissoc_2.CKI.b1 = {486.91, 660.8}
+  dissoc_2.CKI.b2 = {529.03, 742.98}
+  Cdc25_action.position = {655.96, 1072.92}
+  Cdc25_action.pBCKI.rxn_end = {676.12, 1076.2}
+  Cdc25_action.pBCKI.species_end = {805.78, 1095.41}
+  Cdc25_action.pBCKI.b1 = {716.43, 1082.76}
+  Cdc25_action.pBCKI.b2 = {771.19, 1090.72}
+  Cdc25_action.BCKI.rxn_end = {635.8, 1069.64}
+  Cdc25_action.BCKI.species_end = {488.64, 1043.61}
+  Cdc25_action.BCKI.b1 = {595.49, 1063.09}
+  Cdc25_action.BCKI.b2 = {531.99, 1051.71}
+  Wee1_action.position = {649.95, 1070.94}
+  Wee1_action.BCKI.rxn_end = {629.79, 1067.66}
+  Wee1_action.BCKI.species_end = {488.64, 1043.36}
+  Wee1_action.BCKI.b1 = {589.48, 1061.1}
+  Wee1_action.BCKI.b2 = {528.98, 1050.59}
+  Wee1_action.pBCKI.rxn_end = {670.1, 1074.22}
+  Wee1_action.pBCKI.species_end = {805.78, 1095.04}
+  Wee1_action.pBCKI.b1 = {710.42, 1080.78}
+  Wee1_action.pBCKI.b2 = {768.18, 1089.55}
+  Deg_of_CycB_moeity__in_BCKI.position = {535.08, 958.2}
+  Deg_of_CycB_moeity__in_BCKI.BCKI.rxn_end = {527.38, 966.48}
+  Deg_of_CycB_moeity__in_BCKI.BCKI.species_end = {471.81, 1017.49}
+  Deg_of_CycB_moeity__in_BCKI.BCKI.b1 = {511.97, 983.06}
+  Deg_of_CycB_moeity__in_BCKI.BCKI.b2 = {488.04, 1004.42}
+  Deg_of_CycB_moeity__in_BCKI.CKI.rxn_end = {542.79, 949.91}
+  Deg_of_CycB_moeity__in_BCKI.CKI.species_end = {589.89, 889.73}
+  Deg_of_CycB_moeity__in_BCKI.CKI.b1 = {558.19, 933.33}
+  Deg_of_CycB_moeity__in_BCKI.CKI.b2 = {577.89, 907.39}
+  Deg_of_CKI_moeity_in_BCKI.position = {637.06, 977.03}
+  Deg_of_CKI_moeity_in_BCKI.BCKI.rxn_end = {619.09, 983.28}
+  Deg_of_CKI_moeity_in_BCKI.BCKI.species_end = {488.64, 1024.6}
+  Deg_of_CKI_moeity_in_BCKI.BCKI.b1 = {583.16, 995.77}
+  Deg_of_CKI_moeity_in_BCKI.BCKI.b2 = {526.92, 1013.31}
+  Deg_of_CKI_moeity_in_BCKI.CycB.rxn_end = {655.03, 970.78}
+  Deg_of_CKI_moeity_in_BCKI.CycB.species_end = {769.96, 926.98}
+  Deg_of_CKI_moeity_in_BCKI.CycB.b1 = {690.96, 958.28}
+  Deg_of_CKI_moeity_in_BCKI.CycB.b2 = {739.44, 939.51}
+  Deg_of_pB_moeity_in_pBCKI.position = {719.5, 979.42}
+  Deg_of_pB_moeity_in_pBCKI.pBCKI.rxn_end = {731.96, 990.99}
+  Deg_of_pB_moeity_in_pBCKI.pBCKI.species_end = {832.06, 1083.07}
+  Deg_of_pB_moeity_in_pBCKI.pBCKI.b1 = {756.87, 1014.12}
+  Deg_of_pB_moeity_in_pBCKI.pBCKI.b2 = {800.69, 1054.38}
+  Deg_of_pB_moeity_in_pBCKI.CKI.rxn_end = {707.05, 967.85}
+  Deg_of_pB_moeity_in_pBCKI.CKI.species_end = {623.85, 889.73}
+  Deg_of_pB_moeity_in_pBCKI.CKI.b1 = {682.14, 944.72}
+  Deg_of_pB_moeity_in_pBCKI.CKI.b2 = {646.77, 911.44}
+  Deg_of_CKI_moeity_in_pBCKI.position = {536.32, 686.81}
+  Deg_of_CKI_moeity_in_pBCKI.pBCKI.rxn_end = {567.83, 728.38}
+  Deg_of_CKI_moeity_in_pBCKI.pBCKI.species_end = {838.27, 1083.07}
+  Deg_of_CKI_moeity_in_pBCKI.pBCKI.b1 = {630.85, 811.51}
+  Deg_of_CKI_moeity_in_pBCKI.pBCKI.b2 = {750.31, 968.07}
+  Deg_of_CKI_moeity_in_pBCKI.pB.rxn_end = {504.81, 645.25}
+  Deg_of_CKI_moeity_in_pBCKI.pB.species_end = {236.9, 289.75}
+  Deg_of_CKI_moeity_in_pBCKI.pB.b1 = {441.8, 562.12}
+  Deg_of_CKI_moeity_in_pBCKI.pB.b2 = {323.6, 405.15}
+  Synthesis_of_CKI.position = {611.38, 690.66}
+  Synthesis_of_CKI.--.rxn_end = {612.04, 671.75}
+  Synthesis_of_CKI.--.species_end = {616.81, 497.96}
+  Synthesis_of_CKI.--.b1 = {613.36, 633.92}
+  Synthesis_of_CKI.--.b2 = {615.42, 556.48}
+  Synthesis_of_CKI.CKI.rxn_end = {610.72, 709.57}
+  Synthesis_of_CKI.CKI.species_end = {604.58, 851.73}
+  Synthesis_of_CKI.CKI.b1 = {609.39, 747.4}
+  Synthesis_of_CKI.CKI.b2 = {606.65, 809.02}
+  Synthesis_of_CKI.--.position = {616.45, 491.96}
+  Synthesis_of_CKI.--.size = {1, 1}
+  Deg_of_CKI.position = {659.38, 727.44}
+  Deg_of_CKI.CKI.rxn_end = {654.68, 742.7}
+  Deg_of_CKI.CKI.species_end = {611.8, 851.73}
+  Deg_of_CKI.CKI.b1 = {645.26, 773.22}
+  Deg_of_CKI.CKI.b2 = {626.17, 820.1}
+  Deg_of_CKI.--.rxn_end = {664.09, 712.18}
+  Deg_of_CKI.--.species_end = {696.71, 571.05}
+  Deg_of_CKI.--.b1 = {673.51, 681.66}
+  Deg_of_CKI.--.b2 = {687.47, 618.73}
+  Deg_of_CKI.--.position = {697.37, 565.05}
+  Deg_of_CKI.--.size = {1, 1}
+  Assoc_of_CKI_with_CycA.position = {529.87, 740.64}
+  Assoc_of_CKI_with_CycA.CKI.rxn_end = {551.87, 712.89}
+  Assoc_of_CKI_with_CycA.CKI.species_end = {603.01, 851.73}
+  Assoc_of_CKI_with_CycA.CKI.b1 = {595.87, 657.39}
+  Assoc_of_CKI_with_CycA.CKI.b2 = {610.44, 740.69}
+  Assoc_of_CKI_with_CycA.CycA.rxn_end = {551.87, 712.89}
+  Assoc_of_CKI_with_CycA.CycA.species_end = {744.12, 276.84}
+  Assoc_of_CKI_with_CycA.CycA.b1 = {595.87, 657.39}
+  Assoc_of_CKI_with_CycA.CycA.b2 = {680.99, 453.24}
+  Assoc_of_CKI_with_CycA.TriA.rxn_end = {507.87, 768.38}
+  Assoc_of_CKI_with_CycA.TriA.species_end = {252.19, 1100.26}
+  Assoc_of_CKI_with_CycA.TriA.b1 = {463.87, 823.88}
+  Assoc_of_CKI_with_CycA.TriA.b2 = {347.03, 975.95}
+  dissoc_3.position = {530.64, 745.91}
+  dissoc_3.TriA.rxn_end = {508.65, 773.66}
+  dissoc_3.TriA.species_end = {252.5, 1100.26}
+  dissoc_3.TriA.b1 = {464.65, 829.15}
+  dissoc_3.TriA.b2 = {347.58, 978.58}
+  dissoc_3.CKI.rxn_end = {552.64, 718.16}
+  dissoc_3.CKI.species_end = {603.06, 851.73}
+  dissoc_3.CKI.b1 = {596.64, 662.66}
+  dissoc_3.CKI.b2 = {610.85, 743.32}
+  dissoc_3.CycA.rxn_end = {552.64, 718.16}
+  dissoc_3.CycA.species_end = {744.26, 276.84}
+  dissoc_3.CycA.b1 = {596.64, 662.66}
+  dissoc_3.CycA.b2 = {681.45, 455.88}
+  Deg_of_CKI_moeity_in_TriA.position = {500.36, 692.01}
+  Deg_of_CKI_moeity_in_TriA.TriA.rxn_end = {474.67, 735.08}
+  Deg_of_CKI_moeity_in_TriA.TriA.species_end = {249.47, 1100.26}
+  Deg_of_CKI_moeity_in_TriA.TriA.b1 = {423.28, 821.22}
+  Deg_of_CKI_moeity_in_TriA.TriA.b2 = {323.53, 982.28}
+  Deg_of_CKI_moeity_in_TriA.CycA.rxn_end = {526.06, 648.94}
+  Deg_of_CKI_moeity_in_TriA.CycA.species_end = {740.68, 276.84}
+  Deg_of_CKI_moeity_in_TriA.CycA.b1 = {577.45, 562.79}
+  Deg_of_CKI_moeity_in_TriA.CycA.b2 = {671.91, 398.28}
+  Deg_of_CycA_moeity_in_TriA.position = {419.97, 989.79}
+  Deg_of_CycA_moeity_in_TriA.TriA.rxn_end = {401.67, 1002.21}
+  Deg_of_CycA_moeity_in_TriA.TriA.species_end = {263.89, 1100.26}
+  Deg_of_CycA_moeity_in_TriA.TriA.b1 = {365.06, 1027.07}
+  Deg_of_CycA_moeity_in_TriA.TriA.b2 = {305.32, 1069.88}
+  Deg_of_CycA_moeity_in_TriA.CKI.rxn_end = {438.27, 977.36}
+  Deg_of_CycA_moeity_in_TriA.CKI.species_end = {573.77, 889.73}
+  Deg_of_CycA_moeity_in_TriA.CKI.b1 = {474.88, 952.51}
+  Deg_of_CycA_moeity_in_TriA.CKI.b2 = {533.48, 914.91}
+  Assoc_of_CKI_with_CycE.position = {446.58, 729.19}
+  Assoc_of_CKI_with_CycE.CKI.rxn_end = {433.69, 704.24}
+  Assoc_of_CKI_with_CycE.CKI.species_end = {586.51, 851.73}
+  Assoc_of_CKI_with_CycE.CKI.b1 = {407.92, 654.35}
+  Assoc_of_CKI_with_CycE.CKI.b2 = {490.77, 740.57}
+  Assoc_of_CKI_with_CycE.CycE.rxn_end = {433.69, 704.24}
+  Assoc_of_CKI_with_CycE.CycE.species_end = {129.98, 261.01}
+  Assoc_of_CKI_with_CycE.CycE.b1 = {407.92, 654.35}
+  Assoc_of_CKI_with_CycE.CycE.b2 = {262.5, 445.2}
+  Assoc_of_CKI_with_CycE.TriE.rxn_end = {459.47, 754.14}
+  Assoc_of_CKI_with_CycE.TriE.species_end = {607.87, 1036.32}
+  Assoc_of_CKI_with_CycE.TriE.b1 = {485.25, 804.03}
+  Assoc_of_CKI_with_CycE.TriE.b2 = {553.01, 932.65}
+  dissoc_4.position = {454.81, 729.56}
+  dissoc_4.TriE.rxn_end = {467.7, 754.51}
+  dissoc_4.TriE.species_end = {608.48, 1036.32}
+  dissoc_4.TriE.b1 = {493.48, 804.41}
+  dissoc_4.TriE.b2 = {557.42, 932.84}
+  dissoc_4.CKI.rxn_end = {441.92, 704.61}
+  dissoc_4.CKI.species_end = {587.21, 851.73}
+  dissoc_4.CKI.b1 = {416.15, 654.72}
+  dissoc_4.CKI.b2 = {495.23, 740.75}
+  dissoc_4.CycE.rxn_end = {441.92, 704.61}
+  dissoc_4.CycE.species_end = {130.35, 261.01}
+  dissoc_4.CycE.b1 = {416.15, 654.72}
+  dissoc_4.CycE.b2 = {266.8, 445.39}
+  Deg_of_CKI_moeity_in_TriE.position = {368.93, 650.17}
+  Deg_of_CKI_moeity_in_TriE.TriE.rxn_end = {394, 690.84}
+  Deg_of_CKI_moeity_in_TriE.TriE.species_end = {606.24, 1036.32}
+  Deg_of_CKI_moeity_in_TriE.TriE.b1 = {444.13, 772.17}
+  Deg_of_CKI_moeity_in_TriE.TriE.b2 = {537.72, 924.58}
+  Deg_of_CKI_moeity_in_TriE.CycE.rxn_end = {343.86, 609.51}
+  Deg_of_CKI_moeity_in_TriE.CycE.species_end = {128.32, 261.01}
+  Deg_of_CKI_moeity_in_TriE.CycE.b1 = {293.73, 528.18}
+  Deg_of_CKI_moeity_in_TriE.CycE.b2 = {198.49, 374.26}
+  Deg_of_CycE_moeity_in_TriE.position = {608.22, 969.61}
+  Deg_of_CycE_moeity_in_TriE.TriE.rxn_end = {608.93, 978.84}
+  Deg_of_CycE_moeity_in_TriE.TriE.species_end = {615.43, 1036.32}
+  Deg_of_CycE_moeity_in_TriE.TriE.b1 = {610.35, 997.3}
+  Deg_of_CycE_moeity_in_TriE.TriE.b2 = {613.24, 1021.43}
+  Deg_of_CycE_moeity_in_TriE.CKI.rxn_end = {607.51, 960.38}
+  Deg_of_CycE_moeity_in_TriE.CKI.species_end = {604.34, 889.73}
+  Deg_of_CycE_moeity_in_TriE.CKI.b1 = {606.09, 941.93}
+  Deg_of_CycE_moeity_in_TriE.CKI.b2 = {604.86, 911.21}
+  Synthesis_of_CycA_by_TFE.position = {493.57, 356.89}
+  Synthesis_of_CycA_by_TFE.--.rxn_end = {467.84, 367.55}
+  Synthesis_of_CycA_by_TFE.--.species_end = {242.32, 468.55}
+  Synthesis_of_CycA_by_TFE.--.b1 = {416.37, 388.87}
+  Synthesis_of_CycA_by_TFE.--.b2 = {316.47, 434.04}
+  Synthesis_of_CycA_by_TFE.CycA.rxn_end = {519.31, 346.23}
+  Synthesis_of_CycA_by_TFE.CycA.species_end = {712.53, 272.31}
+  Synthesis_of_CycA_by_TFE.CycA.b1 = {570.78, 324.91}
+  Synthesis_of_CycA_by_TFE.CycA.b2 = {654.52, 293.28}
+  Synthesis_of_CycA_by_TFE.--.position = {236.32, 470.57}
+  Synthesis_of_CycA_by_TFE.--.size = {1, 1}
+  Deg_of_CycA.position = {561.76, 306.54}
+  Deg_of_CycA.CycA.rxn_end = {580.29, 302.01}
+  Deg_of_CycA.CycA.species_end = {712.53, 268.05}
+  Deg_of_CycA.CycA.b1 = {617.37, 292.96}
+  Deg_of_CycA.CycA.b2 = {674.21, 278.24}
+  Deg_of_CycA.--.rxn_end = {543.22, 311.07}
+  Deg_of_CycA.--.species_end = {386.33, 347.18}
+  Deg_of_CycA.--.b1 = {506.15, 320.13}
+  Deg_of_CycA.--.b2 = {436.97, 335.92}
+  Deg_of_CycA.--.position = {380.33, 347.92}
+  Deg_of_CycA.--.size = {1, 1}
+  Synthesis_of_CycE_by_TFE.position = {162.75, 527.5}
+  Synthesis_of_CycE_by_TFE.--.rxn_end = {167.2, 556.52}
+  Synthesis_of_CycE_by_TFE.--.species_end = {204.63, 816.85}
+  Synthesis_of_CycE_by_TFE.--.b1 = {176.08, 614.55}
+  Synthesis_of_CycE_by_TFE.--.b2 = {192.58, 730.21}
+  Synthesis_of_CycE_by_TFE.CycE.rxn_end = {158.31, 498.48}
+  Synthesis_of_CycE_by_TFE.CycE.species_end = {119.7, 261.01}
+  Synthesis_of_CycE_by_TFE.CycE.b1 = {149.42, 440.45}
+  Synthesis_of_CycE_by_TFE.CycE.b2 = {132.34, 336.22}
+  Synthesis_of_CycE_by_TFE.--.position = {204.91, 821.85}
+  Synthesis_of_CycE_by_TFE.--.size = {1, 1}
+  Deg_of_CycE.position = {144.24, 430.28}
+  Deg_of_CycE.CycE.rxn_end = {141.25, 410.54}
+  Deg_of_CycE.CycE.species_end = {119.31, 261.01}
+  Deg_of_CycE.CycE.b1 = {135.27, 371.07}
+  Deg_of_CycE.CycE.b2 = {125.8, 306.17}
+  Deg_of_CycE.--.rxn_end = {147.23, 450.02}
+  Deg_of_CycE.--.species_end = {175.46, 631.25}
+  Deg_of_CycE.--.b1 = {153.2, 489.49}
+  Deg_of_CycE.--.b2 = {165.83, 570.24}
+  Deg_of_CycE.--.position = {175.82, 636.25}
+  Deg_of_CycE.--.size = {1, 1}
+  activation_of_APCP.position = {673.47, 823.24}
+  activation_of_APCP.APC.rxn_end = {690.64, 840.11}
+  activation_of_APCP.APC.species_end = {770.47, 939.54}
+  activation_of_APCP.APC.b1 = {725, 873.84}
+  activation_of_APCP.APC.b2 = {756.32, 915.13}
+  activation_of_APCP.APCP.rxn_end = {656.29, 806.38}
+  activation_of_APCP.APCP.species_end = {462.9, 640.2}
+  activation_of_APCP.APCP.b1 = {621.94, 772.64}
+  activation_of_APCP.APCP.b2 = {533.83, 697.99}
+  activation_of_APCP.CycB.species_end = {783.38, 892.53}
+  activation_of_APCP.CycB.rxn_end = {680.47, 816.11}
+  activation_of_APCP.CycB.b1 = {731.93, 854.32}
+  activation_of_APCP.CycB.b2 = {687.48, 808.97}
+  inactivation_1.position = {615.72, 780.51}
+  inactivation_1.APCP.rxn_end = {598.54, 763.65}
+  inactivation_1.APCP.species_end = {461.78, 640.2}
+  inactivation_1.APCP.b1 = {564.19, 729.91}
+  inactivation_1.APCP.b2 = {504.4, 676.62}
+  inactivation_1.APC.rxn_end = {632.9, 797.38}
+  inactivation_1.APC.species_end = {766.27, 939.54}
+  inactivation_1.APC.b1 = {667.25, 831.12}
+  inactivation_1.APC.b2 = {725.35, 893.76}
+  Synthesis_of_Cdc20i.position = {911.22, 602.67}
+  Synthesis_of_Cdc20i.--.rxn_end = {899.96, 639.41}
+  Synthesis_of_Cdc20i.--.species_end = {852.09, 801.84}
+  Synthesis_of_Cdc20i.--.b1 = {877.43, 712.89}
+  Synthesis_of_Cdc20i.--.b2 = {859.13, 775.74}
+  Synthesis_of_Cdc20i.Cdc20i.rxn_end = {922.49, 565.93}
+  Synthesis_of_Cdc20i.Cdc20i.species_end = {1069.87, 91.51}
+  Synthesis_of_Cdc20i.Cdc20i.b1 = {945.01, 492.44}
+  Synthesis_of_Cdc20i.Cdc20i.b2 = {1013.07, 273.6}
+  Synthesis_of_Cdc20i.CycB.species_end = {814.61, 892.53}
+  Synthesis_of_Cdc20i.CycB.rxn_end = {901.66, 599.74}
+  Synthesis_of_Cdc20i.CycB.b1 = {858.14, 746.14}
+  Synthesis_of_Cdc20i.CycB.b2 = {892.1, 596.81}
+  Synthesis_of_Cdc20i.--.position = {850.02, 806.84}
+  Synthesis_of_Cdc20i.--.size = {1, 1}
+  Deg_of_Cdc20i.position = {1111.43, 504.83}
+  Deg_of_Cdc20i.Cdc20i.rxn_end = {1107.67, 461.67}
+  Deg_of_Cdc20i.Cdc20i.species_end = {1077.32, 91.51}
+  Deg_of_Cdc20i.Cdc20i.b1 = {1100.15, 375.35}
+  Deg_of_Cdc20i.Cdc20i.b2 = {1086.85, 211.84}
+  Deg_of_Cdc20i.--.rxn_end = {1115.19, 548}
+  Deg_of_Cdc20i.--.species_end = {1150.47, 930.26}
+  Deg_of_Cdc20i.--.b1 = {1122.71, 634.32}
+  Deg_of_Cdc20i.--.b2 = {1138.47, 803.87}
+  Deg_of_Cdc20i.--.position = {1150.49, 935.26}
+  Deg_of_Cdc20i.--.size = {1, 1}
+  activation_of_Cdc20i.position = {800.37, 274.31}
+  activation_of_Cdc20i.Cdc20i.rxn_end = {810.69, 270.92}
+  activation_of_Cdc20i.Cdc20i.species_end = {1051.55, 91.51}
+  activation_of_Cdc20i.Cdc20i.b1 = {831.31, 264.13}
+  activation_of_Cdc20i.Cdc20i.b2 = {946.59, 176.12}
+  activation_of_Cdc20i.Cdc20A.rxn_end = {790.06, 277.7}
+  activation_of_Cdc20i.Cdc20A.species_end = {856.31, 159.38}
+  activation_of_Cdc20i.Cdc20A.b1 = {769.43, 284.49}
+  activation_of_Cdc20i.Cdc20A.b2 = {807.71, 223.63}
+  activation_of_Cdc20i.APCP.species_end = {460.55, 602.2}
+  activation_of_Cdc20i.APCP.rxn_end = {803.5, 283.81}
+  activation_of_Cdc20i.APCP.b1 = {632.03, 443}
+  activation_of_Cdc20i.APCP.b2 = {806.62, 293.31}
+  inactivation_2.position = {973.93, 100.72}
+  inactivation_2.Cdc20A.rxn_end = {963.61, 104.11}
+  inactivation_2.Cdc20A.species_end = {916.86, 121.38}
+  inactivation_2.Cdc20A.b1 = {942.98, 110.9}
+  inactivation_2.Cdc20A.b2 = {924.76, 117.84}
+  inactivation_2.Cdc20i.rxn_end = {984.24, 97.32}
+  inactivation_2.Cdc20i.species_end = {1020.79, 86.49}
+  inactivation_2.Cdc20i.b1 = {1004.87, 90.54}
+  inactivation_2.Cdc20i.b2 = {1017.98, 86.82}
+  degradation.position = {930.93, 612.27}
+  degradation.Cdc20A.rxn_end = {925.43, 565.8}
+  degradation.Cdc20A.species_end = {872.08, 159.38}
+  degradation.Cdc20A.b1 = {914.45, 472.84}
+  degradation.Cdc20A.b2 = {890.51, 292.87}
+  degradation.--.rxn_end = {936.42, 658.75}
+  degradation.--.species_end = {978.82, 1064.41}
+  degradation.--.b1 = {947.41, 751.7}
+  degradation.--.b2 = {965.86, 931.29}
+  degradation.--.position = {978.87, 1069.41}
+  degradation.--.size = {1, 1}
+  activation_of_Cdh1.position = {998.2, 717.06}
+  activation_of_Cdh1.Cdh1i.rxn_end = {987.56, 689.09}
+  activation_of_Cdh1.Cdh1i.species_end = {907.1, 447.47}
+  activation_of_Cdh1.Cdh1i.b1 = {966.28, 633.15}
+  activation_of_Cdh1.Cdh1i.b2 = {931.37, 526.32}
+  activation_of_Cdh1.Cdh1.rxn_end = {1008.84, 745.04}
+  activation_of_Cdh1.Cdh1.species_end = {1105.32, 968.91}
+  activation_of_Cdh1.Cdh1.b1 = {1030.11, 800.98}
+  activation_of_Cdh1.Cdh1.b2 = {1073.04, 898.93}
+  inactivation__of_Cdh1.position = {1003.17, 699.87}
+  inactivation__of_Cdh1.Cdh1.rxn_end = {1013.81, 727.85}
+  inactivation__of_Cdh1.Cdh1.species_end = {1106.5, 968.91}
+  inactivation__of_Cdh1.Cdh1.b1 = {1035.09, 783.79}
+  inactivation__of_Cdh1.Cdh1.b2 = {1076.11, 890.33}
+  inactivation__of_Cdh1.Cdh1i.rxn_end = {992.53, 671.9}
+  inactivation__of_Cdh1.Cdh1i.species_end = {908.16, 447.47}
+  inactivation__of_Cdh1.Cdh1i.b1 = {971.26, 615.96}
+  inactivation__of_Cdh1.Cdh1i.b2 = {934.39, 517.73}
+
+  // CV terms:
+  cell identity "http://identifiers.org/ncit/C12958"
+  APC biological_system "http://identifiers.org/uniprot/Q9H1A4"
+  APCP biological_system "http://identifiers.org/uniprot/Q9H1A4"
+  APCP property "http://identifiers.org/pato/PATO:0002220"
+  BCKI biological_system "http://identifiers.org/uniprot/Q22197"
+  Cdc14 biological_system "http://identifiers.org/uniprot/Q00684"
+  Cdc20A identity "http://identifiers.org/uniprot/Q12834"
+  Cdc20A property "http://identifiers.org/ncit/NCIT:C45329"
+  Cdc20i identity "http://identifiers.org/uniprot/Q12834"
+  Cdc20i property "http://identifiers.org/ncit/C45422"
+  Cdc25P biological_system "http://identifiers.org/uniprot/P30304"
+  Cdc25P property "http://identifiers.org/pato/PATO:0002220"
+  CycB identity "http://identifiers.org/uniprot/P14635"
+  Cdh1 biological_system "http://identifiers.org/uniprot/Q9UM11"
+  Cdh1i biological_system "http://identifiers.org/uniprot/Q9UM11"
+  Cdh1i property "http://identifiers.org/ncit/C45422"
+  CKI biological_system "http://identifiers.org/uniprot/P46527"
+  CKIT biological_system "http://identifiers.org/uniprot/P46527"
+  pBCKI part "http://identifiers.org/uniprot/P06400"
+  pBCKI part "http://identifiers.org/uniprot/P46527"
+  TriA part "http://identifiers.org/uniprot/P46527"
+  TriA part "http://identifiers.org/uniprot/P20248"
+  TriE part "http://identifiers.org/uniprot/P24864"
+  TriE part "http://identifiers.org/uniprot/P46527"
+  CycA identity "http://identifiers.org/uniprot/P20248"
+  CycAT biological_system "http://identifiers.org/uniprot/P20248"
+  CycBT biological_system "http://identifiers.org/uniprot/P14635"
+  pB identity "http://identifiers.org/uniprot/P06400"
+  CycD identity "http://identifiers.org/uniprot/P24385"
+  Mass identity "http://identifiers.org/pato/PATO:0045030"
+  CycE identity "http://identifiers.org/uniprot/P24864"
+  CycET biological_system "http://identifiers.org/uniprot/P24864"
+  preMPF property "http://identifiers.org/uniprot/Q8NHZ8"
+  TFB homolog "http://identifiers.org/uniprot/Q5AFP3"
+  TFE homolog "http://identifiers.org/uniprot/Q01094"
+  TFI homolog "http://identifiers.org/uniprot/Q9UUB7"
+  TriB biological_system "http://identifiers.org/uniprot/P46527"
+  TriB biological_system "http://identifiers.org/uniprot/P06400"
+  Wee1 identity "http://identifiers.org/uniprot/P30291"
+  Mass_accumulation class "http://identifiers.org/ncit/NCIT:C16402"
+  Synthesis_of_MPF class "http://identifiers.org/sbo/SBO:0000393"
+  Deg_of_MPF class "http://identifiers.org/sbo/SBO:0000179"
+  activation_of_MPF_from_pB_by_Cdc25 class "http://identifiers.org/sbo/SBO:0000656"
+  inactivation_of_MPFby_Wee1 class "http://identifiers.org/sbo/SBO:0000665"
+  assoc_of_MPF_with_CKI class "http://identifiers.org/sbo/SBO:0000177"
+  dissoc_1 class "http://identifiers.org/sbo/SBO:0000180"
+  deg_of_pB class "http://identifiers.org/sbo/SBO:0000179"
+  assoc_of_pB_with_CKI class "http://identifiers.org/sbo/SBO:0000177"
+  dissoc_2 class "http://identifiers.org/sbo/SBO:0000180"
+  Cdc25_action class "http://identifiers.org/sbo/SBO:0000330"
+  Wee1_action class "http://identifiers.org/sbo/SBO:0000216"
+  Deg_of_CycB_moeity__in_BCKI class "http://identifiers.org/sbo/SBO:0000179"
+  Deg_of_CKI_moeity_in_BCKI class "http://identifiers.org/sbo/SBO:0000179"
+  Deg_of_pB_moeity_in_pBCKI class "http://identifiers.org/sbo/SBO:0000179"
+  Deg_of_CKI_moeity_in_pBCKI class "http://identifiers.org/sbo/SBO:0000179"
+  Synthesis_of_CKI class "http://identifiers.org/sbo/SBO:0000393"
+  Deg_of_CKI class "http://identifiers.org/sbo/SBO:0000179"
+  Assoc_of_CKI_with_CycA class "http://identifiers.org/sbo/SBO:0000177"
+  dissoc_3 class "http://identifiers.org/sbo/SBO:0000180"
+  Deg_of_CKI_moeity_in_TriA class "http://identifiers.org/sbo/SBO:0000179"
+  Deg_of_CycA_moeity_in_TriA class "http://identifiers.org/sbo/SBO:0000179"
+  Assoc_of_CKI_with_CycE class "http://identifiers.org/sbo/SBO:0000177"
+  dissoc_4 class "http://identifiers.org/sbo/SBO:0000180"
+  Deg_of_CKI_moeity_in_TriE class "http://identifiers.org/sbo/SBO:0000179"
+  Deg_of_CycE_moeity_in_TriE class "http://identifiers.org/sbo/SBO:0000179"
+  Synthesis_of_CycA_by_TFE class "http://identifiers.org/sbo/SBO:0000393"
+  Deg_of_CycA class "http://identifiers.org/sbo/SBO:0000179"
+  Synthesis_of_CycE_by_TFE class "http://identifiers.org/sbo/SBO:0000393"
+  Deg_of_CycE class "http://identifiers.org/sbo/SBO:0000179"
+  activation_of_APCP class "http://identifiers.org/sbo/SBO:0000216"
+  inactivation_1 class "http://identifiers.org/sbo/SBO:0000665"
+  Synthesis_of_Cdc20i class "http://identifiers.org/sbo/SBO:0000393"
+  Deg_of_Cdc20i class "http://identifiers.org/sbo/SBO:0000179"
+  activation_of_Cdc20i class "http://identifiers.org/sbo/SBO:0000656"
+  inactivation_2 class "http://identifiers.org/sbo/SBO:0000665"
+  degradation class "http://identifiers.org/sbo/SBO:0000179"
+  inactivation__of_Cdh1 class "http://identifiers.org/sbo/SBO:0000665"
+
+  model publication "http://identifiers.org/pubmed/16581849"
+  model model_source "http://identifiers.org/biomodels.db/MODEL3897771820",
+                     "http://identifiers.org/biomodels.db/BIOMD0000001044"
+  model property "http://identifiers.org/mamo/MAMO_0000046"
+  model biological_system "http://identifiers.org/reactome/R-HSA-1640170"
+  model container "http://identifiers.org/ncit/C12958"
+  model taxon "http://identifiers.org/taxonomy/40674"
+  model property "http://identifiers.org/go/GO:0007049",
+                 "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2008-11-28T15:31:42Z"
+  model modified "2012-07-20T11:39:44Z"
+  model creator1.givenName "Attila"
+  model creator1.familyName "Csikasz-Nagy"
+  model creator1.organization "University of Trento Centre for Computational and Systems Biology"
+  model creator1.email "csikasz@cosbi.eu"
+  model creator2.givenName "Vijayalakshmi"
+  model creator2.familyName "Chelliah"
+  model creator2.organization "EMBL-EBI"
+  model creator2.email "viji@ebi.ac.uk"
+  model creator3.givenName "Lukas"
+  model creator3.familyName "Endler"
+  model creator3.organization "EMBL-EBI"
+  model creator3.email "lukas@ebi.ac.uk"
+  model creator4.givenName "Attila"
+  model creator4.familyName "Csikasz-Nagy"
+  model creator4.organization "University of Trento Centre for Computational and Systems Biology"
+  model creator4.email "csikasz@cosbi.eu"
+  model creator5.givenName "Vijayalakshmi"
+  model creator5.familyName "Chelliah"
+  model creator5.organization "EMBL-EBI"
+  model creator5.email "viji@ebi.ac.uk"
+  model creator6.givenName "Lukas"
+  model creator6.familyName "Endler"
+  model creator6.organization "EMBL-EBI"
+  model creator6.email "lukas@ebi.ac.uk"
+  model creator7.givenName "Attila"
+  model creator7.familyName "Csikasz-Nagy"
+  model creator7.organization "University of Trento Centre for Computational and Systems Biology"
+  model creator7.email "csikasz@cosbi.eu"
+  model creator8.givenName "Vijayalakshmi"
+  model creator8.familyName "Chelliah"
+  model creator8.organization "EMBL-EBI"
+  model creator8.email "viji@ebi.ac.uk"
+  model creator9.givenName "Tiwari"
+  model creator9.familyName "Krishna"
+  model creator9.organization "EMBL-EBI"
+  model creator9.email "ktiwari@ebi.ac.uk"
+  model creator10.givenName "Lukas"
+  model creator10.familyName "Endler"
+  model creator10.organization "EMBL-EBI"
+  model creator10.email "lukas@ebi.ac.uk"
+  model creator11.givenName "Vijayalakshmi"
+  model creator11.familyName "Chelliah"
+  model creator11.organization "EMBL-EBI"
+  model creator11.email "viji@ebi.ac.uk"
+  model creator12.givenName "Lukas"
+  model creator12.familyName "Endler"
+  model creator12.organization "EMBL-EBI"
+  model creator12.email "lukas@ebi.ac.uk"
+  model creator13.givenName "Attila"
+  model creator13.familyName "Csikasz-Nagy"
+  model creator13.organization "University of Trento Centre for Computational and Systems Biology"
+  model creator13.email "csikasz@cosbi.eu"
+
+  // Notes:
+  model notes ```
+This model originates from the [Cell Cycle Database](http://www.itb.cnr.it/cellcycle/) . It is described in: 
+**Analysis of a generic model of eukaryotic cell-cycle regulation.** *Csikász-Nagy
+A, Battogtokh D, Chen KC, Novák B, Tyson JJ* Biophys. J. [2006 Jun],90(12
+):4361-79 
+PMID: [16581849](http://www.ncbi.nlm.nih.gov/pubmed/16581849) 
+Abstract: 
+We propose a protein interaction network for the regulation of DNA synthesis
+and mitosis that emphasizes the universality of the regulatory system among eukaryotic
+cells. The idiosyncrasies of cell cycle regulation in particular organisms can be
+attributed, we claim, to specific settings of rate constants in the dynamic network
+of chemical reactions. The values of these rate constants are determined ultimately
+by the genetic makeup of an organism. To support these claims, we convert the reaction
+mechanism into a set of governing kinetic equations and provide parameter values
+(specific to budding yeast, fission yeast, frog eggs, and mammalian cells) that account
+for many curious features of cell cycle regulation in these organisms. Using one-parameter
+bifurcation diagrams, we show how overall cell growth drives progression through
+the cell cycle, how cell-size homeostasis can be achieved by two different strategies,
+and how mutations remodel bifurcation diagrams and create unusual cell-division phenotypes.
+The relation between gene dosage and phenotype can be summarized compactly in two-parameter
+bifurcation diagrams. Our approach provides a theoretical framework in which to understand
+both the universality and particularity of cell cycle regulation, and to construct,
+in modular fashion, increasingly complex models of the networks controlling cell
+growth and division. 
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Creative Commons CC0") for more information. 
+
+In summary, you are entitled to use this encoded model in absolutely any manner you
+deem suitable, verbatim, or with modification, alone or embedded it in a larger context,
+redistribute it, commercially or not, in a restricted way or not.
+
+
+To cite BioModels Database, please use: [Li C, Donizelli M, Rodriguez N, Dharuri H, Endler L, Chelliah V, Li L, He E, Henry A, Stefan MI, Snoep JL, Hucka M, Le Novère N, Laibe C (2010) BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models. BMC Syst Biol., 4:92.](http://www.ncbi.nlm.nih.gov/pubmed/20587024)
+```
+end
+
+Csikasz_Nagy2006___Mammalian_Cell_Cycle_model is "Csikasz-Nagy2006 - Mammalian Cell Cycle model"

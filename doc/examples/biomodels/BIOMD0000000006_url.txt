@@ -1,0 +1,148 @@
+// Created by libAntimony v3.0.0
+model *BIOMD0000000006()
+
+  // Compartments and Species:
+  compartment cell;
+  substanceOnly species $EmptySet in cell, $u in cell, $v in cell, $z in cell;
+
+  // Assignment Rules:
+  alpha := k4prime/k4;
+  z := v - u;
+
+  // Rate Rules:
+  u' = k4*(v - u)*(alpha + u^2) - k6*u;
+  v' = kappa - k6*u;
+
+  // Reactions:
+  Reaction1: $EmptySet => $z; kappa;
+  Reaction2: $u => $EmptySet; k6*u;
+  Reaction3: $z => $u; k4*z*(k4prime/k4 + u^2);
+
+  // Species initializations:
+  EmptySet = 1/cell;
+  u = 0;
+  v = 0;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  k4 = 180;
+  k6 = 1;
+  kappa = 0.015;
+  k4prime = 0.018;
+
+  // Other declarations:
+  var alpha;
+  const cell, k4, k6, kappa, k4prime;
+
+  // SBO terms:
+  EmptySet.sboTerm = 291
+  u.sboTerm = 297
+  v.sboTerm = 297
+  z.sboTerm = 297
+  Reaction1.sboTerm = 205
+  Reaction2.sboTerm = 179
+  Reaction3.sboTerm = 176
+
+  // CV terms:
+  cell identity "http://identifiers.org/go/GO:0005623"
+  u property "http://identifiers.org/go/GO:0004693"
+  u biological_system "http://identifiers.org/go/GO:0031387"
+  v version "http://identifiers.org/uniprot/P04551"
+  v version "http://identifiers.org/go/GO:0031387"
+  v property "http://identifiers.org/go/GO:0004693"
+  z version "http://identifiers.org/uniprot/P04551"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL6614715255"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000006"
+  model publication "http://identifiers.org/pubmed/1831270"
+  model taxon "http://identifiers.org/taxonomy/33154"
+  model identity "http://identifiers.org/kegg.pathway/sce04111"
+  model biological_system "http://identifiers.org/go/GO:0000278"
+  model version "http://identifiers.org/reactome/REACT_152"
+  model created "2005-02-08T18:36:17Z"
+  model modified "2013-05-16T14:38:56Z"
+  model creator1.givenName "Bruce"
+  model creator1.familyName "Shapiro"
+  model creator1.organization "NASA Jet Propulsion Laboratory"
+  model creator1.email "bshapiro@jpl.nasa.gov"
+  model creator2.givenName "Lukas"
+  model creator2.familyName "Endler"
+  model creator2.organization "EMBL-EBI"
+  model creator2.email "lukas@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+Tyson1991 - Cell Cycle 2 var 
+
+
+Mathematical model of the interactions of cdc2 and cyclin.
+
+
+Description taken from the original Cellerator version of the model ( [Tyson (1991, 2 variables)](http://www.cellerator.org/notebooks/Tyson2.html) at [http://www.cellerator.org](http://www.cellerator.org/ "xCellerator: A Mathematica package for biological modeling") ). 
+
+
+This model is described in the article:
+
+
+[Modeling the cell division cycle: cdc2 and cyclin interactions.](http://identifiers.org/pubmed/1831270 "Access to this publication") 
+
+
+Tyson JJ. 
+
+Proc. Natl. Acad. Sci. U.S.A. 1991; 88(16); 7328-32 
+Abstract:
+
+
+The proteins cdc2 and cyclin form a heterodimer (maturation promoting factor) that
+controls the major events of the cell cycle. A mathematical model for the interactions
+of cdc2 and cyclin is constructed. Simulation and analysis of the model show that
+the control system can operate in three modes: as a steady state with high maturation
+promoting factor activity, as a spontaneous oscillator, or as an excitable switch.
+We associate the steady state with metaphase arrest in unfertilized eggs, the spontaneous
+oscillations with rapid division cycles in early embryos, and the excitable switch
+with growth-controlled division cycles typical of nonembryonic cells.
+
+
+This is a two variable reduction of the larger 6-variable model published in the
+same paper. The equations are:
+
+u&apos;= k4(v-u)(alpha+u^2)-k6\*u 
+v&apos;=kappa-k6\*u 
+z= v-u 
+with kappa = k1[aa]/[CT] 
+
+In the present implementation, an additional variable z is introduced with z = v-u
+is made, so that the different variables be interpreted as follows:
+
+u=[activeMPF]/[CT] 
+v=([cyclin]+[preMPF]+[activeMPF])/[CT] 
+z=([ cyclin]+[preMPF])/[CT] 
+with [CT]=[CDC2]+{CDC2P]+[preMPF]+[aMPF]. 
+
+The reactions included are only to show the flows between z and u, and do not influence
+the species, as they all are set to *boundaryCondition=True* ,
+meaning, that they are only determined by the rate rules (explicit differential equations)
+and assignment rules. 
+
+If you set *boundaryCondition=False* and remove the rate rules
+for v, u and the the assignment rule for z, you get the more symmetrical, but equivalent,
+version from the Cellerator repository: 
+
+u&apos;= k4\*z\*(alpha+u^2)-k6\*u 
+z&apos;=kappa-z\*(alpha+u^2) 
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identified by: [BIOMD0000000006](http://identifiers.org/biomodels.db/BIOMD0000000006) . 
+
+To cite BioModels Database, please use: [BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models](http://identifiers.org/pubmed/20587024 "Latest BioModels Database publication") . 
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+end
+
+BIOMD0000000006 is "Tyson1991 - Cell Cycle 2 var"

@@ -1,0 +1,106 @@
+// Created by libAntimony v3.0.0
+model *Owen1998___tumour_growth_model()
+
+  // Compartments and Species:
+  compartment cell;
+  species $l in cell, $m in cell, $n in cell;
+
+  // Rate Rules:
+  l' = A*l*m*(N + 1)/(N + l + m + n) + I*(1 + S*m) - K_l*l*m*m - delta_l*l;
+  m' = xi*m*(N + 1)/(N + l + m + n) - m - K_m*l*m*m;
+  n' = n*(N + 1)/(N + l + m + n) - n;
+
+  // Species initializations:
+  l = 0.0999999999999985;
+  m = 0.899999999999988;
+  n = 0.899999999999988;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  A = 0.025;
+  N = 1;
+  I = 0.01;
+  S = 62.5;
+  K_l = 17.857;
+  delta_l = 0.1;
+  xi = 2;
+  K_m = 25;
+
+  // Other declarations:
+  const cell, A, N, I, S, K_l, delta_l, xi, K_m;
+
+  // Display Names:
+  cell is "Tumor Microenvironment";
+  l is "macrophage";
+  m is "mutated cell";
+  n is "normal cell";
+
+  // CV terms:
+  l biological_system "http://identifiers.org/bto/BTO:0000801"
+  m biological_system "http://identifiers.org/cl/CL:0001063"
+  n biological_system "http://identifiers.org/go/GO:0005623"
+
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000670",
+                     "http://identifiers.org/biomodels.db/MODEL1708240000"
+  model property "http://identifiers.org/go/GO:0002837"
+  model property "http://identifiers.org/mamo/MAMO_0000046"
+  model description "http://identifiers.org/pubmed/9661282"
+  model created "2017-06-13T09:19:14Z"
+  model modified "2017-06-13T09:19:14Z"
+  model creator1.givenName "Emma"
+  model creator1.familyName "Fairbanks"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "efairbanks@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+Owen1998 - tumour growth model 
+
+Deterministic model for the early,avascular growth of a tumour, concentrating on
+the inhibitoryeffect of macrophages. 
+
+
+This model is described in the article:
+
+
+[Modelling the macrophage invasion of tumours: effects on growth and composition.](http://identifiers.org/pubmed/9661282 "Access to this publication") 
+
+
+Owen MR, Sherratt JA. 
+
+IMA J Math Appl Med Biol 1998 Jun; 15(2): 165-185 
+Abstract:
+
+
+Even in the early stages of their development, tumours are not simply a homogeneous
+grouping of mutant cells; rather, they develop in tandem with normal tissue cells,
+and also recruit other cell types including lymphatic cells and the endothelial
+cells required for the development of a blood supply. It has been repeatedly
+seen that macrophages form a significant proportion of the tumour mass, and that
+they can have a variety of effects upon the tumour, leading to a delicate balance
+between growth promotion and inhibition. This paper develops a model for the
+early, avascular growth of a tumour, concentrating on the inhibitory effect of
+macrophages due to their cytolytic activity. It is shown that such an immune 
+response is not sufficient to prevent growth, due to it being a second-order
+process with respect to the density of the tumour cells present. However, the
+presence of macrophages does have important effects on the tumour composition,
+and the authors perform a detailed bifurcation analysis of their model to clarify
+this. An extended model is also considered which incorporates addition of exogenous
+chemical regulators. In this case, the model admits the possibility of tumour
+regression, and the therapeutic implications of this are discussed.
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identified by: [BIOMD0000000670](http://identifiers.org/biomodels.db/BIOMD0000000670).
+
+To cite BioModels Database, please use: [Chelliah V et al. BioModels: ten-year anniversary. Nucl. Acids Res. 2015, 43(Database issue):D542-8](http://identifiers.org/pubmed/25414348).
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+end
+
+Owen1998___tumour_growth_model is "Owen1998 - tumour growth model"

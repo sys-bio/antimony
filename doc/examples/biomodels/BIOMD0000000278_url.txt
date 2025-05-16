@@ -1,0 +1,171 @@
+// Created by libAntimony v3.0.0
+model *BIOMD0000000278()
+
+  // Compartments and Species:
+  compartment Compartment;
+  species $R in Compartment, $B in Compartment, $C in Compartment;
+
+  // Assignment Rules:
+  Phi_C := (C + f0*C_s)/(C + C_s);
+  D_B := f0*d_B;
+  Phi_L := ((k3/k4)*K_L_P*Phi_P*B/(1 + k3*K/k4 + (k1/(k2*kO))*(I_O + K_O_P*R/Phi_P)))*(1 + I_L/r_L);
+  Phi_P := (Pbar + P_O)/(Pbar + P_S);
+  Pbar := I_P/k_P;
+  P_O := S_P/k_P;
+  P_S := k6/k5;
+
+  // Rate Rules:
+  R' = D_R*Phi_C - D_B*R/Phi_C;
+  B' = D_B*R/Phi_C - k_B*B;
+  C' = D_C*Phi_L - D_A*Phi_C*C;
+
+  // Species initializations:
+  R = 0.0007734;
+  B = 0.0007282;
+  C = 0.0009127;
+
+  // Compartment initializations:
+  Compartment = 1;
+
+  // Variable initializations:
+  D_R = 0.0007;
+  k_B = 0.189;
+  D_C = 0.0021;
+  D_A = 0.7;
+  C_s = 0.005;
+  d_B = 0.7;
+  f0 = 0.05;
+  I_L = 0;
+  I_O = 0;
+  I_P = 0;
+  K = 10;
+  k1 = 0.01;
+  k2 = 10;
+  k3 = 0.00058;
+  k4 = 0.017;
+  k5 = 0.02;
+  k6 = 3;
+  K_L_P = 3000000;
+  kO = 0.35;
+  K_O_P = 200000;
+  k_P = 86;
+  r_L = 1000;
+  S_P = 250;
+
+  // Other declarations:
+  var Phi_C, D_B, Phi_L, Phi_P, Pbar, P_O, P_S;
+  const Compartment, D_R, k_B, D_C, D_A, C_s, d_B, f0, I_L, I_O, I_P, K, k1;
+  const k2, k3, k4, k5, k6, K_L_P, kO, K_O_P, k_P, r_L, S_P;
+
+  // Display Names:
+  R is "Responding_Osteoblasts";
+  B is "Active_Osteoblasts";
+  C is "Active_Osteoclasts";
+
+  // SBO terms:
+  Compartment.sboTerm = 290
+  R.sboTerm = 236
+  D_R.sboTerm = 9
+  B.sboTerm = 236
+  k_B.sboTerm = 9
+  C.sboTerm = 236
+  D_C.sboTerm = 9
+  D_A.sboTerm = 9
+  C_s.sboTerm = 188
+  d_B.sboTerm = 9
+  f0.sboTerm = 9
+  I_L.sboTerm = 188
+  I_O.sboTerm = 188
+  I_P.sboTerm = 188
+  K.sboTerm = 188
+  k1.sboTerm = 9
+  k2.sboTerm = 9
+  k3.sboTerm = 9
+  k4.sboTerm = 9
+  k5.sboTerm = 9
+  k6.sboTerm = 9
+  K_L_P.sboTerm = 188
+  kO.sboTerm = 9
+  K_O_P.sboTerm = 188
+  k_P.sboTerm = 9
+  r_L.sboTerm = 9
+  S_P.sboTerm = 9
+
+  // CV terms:
+  Compartment biological_system "http://identifiers.org/bto/BTO:0000140"
+  R biological_system "http://identifiers.org/bto/BTO:0001593"
+  B biological_system "http://identifiers.org/bto/BTO:0001593"
+  C biological_system "http://identifiers.org/bto/BTO:0000968"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1006230067"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000278"
+  model publication "http://identifiers.org/pubmed/15234198"
+  model biological_system "http://identifiers.org/go/GO:0046850"
+  model taxon "http://identifiers.org/taxonomy/7711"
+  model property "http://identifiers.org/doid/DOID:14080"
+  model created "2010-11-18T11:20:34Z"
+  model modified "2014-10-09T16:31:19Z"
+  model creator1.givenName "Vijayalakshmi"
+  model creator1.familyName "Chelliah"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "viji@ebi.ac.uk"
+  model creator2.givenName "Frank L"
+  model creator2.familyName "Tobin"
+  model creator2.organization "Scientific Computing and Mathematical Modeling, GlaxoSmithKline, King of Prussia, PA, USA."
+  model creator2.email "frank_tobin@gsk.com"
+  model creator3.givenName "Vincent"
+  model creator3.familyName "Lemaire"
+  model creator3.organization "Scientific Computing and Mathematical Modeling, GlaxoSmithKline, King of Prussia, PA, USA."
+  model creator3.email "lemaire@cnd.mcgill.ca"
+
+  // Notes:
+  model notes ```
+This a model from the article: 
+** Modeling the interactions between osteoblast and osteoclast activities in
+bone remodeling. ** 
+Lemaire V, Tobin FL, Greller LD, Cho CR, Suva LJ. *J Theor Biol.*2004 Aug 7;229(3):293-309.
+[15234198](http://www.ncbi.nlm.nih.gov/pubmed/15234198), 
+**Abstract:** 
+We propose a mathematical model explaining the interactions between osteoblasts and
+osteoclasts, two cell types specialized in the maintenance of the bone integrity.
+Bone is a dynamic, living tissue whose structure and shape continuously evolves during
+life. It has the ability to change architecture by removal of old bone and replacement
+with newly formed bone in a localized process called remodeling. The model described
+here is based on the idea that the relative proportions of immature and mature osteoblasts
+control the degree of osteoclastic activity. In addition, osteoclasts control osteoblasts
+differentially depending on their stage of differentiation. Despite the tremendous
+complexity of the bone regulatory system and its fragmentary understanding, we obtain
+surprisingly good correlations between the model simulations and the experimental
+observations extracted from the literature. The model results corroborate all behaviors
+of the bone remodeling system that we have simulated, including the tight coupling
+between osteoblasts and osteoclasts, the catabolic effect induced by continuous administration
+of PTH, the catabolic action of RANKL, as well as its reversal by soluble antagonist
+OPG. The model is also able to simulate metabolic bone diseases such as estrogen
+deficiency, vitamin D deficiency, senescence and glucocorticoid excess. Conversely,
+possible routes for therapeutic interventions are tested and evaluated. Our model
+confirms that anti-resorptive therapies are unable to partially restore bone loss,
+whereas bone formation therapies yield better results. The model enables us to determine
+and evaluate potential therapies based on their efficacy. In particular, the model
+predicts that combinations of anti-resorptive and anabolic therapies provide significant
+benefits compared with monotherapy, especially for certain type of skeletal disease.
+Finally, the model clearly indicates that increasing the size of the pool of preosteoblasts
+is an essential ingredient for the therapeutic manipulation of bone formation. This
+model was conceived as the first step in a bone turnover modeling platform. These
+initial modeling results are extremely encouraging and lead us to proceed with additional
+explorations into bone turnover and skeletal remodeling. 
+
+This model corresponds to the core model published in the paper. There is no corresponding
+plot to reproduce for this model.To obtain each of the 9 plots in the Figure 2 of
+the reference publication, there are some changes to be made to the core model.The
+curation figure reproduces figure 2 of the reference publication. There is a corresponding
+SBML and Copasi files for each of the plot. See curation tab for more details.
+
+This model originates from BioModels Database: A Database of Annotated Published
+Models (http://www.ebi.ac.uk/biomodels/). It is copyright (c) 2005-2010 The BioModels.net
+Team. 
+For more information see the [terms of use](http://www.ebi.ac.uk/biomodels/legal.html). 
+To cite BioModels Database, please use: [Li C, Donizelli M, Rodriguez N, Dharuri H, Endler L, Chelliah V, Li L, He E, Henry A, Stefan MI, Snoep JL, Hucka M, Le Novère N, Laibe C (2010) BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models. BMC Syst Biol., 4:92.](http://www.ncbi.nlm.nih.gov/pubmed/20587024)
+```
+end
+
+BIOMD0000000278 is "Lemaire2004 - Role of RANK/RANKL/OPG pathway in bone remodelling process"

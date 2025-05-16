@@ -1,0 +1,222 @@
+// Created by libAntimony v3.0.0
+model *Makhlouf2020___No_treatment_model_of_the_role_of_CD4_T_cells_in_tumor_immune_interactions()
+
+  // Compartments and Species:
+  compartment Tumor_microenvironment;
+  species Tumor_cells in Tumor_microenvironment, NK_cells in Tumor_microenvironment;
+  species CD8_T_cells in Tumor_microenvironment, CD4_T_cells in Tumor_microenvironment;
+  species Circulating_lymphocytes in Tumor_microenvironment, IL_2 in Tumor_microenvironment;
+
+  // Assignment Rules:
+  D := d*((CD8_T_cells/(Tumor_cells + 1e-10))^l/(s + (CD8_T_cells/(Tumor_cells + 1e-10))^l));
+
+  // Reactions:
+  Tumour_growth:  => Tumor_cells; Tumor_microenvironment*(a*Tumor_cells*(1 - b*Tumor_cells));
+  Tumour_death: Tumor_cells => ; Tumor_microenvironment*(c*NK_cells*Tumor_cells + D*Tumor_cells + (c_1*Tumor_cells/(a_1 + Tumor_cells))*IL_2);
+  NK_cell_production:  => NK_cells; Tumor_microenvironment*(e*Circulating_lymphocytes + (g*Tumor_cells^2/(h + Tumor_cells^2))*NK_cells);
+  NK_cell_depletion: NK_cells => ; Tumor_microenvironment*(f*NK_cells + p*NK_cells*Tumor_cells);
+  CD8_T_cell_production:  => CD8_T_cells; Tumor_microenvironment*((j*D^2*Tumor_cells^2/(k + D^2*Tumor_cells^2))*CD8_T_cells + (r_1*NK_cells + r_2*Circulating_lymphocytes)*Tumor_cells + (p_i*IL_2/(g_i + IL_2))*CD8_T_cells);
+  CD8_T_cell_depletion: CD8_T_cells => ; Tumor_microenvironment*(m*CD8_T_cells + q*CD8_T_cells*Tumor_cells + u*NK_cells*CD8_T_cells^2);
+  CD4_T_cell_production:  => CD4_T_cells; Tumor_microenvironment*((beta_1*Tumor_cells/(alpha_1 + Tumor_cells))*IL_2);
+  CD4_T_cell_depletion: CD4_T_cells => ; Tumor_microenvironment*(mu_1*CD4_T_cells + delta_2*Tumor_cells*CD4_T_cells);
+  Circulating_lymphocyte_production:  => Circulating_lymphocytes; Tumor_microenvironment*alpha;
+  Circulating_lymphocyte_depletion: Circulating_lymphocytes => ; Tumor_microenvironment*beta*Circulating_lymphocytes;
+  IL_2_production:  => IL_2; Tumor_microenvironment*((beta_2*Tumor_cells/(alpha_2 + Tumor_cells))*CD4_T_cells);
+  IL_2_depletion: IL_2 => ; Tumor_microenvironment*mu_i*IL_2;
+
+  // Species initializations:
+  Tumor_cells = 10000000;
+  NK_cells = 1000;
+  CD8_T_cells = 100;
+  CD4_T_cells = 1000000;
+  Circulating_lymphocytes = 60000000000;
+  IL_2 = 100000;
+
+  // Compartment initializations:
+  Tumor_microenvironment = 1;
+
+  // Variable initializations:
+  a = 0.431;
+  a has unit_0;
+  a_1 = 100000;
+  a_1 has unit_1;
+  b = 1.02e-09;
+  b has unit_2;
+  c = 6.41e-11;
+  c has unit_3;
+  c_1 = 0.2;
+  c_1 has unit_4;
+  d = 2.34;
+  d has unit_0;
+  e = 2.08e-07;
+  e has unit_0;
+  f = 0.0412;
+  f has unit_0;
+  g = 0.0125;
+  g has unit_0;
+  g_i = 20000000;
+  g_i has unit_5;
+  h = 20200000;
+  h has unit_5;
+  j = 0.0249;
+  j has unit_0;
+  k = 36600000;
+  k has unit_5;
+  l = 2.09;
+  m = 0.204;
+  m has unit_0;
+  p = 3.42e-06;
+  p has unit_6;
+  p_i = 0.125;
+  p_i has unit_0;
+  q = 1.42e-06;
+  q has unit_3;
+  r_1 = 1.1e-07;
+  r_1 has unit_3;
+  r_2 = 6.5e-11;
+  r_2 has unit_6;
+  s = 0.0839;
+  u = 3e-10;
+  u has unit_7;
+  alpha = 750000000;
+  alpha has unit_4;
+  alpha_1 = 1000;
+  alpha_1 has unit_1;
+  alpha_2 = 1000;
+  alpha_2 has unit_1;
+  beta = 0.012;
+  beta has unit_0;
+  beta_1 = 0.835;
+  beta_1 has unit_4;
+  beta_2 = 5.4;
+  beta_2 has unit_6;
+  mu_1 = 0.1;
+  mu_1 has unit_0;
+  mu_i = 10;
+  mu_i has unit_0;
+  delta_2 = 1e-07;
+  delta_2 has unit_6;
+
+  // Other declarations:
+  var D;
+  const Tumor_microenvironment, a, a_1, b, c, c_1, d, e, f, g, g_i, h, j;
+  const k, l, m, p, p_i, q, r_1, r_2, s, u, alpha, alpha_1, alpha_2, beta;
+  const beta_1, beta_2, mu_1, mu_i, delta_2;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = litre;
+  unit time_unit = 86400 second;
+  unit substance = item;
+  unit unit_0 = 1 / 86400 second;
+  unit unit_1 = item;
+  unit unit_2 = 1 / item;
+  unit unit_3 = item / 86400 second;
+  unit unit_4 = item / 86400 second;
+  unit unit_5 = item^2;
+  unit unit_6 = 86400 second / item;
+  unit unit_7 = 86400 second / item^2;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1/d";
+  unit_1 is "#";
+  unit_2 is "1/#";
+  unit_3 is "1/d*#";
+  unit_4 is "#/d";
+  unit_5 is "#^2";
+  unit_6 is "1/#*d";
+  unit_7 is "1/#^2*d";
+  IL_2 is "IL-2";
+  IL_2_production is "IL-2_production";
+  IL_2_depletion is "IL-2_depletion";
+
+  // CV terms:
+  Tumor_microenvironment biological_system "http://identifiers.org/ncit/C94498"
+  Tumor_cells biological_system "http://identifiers.org/cl/CL:0001063"
+  NK_cells biological_system "http://identifiers.org/cl/CL:0000623"
+  CD8_T_cells biological_system "http://identifiers.org/cl/CL:0000625"
+  CD4_T_cells biological_system "http://identifiers.org/cl/CL:0000492"
+  Circulating_lymphocytes biological_system "http://identifiers.org/cl/CL:0000542"
+  Circulating_lymphocytes biological_system "http://identifiers.org/cl/CL:0000080"
+  IL_2 biological_system "http://identifiers.org/pr/PR:000001379"
+  Tumour_growth biological_system "http://identifiers.org/go/GO:0008283"
+  Tumour_growth biological_system "http://identifiers.org/sbo/SBO:0000393"
+  Tumour_death biological_system "http://identifiers.org/go/GO:0008219"
+  Tumour_death biological_system "http://identifiers.org/go/GO:0001906"
+  Tumour_death biological_system "http://identifiers.org/sbo/SBO:0000394"
+  NK_cell_production biological_system "http://identifiers.org/go/GO:0008283"
+  NK_cell_production biological_system "http://identifiers.org/sbo/SBO:0000393"
+  NK_cell_depletion biological_system "http://identifiers.org/sbo/SBO:0000394"
+  NK_cell_depletion biological_system "http://identifiers.org/go/GO:0008219"
+  CD8_T_cell_production biological_system "http://identifiers.org/sbo/SBO:0000393"
+  CD8_T_cell_production biological_system "http://identifiers.org/go/GO:0042098"
+  CD8_T_cell_depletion biological_system "http://identifiers.org/sbo/SBO:0000394"
+  CD8_T_cell_depletion biological_system "http://identifiers.org/go/GO:0008219"
+  CD4_T_cell_production biological_system "http://identifiers.org/sbo/SBO:0000393"
+  CD4_T_cell_production biological_system "http://identifiers.org/go/GO:0042098"
+  CD4_T_cell_depletion biological_system "http://identifiers.org/go/GO:0008219"
+  CD4_T_cell_depletion biological_system "http://identifiers.org/sbo/SBO:0000394"
+  Circulating_lymphocyte_production biological_system "http://identifiers.org/go/GO:0008283"
+  Circulating_lymphocyte_production biological_system "http://identifiers.org/sbo/SBO:0000393"
+  Circulating_lymphocyte_depletion biological_system "http://identifiers.org/go/GO:0008219"
+  Circulating_lymphocyte_depletion biological_system "http://identifiers.org/sbo/SBO:0000394"
+  IL_2_production biological_system "http://identifiers.org/sbo/SBO:0000393"
+  IL_2_depletion biological_system "http://identifiers.org/sbo/SBO:0000394"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL2109060001",
+                     "http://identifiers.org/biomodels.db/BIOMD0000001042"
+  model propertyBearer "http://identifiers.org/go/GO:0002418"
+  model propertyBearer "http://identifiers.org/doid/DOID:162"
+  model propertyBearer "http://identifiers.org/ncit/C18670"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model description "http://identifiers.org/pubmed/32148558"
+  model property "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2021-07-21T11:01:47Z"
+  model modified "2021-07-21T11:01:47Z"
+  model creator1.givenName "Krishna"
+  model creator1.familyName "Tiwari"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "ktiwari@ebi.ac.uk"
+  model creator2.givenName "Emilia"
+  model creator2.familyName "Chen"
+  model creator2.organization "University of Cambridge"
+  model creator2.email "eblc2@cam.ac.uk"
+
+  // Notes:
+  model notes ```
+```This ordinary differential equation model simulating the interactions between 
+tumor and immune cells is detailed in the publication:Ahmed M. Makhlouf, Lamiaa El-Shennawy, 
+Hesham A. Elkaranshawy, "Mathematical Modelling for the Role of CD4+T Cells 
+in Tumor-Immune Interactions", Comput Math Methods Med. 2020 Feb 19;2020:7187602.doi: 
+10.1155/2020/7187602Comment:This no treatment model is described by equations 1-7 
+of the publication manuscript. Abstract:Mathematical modelling has been used to study 
+tumor-immune cell interaction. Some models were proposed to examine the effect of 
+circulating lymphocytes, natural killer cells, and CD8+T cells, but they neglected 
+the role of CD4+T cells. Other models were constructed to study the role of CD4+T 
+cells but did not consider the role of other immune cells. In this study, we propose 
+a mathematical model, in the form of a system of nonlinear ordinary differential 
+equations, that predicts the interaction between tumor cells and natural killer cells, 
+CD4+T cells, CD8+T cells, and circulating lymphocytes with or without immunotherapy 
+and/or chemotherapy. This system is stiff, and the Runge–Kutta method failed to 
+solve it. Consequently, the “Adams predictor-corrector” method is used. The results 
+reveal that the patient’s immune system can overcome small tumors; however, if 
+the tumor is large, adoptive therapy with CD4+T cells can be an alternative to both 
+CD8+T cell therapy and cytokines in some cases. Moreover, CD4+T cell therapy could 
+replace chemotherapy depending upon tumor size. Even if a combination of chemotherapy 
+and immunotherapy is necessary, using CD4+T cell therapy can better reduce the dose 
+of the associated chemotherapy compared to using combined CD8+T cells and cytokine 
+therapy. Stability analysis is performed for the studied patients. It has been found 
+that all equilibrium points are unstable, and a condition for preventing tumor recurrence 
+after treatment has been deduced. Finally, a bifurcation analysis is performed to 
+study the effect of varying system parameters on the stability, and bifurcation points 
+are specified. New equilibrium points are created or demolished at some bifurcation 
+points, and stability is changed at some others. Hence, for systems turning to be 
+stable, tumors can be eradicated without the possibility of recurrence. The proposed 
+mathematical model provides a valuable tool for designing patients’ treatment intervention 
+strategies.```
+```
+end
+
+Makhlouf2020___No_treatment_model_of_the_role_of_CD4_T_cells_in_tumor_immune_interactions is "Makhlouf2020 - No treatment model of the role of CD4 T cells in tumor-immune interactions"

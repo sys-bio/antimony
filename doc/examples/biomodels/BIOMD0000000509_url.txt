@@ -1,0 +1,192 @@
+// Created by libAntimony v3.0.0
+model *MODEL1401200001()
+
+  // Compartments and Species:
+  compartment cell;
+  species $d in cell, $ad in cell, $e in cell, $ca in cell, $rs in cell, $x in cell;
+  species $r in cell, $ip3 in cell, $gstar in cell, $kg in cell, $ro in cell;
+  species $delta in cell, $atp in cell, $ip3con in cell, $rscon in cell, $y in cell;
+
+  // Assignment Rules:
+  ad := addash + gamma_*(ca - p1);
+  ca := p1 + p2*ip3^m/(p3^m + ip3^m) + p4*ip3^n/(p5^n + ip3^n);
+  gstar := (ro + delta)/(kg + delta + ro);
+  kg := kd/ka;
+  ro := atp/(kr + atp);
+  delta := kg*kdeg*ip30/(rhstar - kdeg*ip30);
+  ip3con := (tanh((ip3 - ip3min)/0.01) + 1)/2;
+  rscon := (tanh((rscrit - rs)/0.01) + 1)/2;
+
+  // Rate Rules:
+  d' = ad*(k*gf/(1 + k*gf)) - ddd*e*d;
+  e' = ae*(1 + af*(yo - rs)) - dee*x*e;
+  rs' = ps*(yo - rs)*r - pd*rs*d/(qd + rs + d) - pe*rs*e/(qe + rs + e);
+  x' = ax*e + f*(yo - rs) + g*x^2*e - dxx*x;
+  r' = px*(rt - rs - r)*x/(qx + (rt - rs - r) + x) - ps*(yo - rs)*r;
+  ip3' = scale*(rhstar*gstar - kdeg*ip3);
+  atp' = scale*(vatp_s*(y - atp)*rscon*ip3con*((ip3 - ip3min)/(krel + ip3)) - vdeg*atp/(kkdeg + atp));
+  y' = scale*(alpha*(ymax - y) - rscon*ip3con*vatp_s*(y - atp)*((ip3 - ip3min)/(krel + ip3)));
+
+  // Species initializations:
+  d = 0;
+  e = 1;
+  rs = 1.1;
+  x = 0;
+  r = 0;
+  ip3 = 0;
+  atp = 0;
+  y = 0;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  k = 0.05;
+  gf = 6.3;
+  ddd = 0.4;
+  addash = 0.41;
+  gamma_ = 1;
+  p1 = 0.0159835;
+  ae = 0.16;
+  af = 0.9;
+  yo = 1.5;
+  dee = 0.2;
+  px = 0.48;
+  rt = 2.5;
+  qx = 0.8;
+  ps = 0.6;
+  pd = 0.48;
+  qd = 0.6;
+  pe = 0.096;
+  qe = 0.6;
+  ax = 0.08;
+  f = 0.2;
+  g = 0.528;
+  dxx = 1.04;
+  scale = 3600;
+  rhstar = 0.6;
+  kdeg = 0.0625;
+  kd = 0.15;
+  ka = 0.017;
+  kr = 25;
+  ip3min = 0.012;
+  rscrit = 1;
+  vatp_s = 50;
+  krel = 10;
+  vdeg = 2;
+  kkdeg = 50;
+  alpha = 0.083;
+  ymax = 500;
+  ip30 = 0.013;
+  p2 = 0.514987;
+  m = 24.1946;
+  p3 = 1.31319;
+  p4 = 0.332195;
+  n = 9.79183;
+  p5 = 0.787902;
+  smoothness = 0.01;
+  dip = 280;
+  datpp = 300;
+  cabasil = 0.02055236;
+  dist = 50;
+
+  // Other declarations:
+  const cell, k, gf, ddd, addash, gamma_, p1, ae, af, yo, dee, px, rt, qx;
+  const ps, pd, qd, pe, qe, ax, f, g, dxx, scale, rhstar, kdeg, kd, ka, kr;
+  const ip3min, rscrit, vatp_s, krel, vdeg, kkdeg, alpha, ymax, ip30, p2;
+  const m, p3, p4, n, p5, smoothness, dip, datpp, cabasil, dist;
+
+  // CV terms:
+  d part "http://identifiers.org/uniprot/P11802",
+         "http://identifiers.org/uniprot/P24385"
+  e part "http://identifiers.org/uniprot/P24864",
+         "http://identifiers.org/uniprot/P24941"
+  ca biological_system "http://identifiers.org/chebi/CHEBI:29108"
+  rs part "http://identifiers.org/uniprot/Q08999",
+          "http://identifiers.org/uniprot/Q01094"
+  x biological_system "http://identifiers.org/chebi/CHEBI:47867",
+                      "http://identifiers.org/chebi/CHEBI:16541"
+  r biological_system "http://identifiers.org/uniprot/Q08999"
+  ip3 biological_system "http://identifiers.org/chebi/CHEBI:16595"
+  atp biological_system "http://identifiers.org/chebi/CHEBI:15422"
+  y biological_system "http://identifiers.org/chebi/CHEBI:15422"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1401200001"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000509"
+  model publication "http://identifiers.org/pubmed/24434742"
+  model origin "http://identifiers.org/biomodels.db/BIOMD0000000168",
+               "http://identifiers.org/pubmed/16055527"
+  model property "http://identifiers.org/mamo/MAMO_0000046"
+  model parthood "http://identifiers.org/go/GO:0007049",
+                 "http://identifiers.org/go/GO:0005388"
+  model taxon "http://identifiers.org/taxonomy/40674"
+  model created "2014-01-30T15:57:38Z"
+  model modified "2014-02-28T16:35:41Z"
+  model creator1.givenName "Vijayalakshmi"
+  model creator1.familyName "Chelliah"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "viji@ebi.ac.uk"
+  model creator2.givenName "Duncan"
+  model creator2.familyName "Barrack"
+  model creator2.organization "University of Nottingham"
+  model creator2.email "duncan.barrack@nottingham.ac.uk"
+
+  // Notes:
+  model notes ```
+Barrack2014 - Calcium/cell cycle coupling - Rs dependent ATP release 
+
+
+This model is designed based on the hypothesis that cytoplasmic calcium accelerates
+entry into S phase of the cell cycle and/or acts to recruit otherwise quiescents
+cells onto the cell cycle. The model describes the ATP mediated calcium-cell cycle
+coupling via Rs (retinoblastoma tumour suppressor protein bound to the E2F transcription
+factor) in a single radial glial cell.
+
+
+This model is described in the article:
+
+
+[Modelling the coupling between intracellular calcium release and the cell cycle during cortical brain development.](http://identifiers.org/pubmed/24434742 "Access to this publication") 
+
+
+Barrack DS, Thul R, Owen MR. 
+
+J Theor Biol. 2014 Jan 13;347C:17-32. 
+Abstract:
+
+
+Most neocortical neurons formed during embryonic brain development arise from radial
+glial cells which communicate, in part, via ATP mediated calcium signals. Although
+the intercellular signalling mechanisms that regulate radial glia proliferation are
+not well understood, it has recently been demonstrated that ATP dependent intracellular
+calcium release leads to an increase of nearly 100% in overall cellular proliferation.
+It has been hypothesised that cytoplasmic calcium accelerates entry into S phase
+of the cell cycle and/or acts to recruit otherwise quiescent cells onto the cell
+cycle. In this paper we study this cell cycle acceleration and recruitment by forming
+a differential equation model for ATP mediated calcium-cell cycle coupling via Cyclin
+D in a single radial glial cell. Bifurcation analysis and numerical simulations suggest
+that the cell cycle period depends only weakly on cytoplasmic calcium. Therefore,
+the accelerative impact of calcium on the cell cycle can only account for a small
+fraction of the large increase in proliferation observed experimentally. Crucially
+however, our bifurcation analysis reveals that stable fixed point and stable limit
+cycle solutions can coexist, and that calcium dependent Cyclin D dynamics extend
+the oscillatory region to lower Cyclin D synthesis rates, thus rendering cells more
+susceptible to cycling. This supports the hypothesis that cycling glial cells recruit
+quiescent cells (in G0 phase) onto the cell cycle, via a calcium signalling mechanism,
+and that this may be the primary means by which calcium augments proliferation rates
+at the population scale. Numerical simulations of two coupled cells demonstrate that
+such a scenario is indeed feasible.
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identifiedby: [BIOMD0000000509](http://identifiers.org/biomodels.db/BIOMD0000000509) . 
+
+To cite BioModels Database, please use: [BioModels Database: An enhanced, curated and annotated resourcefor published quantitative kinetic models](http://identifiers.org/pubmed/20587024 "Latest BioModels Database publication") . 
+
+
+To the extent possible under law, all copyright and related orneighbouring rights
+to this encoded model have been dedicated to the publicdomain worldwide. Please refer
+to [CC0 Public DomainDedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+end
+
+MODEL1401200001 is "Barrack2014 - Calcium/cell cycle coupling - Rs dependent ATP release"

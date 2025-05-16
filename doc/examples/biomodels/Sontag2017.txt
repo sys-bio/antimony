@@ -1,0 +1,113 @@
+// Created by libAntimony v3.0.0
+model *Sontag2017___Dynamic_model_of_immune_responses_to_antigen_presentation_by_tumor_or_pathogen()
+
+  // Compartments and Species:
+  compartment Whole_organism;
+  species $Antigen_expressing_cells in Whole_organism, Regulatory_cells in Whole_organism;
+  species Effector_cells in Whole_organism;
+
+  // Assignment Rules:
+  Antigen_expressing_cells := piecewise(time - 99, time >= 100, 1);
+
+  // Reactions:
+  pathogen_tumor_production:  => $Antigen_expressing_cells; Whole_organism*(lambda*Antigen_expressing_cells);
+  pathogen_tumor_consumption: $Antigen_expressing_cells => ; Whole_organism*(kappa*Effector_cells*Antigen_expressing_cells);
+  regulatory_production:  => Regulatory_cells; Whole_organism*(beta*Antigen_expressing_cells);
+  regulatory_consumption: Regulatory_cells => ; Whole_organism*delta_x*Regulatory_cells;
+  effector_production:  => Effector_cells; Whole_organism*(mu*(Antigen_expressing_cells/Regulatory_cells));
+  effector_consumption: Effector_cells => ; Whole_organism*detla_y*Effector_cells;
+
+  // Species initializations:
+  Regulatory_cells = 1;
+  Effector_cells = 1;
+
+  // Compartment initializations:
+  Whole_organism = 1;
+
+  // Variable initializations:
+  lambda = 0;
+  kappa = 0;
+  delta_x = 1;
+  beta = 1;
+  mu = 1;
+  detla_y = 1;
+
+  // Other declarations:
+  const Whole_organism, lambda, kappa, delta_x, beta, mu, detla_y;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = litre;
+  unit time_unit = 86400 second;
+  unit substance = item;
+
+  // Display Names:
+  time_unit is "time";
+  Antigen_expressing_cells is "Antigen-expressing_cells";
+  pathogen_tumor_production is "pathogen/tumor_production";
+  pathogen_tumor_consumption is "pathogen/tumor_consumption";
+
+  // CV terms:
+  Whole_organism biological_system "http://identifiers.org/ncit/C13413"
+  Whole_organism property "http://identifiers.org/pato/PATO:0001993"
+  Antigen_expressing_cells biological_system "http://identifiers.org/ido/0000528"
+  Antigen_expressing_cells biological_system "http://identifiers.org/cl/CL:0001063"
+  Antigen_expressing_cells property "http://identifiers.org/chebi/CHEBI:59132"
+  Regulatory_cells biological_system "http://identifiers.org/cl/CL:0000815"
+  Effector_cells biological_system "http://identifiers.org/cl/CL:0000911"
+  pathogen_tumor_production biological_system "http://identifiers.org/sbo/SBO:0000393"
+  pathogen_tumor_consumption biological_system "http://identifiers.org/sbo/SBO:0000394"
+  regulatory_production biological_system "http://identifiers.org/sbo/SBO:0000393"
+  regulatory_consumption biological_system "http://identifiers.org/sbo/SBO:0000394"
+  effector_production biological_system "http://identifiers.org/sbo/SBO:0000393"
+  effector_consumption biological_system "http://identifiers.org/sbo/SBO:0000394"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL2108160001",
+                     "http://identifiers.org/biomodels.db/BIOMD0000001030"
+  model container "http://identifiers.org/bto/BTO:0005810"
+  model propertyBearer "http://identifiers.org/go/GO:0002507"
+  model propertyBearer "http://identifiers.org/go/GO:0019882"
+  model propertyBearer "http://identifiers.org/go/GO:0006955"
+  model taxon "http://identifiers.org/taxonomy/7742"
+  model description "http://identifiers.org/pubmed/28131824"
+  model property "http://identifiers.org/biomodels.teddy/TEDDY_0000034",
+                 "http://identifiers.org/biomodels.teddy/TEDDY_0000043",
+                 "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2021-08-10T11:27:41Z"
+  model modified "2021-08-10T11:27:41Z"
+  model creator1.givenName "Emilia"
+  model creator1.familyName "Chen"
+  model creator1.organization "University of Cambridge"
+  model creator1.email "eblc2@cam.ac.uk"
+  model creator2.givenName "Rahuman"
+  model creator2.familyName "Sheriff"
+  model creator2.organization "EMBL-EBI"
+  model creator2.email "sheriff@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+```This model of the immune system response to antigen presentation is based on the 
+publication:Eduardo D.Sontag (2017) &apos;A Dynamic Model of Immune Responses to 
+Antigen Presentation Predicts Different Regions of Tumor or Pathogen Elimination&apos;, 
+Cell Systems, 4(2)DOI: 10.1016/j.cels.2016.12.003Comment:This model is based on the 
+"toy model" as described by Equations 1A-1C from the manuscript and the 
+system represented by Equation 2, which exhibits a type of incoherent feedforward 
+loop (IFFL).Abstract:The immune system must discriminate between agents of disease 
+and an organism’s healthy cells. While the identification of an antigen as self/non-self 
+is critically important, the dynamic features of antigen presentation may also determine 
+the immune system’s response. Here, we use a simple mathematical model of immune 
+activation to explore the idea of antigen discrimination through dynamics. We propose 
+that antigen presentation is coupled to two nodes, one regulatory and one effecting 
+the immune response, through an incoherent feedforward loop and repressive feedback. 
+This circuit would allow the immune system to effectively estimate the increase of 
+antigens with respect to time, a key determinant of immune reactivity in vivo. Our 
+model makes the prediction that tumors growing at specific rates evade the immune 
+system despite the continuous presence of antigens indicating disease, a phenomenon 
+closely related to clinically observed “two-zone tolerance.” Finally, we discuss 
+a plausible biological instantiation of our circuit using combinations of regulatory 
+and effector T cells.```
+```
+end
+
+Sontag2017___Dynamic_model_of_immune_responses_to_antigen_presentation_by_tumor_or_pathogen is "Sontag2017 - Dynamic model of immune responses to antigen presentation by tumor or pathogen"

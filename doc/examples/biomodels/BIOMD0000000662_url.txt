@@ -1,0 +1,197 @@
+// Created by libAntimony v3.0.0
+model *Moore2004_CML_TcellInteration()
+
+  // Compartments and Species:
+  compartment COMpartment;
+  species CML in COMpartment, T_cell_naive in COMpartment, T_cell_effector in COMpartment;
+  species $Source in COMpartment, $Sink in COMpartment;
+
+  // Reactions:
+  T_cell_naive_Source: $Source => T_cell_naive; COMpartment*sn*Source;
+  T_cell_naive_Natural_Death: T_cell_naive => $Sink; COMpartment*dn*T_cell_naive;
+  T_cell_naive_Activation: T_cell_naive => $Sink; COMpartment*(kn*T_cell_naive*(CML/(CML + eta)));
+  T_cell_effector_Recruitment: $Source => T_cell_effector; COMpartment*(alpha_e*T_cell_effector*(CML/(CML + eta)));
+  T_cell_effector_Natural_Death: T_cell_effector => $Sink; COMpartment*de*T_cell_effector;
+  T_cell_effector_Death_by_CML: T_cell_effector => $Sink; COMpartment*(gamma_e*CML*T_cell_effector);
+  CML_Growth: $Source => CML; COMpartment*(rc*CML*ln(Cmax/CML));
+  CML_death_by_T_cell_effector: CML => $Sink; COMpartment*(gamma_c*T_cell_effector*CML);
+  CML_natural_death: CML => $Sink; COMpartment*dc*CML;
+  T_cell_effector_Production_from_T_cell_Naive_activation: $Source => T_cell_effector; COMpartment*(alpha_n*kn*T_cell_naive*(CML/(CML + eta)));
+
+  // Species initializations:
+  CML = 10000;
+  T_cell_naive = 1510;
+  T_cell_effector = 20;
+  Source = 1;
+  Sink = 1;
+
+  // Compartment initializations:
+  COMpartment = 1;
+
+  // Variable initializations:
+  sn = 0.071;
+  sn has unit_0;
+  dn = 0.05;
+  dn has unit_1;
+  alpha_n = 0.56;
+  alpha_n has unit_2;
+  alpha_e = 0.53;
+  alpha_e has unit_1;
+  de = 0.12;
+  de has unit_1;
+  gamma_e = 0.0077;
+  gamma_e has unit_3;
+  Cmax = 190000;
+  Cmax has unit_4;
+  rc = 0.23;
+  rc has unit_1;
+  dc = 0.68;
+  dc has unit_1;
+  gamma_c = 0.047;
+  gamma_c has unit_3;
+  kn = 0.063;
+  kn has unit_1;
+  eta = 43;
+  eta has unit_4;
+
+  // Other declarations:
+  const COMpartment, sn, dn, alpha_n, alpha_e, de, gamma_e, Cmax, rc, dc;
+  const gamma_c, kn, eta;
+
+  // Unit definitions:
+  unit time_unit = 86400 second;
+  unit substance = item;
+  unit unit_0 = 1 / (11.5741 litre * second);
+  unit unit_1 = 1 / 0.0115741e-3 second;
+  unit unit_2 = 1 / dimensionless^-0;
+  unit unit_3 = 0.0864 litre / second;
+  unit unit_4 = 1 / 1e6 litre;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1/(11.5741*l*s)";
+  unit_1 is "1/(0.0115741*ms)";
+  unit_2 is "1";
+  unit_3 is "0.0864*l/s";
+  unit_4 is "1/Ml";
+  COMpartment is "Blood";
+  T_cell_naive_Source is "T_cell_naive Source";
+  T_cell_naive_Natural_Death is "T_cell_naive Natural Death";
+  T_cell_naive_Activation is "T_cell_naive Activation";
+  T_cell_effector_Recruitment is "T_cell_effector Recruitment";
+  T_cell_effector_Natural_Death is "T_cell_effector Natural Death";
+  T_cell_effector_Death_by_CML is "T_cell_effector Death by CML";
+  CML_Growth is "CML Growth";
+  CML_death_by_T_cell_effector is "CML death by T_cell_effector";
+  CML_natural_death is "CML natural death";
+  T_cell_effector_Production_from_T_cell_Naive_activation is "T_cell_effector Production from T_cell_Naive activation";
+
+  // CV terms:
+  COMpartment biological_system "http://identifiers.org/bto/BTO:0001102"
+  CML biological_system "http://identifiers.org/bto/BTO:0001271"
+  T_cell_naive biological_system "http://identifiers.org/ncit/C104081"
+  T_cell_effector biological_system "http://identifiers.org/ncit/C104083"
+  alpha_n description "http://identifiers.org/isbn/081533642X"
+  de description "http://identifiers.org/pubmed/8186756"
+  rc description "http://identifiers.org/pubmed/10812720"
+  dc description "http://identifiers.org/pubmed/5239861"
+  gamma_c description "http://identifiers.org/doi/10.1006/jtbi.1994.1199"
+  kn description "http://identifiers.org/doi/10.1006/jtbi.1994.1199"
+  T_cell_naive_Source biological_system "http://identifiers.org/ncit/C25683"
+  T_cell_naive_Natural_Death biological_system "http://identifiers.org/go/GO:0008219"
+  T_cell_naive_Activation biological_system "http://identifiers.org/go/GO:0042110"
+  T_cell_effector_Recruitment biological_system "http://identifiers.org/go/GO:0050778"
+  T_cell_effector_Natural_Death biological_system "http://identifiers.org/go/GO:0008219"
+  T_cell_effector_Death_by_CML biological_system "http://identifiers.org/go/GO:0070241"
+  CML_Growth biological_system "http://identifiers.org/ncit/C19387"
+  CML_death_by_T_cell_effector biological_system "http://identifiers.org/go/GO:0008219"
+  CML_natural_death biological_system "http://identifiers.org/go/GO:0008219"
+  T_cell_effector_Production_from_T_cell_Naive_activation biological_system "http://identifiers.org/go/GO:0042110"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1006230057"
+  model publication "http://identifiers.org/pubmed/15038986"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000662"
+  model property "http://identifiers.org/mamo/MAMO_0000046"
+  model biological_system "http://identifiers.org/efo/0000339"
+  model property "http://identifiers.org/go/GO:0002262"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model created "2010-06-25T13:18:54Z"
+  model modified "2010-06-25T13:18:54Z"
+  model creator1.givenName "Matthew Grant"
+  model creator1.familyName "Roberts"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "mroberts@ebi.ac.uk"
+  model creator2.givenName "Rahuman"
+  model creator2.familyName "Sheriff"
+  model creator2.organization "EMBL-EBI"
+  model creator2.email "sheriff@ebi.ac.uk"
+  model creator3.givenName "Catherine"
+  model creator3.familyName "Lloyd"
+  model creator3.organization "University of Auckland"
+  model creator3.email "c.lloyd@auckland.ac.nz"
+
+  // Notes:
+  model notes ```
+Moore2004 - Chronic Myeloid Leukemic cellsand T-lymphocytes interaction 
+
+A mathematical model for theinteraction of between cancer cells and immune system,
+involvingCML cancer cells, naive and effector T-lymphocytes. 
+
+
+This model is described in the article:
+
+
+[A mathematical model for chronic myelogenous leukemia (CML) and T cell interaction.](http://identifiers.org/pubmed/15038986 "Access to this publication") 
+
+
+Moore H, Li NK. 
+
+J. Theor. Biol. 2004 Apr; 227(4): 513-523 
+Abstract:
+
+
+In this paper, we propose and analyse a mathematical model for chronic myelogenous
+leukemia (CML), a cancer of the blood. We model the interaction between naive
+T cells, effector T cells, and CML cancer cells in the body, using a system of
+ordinary differential equations which gives rates of change of the three cell
+populations. One of the difficulties in modeling CML is the scarcity of experimental
+data which can be used to estimate parameters values. To compensate for the resulting
+uncertainties, we use Latin hypercube sampling (LHS) on large ranges of possible
+parameter values in our analysis. A major goal of this work is the determination
+of parameters which play a critical role in remission or clearance of the cancer
+in the model. Our analysis examines 12 parameters, and identifies two of these,
+the growth and death rates of CML, as critical to the outcome of the system. Our
+results indicate that the most promising research avenues for treatments of CML
+should be those that affect these two significant parameters (CML growth and
+death rates), while altering the other parameters should have little effect on
+the outcome.
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identified by: [BIOMD0000000662](http://identifiers.org/biomodels.db/BIOMD0000000662).
+
+To cite BioModels Database, please use: [Chelliah V et al. BioModels: ten-year anniversary. Nucl. Acids Res. 2015, 43(Database issue):D542-8](http://identifiers.org/pubmed/25414348).
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+  sn notes ```
+```value obtained from: Mohri, H., Perelson, A., Tung, K., Ribeiro, R., Ramratnam, 
+B., Markowitz, M., Kost, R., Hurley, A., Weinberger, L., Cesar, D., Hellerstein, 
+M., Ho, D., 2001. Increased turnover of T lymphocytes in HIV-1 infection and its 
+reduction by antiretroviral therapy. J. Exp. Med. 194 (9) (November 5), 1277–1287.```
+```
+  dn notes ```
+```Value obtained from: Mohri, H., Perelson, A., Tung, K., Ribeiro, R., Ramratnam, 
+B., Markowitz, M., Kost, R., Hurley, A., Weinberger, L., Cesar, D., Hellerstein, 
+M., Ho, D., 2001. Increased turnover of T lymphocytes in HIV-1 infection and its 
+reduction by antiretroviral therapy. J. Exp. Med. 194 (9) (November 5), 1277–1287.```
+```
+  alpha_n notes ```
+```Value obtained from: C.A. Janeway, P. Travers, M. Walport, M. Shlomchik. Immunobiology: 
+The Immune System in Health and Disease, Garland Publishing, New York (2001)```
+```
+end
+
+Moore2004_CML_TcellInteration is "Moore2004 - Chronic Myeloid Leukemic cells and T-lymphocyte interaction"

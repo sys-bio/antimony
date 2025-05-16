@@ -1,0 +1,131 @@
+// Created by libAntimony v3.0.0
+model *Model_1()
+
+  // Compartments and Species:
+  compartment cell;
+  species L in cell, R in cell, G in cell, Gbg in cell, Gd in cell, Ga in cell;
+  species RL in cell;
+
+  // Reactions:
+  reaction_0: L + R -> RL; cell*(reaction_0_k1*L*R - reaction_0_k2*RL);
+  reaction_1:  => R; cell*reaction_1_v;
+  reaction_2: R => ; cell*reaction_2_k1*R;
+  reaction_3: Gd + Gbg => G; cell*reaction_3_k1*Gd*Gbg;
+  reaction_4: G => Ga + Gbg; cell*reaction_4_k1*RL*G;
+  reaction_5: RL => ; cell*reaction_5_k1*RL;
+  reaction_6: Ga => Gd; cell*reaction_6_k1*Ga;
+
+  // Species initializations:
+  L = 6.02e+17;
+  R = 10000;
+  G = 7000;
+  Gbg = 3000;
+  Gd = 3000;
+  Ga = 0;
+  RL = 0;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  reaction_0_k1 = 3.32e-18;
+  reaction_0_k2 = 0.01;
+  reaction_1_v = 4;
+  reaction_2_k1 = 0.0004;
+  reaction_3_k1 = 1;
+  reaction_4_k1 = 1e-05;
+  reaction_5_k1 = 0.004;
+  reaction_6_k1 = 0.11;
+
+  // Other declarations:
+  const cell;
+
+  // Unit definitions:
+  unit substance = item;
+
+  // Display Names:
+  L is "Ligand";
+  R is "Receptor";
+  G is "Inactive heterotrimeric G-protein";
+  Gbg is "Free levels of G-beta-gamma";
+  Gd is "G-alpha-GDP";
+  Ga is "G-alpha-GTP";
+  RL is "Receptor-Ligand";
+  reaction_0 is "Ligand-Receptor Association";
+  reaction_1 is "Receptor Synthesis";
+  reaction_2 is "Receptor Degradation";
+  reaction_3 is "Heterotrimeric G-Protein Formation";
+  reaction_4 is "G-protein Activation";
+  reaction_5 is "Receptor-Ligand Degradation";
+  reaction_6 is "G-protein Inactivation ";
+
+  // CV terms:
+  cell biological_system "http://identifiers.org/go/GO:0005623"
+  L version "http://identifiers.org/uniprot/P34165",
+            "http://identifiers.org/uniprot/P34166"
+  L biological_system "http://identifiers.org/interpro/IPR006742"
+  R identity "http://identifiers.org/uniprot/P06842"
+  G biological_system "http://identifiers.org/go/GO:0005834"
+  Gbg identity "http://identifiers.org/go/GO:0031680"
+  Gd part "http://identifiers.org/interpro/IPR001019",
+          "http://identifiers.org/kegg.compound/C00035"
+  Gd part "http://identifiers.org/chebi/CHEBI:17552",
+          "http://identifiers.org/interpro/IPR001019"
+  Ga part "http://identifiers.org/interpro/IPR001019",
+          "http://identifiers.org/kegg.compound/C00044"
+  Ga part "http://identifiers.org/chebi/CHEBI:15996",
+          "http://identifiers.org/interpro/IPR001019"
+  RL biological_system "http://identifiers.org/go/GO:0043235"
+  RL part "http://identifiers.org/uniprot/P34165",
+          "http://identifiers.org/uniprot/P06842"
+  RL part "http://identifiers.org/uniprot/P34166",
+          "http://identifiers.org/uniprot/P06842"
+  reaction_0 biological_system "http://identifiers.org/go/GO:0004934",
+                               "http://identifiers.org/go/GO:0001664",
+                               "http://identifiers.org/go/GO:0005102"
+  reaction_1 biological_system "http://identifiers.org/go/GO:0006412"
+  reaction_2 biological_system "http://identifiers.org/go/GO:0030163"
+  reaction_3 biological_system "http://identifiers.org/go/GO:0001965",
+                               "http://identifiers.org/go/GO:0031683"
+  reaction_4 biological_system "http://identifiers.org/go/GO:0004930",
+                               "http://identifiers.org/go/GO:0043241"
+  reaction_5 biological_system "http://identifiers.org/go/GO:0030163"
+  reaction_6 biological_system "http://identifiers.org/go/GO:0003924"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL9468910329"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000072"
+  model publication "http://identifiers.org/pubmed/12960402"
+  model biological_system "http://identifiers.org/go/GO:0031684"
+  model taxon "http://identifiers.org/taxonomy/4932"
+  model created "2006-10-17T15:12:36Z"
+  model modified "2015-02-24T20:25:59Z"
+  model creator1.givenName "Enuo"
+  model creator1.familyName "He"
+  model creator1.organization "University of Oxford"
+  model creator1.email "enuo.he@wolfson.ox.ac.uk"
+
+  // Notes:
+  model notes ```
+The paper describes both wild-type and mutant cells of G protein cycle by using different
+values of G protein deactivation. We chosed the wild-type, k=0.11 s-1.
+
+The unit of the concentration for the proteins are numbers of molecules per cell.
+
+Figure5(A) was reproduced with COPASI 4.0 (Build 18) and SBML_odeSolver. Figure5(B)
+was reproduced with COPASI 4.0 (Build 18).
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Creative Commons CC0") for more information. 
+
+In summary, you are entitled to use this encoded model in absolutely any manner you
+deem suitable, verbatim, or with modification, alone or embedded it in a larger context,
+redistribute it, commercially or not, in a restricted way or not.
+
+
+To cite BioModels Database, please use: [Li C, Donizelli M, Rodriguez N, Dharuri H, Endler L, Chelliah V, Li L, He E, Henry A, Stefan MI, Snoep JL, Hucka M, Le Novère N, Laibe C (2010) BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models. BMC Syst Biol., 4:92.](http://www.ncbi.nlm.nih.gov/pubmed/20587024)
+```
+end
+
+Model_1 is "Yi2003_GproteinCycle"

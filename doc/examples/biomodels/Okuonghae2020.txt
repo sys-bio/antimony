@@ -1,0 +1,193 @@
+// Created by libAntimony v3.0.0
+model *Okuonghae2020___SEAIR_model_of_COVID_19_transmission_in_Lagos__Nigeria()
+
+  // Compartments and Species:
+  compartment Lagos;
+  species susceptible in Lagos, exposed in Lagos, asymptomatic in Lagos, symptomatic in Lagos;
+  species detected in Lagos, recovered in Lagos, deceased in Lagos, $total_pop in Lagos;
+  species detected_cumulative in Lagos;
+
+  // Assignment Rules:
+  total_pop := asymptomatic + detected + exposed + recovered + susceptible + symptomatic;
+  lam := transmission_rate_effective*(1 - eps)*(1 - delta)*(alpha*asymptomatic + symptomatic)/(total_pop - detected);
+
+  // Reactions:
+  susceptible_to_exposed: susceptible => exposed; Lagos*lam*susceptible;
+  exposed_to_symptomatic: exposed => symptomatic; Lagos*(sigma*(1 - nu)*exposed);
+  exposed_to_asymptopmatic: exposed => asymptomatic; Lagos*(sigma*nu*exposed);
+  symptomatic_to_detected: symptomatic => detected + detected_cumulative; Lagos*psi*symptomatic;
+  asymptomatic_to_detected: asymptomatic => detected + detected_cumulative; Lagos*theta*asymptomatic;
+  symptomatic_to_recovered: symptomatic => recovered; Lagos*gamma_0*symptomatic;
+  asymptomatic_to_recovered: asymptomatic => recovered; Lagos*gamma_a*asymptomatic;
+  detected_to_recovered: detected => recovered; Lagos*gamma_i*detected;
+  symptomatic_to_deceased: symptomatic => deceased; Lagos*d_0*symptomatic;
+  detected_to_deceased: detected => deceased; Lagos*d_D*detected;
+
+  // Species initializations:
+  susceptible = 14367982;
+  exposed = exposed_start;
+  asymptomatic = asymptomatic_start;
+  symptomatic = symptomatic_start;
+  detected = 1;
+  recovered = 0;
+  deceased = 0;
+  detected_cumulative = 1;
+
+  // Compartment initializations:
+  Lagos = 1;
+
+  // Variable initializations:
+  exposed_start = 441;
+  asymptomatic_start = 188;
+  symptomatic_start = 212;
+  transmission_rate_effective = 0.4236;
+  gamma_a = 0.13978;
+  gamma_a has unit_0;
+  gamma_0 = 0.13978;
+  gamma_0 has unit_0;
+  gamma_i = 1/15;
+  gamma_i has unit_0;
+  psi = 0.0135;
+  psi has unit_0;
+  theta = 1.8999*10^-12;
+  theta has unit_0;
+  d_0 = 0.015;
+  d_0 has unit_0;
+  d_D = 0.015;
+  d_D has unit_0;
+  sigma = 1/5.2;
+  sigma has unit_0;
+  nu = 0.5;
+  nu has unit_0;
+  alpha = 0.5;
+  alpha has unit_0;
+  eps = 0;
+  delta = 0;
+
+  // Other declarations:
+  var lam;
+  const Lagos, exposed_start, asymptomatic_start, symptomatic_start, transmission_rate_effective;
+  const gamma_a, gamma_0, gamma_i, psi, theta, d_0, d_D, sigma, nu, alpha;
+  const eps, delta;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = item;
+  unit unit_0 = 1 / 86400 second;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1/d";
+
+  // CV terms:
+  Lagos parthood "http://identifiers.org/ncit/C16917"
+  susceptible identity "http://identifiers.org/ido/0000514"
+  exposed identity "http://identifiers.org/ido/0000514"
+  exposed property "http://identifiers.org/ido/0000597"
+  asymptomatic identity "http://identifiers.org/ido/0000511"
+  asymptomatic identity "http://identifiers.org/ncit/C171133"
+  asymptomatic property "http://identifiers.org/ido/0000569"
+  symptomatic identity "http://identifiers.org/ncit/C171133"
+  symptomatic identity "http://identifiers.org/ido/0000511"
+  symptomatic property "http://identifiers.org/ido/0000573"
+  detected identity "http://identifiers.org/ido/0000511"
+  detected property "http://identifiers.org/ncit/C16210"
+  recovered property "http://identifiers.org/ido/0000621"
+  deceased identity "http://identifiers.org/ncit/C28554"
+  susceptible_to_exposed identity "http://identifiers.org/ido/0000597"
+  susceptible_to_exposed identity "http://identifiers.org/ncit/C171133"
+  exposed_to_symptomatic identity "http://identifiers.org/ncit/C128320"
+  exposed_to_symptomatic identity "http://identifiers.org/ncit/C168447"
+  exposed_to_asymptopmatic identity "http://identifiers.org/ncit/C168121"
+  exposed_to_asymptopmatic identity "http://identifiers.org/ncit/C128320"
+  symptomatic_to_detected identity "http://identifiers.org/ncit/C16210"
+  asymptomatic_to_detected identity "http://identifiers.org/ncit/C16210"
+  symptomatic_to_recovered identity "http://identifiers.org/ncit/C25746"
+  asymptomatic_to_recovered identity "http://identifiers.org/ncit/C25746"
+  detected_to_recovered identity "http://identifiers.org/ncit/C25746"
+  symptomatic_to_deceased identity "http://identifiers.org/ncit/C28554"
+  detected_to_deceased identity "http://identifiers.org/ncit/C28554"
+
+  model publication "http://identifiers.org/pubmed/32834593"
+  model model_source "http://identifiers.org/biomodels.db/MODEL2102180001",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000991"
+  model identity "http://identifiers.org/doid/DOID:0080600"
+  model taxon "http://identifiers.org/taxonomy/2697049",
+              "http://identifiers.org/taxonomy/9606"
+  model property "http://identifiers.org/mamo/MAMO_0000028"
+  model created "2020-11-13T14:20:23Z"
+  model modified "2020-11-13T14:20:23Z"
+  model creator1.givenName "Paul Jonas"
+  model creator1.familyName "Jost"
+  model creator1.organization "University of Bonn"
+  model creator1.email "s6pajost@uni-bonn.de"
+  model creator2.givenName "Dilan"
+  model creator2.familyName "Pathirana"
+  model creator2.organization "University of Bonn"
+  model creator2.email "dilan_pathirana@outlook.com"
+
+  // Notes:
+  model notes ```
+This work examines the impact of various non-pharmaceutical control measures (government
+and personal) on the population dynamics of the novel coronavirus disease 2019 (COVID-19)
+in Lagos, Nigeria, using an appropriately formulated mathematical model. Using the
+available data, since its first reported case on 16 March 2020, we seek to develop
+a predicative tool for the cumulative number of reported cases and the number of
+active cases in Lagos; we also estimate the basic reproduction number of the disease
+outbreak in the aforementioned State in Nigeria. Using numerical simulations, we
+show the effect of control measures, specifically the common social distancing, use
+of face mask and case detection (via contact tracing and subsequent testings) on
+the dynamics of COVID-19. We also provide forecasts for the cumulative number of
+reported cases and active cases for different levels of the control measures being
+implemented. Numerical simulations of the model show that if at least 55% of the
+population comply with the social distancing regulation with about 55% of the population
+effectively making use of face masks while in public, the disease will eventually
+die out in the population and that, if we can step up the case detection rate for
+symptomatic individuals to about 0.8 per day, with about 55% of the population complying
+with the social distancing regulations, it will lead to a great decrease in the incidence
+(and prevalence) of COVID-19.
+```
+  susceptible notes "```The susceptible humans.```"
+  exposed notes "```Exposed humans (infected but not infectious and show no sign of disease).```"
+  exposed_start notes "```The amount of exposed cases at time 0. Has to be estimated.```"
+  asymptomatic notes "```Asymptomatically-infected undetected people.```"
+  asymptomatic_start notes "```The amount of asymptomatic cases at time 0. Has to be estimated.```"
+  symptomatic notes "```Symptomatically-infectious undetected humans.```"
+  symptomatic_start notes "```The amount of symptomatic cases at time 0. Has to be estimated.```"
+  detected notes "```Detected infectious people (symptomatic and asymptomatic).```"
+  recovered notes "```Recovered people.```"
+  deceased notes "```Deaceased people due to corona.```"
+  detected_cumulative notes "```The sum over all detected cases over time.```"
+  transmission_rate_effective notes "```Effective transmission rate (important for lambda).```"
+  gamma_a notes "```Recovery rates for individuals in the asymptomatic class.```"
+  gamma_0 notes "```Recovery rates for individuals in the symptomatic class.```"
+  gamma_i notes "```Recovery rates for individuals in the detected class.```"
+  psi notes "```detection rate (via contact tracing and testing) for the symptomatic class.```"
+  theta notes "```detection rate (via contact tracing and testing) for the asymptomatic class.```"
+  d_0 notes "```Disease induced death rates for individuals in the symptomatic class.```"
+  d_D notes "```Disease induced death rates for individuals in the detected class.```"
+  sigma notes "```Progression rate from exposed state to infectious state.```"
+  nu notes "```Fraction of new infectious humans that are asymptomatic.```"
+  alpha notes ```
+```Modification parameter that accounts for the reduced infectiousness of humansin 
+the A class when compared to humans in the I class.```
+```
+  eps notes ```
+```eps represents the fraction of the entire population that effectively makes use 
+of a face mask (where we assume that the face masks are with high efficacy), any 
+time they are in public.```
+```
+  delta notes ```
+```delta represents the proportion of the pop- ulation that maintains the minimum 
+distance required to prevent an infection (at least 1 m apart).```
+```
+  lam notes ```
+```The rate at which Sucpectible turn into Exposed people (already depending on Asymptomatic 
+and symptomatic).```
+```
+end
+
+Okuonghae2020___SEAIR_model_of_COVID_19_transmission_in_Lagos__Nigeria is "Okuonghae2020 - SEAIR model of COVID-19 transmission in Lagos, Nigeria"

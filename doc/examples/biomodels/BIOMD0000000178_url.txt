@@ -1,0 +1,176 @@
+// Created by libAntimony v3.0.0
+model *Lebeda2008_BoTN_Paralysis_4stepModel()
+
+  // Compartments and Species:
+  compartment extracellular, endosome, neuroplasm;
+  species $BoNT in extracellular, bulk in extracellular, free in extracellular;
+  species bound in extracellular, translocate in endosome, lytic in neuroplasm;
+
+  // Assignment Rules:
+  BoNT := bulk + free;
+  tension := 1 - lytic;
+
+  // Reactions:
+  endocytosis: bound => translocate; endocytosis_kT*bound*extracellular;
+  translocation: translocate => lytic; translocation_kL*translocate*endosome;
+  binding: free => bound; binding_kB*free*extracellular;
+  bulk_movement: bulk => free; bulk_movement_kS*bulk*extracellular;
+
+  // Species initializations:
+  bulk = 1;
+  free = 0;
+  bound = 0;
+  translocate = 0;
+  lytic = 0;
+
+  // Compartment initializations:
+  extracellular = 1;
+  endosome = 1;
+  neuroplasm = 1;
+
+  // Variable initializations:
+  endocytosis_kT = 0.141;
+  endocytosis_kT has pmin;
+  translocation_kL = 0.013;
+  translocation_kL has pmin;
+  binding_kB = 0.058;
+  binding_kB has pmin;
+  bulk_movement_kS = 0.00015;
+  bulk_movement_kS has pmin;
+
+  // Other declarations:
+  var tension;
+  const extracellular, endosome, neuroplasm;
+
+  // Unit definitions:
+  unit substance = dimensionless;
+  unit volume = dimensionless;
+  unit time_unit = 60 second;
+  unit pmin = 1 / 60 second;
+
+  // Display Names:
+  substance is "relative concentration";
+  volume is "normalized volume";
+  time_unit is "min";
+  pmin is "perminute";
+  BoNT is "tot_free_BoNT/A";
+  bulk is "bulk_BoNT/A";
+  free is "free_BoNT/A";
+  bound is "bound_BoNT/A";
+  translocate is "transloc_BoNT/A";
+  lytic is "lytic_BoNT/A";
+
+  // CV terms:
+  extracellular identity "http://identifiers.org/go/GO:0005615"
+  endosome identity "http://identifiers.org/go/GO:0031904"
+  neuroplasm biological_system "http://identifiers.org/go/GO:0005829",
+                               "http://identifiers.org/go/GO:0043679"
+  BoNT identity "http://identifiers.org/kegg.compound/C07946"
+  bulk identity "http://identifiers.org/kegg.compound/C07946"
+  free identity "http://identifiers.org/kegg.compound/C07946"
+  bound part "http://identifiers.org/kegg.compound/C07946"
+  translocate part "http://identifiers.org/kegg.compound/C07946"
+  lytic biological_system "http://identifiers.org/kegg.compound/C07946"
+  endocytosis homolog "http://identifiers.org/reactome/REACT_11086.1"
+  translocation biological_system "http://identifiers.org/reactome/REACT_11085.1"
+  binding biological_system "http://identifiers.org/reactome/REACT_11084.1"
+  bulk_movement biological_system "http://identifiers.org/go/GO:0006858"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL8472829123"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000178"
+  model publication "http://identifiers.org/pubmed/18551355"
+  model origin "http://identifiers.org/biomodels.db/BIOMD0000000267",
+               "http://identifiers.org/pubmed/6243359"
+  model biological_system "http://identifiers.org/reactome/REACT_11184.1",
+                          "http://identifiers.org/go/GO:0032223",
+                          "http://identifiers.org/go/GO:0033264",
+                          "http://identifiers.org/go/GO:0006898",
+                          "http://identifiers.org/go/GO:0009405"
+  model taxon "http://identifiers.org/taxonomy/9606",
+              "http://identifiers.org/taxonomy/10116",
+              "http://identifiers.org/taxonomy/10090"
+  model property "http://identifiers.org/doid/DOID:11976"
+  model created "2008-08-08T15:57:53Z"
+  model modified "2017-05-18T11:01:40Z"
+  model creator1.givenName "Lukas"
+  model creator1.familyName "Endler"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "lukas@ebi.ac.uk"
+  model creator2.givenName "Frank"
+  model creator2.familyName "Lebeda"
+  model creator2.organization "Integrated Toxicology Division, US Army Medical Research Institute of Infectious Diseases"
+  model creator2.email "frank.lebeda@amedd.army.mil"
+  model creator3.givenName "Vijayalakshmi"
+  model creator3.familyName "Chelliah"
+  model creator3.organization "EMBL-EBI"
+  model creator3.email "viji@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+Lebeda2008 - BoTN Paralysis (4 stepmodel) 
+
+The onset of paralysis of skeletal muscles induced by BoNT/A at the isolated
+rat neuromuscular junction is described in this model. This model is the extended
+model of  [BIOMD0000000267](http://www.ebi.ac.uk/biomodels/BIOMD0000000267) ,
+which itself is the reduced form of the model developed by Simpson 1980; PMID 
+[6243359](http://www.ncbi.nlm.nih.gov/pubmed/6243359) 
+
+
+This model is described in the article:
+
+
+[Onset dynamics of type A botulinum neurotoxin-induced paralysis.](http://identifiers.org/pubmed/18551355 "Access to this publication") 
+
+
+Lebeda FJ, Adler M, Erickson K, Chushak Y. 
+
+J Pharmacokinet Pharmacodyn 2008 Jun; 35(3): 251-267 
+Abstract:
+
+
+Experimental studies have demonstrated that botulinum neurotoxin serotype A (BoNT/A)
+causes flaccid paralysis by a multi-step mechanism. Following its binding to specific
+receptors at peripheral cholinergic nerve endings, BoNT/A is internalized by
+receptor-mediated endocytosis. Subsequently its zinc-dependent catalytic domain
+translocates into the neuroplasm where it cleaves a vesicle-docking protein, SNAP-25,
+to block neurally evoked cholinergic neurotransmission. We tested the hypothesis
+that mathematical models having a minimal number of reactions and reactants can
+simulate published data concerning the onset of paralysis of skeletal muscles
+induced by BoNT/A at the isolated rat neuromuscular junction (NMJ) and in other
+systems. Experimental data from several laboratories were simulated with two different
+models that were represented by sets of coupled, first-order differential equations.
+In this study, the 3-step sequential model developed by Simpson (J Pharmacol
+Exp Ther 212:16-21,1980) was used to estimate upper limits of the times during
+which anti-toxins and other impermeable inhibitors of BoNT/A can exert an effect.
+The experimentally determined binding reaction rate was verified to be consistent
+with published estimates for the rate constants for BoNT/A binding to and dissociating
+from its receptors. Because this 3-step model was not designed to reproduce 
+temporal changes in paralysis with different toxin concentrations, a new BoNT/A
+species and rate (k(S)) were added at the beginning of the reaction sequence to
+create a 4-step scheme. This unbound initial species is transformed at a rate
+determined by k(S) to a free species that is capable of binding. By systematically
+adjusting the values of k(S), the 4-step model simulated the rapid decline in
+NMJ function (k(S) >or= 0.01), the less rapid onset of paralysis in mice 
+following i.m. injections (k (S) = 0.001), and the slow onset of the therapeutic
+effects of BoNT/A (k(S) < 0.001) in man. This minimal modeling approach was
+not only verified by simulating experimental results, it helped to quantitatively
+define the time available for an inhibitor to have some effect (t(inhib)) and
+the relation between this time and the rate of paralysis onset. The 4-step model
+predicted that as the rate of paralysis becomes slower, the estimated upper limits
+of (t(inhib)) for impermeable inhibitors become longer. More generally, this
+modeling approach may be useful in studying the kinetics of other toxins or viruses
+that invade host cells by similar mechanisms, e.g., receptor-mediated endocytosis.
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identified by: [BIOMD0000000178](http://identifiers.org/biomodels.db/BIOMD0000000178).
+
+To cite BioModels Database, please use: [BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models](http://identifiers.org/pubmed/20587024 "Latest BioModels Database publication").
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+end
+
+Lebeda2008_BoTN_Paralysis_4stepModel is "Lebeda2008 - BoTN Paralysis (4 step model)"

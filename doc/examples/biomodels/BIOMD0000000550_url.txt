@@ -1,0 +1,131 @@
+// Created by libAntimony v3.0.0
+model *MODEL1409250000()
+
+  // Compartments and Species:
+  compartment compartment_1;
+  species $species_1 in compartment_1, $species_2 in compartment_1;
+
+  // Rate Rules:
+  species_1' = -species_1 + parameter_4*(species_2^2/(parameter_3^2 + species_2^2));
+  species_2' = -parameter_5*species_2 + (1/(1 + species_1^2))*(parameter_1 + parameter_2*(species_2^2/(1 + species_2^2)));
+
+  // Species initializations:
+  species_1 = 0.00577667577789773;
+  species_2 = 0.0203298264712407;
+
+  // Compartment initializations:
+  compartment_1 = 1;
+
+  // Variable initializations:
+  parameter_4 = 3.5;
+  parameter_3 = 0.5;
+  parameter_5 = 1.25;
+  parameter_1 = 0.025;
+  parameter_2 = 1;
+
+  // Other declarations:
+  const compartment_1, parameter_4, parameter_3, parameter_5, parameter_1;
+  const parameter_2;
+
+  // Unit definitions:
+  unit volume = dimensionless;
+  unit time_unit = dimensionless;
+  unit substance = dimensionless;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_1 is "Synovium";
+  species_1 is "a";
+  parameter_4 is "alpha4";
+  species_2 is "p";
+  parameter_3 is "alpha3";
+  parameter_5 is "gamma";
+  parameter_1 is "alpha1";
+  parameter_2 is "alpha2";
+
+  // CV terms:
+  compartment_1 biological_system "http://identifiers.org/bto/BTO:0001823"
+  species_1 biological_system "http://identifiers.org/chebi/CHEBI:67079"
+  species_2 biological_system "http://identifiers.org/fma/FMA:84050"
+  species_2 property "http://identifiers.org/pato/PATO:0002104"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1409250000"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000550"
+  model publication "http://identifiers.org/pubmed/23002057"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model parthood "http://identifiers.org/reactome/REACT_75790"
+  model biological_system "http://identifiers.org/go/GO:0050727",
+                          "http://identifiers.org/go/GO:0019221"
+  model property "http://identifiers.org/doid/DOID:7148"
+  model created "2014-09-25T13:48:14Z"
+  model modified "2017-05-18T11:34:59Z"
+  model creator1.givenName "Vincent"
+  model creator1.familyName "Knight-Schrijver"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "vknight@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+Baker2013 - Cytokine Mediated Inflammation inRheumatoid Arthritis 
+
+This model by Baker M. 2013, describesthe interaction between pro and anti-inflammatory
+cytokinesignalling in rheumatoid arthritis. 
+
+Using two ordinary differential equations, the first model [[BIOMD0000000550]](http://www.ebi.ac.uk/biomodels-main/anno-model-view.do?mid=BIOMD0000000550)analyses bifurcation and describes different pathological states byaltering inflammatory regulation parameters. 
+The second model [[BIOMD0000000549]](http://www.ebi.ac.uk/biomodels-main/anno-model-view.do?mid=BIOMD0000000549)includes the effect that ageing has on pro-inflammatory signalling,allowing for time-dependant properties and disease progression tobe observed. The author also describes potential dosing forreversal of the disease state. 
+
+
+This model is described in the article:
+
+
+[Mathematical modelling of cytokine-mediated inflammation in rheumatoid arthritis.](http://identifiers.org/pubmed/23002057 "Access to this publication") 
+
+
+Baker M, Denman-Johnson S, Brook BS, Gaywood I, Owen MR. 
+
+Math Med Biol 2013 Dec; 30(4): 311-337 
+Abstract:
+
+
+Rheumatoid arthritis (RA) is a chronic inflammatory disease preferentially affecting
+the joints and leading, if untreated, to progressive joint damage and disability.
+Cytokines, a group of small inducible proteins, which act as intercellular 
+messengers, are key regulators of the inflammation that characterizes RA. They
+can be classified into pro-inflammatory and anti-inflammatory groups. Numerous
+cytokines have been implicated in the regulation of RA with complex up and down
+regulatory interactions. This paper considers a two-variable model for the
+interactions between pro-inflammatory and anti-inflammatory cytokines, and demonstrates
+that mathematical modelling may be used to investigate the involvement of cytokines
+in the disease process. The model displays a range of possible behaviours, such
+as bistability and oscillations, which are strongly reminiscent of the behaviour
+of RA e.g. genetic susceptibility and remitting-relapsing disease. We also 
+show that the dose regimen as well as the dose level are important factors in
+RA treatments.
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identified by: [BIOMD0000000550](http://identifiers.org/biomodels.db/BIOMD0000000550).
+
+To cite BioModels Database, please use: [BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models](http://identifiers.org/pubmed/20587024 "Latest BioModels Database publication").
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+  compartment_1 notes ```
+```Compartment notes: "The synovium is modelled as a spatially uniform collection 
+of homogeneous, generic cells."```
+```
+  species_1 notes "```Anti-inflammatory cytokine concentration (dimensionless)```"
+  parameter_4 notes "```Magnitude of anti-inflammatory cytokine production.```"
+  species_2 notes "```Pro-inflammatory cytokine concentration (dimensionless)```"
+  parameter_3 notes ```
+```Pro-inflammatory cytokine concentration at which the anti-inflammatoryproduction 
+is half maximal```
+```
+  parameter_5 notes "```Relative rate of clearance of pro-inflammatory cytokine to anti-inflammatory cytokine.```"
+  parameter_1 notes "```Background pro-inflammatory production rate```"
+  parameter_2 notes "```Magnitude of additional pro-inflammatory production parameter```"
+end
+
+MODEL1409250000 is "Baker2013 - Cytokine Mediated Inflammation in Rheumatoid Arthritis"

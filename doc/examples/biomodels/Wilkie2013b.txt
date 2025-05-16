@@ -1,0 +1,132 @@
+// Created by libAntimony v3.0.0
+model *Wilkie2013b___immune_induced_cancer_dormancy_and_immune_evasion_basic()
+
+  // Compartments and Species:
+  compartment tumor_microenvironment;
+  species C in tumor_microenvironment, I in tumor_microenvironment;
+
+  // Assignment Rules:
+  a0 := 0.000105*exp(-time/168.1);
+
+  // Reactions:
+  immune_growth:  => I; tumor_microenvironment*(y*I*(1 - I/(Ie + u*C*I)));
+  cancer_logistic_growth:  => C; tumor_microenvironment*(a*C*(1 - C/K));
+  cancer_killing: C => ; tumor_microenvironment*(a0*C*I);
+
+  // Species initializations:
+  C = 1;
+  C has substance_per_volume;
+  I = 100;
+  I has substance_per_volume;
+
+  // Compartment initializations:
+  tumor_microenvironment = 1;
+  tumor_microenvironment has volume;
+
+  // Variable initializations:
+  a = 0.2;
+  a has unit_0;
+  K = 10000000000;
+  K has unit_0;
+  a0 has unit_0;
+  y = 0.2;
+  y has unit_0;
+  Ie = 100;
+  Ie has unit_0;
+  u = 0.001;
+  u has unit_0;
+
+  // Other declarations:
+  var a0;
+  const tumor_microenvironment, a, K, y, Ie, u;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = time_unit;
+  unit substance = 1e-3 mole;
+  unit unit_0 = 1 / dimensionless^-0;
+  unit extent = substance;
+  unit substance_per_volume = 1e-3 mole / 1e-3 litre;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1";
+  tumor_microenvironment is "tumor microenvironment";
+  immune_growth is "immune growth";
+  cancer_logistic_growth is "cancer logistic growth";
+  cancer_killing is "cancer killing";
+
+  // CV terms:
+  tumor_microenvironment biological_system "http://identifiers.org/ncit/C94498"
+  C biological_system "http://identifiers.org/cl/CL:0001064"
+  I biological_system "http://identifiers.org/ncit/C28241"
+  a biological_system "http://identifiers.org/sbo/SBO:0000610"
+  K biological_system "http://identifiers.org/sbo/SBO:0000661"
+  a0 biological_system "http://identifiers.org/ncit/C25201"
+  y biological_system "http://identifiers.org/sbo/SBO:0000610"
+  Ie biological_system "http://identifiers.org/sbo/SBO:0000193"
+  u biological_system "http://identifiers.org/ncit/C64638"
+  immune_growth biological_system "http://identifiers.org/sbo/SBO:0000393"
+  cancer_logistic_growth biological_system "http://identifiers.org/sbo/SBO:0000393"
+  cancer_logistic_growth biological_system "http://identifiers.org/go/GO:0008283"
+  cancer_killing biological_system "http://identifiers.org/go/GO:0002419"
+  cancer_killing biological_system "http://identifiers.org/sbo/SBO:0000179"
+
+  model publication "http://identifiers.org/pubmed/24511375"
+  model model_source "http://identifiers.org/biomodels.db/MODEL1907160002",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000751"
+  model biological_system "http://identifiers.org/go/GO:0002418"
+  model property "http://identifiers.org/mamo/MAMO_0000046"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model created "2019-07-16T13:53:24Z"
+  model modified "2019-07-16T13:53:24Z"
+  model creator1.givenName "Jinghao"
+  model creator1.familyName "Men"
+  model creator1.organization "University of Cambridge"
+  model creator1.email "jm2187@cam.ac.uk"
+
+  // Notes:
+  model notes ```
+The paper describes a basic model of immune-induced cancer dormancy and immune evasion.
+Created by COPASI 4.25 (Build 207) This model is described in the article: Mathematical
+models of immune-induced cancer dormancy and the emergence of immune evasionKathleen
+P. Wilkie and Philip HahnfeldtInterface Focus 3: 20130010Abstract: Cancer dormancy,
+a state in which cancer cells persist in a host without sig- nificant growth, is
+a natural forestallment of progression to manifest disease and is thus of great clinical
+interest. Experimental work in mice suggests that in immune-induced dormancy, the
+longer a cancer remains dormant in a host, the more resistant the cancer cells become
+to cytotoxic T-cell-mediated killing. In this work, mathematical models are used
+to analyse the possible causative mechanisms of cancer escape from immune-induced
+dormancy. Using a data-driven approach, both decaying efficacy in immune predation
+and immune recruitment are analysed with results suggesting that decline in recruitment
+is a stronger determinant of escape than increased resistance to predation. Using
+a mechanistic approach, the existence of an immune- resistant cancer cell subpopulation
+is considered, and the effects on cancer dormancy and potential immunoediting mechanisms
+of cancer escape are analysed and discussed. The immunoediting mechanism assumes
+that the immune system selectively prunes the cancer of immune-sensitive cells, which
+is shown to cause an initially heterogeneous population to become a more homogeneous,
+and more resistant, population. The fact that this selec- tion may result in the
+appearance of decreasing efficacy in T-cell cytotoxic effect with time in dormancy
+is also demonstrated. This work suggests that through actions that temporarily delay
+cancer growth through the targeted removal of immune-sensitive subpopulations, the
+immune response may actually progress the cancer to a more aggressive state.To cite
+BioModels Database, please use: BioModels Database: An enhanced, curated and annotated
+resource for published quantitative kinetic models . To the extent possible under
+law, all copyright and related or neighbouring rights to this encoded model have
+been dedicated to the public domain worldwide.Please refer to CC0 Public Domain Dedication
+for more information.
+```
+  a notes "```cancer growth rate```"
+  K notes "```cancer carrying capacity```"
+  a0 notes ```
+```cancer sensitivity to immune
+predation7.25e-5\*exp(-t/227.9)1.05e-4\*exp(-t/168.1)1.08e-4\*exp(-sqrt(t/99.0))```
+```
+  y notes "```immune growth rate```"
+  Ie notes "```immune homeostatic state```"
+  u notes "```immune recruitment potential```"
+end
+
+Wilkie2013b___immune_induced_cancer_dormancy_and_immune_evasion_basic is "Wilkie2013b - immune-induced cancer dormancy and immune evasion-basic"

@@ -1,0 +1,194 @@
+// Created by libAntimony v3.0.0
+model *New_Model()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species Uninfected_Tumor_Cell_U in compartment_, Infected_Cancer_Cell_I in compartment_;
+  species Oncolytic_Adenovirus_V in compartment_, Tumor_targeting_T_cells_T in compartment_;
+  species Naive_T_cells_A in compartment_, Dendritic_Cells_D in compartment_;
+  species $Total_cells_N in compartment_, $total_tumor_cells in compartment_;
+
+  // Assignment Rules:
+  Total_cells_N := Uninfected_Tumor_Cell_U + Infected_Cancer_Cell_I + Tumor_targeting_T_cells_T;
+  total_tumor_cells := Uninfected_Tumor_Cell_U + Infected_Cancer_Cell_I;
+
+  // Reactions:
+  Tumor_cell_U_exponential_growth:  => Uninfected_Tumor_Cell_U; compartment_*(r*Uninfected_Tumor_Cell_U);
+  Tumour_cell_U_elimination: Uninfected_Tumor_Cell_U => ; compartment_*((k0 + c_kill*Infected_Cancer_Cell_I)*Uninfected_Tumor_Cell_U*Tumor_targeting_T_cells_T/Total_cells_N);
+  Tumor_Cell_U_infection: Uninfected_Tumor_Cell_U => Infected_Cancer_Cell_I; compartment_*(beta*Uninfected_Tumor_Cell_U*Oncolytic_Adenovirus_V/Total_cells_N);
+  Infected_Tumor_Cell_I_death: Infected_Cancer_Cell_I => ; compartment_*(delta_I*Infected_Cancer_Cell_I);
+  Infected_Tumor_Cell_I_elimination: Infected_Cancer_Cell_I => ; compartment_*((k0 + c_kill*Infected_Cancer_Cell_I)*Infected_Cancer_Cell_I*Tumor_targeting_T_cells_T/Total_cells_N);
+  Treatment_with_virus:  => Oncolytic_Adenovirus_V; compartment_*U_V;
+  Natural_decay_of_virus: Oncolytic_Adenovirus_V => ; compartment_*(delta_V*Oncolytic_Adenovirus_V);
+  Release_of_virus:  => Oncolytic_Adenovirus_V; compartment_*(alpha*delta_I*Infected_Cancer_Cell_I);
+  Activation_of_T_Cells_IL12:  => Tumor_targeting_T_cells_T; compartment_*(chi_A*Naive_T_cells_A);
+  Activation_of_naive_T_cells_IL12:  => Naive_T_cells_A; compartment_*(C_A*Infected_Cancer_Cell_I);
+  Activation_of_T_cells_4_1BBL:  => Tumor_targeting_T_cells_T; compartment_*(C_T*Infected_Cancer_Cell_I);
+  Production_of_T_cells:  => Tumor_targeting_T_cells_T; compartment_*(chi_D*Dendritic_Cells_D);
+  natural_death_of_T_cells: Tumor_targeting_T_cells_T => ; compartment_*(delta_T*Tumor_targeting_T_cells_T);
+  natural_death_of_naive_T_cells: Naive_T_cells_A => ; compartment_*(delta_A*Naive_T_cells_A);
+  Treatment_with_Dendritic_Cells_D:  => Dendritic_Cells_D; compartment_*U_D;
+  natural_decay_of_Dendritic_Cells_D: Dendritic_Cells_D => ; compartment_*(delta_D*Dendritic_Cells_D);
+
+  // Events:
+  OV_1: at time == 0: Oncolytic_Adenovirus_V = Oncolytic_Adenovirus_V + OV_dose;
+  OV_2: at time == 2: Oncolytic_Adenovirus_V = Oncolytic_Adenovirus_V + OV_dose;
+  OV_3: at time == 4: Oncolytic_Adenovirus_V = Oncolytic_Adenovirus_V + OV_dose;
+
+  // Species initializations:
+  Uninfected_Tumor_Cell_U = 41.277;
+  Infected_Cancer_Cell_I = 0;
+  Oncolytic_Adenovirus_V = 0;
+  Tumor_targeting_T_cells_T = 0;
+  Naive_T_cells_A = 0;
+  Dendritic_Cells_D = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  OV_dose = 2.5;
+  r = 0.3198;
+  beta = 1.008538;
+  k0 = 2;
+  c_kill = 0.595397;
+  delta_I = 1;
+  U_V = 0;
+  alpha = 3;
+  delta_V = 2.3;
+  C_T = 1.698362;
+  chi_A = 1;
+  chi_D = 4.675397;
+  delta_T = 0.35;
+  C_A = 0.000517;
+  delta_A = 0.35;
+  U_D = 0;
+  delta_D = 0.35;
+  D0 = 1;
+
+  // Other declarations:
+  const compartment_, OV_dose, r, beta, k0, c_kill, delta_I, U_V, alpha, delta_V;
+  const C_T, chi_A, chi_D, delta_T, C_A, delta_A, U_D, delta_D, D0;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  Uninfected_Tumor_Cell_U is "Uninfected Tumor Cell U";
+  Infected_Cancer_Cell_I is "Infected Cancer Cell I";
+  Oncolytic_Adenovirus_V is "Oncolytic Adenovirus V";
+  Tumor_targeting_T_cells_T is "Tumor-targeting T cells T";
+  Naive_T_cells_A is "Naive T cells A";
+  Dendritic_Cells_D is "Dendritic Cells D";
+  Total_cells_N is "Total cells N";
+  total_tumor_cells is "total tumor cells";
+  OV_1 is "OV 1";
+  OV_dose is "OV dose";
+  OV_2 is "OV 2";
+  OV_3 is "OV 3";
+  Tumor_cell_U_exponential_growth is "Tumor cell U exponential growth";
+  Tumour_cell_U_elimination is "Tumour cell U elimination";
+  Tumor_Cell_U_infection is "Tumor Cell U infection";
+  Infected_Tumor_Cell_I_death is "Infected Tumor Cell I death";
+  Infected_Tumor_Cell_I_elimination is "Infected Tumor Cell I elimination";
+  Treatment_with_virus is "Treatment with virus";
+  Natural_decay_of_virus is "Natural decay of virus";
+  Release_of_virus is "Release of virus";
+  Activation_of_T_Cells_IL12 is "Activation of T Cells;IL12";
+  Activation_of_naive_T_cells_IL12 is "Activation of naive T cells;IL12";
+  Activation_of_T_cells_4_1BBL is "Activation of T cells;4-1BBL";
+  Production_of_T_cells is "Production of T cells";
+  natural_death_of_T_cells is "natural death of T cells";
+  natural_death_of_naive_T_cells is "natural death of naive T cells";
+  Treatment_with_Dendritic_Cells_D is "Treatment with Dendritic Cells D";
+  natural_decay_of_Dendritic_Cells_D is "natural decay of Dendritic Cells D";
+
+  // CV terms:
+  compartment_ property "http://identifiers.org/ncit/C13413"
+  compartment_ taxon "http://identifiers.org/taxonomy/10090"
+  Uninfected_Tumor_Cell_U biological_system "http://identifiers.org/efo/0000311"
+  Uninfected_Tumor_Cell_U biological_system "http://identifiers.org/bto/BTO:0002014"
+  Infected_Cancer_Cell_I biological_system "http://identifiers.org/efo/0000311"
+  Infected_Cancer_Cell_I biological_system "http://identifiers.org/bto/BTO:0002014"
+  Infected_Cancer_Cell_I propertyBearer "http://identifiers.org/ncit/C25401"
+  Oncolytic_Adenovirus_V biological_system "http://identifiers.org/ncit/C14179"
+  Oncolytic_Adenovirus_V biological_system "http://identifiers.org/ncit/C28373"
+  Tumor_targeting_T_cells_T biological_system "http://identifiers.org/ncit/C129906"
+  Tumor_targeting_T_cells_T propertyBearer "http://identifiers.org/ncit/C64542"
+  Naive_T_cells_A biological_system "http://identifiers.org/ncit/C129906"
+  Dendritic_Cells_D biological_system "http://identifiers.org/ncit/C12583"
+  Dendritic_Cells_D biological_system "http://identifiers.org/bto/BTO:0002042"
+  Total_cells_N parthood "http://identifiers.org/efo/0000311"
+  Total_cells_N parthood "http://identifiers.org/bto/BTO:0002014"
+  Total_cells_N parthood "http://identifiers.org/ncit/C129906"
+  total_tumor_cells biological_system "http://identifiers.org/efo/0000311"
+  total_tumor_cells biological_system "http://identifiers.org/bto/BTO:0002014"
+  r biological_system "http://identifiers.org/sbo/SBO:0000610"
+  delta_I biological_system "http://identifiers.org/sbo/SBO:0000356"
+  delta_V biological_system "http://identifiers.org/sbo/SBO:0000356"
+  C_T biological_system "http://identifiers.org/sbo/SBO:0000610"
+  chi_A biological_system "http://identifiers.org/sbo/SBO:0000610"
+  chi_D biological_system "http://identifiers.org/sbo/SBO:0000610"
+  delta_T biological_system "http://identifiers.org/sbo/SBO:0000356"
+  C_A biological_system "http://identifiers.org/sbo/SBO:0000610"
+  delta_A biological_system "http://identifiers.org/sbo/SBO:0000356"
+  delta_D biological_system "http://identifiers.org/sbo/SBO:0000356"
+  Tumor_cell_U_exponential_growth biological_system "http://identifiers.org/go/GO:0040007"
+  Tumour_cell_U_elimination biological_system "http://identifiers.org/sbo/SBO:0000179"
+  Tumor_Cell_U_infection biological_system "http://identifiers.org/go/GO:0019089"
+  Infected_Tumor_Cell_I_death biological_system "http://identifiers.org/sbo/SBO:0000179"
+  Infected_Tumor_Cell_I_elimination biological_system "http://identifiers.org/sbo/SBO:0000179"
+  Treatment_with_virus biological_system "http://identifiers.org/go/GO:0035737"
+  Natural_decay_of_virus biological_system "http://identifiers.org/sbo/SBO:0000179"
+  Release_of_virus biological_system "http://identifiers.org/sbo/SBO:0000393"
+  Activation_of_T_Cells_IL12 biological_system "http://identifiers.org/go/GO:0051132"
+  Activation_of_naive_T_cells_IL12 biological_system "http://identifiers.org/go/GO:0051132"
+  Activation_of_T_cells_4_1BBL biological_system "http://identifiers.org/go/GO:0051132"
+  Production_of_T_cells biological_system "http://identifiers.org/sbo/SBO:0000393"
+  natural_death_of_T_cells biological_system "http://identifiers.org/sbo/SBO:0000179"
+  natural_death_of_naive_T_cells biological_system "http://identifiers.org/sbo/SBO:0000179"
+  Treatment_with_Dendritic_Cells_D biological_system "http://identifiers.org/go/GO:0035737"
+  natural_decay_of_Dendritic_Cells_D biological_system "http://identifiers.org/sbo/SBO:0000179"
+
+  model property "http://identifiers.org/ncit/C62713"
+  model property "http://identifiers.org/doid/DOID:1909"
+  model property "http://identifiers.org/efo/0000311"
+  model property "http://identifiers.org/bto/BTO:0002014"
+  model property "http://identifiers.org/mamo/MAMO_0000046"
+  model property "http://identifiers.org/efo/0000756"
+  model taxon "http://identifiers.org/taxonomy/10090"
+  model description "http://identifiers.org/pubmed/30510594"
+  model created "2019-09-06T14:44:44Z"
+  model modified "2019-09-06T14:44:44Z"
+  model creator1.givenName "Szeyi"
+  model creator1.familyName "Ng"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "muffet0307@gmail.com"
+
+  // Notes:
+  model notes ```
+```The model is based on &apos;Developing a Minimally Structured Mathematical Model 
+of Cancer Treatment with Oncolytic Viruses and Dendritic Cell Injections&apos;, PMID:30510594. 
+Author:Jana L.Gevertz and Joanna R.Wares. This model describes the original mathematical 
+model described in section 2.1. Built by COPASI 4.24( Build 197)Abstract:Mathematical 
+models of biological systems must strike a balance between being sufficiently complex 
+to capture important biological features, while being simple enough that they remain 
+tractable through analysis or simulation. In this work, we rigorously explore how 
+to balance these competing interests when modeling murine melanoma treatment with 
+oncolytic viruses and dendritic cell injections. Previously, we developed a system 
+of six ordinary differential equations containing fourteen parameters that well describes 
+experimental data on the efficacy of these treatments. Here, we explore whether this 
+previously developed model is the minimal model needed to accurately describe the 
+data. Using a variety of techniques, including sensitivity analyses and a parameter 
+sloppiness analysis, we find that our model can be reduced by one variable and three 
+parameters and still give excellent fits to the data. We also argue that our model 
+is not too simple to capture the dynamics of the data, and that the original and 
+minimal models make similar predictions about the efficacy and robustness of protocols 
+not considered in experiments. Reducing the model to its minimal form allows us to 
+increase the tractability of the system in the face of parametric uncertainty.```
+```
+end
+
+New_Model is "New Model"

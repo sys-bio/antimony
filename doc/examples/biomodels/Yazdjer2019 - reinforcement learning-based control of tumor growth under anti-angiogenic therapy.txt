@@ -1,0 +1,135 @@
+// Created by libAntimony v3.0.0
+model *New_Model()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species tumor_volume_x_1 in compartment_, endothelial_volume_x_2 in compartment_;
+  species concentration_of_administrated_inhibitor_x_3 in compartment_;
+
+  // Reactions:
+  tumor_growth: tumor_volume_x_1 => ; compartment_*(lambda_1*tumor_volume_x_1*ln(tumor_volume_x_1/endothelial_volume_x_2)*a);
+  endothelial_loss: endothelial_volume_x_2 => ; compartment_*(lambda_2*endothelial_volume_x_2*a);
+  stimulatory_effect:  => endothelial_volume_x_2; compartment_*(b*tumor_volume_x_1*a);
+  inhibition_effect: endothelial_volume_x_2 => ; compartment_*(d*endothelial_volume_x_2*tumor_volume_x_1^(2/3)*a);
+  drug_kill: endothelial_volume_x_2 => ; compartment_*(e*endothelial_volume_x_2*concentration_of_administrated_inhibitor_x_3*a);
+  inhibitor_clearance: concentration_of_administrated_inhibitor_x_3 => ; compartment_*(lambda_3*concentration_of_administrated_inhibitor_x_3*a);
+  administrated_inhibitor:  => concentration_of_administrated_inhibitor_x_3; compartment_*u;
+
+  // Species initializations:
+  tumor_volume_x_1 = 1;
+  endothelial_volume_x_2 = 1;
+  concentration_of_administrated_inhibitor_x_3 = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  lambda_1 = 0.192;
+  lambda_1 has unit_0;
+  lambda_2 = 0;
+  lambda_2 has unit_0;
+  lambda_3 = 1.3;
+  lambda_3 has unit_0;
+  b = 5.85;
+  b has unit_0;
+  d = 0.00873;
+  d has unit_1;
+  e = 0.66;
+  e has unit_2;
+  u = 0;
+  u has unit_3;
+  a = 1;
+
+  // Other declarations:
+  const compartment_, lambda_1, lambda_2, lambda_3, b, d, e, u, a;
+
+  // Unit definitions:
+  unit length = 1e-3 metre;
+  unit area = (1e-3 metre)^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = 1e-3 mole;
+  unit unit_0 = 1 / 86400e-1 second;
+  unit unit_1 = 1 / ((1e-3 metre)^2 * 86400e-1 second);
+  unit unit_2 = 86400e5 second;
+  unit unit_3 = 1 / 86400e5 second;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1/d";
+  unit_1 is "1/(mm^2*day)";
+  unit_2 is "kg/mg*d";
+  unit_3 is "mg/kg/d";
+  compartment_ is "compartment";
+  tumor_volume_x_1 is "tumor volume x_1";
+  endothelial_volume_x_2 is "endothelial volume x_2";
+  concentration_of_administrated_inhibitor_x_3 is "concentration of administrated inhibitor x_3";
+  tumor_growth is "tumor growth";
+  endothelial_loss is "endothelial loss";
+  stimulatory_effect is "stimulatory effect";
+  inhibition_effect is "inhibition effect";
+  drug_kill is "drug kill";
+  inhibitor_clearance is "inhibitor clearance";
+  administrated_inhibitor is "administrated inhibitor";
+
+  // CV terms:
+  compartment_ property "http://identifiers.org/ncit/C13413"
+  tumor_volume_x_1 biological_system "http://identifiers.org/ncit/C94515"
+  endothelial_volume_x_2 biological_system "http://identifiers.org/ncit/C12481"
+  concentration_of_administrated_inhibitor_x_3 biological_system "http://identifiers.org/ncit/C41185"
+  concentration_of_administrated_inhibitor_x_3 biological_system "http://identifiers.org/ncit/C154898"
+  lambda_1 biological_system "http://identifiers.org/sbo/SBO:0000610"
+  lambda_2 biological_system "http://identifiers.org/sbo/SBO:0000356"
+  lambda_3 biological_system "http://identifiers.org/sbo/SBO:0000356"
+  tumor_growth biological_system "http://identifiers.org/go/GO:0040007"
+  endothelial_loss biological_system "http://identifiers.org/sbo/SBO:0000179"
+  stimulatory_effect biological_system "http://identifiers.org/sbo/SBO:0000170"
+  inhibition_effect biological_system "http://identifiers.org/sbo/SBO:0000169"
+  drug_kill biological_system "http://identifiers.org/sbo/SBO:0000179"
+  inhibitor_clearance biological_system "http://identifiers.org/sbo/SBO:0000179"
+  administrated_inhibitor biological_system "http://identifiers.org/go/GO:0035737"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1909240003",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000821"
+  model property "http://identifiers.org/go/GO:0001525"
+  model property "http://identifiers.org/efo/0000311"
+  model property "http://identifiers.org/mamo/MAMO_0000046"
+  model property "http://identifiers.org/ncit/C25409"
+  model property "http://identifiers.org/ncit/C19361"
+  model description "http://identifiers.org/pubmed/31046990"
+  model created "2019-09-24T11:50:15Z"
+  model modified "2019-09-24T11:50:15Z"
+  model creator1.givenName "Szeyi"
+  model creator1.familyName "Ng"
+  model creator1.organization "EBML-EBI"
+  model creator1.email "muffet0307@gmail.com"
+
+  // Notes:
+  model notes ```
+This model is based on:Reinforcement learning-based control of tumor growth under
+anti-angiogenic therapyAuthors: Parisa Yazdjerdi, Nader Meskin, Mohammad Al-Naemi,
+Ala-Eddin Al Moustafa, Levente KovacsAbstract:Background and objectives: In recent
+decades, cancer has become one of the most fatal and destructive diseases which is
+threatening humans life. Accordingly, different types of cancer treatment are studied
+with the main aim to have the best treatment with minimum side effects. Anti-angiogenic
+is a molecular targeted therapy which can be coupled with chemotherapy and radiotherapy.
+Although this method does not eliminate the whole tumor, but it can keep the tumor
+size in a given state by preventing the formation of new blood vessels. In this paper,
+a novel model-free method based on reinforcement learning (RL) framework is used
+to design a closed-loop control of anti-angiogenic drug dosing administration.Methods:
+A Q-learning algorithm is developed for the drug dosing closed-loop control. This
+controller is designed using two different values of the maximum drug dosage to reduce
+the tumor volume up to a desired value. The mathematical model of tumor growth under
+anti-angiogenic inhibitor is used to simulate a real patient.Results: The effectiveness
+of the proposed method is shown through in silico simulation and its robustness to
+patient parameters variation is demonstrated. It is demonstrated that the tumor reaches
+its minimal volume in 84 days with maximum drug inlet of 30 mg/kg/day. Also, it is
+shown that the designed controller is robust with respect to  ± 20% of tumor
+growth parameters changes.Conclusion: The proposed closed-loop reinforcement learning-based
+controller for cancer treatment using anti-angiogenic inhibitor provides an effective
+and novel result such that with a clinically valid and safe dosage of drug, the volume
+reduces up to 1mm3 in a reasonable short period compared to the literature.
+```
+end
+
+New_Model is "Yazdjer2019 - reinforcement learning-based control of tumor growth under anti-angiogenic therapy"

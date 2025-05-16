@@ -1,0 +1,113 @@
+// Created by libAntimony v3.0.0
+model *Admon2017___Modelling_tumor_growth_with_immune_response_and_drug_using_ordinary_differential_equations()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species Ti in compartment_, Tm in compartment_, I in compartment_, u in compartment_;
+
+  // Assignment Rules:
+  d := 2*a1*a4/(a1 + d2);
+
+  // Reactions:
+  Increase_in_the_population_of_tumor_cell_during_interphase:  => Ti; compartment_*(2*a4*Tm);
+  Decrease_in_the_population_of_tumor_cell_during_interphase: Ti => ; compartment_*((c1*I + d2)*Ti + a1*Ti);
+  Increase_in_population_of_tumor_cell_during_mitosis:  => Tm; compartment_*(a1*Ti);
+  Decrease_in_the_population_of_tumor_cell_during_mitosis: Tm => ; compartment_*(d3*Tm + a4*Tm + c3*Tm*I + k1*-exp(-k2*u)*Tm);
+  induction_of_immune_response_due_to_tumor_cell_formation:  => I; compartment_*(k + p*I*(Ti + Tm)^n/(alpha + (Ti + Tm)^n));
+  Decrease_in_the_popoulation_of_immune_response: I => ; compartment_*(c2*I*Ti + c4*Tm*I + d1*I + k3*(1 - exp(-k4*u))*I);
+  Decrease_in_drug: u => ; compartment_*(gamma_*u);
+
+  // Species initializations:
+  Ti = 1.3;
+  Tm = 1.2;
+  I = 0.9;
+  u = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  a1 = 1;
+  a4 = 0.8;
+  d1 = 0.29;
+  d2 = 0.11;
+  d3 = 0.4;
+  c1 = 0.9;
+  c3 = 0.9;
+  c2 = 0.085;
+  c4 = 0.085;
+  k = 0.029;
+  k1 = 0;
+  k2 = 0.57;
+  k3 = 0;
+  k4 = 0.061;
+  alpha = 0.2;
+  p = 0.1;
+  n = 3;
+  gamma_ = 0;
+
+  // Other declarations:
+  var d;
+  const compartment_, a1, a4, d1, d2, d3, c1, c3, c2, c4, k, k1, k2, k3, k4;
+  const alpha, p, n, gamma_;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  gamma_ is "gamma";
+  Increase_in_the_population_of_tumor_cell_during_interphase is "Increase in the population of tumor cell during interphase";
+  Decrease_in_the_population_of_tumor_cell_during_interphase is "Decrease in the population of tumor cell during interphase";
+  Increase_in_population_of_tumor_cell_during_mitosis is "Increase in population of tumor cell during mitosis";
+  Decrease_in_the_population_of_tumor_cell_during_mitosis is "Decrease in the population of tumor cell during mitosis";
+  induction_of_immune_response_due_to_tumor_cell_formation is "induction of immune response due to tumor cell formation";
+  Decrease_in_the_popoulation_of_immune_response is "Decrease in the popoulation of immune response";
+  Decrease_in_drug is "Decrease in drug";
+
+  // CV terms:
+  Ti instance "http://identifiers.org/ncit/C12922"
+  Tm instance "http://identifiers.org/ncit/C12922"
+  I property "http://identifiers.org/go/GO:0006955"
+  Increase_in_the_population_of_tumor_cell_during_interphase instance "http://identifiers.org/ncit/C25533"
+  Decrease_in_the_population_of_tumor_cell_during_interphase instance "http://identifiers.org/ncit/C157203"
+  Increase_in_population_of_tumor_cell_during_mitosis instance "http://identifiers.org/ncit/C25533"
+  Decrease_in_the_population_of_tumor_cell_during_mitosis instance "http://identifiers.org/ncit/C157203"
+  induction_of_immune_response_due_to_tumor_cell_formation instance "http://identifiers.org/ncit/C25533"
+  Decrease_in_the_popoulation_of_immune_response instance "http://identifiers.org/ncit/C157203"
+  Decrease_in_drug instance "http://identifiers.org/ncit/C157203"
+
+  model publication "http://identifiers.org/doi/10.11113/jt.v79.9791"
+  model model_source "http://identifiers.org/biomodels.db/MODEL1912180006",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000904"
+  model property "http://identifiers.org/mamo/MAMO_0000046"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model created "2019-12-18T15:47:33Z"
+  model modified "2019-12-18T17:04:53Z"
+  model creator1.givenName "Mohammad Umer"
+  model creator1.familyName "Sharif Shohan"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "msharifshohan@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+```Modelling tumor growth with immune response and drug using ordinary differential 
+equationsMohd Rashid Admon, Normah MaanThis is a mathematical study about tumor growth 
+from a different perspective, with the aim of predicting and/or controlling the disease. 
+The focus is on the effect and interaction of tumor cell with immune and drug. This 
+paper presents a mathematical model of immune response and a cycle phase specific 
+drug using a system of ordinary differential equations. Stability analysis is used 
+to produce stability regions for various values of certain parameters during mitosis. 
+The stability region of the graph shows that the curve splits the tumor decay and 
+growth regions in the absence of immune response. However, when immune response is 
+present, the tumor growth region is decreased. When drugs are considered in the system, 
+the stability region remains unchanged as the system with the presence of immune 
+response but the population of tumor cells at interphase and metaphase is reduced 
+with percentage differences of 1.27 and 1.53 respectively. The combination of immunity 
+and drug to fight cancer provides a better method to reduce tumor population compared 
+to immunity alone.```
+```
+end
+
+Admon2017___Modelling_tumor_growth_with_immune_response_and_drug_using_ordinary_differential_equations is "Admon2017 - Modelling tumor growth with immune response and drug using ordinary differential equations"

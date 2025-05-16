@@ -1,0 +1,156 @@
+// Created by libAntimony v3.0.0
+model *Ortega2013()
+
+  // Compartments and Species:
+  compartment Brain;
+  species $APP in Brain, $C83 in Brain, $C99 in Brain, $AB in Brain, $X in Brain;
+  species $p3 in Brain;
+
+  // Assignment Rules:
+  den := 1 + (C83/km3)*((1 + X/kiu1)/(1 + X/kic)) + (C99/km4)*((1 + X/kiu2)/(1 + X/kic));
+
+  // Rate Rules:
+  APP' = r0 - r1 - r2;
+  C83' = r1 + r5 - r3__D;
+  C99' = r2 - r5 - r4__D;
+  AB' = r4__D;
+  p3' = r3__D;
+
+  // Reactions:
+  r0:  => $APP; Brain*v0;
+  r1: $APP => $C83; Brain*(vm1*APP/km1/(1 + APP/km1 + C99/km5));
+  r2: $APP => $C99; Brain*(vm2*APP/km2/(1 + APP/km2));
+  r5: $C99 => $C83; Brain*(vm5*C99/km5/(1 + C99/km5 + APP/km1));
+  r3__D: $C83 => $p3; Brain*((vm3/(1 + X/kic))*C83/km3/den);
+  r4__D: $C99 => $AB; Brain*((vm4/(1 + X/kic))*C99/km4/den);
+  r3__ND: $C83 => $p3; Brain*(vm3*C83/km3/(1 + C83/km3 + C99/km4));
+  r4__ND: $C99 => $AB; Brain*(vm4*C99/km4/(1 + C99/km4 + C83/km3));
+
+  // Species initializations:
+  APP = 0;
+  C83 = 0;
+  C99 = 0;
+  AB = 0;
+  X = 0;
+  p3 = 0;
+
+  // Compartment initializations:
+  Brain = 1;
+
+  // Variable initializations:
+  v0 = 1;
+  km1 = 0.186;
+  vm1 = 1.1;
+  km3 = 28.8;
+  vm3 = 14.6;
+  km4 = 0.915;
+  vm4 = 1.71;
+  km5 = 0.0672;
+  vm5 = 0.0223;
+  km2 = 1.64;
+  vm2 = 0.153;
+  kic = 0.173;
+  kiu1 = 145;
+  kiu2 = 7.31;
+
+  // Other declarations:
+  var den;
+  const Brain, v0, km1, vm1, km3, vm3, km4, vm4, km5, vm5, km2, vm2, kic;
+  const kiu1, kiu2;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  r3__D is "r3 (D)";
+  r4__D is "r4 (D)";
+  r3__ND is "r3 (ND)";
+  r4__ND is "r4 (ND)";
+
+  // CV terms:
+  Brain identity "http://identifiers.org/bto/BTO:0000142"
+  APP biological_system "http://identifiers.org/uniprot/P05067"
+  C83 biological_system "http://identifiers.org/uniprot/P05067"
+  C99 biological_system "http://identifiers.org/uniprot/P05067"
+  AB biological_system "http://identifiers.org/uniprot/P05067"
+  X identity "http://identifiers.org/chembl.compound/CHEMBL177969"
+  p3 biological_system "http://identifiers.org/uniprot/P05067"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1409240000"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000556"
+  model publication "http://identifiers.org/pubmed/23152503"
+  model biological_system "http://identifiers.org/go/GO:0042987",
+                          "http://identifiers.org/go/GO:0034205"
+  model property "http://identifiers.org/doid/DOID:10652"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model created "2014-10-23T11:29:00Z"
+  model modified "2016-04-08T17:43:10Z"
+  model creator1.givenName "Audald"
+  model creator1.familyName "Lloret i Villas"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "lloret@ebi.ac.uk"
+  model creator2.givenName "Jonathan"
+  model creator2.familyName "Stott"
+  model creator2.organization "Computational Biology, Discovery Sciences, AstraZeneca"
+  model creator2.email "Jonathan.Stott@astrazeneca.com"
+
+  // Notes:
+  model notes ```
+Ortega2013 - Interplay between secretasesdetermines biphasic amyloid-beta level 
+
+
+This model is described in the article:
+
+
+[Interplay between ?-, ?-, and ?-secretases determines biphasic amyloid-? protein level in the presence of a ?-secretase inhibitor.](http://identifiers.org/pubmed/23152503 "Access to this publication") 
+
+
+Ortega F, Stott J, Visser SA, Bendtsen C. 
+
+J. Biol. Chem. 2013 Jan; 288(2): 785-792 
+Abstract:
+
+
+Amyloid-? (A?) is produced by the consecutive cleavage of amyloid precursor protein
+(APP) first by ?-secretase, generating C99, and then by ?-secretase. APP is also
+cleaved by ?-secretase. It is hypothesized that reducing the production of 
+A? in the brain may slow the progression of Alzheimer disease. Therefore, different
+?-secretase inhibitors have been developed to reduce A? production. Paradoxically,
+it has been shown that low to moderate inhibitor concentrations cause a rise in
+A? production in different cell lines, in different animal models, and also
+in humans. A mechanistic understanding of the A? rise remains elusive. Here, a
+minimal mathematical model has been developed that quantitatively describes the
+A? dynamics in cell lines that exhibit the rise as well as in cell lines that
+do not. The model includes steps of APP processing through both the so-called
+amyloidogenic pathway and the so-called non-amyloidogenic pathway. It is shown
+that the cross-talk between these two pathways accounts for the increase in A?
+production in response to inhibitor, i.e. an increase in C99 will inhibit the
+non-amyloidogenic pathway, redirecting APP to be cleaved by ?-secretase, leading
+to an additional increase in C99 that overcomes the loss in ?-secretase activity.
+With a minor extension, the model also describes plasma A? profiles observed
+in humans upon dosing with a ?-secretase inhibitor. In conclusion, this mechanistic
+model rationalizes a series of experimental results that spans from in vitro to
+in vivo and to humans. This has important implications for the development of
+drugs targeting A? production in Alzheimer disease.
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identified by: [BIOMD0000000556](http://identifiers.org/biomodels.db/BIOMD0000000556).
+
+To cite BioModels Database, please use: [BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models](http://identifiers.org/pubmed/20587024 "Latest BioModels Database publication").
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+  Brain notes "```Brain```"
+  APP notes "```Amyloid protein precursor```"
+  C83 notes "```C83 proteolytic product```"
+  C99 notes "```C99 proteolytic product```"
+  AB notes "```Amyloid-beta```"
+  X notes "```gamma-secretase inhibitor drug```"
+  p3 notes "```Amyloid-beta p3 fragment```"
+end
+
+Ortega2013 is "Ortega2013 - Interplay between secretases determines biphasic amyloid-beta level"

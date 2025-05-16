@@ -1,0 +1,182 @@
+// Created by libAntimony v3.0.0
+model *Mwalili2020___SEIR_model_of_COVID_19_transmission_and_environmental_pathogen_prevalence()
+
+  // Compartments and Species:
+  compartment Human, Pathogen;
+  species Susceptible in Human, Exposed in Human, Infected_Symptomatic in Human;
+  species Infected_Asymptomatic in Human, Recovered in Human, Pathogen_0 in Pathogen;
+
+  // Reactions:
+  Birth_Rate:  => Susceptible; Human*b;
+  Exposed_to_Susceptible: Exposed => Susceptible; Human*psi*Exposed;
+  Susceptible_to_Exposed: Susceptible => Exposed; beta_1*Susceptible*Pathogen_0/(1 + alpha_1*Pathogen_0) + beta_2*Susceptible*(Infected_Asymptomatic + Infected_Symptomatic)/(1 + alpha_2*(Infected_Asymptomatic + Infected_Symptomatic));
+  Death_rate_Susceptible: Susceptible => ; Human*mu*Susceptible;
+  Death_rate_Exposed: Exposed => ; Human*mu*Exposed;
+  Symptomatic_infection_from_Exposed: Exposed => Infected_Symptomatic; Human*(delta*omega*Exposed);
+  Asymptomatic_infection_from_Exposed: Exposed => Infected_Asymptomatic; Human*((1 - delta)*omega*Exposed);
+  Death_rate_Symptomatic_infected: Infected_Symptomatic => ; Human*((mu + sigma)*Infected_Symptomatic);
+  Death_rate_Asymptomatic_infected: Infected_Asymptomatic => ; Human*((mu + sigma)*Infected_Asymptomatic);
+  Recovery_from_Symptomatic_infection: Infected_Symptomatic => Recovered; Human*gamma_S*Infected_Symptomatic;
+  Recovery_from_Asymptomatic_infection: Infected_Asymptomatic => Recovered; Human*gamma_A*Infected_Asymptomatic;
+  Death_rate_Recovered: Recovered => ; Human*mu*Recovered;
+  Rate_of_pathogen_increase:  => Pathogen_0; eta_A*Infected_Asymptomatic + eta_S*Infected_Symptomatic;
+  Death_rate_of_Pathogen: Pathogen_0 => ; Pathogen*mu_p*Pathogen_0;
+
+  // Species initializations:
+  Susceptible = 93000;
+  Susceptible has substance_per_volume;
+  Exposed = 1000;
+  Exposed has substance_per_volume;
+  Infected_Symptomatic = 50;
+  Infected_Symptomatic has substance_per_volume;
+  Infected_Asymptomatic = 50;
+  Infected_Asymptomatic has substance_per_volume;
+  Recovered = 0;
+  Recovered has substance_per_volume;
+  Pathogen_0 = 500;
+  Pathogen_0 has substance_per_volume;
+
+  // Compartment initializations:
+  Human = 1;
+  Human has volume;
+  Pathogen = 1;
+  Pathogen has volume;
+
+  // Variable initializations:
+  alpha_1 = 0.1;
+  alpha_1 has unit_0;
+  alpha_2 = 0.1;
+  alpha_2 has unit_0;
+  b = 0.00018;
+  b has unit_1;
+  mu = 4.563e-05;
+  mu has unit_2;
+  mu_p = 0.1724;
+  mu_p has unit_2;
+  beta_1 = 0.00414;
+  beta_1 has unit_3;
+  beta_2 = 0.0115;
+  beta_2 has unit_3;
+  delta = 0.7;
+  delta has unit_4;
+  psi = 0.005;
+  psi has unit_2;
+  omega = 0.09;
+  omega has unit_2;
+  sigma = 0.0018;
+  sigma has unit_2;
+  gamma_S = 0.05;
+  gamma_S has unit_2;
+  gamma_A = 0.0714;
+  gamma_A has unit_2;
+  eta_S = 0.1;
+  eta_S has unit_2;
+  eta_A = 0.05;
+  eta_A has unit_2;
+
+  // Other declarations:
+  const Human, Pathogen, alpha_1, alpha_2, b, mu, mu_p, beta_1, beta_2, delta;
+  const psi, omega, sigma, gamma_S, gamma_A, eta_S, eta_A;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = time_unit;
+  unit substance = item;
+  unit unit_0 = 1 / item;
+  unit unit_1 = item / 86400 second;
+  unit unit_2 = 1 / 86400 second;
+  unit unit_3 = 1 / (86400 second * item);
+  unit unit_4 = 1 / dimensionless^-0;
+  unit extent = substance;
+  unit substance_per_volume = item / 1e-3 litre;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1/#";
+  unit_1 is "#/d";
+  unit_2 is "1/d";
+  unit_3 is "1/(d*#)";
+  unit_4 is "1";
+  Pathogen_0 is "Pathogen";
+
+  // CV terms:
+  Human identity "http://identifiers.org/ncit/C14225"
+  Human taxon "http://identifiers.org/taxonomy/9606"
+  Pathogen identity "http://identifiers.org/ncit/C80324"
+  Pathogen taxon "http://identifiers.org/taxonomy/2697049"
+  Susceptible biological_system "http://identifiers.org/ncit/C171133"
+  Susceptible biological_system "http://identifiers.org/ido/0000514"
+  Exposed biological_system "http://identifiers.org/ido/0000514"
+  Exposed biological_system "http://identifiers.org/ncit/C171133"
+  Exposed property "http://identifiers.org/ido/0000597"
+  Infected_Symptomatic biological_system "http://identifiers.org/ncit/C171133"
+  Infected_Symptomatic biological_system "http://identifiers.org/ido/0000511"
+  Infected_Symptomatic property "http://identifiers.org/ncit/C25269"
+  Infected_Asymptomatic biological_system "http://identifiers.org/ido/0000511"
+  Infected_Asymptomatic biological_system "http://identifiers.org/ncit/C171133"
+  Infected_Asymptomatic property "http://identifiers.org/ncit/C3833"
+  Recovered biological_system "http://identifiers.org/ncit/C171133"
+  Recovered biological_system "http://identifiers.org/ido/0000621"
+  Pathogen_0 identity "http://identifiers.org/ncit/C171133"
+  Pathogen_0 biological_system "http://identifiers.org/ncit/C80324"
+  Birth_Rate biological_system "http://identifiers.org/ncit/C53345"
+  Exposed_to_Susceptible biological_system "http://identifiers.org/ido/0000597"
+  Exposed_to_Susceptible biological_system "http://identifiers.org/ncit/C171133"
+  Exposed_to_Susceptible property "http://identifiers.org/ncit/C50406"
+  Susceptible_to_Exposed identity "http://identifiers.org/ido/0000597"
+  Susceptible_to_Exposed biological_system "http://identifiers.org/ncit/C171133"
+  Death_rate_Susceptible biological_system "http://identifiers.org/ncit/C53346"
+  Death_rate_Exposed biological_system "http://identifiers.org/ncit/C53346"
+  Symptomatic_infection_from_Exposed identity "http://identifiers.org/ncit/C128320"
+  Symptomatic_infection_from_Exposed biological_system "http://identifiers.org/ncit/C171133"
+  Symptomatic_infection_from_Exposed property "http://identifiers.org/ncit/C168447"
+  Asymptomatic_infection_from_Exposed identity "http://identifiers.org/ncit/C128320"
+  Asymptomatic_infection_from_Exposed biological_system "http://identifiers.org/ncit/C171133"
+  Asymptomatic_infection_from_Exposed property "http://identifiers.org/ncit/C168121"
+  Death_rate_Symptomatic_infected biological_system "http://identifiers.org/ncit/C53346"
+  Death_rate_Asymptomatic_infected biological_system "http://identifiers.org/ncit/C53346"
+  Recovery_from_Symptomatic_infection identity "http://identifiers.org/ncit/C25746"
+  Recovery_from_Symptomatic_infection biological_system "http://identifiers.org/ncit/C171133"
+  Recovery_from_Asymptomatic_infection identity "http://identifiers.org/ncit/C25746"
+  Recovery_from_Asymptomatic_infection biological_system "http://identifiers.org/ncit/C171133"
+  Death_rate_Recovered biological_system "http://identifiers.org/ncit/C53346"
+  Rate_of_pathogen_increase identity "http://identifiers.org/ncit/C80324"
+  Rate_of_pathogen_increase identity "http://identifiers.org/ncit/C64379"
+  Rate_of_pathogen_increase biological_system "http://identifiers.org/ncit/C171133"
+  Death_rate_of_Pathogen biological_system "http://identifiers.org/ncit/C53346"
+
+  model publication "http://identifiers.org/pubmed/32703315"
+  model model_source "http://identifiers.org/biomodels.db/MODEL2009210004",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000964"
+  model biological_system "http://identifiers.org/ido/0000503"
+  model biological_system "http://identifiers.org/doid/DOID:0080600"
+  model taxon "http://identifiers.org/taxonomy/2697049",
+              "http://identifiers.org/taxonomy/9606"
+  model property "http://identifiers.org/mamo/MAMO_0000028"
+  model created "2020-09-21T10:19:54Z"
+  model modified "2020-09-21T10:19:54Z"
+  model creator1.givenName "Kausthubh"
+  model creator1.familyName "Ramachandran"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "kramachandran@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+Objective: Coronavirus disease 2019 (COVID-19) is a pandemic respiratory illness
+spreading from person-to-person caused by a novel coronavirus and poses a serious
+public health risk. The goal of this study was to apply a modified susceptible-exposed-infectious-recovered
+(SEIR) compartmental mathematical model for prediction of COVID-19 epidemic dynamics
+incorporating pathogen in the environment and interventions. The next generation
+matrix approach was used to determine the basic reproduction number R0. The model
+equations are solved numerically using fourth and ffth order Runge–Kutta methods.
+Results: We found an R0 of 2.03, implying that the pandemic will persist in the human
+population in the absence of strong control measures. Results after simulating various
+scenarios indicate that disregarding social distancing and hygiene measures can have
+devastating effects on the human population. The model shows that quarantine of contacts
+and isolation of cases can help halt the spread on novel coronavirus.
+```
+end
+
+Mwalili2020___SEIR_model_of_COVID_19_transmission_and_environmental_pathogen_prevalence is "Mwalili2020 - SEIR model of COVID-19 transmission and environmental pathogen prevalence"

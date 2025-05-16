@@ -1,23 +1,4 @@
-// Created by libAntimony v2.13.0
-function func1_Cdk1_activation(Ks, Adeg, Cdk1CycB, Bdeg, APC, napc, EC50apc, Acdc, Bcdc, ncdc, EC50cdc, CycB, Awee, Bwee, EC50wee, nwee)
-  (Ks - Adeg*Cdk1CycB - Bdeg*APC^napc*Cdk1CycB/(EC50apc^napc + APC^napc)) + (Acdc + Bcdc*Cdk1CycB^ncdc/(EC50cdc^ncdc + Cdk1CycB^ncdc))*(CycB - Cdk1CycB) - (Awee + Bwee*EC50wee^nwee/(EC50wee^nwee + Cdk1CycB^nwee))*Cdk1CycB;
-end
-
-func1_Cdk1_activation is "func1 Cdk1 activation"
-
-function func2_CycB_regulation(Ks, Adeg, CycB, Bdeg, APC, napc, EC50apc)
-  Ks - Adeg*CycB - Bdeg*APC^napc*CycB/(EC50apc^napc + APC^napc);
-end
-
-func2_CycB_regulation is "func2 CycB regulation"
-
-function func3_APC_regulation(AK, BK, Cdk1CycB, nK, EC50K, APC, AP, BP, EC50P, nP)
-  (AK + BK*(Cdk1CycB/200)^nK/((Cdk1CycB/200)^nK + EC50K^nK))*(1 - APC) - (AP + BP*EC50P^nP/(APC^nP + EC50P^nP))*APC;
-end
-
-func3_APC_regulation is "func3 APC regulation"
-
-
+// Created by libAntimony v3.0.0
 model *MODEL1710040001()
 
   // Compartments and Species:
@@ -25,9 +6,9 @@ model *MODEL1710040001()
   species Cdk1CycB in Cell, APC in Cell, CycB in Cell;
 
   // Reactions:
-  R1:  -> Cdk1CycB; Cell*func1_Cdk1_activation(Ks, Adeg, Cdk1CycB, Bdeg, APC, n_apc, EC50apc, Acdc, Bcdc, n_cdc, EC50cdc, CycB, Awee, Bwee, EC50wee, n_wee);
-  R2:  -> CycB; Cell*func2_CycB_regulation(Ks, Adeg, CycB, Bdeg, APC, n_apc, EC50apc);
-  R3:  -> APC; Cell*func3_APC_regulation(AK, BK, Cdk1CycB, n_K, EC50K, APC, AP, BP, EC50P, n_P);
+  R1:  -> Cdk1CycB; Cell*((Ks - Adeg*Cdk1CycB - Bdeg*APC^n_apc*Cdk1CycB/(EC50apc^n_apc + APC^n_apc)) + (Acdc + Bcdc*Cdk1CycB^n_cdc/(EC50cdc^n_cdc + Cdk1CycB^n_cdc))*(CycB - Cdk1CycB) - (Awee + Bwee*EC50wee^n_wee/(EC50wee^n_wee + Cdk1CycB^n_wee))*Cdk1CycB);
+  R2:  -> CycB; Cell*(Ks - Adeg*CycB - Bdeg*APC^n_apc*CycB/(EC50apc^n_apc + APC^n_apc));
+  R3:  -> APC; Cell*((AK + BK*(Cdk1CycB/200)^n_K/((Cdk1CycB/200)^n_K + EC50K^n_K))*(1 - APC) - (AP + BP*EC50P^n_P/(APC^n_P + EC50P^n_P))*APC);
 
   // Species initializations:
   Cdk1CycB = 20;
@@ -86,10 +67,10 @@ model *MODEL1710040001()
 
   // CV terms:
   Cdk1CycB part "http://identifiers.org/uniprot/P06493"
-  Cdk1CycB hypernym "http://identifiers.org/go/GO:0097125"
+  Cdk1CycB biological_system "http://identifiers.org/go/GO:0097125"
   Cdk1CycB part "http://identifiers.org/uniprot/P14635"
-  APC hypernym "http://identifiers.org/uniprot/P25054"
-  CycB hypernym "http://identifiers.org/uniprot/P14635"
+  APC biological_system "http://identifiers.org/uniprot/P25054"
+  CycB biological_system "http://identifiers.org/uniprot/P14635"
   EC50cdc identity "urn:miriam:sbo:SBO%3A0000287"
   n_cdc identity "urn:miriam:sbo:SBO%3A0000191"
   EC50wee identity "urn:miriam:sbo:SBO%3A0000287"
@@ -100,15 +81,68 @@ model *MODEL1710040001()
   n_K identity "urn:miriam:sbo:SBO%3A0000191"
   EC50P identity "urn:miriam:sbo:SBO%3A0000287"
   n_P identity "urn:miriam:sbo:SBO%3A0000191"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1710040001"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000657"
+  model publication "http://identifiers.org/pubmed/27768873"
+  model property "http://identifiers.org/mamo/MAMO_0000046"
+  model part "http://identifiers.org/pw/PW:0000092"
+  model property "http://identifiers.org/biomodels.teddy/TEDDY_0000035"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model description "http://identifiers.org/pubmed/27768873"
+  model created "2017-07-19T14:13:53Z"
+  model modified "2017-10-04T14:41:20Z"
+  model creator1.givenName "Rahuman"
+  model creator1.familyName "Sheriff"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "sheriff@ebi.ac.uk"
+  model creator2.givenName "Lendert"
+  model creator2.familyName "Gelens"
+  model creator2.organization "University of Leuven"
+  model creator2.email "lendert.gelens@kuleuven.be"
+
+  // Notes:
+  model notes ```
+Araujo2016 - Positive feedback in Cdk1signalling keeps mitotic duration short and
+constant 
+
+
+This model is described in the article:
+
+
+[Positive Feedback Keeps Duration of Mitosis Temporally Insulated from Upstream Cell-Cycle Events.](http://identifiers.org/pubmed/27768873 "Access to this publication") 
+
+
+Araujo AR, Gelens L, Sheriff RS, Santos SD. 
+
+Mol. Cell 2016 Oct; 64(2): 362-375 
+Abstract:
+
+
+Cell division is characterized by a sequence of events by which a cell gives rise
+to two daughter cells. Quantitative measurements of cell-cycle dynamics in single
+cells showed that despite variability in G1-, S-, and G2 phases, duration of 
+mitosis is short and remarkably constant. Surprisingly, there is no correlation
+between cell-cycle length and mitotic duration, suggesting that mitosis is temporally
+insulated from variability in earlier cell-cycle phases. By combining live 
+cell imaging and computational modeling, we showed that positive feedback is the
+molecular mechanism underlying the temporal insulation of mitosis. Perturbing
+positive feedback gave rise to a sluggish, variable entry and progression through
+mitosis and uncoupled duration of mitosis from variability in cell cycle length.
+We show that positive feedback is important to keep mitosis short, constant, and
+temporally insulated and anticipate it might be a commonly used regulatory strategy
+to create modularity in other biological systems.
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identified by: [BIOMD0000000657](http://identifiers.org/biomodels.db/BIOMD0000000657).
+
+To cite BioModels Database, please use: [Chelliah V et al. BioModels: ten-year anniversary. Nucl. Acids Res. 2015, 43(Database issue):D542-8](http://identifiers.org/pubmed/25414348).
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
 end
 
 MODEL1710040001 is "Araujo2016 - Positive feedback in Cdk1 signalling keeps mitotic duration short and constant"
-
-MODEL1710040001 model_entity_is "http://identifiers.org/biomodels.db/MODEL1710040001"
-MODEL1710040001 model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000657"
-MODEL1710040001 description "http://identifiers.org/pubmed/27768873"
-MODEL1710040001 unknown_model_qual "http://identifiers.org/mamo/MAMO_0000046"
-MODEL1710040001 part "http://identifiers.org/pw/PW:0000092"
-MODEL1710040001 property "http://identifiers.org/biomodels.teddy/TEDDY_0000035"
-MODEL1710040001 taxon "http://identifiers.org/taxonomy/9606"
-MODEL1710040001 description "http://identifiers.org/pubmed/27768873"

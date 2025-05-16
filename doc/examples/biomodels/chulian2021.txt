@@ -1,0 +1,92 @@
+// Created by libAntimony v3.0.0
+model *Chulian2021___feedback_signalling_in_B_lymphopoeisis()
+
+  // Compartments and Species:
+  compartment Bone_marrow;
+  species C1 in Bone_marrow, C2 in Bone_marrow, C3 in Bone_marrow;
+
+  // Assignment Rules:
+  s1 := 1/(1 + ModelValue_39*C3);
+  s2 := 1/(1 + ModelValue_39*(C1 + C2 + C3));
+
+  // Reactions:
+  Proliferation_of_early_B_cells:  => C1; Bone_marrow*(s2*rho1*C1);
+  transition_from_early_B_cells_to_intermediate_B_cells: C1 => C2; Bone_marrow*alpha1*C1;
+  Proliferation_of_intermediate_B_cells:  => C2; Bone_marrow*(s2*rho2*C2);
+  Transition_of_intermediate_B_cells_to_late_B_cells: C2 => C3; Bone_marrow*alpha2*C2;
+  Blood_transition_of_late_B_cells: C3 => ; Bone_marrow*alpha3*C3;
+
+  // Species initializations:
+  C1 = 1000000;
+  C2 = 0;
+  C3 = 0;
+
+  // Compartment initializations:
+  Bone_marrow = 1;
+
+  // Variable initializations:
+  ModelValue_39 = k;
+  k = 1e-10;
+  rho1 = 0.0289;
+  rho2 = 0.0193;
+  alpha1 = 0.008;
+  alpha2 = 0.006;
+  alpha3 = 0.02;
+
+  // Other declarations:
+  var s1, s2;
+  const Bone_marrow, ModelValue_39, k, rho1, rho2, alpha1, alpha2, alpha3;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1 / dimensionless^-0;
+  unit time_unit = 3600 second;
+  unit substance = item;
+
+  // Display Names:
+  time_unit is "time";
+  Bone_marrow is "Bone marrow";
+  ModelValue_39 is "Initial for k";
+  Proliferation_of_early_B_cells is "Proliferation of early B-cells";
+  transition_from_early_B_cells_to_intermediate_B_cells is "transition from early B-cells to intermediate B-cells";
+  Proliferation_of_intermediate_B_cells is "Proliferation of intermediate B-cells";
+  Transition_of_intermediate_B_cells_to_late_B_cells is "Transition of intermediate B-cells to late B-cells";
+  Blood_transition_of_late_B_cells is "Blood transition of late B-cells";
+
+  // CV terms:
+  Bone_marrow identity "http://identifiers.org/bto/BTO:0000141"
+  C1 biological_system "http://identifiers.org/ncit/C32766"
+  C2 biological_system "http://identifiers.org/ncit/C12474"
+  C3 biological_system "http://identifiers.org/ncit/C33058"
+  s1 biological_system "http://identifiers.org/sbo/SBO:0000280"
+  s2 biological_system "http://identifiers.org/sbo/SBO:0000280"
+  k biological_system "http://identifiers.org/sbo/SBO:0000169"
+  rho1 biological_system "http://identifiers.org/sbo/SBO:0000153"
+  rho2 biological_system "http://identifiers.org/sbo/SBO:0000153"
+  alpha1 biological_system "http://identifiers.org/sbo/SBO:0000001"
+  alpha2 biological_system "http://identifiers.org/sbo/SBO:0000001"
+  alpha3 biological_system "http://identifiers.org/sbo/SBO:0000001"
+  Proliferation_of_early_B_cells biological_system "http://identifiers.org/sbo/SBO:0000393"
+  transition_from_early_B_cells_to_intermediate_B_cells biological_system "http://identifiers.org/sbo/C18314"
+  Proliferation_of_intermediate_B_cells biological_system "http://identifiers.org/sbo/SBO:0000393"
+  Transition_of_intermediate_B_cells_to_late_B_cells biological_system "http://identifiers.org/sbo/C18314"
+  Blood_transition_of_late_B_cells biological_system "http://identifiers.org/sbo/C12434"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL2205170001",
+                     "http://identifiers.org/biomodels.db/BIOMD0000001056"
+  model container "http://identifiers.org/bto/BTO:0000141"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model description "http://identifiers.org/doi/10.1016/j.jtbi.2021.110685"
+  model property "http://identifiers.org/go/GO:0006955",
+                 "http://identifiers.org/go/GO:0030097",
+                 "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2022-05-17T10:51:57Z"
+  model modified "2022-05-17T10:51:57Z"
+  model creator1.givenName "Mikal"
+  model creator1.familyName "Daou"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "mdaou@ebi.ac.uk"
+end
+
+Chulian2021___feedback_signalling_in_B_lymphopoeisis is "Chulian2021 - feedback signalling in B lymphopoeisis"

@@ -1,0 +1,111 @@
+// Created by libAntimony v3.0.0
+model *dePillis2003___The_dynamics_of_an_optimally_controlled_tumor_model__A_case_study()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species N in compartment_, T in compartment_, I in compartment_, u in compartment_;
+
+  // Reactions:
+  Presence_of_Normal_Cell:  => N; compartment_*(r2*N*(1 - b2*N));
+  Normal_cells_attacked_and_removed: N => ; compartment_*(c4*T*N + a3*(1 - exp(-u))*N);
+  Induction_of_tumor_cell:  => T; compartment_*(r1*T*(1 - b1*T));
+  Tumor_cells_removed_by_immune_system: T => ; compartment_*(c2*I*T + c3*T*N + a2*(1 - exp(-u))*T);
+  Initiation_immune_response_against_tumor:  => I; compartment_*(s + p*I*T/(alpha + T));
+  Removal_of_immune_response_components: I => ; compartment_*(c1*I*T + d1*I + a1*(1 - exp(-u))*I);
+  Increase_in_amount_of_drug_at_tumor_site:  => u; compartment_*v;
+  Decrease_of_chemotherapeutic_drug_at_tumor_site: u => ; compartment_*(d2*u);
+
+  // Species initializations:
+  N = 1;
+  T = 0.25;
+  I = 0.15;
+  u = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  a1 = 0.2;
+  a2 = 0.3;
+  a3 = 0.1;
+  b1 = 1;
+  b2 = 1;
+  alpha = 0.3;
+  c1 = 1;
+  c2 = 0.5;
+  c3 = 1;
+  c4 = 1;
+  d1 = 0.2;
+  d2 = 1;
+  r1 = 1.5;
+  r2 = 1;
+  s = 0.33;
+  p = 0.01;
+  v = 0;
+
+  // Other declarations:
+  const compartment_, a1, a2, a3, b1, b2, alpha, c1, c2, c3, c4, d1, d2, r1;
+  const r2, s, p, v;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  Presence_of_Normal_Cell is "Presence of Normal Cell";
+  Normal_cells_attacked_and_removed is "Normal cells attacked and removed";
+  Induction_of_tumor_cell is "Induction of tumor cell";
+  Tumor_cells_removed_by_immune_system is "Tumor cells removed by immune system";
+  Initiation_immune_response_against_tumor is "Initiation immune response against tumor";
+  Removal_of_immune_response_components is "Removal of immune response components";
+  Increase_in_amount_of_drug_at_tumor_site is "Increase in amount of drug at tumor site";
+  Decrease_of_chemotherapeutic_drug_at_tumor_site is "Decrease of chemotherapeutic drug at tumor site";
+
+  // CV terms:
+  T instance "http://identifiers.org/ncit/C12922"
+  I instance "http://identifiers.org/ncit/C12735"
+  u instance "http://identifiers.org/ncit/C2252"
+  Presence_of_Normal_Cell instance "http://identifiers.org/ncit/C12508"
+  Normal_cells_attacked_and_removed instance "http://identifiers.org/ncit/C12508"
+  Induction_of_tumor_cell instance "http://identifiers.org/go/GO:0002355"
+  Tumor_cells_removed_by_immune_system instance "http://identifiers.org/go/GO:0002347"
+  Initiation_immune_response_against_tumor biological_system "http://identifiers.org/go/GO:0031294"
+  Removal_of_immune_response_components instance "http://identifiers.org/go/GO:0002347"
+  Increase_in_amount_of_drug_at_tumor_site instance "http://identifiers.org/go/GO:0008144"
+  Decrease_of_chemotherapeutic_drug_at_tumor_site instance "http://identifiers.org/go/GO:0008144"
+
+  model instance "http://identifiers.org/mamo/MAMO_0000046",
+                 "http://identifiers.org/taxonomy/9606",
+                 "http://identifiers.org/ncit/C48686"
+  model publication "http://identifiers.org/ncit/C48686",
+                    "http://identifiers.org/doi/10.1016/S0895-7177(03)00133-X"
+  model origin "http://identifiers.org/doi/10.1007/bf02460644"
+  model model_source "http://identifiers.org/biomodels.db/MODEL2001080003",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000909"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model property "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2020-01-08T11:31:40Z"
+  model modified "2020-01-08T11:31:40Z"
+  model creator1.givenName "Mohammad Umer"
+  model creator1.familyName "Sharif Shohan"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "msharifshohan@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+The dynamics of an optimally controlled tumor model: A case studyL.G. De PillisA.
+Radunskayahttps://doi.org/10.1016/S0895-7177(03)00133-XAbstractWe present a phase-space
+analysis of a mathematical model of tumor growth with an immune response and chemotherapy.
+We prove that all orbits are bounded and must converge to one of several possible
+equilibrium points. Therefore, the long-term behavior of an orbit is classified according
+to the basin of attraction in which it starts. The addition of a drug term to the
+system can move the solution trajectory into a desirable basin of attraction. We
+show that the solutions of the model with a time-varying drug term approach the solutions
+of the system without the drug once traatment has stopped. We present numerical experiments
+in which optimal control therapy is able to drive the system into a desirable basin
+of attraction, whereas traditional pulsed chemotherapy is not.
+```
+end
+
+dePillis2003___The_dynamics_of_an_optimally_controlled_tumor_model__A_case_study is "dePillis2003 - The dynamics of an optimally controlled tumor model: A case study"

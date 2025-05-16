@@ -1,0 +1,100 @@
+// Created by libAntimony v3.0.0
+model *Caravagna2010___Tumour_suppression_by_immune_system()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species T in compartment_, E in compartment_, I in compartment_;
+
+  // Reactions:
+  Induction_of_tumor:  => T; compartment_*(r2*T*(1 - (b/V)*T));
+  Removal_of_tumor_from_the_system_by_the_action_of_immune_response: T => ; compartment_*((a*T/(g2*V + T))*E);
+  Activation_and_transfer_of_effector_cells_to_the_action_site:  => E; compartment_*((p1*I/(g1*I))*E + c*T + V*s1);
+  Deactivation_and_removal_of_effector_cells_from_the_site_of_tumor: E => ; compartment_*(mu2*E);
+  Activation_of_interleukin_2:  => I; compartment_*((p2/V)*(T*E/(g3*V + T)) + s2);
+  Deactivation_of_interleukin2: I => ; compartment_*(mu3*I);
+
+  // Species initializations:
+  T = 1;
+  E = 1;
+  I = 1;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  r2 = 0.18;
+  b = 1e-09;
+  a = 1;
+  g2 = 100000;
+  p1 = 0.1245;
+  g1 = 20000000;
+  mu2 = 0.03;
+  c = 0.02;
+  p2 = 5;
+  g3 = 1000;
+  mu3 = 10;
+  V = 3.2;
+  s1 = 0;
+  s2 = 0;
+
+  // Other declarations:
+  const compartment_, r2, b, a, g2, p1, g1, mu2, c, p2, g3, mu3, V, s1, s2;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+  Induction_of_tumor is "Induction of tumor";
+  Removal_of_tumor_from_the_system_by_the_action_of_immune_response is "Removal of tumor from the system by the action of immune response";
+  Activation_and_transfer_of_effector_cells_to_the_action_site is "Activation and transfer of effector cells to the action site";
+  Deactivation_and_removal_of_effector_cells_from_the_site_of_tumor is "Deactivation and removal of effector cells from the site of tumor";
+  Activation_of_interleukin_2 is "Activation of interleukin 2";
+  Deactivation_of_interleukin2 is "Deactivation of interleukin2";
+
+  // CV terms:
+  T biological_system "http://identifiers.org/efo/0000616"
+  E property "http://identifiers.org/ncit/C132890"
+  I property "http://identifiers.org/uniprot/P60568"
+  Induction_of_tumor biological_system "http://identifiers.org/go/GO:0002355"
+  Activation_and_transfer_of_effector_cells_to_the_action_site biological_system "http://identifiers.org/go/GO:0002418"
+  Deactivation_and_removal_of_effector_cells_from_the_site_of_tumor biological_system "http://identifiers.org/go/GO:0002837"
+  Activation_of_interleukin_2 biological_system "http://identifiers.org/go/GO:0070970"
+  Deactivation_of_interleukin2 biological_system "http://identifiers.org/go/GO:0070970"
+
+  model origin "http://identifiers.org/mamo/MAMO_0000046",
+               "http://identifiers.org/taxonomy/9606",
+               "http://identifiers.org/biomodels.db/BIOMD0000000732"
+  model publication "http://identifiers.org/biomodels.db/BIOMD0000000732",
+                    "http://identifiers.org/pubmed/20580640"
+  model model_source "http://identifiers.org/biomodels.db/MODEL2001200001",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000912"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model property "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2020-01-20T09:47:17Z"
+  model modified "2020-01-20T10:27:37Z"
+  model creator1.givenName "Mohammad Umer"
+  model creator1.familyName "Sharif Shohan"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "msharifshohan@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+```Tumour suppression by immune system through stochastic oscillationsGiulioCaravagnaa 
+Albertod’Onofriob
+PaoloMilazzoaRobertoBarbutiahttps://doi.org/10.1016/j.jtbi.2010.05.013AbstractThe 
+well-known Kirschner–Panetta model for tumour–immune System interplay [Kirschner, 
+D., Panetta, J.C., 1998. Modelling immunotherapy of the tumour–immune interaction. 
+J. Math. Biol. 37 (3), 235–252] reproduces a number of features of this essential 
+interaction, but it excludes the possibility of tumour suppression by the immune 
+system in the absence of therapy. Here we present a hybrid–stochastic version of 
+that model. In this new framework, we show that in reality the model is also able 
+to reproduce the suppression, through stochastic extinction after the first spike 
+of an oscillation.```
+```
+end
+
+Caravagna2010___Tumour_suppression_by_immune_system is "Caravagna2010 - Tumour suppression by immune system"

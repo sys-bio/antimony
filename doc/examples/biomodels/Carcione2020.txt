@@ -1,0 +1,134 @@
+// Created by libAntimony v3.0.0
+model *Carcione2020___Deterministic_SEIR_simulation_of_a_COVID_19_outbreak()
+
+  // Compartments and Species:
+  compartment City;
+  species Susceptible in City, Total_population in City, Exposed in City;
+  species Infected in City, Recovered in City, Deceased in City;
+
+  // Assignment Rules:
+  lambda := mu*Total_population;
+
+  // Reactions:
+  Susceptible_to_Exposed: Susceptible => Exposed; City*(beta*Susceptible*Infected/Total_population);
+  Exposed_to_Infected: Exposed => Infected; City*epsilon*Exposed;
+  Infected_to_Recovered: Infected => Recovered; City*gamma_*Infected;
+  Infected_to_Deceased: Infected => Deceased; City*alpha*Infected;
+
+  // Species initializations:
+  Susceptible = Total_population - Exposed - Infected;
+  Susceptible has substance_per_volume;
+  Total_population = 10000000;
+  Total_population has substance_per_volume;
+  Exposed = 20000;
+  Exposed has substance_per_volume;
+  Infected = 1;
+  Infected has substance_per_volume;
+  Recovered = 0;
+  Recovered has substance_per_volume;
+  Deceased = 0;
+  Deceased has substance_per_volume;
+
+  // Compartment initializations:
+  City = 1;
+  City has volume;
+
+  // Variable initializations:
+  mu = 0.012048;
+  beta = 0.833;
+  epsilon = 0.33333;
+  gamma_ = 0.125;
+  alpha = 0.006;
+
+  // Other declarations:
+  var lambda;
+  const City, mu, beta, epsilon, gamma_, alpha;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = time_unit;
+  unit substance = item;
+  unit extent = substance;
+  unit substance_per_volume = item / 1e-3 litre;
+
+  // Display Names:
+  time_unit is "time";
+  gamma_ is "gamma";
+
+  // CV terms:
+  City identity "http://identifiers.org/ncit/C25160"
+  Susceptible identity "http://identifiers.org/ido/0000514"
+  Susceptible biological_system "http://identifiers.org/ncit/C171133"
+  Exposed biological_system "http://identifiers.org/ido/0000514"
+  Exposed biological_system "http://identifiers.org/ncit/C171133"
+  Exposed property "http://identifiers.org/ido/0000597"
+  Infected identity "http://identifiers.org/ido/0000511"
+  Infected identity "http://identifiers.org/ncit/C171133"
+  Recovered biological_system "http://identifiers.org/ncit/C171133"
+  Recovered property "http://identifiers.org/ido/0000621"
+  Deceased identity "http://identifiers.org/ncit/C28554"
+  Deceased identity "http://identifiers.org/ncit/C168970"
+  Susceptible_to_Exposed identity "http://identifiers.org/ido/0000597"
+  Susceptible_to_Exposed biological_system "http://identifiers.org/ncit/C171133"
+  Exposed_to_Infected identity "http://identifiers.org/ncit/C128320"
+  Exposed_to_Infected biological_system "http://identifiers.org/ncit/C171133"
+  Infected_to_Recovered identity "http://identifiers.org/ncit/C25746"
+  Infected_to_Deceased identity "http://identifiers.org/ncit/C168970"
+  Infected_to_Deceased identity "http://identifiers.org/ncit/C28554"
+
+  model publication "http://identifiers.org/pubmed/32574303"
+  model model_source "http://identifiers.org/biomodels.db/MODEL2011030005",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000974"
+  model identity "http://identifiers.org/doid/DOID:0080600"
+  model taxon "http://identifiers.org/taxonomy/2697049",
+              "http://identifiers.org/taxonomy/9606"
+  model property "http://identifiers.org/mamo/MAMO_0000028"
+  model created "2020-11-03T07:36:12Z"
+  model modified "2020-11-03T07:36:12Z"
+  model creator1.givenName "Kausthubh"
+  model creator1.familyName "Ramachandran"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "kramachandran@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+An epidemic disease caused by a new coronavirus has spread in Northern Italy with
+a strong contagion rate. We implement an SEIR model to compute the infected population
+and the number of casualties of this epidemic. The example may ideally regard the
+situation in the Italian Region of Lombardy, where the epidemic started on February
+24, but by no means attempts to perform a rigorous case study in view of the lack
+of suitable data and the uncertainty of the different parameters, namely, the variation
+of the degree of home isolation and social distancing as a function of time, the
+initial number of exposed individuals and infected people, the incubation and infectious
+periods, and the fatality rate. First, we perform an analysis of the results of the
+model by varying the parameters and initial conditions (in order for the epidemic
+to start, there should be at least one exposed or one infectious human). Then, we
+consider the Lombardy case and calibrate the model with the number of dead individuals
+to date (May 5, 2020) and constrain the parameters on the basis of values reported
+in the literature. The peak occurs at day 37 (March 31) approximately, with a reproduction
+ratio R0 of 3 initially, 1.36 at day 22, and 0.8 after day 35, indicating different
+degrees of lockdown. The predicted death toll is approximately 15,600 casualties,
+with 2.7 million infected individuals at the end of the epidemic. The incubation
+period providing a better fit to the dead individuals is 4.25 days, and the infectious
+period is 4 days, with a fatality rate of 0.00144/day [values based on the reported
+(official) number of casualties]. The infection fatality rate (IFR) is 0.57%, and
+it is 2.37% if twice the reported number of casualties is assumed. However, these
+rates depend on the initial number of exposed individuals. If approximately nine
+times more individuals are exposed, there are three times more infected people at
+the end of the epidemic and IFR = 0.47%. If we relax these constraints and use a
+wider range of lower and upper bounds for the incubation and infectious periods,
+we observe that a higher incubation period (13 vs. 4.25 days) gives the same IFR
+(0.6 vs. 0.57%), but nine times more exposed individuals in the first case. Other
+choices of the set of parameters also provide a good fit to the data, but some of
+the results may not be realistic. Therefore, an accurate determination of the fatality
+rate and characteristics of the epidemic is subject to knowledge of the precise bounds
+of the parameters. Besides the specific example, the analysis proposed in this work
+shows how isolation measures, social distancing, and knowledge of the diffusion conditions
+help us to understand the dynamics of the epidemic. Hence, it is important to quantify
+the process to verify the effectiveness of the lockdown.
+```
+end
+
+Carcione2020___Deterministic_SEIR_simulation_of_a_COVID_19_outbreak is "Carcione2020 - Deterministic SEIR simulation of a COVID-19 outbreak"

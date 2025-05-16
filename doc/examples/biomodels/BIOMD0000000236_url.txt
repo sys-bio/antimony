@@ -1,0 +1,218 @@
+// Created by libAntimony v3.0.0
+model *Westermark2003_Pancreatic_GlycOsc_extended()
+
+  // Compartments and Species:
+  compartment cell;
+  species $GLC in cell, G6P_F6P in cell, $F6P in cell, FBP in cell, $G3P in cell;
+  species DHAP_G3P in cell, $DHAP in cell;
+
+  // Assignment Rules:
+  F6P := G6P_F6P*KeqGPI/(1 + KeqGPI);
+  G3P := DHAP_G3P*KeqTPI/(1 + KeqTPI);
+  DHAP := DHAP_G3P - G3P;
+  Vgk := Vgk_min*dw_per_ml/min_to_sec;
+  Vpfk := Vpfk_min*dw_per_ml/min_to_sec;
+  Vfba := Vfba_min*dw_per_ml/min_to_sec;
+  Vgapdh := Vgapdh_min*dw_per_ml/min_to_sec;
+  sigma := F6P/Spfk;
+
+  // Reactions:
+  vgk: $GLC -> G6P_F6P; cell*Vgk*(GLC/Sgk)^hGK/(1 + (GLC/Sgk)^hGK);
+  vpfk: G6P_F6P -> FBP; cell*Vpfk*(F6P/Spfk)^(hpfk - (hpfk - hact)*(FBP/Sfba/(1 + FBP/Sfba)))/((F6P/Spfk)^(hpfk - (hpfk - hact)*(FBP/Sfba/(1 + FBP/Sfba))) + (1 + (FBP/Xpfk)^hx)/(1 + alpha^(hpfk - (hpfk - hact)*(FBP/Sfba/(1 + FBP/Sfba)))*(FBP/Xpfk)^hx));
+  vfba: FBP -> 2 DHAP_G3P; cell*Vfba*(FBP/Sfba - G3P*DHAP/(Pfba*Qfba*KeqFBA))/(1 + FBP/Sfba + DHAP/Qfba + G3P*DHAP/(Pfba*Qfba));
+  vgapdh: DHAP_G3P => ; cell*Vgapdh*G3P/(Sgapdh + G3P);
+
+  // Species initializations:
+  GLC = 10;
+  G6P_F6P = 3.71728;
+  FBP = 0.00063612;
+  DHAP_G3P = 0.00262966;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  KeqGPI = 0.3;
+  KeqGPI has dimensionless;
+  KeqTPI = 0.045455;
+  KeqTPI has dimensionless;
+  Vgk has mM_per_s;
+  Vgk_min = 10;
+  Vgk_min has mmole_per_min_g;
+  dw_per_ml = 0.3333;
+  dw_per_ml has g_per_ml;
+  min_to_sec = 60;
+  min_to_sec has dimensionless;
+  hGK = 1.7;
+  hGK has dimensionless;
+  Vpfk has mM_per_s;
+  Vpfk_min = 100;
+  Vpfk_min has mmole_per_min_g;
+  Vfba has mM_per_s;
+  Vfba_min = 25;
+  Vfba_min has mmole_per_min_g;
+  Vgapdh has mM_per_s;
+  Vgapdh_min = 250;
+  Vgapdh_min has mmole_per_min_g;
+  Sgk = 8;
+  Sgk has mM;
+  Spfk = 4;
+  Spfk has mM;
+  Sfba = 0.005;
+  Sfba has mM;
+  Sgapdh = 0.005;
+  Sgapdh has mM;
+  Xpfk = 0.01;
+  Xpfk has mM;
+  alpha = 5;
+  alpha has dimensionless;
+  hx = 2.5;
+  hx has dimensionless;
+  hpfk = 2.5;
+  hpfk has dimensionless;
+  hact = 1;
+  hact has dimensionless;
+  Pfba = 0.5;
+  Pfba has mM;
+  Qfba = 0.275;
+  Qfba has mM;
+  KeqFBA = 0.1;
+  KeqFBA has mM;
+
+  // Other declarations:
+  var Vgk, Vpfk, Vfba, Vgapdh, sigma;
+  const cell, KeqGPI, KeqTPI, Vgk_min, dw_per_ml, min_to_sec, hGK, Vpfk_min;
+  const Vfba_min, Vgapdh_min, Sgk, Spfk, Sfba, Sgapdh, Xpfk, alpha, hx, hpfk;
+  const hact, Pfba, Qfba, KeqFBA;
+
+  // Unit definitions:
+  unit substance = 1e-3 mole;
+  unit time_unit = second;
+  unit mM = 1e-3 mole / litre;
+  unit g_per_ml = 1e-3 kilogram / 1e-3 litre;
+  unit mM_per_s = 1e-3 mole / (second * litre);
+  unit mmole_per_min_g = 1e-3 mole / (60 second * kilogram);
+
+  // Display Names:
+  substance is "mmole";
+  time_unit is "seconds";
+  g_per_ml is "gramm per ml";
+  mM_per_s is "mM per sec";
+  mmole_per_min_g is "mmole per (min kg)";
+  GLC is "intracellular glucose";
+  F6P is "fructose-6-phosphate";
+  FBP is "fructose-1,6-biphosphate";
+  G3P is "glyceraldehyde--phosphate";
+  DHAP_G3P is "DHAP-G3P pool";
+  DHAP is "dihydroxyacetone-phosphate";
+
+  // SBO terms:
+  cell.sboTerm = 290
+  GLC.sboTerm = 247
+  G6P_F6P.sboTerm = 247
+  F6P.sboTerm = 247
+  FBP.sboTerm = 247
+  G3P.sboTerm = 247
+  DHAP_G3P.sboTerm = 247
+  DHAP.sboTerm = 247
+  vgk.sboTerm = 167
+  vpfk.sboTerm = 216
+  vfba.sboTerm = 178
+  vgapdh.sboTerm = 201
+
+  // CV terms:
+  cell biological_system "http://identifiers.org/fma/FMA:70586"
+  cell biological_system "http://identifiers.org/go/GO:0005623"
+  GLC biological_system "http://identifiers.org/chebi/CHEBI:17234",
+                        "http://identifiers.org/kegg.compound/C00293"
+  G6P_F6P part "http://identifiers.org/kegg.compound/C00092",
+               "http://identifiers.org/kegg.compound/C00085",
+               "http://identifiers.org/chebi/CHEBI:4170"
+  G6P_F6P part "http://identifiers.org/chebi/CHEBI:14314",
+               "http://identifiers.org/chebi/CHEBI:15946"
+  F6P biological_system "http://identifiers.org/chebi/CHEBI:15946",
+                        "http://identifiers.org/kegg.compound/C00085"
+  FBP biological_system "http://identifiers.org/chebi/CHEBI:16905",
+                        "http://identifiers.org/kegg.compound/C00354"
+  G3P biological_system "http://identifiers.org/chebi/CHEBI:29052",
+                        "http://identifiers.org/kegg.compound/C00118"
+  DHAP_G3P part "http://identifiers.org/chebi/CHEBI:16108",
+                "http://identifiers.org/chebi/CHEBI:29052"
+  DHAP_G3P part "http://identifiers.org/kegg.compound/C00111",
+                "http://identifiers.org/kegg.compound/C00118",
+                "http://identifiers.org/chebi/CHEBI:16108"
+  DHAP biological_system "http://identifiers.org/chebi/CHEBI:16108",
+                         "http://identifiers.org/kegg.compound/C00111"
+  vgk version "http://identifiers.org/kegg.reaction/R00725",
+              "http://identifiers.org/kegg.reaction/R00771"
+  vgk version "http://identifiers.org/go/GO:0004347",
+              "http://identifiers.org/go/GO:0004396"
+  vgk version "http://identifiers.org/ec-code/5.3.1.9",
+              "http://identifiers.org/ec-code/2.7.1.1"
+  vpfk biological_system "http://identifiers.org/kegg.reaction/R00756"
+  vpfk biological_system "http://identifiers.org/go/GO:0003872"
+  vpfk biological_system "http://identifiers.org/ec-code/2.7.1.11"
+  vfba biological_system "http://identifiers.org/kegg.reaction/R01068"
+  vfba biological_system "http://identifiers.org/ec-code/4.1.2.13"
+  vfba biological_system "http://identifiers.org/go/GO:0004332"
+  vgapdh biological_system "http://identifiers.org/kegg.reaction/R01061"
+  vgapdh biological_system "http://identifiers.org/go/GO:0004365"
+  vgapdh biological_system "http://identifiers.org/ec-code/1.2.1.12"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL9574422639"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000236"
+  model publication "http://identifiers.org/pubmed/12829470"
+  model origin "http://identifiers.org/pubmed/6271617"
+  model biological_system "http://identifiers.org/go/GO:0006096"
+  model parthood "http://identifiers.org/kegg.pathway/map00010"
+  model taxon "http://identifiers.org/taxonomy/40674"
+  model parthood "http://identifiers.org/reactome/REACT_1383"
+  model created "2009-08-06T16:54:12Z"
+  model modified "2014-06-03T14:56:48Z"
+  model creator1.givenName "Lukas"
+  model creator1.familyName "Endler"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "lukas@ebi.ac.uk"
+  model creator2.givenName "Paal O"
+  model creator2.familyName "Westermark"
+  model creator2.organization "Royal Institute of Technology, Stockholm, Sweden."
+  model creator2.email "paal@nada.kth.se"
+  model creator3.givenName "Vijayalakshmi"
+  model creator3.familyName "Chelliah"
+  model creator3.organization "EMBL-EBI"
+  model creator3.email "viji@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+This is the extended model described in eq. 2 of the article: 
+**A model of phosphofructokinase and glycolytic oscillations in the pancreatic
+beta-cell. ** 
+Westermark PO and Lansner A. *Biophys J.* 2003 Jul;85(1):126-39. PMID: [12829470](http://www.ncbi.nlm.nih.gov/pubmed/12829470), doi:[10.1016/S0006-3495(03)74460-9](http://dx.doi.org/10.1016/S0006-3495(03)74460-9) 
+**Abstract:** 
+We have constructed a model of the upper part of the glycolysis in the pancreatic
+beta-cell. The model comprises the enzymatic reactions from glucokinase to
+glyceraldehyde-3-phosphate dehydrogenase (GAPD). Our results show, for a substantial
+part of the parameter space, an oscillatory behavior of the glycolysis for a large
+range of glucose concentrations. We show how the occurrence of oscillations depends
+on glucokinase, aldolase and/or GAPD activities, and how the oscillation period depends
+on the phosphofructokinase activity. We propose that the ratio of glucokinase and
+aldolase and/or GAPD activities are adequate as characteristics of the glucose responsiveness,
+rather than only the glucokinase activity. We also propose that the rapid equilibrium
+between different oligomeric forms of phosphofructokinase may reduce the oscillation
+period sensitivity to phosphofructokinase activity. Methodologically, we show that
+a satisfying description of phosphofructokinase kinetics can be achieved using the
+irreversible Hill equation with allosteric modifiers. We emphasize the use of parameter
+ranges rather than fixed values, and the use of operationally well-defined parameters
+in order for this methodology to be feasible. The theoretical results presented in
+this study apply to the study of insulin secretion mechanisms, since glycolytic oscillations
+have been proposed as a cause of oscillations in the ATP/ADP ratio which is linked
+to insulin secretion. 
+
+This model originates from BioModels Database: A Database of Annotated Published
+Models. It is copyright (c) 2005-2009 The BioModels Team. 
+For more information see the [terms of use](http://www.ebi.ac.uk/biomodels/legal.html). 
+To cite BioModels Database, please use [Le Novère N., Bornstein B., Broicher A., Courtot M., Donizelli M., Dharuri H., Li L., Sauro H., Schilstra M., Shapiro B., Snoep J.L., Hucka M. (2006) BioModels Database: A Free, Centralized Database of Curated, Published, Quantitative Kinetic Models of Biochemical and Cellular Systems Nucleic Acids Res., 34: D689-D691.](http://www.pubmedcentral.nih.gov/articlerender.fcgi?tool=pubmed&pubmedid=16381960)
+```
+end
+
+Westermark2003_Pancreatic_GlycOsc_extended is "Westermark2003_Pancreatic_GlycOsc_extended"

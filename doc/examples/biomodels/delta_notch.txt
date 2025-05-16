@@ -1,0 +1,146 @@
+// Created by libAntimony v3.0.0
+model *Collier1996___Delta_Notch_intercellular_signalling_and_lateral_inhibition()
+
+  // Compartments and Species:
+  compartment cell_1___plasma_membrane, cell_2___plasma_membrane;
+  species delta1 in cell_1___plasma_membrane, delta2 in cell_2___plasma_membrane;
+  species notch1 in cell_1___plasma_membrane, notch2 in cell_2___plasma_membrane;
+
+  // Assignment Rules:
+  G1 := 1/(1 + ModelValue_1*notch1^ModelValue_3);
+  G2 := 1/(1 + ModelValue_1*notch2^ModelValue_3);
+  F2 := delta2^ModelValue_4/(ModelValue_0 + delta2^ModelValue_4);
+  F1 := delta1^ModelValue_4/(ModelValue_0 + delta1^ModelValue_4);
+
+  // Reactions:
+  notch1_activation:  => notch1; cell_1___plasma_membrane*F2;
+  notch2_activation:  => notch2; cell_2___plasma_membrane*F1;
+  delta2_activation:  => delta2; cell_2___plasma_membrane*(G2/rho);
+  delta1_activation:  => delta1; cell_1___plasma_membrane*(G1/rho);
+  delta1_inhibition: delta1 => ; cell_1___plasma_membrane*(rho*delta1);
+  delta2_inhibition: delta2 => ; cell_2___plasma_membrane*(rho*delta2);
+  notch1_inhibition: notch1 => ; cell_1___plasma_membrane*(mu*notch1);
+  notch2_inhibition: notch2 => ; cell_2___plasma_membrane*(mu*notch2);
+
+  // Species initializations:
+  delta1 = 0.999999999999985;
+  delta2 = 0.99;
+  notch1 = 0.999999999999987;
+  notch2 = 0.99;
+
+  // Compartment initializations:
+  cell_1___plasma_membrane = 1;
+  cell_2___plasma_membrane = 1;
+
+  // Variable initializations:
+  a = 0.01;
+  b = 100;
+  ModelValue_1 = b;
+  ModelValue_3 = h;
+  h = 2;
+  k = 2;
+  mu = 1;
+  rho = 1;
+  ModelValue_4 = k;
+  ModelValue_0 = a;
+
+  // Other declarations:
+  var G1, G2, F2, F1;
+  const cell_1___plasma_membrane, cell_2___plasma_membrane, a, b, ModelValue_1;
+  const ModelValue_3, h, k, mu, rho, ModelValue_4, ModelValue_0;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = litre;
+  unit time_unit = second;
+  unit substance = mole;
+
+  // Display Names:
+  time_unit is "time";
+  cell_1___plasma_membrane is "cell 1 - plasma membrane";
+  cell_2___plasma_membrane is "cell 2 - plasma membrane";
+  ModelValue_1 is "Initial for b";
+  ModelValue_3 is "Initial for h";
+  ModelValue_4 is "Initial for k";
+  ModelValue_0 is "Initial for a";
+  notch1_activation is "notch1 activation";
+  notch2_activation is "notch2 activation";
+  delta2_activation is "delta2 activation";
+  delta1_activation is "delta1 activation";
+  delta1_inhibition is "delta1 inhibition";
+  delta2_inhibition is "delta2 inhibition";
+  notch1_inhibition is "notch1 inhibition";
+  notch2_inhibition is "notch2 inhibition";
+
+  // SBO terms:
+  G1.sboTerm = 64
+  mu.sboTerm = 356
+  rho.sboTerm = 356
+  G2.sboTerm = 64
+  F2.sboTerm = 64
+  F1.sboTerm = 64
+  notch1_activation.sboTerm = 656
+  notch2_activation.sboTerm = 656
+  delta2_activation.sboTerm = 656
+  delta1_activation.sboTerm = 656
+
+  // CV terms:
+  cell_1___plasma_membrane biological_system "http://identifiers.org/go/GO:0005886"
+  cell_2___plasma_membrane biological_system "http://identifiers.org/go/GO:0005886"
+  delta1 biological_system "http://identifiers.org/uniprot/P10041"
+  delta2 biological_system "http://identifiers.org/uniprot/P10041"
+  notch1 biological_system "http://identifiers.org/uniprot/P07207"
+  notch1 biological_system "http://identifiers.org/ncit/C113838"
+  notch2 biological_system "http://identifiers.org/ncit/C113838"
+  notch2 biological_system "http://identifiers.org/uniprot/P07207"
+  G1 identity "http://identifiers.org/sbo/SBO:0000064"
+  mu identity "http://identifiers.org/sbo/SBO:0000356"
+  rho identity "http://identifiers.org/sbo/SBO:0000356"
+  G2 identity "http://identifiers.org/sbo/SBO:0000064"
+  F2 identity "http://identifiers.org/sbo/SBO:0000064"
+  F1 identity "http://identifiers.org/sbo/SBO:0000064"
+  notch1_activation identity "http://identifiers.org/sbo/SBO:0000656"
+  notch2_activation identity "http://identifiers.org/sbo/SBO:0000656"
+  delta2_activation identity "http://identifiers.org/sbo/SBO:0000656"
+  delta1_activation identity "http://identifiers.org/sbo/SBO:0000656"
+  delta1_inhibition biological_system "http://identifiers.org/sbo/SBO:0000407"
+  delta2_inhibition biological_system "http://identifiers.org/sbo/SBO:0000407"
+  notch1_inhibition biological_system "http://identifiers.org/sbo/SBO:0000407"
+  notch2_inhibition biological_system "http://identifiers.org/sbo/SBO:0000407"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL2204050001",
+                     "http://identifiers.org/biomodels.db/BIOMD0000001047"
+  model container "http://identifiers.org/bto/BTO:0006223"
+  model taxon "http://identifiers.org/taxonomy/7215"
+  model description "http://identifiers.org/pubmed/9015458"
+  model property "http://identifiers.org/go/GO:0046331",
+                 "http://identifiers.org/go/GO:0007219",
+                 "http://identifiers.org/go/GO:0009888",
+                 "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2022-03-09T14:25:07Z"
+  model modified "2022-03-30T16:14:12Z"
+  model creator1.givenName "Mikal"
+  model creator1.familyName "Daou"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "mikaldaou@hotmail.com"
+  model creator2.givenName "Rahuman"
+  model creator2.familyName "Sheriff"
+  model creator2.organization "EMBL-EBI"
+  model creator2.email "sheriff@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+```ODE model describing how slight variations in Notch and Delta cellular concentrations, 
+through lateral inhibition, lead to cells with different states of differentiation. 
+Lateral inhibition is a process whereby a given cell adopting a given fate prevents 
+its immediate neighbouring cells from doing likewise. Notch and Delta are interacting 
+transmembrane proteins and according to this model, lateral inhibition is due to 
+a process where the inhibited cells (where notch has been activated by Delta) loose 
+their ability to inhibit other cells (by synthesizing Delta). This process creates 
+a feedback loop where cells with more delta proteins on their surface inhibit their 
+immediate neighbours and adopt a different cell fate than those neighbours.```
+```
+end
+
+Collier1996___Delta_Notch_intercellular_signalling_and_lateral_inhibition is "Collier1996 - Delta Notch intercellular signalling and lateral inhibition"

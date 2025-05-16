@@ -1,0 +1,80 @@
+// Created by libAntimony v3.0.0
+model *Tsur2019___Response_of_patients_with_melanoma_to_immune_checkpoint_blockade()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species A in compartment_, M in compartment_, T in compartment_;
+
+  // Reactions:
+  APC_Activation:  => A; compartment_*(alpha_A*M/(M + b));
+  APC_Death: A => ; compartment_*mu_a*A;
+  Activation_CD8:  => T; compartment_*(alpha_e*A);
+  CD8_Death: T => ; compartment_*mu_e*T;
+  Tumor_Growth:  => M; compartment_*(gamma_mel*M);
+  Tumor_Death_CD8: M => ; compartment_*(nu_mel*T*M/(M + g));
+
+  // Species initializations:
+  A = alpha_A/mu_a/(M/(M + b));
+  M = 1000000;
+  T = (alpha_e/mu_e)*A;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  alpha_A = 2986;
+  mu_a = 0.231;
+  b = 92330;
+  alpha_e = 831.8;
+  mu_e = 0.1777;
+  gamma_mel = 0.04496;
+  nu_mel = 0.1245;
+  g = 60100000;
+
+  // Other declarations:
+  const compartment_, alpha_A, mu_a, b, alpha_e, mu_e, gamma_mel, nu_mel;
+  const g;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = item;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/ncit/C94498"
+  A identity "http://identifiers.org/ncit/C12621"
+  M identity "http://identifiers.org/ncit/C36873"
+  T identity "http://identifiers.org/ncit/C12542"
+  APC_Activation biological_system "http://identifiers.org/ncit/C64382"
+  APC_Death identity "http://identifiers.org/go/GO:0008219"
+  Activation_CD8 identity "http://identifiers.org/go/GO:0036037"
+  CD8_Death identity "http://identifiers.org/go/GO:0008219"
+  Tumor_Growth identity "http://identifiers.org/ncit/C36294"
+  Tumor_Death_CD8 identity "http://identifiers.org/go/GO:0002419"
+
+  model publication "http://identifiers.org/pubmed/31580835"
+  model model_source "http://identifiers.org/biomodels.db/MODEL1910250002",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000838"
+  model property "http://identifiers.org/efo/0000756"
+  model property "http://identifiers.org/ncit/C141144"
+  model property "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2019-10-25T13:25:27Z"
+  model modified "2019-10-25T13:25:27Z"
+  model creator1.givenName "Johannes"
+  model creator1.familyName "Meyer"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "johannes.p.meyer@gmail.com"
+
+  // Notes:
+  model notes ```
+```This is a simple mathematical population model for pembrolizumab-treated advanced 
+melanoma patients, used to predict the response of melanoma patients to immune checkpoint 
+inhibitors.```
+```
+end
+
+Tsur2019___Response_of_patients_with_melanoma_to_immune_checkpoint_blockade is "Tsur2019 - Response of patients with melanoma to immune checkpoint blockade"

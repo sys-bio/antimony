@@ -1,0 +1,101 @@
+// Created by libAntimony v3.0.0
+model *New_Model()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species u in compartment_, v in compartment_, w in compartment_;
+
+  // Reactions:
+  Increase_in_density_of_glioma_cells:  => u; compartment_*(r_1*u*(1 - u));
+  Decrease_in_density_of_glioma_cell: u => ; compartment_*(((alpha_1*v + alpha_2*w)/(u + k_1))*u);
+  Increase_in_density_of_macrophage_population:  => v; compartment_*(r_2*v*(1 - v));
+  Decrease_in_the_density_of_macrophage_population: v => ; compartment_*(alpha_3*(u*v/(u + k_2)));
+  Increase_in_density_of_glioma_specific_CD8__T_cell:  => w; compartment_*(gamma_1*u*w/(k_3 + u));
+  decrease_in_density_of_glioma_specific_CD8__T_cell: w => ; compartment_*(mu_1*w + alpha_4*(u*w/(u + k_4)));
+
+  // Species initializations:
+  u = 0.1;
+  v = 0.55;
+  w = 0.2;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  r_1 = 0.4822;
+  alpha_1 = 0.069943;
+  alpha_2 = 2.74492;
+  k_1 = 0.90305;
+  r_2 = 0.3307;
+  alpha_3 = 0.0194;
+  k_2 = 0.030584;
+  gamma_1 = 0.1245;
+  k_3 = 2.8743;
+  mu_1 = 0.0074;
+  alpha_4 = 0.01694;
+  k_4 = 0.378918;
+
+  // Other declarations:
+  const compartment_, r_1, alpha_1, alpha_2, k_1, r_2, alpha_3, k_2, gamma_1;
+  const k_3, mu_1, alpha_4, k_4;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  Increase_in_density_of_glioma_cells is "Increase in density of glioma cells";
+  Decrease_in_density_of_glioma_cell is "Decrease in density of glioma cell";
+  Increase_in_density_of_macrophage_population is "Increase in density of macrophage population";
+  Decrease_in_the_density_of_macrophage_population is "Decrease in the density of macrophage population";
+  Increase_in_density_of_glioma_specific_CD8__T_cell is "Increase in density of glioma specific CD8+ T cell";
+  decrease_in_density_of_glioma_specific_CD8__T_cell is "decrease in density of glioma specific CD8+ T cell";
+
+  // CV terms:
+  u instance "http://identifiers.org/bto/BTO:0000526"
+  v instance "http://identifiers.org/bto/BTO:0000801"
+  w instance "http://identifiers.org/bto/BTO:0000782"
+  Increase_in_density_of_glioma_cells instance "http://identifiers.org/ncit/C25533"
+  Decrease_in_density_of_glioma_cell instance "http://identifiers.org/ncit/C64914"
+  Increase_in_density_of_macrophage_population instance "http://identifiers.org/ncit/C25533"
+  Decrease_in_the_density_of_macrophage_population instance "http://identifiers.org/ncit/C64914"
+  Increase_in_density_of_glioma_specific_CD8__T_cell instance "http://identifiers.org/ncit/C25533"
+  decrease_in_density_of_glioma_specific_CD8__T_cell instance "http://identifiers.org/ncit/C64914"
+
+  model publication "http://identifiers.org/doi/10.1515/ijnsns-2017-0206"
+  model origin "http://identifiers.org/doi/10.1007/s00262-007-0387-z",
+               "http://identifiers.org/doi/10.1371/journal.pone.0123611",
+               "http://identifiers.org/doi/10.1016/S0092-8240(05)80260-5"
+  model model_source "http://identifiers.org/biomodels.db/MODEL1912130001",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000891"
+  model property "http://identifiers.org/mamo/MAMO_0000046"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model created "2019-12-13T10:22:45Z"
+  model modified "2019-12-13T10:22:45Z"
+  model creator1.givenName "Mohammad Umer"
+  model creator1.familyName "Sharif Shohan"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "msharifshohan@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+```Stability Analysis of a Mathematical Model for Glioma-Immune Interaction under 
+Optimal TherapySubhas KhajanchiAbstractWe investigate a mathematical model using 
+a system of coupled ordinary differential equations, which describes the interplay 
+of malignant glioma cells, macrophages, glioma specific CD8+T cells and the immunotherapeutic 
+drug Adoptive Cellular Immunotherapy (ACI). To better understand under what circumstances 
+the glioma cells can be eliminated, we employ the theory of optimal control. We investigate 
+the dynamics of the system by observing biologically feasible equilibrium points 
+and their stability analysis before administration of the external therapy ACI. We 
+solve an optimal control problem with an objective functional which minimizes the 
+glioma cell burden as well as the side effects of the treatment. We characterize 
+our optimal control in terms of the solutions to the optimality system, in which 
+the state system coupled with the adjoint system. Our model simulation demonstrates 
+that the strength of treatment u1(t) plays an important role to eliminate the glioma 
+cells. Finally, we derive an optimal treatment strategy and then solve it numerically.Keywords: 
+malignant gliomas; stability analysis; optimal control; adoptive cellular immunotherapy```
+```
+end
+
+New_Model is "Khajanchi2019 - Stability Analysis of a Mathematical Model forGlioma-Immune Interaction under OptimalTherapy"

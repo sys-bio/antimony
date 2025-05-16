@@ -1,0 +1,169 @@
+// Created by libAntimony v3.0.0
+model *Kwang2003___The_influence_of_RKIP_on_the_ERK_signaling_pathway()
+
+  // Compartments and Species:
+  compartment cytoplasm;
+  species Raf1 in cytoplasm, RKIP in cytoplasm, Raf1_RKIP in cytoplasm, Raf1_RKIP_ERKPP in cytoplasm;
+  species ERK in cytoplasm, RKIPP in cytoplasm, MEKPP in cytoplasm, MEKPP_ERK in cytoplasm;
+  species ERKPP in cytoplasm, RP in cytoplasm, RKIPP_RP in cytoplasm;
+
+  // Reactions:
+  Raf1_RKIP_complex_formation: Raf1 + RKIP => Raf1_RKIP; cytoplasm*k1*Raf1*RKIP;
+  Raf1_RKIP_complex_disassembly: Raf1_RKIP => Raf1 + RKIP; cytoplasm*k2*Raf1_RKIP;
+  Raf1_RKIP_ERKPP_complex_formation: Raf1_RKIP + ERKPP => Raf1_RKIP_ERKPP; cytoplasm*k3*Raf1_RKIP*ERKPP;
+  Raf1_RKIP_ERKPP_complex_disassembly__ERK_phosphorylation: Raf1_RKIP_ERKPP => Raf1_RKIP + ERKPP; cytoplasm*k4*Raf1_RKIP_ERKPP;
+  Raf1_RKIP_ERKPP_complex_disassembly__RKIP_phosphorylation: Raf1_RKIP_ERKPP => Raf1 + ERK + RKIPP; cytoplasm*k5*Raf1_RKIP_ERKPP;
+  MEKPP_ERK_complex_formation: ERK + MEKPP => MEKPP_ERK; cytoplasm*k6*ERK*MEKPP;
+  MEKPP_ERK_complex_disassembly__ERK_unphosphorylated: MEKPP_ERK => ERK + MEKPP; cytoplasm*k7*MEKPP_ERK;
+  MEKPP_ERK_complex_disassembly__ERK_phosphorylated: MEKPP_ERK => MEKPP + ERKPP; cytoplasm*k8*MEKPP_ERK;
+  RKIPP_RP_comlex_formation: RKIPP + RP => RKIPP_RP; cytoplasm*k9*RKIPP*RP;
+  RKIPP_RP_complex_disassembly__phosphorylated_RKIP: RKIPP_RP => RP + RKIPP; cytoplasm*k10*RKIPP_RP;
+  RKIPP_RP_complex_disassembly__unphosphorylated_RKIP: RKIPP_RP => RP + RKIP; cytoplasm*k11*RKIPP_RP;
+
+  // Species initializations:
+  Raf1 = 2;
+  RKIP = 2.5;
+  Raf1_RKIP = 0;
+  Raf1_RKIP_ERKPP = 0;
+  ERK = 0;
+  RKIPP = 0;
+  MEKPP = 2.5;
+  MEKPP_ERK = 0;
+  ERKPP = 2.5;
+  RP = 3;
+  RKIPP_RP = 0;
+
+  // Compartment initializations:
+  cytoplasm = 1;
+
+  // Variable initializations:
+  k1 = 0.53;
+  k2 = 0.0072;
+  k3 = 0.625;
+  k4 = 0.00245;
+  k5 = 0.0315;
+  k6 = 0.8;
+  k7 = 0.0075;
+  k8 = 0.071;
+  k9 = 0.92;
+  k10 = 0.00122;
+  k11 = 0.87;
+
+  // Other declarations:
+  const cytoplasm, k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11;
+
+  // Unit definitions:
+  unit substance = 1e-6 mole;
+
+  // Display Names:
+  Raf1_RKIP_complex_formation is "Raf1_RKIP complex formation";
+  Raf1_RKIP_complex_disassembly is "Raf1_RKIP complex disassembly";
+  Raf1_RKIP_ERKPP_complex_formation is "Raf1_RKIP_ERKPP complex formation";
+  Raf1_RKIP_ERKPP_complex_disassembly__ERK_phosphorylation is "Raf1_RKIP_ERKPP complex disassembly (ERK phosphorylation)";
+  Raf1_RKIP_ERKPP_complex_disassembly__RKIP_phosphorylation is "Raf1_RKIP_ERKPP complex disassembly (RKIP phosphorylation)";
+  MEKPP_ERK_complex_formation is "MEKPP_ERK complex formation";
+  MEKPP_ERK_complex_disassembly__ERK_unphosphorylated is "MEKPP_ERK complex disassembly (ERK unphosphorylated)";
+  MEKPP_ERK_complex_disassembly__ERK_phosphorylated is "MEKPP_ERK complex disassembly (ERK phosphorylated)";
+  RKIPP_RP_comlex_formation is "RKIPP_RP comlex formation";
+  RKIPP_RP_complex_disassembly__phosphorylated_RKIP is "RKIPP_RP complex disassembly (phosphorylated RKIP)";
+  RKIPP_RP_complex_disassembly__unphosphorylated_RKIP is "RKIPP_RP complex disassembly (unphosphorylated RKIP)";
+
+  // CV terms:
+  Raf1 biological_system "http://identifiers.org/uniprot/P04049"
+  RKIP biological_system "http://identifiers.org/ncit/C2336"
+  Raf1_RKIP part "http://identifiers.org/uniprot/P04049"
+  Raf1_RKIP part "http://identifiers.org/ncit/C2336"
+  Raf1_RKIP biological_system "http://identifiers.org/go/GO:0043234"
+  Raf1_RKIP_ERKPP part "http://identifiers.org/uniprot/P27361"
+  Raf1_RKIP_ERKPP part "http://identifiers.org/uniprot/P04049"
+  Raf1_RKIP_ERKPP part "http://identifiers.org/ncit/C2336"
+  Raf1_RKIP_ERKPP biological_system "http://identifiers.org/go/GO:0043234"
+  ERK biological_system "http://identifiers.org/uniprot/P27361"
+  RKIPP biological_system "http://identifiers.org/ncit/C2336"
+  MEKPP biological_system "http://identifiers.org/uniprot/Q02750"
+  MEKPP_ERK part "http://identifiers.org/uniprot/P27361"
+  MEKPP_ERK part "http://identifiers.org/uniprot/Q02750"
+  MEKPP_ERK biological_system "http://identifiers.org/go/GO:0043234"
+  ERKPP biological_system "http://identifiers.org/uniprot/P27361"
+  RP biological_system "http://identifiers.org/ncit/C16981"
+  RKIPP_RP biological_system "http://identifiers.org/ncit/C2336"
+  Raf1_RKIP_complex_formation biological_system "http://identifiers.org/sbo/SBO:0000526"
+  Raf1_RKIP_complex_disassembly biological_system "http://identifiers.org/ncit/C52475"
+  Raf1_RKIP_ERKPP_complex_formation biological_system "http://identifiers.org/sbo/SBO:0000526"
+  Raf1_RKIP_ERKPP_complex_disassembly__ERK_phosphorylation biological_system "http://identifiers.org/go/GO:0016310"
+  Raf1_RKIP_ERKPP_complex_disassembly__ERK_phosphorylation biological_system "http://identifiers.org/ncit/C52475"
+  Raf1_RKIP_ERKPP_complex_disassembly__RKIP_phosphorylation biological_system "http://identifiers.org/ncit/C52475"
+  Raf1_RKIP_ERKPP_complex_disassembly__RKIP_phosphorylation biological_system "http://identifiers.org/go/GO:0016310"
+  MEKPP_ERK_complex_formation biological_system "http://identifiers.org/sbo/SBO:0000526"
+  MEKPP_ERK_complex_disassembly__ERK_unphosphorylated biological_system "http://identifiers.org/go/GO:0016310"
+  MEKPP_ERK_complex_disassembly__ERK_unphosphorylated biological_system "http://identifiers.org/ncit/C52475"
+  MEKPP_ERK_complex_disassembly__ERK_phosphorylated biological_system "http://identifiers.org/go/GO:0016310"
+  MEKPP_ERK_complex_disassembly__ERK_phosphorylated biological_system "http://identifiers.org/ncit/C52475"
+  RKIPP_RP_complex_disassembly__phosphorylated_RKIP biological_system "http://identifiers.org/go/GO:0016310"
+  RKIPP_RP_complex_disassembly__phosphorylated_RKIP biological_system "http://identifiers.org/ncit/C52475"
+  RKIPP_RP_complex_disassembly__unphosphorylated_RKIP biological_system "http://identifiers.org/go/GO:0016310"
+  RKIPP_RP_complex_disassembly__unphosphorylated_RKIP biological_system "http://identifiers.org/ncit/C52475"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1708250000"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000647"
+  model publication "http://identifiers.org/doi/10.1007/3-540-36481-1_11"
+  model part "http://identifiers.org/kegg.pathway/map04010"
+  model property "http://identifiers.org/go/GO:0070372"
+  model property "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2017-06-20T12:07:13Z"
+  model modified "2017-10-26T15:22:33Z"
+  model creator1.givenName "Matthew Grant"
+  model creator1.familyName "Roberts"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "mroberts@ebi.ac.uk"
+  model creator2.givenName "Varun"
+  model creator2.familyName "Kothamachu"
+  model creator2.organization "Babraham Institute"
+  model creator2.email "kothamav@babraham.ac.uk"
+  model creator3.givenName "Emma Louise"
+  model creator3.familyName "Fairbanks"
+  model creator3.organization "EMBL-EBI"
+  model creator3.email "efairbanks@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+Kwang2003 - The influence of RKIP on the ERKsignaling pathway 
+
+
+This model is described in the article:
+
+
+[Mathematical Modeling of the Influence of RKIP on the ERK Signaling Pathway](http://identifiers.org/doi/10.1007/3-540-36481-1_11 "Access to this publication") 
+
+
+Kwang-Hyun Cho, Sung-Young Shin, Hyun-Woo Kim, Olaf Wolkenhauer, Brian McFerran
+and Walter Kolch 
+
+Computational Methods in Systems Biology: First International Workshop, CMSB 2003
+Rovereto, Italy, February 24â??26, 2003 Proceedings 
+Abstract:
+
+
+This paper investigates the influence of the Raf Kinase Inhibitor Pro- tein (RKIP)
+on the Extracellular signal Regulated Kinase (ERK) signaling pathway through mathematical
+modeling and simulation. Using nonlinear ordi- nary differential equations
+to represent biochemical reactions in the pathway, we suggest a technique for
+parameter estimation, utilizing time series data of proteins involved in the 
+signaling pathway. The mathematical model allows the simulation the sensitivity
+of the ERK pathway to variations of initial RKIP and ERK-PP (phosphorylated ERK)
+concentrations along with time. Throughout the simulation study, we can qualitatively
+validate the proposed mathematical model compared with experimental results.
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identified by: [BIOMD0000000647](http://identifiers.org/biomodels.db/BIOMD0000000647).
+
+To cite BioModels Database, please use: [Chelliah V et al. BioModels: ten-year anniversary. Nucl. Acids Res. 2015, 43(Database issue):D542-8](http://identifiers.org/pubmed/25414348).
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+end
+
+Kwang2003___The_influence_of_RKIP_on_the_ERK_signaling_pathway is "Kwang2003 - The influence of RKIP on the ERK signaling pathway"

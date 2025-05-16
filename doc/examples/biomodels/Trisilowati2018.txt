@@ -1,0 +1,103 @@
+// Created by libAntimony v3.0.0
+model *Trisilowati2018___Optimal_control_of_tumor_immune_system_interaction_with_treatment()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species T_Tumor_Cells in compartment_, L_CD8_T_Cells in compartment_, D_Dendritic_Cells in compartment_;
+  species H_CD4_T_Cells in compartment_;
+
+  // Reactions:
+  Tumor_Growth:  => T_Tumor_Cells; compartment_*(a_1*T_Tumor_Cells*(1 - b_1__1*T_Tumor_Cells));
+  Tumor_Death_CD8: T_Tumor_Cells => ; compartment_*(alpha_1*T_Tumor_Cells*L_CD8_T_Cells);
+  Tumor_Death_Chemotherapy: T_Tumor_Cells => ; compartment_*u_1*T_Tumor_Cells;
+  CD8_Activation:  => L_CD8_T_Cells; compartment_*(beta_1*(D_Dendritic_Cells + H_CD4_T_Cells)*L_CD8_T_Cells);
+  CD8_Inactivation: L_CD8_T_Cells => ; compartment_*(alpha_2*T_Tumor_Cells*L_CD8_T_Cells);
+  CD8_Death: L_CD8_T_Cells => ; compartment_*e*L_CD8_T_Cells;
+  DC_Growth:  => D_Dendritic_Cells; compartment_*(a_2*D_Dendritic_Cells*(1 - b_2__1*D_Dendritic_Cells));
+  DC_Inactivation: D_Dendritic_Cells => ; compartment_*(beta_2*D_Dendritic_Cells*L_CD8_T_Cells);
+  DC_Immunotherapy:  => D_Dendritic_Cells; compartment_*u_2;
+  CD4_Growth:  => H_CD4_T_Cells; compartment_*(a_3*H_CD4_T_Cells*(1 - b_3__1*H_CD4_T_Cells));
+  CD4_Inactivation: H_CD4_T_Cells => ; compartment_*(beta_3*H_CD4_T_Cells*L_CD8_T_Cells);
+
+  // Species initializations:
+  T_Tumor_Cells = 1000000;
+  L_CD8_T_Cells = 10;
+  D_Dendritic_Cells = 10;
+  H_CD4_T_Cells = 5;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  a_1 = 0.431;
+  a_2 = 0.234;
+  a_3 = 0.017;
+  b_1__1 = 1.02e-09;
+  b_2__1 = 1.25e-05;
+  b_3__1 = 0.0005;
+  e = 1.04e-08;
+  alpha_1 = 4.2e-08;
+  alpha_2 = 8e-10;
+  beta_1 = 2e-05;
+  beta_2 = 2e-05;
+  beta_3 = 2e-05;
+  u_1 = 0;
+  u_2 = 0;
+
+  // Other declarations:
+  const compartment_, a_1, a_2, a_3, b_1__1, b_2__1, b_3__1, e, alpha_1, alpha_2;
+  const beta_1, beta_2, beta_3, u_1, u_2;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = item;
+
+  // Display Names:
+  compartment_ is "compartment";
+  b_1__1 is "b_1_-1";
+  b_2__1 is "b_2_-1";
+  b_3__1 is "b_3_-1";
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/ncit/C94498"
+  T_Tumor_Cells identity "http://identifiers.org/cl/CL:0001063"
+  L_CD8_T_Cells identity "http://identifiers.org/cco/CCO:0000910"
+  D_Dendritic_Cells identity "http://identifiers.org/cl/CL:0000451"
+  H_CD4_T_Cells identity "http://identifiers.org/cl/CL:0000912"
+  Tumor_Growth biological_system "http://identifiers.org/ncit/C36294"
+  Tumor_Death_CD8 identity "http://identifiers.org/go/GO:0002419"
+  Tumor_Death_Chemotherapy biological_system "http://identifiers.org/go/GO:0008219"
+  Tumor_Death_Chemotherapy property "http://identifiers.org/ncit/C15632"
+  CD8_Activation biological_system "http://identifiers.org/go/GO:0046649"
+  CD8_Inactivation identity "http://identifiers.org/ncit/C40846"
+  CD8_Death identity "http://identifiers.org/go/GO:0008219"
+  DC_Growth biological_system "http://identifiers.org/ncit/C18081"
+  DC_Inactivation identity "http://identifiers.org/ncit/C40846"
+  DC_Immunotherapy identity "http://identifiers.org/ncit/C28976"
+  CD4_Growth biological_system "http://identifiers.org/ncit/C18081"
+  CD4_Inactivation identity "http://identifiers.org/ncit/C40846"
+
+  model publication "http://identifiers.org/doi/10.1063/1.5062816"
+  model model_source "http://identifiers.org/biomodels.db/MODEL1911280003",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000880"
+  model property "http://identifiers.org/ncit/C9305"
+  model property "http://identifiers.org/mamo/MAMO_0000046"
+  model property "http://identifiers.org/go/GO:0006955"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model created "2019-11-28T15:12:24Z"
+  model modified "2019-11-28T15:12:24Z"
+  model creator1.givenName "Johannes"
+  model creator1.familyName "Meyer"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "johannes.p.meyer@gmail.com"
+
+  // Notes:
+  model notes ```
+```This is a mathematical model of a growing tumor and its interaction with the immune 
+system. The model consists of four populations: tumor cells, dendritic cells (representing 
+the innate immune system), cytotoxic T cells, and helper T cells (as the specific 
+immune system). The model is comprised of a system of ordinary differential equations.```
+```
+end
+
+Trisilowati2018___Optimal_control_of_tumor_immune_system_interaction_with_treatment is "Trisilowati2018 - Optimal control of tumor-immune system interaction with treatment"

@@ -1,0 +1,333 @@
+// Created by libAntimony v3.0.0
+model *Abernathy2016___glioblastoma_treatment()
+
+  // Compartments and Species:
+  compartment tumor_microenvironment;
+  species Tumor in tumor_microenvironment, CancerStemCell in tumor_microenvironment;
+  species CytotoxicTcell in tumor_microenvironment, TGFb in tumor_microenvironment;
+  species IFNy in tumor_microenvironment, MHC1 in tumor_microenvironment;
+  species MHC2 in tumor_microenvironment, $Tumor_Plot in tumor_microenvironment;
+  species $CSC_Plot in tumor_microenvironment, $CTL_Plot in tumor_microenvironment;
+
+  // Assignment Rules:
+  Tumor_Plot := Tumor/100000000;
+  CSC_Plot := CancerStemCell/10000000;
+  CTL_Plot := CytotoxicTcell/100;
+  as := at_*0.1;
+  es := et;
+  asb := atb;
+  esb := etb;
+  hs := ht;
+  abs_ := abt;
+
+  // Reactions:
+  tumor_growth:  => Tumor; tumor_microenvironment*(r1*Tumor*(1 - Tumor/k1));
+  tumor_transformation: CancerStemCell => Tumor; tumor_microenvironment*(ra*(Tumor/k1)*(CancerStemCell/k2)*(k1 - Tumor));
+  tumor_killing: Tumor => ; tumor_microenvironment*(at_*(MHC1/(MHC1 + etb))*(atb + etb*(1 - atb)/(TGFb + etb))*CytotoxicTcell*Tumor/(ht + Tumor));
+  csc_growth:  => CancerStemCell; tumor_microenvironment*(r2*CancerStemCell*(1 - CancerStemCell/k2));
+  csc_killing: CancerStemCell => ; tumor_microenvironment*(as*(MHC1/(MHC1 + esb))*(asb + esb*(1 - asb)/(TGFb + esb))*CytotoxicTcell*CancerStemCell/(hs + CancerStemCell));
+  ctl_death: CytotoxicTcell => ; tumor_microenvironment*uc*CytotoxicTcell;
+  ctl_source:  => CytotoxicTcell; tumor_microenvironment*N;
+  tgfb_source:  => TGFb; tumor_microenvironment*gb;
+  tgfb_by_tumor:  => TGFb; tumor_microenvironment*(abt*Tumor);
+  tgfb_by_csc:  => TGFb; tumor_microenvironment*(abs_*CancerStemCell);
+  tgfb_decay: TGFb => ; tumor_microenvironment*ub*TGFb;
+  ifny_production:  => IFNy; tumor_microenvironment*(ayc*CytotoxicTcell);
+  ifny_decay: IFNy => ; tumor_microenvironment*uy*IFNy;
+  mhc1_source:  => MHC1; tumor_microenvironment*gm1;
+  mhc1_decay: MHC1 => ; tumor_microenvironment*um1*MHC1;
+  mhc1_stimulation:  => MHC1; tumor_microenvironment*(am1y*IFNy/(IFNy + em1y));
+  mhc2_production:  => MHC2; tumor_microenvironment*((am2y*IFNy/(IFNy + em2y))*(em2b*(1 - am2b)/(TGFb + em2b) + am2b));
+  mhc2_decay: MHC2 => ; tumor_microenvironment*um2*MHC2;
+
+  // Species initializations:
+  Tumor = 70;
+  Tumor has substance_per_volume;
+  CancerStemCell = 30;
+  CancerStemCell has substance_per_volume;
+  CytotoxicTcell = 250;
+  CytotoxicTcell has substance_per_volume;
+  TGFb = 50;
+  TGFb has substance_per_volume;
+  IFNy = 50;
+  IFNy has substance_per_volume;
+  MHC1 = 50;
+  MHC1 has substance_per_volume;
+  MHC2 = 50;
+  MHC2 has substance_per_volume;
+  Tumor_Plot has substance_per_volume;
+  CSC_Plot has substance_per_volume;
+  CTL_Plot has substance_per_volume;
+
+  // Compartment initializations:
+  tumor_microenvironment = 1;
+  tumor_microenvironment has volume;
+
+  // Variable initializations:
+  r1 = 0.001;
+  r1 has unit_0;
+  k1 = 100000000;
+  k1 has unit_1;
+  at_ = 0.12;
+  at_ has unit_0;
+  et = 50;
+  et has unit_1;
+  atb = 0.69;
+  atb has unit_1;
+  etb = 10000;
+  etb has unit_1;
+  ht = 500000000;
+  ht has unit_1;
+  r2 = 0.1;
+  r2 has unit_0;
+  k2 = 10000000;
+  k2 has unit_1;
+  ra = 0.006;
+  ra has unit_0;
+  as has unit_0;
+  es has unit_1;
+  asb has unit_1;
+  esb has unit_1;
+  hs has unit_1;
+  uc = 0.007;
+  uc has unit_0;
+  gb = 63945;
+  gb has unit_0;
+  abt = 5.75e-06;
+  abt has unit_0;
+  abs_ has unit_0;
+  ub = 7;
+  ub has unit_0;
+  gm1 = 1.44;
+  gm1 has unit_0;
+  am1y = 2.88;
+  am1y has unit_0;
+  em1y = 338000;
+  em1y has unit_1;
+  um1 = 0.0144;
+  um1 has unit_0;
+  am2y = 8660;
+  am2y has unit_0;
+  em2y = 1420;
+  em2y has unit_1;
+  am2b = 0.012;
+  am2b has unit_1;
+  em2b = 100000;
+  em2b has unit_1;
+  um2 = 0.0144;
+  um2 has unit_0;
+  ayc = 0.000102;
+  ayc has unit_0;
+  uy = 0.102;
+  uy has unit_0;
+  N = 0;
+  N has unit_0;
+
+  // Other declarations:
+  var as, es, asb, esb, hs, abs_;
+  const tumor_microenvironment, r1, k1, at_, et, atb, etb, ht, r2, k2, ra;
+  const uc, gb, abt, ub, gm1, am1y, em1y, um1, am2y, em2y, am2b, em2b, um2;
+  const ayc, uy, N;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = time_unit;
+  unit substance = 1e-3 mole;
+  unit unit_0 = 1 / 3600e2 second;
+  unit unit_1 = 1 / dimensionless^-0;
+  unit extent = substance;
+  unit substance_per_volume = 1e-3 mole / 1e-3 litre;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1/h";
+  unit_1 is "1";
+  tumor_microenvironment is "tumor microenvironment";
+  Tumor_Plot is "Tumor Plot";
+  CSC_Plot is "CSC Plot";
+  CTL_Plot is "CTL Plot";
+  at_ is "at";
+  abs_ is "abs";
+  tumor_growth is "tumor growth";
+  tumor_transformation is "tumor transformation";
+  tumor_killing is "tumor killing";
+  csc_growth is "csc growth";
+  csc_killing is "csc killing";
+  ctl_death is "ctl death";
+  ctl_source is "ctl source";
+  tgfb_source is "tgfb source";
+  tgfb_by_tumor is "tgfb by tumor";
+  tgfb_by_csc is "tgfb by csc";
+  tgfb_decay is "tgfb decay";
+  ifny_production is "ifny production";
+  ifny_decay is "ifny decay";
+  mhc1_source is "mhc1 source";
+  mhc1_decay is "mhc1 decay";
+  mhc1_stimulation is "mhc1 stimulation";
+  mhc2_production is "mhc2 production";
+  mhc2_decay is "mhc2 decay";
+
+  // CV terms:
+  tumor_microenvironment biological_system "http://identifiers.org/ncit/C94498"
+  tumor_microenvironment biological_system "http://identifiers.org/ncit/C3058"
+  Tumor biological_system "http://identifiers.org/cl/CL:0001064"
+  CancerStemCell biological_system "http://identifiers.org/bto/BTO:0004254"
+  CytotoxicTcell biological_system "http://identifiers.org/cl/CL:0000910"
+  TGFb identity "http://identifiers.org/uniprot/P01137"
+  IFNy identity "http://identifiers.org/uniprot/P01579"
+  MHC1 biological_system "http://identifiers.org/ncit/C20706"
+  MHC2 biological_system "http://identifiers.org/ncit/C20705"
+  Tumor_Plot biological_system "http://identifiers.org/cl/CL:0001064"
+  CSC_Plot biological_system "http://identifiers.org/bto/BTO:0004254"
+  CTL_Plot biological_system "http://identifiers.org/cl/CL:0000910"
+  r1 biological_system "http://identifiers.org/sbo/SBO:0000610"
+  k1 biological_system "http://identifiers.org/sbo/SBO:0000661"
+  at_ biological_system "http://identifiers.org/ncit/C53346"
+  et biological_system "http://identifiers.org/sbo/SBO:0000193"
+  atb biological_system "http://identifiers.org/sbo/SBO:0000540"
+  etb biological_system "http://identifiers.org/sbo/SBO:0000193"
+  ht biological_system "http://identifiers.org/sbo/SBO:0000193"
+  r2 biological_system "http://identifiers.org/sbo/SBO:0000610"
+  k2 biological_system "http://identifiers.org/sbo/SBO:0000661"
+  ra biological_system "http://identifiers.org/ncit/C25636"
+  as biological_system "http://identifiers.org/ncit/C25636"
+  es biological_system "http://identifiers.org/sbo/SBO:0000193"
+  asb biological_system "http://identifiers.org/sbo/SBO:0000540"
+  esb biological_system "http://identifiers.org/sbo/SBO:0000193"
+  hs biological_system "http://identifiers.org/sbo/SBO:0000193"
+  uc biological_system "http://identifiers.org/ncit/C25636"
+  gb biological_system "http://identifiers.org/ncit/C25636"
+  abt biological_system "http://identifiers.org/ncit/C25636"
+  abs_ biological_system "http://identifiers.org/ncit/C25636"
+  ub biological_system "http://identifiers.org/ncit/C25636"
+  gm1 biological_system "http://identifiers.org/ncit/C25636"
+  am1y biological_system "http://identifiers.org/ncit/C25636"
+  em1y biological_system "http://identifiers.org/sbo/SBO:0000193"
+  um1 biological_system "http://identifiers.org/ncit/C25636"
+  am2y biological_system "http://identifiers.org/ncit/C25636"
+  em2y biological_system "http://identifiers.org/sbo/SBO:0000193"
+  am2b biological_system "http://identifiers.org/sbo/SBO:0000540"
+  em2b biological_system "http://identifiers.org/sbo/SBO:0000193"
+  um2 biological_system "http://identifiers.org/ncit/C25636"
+  ayc biological_system "http://identifiers.org/ncit/C25636"
+  uy biological_system "http://identifiers.org/ncit/C25636"
+  N biological_system "http://identifiers.org/ncit/C25636"
+  tumor_growth biological_system "http://identifiers.org/go/GO:0008283"
+  tumor_growth biological_system "http://identifiers.org/sbo/SBO:0000393"
+  tumor_transformation biological_system "http://identifiers.org/go/GO:0048863"
+  tumor_killing biological_system "http://identifiers.org/go/GO:0002419"
+  tumor_killing biological_system "http://identifiers.org/sbo/SBO:0000179"
+  csc_growth biological_system "http://identifiers.org/go/GO:0008283"
+  csc_growth biological_system "http://identifiers.org/sbo/SBO:0000393"
+  csc_killing biological_system "http://identifiers.org/sbo/SBO:0000179"
+  csc_killing biological_system "http://identifiers.org/go/GO:0002419"
+  ctl_death biological_system "http://identifiers.org/go/GO:0008219"
+  ctl_death biological_system "http://identifiers.org/sbo/SBO:0000179"
+  ctl_source biological_system "http://identifiers.org/sbo/SBO:0000393"
+  ctl_source biological_system "http://identifiers.org/go/GO:0008283"
+  tgfb_source biological_system "http://identifiers.org/sbo/SBO:0000393"
+  tgfb_source biological_system "http://identifiers.org/go/GO:0038044"
+  tgfb_by_tumor biological_system "http://identifiers.org/go/GO:0038044"
+  tgfb_by_tumor biological_system "http://identifiers.org/sbo/SBO:0000393"
+  tgfb_by_csc biological_system "http://identifiers.org/go/GO:0038044"
+  tgfb_by_csc biological_system "http://identifiers.org/sbo/SBO:0000393"
+  tgfb_decay biological_system "http://identifiers.org/sbo/SBO:0000179"
+  tgfb_decay biological_system "http://identifiers.org/go/GO:0030163"
+  ifny_production biological_system "http://identifiers.org/sbo/SBO:0000393"
+  ifny_production biological_system "http://identifiers.org/go/GO:0072643"
+  ifny_decay biological_system "http://identifiers.org/go/GO:0030163"
+  ifny_decay biological_system "http://identifiers.org/sbo/SBO:0000179"
+  mhc1_source biological_system "http://identifiers.org/go/GO:0009306"
+  mhc1_source biological_system "http://identifiers.org/sbo/SBO:0000393"
+  mhc1_decay biological_system "http://identifiers.org/sbo/SBO:0000179"
+  mhc1_decay biological_system "http://identifiers.org/go/GO:0030163"
+  mhc1_stimulation biological_system "http://identifiers.org/sbo/SBO:0000393"
+  mhc1_stimulation biological_system "http://identifiers.org/go/GO:0009306"
+  mhc2_production biological_system "http://identifiers.org/sbo/SBO:0000393"
+  mhc2_production biological_system "http://identifiers.org/go/GO:0009306"
+  mhc2_decay biological_system "http://identifiers.org/sbo/SBO:0000179"
+  mhc2_decay biological_system "http://identifiers.org/go/GO:0030163"
+
+  model publication "http://identifiers.org/pubmed/27022405"
+  model model_source "http://identifiers.org/biomodels.db/MODEL1907240001",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000757"
+  model property "http://identifiers.org/efo/0000519"
+  model property "http://identifiers.org/go/GO:0002418"
+  model property "http://identifiers.org/mamo/MAMO_0000046"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model created "2019-07-22T12:54:46Z"
+  model modified "2019-07-22T12:54:46Z"
+  model creator1.givenName "Jinghao"
+  model creator1.familyName "Men"
+  model creator1.organization "University of Cambridge"
+  model creator1.email "jm2187@cam.ac.uk"
+
+  // Notes:
+  model notes ```
+The paper describes a model of glioblastoma. Created by COPASI 4.25 (Build 207) This
+model is described in the article: Modeling the Treatment of Glioblastoma Multiforme
+and Cancer Stem Cells with Ordinary Differential EquationsKristen Abernathy and Jeremy
+Burke BMC Computational and Mathematical Methods in Medicine Volume 2016, Article
+ID 1239861, 11 pagesAbstract: Despite improvements in cancer therapy and treatments,
+tumor recurrence is a common event in cancer patients. One explanation of recurrence
+is that cancer therapy focuses on treatment of tumor cells and does not eradicate
+cancer stem cells (CSCs). CSCs are postulated to behave similar to normal stem cells
+in that their role is to maintain homeostasis. That is, when the population of tumor
+cells is reduced or depleted by treatment, CSCs will repopulate the tumor, causing
+recurrence. In this paper, we study the application of the CSC Hypothesis to the
+treatment of glioblastoma multiforme by immunotherapy. We extend the work of Kogan
+et al. (2008) to incorporate the dynamics of CSCs, prove the existence of a recurrence
+state, and provide an analysis of possible cancerous states and their dependence
+on treatment levels.To cite BioModels Database, please use: BioModels Database: An
+enhanced, curated and annotated resource for published quantitative kinetic models.
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to CC0 Public Domain Dedication for more information.
+```
+  Tumor notes "```tumor cell```"
+  CancerStemCell notes "```cancer stem cekk```"
+  CytotoxicTcell notes "```cytotoxic t cell```"
+  TGFb notes "```TGF-b```"
+  IFNy notes "```IFN-y```"
+  MHC1 notes "```MHC1```"
+  MHC2 notes "```MHC2```"
+  Tumor_Plot notes "```tumor/1e8```"
+  CSC_Plot notes "```CSC/1e7```"
+  CTL_Plot notes "```CTL/100```"
+  r1 notes "```tumor logistic growth rate```"
+  k1 notes "```tumor cell carrying capacity```"
+  at_ notes "```mhc1 killing rate of tumor```"
+  et notes "```half saturation constant of mhc1 killing tumor```"
+  atb notes "```fraction of inhibition of tumor by mhc1```"
+  etb notes "```tgfb half saturation constant in tumor-mhc1 inhibition```"
+  ht notes "```half saturation constant of tumor at killing```"
+  r2 notes "```CSC growth rate```"
+  k2 notes "```CSC carrying capacity```"
+  ra notes "```CSC to tumor conversion rate```"
+  as notes "```inhibition rate of tumor by mhc1```"
+  es notes "```mhc1 inhibition half saturation constant```"
+  asb notes "```fraction of inhibition of CSC by mhc1```"
+  esb notes "```tgfb half saturation constant in CSC-mhc1 inhibition```"
+  hs notes "```mhc1 inhibition of tumor saturation constant of CSC```"
+  uc notes "```decay rate of CTL```"
+  gb notes "```tgfb source rate```"
+  abt notes "```tgfb production by tumor rate```"
+  abs_ notes "```tgfb production by CSC rate```"
+  ub notes "```tgfb decay rate```"
+  gm1 notes "```mhc1 source```"
+  am1y notes "```mhc1 stimulation rate by ifny```"
+  em1y notes "```half saturation constant of ifny in mhc1 production```"
+  um1 notes "```mhc1 decay rate```"
+  am2y notes "```mhc2 stimulation rate by ifny```"
+  em2y notes "```half saturation constant of ifny in mhc2 stimulation```"
+  am2b notes "```fraction of mhc2 stimulation by tgfb```"
+  em2b notes "```half saturation constant of tgfb in mhc2 stimulation```"
+  um2 notes "```mhc2 decay rate```"
+  ayc notes "```ifny production rate by CTL```"
+  uy notes "```ifny decay rate```"
+  N notes "```CTL source rate```"
+end
+
+Abernathy2016___glioblastoma_treatment is "Abernathy2016 - glioblastoma treatment"

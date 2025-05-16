@@ -1,0 +1,166 @@
+// Created by libAntimony v3.0.0
+model *Shrestha2010_HypoCalcemia_PTHresponse()
+
+  // Compartments and Species:
+  compartment PTG_pool, Plasma_pool;
+  species $x1 in PTG_pool, $x2 in Plasma_pool, $Ca in Plasma_pool;
+
+  // Assignment Rules:
+  k := lambda_2*x2_n + lambda_1*x1_n;
+  lambda_Ca := (A - B)/(1 + (Ca/S)^m_Ca) + B;
+  Ca := piecewise(Ca0, time < t0, Ca0 - Ca1*(1 - exp(-alpha*(time - t0))));
+  A := lambda_1*lambda_2*x2_max/(k - lambda_2*x2_max);
+  B := lambda_1*lambda_2*x2_min/(k - lambda_2*x2_min);
+  S := Ca0_baseline*(-(x1_n*B - lambda_2*x2_n)/(x1_n*A - lambda_2*x2_n))^(1/m_Ca);
+  m_Ca := m1/(1 + exp(-beta*(R - Ca))) + m2;
+
+  // Rate Rules:
+  x1' = k - lambda_Ca*x1 - lambda_1*x1;
+  x2' = lambda_Ca*x1 - lambda_2*x2;
+
+  // Species initializations:
+  x1 = 0;
+  x2 = 0;
+
+  // Compartment initializations:
+  PTG_pool = 1;
+  Plasma_pool = 1;
+
+  // Variable initializations:
+  lambda_1 = 0.0125;
+  lambda_2 = 0.5595;
+  Ca0 = 1.255;
+  t0 = 575;
+  Ca1 = 0.1817;
+  alpha = 0.0442;
+  x2_n = 6.629;
+  x1_n = 490.78;
+  m1 = 112.52;
+  beta = 1000000;
+  R = 1.2162;
+  m2 = 15;
+  x2_max = 14.043;
+  x2_min = 0.6697;
+  Ca0_baseline = 1.255;
+
+  // Other declarations:
+  var k, lambda_Ca, A, B, S, m_Ca;
+  const PTG_pool, Plasma_pool, lambda_1, lambda_2, Ca0, t0, Ca1, alpha, x2_n;
+  const x1_n, m1, beta, R, m2, x2_max, x2_min, Ca0_baseline;
+
+  // Display Names:
+  x1 is "PTH_in_PTG";
+  x2 is "PTH_in_Plasma";
+  Ca is "Ca_in_Plasma";
+
+  // SBO terms:
+  PTG_pool.sboTerm = 290
+  Plasma_pool.sboTerm = 290
+  x1.sboTerm = 245
+  k.sboTerm = 2
+  lambda_1.sboTerm = 2
+  x2.sboTerm = 245
+  lambda_2.sboTerm = 2
+  Ca.sboTerm = 247
+  m1.sboTerm = 2
+  beta.sboTerm = 2
+  R.sboTerm = 2
+  m2.sboTerm = 2
+
+  // CV terms:
+  PTG_pool biological_system "http://identifiers.org/bto/BTO:0000997"
+  Plasma_pool biological_system "http://identifiers.org/bto/BTO:0000131"
+  x1 biological_system "http://identifiers.org/uniprot/P01270"
+  x2 biological_system "http://identifiers.org/uniprot/P01270"
+  Ca biological_system "http://identifiers.org/chebi/CHEBI:29108"
+  Ca biological_system "http://identifiers.org/kegg.compound/C00076"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1011170001"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000276"
+  model publication "http://identifiers.org/pubmed/20406649"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model biological_system "http://identifiers.org/go/GO:0071107"
+  model property "http://identifiers.org/doid/DOID:10575"
+  model created "2010-11-15T14:42:27Z"
+  model modified "2014-10-09T16:15:39Z"
+  model creator1.givenName "Vijayalakshmi"
+  model creator1.familyName "Chelliah"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "viji@ebi.ac.uk"
+  model creator2.givenName "Rajiv P"
+  model creator2.familyName "Shrestha"
+  model creator2.organization "Department of Mechanical and Industrial Engineering, University of Massachusetts, Amherst,  MA 01003, USA"
+  model creator2.email "rshresth@engin.umass.edu"
+
+  // Notes:
+  model notes ```
+This a model from the article: 
+** A mathematical model of parathyroid hormone response to acute changes in plasma
+ionized calcium concentration in humans.** 
+Shrestha RP, Hollot CV, Chipkin SR, Schmitt CP, Chait Y. *Math Biosci.*2010
+Jul;226(1):46-57. [20406649](http://www.ncbi.nlm.nih.gov/pubmed/20406649), 
+**Abstract:** 
+A complex bio-mechanism, commonly referred to as calcium homeostasis, regulates plasma
+ionized calcium (Ca(2+)) concentration in the human body within a narrow range which
+is crucial for maintaining normal physiology and metabolism. Taking a step towards
+creating a complete mathematical model of calcium homeostasis, we focus on the short-term
+dynamics of calcium homeostasis and consider the response of the parathyroid glands
+to acute changes in plasma Ca(2+) concentration. We review available models, discuss
+their limitations, then present a two-pool, linear, time-varying model to describe
+the dynamics of this calcium homeostasis subsystem, the Ca-PTH axis. We propose that
+plasma PTH concentration and plasma Ca(2+) concentration bear an asymmetric reverse
+sigmoid relation. The parameters of our model are successfully estimated based on
+clinical data corresponding to three healthy subjects that have undergone induced
+hypocalcemic clamp tests. In the first validation of this kind, with parameters estimated
+separately for each subject we test the model&apos;s ability to predict the same
+subject&apos;s induced hypercalcemic clamp test responses. Our results demonstrate
+that a two-pool, linear, time-varying model with an asymmetric reverse sigmoid relation
+characterizes the short-term dynamics of the Ca-PTH axis. 
+
+The model corresponds to hypocalcemic clamp test explained in the paper and parameter
+values used in the model are that of "subject 1". In order to obtain the
+plots corresponding to "subject 2" and "subject 3" the following
+parameters to be changed: lambda_1, lambda_2, m1, m2, R, beta, x1_n, x2_n, x2_min,
+x2_max, Ca0, Ca1, t0 and alpha.
+
+| |
+||-----------|-----------|-----------|-----------|
+| :- | -: | -: | -: |
+| | | lambda_1 | 0.0125 | 0.0122 | 0.0269 | |
+| | lambda_2 | 0.5595 | 0.4642 | 0.4935 | |
+| | m1 | 112.5200 | 150.0000 | 90.8570 | |
+| | m2 | 15.0000 | 15.0000 | 15.0000 | |
+| | R | 1.2162 | 1.1627 | 1.1889 | |
+| | beta | 10e+06 | 10e+06 | 10e+06 | |
+| | x1_n | 490.7800 | 452.8200 | 298.8200 | |
+| | x2_n | 6.6290 | 9.5894 | 5.4600 | |
+| | x2_min | 0.6697 | 1.4813 | 0.8287 | |
+| | x2_max | 14.0430 | 17.8710 | 15.1990 | |
+| | Ca0 | 1.2550 | 1.2369 | 1.2475 | |
+| | Ca1 | 0.1817 | 0.2211 | 0.1985 | |
+| | t0 | 575 | 577 | 575 | |
+| | alpha | 0.0442 | 0.0488 | 0.0472 | |
+
+This model originates from BioModels Database: A Database of Annotated Published
+Models (http://www.ebi.ac.uk/biomodels/). It is copyright (c) 2005-2010 The BioModels.net
+Team. 
+For more information see the [terms of use](http://www.ebi.ac.uk/biomodels/legal.html). 
+To cite BioModels Database, please use: [Li C, Donizelli M, Rodriguez N, Dharuri H, Endler L, Chelliah V, Li L, He E, Henry A, Stefan MI, Snoep JL, Hucka M, Le Novère N, Laibe C (2010) BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models. BMC Syst Biol., 4:92.](http://www.ncbi.nlm.nih.gov/pubmed/20587024)
+```
+  lambda_1 notes "For subject1, lambda_1=0.0125; subject2, lambda_1=0.0122; subject3, lambda_1=0.0269"
+  lambda_2 notes "For subject1, lambda_2=0.5595; subject2, lambda_2=0.4642; subject3, lambda_2=0.4935"
+  Ca0 notes "For subject1, Ca0=1.255; subject2, Ca0=1.2369; subject3, Ca0=1.2475"
+  t0 notes "For subject1, t0=575; subject2, t0=577; subject3, t0=575"
+  Ca1 notes "For subject1, Ca1=0.1817; subject2, Ca1=0.2211; subject3, Ca1=0.1985"
+  alpha notes "For subject1, alpha=0.0442; subject2, alpha=0.0488; subject3, alpha=0.0472"
+  x2_n notes "For subject1, x2_n=6.629; subject2, x2_n=9.5894; subject3, x2_n=5.46"
+  x1_n notes "For subject1, x1_n=490.78; subject2, x1_n=452.82; subject3, x1_n=298.82"
+  m1 notes "For subject1, m1=112.52; subject2, m1=150.0; subject3, m1=90.857"
+  beta notes "For subject1, 2 and 3, beta= 1000000"
+  R notes "For subject1, R=1.2162; subject2, R=1.1627; subject3, R=1.1889"
+  m2 notes "For subject 1, 2, and 3, m2=15.0"
+  x2_max notes "For subject1, x2_max=14.043; subject2, x2_max=17.871; subject3, x2_max=15.199"
+  x2_min notes "For subject1, x2_min=0.6697; subject2, x2_min=1.4813; subject3, x2_n=0.8287"
+end
+
+Shrestha2010_HypoCalcemia_PTHresponse is "Shrestha2010_HypoCalcemia_PTHresponse"

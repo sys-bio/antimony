@@ -1,0 +1,335 @@
+// Created by libAntimony v3.0.0
+model *MODEL1509230011()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species $X1 in compartment_, APAP in compartment_, NAPQI in compartment_;
+  species GSH in compartment_, NAPQIGSH in compartment_, APAPconj_Glu in compartment_;
+  species APAPconj_Sul in compartment_;
+
+  // Reactions:
+  J0: APAP => NAPQI; Vmax_2E1_APAP*APAP/(Km_2E1_APAP + APAP);
+  J1: GSH + NAPQI => NAPQIGSH; kNapqiGsh*NAPQI*GSH*compartment_*compartment_;
+  J2: $X1 => GSH; kGsh*(GSHmax - GSH)*compartment_;
+  J3: APAP => APAPconj_Glu; Vmax_PhaseIIEnzGlu_APAP*APAP/(Km_PhaseIIEnzGlu_APAP + APAP);
+  J4: APAP => APAPconj_Sul; Vmax_PhaseIIEnzSul_APAP*APAP/(Km_PhaseIIEnzSul_APAP + APAP);
+
+  // Species initializations:
+  X1 = 0;
+  X1 has millimolar;
+  APAP = 0.1;
+  APAP has millimolar;
+  NAPQI = 0;
+  NAPQI has millimolar;
+  GSH = 10;
+  GSH has millimolar;
+  NAPQIGSH = 0;
+  NAPQIGSH has millimolar;
+  APAPconj_Glu = 0;
+  APAPconj_Glu has millimolar;
+  APAPconj_Sul = 0;
+  APAPconj_Sul has millimolar;
+
+  // Compartment initializations:
+  compartment_ = 1;
+  compartment_ has litre;
+
+  // Variable initializations:
+  Vmax_2E1_APAP = 2e-05;
+  Vmax_2E1_APAP has flux;
+  Km_2E1_APAP = 1.29;
+  Km_2E1_APAP has millimolar;
+  kNapqiGsh = 0.1;
+  kNapqiGsh has second_order_rate_constant;
+  kGsh = 0.0001;
+  kGsh has first_order_rate_constant;
+  GSHmax = 10;
+  GSHmax has millimolar;
+  Vmax_PhaseIIEnzGlu_APAP = 0.001;
+  Vmax_PhaseIIEnzGlu_APAP has flux;
+  Km_PhaseIIEnzGlu_APAP = 1;
+  Km_PhaseIIEnzGlu_APAP has millimolar;
+  Vmax_PhaseIIEnzSul_APAP = 0.000175;
+  Vmax_PhaseIIEnzSul_APAP has flux;
+  Km_PhaseIIEnzSul_APAP = 0.2;
+  Km_PhaseIIEnzSul_APAP has millimolar;
+
+  // Other declarations:
+  const compartment_, Vmax_2E1_APAP, Km_2E1_APAP, kNapqiGsh, kGsh, GSHmax;
+  const Vmax_PhaseIIEnzGlu_APAP, Km_PhaseIIEnzGlu_APAP, Vmax_PhaseIIEnzSul_APAP;
+  const Km_PhaseIIEnzSul_APAP;
+
+  // Unit definitions:
+  unit substance = 1e-3 mole;
+  unit time_unit = second;
+  unit first_order_rate_constant = 1 / second;
+  unit second_order_rate_constant = 1 / (1e-3 mole * second);
+  unit flux = 1e-3 mole / second;
+  unit millimolar = 1e-3 mole / litre;
+
+  // Display Names:
+  substance is "millimole";
+  time_unit is "second";
+  compartment_ is "Hepatocyte";
+
+  // SBO terms:
+  Vmax_2E1_APAP.sboTerm = 186
+  Km_2E1_APAP.sboTerm = 27
+  kNapqiGsh.sboTerm = 17
+  kGsh.sboTerm = 22
+  Vmax_PhaseIIEnzGlu_APAP.sboTerm = 186
+  Km_PhaseIIEnzGlu_APAP.sboTerm = 27
+  Vmax_PhaseIIEnzSul_APAP.sboTerm = 186
+  Km_PhaseIIEnzSul_APAP.sboTerm = 27
+  J0.sboTerm = 201
+  J1.sboTerm = 210
+  J2.sboTerm = 176
+  J3.sboTerm = 210
+  J4.sboTerm = 210
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/fma/FMA:68646"
+  compartment_ identity "http://identifiers.org/fma/FMA:14515"
+  compartment_ identity "http://identifiers.org/bto/BTO:0000575"
+  APAP identity "http://identifiers.org/chebi/CHEBI:46195"
+  NAPQI identity "http://identifiers.org/chebi/CHEBI:29132"
+  GSH identity "http://identifiers.org/chebi/CHEBI:16856"
+  NAPQIGSH identity "http://identifiers.org/chebi/CHEBI:32639"
+  APAPconj_Glu identity "http://identifiers.org/chebi/CHEBI:32636"
+  APAPconj_Sul identity "http://identifiers.org/chebi/CHEBI:32635"
+  J0 description "http://identifiers.org/pubmed/19219744"
+  J0 identity "http://identifiers.org/go/GO:0044237"
+  J0 parthood "http://identifiers.org/go/GO:0045333"
+  J0 description "http://identifiers.org/pubmed/6424115"
+  J0 identity "http://identifiers.org/go/GO:0071704"
+  J0 identity "http://identifiers.org/pw/PW:0000375"
+  J0 identity "urn:miriam:sbo:SBO%3A0000199"
+  J1 identity "urn:miriam:sbo:SBO%3A0000053"
+  J2 identity "http://identifiers.org/go/GO:0004363"
+  J3 identity "http://identifiers.org/go/GO:0052697"
+  J3 identity "urn:miriam:sbo:SBO%3A0000199"
+  J4 identity "http://identifiers.org/go/GO:0051923"
+  J4 identity "urn:miriam:sbo:SBO%3A0000029"
+  J4 identity "urn:miriam:sbo:SBO%3A0000199"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1509230011"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000624"
+  model publication "http://identifiers.org/pubmed/27636091"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model biological_system "http://identifiers.org/go/GO:0042739"
+  model property "http://identifiers.org/efo/0004228",
+                 "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2014-07-29T12:00:00Z"
+  model modified "2017-04-12T15:29:46Z"
+  model creator1.givenName "Vijayalakshmi"
+  model creator1.familyName "Chelliah"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "viji@ebi.ac.uk"
+  model creator2.givenName "James"
+  model creator2.familyName "Sluka"
+  model creator2.organization "Indiana University"
+  model creator2.email "JSluka@indiana.edu"
+
+  // Notes:
+  model notes ```
+Sluka2016 - Acetaminophen metabolism 
+
+**Liver metabolism of Acetaminophen:** Acetaminophen (APAP) ismetabolized in
+the liver in both Phase I and Phase II reactions.Phase II reactions convert APAP
+to APAP-glucuronide andAPAP-sulfate. Phase I reactions involve Cytochrome P450 mediated(mostly
+Cyp450-2E1 and -1A2) conversion of APAP toN-acetyle-p-quinoneimine (NAPQI), which
+goes on to react withcellular nucleophiles such as glutathione (GSH). At high doses
+ofAPAP significant GSH depletion in hepatocyte occurs resulting incell necrosis and
+and in extreme cases death. 
+
+
+This model is described in the article:
+
+
+[A Liver-Centric Multiscale Modeling Framework for Xenobiotics.](http://identifiers.org/pubmed/27636091 "Access to this publication") 
+
+
+Sluka JP, Fu X, Swat M, Belmonte JM, Cosmanescu A, Clendenon SG, Wambaugh JF, Glazier
+JA. 
+
+PLoS ONE 2016; 11(9): e0162428 
+Abstract:
+
+
+We describe a multi-scale, liver-centric in silico modeling framework for acetaminophen
+pharmacology and metabolism. We focus on a computational model to characterize
+whole body uptake and clearance, liver transport and phase I and phase II metabolism.
+We do this by incorporating sub-models that span three scales; Physiologically
+Based Pharmacokinetic (PBPK) modeling of acetaminophen uptake and distribution
+at the whole body level, cell and blood flow modeling at the tissue/organ level
+and metabolism at the sub-cellular level. We have used standard modeling modalities
+at each of the three scales. In particular, we have used the Systems Biology Markup
+Language (SBML) to create both the whole-body and sub-cellular scales. Our
+modeling approach allows us to run the individual sub-models separately and allows
+us to easily exchange models at a particular scale without the need to extensively
+rework the sub-models at other scales. In addition, the use of SBML greatly
+facilitates the inclusion of biological annotations directly in the model code.
+The model was calibrated using human in vivo data for acetaminophen and its sulfate
+and glucuronate metabolites. We then carried out extensive parameter sensitivity
+studies including the pairwise interaction of parameters. We also simulated population
+variation of exposure and sensitivity to acetaminophen. Our modeling framework
+can be extended to the prediction of liver toxicity following acetaminophen overdose,
+or used as a general purpose pharmacokinetic model for xenobiotics.
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identified by: [BIOMD0000000624](http://identifiers.org/biomodels.db/BIOMD0000000624).
+
+To cite BioModels Database, please use: [BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models](http://identifiers.org/pubmed/20587024 "Latest BioModels Database publication").
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+  compartment_ notes ```
+## A single liver hepatocyte (parenchymal) cell.
+
+
+```FMA:68646	CellFMA:14515	HepatocyteGO:0005623	Cell```
+```
+  X1 notes "Generic precursor to GSH."
+  APAP notes ```
+## Acetaminophen (N-acetyl-p-aminophenol APAP).
+
+Formula: C8H9NO2 
+Mol. mass: 151.163 g/mol 
+InChIKey: RZVAJINKPMORJF-UHFFFAOYSA-N 
+
+Also known as: Paracetamol, 4-Acetamidophenol, Tylenol, APAP, Acetaminofen,
+Panadol, Datril, 4&apos;-Hydroxyacetanilide, Algotropyl 
+
+CHEBI:46195
+```
+  NAPQI notes ```
+## N-Acetyl paraquinone imine (NAPQI)
+
+Also known as: N-acetyl-4-benzoquinoneimine, Acetimidoquinone, N-Acetylbenzoquinoneimine,
+					N-Acetyl-P-benzoquinoneimine, N-Acetyl-p-benzoquinone imine, N-acetyl-1,4-benzoquinone
+imine 
+
+A CypP450 oxidation product of Acetaminophen. 
+
+Molecular Formula: C8H7NO2 
+Molecular Weight: 149.14668 
+InChIKey: URNSECGXFRDEDC-UHFFFAOYSA-N 
+
+CHEBI:29132
+```
+  GSH notes ```
+## Glutathione (GSH), reduced.
+
+gamma-L-Glutamyl-L-Cysteinyl-Glycine. 
+
+Molecular formula: C10H17N3O6S 
+Molar mass: 307.32 g/mol
+```
+  NAPQIGSH notes ```
+## N-Acetyl paraquinone imine - Glutathione Conjugate (NAPQIGSH)
+
+Product of the reaction of NAPQI and glutathion. 
+
+Also known as:3-(glutathion-S-yl)acetaminophen, AA-Glutathion, AA-Gsh,
+Acetaminophen glutathion, 			Glutathione-S-acetaminophen conjugate, 3-Gsh-acetaminophen,
+64889-81-2 
+
+Molecular Formula: C18H24N4O8S 
+Molecular Weight: 456.47016 
+InChIKey: VFNAXGMNFCUWCI-RYUDHWBXSA-N 
+
+CHEBI:32639
+```
+  APAPconj_Glu notes ```
+## Acetaminophen glucuronide
+
+4-acetamidophenyl beta-D-glucopyranosiduronic acid 
+Metabolic product of liver metabolism of Acetaminophen (APAP). Typically
+about 50% of an APAP dose ends up as the glucuronide. 
+
+Molecular Formula: C14H17NO8 
+Molecular Weight: 327.28668 grams/mol 
+InChIKey: IPROLSVTVHAQLE-BYNIDDHOSA-N 
+
+CHEBI:32636
+```
+  APAPconj_Sul notes ```
+## Acetaminophen sulfate
+
+4-acetamidophenyl beta-D-glucopyranosiduronic acid 
+Metabolic product of liver metabolism of Acetaminophen (APAP). Typically
+about 25% of an APAP dose ends up as the sulfate. 
+
+Also known as: Paracetamol Sulfate, N-Acetyl-4-aminophenol sulfate,
+N-(4-(Sulfooxy)phenyl)acetamide, Acetamide, 			N-(4-(sulfooxy)phenyl)- 
+
+
+Molecular Formula: C8H9NO5S 
+Molecular Weight: 231.22576 
+InChIKey: IGTYILLPRJOVFY-UHFFFAOYSA-N 
+
+CHEBI:32635
+```
+  kNapqiGsh notes ```
+Second order rate constant for the reaction of NAPQI with GSH. 
+Initial value = 0.1/mol/sec
+```
+  kGsh notes ```
+First order rate constant for formation of GSH from unspecified precursors.
+Units 1/time.
+```
+  GSHmax notes "Maximum concentration of GSH within the cell."
+  J0 notes ```
+## J0: APAP -> NAPQI
+
+Metabolic conversion of APAP to NAPQI by oxidation via Cyp450&apos;s such 1A2 and
+2E1. 
+Phase I metabolism. 
+
+MESH.2013:D050216 Metabolic Detoxication, Phase I 
+isDescribedBy PubMed:19219744 Acetaminophen bioactivation
+by human cytochrome P450 enzymes and animal microsomes. (2009) 
+isDescribedBy PubMed:6424115 N-acetyl-p-benzoquinone
+imine: a cytochrome P-450-mediated oxidation product of acetaminophen. (1984) 
+
+isPartOf GO:0045333 cellular respiration 
+is GO:0044237 cellular metabolic process, biological_process
+
+is GO:0071704 organic substance metabolic process
+```
+  J1 notes ```
+## J1: GSH + NAPQI -> NAPQIGSH
+
+Reaction of (scavenging of) NAPQI by cellular GSH. 
+
+is PW:0000373 glutathione conjugation pathway
+```
+  J2 notes ```
+## J2: X1 -> GSH
+
+Synthesis of GSH, including via reduction of oxidized GSH (GSSG). 
+
+is GO:0004363 glutathione synthase activity
+```
+  J3 notes ```
+## J3: APAP -> APAPconj_Glu
+
+Conjugation of APAP with Glucuronic Acid. 
+Phase II metabolism. 
+
+is GO:0052697 xenobiotic glucuronidation
+```
+  J4 notes ```
+## J4: APAP -> APAPconj_Sul
+
+Conjugation of APAP with Sulfate. 
+Phase II metabolism. 
+
+is GO:0051923 sulfations (phase II metabolism)
+```
+end
+
+MODEL1509230011 is "Sluka2016 - Acetaminophen metabolism"

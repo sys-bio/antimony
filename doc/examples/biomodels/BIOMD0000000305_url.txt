@@ -1,0 +1,178 @@
+// Created by libAntimony v3.0.0
+model *Kolomeisky2003_myosin()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species $ATP in compartment_, $Pi_ in compartment_, $ADP in compartment_;
+  substanceOnly species S0 in compartment_, S1 in compartment_, fwd_step1 in compartment_;
+  substanceOnly species fwd_step2 in compartment_, back_step1 in compartment_;
+  substanceOnly species back_step2 in compartment_;
+
+  // Assignment Rules:
+  S_tot := S0 + S1;
+  V := d*((Fw_1st_step + Fw_2nd_step)/2 - (Bw_1st_step + Bw_2nd_step)/2)/S_tot;
+  V_ave := d*((fwd_step1 + fwd_step2)/2 - (back_step1 + back_step2)/2)/max(1e-15, S_tot*time);
+  tau := (k_1*ATP*exp(-th_1*Force*d/kT) + k_2*exp(-th_2*Force*d/kT) + k_3*ATP*exp(th_3*Force*d/kT) + k_4*exp(th_4*Force*d/kT))/(k_1*ATP*exp(-th_1*Force*d/kT)*k_2*exp(-th_2*Force*d/kT) + k_3*ATP*exp(th_3*Force*d/kT)*k_4*exp(th_4*Force*d/kT));
+
+  // Reactions:
+  Fw_1st_step: S0 + $ATP => S1 + $Pi_ + fwd_step1; k_1*S0*ATP*exp(-th_1*Force*d/kT);
+  Fw_2nd_step: S1 => S0 + $ADP + fwd_step2; k_2*S1*exp(-th_2*Force*d/kT);
+  Bw_1st_step: S0 + $ATP => S1 + $Pi_ + back_step1; k_3*S0*ATP*exp(th_3*Force*d/kT);
+  Bw_2nd_step: S1 => S0 + $ADP + back_step2; k_4*S1*exp(th_4*Force*d/kT);
+
+  // Species initializations:
+  S0 = 10/compartment_;
+  S0 has substance_per_volume;
+  ATP = 20;
+  ATP has uM;
+  S1 = 0;
+  S1 has substance_per_volume;
+  Pi_ = 0;
+  Pi_ has uM;
+  ADP = 0;
+  ADP has uM;
+  fwd_step1 = 0;
+  fwd_step1 has substance_per_volume;
+  fwd_step2 = 0;
+  fwd_step2 has substance_per_volume;
+  back_step1 = 0;
+  back_step1 has substance_per_volume;
+  back_step2 = 0;
+  back_step2 has substance_per_volume;
+
+  // Compartment initializations:
+  compartment_ = 1e-15;
+  compartment_ has volume;
+
+  // Variable initializations:
+  k_1 = 0.7;
+  th_1 = -0.01;
+  Force = 0;
+  d = 36;
+  kT = 4.1164;
+  k_2 = 12;
+  th_2 = 0.045;
+  k_3 = 5e-06;
+  th_3 = 0.58;
+  k_4 = 6e-06;
+  th_4 = 0.385;
+
+  // Other declarations:
+  var S_tot, V, V_ave, tau;
+  const compartment_, k_1, th_1, Force, d, kT, k_2, th_2, k_3, th_3, k_4;
+  const th_4;
+
+  // Unit definitions:
+  unit substance = item;
+  unit umole = 1e-6 mole;
+  unit uM = 1e-6 mole / litre;
+  unit volume = litre;
+  unit area = metre^2;
+  unit length = metre;
+  unit extent = substance;
+  unit time_unit = second;
+  unit substance_per_volume = item / litre;
+
+  // Display Names:
+  substance is "molecules";
+  umole is "micromole";
+  volume is "litre";
+
+  // SBO terms:
+  compartment_.sboTerm = 290
+  S0.sboTerm = 297
+  ATP.sboTerm = 247
+  S1.sboTerm = 297
+  Pi_.sboTerm = 247
+  ADP.sboTerm = 247
+  fwd_step1.sboTerm = 409
+  fwd_step2.sboTerm = 409
+  back_step1.sboTerm = 409
+  back_step2.sboTerm = 409
+  k_1.sboTerm = 23
+  th_1.sboTerm = 380
+  d.sboTerm = 466
+  k_2.sboTerm = 22
+  th_2.sboTerm = 380
+  k_3.sboTerm = 23
+  th_3.sboTerm = 380
+  k_4.sboTerm = 22
+  th_4.sboTerm = 380
+  S_tot.sboTerm = 360
+  Fw_1st_step.sboTerm = 376
+  Fw_2nd_step.sboTerm = 180
+  Bw_1st_step.sboTerm = 376
+  Bw_2nd_step.sboTerm = 180
+  tau.sboTerm = 347
+
+  // CV terms:
+  S0 identity "http://identifiers.org/go/GO:0031475"
+  ATP identity "http://identifiers.org/chebi/CHEBI:15422"
+  ATP identity "http://identifiers.org/kegg.compound/C00002",
+               "http://identifiers.org/pubchem.substance/3304"
+  S1 part "http://identifiers.org/chebi/CHEBI:16761"
+  S1 version "http://identifiers.org/go/GO:0031475"
+  Pi_ identity "http://identifiers.org/chebi/CHEBI:18367"
+  Pi_ identity "http://identifiers.org/kegg.compound/C00009"
+  ADP identity "http://identifiers.org/kegg.compound/C00008"
+  ADP identity "http://identifiers.org/chebi/CHEBI:16761",
+               "http://identifiers.org/pubchem.substance/3310"
+  Fw_1st_step part "http://identifiers.org/ec-code/3.6.4.1"
+  Bw_1st_step part "http://identifiers.org/ec-code/3.6.4.1"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL6623628741"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000305"
+  model publication "http://identifiers.org/pubmed/12609867"
+  model biological_system "http://identifiers.org/go/GO:0000146",
+                          "http://identifiers.org/go/GO:0030832"
+  model taxon "http://identifiers.org/taxonomy/2759"
+  model created "2006-09-29T22:36:52Z"
+  model modified "2016-04-08T16:58:25Z"
+  model creator1.givenName "Lukas"
+  model creator1.familyName "Endler"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "lukas@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+This is the 2 state model of Myosin V movement described in the article: 
+**A simple kinetic model describes the processivity of myosin-v.** 
+Kolomeisky AB, Fisher ME Biophys. J. 84(3):1642-50 (2003); PubmedID:[ 12609867](http://www.ncbi.nlm.nih.gov/pubmed/12609867) 
+
+
+Abstract: 
+Myosin-V is a motor protein responsible for organelle and vesicle transport in cells.
+Recent single-molecule experiments have shown that it is an efficient processive
+motor that walks along actin filaments taking steps of mean size close to 36 nm.
+A theoretical study of myosin-V motility is presented following an approach used
+successfully to analyze the dynamics of conventional kinesin but also taking some
+account of step-size variations. Much of the present experimental data for myosin-V
+can be well described by a two-state chemical kinetic model with three load-dependent
+rates. In addition, the analysis predicts the variation of the mean velocity and
+of the randomness-a quantitative measure of the stochastic deviations from uniform,
+constant-speed motion-with ATP concentration under both resisting and assisting loads,
+and indicates a substep of size d(0) approximately 13-14 nm (from the ATP-binding
+state) that appears to accord with independent observations.
+
+The model differs slightly from the published version. The ATP and ADP bound forms
+of myosin are called S0 and S1. The state transition and binding constants are called
+k_1, k_2, k_3 and k_4 instead of k0 0, u0 1, k&apos; 0 and w0 1. Similarly
+the state loading factors are named th_1, th_2, th_3 and th_4 instead of θ+ 
+0, θ+ 1, θ- 0 and θ- 1. The species fwd_step1, fwd_step2, back_step1
+and back_step2 count the number of state changes of each kind the myosine molecules
+have taken over time.The model can be evaluated in a deterministic continuous or
+stochastic discreet fashion. The parameter V holds the (forward) speed at each time
+point, the V_avg the overall way divided by the simulation time and the amount of
+myosine molecules.
+
+Originally created by libAntimony v1.4 (using libSBML 3.4.1)
+
+This model originates from BioModels Database: A Database of Annotated Published
+Models (http://www.ebi.ac.uk/biomodels/). It is copyright (c) 2005-2011 The BioModels.net
+Team. 
+For more information see the [terms of use](http://www.ebi.ac.uk/biomodels/legal.html). 
+To cite BioModels Database, please use: [Li C, Donizelli M, Rodriguez N, Dharuri H, Endler L, Chelliah V, Li L, He E, Henry A, Stefan MI, Snoep JL, Hucka M, Le Novère N, Laibe C (2010) BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models. BMC Syst Biol., 4:92.](http://www.ncbi.nlm.nih.gov/pubmed/20587024)
+```
+end
+
+Kolomeisky2003_myosin is "Kolomeisky2003_MyosinV_Processivity"

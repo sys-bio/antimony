@@ -1,0 +1,453 @@
+// Created by libAntimony v3.0.0
+model *Pokhilko2010_CircClock()
+
+  // Compartments and Species:
+  compartment def;
+  species cG in def, cG_m in def, cL in def, cL_m in def, cLm in def, cNI in def;
+  species cNI_m in def, cP in def, cP7 in def, cP7_m in def, cP9 in def, cP9_m in def;
+  species cT in def, cT_m in def, cTm in def, cY in def, cY_m in def, cZG in def;
+  species cZTL in def;
+
+  // Assignment Rules:
+  L := 0.5*((1 + tanh((time - 24*floor(time/24))/0.5) - (1 + tanh((time - 24*floor(time/24) - 12)/0.5))) + 1 + tanh((time - 24*floor(time/24) - 24)/0.5));
+  D := 1 - L;
+
+  // Reactions:
+  cL_m_trscr:  => cL_m; def*((n0*L + L*q1*cP + n1*cTm^b/(cTm^b + g2^b))*g1^a/((cP9 + cP7 + cNI)^a + g1^a)/def);
+  cL_m_degr: cL_m => ; def*((m1*L + m2*D)*cL_m/def);
+  cL_trsl:  => cL; def*(cL_m*(p1*L + p2*D)/def);
+  cL_degr: cL => ; def*((m3*cL + p3*cL^c/(cL^c + g3^c))/def);
+  cL_modif:  => cLm; def*(p3*cL^c/(cL^c + g3^c)/def);
+  cLm_degr: cLm => ; def*(m4*cLm/def);
+  cT_m_trscr:  => cT_m; def*((n2*cY^d/(cY^d + g4^d) + n3)*g5^e/(cL^e + g5^e)/def);
+  cT_m_degr: cT_m => ; def*(m5*cT_m/def);
+  cT_trsl:  => cT; def*(p4*cT_m/def);
+  cT_degr: cT => ; def*(((m6*L + m7*D)*cT*(p5*cZTL + cZG) + m8*cT)/def);
+  cT_modif:  => cTm; def*(p15*cT^f/(cT^f + g6^f)/def);
+  cTm_degr: cTm => ; def*((m25*L + m26*D)*cTm/def);
+  cY_m_trscr:  => cY_m; def*((L*q2*cP + ((n5*L + n6*D)*g7^s/(cT^s + g7^s))*g16^g/(cL^g + g16^g))/def);
+  cY_m_degr: cY_m => ; def*(m9*cY_m/def);
+  cY_trsl:  => cY; def*(p6*cY_m/def);
+  cY_degr: cY => ; def*(m10*cY/def);
+  cP_trsl:  => cP; def*(p7*D*(1 - cP)/def);
+  cP_degr: cP => ; def*(m11*cP*L/def);
+  cP9_m_trscr:  => cP9_m; def*((L*q3*cP + (n4*L + n7*cL^i/(cL^i + g9^i))*g8^h/(cT^h + g8^h))/def);
+  cP9_m_degr: cP9_m => ; def*(m12*cP9_m/def);
+  cP9_trsl:  => cP9; def*(p8*cP9_m/def);
+  cP9_degr: cP9 => ; def*((m13*L + m22*D)*cP9/def);
+  cP7_m_trscr:  => cP7_m; def*((n8*(cLm + cL)^j/((cLm + cL)^j + g10^j) + n9*cP9^k/(cP9^k + g11^k))/def);
+  cP7_m_degr: cP7_m => ; def*(m14*cP7_m/def);
+  cP7_trsl:  => cP7; def*(p9*cP7_m/def);
+  cP7_degr: cP7 => ; def*((m15*L + m23*D)*cP7/def);
+  cNI_m_trscr:  => cNI_m; def*((n10*cLm^l/(cLm^l + g12^l) + n11*cP7^m/(cP7^m + g13^m))/def);
+  cNI_m_degr: cNI_m => ; def*(m16*cNI_m/def);
+  cNI_trsl:  => cNI; def*(p10*cNI_m/def);
+  cNI_degr: cNI => ; def*((m17*L + m24*D)*cNI/def);
+  cG_m_trscr:  => cG_m; def*((L*q4*cP + (n12*L*g15^o/(cL^o + g15^o))*g14^n/(cT^n + g14^n))/def);
+  cG_m_degr: cG_m => ; def*(m18*cG_m/def);
+  cG_trsl:  => cG; def*(p11*cG_m/def);
+  cG_degr: cG => ; def*(m19*cG/def);
+  cG_cZTL_assoc: cG + cZTL -> cZG; def*((p12*L*cZTL*cG - p13*D*cZG)/def);
+  cZTL_trsl:  => cZTL; def*(p14/def);
+  cZTL_degr: cZTL => ; def*(m20*cZTL/def);
+  cZG_degr: cZG => ; def*(m21*cZG/def);
+
+  // Species initializations:
+  cG = 0.0238;
+  cG_m = 0.119;
+  cL = 0.416;
+  cL_m = 1;
+  cLm = 0.054;
+  cNI = 0.044;
+  cNI_m = 0.0065;
+  cP = 0.825;
+  cP7 = 0.019;
+  cP7_m = 0.075;
+  cP9 = 0.056;
+  cP9_m = 0.35;
+  cT = 0.393;
+  cT_m = 0.25;
+  cTm = 0.24;
+  cY = 0.1;
+  cY_m = 0.093;
+  cZG = 0.0774;
+  cZTL = 0.323;
+
+  // Compartment initializations:
+  def = 1;
+
+  // Variable initializations:
+  n0 = 0.4;
+  n1 = 1.8;
+  n2 = 0.7;
+  n3 = 0.06;
+  n4 = 0;
+  n5 = 3.4;
+  n6 = 1.25;
+  n7 = 0.2;
+  n8 = 0.42;
+  n9 = 0.26;
+  n10 = 0.18;
+  n11 = 0.71;
+  n12 = 2.3;
+  g1 = 0.1;
+  g2 = 0.28;
+  g3 = 0.4;
+  g4 = 0.91;
+  g5 = 0.3;
+  g6 = 0.3;
+  g7 = 0.18;
+  g8 = 0.14;
+  g9 = 0.3;
+  g10 = 0.7;
+  g11 = 0.7;
+  g12 = 0.5;
+  g13 = 0.6;
+  g14 = 0.17;
+  g15 = 0.4;
+  g16 = 0.2;
+  m1 = 0.54;
+  m2 = 0.24;
+  m3 = 0.2;
+  m4 = 0.2;
+  m5 = 0.3;
+  m6 = 0.25;
+  m7 = 0.5;
+  m8 = 0.1;
+  m9 = 1;
+  m10 = 0.3;
+  m11 = 1;
+  m12 = 1;
+  m13 = 0.32;
+  m14 = 0.28;
+  m15 = 0.31;
+  m16 = 0.5;
+  m17 = 0.3;
+  m18 = 1;
+  m19 = 0.2;
+  m20 = 1.2;
+  m21 = 0.2;
+  m22 = 2;
+  m23 = 1;
+  m24 = 0.405;
+  m25 = 0.28;
+  m26 = 0.14;
+  a = 2;
+  b = 3;
+  c = 3;
+  d = 2.5;
+  e = 2;
+  f = 3;
+  h = 2;
+  g = 2;
+  i = 3;
+  j = 3;
+  k = 3;
+  l = 2;
+  m = 2;
+  n = 1;
+  o = 2;
+  s = 3;
+  p1 = 0.4;
+  p2 = 0.27;
+  p3 = 0.1;
+  p4 = 0.268;
+  p5 = 1;
+  p6 = 0.44;
+  p7 = 0.3;
+  p8 = 0.7;
+  p9 = 0.4;
+  p10 = 0.36;
+  p11 = 0.23;
+  p12 = 30;
+  p13 = 0.4;
+  p14 = 0.45;
+  p15 = 0.05;
+  q1 = 0.8;
+  q2 = 0.5;
+  q3 = 2.9;
+  q4 = 0.6;
+  dawn = 0;
+  dusk = 12;
+  dawn1 = 0;
+  dusk1 = 3;
+  dawn2 = 9;
+  dusk2 = 12;
+  parameter_1 = 0.5;
+
+  // Other declarations:
+  var L, D, parameter_1;
+  const def, n0, n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, g1, g2;
+  const g3, g4, g5, g6, g7, g8, g9, g10, g11, g12, g13, g14, g15, g16, m1;
+  const m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, m13, m14, m15, m16;
+  const m17, m18, m19, m20, m21, m22, m23, m24, m25, m26, a, b, c, d, e, f;
+  const h, g, i, j, k, l, m, n, o, s, p1, p2, p3, p4, p5, p6, p7, p8, p9;
+  const p10, p11, p12, p13, p14, p15, q1, q2, q3, q4, dawn, dusk, dawn1, dusk1;
+  const dawn2, dusk2;
+
+  // Unit definitions:
+  unit substance = item;
+
+  // Display Names:
+  parameter_1 is "quantity";
+
+  // SBO terms:
+  def.sboTerm = 290
+  cG.sboTerm = 245
+  cG_m.sboTerm = 278
+  cL.sboTerm = 245
+  cL_m.sboTerm = 278
+  cLm.sboTerm = 245
+  cNI.sboTerm = 20
+  cNI_m.sboTerm = 278
+  cP.sboTerm = 245
+  cP7.sboTerm = 245
+  cP7_m.sboTerm = 278
+  cP9.sboTerm = 245
+  cP9_m.sboTerm = 278
+  cT.sboTerm = 245
+  cT_m.sboTerm = 278
+  cTm.sboTerm = 245
+  cY.sboTerm = 245
+  cY_m.sboTerm = 278
+  cZG.sboTerm = 296
+  cZTL.sboTerm = 245
+  n0.sboTerm = 9
+  n1.sboTerm = 9
+  n2.sboTerm = 9
+  n3.sboTerm = 9
+  n4.sboTerm = 9
+  n5.sboTerm = 9
+  n6.sboTerm = 9
+  n7.sboTerm = 9
+  n8.sboTerm = 9
+  n9.sboTerm = 9
+  n10.sboTerm = 9
+  n11.sboTerm = 9
+  n12.sboTerm = 9
+  g1.sboTerm = 27
+  g2.sboTerm = 27
+  g3.sboTerm = 27
+  g4.sboTerm = 27
+  g5.sboTerm = 27
+  g6.sboTerm = 27
+  g7.sboTerm = 27
+  g8.sboTerm = 27
+  g9.sboTerm = 27
+  g10.sboTerm = 27
+  g11.sboTerm = 27
+  g12.sboTerm = 27
+  g13.sboTerm = 27
+  g14.sboTerm = 27
+  g15.sboTerm = 27
+  g16.sboTerm = 27
+  m1.sboTerm = 356
+  m2.sboTerm = 356
+  m3.sboTerm = 356
+  m4.sboTerm = 356
+  m5.sboTerm = 356
+  m6.sboTerm = 356
+  m7.sboTerm = 356
+  m8.sboTerm = 356
+  m9.sboTerm = 356
+  m10.sboTerm = 356
+  m11.sboTerm = 356
+  m12.sboTerm = 356
+  m13.sboTerm = 356
+  m14.sboTerm = 356
+  m15.sboTerm = 356
+  m16.sboTerm = 356
+  m17.sboTerm = 356
+  m18.sboTerm = 356
+  m19.sboTerm = 356
+  m20.sboTerm = 356
+  m21.sboTerm = 356
+  m22.sboTerm = 356
+  m23.sboTerm = 356
+  m24.sboTerm = 356
+  m25.sboTerm = 356
+  m26.sboTerm = 356
+  a.sboTerm = 191
+  b.sboTerm = 191
+  c.sboTerm = 191
+  d.sboTerm = 191
+  e.sboTerm = 191
+  f.sboTerm = 191
+  h.sboTerm = 191
+  g.sboTerm = 191
+  i.sboTerm = 191
+  j.sboTerm = 191
+  k.sboTerm = 191
+  l.sboTerm = 191
+  m.sboTerm = 191
+  n.sboTerm = 191
+  o.sboTerm = 191
+  s.sboTerm = 191
+  p1.sboTerm = 9
+  p2.sboTerm = 9
+  p3.sboTerm = 9
+  p4.sboTerm = 9
+  p5.sboTerm = 9
+  p6.sboTerm = 9
+  p7.sboTerm = 9
+  p8.sboTerm = 9
+  p9.sboTerm = 9
+  p10.sboTerm = 9
+  p11.sboTerm = 9
+  p12.sboTerm = 9
+  p13.sboTerm = 9
+  p14.sboTerm = 9
+  p15.sboTerm = 9
+  q1.sboTerm = 9
+  q2.sboTerm = 9
+  q3.sboTerm = 9
+  q4.sboTerm = 9
+  cL_m_trscr.sboTerm = 183
+  cL_m_degr.sboTerm = 179
+  cL_trsl.sboTerm = 184
+  cL_degr.sboTerm = 179
+  cL_modif.sboTerm = 176
+  cLm_degr.sboTerm = 179
+  cT_m_trscr.sboTerm = 183
+  cT_m_degr.sboTerm = 179
+  cT_trsl.sboTerm = 184
+  cT_degr.sboTerm = 179
+  cT_modif.sboTerm = 176
+  cTm_degr.sboTerm = 179
+  cY_m_trscr.sboTerm = 183
+  cY_m_degr.sboTerm = 179
+  cY_trsl.sboTerm = 184
+  cY_degr.sboTerm = 179
+  cP_trsl.sboTerm = 184
+  cP_degr.sboTerm = 179
+  cP9_m_trscr.sboTerm = 183
+  cP9_m_degr.sboTerm = 179
+  cP9_trsl.sboTerm = 184
+  cP9_degr.sboTerm = 179
+  cP7_m_trscr.sboTerm = 183
+  cP7_m_degr.sboTerm = 179
+  cP7_trsl.sboTerm = 184
+  cP7_degr.sboTerm = 179
+  cNI_m_trscr.sboTerm = 183
+  cNI_m_degr.sboTerm = 179
+  cNI_trsl.sboTerm = 184
+  cNI_degr.sboTerm = 179
+  cG_m_trscr.sboTerm = 183
+  cG_m_degr.sboTerm = 179
+  cG_trsl.sboTerm = 184
+  cG_degr.sboTerm = 179
+  cG_cZTL_assoc.sboTerm = 526
+  cZTL_trsl.sboTerm = 183
+  cZTL_degr.sboTerm = 179
+  cZG_degr.sboTerm = 179
+
+  // CV terms:
+  def biological_system "http://identifiers.org/go/GO:0005623"
+  cG biological_system "http://identifiers.org/uniprot/Q9SQI2"
+  cG_m biological_system "http://identifiers.org/chebi/CHEBI:33699"
+  cL biological_system "http://identifiers.org/uniprot/P92973",
+                       "http://identifiers.org/uniprot/Q6R0H1"
+  cL_m biological_system "http://identifiers.org/chebi/CHEBI:33699"
+  cLm biological_system "http://identifiers.org/uniprot/P92973",
+                        "http://identifiers.org/uniprot/Q6R0H1"
+  cLm biological_system "http://identifiers.org/mod/MOD:00000"
+  cNI biological_system "http://identifiers.org/chebi/CHEBI:35222"
+  cNI_m biological_system "http://identifiers.org/chebi/CHEBI:35222",
+                          "http://identifiers.org/chebi/CHEBI:33699"
+  cP7 biological_system "http://identifiers.org/uniprot/Q93WK5"
+  cP7_m biological_system "http://identifiers.org/chebi/CHEBI:33699"
+  cP9 biological_system "http://identifiers.org/uniprot/Q8L500"
+  cP9_m parthood "http://identifiers.org/chebi/CHEBI:33699"
+  cT biological_system "http://identifiers.org/uniprot/Q9LKL2"
+  cT_m biological_system "http://identifiers.org/chebi/CHEBI:33699"
+  cTm biological_system "http://identifiers.org/uniprot/Q9LKL2"
+  cTm biological_system "http://identifiers.org/mod/MOD:00000"
+  cY biological_system "http://identifiers.org/chebi/CHEBI:36080"
+  cY_m identity "http://identifiers.org/chebi/CHEBI:33699",
+                "http://identifiers.org/kegg.compound/C00046"
+  cZG part "http://identifiers.org/uniprot/Q9SQI2",
+           "http://identifiers.org/uniprot/Q94BT6"
+  cZTL biological_system "http://identifiers.org/uniprot/Q94BT6"
+  cL_m_trscr biological_system "http://identifiers.org/go/GO:0009299"
+  cL_m_degr biological_system "http://identifiers.org/go/GO:0006402"
+  cL_trsl biological_system "http://identifiers.org/go/GO:0006412"
+  cL_degr biological_system "http://identifiers.org/go/GO:0030163"
+  cL_modif biological_system "http://identifiers.org/go/GO:0006464"
+  cLm_degr biological_system "http://identifiers.org/go/GO:0030163"
+  cT_m_trscr biological_system "http://identifiers.org/go/GO:0009299"
+  cT_m_degr biological_system "http://identifiers.org/go/GO:0006402"
+  cT_trsl biological_system "http://identifiers.org/go/GO:0006412"
+  cT_degr biological_system "http://identifiers.org/go/GO:0030163"
+  cT_modif biological_system "http://identifiers.org/go/GO:0006464"
+  cTm_degr biological_system "http://identifiers.org/go/GO:0030163"
+  cY_m_trscr biological_system "http://identifiers.org/go/GO:0009299"
+  cY_m_degr biological_system "http://identifiers.org/go/GO:0006402"
+  cY_trsl biological_system "http://identifiers.org/go/GO:0006412"
+  cY_degr biological_system "http://identifiers.org/go/GO:0030163"
+  cP_trsl biological_system "http://identifiers.org/go/GO:0006412"
+  cP_degr biological_system "http://identifiers.org/go/GO:0030163"
+  cP9_m_trscr biological_system "http://identifiers.org/go/GO:0009299"
+  cP9_m_degr biological_system "http://identifiers.org/go/GO:0006402"
+  cP9_trsl biological_system "http://identifiers.org/go/GO:0006412"
+  cP9_degr biological_system "http://identifiers.org/go/GO:0030163"
+  cP7_m_trscr biological_system "http://identifiers.org/go/GO:0009299"
+  cP7_m_degr biological_system "http://identifiers.org/go/GO:0006402"
+  cP7_trsl biological_system "http://identifiers.org/go/GO:0006412"
+  cP7_degr parthood "http://identifiers.org/go/GO:0030163"
+  cNI_m_trscr biological_system "http://identifiers.org/go/GO:0009299"
+  cNI_m_degr biological_system "http://identifiers.org/go/GO:0006402"
+  cNI_trsl biological_system "http://identifiers.org/go/GO:0006412"
+  cNI_degr biological_system "http://identifiers.org/go/GO:0030163"
+  cG_m_trscr biological_system "http://identifiers.org/go/GO:0009299"
+  cG_m_degr biological_system "http://identifiers.org/go/GO:0006402"
+  cG_trsl biological_system "http://identifiers.org/go/GO:0006412"
+  cG_degr biological_system "http://identifiers.org/go/GO:0030163"
+  cG_cZTL_assoc biological_system "http://identifiers.org/go/GO:0006461"
+  cZTL_trsl biological_system "http://identifiers.org/go/GO:0006412"
+  cZTL_degr biological_system "http://identifiers.org/go/GO:0030163"
+  cZG_degr biological_system "http://identifiers.org/go/GO:0030163"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1007240000"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000273"
+  model publication "http://identifiers.org/pubmed/20865009"
+  model origin "http://identifiers.org/biomodels.db/BIOMD0000000089"
+  model taxon "http://identifiers.org/taxonomy/3702"
+  model biological_system "http://identifiers.org/go/GO:0042752"
+  model created "2010-10-21T17:09:01Z"
+  model modified "2016-04-08T16:18:49Z"
+  model creator1.givenName "Vijayalakshmi"
+  model creator1.familyName "Chelliah"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "viji@ebi.ac.uk"
+  model creator2.givenName "Alexandra"
+  model creator2.familyName "Pokhilko"
+  model creator2.organization "Edinburgh University"
+  model creator2.email "apokhilk@staffmail.ed.ac.uk"
+
+  // Notes:
+  model notes ```
+This a model from the article: 
+** Data assimilation constrains new connections and components in a complex,
+eukaryotic circadian clock model.** 
+Pokhilko A, Hodge SK, Stratford K, Knox K, Edwards KD, Thomson AW, Mizuno T, Millar
+AJ. *Mol Syst Biol.*2010 Sep 21;6:416. [20865009](http://www.ncbi.nlm.nih.gov/pubmed/20865009), 
+**Abstract:** 
+Circadian clocks generate 24-h rhythms that are entrained by the day/night cycle.
+Clock circuits include several light inputs and interlocked feedback loops, with
+complex dynamics. Multiple biological components can contribute to each part of the
+circuit in higher organisms. Mechanistic models with morning, evening and central
+feedback loops have provided a heuristic framework for the clock in plants, but were
+based on transcriptional control. Here, we model observed, post-transcriptional and
+post-translational regulation and constrain many parameter values based on experimental
+data. The model&apos;s feedback circuit is revised and now includes PSEUDO-RESPONSE
+REGULATOR 7 (PRR7) and ZEITLUPE. The revised model matches data in varying environments
+and mutants, and gains robustness to parameter variation. Our results suggest that
+the activation of important morning-expressed genes follows their release from a
+night inhibitor (NI). Experiments inspired by the new model support the predicted
+NI function and show that the PRR5 gene contributes to the NI. The multiple PRR genes
+of Arabidopsis uncouple events in the late night from light-driven responses in the
+day, increasing the flexibility of rhythmic regulation.
+```
+end
+
+Pokhilko2010_CircClock is "Pokhilko2010_CircClock"

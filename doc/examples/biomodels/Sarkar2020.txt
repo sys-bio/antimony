@@ -1,0 +1,159 @@
+// Created by libAntimony v3.0.0
+model *Sarkar2020___SAIR_model_of_COVID_19_transmission_with_quarantine_measures_in_India()
+
+  // Compartments and Species:
+  compartment Wuhan;
+  species Susceptible in Wuhan, Infected in Wuhan, Asymptomatic in Wuhan;
+  species Susceptible_quarantined in Wuhan, Exposed_quarantined in Wuhan;
+  species Recovered in Wuhan;
+
+  // Assignment Rules:
+  Total_population := Asymptomatic + Infected + Exposed_quarantined + Recovered + Susceptible + Susceptible_quarantined;
+  Cumulative_cases := Exposed_quarantined;
+
+  // Reactions:
+  Susceptible_to_Susceptible_quarantined: Susceptible => Susceptible_quarantined; Wuhan*(rho_s*(1 - beta_s)*epsilon_s*Susceptible*Infected/Total_population);
+  Infected_to_Recovered: Infected => Recovered; Wuhan*xi_i*Infected;
+  Susceptible_quarantined_to_Susceptible: Susceptible_quarantined => Susceptible; Wuhan*m_s*Susceptible_quarantined;
+  Susceptible_to_Deceased: Susceptible => ; Wuhan*delta*Susceptible;
+  Susceptible_quarantined_to_Deceased: Susceptible_quarantined => ; Wuhan*delta*Susceptible_quarantined;
+  Susceptible_to_Asymptomatic: Susceptible => Asymptomatic; Wuhan*(beta_s*(1 - rho_s)*epsilon_s*Susceptible*Infected/Total_population);
+  Susceptible_to_Infected_quarantined: Susceptible => Exposed_quarantined; Wuhan*(beta_s*epsilon_s*rho_s*Susceptible*Infected/Total_population);
+  Asymptomatic_to_Infected: Asymptomatic => Infected; Wuhan*gamma_a*Asymptomatic;
+  Asymptomatic_to_Recovered: Asymptomatic => Recovered; Wuhan*xi_a*Asymptomatic;
+  Asymptomatic_to_Deceased: Asymptomatic => ; Wuhan*delta*Asymptomatic;
+  Infected_to_Deceased: Infected => ; Wuhan*delta*Infected;
+  Infected_to_Infected_quarantined: Infected => Exposed_quarantined; Wuhan*gamma_i*Infected;
+  Infected_quarantined_to_Recovered: Exposed_quarantined => Recovered; Wuhan*xi_q*Exposed_quarantined;
+  Infected_quarantined_to_Deceased: Exposed_quarantined => ; Wuhan*delta*Exposed_quarantined;
+  Recovered_to_Deceased: Recovered => ; Wuhan*delta*Recovered;
+
+  // Species initializations:
+  Susceptible = 902654;
+  Susceptible has substance_per_volume;
+  Infected = 1;
+  Infected has substance_per_volume;
+  Asymptomatic = 114;
+  Asymptomatic has substance_per_volume;
+  Susceptible_quarantined = 10785;
+  Susceptible_quarantined has substance_per_volume;
+  Exposed_quarantined = 0;
+  Exposed_quarantined has substance_per_volume;
+  Recovered = 0;
+  Recovered has substance_per_volume;
+
+  // Compartment initializations:
+  Wuhan = 1;
+  Wuhan has volume;
+
+  // Variable initializations:
+  lambda_s = 0;
+  beta_s = 0.8799;
+  rho_s = 0.3199;
+  epsilon_s = 14.83;
+  delta = 0;
+  m_s = 0.04167;
+  gamma_a = 0.0168;
+  xi_a = 0.71;
+  gamma_i = 0.07151;
+  xi_i = 0.0286;
+  xi_q = 0.13369;
+
+  // Other declarations:
+  var Total_population, Cumulative_cases;
+  const Wuhan, lambda_s, beta_s, rho_s, epsilon_s, delta, m_s, gamma_a, xi_a;
+  const gamma_i, xi_i, xi_q;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = time_unit;
+  unit substance = item;
+  unit extent = substance;
+  unit substance_per_volume = item / 1e-3 litre;
+
+  // Display Names:
+  time_unit is "time";
+  Wuhan is "India";
+  Exposed_quarantined is "Infected_quarantined";
+
+  // CV terms:
+  Wuhan identity "http://identifiers.org/ncit/C16727"
+  Susceptible identity "http://identifiers.org/ido/0000514"
+  Susceptible biological_system "http://identifiers.org/ncit/C171133"
+  Infected identity "http://identifiers.org/ido/0000511"
+  Infected biological_system "http://identifiers.org/ncit/C171133"
+  Asymptomatic identity "http://identifiers.org/ido/0000569"
+  Asymptomatic identity "http://identifiers.org/ido/0000511"
+  Asymptomatic biological_system "http://identifiers.org/ncit/C171133"
+  Susceptible_quarantined identity "http://identifiers.org/ido/0000514"
+  Susceptible_quarantined identity "http://identifiers.org/ncit/C71902"
+  Susceptible_quarantined biological_system "http://identifiers.org/ncit/C171133"
+  Exposed_quarantined identity "http://identifiers.org/ido/0000511"
+  Exposed_quarantined identity "http://identifiers.org/ncit/C71902"
+  Exposed_quarantined biological_system "http://identifiers.org/ncit/C171133"
+  Recovered property "http://identifiers.org/ido/0000621"
+  Susceptible_to_Susceptible_quarantined identity "http://identifiers.org/ncit/C71902"
+  Susceptible_to_Susceptible_quarantined biological_system "http://identifiers.org/ncit/C171133"
+  Infected_to_Recovered identity "http://identifiers.org/ncit/C25746"
+  Susceptible_to_Deceased identity "http://identifiers.org/ncit/C28554"
+  Susceptible_quarantined_to_Deceased identity "http://identifiers.org/ncit/C28554"
+  Susceptible_to_Asymptomatic identity "http://identifiers.org/ncit/C128320"
+  Susceptible_to_Asymptomatic identity "http://identifiers.org/ncit/C168447"
+  Susceptible_to_Asymptomatic identity "http://identifiers.org/ncit/C171133"
+  Susceptible_to_Infected_quarantined identity "http://identifiers.org/ncit/C171133"
+  Susceptible_to_Infected_quarantined identity "http://identifiers.org/ncit/C128320"
+  Susceptible_to_Infected_quarantined identity "http://identifiers.org/ncit/C71902"
+  Asymptomatic_to_Infected identity "http://identifiers.org/ncit/C128320"
+  Asymptomatic_to_Infected identity "http://identifiers.org/ncit/C168447"
+  Asymptomatic_to_Infected identity "http://identifiers.org/ncit/C171133"
+  Asymptomatic_to_Recovered identity "http://identifiers.org/ncit/C25746"
+  Asymptomatic_to_Deceased identity "http://identifiers.org/ncit/C28554"
+  Infected_to_Deceased identity "http://identifiers.org/ncit/C28554"
+  Infected_to_Infected_quarantined identity "http://identifiers.org/ncit/C171133"
+  Infected_to_Infected_quarantined identity "http://identifiers.org/ncit/C71902"
+  Infected_quarantined_to_Recovered identity "http://identifiers.org/ncit/C25746"
+  Infected_quarantined_to_Deceased identity "http://identifiers.org/ncit/C28554"
+  Recovered_to_Deceased identity "http://identifiers.org/ncit/C28554"
+
+  model publication "http://identifiers.org/pubmed/32834603"
+  model model_source "http://identifiers.org/biomodels.db/MODEL2011300001",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000977"
+  model identity "http://identifiers.org/doid/DOID:0080600"
+  model taxon "http://identifiers.org/taxonomy/9606",
+              "http://identifiers.org/taxonomy/2697049"
+  model property "http://identifiers.org/mamo/MAMO_0000028"
+  model created "2020-10-30T01:31:09Z"
+  model modified "2020-10-30T01:31:09Z"
+  model creator1.givenName "Kausthubh"
+  model creator1.familyName "Ramachandran"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "kramachandran@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+In India, 100,340 confirmed cases and 3155 confirmed deaths due to COVID-19 were
+reported as of May 18, 2020. Due to absence of specific vaccine or therapy, non-pharmacological
+interventions including so- cial distancing, contact tracing are essential to end
+the worldwide COVID-19. We propose a mathematical model that predicts the dynamics
+of COVID-19 in 17 provinces of India and the overall India. A complete scenario is
+given to demonstrate the estimated pandemic life cycle along with the real data or
+history to date, which in turn divulges the predicted inflection point and ending
+phase of SARS-CoV-2. The proposed model monitors the dynamics of six compartments,
+namely susceptible (S), asymptomatic (A), recovered (R), infected (I), isolated infected
+( I q ) and quarantined susceptible ( S q ), collectively expressed SARII q S q .
+A sensitivity analysis is conducted to determine the robustness of model predictions
+to parameter values and the sensitive parameters are estimated from the real data
+on the COVID-19 pandemic in India. Our re- sults reveal that achieving a reduction
+in the contact rate between uninfected and infected individuals by quarantined the
+susceptible individuals, can effectively reduce the basic reproduction number. Our
+model simulations demonstrate that the elimination of ongoing SARS-CoV-2 pandemic
+is possible by combining the restrictive social distancing and contact tracing. Our
+predictions are based on real data with reason- able assumptions, whereas the accurate
+course of epidemic heavily depends on how and when quaran- tine, isolation and precautionary
+measures are enforced.
+```
+end
+
+Sarkar2020___SAIR_model_of_COVID_19_transmission_with_quarantine_measures_in_India is "Sarkar2020 - SAIR model of COVID-19 transmission with quarantine measures in India"

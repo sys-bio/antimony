@@ -1,0 +1,372 @@
+// Created by libAntimony v3.0.0
+model *Brown2004_NGF_EGF_signaling()
+
+  // Compartments and Species:
+  compartment cell;
+  species EGF in cell, NGF in cell, freeEGFReceptor in cell, boundEGFReceptor in cell;
+  species freeNGFReceptor in cell, boundNGFReceptor in cell, SosInactive in cell;
+  species SosActive in cell, P90RskInactive in cell, P90RskActive in cell;
+  species RasInactive in cell, RasActive in cell, $RasGapActive in cell, Raf1Inactive in cell;
+  species Raf1Active in cell, BRafInactive in cell, BRafActive in cell, MekInactive in cell;
+  species MekActive in cell, ErkInactive in cell, ErkActive in cell, PI3KInactive in cell;
+  species PI3KActive in cell, AktInactive in cell, AktActive in cell, C3GInactive in cell;
+  species C3GActive in cell, Rap1Inactive in cell, Rap1Active in cell, $RapGapActive in cell;
+  species $PP2AActive in cell, $Raf1PPtase in cell;
+
+  // Reactions:
+  EGFBindingReaction: EGF + freeEGFReceptor => boundEGFReceptor; cell*krbEGF*EGF*freeEGFReceptor;
+  EGFUnbindingReaction: boundEGFReceptor => EGF + freeEGFReceptor; cell*kruEGF*boundEGFReceptor;
+  NGFBindingReaction: NGF + freeNGFReceptor => boundNGFReceptor; krbNGF*NGF*freeNGFReceptor*cell;
+  NGFUnbindingReaction: boundNGFReceptor => NGF + freeNGFReceptor; kruNGF*boundNGFReceptor*cell;
+  SosActivationByEGFReaction: SosInactive -> SosActive; cell*(kEGF*boundEGFReceptor*SosInactive/(SosInactive + KmEGF));
+  SosActivationByNGFReaction: SosInactive -> SosActive; cell*(kNGF*boundNGFReceptor*SosInactive/(SosInactive + KmNGF));
+  SosDeactivationReaction: SosActive -> SosInactive; cell*(kdSos*P90RskActive*SosActive/(SosActive + KmdSos));
+  RasActivationReaction: RasInactive -> RasActive; cell*(kSos*SosActive*RasInactive/(RasInactive + KmSos));
+  RasDeactivationReaction: RasActive -> RasInactive; cell*(kRasGap*RasGapActive*RasActive/(RasActive + KmRasGap));
+  Raf1ByRasActivationReaction: Raf1Inactive -> Raf1Active; cell*(kRasToRaf1*RasActive*Raf1Inactive/(Raf1Inactive + KmRasToRaf1));
+  MekbyRaf1ActivationReaction: MekInactive -> MekActive; cell*(kpRaf1*Raf1Active*MekInactive/(MekInactive + KmpRaf1));
+  MekbyBRafActivationReaction: MekInactive -> MekActive; cell*(kpBRaf*BRafActive*MekInactive/(MekInactive + KmpBRaf));
+  ErkActivationReaction: ErkInactive -> ErkActive; cell*(kpMekCytoplasmic*MekActive*ErkInactive/(ErkInactive + KmpMekCytoplasmic));
+  MekDeactivationReaction: MekActive -> MekInactive; cell*(kdMek*PP2AActive*MekActive/(MekActive + KmdMek));
+  ErkDeactivationReaction: ErkActive -> ErkInactive; cell*(kdErk*PP2AActive*ErkActive/(ErkActive + KmdErk));
+  Raf1byPPtaseDeactivationReaction: Raf1Active -> Raf1Inactive; cell*(kdRaf1*Raf1PPtase*Raf1Active/(Raf1Active + KmdRaf1));
+  P90RskActivationReaction: P90RskInactive -> P90RskActive; cell*(kpP90Rsk*ErkActive*P90RskInactive/(P90RskInactive + KmpP90Rsk));
+  PI3KbyEGFRActivationReaction: PI3KInactive -> PI3KActive; cell*(kPI3K*boundEGFReceptor*PI3KInactive/(PI3KInactive + KmPI3K));
+  PI3KbyRasActivationReaction: PI3KInactive -> PI3KActive; cell*(kPI3KRas*RasActive*PI3KInactive/(PI3KInactive + KmPI3KRas));
+  AktActivationReaction: AktInactive -> AktActive; cell*(kAkt*PI3KActive*AktInactive/(AktInactive + KmAkt));
+  Raf1ByAktDeactivationReaction: Raf1Active -> Raf1Inactive; cell*(kdRaf1ByAkt*AktActive*Raf1Active/(Raf1Active + KmRaf1ByAkt));
+  C3GActivationReaction: C3GInactive -> C3GActive; cell*(kC3GNGF*boundNGFReceptor*C3GInactive/(C3GInactive + KmC3GNGF));
+  Rap1ActivationReaction: Rap1Inactive -> Rap1Active; cell*(kC3G*C3GActive*Rap1Inactive/(Rap1Inactive + KmC3G));
+  Rap1DeactivationReaction: Rap1Active -> Rap1Inactive; cell*(kRapGap*RapGapActive*Rap1Active/(Rap1Active + KmRapGap));
+  BRafByRap1ActivationReaction: BRafInactive -> BRafActive; cell*(kRap1ToBRaf*Rap1Active*BRafInactive/(BRafInactive + KmRap1ToBRaf));
+  BRafbyPPtaseDeactivationReaction: BRafActive -> BRafInactive; cell*(kdBRaf*Raf1PPtase*BRafActive/(BRafActive + KmdBRaf));
+
+  // Species initializations:
+  EGF = 10002000;
+  NGF = 456000;
+  freeEGFReceptor = 80000;
+  boundEGFReceptor = 0;
+  freeNGFReceptor = 10000;
+  boundNGFReceptor = 0;
+  SosInactive = 120000;
+  SosActive = 0;
+  P90RskInactive = 120000;
+  P90RskActive = 0;
+  RasInactive = 120000;
+  RasActive = 0;
+  RasGapActive = 120000;
+  Raf1Inactive = 120000;
+  Raf1Active = 0;
+  BRafInactive = 120000;
+  BRafActive = 0;
+  MekInactive = 600000;
+  MekActive = 0;
+  ErkInactive = 600000;
+  ErkActive = 0;
+  PI3KInactive = 120000;
+  PI3KActive = 0;
+  AktInactive = 120000;
+  AktActive = 0;
+  C3GInactive = 120000;
+  C3GActive = 0;
+  Rap1Inactive = 120000;
+  Rap1Active = 0;
+  RapGapActive = 120000;
+  PP2AActive = 120000;
+  Raf1PPtase = 120000;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  krbEGF = 2.18503e-05;
+  kruEGF = 0.0121008;
+  krbNGF = 1.38209e-07;
+  kruNGF = 0.00723811;
+  kEGF = 694.731;
+  KmEGF = 6086070;
+  kNGF = 389.428;
+  KmNGF = 2112.66;
+  kdSos = 1611.97;
+  KmdSos = 896896;
+  kSos = 32.344;
+  KmSos = 35954.3;
+  kRasGap = 1509.36;
+  KmRasGap = 1432410;
+  kRasToRaf1 = 0.884096;
+  KmRasToRaf1 = 62464.6;
+  kpRaf1 = 185.759;
+  KmpRaf1 = 4768350;
+  kpBRaf = 125.089;
+  KmpBRaf = 157948;
+  kdMek = 2.83243;
+  KmdMek = 518753;
+  kpMekCytoplasmic = 9.85367;
+  KmpMekCytoplasmic = 1007340;
+  kdErk = 8.8912;
+  KmdErk = 3496490;
+  kpP90Rsk = 0.0213697;
+  KmpP90Rsk = 763523;
+  kPI3K = 10.6737;
+  KmPI3K = 184912;
+  kPI3KRas = 0.0771067;
+  KmPI3KRas = 272056;
+  kAkt = 0.0566279;
+  KmAkt = 653951;
+  kdRaf1ByAkt = 15.1212;
+  KmRaf1ByAkt = 119355;
+  kC3GNGF = 146.912;
+  KmC3GNGF = 12876.2;
+  kC3G = 1.40145;
+  KmC3G = 10965.6;
+  kRapGap = 27.265;
+  KmRapGap = 295990;
+  kRap1ToBRaf = 2.20995;
+  KmRap1ToBRaf = 1025460;
+  kdRaf1 = 0.126329;
+  KmdRaf1 = 1061.71;
+  kdBRaf = 441.287;
+  KmdBRaf = 10879500;
+
+  // Other declarations:
+  const cell, krbEGF, kruEGF, krbNGF, kruNGF, kEGF, KmEGF, kNGF, KmNGF, kdSos;
+  const KmdSos, kSos, KmSos, kRasGap, KmRasGap, kRasToRaf1, KmRasToRaf1, kpRaf1;
+  const KmpRaf1, kpBRaf, KmpBRaf, kdMek, KmdMek, kpMekCytoplasmic, KmpMekCytoplasmic;
+  const kdErk, KmdErk, kpP90Rsk, KmpP90Rsk, kPI3K, KmPI3K, kPI3KRas, KmPI3KRas;
+  const kAkt, KmAkt, kdRaf1ByAkt, KmRaf1ByAkt, kC3GNGF, KmC3GNGF, kC3G, KmC3G;
+  const kRapGap, KmRapGap, kRap1ToBRaf, KmRap1ToBRaf, kdRaf1, KmdRaf1, kdBRaf;
+  const KmdBRaf;
+
+  // Unit definitions:
+  unit substance = item;
+  unit time_unit = 60 second;
+
+  // Display Names:
+  substance is "item (default)";
+  time_unit is "minute (default)";
+  EGFBindingReaction is "EGF binding";
+  EGFUnbindingReaction is "EFG unbinding";
+  NGFBindingReaction is "NGF binding";
+  NGFUnbindingReaction is "NGF unbinding";
+  SosActivationByEGFReaction is "SOS activation by EGF";
+  SosActivationByNGFReaction is "SOS activation by NGF";
+  SosDeactivationReaction is "SOS deactivation";
+  RasActivationReaction is "Ras activation";
+  RasDeactivationReaction is "Ras deactivation";
+  Raf1ByRasActivationReaction is "Raf1 activation by Ras";
+  MekbyRaf1ActivationReaction is "Mek activation by Raf1";
+  MekbyBRafActivationReaction is "Mek activation by B-Raf";
+  ErkActivationReaction is "Erk activation";
+  MekDeactivationReaction is "Mek deactivation";
+  ErkDeactivationReaction is "Erk deactivation";
+  Raf1byPPtaseDeactivationReaction is "Raf1 deactivation by PPase";
+  P90RskActivationReaction is "P90Rsk activation";
+  PI3KbyEGFRActivationReaction is "PI3K activation by EGFR";
+  PI3KbyRasActivationReaction is "PI3K activation by Ras";
+  AktActivationReaction is "Akt activation";
+  Raf1ByAktDeactivationReaction is "Raf1 deactivation by Akt";
+  C3GActivationReaction is "C3G activation";
+  Rap1ActivationReaction is "Rap1 activation";
+  Rap1DeactivationReaction is "Rap1 deactivation";
+  BRafByRap1ActivationReaction is "BRaf activation by Rap1";
+  BRafbyPPtaseDeactivationReaction is "BRaf deactivation by PPase";
+
+  // CV terms:
+  cell identity "http://identifiers.org/go/GO:0005623"
+  EGF identity "http://identifiers.org/uniprot/P07522"
+  NGF identity "http://identifiers.org/uniprot/P25427"
+  freeEGFReceptor identity "http://identifiers.org/uniprot/Q9QX70"
+  boundEGFReceptor part "http://identifiers.org/uniprot/Q9QX70",
+                        "http://identifiers.org/uniprot/P07522"
+  freeNGFReceptor identity "http://identifiers.org/uniprot/P35739"
+  boundNGFReceptor part "http://identifiers.org/uniprot/P35739",
+                        "http://identifiers.org/uniprot/P25427"
+  SosInactive biological_system "http://identifiers.org/ensembl/ENSRNOP00000009359",
+                                "http://identifiers.org/uniprot/Q9Z1I1"
+  SosActive biological_system "http://identifiers.org/ensembl/ENSRNOP00000009359",
+                              "http://identifiers.org/uniprot/Q9Z1I1"
+  P90RskInactive version "http://identifiers.org/uniprot/Q9Z1I2",
+                         "http://identifiers.org/uniprot/Q63531"
+  P90RskActive version "http://identifiers.org/uniprot/Q9Z1I2",
+                       "http://identifiers.org/uniprot/Q63531"
+  RasInactive biological_system "http://identifiers.org/interpro/IPR003577"
+  RasActive biological_system "http://identifiers.org/interpro/IPR003577"
+  RasGapActive identity "http://identifiers.org/uniprot/P50904"
+  Raf1Inactive biological_system "http://identifiers.org/uniprot/P11345"
+  Raf1Active biological_system "http://identifiers.org/uniprot/P11345"
+  BRafInactive biological_system "http://identifiers.org/uniprot/Q99MC6"
+  BRafActive biological_system "http://identifiers.org/uniprot/Q99MC6"
+  MekInactive biological_system "http://identifiers.org/uniprot/Q01986",
+                                "http://identifiers.org/uniprot/P36506"
+  MekActive biological_system "http://identifiers.org/uniprot/Q01986",
+                              "http://identifiers.org/uniprot/P36506"
+  ErkInactive biological_system "http://identifiers.org/uniprot/P21708",
+                                "http://identifiers.org/uniprot/P63086"
+  ErkActive biological_system "http://identifiers.org/uniprot/P21708",
+                              "http://identifiers.org/uniprot/P63086"
+  PI3KInactive part "http://identifiers.org/interpro/IPR015433"
+  PI3KInactive biological_system "http://identifiers.org/go/GO:0005942"
+  PI3KActive part "http://identifiers.org/interpro/IPR015433"
+  PI3KActive biological_system "http://identifiers.org/go/GO:0005942"
+  AktInactive version "http://identifiers.org/uniprot/P47196",
+                      "http://identifiers.org/uniprot/P47197",
+                      "http://identifiers.org/uniprot/Q63484"
+  AktActive version "http://identifiers.org/uniprot/P47196",
+                    "http://identifiers.org/uniprot/P47197",
+                    "http://identifiers.org/uniprot/Q63484"
+  C3GInactive biological_system "http://identifiers.org/uniprot/Q9QYV3"
+  C3GActive biological_system "http://identifiers.org/uniprot/Q9QYV3"
+  Rap1Inactive version "http://identifiers.org/uniprot/P10113",
+                       "http://identifiers.org/uniprot/Q62636"
+  Rap1Active version "http://identifiers.org/uniprot/P10113",
+                     "http://identifiers.org/uniprot/Q62636"
+  RapGapActive identity "http://identifiers.org/uniprot/P47736"
+  PP2AActive identity "http://identifiers.org/go/GO:0000159"
+  EGFBindingReaction identity "http://identifiers.org/go/GO:0048408"
+  EGFBindingReaction biological_system "http://identifiers.org/go/GO:0045741"
+  EGFUnbindingReaction biological_system "http://identifiers.org/go/GO:0007175"
+  NGFBindingReaction biological_system "http://identifiers.org/go/GO:0051396"
+  NGFBindingReaction identity "http://identifiers.org/go/GO:0048406"
+  NGFUnbindingReaction biological_system "http://identifiers.org/go/GO:0051395"
+  SosActivationByEGFReaction biological_system "http://identifiers.org/ec-code/2.7.1.37",
+                                               "http://identifiers.org/go/GO:0004716"
+  SosActivationByNGFReaction biological_system "http://identifiers.org/ec-code/2.7.1.37",
+                                               "http://identifiers.org/go/GO:0004716"
+  SosDeactivationReaction biological_system "http://identifiers.org/ec-code/2.7.1.37"
+  RasActivationReaction identity "http://identifiers.org/go/GO:0046579"
+  RasDeactivationReaction identity "http://identifiers.org/go/GO:0046580"
+  Raf1ByRasActivationReaction biological_system "http://identifiers.org/ec-code/2.7.1.37",
+                                                "http://identifiers.org/go/GO:0008349",
+                                                "http://identifiers.org/go/GO:0000185"
+  MekbyRaf1ActivationReaction biological_system "http://identifiers.org/ec-code/2.7.1.37",
+                                                "http://identifiers.org/go/GO:0004709",
+                                                "http://identifiers.org/go/GO:0000186"
+  MekbyBRafActivationReaction biological_system "http://identifiers.org/ec-code/2.7.1.37",
+                                                "http://identifiers.org/go/GO:0004709",
+                                                "http://identifiers.org/go/GO:0000186"
+  ErkActivationReaction biological_system "http://identifiers.org/ec-code/2.7.1.37",
+                                          "http://identifiers.org/go/GO:0000187",
+                                          "http://identifiers.org/go/GO:0004708"
+  MekDeactivationReaction biological_system "http://identifiers.org/ec-code/3.1.3.16"
+  ErkDeactivationReaction biological_system "http://identifiers.org/ec-code/3.1.3.16",
+                                            "http://identifiers.org/go/GO:0000188"
+  Raf1byPPtaseDeactivationReaction biological_system "http://identifiers.org/ec-code/3.1.3.16"
+  P90RskActivationReaction biological_system "http://identifiers.org/ec-code/2.7.1.37",
+                                             "http://identifiers.org/go/GO:0004707"
+  PI3KbyEGFRActivationReaction biological_system "http://identifiers.org/ec-code/2.7.1.37"
+  PI3KbyRasActivationReaction biological_system "http://identifiers.org/ec-code/2.7.1.37",
+                                                "http://identifiers.org/go/GO:0008349"
+  AktActivationReaction biological_system "http://identifiers.org/go/GO:0045860"
+  Raf1ByAktDeactivationReaction biological_system "http://identifiers.org/ec-code/2.7.1.37"
+  C3GActivationReaction biological_system "http://identifiers.org/ec-code/2.7.1.37",
+                                          "http://identifiers.org/go/GO:0004716"
+  Rap1ActivationReaction identity "http://identifiers.org/go/GO:0046582"
+  BRafByRap1ActivationReaction biological_system "http://identifiers.org/ec-code/2.7.1.37",
+                                                 "http://identifiers.org/go/GO:0000185"
+  BRafbyPPtaseDeactivationReaction biological_system "http://identifiers.org/ec-code/3.1.3.16"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL6619514794"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000033"
+  model publication "http://identifiers.org/pubmed/16204838"
+  model biological_system "http://identifiers.org/go/GO:0070371"
+  model taxon "http://identifiers.org/taxonomy/131567"
+  model property "http://identifiers.org/mamo/MAMO_0000046"
+  model part "http://identifiers.org/go/GO:0048011",
+             "http://identifiers.org/go/GO:0007173"
+  model created "2005-06-10T14:09:32Z"
+  model modified "2015-05-18T10:58:55Z"
+  model creator1.givenName "Nicolas"
+  model creator1.familyName "Le Novère"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "lenov@ebi.ac.uk"
+  model creator2.givenName "Ryan"
+  model creator2.familyName "Gutenkunst"
+  model creator2.organization "Cornell University"
+  model creator2.email "rng7@cornell.edu"
+
+  // Notes:
+  model notes ```
+Brown2004 - NGF and EGF signaling 
+
+
+This model is described in the article:
+
+
+[The statistical mechanics of complex signaling networks: nerve growth factor signaling.](http://identifiers.org/pubmed/16204838 "Access to this publication") 
+
+
+Brown KS, Hill CC, Calero GA, Myers CR, Lee KH, Sethna JP, Cerione RA. 
+
+Phys Biol 2004 Dec; 1(3-4): 184-195 
+Abstract:
+
+
+The inherent complexity of cellular signaling networks and their importance to
+a wide range of cellular functions necessitates the development of modeling methods
+that can be applied toward making predictions and highlighting the appropriate
+experiments to test our understanding of how these systems are designed and function.
+We use methods of statistical mechanics to extract useful predictions for complex
+cellular signaling networks. A key difficulty with signaling models is that,
+while significant effort is being made to experimentally measure the rate constants
+for individual steps in these networks, many of the parameters required to describe
+their behavior remain unknown or at best represent estimates. To establish
+the usefulness of our approach, we have applied our methods toward modeling the
+nerve growth factor (NGF)-induced differentiation of neuronal cells. In particular,
+we study the actions of NGF and mitogenic epidermal growth factor (EGF) in
+rat pheochromocytoma (PC12) cells. Through a network of intermediate signaling
+proteins, each of these growth factors stimulates extracellular regulated kinase
+(Erk) phosphorylation with distinct dynamical profiles. Using our modeling
+approach, we are able to predict the influence of specific signaling modules in
+determining the integrated cellular response to the two growth factors. Our methods
+also raise some interesting insights into the design and possible evolution
+of cellular systems, highlighting an inherent property of these systems that we
+call &apos;sloppiness.&apos;
+
+
+The figures in the paper show results from computationsperformed over an ensemble
+of all parameter sets that fit theavailable data. This file contains only the best
+fit parameters.The full ensemble of parameters is available
+athttp://www.lassp.cornell.edu/sethna/GeneDynamics/PC12DataFiles/(Also, the best-fit
+parameter set produces a curve for DN Rap1 thatis less "peakish" than the
+ensemble average.) 
+
+The conversion factors for EGF and NGF concentrations accountfor their molecular
+weights and the density of cells in the culturedish. These concentrations are saturating,
+so the exact values arenot critical. 
+
+Because the Erk data fit to measure only fold changes inactivity, there is no absolute
+scale for the y-axes. Thus thecurves from this file have different magnitudes than
+thosepublished. 
+
+To reproduce the figures from the paper: 
+2a) For EGF stimulation, set the initial concentration of EGFto 100 ng/ml \* 100020
+(molecule/cell)/(ng/ml) = 10002000. 
+For NGF stimulation, set the initial concentration of NGF to50 ng/ml \* 4560 (molecule/cell)/(ng/ml)
+= 456000 
+5a) To simulate LY294002 addition, set kPI3KRas and kPI3K to0. 
+5b) To simulate a dominant negative Rap1, set kRap1ToBRaf to0. 
+To simulate a dominant negative Ras, set kRasToRaf1 andkPI3KRas to 0. 
+
+Almost all the data fit with this model by the authors arefrom Western blots. Given
+the uncertainties in antibodyeffectiveness and other factors, one can&apos;t a priori
+derive aconversion between the arbitrary units for a given set of data andmolecules
+per cell. So the authors used an adjustable "scalefactor" that converts
+between molecules per cell and Western blotunits. 
+
+For the EGF stimulation data in figure 2a) the scale factorconversion is 1.414e-05
+(U/mg)/(molecule/cell). For the NGFstimulation data in figure 2a) it is
+7.135e-06(U/mg)/(molecule/cell). 
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identified by: [BIOMD0000000033](http://identifiers.org/biomodels.db/BIOMD0000000033).
+
+To cite BioModels Database, please use: [BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models](http://identifiers.org/pubmed/20587024 "Latest BioModels Database publication").
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+end
+
+Brown2004_NGF_EGF_signaling is "Brown2004 - NGF and EGF signaling"

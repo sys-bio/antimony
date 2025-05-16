@@ -432,6 +432,7 @@ int main(int argc, char** argv)
       }
     }
 #endif //NCELLML
+    clearPreviousLoads();
   }
 
   if (handles.size()==0) {

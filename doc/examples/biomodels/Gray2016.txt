@@ -1,0 +1,96 @@
+// Created by libAntimony v3.0.0
+model *Gray2016___The_Akt_switch_model()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species Ac in compartment_, Pc in compartment_, Ap in compartment_, Pp in compartment_;
+
+  // Assignment Rules:
+  P_Perc := 100*(Pc + Pp)/Akt_Total;
+  Akt_Total := Ac + Ap + Pc + Pp;
+  Pp_Perc := 100*(Pp/Akt_Total);
+  Pc_Perc := 100*(Pc/Akt_Total);
+
+  // Reactions:
+  AktP_Dephosphorylation_Cytosol: Pc => Ac; compartment_*koff*Pc;
+  Akt_Translocation_Cytosol_PM_Insulin: Ac => Ap; compartment_*(alpha1*kin*Ac);
+  Akt_Translocation_PM_Cytosol: Ap => Ac; compartment_*kin*Ap;
+  AktP_Translocation_PM_Cytosol: Pp => Pc; compartment_*kin*Pp;
+  AktP_Translocation_Cytosol_PM_Insulin: Pc => Pp; compartment_*(alpha1*kin*Pc);
+  AktP_Dephosphorylation_PM: Pp => Ap; compartment_*koff*Pp;
+  Akt_Phosphorylation_PM_Equilibrium: Ap => Pp; compartment_*(beta1*koff*Ap);
+
+  // Species initializations:
+  Ac = 0.95;
+  Pc = 0;
+  Ap = 0.05;
+  Pp = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  kin = 0.55;
+  koff = 0.35;
+  alpha1 = 0.014;
+  alpha100 = 0.023;
+  beta1 = 2.2;
+
+  // Other declarations:
+  var P_Perc, Akt_Total, Pp_Perc, Pc_Perc;
+  const compartment_, kin, koff, alpha1, alpha100, beta1;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 60 second;
+  unit substance = 1e-9 mole;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/cl/CL:0000000"
+  Ac identity "http://identifiers.org/pr/PR:000029189"
+  Ac container "http://identifiers.org/go/GO:0005829"
+  Pc identity "http://identifiers.org/pr/PR:000029189"
+  Pc biological_system "http://identifiers.org/pr/PR:000037070"
+  Pc container "http://identifiers.org/go/GO:0005829"
+  Ap identity "http://identifiers.org/pr/PR:000029189"
+  Ap container "http://identifiers.org/go/GO:0005886"
+  Pp identity "http://identifiers.org/pr/PR:000029189"
+  Pp biological_system "http://identifiers.org/pr/PR:000037070"
+  Pp container "http://identifiers.org/go/GO:0005886"
+  AktP_Dephosphorylation_Cytosol identity "http://identifiers.org/go/GO:0016311"
+  AktP_Dephosphorylation_Cytosol container "http://identifiers.org/go/GO:0005829"
+  Akt_Translocation_Cytosol_PM_Insulin biological_system "http://identifiers.org/ncit/C89777"
+  Akt_Translocation_PM_Cytosol identity "http://identifiers.org/ncit/C89777"
+  AktP_Translocation_PM_Cytosol identity "http://identifiers.org/ncit/C89777"
+  AktP_Translocation_Cytosol_PM_Insulin identity "http://identifiers.org/ncit/C89777"
+  AktP_Dephosphorylation_PM identity "http://identifiers.org/go/GO:0016311"
+  AktP_Dephosphorylation_PM container "http://identifiers.org/go/GO:0005886"
+  Akt_Phosphorylation_PM_Equilibrium identity "http://identifiers.org/go/GO:0016310"
+
+  model publication "http://identifiers.org/pubmed/26992575"
+  model model_source "http://identifiers.org/biomodels.db/MODEL1911130001",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000854"
+  model property "http://identifiers.org/go/GO:0043491"
+  model property "http://identifiers.org/mamo/MAMO_0000046"
+  model property "http://identifiers.org/ncit/C39130"
+  model taxon "http://identifiers.org/taxonomy/10090"
+  model created "2019-11-13T09:49:17Z"
+  model modified "2019-11-13T09:49:17Z"
+  model creator1.givenName "Johannes"
+  model creator1.familyName "Meyer"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "johannes.p.meyer@gmail.com"
+
+  // Notes:
+  model notes ```
+```This is a simple, linear, four-compartment ordinary differential equation (ODE) 
+model Akt activation that tracks both the phosphorylation state and the physical 
+location (cytosol, plasma membrane) of Akt.```
+```
+end
+
+Gray2016___The_Akt_switch_model is "Gray2016 - The Akt switch model"

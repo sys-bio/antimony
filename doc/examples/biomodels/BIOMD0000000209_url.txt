@@ -1,0 +1,240 @@
+// Created by libAntimony v3.0.0
+model *MODEL8390025091()
+
+  // Compartments and Species:
+  compartment cell;
+  species $OCT4_Gene in cell, $NANOG_Gene in cell, $SOX2_Gene in cell, $GATA6_Gene in cell;
+  species $CDX2_Gene in cell, $GCNF_Gene in cell, $targetGene in cell, $degradation in cell;
+  species $p53 in cell, $A in cell, $SG in cell, $SN in cell, OCT4 in cell;
+  species SOX2 in cell, NANOG in cell, GATA6 in cell, CDX2 in cell, GCNF in cell;
+  species OCT4_SOX2 in cell, Protein in cell;
+
+  // Reactions:
+  R1: $OCT4_Gene => OCT4; (a0 + a1*A + a2*OCT4*SOX2 + a3*OCT4*SOX2*NANOG)/(1 + b0*A + b1*OCT4 + b2*OCT4*SOX2 + b3*OCT4*SOX2*NANOG + b4*CDX2*OCT4 + b5*GCNF);
+  R2: OCT4 => $degradation; gamma1*OCT4;
+  R3: $SOX2_Gene => SOX2; (c0 + c1*OCT4*SOX2 + c2*OCT4*SOX2*NANOG)/(1 + d0*OCT4 + d1*OCT4*SOX2 + d2*OCT4*SOX2*NANOG);
+  R4: SOX2 => $degradation; gamma2*SOX2;
+  R5: $NANOG_Gene => NANOG; (e0 + e1*OCT4*SOX2 + e2*OCT4*SOX2*NANOG + e3*SN)/(1 + f0*OCT4 + f1*OCT4*SOX2 + f2*OCT4*SOX2*NANOG + f3*OCT4*GATA6 + f4*SN);
+  R6: NANOG => $degradation; gamma3*NANOG;
+  R7: $CDX2_Gene => CDX2; (g0 + g1*CDX2)/(1 + h0*CDX2 + h1*CDX2*OCT4);
+  R8: CDX2 => $degradation; gamma4*CDX2;
+  R9: $GCNF_Gene => GCNF; (i0 + i1*CDX2 + i2*GATA6)/(1 + j0*CDX2 + j1*GATA6);
+  R10: GCNF => $degradation; gamma5*GCNF;
+  R11: $GATA6_Gene => GATA6; (p0 + p1*OCT4 + p2*GATA6)/(1 + q0*OCT4 + q1*GATA6 + q2*NANOG + q3*SG);
+  R12: GATA6 => $degradation; gammag*GATA6;
+
+  // Species initializations:
+  OCT4_Gene = 0;
+  NANOG_Gene = 0;
+  SOX2_Gene = 0;
+  GATA6_Gene = 0;
+  CDX2_Gene = 0;
+  GCNF_Gene = 0;
+  targetGene = 0.01;
+  degradation = 0;
+  p53 = 0;
+  A = 25;
+  SG = 0;
+  SN = 0;
+  OCT4 = 0.01;
+  SOX2 = 0.01;
+  NANOG = 0.01;
+  GATA6 = 0.01;
+  CDX2 = 0.01;
+  GCNF = 0.01;
+  OCT4_SOX2 = 0.1;
+  Protein = 0;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  a0 = 0.001;
+  a1 = 1;
+  a2 = 0.005;
+  a3 = 0.025;
+  b0 = 1;
+  b1 = 0.001;
+  b2 = 0.005;
+  b3 = 0.025;
+  b4 = 10;
+  b5 = 10;
+  gamma1 = 0.1;
+  c0 = 0.001;
+  c1 = 0.005;
+  c2 = 0.025;
+  d0 = 0.001;
+  d1 = 0.005;
+  d2 = 0.025;
+  d3 = 0.05;
+  gamma2 = 0.1;
+  e0 = 0.001;
+  e1 = 0.1;
+  e2 = 0.1;
+  e3 = 1;
+  f0 = 0.001;
+  f1 = 0.1;
+  f2 = 0.1;
+  f3 = 10;
+  f4 = 1;
+  gamma3 = 0.1;
+  g0 = 0.001;
+  g1 = 2;
+  h0 = 2;
+  h1 = 5;
+  gamma4 = 0.1;
+  i0 = 0.001;
+  i1 = 0.1;
+  i2 = 0.1;
+  j0 = 0.1;
+  j1 = 0.1;
+  gamma5 = 0.1;
+  p0 = 0.1;
+  p1 = 1;
+  p2 = 0.00025;
+  q0 = 1;
+  q1 = 0.00025;
+  q2 = 15;
+  q3 = 10;
+  gammag = 0.1;
+  gamman = 0.01;
+
+  // Other declarations:
+  const cell, a0, a1, a2, a3, b0, b1, b2, b3, b4, b5, gamma1, c0, c1, c2;
+  const d0, d1, d2, d3, gamma2, e0, e1, e2, e3, f0, f1, f2, f3, f4, gamma3;
+  const g0, g1, h0, h1, gamma4, i0, i1, i2, j0, j1, gamma5, p0, p1, p2, q0;
+  const q1, q2, q3, gammag, gamman;
+
+  // Unit definitions:
+  unit substance = dimensionless;
+  unit volume = litre;
+  unit time_unit = dimensionless;
+
+  // Display Names:
+  substance is "arb_substance";
+  volume is "arb_volume";
+  time_unit is "arb_time";
+
+  // CV terms:
+  cell biological_system "http://identifiers.org/go/GO:0005623"
+  OCT4_Gene biological_system "http://identifiers.org/ensembl/ENSG00000204531"
+  OCT4_Gene encodement "http://identifiers.org/uniprot/Q01860"
+  NANOG_Gene biological_system "http://identifiers.org/ensembl/ENSG00000176654"
+  NANOG_Gene encodement "http://identifiers.org/uniprot/Q8N7R0"
+  SOX2_Gene encodement "http://identifiers.org/ensembl/ENSG00000165661",
+                       "http://identifiers.org/uniprot/Q6ZRP7"
+  GATA6_Gene biological_system "http://identifiers.org/ensembl/ENSG00000141448"
+  GATA6_Gene encodement "http://identifiers.org/uniprot/Q92908"
+  CDX2_Gene biological_system "http://identifiers.org/ensembl/ENSG00000165556"
+  CDX2_Gene encodement "http://identifiers.org/uniprot/Q99626"
+  GCNF_Gene biological_system "http://identifiers.org/ensembl/ENSG00000148200"
+  GCNF_Gene encodement "http://identifiers.org/uniprot/Q15406"
+  p53 biological_system "http://identifiers.org/uniprot/P04637"
+  A biological_system "http://identifiers.org/go/GO:0042813"
+  OCT4 biological_system "http://identifiers.org/uniprot/Q01860"
+  SOX2 biological_system "http://identifiers.org/uniprot/Q6ZRP7"
+  NANOG biological_system "http://identifiers.org/uniprot/Q8N7R0"
+  GATA6 biological_system "http://identifiers.org/uniprot/Q92908"
+  CDX2 biological_system "http://identifiers.org/uniprot/Q99626"
+  GCNF biological_system "http://identifiers.org/uniprot/Q15406"
+  OCT4_SOX2 part "http://identifiers.org/uniprot/Q01860",
+                 "http://identifiers.org/uniprot/Q6ZRP7"
+  R1 biological_system "http://identifiers.org/go/GO:0010467"
+  R2 biological_system "http://identifiers.org/go/GO:0030163"
+  R3 biological_system "http://identifiers.org/go/GO:0010467"
+  R4 biological_system "http://identifiers.org/go/GO:0030163"
+  R5 biological_system "http://identifiers.org/go/GO:0010467"
+  R6 biological_system "http://identifiers.org/go/GO:0030163"
+  R7 biological_system "http://identifiers.org/go/GO:0010467"
+  R8 biological_system "http://identifiers.org/go/GO:0030163"
+  R9 biological_system "http://identifiers.org/go/GO:0010467"
+  R10 biological_system "http://identifiers.org/go/GO:0030163"
+  R11 biological_system "http://identifiers.org/go/GO:0010467"
+  R12 biological_system "http://identifiers.org/go/GO:0030163"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL8390025091"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000209"
+  model publication "http://identifiers.org/pubmed/18941526"
+  model origin "http://identifiers.org/biomodels.db/BIOMD0000000204",
+               "http://identifiers.org/biomodels.db/BIOMD0000000203"
+  model biological_system "http://identifiers.org/go/GO:0042663",
+                          "http://identifiers.org/go/GO:0001830",
+                          "http://identifiers.org/go/GO:0048863"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model created "2008-12-05T14:17:42Z"
+  model modified "2013-06-05T16:45:56Z"
+  model creator1.givenName "Vijayalakshmi"
+  model creator1.familyName "Chelliah"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "viji@ebi.ac.uk"
+  model creator2.givenName "Vijay"
+  model creator2.familyName "Chickarmane"
+  model creator2.organization "Keck Graduate Institute, California"
+  model creator2.email "vchickar@caltech.edu"
+  model creator3.givenName "Carsten"
+  model creator3.familyName "Peterson"
+  model creator3.organization "Lund Strategic Research Centre for Stem Cell Biology and Cell Therapy, Lund University, Sweden."
+  model creator3.email "carsten@thep.lu.se"
+
+  // Notes:
+  model notes ```
+Chickarmane2008 - Stem cell lineage determination 
+
+
+In this work, a dynamical model of lineage determination based upon a minimal circuit,
+as discussed in PMID: [17215298](http://identifiers.org/pubmed/18941526) , which contains the Oct4/Sox2/Nanog core as well its interaction with a few other key genes is discussed. 
+
+
+This model is described in the article:
+
+
+[A computational model for understanding stem cell, trophectoderm and endoderm lineage determination.](http://identifiers.org/pubmed/18941526 "Access to this publication") 
+
+
+Chickarmane V, Peterson C 
+
+PloS one. 2008, 3(10):e3478 
+Abstract:
+
+
+BACKGROUND: Recent studies have associated the transcription factors, Oct4, Sox2
+and Nanog as parts of a self-regulating network which is responsible for maintaining
+embryonic stem cell properties: self renewal and pluripotency. In addition, mutual
+antagonism between two of these and other master regulators have been shown to regulate
+lineage determination. In particular, an excess of Cdx2 over Oct4 determines the
+trophectoderm lineage whereas an excess of Gata-6 over Nanog determines differentiation
+into the endoderm lineage. Also, under/over-expression studies of the master regulator
+Oct4 have revealed that some self-renewal/pluripotency as well as differentiation
+genes are expressed in a biphasic manner with respect to the concentration of Oct4.
+METHODOLOGY/
+
+PRINCIPAL FINDINGS: We construct a dynamical model of a minimalistic network, extracted
+from ChIP-on-chip and microarray data as well as literature studies. The model is
+based upon differential equations and makes two plausible assumptions; activation
+of Gata-6 by Oct4 and repression of Nanog by an Oct4-Gata-6 heterodimer. With these
+assumptions, the results of simulations successfully describe the biphasic behavior
+as well as lineage commitment. The model also predicts that reprogramming the network
+from a differentiated state, in particular the endoderm state, into a stem cell state,
+is best achieved by over-expressing Nanog, rather than by suppression of differentiation
+genes such as Gata-6.
+
+CONCLUSIONS: The computational model provides a mechanistic understanding of how
+different lineages arise from the dynamics of the underlying regulatory network.
+It provides a framework to explore strategies of reprogramming a cell from a differentiated
+state to a stem cell state through directed perturbations. Such an approach is highly
+relevant to regenerative medicine since it allows for a rapid search over the host
+of possibilities for reprogramming to a stem cell state.
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identifiedby: [MODEL8390025091](http://identifiers.org/biomodels.db/MODEL8390025091) . 
+
+To cite BioModels Database, please use: [BioModels Database: An enhanced, curated and annotated resourcefor published quantitative kinetic models](http://identifiers.org/pubmed/20587024 "Latest BioModels Database publication") . 
+
+
+To the extent possible under law, all copyright and related orneighbouring rights
+to this encoded model have been dedicated to the publicdomain worldwide. Please refer
+to [CC0 Public DomainDedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+end
+
+MODEL8390025091 is "Chickarmane2008 - Stem cell lineage determination"

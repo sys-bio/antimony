@@ -1,0 +1,172 @@
+// Created by libAntimony v3.0.0
+model *Phillips2007_AscendingArousalSystem_SleepWakeDynamics()
+
+  // Compartments and Species:
+  compartment COMpartment;
+  species Monoaminergic__MA__voltage in COMpartment, Ventrolateral_preopticarea__VLPO__voltage in COMpartment;
+  species Somnogen_level_H in COMpartment;
+
+  // Assignment Rules:
+  Qv := Qmax/(1 + exp(-(Ventrolateral_preopticarea__VLPO__voltage - theta)/sigma));
+  Qa := Qmax/(1 + exp(-(Va - theta)/sigma));
+  Va := Vao;
+  Qm := Qmax/(1 + exp(-(Monoaminergic__MA__voltage - theta)/sigma));
+  D := v_vc*C + v_vh*Somnogen_level_H;
+  C := c0 + cos(omega*time);
+  omega := 2*pi/24;
+
+  // Reactions:
+  Reaction_for_Monoaminergic__MA__voltage:  => Monoaminergic__MA__voltage; COMpartment*((v_maQao + v_mv*Qv - Monoaminergic__MA__voltage)/(tau_m/3600));
+  Reaction_for_Ventrolateral_preopticarea__VLPO__voltage:  => Ventrolateral_preopticarea__VLPO__voltage; COMpartment*((v_vm*Qm + D - Ventrolateral_preopticarea__VLPO__voltage)/(tau_v/3600));
+  Reaction_for_homeostatic_sleep:  => Somnogen_level_H; COMpartment*((mu*Qm - Somnogen_level_H)/chi);
+
+  // Species initializations:
+  Monoaminergic__MA__voltage = 1;
+  Monoaminergic__MA__voltage has substance_per_volume;
+  Ventrolateral_preopticarea__VLPO__voltage = -10;
+  Ventrolateral_preopticarea__VLPO__voltage has substance_per_volume;
+  Somnogen_level_H = 10;
+  Somnogen_level_H has substance_per_volume;
+
+  // Compartment initializations:
+  COMpartment = 1;
+  COMpartment has volume;
+
+  // Variable initializations:
+  Qmax = 100;
+  theta = 10;
+  sigma = 3;
+  tau_v = 10;
+  v_vm = -1.9;
+  Vao = 1;
+  tau_m = 10;
+  v_mv = -1.9;
+  v_maQao = 1;
+  chi = 10.8;
+  mu = 3.6;
+  v_vc = -6.3;
+  v_vh = 0.19;
+  c0 = 1;
+
+  // Other declarations:
+  var Qv, Qa, Va, Qm, D, C, omega;
+  const COMpartment, Qmax, theta, sigma, tau_v, v_vm, Vao, tau_m, v_mv, v_maQao;
+  const chi, mu, v_vc, v_vh, c0;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = litre;
+  unit time_unit = time_unit;
+  unit substance = mole;
+  unit extent = substance;
+  unit substance_per_volume = mole / litre;
+
+  // Display Names:
+  time_unit is "time";
+  Monoaminergic__MA__voltage is "Monoaminergic (MA) voltage";
+  Ventrolateral_preopticarea__VLPO__voltage is "Ventrolateral preopticarea (VLPO) voltage";
+  Somnogen_level_H is "Somnogen level H";
+  Reaction_for_Monoaminergic__MA__voltage is "Reaction for Monoaminergic (MA) voltage";
+  Reaction_for_Ventrolateral_preopticarea__VLPO__voltage is "Reaction for Ventrolateral preopticarea (VLPO) voltage";
+  Reaction_for_homeostatic_sleep is "Reaction for homeostatic sleep";
+
+  // CV terms:
+  Monoaminergic__MA__voltage property "http://identifiers.org/ncit/C70813"
+  Monoaminergic__MA__voltage property "http://identifiers.org/omit/OMIT:0026787"
+  Monoaminergic__MA__voltage property "http://identifiers.org/ncit/C73238"
+  Monoaminergic__MA__voltage property "http://identifiers.org/ncit/C62025"
+  Monoaminergic__MA__voltage property "http://identifiers.org/ncit/C43382"
+  Monoaminergic__MA__voltage property "http://identifiers.org/ncit/C2321"
+  Ventrolateral_preopticarea__VLPO__voltage container "http://identifiers.org/omit/OMIT:0027571"
+  Ventrolateral_preopticarea__VLPO__voltage property "http://identifiers.org/omit/OMIT:0026787"
+  Ventrolateral_preopticarea__VLPO__voltage property "http://identifiers.org/ncit/C43382"
+  Ventrolateral_preopticarea__VLPO__voltage property "http://identifiers.org/ncit/C70813"
+  Somnogen_level_H property "http://identifiers.org/ncit/C207"
+  Reaction_for_Monoaminergic__MA__voltage property "http://identifiers.org/ncit/C2321"
+  Reaction_for_Monoaminergic__MA__voltage property "http://identifiers.org/ncit/C62025"
+  Reaction_for_Monoaminergic__MA__voltage property "http://identifiers.org/ncit/C73238"
+  Reaction_for_homeostatic_sleep property "http://identifiers.org/ncit/C207"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1006230025",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000917"
+  model identity "http://identifiers.org/biomodels.db/MODEL1006230025"
+  model biological_system "http://identifiers.org/go/GO:0022410"
+  model container "http://identifiers.org/bto/BTO:0000146"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model description "http://identifiers.org/pubmed/17440218"
+  model property "http://identifiers.org/ncit/C99553",
+                 "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2010-06-25T12:34:19Z"
+  model modified "2020-02-20T11:26:51Z"
+  model creator1.givenName "Catherine"
+  model creator1.familyName "Lloyd"
+  model creator1.organization "University of Auckland"
+  model creator1.email "c.lloyd@auckland.ac.nz"
+  model creator2.givenName "Ahmad"
+  model creator2.familyName "Zyoud"
+  model creator2.organization "EMBL-EBI"
+  model creator2.email "ahmad.azd@hotmail.com"
+  model creator3.givenName "Catherine"
+  model creator3.familyName "Lloyd"
+  model creator3.organization "University of Auckland"
+  model creator3.email "c.lloyd@auckland.ac.nz"
+  model creator4.givenName "Catherine"
+  model creator4.familyName "Lloyd"
+  model creator4.organization "University of Auckland"
+  model creator4.email "c.lloyd@auckland.ac.nz"
+
+  // Notes:
+  model notes ```
+This a model from the article: 
+**A quantitative model of sleep-wake dynamics based on the physiology of thebrainstem
+ascending arousal system.** 
+Phillips AJ, Robinson PA. *J Biol Rhythms* 2007 Apr;22(2):167-79
+[17440218](http://www.ncbi.nlm.nih.gov/pubmed/17440218) , 
+**Abstract:** 
+A quantitative, physiology-based model of the ascending arousal system
+isdeveloped, using continuum neuronal population modeling, which involvesaveraging
+properties such as firing rates across neurons in each population. Themodel includes
+the ventrolateral preoptic area (VLPO), where circadian andhomeostatic drives enter
+the system, the monoaminergic and cholinergic nuclei ofthe ascending arousal system,
+and their interconnections. The human sleep-wakecycle is governed by the activities
+of these nuclei, which modulate thebehavioral state of the brain via diffuse neuromodulatory
+projections. The modelparameters are not free since they correspond to physiological
+observables.Approximate parameter bounds are obtained by requiring consistency withphysiological
+and behavioral measures, and the model replicates the humansleep-wake cycle, with
+physiologically reasonable voltages and firing rates.Mutual inhibition between the
+wake-promoting monoaminergic group andsleep-promoting VLPO causes ;;flip-flop&apos;&apos;
+behavior, with most time spent in 2stable steady states corresponding to wake and
+sleep, with transitions betweenthem on a timescale of a few minutes. The model predicts
+hysteresis in thesleep-wake cycle, with a region of bistability of the wake and sleep
+states.Reducing the monoaminergic-VLPO mutual inhibition results in a smallerhysteresis
+loop. This makes the model more prone to wake-sleep transitions inboth directions
+and makes the states less distinguishable, as in narcolepsy. Themodel behavior is
+robust across the constrained parameter ranges, but withsufficient flexibility to
+describe a wide range of observed phenomena. 
+
+This model was taken from the [CellML repository](http://www.cellml.org/models) and automatically converted to SBML. 
+The original model was: [ **Phillips AJ, Robinson PA. (2007)
+- version=1.0** ](http://models.cellml.org/exposure/538f7b53af627b47e9d3f66aef27f9e5) 
+The original CellML model was created by: 
+**Catherine Lloyd** 
+c.lloyd@auckland.ac.nz 
+The University of Auckland 
+
+
+This model originates from BioModels Database: A Database of Annotated Published
+Models (http://www.ebi.ac.uk/biomodels/). It is copyright (c) 2005-2011 The BioModels.net
+Team. 
+To the extent possible under law, all copyright and related or neighbouring
+rights to this encoded model have been dedicated to the public domain worldwide.
+Please refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Creative Commons CC0") for more information. 
+
+In summary, you are entitled to use this encoded model in absolutely any manner you
+deem suitable, verbatim, or with modification, alone or embedded it in a larger context,
+redistribute it, commercially or not, in a restricted way or not.. 
+
+To cite BioModels Database, please use: [Li C, Donizelli M, Rodriguez N, Dharuri H, Endler L, Chelliah V, Li L, He E, Henry A, Stefan MI, Snoep JL, Hucka M, Le Novère N, Laibe C (2010) BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models. BMC Syst Biol., 4:92.](http://www.ncbi.nlm.nih.gov/pubmed/20587024)
+```
+end
+
+Phillips2007_AscendingArousalSystem_SleepWakeDynamics is "Phillips2007_AscendingArousalSystem_SleepWakeDynamics"

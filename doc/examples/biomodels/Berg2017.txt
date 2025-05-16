@@ -1,0 +1,1080 @@
+// Created by libAntimony v3.0.0
+
+// Warnings from automatic translation:
+//    Unable to set K_ECF_mmol.position to {483,342.5}.
+//    Unable to set K_ECF_mmol.size to {70,25}.
+//    Unable to set K_ICF_mmol.position to {915,708.5}.
+//    Unable to set K_ICF_mmol.size to {70,25}.
+
+model *MODEL1710230000()
+
+  // Compartments and Species:
+  compartment default, c1, c2;
+  species K_ECF in c2, K_ICF in c1, K_urin in default, K_tiss in default;
+  species K_sal in default, met_act in default, K_milk in default, $K_ECF_mmol in c2;
+  species $K_ICF_mmol in c1, K_git in default, Gluc_b in c2, ins_b in c2;
+  species Gluc_stor in default, Gluc_prod in default, $src_metact in default;
+  species $snk_metact in default, $src_Kgit in default, $src_Glucblood in c2;
+  species $s23 in default, $sa4_degraded in default, s24 in default, $src_insnew in c2;
+  species $snk_insnew in c2;
+
+  // Assignment Rules:
+  K_ECF_mmol := K_ECF/p34;
+  K_ICF_mmol := K_ICF/p34;
+  pH := 7.5 - met_act/40;
+  dmi := p54*487.5*(1 - sin(pi*time/12));
+  K_feed := p56*dmi;
+  Gluc_feed := p46*dmi;
+
+  // Reactions:
+  re20: SpeciesReference $src_metact => SpeciesReference_1 met_act; default*((p45 + p42*dmi^2/(dmi^2 + p43^2))/default);
+  re37: SpeciesReference_2 Gluc_b => SpeciesReference_3 Gluc_stor; ((Gluc_feed^10/(Gluc_feed^10 + p1^10))*p12*Gluc_prod*default*p57^10/((Gluc_stor*default)^10 + p57^10))*ins_b*Gluc_b*p36^10/(p36^10 + p55^10);
+  re41: SpeciesReference_6 Gluc_prod => SpeciesReference_7 Gluc_b; (p37 + p39*Gluc_prod*default)*(1/(1 + (Gluc_b/p50)^10));
+  re39: SpeciesReference_8 Gluc_prod => SpeciesReference_9 Gluc_stor; default*(p51*Gluc_prod*default*(p57^10/((Gluc_stor*default)^10 + p57^10))*p62^10/(p62^10 + p55^10)/default);
+  re38: SpeciesReference_10 Gluc_stor => SpeciesReference_11 Gluc_b; (1/(1 + (Gluc_feed/p1)^10))*p17*(p7 - Gluc_b)*(Gluc_stor*default)^10/((Gluc_stor*default)^10 + p35^10) + ((1/(1 + (p64/p55)^10))*p65^10/(p65^10 + Gluc_b^10))*p63*(Gluc_stor*default)^10/((Gluc_stor*default)^10 + p35^10);
+  re43: SpeciesReference_12 Gluc_stor => SpeciesReference_13 Gluc_prod; default*((p60*1/(1 + (Gluc_feed/p61)^5))*(Gluc_stor*default)^10/((Gluc_stor*default)^10 + p35^10)/default);
+  re4: SpeciesReference_14 K_ECF => SpeciesReference_15 K_ICF; ((p8 + p9*ins_b^8/(ins_b^8 + p3^8))*K_ECF^2/(K_ECF^2 + p33^2))*(1 + p21*pH^10/(pH^10 + p20^10));
+  re5: SpeciesReference_17 K_ECF => SpeciesReference_18 K_sal; p18*K_ECF*dmi;
+  re7: SpeciesReference_19 K_ECF => SpeciesReference_20 K_tiss; ((K_git*default)^10/((K_git*default)^10 + p15^10))*p25*K_ECF*(p2 - p10)^10/((K_tiss*default - p10)^10 + (p2 - p10)^10);
+  re9: SpeciesReference_22 K_ECF => SpeciesReference_23 K_urin; (1 + p13*K_ECF^5/(K_ECF^5 + p24^5))*p6*K_git*default*(1 + p16*K_ECF^10/(K_ECF^10 + p22^10)) + p53*K_ECF;
+  re35: SpeciesReference_25 K_ECF => SpeciesReference_26 K_milk; p52*p55*K_ECF^10/(K_ECF^10 + p40^10);
+  re6: SpeciesReference_27 K_ECF => SpeciesReference_28 $sa4_degraded; p4*K_ECF;
+  re34: SpeciesReference_29 $src_Kgit => SpeciesReference_30 K_git; default*(p30*K_feed/default);
+  re10: SpeciesReference_31 K_git => SpeciesReference_32 K_ECF; p31*K_git*default;
+  re3: SpeciesReference_33 K_ICF => SpeciesReference_34 K_ECF; ((1 + 1/(1 + (K_ECF/p29)^10))*p5*(1 + 1/(1 + (pH/p20)^10))*K_ICF^2/(K_ICF^2 + p23^2))*(1 + p19*K_ICF^2/(K_ICF^2 + p14^2));
+  re11: SpeciesReference_35 K_sal => SpeciesReference_36 K_git; default*(p32*K_sal*default/default);
+  re8: SpeciesReference_37 K_tiss => SpeciesReference_38 K_ECF; (1/(1 + (K_git*default/p15)^10))*p26*(p27 - K_ECF)*(K_tiss*default - p10)^10/((K_tiss*default - p10)^10 + (p38*0.99 - p10)^10);
+  re21: SpeciesReference_40 met_act => SpeciesReference_41 $snk_metact; default*(p44*met_act*default/default);
+  re40: SpeciesReference_42 Gluc_b => SpeciesReference_43 s24; (Gluc_b^10/(Gluc_b^10 + p58^10))*(p28*Gluc_b + p59*Gluc_prod*default*exp(-p66*p55) + p55*p47);
+  re32: SpeciesReference_45 ins_b => SpeciesReference_46 $snk_insnew; c2*(p41*ins_b/c2);
+  re33: SpeciesReference_47 $src_Glucblood => SpeciesReference_48 Gluc_b; c2*(p48*Gluc_feed/c2);
+  re36: SpeciesReference_49 $s23 => SpeciesReference_50 Gluc_prod; default*((1 - p48)*Gluc_feed/default);
+  re31: SpeciesReference_51 $src_insnew => SpeciesReference_52 ins_b; c2*(p49*Gluc_b/c2);
+
+  // Species initializations:
+  K_ECF = 0.175136827769812;
+  K_ICF = 0.897325991903361;
+  K_urin = 0;
+  K_tiss = 1509.6/default;
+  K_sal = 4.53818901679345/default;
+  met_act = 6.24885128313371/default;
+  K_milk = 0;
+  K_git = 43.1365559451142/default;
+  Gluc_b = 0.546566462071036;
+  ins_b = 21.8532954203392;
+  Gluc_stor = 3647.74674176755/default;
+  Gluc_prod = 34.0337183015116/default;
+  src_metact = 0;
+  snk_metact = 0;
+  src_Kgit = 0;
+  src_Glucblood = 0;
+  s23 = 0;
+  sa4_degraded = 0;
+  s24 = 0;
+  src_insnew = 0;
+  snk_insnew = 0;
+
+  // Compartment initializations:
+  default = 1;
+  default has volume;
+  c1 = 10.2;
+  c1 has volume;
+  c2 = 22.8;
+  c2 has volume;
+
+  // Variable initializations:
+  p34 = 0.0390983;
+  p34 has unit_0;
+  p3 = 22;
+  p3 has unit_0;
+  p4 = 0.0001783;
+  p4 has unit_0;
+  p5 = 0.563;
+  p5 has unit_0;
+  p6 = 0.051;
+  p6 has unit_0;
+  p8 = 0.5994;
+  p8 has unit_0;
+  p9 = 0.4016;
+  p9 has unit_0;
+  p13 = 6.08;
+  p13 has unit_0;
+  p14 = 0.15639932;
+  p14 has unit_0;
+  p15 = 32;
+  p15 has unit_0;
+  p16 = 10;
+  p16 has unit_0;
+  p18 = 0.0223;
+  p18 has unit_0;
+  p19 = 0.1373;
+  p19 has unit_0;
+  p20 = 7.38;
+  p20 has unit_0;
+  p21 = 0.1085;
+  p21 has unit_0;
+  p22 = 0.25;
+  p22 has unit_0;
+  p23 = 0.58649745;
+  p23 has unit_0;
+  p24 = 0.1962811466;
+  p24 has unit_0;
+  p25 = 6.6085;
+  p25 has unit_0;
+  p26 = 49.0279;
+  p26 has unit_0;
+  p27 = 0.232634885;
+  p27 has unit_0;
+  p29 = 0.11729949;
+  p29 has unit_0;
+  p30 = 0.95;
+  p30 has unit_0;
+  p31 = 0.353;
+  p31 has unit_0;
+  p32 = 1.31;
+  p32 has unit_0;
+  p33 = 0.07819966;
+  p33 has unit_0;
+  pH has unit_0;
+  p42 = 4.5;
+  p42 has unit_0;
+  p43 = 10;
+  p43 has unit_0;
+  p44 = 1.2;
+  p44 has unit_0;
+  p45 = 3;
+  p45 has unit_0;
+  p46 = 0.0854;
+  p46 has unit_0;
+  p48 = 0.08;
+  p48 has unit_0;
+  p49 = 800;
+  p49 has unit_0;
+  p41 = 20;
+  p41 has unit_0;
+  Pi = 3.14159265359;
+  Pi has unit_0;
+  dmi has unit_0;
+  p54 = 1;
+  p54 has unit_0;
+  K_feed has unit_0;
+  p56 = 0.01137;
+  p56 has unit_0;
+  Gluc_feed has unit_0;
+  p52 = 1.4;
+  p52 has unit_0;
+  p53 = 0.01;
+  p53 has unit_0;
+  p55 = 0;
+  p55 has unit_0;
+  p1 = 40.4;
+  p1 has unit_0;
+  p11 = 860;
+  p11 has unit_0;
+  p12 = 0.0105;
+  p12 has unit_0;
+  p17 = 16;
+  p17 has unit_0;
+  p28 = 25;
+  p28 has unit_0;
+  p37 = 0;
+  p37 has unit_0;
+  p39 = 30;
+  p39 has unit_0;
+  p50 = 0.4;
+  p50 has unit_0;
+  p7 = 0.925;
+  p7 has unit_0;
+  p51 = 0.1;
+  p51 has unit_0;
+  p57 = 3800;
+  p57 has unit_0;
+  p59 = 1;
+  p59 has unit_0;
+  p60 = 2;
+  p60 has unit_0;
+  p61 = 5;
+  p61 has unit_0;
+  p40 = 0.01;
+  p40 has unit_0;
+  p47 = 72;
+  p47 has unit_0;
+  p58 = 0.01;
+  p58 has unit_0;
+  p63 = 800;
+  p63 has unit_0;
+  p64 = 0.2;
+  p64 has unit_0;
+  p65 = 0.3;
+  p65 has unit_0;
+  p66 = 1.4;
+  p66 has unit_0;
+  p2 = 1600;
+  p2 has unit_0;
+  p10 = 1400;
+  p10 has unit_0;
+  p35 = 100;
+  p35 has unit_0;
+  p62 = 1;
+  p62 has unit_0;
+  p38 = 1509.6;
+  p38 has unit_0;
+  p36 = 1;
+  p36 has unit_0;
+  parameter_1 = 6.022140857e+23;
+  SpeciesReference = 1;
+  SpeciesReference_1 = 1;
+  SpeciesReference_2 = 1;
+  SpeciesReference_3 = 1;
+  SpeciesReference_6 = 1;
+  SpeciesReference_7 = 1;
+  SpeciesReference_8 = 1;
+  SpeciesReference_9 = 1;
+  SpeciesReference_10 = 1;
+  SpeciesReference_11 = 1;
+  SpeciesReference_12 = 1;
+  SpeciesReference_13 = 1;
+  SpeciesReference_14 = 1;
+  SpeciesReference_15 = 1;
+  SpeciesReference_17 = 1;
+  SpeciesReference_18 = 1;
+  SpeciesReference_19 = 1;
+  SpeciesReference_20 = 1;
+  SpeciesReference_22 = 1;
+  SpeciesReference_23 = 1;
+  SpeciesReference_25 = 1;
+  SpeciesReference_26 = 1;
+  SpeciesReference_27 = 1;
+  SpeciesReference_28 = 1;
+  SpeciesReference_29 = 1;
+  SpeciesReference_30 = 1;
+  SpeciesReference_31 = 1;
+  SpeciesReference_32 = 1;
+  SpeciesReference_33 = 1;
+  SpeciesReference_34 = 1;
+  SpeciesReference_35 = 1;
+  SpeciesReference_36 = 1;
+  SpeciesReference_37 = 1;
+  SpeciesReference_38 = 1;
+  SpeciesReference_40 = 1;
+  SpeciesReference_41 = 1;
+  SpeciesReference_42 = 1;
+  SpeciesReference_43 = 1;
+  SpeciesReference_45 = 1;
+  SpeciesReference_46 = 1;
+  SpeciesReference_47 = 1;
+  SpeciesReference_48 = 1;
+  SpeciesReference_49 = 1;
+  SpeciesReference_50 = 1;
+  SpeciesReference_51 = 1;
+  SpeciesReference_52 = 1;
+
+  // Other declarations:
+  var pH, dmi, K_feed, Gluc_feed;
+  const default, c1, c2, p34, p3, p4, p5, p6, p8, p9, p13, p14, p15, p16;
+  const p18, p19, p20, p21, p22, p23, p24, p25, p26, p27, p29, p30, p31, p32;
+  const p33, p42, p43, p44, p45, p46, p48, p49, p41, Pi, p54, p56, p52, p53;
+  const p55, p1, p11, p12, p17, p28, p37, p39, p50, p7, p51, p57, p59, p60;
+  const p61, p40, p47, p58, p63, p64, p65, p66, p2, p10, p35, p62, p38, p36;
+  const parameter_1;
+
+  // Unit definitions:
+  unit substance = mole;
+  unit volume = litre;
+  unit area = metre^2;
+  unit length = metre;
+  unit time_unit = 3600 second;
+  unit unit_0 = 1 / dimensionless^-0;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1";
+  c1 is "intracell";
+  c2 is "extracell";
+  p34 is "con";
+  src_Glucblood is "src_Glucb";
+  s23 is "src_Gprod";
+  sa4_degraded is "snk_Kecf";
+  s24 is "Gluc_use";
+  src_insnew is "src_ins";
+  snk_insnew is "snk_ins";
+  p42 is "src_metact";
+  p43 is "T_src_metact";
+  p44 is "snc_metact";
+  p45 is "basic_metact";
+  p46 is "src_glucfeed";
+  p48 is "scale_blood_gluc";
+  p54 is "dmi_percentage";
+  p56 is "perctK_in_dmi";
+  p52 is "kmilk_content";
+  p53 is "basal_KeKu";
+  p55 is "Milk_in_l/h";
+  parameter_1 is "amount to particle factor";
+  re20 is "DmMa";
+  re37 is "GbGs";
+  re41 is "GpGb";
+  re39 is "GpGs";
+  re38 is "GsGb";
+  re43 is "GsGp";
+  re4 is "KeKi";
+  re5 is "KeKs";
+  re7 is "KeKt";
+  re9 is "KeKu";
+  re35 is "KeMi";
+  re6 is "KeR";
+  re34 is "KfKg";
+  re10 is "KgKe";
+  re3 is "KiKe";
+  re11 is "KsKg";
+  re8 is "KtKe";
+  re21 is "MaSnk";
+  re40 is "SnkGb";
+  re32 is "SnkIn";
+  re33 is "SrcGb";
+  re36 is "SrcGp";
+  re31 is "SrcIn";
+
+  # General layout options
+  model.layout = on
+  model.layout.size = {1081, 940}
+  model.layout.background = "#FFFFFFFF"
+
+  // Species layout defaults
+  species.color = "#a0e0a030"
+
+  // Reaction layout defaults
+  reaction.lineColor = "#000000a0"
+  reaction.lineWidth = 3
+  reaction.fontColor = "#000000a0"
+
+  // Compartment layout defaults
+  compartment.lineColor = "#e69600b0"
+  compartment.fontColor = "#e69600b0"
+  compartment.fontStyle = normal
+
+  // Individual element layout information
+  c1.position = {869, 610}
+  c1.size = {162, 171}
+  c1.lineColor = "#cccc0023"
+  c1.lineWidth = 12
+  c1.font = Arial
+  c1.fontColor = black
+  c1.fontSize = 12
+  c2.position = {284, 28}
+  c2.size = {315, 561}
+  c2.lineColor = "#cccc0023"
+  c2.lineWidth = 12
+  c2.font = Arial
+  c2.fontColor = black
+  c2.fontSize = 12
+  K_ECF.position = {387, 429.5}
+  K_ECF.size = {70, 25}
+  K_ECF.color = "#ccff66"
+  K_ECF.lineColor = black
+  K_ECF.lineWidth = 1
+  K_ECF.font = Arial
+  K_ECF.fontColor = black
+  K_ECF.fontSize = 12
+  K_ECF.shape = ellipse
+  K_ICF.position = {915, 657.5}
+  K_ICF.size = {70, 25}
+  K_ICF.color = "#ccff66"
+  K_ICF.lineColor = black
+  K_ICF.lineWidth = 1
+  K_ICF.font = Arial
+  K_ICF.fontColor = black
+  K_ICF.fontSize = 12
+  K_ICF.shape = ellipse
+  K_urin.position = {759, 480.5}
+  K_urin.size = {70, 25}
+  K_urin.color = "#ccff66"
+  K_urin.lineColor = black
+  K_urin.lineWidth = 1
+  K_urin.font = Arial
+  K_urin.fontColor = black
+  K_urin.fontSize = 12
+  K_urin.shape = ellipse
+  K_tiss.position = {612, 462.5}
+  K_tiss.size = {70, 25}
+  K_tiss.color = "#ccff66"
+  K_tiss.lineColor = black
+  K_tiss.lineWidth = 1
+  K_tiss.font = Arial
+  K_tiss.fontColor = black
+  K_tiss.fontSize = 12
+  K_tiss.shape = ellipse
+  K_sal.position = {867, 396.5}
+  K_sal.size = {70, 25}
+  K_sal.color = "#ccff66"
+  K_sal.lineColor = black
+  K_sal.lineWidth = 1
+  K_sal.font = Arial
+  K_sal.fontColor = black
+  K_sal.fontSize = 12
+  K_sal.shape = ellipse
+  met_act.position = {145, 487.5}
+  met_act.size = {70, 25}
+  met_act.color = "#cccccc7f"
+  met_act.font = Arial
+  met_act.fontColor = black
+  met_act.fontSize = 12
+  met_act.shape = ellipse
+  K_milk.position = {612, 573.5}
+  K_milk.size = {70, 25}
+  K_milk.color = "#cccccc7f"
+  K_milk.font = Arial
+  K_milk.fontColor = black
+  K_milk.fontSize = 12
+  K_milk.shape = ellipse
+  K_ECF_mmol.position = {483, 342.5}
+  K_ECF_mmol.size = {70, 25}
+  K_ECF_mmol.color = "#ccff66"
+  K_ECF_mmol.lineColor = black
+  K_ECF_mmol.lineWidth = 1
+  K_ECF_mmol.font = Arial
+  K_ECF_mmol.fontColor = black
+  K_ECF_mmol.fontSize = 12
+  K_ECF_mmol.shape = ellipse
+  K_ICF_mmol.position = {915, 708.5}
+  K_ICF_mmol.size = {70, 25}
+  K_ICF_mmol.color = "#ccff66"
+  K_ICF_mmol.lineColor = black
+  K_ICF_mmol.lineWidth = 1
+  K_ICF_mmol.font = Arial
+  K_ICF_mmol.fontColor = black
+  K_ICF_mmol.fontSize = 12
+  K_ICF_mmol.shape = ellipse
+  K_git.position = {705, 429.5}
+  K_git.size = {70, 25}
+  K_git.color = "#ccff66"
+  K_git.lineColor = black
+  K_git.lineWidth = 1
+  K_git.font = Arial
+  K_git.fontColor = black
+  K_git.fontSize = 12
+  K_git.shape = ellipse
+  Gluc_b.position = {385, 341}
+  Gluc_b.size = {74, 28}
+  Gluc_b.color = "#cccccc7f"
+  Gluc_b.font = Arial
+  Gluc_b.fontColor = black
+  Gluc_b.fontSize = 12
+  Gluc_b.shape = ellipse
+  ins_b.position = {387, 132.5}
+  ins_b.size = {70, 25}
+  ins_b.color = "#cccccc7f"
+  ins_b.font = Arial
+  ins_b.fontColor = black
+  ins_b.fontSize = 12
+  ins_b.shape = ellipse
+  Gluc_stor.position = {66, 312.5}
+  Gluc_stor.size = {70, 25}
+  Gluc_stor.color = "#cccccc7f"
+  Gluc_stor.font = Arial
+  Gluc_stor.fontColor = black
+  Gluc_stor.fontSize = 12
+  Gluc_stor.shape = ellipse
+  Gluc_prod.position = {186, 195.5}
+  Gluc_prod.size = {70, 25}
+  Gluc_prod.color = "#cccccc7f"
+  Gluc_prod.font = Arial
+  Gluc_prod.fontColor = black
+  Gluc_prod.fontSize = 12
+  Gluc_prod.shape = ellipse
+  src_metact.position = {72, 521}
+  src_metact.size = {30, 30}
+  src_metact.color = "#ffcccc"
+  src_metact.lineColor = black
+  src_metact.lineWidth = 1
+  src_metact.shape = ellipse
+  snk_metact.position = {129, 539}
+  snk_metact.size = {30, 30}
+  snk_metact.color = "#ffcccc"
+  snk_metact.lineColor = black
+  snk_metact.lineWidth = 1
+  snk_metact.shape = ellipse
+  src_Kgit.position = {857, 463}
+  src_Kgit.size = {30, 30}
+  src_Kgit.color = "#ffcccc"
+  src_Kgit.lineColor = black
+  src_Kgit.lineWidth = 1
+  src_Kgit.shape = ellipse
+  src_Glucblood.position = {332, 394}
+  src_Glucblood.size = {30, 30}
+  src_Glucblood.color = "#ffcccc"
+  src_Glucblood.lineColor = black
+  src_Glucblood.lineWidth = 1
+  src_Glucblood.shape = ellipse
+  s23.position = {131, 160}
+  s23.size = {30, 30}
+  s23.color = "#ffcccc"
+  s23.lineColor = black
+  s23.lineWidth = 1
+  s23.shape = ellipse
+  sa4_degraded.position = {902, 565}
+  sa4_degraded.size = {30, 30}
+  sa4_degraded.color = "#ffcccc"
+  sa4_degraded.lineColor = black
+  sa4_degraded.lineWidth = 1
+  sa4_degraded.shape = ellipse
+  s24.position = {170, 247}
+  s24.size = {30, 30}
+  s24.color = "#ffcccc"
+  s24.lineColor = black
+  s24.lineWidth = 1
+  s24.shape = ellipse
+  src_insnew.position = {443, 184}
+  src_insnew.size = {30, 30}
+  src_insnew.color = "#ffcccc"
+  src_insnew.lineColor = black
+  src_insnew.lineWidth = 1
+  src_insnew.shape = ellipse
+  snk_insnew.position = {443, 76}
+  snk_insnew.size = {30, 30}
+  snk_insnew.color = "#ffcccc"
+  snk_insnew.lineColor = black
+  snk_insnew.lineWidth = 1
+  snk_insnew.shape = ellipse
+  re20.position = {91.55, 498.96}
+  re20.lineColor = black
+  re20.lineWidth = 1
+  re20.src_metact.rxn_end = {90.51, 499.85}
+  re20.src_metact.species_end = {88.44, 501.64}
+  re20.src_metact.b1 = {0, 0}
+  re20.src_metact.b2 = {0, 0}
+  re20.src_metact.seg2.rxn_end = {88.44, 501.64}
+  re20.src_metact.seg2.species_end = {87, 521}
+  re20.src_metact.seg2.b1 = {0, 0}
+  re20.src_metact.seg2.b2 = {0, 0}
+  re20.met_act.rxn_end = {92.59, 498.06}
+  re20.met_act.species_end = {94.67, 496.27}
+  re20.met_act.b1 = {0, 0}
+  re20.met_act.b2 = {0, 0}
+  re20.met_act.seg2.rxn_end = {94.67, 496.27}
+  re20.met_act.seg2.species_end = {145, 500}
+  re20.met_act.seg2.b1 = {0, 0}
+  re20.met_act.seg2.b2 = {0, 0}
+  re37.position = {41, 353.5}
+  re37.lineColor = black
+  re37.lineWidth = 1
+  re37.Gluc_b.b1 = {0, 0}
+  re37.Gluc_b.b2 = {0, 0}
+  re37.Gluc_b.seg2.species_end = {385, 355}
+  re37.Gluc_b.seg2.b1 = {0, 0}
+  re37.Gluc_b.seg2.b2 = {0, 0}
+  re37.Gluc_stor.b1 = {0, 0}
+  re37.Gluc_stor.b2 = {0, 0}
+  re37.Gluc_stor.seg2.species_end = {101, 352}
+  re37.Gluc_stor.seg2.b1 = {0, 0}
+  re37.Gluc_stor.seg2.b2 = {0, 0}
+  re37.Gluc_stor.seg3.rxn_end = {101, 352}
+  re37.Gluc_stor.seg3.species_end = {101, 337.5}
+  re37.Gluc_stor.seg3.b1 = {0, 0}
+  re37.Gluc_stor.seg3.b2 = {0, 0}
+  re37.ins_b.species_end = {387, 145}
+  re37.ins_b.rxn_end = {34.69, 145.07}
+  re37.ins_b.b1 = {0, 0}
+  re37.ins_b.b2 = {0, 0}
+  re37.ins_b.seg2.species_end = {34.69, 145.07}
+  re37.ins_b.seg2.rxn_end = {45.75, 353.75}
+  re37.ins_b.seg2.b1 = {0, 0}
+  re37.ins_b.seg2.b2 = {0, 0}
+  re37.Gluc_prod.species_end = {186, 208}
+  re37.Gluc_prod.rxn_end = {37.75, 208.01}
+  re37.Gluc_prod.b1 = {0, 0}
+  re37.Gluc_prod.b2 = {0, 0}
+  re37.Gluc_prod.seg2.species_end = {37.75, 208.01}
+  re37.Gluc_prod.seg2.rxn_end = {35.75, 353.75}
+  re37.Gluc_prod.seg2.b1 = {0, 0}
+  re37.Gluc_prod.seg2.b2 = {0, 0}
+  re41.position = {275, 208}
+  re41.lineColor = black
+  re41.lineWidth = 1
+  re41.Gluc_prod.b1 = {0, 0}
+  re41.Gluc_prod.b2 = {0, 0}
+  re41.Gluc_prod.seg2.b1 = {0, 0}
+  re41.Gluc_prod.seg2.b2 = {0, 0}
+  re41.Gluc_b.b1 = {0, 0}
+  re41.Gluc_b.b2 = {0, 0}
+  re41.Gluc_b.seg2.b1 = {0, 0}
+  re41.Gluc_b.seg2.b2 = {0, 0}
+  re41.Gluc_b.seg3.species_end = {422, 341}
+  re41.Gluc_b.seg3.b1 = {0, 0}
+  re41.Gluc_b.seg3.b2 = {0, 0}
+  re39.position = {50, 322}
+  re39.lineColor = black
+  re39.lineWidth = 1
+  re39.Gluc_prod.rxn_end = {49, 321}
+  re39.Gluc_prod.species_end = {47, 319}
+  re39.Gluc_prod.b1 = {0, 0}
+  re39.Gluc_prod.b2 = {0, 0}
+  re39.Gluc_prod.seg2.rxn_end = {47, 319}
+  re39.Gluc_prod.seg2.species_end = {47, 211}
+  re39.Gluc_prod.seg2.b1 = {0, 0}
+  re39.Gluc_prod.seg2.b2 = {0, 0}
+  re39.Gluc_prod.seg3.rxn_end = {47, 211}
+  re39.Gluc_prod.seg3.species_end = {186, 208}
+  re39.Gluc_prod.seg3.b1 = {0, 0}
+  re39.Gluc_prod.seg3.b2 = {0, 0}
+  re39.Gluc_stor.rxn_end = {51, 323}
+  re39.Gluc_stor.species_end = {53, 325}
+  re39.Gluc_stor.b1 = {0, 0}
+  re39.Gluc_stor.b2 = {0, 0}
+  re39.Gluc_stor.seg2.rxn_end = {53, 325}
+  re39.Gluc_stor.seg2.species_end = {66, 325}
+  re39.Gluc_stor.seg2.b1 = {0, 0}
+  re39.Gluc_stor.seg2.b2 = {0, 0}
+  re38.position = {104, 295}
+  re38.lineColor = black
+  re38.lineWidth = 1
+  re38.Gluc_stor.rxn_end = {103, 296}
+  re38.Gluc_stor.species_end = {101, 298}
+  re38.Gluc_stor.b1 = {0, 0}
+  re38.Gluc_stor.b2 = {0, 0}
+  re38.Gluc_stor.seg2.rxn_end = {101, 298}
+  re38.Gluc_stor.seg2.species_end = {101, 312.5}
+  re38.Gluc_stor.seg2.b1 = {0, 0}
+  re38.Gluc_stor.seg2.b2 = {0, 0}
+  re38.Gluc_b.rxn_end = {105, 294}
+  re38.Gluc_b.species_end = {107, 292}
+  re38.Gluc_b.b1 = {0, 0}
+  re38.Gluc_b.b2 = {0, 0}
+  re38.Gluc_b.seg2.rxn_end = {107, 292}
+  re38.Gluc_b.seg2.species_end = {413, 292}
+  re38.Gluc_b.seg2.b1 = {0, 0}
+  re38.Gluc_b.seg2.b2 = {0, 0}
+  re38.Gluc_b.seg3.rxn_end = {413, 292}
+  re38.Gluc_b.seg3.species_end = {422, 341}
+  re38.Gluc_b.seg3.b1 = {0, 0}
+  re38.Gluc_b.seg3.b2 = {0, 0}
+  re43.position = {152, 322}
+  re43.lineColor = black
+  re43.lineWidth = 1
+  re43.Gluc_stor.rxn_end = {151, 323}
+  re43.Gluc_stor.species_end = {149, 325}
+  re43.Gluc_stor.b1 = {0, 0}
+  re43.Gluc_stor.b2 = {0, 0}
+  re43.Gluc_stor.seg2.rxn_end = {149, 325}
+  re43.Gluc_stor.seg2.species_end = {136, 325}
+  re43.Gluc_stor.seg2.b1 = {0, 0}
+  re43.Gluc_stor.seg2.b2 = {0, 0}
+  re43.Gluc_prod.rxn_end = {153, 321}
+  re43.Gluc_prod.species_end = {155, 319}
+  re43.Gluc_prod.b1 = {0, 0}
+  re43.Gluc_prod.b2 = {0, 0}
+  re43.Gluc_prod.seg2.rxn_end = {155, 319}
+  re43.Gluc_prod.seg2.species_end = {155, 214}
+  re43.Gluc_prod.seg2.b1 = {0, 0}
+  re43.Gluc_prod.seg2.b2 = {0, 0}
+  re43.Gluc_prod.seg3.rxn_end = {155, 214}
+  re43.Gluc_prod.seg3.species_end = {186, 208}
+  re43.Gluc_prod.seg3.b1 = {0, 0}
+  re43.Gluc_prod.seg3.b2 = {0, 0}
+  re4.position = {950, 145}
+  re4.lineColor = black
+  re4.lineWidth = 1
+  re4.K_ECF.b1 = {0, 0}
+  re4.K_ECF.b2 = {0, 0}
+  re4.K_ECF.seg2.b1 = {0, 0}
+  re4.K_ECF.seg2.b2 = {0, 0}
+  re4.K_ECF.seg3.species_end = {26, 25}
+  re4.K_ECF.seg3.b1 = {0, 0}
+  re4.K_ECF.seg3.b2 = {0, 0}
+  re4.K_ECF.seg4.rxn_end = {26, 25}
+  re4.K_ECF.seg4.species_end = {26, 442}
+  re4.K_ECF.seg4.b1 = {0, 0}
+  re4.K_ECF.seg4.b2 = {0, 0}
+  re4.K_ECF.seg5.rxn_end = {26, 442}
+  re4.K_ECF.seg5.species_end = {387, 442}
+  re4.K_ECF.seg5.b1 = {0, 0}
+  re4.K_ECF.seg5.b2 = {0, 0}
+  re4.K_ICF.b1 = {0, 0}
+  re4.K_ICF.b2 = {0, 0}
+  re4.K_ICF.seg2.b1 = {0, 0}
+  re4.K_ICF.seg2.b2 = {0, 0}
+  re4.ins_b.rxn_end = {946, 146}
+  re4.ins_b.b1 = {0, 0}
+  re4.ins_b.b2 = {0, 0}
+  re5.position = {899, 532}
+  re5.lineColor = black
+  re5.lineWidth = 1
+  re5.K_ECF.rxn_end = {898, 533}
+  re5.K_ECF.species_end = {896, 535}
+  re5.K_ECF.b1 = {0, 0}
+  re5.K_ECF.b2 = {0, 0}
+  re5.K_ECF.seg2.rxn_end = {896, 535}
+  re5.K_ECF.seg2.species_end = {431, 535}
+  re5.K_ECF.seg2.b1 = {0, 0}
+  re5.K_ECF.seg2.b2 = {0, 0}
+  re5.K_ECF.seg3.rxn_end = {431, 535}
+  re5.K_ECF.seg3.species_end = {422, 454.5}
+  re5.K_ECF.seg3.b1 = {0, 0}
+  re5.K_ECF.seg3.b2 = {0, 0}
+  re5.K_sal.rxn_end = {900, 531}
+  re5.K_sal.species_end = {902, 529}
+  re5.K_sal.b1 = {0, 0}
+  re5.K_sal.b2 = {0, 0}
+  re5.K_sal.seg2.rxn_end = {902, 529}
+  re5.K_sal.seg2.species_end = {902, 421.5}
+  re5.K_sal.seg2.b1 = {0, 0}
+  re5.K_sal.seg2.b2 = {0, 0}
+  re7.position = {644, 505}
+  re7.lineColor = black
+  re7.lineWidth = 1
+  re7.K_ECF.rxn_end = {643, 506}
+  re7.K_ECF.species_end = {641, 508}
+  re7.K_ECF.b1 = {0, 0}
+  re7.K_ECF.b2 = {0, 0}
+  re7.K_ECF.seg2.rxn_end = {641, 508}
+  re7.K_ECF.seg2.species_end = {440, 508}
+  re7.K_ECF.seg2.b1 = {0, 0}
+  re7.K_ECF.seg2.b2 = {0, 0}
+  re7.K_ECF.seg3.rxn_end = {440, 508}
+  re7.K_ECF.seg3.species_end = {422, 454.5}
+  re7.K_ECF.seg3.b1 = {0, 0}
+  re7.K_ECF.seg3.b2 = {0, 0}
+  re7.K_tiss.rxn_end = {645, 504}
+  re7.K_tiss.species_end = {647, 502}
+  re7.K_tiss.b1 = {0, 0}
+  re7.K_tiss.b2 = {0, 0}
+  re7.K_tiss.seg2.rxn_end = {647, 502}
+  re7.K_tiss.seg2.species_end = {647, 487.5}
+  re7.K_tiss.seg2.b1 = {0, 0}
+  re7.K_tiss.seg2.b2 = {0, 0}
+  re7.K_git.species_end = {740, 454.5}
+  re7.K_git.rxn_end = {737.14, 508.21}
+  re7.K_git.b1 = {0, 0}
+  re7.K_git.b2 = {0, 0}
+  re7.K_git.seg2.species_end = {737.14, 508.21}
+  re7.K_git.seg2.rxn_end = {643.79, 512.57}
+  re7.K_git.seg2.b1 = {0, 0}
+  re7.K_git.seg2.b2 = {0, 0}
+  re9.position = {791, 523}
+  re9.lineColor = black
+  re9.lineWidth = 1
+  re9.K_ECF.rxn_end = {790, 524}
+  re9.K_ECF.species_end = {788, 526}
+  re9.K_ECF.b1 = {0, 0}
+  re9.K_ECF.b2 = {0, 0}
+  re9.K_ECF.seg2.rxn_end = {788, 526}
+  re9.K_ECF.seg2.species_end = {434, 526}
+  re9.K_ECF.seg2.b1 = {0, 0}
+  re9.K_ECF.seg2.b2 = {0, 0}
+  re9.K_ECF.seg3.rxn_end = {434, 526}
+  re9.K_ECF.seg3.species_end = {422, 454.5}
+  re9.K_ECF.seg3.b1 = {0, 0}
+  re9.K_ECF.seg3.b2 = {0, 0}
+  re9.K_urin.rxn_end = {792, 522}
+  re9.K_urin.species_end = {794, 520}
+  re9.K_urin.b1 = {0, 0}
+  re9.K_urin.b2 = {0, 0}
+  re9.K_urin.seg2.rxn_end = {794, 520}
+  re9.K_urin.seg2.species_end = {794, 505.5}
+  re9.K_urin.seg2.b1 = {0, 0}
+  re9.K_urin.seg2.b2 = {0, 0}
+  re9.K_git.species_end = {775, 442}
+  re9.K_git.rxn_end = {842.39, 445.26}
+  re9.K_git.b1 = {0, 0}
+  re9.K_git.b2 = {0, 0}
+  re9.K_git.seg2.species_end = {842.39, 445.26}
+  re9.K_git.seg2.rxn_end = {842.1, 526.74}
+  re9.K_git.seg2.b1 = {0, 0}
+  re9.K_git.seg2.b2 = {0, 0}
+  re9.K_git.seg3.species_end = {842.1, 526.74}
+  re9.K_git.seg3.rxn_end = {787.26, 519.96}
+  re9.K_git.seg3.b1 = {0, 0}
+  re9.K_git.seg3.b2 = {0, 0}
+  re35.position = {644, 556}
+  re35.lineColor = black
+  re35.lineWidth = 1
+  re35.K_ECF.rxn_end = {643, 555}
+  re35.K_ECF.species_end = {641, 553}
+  re35.K_ECF.b1 = {0, 0}
+  re35.K_ECF.b2 = {0, 0}
+  re35.K_ECF.seg2.rxn_end = {641, 553}
+  re35.K_ECF.seg2.species_end = {425, 553}
+  re35.K_ECF.seg2.b1 = {0, 0}
+  re35.K_ECF.seg2.b2 = {0, 0}
+  re35.K_ECF.seg3.rxn_end = {425, 553}
+  re35.K_ECF.seg3.species_end = {422, 454.5}
+  re35.K_ECF.seg3.b1 = {0, 0}
+  re35.K_ECF.seg3.b2 = {0, 0}
+  re35.K_milk.rxn_end = {645, 557}
+  re35.K_milk.species_end = {647, 559}
+  re35.K_milk.b1 = {0, 0}
+  re35.K_milk.b2 = {0, 0}
+  re35.K_milk.seg2.rxn_end = {647, 559}
+  re35.K_milk.seg2.species_end = {647, 573.5}
+  re35.K_milk.seg2.b1 = {0, 0}
+  re35.K_milk.seg2.b2 = {0, 0}
+  re6.position = {913.79, 542.08}
+  re6.lineColor = black
+  re6.lineWidth = 1
+  re6.K_ECF.rxn_end = {912.78, 541.09}
+  re6.K_ECF.species_end = {910.76, 539.12}
+  re6.K_ECF.b1 = {0, 0}
+  re6.K_ECF.b2 = {0, 0}
+  re6.K_ECF.seg2.rxn_end = {910.76, 539.12}
+  re6.K_ECF.seg2.species_end = {428.84, 543.74}
+  re6.K_ECF.seg2.b1 = {0, 0}
+  re6.K_ECF.seg2.b2 = {0, 0}
+  re6.K_ECF.seg3.rxn_end = {428.84, 543.74}
+  re6.K_ECF.seg3.species_end = {422, 454.5}
+  re6.K_ECF.seg3.b1 = {0, 0}
+  re6.K_ECF.seg3.b2 = {0, 0}
+  re6.sa4_degraded.rxn_end = {914.79, 543.07}
+  re6.sa4_degraded.species_end = {916.81, 545.04}
+  re6.sa4_degraded.b1 = {0, 0}
+  re6.sa4_degraded.b2 = {0, 0}
+  re6.sa4_degraded.seg2.rxn_end = {916.81, 545.04}
+  re6.sa4_degraded.seg2.species_end = {917, 565}
+  re6.sa4_degraded.seg2.b1 = {0, 0}
+  re6.sa4_degraded.seg2.b2 = {0, 0}
+  re34.position = {867.93, 440.44}
+  re34.lineColor = black
+  re34.lineWidth = 1
+  re34.src_Kgit.rxn_end = {868.97, 441.38}
+  re34.src_Kgit.species_end = {871.04, 443.26}
+  re34.src_Kgit.b1 = {0, 0}
+  re34.src_Kgit.b2 = {0, 0}
+  re34.src_Kgit.seg2.rxn_end = {871.04, 443.26}
+  re34.src_Kgit.seg2.species_end = {872, 463}
+  re34.src_Kgit.seg2.b1 = {0, 0}
+  re34.src_Kgit.seg2.b2 = {0, 0}
+  re34.K_git.rxn_end = {866.9, 439.5}
+  re34.K_git.species_end = {864.83, 437.62}
+  re34.K_git.b1 = {0, 0}
+  re34.K_git.b2 = {0, 0}
+  re34.K_git.seg2.rxn_end = {864.83, 437.62}
+  re34.K_git.seg2.species_end = {775, 442}
+  re34.K_git.seg2.b1 = {0, 0}
+  re34.K_git.seg2.b2 = {0, 0}
+  re10.position = {737, 514}
+  re10.lineColor = black
+  re10.lineWidth = 1
+  re10.K_git.rxn_end = {738, 513}
+  re10.K_git.species_end = {740, 511}
+  re10.K_git.b1 = {0, 0}
+  re10.K_git.b2 = {0, 0}
+  re10.K_git.seg2.rxn_end = {740, 511}
+  re10.K_git.seg2.species_end = {740, 454.5}
+  re10.K_git.seg2.b1 = {0, 0}
+  re10.K_git.seg2.b2 = {0, 0}
+  re10.K_ECF.rxn_end = {736, 515}
+  re10.K_ECF.species_end = {734, 517}
+  re10.K_ECF.b1 = {0, 0}
+  re10.K_ECF.b2 = {0, 0}
+  re10.K_ECF.seg2.rxn_end = {734, 517}
+  re10.K_ECF.seg2.species_end = {437, 517}
+  re10.K_ECF.seg2.b1 = {0, 0}
+  re10.K_ECF.seg2.b2 = {0, 0}
+  re10.K_ECF.seg3.rxn_end = {437, 517}
+  re10.K_ECF.seg3.species_end = {422, 454.5}
+  re10.K_ECF.seg3.b1 = {0, 0}
+  re10.K_ECF.seg3.b2 = {0, 0}
+  re3.position = {425, 667}
+  re3.lineColor = black
+  re3.lineWidth = 1
+  re3.K_ICF.rxn_end = {426, 668}
+  re3.K_ICF.species_end = {428, 670}
+  re3.K_ICF.b1 = {0, 0}
+  re3.K_ICF.b2 = {0, 0}
+  re3.K_ICF.seg2.rxn_end = {428, 670}
+  re3.K_ICF.seg2.species_end = {915, 670}
+  re3.K_ICF.seg2.b1 = {0, 0}
+  re3.K_ICF.seg2.b2 = {0, 0}
+  re3.K_ECF.rxn_end = {424, 666}
+  re3.K_ECF.species_end = {422, 664}
+  re3.K_ECF.b1 = {0, 0}
+  re3.K_ECF.b2 = {0, 0}
+  re3.K_ECF.seg2.rxn_end = {422, 664}
+  re3.K_ECF.seg2.species_end = {422, 454.5}
+  re3.K_ECF.seg2.b1 = {0, 0}
+  re3.K_ECF.seg2.b2 = {0, 0}
+  re11.position = {743, 412}
+  re11.lineColor = black
+  re11.lineWidth = 1
+  re11.K_sal.rxn_end = {744, 411}
+  re11.K_sal.species_end = {746, 409}
+  re11.K_sal.b1 = {0, 0}
+  re11.K_sal.b2 = {0, 0}
+  re11.K_sal.seg2.rxn_end = {746, 409}
+  re11.K_sal.seg2.species_end = {867, 409}
+  re11.K_sal.seg2.b1 = {0, 0}
+  re11.K_sal.seg2.b2 = {0, 0}
+  re11.K_git.rxn_end = {742, 413}
+  re11.K_git.species_end = {740, 415}
+  re11.K_git.b1 = {0, 0}
+  re11.K_git.b2 = {0, 0}
+  re11.K_git.seg2.rxn_end = {740, 415}
+  re11.K_git.seg2.species_end = {740, 429.5}
+  re11.K_git.seg2.b1 = {0, 0}
+  re11.K_git.seg2.b2 = {0, 0}
+  re8.position = {644, 445}
+  re8.lineColor = black
+  re8.lineWidth = 1
+  re8.K_tiss.rxn_end = {645, 446}
+  re8.K_tiss.species_end = {647, 448}
+  re8.K_tiss.b1 = {0, 0}
+  re8.K_tiss.b2 = {0, 0}
+  re8.K_tiss.seg2.rxn_end = {647, 448}
+  re8.K_tiss.seg2.species_end = {647, 462.5}
+  re8.K_tiss.seg2.b1 = {0, 0}
+  re8.K_tiss.seg2.b2 = {0, 0}
+  re8.K_ECF.rxn_end = {643, 444}
+  re8.K_ECF.species_end = {641, 442}
+  re8.K_ECF.b1 = {0, 0}
+  re8.K_ECF.b2 = {0, 0}
+  re8.K_ECF.seg2.rxn_end = {641, 442}
+  re8.K_ECF.seg2.species_end = {457, 442}
+  re8.K_ECF.seg2.b1 = {0, 0}
+  re8.K_ECF.seg2.b2 = {0, 0}
+  re8.K_git.species_end = {705, 442}
+  re8.K_git.rxn_end = {637.43, 446.21}
+  re8.K_git.b1 = {0, 0}
+  re8.K_git.b2 = {0, 0}
+  re21.position = {180.49, 549.17}
+  re21.lineColor = black
+  re21.lineWidth = 1
+  re21.met_act.rxn_end = {181.35, 548.14}
+  re21.met_act.species_end = {183.07, 546.08}
+  re21.met_act.b1 = {0, 0}
+  re21.met_act.b2 = {0, 0}
+  re21.met_act.seg2.rxn_end = {183.07, 546.08}
+  re21.met_act.seg2.species_end = {180, 512.5}
+  re21.met_act.seg2.b1 = {0, 0}
+  re21.met_act.seg2.b2 = {0, 0}
+  re21.snk_metact.rxn_end = {179.63, 550.2}
+  re21.snk_metact.species_end = {177.92, 552.27}
+  re21.snk_metact.b1 = {0, 0}
+  re21.snk_metact.b2 = {0, 0}
+  re21.snk_metact.seg2.rxn_end = {177.92, 552.27}
+  re21.snk_metact.seg2.species_end = {159, 554}
+  re21.snk_metact.seg2.b1 = {0, 0}
+  re21.snk_metact.seg2.b2 = {0, 0}
+  re40.position = {225.49, 262.18}
+  re40.lineColor = black
+  re40.lineWidth = 1
+  re40.Gluc_b.rxn_end = {227.45, 262.19}
+  re40.Gluc_b.species_end = {231.37, 262.22}
+  re40.Gluc_b.b1 = {0, 0}
+  re40.Gluc_b.b2 = {0, 0}
+  re40.Gluc_b.seg2.rxn_end = {231.37, 262.22}
+  re40.Gluc_b.seg2.species_end = {416.66, 263.51}
+  re40.Gluc_b.seg2.b1 = {0, 0}
+  re40.Gluc_b.seg2.b2 = {0, 0}
+  re40.Gluc_b.seg3.rxn_end = {416.66, 263.51}
+  re40.Gluc_b.seg3.species_end = {422, 341}
+  re40.Gluc_b.seg3.b1 = {0, 0}
+  re40.Gluc_b.seg3.b2 = {0, 0}
+  re40.s24.rxn_end = {223.53, 262.16}
+  re40.s24.species_end = {219.61, 262.14}
+  re40.s24.b1 = {0, 0}
+  re40.s24.b2 = {0, 0}
+  re40.s24.seg2.rxn_end = {219.61, 262.14}
+  re40.s24.seg2.species_end = {200, 262}
+  re40.s24.seg2.b1 = {0, 0}
+  re40.s24.seg2.b2 = {0, 0}
+  re40.Gluc_prod.species_end = {221, 220.5}
+  re40.Gluc_prod.rxn_end = {227.45, 257.19}
+  re40.Gluc_prod.b1 = {0, 0}
+  re40.Gluc_prod.b2 = {0, 0}
+  re32.position = {421.51, 95.83}
+  re32.lineColor = black
+  re32.lineWidth = 1
+  re32.ins_b.rxn_end = {420.65, 96.86}
+  re32.ins_b.species_end = {418.93, 98.92}
+  re32.ins_b.b1 = {0, 0}
+  re32.ins_b.b2 = {0, 0}
+  re32.ins_b.seg2.rxn_end = {418.93, 98.92}
+  re32.ins_b.seg2.species_end = {422, 132.5}
+  re32.ins_b.seg2.b1 = {0, 0}
+  re32.ins_b.seg2.b2 = {0, 0}
+  re32.snk_insnew.rxn_end = {422.37, 94.8}
+  re32.snk_insnew.species_end = {424.08, 92.73}
+  re32.snk_insnew.b1 = {0, 0}
+  re32.snk_insnew.b2 = {0, 0}
+  re32.snk_insnew.seg2.rxn_end = {424.08, 92.73}
+  re32.snk_insnew.seg2.species_end = {443, 91}
+  re32.snk_insnew.seg2.b1 = {0, 0}
+  re32.snk_insnew.seg2.b2 = {0, 0}
+  re33.position = {420.44, 404.04}
+  re33.lineColor = black
+  re33.lineWidth = 1
+  re33.src_Glucblood.rxn_end = {419.53, 405.02}
+  re33.src_Glucblood.species_end = {417.71, 406.97}
+  re33.src_Glucblood.b1 = {0, 0}
+  re33.src_Glucblood.b2 = {0, 0}
+  re33.src_Glucblood.seg2.rxn_end = {417.71, 406.97}
+  re33.src_Glucblood.seg2.species_end = {362, 409}
+  re33.src_Glucblood.seg2.b1 = {0, 0}
+  re33.src_Glucblood.seg2.b2 = {0, 0}
+  re33.Gluc_b.rxn_end = {421.35, 403.06}
+  re33.Gluc_b.species_end = {423.17, 401.1}
+  re33.Gluc_b.b1 = {0, 0}
+  re33.Gluc_b.b2 = {0, 0}
+  re33.Gluc_b.seg2.rxn_end = {423.17, 401.1}
+  re33.Gluc_b.seg2.species_end = {422, 369}
+  re33.Gluc_b.seg2.b1 = {0, 0}
+  re33.Gluc_b.seg2.b2 = {0, 0}
+  re36.position = {218.6, 179.16}
+  re36.lineColor = black
+  re36.lineWidth = 1
+  re36.s23.rxn_end = {217.69, 178.21}
+  re36.s23.species_end = {215.87, 176.3}
+  re36.s23.b1 = {0, 0}
+  re36.s23.b2 = {0, 0}
+  re36.s23.seg2.rxn_end = {215.87, 176.3}
+  re36.s23.seg2.species_end = {161, 175}
+  re36.s23.seg2.b1 = {0, 0}
+  re36.s23.seg2.b2 = {0, 0}
+  re36.Gluc_prod.rxn_end = {219.5, 180.11}
+  re36.Gluc_prod.species_end = {221.32, 182.01}
+  re36.Gluc_prod.b1 = {0, 0}
+  re36.Gluc_prod.b2 = {0, 0}
+  re36.Gluc_prod.seg2.rxn_end = {221.32, 182.01}
+  re36.Gluc_prod.seg2.species_end = {221, 195.5}
+  re36.Gluc_prod.seg2.b1 = {0, 0}
+  re36.Gluc_prod.seg2.b2 = {0, 0}
+  re31.position = {421.51, 194.17}
+  re31.lineColor = black
+  re31.lineWidth = 1
+  re31.src_insnew.rxn_end = {422.37, 195.2}
+  re31.src_insnew.species_end = {424.08, 197.27}
+  re31.src_insnew.b1 = {0, 0}
+  re31.src_insnew.b2 = {0, 0}
+  re31.src_insnew.seg2.rxn_end = {424.08, 197.27}
+  re31.src_insnew.seg2.species_end = {443, 199}
+  re31.src_insnew.seg2.b1 = {0, 0}
+  re31.src_insnew.seg2.b2 = {0, 0}
+  re31.ins_b.rxn_end = {420.65, 193.14}
+  re31.ins_b.species_end = {418.93, 191.08}
+  re31.ins_b.b1 = {0, 0}
+  re31.ins_b.b2 = {0, 0}
+  re31.ins_b.seg2.rxn_end = {418.93, 191.08}
+  re31.ins_b.seg2.species_end = {422, 157.5}
+  re31.ins_b.seg2.b1 = {0, 0}
+  re31.ins_b.seg2.b2 = {0, 0}
+  re31.Gluc_b.species_end = {422, 341}
+  re31.Gluc_b.rxn_end = {425.66, 192.15}
+  re31.Gluc_b.b1 = {0, 0}
+  re31.Gluc_b.b2 = {0, 0}
+
+  model instance "http://identifiers.org/biomodels.db/MODEL1710230000",
+                 "http://identifiers.org/taxonomy/9913",
+                 "http://identifiers.org/mamo/MAMO_0000046"
+  model publication "http://identifiers.org/mamo/MAMO_0000046",
+                    "http://identifiers.org/pubmed/28987591"
+  model model_source "http://identifiers.org/biomodels.db/MODEL1710230000",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000849"
+  model property "http://identifiers.org/biomodels.db/MODEL1710230000"
+  model taxon "http://identifiers.org/taxonomy/9913"
+  model created "2019-11-11T09:57:06Z"
+  model modified "2019-11-11T09:57:06Z"
+  model creator1.givenName "Mohammad Umer"
+  model creator1.familyName "Sharif Shohan"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "msharifshohan@ebi.ac.uk"
+end
+
+MODEL1710230000 is "Potassium balance in lactating and non-lactating dairy cows"

@@ -1,0 +1,122 @@
+// Created by libAntimony v3.0.0
+model *MODEL1609100000()
+
+  // Compartments and Species:
+  compartment default;
+  species s3 in default, s5 in default, s8 in default, s4 in default;
+  substanceOnly species s1 in default, s2 in default, $s6 in default;
+
+  // Reactions:
+  k_golgi: $s6 => s1; s6*k_golgi_k3;
+  k_endo: s1 => s2; s1*k_endo_k1;
+  k_exo: s2 => s1; s2*k_exo_k2;
+  k_le: s2 => s3; s2*k_le_k6;
+  k_lys: s3 => s4; s3*k_lys_k7;
+  k_deg: s4 => s5; s4*k_deg_k8;
+  k_shed: s1 => s8; s1*k_shed_k4;
+
+  // Species initializations:
+  s1 = 0.1/default;
+  s2 = 0.4/default;
+  s3 = 0.4/default;
+  s5 = 0;
+  s6 = 0.155/default;
+  s8 = 0;
+  s4 = 0.85/default;
+
+  // Compartment initializations:
+  default = 1;
+  default has volume;
+
+  // Variable initializations:
+  k_golgi_k3 = 0.96;
+  k_golgi_k3 has substance;
+  k_endo_k1 = 0.025;
+  k_endo_k1 has substance;
+  k_exo_k2 = 0.075;
+  k_exo_k2 has substance;
+  k_le_k6 = 0.01;
+  k_le_k6 has substance;
+  k_lys_k7 = 0.01;
+  k_lys_k7 has substance;
+  k_deg_k8 = 0.005;
+  k_deg_k8 has substance;
+  k_shed_k4 = 0.1;
+  k_shed_k4 has substance;
+
+  // Other declarations:
+  const default;
+
+  // Unit definitions:
+  unit substance = mole;
+  unit volume = litre;
+  unit area = metre^2;
+  unit length = metre;
+  unit time_unit = second;
+
+  // Display Names:
+  time_unit is "time";
+  s1 is "HS surface";
+  s2 is "early endosome";
+  s3 is "late endosome";
+  s6 is "golgi";
+  s4 is "lysosome";
+  k_golgi is "k3";
+  k_endo is "k1";
+  k_exo is "k2";
+  k_le is "k6";
+  k_lys is "k7";
+  k_deg is "k8";
+  k_shed is "k4";
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1609100000"
+
+  // Notes:
+  model notes ```
+Giantsos-Adams2013 - Glycocalyx under shearstress conditions - Heparan Sulphate Endocytosis
+
+
+This model is described in the article:
+
+
+[Heparan Sulfate Regrowth Profiles Under Laminar Shear Flow Following Enzymatic Degradation.](http://identifiers.org/pubmed/23805169 "Access to this publication") 
+
+
+Giantsos-Adams KM, Koo AJ, Song S, Sakai J, Sankaran J, Shin JH, Garcia-Cardena
+G, Dewey CF. 
+
+Cell Mol Bioeng 2013 Jun; 6(2): 160-174 
+Abstract:
+
+
+The local hemodynamic shear stress waveforms present in an artery dictate the
+endothelial cell phenotype. The observed decrease of the apical glycocalyx layer
+on the endothelium in atheroprone regions of the circulation suggests that the
+glycocalyx may have a central role in determining atherosclerotic plaque formation.
+However, the kinetics for the cells&apos; ability to adapt its glycocalyx to the
+environment have not been quantitatively resolved. Here we report that the 
+heparan sulfate component of the glycocalyx of HUVECs increases by 1.4-fold following
+the onset of high shear stress, compared to static cultured cells, with a time
+constant of 19 h. Cell morphology experiments show that 12 h are required 
+for the cells to elongate, but only after 36 h have the cells reached maximal
+alignment to the flow vector. Our findings demonstrate that following enzymatic
+degradation, heparan sulfate is restored to the cell surface within 12 h under
+flow whereas the time required is 20 h under static conditions. We also propose
+a model describing the contribution of endocytosis and exocytosis to apical heparan
+sulfate expression. The change in HS regrowth kinetics from static to high-shear
+EC phenotype implies a differential in the rate of endocytic and exocytic membrane
+turnover.
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identified by: [MODEL1609100000](http://identifiers.org/biomodels.db/MODEL1609100000).
+
+To cite BioModels Database, please use: [BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models](http://identifiers.org/pubmed/20587024 "Latest BioModels Database publication").
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+end
+
+MODEL1609100000 is "Giantsos-Adams2013 - Growth of glycocalyx under shear stress conditions"

@@ -1,0 +1,221 @@
+// Created by libAntimony v3.0.0
+model *Stucki2005___caspase_3_metabolism()
+
+  // Compartments and Species:
+  compartment Cytoplasm;
+  species pc3 in Cytoplasm, c3 in Cytoplasm, iap in Cytoplasm, survivin in Cytoplasm;
+  species cascade in Cytoplasm, iapc3 in Cytoplasm, iapsmac in Cytoplasm;
+  species sursmac in Cytoplasm, smacmit in Cytoplasm, smac in Cytoplasm;
+
+  // Reactions:
+  Production_of_procaspase_3:  => pc3; Cytoplasm*k1;
+  cleavage_of_procaspase_3_into_caspase_3: pc3 => c3; Cytoplasm*k2*pc3;
+  caspase_3_proteolysis: c3 => ; Cytoplasm*((k3*iapc3^n/(H^n + iapc3^n))*c3);
+  IAP_caspas_3_complex_formation: c3 + iap => iapc3; Cytoplasm*k5*c3*iap;
+  Separation_of_caspase_3_and_iap: iapc3 => c3 + iap; Cytoplasm*km5*iapc3;
+  Degradation_of_caspas_3: c3 => ; Cytoplasm*k10*c3;
+  Formation_of_iap_smac_complex: iap + smac => iapsmac; Cytoplasm*k6*iap*smac;
+  Separation_of_iap_and_smac: iapsmac => iap + smac; Cytoplasm*km6*iapsmac;
+  Production_of_iap:  => iap; Cytoplasm*k11;
+  Degradation_of_iap: iap => ; Cytoplasm*k13*iap;
+  release_of_smac_in_cytoplasm: smacmit => smac; Cytoplasm*k7*smacmit;
+  Formation_of_smac_survivin_complex: smac + survivin => sursmac; Cytoplasm*k8*smac*survivin;
+  cleavage_of_smac_survivin_complex: sursmac => survivin + smac; Cytoplasm*km8*sursmac;
+  Productio_of_survivin:  => survivin; Cytoplasm*k9;
+  Degradation_of_survivin: survivin => ; Cytoplasm*k16*survivin;
+  Degradation_of_iap_caspase_3_complex: iapc3 => ; Cytoplasm*k12*iapc3;
+  Degradation_of_iapsmac: iapsmac => ; Cytoplasm*k14*iapsmac;
+  Degradation_of_sursmac: sursmac => ; Cytoplasm*k15*sursmac;
+  activation_of_cascade_controled_by_caspase_3:  => cascade; Cytoplasm*(k4*c3);
+  Auto_amplification_of_cascade:  => cascade; Cytoplasm*(k17*cascade);
+  Degradation_of_cascade: cascade => ; Cytoplasm*k10_cascade*cascade;
+
+  // Events:
+  Release_of_SMAC: at time == 2000: k7 = 0.025;
+  cascade__1: at (cascade <= 20) && (c3 >= 4.5): k17 = 0.01, k10_cascade = 0.001, k4 = 0.001;
+  cascade__2: at cascade > 20: k4 = 0, k17 = 0, k10_cascade = 0;
+
+  // Species initializations:
+  pc3 = 0.1;
+  c3 = 0.710362;
+  iap = 0.3;
+  survivin = 0;
+  cascade = 0;
+  iapc3 = 0.44919;
+  iapsmac = 0.00483757;
+  sursmac = 0;
+  smacmit = 9.99999999999994;
+  smac = 0.0076907;
+
+  // Compartment initializations:
+  Cytoplasm = 1;
+
+  // Variable initializations:
+  k7 = 0;
+  k4 = 0;
+  k10_cascade = 0;
+  k17 = 0;
+  k1 = 0.01;
+  k2 = 0.1;
+  k3 = 0.001;
+  k5 = 1;
+  km5 = 1;
+  k6 = 1;
+  km6 = 1;
+  k8 = 1;
+  km8 = 1;
+  k9 = 0;
+  k10 = 0.001;
+  k11 = 0.002;
+  k12 = 0.001;
+  k13 = 0.002;
+  k14 = 0.01;
+  k15 = 0.002;
+  k16 = 0.001;
+  n = 4;
+  H = 2;
+
+  // Other declarations:
+  var k7, k4, k10_cascade, k17;
+  const Cytoplasm, k1, k2, k3, k5, km5, k6, km6, k8, km8, k9, k10, k11, k12;
+  const k13, k14, k15, k16, n, H;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = litre;
+  unit time_unit = second;
+  unit substance = mole;
+
+  // Display Names:
+  time_unit is "time";
+  Release_of_SMAC is "Release of SMAC";
+  cascade__1 is "cascade (1)";
+  cascade__2 is "cascade (2)";
+  Production_of_procaspase_3 is "Production of procaspase-3";
+  cleavage_of_procaspase_3_into_caspase_3 is "cleavage of procaspase-3 into caspase-3";
+  caspase_3_proteolysis is "caspase-3 proteolysis";
+  IAP_caspas_3_complex_formation is "IAP caspas-3 complex formation";
+  Separation_of_caspase_3_and_iap is "Separation of caspase-3 and iap";
+  Degradation_of_caspas_3 is "Degradation of caspas-3";
+  Formation_of_iap_smac_complex is "Formation of iap-smac complex";
+  Separation_of_iap_and_smac is "Separation of iap and smac";
+  Production_of_iap is "Production of iap";
+  Degradation_of_iap is "Degradation of iap";
+  release_of_smac_in_cytoplasm is "release of smac in cytoplasm";
+  Formation_of_smac_survivin_complex is "Formation of smac-survivin complex";
+  cleavage_of_smac_survivin_complex is "cleavage of smac survivin complex";
+  Productio_of_survivin is "Productio of survivin";
+  Degradation_of_survivin is "Degradation of survivin";
+  Degradation_of_iap_caspase_3_complex is "Degradation of iap-caspase-3 complex";
+  Degradation_of_iapsmac is "Degradation of iapsmac";
+  Degradation_of_sursmac is "Degradation of sursmac";
+  activation_of_cascade_controled_by_caspase_3 is "activation of cascade controled by caspase-3";
+  Auto_amplification_of_cascade is "Auto-amplification of cascade";
+  Degradation_of_cascade is "Degradation of cascade";
+
+  // SBO terms:
+  k7.sboTerm = 9
+  k4.sboTerm = 9
+  k10_cascade.sboTerm = 9
+  k17.sboTerm = 9
+  k1.sboTerm = 9
+  k2.sboTerm = 9
+  k3.sboTerm = 9
+  k5.sboTerm = 9
+  km5.sboTerm = 353
+  k6.sboTerm = 9
+  km6.sboTerm = 353
+  k8.sboTerm = 9
+  km8.sboTerm = 353
+  k9.sboTerm = 9
+  k10.sboTerm = 9
+  k11.sboTerm = 9
+  k12.sboTerm = 9
+  k13.sboTerm = 9
+  k14.sboTerm = 9
+  k15.sboTerm = 9
+  k16.sboTerm = 9
+  n.sboTerm = 190
+  H.sboTerm = 191
+  Degradation_of_caspas_3.sboTerm = 179
+
+  // CV terms:
+  Cytoplasm identity "http://identifiers.org/go/GO:0005737"
+  pc3 biological_system "http://identifiers.org/uniprot/P70677"
+  c3 biological_system "http://identifiers.org/uniprot/P70677"
+  iap biological_system "http://identifiers.org/chebi/CHEBI:68494"
+  survivin biological_system "http://identifiers.org/uniprot/O70201"
+  cascade biological_system "http://identifiers.org/ncit/C18153"
+  iapc3 part "http://identifiers.org/chebi/CHEBI:68494"
+  iapc3 part "http://identifiers.org/uniprot/P70677"
+  iapc3 identity "http://identifiers.org/go/GO:0032991"
+  iapsmac part "http://identifiers.org/chebi/CHEBI:68494"
+  iapsmac part "http://identifiers.org/uniprot/Q9JIQ3"
+  iapsmac identity "http://identifiers.org/go/GO:0032991"
+  sursmac part "http://identifiers.org/uniprot/Q9JIQ3"
+  sursmac part "http://identifiers.org/uniprot/O70201"
+  sursmac identity "http://identifiers.org/go/GO:0032991"
+  smacmit biological_system "http://identifiers.org/uniprot/Q9JIQ3"
+  smac biological_system "http://identifiers.org/uniprot/Q9JIQ3"
+  k7 identity "http://identifiers.org/sbo/SBO:0000009"
+  k4 identity "http://identifiers.org/sbo/SBO:0000009"
+  k10_cascade identity "http://identifiers.org/sbo/SBO:0000009"
+  k17 identity "http://identifiers.org/sbo/SBO:0000009"
+  k1 identity "http://identifiers.org/sbo/SBO:0000009"
+  k2 identity "http://identifiers.org/sbo/SBO:0000009"
+  k3 identity "http://identifiers.org/sbo/SBO:0000009"
+  k5 identity "http://identifiers.org/sbo/SBO:0000009"
+  km5 identity "http://identifiers.org/sbo/SBO:0000353"
+  k6 identity "http://identifiers.org/sbo/SBO:0000009"
+  km6 identity "http://identifiers.org/sbo/SBO:0000353"
+  k8 identity "http://identifiers.org/sbo/SBO:0000009"
+  km8 identity "http://identifiers.org/sbo/SBO:0000353"
+  k9 identity "http://identifiers.org/sbo/SBO:0000009"
+  k10 identity "http://identifiers.org/sbo/SBO:0000009"
+  k11 identity "http://identifiers.org/sbo/SBO:0000009"
+  k12 identity "http://identifiers.org/sbo/SBO:0000009"
+  k13 identity "http://identifiers.org/sbo/SBO:0000009"
+  k14 identity "http://identifiers.org/sbo/SBO:0000009"
+  k15 identity "http://identifiers.org/sbo/SBO:0000009"
+  k16 identity "http://identifiers.org/sbo/SBO:0000009"
+  n identity "http://identifiers.org/sbo/SBO:0000190"
+  H identity "http://identifiers.org/sbo/SBO:0000191"
+  Production_of_procaspase_3 biological_system "http://identifiers.org/sbo/SBO:0000393"
+  cleavage_of_procaspase_3_into_caspase_3 biological_system "http://identifiers.org/sbo/SBO:0000178"
+  caspase_3_proteolysis biological_system "http://identifiers.org/ncit/C18105"
+  IAP_caspas_3_complex_formation biological_system "http://identifiers.org/ncit/C25513"
+  Separation_of_caspase_3_and_iap biological_system "http://identifiers.org/sbo/SBO:0000178"
+  Degradation_of_caspas_3 identity "http://identifiers.org/sbo/SBO:0000179"
+  Formation_of_iap_smac_complex biological_system "http://identifiers.org/ncit/C25513"
+  Separation_of_iap_and_smac biological_system "http://identifiers.org/sbo/SBO:0000178"
+  Production_of_iap biological_system "http://identifiers.org/sbo/SBO:0000393"
+  Degradation_of_iap biological_system "http://identifiers.org/sbo/SBO:0000179"
+  release_of_smac_in_cytoplasm biological_system "http://identifiers.org/ncit/C42882"
+  Formation_of_smac_survivin_complex biological_system "http://identifiers.org/ncit/C25513"
+  cleavage_of_smac_survivin_complex biological_system "http://identifiers.org/sbo/SBO:0000178"
+  Productio_of_survivin biological_system "http://identifiers.org/sbo/SBO:0000393"
+  Degradation_of_survivin biological_system "http://identifiers.org/sbo/SBO:0000179"
+  Degradation_of_iap_caspase_3_complex biological_system "http://identifiers.org/sbo/SBO:0000179"
+  Degradation_of_iapsmac biological_system "http://identifiers.org/sbo/SBO:0000179"
+  Degradation_of_sursmac biological_system "http://identifiers.org/sbo/SBO:0000179"
+  activation_of_cascade_controled_by_caspase_3 biological_system "http://identifiers.org/sbo/SBO:0000393"
+  Auto_amplification_of_cascade biological_system "http://identifiers.org/sbo/SBO:0000393"
+  Degradation_of_cascade biological_system "http://identifiers.org/sbo/SBO:0000179"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL2205200001",
+                     "http://identifiers.org/biomodels.db/BIOMD0000001059"
+  model container "http://identifiers.org/go/GO:0005737"
+  model taxon "http://identifiers.org/taxonomy/10088"
+  model description "http://identifiers.org/doi/10.1016/j.jtbi.2004.11.011"
+  model property "http://identifiers.org/ncit/C17557",
+                 "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2022-05-18T13:22:27Z"
+  model modified "2022-05-18T13:22:27Z"
+  model creator1.givenName "Mikal"
+  model creator1.familyName "Daou"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "mikaldaou@hotmail.com"
+end
+
+Stucki2005___caspase_3_metabolism is "Stucki2005 - caspase-3 metabolism"

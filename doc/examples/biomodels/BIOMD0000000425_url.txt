@@ -1,0 +1,118 @@
+// Created by libAntimony v3.0.0
+model *MODEL1208300000()
+
+  // Compartments and Species:
+  compartment cell;
+  species c in cell;
+
+  // Reactions:
+  reaction_1:  => c; reaction_1_alpha;
+  reaction_3: c => ; reaction_3_kd*c;
+  reaction_2:  => c; c/(reaction_2_kappa + c);
+  reaction_4: c => ; reaction_4_phi*c/(reaction_4_delta + reaction_4_gamma*c);
+
+  // Species initializations:
+  c = 1/cell;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  reaction_1_alpha = 0.001;
+  reaction_3_kd = 1;
+  reaction_2_kappa = 0.5;
+  reaction_4_phi = 5e-06;
+  reaction_4_delta = 1e-05;
+  reaction_4_gamma = 1e-05;
+
+  // Other declarations:
+  const cell;
+
+  // Display Names:
+  c is "ribosome concentration";
+
+  // CV terms:
+  cell biological_system "http://identifiers.org/go/GO:0005623"
+  c part "http://identifiers.org/uniprot/P0AG67",
+         "http://identifiers.org/uniprot/P0A7L0"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1208300000"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000425"
+  model publication "http://identifiers.org/pubmed/23047527"
+  model biological_system "http://identifiers.org/go/GO:0071236"
+  model taxon "http://identifiers.org/taxonomy/562"
+  model property "http://identifiers.org/doid/DOID:104"
+  model created "2012-11-01T15:23:56Z"
+  model modified "2014-10-10T10:47:25Z"
+  model creator1.givenName "Vijayalakshmi"
+  model creator1.familyName "Chelliah"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "viji@ebi.ac.uk"
+  model creator2.givenName "Cheemeng"
+  model creator2.familyName "Tan"
+  model creator2.organization "Carnegie Mellon University"
+  model creator2.email "cheemeng@gmail.com"
+
+  // Notes:
+  model notes ```
+Tan2012 - Antibiotic Treatment, Inoculum Effect 
+
+
+The efficacy of many antibiotics decreases with increasing bacterial density, a phenomenon
+called the ‘inoculum effect’ (IE). This study reveals that, for ribosome-targeting
+antibiotics, IE is due to bistable inhibition of bacterial growth, which reduces
+the efficacy of certain treatment frequencies.
+
+
+This model is described in the article:
+
+
+[The inoculum effect and band-pass bacterial response to periodic antibiotic treatment.](http://identifiers.org/pubmed/23047527 "Access to this publication") 
+
+
+Tan C, Phillip Smith R, Srimani JK, Riccione KA, Prasada S, Kuehn M, You L. 
+
+Mol Syst Biol. 2012 Oct 9; 8:617 
+Abstract:
+
+
+The inoculum effect (IE) refers to the decreasing efficacy of an antibiotic with
+increasing bacterial density. It represents a unique strategy of antibiotic tolerance
+and it can complicate design of effective antibiotic treatment of bacterial infections.
+To gain insight into this phenomenon, we have analyzed responses of a lab strain
+of Escherichia coli to antibiotics that target the ribosome. We show that the IE
+can be explained by bistable inhibition of bacterial growth. A critical requirement
+for this bistability is sufficiently fast degradation of ribosomes, which can result
+from antibiotic-induced heat-shock response. Furthermore, antibiotics that elicit
+the IE can lead to &apos;band-pass&apos; response of bacterial growth to periodic
+antibiotic treatment: the treatment efficacy drastically diminishes at intermediate
+frequencies of treatment. Our proposed mechanism for the IE may be generally applicable
+to other bacterial species treated with antibiotics targeting the ribosomes.
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identified by: [MODEL1208300000](http://identifiers.org/biomodels.db/MODEL1208300000) . 
+
+To cite BioModels Database, please use: [BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models](http://identifiers.org/pubmed/20587024 "Latest BioModels Database publication") . 
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+  c notes "c represents concentration of ribosomes C"
+  reaction_1_alpha notes "alpha represents the basal synthesis rate of c"
+  reaction_2_kappa notes ```
+kappa represents the concentration of c rliciting half-maximal activation
+of its positive feedback
+```
+  reaction_4_phi notes "phi represents the applied anitbiotic concentration"
+  reaction_4_delta notes ```
+the parameter delta lumps the effects of multiple reactions: it increases
+with decreasing rates of intrinsic or antibiotic-induced degradation of C (ribosomes),
+increasing dissociation between the antibiotic and C, and increasing export rate
+of the antibiotic.
+```
+  reaction_4_gamma notes "gamma represents the bacterial density"
+end
+
+MODEL1208300000 is "Tan2012 - Antibiotic Treatment, Inoculum Effect"

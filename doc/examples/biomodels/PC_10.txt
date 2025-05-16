@@ -1,0 +1,139 @@
+// Created by libAntimony v3.0.0
+model *PC_IFNg10()
+
+  // Compartments and Species:
+  compartment cell;
+  species $Ifng in cell, $Ir in cell, $II in cell, $d1 in cell, $d2 in cell;
+  species $d3 in cell, $d4 in cell, $Stat1Pd in cell, $Stat1U in cell, $j4 in cell;
+  species $Stat1Pdn in cell, $i1 in cell, $i2 in cell, $i3 in cell, $i4 in cell;
+  species $j1 in cell, $mRNA in cell, $j2 in cell, $j3 in cell, $Stat1Un in cell;
+  species $Stat1ex in cell, $Stat1Pex in cell, $SOCS1__observed in cell;
+
+  // Assignment Rules:
+  Stat1ex := (Stat1U + Stat1Pd + Stat1Un + Stat1Pdn)/2;
+  Stat1Pex := ((Stat1Pd + Stat1Pdn)/2)*scale_Stat1Pex;
+
+  // Rate Rules:
+  Ifng' = -(k1*Ifng*Ir);
+  Ir' = -(k1*Ifng*Ir);
+  II' = k1*Ifng*Ir;
+  d1' = 4*(II - d1)/taud;
+  d2' = 4*(d1 - d2)/taud;
+  d3' = 4*(d2 - d3)/taud;
+  d4' = 4*(d3 - d4)/taud;
+  Stat1Pd' = k4*II*Stat1U/(1 + k14*j4) - k6*Stat1Pd;
+  Stat1U' = k3*d4 + k12*Stat1Un - k11*Stat1U - k4*II*Stat1U/(1 + k14*j4);
+  j4' = 4*(j3 - j4)/tauj;
+  Stat1Pdn' = k6*Stat1Pd - k5*Stat1Pdn;
+  i1' = 4*(Stat1Pdn - i1)/tau;
+  i2' = 4*(i1 - i2)/tau;
+  i3' = 4*(i2 - i3)/tau;
+  i4' = 4*(i3 - i4)/tau;
+  j1' = 4*(mRNA - j1)/tauj;
+  mRNA' = k13 + k9*i4 - k10*mRNA;
+  j2' = 4*(j1 - j2)/tauj;
+  j3' = 4*(j2 - j3)/tauj;
+  Stat1Un' = (k11*Stat1U - k12*Stat1Un) + k5*Stat1Pdn;
+  SOCS1__observed' = mRNA;
+
+  // Species initializations:
+  Ifng = 10;
+  Ir = 0.05721;
+  II = 0;
+  d1 = 0;
+  d2 = 0;
+  d3 = 0;
+  d4 = 0;
+  Stat1Pd = 0;
+  Stat1U = 0.950418;
+  j4 = 0;
+  Stat1Pdn = 0;
+  i1 = 0;
+  i2 = 0;
+  i3 = 0;
+  i4 = 0;
+  j1 = 0;
+  mRNA = 0.108325;
+  j2 = 0;
+  j3 = 0;
+  Stat1Un = 0.661213;
+  SOCS1__observed = 0.108325;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  k1 = 0.00094915;
+  taud = 277.363;
+  k4 = 0.0997621;
+  k14 = 0.748449;
+  k6 = 0.0666851;
+  k5 = 298.763;
+  tau = 79.3354;
+  tauj = 451.937;
+  k3 = 0.0959796;
+  k12 = 12.2679;
+  k11 = 8.90244;
+  k13 = 0.00949819;
+  k9 = 4179.56;
+  k10 = 0.0583427;
+  scale_Stat1Pex = 44.4066;
+  scale_Stat1ex = 1;
+
+  // Other declarations:
+  const cell, k1, taud, k4, k14, k6, k5, tau, tauj, k3, k12, k11, k13, k9;
+  const k10, scale_Stat1Pex, scale_Stat1ex;
+
+  // Display Names:
+  taud is "tau_1";
+  Stat1Pd is "STAT1Dc";
+  Stat1U is "STAT1Uc";
+  k14 is "k12";
+  Stat1Pdn is "STAT1Dn";
+  tau is "tau_2";
+  mRNA is "SOCS1";
+  tauj is "tau_3";
+  k12 is "k10";
+  Stat1Un is "STAT1Un";
+  k11 is "k9";
+  k13 is "k11";
+  k9 is "k7";
+  k10 is "k8";
+  Stat1ex is "STAT1 (observed)";
+  Stat1Pex is "STAT1D (observed)";
+  scale_Stat1Pex is "WB_STAT1D";
+  SOCS1__observed is "SOCS1 (observed)";
+  scale_Stat1ex is "WB_STAT1";
+
+  // CV terms:
+  Ifng encoder "http://identifiers.org/ensembl/ENSG00000111537"
+  Ifng encoder "http://identifiers.org/hgnc.symbol/IFNG"
+  Stat1ex encoder "http://identifiers.org/hgnc.symbol/STAT1"
+  Stat1ex encoder "http://identifiers.org/ensembl/ENSG00000115415"
+  SOCS1__observed encoder "http://identifiers.org/ensembl/ENSG00000185338"
+  SOCS1__observed encoder "http://identifiers.org/hgnc.symbol/SOCS1"
+
+  model description "http://identifiers.org/doi/10.1371/journal.pcbi.1002815"
+  model created "2015-03-14T08:23:38Z"
+  model modified "2015-03-14T08:23:38Z"
+  model creator1.givenName "Katja"
+  model creator1.familyName "Rateitschak"
+  model creator1.organization "University of Rostock"
+  model creator1.email "katja.rateitschak@uni-rostock.de"
+  model creator2.givenName "Felix"
+  model creator2.familyName "Winter"
+  model creator2.email "winter@kapora.de"
+
+  // Notes:
+  model notes ```
+```This model can be used to recreate the lower row of Fig. S2 from the supplementary 
+material of the following publication:Rateitschak K, Winter F, Lange F, Jaster R, 
+Wolkenhauer O (2012)Parameter Identifiability and Sensitivity Analysis Predict Targets 
+for Enhancement of STAT1 Activity in Pancreatic Cancer and Stellate CellsPLoS Computational 
+Biology 8: e1002815DOI: 10.1371/journal.pcbi.1002815experimental conditions: IFNgamma 
+= 10ng/mlThe parameters k_v, k_0 and k_2 are omitted from the model as k_v has the 
+value 1 and k_0 and k_2 have the value 0, which makes them redundant.```
+```
+end
+
+PC_IFNg10 is "PC_IFNg10"

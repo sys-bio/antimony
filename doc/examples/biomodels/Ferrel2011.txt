@@ -1,0 +1,71 @@
+// Created by libAntimony v3.0.0
+model *Ferrel2011___Cdk1_and_APC_regulation_in_cell_cycle_in_Xenopus_laevis()
+
+  // Compartments and Species:
+  compartment nuclear;
+  species CDK1_active in nuclear, APC_active in nuclear;
+
+  // Reactions:
+  R1_Cdk1_activation_by_cyclin_synthesis:  => CDK1_active; nuclear*a1;
+  R2_Cdk1_inactivation_by_APC_active: CDK1_active => ; nuclear*(b1*CDK1_active*APC_active^n1/(k1^n1 + APC_active^n1));
+  R3_APC_activation_by_Cdk1_active:  => APC_active; nuclear*(a2*(1 - APC_active)*CDK1_active^n2/(k2^n2 + CDK1_active^n2));
+  R4_APC_Inactivation: APC_active => ; nuclear*b2*APC_active;
+
+  // Species initializations:
+  CDK1_active = 0;
+  APC_active = 0;
+
+  // Compartment initializations:
+  nuclear = 1;
+
+  // Variable initializations:
+  a1 = 0.1;
+  b1 = 3;
+  k1 = 0.5;
+  n1 = 8;
+  a2 = 3;
+  b2 = 1;
+  k2 = 0.5;
+  n2 = 8;
+
+  // Other declarations:
+  const nuclear, a1, b1, k1, n1, a2, b2, k2, n2;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  R1_Cdk1_activation_by_cyclin_synthesis is "R1 Cdk1 activation by cyclin synthesis";
+  R2_Cdk1_inactivation_by_APC_active is "R2 Cdk1 inactivation by APC_active";
+  R3_APC_activation_by_Cdk1_active is "R3 APC activation by Cdk1_active";
+  R4_APC_Inactivation is "R4 APC Inactivation";
+
+  // CV terms:
+  nuclear biological_system "http://identifiers.org/ncit/C13361"
+  CDK1_active biological_system "http://identifiers.org/uniprot/P35567"
+  CDK1_active property "http://identifiers.org/pato/PATO:0002354"
+  APC_active biological_system "http://identifiers.org/uniprot/P70039"
+  APC_active property "http://identifiers.org/pato/PATO:0002354"
+  R1_Cdk1_activation_by_cyclin_synthesis biological_system "http://identifiers.org/ncit/C64382"
+  R3_APC_activation_by_Cdk1_active biological_system "http://identifiers.org/ncit/C64382"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1809040003",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000935"
+  model part "http://identifiers.org/go/GO:0051726"
+  model taxon "http://identifiers.org/taxonomy/8355"
+  model description "http://identifiers.org/pubmed/21414480"
+  model property "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2018-06-05T15:33:10Z"
+  model modified "2020-04-24T16:46:54Z"
+  model creator1.givenName "Ahmad"
+  model creator1.familyName "Zyoud"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "ahmad.azd@hotmail.com"
+  model creator2.givenName "Matthieu"
+  model creator2.familyName "MAIRE"
+  model creator2.organization "EMBL-EBI"
+  model creator2.email "matt.maire@free.fr"
+end
+
+Ferrel2011___Cdk1_and_APC_regulation_in_cell_cycle_in_Xenopus_laevis is "Ferrel2011 - Cdk1 and APC regulation in cell cycle in Xenopus laevis"

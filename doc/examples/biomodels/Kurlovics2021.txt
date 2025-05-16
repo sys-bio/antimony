@@ -1,0 +1,119 @@
+// Created by libAntimony v3.0.0
+model *Kurlovics2021___Metformin_partitioning_between_plasma_and_RBC_with_independent_Kin_and_Kout_coefficients()
+
+  // Compartments and Species:
+  compartment RBC;
+  species Mrbc in RBC;
+
+  // Assignment Rules:
+  Mpl := ModelValue_1*exp(ModelValue_5*time) - ModelValue_2*exp(ModelValue_3*time);
+  B := ModelValue_1;
+  Summary_flux_to_RBC := Vin - Vout;
+
+  // Reactions:
+  Vin:  => Mrbc; RBC*(Kin*Mpl);
+  Vout: Mrbc => ; RBC*Kout*Mrbc;
+
+  // Species initializations:
+  Mrbc = 0;
+  Mrbc has substance_per_volume;
+
+  // Compartment initializations:
+  RBC = 2198;
+  RBC has volume;
+
+  // Variable initializations:
+  ModelValue_1 = A;
+  ModelValue_5 = c;
+  ModelValue_2 = B;
+  ModelValue_3 = d;
+  A = 1382.06142698431;
+  d = -0.783006790599975;
+  Kin = 0.0440064186883752;
+  c = -0.215608884195034;
+  Kout = 0.0399798384276102;
+
+  // Other declarations:
+  var Mpl, B, Summary_flux_to_RBC;
+  const RBC, ModelValue_1, ModelValue_5, ModelValue_2, ModelValue_3, A, d;
+  const Kin, c, Kout;
+
+  // Unit definitions:
+  unit substance = 1e-3 mole;
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = time_unit;
+  unit extent = substance;
+  unit substance_per_volume = 1e-3 mole / 1e-3 litre;
+
+  // Display Names:
+  time_unit is "time";
+  ModelValue_1 is "Initial for A";
+  ModelValue_5 is "Initial for c";
+  ModelValue_2 is "Initial for B";
+  ModelValue_3 is "Initial for d";
+  Summary_flux_to_RBC is "Summary flux to RBC";
+
+  // CV terms:
+  RBC identity "http://identifiers.org/bto/BTO:0000424"
+  Mrbc identity "http://identifiers.org/bto/BTO:0000424"
+  Vin biological_system "http://identifiers.org/go/GO:0015893"
+  Vout biological_system "http://identifiers.org/go/GO:0015893"
+
+  model class "http://identifiers.org/biomodels.db/MODEL2103170002",
+              "http://identifiers.org/bto/BTO:0000424",
+              "http://identifiers.org/chebi/CHEBI:6801",
+              "http://identifiers.org/mamo/MAMO_0000046",
+              "http://identifiers.org/taxonomy/9606",
+              "http://identifiers.org/go/GO:0015893"
+  model model_source "http://identifiers.org/biomodels.db/MODEL2103170002",
+                     "http://identifiers.org/biomodels.db/BIOMD0000001026"
+  model encoder "http://identifiers.org/biomodels.db/MODEL2103170002"
+  model property "http://identifiers.org/mamo/MAMO_0000046"
+  model container "http://identifiers.org/bto/BTO:0000424"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model description "http://identifiers.org/go/GO:0015893",
+                    "http://identifiers.org/pubmed/34309806"
+  model property "http://identifiers.org/chebi/CHEBI:6801",
+                 "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2020-11-16T09:49:03Z"
+  model modified "2020-11-16T09:49:03Z"
+  model creator1.givenName "Kristaps"
+  model creator1.familyName "Berzins"
+  model creator1.organization "Institute of Microbiology and Biotechnology, University of Latvia, Riga, Latvia;"
+  model creator2.givenName "Krishna"
+  model creator2.familyName "Tiwari"
+  model creator2.email "ktiwari@ebi.ac.uk"
+  model creator3.givenName "Darta Maija"
+  model creator3.familyName "Zake"
+  model creator3.organization "Institute of Microbiology and Biotechnology, University of Latvia, Riga, Latvia; Latvian Biomedical Research and Study Centre, Riga, Latvia"
+  model creator4.givenName "Janis"
+  model creator4.familyName "Kurlovics"
+  model creator4.organization "Institute of Microbiology and Biotechnology, University of Latvia, Riga, Latvia; 
+Division of Pharmaceutical Chemistry and Technology, University of Helsinki, Helsinki, Finland"
+  model creator4.email "janis.kurlovics@lu.lv"
+  model creator5.givenName "Linda"
+  model creator5.familyName "Zaharenko"
+  model creator5.organization "Latvian Biomedical Research and Study Centre, Riga, Latvia"
+  model creator6.givenName "Janis"
+  model creator6.familyName "Klovins"
+  model creator6.organization "Latvian Biomedical Research and Study Centre, Riga, Latvia"
+  model creator7.givenName "Egils"
+  model creator7.familyName "Stalidzans"
+  model creator7.organization "Institute of Microbiology and Biotechnology, University of Latvia, Riga, Latvia; Latvian Biomedical Research and Study Centre, Riga, Latvia"
+  model creator7.email "egils.stalidzans@gmail.com"
+
+  // Notes:
+  model notes ```
+```This model is a supplementary material of a manuscript"Diffusion driven metformin 
+exchange transport rates between plasma and red blood cells"by Janis Kurlovics, 
+Darta Maija Zake, Linda Zaharenko, Kristaps Berzins, Janis Klovins, Egils StalidzansThe 
+setting of the model correspond to Fig.2 for the case with a single coefficient for 
+experimental values of average concentration curve. Parameter estimation can be executed 
+using experimental data file "average_exp_data.txt".A=B if metformin concentration 
+is 0 at t=0.```
+```
+end
+
+Kurlovics2021___Metformin_partitioning_between_plasma_and_RBC_with_independent_Kin_and_Kout_coefficients is "Kurlovics2021 - Metformin partitioning between plasma and RBC with independent Kin and Kout coefficients"

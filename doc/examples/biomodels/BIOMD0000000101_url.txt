@@ -1,0 +1,147 @@
+// Created by libAntimony v3.0.0
+model *Vilar2006_TGFbeta()
+
+  // Compartments and Species:
+  compartment PM, Endosome;
+  substanceOnly species RI in PM, RII in PM, lRIRII in PM, lRIRII_endo in Endosome;
+  substanceOnly species RI_endo in Endosome, RII_endo in Endosome;
+
+  // Reactions:
+  v1: RII + RI => lRIRII; ka*ligand*RI*RII;
+  v2: lRIRII => ; kcd*lRIRII;
+  v3: lRIRII => ; klid*lRIRII;
+  v4: lRIRII => lRIRII_endo; ki*lRIRII;
+  v5:  => RI; pRI;
+  v6: RI => ; kcd*RI;
+  v7: RI => RI_endo; ki*RI;
+  v8: RI_endo => RI; kr*RI_endo;
+  v9: lRIRII_endo => RI + RII; kr*lRIRII_endo;
+  v10:  => RII; pRII;
+  v11: RII => ; kcd*RII;
+  v12: RII => RII_endo; ki*RII;
+  v13: RII_endo => RII; kr*RII_endo;
+
+  // Events:
+  event_0000001: at time >= 2500: ligand = 0.01;
+
+  // Species initializations:
+  RI = 20/PM;
+  RII = 20/PM;
+  lRIRII = 0;
+  lRIRII_endo = 40/Endosome;
+  RI_endo = 0;
+  RII_endo = 0;
+
+  // Compartment initializations:
+  PM = 1;
+  Endosome = 1;
+
+  // Variable initializations:
+  ligand = 3e-05;
+  ka = 1;
+  kcd = 0.0277777778;
+  klid = 0.25;
+  ki = 0.3333333333333;
+  pRI = 8;
+  kr = 0.0333333333333333;
+  alpha = 1;
+  pRII = 4;
+
+  // Other declarations:
+  var ligand;
+  const PM, Endosome, ka, kcd, klid, ki, pRI, kr, alpha, pRII;
+
+  // Unit definitions:
+  unit substance = item;
+  unit time_unit = 3600 second;
+  unit min_inv = 1 / 3600 second;
+
+  // Display Names:
+  time_unit is "minutes";
+  PM is "Plasma membrane";
+  RI is "Receptor 1";
+  RII is "Receptor 2";
+  lRIRII is "ligand receptor complex-plasma membrane";
+  lRIRII_endo is "ligand receptor complex-endosome";
+  RI_endo is "Receptor 1-endosome";
+  RII_endo is "Receptor 2 endosome";
+  v1 is "Ligand receptor complex formation";
+  v2 is "Ligand receptor complex constitutive degradation";
+  v3 is "Ligand independent complex degradation";
+  v4 is "Ligand receptor complex internalization";
+  v5 is "RI synthesis";
+  v6 is "RI constitutive degradation";
+  v7 is "RI internalization";
+  v8 is "RI recycling";
+  v9 is "Ligand Receptor complex recycling";
+  v10 is "RII synthesis";
+  v11 is "RII constitutive degradation";
+  v12 is "RII internalization";
+  v13 is "RII recycling";
+
+  // CV terms:
+  PM identity "http://identifiers.org/go/GO:0005886"
+  Endosome identity "http://identifiers.org/go/GO:0005768"
+  RI biological_system "http://identifiers.org/uniprot/P36897"
+  RII biological_system "http://identifiers.org/uniprot/P37173"
+  lRIRII part "http://identifiers.org/uniprot/P01137",
+              "http://identifiers.org/uniprot/P36897",
+              "http://identifiers.org/uniprot/P37173"
+  lRIRII_endo part "http://identifiers.org/uniprot/P01137",
+                   "http://identifiers.org/uniprot/P36897",
+                   "http://identifiers.org/uniprot/P37173"
+  RI_endo biological_system "http://identifiers.org/uniprot/P36897"
+  RII_endo biological_system "http://identifiers.org/uniprot/P37173"
+  v1 identity "http://identifiers.org/go/GO:0050431",
+              "http://identifiers.org/go/GO:0007181"
+  v2 biological_system "http://identifiers.org/go/GO:0030512"
+  v3 biological_system "http://identifiers.org/go/GO:0030512"
+  v4 biological_system "http://identifiers.org/go/GO:0030511"
+  v5 biological_system "http://identifiers.org/go/GO:0006412"
+  v6 biological_system "http://identifiers.org/go/GO:0032801"
+  v7 biological_system "http://identifiers.org/go/GO:0031623"
+  v8 biological_system "http://identifiers.org/go/GO:0001881"
+  v9 biological_system "http://identifiers.org/go/GO:0001881"
+  v10 biological_system "http://identifiers.org/go/GO:0006412"
+  v11 biological_system "http://identifiers.org/go/GO:0032801"
+  v12 biological_system "http://identifiers.org/go/GO:0031623"
+  v13 biological_system "http://identifiers.org/go/GO:0001881"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL4023382414"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000101"
+  model publication "http://identifiers.org/pubmed/16446785"
+  model taxon "http://identifiers.org/taxonomy/131567"
+  model part "http://identifiers.org/reactome/REACT_6844.3"
+  model biological_system "http://identifiers.org/go/GO:0007179"
+  model part "http://identifiers.org/kegg.pathway/hsa04350"
+  model created "2006-11-28T18:39:38Z"
+  model modified "2012-07-05T14:45:52Z"
+  model creator1.givenName "Harish"
+  model creator1.familyName "Dharuri"
+  model creator1.organization "California Institute of Technology"
+  model creator1.email "hdharuri@cds.caltech.edu"
+
+  // Notes:
+  model notes ```
+The model reproduces Fig 5A of the paper. The ligand concentration is increased from
+3E-5 to 0.01 at time t=2500 to ensure that the system reaches steady state. Hence,
+the time t=0 of the paper corresponds to t=2500 in the model. The peak value of the
+active ligand receptor complex is off by a value of 1.25, the authors have stated
+that this discrepancy is due to the fact that the figure in the paper corresponds
+to a slightly different parameter set. The model was successfully tested on MathSBML.
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Creative Commons CC0") for more information. 
+
+In summary, you are entitled to use this encoded model in absolutely any manner you
+deem suitable, verbatim, or with modification, alone or embedded it in a larger context,
+redistribute it, commercially or not, in a restricted way or not.
+
+
+To cite BioModels Database, please use: [Li C, Donizelli M, Rodriguez N, Dharuri H, Endler L, Chelliah V, Li L, He E, Henry A, Stefan MI, Snoep JL, Hucka M, Le Novère N, Laibe C (2010) BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models. BMC Syst Biol., 4:92.](http://www.ncbi.nlm.nih.gov/pubmed/20587024)
+```
+end
+
+Vilar2006_TGFbeta is "Vilar2006_TGFbeta"

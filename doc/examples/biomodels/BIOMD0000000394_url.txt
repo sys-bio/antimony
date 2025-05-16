@@ -1,0 +1,329 @@
+// Created by libAntimony v3.0.0
+model *Sivakumar2011_EGFReceptorSignalingPathway()
+
+  // Compartments and Species:
+  compartment default, c2;
+  species s21 in c2, s22 in c2, s25 in c2, s26 in c2, s27 in c2, s28 in c2;
+  species s29 in c2, s30 in c2, s31 in c2, s33 in c2, s34 in c2, s23 in c2;
+  species s24 in c2, s3 in default, s123 in c2, s124 in c2, s125 in c2, s126 in c2;
+  species s127 in c2, s129 in c2, s142 in default, s144 in c2, s147 in c2;
+
+  // Reactions:
+  r8: s23 -> s24; (kI_r8_s22/(kI_r8_s22 + s22))*(kI_r8_s29/(kI_r8_s29 + s29))*(kI_r8_s33/(kI_r8_s33 + s33))*(s124*(((kcatp_r8_s124/kM_r8_s124_s23)*s23 - (kcatn_r8_s124/kM_r8_s124_s24)*s24)/(1 + s23/kM_r8_s124_s23 + s24/kM_r8_s124_s24)) + s31*(((kcatp_r8_s31/kM_r8_s31_s23)*s23 - (kcatn_r8_s31/kM_r8_s31_s24)*s24)/(1 + s23/kM_r8_s31_s23 + s24/kM_r8_s31_s24)));
+  r9: s25 -> s26; s24*(((kcatp_r9/kM_r9_s25)*s25 - (kcatn_r9/kM_r9_s26)*s26)/(1 + s25/kM_r9_s25 + s26/kM_r9_s26));
+  r11: s29 -> s30; s127*(((kcatp_r11/kM_r11_s29)*s29 - (kcatn_r11/kM_r11_s30)*s30)/(1 + s29/kM_r11_s29 + s30/kM_r11_s30));
+  r14: s27 -> s28; s26*(((kcatp_r14/kM_r14_s27)*s27 - (kcatn_r14/kM_r14_s28)*s28)/(1 + s27/kM_r14_s27 + s28/kM_r14_s28));
+  r15: s28 -> s34; kass_r15*s28 - kdiss_r15*s34;
+  r17: 2 s123 -> s129; s3*(kass_r17_s3*s123^2 - kdiss_r17_s3*s129);
+  r6: s127 -> s127; s144*(kass_r6_s144*s127 - kdiss_r6_s144*s127);
+  r7: s21 -> s22; s144*(kass_r7_s144*s21 - kdiss_r7_s144*s22);
+  r4: s124 + s125 -> s124 + s126; s144*(kass_r4_s144*s124*s125 - kdiss_r4_s144*s124*s126);
+  re11: s129 + s147 => s144; (kI_re11_s142/(kI_re11_s142 + s142))*(Vp_re11*s129*s147/(ki_re11_s129*kM_re11_s147 + kM_re11_s147*s129 + kM_re11_s129*s147 + s129*s147));
+
+  // Species initializations:
+  s21 = 5/c2;
+  s22 = 0;
+  s25 = 5/c2;
+  s26 = 0;
+  s27 = 5/c2;
+  s28 = 0;
+  s29 = 5/c2;
+  s30 = 0;
+  s31 = 5/c2;
+  s33 = 5/c2;
+  s34 = 1/c2;
+  s23 = 5/c2;
+  s24 = 0;
+  s3 = 5/default;
+  s123 = 5/c2;
+  s124 = 5/c2;
+  s125 = 0.5/c2;
+  s126 = 0;
+  s127 = 2/c2;
+  s129 = 0;
+  s142 = 0.5/default;
+  s144 = 0;
+  s147 = 5/c2;
+
+  // Compartment initializations:
+  default = 1;
+  c2 = 1;
+
+  // Variable initializations:
+  kcatp_r8_s124 = 0.511;
+  kM_r8_s124_s23 = 0.47;
+  kcatn_r8_s124 = 1.083;
+  kM_r8_s124_s24 = 0.786;
+  kcatp_r8_s31 = 0.727;
+  kM_r8_s31_s23 = 0.614;
+  kcatn_r8_s31 = 0.636;
+  kM_r8_s31_s24 = 1.367;
+  kI_r8_s22 = 0.583;
+  kI_r8_s29 = 1.219;
+  kI_r8_s33 = 0.293;
+  kcatp_r9 = 2;
+  kM_r9_s25 = 0.626;
+  kcatn_r9 = 0.693;
+  kM_r9_s26 = 0.463;
+  kcatp_r11 = 0.787;
+  kM_r11_s29 = 1.459;
+  kcatn_r11 = 0.566;
+  kM_r11_s30 = 1.021;
+  kcatp_r14 = 0.558;
+  kM_r14_s27 = 0.038;
+  kcatn_r14 = 0.725;
+  kM_r14_s28 = 1.65;
+  kass_r15 = 2;
+  kdiss_r15 = 0.074;
+  kass_r17_s3 = 0.73;
+  kdiss_r17_s3 = 1.13;
+  kI_re11_s142 = 1;
+  kass_r6_s144 = 1;
+  kdiss_r6_s144 = 1;
+  kass_r7_s144 = 1;
+  kdiss_r7_s144 = 1;
+  kass_r4_s144 = 1;
+  kdiss_r4_s144 = 1;
+  Vp_re11 = 1;
+  kM_re11_s129 = 1;
+  kM_re11_s147 = 1;
+  ki_re11_s129 = 1;
+
+  // Other declarations:
+  const default, c2, kcatp_r8_s124, kM_r8_s124_s23, kcatn_r8_s124, kM_r8_s124_s24;
+  const kcatp_r8_s31, kM_r8_s31_s23, kcatn_r8_s31, kM_r8_s31_s24, kI_r8_s22;
+  const kI_r8_s29, kI_r8_s33, kcatp_r9, kM_r9_s25, kcatn_r9, kM_r9_s26, kcatp_r11;
+  const kM_r11_s29, kcatn_r11, kM_r11_s30, kcatp_r14, kM_r14_s27, kcatn_r14;
+  const kM_r14_s28, kass_r15, kdiss_r15, kass_r17_s3, kdiss_r17_s3, kI_re11_s142;
+  const kass_r6_s144, kdiss_r6_s144, kass_r7_s144, kdiss_r7_s144, kass_r4_s144;
+  const kdiss_r4_s144, Vp_re11, kM_re11_s129, kM_re11_s147, ki_re11_s129;
+
+  // Display Names:
+  c2 is "Cytosol";
+  s21 is "Akt";
+  s22 is "Akt";
+  s25 is "MEK1_minus_2";
+  s26 is "MEK1_minus_2";
+  s27 is "ERK1_minus_2";
+  s28 is "ERK1_minus_2";
+  s29 is "RKIP";
+  s30 is "RKIP";
+  s31 is "PP2A";
+  s33 is "14_minus_3_minus_3";
+  s34 is "Mitogenesis_br_Differentiation";
+  s23 is "Raf_minus_1";
+  s24 is "Raf_minus_1";
+  s3 is "EGF";
+  s123 is "EGFR";
+  s124 is "Ras";
+  s125 is "GDP";
+  s126 is "GTP";
+  s127 is "PKC";
+  s129 is "EGFR";
+  s142 is "erlotinib";
+  s144 is "Complex_br_(EGFR/../_br_GAP)";
+  s147 is "Complex(Grb2/../PLC)";
+
+  // CV terms:
+  s21 biological_system "http://identifiers.org/uniprot/P31749"
+  s22 biological_system "http://identifiers.org/uniprot/P31749"
+  s25 biological_system "http://identifiers.org/uniprot/Q02750"
+  s26 biological_system "http://identifiers.org/uniprot/Q02750"
+  s27 biological_system "http://identifiers.org/go/GO:0004707"
+  s28 biological_system "http://identifiers.org/go/GO:0004707"
+  s29 biological_system "http://identifiers.org/uniprot/P30086"
+  s30 biological_system "http://identifiers.org/uniprot/P30086"
+  s31 part "http://identifiers.org/uniprot/P62714"
+  s33 biological_system "http://identifiers.org/uniprot/P61981"
+  s23 biological_system "http://identifiers.org/uniprot/P04049"
+  s24 biological_system "http://identifiers.org/uniprot/P04049"
+  s3 biological_system "http://identifiers.org/uniprot/P01133"
+  s123 biological_system "http://identifiers.org/uniprot/Q504U8"
+  s124 homolog "http://identifiers.org/uniprot/P08646"
+  s125 identity "http://identifiers.org/chebi/CHEBI:17552"
+  s126 identity "http://identifiers.org/chebi/CHEBI:15996"
+  s127 biological_system "http://identifiers.org/uniprot/P17252"
+  s129 biological_system "http://identifiers.org/uniprot/Q504U8"
+  s142 biological_system "http://identifiers.org/chebi/CHEBI:114785"
+  s144 biological_system "http://identifiers.org/go/GO:0043234"
+  s147 biological_system "http://identifiers.org/go/GO:0043234"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1101270003"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000394"
+  model publication "http://identifiers.org/pubmed/21978399"
+  model origin "http://identifiers.org/panther.pathway/P00018"
+  model biological_system "http://identifiers.org/go/GO:0007173"
+  model taxon "http://identifiers.org/taxonomy/40674"
+  model container "http://identifiers.org/cl/CL:0000047"
+  model created "2011-11-02T14:44:52Z"
+  model modified "2016-04-08T17:15:18Z"
+  model creator1.givenName "Vijayalakshmi"
+  model creator1.familyName "Chelliah"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "viji@ebi.ac.uk"
+  model creator2.givenName "KC"
+  model creator2.familyName "Sivakumar"
+  model creator2.organization "Rajiv Gandhi Centre for Biotechnology"
+  model creator2.email "sivakumar.kc@gmail.com"
+
+  // Notes:
+  model notes ```
+Sivakumar2011 - EGF Receptor Signaling Pathway	 
+
+
+EGFR belongs to the human epidermal receptor (HER) family of receptor tyrosine kinases,
+which consists of four closely related receptors (EGFR (HER1, erbB1), HER2 (neu,
+erbB2), HER3 (erbB3), and HER4 (erbB4)) that mediate cellular signaling pathways
+involved in growth and proliferation in response to the binding of a variety of growth
+factor ligands. There are currently six known endogenous ligands for EGFR: EGF,
+transforming growth factor- (TGF-), amphiregulin, betacellulin, heparin-binding EGF
+(HB-EGF), and epiregulin.Upon ligand binding, the EGFR forms homo- or heterodimeric
+complexes (usually with HER2), which leads to activation of the receptor tyrosine
+kinase, via autophosphorylation.
+
+References:
+
+- [The EGF receptor family--multiple roles in proliferation, differentiation, and neoplasia with an emphasis on HER4.](http://identifiers.org/pubmed/12813928) 
+- [An open-and-shut case? Recent insights into the activation of EGF/ErbB receptors.](http://identifiers.org/pubmed/14527402) 
+- [EGF receptor signaling: putting a new spin on eye development.](http://identifiers.org/pubmed/14561424) 
+- [Epidermal growth factor receptor: a promising target in solid tumours.](http://identifiers.org/pubmed/14766123) 
+
+
+This model is described in the article:
+
+
+[A systems biology approach to model neural stem cell regulation by notch, shh, wnt, and EGF signaling pathways.](http://identifiers.org/pubmed/21978399 "Access to this publication") 
+
+
+Sivakumar KC, Dhanesh SB, Shobana S, James J, Mundayoor S. 
+
+Omics: a Journal of Integrative Biology. 2011; 15(10):729-737 
+Abstract:
+
+
+The Notch, Sonic Hedgehog (Shh), Wnt, and EGF pathways have long been known to influence
+cell fate specification in the developing nervous system. Here we attempted to evaluate
+the contemporary knowledge about neural stem cell differentiation promoted by various
+drug-based regulations through a systems biology approach. Our model showed the phenomenon
+of DAPT-mediated antagonism of Enhancer of split [E(spl)] genes and enhancement of
+Shh target genes by a SAG agonist that were effectively demonstrated computationally
+and were consistent with experimental studies. However, in the case of model simulation
+of Wnt and EGF pathways, the model network did not supply any concurrent results
+with experimental data despite the fact that drugs were added at the appropriate
+positions. This paves insight into the potential of crosstalks between pathways considered
+in our study. Therefore, we manually developed a map of signaling crosstalk, which
+included the species connected by representatives from Notch, Shh, Wnt, and EGF pathways
+and highlighted the regulation of a single target gene, Hes-1, based on drug-induced
+simulations. These simulations provided results that matched with experimental studies.
+Therefore, these signaling crosstalk models complement as a tool toward the discovery
+of novel regulatory processes involved in neural stem cell maintenance, proliferation,
+and differentiation during mammalian central nervous system development. To our knowledge,
+this is the first report of a simple crosstalk map that highlights the differential
+regulation of neural stem cell differentiation and underscores the flow of positive
+and negative regulatory signals modulated by drugs.
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identified by: [BIOMD0000000394](http://identifiers.org/biomodels.db/BIOMD0000000394).
+
+To cite BioModels Database, please use: [BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models](http://identifiers.org/pubmed/20587024 "Latest BioModels Database publication").
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+  s21 notes ```
+Long Name: Thymoma viral proto-oncogeneSynonym: PKB,RAC protein kinase,protein
+kinase BAccession: P00551
+```
+  s22 notes ```
+Long Name: Thymoma viral proto-oncogeneSynonym: PKB,RAC protein kinase,protein
+kinase BAccession: P00551
+```
+  s25 notes ```
+Long Name: MAP/ERK kinaseSynonym: Dual specificity mitogen-activated protein
+kinase kinaseAccession: P00559
+```
+  s26 notes ```
+Long Name: MAP/ERK kinaseSynonym: Dual specificity mitogen-activated protein
+kinase kinaseAccession: P00559
+```
+  s27 notes ```
+Long Name: Extracellular signal-regulated kinaseSynonym: MAPK,Mitogen-activated
+protein kinase,pp42/44Accession: P00543
+```
+  s28 notes ```
+Long Name: Extracellular signal-regulated kinaseSynonym: MAPK,Mitogen-activated
+protein kinase,pp42/44Accession: P00543
+```
+  s29 notes ```
+Long Name: Raf-1 kinase inhibitor proteinSynonym: Hippocampal cholinergic
+stimulatory peptide precursor,PEBP,Phosphatidylethanolamine-binding protein,Terminal
+flower 1,neuropolypeptide h3,prostastic binding proteinAccession: P00548
+```
+  s30 notes ```
+Long Name: Raf-1 kinase inhibitor proteinSynonym: Hippocampal cholinergic
+stimulatory peptide precursor,PEBP,Phosphatidylethanolamine-binding protein,Terminal
+flower 1,neuropolypeptide h3,prostastic binding proteinAccession: P00548
+```
+  s31 notes ```
+Long Name: protein phosphatase 2ASynonym: Serine/threonine protein phosphatase
+2AAccession: P00547
+```
+  s33 notes ```
+Long Name: 14-3-3Synonym: PAR-5,Stratifin,protein kinase C inhibitor protein-1
+(KCIP-1)Accession: P00539
+```
+  s34 notes ```
+Long Name: Mitogenesis DifferentiationSynonym: Synonym not specifiedAccession:
+U02228
+```
+  s23 notes ```
+Long Name: RAF proto-oncogene serine/threonine-protein kinaseSynonym: C-Raf,MAP
+kinase kinase kinase,Raf-1Accession: P00560
+```
+  s24 notes ```
+Long Name: RAF proto-oncogene serine/threonine-protein kinaseSynonym: C-Raf,MAP
+kinase kinase kinase,Raf-1Accession: P00560
+```
+  s3 notes ```
+Long Name: Epidermal growth factorSynonym: gurken,transforming growth factor
+alphaAccession: P00549
+```
+  s123 notes ```
+Long Name: EGFRSynonym: Gurken receptor, Erb, Neu, neuregulinAccession: 
+P00542
+```
+  s124 notes "Long Name: RasSynonym: Synonym not specifiedAccession: P00552"
+  s125 notes "Long Name: GDPSynonym: Synonym not specifiedAccession: S01652"
+  s126 notes "Long Name: GTPSynonym: Synonym not specifiedAccession: S01653"
+  s127 notes "Long Name: PKCSynonym: Synonym not specifiedAccession: P00565"
+  s129 notes ```
+Long Name: EGFRSynonym: Gurken receptor, Erb, Neu, neuregulinAccession: 
+P00542
+```
+  r8 notes "kinetics of unireactant enzymes"
+  r9 notes "kinetics of non-modulated unireactant enzymes"
+  r11 notes "kinetics of non-modulated unireactant enzymes"
+  r14 notes "kinetics of non-modulated unireactant enzymes"
+  r15 notes ```
+mass action rate law for first order forward, first order reverse, reversible
+reactions, continuous scheme
+```
+  r17 notes ```
+reversible rapid-equilibrium random order ternary-complex mechanism with one
+product
+```
+  r6 notes "kinetics of non-modulated unireactant enzymes"
+  r7 notes "kinetics of non-modulated unireactant enzymes"
+  r4 notes ```
+reversible rapid-equilibrium random order ternary-complex mechanism with two
+products
+```
+  re11 notes ```
+mass action rate law for second order irreversible reactions, two reactants,
+continuous scheme
+```
+end
+
+Sivakumar2011_EGFReceptorSignalingPathway is "Sivakumar2011 - EGF Receptor Signaling Pathway"

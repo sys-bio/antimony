@@ -1,0 +1,105 @@
+// Created by libAntimony v3.0.0
+model *MODEL1412110000()
+
+  // Compartments and Species:
+  compartment Brain;
+  species $Amyloid in Brain;
+
+  // Assignment Rules:
+  Amyloid := (1 - 1/(kb*(exp(ka*time) - 1) + 1))*deltamt;
+  deltamt := sigmao*V*C*gamma_;
+  gamma_ := (C_0 - C)/C;
+
+  // Compartment initializations:
+  Brain = 1;
+
+  // Variable initializations:
+  kb = 0.001;
+  ka = 0.5;
+  sigmao = 1;
+  V = 1;
+  C = 1;
+  C_0 = 2;
+
+  // Other declarations:
+  var deltamt, gamma_;
+  const Brain, kb, ka, sigmao, V, C, C_0;
+
+  // Unit definitions:
+  unit volume = dimensionless;
+  unit time_unit = dimensionless;
+  unit substance = dimensionless;
+
+  // Display Names:
+  time_unit is "time";
+  C is "C*";
+  gamma_ is "gamma";
+  C_0 is "C";
+
+  // CV terms:
+  Brain identity "http://identifiers.org/bto/BTO:0000142"
+  Amyloid identity "http://identifiers.org/chebi/CHEBI:60425"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1412110000"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000561"
+  model publication "http://identifiers.org/pubmed/23232498"
+  model origin "http://identifiers.org/biomodels.db/BIOMD0000000531"
+  model property "http://identifiers.org/doid/DOID:649",
+                 "http://identifiers.org/doid/DOID:14330",
+                 "http://identifiers.org/doid/DOID:10652"
+  model biological_system "http://identifiers.org/go/GO:1990000"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model created "2014-12-11T15:30:21Z"
+  model modified "2016-04-08T17:52:20Z"
+  model creator1.givenName "Audald"
+  model creator1.familyName "Lloret i Villas"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "lloret@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+Martins2013 - True and apparent inhibition ofamyloid fribril formation 
+
+
+This model is described in the article:
+
+
+[True and apparent inhibition of amyloid fibril formation.](http://identifiers.org/pubmed/23232498 "Access to this publication") 
+
+
+Martins PM. 
+
+Prion 2013 Mar-Apr; 7(2): 136-139 
+Abstract:
+
+
+A possible therapeutic strategy for amyloid diseases involves the use of small
+molecule compounds to inhibit protein assembly into insoluble aggregates. According
+to the recently proposed Crystallization-Like Model, the kinetics of amyloid 
+fibrillization can be retarded by decreasing the frequency of new fibril formation
+or by decreasing the elongation rate of existing fibrils. To the compounds that
+affect the nucleation and/or the growth steps we call true inhibitors. An apparent
+inhibition mechanism may however result from the alteration of thermodynamic
+properties such as the solubility of the amyloidogenic protein. Apparent inhibitors
+markedly influence protein aggregation kinetics measured in vitro, yet they are
+likely to lead to disappointing results when tested in vivo. This is because
+cells and tissues media are in general much more buffered against small variations
+in composition than the solutions prepared in lab. Here we show how to discriminate
+between true and apparent inhibition mechanisms from experimental data on protein
+aggregation kinetics. The goal is to be able to identify false positives much
+earlier during the drug development process.
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identified by: [BIOMD0000000561](http://identifiers.org/biomodels.db/BIOMD0000000561).
+
+To cite BioModels Database, please use: [BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models](http://identifiers.org/pubmed/20587024 "Latest BioModels Database publication").
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+  Amyloid notes "```Amyloid fibril```"
+end
+
+MODEL1412110000 is "Martins2013 - True and apparent inhibition of amyloid fribril formation"

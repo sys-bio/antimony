@@ -1,0 +1,91 @@
+// Created by libAntimony v3.0.0
+model *Metformin_partitioning_between_plasma_and_RBC_with_independent_Kin_and_Kout_coefficients()
+
+  // Compartments and Species:
+  compartment RBC;
+  species Mrbc in RBC;
+
+  // Assignment Rules:
+  Mpl := ModelValue_1*exp(ModelValue_5*time) - ModelValue_2*exp(ModelValue_3*time);
+  B := ModelValue_1;
+  Summary_flux_to_RBC := Vin - Vout;
+
+  // Reactions:
+  Vin:  => Mrbc; RBC*(Kin*Mpl);
+  Vout: Mrbc => ; RBC*Kout*Mrbc;
+
+  // Species initializations:
+  Mrbc = 0;
+
+  // Compartment initializations:
+  RBC = 2198;
+
+  // Variable initializations:
+  ModelValue_1 = A;
+  ModelValue_5 = c;
+  ModelValue_2 = B;
+  ModelValue_3 = d;
+  A = 1382.06142698431;
+  d = -0.783006790599975;
+  Kin = 0.0440064186883752;
+  c = -0.215608884195034;
+  Kout = 0.0399798384276102;
+
+  // Other declarations:
+  var Mpl, B, Summary_flux_to_RBC;
+  const RBC, ModelValue_1, ModelValue_5, ModelValue_2, ModelValue_3, A, d;
+  const Kin, c, Kout;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = 3600e2 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+  ModelValue_1 is "Initial for A";
+  ModelValue_5 is "Initial for c";
+  ModelValue_2 is "Initial for B";
+  ModelValue_3 is "Initial for d";
+  Summary_flux_to_RBC is "Summary flux to RBC";
+
+  model property "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2020-11-16T09:49:03Z"
+  model modified "2020-11-16T09:49:03Z"
+  model creator1.givenName "Linda"
+  model creator1.familyName "Zaharenko"
+  model creator1.organization "Latvian Biomedical Research and Study Centre, Riga, Latvia"
+  model creator2.givenName "Janis"
+  model creator2.familyName "Kurlovics"
+  model creator2.organization "Institute of Microbiology and Biotechnology, University of Latvia, Riga, Latvia; 
+Division of Pharmaceutical Chemistry and Technology, University of Helsinki, Helsinki, Finland"
+  model creator2.email "janis.kurlovics@lu.lv"
+  model creator3.givenName "Kristaps"
+  model creator3.familyName "Berzins"
+  model creator3.organization "Institute of Microbiology and Biotechnology, University of Latvia, Riga, Latvia;"
+  model creator4.givenName "Janis"
+  model creator4.familyName "Klovins"
+  model creator4.organization "Latvian Biomedical Research and Study Centre, Riga, Latvia"
+  model creator5.givenName "Egils"
+  model creator5.familyName "Stalidzans"
+  model creator5.organization "Institute of Microbiology and Biotechnology, University of Latvia, Riga, Latvia; Latvian Biomedical Research and Study Centre, Riga, Latvia"
+  model creator5.email "egils.stalidzans@gmail.com"
+  model creator6.givenName "Darta Maija"
+  model creator6.familyName "Zake"
+  model creator6.organization "Institute of Microbiology and Biotechnology, University of Latvia, Riga, Latvia; Latvian Biomedical Research and Study Centre, Riga, Latvia"
+
+  // Notes:
+  model notes ```
+```This model is a supplementary material of a manuscript"Diffusion driven metformin 
+exchange transport rates between plasma and red blood cells"by Janis Kurlovics, 
+Darta Maija Zake, Linda Zaharenko, Kristaps Berzins, Janis Klovins, Egils StalidzansThe 
+setting of the model correspond to Fig.2 for the case with a single coefficient for 
+experimental values of average concentration curve. Parameter estimation can be executed 
+using experimental data file "average_exp_data.txt".A=B if metformin concentration 
+is 0 at t=0.```
+```
+end
+
+Metformin_partitioning_between_plasma_and_RBC_with_independent_Kin_and_Kout_coefficients is "Kurlovics2021 - Metformin partitioning between plasma and RBC with independent Kin and Kout coefficients"

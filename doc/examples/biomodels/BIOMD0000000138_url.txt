@@ -1,0 +1,130 @@
+// Created by libAntimony v3.0.0
+model *model_0000001()
+
+  // Compartments and Species:
+  compartment cell;
+  species c in cell;
+
+  // Assignment Rules:
+  phik := 1/(1 + exp((vn - V)/sn));
+  phia := 1/(1 + exp((va - V)/sa));
+  phih := 1/(1 + exp((V - vh)/sh));
+  phif := 1/(1 + exp((vf - V)/sf));
+  phical := 1/(1 + exp((vm - V)/sm));
+  cinf := c^2/(c^2 + ks^2);
+  ica := gcal*phical*(V - vca);
+  isk := gsk*cinf*(V - vk);
+  ibk := gf*phif*(V - vk);
+  ikdr := gk*n*(V - vk);
+  ia := ga*phia*h*(V - vk);
+  ik := isk + ibk + ikdr + ia;
+
+  // Rate Rules:
+  V' = -(ica + ik)/Cm;
+  n' = lambda*(phik - n)/taun;
+  h' = (phih - h)/tauh;
+
+  // Reactions:
+  reaction_0000004:  => c; -ff*(alpha*ica + kc*c)*cell;
+
+  // Species initializations:
+  c = 0.3;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  vca = 50;
+  vk = -75;
+  Cm = 10;
+  gk = 4;
+  gcal = 2;
+  gsk = 1.7;
+  ga = 0;
+  gf = 0;
+  vn = -5;
+  va = -20;
+  vm = -20;
+  vh = -60;
+  vf = -20;
+  sn = 10;
+  sa = 10;
+  sm = 12;
+  sh = 5;
+  sf = 5.6;
+  taun = 30;
+  tauh = 20;
+  lambda = 0.7;
+  kc = 0.16;
+  ks = 0.5;
+  ff = 0.01;
+  alpha = 0.0015;
+  V = -60;
+  n = 0.1;
+  h = 0.1;
+
+  // Other declarations:
+  var phik, V, phia, phih, phif, phical, cinf, ica, isk, ibk, ikdr, n, ia;
+  var h, ik;
+  const cell, vca, vk, Cm, gk, gcal, gsk, ga, gf, vn, va, vm, vh, vf, sn;
+  const sa, sm, sh, sf, taun, tauh, lambda, kc, ks, ff, alpha;
+
+  // Unit definitions:
+  unit ms = 1e-3 second;
+  unit mV = 1e-3 volt;
+  unit micro_mole = 1e-6 mole;
+
+  // Display Names:
+  c is "calcium concentration";
+  vca is "reversal potential for Ca";
+  vk is "reversal potential for K";
+  Cm is "membrane capacitance";
+
+  // CV terms:
+  cell biological_system "http://identifiers.org/go/GO:0005623"
+  c identity "http://identifiers.org/chebi/CHEBI:29108",
+             "http://identifiers.org/kegg.compound/C00076"
+  reaction_0000004 biological_system "http://identifiers.org/go/GO:0006816"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL6090663405"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000138"
+  model publication "http://identifiers.org/pubmed/17058022"
+  model taxon "http://identifiers.org/taxonomy/7711"
+  model biological_system "http://identifiers.org/go/GO:0014046",
+                          "http://identifiers.org/go/GO:0005267",
+                          "http://identifiers.org/go/GO:1902211"
+  model property "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2007-08-02T10:34:59Z"
+  model modified "2014-04-01T18:01:13Z"
+  model creator1.givenName "Enuo"
+  model creator1.familyName "He"
+  model creator1.organization "BNMC"
+  model creator1.email "enuo@caltech.edu"
+
+  // Notes:
+  model notes ```
+The model is encoded according to the paper *Low dose of dopamine may stimulate
+prolactin secretion by increasing fast potassium currents* Figure5 has been
+reproduced by MathSBML. One need to change the value of ga in order to get the three
+correct results. 
+
+the xppaut file of the model is avaiable on the following address offered by the
+author, http://www.math.fsu.edu/%7Ebertram/software/pituitary/JCNS_07.ode
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Creative Commons CC0") for more information. 
+
+In summary, you are entitled to use this encoded model in absolutely any manner you
+deem suitable, verbatim, or with modification, alone or embedded it in a larger context,
+redistribute it, commercially or not, in a restricted way or not.
+
+
+To cite BioModels Database, please use: [Li C, Donizelli M, Rodriguez N, Dharuri H, Endler L, Chelliah V, Li L, He E, Henry A, Stefan MI, Snoep JL, Hucka M, Le Novère N, Laibe C (2010) BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models. BMC Syst Biol., 4:92.](http://www.ncbi.nlm.nih.gov/pubmed/20587024)
+```
+  c notes "The concentration of Ca range can change from 0.1 to 0.3"
+  ga notes "For figure 5A, ga=0, figure5B, ga=8, figure5C, ga=25"
+end
+
+model_0000001 is "Tabak2007_dopamine"

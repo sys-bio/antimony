@@ -1,0 +1,62 @@
+// Created by libAntimony v3.0.0
+model *Model_1()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species II in compartment_, M in compartment_, IIa in compartment_, P2 in compartment_;
+
+  // Reactions:
+  r1: II => M; compartment_*r1_k1*II;
+  r2: M => IIa; compartment_*r2_k1*M;
+  r3: II => P2; compartment_*r3_k1*II;
+  r4: P2 => IIa; compartment_*r4_k1*P2;
+
+  // Species initializations:
+  II = 1;
+  M = 0;
+  IIa = 0;
+  P2 = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  r1_k1 = 0.005;
+  r2_k1 = 0.01;
+  r3_k1 = 1e-05;
+  r4_k1 = 2.5e-05;
+
+  // Other declarations:
+  const compartment_;
+
+  // Unit definitions:
+  unit substance = 1e-6 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+
+  // SBO terms:
+  r1_k1.sboTerm = 35
+  r2_k1.sboTerm = 35
+  r3_k1.sboTerm = 35
+  r4_k1.sboTerm = 35
+
+  // CV terms:
+  II identity "http://identifiers.org/uniprot/P00734"
+  IIa identity "http://identifiers.org/uniprot/P00734"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1108260004"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000363"
+  model publication "http://identifiers.org/pubmed/20435402"
+  model origin "http://identifiers.org/pubmed/17726029"
+  model biological_system "http://identifiers.org/go/GO:0007596"
+  model taxon "http://identifiers.org/taxonomy/2759"
+  model created "2011-08-26T16:37:18Z"
+  model modified "2014-10-09T17:10:09Z"
+  model creator1.givenName "Michael"
+  model creator1.familyName "Schubert"
+  model creator1.organization "EBI"
+  model creator1.email "schubert@ebi.ac.uk"
+end
+
+Model_1 is "Lee2010_ThrombinActivation_OneForm_minimal"

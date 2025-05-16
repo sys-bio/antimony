@@ -1,0 +1,327 @@
+// Created by libAntimony v3.0.0
+model *BIOMD0000000001()
+
+  // Compartments and Species:
+  compartment comp1;
+  species BLL in comp1, IL in comp1, AL in comp1, A in comp1, BL in comp1;
+  species B in comp1, DLL in comp1, D in comp1, ILL in comp1, DL in comp1;
+  species I in comp1, ALL in comp1;
+
+  // Reactions:
+  React0: B -> BL; comp1*(kf_0*B - kr_0*BL);
+  React1: BL -> BLL; comp1*(kf_1*BL - kr_1*BLL);
+  React2: BLL -> ALL; comp1*(kf_2*BLL - kr_2*ALL);
+  React3: A -> AL; comp1*(kf_3*A - kr_3*AL);
+  React4: AL -> ALL; comp1*(kf_4*AL - kr_4*ALL);
+  React5: B -> A; comp1*(kf_5*B - kr_5*A);
+  React6: BL -> AL; comp1*(kf_6*BL - kr_6*AL);
+  React7: I -> IL; comp1*(kf_7*I - kr_7*IL);
+  React8: IL -> ILL; comp1*(kf_8*IL - kr_8*ILL);
+  React9: A -> I; comp1*(kf_9*A - kr_9*I);
+  React10: AL -> IL; comp1*(kf_10*AL - kr_10*IL);
+  React11: ALL -> ILL; comp1*(kf_11*ALL - kr_11*ILL);
+  React12: D -> DL; comp1*(kf_12*D - kr_12*DL);
+  React13: DL -> DLL; comp1*(kf_13*DL - kr_13*DLL);
+  React14: I -> D; comp1*(kf_14*I - kr_14*D);
+  React15: IL -> DL; comp1*(kf_15*IL - kr_15*DL);
+  React16: ILL -> DLL; comp1*(kf_16*ILL - kr_16*DLL);
+
+  // Events:
+  RemovalACh: at time > t2: kf_13 = 0, kf_8 = 0, kf_4 = 0, kf_1 = 0, kf_12 = 0, kf_7 = 0, kf_3 = 0, kf_0 = 0;
+
+  // Species initializations:
+  BLL = 0;
+  IL = 0;
+  AL = 0;
+  A = 0;
+  BL = 0;
+  B = 1.66057788110262e-21/comp1;
+  DLL = 0;
+  D = 0;
+  ILL = 0;
+  DL = 0;
+  I = 0;
+  ALL = 0;
+
+  // Compartment initializations:
+  comp1 = 1e-16;
+
+  // Variable initializations:
+  t2 = 20;
+  kf_0 = 3000;
+  kf_3 = 3000;
+  kf_7 = 3000;
+  kf_12 = 3000;
+  kf_1 = 1500;
+  kf_4 = 1500;
+  kf_8 = 1500;
+  kf_13 = 1500;
+  kr_0 = 8000;
+  kr_1 = 16000;
+  kf_2 = 30000;
+  kr_2 = 700;
+  kr_3 = 8.64;
+  kr_4 = 17.28;
+  kf_5 = 0.54;
+  kr_5 = 10800;
+  kf_6 = 130;
+  kr_6 = 2740;
+  kr_7 = 4;
+  kr_8 = 8;
+  kf_9 = 19.7;
+  kr_9 = 3.74;
+  kf_10 = 19.85;
+  kr_10 = 1.74;
+  kf_11 = 20;
+  kr_11 = 0.81;
+  kr_12 = 4;
+  kr_13 = 8;
+  kf_14 = 0.05;
+  kr_14 = 0.0012;
+  kf_15 = 0.05;
+  kr_15 = 0.0012;
+  kf_16 = 0.05;
+  kr_16 = 0.0012;
+
+  // Other declarations:
+  var kf_0, kf_3, kf_7, kf_12, kf_1, kf_4, kf_8, kf_13;
+  const comp1, t2, kr_0, kr_1, kf_2, kr_2, kr_3, kr_4, kf_5, kr_5, kf_6, kr_6;
+  const kr_7, kr_8, kf_9, kr_9, kf_10, kr_10, kf_11, kr_11, kr_12, kr_13;
+  const kf_14, kr_14, kf_15, kr_15, kf_16, kr_16;
+
+  // Display Names:
+  comp1 is "compartment1";
+  BLL is "BasalACh2";
+  IL is "IntermediateACh";
+  AL is "ActiveACh";
+  A is "Active";
+  BL is "BasalACh";
+  B is "Basal";
+  DLL is "DesensitisedACh2";
+  D is "Desensitised";
+  ILL is "IntermediateACh2";
+  DL is "DesensitisedACh";
+  I is "Intermediate";
+  ALL is "ActiveACh2";
+  RemovalACh is "removal of ACh";
+
+  // SBO terms:
+  comp1.sboTerm = 290
+  BLL.sboTerm = 297
+  IL.sboTerm = 297
+  AL.sboTerm = 297
+  A.sboTerm = 420
+  BL.sboTerm = 297
+  B.sboTerm = 420
+  DLL.sboTerm = 297
+  D.sboTerm = 420
+  ILL.sboTerm = 297
+  DL.sboTerm = 297
+  I.sboTerm = 420
+  ALL.sboTerm = 297
+  kf_0.sboTerm = 35
+  kf_3.sboTerm = 35
+  kf_7.sboTerm = 35
+  kf_12.sboTerm = 35
+  kf_1.sboTerm = 35
+  kf_4.sboTerm = 35
+  kf_8.sboTerm = 35
+  kf_13.sboTerm = 35
+  kr_0.sboTerm = 38
+  kr_1.sboTerm = 38
+  kf_2.sboTerm = 35
+  kr_2.sboTerm = 38
+  kr_3.sboTerm = 38
+  kr_4.sboTerm = 38
+  kf_5.sboTerm = 35
+  kr_5.sboTerm = 38
+  kf_6.sboTerm = 35
+  kr_6.sboTerm = 38
+  kr_7.sboTerm = 38
+  kr_8.sboTerm = 38
+  kf_9.sboTerm = 35
+  kr_9.sboTerm = 38
+  kf_10.sboTerm = 35
+  kr_10.sboTerm = 38
+  kf_11.sboTerm = 35
+  kr_11.sboTerm = 38
+  kr_12.sboTerm = 38
+  kr_13.sboTerm = 38
+  kf_14.sboTerm = 35
+  kr_14.sboTerm = 38
+  kf_15.sboTerm = 35
+  kr_15.sboTerm = 38
+  kf_16.sboTerm = 35
+  kr_16.sboTerm = 38
+  React0.sboTerm = 177
+  React1.sboTerm = 177
+  React2.sboTerm = 181
+  React3.sboTerm = 177
+  React4.sboTerm = 177
+  React5.sboTerm = 181
+  React6.sboTerm = 181
+  React7.sboTerm = 177
+  React8.sboTerm = 177
+  React9.sboTerm = 181
+  React10.sboTerm = 181
+  React11.sboTerm = 181
+  React12.sboTerm = 177
+  React13.sboTerm = 177
+  React14.sboTerm = 181
+  React15.sboTerm = 181
+  React16.sboTerm = 181
+
+  // CV terms:
+  comp1 identity "http://identifiers.org/go/GO:0031594"
+  BLL biological_system "http://identifiers.org/interpro/IPR002394",
+                        "http://identifiers.org/go/GO:0005892"
+  IL biological_system "http://identifiers.org/interpro/IPR002394",
+                       "http://identifiers.org/go/GO:0005892"
+  AL biological_system "http://identifiers.org/interpro/IPR002394",
+                       "http://identifiers.org/go/GO:0005892"
+  A biological_system "http://identifiers.org/interpro/IPR002394",
+                      "http://identifiers.org/go/GO:0005892"
+  BL biological_system "http://identifiers.org/interpro/IPR002394",
+                       "http://identifiers.org/go/GO:0005892"
+  B biological_system "http://identifiers.org/interpro/IPR002394",
+                      "http://identifiers.org/go/GO:0005892"
+  DLL biological_system "http://identifiers.org/interpro/IPR002394",
+                        "http://identifiers.org/go/GO:0005892"
+  D biological_system "http://identifiers.org/interpro/IPR002394",
+                      "http://identifiers.org/go/GO:0005892"
+  ILL biological_system "http://identifiers.org/interpro/IPR002394",
+                        "http://identifiers.org/go/GO:0005892"
+  DL biological_system "http://identifiers.org/interpro/IPR002394",
+                       "http://identifiers.org/go/GO:0005892"
+  I biological_system "http://identifiers.org/interpro/IPR002394",
+                      "http://identifiers.org/go/GO:0005892"
+  ALL biological_system "http://identifiers.org/interpro/IPR002394",
+                        "http://identifiers.org/go/GO:0005892"
+  React0 identity "http://identifiers.org/go/GO:0042166"
+  React1 identity "http://identifiers.org/go/GO:0042166"
+  React2 identity "http://identifiers.org/go/GO:0004889"
+  React3 identity "http://identifiers.org/go/GO:0042166"
+  React4 identity "http://identifiers.org/go/GO:0042166"
+  React5 identity "http://identifiers.org/go/GO:0004889"
+  React6 identity "http://identifiers.org/go/GO:0004889"
+  React7 identity "http://identifiers.org/go/GO:0042166"
+  React8 identity "http://identifiers.org/go/GO:0042166"
+  React9 identity "http://identifiers.org/go/GO:0004889"
+  React10 identity "http://identifiers.org/go/GO:0004889"
+  React11 identity "http://identifiers.org/go/GO:0004889"
+  React12 identity "http://identifiers.org/go/GO:0042166"
+  React13 identity "http://identifiers.org/go/GO:0042166"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL6613849442"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000001"
+  model publication "http://identifiers.org/pubmed/8983160"
+  model biological_system "http://identifiers.org/go/GO:0007274",
+                          "http://identifiers.org/go/GO:0007166",
+                          "http://identifiers.org/go/GO:0019226"
+  model taxon "http://identifiers.org/taxonomy/7787"
+  model created "2005-02-02T14:56:11Z"
+  model modified "2017-05-19T14:33:51Z"
+  model creator1.givenName "Nicolas"
+  model creator1.familyName "Le Novère"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "lenov@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+Edelstein1996 - EPSP ACh event 
+
+
+Model of a nicotinic Excitatory Post-Synaptic Potential in a Torpedo electric organ.
+Acetylcholine is not represented explicitely, but by an event that changes the constants
+of transition from unliganded to liganded.  
+
+
+This model has initially been encoded using StochSim.
+
+
+This model is described in the article:
+
+
+[A kinetic mechanism for nicotinic acetylcholine receptors based on multiple allosteric transitions.](http://identifiers.org/pubmed/8983160 "Access to this publication") 
+
+
+Edelstein SJ, Schaad O, Henry E, Bertrand D, Changeux JP. 
+
+Biol Cybern 1996 Nov; 75(5): 361-379 
+Abstract:
+
+
+Nicotinic acetylcholine receptors are transmembrane oligomeric proteins that mediate
+interconversions between open and closed channel states under the control of 
+neurotransmitters. Fast in vitro chemical kinetics and in vivo electrophysiological
+recordings are consistent with the following multi-step scheme. Upon binding of
+agonists, receptor molecules in the closed but activatable resting state (the
+Basal state, B) undergo rapid transitions to states of higher affinities with
+either open channels (the Active state, A) or closed channels (the initial Inactivatable
+and fully Desensitized states, I and D). In order to represent the functional
+properties of such receptors, we have developed a kinetic model that links conformational
+interconversion rates to agonist binding and extends the general principles of
+the Monod-Wyman-Changeux model of allosteric transitions. The crucial assumption
+is that the linkage is controlled by the position of the interconversion transition
+states on a hypothetical linear reaction coordinate. Application of the model
+to the peripheral nicotine acetylcholine receptor (nAChR) accounts for the main
+properties of ligand-gating, including single-channel events, and several new
+relationships are predicted. Kinetic simulations reveal errors inherent in using
+the dose-response analysis, but justify its application under defined conditions.
+The model predicts that (in order to overcome the intrinsic stability of the B
+state and to produce the appropriate cooperativity) channel activation is driven
+by an A state with a Kd in the 50 nM range, hence some 140-fold stronger than
+the apparent affinity of the open state deduced previously. According to the model,
+recovery from the desensitized states may occur via rapid transit through the
+A state with minimal channel opening, thus without necessarily undergoing a
+distinct recovery pathway, as assumed in the standard &apos;cycle&apos; model.
+Transitions to the desensitized states by low concentration &apos;pre-pulses&apos;
+are predicted to occur without significant channel opening, but equilibrium values
+of IC50 can be obtained only with long pre-pulse times. Predictions are also
+made concerning allosteric effectors and their possible role in coincidence detection.
+In terms of future developments, the analysis presented here provides a physical
+basis for constructing more biologically realistic models of synaptic modulation
+that may be applied to artificial neural networks.
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identified by: [BIOMD0000000001](http://identifiers.org/biomodels.db/BIOMD0000000001).
+
+To cite BioModels Database, please use: [BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models](http://identifiers.org/pubmed/20587024 "Latest BioModels Database publication").
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+  BLL notes "biliganded basal state"
+  IL notes "monoliganded intermediate"
+  AL notes "monoliganded active state"
+  A notes "unkiganded active state"
+  BL notes "monoliganded basal state"
+  B notes "unliganded basal state"
+  DLL notes "biliganded desensitised state"
+  D notes "fully desensitised state"
+  ILL notes "biliganded intermediate"
+  DL notes "monoliganded desensitised state"
+  I notes "unliganted intermediate"
+  ALL notes "biliganted active state"
+  React0 notes "first ligand on basal"
+  React1 notes "second ligand on basal"
+  React2 notes "opening of biliganded"
+  React3 notes "first ligand on active"
+  React4 notes "second ligand on active"
+  React5 notes "opening of unliganded"
+  React6 notes "opening of monoliganded"
+  React7 notes "first ligand on intermediate"
+  React8 notes "second ligand on intermediate"
+  React9 notes "unliganded active <=> unliganded intermediate"
+  React10 notes "monoliganded active <=> monoliganded intermediate"
+  React11 notes "biliganded active <=> biliganded intermediate"
+  React12 notes "first ligand on desensitised"
+  React13 notes "second ligand on desensitised"
+  React14 notes "unliganded intermediate <=> unliganded desensitised"
+  React15 notes "monoliganded intermediate <=> monoliganded desensitised"
+  React16 notes "biliganded intermediate <=> biliganded desensitised"
+end
+
+BIOMD0000000001 is "Edelstein1996 - EPSP ACh event"

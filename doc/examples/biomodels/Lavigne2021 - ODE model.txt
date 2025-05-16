@@ -1,0 +1,152 @@
+// Created by libAntimony v3.0.0
+model *Lavigne2021___non_spatial_model_of_viral_infection_dynamics_and_interferon_response_of_well_mixed_viral_infection()
+
+  // Compartments and Species:
+  compartment whole_organism;
+  species Target_cells in whole_organism, Infected_cells in whole_organism;
+  species Infected_cells_antiviral in whole_organism, Refractory_cells in whole_organism;
+  species Virions in whole_organism, IFN in whole_organism, $Fraction_target_cells_remaining in whole_organism;
+
+  // Assignment Rules:
+  Fraction_target_cells_remaining := Target_cells/Metabolite_0;
+
+  // Reactions:
+  Infection: Target_cells => Infected_cells; whole_organism*(Beta*Virions*Target_cells);
+  Refractory_state: Target_cells -> Refractory_cells; whole_organism*(Phi*IFN*Target_cells - Rho*Refractory_cells);
+  Antiviral_response: Infected_cells => Infected_cells_antiviral; whole_organism*(k*Infected_cells + Phi*IFN*Infected_cells);
+  Infected_cell_death: Infected_cells => ; whole_organism*Delta*Infected_cells;
+  Antiviral_infected_cell_death: Infected_cells_antiviral => ; whole_organism*Delta*Infected_cells_antiviral;
+  Virus_release:  => Virions; whole_organism*(p*Infected_cells + (1 - f)*p*Infected_cells_antiviral);
+  IFN_release:  => IFN; whole_organism*(Pi*p*(Infected_cells + Infected_cells_antiviral));
+  Virus_clearence: Virions => ; whole_organism*c*Virions;
+  IFN_clearence: IFN => ; whole_organism*c*IFN;
+
+  // Species initializations:
+  Target_cells = 400000000;
+  Infected_cells = 0;
+  Infected_cells_antiviral = 0;
+  Refractory_cells = 0;
+  Virions = 100;
+  IFN = 0;
+
+  // Compartment initializations:
+  whole_organism = 1;
+
+  // Variable initializations:
+  Metabolite_0 = Target_cells;
+  Beta = 5e-10;
+  Beta has unit_0;
+  Phi = 5e-10;
+  Phi has unit_0;
+  Rho = 1;
+  Rho has unit_1;
+  Delta = 4;
+  Delta has unit_1;
+  k = 2;
+  k has unit_1;
+  p = 2400;
+  p has unit_2;
+  f = 0.9;
+  c = 14;
+  c has unit_1;
+  Pi = 1;
+
+  // Other declarations:
+  const whole_organism, Metabolite_0, Beta, Phi, Rho, Delta, k, p, f, c, Pi;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = litre;
+  unit time_unit = 86400 second;
+  unit substance = item;
+  unit unit_0 = 1e-2 metre / (86400 second * item);
+  unit unit_1 = 1 / 86400 second;
+  unit unit_2 = 1 / (86400 second * item);
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "cm/(#*d)";
+  unit_1 is "1/d";
+  unit_2 is "1/(#*d)";
+  Metabolite_0 is "Initial for Target_cells";
+
+  // CV terms:
+  whole_organism biological_system "http://identifiers.org/obi/OBI_0100026"
+  whole_organism property "http://identifiers.org/pato/PATO:0001993"
+  Target_cells biological_system "http://identifiers.org/cl/CL:0000000"
+  Target_cells property "http://identifiers.org/efo/0001460"
+  Infected_cells biological_system "http://identifiers.org/bto/BTO:0000152"
+  Infected_cells_antiviral biological_system "http://identifiers.org/bto/BTO:0000152"
+  Infected_cells_antiviral property "http://identifiers.org/ido/0000440"
+  Refractory_cells biological_system "http://identifiers.org/cl/CL:0000000"
+  Refractory_cells property "http://identifiers.org/efo/0001460"
+  Refractory_cells property "http://identifiers.org/mp/MP:0002409"
+  Virions biological_system "http://identifiers.org/ido/0000508"
+  IFN biological_system "http://identifiers.org/ncit/C20493"
+  Fraction_target_cells_remaining biological_system "http://identifiers.org/cl/CL:0000000"
+  Fraction_target_cells_remaining property "http://identifiers.org/efo/0001460"
+  Infection biological_system "http://identifiers.org/ido/0000586"
+  Refractory_state biological_system "http://identifiers.org/go/GO:0051607"
+  Refractory_state biological_system "http://identifiers.org/sbo/SBO:0000650"
+  Antiviral_response biological_system "http://identifiers.org/go/GO:0051607"
+  Infected_cell_death biological_system "http://identifiers.org/go/GO:0008219"
+  Infected_cell_death biological_system "http://identifiers.org/sbo/SBO:0000394"
+  Antiviral_infected_cell_death biological_system "http://identifiers.org/sbo/SBO:0000394"
+  Antiviral_infected_cell_death biological_system "http://identifiers.org/go/GO:0008219"
+  Virus_release biological_system "http://identifiers.org/go/GO:0019076"
+  Virus_release biological_system "http://identifiers.org/sbo/SBO:0000393"
+  IFN_release biological_system "http://identifiers.org/sbo/SBO:0000393"
+  IFN_release biological_system "http://identifiers.org/go/GO:0001816"
+  Virus_clearence biological_system "http://identifiers.org/sbo/SBO:0000394"
+  IFN_clearence biological_system "http://identifiers.org/sbo/SBO:0000394"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL2107220003",
+                     "http://identifiers.org/biomodels.db/BIOMD0000001021"
+  model propertyBearer "http://identifiers.org/go/GO:0140374"
+  model propertyBearer "http://identifiers.org/go/GO:0071345"
+  model propertyBearer "http://identifiers.org/go/GO:0019221"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model description "http://identifiers.org/pubmed/33622135"
+  model property "http://identifiers.org/go/GO:0038001",
+                 "http://identifiers.org/go/GO:0035425",
+                 "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2021-07-19T12:35:42Z"
+  model modified "2021-07-19T12:35:42Z"
+  model creator1.givenName "Rahuman"
+  model creator1.familyName "Sheriff"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "sheriff@ebi.ac.uk"
+  model creator2.givenName "Emilia"
+  model creator2.familyName "Chen"
+  model creator2.organization "University of Cambridge"
+  model creator2.email "eblc2@cam.ac.uk"
+
+  // Notes:
+  model notes ```
+```This ordinary differential equation model is described in the following article:"Autocrine 
+and paracrine interferon signalling as ‘ring vaccination’ and ‘contact tracing’ 
+strategies to suppress virus infection in a host"G. Michael Lavigne, Hayley 
+Russell, Barbara Sherry and Ruian KeDOI: 10.1098/rspb.2020.3002Comment:This model 
+is based on the ordinary differential equations of the non-spatial model of well-mixed 
+viral infection stated in the manuscript (Eq. 2.1 in the article).Abstract:The innate 
+immune response, particularly the interferon response, represents a first line of 
+defence against viral infections. The interferon molecules produced from infected 
+cells act through autocrine and paracrine signalling to turn host cells into an antiviral 
+state. Although the molecular mechanisms of IFN signalling have been well characterized, 
+how the interferon response collectively contribute to the regulation of host cells 
+to stop or suppress viral infection during early infection remain unclear. Here, 
+we use mathematical models to delineate the roles of the autocrine and the paracrine 
+signalling, and show that their impacts on viral spread are dependent on how infection 
+proceeds. In particular, we found that when infection is well-mixed, the paracrine 
+signalling is not as effective; by contrast, when infection spreads in a spatial 
+manner, a likely scenario during initial infection in tissue, the paracrine signalling 
+can impede the spread of infection by decreasing the number of susceptible cells 
+close to the site of infection. Furthermore, we argue that the interferon response 
+can be seen as a parallel to population-level epidemic prevention strategies such 
+as ‘contact tracing’ or ‘ring vaccination’. Thus, our results here may have 
+implications for the outbreak control at the population scale more broadly.```
+```
+end
+
+Lavigne2021___non_spatial_model_of_viral_infection_dynamics_and_interferon_response_of_well_mixed_viral_infection is "Lavigne2021 - Non-spatial model of viral infection dynamics and interferon response of well-mixed viral infection"

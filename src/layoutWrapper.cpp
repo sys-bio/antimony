@@ -617,7 +617,7 @@ bool LayoutWrapper::TransferLayoutInformationTo(SBMLDocument* sbml)
         if (ret != 0) {
             //g_registry.AddWarning(error);
             delete astn;
-            assert(false);
+            //assert(false);
             return false;
 
         }

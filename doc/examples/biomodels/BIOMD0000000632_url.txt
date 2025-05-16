@@ -1,0 +1,332 @@
+// Created by libAntimony v3.0.0
+model *MODEL1505080000()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species CycE in compartment_, Cdk2 in compartment_, CycECdk2 in compartment_;
+  species CycECdk2a in compartment_, p21 in compartment_, DNADamageC in compartment_;
+  species DNADamageS in compartment_, $DDR in compartment_, p53 in compartment_;
+
+  // Assignment Rules:
+  DDR := BaseDNAdamage + DNADamageC + DNADamageS + TAF;
+  DNAdamagefoci_0 := Gy*FociPerGy;
+  Cdk2_T := Cdk2 + CycECdk2 + CycECdk2a;
+  Cdk2_Thr160 := CycECdk2 + CycECdk2a;
+  Fit_Cdk2_Thr160 := (CycECdk2 + CycECdk2a)/(Metabolite_5_0 + Metabolite_7_0);
+  Fit_Cdk2_T := (Cdk2 + CycECdk2 + CycECdk2a)/(Metabolite_3_0 + Metabolite_5_0 + Metabolite_7_0);
+  Fit_CycE_T := (CycECdk2 + CycECdk2a + CycE)/(Metabolite_5_0 + Metabolite_7_0 + Metabolite_1_0);
+  CycE_T := CycECdk2 + CycECdk2a + CycE;
+  Fit_Cdk2a := CycECdk2a/Metabolite_7_0;
+
+  // Reactions:
+  vb5:  => CycE; compartment_*vb5_v_0;
+  vb6: CycE => ; compartment_*k6b*CycE;
+  vb3:  => Cdk2; compartment_*vb3_v_0;
+  vb4: Cdk2 => ; compartment_*k4b*Cdk2;
+  vb7: CycE + Cdk2 => CycECdk2; compartment_*vb7_k1_0*CycE*Cdk2;
+  vb8: CycECdk2 => CycE + Cdk2; compartment_*k8b*CycECdk2;
+  vb1: CycECdk2 => CycECdk2a; compartment_*(CycECdk2*(vb1_k0_0 + vb1_k1_0*2*vb1_ka_0*CycECdk2a*vb1_Kmb_0/((vb1_kb_0 - vb1_ka_0*CycECdk2a) + vb1_kb_0*vb1_Kma_0 + vb1_ka_0*CycECdk2a*vb1_Kmb_0 + (((vb1_kb_0 - vb1_ka_0*CycECdk2a) + vb1_kb_0*vb1_Kma_0 + vb1_ka_0*CycECdk2a*vb1_Kmb_0)^2 - 4*(vb1_kb_0 - vb1_ka_0*CycECdk2a)*vb1_ka_0*CycECdk2a*vb1_Kmb_0)^(1/2)))/(1 + (vb1_Ki_0*p21)^vb1_h_0));
+  vb2: CycECdk2a => CycECdk2; compartment_*k2b*CycECdk2a;
+  va3:  => p53; compartment_*(va3_k_0*DDR);
+  va2: DNADamageC => ; compartment_*va2_k1*DNADamageC;
+  va1: DNADamageS => ; compartment_*va1_k1*DNADamageS;
+  va5:  => p21; compartment_*(va5_k_0*p53);
+  va6: p21 => ; compartment_*k6a*p21;
+  va4: p53 => ; compartment_*k4a*p53;
+
+  // Events:
+  DNADamage: at 0 after time > 0: DNADamageS = (1 - prop_C)*DNAdamagefoci_0, DNADamageC = prop_C*DNAdamagefoci_0, TAF = ModelValue_9_0 + k_TAF*Gy^(1/2);
+
+  // Species initializations:
+  CycE = CycE_0;
+  Cdk2 = Cdk2_0;
+  CycECdk2 = CycECdk2_0;
+  CycECdk2a = CycECdk2a_0;
+  p21 = 1;
+  DNADamageC = 0;
+  DNADamageS = 0;
+  p53 = 1;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  CycE_0 = 9.2179813538304;
+  Cdk2_0 = 0.0166736;
+  CycECdk2_0 = 1.36697471606784;
+  CycECdk2a_0 = 2.28154;
+  BaseDNAdamage = 2.16068;
+  TAF = 0.506228;
+  ModelValue_9_0 = TAF;
+  k_TAF = 0.973822;
+  Gy = 0;
+  prop_C = 0.0905648;
+  FociPerGy = 28.9678;
+  Metabolite_5_0 = CycECdk2;
+  Metabolite_7_0 = CycECdk2a;
+  Metabolite_3_0 = Cdk2;
+  Metabolite_1_0 = CycE;
+  k4b = vb3_v_0/Cdk2;
+  vb3_v_0 = 99.84;
+  k6b = vb5_v_0/CycE;
+  vb5_v_0 = 9.99936;
+  k8b = vb7_k1_0*Cdk2*CycE/CycECdk2;
+  vb7_k1_0 = 10;
+  k2b = CycECdk2*(vb1_k0_0 + vb1_k1_0*2*vb1_ka_0*CycECdk2a*vb1_Kmb_0/((vb1_kb_0 - vb1_ka_0*CycECdk2a) + vb1_kb_0*vb1_Kma_0 + vb1_ka_0*CycECdk2a*vb1_Kmb_0 + (((vb1_kb_0 - vb1_ka_0*CycECdk2a) + vb1_kb_0*vb1_Kma_0 + vb1_ka_0*CycECdk2a*vb1_Kmb_0)^2 - 4*(vb1_kb_0 - vb1_ka_0*CycECdk2a)*vb1_ka_0*CycECdk2a*vb1_Kmb_0)^(1/2)))/(1 + (vb1_Ki_0*p21)^vb1_h_0)/CycECdk2a;
+  vb1_k0_0 = 0.10249;
+  vb1_k1_0 = 4.00486;
+  vb1_ka_0 = 3.40431;
+  vb1_Kmb_0 = 0.00842472;
+  vb1_kb_0 = 0.324616;
+  vb1_Kma_0 = 0.001143917344;
+  vb1_Ki_0 = 0.394586;
+  vb1_h_0 = 4.93142;
+  k6a = va5_k_0*p53/p21;
+  va5_k_0 = 193.258;
+  k4a = va3_k_0*DDR/p53;
+  va3_k_0 = 0.00547468;
+  va2_k1 = 0.0164994;
+  va1_k1 = 0.234805;
+
+  // Other declarations:
+  var TAF, DNAdamagefoci_0, Cdk2_T, Cdk2_Thr160, Fit_Cdk2_Thr160, Fit_Cdk2_T;
+  var Fit_CycE_T, CycE_T, Fit_Cdk2a;
+  const compartment_, CycE_0, Cdk2_0, CycECdk2_0, CycECdk2a_0, BaseDNAdamage;
+  const ModelValue_9_0, k_TAF, Gy, prop_C, FociPerGy, Metabolite_5_0, Metabolite_7_0;
+  const Metabolite_3_0, Metabolite_1_0, k4b, vb3_v_0, k6b, vb5_v_0, k8b, vb7_k1_0;
+  const k2b, vb1_k0_0, vb1_k1_0, vb1_ka_0, vb1_Kmb_0, vb1_kb_0, vb1_Kma_0;
+  const vb1_Ki_0, vb1_h_0, k6a, va5_k_0, k4a, va3_k_0;
+
+  // Unit definitions:
+  unit volume = 1e-6 litre;
+  unit time_unit = 3600 second;
+  unit substance = 1e-6 mole;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "MRC-5 cell";
+  ModelValue_9_0 is "Initial for TAF";
+  Metabolite_5_0 is "Initial for CycECdk2";
+  Metabolite_7_0 is "Initial for CycECdk2a";
+  Metabolite_3_0 is "Initial for Cdk2";
+  Metabolite_1_0 is "Initial for CycE";
+  vb3_v_0 is "vb3_v";
+  vb5_v_0 is "vb5_v";
+  vb7_k1_0 is "vb7_k1";
+  vb1_k0_0 is "vb1_k0";
+  vb1_k1_0 is "vb1_k1";
+  vb1_ka_0 is "vb1_ka";
+  vb1_Kmb_0 is "vb1_Kmb";
+  vb1_kb_0 is "vb1_kb";
+  vb1_Kma_0 is "vb1_Kma";
+  vb1_Ki_0 is "vb1_Ki";
+  vb1_h_0 is "vb1_h";
+  va5_k_0 is "va5_k";
+  va3_k_0 is "va3_k";
+
+  // SBO terms:
+  compartment_.sboTerm = 290
+  vb5.sboTerm = 291
+  vb6.sboTerm = 291
+  vb3.sboTerm = 291
+  vb4.sboTerm = 291
+  vb7.sboTerm = 526
+  vb8.sboTerm = 180
+  vb2.sboTerm = 216
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/bto/BTO:0001590"
+  CycE biological_system "http://identifiers.org/uniprot/P24864"
+  Cdk2 biological_system "http://identifiers.org/uniprot/P24941"
+  CycECdk2 part "http://identifiers.org/uniprot/P24941",
+                "http://identifiers.org/uniprot/P24864"
+  CycECdk2a part "http://identifiers.org/uniprot/P24941",
+                 "http://identifiers.org/uniprot/P24864"
+  p21 biological_system "http://identifiers.org/uniprot/P38936"
+  p53 biological_system "http://identifiers.org/uniprot/P04637"
+  vb5 biological_system "http://identifiers.org/go/GO:0006412",
+                        "http://identifiers.org/go/GO:0006351"
+  vb6 biological_system "http://identifiers.org/go/GO:0043161"
+  vb3 biological_system "http://identifiers.org/go/GO:0006412",
+                        "http://identifiers.org/go/GO:0006351"
+  vb4 biological_system "http://identifiers.org/go/GO:0043161"
+  vb7 identity "urn:miriam:reactome:R-HSA-69191"
+  vb1 identity "urn:miriam:reactome:R-HSA-188350"
+  vb2 identity "urn:miriam:reactome:R-HSA-69195"
+  va3 identity "http://identifiers.org/go/GO:0006974"
+  va2 identity "http://identifiers.org/go/GO:0006281"
+  va1 identity "http://identifiers.org/go/GO:0006281"
+  va5 identity "http://identifiers.org/go/GO:0006978"
+  va6 biological_system "http://identifiers.org/go/GO:0043161"
+  va4 biological_system "http://identifiers.org/go/GO:2001021"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1505080000"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000632"
+  model publication "http://identifiers.org/pubmed/26830321"
+  model part "http://identifiers.org/go/GO:0007050",
+             "http://identifiers.org/go/GO:0006281"
+  model container "http://identifiers.org/bto/BTO:0000452"
+  model parthood "http://identifiers.org/go/GO:2000772"
+  model property "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2017-03-30T15:27:28Z"
+  model modified "2017-04-11T11:30:08Z"
+  model creator1.givenName "Joerg"
+  model creator1.familyName "Schaber"
+  model creator1.email "j.schaber@web.de"
+  model creator2.givenName "Ryan"
+  model creator2.familyName "Gutenkunst"
+  model creator2.organization "University of Arizona"
+  model creator2.email "rgutenk@email.arizona.edu"
+  model creator3.givenName "Varun"
+  model creator3.familyName "Kothamachu"
+  model creator3.organization "Babraham Institute"
+  model creator3.email "kothamav@babraham.ac.uk"
+  model creator4.givenName "Alyssa"
+  model creator4.familyName "Fortier"
+  model creator4.organization "University of Arizona"
+  model creator4.email "alyssalynfortier@email.arizona.edu"
+  model creator5.givenName "Jordan"
+  model creator5.familyName "Knapp-Wilson"
+  model creator5.organization "University of Arizona"
+  model creator5.email "jknappw@gmail.com"
+  model creator6.givenName "Laura"
+  model creator6.familyName "Haferkamp"
+  model creator6.organization "University of Arizona"
+  model creator6.email "ljhkamp@email.arizona.edu"
+  model creator7.givenName "Cody"
+  model creator7.familyName "Stepanski"
+  model creator7.organization "University of Arizona"
+  model creator7.email "codystep09@email.arizona.edu"
+  model creator8.givenName "Prager"
+  model creator8.familyName "Amy Beth"
+  model creator8.organization "Fundacion Ceibal"
+  model creator8.email "amybethx@rocketmail.com"
+  model creator9.givenName "Shriver"
+  model creator9.familyName "Lauren "
+  model creator9.organization "College of William and Mary"
+  model creator9.email "leshriver@email.wm.edu"
+  model creator10.givenName "Slavkova"
+  model creator10.familyName "Kalina"
+  model creator10.organization "University of Pennsylvania"
+  model creator10.email "kslav@sas.upenn.edu"
+  model creator11.givenName "Gray"
+  model creator11.familyName "William"
+  model creator11.organization "Yale University"
+  model creator11.email "william.gray@yale.edu"
+  model creator12.givenName "Bhaskar"
+  model creator12.familyName "Dhananjay"
+  model creator12.organization "University of British Columbia"
+  model creator12.email "dbhaskar92@math.ubc.ca"
+
+  // Notes:
+  model notes ```
+Kollarovic2016 - Cell fate decision at G1-Stransition 
+
+
+This model is described in the article:
+
+
+[To senesce or not to senesce: how primary human fibroblasts decide their cell fate after DNA damage.](http://identifiers.org/pubmed/26830321 "Access to this publication") 
+
+
+Kollarovic G, Studencka M, Ivanova L, Lauenstein C, Heinze K, Lapytsko A, Talemi
+SR, Figueiredo AS, Schaber J. 
+
+Aging (Albany NY) 2016 Jan; 
+Abstract:
+
+
+Excessive DNA damage can induce an irreversible cell cycle arrest, called senescence,
+which is generally perceived as an important tumour-suppressor mechanism. However,
+it is unclear how cells decide whether to senesce or not after DNA damage. By
+combining experimental data with a parameterized mathematical model we elucidate
+this cell fate decision at the G1-S transition. Our model provides a quantitative
+and conceptually new understanding of how human fibroblasts decide whether DNA
+damage is beyond repair and senesce. Model and data imply that the G1-S transition
+is regulated by a bistable hysteresis switch with respect to Cdk2 activity, which
+in turn is controlled by the Cdk2/p21 ratio rather than cyclin abundance. We
+experimentally confirm the resulting predictions that to induce senescence i)
+in healthy cells both high initial and elevated background DNA damage are necessary
+and sufficient, and ii) in already damaged cells much lower additional DNA 
+damage is sufficient. Our study provides a mechanistic explanation of a) how noise
+in protein abundances allows cells to overcome the G1-S arrest even with substantial
+DNA damage, potentially leading to neoplasia, and b) how accumulating DNA damage
+with age increasingly sensitizes cells for senescence.
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identified by: [BIOMD0000000632](http://identifiers.org/biomodels.db/BIOMD0000000632).
+
+To cite BioModels Database, please use: [BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models](http://identifiers.org/pubmed/20587024 "Latest BioModels Database publication").
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+  CycE notes "represents Cyclin E"
+  Cdk2 notes "represents Cdk2"
+  CycECdk2 notes "represents the CycE/Cdk2 complex"
+  CycECdk2a notes "represents phosphorylated Cdk2 and dephosphorylated CyclinE1 in a complex"
+  p21 notes "p21 is also known as cyclin-dependent-kinase inhibitor 1"
+  DNADamageC notes ```
+The model uses DNADamageC as a way to quantify DNA damage that can be repaired
+slowly. Slow repair is mainly attributed to cell cycle checkpoints. It is difficult
+to annotate this, as it is simply a way to quantify slowly repairable damage and
+is not a protein nor small molecule species. Thus, it is described with "isPropertyOf"
+double strand break sites and "hasProperty" DNA damage checkpoint.
+```
+  DNADamageS notes ```
+The model uses DNADamageS as a way to quantify DNA damage that can be repaired
+quickly. Fast repair is not well elucidated but could be due to chromatin structure
+or DNA sequence context. It is difficult to annotate this, as it is simply a way
+to quantify quickly repairable damage and is not a protein nor small molecule species.
+Thus, it is described with "isPropertyOf" double strand break sites and
+"hasProperty" double strand break repair. While double strand break repair
+applies to both slow and fast repair, the distinction is made by applying cell cycle
+checkpoint repair to slowly repairable damage, DNADamageC above, and not to DNADamageS.
+```
+  DDR notes ```
+Total DNA damage is the sum of base DNA damage (BASE), slowly repairable damage
+(DNADamageC), quickly repairable damage (DNADamageS), and unrepairable telomere double
+strand breaks (TAF)
+```
+  p53 notes "represents p53"
+  vb5 notes "CycE is constitutively produced"
+  vb6 notes "CycE is constitutively degraded"
+  vb3 notes ```
+The production of Cdk2 is consititutive in some versions of the model but negatively
+regulated by p21 in other versions. The "hasProperty: negative regulation of
+cyclin-dependent kinase activity" annotation is thus only relevant for versions
+of the model where this negative feedback aspect is included.
+```
+  vb4 notes ```
+The degradation of Cdk is constitutive in some versions of the model but positively
+regulated by p21 in other versions. The "hasProperty: positive regulation of
+proteosome-mediated ubiquitin-dependent degradation" annotation is thus only
+relevant for versions of the model where p21 regulates the degradation process.
+```
+  vb7 notes "CycECdk2 complex association"
+  vb8 notes ```
+Surprisingly, there were no more specific annotations for the dissociation of a
+cyclin-CDK complex.
+```
+  vb1 notes ```
+CycECdk2 is activated by a CAK. The active form engages in a positive feedback
+loop, and the activation process can be inhibited by p21.
+```
+  vb2 notes "The CycECdk2 complex is deactivated by phosphorylation by Wee1."
+  va3 notes ```
+The DDR (DNA damage response) signal influences the accumulation of p53 by preventing
+its degradation.
+```
+  va2 notes "Slowly repairable DNA damage is repaired."
+  va1 notes "Quickly repairable DNA damage is repaired."
+  va5 notes ```
+The DDR (DNA damage response) signal influences accumulation of p53 which stimulates
+transcription of p21.
+```
+  va6 notes "p21 is constitutively deactivated"
+  va4 notes "DDR signal is constitutively deactivated"
+end
+
+MODEL1505080000 is "Kollarovic2016 - Cell fate decision at G1-S transition"

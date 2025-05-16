@@ -1,0 +1,121 @@
+// Created by libAntimony v3.0.0
+model *Zhang2007___Mechanism_of_DNA_damage_response__Model3()
+
+  // Compartments and Species:
+  compartment cyt, nuc;
+  species p53 in nuc, $DNAdamage in nuc, MDM2 in cyt;
+
+  // Assignment Rules:
+  DNAdamage := heav_x*max_;
+  heav_x := piecewise(0, x < 0, piecewise(1, x > 0, 0));
+  max_ := piecewise(0, 0 >= (Dam0 - krepair*(time - Tdam)), Dam0 - krepair*(time - Tdam));
+  kd2_0 := kd2*(1 + DNAdamage);
+  kd53_0 := kd53 + kd53_*G_u_v_q_r;
+  G_u_v_q_r := 2*u*r/((v - u) + v*q + u*r + (((v - u) + v*q + u*r)^2 - 4*u*r*(v - u))^0.5);
+  u := MDM2;
+  r := J2/p53;
+  v := Q;
+  q := J1/p53;
+  x := time - ModelValue_20;
+
+  // Reactions:
+  MDM2_production:  => MDM2; ks2 + ks2_*p53 + ks2__*MDM2^m/(Js2^m + MDM2^m);
+  MDM2_degradation: MDM2 => ; cyt*kd2_0*MDM2;
+  p53_production:  => p53; nuc*ks53;
+  p53_degradation: p53 => ; nuc*kd53_0*p53;
+
+  // Species initializations:
+  p53 = 0.36;
+  p53 has substance_per_volume;
+  DNAdamage has substance_per_volume;
+  MDM2 = 0.71;
+  MDM2 has substance_per_volume;
+
+  // Compartment initializations:
+  cyt = 1;
+  cyt has volume;
+  nuc = 1;
+  nuc has volume;
+
+  // Variable initializations:
+  kd53 = 0.005;
+  kd2 = 1.4;
+  ks2 = 0.01;
+  Js2 = 0.5;
+  m = 4;
+  kd53_ = 0.1;
+  Q = 0.5;
+  J1 = 0.1;
+  J2 = 0.1;
+  krepair = 0.0021429;
+  ks2_ = 0.5;
+  ks53 = 0.0276;
+  ks2__ = 1;
+  Tdam = 50;
+  Dam0 = 0.2;
+  ModelValue_20 = Tdam;
+
+  // Other declarations:
+  var heav_x, max_, kd2_0, kd53_0, G_u_v_q_r, u, r, v, q, x;
+  const cyt, nuc, kd53, kd2, ks2, Js2, m, kd53_, Q, J1, J2, krepair, ks2_;
+  const ks53, ks2__, Tdam, Dam0, ModelValue_20;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = litre;
+  unit time_unit = time_unit;
+  unit substance = mole;
+  unit extent = substance;
+  unit substance_per_volume = mole / litre;
+
+  // Display Names:
+  time_unit is "time";
+  heav_x is "heav(x)";
+  max_ is "max";
+  kd53 is "kd53'";
+  kd2 is "kd2'";
+  kd2_0 is "kd2";
+  ks2 is "ks2'";
+  kd53_0 is "kd53";
+  kd53_ is "kd53''";
+  G_u_v_q_r is "G(u,v,q,r)";
+  ks2_ is "ks2''";
+  ks2__ is "ks2'''";
+  ModelValue_20 is "Initial for Tdam";
+  MDM2_production is "MDM2 production";
+  MDM2_degradation is "MDM2 degradation";
+  p53_production is "p53 production";
+  p53_degradation is "p53 degradation";
+
+  // CV terms:
+  cyt identity "http://identifiers.org/go/GO:0005829"
+  nuc identity "http://identifiers.org/go/GO:0005634"
+  p53 identity "http://identifiers.org/uniprot/P04637"
+  DNAdamage identity "http://identifiers.org/ncit/C16507"
+  MDM2 identity "http://identifiers.org/uniprot/Q00987"
+  MDM2_production biological_system "http://identifiers.org/sbo/SBO:0000393"
+  MDM2_degradation biological_system "http://identifiers.org/sbo/SBO:0000179"
+  p53_production biological_system "http://identifiers.org/sbo/SBO:0000393"
+  p53_degradation biological_system "http://identifiers.org/sbo/SBO:0000179"
+
+  model publication "http://identifiers.org/pubmed/17245126"
+  model property "http://identifiers.org/mamo/MAMO_0000046"
+  model property "http://identifiers.org/pw/PW:0001360"
+  model property "http://identifiers.org/pw/PW:0000718"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model created "2021-04-19T16:25:25Z"
+  model modified "2021-04-19T16:25:25Z"
+  model creator1.givenName "Krishna"
+  model creator1.familyName "Tiwari"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "ktiwari@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+```Its a mechanistic model explaining the impact of p53 om apoptosis decision. This 
+model represents schema 1 of manuscript.```
+```
+end
+
+Zhang2007___Mechanism_of_DNA_damage_response__Model3 is "Zhang2007 - Mechanism of DNA damage response (Model3)"

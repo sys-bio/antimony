@@ -1,0 +1,312 @@
+// Created by libAntimony v3.0.0
+model *BIOMD0000000009()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species E1 in compartment_, E2 in compartment_, KKK in compartment_, P_KKK in compartment_;
+  species KK in compartment_, P_KK in compartment_, PP_KK in compartment_;
+  species K in compartment_, P_K in compartment_, PP_K in compartment_, KPase in compartment_;
+  species KKPase in compartment_, E1_KKK in compartment_, E2_P_KKK in compartment_;
+  species P_KKK_KK in compartment_, P_KKK_P_KK in compartment_, PP_KK_K in compartment_;
+  species PP_KK_P_K in compartment_, KKPase_PP_KK in compartment_, KKPase_P_KK in compartment_;
+  species KPase_PP_K in compartment_, KPase_P_K in compartment_, $K_PP_norm in compartment_;
+  species $KK_PP_norm in compartment_, $KKK_P_norm in compartment_, $rel_K_PP_max in compartment_;
+
+  // Assignment Rules:
+  K_PP_norm := (PP_K + KPase_PP_K)/(PP_K + P_K + K + PP_KK_K + PP_KK_P_K + KPase_PP_K + KPase_P_K);
+  KK_PP_norm := (PP_KK + PP_KK_K + PP_KK_P_K + KKPase_PP_KK)/(PP_KK + P_KK + KK + PP_KK_K + PP_KK_P_K + P_KKK_KK + P_KKK_P_KK + KKPase_PP_KK + KKPase_P_KK);
+  KKK_P_norm := (P_KKK + P_KKK_KK + P_KKK_P_KK)/(KKK + P_KKK + P_KKK_KK + P_KKK_P_KK);
+  rel_K_PP_max := K_PP_norm/K_PP_norm_max;
+
+  // Reactions:
+  r1a: KKK + E1 -> E1_KKK; compartment_*(r1a_a1*E1*KKK - r1a_d1*E1_KKK);
+  r1b: E1_KKK => E1 + P_KKK; compartment_*r1b_k2*E1_KKK;
+  r2a: P_KKK + E2 -> E2_P_KKK; compartment_*(r2a_a2*E2*P_KKK - r2a_d2*E2_P_KKK);
+  r2b: E2_P_KKK => E2 + KKK; compartment_*r2b_k2*E2_P_KKK;
+  r3a: KK + P_KKK -> P_KKK_KK; compartment_*(r3a_a3*KK*P_KKK - r3a_d3*P_KKK_KK);
+  r3b: P_KKK_KK => P_KK + P_KKK; compartment_*r3b_k3*P_KKK_KK;
+  r4a: P_KK + KKPase -> KKPase_P_KK; compartment_*(r4a_a4*P_KK*KKPase - r4a_d4*KKPase_P_KK);
+  r4b: KKPase_P_KK => KK + KKPase; compartment_*r4b_k4*KKPase_P_KK;
+  r5a: P_KK + P_KKK -> P_KKK_P_KK; compartment_*(r5a_a5*P_KK*P_KKK - r5a_d5*P_KKK_P_KK);
+  r5b: P_KKK_P_KK => PP_KK + P_KKK; compartment_*r5b_k5*P_KKK_P_KK;
+  r6a: PP_KK + KKPase -> KKPase_PP_KK; compartment_*(r6a_a6*PP_KK*KKPase - r6a_d6*KKPase_PP_KK);
+  r6b: KKPase_PP_KK => P_KK + KKPase; compartment_*r6b_k6*KKPase_PP_KK;
+  r7a: K + PP_KK -> PP_KK_K; compartment_*(r7a_a7*K*PP_KK - r7a_d7*PP_KK_K);
+  r7b: PP_KK_K => P_K + PP_KK; compartment_*r7b_k7*PP_KK_K;
+  r8a: P_K + KPase -> KPase_P_K; compartment_*(r8a_a8*P_K*KPase - r8a_d8*KPase_P_K);
+  r8b: KPase_P_K => K + KPase; compartment_*r8b_k8*KPase_P_K;
+  r9a: P_K + PP_KK -> PP_KK_P_K; compartment_*(r9a_a9*P_K*PP_KK - r9a_d9*PP_KK_P_K);
+  r9b: PP_KK_P_K => PP_KK + PP_K; compartment_*r9b_k9*PP_KK_P_K;
+  r10a: PP_K + KPase -> KPase_PP_K; compartment_*(r10a_a10*PP_K*KPase - r10a_d10*KPase_PP_K);
+  r10b: KPase_PP_K => P_K + KPase; compartment_*r10b_k10*KPase_PP_K;
+
+  // Species initializations:
+  E1 = 3e-05;
+  E2 = 0.0003;
+  KKK = 0.003;
+  P_KKK = 0;
+  KK = 1.2;
+  P_KK = 0;
+  PP_KK = 0;
+  K = 1.2;
+  P_K = 0;
+  PP_K = 0;
+  KPase = 0.12;
+  KKPase = 0.0003;
+  E1_KKK = 0;
+  E2_P_KKK = 0;
+  P_KKK_KK = 0;
+  P_KKK_P_KK = 0;
+  PP_KK_K = 0;
+  PP_KK_P_K = 0;
+  KKPase_PP_KK = 0;
+  KKPase_P_KK = 0;
+  KPase_PP_K = 0;
+  KPase_P_K = 0;
+
+  // Compartment initializations:
+  compartment_ = 4e-12;
+
+  // Variable initializations:
+  K_PP_norm_max = 0.900049;
+  r1a_a1 = 1000;
+  r1a_d1 = 150;
+  r1b_k2 = 150;
+  r2a_a2 = 1000;
+  r2a_d2 = 150;
+  r2b_k2 = 150;
+  r3a_a3 = 1000;
+  r3a_d3 = 150;
+  r3b_k3 = 150;
+  r4a_a4 = 1000;
+  r4a_d4 = 150;
+  r4b_k4 = 150;
+  r5a_a5 = 1000;
+  r5a_d5 = 150;
+  r5b_k5 = 150;
+  r6a_a6 = 1000;
+  r6a_d6 = 150;
+  r6b_k6 = 150;
+  r7a_a7 = 1000;
+  r7a_d7 = 150;
+  r7b_k7 = 150;
+  r8a_a8 = 1000;
+  r8a_d8 = 150;
+  r8b_k8 = 150;
+  r9a_a9 = 1000;
+  r9a_d9 = 150;
+  r9b_k9 = 150;
+  r10a_a10 = 1000;
+  r10a_d10 = 150;
+  r10b_k10 = 150;
+
+  // Other declarations:
+  const compartment_, K_PP_norm_max;
+
+  // Unit definitions:
+  unit substance = 1e-6 mole;
+
+  // Display Names:
+  substance is "micromole";
+  E1 is "MAPKKK activator (Ras)";
+  E2 is "MAPKKK inactivator";
+  KKK is "Mos";
+  P_KKK is "Mos-P";
+  KK is "Mek1";
+  P_KK is "Mek1-P";
+  PP_KK is "Mek1-PP";
+  K is "Erk2";
+  P_K is "Erk2-P";
+  PP_K is "Erk2-PP";
+  KPase is "MAPK-Pase";
+  KKPase is "MAPKK-Pase";
+  E1_KKK is "E1_Mos";
+  E2_P_KKK is "E2_Mos-P";
+  P_KKK_KK is "P-Mos_Mek1";
+  P_KKK_P_KK is "P-Mos_P-Mek1";
+  PP_KK_K is "PP-Mek1_Erk2";
+  PP_KK_P_K is "PP-Mek1_P-Erk2";
+  KKPase_PP_KK is "MAPKK-Pase_PP-Mek1";
+  KKPase_P_KK is "MAPKK-Pase_P-Mek1";
+  KPase_PP_K is "MAPK-Pase_PP-Erk2";
+  KPase_P_K is "MAPK-Pase_P-Erk2";
+  rel_K_PP_max is "relative maximal K_PP";
+  r1a is "binding of MAPKKK activator";
+  r1b is "MAPKKK activation";
+  r2a is "binding of MAPKKK inactivator";
+  r2b is "MAPKKK inactivation";
+  r3a is "binding P-MAPKKK and MAPKK";
+  r3b is "phosphorylation of MAPKK";
+  r4a is "binding MAPKK-Pase and P-MAPKK";
+  r4b is "dephosphorylation of P-MAPKK";
+  r5a is "binding P-MAPKKK and P-MAPKK";
+  r5b is "phosphorylation of P-MAPKK";
+  r6a is "binding MAPKK-Pase and PP-MAPKK";
+  r6b is "dephosphorylation of PP-MAPKK";
+  r7a is "binding MAPK and PP-MAPKK";
+  r7b is "phosphorylation of MAPK";
+  r8a is "binding MAPK-Pase and P-MAPK";
+  r8b is "dephosphorylation of P-MAPK";
+  r9a is "binding PP-MAPKK and P-MAPK";
+  r9b is "phosphorylation of P-MAPK";
+  r10a is "binding MAPK-Pase and PP-MAPK";
+  r10b is "dephosphorylation of PP-MAPK";
+
+  // CV terms:
+  E1 biological_system "http://identifiers.org/interpro/IPR003577"
+  KKK biological_system "http://identifiers.org/uniprot/P12965"
+  P_KKK biological_system "http://identifiers.org/uniprot/P12965"
+  KK biological_system "http://identifiers.org/uniprot/Q05116"
+  P_KK biological_system "http://identifiers.org/uniprot/Q05116"
+  PP_KK biological_system "http://identifiers.org/uniprot/Q05116"
+  K biological_system "http://identifiers.org/uniprot/P26696"
+  P_K biological_system "http://identifiers.org/uniprot/P26696"
+  PP_K biological_system "http://identifiers.org/uniprot/P26696"
+  KPase identity "http://identifiers.org/uniprot/Q90W58"
+  E1_KKK part "http://identifiers.org/uniprot/P12965",
+              "http://identifiers.org/interpro/IPR003577"
+  E2_P_KKK part "http://identifiers.org/uniprot/P12965"
+  P_KKK_KK part "http://identifiers.org/uniprot/P12965",
+                "http://identifiers.org/uniprot/Q05116"
+  P_KKK_P_KK part "http://identifiers.org/uniprot/P12965",
+                  "http://identifiers.org/uniprot/Q05116"
+  PP_KK_K part "http://identifiers.org/uniprot/Q05116",
+               "http://identifiers.org/uniprot/P26696"
+  PP_KK_P_K part "http://identifiers.org/uniprot/Q05116",
+                 "http://identifiers.org/uniprot/P26696"
+  KKPase_PP_KK part "http://identifiers.org/uniprot/Q05116"
+  KKPase_P_KK part "http://identifiers.org/uniprot/Q05116"
+  KPase_PP_K part "http://identifiers.org/uniprot/Q90W58",
+                  "http://identifiers.org/uniprot/P26696"
+  KPase_P_K part "http://identifiers.org/uniprot/P26696",
+                 "http://identifiers.org/uniprot/Q90W58"
+  r1a homolog "http://identifiers.org/reactome/REACT_996"
+  r1a biological_system "http://identifiers.org/go/GO:0031435"
+  r1b homolog "http://identifiers.org/reactome/REACT_525"
+  r1b biological_system "http://identifiers.org/ec-code/2.7.11.1",
+                        "http://identifiers.org/go/GO:0008349",
+                        "http://identifiers.org/go/GO:0000185"
+  r2a biological_system "http://identifiers.org/go/GO:0031435"
+  r2b biological_system "http://identifiers.org/ec-code/3.1.3.16",
+                        "http://identifiers.org/go/GO:0051390",
+                        "http://identifiers.org/go/GO:0006470"
+  r3a homolog "http://identifiers.org/reactome/REACT_143"
+  r3a biological_system "http://identifiers.org/go/GO:0031434",
+                        "http://identifiers.org/go/GO:0031435"
+  r3b homolog "http://identifiers.org/reactome/REACT_614"
+  r3b biological_system "http://identifiers.org/ec-code/2.7.11.25",
+                        "http://identifiers.org/go/GO:0006468",
+                        "http://identifiers.org/go/GO:0004709"
+  r4a biological_system "http://identifiers.org/go/GO:0031434"
+  r4b biological_system "http://identifiers.org/ec-code/3.1.3.16",
+                        "http://identifiers.org/go/GO:0006470"
+  r5a homolog "http://identifiers.org/reactome/REACT_143"
+  r5a biological_system "http://identifiers.org/go/GO:0031435",
+                        "http://identifiers.org/go/GO:0031434"
+  r5b homolog "http://identifiers.org/reactome/REACT_614"
+  r5b biological_system "http://identifiers.org/ec-code/2.7.11.25",
+                        "http://identifiers.org/go/GO:0006468",
+                        "http://identifiers.org/go/GO:0004709",
+                        "http://identifiers.org/go/GO:0000186"
+  r6a biological_system "http://identifiers.org/go/GO:0031434"
+  r6b biological_system "http://identifiers.org/ec-code/3.1.3.16",
+                        "http://identifiers.org/go/GO:0006470",
+                        "http://identifiers.org/go/GO:0051389"
+  r7a version "http://identifiers.org/reactome/REACT_1780",
+              "http://identifiers.org/reactome/REACT_495"
+  r7a biological_system "http://identifiers.org/go/GO:0031434",
+                        "http://identifiers.org/go/GO:0051019"
+  r7b version "http://identifiers.org/reactome/REACT_136",
+              "http://identifiers.org/reactome/REACT_2247"
+  r7b biological_system "http://identifiers.org/ec-code/2.7.12.2",
+                        "http://identifiers.org/go/GO:0006468",
+                        "http://identifiers.org/go/GO:0004708"
+  r8a biological_system "http://identifiers.org/go/GO:0051019"
+  r8b biological_system "http://identifiers.org/ec-code/3.1.3.16",
+                        "http://identifiers.org/go/GO:0006470"
+  r9a version "http://identifiers.org/reactome/REACT_1780",
+              "http://identifiers.org/reactome/REACT_495"
+  r9a biological_system "http://identifiers.org/go/GO:0051019",
+                        "http://identifiers.org/go/GO:0031434"
+  r9b biological_system "http://identifiers.org/ec-code/2.7.12.2",
+                        "http://identifiers.org/go/GO:0006468",
+                        "http://identifiers.org/go/GO:0004708",
+                        "http://identifiers.org/go/GO:0000187"
+  r9b version "http://identifiers.org/reactome/REACT_136",
+              "http://identifiers.org/reactome/REACT_2247"
+  r10a biological_system "http://identifiers.org/go/GO:0051019"
+  r10b biological_system "http://identifiers.org/ec-code/3.1.3.16",
+                         "http://identifiers.org/go/GO:0006470",
+                         "http://identifiers.org/go/GO:0000188"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL6615048798"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000009"
+  model publication "http://identifiers.org/pubmed/8816754"
+  model homolog "http://identifiers.org/reactome/REACT_634"
+  model biological_system "http://identifiers.org/go/GO:0000165"
+  model taxon "http://identifiers.org/taxonomy/8355"
+  model created "2005-02-10T23:39:30Z"
+  model modified "2015-06-02T12:02:44Z"
+  model creator1.givenName "Rainer"
+  model creator1.familyName "Machne"
+  model creator1.organization "University of Vienna"
+  model creator1.email "raim@tbi.univie.ac.at"
+
+  // Notes:
+  model notes ```
+Huang1996 - Ultrasensitivity in MAPK cascade 
+
+
+The temporal sequence of kinase activation, from MAPKKK (activated RAF) to the final
+effector MAPK (activated ERK), is described here. It is observed from the model that
+there is an increase in sensitivity along the levels of the cascade, where the activity
+of MAPK reaches its maximal before MAPKKK.
+
+
+This model is described in the article:
+
+
+[Ultrasensitivity in the mitogen-activated protein kinase cascade.](http://identifiers.org/pubmed/8816754 "Access to this publication") 
+
+
+Huang CY, Ferrell JE Jr 
+
+Proc. Natl. Acad. Sci. U.S.A. 1996:93(19):10078-83 
+Abstract:
+
+
+The mitogen-activated protein kinase (MAPK) cascade is a highly conserved series
+of three protein kinases implicated in diverse biological processes. Here we demonstrate
+that the cascade arrangement has unexpected consequences for the dynamics of MAPK
+signaling. We solved the rate equations for the cascade numerically and found that
+MAPK is predicted to behave like a highly cooperative enzyme, even though it was
+not assumed that any of the enzymes in the cascade were regulated cooperatively.
+Measurements of MAPK activation in Xenopus oocyte extracts confirmed this prediction.
+The stimulus/response curve of the MAPK was found to be as steep as that of a cooperative
+enzyme with a Hill coefficient of 4-5, well in excess of that of the classical allosteric
+protein hemoglobin. The shape of the MAPK stimulus/ response curve may make the cascade
+particularly appropriate for mediating processes like mitogenesis, cell fate induction,
+and oocyte maturation, where a cell switches from one discrete state to another.
+
+
+The species K_PP_norm, KKK_P_norm and KK_PP_norm are the relative concentrations
+of the active MAPK, MAPKK and MAPKKK, that is the double, or single resp. phophorylated
+forms divided by the total concentrations of each kinase. For MAPK additionally the
+also active MAPK divided by the maximal concentration of active MAPK is given by
+rel_K_PP_max. The parameter K_PP_norm_max, the maximal ratio of active MapK, has
+to be calculated for each change of parameters.
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identified by: [BIOMD0000000009](http://identifiers.org/biomodels.db/BIOMD0000000009) . 
+
+To cite BioModels Database, please use: [BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models](http://identifiers.org/pubmed/20587024 "Latest BioModels Database publication") . 
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+  K_PP_norm_max notes "the maximal value of K_PP_norm at a stimulation conc. of 10."
+end
+
+BIOMD0000000009 is "Huang1996 - Ultrasensitivity in MAPK cascade"

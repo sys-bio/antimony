@@ -1,0 +1,153 @@
+// Created by libAntimony v3.0.0
+model *Jenner2018___treatment_of_oncolytic_virus()
+
+  // Compartments and Species:
+  compartment tme;
+  species V in tme, S in tme, I in tme, $T in tme;
+
+  // Assignment Rules:
+  T := I + S;
+
+  // Reactions:
+  virus_burst:  => V; tme*(a*di*I);
+  virus_decay: V => ; tme*dv*V;
+  tumor_growth:  => S; tme*(r*S*ln(L/S));
+  tumor_infection: S => I; tme*(b*S*V/T);
+  infected_tumor_death: I => ; tme*di*I;
+
+  // Events:
+  virus_treatment_1: at time >= 2, persistent=false, fromTrigger=false: V = V0;
+  virus_treatment_2: at time >= 4, persistent=false, fromTrigger=false: V = V0;
+
+  // Species initializations:
+  V = V0;
+  V has substance_per_volume;
+  S = S0;
+  S has substance_per_volume;
+  I = 0;
+  I has substance_per_volume;
+  T has substance_per_volume;
+
+  // Compartment initializations:
+  tme = 1;
+  tme has volume;
+
+  // Variable initializations:
+  V0 = 0;
+  V0 has unit_0;
+  S0 = 251000000;
+  S0 has unit_0;
+  dv = 0;
+  dv has unit_1;
+  a = 0;
+  a has unit_0;
+  di = 0;
+  di has unit_1;
+  r = 0.037;
+  r has unit_1;
+  L = 3490000000;
+  L has unit_0;
+  b = 0;
+  b has unit_1;
+
+  // Other declarations:
+  const tme, V0, S0, dv, a, di, r, L, b;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1 / dimensionless^-0;
+  unit time_unit = time_unit;
+  unit substance = 1e-3 mole;
+  unit unit_0 = 1 / dimensionless^-0;
+  unit unit_1 = 1 / 86400 second;
+  unit extent = substance;
+  unit substance_per_volume = 1e-3 mole / dimensionless^0;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1";
+  unit_1 is "1/d";
+  virus_treatment_1 is "virus treatment 1";
+  virus_treatment_2 is "virus treatment 2";
+  virus_burst is "virus burst";
+  virus_decay is "virus decay";
+  tumor_growth is "tumor growth";
+  tumor_infection is "tumor infection";
+  infected_tumor_death is "infected tumor death";
+
+  // CV terms:
+  tme biological_system "http://identifiers.org/ncit/C94498"
+  V biological_system "http://identifiers.org/ncit/C717"
+  V0 biological_system "http://identifiers.org/ncit/C717"
+  S biological_system "http://identifiers.org/cl/CL:0001063"
+  S0 biological_system "http://identifiers.org/cl/CL:0001063"
+  I biological_system "http://identifiers.org/cl/CL:0001063"
+  T biological_system "http://identifiers.org/cl/CL:0001063"
+  dv biological_system "http://identifiers.org/ncit/C25636"
+  a biological_system "http://identifiers.org/ncit/C84380"
+  di biological_system "http://identifiers.org/ncit/C25636"
+  r biological_system "http://identifiers.org/sbo/SBO:0000610"
+  L biological_system "http://identifiers.org/sbo/SBO:0000661"
+  b biological_system "http://identifiers.org/ncit/C25636"
+  virus_burst biological_system "http://identifiers.org/sbo/SBO:0000393"
+  virus_decay biological_system "http://identifiers.org/sbo/SBO:0000179"
+  tumor_growth biological_system "http://identifiers.org/go/GO:0008283"
+  tumor_growth biological_system "http://identifiers.org/sbo/SBO:0000393"
+  infected_tumor_death biological_system "http://identifiers.org/sbo/SBO:0000179"
+  infected_tumor_death biological_system "http://identifiers.org/go/GO:0000821"
+
+  model publication "http://identifiers.org/pubmed/29644518"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model property "http://identifiers.org/ncit/C62713",
+                 "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2019-08-12T09:06:43Z"
+  model modified "2019-08-12T09:06:43Z"
+  model creator1.givenName "Jinghao"
+  model creator1.familyName "Men"
+  model creator1.organization "University of Cambridge"
+  model creator1.email "jm2187@cam.ac.uk"
+
+  // Notes:
+  model notes ```
+The paper describes a model of oncolytic virotherapy. Created by COPASI 4.26 (Build
+213) This model is described in the article: Mathematical Modelling of the Interaction
+Between Cancer Cells and an Oncolytic Virus: Insights into the Effects of Treatment
+ProtocolsAdrianne L. Jenner, Chae-Ok Yun, Peter S. Kim, Adelle C. F. CosterBull Math
+Biol (2018) 80:1615–1629Abstract: Oncolyticvirotherapyisanexperimentalcancertreatmentthatusesgenet-
+ically engineered viruses to target and kill cancer cells. One major limitation of
+this treatment is that virus particles are rapidly cleared by the immune system,
+preventing them from arriving at the tumour site. To improve virus survival and infectivity
+Kim et al. (Biomaterials 32(9):2314–2326, 2011) modified virus particles with the
+polymer polyethylene glycol (PEG) and the monoclonal antibody herceptin. Whilst PEG
+mod- ification appeared to improve plasma retention and initial infectivity, it also
+increased the virus particle arrival time. We derive a mathematical model that describes
+the inter- action between tumour cells and an oncolytic virus. We tune our model
+to represent the experimental data by Kim et al. (2011) and obtain optimised parameters.
+Our model provides a platform from which predictions may be made about the response
+of cancer growth to other treatment protocols beyond those in the experiments. Through
+model simulations, we find that the treatment protocol affects the outcome dramatically.
+We quantify the effects of dosage strategy as a function of tumour cell replication
+and tumour carrying capacity on the outcome of oncolytic virotherapy as a treatment.
+The relative significance of the modification of the virus and the crucial role it
+plays in optimising treatment efficacy are explored.To cite BioModels Database, please
+use: BioModels Database: An enhanced, curated and annotated resource for published
+quantitative kinetic models . To the extent possible under law, all copyright and
+related or neighbouring rights to this encoded model have been dedicated to the public
+domain worldwide. Please refer to CC0 Public Domain Dedication for more information.
+```
+  V notes "```oncolytic virus```"
+  V0 notes "```virus particle, 0 for PBS, 1e10 for others```"
+  S notes "```susceptible cell non infected```"
+  S0 notes "```initial tumor size, 1e6\*251 for PBS, 200 for Ad, 223 for Ad-PEG, 153 for Ad-PEG-HER```"
+  I notes "```infected cell```"
+  T notes "```total tumor cell```"
+  dv notes "```viral decay rate, 0 for PBS, 1.38 for others```"
+  a notes "```viral burst size0 for PBS, 3.5e9 for others```"
+  di notes "```burst rate, 0 for PBS, 0.1 for others```"
+  r notes "```growth rate of tumor```"
+  L notes "```capacity of cells```"
+  b notes "```infection rate0.562 for Ad, 0.771 for Ad-PEG, 0.862 for Ad-PEG-HER0 for PBS```"
+end
+
+Jenner2018___treatment_of_oncolytic_virus is "Jenner2018 - treatment of oncolytic virus"

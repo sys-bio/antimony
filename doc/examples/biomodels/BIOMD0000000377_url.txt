@@ -1,0 +1,152 @@
+// Created by libAntimony v3.0.0
+model *Bertram2000_PancreaticBetaCells_Oscillations()
+
+  // Compartments and Species:
+  compartment Compartment;
+  species $V in Compartment, $n in Compartment, $s1 in Compartment, $s2 in Compartment;
+
+  // Assignment Rules:
+  ICa := gCa*minf*(V - VCa);
+  IK := gK*n*(V - VK);
+  Il := gl*(V - Vl);
+  Is1 := gs1*s1*(V - VK);
+  Is2 := gs2*s2*(V - VK);
+  ninf := 1/(1 + exp((Vn - V)/sn));
+  taun := tnbar/(1 + exp((V - Vn)/sn));
+  s1inf := 1/(1 + exp((Vs1 - V)/ss1));
+  s2inf := 1/(1 + exp((Vs2 - V)/ss2));
+  minf := 1/(1 + exp((Vm - V)/sm));
+  parameter_1 := Is1 + Is2;
+
+  // Rate Rules:
+  V' = -(ICa + IK + Il + Is1 + Is2)/Cm;
+  n' = (ninf - n)/taun;
+  s1' = (s1inf - s1)/taus1;
+  s2' = (s2inf - s2)/taus2;
+
+  // Species initializations:
+  V = -43/Compartment;
+  n = 0.03/Compartment;
+  s1 = 0.1/Compartment;
+  s2 = 0.434/Compartment;
+
+  // Compartment initializations:
+  Compartment = 1;
+
+  // Variable initializations:
+  Cm = 4524;
+  taus1 = 1000;
+  taus2 = 120000;
+  Vm = -22;
+  VCa = 100;
+  gCa = 280;
+  sm = 7.5;
+  gK = 1300;
+  VK = -80;
+  lambda = 1.1;
+  tnbar = 8.3;
+  Vn = -9;
+  sn = 10;
+  gs1 = 20;
+  Vs1 = -40;
+  ss1 = 0.5;
+  Vs2 = -42;
+  ss2 = 0.4;
+  gs2 = 32;
+  gl = 25;
+  Vl = -40;
+
+  // Other declarations:
+  var ICa, IK, Il, Is1, Is2, ninf, taun, s1inf, s2inf, minf, parameter_1;
+  const Compartment, Cm, taus1, taus2, Vm, VCa, gCa, sm, gK, VK, lambda, tnbar;
+  const Vn, sn, gs1, Vs1, ss1, Vs2, ss2, gs2, gl, Vl;
+
+  // Display Names:
+  parameter_1 is "I1+I2";
+
+  // SBO terms:
+  V.sboTerm = 259
+  Cm.sboTerm = 258
+  taus1.sboTerm = 9
+  taus2.sboTerm = 9
+  Vm.sboTerm = 9
+  VCa.sboTerm = 9
+  gCa.sboTerm = 9
+  sm.sboTerm = 9
+  VK.sboTerm = 9
+  lambda.sboTerm = 9
+  tnbar.sboTerm = 9
+  Vn.sboTerm = 9
+  sn.sboTerm = 9
+  gs1.sboTerm = 9
+  Vs1.sboTerm = 9
+  ss1.sboTerm = 9
+  Vs2.sboTerm = 9
+  ss2.sboTerm = 9
+  gs2.sboTerm = 9
+  gl.sboTerm = 9
+  Vl.sboTerm = 9
+
+  // CV terms:
+  V biological_system "http://identifiers.org/pato/PATO:0001462"
+  n biological_system "http://identifiers.org/go/GO:0005251"
+  s1 biological_system "http://identifiers.org/pato/PATO:0001227"
+  s2 biological_system "http://identifiers.org/pato/PATO:0001227"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL0911270001"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000377"
+  model publication "http://identifiers.org/pubmed/11106596"
+  model origin "http://identifiers.org/pubmed/1850840"
+  model biological_system "http://identifiers.org/go/GO:0061469",
+                          "http://identifiers.org/go/GO:0044342",
+                          "http://identifiers.org/go/GO:0003323"
+  model container "http://identifiers.org/bto/BTO:0000783"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model created "2011-09-29T22:15:05Z"
+  model modified "2014-05-28T20:48:36Z"
+  model creator1.givenName "Ishan"
+  model creator1.familyName "Ajmera"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "ajmera@ebi.ac.uk"
+  model creator2.givenName "Catherine"
+  model creator2.familyName "Lloyd"
+  model creator2.organization "The University of Auckland,The Bioengineering Institute"
+  model creator2.email "c.lloyd@aukland.ac.nz"
+
+  // Notes:
+  model notes ```
+This a model from the article: 
+** The phantom burster model for pancreatic beta-cells.** 
+Bertram R, Previte J, Sherman A, Kinard TA, Satin LS. *Biophys J*2000 Dec;79(6):2880-92
+[11106596](http://www.ncbi.nlm.nih.gov/pubmed/11106596), 
+**Abstract:** 
+Pancreatic beta-cells exhibit bursting oscillations with a wide range ofperiods.
+Whereas periods in isolated cells are generally either a few seconds ora few minutes,
+in intact islets of Langerhans they are intermediate (10-60 s).We develop a mathematical
+model for beta-cell electrical activity capable ofgenerating this wide range of bursting
+oscillations. Unlike previous models,bursting is driven by the interaction of two
+slow processes, one with arelatively small time constant (1-5 s) and the other with
+a much larger timeconstant (1-2 min). Bursting on the intermediate time scale is
+generated withoutneed for a slow process having an intermediate time constant, hence
+phantombursting. The model suggests that isolated cells exhibiting a fast pattern
+maynonetheless possess slower processes that can be brought out by injectingsuitable
+exogenous currents. Guided by this, we devise an experimental protocolusing the dynamic
+clamp technique that reliably elicits islet-like, mediumperiod oscillations from
+isolated cells. Finally, we show that strong electricalcoupling between a fast burster
+and a slow burster can produce synchronizedmedium bursting, suggesting that islets
+may be composed of cells that areintrinsically either fast or slow, with few or none
+that are intrinsicallymedium. 
+
+This model was taken from the [CellML repository](http://www.cellml.org/models) and automatically converted to SBML. 
+The original model was: [ **Bertram R, Previte J, Sherman A, Kinard TA,
+Satin LS. (2000) - version02** ](http://www.cellml.org/models/bertram_previte_sherman_kinard_satin_2000_version02)
+
+This model originates from BioModels Database: A Database of Annotated Published
+Models (http://www.ebi.ac.uk/biomodels/). It is copyright (c) 2005-2011 The BioModels.net
+Team. 
+For more information see the [terms of use](http://www.ebi.ac.uk/biomodels/legal.html). 
+To cite BioModels Database, please use: [Li C, Donizelli M, Rodriguez N, Dharuri H, Endler L, Chelliah V, Li L, He E, Henry A, Stefan MI, Snoep JL, Hucka M, Le Novère N, Laibe C (2010) BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models. BMC Syst Biol., 4:92.](http://www.ncbi.nlm.nih.gov/pubmed/20587024)
+```
+end
+
+Bertram2000_PancreaticBetaCells_Oscillations is "Bertram2000_PancreaticBetaCells_Oscillations"

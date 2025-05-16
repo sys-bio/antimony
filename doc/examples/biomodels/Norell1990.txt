@@ -1,0 +1,82 @@
+// Created by libAntimony v3.0.0
+model *Norel1990___MPF_and_Cyclin_Oscillations()
+
+  // Compartments and Species:
+  compartment cell;
+  species M in cell, C in cell;
+
+  // Reactions:
+  Cylin_synthesis:  => C; cell*i;
+  Cyclin_degradation: C => ; cell*M;
+  MPF_synthesis_1:  => M; cell*(e*C);
+  MPF_synthesis_2:  => M; cell*(f*C*M^2);
+  MPF_degradation: M => ; cell*(g*M/(M + 1));
+
+  // Species initializations:
+  M = 0.4;
+  C = 0.8;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  e = 3.46616;
+  f = 1;
+  g = 10;
+  i = 1.2;
+
+  // Other declarations:
+  const cell, e, f, g, i;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  Cylin_synthesis is "Cylin synthesis";
+  Cyclin_degradation is "Cyclin degradation";
+  MPF_synthesis_1 is "MPF synthesis 1";
+  MPF_synthesis_2 is "MPF synthesis 2";
+  MPF_degradation is "MPF degradation";
+
+  // CV terms:
+  cell property "http://identifiers.org/ncit/C48694"
+  M biological_system "http://identifiers.org/go/GO:0031387"
+  C property "http://identifiers.org/ncit/C17349"
+  e property "http://identifiers.org/ncit/C94967"
+  f property "http://identifiers.org/ncit/C94967"
+  g property "http://identifiers.org/ncit/C94967"
+  i property "http://identifiers.org/ncit/C94967"
+  Cylin_synthesis property "http://identifiers.org/ncit/C61408"
+  Cyclin_degradation property "http://identifiers.org/ncit/C61559"
+  MPF_synthesis_1 property "http://identifiers.org/ncit/C61408"
+  MPF_synthesis_2 property "http://identifiers.org/ncit/C61408"
+  MPF_degradation property "http://identifiers.org/ncit/C61559"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1812120004",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000728"
+  model property "http://identifiers.org/mamo/MAMO_0000046"
+  model property "http://identifiers.org/go/GO:0000278"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model description "http://identifiers.org/pubmed/1825521"
+  model created "2018-11-09T11:47:19Z"
+  model modified "2018-11-09T11:47:19Z"
+  model creator1.givenName "Ashley"
+  model creator1.familyName "Xavier"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "ashleythomasxavier@gmail.com"
+
+  // Notes:
+  model notes ```
+```A mathematical model of cell cycle progression is presented, which integrates 
+recent biochemical information on the interaction of the maturation promotion factor 
+(MPF) and cyclin. The model retrieves the dynamics observed in early embryos and 
+explains how multiple cycles of MPF activity can be produced and how the internal 
+clock that determines durations and number of cycles can be adjusted by modulating 
+the rate of change in MPF or cyclin concentrations. Experiments are suggested for 
+verifying the role of MPF activity in determining the length of the somatic cell 
+cycle.```
+```
+end
+
+Norel1990___MPF_and_Cyclin_Oscillations is "Norel1990 - MPF and Cyclin Oscillations"

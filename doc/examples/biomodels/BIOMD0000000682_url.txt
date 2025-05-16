@@ -1,0 +1,181 @@
+// Created by libAntimony v3.0.0
+model *Wierschem2004_PancreaticIslets_ActionPotentials()
+
+  // Compartments and Species:
+  compartment COMpartment;
+
+  // Assignment Rules:
+  phi := ATP*(1 + k*ADP)^2;
+  I_Ca := g_Ca_*m_infinity*(V_membrane - V_Ca);
+  I_K := g_K_*n*(V_membrane - V_K);
+  I_KCa := g_KCa_*omega*(V_membrane - V_K);
+  I_KATP := (V_membrane - V_K)*g_KATP_/ATP;
+  m_infinity := 1/(1 + exp((v_m - V_membrane)/s_m));
+  omega := 1/(1 + k_D/c);
+  n_infinity := 1/(1 + exp((v_n - V_membrane)/s_n));
+  J_mem := -f*(alpha*I_Ca + k_c*c);
+
+  // Rate Rules:
+  ATP' = (v - phi)/(1000*tau_c);
+  ADP' = (phi - eta*ADP)/(1000*tau_c);
+  V_membrane' = -(I_Ca + I_K + I_KCa + I_KATP)/C_m;
+  n' = (n_infinity - n)/tau_n;
+  c' = J_mem;
+
+  // Compartment initializations:
+  COMpartment = 1;
+  COMpartment has litre;
+
+  // Variable initializations:
+  tau_c = 1200;
+  eta = 185;
+  v = 10;
+  k = 20;
+  ATP = 2.1047;
+  ADP = 0.085817;
+  C_m = 5300;
+  V_membrane = -67.018;
+  g_Ca_ = 1200;
+  V_Ca = 25;
+  v_m = -20;
+  s_m = 12;
+  g_K_ = 3000;
+  V_K = -75;
+  n = 0.00011;
+  g_KCa_ = 300;
+  k_D = 0.3;
+  c = 0.15666;
+  g_KATP_ = 350;
+  tau_n = 16;
+  v_n = -16;
+  s_n = 5.6;
+  f = 0.001;
+  alpha = 2.25e-06;
+  k_c = 0.1;
+
+  // Other declarations:
+  var phi, ATP, ADP, V_membrane, I_Ca, I_K, I_KCa, I_KATP, m_infinity, n;
+  var omega, c, n_infinity, J_mem;
+  const COMpartment, tau_c, eta, v, k, C_m, g_Ca_, V_Ca, v_m, s_m, g_K_, V_K;
+  const g_KCa_, k_D, g_KATP_, tau_n, v_n, s_n, f, alpha, k_c;
+
+  // Unit definitions:
+  unit millisecond = 1e-3 second;
+  unit per_millisecond = 1 / 1e-3 second;
+  unit millivolt = 1e-3 volt;
+  unit picosiemens = 1e-12 siemens;
+  unit per_litre = 1 / litre;
+  unit micromolar = 1e-6 mole / litre;
+  unit femtoampere = 1e-15 ampere;
+  unit micromolar_per_fA_m = 1e-6 mole / (litre * 1e-15 ampere * 1e-3 second);
+  unit micromolar_per_m = 1e-6 mole / (litre * 1e-3 second);
+  unit femtofarad = 1e-15 farad;
+  unit time_unit = 1e-3 second;
+
+  // Display Names:
+  micromolar_per_fA_m is "micromolar_per_fA_ms";
+  micromolar_per_m is "micromolar_per_ms";
+  time_unit is "time";
+  COMpartment is "Pancreatic Islet Cell";
+  V_membrane is "V";
+
+  // CV terms:
+  COMpartment biological_system "http://identifiers.org/bto/BTO:0000991"
+  tau_c propertyBearer "http://identifiers.org/go/GO:0008443"
+  eta encodement "urn:miriam:sbo:SBO%3A0000179"
+  k encodement "urn:miriam:sbo:SBO%3A0000281"
+  phi class "http://identifiers.org/go/GO:0008443"
+  ATP biological_system "http://identifiers.org/kegg.compound/C00002"
+  ATP biological_system "http://identifiers.org/chebi/CHEBI:15422"
+  ADP biological_system "http://identifiers.org/kegg.compound/C00008"
+  ADP biological_system "http://identifiers.org/chebi/CHEBI:16761"
+  V_membrane biological_system "urn:miriam:sbo:SBO%3A0000259"
+  I_Ca part "http://identifiers.org/chebi/CHEBI:22984"
+  I_Ca biological_system "http://identifiers.org/ncit/C48434"
+  I_K part "http://identifiers.org/chebi/CHEBI:26216"
+  I_K biological_system "http://identifiers.org/ncit/C48434"
+  I_KCa class "http://identifiers.org/go/GO:0015269"
+  I_KCa part "http://identifiers.org/chebi/CHEBI:26216"
+  I_KCa biological_system "http://identifiers.org/ncit/C48434"
+  I_KATP part "http://identifiers.org/chebi/CHEBI:26216"
+  I_KATP biological_system "http://identifiers.org/ncit/C48434"
+  g_Ca_ encodement "urn:miriam:sbo:SBO%3A0000257"
+  m_infinity encodement "urn:miriam:sbo:SBO%3A0000391"
+  g_K_ encodement "urn:miriam:sbo:SBO%3A0000257"
+  n encodement "http://identifiers.org/go/GO:0005267"
+  g_KCa_ encodement "urn:miriam:sbo:SBO%3A0000257"
+  omega encodement "urn:miriam:sbo:SBO%3A0000488"
+  c biological_system "http://identifiers.org/chebi/CHEBI:22984"
+  c container "http://identifiers.org/go/GO:0005829"
+  g_KATP_ encodement "urn:miriam:sbo:SBO%3A0000257"
+  tau_n propertyBearer "http://identifiers.org/go/GO:0005267"
+  n_infinity encodement "urn:miriam:sbo:SBO%3A0000391"
+  J_mem biological_system "http://identifiers.org/go/GO:0070509"
+  k_c encodement "http://identifiers.org/go/GO:1901660"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1006230006"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000682"
+  model publication "http://identifiers.org/pubmed/15178199"
+  model origin "http://identifiers.org/pubmed/6305437"
+  model origin "http://identifiers.org/pubmed/4263005"
+  model model_source "http://identifiers.org/biomodels.db/MODEL1006230006"
+  model biological_system "http://identifiers.org/go/GO:0098900"
+  model container "http://identifiers.org/bto/BTO:0000991"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model description "http://identifiers.org/pubmed/15178199"
+  model created "2010-06-25T12:07:02Z"
+  model modified "2018-03-14T09:28:43Z"
+  model creator1.givenName "Ethan"
+  model creator1.familyName "Choi"
+  model creator1.organization "The University of Auckland"
+  model creator1.email "mcho099@aucklanduni.ac.nz"
+  model creator2.givenName "Matthew Grant"
+  model creator2.familyName "Roberts"
+  model creator2.organization "EMBL-EBI"
+  model creator2.email "mroberts@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+This a model from the article: 
+**Complex bursting in pancreatic islets: a potential glycolytic mechanism.**
+
+Wierschem K, Bertram R. *J Theor Biol* 2004 Jun 21;228(4):513-21
+[15178199](http://www.ncbi.nlm.nih.gov/pubmed/15178199) , 
+**Abstract:** 
+The electrical activity of insulin-secreting pancreatic islets of Langerhans
+ischaracterized by bursts of action potentials. Most often this bursting isperiodic,
+but in some cases it is modulated by an underlying slower rhythm. Wesuggest that
+the modulatory rhythm for this complex bursting pattern is due tooscillations in
+glycolysis, while the bursting itself is generated by some otherslow process. To
+demonstrate this hypothesis, we couple a minimal model ofglycolytic oscillations
+to a minimal model for activity-dependent bursting inislets. We show that the combined
+model can reproduce several complex burstingpatterns from mouse islets published
+in the literature, and we illustrate howthese complex oscillations are produced through
+the use of a fast/slow analysis. 
+
+This model was taken from the [CellML repository](http://www.cellml.org/models) and automatically converted to SBML. 
+The original model was: [ **Wierschem K, Bertram R. () - version=1.0**
+](http://models.cellml.org/exposure/8208bdd04deaa0851f1f935b263d6035) 
+The original CellML model was created by: 
+**Ethan Choi** 
+mcho099@aucklanduni.ac.nz 
+The University of Auckland 
+
+
+This model originates from BioModels Database: A Database of Annotated Published
+Models (http://www.ebi.ac.uk/biomodels/). It is copyright (c) 2005-2011 The BioModels.net
+Team. 
+To the extent possible under law, all copyright and related or neighbouring
+rights to this encoded model have been dedicated to the public domain worldwide.
+Please refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Creative Commons CC0") for more information. 
+
+In summary, you are entitled to use this encoded model in absolutely any manner you
+deem suitable, verbatim, or with modification, alone or embedded it in a larger context,
+redistribute it, commercially or not, in a restricted way or not.. 
+
+To cite BioModels Database, please use: [Li C, Donizelli M, Rodriguez N, Dharuri H, Endler L, Chelliah V, Li L, He E, Henry A, Stefan MI, Snoep JL, Hucka M, Le Novère N, Laibe C (2010) BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models. BMC Syst Biol., 4:92.](http://www.ncbi.nlm.nih.gov/pubmed/20587024)
+```
+  alpha notes "```converts current to flux```"
+end
+
+Wierschem2004_PancreaticIslets_ActionPotentials is "Wierschem2004 - Electrical bursting activity in Pancreatic Islets"

@@ -1,0 +1,158 @@
+// Created by libAntimony v3.0.0
+model *model_0000001()
+
+  // Compartments and Species:
+  compartment cell;
+  species c3 in cell, c2 in cell, c1 in cell, o in cell, i in cell, $ik in cell;
+
+  // Assignment Rules:
+  ik := Gk*o*(v - vk);
+  Gk := 1.35e-2*ko^0.59;
+  vk := (R*Temp/F)*ln(ko/ki);
+  a := 5.55e-2*exp(0.05547153*(v - 12));
+  b := 2.357e-3*exp(-0.036588*v);
+  aa := 6.55e-2*exp(0.05547153*(v - 36));
+  bb := 2.9357e-3*exp(-0.02158*v);
+  ai := 0.439*exp(-0.02352*(v + 25))*4.5/ko;
+  bi := 0.656*exp(0.000942*v)*(4.5/ko)^0.3;
+  u := ai*bb*aa/(aa*bi);
+
+  // Reactions:
+  reaction_0000001: c3 -> c2; (a*c3 - b*c2)*cell;
+  reaction_0000002: c2 -> c1; (ain*c2 - bin*c1)*cell;
+  reaction_0000003: c1 -> o; (c1*aa - bb*o)*cell;
+  reaction_0000004: o -> i; (o*bi - ai*i)*cell;
+  reaction_0000005: c1 -> i; (aa*c1 - u*i)*cell;
+
+  // Events:
+  event_0000001: at (time > 50) && (time <= 300): v = vtest;
+  event_0000002: at time > 300: v = vhold;
+
+  // Species initializations:
+  c3 = 1;
+  c2 = 0;
+  c1 = 0;
+  o = 0.06;
+  i = 0;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  v = -40;
+  vtest = 0;
+  vhold = -40;
+  R = 8.314;
+  F = 96.485;
+  Temp = 310;
+  ko = 5.4;
+  ki = 140;
+  ain = 2.172;
+  bin = 1.077;
+
+  // Other declarations:
+  var Gk, v, vk, a, b, aa, bb, ai, bi, u;
+  const cell, vtest, vhold, R, F, Temp, ko, ki, ain, bin;
+
+  // Unit definitions:
+  unit time_unit = 1e-3 second;
+  unit mV = 1e-3 volt;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "ms";
+  substance is "mM";
+  c3 is "ClosedState_3";
+  c2 is "ClosedState_2";
+  c1 is "ClosedState_1";
+  o is "OpenState";
+  i is "InactivationState";
+  ik is "cardiac delayed rectifier current";
+  Gk is "membrane_conductance";
+  v is "membrane_potential";
+  vk is "reversal potential for k";
+  vtest is "test_potential";
+  vhold is "holding_potential";
+  R is "gas constant";
+  F is "Faraday constant";
+  Temp is "temperature";
+  ko is "extracellular K";
+  ki is "introcellular K";
+  reaction_0000001 is "c3-c2 transition";
+  reaction_0000002 is "c2-c1 transition";
+  reaction_0000003 is "c1-o transition";
+  reaction_0000004 is "o-i transition";
+  reaction_0000005 is "c1-i transition";
+
+  // CV terms:
+  cell biological_system "http://identifiers.org/go/GO:0005623"
+  c3 biological_system "http://identifiers.org/interpro/IPR003967",
+                       "http://identifiers.org/go/GO:0008076"
+  c2 biological_system "http://identifiers.org/interpro/IPR003967",
+                       "http://identifiers.org/go/GO:0008076"
+  c1 biological_system "http://identifiers.org/interpro/IPR003967",
+                       "http://identifiers.org/go/GO:0008076"
+  o biological_system "http://identifiers.org/interpro/IPR003967",
+                      "http://identifiers.org/go/GO:0008076"
+  i biological_system "http://identifiers.org/interpro/IPR003967",
+                      "http://identifiers.org/go/GO:0008076"
+  reaction_0000001 biological_system "http://identifiers.org/go/GO:0015459",
+                                     "http://identifiers.org/go/GO:0043266"
+  reaction_0000002 biological_system "http://identifiers.org/go/GO:0015459",
+                                     "http://identifiers.org/go/GO:0043266"
+  reaction_0000003 biological_system "http://identifiers.org/go/GO:0015459",
+                                     "http://identifiers.org/go/GO:0043266"
+  reaction_0000004 biological_system "http://identifiers.org/go/GO:0015459",
+                                     "http://identifiers.org/go/GO:0043266"
+  reaction_0000005 biological_system "http://identifiers.org/go/GO:0043266",
+                                     "http://identifiers.org/go/GO:0015459"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL2898180293"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000121"
+  model publication "http://identifiers.org/pubmed/11334834"
+  model origin "http://identifiers.org/pubmed/7514509",
+               "http://identifiers.org/pubmed/7788872",
+               "http://identifiers.org/pubmed/10318671",
+               "http://identifiers.org/pubmed/10448858"
+  model homolog "http://identifiers.org/mim/152427"
+  model taxon "http://identifiers.org/taxonomy/10141"
+  model biological_system "http://identifiers.org/go/GO:0005251",
+                          "http://identifiers.org/go/GO:0043266",
+                          "http://identifiers.org/go/GO:0003015"
+  model version "http://identifiers.org/doid/DOID:0050434"
+  model property "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2007-06-20T09:51:21Z"
+  model modified "2017-04-27T18:37:54Z"
+  model creator1.givenName "Enuo"
+  model creator1.familyName "He"
+  model creator1.organization "BNMC"
+  model creator1.email "enuo@caltech.edu"
+
+  // Notes:
+  model notes ```
+This model is according to the paper *Cellular consequences of HEGR mutations
+in the long QT syndrome: precursors to sudden cardiac death.* The author
+used Markovian model of cardiac Ikr in the paper. Figure4B in the paper has been
+reproduced using CellDesigner3.5.1. The cell is depolarized to the indicated test
+potential for 250ms (from 50ms to 300ms) from a holding potential of -40mV and then
+repolarized to -40mV. Change the value for vtest from -30,-20,-10,0,10,20,30,40 for
+each simulation in order to produce the different cureve in the paper. 
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Creative Commons CC0") for more information. 
+
+In summary, you are entitled to use this encoded model in absolutely any manner you
+deem suitable, verbatim, or with modification, alone or embedded it in a larger context,
+redistribute it, commercially or not, in a restricted way or not.
+
+
+To cite BioModels Database, please use: [Li C, Donizelli M, Rodriguez N, Dharuri H, Endler L, Chelliah V, Li L, He E, Henry A, Stefan MI, Snoep JL, Hucka M, Le Novère N, Laibe C (2010) BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models. BMC Syst Biol., 4:92.](http://www.ncbi.nlm.nih.gov/pubmed/20587024)
+```
+  v notes "when (t gt 0) and ( t lt 50), v=vhold=-40"
+  event_0000001 notes "when ( t gt 50 ) and ( t lt 300 ), v=vtest"
+  event_0000002 notes "when t > 300, v=vhold."
+end
+
+model_0000001 is "Clancy2001_Kchannel"

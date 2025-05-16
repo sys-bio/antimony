@@ -1,0 +1,192 @@
+// Created by libAntimony v3.0.0
+model *Ciliberto2005___Steady_states_and_oscillations_in_the_p53_Mdm2_network()
+
+  // Compartments and Species:
+  compartment Cyt, Nuc;
+  species DNA_damage in Nuc, $IR in Nuc, p53_total in Nuc, p53_ub in Nuc;
+  species p53_ub_ub in Nuc, Mdm2_cyt in Cyt, Mdm2_p_cyt in Cyt, Mdm2_p_nuc in Nuc;
+  species $p53 in Nuc, $MDM2_total in Cyt;
+
+  // Assignment Rules:
+  IR := ampl*step;
+  p53 := p53_total - p53_ub - p53_ub_ub;
+  MDM2_total := Mdm2_cyt + (1/ModelValue_6)*Mdm2_p_nuc + Mdm2_p_cyt;
+  kd2_0 := kd2 + kd2_*DNA_damage/(Jdam + DNA_damage);
+
+  // Reactions:
+  DNA_Damage:  => DNA_damage; Nuc*(kDNA*IR);
+  DNA_Repair: DNA_damage => ; Nuc*(kdDNA*p53_total*(DNA_damage/(Jdna + DNA_damage)));
+  p53_total_production:  => p53_total; Nuc*ks53;
+  p53_total_degradation: p53_total => ; Nuc*kd53*p53_total;
+  p53_ubiquitination_1:  => p53_ub; Nuc*(Kf*Mdm2_p_nuc*p53);
+  p53_ubiquitination_2: p53_ub => p53_ub_ub; Nuc*(Kf*Mdm2_p_nuc*p53_ub);
+  p53_ub_degradation: p53_ub => ; Nuc*kd53*p53_ub;
+  p53_ub_ub_degradation: p53_ub_ub => ; Nuc*((kd53 + kd53_0)*p53_ub_ub);
+  p53_deubiquitination_1: p53_ub => ; Nuc*Kr*p53_ub;
+  p53_deubiquitination_2: p53_ub_ub => p53_ub; Nuc*Kr*p53_ub_ub;
+  Mdm2_cyt_production:  => Mdm2_cyt; ks2 + ks2_0*p53_total^m/(Js^m + p53_total^m);
+  Mdm2_cyt_phosphorylation: Mdm2_cyt => Mdm2_p_cyt; (kph/(Jph + p53_total))*Mdm2_cyt;
+  Mdm2_cyt_degradation: Mdm2_cyt => ; Cyt*kd2*Mdm2_cyt;
+  Mdm2_p_cyt_degradation: Mdm2_p_cyt => ; Cyt*kd2*Mdm2_p_cyt;
+  Mdm2_p_nuc_translocation_out: Mdm2_p_nuc => ; Nuc*(vratio*kout*Mdm2_p_nuc);
+  Mdm2_p_cyt_dephosphorylation: Mdm2_p_cyt => Mdm2_cyt; Cyt*kdeph*Mdm2_p_cyt;
+  Mdm2_p_cyt_translocation_out: Mdm2_p_cyt => ; Cyt*kin*Mdm2_p_cyt;
+  Mdm2_p_nuc_degradation: Mdm2_p_nuc => ; Nuc*kd2_0*Mdm2_p_nuc;
+  p53_total_degradation_2: p53_total => ; Nuc*(kd53_0*p53_ub_ub);
+  Mdm2_p_cyt_translocation_in:  => Mdm2_p_cyt; kout*Mdm2_p_nuc;
+  Mdm2_p_nuc_translocation_in:  => Mdm2_p_nuc; vratio*kin*Mdm2_p_cyt;
+
+  // Events:
+  event_: at 2 after time > 10, fromTrigger=false: step = 1;
+  event_1: at time > 20: step = 0;
+
+  // Species initializations:
+  DNA_damage = 0;
+  p53_total = 0.07118;
+  p53_ub = 0.02456;
+  p53_ub_ub = 0.006826;
+  Mdm2_cyt = 0.1161;
+  Mdm2_p_cyt = 0.01187;
+  Mdm2_p_nuc = 0.331800000000002;
+
+  // Compartment initializations:
+  Cyt = 1;
+  Nuc = 1;
+
+  // Variable initializations:
+  ampl = 1;
+  step = 0;
+  ModelValue_6 = vratio;
+  Kf = 8.8;
+  Kr = 2.5;
+  ks53 = 0.055;
+  kDNA = 0.18;
+  kdDNA = 0.017;
+  Jdna = 1;
+  vratio = 15;
+  kd53 = 0.0055;
+  ks2 = 0.0015;
+  ks2_0 = 0.006;
+  kd2 = 0.01;
+  kd2_ = 0.01;
+  kph = 0.05;
+  kdeph = 6;
+  kin = 14;
+  kout = 0.5;
+  kd53_0 = 8;
+  m = 3;
+  Js = 1.2;
+  Jdam = 0.2;
+  Jph = 0.01;
+  t_on = 10;
+  t_off = 20;
+
+  // Other declarations:
+  var step, kd2_0;
+  const Cyt, Nuc, ampl, ModelValue_6, Kf, Kr, ks53, kDNA, kdDNA, Jdna, vratio;
+  const kd53, ks2, ks2_0, kd2, kd2_, kph, kdeph, kin, kout, kd53_0, m, Js;
+  const Jdam, Jph, t_on, t_off;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = litre;
+  unit time_unit = second;
+  unit substance = mole;
+
+  // Display Names:
+  time_unit is "time";
+  ModelValue_6 is "Initial for vratio";
+  event_ is "event";
+  kd53 is "kd53'";
+  ks2 is "ks2'";
+  ks2_0 is "ks2";
+  kd2 is "kd2'";
+  kd2_ is "kd2''";
+  kd53_0 is "kd53";
+  kd2_0 is "kd2";
+  DNA_Damage is "DNA Damage";
+  DNA_Repair is "DNA Repair";
+  p53_total_production is "p53 total production";
+  p53_total_degradation is "p53 total degradation";
+  p53_ubiquitination_1 is "p53 ubiquitination 1";
+  p53_ubiquitination_2 is "p53 ubiquitination 2";
+  p53_ub_degradation is "p53_ub degradation";
+  p53_ub_ub_degradation is "p53_ub_ub degradation";
+  p53_deubiquitination_1 is "p53 deubiquitination 1";
+  p53_deubiquitination_2 is "p53 deubiquitination 2";
+  Mdm2_cyt_production is "Mdm2_cyt production";
+  Mdm2_cyt_phosphorylation is "Mdm2_cyt phosphorylation";
+  Mdm2_cyt_degradation is "Mdm2_cyt degradation";
+  Mdm2_p_cyt_degradation is "Mdm2_p_cyt degradation";
+  Mdm2_p_nuc_translocation_out is "Mdm2_p_nuc translocation out";
+  Mdm2_p_cyt_dephosphorylation is "Mdm2_p_cyt dephosphorylation";
+  Mdm2_p_cyt_translocation_out is "Mdm2_p_cyt translocation out";
+  Mdm2_p_nuc_degradation is "Mdm2_p_nuc degradation";
+  p53_total_degradation_2 is "p53 total degradation 2";
+  Mdm2_p_cyt_translocation_in is "Mdm2_p_cyt translocation in";
+  Mdm2_p_nuc_translocation_in is "Mdm2_p_nuc translocation in";
+
+  // CV terms:
+  Cyt identity "http://identifiers.org/go/GO:0005829"
+  Nuc identity "http://identifiers.org/go/GO:0005634"
+  DNA_damage biological_system "http://identifiers.org/ncit/C16507"
+  IR biological_system "http://identifiers.org/obi/OBI_0302889"
+  p53_total biological_system "http://identifiers.org/uniprot/P04637"
+  p53_ub biological_system "http://identifiers.org/uniprot/P04637"
+  p53_ub property "http://identifiers.org/pr/PR:000037077"
+  p53_ub_ub biological_system "http://identifiers.org/uniprot/P04637"
+  p53_ub_ub property "http://identifiers.org/pr/PR:000037077"
+  Mdm2_cyt identity "http://identifiers.org/uniprot/Q00987"
+  Mdm2_p_cyt biological_system "http://identifiers.org/uniprot/Q00987"
+  Mdm2_p_cyt property "http://identifiers.org/bao/0002007"
+  Mdm2_p_nuc biological_system "http://identifiers.org/uniprot/Q00987"
+  Mdm2_p_nuc property "http://identifiers.org/bao/0002007"
+  p53 identity "http://identifiers.org/uniprot/P04637"
+  MDM2_total biological_system "http://identifiers.org/uniprot/Q00987"
+  DNA_Damage biological_system "http://identifiers.org/ncit/C18754"
+  DNA_Repair biological_system "http://identifiers.org/ncit/NCIT:C16513"
+  p53_total_production class "http://identifiers.org/sbo/SBO:0000393"
+  p53_total_degradation class "http://identifiers.org/sbo/SBO:0000179"
+  p53_ubiquitination_1 class "http://identifiers.org/sbo/SBO:0000224"
+  p53_ubiquitination_2 class "http://identifiers.org/sbo/SBO:0000224"
+  p53_ub_degradation class "http://identifiers.org/sbo/SBO:0000179"
+  p53_ub_ub_degradation class "http://identifiers.org/sbo/SBO:0000179"
+  p53_deubiquitination_1 class "http://identifiers.org/go/GO:0016579"
+  p53_deubiquitination_2 class "http://identifiers.org/go/GO:0016579"
+  Mdm2_cyt_production class "http://identifiers.org/sbo/SBO:0000393"
+  Mdm2_cyt_phosphorylation class "http://identifiers.org/sbo/SBO:0000216"
+  Mdm2_cyt_degradation biological_system "http://identifiers.org/sbo/SBO:0000179"
+  Mdm2_p_cyt_degradation class "http://identifiers.org/sbo/SBO:0000179"
+  Mdm2_p_nuc_translocation_out class "http://identifiers.org/sbo/SBO:0000185"
+  Mdm2_p_cyt_dephosphorylation class "http://identifiers.org/sbo/SBO:0000330"
+  Mdm2_p_cyt_translocation_out class "http://identifiers.org/sbo/SBO:0000185"
+  Mdm2_p_nuc_degradation class "http://identifiers.org/sbo/SBO:0000179"
+  p53_total_degradation_2 class "http://identifiers.org/sbo/SBO:0000179"
+  Mdm2_p_cyt_translocation_in class "http://identifiers.org/sbo/SBO:0000185"
+  Mdm2_p_nuc_translocation_in class "http://identifiers.org/sbo/SBO:0000185"
+
+  model publication "http://identifiers.org/pubmed/15725723"
+  model model_source "http://identifiers.org/biomodels.db/MODEL2104140001",
+                     "http://identifiers.org/biomodels.db/BIOMD0000001006"
+  model property "http://identifiers.org/mamo/MAMO_0000046"
+  model container "http://identifiers.org/bto/BTO:0000414"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model property "http://identifiers.org/pw/PW:0000718",
+                 "http://identifiers.org/go/GO:0042769",
+                 "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2021-03-31T14:09:25Z"
+  model modified "2021-03-31T14:09:25Z"
+  model creator1.givenName "Krishna"
+  model creator1.familyName "Tiwari"
+  model creator1.organization "Babraham Institute"
+  model creator1.email "tiwarik@babraham.ac.uk"
+
+  // Notes:
+  model notes ```
+```Its a mathematial model studying steady state and oscialltions in p53-MDM2 network 
+triggered by IR induced DNA Damage.```
+```
+end
+
+Ciliberto2005___Steady_states_and_oscillations_in_the_p53_Mdm2_network is "Ciliberto2005 - Steady states and oscillations in the p53/Mdm2 network"

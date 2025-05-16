@@ -1,0 +1,103 @@
+// Created by libAntimony v3.0.0
+model *Sandip2013___Modeling_the_dynamics_of_hepatitis_C_virus_with_combined_antiviral_drug_therapy__interferon_and_ribavirin()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species T in compartment_, I in compartment_, VI in compartment_, VNI in compartment_;
+
+  // Reactions:
+  Formation_of_target_cells:  => T; compartment_*(s + r*T*(1 - (T + 1)/k));
+  Removal_of_target_cell: T => ; compartment_*(d1*T + (1 - c*n1)*alpha*VI*T);
+  Formation_infected_cell:  => I; compartment_*((1 - c*n1)*alpha*VI*T);
+  Removal_of_infected_cell: I => ; compartment_*(d2*I);
+  Formation_of_infected_virion:  => VI; compartment_*((1 - (nr + n1)/2)*beta*I);
+  Removal_of_infected_virion: VI => ; compartment_*(d3*VI);
+  Formation_of_non_infected_virion:  => VNI; compartment_*(((nr + n1)/2)*beta*I);
+  Removal_of_non_infected_virion: VNI => ; compartment_*(d3*VNI);
+
+  // Species initializations:
+  T = 1000000;
+  I = 1000000;
+  VI = 10000000;
+  VNI = 1000000;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  s = 1;
+  r = 1.99;
+  k = 36000000;
+  d1 = 0.01;
+  alpha = 2.25e-07;
+  d2 = 1;
+  beta = 2.9;
+  d3 = 6;
+  nr = 0;
+  c = 0.5;
+  n1 = 0.8;
+
+  // Other declarations:
+  const compartment_, s, r, k, d1, alpha, d2, beta, d3, nr, c, n1;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  Formation_of_target_cells is "Formation of target cells";
+  Removal_of_target_cell is "Removal of target cell";
+  Formation_infected_cell is "Formation infected cell";
+  Removal_of_infected_cell is "Removal of infected cell";
+  Formation_of_infected_virion is "Formation of infected virion";
+  Removal_of_infected_virion is "Removal of infected virion";
+  Formation_of_non_infected_virion is "Formation of non infected virion";
+  Removal_of_non_infected_virion is "Removal of non infected virion";
+
+  // CV terms:
+  T instance "http://identifiers.org/ncit/C12922"
+  I property "http://identifiers.org/bto/BTO:0000575"
+  Formation_of_target_cells property "http://identifiers.org/ncit/C25513"
+  Removal_of_target_cell instance "http://identifiers.org/ncit/C64914"
+  Formation_infected_cell property "http://identifiers.org/ncit/C25513"
+  Removal_of_infected_cell instance "http://identifiers.org/ncit/C64914"
+  Formation_of_infected_virion property "http://identifiers.org/ncit/C25513"
+  Removal_of_infected_virion instance "http://identifiers.org/ncit/C64914"
+  Formation_of_non_infected_virion property "http://identifiers.org/ncit/C25513"
+  Removal_of_non_infected_virion instance "http://identifiers.org/ncit/C64914"
+
+  model publication "http://identifiers.org/pubmed/23891586"
+  model model_source "http://identifiers.org/biomodels.db/MODEL1912130002",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000892"
+  model property "http://identifiers.org/mamo/MAMO_0000046"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model created "2019-12-12T10:28:46Z"
+  model modified "2019-12-12T10:28:46Z"
+  model creator1.givenName "Mohammad Umer"
+  model creator1.familyName "Sharif Shohan"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "msharifshohan@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+```Modeling the dynamics of hepatitis C virus with combined antiviral drug therapy: 
+interferon and ribavirin.Banerjee S1, Keval R, Gakkhar S.Author information1 Department 
+of Mathematics, Indian Institute of Technology Roorkee (IITR), Roorkee 247667, Uttaranchal, 
+India. Electronic address: sandofma@iitr.ernet.in.AbstractA mathematical modeling 
+of hepatitis C virus (HCV) dynamics and antiviral therapy has been presented in this 
+paper. The proposed model, which involves four coupled ordinary differential equations, 
+describes the interaction of target cells (hepatocytes), infected cells, infectious 
+virions and non-infectious virions. The model takes into consideration the addition 
+of ribavirin to interferon therapy and explains the dynamics regarding a biphasic 
+and triphasic decline of viral load in the model. A critical drug efficacy parameter 
+has been defined and it is shown that for an efficacy above this critical value, 
+HCV is eradicated whereas for efficacy lower this critical value, a new steady state 
+for infectious virions is reached, which is lower than the previous steady state 
+value.Copyright © 2013 Elsevier Inc. All rights reserved.KEYWORDS:Hepatitis C virus 
+(HCV); Infected cells; Infectious virions; Interferon; Noninfectious virions; Ribavirin; 
+Target cells```
+```
+end
+
+Sandip2013___Modeling_the_dynamics_of_hepatitis_C_virus_with_combined_antiviral_drug_therapy__interferon_and_ribavirin is "Sandip2013 - Modeling the dynamics of hepatitis C virus with combined antiviral drug therapy: interferon and ribavirin."

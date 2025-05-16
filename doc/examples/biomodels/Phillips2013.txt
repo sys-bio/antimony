@@ -1,0 +1,229 @@
+// Created by libAntimony v3.0.0
+model *Phillips2013___physiologically_based_modeling_explaining_Mammalian_rest_activity_patterns()
+
+  // Compartments and Species:
+  compartment individual;
+  species V_v in individual, V_m in individual, H in individual, n in individual;
+  species X in individual, Y in individual;
+
+  // Assignment Rules:
+  B := (1 - ModelValue_5*X)*(1 - ModelValue_5*Y)*B_circumflex;
+  B_circumflex := ModelValue_4*alpha*(1 - n);
+  alpha := ModelValue_40*(I_tilded/ModelValue_41)^ModelValue_42*(I_tilded/(I_tilded + I_one));
+  I_tilded := Omega*ModelValue_37*piecewise(I - 24*3600*ceil(I/(24*3600)), xor((I < 0), ((24*3600) < 0)), I - 24*3600*floor(I/(24*3600)));
+  Qm := ModelValue_1/(1 + exp((ModelValue_2 - V_m)/ModelValue_3));
+
+  // Reactions:
+  Vm_deg: V_m => ; individual*((1/tau_m)*V_m);
+  Vv_deg: V_v => ; individual*((1/tau_v)*V_v);
+  Vm_Vv:  => V_v; individual*((v_vm*Q_max/(1 + exp((theta - V_m)/sigma_comma)) + v_vd*(a*k*(X + delta) + b) + v_vh*eta*H + v_vb*eta*B + D_null)/tau_v);
+  Vv_Vm:  => V_m; individual*((v_mv*Q_max/(1 + exp((theta - V_v)/sigma_comma)) + v_md*(a*k*(X + delta) + b) + A_null)/tau_m);
+  Vm_H:  => H; individual*(mu*Q_max/(1 + exp((theta - V_m)/sigma_comma))/chi);
+  H_deg: H => ; individual*((1/chi)*H);
+  X_syn:  => X; individual*((gamma_*(X/3 + (4/3)*X^3 - (256/105)*X^7) + B + rho*(1/3 - Theta)*(1 - tanh(q*X)))/kappa);
+  Y_syn:  => Y; individual*(B*Y/3/kappa);
+  n_deg: n => ; individual*(60*(alpha + beta)*n);
+  n_syn:  => n; individual*(60*alpha);
+  Y_X:  => X; individual*(Y/kappa);
+  X_Y:  => Y; individual*(-X*((day/(f*tau_c))^2 + h*B)/kappa);
+
+  // Events:
+  asleep: at 0 after (ModelValue_1/(1 + exp(ModelValue_2 - V_m/ModelValue_3))) <= 1: Omega = 0.03, Theta = 1;
+  awake: at 0 after (ModelValue_1/(1 + exp(ModelValue_2 - V_m/ModelValue_3))) > 1: Omega = 1, Theta = 0;
+  day_0: at 0 after time < (12*3600): I = 1;
+  night: at 0 after time >= (12*3600): I = 0;
+
+  // Species initializations:
+  V_v = 3.82007920893978;
+  V_m = -17.5981186613022;
+  H = 5.57377096632541;
+  n = 0;
+  X = -0.644229940134898;
+  Y = -0.803527836803535;
+
+  // Compartment initializations:
+  individual = 1;
+
+  // Variable initializations:
+  ModelValue_1 = Q_max;
+  ModelValue_2 = theta;
+  ModelValue_3 = sigma_comma;
+  Theta = 0;
+  Omega = 0;
+  I = 0;
+  Q_max = 100;
+  Q_max has unit_0;
+  theta = 10;
+  theta has unit_1;
+  sigma_comma = 3;
+  sigma_comma has unit_1;
+  G = 37;
+  r = 0.4;
+  h = 0.55;
+  q = 10;
+  rho = 0.032;
+  kappa = (12/pi)*3600;
+  kappa has unit_2;
+  f = 0.99729;
+  tau_c = 24.2;
+  tau_c has unit_3;
+  gamma_ = 0.13;
+  delta = -0.7;
+  a = 1;
+  k = 17;
+  k has unit_0;
+  b = 4.8;
+  b has unit_0;
+  v_vd = -0.17;
+  v_vd has unit_4;
+  v_md = -0.08;
+  v_md has unit_4;
+  v_vb = 0;
+  v_vb has unit_4;
+  eta = 1;
+  eta has unit_0;
+  A_null = 1.3;
+  A_null has unit_1;
+  D_null = -4.8;
+  D_null has unit_1;
+  chi = 22*3600;
+  chi has unit_2;
+  mu = 4.4;
+  mu has unit_2;
+  v_vh = 1;
+  v_vh has unit_4;
+  v_vm = -2.1;
+  v_vm has unit_4;
+  v_mv = -1.8;
+  v_mv has unit_4;
+  tau_v = 10;
+  tau_v has unit_2;
+  tau_m = 10;
+  tau_m has unit_2;
+  B has unit_0;
+  ModelValue_5 = r;
+  B_circumflex has unit_0;
+  alpha has unit_0;
+  ModelValue_40 = alpha_null;
+  I_tilded has unit_5;
+  ModelValue_41 = I_null;
+  ModelValue_42 = p;
+  I_one = 10;
+  I_one has unit_5;
+  beta = 0.4/3600;
+  beta has unit_0;
+  day = 24;
+  day has unit_3;
+  Qm has unit_0;
+  ModelValue_4 = G;
+  I_on = 0;
+  I_on has unit_5;
+  ModelValue_37 = I_on;
+  alpha_null = 6/3600;
+  alpha_null has unit_0;
+  I_null = 9500;
+  I_null has unit_5;
+  p = 0.5;
+
+  // Other declarations:
+  var Theta, Omega, I, B, B_circumflex, alpha, I_tilded, Qm;
+  const individual, ModelValue_1, ModelValue_2, ModelValue_3, Q_max, theta;
+  const sigma_comma, G, r, h, q, rho, kappa, f, tau_c, gamma_, delta, a, k;
+  const b, v_vd, v_md, v_vb, eta, A_null, D_null, chi, mu, v_vh, v_vm, v_mv;
+  const tau_v, tau_m, ModelValue_5, ModelValue_40, ModelValue_41, ModelValue_42;
+  const I_one, beta, day, ModelValue_4, I_on, ModelValue_37, alpha_null, I_null;
+  const p;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = litre;
+  unit time_unit = second;
+  unit substance = 1 / dimensionless^-0;
+  unit unit_0 = 1 / second;
+  unit unit_1 = 1e-3 volt;
+  unit unit_2 = second;
+  unit unit_3 = 3600 second;
+  unit unit_4 = 1e-3 volt * second;
+  unit unit_5 = lux;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1/s";
+  unit_1 is "mV";
+  unit_2 is "s";
+  unit_3 is "h";
+  unit_4 is "mV*s";
+  unit_5 is "lx";
+  individual is "Default";
+  V_v is "V_v(mean_cell_body_potential_VLPO)";
+  V_m is "V_m(mean_cell_body_potential_MA)";
+  H is "H(sleep_homeostatic_drive)";
+  n is "n(fraction_of_photoreceptors_that_are_activated)";
+  X is "x(SCN_activity)";
+  Y is "y(complement_of_x)";
+  ModelValue_1 is "Initial for Q_max";
+  ModelValue_2 is "Initial for theta";
+  ModelValue_3 is "Initial for sigma_comma";
+  day_0 is "day";
+  gamma_ is "gamma";
+  ModelValue_5 is "Initial for r";
+  ModelValue_40 is "Initial for alpha_null";
+  ModelValue_41 is "Initial for I_null";
+  ModelValue_42 is "Initial for p";
+  ModelValue_4 is "Initial for G";
+  ModelValue_37 is "Initial for I_on";
+  Vm_deg is "V_m_Degradation";
+  Vv_deg is "V_v_Degradation";
+  Vm_Vv is "V_v_Regulation";
+  Vv_Vm is "V_m_Regulation";
+  Vm_H is "H_Regulation_by_V_m";
+  H_deg is "H_Degradation";
+  X_syn is "x_Production";
+  Y_syn is "y_Production";
+  n_deg is "n_Degradation";
+  n_syn is "n_Production";
+  Y_X is "x_Regulation_by_y";
+  X_Y is "y_Regulation_by_x";
+
+  // SBO terms:
+  Vm_deg.sboTerm = 179
+  Vv_deg.sboTerm = 179
+  H_deg.sboTerm = 179
+  n_deg.sboTerm = 179
+  n_syn.sboTerm = 393
+
+  // CV terms:
+  V_v property "http://identifiers.org/UBERON:8440014"
+  H biological_system "http://identifiers.org/go/GO:0160060"
+  n property "http://identifiers.org/ncit/C32954"
+  X property "http://identifiers.org/ncit/C74537"
+  alpha property "http://identifiers.org/SBO:0000656"
+  Vm_deg identity "http://identifiers.org/SBO:0000179"
+  Vv_deg identity "http://identifiers.org/SBO:0000179"
+  Vm_Vv biological_system "http://identifiers.org/go/GO:0009966"
+  Vv_Vm biological_system "http://identifiers.org/go/GO:0009966"
+  Vm_H biological_system "http://identifiers.org/go/GO:0009966"
+  H_deg identity "http://identifiers.org/SBO:0000179"
+  X_syn property "http://identifiers.org/SBO:0000393"
+  Y_syn property "http://identifiers.org/SBO:0000393"
+  n_deg identity "http://identifiers.org/SBO:0000179"
+  n_syn identity "http://identifiers.org/SBO:0000393"
+  Y_X biological_system "http://identifiers.org/go/GO:0009966"
+  X_Y biological_system "http://identifiers.org/go/GO:0009966"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL2003080001",
+                     "http://identifiers.org/biomodels.db/BIOMD0000001072"
+  model taxon "http://identifiers.org/taxonomy/40674"
+  model description "http://identifiers.org/pubmed/24039566"
+  model property "http://identifiers.org/go/GO:0042745",
+                 "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2023-01-02T12:34:17Z"
+  model modified "2023-01-02T12:34:17Z"
+  model creator1.givenName "Zsófia"
+  model creator1.familyName "Bujtár"
+  model creator1.organization "Max-Delbrück-Centrum für Molekulare Medizin in der Helmholtz-Gemeinschaft"
+  model creator1.email "Zsofia.Bujtar@mdc-berlin.de"
+end
+
+Phillips2013___physiologically_based_modeling_explaining_Mammalian_rest_activity_patterns is "Phillips2013 - physiologically based modeling explaining Mammalian rest/activity patterns"

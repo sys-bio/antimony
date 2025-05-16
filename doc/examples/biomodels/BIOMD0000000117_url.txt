@@ -1,0 +1,126 @@
+// Created by libAntimony v3.0.0
+model *model_0000001()
+
+  // Compartments and Species:
+  compartment extracellular, Cytosol, intracellular_Ca_storepool;
+  species z in Cytosol, y in intracellular_Ca_storepool;
+
+  // Assignment Rules:
+  beta := flag*0.96*exp(-0.2*(time - tstim));
+
+  // Reactions:
+  reaction_0000001:  => z; v1*beta*Cytosol;
+  reaction_0000002:  => z; v0*Cytosol;
+  reaction_0000003: y => z; kf*y*Cytosol;
+  reaction_0000004: z => y; intracellular_Ca_storepool*VM2*z^n/(K2^n + z^n);
+  reaction_0000005: y => z; Cytosol*VM3*(y^m/(KR^m + y^m))*(z^p/(KA^p + z^p));
+  reaction_0000006: z => ; k*z*extracellular;
+
+  // Events:
+  event_0000001: at time > tstim: flag = 1;
+
+  // Species initializations:
+  z = 0.1;
+  y = 1.4;
+
+  // Compartment initializations:
+  extracellular = 1;
+  Cytosol = 1;
+  intracellular_Ca_storepool = 1;
+
+  // Variable initializations:
+  tstim = 4;
+  flag = 0;
+  v0 = 1;
+  v1 = 7.3;
+  VM2 = 65;
+  VM3 = 500;
+  KR = 2;
+  KA = 0.9;
+  K2 = 1;
+  kf = 1;
+  k = 10;
+  n = 2;
+  m = 2;
+  p = 4;
+
+  // Other declarations:
+  var flag, beta;
+  const extracellular, Cytosol, intracellular_Ca_storepool, tstim, v0, v1;
+  const VM2, VM3, KR, KA, K2, kf, k, n, m, p;
+
+  // Unit definitions:
+  unit substance = 1e-6 mole;
+
+  // Display Names:
+  substance is "microM";
+  z is "Ca in the cytosol";
+  y is "Ca in the InsP3-insensitive pool";
+  tstim is "stimulation time";
+  reaction_0000001 is "InsP3 modulated release of Ca from the InsP3 sensitive store";
+  reaction_0000002 is "Constant input of Ca from the extracellular medium";
+  reaction_0000003 is "Leak Ca from pool to cytosol";
+  reaction_0000004 is "Pumping Ca into the InsP3-insensitive store";
+  reaction_0000005 is "Release of Ca from the pool into the cytosol";
+  reaction_0000006 is "Transport of cytosolic ca into the extracellular medium";
+
+  // CV terms:
+  extracellular biological_system "http://identifiers.org/go/GO:0005576"
+  Cytosol biological_system "http://identifiers.org/go/GO:0005829"
+  intracellular_Ca_storepool biological_system "http://identifiers.org/go/GO:0044424"
+  z identity "http://identifiers.org/chebi/CHEBI:29108",
+             "http://identifiers.org/kegg.compound/C00076"
+  y identity "http://identifiers.org/chebi/CHEBI:29108",
+             "http://identifiers.org/kegg.compound/C00076"
+  reaction_0000001 biological_system "http://identifiers.org/go/GO:0006816",
+                                     "http://identifiers.org/go/GO:0007204"
+  reaction_0000002 biological_system "http://identifiers.org/go/GO:0006816",
+                                     "http://identifiers.org/go/GO:0007204"
+  reaction_0000003 biological_system "http://identifiers.org/go/GO:0006816",
+                                     "http://identifiers.org/go/GO:0007204"
+  reaction_0000004 biological_system "http://identifiers.org/go/GO:0005388",
+                                     "http://identifiers.org/go/GO:0006816",
+                                     "http://identifiers.org/go/GO:0051481"
+  reaction_0000005 biological_system "http://identifiers.org/go/GO:0006816",
+                                     "http://identifiers.org/go/GO:0007204"
+  reaction_0000006 biological_system "http://identifiers.org/go/GO:0006816",
+                                     "http://identifiers.org/go/GO:0051481"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL0466937756"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000117"
+  model publication "http://identifiers.org/pubmed/1647878"
+  model taxon "http://identifiers.org/taxonomy/131567"
+  model biological_system "http://identifiers.org/go/GO:0019722",
+                          "http://identifiers.org/go/GO:0048763"
+  model created "2007-05-22T13:36:51Z"
+  model modified "2012-07-05T16:48:14Z"
+  model creator1.givenName "Enuo"
+  model creator1.familyName "He"
+  model creator1.organization "BNMC"
+  model creator1.email "enuo@caltech.edu"
+
+  // Notes:
+  model notes ```
+This model is according to the paper *Signal-induced Ca2+ oscillations: Properties
+of a model based on Ca2+-induced Ca2+ release.* Figure4B in the paper has
+been reproduced by RoadRunner and MathSBML. Damped Ca2+ oscillations elicited by
+a transient pulse of InsP3 applied intracellularly to a resting, non-oscillatory
+cell. 
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Creative Commons CC0") for more information. 
+
+In summary, you are entitled to use this encoded model in absolutely any manner you
+deem suitable, verbatim, or with modification, alone or embedded it in a larger context,
+redistribute it, commercially or not, in a restricted way or not.
+
+
+To cite BioModels Database, please use: [Li C, Donizelli M, Rodriguez N, Dharuri H, Endler L, Chelliah V, Li L, He E, Henry A, Stefan MI, Snoep JL, Hucka M, Le Novère N, Laibe C (2010) BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models. BMC Syst Biol., 4:92.](http://www.ncbi.nlm.nih.gov/pubmed/20587024)
+```
+  flag notes "when flag=0, beta=0, flag=1, beta=beta_f\*exp[-0.2\*(t-tp)]"
+  beta notes "saturation function of the InsP3 receptor"
+end
+
+model_0000001 is "Dupont1991_CaOscillation"
