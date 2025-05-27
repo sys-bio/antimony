@@ -34,6 +34,7 @@ UnitDef GetUnitDefFrom(const libsbml::UnitDefinition* unitdefinition, std::strin
 #endif
 
 void removeBooleanErrors(libsbml::SBMLDocument* doc);
+void removeSBOErrors(libsbml::SBMLDocument* doc);
 
 /// Remove all metaids from document - allows comparisons without metaids
 void elideMetaIds(libsbml::SBMLDocument* doc);

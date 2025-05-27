@@ -1543,10 +1543,16 @@ bool Module::Finalize()
         m_libsbml_warnings += error->getMessage();
         break;
       case 2: //LIBSBML_SEV_ERROR:
-        if (trueerrors != "") trueerrors += "\n";
-        trueerrors += error->getMessage();
-        //  m_libsbml_warnings += error->getMessage(); //If we want to disable fail-on-error again.
-        break;
+          if (error->getErrorId() >= 10700 && error->getErrorId() <= 10750) {
+              if (m_libsbml_warnings != "") m_libsbml_warnings += "\n";
+              m_libsbml_warnings += error->getMessage();
+          }
+          else {
+              if (trueerrors != "") trueerrors += "\n";
+              trueerrors += error->getMessage();
+          }
+          //  m_libsbml_warnings += error->getMessage(); //If we want to disable fail-on-error again.
+          break;
       case 3: //LIBSBML_SEV_FATAL:
         g_registry.SetError("Fatal error when creating an SBML document; unable to continue.  Error from libSBML:\n\n" + error->getMessage());
         delete testdoc;

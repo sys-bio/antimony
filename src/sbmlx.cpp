@@ -648,6 +648,32 @@ void removeBooleanErrors(SBMLDocument* doc)
   }
 }
 
+void removeSBOErrors(SBMLDocument* doc)
+{
+    SBMLErrorLog* log = doc->getErrorLog();
+    log->removeAll(10700);
+    log->removeAll(10701);
+    log->removeAll(10702);
+    log->removeAll(10703);
+    log->removeAll(10704);
+    log->removeAll(10705);
+    log->removeAll(10706);
+    log->removeAll(10707);
+    log->removeAll(10708);
+    log->removeAll(10709);
+    log->removeAll(10710);
+    log->removeAll(10711);
+    log->removeAll(10712);
+    log->removeAll(10713);
+    log->removeAll(10714);
+    log->removeAll(10715);
+    log->removeAll(10716);
+    log->removeAll(10717);
+    log->removeAll(10718);
+    log->removeAll(10719);
+    log->removeAll(10720);
+}
+
 void elideMetaIds(SBMLDocument* doc)
 {
   List* elts = doc->getAllElements();
