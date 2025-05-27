@@ -1138,11 +1138,11 @@ bool Registry::SetNewCurrentEvent(Formula* trigger, Variable* var)
       free(l3err);
       return true;
     }
-    else if (!ASTform->isBoolean() && !ASTform->isFunction()) {
-      g_registry.SetError("The formula \"" + trigger->ToDelimitedStringWithEllipses(".") + "\" cannot be parsed in a boolean context, and it is therefore illegal to use it as the trigger for an event.  (Perhaps try adding parentheses?)");
-      delete ASTform;
-      return true;
-    }
+    //else if (!ASTform->isBoolean() && !ASTform->isFunction()) {
+    //  g_registry.SetError("The formula \"" + trigger->ToDelimitedStringWithEllipses(".") + "\" cannot be parsed in a boolean context, and it is therefore illegal to use it as the trigger for an event.  (Perhaps try adding parentheses?)");
+    //  delete ASTform;
+    //  return true;
+    //}
     delete ASTform;
   }
 #endif

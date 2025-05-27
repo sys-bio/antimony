@@ -238,6 +238,19 @@ START_TEST (test_eventPersistent_txt)
 END_TEST
 
 
+START_TEST(test_event_nonBoolean)
+{
+    compareFileTranslation("event_nonBoolean");
+}
+END_TEST
+
+START_TEST(test_event_nonBoolean_txt)
+{
+    compareStringTranslation("at 5: x=3", "event_nonBoolean.xml");
+}
+END_TEST
+
+
 START_TEST (test_initialValue)
 {
   compareFileTranslation("initialValue");
