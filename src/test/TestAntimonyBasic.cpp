@@ -618,8 +618,31 @@ START_TEST(test_algrule_idname)
 }
 END_TEST
 
+START_TEST(test_name_as_id)
+{
+    //string sbml = "<?xml version = \"1.0\" encoding=\"UTF-8\"?>\n"
+    //    "<sbml xmlns=\"http://www.sbml.org/sbml/level3/version2/core\" level=\"3\" version=\"2\">\n"
+    //    "  <model metaid=\"foo\" name=\"2foo-4-U+ \"/>\n"
+    //    "</sbml>\n";
+    string sbml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<sbml xmlns=\"http://www.sbml.org/sbml/level3/version2/core\" level=\"3\" version=\"2\">\n"
+        "  <model metaid=\"foo\" name=\"2foo-4-U+ \"/>\n"
+        "</sbml>\n";
 
+    clearPreviousLoads();
+    long ret = loadSBMLString(sbml.c_str());
+    fail_unless(ret != -1);
+    char* sbml2a = getAntimonyString(NULL);
+    string antimony = "// Created by libAntimony v3.0.0\n"
+        "model *_2foo_4_U__()\n"
+        "end\n"
+        "\n"
+        "_2foo_4_U__ is \"2foo-4-U+ \"\n";
+    fail_unless(antimony == string(sbml2a));
+    freeAll();
 
+}
+END_TEST
 
 
 Suite *
@@ -653,6 +676,8 @@ create_suite_Basic (void)
   tcase_add_test( tcase, test_eventFromTrigger_txt);
   tcase_add_test( tcase, test_eventPersistent);
   tcase_add_test( tcase, test_eventPersistent_txt);
+  tcase_add_test( tcase, test_event_nonBoolean);
+  tcase_add_test( tcase, test_event_nonBoolean_txt);
   tcase_add_test( tcase, test_initialValue);
   tcase_add_test( tcase, test_initialValue_txt);
   tcase_add_test( tcase, test_initialConcentration);
@@ -705,6 +730,8 @@ create_suite_Basic (void)
   tcase_add_test( tcase, test_empty_cvterm_txt);
   tcase_add_test( tcase, test_negparen);
   tcase_add_test( tcase, test_negparen_txt);
+  tcase_add_test( tcase, test_name_as_id);
+
 
   suite_add_tcase(suite, tcase);
 
