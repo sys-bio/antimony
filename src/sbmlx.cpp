@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <regex>
 #include "variable.h"
 #include "formula.h"
 #include "registry.h"
@@ -33,10 +34,11 @@ string getNameFromSBMLObject(const SBase* sbml, string basename)
   string name = sbml->getIdAttribute();
   if (name == "") {
     name = sbml->getName();
-    //Names can have spaces, so...
-    while (name.find(" ") != string::npos) {
-      name.replace(name.find(" "), 1, "_");
-    }
+    //Names are not legal IDs, so convert all illegal chars to '_'.
+    regex nonalpha("[^A-Za-z0-9_]");
+    name = regex_replace(name, nonalpha, "_");
+    regex startNum("^([0-9])");
+    name = regex_replace(name, startNum, "_$1");
   }
   if (name=="") {
     long num=0;
