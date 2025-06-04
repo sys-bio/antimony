@@ -850,8 +850,8 @@ bool Variable::SetType(var_type newtype)
     case varSpeciesUndef: //If they were both SpeciesUndef, we already returned.
     case varDeleted:
     case varLayoutColorEtc:
-      return false;
     case varFormulaUndef:
+        return false;
     case varDNA:
     case varFormulaOperator:
     case varReactionGene:
@@ -2352,6 +2352,7 @@ void Variable::FixNames()
   }
   m_valEvent.FixNames();
   m_valStrand.FixNames();
+  m_valUnitDef.FixNames();
 }
 
 void Variable::ClearSameName() 

@@ -3,6 +3,7 @@
 #include "stringx.h"
 #include "sbml/annotation/Date.h"
 #include <string>
+#include <regex>
 
 using namespace std;
 using namespace libsbml;
@@ -67,6 +68,8 @@ bool Annotated::TransferAnnotationTo(SBase* sbmlobj, string metaid) const
           }
       }
       else {
+          regex triple_quotes("\"\"\"");
+          notes = regex_replace(notes, triple_quotes, "```");
           sbmlobj->setNotesFromMarkdown(notes);
       }
   }
@@ -108,19 +111,19 @@ string Annotated::GetCreatorStringFor(const string& id) const
         string left = id + " creator" + to_string(v+1) + ".";
         ModelCreator* mc = mh->getCreator(v);
         if (mc->isSetName()) {
-            ret += left + "name \"" + mc->getName() + "\"\n";
+            ret += left + "name " + quoteText(mc->getName()) + "\n";
         }
         if (mc->isSetGivenName()) {
-            ret += left + "givenName \"" + mc->getGivenName() + "\"\n";
+            ret += left + "givenName " + quoteText(mc->getGivenName()) + "\n";
         }
         if (mc->isSetFamilyName()) {
-            ret += left + "familyName \"" + mc->getFamilyName() + "\"\n";
+            ret += left + "familyName " + quoteText(mc->getFamilyName()) + "\n";
         }
         if (mc->isSetOrganisation()) {
-            ret += left + "organization \"" + mc->getOrganisation() + "\"\n";
+            ret += left + "organization " + quoteText(mc->getOrganisation()) + "\n";
         }
         if (mc->isSetEmail()) {
-            ret += left + "email \"" + mc->getEmail() + "\"\n";
+            ret += left + "email " + quoteText(mc->getEmail()) + "\n";
         }
     }
     return ret;
@@ -153,7 +156,7 @@ string Annotated::getModifiedString(string indent) const
         if (!ret.empty()) {
             ret += ",\n" + indent;
         }
-        ret += "\"" + const_cast<Date*>(&m_modified[i])->getDateAsString() + "\"";
+        ret += quoteText(const_cast<Date*>(&m_modified[i])->getDateAsString());
     }
     return ret + "\n";
 }
@@ -585,7 +588,7 @@ string Annotated::CreateCVTermsAntimonySyntax(const string& elt_id, const string
       // align each subsequent uri with the first one
       if (j!=i->second.begin())
         term += ",\n"+subindent;
-      term += "\""+*j+"\"";
+      term += quoteText(*j);
     }
     result += term+"\n";
   }
@@ -602,7 +605,7 @@ string Annotated::CreateCVTermsAntimonySyntax(const string& elt_id, const string
       // align each subsequent uri with the first one
       if (j!=i->second.begin())
         term += ",\n"+subindent;
-      term += "\""+*j+"\"";
+      term += quoteText(*j);
     }
     result += term+"\n";
   }

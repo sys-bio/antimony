@@ -5,6 +5,7 @@
 #include "module.h"
 #include "registry.h"
 #include "sbmlx.h"
+#include "stringx.h"
 
 using namespace std;
 using namespace libsbml;
@@ -96,7 +97,7 @@ string UserFunction::GetAntimony(bool enableAnnotations) const
     }
   }
   if (HasDisplayName()) {
-    func += "\n" + m_modulename + " is \"" + GetDisplayName() + "\"\n";
+    func += "\n" + m_modulename + " is " + quoteText(GetDisplayName()) + "\n";
   }
 
   return func;

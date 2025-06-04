@@ -325,7 +325,7 @@ string LayoutWrapper::CreateLayoutParamsAntimonySyntax(const string& indent) con
         ret = indent + GetNameDelimitedBy(".") + " = " + strval + "\n";
     }
     if (!m_displayname.empty()) {
-        ret += indent + GetNameDelimitedBy(".") + " is \"" + m_displayname + "\"\n";
+        ret += indent + GetNameDelimitedBy(".") + " is " + quoteText(m_displayname) + "\n";
     }
     for (size_t lw = 0; lw < m_layoutWrappers.size(); lw++) {
         ret += m_layoutWrappers[lw]->CreateLayoutParamsAntimonySyntax(indent);

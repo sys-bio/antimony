@@ -1,3 +1,4 @@
+#include "stringx.h"
 #include <sstream>
 #include <assert.h>
 #include <iostream>
@@ -6,6 +7,7 @@
 #include "registry.h"
 #include <limits>
 #include <stdlib.h>
+#include <regex>
 
 using namespace std;
 extern bool CaselessStrCmp(bool caseless, const string& lhs, const string& rhs);
@@ -324,4 +326,18 @@ void trimAndRemoveDoubleSpaces(std::string& s) {
         // rather than going back to the beginning
         pos = s.find("  ", pos);
     }
+    regex triple_tics("```");
+    //BUG:  Maddy currently does not support ```preformatted text``` like this.
+    //s = regex_replace(s, triple_tics, "\"\"\"");
+    s = regex_replace(s, triple_tics, "");
+}
+
+string quoteText(string in)
+{
+    regex ret("\n");
+    if (regex_search(in, ret)) {
+        return "```\n" + in + "\n```";
+    }
+    regex quote("\"");
+    return "\"" + regex_replace(in, quote, "\\\"") + "\"";
 }

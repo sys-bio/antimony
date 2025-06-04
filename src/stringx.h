@@ -43,6 +43,8 @@ void trim(std::string& s);
 //trim and also remove internal double spaces.
 void trimAndRemoveDoubleSpaces(std::string& s);
 
+std::string quoteText(std::string in);
+
 
 
 #endif //STRINGX_h

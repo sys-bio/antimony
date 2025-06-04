@@ -76,11 +76,11 @@ void Formula::AddNum(double num)
   m_components.push_back(newvar);
 }
 
-void Formula::AddText(const string* function, bool literalString)
+void Formula::AddText(const string* text, bool literalString)
 {
   vector<string> novar;
   pair<string, vector<string> > newvar;
-  newvar = make_pair(*function, novar);
+  newvar = make_pair(*text, novar);
   m_components.push_back(newvar);
   if (literalString) {
       m_setWithLiteralStrings = literalString;

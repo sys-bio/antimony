@@ -36,7 +36,7 @@ public:
   void AddNum(double num);
   void AddMathThing(char maththing);
   void AddInequality(constraint_type ineq);
-  void AddText(const std::string* function, bool literalString = false);
+  void AddText(const std::string* text, bool literalString = false);
   void AddFormula(const Formula* form2);
   void AddEllipses();
   void AddParentheses();

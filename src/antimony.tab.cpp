@@ -4614,7 +4614,14 @@ int antimony_yylex(void)
     long ccount = 0;
     g_registry.input->get(cc);
     while (cc != '"' && cc != '\r' && cc != '\n' && !g_registry.input->eof()) {
-      textstring += cc;
+      if (cc == '\\') {
+        g_registry.input->get(cc);
+        textstring += cc;
+        ccount++;
+      }
+      else {
+        textstring += cc;
+      }
       ccount++;
       g_registry.input->get(cc);
     }
