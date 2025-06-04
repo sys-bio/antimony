@@ -252,6 +252,8 @@ void setFormulaWithString(string formulastring, Formula* formula, Module* module
       input.unget();
       input.unget();
     }
+
+    //Just add the character.
     string text;
     text.push_back(cc);
     formula->AddText(&text);

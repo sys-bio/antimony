@@ -319,6 +319,7 @@ void LoadSBML(SBMLDocument* doc)
     }
 #ifdef USE_COMP
   string mainsbmlname = getNameFromSBMLObject(doc->getModel(), "doc");
+  FixName(mainsbmlname);
   CompSBMLDocumentPlugin* compdoc = static_cast<CompSBMLDocumentPlugin*>(doc->getPlugin("comp"));
   if (compdoc!=NULL) {
     int numext = compdoc->getNumExternalModelDefinitions();

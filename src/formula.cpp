@@ -589,7 +589,12 @@ string Formula::ToDelimitedStringWithEllipses(string cc) const
         m_components[comp].first == "&" ||
         m_components[comp].first == "|")
       {
-        retval += " " + m_components[comp].first + " ";
+          if (retval[retval.size() - 1] == '!') {
+              retval += m_components[comp].first + " ";
+          }
+          else {
+              retval += " " + m_components[comp].first + " ";
+          }
       }
       else if (m_components[comp].first == "-" &&
          comp != 0 &&
