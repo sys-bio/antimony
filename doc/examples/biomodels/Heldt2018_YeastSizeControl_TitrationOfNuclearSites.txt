@@ -244,7 +244,7 @@ model *Budding_yeast_size_control_by_titration_of_nuclear_sites()
 
   // Notes:
   model notes ```
-```This model is decribed in the article:Dilution and titration of cell-cycle regulators 
+This model is decribed in the article:Dilution and titration of cell-cycle regulators 
 may control cell size in budding yeastFrank S. Heldt, Reece Lunstone, John J. Tyson, 
 Bela NovakPLoS Comput Biol, October 2018, 14(10), e1006548, doi:
 10.1371/journal.pcbi.1006548Abstract:The size of a cell sets the scale for all biochemical 
@@ -266,104 +266,104 @@ size of these mutant strains. Moreover, this model produces an imperfect ‘size
 behaviour in G1 and a ‘timer’ in S/G2/M, which combine to yield an ‘adder’ 
 over the whole cell cycle; an observation recently made in experiments. Hence, our 
 model connects these phenomenological data with the molecular details of the cell 
-cycle, providing a systems-level perspective of budding yeast size control.```
+cycle, providing a systems-level perspective of budding yeast size control.
 ```
-  tV notes "```(AV) total cell volume (including mother and daughter cell)```"
-  mV notes "```(AV) mother cell volume```"
-  dV notes "```(AV) daughter cell volume```"
-  GRm notes "```(-) binary variable (1 - if mother cell growths)```"
-  kSyVo notes "```(AV/(molecule\*min)) cell volume growth```"
-  GDTM notes "```(molecules) size-dependent genes occupied by transcription machinery```"
-  GCN notes "```(molecules) gene copy number (of all genes except Whi5 and Cln3)```"
-  GDt notes "```(molecules) total number of size-dependent genes```"
-  GRd notes "```(-) binary variable (1 - if daughter cell growths)```"
-  TM notes "```(molecules) transcription machinery```"
-  GI notes "```(molecules) free, size-independent genes```"
-  GIt notes "```(molecules) total number of size-independent genes```"
-  GITM notes "```(molecules) size-independent genes occupied by transcription machinery```"
-  GD notes "```(molecules) free, size-dependent genes```"
-  CLN3 notes "```(AU) Cln3```"
-  WHI notes "```(AU) free Whi5```"
-  WHIp notes "```(AU) phosphorylated Whi5```"
-  SBF notes "```(AU) free SBF```"
-  NSt notes "```(AU) total number of nuclear sites (each site is occupied by SBF)```"
-  WHISBF notes "```(AU) Whi5:SBF complexes```"
-  CLN3WHISBF notes "```(AU) Cln3:Whi5:SBF complexes```"
-  WHIpSBF notes "```(AU) hypo-phosphorylated Whi5 in complex with SBF```"
-  WHIn notes "```(AU) newly synthesised Whi5```"
-  WHIt notes "```(AU) total Whi5```"
-  SBFt notes "```(AU) total SBF```"
+  tV notes "(AV) total cell volume (including mother and daughter cell)"
+  mV notes "(AV) mother cell volume"
+  dV notes "(AV) daughter cell volume"
+  GRm notes "(-) binary variable (1 - if mother cell growths)"
+  kSyVo notes "(AV/(molecule\*min)) cell volume growth"
+  GDTM notes "(molecules) size-dependent genes occupied by transcription machinery"
+  GCN notes "(molecules) gene copy number (of all genes except Whi5 and Cln3)"
+  GDt notes "(molecules) total number of size-dependent genes"
+  GRd notes "(-) binary variable (1 - if daughter cell growths)"
+  TM notes "(molecules) transcription machinery"
+  GI notes "(molecules) free, size-independent genes"
+  GIt notes "(molecules) total number of size-independent genes"
+  GITM notes "(molecules) size-independent genes occupied by transcription machinery"
+  GD notes "(molecules) free, size-dependent genes"
+  CLN3 notes "(AU) Cln3"
+  WHI notes "(AU) free Whi5"
+  WHIp notes "(AU) phosphorylated Whi5"
+  SBF notes "(AU) free SBF"
+  NSt notes "(AU) total number of nuclear sites (each site is occupied by SBF)"
+  WHISBF notes "(AU) Whi5:SBF complexes"
+  CLN3WHISBF notes "(AU) Cln3:Whi5:SBF complexes"
+  WHIpSBF notes "(AU) hypo-phosphorylated Whi5 in complex with SBF"
+  WHIn notes "(AU) newly synthesised Whi5"
+  WHIt notes "(AU) total Whi5"
+  SBFt notes "(AU) total SBF"
   SBFu notes ```
-```(AU) unphosphorylated SBFNote that SBFp and SBFu are treated independently from 
+(AU) unphosphorylated SBFNote that SBFp and SBFu are treated independently from 
 the other SBF-related variables such that SBFt = SBFp + SBFu as well as SBFt = SBF 
-+ WHISBF.```
++ WHISBF.
 ```
   SBFp notes ```
-```(AU) phosphorylated (inactive) SBFNote that SBFp and SBFu are treated independently 
+(AU) phosphorylated (inactive) SBFNote that SBFp and SBFu are treated independently 
 from the other SBF-related variables such that SBFt = SBFp + SBFu as well as SBFt 
-= SBF + WHISBF.```
+= SBF + WHISBF.
 ```
-  CLN notes "```(AU) Cln1/2```"
-  CLB notes "```(AU) Clb1/2```"
-  CDHa notes "```(AU) active APC/C^Cdh1```"
-  CDHi notes "```(AU) inactive APC/C^Cdh1```"
-  CDCa notes "```(AU) active APC/C^Cdc20```"
-  CDCi notes "```(AU) inactive APC/C^Cdc20```"
-  TMt notes "```(molecules) total amount of transcription machinery```"
-  active_SBF notes "```(AU) active SBF```"
-  CLN3t notes "```(AU) total Cln3 level```"
+  CLN notes "(AU) Cln1/2"
+  CLB notes "(AU) Clb1/2"
+  CDHa notes "(AU) active APC/C^Cdh1"
+  CDHi notes "(AU) inactive APC/C^Cdh1"
+  CDCa notes "(AU) active APC/C^Cdc20"
+  CDCi notes "(AU) inactive APC/C^Cdc20"
+  TMt notes "(molecules) total amount of transcription machinery"
+  active_SBF notes "(AU) active SBF"
+  CLN3t notes "(AU) total Cln3 level"
   Start notes ```
-```Start transition is triggered when Cdk reaches a threshold, which initiats genome 
-replication and bud growth.```
+Start transition is triggered when Cdk reaches a threshold, which initiats genome 
+replication and bud growth.
 ```
-  StartThr notes "```(AU/AV) Cln1/2 threshold for Start transition```"
-  GCt notes "```(molecules) copy number of Cln3 gene```"
+  StartThr notes "(AU/AV) Cln1/2 threshold for Start transition"
+  GCt notes "(molecules) copy number of Cln3 gene"
   GWt notes ```
-```(molecules) copy number of Whi5 gene (corresponds to total number of size-independent 
-genes, GIt)```
+(molecules) copy number of Whi5 gene (corresponds to total number of size-independent 
+genes, GIt)
 ```
   Division notes ```
-```Cell division is triggered when Cdk activity (combined Cln1/2 and Clb1/2 activity) 
-drops below a thresholds that maintains the mitotic state.```
+Cell division is triggered when Cdk activity (combined Cln1/2 and Clb1/2 activity) 
+drops below a thresholds that maintains the mitotic state.
 ```
-  MitosisThr notes "```(AU/AV) Cln1/2 + Clb1/2 threshold for cell division```"
-  rV notes "```(AV) ratio of daughter to total cell volume```"
-  kSyTm notes "```(1/min) synthesis of transcription machinery```"
-  kAsGiTm notes "```(AV/(molecule\*min)) association of size-independent genes and transcription machinery```"
-  kAsGdTm notes "```(AV/(molecule\*min)) association of size-dependent genes and transcription machinery```"
-  kDsGiTm notes "```(1/min) dissociation of size-independent genes and transcription machinery```"
-  kDsGdTm notes "```(1/min) dissociation of size-dependent genes and transcription machinery```"
-  kSyCln3 notes "```(AU/(molecule\*min)) Cln3 synthesis```"
-  kDeCln3 notes "```(1/min) Cln3 degradation```"
-  kSyCln notes "```(AU/(molecule\*min)) Cln1/2 synthesis```"
-  kDeCln notes "```(1/min) constitutive Cln1/2 degradation```"
-  kSyClb notes "```(AU/(molecule\*min)) constitutive Clb1/2 synthesis```"
-  kSyClbClb notes "```(AU/(molecule\*min)) Clb1/2-dependent Clb1/2 synthesis```"
-  jSyClb notes "```(AU/AV) Michaelis-Menten constant for Clb1/2 synthesis```"
-  kDeClb notes "```(1/min) constitutive Clb1/2 degradation```"
-  kDeClbCdh notes "```(AV/(AU\*min)) Cdh1-dependent Clb1/2 degradation```"
-  kSyWhi notes "```(AU/(molecule\*min)) Whi5 synthesis```"
-  kPhWhiCln3 notes "```(1/min) hypo-phosphorylation of Whi5 in Cln3:Whi5:SBF complexes```"
-  kPhWhiCln notes "```(AV/(AU\*min)) Cln1/2-dependent phosphorylation of free Whi5```"
-  kDpWhi notes "```(1/min) dephosphorylation of Whi5```"
-  kAsWhiSbf notes "```(AV/(AU\*min)) association of Whi5 and SBF```"
-  kPhSbfClb notes "```(AV/(AU\*min)) Clb1/2-dependent SBF phosphorylation```"
-  kDpSbf notes "```(1/min) SBF dephosphorylation```"
-  kAcCdh notes "```(AU/(AV\*min)) constitutive Cdh1 activation```"
-  kAcCdhCdc notes "```(1/min) Cdc20-dependent Cdh1 activation```"
-  kInCdhCln notes "```(1/min) Cln1/2-dependent Cdh1 inactivation```"
-  kInCdhClb notes "```(1/min) Clb1/2-dependent Cdh1 inactivation```"
-  jCdh notes "```(AU/AV) Michaelis-Menten constant for Cdh1 (in-)activation```"
-  kAcCdcClb notes "```(1/min) Clb1/2-dependent Cdc20 activation```"
-  kInCdc notes "```(AU/(AV\*min)) Cdc20 inactivation```"
-  jCdc notes "```(AU/AV) Michaelis-Menten constant for Cdc20 (in-)activation```"
-  kSySbf notes "```AU/(molecules\*min) synthesis of SBF```"
-  kSyCdh notes "```AU/(molecules\*min) synthesis of Cdh1```"
-  kSyCdc notes "```AU/(molecules\*min) synthesis of Cdc20```"
-  kPhWhipCln3 notes "```(AV/(AU\*min)) Cln3-dependent hyper-phosphorylation of Whi5 in Whi5-P:SBF complexes```"
-  kPhWhipCln notes "```(AV/(AU\*min)) Cln1/2-dependent hyper-phoshorylation of Whi5 in Whi5-P:SBF complexes```"
-  kAsCln3Whi notes "```(AV/(AU\*min)) association of Whi5 and Cln3```"
-  kDsCln3Whi notes "```(1/min) dissociation of Cln3:Whi5 compelexes```"
+  MitosisThr notes "(AU/AV) Cln1/2 + Clb1/2 threshold for cell division"
+  rV notes "(AV) ratio of daughter to total cell volume"
+  kSyTm notes "(1/min) synthesis of transcription machinery"
+  kAsGiTm notes "(AV/(molecule\*min)) association of size-independent genes and transcription machinery"
+  kAsGdTm notes "(AV/(molecule\*min)) association of size-dependent genes and transcription machinery"
+  kDsGiTm notes "(1/min) dissociation of size-independent genes and transcription machinery"
+  kDsGdTm notes "(1/min) dissociation of size-dependent genes and transcription machinery"
+  kSyCln3 notes "(AU/(molecule\*min)) Cln3 synthesis"
+  kDeCln3 notes "(1/min) Cln3 degradation"
+  kSyCln notes "(AU/(molecule\*min)) Cln1/2 synthesis"
+  kDeCln notes "(1/min) constitutive Cln1/2 degradation"
+  kSyClb notes "(AU/(molecule\*min)) constitutive Clb1/2 synthesis"
+  kSyClbClb notes "(AU/(molecule\*min)) Clb1/2-dependent Clb1/2 synthesis"
+  jSyClb notes "(AU/AV) Michaelis-Menten constant for Clb1/2 synthesis"
+  kDeClb notes "(1/min) constitutive Clb1/2 degradation"
+  kDeClbCdh notes "(AV/(AU\*min)) Cdh1-dependent Clb1/2 degradation"
+  kSyWhi notes "(AU/(molecule\*min)) Whi5 synthesis"
+  kPhWhiCln3 notes "(1/min) hypo-phosphorylation of Whi5 in Cln3:Whi5:SBF complexes"
+  kPhWhiCln notes "(AV/(AU\*min)) Cln1/2-dependent phosphorylation of free Whi5"
+  kDpWhi notes "(1/min) dephosphorylation of Whi5"
+  kAsWhiSbf notes "(AV/(AU\*min)) association of Whi5 and SBF"
+  kPhSbfClb notes "(AV/(AU\*min)) Clb1/2-dependent SBF phosphorylation"
+  kDpSbf notes "(1/min) SBF dephosphorylation"
+  kAcCdh notes "(AU/(AV\*min)) constitutive Cdh1 activation"
+  kAcCdhCdc notes "(1/min) Cdc20-dependent Cdh1 activation"
+  kInCdhCln notes "(1/min) Cln1/2-dependent Cdh1 inactivation"
+  kInCdhClb notes "(1/min) Clb1/2-dependent Cdh1 inactivation"
+  jCdh notes "(AU/AV) Michaelis-Menten constant for Cdh1 (in-)activation"
+  kAcCdcClb notes "(1/min) Clb1/2-dependent Cdc20 activation"
+  kInCdc notes "(AU/(AV\*min)) Cdc20 inactivation"
+  jCdc notes "(AU/AV) Michaelis-Menten constant for Cdc20 (in-)activation"
+  kSySbf notes "AU/(molecules\*min) synthesis of SBF"
+  kSyCdh notes "AU/(molecules\*min) synthesis of Cdh1"
+  kSyCdc notes "AU/(molecules\*min) synthesis of Cdc20"
+  kPhWhipCln3 notes "(AV/(AU\*min)) Cln3-dependent hyper-phosphorylation of Whi5 in Whi5-P:SBF complexes"
+  kPhWhipCln notes "(AV/(AU\*min)) Cln1/2-dependent hyper-phoshorylation of Whi5 in Whi5-P:SBF complexes"
+  kAsCln3Whi notes "(AV/(AU\*min)) association of Whi5 and Cln3"
+  kDsCln3Whi notes "(1/min) dissociation of Cln3:Whi5 compelexes"
 end
 
 Budding_yeast_size_control_by_titration_of_nuclear_sites is "Heldt2018 - Budding yeast size control by titration of nuclear sites"

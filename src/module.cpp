@@ -2408,7 +2408,7 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
           retval += "\n" + indent + "// Display Names:\n";
           anydisplay = true;
       }
-      retval += indent + m_uniquevars[var]->GetNameDelimitedBy(cc) + " is \"" + m_uniquevars[var]->GetDisplayName() + "\";\n";
+      retval += indent + m_uniquevars[var]->GetNameDelimitedBy(cc) + " is " + quoteText(m_uniquevars[var]->GetDisplayName()) + ";\n";
   }
 
   if (m_autolayout.use) {
@@ -2462,7 +2462,7 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
       for (size_t v = 0; v < m_uniquevars.size(); v++) {
           Variable* var = m_uniquevars[v];
           if (var->isSetCreated()) {
-              dates_plus += indent + var->GetNameDelimitedBy(cc) + " created \"" + var->getCreatedString() + "\"\n";
+              dates_plus += indent + var->GetNameDelimitedBy(cc) + " created " + quoteText(var->getCreatedString()) + "\n";
           }
           if (var->isSetModifiedTimes()) {
               string added = indent + var->GetNameDelimitedBy(cc) + " modified ";
@@ -2478,7 +2478,7 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
       }
       //Dates and creator for model itself
       if (isSetCreated()) {
-          retval += indent + "model created \"" + getCreatedString() + "\"\n";
+          retval += indent + "model created " + quoteText(getCreatedString()) + "\n";
       }
       if (isSetModifiedTimes()) {
           string added = indent + "model modified ";
@@ -2503,7 +2503,7 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
               retval += "\n```\n";
           }
           else {
-              retval += "\"" + notes + "\"\n";
+              retval += quoteText(notes) + "\n";
           }
       }
 
@@ -2522,7 +2522,7 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
                   retval += "\n```\n";
               }
               else {
-                  retval += "\"" + notes + "\"\n";
+                  retval += quoteText(notes) + "\n";
               }
           }
       }
@@ -2543,7 +2543,7 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
   if (m_modulename != MAINMODULE) {
     retval += "end\n";
     if (HasDisplayName()) {
-      retval += "\n" + m_modulename + " is \"" + GetDisplayName() + "\"\n";
+      retval += "\n" + m_modulename + " is " + quoteText(GetDisplayName()) + "\n";
     }
   }
 
@@ -3732,7 +3732,7 @@ string Module::GetAntimonyGeneralLayout(const string& indent) const
         ret << indent << "model.layout.width = " << m_layout.width << endl;
     }
     if (m_layout.style != "") {
-        ret << indent << "model.layout.style = \"" << m_layout.style << "\"" << endl;
+        ret << indent << "model.layout.style = " << quoteText(m_layout.style) << endl;
     }
     if (m_layout.background != "") {
         string colorstring;

@@ -3110,6 +3110,14 @@ void Module::FixUnitNames(Model* model)
         if (shadow == NULL) {
             shadow = model->getListOfSpecies()->getElementBySId(unitid);
         }
+        if (shadow == NULL) {
+            string copy = unitid;
+            FixName(copy);
+            if (unitid != copy) {
+                //For units with names like 'min'.
+                shadow = model;
+            }
+        }
         if (shadow != NULL) {
             //It was shadowed:  rename the unit.
             string newunitid = unitid + "_unit";

@@ -388,6 +388,14 @@ UnitDef GetUnitDefFrom(const UnitDefinition* unitdefinition, string modulename)
     const Unit* unit = unitdefinition->getUnit(ue);
     ret.AddUnitElement(unit);
   }
+  if (unitdefinition->getNumUnits() == 0) {
+      Unit unit(3, 2);
+      unit.setKind(UNIT_KIND_DIMENSIONLESS);
+      unit.setExponent(1);
+      unit.setMultiplier(1);
+      unit.setScale(0);
+      ret.AddUnitElement(&unit);
+  }
   return ret;
 }
 

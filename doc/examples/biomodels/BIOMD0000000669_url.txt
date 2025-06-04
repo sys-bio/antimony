@@ -12,8 +12,8 @@ model *Zhu2015___combined_gemcitabine_and_birinapant_in_pancreatic_cancer_cells_
   Inh_1 := R_live/(IR50 + R_live);
   Sti_other_g := Kother_g*C_g^Hother_g;
   Sti_other_b := Kother_b*C_b^Hother_b;
-  k_other := piecewise(0.000297, (C_b! = 0) && (C_g! = 0), 0);
-  Inh_g := piecewise(Imax_g*C_g^Hi_g/(IC50_g^Hi_g + C_g^Hi_g), (C_b == 0) && (time <= Tlag_r), piecewise((Imax_g*C_g^Hi_g/(IC50_g^Hi_g + C_g^Hi_g))*exp(-1*k_repair*(time - Tlag_r)), (C_b == 0) && (time > Tlag_r), piecewise(Imax_g*C_g^Hi_g/((Psi_i*IC50_g)^Hi_g + C_g^Hi_g), (C_b! = 0) && (time <= Tlag_re), piecewise((Imax_g*C_g^Hi_g/((Psi_i*IC50_g)^Hi_g + C_g^Hi_g))*exp(-1*(1 - k_comb2*C_b)*k_repair*(time - Tlag_re)), (C_b! = 0) && (time > Tlag_re), 0))));
+  k_other := piecewise(0.000297, (C_b!= 0) && (C_g!= 0), 0);
+  Inh_g := piecewise(Imax_g*C_g^Hi_g/(IC50_g^Hi_g + C_g^Hi_g), (C_b == 0) && (time <= Tlag_r), piecewise((Imax_g*C_g^Hi_g/(IC50_g^Hi_g + C_g^Hi_g))*exp(-1*k_repair*(time - Tlag_r)), (C_b == 0) && (time > Tlag_r), piecewise(Imax_g*C_g^Hi_g/((Psi_i*IC50_g)^Hi_g + C_g^Hi_g), (C_b!= 0) && (time <= Tlag_re), piecewise((Imax_g*C_g^Hi_g/((Psi_i*IC50_g)^Hi_g + C_g^Hi_g))*exp(-1*(1 - k_comb2*C_b)*k_repair*(time - Tlag_re)), (C_b!= 0) && (time > Tlag_re), 0))));
   R_total := G1 + S + G2 + R_apo + R_other;
   R_live := G1 + S + G2;
   Tlag_re := (1 + k_comb1*C_b)*Tlag_r;
@@ -70,8 +70,8 @@ model *Zhu2015___combined_gemcitabine_and_birinapant_in_pancreatic_cancer_cells_
   Tlag_sg = 38.7;
   Hother_g = 0.1;
   Smax_b = 3.72;
-  Psi_i = piecewise(0.949, (C_b! = 0) && (C_g! = 0), 1);
-  Psi_s = piecewise(1.26, (C_b! = 0) && (C_g! = 0), 1);
+  Psi_i = piecewise(0.949, (C_b!= 0) && (C_g!= 0), 1);
+  Psi_s = piecewise(1.26, (C_b!= 0) && (C_g!= 0), 1);
   Smax_g = 2.74;
   SC50_g = 23.6;
   SC50_b = 50.1;
@@ -288,8 +288,8 @@ To the extent possible under law, all copyright and related or neighbouring righ
 to this encoded model have been dedicated to the public domain worldwide. Please
 refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
 ```
-  Sti_apo_g notes "```Value???```"
-  Sti_apo_b notes "```Value???```"
+  Sti_apo_g notes "Value???"
+  Sti_apo_b notes "Value???"
 end
 
 Zhu2015___combined_gemcitabine_and_birinapant_in_pancreatic_cancer_cells___mechanistic_PD_model is "Zhu2015 - Combined gemcitabine and birinapant in pancreatic cancer cells - mechanistic PD model"
