@@ -4238,8 +4238,12 @@ int antimony_yylex(void)
     }
   }
   if (!g_registry.input->good()) {
-    //Something else went wrong!
-    g_registry.SetError("Unparseable content in line " + DoubleToString(antimony_yylloc_last_line) + ".");
+    // Something else went wrong!
+    g_registry.SetError("Failure reading input stream in line " + DoubleToString(antimony_yylloc_last_line) + ".  Try adding a space anywhere before that line and re-running.");
+    // In case knowing the following helps during debugging:
+    bool eof = g_registry.input->eof();
+    bool fail = g_registry.input->fail();
+    bool bad = g_registry.input->bad();
     return ERROR;
   }
 
