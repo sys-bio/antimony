@@ -1934,7 +1934,7 @@ The size of model elements can be set with the 'size' keyword, or with 'width' a
  S1.height = 66
 ```
 
-By default, the size of a species is {60, 36}, and the size of a reaction is {0, 0}, meaning that no central box or other shape is shown for reactions, just arcs going to the species from a single point.  A compartment has no default size; it will be large enough to contain the species and reactions within.
+By default, the size of a species is {60, 36}, and the size of a reaction is {20, 20}, meaning that the centroid of the reaction arc is a square of that size.  A compartment has no default size; it will be large enough to contain the species and reactions within.
 
 One can also resize all species or reactions at once:
 
@@ -1956,9 +1956,9 @@ means that species S1 will have twice the width and height of all other species 
 
 ### Reaction arcs
 
-A 'reaction arc' is a line going from a reaction centroid (usually a point) to a species that participates in that reaction.  Lines between a reaction and a reactant have no arrowheads; a line from a reaction to a product have an arrowhead at the product side.
+A 'reaction arc' is a line going from a reaction centroid (usually a square) to a species that participates in that reaction.  Lines between a reaction and a reactant have no arrowheads; a line from a reaction to a product have an arrowhead at the product side.
 
-Each arc is defined by three points:  the start, the end, and two 'base points' or 'control points' that define how the line arcs between the start and the end.  Because one end is usually 'the reaction centroid', that end doesn't need to be defined, so Antimony lets you define a reaction arc with the position of the reaction, plus three points:  'position', 'b1' and 'b2':
+Each arc is defined by three points:  the start, the end, and two 'base points' or 'control points' that define how the line arcs between the start and the end.  Because one end is usually 'the reaction centroid', that end doesn't need to be defined, so Antimony lets you define a reaction arc with the position of the reaction, plus three points:  'species_pos', 'b1' and 'b2':
 
 ```
  J0.position = {80.54, 153.07}
@@ -2043,7 +2043,7 @@ J0.S1.seg1.species_pos = {740, 992.6}
  J0.S1.seg3.b2 = {685, 1118}
 ```
 
-Note that to preserve continuity, the 'position' side of each segment is the same as the 'reaction' side of the next segment.
+Note that to preserve continuity, the 'species_pos' side of each segment is the same as the 'reaction' side of the next segment.
 
 If multiple arcs and segments exist, they can be combined:
 
