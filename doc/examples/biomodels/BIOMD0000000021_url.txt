@@ -1,0 +1,242 @@
+// Created by libAntimony v3.0.0
+model *Leloup1999_CircClock_periodic()
+
+  // Compartments and Species:
+  compartment Cell, compartment_0000002;
+  species P0 in Cell, T0 in Cell, P1 in Cell, T1 in Cell, P2 in Cell, T2 in Cell;
+  species CC in Cell, Cn in compartment_0000002, Mp in Cell, Mt in Cell;
+
+  // Assignment Rules:
+  Pt := CC + Cn + P0 + P1 + P2;
+  Tt := CC + Cn + T0 + T1 + T2;
+
+  // Reactions:
+  P0_to_P1: P0 => P1; Cell*P0_to_P1_V_1P*P0/(P0_to_P1_K1_P + P0);
+  T0_to_T1: T0 => T1; Cell*T0_to_T1_V_1T*T0/(T0_to_T1_K_1T + T0);
+  P1_to_P0: P1 => P0; Cell*P1_to_P0_V_2P*P1/(P1_to_P0_K_2P + P1);
+  T1_to_T0: T1 => T0; Cell*T1_to_T0_V_2T*T1/(T1_to_T0_K_2T + T1);
+  P1_to_P2: P1 => P2; Cell*P1_to_P2_V_3P*P1/(P1_to_P2_K_3P + P1);
+  T1_to_T2: T1 => T2; Cell*T1_to_T2_V_3T*T1/(T1_to_T2_K_3T + T1);
+  P2_to_P1: P2 => P1; Cell*P2_to_P1_V_4P*P2/(P2_to_P1_K_4P + P2);
+  T2_to_T1: T2 => T1; Cell*T2_to_T1_V_4T*T2/(T2_to_T1_K_4T + T2);
+  P0_degradation: P0 => ; Cell*P0_degradation_k_d*P0;
+  T0_degradation: T0 => ; Cell*T0_degradation_k_d*T0;
+  P1_degradation: P1 => ; Cell*P1_degradation_k_d*P1;
+  T1_degradation: T1 => ; Cell*T1_degradation_k_d*T1;
+  P2_degradation: P2 => ; Cell*P2_degradation_k_d*P2 + Cell*P2_degradation_V_dP*P2/(P2_degradation_K_dP + P2);
+  T2_degradation: T2 => ; Cell*T2_degradation_k_d*T2 + Cell*V_dT*T2/(T2_degradation_K_dT + T2);
+  PT_complex_formation: P2 + T2 -> CC; Cell*PT_complex_formation_k3*P2*T2 - Cell*PT_complex_formation_k4*CC;
+  PT_complex_nucleation: CC -> Cn; Cell*PT_complex_nucleation_k1*CC - compartment_0000002*PT_complex_nucleation_k2*Cn;
+  PT_complex_degradation: CC => ; Cell*PT_complex_degradation_k_dC*CC;
+  PTnucl_complex_degradation: Cn => ; compartment_0000002*PTnucl_complex_degradation_k_dN*Cn;
+  Mp_production:  => Mp; Cell*Mp_production_v_sP*Mp_production_K_IP^Mp_production_n/(Mp_production_K_IP^Mp_production_n + Cn^Mp_production_n);
+  Mt_production:  => Mt; Cell*Mt_production_V_sT*Mt_production_K_IT^Mt_production_n/(Mt_production_K_IT^Mt_production_n + Cn^Mt_production_n);
+  P0_production:  => P0; Cell*P0_production_k_sP*Mp;
+  T0_production:  => T0; Cell*T0_production_k_sT*Mt;
+  Mp_degradation: Mp => ; Cell*Mp_degradation_k_d*Mp + Cell*Mp_degradation_V_mP*Mp/(Mp_degradation_K_mP + Mp);
+  Mt_degradation: Mt => ; Cell*Mt_degradation_k_d*Mt + Cell*V_mT*Mt/(Mt_degradation_K_mT + Mt);
+
+  // Species initializations:
+  P0 = 0;
+  T0 = 0;
+  P1 = 0;
+  T1 = 0;
+  P2 = 0;
+  T2 = 0;
+  CC = 0;
+  Cn = 0;
+  Mp = 0;
+  Mt = 0;
+
+  // Compartment initializations:
+  Cell = 1;
+  compartment_0000002 = 1;
+
+  // Variable initializations:
+  V_mT = 0.7;
+  V_dT = 2;
+  P0_to_P1_K1_P = 2;
+  P0_to_P1_V_1P = 8;
+  T0_to_T1_K_1T = 2;
+  T0_to_T1_V_1T = 8;
+  P1_to_P0_K_2P = 2;
+  P1_to_P0_V_2P = 1;
+  T1_to_T0_K_2T = 2;
+  T1_to_T0_V_2T = 1;
+  P1_to_P2_K_3P = 2;
+  P1_to_P2_V_3P = 8;
+  T1_to_T2_K_3T = 2;
+  T1_to_T2_V_3T = 8;
+  P2_to_P1_K_4P = 2;
+  P2_to_P1_V_4P = 1;
+  T2_to_T1_K_4T = 2;
+  T2_to_T1_V_4T = 1;
+  P0_degradation_k_d = 0.01;
+  T0_degradation_k_d = 0.01;
+  P1_degradation_k_d = 0.01;
+  T1_degradation_k_d = 0.01;
+  P2_degradation_k_d = 0.01;
+  P2_degradation_V_dP = 2;
+  P2_degradation_K_dP = 0.2;
+  T2_degradation_k_d = 0.01;
+  T2_degradation_K_dT = 0.2;
+  PT_complex_formation_k3 = 1.2;
+  PT_complex_formation_k4 = 0.6;
+  PT_complex_nucleation_k1 = 0.6;
+  PT_complex_nucleation_k2 = 0.2;
+  PT_complex_degradation_k_dC = 0.01;
+  PTnucl_complex_degradation_k_dN = 0.01;
+  Mp_production_v_sP = 1;
+  Mp_production_K_IP = 1;
+  Mp_production_n = 4;
+  Mt_production_V_sT = 1;
+  Mt_production_K_IT = 1;
+  Mt_production_n = 4;
+  P0_production_k_sP = 0.9;
+  T0_production_k_sT = 0.9;
+  Mp_degradation_k_d = 0.01;
+  Mp_degradation_V_mP = 0.7;
+  Mp_degradation_K_mP = 0.2;
+  Mt_degradation_k_d = 0.01;
+  Mt_degradation_K_mT = 0.2;
+
+  // Other declarations:
+  var Pt, Tt;
+  const Cell, compartment_0000002, V_mT, V_dT;
+
+  // Unit definitions:
+  unit substance = 1e-9 mole;
+  unit time_unit = 3600 second;
+
+  // Display Names:
+  substance is "nanomole (default)";
+  time_unit is "hour (default)";
+  Cell is "cytoplasm";
+  compartment_0000002 is "nucleus";
+  P0 is "PER Protein (unphosphorylated)";
+  T0 is "TIM Protein (unphosphorylated)";
+  P1 is "PER Protein (mono-phosphorylated)";
+  T1 is "TIM Protein (mono-phosphorylated)";
+  P2 is "PER Protein (bi-phosphorylated)";
+  T2 is "TIM Protein (bi-phosphorylated)";
+  CC is "Cytosolic PER-TIM Complex";
+  Cn is "Nuclear PER-TIM Complex";
+  Mp is "PER mRNA";
+  Mt is "TIM mRNA";
+  Pt is "Total Per";
+  Tt is "Total Tim";
+  P0_to_P1 is "First Phosphorylation of PER";
+  T0_to_T1 is "First Phosphorylation of TIM";
+  P1_to_P0 is "Dephosphorylation of PER (1st P)";
+  T1_to_T0 is "Dephosphorylation of TIM (1st P)";
+  P1_to_P2 is "Second Phosphorylation of PER";
+  T1_to_T2 is "Second Phosphorylation of TIM";
+  P2_to_P1 is "Dephosphorylation of PER (2nd P)";
+  T2_to_T1 is "Dephosphorylation of TIM (2nd P)";
+  P0_degradation is "PER degradation";
+  T0_degradation is "TIM degradation";
+  P1_degradation is "PER-1 degradation";
+  T1_degradation is "TIM-1 degradation";
+  P2_degradation is "PER-2 degradation";
+  T2_degradation is "TIM-2 degradation";
+  PT_complex_formation is "PER-TIM complex formation";
+  PT_complex_nucleation is "PER-TIM complex nucleation";
+  PT_complex_degradation is "PER-TIM complex degradation (cytosol)";
+  PTnucl_complex_degradation is "PER-TIM complex degradation (nuclear)";
+  Mp_production is "PER mRNA production";
+  Mt_production is "TIM mRNA production";
+  P0_production is "PER production";
+  T0_production is "TIM production";
+  Mp_degradation is "PER mRNA degradation";
+  Mt_degradation is "TIM mRNA degradation";
+
+  // CV terms:
+  Cell identity "http://identifiers.org/go/GO:0005737"
+  compartment_0000002 identity "http://identifiers.org/go/GO:0005634"
+  P0 biological_system "http://identifiers.org/uniprot/P07663"
+  T0 biological_system "http://identifiers.org/uniprot/P49021"
+  P1 biological_system "http://identifiers.org/uniprot/P07663"
+  T1 biological_system "http://identifiers.org/uniprot/P49021"
+  P2 biological_system "http://identifiers.org/uniprot/P07663"
+  T2 biological_system "http://identifiers.org/uniprot/P49021"
+  CC part "http://identifiers.org/uniprot/P49021",
+          "http://identifiers.org/uniprot/P07663"
+  Cn part "http://identifiers.org/uniprot/P49021",
+          "http://identifiers.org/uniprot/P07663"
+  Mp biological_system "http://identifiers.org/chebi/CHEBI:33699",
+                       "http://identifiers.org/kegg.compound/C00046"
+  Mt biological_system "http://identifiers.org/chebi/CHEBI:33699",
+                       "http://identifiers.org/kegg.compound/C00046"
+  P0_to_P1 biological_system "http://identifiers.org/ec-code/2.7.11.1",
+                             "http://identifiers.org/go/GO:0006468"
+  T0_to_T1 biological_system "http://identifiers.org/ec-code/2.7.11.1",
+                             "http://identifiers.org/go/GO:0006468"
+  P1_to_P0 biological_system "http://identifiers.org/ec-code/3.1.3.16",
+                             "http://identifiers.org/go/GO:0006470"
+  T1_to_T0 biological_system "http://identifiers.org/ec-code/3.1.3.16",
+                             "http://identifiers.org/go/GO:0006470"
+  P1_to_P2 biological_system "http://identifiers.org/ec-code/2.7.11.1",
+                             "http://identifiers.org/go/GO:0006468"
+  T1_to_T2 biological_system "http://identifiers.org/ec-code/2.7.11.1",
+                             "http://identifiers.org/go/GO:0006468"
+  P2_to_P1 biological_system "http://identifiers.org/ec-code/3.1.3.16",
+                             "http://identifiers.org/go/GO:0006470"
+  T2_to_T1 biological_system "http://identifiers.org/ec-code/3.1.3.16",
+                             "http://identifiers.org/go/GO:0006470"
+  P0_degradation biological_system "http://identifiers.org/go/GO:0030163"
+  T0_degradation biological_system "http://identifiers.org/go/GO:0030163"
+  P1_degradation biological_system "http://identifiers.org/go/GO:0030163"
+  T1_degradation biological_system "http://identifiers.org/go/GO:0030163"
+  P2_degradation biological_system "http://identifiers.org/go/GO:0030163"
+  T2_degradation biological_system "http://identifiers.org/go/GO:0030163"
+  PT_complex_formation biological_system "http://identifiers.org/go/GO:0006461"
+  PT_complex_nucleation biological_system "http://identifiers.org/go/GO:0006606"
+  PT_complex_degradation biological_system "http://identifiers.org/go/GO:0030163"
+  PTnucl_complex_degradation biological_system "http://identifiers.org/go/GO:0030163"
+  Mp_production biological_system "http://identifiers.org/go/GO:0009299",
+                                  "http://identifiers.org/go/GO:0006355"
+  Mt_production biological_system "http://identifiers.org/go/GO:0009299",
+                                  "http://identifiers.org/go/GO:0006355"
+  P0_production biological_system "http://identifiers.org/go/GO:0006412"
+  T0_production biological_system "http://identifiers.org/go/GO:0006412"
+  Mp_degradation biological_system "http://identifiers.org/go/GO:0006402"
+  Mt_degradation biological_system "http://identifiers.org/go/GO:0006402"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL6617834203"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000021"
+  model publication "http://identifiers.org/pubmed/10366496"
+  model origin "http://identifiers.org/biomodels.db/BIOMD0000000171"
+  model taxon "http://identifiers.org/taxonomy/7227"
+  model identity "http://identifiers.org/kegg.pathway/dme04710"
+  model biological_system "http://identifiers.org/go/GO:0042752"
+  model created "2005-06-29T10:27:52Z"
+  model modified "2015-02-25T13:16:43Z"
+  model creator1.givenName "Nicolas"
+  model creator1.familyName "Le Novère"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "lenov@ebi.ac.uk"
+  model creator2.givenName "Bruce"
+  model creator2.familyName "Shapiro"
+  model creator2.organization "NASA Jet Propulsion Laboratory"
+  model creator2.email "bshapiro@jpl.nasa.gov"
+
+  // Notes:
+  model notes ```
+This model originates from BioModels Database: A Database of Annotated Published
+Models. It is copyright (c) 2005-2009 The BioModels Team. 
+For more information see the [terms of use](http://www.ebi.ac.uk/biomodels/legal.html). 
+To cite BioModels Database, please use [Le Novère N., Bornstein B., Broicher A., Courtot M., Donizelli M., Dharuri H., Li L., Sauro H., Schilstra M., Shapiro B., Snoep J.L., Hucka M. (2006) BioModels Database: A Free, Centralized Database of Curated, Published, Quantitative Kinetic Models of Biochemical and Cellular Systems Nucleic Acids Res., 34: D689-D691.](http://www.pubmedcentral.nih.gov/articlerender.fcgi?tool=pubmed&pubmedid=16381960)
+```
+  V_mT notes "V_mT=.7 (physiological oscillations); 0.28 (chaos); .4 or .99 (biorhythmicity example)"
+  V_dT notes "V_dT=2 (physiological oscillations); 4.8 (chaos); 3.8 or 2 (biorhythmicity example)"
+  P0_to_P1 notes ```
+This phosphorylation is triggered by the protein product of the gene *double-time*
+(DBT, [DCO_DROME](http://www.uniprot.org/entry/O76324)). Not explicitely represented in the model.
+```
+  P1_to_P2 notes ```
+This phosphorylation is triggered by the protein product of the gene *double-time*
+(DBT, [DCO_DROME](http://www.uniprot.org/entry/O76324)). Not explicitely represented in the model.
+```
+end
+
+Leloup1999_CircClock_periodic is "Leloup1999_CircClock"

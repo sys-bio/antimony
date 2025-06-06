@@ -5,10 +5,12 @@
 #include "registry.h"
 #include "sbmlx.h"
 #include "sboTermWrapper.h"
+#include "layoutWrapper.h"
 #include "stringx.h"
 #include "typex.h"
 #include "unitdef.h"
 #include "uncertWrapper.h"
+#include <sbmlnetwork/libsbmlnetwork_sbmldocument_layout.h>
 #ifdef LIBSBML_HAS_PACKAGE_DISTRIB
 #include <sbml/packages/distrib/extension/DistribSBasePlugin.h>
 #endif
@@ -89,6 +91,9 @@ Variable::~Variable()
   for (size_t uw = 0; uw < m_uncertWrappers.size(); uw++) {
     delete m_uncertWrappers[uw];
   }
+  for (size_t lw = 0; lw < m_layoutWrappers.size(); lw++) {
+      delete m_layoutWrappers[lw];
+  }
 }
 
 bool Variable::IsPointer() const 
@@ -166,7 +171,9 @@ formula_type Variable::GetFormulaType() const
   case varConstraint:
   case varSboTermWrapper:
   case varUncertWrapper:
-    return formulaINITIAL; //For lack of any other default.
+  case varLayoutWrapper:
+  case varLayoutColorEtc:
+      return formulaINITIAL; //For lack of any other default.
   }
   assert(false); //uncaught variable type;
   return m_formulatype;
@@ -186,6 +193,7 @@ const Formula* Variable::GetFormula() const
   case varDNA:
   case varUnitDefinition:
   case varUncertWrapper:
+  case varLayoutWrapper:
   case varStoichiometry:
   case varAlgebraicRule:
     return &(m_valFormula);
@@ -200,6 +208,7 @@ const Formula* Variable::GetFormula() const
   case varStrand:
     return m_valStrand.GetFinalFormula();
   case varDeleted:
+  case varLayoutColorEtc:
     return &(g_registry.m_blankform);
   case varConstraint:
     return m_valConstraint.GetFormula();
@@ -226,6 +235,7 @@ Formula* Variable::GetFormula()
   case varUndefined:
   case varUnitDefinition:
   case varUncertWrapper:
+  case varLayoutWrapper:
   case varStoichiometry:
   case varAlgebraicRule:
     return &(m_valFormula);
@@ -240,7 +250,8 @@ Formula* Variable::GetFormula()
   case varStrand:
     return m_valStrand.GetFinalFormula();
   case varDeleted:
-    return &(g_registry.m_blankform);
+  case varLayoutColorEtc:
+      return &(g_registry.m_blankform);
   case varConstraint:
     return m_valConstraint.GetFormula();
   case varSboTermWrapper:
@@ -274,7 +285,8 @@ const Formula* Variable::GetInitialAssignment() const
     return m_valModule[0].GetFormula();
   case varUnitDefinition:
   case varUncertWrapper:
-    return &(m_valFormula);
+  case varLayoutWrapper:
+      return &(m_valFormula);
   case varFormulaOperator:
   case varDNA:
   case varReactionUndef:
@@ -285,7 +297,8 @@ const Formula* Variable::GetInitialAssignment() const
   case varDeleted:
   case varConstraint:
   case varSboTermWrapper:
-    return &(g_registry.m_blankform);
+  case varLayoutColorEtc:
+      return &(g_registry.m_blankform);
   }
   assert(false); //uncaught type
   return &(g_registry.m_blankform);
@@ -324,7 +337,10 @@ const Formula* Variable::GetAssignmentRuleOrKineticLaw() const
   case varConstraint:
   case varSboTermWrapper:
   case varUncertWrapper:
-    return &(g_registry.m_blankform);
+  case varLayoutWrapper:
+  case varLayoutColorEtc:
+  case varAlgebraicRule:
+      return &(g_registry.m_blankform);
   }
   assert(false); //uncaught type
   return &(g_registry.m_blankform);
@@ -363,7 +379,10 @@ Formula* Variable::GetAssignmentRuleOrKineticLaw()
   case varConstraint:
   case varSboTermWrapper:
   case varUncertWrapper:
-    return &(g_registry.m_blankform);
+  case varLayoutWrapper:
+  case varLayoutColorEtc:
+  case varAlgebraicRule:
+      return &(g_registry.m_blankform);
   }
   assert(false); //uncaught type
   return &(g_registry.m_blankform);
@@ -500,9 +519,26 @@ Variable* Variable::GetSubVariable(const string* name)
       m_sboTermWrapper = new SboTermWrapper(this);
     return m_sboTermWrapper;
   }
+  if (IsReaction(m_type)) {
+      Module* mod = g_registry.GetModule(m_module);
+      Variable* var = mod->GetSubVariable(name);
+      if ((var != NULL && IsSpecies(var->GetType())) || *name == "--") {
+          LayoutWrapper* lw = GetReactionArcLayoutWrapper(name);
+          lw->setSpeciesIndex(0);
+          lw->setSegmentIndex(0);
+          return lw;
+      }
+  }
   uncert_type utype = UncertStringToType(*name);
   if (name && utype != unUnknown) {
     return AddOrGetUncertWrapper(utype);
+  }
+  layout_type ltype = lt_unknown;
+  int aliasNum = -1;
+  GetLayoutTypeAndNumFromString(*name, ltype, aliasNum);
+  vector<string> noRxnIds;
+  if (name && ltype != lt_unknown) {
+      return AddOrGetLayoutWrapper(ltype, aliasNum, noRxnIds);
   }
   return NULL;
 }
@@ -615,7 +651,9 @@ bool Variable::GetIsConst() const
   case varConstraint:
   case varSboTermWrapper:
   case varUncertWrapper:
-    return true;
+  case varLayoutWrapper:
+  case varLayoutColorEtc:
+      return true;
   }
   switch(m_const) {
   case constCONST:
@@ -750,7 +788,11 @@ bool Variable::SetType(var_type newtype)
     return false;
   }
   if (newtype == varDeleted) {
-    //You can delete any type of variable.
+      if (m_type == varLayoutColorEtc) {
+          g_registry.SetError("No such variable '" + GetNameDelimitedBy(".") + "' in the submodel.  It's only being used as the name of a color or shape.");
+          return true;
+      }
+    //You can delete any other type of variable.
     if (m_type == varUnitDefinition) {
       m_deletedunit = true; 
     }
@@ -805,11 +847,11 @@ bool Variable::SetType(var_type newtype)
   switch(m_type) {
   case varSpeciesUndef:
     switch(newtype) {
-    case varSpeciesUndef:
+    case varSpeciesUndef: //If they were both SpeciesUndef, we already returned.
     case varDeleted:
-      //If they were both SpeciesUndef, we already returned.
-      return false;
+    case varLayoutColorEtc:
     case varFormulaUndef:
+        return false;
     case varDNA:
     case varFormulaOperator:
     case varReactionGene:
@@ -824,8 +866,10 @@ bool Variable::SetType(var_type newtype)
     case varConstraint:
     case varSboTermWrapper:
     case varUncertWrapper:
+    case varLayoutWrapper:
     case varStoichiometry:
-      g_registry.SetError(error); return true;
+    case varAlgebraicRule:
+        g_registry.SetError(error); return true;
     }
   case varFormulaUndef:
     switch(newtype) {
@@ -841,7 +885,8 @@ bool Variable::SetType(var_type newtype)
     case varDeleted:
     case varConstraint:
     case varStoichiometry:
-      m_type = newtype;
+    case varAlgebraicRule:
+        m_type = newtype;
       return false;
     case varUnitDefinition:
       m_type = newtype;
@@ -856,7 +901,9 @@ bool Variable::SetType(var_type newtype)
     case varStrand:
     case varSboTermWrapper:
     case varUncertWrapper:
-      g_registry.SetError(error); return true;
+    case varLayoutWrapper:
+        g_registry.SetError(error); return true;
+    case varLayoutColorEtc:
     case varUndefined:
       return false;
     }
@@ -865,7 +912,8 @@ bool Variable::SetType(var_type newtype)
     case varFormulaUndef:
     case varUndefined:
     case varDeleted:
-      return false;
+    case varLayoutColorEtc:
+        return false;
     case varDNA:
     case varFormulaOperator:
     case varReactionGene:
@@ -884,8 +932,10 @@ bool Variable::SetType(var_type newtype)
     case varConstraint:
     case varSboTermWrapper:
     case varUncertWrapper:
+    case varLayoutWrapper:
     case varStoichiometry:
-      g_registry.SetError(error); return true;
+    case varAlgebraicRule:
+        g_registry.SetError(error); return true;
     }
   case varFormulaOperator:
     switch(newtype) {
@@ -894,7 +944,8 @@ bool Variable::SetType(var_type newtype)
     case varDNA:
     case varUndefined:
     case varDeleted:
-      return false;
+    case varLayoutColorEtc:
+        return false;
     case varSpeciesUndef:
     case varReactionGene:
     case varReactionUndef:
@@ -908,7 +959,9 @@ bool Variable::SetType(var_type newtype)
     case varSboTermWrapper:
     case varUncertWrapper:
     case varStoichiometry:
-      g_registry.SetError(error); return true;
+    case varLayoutWrapper:
+    case varAlgebraicRule:
+        g_registry.SetError(error); return true;
     }
   case varReactionGene:
     switch(newtype) {
@@ -918,7 +971,8 @@ bool Variable::SetType(var_type newtype)
     case varReactionUndef:
     case varUndefined:
     case varDeleted:
-      return false;
+    case varLayoutColorEtc:
+        return false;
     case varSpeciesUndef:
     case varFormulaOperator:
     case varInteraction:
@@ -930,8 +984,10 @@ bool Variable::SetType(var_type newtype)
     case varConstraint:
     case varSboTermWrapper:
     case varUncertWrapper:
+    case varLayoutWrapper:
     case varStoichiometry:
-      g_registry.SetError(error); return true;
+    case varAlgebraicRule:
+        g_registry.SetError(error); return true;
     }
   case varReactionUndef:
     switch(newtype) {
@@ -939,7 +995,8 @@ bool Variable::SetType(var_type newtype)
     case varUndefined:
     case varFormulaUndef:
     case varDeleted:
-      return false;
+    case varLayoutColorEtc:
+        return false;
     case varDNA:
     case varReactionGene:
       m_type = varReactionGene;
@@ -955,19 +1012,25 @@ bool Variable::SetType(var_type newtype)
     case varConstraint:
     case varSboTermWrapper:
     case varUncertWrapper:
+    case varLayoutWrapper:
     case varStoichiometry:
-      g_registry.SetError(error); return true;
+    case varAlgebraicRule:
+        g_registry.SetError(error); return true;
     }
   case varInteraction:
   case varEvent:
   case varCompartment:
   case varUnitDefinition:
   case varStoichiometry:
-    if (newtype == varFormulaUndef || newtype == varUndefined) return false;
+    if (newtype == varFormulaUndef || newtype == varUndefined || newtype == varLayoutColorEtc) return false;
     g_registry.SetError(error); return true; //the already-identical cases handled above.
   case varUndefined:
     m_type = newtype;
     return false;
+  case varLayoutColorEtc:
+      if (newtype == varUndefined) return false;
+      m_type = newtype;
+      return false;
   case varModule:
   case varStrand:
     g_registry.SetError(error); return true; //the already-identical cases handled above.
@@ -976,7 +1039,9 @@ bool Variable::SetType(var_type newtype)
   case varConstraint:
   case varSboTermWrapper:
   case varUncertWrapper:
-    g_registry.SetError(error); return true; //the already-identical cases handled above.
+  case varLayoutWrapper:
+  case varAlgebraicRule:
+      g_registry.SetError(error); return true; //the already-identical cases handled above.
     return true;
   }
 
@@ -993,24 +1058,31 @@ bool Variable::SetFormula(Formula* formula, bool isObjective)
   string formstring = formula->ToSBMLString(GetStrandVars());
   if (formstring.size() > 0) {
     ASTNode_t* ASTform = parseStringToASTNode(formstring);
-    char* err = SBML_getLastParseL3Error();
-    string errstring(err);
-    free(err);
-    if (ASTform == NULL && !errstring.empty()) {
-      g_registry.SetError("In the formula \"" + formula->ToDelimitedStringWithEllipses(".") + "\":  " + errstring);
+    if (ASTform == NULL) {
+        char* err = SBML_getLastParseL3Error();
+        string errstring(err);
+        free(err);
+        if (!errstring.empty()) {
+            g_registry.SetError("In the formula \"" + formula->ToDelimitedStringWithEllipses(".") + "\":  " + errstring);
+        }
       return true;
     }
     delete ASTform;
   }
 #endif
-  if (formula->ContainsVar(this)) {
+  if (m_type != varLayoutWrapper && formula->ContainsVar(this)) {
     g_registry.SetError("Loop detected:  " + GetNameDelimitedBy(".") + "'s definition (" + formula->ToDelimitedStringWithEllipses(".") + ") either includes itself directly (i.e. 's5 = 6 + s5') or by proxy (i.e. 's5 = 8*d3' and 'd3 = 9*s5').");
     return true;
   }
 
-  if (m_type != varUncertWrapper && formula->ContainsCurlyBrackets()) {
-    g_registry.SetError("Curly brackets detected in formula: '" + formula->ToDelimitedStringWithEllipses(".") + "': vectors are not supported in the current version of Antimony apart from their use in setting certain uncertainty parameters.");
+  if (m_type != varUncertWrapper && m_type != varLayoutWrapper && formula->ContainsCurlyBrackets()) {
+    g_registry.SetError("Curly brackets detected in formula: '" + formula->ToDelimitedStringWithEllipses(".") + "': vectors are not supported in the current version of Antimony apart from their use in setting certain uncertainty or layout parameters.");
     return true;
+  }
+
+  if (m_type != varLayoutWrapper && formula->SetWithLiteralStrings()) {
+      g_registry.SetError("Cannot set the value of " + GetNameDelimitedBy(".") + " to '" + formula->ToDelimitedStringWithEllipses(".") + "' because literal strings are not allowed in formulas for this variable.");
+      return true;
   }
   bool isdeletion = false;
   Variable* submodel = NULL;
@@ -1040,12 +1112,14 @@ bool Variable::SetFormula(Formula* formula, bool isObjective)
     }
     break;
   case varUndefined:
+  case varLayoutColorEtc:
     m_type = varFormulaUndef;
     //and fall through to:
   case varFormulaUndef:
   case varCompartment:
   case varSpeciesUndef:
   case varUncertWrapper:
+  case varLayoutWrapper:
   case varStoichiometry:
     if (m_formulatype == formulaASSIGNMENT) {
       g_registry.SetError("Cannot set '" + GetNameDelimitedBy(".") + "' to have the initial value '" + formula->ToDelimitedStringWithEllipses(".") + "' because it already has an assignment rule, which applies at all times, including time=0.");
@@ -1056,6 +1130,9 @@ bool Variable::SetFormula(Formula* formula, bool isObjective)
     }
     m_valFormula = *formula;
     break;
+  case varAlgebraicRule:
+      g_registry.SetError("Cannot set '" + GetNameDelimitedBy(".") + "' to have the initial value '" + formula->ToDelimitedStringWithEllipses(".") + "' because it is an algebraic rule, which applies at all times, including time=0.");
+      return true;
   case varUnitDefinition:
     if (formula->MakeAllVariablesUnits()) return true;
     if (m_valUnitDef.SetFromFormula(formula)) return true;
@@ -1201,7 +1278,7 @@ bool Variable::SetRateRule(Formula* formula)
   return false;
 }
 
-bool Variable::SetAlgebraicRule(int val, Formula* formula)
+bool Variable::SetAlgebraicRule(double val, Formula* formula)
 {
     if (IsPointer()) {
         return GetSameVariable()->SetAlgebraicRule(val, formula);
@@ -1236,7 +1313,7 @@ bool Variable::SetAlgebraicRule(int val, Formula* formula)
     if (formula->MakeUnitVariablesUnits()) return true;
 
     //If nothing is set variable explicitly, set all default variables to non-const
-    vector<vector<string> > formvars = formula->GetVariables();
+    vector<vector<string> > formvars = formula->GetVariableStrings();
     Module* thismod = g_registry.GetModule(m_module);
     vector<Variable*> algvars;
     bool anyNonConst = false;
@@ -1456,6 +1533,12 @@ bool Variable::SetIsConst(bool constant)
       return true;
     }
     break;
+  case varAlgebraicRule:
+      if (!constant) {
+          g_registry.SetError(error + ", as 'constantness' is undefined for algebraic rules.");
+          return true;
+      }
+      break;
   case varStrand:
     if (!constant) {
       g_registry.SetError(error + ", as 'constantness' is undefined for DNA strands.");
@@ -1474,6 +1557,18 @@ bool Variable::SetIsConst(bool constant)
       return true;
     }
     break;
+  case varLayoutWrapper:
+      if (!constant) {
+          g_registry.SetError(error + ", as 'constantness' is undefined for layout and render parameters.");
+          return true;
+      }
+      break;
+  case varLayoutColorEtc:
+      if (!constant) {
+          g_registry.SetError(error + ", as 'constantness' is undefined for things like colors.");
+          return true;
+      }
+      break;
   case varConstraint:
     if (!constant) {
       g_registry.SetError(error + ", as 'constantness' is undefined for constraints.");
@@ -1561,8 +1656,11 @@ bool Variable::SetSuperCompartment(Variable* var, var_type supertype)
   case varDeleted:
   case varSboTermWrapper:
   case varUncertWrapper:
+  case varLayoutWrapper:
   case varConstraint:
   case varStoichiometry:
+  case varAlgebraicRule:
+  case varLayoutColorEtc:
     assert(false); // Those things don't have components
     return false;
   case varStrand:
@@ -1609,8 +1707,11 @@ void Variable::SetComponentCompartments(bool frommodule)
   case varDeleted:
   case varSboTermWrapper:
   case varUncertWrapper:
+  case varLayoutWrapper:
   case varConstraint:
   case varStoichiometry:
+  case varAlgebraicRule:
+  case varLayoutColorEtc:
     return; //No components to set
   case varReactionUndef:
   case varReactionGene:
@@ -1786,6 +1887,7 @@ bool Variable::DeleteFromSubmodel(Variable* deletedvar)
  case varUndefined:
  case varCompartment:
  case varStoichiometry:
+ case varAlgebraicRule:
    switch (deletedvar->GetFormulaType()) {
    case formulaRATE:
      if (!rform->IsEmpty()) {
@@ -1806,6 +1908,7 @@ bool Variable::DeleteFromSubmodel(Variable* deletedvar)
      break;
    case formulaKINETIC:
    case formulaTRIGGER:
+   case formulaALGEBRAIC:
      //Nothing extra needed.
      break;
    }
@@ -1822,7 +1925,9 @@ bool Variable::DeleteFromSubmodel(Variable* deletedvar)
   case varDeleted:
   case varSboTermWrapper:
   case varUncertWrapper:
+  case varLayoutWrapper:
   case varConstraint:
+  case varLayoutColorEtc:
     //These types can't have rules to them.
     break;
   }
@@ -1932,7 +2037,7 @@ set<pair<vector<string>, deletion_type> > Variable::ClearReferencesTo(Variable* 
 //Set this variable to be a shell pointing to the clone, transferring any data we may already have.
 bool Variable::Synchronize(Variable* clone, const Variable* conversionFactor)
 {
-  if (clone->GetType() == varSboTermWrapper || clone->GetType() == varUncertWrapper) {
+  if (clone->GetType() == varSboTermWrapper || clone->GetType() == varUncertWrapper || clone->GetType() == varLayoutWrapper) {
     return clone->Synchronize(this, conversionFactor); //Which will give an error.
   }
   if (IsPointer()) {
@@ -2052,6 +2157,12 @@ bool Variable::Synchronize(Variable* clone, const Variable* conversionFactor)
           return true;
         }
         break;
+      case formulaALGEBRAIC:
+          if (clone->SetAlgebraicRule(0, &m_valFormula)) {
+              g_registry.AddErrorPrefix("Cannot synchronize " + GetNameDelimitedBy(".") + " with " + clone->GetNameDelimitedBy(".") + ":  ");
+              return true;
+          }
+          break;
       case formulaKINETIC:
       case formulaTRIGGER:
         assert(false); //How did a reaction or trigger have a m_valFormula?
@@ -2133,6 +2244,24 @@ bool Variable::Synchronize(Variable* clone, const Variable* conversionFactor)
     }
   }
 
+  //Synchronize the layout parameters
+  for (size_t lw = 0; lw < m_layoutWrappers.size(); lw++) {
+      LayoutWrapper* wrapper = m_layoutWrappers[lw];
+      layout_type wtype = wrapper->GetLayoutType();
+      bool no_same = true;
+      for (size_t clw = 0; clw < clone->m_layoutWrappers.size(); clw++) {
+          if (clone->m_layoutWrappers[clw]->GetLayoutType() == wtype) {
+              no_same = false;
+              break;
+          }
+      }
+      if (no_same) {
+          //Move the pointer to the clone; clear the local pointer.
+          clone->m_layoutWrappers.push_back(wrapper);
+          m_layoutWrappers[lw] = NULL;
+      }
+  }
+
   //We always synchronize the data above first, but where we store it can change based on which version is the top-level.
   if (clone->m_name.size() > 1 && m_name.size() == 1) {
     //When synchronizing a local variable to a submodule's variable, always have the local trump the submodule.
@@ -2151,6 +2280,10 @@ bool Variable::IncludesSelf()
 {
   if (IsPointer()) {
     return GetSameVariable()->IncludesSelf();
+  }
+  if (m_type == varLayoutWrapper) {
+    // It's fine to say that a species named 'red' has a color that's 'red'.
+    return false;
   }
   Formula* form = GetFormula();
   if (form != NULL) {
@@ -2219,6 +2352,7 @@ void Variable::FixNames()
   }
   m_valEvent.FixNames();
   m_valStrand.FixNames();
+  m_valUnitDef.FixNames();
 }
 
 void Variable::ClearSameName() 
@@ -2275,7 +2409,32 @@ UncertWrapper * Variable::AddOrGetUncertWrapper(uncert_type type)
   return uncertWrapper;
 }
 
-bool Variable::IsReplacedFormRxn() const 
+LayoutWrapper* Variable::AddOrGetLayoutWrapper(layout_type type, int aliasNum, vector<string> rxnIDs)
+{
+    //for (size_t uw = 0; uw < m_layoutWrappers.size(); uw++) {
+    //    //A single variable can have multiple reaction arcs, but only one of everything else.
+    //    if (type != lt_reactionArc && m_layoutWrappers[uw]->GetLayoutType() == type && m_layoutWrappers[uw]->GetAliasNum() == aliasNum) {
+    //        return m_layoutWrappers[uw];
+    //    }
+    //}
+    LayoutWrapper* layoutWrapper = new LayoutWrapper(this, type);
+    layoutWrapper->setAliasNum(aliasNum);
+    layoutWrapper->setAliasReactionConnections(rxnIDs);
+    m_layoutWrappers.push_back(layoutWrapper);
+    return layoutWrapper;
+}
+
+LayoutWrapper* Variable::GetReactionArcLayoutWrapper(const string* name)
+{
+    LayoutWrapper* layoutWrapper = new LayoutWrapper(this, lt_reactionArc);
+    if (name) {
+        layoutWrapper->setSpeciesId(*name);
+    }
+    m_layoutWrappers.push_back(layoutWrapper);
+    return layoutWrapper;
+}
+
+bool Variable::IsReplacedFormRxn() const
 {
   return m_replacedformrxn;
 }
@@ -2314,6 +2473,15 @@ string Variable::CreateUncertParamsAntimonySyntax(const string & indent) const
   return retval;
 }
 
+string Variable::CreateLayoutParamsAntimonySyntax(const string& indent) const
+{
+    string retval = "";
+    for (size_t uw = 0; uw < m_layoutWrappers.size(); uw++) {
+        retval += m_layoutWrappers[uw]->CreateLayoutParamsAntimonySyntax(indent);
+    }
+    return retval;
+}
+
 bool Variable::AllowedInFormulas() const
 {
   switch (m_type) {
@@ -2327,6 +2495,7 @@ bool Variable::AllowedInFormulas() const
   case varCompartment:
   case varUnitDefinition:
   case varStoichiometry:
+  case varLayoutColorEtc:
     return true;
 
   case varInteraction:
@@ -2336,7 +2505,9 @@ bool Variable::AllowedInFormulas() const
   case varDeleted:
   case varSboTermWrapper:
   case varUncertWrapper:
+  case varLayoutWrapper:
   case varConstraint:
+  case varAlgebraicRule:
     return false;
 
   }
@@ -2383,6 +2554,63 @@ bool Variable::TransferAnnotationTo(SBase * sbmlobj, string metaid) const
     }
   }
   return Annotated::TransferAnnotationTo(sbmlobj, metaid);
+}
+
+bool Variable::TransferLayoutInformationTo(SBMLDocument* sbml)
+{
+    if (IsPointer()) {
+        return GetSameVariable()->TransferLayoutInformationTo(sbml);
+    }
+    bool retval = false;
+    for (size_t uw = 0; uw < m_layoutWrappers.size(); uw++) {
+        if (m_layoutWrappers[uw]->TransferLayoutInformationTo(sbml)) {
+            retval = true;
+        }
+    }
+    if (IsReaction(m_type) && m_layoutWrappers.size() > 0) {
+        string id = GetNameDelimitedBy("__");
+        double xval = LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(sbml, id);
+        xval = xval + LIBSBMLNETWORK_CPP_NAMESPACE::getDimensionWidth(sbml, id)/2;
+        double yval = LIBSBMLNETWORK_CPP_NAMESPACE::getPositionY(sbml, id);
+        yval = yval + LIBSBMLNETWORK_CPP_NAMESPACE::getDimensionHeight(sbml, id) / 2;
+
+        unsigned int narcs = LIBSBMLNETWORK_CPP_NAMESPACE::getNumSpeciesReferences(sbml, id, 0);
+        for (unsigned int speciesIndex = 0; speciesIndex < narcs; speciesIndex++) {
+            string role = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceRole(sbml, id, 0, speciesIndex);
+            bool anySet = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointX(sbml, id, 0, speciesIndex, 0) != 0.0 ||
+                LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointY(sbml, id, 0, speciesIndex, 0) != 0.0 ||
+                LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointX(sbml, id, 0, speciesIndex, 0) != 0.0 ||
+                LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointY(sbml, id, 0, speciesIndex, 0) != 0.0;
+            if (anySet) {
+                if (!startsAtReaction(role)) {
+                    if (!isnan(xval)) {
+                        if (LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointX(sbml, id, 0, speciesIndex, 0) == 0.0) {
+                            LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentEndPointX(sbml, id, 0, speciesIndex, 0, xval);
+                        }
+                    }
+                    if (!isnan(yval)) {
+                        if (LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointY(sbml, id, 0, speciesIndex, 0) == 0.0) {
+                            LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentEndPointY(sbml, id, 0, speciesIndex, 0, yval);
+                        }
+                    }
+                }
+                else {
+                    assert(startsAtReaction(role));
+                    if (!isnan(xval)) {
+                        if (LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointX(sbml, id, 0, speciesIndex, 0) == 0.0) {
+                            LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentStartPointX(sbml, id, 0, speciesIndex, 0, xval);
+                        }
+                    }
+                    if (!isnan(yval)) {
+                        if (LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointY(sbml, id, 0, speciesIndex, 0) == 0.0) {
+                            LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentStartPointY(sbml, id, 0, speciesIndex, 0, yval);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return retval;
 }
 
 void Variable::ReadAnnotationFrom(const SBase * sbmlobj)
@@ -2456,6 +2684,21 @@ void Variable::ReadAnnotationFrom(const SBase * sbmlobj)
 size_t Variable::GetNumUncertWrappers() const
 {
   return m_uncertWrappers.size();
+}
+
+size_t Variable::GetNumLayoutWrappers() const
+{
+    return m_layoutWrappers.size();
+}
+
+bool Variable::HasLayoutPositionInfo() const
+{
+    for (size_t l = 0; l < m_layoutWrappers.size(); l++) {
+        if (m_layoutWrappers[l]->HasLayoutPositionInfo()) {
+            return true;
+        }
+    }
+    return false;
 }
 
 #endif

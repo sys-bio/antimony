@@ -1,0 +1,723 @@
+// Created by libAntimony v3.0.0
+model *Reyes_Palomares2012___a_combined_model_hepatic_polyamine_and_sulfur_aminoacid_metabolism___version1_1()
+
+  // Compartments and Species:
+  compartment blood, cytosol, mito, cell;
+  species $b_met in blood, $b_ser in blood, b_gly in blood, b_glu in blood;
+  species b_cys in blood, b_gsg in blood, b_gsh in blood, $GAR in cytosol;
+  species $NADPH in cytosol, $BET in cytosol, $DUMP in cytosol, $H2O2 in cytosol;
+  species c_thf in cytosol, $Fol in cell, c_5mf in cytosol, c_2cf in cytosol;
+  species c_1cf in cytosol, c_10f in cytosol, c_dhf in cytosol, aic in cytosol;
+  species c_glu in cytosol, c_cys in cytosol, glc in cytosol, c_gly in cytosol;
+  species c_gsg in cytosol, c_gsh in cytosol, cyt in cytosol, hcy in cytosol;
+  species c_ser in cytosol, sah in cytosol, sam in cytosol, met in cytosol;
+  species c_coo in cytosol, species_1 in cytosol, species_2 in cytosol, species_3 in cytosol;
+  species species_4 in cytosol, species_5 in cytosol, species_6 in cytosol;
+  species $species_7 in cytosol, species_8 in cytosol, species_9 in cytosol;
+  species $CO in mito, m_thf in mito, m_2cf in mito, m_1cf in mito, m_10f in mito;
+  species m_ser in mito, m_gly in mito, m_coo in mito, $HCHO in cell, src in cell;
+  species dmg in cell;
+
+  // Assignment Rules:
+  b_met := aa_input*b_met_basal;
+  aa_input := piecewise(breakfast, (7 <= daytime) && (daytime <= 10), piecewise(lunch, (12 <= daytime) && (daytime <= 15), piecewise(dinner, (18 <= daytime) && (daytime <= 21), fasting)));
+  b_ser := aa_input*b_ser_basal;
+  tot_cfol := c_5mf + c_2cf + c_1cf + c_10f + c_dhf + c_thf;
+  tot_mfol := m_thf + m_2cf + m_1cf + m_10f;
+  V_oCys_b := aa_input*V_oCys_b_basal;
+  V_oGly_b := aa_input*V_oGly_b_basal;
+  V_oGlu_b := aa_input*V_oGlu_b_basal;
+  daytime := time - 24*floor(time/24);
+  parameter_14 := parameter_16;
+  parameter_15 := 3*parameter_16;
+  parameter_17 := species_3 + species_4;
+  parameter_18 := 100*(parameter_16/0.24);
+
+  // Rate Rules:
+  parameter_1' = 60*parameter_7*(1/(1 + parameter_5*(species_4 + species_3))) - parameter_6*parameter_4*parameter_1;
+  parameter_4' = 1*parameter_13*(1 - 1/(1 + parameter_5*0.01*(species_4 + species_3))) - parameter_12*parameter_4;
+  parameter_2' = 60*parameter_9*(1 - 1/(1 + parameter_5*(species_4 + species_3))) - parameter_8*(1/(1 + parameter_5*(species_4 + species_3)))*parameter_2;
+  parameter_3' = 60*parameter_11*(1/(1 + parameter_5*(species_4 + species_3))) - parameter_10*parameter_3;
+
+  // Reactions:
+  b_gsh_decomp: b_gsh -> b_cys + b_gly + b_glu; blood*(90*b_gsh);
+  b_gsg_decomp: b_gsg -> 2 b_cys + 2 b_gly + 2 b_glu; blood*(67.5*b_gsg);
+  b_cys_cystine_conv: b_cys -> ; blood*(0.25*b_cys);
+  b_cys_loss: b_cys -> ; blood*(0.1*b_cys);
+  b_glu_loss: b_glu -> ; blood*(0.1*b_glu);
+  b_gly_loss: b_gly -> ; blood*(0.1*b_gly);
+  b_gsh_loss: b_gsh -> ; blood*(0.7*b_gsh);
+  b_gsg_loss: b_gsg -> ; blood*(7.5*b_gsg);
+  b_cys_import:  -> b_cys; blood*V_oCys_b;
+  b_gly_import:  -> b_gly; blood*V_oGly_b;
+  b_glu_import:  -> b_glu; blood*V_oGlu_b;
+  V_c_gshHb: c_gsh -> b_gsh; cytosol*(V_gshHb*c_gsh/(K_gshHb + c_gsh));
+  V_c_gshLb: c_gsh -> b_gsh; cytosol*V_gshLb*c_gsh^h_gshLb/(K_gshLb^h_gshLb + c_gsh^h_gshLb);
+  V_c_gsgHb: c_gsg -> b_gsg; cytosol*(V_gsgHb*c_gsg/(K_gsgHb + c_gsg));
+  V_c_gsgLb: c_gsg -> b_gsg; cytosol*(V_gsgLb*c_gsg/(K_gsgLb + c_gsg));
+  V_b_CYS_c: b_cys -> c_cys; cytosol*(V_bcysc*b_cys/(K_bcysc + b_cys));
+  V_b_GLU_c: b_glu -> c_glu; cytosol*(V_bglutc*b_glu/(K_bglutc + b_glu) - k_out_glu*c_glu);
+  V_b_GLY_c: b_gly -> c_gly; cytosol*(V_bglyc*b_gly/(K_bglyc + b_gly) - k_out_gly*c_gly);
+  V_b_SER_c: $b_ser -> c_ser; cytosol*(V_bserc*b_ser/(K_bserc + b_ser) - k_out_ser*c_ser);
+  V_b_MET_c: $b_met -> met; cytosol*(V_bmetc*b_met/(K_bmetc + b_met) - k_out_met*met);
+  VmFTD: m_10f -> m_thf; mito*(Vm_mFTD*m_10f/(K_10f_FTD + m_10f));
+  VmSHMT: m_thf + m_ser -> m_gly + m_2cf; mito*(Vf_mSHMT*m_thf*m_ser/((K_thf_SHMT + m_thf)*(K_ser_SHMT + m_ser)) - Vr_mSHMT*m_gly*m_2cf/((K_gly_SHMT + m_gly)*(K_2cf_SHMT + m_2cf)));
+  VmFTS: m_thf + m_coo -> m_10f; mito*(Vf_mFTS*m_thf*m_coo/((K_thf_mFTS + m_thf)*(K_coo_mFTS + m_coo)) - Vr_mFTS*m_10f/(K_10f_mFTS + m_10f));
+  VmNE: m_thf + $HCHO -> m_2cf; mito*(k1_mNE*m_thf*HCHO - k2_mNE*m_2cf);
+  V_GDC: m_thf + m_gly -> m_2cf + $CO; mito*(Vm_GDC*m_thf*m_gly/((K_thf_GDC + m_thf)*(K_gly_GDC + m_gly)));
+  V_SDH: m_thf + src -> m_2cf + m_gly; mito*(Vm_SDH*m_thf*src/((K_thf_SDH + m_thf)*(K_src_SDH + src)));
+  V_DMGD: m_thf + dmg -> m_2cf + src; mito*(Vm_DMGD*m_thf*dmg/((K_thf_DMGD + m_thf)*(K_dmg_DMGD + dmg)));
+  VmMTD: m_2cf -> m_1cf; mito*(Vf_mMTD*m_2cf/(K_2cf_MTD + m_2cf) - Vr_MTD*m_1cf/(K_1cf_MTD + m_1cf));
+  VmMTCH: m_1cf -> m_10f; mito*(Vf_mMTCH*m_1cf/(K_1cf_MTCH + m_1cf) - Vr_MTCH*m_10f/(K_10f_MTCH + m_10f));
+  VmSERc: 3 m_ser -> c_ser; ((V_mser*m_ser/(K_mser + m_ser))*mito/3 - V_cser*c_ser/(K_cser + c_ser))*cytosol;
+  VmHCOOHc: 3 m_coo -> c_coo; k_in_coo*m_coo*mito/3 - k_out_coo*c_coo*cytosol;
+  VmGLYc: 3 m_gly -> c_gly; (V_mgly*m_gly/(K_mgly + m_gly))*mito*(1/3) - (V_cgly*c_gly/(K_cgly + c_gly))*cytosol;
+  V_MS: c_5mf + hcy -> c_thf + met; cytosol*((Vm_MS*c_5mf*hcy/((K_5mf_MS + c_5mf)*(K_hcy_MS + hcy)))*(ssH2O2 + Ki_MS)/(H2O2 + Ki_MS));
+  V_DHFR: c_dhf + $NADPH -> c_thf; cytosol*(Vm_DHFR*c_dhf*NADPH/((K_dhf_DHFR + c_dhf)*(K_NADPH_DHFR + NADPH)));
+  VcFTD: c_10f -> c_thf; cytosol*(Vm_cFTD*c_10f/(K_10f_FTD + c_10f));
+  V_PGT: c_10f + $GAR -> aic + c_thf; cytosol*(Vm_PGT*c_10f*GAR/((K_10f_PGT + c_10f)*(K_GAR_PGT + GAR)));
+  VcFTS: c_thf + c_coo -> c_10f; cytosol*(Vm_cFTS*c_thf*c_coo/((K_thf_cFTS + c_thf)*(K_coo_cFTS + c_coo)));
+  VcSHMT: c_ser + c_thf -> c_gly + c_2cf; cytosol*(Vf_cSHMT*c_thf*c_ser/((K_thf_SHMT + c_thf)*(K_ser_SHMT + c_ser)) - Vr_cSHMT*c_gly*c_2cf/((K_gly_SHMT + c_gly)*(K_2cf_SHMT + c_2cf)));
+  VcNE: c_thf + $HCHO -> c_2cf; cytosol*(k1_cNE*c_thf*HCHO - k2_cNE*c_2cf);
+  V_TS: $DUMP + c_2cf -> c_dhf; cytosol*(Vm_TS*DUMP*c_2cf/((K_DUMP_TS + DUMP)*(K_2cf_TS + c_2cf)));
+  V_MTHFR: c_2cf + $NADPH -> c_5mf; cytosol*((Vm_MTHFR*c_2cf*NADPH/((K_2cf_MTHFR + c_2cf)*(K_NADPH_MTHFR + NADPH)))*72/(10 + sam - sah));
+  VcMTD: c_2cf -> c_1cf + $NADPH; cytosol*(Vf_cMTD*c_2cf/(K_2cf_MTD + c_2cf) - Vr_cMTD*c_1cf/(K_1cf_MTD + c_1cf));
+  VcMTCH: c_1cf -> c_10f; cytosol*(Vf_cMTCH*c_1cf/(K_1cf_MTCH + c_1cf) - Vr_MTCH*c_10f/(K_10f_MTCH + c_10f));
+  V_ART: c_10f + aic -> c_thf; cytosol*(Vm_ART*c_10f*aic/((K_10f_ART + c_10f)*(K_aic_ART + aic)));
+  V_BHMT: hcy + $BET -> met + dmg; cytosol*exp(-0.0021*(sam + sah))*exp(0.0021*102.6)*(Vm_BHMT*hcy*BET/((K_hcy_BHMT + hcy)*(K_bet_BHMT + BET)))*((ssH2O2 + Ki_BHMT)/(H2O2 + Ki_BHMT));
+  V_MATI: met -> sam; cytosol*(Vm_MAT1*(met/(Km_MAT1 + met))*(0.23 + 0.8*exp(-0.0026*sam))*((Ki_MAT1 + 66.71)/(Ki_MAT1 + c_gsg)));
+  V_MATIII: met -> sam; cytosol*(Vm_MAT3*(met^1.21/(Km_MAT3 + met^1.21))*(1 + 7.2*sam^2/(Ka_MAT3^2 + sam^2))*((Ki_MAT3 + 66.71)/(Ki_MAT3 + c_gsg)));
+  V_GNMT: sam + c_gly -> sah + src; cytosol*(Vm_GNMT*sam*c_gly/((K_sam_GNMT + sam)*(K_gly_GNMT + c_gly)))*(1/(1 + sah/Ki_GNMT))*(4.8/(0.35 + c_5mf));
+  V_DNMT: sam -> sah; cytosol*(Vm_DNMT*(sam/(Km_DNMT*(1 + sah/Ki_DNMT) + sam)));
+  V_SAHH: sah -> hcy; cytosol*(Vf_SAHH*sah/(K_sah_SAHH + sah) - Vr_SAHH*hcy/(K_hcy_SAHH + hcy));
+  gluconeogenesis_ser: c_ser -> ; cytosol*(1.2*c_ser);
+  V_CBS: hcy + c_ser -> cyt; cytosol*((Vm_CBS*hcy*c_ser/((K_hcy_CBS + hcy)*(K_ser_CBS + c_ser)))*(((30/102.59)^2 + 1)/((30/(sam + sah))^2 + 1))*((H2O2 + Ka_CBS)/(ssH2O2 + Ka_CBS)));
+  V_CTGL: cyt -> c_cys; cytosol*(Vm_CTGL*cyt/(K_cyt_CTGL + cyt));
+  V_GCS: c_cys + c_glu -> glc; cytosol*((Vm_GCS*(c_cys*c_glu - glc/Ke_GCS)/(K_cys_GCS*K_glu_GCS + c_glu*K_cys_GCS + c_cys*(K_glu_GCS*(1 + c_gsh/Ki_GCS) + c_glu) + glc/Kp_GCS + c_gsh/Ki_GCS))*((H2O2 + Ka_GCS)/(ssH2O2 + Ka_GCS)));
+  cys_usage: c_cys -> ; cytosol*(0.35*c_cys^2/200);
+  c_glu_usage: c_glu -> ; cytosol*(0.07*c_glu);
+  V_GS: glc + c_gly -> c_gsh; cytosol*(Vm_GS*(c_gly*glc - c_gsh/Ke_GS)/(K_gly_GS*K_glc_GS + glc*K_gly_GS + c_gly*(K_glc_GS + glc) + c_gsh/Kp_GS));
+  V_GPX: 2 c_gsh + $H2O2 -> c_gsg; cytosol*(Vm_GPX*(c_gsh/(K_gsh_GPX + c_gsh))^2*(H2O2/(K_H2O2_GPX + H2O2)));
+  V_GR: c_gsg + $NADPH -> 2 c_gsh; cytosol*(Vm_GR*c_gsg*NADPH/((K_gsg_GR + c_gsg)*(K_NADPH_GR + NADPH)));
+  c_gsh_degr: c_gsh -> ; cytosol*(0.002*c_gsh);
+  c_gsg_degr: c_gsg -> ; cytosol*(0.1*c_gsg);
+  reaction_1: $species_7 -> species_2; cytosol*(parameter_1*species_7/(reaction_1_Kmodc*(1 + species_2/reaction_1_Kipodc) + species_7));
+  reaction_2: sam -> species_1; cytosol*((parameter_3/(1 + species_3/reaction_2_Kissamdc))*sam/(reaction_2_Kmsamdc*(1 + reaction_2_Kapsamdc/species_2 + species_1/reaction_2_Kiasamdc) + sam));
+  reaction_3: species_3 + species_8 -> species_5 + species_9; cytosol*((1/reaction_3_C)*parameter_2*species_3*species_8/(reaction_3_Kmsssat*(1 + species_4/reaction_3_Kmdssat)*reaction_3_Kmaccoassat*(1 + species_9/reaction_3_Kmcoassat) + reaction_3_Kmaccoassat*(1 + species_9/reaction_3_Kmcoassat)*species_3 + reaction_3_Kmsssat*(1 + species_4/reaction_3_Kmdssat)*species_8 + species_3*species_8));
+  reaction_4: species_4 + species_8 -> species_6 + species_9; cytosol*(parameter_2*species_4*species_8/(reaction_4_Kmdssat*(1 + species_3/reaction_4_Kmsssat)*reaction_4_Kmaccoassat*(1 + species_9/reaction_4_Kmcoassat) + reaction_4_Kmaccoassat*(1 + species_9/reaction_4_Kmcoassat)*species_4 + reaction_4_Kmdssat*(1 + species_3/reaction_4_Kmsssat)*species_8 + species_4*species_8));
+  reaction_5: species_6 -> species_2; cytosol*(reaction_5_Vmpao*species_6/(reaction_5_Kmadpao*(1 + species_6/reaction_5_Kmadpao + species_5/reaction_5_Kmaspao + species_4/reaction_5_Kmdpao + species_3/reaction_5_Kmspao)));
+  reaction_6: species_5 -> species_4; cytosol*(reaction_6_Vmpao*species_5/(reaction_6_Kmaspao*(1 + species_6/reaction_6_Kmadpao + species_5/reaction_6_Kmaspao + species_4/reaction_6_Kmdpao + species_3/reaction_6_Kmspao)));
+  reaction_7: species_1 + species_2 -> species_4; cytosol*(reaction_7_Vmspds*species_1*species_2/(reaction_7_Kiaspds*reaction_7_Kpspds*(1 + species_4/reaction_7_Kidspds) + reaction_7_Kpspds*species_1 + reaction_7_KaSpds*(1 + species_4/reaction_7_Kidspds)*species_2 + species_1*species_2));
+  reaction_8: species_1 + species_4 -> species_3; cytosol*(reaction_8_Vmspms*species_1*species_4/(reaction_8_Kiaspms*reaction_8_Kdspms*(1 + species_3/reaction_8_Kisspms) + reaction_8_Kdspms*species_1 + reaction_8_Kaspms*(1 + species_3/reaction_8_Kisspms)*species_4 + species_1*species_4));
+  reaction_9: species_8 => species_9; cytosol*parameter_15*species_8;
+  reaction_10: species_9 => species_8; cytosol*parameter_14*species_9;
+  reaction_11: species_2 => ; cytosol*reaction_11_k1*species_2;
+  reaction_12: species_6 => ; cytosol*reaction_12_k1*species_6;
+
+  // Species initializations:
+  b_gly = 218.733171504338;
+  b_glu = 60.4651616225031;
+  b_cys = 183.099466381356;
+  b_gsg = 0.472632922783833;
+  b_gsh = 12.5470655822207;
+  GAR = 10;
+  NADPH = 50;
+  BET = 50;
+  DUMP = 20;
+  H2O2 = 0.01;
+  c_thf = Fol/(2*3/4) - (c_5mf + c_2cf + c_1cf + c_10f + c_dhf);
+  Fol = 20.1;
+  c_5mf = 5.36079859230553;
+  c_2cf = 0.463962655701761;
+  c_1cf = 0.259497676806752;
+  c_10f = 3.25539505319571;
+  c_dhf = 0.0352527196984464;
+  aic = 0.944676738309717;
+  c_glu = 3236.78229408139;
+  c_cys = 179.792196767939;
+  glc = 9.60706615144005;
+  c_gly = 927.560131015361;
+  c_gsg = 59.8062682413464;
+  c_gsh = 6272.51492720171;
+  cyt = 32.3047581589977;
+  hcy = 1.02425194863179;
+  c_ser = 571.225285800751;
+  sah = 15.5626693211634;
+  sam = 65.0613824844853;
+  met = 50.6006924474774;
+  c_coo = 13.9758110645557;
+  species_1 = 0.011178638638793;
+  species_2 = 98.2036296721139;
+  species_3 = 61.3595114874529;
+  species_4 = 79.5917525310194;
+  species_5 = 0.0272742537826481;
+  species_6 = 0.903751442137693;
+  species_7 = 300;
+  species_8 = 38.833390762794;
+  species_9 = 160.666609237206;
+  CO = 0;
+  m_thf = Fol/(2*1/4) - (m_2cf + m_1cf + m_10f);
+  m_2cf = 1.66729681864136;
+  m_1cf = 1.55022131198345;
+  m_10f = 15.9931179032642;
+  m_ser = 2150.05782513217;
+  m_gly = 2043.470284255;
+  m_coo = 58.3710073680041;
+  HCHO = 500;
+  src = 8.25411023033989;
+  dmg = 0.677559463168903;
+
+  // Compartment initializations:
+  blood = 1;
+  cytosol = 1;
+  mito = 1;
+  cell = 1;
+
+  // Variable initializations:
+  b_met_basal = 30;
+  b_ser_basal = 150;
+  V_oCys_b_basal = 70;
+  V_oGly_b_basal = 630;
+  V_oGlu_b_basal = 273;
+  V_gshHb = 150;
+  K_gshHb = 150;
+  V_gshLb = 1100;
+  h_gshLb = 3;
+  K_gshLb = 3000;
+  V_gsgHb = 40;
+  K_gsgHb = 1250;
+  V_gsgLb = 4025;
+  K_gsgLb = 7100;
+  V_bcysc = 14950;
+  K_bcysc = 2100;
+  V_bglutc = 28000;
+  K_bglutc = 300;
+  k_out_glu = 1;
+  V_bglyc = 4600;
+  K_bglyc = 150;
+  k_out_gly = 1;
+  V_bserc = 2700;
+  K_bserc = 150;
+  k_out_ser = 1;
+  V_bmetc = 913.4;
+  K_bmetc = 150;
+  k_out_met = 1;
+  Vm_mFTD = 1050;
+  K_10f_FTD = 20;
+  Vf_mSHMT = 11440;
+  K_thf_SHMT = 50;
+  K_ser_SHMT = 600;
+  Vr_mSHMT = 30000000;
+  K_gly_SHMT = 10000;
+  K_2cf_SHMT = 3200;
+  Vf_mFTS = 2000;
+  K_thf_mFTS = 3;
+  K_coo_mFTS = 43;
+  Vr_mFTS = 6300;
+  K_10f_mFTS = 22;
+  k1_mNE = 0.03;
+  k2_mNE = 20;
+  Vm_GDC = 15000;
+  K_thf_GDC = 50;
+  K_gly_GDC = 3400;
+  Vm_SDH = 15000;
+  K_thf_SDH = 50;
+  K_src_SDH = 320;
+  Vm_DMGD = 15000;
+  K_thf_DMGD = 50;
+  K_dmg_DMGD = 50;
+  Vf_mMTD = 180000;
+  K_2cf_MTD = 2;
+  Vr_MTD = 594000;
+  K_1cf_MTD = 10;
+  Vf_mMTCH = 790000;
+  K_1cf_MTCH = 250;
+  Vr_MTCH = 20000;
+  K_10f_MTCH = 100;
+  V_mser = 10000;
+  K_mser = 5700;
+  V_cser = 10000;
+  K_cser = 5700;
+  k_in_coo = 100;
+  k_out_coo = 100;
+  V_mgly = 10000;
+  K_mgly = 5700;
+  V_cgly = 10000;
+  K_cgly = 5700;
+  Vm_MS = 500;
+  K_5mf_MS = 25;
+  K_hcy_MS = 1;
+  ssH2O2 = 0.01;
+  Ki_MS = 0.01;
+  Vm_DHFR = 2000;
+  K_dhf_DHFR = 0.5;
+  K_NADPH_DHFR = 4;
+  Vm_cFTD = 500;
+  Vm_PGT = 24300;
+  K_10f_PGT = 4.9;
+  K_GAR_PGT = 520;
+  Vm_cFTS = 3900;
+  K_thf_cFTS = 3;
+  K_coo_cFTS = 43;
+  Vf_cSHMT = 5200;
+  Vr_cSHMT = 15000000;
+  k1_cNE = 0.03;
+  k2_cNE = 22;
+  Vm_TS = 5000;
+  K_DUMP_TS = 6.3;
+  K_2cf_TS = 14;
+  Vm_MTHFR = 5300;
+  K_2cf_MTHFR = 50;
+  K_NADPH_MTHFR = 16;
+  Vf_cMTD = 80000;
+  Vr_cMTD = 600000;
+  Vf_cMTCH = 500000;
+  Vm_ART = 55000;
+  K_10f_ART = 5.9;
+  K_aic_ART = 100;
+  Vm_BHMT = 2160;
+  K_hcy_BHMT = 12;
+  K_bet_BHMT = 100;
+  Ki_BHMT = 0.01;
+  Vm_MAT1 = 260;
+  Km_MAT1 = 41;
+  Ki_MAT1 = 2140;
+  Vm_MAT3 = 220;
+  Km_MAT3 = 300;
+  Ka_MAT3 = 360;
+  Ki_MAT3 = 4030;
+  Vm_GNMT = 260;
+  K_sam_GNMT = 63;
+  K_gly_GNMT = 130;
+  Ki_GNMT = 18;
+  Vm_DNMT = 180;
+  Km_DNMT = 1.4;
+  Ki_DNMT = 1.4;
+  Vf_SAHH = 320;
+  K_sah_SAHH = 6.5;
+  Vr_SAHH = 4530;
+  K_hcy_SAHH = 150;
+  Vm_CBS = 420000;
+  K_hcy_CBS = 1000;
+  K_ser_CBS = 2000;
+  Ka_CBS = 0.035;
+  Vm_CTGL = 1500;
+  K_cyt_CTGL = 500;
+  Vm_GCS = 3600;
+  Ke_GCS = 5597;
+  K_cys_GCS = 100;
+  K_glu_GCS = 1900;
+  Ki_GCS = 8200;
+  Kp_GCS = 300;
+  Ka_GCS = 0.01;
+  Vm_GS = 5400;
+  Ke_GS = 5600;
+  K_gly_GS = 300;
+  K_glc_GS = 22;
+  Kp_GS = 30;
+  Vm_GPX = 4500;
+  K_gsh_GPX = 1330;
+  K_H2O2_GPX = 0.09;
+  Vm_GR = 892.5;
+  K_gsg_GR = 107;
+  K_NADPH_GR = 10.4;
+  dinner = 3.25;
+  lunch = 1.75;
+  breakfast = 1.75;
+  fasting = 0.25;
+  k_out_cys = 1;
+  parameter_1 = 72.2557178994351;
+  parameter_7 = 300;
+  parameter_5 = 1;
+  parameter_6 = 3;
+  parameter_4 = 0.58497831332261;
+  parameter_2 = 42.2853792055417;
+  parameter_9 = 0.06;
+  parameter_8 = 12;
+  parameter_3 = 21.1340139923629;
+  parameter_11 = 60;
+  parameter_10 = 1.2;
+  parameter_13 = 0.02;
+  parameter_12 = 0.02;
+  parameter_16 = 0.24;
+  reaction_1_Kipodc = 1300;
+  reaction_1_Kmodc = 60;
+  reaction_2_Kapsamdc = 0.5;
+  reaction_2_Kiasamdc = 2.5;
+  reaction_2_Kissamdc = 500;
+  reaction_2_Kmsamdc = 50;
+  reaction_3_C = 4.44;
+  reaction_3_Kmaccoassat = 1.5;
+  reaction_3_Kmcoassat = 40;
+  reaction_3_Kmdssat = 130;
+  reaction_3_Kmsssat = 35;
+  reaction_4_Kmaccoassat = 1.5;
+  reaction_4_Kmcoassat = 40;
+  reaction_4_Kmdssat = 130;
+  reaction_4_Kmsssat = 35;
+  reaction_5_Kmadpao = 14;
+  reaction_5_Kmaspao = 0.6;
+  reaction_5_Kmdpao = 50;
+  reaction_5_Kmspao = 15;
+  reaction_5_Vmpao = 621;
+  reaction_6_Kmadpao = 14;
+  reaction_6_Kmaspao = 0.6;
+  reaction_6_Kmdpao = 50;
+  reaction_6_Kmspao = 15;
+  reaction_6_Vmpao = 621;
+  reaction_7_KaSpds = 0.3;
+  reaction_7_Kiaspds = 0.8;
+  reaction_7_Kidspds = 100;
+  reaction_7_Kpspds = 40;
+  reaction_7_Vmspds = 657;
+  reaction_8_Kaspms = 0.1;
+  reaction_8_Kdspms = 60;
+  reaction_8_Kiaspms = 0.06;
+  reaction_8_Kisspms = 25;
+  reaction_8_Vmspms = 193.8;
+  reaction_11_k1 = 0.6;
+  reaction_12_k1 = 0.6;
+
+  // Other declarations:
+  var aa_input, tot_cfol, tot_mfol, V_oCys_b, V_oGly_b, V_oGlu_b, daytime;
+  var parameter_1, parameter_4, parameter_2, parameter_3, parameter_14, parameter_15;
+  var parameter_17, parameter_18;
+  const blood, cytosol, mito, cell, b_met_basal, b_ser_basal, V_oCys_b_basal;
+  const V_oGly_b_basal, V_oGlu_b_basal, V_gshHb, K_gshHb, V_gshLb, h_gshLb;
+  const K_gshLb, V_gsgHb, K_gsgHb, V_gsgLb, K_gsgLb, V_bcysc, K_bcysc, V_bglutc;
+  const K_bglutc, k_out_glu, V_bglyc, K_bglyc, k_out_gly, V_bserc, K_bserc;
+  const k_out_ser, V_bmetc, K_bmetc, k_out_met, Vm_mFTD, K_10f_FTD, Vf_mSHMT;
+  const K_thf_SHMT, K_ser_SHMT, Vr_mSHMT, K_gly_SHMT, K_2cf_SHMT, Vf_mFTS;
+  const K_thf_mFTS, K_coo_mFTS, Vr_mFTS, K_10f_mFTS, k1_mNE, k2_mNE, Vm_GDC;
+  const K_thf_GDC, K_gly_GDC, Vm_SDH, K_thf_SDH, K_src_SDH, Vm_DMGD, K_thf_DMGD;
+  const K_dmg_DMGD, Vf_mMTD, K_2cf_MTD, Vr_MTD, K_1cf_MTD, Vf_mMTCH, K_1cf_MTCH;
+  const Vr_MTCH, K_10f_MTCH, V_mser, K_mser, V_cser, K_cser, k_in_coo, k_out_coo;
+  const V_mgly, K_mgly, V_cgly, K_cgly, Vm_MS, K_5mf_MS, K_hcy_MS, ssH2O2;
+  const Ki_MS, Vm_DHFR, K_dhf_DHFR, K_NADPH_DHFR, Vm_cFTD, Vm_PGT, K_10f_PGT;
+  const K_GAR_PGT, Vm_cFTS, K_thf_cFTS, K_coo_cFTS, Vf_cSHMT, Vr_cSHMT, k1_cNE;
+  const k2_cNE, Vm_TS, K_DUMP_TS, K_2cf_TS, Vm_MTHFR, K_2cf_MTHFR, K_NADPH_MTHFR;
+  const Vf_cMTD, Vr_cMTD, Vf_cMTCH, Vm_ART, K_10f_ART, K_aic_ART, Vm_BHMT;
+  const K_hcy_BHMT, K_bet_BHMT, Ki_BHMT, Vm_MAT1, Km_MAT1, Ki_MAT1, Vm_MAT3;
+  const Km_MAT3, Ka_MAT3, Ki_MAT3, Vm_GNMT, K_sam_GNMT, K_gly_GNMT, Ki_GNMT;
+  const Vm_DNMT, Km_DNMT, Ki_DNMT, Vf_SAHH, K_sah_SAHH, Vr_SAHH, K_hcy_SAHH;
+  const Vm_CBS, K_hcy_CBS, K_ser_CBS, Ka_CBS, Vm_CTGL, K_cyt_CTGL, Vm_GCS;
+  const Ke_GCS, K_cys_GCS, K_glu_GCS, Ki_GCS, Kp_GCS, Ka_GCS, Vm_GS, Ke_GS;
+  const K_gly_GS, K_glc_GS, Kp_GS, Vm_GPX, K_gsh_GPX, K_H2O2_GPX, Vm_GR, K_gsg_GR;
+  const K_NADPH_GR, dinner, lunch, breakfast, fasting, k_out_cys, parameter_7;
+  const parameter_5, parameter_6, parameter_9, parameter_8, parameter_11;
+  const parameter_10, parameter_13, parameter_12, parameter_16;
+
+  // Unit definitions:
+  unit time_unit = 3600 second;
+  unit substance = 1e-6 mole;
+
+  // Display Names:
+  time_unit is "time";
+  mito is "mitochondrion";
+  b_met is "b_Methionine";
+  aa_input is "Aminoacid_input";
+  b_ser is "b_Serine";
+  b_gly is "b_Glycine";
+  b_glu is "b_Glutamate";
+  b_cys is "b_Cysteine";
+  b_gsg is "b_GSSG";
+  b_gsh is "b_GSH";
+  BET is "Betaine";
+  DUMP is "dUMP";
+  c_thf is "c_THF";
+  Fol is "Folate";
+  c_5mf is "c_5-methyl-THF";
+  c_2cf is "c_5-10-methylene-THF";
+  c_1cf is "c_5-10-methenyl-THF";
+  c_10f is "c_10-formyl-THF";
+  c_dhf is "c_DHF";
+  aic is "AICAR";
+  c_glu is "c_Glutamate";
+  c_cys is "c_Cysteine";
+  glc is "Glutamyl-Cysteine";
+  c_gly is "c_Glycine";
+  c_gsg is "c_GSSG";
+  c_gsh is "c_GSH";
+  cyt is "Cystathionine";
+  hcy is "Homocysteine";
+  c_ser is "c_Serine";
+  sah is "SAH";
+  sam is "SAM";
+  met is "c_Methionine";
+  c_coo is "c_Formate";
+  species_1 is "dcSAM";
+  species_2 is "Putrescine";
+  species_3 is "Spermine";
+  species_4 is "Spermidine";
+  species_5 is "Acetylspermine";
+  species_6 is "Acetylspermidine";
+  species_7 is "Ornithine";
+  species_8 is "Acetyl-CoA";
+  species_9 is "CoA";
+  CO is "CO2";
+  m_thf is "m_THF";
+  m_2cf is "m_5-10-methylene-THF";
+  m_1cf is "m_5-10-methenyl-THF";
+  m_10f is "m_10-formyl-THF";
+  m_ser is "m_Serine";
+  m_gly is "m_Glycine";
+  m_coo is "m_Formate";
+  HCHO is "Formaldehyde";
+  src is "Sarcosine";
+  dmg is "Dimethylglycine";
+  parameter_1 is "Vm_ODC";
+  parameter_7 is "Ks_ODC";
+  parameter_5 is "Ke_POL";
+  parameter_6 is "Kd_ODC";
+  parameter_4 is "ANTZ";
+  parameter_2 is "Vm_SSAT";
+  parameter_9 is "Ks_SSAT";
+  parameter_8 is "Kd_SSAT";
+  parameter_3 is "Vm_SAMDC";
+  parameter_11 is "Ks_SAMDC";
+  parameter_10 is "Kd_SAMDC";
+  parameter_13 is "Ks_ANTZ";
+  parameter_12 is "Kd_ANTZ";
+  parameter_14 is "K_accoa";
+  parameter_16 is "R";
+  parameter_15 is "K_coa";
+  parameter_17 is "S+D";
+  parameter_18 is "R_percent";
+  reaction_1 is "V_ODC";
+  reaction_2 is "V_SAMDC";
+  reaction_3 is "V_SSAT_S";
+  reaction_4 is "V_SSAT_D";
+  reaction_5 is "V_PAO_AD";
+  reaction_6 is "V_PAO_AS";
+  reaction_7 is "V_SPDS";
+  reaction_8 is "V_SPMS";
+  reaction_9 is "V_COA";
+  reaction_10 is "V_ACCOA";
+  reaction_11 is "V_PUT_efflux";
+  reaction_12 is "V_AD_efflux";
+
+  // CV terms:
+  blood biological_system "http://identifiers.org/bto/BTO:0000089"
+  cytosol biological_system "http://identifiers.org/go/GO:0005829"
+  mito biological_system "http://identifiers.org/go/GO:0005739"
+  cell biological_system "http://identifiers.org/go/GO:0005623"
+  b_met biological_system "http://identifiers.org/kegg.compound/C01733"
+  b_met biological_system "http://identifiers.org/chebi/CHEBI:16811"
+  b_ser biological_system "http://identifiers.org/chebi/CHEBI:17822"
+  b_ser biological_system "http://identifiers.org/kegg.compound/C00716"
+  b_gly biological_system "http://identifiers.org/chebi/CHEBI:15428"
+  b_gly biological_system "http://identifiers.org/kegg.compound/C00037"
+  b_glu biological_system "http://identifiers.org/chebi/CHEBI:18237"
+  b_glu biological_system "http://identifiers.org/kegg.compound/C00302"
+  b_cys biological_system "http://identifiers.org/kegg.compound/C00736"
+  b_cys biological_system "http://identifiers.org/chebi/CHEBI:15356"
+  b_gsg biological_system "http://identifiers.org/chebi/CHEBI:17858"
+  b_gsg biological_system "http://identifiers.org/kegg.compound/C00127"
+  b_gsh biological_system "http://identifiers.org/kegg.compound/C00051"
+  b_gsh biological_system "http://identifiers.org/chebi/CHEBI:16856"
+  GAR biological_system "http://identifiers.org/chebi/CHEBI:18349"
+  GAR biological_system "http://identifiers.org/kegg.compound/C003838"
+  NADPH biological_system "http://identifiers.org/kegg.compound/C00005"
+  NADPH biological_system "http://identifiers.org/chebi/CHEBI:16474"
+  BET biological_system "http://identifiers.org/chebi/CHEBI:17750"
+  BET biological_system "http://identifiers.org/kegg.compound/C00719"
+  DUMP biological_system "http://identifiers.org/kegg.compound/C00365"
+  DUMP biological_system "http://identifiers.org/chebi/CHEBI:17622"
+  H2O2 biological_system "http://identifiers.org/chebi/CHEBI:16240"
+  H2O2 biological_system "http://identifiers.org/kegg.compound/C00027"
+  c_thf biological_system "http://identifiers.org/chebi/CHEBI:15635"
+  c_thf biological_system "http://identifiers.org/kegg.compound/C00101"
+  Fol biological_system "http://identifiers.org/chebi/CHEBI:27470"
+  Fol biological_system "http://identifiers.org/kegg.compound/C00504"
+  c_5mf biological_system "http://identifiers.org/chebi/CHEBI:15641"
+  c_5mf biological_system "http://identifiers.org/kegg.compound/C00440"
+  c_2cf biological_system "http://identifiers.org/chebi/CHEBI:1989"
+  c_2cf biological_system "http://identifiers.org/kegg.compound/C00143"
+  c_1cf biological_system "http://identifiers.org/pubchem.compound/644350"
+  c_10f biological_system "http://identifiers.org/chebi/CHEBI:15637"
+  c_10f biological_system "http://identifiers.org/kegg.compound/C00234"
+  c_dhf biological_system "http://identifiers.org/kegg.compound/C00415"
+  c_dhf biological_system "http://identifiers.org/chebi/CHEBI:15633"
+  aic biological_system "http://identifiers.org/kegg.compound/C04677"
+  aic biological_system "http://identifiers.org/chebi/CHEBI:18406"
+  c_glu biological_system "http://identifiers.org/kegg.compound/C00302"
+  c_glu biological_system "http://identifiers.org/chebi/CHEBI:18237"
+  c_cys biological_system "http://identifiers.org/chebi/CHEBI:15356"
+  c_cys biological_system "http://identifiers.org/kegg.compound/C00736"
+  glc biological_system "http://identifiers.org/kegg.compound/C00669"
+  glc biological_system "http://identifiers.org/chebi/CHEBI:17515"
+  c_gly biological_system "http://identifiers.org/kegg.compound/C00037"
+  c_gly biological_system "http://identifiers.org/chebi/CHEBI:15428"
+  c_gsg biological_system "http://identifiers.org/chebi/CHEBI:17858"
+  c_gsg biological_system "http://identifiers.org/kegg.compound/C00127"
+  c_gsh biological_system "http://identifiers.org/kegg.compound/C00051"
+  c_gsh biological_system "http://identifiers.org/chebi/CHEBI:16856"
+  cyt biological_system "http://identifiers.org/pubchem.compound/834"
+  hcy biological_system "http://identifiers.org/chebi/CHEBI:17230"
+  hcy biological_system "http://identifiers.org/kegg.compound/C05330"
+  c_ser biological_system "http://identifiers.org/chebi/CHEBI:17822"
+  c_ser biological_system "http://identifiers.org/kegg.compound/C00716"
+  sah biological_system "http://identifiers.org/chebi/CHEBI:16680"
+  sah biological_system "http://identifiers.org/kegg.compound/C00021"
+  sam biological_system "http://identifiers.org/kegg.compound/C00019"
+  sam biological_system "http://identifiers.org/chebi/CHEBI:15414"
+  met identity "http://identifiers.org/chebi/CHEBI:16811"
+  met identity "http://identifiers.org/kegg.compound/C01733"
+  c_coo biological_system "http://identifiers.org/kegg.compound/C00058"
+  c_coo biological_system "http://identifiers.org/chebi/CHEBI:15740"
+  species_1 biological_system "http://identifiers.org/chebi/CHEBI:15625"
+  species_2 biological_system "http://identifiers.org/chebi/CHEBI:17148"
+  species_3 biological_system "http://identifiers.org/chebi/CHEBI:15746"
+  species_4 biological_system "http://identifiers.org/chebi/CHEBI:16610"
+  species_5 biological_system "http://identifiers.org/chebi/CHEBI:17312"
+  species_6 biological_system "http://identifiers.org/chebi/CHEBI:17927"
+  species_7 biological_system "http://identifiers.org/chebi/CHEBI:18257"
+  species_8 biological_system "http://identifiers.org/chebi/CHEBI:15351"
+  species_9 biological_system "http://identifiers.org/chebi/CHEBI:15346"
+  CO biological_system "http://identifiers.org/chebi/CHEBI:16526"
+  CO biological_system "http://identifiers.org/kegg.compound/C00011"
+  m_thf biological_system "http://identifiers.org/chebi/CHEBI:15635"
+  m_thf biological_system "http://identifiers.org/kegg.compound/C00101"
+  m_2cf biological_system "http://identifiers.org/kegg.compound/C00143"
+  m_2cf biological_system "http://identifiers.org/chebi/CHEBI:1989"
+  m_1cf biological_system "http://identifiers.org/pubchem.compound/644350"
+  m_10f biological_system "http://identifiers.org/chebi/CHEBI:15637"
+  m_10f biological_system "http://identifiers.org/kegg.compound/C00234"
+  m_ser biological_system "http://identifiers.org/chebi/CHEBI:17822"
+  m_ser biological_system "http://identifiers.org/kegg.compound/C00716"
+  m_gly biological_system "http://identifiers.org/kegg.compound/C00037"
+  m_gly biological_system "http://identifiers.org/chebi/CHEBI:15428"
+  m_coo biological_system "http://identifiers.org/chebi/CHEBI:15740"
+  m_coo biological_system "http://identifiers.org/kegg.compound/C00058"
+  HCHO biological_system "http://identifiers.org/chebi/CHEBI:16842"
+  HCHO biological_system "http://identifiers.org/kegg.compound/C00067"
+  src biological_system "http://identifiers.org/kegg.compound/C00213"
+  src biological_system "http://identifiers.org/chebi/CHEBI:15611"
+  dmg biological_system "http://identifiers.org/chebi/CHEBI:17724"
+  dmg biological_system "http://identifiers.org/kegg.compound/C01026"
+  b_gsh_decomp biological_system "http://identifiers.org/go/GO:0006751"
+  b_gsg_decomp biological_system "http://identifiers.org/go/GO:0006751"
+  b_cys_cystine_conv biological_system "http://identifiers.org/go/GO:0019456"
+  b_cys_loss biological_system "http://identifiers.org/go/GO:0009093"
+  b_glu_loss biological_system "http://identifiers.org/go/GO:0006538"
+  b_gly_loss biological_system "http://identifiers.org/go/GO:0006546"
+  b_gsh_loss biological_system "http://identifiers.org/go/GO:0006751"
+  b_gsg_loss biological_system "http://identifiers.org/go/GO:0006751"
+  b_cys_import biological_system "http://identifiers.org/go/GO:0042883"
+  b_gly_import biological_system "http://identifiers.org/go/GO:0015816"
+  b_glu_import biological_system "http://identifiers.org/go/GO:0015813"
+  V_c_gshHb biological_system "http://identifiers.org/go/GO:0034635"
+  V_c_gshLb biological_system "http://identifiers.org/go/GO:0034635"
+  V_c_gsgHb biological_system "http://identifiers.org/go/GO:0034635"
+  V_c_gsgLb biological_system "http://identifiers.org/go/GO:0034635"
+  V_b_CYS_c biological_system "http://identifiers.org/go/GO:0042883"
+  V_b_GLU_c biological_system "http://identifiers.org/go/GO:0015813"
+  V_b_GLY_c biological_system "http://identifiers.org/go/GO:0015816"
+  V_b_SER_c biological_system "http://identifiers.org/go/GO:0032329"
+  V_b_MET_c biological_system "http://identifiers.org/go/GO:0015821"
+  VmFTD biological_system "http://identifiers.org/kegg.reaction/R00941"
+  VmSHMT biological_system "http://identifiers.org/kegg.reaction/R00945"
+  VmFTS biological_system "http://identifiers.org/kegg.reaction/R00944"
+  VmNE biological_system "http://identifiers.org/kegg.reaction/R09093"
+  V_TS biological_system "http://identifiers.org/kegg.reaction/R02101"
+  V_MTHFR biological_system "http://identifiers.org/kegg.reaction/R01220"
+  VcMTD biological_system "http://identifiers.org/kegg.reaction/R01220"
+  VcMTCH biological_system "http://identifiers.org/kegg.reaction/R01655"
+  V_ART biological_system "http://identifiers.org/kegg.reaction/R04560"
+  V_BHMT biological_system "http://identifiers.org/kegg.reaction/R02821"
+  V_MATI biological_system "http://identifiers.org/kegg.reaction/R00650"
+  V_MATIII biological_system "http://identifiers.org/kegg.reaction/R00650"
+  V_GNMT biological_system "http://identifiers.org/kegg.reaction/R00367"
+  V_DNMT biological_system "http://identifiers.org/kegg.reaction/R00649"
+  V_SAHH biological_system "http://identifiers.org/kegg.reaction/R00192"
+  gluconeogenesis_ser biological_system "http://identifiers.org/kegg.reaction/R0006565"
+  V_CBS biological_system "http://identifiers.org/kegg.reaction/R01289"
+  V_CTGL biological_system "http://identifiers.org/kegg.reaction/R00894"
+  V_GCS biological_system "http://identifiers.org/kegg.reaction/R00894"
+  cys_usage biological_system "http://identifiers.org/go/GO:0009093"
+  c_glu_usage biological_system "http://identifiers.org/go/GO:0006538"
+  V_GS biological_system "http://identifiers.org/kegg.reaction/R00497"
+  V_GPX biological_system "http://identifiers.org/kegg.reaction/R00274"
+  V_GR biological_system "http://identifiers.org/kegg.reaction/R00115"
+  c_gsh_degr biological_system "http://identifiers.org/go/GO:0006751"
+  c_gsg_degr biological_system "http://identifiers.org/go/GO:0006751"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1305060000"
+  model origin "http://identifiers.org/biomodels.db/BIOMD0000000268"
+  model origin "http://identifiers.org/biomodels.db/BIOMD0000000190"
+  model publication "http://identifiers.org/pubmed/21814788"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000674"
+  model part "http://identifiers.org/go/GO:0000096"
+  model part "http://identifiers.org/go/GO:0006595"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model description "http://identifiers.org/pubmed/18442411"
+  model created "2018-02-14T13:11:36Z"
+  model modified "2018-02-14T16:15:16Z",
+                 "2018-02-14T16:15:16Z"
+  model creator1.givenName "Armando"
+  model creator1.familyName "Reyes-Palomares"
+  model creator1.email "armando@uma.es"
+  model creator2.givenName "Matthew Grant"
+  model creator2.familyName "Roberts"
+  model creator2.organization "EMBL-EBI"
+  model creator2.email "mroberts@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+Reyes-Palomares2012 - a combined modelhepatic polyamine and sulfur aminoacid metabolism
+- version1 
+
+
+Mammalian polyamine metabolism consists of a bi-cycle with two required entrances,
+omithine and S-adenosyl methionine (SAM), and several alternative exists. The relevant
+regulatory roles of the short half-life enzymes ornithine decarboxylase (ODC), S-adenosyl
+methione decarboxylase (SAMDC) and spermindine/spermine acetyl transferase (SSAT)
+in polyamine metabolism are well studied, and has been modelled here.
+
+
+This model is described in the article:
+
+
+[A combined model of hepatic polyamine and sulfur amino acid metabolism to analyze S-adenosyl methionine availability.](http://identifiers.org/pubmed/21814788 "Access to this publication") 
+
+
+Reyes-Palomares A, Montañez R, Sánchez-Jiménez F, Medina MA. 
+
+Amino Acids 2012 Feb; 42(2-3): 597-610 
+Abstract:
+
+
+Many molecular details remain to be uncovered concerning the regulation of polyamine
+metabolism. A previous model of mammalian polyamine metabolism showed that S-adenosyl
+methionine availability could play a key role in polyamine homeostasis. To
+get a deeper insight in this prediction, we have built a combined model by integration
+of the previously published polyamine model and one-carbon and glutathione 
+metabolism model, published by different research groups. The combined model is
+robust and it is able to achieve physiological steady-state values, as well as
+to reproduce the predictions of the individual models. Furthermore, a transition
+between two versions of our model with new regulatory factors added properly
+simulates the switch in methionine adenosyl transferase isozymes occurring when
+the liver enters in proliferative conditions. The combined model is useful to
+support the previous prediction on the role of S-adenosyl methionine availability
+in polyamine homeostasis. Furthermore, it could be easily adapted to get deeper
+insights on the connections of polyamines with energy metabolism.
+
+
+**Notes by the author:** 
+
+This model combines BIOMD0000000190 and BIOMD0000000268 from BioModels Database,
+both models include corrections respect to their originals publications.
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identified by: [BIOMD0000000674](http://identifiers.org/biomodels.db/BIOMD0000000674).
+
+To cite BioModels Database, please use: [Chelliah V et al. BioModels: ten-year anniversary. Nucl. Acids Res. 2015, 43(Database issue):D542-8](http://identifiers.org/pubmed/25414348).
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+end
+
+Reyes_Palomares2012___a_combined_model_hepatic_polyamine_and_sulfur_aminoacid_metabolism___version1_1 is "Reyes-Palomares2012 - a combined model hepatic polyamine and sulfur aminoacid metabolism - version1"

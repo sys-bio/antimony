@@ -1,0 +1,91 @@
+// Created by libAntimony v3.0.0
+model *FitzHugh1961_NerveMembrane()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species $x in compartment_, $y in compartment_;
+
+  // Rate Rules:
+  x' = c*(x + -(x^3/3) + y + z);
+  y' = -(1/c)*(x + -a + b*y);
+
+  // Species initializations:
+  x = -1;
+  y = 0.5;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  c = 3;
+  c has dimensionless;
+  z = -0.4;
+  z has dimensionless;
+  a = 0.7;
+  a has dimensionless;
+  b = 0.8;
+  b has dimensionless;
+
+  // Other declarations:
+  var z;
+  const compartment_, c, a, b;
+
+  // Unit definitions:
+  unit time_unit = 1e-3 second;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+
+  // SBO terms:
+  c.sboTerm = 9
+  z.sboTerm = 9
+  a.sboTerm = 9
+  b.sboTerm = 9
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL0911929415"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000346"
+  model publication "http://identifiers.org/pubmed/19431309"
+  model taxon "http://identifiers.org/taxonomy/131567",
+              "http://identifiers.org/bto/BTO:0000925"
+  model biological_system "http://identifiers.org/go/GO:0019226"
+  model created "2009-04-28T13:20:23Z"
+  model modified "2012-04-20T21:37:02Z"
+  model creator1.givenName "Nicolas"
+  model creator1.familyName "Le Novère"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "lenov@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+This is the original model from Richard FitzHugh, which led the famous FitzHugh–Nagumo
+model, still used for instance in computational neurosciences. 
+**Impulses and Physiological States in Theoretical Models of Nerve Membrane**
+
+FitzHugh R *Biophysical Journal,* 1961 July:1(6):445-466
+[doi:10.1016/S0006-3495(61)86902-6](http://dx.doi.org/10.1016/S0006-3495(61)86902-6) , 
+**Abstract:** 
+Van der Pol&apos;s equation for a relaxation oscillator is generalized
+by the addition of terms to produce a pair of non-linear differential equations with
+either a stable singular point or a limit cycle. The resulting BVP model has two
+variables of state, representing excitability and refractoriness, and qualitatively
+resembles Bonhoeffer&apos;s theoretical model for the iron wire model of nerve. This
+BVP model serves as a simple representative of a class of excitable-oscillatory systems
+including the Hodgkin-Huxley (HH) model of the squid giant axon. The BVP phase plane
+can be divided into regions corresponding to the physiological states of nerve fiber
+(resting, active, refractory, enhanced, depressed, etc.) to form a physiological
+state diagram, with the help of which many physiological phenomena can be summarized.
+A properly chosen projection from the 4-dimensional HH phase space onto a plane produces
+a similar diagram which shows the underlying relationship between the two models.
+Impulse trains occur in the BVP and HH models for a range of constant applied currents
+which make the singular point representing the resting state unstable. 
+
+This model originates from BioModels Database: A Database of Annotated Published
+Models (http://www.ebi.ac.uk/biomodels/). It is copyright (c) 2005-2012 The BioModels.net
+Team. 
+For more information see the [terms of use](http://www.ebi.ac.uk/biomodels/legal.html) . 
+To cite BioModels Database, please use: [Li C, Donizelli M, Rodriguez N, Dharuri H, Endler L, Chelliah V, Li L, He E, Henry A, Stefan MI, Snoep JL, Hucka M, Le Novère N, Laibe C (2010) BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models. BMC Syst Biol., 4:92.](http://www.ncbi.nlm.nih.gov/pubmed/20587024)
+```
+end
+
+FitzHugh1961_NerveMembrane is "FitzHugh1961_NerveMembrane"

@@ -1,0 +1,112 @@
+// Created by libAntimony v3.0.0
+model *Ortega2006_bistability_doublePhosphorylation()
+
+  // Compartments and Species:
+  compartment cell;
+  species alpha in cell, beta in cell, gamma_ in cell;
+
+  // Reactions:
+  v1: alpha -> beta; Vm1*(alpha/Ks1)/(1 + alpha/Ks1 + beta/Ks3);
+  v2: beta -> alpha; r24*(Vm1/Chi14)*(beta/Ks2)/(1 + gamma_/Ks4 + beta/Ks2);
+  v3: beta -> gamma_; r31*Vm1*(beta/Ks3)/(1 + alpha/Ks1 + beta/Ks3);
+  v4: gamma_ => beta; (Vm1/Chi14)*(gamma_/Ks4)/(1 + gamma_/Ks4 + beta/Ks2);
+
+  // Species initializations:
+  alpha = 0.462;
+  beta = 0.2;
+  gamma_ = 0.338;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  r31 = 1;
+  r24 = 1;
+  Chi14 = 1.1;
+  Ks1 = 0.01;
+  Ks2 = 0.01;
+  Ks3 = 0.01;
+  Ks4 = 0.01;
+  Vm1 = 1;
+  p = 1;
+
+  // Other declarations:
+  const cell, r31, r24, Chi14, Ks1, Ks2, Ks3, Ks4, Vm1, p;
+
+  // Display Names:
+  gamma_ is "gamma";
+
+  // SBO terms:
+  alpha.sboTerm = 252
+  beta.sboTerm = 252
+  gamma_.sboTerm = 252
+
+  // CV terms:
+  alpha biological_system "http://identifiers.org/kegg.compound/C00017",
+                          "http://identifiers.org/chebi/CHEBI:16541"
+  beta biological_system "http://identifiers.org/kegg.compound/C00562"
+  gamma_ biological_system "http://identifiers.org/kegg.compound/C00562"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1008100000"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000258"
+  model publication "http://identifiers.org/pubmed/16934033"
+  model biological_system "http://identifiers.org/go/GO:0006468"
+  model taxon "http://identifiers.org/taxonomy/131567"
+  model created "2010-07-29T10:50:32Z"
+  model modified "2015-05-22T13:15:14Z"
+  model creator1.givenName "Vijayalakshmi"
+  model creator1.familyName "Chelliah"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "viji@ebi.ac.uk"
+  model creator2.givenName "Marta"
+  model creator2.familyName "Cascante"
+  model creator2.organization "University of Barcelona"
+  model creator2.email "martacascante@ub.edu"
+
+  // Notes:
+  model notes ```
+Ortega2006 - bistability from doublephosphorylation in signal transduction 
+
+
+This model is described in the article:
+
+
+[Bistability from double phosphorylation in signal transduction. Kinetic and structural requirements.](http://identifiers.org/pubmed/16934033 "Access to this publication") 
+
+
+Ortega F, Garcés JL, Mas F, Kholodenko BN, Cascante M. 
+
+FEBS J. 2006 Sep; 273(17): 3915-3926 
+Abstract:
+
+
+Previous studies have suggested that positive feedback loops and ultrasensitivity
+are prerequisites for bistability in covalent modification cascades. However,
+it was recently shown that bistability and hysteresis can also arise solely from
+multisite phosphorylation. Here we analytically demonstrate that double phosphorylation
+of a protein (or other covalent modification) generates bistability only if: (a)
+the two phosphorylation (or the two dephosphorylation) reactions are catalyzed
+by the same enzyme; (b) the kinetics operate at least partly in the zero-order
+region; and (c) the ratio of the catalytic constants of the phosphorylation and
+dephosphorylation steps in the first modification cycle is less than this ratio
+in the second cycle. We also show that multisite phosphorylation enlarges the
+region of kinetic parameter values in which bistability appears, but does not
+generate multistability. In addition, we conclude that a cascade of phosphorylation/dephosphorylation
+cycles generates multiple steady states in the absence of feedback or feedforward
+loops. Our results show that bistable behavior in covalent modification cascades
+relies not only on the structure and regulatory pattern of feedback/feedforward
+loops, but also on the kinetic characteristics of their component proteins.
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identified by: [BIOMD0000000258](http://identifiers.org/biomodels.db/BIOMD0000000258).
+
+To cite BioModels Database, please use: [BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models](http://identifiers.org/pubmed/20587024 "Latest BioModels Database publication").
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+end
+
+Ortega2006_bistability_doublePhosphorylation is "Ortega2006 - bistability from double phosphorylation in signal transduction"

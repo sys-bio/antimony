@@ -1,0 +1,102 @@
+// Created by libAntimony v3.0.0
+model *th17_core_network()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species IL6ext in compartment_, IL6int in compartment_, STAT3mRNA in compartment_;
+  species STAT3prot_star in compartment_, STAT3prot in compartment_, TGFbext in compartment_;
+  species TGFbint in compartment_, RORgtmRNA in compartment_, FOXP3prot_star in compartment_;
+  species FOXP3mRNA in compartment_;
+
+  // Reactions:
+  IL6_conversion: IL6ext => IL6int; compartment_*IL6_conversion_k1*IL6ext;
+  STAT3_basal_expression:  => STAT3mRNA; compartment_*STAT3_basal_expression_v;
+  STAT3_autoactivation: STAT3prot_star => STAT3mRNA + STAT3prot_star; compartment_*STAT3_autoactivation_k1*STAT3prot_star;
+  STAT3_mRNA_degradation: STAT3mRNA => ; compartment_*STAT3_mRNA_degradation_k1*STAT3mRNA;
+  STAT3_translation: STAT3mRNA => STAT3mRNA + STAT3prot; compartment_*STAT3_translation_k1*STAT3mRNA;
+  STAT3_activation: STAT3prot + IL6int => STAT3prot_star + IL6int; compartment_*STAT3_activation_k1*STAT3prot*IL6int;
+  STAT3_protein_degradation: STAT3prot => ; compartment_*STAT3_protein_degradation_k1*STAT3prot;
+  STAT3_phosphoprotein_degradation: STAT3prot_star => ; compartment_*STAT3_phosphoprotein_degradation_k1*STAT3prot_star;
+  TGFb_conversion: TGFbext => TGFbint; compartment_*TGFb_conversion_k1*TGFbext;
+  RORgt_inhibition_by_FOXP3: RORgtmRNA + FOXP3prot_star => FOXP3prot_star; compartment_*RORgt_inhibition_by_FOXP3_k1*RORgtmRNA*FOXP3prot_star;
+  RORgt_degradation: RORgtmRNA => ; compartment_*RORgt_degradation_k1*RORgtmRNA;
+  FOXP3_basal_expression:  => FOXP3mRNA; compartment_*FOXP3_basal_expression_v;
+  FOXP3_activation_by_TGFb: TGFbint => FOXP3mRNA + TGFbint; compartment_*FOXP3_activation_by_TGFb_k1*TGFbint;
+  FOXP3_inhibition_by_STAT3: FOXP3mRNA + STAT3prot_star => STAT3prot_star; compartment_*FOXP3_inhibition_by_STAT3_k1*FOXP3mRNA*STAT3prot_star;
+  FOXP3_mRNA_degradation: FOXP3mRNA => ; compartment_*FOXP3_mRNA_degradation_k1*FOXP3mRNA;
+  FOXP3_translation_activation: FOXP3mRNA => FOXP3mRNA + FOXP3prot_star; compartment_*FOXP3_translation_activation_k1*FOXP3mRNA;
+  FOXP3_protein_degradation: FOXP3prot_star => ; compartment_*FOXP3_protein_degradation_k1*FOXP3prot_star;
+  RORgt_activation_by_TGFb_and_STAT3: TGFbint + STAT3prot_star => RORgtmRNA + TGFbint + STAT3prot_star; compartment_*RORgt_activation_by_TGFb_and_STAT3_k1*TGFbint*STAT3prot_star;
+
+  // Species initializations:
+  IL6ext = 1;
+  IL6int = 0;
+  STAT3mRNA = 0.4576;
+  STAT3prot_star = 0;
+  STAT3prot = 1;
+  TGFbext = 1;
+  TGFbint = 0;
+  RORgtmRNA = 0.0026;
+  FOXP3prot_star = 1;
+  FOXP3mRNA = 0.145;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  IL6_conversion_k1 = 0.0627;
+  STAT3_basal_expression_v = 1.0222;
+  STAT3_autoactivation_k1 = 14.8148;
+  STAT3_mRNA_degradation_k1 = 2.2047;
+  STAT3_translation_k1 = 0.0846;
+  STAT3_activation_k1 = 16.3647;
+  STAT3_protein_degradation_k1 = 0.0221;
+  STAT3_phosphoprotein_degradation_k1 = 2.7893;
+  TGFb_conversion_k1 = 19.3743;
+  RORgt_inhibition_by_FOXP3_k1 = 773.7824;
+  RORgt_degradation_k1 = 0.0479;
+  FOXP3_basal_expression_v = 0;
+  FOXP3_activation_by_TGFb_k1 = 0.0734;
+  FOXP3_inhibition_by_STAT3_k1 = 7.4237;
+  FOXP3_mRNA_degradation_k1 = 0.8092;
+  FOXP3_translation_activation_k1 = 0.0053;
+  FOXP3_protein_degradation_k1 = 1.3205;
+  RORgt_activation_by_TGFb_and_STAT3_k1 = 4.967;
+
+  // Other declarations:
+  const compartment_;
+
+  // Unit definitions:
+  unit volume = dimensionless;
+  unit time_unit = 3600 second;
+  unit substance = dimensionless;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+  IL6_conversion is "IL6 conversion";
+  STAT3_basal_expression is "STAT3 basal expression";
+  STAT3_autoactivation is "STAT3 autoactivation";
+  STAT3_mRNA_degradation is "STAT3 mRNA degradation";
+  STAT3_translation is "STAT3 translation";
+  STAT3_activation is "STAT3 activation";
+  STAT3_protein_degradation is "STAT3 protein degradation";
+  STAT3_phosphoprotein_degradation is "STAT3 phosphoprotein degradation";
+  TGFb_conversion is "TGFb conversion";
+  RORgt_inhibition_by_FOXP3 is "RORgt inhibition by FOXP3";
+  RORgt_degradation is "RORgt degradation";
+  FOXP3_basal_expression is "FOXP3 basal expression";
+  FOXP3_activation_by_TGFb is "FOXP3 activation by TGFb";
+  FOXP3_inhibition_by_STAT3 is "FOXP3 inhibition by STAT3";
+  FOXP3_mRNA_degradation is "FOXP3 mRNA degradation";
+  FOXP3_translation_activation is "FOXP3 translation/activation";
+  FOXP3_protein_degradation is "FOXP3 protein degradation";
+  RORgt_activation_by_TGFb_and_STAT3 is "RORgt activation by TGFb and STAT3";
+
+  model property "http://identifiers.org/mamo/MAMO_0000046"
+
+  // Notes:
+  model notes "Th17 core network"
+end
+
+th17_core_network is "Intoslami2015 - Th17 core network model"

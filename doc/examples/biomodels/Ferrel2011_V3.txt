@@ -1,0 +1,100 @@
+// Created by libAntimony v3.0.0
+model *Ferrel2011___Autonomous_biochemical_oscillator_in_regulation_of_CDK1__Plk1__and_APC_in_Xenopus_Laevis_cell_cycle()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species CDK1_active in compartment_, APC_active in compartment_, Plk1_active in compartment_;
+
+  // Reactions:
+  R1_Cdk1_activation_by_cyclin_synthesis:  => CDK1_active; compartment_*a1;
+  R2_Cdk1_inactivation_by_APC_active: CDK1_active => ; compartment_*(b1*CDK1_active*APC_active^n1/(k1^n1 + APC_active^n1));
+  R3_APC_activation_by_Cdk1_active:  => APC_active; compartment_*(a3*(1 - APC_active)*Plk1_active^n3/(k3^n3 + Plk1_active^n3));
+  R4_APC_Inactivation: APC_active => ; compartment_*b3*APC_active;
+  R5_Plk1_activation_by:  => Plk1_active; compartment_*(a2*(1 - Plk1_active)*CDK1_active^n2/(k2^n2 + CDK1_active^n2));
+  R6_Plk1_inactivation: Plk1_active => ; compartment_*b2*Plk1_active;
+
+  // Species initializations:
+  CDK1_active = 0;
+  APC_active = 0;
+  Plk1_active = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  a1 = 0.1;
+  a2 = 3;
+  a3 = 3;
+  b1 = 3;
+  b2 = 1;
+  b3 = 1;
+  k1 = 0.5;
+  k2 = 0.5;
+  k3 = 0.5;
+  n1 = 8;
+  n2 = 8;
+  n3 = 8;
+
+  // Other declarations:
+  const compartment_, a1, a2, a3, b1, b2, b3, k1, k2, k3, n1, n2, n3;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "nuclear";
+  R1_Cdk1_activation_by_cyclin_synthesis is "R1 Cdk1 activation by cyclin synthesis";
+  R2_Cdk1_inactivation_by_APC_active is "R2 Cdk1 inactivation by APC_active";
+  R3_APC_activation_by_Cdk1_active is "R3 APC activation by Cdk1_active";
+  R4_APC_Inactivation is "R4 APC Inactivation";
+  R5_Plk1_activation_by is "R5 Plk1 activation by";
+  R6_Plk1_inactivation is "R6 Plk1 inactivation";
+
+  // CV terms:
+  compartment_ biological_system "http://identifiers.org/ncit/C13361"
+  CDK1_active biological_system "http://identifiers.org/uniprot/P35567"
+  CDK1_active property "http://identifiers.org/pato/PATO:0002354"
+  APC_active biological_system "http://identifiers.org/uniprot/P70039"
+  APC_active property "http://identifiers.org/pato/PATO:0002354"
+  Plk1_active biological_system "http://identifiers.org/uniprot/P70032"
+  Plk1_active property "http://identifiers.org/pato/PATO:0002354"
+  R1_Cdk1_activation_by_cyclin_synthesis biological_system "http://identifiers.org/ncit/C64382"
+  R3_APC_activation_by_Cdk1_active biological_system "http://identifiers.org/ncit/C64382"
+  R5_Plk1_activation_by biological_system "http://identifiers.org/ncit/C64382"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1809040004",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000937"
+  model part "http://identifiers.org/go/GO:0051726"
+  model taxon "http://identifiers.org/taxonomy/8355"
+  model description "http://identifiers.org/pubmed/21414480"
+  model property "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2018-06-05T15:33:10Z"
+  model modified "2020-04-27T16:33:12Z"
+  model creator1.givenName "Ahmad"
+  model creator1.familyName "Zyoud"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "ahmad.azd@hotmail.com"
+  model creator2.givenName "Matthieu"
+  model creator2.familyName "MAIRE"
+  model creator2.organization "EMBL-EBI"
+  model creator2.email "matt.maire@free.fr"
+
+  // Notes:
+  model notes ```
+Computational modeling and the theory of nonlinear dynamical systems allow one 
+to not simply describe the events of the cell cycle, but also to understand why these 
+events occur, just as the theory of gravitation allows one to understand why cannonballs 
+fly in parabolic arcs. The simplest examples of the eukaryotic cell cycle operate 
+like autonomous oscillators. Here, we present the basic theory of oscillatory biochemical 
+circuits in the context of the Xenopus embryonic cell cycle. We examine Boolean models, 
+delay differential equation models, and especially ordinary differential equation 
+(ODE) models. For ODE models, we explore what it takes to get oscillations out of 
+two simple types of circuits (negative feedback loops and coupled positive and negative 
+feedback loops). Finally, we review the procedures of linear stability analysis, 
+which allow one to determine whether a given ODE model and a particular set of kinetic 
+parameters will produce oscillations.
+```
+end
+
+Ferrel2011___Autonomous_biochemical_oscillator_in_regulation_of_CDK1__Plk1__and_APC_in_Xenopus_Laevis_cell_cycle is "Ferrel2011 - Autonomous biochemical oscillator in regulation of CDK1, Plk1, and APC in Xenopus Laevis cell cycle"

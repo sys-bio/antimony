@@ -1,0 +1,165 @@
+// Created by libAntimony v3.0.0
+model *Larbat2016_2___Modeling_the_diversion_of_primary_carbon_flux_into_secondary_metabolism_under_variable_nitrate_and_light_or_dark_conditions__Light_Dark_Cycles()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species sucr in compartment_, EtrioseP in compartment_, Ephe in compartment_;
+  species N in compartment_, starch in compartment_, $Next in compartment_;
+  species Enitrate in compartment_, trioseP in compartment_, $ECO2 in compartment_;
+  species Estarch in compartment_;
+
+  // Assignment Rules:
+  k29 := piecewise(10.1, Light_Dark_Tracker < 0, 0);
+  Light_Dark_Tracker := (time%24) - 12;
+  f_I_phe := k38/(k38 + N);
+  f_act_pcf := N/(k13 + N);
+  f_I_E_phe_outfl := k39/(k39 + N);
+  f_act_trioseP := N/(k33 + N);
+
+  // Reactions:
+  Sucrose_Formation_TrioseP: trioseP => sucr; compartment_*(k4*EtrioseP*trioseP);
+  Sucrose_Consumption_Ephe: sucr => ; compartment_*(k9*sucr*Ephe*f_I_phe);
+  Sucrose_Consumption_PCF: sucr => ; compartment_*(k5*sucr*f_act_pcf);
+  Sucrose_Consumption_PCF_Lignin: sucr => ; compartment_*((k14 + k15)*sucr);
+  Sucrose_Formation_Starch: starch => sucr; compartment_*(k37*starch*Estarch);
+  EtrioseP_Formation_Constant:  => EtrioseP; compartment_*k1;
+  EtrioseP_Consumption_Sucrose: EtrioseP => ; compartment_*(k2*sucr*EtrioseP/(k3 + EtrioseP));
+  Ephe_Formation_Sucrose:  => Ephe; compartment_*(k6*sucr*f_I_E_phe_outfl);
+  Ephe_Consumption: Ephe => ; compartment_*(k7*Ephe/(k8 + Ephe));
+  N_Formation:  => N; compartment_*(k11*Next*Enitrate);
+  N_Consumption: N => ; compartment_*k12*N;
+  Next_Consumption: $Next => ; compartment_*(g*k11*Next*Enitrate);
+  Starch_Formation: trioseP => starch; compartment_*k10*trioseP;
+  Enitrate_Formation:  => Enitrate; compartment_*k26;
+  Enitrate_Consumption: Enitrate => ; compartment_*(k27*N*Enitrate/(k28 + Enitrate));
+  TrioseP_Formation:  => trioseP; compartment_*(k29*f_act_trioseP*ECO2);
+  ECO2_Formation:  => $ECO2; compartment_*k30;
+  ECO2_Consumption: $ECO2 => ; compartment_*(k31*trioseP*ECO2/(k32 + ECO2));
+  Estarch_Formation:  => Estarch; compartment_*k34;
+  Estarch_Consumption: Estarch => ; compartment_*(k35*sucr*Estarch/(k36 + Estarch));
+
+  // Species initializations:
+  sucr = 0.748;
+  EtrioseP = 2.825;
+  Ephe = 9.751e-07;
+  N = 4.998;
+  starch = 6.041;
+  Next = 20;
+  Enitrate = 18.742;
+  trioseP = 0;
+  ECO2 = 1;
+  Estarch = 5.95;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  k1 = 1;
+  k2 = 1;
+  k3 = 1e-05;
+  k4 = 5;
+  k5 = 5.5;
+  k6 = 10;
+  k7 = 9.8;
+  k8 = 1e-06;
+  k9 = 1;
+  k10 = 10;
+  k11 = 0.2;
+  k12 = 15;
+  k13 = 1;
+  k14 = 0.2;
+  k15 = 0.2;
+  k26 = 0.5;
+  k27 = 0.1;
+  k28 = 1e-06;
+  k30 = 0;
+  k31 = 0;
+  k32 = 1e-05;
+  k33 = 1e-11;
+  k34 = 9.8;
+  k35 = 10;
+  k36 = 0.0001;
+  k37 = 0.1;
+  k38 = 0.02;
+  k39 = 1000;
+  g = 1;
+
+  // Other declarations:
+  var k29, Light_Dark_Tracker, f_I_phe, f_act_pcf, f_I_E_phe_outfl, f_act_trioseP;
+  const compartment_, k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11, k12, k13;
+  const k14, k15, k26, k27, k28, k30, k31, k32, k33, k34, k35, k36, k37, k38;
+  const k39, g;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+
+  // CV terms:
+  compartment_ biological_system "http://identifiers.org/po/PO:0009002"
+  sucr identity "http://identifiers.org/chebi/CHEBI:17992"
+  EtrioseP property "http://identifiers.org/ncit/C49887"
+  EtrioseP property "http://identifiers.org/chebi/CHEBI:27137"
+  Ephe property "http://identifiers.org/chebi/CHEBI:15882"
+  Ephe property "http://identifiers.org/ncit/C49887"
+  N identity "http://identifiers.org/chebi/CHEBI:17632"
+  starch identity "http://identifiers.org/chebi/CHEBI:28017"
+  Next identity "http://identifiers.org/chebi/CHEBI:17632"
+  Next container "http://identifiers.org/go/GO:0005576"
+  Enitrate property "http://identifiers.org/chebi/CHEBI:17632"
+  Enitrate property "http://identifiers.org/ncit/C49887"
+  trioseP biological_system "http://identifiers.org/chebi/CHEBI:27137"
+  trioseP property "http://identifiers.org/pato/PATO:0002220"
+  ECO2 property "http://identifiers.org/ncit/C49887"
+  ECO2 property "http://identifiers.org/chebi/CHEBI:16526"
+  Estarch property "http://identifiers.org/chebi/CHEBI:28017"
+  Estarch property "http://identifiers.org/ncit/C49887"
+  Sucrose_Formation_TrioseP biological_system "http://identifiers.org/sbo/SBO:0000393"
+  Sucrose_Consumption_Ephe biological_system "http://identifiers.org/sbo/SBO:0000394"
+  Sucrose_Consumption_PCF biological_system "http://identifiers.org/sbo/SBO:0000394"
+  Sucrose_Consumption_PCF_Lignin biological_system "http://identifiers.org/sbo/SBO:0000394"
+  Sucrose_Formation_Starch biological_system "http://identifiers.org/sbo/SBO:0000393"
+  EtrioseP_Formation_Constant biological_system "http://identifiers.org/sbo/SBO:0000393"
+  EtrioseP_Consumption_Sucrose biological_system "http://identifiers.org/sbo/SBO:0000394"
+  Ephe_Formation_Sucrose biological_system "http://identifiers.org/sbo/SBO:0000393"
+  Ephe_Consumption biological_system "http://identifiers.org/sbo/SBO:0000394"
+  N_Formation biological_system "http://identifiers.org/sbo/SBO:0000393"
+  N_Consumption biological_system "http://identifiers.org/sbo/SBO:0000394"
+  Next_Consumption biological_system "http://identifiers.org/sbo/SBO:0000394"
+  Starch_Formation biological_system "http://identifiers.org/sbo/SBO:0000393"
+  Enitrate_Formation biological_system "http://identifiers.org/sbo/SBO:0000393"
+  Enitrate_Consumption biological_system "http://identifiers.org/sbo/SBO:0000394"
+  TrioseP_Formation biological_system "http://identifiers.org/sbo/SBO:0000393"
+  TrioseP_Formation description "http://identifiers.org/pubmed/27164436"
+  ECO2_Formation biological_system "http://identifiers.org/sbo/SBO:0000393"
+  ECO2_Consumption biological_system "http://identifiers.org/sbo/SBO:0000394"
+  Estarch_Formation biological_system "http://identifiers.org/sbo/SBO:0000393"
+  Estarch_Consumption biological_system "http://identifiers.org/sbo/SBO:0000394"
+
+  model publication "http://identifiers.org/pubmed/27164436"
+  model model_source "http://identifiers.org/biomodels.db/MODEL1911130005",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000858"
+  model property "http://identifiers.org/go/GO:0018958"
+  model property "http://identifiers.org/mamo/MAMO_0000046"
+  model property "http://identifiers.org/go/GO:0005985"
+  model property "http://identifiers.org/go/GO:0005982"
+  model created "2019-11-13T13:59:57Z"
+  model modified "2019-11-13T13:59:57Z"
+  model creator1.givenName "Johannes"
+  model creator1.familyName "Meyer"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "johannes.p.meyer@gmail.com"
+
+  // Notes:
+  model notes ```
+This is a global mathematical model describing metabolic partitioning of carbon 
+resources in plants between growth and defense, as a function of nitrate fertilization. 
+The model hinges on the dynamics of sucrose inflow/outflow properties. The model 
+also accounts for variations in photosynthetic activity as dictated by a daily light/dark 
+cycle.
+```
+end
+
+Larbat2016_2___Modeling_the_diversion_of_primary_carbon_flux_into_secondary_metabolism_under_variable_nitrate_and_light_or_dark_conditions__Light_Dark_Cycles is "Larbat2016.2 - Modeling the diversion of primary carbon flux into secondary metabolism under variable nitrate and light or dark conditions (Light Dark Cycles)"

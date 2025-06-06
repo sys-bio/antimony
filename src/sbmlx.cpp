@@ -2,10 +2,13 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <regex>
 #include "variable.h"
 #include "formula.h"
 #include "registry.h"
 #include "typex.h"
+#include <sbmlnetwork/libsbmlnetwork_render_helpers.h>
+#include <sbmlnetwork/features/colors/libsbmlnetwork_colors.h>
 
 using namespace std;
 using namespace libsbml;
@@ -15,6 +18,7 @@ extern bool CaselessStrCmp(bool caseless, const string& lhs, const string& rhs);
 #ifndef NSBML
 #include "sbmlx.h"
 #include "sbml/math/FormulaFormatter.h"
+#include "sbmlnetwork/libsbmlnetwork_sbmldocument.h"
 #if LIBSBML_VERSION >= 50900
 #include "sbml/math/L3FormulaFormatter.h"
 #endif
@@ -30,20 +34,21 @@ string getNameFromSBMLObject(const SBase* sbml, string basename)
   string name = sbml->getIdAttribute();
   if (name == "") {
     name = sbml->getName();
-    //Names can have spaces, so...
-    while (name.find(" ") != string::npos) {
-      name.replace(name.find(" "), 1, "_");
-    }
+    //Names are not legal IDs, so convert all illegal chars to '_'.
+    regex nonalpha("[^A-Za-z0-9_]");
+    name = regex_replace(name, nonalpha, "_");
+    regex startNum("^([0-9])");
+    name = regex_replace(name, startNum, "_$1");
   }
   if (name=="") {
     long num=0;
     Variable* foundvar = NULL;
     do {
-      char charnum[50];
-      sprintf(charnum, "%li", num);
+      stringstream charnum;
+      charnum << num;
       num++;
       name = basename;
-      name += charnum;
+      name += charnum.str();
       vector<string> fullname;
       fullname.push_back(name);
       foundvar = g_registry.CurrentModule()->GetVariable(fullname);
@@ -383,6 +388,14 @@ UnitDef GetUnitDefFrom(const UnitDefinition* unitdefinition, string modulename)
     const Unit* unit = unitdefinition->getUnit(ue);
     ret.AddUnitElement(unit);
   }
+  if (unitdefinition->getNumUnits() == 0) {
+      Unit unit(3, 2);
+      unit.setKind(UNIT_KIND_DIMENSIONLESS);
+      unit.setExponent(1);
+      unit.setMultiplier(1);
+      unit.setScale(0);
+      ret.AddUnitElement(&unit);
+  }
   return ret;
 }
 
@@ -643,6 +656,32 @@ void removeBooleanErrors(SBMLDocument* doc)
   }
 }
 
+void removeSBOErrors(SBMLDocument* doc)
+{
+    SBMLErrorLog* log = doc->getErrorLog();
+    log->removeAll(10700);
+    log->removeAll(10701);
+    log->removeAll(10702);
+    log->removeAll(10703);
+    log->removeAll(10704);
+    log->removeAll(10705);
+    log->removeAll(10706);
+    log->removeAll(10707);
+    log->removeAll(10708);
+    log->removeAll(10709);
+    log->removeAll(10710);
+    log->removeAll(10711);
+    log->removeAll(10712);
+    log->removeAll(10713);
+    log->removeAll(10714);
+    log->removeAll(10715);
+    log->removeAll(10716);
+    log->removeAll(10717);
+    log->removeAll(10718);
+    log->removeAll(10719);
+    log->removeAll(10720);
+}
+
 void elideMetaIds(SBMLDocument* doc)
 {
   List* elts = doc->getAllElements();
@@ -803,5 +842,29 @@ bool FluxesMatch(const FluxBound* fb1, const FluxBound* fb2)
   if (fb1->getValue() != fb2->getValue()) return false;
   return true;
 }
+
+bool isValidColorValue(string formstring)
+{
+    if (!LIBSBMLNETWORK_CPP_NAMESPACE::isValidColorValue(formstring)) {
+        ColorDefinition cd;
+        if (!cd.setColorValue(formstring)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool startsAtReaction(std::string role)
+{
+    if (role == "substrate" || role == "sidesubstrate" || role == "product" || role == "sideproduct" || role == "undefined") {
+        return true;
+    }
+    else if (role == "modifier" || role == "activator" || role == "inhibitor") {
+        return false;
+    }
+    assert(false); //All roles should be accounted for above
+    return true;
+}
+
 
 #endif

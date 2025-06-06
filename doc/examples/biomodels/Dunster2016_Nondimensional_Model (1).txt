@@ -1,0 +1,111 @@
+// Created by libAntimony v3.0.0
+model *Dunster2016___Nondimensional_Coagulation_Model()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species $Fibrinogen in compartment_, $Fibrin in compartment_, $PC in compartment_;
+  species $APC in compartment_, $APC_inactive in compartment_, $Xa in compartment_;
+  species $Va_Xa in compartment_, $Va in compartment_, $IIa in compartment_;
+  species $V in compartment_, $II in compartment_, $Xa_L in compartment_;
+  species $Va_Xa_L in compartment_, $Xa_ATIII in compartment_, $Va_inactive in compartment_;
+  species $IIa_ATIII in compartment_;
+
+  // Assignment Rules:
+  Xa_L := 0.5*(k_tilde_x + l_tilde_x + Xa - sqrt((k_tilde_x + l_tilde_x + Xa)^2 - 4*l_tilde_x*Xa));
+  Va_Xa_L := 0.5*(k_tilde_b + l_tilde_b + Va_Xa - sqrt((k_tilde_b + l_tilde_b + Va_Xa)^2 - 4*l_tilde_b*Va_Xa));
+  log_time := log10(time);
+
+  // Rate Rules:
+  Fibrinogen' = -k_tilde_6*Fibrinogen;
+  Fibrin' = k_tilde_6*Fibrinogen;
+  PC' = -k_tilde_5a*PC;
+  APC' = k_tilde_5a*PC - k_tilde_5b*APC;
+  APC_inactive' = k_tilde_5b*APC;
+  Xa' = k_tilde_1a*gamma_tilde_1a*exp(-gamma_tilde_1a*time) + k_tilde_3c*k_tilde_3a*APC*Va_Xa/(Va_Xa + 1) - k_tilde_1b*Xa - k_tilde_3a*Xa*Va;
+  Va_Xa' = q_tilde_3a*Xa*Va - k_tilde_3b*Va_Xa - k_tilde_3c*q_tilde_3a*APC*Va_Xa/(Va_Xa + 1);
+  Va' = IIa*V/(V + k_tilde_2am*(1 + Fibrinogen)) + k_tilde_2b*Xa*V/(V + 1 + II) + (k_tilde_3b/q_tilde_3a)*Va_Xa - APC*Va/(Va + 1) - Xa*Va;
+  IIa' = k_tilde_4a*Xa_L*II/(V + 1 + II) + k_tilde_4a*k_tilde_4b*Va_Xa_L*II/(q_tilde_4a*(II + k_tilde_4bm)) - IIa;
+  V' = -k_tilde_2a*IIa*V/(V + k_tilde_2am*(1 + Fibrinogen)) - k_tilde_2a*k_tilde_2b*Xa*V/(V + 1 + II);
+  II' = -q_tilde_4a*Xa_L*II/(V + 1 + II) - k_tilde_4b*Va_Xa_L*II/(II + k_tilde_4bm);
+  Xa_ATIII' = k_tilde_1b*Xa + (k_tilde_3a*k_tilde_3b/q_tilde_3a)*Va_Xa;
+  Va_inactive' = APC*Va/(Va + 1) + k_tilde_3c*APC*Va_Xa/(Va_Xa + 1);
+  IIa_ATIII' = IIa;
+
+  // Species initializations:
+  Fibrinogen = 5;
+  Fibrin = 0;
+  PC = 92;
+  APC = 0;
+  APC_inactive = 0;
+  Xa = 0;
+  Va_Xa = 0;
+  Va = 0;
+  IIa = 0;
+  V = 3;
+  II = 17;
+  Xa_ATIII = 0;
+  Va_inactive = 0;
+  IIa_ATIII = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  k_tilde_6 = 1500;
+  k_tilde_5a = 0.0011;
+  k_tilde_5b = 0.27;
+  k_tilde_1a = 150;
+  gamma_tilde_1a = 0.77;
+  k_tilde_3c = 1;
+  k_tilde_3a = 150;
+  k_tilde_1b = 0.19;
+  k_tilde_2am = 7.2;
+  k_tilde_2b = 0.013;
+  k_tilde_3b = 0.038;
+  q_tilde_3a = 1;
+  k_tilde_4a = 0.12;
+  k_tilde_4b = 530;
+  q_tilde_4a = 0.004;
+  k_tilde_4bm = 3.6;
+  k_tilde_2a = 2;
+  k_tilde_x = 385;
+  l_tilde_x = 7.69;
+  k_tilde_b = 0.0005;
+  l_tilde_b = 0.05;
+
+  // Other declarations:
+  var log_time;
+  const compartment_, k_tilde_6, k_tilde_5a, k_tilde_5b, k_tilde_1a, gamma_tilde_1a;
+  const k_tilde_3c, k_tilde_3a, k_tilde_1b, k_tilde_2am, k_tilde_2b, k_tilde_3b;
+  const q_tilde_3a, k_tilde_4a, k_tilde_4b, q_tilde_4a, k_tilde_4bm, k_tilde_2a;
+  const k_tilde_x, l_tilde_x, k_tilde_b, l_tilde_b;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  Va_Xa is "Va:Xa";
+  Xa_L is "Xa:L";
+  Va_Xa_L is "Va:Xa:L";
+  Xa_ATIII is "Xa:ATIII";
+  IIa_ATIII is "IIa:ATIII";
+
+  model biological_system "http://identifiers.org/go/GO:0007596"
+  model description "http://identifiers.org/doi/10.1093/imamat/hxw007"
+  model created "2018-08-14T10:05:20Z"
+  model modified "2018-08-14T10:05:20Z"
+  model creator1.givenName "Matthew Grant"
+  model creator1.familyName "Roberts"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "mroberts@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+Nondimensional mathematical model of blood coagulation based on Willems et al. 1991
+model.
+```
+end
+
+Dunster2016___Nondimensional_Coagulation_Model is "Dunster2016 - Nondimensional Coagulation Model"

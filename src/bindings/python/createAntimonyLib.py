@@ -9,16 +9,20 @@ from ctypes import c_long, c_char_p, c_ulong, c_bool, c_int, c_double, POINTER
 import sys
 
 srcdir = "C:/Users/Lucian/Desktop/antimony/src/"
-if len(sys.argv)>2:
-    print("Unable to process arguments:  there should be a single argument that is the directory where the source code lives.")
+if len(sys.argv)>3:
+    print("Unable to process arguments:  there should be a single argument that is the directory where the source code lives, and an optional second argument to the output file (antimony.py by default).")
     assert(False)
 
-if len(sys.argv)==2:
+if len(sys.argv)>=2:
     srcdir = sys.argv[1] + "/"
+
+outfile = "antimony.py"
+if len(sys.argv)>=3:
+    outfile = sys.argv[2]
 
 headerfiles = ["antimony_api.h"]#, "antimony_api_cpp.h"]
 
-libfile = open("antimony.py", "w")
+libfile = open(outfile, "w")
 alib = "__antLib"
 iblock = "   "
 
@@ -141,9 +145,9 @@ def readHeaderFiles(headerfile):
             cline = line.strip();
             if "@name" in line:
                continue
-            if "\{" in line:
+            if "{" in line:
                continue
-            if "\}" in line:
+            if "}" in line:
                continue
             cline = cline.replace("/**", "")
             cline = cline.replace("*/", "")
@@ -408,4 +412,4 @@ writeDefs(libfile, defs)
 writeFunctions(libfile, functions)
 
 libfile.close()
-print("Successfully created antimony.py.")
+print("Successfully created", outfile)

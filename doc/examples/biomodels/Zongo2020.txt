@@ -1,0 +1,176 @@
+// Created by libAntimony v3.0.0
+model *Zongo2020___model_of_COVID_19_transmission_dynamics_under_containement_measures_in_France()
+
+  // Compartments and Species:
+  compartment _1;
+  species S_c in _1, S_u in _1, E in _1, I_r in _1, I_u in _1, R in _1, Q in _1;
+
+  // Assignment Rules:
+  m_t := 0 + m_t_phase_1*(1 - exp(-a*(time - tau_1))) + m_t_phase_2*p + m_t_phase_3*(p + b*(time - tau_3));
+  a := -ln(1 - p)/(tau_2 - tau_1);
+  b := -p/(tau_f - tau_3);
+
+  // Reactions:
+  reaction_: S_c => S_u; _1*((1 - m_t)*S_c);
+  reaction_1: S_u => S_c; _1*m_t*S_u;
+  reaction_2: S_u => E; _1*((1 - sigma)*beta*(n*I_r + I_u)*S_u);
+  reaction_3: S_u => Q; _1*(sigma*beta*(n*I_r + I_u)*S_u);
+  reaction_4: Q => I_r; _1*(theta*lambda*Q);
+  reaction_5: E => I_r; _1*(mu*f*E);
+  reaction_6: E => I_u; _1*(mu*(1 - f)*E);
+  reaction_7: I_r => R; _1*eta_r*I_r;
+  reaction_8: I_u => R; _1*eta_u*I_u;
+  reaction_9: Q => S_u; _1*(theta*(1 - lambda)*Q);
+
+  // Events:
+  Phase_1: at 0 after time > tau_1, persistent=false: m_t_phase_1 = 1;
+  Phase_2: at 0 after time > tau_2, persistent=false: m_t_phase_2 = 1, m_t_phase_1 = 0;
+  Phase_3: at 0 after time > tau_3, persistent=false: m_t_phase_3 = 1, m_t_phase_2 = 0;
+  End_phase: at 0 after time > tau_f, persistent=false: m_t_phase_3 = 0;
+
+  // Species initializations:
+  S_c = 0;
+  S_c has substance_per_volume;
+  S_u = 66990000;
+  S_u has substance_per_volume;
+  E = 112;
+  E has substance_per_volume;
+  I_r = 12;
+  I_r has substance_per_volume;
+  I_u = 50;
+  I_u has substance_per_volume;
+  R = 0;
+  R has substance_per_volume;
+  Q = 36;
+  Q has substance_per_volume;
+
+  // Compartment initializations:
+  _1 = 1;
+  _1 has volume;
+
+  // Variable initializations:
+  tau_1 = 21;
+  m_t_phase_1 = 0;
+  tau_2 = 47;
+  m_t_phase_2 = 0;
+  tau_3 = 76;
+  m_t_phase_3 = 0;
+  tau_f = 189;
+  p = 0.93;
+  f = 0.2;
+  n = 0.5;
+  lambda = 0.3;
+  q = 0.83;
+  sigma = 0.2;
+  beta = 2.115e-08;
+  mu = 0.2;
+  eta_r = 0.1;
+  eta_u = 0.25;
+  theta = 0.07142857;
+
+  // Other declarations:
+  var m_t_phase_1, m_t_phase_2, m_t_phase_3, m_t, a, b;
+  const _1, tau_1, tau_2, tau_3, tau_f, p, f, n, lambda, q, sigma, beta, mu;
+  const eta_r, eta_u, theta;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = time_unit;
+  unit substance = item;
+  unit extent = substance;
+  unit substance_per_volume = item / 1e-3 litre;
+
+  // Display Names:
+  time_unit is "time";
+  _1 is "France";
+  S_c is "Susceptible_confined";
+  S_u is "Susceptible_unconfined";
+  E is "Exposed";
+  I_r is "Infected_reported";
+  I_u is "Infected_unreported";
+  R is "Recovered";
+  Q is "Quarantined";
+  m_t_phase_1 is "trigger_phase_1";
+  m_t_phase_2 is "trigger_phase_2";
+  m_t_phase_3 is "trigger_phase_3";
+  reaction_ is "Susceptible_confined_to_Susceptible_unconfined";
+  reaction_1 is "Susceptible_unconfined_to_Susceptible_confined";
+  reaction_2 is "Susceptible_unconfined_to_Exposed";
+  reaction_3 is "Susceptible_unconfined_to_Quarantined";
+  reaction_4 is "Quarantined_to_Infected_reported";
+  reaction_5 is "Exposed_to_Infected_reported";
+  reaction_6 is "Exposed_to_Infected_unreported";
+  reaction_7 is "Infected_reported_to_Recovered";
+  reaction_8 is "Infected_unreported_to_Recovered";
+  reaction_9 is "Quarantined_to_Susceptible_unconfined";
+
+  // CV terms:
+  _1 identity "http://identifiers.org/ncit/C16592"
+  S_c identity "http://identifiers.org/ido/0000514"
+  S_c property "http://identifiers.org/ncit/C25549"
+  S_u identity "http://identifiers.org/ido/0000514"
+  E identity "http://identifiers.org/ido/0000514"
+  E identity "http://identifiers.org/ncit/C171133"
+  E property "http://identifiers.org/ido/0000597"
+  I_r identity "http://identifiers.org/ncit/C171133"
+  I_r identity "http://identifiers.org/ido/0000511"
+  I_u identity "http://identifiers.org/ido/0000511"
+  I_u identity "http://identifiers.org/ncit/C171133"
+  I_u property "http://identifiers.org/ncit/C43234"
+  R property "http://identifiers.org/ido/0000621"
+  Q identity "http://identifiers.org/ido/0000514"
+  Q property "http://identifiers.org/ncit/C71902"
+  reaction_ identity "http://identifiers.org/ncit/C42882"
+  reaction_1 identity "http://identifiers.org/ncit/C25549"
+  reaction_2 identity "http://identifiers.org/ido/0000597"
+  reaction_3 identity "http://identifiers.org/ncit/C71902"
+  reaction_4 identity "http://identifiers.org/ncit/C128320"
+  reaction_4 identity "http://identifiers.org/ncit/C171133"
+  reaction_5 identity "http://identifiers.org/ncit/C171133"
+  reaction_5 identity "http://identifiers.org/ncit/C128320"
+  reaction_6 identity "http://identifiers.org/ncit/C128320"
+  reaction_6 identity "http://identifiers.org/ncit/C171133"
+  reaction_7 identity "http://identifiers.org/ncit/C25746"
+  reaction_8 identity "http://identifiers.org/ncit/C25746"
+  reaction_9 identity "http://identifiers.org/ncit/C42882"
+
+  model publication "http://identifiers.org/pubmed/32958091"
+  model model_source "http://identifiers.org/biomodels.db/MODEL2101150002",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000983"
+  model identity "http://identifiers.org/doid/DOID:0080600"
+  model taxon "http://identifiers.org/taxonomy/9606",
+              "http://identifiers.org/taxonomy/2697049"
+  model property "http://identifiers.org/mamo/MAMO_0000028"
+  model created "2021-01-15T10:26:45Z"
+  model modified "2021-01-15T10:26:45Z"
+  model creator1.givenName "Kausthubh"
+  model creator1.familyName "Ramachandran"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "kramachandran@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+The main objective of this paper is to address the following question: are the containment
+measures imposed by most of the world governments effective and sufficient to stop
+the epidemic of COVID-19 beyond the lock-down period? In this paper, we propose a
+mathematical model which allows us to investigate and analyse this problem. We show
+by means of the reproductive number, R0 that the containment measures appear to have
+slowed the growth of the outbreak. Nevertheless, these measures remain only effective
+as long as a very large fraction of population, p, greater than the critical value
+1 − 1/R0 remains confined. Using French current data, we give some simulation experiments
+with five scenarios including: (i) the validation of model with p estimated to 93%,
+(ii) the study of the effectiveness of containment measures, (iii) the study of the
+effectiveness of the large-scale testing, (iv) the study of the social distancing
+and wearing masks measures and (v) the study taking into account the combination
+of the large-scale test of detection of infected individuals and the social distancing
+with linear progressive easing of restrictions. The latter scenario was shown to
+be effective at overcoming the outbreak if the transmission rate decreases to 75%
+and the number of tests of detection is multiplied by three. We also noticed that
+if the measures studied in our five scenarios are taken separately then the second
+wave might occur at least as far as the parameter values remain unchanged.
+```
+end
+
+Zongo2020___model_of_COVID_19_transmission_dynamics_under_containement_measures_in_France is "Zongo2020 - model of COVID-19 transmission dynamics under containment measures in France"

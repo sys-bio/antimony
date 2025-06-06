@@ -1,0 +1,45 @@
+// Created by libAntimony v3.0.0
+model *cellcycle_bistableapc()
+
+  // Compartments and Species:
+  species CycCdk;
+
+  // Rate Rules:
+  APC' = (1/epsilon)*(CycCdk^n/((K*(1 + alpha*APC*(APC - 1)*(APC - r)))^n + CycCdk^n) - APC);
+
+  // Reactions:
+  _J0:  -> CycCdk; ks;
+  _J1: CycCdk -> ; bdeg*CycCdk*APC;
+
+  // Species initializations:
+  CycCdk = 0;
+
+  // Variable initializations:
+  ks = 1.1;
+  bdeg = 0.1;
+  APC = 0;
+  epsilon = 0.01;
+  n = 15;
+  K = 20;
+  alpha = 4.16;
+  r = 0.5;
+
+  // Other declarations:
+  var APC;
+  const ks, bdeg, epsilon, n, K, alpha, r;
+
+  model publication "http://identifiers.org/doi:10.1371/journal.pcbi.1009008"
+  model model_source "http://identifiers.org/biomodels.db:MODEL2212060001"
+  model property "http://identifiers.org/mamo/MAMO_0000045"
+
+  // Notes:
+  model notes ```
+Models the production and degradation of cyclin B that drives the early embryonic
+cell cycle.Cyclin B is degraded by APC/C. The activity of APC/C is modelled not through
+biochemical interactions, but through a "functional response curve". This
+can be ultrasensitive (with the parameter alpha = 0). In this case, the system does
+not oscillate. Importantly, the response can be made bistable and the form of the
+bistability can be easily prescribed. With a bistable response, the system oscillates.The
+uploaded file corresponds to the model used for Figs.3H, I in the publication.
+```
+end

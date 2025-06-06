@@ -1,0 +1,187 @@
+// Created by libAntimony v3.0.0
+model *Model_1()
+
+  // Compartments and Species:
+  compartment endosome;
+  species r5 in endosome, R5 in endosome, r7 in endosome, R7 in endosome;
+
+  // Reactions:
+  reaction_0:  => r5; endosome*reaction_0_K1;
+  reaction_1: r5 => R5; endosome*(r5*(reaction_1_ke*time/(100 + time))/(1 + exp((reaction_1_kg - R5)*reaction_1_kf)));
+  reaction_2: r5 => ; endosome*(reaction_2_kminus1*r5);
+  reaction_3:  => r7; endosome*reaction_3_K1;
+  reaction_4: r7 => R7; endosome*(r7*reaction_4_ke*R7^reaction_4_h/(reaction_4_kg + R7^reaction_4_h));
+  reaction_5: r7 => R7; endosome*(reaction_5_ke*r7/(1 + exp((reaction_5_kg - R5)*reaction_5_kf)));
+  reaction_6: R5 => r5; endosome*(reaction_6_ke*R5/(1 + exp((reaction_6_kg - R7)*reaction_6_kf)));
+  reaction_7: r7 => ; endosome*(reaction_7_kminus1*r7);
+  reaction_8: R5 => r5; endosome*(reaction_8_kh*R5);
+  reaction_9: R7 => r7; endosome*(reaction_9_kh*R7);
+
+  // Species initializations:
+  r5 = 1;
+  R5 = 0.001;
+  r7 = 1;
+  R7 = 0.001;
+
+  // Compartment initializations:
+  endosome = 1;
+
+  // Variable initializations:
+  reaction_0_K1 = 1;
+  reaction_0_K1 has Mp;
+  reaction_1_ke = 0.3;
+  reaction_1_ke has ps;
+  reaction_1_kg = 0.1;
+  reaction_1_kg has M;
+  reaction_1_kf = 2.5;
+  reaction_1_kf has lpmole;
+  reaction_2_kminus1 = 1;
+  reaction_2_kminus1 has ps;
+  reaction_3_K1 = 0.483;
+  reaction_3_K1 has Mp;
+  reaction_4_ke = 0.21;
+  reaction_4_ke has ps;
+  reaction_4_h = 3;
+  reaction_4_h has dimensionless;
+  reaction_4_kg = 0.1;
+  reaction_5_ke = 0.021;
+  reaction_5_ke has ps;
+  reaction_5_kg = 1;
+  reaction_5_kg has M;
+  reaction_5_kf = 3;
+  reaction_5_kf has lpmole;
+  reaction_6_ke = 0.31;
+  reaction_6_ke has ps;
+  reaction_6_kg = 0.3;
+  reaction_6_kg has M;
+  reaction_6_kf = 3;
+  reaction_6_kf has lpmole;
+  reaction_7_kminus1 = 0.483;
+  reaction_7_kminus1 has ps;
+  reaction_8_kh = 0.06;
+  reaction_8_kh has ps;
+  reaction_9_kh = 0.15;
+  reaction_9_kh has ps;
+
+  // Other declarations:
+  const endosome;
+
+  // Unit definitions:
+  unit time_unit = second;
+  unit M = mole / litre;
+  unit ps = 1 / second;
+  unit Mp = mole / (second * litre);
+  unit lpmole = litre / mole;
+
+  // Display Names:
+  time_unit is "sec";
+  ps is "persec";
+  Mp is "Mpers";
+  lpmole is "lpermole";
+  endosome is "endosomal membrane";
+  r5 is "Rab5-GDP";
+  R5 is "Rab5-GTP";
+  r7 is "Rab7-GDP";
+  R7 is "Rab7-GTP";
+  reaction_0 is "recruitment of Rab5";
+  reaction_1 is "activation of Rab5 (time)";
+  reaction_2 is "extraction of Rab5";
+  reaction_3 is "recruitment of Rab7";
+  reaction_4 is "activation of Rab7 by GEF7";
+  reaction_5 is "activation of Rab7 by GEF5";
+  reaction_6 is "hydrolysis of Rab5 by Rab7";
+  reaction_7 is "extraction of rab7";
+  reaction_8 is "hydrolysis of Rab5 (intr.)";
+  reaction_9 is "hydrolysis of Rab7 (intr.)";
+
+  // CV terms:
+  endosome identity "http://identifiers.org/go/GO:0010008"
+  r5 part "http://identifiers.org/chebi/CHEBI:17552",
+          "http://identifiers.org/uniprot/P20339"
+  r5 identity "http://identifiers.org/go/GO:0031225"
+  R5 part "http://identifiers.org/chebi/CHEBI:15996",
+          "http://identifiers.org/uniprot/P20339"
+  R5 identity "http://identifiers.org/go/GO:0031225"
+  r7 part "http://identifiers.org/chebi/CHEBI:17552",
+          "http://identifiers.org/uniprot/P51149"
+  r7 identity "http://identifiers.org/go/GO:0031225"
+  R7 part "http://identifiers.org/chebi/CHEBI:15996",
+          "http://identifiers.org/uniprot/P51149"
+  R7 identity "http://identifiers.org/go/GO:0031225"
+  reaction_0 biological_system "http://identifiers.org/go/GO:0045184"
+  reaction_1 biological_system "http://identifiers.org/go/GO:0032858"
+  reaction_3 biological_system "http://identifiers.org/go/GO:0045184"
+  reaction_4 biological_system "http://identifiers.org/go/GO:0017112",
+                               "http://identifiers.org/go/GO:0032858"
+  reaction_5 biological_system "http://identifiers.org/go/GO:0032858",
+                               "http://identifiers.org/go/GO:0017112"
+  reaction_6 biological_system "http://identifiers.org/go/GO:0003924",
+                               "http://identifiers.org/go/GO:0005097"
+  reaction_8 biological_system "http://identifiers.org/go/GO:0003924"
+  reaction_9 biological_system "http://identifiers.org/go/GO:0003924"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL5937037510"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000174"
+  model publication "http://identifiers.org/pubmed/18628746"
+  model origin "http://identifiers.org/pubmed/10591225",
+               "http://identifiers.org/pubmed/16890441"
+  model biological_system "http://identifiers.org/go/GO:0032313"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model property "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2008-07-28T12:59:41Z"
+  model modified "2014-04-28T15:37:54Z"
+  model creator1.givenName "Perla"
+  model creator1.familyName "Del Conte-Zerial"
+  model creator1.organization "Center for Information Services and High Performance Computing, University of Technology Dresden, 01062 Dresden, Germany"
+  model creator1.email "pzerial@mpi-cbg.de"
+  model creator2.givenName "Lukas"
+  model creator2.familyName "Endler"
+  model creator2.organization "EMBL-EBI"
+  model creator2.email "lukas@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+Cut-out switch model
+==================================
+
+
+**Membrane identity and GTPase cascades regulated by toggle and cut-out switches**
+
+Perla Del Conte-Zerial, Lutz Brusch, Jochen C Rink, Claudio Collinet, Yannis
+Kalaidzidis, Marino Zerial, and Andreas Deutsch: 
+*Molecular Systems Biology*4:206 
+*15 July 2008*, [ doi:10.1038/msb.2008.45 ](http://dx.doi.org/10.1038/msb.2008.45)
+
+This is the cut-out switch model for the Rab5 - Rab7 transition, also referred to
+as model 2 in the original publication. 
+This model is not completely described in all details in the publication. Thanks
+go to Barbara Szomolay and Lutz Brusch for finding and clarifying this. According
+to Dr. Brusch this model represents the mechanism identified by the qualitative analysis
+in the article in the scenario deemed most useful by the authors. For the time-course
+simulations it was necessary to add a time dependency to one of the parameters, which
+is only verbally described in the article. 
+As argued in the publication the switch between early and late endosomes can be triggered
+by a parameter change. While with fixed parameter values each switch just converges
+to one steady state from its initial conditions and stays there, endosomes should
+switch between two different states. These changes would in reality of course depend
+on many different factors, such as cargo composition and amount in the specific endosome,
+its location and some additional cellular control mechanisms and encompass many different
+parameters. To keep the model simple the authors chose to add a time dependency to
+only one reaction - **ke** in the activation of RAB5 is multiplied with a term monotonously
+increasing over time from 0 to 1. They also hard coded a time dependence in this
+term, 100 minutes, to make the switch occur after several hundred minutes. As long
+as this modulating term remains monotonic all resulting time courses should look
+similar, with the switching behavior depending on the initial conditions and whether
+the term is increasing or decreasing. Monotonic increase is a reasonable assumption
+for the described mechanism of cargo accumulation. 
+Not explicitly described in the article:*activation of Rab5 (time)* : *r\*ke\***time/(100+time)**
+/(1+e(kg-R)\*kf)* instead of *r\*ke/(1+e(kg-R)\*kf)*
+
+This model originates from BioModels Database: A Database of Annotated Published
+Models. It is copyright (c) 2005-2009 The BioModels Team. 
+For more information see the [terms of use](http://www.ebi.ac.uk/biomodels/legal.html). 
+To cite BioModels Database, please use [Le Novère N., Bornstein B., Broicher A., Courtot M., Donizelli M., Dharuri H., Li L., Sauro H., Schilstra M., Shapiro B., Snoep J.L., Hucka M. (2006) BioModels Database: A Free, Centralized Database of Curated, Published, Quantitative Kinetic Models of Biochemical and Cellular Systems Nucleic Acids Res., 34: D689-D691.](http://www.pubmedcentral.nih.gov/articlerender.fcgi?tool=pubmed&pubmedid=16381960)
+```
+end
+
+Model_1 is "Del_Conte_Zerial2008_Rab5_Rab7_cut_out_switch"

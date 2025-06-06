@@ -28,6 +28,7 @@ public:
   ~UnitDef() {};
 
   void SetName(std::vector<std::string> name);
+  void FixNames();
   void MultiplyUnitDef(UnitDef* unitdef);
   void DivideUnitDef(UnitDef* unitdef);
   void RaiseTo(double pow);

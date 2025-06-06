@@ -1,0 +1,93 @@
+// Created by libAntimony v3.0.0
+model *Ledzewicz2013___On_optimal_chemotherapy_with_a_strongly_targeted_agent_for_a_model_of_tumor_immune_system_interactions_with_generalized_logistic_growth()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species y in compartment_, x in compartment_;
+
+  // Reactions:
+  a_constant_rate_of_influx_of_T_cells_generated_through_the_primary_organs:  => y; compartment_*alpha;
+  Natural_death_of_T_cells: y => ; compartment_*(delta*y);
+  Tumor_immune_interaction_on_the_immune_system:  => y; compartment_*(mu_I*(1 - beta*x)*x*y);
+  Elimination_effect_of_the_tumor_immune_interaction_on_the_cancer_volume: x => ; compartment_*(gamma_*x*y);
+  Increase_in_tumor_volume:  => x; compartment_*(mu_C*x*(1 - (x/x_inf)^v));
+
+  // Species initializations:
+  y = 0.1;
+  x = 600;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  alpha = 0.1181;
+  beta = 0.00264;
+  gamma_ = 1;
+  delta = 0.37451;
+  mu_C = 0.5599;
+  mu_I = 0.00484;
+  x_inf = 780;
+  kappa = 1;
+  v = 1;
+
+  // Other declarations:
+  const compartment_, alpha, beta, gamma_, delta, mu_C, mu_I, x_inf, kappa;
+  const v;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  gamma_ is "gamma";
+  a_constant_rate_of_influx_of_T_cells_generated_through_the_primary_organs is "a constant rate of influx of T cells generated through the primary organs";
+  Natural_death_of_T_cells is "Natural death of T cells";
+  Tumor_immune_interaction_on_the_immune_system is "Tumor immune interaction on the immune system";
+  Elimination_effect_of_the_tumor_immune_interaction_on_the_cancer_volume is "Elimination effect of the tumor immune interaction on the cancer volume";
+  Increase_in_tumor_volume is "Increase in tumor volume";
+
+  // CV terms:
+  x class "http://identifiers.org/ncit/C94515"
+  a_constant_rate_of_influx_of_T_cells_generated_through_the_primary_organs class "http://identifiers.org/go/GO:0045066"
+  Natural_death_of_T_cells biological_system "http://identifiers.org/go/GO:0006924"
+  Elimination_effect_of_the_tumor_immune_interaction_on_the_cancer_volume class "http://identifiers.org/go/GO:0002418"
+  Increase_in_tumor_volume class "http://identifiers.org/go/GO:0002413"
+
+  model class "http://identifiers.org/mamo/MAMO_0000046",
+              "http://identifiers.org/taxonomy/9606"
+  model publication "http://identifiers.org/pubmed/23906150"
+  model model_source "http://identifiers.org/biomodels.db/MODEL2003060003",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000919"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model property "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2020-03-06T16:28:33Z"
+  model modified "2020-03-06T23:29:49Z"
+  model creator1.givenName "Mohammad Umer"
+  model creator1.familyName "Sharif Shohan"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "m.sharifshohan@gmail.com"
+
+  // Notes:
+  model notes ```
+On optimal chemotherapy with a strongly targeted agent for a model of tumor-immune 
+system interactions with generalized logistic growth.Ledzewicz U1, Olumoye O, Schättler 
+H.1Dept. of Mathematics and Statistics, Southern Illinois University Edwardsville, 
+Edwardsville, Illinois 62026-1653, USA. uledzew@siue.eduAbstractIn this paper, a 
+mathematical model for chemotherapy that takes tumor immune-system interactions into 
+account is considered for a strongly targeted agent. We use a classical model originally 
+formulated by Stepanova, but replace exponential tumor growth with a generalised 
+logistic growth model function depending on a parameter v. This growth function interpolates 
+between a Gompertzian model (in the limit v → 0) and an exponential model (in the 
+limit v → ∞). The dynamics is multi-stable and equilibria and their stability 
+will be investigated depending on the parameter v. Except for small values of v, 
+the system has both an asymptotically stable microscopic (benign) equilibrium point 
+and an asymptotically stable macroscopic (malignant) equilibrium point. The corresponding 
+regions of attraction are separated by the stable manifold of a saddle. The optimal 
+control problem of moving an initial condition that lies in the malignant region 
+into the benign region is formulated and the structure of optimal singular controls 
+is determined
+```
+end
+
+Ledzewicz2013___On_optimal_chemotherapy_with_a_strongly_targeted_agent_for_a_model_of_tumor_immune_system_interactions_with_generalized_logistic_growth is "Ledzewicz2013 - On optimal chemotherapy with a strongly targeted agent for a model of tumor immune system interactions with generalized logistic growth"

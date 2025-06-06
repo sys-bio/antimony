@@ -432,12 +432,14 @@ int main(int argc, char** argv)
       }
     }
 #endif //NCELLML
+    clearPreviousLoads();
   }
 
   if (handles.size()==0) {
     cerr << "No models successfully read!" << endl;
     retval = 1;
   }
+  clearPreviousLoads();
   return retval;
 }
 

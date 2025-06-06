@@ -1,0 +1,1238 @@
+// Created by libAntimony v3.0.0
+model *Leloup2004_CircadianRhythms()
+
+  // Compartments and Species:
+  compartment Compartment;
+  species MP_0 in Compartment, MC_0 in Compartment, MB_0 in Compartment, PC_0 in Compartment;
+  species CC_0 in Compartment, PCP_0 in Compartment, CCP_0 in Compartment;
+  species PCC_0 in Compartment, PCN_0 in Compartment, PCNP_0 in Compartment;
+  species PCCP_0 in Compartment, BC_0 in Compartment, BCP_0 in Compartment;
+  species BN_0 in Compartment, BNP_0 in Compartment, IN_0 in Compartment;
+  species $BTot in Compartment, $CTot in Compartment, $PTot in Compartment;
+
+  // Assignment Rules:
+  BTot := BN + BC;
+  CTot := CC + CCP;
+  PTot := PC + PCCP + PCC + PCNP + PCN + PCP;
+  vsP := vstot;
+  vsC := 0.8*vstot;
+  vsB := 0.7*vstot;
+  ksP := 0.5*kstot;
+  V1P := Vphos;
+  ksC := kstot;
+  V1PC := Vphos;
+  V3PC := Vphos;
+  ksB := kstot;
+
+  // Rate Rules:
+  BN' = V4B*(BNP/(Kdp + BNP)) + k5*BC + k8*IN - (V3B*(BN/(Kp + BN)) + k6*BN + k7*BN*PCN + kdn*BN);
+  BC' = V2B*(BCP/(Kdp + BCP)) + k6*BN + ksB*MB - (V1B*(BC/(Kp + BC)) + k5*BC + kdn*BC);
+  CC' = ksC*MC + V2C*(CCP/(Kdp + CCP)) + k4*PCC - (V1C*(CC/(Kp + CC)) + k3*PC*CC + kdnc*CC);
+  CCP' = V1C*(CC/(Kp + CC)) - (V2C*(CCP/(Kdp + CCP)) + vdCC*(CCP/(Kd + CCP)) + kdn*CCP);
+  PC' = ksP*MP + V2P*(PCP/(Kdp + PCP)) + k4*PCC - (V1P*(PC/(Kp + PC)) + k3*PC*CC + kdn*PC);
+  PCCP' = V1PC*(PCC/(Kp + PCC)) - (V2PC*(PCCP/(Kdp + PCCP)) + vdPCC*(PCCP/(Kd + PCCP)) + kdn*PCCP);
+  PCC' = V2PC*(PCCP/(Kdp + PCCP)) + k3*PC*CC + k2*PCN - (V1PC*(PCC/(Kp + PCC)) + k4*PCC + k1*PCC + kdn*PCC);
+  PCNP' = V3PC*(PCN/(Kp + PCN)) - (V4PC*(PCNP/(Kdp + PCNP)) + vdPCN*(PCNP/(Kd + PCNP)) + kdn*PCNP);
+  PCN' = V4PC*(PCNP/(Kdp + PCNP)) + k1*PCC + k8*IN - (V3PC*(PCN/(Kp + PCN)) + k2*PCN + k7*BN*PCN + kdn*PCN);
+  PCP' = V1P*(PC/(Kp + PC)) - (V2P*(PCP/(Kdp + PCP)) + vdPC*(PCP/(Kd + PCP)) + kdn*PCP);
+  MP' = vsP*(BN^n/(KAP^n + BN^n)) - (vmP*(MP/(KmP + MP)) + kdmp*MP);
+  MC' = vsC*(BN^n/(KAC^n + BN^n)) - (vmC*(MC/(KmC + MC)) + kdmc*MC);
+  MB' = vsB*(KIB^m/(KIB^m + BN^m)) - (vmB*(MB/(KmB + MB)) + kdmb*MB);
+  IN' = k7*BN*PCN - (k8*IN + vdIN*(IN/(Kd + IN)) + kdn*IN);
+  BCP' = V1B*(BC/(Kp + BC)) - (V2B*(BCP/(Kdp + BCP)) + vdBC*(BCP/(Kd + BCP)) + kdn*BCP);
+  BNP' = V3B*(BN/(Kp + BN)) - (V4B*(BNP/(Kdp + BNP)) + vdBN*(BNP/(Kd + BNP)) + kdn*BNP);
+
+  // Reactions:
+  Reversible_reaction__between_PER_CRY_complex_in_cytosol_and_nucleus: PCC_0 -> PCN_0; Compartment*(k1*PCC_0 - k2*PCN_0);
+  Phosphorylation_of_PER_CRY_complex_in_nucleus: PCN_0 => PCNP_0; Compartment*(V3PC*PCN_0/(Kp + PCN_0));
+  Dephosphorylation_of_PER_CRY_complex_in_nucleus: PCNP_0 => PCN_0; Compartment*(V4PC*PCNP_0/(Kdp + PCNP_0));
+  Phosphorylation_of_PER_CRY_complex_in_cytosol: PCC_0 => PCCP_0; Compartment*(V1PC*PCC_0/(Kp + PCC_0));
+  Dephosphorylation_of_PER_CRY_complex_in_cytosol: PCCP_0 => PCC_0; Compartment*(V2PC*PCCP_0/(Kdp + PCCP_0));
+  Reversible_reaction_between_PER__CRY_and_PER_CRY_complex_in_cytosol: CC_0 + PC_0 -> PCC_0; Compartment*(k3*CC_0*PC_0 - k4*PCC_0);
+  Phosphorylation_of_CRY_in_cytosol: CC_0 => CCP_0; Compartment*(V1C*CC_0/(Kp + CC_0));
+  Dephosphorylation_of_CRY_in_cytosol: CCP_0 => CC_0; Compartment*(V2C*CCP_0/(Kdp + CCP_0));
+  Translation_of_Cry_mRNA_to_CRY_protein_in_cytosol:  => CC_0; Compartment*(ksC*MC_0);
+  Transcription_of_Cry_gene_to_Cry_mRNA:  => MC_0; Compartment*(vsC*BN_0^n/(KAC^n + BN_0^n));
+  Transcription_of_Per_gene_to_Per_mRNA:  => MP_0; Compartment*(vsP*BN_0^n/(KAP^n + BN_0^n));
+  Translation_of_Per_mRNA_to_PER_protein:  => PC_0; Compartment*(ksP*MP_0);
+  Phosphorylation_of_PER_in_cytosol: PC_0 => PCP_0; Compartment*(V1P*PC_0/(Kp + PC_0));
+  Dephosphorylation_of_PER_in_cytosol: PCP_0 => PC_0; Compartment*(V2P*PCP_0/(Kdp + PCP_0));
+  Transcription_of_Bmal1_gene_to_Bmal1_mRNA:  => MB_0; Compartment*(vsB*KIB^m/(KIB^m + BN_0^m));
+  Translation_of_Bmal1_mRNA_to_BMAL1_protein:  => BC_0; Compartment*(ksB*MB_0);
+  Phosphorylation_of_BMAL1_in_cytosol: BC_0 => BCP_0; Compartment*(V1B*BC_0/(Kp + BC_0));
+  Dephosphorylation_of_BMAL1_in_cytosol: BCP_0 => BC_0; Compartment*(V2B*BCP_0/(Kdp + BCP_0));
+  Reversible_reation_between_BMAL1_in_cytosol_and_nucleus: BC_0 -> BN_0; Compartment*(k5*BC_0 - k6*BN_0);
+  Phosphorylation_of_BMAL1_in_nucleus: BN_0 => BNP_0; Compartment*(V3B*BN_0/(Kp + BN_0));
+  Dephosphorylation_of_BMAL1_in_nucleus: BNP_0 => BN_0; Compartment*(V4B*BNP_0/(Kdp + BNP_0));
+  Reversible_reaction_between_PER_CRY_complex_and_PER_CRY_CLOCK_BMAL1_in_nuclues: PCN_0 + BN_0 -> IN_0; Compartment*(k7*PCN_0*BN_0 - k8*IN_0);
+  Degradation_of_the_PER_CRY_CLOCK_BMAL1_complex: IN_0 => ; Compartment*(vdIN*IN_0/(Kd + IN_0));
+  Degradation_of_Cry_mRNA: MC_0 => ; Compartment*(vmC*MC_0/(KmC + MC_0));
+  Degradation_of_CRY_P_protein_in_cytosol: CCP_0 => ; Compartment*(vdCC*CCP_0/(Kd + CCP_0));
+  Non_specific_degradation_of_Cry_mRNA: MC_0 => ; Compartment*kdmc*MC_0;
+  Degradation_of_PER_CRY_complex_in_cytosol: PCCP_0 => ; Compartment*(vdPCC*PCCP_0/(Kd + PCCP_0));
+  Degradation_of_PER_CRY_complex_in_nucleus: PCNP_0 => ; Compartment*(vdPCN*PCNP_0/(Kd + PCNP_0));
+  Degradation_of_Per_mRNA: MP_0 => ; Compartment*(vmP*MP_0/(KmP + MP_0));
+  Degradation_of_PER_P_in_cytosol: PCP_0 => ; Compartment*(vdPC*PCP_0/(Kd + PCP_0));
+  Non_specific_degradation_of_Per_mRNA: MP_0 => ; Compartment*kdmp*MP_0;
+  Degradation_of_Bmal1_mRNA: MB_0 => ; Compartment*(vmB*MB_0/(KmB + MB_0));
+  Non_specific_degradation_of_Bmal1_mRNA: MB_0 => ; Compartment*kdmb*MB_0;
+  Degradation_of_BMAL1_P_in_cytosol: BCP_0 => ; Compartment*(vdBC*BCP_0/(Kd + BCP_0));
+  Degradation_of_BMAL1_P_in_nucleus: BNP_0 => ; Compartment*(vdBN*BNP_0/(Kd + BNP_0));
+  Non_specific_degradation_of_PER_protein_in_cytosol: PC_0 => ; Compartment*kdn*PC_0;
+  Non_specific_degradation_of_CRY_protein_in_cytosol: CC_0 => ; Compartment*kdnc*CC_0;
+  Non_specific_degradation_of_PER_P_protein_in_cytosol: PCP_0 => ; Compartment*kdn*PCP_0;
+  Non_specific_degradation_of_CRY_P_protein_in_cytosol: CCP_0 => ; Compartment*kdn*CCP_0;
+  Non_specific_degradation_of_PER_CRY_protein_complex_in_cytosol: PCC_0 => ; Compartment*kdn*PCC_0;
+  Non_specific_degradation_of_PER_CRY_protein_complex_in_nucleus: PCN_0 => ; Compartment*kdn*PCN_0;
+  Non_specific_degradation_of_PER_CRY_P_protein_complex_in_cytosol: PCCP_0 => ; Compartment*kdn*PCCP_0;
+  Non_specific_degradation_of_PER_CRY_P_protein_complex_in_nucleus: PCNP_0 => ; Compartment*kdn*PCNP_0;
+  Non_specific_degradation_of_BMAL1_protein_in_cytosol: BC_0 => ; Compartment*kdn*BC_0;
+  Non_specific_degradation_of_BMAL1_P_protein_in_cytosol: BCP_0 => ; Compartment*kdn*BCP_0;
+  Non_specific_degradation_of_BMAL1_protein_in_nucleus: BN_0 => ; Compartment*kdn*BN_0;
+  Non_specific_degradation_of_BMAL1_P_protein_in_nucleus: BNP_0 => ; Compartment*kdn*BNP_0;
+  Non_specific_degradation_of_PER_CRY_BMAL1_CLOCK_complex_in_nucleus: IN_0 => ; Compartment*kdn*IN_0;
+
+  // Species initializations:
+  MP_0 = 0.5;
+  MC_0 = 0.3;
+  MB_0 = 3;
+  PC_0 = 1;
+  CC_0 = 1;
+  PCP_0 = 1;
+  CCP_0 = 1;
+  PCC_0 = 1;
+  PCN_0 = 1;
+  PCNP_0 = 1;
+  PCCP_0 = 1;
+  BC_0 = 1;
+  BCP_0 = 1;
+  BN_0 = 1;
+  BNP_0 = 1;
+  IN_0 = 1;
+
+  // Compartment initializations:
+  Compartment = 1;
+
+  // Variable initializations:
+  BN = 1;
+  BN has unit_0;
+  BC = 1;
+  BC has unit_0;
+  CC = 1;
+  CC has unit_0;
+  CCP = 1;
+  CCP has unit_0;
+  PC = 1;
+  PC has unit_0;
+  PCCP = 1;
+  PCCP has unit_0;
+  PCC = 1;
+  PCC has unit_0;
+  PCNP = 1;
+  PCNP has unit_0;
+  PCN = 1;
+  PCN has unit_0;
+  PCP = 1;
+  PCP has unit_0;
+  MP = 0.5;
+  MP has unit_0;
+  vsP has unit_1;
+  n = 4;
+  n has unit_4;
+  KAP = 0.7;
+  KAP has unit_0;
+  vmP = 1.1;
+  vmP has unit_1;
+  KmP = 0.3;
+  KmP has unit_0;
+  kdmp = 0.01;
+  kdmp has unit_2;
+  vstot = 1;
+  vstot has unit_1;
+  MC = 0.3;
+  MC has unit_0;
+  vsC has unit_1;
+  KAC = 1;
+  KAC has unit_0;
+  vmC = 1;
+  vmC has unit_1;
+  KmC = 0.4;
+  KmC has unit_0;
+  kdmc = 0.01;
+  kdmc has unit_2;
+  MB = 3;
+  MB has unit_0;
+  vsB has unit_1;
+  KIB = 0.8;
+  KIB has unit_0;
+  m = 4;
+  m has unit_4;
+  vmB = 0.2;
+  vmB has unit_1;
+  KmB = 0.4;
+  KmB has unit_0;
+  kdmb = 0.01;
+  kdmb has unit_2;
+  ksP has unit_2;
+  V2P = 0.3;
+  V2P has unit_1;
+  Kdp = 0.3;
+  Kdp has unit_0;
+  k4 = 0.2;
+  k4 has unit_2;
+  V1P has unit_1;
+  Kp = 0.1;
+  Kp has unit_0;
+  k3 = 0.8;
+  k3 has unit_3;
+  kdn = 0.01;
+  kdn has unit_2;
+  ksC has unit_2;
+  V2C = 0.1;
+  V2C has unit_1;
+  V1C = 0.6;
+  V1C has unit_1;
+  kdnc = 0.01;
+  kdnc has unit_2;
+  vdPC = 0.7;
+  vdPC has unit_1;
+  Kd = 0.3;
+  Kd has unit_0;
+  vdCC = 0.7;
+  vdCC has unit_1;
+  V2PC = 0.1;
+  V2PC has unit_1;
+  k2 = 0.2;
+  k2 has unit_2;
+  V1PC has unit_1;
+  k1 = 0.8;
+  k1 has unit_2;
+  V4PC = 0.1;
+  V4PC has unit_1;
+  k8 = 0.1;
+  k8 has unit_2;
+  IN = 1;
+  IN has unit_0;
+  V3PC has unit_1;
+  k7 = 0.5;
+  k7 has unit_3;
+  vdPCC = 1;
+  vdPCC has unit_1;
+  vdPCN = 1;
+  vdPCN has unit_1;
+  V2B = 0.1;
+  V2B has unit_1;
+  BCP = 1;
+  BCP has unit_0;
+  k6 = 0.2;
+  k6 has unit_2;
+  ksB has unit_2;
+  V1B = 1;
+  V1B has unit_1;
+  k5 = 0.4;
+  k5 has unit_2;
+  vdBC = 1;
+  vdBC has unit_1;
+  V4B = 0.2;
+  V4B has unit_1;
+  BNP = 1;
+  BNP has unit_0;
+  V3B = 1;
+  V3B has unit_1;
+  vdBN = 0.5;
+  vdBN has unit_1;
+  vdIN = 0.8;
+  vdIN has unit_1;
+  kstot = 1;
+  kstot has unit_2;
+  Vphos = 0.6;
+  Vphos has unit_1;
+
+  // Other declarations:
+  var BN, BC, CC, CCP, PC, PCCP, PCC, PCNP, PCN, PCP, MP, vsP, MC, vsC, MB;
+  var vsB, ksP, V1P, ksC, V1PC, IN, V3PC, BCP, ksB, BNP;
+  const Compartment, n, KAP, vmP, KmP, kdmp, vstot, KAC, vmC, KmC, kdmc, KIB;
+  const m, vmB, KmB, kdmb, V2P, Kdp, k4, Kp, k3, kdn, V2C, V1C, kdnc, vdPC;
+  const Kd, vdCC, V2PC, k2, k1, V4PC, k8, k7, vdPCC, vdPCN, V2B, k6, V1B;
+  const k5, vdBC, V4B, V3B, vdBN, vdIN, kstot, Vphos;
+
+  // Unit definitions:
+  unit time_unit = 3600 second;
+  unit substance = 1e-9 mole;
+  unit unit_0 = 1e-9 mole / litre;
+  unit unit_1 = 1e-3 mole / (litre * second);
+  unit unit_2 = 1 / 1e-3 second;
+  unit unit_3 = 1e-3 litre / (mole * second);
+  unit unit_4 = 1 / dimensionless^-0;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "nmol/l";
+  unit_1 is "mmol/(l*s)";
+  unit_2 is "1/ms";
+  unit_3 is "ml/(mol*s)";
+  unit_4 is "1";
+  Compartment is "Mammalian Cell";
+  MP_0 is "MP";
+  MC_0 is "MC";
+  MB_0 is "MB";
+  PC_0 is "PC";
+  CC_0 is "CC";
+  PCP_0 is "PCP";
+  CCP_0 is "CCP";
+  PCC_0 is "PCC";
+  PCN_0 is "PCN";
+  PCNP_0 is "PCNP";
+  PCCP_0 is "PCCP";
+  BC_0 is "BC";
+  BCP_0 is "BCP";
+  BN_0 is "BN";
+  BNP_0 is "BNP";
+  IN_0 is "IN";
+  Reversible_reaction__between_PER_CRY_complex_in_cytosol_and_nucleus is "Reversible reaction  between PER-CRY complex in cytosol and nucleus";
+  Phosphorylation_of_PER_CRY_complex_in_nucleus is "Phosphorylation of PER-CRY complex in nucleus";
+  Dephosphorylation_of_PER_CRY_complex_in_nucleus is "Dephosphorylation of PER-CRY complex in nucleus";
+  Phosphorylation_of_PER_CRY_complex_in_cytosol is "Phosphorylation of PER-CRY complex in cytosol";
+  Dephosphorylation_of_PER_CRY_complex_in_cytosol is "Dephosphorylation of PER-CRY complex in cytosol";
+  Reversible_reaction_between_PER__CRY_and_PER_CRY_complex_in_cytosol is "Reversible reaction between PER, CRY and PER-CRY complex in cytosol";
+  Phosphorylation_of_CRY_in_cytosol is "Phosphorylation of CRY in cytosol";
+  Dephosphorylation_of_CRY_in_cytosol is "Dephosphorylation of CRY in cytosol";
+  Translation_of_Cry_mRNA_to_CRY_protein_in_cytosol is "Translation of Cry mRNA to CRY protein in cytosol";
+  Transcription_of_Cry_gene_to_Cry_mRNA is "Transcription of Cry gene to Cry mRNA";
+  Transcription_of_Per_gene_to_Per_mRNA is "Transcription of Per gene to Per mRNA";
+  Translation_of_Per_mRNA_to_PER_protein is "Translation of Per mRNA to PER protein";
+  Phosphorylation_of_PER_in_cytosol is "Phosphorylation of PER in cytosol";
+  Dephosphorylation_of_PER_in_cytosol is "Dephosphorylation of PER in cytosol";
+  Transcription_of_Bmal1_gene_to_Bmal1_mRNA is "Transcription of Bmal1 gene to Bmal1 mRNA";
+  Translation_of_Bmal1_mRNA_to_BMAL1_protein is "Translation of Bmal1 mRNA to BMAL1 protein";
+  Phosphorylation_of_BMAL1_in_cytosol is "Phosphorylation of BMAL1 in cytosol";
+  Dephosphorylation_of_BMAL1_in_cytosol is "Dephosphorylation of BMAL1 in cytosol";
+  Reversible_reation_between_BMAL1_in_cytosol_and_nucleus is "Reversible reation between BMAL1 in cytosol and nucleus";
+  Phosphorylation_of_BMAL1_in_nucleus is "Phosphorylation of BMAL1 in nucleus";
+  Dephosphorylation_of_BMAL1_in_nucleus is "Dephosphorylation of BMAL1 in nucleus";
+  Reversible_reaction_between_PER_CRY_complex_and_PER_CRY_CLOCK_BMAL1_in_nuclues is "Reversible reaction between PER-CRY complex and PER-CRY-CLOCK-BMAL1 in nuclues";
+  Degradation_of_the_PER_CRY_CLOCK_BMAL1_complex is "Degradation of the PER-CRY-CLOCK-BMAL1 complex";
+  Degradation_of_Cry_mRNA is "Degradation of Cry mRNA";
+  Degradation_of_CRY_P_protein_in_cytosol is "Degradation of CRY-P protein in cytosol";
+  Non_specific_degradation_of_Cry_mRNA is "Non-specific degradation of Cry mRNA";
+  Degradation_of_PER_CRY_complex_in_cytosol is "Degradation of PER-CRY complex in cytosol";
+  Degradation_of_PER_CRY_complex_in_nucleus is "Degradation of PER-CRY complex in nucleus";
+  Degradation_of_Per_mRNA is "Degradation of Per mRNA";
+  Degradation_of_PER_P_in_cytosol is "Degradation of PER-P in cytosol";
+  Non_specific_degradation_of_Per_mRNA is "Non-specific degradation of Per mRNA";
+  Degradation_of_Bmal1_mRNA is "Degradation of Bmal1 mRNA";
+  Non_specific_degradation_of_Bmal1_mRNA is "Non-specific degradation of Bmal1 mRNA";
+  Degradation_of_BMAL1_P_in_cytosol is "Degradation of BMAL1-P in cytosol";
+  Degradation_of_BMAL1_P_in_nucleus is "Degradation of BMAL1-P in nucleus";
+  Non_specific_degradation_of_PER_protein_in_cytosol is "Non-specific degradation of PER protein in cytosol";
+  Non_specific_degradation_of_CRY_protein_in_cytosol is "Non-specific degradation of CRY protein in cytosol";
+  Non_specific_degradation_of_PER_P_protein_in_cytosol is "Non-specific degradation of PER-P protein in cytosol";
+  Non_specific_degradation_of_CRY_P_protein_in_cytosol is "Non-specific degradation of CRY-P protein in cytosol";
+  Non_specific_degradation_of_PER_CRY_protein_complex_in_cytosol is "Non-specific degradation of PER-CRY protein complex in cytosol";
+  Non_specific_degradation_of_PER_CRY_protein_complex_in_nucleus is "Non-specific degradation of PER-CRY protein complex in nucleus";
+  Non_specific_degradation_of_PER_CRY_P_protein_complex_in_cytosol is "Non-specific degradation of PER-CRY-P protein complex in cytosol";
+  Non_specific_degradation_of_PER_CRY_P_protein_complex_in_nucleus is "Non-specific degradation of PER-CRY-P protein complex in nucleus";
+  Non_specific_degradation_of_BMAL1_protein_in_cytosol is "Non-specific degradation of BMAL1 protein in cytosol";
+  Non_specific_degradation_of_BMAL1_P_protein_in_cytosol is "Non-specific degradation of BMAL1-P protein in cytosol";
+  Non_specific_degradation_of_BMAL1_protein_in_nucleus is "Non-specific degradation of BMAL1 protein in nucleus";
+  Non_specific_degradation_of_BMAL1_P_protein_in_nucleus is "Non-specific degradation of BMAL1-P protein in nucleus";
+  Non_specific_degradation_of_PER_CRY_BMAL1_CLOCK_complex_in_nucleus is "Non-specific degradation of PER-CRY-BMAL1-CLOCK complex in nucleus";
+
+  # General layout options
+  model.layout = on
+  model.layout.size = {139.59, 87.63}
+  model.layout.background = "#FFFFFFFF"
+
+  // Species layout defaults
+  species.color = "#a0e0a030"
+
+  // Reaction layout defaults
+  reaction.lineColor = "#000000a0"
+  reaction.lineWidth = 3
+  reaction.fontColor = "#000000a0"
+
+  // Compartment layout defaults
+  compartment.lineColor = "#e69600b0"
+  compartment.lineWidth = 7
+  compartment.fontColor = "#e69600b0"
+  compartment.fontStyle = normal
+
+  // Individual element layout information
+  MP_0.position = {735.91, 564.96}
+  MP_0.size = {36, 28}
+  MP_0.font = Verdana
+  MP_0.fontColor = black
+  MP_0.fontSize = 12
+  MC_0.position = {385.38, 432.38}
+  MC_0.size = {36, 28}
+  MC_0.font = Verdana
+  MC_0.fontColor = black
+  MC_0.fontSize = 12
+  MB_0.position = {394.47, 887.47}
+  MB_0.size = {36, 28}
+  MB_0.font = Verdana
+  MB_0.fontColor = black
+  MB_0.fontSize = 12
+  PC_0.position = {706.29, 346.96}
+  PC_0.size = {36, 28}
+  PC_0.font = Verdana
+  PC_0.fontColor = black
+  PC_0.fontSize = 12
+  CC_0.position = {516.84, 257.34}
+  CC_0.size = {36, 28}
+  CC_0.font = Verdana
+  CC_0.fontColor = black
+  CC_0.fontSize = 12
+  PCP_0.position = {704.89, 168.26}
+  PCP_0.size = {52, 28}
+  PCP_0.font = Verdana
+  PCP_0.fontColor = black
+  PCP_0.fontSize = 12
+  CCP_0.position = {384.99, 151.51}
+  CCP_0.size = {52, 28}
+  CCP_0.font = Verdana
+  CCP_0.fontColor = black
+  CCP_0.fontSize = 12
+  PCC_0.position = {747.35, 318.98}
+  PCC_0.size = {52, 28}
+  PCC_0.font = Verdana
+  PCC_0.fontColor = black
+  PCC_0.fontSize = 12
+  PCN_0.position = {619.69, 489.94}
+  PCN_0.size = {52, 28}
+  PCN_0.font = Verdana
+  PCN_0.fontColor = black
+  PCN_0.fontSize = 12
+  PCNP_0.position = {488.93, 445.5}
+  PCNP_0.size = {68, 28}
+  PCNP_0.font = Verdana
+  PCNP_0.fontColor = black
+  PCNP_0.fontSize = 12
+  PCCP_0.position = {911.35, 324.42}
+  PCCP_0.size = {68, 28}
+  PCCP_0.font = Verdana
+  PCCP_0.fontColor = black
+  PCCP_0.fontSize = 12
+  BC_0.position = {542.69, 886.99}
+  BC_0.size = {36, 28}
+  BC_0.font = Verdana
+  BC_0.fontColor = black
+  BC_0.fontSize = 12
+  BCP_0.position = {647.33, 995.09}
+  BCP_0.size = {52, 28}
+  BCP_0.font = Verdana
+  BCP_0.fontColor = black
+  BCP_0.fontSize = 12
+  BN_0.position = {511.96, 674.78}
+  BN_0.size = {36, 28}
+  BN_0.font = Verdana
+  BN_0.fontColor = black
+  BN_0.fontSize = 12
+  BNP_0.position = {327.94, 684.68}
+  BNP_0.size = {52, 28}
+  BNP_0.font = Verdana
+  BNP_0.fontColor = black
+  BNP_0.fontSize = 12
+  IN_0.position = {459.56, 513.63}
+  IN_0.size = {36, 28}
+  IN_0.font = Verdana
+  IN_0.fontColor = black
+  IN_0.fontSize = 12
+  BTot.position = {987.3, 890.15}
+  BTot.size = {68, 28}
+  BTot.font = Verdana
+  BTot.fontColor = black
+  BTot.fontSize = 12
+  CTot.position = {0, 477.76}
+  CTot.size = {68, 28}
+  CTot.font = Verdana
+  CTot.fontColor = black
+  CTot.fontSize = 12
+  PTot.position = {473.26, 1220.01}
+  PTot.size = {68, 28}
+  PTot.font = Verdana
+  PTot.fontColor = black
+  PTot.fontSize = 12
+  Reversible_reaction__between_PER_CRY_complex_in_cytosol_and_nucleus.position = {703.51, 419.57}
+  Reversible_reaction__between_PER_CRY_complex_in_cytosol_and_nucleus.PCC_0.rxn_end = {709.9, 411.02}
+  Reversible_reaction__between_PER_CRY_complex_in_cytosol_and_nucleus.PCC_0.species_end = {757.55, 351.98}
+  Reversible_reaction__between_PER_CRY_complex_in_cytosol_and_nucleus.PCC_0.b1 = {722.66, 393.92}
+  Reversible_reaction__between_PER_CRY_complex_in_cytosol_and_nucleus.PCC_0.b2 = {743.3, 368.68}
+  Reversible_reaction__between_PER_CRY_complex_in_cytosol_and_nucleus.PCN_0.rxn_end = {697.13, 428.11}
+  Reversible_reaction__between_PER_CRY_complex_in_cytosol_and_nucleus.PCN_0.species_end = {658.2, 484.94}
+  Reversible_reaction__between_PER_CRY_complex_in_cytosol_and_nucleus.PCN_0.b1 = {684.37, 445.21}
+  Reversible_reaction__between_PER_CRY_complex_in_cytosol_and_nucleus.PCN_0.b2 = {668.09, 469.35}
+  Phosphorylation_of_PER_CRY_complex_in_nucleus.position = {605.27, 441.84}
+  Phosphorylation_of_PER_CRY_complex_in_nucleus.PCN_0.rxn_end = {611.4, 444.06}
+  Phosphorylation_of_PER_CRY_complex_in_nucleus.PCN_0.species_end = {638.15, 484.94}
+  Phosphorylation_of_PER_CRY_complex_in_nucleus.PCN_0.b1 = {623.68, 448.5}
+  Phosphorylation_of_PER_CRY_complex_in_nucleus.PCN_0.b2 = {633.98, 467.83}
+  Phosphorylation_of_PER_CRY_complex_in_nucleus.PCNP_0.rxn_end = {599.13, 439.62}
+  Phosphorylation_of_PER_CRY_complex_in_nucleus.PCNP_0.species_end = {561.93, 444.66}
+  Phosphorylation_of_PER_CRY_complex_in_nucleus.PCNP_0.b1 = {586.85, 435.17}
+  Phosphorylation_of_PER_CRY_complex_in_nucleus.PCNP_0.b2 = {571.32, 438.8}
+  Dephosphorylation_of_PER_CRY_complex_in_nucleus.position = {574.76, 508.94}
+  Dephosphorylation_of_PER_CRY_complex_in_nucleus.PCNP_0.rxn_end = {568.62, 506.71}
+  Dephosphorylation_of_PER_CRY_complex_in_nucleus.PCNP_0.species_end = {537.77, 478.5}
+  Dephosphorylation_of_PER_CRY_complex_in_nucleus.PCNP_0.b1 = {556.35, 502.27}
+  Dephosphorylation_of_PER_CRY_complex_in_nucleus.PCNP_0.b2 = {543.99, 489.27}
+  Dephosphorylation_of_PER_CRY_complex_in_nucleus.PCN_0.rxn_end = {580.9, 511.16}
+  Dephosphorylation_of_PER_CRY_complex_in_nucleus.PCN_0.species_end = {614.69, 510.82}
+  Dephosphorylation_of_PER_CRY_complex_in_nucleus.PCN_0.b1 = {593.18, 515.6}
+  Dephosphorylation_of_PER_CRY_complex_in_nucleus.PCN_0.b2 = {607, 514.32}
+  Phosphorylation_of_PER_CRY_complex_in_cytosol.position = {863.72, 366.55}
+  Phosphorylation_of_PER_CRY_complex_in_cytosol.PCC_0.rxn_end = {855.12, 366.28}
+  Phosphorylation_of_PER_CRY_complex_in_cytosol.PCC_0.species_end = {804.35, 348.71}
+  Phosphorylation_of_PER_CRY_complex_in_cytosol.PCC_0.b1 = {837.93, 365.74}
+  Phosphorylation_of_PER_CRY_complex_in_cytosol.PCC_0.b2 = {816.84, 357.09}
+  Phosphorylation_of_PER_CRY_complex_in_cytosol.PCCP_0.rxn_end = {872.32, 366.82}
+  Phosphorylation_of_PER_CRY_complex_in_cytosol.PCCP_0.species_end = {908.71, 357.42}
+  Phosphorylation_of_PER_CRY_complex_in_cytosol.PCCP_0.b1 = {889.52, 367.37}
+  Phosphorylation_of_PER_CRY_complex_in_cytosol.PCCP_0.b2 = {903.42, 362.53}
+  Dephosphorylation_of_PER_CRY_complex_in_cytosol.position = {866.17, 309.51}
+  Dephosphorylation_of_PER_CRY_complex_in_cytosol.PCCP_0.rxn_end = {874.77, 309.78}
+  Dephosphorylation_of_PER_CRY_complex_in_cytosol.PCCP_0.species_end = {909.24, 319.42}
+  Dephosphorylation_of_PER_CRY_complex_in_cytosol.PCCP_0.b1 = {891.97, 310.33}
+  Dephosphorylation_of_PER_CRY_complex_in_cytosol.PCCP_0.b2 = {904.91, 315.01}
+  Dephosphorylation_of_PER_CRY_complex_in_cytosol.PCC_0.rxn_end = {857.57, 309.24}
+  Dephosphorylation_of_PER_CRY_complex_in_cytosol.PCC_0.species_end = {804.35, 321.75}
+  Dephosphorylation_of_PER_CRY_complex_in_cytosol.PCC_0.b1 = {840.37, 308.69}
+  Dephosphorylation_of_PER_CRY_complex_in_cytosol.PCC_0.b2 = {818.06, 315.09}
+  Reversible_reaction_between_PER__CRY_and_PER_CRY_complex_in_cytosol.position = {655.38, 310.24}
+  Reversible_reaction_between_PER__CRY_and_PER_CRY_complex_in_cytosol.CC_0.rxn_end = {648.19, 309.39}
+  Reversible_reaction_between_PER__CRY_and_PER_CRY_complex_in_cytosol.CC_0.species_end = {557.84, 279.79}
+  Reversible_reaction_between_PER__CRY_and_PER_CRY_complex_in_cytosol.CC_0.b1 = {633.81, 307.71}
+  Reversible_reaction_between_PER__CRY_and_PER_CRY_complex_in_cytosol.CC_0.b2 = {592.23, 293.33}
+  Reversible_reaction_between_PER__CRY_and_PER_CRY_complex_in_cytosol.PC_0.rxn_end = {648.19, 309.39}
+  Reversible_reaction_between_PER__CRY_and_PER_CRY_complex_in_cytosol.PC_0.species_end = {701.29, 347.42}
+  Reversible_reaction_between_PER__CRY_and_PER_CRY_complex_in_cytosol.PC_0.b1 = {633.81, 307.71}
+  Reversible_reaction_between_PER__CRY_and_PER_CRY_complex_in_cytosol.PC_0.b2 = {663.95, 327.15}
+  Reversible_reaction_between_PER__CRY_and_PER_CRY_complex_in_cytosol.PCC_0.rxn_end = {662.57, 311.08}
+  Reversible_reaction_between_PER__CRY_and_PER_CRY_complex_in_cytosol.PCC_0.species_end = {742.35, 326.48}
+  Reversible_reaction_between_PER__CRY_and_PER_CRY_complex_in_cytosol.PCC_0.b1 = {676.95, 312.76}
+  Reversible_reaction_between_PER__CRY_and_PER_CRY_complex_in_cytosol.PCC_0.b2 = {713.24, 320.04}
+  Phosphorylation_of_CRY_in_cytosol.position = {449.22, 241.33}
+  Phosphorylation_of_CRY_in_cytosol.CC_0.rxn_end = {455.42, 246.62}
+  Phosphorylation_of_CRY_in_cytosol.CC_0.species_end = {511.84, 266.49}
+  Phosphorylation_of_CRY_in_cytosol.CC_0.b1 = {467.8, 257.2}
+  Phosphorylation_of_CRY_in_cytosol.CC_0.b2 = {492.92, 264.49}
+  Phosphorylation_of_CRY_in_cytosol.CCP_0.rxn_end = {443.03, 236.04}
+  Phosphorylation_of_CRY_in_cytosol.CCP_0.species_end = {417.22, 184.51}
+  Phosphorylation_of_CRY_in_cytosol.CCP_0.b1 = {430.65, 225.45}
+  Phosphorylation_of_CRY_in_cytosol.CCP_0.b2 = {420.84, 202.34}
+  Dephosphorylation_of_CRY_in_cytosol.position = {490.85, 193.05}
+  Dephosphorylation_of_CRY_in_cytosol.CCP_0.rxn_end = {484.66, 187.76}
+  Dephosphorylation_of_CRY_in_cytosol.CCP_0.species_end = {441.99, 171.41}
+  Dephosphorylation_of_CRY_in_cytosol.CCP_0.b1 = {472.27, 177.18}
+  Dephosphorylation_of_CRY_in_cytosol.CCP_0.b2 = {454.03, 171.65}
+  Dephosphorylation_of_CRY_in_cytosol.CC_0.rxn_end = {497.04, 198.35}
+  Dephosphorylation_of_CRY_in_cytosol.CC_0.species_end = {527.11, 252.34}
+  Dephosphorylation_of_CRY_in_cytosol.CC_0.b1 = {509.43, 208.93}
+  Dephosphorylation_of_CRY_in_cytosol.CC_0.b2 = {521.36, 233.28}
+  Translation_of_Cry_mRNA_to_CRY_protein_in_cytosol.position = {447.16, 341.15}
+  Translation_of_Cry_mRNA_to_CRY_protein_in_cytosol.MC_0.rxn_end = {440.58, 349.91}
+  Translation_of_Cry_mRNA_to_CRY_protein_in_cytosol.MC_0.species_end = {409.17, 427.38}
+  Translation_of_Cry_mRNA_to_CRY_protein_in_cytosol.MC_0.b1 = {427.44, 367.41}
+  Translation_of_Cry_mRNA_to_CRY_protein_in_cytosol.MC_0.b2 = {415.02, 401.77}
+  Translation_of_Cry_mRNA_to_CRY_protein_in_cytosol.CC_0.rxn_end = {453.73, 332.4}
+  Translation_of_Cry_mRNA_to_CRY_protein_in_cytosol.CC_0.species_end = {511.84, 286.08}
+  Translation_of_Cry_mRNA_to_CRY_protein_in_cytosol.CC_0.b1 = {466.88, 314.9}
+  Translation_of_Cry_mRNA_to_CRY_protein_in_cytosol.CC_0.b2 = {492.65, 296.11}
+  Transcription_of_Cry_gene_to_Cry_mRNA.position = {461.01, 580.02}
+  Transcription_of_Cry_gene_to_Cry_mRNA.BN_0.rxn_end = {467.34, 592.14}
+  Transcription_of_Cry_gene_to_Cry_mRNA.BN_0.species_end = {516.85, 669.78}
+  Transcription_of_Cry_gene_to_Cry_mRNA.BN_0.b1 = {480, 616.38}
+  Transcription_of_Cry_gene_to_Cry_mRNA.BN_0.b2 = {501.59, 649.14}
+  Transcription_of_Cry_gene_to_Cry_mRNA.MC_0.rxn_end = {454.68, 567.9}
+  Transcription_of_Cry_gene_to_Cry_mRNA.MC_0.species_end = {410.93, 465.38}
+  Transcription_of_Cry_gene_to_Cry_mRNA.MC_0.b1 = {442.02, 543.66}
+  Transcription_of_Cry_gene_to_Cry_mRNA.MC_0.b2 = {423.31, 498.46}
+  Transcription_of_Per_gene_to_Per_mRNA.position = {650.46, 641.8}
+  Transcription_of_Per_gene_to_Per_mRNA.BN_0.rxn_end = {639.26, 647.29}
+  Transcription_of_Per_gene_to_Per_mRNA.BN_0.species_end = {552.96, 680.71}
+  Transcription_of_Per_gene_to_Per_mRNA.BN_0.b1 = {616.86, 658.27}
+  Transcription_of_Per_gene_to_Per_mRNA.BN_0.b2 = {579.31, 672.24}
+  Transcription_of_Per_gene_to_Per_mRNA.MP_0.rxn_end = {661.65, 636.31}
+  Transcription_of_Per_gene_to_Per_mRNA.MP_0.species_end = {730.91, 594.22}
+  Transcription_of_Per_gene_to_Per_mRNA.MP_0.b1 = {684.05, 625.33}
+  Transcription_of_Per_gene_to_Per_mRNA.MP_0.b2 = {713.08, 607.03}
+  Translation_of_Per_mRNA_to_PER_protein.position = {748.41, 472.49}
+  Translation_of_Per_mRNA_to_PER_protein.MP_0.rxn_end = {749.9, 483.39}
+  Translation_of_Per_mRNA_to_PER_protein.MP_0.species_end = {753.64, 559.96}
+  Translation_of_Per_mRNA_to_PER_protein.MP_0.b1 = {752.86, 505.19}
+  Translation_of_Per_mRNA_to_PER_protein.MP_0.b2 = {753.99, 538.03}
+  Translation_of_Per_mRNA_to_PER_protein.PC_0.rxn_end = {746.93, 461.59}
+  Translation_of_Per_mRNA_to_PER_protein.PC_0.species_end = {729.03, 379.96}
+  Translation_of_Per_mRNA_to_PER_protein.PC_0.b1 = {743.97, 439.79}
+  Translation_of_Per_mRNA_to_PER_protein.PC_0.b2 = {735.76, 404.43}
+  Phosphorylation_of_PER_in_cytosol.position = {748.03, 267.52}
+  Phosphorylation_of_PER_in_cytosol.PC_0.rxn_end = {747.7, 276.46}
+  Phosphorylation_of_PER_in_cytosol.PC_0.species_end = {730.77, 341.96}
+  Phosphorylation_of_PER_in_cytosol.PC_0.b1 = {747.04, 294.33}
+  Phosphorylation_of_PER_in_cytosol.PC_0.b2 = {738.74, 322.61}
+  Phosphorylation_of_PER_in_cytosol.PCP_0.rxn_end = {748.36, 258.59}
+  Phosphorylation_of_PER_in_cytosol.PCP_0.species_end = {736.78, 201.26}
+  Phosphorylation_of_PER_in_cytosol.PCP_0.b1 = {749.02, 240.72}
+  Phosphorylation_of_PER_in_cytosol.PCP_0.b2 = {743.07, 216.52}
+  Dephosphorylation_of_PER_in_cytosol.position = {695.76, 263.03}
+  Dephosphorylation_of_PER_in_cytosol.PCP_0.rxn_end = {696.09, 254.09}
+  Dephosphorylation_of_PER_in_cytosol.PCP_0.species_end = {718.87, 201.26}
+  Dephosphorylation_of_PER_in_cytosol.PCP_0.b1 = {696.75, 236.22}
+  Dephosphorylation_of_PER_in_cytosol.PCP_0.b2 = {707.97, 214.27}
+  Dephosphorylation_of_PER_in_cytosol.PC_0.rxn_end = {695.43, 271.96}
+  Dephosphorylation_of_PER_in_cytosol.PC_0.species_end = {716.4, 341.96}
+  Dephosphorylation_of_PER_in_cytosol.PC_0.b1 = {694.77, 289.83}
+  Dephosphorylation_of_PER_in_cytosol.PC_0.b2 = {705.42, 320.36}
+  Transcription_of_Bmal1_gene_to_Bmal1_mRNA.position = {453.37, 790.71}
+  Transcription_of_Bmal1_gene_to_Bmal1_mRNA.BN_0.rxn_end = {459.24, 780.07}
+  Transcription_of_Bmal1_gene_to_Bmal1_mRNA.BN_0.species_end = {513.96, 707.78}
+  Transcription_of_Bmal1_gene_to_Bmal1_mRNA.BN_0.b1 = {470.99, 758.8}
+  Transcription_of_Bmal1_gene_to_Bmal1_mRNA.BN_0.b2 = {495.41, 727.97}
+  Transcription_of_Bmal1_gene_to_Bmal1_mRNA.MB_0.rxn_end = {447.5, 801.34}
+  Transcription_of_Bmal1_gene_to_Bmal1_mRNA.MB_0.species_end = {418.08, 882.47}
+  Transcription_of_Bmal1_gene_to_Bmal1_mRNA.MB_0.b1 = {435.75, 822.61}
+  Transcription_of_Bmal1_gene_to_Bmal1_mRNA.MB_0.b2 = {423.98, 857.86}
+  Translation_of_Bmal1_mRNA_to_BMAL1_protein.position = {488.36, 952.77}
+  Translation_of_Bmal1_mRNA_to_BMAL1_protein.MB_0.rxn_end = {480.95, 952.8}
+  Translation_of_Bmal1_mRNA_to_BMAL1_protein.MB_0.species_end = {432.32, 920.47}
+  Translation_of_Bmal1_mRNA_to_BMAL1_protein.MB_0.b1 = {466.12, 952.85}
+  Translation_of_Bmal1_mRNA_to_BMAL1_protein.MB_0.b2 = {445.51, 936.67}
+  Translation_of_Bmal1_mRNA_to_BMAL1_protein.BC_0.rxn_end = {495.77, 952.75}
+  Translation_of_Bmal1_mRNA_to_BMAL1_protein.BC_0.species_end = {542.28, 919.99}
+  Translation_of_Bmal1_mRNA_to_BMAL1_protein.BC_0.b1 = {510.59, 952.7}
+  Translation_of_Bmal1_mRNA_to_BMAL1_protein.BC_0.b2 = {530.14, 936.33}
+  Phosphorylation_of_BMAL1_in_cytosol.position = {592.06, 986.31}
+  Phosphorylation_of_BMAL1_in_cytosol.BC_0.rxn_end = {586.43, 980.9}
+  Phosphorylation_of_BMAL1_in_cytosol.BC_0.species_end = {564.67, 919.99}
+  Phosphorylation_of_BMAL1_in_cytosol.BC_0.b1 = {575.16, 970.09}
+  Phosphorylation_of_BMAL1_in_cytosol.BC_0.b2 = {567.1, 942.34}
+  Phosphorylation_of_BMAL1_in_cytosol.BCP_0.rxn_end = {597.69, 991.71}
+  Phosphorylation_of_BMAL1_in_cytosol.BCP_0.species_end = {642.33, 1005.92}
+  Phosphorylation_of_BMAL1_in_cytosol.BCP_0.b1 = {608.96, 1002.52}
+  Phosphorylation_of_BMAL1_in_cytosol.BCP_0.b2 = {628.46, 1006.92}
+  Dephosphorylation_of_BMAL1_in_cytosol.position = {641.61, 932.69}
+  Dephosphorylation_of_BMAL1_in_cytosol.BCP_0.rxn_end = {647.25, 938.1}
+  Dephosphorylation_of_BMAL1_in_cytosol.BCP_0.species_end = {668.65, 990.09}
+  Dephosphorylation_of_BMAL1_in_cytosol.BCP_0.b1 = {658.51, 948.91}
+  Dephosphorylation_of_BMAL1_in_cytosol.BCP_0.b2 = {666.4, 972.2}
+  Dephosphorylation_of_BMAL1_in_cytosol.BC_0.rxn_end = {635.98, 927.29}
+  Dephosphorylation_of_BMAL1_in_cytosol.BC_0.species_end = {583.69, 906.55}
+  Dephosphorylation_of_BMAL1_in_cytosol.BC_0.b1 = {624.72, 916.48}
+  Dephosphorylation_of_BMAL1_in_cytosol.BC_0.b2 = {601.39, 908.81}
+  Reversible_reation_between_BMAL1_in_cytosol_and_nucleus.position = {561.24, 797.61}
+  Reversible_reation_between_BMAL1_in_cytosol_and_nucleus.BC_0.rxn_end = {562.78, 808.22}
+  Reversible_reation_between_BMAL1_in_cytosol_and_nucleus.BC_0.species_end = {562.06, 881.99}
+  Reversible_reation_between_BMAL1_in_cytosol_and_nucleus.BC_0.b1 = {565.85, 829.44}
+  Reversible_reation_between_BMAL1_in_cytosol_and_nucleus.BC_0.b2 = {564.72, 861.02}
+  Reversible_reation_between_BMAL1_in_cytosol_and_nucleus.BN_0.rxn_end = {559.71, 787}
+  Reversible_reation_between_BMAL1_in_cytosol_and_nucleus.BN_0.species_end = {536.54, 707.78}
+  Reversible_reation_between_BMAL1_in_cytosol_and_nucleus.BN_0.b1 = {556.64, 765.78}
+  Reversible_reation_between_BMAL1_in_cytosol_and_nucleus.BN_0.b2 = {545.82, 731.48}
+  Phosphorylation_of_BMAL1_in_nucleus.position = {436.62, 714.07}
+  Phosphorylation_of_BMAL1_in_nucleus.BN_0.rxn_end = {445.42, 713.58}
+  Phosphorylation_of_BMAL1_in_nucleus.BN_0.species_end = {506.96, 696.96}
+  Phosphorylation_of_BMAL1_in_nucleus.BN_0.b1 = {463.03, 712.59}
+  Phosphorylation_of_BMAL1_in_nucleus.BN_0.b2 = {489.4, 704.53}
+  Phosphorylation_of_BMAL1_in_nucleus.BNP_0.rxn_end = {427.82, 714.57}
+  Phosphorylation_of_BMAL1_in_nucleus.BNP_0.species_end = {384.94, 707.98}
+  Phosphorylation_of_BMAL1_in_nucleus.BNP_0.b1 = {410.22, 715.56}
+  Phosphorylation_of_BMAL1_in_nucleus.BNP_0.b2 = {393.18, 712.01}
+  Dephosphorylation_of_BMAL1_in_nucleus.position = {438.23, 663.22}
+  Dephosphorylation_of_BMAL1_in_nucleus.BNP_0.rxn_end = {429.43, 663.72}
+  Dephosphorylation_of_BMAL1_in_nucleus.BNP_0.species_end = {384.94, 680.49}
+  Dephosphorylation_of_BMAL1_in_nucleus.BNP_0.b1 = {411.82, 664.71}
+  Dephosphorylation_of_BMAL1_in_nucleus.BNP_0.b2 = {393.98, 672.85}
+  Dephosphorylation_of_BMAL1_in_nucleus.BN_0.rxn_end = {447.03, 662.73}
+  Dephosphorylation_of_BMAL1_in_nucleus.BN_0.species_end = {506.96, 679.26}
+  Dephosphorylation_of_BMAL1_in_nucleus.BN_0.b1 = {464.63, 661.74}
+  Dephosphorylation_of_BMAL1_in_nucleus.BN_0.b2 = {490.2, 670.25}
+  Reversible_reaction_between_PER_CRY_complex_and_PER_CRY_CLOCK_BMAL1_in_nuclues.position = {554.96, 578.08}
+  Reversible_reaction_between_PER_CRY_complex_and_PER_CRY_CLOCK_BMAL1_in_nuclues.PCN_0.rxn_end = {560.47, 581.52}
+  Reversible_reaction_between_PER_CRY_complex_and_PER_CRY_CLOCK_BMAL1_in_nuclues.PCN_0.species_end = {629, 522.94}
+  Reversible_reaction_between_PER_CRY_complex_and_PER_CRY_CLOCK_BMAL1_in_nuclues.PCN_0.b1 = {571.5, 588.39}
+  Reversible_reaction_between_PER_CRY_complex_and_PER_CRY_CLOCK_BMAL1_in_nuclues.PCN_0.b2 = {603.01, 557.38}
+  Reversible_reaction_between_PER_CRY_complex_and_PER_CRY_CLOCK_BMAL1_in_nuclues.BN_0.rxn_end = {560.47, 581.52}
+  Reversible_reaction_between_PER_CRY_complex_and_PER_CRY_CLOCK_BMAL1_in_nuclues.BN_0.species_end = {537.82, 669.78}
+  Reversible_reaction_between_PER_CRY_complex_and_PER_CRY_CLOCK_BMAL1_in_nuclues.BN_0.b1 = {571.5, 588.39}
+  Reversible_reaction_between_PER_CRY_complex_and_PER_CRY_CLOCK_BMAL1_in_nuclues.BN_0.b2 = {557.42, 630.8}
+  Reversible_reaction_between_PER_CRY_complex_and_PER_CRY_CLOCK_BMAL1_in_nuclues.IN_0.rxn_end = {549.45, 574.64}
+  Reversible_reaction_between_PER_CRY_complex_and_PER_CRY_CLOCK_BMAL1_in_nuclues.IN_0.species_end = {500.56, 542.8}
+  Reversible_reaction_between_PER_CRY_complex_and_PER_CRY_CLOCK_BMAL1_in_nuclues.IN_0.b1 = {538.42, 567.77}
+  Reversible_reaction_between_PER_CRY_complex_and_PER_CRY_CLOCK_BMAL1_in_nuclues.IN_0.b2 = {516.73, 553.57}
+  Degradation_of_the_PER_CRY_CLOCK_BMAL1_complex.position = {373.52, 524.45}
+  Degradation_of_the_PER_CRY_CLOCK_BMAL1_complex.IN_0.rxn_end = {382.79, 523.79}
+  Degradation_of_the_PER_CRY_CLOCK_BMAL1_complex.IN_0.species_end = {454.56, 526.07}
+  Degradation_of_the_PER_CRY_CLOCK_BMAL1_complex.IN_0.b1 = {401.33, 522.47}
+  Degradation_of_the_PER_CRY_CLOCK_BMAL1_complex.IN_0.b2 = {432.58, 523.94}
+  Degradation_of_the_PER_CRY_CLOCK_BMAL1_complex.--.rxn_end = {364.25, 525.11}
+  Degradation_of_the_PER_CRY_CLOCK_BMAL1_complex.--.species_end = {297.63, 539.36}
+  Degradation_of_the_PER_CRY_CLOCK_BMAL1_complex.--.b1 = {345.7, 526.43}
+  Degradation_of_the_PER_CRY_CLOCK_BMAL1_complex.--.b2 = {317.03, 533.23}
+  Degradation_of_the_PER_CRY_CLOCK_BMAL1_complex.--.position = {291.63, 540.33}
+  Degradation_of_the_PER_CRY_CLOCK_BMAL1_complex.--.size = {1, 1}
+  Degradation_of_Cry_mRNA.position = {309.31, 441.33}
+  Degradation_of_Cry_mRNA.MC_0.rxn_end = {318.12, 441.74}
+  Degradation_of_Cry_mRNA.MC_0.species_end = {380.38, 445.07}
+  Degradation_of_Cry_mRNA.MC_0.b1 = {335.73, 442.54}
+  Degradation_of_Cry_mRNA.MC_0.b2 = {362.46, 444.01}
+  Degradation_of_Cry_mRNA.--.rxn_end = {300.5, 440.93}
+  Degradation_of_Cry_mRNA.--.species_end = {232.7, 438.54}
+  Degradation_of_Cry_mRNA.--.b1 = {282.88, 440.13}
+  Degradation_of_Cry_mRNA.--.b2 = {253.39, 439.13}
+  Degradation_of_Cry_mRNA.--.position = {226.7, 437.86}
+  Degradation_of_Cry_mRNA.--.size = {1, 1}
+  Degradation_of_CRY_P_protein_in_cytosol.position = {325.94, 165.15}
+  Degradation_of_CRY_P_protein_in_cytosol.CCP_0.rxn_end = {333.91, 166.61}
+  Degradation_of_CRY_P_protein_in_cytosol.CCP_0.species_end = {379.99, 167.54}
+  Degradation_of_CRY_P_protein_in_cytosol.CCP_0.b1 = {349.85, 169.51}
+  Degradation_of_CRY_P_protein_in_cytosol.CCP_0.b2 = {368.9, 169.25}
+  Degradation_of_CRY_P_protein_in_cytosol.--.rxn_end = {317.97, 163.7}
+  Degradation_of_CRY_P_protein_in_cytosol.--.species_end = {257.12, 139.1}
+  Degradation_of_CRY_P_protein_in_cytosol.--.b1 = {302.04, 160.79}
+  Degradation_of_CRY_P_protein_in_cytosol.--.b2 = {275.59, 149.22}
+  Degradation_of_CRY_P_protein_in_cytosol.--.position = {251.12, 135.95}
+  Degradation_of_CRY_P_protein_in_cytosol.--.size = {1, 1}
+  Non_specific_degradation_of_Cry_mRNA.position = {352.25, 370.33}
+  Non_specific_degradation_of_Cry_mRNA.MC_0.rxn_end = {358.04, 376.49}
+  Non_specific_degradation_of_Cry_mRNA.MC_0.species_end = {392.24, 427.38}
+  Non_specific_degradation_of_Cry_mRNA.MC_0.b1 = {369.64, 388.81}
+  Non_specific_degradation_of_Cry_mRNA.MC_0.b2 = {383.84, 411.17}
+  Non_specific_degradation_of_Cry_mRNA.--.rxn_end = {346.45, 364.17}
+  Non_specific_degradation_of_Cry_mRNA.--.species_end = {292.94, 326.51}
+  Non_specific_degradation_of_Cry_mRNA.--.b1 = {334.86, 351.85}
+  Non_specific_degradation_of_Cry_mRNA.--.b2 = {311, 336.1}
+  Non_specific_degradation_of_Cry_mRNA.--.position = {286.94, 322.68}
+  Non_specific_degradation_of_Cry_mRNA.--.size = {1, 1}
+  Degradation_of_PER_CRY_complex_in_cytosol.position = {1011.72, 282.86}
+  Degradation_of_PER_CRY_complex_in_cytosol.PCCP_0.rxn_end = {1005.2, 287.99}
+  Degradation_of_PER_CRY_complex_in_cytosol.PCCP_0.species_end = {967.49, 319.42}
+  Degradation_of_PER_CRY_complex_in_cytosol.PCCP_0.b1 = {992.16, 298.25}
+  Degradation_of_PER_CRY_complex_in_cytosol.PCCP_0.b2 = {976.56, 311.4}
+  Degradation_of_PER_CRY_complex_in_cytosol.--.rxn_end = {1018.24, 277.73}
+  Degradation_of_PER_CRY_complex_in_cytosol.--.species_end = {1070.25, 239.74}
+  Degradation_of_PER_CRY_complex_in_cytosol.--.b1 = {1031.28, 267.47}
+  Degradation_of_PER_CRY_complex_in_cytosol.--.b2 = {1054.02, 251.04}
+  Degradation_of_PER_CRY_complex_in_cytosol.--.position = {1075.25, 235.33}
+  Degradation_of_PER_CRY_complex_in_cytosol.--.size = {1, 1}
+  Degradation_of_PER_CRY_complex_in_nucleus.position = {566.47, 389.2}
+  Degradation_of_PER_CRY_complex_in_nucleus.PCNP_0.rxn_end = {563.46, 396.33}
+  Degradation_of_PER_CRY_complex_in_nucleus.PCNP_0.species_end = {536.34, 440.5}
+  Degradation_of_PER_CRY_complex_in_nucleus.PCNP_0.b1 = {557.43, 410.61}
+  Degradation_of_PER_CRY_complex_in_nucleus.PCNP_0.b2 = {545.38, 429.12}
+  Degradation_of_PER_CRY_complex_in_nucleus.--.rxn_end = {569.49, 382.06}
+  Degradation_of_PER_CRY_complex_in_nucleus.--.species_end = {582.4, 322.29}
+  Degradation_of_PER_CRY_complex_in_nucleus.--.b1 = {575.52, 367.79}
+  Degradation_of_PER_CRY_complex_in_nucleus.--.b2 = {580.47, 341.47}
+  Degradation_of_PER_CRY_complex_in_nucleus.--.position = {582.73, 316.29}
+  Degradation_of_PER_CRY_complex_in_nucleus.--.size = {1, 1}
+  Degradation_of_Per_mRNA.position = {814.85, 650.44}
+  Degradation_of_Per_mRNA.MP_0.rxn_end = {809.58, 643.45}
+  Degradation_of_Per_mRNA.MP_0.species_end = {770.89, 597.96}
+  Degradation_of_Per_mRNA.MP_0.b1 = {799.04, 629.47}
+  Degradation_of_Per_mRNA.MP_0.b2 = {782.33, 610.22}
+  Degradation_of_Per_mRNA.--.rxn_end = {820.12, 657.43}
+  Degradation_of_Per_mRNA.--.species_end = {855.99, 713.26}
+  Degradation_of_Per_mRNA.--.b1 = {830.66, 671.41}
+  Degradation_of_Per_mRNA.--.b2 = {845.96, 695.83}
+  Degradation_of_Per_mRNA.--.position = {858.82, 718.26}
+  Degradation_of_Per_mRNA.--.size = {1, 1}
+  Degradation_of_PER_P_in_cytosol.position = {790.19, 117.33}
+  Degradation_of_PER_P_in_cytosol.PCP_0.rxn_end = {784.62, 123.7}
+  Degradation_of_PER_P_in_cytosol.PCP_0.species_end = {748.55, 163.26}
+  Degradation_of_PER_P_in_cytosol.PCP_0.b1 = {773.49, 136.44}
+  Degradation_of_PER_P_in_cytosol.PCP_0.b2 = {758.23, 153.03}
+  Degradation_of_PER_P_in_cytosol.--.rxn_end = {795.76, 110.96}
+  Degradation_of_PER_P_in_cytosol.--.species_end = {837.78, 60.4}
+  Degradation_of_PER_P_in_cytosol.--.b1 = {806.9, 98.23}
+  Degradation_of_PER_P_in_cytosol.--.b2 = {825.13, 76.13}
+  Degradation_of_PER_P_in_cytosol.--.position = {841.77, 54.4}
+  Degradation_of_PER_P_in_cytosol.--.size = {1, 1}
+  Non_specific_degradation_of_Per_mRNA.position = {840.83, 566.46}
+  Non_specific_degradation_of_Per_mRNA.MP_0.rxn_end = {832.47, 566.66}
+  Non_specific_degradation_of_Per_mRNA.MP_0.species_end = {776.91, 574.53}
+  Non_specific_degradation_of_Per_mRNA.MP_0.b1 = {815.74, 567.05}
+  Non_specific_degradation_of_Per_mRNA.MP_0.b2 = {792.15, 570.89}
+  Non_specific_degradation_of_Per_mRNA.--.rxn_end = {849.19, 566.26}
+  Non_specific_degradation_of_Per_mRNA.--.species_end = {915.66, 574.07}
+  Non_specific_degradation_of_Per_mRNA.--.b1 = {865.92, 565.86}
+  Non_specific_degradation_of_Per_mRNA.--.b2 = {894.97, 569.87}
+  Non_specific_degradation_of_Per_mRNA.--.position = {920.66, 574.48}
+  Non_specific_degradation_of_Per_mRNA.--.size = {1, 1}
+  Degradation_of_Bmal1_mRNA.position = {392.21, 990.25}
+  Degradation_of_Bmal1_mRNA.MB_0.rxn_end = {393.22, 981.8}
+  Degradation_of_Bmal1_mRNA.MB_0.species_end = {407.32, 920.47}
+  Degradation_of_Bmal1_mRNA.MB_0.b1 = {395.26, 964.9}
+  Degradation_of_Bmal1_mRNA.MB_0.b2 = {401.8, 938.46}
+  Degradation_of_Bmal1_mRNA.--.rxn_end = {391.19, 998.7}
+  Degradation_of_Bmal1_mRNA.--.species_end = {391.82, 1064.96}
+  Degradation_of_Bmal1_mRNA.--.b1 = {389.15, 1015.6}
+  Degradation_of_Bmal1_mRNA.--.b2 = {389.98, 1044.5}
+  Degradation_of_Bmal1_mRNA.--.position = {391.62, 1069.96}
+  Degradation_of_Bmal1_mRNA.--.size = {1, 1}
+  Non_specific_degradation_of_Bmal1_mRNA.position = {323.98, 919.21}
+  Non_specific_degradation_of_Bmal1_mRNA.MB_0.rxn_end = {332.19, 916.93}
+  Non_specific_degradation_of_Bmal1_mRNA.MB_0.species_end = {389.47, 905.39}
+  Non_specific_degradation_of_Bmal1_mRNA.MB_0.b1 = {348.6, 912.35}
+  Non_specific_degradation_of_Bmal1_mRNA.MB_0.b2 = {373.14, 907.72}
+  Non_specific_degradation_of_Bmal1_mRNA.--.rxn_end = {315.77, 921.5}
+  Non_specific_degradation_of_Bmal1_mRNA.--.species_end = {253.82, 944.96}
+  Non_specific_degradation_of_Bmal1_mRNA.--.b1 = {299.36, 926.08}
+  Non_specific_degradation_of_Bmal1_mRNA.--.b2 = {272.48, 936.66}
+  Non_specific_degradation_of_Bmal1_mRNA.--.position = {247.82, 946.74}
+  Non_specific_degradation_of_Bmal1_mRNA.--.size = {1, 1}
+  Degradation_of_BMAL1_P_in_cytosol.position = {756.78, 991.52}
+  Degradation_of_BMAL1_P_in_cytosol.BCP_0.rxn_end = {748.71, 993.12}
+  Degradation_of_BMAL1_P_in_cytosol.BCP_0.species_end = {704.33, 1002.4}
+  Degradation_of_BMAL1_P_in_cytosol.BCP_0.b1 = {732.58, 996.32}
+  Degradation_of_BMAL1_P_in_cytosol.BCP_0.b2 = {714.42, 1000.16}
+  Degradation_of_BMAL1_P_in_cytosol.--.rxn_end = {764.84, 989.93}
+  Degradation_of_BMAL1_P_in_cytosol.--.species_end = {829.13, 978.13}
+  Degradation_of_BMAL1_P_in_cytosol.--.b1 = {780.97, 986.73}
+  Degradation_of_BMAL1_P_in_cytosol.--.b2 = {809.09, 981.63}
+  Degradation_of_BMAL1_P_in_cytosol.--.position = {834.13, 976.64}
+  Degradation_of_BMAL1_P_in_cytosol.--.size = {1, 1}
+  Degradation_of_BMAL1_P_in_nucleus.position = {273.99, 662.86}
+  Degradation_of_BMAL1_P_in_nucleus.BNP_0.rxn_end = {281.84, 665.98}
+  Degradation_of_BMAL1_P_in_nucleus.BNP_0.species_end = {322.94, 684.13}
+  Degradation_of_BMAL1_P_in_nucleus.BNP_0.b1 = {297.54, 672.22}
+  Degradation_of_BMAL1_P_in_nucleus.BNP_0.b2 = {314.16, 679.73}
+  Degradation_of_BMAL1_P_in_nucleus.--.rxn_end = {266.13, 659.74}
+  Degradation_of_BMAL1_P_in_nucleus.--.species_end = {202.43, 638.08}
+  Degradation_of_BMAL1_P_in_nucleus.--.b1 = {250.43, 653.51}
+  Degradation_of_BMAL1_P_in_nucleus.--.b2 = {222.51, 644.23}
+  Degradation_of_BMAL1_P_in_nucleus.--.position = {196.43, 635.81}
+  Degradation_of_BMAL1_P_in_nucleus.--.size = {1, 1}
+  Non_specific_degradation_of_PER_protein_in_cytosol.position = {799.25, 415.95}
+  Non_specific_degradation_of_PER_protein_in_cytosol.PC_0.rxn_end = {791.98, 411.09}
+  Non_specific_degradation_of_PER_protein_in_cytosol.PC_0.species_end = {747.29, 378.44}
+  Non_specific_degradation_of_PER_protein_in_cytosol.PC_0.b1 = {777.45, 401.36}
+  Non_specific_degradation_of_PER_protein_in_cytosol.PC_0.b2 = {758.73, 387.47}
+  Non_specific_degradation_of_PER_protein_in_cytosol.--.rxn_end = {806.52, 420.81}
+  Non_specific_degradation_of_PER_protein_in_cytosol.--.species_end = {864.14, 455.07}
+  Non_specific_degradation_of_PER_protein_in_cytosol.--.b1 = {821.05, 430.54}
+  Non_specific_degradation_of_PER_protein_in_cytosol.--.b2 = {846.23, 445.24}
+  Non_specific_degradation_of_PER_protein_in_cytosol.--.position = {869.14, 457.71}
+  Non_specific_degradation_of_PER_protein_in_cytosol.--.size = {1, 1}
+  Non_specific_degradation_of_CRY_protein_in_cytosol.position = {572.07, 191.1}
+  Non_specific_degradation_of_CRY_protein_in_cytosol.CC_0.rxn_end = {570.2, 199.13}
+  Non_specific_degradation_of_CRY_protein_in_cytosol.CC_0.species_end = {545.55, 252.34}
+  Non_specific_degradation_of_CRY_protein_in_cytosol.CC_0.b1 = {566.47, 215.2}
+  Non_specific_degradation_of_CRY_protein_in_cytosol.CC_0.b2 = {555.07, 237.78}
+  Non_specific_degradation_of_CRY_protein_in_cytosol.--.rxn_end = {573.93, 183.07}
+  Non_specific_degradation_of_CRY_protein_in_cytosol.--.species_end = {572.7, 116.2}
+  Non_specific_degradation_of_CRY_protein_in_cytosol.--.b1 = {577.66, 167}
+  Non_specific_degradation_of_CRY_protein_in_cytosol.--.b2 = {576.12, 137.58}
+  Non_specific_degradation_of_CRY_protein_in_cytosol.--.position = {571.66, 110.2}
+  Non_specific_degradation_of_CRY_protein_in_cytosol.--.size = {1, 1}
+  Non_specific_degradation_of_PER_P_protein_in_cytosol.position = {695.45, 102.83}
+  Non_specific_degradation_of_PER_P_protein_in_cytosol.PCP_0.rxn_end = {697.99, 110.79}
+  Non_specific_degradation_of_PER_P_protein_in_cytosol.PCP_0.species_end = {721.38, 163.26}
+  Non_specific_degradation_of_PER_P_protein_in_cytosol.PCP_0.b1 = {703.08, 126.7}
+  Non_specific_degradation_of_PER_P_protein_in_cytosol.PCP_0.b2 = {713.5, 148.96}
+  Non_specific_degradation_of_PER_P_protein_in_cytosol.--.rxn_end = {692.91, 94.87}
+  Non_specific_degradation_of_PER_P_protein_in_cytosol.--.species_end = {680.81, 28.6}
+  Non_specific_degradation_of_PER_P_protein_in_cytosol.--.b1 = {687.82, 78.96}
+  Non_specific_degradation_of_PER_P_protein_in_cytosol.--.b2 = {683.05, 49.8}
+  Non_specific_degradation_of_PER_P_protein_in_cytosol.--.position = {679.54, 22.6}
+  Non_specific_degradation_of_PER_P_protein_in_cytosol.--.size = {1, 1}
+  Non_specific_degradation_of_CRY_P_protein_in_cytosol.position = {406.48, 79.65}
+  Non_specific_degradation_of_CRY_P_protein_in_cytosol.CCP_0.rxn_end = {406.76, 87.9}
+  Non_specific_degradation_of_CRY_P_protein_in_cytosol.CCP_0.species_end = {409.85, 146.51}
+  Non_specific_degradation_of_CRY_P_protein_in_cytosol.CCP_0.b1 = {407.31, 104.4}
+  Non_specific_degradation_of_CRY_P_protein_in_cytosol.CCP_0.b2 = {408.72, 129.58}
+  Non_specific_degradation_of_CRY_P_protein_in_cytosol.--.rxn_end = {406.2, 71.4}
+  Non_specific_degradation_of_CRY_P_protein_in_cytosol.--.species_end = {405.45, 6}
+  Non_specific_degradation_of_CRY_P_protein_in_cytosol.--.b1 = {405.65, 54.9}
+  Non_specific_degradation_of_CRY_P_protein_in_cytosol.--.b2 = {405.41, 26.33}
+  Non_specific_degradation_of_CRY_P_protein_in_cytosol.--.position = {404.93, 0}
+  Non_specific_degradation_of_CRY_P_protein_in_cytosol.--.size = {1, 1}
+  Non_specific_degradation_of_PER_CRY_protein_complex_in_cytosol.position = {826.3, 253.83}
+  Non_specific_degradation_of_PER_CRY_protein_complex_in_cytosol.PCC_0.rxn_end = {820.78, 260.75}
+  Non_specific_degradation_of_PER_CRY_protein_complex_in_cytosol.PCC_0.species_end = {785.2, 313.98}
+  Non_specific_degradation_of_PER_CRY_protein_complex_in_cytosol.PCC_0.b1 = {809.76, 274.6}
+  Non_specific_degradation_of_PER_CRY_protein_complex_in_cytosol.PCC_0.b2 = {794.72, 297.75}
+  Non_specific_degradation_of_PER_CRY_protein_complex_in_cytosol.--.rxn_end = {831.81, 246.91}
+  Non_specific_degradation_of_PER_CRY_protein_complex_in_cytosol.--.species_end = {878.11, 199.73}
+  Non_specific_degradation_of_PER_CRY_protein_complex_in_cytosol.--.b1 = {842.84, 233.06}
+  Non_specific_degradation_of_PER_CRY_protein_complex_in_cytosol.--.b2 = {863.23, 212.94}
+  Non_specific_degradation_of_PER_CRY_protein_complex_in_cytosol.--.position = {883.11, 194.03}
+  Non_specific_degradation_of_PER_CRY_protein_complex_in_cytosol.--.size = {1, 1}
+  Non_specific_degradation_of_PER_CRY_protein_complex_in_nucleus.position = {698.86, 561.85}
+  Non_specific_degradation_of_PER_CRY_protein_complex_in_nucleus.PCN_0.rxn_end = {694.55, 555.08}
+  Non_specific_degradation_of_PER_CRY_protein_complex_in_nucleus.PCN_0.species_end = {666.02, 522.94}
+  Non_specific_degradation_of_PER_CRY_protein_complex_in_nucleus.PCN_0.b1 = {685.92, 541.53}
+  Non_specific_degradation_of_PER_CRY_protein_complex_in_nucleus.PCN_0.b2 = {673.81, 528.85}
+  Non_specific_degradation_of_PER_CRY_protein_complex_in_nucleus.--.rxn_end = {703.18, 568.63}
+  Non_specific_degradation_of_PER_CRY_protein_complex_in_nucleus.--.species_end = {730.04, 633.9}
+  Non_specific_degradation_of_PER_CRY_protein_complex_in_nucleus.--.b1 = {711.81, 582.17}
+  Non_specific_degradation_of_PER_CRY_protein_complex_in_nucleus.--.b2 = {723.08, 611.43}
+  Non_specific_degradation_of_PER_CRY_protein_complex_in_nucleus.--.position = {731.48, 638.9}
+  Non_specific_degradation_of_PER_CRY_protein_complex_in_nucleus.--.size = {1, 1}
+  Non_specific_degradation_of_PER_CRY_P_protein_complex_in_cytosol.position = {1008.85, 395.5}
+  Non_specific_degradation_of_PER_CRY_P_protein_complex_in_cytosol.PCCP_0.rxn_end = {1002.54, 390.25}
+  Non_specific_degradation_of_PER_CRY_P_protein_complex_in_cytosol.PCCP_0.species_end = {965.83, 357.42}
+  Non_specific_degradation_of_PER_CRY_P_protein_complex_in_cytosol.PCCP_0.b1 = {989.91, 379.74}
+  Non_specific_degradation_of_PER_CRY_P_protein_complex_in_cytosol.PCCP_0.b2 = {974.71, 365.95}
+  Non_specific_degradation_of_PER_CRY_P_protein_complex_in_cytosol.--.rxn_end = {1015.17, 400.75}
+  Non_specific_degradation_of_PER_CRY_P_protein_complex_in_cytosol.--.species_end = {1066.15, 439.42}
+  Non_specific_degradation_of_PER_CRY_P_protein_complex_in_cytosol.--.b1 = {1027.8, 411.26}
+  Non_specific_degradation_of_PER_CRY_P_protein_complex_in_cytosol.--.b2 = {1050.13, 427.97}
+  Non_specific_degradation_of_PER_CRY_P_protein_complex_in_cytosol.--.position = {1071.15, 442.96}
+  Non_specific_degradation_of_PER_CRY_P_protein_complex_in_cytosol.--.size = {1, 1}
+  Non_specific_degradation_of_PER_CRY_P_protein_complex_in_nucleus.position = {435.88, 505.17}
+  Non_specific_degradation_of_PER_CRY_P_protein_complex_in_nucleus.PCNP_0.rxn_end = {442.66, 499.18}
+  Non_specific_degradation_of_PER_CRY_P_protein_complex_in_nucleus.PCNP_0.species_end = {483.93, 475.7}
+  Non_specific_degradation_of_PER_CRY_P_protein_complex_in_nucleus.PCNP_0.b1 = {456.22, 487.21}
+  Non_specific_degradation_of_PER_CRY_P_protein_complex_in_nucleus.PCNP_0.b2 = {473.46, 478.46}
+  Non_specific_degradation_of_PER_CRY_P_protein_complex_in_nucleus.--.rxn_end = {429.09, 511.16}
+  Non_specific_degradation_of_PER_CRY_P_protein_complex_in_nucleus.--.species_end = {390.09, 573.75}
+  Non_specific_degradation_of_PER_CRY_P_protein_complex_in_nucleus.--.b1 = {415.53, 523.13}
+  Non_specific_degradation_of_PER_CRY_P_protein_complex_in_nucleus.--.b2 = {399.42, 551.43}
+  Non_specific_degradation_of_PER_CRY_P_protein_complex_in_nucleus.--.position = {386.82, 578.75}
+  Non_specific_degradation_of_PER_CRY_P_protein_complex_in_nucleus.--.size = {1, 1}
+  Non_specific_degradation_of_BMAL1_protein_in_cytosol.position = {475.99, 886.7}
+  Non_specific_degradation_of_BMAL1_protein_in_cytosol.BC_0.rxn_end = {484.11, 889.51}
+  Non_specific_degradation_of_BMAL1_protein_in_cytosol.BC_0.species_end = {537.69, 898.75}
+  Non_specific_degradation_of_BMAL1_protein_in_cytosol.BC_0.b1 = {500.36, 895.13}
+  Non_specific_degradation_of_BMAL1_protein_in_cytosol.BC_0.b2 = {523.09, 898.35}
+  Non_specific_degradation_of_BMAL1_protein_in_cytosol.--.rxn_end = {467.87, 883.89}
+  Non_specific_degradation_of_BMAL1_protein_in_cytosol.--.species_end = {403.71, 848.25}
+  Non_specific_degradation_of_BMAL1_protein_in_cytosol.--.b1 = {451.62, 878.27}
+  Non_specific_degradation_of_BMAL1_protein_in_cytosol.--.b2 = {423.6, 861.86}
+  Non_specific_degradation_of_BMAL1_protein_in_cytosol.--.position = {397.71, 844.3}
+  Non_specific_degradation_of_BMAL1_protein_in_cytosol.--.size = {1, 1}
+  Non_specific_degradation_of_BMAL1_P_protein_in_cytosol.position = {672.26, 1093.74}
+  Non_specific_degradation_of_BMAL1_P_protein_in_cytosol.BCP_0.rxn_end = {671.11, 1085.75}
+  Non_specific_degradation_of_BMAL1_P_protein_in_cytosol.BCP_0.species_end = {671.91, 1028.09}
+  Non_specific_degradation_of_BMAL1_P_protein_in_cytosol.BCP_0.b1 = {668.8, 1069.77}
+  Non_specific_degradation_of_BMAL1_P_protein_in_cytosol.BCP_0.b2 = {669.78, 1044.93}
+  Non_specific_degradation_of_BMAL1_P_protein_in_cytosol.--.rxn_end = {673.42, 1101.74}
+  Non_specific_degradation_of_BMAL1_P_protein_in_cytosol.--.species_end = {694.2, 1163.45}
+  Non_specific_degradation_of_BMAL1_P_protein_in_cytosol.--.b1 = {675.73, 1117.72}
+  Non_specific_degradation_of_BMAL1_P_protein_in_cytosol.--.b2 = {685.54, 1144.58}
+  Non_specific_degradation_of_BMAL1_P_protein_in_cytosol.--.position = {695.92, 1168.45}
+  Non_specific_degradation_of_BMAL1_P_protein_in_cytosol.--.size = {1, 1}
+  Non_specific_degradation_of_BMAL1_protein_in_nucleus.position = {577.91, 639.44}
+  Non_specific_degradation_of_BMAL1_protein_in_nucleus.BN_0.rxn_end = {573.17, 644.82}
+  Non_specific_degradation_of_BMAL1_protein_in_nucleus.BN_0.species_end = {549.28, 669.78}
+  Non_specific_degradation_of_BMAL1_protein_in_nucleus.BN_0.b1 = {563.69, 655.6}
+  Non_specific_degradation_of_BMAL1_protein_in_nucleus.BN_0.b2 = {554.11, 665.39}
+  Non_specific_degradation_of_BMAL1_protein_in_nucleus.--.rxn_end = {582.65, 634.05}
+  Non_specific_degradation_of_BMAL1_protein_in_nucleus.--.species_end = {620.5, 586.49}
+  Non_specific_degradation_of_BMAL1_protein_in_nucleus.--.b1 = {592.12, 623.27}
+  Non_specific_degradation_of_BMAL1_protein_in_nucleus.--.b2 = {608.68, 602.19}
+  Non_specific_degradation_of_BMAL1_protein_in_nucleus.--.position = {624.24, 580.49}
+  Non_specific_degradation_of_BMAL1_protein_in_nucleus.--.size = {1, 1}
+  Non_specific_degradation_of_BMAL1_P_protein_in_nucleus.position = {283.5, 750.22}
+  Non_specific_degradation_of_BMAL1_P_protein_in_nucleus.BNP_0.rxn_end = {290.75, 746.12}
+  Non_specific_degradation_of_BMAL1_P_protein_in_nucleus.BNP_0.species_end = {330.36, 717.68}
+  Non_specific_degradation_of_BMAL1_P_protein_in_nucleus.BNP_0.b1 = {305.25, 737.91}
+  Non_specific_degradation_of_BMAL1_P_protein_in_nucleus.BNP_0.b2 = {321.43, 725.75}
+  Non_specific_degradation_of_BMAL1_P_protein_in_nucleus.--.rxn_end = {276.25, 754.33}
+  Non_specific_degradation_of_BMAL1_P_protein_in_nucleus.--.species_end = {214.45, 778.85}
+  Non_specific_degradation_of_BMAL1_P_protein_in_nucleus.--.b1 = {261.75, 762.53}
+  Non_specific_degradation_of_BMAL1_P_protein_in_nucleus.--.b2 = {234.48, 772.74}
+  Non_specific_degradation_of_BMAL1_P_protein_in_nucleus.--.position = {208.45, 780.24}
+  Non_specific_degradation_of_BMAL1_P_protein_in_nucleus.--.size = {1, 1}
+  Non_specific_degradation_of_PER_CRY_BMAL1_CLOCK_complex_in_nucleus.position = {466.05, 440.79}
+  Non_specific_degradation_of_PER_CRY_BMAL1_CLOCK_complex_in_nucleus.IN_0.rxn_end = {465.11, 448.62}
+  Non_specific_degradation_of_PER_CRY_BMAL1_CLOCK_complex_in_nucleus.IN_0.species_end = {473.26, 508.63}
+  Non_specific_degradation_of_PER_CRY_BMAL1_CLOCK_complex_in_nucleus.IN_0.b1 = {463.24, 464.27}
+  Non_specific_degradation_of_PER_CRY_BMAL1_CLOCK_complex_in_nucleus.IN_0.b2 = {467.78, 490.36}
+  Non_specific_degradation_of_PER_CRY_BMAL1_CLOCK_complex_in_nucleus.--.rxn_end = {466.99, 432.96}
+  Non_specific_degradation_of_PER_CRY_BMAL1_CLOCK_complex_in_nucleus.--.species_end = {493.06, 376.61}
+  Non_specific_degradation_of_PER_CRY_BMAL1_CLOCK_complex_in_nucleus.--.b1 = {468.87, 417.31}
+  Non_specific_degradation_of_PER_CRY_BMAL1_CLOCK_complex_in_nucleus.--.b2 = {481.43, 393.05}
+  Non_specific_degradation_of_PER_CRY_BMAL1_CLOCK_complex_in_nucleus.--.position = {495.83, 370.61}
+  Non_specific_degradation_of_PER_CRY_BMAL1_CLOCK_complex_in_nucleus.--.size = {1, 1}
+
+  // SBO terms:
+  n.sboTerm = 190
+  KAP.sboTerm = 363
+  KmP.sboTerm = 27
+  KAC.sboTerm = 363
+  KmC.sboTerm = 27
+  KIB.sboTerm = 261
+  m.sboTerm = 190
+  KmB.sboTerm = 27
+  Kdp.sboTerm = 27
+  Kp.sboTerm = 27
+  Kd.sboTerm = 27
+  Vphos.sboTerm = 612
+  Reversible_reaction__between_PER_CRY_complex_in_cytosol_and_nucleus.sboTerm = 650
+  Phosphorylation_of_PER_CRY_complex_in_nucleus.sboTerm = 216
+  Phosphorylation_of_PER_CRY_complex_in_cytosol.sboTerm = 216
+  Reversible_reaction_between_PER__CRY_and_PER_CRY_complex_in_cytosol.sboTerm = 650
+  Phosphorylation_of_CRY_in_cytosol.sboTerm = 216
+  Phosphorylation_of_PER_in_cytosol.sboTerm = 216
+  Phosphorylation_of_BMAL1_in_cytosol.sboTerm = 216
+  Reversible_reation_between_BMAL1_in_cytosol_and_nucleus.sboTerm = 650
+  Phosphorylation_of_BMAL1_in_nucleus.sboTerm = 216
+  Reversible_reaction_between_PER_CRY_complex_and_PER_CRY_CLOCK_BMAL1_in_nuclues.sboTerm = 650
+
+  // CV terms:
+  Compartment identity "http://identifiers.org/ncit/C12958"
+  Compartment description "http://identifiers.org/pubmed/15363675"
+  MP_0 encoder "http://identifiers.org/ensembl/ENST00000317276"
+  MP_0 description "http://identifiers.org/pubmed/24005054"
+  MC_0 encoder "http://identifiers.org/ensembl/ENST00000008527"
+  MB_0 encoder "http://identifiers.org/ensembl/ENST00000403290"
+  PC_0 identity "http://identifiers.org/uniprot/O15534"
+  CC_0 identity "http://identifiers.org/uniprot/Q16526"
+  PCP_0 biological_system "http://identifiers.org/uniprot/O15534"
+  PCP_0 property "http://identifiers.org/pato/PATO:0002220"
+  CCP_0 biological_system "http://identifiers.org/uniprot/Q16526"
+  CCP_0 property "http://identifiers.org/pato/PATO:0002220"
+  PCC_0 instance "http://identifiers.org/go/GO:1990512",
+                 "http://identifiers.org/uniprot/Q16526"
+  PCC_0 instance "http://identifiers.org/uniprot/O15534"
+  PCC_0 identity "http://identifiers.org/go/GO:1990512"
+  PCN_0 instance "http://identifiers.org/go/GO:1990512",
+                 "http://identifiers.org/uniprot/Q16526"
+  PCN_0 instance "http://identifiers.org/uniprot/O15534"
+  PCN_0 identity "http://identifiers.org/go/GO:1990512"
+  PCNP_0 instance "http://identifiers.org/go/GO:1990512",
+                  "http://identifiers.org/pato/PATO:0002220",
+                  "http://identifiers.org/uniprot/Q16526"
+  PCNP_0 instance "http://identifiers.org/uniprot/O15534"
+  PCNP_0 biological_system "http://identifiers.org/go/GO:1990512"
+  PCNP_0 property "http://identifiers.org/pato/PATO:0002220"
+  PCCP_0 instance "http://identifiers.org/go/GO:1990512",
+                  "http://identifiers.org/pato/PATO:0002220",
+                  "http://identifiers.org/uniprot/O15534"
+  PCCP_0 instance "http://identifiers.org/uniprot/Q16526"
+  PCCP_0 biological_system "http://identifiers.org/go/GO:1990512"
+  PCCP_0 property "http://identifiers.org/pato/PATO:0002220"
+  BC_0 identity "http://identifiers.org/uniprot/O00327"
+  BCP_0 biological_system "http://identifiers.org/uniprot/O00327"
+  BCP_0 property "http://identifiers.org/pato/PATO:0002220"
+  BN_0 identity "http://identifiers.org/uniprot/O00327"
+  BNP_0 biological_system "http://identifiers.org/uniprot/O00327"
+  BNP_0 property "http://identifiers.org/pato/PATO:0002220"
+  IN_0 part "http://identifiers.org/go/GO:1990512"
+  IN_0 part "http://identifiers.org/go/GO:1990513"
+  BTot identity "http://identifiers.org/ncit/C25697"
+  BN identity "http://identifiers.org/uniprot/O00327"
+  BC identity "http://identifiers.org/uniprot/O00327"
+  CTot identity "http://identifiers.org/ncit/C25697"
+  CC identity "http://identifiers.org/uniprot/Q16526"
+  CCP biological_system "http://identifiers.org/uniprot/Q16526"
+  CCP property "http://identifiers.org/pato/PATO:0002220"
+  PTot identity "http://identifiers.org/ncit/C25697"
+  PC identity "http://identifiers.org/uniprot/O15534"
+  PCCP instance "http://identifiers.org/go/GO:1990512",
+                "http://identifiers.org/pato/PATO:0002220",
+                "http://identifiers.org/uniprot/O15534"
+  PCCP instance "http://identifiers.org/uniprot/Q16526"
+  PCCP biological_system "http://identifiers.org/go/GO:1990512"
+  PCCP property "http://identifiers.org/pato/PATO:0002220"
+  PCC instance "http://identifiers.org/go/GO:1990512",
+               "http://identifiers.org/uniprot/O15534"
+  PCC instance "http://identifiers.org/uniprot/Q16526"
+  PCC identity "http://identifiers.org/go/GO:1990512"
+  PCNP instance "http://identifiers.org/go/GO:1990512",
+                "http://identifiers.org/pato/PATO:0002220",
+                "http://identifiers.org/uniprot/O15534"
+  PCNP instance "http://identifiers.org/uniprot/Q16526"
+  PCNP biological_system "http://identifiers.org/go/GO:1990512"
+  PCNP property "http://identifiers.org/pato/PATO:0002220"
+  PCN instance "http://identifiers.org/go/GO:1990512",
+               "http://identifiers.org/uniprot/O15534"
+  PCN instance "http://identifiers.org/uniprot/Q16526"
+  PCN identity "http://identifiers.org/go/GO:1990512"
+  PCP biological_system "http://identifiers.org/uniprot/O15534"
+  PCP property "http://identifiers.org/pato/PATO:0002220"
+  MP encoder "http://identifiers.org/ensembl/ENST00000317276"
+  vsP identity "http://identifiers.org/ncit/C47822"
+  n identity "http://identifiers.org/sbo/SBO:0000190"
+  KAP identity "http://identifiers.org/sbo/SBO:0000363"
+  vmP identity "http://identifiers.org/ncit/C47822"
+  KmP identity "http://identifiers.org/sbo/SBO:0000027"
+  kdmp identity "http://identifiers.org/ncit/C94967"
+  vstot identity "http://identifiers.org/ncit/C47822"
+  MC encoder "http://identifiers.org/ensembl/ENST00000008527"
+  vsC identity "http://identifiers.org/ncit/C47822"
+  KAC identity "http://identifiers.org/sbo/SBO:0000363"
+  vmC identity "http://identifiers.org/ncit/C47822"
+  KmC identity "http://identifiers.org/sbo/SBO:0000027"
+  kdmc identity "http://identifiers.org/ncit/C94967"
+  MB encoder "http://identifiers.org/ensembl/ENST00000403290"
+  vsB identity "http://identifiers.org/ncit/C47822"
+  KIB identity "http://identifiers.org/sbo/SBO:0000261"
+  m identity "http://identifiers.org/sbo/SBO:0000190"
+  vmB identity "http://identifiers.org/ncit/C47822"
+  KmB identity "http://identifiers.org/sbo/SBO:0000027"
+  kdmb identity "http://identifiers.org/ncit/C94967"
+  ksP identity "http://identifiers.org/ncit/C94967"
+  V2P identity "http://identifiers.org/ncit/C47822"
+  Kdp identity "http://identifiers.org/sbo/SBO:0000027"
+  k4 identity "http://identifiers.org/ncit/C94967"
+  V1P identity "http://identifiers.org/ncit/C47822"
+  Kp identity "http://identifiers.org/sbo/SBO:0000027"
+  k3 identity "http://identifiers.org/ncit/C94967"
+  kdn identity "http://identifiers.org/ncit/C94967"
+  ksC identity "http://identifiers.org/ncit/C94967"
+  V2C identity "http://identifiers.org/ncit/C47822"
+  V1C identity "http://identifiers.org/ncit/C47822"
+  kdnc identity "http://identifiers.org/ncit/C94967"
+  vdPC identity "http://identifiers.org/ncit/C47822"
+  Kd identity "http://identifiers.org/sbo/SBO:0000027"
+  vdCC identity "http://identifiers.org/ncit/C47822"
+  V2PC identity "http://identifiers.org/ncit/C47822"
+  k2 identity "http://identifiers.org/ncit/C94967"
+  V1PC identity "http://identifiers.org/ncit/C47822"
+  k1 identity "http://identifiers.org/ncit/C94967"
+  V4PC identity "http://identifiers.org/ncit/C47822"
+  k8 identity "http://identifiers.org/ncit/C94967"
+  IN part "http://identifiers.org/go/GO:1990512"
+  IN part "http://identifiers.org/go/GO:1990513"
+  V3PC identity "http://identifiers.org/ncit/C47822"
+  k7 identity "http://identifiers.org/ncit/C94967"
+  vdPCC identity "http://identifiers.org/ncit/C47822"
+  vdPCN identity "http://identifiers.org/ncit/C47822"
+  V2B identity "http://identifiers.org/ncit/C47822"
+  BCP biological_system "http://identifiers.org/uniprot/O00327"
+  BCP property "http://identifiers.org/pato/PATO:0002220"
+  k6 identity "http://identifiers.org/ncit/C94967"
+  ksB identity "http://identifiers.org/ncit/C94967"
+  V1B identity "http://identifiers.org/ncit/C47822"
+  k5 identity "http://identifiers.org/ncit/C94967"
+  vdBC identity "http://identifiers.org/ncit/C47822"
+  V4B identity "http://identifiers.org/ncit/C47822"
+  BNP biological_system "http://identifiers.org/uniprot/O00327"
+  BNP property "http://identifiers.org/pato/PATO:0002220"
+  V3B identity "http://identifiers.org/ncit/C47822"
+  vdBN identity "http://identifiers.org/ncit/C47822"
+  vdIN identity "http://identifiers.org/ncit/C47822"
+  kstot identity "http://identifiers.org/ncit/C94967"
+  Vphos identity "http://identifiers.org/sbo/SBO:0000612"
+  Reversible_reaction__between_PER_CRY_complex_in_cytosol_and_nucleus identity "http://identifiers.org/sbo/SBO:0000650"
+  Phosphorylation_of_PER_CRY_complex_in_nucleus identity "http://identifiers.org/sbo/SBO:0000216"
+  Phosphorylation_of_PER_CRY_complex_in_cytosol identity "http://identifiers.org/sbo/SBO:0000216"
+  Dephosphorylation_of_PER_CRY_complex_in_cytosol identity "http://identifiers.org/ncit/C20612"
+  Reversible_reaction_between_PER__CRY_and_PER_CRY_complex_in_cytosol identity "http://identifiers.org/sbo/SBO:0000650"
+  Phosphorylation_of_CRY_in_cytosol identity "http://identifiers.org/sbo/SBO:0000216"
+  Dephosphorylation_of_CRY_in_cytosol identity "http://identifiers.org/ncit/C20612"
+  Translation_of_Cry_mRNA_to_CRY_protein_in_cytosol identity "http://identifiers.org/ncit/C80450"
+  Transcription_of_Cry_gene_to_Cry_mRNA identity "http://identifiers.org/ncit/C17208"
+  Transcription_of_Per_gene_to_Per_mRNA identity "http://identifiers.org/ncit/C17208"
+  Translation_of_Per_mRNA_to_PER_protein identity "http://identifiers.org/ncit/C80450"
+  Phosphorylation_of_PER_in_cytosol identity "http://identifiers.org/sbo/SBO:0000216"
+  Dephosphorylation_of_PER_in_cytosol identity "http://identifiers.org/ncit/C20612"
+  Transcription_of_Bmal1_gene_to_Bmal1_mRNA identity "http://identifiers.org/ncit/C17208"
+  Translation_of_Bmal1_mRNA_to_BMAL1_protein identity "http://identifiers.org/ncit/C80450"
+  Phosphorylation_of_BMAL1_in_cytosol identity "http://identifiers.org/sbo/SBO:0000216"
+  Dephosphorylation_of_BMAL1_in_cytosol identity "http://identifiers.org/ncit/C20612"
+  Reversible_reation_between_BMAL1_in_cytosol_and_nucleus identity "http://identifiers.org/sbo/SBO:0000650"
+  Phosphorylation_of_BMAL1_in_nucleus identity "http://identifiers.org/sbo/SBO:0000216"
+  Dephosphorylation_of_BMAL1_in_nucleus identity "http://identifiers.org/ncit/C20612"
+  Reversible_reaction_between_PER_CRY_complex_and_PER_CRY_CLOCK_BMAL1_in_nuclues identity "http://identifiers.org/sbo/SBO:0000650"
+  Degradation_of_the_PER_CRY_CLOCK_BMAL1_complex identity "http://identifiers.org/ncit/C61559"
+  Degradation_of_Cry_mRNA identity "http://identifiers.org/ncit/C61559"
+  Degradation_of_CRY_P_protein_in_cytosol identity "http://identifiers.org/ncit/C61559"
+  Non_specific_degradation_of_Cry_mRNA identity "http://identifiers.org/ncit/C61559"
+  Degradation_of_PER_CRY_complex_in_cytosol identity "http://identifiers.org/ncit/C61559"
+  Degradation_of_PER_CRY_complex_in_nucleus identity "http://identifiers.org/ncit/C61559"
+  Degradation_of_Per_mRNA identity "http://identifiers.org/ncit/C61559"
+  Degradation_of_PER_P_in_cytosol identity "http://identifiers.org/ncit/C61559"
+  Non_specific_degradation_of_Per_mRNA identity "http://identifiers.org/ncit/C61559"
+  Degradation_of_Bmal1_mRNA identity "http://identifiers.org/ncit/C61559"
+  Non_specific_degradation_of_Bmal1_mRNA identity "http://identifiers.org/ncit/C61559"
+  Degradation_of_BMAL1_P_in_cytosol identity "http://identifiers.org/ncit/C61559"
+  Degradation_of_BMAL1_P_in_nucleus identity "http://identifiers.org/ncit/C61559"
+  Non_specific_degradation_of_PER_protein_in_cytosol identity "http://identifiers.org/ncit/C61559"
+  Non_specific_degradation_of_CRY_protein_in_cytosol identity "http://identifiers.org/ncit/C61559"
+  Non_specific_degradation_of_PER_P_protein_in_cytosol identity "http://identifiers.org/ncit/C61559"
+  Non_specific_degradation_of_CRY_P_protein_in_cytosol identity "http://identifiers.org/ncit/C61559"
+  Non_specific_degradation_of_PER_CRY_protein_complex_in_cytosol identity "http://identifiers.org/ncit/C61559"
+  Non_specific_degradation_of_PER_CRY_protein_complex_in_nucleus identity "http://identifiers.org/ncit/C61559"
+  Non_specific_degradation_of_PER_CRY_P_protein_complex_in_cytosol identity "http://identifiers.org/ncit/C61559"
+  Non_specific_degradation_of_PER_CRY_P_protein_complex_in_nucleus identity "http://identifiers.org/ncit/C61559"
+  Non_specific_degradation_of_BMAL1_protein_in_cytosol identity "http://identifiers.org/ncit/C61559"
+  Non_specific_degradation_of_BMAL1_P_protein_in_cytosol identity "http://identifiers.org/ncit/C61559"
+  Non_specific_degradation_of_BMAL1_protein_in_nucleus identity "http://identifiers.org/ncit/C61559"
+  Non_specific_degradation_of_BMAL1_P_protein_in_nucleus identity "http://identifiers.org/ncit/C61559"
+  Non_specific_degradation_of_PER_CRY_BMAL1_CLOCK_complex_in_nucleus identity "http://identifiers.org/ncit/C61559"
+
+  model origin "http://identifiers.org/biomodels.db/MODEL0478895291",
+               "http://identifiers.org/biomodels.db/MODEL0478895291",
+               "http://identifiers.org/go/GO:0043153",
+               "http://identifiers.org/taxonomy/9606",
+               "http://identifiers.org/biomodels.db/BIOMD0000000078"
+  model origin "http://identifiers.org/biomodels.db/BIOMD0000000074"
+  model origin "http://identifiers.org/biomodels.db/BIOMD0000000073"
+  model origin "http://identifiers.org/biomodels.db/BIOMD0000000083"
+  model identity "http://identifiers.org/biomodels.db/MODEL0478895291"
+  model biological_system "http://identifiers.org/go/GO:0043153"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model description "http://identifiers.org/biomodels.db/BIOMD0000000078",
+                    "http://identifiers.org/biomodels.db/BIOMD0000000074",
+                    "http://identifiers.org/biomodels.db/BIOMD0000000073",
+                    "http://identifiers.org/biomodels.db/BIOMD0000000083",
+                    "http://identifiers.org/pubmed/15363675"
+
+  // Notes:
+  model notes ```
+This a model from the article: 
+**Modeling the mammalian circadian clock: sensitivity analysis and multiplicity
+of oscillatory mechanisms.** 
+Leloup JC, Goldbeter A. *J Theor Biol.* 2004 Oct 21;230(4):541-62.
+[15363675](http://www.ncbi.nlm.nih.gov/pubmed/15363675) , 
+**Abstract:** 
+We extend the study of a computational model recently proposed for the
+mammalian circadian clock (Proc. Natl Acad. Sci. USA 100 (2003) 7051). The model,
+based on the intertwined positive and negative regulatory loops involving the Per,
+Cry, Bmal1, and Clock genes, can give rise to sustained circadian oscillations in
+conditions of continuous darkness. These limit cycle oscillations correspond to circadian
+rhythms autonomously generated by suprachiasmatic nuclei and by some peripheral tissues.
+By using different sets of parameter values producing circadian oscillations, we
+compare the effect of the various parameters and show that both the occurrence and
+the period of the oscillations are generally most sensitive to parameters related
+to synthesis or degradation of Bmal1 mRNA and BMAL1 protein. The mechanism of circadian
+oscillations relies on the formation of an inactive complex between PER and CRY and
+the activators CLOCK and BMAL1 that enhance Per and Cry expression. Bifurcation diagrams
+and computer simulations nevertheless indicate the possible existence of a second
+source of oscillatory behavior. Thus, sustained oscillations might arise from the
+sole negative autoregulation of Bmal1 expression. This second oscillatory mechanism
+may not be functional in physiological conditions, and its period need not necessarily
+be circadian. When incorporating the light-induced expression of the Per gene, the
+model accounts for entrainment of the oscillations by light-dark (LD) cycles. Long-term
+suppression of circadian oscillations by a single light pulse can occur in the model
+when a stable steady state coexists with a stable limit cycle. The phase of the oscillations
+upon entrainment in LD critically depends on the parameters that govern the level
+of CRY protein. Small changes in the parameters governing CRY levels can shift the
+peak in Per mRNA from the L to the D phase, or can prevent entrainment. The results
+are discussed in relation to physiological disorders of the sleep-wake cycle linked
+to perturbations of the human circadian clock, such as the familial advanced sleep
+phase syndrome or the non-24h sleep-wake syndrome. 
+
+This model was taken from the [CellML repository](http://www.cellml.org/models) and automatically converted to SBML. 
+The original model was: [ **Leloup JC, Goldbeter A. (2004) -
+version02** ](http://www.cellml.org/models/leloup_goldbeter_2004_version02) 
+The original CellML model was created by: 
+**Lloyd, Catherine, May** 
+c.lloyd@aukland.ac.nz 
+The University of Auckland 
+The Bioengineering Institute 
+
+
+This model originates from BioModels Database: A Database of Annotated Published
+Models (http://www.ebi.ac.uk/biomodels/). It is copyright (c) 2005-2011 The BioModels.net
+Team. 
+To the extent possible under law, all copyright and related or neighbouring
+rights to this encoded model have been dedicated to the public domain worldwide.
+Please refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Creative Commons CC0") for more information. 
+
+In summary, you are entitled to use this encoded model in absolutely any manner you
+deem suitable, verbatim, or with modification, alone or embedded it in a larger context,
+redistribute it, commercially or not, in a restricted way or not.. 
+
+To cite BioModels Database, please use: [Li C, Donizelli M, Rodriguez N, Dharuri H, Endler L, Chelliah V, Li L, He E, Henry A, Stefan MI, Snoep JL, Hucka M, Le Novère N, Laibe C (2010) BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models. BMC Syst Biol., 4:92.](http://www.ncbi.nlm.nih.gov/pubmed/20587024)
+```
+  Compartment notes "This compartment describes Circadian Rhythms occuring at 24.2 hours."
+  k3 notes "Rate constant for the formation of the PER–CRY complex"
+  k2 notes "Rate constant for exit of the PER–CRY complex from the nucleus"
+  k1 notes "Rate constant for entry of the PER–CRY complex into the nucleus"
+end
+
+Leloup2004_CircadianRhythms is "Leloup2004_CircadianRhythms"

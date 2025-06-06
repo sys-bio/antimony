@@ -1,0 +1,116 @@
+// Created by libAntimony v3.0.0
+model *MODEL1410200000()
+
+  // Compartments and Species:
+  compartment Brain;
+  species a in Brain, b in Brain, $aRel in Brain;
+
+  // Assignment Rules:
+  aRel := a/50;
+
+  // Reactions:
+  Loss_of_intracellular_choline: a => ; Brain*(k1*a*b);
+  Abeta_formation_from_APP:  => b; Brain*k2;
+  Effect_of_extracellular_ACh: b => ; Brain*(k3*a);
+  Decrease_in_the_extracellular_concentration_of_beta_amyloid: b => ; Brain*(k4*b);
+
+  // Species initializations:
+  a = 50;
+  b = 0;
+
+  // Compartment initializations:
+  Brain = 1;
+
+  // Variable initializations:
+  k1 = 0.007;
+  k2 = 0.33;
+  k3 = 0.0042;
+  k4 = 0.01;
+
+  // Other declarations:
+  const Brain, k1, k2, k3, k4;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+  Loss_of_intracellular_choline is "Loss of intracellular choline";
+  Abeta_formation_from_APP is "Abeta formation from APP";
+  Effect_of_extracellular_ACh is "Effect of extracellular ACh";
+  Decrease_in_the_extracellular_concentration_of_beta_amyloid is "Decrease in the extracellular concentration of beta-amyloid";
+
+  // CV terms:
+  Brain identity "http://identifiers.org/bto/BTO:0000142"
+  a identity "http://identifiers.org/chebi/CHEBI:15355"
+  b identity "http://identifiers.org/uniprot/P05067"
+  aRel identity "http://identifiers.org/chebi/CHEBI:15355"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1410200000"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000553"
+  model publication "http://identifiers.org/pubmed/9284295"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model biological_system "http://identifiers.org/go/GO:0008292"
+  model version "http://identifiers.org/doid/DOID:10652"
+  model created "2014-10-20T13:38:11Z"
+  model modified "2015-03-17T17:01:06Z"
+  model creator1.givenName "Audald"
+  model creator1.familyName "Lloret i Villas"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "lloret@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+Ehrenstein1997 - The choline-leakagehypothesis in Alzheimer&apos;s disease 
+
+
+This model is described in the article:
+
+
+[The choline-leakage hypothesis for the loss of acetylcholine in Alzheimer&apos;s disease.](http://identifiers.org/pubmed/9284295 "Access to this publication") 
+
+
+Ehrenstein G, Galdzicki Z, Lange GD. 
+
+Biophys. J. 1997 Sep; 73(3): 1276-1280 
+Abstract:
+
+
+We present a hypothesis for the loss of acetylcholine in Alzheimer&apos;s disease
+that is based on two recent experimental results: that beta-amyloid causes leakage
+of choline across cell membranes and that decreased production of acetylcholine
+increases the production of beta-amyloid. According to the hypothesis, an increase
+in beta-amyloid concentration caused by proteolysis of the amyloid precursor protein
+results in an increase in the leakage of choline out of cells. This leads to 
+a reduction in intracellular choline concentration and hence a reduction in
+acetylcholine production. The reduction in acetylcholine production, in turn,
+causes an increase in the concentration of beta-amyloid. The resultant positive
+feedback between decreased acetylcholine and increased beta-amyloid accelerates
+the loss of acetylcholine. We compare the predictions of the choline-leakage hypothesis
+with a number of experimental observations. We also approximate it with a pair
+of ordinary differential equations. The solutions of these equations indicate
+that the loss of acetylcholine is very sensitive to the initial rate of beta-amyloid
+production.
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identified by: [BIOMD0000000553](http://identifiers.org/biomodels.db/BIOMD0000000553).
+
+To cite BioModels Database, please use: [BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models](http://identifiers.org/pubmed/20587024 "Latest BioModels Database publication").
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+  a notes "Extracellular concentration of Acetylcholine (ACh)"
+  b notes "Extracellular concentration of β-amyloid"
+  aRel notes "Relative concentration of Acetylcholine"
+  k1 notes "Production rate of ACh"
+  k2 notes "Formation of β-amyloid from APP"
+  k3 notes "Effect of extracellular ACh"
+  k4 notes "Intracellular concentration of β-amyloid rate"
+end
+
+MODEL1410200000 is "Ehrenstein1997 - The choline-leakage hypothesis in Alzheimer's disease"

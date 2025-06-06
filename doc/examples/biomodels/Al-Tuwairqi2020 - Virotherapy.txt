@@ -1,0 +1,129 @@
+// Created by libAntimony v3.0.0
+model *Al_Tuwairqi2020___Dynamics_of_cancer_virotherapy_with_immune_response()
+
+  // Compartments and Species:
+  compartment Whole_organism;
+  species uninfected_cancer_cells in Whole_organism, infected_cancer_cells in Whole_organism;
+  species free_virus in Whole_organism, immune_cells in Whole_organism;
+
+  // Reactions:
+  uninfected_cancer_cell_growth:  => uninfected_cancer_cells; Whole_organism*(r_1*uninfected_cancer_cells*(1 - (uninfected_cancer_cells + infected_cancer_cells)));
+  cancer_cell_infection: uninfected_cancer_cells + free_virus => infected_cancer_cells; Whole_organism*a*uninfected_cancer_cells*free_virus;
+  uninfected_cancer_cell_killing_death: uninfected_cancer_cells => ; Whole_organism*(h_1*uninfected_cancer_cells*immune_cells + d_1*uninfected_cancer_cells);
+  infected_cancer_cell_killing_death: infected_cancer_cells => ; Whole_organism*(c*infected_cancer_cells*immune_cells + infected_cancer_cells);
+  virus_lytic_release:  => free_virus; Whole_organism*(b*infected_cancer_cells);
+  virus_killing_clearence: free_virus => ; Whole_organism*(h_2*free_virus*immune_cells + e*free_virus);
+  immune_cell_proliferation:  => immune_cells; Whole_organism*(m_1*infected_cancer_cells*immune_cells + m_2*uninfected_cancer_cells*immune_cells);
+  immune_cell_clearence: immune_cells => ; Whole_organism*n*immune_cells;
+
+  // Species initializations:
+  uninfected_cancer_cells = 0.5;
+  infected_cancer_cells = 0;
+  free_virus = 0.01;
+  immune_cells = 0.01;
+
+  // Compartment initializations:
+  Whole_organism = 1;
+
+  // Variable initializations:
+  r_1 = 0.36;
+  a = 0.5;
+  h_1 = 0.36;
+  d_1 = 0.1278;
+  c = 0.48;
+  h_2 = 0.16;
+  e = 0.2;
+  m_1 = 0.6;
+  m_2 = 0.29;
+  n = 0.16;
+  b = 2;
+
+  // Other declarations:
+  const Whole_organism, r_1, a, h_1, d_1, c, h_2, e, m_1, m_2, n, b;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = (1e-3 metre)^3;
+  unit time_unit = 3600e2 second;
+  unit substance = item;
+
+  // Display Names:
+  time_unit is "time";
+  uninfected_cancer_cell_killing_death is "uninfected_cancer_cell_killing/death";
+  infected_cancer_cell_killing_death is "infected_cancer_cell_killing/death";
+  virus_killing_clearence is "virus_killing/clearence";
+
+  // CV terms:
+  Whole_organism biological_system "http://identifiers.org/ncit/C13413"
+  Whole_organism property "http://identifiers.org/pato/PATO:0001993"
+  uninfected_cancer_cells biological_system "http://identifiers.org/cl/CL:0001063"
+  uninfected_cancer_cells property "http://identifiers.org/chebi/CHEBI:144829"
+  uninfected_cancer_cells property "http://identifiers.org/efo/0001460"
+  infected_cancer_cells biological_system "http://identifiers.org/cl/CL:0001063"
+  infected_cancer_cells biological_system "http://identifiers.org/bto/BTO:0000152"
+  infected_cancer_cells property "http://identifiers.org/chebi/CHEBI:144829"
+  free_virus biological_system "http://identifiers.org/ido/0000508"
+  free_virus biological_system "http://identifiers.org/ncit/C717"
+  immune_cells biological_system "http://identifiers.org/cl/CL:0000623"
+  immune_cells biological_system "http://identifiers.org/ncit/C132890"
+  immune_cells biological_system "http://identifiers.org/cl/CL:0000910"
+  uninfected_cancer_cell_growth biological_system "http://identifiers.org/sbo/SBO:0000393"
+  uninfected_cancer_cell_growth biological_system "http://identifiers.org/go/GO:0008283"
+  cancer_cell_infection biological_system "http://identifiers.org/ncit/C3439"
+  cancer_cell_infection biological_system "http://identifiers.org/ido/0000586"
+  uninfected_cancer_cell_killing_death biological_system "http://identifiers.org/sbo/SBO:0000394"
+  uninfected_cancer_cell_killing_death biological_system "http://identifiers.org/go/GO:0001906"
+  uninfected_cancer_cell_killing_death biological_system "http://identifiers.org/go/GO:0008219"
+  uninfected_cancer_cell_killing_death property "http://identifiers.org/ncit/C28373"
+  infected_cancer_cell_killing_death biological_system "http://identifiers.org/go/GO:0008219"
+  infected_cancer_cell_killing_death biological_system "http://identifiers.org/sbo/SBO:0000394"
+  infected_cancer_cell_killing_death biological_system "http://identifiers.org/go/GO:0001906"
+  virus_lytic_release biological_system "http://identifiers.org/go/GO:0044659"
+  virus_lytic_release biological_system "http://identifiers.org/sbo/SBO:0000393"
+  virus_killing_clearence biological_system "http://identifiers.org/sbo/SBO:0000394"
+  virus_killing_clearence biological_system "http://identifiers.org/ncit/C26011"
+  immune_cell_proliferation biological_system "http://identifiers.org/go/GO:0008283"
+  immune_cell_proliferation biological_system "http://identifiers.org/sbo/SBO:0000393"
+  immune_cell_clearence biological_system "http://identifiers.org/sbo/SBO:0000394"
+  immune_cell_clearence biological_system "http://identifiers.org/go/GO:0008219"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL2108190004",
+                     "http://identifiers.org/biomodels.db/BIOMD0000001035"
+  model propertyBearer "http://identifiers.org/ncit/C62713"
+  model propertyBearer "http://identifiers.org/ncit/C15438"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model description "http://identifiers.org/doi/10.1186/s13662-020-02893-6"
+  model property "http://identifiers.org/go/GO:0002837",
+                 "http://identifiers.org/go/GO:0046730",
+                 "http://identifiers.org/doid/DOID:162",
+                 "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2021-08-13T13:01:59Z"
+  model modified "2021-08-13T13:01:59Z"
+  model creator1.givenName "Emilia"
+  model creator1.familyName "Chen"
+  model creator1.organization "University of Cambridge"
+  model creator1.email "eblc2@cam.ac.uk"
+
+  // Notes:
+  model notes ```
+This ordinary differential equation model of the role of the immune response in 
+cancer virotherapy dynamics is described in the publication:Al-Tuwairqi, S.M., Al-Johani, 
+N.O., Simbawa, E.A. "Modeling dynamics of cancer virotherapy with immune response." 
+Adv Differ Equ 2020, 438 (2020).DOI: 10.1186/s13662-020-02893-6Comment:This model 
+is represented by the system described in Equation 2 of the publication
+manuscript.Abstract:Virotherapy is a therapeutic treatment for cancer. It uses genetically 
+engineered viruses to selectively infect, replicate in, and destroy cancer cells 
+without damaging normal cells. In this paper, we present a modified model to include, 
+within the dynamics of virotherapy, the interaction between uninfected tumor cells 
+and immune response. The model is analyzed qualitatively to produce five equilibrium 
+points. One of these equilibriums demonstrates the effect observed in virotherapy, 
+where the immune system demolishes infected cells as well as viruses. Moreover, the 
+existence and stability of the equilibrium points are established under certain criteria. 
+Numerical simulations are performed to display the agreement with the analytical 
+results. Finally, parameter analysis is carried out to illustrate which parameters 
+in the model affect the outcome of virotherapy.
+```
+end
+
+Al_Tuwairqi2020___Dynamics_of_cancer_virotherapy_with_immune_response is "Al-Tuwairqi2020 - Dynamics of cancer virotherapy with immune response"

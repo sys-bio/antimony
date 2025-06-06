@@ -53,8 +53,10 @@ enum var_type {varSpeciesUndef = 0,
                varConstraint,
                varSboTermWrapper,
                varUncertWrapper,
+               varLayoutWrapper,
                varStoichiometry,
                varAlgebraicRule,
+               varLayoutColorEtc,
                };
 /**
  * return_types are used in the API when requesting information about different symbols.  Each return_type refers to a different group of symbols, and are overlapping--i.e. a single symbol can be included in 'allGenes' and 'allReactions'. 
@@ -190,6 +192,54 @@ enum uncert_type {
   unDistribution, 
   unExternalParameter,
   unUnknown
+};
+
+/**
+ * layout_types are the different types of layout information.
+ * - unCoefficientOfVariation:
+ * - unKurtosis:
+ * - unMean:
+ * - unMedian:
+ * - unMode:
+ * - unSampleSize:
+ * - unSkewness:
+ * - unStandardDeviation:
+ * - unStandardError:
+ * - unVariance:
+ * - unConfidenceInterval:
+ * - unCredibleInterval:
+ * - unInterquartileRange:
+ * - unRange:
+ * - unDistribution:
+ * - unExternalParameter:
+ */
+enum layout_type {
+    lt_position = 0,
+    lt_x,
+    lt_y,
+    lt_size,
+    lt_height,
+    lt_width,
+    lt_color,
+    lt_font,
+    lt_fontsize,
+    lt_fontcolor,
+    lt_fontstyle,
+    lt_fontweight,
+    lt_linewidth,
+    lt_linecolor,
+    lt_shape,
+    lt_reactionArc,
+    lt_sourceSink,
+    lt_unknown
+};
+
+enum arc_type {
+    at_rxn = 0,
+    at_spec,
+    at_b1,
+    at_b2,
+    at_none
 };
 
 #endif // ENUMS_H

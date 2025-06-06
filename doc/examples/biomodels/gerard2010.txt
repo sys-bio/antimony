@@ -1,0 +1,161 @@
+// Created by libAntimony v3.0.0
+model *Gerard2010___Progression_of_mammalian_cell_cycle_by_successive_activation_of_various_cyclin_cdk_complexes()
+
+  // Compartments and Species:
+  compartment nuclear;
+  species cyclin_D_Cdk4_6 in nuclear, transcription_factor_E2F_active in nuclear;
+  species cyclin_E_Cdk2 in nuclear, cyclin_A_Cdk2 in nuclear, cyclin_B_Cdk1 in nuclear;
+  species Cdc20_active in nuclear, E2F_total in nuclear, Cdc20_total in nuclear;
+
+  // Reactions:
+  R1_Synthesis_of_cyclin_D_Cdk4_6:  => cyclin_D_Cdk4_6; nuclear*(vsd*GF/(Kgf + GF));
+  R2_Degradation_of_cyclin_D_Cdk4_6: cyclin_D_Cdk4_6 => ; nuclear*(Vdd*cyclin_D_Cdk4_6/(Kdd + cyclin_D_Cdk4_6));
+  R3_E2F_activation:  => transcription_factor_E2F_active; nuclear*(V1e2f*((E2F_total - transcription_factor_E2F_active)/(K1e2f + E2F_total - transcription_factor_E2F_active))*(cyclin_D_Cdk4_6 + cyclin_E_Cdk2));
+  R4_E2F_inactivation: transcription_factor_E2F_active => ; nuclear*((V2e2f*transcription_factor_E2F_active/(K2e2f + transcription_factor_E2F_active))*cyclin_A_Cdk2);
+  R5_Synthesis_of_cyclin_E_Cdk2:  => cyclin_E_Cdk2; nuclear*(vse*transcription_factor_E2F_active);
+  R6_Degradation_of_cyclin_E_Cdk2: cyclin_E_Cdk2 => ; nuclear*(Vde*cyclin_A_Cdk2*cyclin_E_Cdk2/(Kde + cyclin_E_Cdk2));
+  R7_Synthesis_of_cyclin_A_Cdk2:  => cyclin_A_Cdk2; nuclear*(vsa*transcription_factor_E2F_active);
+  R8_Degradation_of_cyclin_A_Cdk2: cyclin_A_Cdk2 => ; nuclear*(Vda*Cdc20_active*cyclin_A_Cdk2/(Kda + cyclin_A_Cdk2));
+  R9_Synthesis_of_cyclin_B_Cdk1:  => cyclin_B_Cdk1; nuclear*(vsb*cyclin_A_Cdk2);
+  R10_Degradation_of_cyclin_B_Cdk1: cyclin_B_Cdk1 => ; nuclear*(Vdb*Cdc20_active*cyclin_B_Cdk1/(Kdb + cyclin_B_Cdk1));
+  R11_Phosphorylation_and_activation_of_Cdc20:  => Cdc20_active; nuclear*(V1cdc20*cyclin_B_Cdk1*(Cdc20_total - Cdc20_active)/(K1cdc20 + (Cdc20_total - Cdc20_active)));
+  R12_Dephosphorylation_and_inactivation_of_Cdc20: Cdc20_active => ; nuclear*(V2cdc20*Cdc20_active/(K2cdc20 + Cdc20_active));
+
+  // Species initializations:
+  cyclin_D_Cdk4_6 = 0.7205;
+  transcription_factor_E2F_active = 2.4855;
+  cyclin_E_Cdk2 = 2;
+  cyclin_A_Cdk2 = 2.6;
+  cyclin_B_Cdk1 = 1;
+  Cdc20_active = 0.5;
+  E2F_total = 3;
+  Cdc20_total = 5;
+
+  // Compartment initializations:
+  nuclear = 1;
+
+  // Variable initializations:
+  GF = 1;
+  Kda = 0.1;
+  Kdb = 0.005;
+  Kdd = 0.1;
+  Kde = 0.1;
+  Kgf = 0.1;
+  K1cdc20 = 1;
+  K2cdc20 = 1;
+  K1e2f = 0.01;
+  K2e2f = 0.01;
+  Vda = 0.245;
+  Vdb = 0.28;
+  Vdd = 0.245;
+  Vde = 0.35;
+  vsa = 0.175;
+  vsb = 0.21;
+  vsd = 0.175;
+  vse = 0.21;
+  V1cdc20 = 0.21;
+  V2cdc20 = 0.35;
+  V1e2f = 0.805;
+  V2e2f = 0.7;
+
+  // Other declarations:
+  const nuclear, GF, Kda, Kdb, Kdd, Kde, Kgf, K1cdc20, K2cdc20, K1e2f, K2e2f;
+  const Vda, Vdb, Vdd, Vde, vsa, vsb, vsd, vse, V1cdc20, V2cdc20, V1e2f, V2e2f;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 3600 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+  cyclin_D_Cdk4_6 is "cyclin D Cdk4-6";
+  transcription_factor_E2F_active is "transcription factor E2F active";
+  cyclin_E_Cdk2 is "cyclin E Cdk2";
+  cyclin_A_Cdk2 is "cyclin A Cdk2";
+  cyclin_B_Cdk1 is "cyclin B Cdk1";
+  Cdc20_active is "Cdc20 active";
+  R1_Synthesis_of_cyclin_D_Cdk4_6 is "R1 Synthesis of cyclin D Cdk4-6";
+  R2_Degradation_of_cyclin_D_Cdk4_6 is "R2 Degradation of cyclin D Cdk4-6";
+  R3_E2F_activation is "R3 E2F activation";
+  R4_E2F_inactivation is "R4 E2F inactivation";
+  R5_Synthesis_of_cyclin_E_Cdk2 is "R5 Synthesis of cyclin E Cdk2";
+  R6_Degradation_of_cyclin_E_Cdk2 is "R6 Degradation of cyclin E Cdk2";
+  R7_Synthesis_of_cyclin_A_Cdk2 is "R7 Synthesis of cyclin A Cdk2";
+  R8_Degradation_of_cyclin_A_Cdk2 is "R8 Degradation of cyclin A Cdk2";
+  R9_Synthesis_of_cyclin_B_Cdk1 is "R9 Synthesis of cyclin B Cdk1";
+  R10_Degradation_of_cyclin_B_Cdk1 is "R10 Degradation of cyclin B Cdk1";
+  R11_Phosphorylation_and_activation_of_Cdc20 is "R11 Phosphorylation and activation of Cdc20";
+  R12_Dephosphorylation_and_inactivation_of_Cdc20 is "R12 Dephosphorylation and inactivation of Cdc20";
+
+  // CV terms:
+  nuclear identity "http://identifiers.org/ncit/C13361"
+  cyclin_D_Cdk4_6 part "http://identifiers.org/uniprot/P24385"
+  cyclin_D_Cdk4_6 part "http://identifiers.org/uniprot/P11802"
+  cyclin_D_Cdk4_6 property "http://identifiers.org/go/GO:0032991"
+  transcription_factor_E2F_active biological_system "http://identifiers.org/uniprot/Q01094"
+  transcription_factor_E2F_active property "http://identifiers.org/pato/PATO:0002354"
+  cyclin_E_Cdk2 part "http://identifiers.org/uniprot/P24864"
+  cyclin_E_Cdk2 part "http://identifiers.org/uniprot/P24941"
+  cyclin_E_Cdk2 property "http://identifiers.org/go/GO:0032991"
+  cyclin_A_Cdk2 part "http://identifiers.org/uniprot/P24941"
+  cyclin_A_Cdk2 part "http://identifiers.org/uniprot/P20248"
+  cyclin_A_Cdk2 property "http://identifiers.org/go/GO:0032991"
+  cyclin_B_Cdk1 part "http://identifiers.org/uniprot/P06493"
+  cyclin_B_Cdk1 part "http://identifiers.org/uniprot/P14635"
+  cyclin_B_Cdk1 property "http://identifiers.org/go/GO:0032991"
+  Cdc20_active biological_system "http://identifiers.org/uniprot/Q12834"
+  Cdc20_active property "http://identifiers.org/pato/PATO:0002354"
+  Cdc20_active property "http://identifiers.org/pato/PATO:0002220"
+  E2F_total biological_system "http://identifiers.org/uniprot/Q01094"
+  Cdc20_total biological_system "http://identifiers.org/uniprot/Q12834"
+  R1_Synthesis_of_cyclin_D_Cdk4_6 biological_system "http://identifiers.org/ncit/C61408"
+  R2_Degradation_of_cyclin_D_Cdk4_6 biological_system "http://identifiers.org/sbo/SBO:0000179"
+  R3_E2F_activation biological_system "http://identifiers.org/sbo/SBO:0000656"
+  R5_Synthesis_of_cyclin_E_Cdk2 biological_system "http://identifiers.org/ncit/C61408"
+  R6_Degradation_of_cyclin_E_Cdk2 biological_system "http://identifiers.org/sbo/SBO:0000179"
+  R7_Synthesis_of_cyclin_A_Cdk2 biological_system "http://identifiers.org/ncit/C61408"
+  R9_Synthesis_of_cyclin_B_Cdk1 biological_system "http://identifiers.org/sbo/SBO:0000179"
+  R10_Degradation_of_cyclin_B_Cdk1 biological_system "http://identifiers.org/sbo/SBO:0000179"
+  R11_Phosphorylation_and_activation_of_Cdc20 biological_system "http://identifiers.org/sbo/SBO:0000656"
+  R11_Phosphorylation_and_activation_of_Cdc20 biological_system "http://identifiers.org/pato/PATO:0002262"
+  R12_Dephosphorylation_and_inactivation_of_Cdc20 biological_system "http://identifiers.org/sbo/SBO:0000330"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1809060001",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000941"
+  model part "http://identifiers.org/go/GO:0051726"
+  model taxon "http://identifiers.org/taxonomy/40674"
+  model description "http://identifiers.org/doi/10.1098/rsfs.2010.0008"
+  model description "http://identifiers.org/pubmed/22419972"
+  model property "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2018-06-27T10:04:37Z"
+  model modified "2020-04-30T17:58:47Z"
+  model creator1.givenName "Matthieu"
+  model creator1.familyName "MAIRE"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "matt.maire@free.fr"
+  model creator2.givenName "Ahmad"
+  model creator2.familyName "Zyoud"
+  model creator2.organization "EMBL-EBI"
+  model creator2.email "ahmad.azd@hotmail.com"
+
+  // Notes:
+  model notes ```
+We previously proposed a detailed, 39-variable model for the network of cyclin-dependent 
+kinases (Cdks) that controls progression along the successive phases of the mammalian 
+cell cycle. Here, we propose a skeleton, 5-variable model for the Cdk network that 
+can be seen as the backbone of the more detailed model for the mammalian cell cycle. 
+In the presence of sufficient amounts of growth factor, the skeleton model also passes 
+from a stable steady state to sustained oscillations of the various cyclin/Cdk complexes. 
+This transition corresponds to the switch from quiescence to cell proliferation. 
+Sequential activation of the cyclin/Cdk complexes allows the ordered progression 
+along the G1, S, G2 and M phases of the cell cycle. The 5-variable model can also 
+account for the existence of a restriction point in G1, and for endoreplication. 
+Like the detailed model, it contains multiple oscillatory circuits and can display 
+complex oscillatory behaviour such as quasi-periodic oscillations and chaos. We compare 
+the dynamical properties of the skeleton model with those of the more detailed model 
+for the mammalian cell cycle.
+```
+end
+
+Gerard2010___Progression_of_mammalian_cell_cycle_by_successive_activation_of_various_cyclin_cdk_complexes is "Gerard2010 - Progression of mammalian cell cycle by successive activation of various cyclin cdk complexes"

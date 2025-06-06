@@ -138,7 +138,7 @@ string UncertWrapper::CreateUncertParamsAntimonySyntax(const string & indent) co
     ret = indent + GetNameDelimitedBy(".") + " = " + m_valFormula.ToDelimitedStringWithEllipses(".") + "\n";
   }
   if (!m_displayname.empty()) {
-    ret += indent + GetNameDelimitedBy(".") + " is \"" + m_displayname + "\"\n";
+    ret += indent + GetNameDelimitedBy(".") + " is " + quoteText(m_displayname) + "\n";
   }
   return ret;
 }

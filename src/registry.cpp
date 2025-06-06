@@ -113,6 +113,7 @@ void Registry::ClearAll()
   m_oldmodules.clear();
   m_oldmodulemaps.clear();
   m_olduserfunctions.clear();
+  m_warnings.clear();
   FreeVariables();
   FreeFormulas();
   ClearModules();
@@ -1137,11 +1138,11 @@ bool Registry::SetNewCurrentEvent(Formula* trigger, Variable* var)
       free(l3err);
       return true;
     }
-    else if (!ASTform->isBoolean() && !ASTform->isFunction()) {
-      g_registry.SetError("The formula \"" + trigger->ToDelimitedStringWithEllipses(".") + "\" cannot be parsed in a boolean context, and it is therefore illegal to use it as the trigger for an event.  (Perhaps try adding parentheses?)");
-      delete ASTform;
-      return true;
-    }
+    //else if (!ASTform->isBoolean() && !ASTform->isFunction()) {
+    //  g_registry.SetError("The formula \"" + trigger->ToDelimitedStringWithEllipses(".") + "\" cannot be parsed in a boolean context, and it is therefore illegal to use it as the trigger for an event.  (Perhaps try adding parentheses?)");
+    //  delete ASTform;
+    //  return true;
+    //}
     delete ASTform;
   }
 #endif
@@ -1161,7 +1162,7 @@ AntimonyEvent* Registry::GetCurrentEvent() {
   return CurrentModule()->GetVariable(m_currentEvent)->GetEvent();
 }
 
-bool Registry::AddNewAlgebraicRuleToCurrent(int val, Formula* formula)
+bool Registry::AddNewAlgebraicRuleToCurrent(double val, Formula* formula)
 {
     return CurrentModule()->AddNewAlgebraicRule(val, formula);
 }
@@ -1169,6 +1170,16 @@ bool Registry::AddNewAlgebraicRuleToCurrent(int val, Formula* formula)
 Variable* Registry::GetCurrentSubmodel()
 {
   return CurrentModule()->GetVariable(m_currentImportedModule);
+}
+
+void Registry::AddWarning(std::string warning)
+{
+    for (size_t w = 0; w < m_warnings.size(); w++) {
+        if (m_warnings[w] == warning) {
+            return;
+        }
+    }
+    m_warnings.push_back(warning);
 }
 
 Formula* Registry::NewBlankFormula()
@@ -1523,9 +1534,15 @@ bool Registry::ProcessGlobalCVTerm(const string* name, const string* qual, vecto
   }
 }
 
-bool Registry::ProcessCreatorTerm(Annotated* a, const string* creator, const string* cterm, int resource)
+bool Registry::ProcessCreatorTerm(Annotated* a, const string* creator, const string* cterm, double resource)
 {
-    string val = to_string(resource);
+    if (abs(resource - round(resource)) > 0.000001) {
+        stringstream err;
+        err << "Unable to use " << resource << " as a creator term resource; only non-decimal numbers are allowed.";
+        g_registry.SetError(err.str());
+        return true;
+    }
+    string val = to_string(round(resource));
     vector<string> vals;
     vals.push_back(val);
     return ProcessCreatorTerm(a, creator, cterm, &vals);
@@ -1533,7 +1550,7 @@ bool Registry::ProcessCreatorTerm(Annotated* a, const string* creator, const str
 
 bool Registry::ProcessCreatorTerm(Annotated* a, const string* creator, const string* cterm, vector<string>* resources)
 {
-    int creator_number = 0;
+    unsigned int creator_number = 0;
 
     if (*creator == "created") {
         if (resources->size() > 1) {
@@ -1560,9 +1577,15 @@ bool Registry::ProcessCreatorTerm(Annotated* a, const string* creator, const str
     return false;
 }
 
-bool Registry::ProcessGlobalCreatorTerm(const string* name, const string* creator, const string* cterm, int resource)
+bool Registry::ProcessGlobalCreatorTerm(const string* name, const string* creator, const string* cterm, double resource)
 {
-    string val = to_string(resource);
+    if (abs(resource - round(resource)) > 0.000001) {
+        stringstream err;
+        err << "Unable to use " << resource << " as a creator term resource; only non-decimal numbers are allowed.";
+        g_registry.SetError(err.str());
+        return true;
+    }
+    string val = to_string(round(resource));
     vector<string> vals;
     vals.push_back(val);
     return ProcessGlobalCreatorTerm(name, creator, cterm, &vals);
@@ -1579,7 +1602,7 @@ bool Registry::ProcessGlobalCreatorTerm(const string* name, const string* creato
             delete resources;
             return true;
         }
-        int creator_number = 0;
+        unsigned int creator_number = 0;
         if (*creator == "created") {
             if (resources->size() > 1) {
                 SetError("Unable to set multiple date elements at once.");
@@ -1610,13 +1633,13 @@ bool Registry::ProcessGlobalCreatorTerm(const string* name, const string* creato
     }
 }
 
-bool Registry::CheckCreatorString(const string& qualifier, int& creator_number)
+bool Registry::CheckCreatorString(const string& qualifier, unsigned int& creator_number)
 {
     if (qualifier == "creator") {
         creator_number = 1;
         return false;
     }
-    regex creatorNum("^creator([0-9]+)");
+    regex creatorNum("^creator([0-9]+)$");
     std::smatch m;
     if (regex_search(qualifier, m, creatorNum)) {
         creator_number = stoi(m[1].str());

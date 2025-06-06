@@ -1,0 +1,98 @@
+// Created by libAntimony v3.0.0
+model *MODEL1610100004()
+
+  // Compartments and Species:
+  compartment cell;
+  substanceOnly species miR in cell, TF1 in cell, TF1target_mRNA in cell;
+  substanceOnly species $Sink in cell;
+
+  // Reactions:
+  miR_synthesis: TF1 => TF1 + miR; ksynMiR*TF1;
+  miR_degradation: miR => $Sink; kdegMiR*miR;
+  TF1target_transcription: TF1 => TF1 + TF1target_mRNA; ksynTF1targetmRNA*TF1;
+  TF1target_mRNA_degradation: TF1target_mRNA => $Sink; kdegTF1targetmRNA*TF1target_mRNA;
+  TF1target_mRNA_degradation_via_MiR: TF1target_mRNA + miR => $Sink + miR; kdegTF1targetmRNAbyMiR*TF1target_mRNA*miR;
+
+  // Events:
+  ActivateSignal: at time > 3600: TF1 = 500;
+
+  // Species initializations:
+  miR = 0;
+  TF1 = 0;
+  TF1target_mRNA = 0;
+  Sink = 0;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  kdegMiR = 0.0004;
+  kdegTF1targetmRNA = 0.001;
+  kdegTF1targetmRNAbyMiR = 5e-05;
+  ksynTF1targetmRNA = 0.004;
+  ksynMiR = 0.0002;
+
+  // Other declarations:
+  const cell, kdegMiR, kdegTF1targetmRNA, kdegTF1targetmRNAbyMiR, ksynTF1targetmRNA;
+  const ksynMiR;
+
+  // Unit definitions:
+  unit substance = item;
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1610100004"
+  model publication "http://identifiers.org/pubmed/29095952"
+  model created "2017-11-06T09:16:49Z"
+  model modified "2017-11-06T11:20:08Z"
+
+  // Notes:
+  model notes ```
+Proctor2017- Role of microRNAs inosteoarthritis (Positive Feedforward Incoherent
+By MicroRNA) 
+
+
+This model is described in the article:
+
+
+[Computer simulation models as a tool to investigate the role of microRNAs in osteoarthritis.](http://identifiers.org/pubmed/29095952 "Access to this publication") 
+
+
+Proctor CJ, Smith GR. 
+
+PLoS ONE 2017; 12(11): e0187568 
+Abstract:
+
+
+The aim of this study was to show how computational models can be used to increase
+our understanding of the role of microRNAs in osteoarthritis (OA) using miR-140
+as an example. Bioinformatics analysis and experimental results from the literature
+were used to create and calibrate models of gene regulatory networks in OA involving
+miR-140 along with key regulators such as NF-?B, SMAD3, and RUNX2. The individual
+models were created with the modelling standard, Systems Biology Markup Language,
+and integrated to examine the overall effect of miR-140 on cartilage homeostasis.
+Down-regulation of miR-140 may have either detrimental or protective effects for
+cartilage, indicating that the role of miR-140 is complex. Studies of individual
+networks in isolation may therefore lead to different conclusions. This indicated
+the need to combine the five chosen individual networks involving miR-140 into
+an integrated model. This model suggests that the overall effect of miR-140
+is to change the response to an IL-1 stimulus from a prolonged increase in matrix
+degrading enzymes to a pulse-like response so that cartilage degradation is temporary.
+Our current model can easily be modified and extended as more experimental
+data become available about the role of miR-140 in OA. In addition, networks of
+other microRNAs that are important in OA could be incorporated. A fully integrated
+model could not only aid our understanding of the mechanisms of microRNAs in 
+ageing cartilage but could also provide a useful tool to investigate the effect
+of potential interventions to prevent cartilage loss.
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identified by: [MODEL1610100004](http://identifiers.org/biomodels.db/MODEL1610100004).
+
+To cite BioModels Database, please use: [Chelliah V et al. BioModels: ten-year anniversary. Nucl. Acids Res. 2015, 43(Database issue):D542-8](http://identifiers.org/pubmed/25414348).
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+end
+
+MODEL1610100004 is "Proctor2017- Role of microRNAs in osteoarthritis (Positive Feedforward Incoherent By MicroRNA)"

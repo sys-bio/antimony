@@ -1,0 +1,202 @@
+// Created by libAntimony v3.0.0
+model *Shi1993_Caffeine_pressor_tolerance()
+
+  // Compartments and Species:
+  compartment Gut, C, P, Tol, Eff;
+  species $C_p in C, $C_per in P, $C_e in Eff, $C_t in Tol;
+  substanceOnly species $X_gut in Gut;
+
+  // Assignment Rules:
+  E := E_0 + S*C_e/(1 + C_t/T_50);
+
+  // Rate Rules:
+  X_gut' = -k_a*X_gut;
+  C_p' = (k_a*F*X_gut/V_C - k12*C_p) + k21*C_per - k10*C_p;
+  C_per' = k12*C_p - k21*C_per;
+  C_e' = k_eo*(C_p - C_e);
+  C_t' = k_tol*(C_p - C_t);
+
+  // Events:
+  coffecup: at time >= (t_int*cups + t_lag): X_gut = X_gut + cupsize/bodyweight, cups = cups + 1;
+
+  // Species initializations:
+  X_gut = 0;
+  X_gut has mg_per_kg_per_volume;
+  C_p = 0;
+  C_per = 0;
+  C_e = 0;
+  C_t = 0;
+
+  // Compartment initializations:
+  Gut = 1;
+  C = 0.31;
+  P = 1;
+  Tol = 1;
+  Eff = 1;
+
+  // Variable initializations:
+  k_a = 12;
+  k_a has per_hour;
+  F = 0.984;
+  V_C = 0.32;
+  V_C has l_per_kg;
+  k12 = 1.64;
+  k12 has per_hour;
+  k21 = 1.19;
+  k21 has per_hour;
+  k10 = 0.34;
+  k10 has per_hour;
+  k_eo = 2.03;
+  k_eo has per_hour;
+  k_tol = 0.75;
+  k_tol has per_hour;
+  t_int = 2;
+  t_int has time_unit;
+  cups = 0;
+  cups has dimensionless;
+  t_lag = 0.15;
+  t_lag has time_unit;
+  cupsize = 90;
+  cupsize has substance;
+  bodyweight = 80;
+  bodyweight has kilogram;
+  CL = 0.11;
+  t_half = 3.98;
+  t_half has time_unit;
+  E_0 = 83.3;
+  E_0 has mm_Hg;
+  S = 19.07;
+  S has mm_Hg_l_per_mg;
+  T_50 = 0.26;
+  T_50 has mg_per_l;
+  E has mm_Hg;
+
+  // Other declarations:
+  var cups, E;
+  const Gut, C, P, Tol, Eff, k_a, F, V_C, k12, k21, k10, k_eo, k_tol, t_int;
+  const t_lag, cupsize, bodyweight, CL, t_half, E_0, S, T_50;
+
+  // Unit definitions:
+  unit substance = 1e-6 kilogram;
+  unit time_unit = 3600 second;
+  unit per_hour = 1 / 3600 second;
+  unit l_per_kg = litre / kilogram;
+  unit mm_Hg = 1e-3 metre;
+  unit mm_Hg_l_per_mg = 1e-3 metre * litre / 1e-6 kilogram;
+  unit mg_per_l = 1e-6 kilogram / litre;
+  unit mg_per_kg = dimensionless;
+  unit mg_per_kg_per_volume = dimensionless / litre;
+
+  // Display Names:
+  substance is "mg";
+  time_unit is "hr";
+  l_per_kg is "liter_per_kg";
+  mm_Hg_l_per_mg is "mm_Hg per (mg/l)";
+  mg_per_l is "mg/l";
+  coffecup is "coffee cup";
+  t_int is "t_intervall";
+  E is "MAP";
+
+  // SBO terms:
+  Gut.sboTerm = 290
+  C.sboTerm = 290
+  P.sboTerm = 290
+  Tol.sboTerm = 289
+  Eff.sboTerm = 289
+  X_gut.sboTerm = 241
+  C_p.sboTerm = 247
+  C_per.sboTerm = 247
+  C_e.sboTerm = 241
+  C_t.sboTerm = 241
+
+  // CV terms:
+  Gut biological_system "http://identifiers.org/fma/FMA:71132"
+  C biological_system "http://identifiers.org/fma/FMA:62970"
+  P parthood "http://identifiers.org/fma/FMA:20394"
+  X_gut identity "http://identifiers.org/kegg.compound/C07481"
+  X_gut identity "http://identifiers.org/chebi/CHEBI:27732"
+  C_p identity "http://identifiers.org/chebi/CHEBI:27732",
+               "http://identifiers.org/kegg.compound/C07481"
+  C_per identity "http://identifiers.org/chebi/CHEBI:27732",
+                 "http://identifiers.org/kegg.compound/C07481"
+  C_e biological_system "http://identifiers.org/chebi/CHEBI:27732"
+  C_t biological_system "http://identifiers.org/chebi/CHEBI:27732"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1001080000"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000241"
+  model publication "http://identifiers.org/pubmed/8422743"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model biological_system "http://identifiers.org/go/GO:0031000",
+                          "http://identifiers.org/go/GO:0008217"
+  model created "2010-01-08T11:00:59Z"
+  model modified "2016-04-08T16:07:28Z"
+  model creator1.givenName "Lukas"
+  model creator1.familyName "Endler"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "lukas@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+described in: **Pharmacokinetic-pharmacodynamic modeling of caffeine: Tolerance
+to pressor effects** 
+Shi J, Benowitz NL, Denaro CP and Sheiner LB. ;*Clin. Pharmacol. Ther.*
+1993 Jan;53(1):6-14. PMID:[8422743](http://www.ncbi.nlm.nih.gov/pubmed/8422743); 
+**Abstract:** 
+	 We propose a parametric pharmacokinetic-pharmacodynamic model for caffeine that
+quantifies the development of tolerance to the pressor effect of the drug and characterizes
+the mean behavior and inter-individual variation of both pharmacokinetics and pressor
+effect. Our study in a small group of subjects indicates that acute tolerance develops
+to the pressor effect of caffeine and that both the pressor effect and tolerance
+occur after some time delay relative to changes in plasma caffeine concentration.
+The half-life of equilibration of effect with plasma caffeine concentration is about
+20 minutes. The half-life of development and regression of tolerance is estimated
+to be about 1 hour, and the model suggests that tolerance, at its fullest, causes
+more than a 90 percent reduction of initial (nontolerant) effect. Whereas tolerance
+to the pressor effect of caffeine develops in habitual coffee drinkers, the pressor
+response is regained after relatively brief periods of abstinence. Because of the
+rapid development and regression of tolerance, the pressor response to caffeine depends
+on how much caffeine is consumed, the schedule of consumption, and the elimination
+half-life of caffeine.
+
+Caffeine intake in this version is modelled as cups of coffee drunk at regular intervals
+(parameter *t_interval*). The amount of caffeine per cup is determined by the parameter
+*cupsize*. The body weight of the person drinking is given by the parameter *bodyweight*. 
+The even *coffee cup* occures delayed to the drinking of each cup, as the availability
+of the caffeine in the digestive tract is assumed to be delayed to the ingestion
+by the time *t_lag*. 
+
+This model originates from BioModels Database: A Database of Annotated Published
+Models. It is copyright (c) 2005-2011 The BioModels.net Team. 
+For more information see the [terms of use](http://www.ebi.ac.uk/biomodels/legal.html). 
+To cite BioModels Database, please use: [Li C, Donizelli M, Rodriguez N, Dharuri H, Endler L, Chelliah V, Li L, He E, Henry A, Stefan MI, Snoep JL, Hucka M, Le Novère N, Laibe C (2010) BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models. BMC Syst Biol., 4:92.](http://www.ncbi.nlm.nih.gov/pubmed/20587024)
+```
+  mm_Hg notes "unit for blood pressure"
+  Gut notes "gut compartment, the digestive tract"
+  C notes ```
+the central compartment, corresponding mainly to the plasma. Its apparant volume
+is given by the parameter **V_C**
+```
+  P notes "peripheral compartment"
+  Tol notes "virtual compartment to account for tolerance effects"
+  Eff notes "virtual effect compartment"
+  F notes "bioavailability"
+  V_C notes "apparent volume of the central compartment per kg body-weight"
+  k12 notes "central to peripheral transport rate"
+  k21 notes "peripheral to central compartment transport rate"
+  k10 notes "plasma clearance rate"
+  C_e notes "hypothetical effect-site concentration"
+  k_eo notes "first order rate of entry/exit to/from effector site"
+  C_t notes "hypothetical antagonistic metabolite to account for tolerance development"
+  k_tol notes "first order rate constant of appearance/disappearance of tolerance"
+  coffecup notes "availability of caffeine in gut after drinking a cup"
+  t_int notes "intervall between drinking of cups of coffee"
+  cups notes "number of cups drank at time t"
+  t_lag notes "time lag between drinking of coffee and arrival in gastrointestinal tract"
+  cupsize notes "amount of caffeine per cup"
+  bodyweight notes "total body weight"
+  CL notes "overall clearance per kilogram bodyweight"
+  E_0 notes "base line effect (base MAP)"
+  E notes "effect (mean arterial pressure, MAP)"
+end
+
+Shi1993_Caffeine_pressor_tolerance is "Shi1993_Caffeine_pressor_tolerance"

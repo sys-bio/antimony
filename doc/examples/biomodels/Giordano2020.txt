@@ -1,0 +1,249 @@
+// Created by libAntimony v3.0.0
+model *Giordano2020___SIDARTHE_model_of_COVID_19_spread_in_Italy()
+
+  // Compartments and Species:
+  compartment Italy;
+  species Susceptible in Italy, Infected in Italy, Diagnosed in Italy, Ailing in Italy;
+  species Recognized in Italy, Threatened in Italy, Healed in Italy, Extinct in Italy;
+
+  // Reactions:
+  Susceptible_to_Infected: Susceptible => Infected; Italy*(Susceptible*(alpha*Infected + beta*Diagnosed + gamma_*Ailing + delta*Recognized));
+  Infected_to_Diagnosed: Infected => Diagnosed; Italy*epsilon*Infected;
+  Infected_to_Ailing: Infected => Ailing; Italy*zeta*Infected;
+  Infected_to_Healed: Infected => Healed; Italy*lambda*Infected;
+  Diagnosed_to_Recognized: Diagnosed => Recognized; Italy*eta*Diagnosed;
+  Diagnosed_to_Healed: Diagnosed => Healed; Italy*rho*Diagnosed;
+  Ailing_to_Recognised: Ailing => Recognized; Italy*theta*Ailing;
+  Ailing_to_Healed: Ailing => Healed; Italy*kappa*Ailing;
+  Ailing_to_Threatened: Ailing => Threatened; Italy*mu*Ailing;
+  Recognised_to_Threatened: Recognized => Threatened; Italy*nu*Recognized;
+  Recognised_to_Healed: Recognized => Healed; Italy*xi*Recognized;
+  Threatened_to_Extinct: Threatened => Extinct; Italy*tau*Threatened;
+  Threatened_to_Healed: Threatened => Healed; Italy*sigma*Threatened;
+
+  // Events:
+  Day_4: at 0 after time > 4, persistent=false: delta = 0.0057, gamma_ = 0.285, beta = 0.0057, alpha = 0.422;
+  Day_12: at 0 after time > 12, persistent=false: epsilon = 0.143;
+  Day_22: at 0 after time > 22, persistent=false: eta = 0.034, zeta = 0.034, sigma = 0.017, xi = 0.017, kappa = 0.017, rho = 0.017, lambda = 0.08, nu = 0.015, mu = 0.008, delta = 0.005, gamma_ = 0.2, beta = 0.005, alpha = 0.36;
+  Day_28: at 0 after time > 28, persistent=false: gamma_ = 0.11, alpha = 0.21;
+  Day_38: at 0 after time > 38, persistent=false: kappa = 0.02, eta = 0.025, epsilon = 0.2, zeta = 0.025, sigma = 0.01, xi = 0.02, rho = 0.02;
+  Day_50: at 0 after time > 50, persistent=false: epsilon = 0.2*ModelValue_20 + 0.4*ModelValue_18 + 0.6*ModelValue_19, alpha = 0.209*ModelValue_21 + 0.252*ModelValue_16 + 0.105*ModelValue_17 + 0.42*ModelValue_19;
+
+  // Species initializations:
+  Susceptible = 0.9999963;
+  Susceptible has substance_per_volume;
+  Infected = 3.33333333e-06;
+  Infected has substance_per_volume;
+  Diagnosed = 3.33333333e-07;
+  Diagnosed has substance_per_volume;
+  Ailing = 1.66666666e-08;
+  Ailing has substance_per_volume;
+  Recognized = 3.33333333e-08;
+  Recognized has substance_per_volume;
+  Threatened = 0;
+  Threatened has substance_per_volume;
+  Healed = 0;
+  Healed has substance_per_volume;
+  Extinct = 0;
+  Extinct has substance_per_volume;
+
+  // Compartment initializations:
+  Italy = 1;
+  Italy has volume;
+
+  // Variable initializations:
+  alpha = 0.57;
+  alpha has unit_0;
+  beta = 0.011;
+  beta has unit_0;
+  gamma_ = 0.456;
+  gamma_ has unit_0;
+  delta = 0.011;
+  delta has unit_0;
+  epsilon = 0.171;
+  epsilon has unit_1;
+  mu = 0.017;
+  mu has unit_1;
+  nu = 0.027;
+  nu has unit_1;
+  lambda = 0.034;
+  lambda has unit_1;
+  rho = 0.034;
+  rho has unit_1;
+  kappa = 0.017;
+  kappa has unit_1;
+  xi = 0.017;
+  xi has unit_1;
+  sigma = 0.017;
+  sigma has unit_1;
+  zeta = 0.125;
+  zeta has unit_1;
+  eta = 0.125;
+  eta has unit_1;
+  ModelValue_21 = alpha_modifier;
+  ModelValue_16 = Event_trigger_Fig3b;
+  ModelValue_17 = Event_trigger_Fig3d;
+  ModelValue_19 = Event_trigger_Fig4d;
+  ModelValue_20 = epsilon_modifier;
+  ModelValue_18 = Event_trigger_Fig4b;
+  theta = 0.371;
+  theta has unit_1;
+  tau = 0.01;
+  tau has unit_1;
+  Event_trigger_Fig3b = 0;
+  Event_trigger_Fig3b has unit_2;
+  Event_trigger_Fig3d = 0;
+  Event_trigger_Fig3d has unit_2;
+  Event_trigger_Fig4b = 0;
+  Event_trigger_Fig4b has unit_2;
+  Event_trigger_Fig4d = 0;
+  Event_trigger_Fig4d has unit_2;
+  epsilon_modifier = 1;
+  epsilon_modifier has unit_2;
+  alpha_modifier = 1;
+  alpha_modifier has unit_2;
+
+  // Other declarations:
+  var alpha, beta, gamma_, delta, epsilon, mu, nu, lambda, rho, kappa, xi;
+  var sigma, zeta, eta;
+  const Italy, ModelValue_21, ModelValue_16, ModelValue_17, ModelValue_19;
+  const ModelValue_20, ModelValue_18, theta, tau, Event_trigger_Fig3b, Event_trigger_Fig3d;
+  const Event_trigger_Fig4b, Event_trigger_Fig4d, epsilon_modifier, alpha_modifier;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = time_unit;
+  unit substance = item;
+  unit unit_0 = 1 / (86400 second * item);
+  unit unit_1 = 1 / 86400 second;
+  unit unit_2 = 1 / dimensionless^-0;
+  unit extent = substance;
+  unit substance_per_volume = item / 1e-3 litre;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1/(#*d)";
+  unit_1 is "1/d";
+  unit_2 is "dimensionless";
+  gamma_ is "gamma";
+  ModelValue_21 is "Initial for alpha_modifier";
+  ModelValue_16 is "Initial for Event_trigger_Fig3b";
+  ModelValue_17 is "Initial for Event_trigger_Fig3d";
+  ModelValue_19 is "Initial for Event_trigger_Fig4d";
+  ModelValue_20 is "Initial for epsilon_modifier";
+  ModelValue_18 is "Initial for Event_trigger_Fig4b";
+
+  // CV terms:
+  Italy biological_system "http://identifiers.org/ncit/C16761"
+  Susceptible biological_system "http://identifiers.org/ido/0000514"
+  Susceptible property "http://identifiers.org/ido/0000468"
+  Susceptible property "http://identifiers.org/ido/0000659"
+  Infected biological_system "http://identifiers.org/ido/0000569"
+  Infected biological_system "http://identifiers.org/ido/0000511"
+  Infected property "http://identifiers.org/ncit/C113725"
+  Diagnosed biological_system "http://identifiers.org/ido/0000511"
+  Diagnosed property "http://identifiers.org/ncit/C15220"
+  Diagnosed property "http://identifiers.org/ncit/C3833"
+  Ailing biological_system "http://identifiers.org/ido/0000511"
+  Ailing biological_system "http://identifiers.org/ido/0000573"
+  Ailing property "http://identifiers.org/ncit/C113725"
+  Recognized biological_system "http://identifiers.org/ido/0000573"
+  Recognized biological_system "http://identifiers.org/ido/0000511"
+  Recognized property "http://identifiers.org/ncit/C25587"
+  Threatened biological_system "http://identifiers.org/ido/0000573"
+  Threatened property "http://identifiers.org/ncit/C15220"
+  Threatened property "http://identifiers.org/ncit/C25467"
+  Healed property "http://identifiers.org/ido/0000621"
+  Extinct identity "http://identifiers.org/ncit/C28554"
+  Susceptible_to_Infected biological_system "http://identifiers.org/ncit/C171133"
+  Susceptible_to_Infected biological_system "http://identifiers.org/doid/DOID:0080600"
+  Infected_to_Diagnosed biological_system "http://identifiers.org/ncit/C15220"
+  Infected_to_Diagnosed biological_system "http://identifiers.org/doid/DOID:0080600"
+  Infected_to_Ailing biological_system "http://identifiers.org/doid/DOID:0080600"
+  Infected_to_Ailing biological_system "http://identifiers.org/ncit/C168447"
+  Infected_to_Healed biological_system "http://identifiers.org/ncit/C25746"
+  Diagnosed_to_Recognized biological_system "http://identifiers.org/ncit/C168447"
+  Diagnosed_to_Recognized biological_system "http://identifiers.org/ncit/C15220"
+  Diagnosed_to_Recognized biological_system "http://identifiers.org/doid/DOID:0080600"
+  Diagnosed_to_Healed biological_system "http://identifiers.org/ncit/C25746"
+  Ailing_to_Recognised biological_system "http://identifiers.org/ncit/C15220"
+  Ailing_to_Recognised biological_system "http://identifiers.org/doid/DOID:0080600"
+  Ailing_to_Healed biological_system "http://identifiers.org/ncit/C25746"
+  Ailing_to_Threatened biological_system "http://identifiers.org/doid/DOID:0080600"
+  Ailing_to_Threatened biological_system "http://identifiers.org/meddra/10049438"
+  Recognised_to_Threatened biological_system "http://identifiers.org/meddra/10049438"
+  Recognised_to_Threatened biological_system "http://identifiers.org/doid/DOID:0080600"
+  Recognised_to_Healed biological_system "http://identifiers.org/ncit/C25746"
+  Threatened_to_Extinct biological_system "http://identifiers.org/doid/DOID:0080600"
+  Threatened_to_Extinct biological_system "http://identifiers.org/ncit/C28554"
+  Threatened_to_Healed biological_system "http://identifiers.org/ncit/C25746"
+
+  model publication "http://identifiers.org/pubmed/32322102"
+  model model_source "http://identifiers.org/biomodels.db/MODEL2007280002",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000955"
+  model taxon "http://identifiers.org/taxonomy/2697049",
+              "http://identifiers.org/taxonomy/9606"
+  model property "http://identifiers.org/doid/DOID:0080600",
+                 "http://identifiers.org/ido/0000503",
+                 "http://identifiers.org/mamo/MAMO_0000028"
+  model created "2020-07-13T21:17:26Z"
+  model modified "2020-07-17T02:10:46Z"
+  model creator1.givenName "Krishna"
+  model creator1.familyName "Tiwari"
+  model creator1.organization "European Bioinformatics Institute, European Molecular Biology Laboratory"
+  model creator1.email "ktiwari@ebi.ac.uk"
+  model creator2.givenName "Kausthubh"
+  model creator2.familyName "Ramachandran"
+  model creator2.organization "European Bioinformatics Institute, European Molecular Biology Laboratory"
+  model creator2.email "kramachandran@ebi.ac.uk"
+  model creator3.givenName "Rahuman"
+  model creator3.familyName "Sheriff"
+  model creator3.organization "European Bioinformatics Institute, European Molecular Biology Laboratory"
+  model creator3.email "sheriff@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+This is a model created on COPASI 4.27 (Build 217) which reproduces the Figures 
+2b, 2d, 3b, 3d, 4b, 4d in the article - https://www.nature.com/articles/s41591-020-0883-7To 
+reproduce Fig 2b and 2d, set Event_trigger_Fig3b = 0, Event_trigger_Fig3d = 0, Event_trigger_Fig4b 
+= 0, Event_trigger_Fig4d = 0, epsilon_modifer = 1, alpha_modifer = 1 and run for 
+t = 45 d (for Fig 2b) and t = 350 days (for Fig 2d).Set alpha_modifier = 0 for the 
+remaining 4 casesTo reproduce Fig 3b, set Event_trigger_Fig3b = 1, Event_trigger_Fig3d 
+= 0, Event_trigger_Fig4b = 0, Event_trigger_Fig4d = 0, epsilon_modifer = 1 and run 
+for t = 350 days.To reproduce Fig 3d, set Event_trigger_Fig3b = 0, Event_trigger_Fig3d 
+= 1, Event_trigger_Fig4b = 0, Event_trigger_Fig4d = 0, epsilon_modifer = 1 and run 
+for t = 350 days.To reproduce Fig 4b, set Event_trigger_Fig3b = 0, Event_trigger_Fig3d 
+= 0, Event_trigger_Fig4b = 1, Event_trigger_Fig4d = 0, epsilon_modifer = 0 and run 
+for t = 350 days.To reproduce Fig 4d, set Event_trigger_Fig3b = 0, Event_trigger_Fig3d 
+= 0, Event_trigger_Fig4b = 0, Event_trigger_Fig4d = 1, epsilon_modifer = 0 and run 
+for t = 350 days.Modelling the COVID-19 epidemic and implementation of population-wide 
+interventions in ItalyGiulia Giordano, Franco Blanchini, Raffaele Bruno, Patrizio 
+Colaneri, Alessandro Di Filippo, Angela Di Matteo and Marta ColaneriJournal - Nature 
+MedicineDOI - 10.1038/s41591-020-0883-7In Italy, 128,948 confirmed cases and 15,887 
+deaths of people who tested positive for SARS-CoV-2 were registered as of 5 April 
+2020. Ending the global SARS-CoV-2 pandemic requires implementation of multiple population-wide 
+strategies, including social distancing, testing and contact tracing. We propose 
+a new model that predicts the course of the epidemic to help plan an effective control 
+strategy. The model considers eight stages of infection: susceptible (S), infected 
+(I), diagnosed (D), ailing (A), recognized (R), threatened (T), healed (H) and extinct 
+(E), collectively termed SIDARTHE. Our SIDARTHE model discriminates between infected 
+individuals depending on whether they have been diagnosed and on the severity of 
+their symptoms. The distinction between diagnosed and non-diagnosed individuals is 
+important because the former are typically isolated and hence less likely to spread 
+the infection. This delineation also helps to explain misperceptions of the case 
+fatality rate and of the epidemic spread. We compare simulation results with real 
+data on the COVID-19 epidemic in Italy, and we model possible scenarios of implementation 
+of countermeasures. Our results demonstrate that restrictive social-distancing measures 
+will need to be combined with widespread testing and contact tracing to end the ongoing 
+COVID-19 pandemic.
+```
+  Infected notes "Infected ND AS - non-diagnosed, asymptomatic (I)"
+  Diagnosed notes "Infected D AS - diagnosed, asymptomatic (D)"
+  Ailing notes "Infected ND S - non-diagnosed, symptomatic (A)"
+  Recognized notes "Infected D S - diagnosed, symptomatic (R)"
+  Threatened notes "Infected D IC - diagnosed, life-threatening symptoms (T)"
+end
+
+Giordano2020___SIDARTHE_model_of_COVID_19_spread_in_Italy is "Giordano2020 - SIDARTHE model of COVID-19 spread in Italy"

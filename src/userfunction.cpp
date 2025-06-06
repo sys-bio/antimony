@@ -5,6 +5,7 @@
 #include "module.h"
 #include "registry.h"
 #include "sbmlx.h"
+#include "stringx.h"
 
 using namespace std;
 using namespace libsbml;
@@ -30,7 +31,7 @@ bool UserFunction::SetFormula(const Formula& formula)
 #endif
   m_formula = formula;
   formstring = formula.ToDelimitedStringWithEllipses(".");
-  vector<vector<string> > formvars = formula.GetVariables();
+  vector<vector<string> > formvars = formula.GetVariableStrings();
   for (size_t fv=0; fv<formvars.size(); fv++) {
     bool foundvar = false;
     for (size_t ufv=0; ufv<m_exportlist.size(); ufv++) {
@@ -96,7 +97,7 @@ string UserFunction::GetAntimony(bool enableAnnotations) const
     }
   }
   if (HasDisplayName()) {
-    func += "\n" + m_modulename + " is \"" + GetDisplayName() + "\"\n";
+    func += "\n" + m_modulename + " is " + quoteText(GetDisplayName()) + "\n";
   }
 
   return func;

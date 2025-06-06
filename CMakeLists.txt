@@ -3,15 +3,15 @@
 # CMake Build Script for libantimony
 #
 
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.0...4.0)
 project(libantimony)
 
 ####################################################################
 #
 # Set up version information.
 #
-SET(LIBANTIMONY_VERSION_MAJOR 2)
-SET(LIBANTIMONY_VERSION_MINOR 15)
+SET(LIBANTIMONY_VERSION_MAJOR 3)
+SET(LIBANTIMONY_VERSION_MINOR 0)
 SET(LIBANTIMONY_VERSION_PATCH ".0")
 SET(LIBANTIMONY_VERSION_RELEASE "")
 
@@ -45,7 +45,7 @@ include (CheckTypeSize)
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "An API library for reading, writing, manipulating, and translating Antimony models")
 SET(CPACK_PACKAGE_NAME "libAntimony")
 SET(CPACK_PACKAGE_VENDOR "Lucian Smith")
-SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README.txt")
+SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README.md")
 SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.txt")
 SET(CPACK_PACKAGE_VERSION_MAJOR "${LIBANTIMONY_VERSION_MAJOR}")
 SET(CPACK_PACKAGE_VERSION_MINOR "${LIBANTIMONY_VERSION_MINOR}")
@@ -59,12 +59,13 @@ SET(LIBANTIMONY_VERSION_STRING "v${LIBANTIMONY_VERSION_MAJOR}.${LIBANTIMONY_VERS
 option(BUILD_SHARED_LIBS  "Build shared library (Set to OFF to build static libraries)" ON)
 set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Choose the type of build, options are: None (CMAKE_CXX_FLAGS or CMAKE_C_FLAGS are used), Debug, Release, RelWithDebInfo, MinSizeRel" )
 
-set(USE_UNIVERSAL_BINARIES "ON" CACHE BOOL "Build and link to universal binaries on MacOS")
+#Turn off:  could never get universal binaries to work.
+#set(USE_UNIVERSAL_BINARIES "ON" CACHE BOOL "Build and link to universal binaries on MacOS")
 
-if (USE_UNIVERSAL_BINARIES)
-    set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64" CACHE INTERNAL "Compile for intel and M1 chips on apple" FORCE)
-    message(STATUS "building on mac with universal binaries")
-endif()
+#if (USE_UNIVERSAL_BINARIES)
+#    set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64" CACHE INTERNAL "Compile for intel and M1 chips on apple" FORCE)
+#    message(STATUS "building on mac with universal binaries")
+#endif()
 
 ####################################################################
 #
@@ -255,7 +256,7 @@ endif(WITH_CELLML)
 
 if(WITH_LIBSBML_EXPAT)
     find_library(EXPAT_LIBRARY
-        NAMES libexpat.lib libexpat.so libexpat.dylib libexpat expat.lib expat.so expat.dylib expat
+        NAMES libexpat.lib libexpat.so libexpat.dylib libexpat expat.lib expat.so expat.dylib expat libexpatdMD libexpatMD
 	PATHS /usr/lib /usr/local/lib
               ${CMAKE_SOURCE_DIR}
               ${CMAKE_SOURCE_DIR}/dependencies/lib
@@ -267,7 +268,7 @@ endif()
 if(WITH_LIBSBML_LIBXML)
     find_library(LIBXML_LIBRARY
         NAMES libxml2.lib libxml2.so libxml2.dylib libxml2 libxml2s libxml2sd
-	PATHS /usr/lib /usr/local/lib
+        PATHS /usr/lib /usr/local/lib
               ${CMAKE_SOURCE_DIR}
               ${CMAKE_SOURCE_DIR}/dependencies/lib
               ${LIBSBML_INCLUDE_DIR}/../lib
@@ -276,8 +277,8 @@ if(WITH_LIBSBML_LIBXML)
 
     #The libxml library requires the libz library, too.
     find_library(ZDLL_LIBRARY
-        NAMES zdll.lib zdll.so zdll.dylib zdll z zlibd.lib zlibstaticd.lib zlibmd.lib zlibstatic.lib
-	PATHS /usr/lib /usr/local/lib
+        NAMES zlibstatic.lib zlibstaticd.lib zlibstaticmd.lib zlibstatic zlibstaticd zlibstaticmd libz.a libz
+        PATHS /usr/lib /usr/local/lib
               ${CMAKE_SOURCE_DIR}
               ${CMAKE_SOURCE_DIR}/dependencies/lib
               ${LIBSBML_INCLUDE_DIR}/../lib
@@ -318,7 +319,7 @@ endif()
 
 if(WITH_LIBSBML_COMPRESSION)
     find_library(ZDLL_LIBRARY
-        NAMES zdll.lib zdll.so zdll.dylib zdll z zlibd.lib zlibstaticd.lib zlibmd.lib zlibstatic.lib
+    NAMES zlibstatic.lib zlibstaticd.lib zlibstaticmd.lib zlibstatic zlibstaticd zlibstaticmd zdll.lib zdll.so zdll.dylib zdll z libz.a 
 	PATHS /usr/lib /usr/local/lib
               ${CMAKE_SOURCE_DIR}
               ${CMAKE_SOURCE_DIR}/dependencies/lib
@@ -337,6 +338,30 @@ if(WITH_LIBSBML_COMPRESSION)
         )
     set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${BZIP_LIBRARY} )
 endif()
+
+if(WITH_SBML)
+    find_library(SBMLNETWORK_LIBRARY
+        NAMES libsbmlnetwork-static.lib sbmlnetwork-static.lib libsbmlnetwork-static sbmlnetwork-static libsbmlnetwork-staticmdd libsbmlnetwork-staticmd libsbmlnetwork-staticd libsbmlnetwork-staticd.a
+	PATHS /usr/lib /usr/local/lib
+              ${CMAKE_SOURCE_DIR}
+              ${CMAKE_SOURCE_DIR}/dependencies/lib
+              ${LIBSBML_INCLUDE_DIR}/../lib
+        )
+    set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${SBMLNETWORK_LIBRARY} )
+
+    find_path(SBMLNETWORK_INCLUDE_DIR
+        NAMES sbmlnetwork/libsbmlnetwork_common.h
+        PATHS /usr/include /usr/local/include  ${LIBSBML_INSTALL_DIR}/include
+        DOC "The directory containing the SBMLNetwork include files."
+              )
+
+    INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${SBMLNETWORK_INCLUDE_DIR} )
+    # SBMLNETWORK uses stuff from the 'dl' library on some platforms.  CMake defines CMAKE_DL_LIBS if so.
+    set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${CMAKE_DL_LIBS} )
+
+endif()
+
+message(STATUS "Antimony libs: ${LIBANTIMONY_LIBS}")
 
 ###############################################################################
 #
@@ -383,7 +408,7 @@ set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${EXTRA_LIBS})
 if(WITH_CHECK)
 
     # we do use tests, that require 2.8.4
-    cmake_minimum_required(VERSION 2.8.4)
+    # cmake_minimum_required(VERSION 2.8.4)
 
     # set test timeout to 3000 as the normal time limit is not sufficient
     # for the comp tests
@@ -534,9 +559,9 @@ file(GLOB LIBANTIMONY_SOURCES
     ${ANTIMONY_SRC_DIR}cellmlx.cpp
     ${ANTIMONY_SRC_DIR}constraint.cpp
     ${ANTIMONY_SRC_DIR}dnastrand.cpp
-    ${ANTIMONY_SRC_DIR}uncertWrapper.cpp
     ${ANTIMONY_SRC_DIR}event.cpp
     ${ANTIMONY_SRC_DIR}formula.cpp
+    ${ANTIMONY_SRC_DIR}layoutWrapper.cpp
     ${ANTIMONY_SRC_DIR}module.cpp
     ${ANTIMONY_SRC_DIR}reactantlist.cpp
     ${ANTIMONY_SRC_DIR}reaction.cpp
@@ -548,6 +573,7 @@ file(GLOB LIBANTIMONY_SOURCES
     ${ANTIMONY_SRC_DIR}unitdef.cpp
     ${ANTIMONY_SRC_DIR}unitelement.cpp
     ${ANTIMONY_SRC_DIR}userfunction.cpp
+    ${ANTIMONY_SRC_DIR}uncertWrapper.cpp
     ${ANTIMONY_SRC_DIR}unitdef.cpp
     ${ANTIMONY_SRC_DIR}unitelement.cpp
     ${ANTIMONY_SRC_DIR}variable.cpp
@@ -570,10 +596,10 @@ file(GLOB LIBANTIMONY_HEADERS
         ${ANTIMONY_SRC_DIR}cellmlx.h
         ${ANTIMONY_SRC_DIR}constraint.h
         ${ANTIMONY_SRC_DIR}dnastrand.h
-        ${ANTIMONY_SRC_DIR}uncertWrapper.h
         ${ANTIMONY_SRC_DIR}enums.h
         ${ANTIMONY_SRC_DIR}event.h
         ${ANTIMONY_SRC_DIR}formula.h
+        ${ANTIMONY_SRC_DIR}layoutWrapper.h
         ${ANTIMONY_SRC_DIR}libutil.h
         ${ANTIMONY_SRC_DIR}module.h
         ${ANTIMONY_SRC_DIR}reactantlist.h
@@ -583,6 +609,7 @@ file(GLOB LIBANTIMONY_HEADERS
         ${ANTIMONY_SRC_DIR}sboTermWrapper.h
         ${ANTIMONY_SRC_DIR}stringx.h
         ${ANTIMONY_SRC_DIR}typex.h
+        ${ANTIMONY_SRC_DIR}uncertWrapper.h
         ${ANTIMONY_SRC_DIR}unitdef.h
         ${ANTIMONY_SRC_DIR}unitelement.h
         ${ANTIMONY_SRC_DIR}userfunction.h

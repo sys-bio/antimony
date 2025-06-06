@@ -158,12 +158,12 @@ public:
   AntimonyEvent* GetCurrentEvent();
 
   //Algebraic rules
-  bool AddNewAlgebraicRuleToCurrent(int val, Formula* formula);
+  bool AddNewAlgebraicRuleToCurrent(double val, Formula* formula);
 
   Variable* GetCurrentSubmodel();
   void SetError(std::string error) {m_error = error;};
   void AddErrorPrefix(std::string error) {m_error = error + m_error;};
-  void AddWarning(std::string warning) {m_warnings.push_back(warning);};
+  void AddWarning(std::string warning);
   void ClearWarnings() {m_warnings.clear();};
 
   std::string GetLastFile();
@@ -207,15 +207,15 @@ public:
   // CV terms
   bool ProcessGlobalCVTerm(const std::string* name, const std::string* qual, std::vector<std::string>* resources);
 
-  bool ProcessCreatorTerm(Annotated* a, const std::string* creator, const std::string* cterm, int resource);
+  bool ProcessCreatorTerm(Annotated* a, const std::string* creator, const std::string* cterm, double resource);
 
   bool ProcessCreatorTerm(Annotated* a, const std::string* creator, const std::string* cterm, std::vector<std::string>* resources);
 
-  bool ProcessGlobalCreatorTerm(const std::string* name, const std::string* creator, const std::string* cterm, int resource);
+  bool ProcessGlobalCreatorTerm(const std::string* name, const std::string* creator, const std::string* cterm, double resource);
 
   bool ProcessGlobalCreatorTerm(const std::string* name, const std::string* creator, const std::string* cterm, std::vector<std::string>* resources);
 
-  bool CheckCreatorString(const std::string& qualifier, int& creator_number);
+  bool CheckCreatorString(const std::string& qualifier, unsigned int& creator_number);
 
   //Keeping track of malloc'd stuff so we can free it ourselves if need be.
   std::vector<char*>    m_charstars;

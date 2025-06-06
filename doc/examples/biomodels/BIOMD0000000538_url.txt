@@ -1,0 +1,132 @@
+// Created by libAntimony v3.0.0
+model *MODEL1408070000()
+
+  // Compartments and Species:
+  compartment Brain;
+  species $ONLnr in Brain, $ONLpcd in Brain, $ONLrom in Brain;
+
+  // Assignment Rules:
+  ONLrom := ONLrom_0*exp((exp(-Rrom*time) - 1)*Murom/Rrom)*100/ONLrom_0;
+
+  // Rate Rules:
+  ONLnr' = -Munr*ONLnr;
+  ONLpcd' = -Mupcd*ONLpcd;
+
+  // Species initializations:
+  ONLnr = 100;
+  ONLpcd = 100;
+
+  // Compartment initializations:
+  Brain = 1;
+
+  // Variable initializations:
+  Munr = 0.278;
+  Mupcd = 0.223;
+  ONLrom_0 = 40.947;
+  Rrom = 0.103;
+  Murom = 0.0708;
+
+  // Other declarations:
+  const Brain, Munr, Mupcd, ONLrom_0, Rrom, Murom;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+  ONLrom_0 is "ONLrom";
+
+  // CV terms:
+  Brain identity "http://identifiers.org/bto/BTO:0000142"
+  ONLnr identity "http://identifiers.org/bto/BTO:0005600"
+  ONLpcd identity "http://identifiers.org/bto/BTO:0005600"
+  ONLrom identity "http://identifiers.org/bto/BTO:0005600"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1408070000"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000538"
+  model publication "http://identifiers.org/pubmed/10910361"
+  model taxon "http://identifiers.org/taxonomy/9606",
+              "http://identifiers.org/taxonomy/10090",
+              "http://identifiers.org/taxonomy/9685",
+              "http://identifiers.org/taxonomy/9615",
+              "http://identifiers.org/taxonomy/10116"
+  model version "http://identifiers.org/doid/DOID:8466",
+                "http://identifiers.org/doid/DOID:1443",
+                "http://identifiers.org/doid/DOID:5327",
+                "http://identifiers.org/doid/DOID:5679",
+                "http://identifiers.org/doid/DOID:0050633",
+                "http://identifiers.org/doid/DOID:14330",
+                "http://identifiers.org/doid/DOID:12858"
+  model biological_system "http://identifiers.org/go/GO:0051402"
+  model created "2014-08-07T11:59:06Z"
+  model modified "2014-09-08T13:29:09Z"
+  model creator1.givenName "Audald"
+  model creator1.familyName "Lloret i Villas"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "lloret@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+Clarke2000 - One-hit model of cell death inneuronal degenerations 
+
+This one-hit model fits differentneuronal-death associated diseases for different
+animalmodels.  
+
+
+This model is described in the article:
+
+
+[A one-hit model of cell death in inherited neuronal degenerations.](http://identifiers.org/pubmed/10910361 "Access to this publication") 
+
+
+Clarke G, Collins RA, Leavitt BR, Andrews DF, Hayden MR, Lumsden CJ, McInnes RR.
+
+
+Nature 2000 Jul; 406(6792): 195-199 
+Abstract:
+
+
+In genetic disorders associated with premature neuronal death, symptoms may not
+appear for years or decades. This delay in clinical onset is often assumed to
+reflect the occurrence of age-dependent cumulative damage. For example, it has
+been suggested that oxidative stress disrupts metabolism in neurological degenerative
+disorders by the cumulative damage of essential macromolecules. A prediction of
+the cumulative damage hypothesis is that the probability of cell death will increase
+over time. Here we show in contrast that the kinetics of neuronal death in
+12 models of photoreceptor degeneration, hippocampal neurons undergoing excitotoxic
+cell death, a mouse model of cerebellar degeneration and Parkinson&apos;s and
+Huntington&apos;s diseases are all exponential and better explained by mathematical
+models in which the risk of cell death remains constant or decreases exponentially
+with age. These kinetics argue against the cumulative damage hypothesis; instead,
+the time of death of any neuron is random. Our findings are most simply accommodated
+by a &apos;one-hit&apos; biochemical model in which mutation imposes a mutant
+steady state on the neuron and a single event randomly initiates cell death. This
+model appears to be common to many forms of neurodegeneration and has implications
+for therapeutic strategies.
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identified by: [BIOMD0000000538](http://identifiers.org/biomodels.db/BIOMD0000000538).
+
+To cite BioModels Database, please use: [BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models](http://identifiers.org/pubmed/20587024 "Latest BioModels Database publication").
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+  ONLnr notes "Outer nuclear layer in nr/nr miceConstant risk equation, according to the article"
+  Munr notes "Mu Value for nr/nr mice"
+  ONLpcd notes "Outer nuclear layer in pcd/pcd miceConstant risk equation, according to the article"
+  Mupcd notes "Mu Value for pcd/pcd mice"
+  ONLrom notes ```
+Outer nuclear layer in Rom1-/- miceExponentially decreasing risk equation, according 
+to supplementary information
+```
+  ONLrom_0 notes "Initial ONL for Rom1-/- mice"
+  Rrom notes "R Value for Rom1-/- mice"
+  Murom notes "Mu Value for Rom1-/- mice"
+end
+
+MODEL1408070000 is "Clarke2000 - One-hit model of cell death in neuronal degenerations"

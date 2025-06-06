@@ -1,0 +1,109 @@
+// Created by libAntimony v3.0.0
+model *Voliotis2019_GnRH_Pulse_Generation()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species D in compartment_, N in compartment_, v in compartment_;
+
+  // Assignment Rules:
+  f_D := k_D0 + k_D*v^n_1/(v^n_1 + K_v1^n_1);
+  f_N := k_N0 + k_N*(v^n_2/(v^n_2 + K_v2^n_2))*(K_D^n_3/(D^n_3 + K_D^n_3));
+  f_v := v_0*((1 - exp(-I))/(1 + exp(-I)));
+  I := I_0 + p_v*v*(N^n_4/(N^n_4 + K_N^n_4));
+
+  // Reactions:
+  Dyn_Secretion:  => D; compartment_*f_D;
+  NKB_Secretion:  => N; compartment_*f_N;
+  Firing_Rate:  => v; compartment_*f_v;
+  Dyn_Decay: D => ; compartment_*d_D*D;
+  NKB_Decay: N => ; compartment_*d_N*N;
+  FR_Decay: v => ; compartment_*d_v*v;
+
+  // Species initializations:
+  D = 2.348;
+  N = 0.07764;
+  v = 300;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  d_D = 0.25;
+  d_N = 1;
+  d_v = 10;
+  k_D = 4.5;
+  k_N = 320;
+  k_D0 = 0.175;
+  k_N0 = 0;
+  p_v = 1;
+  v_0 = 30000;
+  K_D = 0.3;
+  K_N = 32;
+  K_v1 = 1200;
+  K_v2 = 1200;
+  I_0 = 0.2;
+  n_1 = 2;
+  n_2 = 2;
+  n_3 = 2;
+  n_4 = 2;
+
+  // Other declarations:
+  var f_D, f_N, f_v, I;
+  const compartment_, d_D, d_N, d_v, k_D, k_N, k_D0, k_N0, p_v, v_0, K_D;
+  const K_N, K_v1, K_v2, I_0, n_1, n_2, n_3, n_4;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 60 second;
+  unit substance = item;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL2003190007",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000931"
+  model taxon "http://identifiers.org/taxonomy/10088"
+  model description "http://identifiers.org/pubmed/31645462"
+  model property "http://identifiers.org/ncit/C16578",
+                 "http://identifiers.org/ncit/C41064",
+                 "http://identifiers.org/ncit/C2270",
+                 "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2019-12-17T12:47:18Z"
+  model modified "2020-03-19T20:58:27Z"
+  model creator1.givenName "Ahmad"
+  model creator1.familyName "Zyoud"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "ahmad.azd@hotmail.com"
+
+  // Notes:
+  model notes ```
+Fertility critically depends on the gonadotropin-releasing hormone (GnRH) pulse 
+generator, a neural construct comprised of hypothalamic neurons coexpressing kisspeptin, 
+neurokoinin-B and dynorphin. Here, using mathematical modeling and in vivo optogenetics 
+we reveal for the first time how this neural construct initiates and sustains the 
+appropriate ultradian frequency essential for reproduction. Prompted by mathematical 
+modeling, we show experimentally using female estrous mice that robust pulsatile 
+release of luteinizing hormone, a proxy for GnRH, emerges abruptly as we increase 
+the basal activity of the neuronal network using continuous low-frequency optogenetic 
+stimulation. Further increase in basal activity markedly increases pulse frequency 
+and eventually leads to pulse termination. Additional model predictions that pulsatile 
+dynamics emerge from nonlinear positive and negative feedback interactions mediated 
+through neurokinin-B and dynorphin signaling respectively are confirmed neuropharmacologically. 
+Our results shed light on the long-elusive GnRH pulse generator offering new horizons 
+for reproductive health and wellbeing.SIGNIFICANCE STATEMENT The gonadotropin-releasing 
+hormone (GnRH) pulse generator controls the pulsatile secretion of the gonadotropic 
+hormones LH and FSH and is critical for fertility. The hypothalamic arcuate kisspeptin 
+neurons are thought to represent the GnRH pulse generator, since their oscillatory 
+activity is coincident with LH pulses in the blood; a proxy for GnRH pulses. However, 
+the mechanisms underlying GnRH pulse generation remain elusive. We developed a mathematical 
+model of the kisspeptin neuronal network and confirmed its predictions experimentally, 
+showing how LH secretion is frequency-modulated as we increase the basal activity 
+of the arcuate kisspeptin neurons in vivo using continuous optogenetic stimulation. 
+Our model provides a quantitative framework for understanding the reproductive neuroendocrine 
+system and opens new horizons for fertility regulationModel is encoded by Johannes 
+and submitted to BioModels by Ahmad Zyoud.
+```
+end
+
+Voliotis2019_GnRH_Pulse_Generation is "Voliotis2019-GnRH Pulse Generation"

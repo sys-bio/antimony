@@ -1,0 +1,95 @@
+// Created by libAntimony v3.0.0
+model *Weitz2020___SIR_model_of_COVID_19_transmission_with_shielding()
+
+  // Compartments and Species:
+  compartment Country;
+  species Susceptible in Country, Infected in Country, Recovered in Country;
+
+  // Reactions:
+  Susceptible_to_Infected: Susceptible => Infected; Country*(beta*Susceptible*Infected/(1 + alpha*Recovered));
+  Infected_to_Recovered: Infected => Recovered; Country*Infected_to_Recovered_k1*Infected;
+
+  // Events:
+  Simulation_end: at 0 after time == 199: Uninfected = Susceptible, Epidemic_size = Recovered;
+
+  // Species initializations:
+  Susceptible = 0.999;
+  Infected = 0.001;
+  Recovered = 0;
+
+  // Compartment initializations:
+  Country = 1;
+
+  // Variable initializations:
+  Epidemic_size = 0;
+  Uninfected = 0;
+  alpha = 0;
+  beta = 0.25;
+  gamma_ = 0.1;
+  Infected_to_Recovered_k1 = 0.1;
+
+  // Other declarations:
+  var Epidemic_size, Uninfected;
+  const Country, alpha, beta, gamma_;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = item;
+
+  // Display Names:
+  time_unit is "time";
+  gamma_ is "gamma";
+
+  // CV terms:
+  Country biological_system "http://identifiers.org/ncit/C25464"
+  Susceptible biological_system "http://identifiers.org/ncit/C171133"
+  Susceptible biological_system "http://identifiers.org/ido/0000514"
+  Infected biological_system "http://identifiers.org/ncit/C171133"
+  Infected biological_system "http://identifiers.org/ido/0000511"
+  Recovered biological_system "http://identifiers.org/ido/0000621"
+  Recovered biological_system "http://identifiers.org/ncit/C171133"
+  Susceptible_to_Infected biological_system "http://identifiers.org/ncit/C171133"
+  Susceptible_to_Infected biological_system "http://identifiers.org/ncit/C128320"
+  Infected_to_Recovered biological_system "http://identifiers.org/ncit/C171133"
+  Infected_to_Recovered biological_system "http://identifiers.org/ncit/C25746"
+
+  model publication "http://identifiers.org/pubmed/32382154"
+  model model_source "http://identifiers.org/biomodels.db/MODEL2009160002",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000963"
+  model biological_system "http://identifiers.org/doid/DOID:0080600"
+  model biological_system "http://identifiers.org/ido/0000503"
+  model taxon "http://identifiers.org/taxonomy/9606",
+              "http://identifiers.org/taxonomy/2697049"
+  model property "http://identifiers.org/mamo/MAMO_0000028"
+  model created "2020-09-12T00:04:01Z"
+  model modified "2020-09-12T00:04:01Z"
+  model creator1.givenName "Kausthubh"
+  model creator1.familyName "Ramachandran"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "kramachandran@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+The COVID-19 pandemic has precipitated a global crisis, with more than 1,430,000
+confirmed cases and more than 85,000 confirmed deaths globally as of 9 April 2020.
+Mitigation and suppression of new infections have emerged as the two predominant
+public health control strategies. Both strategies focus on reducing new infections
+by limiting human-to-human interactions, which could be both socially and economically
+unsustainable in the long term. We have developed and analyzed an epidemiological
+intervention model that leverages serological tests to identify and deploy recovered
+individuals as focal points for sustaining safer interactions via interaction substitution,
+developing what we term ‘shield immunity’ at the population scale. The objective
+of a shield immunity strategy is to help to sustain the interactions necessary for
+the functioning of essential goods and services while reducing the probability of
+transmission. Our shield immunity approach could substantively reduce the length
+and reduce the overall burden of the current outbreak, and can work synergistically
+with social distancing. The present model highlights the value of serological testing
+as part of intervention strategies, in addition to its well-recognized roles in estimating
+prevalence and in the potential development of plasma-based therapies.
+```
+end
+
+Weitz2020___SIR_model_of_COVID_19_transmission_with_shielding is "Weitz2020 - SIR model of COVID-19 transmission with shielding"

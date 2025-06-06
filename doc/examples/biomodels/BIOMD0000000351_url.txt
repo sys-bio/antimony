@@ -1,0 +1,214 @@
+// Created by libAntimony v3.0.0
+model *Vernoux2011_AuxinSignalling_AuxinSingleStepInput()
+
+  // Compartments and Species:
+  compartment compartment_0000001;
+  species I in compartment_0000001, A in compartment_0000001, D_II in compartment_0000001;
+  species D_IA in compartment_0000001, R in compartment_0000001, $aux in compartment_0000001;
+
+  // Assignment Rules:
+  aux := piecewise(5, time > 1000, 0);
+  kprime_IA := K_IA*k_IA;
+  kprime_II := K_II*k_II;
+  aux_basal := 1/(K_aux*(gamma_I - 1));
+
+  // Reactions:
+  reac_DIA: A + I -> D_IA; k_IA*I*A - kprime_IA*D_IA;
+  reac_DII: I + I -> D_II; k_II*I*I - kprime_II*D_II;
+  reac_degrI: I => ; (gamma_I*d_I*K_aux*aux/(K_aux*aux + 1))*I;
+  reac_degrA: A => ; d_A*A;
+  reac_degrDIA: D_IA => ; d_IA*D_IA;
+  reac_degrDII: D_II => ; d_II*D_II;
+  reac_DIAxA: D_IA => A; (gamma_I*d_I*K_aux*aux/(K_aux*aux + 1))*D_IA;
+  reac_DIIxI: D_II => I; (gamma_I*d_I*K_aux*aux/(K_aux*aux + 1))*D_II;
+  reac_degrR: R => ; d_r*R;
+  reac_prodI:  => I; pi_I*R;
+  reac_prodA:  => A; pi_A;
+  reac_prodR:  => R; (1 + (f_c/B_d)*A*(1 + w_A*f_A*A/B_d))/(1 + (A/B_d)*(1 + w_A*A/B_d) + w_I*A*I/(K_IA*B_d) + w_D*D_IA/B_d + k_Am);
+
+  // Species initializations:
+  I = 10;
+  A = 10;
+  D_II = 10;
+  D_IA = 10;
+  R = 1;
+
+  // Compartment initializations:
+  compartment_0000001 = 1;
+
+  // Variable initializations:
+  pi_I = 1;
+  d_r = 0.007;
+  d_A = 0.003;
+  d_II = 0.003;
+  d_IA = 0.003;
+  k_II = 1;
+  k_IA = 1;
+  B_d = 100;
+  f_A = 10;
+  gamma_I = 10;
+  K_aux = 1;
+  K_II = 10;
+  K_IA = 10;
+  f_c = 10;
+  w_A = 10;
+  w_I = 10;
+  w_D = 10;
+  d_I = 0.05;
+  pi_A = 1;
+  k_Am = 10;
+
+  // Other declarations:
+  var kprime_IA, kprime_II, aux_basal;
+  const compartment_0000001, pi_I, d_r, d_A, d_II, d_IA, k_II, k_IA, B_d;
+  const f_A, gamma_I, K_aux, K_II, K_IA, f_c, w_A, w_I, w_D, d_I, pi_A, k_Am;
+
+  // Display Names:
+  compartment_0000001 is "c_1";
+  I is "Aux/IAA";
+  A is "ARF";
+  D_II is "Aux/IAA:Aux/IAA";
+  D_IA is "Aux/IAA:ARF";
+  R is "mRNA";
+  aux is "auxin";
+
+  // SBO terms:
+  compartment_0000001.sboTerm = 290
+  I.sboTerm = 252
+  A.sboTerm = 252
+  D_II.sboTerm = 286
+  D_IA.sboTerm = 297
+  R.sboTerm = 278
+  aux.sboTerm = 252
+  pi_I.sboTerm = 153
+  d_r.sboTerm = 356
+  d_A.sboTerm = 356
+  d_II.sboTerm = 356
+  d_IA.sboTerm = 356
+  k_II.sboTerm = 341
+  k_IA.sboTerm = 341
+  B_d.sboTerm = 282
+  f_A.sboTerm = 9
+  gamma_I.sboTerm = 9
+  K_aux.sboTerm = 282
+  K_II.sboTerm = 282
+  K_IA.sboTerm = 282
+  f_c.sboTerm = 9
+  w_A.sboTerm = 481
+  w_I.sboTerm = 481
+  w_D.sboTerm = 481
+  d_I.sboTerm = 356
+  pi_A.sboTerm = 153
+  k_Am.sboTerm = 9
+  kprime_IA.sboTerm = 338
+  kprime_II.sboTerm = 338
+  aux_basal.sboTerm = 9
+  reac_DIA.sboTerm = 526
+  reac_DII.sboTerm = 526
+  reac_degrI.sboTerm = 179
+  reac_degrA.sboTerm = 179
+  reac_degrDIA.sboTerm = 179
+  reac_degrDII.sboTerm = 179
+  reac_DIAxA.sboTerm = 180
+  reac_DIIxI.sboTerm = 180
+  reac_degrR.sboTerm = 179
+  reac_prodI.sboTerm = 393
+  reac_prodA.sboTerm = 393
+  reac_prodR.sboTerm = 393
+
+  // CV terms:
+  compartment_0000001 biological_system "http://identifiers.org/go/GO:0005623"
+  I biological_system "http://identifiers.org/uniprot/P49677"
+  A biological_system "http://identifiers.org/uniprot/Q94JM3"
+  D_II part "http://identifiers.org/uniprot/P49677"
+  D_IA part "http://identifiers.org/uniprot/Q94JM3",
+            "http://identifiers.org/uniprot/P49677"
+  R biological_system "http://identifiers.org/chebi/CHEBI:33699"
+  aux biological_system "http://identifiers.org/uniprot/Q96247"
+  reac_DIA biological_system "http://identifiers.org/go/GO:0006461"
+  reac_DII biological_system "http://identifiers.org/go/GO:0006461"
+  reac_degrI biological_system "http://identifiers.org/go/GO:0009056"
+  reac_degrA biological_system "http://identifiers.org/go/GO:0009056"
+  reac_degrDIA biological_system "http://identifiers.org/go/GO:0009056"
+  reac_degrDII biological_system "http://identifiers.org/go/GO:0009056"
+  reac_DIAxA biological_system "http://identifiers.org/go/GO:0043241"
+  reac_DIIxI biological_system "http://identifiers.org/go/GO:0043241"
+  reac_degrR biological_system "http://identifiers.org/go/GO:0009056"
+  reac_prodI biological_system "http://identifiers.org/go/GO:0009058"
+  reac_prodA biological_system "http://identifiers.org/go/GO:0009058"
+  reac_prodR biological_system "http://identifiers.org/go/GO:0009299"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1105290000"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000351"
+  model publication "http://identifiers.org/pubmed/21734647"
+  model taxon "http://identifiers.org/taxonomy/3701"
+  model biological_system "http://identifiers.org/go/GO:0009734"
+  model created "2011-04-01T10:17:29Z"
+  model modified "2011-08-23T14:13:38Z"
+  model creator1.givenName "Vijayalakshmi"
+  model creator1.familyName "Chelliah"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "viji@ebi.ac.uk"
+  model creator2.givenName "Teva"
+  model creator2.familyName "Vernoux"
+  model creator2.organization "CNRS"
+  model creator2.email "teva.vernoux@ens-lyon.fr"
+  model creator3.givenName "Farcot"
+  model creator3.familyName "Etienne"
+  model creator3.organization "INRIA"
+  model creator3.email "etienne.farcot@inria.fr"
+
+  // Notes:
+  model notes ```
+This model is from the article: 
+**The auxin signalling network translates dynamic input into robust patterning
+at the shoot apex.** 
+Vernoux T, Brunoud G, Farcot E, Morin V, Van den Daele H, Legrand J, Oliva
+M, Das P, Larrieu A, Wells D, Guédon Y, Armitage L, Picard F, Guyomarc&apos;h S,
+Cellier C, Parry G, Koumproglou R, Doonan JH, Estelle M, Godin C, Kepinski S, Bennett
+M, De Veylder L, Traas J. *Mol Syst Biol.* 2011 Jul 5;7:508. [21734647](http://www.ncbi.nlm.nih.gov/pubmed/21734647) , 
+**Abstract:** 
+The plant hormone auxin is thought to provide positional information for
+patterning during development. It is still unclear, however, precisely how auxin
+is distributed across tissues and how the hormone is sensed in space and time. The
+control of gene expression in response to auxin involves a complex network of over
+50 potentially interacting transcriptional activators and repressors, the auxin response
+factors (ARFs) and Aux/IAAs. Here, we perform a large-scale analysis of the Aux/IAA-ARF
+pathway in the shoot apex of Arabidopsis, where dynamic auxin-based patterning controls
+organogenesis. A comprehensive expression map and full interactome uncovered an unexpectedly
+simple distribution and structure of this pathway in the shoot apex. A mathematical
+model of the Aux/IAA-ARF network predicted a strong bufferingcapacity along with
+spatial differences in auxin sensitivity. We then tested and confirmed these predictions
+using a novel auxin signalling sensor that reports input into the signalling pathway,
+in conjunction with the published DR5 transcriptional output reporter. Our results
+provide evidence that the auxin signalling network is essential to create robust
+patterns at the shoot apex. 
+**Note:** 
+
+Figure 3 of the supplementary material of the reference article has been reproduced
+here. Time evolution of all the variables in the model are plotted, under the influence
+of a step input of auxin level (auxin=5, when time>1000; 0.11, otherwise). pi_A
+is varied between 0 and 2 by steps of 0.1.
+
+
+This model originates from BioModels Database: A Database of Annotated Published
+Models (http://www.ebi.ac.uk/biomodels/). It is copyright (c) 2005-2011 The BioModels.net
+Team. 
+For more information see the [terms of use](http://www.ebi.ac.uk/biomodels/legal.html) . 
+To cite BioModels Database, please use: [Li C, Donizelli M, Rodriguez N, Dharuri H, Endler L, Chelliah V, Li L, He E, Henry A, Stefan MI, Snoep JL, Hucka M, Le Novère N, Laibe C (2010) BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models. BMC Syst Biol., 4:92.](http://www.ncbi.nlm.nih.gov/pubmed/20587024)
+```
+  d_r notes ```
+Auxin target gene mRNA degradation rate. Computed from the mean half life
+of Aux/IAA mRNA in Narsai et al. The Plant Cell 2007.
+```
+  d_A notes ```
+ARF degradation rate, based on the value for ARF1, cf. Salmon et al. The
+Plant Journal (2008)
+```
+  d_I notes ```
+Aux/IAA basal degradation rate (without auxin), based on half-lifes measured
+in Dreher et al. The Plant Cell 2006.
+```
+end
+
+Vernoux2011_AuxinSignalling_AuxinSingleStepInput is "Vernoux2011_AuxinSignaling_AuxinSingleStepInput"

@@ -34,6 +34,7 @@ UnitDef GetUnitDefFrom(const libsbml::UnitDefinition* unitdefinition, std::strin
 #endif
 
 void removeBooleanErrors(libsbml::SBMLDocument* doc);
+void removeSBOErrors(libsbml::SBMLDocument* doc);
 
 /// Remove all metaids from document - allows comparisons without metaids
 void elideMetaIds(libsbml::SBMLDocument* doc);
@@ -50,5 +51,8 @@ libsbml::FluxBoundOperation_t getReverseFBOperationFrom(libsbml::ASTNodeType_t a
 constraint_type getConstraintTypeFrom(libsbml::FluxBoundOperation_t fbtype);
 bool FluxesMatch(const libsbml::FluxBound* fb1, const libsbml::FluxBound* fb2);
 #endif
+
+bool isValidColorValue(std::string formstring);
+bool startsAtReaction(std::string role);
 
 #endif

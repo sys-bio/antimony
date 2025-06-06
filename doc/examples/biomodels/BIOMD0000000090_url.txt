@@ -1,0 +1,349 @@
+// Created by libAntimony v3.0.0
+model *Wolf2001_Respiratory_Oscillations()
+
+  // Compartments and Species:
+  compartment c0, c1, c2;
+  species $sul_ex in c0, $eth_ex in c0, $oxy_ex in c0, oxy in c2, $H2O in c2;
+  species A3c in c1, aps in c1, $PPi in c1, pap in c1, sul in c1, eth in c1;
+  species $A2c in c1, hyd in c1, cys in c1, N2 in c1, $N1 in c1, aco in c1;
+  species oah in c1, S1 in c2, $S2 in c2, $C1 in c2, $C2 in c2, $A2m in c2;
+  species A3m in c2, $Ho in c1, $Hm in c2;
+
+  // Assignment Rules:
+  A2c := Ac - A3c;
+  N1 := N - N2;
+  S2 := S - S1;
+  A2m := Am - A3m;
+
+  // Reactions:
+  v1: $sul_ex => sul; c0*k_v0/(1 + (cys/Kc)^n);
+  v13: $eth_ex => eth; c0*k_v13;
+  v2: sul + A3c => aps + $PPi; c1*k2*sul*A3c;
+  v10: $oxy_ex => oxy; c0*k_v10;
+  v14: oxy => $oxy_ex; c2*k14*oxy;
+  v3: aps + A3c => pap + $A2c; c1*k3*aps*A3c;
+  v4: pap + 3 N2 => hyd + 3 $N1; c1*k4*pap*N2;
+  v5: hyd + oah => cys; c1*k5*hyd*oah;
+  v6: cys => ; c1*k6*cys;
+  v7: eth + 2 $N1 => aco + 2 N2; c1*k7*eth*N1;
+  v15: aco => oah; c1*k15*aco;
+  v17: hyd => ; c1*k17*hyd;
+  v18: oah => ; c1*k18*oah;
+  v8: $S2 + aco => S1; c2*k8*aco*S2;
+  v9: S1 + 4 $N1 => $S2 + 4 N2; c2*k9*S1*N1;
+  v11a: $C1 + $Hm + N2 => $C2 + $Ho + $N1; c2*k11*N2*oxy/((a*N2 + oxy)*(1 + (hyd/Kh)^m));
+  v11a2: $C2 + oxy => $C1 + $H2O; c2*k11*N2*oxy/((a*N2 + oxy)*(1 + (hyd/Kh)^m));
+  v16: $A2c + A3m => $A2m + A3c; c2*k16*A3m*A2c;
+  v11b: $Ho + $A2m => $Hm + A3m; (c2*3*k11*N2*oxy/((a*N2 + oxy)*(1 + (hyd/Kh)^m)))*A2m/(Ka + A2m);
+  vLEAK: $Ho => $Hm; 0;
+  v12: A3c => $A2c; c1*k12*A3c;
+
+  // Species initializations:
+  sul_ex = 0;
+  eth_ex = 0;
+  oxy_ex = 0;
+  oxy = 7;
+  oxy has substance_per_volume;
+  H2O = 0;
+  A3c = 1.5;
+  A3c has substance_per_volume;
+  aps = 0.5;
+  aps has substance_per_volume;
+  PPi = 0;
+  pap = 0.4;
+  pap has substance_per_volume;
+  sul = 0.4;
+  sul has substance_per_volume;
+  eth = 4;
+  eth has substance_per_volume;
+  A2c has substance_per_volume;
+  hyd = 0.5;
+  hyd has substance_per_volume;
+  cys = 0.3;
+  cys has substance_per_volume;
+  N2 = 2;
+  N2 has substance_per_volume;
+  N1 has substance_per_volume;
+  aco = 0.3;
+  aco has substance_per_volume;
+  oah = 1.5;
+  oah has substance_per_volume;
+  S1 = 1.5;
+  S1 has substance_per_volume;
+  S2 has substance_per_volume;
+  C1 = 0;
+  C2 = 0;
+  A2m has substance_per_volume;
+  A3m = 1.5;
+  A3m has substance_per_volume;
+  Ho = 0;
+  Hm = 0;
+
+  // Compartment initializations:
+  c0 = 1;
+  c1 = 1;
+  c2 = 1;
+
+  // Variable initializations:
+  Ac = 2;
+  N = 2;
+  S = 2;
+  Am = 2;
+  k_v0 = 1.6;
+  k2 = 0.2;
+  k3 = 0.2;
+  k4 = 0.2;
+  k5 = 0.1;
+  k6 = 0.12;
+  k7 = 10;
+  k8 = 10;
+  k9 = 10;
+  k_v10 = 80;
+  k11 = 10;
+  k12 = 5;
+  k_v13 = 4;
+  k14 = 10;
+  k15 = 5;
+  k16 = 10;
+  k17 = 0.02;
+  k18 = 1;
+  n = 4;
+  m = 4;
+  Ka = 1;
+  Kc = 0.1;
+  a = 0.1;
+  Kh = 0.5;
+
+  // Other declarations:
+  const c0, c1, c2, Ac, N, S, Am, k_v0, k2, k3, k4, k5, k6, k7, k8, k9, k_v10;
+  const k11, k12, k_v13, k14, k15, k16, k17, k18, n, m, Ka, Kc, a, Kh;
+
+  // Unit definitions:
+  unit substance = mole;
+  unit substance_per_volume = mole / litre;
+
+  // Display Names:
+  c0 is "external";
+  c1 is "cytosol";
+  c2 is "mitochondria";
+  sul_ex is "SO4_ex";
+  eth_ex is "EtOH_ex";
+  oxy_ex is "O2_ex";
+  oxy is "O2";
+  A3c is "ATP";
+  aps is "APS";
+  pap is "PAPS";
+  sul is "SO4";
+  eth is "EtOH";
+  A2c is "ADP";
+  hyd is "H2S";
+  cys is "CYS";
+  N2 is "NADH";
+  N1 is "NAD";
+  aco is "AcCoA";
+  oah is "OAH";
+  A2m is "ADP_mit";
+  A3m is "ATP_mit";
+  v11a is "vET1";
+  v11a2 is "vET2";
+  v11b is "vSYNT";
+
+  // CV terms:
+  c0 biological_system "http://identifiers.org/go/GO:0005576"
+  c1 biological_system "http://identifiers.org/go/GO:0005829"
+  c2 biological_system "http://identifiers.org/go/GO:0005739"
+  sul_ex identity "http://identifiers.org/chebi/CHEBI:16189"
+  eth_ex identity "http://identifiers.org/chebi/CHEBI:16236"
+  oxy_ex identity "http://identifiers.org/chebi/CHEBI:15379"
+  oxy identity "http://identifiers.org/chebi/CHEBI:15379"
+  H2O identity "http://identifiers.org/chebi/CHEBI:15377"
+  A3c identity "http://identifiers.org/chebi/CHEBI:15422"
+  aps identity "http://identifiers.org/chebi/CHEBI:17709"
+  PPi identity "http://identifiers.org/chebi/CHEBI:18361"
+  pap identity "http://identifiers.org/chebi/CHEBI:17980"
+  sul identity "http://identifiers.org/chebi/CHEBI:16189"
+  eth identity "http://identifiers.org/chebi/CHEBI:16236"
+  A2c identity "http://identifiers.org/chebi/CHEBI:16761"
+  hyd identity "http://identifiers.org/chebi/CHEBI:16136"
+  cys identity "http://identifiers.org/chebi/CHEBI:17561"
+  N2 identity "http://identifiers.org/chebi/CHEBI:16908"
+  N1 identity "http://identifiers.org/chebi/CHEBI:15846"
+  aco identity "http://identifiers.org/chebi/CHEBI:15351"
+  oah identity "http://identifiers.org/chebi/CHEBI:16288"
+  S1 parthood "http://identifiers.org/go/GO:0030062"
+  S2 parthood "http://identifiers.org/go/GO:0030062"
+  C1 biological_system "http://identifiers.org/go/GO:0005746"
+  C2 biological_system "http://identifiers.org/go/GO:0005746"
+  A2m identity "http://identifiers.org/chebi/CHEBI:16761"
+  A3m identity "http://identifiers.org/chebi/CHEBI:15422"
+  Ho identity "http://identifiers.org/chebi/CHEBI:24636"
+  Hm identity "http://identifiers.org/chebi/CHEBI:24636"
+  v1 biological_system "http://identifiers.org/go/GO:0015381"
+  v13 biological_system "http://identifiers.org/go/GO:0015850"
+  v2 identity "http://identifiers.org/ec-code/2.7.7.4"
+  v3 identity "http://identifiers.org/ec-code/2.7.1.25"
+  v3 biological_system "http://identifiers.org/go/GO:0004020"
+  v4 version "http://identifiers.org/ec-code/1.8.4.8",
+             "http://identifiers.org/ec-code/1.8.1.2"
+  v5 version "http://identifiers.org/ec-code/4.4.1.1",
+             "http://identifiers.org/ec-code/4.2.1.22",
+             "http://identifiers.org/ec-code/2.5.1.49"
+  v7 version "http://identifiers.org/ec-code/6.2.1.1",
+             "http://identifiers.org/ec-code/1.2.1.3",
+             "http://identifiers.org/ec-code/1.1.1.1"
+  v15 identity "http://identifiers.org/ec-code/2.3.1.31"
+  v8 parthood "http://identifiers.org/go/GO:0006099"
+  v9 parthood "http://identifiers.org/go/GO:0006099"
+  v11a identity "http://identifiers.org/go/GO:0015990"
+  v11a parthood "http://identifiers.org/go/GO:0042775"
+  v11a version "http://identifiers.org/go/GO:0002082"
+  v11a2 parthood "http://identifiers.org/go/GO:0042775"
+  v11a2 version "http://identifiers.org/go/GO:0002082"
+  v11a2 identity "http://identifiers.org/go/GO:0006123"
+  v16 identity "http://identifiers.org/go/GO:0005471"
+  v11b parthood "http://identifiers.org/go/GO:0042775"
+  v11b biological_system "http://identifiers.org/go/GO:0006119"
+  v11b version "http://identifiers.org/go/GO:0002082"
+  vLEAK biological_system "http://identifiers.org/go/GO:0006810"
+  v12 biological_system "http://identifiers.org/go/GO:0006200"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL9728951048"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000090"
+  model publication "http://identifiers.org/pubmed/11423122"
+  model taxon "http://identifiers.org/taxonomy/4932"
+  model biological_system "http://identifiers.org/go/GO:0019379"
+  model created "2007-01-23T15:42:43Z"
+  model modified "2012-07-05T14:48:26Z"
+  model creator1.givenName "Rainer"
+  model creator1.familyName "Machne"
+  model creator1.organization "University of Vienna"
+  model creator1.email "raim@tbi.univie.ac.at"
+
+  // Notes:
+  model notes ```
+This model by Jana Wolf et al. 2001 is the first mechanistic model of respiratory
+oscillations in Saccharomyces cerevisae. It is based on the assumption that feedback
+inhibition of cysteine on the sulfate transporters leads to oscillations in this
+pathway and causes oscillations in respiratory activity via inhibition of cytochrome
+c oxidase by hydrogen disulfide. The model is qualitative/semi-quantitative and reproduces
+the respiratory oscillation pattern quite well. It is based on very coarse-grained
+representations of the mitochondrial tricarboxylic acid cycle and the mitochondrial
+electron transport chain (oxidative phosphorylation). The sulfate assimilatory pathways
+also contains some significant simplifcations.
+
+The model corresponds to Fig. 2B of the paper, with a slight phase shift of the oscillations.
+No initial conditions were given in the paper, and thus they were chosen arbitrarily
+in a range that lies within the basin of attraction of the limit cycle oscillations.
+Species IDs correspond to IDs used by the authors, while SBML names are more common
+abbreviations.
+
+Caveats: 
+1) Equilibrated transport: 
+The model assumes fast equilibration between mitochondria and cytoplasm
+for the metabolites NADH, NAD+, H2S and Acetyl-CoA. 
+2) Cytosolic mass conservation ATP/ADP: 
+The model uses mass conservation for cytosolic adenosine nucleotides with
+is however not encoded in the stoichiometry, but is implied by the lumped reaction
+v4. This reaction combines the enzymatic reactions of phosphoadenylyl-sulfate reductase
+(thioredoxin) (yeast protein Met16p, EC 1.8.4.8) and sulfite reductase (NADPH) (subunits
+Met5p and Met10p, EC 1.8.1.2). EC 1.8.4.8 also has adenosine-3&apos;,5&apos;-bismonophosphate
+(PAP, not to confuse with ID pap in this model, standing for PAPS) as a product.
+PAP is the substrate for enzyme 3&apos;(2&apos;),5&apos;-bisphosphate nucleotidase
+(Met22p, EC:3.1.3.7) which would revover AMP (and Pi). Then AMP can be assumed to
+be equilibrated with ATP and ADP via adenylate kinase, as often used in metabolic
+models. This AMP production is implied in the mass conservation for cytosolic adenosine
+phosphates. Accounting for these reactions explicitly does not change the dynamics
+of the model significantly. An according version can be obtained from the SBML creator
+(Rainer Machne, mailto:raim@tbi.univie.ac.at). 
+3) Redox balance: 
+The enzyme sulfite reductase (NADPH) (subunits Met5p and Met10p, EC 1.8.1.2,
+part of reaction v4) actually uses NADPH, and the authors assume equilibration of
+NADH and NADPH. But actually S. cerevisiae specifically is missing the according
+enzyme transhydrogenase (EC 1.6.1.1 or EC 1.6.1.2). EC 1.8.4.8 also oxidizes thioredoxin
+and would actually require an additional NADPH for thioredoxin recovery (reduction).
+This would slightly affect the redox balance of the model. 
+4) Energy balance: 
+Reaction v7 lumps NAD-dependent alcohol dehydrogenase (EC 1.1.1.1), aldehyde
+dehydrogenase (NAD+) (EC 1.2.1.3) and acetyl-CoA synthase (EC 6.2.1.1). The latter
+reaction would actually consume ATP as a co-factor, producing AMP+PPi, and this is
+not included in the model. This would slightly bias the model&apos;s energy balance.
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Creative Commons CC0") for more information. 
+
+In summary, you are entitled to use this encoded model in absolutely any manner you
+deem suitable, verbatim, or with modification, alone or embedded it in a larger context,
+redistribute it, commercially or not, in a restricted way or not.
+
+
+To cite BioModels Database, please use: [Li C, Donizelli M, Rodriguez N, Dharuri H, Endler L, Chelliah V, Li L, He E, Henry A, Stefan MI, Snoep JL, Hucka M, Le Novère N, Laibe C (2010) BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models. BMC Syst Biol., 4:92.](http://www.ncbi.nlm.nih.gov/pubmed/20587024)
+```
+  v10 notes "oxygen diffusion"
+  v14 notes "oxygen diffusion"
+  v4 notes ```
+This combined reaction contains phosphoadenylyl-sulfate reductase (thioredoxin)
+(yeast protein Met16p, EC:1.8.4.8) which also reduces thioredoxin and would actually
+require an additional NADPH for thioredoxin recovery (reduction), thus a correct
+stoichiometry would have to include an additional NADPH. This reaction also has 
+adenosine 3&apos;,5&apos;-bismonophosphate (PAP) as a product from which the enzyme
+3&apos;(2&apos;),5&apos;-bisphosphate nucleotidase (Met22p, EC:3.1.3.7) would revover
+AMP (and Pi). This latter AMP production is implied in the mass conservation for
+cytosolic adenosine phosphates (see model notes).
+```
+  v5 notes ```
+This combined reaction contains cystathionine β-synthase (yeast protein
+Cys4p, EC:4.2.1.22) which would require an additional serine as reactant, and cystathionine
+γ-lyase (yeast protein Cys3p, EC:4.4.1.1) which has oxo-butanoate as an additional
+product
+```
+  v6 notes ```
+cysteine usage for glutathione and protein synthesis, other pathways and
+degradation, no GO term applicable
+```
+  v7 notes ```
+This combined reaction contains the acetyl-CoA synthase (yeast proteins Acs1p
+and Acs2p, EC 6.2.1.1) which would actually require ATP as a co-substrate (hydrolysed
+to AMP+PPi)
+```
+  v15 notes ```
+This reaction (L-homoserine-O-acetyltransferase, Met2p, EC:2.3.1.31) has
+homoserine as an additional reactant and Coenzyme A as an additional product.
+```
+  v18 notes "O-acetyl-homoserine usage for other metabolic reactions, no GO term applicable"
+  v8 notes ```
+A simplification of the (acetyl-CoA) assimilatory part of the tricarboxylic
+acid cycle, with implied equilibration of Acetyl-CoA between mitochondria and cytosol
+```
+  v9 notes ```
+A simplification of the oxidative (NADH producing) part of the tricarboxylic
+acid cycle, with implied equilibration between mitochondrial and cytosolic NADH/NAD+
+```
+  v11a notes ```
+Reactions v11a, v11a2 and v11b form a minimal description for the oxidative
+phosphorylation, v11a represents the electron transfer from NAD(P)H to the protein
+complexes of mitochondrial electron transport chain
+```
+  v11a2 notes ```
+Reactions v11a, v11a2 and v11b form a minimal description for the oxidative
+phosphorylation, v11b represents the electron transfer from the protein complexes
+of mitochondrial electron transport chain to oxgyen
+```
+  v16 notes ```
+TODO: NOT CLEAR ABOUT CORRECT VOLUME CORRECTION FOR THIS KINETIC LAW OF A
+TRANSPORT REACTION
+```
+  v11b notes ```
+Reactions v11a, v11a2 and v11b form a minimal description for the oxidative
+phosphorylation, v11b represents the production of ATP, coupled to the flux of protons
+from the cytosol to the mitochondria
+```
+  vLEAK notes ```
+proton leakage of the inner mitochondrial membrane, no GO term applicable.
+The kinetic law is set to 0 as the leakage is handled in reactions v11a, v11a2 and
+v11b and the proton gradient is assumed to be in equlibrium.
+```
+end
+
+Wolf2001_Respiratory_Oscillations is "Wolf2001_Respiratory_Oscillations"

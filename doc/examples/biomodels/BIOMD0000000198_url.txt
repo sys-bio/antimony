@@ -1,0 +1,239 @@
+// Created by libAntimony v3.0.0
+model *testid()
+
+  // Compartments and Species:
+  compartment cytosol;
+  species $NO in cytosol, sGCfast in cytosol, NO_sGCfast in cytosol, NO_sGCfast_6coord in cytosol;
+  species NO_sGCfast_5coord in cytosol, sGCslow in cytosol, NO_sGCslow in cytosol;
+  species NO_sGCslow_6coord in cytosol, NO_sGCslow_6coord_NO_int in cytosol;
+  species NO_sGCslow_5coord in cytosol, $NO_sGC_5coord_tot in cytosol, $sGC_inact_tot in cytosol;
+
+  // Assignment Rules:
+  NO_sGC_5coord_tot := NO_sGCfast_5coord + NO_sGCslow_5coord;
+  sGC_inact_tot := sGCfast + NO_sGCfast + NO_sGCfast_6coord + sGCslow + NO_sGCslow + NO_sGCslow_6coord + NO_sGCslow_6coord_NO_int;
+  ext_ := e5c*(sGCfast + NO_sGCfast + sGCslow + NO_sGCslow) + e5c_NO*(NO_sGCfast_5coord + NO_sGCslow_5coord) + e6c_NO*(NO_sGCfast_6coord + NO_sGCslow_6coord + NO_sGCslow_6coord_NO_int);
+
+  // Reactions:
+  r1fast: $NO + sGCfast -> NO_sGCfast; cytosol*(k1*NO*sGCfast - k2*NO_sGCfast);
+  r2fast: NO_sGCfast => NO_sGCfast_6coord; k3*cytosol*NO_sGCfast;
+  r3fast: NO_sGCfast_6coord -> NO_sGCfast_5coord; cytosol*(k4*NO_sGCfast_6coord - k5*NO_sGCfast_5coord);
+  r1slow: $NO + sGCslow -> NO_sGCslow; cytosol*(k6*NO*sGCslow - k7*NO_sGCslow);
+  r2slow: NO_sGCslow => NO_sGCslow_6coord; k8*cytosol*NO_sGCslow;
+  r3slow: $NO + NO_sGCslow_6coord -> NO_sGCslow_6coord_NO_int; cytosol*(k9*NO*NO_sGCslow_6coord - k10*NO_sGCslow_6coord_NO_int);
+  r4slow: NO_sGCslow_6coord_NO_int -> NO_sGCslow_5coord; cytosol*(k11*NO_sGCslow_6coord_NO_int - k12*NO_sGCslow_5coord);
+
+  // Species initializations:
+  NO = 0.5;
+  sGCfast = 0.112;
+  NO_sGCfast = 0;
+  NO_sGCfast_6coord = 0;
+  NO_sGCfast_5coord = 0;
+  sGCslow = 0.288;
+  NO_sGCslow = 0;
+  NO_sGCslow_6coord = 0;
+  NO_sGCslow_6coord_NO_int = 0;
+  NO_sGCslow_5coord = 0;
+
+  // Compartment initializations:
+  cytosol = 1;
+
+  // Variable initializations:
+  k1 = 700;
+  k1 has peruMpersec;
+  k2 = 800;
+  k2 has persec;
+  k3 = 850;
+  k3 has persec;
+  k4 = 20;
+  k4 has persec;
+  k5 = 0.2;
+  k5 has persec;
+  k6 = 700;
+  k6 has peruMpersec;
+  k7 = 800;
+  k7 has persec;
+  k8 = 850;
+  k8 has persec;
+  k9 = 5;
+  k9 has peruMpersec;
+  k10 = 25;
+  k10 has persec;
+  k11 = 1.6;
+  k11 has persec;
+  k12 = 0.02;
+  k12 has persec;
+  e5c = 0.11;
+  e5c has peruMpercm;
+  e5c_NO = 0.025;
+  e5c_NO has peruMpercm;
+  e6c_NO = 0.064;
+  e6c_NO has peruMpercm;
+  ext_ has percm;
+
+  // Other declarations:
+  var ext_;
+  const cytosol, k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11, k12, e5c, e5c_NO;
+  const e6c_NO;
+
+  // Unit definitions:
+  unit substance = 1e-6 mole;
+  unit peruMpersec = litre / (1e-6 mole * second);
+  unit uM = 1e-6 mole / litre;
+  unit persec = 1 / second;
+  unit peruMpercm = litre / (1e-6 mole * 1e-2 metre);
+  unit percm = 1 / 1e-2 metre;
+
+  // Display Names:
+  substance is "micromole";
+  e5c is "ext_5coord";
+  e5c_NO is "ext_5coord_NO";
+  e6c_NO is "ext_6coord_NO";
+  ext_ is "extinction";
+
+  // SBO terms:
+  NO.sboTerm = 247
+  sGCfast.sboTerm = 297
+  NO_sGCfast.sboTerm = 297
+  NO_sGCfast_6coord.sboTerm = 297
+  NO_sGCfast_5coord.sboTerm = 297
+  sGCslow.sboTerm = 297
+  NO_sGCslow.sboTerm = 297
+  NO_sGCslow_6coord.sboTerm = 297
+  NO_sGCslow_6coord_NO_int.sboTerm = 297
+  NO_sGCslow_5coord.sboTerm = 297
+  NO_sGC_5coord_tot.sboTerm = 297
+  sGC_inact_tot.sboTerm = 297
+  r1fast.sboTerm = 177
+  r2fast.sboTerm = 181
+  r3fast.sboTerm = 181
+  r1slow.sboTerm = 177
+  r2slow.sboTerm = 181
+  r3slow.sboTerm = 177
+  r4slow.sboTerm = 181
+
+  // CV terms:
+  cytosol model_source "http://identifiers.org/go/GO:0005829"
+  NO identity "http://identifiers.org/chebi/CHEBI:16480",
+              "http://identifiers.org/kegg.compound/C00533"
+  sGCfast version "http://identifiers.org/uniprot/P19687",
+                  "http://identifiers.org/uniprot/P16068"
+  NO_sGCfast part "http://identifiers.org/chebi/CHEBI:16480",
+                  "http://identifiers.org/uniprot/P19687",
+                  "http://identifiers.org/uniprot/P16068"
+  NO_sGCfast_6coord part "http://identifiers.org/chebi/CHEBI:16480",
+                         "http://identifiers.org/uniprot/P19687",
+                         "http://identifiers.org/uniprot/P16068"
+  NO_sGCfast_5coord part "http://identifiers.org/chebi/CHEBI:16480",
+                         "http://identifiers.org/uniprot/P19687",
+                         "http://identifiers.org/uniprot/P16068"
+  sGCslow part "http://identifiers.org/uniprot/P19687",
+               "http://identifiers.org/uniprot/P16068"
+  NO_sGCslow part "http://identifiers.org/chebi/CHEBI:16480",
+                  "http://identifiers.org/uniprot/P19687",
+                  "http://identifiers.org/uniprot/P16068"
+  NO_sGCslow_6coord part "http://identifiers.org/chebi/CHEBI:16480",
+                         "http://identifiers.org/uniprot/P19687",
+                         "http://identifiers.org/uniprot/P16068"
+  NO_sGCslow_6coord_NO_int part "http://identifiers.org/chebi/CHEBI:16480",
+                                "http://identifiers.org/uniprot/P19687",
+                                "http://identifiers.org/uniprot/P16068"
+  NO_sGCslow_5coord part "http://identifiers.org/chebi/CHEBI:16480",
+                         "http://identifiers.org/uniprot/P19687",
+                         "http://identifiers.org/uniprot/P16068"
+  NO_sGC_5coord_tot part "http://identifiers.org/chebi/CHEBI:16480",
+                         "http://identifiers.org/uniprot/P16068",
+                         "http://identifiers.org/uniprot/P19687"
+  sGC_inact_tot part "http://identifiers.org/chebi/CHEBI:16480",
+                     "http://identifiers.org/uniprot/P16068",
+                     "http://identifiers.org/uniprot/P19687"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL4779732381"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000198"
+  model publication "http://identifiers.org/pubmed/8573563"
+  model biological_system "http://identifiers.org/go/GO:0007263",
+                          "http://identifiers.org/go/GO:0031282"
+  model taxon "http://identifiers.org/taxonomy/9913"
+  model created "2008-10-21T15:19:25Z"
+  model modified "2012-05-16T10:00:59Z"
+  model creator1.givenName "Lukas"
+  model creator1.familyName "Endler"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "lukas@ebi.ac.uk"
+  model creator2.givenName "Vijayalakshmi"
+  model creator2.familyName "Chelliah"
+  model creator2.organization "EMBL-EBI"
+  model creator2.email "viji@ebi.ac.uk"
+  model creator3.givenName "James R"
+  model creator3.familyName "Stone"
+  model creator3.organization "Department of Biological Chemistry, University of Michigan, Michigan"
+  model creator4.givenName "Michael A"
+  model creator4.familyName "Marletta"
+  model creator4.organization "Department of Biological Chemistry, University of Michigan, Michigan"
+
+  // Notes:
+  model notes ```
+Stone1996 - activation of soluble guanylatecyclase by nitric oxide 
+
+This features the two step binding ofNO to soluble Guanylyl Cyclase as proposed by
+[StoneJR, Marletta MA. Biochemistry (1996) 35(4):1093-9](http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=pubmed&dopt=Abstract&list_uids=8573563) . There is afast step binding scheme and a slow step binding scheme. Thedifference lies in the binding of a NO to a non-heme site on sGC,which may not necessarily be the same site of binding during theinitial binding. The rates have been directly used models.
+
+
+This model is described in the article:
+
+
+[Spectral and kinetic studies on the activation of soluble guanylate cyclase by nitric oxide.](http://identifiers.org/pubmed/8573563 "Access to this publication") 
+
+
+Stone JR, Marletta MA. 
+
+Biochemistry 1996 Jan; 35(4): 1093-1099 
+Abstract:
+
+
+The soluble form of guanylate cyclase (sGC) is the only definitive receptor for
+the signaling agent nitric oxide (.NO). The enzyme is a heterodimer of homologous
+subunits in which each subunit binds 1 equiv of 5-coordinate high-spin heme. .NO
+increases the Vmax of sGC up to 400-fold and has previously been shown to bind
+to the heme to form a 5-coordinate complex. Using stopped-flow spectrophotometry,
+it is demonstrated that the binding of .NO to the heme of sGC is a complex process.
+.NO first binds to the heme to form a 6-coordinate nitrosyl complex, which
+then converts to a 5-coordinate nitrosyl complex through one of two ways. For
+28 +/- 4% of the heme, the 6-coordinate nitrosyl complex rapidly (approximately
+20 s-1) converts to the 5-coordinate complex. For the remaining 72 +/- 4% of
+the heme, the conversion of the 6-coordinate nitrosyl complex to a 5-coordinate
+nitrosyl complex is slow (0.1-1.0 s-1) and is dependent upon the interaction of
+.NO with an unidentified non-heme site on the protein. The heme (200 nM) was
+completely converted to the 5-coordinate state with as little as 500 nM .NO, and
+the equilibrium dissociation constant of .NO for activating the enzyme was determined
+to be < or = 250 nM. Gel-filtration analysis indicates that the binding of
+.NO to the heme has no effect on the native molecular mass of the protein.
+Correlation of electronic absorption spectra with activity measurements indicates
+that the 5-coordinate nitrosyl form of the enzyme is activated relative to the
+resting 5-coordinate ferrous form of the enzyme.
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identified by: [BIOMD0000000198](http://identifiers.org/biomodels.db/BIOMD0000000198).
+
+To cite BioModels Database, please use: [BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models](http://identifiers.org/pubmed/20587024 "Latest BioModels Database publication").
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+  e5c notes ```
+micromolar extinction coefficient of the 5-coordinate ferrous species at
+431 nm
+```
+  e5c_NO notes ```
+micromolar extinction coefficient of the 5-coordinate ferrous nitrosyl species
+at 431 nm
+```
+  e6c_NO notes ```
+micromolar extinction coefficient of the 6-coordinate ferrous nitrosyl species
+at 431 nm
+```
+  ext_ notes "extinction at 431 nm"
+end
+
+testid is "Stone1996 - activation of soluble guanylate cyclase by nitric oxide"

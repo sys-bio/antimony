@@ -1,0 +1,136 @@
+// Created by libAntimony v3.0.0
+model *Kimmel2021___T_cell_competition_and_stochastic_extinction_events_in_CAR_T_cell_therapy()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species Normal_T_cells in compartment_, CAR_T_cells in compartment_, Antigen_presenting_tumour_cells in compartment_;
+  species $Total_lymphocyte_count in compartment_;
+
+  // Assignment Rules:
+  Total_lymphocyte_count := Normal_T_cells + CAR_T_cells;
+  r_C := rho_C + b*(Total_lymphocyte_count - K_N)^2/(a*Total_lymphocyte_count^2 + (Total_lymphocyte_count - K_N)^2);
+
+  // Reactions:
+  Normal_T_cell_population_growth:  => Normal_T_cells; compartment_*(-r_N*Normal_T_cells*ln((Normal_T_cells + CAR_T_cells)/K_N));
+  CAR_T_cell_population_growth:  => CAR_T_cells; compartment_*(-r_C*CAR_T_cells*ln((Normal_T_cells + CAR_T_cells)/K_C));
+  Tumour_growth:  => Antigen_presenting_tumour_cells; compartment_*(r_B*Antigen_presenting_tumour_cells);
+  Tumour_killing: Antigen_presenting_tumour_cells => ; compartment_*(gamma_B*Antigen_presenting_tumour_cells*(CAR_T_cells/(k_B + CAR_T_cells)));
+
+  // Species initializations:
+  Normal_T_cells = 6;
+  CAR_T_cells = 0.36;
+  Antigen_presenting_tumour_cells = 94.86;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  K_N = 500;
+  K_N has unit_0;
+  K_C = 139;
+  K_C has unit_0;
+  r_N = 0.17;
+  r_N has unit_1;
+  rho_C = 0.0251;
+  rho_C has unit_1;
+  a = 0.423;
+  b = 0.525;
+  b has unit_2;
+  r_B = 0.01;
+  r_B has unit_1;
+  gamma_B = 1.15;
+  gamma_B has unit_1;
+  k_B = 4.05;
+  k_B has unit_0;
+
+  // Other declarations:
+  var r_C;
+  const compartment_, K_N, K_C, r_N, rho_C, a, b, r_B, gamma_B, k_B;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = item;
+  unit unit_0 = item / 1e-6 litre;
+  unit unit_1 = 1 / 86400 second;
+  unit unit_2 = 86400 second;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "#/ul";
+  unit_1 is "1/d";
+  unit_2 is "d";
+  compartment_ is "compartment";
+  Antigen_presenting_tumour_cells is "Antigen-presenting_tumour_cells";
+
+  // CV terms:
+  Normal_T_cells biological_system "http://identifiers.org/cl/CL:0000084"
+  CAR_T_cells biological_system "http://identifiers.org/cl/CL:0000084"
+  CAR_T_cells biological_system "http://identifiers.org/ncit/C137999"
+  Antigen_presenting_tumour_cells biological_system "http://identifiers.org/cl/CL:0001063"
+  Antigen_presenting_tumour_cells biological_system "http://identifiers.org/cl/CL:0001201"
+  Antigen_presenting_tumour_cells property "http://identifiers.org/chebi/CHEBI:144829"
+  Total_lymphocyte_count biological_system "http://identifiers.org/cl/CL:0000084"
+  Total_lymphocyte_count biological_system "http://identifiers.org/ncit/C122157"
+  Normal_T_cell_population_growth biological_system "http://identifiers.org/sbo/SBO:0000393"
+  Normal_T_cell_population_growth biological_system "http://identifiers.org/go/GO:0042098"
+  CAR_T_cell_population_growth biological_system "http://identifiers.org/sbo/SBO:0000393"
+  CAR_T_cell_population_growth biological_system "http://identifiers.org/go/GO:0042098"
+  Tumour_growth biological_system "http://identifiers.org/go/GO:0008283"
+  Tumour_growth biological_system "http://identifiers.org/sbo/SBO:0000393"
+  Tumour_killing biological_system "http://identifiers.org/go/GO:0001906"
+  Tumour_killing biological_system "http://identifiers.org/obi/OBI_1110204"
+  Tumour_killing biological_system "http://identifiers.org/sbo/SBO:0000394"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL2109010001",
+                     "http://identifiers.org/biomodels.db/BIOMD0000001041"
+  model propertyBearer "http://identifiers.org/ncit/C15438"
+  model propertyBearer "http://identifiers.org/ncit/C126102"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model description "http://identifiers.org/pubmed/33757357"
+  model property "http://identifiers.org/doid/DOID:0060060",
+                 "http://identifiers.org/go/GO:0002837",
+                 "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2021-08-31T17:35:48Z"
+  model modified "2021-08-31T17:35:48Z"
+  model creator1.givenName "Emilia"
+  model creator1.familyName "Chen"
+  model creator1.organization "eblc2@cam.ac.uk"
+  model creator1.email "University of Cambridge"
+
+  // Notes:
+  model notes ```
+This mathematical model of T cell-tumour interactions considering the roles of 
+T cell competition and stochastic extinction events in CAR T cell therapy is described 
+by the publication:Kimmel GJ, Locke FL, Altrock PM. "The roles of T cell competition 
+and stochastic extinction events in chimeric antigen receptor T cell therapy." 
+Proc Biol Sci. 2021 Mar 31;288(1947):20210229.doi: 10.1098/rspb.2021.0229Comment:Reproduction 
+of Fig. 2(a) and (b) was simulated by using the fitted model parameter set given 
+in Table 1 of the manuscript&apos;s Supplementary Material, however substituting 
+the values of r_N and rho_C for those stated in Table 1 of the publication manuscript, 
+i.e. r_N = 0.17 and rho_C = 0.0251.Abstract:Chimeric antigen receptor (CAR) T cell 
+therapy is a remarkably effective immunotherapy that relies on in vivo expansion 
+of engineered CAR T cells, after lymphodepletion (LD) by chemotherapy. The quantitative 
+laws underlying this expansion and subsequent tumour eradication remain unknown. 
+We develop a mathematical model of T cell–tumour cell interactions and demonstrate 
+that expansion can be explained by immune reconstitution dynamics after LD and competition 
+among T cells. CAR T cells rapidly grow and engage tumour cells but experience an 
+emerging growth rate disadvantage compared to normal T cells. Since tumour eradication 
+is deterministically unstable in our model, we define cure as a stochastic event, 
+which, even when likely, can occur at variable times. However, we show that variability 
+in timing is largely determined by patient variability. While cure events impacted 
+by these fluctuations occur early and are narrowly distributed, progression events 
+occur late and are more widely distributed in time. We parameterized our model using 
+population-level CAR T cell and tumour data over time and compare our predictions 
+with progression-free survival rates. We find that therapy could be improved by optimizing 
+the tumour-killing rate and the CAR T cells&apos; ability to adapt, as quantified 
+by their carrying capacity. Our tumour extinction model can be leveraged to examine 
+why therapy works in some patients but not others, and to better understand the interplay 
+of deterministic and stochastic effects on outcomes. For example, our model implies 
+that LD before a second CAR T injection is necessary.
+```
+end
+
+Kimmel2021___T_cell_competition_and_stochastic_extinction_events_in_CAR_T_cell_therapy is "Kimmel2021 - T cell competition and stochastic extinction events in CAR T cell therapy"

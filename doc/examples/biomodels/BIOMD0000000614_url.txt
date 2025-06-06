@@ -1,0 +1,120 @@
+// Created by libAntimony v3.0.0
+model *Kamihira2000()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species f in compartment_;
+
+  // Reactions:
+  R1:  -> f; compartment_*k1;
+  R2:  -> f; compartment_*(k2*a*f);
+  R3: f -> ; compartment_*(k1*f);
+  R4: f -> ; compartment_*(k2*a*f*f);
+
+  // Species initializations:
+  f = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  k1 = 2.79e-06;
+  k2 = 2.29;
+  a = 5.85e-05;
+
+  // Other declarations:
+  const compartment_, k1, k2, a;
+
+  // Display Names:
+  f is "fibril fraction";
+
+  // SBO terms:
+  compartment_.sboTerm = 290
+  f.sboTerm = 280
+
+  // CV terms:
+  f model_source "http://identifiers.org/uniprot/P01258"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1608100002"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000614"
+  model publication "http://identifiers.org/pubmed/10850796"
+  model biological_system "http://identifiers.org/go/GO:1902903"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model created "2016-08-08T15:40:42Z"
+  model modified "2016-08-18T11:19:02Z"
+  model creator1.givenName "Thawfeek"
+  model creator1.familyName "Varusai"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "tvarusai@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+Kamihira2000 - calcitonin fibrillation kinetics 
+
+
+This model studies the kinetics of human calcitonin fibrillation described as a two-step
+process. Empirical data is used to determine the parameter values. Results show that
+the first step in fibrillation is a slow homogenous reaction and the second step
+is a fast autocatalytic heterogenous reaction.
+
+This model is described in the article:
+
+
+[Conformational transitions and fibrillation mechanism of human calcitonin as studied by high-resolution solid-state 13C NMR.](http://identifiers.org/pubmed/10850796 "Access to this publication") 
+
+
+Kamihira M, Naito A, Tuzi S, Nosaka AY, Saitô H. 
+
+Protein Sci. 2000 May; 9(5): 867-877 
+Abstract:
+
+
+Conformational transitions of human calcitonin (hCT) during fibril formation in
+the acidic and neutral conditions were investigated by high-resolution solid-state
+13C NMR spectroscopy. In aqueous acetic acid solution (pH 3.3), a local alpha-helical
+form is present around Gly10 whereas a random coil form is dominant as viewed
+from Phe22, Ala26, and Ala31 in the monomer form on the basis of the 13C chemical
+shifts. On the other hand, a local beta-sheet form as viewed from Gly10 and
+Phe22, and both beta-sheet and random coil as viewed from Ala26 and Ala31 were
+detected in the fibril at pH 3.3. The results indicate that conformational transitions
+from alpha-helix to beta-sheet, and from random coil to beta-sheet forms occurred
+in the central and C-terminus regions, respectively, during the fibril formation.
+The increased 13C resonance intensities of fibrils after a certain delay time
+suggests that the fibrillation can be explained by a two-step reaction mechanism
+in which the first step is a homogeneous association to form a nucleus, and the
+second step is an autocatalytic heterogeneous fibrillation. In contrast to the
+fibril at pH 3.3, the fibril at pH 7.5 formed a local beta-sheet conformation
+at the central region and exhibited a random coil at the C-terminus region. Not
+only a hydrophobic interaction among the amphiphilic alpha-helices, but also an
+electrostatic interaction between charged side chains can play an important
+role for the fibril formation at pH 7.5 and 3.3 acting as electrostatically favorable
+and unfavorable interactions, respectively. These results suggest that hCT 
+fibrils are formed by stacking antiparallel beta-sheets at pH 7.5 and a mixture
+of antiparallel and parallel beta-sheets at pH 3.3.
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identified by: [BIOMD0000000614](http://identifiers.org/biomodels.db/BIOMD0000000614).
+
+To cite BioModels Database, please use: [BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models](http://identifiers.org/pubmed/20587024 "Latest BioModels Database publication").
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+  f notes "This species indicates the fraction of human calcitonin in the system."
+  k1 notes ```
+This parameter represents the rate at which human calcitonin monomers can form 
+fibril nucleus.
+```
+  k2 notes ```
+This parameter indicates the rate at which human calcitonin monomers can bind 
+with fibril nucleus and extend them.
+```
+  a notes ```
+This parameter indicates the catalytic effect of each site in the fibril nucleus 
+to convert calcitonin monomers to fibrils.
+```
+end
+
+Kamihira2000 is "Kamihira2000"

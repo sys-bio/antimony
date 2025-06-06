@@ -1,0 +1,94 @@
+// Created by libAntimony v3.0.0
+model *Landberg2009___Alkylresorcinol_Dose_Response()
+
+  // Compartments and Species:
+  compartment compartment_, A1, A2, Central;
+  species AR_A1 in A1, AR_A2 in A2, AR_Central in Central, AR_Dose in compartment_;
+  species $F1 in compartment_, $F2 in compartment_;
+
+  // Assignment Rules:
+  F1 := piecewise(0, time < Lag_time_1, piecewise(0.1, (time >= Lag_time_1) && (time < Lag_time_2), 0.052));
+  F2 := piecewise(0, time < Lag_time_2, 0.048);
+
+  // Reactions:
+  reaction_: AR_Dose => AR_A1; F1*AR_Dose;
+  reaction_1: AR_Dose => AR_A2; F2*AR_Dose;
+  reaction_2: AR_A1 => AR_Central; k_a_1*AR_A1;
+  reaction_3: AR_A2 => AR_Central; k_a_2*AR_A2;
+  reaction_4:  => AR_Central; Central*base;
+  reaction_5: AR_Central => ; Central*CL_V*AR_Central;
+
+  // Species initializations:
+  AR_A1 = 0;
+  AR_A2 = 0;
+  AR_Central = 0.01;
+  AR_Dose = 485;
+
+  // Compartment initializations:
+  compartment_ = 1;
+  A1 = 1;
+  A2 = 1;
+  Central = 1;
+
+  // Variable initializations:
+  Lag_time_1 = 0.9;
+  Lag_time_2 = 4.7;
+  k_a_1 = 0.3;
+  k_a_2 = 1.8;
+  base = 0.32;
+  CL_V = 20;
+
+  // Other declarations:
+  const compartment_, A1, A2, Central, Lag_time_1, Lag_time_2, k_a_1, k_a_2;
+  const base, CL_V;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 3600 second;
+  unit substance = 1e-9 mole;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+  AR_A1 is "AR";
+  AR_A2 is "AR";
+  AR_Central is "AR";
+  CL_V is "CL/V";
+  reaction_ is "reaction";
+
+  // CV terms:
+  AR_A1 biological_system "http://identifiers.org/kegg.compound/C01751"
+  AR_A1 biological_system "http://identifiers.org/chebi/CHEBI:52679"
+  AR_A2 biological_system "http://identifiers.org/chebi/CHEBI:52679"
+  AR_A2 biological_system "http://identifiers.org/kegg.compound/C01751"
+  AR_Central biological_system "http://identifiers.org/kegg.compound/C01751"
+  AR_Central biological_system "http://identifiers.org/chebi/CHEBI:52679"
+  AR_Dose biological_system "http://identifiers.org/chebi/CHEBI:52679"
+  AR_Dose biological_system "http://identifiers.org/kegg.compound/C01751"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1803050001",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000948"
+  model part "http://identifiers.org/kegg.compound/C01751"
+  model part "http://identifiers.org/chebi/CHEBI:52679"
+  model identity "http://identifiers.org/efo/0001757"
+  model description "http://identifiers.org/pubmed/19056600"
+  model property "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2018-02-26T14:24:24Z"
+  model modified "2018-02-26T14:24:24Z"
+  model creator1.givenName "Matthew Grant"
+  model creator1.familyName "Roberts"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "mroberts@ebi.ac.uk"
+
+  // Notes:
+  F1 notes ```
+This was made a species so that it could behave as a modifier in a reaction. 52% 
+of the dose is absorbed into A1 for t > lag_time_2.
+```
+  F2 notes ```
+This was made a species so that it could behave as a modifier in a reaction. 48% 
+of the dose is absorbed into A2 for t > lag_time_2.
+```
+end
+
+Landberg2009___Alkylresorcinol_Dose_Response is "Landberg2009 - Alkylresorcinol Dose Response"

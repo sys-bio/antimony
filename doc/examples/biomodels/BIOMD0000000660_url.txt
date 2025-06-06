@@ -1,0 +1,333 @@
+// Created by libAntimony v3.0.0
+model *Barr2017___Dynamics_of_p21_in_hTert_RPE1_cells()
+
+  // Compartments and Species:
+  compartment Cell;
+  species MrnaP21 in Cell, MrnaCy in Cell, MrnaP53 in Cell, P21 in Cell, Cy in Cell;
+  species CyP21 in Cell, aPcna in Cell, Rc in Cell, pRc in Cell, aRc in Cell;
+  species iRc in Cell, Dna in Cell, Dam in Cell, P53 in Cell, $Skp2 in Cell;
+  species $Cdt2 in Cell, iPcna in Cell, $tP21 in Cell, $tCy in Cell, $tPcna in Cell;
+
+  // Assignment Rules:
+  tP21 := P21 + CyP21 + iPcna + iRc;
+  tCy := Cy + CyP21;
+  tPcna := aPcna + iPcna + aRc + iRc;
+
+  // Reactions:
+  Synthesis_of_p21_mRNAs:  => MrnaP21; Cell*kSyMrna;
+  Synthesis_of_p21_mRNAs_by_p53: P53 => MrnaP21 + P53; Cell*kSyMrnaP53*P53;
+  Synthesis_of_cyclin_mRNAs:  => MrnaCy; Cell*kSyMrna;
+  Synthesis_of_p53_mRNAs:  => MrnaP53; Cell*kSyMrna;
+  Degradation_of_p21_mRNAs: MrnaP21 => ; Cell*kDeMrna*MrnaP21;
+  Degradation_of_cyclin_mRNAs: MrnaCy => ; Cell*kDeMrna*MrnaCy;
+  Degradation_of_p53_mRNAs: MrnaP53 => ; Cell*kDeMrna*MrnaP53;
+  Synthesis_of_p21: MrnaP21 => MrnaP21 + P21; Cell*kSyP21*MrnaP21;
+  Degradation_of_p21: P21 => ; Cell*((kDeP21 + kDeP21Cy*Skp2*Cy + kDeP21aRc*Cdt2*aRc)*P21);
+  Synthesis_of_cyclins: MrnaCy => MrnaCy + Cy; Cell*kSyCy*MrnaCy;
+  Degradation_of_cyclins: Cy => ; Cell*((kDeCy + kDeCyCy*Skp2*Cy)*Cy);
+  Association_and_dissociation_of_CDK2_Cyclin_and_p21: Cy + P21 -> CyP21; Cell*(kAsCyP21*Cy*P21 - kDsCyP21*CyP21);
+  Degradation_of_cyclin_in_CDK2_Cyclin_p21_complexes: CyP21 => P21; Cell*((kDeCy + kDeCyCy*Skp2*Cy)*CyP21);
+  Degradation_of_p21_in_CDK2_Cyclin_p21_complexes: CyP21 => Cy; Cell*((kDeP21 + kDeP21Cy*Skp2*Cy + kDeP21aRc*Cdt2*aRc)*CyP21);
+  Import_of_active_PCNA:  => aPcna; Cell*kImPc;
+  Export_of_active_PCNA: aPcna => ; Cell*kExPc*aPcna;
+  Export_of_inactive_PCNA: iPcna => P21; Cell*kExPc*iPcna;
+  Association_and_dissociation_of_PCNA_and_p21: aPcna + P21 -> iPcna; Cell*(kAsPcP21*aPcna*P21 - kDsPcP21*iPcna);
+  Degradation_of_p21_in_PCNA_p21_complexes: iPcna => aPcna; Cell*((kDeP21 + kDeP21Cy*Skp2*Cy + kDeP21aRc*Cdt2*aRc)*iPcna);
+  Phosphorylation_priming_of_replication_complexes: Rc => pRc; Cell*((kPhRc*Cy^n/(jCy^n + Cy^n))*Rc);
+  Dephosphorylation_of_replication_complexes: pRc => Rc; Cell*kDpRc*pRc;
+  Association_and_dissociation_of_active_PCNA_and_replication_complexes: aPcna + pRc -> aRc; Cell*(kAsRcPc*aPcna*pRc - kDsRcPc*aRc);
+  Association_and_dissociation_of_inactive_PCNA_and_replication_complexes: iPcna + pRc -> iRc; Cell*(kAsRcPc*iPcna*pRc - kDsRcPc*iRc);
+  Association_and_dissociation_of_p21_and_replication_complexes: aRc + P21 -> iRc; Cell*(kAsPcP21*aRc*P21 - kDsPcP21*iRc);
+  Degradation_of_p21_in_inactive_replication_complexes: iRc => aRc; Cell*((kDeP21 + kDeP21Cy*Skp2*Cy + kDeP21aRc*Cdt2*aRc)*iRc);
+  Synthesis_of_DNA: aRc => aRc + Dna; Cell*kSyDna*aRc;
+  Dissassembly_of_RC: Rc => ; Cell*piecewise(0, Dna < 1, piecewise(1*Rc, Dna > 1, 0.5*Rc));
+  Dissassembly_of_pRC: pRc => ; Cell*piecewise(0, Dna < 1, piecewise(1*pRc, Dna > 1, 0.5*pRc));
+  Dissassembly_of_aRC: aRc => aPcna; Cell*piecewise(0, Dna < 1, piecewise(1*aRc, Dna > 1, 0.5*aRc));
+  Dissassembly_of_iRC: iRc => iPcna; Cell*piecewise(0, Dna < 1, piecewise(1*iRc, Dna > 1, 0.5*iRc));
+  Synthesis_of_p53: MrnaP53 => MrnaP53 + P53; Cell*kSyP53*MrnaP53;
+  Degradation_of_p53: P53 => ; Cell*((kDeP53/(jP53 + Dam))*P53);
+  Induction_of_DNA_damage:  => Dam; Cell*kGeDam;
+  Induction_of_DNA_damage_by_replication: aRc => aRc + Dam; Cell*kGeDamArc*aRc;
+  Repair_of_DNA_damage: Dam => ; Cell*((kReDam + kReDamP53*P53/(jDam + Dam))*Dam);
+
+  // Species initializations:
+  MrnaP21 = 1;
+  MrnaCy = 1;
+  MrnaP53 = 1;
+  P21 = 0.72;
+  Cy = 0.4;
+  CyP21 = 0;
+  aPcna = 0.5;
+  Rc = 1;
+  pRc = 0;
+  aRc = 0;
+  iRc = 0;
+  Dna = 0;
+  Dam = 0;
+  P53 = 0;
+  Skp2 = 1;
+  Cdt2 = 1;
+  iPcna = 0;
+
+  // Compartment initializations:
+  Cell = 1;
+
+  // Variable initializations:
+  kSyMrna = 0.02;
+  kSyMrnaP53 = 0.08;
+  kDeMrna = 0.02;
+  kSyP21 = 0.0018;
+  kDeP21 = 0.0025;
+  kDeP21Cy = 0.007;
+  kDeP21aRc = 1;
+  kSyCy = 0.005;
+  kAsCyP21 = 1;
+  kDsCyP21 = 0.05;
+  kDeCy = 0.002;
+  kDeCyCy = 0.0002;
+  kImPc = 0.003;
+  kExPc = 0.006;
+  kPhRc = 0.1;
+  kDpRc = 0.01;
+  jCy = 1.8;
+  n = 6;
+  kAsRcPc = 0.01;
+  kDsRcPc = 0.001;
+  kAsPcP21 = 100;
+  kDsPcP21 = 0.01;
+  kSyDna = 0.007;
+  kSyP53 = 0.05;
+  kDeP53 = 0.05;
+  jP53 = 0.01;
+  kGeDam = 0.001;
+  kGeDamArc = 0.005;
+  kReDam = 0.001;
+  kReDamP53 = 0.005;
+  jDam = 0.5;
+
+  // Other declarations:
+  const Cell, kSyMrna, kSyMrnaP53, kDeMrna, kSyP21, kDeP21, kDeP21Cy, kDeP21aRc;
+  const kSyCy, kAsCyP21, kDsCyP21, kDeCy, kDeCyCy, kImPc, kExPc, kPhRc, kDpRc;
+  const jCy, n, kAsRcPc, kDsRcPc, kAsPcP21, kDsPcP21, kSyDna, kSyP53, kDeP53;
+  const jP53, kGeDam, kGeDamArc, kReDam, kReDamP53, jDam;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 60 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+  Synthesis_of_p21_mRNAs is "Synthesis of p21 mRNAs";
+  Synthesis_of_p21_mRNAs_by_p53 is "Synthesis of p21 mRNAs by p53";
+  Synthesis_of_cyclin_mRNAs is "Synthesis of cyclin mRNAs";
+  Synthesis_of_p53_mRNAs is "Synthesis of p53 mRNAs";
+  Degradation_of_p21_mRNAs is "Degradation of p21 mRNAs";
+  Degradation_of_cyclin_mRNAs is "Degradation of cyclin mRNAs";
+  Degradation_of_p53_mRNAs is "Degradation of p53 mRNAs";
+  Synthesis_of_p21 is "Synthesis of p21";
+  Degradation_of_p21 is "Degradation of p21";
+  Synthesis_of_cyclins is "Synthesis of cyclins";
+  Degradation_of_cyclins is "Degradation of cyclins";
+  Association_and_dissociation_of_CDK2_Cyclin_and_p21 is "Association and dissociation of CDK2:Cyclin and p21";
+  Degradation_of_cyclin_in_CDK2_Cyclin_p21_complexes is "Degradation of cyclin in CDK2:Cyclin:p21 complexes";
+  Degradation_of_p21_in_CDK2_Cyclin_p21_complexes is "Degradation of p21 in CDK2:Cyclin:p21 complexes";
+  Import_of_active_PCNA is "Import of active PCNA";
+  Export_of_active_PCNA is "Export of active PCNA";
+  Export_of_inactive_PCNA is "Export of inactive PCNA";
+  Association_and_dissociation_of_PCNA_and_p21 is "Association and dissociation of PCNA and p21";
+  Degradation_of_p21_in_PCNA_p21_complexes is "Degradation of p21 in PCNA:p21 complexes";
+  Phosphorylation_priming_of_replication_complexes is "Phosphorylation/priming of replication complexes";
+  Dephosphorylation_of_replication_complexes is "Dephosphorylation of replication complexes";
+  Association_and_dissociation_of_active_PCNA_and_replication_complexes is "Association and dissociation of active PCNA and replication complexes";
+  Association_and_dissociation_of_inactive_PCNA_and_replication_complexes is "Association and dissociation of inactive PCNA and replication complexes";
+  Association_and_dissociation_of_p21_and_replication_complexes is "Association and dissociation of p21 and replication complexes";
+  Degradation_of_p21_in_inactive_replication_complexes is "Degradation of p21 in inactive replication complexes";
+  Synthesis_of_DNA is "Synthesis of DNA";
+  Dissassembly_of_RC is "Dissassembly of RC";
+  Dissassembly_of_pRC is "Dissassembly of pRC";
+  Dissassembly_of_aRC is "Dissassembly of aRC";
+  Dissassembly_of_iRC is "Dissassembly of iRC";
+  Synthesis_of_p53 is "Synthesis of p53";
+  Degradation_of_p53 is "Degradation of p53";
+  Induction_of_DNA_damage is "Induction of DNA damage";
+  Induction_of_DNA_damage_by_replication is "Induction of DNA damage by replication";
+  Repair_of_DNA_damage is "Repair of DNA damage";
+
+  // CV terms:
+  Cell biological_system "http://identifiers.org/bto/BTO:0004790"
+  MrnaP21 encodement "http://identifiers.org/uniprot/P38936"
+  MrnaP21 biological_system "http://identifiers.org/chebi/CHEBI:33699"
+  MrnaCy encodement "http://identifiers.org/uniprot/P24864"
+  MrnaCy biological_system "http://identifiers.org/chebi/CHEBI:33699"
+  MrnaCy encodement "http://identifiers.org/uniprot/P78396"
+  MrnaP53 biological_system "http://identifiers.org/chebi/CHEBI:33699"
+  MrnaP53 encodement "http://identifiers.org/uniprot/P04637"
+  P21 biological_system "http://identifiers.org/uniprot/P38936"
+  Cy biological_system "http://identifiers.org/uniprot/P24864",
+                       "http://identifiers.org/uniprot/P78396"
+  CyP21 part "http://identifiers.org/uniprot/P24864",
+             "http://identifiers.org/uniprot/P38936"
+  CyP21 part "http://identifiers.org/uniprot/P38936",
+             "http://identifiers.org/uniprot/P78396"
+  aPcna biological_system "http://identifiers.org/uniprot/P12004"
+  Rc biological_system "http://identifiers.org/go/GO:0036387"
+  pRc biological_system "http://identifiers.org/go/GO:0036387"
+  aRc property "http://identifiers.org/pato/PATO:0002354"
+  aRc biological_system "http://identifiers.org/go/GO:0036387"
+  iRc property "http://identifiers.org/pato/PATO:0002355"
+  iRc biological_system "http://identifiers.org/go/GO:0036387"
+  Dna biological_system "http://identifiers.org/chebi/CHEBI:16991"
+  Dam biological_system "urn:miriam:ncit:NCIT_C16507"
+  P53 biological_system "http://identifiers.org/uniprot/P04637"
+  Skp2 biological_system "http://identifiers.org/uniprot/Q13309"
+  Cdt2 biological_system "http://identifiers.org/uniprot/Q9NZJ0"
+  iPcna part "http://identifiers.org/uniprot/P38936",
+             "http://identifiers.org/uniprot/P12004"
+  tP21 biological_system "http://identifiers.org/uniprot/P38936"
+  tCy part "http://identifiers.org/uniprot/P78396",
+           "http://identifiers.org/uniprot/P24941"
+  tCy part "http://identifiers.org/uniprot/P24864",
+           "http://identifiers.org/uniprot/P24941"
+  tPcna biological_system "http://identifiers.org/uniprot/P12004"
+  Synthesis_of_p21_mRNAs biological_system "http://identifiers.org/go/GO:0009299"
+  Synthesis_of_p21_mRNAs_by_p53 biological_system "http://identifiers.org/go/GO:0009299"
+  Synthesis_of_cyclin_mRNAs biological_system "http://identifiers.org/go/GO:0009299"
+  Synthesis_of_p53_mRNAs biological_system "http://identifiers.org/go/GO:0009299"
+  Degradation_of_p21_mRNAs biological_system "http://identifiers.org/go/GO:0006402"
+  Degradation_of_cyclin_mRNAs biological_system "http://identifiers.org/go/GO:0006402"
+  Degradation_of_p53_mRNAs biological_system "http://identifiers.org/go/GO:0006402"
+  Synthesis_of_p21 biological_system "http://identifiers.org/go/GO:0045727"
+  Degradation_of_p21 biological_system "http://identifiers.org/go/GO:0030163"
+  Synthesis_of_cyclins biological_system "http://identifiers.org/go/GO:0045727"
+  Degradation_of_cyclins biological_system "http://identifiers.org/go/GO:0030163"
+  Association_and_dissociation_of_CDK2_Cyclin_and_p21 property "http://identifiers.org/go/GO:0006461"
+  Association_and_dissociation_of_CDK2_Cyclin_and_p21 property "http://identifiers.org/go/GO:0043241"
+  Degradation_of_cyclin_in_CDK2_Cyclin_p21_complexes biological_system "http://identifiers.org/go/GO:0030163"
+  Degradation_of_p21_in_CDK2_Cyclin_p21_complexes biological_system "http://identifiers.org/go/GO:0030163"
+  Import_of_active_PCNA biological_system "http://identifiers.org/go/GO:0006606"
+  Export_of_active_PCNA biological_system "http://identifiers.org/go/GO:0006611"
+  Export_of_inactive_PCNA biological_system "http://identifiers.org/go/GO:0006611"
+  Association_and_dissociation_of_PCNA_and_p21 property "http://identifiers.org/go/GO:0043241"
+  Association_and_dissociation_of_PCNA_and_p21 property "http://identifiers.org/go/GO:0006461"
+  Degradation_of_p21_in_PCNA_p21_complexes biological_system "http://identifiers.org/go/GO:0030163"
+  Phosphorylation_priming_of_replication_complexes biological_system "http://identifiers.org/go/GO:0016310"
+  Dephosphorylation_of_replication_complexes biological_system "http://identifiers.org/go/GO:0016311"
+  Association_and_dissociation_of_active_PCNA_and_replication_complexes property "http://identifiers.org/go/GO:0006461"
+  Association_and_dissociation_of_active_PCNA_and_replication_complexes property "http://identifiers.org/go/GO:0043241"
+  Association_and_dissociation_of_inactive_PCNA_and_replication_complexes property "http://identifiers.org/go/GO:0043241"
+  Association_and_dissociation_of_inactive_PCNA_and_replication_complexes property "http://identifiers.org/go/GO:0006461"
+  Association_and_dissociation_of_p21_and_replication_complexes property "http://identifiers.org/go/GO:0006461"
+  Association_and_dissociation_of_p21_and_replication_complexes property "http://identifiers.org/go/GO:0043241"
+  Degradation_of_p21_in_inactive_replication_complexes biological_system "http://identifiers.org/go/GO:0030163"
+  Synthesis_of_DNA biological_system "http://identifiers.org/go/GO:0000731"
+  Dissassembly_of_RC biological_system "http://identifiers.org/go/GO:0043241"
+  Dissassembly_of_pRC biological_system "http://identifiers.org/go/GO:0043241"
+  Dissassembly_of_aRC biological_system "http://identifiers.org/go/GO:0043241"
+  Dissassembly_of_iRC biological_system "http://identifiers.org/go/GO:0043241"
+  Synthesis_of_p53 biological_system "http://identifiers.org/go/GO:0045727"
+  Degradation_of_p53 biological_system "http://identifiers.org/go/GO:0030163"
+  Induction_of_DNA_damage biological_system "urn:miriam:omit:OMIT_0005506"
+  Induction_of_DNA_damage_by_replication biological_system "urn:miriam:omit:OMIT_0005506"
+  Repair_of_DNA_damage biological_system "urn:miriam:omit:OMIT_0005517"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1607210001"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000660"
+  model publication "http://identifiers.org/pubmed/28317845"
+  model description "http://identifiers.org/pubmed/28317845"
+  model property "http://identifiers.org/pw/PW:0001360"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model created "2016-06-09T17:37:08Z"
+  model modified "2017-12-06T16:28:38Z"
+  model creator1.givenName "Frank Stefan"
+  model creator1.familyName "Heldt"
+  model creator1.organization "University of Oxford"
+  model creator1.email "stefan.heldt@bioch.ox.ac.uk"
+  model creator2.givenName "Emma Louise"
+  model creator2.familyName "Fairbanks"
+  model creator2.organization "EMBL-EBI"
+  model creator2.email "efairbanks@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+Barr2017 - Dynamics of p21 in hTert-RPE1cells 
+
+This deteministic model reveals that abistable switch created by Cdt2, promotes irreversible
+S-phaseentry by keeping p21 levels low, prevents premature S-phase exitupon DNA damage
+
+
+This model is described in the article:
+
+
+[DNA damage during S-phase mediates the proliferation-quiescence decision in the subsequent G1 via p21 expression.](http://identifiers.org/pubmed/28317845 "Access to this publication") 
+
+
+Barr AR, Cooper S, Heldt FS, Butera F, Stoy H, Mansfeld J, Novák B, Bakal C. 
+
+
+Nat Commun 2017 Mar; 8: 14728 
+Abstract:
+
+
+Following DNA damage caused by exogenous sources, such as ionizing radiation,
+the tumour suppressor p53 mediates cell cycle arrest via expression of the CDK
+inhibitor, p21. However, the role of p21 in maintaining genomic stability in the
+absence of exogenous DNA-damaging agents is unclear. Here, using live single-cell
+measurements of p21 protein in proliferating cultures, we show that naturally
+occurring DNA damage incurred over S-phase causes p53-dependent accumulation of
+p21 during mother G2- and daughter G1-phases. High p21 levels mediate G1 arrest
+via CDK inhibition, yet lower levels have no impact on G1 progression, and the
+ubiquitin ligases CRL4Cdt2 and SCFSkp2 couple to degrade p21 prior to the G1/S
+transition. Mathematical modelling reveals that a bistable switch, created 
+by CRL4Cdt2, promotes irreversible S-phase entry by keeping p21 levels low, preventing
+premature S-phase exit upon DNA damage. Thus, we characterize how p21 regulates
+the proliferation-quiescence decision to maintain genomic stability.
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identified by: [BIOMD0000000660](http://identifiers.org/biomodels.db/BIOMD0000000660).
+
+To cite BioModels Database, please use: [Chelliah V et al. BioModels: ten-year anniversary. Nucl. Acids Res. 2015, 43(Database issue):D542-8](http://identifiers.org/pubmed/25414348).
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+  MrnaCy notes "mRNAs encoding for both CyclinA:Cdk2 and CyclinE:Cdk2 complexes"
+  Cy notes "Both CyclinA:Cdk2 and CyclinE:Cdk2 complexes"
+  CyP21 notes "Both CyclinA:Cdk2:p21 and CyclinE:Cdk2:p21 complexes"
+  tCy notes "Total level of both CyclinA:Cdk2 and CyclinE:Cdk2 complexes"
+  kSyMrna notes "(AU/min) constitutive mRNA synthesis"
+  kSyMrnaP53 notes "(1/min) p53-dependent synthesis of p21 mRNAs"
+  kDeMrna notes "(1/min) mRNA degradation"
+  kSyP21 notes "(1/min) constitutive p21 synthesis"
+  kDeP21 notes "(1/min) constitutive p21 degradation"
+  kDeP21Cy notes "(1/(AU\*min)) Cyclin:CDK2-mediated p21 degradation (Skp2-dependent)"
+  kDeP21aRc notes "(1/(AU\*min)) aRC-mediated p21 degradation (Cdt2-dependent)"
+  kSyCy notes "(1/min) cyclin synthesis"
+  kAsCyP21 notes "(1/(AU\*min)) association of Cyclin:CDK2 and p21"
+  kDsCyP21 notes "(1/min) dissociation of Cyclin:CDK2:p21 complexes"
+  kDeCy notes "(1/min) constitutive cyclin degradation"
+  kDeCyCy notes "(1/(AU\*min)) Cyclin:CDK2-mediated cyclin degradation (Skp2-dependent)"
+  kImPc notes "(AU/min) PCNA import into the nucleus"
+  kExPc notes "(1/min) PCNA export from the nucleus"
+  kPhRc notes "(1/min) Cyclin:CDK2-mediated phosphorylation/priming of RCs"
+  kDpRc notes "(1/min) dephosphorylation of pRCs"
+  jCy notes "(AU) CDK2 threshold for the phosphorylation/priming of RCs"
+  n notes "(-) hill coefficient for the phosphorylation/priming of RCs"
+  kAsRcPc notes "(1/(AU\*min)) association of phosphorylated/primed RCs and PCNA"
+  kDsRcPc notes "(1/min) dissociation of pRC:PCNA complexes"
+  kAsPcP21 notes "(1/(AU\*min)) association of PCNA and p21"
+  kDsPcP21 notes "(1/min) dissociation of PCNA:p21 complexes"
+  kSyDna notes "(1/min) DNA synthesis by active RCs"
+  kSyP53 notes "(1/min) constitutive p53 synthesis"
+  kDeP53 notes "(AU/min) DNA damage-dependent degradation of p53"
+  jP53 notes "(AU) inhibition constant of p53 degradation by DNA damage"
+  kGeDam notes "(AU/min) replication-independent DNA damage"
+  kGeDamArc notes "(1/min) replication-dependent DNA damage"
+  kReDam notes "(1/min) p53-independent DNA damage repair"
+  kReDamP53 notes "(1/min) p53-dependent DNA damage repair"
+  jDam notes "(AU) DNA damage threshold for repair"
+end
+
+Barr2017___Dynamics_of_p21_in_hTert_RPE1_cells is "Barr2017 - Dynamics of p21 in hTert-RPE1 cells"

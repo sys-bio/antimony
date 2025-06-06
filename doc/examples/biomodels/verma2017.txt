@@ -1,0 +1,656 @@
+// Created by libAntimony v3.0.0
+
+// Warnings from automatic translation:
+//    The alias node 1 for species s13 does not connect to the reaction(s) re24, but instead connects to re17, re24
+//    Unable to add an alias of 's13' to the reaction 're24'.  It seems to already connect to that species.
+//    The alias node 1 for species s12 does not connect to the reaction(s) re25, but instead connects to re18, re25
+//    Layout error in model:  unable to draw an arc between the species 's2' and the reaction 're11': 's2' is not a participant in that reaction.
+//    Layout error in model:  unable to draw an arc between the species 's13' and the reaction 're11': 's13' is not a participant in that reaction.
+//    Layout error in model:  unable to draw an arc between the species 's4' and the reaction 're26': 's4' is not a participant in that reaction.
+
+model *Verma2016___HIV_and_HPV_co_infection__T_cell_response()
+
+  // Compartments and Species:
+  compartment default;
+  species s2 in default, s3 in default, s4 in default, s14 in default, s16 in default;
+  species s13 in default, s12 in default;
+
+  // Reactions:
+  re1:  => s2; default*((1 - e_pi)*N1*re1_delta*s3);
+  re3: s2 => ; default*c1*s2;
+  re4: s4 => s3; default*((1 - e_rt)*beta*s4*s2);
+  re5:  => s4; default*s;
+  re7: s4 => ; default*d*s4;
+  re8: s3 => ; default*re8_k1*s3;
+  re9: s12 => s13; default*epi*s12;
+  re11:  => s14; default*(mu*re11_k1*s12);
+  re12: s12 => ; default*(re12_a*s12*s16);
+  re14: s13 => ; default*re14_k1*s13;
+  re15: s16 => ; default*(omega*s13*s16*s16/(re15_b*s4));
+  re17: s13 => ; default*(re17_a*s16*s13);
+  re18: s12 => ; default*mu*s12;
+  re20: s14 => ; default*re20_k1*s14;
+  re24: s13 => 2 s13; default*(re24_r*epi*s13);
+  re25: s12 => 2 s12; default*(re25_psi*s14*(((1 + re25_p*s2)*re25_N2 - s12)/(re25_phi + (1 + re25_p*s2)*re25_N2 - s12)));
+  re26: s16 => 2 s16; default*(omega*s13*s16);
+  Production_of_HPV_due_to_HPV_self_proliferating:  => s14; default*(mu*Production_of_HPV_due_to_HPV_self_proliferating_k2*s13);
+
+  // Species initializations:
+  s2 = 48000;
+  s3 = beta*s4*s2;
+  s4 = 250000;
+  s14 = 0;
+  s16 = 0.01;
+  s13 = 0;
+  s12 = 1;
+
+  // Compartment initializations:
+  default = 1;
+
+  // Variable initializations:
+  beta = c1/(N1*s4);
+  e_rt = 0;
+  e_pi = 0;
+  epi = 0.5;
+  omega = 0.001;
+  mu = 0.048;
+  c1 = 23;
+  N1 = 467;
+  s = d*s4 + beta*s4*s2;
+  d = 0.01;
+  re1_delta = 1;
+  re8_k1 = 1;
+  re11_k1 = 1000;
+  re12_a = 0.01;
+  re14_k1 = 0.048;
+  re15_b = 3.5e-05;
+  re17_a = 0.01;
+  re20_k1 = 0.05;
+  re24_r = 0.1;
+  re25_N2 = 10000;
+  re25_p = 2.0833e-05;
+  re25_phi = 1000000;
+  re25_psi = 0.0067;
+  Production_of_HPV_due_to_HPV_self_proliferating_k2 = 1000;
+
+  // Other declarations:
+  const default, beta, e_rt, e_pi, epi, omega, mu, c1, N1, s, d;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = item;
+
+  // Display Names:
+  time_unit is "time";
+  s2 is "V";
+  s3 is "I";
+  s4 is "T";
+  s14 is "W";
+  s16 is "E";
+  s13 is "Y2";
+  s12 is "Y1";
+  re1 is "Production of HIV virion";
+  re3 is "Death of HIV";
+  re4 is "Production of HIV infected cells";
+  re5 is "Production of T cells";
+  re7 is "Decay of T cells";
+  re8 is "Decay of HIV-infected";
+  re9 is "Production of HPV-self-proliferating cells by HPV infected";
+  re11 is "Production of HPV due to HPVinfected";
+  re12 is "Death of HPV infected due to Effector cells";
+  re14 is "Decay of HPV self-proliferating";
+  re15 is "Logistic term for Effector cells";
+  re17 is "Death of HPV self-proliferating cells due to effector cells";
+  re18 is "Decay of HPV-infected cells";
+  re20 is "Decay of HPV";
+  re24 is "Proliferation of HPV self-proliferating cells";
+  re25 is "Productionof HPV infected cells";
+  re26 is "Production of Effector cell";
+  Production_of_HPV_due_to_HPV_self_proliferating is "Production of HPV due to HPV self proliferating";
+
+  # General layout options
+  model.layout = on
+  model.layout.size = {2000, 1000} 
+  model.layout.background = "#FFFFFFFF"
+
+  // Species layout defaults
+  species.color = "#a0e0a030"
+
+  // Reaction layout defaults
+  reaction.lineColor = "#000000a0"
+  reaction.lineWidth = 3
+  reaction.fontColor = "#000000a0"
+
+  // Compartment layout defaults
+  compartment.lineColor = "#e69600b0"
+  compartment.lineWidth = 7
+  compartment.fontColor = "#e69600b0"
+  compartment.fontStyle = normal
+
+  // Individual element layout information
+  s2.position = {156, 36.5}
+  s2.size = {70, 25}
+  s2.color = "#ccccff"
+  s2.font = Arial
+  s2.fontColor = black
+  s2.fontSize = 12
+  s2.shape = ellipse
+  s3.position = {251, 167.5}
+  s3.size = {75, 32}
+  s3.color = "#ff9999"
+  s3.font = Arial
+  s3.fontColor = black
+  s3.fontSize = 12
+  s3.shape = ellipse
+  s4.position = {64, 166.5}
+  s4.size = {70, 25}
+  s4.color = "#99ffff"
+  s4.font = Arial
+  s4.fontColor = black
+  s4.fontSize = 12
+  s4.shape = ellipse
+  s14.position = {843, 131.5}
+  s14.size = {70, 25}
+  s14.color = "#ffcc00"
+  s14.font = Arial
+  s14.fontColor = black
+  s14.fontSize = 12
+  s14.shape = ellipse
+  s16.position = {536, 165.5}
+  s16.size = {77, 30}
+  s16.color = "#33ccff"
+  s16.font = Arial
+  s16.fontColor = black
+  s16.fontSize = 12
+  s16.shape = ellipse
+  s16.position.re26 = {533, 307.5}
+  s16.size.re26 = {77, 30}
+  s16.color.re26 = "#99ccff"
+  s16.font.re26 = Arial
+  s16.fontColor.re26 = black
+  s16.fontSize.re26 = 12
+  s16.shape.re26 = ellipse
+  s13.position = {663, 235.5}
+  s13.size = {84, 34}
+  s13.color = "#ff66ff"
+  s13.font = Arial
+  s13.fontColor = black
+  s13.fontSize = 12
+  s13.shape = ellipse
+  s13.position.re24 = {784, 300.5}
+  s13.size.re24 = {91, 33}
+  s13.color.re24 = "#ffccff"
+  s13.font.re24 = Arial
+  s13.fontColor.re24 = black
+  s13.fontSize.re24 = 12
+  s13.shape.re24 = ellipse
+  s12.position = {658, 41.5}
+  s12.size = {98, 37}
+  s12.color = "#ff66cc"
+  s12.font = Arial
+  s12.fontColor = black
+  s12.fontSize = 12
+  s12.shape = ellipse
+  s12.position.re25 = {1001, 41.5}
+  s12.size.re25 = {88, 37}
+  s12.color.re25 = "#ff99cc"
+  s12.font.re25 = Arial
+  s12.fontColor.re25 = black
+  s12.fontSize.re25 = 12
+  s12.shape.re25 = ellipse
+  re1.position = {286, 50}
+  re1.lineColor = black
+  re1.lineWidth = 1
+  re1.--.rxn_end = {293.5, 50.12}
+  re1.--.species_end = {346, 51}
+  re1.--.b1 = {0, 0}
+  re1.--.b2 = {0, 0}
+  re1.s2.rxn_end = {278.5, 49.88}
+  re1.s2.species_end = {226, 49}
+  re1.s2.b1 = {0, 0}
+  re1.s2.b2 = {0, 0}
+  re1.s3.rxn_end = {288.5, 167.5}
+  re1.s3.species_end = {293.5, 55.12}
+  re1.s3.b1 = {0, 0}
+  re1.s3.b2 = {0, 0}
+  re1.--.position = {346, 37}
+  re1.--.size = {25, 28}
+  re3.position = {119, 53}
+  re3.lineColor = "#ff3333"
+  re3.lineWidth = 2
+  re3.s2.rxn_end = {126.46, 52.19}
+  re3.s2.species_end = {156, 49}
+  re3.s2.b1 = {0, 0}
+  re3.s2.b2 = {0, 0}
+  re3.--.rxn_end = {111.54, 53.81}
+  re3.--.species_end = {82, 57}
+  re3.--.b1 = {0, 0}
+  re3.--.b2 = {0, 0}
+  re3.--.position = {61, 40}
+  re3.--.size = {21, 34}
+  re4.position = {192.5, 184.38}
+  re4.lineColor = black
+  re4.lineWidth = 1
+  re4.s4.rxn_end = {185, 184.49}
+  re4.s4.species_end = {134, 185.25}
+  re4.s4.b1 = {0, 0}
+  re4.s4.b2 = {0, 0}
+  re4.s3.rxn_end = {200, 184.26}
+  re4.s3.species_end = {251, 183.5}
+  re4.s3.b1 = {0, 0}
+  re4.s3.b2 = {0, 0}
+  re4.s2.rxn_end = {191, 61.5}
+  re4.s2.b1 = {0, 0}
+  re4.s2.b2 = {0, 0}
+  re5.position = {99.5, 133.25}
+  re5.lineColor = black
+  re5.lineWidth = 1
+  re5.--.rxn_end = {99.61, 125.75}
+  re5.--.species_end = {100, 100}
+  re5.--.b1 = {0, 0}
+  re5.--.b2 = {0, 0}
+  re5.s4.rxn_end = {99.39, 140.75}
+  re5.s4.species_end = {99, 166.5}
+  re5.s4.b1 = {0, 0}
+  re5.s4.b2 = {0, 0}
+  re5.--.position = {85, 70}
+  re7.position = {97, 231.75}
+  re7.lineColor = "#ff3333"
+  re7.lineWidth = 2
+  re7.s4.rxn_end = {97.37, 224.26}
+  re7.s4.species_end = {99, 191.5}
+  re7.s4.b1 = {0, 0}
+  re7.s4.b2 = {0, 0}
+  re7.--.rxn_end = {96.63, 239.24}
+  re7.--.species_end = {95, 272}
+  re7.--.b1 = {0, 0}
+  re7.--.b2 = {0, 0}
+  re7.--.position = {88, 272}
+  re7.--.size = {28, 26}
+  re8.position = {354, 167.5}
+  re8.lineColor = "#ff3333"
+  re8.lineWidth = 2
+  re8.s3.b1 = {0, 0}
+  re8.s3.b2 = {0, 0}
+  re8.--.b1 = {0, 0}
+  re8.--.b2 = {0, 0}
+  re8.--.seg2.species_end = {382, 222}
+  re8.--.seg2.b1 = {0, 0}
+  re8.--.seg2.b2 = {0, 0}
+  re8.--.position = {368, 222}
+  re8.--.size = {28, 22}
+  re9.position = {706, 157}
+  re9.lineColor = black
+  re9.lineWidth = 1
+  re9.s12.rxn_end = {706.1, 149.5}
+  re9.s12.species_end = {707, 78.5}
+  re9.s12.b1 = {0, 0}
+  re9.s12.b2 = {0, 0}
+  re9.s13.rxn_end = {705.9, 164.5}
+  re9.s13.species_end = {705, 235.5}
+  re9.s13.b1 = {0, 0}
+  re9.s13.b2 = {0, 0}
+  re11.position = {808.8, 129.5}
+  re11.lineColor = black
+  re11.lineWidth = 1
+  re11.--.b1 = {0, 0}
+  re11.--.b2 = {0, 0}
+  re11.s14.b1 = {0, 0}
+  re11.s14.b2 = {0, 0}
+  re11.s14.seg2.species_end = {836.6, 99.59}
+  re11.s14.seg2.b1 = {0, 0}
+  re11.s14.seg2.b2 = {0, 0}
+  re11.s14.seg3.rxn_end = {836.6, 99.59}
+  re11.s14.seg3.species_end = {860.5, 99.59}
+  re11.s14.seg3.b1 = {0, 0}
+  re11.s14.seg3.b2 = {0, 0}
+  re11.s14.seg4.rxn_end = {860.5, 99.59}
+  re11.s14.seg4.species_end = {860.5, 131.5}
+  re11.s14.seg4.b1 = {0, 0}
+  re11.s14.seg4.b2 = {0, 0}
+  re11.s12.rxn_end = {756, 78.5}
+  re11.s12.species_end = {756, 99.72}
+  re11.s12.b1 = {0, 0}
+  re11.s12.b2 = {0, 0}
+  re11.s12.seg2.rxn_end = {756, 99.72}
+  re11.s12.seg2.species_end = {801.3, 99.72}
+  re11.s12.seg2.b1 = {0, 0}
+  re11.s12.seg2.b2 = {0, 0}
+  re11.s12.seg3.rxn_end = {801.3, 99.72}
+  re11.s12.seg3.species_end = {801.3, 124.5}
+  re11.s12.seg3.b1 = {0, 0}
+  re11.s12.seg3.b2 = {0, 0}
+  re11.s2.rxn_end = {226, 36.5}
+  re11.s2.species_end = {226, 6.11}
+  re11.s2.b1 = {0, 0}
+  re11.s2.b2 = {0, 0}
+  re11.s2.seg2.rxn_end = {226, 6.11}
+  re11.s2.seg2.species_end = {816.3, 6.11}
+  re11.s2.seg2.b1 = {0, 0}
+  re11.s2.seg2.b2 = {0, 0}
+  re11.s2.seg3.rxn_end = {816.3, 6.11}
+  re11.s2.seg3.species_end = {816.3, 124.5}
+  re11.s2.seg3.b1 = {0, 0}
+  re11.s2.seg3.b2 = {0, 0}
+  re11.s13.rxn_end = {747, 235.5}
+  re11.s13.species_end = {747, 183.37}
+  re11.s13.b1 = {0, 0}
+  re11.s13.b2 = {0, 0}
+  re11.s13.seg2.rxn_end = {747, 183.37}
+  re11.s13.seg2.b1 = {0, 0}
+  re11.s13.seg2.b2 = {0, 0}
+  re11.s13.seg3.b1 = {0, 0}
+  re11.s13.seg3.b2 = {0, 0}
+  re11.--.position = {757, 117}
+  re11.--.size = {24, 25}
+  re12.position = {577.5, 60.25}
+  re12.lineColor = black
+  re12.lineWidth = 1
+  re12.s12.rxn_end = {585, 60.23}
+  re12.s12.species_end = {658, 60}
+  re12.s12.b1 = {0, 0}
+  re12.s12.b2 = {0, 0}
+  re12.--.rxn_end = {570, 60.27}
+  re12.--.species_end = {497, 60.5}
+  re12.--.b1 = {0, 0}
+  re12.--.b2 = {0, 0}
+  re12.s16.rxn_end = {574.5, 165.5}
+  re12.s16.species_end = {585, 65.27}
+  re12.s16.b1 = {0, 0}
+  re12.s16.b2 = {0, 0}
+  re12.--.position = {474, 48.5}
+  re12.--.size = {23, 24}
+  re14.position = {705.5, 299}
+  re14.lineColor = "#ff3333"
+  re14.lineWidth = 2
+  re14.s13.rxn_end = {705.37, 291.5}
+  re14.s13.species_end = {705, 269.5}
+  re14.s13.b1 = {0, 0}
+  re14.s13.b2 = {0, 0}
+  re14.--.rxn_end = {705.63, 306.5}
+  re14.--.species_end = {706, 328.5}
+  re14.--.b1 = {0, 0}
+  re14.--.b2 = {0, 0}
+  re14.--.position = {692, 328.5}
+  re14.--.size = {28, 24}
+  re15.position = {492.5, 183.75}
+  re15.lineColor = "#ff3333"
+  re15.lineWidth = 2
+  re15.s16.rxn_end = {499.98, 183.19}
+  re15.s16.species_end = {536, 180.5}
+  re15.s16.b1 = {0, 0}
+  re15.s16.b2 = {0, 0}
+  re15.--.rxn_end = {485.02, 184.31}
+  re15.--.species_end = {449, 187}
+  re15.--.b1 = {0, 0}
+  re15.--.b2 = {0, 0}
+  re15.--.position = {427, 171}
+  re15.--.size = {22, 32}
+  re17.position = {666.88, 180}
+  re17.lineColor = "#ff3333"
+  re17.lineWidth = 2
+  re17.s13.rxn_end = {666.35, 187.48}
+  re17.s13.species_end = {663, 235.5}
+  re17.s13.b1 = {0, 0}
+  re17.s13.b2 = {0, 0}
+  re17.--.rxn_end = {667.4, 172.52}
+  re17.--.species_end = {670.75, 124.5}
+  re17.--.b1 = {0, 0}
+  re17.--.b2 = {0, 0}
+  re17.s16.rxn_end = {613, 180.5}
+  re17.s16.species_end = {655.92, 183.22}
+  re17.s16.b1 = {0, 0}
+  re17.s16.b2 = {0, 0}
+  re17.--.position = {665, 100.5}
+  re17.--.size = {23, 24}
+  re18.position = {678.5, 25.5}
+  re18.lineColor = "#ff3333"
+  re18.lineWidth = 2
+  re18.s12.b1 = {0, 0}
+  re18.s12.b2 = {0, 0}
+  re18.s12.seg2.species_end = {707, 41.5}
+  re18.s12.seg2.b1 = {0, 0}
+  re18.s12.seg2.b2 = {0, 0}
+  re18.--.b1 = {0, 0}
+  re18.--.b2 = {0, 0}
+  re18.--.position = {628, 12.5}
+  re18.--.size = {22, 26}
+  re20.position = {935.5, 192.5}
+  re20.lineColor = "#ff3333"
+  re20.lineWidth = 2
+  re20.s14.b1 = {0, 0}
+  re20.s14.b2 = {0, 0}
+  re20.s14.seg2.species_end = {913, 156.5}
+  re20.s14.seg2.b1 = {0, 0}
+  re20.s14.seg2.b2 = {0, 0}
+  re20.--.b1 = {0, 0}
+  re20.--.b2 = {0, 0}
+  re20.--.position = {958, 182}
+  re20.--.size = {25, 21}
+  re24.position = {755, 317}
+  re24.lineColor = black
+  re24.lineWidth = 1
+  re24.s13.b1 = {0, 0}
+  re24.s13.b2 = {0, 0}
+  re24.s13.arc2.b1 = {0, 0}
+  re24.s13.arc2.b2 = {0, 0}
+  re24.s13.arc2.seg2.species_end = {726, 269.5}
+  re24.s13.arc2.seg2.b1 = {0, 0}
+  re24.s13.arc2.seg2.b2 = {0, 0}
+  re24.s13.arc3.rxn_end = {747, 261}
+  re24.s13.arc3.species_end = {768.84, 261}
+  re24.s13.arc3.b1 = {0, 0}
+  re24.s13.arc3.b2 = {0, 0}
+  re24.s13.arc3.seg2.rxn_end = {768.84, 261}
+  re24.s13.arc3.seg2.species_end = {768.84, 284.42}
+  re24.s13.arc3.seg2.b1 = {0, 0}
+  re24.s13.arc3.seg2.b2 = {0, 0}
+  re24.s13.arc3.seg3.rxn_end = {768.84, 284.42}
+  re24.s13.arc3.seg3.species_end = {762.5, 284.42}
+  re24.s13.arc3.seg3.b1 = {0, 0}
+  re24.s13.arc3.seg3.b2 = {0, 0}
+  re24.s13.arc3.seg4.rxn_end = {762.5, 284.42}
+  re24.s13.arc3.seg4.species_end = {762.5, 312}
+  re24.s13.arc3.seg4.b1 = {0, 0}
+  re24.s13.arc3.seg4.b2 = {0, 0}
+  re25.position = {878.5, 60}
+  re25.lineColor = black
+  re25.lineWidth = 1
+  re25.s12.b1 = {0, 0}
+  re25.s12.b2 = {0, 0}
+  re25.s12.arc2.b1 = {0, 0}
+  re25.s12.arc2.b2 = {0, 0}
+  re25.s12.arc3.rxn_end = {756, 41.5}
+  re25.s12.arc3.species_end = {756, 20.15}
+  re25.s12.arc3.b1 = {0, 0}
+  re25.s12.arc3.b2 = {0, 0}
+  re25.s12.arc3.seg2.rxn_end = {756, 20.15}
+  re25.s12.arc3.seg2.species_end = {886, 20.15}
+  re25.s12.arc3.seg2.b1 = {0, 0}
+  re25.s12.arc3.seg2.b2 = {0, 0}
+  re25.s12.arc3.seg3.rxn_end = {886, 20.15}
+  re25.s12.arc3.seg3.species_end = {886, 55}
+  re25.s12.arc3.seg3.b1 = {0, 0}
+  re25.s12.arc3.seg3.b2 = {0, 0}
+  re25.s14.rxn_end = {878, 131.5}
+  re25.s14.species_end = {886, 65}
+  re25.s14.b1 = {0, 0}
+  re25.s14.b2 = {0, 0}
+  re26.position = {573, 251.5}
+  re26.lineColor = black
+  re26.lineWidth = 1
+  re26.s16.rxn_end = {572.8, 259}
+  re26.s16.species_end = {571.5, 307.5}
+  re26.s16.b1 = {0, 0}
+  re26.s16.b2 = {0, 0}
+  re26.s16.arc2.rxn_end = {573.2, 244}
+  re26.s16.arc2.species_end = {574.5, 195.5}
+  re26.s16.arc2.b1 = {0, 0}
+  re26.s16.arc2.b2 = {0, 0}
+  re26.s16.arc3.rxn_end = {555.25, 195.5}
+  re26.s16.arc3.species_end = {555.25, 250.05}
+  re26.s16.arc3.b1 = {0, 0}
+  re26.s16.arc3.b2 = {0, 0}
+  re26.s16.arc3.seg2.rxn_end = {555.25, 250.05}
+  re26.s16.arc3.seg2.species_end = {561.99, 250.05}
+  re26.s16.arc3.seg2.b1 = {0, 0}
+  re26.s16.arc3.seg2.b2 = {0, 0}
+  re26.s4.rxn_end = {116.5, 191.5}
+  re26.s4.species_end = {116.5, 255.05}
+  re26.s4.b1 = {0, 0}
+  re26.s4.b2 = {0, 0}
+  re26.s4.seg2.rxn_end = {116.5, 255.05}
+  re26.s4.seg2.species_end = {561.86, 255.05}
+  re26.s4.seg2.b1 = {0, 0}
+  re26.s4.seg2.b2 = {0, 0}
+  re26.s13.rxn_end = {663, 252.5}
+  re26.s13.species_end = {576.85, 255.45}
+  re26.s13.b1 = {0, 0}
+  re26.s13.b2 = {0, 0}
+
+  // CV terms:
+  s2 instance "http://identifiers.org/ncit/C14219"
+  s3 property "http://identifiers.org/ncit/C97350"
+  s4 instance "http://identifiers.org/ncit/C97350"
+  s14 instance "http://identifiers.org/efo/0004510"
+  s16 instance "http://identifiers.org/ncit/C12543"
+  s13 instance "http://identifiers.org/ncit/C12578"
+  s12 instance "http://identifiers.org/ncit/C12578"
+
+  model class "http://identifiers.org/biomodels.db/MODEL1605030001",
+              "http://identifiers.org/ncit/C15261",
+              "http://identifiers.org/ncit/C14219",
+              "http://identifiers.org/taxonomy/9606"
+  model publication "http://identifiers.org/taxonomy/9606",
+                    "http://identifiers.org/pubmed/28060843"
+  model model_source "http://identifiers.org/biomodels.db/MODEL1605030001",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000872"
+  model identity "http://identifiers.org/biomodels.db/MODEL1605030001"
+  model property "http://identifiers.org/ncit/C15261"
+  model property "http://identifiers.org/ncit/C14219"
+  model created "2015-12-16T13:33:59Z"
+  model modified "2015-12-16T13:33:59Z"
+  model creator1.givenName "Mohammad Umer"
+  model creator1.familyName "Sharif Shohan"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "msharifshohan@ebi.ac.uk"
+  model creator2.givenName "Josep"
+  model creator2.familyName "Bassaganya-Riera"
+  model creator2.organization "VT"
+  model creator2.email "jbassaga@vt.edu"
+  model creator3.givenName "Raquel"
+  model creator3.familyName "Hontecillas"
+  model creator3.organization "VT"
+  model creator3.email "rmagarzo@vt.edu"
+  model creator4.givenName "Stefan"
+  model creator4.familyName "Hoops"
+  model creator4.organization "VT"
+  model creator4.email "shoops@vbi.vt.edu"
+  model creator5.givenName "Stanca"
+  model creator5.familyName "Ciupe"
+  model creator5.organization "VT"
+  model creator5.email "stanca@math.vt.edu"
+  model creator6.givenName "Vida"
+  model creator6.familyName "Abedi"
+  model creator6.organization "VT"
+  model creator6.email "abedi@vt.edu"
+  model creator7.givenName "Meghna"
+  model creator7.familyName "Verma"
+  model creator7.organization "VT"
+  model creator7.email "meghna89@vt.edu"
+  model creator8.givenName "Samantha"
+  model creator8.familyName "Erwin"
+  model creator8.organization "VT"
+  model creator8.email "sherwin@vt.edu"
+  model creator9.givenName "Andrew"
+  model creator9.familyName "Leber"
+  model creator9.organization "VT"
+  model creator9.email "ajleber@vt.edu"
+
+  // Notes:
+  model notes ```
+This is a COPASI version of the HIV/HPV coinfection model submitted to PLoS One.Title: 
+Modeling the mechanisms by which HIV-associated immunosuppression influences HPV 
+persistence at the oral mucosaAuthors: Meghna Verma\*, Samantha Erwin\*, Vida Abedi, 
+Raque Hontecillas, Stefan Hoops, Andrew Leber, Josep Bassaganya-Riera, Stanca Ciupe\* 
+Contributed equally to the workCorresponding Authors: Josep Bassaganya-Riera and 
+Stanca Ciupe
+```
+  s2 notes "HIV"
+  s3 notes "HIV infected cells"
+  s4 notes "CD4+ T cells"
+  s14 notes "HPV"
+  s16 notes "HPV specific CTL"
+  s13 notes "HPV self-proliferating cells"
+  s12 notes "HPV infected cells"
+  re1 notes ```
+N1 - Ciupe MS, Bivort BL, Bortz DM, Nelson PW. Estimating kinetic parameters from 
+HIV primary infection data through the eyes of three different mathematical models. 
+Math Biosci. 2006;200:1-27.delta - Klatt NR, Shudo E, Ortiz AM, Engram JC, Paiardini 
+M, Lawson B, et al. CD8+ lymphocytes control viral replication in SIVmac239-infected 
+rhesus macaques without decreasing the lifespan of productively infected cells. PLoS 
+Pathog. 2010; 6:1-11.
+```
+  re3 notes ```
+Ramratnam B, Bonhoeffer S, Binley J, Hurley A, Zhang L, Mittler JE, et al. Rapid 
+production and clearance of HIV-1 and hepatitis C virus assessed by large volume 
+plasma apheresis. Lancet. 1999;354:1782-5.
+```
+  re7 notes ```
+Mohri H, Perelson AS, Tung K, Ribeiro RM, Ramratnam B, Markowitz M, et al. Increased 
+turnover of T lymphocytes in HIV-1 infection and its reduction by antiretroviral 
+therapy. J Exp Med. 2001;194:1277-88.
+```
+  re8 notes ```
+Klatt NR, Shudo E, Ortiz AM, Engram JC, Paiardini M, Lawson B, et al. CD8+ lymphocytes 
+control viral replication in SIVmac239-infected rhesus macaques without decreasing 
+the lifespan of productively infected cells. PLoS Pathog. 2010; 6:1-11.
+```
+  re9 notes ```
+Murall CL, Bauch CT, Day T. Could the human papillomavirus vaccines drive virulence 
+evolution? Proc Biol Sci. 2015;282:20141069.
+```
+  re11 notes ```
+Murall CL, Bauch CT, Day T. Could the human papillomavirus vaccines drive virulence 
+evolution? Proc Biol Sci. 2015;282:20141069.
+```
+  re12 notes ```
+Murall CL, Bauch CT, Day T. Could the human papillomavirus vaccines drive virulence 
+evolution? Proc Biol Sci. 2015;282:20141069.
+```
+  re14 notes ```
+Murall CL, Bauch CT, Day T. Could the human papillomavirus vaccines drive virulence 
+evolution? Proc Biol Sci. 2015;282:20141069.
+```
+  re17 notes ```
+Murall CL, Bauch CT, Day T. Could the human papillomavirus vaccines drive virulence 
+evolution? Proc Biol Sci. 2015;282:20141069.
+```
+  re18 notes ```
+Murall CL, Bauch CT, Day T. Could the human papillomavirus vaccines drive virulence 
+evolution? Proc Biol Sci. 2015;282:20141069.
+```
+  re20 notes ```
+Murall CL, Bauch CT, Day T. Could the human papillomavirus vaccines drive virulence 
+evolution? Proc Biol Sci. 2015;282:20141069.
+```
+  re24 notes ```
+Murall CL, Bauch CT, Day T. Could the human papillomavirus vaccines drive virulence 
+evolution? Proc Biol Sci. 2015;282:20141069.
+```
+  re25 notes ```
+Murall CL, Bauch CT, Day T. Could the human papillomavirus vaccines drive virulence 
+evolution? Proc Biol Sci. 2015;282:20141069.
+```
+  re26 notes ```
+Murall CL, Bauch CT, Day T. Could the human papillomavirus vaccines drive virulence 
+evolution? Proc Biol Sci. 2015;282:20141069.
+```
+  Production_of_HPV_due_to_HPV_self_proliferating notes ```
+Murall CL, Bauch CT, Day T. Could the human papillomavirus vaccines drive virulence 
+evolution? Proc Biol Sci. 2015;282:20141069.
+```
+end
+
+Verma2016___HIV_and_HPV_co_infection__T_cell_response is "Verma2016 - HIV and HPV co-infection, T-cell response"

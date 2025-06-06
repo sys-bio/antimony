@@ -1,0 +1,620 @@
+// Created by libAntimony v3.0.0
+
+// Warnings from automatic translation:
+//    Layout error in model:  unable to draw an arc between the species 'NFKB_nuc' and the reaction 'NFKB_export': 'NFKB_nuc' is not a participant in that reaction.
+//    Layout error in model:  unable to draw an arc between the species 'IkB_NFKB' and the reaction 'IkB_NFKB_n_export': 'IkB_NFKB' is not a participant in that reaction.
+//    Layout error in model:  unable to draw an arc between the species 'IkB' and the reaction 'IkBnuc_export': 'IkB' is not a participant in that reaction.
+//    Layout error in model:  unable to draw an arc between the species 'IkB_nuc' and the reaction 'IkB_export': 'IkB_nuc' is not a participant in that reaction.
+
+model *Lipniacki2004___Mathematical_model_of_NFKB_regulatory_module()
+
+  // Compartments and Species:
+  compartment Cytosol, Nucleus;
+  species IKK_neutral in Cytosol, IKK_active in Cytosol, IKK_inact in Cytosol;
+  species IKKactive_IkB in Cytosol, IkB in Cytosol, IKKactive_IkB_NFKB in Cytosol;
+  species IkB_NFKB in Cytosol, NFKB in Cytosol, NFKB_nuc in Nucleus, IkB_nuc in Nucleus;
+  species IkB_NFKB_nuc in Nucleus, IkB_mRNA in Nucleus, A20_mRNA in Nucleus;
+  species A20 in Cytosol, $TNF in Cytosol, cgen_mRNA in Nucleus;
+
+  // Assignment Rules:
+  TNF := TNF_R;
+  NFKB_total := IKKactive_IkB_NFKB + NFKB + IkB_NFKB + (1/ModelValue_1)*NFKB_nuc + (1/ModelValue_1)*IkB_NFKB_nuc;
+  IkB_mRNA_amp := IkB_mRNA*10000;
+  A20_mRNA_amp := A20_mRNA*10000;
+  cgen_mRNA_amp := cgen_mRNA*10000;
+
+  // Reactions:
+  IKKn_production:  => IKK_neutral; Cytosol*Kprod;
+  IKKn_degradation: IKK_neutral => ; Cytosol*Kdeg*IKK_neutral;
+  IKKn_activation: IKK_neutral => IKK_active; Cytosol*(k1*TNF*IKK_neutral);
+  NFKB_export: NFKB => ; Cytosol*i1*NFKB;
+  IkBn_NFKBn_binding: NFKB_nuc + IkB_nuc => IkB_NFKB_nuc; Nucleus*a1*NFKB_nuc*IkB_nuc;
+  IkB_NFKB_n_export: IkB_NFKB_nuc => ; Nucleus*(e2a*Kv*IkB_NFKB_nuc);
+  IkB_NFKB_binding: NFKB + IkB => IkB_NFKB; Cytosol*a1*NFKB*IkB;
+  IkB_degradation: IkB_NFKB => NFKB; Cytosol*c6a*IkB_NFKB;
+  IkBnuc_export: IkB_nuc => ; Nucleus*(e1a*Kv*IkB_nuc);
+  IkB_export: IkB => ; Cytosol*i1a*IkB;
+  IkB_transcription:  => IkB_mRNA; Nucleus*(c1a*NFKB_nuc);
+  IKKa_spon_inactivation: IKK_active => IKK_inact; Cytosol*k3*IKK_active;
+  IKKinact_degradation: IKK_inact => ; Cytosol*Kdeg*IKK_inact;
+  IKKa_degradation: IKK_active => ; Cytosol*Kdeg*IKK_active;
+  IKKa_IkB_binding: IKK_active + IkB => IKKactive_IkB; Cytosol*a2*IKK_active*IkB;
+  IKKa_IkBNFKB_binding: IKK_active + IkB_NFKB => IKKactive_IkB_NFKB; Cytosol*a3*IKK_active*IkB_NFKB;
+  IkBmRNA_degradation: IkB_mRNA => ; Nucleus*c3a*IkB_mRNA;
+  IkB_translation:  => IkB; c4a*IkB_mRNA;
+  IkB_con_degradation: IkB => ; Cytosol*c5a*IkB;
+  A20_transcription:  => A20_mRNA; Nucleus*(c1*NFKB_nuc);
+  A20mRNA_degradation: A20_mRNA => ; Nucleus*c3*A20_mRNA;
+  A20_translation:  => A20; c4*A20_mRNA;
+  A20_degradation: A20 => ; Cytosol*c5*A20;
+  IKKa_inactivation_1: IKK_active => IKK_inact; Cytosol*(k2*TNF*A20*IKK_active);
+  cgen_transcription:  => cgen_mRNA; Nucleus*(c1c*NFKB_nuc);
+  cgen_mRNA_degradation: cgen_mRNA => ; Nucleus*c3c*cgen_mRNA;
+  IkB_degradation_1: IKKactive_IkB_NFKB => IKK_active + NFKB; Cytosol*t2*IKKactive_IkB_NFKB;
+  IkB_degradation_2: IKKactive_IkB => IKK_active; Cytosol*t1*IKKactive_IkB;
+  NFKBc_induced_NFKBn_production:  => NFKB_nuc; i1*Kv*NFKB;
+  IkBn_induced_IkBc_production:  => IkB; e1a*IkB_nuc;
+  IkBc_induced_IkBn_production:  => IkB_nuc; i1a*Kv*IkB;
+  IkB_NFKB_n_induced_IkB_NFKBc_production:  => IkB_NFKB; e2a*IkB_NFKB_nuc;
+
+  // Events:
+  TNF_stimulation: at 0 after time > 363600: TNF_R = 1;
+
+  // Species initializations:
+  IKK_neutral = 0;
+  IKK_active = 0;
+  IKK_inact = 0;
+  IKKactive_IkB = 0;
+  IkB = 0;
+  IKKactive_IkB_NFKB = 0;
+  IkB_NFKB = 0.06;
+  NFKB = 0;
+  NFKB_nuc = 0;
+  IkB_nuc = 0;
+  IkB_NFKB_nuc = 0;
+  IkB_mRNA = 0;
+  A20_mRNA = 0;
+  A20 = 0;
+  cgen_mRNA = 0;
+
+  // Compartment initializations:
+  Cytosol = 1;
+  Nucleus = 1;
+
+  // Variable initializations:
+  TNF_R = 0;
+  ModelValue_1 = Kv;
+  Kv = 5;
+  a1 = 0.5;
+  a2 = 0.2;
+  t1 = 0.1;
+  a3 = 1;
+  t2 = 0.1;
+  c1a = 5e-07;
+  c2a = 0;
+  c3a = 0.0004;
+  c4a = 0.5;
+  c5a = 0.0001;
+  c6a = 2e-05;
+  c1 = 5e-07;
+  c2 = 0;
+  c3 = 0.0004;
+  c4 = 0.5;
+  c5 = 0.0003;
+  k1 = 0.0025;
+  k2 = 0.1;
+  k3 = 0.0015;
+  Kprod = 2.5e-05;
+  Kdeg = 0.000125;
+  i1 = 0.0025;
+  e2a = 0.01;
+  i1a = 0.001;
+  e1a = 0.0005;
+  c1c = 5e-07;
+  c2c = 0;
+  c3c = 0.0004;
+
+  // Other declarations:
+  var TNF_R, NFKB_total, IkB_mRNA_amp, A20_mRNA_amp, cgen_mRNA_amp;
+  const Cytosol, Nucleus, ModelValue_1, Kv, a1, a2, t1, a3, t2, c1a, c2a;
+  const c3a, c4a, c5a, c6a, c1, c2, c3, c4, c5, k1, k2, k3, Kprod, Kdeg, i1;
+  const e2a, i1a, e1a, c1c, c2c, c3c;
+
+  // Unit definitions:
+  unit substance = 1e-6 mole;
+
+  // Display Names:
+  ModelValue_1 is "Initial for Kv";
+
+  # General layout options
+  model.layout = on
+  model.layout.size = {10, 10}
+  model.layout.background = "#FFFFFFFF"
+
+  // Species layout defaults
+  species.color = "#a0e0a030"
+
+  // Reaction layout defaults
+  reaction.lineColor = "#000000a0"
+  reaction.lineWidth = 3
+  reaction.fontColor = "#000000a0"
+
+  // Compartment layout defaults
+  compartment.lineColor = "#e69600b0"
+  compartment.fontColor = "#e69600b0"
+  compartment.fontStyle = normal
+
+  // Individual element layout information
+  IKK_neutral.position = {559.94, 427.79}
+  IKK_neutral.size = {180, 28}
+  IKK_neutral.font = Verdana
+  IKK_neutral.fontColor = black
+  IKK_neutral.fontSize = 12
+  IKK_active.position = {366.02, 402.89}
+  IKK_active.size = {164, 28}
+  IKK_active.font = Verdana
+  IKK_active.fontColor = black
+  IKK_active.fontSize = 12
+  IKK_inact.position = {337.26, 577.82}
+  IKK_inact.size = {148, 28}
+  IKK_inact.font = Verdana
+  IKK_inact.fontColor = black
+  IKK_inact.fontSize = 12
+  IKKactive_IkB.position = {434.63, 286.74}
+  IKKactive_IkB.size = {212, 28}
+  IKKactive_IkB.font = Verdana
+  IKKactive_IkB.fontColor = black
+  IKKactive_IkB.fontSize = 12
+  IkB.position = {393.85, 176.44}
+  IkB.size = {52, 28}
+  IkB.font = Verdana
+  IkB.fontColor = black
+  IkB.fontSize = 12
+  IKKactive_IkB_NFKB.position = {384.56, 345.33}
+  IKKactive_IkB_NFKB.size = {292, 28}
+  IKKactive_IkB_NFKB.font = Verdana
+  IKKactive_IkB_NFKB.fontColor = black
+  IKKactive_IkB_NFKB.fontSize = 12
+  IkB_NFKB.position = {193.61, 253.52}
+  IkB_NFKB.size = {132, 28}
+  IkB_NFKB.font = Verdana
+  IkB_NFKB.fontColor = black
+  IkB_NFKB.fontSize = 12
+  NFKB.position = {232.47, 331}
+  NFKB.size = {68, 28}
+  NFKB.font = Verdana
+  NFKB.fontColor = black
+  NFKB.fontSize = 12
+  NFKB_nuc.position = {218.81, 494.13}
+  NFKB_nuc.size = {132, 28}
+  NFKB_nuc.font = Verdana
+  NFKB_nuc.fontColor = black
+  NFKB_nuc.fontSize = 12
+  IkB_nuc.position = {397.77, 228.14}
+  IkB_nuc.size = {116, 28}
+  IkB_nuc.font = Verdana
+  IkB_nuc.fontColor = black
+  IkB_nuc.fontSize = 12
+  IkB_NFKB_nuc.position = {200.17, 160.41}
+  IkB_NFKB_nuc.size = {196, 28}
+  IkB_NFKB_nuc.font = Verdana
+  IkB_NFKB_nuc.fontColor = black
+  IkB_NFKB_nuc.fontSize = 12
+  IkB_mRNA.position = {487.09, 86.18}
+  IkB_mRNA.size = {132, 28}
+  IkB_mRNA.font = Verdana
+  IkB_mRNA.fontColor = black
+  IkB_mRNA.fontSize = 12
+  A20_mRNA.position = {84.52, 445.58}
+  A20_mRNA.size = {132, 28}
+  A20_mRNA.font = Verdana
+  A20_mRNA.fontColor = black
+  A20_mRNA.fontSize = 12
+  A20.position = {240.63, 588.15}
+  A20.size = {52, 28}
+  A20.font = Verdana
+  A20.fontColor = black
+  A20.fontSize = 12
+  TNF.position = {461.92, 545.41}
+  TNF.size = {52, 28}
+  TNF.font = Verdana
+  TNF.fontColor = black
+  TNF.fontSize = 12
+  cgen_mRNA.position = {492.69, 584.88}
+  cgen_mRNA.size = {148, 28}
+  cgen_mRNA.font = Verdana
+  cgen_mRNA.fontColor = black
+  cgen_mRNA.fontSize = 12
+  IKKn_production.position = {722.18, 492.26}
+  IKKn_production.--.rxn_end = {728.96, 497.2}
+  IKKn_production.--.species_end = {780.17, 536.37}
+  IKKn_production.--.b1 = {742.54, 507.09}
+  IKKn_production.--.b2 = {764.74, 524.2} 
+  IKKn_production.IKK_neutral.rxn_end = {715.39, 487.31}
+  IKKn_production.IKK_neutral.species_end = {677.6, 460.79}
+  IKKn_production.IKK_neutral.b1 = {701.82, 477.43}
+  IKKn_production.IKK_neutral.b2 = {686.32, 466.63}
+  IKKn_production.--.position = {785.17, 540.15}
+  IKKn_production.--.size = {1, 1}
+  IKKn_degradation.position = {719.72, 388}
+  IKKn_degradation.IKK_neutral.rxn_end = {713.04, 393.08}
+  IKKn_degradation.IKK_neutral.species_end = {674.44, 422.79}
+  IKKn_degradation.IKK_neutral.b1 = {699.66, 403.23}
+  IKKn_degradation.IKK_neutral.b2 = {683.71, 415.55}
+  IKKn_degradation.--.rxn_end = {726.41, 382.92}
+  IKKn_degradation.--.species_end = {778.22, 344.3}
+  IKKn_degradation.--.b1 = {739.79, 372.76}
+  IKKn_degradation.--.b2 = {762.35, 355.99}
+  IKKn_degradation.--.position = {783.22, 339.73}
+  IKKn_degradation.--.size = {1, 1}
+  IKKn_activation.position = {548.67, 449.7}
+  IKKn_activation.IKK_neutral.rxn_end = {558.76, 450.95}
+  IKKn_activation.IKK_neutral.species_end = {554.94, 457.38}
+  IKKn_activation.IKK_neutral.b1 = {578.95, 453.44}
+  IKKn_activation.IKK_neutral.b2 = {572, 456.03}
+  IKKn_activation.IKK_active.rxn_end = {538.57, 448.46}
+  IKKn_activation.IKK_active.species_end = {493.99, 435.89}
+  IKKn_activation.IKK_active.b1 = {518.38, 445.97}
+  IKKn_activation.IKK_active.b2 = {501.14, 440.31}
+  IKKn_activation.TNF.species_end = {499.25, 540.41}
+  IKKn_activation.TNF.rxn_end = {547.44, 459.63}
+  IKKn_activation.TNF.b1 = {523.35, 500.02}
+  IKKn_activation.TNF.b2 = {546.22, 469.55}
+  NFKB_export.position = {324.42, 372.55}
+  NFKB_export.NFKB.rxn_end = {323.5, 364.4}
+  NFKB_export.NFKB.species_end = {305.47, 347.18}
+  NFKB_export.NFKB.b1 = {321.66, 348.08}
+  NFKB_export.NFKB.b2 = {313.11, 343.55}
+  NFKB_export.NFKB_nuc.rxn_end = {325.33, 380.71}
+  NFKB_export.NFKB_nuc.species_end = {292.05, 489.13}
+  NFKB_export.NFKB_nuc.b1 = {327.17, 397.02}
+  NFKB_export.NFKB_nuc.b2 = {310.07, 447.16}
+  IkBn_NFKBn_binding.position = {372.25, 227.11}
+  IkBn_NFKBn_binding.NFKB_nuc.rxn_end = {375.86, 237.15}
+  IkBn_NFKBn_binding.NFKB_nuc.species_end = {292.25, 489.13}
+  IkBn_NFKBn_binding.NFKB_nuc.b1 = {383.07, 257.22}
+  IkBn_NFKBn_binding.NFKB_nuc.b2 = {339.46, 378.19}
+  IkBn_NFKBn_binding.IkB_nuc.rxn_end = {375.86, 237.15}
+  IkBn_NFKBn_binding.IkB_nuc.species_end = {392.77, 255.21}
+  IkBn_NFKBn_binding.IkB_nuc.b1 = {383.07, 257.22}
+  IkBn_NFKBn_binding.IkB_nuc.b2 = {389.72, 261.23}
+  IkBn_NFKBn_binding.IkB_NFKB_nuc.rxn_end = {368.65, 217.07}
+  IkBn_NFKBn_binding.IkB_NFKB_nuc.species_end = {351.38, 193.41}
+  IkBn_NFKBn_binding.IkB_NFKB_nuc.b1 = {361.44, 197}
+  IkBn_NFKBn_binding.IkB_NFKB_nuc.b2 = {354.61, 190.19}
+  IkB_NFKB_n_export.position = {218.74, 192.94}
+  IkB_NFKB_n_export.IkB_NFKB_nuc.rxn_end = {220.66, 188.29}
+  IkB_NFKB_n_export.IkB_NFKB_nuc.species_end = {195.17, 180.8}
+  IkB_NFKB_n_export.IkB_NFKB_nuc.b1 = {224.52, 178.98}
+  IkB_NFKB_n_export.IkB_NFKB_nuc.b2 = {210.81, 177.56}
+  IkB_NFKB_n_export.IkB_NFKB.rxn_end = {216.81, 197.6}
+  IkB_NFKB_n_export.IkB_NFKB.species_end = {244.99, 248.52}
+  IkB_NFKB_n_export.IkB_NFKB.b1 = {212.95, 206.91}
+  IkB_NFKB_n_export.IkB_NFKB.b2 = {228.01, 230.04}
+  IkB_NFKB_binding.position = {327.78, 257.73}
+  IkB_NFKB_binding.NFKB.rxn_end = {331.96, 257.74}
+  IkB_NFKB_binding.NFKB.species_end = {282.55, 326}
+  IkB_NFKB_binding.NFKB.b1 = {340.31, 257.76}
+  IkB_NFKB_binding.NFKB.b2 = {313.52, 291.89}
+  IkB_NFKB_binding.IkB.rxn_end = {331.96, 257.74}
+  IkB_NFKB_binding.IkB.species_end = {397.4, 209.44}
+  IkB_NFKB_binding.IkB.b1 = {340.31, 257.76}
+  IkB_NFKB_binding.IkB.b2 = {370.95, 233.6}
+  IkB_NFKB_binding.IkB_NFKB.rxn_end = {323.6, 257.72}
+  IkB_NFKB_binding.IkB_NFKB.species_end = {330.61, 254.99}
+  IkB_NFKB_binding.IkB_NFKB.b1 = {315.25, 257.7}
+  IkB_NFKB_binding.IkB_NFKB.b2 = {320.84, 256.34}
+  IkB_degradation.position = {189.83, 307.37}
+  IkB_degradation.IkB_NFKB.rxn_end = {189.48, 303.49}
+  IkB_degradation.IkB_NFKB.species_end = {211.94, 286.52}
+  IkB_degradation.IkB_NFKB.b1 = {188.8, 295.74}
+  IkB_degradation.IkB_NFKB.b2 = {200.2, 289.2}
+  IkB_degradation.NFKB.rxn_end = {190.17, 311.24}
+  IkB_degradation.NFKB.species_end = {227.47, 331.58}
+  IkB_degradation.NFKB.b1 = {190.85, 318.99}
+  IkB_degradation.NFKB.b2 = {209.33, 327.22}
+  IkBnuc_export.position = {495.72, 174.21}
+  IkBnuc_export.IkB_nuc.rxn_end = {497.52, 176.8}
+  IkBnuc_export.IkB_nuc.species_end = {470.08, 223.14}
+  IkBnuc_export.IkB_nuc.b1 = {501.11, 181.97}
+  IkBnuc_export.IkB_nuc.b2 = {486.49, 203.85}
+  IkBnuc_export.IkB.rxn_end = {493.93, 171.63}
+  IkBnuc_export.IkB.species_end = {450.85, 179.89}
+  IkBnuc_export.IkB.b1 = {490.34, 166.46}
+  IkBnuc_export.IkB.b2 = {469.69, 171.88}
+  IkB_export.position = {520.07, 217.6}
+  IkB_export.IkB.rxn_end = {518.27, 215.01}
+  IkB_export.IkB.species_end = {450.85, 196.78}
+  IkB_export.IkB.b1 = {514.68, 209.84}
+  IkB_export.IkB.b2 = {481.87, 202.02}
+  IkB_export.IkB_nuc.rxn_end = {521.87, 220.18}
+  IkB_export.IkB_nuc.species_end = {518.77, 226.96}
+  IkB_export.IkB_nuc.b1 = {525.46, 225.35}
+  IkB_export.IkB_nuc.b2 = {523.01, 227.45}
+  IkB_transcription.position = {482.03, 118.06}
+  IkB_transcription.--.rxn_end = {479.52, 114.35}
+  IkB_transcription.--.species_end = {500.98, 31.45}
+  IkB_transcription.--.b1 = {474.5, 106.93}
+  IkB_transcription.--.b2 = {486.48, 67.33}
+  IkB_transcription.IkB_mRNA.rxn_end = {484.53, 121.77}
+  IkB_transcription.IkB_mRNA.species_end = {511.49, 119.18}
+  IkB_transcription.IkB_mRNA.b1 = {489.55, 129.2}
+  IkB_transcription.IkB_mRNA.b2 = {501.77, 126.04}
+  IkB_transcription.NFKB_nuc.species_end = {294.15, 489.13}
+  IkB_transcription.NFKB_nuc.rxn_end = {473.74, 123.66}
+  IkB_transcription.NFKB_nuc.b1 = {383.94, 306.4}
+  IkB_transcription.NFKB_nuc.b2 = {465.46, 129.26}
+  IkB_transcription.--.position = {502.41, 25.45}
+  IkB_transcription.--.size = {1, 1}
+  IKKa_spon_inactivation.position = {444.12, 510.44}
+  IKKa_spon_inactivation.IKK_active.rxn_end = {445.96, 501.7}
+  IKKa_spon_inactivation.IKK_active.species_end = {448.47, 435.89}
+  IKKa_spon_inactivation.IKK_active.b1 = {449.64, 484.2}
+  IKKa_spon_inactivation.IKK_active.b2 = {449.97, 455.67}
+  IKKa_spon_inactivation.IKK_inact.rxn_end = {442.28, 519.19}
+  IKKa_spon_inactivation.IKK_inact.species_end = {420.69, 572.82}
+  IKKa_spon_inactivation.IKK_inact.b1 = {438.61, 536.68}
+  IKKa_spon_inactivation.IKK_inact.b2 = {428.73, 559.13}
+  IKKinact_degradation.position = {419.82, 676.74}
+  IKKinact_degradation.IKK_inact.rxn_end = {418.38, 668.65}
+  IKKinact_degradation.IKK_inact.species_end = {412.59, 610.82}
+  IKKinact_degradation.IKK_inact.b1 = {415.49, 652.48}
+  IKKinact_degradation.IKK_inact.b2 = {413.32, 627.61}
+  IKKinact_degradation.--.rxn_end = {421.27, 684.82}
+  IKKinact_degradation.--.species_end = {438.45, 748.05}
+  IKKinact_degradation.--.b1 = {424.15, 700.99}
+  IKKinact_degradation.--.b2 = {432.02, 728.56}
+  IKKinact_degradation.--.position = {439.63, 753.05}
+  IKKinact_degradation.--.size = {1, 1}
+  IKKa_degradation.position = {547.39, 385.39}
+  IKKa_degradation.IKK_active.rxn_end = {539.01, 389.51}
+  IKKa_degradation.IKK_active.species_end = {521.69, 397.89}
+  IKKa_degradation.IKK_active.b1 = {522.24, 397.75}
+  IKKa_degradation.IKK_active.b2 = {517.77, 399.88}
+  IKKa_degradation.--.rxn_end = {555.77, 381.27}
+  IKKa_degradation.--.species_end = {610.19, 339.41}
+  IKKa_degradation.--.b1 = {572.54, 373.03}
+  IKKa_degradation.--.b2 = {595.56, 354.16}
+  IKKa_degradation.--.position = {615.19, 334}
+  IKKa_degradation.--.size = {1, 1}
+  IKKa_IkB_binding.position = {460.06, 302.03}
+  IKKa_IkB_binding.IKK_active.rxn_end = {454.72, 302.18}
+  IKKa_IkB_binding.IKK_active.species_end = {447.36, 397.89}
+  IKKa_IkB_binding.IKK_active.b1 = {444.05, 302.47}
+  IKKa_IkB_binding.IKK_active.b2 = {443.04, 350.25}
+  IKKa_IkB_binding.IkB.rxn_end = {454.72, 302.18}
+  IKKa_IkB_binding.IkB.species_end = {423.95, 209.44}
+  IKKa_IkB_binding.IkB.b1 = {444.05, 302.47}
+  IKKa_IkB_binding.IkB.b2 = {431.34, 256.03}
+  IKKa_IkB_binding.IKKactive_IkB.rxn_end = {465.39, 301.88}
+  IKKa_IkB_binding.IKKactive_IkB.species_end = {429.63, 302.21}
+  IKKa_IkB_binding.IKKactive_IkB.b1 = {476.06, 301.59}
+  IKKa_IkB_binding.IKKactive_IkB.b2 = {455.51, 301.83}
+  IKKa_IkBNFKB_binding.position = {348.99, 331.88}
+  IKKa_IkBNFKB_binding.IKK_active.rxn_end = {340.16, 331.02}
+  IKKa_IkBNFKB_binding.IKK_active.species_end = {420.78, 397.89}
+  IKKa_IkBNFKB_binding.IKK_active.b1 = {322.48, 329.31}
+  IKKa_IkBNFKB_binding.IKK_active.b2 = {367.21, 363.17}
+  IKKa_IkBNFKB_binding.IkB_NFKB.rxn_end = {340.16, 331.02}
+  IKKa_IkBNFKB_binding.IkB_NFKB.species_end = {278.95, 286.52}
+  IKKa_IkBNFKB_binding.IkB_NFKB.b1 = {322.48, 329.31}
+  IKKa_IkBNFKB_binding.IkB_NFKB.b2 = {296.3, 307.49}
+  IKKa_IkBNFKB_binding.IKKactive_IkB_NFKB.rxn_end = {357.83, 332.73}
+  IKKa_IkBNFKB_binding.IKKactive_IkB_NFKB.species_end = {412.19, 340.33}
+  IKKa_IkBNFKB_binding.IKKactive_IkB_NFKB.b1 = {375.51, 334.45}
+  IKKa_IkBNFKB_binding.IKKactive_IkB_NFKB.b2 = {398.27, 337.82}
+  IkBmRNA_degradation.position = {639.01, 91.1}
+  IkBmRNA_degradation.IkB_mRNA.rxn_end = {631.28, 89.61}
+  IkBmRNA_degradation.IkB_mRNA.species_end = {624.09, 84.84}
+  IkBmRNA_degradation.IkB_mRNA.b1 = {615.84, 86.62}
+  IkBmRNA_degradation.IkB_mRNA.b2 = {616.11, 84.98}
+  IkBmRNA_degradation.--.rxn_end = {646.73, 92.6}
+  IkBmRNA_degradation.--.species_end = {702.03, 125.88}
+  IkBmRNA_degradation.--.b1 = {662.17, 95.59}
+  IkBmRNA_degradation.--.b2 = {685.96, 111.48}
+  IkBmRNA_degradation.--.position = {707.03, 129.56}
+  IkBmRNA_degradation.--.size = {1, 1}
+  IkB_translation.position = {386.14, 115.3}
+  IkB_translation.--.rxn_end = {380.85, 109.05}
+  IkB_translation.--.species_end = {319.67, 68.48}
+  IkB_translation.--.b1 = {370.29, 96.55}
+  IkB_translation.--.b2 = {342.33, 79.39}
+  IkB_translation.IkB.rxn_end = {391.42, 121.55}
+  IkB_translation.IkB.species_end = {413.83, 171.44}
+  IkB_translation.IkB.b1 = {401.99, 134.05}
+  IkB_translation.IkB.b2 = {410.55, 155.87}
+  IkB_translation.IkB_mRNA.species_end = {482.09, 104.04}
+  IkB_translation.IkB_mRNA.rxn_end = {393.77, 108.85}
+  IkB_translation.IkB_mRNA.b1 = {437.93, 106.44}
+  IkB_translation.IkB_mRNA.b2 = {401.41, 102.39}
+  IkB_translation.--.position = {313.67, 64.94}
+  IkB_translation.--.size = {1, 1}
+  IkB_con_degradation.position = {421.89, 81.76}
+  IkB_con_degradation.IkB.rxn_end = {423.04, 91.25}
+  IkB_con_degradation.IkB.species_end = {421.15, 171.44}
+  IkB_con_degradation.IkB.b1 = {425.34, 110.25}
+  IkB_con_degradation.IkB.b2 = {423.82, 145.59}
+  IkB_con_degradation.--.rxn_end = {420.74, 72.26}
+  IkB_con_degradation.--.species_end = {399.1, 6}
+  IkB_con_degradation.--.b1 = {418.44, 53.27}
+  IkB_con_degradation.--.b2 = {408.2, 24.88}
+  IkB_con_degradation.--.position = {396.35, 0}
+  IkB_con_degradation.--.size = {1, 1}
+  A20_transcription.position = {234.63, 421.75}
+  A20_transcription.--.rxn_end = {239.49, 423.73}
+  A20_transcription.--.species_end = {247.71, 493.65}
+  A20_transcription.--.b1 = {249.2, 427.69}
+  A20_transcription.--.b2 = {250.88, 461.66}
+  A20_transcription.A20_mRNA.rxn_end = {229.78, 419.78}
+  A20_transcription.A20_mRNA.species_end = {180.71, 440.58}
+  A20_transcription.A20_mRNA.b1 = {220.07, 415.82}
+  A20_transcription.A20_mRNA.b2 = {197.97, 427.21}
+  A20_transcription.NFKB_nuc.species_end = {271.52, 489.13}
+  A20_transcription.NFKB_nuc.rxn_end = {230.86, 431.01}
+  A20_transcription.NFKB_nuc.b1 = {251.19, 460.07}
+  A20_transcription.NFKB_nuc.b2 = {227.09, 440.28}
+  A20_transcription.--.position = {247.08, 498.65}
+  A20_transcription.--.size = {1, 1}
+  A20mRNA_degradation.position = {71.2, 435.14}
+  A20mRNA_degradation.A20_mRNA.rxn_end = {78.7, 438.02}
+  A20mRNA_degradation.A20_mRNA.species_end = {82.25, 440.58}
+  A20mRNA_degradation.A20_mRNA.b1 = {93.7, 443.77}
+  A20mRNA_degradation.A20_mRNA.b2 = {91.73, 443.61}
+  A20mRNA_degradation.--.rxn_end = {63.7, 432.26}
+  A20mRNA_degradation.--.species_end = {6, 404.85}
+  A20mRNA_degradation.--.b1 = {48.69, 426.51}
+  A20mRNA_degradation.--.b2 = {23.6, 414.24}
+  A20mRNA_degradation.--.position = {0, 401.56} 
+  A20mRNA_degradation.--.size = {1, 1}
+  A20_translation.position = {182.29, 573.11}
+  A20_translation.--.rxn_end = {174.52, 573.74}
+  A20_translation.--.species_end = {116.61, 610.15}
+  A20_translation.--.b1 = {158.96, 574.99}
+  A20_translation.--.b2 = {133.9, 592.89}
+  A20_translation.A20.rxn_end = {190.07, 572.48}
+  A20_translation.A20.species_end = {235.63, 586.44}
+  A20_translation.A20.b1 = {205.62, 571.22}
+  A20_translation.A20.b2 = {224.52, 578.52}
+  A20_translation.A20_mRNA.species_end = {156.2, 478.58}
+  A20_translation.A20_mRNA.rxn_end = {181.49, 563.14}
+  A20_translation.A20_mRNA.b1 = {168.84, 520.86}
+  A20_translation.A20_mRNA.b2 = {180.68, 553.17}
+  A20_translation.--.position = {110.61, 614.22}
+  A20_translation.--.size = {1, 1}
+  A20_degradation.position = {252.91, 685.31}
+  A20_degradation.A20.rxn_end = {254.22, 677.21}
+  A20_degradation.A20.species_end = {263.47, 621.15}
+  A20_degradation.A20.b1 = {256.84, 661.01}
+  A20_degradation.A20.b2 = {260.81, 637.03}
+  A20_degradation.--.rxn_end = {251.59, 693.41}
+  A20_degradation.--.species_end = {241.26, 758.67}
+  A20_degradation.--.b1 = {248.97, 709.61}
+  A20_degradation.--.b2 = {244.46, 738.19}
+  A20_degradation.--.position = {239.9, 763.67}
+  A20_degradation.--.size = {1, 1}
+  IKKa_inactivation_1.position = {383.98, 517.43}
+  IKKa_inactivation_1.IKK_active.rxn_end = {385.81, 508.68}
+  IKKa_inactivation_1.IKK_active.species_end = {433.05, 435.89}
+  IKKa_inactivation_1.IKK_active.b1 = {389.49, 491.19}
+  IKKa_inactivation_1.IKK_active.b2 = {412.19, 459.17}
+  IKKa_inactivation_1.IKK_inact.rxn_end = {382.14, 526.17}
+  IKKa_inactivation_1.IKK_inact.species_end = {398.32, 572.82}
+  IKKa_inactivation_1.IKK_inact.b1 = {378.46, 543.67}
+  IKKa_inactivation_1.IKK_inact.b2 = {387.47, 562.62}
+  IKKa_inactivation_1.TNF.species_end = {456.92, 546.26}
+  IKKa_inactivation_1.TNF.rxn_end = {393.76, 519.48}
+  IKKa_inactivation_1.TNF.b1 = {425.34, 532.87}
+  IKKa_inactivation_1.TNF.b2 = {403.55, 521.54}
+  IKKa_inactivation_1.A20.species_end = {290.18, 583.15}
+  IKKa_inactivation_1.A20.rxn_end = {374.19, 515.37}
+  IKKa_inactivation_1.A20.b1 = {332.19, 549.26}
+  IKKa_inactivation_1.A20.b2 = {364.4, 513.31}
+  cgen_transcription.position = {533.63, 505.97}
+  cgen_transcription.--.rxn_end = {536.06, 502.39}
+  cgen_transcription.--.species_end = {609.65, 524.88}
+  cgen_transcription.--.b1 = {540.9, 495.23}
+  cgen_transcription.--.b2 = {576.49, 508.26}
+  cgen_transcription.cgen_mRNA.rxn_end = {531.21, 509.55}
+  cgen_transcription.cgen_mRNA.species_end = {557.36, 579.88}
+  cgen_transcription.cgen_mRNA.b1 = {526.36, 516.71}
+  cgen_transcription.cgen_mRNA.b2 = {540.65, 550.08}
+  cgen_transcription.NFKB_nuc.species_end = {355.81, 505.84}
+  cgen_transcription.NFKB_nuc.rxn_end = {525.35, 500.37}
+  cgen_transcription.NFKB_nuc.b1 = {440.58, 503.1}
+  cgen_transcription.NFKB_nuc.b2 = {517.07, 494.76}
+  cgen_transcription.--.position = {614.65, 526.75}
+  cgen_transcription.--.size = {1, 1}
+  cgen_mRNA_degradation.position = {618.98, 663.94}
+  cgen_mRNA_degradation.cgen_mRNA.rxn_end = {615.06, 657}
+  cgen_mRNA_degradation.cgen_mRNA.species_end = {584.1, 617.88}
+  cgen_mRNA_degradation.cgen_mRNA.b1 = {607.24, 643.12}
+  cgen_mRNA_degradation.cgen_mRNA.b2 = {593.71, 627.03}
+  cgen_mRNA_degradation.--.rxn_end = {622.89, 670.88}
+  cgen_mRNA_degradation.--.species_end = {643.47, 732.17}
+  cgen_mRNA_degradation.--.b1 = {630.71, 684.75}
+  cgen_mRNA_degradation.--.b2 = {639.05, 711.93}
+  cgen_mRNA_degradation.--.position = {644.45, 737.17}
+  cgen_mRNA_degradation.--.size = {1, 1}
+
+  // CV terms:
+  Cytosol identity "http://identifiers.org/go/GO:0005737"
+  Nucleus identity "http://identifiers.org/go/GO:0005634"
+  IKK_neutral homolog "http://identifiers.org/uniprot/Q60680"
+  IKK_active homolog "http://identifiers.org/uniprot/Q60680"
+  IKK_inact homolog "http://identifiers.org/uniprot/Q60680"
+  IKKactive_IkB part "http://identifiers.org/uniprot/Q9Z1E3"
+  IKKactive_IkB part "http://identifiers.org/uniprot/Q60680"
+  IkB identity "http://identifiers.org/uniprot/Q9Z1E3"
+  IKKactive_IkB_NFKB part "http://identifiers.org/uniprot/P25799"
+  IKKactive_IkB_NFKB part "http://identifiers.org/uniprot/Q60680"
+  IKKactive_IkB_NFKB part "http://identifiers.org/uniprot/Q9Z1E3"
+  IkB_NFKB part "http://identifiers.org/uniprot/P25799"
+  IkB_NFKB part "http://identifiers.org/uniprot/Q9Z1E3"
+  NFKB homolog "http://identifiers.org/uniprot/P25799"
+  NFKB_nuc homolog "http://identifiers.org/uniprot/P25799"
+  IkB_nuc biological_system "http://identifiers.org/uniprot/Q9Z1E3"
+  IkB_NFKB_nuc part "http://identifiers.org/uniprot/Q9Z1E3"
+  IkB_NFKB_nuc part "http://identifiers.org/uniprot/P25799"
+  IkB_mRNA encodement "http://identifiers.org/uniprot/Q9Z1E3"
+  A20_mRNA encodement "http://identifiers.org/uniprot/Q60769"
+  A20 identity "http://identifiers.org/uniprot/Q60769"
+  TNF identity "http://identifiers.org/uniprot/P06804"
+  IKKn_production class "http://identifiers.org/sbo/SBO:0000393"
+  IKKn_degradation property "http://identifiers.org/go/GO:0030163"
+  IKKn_activation property "http://identifiers.org/ncit/C64382"
+  NFKB_export property "http://identifiers.org/go/GO:0006606"
+  IkBn_NFKBn_binding property "http://identifiers.org/go/GO:0005515"
+  IkB_NFKB_n_export property "http://identifiers.org/go/GO:0006611"
+  IkB_NFKB_binding property "http://identifiers.org/go/GO:0005515"
+  IkB_degradation property "http://identifiers.org/go/GO:0030163"
+  IkBnuc_export property "http://identifiers.org/go/GO:0006611"
+  IkB_export property "http://identifiers.org/go/GO:0006606"
+  IkB_transcription identity "http://identifiers.org/go/GO:0006351"
+  IKKa_spon_inactivation class "http://identifiers.org/go/GO:0043687"
+  IKKinact_degradation property "http://identifiers.org/go/GO:0030163"
+  IKKa_degradation property "http://identifiers.org/go/GO:0030163"
+  IKKa_IkB_binding part "http://identifiers.org/go/GO:0005515"
+  IKKa_IkBNFKB_binding property "http://identifiers.org/go/GO:0005515"
+  IkBmRNA_degradation property "http://identifiers.org/go/GO:0006402"
+  IkB_translation identity "http://identifiers.org/go/GO:0006412"
+  IkB_con_degradation property "http://identifiers.org/go/GO:0030163"
+  A20_transcription identity "http://identifiers.org/go/GO:0006351"
+  A20mRNA_degradation part "http://identifiers.org/go/GO:0006402"
+  A20_translation identity "http://identifiers.org/go/GO:0006412"
+  A20_degradation property "http://identifiers.org/go/GO:0030163"
+  IKKa_inactivation_1 class "http://identifiers.org/go/GO:0043687"
+  cgen_transcription identity "http://identifiers.org/go/GO:0006351"
+  cgen_mRNA_degradation property "http://identifiers.org/go/GO:0006402"
+  IkB_degradation_1 part "http://identifiers.org/go/GO:0030163"
+  IkB_degradation_2 property "http://identifiers.org/go/GO:0030163"
+  NFKBc_induced_NFKBn_production property "http://identifiers.org/ncit/C18103"
+  IkBn_induced_IkBc_production part "http://identifiers.org/ncit/C18103"
+  IkBc_induced_IkBn_production property "http://identifiers.org/ncit/C18103"
+  IkB_NFKB_n_induced_IkB_NFKBc_production property "http://identifiers.org/ncit/C18103"
+
+  model publication "http://identifiers.org/pubmed/15094015"
+  model model_source "http://identifiers.org/biomodels.db/MODEL1908090003",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000786"
+  model parthood "http://identifiers.org/reactome/R-HSA-5676594"
+  model container "http://identifiers.org/ncit/C132890"
+  model property "http://identifiers.org/ncit/C39173"
+  model property "http://identifiers.org/mamo/MAMO_0000046"
+  model property "http://identifiers.org/go/GO:0034612"
+  model taxon "http://identifiers.org/taxonomy/10090"
+  model created "2019-08-05T16:33:23Z"
+  model modified "2019-08-05T16:33:23Z"
+  model creator1.givenName "Krishna"
+  model creator1.familyName "Tiwari"
+  model creator1.organization "babraham institute"
+  model creator1.email "tiwarik@babraham.ac.uk"
+
+  // Notes:
+  model notes ```
+its a mathematical model studying impact of TNF on NFKB nuclear dynamics. This 
+model is derived from Hoffmann2002 (PMID:12424381).
+```
+  TNF notes "if({Time} > 3600,1,0)"
+  cgen_mRNA notes "it&apos;s an arbitarory proetin used to model nfkb induced transcription"
+end
+
+Lipniacki2004___Mathematical_model_of_NFKB_regulatory_module is "Lipniacki2004 - Mathematical model of NFKB regulatory module"

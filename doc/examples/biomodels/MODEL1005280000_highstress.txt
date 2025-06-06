@@ -1,0 +1,309 @@
+// Created by libAntimony v3.0.0
+model *Hsp70Model()
+
+  // Compartments and Species:
+  compartment cytosol, nucleus;
+  substanceOnly species NatP in cytosol, MisP in cytosol, Hsp70 in cytosol;
+  substanceOnly species Hsp90 in cytosol, Hsp70_dam in cytosol, Hsp90_dam in cytosol;
+  substanceOnly species Hsp90_Proteasome in cytosol, Hsp70_Proteasome in cytosol;
+  substanceOnly species Hsp70Client in cytosol, Hsp90Client in cytosol, Hsp70_Hsp70Client in cytosol;
+  substanceOnly species Hsp90_Hsp90Client in cytosol, Akt in cytosol, Akt_Hsp90 in cytosol;
+  substanceOnly species CHIP in cytosol, Akt_CHIP_Hsp90 in cytosol, Akt_Proteasome in cytosol;
+  substanceOnly species Hsf1 in cytosol, Hsf1_Hsp90 in cytosol, Hsp90_MisP in cytosol;
+  substanceOnly species Hsp70_MisP in cytosol, Hsf1_Hsf1_Hsf1 in nucleus;
+  substanceOnly species Hsf1_Hsf1_Hsf1_P in nucleus, Hsf1_Hsf1 in cytosol;
+  substanceOnly species HSEHsp70 in nucleus, HSEHsp90 in nucleus, HSEHsp70_Hsf1_Hsf1_Hsf1 in nucleus;
+  substanceOnly species HSEHsp70_Hsf1_Hsf1_Hsf1_P in nucleus, HSEHsp90_Hsf1_Hsf1_Hsf1 in nucleus;
+  substanceOnly species HSEHsp90_Hsf1_Hsf1_Hsf1_P in nucleus, Jnk in cytosol;
+  substanceOnly species Jnk_P in cytosol, Ppx in cytosol, Mkp1 in cytosol;
+  substanceOnly species Mkp1_P in cytosol, Mkp1_Proteasome in cytosol, Hsp70_Ppx in cytosol;
+  substanceOnly species Pkc in cytosol, p38 in cytosol, p38_P in cytosol;
+  substanceOnly species Proteasome in cytosol, MisP_Proteasome in cytosol;
+  substanceOnly species AggP in cytosol, SeqAggP in cytosol, AggP_Proteasome in cytosol;
+  substanceOnly species ROS in cytosol, $ATP in cytosol, $ADP in cytosol;
+  substanceOnly species $Source in cytosol, $Sink in cytosol, p38Death in cytosol;
+  substanceOnly species JNKDeath in cytosol, PIDeath in cytosol, CellDeath in cytosol;
+
+  // Assignment Rules:
+  tot_Hsp90 := Hsp90 + Hsp90_dam + Hsp90_Proteasome + Hsp90_Hsp90Client + Akt_Hsp90 + Akt_CHIP_Hsp90 + Hsf1_Hsp90 + Hsp90_MisP;
+  tot_Hsp70 := Hsp70 + Hsp70_dam + Hsp70_Proteasome + Hsp70_Hsp70Client + Hsp70_MisP + Hsp70_Ppx;
+  tot_MisP := MisP + Hsp70_MisP + Hsp90_MisP;
+
+  // Reactions:
+  ProteinSynthesis: $Source => NatP; ksynNatP*Source*kalive;
+  Misfolding: NatP + ROS => MisP + ROS; kmisfold*NatP*ROS*kalive;
+  Hsp90MisPBinding: MisP + Hsp90 => Hsp90_MisP; kbinHspMisp*MisP*Hsp90*kalive;
+  Hsp90unsuccessulRefolding: Hsp90_MisP => MisP + Hsp90; krelHspMisp*Hsp90_MisP*kalive;
+  Hsp90refolding: Hsp90_MisP + $ATP => Hsp90 + NatP + $ADP; krefold*Hsp90_MisP*kalive*ATP/(5000 + ATP);
+  Hsp70MisPBinding: MisP + Hsp70 => Hsp70_MisP; kbinHspMisp*MisP*Hsp70*kalive;
+  Hsp70unsuccessulRefolding: Hsp70_MisP => MisP + Hsp70; krelHspMisp*Hsp70_MisP*kalive;
+  Hsp70refolding: Hsp70_MisP + $ATP => Hsp70 + NatP + $ADP; krefold*Hsp70_MisP*kalive*ATP/(5000 + ATP);
+  Hsp70ClientBinding: Hsp70 + Hsp70Client => Hsp70_Hsp70Client; kbinHsp70client*Hsp70*Hsp70Client*kalive;
+  Hsp70ClientRelease: Hsp70_Hsp70Client => Hsp70 + Hsp70Client; krelHsp70client*Hsp70_Hsp70Client*kalive;
+  Hsp90ClientBinding: Hsp90 + Hsp90Client => Hsp90_Hsp90Client; kbinHsp90client*Hsp90*Hsp90Client*kalive;
+  Hsp90ClientRelease: Hsp90_Hsp90Client => Hsp90 + Hsp90Client; krelHsp90client*Hsp90_Hsp90Client*kalive;
+  Hsp90HSF1Binding: Hsp90 + Hsf1 => Hsf1_Hsp90; kbinHsf1Hsp90*Hsp90*Hsf1*kalive;
+  Hsp90HSF1Release: Hsf1_Hsp90 => Hsp90 + Hsf1; krelHsf1Hsp90*Hsf1_Hsp90*kalive;
+  dimerisation: 2 Hsf1 => Hsf1_Hsf1; (Hsf1 - 1)*kdimerHsf1*kalive*Hsf1/2;
+  trimerisation: Hsf1 + Hsf1_Hsf1 => Hsf1_Hsf1_Hsf1; ktrimerHsf1*Hsf1*Hsf1_Hsf1*kalive;
+  deTrimerisation: Hsf1_Hsf1_Hsf1 => Hsf1 + Hsf1_Hsf1; kdetrimerHsf1*Hsf1_Hsf1_Hsf1*kalive;
+  deDimerisation: Hsf1_Hsf1 => 2 Hsf1; kdedimerHsf1*Hsf1_Hsf1*kalive;
+  HSE70TriHBinding: Hsf1_Hsf1_Hsf1 + HSEHsp70 => HSEHsp70_Hsf1_Hsf1_Hsf1; kbinHSEHsf1*HSEHsp70*Hsf1_Hsf1_Hsf1*kalive;
+  HSE70TriHRelease: HSEHsp70_Hsf1_Hsf1_Hsf1 => HSEHsp70 + Hsf1_Hsf1_Hsf1; krelHSEHsf1*HSEHsp70_Hsf1_Hsf1_Hsf1*kalive;
+  HSE90TriHBinding: Hsf1_Hsf1_Hsf1 + HSEHsp90 => HSEHsp90_Hsf1_Hsf1_Hsf1; kbinHSEHsf1*HSEHsp90*Hsf1_Hsf1_Hsf1*kalive;
+  HSE90TriHRelease: HSEHsp90_Hsf1_Hsf1_Hsf1 => HSEHsp90 + Hsf1_Hsf1_Hsf1; krelHSEHsf1*HSEHsp90_Hsf1_Hsf1_Hsf1*kalive;
+  Hsf1_Hsf1_Hsf1Phosphorylation: Hsf1_Hsf1_Hsf1 + Pkc => Hsf1_Hsf1_Hsf1_P + Pkc; kphosHsf1*Hsf1_Hsf1_Hsf1*Pkc*kalive;
+  Hsf1_Hsf1_Hsf1DePhosphorylation: Hsf1_Hsf1_Hsf1_P + Hsp70_Ppx => Hsf1_Hsf1_Hsf1 + Hsp70_Ppx; kdephosHsf1*Hsf1_Hsf1_Hsf1_P*Hsp70_Ppx*kalive;
+  HSE70PhosTriHBinding: Hsf1_Hsf1_Hsf1_P + HSEHsp70 => HSEHsp70_Hsf1_Hsf1_Hsf1_P; kbinHSEPhosTriH*HSEHsp70*Hsf1_Hsf1_Hsf1_P*kalive;
+  HSE70PhosTriHRelease: HSEHsp70_Hsf1_Hsf1_Hsf1_P => Hsf1_Hsf1_Hsf1_P + HSEHsp70; krelHSEPhosTriH*HSEHsp70_Hsf1_Hsf1_Hsf1_P*kalive;
+  HSE90PhosTriHBinding: Hsf1_Hsf1_Hsf1_P + HSEHsp90 => HSEHsp90_Hsf1_Hsf1_Hsf1_P; kbinHSEPhosTriH*HSEHsp90*Hsf1_Hsf1_Hsf1_P*kalive;
+  HSE90PhosTriHRelease: HSEHsp90_Hsf1_Hsf1_Hsf1_P => Hsf1_Hsf1_Hsf1_P + HSEHsp90; krelHSEPhosTriH*HSEHsp90_Hsf1_Hsf1_Hsf1_P*kalive;
+  Hsp90BasalSynthesis: $Source => Hsp90; kbasalsynHsp90*kalive;
+  Hsp90Upregulation: HSEHsp90_Hsf1_Hsf1_Hsf1_P => HSEHsp90_Hsf1_Hsf1_Hsf1_P + Hsp90; kupregHsp*HSEHsp90_Hsf1_Hsf1_Hsf1_P*kalive;
+  Hsp90ProteasomeBinding: Hsp90 + Proteasome => Hsp90_Proteasome; kbinHsp90Prot*Hsp90*Proteasome*kalive;
+  Hsp90Degradation: Hsp90_Proteasome + $ATP => Proteasome + $ADP; kdegHsp90*Hsp90_Proteasome*kalive*ATP/(5000 + ATP);
+  Hsp70BasalSynthesis: $Source => Hsp70; kbasalsynHsp70*kalive;
+  Hsp70Upregulation: HSEHsp70_Hsf1_Hsf1_Hsf1_P => HSEHsp70_Hsf1_Hsf1_Hsf1_P + Hsp70; kupregHsp*HSEHsp70_Hsf1_Hsf1_Hsf1_P*kalive;
+  Hsp70ProteasomeBinding: Hsp70 + Proteasome => Hsp70_Proteasome; kbinHsp70Prot*Hsp70*Proteasome*kalive;
+  Hsp70Degradation: Hsp70_Proteasome + $ATP => Proteasome + $ADP; kdegHsp70*Hsp70_Proteasome*kalive*ATP/(5000 + ATP);
+  MisPProteasomeBinding1: Hsp70_MisP + Proteasome => MisP_Proteasome + Hsp70; kbinMisPProt*Hsp70_MisP*Proteasome*kalive;
+  MisPProteasomeBinding2: Hsp90_MisP + Proteasome => MisP_Proteasome + Hsp90; kbinMisPProt*Hsp90_MisP*Proteasome*kalive;
+  MisPDegradation: MisP_Proteasome + $ATP => Proteasome + $ADP; kdegMisP*MisP_Proteasome*kalive*ATP/(5000 + ATP);
+  radicalFormation: $Source => ROS; (kgenROS + time*10^-6)*Source*kalive;
+  radicalScavenging: ROS => $Sink; kremROS*ROS*kalive;
+  Hsp70_PpxBinding: Hsp70 + Ppx => Hsp70_Ppx; kbinHsp70Ppx*Hsp70*Ppx*kalive;
+  Hsp70_PPXRelease: Hsp70_Ppx => Hsp70 + Ppx; krelHsp70Ppx*Hsp70_Ppx*kalive;
+  JnkPhosphorylation: ROS + Jnk => ROS + Jnk_P; kphosJnk*Jnk*ROS*kalive;
+  JNKDephosphorylatioByMkp1: Jnk_P + Mkp1_P => Jnk + Mkp1_P; kdephosJnkMkp1*Jnk_P*Mkp1_P*kalive;
+  p38Phosphorylation: ROS + p38 => ROS + p38_P; kphosp38*ROS*p38*kalive;
+  p38DePhosphorylationByMkp1: p38_P + Mkp1_P => p38 + Mkp1_P; kdephosp38Mkp1*p38_P*Mkp1_P*kalive;
+  Aggregation1: 2 MisP => AggP; kagg*MisP*(MisP - 1)*0.5*kalive;
+  SequesteringOfAggregate: MisP + AggP => SeqAggP; kagg*MisP*AggP*kalive;
+  InclusionGrowth: SeqAggP + MisP => 2 SeqAggP; kseqagg*SeqAggP*MisP*kalive;
+  ProteasomeInhibtion: AggP + Proteasome => AggP_Proteasome; kbinAggPProt*AggP*Proteasome*kalive;
+  ROSgenerationSmallAggP: AggP => AggP + ROS; kgenROSAggP*AggP*kalive;
+  ROSgenerationAggPProteasome: AggP_Proteasome => AggP_Proteasome + ROS; kgenROSAggP*AggP_Proteasome*kalive;
+  AktSynthesis: $Source => Akt; ksynAkt*Source*kalive;
+  Hsp90AktBinding: Hsp90 + Akt => Akt_Hsp90; kbinAktHsp90*Hsp90*Akt*kalive;
+  Hsp90AktRelease: Akt_Hsp90 => Akt + Hsp90; krelAktHsp90*Akt_Hsp90*kalive;
+  CHIPbinding: CHIP + Akt_Hsp90 => Akt_CHIP_Hsp90; kbinCHIP*CHIP*Akt_Hsp90*kalive;
+  CHIPrelease: Akt_CHIP_Hsp90 => CHIP + Akt_Hsp90; krelCHIP*Akt_CHIP_Hsp90*kalive;
+  AktProteasomeBinding: Akt_CHIP_Hsp90 + Proteasome => Akt_Proteasome + CHIP + Hsp90; kbinAktProt*Akt_CHIP_Hsp90*Proteasome*kalive;
+  AktProteasomeRelease: Akt_Proteasome => Akt + Proteasome; krelAktProt*Akt_Proteasome*kalive;
+  AktDegradation: Akt_Proteasome + $ATP => Proteasome + $ADP; kdegAkt*Akt_Proteasome*kalive*ATP/(5000 + ATP);
+  Mkp1Synthesis: $Source => Mkp1; ksynMkp1*Source*kalive;
+  Mkp1ProteasomeBinding: Mkp1 + Proteasome => Mkp1_Proteasome; kbinMkp1Prot*Mkp1*Proteasome*kalive;
+  Mkp1Degradation: Mkp1_Proteasome + $ATP => Proteasome + $ADP; kdegMkp1*Mkp1_Proteasome*kalive*ATP/(5000 + ATP);
+  Mkp1Phosphorylation: Mkp1 + Hsp70 => Mkp1_P + Hsp70; kphosMkp1*Mkp1*Hsp70*kalive;
+  Mkp1Dephosphorylation: Mkp1_P + ROS => Mkp1 + ROS; kdephosMkp1*Mkp1_P*ROS*kalive;
+  p38ROSproduction: p38_P => p38_P + ROS; kgenROSp38*p38_P*kalive*kp38act;
+  Hsp70Damage: Hsp70 + ROS => Hsp70_dam + ROS; kdamHsp*Hsp70*ROS*kalive;
+  Hsp90Damage: Hsp90 + ROS => Hsp90_dam + ROS; kdamHsp*Hsp90*ROS*kalive;
+  Hsp70DamProteasomeBinding: Hsp70_dam + Proteasome => Hsp70_Proteasome; kbinHsp70Prot*Hsp70_dam*Proteasome*kalive;
+  Hsp90DamProteasomeBinding: Hsp90_dam + Proteasome => Hsp90_Proteasome; kbinHsp90Prot*Hsp90_dam*Proteasome*kalive;
+  Hsp70DamAggregation1: 2 Hsp70_dam => AggP; kagg*Hsp70_dam*(Hsp70_dam - 1)*0.5*kalive;
+  Hsp70DamInclusionFormation: Hsp70_dam + AggP => SeqAggP; kagg*Hsp70_dam*AggP*kalive;
+  Hsp90DamAggregation: 2 Hsp90_dam => AggP; kagg*Hsp90_dam*(Hsp90_dam - 1)*0.5*kalive;
+  Hsp90DamInclusionFormation: Hsp90_dam + AggP => SeqAggP; kagg*Hsp90_dam*AggP*kalive;
+  Hsp70DamSequestering: Hsp70_dam + SeqAggP => 2 SeqAggP; kseqagg*Hsp70_dam*SeqAggP*kalive;
+  Hsp90DamSequestering: Hsp90_dam + SeqAggP => 2 SeqAggP; kseqagg*Hsp90_dam*SeqAggP*kalive;
+  p38CellDeath: p38_P => p38_P + p38Death + CellDeath; kp38death*p38_P*kalive*kp38act;
+  JnkCellDeath: Jnk_P => Jnk_P + JNKDeath + CellDeath; kJnkdeath*Jnk_P*kalive;
+  PICellDeath: AggP_Proteasome => AggP_Proteasome + PIDeath + CellDeath; kPIdeath*AggP_Proteasome*kalive;
+
+  // Events:
+  DeathOfCell: at CellDeath >= 1: kalive = 0;
+
+  // Species initializations:
+  NatP = 17600/cytosol;
+  MisP = 0;
+  Hsp70 = 1400/cytosol;
+  Hsp90 = 1850/cytosol;
+  Hsp70_dam = 0;
+  Hsp90_dam = 0;
+  Hsp90_Proteasome = 0;
+  Hsp70_Proteasome = 0;
+  Hsp70Client = 490/cytosol;
+  Hsp90Client = 590/cytosol;
+  Hsp70_Hsp70Client = 10/cytosol;
+  Hsp90_Hsp90Client = 10/cytosol;
+  Akt = 340/cytosol;
+  Akt_Hsp90 = 30/cytosol;
+  CHIP = 255/cytosol;
+  Akt_CHIP_Hsp90 = 80/cytosol;
+  Akt_Proteasome = 0;
+  Hsf1 = 5/cytosol;
+  Hsf1_Hsp90 = 95/cytosol;
+  Hsp90_MisP = 470/cytosol;
+  Hsp70_MisP = 410/cytosol;
+  Hsf1_Hsf1_Hsf1 = 0;
+  Hsf1_Hsf1_Hsf1_P = 0;
+  Hsf1_Hsf1 = 0;
+  HSEHsp70 = 2/nucleus;
+  HSEHsp90 = 2/nucleus;
+  HSEHsp70_Hsf1_Hsf1_Hsf1 = 0;
+  HSEHsp70_Hsf1_Hsf1_Hsf1_P = 0;
+  HSEHsp90_Hsf1_Hsf1_Hsf1 = 0;
+  HSEHsp90_Hsf1_Hsf1_Hsf1_P = 0;
+  Jnk = 100/cytosol;
+  Jnk_P = 0;
+  Ppx = 0;
+  Mkp1 = 0;
+  Mkp1_P = 100/cytosol;
+  Mkp1_Proteasome = 0;
+  Hsp70_Ppx = 100/cytosol;
+  Pkc = 100/cytosol;
+  p38 = 100/cytosol;
+  p38_P = 0;
+  Proteasome = 500/cytosol;
+  MisP_Proteasome = 0;
+  AggP = 0;
+  SeqAggP = 0;
+  AggP_Proteasome = 0;
+  ROS = 10/cytosol;
+  ATP = 10000/cytosol;
+  ADP = 1000/cytosol;
+  Source = 1/cytosol;
+  Sink = 1/cytosol;
+  p38Death = 0;
+  JNKDeath = 0;
+  PIDeath = 0;
+  CellDeath = 0;
+
+  // Compartment initializations:
+  cytosol = 1;
+  nucleus = 1;
+
+  // Variable initializations:
+  kalive = 1;
+  ksynNatP = 0.042;
+  kmisfold = 2e-06;
+  kbinMisPProt = 1e-07;
+  kdegMisP = 0.01;
+  kagg = 1e-08;
+  kseqagg = 7e-07;
+  kbinAggPProt = 1e-05;
+  kbinHspMisp = 8e-06;
+  krelHspMisp = 8e-05;
+  krefold = 0.00055;
+  kbinHsf1Hsp90 = 0.02;
+  krelHsf1Hsp90 = 0.5;
+  kdimerHsf1 = 8e-05;
+  ktrimerHsf1 = 0.01;
+  kdetrimerHsf1 = 0.5;
+  kdedimerHsf1 = 0.5;
+  kbinHSEHsf1 = 0.05;
+  krelHSEHsf1 = 0.08;
+  kupregHsp = 0.2;
+  kbasalsynHsp70 = 0.008;
+  kbasalsynHsp90 = 0.008;
+  kbinHsp70Prot = 1.2e-08;
+  kbinHsp90Prot = 1e-08;
+  kdegHsp70 = 0.01;
+  kdegHsp90 = 0.01;
+  kgenROS = 0.01;
+  kremROS = 0.001;
+  kbinHsp70client = 0.0002;
+  krelHsp70client = 5;
+  kbinHsp90client = 0.0002;
+  krelHsp90client = 5;
+  kphosJnk = 0.02;
+  kdephosJnkMkp1 = 0.05;
+  kbinHsp70Ppx = 0.2;
+  krelHsp70Ppx = 5;
+  kphosHsf1 = 0.03;
+  kdephosHsf1 = 0.01;
+  kbinHSEPhosTriH = 0.1;
+  krelHSEPhosTriH = 0.08;
+  kphosp38 = 0.02;
+  kdephosp38Mkp1 = 0.05;
+  kgenROSAggP = 1e-06;
+  ksynAkt = 0.0015;
+  kbinAktHsp90 = 0.00037;
+  krelAktHsp90 = 7;
+  kbinAktProt = 6e-08;
+  krelAktProt = 1e-08;
+  kdegAkt = 0.01;
+  kbinCHIP = 2e-07;
+  krelCHIP = 1e-08;
+  ksynMkp1 = 1e-05;
+  kbinMkp1Prot = 9.6e-09;
+  kdegMkp1 = 0.01;
+  kphosMkp1 = 0.02;
+  kdephosMkp1 = 0.001;
+  kgenROSp38 = 0.0001;
+  kdamHsp = 1e-08;
+  kp38death = 1.5e-07;
+  kJnkdeath = 1.5e-07;
+  kPIdeath = 2e-08;
+  kp38act = 1;
+
+  // Other declarations:
+  var kalive, kbinHsf1Hsp90, kgenROS, krelHsp90client, krelAktHsp90, kp38act;
+  var tot_Hsp90, tot_Hsp70, tot_MisP;
+  const cytosol, nucleus, ksynNatP, kmisfold, kbinMisPProt, kdegMisP, kagg;
+  const kseqagg, kbinAggPProt, kbinHspMisp, krelHspMisp, krefold, krelHsf1Hsp90;
+  const kdimerHsf1, ktrimerHsf1, kdetrimerHsf1, kdedimerHsf1, kbinHSEHsf1;
+  const krelHSEHsf1, kupregHsp, kbasalsynHsp70, kbasalsynHsp90, kbinHsp70Prot;
+  const kbinHsp90Prot, kdegHsp70, kdegHsp90, kremROS, kbinHsp70client, krelHsp70client;
+  const kbinHsp90client, kphosJnk, kdephosJnkMkp1, kbinHsp70Ppx, krelHsp70Ppx;
+  const kphosHsf1, kdephosHsf1, kbinHSEPhosTriH, krelHSEPhosTriH, kphosp38;
+  const kdephosp38Mkp1, kgenROSAggP, ksynAkt, kbinAktHsp90, kbinAktProt, krelAktProt;
+  const kdegAkt, kbinCHIP, krelCHIP, ksynMkp1, kbinMkp1Prot, kdegMkp1, kphosMkp1;
+  const kdephosMkp1, kgenROSp38, kdamHsp, kp38death, kJnkdeath, kPIdeath;
+
+  // Unit definitions:
+  unit substance = item;
+
+  // Notes:
+  model notes ```
+This model is from the article: 
+** Modelling the Role of the Hsp70/Hsp90 System in the Maintenance of Protein
+Homeostasis** 
+Proctor CJ, Lorimer IAJ *PLoS ONE*2011; 6(7): e22038. [doi:10.1371/journal.pone.0022038](http://www.plosone.org/article/info%3Adoi%2F10.1371%2Fjournal.pone .0022038), 
+**Abstract:** 
+Neurodegeneration is an age-related disorder which is characterised by the accumulation
+of aggregated protein and neuronal cell death. There are many different neurodegenerative
+diseases which are classified according to the specific proteinsinvolved and the
+regions of the brain which are affected. Despite individual differences, there are
+common mechanisms at the sub-cellular level leading to loss of protein homeostasis.
+The two central systems in protein homeostasis are the chaperone system, which promotes
+correct protein folding, and the cellular proteolytic system, which degrades misfolded
+or damaged proteins. Since these systems and their interactions are very complex,
+we use mathematical modelling to aid understanding of the processes involved. The
+model developed in this study focuses on the role of Hsp70 (IPR00103) and Hsp90 (IPR001404)
+chaperones in preventing both protein aggregation and cell death. Simulations were
+performed under three different conditions: no stress; transient stress due to an
+increase in reactive oxygen species; and high stress due to sustained increases in
+reactive oxygen species. The model predicts that protein homeostasis can be maintained
+during short periods of stress. However, under long periods of stress, the chaperone
+system becomes overwhelmed and the probability of cell death pathways being activated
+increases. Simulations were also run in which cell death mediated by the JNK (P45983)
+and p38(Q16539) pathways was inhibited. The model predicts that inhibiting either
+or both of these pathways may delay cell death but does not stop the aggregation
+process and that eventually cells die due to aggregated protein inhibiting proteasomalfunction.
+This problem can be overcome if the sequestration of aggregated protein into inclusion
+bodies is enhanced. This model predicts responses to reactive oxygen species-mediated
+stress that are consistent with currently available experimental data. The model
+can be used to assess specific interventions to reduce celldeath due to impaired
+protein homeostasis.
+
+**te:** 
+
+Simulations were performed under three different conditions: 1) normal condition
+(no stress), 2) moderate stress due to an increase in reactive oxygen species (ROS)
+i.e. ROS levels were increased by a factor of 4 at time=4hours for a period of 1
+hour (not 2 hours as mentioned in the figure 5 legend of the reference publication.
+This is a typo in the paper and is clarified by the author) and 3) high stress due
+to sustained increase in reactive oxygen species (ROS) (here ROS increases with time).
+
+This model is for highly stressed cells (i.e. high stress condition). The model
+that corresponds to the normal condition is submitted as a main model in the BioModels
+Database.
+
+Supplementary figures S3 (normal condition), S4 (moderate stress condition) and
+S6 (high stress condition) are reproduced here.
+```
+end
+
+Hsp70Model is "Proctor2011_ProteinHomeostasis_HighStress"

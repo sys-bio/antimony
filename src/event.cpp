@@ -48,11 +48,11 @@ bool AntimonyEvent::SetTrigger(const Formula& form)
       g_registry.SetError("The formula \"" + form.ToDelimitedStringWithEllipses(".") + "\" seems to be incorrect, and cannot be parsed into an Abstract Syntax Tree (AST).");
       return true;
     }
-    else if (!ASTform->isBoolean()) {
-      g_registry.SetError("The formula \"" + form.ToDelimitedStringWithEllipses(".") + "\" cannot be parsed in a boolean context, and it is therefore illegal to use it as the trigger for an event.  (Perhaps try adding parentheses?)");
-      delete ASTform;
-      return true;
-    }
+    //else if (!ASTform->isBoolean()) {
+    //  g_registry.SetError("The formula \"" + form.ToDelimitedStringWithEllipses(".") + "\" cannot be parsed in a boolean context, and it is therefore illegal to use it as the trigger for an event.  (Perhaps try adding parentheses?)");
+    //  delete ASTform;
+    //  return true;
+    //}
     delete ASTform;
   }
 #endif

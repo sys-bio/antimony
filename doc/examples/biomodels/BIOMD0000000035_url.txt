@@ -1,0 +1,173 @@
+// Created by libAntimony v3.0.0
+model *vilarOscillator()
+
+  // Compartments and Species:
+  compartment deterministicOscillator;
+  substanceOnly species $EmptySet in deterministicOscillator, A in deterministicOscillator;
+  substanceOnly species C in deterministicOscillator, DA in deterministicOscillator;
+  substanceOnly species DAp in deterministicOscillator, DR in deterministicOscillator;
+  substanceOnly species DRp in deterministicOscillator, MA in deterministicOscillator;
+  substanceOnly species MR in deterministicOscillator, R in deterministicOscillator;
+
+  // Reactions:
+  Reaction1: A + R => C; A*R*Reaction1_gammaC;
+  Reaction2: A => $EmptySet; A*Reaction2_deltaA;
+  Reaction3: C => R; C*Reaction3_deltaA;
+  Reaction4: R => $EmptySet; R*Reaction4_deltaR;
+  Reaction5: A + DA => DAp; A*DA*Reaction5_gammaA;
+  Reaction6: DAp => A + DA; DAp*Reaction6_thetaA;
+  Reaction7: DA => DA + MA; DA*Reaction7_alphaA;
+  Reaction8: DAp => DAp + MA; DAp*Reaction8_alphaAp;
+  Reaction9: MA => $EmptySet; MA*Reaction9_deltaMA;
+  Reaction10: MA => A + MA; MA*Reaction10_betaA;
+  Reaction11: A + DR => DRp; A*DR*Reaction11_gammaR;
+  Reaction12: DRp => A + DR; DRp*Reaction12_thetaR;
+  Reaction13: DR => DR + MR; DR*Reaction13_alphaR;
+  Reaction14: DRp => DRp + MR; DRp*Reaction14_alphaRp;
+  Reaction15: MR => $EmptySet; MR*Reaction15_deltaMR;
+  Reaction16: MR => MR + R; MR*Reaction16_betaR;
+
+  // Species initializations:
+  EmptySet = 0;
+  A = 0;
+  C = 0;
+  DA = 1/deterministicOscillator;
+  DAp = 0;
+  DR = 1/deterministicOscillator;
+  DRp = 0;
+  MA = 0;
+  MR = 0;
+  R = 0;
+
+  // Compartment initializations:
+  deterministicOscillator = 1;
+
+  // Variable initializations:
+  Reaction1_gammaC = 2;
+  Reaction2_deltaA = 1;
+  Reaction3_deltaA = 1;
+  Reaction4_deltaR = 0.2;
+  Reaction5_gammaA = 1;
+  Reaction6_thetaA = 50;
+  Reaction7_alphaA = 50;
+  Reaction8_alphaAp = 500;
+  Reaction9_deltaMA = 10;
+  Reaction10_betaA = 50;
+  Reaction11_gammaR = 1;
+  Reaction12_thetaR = 100;
+  Reaction13_alphaR = 0.01;
+  Reaction14_alphaRp = 50;
+  Reaction15_deltaMR = 0.5;
+  Reaction16_betaR = 5;
+
+  // Other declarations:
+  const deterministicOscillator;
+
+  // Unit definitions:
+  unit time_unit = 3600 second;
+
+  // Display Names:
+  time_unit is "hour";
+
+  // CV terms:
+  A biological_system "http://identifiers.org/chebi/CHEBI:36080"
+  C biological_system "http://identifiers.org/chebi/CHEBI:36080"
+  MA biological_system "http://identifiers.org/chebi/CHEBI:33699"
+  MR biological_system "http://identifiers.org/chebi/CHEBI:33699"
+  R biological_system "http://identifiers.org/chebi/CHEBI:36080"
+  Reaction1 biological_system "http://identifiers.org/go/GO:0006461"
+  Reaction2 biological_system "http://identifiers.org/go/GO:0030163"
+  Reaction3 biological_system "http://identifiers.org/go/GO:0030163"
+  Reaction4 biological_system "http://identifiers.org/go/GO:0030163"
+  Reaction5 biological_system "http://identifiers.org/go/GO:0016563"
+  Reaction6 biological_system "http://identifiers.org/go/GO:0032986"
+  Reaction7 biological_system "http://identifiers.org/go/GO:0006351"
+  Reaction8 biological_system "http://identifiers.org/go/GO:0006351"
+  Reaction9 biological_system "http://identifiers.org/go/GO:0006402"
+  Reaction10 biological_system "http://identifiers.org/go/GO:0006412"
+  Reaction11 biological_system "http://identifiers.org/go/GO:0016563",
+                               "http://identifiers.org/go/GO:0010843"
+  Reaction12 biological_system "http://identifiers.org/go/GO:0032986"
+  Reaction13 biological_system "http://identifiers.org/go/GO:0006351"
+  Reaction14 biological_system "http://identifiers.org/go/GO:0006351"
+  Reaction15 biological_system "http://identifiers.org/go/GO:0006402"
+  Reaction16 biological_system "http://identifiers.org/go/GO:0006412"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL6619651140"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000035"
+  model publication "http://identifiers.org/pubmed/11972055"
+  model biological_system "http://identifiers.org/go/GO:0042752"
+  model taxon "http://identifiers.org/taxonomy/131567"
+  model created "2005-06-30T10:20:37Z"
+  model modified "2013-06-03T13:58:11Z"
+  model creator1.givenName "Nicolas"
+  model creator1.familyName "Le Novère"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "lenov@ebi.ac.uk"
+  model creator2.givenName "Bruce"
+  model creator2.familyName "Shapiro"
+  model creator2.organization "Jet Propulsion Laboratory"
+  model creator2.email "bshapiro@caltech.edu"
+
+  // Notes:
+  model notes ```
+# 
+# Minimal Model for Circadian Oscillations
+
+| |
+||----------|
+| - |
+| | | Vilar JMG, Kueh HY, Barkai N, Leibler S,							 (2002)							. Mechanisms of noise resistance in genetic oscillators,							PNAS, 99(9):5988-5992. [http://www.pnas.org/cgi/content/abstract/							99/9/5988](http://www.pnas.org/%20%20%20%20%20%20%20%20cgi/content/abstract/99/9/5988) | |
+
+| |
+||-------------|
+| - |
+| | | A minimal model of genomically based oscillation,							 based on two mutually interacting genes,							 an activator and a repressor. Postive feedback is provided by the activator protein,							 which binds to the promotors of both the activator and the repressor genes. Negative feedback is provided by the repressor protein which binds to the activator protein. | |
+
+| |
+||----------------------------|------------------------|
+| - | - |
+| | | alphaA = 50 | DA -> DA + MA | |
+| | alphaAp = 500 | DAp -> DAp + MA | |
+| | alphaR = 0.01 | DR -> DR + MR | |
+| | alphaRp = 50 | DRp -> DRp + MR | |
+| | betaA = 50 | MA -> A + MA | |
+| | betaR = 5 | MR -> MR + R | |
+| | gammaA = 1 | A + DA -> DAp | |
+| | gammaC = 2 | A + R -> C | |
+| | gammaR = 1 | A + DR -> DRp | |
+| | deltaA = 1 | A -> EmptySet | |
+| | deltaA = 1 | C -> R | |
+| | deltaMA = 10 | MA -> EmptySet | |
+| | deltaMR = 0.5 | MR -> EmptySet | |
+| | deltaR = 0.2 | R -> EmptySet | |
+| | thetaA = 50 | DAp -> A + DA | |
+| | thetaR = 100 | DRp -> A + DR | |
+
+| |
+||----------|--------|----------------------------------------------------------------------------------------------|
+| - | - | - |
+| | | A | 0 | A&apos;[t] == -(deltaA\*A[t]) - gammaA\*A[t]\*DA[t] + thetaA\*DAp[							t] - gammaR\*A[t]\*DR[t] + thetaR\*DRp[t] + betaA\*MA[t] -							 gammaC\*A[t]\*R[t] | |
+| | C | 0 | C&apos;[t] == -(deltaA\*C[t]) + gammaC\*A[t]\*R[t] | |
+| | DA | 1 | DA&apos;[t] == -(gammaA\*A[t]\*DA[t]) + thetaA\*DAp[t] | |
+| | DAp | 0 | DAp&apos;[t] == gammaA\*A[t]\*DA[t] - thetaA\*DAp[t] | |
+| | DR | 1 | DR&apos;[t] == -(gammaR\*A[t]\*DR[t]) + thetaR\*DRp[t] | |
+| | DRp | 0 | DRp&apos;[t] == gammaR\*A[t]\*DR[t] - thetaR\*DRp[t] | |
+| | MA | 0 | MA&apos;[t] == alphaA\*DA[t] + alphaAp\*DAp[t] - deltaMA\*MA[t] | |
+| | MR | 0 | MR&apos;[t] == alphaR\*DR[t] + alphaRp\*DRp[t] - deltaMR\*MR[t] | |
+| | R | 0 | R&apos;[t] == deltaA\*C[t] + betaR\*MR[t] - deltaR\*R[t] -							 gammaC\*A[t]\*R[t] | |
+
+Generated by Cellerator Version 1.0 update 2.1127 using Mathematica 4.2 for 				Mac
+OS X (June 4, 2002), November 27, 2002 12:17:46, using (PowerMac,PowerPC,				Mac
+OS X,MacOSX,Darwin)
+
+author=B.E.Shapiro
+
+This model originates from BioModels Database: A Database of Annotated Published
+Models. It is copyright (c) 2005-2009 The BioModels Team. 
+For more information see the [terms of use](http://www.ebi.ac.uk/biomodels/legal.html) . 
+To cite BioModels Database, please use [Le Novère N., Bornstein B., Broicher A., Courtot M., Donizelli M., Dharuri H., Li L., Sauro H., Schilstra M., Shapiro B., Snoep J.L., Hucka M. (2006) BioModels Database: A Free, Centralized Database of Curated, Published, Quantitative Kinetic Models of Biochemical and Cellular Systems Nucleic Acids Res., 34: D689-D691.](http://www.pubmedcentral.nih.gov/articlerender.fcgi?tool=pubmed&pubmedid=16381960)
+```
+end
+
+vilarOscillator is "Vilar2002_Oscillator"

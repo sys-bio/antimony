@@ -1,0 +1,585 @@
+// Created by libAntimony v3.0.0
+model *MODEL1408150000()
+
+  // Compartments and Species:
+  compartment Brain;
+  species ADP in Brain, ATP in Brain, MT in Brain, $_20S in Brain, Hsc70 in Brain;
+  species Hsp90 in Brain, CHIP in Brain, Bag2 in Brain, $_26S in Brain, TauH3RUb in Brain;
+  species TauH4RUb in Brain, Nucleus3 in Brain, Nucleus4 in Brain, Agg33 in Brain;
+  species $Ap in Brain, Agg43 in Brain, $Bp in Brain, Tau03R in Brain, TauN3R in Brain;
+  species TauH3R in Brain, Tau0_3R in Brain, Tau03RMT in Brain, TauN_3R in Brain;
+  species TauN3RMT in Brain, TauH_3R in Brain, TauH3RMT in Brain, TauH3R_Hsc70 in Brain;
+  species TauH3R_Hsp90 in Brain, Tau03R_Hsp90 in Brain, TauH3R_CHIP_Hsc70 in Brain;
+  species TauH3R_CHIP_Hsc70_Bag2 in Brain, Tau04R in Brain, TauN4R in Brain;
+  species TauH4R in Brain, Tau0_4R in Brain, Tau04RMT in Brain, TauN_4R in Brain;
+  species TauN4RMT in Brain, TauH_4R in Brain, TauH4RMT in Brain, TauH4R_Hsc70 in Brain;
+  species TauH4R_Hsp90 in Brain, Tau04R_Hsp90 in Brain, TauH4R_CHIP_Hsc70 in Brain;
+  species TauH4R_CHIP_Hsc70_Bag2 in Brain;
+
+  // Rate Rules:
+  _20S' = 0;
+  _26S' = 0;
+  Ap' = r77;
+  Bp' = r82;
+
+  // Reactions:
+  r77: TauH3RUb + Agg33 => $Ap; Brain*(k90*TauH3RUb*Agg33);
+  r82: TauH4RUb + Agg43 => $Bp; Brain*(k92*TauH4RUb*Agg43);
+  r1:  => Tau03R; Brain*k1;
+  r2: Tau03R + ATP => TauN3R + ADP; Brain*(k2*Tau03R*ATP/(k3 + Tau03R));
+  r3: TauN3R => Tau03R; Brain*(k4*TauN3R/(k5 + TauN3R));
+  r4: TauN3R + ATP => TauH3R + ADP; Brain*(k6*TauN3R*ATP/(k7 + TauN3R));
+  r5: TauH3R => TauN3R; Brain*(k8*TauH3R/(k9 + TauH3R));
+  r6: Tau03R => Tau0_3R; Brain*k10*Tau03R;
+  r7: Tau0_3R => Tau03R; Brain*k11*Tau0_3R;
+  r8: Tau0_3R + MT => Tau03RMT; Brain*(k12*Tau0_3R*MT);
+  r9: Tau03RMT => Tau0_3R + MT; Brain*k13*Tau03RMT;
+  r10: TauN3R => TauN_3R; Brain*k14*TauN3R;
+  r11: TauN_3R => TauN3R; Brain*k15*TauN_3R;
+  r12: TauN_3R + MT => TauN3RMT; Brain*(k16*TauN_3R*MT);
+  r13: TauN3RMT => TauN_3R + MT; Brain*k17*TauN3RMT;
+  r14: TauH3R => TauH_3R; Brain*k18*TauH3R;
+  r15: TauH_3R => TauH3R; Brain*k19*TauH_3R;
+  r16: TauH_3R + MT => TauH3RMT; Brain*(k20*TauH_3R*MT);
+  r17: TauH3RMT => TauH_3R + MT; Brain*k21*TauH3RMT;
+  r18: Tau03R + $_20S + ATP => ADP + $_20S; Brain*(k22*Tau03R*_20S*ATP);
+  r19: TauN3R + $_20S + ATP => ADP + $_20S; Brain*(k23*TauN3R*_20S*ATP);
+  r20: TauH3R + $_20S + ATP => $_20S + ADP; Brain*(k24*TauH3R*_20S*ATP);
+  r21: Tau03RMT + ATP => TauN3RMT + ADP; Brain*(k25*Tau03RMT*ATP/(k26 + Tau03RMT));
+  r22: TauN3RMT => Tau03RMT; Brain*(k27*TauN3RMT/(k28 + TauN3RMT));
+  r23: TauN3RMT + ATP => TauH3RMT + ADP; Brain*(k29*TauN3RMT*ATP/(k30 + TauN3RMT));
+  r24: TauH3RMT => TauN3RMT; Brain*(k31*TauH3RMT/(k32 + TauH3RMT));
+  r25: TauH3R + Hsc70 => TauH3R_Hsc70; Brain*(k33*TauH3R*Hsc70);
+  r26: TauH3R_Hsc70 => TauH3R + Hsc70; Brain*k34*TauH3R_Hsc70;
+  r27: TauH3R_Hsc70 + Hsp90 => TauH3R_Hsp90 + Hsc70; Brain*(k35*TauH3R_Hsc70*Hsp90);
+  r28: TauH3R_Hsp90 => Tau03R_Hsp90; Brain*(k8*TauH3R_Hsp90/(k9 + TauH3R_Hsp90));
+  r29: Tau03R_Hsp90 => Hsp90 + Tau03R; Brain*k36*Tau03R_Hsp90;
+  r30: TauH3R_Hsc70 + CHIP => TauH3R_CHIP_Hsc70; Brain*(k37*TauH3R_Hsc70*CHIP);
+  r31: TauH3R_CHIP_Hsc70 => TauH3RUb + Hsc70 + CHIP; Brain*k38*TauH3R_CHIP_Hsc70;
+  r32: TauH3R_CHIP_Hsc70 + Bag2 => TauH3R_CHIP_Hsc70_Bag2; Brain*(k39*TauH3R_CHIP_Hsc70*Bag2);
+  r33: TauH3R_CHIP_Hsc70_Bag2 => TauH3R_Hsc70 + CHIP + Bag2; Brain*k40*TauH3R_CHIP_Hsc70_Bag2;
+  r34: TauH3RUb + $_26S + ATP => ADP + $_26S; Brain*(k41*TauH3RUb*_26S*ATP);
+  r35:  => Tau04R; Brain*k42;
+  r36: Tau04R + ATP => TauN4R + ADP; Brain*(k43*Tau04R*ATP/(k44 + Tau04R));
+  r37: TauN4R => Tau04R; Brain*(k45*TauN4R/(k46 + TauN4R));
+  r38: TauN4R + ATP => TauH4R + ADP; Brain*(k47*TauN4R*ATP/(k48 + TauN4R));
+  r39: TauH4R => TauN4R; Brain*(k49*TauH4R/(k50 + TauH4R));
+  r40: Tau04R => Tau0_4R; Brain*k51*Tau04R;
+  r41: Tau0_4R => Tau04R; Brain*k52*Tau0_4R;
+  r42: Tau0_4R + MT => Tau04RMT; Brain*(k53*Tau0_4R*MT);
+  r43: Tau04RMT => Tau0_4R + MT; Brain*k54*Tau04RMT;
+  r44: TauN4R => TauN_4R; Brain*k55*TauN4R;
+  r45: TauN_4R => TauN4R; Brain*k56*TauN_4R;
+  r46: TauN_4R + MT => TauN4RMT; Brain*(k57*TauN_4R*MT);
+  r47: TauN4RMT => TauN_4R + MT; Brain*k58*TauN4RMT;
+  r48: TauH4R => TauH_4R; Brain*k59*TauH4R;
+  r49: TauH_4R => TauH4R; Brain*k60*TauH_4R;
+  r50: TauH_4R + MT => TauH4RMT; Brain*(k61*TauH_4R*MT);
+  r51: TauH4RMT => TauH_4R + MT; Brain*k62*TauH4RMT;
+  r52: Tau04R + $_20S + ATP => ADP + $_20S; Brain*(k63*Tau04R*_20S*ATP);
+  r53: TauN4R + $_20S + ATP => ADP + $_20S; Brain*(k64*TauN4R*_20S*ATP);
+  r54: TauH4R + $_20S + ATP => ADP + $_20S; Brain*(k65*TauH4R*_20S*ATP);
+  r55: Tau04RMT + ATP => TauN4RMT + ADP; Brain*(k66*Tau04RMT*ATP/(k67 + Tau04RMT));
+  r56: TauN4RMT => Tau04RMT; Brain*(k68*TauN4RMT/(k69 + TauN4RMT));
+  r57: TauN4RMT + ATP => TauH4RMT + ADP; Brain*(k70*TauN4RMT*ATP/(k71 + TauN4RMT));
+  r58: TauH4RMT => TauN4RMT; Brain*(k72*TauH4RMT/(k73 + TauH4RMT));
+  r59: TauH4R + Hsc70 => TauH4R_Hsc70; Brain*(k74*TauH4R*Hsc70);
+  r60: TauH4R_Hsc70 => TauH4R + Hsc70; Brain*k75*TauH4R_Hsc70;
+  r61: TauH4R_Hsc70 + Hsp90 => TauH4R_Hsp90 + Hsc70; Brain*(k76*TauH4R_Hsc70*Hsp90);
+  r62: TauH4R_Hsp90 => Tau04R_Hsp90; Brain*(k77*TauH4R_Hsp90/(k9 + TauH4R_Hsp90));
+  r63: Tau04R_Hsp90 => Hsp90 + Tau04R; Brain*k78*Tau04R_Hsp90;
+  r64: TauH4R_Hsc70 + CHIP => TauH4R_CHIP_Hsc70; Brain*(k79*TauH4R_Hsc70*CHIP);
+  r65: TauH4R_CHIP_Hsc70 => TauH4RUb + Hsc70 + CHIP; Brain*k80*TauH4R_CHIP_Hsc70;
+  r66: TauH4R_CHIP_Hsc70 + Bag2 => TauH4R_CHIP_Hsc70_Bag2; Brain*(k81*TauH4R_CHIP_Hsc70*Bag2);
+  r67: TauH4R_CHIP_Hsc70_Bag2 => TauH4R_Hsc70 + CHIP + Bag2; Brain*k82*TauH4R_CHIP_Hsc70_Bag2;
+  r68: TauH4RUb + $_26S + ATP => ADP + $_26S; Brain*(k83*TauH4RUb*_26S*ATP);
+  r69: ADP => ATP; Brain*k84*ADP;
+  r70: ATP => ADP; Brain*k85*ATP;
+  r71: 2 TauH3RUb => Nucleus3; Brain*(k86*TauH3RUb^2);
+  r72: Nucleus3 => 2 TauH3RUb; Brain*k87*Nucleus3;
+  r73: 2 TauH4RUb => Nucleus4; Brain*(k88*TauH4RUb^2);
+  r74: Nucleus4 => 2 TauH4RUb; Brain*k89*Nucleus4;
+  r75: Nucleus3 + TauH3RUb => Agg33; Brain*(k90*Nucleus3*TauH3RUb);
+  r76: Agg33 => Nucleus3 + TauH3RUb; Brain*k91*Agg33;
+  r78: TauH3RUb + $Ap => $Ap; Brain*(k90*TauH3RUb*Ap);
+  r79: $Ap => TauH3RUb + $Ap; Brain*k91*Ap;
+  r80: Nucleus4 + TauH4RUb => Agg43; Brain*(k92*Nucleus4*TauH4RUb);
+  r81: Agg43 => Nucleus4 + TauH4RUb; Brain*k93*Agg43;
+  r83: TauH4RUb + $Bp => $Bp; Brain*(k92*TauH4RUb*Bp);
+  r84: $Bp => TauH4RUb + $Bp; Brain*k93*Bp;
+
+  // Species initializations:
+  ADP = 1;
+  ATP = 0;
+  MT = 15;
+  _20S = 1;
+  Hsc70 = 0.1;
+  Hsp90 = 0.1;
+  CHIP = 0.1;
+  Bag2 = 0.1;
+  _26S = 1;
+  TauH3RUb = 0;
+  TauH4RUb = 0;
+  Nucleus3 = 0;
+  Nucleus4 = 0;
+  Agg33 = 0;
+  Ap = 0;
+  Agg43 = 0;
+  Bp = 0;
+  Tau03R = 0;
+  TauN3R = 0;
+  TauH3R = 0;
+  Tau0_3R = 0;
+  Tau03RMT = 0;
+  TauN_3R = 0;
+  TauN3RMT = 0;
+  TauH_3R = 0;
+  TauH3RMT = 0;
+  TauH3R_Hsc70 = 0;
+  TauH3R_Hsp90 = 0;
+  Tau03R_Hsp90 = 0;
+  TauH3R_CHIP_Hsc70 = 0;
+  TauH3R_CHIP_Hsc70_Bag2 = 0;
+  Tau04R = 0;
+  TauN4R = 0;
+  TauH4R = 0;
+  Tau0_4R = 0;
+  Tau04RMT = 0;
+  TauN_4R = 0;
+  TauN4RMT = 0;
+  TauH_4R = 0;
+  TauH4RMT = 0;
+  TauH4R_Hsc70 = 0;
+  TauH4R_Hsp90 = 0;
+  Tau04R_Hsp90 = 0;
+  TauH4R_CHIP_Hsc70 = 0;
+  TauH4R_CHIP_Hsc70_Bag2 = 0;
+
+  // Compartment initializations:
+  Brain = 1;
+
+  // Variable initializations:
+  k1 = 0.03725;
+  k2 = 0.391818;
+  k3 = 27.5668;
+  k4 = 6.065997;
+  k5 = 7.99621;
+  k6 = 0.142099;
+  k7 = 21.91138;
+  k8 = 0.608448;
+  k9 = 5.760257;
+  k10 = 7.118684;
+  k11 = 15;
+  k12 = 9.633772;
+  k13 = 0.163388;
+  k14 = 1.540886;
+  k15 = 9.220426;
+  k16 = 50.66157;
+  k17 = 0.202066;
+  k18 = 3.940468;
+  k19 = 8.052152;
+  k20 = 19.76984;
+  k21 = 7.248652;
+  k22 = 0.173127;
+  k23 = 0.075176;
+  k24 = 0.039141;
+  k25 = 0.066012;
+  k26 = 0.1452;
+  k27 = 0.473124;
+  k28 = 12.62955;
+  k29 = 0.006017;
+  k30 = 16.56551;
+  k31 = 3.991539;
+  k32 = 7.130081;
+  k33 = 0.009267;
+  k34 = 0.000111;
+  k35 = 0.146177;
+  k36 = 0.006298;
+  k37 = 1.07;
+  k38 = 0.029266;
+  k39 = 1.163756;
+  k40 = 0.050949;
+  k41 = 0.279;
+  k42 = 0.025365;
+  k43 = 3.68998;
+  k44 = 27.5668;
+  k45 = 0.216599;
+  k46 = 7.99621;
+  k47 = 2.801964;
+  k48 = 21.91138;
+  k49 = 0.003379;
+  k50 = 5.760257;
+  k51 = 7.118684;
+  k52 = 15;
+  k53 = 9.633772;
+  k54 = 0.054463;
+  k55 = 1.540886;
+  k56 = 9.220426;
+  k57 = 50.66157;
+  k58 = 0.067355;
+  k59 = 3.940468;
+  k60 = 8.052152;
+  k61 = 19.76984;
+  k62 = 2.416217;
+  k63 = 0.211664;
+  k64 = 0.074306;
+  k65 = 0.001334;
+  k66 = 0.028914;
+  k67 = 0.1452;
+  k68 = 0.004313;
+  k69 = 12.62955;
+  k70 = 0.073055;
+  k71 = 16.56551;
+  k72 = 0.014352;
+  k73 = 7.130081;
+  k74 = 0.000161;
+  k75 = 8.57e-05;
+  k76 = 0.283991;
+  k77 = 1.185806;
+  k78 = 0.004562;
+  k79 = 0.346673;
+  k80 = 0.551509;
+  k81 = 5.59e-05;
+  k82 = 0.644848;
+  k83 = 0.006502;
+  k84 = 0.68;
+  k85 = 0.015317;
+  k86 = 5e-06;
+  k87 = 0.0012;
+  k88 = 5e-06;
+  k89 = 0.06;
+  k90 = 0.095;
+  k91 = 0.005429;
+  k92 = 0.095;
+  k93 = 0.019;
+
+  // Other declarations:
+  const Brain, k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11, k12, k13, k14;
+  const k15, k16, k17, k18, k19, k20, k21, k22, k23, k24, k25, k26, k27, k28;
+  const k29, k30, k31, k32, k33, k34, k35, k36, k37, k38, k39, k40, k41, k42;
+  const k43, k44, k45, k46, k47, k48, k49, k50, k51, k52, k53, k54, k55, k56;
+  const k57, k58, k59, k60, k61, k62, k63, k64, k65, k66, k67, k68, k69, k70;
+  const k71, k72, k73, k74, k75, k76, k77, k78, k79, k80, k81, k82, k83, k84;
+  const k85, k86, k87, k88, k89, k90, k91, k92, k93;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  _20S is "20S";
+  _26S is "26S";
+  Tau0_3R is "Tau0*3R";
+  TauN_3R is "TauN*3R";
+  TauH_3R is "TauH*3R";
+  TauH3R_Hsc70 is "TauH3R-Hsc70";
+  TauH3R_Hsp90 is "TauH3R-Hsp90";
+  Tau03R_Hsp90 is "Tau03R-Hsp90";
+  TauH3R_CHIP_Hsc70 is "TauH3R-CHIP-Hsc70";
+  TauH3R_CHIP_Hsc70_Bag2 is "TauH3R-CHIP-Hsc70-Bag2";
+  Tau0_4R is "Tau0*4R";
+  TauN_4R is "TauN*4R";
+  TauH_4R is "TauH*4R";
+  TauH4R_Hsc70 is "TauH4R-Hsc70";
+  TauH4R_Hsp90 is "TauH4R-Hsp90";
+  Tau04R_Hsp90 is "Tau04R-Hsp90";
+  TauH4R_CHIP_Hsc70 is "TauH4R-CHIP-Hsc70";
+  TauH4R_CHIP_Hsc70_Bag2 is "TauH4R-CHIP-Hsc70-Bag2";
+
+  // CV terms:
+  Brain identity "http://identifiers.org/bto/BTO:0000142"
+  ADP identity "http://identifiers.org/chebi/CHEBI:16761"
+  ATP identity "http://identifiers.org/chebi/CHEBI:15422"
+  MT biological_system "http://identifiers.org/uniprot/Q71U36"
+  _20S identity "http://identifiers.org/go/GO:0005839"
+  Hsc70 identity "http://identifiers.org/uniprot/P11142"
+  Hsp90 identity "http://identifiers.org/uniprot/Q16543"
+  CHIP identity "http://identifiers.org/uniprot/Q9UNE7"
+  Bag2 identity "http://identifiers.org/uniprot/O95816"
+  _26S identity "http://identifiers.org/go/GO:0000502"
+  TauH3RUb part "http://identifiers.org/uniprot/P10636"
+  TauH3RUb property "http://identifiers.org/sbo/SBO:0000181",
+                    "http://identifiers.org/pato/PATO:0002216"
+  TauH4RUb part "http://identifiers.org/uniprot/P10636"
+  TauH4RUb property "http://identifiers.org/sbo/SBO:0000181",
+                    "http://identifiers.org/pato/PATO:0002216"
+  Nucleus3 biological_system "http://identifiers.org/uniprot/P10636"
+  Nucleus3 property "http://identifiers.org/pato/PATO:0001629"
+  Nucleus4 biological_system "http://identifiers.org/uniprot/P10636"
+  Nucleus4 property "http://identifiers.org/pato/PATO:0001629"
+  Agg33 biological_system "http://identifiers.org/uniprot/P10636"
+  Agg33 property "http://identifiers.org/pato/PATO:0001629"
+  Ap biological_system "http://identifiers.org/uniprot/P10636"
+  Ap property "http://identifiers.org/pato/PATO:0001629"
+  Agg43 biological_system "http://identifiers.org/uniprot/P10636"
+  Agg43 property "http://identifiers.org/pato/PATO:0001629"
+  Bp biological_system "http://identifiers.org/uniprot/P10636"
+  Bp property "http://identifiers.org/pato/PATO:0001629"
+  Tau03R biological_system "http://identifiers.org/uniprot/P10636"
+  TauN3R biological_system "http://identifiers.org/uniprot/P10636"
+  TauN3R property "http://identifiers.org/pato/PATO:0002220"
+  TauH3R biological_system "http://identifiers.org/uniprot/P10636"
+  TauH3R property "http://identifiers.org/sbo/SBO:0000181"
+  Tau0_3R biological_system "http://identifiers.org/uniprot/P10636"
+  Tau0_3R property "http://identifiers.org/sbo/SBO:0000181"
+  Tau03RMT biological_system "http://identifiers.org/uniprot/Q71U36"
+  Tau03RMT biological_system "http://identifiers.org/uniprot/P10636"
+  TauN_3R biological_system "http://identifiers.org/uniprot/P10636"
+  TauN_3R property "http://identifiers.org/sbo/SBO:0000181",
+                   "http://identifiers.org/pato/PATO:0002220"
+  TauN3RMT part "http://identifiers.org/uniprot/Q71U36"
+  TauN3RMT biological_system "http://identifiers.org/uniprot/P10636"
+  TauN3RMT property "http://identifiers.org/pato/PATO:0002220"
+  TauH_3R biological_system "http://identifiers.org/uniprot/P10636"
+  TauH_3R property "http://identifiers.org/sbo/SBO:0000181"
+  TauH3RMT part "http://identifiers.org/uniprot/Q71U36"
+  TauH3RMT biological_system "http://identifiers.org/uniprot/P10636"
+  TauH3RMT property "http://identifiers.org/sbo/SBO:0000181"
+  TauH3R_Hsc70 part "http://identifiers.org/uniprot/P11142"
+  TauH3R_Hsc70 biological_system "http://identifiers.org/uniprot/P10636"
+  TauH3R_Hsc70 property "http://identifiers.org/sbo/SBO:0000181"
+  TauH3R_Hsp90 part "http://identifiers.org/uniprot/Q16543"
+  TauH3R_Hsp90 biological_system "http://identifiers.org/uniprot/P10636"
+  TauH3R_Hsp90 property "http://identifiers.org/sbo/SBO:0000181"
+  Tau03R_Hsp90 part "http://identifiers.org/uniprot/Q16543"
+  Tau03R_Hsp90 biological_system "http://identifiers.org/uniprot/P10636"
+  TauH3R_CHIP_Hsc70 part "http://identifiers.org/uniprot/P11142",
+                         "http://identifiers.org/uniprot/Q9UNE7"
+  TauH3R_CHIP_Hsc70 biological_system "http://identifiers.org/uniprot/P10636"
+  TauH3R_CHIP_Hsc70 property "http://identifiers.org/sbo/SBO:0000181"
+  TauH3R_CHIP_Hsc70_Bag2 part "http://identifiers.org/uniprot/P11142",
+                              "http://identifiers.org/uniprot/Q9UNE7",
+                              "http://identifiers.org/uniprot/O95816"
+  TauH3R_CHIP_Hsc70_Bag2 biological_system "http://identifiers.org/uniprot/P10636"
+  TauH3R_CHIP_Hsc70_Bag2 property "http://identifiers.org/sbo/SBO:0000181"
+  Tau04R biological_system "http://identifiers.org/uniprot/P10636"
+  TauN4R biological_system "http://identifiers.org/uniprot/P10636"
+  TauN4R property "http://identifiers.org/pato/PATO:0002220"
+  TauH4R biological_system "http://identifiers.org/uniprot/P10636"
+  TauH4R property "http://identifiers.org/sbo/SBO:0000181"
+  Tau0_4R biological_system "http://identifiers.org/uniprot/P10636"
+  Tau0_4R property "http://identifiers.org/sbo/SBO:0000181"
+  Tau04RMT part "http://identifiers.org/uniprot/Q71U36"
+  Tau04RMT biological_system "http://identifiers.org/uniprot/P10636"
+  TauN_4R biological_system "http://identifiers.org/uniprot/P10636"
+  TauN_4R property "http://identifiers.org/sbo/SBO:0000181",
+                   "http://identifiers.org/pato/PATO:0002220"
+  TauN4RMT part "http://identifiers.org/uniprot/Q71U36"
+  TauN4RMT biological_system "http://identifiers.org/uniprot/P10636"
+  TauN4RMT property "http://identifiers.org/pato/PATO:0002220"
+  TauH_4R biological_system "http://identifiers.org/uniprot/P10636"
+  TauH_4R property "http://identifiers.org/sbo/SBO:0000181"
+  TauH4RMT part "http://identifiers.org/uniprot/Q71U36"
+  TauH4RMT biological_system "http://identifiers.org/uniprot/P10636"
+  TauH4RMT property "http://identifiers.org/sbo/SBO:0000181"
+  TauH4R_Hsc70 part "http://identifiers.org/uniprot/P11142"
+  TauH4R_Hsc70 biological_system "http://identifiers.org/uniprot/P10636"
+  TauH4R_Hsc70 property "http://identifiers.org/sbo/SBO:0000181"
+  TauH4R_Hsp90 part "http://identifiers.org/uniprot/Q16543"
+  TauH4R_Hsp90 biological_system "http://identifiers.org/uniprot/P10636"
+  TauH4R_Hsp90 property "http://identifiers.org/sbo/SBO:0000181"
+  Tau04R_Hsp90 part "http://identifiers.org/uniprot/Q16543"
+  Tau04R_Hsp90 biological_system "http://identifiers.org/uniprot/P10636"
+  TauH4R_CHIP_Hsc70 part "http://identifiers.org/uniprot/P11142",
+                         "http://identifiers.org/uniprot/Q9UNE7"
+  TauH4R_CHIP_Hsc70 biological_system "http://identifiers.org/uniprot/P10636"
+  TauH4R_CHIP_Hsc70 property "http://identifiers.org/sbo/SBO:0000181"
+  TauH4R_CHIP_Hsc70_Bag2 part "http://identifiers.org/uniprot/P11142",
+                              "http://identifiers.org/uniprot/Q9UNE7",
+                              "http://identifiers.org/uniprot/O95816"
+  TauH4R_CHIP_Hsc70_Bag2 biological_system "http://identifiers.org/uniprot/P10636"
+  TauH4R_CHIP_Hsc70_Bag2 property "http://identifiers.org/sbo/SBO:0000181"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1408150000"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000542"
+  model publication "http://identifiers.org/pubmed/21085645"
+  model biological_system "http://identifiers.org/go/GO:0070841"
+  model property "http://identifiers.org/doid/DOID:10652",
+                 "http://identifiers.org/doid/DOID:680"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model created "2014-08-15T11:00:27Z"
+  model modified "2014-09-23T18:41:53Z"
+  model creator1.givenName "Audald"
+  model creator1.familyName "Lloret i Villas"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "lloret@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+Yuraszeck2010 - Vulnerabilities in the TauNetwork in Tau Pathophysiology 
+
+
+This model is described in the article:
+
+
+[Vulnerabilities in the tau network and the role of ultrasensitive points in tau pathophysiology.](http://identifiers.org/pubmed/21085645 "Access to this publication") 
+
+
+Yuraszeck TM, Neveu P, Rodriguez-Fernandez M, Robinson A, Kosik KS, Doyle FJ 3rd.
+
+
+PLoS Comput. Biol. 2010; 6(11): e1000997 
+Abstract:
+
+
+The multifactorial nature of disease motivates the use of systems-level analyses
+to understand their pathology. We used a systems biology approach to study tau
+aggregation, one of the hallmark features of Alzheimer&apos;s disease. A mathematical
+model was constructed to capture the current state of knowledge concerning
+tau&apos;s behavior and interactions in cells. The model was implemented in silico
+in the form of ordinary differential equations. The identifiability of the model
+was assessed and parameters were estimated to generate two cellular states: a
+population of solutions that corresponds to normal tau homeostasis and a population
+of solutions that displays aggregation-prone behavior. The model of normal tau
+homeostasis was robust to perturbations, and disturbances in multiple processes
+were required to achieve an aggregation-prone state. The aggregation-prone state
+was ultrasensitive to perturbations in diverse subsets of networks. Tau aggregation
+requires that multiple cellular parameters are set coordinately to a set of 
+values that drive pathological assembly of tau. This model provides a foundation
+on which to build and increase our understanding of the series of events that
+lead to tau aggregation and may ultimately be used to identify critical intervention
+points that can direct the cell away from tau aggregation to aid in the treatment
+of tau-mediated (or related) aggregation diseases including Alzheimer&apos;s.
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identified by: [BIOMD0000000542](http://identifiers.org/biomodels.db/BIOMD0000000542).
+
+To cite BioModels Database, please use: [BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models](http://identifiers.org/pubmed/20587024 "Latest BioModels Database publication").
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+  ADP notes "Energy"
+  ATP notes "Energy"
+  MT notes "Microtubules"
+  _20S notes "20S proteasome"
+  Hsc70 notes "Chaperone"
+  Hsp90 notes "Refolding chaperone"
+  CHIP notes "Degrading chaperone"
+  Bag2 notes "Bag2"
+  _26S notes "26S proteasome"
+  TauH3RUb notes "Ubiquitinated 3R tau"
+  TauH4RUb notes "Ubiquitinated 4R tau"
+  Nucleus3 notes "Nucleus for aggregaion (dimer) from 3R tau"
+  Nucleus4 notes "Nucleus for aggregaion (dimer) from 4R tau"
+  Agg33 notes "Aggregates of length 3, 3R tau"
+  Ap notes "Aggregates greater than length 3, 3R tau"
+  r77 notes "Formation of Tau3, 1 > 3 from Tau3 aggregate of length 3"
+  Agg43 notes "Aggregates of length 3, 4R tau"
+  Bp notes "Aggregates greater than length 3, 4R tau"
+  r82 notes "Formation of Tau4, 1 > 3 from Tau3 aggreate of length 3"
+  Tau03R notes "Newly synthesized 3R tau, unphosphorylated"
+  TauN3R notes "Normally phosphorylated 3R tau"
+  TauH3R notes "Misfolded 3R tau prone to aggregation"
+  Tau0_3R notes "Conformationally altered, unphosphorylated, 3R tau with afinity for MT"
+  Tau03RMT notes "Unphosphorylated 3R tau bound to microtubule"
+  TauN_3R notes "Conformationally altered, normal, 3R tau with affinity for MT"
+  TauN3RMT notes "Normal 3R tau bound to microtubule"
+  TauH_3R notes "Conformationally altered, misfolded, 3R tau with affinity for MT"
+  TauH3RMT notes "Misfolded 3R tau bound to microtubule"
+  TauH3R_Hsc70 notes "Protein triage complex, 3R tau"
+  TauH3R_Hsp90 notes "Refolding complex, 3R tau"
+  Tau03R_Hsp90 notes "Refolding complex with restored substrate, 3R tau"
+  TauH3R_CHIP_Hsc70 notes "Degradation complex, 3R tau"
+  TauH3R_CHIP_Hsc70_Bag2 notes "Protein triage complex, 3R tau"
+  Tau04R notes "Newly synthesized 4R tau, unphosphorylated"
+  TauN4R notes "Normally phosphorylated 4R tau"
+  TauH4R notes "Misfolded 4R tau prone to aggregation"
+  Tau0_4R notes "Conformationally altered, unphosphorylated, 4R tau with afinity for MT"
+  Tau04RMT notes "Unphosphorylated 4R tau bound to microtubule"
+  TauN_4R notes "Conformationally altered, normal, 4R tau with affinity for MT"
+  TauN4RMT notes "Normal 4R tau bound to microtubule"
+  TauH_4R notes "Conformationally altered, misfolded, 4R tau with affinity for MT"
+  TauH4RMT notes "Misfolded 4R tau bound to microtubule"
+  TauH4R_Hsc70 notes "Protein triage complex, 4R tau"
+  TauH4R_Hsp90 notes "Refolding complex, 4R tau"
+  Tau04R_Hsp90 notes "Refolding complex with restored substrate, 4R tau"
+  TauH4R_CHIP_Hsc70 notes "Degradation complex, 4R tau"
+  TauH4R_CHIP_Hsc70_Bag2 notes "Protein triage complex, 4R tau"
+  r1 notes "Tau synthesis"
+  r2 notes "Phosphorylation of newly synthesized tau"
+  r3 notes "dephosphosrylation of normally phosphorylated tau"
+  r4 notes "Phosphorylation of normally phosphorylated tau"
+  r5 notes "Dephosphorylation of abnormal/misfolded tau"
+  r6 notes "Conformation change favoring MT binding"
+  r7 notes "Conformational change back to original"
+  r8 notes "Binding of newly synthesized tau to MT"
+  r9 notes "Release of newly synthesized au from MT"
+  r10 notes "Conformation chang favoring MT binding"
+  r11 notes "Conformational change back to original"
+  r12 notes "Binding of normally phosphorylated tau to MT"
+  r13 notes "Release of normally phosphorylated tau from MT"
+  r14 notes "Conformational change favoring MT binding"
+  r15 notes "Conformational change backt to original"
+  r16 notes "Binding of misfolded tau to MT"
+  r17 notes "Release of misfolded tau from microtubules"
+  r18 notes "Degradation of newly synthesized tau"
+  r19 notes "Degradation of phosphorlated tau"
+  r20 notes "Degradation of misfolded tau"
+  r21 notes "Phosphorylation of MT-bound newly synthesized tau"
+  r22 notes "Dephosphorylation of MT-bound normally phosphorylated tau"
+  r23 notes "Phosphorylation of MT-bound normally phosphorylated tau"
+  r24 notes "Dephosphorylation of MT-bound abnormal/midfolded tau"
+  r25 notes "Association of misfolded tau with Hsp70"
+  r26 notes "Hsc70 release"
+  r27 notes "Exchange of Hsc70 for Hsp90"
+  r28 notes "Restoration of TauH to Tau0 via Hsp90"
+  r29 notes "Release of Tau0 from Hsp90"
+  r30 notes "Exchange of Hsc70 for CHIP"
+  r31 notes "Ubiquitination of tau"
+  r32 notes "Binding of Bag-2 to the degradation complex"
+  r33 notes "Rescue for degradation by Bag2"
+  r34 notes "Degradation of ubiquitinated tau"
+  r35 notes "Synthesis of 4R tau"
+  r36 notes "Phosphorylation of newly synthesized tau"
+  r37 notes "Dephosphorylation of normally phosphorylated tau"
+  r38 notes "Phosphorylation of normally phosphorylated tau"
+  r39 notes "Dephosphorylation of abnormal/misfolded tau"
+  r40 notes "Conformation change favoring MT binding"
+  r41 notes "Conformational change back to original"
+  r42 notes "Binding of newly shynthesized tau to MT"
+  r43 notes "Release of newly shyntesized tau from MT"
+  r44 notes "Conformation change favoring MT binding"
+  r45 notes "Conformational change back to original"
+  r46 notes "Binding of normally phosphorylated tau to MT"
+  r47 notes "Release of normally phosphorylated tau from MT"
+  r48 notes "Conformation change favoring MT binding"
+  r49 notes "Conformational change back to original"
+  r50 notes "Binding of misfolded tau to MT"
+  r51 notes "Release of misfolded tau from microtubules"
+  r52 notes "Degradation of newly shynthesized tau"
+  r53 notes "Degradation of phosphorylated tau"
+  r54 notes "Degradation of misfolded tau"
+  r55 notes "Phosphorylation of MT-bound newly synthesized tau"
+  r56 notes "Dephosphorylation of MT-bound normally phosphorylated tau"
+  r57 notes "Phosphorylation of MT-bound normally phosphorylated tau"
+  r58 notes "Dephosphorylation of MT-bound abnormal/misfolded tau"
+  r59 notes "Association of misfolded tau with Hsp70"
+  r60 notes "Hsc70 release"
+  r61 notes "Exchange of Hsc70 for Hsp90"
+  r62 notes "Restoration of TauH to Tau0 via Hsp90"
+  r63 notes "Release of Tau0 from Hsp90"
+  r64 notes "Exchange of Hsc70 for CHIP"
+  r65 notes "Ubiquitination of tau"
+  r66 notes "Binding of Bag-2 to the degradation complex"
+  r67 notes "Rescue from degradation by Bag2"
+  r68 notes "Degradation of ubiquitinated tau"
+  r69 notes "Generation of ATP"
+  r70 notes "Use of ATP by other processes"
+  r71 notes "Nucleation of Tau3"
+  r72 notes "Dissociation of Tau3 Nucleus"
+  r73 notes "Nucleation of Tau4"
+  r74 notes "Dissociation of Tau4 Nucleus"
+  r75 notes "Formation of Tau3, length 3"
+  r76 notes "Dissociation"
+  r78 notes "Formation of Agg of 1 > 3 from aggregaties of 1 > 3"
+  r79 notes "Dissociation of aggregates 1 > 3"
+  r80 notes "Formation of Tau4, length 3"
+  r81 notes "Dissociation"
+  r83 notes "Formation of Agg of 1 > 3 from aggregates of 1 >3"
+  r84 notes "Dissociation of aggregates 1 > 3"
+end
+
+MODEL1408150000 is "Yuraszeck2010 - Vulnerabilities in the Tau Network in Tau Pathophysiology"

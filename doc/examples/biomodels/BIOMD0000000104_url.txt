@@ -1,0 +1,147 @@
+// Created by libAntimony v3.0.0
+model *Model_0()
+
+  // Compartments and Species:
+  compartment compartment_0;
+  species species_0 in compartment_0, species_1 in compartment_0, species_2 in compartment_0;
+  species $species_3 in compartment_0, $species_5 in compartment_0, species_4 in compartment_0;
+
+  // Assignment Rules:
+  species_3 := species_5 - species_2;
+
+  // Reactions:
+  reaction_0: species_0 => species_1; compartment_0*species_0*species_2*reaction_0_k1;
+  reaction_1: species_1 => species_4; compartment_0*reaction_1_k2*species_1*species_3;
+
+  // Events:
+  event_0000002: at time > 1: species_2 = 0.4;
+
+  // Species initializations:
+  species_0 = 1;
+  species_1 = 0;
+  species_2 = 1;
+  species_5 = 1;
+  species_4 = 0;
+
+  // Compartment initializations:
+  compartment_0 = 1;
+
+  // Variable initializations:
+  reaction_0_k1 = 1;
+  reaction_1_k2 = 1;
+
+  // Other declarations:
+  const compartment_0;
+
+  // Display Names:
+  compartment_0 is "cell";
+  species_0 is "S";
+  species_1 is "X1";
+  species_2 is "E1";
+  species_3 is "E2";
+  species_5 is "Etot";
+  species_4 is "P";
+  event_0000002 is "single switch";
+  reaction_0 is "S->X1";
+  reaction_1 is "X1->P";
+
+  // CV terms:
+  compartment_0 biological_system "http://identifiers.org/go/GO:0005623"
+  species_0 biological_system "http://identifiers.org/sbo/SBO:0000015"
+  species_1 biological_system "http://identifiers.org/sbo/SBO:0000299"
+  species_2 biological_system "http://identifiers.org/sbo/SBO:0000014"
+  species_3 biological_system "http://identifiers.org/sbo/SBO:0000014"
+  species_5 biological_system "http://identifiers.org/sbo/SBO:0000505"
+  species_4 biological_system "http://identifiers.org/sbo/SBO:0000011"
+  reaction_0 biological_system "http://identifiers.org/sbo/SBO:0000393"
+  reaction_1 biological_system "http://identifiers.org/sbo/SBO:0000394"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL4931762955"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000104"
+  model publication "http://identifiers.org/pubmed/12423338"
+  model taxon "http://identifiers.org/taxonomy/131567"
+  model biological_system "http://identifiers.org/go/GO:0010468"
+  model property "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2007-03-26T09:35:54Z"
+  model modified "2015-02-25T12:24:34Z"
+  model creator1.givenName "Nicolas"
+  model creator1.familyName "Le Novère"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "lenov@ebi.ac.uk"
+  model creator2.givenName "Nick"
+  model creator2.familyName "Juty"
+  model creator2.organization "EMBL-EBI"
+  model creator2.email "juty@ebi.ac.uk"
+  model creator3.givenName "Enuo"
+  model creator3.familyName "He"
+  model creator3.organization "BNMC"
+  model creator3.email "enuo@caltech.edu"
+
+  // Notes:
+  model notes ```
+Klipp2002_MetabolicOptimization_linearPathway(n=2) 
+
+
+The model describes time dependent gene expression as a means to enable cells to
+adapt metabolic activity optimally based on environmental conditions. It uses a simple
+unbranched pathway and a constraint of fixed total enzyme. It calculates enzyme profiles
+at different times which optimise a performance function, and compares them to experimental
+data. The initial model is cell-type agnostic, while the experimeental data is from
+yeast.
+
+
+This model is described in the article:
+
+
+[Prediction of temporal gene expression. Metabolic opimization by re-distribution of enzyme activities.](http://identifiers.org/pubmed/12423338 "Access to this publication") 
+
+
+Klipp E, Heinrich R, Holzhütter HG. 
+
+Eur. J. Biochem. 2002 Nov; 269(22): 5406-5413 
+Abstract:
+
+
+A computational approach is used to analyse temporal gene expression in the context
+of metabolic regulation. It is based on the assumption that cells developed optimal
+adaptation strategies to changing environmental conditions. Time- dependent enzyme
+profiles are calculated which optimize the function of a metabolic pathway under
+the constraint of limited total enzyme amount. For linear model pathways it is 
+shown that wave-like enzyme profiles are optimal for a rapid substrate turnover.
+For the central metabolism of yeast cells enzyme profiles are calculated which ensure
+long-term homeostasis of key metabolites under conditions of a diauxic shift. These
+enzyme profiles are in close correlation with observed gene expression data. Our
+results demonstrate that optimality principles help to rationalize observed gene
+expression profiles.
+
+
+This model is from the paper *Prediction of temporal gene expression metabolic
+optimization by re-distribution of enzyme activities.* The model describes
+optimal enzyme profiles and metabolite time courses for a simple linear metabolic
+pathway (n=2). Figure 1 was reproduced using roadRunner. The values of k1 and k2
+were not explicitly stated in the publication, but calculations were performed for
+equal catalytic efficiencies of the enzymes (ki=k), hence the curator assigned k1=k2=1.
+Also enzyme concentrations are given in units of Etot; times are given in units of
+1/(k\*Etot) in the papaer, for simplicity, we use defalut units of the SBML to present
+the concentration and time. 
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identifiedby: [MODEL4931762955](http://identifiers.org/biomodels.db/BIOMD0000000104) . 
+
+To cite BioModels Database, please use: [BioModels Database: An enhanced, curated and annotated resourcefor published quantitative kinetic models](http://identifiers.org/pubmed/20587024 "Latest BioModels Database publication") . 
+
+
+To the extent possible under law, all copyright and related orneighbouring rights
+to this encoded model have been dedicated to the publicdomain worldwide. Please refer
+to [CC0 Public DomainDedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+  species_5 notes "Etot=E1+E2 is constant."
+  event_0000002 notes ```
+During the initial phase, t smaller than T1 (T1=1), the whole amount of protein
+is allocated to the first reaction(E1=Etot, E2=0). At the beginning of the second
+phase the concentration E2 undergoes an abrupt switch from zero to a finite vaule
+whereas the concentration E1 is descreased by the same extent.
+```
+end
+
+Model_0 is "Klipp2002_MetabolicOptimization_linearPathway(n=2)"

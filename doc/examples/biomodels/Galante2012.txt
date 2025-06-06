@@ -1,0 +1,108 @@
+// Created by libAntimony v3.0.0
+model *Galante2012___B7_H1_and_a_Mathematical_Model_for_Cytotoxic_T_Cell_and_Tumor_Cell_Interaction()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species X_Complex in compartment_, P_Perforin in compartment_, C_Cancer_Uncomplexed in compartment_;
+  species T_ast in compartment_, $E_CTL in compartment_, $T_Cancer_Cell_Total in compartment_;
+
+  // Assignment Rules:
+  E_CTL := ModelValue_11 - X_Complex;
+  T_Cancer_Cell_Total := C_Cancer_Uncomplexed + X_Complex;
+  Perc_Lysis := 100*((T_ast - T_Cancer_Cell_Total)/T_ast);
+  P_10 := 10*P_Perforin;
+  X_1000 := X_Complex*1000;
+
+  // Reactions:
+  X_Complex_Formation: C_Cancer_Uncomplexed => X_Complex; compartment_*(k_1*C_Cancer_Uncomplexed*E_CTL);
+  X_Complex_Dissociation: X_Complex => C_Cancer_Uncomplexed; compartment_*k_2*X_Complex;
+  X_Complex_Apoptosis: X_Complex => ; compartment_*k_3*X_Complex;
+  P_Production:  => P_Perforin; compartment_*(k_p*E_CTL/((k_m_1 + E_CTL)*k_m_2*C_Cancer_Uncomplexed));
+  P_Apoptosis_Perforin: P_Perforin + C_Cancer_Uncomplexed => ; compartment_*k_4*P_Perforin*C_Cancer_Uncomplexed;
+  C_Growth:  => C_Cancer_Uncomplexed; compartment_*(k*C_Cancer_Uncomplexed);
+  C_Carrying_Capacity_Limit: C_Cancer_Uncomplexed => ; compartment_*(k_5*C_Cancer_Uncomplexed^2);
+  T_Growth:  => T_ast; compartment_*(k*T_ast);
+  T_Carrying_Capacity_Limit: T_ast => ; compartment_*(k_5*T_ast^2);
+
+  // Species initializations:
+  X_Complex = 0;
+  P_Perforin = 0.315;
+  C_Cancer_Uncomplexed = 1;
+  T_ast = 1;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  ModelValue_11 = E_init;
+  k = 0.035;
+  k_1 = 0.0001;
+  k_2 = 0.0001;
+  k_3 = 0.0001;
+  k_4 = 3;
+  k_5 = 0.003;
+  k_6 = 0.63;
+  k_p = 0.097;
+  k_m = 1;
+  k_m_1 = 2.2;
+  k_m_2 = 80;
+  E_init = 1;
+
+  // Other declarations:
+  var Perc_Lysis, P_10, X_1000;
+  const compartment_, ModelValue_11, k, k_1, k_2, k_3, k_4, k_5, k_6, k_p;
+  const k_m, k_m_1, k_m_2, E_init;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 3600 second;
+  unit substance = item;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+  ModelValue_11 is "Initial for E_init";
+
+  // CV terms:
+  compartment_ biological_system "http://identifiers.org/ncit/C94498"
+  X_Complex part "http://identifiers.org/cl/CL:0000910"
+  X_Complex part "http://identifiers.org/cl/CL:0001063"
+  X_Complex biological_system "http://identifiers.org/ncit/C47881"
+  P_Perforin identity "http://identifiers.org/uniprot/S5S2F2"
+  C_Cancer_Uncomplexed biological_system "http://identifiers.org/cl/CL:0001063"
+  T_ast biological_system "http://identifiers.org/cl/CL:0001063"
+  E_CTL identity "http://identifiers.org/cl/CL:0000910"
+  T_Cancer_Cell_Total biological_system "http://identifiers.org/cl/CL:0001063"
+  X_Complex_Formation biological_system "http://identifiers.org/sbo/SBO:0000177"
+  X_Complex_Dissociation biological_system "http://identifiers.org/sbo/SBO:0000180"
+  X_Complex_Apoptosis biological_system "http://identifiers.org/ncit/C17557"
+  P_Production biological_system "http://identifiers.org/sbo/SBO:0000184"
+  P_Apoptosis_Perforin biological_system "http://identifiers.org/ncit/C17557"
+  C_Growth biological_system "http://identifiers.org/ncit/C18081"
+  C_Carrying_Capacity_Limit biological_system "http://identifiers.org/go/GO:0035212"
+  T_Growth biological_system "http://identifiers.org/ncit/C18081"
+  T_Carrying_Capacity_Limit biological_system "http://identifiers.org/go/GO:0035212"
+
+  model publication "http://identifiers.org/pubmed/21656310"
+  model origin "http://identifiers.org/pubmed/15705911"
+  model model_source "http://identifiers.org/biomodels.db/MODEL1909160001",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000812"
+  model property "http://identifiers.org/taxonomy/9606"
+  model property "http://identifiers.org/go/GO:0012501"
+  model property "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2019-09-12T13:21:49Z"
+  model modified "2019-09-12T13:21:49Z"
+  model creator1.givenName "Johannes"
+  model creator1.familyName "Meyer"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "johannes.p.meyer@gmail.com"
+
+  // Notes:
+  model notes ```
+This is a mathematical model that describes the interactions between cytotoxic 
+T cells and tumor cells as influenced by B7-H1 (PD-L1) activity, with a focus on 
+how B7-H1 affects cancer cells apoptosis.
+```
+end
+
+Galante2012___B7_H1_and_a_Mathematical_Model_for_Cytotoxic_T_Cell_and_Tumor_Cell_Interaction is "Galante2012 - B7-H1 and a Mathematical Model for Cytotoxic T Cell and Tumor Cell Interaction"

@@ -1,0 +1,526 @@
+// Created by libAntimony v3.0.0
+model *Zake2021___PBPK_model_of_metformin_in_mice__single_dose_intavenous()
+
+  // Compartments and Species:
+  compartment IntestineLumen, Liver, KidneyPlasma, Remainder, PlasmaVenous;
+  compartment Urine, Feces, Heart, Muscle, Brain, Adipose, PlasmaArterial;
+  compartment Lung, PortalVein, Stomach, IntestineEnterocytes, KidneyTissue;
+  compartment IntestineVascular, StomachLumen, KidneyTubular;
+  substanceOnly species mLiver in Liver, mKidneyPlasma in KidneyPlasma, mRemainder in Remainder;
+  substanceOnly species mPlasmaVenous in PlasmaVenous, mHeart in Heart, mMuscle in Muscle;
+  substanceOnly species mAdipose in Adipose, mBrain in Brain, mFeces in Feces;
+  substanceOnly species mUrine in Urine, mIntestineLumen in IntestineLumen;
+  substanceOnly species mPlasmaArterial in PlasmaArterial, mLung in Lung;
+  substanceOnly species mPortalVein in PortalVein, mStomach in Stomach, mIntestineEnterocytes in IntestineEnterocytes;
+  substanceOnly species mKidneyTissue in KidneyTissue, mIntestineVascular in IntestineVascular;
+  substanceOnly species mStomachLumen in StomachLumen, mKidneyTubular in KidneyTubular;
+
+  // Assignment Rules:
+  Liver := ModelValue_1*0.0549;
+  KidneyPlasma := ModelValue_1*0.0056;
+  Remainder := ModelValue_1*0.3585;
+  PlasmaVenous := ModelValue_1*0.0375;
+  Heart := ModelValue_1*0.005;
+  Muscle := ModelValue_1*0.384;
+  Brain := ModelValue_1*0.0165;
+  Adipose := ModelValue_1*0.07;
+  PlasmaArterial := ModelValue_1*0.0125;
+  Lung := ModelValue_1*0.0073;
+  PortalVein := ModelValue_1*0.0058;
+  Stomach := ModelValue_1*0.006;
+  IntestineEnterocytes := ModelValue_1*0.0025;
+  KidneyTissue := ModelValue_1*0.0056;
+  IntestineVascular := ModelValue_1*0.0228;
+  KidneyTubular := ModelValue_1*0.0056;
+  QAdipose := ModelValue_3*0.005;
+  QBrain := ModelValue_3*0.033;
+  QHeart := ModelValue_3*0.066;
+  QKidney := ModelValue_3*0.091;
+  QMuscle := ModelValue_3*0.159;
+  QRemainder := ModelValue_3*0.411;
+  mgLiver := 129.16*(mLiver/Liver)*Compartment_1/1000000;
+  mgIntestineLumen := 129.16*(mIntestineLumen/IntestineLumen)*Compartment_0/1000000;
+  mgBrain := 129.16*(mBrain/Brain)*Compartment_9/1000000;
+  mgAdipose := 129.16*(mAdipose/Adipose)*Compartment_10/1000000;
+  mgHeart := 129.16*(mHeart/Heart)*Compartment_7/1000000;
+  mgKidneyPlasma := 129.16*(mKidneyPlasma/KidneyPlasma)*Compartment_2/1000000;
+  mgRemainder := 129.16*(mRemainder/Remainder)*Compartment_3/1000000;
+  mgMuscle := 129.16*(mMuscle/Muscle)*Compartment_8/1000000;
+  mgPortalVein := 129.16*(mPortalVein/PortalVein)*Compartment_13/1000000;
+  mgUrine := 129.16*(mUrine/Urine)*Compartment_5/1000000;
+  mgFeces := 129.16*(mFeces/Feces)*Compartment_6/1000000;
+  mgIntestineEnterocytes := 129.16*(mIntestineEnterocytes/IntestineEnterocytes)*Compartment_15/1000000;
+  mgPlasmaVenous := 129.16*(mPlasmaVenous/PlasmaVenous)*Compartment_4/1000000;
+  mgPlasmaArterial := 129.16*(mPlasmaArterial/PlasmaArterial)*Compartment_11/1000000;
+  mgLung := 129.16*(mLung/Lung)*Compartment_12/1000000;
+  mgStomach := 129.16*(mStomach/Stomach)*Compartment_14/1000000;
+  QLiverArtery := ModelValue_3*0.02;
+  QStomach := ModelValue_3*0.02;
+  QPortalVein := ModelValue_3*0.06;
+  QIntestineVascular := ModelValue_3*0.135;
+  QLiverOut := ModelValue_47 + ModelValue_34;
+  mIntestineSum := ((mIntestineEnterocytes/IntestineEnterocytes)*Compartment_15 + Compartment_17*(mIntestineVascular/IntestineVascular))/(Compartment_15 + Compartment_17);
+  mKidneySum := (Compartment_2*(mKidneyPlasma/KidneyPlasma) + Compartment_16*(mKidneyTissue/KidneyTissue) + Compartment_19*(mKidneyTubular/KidneyTubular))/(Compartment_2 + Compartment_16 + Compartment_19);
+  mgKidneyTissues := 129.16*Compartment_16*(mKidneyTissue/KidneyTissue)/1000000;
+  mgIntestineVascular := 129.16*(mIntestineVascular/IntestineVascular)*Compartment_17/1000000;
+  mgStomachLumen := 129.16*(mStomachLumen/StomachLumen)*Compartment_18/1000000;
+  QPortalVeinOut := ModelValue_35 + ModelValue_36 + ModelValue_37;
+  mArterialPlasma__for_kidney := mPlasmaArterial/PlasmaArterial;
+  mgKidneyTubular := 129.16*Compartment_19*(mKidneyTubular/KidneyTubular)/1000000;
+  mgKidneyTotal := mgKidneyPlasma + mgKidneyTissues + mgKidneyTubular;
+  mgIntestineTotal := mgIntestineEnterocytes + mgIntestineVascular;
+
+  // Reactions:
+  _03_5__IntestineVascular____PortalVein: mIntestineVascular => mPortalVein; QIntestineVascular*(mIntestineVascular/IntestineVascular)/Ktp_IntestineVascular;
+  _06_3__Liver____PlasmaVenous: mLiver => mPlasmaVenous; QLiverOut*(mLiver/Liver)/Ktp_Liver;
+  _13_2__KidneyPlasma____PlasmaVenous: mKidneyPlasma => mPlasmaVenous; QKidney*(mKidneyPlasma/KidneyPlasma)/Ktp_Kidney;
+  _09_2__Muscle____PlasmaVenous: mMuscle => mPlasmaVenous; QMuscle*(mMuscle/Muscle)/Ktp_Muscle;
+  _12_2__Remainder____PlasmaVenous: mRemainder => mPlasmaVenous; QRemainder*(mRemainder/Remainder)/Ktp_Remainder;
+  _02__IntestineLumen____Feces: mIntestineLumen => mFeces; _02__IntestineLumen____Feces_k1*(mIntestineLumen/IntestineLumen);
+  _13_1__PlasmaArterial____KidneyPlasma: mPlasmaArterial => mKidneyPlasma; QKidney*(mPlasmaArterial/PlasmaArterial);
+  _09_1__PlasmaArterial____Muscle: mPlasmaArterial => mMuscle; QMuscle*(mPlasmaArterial/PlasmaArterial);
+  _12_1__PlasmaArterial____Remainder: mPlasmaArterial => mRemainder; QRemainder*(mPlasmaArterial/PlasmaArterial);
+  _13_3__KidneyPlasma____KidneyTubular: mKidneyPlasma => mKidneyTubular; mArterialPlasma__for_kidney*Qgfr;
+  _06_2__PortalVein____Liver: mPortalVein => mLiver; QPortalVeinOut*(mPortalVein/PortalVein);
+  _05_1__PlasmaArterial____Stomach: mPlasmaArterial => mStomach; QStomach*(mPlasmaArterial/PlasmaArterial);
+  _05_2__Stomach____PortalVein: mStomach => mPortalVein; QStomach*(mStomach/Stomach)/Ktp_Stomach;
+  _04__PlasmaArterial____PortalVein: mPlasmaArterial => mPortalVein; QPortalVein*(mPlasmaArterial/PlasmaArterial);
+  _03_1__PlasmaArterial____IntestineVascular: mPlasmaArterial => mIntestineVascular; QIntestineVascular*(mPlasmaArterial/PlasmaArterial);
+  _06_1__PlasmaArterial____Liver: mPlasmaArterial => mLiver; QLiverArtery*(mPlasmaArterial/PlasmaArterial);
+  _03_2__IntestineLumen____IntestineEnterocytes__PMAT_OCT3: mIntestineLumen => mIntestineEnterocytes; _03_2__IntestineLumen____IntestineEnterocytes__PMAT_OCT3_V*(mIntestineLumen/IntestineLumen)/(_03_2__IntestineLumen____IntestineEnterocytes__PMAT_OCT3_Km + mIntestineLumen/IntestineLumen);
+  _03_4__IntestineLumen____IntestineVascular__Saturable: mIntestineLumen => mIntestineVascular; _03_4__IntestineLumen____IntestineVascular__Saturable_V*(mIntestineLumen/IntestineLumen)/(_03_4__IntestineLumen____IntestineVascular__Saturable_Km + mIntestineLumen/IntestineLumen);
+  _03_3__IntestineEnterocytes____IntestineVascular__OCT1: mIntestineEnterocytes => mIntestineVascular; _03_3__IntestineEnterocytes____IntestineVascular__OCT1_V*(mIntestineEnterocytes/IntestineEnterocytes)/(_03_3__IntestineEnterocytes____IntestineVascular__OCT1_Km + mIntestineEnterocytes/IntestineEnterocytes);
+  _13_4__KidneyPlasma____KidneyTissue: mKidneyPlasma => mKidneyTissue; _13_4__KidneyPlasma____KidneyTissue_V*(mKidneyPlasma/KidneyPlasma)/(_13_4__KidneyPlasma____KidneyTissue_Km + mKidneyPlasma/KidneyPlasma);
+  _13_5__KidneyTissue____KidneyTubular: mKidneyTissue => mKidneyTubular; _13_5__KidneyTissue____KidneyTubular_V*(mKidneyTissue/KidneyTissue)/(_13_5__KidneyTissue____KidneyTubular_Km + mKidneyTissue/KidneyTissue);
+  _01__StomachLumen_____IntestineLumen: mStomachLumen => mIntestineLumen; _01__StomachLumen_____IntestineLumen_k1*(mStomachLumen/StomachLumen);
+  _07_2__Lung____PlasmaArterial: mLung => mPlasmaArterial; Cardiac_Output*(mLung/Lung)/Ktp_Lung;
+  _07_1__PlasmaVenous____Lung: mPlasmaVenous => mLung; Cardiac_Output*(mPlasmaVenous/PlasmaVenous);
+  _08_2__Brain____PlasmaVenous: mBrain => mPlasmaVenous; QBrain*(mBrain/Brain)/Ktp_Brain;
+  _08_1__PlasmaArterial____Brain: mPlasmaArterial => mBrain; QBrain*(mPlasmaArterial/PlasmaArterial);
+  _11_2__Heart____PlasmaVenous: mHeart => mPlasmaVenous; QHeart*(mHeart/Heart)/Ktp_Heart;
+  _11_1__PlasmaArterial____Heart: mPlasmaArterial => mHeart; QHeart*(mPlasmaArterial/PlasmaArterial);
+  _10_2__Adipose____PlasmaVenous: mAdipose => mPlasmaVenous; QAdipose*(mAdipose/Adipose)/Ktp_Adipose;
+  _10_1__PlasmaArterial____Adipose: mPlasmaArterial => mAdipose; QAdipose*(mPlasmaArterial/PlasmaArterial);
+  _13_6__KidneyTubular____UrineExternal: mKidneyTubular => mUrine; _13_6__KidneyTubular____UrineExternal_k1*(mKidneyTubular/KidneyTubular);
+  _03_6__IntestineLumen____IntestineEnterocytes__Diffusion: mIntestineLumen -> mIntestineEnterocytes; _03_6__IntestineLumen____IntestineEnterocytes__Diffusion_k1*(mIntestineLumen/IntestineLumen) - _03_6__IntestineLumen____IntestineEnterocytes__Diffusion_k2*(mIntestineEnterocytes/IntestineEnterocytes);
+  _03_7__IntestineLumen____IntestineVascular__Diffusion: mIntestineLumen -> mIntestineVascular; _03_7__IntestineLumen____IntestineVascular__Diffusion_k1*(mIntestineLumen/IntestineLumen) - _03_7__IntestineLumen____IntestineVascular__Diffusion_k2*(mIntestineVascular/IntestineVascular);
+
+  // Events:
+  Oral_at_0_001: at time > 0.001, t0=false, fromTrigger=false: mStomachLumen = (1000000*ModelValue_0/(129.16*Compartment_18) + mStomachLumen/StomachLumen)*StomachLumen;
+
+  // Species initializations:
+  mLiver = 0;
+  mLiver has substance_per_volume;
+  mKidneyPlasma = 0;
+  mKidneyPlasma has substance_per_volume;
+  mRemainder = 0;
+  mRemainder has substance_per_volume;
+  mPlasmaVenous = (1000000*Metformin_Dose_in_Plasma_in_mg/(129.16*PlasmaVenous))*PlasmaVenous;
+  mPlasmaVenous has substance_per_volume;
+  mHeart = 0;
+  mHeart has substance_per_volume;
+  mMuscle = 0;
+  mMuscle has substance_per_volume;
+  mAdipose = 0;
+  mAdipose has substance_per_volume;
+  mBrain = 0;
+  mBrain has substance_per_volume;
+  mFeces = 0;
+  mFeces has substance_per_volume;
+  mUrine = 0;
+  mUrine has substance_per_volume;
+  mIntestineLumen = 0;
+  mIntestineLumen has substance_per_volume;
+  mPlasmaArterial = 0;
+  mPlasmaArterial has substance_per_volume;
+  mLung = 0;
+  mLung has substance_per_volume;
+  mPortalVein = 0;
+  mPortalVein has substance_per_volume;
+  mStomach = 0;
+  mStomach has substance_per_volume;
+  mIntestineEnterocytes = 0;
+  mIntestineEnterocytes has substance_per_volume;
+  mKidneyTissue = 0;
+  mKidneyTissue has substance_per_volume;
+  mIntestineVascular = 0;
+  mIntestineVascular has substance_per_volume;
+  mStomachLumen = 0;
+  mStomachLumen has substance_per_volume;
+  mKidneyTubular = 0;
+  mKidneyTubular has substance_per_volume;
+
+  // Compartment initializations:
+  IntestineLumen = 0.6;
+  IntestineLumen has volume;
+  Liver has volume;
+  KidneyPlasma has volume;
+  Remainder has volume;
+  PlasmaVenous has volume;
+  Urine = 1;
+  Urine has volume;
+  Feces = 1;
+  Feces has volume;
+  Heart has volume;
+  Muscle has volume;
+  Brain has volume;
+  Adipose has volume;
+  PlasmaArterial has volume;
+  Lung has volume;
+  PortalVein has volume;
+  Stomach has volume;
+  IntestineEnterocytes has volume;
+  KidneyTissue has volume;
+  IntestineVascular has volume;
+  StomachLumen = 0.4;
+  StomachLumen has volume;
+  KidneyTubular has volume;
+
+  // Variable initializations:
+  ModelValue_1 = Body_Weight;
+  Metformin_Dose_in_Plasma_in_mg = 1.375;
+  Metformin_Dose_in_Plasma_in_mg has unit_0;
+  ModelValue_0 = Metformin_Dose_in_Lumen_in_mg;
+  Compartment_18 = StomachLumen;
+  Metformin_Dose_in_Lumen_in_mg = 0;
+  Metformin_Dose_in_Lumen_in_mg has unit_0;
+  Body_Weight = 27.5;
+  Body_Weight has unit_1;
+  Cardiac_Output = 838.8;
+  Cardiac_Output has unit_2;
+  Ktp_Liver = 5.5;
+  Ktp_Brain = 0.8;
+  Ktp_Adipose = 0.73;
+  Ktp_Heart = 2.50008880523789;
+  Ktp_Kidney = 4.5;
+  Ktp_Muscle = 4.1;
+  Ktp_Remainder = 0.8;
+  QAdipose has unit_2;
+  ModelValue_3 = Cardiac_Output;
+  QBrain has unit_2;
+  QHeart has unit_2;
+  QKidney has unit_2;
+  QMuscle has unit_2;
+  QRemainder has unit_2;
+  Compartment_1 = Liver;
+  Compartment_0 = IntestineLumen;
+  Compartment_9 = Brain;
+  Compartment_10 = Adipose;
+  Compartment_7 = Heart;
+  Compartment_2 = KidneyPlasma;
+  Compartment_3 = Remainder;
+  Compartment_8 = Muscle;
+  Compartment_13 = PortalVein;
+  Compartment_5 = Urine;
+  Compartment_6 = Feces;
+  Compartment_15 = IntestineEnterocytes;
+  Ktp_Lung = 3;
+  Compartment_4 = PlasmaVenous;
+  Compartment_11 = PlasmaArterial;
+  Compartment_12 = Lung;
+  Compartment_14 = Stomach;
+  QLiverArtery has unit_2;
+  QStomach has unit_2;
+  QPortalVein has unit_2;
+  QIntestineVascular has unit_2;
+  ModelValue_47 = QPortalVeinOut;
+  ModelValue_34 = QLiverArtery;
+  Ktp_Stomach = 3.20000000001417;
+  Ktp_IntestineVascular = 4.6;
+  Compartment_17 = IntestineVascular;
+  Qgfr = 20;
+  Compartment_16 = KidneyTissue;
+  Compartment_19 = KidneyTubular;
+  ModelValue_35 = QStomach;
+  ModelValue_36 = QPortalVein;
+  ModelValue_37 = QIntestineVascular;
+  _02__IntestineLumen____Feces_k1 = 0.177684;
+  _03_2__IntestineLumen____IntestineEnterocytes__PMAT_OCT3_Km = 900;
+  _03_2__IntestineLumen____IntestineEnterocytes__PMAT_OCT3_V = 1271;
+  _03_4__IntestineLumen____IntestineVascular__Saturable_Km = 60;
+  _03_4__IntestineLumen____IntestineVascular__Saturable_V = 19.2;
+  _03_3__IntestineEnterocytes____IntestineVascular__OCT1_Km = 12300;
+  _03_3__IntestineEnterocytes____IntestineVascular__OCT1_V = 495;
+  _13_4__KidneyPlasma____KidneyTissue_Km = 1380;
+  _13_4__KidneyPlasma____KidneyTissue_V = 87339.5;
+  _13_5__KidneyTissue____KidneyTubular_Km = 230;
+  _13_5__KidneyTissue____KidneyTubular_V = 3000;
+  _01__StomachLumen_____IntestineLumen_k1 = 3.16214;
+  _13_6__KidneyTubular____UrineExternal_k1 = 1.6;
+  _03_6__IntestineLumen____IntestineEnterocytes__Diffusion_k1 = 0.14;
+  _03_6__IntestineLumen____IntestineEnterocytes__Diffusion_k2 = 0.14;
+  _03_7__IntestineLumen____IntestineVascular__Diffusion_k1 = 0.26;
+  _03_7__IntestineLumen____IntestineVascular__Diffusion_k2 = 0.26;
+
+  // Other declarations:
+  var Liver, KidneyPlasma, Remainder, PlasmaVenous, Heart, Muscle, Brain;
+  var Adipose, PlasmaArterial, Lung, PortalVein, Stomach, IntestineEnterocytes;
+  var KidneyTissue, IntestineVascular, KidneyTubular, QAdipose, QBrain, QHeart;
+  var QKidney, QMuscle, QRemainder, mgLiver, mgIntestineLumen, mgBrain, mgAdipose;
+  var mgHeart, mgKidneyPlasma, mgRemainder, mgMuscle, mgPortalVein, mgUrine;
+  var mgFeces, mgIntestineEnterocytes, mgPlasmaVenous, mgPlasmaArterial, mgLung;
+  var mgStomach, QLiverArtery, QStomach, QPortalVein, QIntestineVascular;
+  var QLiverOut, mIntestineSum, mKidneySum, mgKidneyTissues, mgIntestineVascular;
+  var mgStomachLumen, QPortalVeinOut, mArterialPlasma__for_kidney, mgKidneyTubular;
+  var mgKidneyTotal, mgIntestineTotal;
+  const IntestineLumen, ModelValue_1, Urine, Feces, StomachLumen, Metformin_Dose_in_Plasma_in_mg;
+  const ModelValue_0, Compartment_18, Metformin_Dose_in_Lumen_in_mg, Body_Weight;
+  const Cardiac_Output, Ktp_Liver, Ktp_Brain, Ktp_Adipose, Ktp_Heart, Ktp_Kidney;
+  const Ktp_Muscle, Ktp_Remainder, ModelValue_3, Compartment_1, Compartment_0;
+  const Compartment_9, Compartment_10, Compartment_7, Compartment_2, Compartment_3;
+  const Compartment_8, Compartment_13, Compartment_5, Compartment_6, Compartment_15;
+  const Ktp_Lung, Compartment_4, Compartment_11, Compartment_12, Compartment_14;
+  const ModelValue_47, ModelValue_34, Ktp_Stomach, Ktp_IntestineVascular;
+  const Compartment_17, Qgfr, Compartment_16, Compartment_19, ModelValue_35;
+  const ModelValue_36, ModelValue_37;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = time_unit;
+  unit substance = 1e-9 mole;
+  unit unit_0 = 1e-3 gram;
+  unit unit_1 = 1e-3 litre;
+  unit unit_2 = 1e-3 litre / 3600e2 second;
+  unit extent = substance;
+  unit substance_per_volume = 1e-9 mole / 1e-3 litre;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "mg";
+  unit_1 is "ml";
+  unit_2 is "ml/h";
+  ModelValue_1 is "Initial for Body Weight";
+  Metformin_Dose_in_Plasma_in_mg is "Metformin Dose in Plasma in mg";
+  Oral_at_0_001 is "Oral at 0.001";
+  ModelValue_0 is "Initial for Metformin Dose in Lumen in mg";
+  Compartment_18 is "Initial for StomachLumen";
+  Metformin_Dose_in_Lumen_in_mg is "Metformin Dose in Lumen in mg";
+  Body_Weight is "Body Weight";
+  Cardiac_Output is "Cardiac Output";
+  ModelValue_3 is "Initial for Cardiac Output";
+  Compartment_1 is "Initial for Liver";
+  Compartment_0 is "Initial for IntestineLumen";
+  Compartment_9 is "Initial for Brain";
+  Compartment_10 is "Initial for Adipose";
+  Compartment_7 is "Initial for Heart";
+  Compartment_2 is "Initial for KidneyPlasma";
+  Compartment_3 is "Initial for Remainder";
+  Compartment_8 is "Initial for Muscle";
+  Compartment_13 is "Initial for PortalVein";
+  Compartment_5 is "Initial for Urine";
+  Compartment_6 is "Initial for Feces";
+  Compartment_15 is "Initial for IntestineEnterocytes";
+  Compartment_4 is "Initial for PlasmaVenous";
+  Compartment_11 is "Initial for PlasmaArterial";
+  Compartment_12 is "Initial for Lung";
+  Compartment_14 is "Initial for Stomach";
+  ModelValue_47 is "Initial for QPortalVeinOut";
+  ModelValue_34 is "Initial for QLiverArtery";
+  Compartment_17 is "Initial for IntestineVascular";
+  Compartment_16 is "Initial for KidneyTissue";
+  Compartment_19 is "Initial for KidneyTubular";
+  ModelValue_35 is "Initial for QStomach";
+  ModelValue_36 is "Initial for QPortalVein";
+  ModelValue_37 is "Initial for QIntestineVascular";
+  mArterialPlasma__for_kidney is "mArterialPlasma (for kidney)";
+  _03_5__IntestineVascular____PortalVein is "03.5. IntestineVascular -> PortalVein";
+  _06_3__Liver____PlasmaVenous is "06.3. Liver -> PlasmaVenous";
+  _13_2__KidneyPlasma____PlasmaVenous is "13.2. KidneyPlasma -> PlasmaVenous";
+  _09_2__Muscle____PlasmaVenous is "09.2. Muscle -> PlasmaVenous";
+  _12_2__Remainder____PlasmaVenous is "12.2. Remainder -> PlasmaVenous";
+  _02__IntestineLumen____Feces is "02. IntestineLumen -> Feces";
+  _13_1__PlasmaArterial____KidneyPlasma is "13.1. PlasmaArterial -> KidneyPlasma";
+  _09_1__PlasmaArterial____Muscle is "09.1. PlasmaArterial -> Muscle";
+  _12_1__PlasmaArterial____Remainder is "12.1. PlasmaArterial -> Remainder";
+  _13_3__KidneyPlasma____KidneyTubular is "13.3. KidneyPlasma -> KidneyTubular";
+  _06_2__PortalVein____Liver is "06.2. PortalVein -> Liver";
+  _05_1__PlasmaArterial____Stomach is "05.1. PlasmaArterial -> Stomach";
+  _05_2__Stomach____PortalVein is "05.2. Stomach -> PortalVein";
+  _04__PlasmaArterial____PortalVein is "04. PlasmaArterial -> PortalVein";
+  _03_1__PlasmaArterial____IntestineVascular is "03.1. PlasmaArterial -> IntestineVascular";
+  _06_1__PlasmaArterial____Liver is "06.1. PlasmaArterial -> Liver";
+  _03_2__IntestineLumen____IntestineEnterocytes__PMAT_OCT3 is "03.2. IntestineLumen -> IntestineEnterocytes (PMAT OCT3)";
+  _03_4__IntestineLumen____IntestineVascular__Saturable is "03.4. IntestineLumen -> IntestineVascular (Saturable)";
+  _03_3__IntestineEnterocytes____IntestineVascular__OCT1 is "03.3. IntestineEnterocytes -> IntestineVascular (OCT1)";
+  _13_4__KidneyPlasma____KidneyTissue is "13.4. KidneyPlasma -> KidneyTissue";
+  _13_5__KidneyTissue____KidneyTubular is "13.5. KidneyTissue -> KidneyTubular";
+  _01__StomachLumen_____IntestineLumen is "01. StomachLumen  -> IntestineLumen";
+  _07_2__Lung____PlasmaArterial is "07.2. Lung -> PlasmaArterial";
+  _07_1__PlasmaVenous____Lung is "07.1. PlasmaVenous -> Lung";
+  _08_2__Brain____PlasmaVenous is "08.2. Brain -> PlasmaVenous";
+  _08_1__PlasmaArterial____Brain is "08.1. PlasmaArterial -> Brain";
+  _11_2__Heart____PlasmaVenous is "11.2. Heart -> PlasmaVenous";
+  _11_1__PlasmaArterial____Heart is "11.1. PlasmaArterial -> Heart";
+  _10_2__Adipose____PlasmaVenous is "10.2. Adipose -> PlasmaVenous";
+  _10_1__PlasmaArterial____Adipose is "10.1. PlasmaArterial -> Adipose";
+  _13_6__KidneyTubular____UrineExternal is "13.6. KidneyTubular -> UrineExternal";
+  _03_6__IntestineLumen____IntestineEnterocytes__Diffusion is "03.6. IntestineLumen -> IntestineEnterocytes (Diffusion)";
+  _03_7__IntestineLumen____IntestineVascular__Diffusion is "03.7. IntestineLumen -> IntestineVascular (Diffusion)";
+
+  // CV terms:
+  IntestineLumen identity "http://identifiers.org/uberon/UBERON:0018543"
+  Liver identity "http://identifiers.org/uberon/UBERON:0002107"
+  KidneyPlasma identity "http://identifiers.org/ncit/C13356"
+  KidneyPlasma parthood "http://identifiers.org/uberon/UBERON:0002113"
+  Remainder identity "http://identifiers.org/ncit/C37895"
+  PlasmaVenous identity "http://identifiers.org/uberon/UBERON:0004582"
+  Urine identity "http://identifiers.org/uberon/UBERON:0001088"
+  Feces identity "http://identifiers.org/uberon/UBERON:0001245"
+  Heart identity "http://identifiers.org/uberon/UBERON:0000948"
+  Muscle identity "http://identifiers.org/uberon/UBERON:0001630"
+  Brain identity "http://identifiers.org/uberon/UBERON:0000955"
+  Adipose identity "http://identifiers.org/uberon/UBERON:0001013"
+  PlasmaArterial identity "http://identifiers.org/uberon/UBERON:0004572"
+  Lung identity "http://identifiers.org/uberon/UBERON:0002048"
+  PortalVein identity "http://identifiers.org/uberon/UBERON:0002017"
+  Stomach identity "http://identifiers.org/uberon/UBERON:0000945"
+  IntestineEnterocytes identity "http://identifiers.org/bto/BTO:0000398"
+  IntestineEnterocytes parthood "http://identifiers.org/bto/BTO:0000648"
+  KidneyTissue identity "http://identifiers.org/ncit/C12801"
+  KidneyTissue parthood "http://identifiers.org/uberon/UBERON:0002113"
+  IntestineVascular identity "http://identifiers.org/ncit/C13311"
+  IntestineVascular homolog "http://identifiers.org/bto/BTO:0000648"
+  StomachLumen identity "http://identifiers.org/uberon/UBERON:0013525"
+  KidneyTubular identity "http://identifiers.org/uberon/UBERON:0001231"
+  mLiver identity "http://identifiers.org/uberon/UBERON:0002107"
+  mKidneyPlasma identity "http://identifiers.org/ncit/C13356"
+  mKidneyPlasma parthood "http://identifiers.org/uberon/UBERON:0002113"
+  mRemainder identity "http://identifiers.org/ncit/C37895"
+  mPlasmaVenous identity "http://identifiers.org/uberon/UBERON:0004582"
+  mHeart identity "http://identifiers.org/uberon/UBERON:0000948"
+  mMuscle identity "http://identifiers.org/uberon/UBERON:0001630"
+  mAdipose identity "http://identifiers.org/uberon/UBERON:0001013"
+  mBrain identity "http://identifiers.org/uberon/UBERON:0000955"
+  mFeces identity "http://identifiers.org/uberon/UBERON:0001245"
+  mUrine identity "http://identifiers.org/uberon/UBERON:0001088"
+  mIntestineLumen identity "http://identifiers.org/uberon/UBERON:0018543"
+  mPlasmaArterial identity "http://identifiers.org/uberon/UBERON:0004572"
+  mLung identity "http://identifiers.org/uberon/UBERON:0002048"
+  mPortalVein identity "http://identifiers.org/uberon/UBERON:0002017"
+  mStomach identity "http://identifiers.org/uberon/UBERON:0000945"
+  mIntestineEnterocytes identity "http://identifiers.org/bto/BTO:0000398"
+  mIntestineEnterocytes parthood "http://identifiers.org/bto/BTO:0000648"
+  mKidneyTissue identity "http://identifiers.org/ncit/C12801"
+  mKidneyTissue parthood "http://identifiers.org/uberon/UBERON:0002113"
+  mIntestineVascular identity "http://identifiers.org/ncit/C13311"
+  mIntestineVascular parthood "http://identifiers.org/bto/BTO:0000648"
+  mStomachLumen identity "http://identifiers.org/uberon/UBERON:0013525"
+  mKidneyTubular identity "http://identifiers.org/uberon/UBERON:0001231"
+  _03_5__IntestineVascular____PortalVein biological_system "http://identifiers.org/go/GO:0015893"
+  _06_3__Liver____PlasmaVenous biological_system "http://identifiers.org/go/GO:0015893"
+  _13_2__KidneyPlasma____PlasmaVenous biological_system "http://identifiers.org/go/GO:0015893"
+  _09_2__Muscle____PlasmaVenous biological_system "http://identifiers.org/go/GO:0015893"
+  _12_2__Remainder____PlasmaVenous biological_system "http://identifiers.org/go/GO:0015893"
+  _02__IntestineLumen____Feces homolog "http://identifiers.org/go/GO:0015893"
+  _13_1__PlasmaArterial____KidneyPlasma biological_system "http://identifiers.org/go/GO:0015893"
+  _09_1__PlasmaArterial____Muscle biological_system "http://identifiers.org/go/GO:0015893"
+  _12_1__PlasmaArterial____Remainder biological_system "http://identifiers.org/go/GO:0015893"
+  _13_3__KidneyPlasma____KidneyTubular biological_system "http://identifiers.org/go/GO:0015893"
+  _06_2__PortalVein____Liver propertyBearer "http://identifiers.org/go/GO:0015893"
+  _05_1__PlasmaArterial____Stomach biological_system "http://identifiers.org/go/GO:0015893"
+  _05_2__Stomach____PortalVein biological_system "http://identifiers.org/go/GO:0015893"
+  _04__PlasmaArterial____PortalVein biological_system "http://identifiers.org/go/GO:0015893"
+  _03_1__PlasmaArterial____IntestineVascular biological_system "http://identifiers.org/go/GO:0015893"
+  _06_1__PlasmaArterial____Liver propertyBearer "http://identifiers.org/go/GO:0015893"
+  _03_2__IntestineLumen____IntestineEnterocytes__PMAT_OCT3 biological_system "http://identifiers.org/go/GO:0015893"
+  _03_4__IntestineLumen____IntestineVascular__Saturable biological_system "http://identifiers.org/go/GO:0015893"
+  _03_3__IntestineEnterocytes____IntestineVascular__OCT1 biological_system "http://identifiers.org/go/GO:0015893"
+  _13_4__KidneyPlasma____KidneyTissue biological_system "http://identifiers.org/go/GO:0015893"
+  _13_5__KidneyTissue____KidneyTubular biological_system "http://identifiers.org/go/GO:0015893"
+  _01__StomachLumen_____IntestineLumen biological_system "http://identifiers.org/go/GO:0015893"
+  _07_2__Lung____PlasmaArterial biological_system "http://identifiers.org/go/GO:0015893"
+  _07_1__PlasmaVenous____Lung biological_system "http://identifiers.org/go/GO:0015893"
+  _08_2__Brain____PlasmaVenous biological_system "http://identifiers.org/go/GO:0015893"
+  _08_1__PlasmaArterial____Brain biological_system "http://identifiers.org/go/GO:0015893"
+  _11_2__Heart____PlasmaVenous biological_system "http://identifiers.org/go/GO:0015893"
+  _11_1__PlasmaArterial____Heart biological_system "http://identifiers.org/go/GO:0015893"
+  _10_2__Adipose____PlasmaVenous biological_system "http://identifiers.org/go/GO:0015893"
+  _10_1__PlasmaArterial____Adipose biological_system "http://identifiers.org/go/GO:0015893"
+  _13_6__KidneyTubular____UrineExternal biological_system "http://identifiers.org/go/GO:0015893"
+  _03_6__IntestineLumen____IntestineEnterocytes__Diffusion class "http://identifiers.org/go/GO:0015893",
+                                                                 "http://identifiers.org/ncit/C82333"
+  _03_6__IntestineLumen____IntestineEnterocytes__Diffusion biological_system "http://identifiers.org/go/GO:0015893"
+  _03_7__IntestineLumen____IntestineVascular__Diffusion class "http://identifiers.org/go/GO:0015893",
+                                                              "http://identifiers.org/ncit/C82333"
+  _03_7__IntestineLumen____IntestineVascular__Diffusion propertyBearer "http://identifiers.org/go/GO:0015893"
+
+  model publication "http://identifiers.org/pubmed/33826656"
+  model model_source "http://identifiers.org/biomodels.db/MODEL2103020002",
+                     "http://identifiers.org/biomodels.db/BIOMD0000001039"
+  model encoder "http://identifiers.org/biomodels.db/MODEL2103020002"
+  model property "http://identifiers.org/mamo/MAMO_0000046"
+  model property "http://identifiers.org/mamo/MAMO_0000203"
+  model container "http://identifiers.org/fma/FMA:7149"
+  model taxon "http://identifiers.org/taxonomy/10095"
+  model property "http://identifiers.org/chebi/CHEBI:6801",
+                 "http://identifiers.org/ncit/C38276",
+                 "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2017-05-26T09:17:54Z"
+  model modified "2017-05-26T09:17:54Z"
+  model creator1.givenName "Egils"
+  model creator1.familyName "Stalidzans"
+  model creator1.organization "Latvian Biomedical Research and Study Centre, University of Latvia"
+  model creator1.email "egils.stalidzans@gmail.com"
+  model creator2.givenName "Krishna"
+  model creator2.familyName "Tiwari"
+  model creator2.organization "EMBL-EBI"
+  model creator2.email "ktiwari@ebi.ac.uk"
+  model creator3.givenName "Janis"
+  model creator3.familyName "Kurlovics"
+  model creator3.organization "University of Latvia"
+  model creator3.email "j.kurlovics@gmail.com"
+  model creator4.givenName "Darta Maija"
+  model creator4.familyName "Zake"
+  model creator4.organization "Latvian Biomedical Research and Study Centre, University of Latvia"
+  model creator4.email "darta.zake@gmail.com"
+
+  // Notes:
+  model notes ```
+This model is supplementary material of publication "Physiologically based metformin
+pharmacokinetics model of mice and scale-up to humans for the estimation of concentrations
+in various tissues"by Darta Maija Zake, Linda Zaharenko, JanisKurlovics, Vitalijs
+Komasilovs, Egils Stalidzans and Janis Klovins.This is a whole-body model representing
+the pharmacokinetics of metformin in the mouse body. The model is in the form of
+ordinary differential equations and describes metformin concentration in 20 compartments.
+The model consists of 20 compartments (“Compartments” in COPASI model) describing
+various tissues or tissue sub-compartments and body fluids of metformin action (venous
+and arterial plasma, intestine, kidney, heart, fat, muscle, brain, lungs, stomach,
+liver, portal vein, remainder urine and feces). Body weight and the weight of all
+compartments is expressed as a volume in mL and for the calculations it is assumed
+that 1mL = 1g. The volumes of most compartments are calculated as a fraction of the
+body weight/volume, and the fractions are determined from literature data, the volumes
+of the stomach lumen and intestine lumen are fixed and do not change depending on
+the body weight. Similarly, the volume of external urine and feces is set to 1mL,
+but those are “volumeless” compartments as they are only necessary for the calculation
+of metformin amount, not concentration. The model consists of 20 species (“Species”
+in COPASI model) that correspond to the metformin concentrations in the 20 compartments.
+The initial concentrations for all the species are 0 nmol/mL as metformin is not
+produced in the body and can only be detected after dose administration. The model
+consists of 33 reactions – they describe the transport processes of metformin in
+the body. The reactions include local parameters that are involved only in that particular
+reaction and global parameters – parameters that are used in multiple reactions
+or are calculated depending on another parameter e.g. scale-up coefficients. The
+model consists of 52 global quantities – parameters involved in multiple reactions
+or necessary for another parameter calculation:1.Parameters describing metformin
+dose – either in peroral (Metformin Dose in Lumen in mg) or intravenous (Metformin
+Dose in Plasma in mg). 2.Parameter describing mice physiology – body weight (in
+mL), cardiac output, blood flow to different compartments described as Q”compartment_name”
+(for example Qliver describes blood flow to the liver compartment). Qgfr refers to
+the glomerular filtration rate. 3.Tissue:plasma partition coefficients (Ktp) that
+are necessary for the scale-up to humans.4.Parameters involved in the calculation
+of metformin amount in mg, these parameters are named mg”Compartment_name” (for
+example mgLiver describes the metformin amount in mg in the liver tissues). The time
+points of dose release are defined as “events” in COPASI and can be changed as
+necessary. Time course simulations can be accessed through the section “Time Course”
+in this section the time duration and intervals can be changed. When time-course
+simulations are run three plots are created – Metformin amount in the 20 compartments,
+metformin concentrations in the compartments and reaction fluxes of all the reactions
+(see “Output Specifications” -> “Plots” to activate or deactivate plots).
+Also plotting the species result after 0.5 hours will reproduce the literature results.
+```
+  Metformin_Dose_in_Lumen_in_mg notes "Metformīna molmasa 129,16 g/mol"
+end
+
+Zake2021___PBPK_model_of_metformin_in_mice__single_dose_intavenous is "Zake2021 - PBPK model of metformin in mice: single dose intavenous"

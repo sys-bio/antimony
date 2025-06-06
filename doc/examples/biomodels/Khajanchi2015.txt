@@ -1,0 +1,87 @@
+// Created by libAntimony v3.0.0
+model *New_Model()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species E in compartment_, T in compartment_;
+
+  // Reactions:
+  Fomation_of_activated_immune_effector_cell:  => E; compartment_*(s*e1 + p*E*T/(g + T));
+  Removal_of_activated_tumor_immune_cell: E => ; compartment_*(m*E*T + d*E);
+  Formation_of_tumor_cell:  => T; compartment_*(a*T*(1 - b*T));
+  Removal_of_tumor_cell: T => ; compartment_*(n*E*T + e2*T);
+
+  // Species initializations:
+  E = 1708110;
+  T = 8286380;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  s = 13000;
+  p = 0.1245;
+  g = 20190000;
+  m = 3.422e-10;
+  d = 0.0412;
+  a = 0.18;
+  b = 2e-09;
+  n = 1.101e-07;
+  e1 = 1;
+  e2 = 0;
+
+  // Other declarations:
+  const compartment_, s, p, g, m, d, a, b, n, e1, e2;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  Fomation_of_activated_immune_effector_cell is "Fomation of activated immune effector cell";
+  Removal_of_activated_tumor_immune_cell is "Removal of activated tumor immune cell";
+  Formation_of_tumor_cell is "Formation of tumor cell";
+  Removal_of_tumor_cell is "Removal of tumor cell";
+
+  // CV terms:
+  E property "http://identifiers.org/ncit/C28241"
+  T property "http://identifiers.org/ncit/C12922"
+  Fomation_of_activated_immune_effector_cell property "http://identifiers.org/ncit/C25513"
+  Removal_of_activated_tumor_immune_cell property "http://identifiers.org/ncit/C64914"
+  Formation_of_tumor_cell property "http://identifiers.org/ncit/C25513"
+  Removal_of_tumor_cell property "http://identifiers.org/ncit/C64914"
+
+  model publication "http://identifiers.org/doi/10.1016/j.amc.2015.09.012"
+  model origin "http://identifiers.org/doi/10.1080/10273660108833067",
+               "http://identifiers.org/doi/10.3934/mbe.2005.2.499"
+  model model_source "http://identifiers.org/biomodels.db/MODEL1912170001",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000897"
+  model property "http://identifiers.org/mamo/MAMO_0000046"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model created "2019-12-17T09:15:17Z"
+  model modified "2019-12-17T09:15:17Z"
+  model creator1.givenName "Mohammad Umer"
+  model creator1.familyName "Sharif Shohan"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "msharifshohan@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+The combined effects of optimal control in cancer remissionSubhasKhajanchiDibakarGhoshAbstractWe 
+investigate a mathematical model depicting the nonlinear dynamics of immunogenic 
+tumors as envisioned by Kuznetsov et al. [1]. To understand the dynamics under what 
+circumstances the cancer cells can be eliminated, we implement the theory of optimal 
+control. We design two types of external treatment strategies, one is Adoptive Cellular 
+Immunotherapy and another is interleukin-2. Our aim is to establish the treatment 
+regimens that maximize the effector cell count and minimize the tumor cell burden 
+and the deleterious effects of the total amount of drugs. We derive the existence 
+of an optimal control by using the boundedness of solutions. We characterize the 
+optimality system, in which the state system is coupled with co-states. The uniqueness 
+of an optimal control of our problem is also analyzed. Finally, we demonstrate the 
+numerical illustrations that the optimal regimens reduce the tumor burden under different 
+scenarios.
+```
+end
+
+New_Model is "Khajanchi2015 - The combined effects of optimal control in cancer remission"

@@ -1,0 +1,96 @@
+// Created by libAntimony v3.0.0
+model *Grigolon2018_Responses_to_auxin_signals()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species auxin in compartment_, IAA in compartment_, ARF in compartment_;
+
+  // Reactions:
+  reaction_for_auxin_induction:  => auxin; compartment_*(Sauxin - auxin/Tauxin);
+  reaction_for_synthesis_of_IAA_along_with_natural_decay_of_IAA:  => IAA; compartment_*(SIAA - IAA/TIAA);
+  reaction_for_synthesis_of_ARF_along_with_natural_decay_of_ARF:  => ARF; compartment_*(SARF - ARF/TARF);
+  reaction_for__natural_decay_of_ARF: ARF => ; compartment_*(beta*IAA*ARF);
+  reaction_natural_decay_of_IAA: IAA => ; compartment_*(alpha_no_reg*auxin*IAA);
+
+  // Species initializations:
+  auxin = 0.2;
+  IAA = 0.0333299969972976;
+  ARF = 49.9900030001007;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  Tauxin = 10;
+  TIAA = 333;
+  TARF = 2;
+  alpha_no_reg = 0.05;
+  alpha_reg = 150;
+  SIAA = 1;
+  SARF = 25;
+  beta = 0.003;
+  Sauxin = 0.02;
+
+  // Other declarations:
+  const compartment_, Tauxin, TIAA, TARF, alpha_no_reg, alpha_reg, SIAA, SARF;
+  const beta, Sauxin;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  reaction_for_auxin_induction is "reaction for auxin induction";
+  reaction_for_synthesis_of_IAA_along_with_natural_decay_of_IAA is "reaction for synthesis of IAA";
+  reaction_for_synthesis_of_ARF_along_with_natural_decay_of_ARF is "reaction for synthesis of ARF";
+  reaction_for__natural_decay_of_ARF is "reaction for  natural decay of ARF";
+  reaction_natural_decay_of_IAA is "reaction natural decay of IAA";
+
+  // CV terms:
+  auxin property "http://identifiers.org/efo/0005900"
+  IAA property "http://identifiers.org/chebi/CHEBI:16411"
+  ARF property "http://identifiers.org/pr/PR:000028506"
+  reaction_for_auxin_induction property "http://identifiers.org/eo/EO:0007074"
+  reaction_for_synthesis_of_IAA_along_with_natural_decay_of_IAA property "http://identifiers.org/ncit/C75947"
+  reaction_for_synthesis_of_IAA_along_with_natural_decay_of_IAA property "http://identifiers.org/ncit/C61367"
+  reaction_for_synthesis_of_ARF_along_with_natural_decay_of_ARF property "http://identifiers.org/ncit/C61367"
+  reaction_for__natural_decay_of_ARF property "http://identifiers.org/ncit/C75947"
+  reaction_natural_decay_of_IAA property "http://identifiers.org/ncit/C75947"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1706070000",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000927"
+  model container "http://identifiers.org/bto/BTO:0001481"
+  model taxon "http://identifiers.org/taxonomy/47299"
+  model description "http://identifiers.org/pubmed/29410878"
+  model property "http://identifiers.org/chebi/CHEBI:26158",
+                 "http://identifiers.org/omit/0011910",
+                 "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2020-03-05T13:36:44Z"
+  model modified "2020-03-06T09:34:58Z"
+  model creator1.givenName "Chloe"
+  model creator1.familyName "key"
+  model creator1.organization "University of Nottingham"
+  model creator1.email "chloekey@live.co.uk"
+  model creator2.givenName "Ahmad"
+  model creator2.familyName "Zyoud"
+  model creator2.organization "EMBL-EBI"
+  model creator2.email "ahmad.azd@hotmail.com"
+
+  // Notes:
+  model notes ```
+Plants depend on the signalling of the phytohormone auxin for their development 
+and for responding to environmental perturbations. The associated biomolecular signalling 
+network involves a negative feedback on Aux/IAA proteins which mediate the influence 
+of auxin (the signal) on the auxin response factor (ARF) transcription factors (the 
+drivers of the response). To probe the role of this feedback, we consider alternative 
+in silico signalling networks implementing different operating principles. By a comparative 
+analysis, we find that the presence of a negative feedback allows the system to have 
+a far larger sensitivity in its dynamical response to auxin and that this sensitivity 
+does not prevent the system from being highly resilient. Given this insight, we build 
+a new biomolecular signalling model for quantitatively describing such Aux/IAA and 
+ARF responses.
+```
+end
+
+Grigolon2018_Responses_to_auxin_signals is "Grigolon2018-Responses to auxin signals"

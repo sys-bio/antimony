@@ -1,0 +1,112 @@
+// Created by libAntimony v3.0.0
+model *Valero2006_Adenine_TernaryCycle()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species ATP in compartment_, AMP in compartment_, ADP in compartment_, Pyr in compartment_;
+  species NADH in compartment_, $Lac in compartment_;
+
+  // Reactions:
+  v1: ATP -> AMP; Vmapp1*ATP/(Kmapp1 + ATP);
+  v2: ATP + AMP -> 2 ADP; Vm2*ATP*AMP/(K + Km2ATP*AMP + Km2AMP*ATP + ATP*AMP);
+  v3: ADP -> ATP + Pyr; Vmapp3*ADP/(Kmapp3 + ADP);
+  v4: Pyr + NADH -> $Lac; k4*Pyr;
+
+  // Species initializations:
+  ATP = 16.3;
+  AMP = 0;
+  ADP = 0;
+  Pyr = 0;
+  NADH = 256;
+  Lac = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  Vmapp1 = 2.3;
+  Kmapp1 = 700;
+  Vm2 = 170;
+  Km2ATP = 25;
+  Km2AMP = 110;
+  K = 71000;
+  Vmapp3 = 65;
+  Kmapp3 = 260;
+  k4 = 5;
+
+  // Other declarations:
+  const compartment_, Vmapp1, Kmapp1, Vm2, Km2ATP, Km2AMP, K, Vmapp3, Kmapp3;
+  const k4;
+
+  // Display Names:
+  compartment_ is "compartment";
+
+  // SBO terms:
+  ATP.sboTerm = 247
+  AMP.sboTerm = 247
+  ADP.sboTerm = 247
+  Pyr.sboTerm = 14
+  NADH.sboTerm = 247
+  Lac.sboTerm = 14
+
+  // CV terms:
+  ATP biological_system "http://identifiers.org/chebi/CHEBI:15422",
+                        "http://identifiers.org/kegg.compound/C00002"
+  AMP biological_system "http://identifiers.org/chebi/CHEBI:16027",
+                        "http://identifiers.org/kegg.compound/C00020"
+  ADP biological_system "http://identifiers.org/chebi/CHEBI:16761",
+                        "http://identifiers.org/kegg.compound/C00008"
+  Pyr biological_system "http://identifiers.org/interpro/IPR001697"
+  Pyr homolog "http://identifiers.org/uniprot/O62619"
+  NADH biological_system "http://identifiers.org/chebi/CHEBI:16908",
+                         "http://identifiers.org/kegg.compound/C00004"
+  Lac biological_system "http://identifiers.org/uniprot/Q2KJG0",
+                        "http://identifiers.org/interpro/IPR011304"
+  v1 biological_system "http://identifiers.org/kegg.reaction/R00086"
+  v2 biological_system "http://identifiers.org/kegg.reaction/R00127"
+  v3 biological_system "http://identifiers.org/kegg.reaction/R00200"
+  v4 biological_system "http://identifiers.org/kegg.reaction/R00703"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL5952687775"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000231"
+  model publication "http://identifiers.org/pubmed/16884499"
+  model taxon "http://identifiers.org/taxonomy/9913"
+  model biological_system "http://identifiers.org/reactome/REACT_2124"
+  model biological_system "http://identifiers.org/go/GO:0046085"
+  model created "2009-08-19T16:30:30Z"
+  model modified "2012-03-09T11:40:35Z"
+  model creator1.givenName "Vijayalakshmi"
+  model creator1.familyName "Chelliah"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "viji@ebi.ac.uk"
+  model creator2.givenName "Edelmira"
+  model creator2.familyName "Valero"
+  model creator2.organization "University of Castilla-La Mancha, 02071 Albaceta, Spain."
+  model creator2.email "Edelmira.Valero@uclm.es"
+
+  // Notes:
+  model notes ```
+This a model from the article: 
+**A kinetic study of a ternary cycle between adenine nucleotides.** 
+Valero E, Varón R, García-Carmona F *FEBS J.* [2006 Aug;273(15):3598-613
+[16884499](http://www.ncbi.nlm.nih.gov/pubmed/16884499) , 
+**Abstract:** 
+In the present paper, a kinetic study is made of the behavior of a moiety-conserved
+ternary cycle between the adenine nucleotides. The system contains the enzymes S-acetyl
+coenzyme A synthetase, adenylate kinase and pyruvate kinase, and converts ATP into
+AMP, then into ADP and finally back to ATP. L-Lactate dehydrogenase is added to the
+system to enable continuous monitoring of the progress of the reaction. The cycle
+cannot work when the only recycling substrate in the reaction medium is AMP. A mathematical
+model is proposed whose kinetic behavior has been analyzed both numerically by integration
+of the nonlinear differential equations describing the kinetics of the reactions
+involved, and analytically under steady-state conditions, with good agreement with
+the experimental results being obtained. The data obtained showed that there is a
+threshold value of the S-acetyl coenzyme A synthetase/adenylate kinase ratio, above
+which the cycle stops because all the recycling substrate has been accumulated as
+AMP, never reaching the steady state. In addition, the concept of adenylate energy
+charge has been applied to the system, obtaining the enabled values of the rate constants
+for a fixed adenylate energy charge value and vice versa.
+```
+end
+
+Valero2006_Adenine_TernaryCycle is "Valero2006_Adenine_TernaryCycle"

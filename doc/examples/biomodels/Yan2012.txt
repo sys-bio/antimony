@@ -1,0 +1,138 @@
+// Created by libAntimony v3.0.0
+model *Yan2014___Rb_E2F_pathway_dynamics_with_miR449()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species E2F in compartment_, Myc in compartment_, CycD in compartment_;
+  species RE in compartment_, CycE in compartment_, RB in compartment_, miR449 in compartment_;
+  species $S in compartment_, PRB in compartment_;
+
+  // Reactions:
+  reaction_:  => E2F; compartment_*(ksE1*(Myc/(JM + Myc))*(E2F/(JE + E2F)));
+  reaction_1:  => E2F; compartment_*(ksE2*Myc/(JM + Myc));
+  reaction_2: RE => E2F + PRB; compartment_*(kP1*CycD*(RE/(JCD + RE)));
+  reaction_3: RE => E2F + PRB; compartment_*(kP2*CycE*(RE/(JCE + RE)));
+  reaction_4: E2F => ; compartment_*kdE*E2F;
+  reaction_5: E2F + RB => RE; compartment_*kRE*E2F*RB;
+  reaction_6:  => miR449; compartment_*(ksmiR*E2F/(JE + E2F));
+  reaction_7: miR449 => ; compartment_*kdmiR*miR449;
+  reaction_8: miR449 + Myc => ; compartment_*(kdM2*miR449*(Myc/(JM + Myc)));
+  reaction_9: miR449 + CycD => ; compartment_*(kdCD2*miR449*(CycD/(JCD + CycD)));
+  reaction_10: miR449 + CycE => ; compartment_*(kdCE2*miR449*(CycE/(JCE + CycE)));
+  reaction_11:  => Myc; compartment_*(ksM*S/(JS + S));
+  reaction_12: Myc => ; compartment_*kdM1*Myc;
+  reaction_13:  => CycD; compartment_*(ksCD1*S/(JS + S));
+  reaction_14:  => CycD; compartment_*(ksCD2*Myc/(JM + Myc));
+  reaction_15: CycD => ; compartment_*kdCD1*CycD;
+  reaction_16:  => CycE; compartment_*(ksCE*E2F/(JE + E2F));
+  reaction_17: CycE => ; compartment_*kdCE1*CycE;
+  reaction_18:  => RB; compartment_*ksR;
+  reaction_19: PRB => RB; compartment_*(kP*PRB/(JP + PRB));
+  reaction_20: RB => ; compartment_*kdR*RB;
+  reaction_21: RB => PRB; compartment_*(kP1*CycD*(RB/(JCD + RB)));
+  reaction_22: RB => PRB; compartment_*(kP2*CycE*(RB/(JCE + RB)));
+  reaction_23: PRB => ; compartment_*kdP*PRB;
+  reaction_24: RE => ; compartment_*kdRE*RE;
+
+  // Species initializations:
+  E2F = 1.2;
+  Myc = 0;
+  CycD = 0;
+  RE = 0;
+  CycE = 0;
+  RB = 0.55;
+  miR449 = 0;
+  S = 3;
+  PRB = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  ksE1 = 0.4;
+  JM = 0.15;
+  JE = 0.15;
+  ksE2 = 0.003;
+  kP1 = 18;
+  JCD = 0.92;
+  kP2 = 18;
+  JCE = 0.92;
+  kdE = 0.25;
+  kRE = 180;
+  ksmiR = 1.4;
+  kdmiR = 0.02;
+  ksM = 1;
+  JS = 0.5;
+  kdM1 = 0.7;
+  kdM2 = 0.6;
+  ksCD1 = 0.45;
+  ksCD2 = 0.03;
+  kdCD1 = 1.5;
+  kdCD2 = 1;
+  ksCE = 0.35;
+  kdCE1 = 1.5;
+  kdCE2 = 0.7;
+  ksR = 0.18;
+  kP = 3.6;
+  JP = 0.01;
+  kdR = 0.06;
+  kdP = 0.06;
+  kdRE = 0.03;
+
+  // Other declarations:
+  const compartment_, ksE1, JM, JE, ksE2, kP1, JCD, kP2, JCE, kdE, kRE, ksmiR;
+  const kdmiR, ksM, JS, kdM1, kdM2, ksCD1, ksCD2, kdCD1, kdCD2, ksCE, kdCE1;
+  const kdCE2, ksR, kP, JP, kdR, kdP, kdRE;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 3600 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "cell";
+  reaction_ is "reaction";
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/ncit/C12958"
+  E2F biological_system "http://identifiers.org/uniprot/Q01094"
+  Myc biological_system "http://identifiers.org/uniprot/P01106"
+  CycD part "http://identifiers.org/uniprot/Q00534"
+  CycD part "http://identifiers.org/uniprot/P11802"
+  CycD biological_system "http://identifiers.org/uniprot/P30279"
+  CycD biological_system "http://identifiers.org/uniprot/P30281"
+  CycD biological_system "http://identifiers.org/uniprot/P24385"
+  RE part "http://identifiers.org/uniprot/Q01094"
+  RE part "http://identifiers.org/uniprot/P06400"
+  CycE part "http://identifiers.org/uniprot/P24864"
+  CycE part "http://identifiers.org/uniprot/P24941"
+  RB biological_system "http://identifiers.org/uniprot/P06400"
+  miR449 biological_system "http://identifiers.org/mirbase.mature/MIMAT0001541"
+  S property "http://identifiers.org/ncit/C20424"
+  PRB biological_system "http://identifiers.org/uniprot/P06400"
+  PRB property "http://identifiers.org/ncit/C1897"
+
+  model origin "http://identifiers.org/go/GO:0007049",
+               "http://identifiers.org/reactome/R-HSA-69206",
+               "http://identifiers.org/mamo/MAMO_0000046",
+               "http://identifiers.org/taxonomy/40674",
+               "http://identifiers.org/biomodels.db/BIOMD0000000318"
+  model model_source "http://identifiers.org/biomodels.db/MODEL1811080001",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000720"
+  model part "http://identifiers.org/go/GO:0007049"
+  model parthood "http://identifiers.org/reactome/R-HSA-69206"
+  model property "http://identifiers.org/mamo/MAMO_0000046"
+  model taxon "http://identifiers.org/taxonomy/40674"
+  model description "http://identifiers.org/biomodels.db/BIOMD0000000318",
+                    "http://identifiers.org/doi/10.1371/journal.pone.0043908"
+  model description "http://identifiers.org/pubmed/23028477"
+  model created "2018-09-13T13:27:06Z"
+  model modified "2018-11-07T16:30:41Z"
+  model creator1.givenName "Ashley"
+  model creator1.familyName "Xavier"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "ashleythomasxavier@gmail.com"
+end
+
+Yan2014___Rb_E2F_pathway_dynamics_with_miR449 is "Yan2012 - Rb-E2F pathway dynamics with miR449"

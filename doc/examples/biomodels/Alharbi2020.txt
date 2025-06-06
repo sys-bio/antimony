@@ -1,0 +1,126 @@
+// Created by libAntimony v3.0.0
+model *Alharbi2020___An_ODE_based_model_of_the_dynamics_of_tumor_cell_progression_and_its_effects_on_normal_cell_growth_and_immune_system_functionality()
+
+  // Compartments and Species:
+  compartment Whole_organism;
+  species Normal_cells in Whole_organism, Tumor_cells in Whole_organism, Immune_cells in Whole_organism;
+
+  // Reactions:
+  Normal_cell_growth:  => Normal_cells; Whole_organism*(r*Normal_cells*(1 - beta_1*Normal_cells));
+  Normal_cell_death_inhibition: Normal_cells => ; Whole_organism*(eta*Normal_cells*Immune_cells + gamma_*Normal_cells*Tumor_cells);
+  Tumor_cell_growth:  => Tumor_cells; Whole_organism*(alpha_1*Tumor_cells*(1 - alpha_2*Tumor_cells) + beta_2*Normal_cells*Tumor_cells);
+  Tumor_cell_death_inhibition: Tumor_cells => ; Whole_organism*(alpha_3*Tumor_cells*Immune_cells);
+  Immune_cell_increase:  => Immune_cells; Whole_organism*(sigma + rho*Normal_cells*Immune_cells/(m + Normal_cells) + rho_1*Tumor_cells*Immune_cells/(m_1 + Tumor_cells));
+  Immune_cell_decrease: Immune_cells => ; Whole_organism*(delta*Immune_cells + mu*Normal_cells*Immune_cells + mu_1*Tumor_cells*Immune_cells);
+
+  // Species initializations:
+  Normal_cells = 1;
+  Tumor_cells = 1;
+  Immune_cells = 1.22;
+
+  // Compartment initializations:
+  Whole_organism = 1;
+
+  // Variable initializations:
+  r = 0.4312;
+  beta_1 = 2.99e-06;
+  eta = 0.1379;
+  gamma_ = 0.9314;
+  alpha_1 = 0.4426;
+  alpha_2 = 0.4;
+  beta_2 = 1.189;
+  alpha_3 = 0.1469;
+  sigma = 0.7;
+  delta = 0.57;
+  mu = 0.813;
+  rho = 0.271;
+  m = 0.813;
+  mu_1 = 0.3634;
+  rho_1 = 0.7829;
+  m_1 = 0.862;
+
+  // Other declarations:
+  const Whole_organism, r, beta_1, eta, gamma_, alpha_1, alpha_2, beta_2;
+  const alpha_3, sigma, delta, mu, rho, m, mu_1, rho_1, m_1;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = litre;
+  unit time_unit = 86400 second;
+  unit substance = mole;
+
+  // Display Names:
+  time_unit is "time";
+  gamma_ is "gamma";
+  Normal_cell_death_inhibition is "Normal_cell_death/inhibition";
+  Tumor_cell_death_inhibition is "Tumor_cell_death/inhibition";
+
+  // CV terms:
+  Whole_organism biological_system "http://identifiers.org/ncit/C13413"
+  Whole_organism property "http://identifiers.org/pato/PATO:0001993"
+  Normal_cells biological_system "http://identifiers.org/cl/CL:0000000"
+  Normal_cells property "http://identifiers.org/hp/HP:0032322"
+  Tumor_cells biological_system "http://identifiers.org/cl/CL:0001063"
+  Immune_cells biological_system "http://identifiers.org/ncit/C132890"
+  Normal_cell_growth biological_system "http://identifiers.org/go/GO:0008283"
+  Normal_cell_growth biological_system "http://identifiers.org/sbo/SBO:0000393"
+  Normal_cell_death_inhibition biological_system "http://identifiers.org/go/GO:0008219"
+  Normal_cell_death_inhibition biological_system "http://identifiers.org/sbo/SBO:0000394"
+  Normal_cell_death_inhibition biological_system "http://identifiers.org/sbo/SBO:0000169"
+  Tumor_cell_growth biological_system "http://identifiers.org/go/GO:0008283"
+  Tumor_cell_growth biological_system "http://identifiers.org/sbo/SBO:0000393"
+  Tumor_cell_death_inhibition biological_system "http://identifiers.org/go/GO:0008219"
+  Tumor_cell_death_inhibition biological_system "http://identifiers.org/sbo/SBO:0000169"
+  Tumor_cell_death_inhibition biological_system "http://identifiers.org/sbo/SBO:0000394"
+  Tumor_cell_death_inhibition biological_system "http://identifiers.org/go/GO:0001906"
+  Immune_cell_increase biological_system "http://identifiers.org/sbo/SBO:0000393"
+  Immune_cell_increase biological_system "http://identifiers.org/sbo/SBO:0000170"
+  Immune_cell_increase biological_system "http://identifiers.org/go/GO:0008283"
+  Immune_cell_decrease biological_system "http://identifiers.org/go/GO:0008219"
+  Immune_cell_decrease biological_system "http://identifiers.org/sbo/SBO:0000169"
+  Immune_cell_decrease biological_system "http://identifiers.org/sbo/SBO:0000394"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL2107290002",
+                     "http://identifiers.org/biomodels.db/BIOMD0000001023"
+  model propertyBearer "http://identifiers.org/go/GO:0002418"
+  model propertyBearer "http://identifiers.org/ncit/C18670"
+  model propertyBearer "http://identifiers.org/doid/DOID:162"
+  model propertyBearer "http://identifiers.org/go/GO:0002376"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model description "http://identifiers.org/doi/10.3390/math8081285"
+  model property "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2021-07-28T12:54:19Z"
+  model modified "2021-07-28T12:54:19Z"
+  model creator1.givenName "Emilia"
+  model creator1.familyName "Chen"
+  model creator1.organization "University of Cambridge"
+  model creator1.email "eblc2@cam.ac.uk"
+
+  // Notes:
+  model notes ```
+This ordinary differential equation model of tumor cell growth, called the
+normal-tumor-immune-unhealthy diet model (NTIUNHDM), is described by the publication:Alharbi, 
+S.A.; Rambely, A.S."A New ODE-Based Model for Tumor Cells and Immune System 
+Competition"Mathematics 2020, 8, 1285.doi:10.3390/math8081285Abstract:Changes 
+in diet are heavily associated with high mortality rates in several types of cancer. 
+In this paper, a new mathematical model of tumor cells growth is established to dynamically 
+demonstrate the effects of abnormal cell progression on the cells affected by the 
+tumor in terms of the immune system’s functionality and normal cells’ dynamic 
+growth. This model is called the normal-tumor-immune-unhealthy diet model (NTIUNHDM) 
+and governed by a system of ordinary differential equations. In the NTIUNHDM, there 
+are three main populations normal cells, tumor cell and immune cells. The model is 
+discussed analytically and numerically by utilizing a fourth-order Runge–Kutta 
+method. The dynamic behavior of the NTIUNHDM is discussed by analyzing the stability 
+of the system at various equilibrium points and the Mathematica software is used 
+to simulate the model. From analysis and simulation of the NTIUNHDM, it can be deduced 
+that instability of the response stage, due to a weak immune system, is classified 
+as one of the main reasons for the coexistence of abnormal cells and normal cells. 
+Additionally, it is obvious that the NTIUNHDM has only one stable case when abnormal 
+cells begin progressing into early stages of tumor cells such that the immune cells 
+are generated once. Thus, early boosting of the immune system might contribute to 
+reducing the risk of cancer.
+```
+end
+
+Alharbi2020___An_ODE_based_model_of_the_dynamics_of_tumor_cell_progression_and_its_effects_on_normal_cell_growth_and_immune_system_functionality is "Alharbi2020 - An ODE-based model of the dynamics of tumor cell progression and its effects on normal cell growth and immune system functionality"

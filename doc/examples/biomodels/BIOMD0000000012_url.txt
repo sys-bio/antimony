@@ -1,0 +1,338 @@
+// Created by libAntimony v3.0.0
+model *BIOMD0000000012()
+
+  // Compartments and Species:
+  compartment cell;
+  substanceOnly species PX in cell, PY in cell, PZ in cell, X in cell, Y in cell;
+  substanceOnly species Z in cell;
+
+  // Assignment Rules:
+  beta := tau_mRNA/tau_prot;
+  alpha0 := a0_tr*eff*tau_prot/(ln(2)*KM);
+  a0_tr := ps_0*60;
+  alpha := a_tr*eff*tau_prot/(ln(2)*KM);
+  a_tr := (ps_a - ps_0)*60;
+  t_ave := tau_mRNA/ln(2);
+  kd_mRNA := ln(2)/tau_mRNA;
+  kd_prot := ln(2)/tau_prot;
+  k_tl := eff/t_ave;
+
+  // Reactions:
+  Reaction1: X => ; kd_mRNA*X;
+  Reaction2: Y => ; kd_mRNA*Y;
+  Reaction3: Z => ; kd_mRNA*Z;
+  Reaction4:  => PX; k_tl*X;
+  Reaction5:  => PY; k_tl*Y;
+  Reaction6:  => PZ; k_tl*Z;
+  Reaction7: PX => ; kd_prot*PX;
+  Reaction8: PY => ; kd_prot*PY;
+  Reaction9: PZ => ; kd_prot*PZ;
+  Reaction10:  => X; a0_tr + a_tr*KM^n/(KM^n + PZ^n);
+  Reaction11:  => Y; a0_tr + a_tr*KM^n/(KM^n + PX^n);
+  Reaction12:  => Z; a0_tr + a_tr*KM^n/(KM^n + PY^n);
+
+  // Species initializations:
+  PX = 0;
+  PY = 0;
+  PZ = 0;
+  X = 0;
+  Y = 20/cell;
+  Z = 0;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  tau_mRNA = 2;
+  tau_prot = 10;
+  eff = 20;
+  KM = 40;
+  n = 2;
+  ps_a = 0.5;
+  ps_0 = 0.0005;
+
+  // Other declarations:
+  var beta, alpha0, a0_tr, alpha, a_tr, t_ave, kd_mRNA, kd_prot, k_tl;
+  const cell, tau_mRNA, tau_prot, eff, KM, n, ps_a, ps_0;
+
+  // Unit definitions:
+  unit volume = 1e-15 litre;
+  unit substance = item;
+  unit time_unit = 60 second;
+
+  // Display Names:
+  volume is "cubic microns";
+  substance is "item";
+  time_unit is "minute";
+  PX is "LacI protein";
+  PY is "TetR protein";
+  PZ is "cI protein";
+  X is "LacI mRNA";
+  Y is "TetR mRNA";
+  Z is "cI mRNA";
+  tau_mRNA is "mRNA half life";
+  tau_prot is "protein half life";
+  eff is "translation efficiency";
+  t_ave is "average mRNA life time";
+  ps_a is "tps_active";
+  ps_0 is "tps_repr";
+  Reaction1 is "degradation of LacI transcripts";
+  Reaction2 is "degradation of TetR transcripts";
+  Reaction3 is "degradation of CI transcripts";
+  Reaction4 is "translation of LacI";
+  Reaction5 is "translation of TetR";
+  Reaction6 is "translation of CI";
+  Reaction7 is "degradation of LacI";
+  Reaction8 is "degradation of TetR";
+  Reaction9 is "degradation of CI";
+  Reaction10 is "transcription of LacI";
+  Reaction11 is "transcription of TetR";
+  Reaction12 is "transcription of CI";
+
+  // SBO terms:
+  cell.sboTerm = 290
+  PX.sboTerm = 252
+  PY.sboTerm = 252
+  PZ.sboTerm = 252
+  X.sboTerm = 250
+  Y.sboTerm = 250
+  Z.sboTerm = 250
+  tau_mRNA.sboTerm = 332
+  tau_prot.sboTerm = 332
+  alpha0.sboTerm = 485
+  a0_tr.sboTerm = 485
+  KM.sboTerm = 288
+  alpha.sboTerm = 186
+  a_tr.sboTerm = 186
+  n.sboTerm = 190
+  t_ave.sboTerm = 348
+  kd_mRNA.sboTerm = 356
+  kd_prot.sboTerm = 356
+  k_tl.sboTerm = 16
+  ps_a.sboTerm = 186
+  ps_0.sboTerm = 485
+  Reaction1.sboTerm = 179
+  Reaction2.sboTerm = 179
+  Reaction3.sboTerm = 179
+  Reaction4.sboTerm = 184
+  Reaction5.sboTerm = 184
+  Reaction6.sboTerm = 184
+  Reaction7.sboTerm = 179
+  Reaction8.sboTerm = 179
+  Reaction9.sboTerm = 179
+  Reaction10.sboTerm = 183
+  Reaction11.sboTerm = 183
+  Reaction12.sboTerm = 183
+
+  // CV terms:
+  cell identity "http://identifiers.org/go/GO:0005623"
+  PX identity "http://identifiers.org/uniprot/P03023"
+  PY identity "http://identifiers.org/uniprot/P04483"
+  PZ identity "http://identifiers.org/uniprot/P03034"
+  X biological_system "http://identifiers.org/chebi/CHEBI:33699",
+                      "http://identifiers.org/kegg.compound/C00046"
+  X encodement "http://identifiers.org/uniprot/P03023"
+  Y biological_system "http://identifiers.org/chebi/CHEBI:33699",
+                      "http://identifiers.org/kegg.compound/C00046"
+  Y encodement "http://identifiers.org/uniprot/P04483"
+  Z biological_system "http://identifiers.org/chebi/CHEBI:33699",
+                      "http://identifiers.org/kegg.compound/C00046"
+  Z encodement "http://identifiers.org/uniprot/P03034"
+  Reaction1 biological_system "http://identifiers.org/go/GO:0006402"
+  Reaction2 biological_system "http://identifiers.org/go/GO:0006402"
+  Reaction3 biological_system "http://identifiers.org/go/GO:0006402"
+  Reaction4 biological_system "http://identifiers.org/go/GO:0006412"
+  Reaction5 biological_system "http://identifiers.org/go/GO:0006412"
+  Reaction6 biological_system "http://identifiers.org/go/GO:0006412"
+  Reaction7 biological_system "http://identifiers.org/go/GO:0030163"
+  Reaction8 biological_system "http://identifiers.org/go/GO:0030163"
+  Reaction9 biological_system "http://identifiers.org/go/GO:0030163"
+  Reaction10 biological_system "http://identifiers.org/go/GO:0006351"
+  Reaction11 biological_system "http://identifiers.org/go/GO:0006351"
+  Reaction12 biological_system "http://identifiers.org/go/GO:0006351"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL6615351360"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000012"
+  model publication "http://identifiers.org/pubmed/10659856"
+  model taxon "http://identifiers.org/taxonomy/562"
+  model biological_system "http://identifiers.org/go/GO:0040029"
+  model created "2009-01-20T14:03:56Z"
+  model modified "2013-07-10T10:59:30Z"
+  model creator1.givenName "Nicolas"
+  model creator1.familyName "Le Novère"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "lenov@ebi.ac.uk"
+  model creator2.givenName "Vijayalakshmi"
+  model creator2.familyName "Chelliah"
+  model creator2.organization "EMBL-EBI"
+  model creator2.email "viji@ebi.ac.uk"
+  model creator3.givenName "Lukas"
+  model creator3.familyName "Endler"
+  model creator3.organization "EMBL-EBI"
+  model creator3.email "lukas@ebi.ac.uk"
+  model creator4.givenName "Nick"
+  model creator4.familyName "Juty"
+  model creator4.organization "EMBL-EBI"
+  model creator4.email "juty@ebi.ac.uk"
+  model creator5.givenName "Bruce"
+  model creator5.familyName "Shapiro"
+  model creator5.organization "Jet Propulsion Laboratory"
+  model creator5.email "bshapiro@caltech.edu"
+
+  // Notes:
+  model notes ```
+Elowitz2000 - Repressilator 
+
+
+This model describes the deterministic version of the repressilator system.
+
+The authors of this model (see reference) use three transcriptional repressor systems
+that are not part of any natural biological clock to build an oscillating network
+that they called the repressilator. The model system was induced in Escherichia coli.
+
+In this system, LacI (variable X is the mRNA, variable PX is the protein) inhibits
+the tetracycline-resistance transposon tetR (Y, PY describe mRNA and protein). Protein
+tetR inhibits the gene Cl from phage Lambda (Z, PZ: mRNA, protein),and protein Cl
+inhibits lacI expression. With the appropriate parameter values this system oscillates.
+
+
+This model is described in the article:
+
+
+[A synthetic oscillatory network of transcriptional regulators.](http://identifiers.org/pubmed/10659856 "Access to this publication") 
+
+
+Elowitz MB, Leibler S. 
+
+Nature. 2000 Jan; 403(6767):335-338 
+Abstract:
+
+
+Networks of interacting biomolecules carry out many essential functions in living
+cells, but the &apos;design principles&apos; underlying the functioning of such intracellular
+networks remain poorly understood, despite intensive efforts including quantitative
+analysis of relatively simple systems. Here we present a complementary approach to
+this problem: the design and construction of a synthetic network to implement a particular
+function. We used three transcriptional repressor systems that are not part of any
+natural biological clock to build an oscillating network, termed the repressilator,
+in Escherichia coli. The network periodically induces the synthesis of green fluorescent
+protein as a readout of its state in individual cells. The resulting oscillations,
+with typical periods of hours, are slower than the cell-division cycle, so the state
+of the oscillator has to be transmitted from generation to generation. This artificial
+clock displays noisy behaviour, possibly because of stochastic fluctuations of its
+components. Such &apos;rational network design may lead both to the engineering of
+new cellular behaviours and to an improved understanding of naturally occurring networks.
+
+
+The model is based upon the equations in Box 1 of the paper; however, these equations
+as printed are dimensionless, and the correct dimensions have been returned to the
+equations, and the parameters set to reproduce Figure 1C (left).
+
+
+The original model was generated by B.E. Shapiro using Cellerator version 1.0 update
+2.1127 using Mathematica 4.2 for Mac OS X (June 4, 2002), November 27, 2002 12:15:32,
+using (PowerMac,PowerPC, Mac OS X,MacOSX,Darwin).
+
+Nicolas Le Novere provided a corrected version generated by SBMLeditor on Sun Aug
+20 00:44:05 BST 2006. This removed the EmptySet species. Ran fine on COPASI 4.0 build
+18.
+
+Bruce Shapiro revised the model with SBMLeditor on 23 October 2006 20:39 PST. This
+defines default units and correct reactions. The original Cellerator reactions while
+being mathematically correct did not accurately reflect the intent of the authors.
+The original notes were mostly removed because they were mostly incorrect in the
+revised version. Tested with MathSBML 2.6.0.
+
+Nicolas Le Novere changed the volume to 1 cubic micrometre, to allow for stochastic
+simulation.
+
+Changed by Lukas Endler to use the average livetime of mRNA instead of its halflife
+and a corrected value of alpha and alpha0.
+
+Moreover, the equations used in this model were clarified, cf. below.
+
+The equations given in **box 1** of the original publication are
+rescaled in three respects (lowercase letters denote the rescaled, uppercase letters
+the unscaled number of molecules per cell): 
+
+- the time is rescaled to the average mRNA lifetime, *t_ave: τ = t/t_ave*
+- the mRNA concentration is rescaled to the translation efficiency *eff: m = M/eff*
+- the protein concentration is rescaled to *Km: p = P/Km*
+
+
+*α* in the equations should be in units of rescaled proteins
+per promotor and cell, and *β* is the ratio of the protein to
+the mRNA decay rates or the ratio of the mRNA to the protein halflife. 
+
+In this version of the model *α* and *β* are
+calculated correspondingly to the article, while *p* and 
+*m* where just replaced by *P/Km* resp. *M/eff*
+and all equations multiplied by *1/t_ave* . Also, to
+make the equations easier to read, commonly used variables derived from the parameters
+given in the article by simple rules were introduced. 
+
+The parameters given in the article were:
+
+| |
+||------------------------------------------------------------------------:|---------------------|---------------------------||
+| | promotor strength (full) ( *tps_active* ): | 0.5 | transcripts/(promotor\*s) | |
+| | mRNA half life, τ 1/2,mRNA : | 2 | min | |
+| | protein half life, τ 1/2,prot : | 10 | min | |
+| | K M : | 40 | monomers/cell | |
+| | Hill coefficient n: | 2 | | |
+
+From these the following constants can be derived:
+
+| |
+||----------------------------------------------------------------------:|--------------------------------------------------------------------------------------------------------------------|----------------------------------------||
+| | mRNA decay rate ( *kd_mRNA* ): | *ln(2)/ τ 1/2,mRNA* | = 0.347 min -1 | |
+| | protein decay rate ( *kd_prot* ): | *ln(2)/ τ 1/2,prot* | |
+| | transcription rate ( *a_tr* ): | *tps_active\*60* | = 29.97 transcripts/min | |
+| | transcription rate (repressed) ( *a0_tr* ): | *tps_repr\*60* | = 0.03 transcripts/min | |
+| | translation rate ( *k_tl* ): | *eff\*kd_mRNA* | = 6.93 proteins/(mRNA\*min) | |
+| | α : | *a_tr\*eff\*τ 1/2,prot /(ln(2)\*K M ) * | = 216.4 proteins/(promotor\*cell\*Km) | |
+| | α 0 : | *a0_tr\*eff\*τ 1/2,prot /(ln(2)\*K M ) * | = 0.2164 proteins/(promotor\*cell\*Km) | |
+| | β : | *k_dp/k_dm* | = 0.2 | |
+
+
+Annotation by the Kinetic Simulation Algorithm Ontology (KiSAO):
+
+To reproduce the simulations run published by the authors, the model has to be simulated
+with any of two different approaches. First, one could use a deterministic method
+( [KISAO_0000035](http://identifiers.org/biomodels.kisao/KISAO_0000035 "Access to: KISAO_0000035") ) with continuous variables ( [KISAO_0000018](http://identifiers.org/biomodels.kisao/KISAO_0000018 "Access to: KISAO_0000018") ). One sample algorithm to use is the CVODE solver ( [KISAO_0000019](http://identifiers.org/biomodels.kisao/KISAO_0000019 "Access to: KISAO_0000019") ). Second, one could simulate the system using Gillespie&apos;s direct method ( [KISAO_0000029](http://identifiers.org/biomodels.kisao/KISAO_0000029 "Access to: KISAO_0000029") ), which is a stochastic method ( [KISAO_0000036](http://identifiers.org/biomodels.kisao/KISAO_0000036 "Access to: KISAO_0000036") ) supporting adaptive timesteps ( [KISAO_0000041](http://identifiers.org/biomodels.kisao/KISAO_0000041 "Access to: KISAO_0000041") ) and using discrete variables ( [KISAO_0000016](http://identifiers.org/biomodels.kisao/KISAO_0000016 "Access to: KISAO_0000016") ). 
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identified by: [BIOMD0000000012](http://identifiers.org/biomodels.db/BIOMD0000000012) . 
+
+To cite BioModels Database, please use: [BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models](http://identifiers.org/pubmed/20587024 "Latest BioModels Database publication") . 
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+  PX notes "lacI inhibitor"
+  PY notes "Tet repressor protein"
+  PZ notes "lambda repressor"
+  beta notes "ratio of protein to mRNA decay rates"
+  alpha0 notes "Leakiness in protein copies per promoter and cell"
+  a0_tr notes "Transcription rate from fully repressed promotor"
+  eff notes "Average number of proteins per transcript"
+  KM notes ```
+Number of repressor molecules per cell giving half maximal repression, in
+monomers per cell
+```
+  alpha notes "Protein copies per promoter and cell"
+  a_tr notes "Transcription rate from free promotor minus a0_tr"
+  n notes "Hill coefficient"
+  kd_mRNA notes "mRNA decay rate constant"
+  kd_prot notes "Protein decay rate costant"
+  k_tl notes "Translation rate constant"
+  ps_a notes "Transcrition from free promotor in transcripts per second and promotor"
+  ps_0 notes ```
+Transcrition from fully repressed promotor in transcripts per second and
+promotor
+```
+end
+
+BIOMD0000000012 is "Elowitz2000 - Repressilator"

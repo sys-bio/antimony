@@ -1,0 +1,296 @@
+// Created by libAntimony v3.0.0
+model *Jeon2018___Enzyme_clustering_in_Glucose_metabolism()
+
+  // Compartments and Species:
+  compartment Cytoplasm;
+  species Glucose in Cytoplasm, Fructose_6_Phosphate in Cytoplasm, Fructose_1_6_Bisphosphate in Cytoplasm;
+  species _3_Phosphoglycerate in Cytoplasm, Phosphoenolpyruvate in Cytoplasm;
+  species Pyruvate in Cytoplasm, Oxaloacetate in Cytoplasm, Metabolic_outcome_of_Pentose_Phosphate_Shunt in Cytoplasm;
+  species Metabolic_outcome_of_Serine_Biosynthesis_Flux in Cytoplasm, Metabolic_outcome_of_Glycolytic_Flux in Cytoplasm;
+  species Phosphofructokinase_1 in Cytoplasm, Fructose_1_6_Bisphosphatase in Cytoplasm;
+  species Large_sized_enzyme_clusters in Cytoplasm, Medium_sized_enzyme_clusters in Cytoplasm;
+  species Small_sized_enzyme_clusters in Cytoplasm, Pyruvate_Kinase_M2_dimers in Cytoplasm;
+  species Phosphoenolpyruvate_Carboxykinase_1 in Cytoplasm, Glycosylated_Phosphofructokinase in Cytoplasm;
+  species Pyruvate_Kinase_M2_tetramers in Cytoplasm;
+
+  // Reactions:
+  R1:  => Glucose; Cytoplasm*k0;
+  R2: Glucose => Fructose_6_Phosphate; Cytoplasm*k1*Glucose;
+  R3: Fructose_6_Phosphate => Glucose; Cytoplasm*k_1*Fructose_6_Phosphate;
+  R4: Fructose_6_Phosphate => Fructose_1_6_Bisphosphate; Cytoplasm*(k2*(Phosphofructokinase_1 + Small_sized_enzyme_clusters + c2*Medium_sized_enzyme_clusters + e2*Large_sized_enzyme_clusters)*Fructose_6_Phosphate*K1/(K1 + Fructose_1_6_Bisphosphate));
+  R5: Fructose_1_6_Bisphosphate => Fructose_6_Phosphate; Cytoplasm*(k_2*(Fructose_1_6_Bisphosphatase + c_2*Medium_sized_enzyme_clusters + e_2*Large_sized_enzyme_clusters)*Fructose_1_6_Bisphosphate*K2/(K2 + Fructose_6_Phosphate));
+  R6: Fructose_1_6_Bisphosphate => _3_Phosphoglycerate; Cytoplasm*k3*Fructose_1_6_Bisphosphate;
+  R7: _3_Phosphoglycerate => Fructose_1_6_Bisphosphate; Cytoplasm*k_3*_3_Phosphoglycerate;
+  R8: _3_Phosphoglycerate => Phosphoenolpyruvate; Cytoplasm*k4*_3_Phosphoglycerate;
+  R9: Phosphoenolpyruvate => _3_Phosphoglycerate; Cytoplasm*k_4*Phosphoenolpyruvate;
+  R10: Phosphoenolpyruvate => Pyruvate; Cytoplasm*(k5*Pyruvate_Kinase_M2_tetramers*Phosphoenolpyruvate);
+  R11: Pyruvate => Oxaloacetate; Cytoplasm*k_5*Pyruvate;
+  R12: Oxaloacetate => Phosphoenolpyruvate; Cytoplasm*(k_6*(Phosphoenolpyruvate_Carboxykinase_1 + c_6*Medium_sized_enzyme_clusters + e_6*Large_sized_enzyme_clusters)*Oxaloacetate);
+  R13: Phosphofructokinase_1 => Small_sized_enzyme_clusters; Cytoplasm*kas*Phosphofructokinase_1;
+  R14: Small_sized_enzyme_clusters => Phosphofructokinase_1; Cytoplasm*k_as*Small_sized_enzyme_clusters;
+  R15: Small_sized_enzyme_clusters + Fructose_1_6_Bisphosphatase + Pyruvate_Kinase_M2_dimers + Phosphoenolpyruvate_Carboxykinase_1 => Medium_sized_enzyme_clusters; Cytoplasm*kam*Small_sized_enzyme_clusters*Fructose_1_6_Bisphosphatase*Pyruvate_Kinase_M2_dimers*Phosphoenolpyruvate_Carboxykinase_1;
+  R16: Medium_sized_enzyme_clusters => Small_sized_enzyme_clusters + Fructose_1_6_Bisphosphatase + Pyruvate_Kinase_M2_dimers + Phosphoenolpyruvate_Carboxykinase_1; Cytoplasm*k_am*Medium_sized_enzyme_clusters;
+  R17: Medium_sized_enzyme_clusters => ; Cytoplasm*(11*kal*Medium_sized_enzyme_clusters^11);
+  R18:  => Medium_sized_enzyme_clusters; Cytoplasm*(11*k_al*Large_sized_enzyme_clusters);
+  R19: Phosphofructokinase_1 => Glycosylated_Phosphofructokinase; Cytoplasm*kg*Phosphofructokinase_1;
+  R20: Glycosylated_Phosphofructokinase => Phosphofructokinase_1; Cytoplasm*k_g*Glycosylated_Phosphofructokinase;
+  R21: Pyruvate_Kinase_M2_tetramers => Pyruvate_Kinase_M2_dimers; Cytoplasm*kd*Pyruvate_Kinase_M2_tetramers;
+  R22: Pyruvate_Kinase_M2_dimers => Pyruvate_Kinase_M2_tetramers; Cytoplasm*(k_d*(Pyruvate_Kinase_M2_dimers + c_d*Medium_sized_enzyme_clusters + e_d*Large_sized_enzyme_clusters)*(1 + alpha*Fructose_1_6_Bisphosphate/(Fructose_1_6_Bisphosphate + K3)));
+  R23: Fructose_6_Phosphate => Metabolic_outcome_of_Pentose_Phosphate_Shunt; Cytoplasm*kp*Fructose_6_Phosphate;
+  R24: _3_Phosphoglycerate => Metabolic_outcome_of_Serine_Biosynthesis_Flux; Cytoplasm*ks*_3_Phosphoglycerate;
+  R25: Pyruvate => Metabolic_outcome_of_Glycolytic_Flux; Cytoplasm*kf*Pyruvate;
+  R26: Metabolic_outcome_of_Pentose_Phosphate_Shunt => ; Cytoplasm*delta_p*Metabolic_outcome_of_Pentose_Phosphate_Shunt;
+  R27: Metabolic_outcome_of_Serine_Biosynthesis_Flux => ; Cytoplasm*delta_s*Metabolic_outcome_of_Serine_Biosynthesis_Flux;
+  R28: Metabolic_outcome_of_Glycolytic_Flux => ; Cytoplasm*delta_f*Metabolic_outcome_of_Glycolytic_Flux;
+  R17_1:  => Large_sized_enzyme_clusters; Cytoplasm*(kal*Medium_sized_enzyme_clusters^11);
+  R18_1: Large_sized_enzyme_clusters => ; Cytoplasm*k_al*Large_sized_enzyme_clusters;
+
+  // Species initializations:
+  Glucose = 0.01;
+  Fructose_6_Phosphate = 0.01;
+  Fructose_1_6_Bisphosphate = 0.01;
+  _3_Phosphoglycerate = 0.01;
+  Phosphoenolpyruvate = 0.01;
+  Pyruvate = 0.01;
+  Oxaloacetate = 0.01;
+  Metabolic_outcome_of_Pentose_Phosphate_Shunt = 0.01;
+  Metabolic_outcome_of_Serine_Biosynthesis_Flux = 0.01;
+  Metabolic_outcome_of_Glycolytic_Flux = 0.01;
+  Phosphofructokinase_1 = 99.9899999999985;
+  Fructose_1_6_Bisphosphatase = 100;
+  Large_sized_enzyme_clusters = 0;
+  Medium_sized_enzyme_clusters = 0;
+  Small_sized_enzyme_clusters = 0;
+  Pyruvate_Kinase_M2_dimers = 99.9899999999985;
+  Phosphoenolpyruvate_Carboxykinase_1 = 100;
+  Glycosylated_Phosphofructokinase = 0.01;
+  Pyruvate_Kinase_M2_tetramers = 0.999999999999996;
+
+  // Compartment initializations:
+  Cytoplasm = 1;
+
+  // Variable initializations:
+  k1 = 10;
+  k_1 = 10;
+  k2 = 40;
+  k_2 = 7;
+  k3 = 10;
+  k_3 = 10;
+  k4 = 14;
+  k_4 = 7;
+  k5 = 1;
+  k_5 = 10;
+  k_6 = 10;
+  kas = 0;
+  k_as = 0;
+  kam = 0;
+  k_am = 0;
+  kal = 0;
+  k_al = 0;
+  kg = 1;
+  k_g = 1;
+  kd = 1;
+  k_d = 1;
+  kp = 5;
+  ks = 5;
+  kf = 5;
+  delta_p = 0.5;
+  delta_s = 0.5;
+  delta_f = 0.5;
+  c2 = 0;
+  c_2 = 0;
+  c_6 = 0;
+  e2 = 0;
+  e_2 = 0;
+  e_6 = 0;
+  e_d = 0;
+  c_d = 0;
+  alpha = 1;
+  K1 = 1;
+  K2 = 1;
+  K3 = 1;
+  k0 = 10;
+
+  // Other declarations:
+  const Cytoplasm, k1, k_1, k2, k_2, k3, k_3, k4, k_4, k5, k_5, k_6, kas;
+  const k_as, kam, k_am, kal, k_al, kg, k_g, kd, k_d, kp, ks, kf, delta_p;
+  const delta_s, delta_f, c2, c_2, c_6, e2, e_2, e_6, e_d, c_d, alpha, K1;
+  const K2, K3, k0;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = litre;
+  unit time_unit = second;
+  unit substance = mole;
+
+  // Display Names:
+  time_unit is "time";
+  Fructose_6_Phosphate is "Fructose-6-Phosphate";
+  Fructose_1_6_Bisphosphate is "Fructose-1,6,Bisphosphate";
+  _3_Phosphoglycerate is "3-Phosphoglycerate";
+  Metabolic_outcome_of_Pentose_Phosphate_Shunt is "Metabolic outcome of Pentose Phosphate Shunt";
+  Metabolic_outcome_of_Serine_Biosynthesis_Flux is "Metabolic outcome of Serine Biosynthesis Flux";
+  Metabolic_outcome_of_Glycolytic_Flux is "Metabolic outcome of Glycolytic Flux";
+  Phosphofructokinase_1 is "Phosphofructokinase 1";
+  Fructose_1_6_Bisphosphatase is "Fructose-1,6-Bisphosphatase";
+  Large_sized_enzyme_clusters is "Large-sized enzyme clusters";
+  Medium_sized_enzyme_clusters is "Medium-sized enzyme clusters";
+  Small_sized_enzyme_clusters is "Small-sized enzyme clusters";
+  Pyruvate_Kinase_M2_dimers is "Pyruvate Kinase M2 dimers";
+  Phosphoenolpyruvate_Carboxykinase_1 is "Phosphoenolpyruvate Carboxykinase 1";
+  Glycosylated_Phosphofructokinase is "Glycosylated Phosphofructokinase";
+  Pyruvate_Kinase_M2_tetramers is "Pyruvate Kinase M2 tetramers";
+  k_1 is "k-1";
+  k_2 is "k-2";
+  k_3 is "k-3";
+  k_4 is "k-4";
+  k_5 is "k-5";
+  k_6 is "k-6";
+  k_as is "k-as";
+  k_am is "k-am";
+  k_al is "k-al";
+  k_g is "k-g";
+  k_d is "k-d";
+  delta_p is "delta-p";
+  c_2 is "c-2";
+  c_6 is "c-6";
+  e_2 is "e-2";
+  e_6 is "e-6";
+  e_d is "e-d";
+  c_d is "c-d";
+
+  // CV terms:
+  Cytoplasm identity "http://identifiers.org/go/GO:0005737"
+  Glucose biological_system "http://identifiers.org/chebi/CHEBI:64297"
+  Glucose biological_system "http://identifiers.org/chebi/CHEBI:25212"
+  Glucose biological_system "http://identifiers.org/chebi/CHEBI:17234"
+  Fructose_6_Phosphate biological_system "http://identifiers.org/chebi/CHEBI:64297"
+  Fructose_6_Phosphate biological_system "http://identifiers.org/chebi/CHEBI:25212"
+  Fructose_6_Phosphate biological_system "http://identifiers.org/chebi/CHEBI:78697"
+  Fructose_1_6_Bisphosphate biological_system "http://identifiers.org/chebi/CHEBI:78682"
+  Fructose_1_6_Bisphosphate biological_system "http://identifiers.org/chebi/CHEBI:25212"
+  Fructose_1_6_Bisphosphate biological_system "http://identifiers.org/chebi/CHEBI:64297"
+  _3_Phosphoglycerate biological_system "http://identifiers.org/chebi/CHEBI:25212"
+  _3_Phosphoglycerate biological_system "http://identifiers.org/chebi/CHEBI:61304"
+  _3_Phosphoglycerate biological_system "http://identifiers.org/chebi/CHEBI:64297"
+  Phosphoenolpyruvate biological_system "http://identifiers.org/chebi/CHEBI:25212"
+  Phosphoenolpyruvate biological_system "http://identifiers.org/chebi/CHEBI:18021"
+  Phosphoenolpyruvate biological_system "http://identifiers.org/chebi/CHEBI:64297"
+  Pyruvate biological_system "http://identifiers.org/chebi/CHEBI:64297"
+  Pyruvate biological_system "http://identifiers.org/chebi/CHEBI:15361"
+  Pyruvate biological_system "http://identifiers.org/chebi/CHEBI:25212"
+  Oxaloacetate biological_system "http://identifiers.org/chebi/CHEBI:64297"
+  Oxaloacetate biological_system "http://identifiers.org/chebi/CHEBI:30744"
+  Oxaloacetate biological_system "http://identifiers.org/chebi/CHEBI:25212"
+  Metabolic_outcome_of_Pentose_Phosphate_Shunt biological_system "http://identifiers.org/chebi/CHEBI:25212"
+  Metabolic_outcome_of_Serine_Biosynthesis_Flux biological_system "http://identifiers.org/chebi/CHEBI:25212"
+  Metabolic_outcome_of_Glycolytic_Flux biological_system "http://identifiers.org/chebi/CHEBI:25212"
+  Phosphofructokinase_1 biological_system "http://identifiers.org/uniprot/P08237"
+  Phosphofructokinase_1 biological_system "http://identifiers.org/ncit/C28597"
+  Fructose_1_6_Bisphosphatase biological_system "http://identifiers.org/uniprot/P09467"
+  Fructose_1_6_Bisphosphatase biological_system "http://identifiers.org/ncit/C16981"
+  Large_sized_enzyme_clusters part "http://identifiers.org/uniprot/P30613"
+  Large_sized_enzyme_clusters part "http://identifiers.org/uniprot/P09467"
+  Large_sized_enzyme_clusters part "http://identifiers.org/uniprot/P35558"
+  Large_sized_enzyme_clusters part "http://identifiers.org/uniprot/P08237"
+  Medium_sized_enzyme_clusters part "http://identifiers.org/uniprot/P30613"
+  Medium_sized_enzyme_clusters part "http://identifiers.org/uniprot/P35558"
+  Medium_sized_enzyme_clusters part "http://identifiers.org/uniprot/P09467"
+  Medium_sized_enzyme_clusters part "http://identifiers.org/uniprot/P08237"
+  Small_sized_enzyme_clusters part "http://identifiers.org/uniprot/P08237"
+  Pyruvate_Kinase_M2_dimers part "http://identifiers.org/uniprot/P30613"
+  Phosphoenolpyruvate_Carboxykinase_1 biological_system "http://identifiers.org/ncit/C28597"
+  Phosphoenolpyruvate_Carboxykinase_1 biological_system "http://identifiers.org/uniprot/P35558"
+  Glycosylated_Phosphofructokinase biological_system "http://identifiers.org/uniprot/P08237"
+  Glycosylated_Phosphofructokinase property "http://identifiers.org/ncit/C21034"
+  Pyruvate_Kinase_M2_tetramers part "http://identifiers.org/uniprot/P30613"
+  k1 biological_system "http://identifiers.org/sbo/SBO:0000009"
+  k_1 biological_system "http://identifiers.org/sbo/SBO:0000009"
+  k2 biological_system "http://identifiers.org/sbo/SBO:0000009"
+  k_2 biological_system "http://identifiers.org/sbo/SBO:0000009"
+  k3 biological_system "http://identifiers.org/sbo/SBO:0000009"
+  k_3 biological_system "http://identifiers.org/sbo/SBO:0000009"
+  k4 biological_system "http://identifiers.org/sbo/SBO:0000009"
+  k_4 biological_system "http://identifiers.org/sbo/SBO:0000009"
+  k5 container "http://identifiers.org/sbo/SBO:0000009"
+  k_5 biological_system "http://identifiers.org/sbo/SBO:0000009"
+  k_6 biological_system "http://identifiers.org/sbo/SBO:0000009"
+  kas biological_system "http://identifiers.org/sbo/SBO:0000341"
+  k_as biological_system "http://identifiers.org/sbo/SBO:0000341"
+  kam biological_system "http://identifiers.org/sbo/SBO:0000341"
+  k_am biological_system "http://identifiers.org/sbo/SBO:0000341"
+  kal biological_system "http://identifiers.org/sbo/SBO:0000341"
+  k_al biological_system "http://identifiers.org/sbo/SBO:0000341"
+  kg biological_system "http://identifiers.org/sbo/SBO:0000009"
+  k_g biological_system "http://identifiers.org/sbo/SBO:0000341"
+  kd biological_system "http://identifiers.org/sbo/SBO:0000009"
+  k_d biological_system "http://identifiers.org/sbo/SBO:0000341"
+  kp container "http://identifiers.org/sbo/SBO:0000009"
+  ks biological_system "http://identifiers.org/sbo/SBO:0000009"
+  kf biological_system "http://identifiers.org/sbo/SBO:0000009"
+  delta_p biological_system "http://identifiers.org/sbo/SBO:0000009"
+  delta_s biological_system "http://identifiers.org/sbo/SBO:0000009"
+  delta_f biological_system "http://identifiers.org/sbo/SBO:0000009"
+  c2 biological_system "http://identifiers.org/sbo/SBO:0000009"
+  c_2 biological_system "http://identifiers.org/sbo/SBO:0000009"
+  c_6 biological_system "http://identifiers.org/sbo/SBO:0000009"
+  e2 biological_system "http://identifiers.org/sbo/SBO:0000009"
+  e_2 biological_system "http://identifiers.org/sbo/SBO:0000009"
+  e_6 biological_system "http://identifiers.org/sbo/SBO:0000009"
+  e_d biological_system "http://identifiers.org/sbo/SBO:0000009"
+  c_d biological_system "http://identifiers.org/sbo/SBO:0000009"
+  alpha biological_system "http://identifiers.org/sbo/SBO:0000009"
+  K1 biological_system "http://identifiers.org/sbo/SBO:0000009"
+  K2 biological_system "http://identifiers.org/sbo/SBO:0000009"
+  K3 biological_system "http://identifiers.org/sbo/SBO:0000009"
+  k0 biological_system "http://identifiers.org/sbo/SBO:0000009"
+  R1 biological_system "http://identifiers.org/go/GO:0046323"
+  R2 biological_system "http://identifiers.org/reactome/R-HSA-70471"
+  R3 biological_system "http://identifiers.org/reactome/R-HSA-70475"
+  R4 biological_system "http://identifiers.org/go/GO:0016310"
+  R5 biological_system "http://identifiers.org/go/GO:0016311"
+  R6 biological_system "http://identifiers.org/sbo/SBO:0000178"
+  R6 biological_system "http://identifiers.org/reactome/R-HSA-71496"
+  R7 biological_system "http://identifiers.org/reactome/R-HSA-71496"
+  R8 property "http://identifiers.org/go/GO:0004619"
+  R8 property "http://identifiers.org/go/GO:0004634"
+  R9 property "http://identifiers.org/go/GO:0004619"
+  R9 property "http://identifiers.org/go/GO:0004634"
+  R10 biological_system "http://identifiers.org/sbo/SBO:0000330"
+  R11 biological_system "http://identifiers.org/go/GO:0004736"
+  R12 biological_system "http://identifiers.org/go/GO:0004611"
+  R13 biological_system "http://identifiers.org/sbo/SBO:0000526"
+  R14 biological_system "http://identifiers.org/sbo/SBO:0000180"
+  R15 biological_system "http://identifiers.org/sbo/SBO:0000526"
+  R16 biological_system "http://identifiers.org/sbo/SBO:0000180"
+  R17 biological_system "http://identifiers.org/sbo/SBO:0000526"
+  R18 biological_system "http://identifiers.org/sbo/SBO:0000180"
+  R19 biological_system "http://identifiers.org/sbo/SBO:0000217"
+  R20 biological_system "http://identifiers.org/go/GO:0006517"
+  R21 biological_system "http://identifiers.org/sbo/SBO:0000180"
+  R22 biological_system "http://identifiers.org/sbo/SBO:0000526"
+  R23 biological_system "http://identifiers.org/go/GO:0008152"
+  R24 biological_system "http://identifiers.org/go/GO:0008152"
+  R25 biological_system "http://identifiers.org/go/GO:0008152"
+  R26 biological_system "http://identifiers.org/sbo/SBO:0000394"
+  R27 biological_system "http://identifiers.org/sbo/SBO:0000394"
+  R28 biological_system "http://identifiers.org/sbo/SBO:0000394"
+  R17_1 container "http://identifiers.org/sbo/SBO:0000526"
+  R18_1 biological_system "http://identifiers.org/sbo/SBO:0000180"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL2204290002",
+                     "http://identifiers.org/biomodels.db/BIOMD0000001055"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model description "http://identifiers.org/doi/10.1038/s41598-018-20348-7"
+  model property "http://identifiers.org/go/GO:0006006",
+                 "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2022-04-25T14:33:02Z"
+  model modified "2022-04-25T14:33:02Z"
+  model creator1.givenName "Mikal"
+  model creator1.familyName "Daou"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "mikaldaou@hotmail.com"
+end
+
+Jeon2018___Enzyme_clustering_in_Glucose_metabolism is "Jeon2018 - Enzyme clustering in Glucose metabolism"

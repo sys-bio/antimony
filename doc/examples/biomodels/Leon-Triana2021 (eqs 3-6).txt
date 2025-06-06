@@ -1,0 +1,175 @@
+// Created by libAntimony v3.0.0
+model *Leon_Triana2021___Competition_between_tumour_cells_and_dual_target_CAR_T_cells()
+
+  // Compartments and Species:
+  compartment On_tumour, Off_tumour;
+  species CAR_T_cells_on_tumour in On_tumour, Tumour_cells in On_tumour, CAR_T_cells_off_tumour in Off_tumour;
+  species B_cells in Off_tumour, $CAR_T_cells_total in On_tumour;
+
+  // Assignment Rules:
+  CAR_T_cells_total := CAR_T_cells_on_tumour + CAR_T_cells_off_tumour;
+
+  // Reactions:
+  CAR_T_cell_proliferation:  => CAR_T_cells_on_tumour; k*CAR_T_cells_off_tumour + rho_C*CAR_T_cells_on_tumour*Tumour_cells/(g_T + Tumour_cells);
+  CAR_T_cell_depletion: CAR_T_cells_on_tumour => ; On_tumour*(alpha_1*CAR_T_cells_on_tumour*Tumour_cells/(g_C + CAR_T_cells_on_tumour) + (1/tao_C)*CAR_T_cells_on_tumour);
+  tumour_growth:  => Tumour_cells; On_tumour*(rho_T*Tumour_cells);
+  tumour_death: Tumour_cells => ; On_tumour*(alpha_2*CAR_T_cells_on_tumour*Tumour_cells);
+  B_cell_induced_CAR_T_cell_proliferation:  => CAR_T_cells_off_tumour; Off_tumour*(rho_C_bar*CAR_T_cells_off_tumour*B_cells/(g_B + B_cells));
+  CAR_T_cell_off_tumour_depletion: CAR_T_cells_off_tumour => ; Off_tumour*((1/tao_C)*CAR_T_cells_off_tumour + k*CAR_T_cells_off_tumour);
+  CAR_T_cell_induced_B_cell_death: B_cells => ; Off_tumour*(alpha_B*B_cells*CAR_T_cells_off_tumour + (1/tao_B)*B_cells);
+
+  // Species initializations:
+  CAR_T_cells_on_tumour = 0;
+  Tumour_cells = 33500000000;
+  CAR_T_cells_off_tumour = 200000000;
+  B_cells = 25000000000;
+
+  // Compartment initializations:
+  On_tumour = 1;
+  Off_tumour = 1;
+
+  // Variable initializations:
+  rho_C = 0.9;
+  rho_C has unit_0;
+  g_T = 10000000000;
+  g_T has unit_1;
+  alpha_1 = 0.02;
+  alpha_1 has unit_0;
+  g_C = 2000000000;
+  g_C has unit_1;
+  tao_C = 7;
+  tao_C has unit_2;
+  rho_T = 0.02;
+  rho_T has unit_0;
+  alpha_2 = 2.5e-10;
+  alpha_2 has unit_3;
+  rho_C_bar = 0.9;
+  rho_C_bar has unit_0;
+  g_B = 10000000000;
+  g_B has unit_1;
+  k = 0.2;
+  alpha_B = 4.5e-11;
+  alpha_B has unit_3;
+  tao_B = 60;
+  tao_B has unit_2;
+
+  // Other declarations:
+  const On_tumour, Off_tumour, rho_C, g_T, alpha_1, g_C, tao_C, rho_T, alpha_2;
+  const rho_C_bar, g_B, k, alpha_B, tao_B;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = litre;
+  unit time_unit = 86400 second;
+  unit substance = item;
+  unit unit_0 = 1 / 86400 second;
+  unit unit_1 = item;
+  unit unit_2 = 86400 second;
+  unit unit_3 = 1 / 86400 second;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1/d";
+  unit_1 is "#";
+  unit_2 is "d";
+  unit_3 is "1/(d)";
+  CAR_T_cells_on_tumour is "CAR_T-cells_on-tumour";
+  CAR_T_cells_off_tumour is "CAR_T-cells_off-tumour";
+  CAR_T_cells_total is "CAR_T-cells_total";
+  CAR_T_cell_proliferation is "CAR_T-cell_proliferation";
+  CAR_T_cell_depletion is "CAR_T-cell_depletion";
+  B_cell_induced_CAR_T_cell_proliferation is "B-cell_induced_CAR_T-cell_proliferation";
+  CAR_T_cell_off_tumour_depletion is "CAR_T-cell_off_tumour_depletion";
+  CAR_T_cell_induced_B_cell_death is "CAR_T-cell_induced_B-cell_death";
+
+  // CV terms:
+  On_tumour biological_system "http://identifiers.org/ncit/C3058"
+  On_tumour biological_system "http://identifiers.org/ncit/C9292"
+  On_tumour property "http://identifiers.org/ncit/C94498"
+  Off_tumour identity "http://identifiers.org/bto/BTO:0000553"
+  Off_tumour identity "http://identifiers.org/bto/BTO:0000141"
+  CAR_T_cells_on_tumour biological_system "http://identifiers.org/ncit/C137999"
+  CAR_T_cells_on_tumour biological_system "http://identifiers.org/cl/CL:0000084"
+  Tumour_cells biological_system "http://identifiers.org/bto/BTO:0000527"
+  Tumour_cells biological_system "http://identifiers.org/cl/CL:0001063"
+  Tumour_cells property "http://identifiers.org/chebi/CHEBI:144829"
+  Tumour_cells property "http://identifiers.org/ncit/C134496"
+  CAR_T_cells_off_tumour biological_system "http://identifiers.org/ncit/C137999"
+  CAR_T_cells_off_tumour biological_system "http://identifiers.org/cl/CL:0000084"
+  B_cells biological_system "http://identifiers.org/cl/CL:0000236"
+  B_cells property "http://identifiers.org/pr/PR:000001002"
+  CAR_T_cells_total biological_system "http://identifiers.org/ncit/C137999"
+  CAR_T_cells_total biological_system "http://identifiers.org/cl/CL:0000084"
+  CAR_T_cell_proliferation biological_system "http://identifiers.org/sbo/SBO:0000393"
+  CAR_T_cell_proliferation biological_system "http://identifiers.org/go/GO:0042098"
+  CAR_T_cell_depletion biological_system "http://identifiers.org/sbo/SBO:0000179"
+  CAR_T_cell_depletion biological_system "http://identifiers.org/ncit/C175900"
+  CAR_T_cell_depletion biological_system "http://identifiers.org/go/GO:0008219"
+  tumour_growth biological_system "http://identifiers.org/go/GO:0040007"
+  tumour_growth biological_system "http://identifiers.org/sbo/SBO:0000393"
+  tumour_growth biological_system "http://identifiers.org/ncit/C28378"
+  tumour_death biological_system "http://identifiers.org/sbo/SBO:0000179"
+  tumour_death biological_system "http://identifiers.org/go/GO:0008219"
+  B_cell_induced_CAR_T_cell_proliferation biological_system "http://identifiers.org/go/GO:0042098"
+  B_cell_induced_CAR_T_cell_proliferation biological_system "http://identifiers.org/sbo/SBO:0000393"
+  CAR_T_cell_off_tumour_depletion biological_system "http://identifiers.org/efo/0009832"
+  CAR_T_cell_off_tumour_depletion biological_system "http://identifiers.org/sbo/SBO:0000179"
+  CAR_T_cell_off_tumour_depletion biological_system "http://identifiers.org/go/GO:0008219"
+  CAR_T_cell_induced_B_cell_death biological_system "http://identifiers.org/sbo/SBO:0000179"
+  CAR_T_cell_induced_B_cell_death biological_system "http://identifiers.org/go/GO:0008219"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL2107120004",
+                     "http://identifiers.org/biomodels.db/BIOMD0000001014"
+  model container "http://identifiers.org/ncit/C94498"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model description "http://identifiers.org/pubmed/33572301"
+  model property "http://identifiers.org/ncit/C126102",
+                 "http://identifiers.org/go/GO:0002837",
+                 "http://identifiers.org/ncit/C15438",
+                 "http://identifiers.org/doid/DOID:3068",
+                 "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2021-07-08T12:08:03Z"
+  model modified "2021-07-08T12:08:03Z"
+  model creator1.givenName "Emilia"
+  model creator1.familyName "Chen"
+  model creator1.organization "University of Cambridge"
+  model creator1.email "eblc2@cam.ac.uk"
+  model creator2.givenName "Rahuman"
+  model creator2.familyName "Sheriff"
+  model creator2.organization "EMBL-EBI"
+  model creator2.email "sheriff@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+This model of the use of chimeric antigen receptor (CAR)-T cell therapy in the 
+treatment of solid tumours is described in the article:"Dual-Target CAR-Ts with 
+On- and Off-Tumour Activity May Override Immune Suppression in Solid Cancers: A Mathematical 
+Proof of Concept"Odelaisy León-Triana, Antonio Pérez-Martínez, Manuel Ramírez-Orellana 
+and Víctor M. Pérez-GarcíaCancers 2021, 13, 703.; doi: 10.3390/cancers13040703Comment:This 
+is the second mathematical model, derived from equations 3 to 6, used in the paper.Reproduction 
+of Figure 5b was achieved by setting alpha_1 = 0.183, in substitution for alpha_1 
+= 0.2 as quoted in the article.Abstract:Chimeric antigen receptor (CAR)-T cell-based 
+therapies have achieved substantial success against B-cell malignancies, which has 
+led to a growing scientific and clinical interest in extending their use to solid 
+cancers. However, results for solid tumours have been limited up to now, in part 
+due to the immunosuppressive tumour microenvironment, which is able to inactivate 
+CAR-T cell clones. In this paper we put forward a mathematical model describing the 
+competition of CAR-T and tumour cells, taking into account their immunosuppressive 
+capacity. Using the mathematical model, we show that the use of large numbers of 
+CAR-T cells targetting the solid tumour antigens could overcome the immunosuppressive 
+potential of cancer. To achieve such high levels of CAR-T cells we propose, and study 
+computationally, the manufacture and injection of CAR-T cells targetting two antigens: 
+CD19 and a tumour-associated antigen. We study in silico the resulting dynamics of 
+the disease after the injection of this product and find that the expansion of the 
+CAR-T cell population in the blood and lymphopoietic organs could lead to the massive 
+production of an army of CAR-T cells targetting the solid tumour, and potentially 
+overcoming its immune suppression capabilities. This strategy could benefit from 
+the combination with PD-1 inhibitors and low tumour loads. Our computational results 
+provide theoretical support for the treatment of different types of solid tumours 
+using T cells engineered with combination treatments of dual CARs with on- and off-tumour 
+activity and anti-PD-1 drugs after completion of classical cytoreductive treatments.
+```
+end
+
+Leon_Triana2021___Competition_between_tumour_cells_and_dual_target_CAR_T_cells is "Leon-Triana2021 - Competition between tumour cells and dual-target CAR T-cells"

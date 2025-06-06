@@ -1,0 +1,153 @@
+// Created by libAntimony v3.0.0
+model *Figueredo2013_1___immunointeraction_base_model()
+
+  // Compartments and Species:
+  compartment tumor_microenvironment;
+  species T in tumor_microenvironment, E in tumor_microenvironment;
+
+  // Reactions:
+  tumor_growth:  => T; tumor_microenvironment*(a*T);
+  tumor_death: T => ; tumor_microenvironment*(a*b*T*T);
+  tumor_killing: T => ; tumor_microenvironment*(n*T*E);
+  immune_stimulation:  => E; tumor_microenvironment*(p*T*E/(g + T));
+  immune_exhaustion: E => ; tumor_microenvironment*(m*E*T);
+  immune_death: E => ; tumor_microenvironment*d*E;
+  immune_source:  => E; tumor_microenvironment*s;
+
+  // Species initializations:
+  T = 50;
+  T has substance_per_volume;
+  E = 5;
+  E has substance_per_volume;
+
+  // Compartment initializations:
+  tumor_microenvironment = 1;
+  tumor_microenvironment has volume;
+
+  // Variable initializations:
+  a = 1.636;
+  a has unit_0;
+  b = 0.004;
+  b has unit_0;
+  n = 1;
+  n has unit_0;
+  p = 1.131;
+  p has unit_0;
+  g = 20.19;
+  g has unit_0;
+  m = 0.00311;
+  m has unit_0;
+  d = 2;
+  d has unit_0;
+  s = 0.318;
+  s has unit_0;
+
+  // Other declarations:
+  const tumor_microenvironment, a, b, n, p, g, m, d, s;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = time_unit;
+  unit substance = 1e-3 mole;
+  unit unit_0 = 1 / dimensionless^-0;
+  unit extent = substance;
+  unit substance_per_volume = 1e-3 mole / 1e-3 litre;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1";
+  tumor_microenvironment is "tumor microenvironment";
+  tumor_growth is "tumor growth";
+  tumor_death is "tumor death";
+  tumor_killing is "tumor killing";
+  immune_stimulation is "immune stimulation";
+  immune_exhaustion is "immune exhaustion";
+  immune_death is "immune death";
+  immune_source is "immune source";
+
+  // CV terms:
+  tumor_microenvironment biological_system "http://identifiers.org/ncit/C94498"
+  T biological_system "http://identifiers.org/cl/CL:0001064"
+  E biological_system "http://identifiers.org/ncit/C28241"
+  a biological_system "http://identifiers.org/sbo/SBO:0000610"
+  b biological_system "http://identifiers.org/ncit/C53346"
+  p biological_system "http://identifiers.org/sbo/SBO:0000610"
+  g biological_system "http://identifiers.org/sbo/SBO:0000193"
+  m biological_system "http://identifiers.org/ncit/C53346"
+  d biological_system "http://identifiers.org/ncit/C53346"
+  s biological_system "http://identifiers.org/sbo/SBO:0000610"
+  tumor_growth biological_system "http://identifiers.org/go/GO:0008283"
+  tumor_growth biological_system "http://identifiers.org/sbo/SBO:0000393"
+  tumor_death biological_system "http://identifiers.org/go/GO:0008219"
+  tumor_death biological_system "http://identifiers.org/sbo/SBO:0000179"
+  tumor_killing biological_system "http://identifiers.org/go/GO:0002419"
+  tumor_killing biological_system "http://identifiers.org/sbo/SBO:0000179"
+  immune_stimulation biological_system "http://identifiers.org/sbo/SBO:0000393"
+  immune_stimulation biological_system "http://identifiers.org/go/GO:0008283"
+  immune_exhaustion biological_system "http://identifiers.org/go/GO:0008219"
+  immune_exhaustion biological_system "http://identifiers.org/sbo/SBO:0000179"
+  immune_death biological_system "http://identifiers.org/sbo/SBO:0000179"
+  immune_death biological_system "http://identifiers.org/go/GO:0008219"
+  immune_source biological_system "http://identifiers.org/sbo/SBO:0000393"
+  immune_source biological_system "http://identifiers.org/go/GO:0008283"
+
+  model publication "http://identifiers.org/pubmed/23734575"
+  model model_source "http://identifiers.org/biomodels.db/MODEL1907180001",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000753"
+  model biological_system "http://identifiers.org/go/GO:0002418"
+  model property "http://identifiers.org/mamo/MAMO_0000046"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model created "2019-07-18T09:48:26Z"
+  model modified "2019-07-18T09:48:26Z"
+  model creator1.givenName "Jinghao"
+  model creator1.familyName "Men"
+  model creator1.organization "University of Cambridge"
+  model creator1.email "jm2187@cam.ac.uk"
+
+  // Notes:
+  model notes ```
+The paper describes a basic model of immune-itumor interaction.Created by COPASI
+4.25 (Build 207) This model is described in the article: Investigating mathematical
+models of immuno-interactions with early-stage cancer under an agent-based modelling
+perspectiveGrazziela P Figueredo, Peer-Olaf Siebers, Uwe Aickelin Kathleen BMC Bioinformatics
+2013, 14(Suppl 6):S6Abstract: Many advances in research regarding immuno-interactions
+with cancer were developed with the help of ordinary differential equation (ODE)
+models. These models, however, are not effectively capable of representing problems
+involving individual localisation, memory and emerging properties, which are common
+characteristics of cells and molecules of the immune system. Agent-based modelling
+and simulation is an alternative paradigm to ODE models that overcomes these limitations.
+In this paper we investigate the potential contribution of agent-based modelling
+and simulation when compared to ODE modelling and simulation. We seek answers to
+the following questions: Is it possible to obtain an equivalent agent-based model
+from the ODE formulation? Do the outcomes differ? Are there any benefits of using
+one method compared to the other? To answer these questions, we have considered three
+case studies using established mathematical models of immune interactions with early-stage
+cancer. These case studies were re-conceptualised under an agent-based perspective
+and the simulation results were then compared with those from the ODE models. Our
+results show that it is possible to obtain equivalent agent-based models (i.e. implementing
+the same mechanisms); the simulation output of both types of models however might
+differ depending on the attributes of the system to be modelled. In some cases, additional
+insight from using agent-based modelling was obtained. Overall, we can confirm that
+agent-based modelling is a useful addition to the tool set of immunologists, as it
+has extra features that allow for simulations with characteristics that are closer
+to the biological phenomena.To cite BioModels Database, please use: BioModels Database:
+An enhanced, curated and annotated resource for published quantitative kinetic models.
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to CC0 Public Domain Dedication for more information.
+```
+  T notes "tumor cell"
+  E notes "effector cell"
+  a notes "proliferation rate of tumor"
+  b notes "=0.002/0.004death rate of tumor"
+  n notes "immune killing rate of tumor"
+  p notes "immune stimulation rate"
+  g notes "immune stimulation half saturation constant"
+  m notes "immune cell exhaustion rate"
+  d notes "=0.1908/0.3743/2immune cell death rate"
+  s notes "=0.318/0.1181/0immune cell source"
+end
+
+Figueredo2013_1___immunointeraction_base_model is "Figueredo2013/1 - immunointeraction base model"

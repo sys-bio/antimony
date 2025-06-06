@@ -1,3 +1,4 @@
+#include "stringx.h"
 #include <sstream>
 #include <assert.h>
 #include <iostream>
@@ -6,6 +7,7 @@
 #include "registry.h"
 #include <limits>
 #include <stdlib.h>
+#include <regex>
 
 using namespace std;
 extern bool CaselessStrCmp(bool caseless, const string& lhs, const string& rhs);
@@ -91,25 +93,6 @@ string ToThinString(wstring in)
   string out;
   for (size_t ch=0; ch<in.size(); ch++) {
 	  out.push_back(static_cast<char>(in[ch]));
-  }
-  return out;
-}
-
-string Trim(string in)
-{
-  string out = in;
-  while (out.size() && out[0] == ' ') {
-    out.erase(0,1);
-  }
-  while (out.size() && out[out.size()-1] == ' ') {
-    out.erase(out.size()-1, 1);
-  }
-  size_t retpos;
-  while ((retpos = out.find('\n')) != string::npos) {
-    out.replace(retpos, 1, " ");
-  }
-  while ((retpos = out.find('\r')) != string::npos) {
-    out.replace(retpos, 1, " ");
   }
   return out;
 }
@@ -269,6 +252,8 @@ void setFormulaWithString(string formulastring, Formula* formula, Module* module
       input.unget();
       input.unget();
     }
+
+    //Just add the character.
     string text;
     text.push_back(cc);
     formula->AddText(&text);
@@ -309,25 +294,6 @@ void FixUnitName(string& name)
   }
 }
 
-string escapeDoubleQuotes(string s)
-{
-  string::size_type n=0;
-  while((n=s.find("\"",n)) < string::npos) {
-    s.insert(n, "\\");
-    n+=2;
-  }
-  return s;
-}
-
-void gitdiffit(const std::string& before, const std::string& after)
-{
-  system(("git -c color.ui=always diff $(echo \"" +
-    escapeDoubleQuotes(before) +
-    "\" | git hash-object -w --stdin) $(echo \"" +
-    escapeDoubleQuotes(after) +
-    "\" | git hash-object -w --stdin) --color-words | tail -n +6").c_str());
-}
-
 //From https://stackoverflow.com/questions/216823/how-to-trim-an-stdstring
 // trim from start (in place)
 void ltrim(std::string& s) {
@@ -347,4 +313,33 @@ void rtrim(std::string& s) {
 void trim(std::string& s) {
     rtrim(s);
     ltrim(s);
+}
+
+void trimAndRemoveDoubleSpaces(std::string& s) {
+    trim(s);
+    std::string::size_type pos = s.find("  ");
+
+    while (pos != std::string::npos) {
+
+        // replace BOTH spaces with one space
+        s.replace(pos, 2, " ");
+
+        // start searching again, where you left off
+        // rather than going back to the beginning
+        pos = s.find("  ", pos);
+    }
+    regex triple_tics("```");
+    //BUG:  Maddy currently does not support ```preformatted text``` like this.
+    //s = regex_replace(s, triple_tics, "\"\"\"");
+    s = regex_replace(s, triple_tics, "");
+}
+
+string quoteText(string in)
+{
+    regex ret("\n");
+    if (regex_search(in, ret)) {
+        return "```\n" + in + "\n```";
+    }
+    regex quote("\"");
+    return "\"" + regex_replace(in, quote, "\\\"") + "\"";
 }

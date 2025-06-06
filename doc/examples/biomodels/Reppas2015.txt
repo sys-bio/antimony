@@ -1,0 +1,176 @@
+// Created by libAntimony v3.0.0
+model *Reppas2015___tumor_control_via_alternating_immunostimulating_and_immunosuppressive_phases()
+
+  // Compartments and Species:
+  compartment tumor_microenvironment;
+  species E in tumor_microenvironment, R in tumor_microenvironment, $f in tumor_microenvironment;
+  species $E_0 in tumor_microenvironment;
+
+  // Assignment Rules:
+  f := R^(B - 1)/(R^(B - 1) + 1);
+  E_0 := E/100000;
+
+  // Reactions:
+  tumor_growth:  => R; tumor_microenvironment*(lm*B*R/3);
+  tumor_death: R => ; tumor_microenvironment*(la*R/3);
+  tumor_killing: R => ; tumor_microenvironment*(c*E_0*R*f);
+  tumor_nutrient_supply:  => R; tumor_microenvironment*(lm*(1 - B)*ld/tanh(R/ld));
+  effector_stimulation:  => E; tumor_microenvironment*(r*R*R*R*E/(k + R*R*R));
+  effector_exhaustion: E => ; tumor_microenvironment*(d1*E*R*R*R*f);
+  effector_death: E => ; tumor_microenvironment*d0*E;
+  effector_source:  => E; tumor_microenvironment*sigma;
+  tumor_nutrient_missuply: R => ; tumor_microenvironment*(lm*(1 - B)*ld*ld/R);
+
+  // Species initializations:
+  E = 1000000;
+  E has substance_per_volume;
+  R = 2;
+  R has substance_per_volume;
+  f has substance_per_volume;
+  E_0 has substance_per_volume;
+
+  // Compartment initializations:
+  tumor_microenvironment = 1;
+  tumor_microenvironment has volume;
+
+  // Variable initializations:
+  B = 0.5;
+  B has unit_0;
+  lm = 1.34;
+  lm has unit_1;
+  la = 0.14;
+  la has unit_1;
+  ld = 0.3;
+  ld has unit_0;
+  c = 0.03;
+  c has unit_1;
+  k = 2.72;
+  k has unit_0;
+  d1 = 0.01;
+  d1 has unit_1;
+  d0 = 0.37;
+  d0 has unit_1;
+  sigma = 13000;
+  sigma has unit_1;
+  r = 0.57;
+  r has unit_1;
+
+  // Other declarations:
+  const tumor_microenvironment, B, lm, la, ld, c, k, d1, d0, sigma, r;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = time_unit;
+  unit substance = 1e-3 mole;
+  unit unit_0 = 1 / dimensionless^-0;
+  unit unit_1 = 1 / 86400e-1 second;
+  unit extent = substance;
+  unit substance_per_volume = 1e-3 mole / 1e-3 litre;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1";
+  unit_1 is "1/d";
+  tumor_microenvironment is "tumor microenvironment";
+  E_0 is "E'";
+  tumor_growth is "tumor growth";
+  tumor_death is "tumor death";
+  tumor_killing is "tumor killing";
+  tumor_nutrient_supply is "tumor nutrient supply";
+  effector_stimulation is "effector stimulation";
+  effector_exhaustion is "effector exhaustion";
+  effector_death is "effector death";
+  effector_source is "effector source";
+  tumor_nutrient_missuply is "tumor nutrient missuply";
+
+  // CV terms:
+  tumor_microenvironment biological_system "http://identifiers.org/ncit/C94498"
+  E biological_system "http://identifiers.org/ncit/C28241"
+  R biological_system "http://identifiers.org/cl/CL:0001064"
+  f biological_system "http://identifiers.org/ncit/C54025"
+  E_0 biological_system "http://identifiers.org/ncit/C28241"
+  lm biological_system "http://identifiers.org/sbo/SBO:0000610"
+  la biological_system "http://identifiers.org/ncit/C53346"
+  ld biological_system "http://identifiers.org/sbo/SBO:0000466"
+  c biological_system "http://identifiers.org/ncit/C53346"
+  k biological_system "http://identifiers.org/sbo/SBO:0000193"
+  d1 biological_system "http://identifiers.org/ncit/C53346"
+  d0 biological_system "http://identifiers.org/ncit/C53346"
+  sigma biological_system "http://identifiers.org/sbo/SBO:0000610"
+  r biological_system "http://identifiers.org/sbo/SBO:0000610"
+  tumor_growth biological_system "http://identifiers.org/go/GO:0008283"
+  tumor_growth biological_system "http://identifiers.org/sbo/SBO:0000393"
+  tumor_death biological_system "http://identifiers.org/sbo/SBO:0000179"
+  tumor_death biological_system "http://identifiers.org/go/GO:0008219"
+  tumor_killing biological_system "http://identifiers.org/sbo/SBO:0000179"
+  tumor_killing biological_system "http://identifiers.org/go/GO:0001909"
+  tumor_nutrient_supply biological_system "http://identifiers.org/go/GO:0008283"
+  tumor_nutrient_supply biological_system "http://identifiers.org/sbo/SBO:0000393"
+  effector_stimulation biological_system "http://identifiers.org/sbo/SBO:0000393"
+  effector_stimulation biological_system "http://identifiers.org/go/GO:0070661"
+  effector_exhaustion biological_system "http://identifiers.org/go/GO:0008219"
+  effector_exhaustion biological_system "http://identifiers.org/sbo/SBO:0000179"
+  effector_death biological_system "http://identifiers.org/go/GO:0008219"
+  effector_death biological_system "http://identifiers.org/sbo/SBO:0000179"
+  effector_source biological_system "http://identifiers.org/sbo/SBO:0000393"
+  effector_source biological_system "http://identifiers.org/go/GO:0070661"
+  tumor_nutrient_missuply biological_system "http://identifiers.org/sbo/SBO:0000179"
+  tumor_nutrient_missuply biological_system "http://identifiers.org/go/GO:0008219"
+
+  model publication "http://identifiers.org/pubmed/26305801"
+  model model_source "http://identifiers.org/biomodels.db/MODEL1907110002",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000749"
+  model biological_system "http://identifiers.org/go/GO:0002418"
+  model property "http://identifiers.org/mamo/MAMO_0000046"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model created "2019-07-11T10:58:43Z"
+  model modified "2019-07-11T10:58:43Z"
+  model creator1.givenName "Jinghao"
+  model creator1.familyName "Men"
+  model creator1.organization "University of Cambridge"
+  model creator1.email "jm2187@cam.ac.uk"
+
+  // Notes:
+  model notes ```
+The paper describes a model of tumor control via alternating immunostimulating and
+immunosuppressive phases. Created by COPASI 4.25 (Build 207) This model is described
+in the article: In silico tumor control induced via alternating immunostimulating
+and immunosuppressive phasesAI Reppas, JCL Alfonso, and H HatzikirouVirulence 7:2,
+174--186Abstract: Despite recent advances in the field of Oncoimmunology, the success
+potential of immunomodulatory therapies against cancer remains to be elucidated.
+One of the reasons is the lack of understanding on the complex interplay between
+tumor growth dynamics and the associated immune system responses. Toward this goal,
+we consider a mathematical model of vascularized tumor growth and the corresponding
+effector cell recruitment dynamics. Bifurcation analysis allows for the exploration
+of model’s dynamic behavior and the determination of these parameter regimes that
+result in immune-mediated tumor control. In this work, we focus on a particular tumor
+evasion regime that involves tumor and effector cell concentration oscillations of
+slowly increasing and decreasing amplitude, respectively. Considering a temporal
+multiscale analysis, we derive an analytically tractable mapping of model solutions
+onto a weakly negatively damped harmonic oscillator. Based on our analysis, we propose
+a theory-driven intervention strategy involving immunostimulating and immunosuppressive
+phases to induce long-term tumor control.To cite BioModels Database, please use:
+BioModels Database: An enhanced, curated and annotated resource for published quantitative
+kinetic models . To the extent possible under law, all copyright and related or neighbouring
+rights to this encoded model have been dedicated to the public domain worldwide.
+Please refer to CC0 Public Domain Dedication for more information.
+```
+  E notes "initial condition 1=2e6, condition 2=1e6effector cell count"
+  R notes "in mmtumor radius"
+  f notes "phenomenological scaling function f(R,B)"
+  B notes "vascularization parameter, 0.40/0.50/0.65/0.80/0.95"
+  E_0 notes "effector cell count/1e5easier for plotting"
+  lm notes "Mitotic rate of tumor cells"
+  la notes "Death rate of tumor cells"
+  ld notes "Characteristic nutrient diffusion length, mm0.2-0.3"
+  c notes "Killing rate of tumor cells by effectors"
+  k notes "Tumor volume where effector recruitment rate is half-maximal"
+  d1 notes "Inactivation rate of effectors by tumor cells"
+  d0 notes "Death rate of effectors"
+  sigma notes "Background rate of effector recruitment"
+  r notes "immune recruitment rate, 0.54/0.57/0.60"
+end
+
+Reppas2015___tumor_control_via_alternating_immunostimulating_and_immunosuppressive_phases is "Reppas2015 - tumor control via alternating immunostimulating and immunosuppressive phases"

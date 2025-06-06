@@ -1,0 +1,335 @@
+// Created by libAntimony v3.0.0
+model *Zi2011_TGFbeta_Pathway()
+
+  // Compartments and Species:
+  compartment default, Vmed, Vcyt, Vnuc;
+  species TGF_beta_ex in Vmed, T1R_surf in Vcyt, T1R_endo in Vcyt, T2R_surf in Vcyt;
+  species T2R_endo in Vcyt, LRC_surf in Vcyt, LRC_endo in Vcyt, Smad2c in Vcyt;
+  species Smad2n in Vnuc, Smad4c in Vcyt, Smad4n in Vnuc, PSmad2c in Vcyt;
+  species PSmad2_PSmad2_c in Vcyt, PSmad2_Smad4_c in Vcyt, PSmad2n in Vnuc;
+  species PSmad2_PSmad2_n in Vnuc, PSmad2_Smad4_n in Vnuc, TGF_beta_endo in Vcyt;
+  species TGF_beta_ns in Vmed, $AA in Vcyt, $empty_degraded in Vcyt;
+
+  // Assignment Rules:
+  Vmed := 2e-3/(1e6*exp(ln(1.45)*time/1440));
+  totalNumT1R := (T1R_surf + T1R_endo + LRC_surf + LRC_endo)*2.3*602;
+  totalNumT2R := (T2R_surf + T2R_endo + LRC_surf + LRC_endo)*2.3*602;
+  totalNumLRC := (LRC_surf + LRC_endo)*2.3*602;
+  totalNumPSmad2 := (PSmad2c + PSmad2_PSmad2_c*2 + PSmad2_Smad4_c)*2.3*602 + (PSmad2n + PSmad2_PSmad2_n*2 + PSmad2_Smad4_n)*602;
+  totalNuclearPSmad2 := PSmad2n + 2*PSmad2_PSmad2_n + PSmad2_Smad4_n;
+  totalSmad2c := Smad2c + PSmad2c + 2*PSmad2_PSmad2_c + PSmad2_Smad4_c;
+  totalSmad2n := Smad2n + PSmad2n + 2*PSmad2_PSmad2_n + PSmad2_Smad4_n;
+  medium_TGF_beta_amount := TGF_beta_ex*1e-9*Vmed*6e23;
+  koff_ns := kon_ns*KD_ns;
+
+  // Reactions:
+  re1: $AA => T1R_surf; Vcyt*k_T1R;
+  re2: T1R_surf => T1R_endo; Vcyt*ki*T1R_surf;
+  re3: T1R_endo => T1R_surf; Vcyt*kr*T1R_endo;
+  re4: T1R_endo => $empty_degraded; Vcyt*kdeg_T1R*T1R_endo;
+  re5: $AA => T2R_surf; Vcyt*k_T2R;
+  re6: T2R_surf => T2R_endo; Vcyt*ki*T2R_surf;
+  re7: T2R_endo => T2R_surf; Vcyt*kr*T2R_endo;
+  re8: T2R_endo => $empty_degraded; Vcyt*kdeg_T2R*T2R_endo;
+  re9: TGF_beta_ex + T2R_surf + T1R_surf => LRC_surf; Vcyt*ka_LRC*TGF_beta_ex*T2R_surf*T1R_surf;
+  re10: LRC_surf => LRC_endo; Vcyt*ki*LRC_surf;
+  re11: LRC_endo => $empty_degraded; Vcyt*kdeg_LRC*LRC_endo;
+  re12: LRC_endo => T1R_endo + T2R_endo + TGF_beta_endo; Vcyt*kdiss_LRC*LRC_endo;
+  re13: TGF_beta_endo => $empty_degraded; Vcyt*kdeg_TGF_beta*TGF_beta_endo;
+  re14: Smad2c => Smad2n; Vcyt*kimp_Smad2*Smad2c;
+  re15: Smad2n => Smad2c; Vnuc*kexp_Smad2*Smad2n;
+  re16: Smad4c => Smad4n; Vcyt*kimp_Smad4*Smad4c;
+  re17: Smad4n => Smad4c; Vnuc*kexp_Smad4*Smad4n;
+  re18: Smad2c => PSmad2c; Vcyt*kpho_Smad2*Smad2c*LRC_endo;
+  re19: PSmad2c => PSmad2n; Vcyt*kimp_Smad2*PSmad2c;
+  re20: PSmad2n => PSmad2c; Vnuc*kexp_Smad2*PSmad2n;
+  re21: PSmad2c + Smad4c -> PSmad2_Smad4_c; Vcyt*(kon_Smads*PSmad2c*Smad4c - koff_Smads*PSmad2_Smad4_c);
+  re22: PSmad2_Smad4_c => PSmad2_Smad4_n; Vcyt*kimp_Smads*PSmad2_Smad4_c;
+  re23: PSmad2_Smad4_n -> PSmad2n + Smad4n; Vnuc*(koff_Smads*PSmad2_Smad4_n - kon_Smads*PSmad2n*Smad4n);
+  re24: PSmad2n => Smad2n; Vnuc*kdepho_Smad2*PSmad2n;
+  re25: 2 PSmad2c -> PSmad2_PSmad2_c; Vcyt*(kon_Smads*PSmad2c^2 - koff_Smads*PSmad2_PSmad2_c);
+  re26: PSmad2_PSmad2_c => PSmad2_PSmad2_n; Vcyt*kimp_Smads*PSmad2_PSmad2_c;
+  re27: PSmad2_PSmad2_n -> 2 PSmad2n; Vnuc*(koff_Smads*PSmad2_PSmad2_n - kon_Smads*PSmad2n^2);
+  re28: LRC_surf => $empty_degraded; Vcyt*klid*LRC_surf*totalNuclearPSmad2;
+  re29: TGF_beta_ex -> TGF_beta_ns; Vmed*(kon_ns*TGF_beta_ex - koff_ns*TGF_beta_ns);
+
+  // Events:
+  single_pulse_TGF_beta_washout: at 0 after (stimulation_type == 2) && (time > single_pulse_duration): TGF_beta_ex = 0;
+
+  // Species initializations:
+  TGF_beta_ex = 0.05;
+  TGF_beta_ex has nM_per_volume;
+  T1R_surf = (k_T1R*kdeg_T1R + k_T1R*kr)/(kdeg_T1R*ki);
+  T1R_surf has nM_per_volume;
+  T1R_endo = k_T1R/kdeg_T1R;
+  T1R_endo has nM_per_volume;
+  T2R_surf = (k_T2R*kdeg_T2R + k_T2R*kr)/(kdeg_T2R*ki);
+  T2R_surf has nM_per_volume;
+  T2R_endo = k_T2R/kdeg_T2R;
+  T2R_endo has nM_per_volume;
+  LRC_surf = 0;
+  LRC_surf has nM_per_volume;
+  LRC_endo = 0;
+  LRC_endo has nM_per_volume;
+  Smad2c = 60.6;
+  Smad2c has nM_per_volume;
+  Smad2n = 28.5;
+  Smad2n has nM_per_volume;
+  Smad4c = 50.8;
+  Smad4c has nM_per_volume;
+  Smad4n = 50.8;
+  Smad4n has nM_per_volume;
+  PSmad2c = 0;
+  PSmad2c has nM_per_volume;
+  PSmad2_PSmad2_c = 0;
+  PSmad2_PSmad2_c has nM_per_volume;
+  PSmad2_Smad4_c = 0;
+  PSmad2_Smad4_c has nM_per_volume;
+  PSmad2n = 0;
+  PSmad2n has nM_per_volume;
+  PSmad2_PSmad2_n = 0;
+  PSmad2_PSmad2_n has nM_per_volume;
+  PSmad2_Smad4_n = 0;
+  PSmad2_Smad4_n has nM_per_volume;
+  TGF_beta_endo = 0;
+  TGF_beta_endo has nM_per_volume;
+  TGF_beta_ns = 0;
+  TGF_beta_ns has nM_per_volume;
+  AA = 0;
+  AA has nM_per_volume;
+  empty_degraded = 0;
+  empty_degraded has nM_per_volume;
+
+  // Compartment initializations:
+  default = 1;
+  default has volume;
+  Vmed has volume;
+  Vcyt = 2.3e-12;
+  Vcyt has volume;
+  Vnuc = 1e-12;
+  Vnuc has volume;
+
+  // Variable initializations:
+  k_T1R = 0.0167;
+  k_T1R has nM_per_min;
+  kdeg_T1R = 0.00256;
+  kdeg_T1R has per_min;
+  kr = 0.0333;
+  kr has per_min;
+  ki = 0.333;
+  ki has per_min;
+  k_T2R = 0.0190076;
+  k_T2R has nM_per_min;
+  kdeg_T2R = 0.0132;
+  kdeg_T2R has per_min;
+  stimulation_type = 2;
+  stimulation_type has dimensionless;
+  single_pulse_duration = 0.5;
+  single_pulse_duration has min_unit;
+  totalNumT1R has molecules_per_cell;
+  totalNumT2R has molecules_per_cell;
+  totalNumLRC has molecules_per_cell;
+  totalNumPSmad2 has molecules_per_cell;
+  totalNuclearPSmad2 has nM;
+  totalSmad2c has nM;
+  totalSmad2n has nM;
+  medium_TGF_beta_amount has molecules_per_cell;
+  TGF_beta_dose_mol_per_cell = TGF_beta_ex*1e-9*Vmed*6e23;
+  TGF_beta_dose_mol_per_cell has molecules_per_cell;
+  kdeg_LRC = 0.00256;
+  kdeg_LRC has per_min;
+  kdeg_TGF_beta = 0.347;
+  kdeg_TGF_beta has per_min;
+  klid = 0.0233678;
+  klid has per_min;
+  ka_LRC = 117.897;
+  ka_LRC has third_order;
+  kdiss_LRC = 0.0438111;
+  kdiss_LRC has per_min;
+  kimp_Smad2 = 0.156;
+  kimp_Smad2 has per_min;
+  kexp_Smad2 = 0.763;
+  kexp_Smad2 has per_min;
+  kimp_Smad4 = 0.156;
+  kimp_Smad4 has per_min;
+  kexp_Smad4 = 0.359;
+  kexp_Smad4 has per_min;
+  kpho_Smad2 = 0.0488268;
+  kpho_Smad2 has second_order;
+  kon_Smads = 0.198472;
+  kon_Smads has second_order;
+  koff_Smads = 1;
+  koff_Smads has per_min;
+  kimp_Smads = 0.889;
+  kimp_Smads has per_min;
+  kdepho_Smad2 = 0.394;
+  kdepho_Smad2 has per_min;
+  kon_ns = 0.0505413;
+  kon_ns has per_min;
+  koff_ns has per_min;
+  KD_ns = 40.2257;
+  KD_ns has dimensionless;
+
+  // Other declarations:
+  var Vmed, totalNumT1R, totalNumT2R, totalNumLRC, totalNumPSmad2, totalNuclearPSmad2;
+  var totalSmad2c, totalSmad2n, medium_TGF_beta_amount, TGF_beta_dose_mol_per_cell;
+  var koff_ns;
+  const default, Vcyt, Vnuc, k_T1R, kdeg_T1R, kr, ki, k_T2R, kdeg_T2R, stimulation_type;
+  const single_pulse_duration, kdeg_LRC, kdeg_TGF_beta, klid, ka_LRC, kdiss_LRC;
+  const kimp_Smad2, kexp_Smad2, kimp_Smad4, kexp_Smad4, kpho_Smad2, kon_Smads;
+  const koff_Smads, kimp_Smads, kdepho_Smad2, kon_ns, KD_ns;
+
+  // Unit definitions:
+  unit substance = 1e-9 mole;
+  unit volume = litre;
+  unit area = metre^2;
+  unit length = metre;
+  unit time_unit = 60 second;
+  unit per_min = 1 / 60 second;
+  unit nM_per_min = 1e-9 mole / 60 second;
+  unit third_order = 1 / ((1e-9 mole)^2 * 60 second);
+  unit second_order = 1 / (1e-9 mole * 60 second);
+  unit min_unit = 60 second;
+  unit nM = 1e-9 mole;
+  unit molecules_per_cell = dimensionless;
+  unit nM_per_volume = 1e-9 mole / litre;
+
+  // Display Names:
+  time_unit is "min";
+  per_min is "per min";
+  nM_per_min is "nM per min";
+  third_order is "third order rate constant";
+  second_order is "second order rate constant";
+  min_unit is "minute";
+  nM is "nanomolar";
+  molecules_per_cell is "molecules per cell";
+  Vmed is "Medium";
+  Vcyt is "Cytoplasm";
+  Vnuc is "Nucleus";
+  single_pulse_TGF_beta_washout is "TGF-beta washout in singel pulse stimulation";
+  re1 is "T1R production";
+  re2 is "T1R internalization to early endosome";
+  re3 is "T1R recycling from early endosome";
+  re4 is "T1R constitutive degradation";
+  re5 is "T2R production";
+  re6 is "T2R internalization to early endosome";
+  re7 is "T2R recycling from early endosome";
+  re8 is "T2R constitutive degradation";
+  re9 is "LRC activation";
+  re10 is "LRC internalization to early endosome";
+  re11 is "LRC constitutive degradation";
+  re12 is "dissociation of LRC in endosome";
+  re13 is "TGF-beta constitutive degradation";
+  re14 is "Smad2 nuclear import";
+  re15 is "Smad2 nuclear export";
+  re16 is "Smad4 nuclear import";
+  re17 is "Smad4 nuclear export";
+  re18 is "Smad2 phosphorylation";
+  re19 is "PSmad2 nuclear import";
+  re20 is "PSmad2 nuclear export";
+  re21 is "Smad2-Smad4 complex formation";
+  re22 is "Smad2-Smad4 nuclear import";
+  re23 is "Smad2-Smad4 dissociation";
+  re24 is "Smad2 dephosphorylation";
+  re25 is "PSmad2 dimer formation";
+  re26 is "PSmad2 dimer nuclear  import";
+  re27 is "PSmad2 dimmer dissociation";
+  re28 is "negative feedback induced LRC degradation";
+  re29 is "non-specific binding of TGF-beta";
+
+  // Notes:
+  model notes ```
+This model is from the article: 
+** Quantitative analysis of transient and sustained transforming growth factor-β
+signaling dynamics.** 
+Zhike Zi, Zipei Feng, Douglas A Chapnick, Markus Dahl, Difan Deng, Edda Klipp, Aristidis
+Moustakas & Xuedong Liu *Molecular Systems Biology*2011 May 24;7:492. 
+[21613981](http://www.ncbi.nlm.nih.gov/pubmed/21613981), 
+**Abstract:** 
+Mammalian cells can decode the concentration of extracellular transforming growth
+factor-β (TGF-β) and transduce this cue into appropriate cell fate decisions. How
+variable TGF-β ligand doses quantitatively control intracellular signaling dynamics
+and how continuous ligand doses are translated into discontinuous cellular fate decisions
+remain poorly understood. Using a combined experimental and mathematical modeling
+approach, we discovered that cells respond differently to continuous and pulsating
+TGF-β stimulation. The TGF-β pathway elicits a transient signaling response to
+a single pulse of TGF-β stimulation, whereas it is capable of integrating repeated
+pulses of ligand stimulation at short time interval, resulting in sustained phospho-Smad2
+and transcriptional responses. Additionally, the TGF-β pathway displays different
+sensitivities to ligand doses at different time scales. While ligand-induced short-term
+Smad2 phosphorylation is graded, long-term Smad2 phosphorylation is switch-like to
+a small change in TGF-β levels. Correspondingly, the short-term Smad7 gene expression
+is graded, while long-term PAI-1 gene expression is switch-like, as is the long-term
+growth inhibitory response. Our results suggest that long-term switch-like signaling
+responses in the TGF-β pathway might be critical for cell fate determination. 
+
+
+**Note:** 
+
+Developer of the model: Zhike Zi
+
+Reference: Zi Z. et al., Quantitative Analysis of Transient and Sustained Transforming
+Growth Factor-beta Signaling Dynamics, Molecular Systems Biology, 2011
+
+1. The global parameter that set the type of stimulation
+
+(a) for sustained TGF-beta stimulation: set stimulation_type = 1.
+
+(b) for single pulse of TGF-beta stimulation: set stimulation_type = 2.
+
+parameter "single_pulse_duration" is for the duration of stimulation,
+for example,
+
+single_pulse_duration = 0.5, for 0.5 min (30 seconds) of TGF-beta stimulation.
+
+\*Note: make sure that the time course cover the time point when the event is
+triggered.
+
+(c) for single pulse of TGF-beta stimulation in COPASI
+
+change the trigger of event "single_pulse_TGF_beta_washout"
+
+from
+
+"and(eq(stimulation_type, 2), eq(time, single_pulse_duration))" (for
+SBML-SAT)
+
+to
+
+"and(eq(stimulation_type, 2), gt(time, single_pulse_duration))" (for
+COPASI)
+
+
+2. Notes for TGF-beta dose in terms of molecules per cell
+
+(a) The following equation applies for conversion of TGF-beta dose in molecules per
+cell
+
+TGF_beta_dose_mol_per_cell = initial TGF_beta_ex\*1e-9\*Vmed\*6e23
+
+(b) for standard experimental setup 1e6 cells in 2 mL medium
+
+0.001 nM initial TGF_beta_ex is approximately equal to the dose of 1200 TGF-beta
+molecules/cell
+
+0.050 nM initial TGF_beta_ex is approximately equal to the dose of 60000 TGF-beta
+molecules/cell
+
+(c) For 1e6 cells in 10 mL medium, please change the initial compartment size
+of Vmed and the corresponding assignment rule for Vmed.
+
+initial Vmed = 1e-8 (1e6 cells in 10 mL medium)
+
+Vmed = 0.010/(1e6\*exp(log(1.45)\*time/1440)) (1e6 cells in 10 mL medium)
+
+
+3. Please note that this model contains events and the medium compartment size is
+varied.
+
+
+4. For the model simulation in SBML-SAT, please remove initialAssignments and save
+it as SBML Level 2 Verion 1 file.
+```
+end
+
+Zi2011_TGFbeta_Pathway is "Zi2011_TGF-beta_Pathway"

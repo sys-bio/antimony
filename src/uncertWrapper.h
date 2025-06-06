@@ -7,7 +7,7 @@
 #endif
 
 class Variable;
-// A proxy class returned by the parser for setting SBO terms
+// A proxy class returned by the parser for setting Uncertainty terms
 class UncertWrapper : public Variable
 {
 protected:

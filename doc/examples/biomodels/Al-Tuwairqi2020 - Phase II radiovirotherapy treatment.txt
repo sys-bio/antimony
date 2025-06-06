@@ -1,0 +1,128 @@
+// Created by libAntimony v3.0.0
+model *Al_Tuwairqi2020___Dynamics_of_cancer_radiovirotherapy()
+
+  // Compartments and Species:
+  compartment Whole_organism;
+  species uninfected_cancer_cells in Whole_organism, infected_cancer_cells in Whole_organism;
+  species free_virus in Whole_organism, damaged_cancer_cells in Whole_organism;
+
+  // Reactions:
+  uninfected_cancer_cell_growth:  => uninfected_cancer_cells; Whole_organism*(f*uninfected_cancer_cells);
+  cancer_cell_infection: uninfected_cancer_cells => infected_cancer_cells; Whole_organism*(uninfected_cancer_cells*free_virus);
+  infected_cancer_cell_lysis: infected_cancer_cells => free_virus; Whole_organism*infected_cancer_cell_lysis_k1*infected_cancer_cells;
+  virus_infection_removal: free_virus => ; Whole_organism*(m*uninfected_cancer_cells*free_virus + h*free_virus);
+  radiotherapy_uninfected_cells: uninfected_cancer_cells => damaged_cancer_cells; Whole_organism*alpha_1*uninfected_cancer_cells;
+  radiotherapy_infected_cells: infected_cancer_cells => damaged_cancer_cells; Whole_organism*alpha_2*infected_cancer_cells;
+  damaged_cell_removal: damaged_cancer_cells => ; Whole_organism*alpha_3*damaged_cancer_cells;
+
+  // Events:
+  radiotherapy: at time >= 35: alpha_3 = 0.9, alpha_2 = 0.5, alpha_1 = 0.5;
+
+  // Species initializations:
+  uninfected_cancer_cells = 0.4;
+  infected_cancer_cells = 0;
+  free_virus = 0.1;
+  damaged_cancer_cells = 0;
+
+  // Compartment initializations:
+  Whole_organism = 1;
+
+  // Variable initializations:
+  alpha_1 = 0;
+  alpha_2 = 0;
+  alpha_3 = 0;
+  f = 0;
+  h = 0.15;
+  m = 0.02;
+  infected_cancer_cell_lysis_k1 = 1;
+
+  // Other declarations:
+  var alpha_1, alpha_2, alpha_3;
+  const Whole_organism, f, h, m;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = (1e-3 metre)^3;
+  unit time_unit = 3600e2 second;
+  unit substance = item;
+
+  // Display Names:
+  time_unit is "time";
+  virus_infection_removal is "virus_infection/removal";
+
+  // CV terms:
+  Whole_organism biological_system "http://identifiers.org/ncit/C13413"
+  Whole_organism property "http://identifiers.org/pato/PATO:0001993"
+  uninfected_cancer_cells biological_system "http://identifiers.org/cl/CL:0001063"
+  uninfected_cancer_cells property "http://identifiers.org/chebi/CHEBI:144829"
+  uninfected_cancer_cells property "http://identifiers.org/efo/0001460"
+  infected_cancer_cells biological_system "http://identifiers.org/cl/CL:0001063"
+  infected_cancer_cells biological_system "http://identifiers.org/bto/BTO:0000152"
+  infected_cancer_cells property "http://identifiers.org/chebi/CHEBI:144829"
+  free_virus biological_system "http://identifiers.org/ido/0000508"
+  free_virus biological_system "http://identifiers.org/ncit/C717"
+  damaged_cancer_cells biological_system "http://identifiers.org/cl/CL:0001063"
+  damaged_cancer_cells property "http://identifiers.org/pato/PATO:0001167"
+  damaged_cancer_cells property "http://identifiers.org/chebi/CHEBI:144829"
+  uninfected_cancer_cell_growth biological_system "http://identifiers.org/sbo/SBO:0000393"
+  uninfected_cancer_cell_growth biological_system "http://identifiers.org/go/GO:0008283"
+  cancer_cell_infection biological_system "http://identifiers.org/ncit/C3439"
+  cancer_cell_infection biological_system "http://identifiers.org/ido/0000586"
+  infected_cancer_cell_lysis biological_system "http://identifiers.org/go/GO:0044659"
+  infected_cancer_cell_lysis biological_system "http://identifiers.org/go/GO:0008219"
+  infected_cancer_cell_lysis biological_system "http://identifiers.org/sbo/SBO:0000394"
+  virus_infection_removal biological_system "http://identifiers.org/sbo/SBO:0000394"
+  virus_infection_removal biological_system "http://identifiers.org/go/GO:0046718"
+  radiotherapy_uninfected_cells biological_system "http://identifiers.org/go/GO:0071478"
+  radiotherapy_uninfected_cells biological_system "http://identifiers.org/ncit/C61555"
+  radiotherapy_infected_cells biological_system "http://identifiers.org/go/GO:0071478"
+  radiotherapy_infected_cells biological_system "http://identifiers.org/ncit/C61555"
+  damaged_cell_removal biological_system "http://identifiers.org/go/GO:0008219"
+  damaged_cell_removal biological_system "http://identifiers.org/sbo/SBO:0000394"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL2108170001",
+                     "http://identifiers.org/biomodels.db/BIOMD0000001032"
+  model propertyBearer "http://identifiers.org/ncit/C15313"
+  model propertyBearer "http://identifiers.org/ncit/C62713"
+  model propertyBearer "http://identifiers.org/ncit/C15438"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model description "http://identifiers.org/pubmed/32738266"
+  model property "http://identifiers.org/doid/DOID:162",
+                 "http://identifiers.org/go/GO:0002837",
+                 "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2021-08-13T16:54:52Z"
+  model modified "2021-08-13T16:54:52Z"
+  model creator1.givenName "Emilia"
+  model creator1.familyName "Chen"
+  model creator1.organization "University of Cambridge"
+  model creator1.email "eblc2@cam.ac.uk"
+
+  // Notes:
+  model notes ```
+This ordinary differential equation model of cancer radiovirotherapy dynamics 
+is described in the publication:Salma M. Al-Tuwairqi, Najwa O. Al-Johani, Eman A. 
+Simbawa,"Modeling dynamics of cancer radiovirotherapy",Journal of Theoretical 
+Biology, Volume 506, 2020, 110405, ISSN 0022-5193,DOI: 10.1016/j.jtbi.2020.110405.Comment:This 
+model is represented by the equations in system (14) of the publication manuscript 
+and describes the cancer-virus interactions for the Phase II radiovirotherapy
+treatment.Abstract:Advances in genetic engineering have paved the way for a new 
+therapy for cancer, which is called virotherapy. This treatment uses genetically 
+engineered viruses which selectively infect, replicate in, and destroy cancer cells 
+without damaging normal cells. Furthermore, current research and clinical trials 
+have indicated that these viruses can be delivered as single agents or in combination 
+with other therapies. In this paper, we propose systems of ordinary differential 
+equations for modeling the dynamics of aggressive tumor growth under radiovirotherapy 
+treatment. We divide the treatment period into two phases; consequently, we present 
+two mathematical models. First, we formulate the virotherapy model as Phase I of 
+the treatment. Then we extend the model to include radiotherapy in combination with 
+virotherapy as Phase II of the treatment. Comprehensive qualitative analyses of both 
+models are conducted. Furthermore, numerical experiments are performed in order to 
+support the analytical results. An analysis of the parameters is also carried out 
+to investigate their effects on the outcome of the treatment. Overall, the analytical 
+results reveal that radiovirotherapy is more effective than, and a good alternative 
+to, virotherapy, as it is capable of eradicating tumors completely.
+```
+end
+
+Al_Tuwairqi2020___Dynamics_of_cancer_radiovirotherapy is "Al-Tuwairqi2020 - Dynamics of cancer radiovirotherapy - Phase II treatment"

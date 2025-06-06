@@ -1,0 +1,111 @@
+// Created by libAntimony v3.0.0
+model *New_Model()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species p_0 in compartment_, p_1 in compartment_, p_2 in compartment_, p_3 in compartment_;
+  species p_4 in compartment_, p_5 in compartment_, p_6 in compartment_, p_7 in compartment_;
+  species p_8 in compartment_, $p in compartment_;
+
+  // Assignment Rules:
+  p := p_0 + p_1 + p_2 + p_3 + p_4 + p_5 + p_6 + p_7 + p_8;
+  myu := a*exp(b*time);
+
+  // Reactions:
+  mutation_1_2: p_1 => p_2; compartment_*(myu*p_1);
+  mutation_2_3: p_2 => p_3; compartment_*(myu*p_2);
+  mutation_3_4: p_3 => p_4; compartment_*(myu*p_3);
+  mutation_4_5: p_4 => p_5; compartment_*(myu*p_4);
+  mutation_5_6: p_5 => p_6; compartment_*(myu*p_5);
+  mutation_6_7: p_6 => p_7; compartment_*(myu*p_6);
+  mutation_7_8: p_7 => p_8; compartment_*(myu*p_7);
+  mutation_0_1: p_0 => p_1; compartment_*(myu*p_0);
+
+  // Species initializations:
+  p_0 = 1;
+  p_1 = 0;
+  p_2 = 0;
+  p_3 = 0;
+  p_4 = 0;
+  p_5 = 0;
+  p_6 = 0;
+  p_7 = 0;
+  p_8 = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  a = 1e-06;
+  b = 3e-05;
+
+  // Other declarations:
+  var myu;
+  const compartment_, a, b;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  mutation_1_2 is "mutation 1-2";
+  mutation_2_3 is "mutation 2-3";
+  mutation_3_4 is "mutation 3-4";
+  mutation_4_5 is "mutation 4-5";
+  mutation_5_6 is "mutation 5-6";
+  mutation_6_7 is "mutation 6-7";
+  mutation_7_8 is "mutation 7-8";
+  mutation_0_1 is "mutation 0-1";
+
+  // CV terms:
+  compartment_ biological_system "http://identifiers.org/ncit/C13413"
+  p_0 biological_system "http://identifiers.org/efo/0000311"
+  p_1 biological_system "http://identifiers.org/efo/0000311"
+  p_2 biological_system "http://identifiers.org/efo/0000311"
+  p_3 biological_system "http://identifiers.org/efo/0000311"
+  p_4 biological_system "http://identifiers.org/efo/0000311"
+  p_5 biological_system "http://identifiers.org/efo/0000311"
+  p_6 biological_system "http://identifiers.org/efo/0000311"
+  p_7 biological_system "http://identifiers.org/efo/0000311"
+  p_8 biological_system "http://identifiers.org/efo/0000311"
+  p biological_system "http://identifiers.org/efo/0000311"
+
+  model property "http://identifiers.org/mamo/MAMO_0000046"
+  model property "http://identifiers.org/efo/0000311"
+  model property "http://identifiers.org/ncit/C94346"
+  model property "http://identifiers.org/vario/VariO:0139"
+  model description "http://identifiers.org/pubmed/30463617"
+  model created "2019-09-24T14:12:49Z"
+  model modified "2019-09-24T14:12:49Z"
+  model creator1.givenName "Szeyi"
+  model creator1.familyName "Ng"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "muffet0307@gmail.com"
+
+  // Notes:
+  model notes ```
+BackgroundCancer is one of the leading causes for the morbidity and mortality worldwide.
+Although substantial studies have been conducted theoretically and experimentally
+in recent years, it is still a challenge to explore the mechanisms of cancer initiation
+and progression. The investigation for these problems is very important for the diagnosis
+of cancer diseases and development of treatment schemes.ResultsTo accurately describe
+the process of cancer initiation, we propose a new concept of gene initial mutation
+rate based on our recently designed mathematical model using the non-constant mutation
+rate. Unlike the widely-used average gene mutation rate that depends on the number
+of mutations, the gene initial mutation rate can be used to describe the initiation
+process of a single patient. In addition, we propose the instantaneous tumour doubling
+time that is a continuous function of time based on the non-constant mutation rate.
+Our proposed concepts are supported by the clinic data of seven patients with advanced
+pancreatic cancer. The regression results suggest that, compared with the average
+mutation rate, the estimated initial mutation rate has a larger value of correlation
+coefficient with the patient survival time. We also provide the estimated tumour
+size of these seven patients over time.ConclusionsThe proposed concepts can be used
+to describe the cancer initiation and progression for different patients more accurately.
+Since a quantitative understanding of cancer progression is important for clinical
+treatment, our proposed model and calculated results may provide insights into the
+development of treatment schemes and also have other clinic implications.
+```
+end
+
+New_Model is "Sun2018 - Instantaneous mutation rate in cancer initiation and progression"

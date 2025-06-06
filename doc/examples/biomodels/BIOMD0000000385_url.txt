@@ -1,0 +1,176 @@
+// Created by libAntimony v3.0.0
+model *Arnold2011_Schultz2003_RuBisCO_CalvinCycle()
+
+  // Compartments and Species:
+  compartment chloroplast;
+  species $RuBP in chloroplast, PGA in chloroplast, NADPH in chloroplast;
+  species $CO2 in chloroplast, $O2 in chloroplast, $NADP in chloroplast;
+
+  // Assignment Rules:
+  NADP := Nt - NADPH;
+  J := alpha*PPFD/sqrt(1 + (alpha*PPFD/Jmax)^2)/(65*0.5);
+  phi := 0.21*((g0 + (h*k/CO2)*(v_c - Rd))*O2/Ko)/((g0 + (h*k - 1.6)*(v_c - Rd))/Kc);
+  v_c := (abs((abs(Vc + Vj) - abs(Vc - Vj))/2 + Vp) - abs((abs(Vc + Vj) - abs(Vc - Vj))/2 - Vp))/2;
+  Vc := Vcmax*((CO2 - 1.6*((1/2)*((1.6*(Vcmax - Rd) + ((k*h/CO2)*Rd + g0)*(CO2 + Kc*(1 + O2/Ko)) + (k*h/CO2)*Vcmax*(Gamma - CO2))/(1.6 - (k*h/CO2)*(CO2 + Kc*(1 + O2/Ko))) + sqrt(((1.6*(Vcmax - Rd) + ((k*h/CO2)*Rd + g0)*(CO2 + Kc*(1 + O2/Ko)) + (k*h/CO2)*Vcmax*(Gamma - CO2))/(1.6 - (k*h/CO2)*(CO2 + Kc*(1 + O2/Ko))))^2 + 4*g0*((Rd*(CO2 + Kc*(1 + O2/Ko)) + Vcmax*(Gamma - CO2))/(1.6 - (k*h/CO2)*(CO2 + Kc*(1 + O2/Ko))))))/(g0 + (k*h/CO2)*(1/2)*((1.6*(Vcmax - Rd) + ((k*h/CO2)*Rd + g0)*(CO2 + Kc*(1 + O2/Ko)) + (k*h/CO2)*Vcmax*(Gamma - CO2))/(1.6 - (k*h/CO2)*(CO2 + Kc*(1 + O2/Ko))) + sqrt(((1.6*(Vcmax - Rd) + ((k*h/CO2)*Rd + g0)*(CO2 + Kc*(1 + O2/Ko)) + (k*h/CO2)*Vcmax*(Gamma - CO2))/(1.6 - (k*h/CO2)*(CO2 + Kc*(1 + O2/Ko))))^2 + 4*g0*((Rd*(CO2 + Kc*(1 + O2/Ko)) + Vcmax*(Gamma - CO2))/(1.6 - (k*h/CO2)*(CO2 + Kc*(1 + O2/Ko)))))))))/((CO2 - 1.6*((1/2)*((1.6*(Vcmax - Rd) + ((k*h/CO2)*Rd + g0)*(CO2 + Kc*(1 + O2/Ko)) + (k*h/CO2)*Vcmax*(Gamma - CO2))/(1.6 - (k*h/CO2)*(CO2 + Kc*(1 + O2/Ko))) + sqrt(((1.6*(Vcmax - Rd) + ((k*h/CO2)*Rd + g0)*(CO2 + Kc*(1 + O2/Ko)) + (k*h/CO2)*Vcmax*(Gamma - CO2))/(1.6 - (k*h/CO2)*(CO2 + Kc*(1 + O2/Ko))))^2 + 4*g0*((Rd*(CO2 + Kc*(1 + O2/Ko)) + Vcmax*(Gamma - CO2))/(1.6 - (k*h/CO2)*(CO2 + Kc*(1 + O2/Ko))))))/(g0 + (k*h/CO2)*(1/2)*((1.6*(Vcmax - Rd) + ((k*h/CO2)*Rd + g0)*(CO2 + Kc*(1 + O2/Ko)) + (k*h/CO2)*Vcmax*(Gamma - CO2))/(1.6 - (k*h/CO2)*(CO2 + Kc*(1 + O2/Ko))) + sqrt(((1.6*(Vcmax - Rd) + ((k*h/CO2)*Rd + g0)*(CO2 + Kc*(1 + O2/Ko)) + (k*h/CO2)*Vcmax*(Gamma - CO2))/(1.6 - (k*h/CO2)*(CO2 + Kc*(1 + O2/Ko))))^2 + 4*g0*((Rd*(CO2 + Kc*(1 + O2/Ko)) + Vcmax*(Gamma - CO2))/(1.6 - (k*h/CO2)*(CO2 + Kc*(1 + O2/Ko))))))))) + Kc*(1 + O2/Ko)));
+  Vj := (J/4)*((CO2 - 1.6*((1/2)*((1.6*(J/4 - Rd) + ((k*h/CO2)*Rd + g0)*(CO2 + 2*Gamma) + ((k*h/CO2)*J/4)*(Gamma - CO2))/(1.6 - (k*h/CO2)*(CO2 + 2*Gamma)) + sqrt(((1.6*(J/4 - Rd) + ((k*h/CO2)*Rd + g0)*(CO2 + 2*Gamma) + ((k*h/CO2)*J/4)*(Gamma - CO2))/(1.6 - (k*h/CO2)*(CO2 + 2*Gamma)))^2 + 4*g0*((Rd*(CO2 + 2*Gamma) + (J/4)*(Gamma - CO2))/(1.6 - (k*h/CO2)*(CO2 + 2*Gamma)))))/(g0 + (k*h/CO2)*(1/2)*((1.6*(J/4 - Rd) + ((k*h/CO2)*Rd + g0)*(CO2 + 2*Gamma) + ((k*h/CO2)*J/4)*(Gamma - CO2))/(1.6 - (k*h/CO2)*(CO2 + 2*Gamma)) + sqrt(((1.6*(J/4 - Rd) + ((k*h/CO2)*Rd + g0)*(CO2 + 2*Gamma) + ((k*h/CO2)*J/4)*(Gamma - CO2))/(1.6 - (k*h/CO2)*(CO2 + 2*Gamma)))^2 + 4*g0*((Rd*(CO2 + 2*Gamma) + (J/4)*(Gamma - CO2))/(1.6 - (k*h/CO2)*(CO2 + 2*Gamma))))))))/((CO2 - 1.6*((1/2)*((1.6*(J/4 - Rd) + ((k*h/CO2)*Rd + g0)*(CO2 + 2*Gamma) + ((k*h/CO2)*J/4)*(Gamma - CO2))/(1.6 - (k*h/CO2)*(CO2 + 2*Gamma)) + sqrt(((1.6*(J/4 - Rd) + ((k*h/CO2)*Rd + g0)*(CO2 + 2*Gamma) + ((k*h/CO2)*J/4)*(Gamma - CO2))/(1.6 - (k*h/CO2)*(CO2 + 2*Gamma)))^2 + 4*g0*((Rd*(CO2 + 2*Gamma) + (J/4)*(Gamma - CO2))/(1.6 - (k*h/CO2)*(CO2 + 2*Gamma)))))/(g0 + (k*h/CO2)*(1/2)*((1.6*(J/4 - Rd) + ((k*h/CO2)*Rd + g0)*(CO2 + 2*Gamma) + ((k*h/CO2)*J/4)*(Gamma - CO2))/(1.6 - (k*h/CO2)*(CO2 + 2*Gamma)) + sqrt(((1.6*(J/4 - Rd) + ((k*h/CO2)*Rd + g0)*(CO2 + 2*Gamma) + ((k*h/CO2)*J/4)*(Gamma - CO2))/(1.6 - (k*h/CO2)*(CO2 + 2*Gamma)))^2 + 4*g0*((Rd*(CO2 + 2*Gamma) + (J/4)*(Gamma - CO2))/(1.6 - (k*h/CO2)*(CO2 + 2*Gamma)))))))) + 2*Gamma));
+  Vp := 3*TPU*((CO2 - 1.6*((1/2)*((1.6*(3*TPU - Rd) + ((k*h/CO2)*Rd + g0)*(CO2 - Gamma) - k*h*3*TPU)/(1.6 - (k*h/CO2)*(CO2 - Gamma)) + sqrt(((1.6*(3*TPU - Rd) + ((k*h/CO2)*Rd + g0)*(CO2 - Gamma) - k*h*3*TPU)/(1.6 - (k*h/CO2)*(CO2 - Gamma)))^2 + 4*g0*((Rd*(CO2 - Gamma) - 3*TPU*CO2)/(1.6 - (k*h/CO2)*(CO2 - Gamma)))))/(g0 + (k*h/CO2)*(1/2)*((1.6*(3*TPU - Rd) + ((k*h/CO2)*Rd + g0)*(CO2 - Gamma) - k*h*3*TPU)/(1.6 - (k*h/CO2)*(CO2 - Gamma)) + sqrt(((1.6*(3*TPU - Rd) + ((k*h/CO2)*Rd + g0)*(CO2 - Gamma) - k*h*3*TPU)/(1.6 - (k*h/CO2)*(CO2 - Gamma)))^2 + 4*g0*((Rd*(CO2 - Gamma) - 3*TPU*CO2)/(1.6 - (k*h/CO2)*(CO2 - Gamma))))))))/(CO2 - 1.6*((1/2)*((1.6*(3*TPU - Rd) + ((k*h/CO2)*Rd + g0)*(CO2 - Gamma) - k*h*3*TPU)/(1.6 - (k*h/CO2)*(CO2 - Gamma)) + sqrt(((1.6*(3*TPU - Rd) + ((k*h/CO2)*Rd + g0)*(CO2 - Gamma) - k*h*3*TPU)/(1.6 - (k*h/CO2)*(CO2 - Gamma)))^2 + 4*g0*((Rd*(CO2 - Gamma) - 3*TPU*CO2)/(1.6 - (k*h/CO2)*(CO2 - Gamma)))))/(g0 + (k*h/CO2)*(1/2)*((1.6*(3*TPU - Rd) + ((k*h/CO2)*Rd + g0)*(CO2 - Gamma) - k*h*3*TPU)/(1.6 - (k*h/CO2)*(CO2 - Gamma)) + sqrt(((1.6*(3*TPU - Rd) + ((k*h/CO2)*Rd + g0)*(CO2 - Gamma) - k*h*3*TPU)/(1.6 - (k*h/CO2)*(CO2 - Gamma)))^2 + 4*g0*((Rd*(CO2 - Gamma) - 3*TPU*CO2)/(1.6 - (k*h/CO2)*(CO2 - Gamma))))))) - Gamma));
+
+  // Reactions:
+  PGA_prod_Vc: $RuBP + $CO2 + 2 NADPH => 2 PGA; chloroplast*(((Vc + Vj - abs(Vc - Vj))/2 + Vp - abs((Vc + Vj - abs(Vc - Vj))/2 - Vp))/2);
+  PGA_prod_Vo: $RuBP + $O2 + 2 NADPH => 1.5 PGA; chloroplast*(phi*((Vc + Vj - abs(Vc - Vj))/2 + Vp - abs((Vc + Vj - abs(Vc - Vj))/2 - Vp))/2);
+  PGA_cons: PGA => $RuBP; chloroplast*((PGA/Rp)*(NADPH/Nt)*Vcmax);
+  NADPH_prod: $NADP => NADPH; chloroplast*((J/2)*(NADP/Nt));
+
+  // Species initializations:
+  RuBP = 2;
+  PGA = 2.4;
+  NADPH = 0.21;
+  CO2 = 35;
+  O2 = 21;
+
+  // Compartment initializations:
+  chloroplast = 1;
+
+  // Variable initializations:
+  Nt = 0.5;
+  Rp = 3.2;
+  alpha = 0.19;
+  PPFD = 1000;
+  Jmax = 112.989573402043;
+  Gamma = 3.81695;
+  Vcmax = 1.4749455852483;
+  Kc = 27.8535785188479;
+  Ko = 41.9469718861558;
+  g0 = 0.468615384615385;
+  h = 0.6;
+  k = 118.69;
+  Rd = 0.00624227154326423;
+  TPU = 0.227712577291006;
+
+  // Other declarations:
+  var J, phi, v_c, Vc, Vj, Vp;
+  const chloroplast, Nt, Rp, alpha, PPFD, Jmax, Gamma, Vcmax, Kc, Ko, g0;
+  const h, k, Rd, TPU;
+
+  // Unit definitions:
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  PGA_prod_Vc is "PGA production - v_c";
+  PGA_prod_Vo is "PGA production - v_o";
+  PGA_cons is "PGA consumption";
+  NADPH_prod is "NADPH production";
+
+  // SBO terms:
+  Nt.sboTerm = 9
+  Rp.sboTerm = 9
+  alpha.sboTerm = 9
+  J.sboTerm = 9
+  PPFD.sboTerm = 196
+  Jmax.sboTerm = 9
+  Gamma.sboTerm = 9
+  Vcmax.sboTerm = 9
+  Kc.sboTerm = 9
+  Ko.sboTerm = 9
+  phi.sboTerm = 9
+  g0.sboTerm = 9
+  h.sboTerm = 9
+  k.sboTerm = 9
+  v_c.sboTerm = 9
+  Rd.sboTerm = 9
+  TPU.sboTerm = 196
+  Vc.sboTerm = 9
+  Vj.sboTerm = 9
+  Vp.sboTerm = 9
+
+  // CV terms:
+  RuBP biological_system "http://identifiers.org/chebi/CHEBI:16710"
+  PGA biological_system "http://identifiers.org/chebi/CHEBI:17050"
+  NADPH biological_system "http://identifiers.org/chebi/CHEBI:16474"
+  CO2 biological_system "http://identifiers.org/chebi/CHEBI:16526"
+  O2 biological_system "http://identifiers.org/chebi/CHEBI:15379"
+  NADP biological_system "http://identifiers.org/chebi/CHEBI:25523"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1109270001"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000385"
+  model publication "http://identifiers.org/pubmed/22001849"
+  model model_source "http://identifiers.org/go/GO:0019253"
+  model taxon "http://identifiers.org/taxonomy/33090"
+  model created "2011-10-19T14:51:13Z"
+  model modified "2012-04-20T19:52:45Z"
+  model creator1.givenName "Vijayalakshmi"
+  model creator1.familyName "Chelliah"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "viji@ebi.ac.uk"
+  model creator2.givenName "Zoran"
+  model creator2.familyName "Nikoloski"
+  model creator2.organization "Institute  of Biochemistry and Biology, University of Potsdam, 14476 Potsdam, Germany"
+  model creator2.email "nikoloski@mpimp-golm.mpg.de"
+  model creator3.givenName "Anne"
+  model creator3.familyName "Arnold"
+  model creator3.organization "Max-Planck-Institute of Molecular Plant Physiology"
+  model creator3.email "arnold@mpimp-golm.mpg.de"
+
+  // Notes:
+  model notes ```
+This model is from the article: 
+**A quantitative comparison of Calvin–Benson cycle models** 
+Anne Arnold, Zoran Nikoloski *Trends in Plant Science* 2011
+Oct 14. [22001849](http://www.ncbi.nlm.nih.gov/pubmed/22001849) , 
+**Abstract:** 
+The Calvin-Benson cycle (CBC) provides the precursors for biomass synthesis
+necessary for plant growth. The dynamic behavior and yield of the CBC depend on the
+environmental conditions and regulation of the cellular state. Accurate quantitative
+models hold the promise of identifying the key determinants of the tightly regulated
+CBC function and their effects on the responses in future climates. We provide an
+integrative analysis of the largest compendium of existing models for photosynthetic
+processes. Based on the proposed ranking, our framework facilitates the discovery
+of best-performing models with regard to metabolomics data and of candidates for
+metabolic engineering. 
+
+**Note:** Model of the Calvin cycle with focus on the RuBisCO reaction
+by Schultz (2003, [DOI:10.1071/FP02146](http://dx.doi.org/10.1071/FP02146) ). 
+The parameter values are partly taken from Farquhar et al. (1980, [DOI:10.1007/BF00386231](http://dx.doi.org/10.1007/BF00386231) ) and Medlyn et al. (2002, [DOI:10.1046/j.1365-3040.2002.00891.x](http://dx.doi.org/10.1046/j.1365-3040.2002.00891.x) ). The initial metabolite values are chosen from the data set of Zhu et al. (2007, [DOI:10.1104/pp.107.103713](http://dx.doi.org/10.1104/pp.107.103713) ). A detailed description of all modifications is given in the model described by Arnold and Nikoloski (2011, [PMID:22001849](http://www.ncbi.nlm.nih.gov/pubmed/22001849) .
+```
+  CO2 notes "[Pa]"
+  O2 notes "[kPa]"
+  alpha notes "Table 1, sunleaves (20-30°C)"
+  J notes ```
+converted into [mM] using Winter et al. (1994) subcellular stroma volume, BioNumbers
+(ID: 105594)
+```
+  Gamma notes "LPI = 15 (mature leaves LPI 10-20, p. 667); additionally legend of Figure 1"
+  Vcmax notes ```
+converted into [mM] using Winter et al. (1994) subcellular stroma volume, BioNumbers
+(ID: 105594)
+```
+  g0 notes ```
+converted into [mM] using Winter et al. (1994) subcellular stroma volume, BioNumbers
+(ID: 105594)
+```
+  h notes ```
+"relative humidity >50%" (p. 675)
+```
+  Rd notes ```
+LPI = 15 (mature leaves LPI 10-20, p. 667); additionally legend of Figure 1; converted
+into [mM] using Winter et al. (1994) subcellular stroma volume, BioNumbers (ID: 105594)
+```
+  TPU notes ```
+converted into [mM] using Winter et al. (1994) subcellular stroma volume, BioNumbers
+(ID: 105594)
+```
+  Vc notes ```
+incorporates assimilation rate (A) dependence; solved and replaced (causes a complex
+assignment)
+```
+  Vj notes ```
+incorporates assimilation rate (A) dependence; solved and replaced (causes a complex
+assignment)
+```
+  Vp notes ```
+incorporates assimilation rate (A) dependence; solved and replaced (causes a complex
+assignment)
+```
+end
+
+Arnold2011_Schultz2003_RuBisCO_CalvinCycle is "Arnold2011_Schultz2003_RuBisCO-CalvinCycle"

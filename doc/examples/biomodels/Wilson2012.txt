@@ -1,0 +1,197 @@
+// Created by libAntimony v3.0.0
+model *Wilson2012___tumor_vaccine_efficacy()
+
+  // Compartments and Species:
+  compartment tme;
+  species T in tme, B in tme, E in tme, R in tme, V in tme;
+
+  // Assignment Rules:
+  c0 := 1/c0inv;
+
+  // Reactions:
+  tumor_growth:  => T; tme*(a0*T*(1 - c0*T));
+  tumor_immune: T => ; tme*(d0*E*T/(1 + c1*B));
+  tumor_immune_induced: T => ; tme*(d0*T*V);
+  tgfb_secretion:  => B; tme*(a1*T^2/(c2 + T^2));
+  tgfb_decay: B => ; tme*d*B;
+  effector_stimulation:  => E; tme*(f*E*T/(1 + c3*T*B));
+  effector_death: E => ; tme*d1*E;
+  effector_regulation: E => ; tme*(d0*R*E);
+  effector_conversion: E => R; tme*r*E;
+  Treg_death: R => ; tme*d1*R;
+  vaccine_decay: V => ; tme*d1*V;
+
+  // Events:
+  vaccine_administration: at time >= 3, t0=false, persistent=false, fromTrigger=false: V = g0;
+
+  // Species initializations:
+  T = 3;
+  T has substance_per_volume;
+  B = 0;
+  B has substance_per_volume;
+  E = 100;
+  E has substance_per_volume;
+  R = 1;
+  R has substance_per_volume;
+  V = 0;
+  V has substance_per_volume;
+
+  // Compartment initializations:
+  tme = 1;
+  tme has volume;
+
+  // Variable initializations:
+  g0 = 0;
+  g0 has unit_0;
+  a0 = 0.1946;
+  a0 has unit_1;
+  c0 has unit_0;
+  c0inv = 369;
+  c0inv has unit_0;
+  d0 = 1e-05;
+  d0 has unit_1;
+  c1 = 100;
+  c1 has unit_0;
+  a1 = 0.3;
+  a1 has unit_1;
+  c2 = 300;
+  c2 has unit_0;
+  d = 0.0007;
+  d has unit_1;
+  f = 0.62;
+  f has unit_1;
+  c3 = 300;
+  c3 has unit_0;
+  r = 0.01;
+  r has unit_1;
+  d1 = 1e-05;
+  d1 has unit_1;
+
+  // Other declarations:
+  var c0;
+  const tme, g0, a0, c0inv, d0, c1, a1, c2, d, f, c3, r, d1;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1 / dimensionless^-0;
+  unit time_unit = time_unit;
+  unit substance = 1e-3 mole;
+  unit unit_0 = 1 / dimensionless^-0;
+  unit unit_1 = 1 / 86400 second;
+  unit extent = substance;
+  unit substance_per_volume = 1e-3 mole / dimensionless^0;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1";
+  unit_1 is "1/d";
+  vaccine_administration is "vaccine administration";
+  tumor_growth is "tumor growth";
+  tumor_immune is "tumor immune";
+  tumor_immune_induced is "tumor immune-induced";
+  tgfb_secretion is "tgfb secretion";
+  tgfb_decay is "tgfb decay";
+  effector_stimulation is "effector stimulation";
+  effector_death is "effector death";
+  effector_regulation is "effector regulation";
+  effector_conversion is "effector conversion";
+  Treg_death is "Treg death";
+  vaccine_decay is "vaccine decay";
+
+  // CV terms:
+  tme biological_system "http://identifiers.org/ncit/C94498"
+  T biological_system "http://identifiers.org/cl/CL:0001064"
+  B identity "http://identifiers.org/uniprot/P01137"
+  E biological_system "http://identifiers.org/cl/CL:0000911"
+  R propertyBearer "http://identifiers.org/cl/CL:0000815"
+  V biological_system "http://identifiers.org/cl/CL:0000911"
+  g0 parthood "http://identifiers.org/ncit/C25488"
+  a0 propertyBearer "http://identifiers.org/sbo/SBO:0000610"
+  c0 biological_system "http://identifiers.org/sbo/SBO:0000661"
+  c0inv biological_system "http://identifiers.org/sbo/SBO:0000661"
+  d0 propertyBearer "http://identifiers.org/ncit/C25636"
+  c1 biological_system "http://identifiers.org/ncit/C48922"
+  a1 biological_system "http://identifiers.org/ncit/C25636"
+  c2 biological_system "http://identifiers.org/ncit/C48922"
+  d biological_system "http://identifiers.org/ncit/C25636"
+  f biological_system "http://identifiers.org/ncit/C25636"
+  c3 biological_system "http://identifiers.org/ncit/C48922"
+  r biological_system "http://identifiers.org/ncit/C25636"
+  d1 biological_system "http://identifiers.org/ncit/C25636"
+  tumor_growth biological_system "http://identifiers.org/go/GO:0008283"
+  tumor_growth biological_system "http://identifiers.org/sbo/SBO:0000393"
+  tumor_immune biological_system "http://identifiers.org/sbo/SBO:0000179"
+  tumor_immune biological_system "http://identifiers.org/go/GO:0002419"
+  tumor_immune_induced biological_system "http://identifiers.org/go/GO:0002419"
+  tumor_immune_induced biological_system "http://identifiers.org/sbo/SBO:0000179"
+  tgfb_secretion biological_system "http://identifiers.org/sbo/SBO:0000393"
+  tgfb_secretion biological_system "http://identifiers.org/go/GO:0050663"
+  tgfb_decay biological_system "http://identifiers.org/sbo/SBO:0000179"
+  tgfb_decay biological_system "http://identifiers.org/go/GO:0030163"
+  effector_stimulation biological_system "http://identifiers.org/go/GO:0008283"
+  effector_stimulation biological_system "http://identifiers.org/sbo/SBO:0000393"
+  effector_death biological_system "http://identifiers.org/go/GO:0008219"
+  effector_death biological_system "http://identifiers.org/sbo/SBO:0000179"
+  effector_regulation biological_system "http://identifiers.org/go/GO:0008219"
+  effector_regulation biological_system "http://identifiers.org/sbo/SBO:0000179"
+  Treg_death biological_system "http://identifiers.org/go/GO:0008219"
+  Treg_death biological_system "http://identifiers.org/sbo/SBO:0000179"
+  vaccine_decay biological_system "http://identifiers.org/sbo/SBO:0000179"
+  vaccine_decay biological_system "http://identifiers.org/go/GO:0008219"
+
+  model publication "http://identifiers.org/pubmed/22438084"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model property "http://identifiers.org/go/GO:0002418",
+                 "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2019-08-12T11:19:29Z"
+  model modified "2019-08-12T11:19:29Z"
+  model creator1.givenName "Jinghao"
+  model creator1.familyName "Men"
+  model creator1.organization "University of Cambridge"
+  model creator1.email "jm2187@cam.ac.uk"
+
+  // Notes:
+  model notes ```
+The paper describes a model of antitumor vaccine therapy.Created by COPASI 4.25 (Build
+207) This model is described in the article: A Mathematical Model of the Enhancement
+of Tumor Vaccine Efficacy by ImmunotherapyShelby Wilson and Doron LevyBull Math Biol.
+2012 July ; 74(7)Abstract: TGF-β is an immunoregulatory protein that contributes
+to inadequate antitumor immune responses in cancer patients. Recent experimental
+data suggests that TGF-β inhibition alone, provides few clinical benefits, yet it
+can significantly amplify the anti-tumor immune response when combined with a tumor
+vaccine. We develop a mathematical model in order to gain insight into the cooperative
+interaction between anti-TGF-β and vaccine treatments. The mathematical model follows
+the dynamics of the tumor size, TGF-β concentration, activated cytotoxic effector
+cells, and regulatory T cells. Using numerical simulations and stability analysis,
+we study the following scenarios: a control case of no treatment, anti-TGF-β treatment,
+vaccine treatment, and combined anti-TGF-β vaccine treatments. We show that our
+model is capable of capturing the observed experimental results, and hence can be
+potentially used in designing future experiments involving this approach to immunotherapy.To
+cite BioModels Database, please use: BioModels Database: An enhanced, curated and
+annotated resource for published quantitative kinetic models . To the extent possible
+under law, all copyright and related or neighbouring rights to this encoded model
+have been dedicated to the public domain worldwide. Please refer to CC0 Public Domain
+Dedication for more information.
+```
+  T notes "tumor size mm2"
+  B notes "TGFb"
+  E notes "effector cell"
+  R notes "regulatory T cell"
+  V notes "vaccine stimulated T cell"
+  g0 notes "0 or 5000vaccine dose"
+  a0 notes "tumor growth rate"
+  c0 notes "tumor carrying capacity inversed"
+  c0inv notes "tumor carrying capacity"
+  d0 notes "effector T-cell induced tumor death rate/removal rate of CTLs by Tregs"
+  c1 notes "TGF-β inhibitory parameter for CTL induction of tumor death"
+  a1 notes "maximal production rate of TGF-β"
+  c2 notes "steepness coefficient of TGF-β production"
+  d notes "degradation rate of TGF-β"
+  f notes "tumor antigenicity rate"
+  c3 notes "combined tumor growth and TGF-β inhibitory parameter for activation of CTLs"
+  r notes "rate of effector T cells that become regulatory T cells"
+  d1 notes "natural death of CTLs, Vaccine cells, and Tregs"
+end
+
+Wilson2012___tumor_vaccine_efficacy is "Wilson2012 - tumor vaccine efficacy"

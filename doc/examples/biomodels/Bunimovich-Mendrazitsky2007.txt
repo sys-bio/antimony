@@ -1,0 +1,135 @@
+// Created by libAntimony v3.0.0
+model *Bunimovich_Mendrazitsky2007___Mathematical_model_of_BCG_immunotherapy()
+
+  // Compartments and Species:
+  compartment Bladder;
+  species BCG in Bladder, Effector_cells in Bladder, Tumor_infected_cells in Bladder;
+  species Tumor_uninfected_cells in Bladder;
+
+  // Assignment Rules:
+  mu := mu2/mu1;
+
+  // Reactions:
+  BCG_production:  => BCG; Bladder*b;
+  Effector_cell_activation_recruitment:  => Effector_cells; Bladder*(Effector_cells*p4*BCG + alpha*Tumor_infected_cells);
+  Effector_cell_inactivation_death: Effector_cells => ; Bladder*(Effector_cells*mu + Effector_cells*p5*Tumor_infected_cells);
+  Tumor_growth:  => Tumor_uninfected_cells; Bladder*(Tumor_uninfected_cells*r*(1 - beta*Tumor_uninfected_cells));
+  Tumor_infection: Tumor_uninfected_cells + BCG => Tumor_infected_cells; Bladder*p2*Tumor_uninfected_cells*BCG;
+  Infected_tumor_cell_death: Tumor_infected_cells => ; Bladder*(p3*Effector_cells*Tumor_infected_cells);
+  BCG_killing: BCG => ; Bladder*(BCG*p1*Effector_cells + BCG);
+
+  // Species initializations:
+  BCG = 0;
+  Effector_cells = 0.05;
+  Tumor_infected_cells = 0;
+  Tumor_uninfected_cells = 0.55;
+
+  // Compartment initializations:
+  Bladder = 1;
+
+  // Variable initializations:
+  mu1 = 1;
+  mu2 = 0.41;
+  p1 = 1.25;
+  p2 = 0.285;
+  p3 = 1.1;
+  p4 = 0.085;
+  p5 = 0.003;
+  alpha = 0.52;
+  beta = 0.0155;
+  r = 0.12;
+  b = 1.9;
+
+  // Other declarations:
+  var mu;
+  const Bladder, mu1, mu2, p1, p2, p3, p4, p5, alpha, beta, r, b;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = litre;
+  unit time_unit = 86400 second;
+  unit substance = item;
+
+  // Display Names:
+  time_unit is "time";
+  Effector_cell_activation_recruitment is "Effector_cell_activation/recruitment";
+  Effector_cell_inactivation_death is "Effector_cell_inactivation/death";
+
+  // CV terms:
+  Bladder biological_system "http://identifiers.org/bto/BTO:0000123"
+  Bladder property "http://identifiers.org/hp/HP:0009725"
+  BCG biological_system "http://identifiers.org/taxonomy/33892"
+  Effector_cells biological_system "http://identifiers.org/cl/CL:0000911"
+  Effector_cells biological_system "http://identifiers.org/ncit/C28241"
+  Tumor_infected_cells biological_system "http://identifiers.org/cl/CL:0001063"
+  Tumor_infected_cells biological_system "http://identifiers.org/bto/BTO:0000152"
+  Tumor_infected_cells biological_system "http://identifiers.org/bto/BTO:0000362"
+  Tumor_uninfected_cells biological_system "http://identifiers.org/bto/BTO:0000362"
+  Tumor_uninfected_cells biological_system "http://identifiers.org/cl/CL:0001063"
+  Tumor_uninfected_cells property "http://identifiers.org/efo/0001460"
+  BCG_production biological_system "http://identifiers.org/omit/0008442"
+  BCG_production biological_system "http://identifiers.org/sbo/SBO:0000393"
+  Effector_cell_activation_recruitment biological_system "http://identifiers.org/go/GO:0042110"
+  Effector_cell_activation_recruitment biological_system "http://identifiers.org/sbo/SBO:0000393"
+  Effector_cell_activation_recruitment biological_system "http://identifiers.org/go/GO:0072678"
+  Effector_cell_inactivation_death biological_system "http://identifiers.org/ncit/C175900"
+  Effector_cell_inactivation_death biological_system "http://identifiers.org/sbo/SBO:0000394"
+  Effector_cell_inactivation_death biological_system "http://identifiers.org/go/GO:0008219"
+  Tumor_growth biological_system "http://identifiers.org/sbo/SBO:0000393"
+  Tumor_growth biological_system "http://identifiers.org/go/GO:0008283"
+  Tumor_infection biological_system "http://identifiers.org/ido/0000586"
+  Tumor_infection biological_system "http://identifiers.org/efo/0009429"
+  Infected_tumor_cell_death biological_system "http://identifiers.org/sbo/SBO:0000394"
+  Infected_tumor_cell_death biological_system "http://identifiers.org/go/GO:0001906"
+  Infected_tumor_cell_death biological_system "http://identifiers.org/go/GO:0008219"
+  BCG_killing biological_system "http://identifiers.org/go/GO:0042742"
+  BCG_killing biological_system "http://identifiers.org/go/GO:0008219"
+  BCG_killing biological_system "http://identifiers.org/sbo/SBO:0000394"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL2108190003",
+                     "http://identifiers.org/biomodels.db/BIOMD0000001034"
+  model container "http://identifiers.org/bto/BTO:0000123"
+  model propertyBearer "http://identifiers.org/ncit/C15438"
+  model propertyBearer "http://identifiers.org/efo/0011041"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model taxon "http://identifiers.org/taxonomy/33892"
+  model description "http://identifiers.org/pubmed/17457655"
+  model property "http://identifiers.org/go/GO:0002837",
+                 "http://identifiers.org/doid/DOID:11054",
+                 "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2021-08-17T14:45:08Z"
+  model modified "2021-08-17T14:45:08Z"
+  model creator1.givenName "Emilia"
+  model creator1.familyName "Chen"
+  model creator1.organization "University of Cambridge"
+  model creator1.email "eblc2@cam.ac.uk"
+
+  // Notes:
+  model notes ```
+This ordinary differential equation model, simulating the tumor-immune interactions 
+involved in BCG immunotherapy to treat superficial bladder cancer, is described by 
+the publication:Bunimovich-Mendrazitsky, S., Shochat, E., Stone, L. "Mathematical 
+Model of BCG Immunotherapy in Superficial Bladder Cancer". Bull. Math. Biol. 
+69, 1847–1870 (2007). DOI: 10.1007/s11538-007-9195-zComment:This model is based 
+on the system of ODEs given in Equation 4 of the publication manuscript.Reproduction 
+of Figure 4 was achieved by setting p4 = 0.085.Abstract:Immunotherapy with Bacillus 
+Calmette-Guérin (BCG)-an attenuated strain of Mycobacterium bovis (M. bovis) used 
+for anti tuberculosis immunization-is a clinically established procedure for the 
+treatment of superficial bladder cancer. However, the mode of action has not yet 
+been fully elucidated, despite much extensive biological experience. The purpose 
+of this paper is to develop a first mathematical model that describes tumor-immune 
+interactions in the bladder as a result of BCG therapy. A mathematical analysis of 
+the ODE model identifies multiple equilibrium points, their stability properties, 
+and bifurcation points. Intriguing regimes of bistability are identified in which 
+treatment has potential to result in a tumor-free equilibrium or a full-blown tumor 
+depending only on initial conditions. Attention is given to estimating parameters 
+and validating the model using published data taken from in vitro, mouse and human 
+studies. The model makes clear that intensity of immunotherapy must be kept in limited 
+bounds. While small treatment levels may fail to clear the tumor, a treatment that 
+is too large can lead to an over-stimulated immune system having dangerous side effects 
+for the patient.
+```
+end
+
+Bunimovich_Mendrazitsky2007___Mathematical_model_of_BCG_immunotherapy is "Bunimovich-Mendrazitsky2007 - Mathematical model of BCG immunotherapy"

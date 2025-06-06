@@ -1,0 +1,110 @@
+// Created by libAntimony v3.0.0
+model *New_Model()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species L in compartment_, U in compartment_, V in compartment_;
+
+  // Assignment Rules:
+  phi := ((r - delta)*L + g*U - alpha*U*V*(1 - p))/K;
+  K := L + U;
+
+  // Reactions:
+  Production_of_Lysogens:  => L; compartment_*(r*L + p*alpha*U*V);
+  Removal_of_Lysogens: L => ; compartment_*(delta*L + phi*L);
+  Production_of_uninfected_cells:  => U; compartment_*(g*U);
+  Removal_of_uninfected_cells: U => ; compartment_*(alpha*U*V + phi*U);
+  Production_of_viruses:  => V; compartment_*((1 - p)*b*alpha*U*V + b*delta*L);
+  Removal_of_viruses: V => ; compartment_*(gamma_*V + alpha*V*L);
+
+  // Species initializations:
+  L = 10000;
+  U = 990000;
+  V = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  r = 0.99;
+  delta = 0.0001;
+  p = 0.3;
+  alpha = 1e-07;
+  g = 1;
+  b = 150;
+  gamma_ = 0.001;
+
+  // Other declarations:
+  var phi, K;
+  const compartment_, r, delta, p, alpha, g, b, gamma_;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  gamma_ is "gamma";
+  Production_of_Lysogens is "Production of Lysogens";
+  Removal_of_Lysogens is "Removal of Lysogens";
+  Production_of_uninfected_cells is "Production of uninfected cells";
+  Removal_of_uninfected_cells is "Removal of uninfected cells";
+  Production_of_viruses is "Production of viruses";
+  Removal_of_viruses is "Removal of viruses";
+
+  // CV terms:
+  L instance "http://identifiers.org/ncit/C14283"
+  V instance "http://identifiers.org/ncit/C14283"
+  Production_of_Lysogens class "http://identifiers.org/sbo/SBO:0000393"
+  Removal_of_Lysogens property "http://identifiers.org/ncit/C64914"
+  Production_of_uninfected_cells class "http://identifiers.org/sbo/SBO:0000393"
+  Removal_of_uninfected_cells property "http://identifiers.org/ncit/C64914"
+  Production_of_viruses class "http://identifiers.org/sbo/SBO:0000393"
+  Removal_of_viruses property "http://identifiers.org/ncit/C64914"
+
+  model publication "http://identifiers.org/pubmed/31525321"
+  model model_source "http://identifiers.org/biomodels.db/MODEL1912040001",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000884"
+  model identity "http://identifiers.org/biomodels.db/MODEL1912040001"
+  model propertyBearer "http://identifiers.org/ncit/C61367"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model created "2019-12-03T10:15:44Z"
+  model modified "2019-12-03T10:15:44Z"
+  model creator1.givenName "Mohammad Umer"
+  model creator1.familyName "Sharif Shohan"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "msharifshohan@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+Optimality of the spontaneous prophage induction rate.Cortes MG1, Krog J2, Balázsi 
+G3.1 Department of Applied Mathematics and Statistics, Stony Brook University, Stony 
+Brook, NY 11794, USA.2 The Louis and Beatrice Laufer Center for Physical and Quantitative 
+Biology, Stony Brook University, Stony Brook, NY 11794, USA.3 Department of Biomedical 
+Engineering, Stony Brook University, Stony Brook, NY 11794, USA. Electronic address: 
+gabor.balazsi@stonybrook.edu.AbstractLysogens are bacterial cells that have survived 
+after genomically incorporating the DNA of temperate bacteriophages infecting them. 
+If an infection results in lysogeny, the lysogen continues to grow and divide normally, 
+seemingly unaffected by the integrated viral genome known as a prophage. However, 
+the prophage can still have an impact on the host&apos;s phenotype and overall fitness 
+in certain environments. Additionally, the prophage within the lysogen can activate 
+the lytic pathway via spontaneous prophage induction (SPI), killing the lysogen and 
+releasing new progeny phages. These new phages can then lyse or lysogenize other 
+susceptible nonlysogens, thereby impacting the competition between lysogens and nonlysogens. 
+In a scenario with differing growth rates, it is not clear whether SPI would be beneficial 
+or detrimental to the lysogens since it kills the host cell but also attacks nonlysogenic 
+competitors, either lysing or lysogenizing them. Here we study the evolutionary dynamics 
+of a mixture of lysogens and nonlysogens and derive general conditions on SPI rates 
+for lysogens to displace nonlysogens. We show that there exists an optimal SPI rate 
+for bacteriophage λ and explain why it is so low. We also investigate the impact 
+of stochasticity and conclude that even at low cell numbers SPI can still provide 
+an advantage to the lysogens. These results corroborate recent experimental studies 
+showing that lower SPI rates are advantageous for phage-phage competition, and establish 
+theoretical bounds on the SPI rate in terms of ecological and environmental variables 
+associated with lysogens having a competitive advantage over their nonlysogenic
+counterparts.Copyright © 2019 The Author(s). Published by Elsevier Ltd.. All rights 
+reserved.
+```
+end
+
+New_Model is "Cortes2019 - Optimality of the spontaneous prophage induction rate."

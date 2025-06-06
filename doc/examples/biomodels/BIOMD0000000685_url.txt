@@ -1,0 +1,145 @@
+// Created by libAntimony v3.0.0
+model *Wodarz2003_CTL_cross_priming()
+
+  // Compartments and Species:
+  compartment COMpartment;
+
+  // Assignment Rules:
+  R := C*A_star/(q*T);
+
+  // Rate Rules:
+  T' = r*T*(1 - T/k) - d*T - gamma_*T*C;
+  C' = eta*A_star*C/(epsilon*C + 1) - q*T*C - mu*C;
+  A' = lambda - delta_1*A - alpha*A*T;
+  A_star' = alpha*A*T - delta_2*A_star;
+
+  // Compartment initializations:
+  COMpartment = 1;
+
+  // Variable initializations:
+  T = 0.1;
+  r = 1;
+  k = 10;
+  d = 0.1;
+  gamma_ = 1;
+  C = 0.3;
+  A = 2;
+  lambda = 1;
+  delta_1 = 0.1;
+  alpha = 0.5;
+  A_star = 2;
+  delta_2 = 1.5;
+  eta = 2;
+  epsilon = 1;
+  q = 0.5;
+  mu = 0.1;
+
+  // Other declarations:
+  var T, C, A, A_star, R;
+  const COMpartment, r, k, d, gamma_, lambda, delta_1, alpha, delta_2, eta;
+  const epsilon, q, mu;
+
+  // Unit definitions:
+  unit time_unit = 86400 second;
+
+  // Display Names:
+  time_unit is "time";
+  gamma_ is "gamma";
+
+  // CV terms:
+  T biological_system "http://identifiers.org/ncit/C12922"
+  T biological_system "http://identifiers.org/bto/BTO:0000152"
+  r encodement "urn:miriam:sbo:SBO%3A0000610"
+  k encodement "http://identifiers.org/ncit/C25443"
+  d encodement "http://identifiers.org/go/GO:0008219"
+  gamma_ encodement "urn:miriam:obi:OBI%3A0302894"
+  C biological_system "http://identifiers.org/bto/BTO:0000289"
+  C biological_system "http://identifiers.org/cl/CL:0000910"
+  A biological_system "http://identifiers.org/cl/CL:0000145"
+  lambda encodement "urn:miriam:sbo:SBO%3A0000393"
+  delta_1 encodement "http://identifiers.org/go/GO:0008219"
+  alpha encodement "http://identifiers.org/chebi/CHEBI:59132"
+  alpha property "http://identifiers.org/go/GO:0019882"
+  alpha property "http://identifiers.org/ncit/C71688"
+  alpha property "http://identifiers.org/go/GO:0046903"
+  A_star biological_system "http://identifiers.org/cl/CL:0000145"
+  delta_2 encodement "http://identifiers.org/go/GO:0002578"
+  delta_2 encodement "http://identifiers.org/go/GO:0008219"
+  eta encodement "urn:miriam:sbo:SBO%3A0000610"
+  epsilon encodement "http://identifiers.org/ncit/C25443"
+  q encodement "http://identifiers.org/go/GO:0097300"
+  q encodement "http://identifiers.org/go/GO:0006924"
+  mu encodement "http://identifiers.org/go/GO:0008219"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1006230094"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000685"
+  model publication "http://identifiers.org/pubmed/12706524"
+  model model_source "http://identifiers.org/biomodels.db/MODEL1006230094"
+  model part "http://identifiers.org/bto/BTO:0000289"
+  model biological_system "http://identifiers.org/go/GO:0002250"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model description "http://identifiers.org/pubmed/12706524"
+  model part "http://identifiers.org/cl/CL:0000145"
+  model created "2010-06-25T13:46:40Z"
+  model modified "2018-03-09T11:42:14Z"
+  model creator1.givenName "Catherine"
+  model creator1.familyName "Lloyd"
+  model creator1.organization "University of Auckland"
+  model creator1.email "c.lloyd@auckland.ac.nz"
+  model creator2.givenName "Matthew Grant"
+  model creator2.familyName "Roberts"
+  model creator2.organization "EMBL-EBI"
+  model creator2.email "mroberts@embl.ac.uk"
+
+  // Notes:
+  model notes ```
+This a model from the article: 
+**A dynamical perspective of CTL cross-priming and regulation: implications forcancer
+immunology.** 
+Wodarz D, Jansen VA. *Immunol Lett* 2003 May 1;86(3):213-27
+[12706524](http://www.ncbi.nlm.nih.gov/pubmed/12706524) , 
+**Abstract:** 
+Cytotoxic T lymphocytes (CTL) responses are required to fight many diseases
+suchas viral infections and tumors. At the same time, they can cause disease wheninduced
+inappropriately. Which factors regulate CTL and decide whether theyshould remain
+silent or react is open to debate. The phenomenon calledcross-priming has received
+attention in this respect. That is, CTL expansionoccurs if antigen is recognized
+on the surface of professional antigenpresenting cells (APCs). This is in contrast
+to direct presentation whereantigen is seen on the surface of the target cells (e.g.
+infected cells or tumorcells). Here we introduce a mathematical model, which takes
+the phenomenon ofcross-priming into account. We propose a new mechanism of regulation
+which isimplicit in the dynamics of the CTL: According to the model, the ability
+of aCTL response to become established depends on the ratio of cross-presentation
+todirect presentation of the antigen. If this ratio is relatively high, CTLresponses
+are likely to become established. If this ratio is relatively low,tolerance is the
+likely outcome. The behavior of the model includes a parameterregion where the outcome
+depends on the initial conditions. We discuss ourresults with respect to the idea
+of self/non-self discrimination and the dangersignal hypothesis. We apply the model
+to study the role of CTL in cancerinitiation, cancer evolution/progression, and therapeutic
+vaccination againstcancers. 
+
+This model was taken from the [CellML repository](http://www.cellml.org/models) and automatically converted to SBML. 
+The original model was: [ **Wodarz D, Jansen VA. (2003) - version=1.0**
+](http://models.cellml.org/exposure/7113cad8414646c526728e1a7d68e13b) 
+The original CellML model was created by: 
+**Catherine Lloyd** 
+c.lloyd@auckland.ac.nz 
+The University of Auckland 
+
+
+This model originates from BioModels Database: A Database of Annotated Published
+Models (http://www.ebi.ac.uk/biomodels/). It is copyright (c) 2005-2011 The BioModels.net
+Team. 
+To the extent possible under law, all copyright and related or neighbouring
+rights to this encoded model have been dedicated to the public domain worldwide.
+Please refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Creative Commons CC0") for more information. 
+
+In summary, you are entitled to use this encoded model in absolutely any manner you
+deem suitable, verbatim, or with modification, alone or embedded it in a larger context,
+redistribute it, commercially or not, in a restricted way or not.. 
+
+To cite BioModels Database, please use: [Li C, Donizelli M, Rodriguez N, Dharuri H, Endler L, Chelliah V, Li L, He E, Henry A, Stefan MI, Snoep JL, Hucka M, Le Novère N, Laibe C (2010) BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models. BMC Syst Biol., 4:92.](http://www.ncbi.nlm.nih.gov/pubmed/20587024)
+```
+end
+
+Wodarz2003_CTL_cross_priming is "Wodarz2003 - Cytotoxic T lymphocyte cross-priming"

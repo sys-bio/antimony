@@ -1,0 +1,85 @@
+// Created by libAntimony v3.0.0
+model *Precup2012___Mathematical_modeling_of_cell_dynamics_after_allogeneic_bone_marrow_transplantation()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species x in compartment_, y in compartment_, z in compartment_;
+
+  // Reactions:
+  Normal_Cells_Growth:  => x; compartment_*((a/(1 + b*(x + y + z)))*((x + y + epsilon)/(x + y + epsilon + g*z))*x);
+  Normal_Cells_Removal: x => ; compartment_*c*x;
+  Leukemic_Cells_Growth:  => y; compartment_*((A/(1 + B*(x + y + z)))*((x + y + epsilon)/(x + y + epsilon + G*z))*y);
+  Leukemic_Cells_Removal: y => ; compartment_*C*y;
+  Donor_Cells_Growth:  => z; compartment_*((a/(1 + b*(x + y + z)))*(1 - h*(x + y)/(z + epsilon + h*(x + y)))*z);
+  Donor_Cells_Removal: z => ; compartment_*c*z;
+
+  // Species initializations:
+  x = 200000000;
+  y = 100000000;
+  z = 400000000;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  a = 0.23;
+  A = 0.45;
+  b = 2.2e-08;
+  B = 2.2e-08;
+  c = 0.01;
+  C = 0.01;
+  epsilon = 1;
+  g = 2;
+  G = 2;
+  h = 2;
+
+  // Other declarations:
+  const compartment_, a, A, b, B, c, C, epsilon, g, G, h;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = item;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/bto/BTO:0000141"
+  x biological_system "http://identifiers.org/bto/BTO:0000725"
+  x container "http://identifiers.org/bto/BTO:0000141"
+  y identity "http://identifiers.org/bto/BTO:0004178"
+  y container "http://identifiers.org/bto/BTO:0000141"
+  z biological_system "http://identifiers.org/bto/BTO:0000725"
+  z container "http://identifiers.org/bto/BTO:0000141"
+  Normal_Cells_Growth identity "http://identifiers.org/go/GO:0071425"
+  Normal_Cells_Removal biological_system "http://identifiers.org/go/GO:0035701"
+  Leukemic_Cells_Growth biological_system "http://identifiers.org/go/GO:0071425"
+  Leukemic_Cells_Removal biological_system "http://identifiers.org/go/GO:0035701"
+  Donor_Cells_Growth biological_system "http://identifiers.org/go/GO:0071425"
+  Donor_Cells_Removal biological_system "http://identifiers.org/go/GO:0035701"
+
+  model publication "http://identifiers.org/doi/10.1142/S1793524511001684"
+  model origin "http://identifiers.org/doi/10.1080/17486700902973751"
+  model model_source "http://identifiers.org/biomodels.db/MODEL1908190003",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000800"
+  model property "http://identifiers.org/ncit/NCIT:C46089"
+  model property "http://identifiers.org/ncit/C3161"
+  model property "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2019-08-19T15:12:47Z"
+  model modified "2019-08-19T15:12:47Z"
+  model creator1.givenName "Johannes"
+  model creator1.familyName "Meyer"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "johannes.p.meyer@gmail.com"
+
+  // Notes:
+  model notes ```
+This is a basic mathematical model describing the dynamics of three cell lines 
+(normal host cells, leukemic host cells and donor cells) after allogeneic stem cell 
+transplantation.
+```
+end
+
+Precup2012___Mathematical_modeling_of_cell_dynamics_after_allogeneic_bone_marrow_transplantation is "Precup2012 - Mathematical modeling of cell dynamics after allogeneic bone marrow transplantation"

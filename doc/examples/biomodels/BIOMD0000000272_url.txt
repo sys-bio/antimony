@@ -1,0 +1,230 @@
+// Created by libAntimony v3.0.0
+model *BeckerSchilling2010_EpoR_AuxiliaryMode()
+
+  // Compartments and Species:
+  compartment medium, cellsurface, cell;
+  species EpoR in cellsurface, SAv in medium, SAv_EpoR in cellsurface, SAv_EpoRi in cell;
+  species dSAvi in cell, dSAve in medium;
+
+  // Assignment Rules:
+  SAv_medium := SAv + dSAve;
+  SAv_cells := SAv_EpoRi + dSAvi;
+
+  // Reactions:
+  reaction_1:  => EpoR; kt*Bmax_SAv*cell;
+  reaction_2: EpoR => ; kt*EpoR*cell;
+  reaction_3: SAv + EpoR => SAv_EpoR; kon_SAv*SAv*EpoR*cell;
+  reaction_4: SAv_EpoR => SAv + EpoR; koff_SAv*SAv_EpoR*cell;
+  reaction_5: SAv_EpoR => SAv_EpoRi; kt*SAv_EpoR*cell;
+  reaction_6: SAv_EpoRi => SAv; kex_SAv*SAv_EpoRi*cell;
+  reaction_7: SAv_EpoRi => dSAvi; kdi*SAv_EpoRi*cell;
+  reaction_8: SAv_EpoRi => dSAve; kde*SAv_EpoRi*cell;
+
+  // Species initializations:
+  EpoR = 76;
+  SAv = 999.293;
+  SAv_EpoR = 0;
+  SAv_EpoRi = 0;
+  dSAvi = 0;
+  dSAve = 0;
+
+  // Compartment initializations:
+  medium = 1;
+  cellsurface = 1;
+  cell = 1;
+
+  // Variable initializations:
+  kt = 0.0329366;
+  kt has per_minute;
+  Bmax_SAv = 76;
+  Bmax_SAv has pM;
+  kon_SAv = 2.29402e-06;
+  kon_SAv has per_minute_per_pM;
+  koff_SAv = 0.00679946;
+  koff_SAv has per_minute;
+  kex_SAv = 0.01101;
+  kex_SAv has per_minute;
+  kdi = 0.00317871;
+  kdi has per_minute;
+  kde = 0.0164042;
+  kde has per_minute;
+
+  // Other declarations:
+  var SAv_medium, SAv_cells;
+  const medium, cellsurface, cell, kt, Bmax_SAv, kon_SAv, koff_SAv, kex_SAv;
+  const kdi, kde;
+
+  // Unit definitions:
+  unit time_unit = 60 second;
+  unit substance = 1e-12 mole;
+  unit per_minute = 1 / 60 second;
+  unit pM = 1e-12 mole / litre;
+  unit per_minute_per_pM = litre / (60 second * 1e-12 mole);
+
+  // Display Names:
+  time_unit is "minute";
+  substance is "picomole";
+
+  // SBO terms:
+  medium.sboTerm = 290
+  cellsurface.sboTerm = 290
+  cell.sboTerm = 290
+  EpoR.sboTerm = 244
+  SAv.sboTerm = 280
+  SAv_EpoR.sboTerm = 297
+  SAv_EpoRi.sboTerm = 297
+  dSAvi.sboTerm = 291
+  dSAve.sboTerm = 291
+  kt.sboTerm = 256
+  Bmax_SAv.sboTerm = 256
+  kon_SAv.sboTerm = 341
+  koff_SAv.sboTerm = 338
+  kex_SAv.sboTerm = 256
+  kdi.sboTerm = 356
+  kde.sboTerm = 356
+  reaction_1.sboTerm = 176
+  reaction_2.sboTerm = 179
+  reaction_3.sboTerm = 177
+  reaction_4.sboTerm = 180
+  reaction_5.sboTerm = 185
+  reaction_6.sboTerm = 180
+  reaction_7.sboTerm = 179
+  reaction_8.sboTerm = 179
+
+  // CV terms:
+  medium biological_system "http://identifiers.org/bto/BTO:0000316"
+  cellsurface biological_system "http://identifiers.org/go/GO:0009986"
+  cell biological_system "http://identifiers.org/go/GO:0005623"
+  EpoR biological_system "http://identifiers.org/uniprot/P14753",
+                         "http://identifiers.org/kegg.orthology/K05079"
+  SAv biological_system "http://identifiers.org/uniprot/P22629"
+  SAv_EpoR part "http://identifiers.org/uniprot/P14753",
+                "http://identifiers.org/uniprot/P22629"
+  SAv_EpoRi part "http://identifiers.org/uniprot/P14753",
+                 "http://identifiers.org/uniprot/P22629"
+  reaction_1 biological_system "http://identifiers.org/go/GO:0032800"
+  reaction_2 biological_system "http://identifiers.org/go/GO:0032801"
+  reaction_3 biological_system "http://identifiers.org/go/GO:0005102",
+                               "http://identifiers.org/go/GO:0005128"
+  reaction_4 biological_system "http://identifiers.org/go/GO:0043241"
+  reaction_5 biological_system "http://identifiers.org/go/GO:0015031"
+  reaction_6 biological_system "http://identifiers.org/go/GO:0043241"
+  reaction_7 biological_system "http://identifiers.org/go/GO:0030163"
+  reaction_8 biological_system "http://identifiers.org/go/GO:0030163"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1005260001"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000272"
+  model publication "http://identifiers.org/pubmed/20488988"
+  model taxon "http://identifiers.org/taxonomy/39107",
+              "http://identifiers.org/bto/BTO:0001035"
+  model biological_system "http://identifiers.org/go/GO:0004900"
+  model parthood "http://identifiers.org/kegg.pathway/ko04630",
+                 "http://identifiers.org/kegg.pathway/ko04640"
+  model created "2010-05-26T16:11:31Z"
+  model modified "2012-01-31T13:51:44Z"
+  model creator1.givenName "Vijayalakshmi"
+  model creator1.familyName "Chelliah"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "viji@ebi.ac.uk"
+  model creator2.givenName "Verena"
+  model creator2.familyName "Becker"
+  model creator2.organization "Department of Systems Biology, Harvard Medical School, Boston, USA"
+  model creator2.email "verena_becker@hms.harvard.edu"
+  model creator3.givenName "Marcel"
+  model creator3.familyName "Schilling"
+  model creator3.organization "German Cancer Research Center"
+  model creator3.email "m.schilling@dkfz.de"
+
+  // Notes:
+  model notes ```
+This is the auxiliary model described in the article: 
+**Covering a Broad Dynamic Range: Information Processing at the Erythropoietin
+Receptor** 
+Verena Becker, Marcel Schilling, Julie Bachmann, Ute Baumann, Andreas Raue,
+Thomas Maiwald, Jens Timmer and Ursula Klingmüller; *Science* Published
+Online May 20, 2010; DOI: [10.1126/science.1184913](http://dx.doi.org/10.1126/science.1184913) PMID: [20488988](http://www.ncbi.nlm.nih.gov/pubmed/20488988) 
+Abstract: 
+Cell surface receptors convert extracellular cues into receptor activation,
+thereby triggering intracellular signaling networks and controlling cellular decisions.
+A major unresolved issue is the identification of receptor properties that critically
+determine processing of ligand-encoded information. We show by mathematical modeling
+of quantitative data and experimental validation that rapid ligand depletion and
+replenishment of cell surface receptor are characteristic features of the erythropoietin
+(Epo) receptor (EpoR). The amount of Epo-EpoR complexes and EpoR activation integrated
+over time corresponds linearly to ligand input, covering a broad range of ligand
+concentrations. This relation solely depends on EpoR turnover independent of ligand
+binding, suggesting an essential role of large intracellular receptor pools. These
+receptor properties enable the system to cope with basal and acute demand in the
+hematopoietic system. 
+
+SBML model exported from PottersWheel.
+
+
+% PottersWheel model definition filefunction m = BeckerSchilling2010_EpoR_AuxiliaryMode()m 
+ = pwGetEmptyModel();%% Meta informationm.ID =
+&apos;BeckerSchilling2010_EpoR_AuxiliaryMode&apos;;m.name =
+&apos;BeckerSchilling2010_EpoR_AuxiliaryModel&apos;;m.description =
+&apos;BeckerSchilling2010_EpoR_AuxiliaryModel&apos;;m.authors = {&apos;Verena 
+Becker&apos;,&apos; Marcel Schilling&apos;};m.dates = {&apos;2010&apos;};m.type 
+ = &apos;PW-2-0-42&apos;;%% X: Dynamic variables% m = pwAddX(m, ID, startValue, 
+type, minValue, maxValue, unit, compartment, name, description, typeOfStartValue)m 
+= pwAddX(m, &apos;EpoR&apos; , 76, &apos;fix&apos; , 0, 10000, [], 
+&apos;cell&apos;, [] , [] , [] , [] , &apos;protein.generic&apos;);m 
+= pwAddX(m, &apos;SAv&apos; , 999.293, &apos;global&apos;, 900, 1100, [], 
+&apos;cell&apos;, [] , [] , [] , [] , &apos;protein.generic&apos;);m 
+= pwAddX(m, &apos;SAv_EpoR&apos;, 0, &apos;fix&apos; , 0, 10000, [], 
+&apos;cell&apos;, [] , [] , [] , [] , &apos;protein.generic&apos;);m 
+= pwAddX(m, &apos;SAv_EpoRi&apos;, 0, &apos;fix&apos; , 0, 10000, [], 
+&apos;cell&apos;, [] , [] , [] , [] , &apos;protein.generic&apos;);m 
+= pwAddX(m, &apos;dSAvi&apos; , 0, &apos;fix&apos; , 0, 10000, [], 
+&apos;cell&apos;, [] , [] , [] , [] , &apos;protein.generic&apos;);m 
+= pwAddX(m, &apos;dSAve&apos; , 0, &apos;fix&apos; , 0, 10000, [], 
+&apos;cell&apos;, [] , [] , [] , [] , &apos;protein.generic&apos;);%% 
+R: Reactions% m = pwAddR(m, reactants, products, modifiers, type, options, rateSignature, 
+parameters, description, ID, name, fast, compartments, parameterTrunks, designerPropsR, 
+stoichiometry, reversible)m = pwAddR(m, { }, {&apos;EpoR&apos; }, 
+{ }, &apos;C&apos;, [], &apos;k1\*k2&apos;, {&apos;kt&apos;,&apos;Bmax_SAv&apos;}, 
+[], &apos;reaction0001&apos;);m = pwAddR(m, {&apos;EpoR&apos; }, { 
+ }, { }, &apos;MA&apos;, [], [] , {&apos;kt&apos; }, [],
+&apos;reaction0002&apos;);m = pwAddR(m, {&apos;SAv&apos;,&apos;EpoR&apos;}, {&apos;SAv_EpoR&apos; 
+ }, { }, &apos;MA&apos;, [], [] , {&apos;kon_SAv&apos; }, [], &apos;reaction0003&apos;);m 
+= pwAddR(m, {&apos;SAv_EpoR&apos; }, {&apos;SAv&apos;,&apos;EpoR&apos;}, { }, &apos;MA&apos;, 
+[], [] , {&apos;koff_SAv&apos; }, [], &apos;reaction0004&apos;);m = pwAddR(m, 
+{&apos;SAv_EpoR&apos; }, {&apos;SAv_EpoRi&apos; }, { }, &apos;MA&apos;, [], [] 
+ , {&apos;kt&apos; }, [], &apos;reaction0005&apos;);m = pwAddR(m,
+{&apos;SAv_EpoRi&apos; }, {&apos;SAv&apos; }, { }, &apos;MA&apos;, [], [] 
+ , {&apos;kex_SAv&apos; }, [], &apos;reaction0006&apos;);m = pwAddR(m,
+{&apos;SAv_EpoRi&apos; }, {&apos;dSAvi&apos; }, { }, &apos;MA&apos;, [], [] 
+ , {&apos;kdi&apos; }, [], &apos;reaction0007&apos;);m = pwAddR(m,
+{&apos;SAv_EpoRi&apos; }, {&apos;dSAve&apos; }, { }, &apos;MA&apos;, [], [] 
+ , {&apos;kde&apos; }, [], &apos;reaction0008&apos;);%% C: Compartments% 
+m = pwAddC(m, ID, size, outside, spatialDimensions, name, unit, constant)m = pwAddC(m, 
+&apos;cell&apos;, 1);%% K: Dynamical parameters% m = pwAddK(m, ID, value, type, minValue, 
+maxValue, unit, name, description)m = pwAddK(m, &apos;kt&apos; , 0.0329366 
+, &apos;global&apos;, 1e-007, 1000);m = pwAddK(m, &apos;Bmax_SAv&apos;, 76 
+ , &apos;fix&apos; , 61 , 91 );m = pwAddK(m, &apos;kon_SAv&apos;, 2.29402e-006, 
+&apos;global&apos;, 1e-007, 1000);m = pwAddK(m, &apos;koff_SAv&apos;, 0.00679946 
+, &apos;global&apos;, 1e-007, 1000);m = pwAddK(m, &apos;kex_SAv&apos;, 0.01101 
+ , &apos;global&apos;, 1e-007, 1000);m = pwAddK(m, &apos;kdi&apos; , 0.00317871 
+, &apos;global&apos;, 1e-007, 1000);m = pwAddK(m, &apos;kde&apos; , 0.0164042 
+ , &apos;global&apos;, 1e-007, 1000);%% Default sampling time pointsm.t = 0:3:99;%% 
+Y: Observables% m = pwAddY(m, rhs, ID, scalingParameter, errorModel, noiseType, unit, 
+name, description, alternativeIDs, designerProps)m = pwAddY(m, &apos;SAv + dSAve&apos; 
+ , &apos;SAv_extracellular_obs&apos;);m = pwAddY(m, &apos;SAv_EpoR&apos; 
+ , &apos;SAv_cellsurface_obs&apos; );m = pwAddY(m, &apos;SAv_EpoRi + dSAvi&apos;, 
+&apos;SAv_intracellular_obs&apos;);%% S: Scaling parameters% m = pwAddS(m, ID, value, 
+type, minValue, maxValue, unit, name, description)m = pwAddS(m,
+&apos;scale_SAv_extracellular_obs&apos;, 1, &apos;fix&apos;, 0, 100);m = pwAddS(m, 
+&apos;scale_SAv_cellsurface_obs&apos; , 1, &apos;fix&apos;, 0, 100);m = pwAddS(m, 
+&apos;scale_SAv_intracellular_obs&apos;, 1, &apos;fix&apos;, 0, 100);%% Designer 
+properties (do not modify)m.designerPropsM = [1 1 1 0 0 0 400 250 600 400 1 1 1 0 
+0 0 0];
+ 
+This model originates from BioModels Database: A Database of Annotated Published 
+Models. It is copyright (c) 2005-2010 The BioModels.net Team. 
+ For more information see the [terms of use](http://www.ebi.ac.uk/biomodels/legal.html) . 
+ To cite BioModels Database, please use: [Li C, Donizelli M, Rodriguez N, Dharuri H, Endler L, Chelliah V, Li L, He E, Henry A, Stefan MI, Snoep JL, Hucka M, Le Novère N, Laibe C (2010) BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models. BMC Syst Biol., 4:92.](http://www.ncbi.nlm.nih.gov/pubmed/20587024)
+```
+end
+
+BeckerSchilling2010_EpoR_AuxiliaryMode is "Becker2010_EpoR_AuxiliaryModel"

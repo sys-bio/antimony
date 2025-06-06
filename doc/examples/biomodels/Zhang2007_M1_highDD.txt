@@ -1,0 +1,129 @@
+// Created by libAntimony v3.0.0
+model *Zhang2007___Mechanism_of_DNA_damage_response__Model1()
+
+  // Compartments and Species:
+  compartment cyt, nuc;
+  species p53 in nuc, MDM2cyt in cyt, MDM2nuc in nuc, $DNAdamage in nuc;
+
+  // Assignment Rules:
+  DNAdamage := heav_x*xyz;
+  heav_x := piecewise(0, x < 0, piecewise(1, x > 0, 0));
+  xyz := piecewise(0, 0 >= (Dam0 - krepair*(time - Tdam)), Dam0 - krepair*(time - Tdam));
+  kd2_0 := kd2*(1 + DNAdamage);
+  kd53_0 := kd53 + kd53_*G_u_v_q_r;
+  G_u_v_q_r := 2*u*r/((v - u) + v*q + u*r + (((v - u) + v*q + u*r)^2 - 4*u*r*(v - u))^0.5);
+  u := MDM2nuc;
+  r := J2/p53;
+  v := Q;
+  q := J1/p53;
+  x := time - ModelValue_27;
+
+  // Reactions:
+  p53_production:  => p53; ks53 + ks53_*(MDM2cyt^n/(Js53^n + MDM2cyt^n));
+  p53_degradation: p53 => ; nuc*kd53_0*p53;
+  MDM2cyt_production:  => MDM2cyt; ks2 + ks2_*(p53^m/(Js2^m + p53^m));
+  MDM2cyt_translocation: MDM2cyt -> MDM2nuc; kin*MDM2cyt - kout*MDM2nuc;
+  MDM2cyt_degradation: MDM2cyt => ; cyt*kd2_*MDM2cyt;
+  MDM2nuc_degradation: MDM2nuc => ; nuc*kd2_0*MDM2nuc;
+
+  // Species initializations:
+  p53 = 0.186;
+  MDM2cyt = 0.158;
+  MDM2nuc = 0.647000000000002;
+
+  // Compartment initializations:
+  cyt = 1;
+  nuc = 1;
+
+  // Variable initializations:
+  ks53 = 0.6;
+  Js53 = 0.45;
+  kd53 = 0.27;
+  n = 4;
+  kin = 0.41;
+  kout = 0.05;
+  kd2 = 0.05;
+  ks2 = 0.15;
+  Js2 = 0.92;
+  m = 4;
+  kd53_ = 8.25;
+  Q = 0.83;
+  J1 = 0.1;
+  J2 = 0.1;
+  krepair = 0.08;
+  ks53_ = 2.56;
+  ks2_ = 4.23;
+  kd2_ = 0.79;
+  dd = 2;
+  Dam0 = 6;
+  Tdam = 50;
+  ModelValue_27 = Tdam;
+
+  // Other declarations:
+  var heav_x, xyz, kd2_0, kd53_0, G_u_v_q_r, u, r, v, q, x;
+  const cyt, nuc, ks53, Js53, kd53, n, kin, kout, kd2, ks2, Js2, m, kd53_;
+  const Q, J1, J2, krepair, ks53_, ks2_, kd2_, dd, Dam0, Tdam, ModelValue_27;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = litre;
+  unit time_unit = second;
+  unit substance = mole;
+
+  // Display Names:
+  time_unit is "time";
+  heav_x is "heav(x)";
+  ks53 is "ks53'";
+  kd53 is "kd53'";
+  kd2 is "kd2'";
+  kd2_0 is "kd2";
+  ks2 is "ks2'";
+  kd53_0 is "kd53";
+  kd53_ is "kd53''";
+  G_u_v_q_r is "G(u,v,q,r)";
+  ks53_ is "ks53''";
+  ks2_ is "ks2''";
+  kd2_ is "kd2''";
+  ModelValue_27 is "Initial for Tdam";
+  p53_production is "p53 production";
+  p53_degradation is "p53 degradation";
+  MDM2cyt_production is "MDM2cyt production";
+  MDM2cyt_translocation is "MDM2cyt translocation";
+  MDM2cyt_degradation is "MDM2cyt degradation";
+  MDM2nuc_degradation is "MDM2nuc degradation";
+
+  // CV terms:
+  cyt identity "http://identifiers.org/go/GO:0005829"
+  nuc identity "http://identifiers.org/go/GO:0005634"
+  p53 identity "http://identifiers.org/uniprot/P04637"
+  MDM2cyt identity "http://identifiers.org/uniprot/Q00987"
+  MDM2nuc identity "http://identifiers.org/uniprot/Q00987"
+  DNAdamage identity "http://identifiers.org/ncit/C16507"
+  p53_production biological_system "http://identifiers.org/sbo/SBO:0000393"
+  p53_degradation biological_system "http://identifiers.org/sbo/SBO:0000179"
+  MDM2cyt_production biological_system "http://identifiers.org/sbo/SBO:0000393"
+  MDM2cyt_translocation biological_system "http://identifiers.org/sbo/SBO:0000185"
+  MDM2cyt_degradation biological_system "http://identifiers.org/sbo/SBO:0000179"
+  MDM2nuc_degradation biological_system "http://identifiers.org/sbo/SBO:0000179"
+
+  model publication "http://identifiers.org/pubmed/17245126"
+  model property "http://identifiers.org/pw/PW:0001360"
+  model property "http://identifiers.org/mamo/MAMO_0000046"
+  model property "http://identifiers.org/pw/PW:0000718"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model created "2021-04-19T16:25:25Z"
+  model modified "2021-04-19T16:25:25Z"
+  model creator1.givenName "Krishna"
+  model creator1.familyName "Tiwari"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "ktiwari@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+Its a mechanistic model explaining the impact of p53 om apoptosis decision. This 
+model represents schema 1 of manuscript.
+```
+end
+
+Zhang2007___Mechanism_of_DNA_damage_response__Model1 is "Zhang2007 - Mechanism of DNA damage response (Model1)"

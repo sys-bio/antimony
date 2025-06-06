@@ -1,0 +1,397 @@
+// Created by libAntimony v3.0.0
+model *MODEL1204280024()
+
+  // Compartments and Species:
+  compartment compartment_1;
+  species species_1 in compartment_1, species_2 in compartment_1, species_3 in compartment_1;
+  species species_4 in compartment_1, species_5 in compartment_1, species_6 in compartment_1;
+  species species_7 in compartment_1, species_8 in compartment_1, species_9 in compartment_1;
+  species species_10 in compartment_1, species_11 in compartment_1, species_12 in compartment_1;
+  species species_13 in compartment_1, species_14 in compartment_1, species_15 in compartment_1;
+  species species_16 in compartment_1, species_17 in compartment_1, species_18 in compartment_1;
+  species species_19 in compartment_1, species_20 in compartment_1, species_21 in compartment_1;
+  species species_22 in compartment_1, species_23 in compartment_1, species_24 in compartment_1;
+  species species_25 in compartment_1, species_26 in compartment_1, species_27 in compartment_1;
+
+  // Reactions:
+  reaction_1: species_1 + species_2 -> species_3; compartment_1*(reaction_1_k1*species_1*species_2 - reaction_1_k2*species_3);
+  reaction_2: species_3 => species_4 + species_2; compartment_1*reaction_2_k1*species_3;
+  reaction_3: species_4 + species_2 -> species_5; compartment_1*(reaction_3_k1*species_4*species_2 - reaction_3_k2*species_5);
+  reaction_4: species_5 => species_6 + species_2; compartment_1*reaction_4_k1*species_5;
+  reaction_5: species_6 + species_13 -> species_21; compartment_1*(reaction_5_k1*species_6*species_13 - reaction_5_k2*species_21);
+  reaction_6: species_21 => species_4 + species_13; compartment_1*reaction_6_k1*species_21;
+  reaction_7: species_4 + species_13 -> species_22; compartment_1*(reaction_7_k1*species_4*species_13 - reaction_7_k2*species_22);
+  reaction_8: species_22 => species_23; compartment_1*reaction_8_k1*species_22;
+  reaction_9: species_23 -> species_1 + species_13; compartment_1*(reaction_9_k1*species_23 - reaction_9_k2*species_1*species_13);
+  reaction_10: species_7 + species_8 -> species_9; compartment_1*(reaction_10_k1*species_7*species_8 - reaction_10_k2*species_9);
+  reaction_11: species_9 => species_10 + species_8; compartment_1*reaction_11_k1*species_9;
+  reaction_12: species_10 + species_8 -> species_11; compartment_1*(reaction_12_k1*species_10*species_8 - reaction_12_k2*species_11);
+  reaction_13: species_11 => species_2 + species_8; compartment_1*reaction_13_k1*species_11;
+  reaction_14: species_2 + species_13 -> species_12; compartment_1*(reaction_14_k1*species_2*species_13 - reaction_14_k2*species_12);
+  reaction_15: species_12 => species_10 + species_13; compartment_1*reaction_15_k1*species_12;
+  reaction_16: species_10 + species_13 -> species_14; compartment_1*(reaction_16_k1*species_10*species_13 - reaction_16_k2*species_14);
+  reaction_17: species_14 => species_15; compartment_1*reaction_17_k1*species_14;
+  reaction_18: species_15 -> species_7 + species_13; compartment_1*(reaction_18_k1*species_15 - reaction_18_k2*species_7*species_13);
+  reaction_19: species_16 + species_18 -> species_17; compartment_1*(reaction_19_k1*species_16*species_18 - reaction_19_k2*species_17);
+  reaction_20: species_17 => species_8 + species_18; compartment_1*reaction_20_k1*species_17;
+  reaction_21: species_8 + species_20 -> species_19; compartment_1*(reaction_21_k1*species_8*species_20 - reaction_21_k2*species_19);
+  reaction_22: species_19 => species_27; compartment_1*reaction_22_k1*species_19;
+  reaction_23: species_2 + species_20 -> species_24; compartment_1*(reaction_23_k1*species_2*species_20 - reaction_23_k2*species_24);
+  reaction_25: species_24 => species_10 + species_20; compartment_1*reaction_25_k1*species_24;
+  reaction_26: species_10 + species_20 -> species_25; compartment_1*(reaction_26_k1*species_10*species_20 - reaction_26_k2*species_25);
+  reaction_27: species_25 => species_26; compartment_1*reaction_27_k1*species_25;
+  reaction_28: species_26 -> species_7 + species_20; compartment_1*(reaction_28_k1*species_26 - reaction_28_k2*species_7*species_20);
+  reaction_24: species_27 -> species_16 + species_20; compartment_1*(reaction_24_k1*species_27 - reaction_24_k2*species_16*species_20);
+
+  // Species initializations:
+  species_1 = 1200;
+  species_2 = 0;
+  species_3 = 0;
+  species_4 = 0;
+  species_5 = 0;
+  species_6 = 0;
+  species_7 = 1200;
+  species_8 = 0;
+  species_9 = 0;
+  species_10 = 0;
+  species_11 = 0;
+  species_12 = 0;
+  species_13 = 200;
+  species_14 = 0;
+  species_15 = 0;
+  species_16 = 300;
+  species_17 = 0;
+  species_18 = 10;
+  species_19 = 0;
+  species_20 = 100;
+  species_21 = 0;
+  species_22 = 0;
+  species_23 = 0;
+  species_24 = 0;
+  species_25 = 0;
+  species_26 = 0;
+  species_27 = 0;
+
+  // Compartment initializations:
+  compartment_1 = 1;
+
+  // Variable initializations:
+  parameter_1 = 0;
+  reaction_1_k1 = 0.02;
+  reaction_1_k2 = 1;
+  reaction_2_k1 = 0.01;
+  reaction_3_k1 = 0.032;
+  reaction_3_k2 = 1;
+  reaction_4_k1 = 15;
+  reaction_5_k1 = 0.045;
+  reaction_5_k2 = 1;
+  reaction_6_k1 = 0.092;
+  reaction_7_k1 = 0.01;
+  reaction_7_k2 = 1;
+  reaction_8_k1 = 0.5;
+  reaction_9_k1 = 0.086;
+  reaction_9_k2 = 0.005;
+  reaction_10_k1 = 0.02;
+  reaction_10_k2 = 1;
+  reaction_11_k1 = 0.01;
+  reaction_12_k1 = 0.032;
+  reaction_12_k2 = 1;
+  reaction_13_k1 = 15;
+  reaction_14_k1 = 0.045;
+  reaction_14_k2 = 1;
+  reaction_15_k1 = 0.092;
+  reaction_16_k1 = 0.01;
+  reaction_16_k2 = 1;
+  reaction_17_k1 = 0.5;
+  reaction_18_k1 = 0.086;
+  reaction_18_k2 = 0.005;
+  reaction_19_k1 = 0.02;
+  reaction_19_k2 = 1;
+  reaction_20_k1 = 1;
+  reaction_21_k1 = 0.02;
+  reaction_21_k2 = 1;
+  reaction_22_k1 = 0.5;
+  reaction_23_k1 = 0.045;
+  reaction_23_k2 = 1;
+  reaction_25_k1 = 0.092;
+  reaction_26_k1 = 0.01;
+  reaction_26_k2 = 1;
+  reaction_27_k1 = 0.5;
+  reaction_28_k1 = 0.086;
+  reaction_28_k2 = 0.005;
+  reaction_24_k1 = 0.086;
+  reaction_24_k2 = 0.005;
+
+  // Other declarations:
+  const compartment_1, parameter_1;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-9 mole;
+
+  // Display Names:
+  compartment_1 is "compartment";
+  species_1 is "MK";
+  species_2 is "MKK-PP";
+  species_3 is "MK_MKK-PP";
+  species_4 is "MK-P";
+  species_5 is "MK-P_MKK-PP";
+  species_6 is "MK-PP";
+  species_7 is "MKK";
+  species_8 is "MKKK-P";
+  species_9 is "MKK_MKKK-P";
+  species_10 is "MKK-P";
+  species_11 is "MKK-P_MKKK-P";
+  species_12 is "MKK-PP_P2";
+  species_13 is "P2";
+  species_14 is "MKK-P_P2";
+  species_15 is "MKK_P2";
+  species_16 is "MKKK";
+  species_17 is "MKKK_Sig";
+  species_18 is "Sig";
+  species_19 is "MKKK-P_P1";
+  species_20 is "P1";
+  species_21 is "MK-PP_P2";
+  species_22 is "MK-P_P2";
+  species_23 is "MK_P2";
+  species_24 is "MKK-PP_P1";
+  species_25 is "MKK-P_P1";
+  species_26 is "MKK_P1";
+  species_27 is "MKKK_P1";
+  parameter_1 is "quantity_1";
+  reaction_1 is "15";
+  reaction_2 is "16";
+  reaction_3 is "17";
+  reaction_4 is "18";
+  reaction_5 is "19";
+  reaction_6 is "20";
+  reaction_7 is "21";
+  reaction_8 is "22";
+  reaction_9 is "23";
+  reaction_10 is "6";
+  reaction_11 is "7";
+  reaction_12 is "8";
+  reaction_13 is "9";
+  reaction_14 is "10_P2";
+  reaction_15 is "11_P2";
+  reaction_16 is "12_P2";
+  reaction_17 is "13_P2";
+  reaction_18 is "14_P2";
+  reaction_19 is "1";
+  reaction_20 is "2";
+  reaction_21 is "3";
+  reaction_22 is "4";
+  reaction_23 is "10_P1";
+  reaction_25 is "11_P1";
+  reaction_26 is "12_P1";
+  reaction_27 is "13_P1";
+  reaction_28 is "14_P1";
+  reaction_24 is "5";
+
+  // CV terms:
+  compartment_1 biological_system "http://identifiers.org/go/GO:0005623"
+  species_1 biological_system "http://identifiers.org/uniprot/P27361"
+  species_2 biological_system "http://identifiers.org/uniprot/Q02750",
+                              "http://identifiers.org/kegg.compound/C00562"
+  species_3 part "http://identifiers.org/uniprot/P27361"
+  species_3 biological_system "http://identifiers.org/kegg.compound/C00562"
+  species_4 biological_system "http://identifiers.org/uniprot/P27361",
+                              "http://identifiers.org/kegg.compound/C00562"
+  species_5 part "http://identifiers.org/uniprot/P27361",
+                 "http://identifiers.org/uniprot/Q02750"
+  species_5 biological_system "http://identifiers.org/kegg.compound/C00562"
+  species_6 biological_system "http://identifiers.org/uniprot/P27361",
+                              "http://identifiers.org/kegg.compound/C00562"
+  species_7 biological_system "http://identifiers.org/uniprot/Q02750"
+  species_8 biological_system "http://identifiers.org/uniprot/P04049",
+                              "http://identifiers.org/kegg.compound/C00562"
+  species_9 part "http://identifiers.org/uniprot/P04049",
+                 "http://identifiers.org/uniprot/Q02750"
+  species_9 biological_system "http://identifiers.org/kegg.compound/C00562"
+  species_10 biological_system "http://identifiers.org/uniprot/Q02750",
+                               "http://identifiers.org/kegg.compound/C00562"
+  species_11 part "http://identifiers.org/uniprot/P04049",
+                  "http://identifiers.org/uniprot/Q02750"
+  species_11 biological_system "http://identifiers.org/kegg.compound/C00562"
+  species_12 part "http://identifiers.org/uniprot/Q02750",
+                  "http://identifiers.org/uniprot/P51452"
+  species_12 biological_system "http://identifiers.org/kegg.compound/C00562"
+  species_13 biological_system "http://identifiers.org/uniprot/P51452"
+  species_14 part "http://identifiers.org/uniprot/Q02750",
+                  "http://identifiers.org/uniprot/P51452"
+  species_14 biological_system "http://identifiers.org/kegg.compound/C00562"
+  species_15 part "http://identifiers.org/uniprot/Q02750",
+                  "http://identifiers.org/uniprot/P51452"
+  species_16 part "http://identifiers.org/uniprot/P04049"
+  species_17 part "http://identifiers.org/uniprot/P04049",
+                  "http://identifiers.org/uniprot/P61225"
+  species_18 biological_system "http://identifiers.org/uniprot/P61225"
+  species_19 part "http://identifiers.org/uniprot/P04049",
+                  "http://identifiers.org/uniprot/P51452"
+  species_19 biological_system "http://identifiers.org/kegg.compound/C00562"
+  species_20 biological_system "http://identifiers.org/uniprot/P51452"
+  species_21 part "http://identifiers.org/uniprot/P27361",
+                  "http://identifiers.org/uniprot/P51452"
+  species_21 biological_system "http://identifiers.org/kegg.compound/C00562"
+  species_22 part "http://identifiers.org/uniprot/P27361",
+                  "http://identifiers.org/uniprot/P51452"
+  species_22 biological_system "http://identifiers.org/kegg.compound/C00562"
+  species_23 part "http://identifiers.org/uniprot/P27361",
+                  "http://identifiers.org/uniprot/P51452"
+  species_24 part "http://identifiers.org/uniprot/Q02750",
+                  "http://identifiers.org/uniprot/P51452"
+  species_24 biological_system "http://identifiers.org/kegg.compound/C00562"
+  species_25 part "http://identifiers.org/uniprot/Q02750",
+                  "http://identifiers.org/uniprot/P51452"
+  species_25 biological_system "http://identifiers.org/kegg.compound/C00562"
+  species_26 part "http://identifiers.org/uniprot/Q02750",
+                  "http://identifiers.org/uniprot/P51452"
+  species_27 part "http://identifiers.org/uniprot/P04049",
+                  "http://identifiers.org/uniprot/P51452"
+  reaction_1 biological_system "http://identifiers.org/go/GO:0006461"
+  reaction_2 biological_system "http://identifiers.org/go/GO:0043241",
+                               "http://identifiers.org/go/GO:0016310"
+  reaction_3 biological_system "http://identifiers.org/go/GO:0006461"
+  reaction_4 biological_system "http://identifiers.org/go/GO:0043241",
+                               "http://identifiers.org/go/GO:0016310"
+  reaction_5 biological_system "http://identifiers.org/go/GO:0006461"
+  reaction_6 biological_system "http://identifiers.org/go/GO:0043241",
+                               "http://identifiers.org/go/GO:0016311"
+  reaction_7 biological_system "http://identifiers.org/go/GO:0006461"
+  reaction_8 biological_system "http://identifiers.org/go/GO:0016311"
+  reaction_9 biological_system "http://identifiers.org/go/GO:0043241"
+  reaction_10 biological_system "http://identifiers.org/go/GO:0006461"
+  reaction_11 biological_system "http://identifiers.org/go/GO:0043241",
+                                "http://identifiers.org/go/GO:0016310"
+  reaction_12 biological_system "http://identifiers.org/go/GO:0006461"
+  reaction_13 biological_system "http://identifiers.org/go/GO:0016310",
+                                "http://identifiers.org/go/GO:0043241"
+  reaction_14 biological_system "http://identifiers.org/go/GO:0006461"
+  reaction_15 biological_system "http://identifiers.org/go/GO:0016311",
+                                "http://identifiers.org/go/GO:0043241"
+  reaction_16 biological_system "http://identifiers.org/go/GO:0006461"
+  reaction_17 biological_system "http://identifiers.org/go/GO:0043241",
+                                "http://identifiers.org/go/GO:0016311"
+  reaction_18 biological_system "http://identifiers.org/go/GO:0043241"
+  reaction_19 biological_system "http://identifiers.org/go/GO:0006461"
+  reaction_20 biological_system "http://identifiers.org/go/GO:0016310",
+                                "http://identifiers.org/go/GO:0043241"
+  reaction_21 biological_system "http://identifiers.org/go/GO:0006461"
+  reaction_22 biological_system "http://identifiers.org/go/GO:0016311"
+  reaction_23 biological_system "http://identifiers.org/go/GO:0006461"
+  reaction_25 biological_system "http://identifiers.org/go/GO:0016311",
+                                "http://identifiers.org/go/GO:0043241"
+  reaction_26 biological_system "http://identifiers.org/go/GO:0006461"
+  reaction_27 biological_system "http://identifiers.org/go/GO:0016311"
+  reaction_28 biological_system "http://identifiers.org/go/GO:0043241"
+  reaction_24 biological_system "http://identifiers.org/go/GO:0043241"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1204280024"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000431"
+  model publication "http://identifiers.org/pubmed/22748295"
+  model origin "http://identifiers.org/pubmed/19897477"
+  model taxon "http://identifiers.org/taxonomy/131567"
+  model biological_system "http://identifiers.org/go/GO:0000165"
+  model created "2012-11-23T16:11:29Z"
+  model modified "2014-05-30T18:20:24Z"
+  model creator1.givenName "Vijayalakshmi"
+  model creator1.familyName "Chelliah"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "viji@ebi.ac.uk"
+  model creator2.givenName "Uddipan"
+  model creator2.familyName "Sarma"
+  model creator2.organization "National Centre for Cell Science"
+  model creator2.email "uddipans@gmail.com"
+
+  // Notes:
+  model notes ```
+Sarma2012 - Interaction topologies of MAPK cascade (M4_K2_PSEQ) 
+
+
+The paper presents the various interaction topologies between the kinases and phosphatases
+of MAPK cascade. They are represented as M1, M2, M3 and M4. The kinases of the cascades
+are MKKK, MKK and MK, and Phos1, Phos2 and Phos3 are phosphatases of the system.
+All three kinases in a M1 type network have specific phosphatases Phos1, Phos2 and
+Phos3 for the dephosphorylation process. In a M2 type system, kinases MKKK and MKK
+are dephosphorylated by Phos1 and MK is dephosphorylated by Phos2. The architecture
+of system like M3 is such that MKKK gets dephosphorylated by Phos1, whereas Phos2
+dephosphorylates both MKK and MK. Finally, the MAPK cascade exhibiting more complex
+design of interaction such as M4 is such that MKKK and MKK are dephosphorylated by
+Phos1 whereas MKK and MK are dephosphorylated by Phos2. In addition, as it is plausible
+that the kinases can sequester their respective phosphatases by binding to them,
+this is considered in the design of the systems (PSEQ-sequestrated system; USEQ-Unsequestrated
+system). The robustness of different interaction designs of the systems is checked,
+considering both MichaelisMenten type kinetics (K1) and elementary mass action kinetics
+(K2). In the living systems, the MAPK cascade transmit both short and long duration
+signals where short duration signals trigger proliferation and long duration signals
+trigger cell differentiation. These signal variants are considered to interpret the
+systems behaviour. It is also tested how the robustness and signal response behaviour
+of K2 models are affected when K2 assumes quasi steady state (QSS). The combinations
+of the above variants resulted in 40 models (MODEL1204280001-MODEL1204280040). All
+these 40 models are available from [BioModels Database](http://www.ebi.ac.uk/biomodels) . 
+
+Models that correspond to type M4 with mass-action kinetics K2, in four condition
+1) USEQ [ [MODEL1204280020](http://identifiers.org/biomodels.db/MODEL1204280020) - M4_K2_USEQ], 2) PSEQ [ [MODEL1204280024](http://identifiers.org/biomodels.db/MODEL1204280024) - M4_K2_PSEQ], 3) QSS_USEQ [ [MODEL1204280036](http://identifiers.org/biomodels.db/MODEL1204280036) - M4_K2_QSS_USEQ] and 4) QSS_PSEQ [ [MODEL1204280040](http://identifiers.org/biomodels.db/MODEL1204280040) - M4_K2_QSS_PSEQ] are available from the curated branch. The remaining 36 models can be accessed from the non-curated branch. 
+
+This model [ [MODEL1204280024](http://identifiers.org/biomodels.db/MODEL1204280024) - M4_K2_PSEQ] correspond to type M4 with mass-action kinetics K2, in PSEQ (sequestrated ) condition. . 
+
+
+This model is described in the article:
+
+
+[Different designs of kinase-phosphatase interactions and phosphatase sequestration shapes the robustness and signal flow in the MAPK cascade.](http://identifiers.org/pubmed/22748295 "Access to this publication") 
+
+
+Sarma U, Ghosh I. 
+
+BMC Syst Biol. 2012 Jul 2;6(1):82. 
+Abstract:
+
+
+BACKGROUND: The three layer mitogen activated protein kinase (MAPK) signaling cascade
+exhibits different designs of interactions between its kinases and phosphatases.
+While the sequential interactions between the three kinases of the cascade are tightly
+preserved, the phosphatases of the cascade, such as MKP3 and PP2A, exhibit relatively
+diverse interactions with their substrate kinases. Additionally, the kinases of the
+MAPK cascade can also sequester their phosphatases. Thus, each topologically distinct
+interaction design of kinases and phosphatases could exhibit unique signal processing
+characteristics, and the presence of phosphatase sequestration may lead to further
+fine tuning of the propagated signal.
+
+RESULTS: We have built four models of the MAPK cascade, each model with identical
+kinase-kinase interactions but unique kinases-phosphatases interactions. Our simulations
+unravelled that MAPK cascade&apos;s robustness to external perturbations is a function
+of nature of interaction between its kinases and phosphatases. The cascade&apos;s
+output robustness was enhanced when phosphatases were sequestrated by their target
+kinases. We uncovered a novel implicit/hidden negative feedback loop from the phosphatase
+MKP3 to its upstream kinase Raf-1, in a cascade resembling the B cell MAPK cascade.
+Notably, strength of the feedback loop was reciprocal to the strength of phosphatases&apos;
+sequestration and stronger sequestration abolished the feedback loop completely.
+An experimental method to verify the presence of the feedback loop is also proposed.
+We further showed, when the models were activated by transient signal, memory (total
+time taken by the cascade output to reach its unstimulated level after removal of
+signal) of a cascade was determined by the specific designs of interaction among
+its kinases and phosphatases.
+
+CONCLUSIONS: Differences in interaction designs among the kinases and phosphatases
+can differentially shape the robustness and signal response behaviour of the MAPK
+cascade and phosphatase sequestration dramatically enhances the robustness to perturbations
+in each of the cascade. An implicit negative feedback loop was uncovered from our
+analysis and we found that strength of the negative feedback loop is reciprocally
+related to the strength of phosphatase sequestration. Duration of output phosphorylation
+in response to a transient signal was also found to be determined by the individual
+cascade&apos;s kinase-phosphatase interaction design.
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels) and identified by: [MODEL1204280024](http://identifiers.org/biomodels.db/MODEL1204280024) . 
+
+To cite BioModels Database, please use: [BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models](http://identifiers.org/pubmed/20587024 "Latest BioModels Database publication") . 
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+end
+
+MODEL1204280024 is "Sarma2012 - Interaction topologies of MAPK cascade (M4_K2_PSEQ)"

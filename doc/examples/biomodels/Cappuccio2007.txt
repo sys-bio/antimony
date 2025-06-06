@@ -1,0 +1,124 @@
+// Created by libAntimony v3.0.0
+model *Cappuccio2007___Tumor_immune_system_interactions_and_determination_of_the_optimal_therapeutic_protocol_in_immunotherapy()
+
+  // Compartments and Species:
+  compartment Tumor_microenvironment;
+  species Effector_cells in Tumor_microenvironment, Tumor_cells in Tumor_microenvironment;
+  species IL_2 in Tumor_microenvironment;
+
+  // Reactions:
+  Effector_cell_stimulation:  => Effector_cells; Tumor_microenvironment*(c*Tumor_cells + p1*Effector_cells*IL_2/(g1 + IL_2) + s1);
+  Effector_cell_decay: Effector_cells => ; Tumor_microenvironment*mu2*Effector_cells;
+  Tumor_growth:  => Tumor_cells; Tumor_microenvironment*(r2*Tumor_cells*(1 - b*Tumor_cells));
+  Tumor_killing: Tumor_cells => ; Tumor_microenvironment*(a*Effector_cells*Tumor_cells/(g2 + Tumor_cells));
+  IL_2_production:  => IL_2; Tumor_microenvironment*(p2*Effector_cells*Tumor_cells/(g3 + Tumor_cells) + s2);
+  IL_2_decay: IL_2 => ; Tumor_microenvironment*mu3*IL_2;
+
+  // Species initializations:
+  Effector_cells = 1e-05;
+  Tumor_cells = 1e-05;
+  IL_2 = 1e-05;
+
+  // Compartment initializations:
+  Tumor_microenvironment = 1;
+
+  // Variable initializations:
+  c = 1.009;
+  mu2 = 0.0378;
+  p1 = 0.044;
+  g1 = 0.02;
+  s1 = 0;
+  r2 = 0.123;
+  b = 1;
+  a = 0.018;
+  g2 = 0.0001;
+  p2 = 0.9;
+  g3 = 1e-05;
+  mu3 = 1.8;
+  s2 = 0;
+
+  // Other declarations:
+  const Tumor_microenvironment, c, mu2, p1, g1, s1, r2, b, a, g2, p2, g3;
+  const mu3, s2;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = litre;
+  unit time_unit = second;
+  unit substance = mole;
+
+  // Display Names:
+  time_unit is "time";
+  IL_2 is "IL-2";
+  IL_2_production is "IL-2_production";
+  IL_2_decay is "IL-2_decay";
+
+  // CV terms:
+  Tumor_microenvironment biological_system "http://identifiers.org/ncit/C94498"
+  Effector_cells biological_system "http://identifiers.org/ncit/C28241"
+  Effector_cells biological_system "http://identifiers.org/cl/CL:0000084"
+  Tumor_cells biological_system "http://identifiers.org/cl/CL:0001063"
+  IL_2 biological_system "http://identifiers.org/pr/PR:000001379"
+  Effector_cell_stimulation biological_system "http://identifiers.org/sbo/SBO:0000393"
+  Effector_cell_stimulation biological_system "http://identifiers.org/go/GO:0042098"
+  Effector_cell_decay biological_system "http://identifiers.org/sbo/SBO:0000394"
+  Tumor_growth biological_system "http://identifiers.org/go/GO:0008283"
+  Tumor_growth biological_system "http://identifiers.org/sbo/SBO:0000393"
+  Tumor_killing biological_system "http://identifiers.org/go/GO:0001906"
+  Tumor_killing biological_system "http://identifiers.org/sbo/SBO:0000394"
+  IL_2_production biological_system "http://identifiers.org/sbo/SBO:0000393"
+  IL_2_decay biological_system "http://identifiers.org/sbo/SBO:0000394"
+
+  model origin "http://identifiers.org/biomodels.db/BIOMD0000000732"
+  model origin "http://identifiers.org/biomodels.db/BIOMD0000000732",
+               "http://identifiers.org/pubmed/9785481"
+  model model_source "http://identifiers.org/biomodels.db/MODEL2108260001",
+                     "http://identifiers.org/biomodels.db/BIOMD0000001036"
+  model propertyBearer "http://identifiers.org/ncit/C15438"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model description "http://identifiers.org/pubmed/17416392"
+  model property "http://identifiers.org/go/GO:0002837",
+                 "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2021-08-24T16:55:01Z"
+  model modified "2021-08-24T16:55:01Z"
+  model creator1.givenName "Emilia"
+  model creator1.familyName "Chen"
+  model creator1.organization "University of Cambridge"
+  model creator1.email "eblc2@cam.ac.uk"
+
+  // Notes:
+  model notes ```
+This ordinary differential equation model is the Panetta-Kirschner model of tumor-immune 
+interactions is described in the publication:Cappuccio A, Castiglione F, Piccoli 
+B." Determination of the optimal therapeutic protocols in cancer immunotherapy." 
+Math Biosci. 2007 Sep;209(1):1-13.doi: 10.1016/j.mbs.2007.02.009. Comment:The model 
+represented in Equations 1-3 is the Panetta-Kirschner model and was used to reproduce 
+Fig. 1.N.B.: Labelling of Fig. 1 graphs in manuscript mismatches with simulation 
+results - CTL and tumor cell plots swapped.Abstract:Cancer immunotherapy aims at 
+eliciting an immune system response against the tumor. However, it is often characterized 
+by toxic side-effects. Limiting the tumor growth and, concurrently, avoiding the 
+toxicity of a drug, is the problem of protocol design. We formulate this question 
+as an optimization problem and derive an algorithm for its solution. Unlike the standard 
+optimal control approach, the algorithm simulates impulse-like drug administrations. 
+It relies on an exact computation of the gradient of the cost function with respect 
+to any protocol by means of the variational equations, that can be solved in parallel 
+with the system. In comparison with previous versions of this method [F. Castiglione, 
+B. Piccoli, Optimal control in a model of dendritic cell transfection cancer immunotherapy, 
+Bull. Math. Biol. 68 (2006) 255-274; B. Piccoli, F. Castiglione, Optimal vaccine 
+scheduling in cancer immunotherapy, Physica A. 370 (2) (2007) 672-680], we optimize 
+both the timing and the dosage of each administration and introduce a penalty term 
+to avoid clustering of subsequent injections, a requirement consistent with the clinical 
+practice. In addition, we implement the optimization scheme to simulate the case 
+of multi-therapies. The procedure works for any ODE system describing the pharmacokinetics 
+and pharmacodynamics of an arbitrary number of therapeutic agents. In this work, 
+it was tested for a well known model of the tumor-immune system interaction [D. Kirschner, 
+J.C. Panetta, Modeling immunotherapy of tumor-immune interaction, J. Math. Biol. 
+37 (1998) 235-252]. Exploring three immunotherapeutic scenarios (CTL therapy, IL-2 
+therapy and combined therapy), we display the stability and efficacy of the optimization 
+method, obtaining protocols that are successful compromises between various clinical 
+requirements.
+```
+end
+
+Cappuccio2007___Tumor_immune_system_interactions_and_determination_of_the_optimal_therapeutic_protocol_in_immunotherapy is "Cappuccio2007 - Tumor-immune system interactions and determination of the optimal therapeutic protocol in immunotherapy"

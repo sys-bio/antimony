@@ -1,0 +1,194 @@
+// Created by libAntimony v3.0.0
+model *MODEL1512160000()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species cp in compartment_, ca in compartment_, dho in compartment_, oro in compartment_;
+  species omp in compartment_, ump in compartment_, udp in compartment_, utp in compartment_;
+  species ctp in compartment_;
+
+  // Reactions:
+  r1:  -> cp; compartment_*(vmax1*bc*glu*atp/((1 + utp/K_utp)*(K_atp + atp)*(K_bc + bc)*(K_q + glu))/compartment_);
+  r2: cp -> ca; compartment_*(vmax2*cp*asp/((1 + utp/K_utp)*(K_m2 + cp)*(K_asp + asp))/compartment_);
+  r3: ca -> dho; compartment_*(vmax3*ca/(K_m3 + ca)/compartment_);
+  r4: dho -> oro; compartment_*(vmax4*dho/(K_m4 + dho)/compartment_);
+  r5: oro -> omp; compartment_*(vmax5*oro*prpp/(K_m5 + oro*prpp)/compartment_);
+  r6: omp -> ump; compartment_*(vmax6*omp/(K_m6 + omp)/compartment_);
+  r10: ump -> udp; compartment_*(vmax10*ump/(K_m10 + ump)/compartment_);
+  r7: udp -> utp; compartment_*(vmax7*udp/(K_m7 + udp)/compartment_);
+  utp_degradation: utp -> ; compartment_*(g_pyr*utp/(K_Mp + utp)/compartment_);
+  r8: utp -> ctp; compartment_*(vmax8*utp/(K_m8 + utp)/compartment_);
+  ctp_degradation: ctp -> ; compartment_*(g_pyr*ctp/(K_Mp + ctp)/compartment_);
+  cp_dilution: cp -> ; compartment_*(d*cp/compartment_);
+  ca_dilution: ca -> ; compartment_*(d*ca/compartment_);
+  dho_dilution: dho -> ; compartment_*(d*dho/compartment_);
+  oro_dilution: oro -> ; compartment_*(d*oro/compartment_);
+  omp_dilution: omp -> ; compartment_*(d*omp/compartment_);
+  ump_dilution: ump -> ; compartment_*(d*ump/compartment_);
+  udp_dilution: udp -> ; compartment_*(d*udp/compartment_);
+  utp_dilution: utp -> ; compartment_*(d*utp/compartment_);
+  ctp_dilution: ctp -> ; compartment_*(d*ctp/compartment_);
+
+  // Species initializations:
+  cp = 0.00037;
+  ca = 0.00037;
+  dho = 0.00037;
+  oro = 0.00037;
+  omp = 0.00037;
+  ump = 0.00037;
+  udp = 0.002886;
+  utp = 0.00666;
+  ctp = 0.00037;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  vmax1 = 3.61602627459517;
+  bc = 1.52264278250403;
+  glu = 0.54620785996429;
+  K_utp = 1.413855257896;
+  K_q = 0.05784981576165;
+  K_bc = 2.3716657188714;
+  vmax2 = 2.44590712912244;
+  asp = 0.0972544685826559;
+  atp = 0.150650172583633;
+  K_atp = 1.28940553329954;
+  K_m2 = 2.00489353757245;
+  vmax3 = 28.6613123782585;
+  K_m3 = 1.27179181717468;
+  vmax4 = 91.7802875108298;
+  K_m4 = 0.0160033122150611;
+  vmax5 = 5227.49670547203;
+  K_m5 = 0.0195216150005324;
+  prpp = 0.181644900226225;
+  vmax6 = 34.9720846528477;
+  K_m6 = 20.3406449182435;
+  vmax10 = 6.55543523218919;
+  K_m10 = 0.0267841313759584;
+  vmax7 = 5.83104141997666;
+  K_m7 = 0.166382738667754;
+  g_pyr = 0.198306450999093;
+  K_Mp = 5.48714446027226;
+  vmax8 = 0.162943604164789;
+  K_m8 = 0.00435621076587497;
+  K_asp = 0.168308889432487;
+  d = 0.1;
+
+  // Other declarations:
+  const compartment_, vmax1, bc, glu, K_utp, K_q, K_bc, vmax2, asp, atp, K_atp;
+  const K_m2, vmax3, K_m3, vmax4, K_m4, vmax5, K_m5, prpp, vmax6, K_m6, vmax10;
+  const K_m10, vmax7, K_m7, g_pyr, K_Mp, vmax8, K_m8, K_asp, d;
+
+  // Unit definitions:
+  unit time_unit = 3600 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+  bc is "[bc]";
+  glu is "[glu]";
+  asp is "[asp]";
+  atp is "[atp]";
+  prpp is "[prpp]";
+
+  // CV terms:
+  cp identity "http://identifiers.org/kegg.compound/C00169",
+              "http://identifiers.org/chebi/CHEBI:17672"
+  ca identity "http://identifiers.org/kegg.compound/C00438",
+              "http://identifiers.org/chebi/CHEBI:15859"
+  dho identity "http://identifiers.org/kegg.compound/C00337",
+               "http://identifiers.org/chebi/CHEBI:17025"
+  oro identity "http://identifiers.org/kegg.compound/C00295",
+               "http://identifiers.org/chebi/CHEBI:16742"
+  omp identity "http://identifiers.org/kegg.compound/C01103",
+               "http://identifiers.org/chebi/CHEBI:15842"
+  ump identity "http://identifiers.org/kegg.compound/C00105",
+               "http://identifiers.org/chebi/CHEBI:16695"
+  udp identity "http://identifiers.org/kegg.compound/C00015",
+               "http://identifiers.org/chebi/CHEBI:17659"
+  utp identity "http://identifiers.org/kegg.compound/C00075",
+               "http://identifiers.org/chebi/CHEBI:15713"
+  ctp identity "http://identifiers.org/kegg.compound/C00063",
+               "http://identifiers.org/chebi/CHEBI:17677"
+  r1 identity "http://identifiers.org/uniprot/P07259"
+  r1 identity "http://identifiers.org/kegg.reaction/R00575"
+  r2 identity "http://identifiers.org/kegg.reaction/R01397"
+  r2 identity "http://identifiers.org/uniprot/P07259"
+  r3 identity "http://identifiers.org/kegg.reaction/R01993"
+  r3 identity "http://identifiers.org/uniprot/P20051"
+  r4 identity "http://identifiers.org/kegg.reaction/R01866"
+  r4 identity "http://identifiers.org/uniprot/P28272"
+  r5 identity "http://identifiers.org/uniprot/P13298"
+  r5 identity "http://identifiers.org/kegg.reaction/R01870"
+  r5 homolog "http://identifiers.org/uniprot/P30402"
+  r6 identity "http://identifiers.org/uniprot/P03962"
+  r6 identity "http://identifiers.org/kegg.reaction/R00965"
+  r10 version "http://identifiers.org/kegg.reaction/R00158"
+  r10 identity "http://identifiers.org/uniprot/P15700"
+  r7 identity "http://identifiers.org/uniprot/P36010"
+  r7 identity "http://identifiers.org/kegg.reaction/R00156"
+  r8 identity "http://identifiers.org/kegg.reaction/R00573"
+  r8 identity "http://identifiers.org/uniprot/P28274"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1512160000"
+  model publication "http://identifiers.org/pubmed/26511837"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000590"
+  model encodement "http://identifiers.org/kegg.pathway/rn00240"
+  model description "http://identifiers.org/doi/doi:10.1186/s12862-015-0515-x"
+  model created "2015-12-10T13:40:40Z"
+  model modified "2015-12-10T13:40:40Z",
+                 "2016-02-09T16:23:54Z"
+  model creator1.givenName "Brian"
+  model creator1.familyName "Mannakee"
+  model creator1.organization "University of Arizona"
+  model creator1.email "mannakee@email.arizona.edu"
+  model creator2.givenName "Ryan"
+  model creator2.familyName "Gutenkunst"
+  model creator2.organization "University of Arizona"
+  model creator2.email "rgutenk@email.arizona.edu"
+
+  // Notes:
+  model notes ```
+Hermansen2015 - denovo biosynthesis of pyrimidines in yeast 
+
+
+This model is described in the article:
+
+
+[Characterizing selective pressures on the pathway for de novo biosynthesis of pyrimidines in yeast. ](http://identifiers.org/pubmed/26511837 "Access to this publication") 
+
+
+Hermansen RA, Mannakee BK, Knecht W, Liberles DA, Gutenkunst RN 
+
+BMC Evolutionary Biology. 2015, 15:232 
+Abstract:
+
+
+Selection on proteins is typically measured with the assumption that each protein
+acts independently. However, selection more likely acts at higher levels of biological
+organization, requiring an integrative view of protein function. Here, we built a
+kinetic model for de novo pyrimidine biosynthesis in the yeast Saccharomyces cerevisiae
+to relate pathway function to selective pressures on individual protein-encoding
+genes.Gene families across yeast were constructed for each member of the pathway
+and the ratio of nonsynonymous to synonymous nucleotide substitution rates (dN/dS)
+was estimated for each enzyme from S. cerevisiae and closely related species. We
+found a positive relationship between the influence that each enzyme has on pathway
+function and its selective constraint.We expect this trend to be locally present
+for enzymes that have pathway control, but over longer evolutionary timescales we
+expect that mutation-selection balance may change the enzymes that have pathway control.
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identified by: [MODEL1512160000](http://identifiers.org/biomodels.db/MODEL1512160000).
+
+To cite BioModels Database, please use: [BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models](http://identifiers.org/pubmed/20587024 "Latest BioModels Database publication").
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+end
+
+MODEL1512160000 is "Hermansen2015 - denovo biosynthesis of pyrimidines in yeast"

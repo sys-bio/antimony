@@ -1,0 +1,88 @@
+// Created by libAntimony v3.0.0
+model *L2V4_Model_of_Dritschel2018___A_mathematical_model_of_cytotoxic_and_helper_T_cell_interactions_in_a_tumour_microenvironment()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species N_Tumour in compartment_, T_H in compartment_, T_C in compartment_;
+
+  // Reactions:
+  Tumor_Growth:  => N_Tumour; compartment_*(gamma_*(1 - N_Tumour)*N_Tumour);
+  Tumor_Elimination: N_Tumour => ; compartment_*(p*k*T_C*N_Tumour);
+  T_Helper_Infiltration_Passive:  => T_H; compartment_*sigma_H;
+  T_Cytotoxic_Infiltration_Passive:  => T_C; compartment_*sigma_C;
+  T_Cytotoxic_Infiltration_Active:  => T_C; compartment_*(T_C*T_H);
+  T_Helper_Infiltration_Active:  => T_H; compartment_*(alpha*N_Tumour*T_H/(Ntilde^2 + N_Tumour^2));
+  T_Cytotoxic_Death: T_C => ; compartment_*T_C;
+  T_Cytotoxic_Tumor_Infiltrate_Elimination: T_C => ; compartment_*((1 - p)*k*T_C*N_Tumour);
+  T_Helper_Death: T_H => ; compartment_*delta_H*T_H;
+
+  // Species initializations:
+  N_Tumour = 0.01;
+  T_H = 0.6;
+  T_C = 4.5;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  gamma_ = 10;
+  p = 0.5;
+  k = 4.15;
+  sigma_H = 0.5;
+  alpha = 0.19;
+  Ntilde = 0.04;
+  delta_H = 1;
+  sigma_C = 2;
+
+  // Other declarations:
+  const compartment_, gamma_, p, k, sigma_H, alpha, Ntilde, delta_H, sigma_C;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+  gamma_ is "gamma";
+
+  // CV terms:
+  compartment_ biological_system "http://identifiers.org/ncit/C94498"
+  N_Tumour biological_system "http://identifiers.org/ncit/C12922"
+  T_H biological_system "http://identifiers.org/cl/CL:0000912"
+  T_C biological_system "http://identifiers.org/cl/CL:0000910"
+  Tumor_Growth biological_system "http://identifiers.org/ncit/C18081"
+  Tumor_Elimination biological_system "http://identifiers.org/sbo/SBO:0000179"
+  Tumor_Elimination biological_system "http://identifiers.org/ncit/C18246"
+  T_Helper_Infiltration_Passive biological_system "http://identifiers.org/go/GO:0035684"
+  T_Cytotoxic_Infiltration_Passive biological_system "http://identifiers.org/go/GO:0072683"
+  T_Cytotoxic_Infiltration_Active biological_system "http://identifiers.org/go/GO:0072683"
+  T_Helper_Infiltration_Active biological_system "http://identifiers.org/go/GO:0035684"
+  T_Cytotoxic_Death biological_system "http://identifiers.org/go/GO:0008219"
+  T_Cytotoxic_Tumor_Infiltrate_Elimination biological_system "http://identifiers.org/go/GO:0008219"
+  T_Helper_Death biological_system "http://identifiers.org/go/GO:0008219"
+
+  model publication "http://identifiers.org/doi/10.1080/23737867.2018.1465863"
+  model origin "http://identifiers.org/pubmed/8186756"
+  model model_source "http://identifiers.org/biomodels.db/MODEL1907230003",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000763"
+  model biological_system "http://identifiers.org/mamo/MAMO_0000046"
+  model biological_system "http://identifiers.org/go/GO:0002424"
+  model created "2019-07-17T14:46:18Z"
+  model modified "2019-07-17T14:46:18Z"
+  model creator1.givenName "Johannes"
+  model creator1.familyName "Meyer"
+  model creator1.organization "EBML-EBI"
+  model creator1.email "johannes.p.meyer@gmail.com"
+
+  // Notes:
+  model notes ```
+This model examines the role of helper and cytotoxic T cells in an anti-tumour 
+response, with implicit inclusions of immunosuppressive effects. The model demonstrates 
+the dependence of immunoediting on infilftration by helper and cytotoxic T cells, 
+as well as the importance of these cells in mediating tumour elimination.
+```
+end
+
+L2V4_Model_of_Dritschel2018___A_mathematical_model_of_cytotoxic_and_helper_T_cell_interactions_in_a_tumour_microenvironment is "Dritschel2018 - A mathematical model of cytotoxic and helper T cell interactions in a tumour microenvironment"

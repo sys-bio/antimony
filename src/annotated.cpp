@@ -3,6 +3,7 @@
 #include "stringx.h"
 #include "sbml/annotation/Date.h"
 #include <string>
+#include <regex>
 
 using namespace std;
 using namespace libsbml;
@@ -49,16 +50,27 @@ bool Annotated::TransferAnnotationTo(SBase* sbmlobj, string metaid) const
   if (!m_notes.empty()) {
       sbmlobj->setMetaId(metaid);
       string notes = getNotesString();
-      int ret = sbmlobj->setNotes(notes, false);
-      if (ret != libsbml::LIBSBML_OPERATION_SUCCESS) {
-          ret = sbmlobj->setNotes(notes, true);
+      if (notes[0] == '<') {
+          int ret = sbmlobj->setNotes(notes, false);
+          if (ret != libsbml::LIBSBML_OPERATION_SUCCESS) {
+              ret = sbmlobj->setNotes(notes, true);
+          }
+          if (ret != libsbml::LIBSBML_OPERATION_SUCCESS) {
+              ret = sbmlobj->setNotes("<notes><body xmlns=\"http://www.w3.org/1999/xhtml\"> " + notes + " </body></notes>");
+          }
+          if (ret != libsbml::LIBSBML_OPERATION_SUCCESS) {
+              ret = sbmlobj->setNotes("<notes><p xmlns=\"http://www.w3.org/1999/xhtml\"> " + notes + " </p></notes>");
+              assert(ret == libsbml::LIBSBML_OPERATION_SUCCESS);
+          }
+          if (ret != libsbml::LIBSBML_OPERATION_SUCCESS) {
+              ret = sbmlobj->setNotesFromMarkdown(notes);
+              assert(ret == libsbml::LIBSBML_OPERATION_SUCCESS);
+          }
       }
-      if (ret != libsbml::LIBSBML_OPERATION_SUCCESS) {
-          ret = sbmlobj->setNotes("<notes><body xmlns=\"http://www.w3.org/1999/xhtml\"> " + notes + " </body></notes>");
-      }
-      if (ret != libsbml::LIBSBML_OPERATION_SUCCESS) {
-          ret = sbmlobj->setNotes("<notes><p xmlns=\"http://www.w3.org/1999/xhtml\"> " + notes + " </p></notes>");
-          assert(ret == libsbml::LIBSBML_OPERATION_SUCCESS);
+      else {
+          regex triple_quotes("\"\"\"");
+          notes = regex_replace(notes, triple_quotes, "```");
+          sbmlobj->setNotesFromMarkdown(notes);
       }
   }
   ModelHistory* mh = const_cast<ModelHistory*>(&m_history);
@@ -87,6 +99,7 @@ string Annotated::getNotesString() const
         }
         notes += m_notes[n];
     }
+    trimAndRemoveDoubleSpaces(notes);
     return notes;
 }
 
@@ -94,23 +107,23 @@ string Annotated::GetCreatorStringFor(const string& id) const
 {
     string ret = "";
     ModelHistory* mh = const_cast<ModelHistory*>(&m_history);
-    for (size_t v = 0; v < mh->getNumCreators(); v++) {
+    for (unsigned int v = 0; v < mh->getNumCreators(); v++) {
         string left = id + " creator" + to_string(v+1) + ".";
         ModelCreator* mc = mh->getCreator(v);
         if (mc->isSetName()) {
-            ret += left + "name \"" + mc->getName() + "\"\n";
+            ret += left + "name " + quoteText(mc->getName()) + "\n";
         }
         if (mc->isSetGivenName()) {
-            ret += left + "givenName \"" + mc->getGivenName() + "\"\n";
+            ret += left + "givenName " + quoteText(mc->getGivenName()) + "\n";
         }
         if (mc->isSetFamilyName()) {
-            ret += left + "familyName \"" + mc->getFamilyName() + "\"\n";
+            ret += left + "familyName " + quoteText(mc->getFamilyName()) + "\n";
         }
         if (mc->isSetOrganisation()) {
-            ret += left + "organization \"" + mc->getOrganisation() + "\"\n";
+            ret += left + "organization " + quoteText(mc->getOrganisation()) + "\n";
         }
         if (mc->isSetEmail()) {
-            ret += left + "email \"" + mc->getEmail() + "\"\n";
+            ret += left + "email " + quoteText(mc->getEmail()) + "\n";
         }
     }
     return ret;
@@ -143,7 +156,7 @@ string Annotated::getModifiedString(string indent) const
         if (!ret.empty()) {
             ret += ",\n" + indent;
         }
-        ret += "\"" + const_cast<Date*>(&m_modified[i])->getDateAsString() + "\"";
+        ret += quoteText(const_cast<Date*>(&m_modified[i])->getDateAsString());
     }
     return ret + "\n";
 }
@@ -158,21 +171,8 @@ void Annotated::ReadAnnotationFrom(const SBase* sbmlobj)
     m_sboTerm = sbmlobj->getSBOTerm();
   }
   if (sbmlobj->isSetNotes()) {
-      string notes = sbmlobj->getNotesString();
-      size_t xmlns = notes.find("xmlns=\"http://www.w3.org/1999/xhtml\">");
-      size_t end_p = notes.rfind("</p>");
-      size_t end_body = notes.rfind("/body>");
-      if (xmlns > 5 && xmlns < 30) {
-          if (end_p == notes.size() - 13) {
-              notes = notes.substr(xmlns + 37, end_p - xmlns - 37);
-              ltrim(notes);
-          }
-          else if (end_body > notes.size() - 20  &&
-              end_body < notes.size()-5) {
-              notes = notes.substr(xmlns + 39, end_body - xmlns - 40);
-          }
-      }
-      rtrim(notes);
+      string notes = sbmlobj->getNotesMarkdown();
+      trimAndRemoveDoubleSpaces(notes);
       m_notes.push_back(notes);
   }
   if (sbmlobj->isSetModelHistory()) {
@@ -318,7 +318,7 @@ void Annotated::AppendNotes(const std::vector<std::string>& resources)
     }
 }
 
-bool Annotated::addCreatorInfo(int creator_number, const string& creator_substr, const vector<string>& resources)
+bool Annotated::addCreatorInfo(unsigned int creator_number, const string& creator_substr, const vector<string>& resources)
 {
     ModelCreator* creator = NULL;
     if (creator_number <= m_history.getNumCreators()) {
@@ -518,7 +518,7 @@ void Annotated::PopulateCVTerms(SBase* sbmlobj)
   if (sbmlobj->isSetCreatedDate()) {
       SetCreated(sbmlobj->getCreatedDate());
   }
-  for (size_t i = 0; i < sbmlobj->getNumModifiedDates(); i++) {
+  for (unsigned int i = 0; i < sbmlobj->getNumModifiedDates(); i++) {
       AppendModified(sbmlobj->getModifiedDate(i));
   }
   if (sbmlobj->isSetModelHistory()) {
@@ -588,7 +588,7 @@ string Annotated::CreateCVTermsAntimonySyntax(const string& elt_id, const string
       // align each subsequent uri with the first one
       if (j!=i->second.begin())
         term += ",\n"+subindent;
-      term += "\""+*j+"\"";
+      term += quoteText(*j);
     }
     result += term+"\n";
   }
@@ -605,7 +605,7 @@ string Annotated::CreateCVTermsAntimonySyntax(const string& elt_id, const string
       // align each subsequent uri with the first one
       if (j!=i->second.begin())
         term += ",\n"+subindent;
-      term += "\""+*j+"\"";
+      term += quoteText(*j);
     }
     result += term+"\n";
   }

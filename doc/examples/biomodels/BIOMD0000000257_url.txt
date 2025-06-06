@@ -1,0 +1,185 @@
+// Created by libAntimony v3.0.0
+model *Piedrafita2010_MR_System()
+
+  // Compartments and Species:
+  compartment env;
+  species $S in env, $U in env, $T in env, STU in env, STUS in env, STUST in env;
+  species STUSU in env, SU in env, ST in env, SUST in env, SUSTU in env;
+
+  // Assignment Rules:
+  k8 := k4;
+  k11 := k4;
+
+  // Reactions:
+  reaction1: $S + STU -> STUS; env*(k1*S*STU - k1r*STUS);
+  reaction2: $T + STUS -> STUST; env*(k2*T*STUS - k2r*STUST);
+  reaction3: STUST -> ST + STU; env*(k3*STUST - k3r*ST*STU);
+  reaction4: STU => ; env*k4*STU;
+  reaction5: SU + ST -> SUST; env*(k5*ST*SU - k5r*SUST);
+  reaction6: $U + SUST -> SUSTU; env*(k6*U*SUST - k6r*SUSTU);
+  reaction7: SUSTU -> STU + SU; env*(k7*SUSTU - k7r*STU*SU);
+  reaction8: SU => ; env*k8*SU;
+  reaction9: $U + STUS -> STUSU; env*(k9*U*STUS - k9r*STUSU);
+  reaction10: STUSU -> STU + SU; env*(k10*STUSU - k10r*STU*SU);
+  reaction11: ST => ; env*k11*ST;
+
+  // Species initializations:
+  S = 4;
+  U = 1;
+  T = 2;
+  STU = 5;
+  STUS = 0;
+  STUST = 0;
+  STUSU = 0;
+  SU = 0;
+  ST = 0;
+  SUST = 0;
+  SUSTU = 0;
+
+  // Compartment initializations:
+  env = 1;
+
+  // Variable initializations:
+  k1 = 10;
+  k1 has per_time_per_M;
+  k1r = 10;
+  k1r has per_time;
+  k2 = 10;
+  k2 has per_time_per_M;
+  k2r = 10;
+  k2r has per_time;
+  k3 = 2;
+  k3 has per_time;
+  k3r = 1;
+  k3r has per_time_per_M;
+  k4 = 0.3;
+  k4 has per_time;
+  k5 = 1;
+  k5 has per_time_per_M;
+  k5r = 1;
+  k5r has per_time;
+  k6 = 1;
+  k6 has per_time_per_M;
+  k6r = 1;
+  k6r has per_time;
+  k7 = 0.1;
+  k7 has per_time;
+  k7r = 0.1;
+  k7r has per_time_per_M;
+  k8 has per_time;
+  k9 = 0.1;
+  k9 has per_time_per_M;
+  k9r = 0.05;
+  k9r has per_time;
+  k10 = 0.05;
+  k10 has per_time;
+  k10r = 0.05;
+  k10r has per_time_per_M;
+  k11 has per_time;
+
+  // Other declarations:
+  var k8, k11;
+  const env, k1, k1r, k2, k2r, k3, k3r, k4, k5, k5r, k6, k6r, k7, k7r, k9;
+  const k9r, k10, k10r;
+
+  // Unit definitions:
+  unit substance = mole;
+  unit time_unit = second;
+  unit volume = litre;
+  unit per_time = 1 / second;
+  unit per_time_per_M = litre / (mole * second);
+
+  // Display Names:
+  substance is "mole";
+  time_unit is "sec";
+  volume is "litre";
+  env is "environment";
+
+  // SBO terms:
+  env.sboTerm = 290
+  S.sboTerm = 240
+  U.sboTerm = 240
+  T.sboTerm = 240
+  STU.sboTerm = 240
+  STUS.sboTerm = 240
+  STUST.sboTerm = 240
+  STUSU.sboTerm = 240
+  SU.sboTerm = 240
+  ST.sboTerm = 240
+  SUST.sboTerm = 240
+  SUSTU.sboTerm = 240
+  k1.sboTerm = 339
+  k1r.sboTerm = 38
+  k2.sboTerm = 339
+  k2r.sboTerm = 38
+  k3.sboTerm = 35
+  k3r.sboTerm = 39
+  k4.sboTerm = 35
+  k5.sboTerm = 339
+  k5r.sboTerm = 38
+  k6.sboTerm = 339
+  k6r.sboTerm = 38
+  k7.sboTerm = 35
+  k7r.sboTerm = 39
+  k8.sboTerm = 35
+  k9.sboTerm = 339
+  k9r.sboTerm = 38
+  k10.sboTerm = 35
+  k10r.sboTerm = 39
+  k11.sboTerm = 35
+  reaction1.sboTerm = 210
+  reaction2.sboTerm = 210
+  reaction3.sboTerm = 178
+  reaction4.sboTerm = 179
+  reaction5.sboTerm = 210
+  reaction6.sboTerm = 210
+  reaction7.sboTerm = 178
+  reaction8.sboTerm = 179
+  reaction9.sboTerm = 210
+  reaction10.sboTerm = 178
+  reaction11.sboTerm = 179
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1008090000"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000257"
+  model publication "http://identifiers.org/pubmed/20700491"
+  model biological_system "http://identifiers.org/go/GO:0050790"
+  model taxon "http://identifiers.org/taxonomy/131567"
+  model created "2010-08-09T16:31:52Z"
+  model modified "2014-04-04T17:44:16Z"
+  model creator1.givenName "Lukas"
+  model creator1.familyName "Endler"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "lukas@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+This is the self maintaining metabolism model described in the article:
+
+** A Simple Self-Maintaining Metabolic System: Robustness, Autocatalysis, Bistability.
+** 
+Piedrafita G, Montero F, Morán F, Cárdenas ML, Cornish-Bowden A, *PLoS
+Computational Biology* 2010, 6(8):e1000872. doi:[10.1371/journal.pcbi.1000872](http://dx.doi.org/10.1371/journal.pcbi.1000872) 
+**Abstract:** 
+A living organism must not only organize itself from within; it must also maintain
+its organization in the face of changes in its environment and degradation of its
+components. We show here that a simple (M,R)-system consisting of three interlocking
+catalytic cycles, with every catalyst produced by the system itself, can both establish
+a non-trivial steady state and maintain this despite continuous loss of the catalysts
+by irreversible degradation. As long as at least one catalyst is present at a sufficient
+concentration in the initial state, the others can be produced and maintained. The
+system shows bistability, because if the amount of catalyst in the initial state
+is insufficient to reach the non-trivial steady state the system collapses to a trivial
+steady state in which all fluxes are zero. It is also robust, because if one catalyst
+is catastrophically lost when the system is in steady state it can recreate the same
+state. There are three elementary flux modes, but none of them is an enzyme-maintaining
+mode, the entire network being necessary to maintain the two catalysts
+
+As this is a theoretical model and no units are given in the article, the standard
+units (mol, seconds and litre) are used for the parameters. k8 and k11 are set equal
+to k4.
+
+Originally created by libAntimony v1.4 (using libSBML 3.4.1)
+```
+end
+
+Piedrafita2010_MR_System is "Piedrafita2010_MR_System"

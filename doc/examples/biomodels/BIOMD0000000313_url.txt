@@ -1,0 +1,418 @@
+// Created by libAntimony v3.0.0
+model *Raia2010_IL13_MedB1()
+
+  // Compartments and Species:
+  compartment cell;
+  species Rec in cell, Rec_i in cell, IL13_Rec in cell, p_IL13_Rec in cell;
+  species p_IL13_Rec_i in cell, JAK2 in cell, pJAK2 in cell, SHP1 in cell;
+  species STAT5 in cell, pSTAT5 in cell, SOCS3mRNA in cell, DecoyR in cell;
+  species IL13_DecoyR in cell, SOCS3 in cell, CD274mRNA in cell, $IL13 in cell;
+
+  // Assignment Rules:
+  IL13 := 2.265*IL13stimulation;
+
+  // Reactions:
+  reaction_1: Rec => IL13_Rec; Kon_IL13Rec*IL13*Rec*cell;
+  reaction_2: Rec => Rec_i; Rec_intern*Rec*cell;
+  reaction_3: Rec_i => Rec; Rec_recycle*Rec_i*cell;
+  reaction_4: IL13_Rec => p_IL13_Rec; Rec_phosphorylation*IL13_Rec*pJAK2*cell;
+  reaction_5: JAK2 => pJAK2; (JAK2_phosphorylation*IL13_Rec*JAK2/(1 + JAK2_p_inhibition*SOCS3))*cell;
+  reaction_6: JAK2 => pJAK2; (JAK2_phosphorylation*p_IL13_Rec*JAK2/(1 + JAK2_p_inhibition*SOCS3))*cell;
+  reaction_7: p_IL13_Rec => p_IL13_Rec_i; pRec_intern*p_IL13_Rec*cell;
+  reaction_8: p_IL13_Rec_i => ; pRec_degradation*p_IL13_Rec_i*cell;
+  reaction_9: pJAK2 => JAK2; pJAK2_dephosphorylation*pJAK2*SHP1*cell;
+  reaction_10: STAT5 => pSTAT5; STAT5_phosphorylation*STAT5*pJAK2*cell;
+  reaction_11: pSTAT5 => STAT5; pSTAT5_dephosphorylation*pSTAT5*SHP1*cell;
+  reaction_12: DecoyR => IL13_DecoyR; DecoyR_binding*IL13*DecoyR*cell;
+  reaction_13:  => SOCS3mRNA; pSTAT5*SOCS3mRNA_production*cell;
+  reaction_14:  => SOCS3; (SOCS3mRNA*SOCS3_translation/(SOCS3_accumulation + SOCS3mRNA))*cell;
+  reaction_15: SOCS3 => ; SOCS3_degradation*SOCS3*cell;
+  reaction_16:  => CD274mRNA; pSTAT5*CD274mRNA_production*cell;
+
+  // Species initializations:
+  Rec = 1.3;
+  Rec_i = 113.194;
+  IL13_Rec = 0;
+  p_IL13_Rec = 0;
+  p_IL13_Rec_i = 0;
+  JAK2 = 2.8;
+  pJAK2 = 0;
+  SHP1 = 91;
+  STAT5 = 165;
+  pSTAT5 = 0;
+  SOCS3mRNA = 0;
+  DecoyR = 0.34;
+  IL13_DecoyR = 0;
+  SOCS3 = 0;
+  CD274mRNA = 0;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  IL13stimulation = 1;
+  IL13stimulation has ng_per_ml;
+  Kon_IL13Rec = 0.00341992;
+  Rec_phosphorylation = 999.631;
+  pRec_intern = 0.15254;
+  pRec_degradation = 0.172928;
+  Rec_intern = 0.103346;
+  Rec_recycle = 0.00135598;
+  JAK2_phosphorylation = 0.157057;
+  pJAK2_dephosphorylation = 0.000621906;
+  STAT5_phosphorylation = 0.0382596;
+  pSTAT5_dephosphorylation = 0.000343392;
+  SOCS3mRNA_production = 0.00215826;
+  DecoyR_binding = 0.000124391;
+  JAK2_p_inhibition = 0.0168268;
+  SOCS3_translation = 11.9086;
+  SOCS3_accumulation = 3.70803;
+  SOCS3_degradation = 0.0429186;
+  CD274mRNA_production = 8.21752e-05;
+
+  // Other declarations:
+  const cell, IL13stimulation, Kon_IL13Rec, Rec_phosphorylation, pRec_intern;
+  const pRec_degradation, Rec_intern, Rec_recycle, JAK2_phosphorylation, pJAK2_dephosphorylation;
+  const STAT5_phosphorylation, pSTAT5_dephosphorylation, SOCS3mRNA_production;
+  const DecoyR_binding, JAK2_p_inhibition, SOCS3_translation, SOCS3_accumulation;
+  const SOCS3_degradation, CD274mRNA_production;
+
+  // Unit definitions:
+  unit substance = item;
+  unit time_unit = 60 second;
+  unit volume = 60e-15 litre;
+  unit ng_per_ml = 1e-9 gram * 1e-3 litre;
+
+  // Display Names:
+  substance is "molecules";
+  time_unit is "minutes";
+  volume is "cell_volumes";
+
+  // SBO terms:
+  cell.sboTerm = 290
+  Rec.sboTerm = 297
+  Rec_i.sboTerm = 297
+  IL13_Rec.sboTerm = 297
+  p_IL13_Rec.sboTerm = 297
+  p_IL13_Rec_i.sboTerm = 297
+  JAK2.sboTerm = 252
+  pJAK2.sboTerm = 252
+  SHP1.sboTerm = 252
+  STAT5.sboTerm = 252
+  pSTAT5.sboTerm = 252
+  SOCS3mRNA.sboTerm = 250
+  DecoyR.sboTerm = 297
+  IL13_DecoyR.sboTerm = 297
+  SOCS3.sboTerm = 252
+  CD274mRNA.sboTerm = 250
+  IL13.sboTerm = 252
+  IL13stimulation.sboTerm = 228
+  Kon_IL13Rec.sboTerm = 339
+  Rec_phosphorylation.sboTerm = 36
+  pRec_intern.sboTerm = 35
+  pRec_degradation.sboTerm = 356
+  Rec_intern.sboTerm = 35
+  Rec_recycle.sboTerm = 35
+  JAK2_phosphorylation.sboTerm = 36
+  pJAK2_dephosphorylation.sboTerm = 36
+  STAT5_phosphorylation.sboTerm = 36
+  pSTAT5_dephosphorylation.sboTerm = 36
+  SOCS3mRNA_production.sboTerm = 35
+  DecoyR_binding.sboTerm = 339
+  JAK2_p_inhibition.sboTerm = 308
+  SOCS3_translation.sboTerm = 324
+  SOCS3_accumulation.sboTerm = 27
+  SOCS3_degradation.sboTerm = 356
+  CD274mRNA_production.sboTerm = 35
+  reaction_1.sboTerm = 177
+  reaction_2.sboTerm = 185
+  reaction_3.sboTerm = 185
+  reaction_4.sboTerm = 216
+  reaction_5.sboTerm = 216
+  reaction_6.sboTerm = 216
+  reaction_7.sboTerm = 185
+  reaction_8.sboTerm = 179
+  reaction_9.sboTerm = 330
+  reaction_10.sboTerm = 216
+  reaction_11.sboTerm = 330
+  reaction_12.sboTerm = 177
+  reaction_13.sboTerm = 183
+  reaction_14.sboTerm = 181
+  reaction_15.sboTerm = 179
+  reaction_16.sboTerm = 183
+
+  // CV terms:
+  cell biological_system "http://identifiers.org/go/GO:0005623",
+                         "http://identifiers.org/bto/BTO:0001518"
+  Rec identity "http://identifiers.org/go/GO:0016516"
+  Rec part "http://identifiers.org/uniprot/P29597"
+  Rec version "http://identifiers.org/uniprot/P24394",
+              "http://identifiers.org/uniprot/P78552"
+  Rec property "http://identifiers.org/go/GO:0019973"
+  Rec_i part "http://identifiers.org/uniprot/P29597"
+  Rec_i biological_system "http://identifiers.org/go/GO:0016516"
+  Rec_i version "http://identifiers.org/uniprot/P78552"
+  Rec_i property "http://identifiers.org/go/GO:0031623"
+  Rec_i version "http://identifiers.org/uniprot/P24394"
+  IL13_Rec part "http://identifiers.org/uniprot/P35225"
+  IL13_Rec version "http://identifiers.org/uniprot/P78552",
+                   "http://identifiers.org/uniprot/P24394"
+  IL13_Rec part "http://identifiers.org/uniprot/P29597",
+                "http://identifiers.org/go/GO:0016516"
+  p_IL13_Rec part "http://identifiers.org/mod/MOD:00048"
+  p_IL13_Rec part "http://identifiers.org/uniprot/P35225"
+  p_IL13_Rec version "http://identifiers.org/uniprot/P24394",
+                     "http://identifiers.org/uniprot/P78552",
+                     "http://identifiers.org/kegg.compound/C00562"
+  p_IL13_Rec part "http://identifiers.org/uniprot/P29597",
+                  "http://identifiers.org/go/GO:0016516",
+                  "urn:miriam:mod:MOD%3A00048"
+  p_IL13_Rec_i part "http://identifiers.org/mod/MOD:00048"
+  p_IL13_Rec_i part "http://identifiers.org/uniprot/P35225",
+                    "http://identifiers.org/uniprot/P29597",
+                    "urn:miriam:mod:MOD%3A00048"
+  p_IL13_Rec_i biological_system "http://identifiers.org/go/GO:0016516"
+  p_IL13_Rec_i version "http://identifiers.org/uniprot/P24394",
+                       "http://identifiers.org/uniprot/P78552"
+  p_IL13_Rec_i property "http://identifiers.org/go/GO:0031623"
+  JAK2 biological_system "http://identifiers.org/uniprot/O60674"
+  pJAK2 version "http://identifiers.org/mod/MOD:00048"
+  pJAK2 biological_system "http://identifiers.org/uniprot/O60674",
+                          "http://identifiers.org/kegg.compound/C00562"
+  pJAK2 version "urn:miriam:mod:MOD%3A00048"
+  SHP1 biological_system "http://identifiers.org/uniprot/P29350"
+  STAT5 biological_system "http://identifiers.org/uniprot/P42229"
+  STAT5 biological_system "http://identifiers.org/uniprot/P51692"
+  pSTAT5 version "http://identifiers.org/mod/MOD:00048"
+  pSTAT5 biological_system "http://identifiers.org/uniprot/P51692"
+  pSTAT5 version "urn:miriam:mod:MOD%3A00048"
+  pSTAT5 biological_system "http://identifiers.org/uniprot/P42229",
+                           "http://identifiers.org/kegg.compound/C00562"
+  SOCS3mRNA identity "http://identifiers.org/chebi/CHEBI:33699"
+  SOCS3mRNA biological_system "http://identifiers.org/kegg.compound/C00046"
+  SOCS3mRNA encodement "http://identifiers.org/uniprot/O14543"
+  DecoyR biological_system "http://identifiers.org/uniprot/Q14627"
+  IL13_DecoyR part "http://identifiers.org/uniprot/P35225"
+  IL13_DecoyR version "http://identifiers.org/uniprot/Q14627"
+  SOCS3 biological_system "http://identifiers.org/uniprot/O14543"
+  CD274mRNA identity "http://identifiers.org/chebi/CHEBI:33699"
+  CD274mRNA biological_system "http://identifiers.org/kegg.compound/C00046"
+  CD274mRNA encodement "http://identifiers.org/uniprot/P20963"
+  IL13 biological_system "http://identifiers.org/uniprot/P35225"
+  IL13 property "http://identifiers.org/go/GO:0005144"
+  IL13stimulation biological_system "http://identifiers.org/uniprot/P35225"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1102020001"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000313"
+  model publication "http://identifiers.org/pubmed/21127196"
+  model property "http://identifiers.org/doid/DOID:0050743"
+  model part "http://identifiers.org/kegg.pathway/hsa04630",
+             "http://identifiers.org/reactome/REACT_22232"
+  model container "http://identifiers.org/bto/BTO:0001518"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model biological_system "http://identifiers.org/go/GO:0046425"
+  model created "2011-02-14T03:36:22Z"
+  model modified "2017-05-18T11:22:27Z"
+  model creator1.givenName "Lukas"
+  model creator1.familyName "Endler"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "lukas@ebi.ac.uk"
+  model creator2.givenName "Marcel"
+  model creator2.familyName "Schilling"
+  model creator2.organization "German Cancer Research Center"
+  model creator2.email "m.schilling@dkfz.de"
+
+  // Notes:
+  model notes ```
+This is the model of IL13 induced signalling in MedB-1 cell described in the article: 
+**Dynamic Mathematical Modeling of IL13-Induced Signaling in Hodgkin and Primary
+Mediastinal B-Cell Lymphoma Allows Prediction of Therapeutic Targets.** 
+Raia V, Schilling M, Böhm M, Hahn B, Kowarsch A, Raue A, Sticht C, Bohl S, Saile
+M, Möller P, Gretz N, Timmer J, Theis F, Lehmann WD, Lichter P and Klingmüller
+U. Cancer Res. 2011 Feb 1;71(3):693-704. PubmedID:[21127196](http://www.ncbi.nlm.nih.gov/pubmed/21127196); DOI:[10.1158/0008-5472.CAN-10-2987](http://dx.doi.org/10.1158/0008-5472.CAN-10-2987) 
+Abstract: 
+Primary mediastinal B-cell lymphoma (PMBL) and classical Hodgkin lymphoma (cHL) share
+a frequent constitutive activation of JAK (Janus kinase)/STAT signaling pathway.
+Because of complex, nonlinear relations within the pathway, key dynamic properties
+remained to be identified to predict possible strategies for intervention. We report
+the development of dynamic pathway models based on quantitative data collected on
+signaling components of JAK/STAT pathway in two lymphoma-derived cell lines, MedB-1
+and L1236, representative of PMBL and cHL, respectively. We show that the amounts
+of STAT5 and STAT6 are higher whereas those of SHP1 are lower in the two lymphoma
+cell lines than in normal B cells. Distinctively, L1236 cells harbor more JAK2 and
+less SHP1 molecules per cell than MedB-1 or control cells. In both lymphoma cell
+lines, we observe interleukin-13 (IL13)-induced activation of IL4 receptor α, JAK2,
+and STAT5, but not of STAT6. Genome-wide, 11 early and 16 sustained genes are upregulated
+by IL13 in both lymphoma cell lines. Specifically, the known STAT-inducible negative
+regulators CISH and SOCS3 are upregulated within 2 hours in MedB-1 but not in L1236
+cells. On the basis of this detailed quantitative information, we established two
+mathematical models, MedB-1 and L1236 model, able to describe the respective experimental
+data. Most of the model parameters are identifiable and therefore the models are
+predictive. Sensitivity analysis of the model identifies six possible therapeutic
+targets able to reduce gene expression levels in L1236 cells and three in MedB-1.
+We experimentally confirm reduction in target gene expression in response to inhibition
+of STAT5 phosphorylation, thereby validating one of the predicted targets.
+
+All concentrations in the model, apart from IL13, are in molecules/cell. IL13 is
+given in ng/ml. As the cell volume is not explicitely given in the article, it is
+just approximately derived from the MW of IL13 () and the conversion factor 2.265
+molecules IL13/cell = 1 ng/ml to be around 60 fl.
+
+SBML model exported from PottersWheel on 2010-08-10 12:14:57. 
+Inline follows the original matlab code:
+
+
+% PottersWheel model definition filefunction m = Raia2010_IL13_MedB1()m 
+ = pwGetEmptyModel();%% Meta informationm.ID = &apos;Raia2010_IL13_MedB1&apos;;m.name 
+ = &apos;Raia2010_IL13_MedB1&apos;;m.description = &apos;&apos;;m.authors 
+ = {&apos;Raia et al&apos;};m.dates = {&apos;2010&apos;};m.type = 
+&apos;PW-2-0-47&apos;;%% X: Dynamic variables% m = pwAddX(m, ID, startValue, type, 
+minValue, maxValue, unit, compartment, name, description, typeOfStartValue)m = pwAddX(m, 
+&apos;Rec&apos; , 1.3, &apos;fix&apos; , 1e-006, 10000, &apos;molecules/cell 
+(x 1000)&apos;, &apos;cell&apos;, [] , [] , [] , [] , &apos;protein.generic&apos;);m 
+= pwAddX(m, &apos;Rec_i&apos; , 113.193916718733, &apos;global&apos;, 0.001, 
+10000, &apos;molecules/cell (x 1000)&apos;, &apos;cell&apos;, [] , [] , [] 
+ , [] , &apos;protein.generic&apos;);m = pwAddX(m, &apos;IL13_Rec&apos; 
+ , 0, &apos;fix&apos; , 1e-006, 10000, &apos;molecules/cell (x 
+1000)&apos;, &apos;cell&apos;, [] , [] , [] , [] , &apos;protein.generic&apos;);m 
+= pwAddX(m, &apos;p_IL13_Rec&apos; , 0, &apos;fix&apos; , 1e-006, 
+10000, &apos;molecules/cell (x 1000)&apos;, &apos;cell&apos;, [] , [] , [] 
+ , [] , &apos;protein.generic&apos;);m = pwAddX(m, &apos;p_IL13_Rec_i&apos;, 
+ 0, &apos;fix&apos; , 1e-006, 10000, &apos;molecules/cell (x 1000)&apos;, 
+&apos;cell&apos;, [] , [] , [] , [] , &apos;protein.generic&apos;);m 
+= pwAddX(m, &apos;JAK2&apos; , 2.8, &apos;fix&apos; , 1e-006, 
+10000, &apos;molecules/cell (x 1000)&apos;, &apos;cell&apos;, [] , [] , [] 
+ , [] , &apos;protein.generic&apos;);m = pwAddX(m, &apos;pJAK2&apos; 
+ , 0, &apos;fix&apos; , 1e-006, 10000, &apos;molecules/cell (x 
+1000)&apos;, &apos;cell&apos;, [] , [] , [] , [] , &apos;protein.generic&apos;);m 
+= pwAddX(m, &apos;SHP1&apos; , 91, &apos;fix&apos; , 1e-006, 
+10000, &apos;molecules/cell (x 1000)&apos;, &apos;cell&apos;, [] , [] , [] 
+ , [] , &apos;protein.generic&apos;);m = pwAddX(m, &apos;STAT5&apos; 
+ , 165, &apos;fix&apos; , 1e-006, 10000, &apos;molecules/cell (x 
+1000)&apos;, &apos;cell&apos;, [] , [] , [] , [] , &apos;protein.generic&apos;);m 
+= pwAddX(m, &apos;pSTAT5&apos; , 0, &apos;fix&apos; , 1e-006, 
+10000, &apos;molecules/cell (x 1000)&apos;, &apos;cell&apos;, [] , [] , [] 
+ , [] , &apos;protein.generic&apos;);m = pwAddX(m, &apos;SOCS3mRNA&apos; 
+ , 0, &apos;fix&apos; , 1e-006, 10000, &apos;molecules/cell (x 
+1000)&apos;, &apos;cell&apos;, [] , [] , [] , [] , &apos;protein.generic&apos;);m 
+= pwAddX(m, &apos;DecoyR&apos; , 0.34, &apos;fix&apos; , 1e-006, 
+10000, &apos;molecules/cell (x 1000)&apos;, &apos;cell&apos;, [] , [] , [] 
+ , [] , &apos;protein.generic&apos;);m = pwAddX(m, &apos;IL13_DecoyR&apos; 
+, 0, &apos;fix&apos; , 1e-006, 10000, &apos;molecules/cell (x 1000)&apos;, 
+&apos;cell&apos;, [] , [] , [] , [] , &apos;protein.generic&apos;);m 
+= pwAddX(m, &apos;SOCS3&apos; , 0, &apos;fix&apos; , 1e-006, 
+10000, &apos;molecules/cell (x 1000)&apos;, &apos;cell&apos;, [] , [] , [] 
+ , [] , &apos;protein.generic&apos;);m = pwAddX(m, &apos;CD274mRNA&apos; 
+ , 0, &apos;fix&apos; , 1e-006, 10000, &apos;molecules/cell (x 
+1000)&apos;, &apos;cell&apos;, [] , [] , [] , [] , &apos;protein.generic&apos;);%% 
+R: Reactions% m = pwAddR(m, reactants, products, modifiers, type, options, rateSignature, 
+parameters, description, ID, name, fast, compartments, parameterTrunks, designerPropsR, 
+stoichiometry, reversible)m = pwAddR(m, {&apos;Rec&apos; }, {&apos;IL13_Rec&apos; 
+ }, {&apos;IL13stimulation&apos; }, &apos;C&apos;, [], &apos;k1 \* m1 \* r1 
+\* 2.265&apos; , {&apos;Kon_IL13Rec&apos; });m 
+= pwAddR(m, {&apos;Rec&apos; }, {&apos;Rec_i&apos; }, { 
+ }, &apos;MA&apos;, [], [] , {&apos;Rec_intern&apos; 
+ });m = pwAddR(m, {&apos;Rec_i&apos; }, {&apos;Rec&apos; 
+ }, { }, &apos;MA&apos;, [], [] 
+ , {&apos;Rec_recycle&apos; });m = pwAddR(m, {&apos;IL13_Rec&apos; 
+ }, {&apos;p_IL13_Rec&apos; }, {&apos;pJAK2&apos; }, &apos;E&apos; 
+, [], [] , {&apos;Rec_phosphorylation&apos; 
+ });m = pwAddR(m, {&apos;JAK2&apos; }, {&apos;pJAK2&apos; 
+}, {&apos;IL13_Rec&apos;,&apos;SOCS3&apos; }, &apos;C&apos;, [], &apos;k1 \* m1 
+\* r1 / (1 + k2 \* m2)&apos;, {&apos;JAK2_phosphorylation&apos;,&apos;JAK2_p_inhibition&apos;});m 
+= pwAddR(m, {&apos;JAK2&apos; }, {&apos;pJAK2&apos; },
+{&apos;p_IL13_Rec&apos;,&apos;SOCS3&apos;}, &apos;C&apos;, [], &apos;k1 \* m1 
+\* r1 / (1 + k2 \* m2)&apos;, {&apos;JAK2_phosphorylation&apos;,&apos;JAK2_p_inhibition&apos;});m 
+= pwAddR(m, {&apos;p_IL13_Rec&apos; }, {&apos;p_IL13_Rec_i&apos;}, { 
+ }, &apos;MA&apos;, [], [] , {&apos;pRec_intern&apos; 
+ });m = pwAddR(m, {&apos;p_IL13_Rec_i&apos;}, { 
+ }, { }, &apos;MA&apos;, [], [] 
+ , {&apos;pRec_degradation&apos; });m = pwAddR(m, {&apos;pJAK2&apos; 
+ }, {&apos;JAK2&apos; }, {&apos;SHP1&apos; }, &apos;E&apos; 
+, [], [] , {&apos;pJAK2_dephosphorylation&apos; 
+ });m = pwAddR(m, {&apos;STAT5&apos; }, {&apos;pSTAT5&apos; 
+}, {&apos;pJAK2&apos; }, &apos;E&apos;, [], [] 
+ , {&apos;STAT5_phosphorylation&apos; });m = pwAddR(m, {&apos;pSTAT5&apos; 
+ }, {&apos;STAT5&apos; }, {&apos;SHP1&apos; }, &apos;E&apos; 
+, [], [] , {&apos;pSTAT5_dephosphorylation&apos; 
+ });m = pwAddR(m, {&apos;DecoyR&apos; }, {&apos;IL13_DecoyR&apos; 
+}, {&apos;IL13stimulation&apos; }, &apos;C&apos;, [], &apos;k1 \* m1 \* r1 \* 
+2.265&apos; , {&apos;DecoyR_binding&apos; });m = 
+pwAddR(m, { }, {&apos;SOCS3mRNA&apos; }, {&apos;pSTAT5&apos; 
+ }, &apos;C&apos;, [], &apos;m1\*k1&apos; ,
+{&apos;SOCS3mRNA_production&apos; });m = pwAddR(m, { 
+ }, {&apos;SOCS3&apos; }, {&apos;SOCS3mRNA&apos; }, &apos;C&apos; 
+, [], &apos;m1\*k1/(k2+m1)&apos; ,
+{&apos;SOCS3_translation&apos;,&apos;SOCS3_accumulation&apos; });m = pwAddR(m, 
+{&apos;SOCS3&apos; }, { }, { }, &apos;MA&apos;, 
+[], [] , {&apos;SOCS3_degradation&apos; 
+ });m = pwAddR(m, { }, {&apos;CD274mRNA&apos; }, {&apos;pSTAT5&apos; 
+ }, &apos;C&apos;, [], &apos;m1\*k1&apos; ,
+{&apos;CD274mRNA_production&apos; });%% C: Compartments% m = 
+pwAddC(m, ID, size, outside, spatialDimensions, name, unit, constant)m = pwAddC(m, 
+&apos;cell&apos;, 1);%% K: Dynamical parameters% m = pwAddK(m, ID, value, type, minValue, 
+maxValue, unit, name, description)m = pwAddK(m, &apos;Kon_IL13Rec&apos; 
+ , 0.00341992477561527 , &apos;global&apos;, 1e-009, 1000);m = pwAddK(m,
+&apos;Rec_phosphorylation&apos; , 999.630699390459 , &apos;global&apos;, 
+1e-009, 1000);m = pwAddK(m, &apos;pRec_intern&apos; , 0.152540135862128 
+ , &apos;global&apos;, 1e-009, 1000);m = pwAddK(m, &apos;pRec_degradation&apos; 
+ , 0.17292753960894 , &apos;global&apos;, 1e-009, 1000);m = pwAddK(m,
+&apos;Rec_intern&apos; , 0.103345784175639 , &apos;global&apos;, 
+1e-009, 1000);m = pwAddK(m, &apos;Rec_recycle&apos; , 0.00135598001330518 
+, &apos;global&apos;, 1e-009, 1000);m = pwAddK(m, &apos;JAK2_phosphorylation&apos; 
+ , 0.157057142470047 , &apos;global&apos;, 1e-009, 1000);m = pwAddK(m,
+&apos;pJAK2_dephosphorylation&apos;, 0.000621906059346898, &apos;global&apos;, 
+1e-009, 1000);m = pwAddK(m, &apos;STAT5_phosphorylation&apos; , 0.0382596267705733 
+ , &apos;global&apos;, 1e-009, 1000);m = pwAddK(m, &apos;pSTAT5_dephosphorylation&apos;, 
+0.000343391620492938, &apos;global&apos;, 1e-009, 1000);m = pwAddK(m,
+&apos;SOCS3mRNA_production&apos; , 0.00215826062955433 , &apos;global&apos;, 
+1e-009, 1000);m = pwAddK(m, &apos;DecoyR_binding&apos; , 0.000124391087466499 
+, &apos;global&apos;, 1e-009, 1000);m = pwAddK(m, &apos;JAK2_p_inhibition&apos; 
+ , 0.0168267797836881 , &apos;global&apos;, 1e-009, 1000);m = pwAddK(m,
+&apos;SOCS3_translation&apos; , 11.9086462945188 , &apos;global&apos;, 
+1e-009, 1000);m = pwAddK(m, &apos;SOCS3_accumulation&apos; , 3.70803336415341 
+ , &apos;global&apos;, 1 , 1000);m = pwAddK(m, &apos;SOCS3_degradation&apos; 
+ , 0.0429185935645562 , &apos;global&apos;, 1e-009, 1000);m = pwAddK(m,
+&apos;CD274mRNA_production&apos; , 8.21752278733562e-005, &apos;global&apos;, 
+1e-009, 1000);%% U: Driving input% m = pwAddU(m, ID, uType, uTimes, uValues, compartment, 
+name, description, u2Values, alternativeIDs, designerProps)m = pwAddU(m,
+&apos;IL13stimulation&apos;, &apos;steps&apos;, [-100 0] , [0 1] , [], [], [], 
+[], {}, [], &apos;protein.generic&apos;);%% Default sampling time pointsm.t = 0:1:120;%% 
+Y: Observables% m = pwAddY(m, rhs, ID, scalingParameter, errorModel, noiseType, unit, 
+name, description, alternativeIDs, designerProps)m = pwAddY(m, &apos;Rec + IL13_Rec 
++ p_IL13_Rec&apos; , &apos;RecSurf_obs&apos; , &apos;scale_RecSurf&apos; 
+, &apos;0.10 \* y + 0.1 \* max(y)&apos;);m = pwAddY(m, &apos;IL13_Rec + p_IL13_Rec 
++ p_IL13_Rec_i + IL13_DecoyR&apos;, &apos;IL13-cell_obs&apos;, &apos;scale_IL13-cell&apos;, 
+&apos;0.15 \* y + 0.05 \* max(y)&apos;);m = pwAddY(m, &apos;p_IL13_Rec + p_IL13_Rec_i&apos; 
+ , &apos;pIL4Ra_obs&apos; , &apos;scale_pIL4Ra&apos; , 
+&apos;0.1 \* y + 0.15 \* max(y)&apos;);m = pwAddY(m, &apos;pJAK2&apos; 
+ , &apos;pJAK2_obs&apos; , &apos;scale_pJAK2&apos; 
+ , &apos;0.15 \* y + 0.1 \* max(y)&apos;);m = pwAddY(m, &apos;SOCS3mRNA&apos; 
+ , &apos;SOCS3mRNA_obs&apos;, &apos;scale_SOCS3mRNA&apos;, 
+&apos;0.1 \* y + 0.1 \* max(y)&apos;);m = pwAddY(m, &apos;CD274mRNA&apos; 
+ , &apos;CD274mRNA_obs&apos;, &apos;scale_CD274mRNA&apos;, 
+&apos;0.1 \* y + 0.1 \* max(y)&apos;);m = pwAddY(m, &apos;SOCS3&apos; 
+ , &apos;SOCS3_obs&apos; , &apos;scale_SOCS3&apos; 
+ , &apos;0.1 \* y + 0.15 \* max(y)&apos;);m = pwAddY(m, &apos;pSTAT5&apos; 
+ , &apos;pSTAT5_obs&apos; , &apos;scale_pSTAT5&apos; 
+ , &apos;0.15 \* y + 0.1 \* max(y)&apos;);%% S: Scaling parameters% m = pwAddS(m, 
+ID, value, type, minValue, maxValue, unit, name, description)m = pwAddS(m, &apos;scale_pJAK2&apos; 
+ , 1.39039557075997, &apos;global&apos;, 0.001, 10000);m = pwAddS(m, &apos;scale_pIL4Ra&apos; 
+ , 1.88700484471494, &apos;global&apos;, 0.001, 10000);m = pwAddS(m, &apos;scale_RecSurf&apos; 
+, 1, &apos;fix&apos;, 0.001, 10000);m = pwAddS(m, &apos;scale_IL13-cell&apos;, 
+5.56750251420935, &apos;global&apos;, 0.001, 10000);m = pwAddS(m, &apos;scale_SOCS3mRNA&apos;, 
+17.6699101927908, &apos;global&apos;, 0.001, 10000);m = pwAddS(m, &apos;scale_CD274mRNA&apos;, 
+2.48547378765387, &apos;global&apos;, 0.001, 10000);m = pwAddS(m, &apos;scale_pSTAT5&apos; 
+ , 1, &apos;fix&apos;, 0.001, 10000);m = pwAddS(m, &apos;scale_SOCS3&apos; 
+ , 1, &apos;fix&apos;, 0.001, 10000);%% Designer properties (do 
+not modify)m.designerPropsM = [1 1 1 0 0 0 400 250 600 400 1 1 1 0 0 0 0];
+ 
+This model originates from BioModels Database: A Database of Annotated Published 
+Models (http://www.ebi.ac.uk/biomodels/). It is copyright (c) 2005-2011 The BioModels.net 
+Team. 
+For more information see the [terms of use](http://www.ebi.ac.uk/biomodels/legal.html). 
+To cite BioModels Database, please use: [Li C, Donizelli M, Rodriguez N, Dharuri H, Endler L, Chelliah V, Li L, He E, Henry A, Stefan MI, Snoep JL, Hucka M, Le Nov��re N, Laibe C (2010) BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models. BMC Syst Biol., 4:92.](http://www.ncbi.nlm.nih.gov/pubmed/20587024)
+```
+end
+
+Raia2010_IL13_MedB1 is "Raia2010 - IL13 Signalling MedB1"

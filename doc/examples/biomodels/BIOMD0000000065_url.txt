@@ -1,0 +1,193 @@
+// Created by libAntimony v3.0.0
+model *Yildirim2003_Lac_operon()
+
+  // Compartments and Species:
+  compartment cell;
+  species M in cell, B in cell, A in cell, L in cell, P in cell, I1 in cell;
+  species I2 in cell, I3 in cell, $L_e in cell;
+
+  // Reactions:
+  r_m1:  => M; cell*gamma_0;
+  r_m2: M => ; cell*M*(gamma_M + mu);
+  r_m3_i1: I1 => M; cell*I1/tau_M;
+  r_i1:  => I1; cell*alpha_M*((K_1*exp(mu*tau_M*-2)*A^2 + 1)/(K + K_1*exp(-2*mu*tau_M)*A^2));
+  r_b1: B => ; cell*B*(gamma_B + mu);
+  r_b2_i2: I2 => B; cell*I2/tau_B;
+  r_i2:  => I2; cell*alpha_B*M*exp(-(mu*tau_B));
+  r_a1: A => ; cell*A*(gamma_A + mu);
+  r_a2: A => ; cell*beta_A*B*(A/(K_A + A));
+  r_a3_l1: L => A; cell*alpha_A*B*(L/(K_L + L));
+  r_l2: L => ; cell*L*(gamma_L + mu);
+  r_l3: L => ; cell*beta_L1*P*(L/(K_L1 + L));
+  r_l4:  => L; cell*alpha_L*P*(L_e/(K_Le + L_e));
+  r_p1: P => ; cell*P*(gamma_P + mu);
+  r_p2_i3: I3 => P; cell*I3/(tau_B + tau_P);
+  r_i3:  => I3; cell*alpha_P*M*exp(-1*mu*(tau_B + tau_P));
+
+  // Species initializations:
+  M = 0.000626;
+  B = 0;
+  A = 0.038;
+  L = 0.372;
+  P = 0.0149;
+  I1 = 0;
+  I2 = 0;
+  I3 = 0;
+  L_e = 0.08;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  mu = 0.0226;
+  gamma_M = 0.411;
+  gamma_B = 0.000833;
+  gamma_A = 0.52;
+  gamma_0 = 7.25e-07;
+  K = 7200;
+  alpha_M = 0.000997;
+  tau_B = 2;
+  alpha_A = 17600;
+  K_L1 = 1.81;
+  alpha_B = 0.0166;
+  K_A = 1.95;
+  beta_A = 21500;
+  tau_M = 0.1;
+  K_L = 0.97;
+  gamma_L = 0;
+  gamma_P = 0.65;
+  alpha_L = 2880;
+  alpha_P = 10;
+  tau_P = 0.83;
+  beta_L1 = 2650;
+  K_Le = 0.26;
+  K_1 = 25200;
+
+  // Other declarations:
+  const cell, mu, gamma_M, gamma_B, gamma_A, gamma_0, K, alpha_M, tau_B, alpha_A;
+  const K_L1, alpha_B, K_A, beta_A, tau_M, K_L, gamma_L, gamma_P, alpha_L;
+  const alpha_P, tau_P, beta_L1, K_Le, K_1;
+
+  // Unit definitions:
+  unit time_unit = 60 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "minute";
+  substance is "millimoles";
+  M is "mRNA";
+  B is "Betagalactosidase";
+  A is "allolactose";
+  L is "lactose_internal";
+  P is "permease";
+  I1 is "PartialmRNA";
+  I2 is "PartialBetagalactosidase";
+  I3 is "PartialPermease";
+  L_e is "External_Lactose";
+  r_m1 is "Basal_mRNA_Synthesis";
+  r_m2 is "mRNA_Degradation";
+  r_m3_i1 is "allolactose_controlled_mRNA_synthesis";
+  r_i1 is "allolactose_controlled_partial_mRNA_synthesis";
+  r_b1 is "Beta_galactosidase_Degradation";
+  r_b2_i2 is "Beta_galactosidase_synthesis";
+  r_i2 is "Partial_Beta_galactosidase_synthesis";
+  r_a1 is "Basal_Allolactose_Degradation";
+  r_a2 is "Betagalactosidase_mediated_Allolactose_Degradation";
+  r_a3_l1 is "Beta_galactosidase_reaction";
+  r_l2 is "lactose_degradation";
+  r_l3 is "Lactose_transport_out";
+  r_l4 is "Lactose_transport_in";
+  r_p1 is "permease_degradation";
+  r_p2_i3 is "permease_synthesis";
+  r_i3 is "partial_permease_synthesis";
+
+  // CV terms:
+  cell identity "http://identifiers.org/go/GO:0005623"
+  M identity "http://identifiers.org/chebi/CHEBI:33699"
+  B identity "http://identifiers.org/uniprot/P00722"
+  A part "http://identifiers.org/chebi/CHEBI:36229"
+  L identity "http://identifiers.org/chebi/CHEBI:17716",
+             "http://identifiers.org/kegg.compound/C00243"
+  P identity "http://identifiers.org/uniprot/P02920"
+  L_e identity "http://identifiers.org/chebi/CHEBI:17716",
+               "http://identifiers.org/kegg.compound/C00243"
+  r_m1 biological_system "http://identifiers.org/go/GO:0006351"
+  r_m2 identity "http://identifiers.org/go/GO:0006402"
+  r_m3_i1 biological_system "http://identifiers.org/go/GO:0009299"
+  r_i1 biological_system "http://identifiers.org/go/GO:0009299"
+  r_b1 biological_system "http://identifiers.org/go/GO:0044257"
+  r_b2_i2 biological_system "http://identifiers.org/go/GO:0006412"
+  r_i2 biological_system "http://identifiers.org/go/GO:0006412"
+  r_a1 biological_system "http://identifiers.org/go/GO:0046352"
+  r_a2 biological_system "http://identifiers.org/go/GO:0046352"
+  r_a3_l1 identity "http://identifiers.org/ec-code/3.2.1.108",
+                   "http://identifiers.org/go/GO:0004565"
+  r_l2 identity "http://identifiers.org/go/GO:0005990"
+  r_l3 identity "http://identifiers.org/go/GO:0015155"
+  r_l4 identity "http://identifiers.org/go/GO:0015155"
+  r_p1 biological_system "http://identifiers.org/go/GO:0044257"
+  r_p2_i3 biological_system "http://identifiers.org/go/GO:0006412"
+  r_i3 biological_system "http://identifiers.org/go/GO:0006412"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL6624248569"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000065"
+  model publication "http://identifiers.org/pubmed/12719218"
+  model origin "http://identifiers.org/pubmed/9104037"
+  model biological_system "http://identifiers.org/go/GO:0045990"
+  model taxon "http://identifiers.org/taxonomy/562"
+  model created "2006-06-21T14:47:26Z"
+  model modified "2014-02-12T16:36:21Z"
+  model creator1.givenName "Harish"
+  model creator1.familyName "Dharuri"
+  model creator1.organization "California Institute of Technology"
+  model creator1.email "hdharuri@cds.caltech.edu"
+  model creator2.givenName "Vijayalakshmi"
+  model creator2.familyName "Chelliah"
+  model creator2.organization "EMBL-EBI"
+  model creator2.email "viji@ebi.ac.uk"
+  model creator3.givenName "Adam"
+  model creator3.familyName "Halasz"
+  model creator3.organization "Penn Engineering"
+  model creator3.email "halasz@grasp.upenn.edu"
+
+  // Notes:
+  model notes ```
+This a model from the article: 
+**Feedback regulation in the lactose operon: a mathematical modeling study and
+comparison with experimental data.** 
+Yildirim N, Mackey MC *Biophys. J.* 2003 [12719218](http://www.ncbi.nlm.nih.gov/pubmed/12719218) , 
+**Abstract:** 
+A mathematical model for the regulation of induction in the lac operon
+in Escherichia coli is presented. This model takes into account the dynamics of the
+permease facilitating the internalization of external lactose; internal lactose;
+beta-galactosidase, which is involved in the conversion of lactose to allolactose,
+glucose and galactose; the allolactose interactions with the lac repressor; and mRNA.
+The final model consists of five nonlinear differential delay equations with delays
+due to the transcription and translation process. We have paid particular attention
+to the estimation of the parameters in the model. We have tested our model against
+two sets of beta-galactosidase activity versus time data, as well as a set of data
+on beta-galactosidase activity during periodic phosphate feeding. In all three cases
+we find excellent agreement between the data and the model predictions. Analytical
+and numerical studies also indicate that for physiologically realistic values of
+the external lactose and the bacterial growth rate, a regime exists where there may
+be bistable steady-state behavior, and that this corresponds to a cusp bifurcation
+in the model dynamics. 
+
+The model reproduces the time profile of beta-galactosidase activity as shown in
+Fig 3 of the paper. The delay functions for transcription (M) and translation (B
+and P) have been implemented by introducing intermediates ( I1, I2 and I3) in the
+reaction scheme which then give their respective products (I1-> M, I2 ->B
+and I3 ->P) after an appropriate length of time. The steady state values, attained
+upon simulation of model equations, for Allolactose (A), mRNA (M), beta-galactosidase
+(B), Lactose (L), and Permease (P) match with those predicted by the paper. The
+model was successfully tested on Jarnac, MathSBML and COPASI
+
+This model originates from BioModels Database: A Database of Annotated Published
+Models (http://www.ebi.ac.uk/biomodels/). It is copyright (c) 2005-2010 The BioModels.net
+Team. 
+For more information see the [terms of use](http://www.ebi.ac.uk/biomodels/legal.html) . 
+To cite BioModels Database, please use: [Li C, Donizelli M, Rodriguez N, Dharuri H, Endler L, Chelliah V, Li L, He E, Henry A, Stefan MI, Snoep JL, Hucka M, Le Novère N, Laibe C (2010) BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models. BMC Syst Biol., 4:92.](http://www.ncbi.nlm.nih.gov/pubmed/20587024)
+```
+end
+
+Yildirim2003_Lac_operon is "Yildirim2003_Lac_Operon"

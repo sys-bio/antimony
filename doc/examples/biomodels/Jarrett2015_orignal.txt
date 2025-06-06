@@ -1,0 +1,87 @@
+// Created by libAntimony v3.0.0
+model *Jarrett2015___Modelling_the_interaction_between_immune_response__bacterial_dynamics_and_inflammatory_damage()
+
+  // Compartments and Species:
+  compartment BALB_c_Mouse;
+  species $B in BALB_c_Mouse, $I in BALB_c_Mouse, $P in BALB_c_Mouse, $A in BALB_c_Mouse;
+
+  // Rate Rules:
+  B' = (g*(1 - B/K_B) + alpha_4*I - beta_4*P)*B + exp(-1*gamma_*time);
+  I' = alpha_3*P + rho_2*B - (beta_3*A + mu_3)*I;
+  P' = (alpha_1*I + rho_1*B)*(1 - P) - (beta_1*A + mu_1*(1 - B/K_B))*P;
+  A' = alpha_2*P - (beta_2*I + mu_2*(1 - B/K_B))*A;
+
+  // Species initializations:
+  B = 1;
+  I = 3;
+  P = 1;
+  A = 1;
+
+  // Compartment initializations:
+  BALB_c_Mouse = 1;
+
+  // Variable initializations:
+  g = 0.9;
+  K_B = 1;
+  alpha_4 = 1.5;
+  beta_4 = 5;
+  gamma_ = 0.01;
+  alpha_1 = 0.27;
+  rho_1 = 0.2;
+  beta_1 = 0.01;
+  mu_1 = 0.12;
+  alpha_3 = 1.05;
+  rho_2 = 0.45;
+  beta_3 = 2;
+  mu_3 = 0.0174;
+  alpha_2 = 0.11;
+  beta_2 = 0.135;
+  mu_2 = 0.25;
+
+  // Other declarations:
+  const BALB_c_Mouse, g, K_B, alpha_4, beta_4, gamma_, alpha_1, rho_1, beta_1;
+  const mu_1, alpha_3, rho_2, beta_3, mu_3, alpha_2, beta_2, mu_2;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 3600 second;
+  unit substance = item;
+
+  // Display Names:
+  time_unit is "time";
+  BALB_c_Mouse is "BALB/c Mouse";
+  gamma_ is "gamma";
+
+  // CV terms:
+  BALB_c_Mouse property "http://identifiers.org/efo/0000602"
+  B biological_system "http://identifiers.org/efo/0005681"
+  g encodement "http://identifiers.org/sbo/SBO:0000610"
+  K_B encodement "http://identifiers.org/ncit/C25443"
+  I biological_system "http://identifiers.org/ncit/C3137"
+  beta_4 encodement "http://identifiers.org/go/GO:0006925"
+  P biological_system "http://identifiers.org/go/GO:0006954"
+  P property "http://identifiers.org/go/GO:0050729"
+  P propertyBearer "http://identifiers.org/bto/BTO:0001678"
+  P propertyBearer "http://identifiers.org/bto/BTO:0005655"
+  gamma_ encodement "http://identifiers.org/sbo/SBO:0000356"
+  A biological_system "http://identifiers.org/go/GO:0006954"
+  A property "http://identifiers.org/go/GO:0050728"
+  A propertyBearer "http://identifiers.org/bto/BTO:0004520"
+  mu_1 encodement "http://identifiers.org/sbo/SBO:0000356"
+  mu_3 encodement "http://identifiers.org/sbo/SBO:0000356"
+  mu_2 encodement "http://identifiers.org/sbo/SBO:0000356"
+
+  model biological_system "http://identifiers.org/go/GO:0050727"
+  model property "http://identifiers.org/efo/0005681"
+  model property "http://identifiers.org/efo/0000602"
+  model taxon "http://identifiers.org/taxonomy/10090"
+  model description "http://identifiers.org/pubmed/24814512"
+  model created "2018-03-20T10:14:28Z"
+  model modified "2018-03-20T10:14:28Z"
+  model creator1.givenName "Matthew Grant"
+  model creator1.familyName "Roberts"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "mroberts@ebi.ac.uk"
+end
+
+Jarrett2015___Modelling_the_interaction_between_immune_response__bacterial_dynamics_and_inflammatory_damage is "Jarrett2015 - Modelling the interaction between immune response, bacterial dynamics and inflammatory damage"

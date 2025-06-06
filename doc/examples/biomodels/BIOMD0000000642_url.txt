@@ -1,0 +1,135 @@
+// Created by libAntimony v3.0.0
+model *Mufudza2012___Estrogen_effect_on_the_dynamics_of_breast_cancer()
+
+  // Compartments and Species:
+  compartment Tissue;
+  species $H in Tissue, $T in Tissue, $E in Tissue, $I in Tissue;
+
+  // Rate Rules:
+  H' = H*(alpha1 - beta1*H - delta1*T) - sigma1*H*E;
+  T' = (T*(alpha3 - beta2*T) - gamma2*I*T) + sigma2*H*E;
+  I' = s + rho*I*T/(omega + T) - gamma3*I*T - mu*I - sigma3*I*E/(v + E);
+
+  // Species initializations:
+  H = 0.999999999999998;
+  T = 9.99999999999998e-06;
+  E = 0.499999999999999;
+  I = 1.379310345;
+
+  // Compartment initializations:
+  Tissue = 1;
+
+  // Variable initializations:
+  alpha1 = 0.7;
+  beta1 = 0.3;
+  delta1 = 1;
+  sigma1 = 1.2;
+  alpha3 = 1;
+  beta2 = 0.4;
+  gamma2 = 0.9;
+  sigma2 = 0.94;
+  s = 0.4;
+  rho = 0.2;
+  omega = 0.3;
+  gamma3 = 0.085;
+  mu = 0.29;
+  sigma3 = 0.3;
+  v = 0.4;
+  alpha2 = 0.98;
+  theta = 0.8;
+  pi_ = 0;
+
+  // Other declarations:
+  const Tissue, alpha1, beta1, delta1, sigma1, alpha3, beta2, gamma2, sigma2;
+  const s, rho, omega, gamma3, mu, sigma3, v, alpha2, theta, pi_;
+
+  // Unit definitions:
+  unit time_unit = 86400 second;
+
+  // Display Names:
+  time_unit is "time";
+  Tissue is "breast";
+  H is "normal cells";
+  T is "Tumour cells";
+  E is "estrogen";
+  I is "Immune cells";
+  pi_ is "pi";
+
+  // CV terms:
+  Tissue biological_system "http://identifiers.org/omit/OMIT:0027497"
+  Tissue biological_system "http://identifiers.org/bto/BTO:0000149"
+  H biological_system "http://identifiers.org/go/GO:0005623"
+  alpha1 description "http://identifiers.org/pubmed/23365616"
+  beta1 description "http://identifiers.org/pubmed/23365616"
+  delta1 description "http://identifiers.org/pubmed/12955460"
+  T biological_system "http://identifiers.org/cl/CL:0001063"
+  E identity "http://identifiers.org/chebi/CHEBI:16469"
+  beta2 description "http://identifiers.org/pubmed/12955460"
+  gamma2 description "http://identifiers.org/pubmed/12955460"
+  I property "http://identifiers.org/go/GO:0006955"
+  I biological_system "http://identifiers.org/go/GO:0005623"
+  s description "http://identifiers.org/doi/10.1080/10273660108833067"
+  rho description "http://identifiers.org/doi/10.1080/10273660108833067"
+  omega description "urn:miriam:pubmed:10.1080%2F10273660108833067"
+  mu description "http://identifiers.org/pubmed/12955460"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1304190001"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000642"
+  model publication "http://identifiers.org/pubmed/23365616"
+  model property "http://identifiers.org/go/GO:0043627",
+                 "urn:miriam:doid:DOID%3A+0060075",
+                 "http://identifiers.org/mamo/MAMO_0000046"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model created "2017-07-26T13:09:57Z"
+  model modified "2017-08-24T16:48:33Z"
+  model creator1.givenName "Emma Louise"
+  model creator1.familyName "Fairbanks"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "efairbanks@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+Mufudza2012 - Estrogen effect on the dynamicsof breast cancer 
+
+This deterministic model shows thedynamics of breast cancer with immune response.
+The effects ofestrogen are incorporated to study its effects as a risk factor forthe
+disease.  
+
+
+This model is described in the article:
+
+
+[Assessing the effects of estrogen on the dynamics of breast cancer.](http://identifiers.org/pubmed/23365616 "Access to this publication") 
+
+
+Mufudza C, Sorofa W, Chiyaka ET. 
+
+Comput Math Methods Med 2012; 2012: 473572 
+Abstract:
+
+
+Worldwide, breast cancer has become the second most common cancer in women. The
+disease has currently been named the most deadly cancer in women but little is
+known on what causes the disease. We present the effects of estrogen as a risk
+factor on the dynamics of breast cancer. We develop a deterministic mathematical
+model showing general dynamics of breast cancer with immune response. This is
+a four-population model that includes tumor cells, host cells, immune cells, and
+estrogen. The effects of estrogen are then incorporated in the model. The results
+show that the presence of extra estrogen increases the risk of developing breast
+cancer.
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identified by: [BIOMD0000000642](http://identifiers.org/biomodels.db/BIOMD0000000642).
+
+To cite BioModels Database, please use: [BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models](http://identifiers.org/pubmed/20587024 "Latest BioModels Database publication").
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+  E notes "17-beta-estradiol"
+  I notes "These are immune cells involved in immune response."
+end
+
+Mufudza2012___Estrogen_effect_on_the_dynamics_of_breast_cancer is "Mufudza2012 - Estrogen effect on the dynamics of breast cancer"

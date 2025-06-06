@@ -1,0 +1,96 @@
+// Created by libAntimony v3.0.0
+model *Smith1980_HypothalamicRegulation()
+
+  // Compartments and Species:
+  compartment Compartment;
+
+  // Assignment Rules:
+  H := piecewise(1, x > 0, 0);
+  x := T - c/h;
+
+  // Rate Rules:
+  R' = (c - h*T)*(1 - H) - b1*R;
+  T' = g2*L - b3*T;
+  L' = g1*R - b2*L;
+
+  // Compartment initializations:
+  Compartment = 1;
+  Compartment has litre;
+
+  // Variable initializations:
+  R = 0.5;
+  R has ng_ml;
+  c = 100;
+  c has pg_ml_hr;
+  h = 12;
+  h has first_order_rate_constant;
+  T = 15;
+  T has pg_ml;
+  H has dimensionless;
+  b1 = 1.29;
+  b1 has first_order_rate_constant;
+  x has pg_ml;
+  L = 22;
+  L has ng_ml;
+  g1 = 10;
+  g1 has first_order_rate_constant;
+  b2 = 0.97;
+  b2 has first_order_rate_constant;
+  g2 = 0.7;
+  g2 has first_order_rate_constant;
+  b3 = 1.39;
+
+  // Other declarations:
+  var R, T, H, x, L;
+  const Compartment, c, h, b1, g1, b2, g2, b3;
+
+  // Unit definitions:
+  unit hour = 3600 second;
+  unit pg_ml = 1e-12 gram / 1e-3 litre;
+  unit ng_ml = 1e-9 gram / 1e-3 litre;
+  unit pg_ml_hr = 1e-12 gram / (1e-3 litre * 3600 second);
+  unit first_order_rate_constant = 1 / 3600 second;
+  unit time_unit = 3600 second;
+
+  // Display Names:
+  time_unit is "time";
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL7898438988"
+  model publication "http://identifiers.org/pubmed/6986927"
+  model taxon "http://identifiers.org/taxonomy/9606"
+  model biological_system "http://identifiers.org/go/GO:0042700"
+
+  // Notes:
+  model notes ```
+This a model from the article: 
+**Hypothalamic regulation of pituitary secretion of luteinizing hormone.II. Feedback
+control of gonadotropin secretion.** 
+Smith WR *Bull Math Biol.* (1980) 42(1): 57-78 [6986927](http://www.ncbi.nlm.nih.gov/pubmed/6986927) , 
+**Abstract:** 
+No Abstract Available 
+
+This model was taken from the [CellML repository](http://www.cellml.org/models) and automatically converted to SBML. 
+The original model was: [ **smith,1980,version02** ](http://www.cellml.org/models/smith_1980_version02) 
+The original CellML model was created by: 
+**Lloyd, Catherine, May** 
+c.lloyd@auckland.ac.nz 
+The University of Auckland 
+Auckland Bioengineering Institute 
+
+
+This model originates from BioModels Database: A Database of Annotated Published
+Models (http://www.ebi.ac.uk/biomodels/). It is copyright (c) 2005-2011 The BioModels.net
+Team. 
+To the extent possible under law, all copyright and related or neighbouring
+rights to this encoded model have been dedicated to the public domain worldwide.
+Please refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Creative Commons CC0") for more information. 
+
+In summary, you are entitled to use this encoded model in absolutely any manner you
+deem suitable, verbatim, or with modification, alone or embedded it in a larger context,
+redistribute it, commercially or not, in a restricted way or not.. 
+
+To cite BioModels Database, please use: [Li C, Donizelli M, Rodriguez N, Dharuri H, Endler L, Chelliah V, Li L, He E, Henry A, Stefan MI, Snoep JL, Hucka M, Le Novère N, Laibe C (2010) BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models. BMC Syst Biol., 4:92.](http://www.ncbi.nlm.nih.gov/pubmed/20587024)
+```
+end
+
+Smith1980_HypothalamicRegulation is "Smith1980_HypothalamicRegulation"

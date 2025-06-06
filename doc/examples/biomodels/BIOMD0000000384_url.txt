@@ -1,0 +1,136 @@
+// Created by libAntimony v3.0.0
+model *Arnold2011_Medlyn2002_RuBisCO_CalvinCycle()
+
+  // Compartments and Species:
+  compartment chloroplast;
+  species $RuBP in chloroplast, PGA in chloroplast, NADPH in chloroplast;
+  species $CO2 in chloroplast, $O2 in chloroplast, $NADP in chloroplast;
+
+  // Assignment Rules:
+  NADP := Nt - NADPH;
+  J := alpha*Q/(10 - 9*teta)/(65*0.5);
+  Vomax := 0.21*Vcmax;
+  Vj := (J/4)*CO2/(CO2 + 2*Gamma);
+  phi := 0.21*(O2/Ko)/(CO2/Kc);
+  Vc := Vcmax*CO2/((1 + O2/Ko)*Kc + CO2);
+
+  // Reactions:
+  PGA_prod_Vc: $RuBP + $CO2 + 2 NADPH => 2 PGA; chloroplast*((Vc + Vj - abs(Vc - Vj))/2);
+  PGA_prod_Vo: $RuBP + $O2 + 2 NADPH => 1.5 PGA; chloroplast*(phi*(Vc + Vj - abs(Vc - Vj))/2);
+  PGA_cons: PGA => $RuBP; chloroplast*((PGA/Rp)*(NADPH/Nt)*Vcmax);
+  NADPH_prod: $NADP => NADPH; chloroplast*((J/2)*(NADP/Nt));
+
+  // Species initializations:
+  RuBP = 2;
+  PGA = 2.4;
+  NADPH = 0.21;
+  CO2 = 245;
+  O2 = 210;
+
+  // Compartment initializations:
+  chloroplast = 1;
+
+  // Variable initializations:
+  Nt = 0.5;
+  Rp = 3.2;
+  alpha = 0.3;
+  Q = 1000;
+  teta = 0.9;
+  Gamma = 42.8926627111176;
+  Vcmax = 2.53232284114507;
+  Kc = 406.066146391504;
+  Ko = 276.900084789612;
+
+  // Other declarations:
+  var J, Vomax, Vj, phi, Vc;
+  const chloroplast, Nt, Rp, alpha, Q, teta, Gamma, Vcmax, Kc, Ko;
+
+  // Unit definitions:
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  PGA_prod_Vc is "PGA production - v_c";
+  PGA_prod_Vo is "PGA production - v_o";
+  PGA_cons is "PGA consumption";
+  NADPH_prod is "NADPH production";
+
+  // SBO terms:
+  Nt.sboTerm = 9
+  alpha.sboTerm = 9
+  Q.sboTerm = 9
+  J.sboTerm = 9
+  teta.sboTerm = 9
+  Gamma.sboTerm = 9
+  Vcmax.sboTerm = 9
+  Kc.sboTerm = 9
+  Vj.sboTerm = 9
+  phi.sboTerm = 9
+  Vc.sboTerm = 9
+
+  // CV terms:
+  RuBP biological_system "http://identifiers.org/chebi/CHEBI:16710"
+  PGA biological_system "http://identifiers.org/chebi/CHEBI:17050"
+  NADPH biological_system "http://identifiers.org/chebi/CHEBI:16474"
+  CO2 biological_system "http://identifiers.org/chebi/CHEBI:16526"
+  O2 biological_system "http://identifiers.org/chebi/CHEBI:15379"
+  NADP biological_system "http://identifiers.org/chebi/CHEBI:25523"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1109270000"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000384"
+  model publication "http://identifiers.org/pubmed/22001849"
+  model encodement "http://identifiers.org/go/GO:0019253"
+  model taxon "http://identifiers.org/taxonomy/33090"
+  model created "2011-10-19T14:50:44Z"
+  model modified "2012-04-20T19:53:00Z"
+  model creator1.givenName "Vijayalakshmi"
+  model creator1.familyName "Chelliah"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "viji@ebi.ac.uk"
+  model creator2.givenName "Zoran"
+  model creator2.familyName "Nikoloski"
+  model creator2.organization "Institute  of Biochemistry and Biology, University of Potsdam, 14476 Potsdam, Germany"
+  model creator2.email "nikoloski@mpimp-golm.mpg.de"
+  model creator3.givenName "Anne"
+  model creator3.familyName "Arnold"
+  model creator3.organization "Max-Planck-Institute of Molecular Plant Physiology"
+  model creator3.email "arnold@mpimp-golm.mpg.de"
+
+  // Notes:
+  model notes ```
+This model is from the article: 
+**A quantitative comparison of Calvin–Benson cycle models** 
+Anne Arnold, Zoran Nikoloski *Trends in Plant Science* 2011
+Oct 14. [22001849](http://www.ncbi.nlm.nih.gov/pubmed/22001849) , 
+**Abstract:** 
+The Calvin-Benson cycle (CBC) provides the precursors for biomass synthesis
+necessary for plant growth. The dynamic behavior and yield of the CBC depend on the
+environmental conditions and regulation of the cellular state. Accurate quantitative
+models hold the promise of identifying the key determinants of the tightly regulated
+CBC function and their effects on the responses in future climates. We provide an
+integrative analysis of the largest compendium of existing models for photosynthetic
+processes. Based on the proposed ranking, our framework facilitates the discovery
+of best-performing models with regard to metabolomics data and of candidates for
+metabolic engineering. 
+
+**Note:** Model of the Calvin cycle with focus on the RuBisCO reaction
+by Medlyn et al. (2002, [DOI:10.1046/j.1365-3040.2002.00891.x](http://dx.doi.org/10.1046/j.1365-3040.2002.00891.x) ). 
+The parameter values are widely taken from Farquhar et al. (1980, [DOI:10.1007/BF00386231](http://dx.doi.org/10.1007/BF00386231) ). The initial metabolite values are chosen from the data set of Zhu et al. (2007, [DOI:10.1104/pp.107.103713)](http:dx.doi.org/10.1104/pp.107.103713) . A detailed description of all modifications is given in the model described by Arnold and Nikoloski (2011, [PMID:22001849](http://www.ncbi.nlm.nih.gov/pubmed/22001849) .
+```
+  CO2 notes "0.7\* 350 [µbar] (p. 1172)"
+  O2 notes "[mbar]"
+  alpha notes "(p. 1170)"
+  J notes ```
+assumed J = 0.9 Jmax (p. 1172); converted into [mM] using Winter et al. (1994) subcellular
+stroma volume, BioNumbers (ID: 105594)
+```
+  teta notes "(p. 1170)"
+  Gamma notes "Bernacchi et al. (2001) Equation (8), Table 1"
+  Vcmax notes ```
+average of corresponding values of Table 2; converted into [mM] using Winter et al.
+(1994) subcellular stroma volume, BioNumbers (ID: 105594)
+```
+  Kc notes "Bernacchi et al. (2001) Equation (8), Table 1"
+  Ko notes "Bernacchi et al. (2001) Equation (8), Table 1"
+end
+
+Arnold2011_Medlyn2002_RuBisCO_CalvinCycle is "Arnold2011_Medlyn2002_RuBisCO-CalvinCycle"
