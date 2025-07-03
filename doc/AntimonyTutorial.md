@@ -3,11 +3,12 @@ Antimony Reference
 
 Different authoring tools have different ways of allowing the user to
 build models, and these approaches have individual advantages and
-disadvantages. In Antimony, the main approach to building models is to
+disadvantages. In Antimony (and in Tellurium, which uses it), the main approach to building models is to
 use a human-readable, text-based definition language, designed to
 interconvert between the SBML standard and a shorthand form that allows
 editing without the structure and overhead of working with XML directly.
 This guide will show you the intricacies of working with Antimony.
+More information can be found at https://github.com/sys-bio/antimony/.
 
 
 ## Table of contents
@@ -18,7 +19,7 @@ This guide will show you the intricacies of working with Antimony.
     - [Comments](#comments)
     - [Reactions](#reactions)
     - [Rate Laws and Initializing Values](#rate-laws-and-initializing-values)
-    - [Defining parameters, species, and compartments](#defining-parameters-species-and-compartments)
+    - [Defining basic elements](#defining-basic-elements)
     - [Boundary Species](#boundary-species)
     - [Compartments](#compartments)
     - [Assignments](#assignments)
@@ -61,7 +62,7 @@ This guide will show you the intricacies of working with Antimony.
     - [Positioning model elements](#positioning-model-elements)
     - [Sizing model elements](#sizing-model-elements)
     - [Reaction arcs](#reaction-arcs)
-    - [Reaction source/sinks](#reaction-source-sinks)
+    - [Reaction source or sinks](#reaction-source-or-sinks)
     - [Species alias nodes](#species-alias-nodes)
     - [General styles](#general-styles)
     - [Style settings](#style-settings)
@@ -325,7 +326,7 @@ Reactions can be defined with a wide variety of rate laws
       n = 4
     end
 
-### Defining parameters, species, and compartments.
+### Defining basic elements
 
 By default, any named element in an Antimony model is translated as
 an SBML 'parameter'.  If it is used in a reaction, it is translated
@@ -343,6 +344,7 @@ not appear in a reaction, you must declare it to be a species:
 
     species S1 = 1.3
     S1' = 0.4
+
 ### Boundary Species
 
 Boundary species are those species which are unaffected by the model.
@@ -359,6 +361,9 @@ boundary species.
       $S1 ->  S2; k1*S1
       S2 ->  S3; k2*S2
       S3 -> $S4; k3*S3
+
+      k1 = 0.1; k2 = 0.3; k3 = 0.15
+      S1 = 10
     end
 
 2)  Using the const keyword to declare species are fixed:
@@ -372,6 +377,9 @@ boundary species.
       S1 -> S2; k1*S1
       S2 -> S3; k2*S2
       S3 -> S4; k3*S3
+
+      k1 = 0.1; k2 = 0.3; k3 = 0.15
+      S1 = 10
     end
 
 ### Compartments
@@ -393,6 +401,9 @@ compartments with the `in` keyword:
       S1 -> S2; k1*S1
       S2 -> S3; k2*S2
       S3 -> S4; k3*S3
+
+      k1 = 0.1; k2 = 0.3; k3 = 0.15
+      S1 = 10
     end
 
 ### Assignments
@@ -411,6 +422,8 @@ simple numbers:
       S1 -> S2; k1*S1
       S2 -> S3; k2*S2
       S3 -> S4; k3*S3
+
+      S1 = 10
     end
 
 #### Assignments in Time
@@ -432,6 +445,8 @@ keyword `time` represents time.
     
       S1 -> S2; k1*S1
       S2 -> S3; k2*S2
+
+      S1 = 10
     end
 
 #### Piecewise Assignments
@@ -449,7 +464,7 @@ You can use `piecewise` to define piecewise assignments.
       k2 = 0.45; k3 = 0.34; Xo = 5;
     end
 
-Above will return `k1 = 0.1` if `time > 50` and `20` otherwise. A more
+The above will return `k1 = 0.1` if `time > 50` and `20` otherwise. A more
 complicated piecewise assignment can be defined as well.
 
     model pathway()
@@ -510,6 +525,8 @@ quadratic equation and use it in a later equation as follows:
     
     model quad1
       S3 := quadratic(s1, k1, k2, k3);
+
+      s1 = 5; k1=0.3; k2=42; k3=10
     end
 
 This effectively defines S3 to always equal the equation `k1*s1^2 +
@@ -531,7 +548,33 @@ following way:
     MgATP part "http://identifiers.org/chebi/CHEBI:25107",
                "http://identifiers.org/chebi/CHEBI:15422"
 
-Any Antimony element with an id may be annotated in this way, including the model itself.
+Any Antimony element with an id may be annotated in this way, including 
+the model itself.  Inside a model definition, the model itself may be 
+annotated using the 'model' keyword:
+
+    model foo()
+      model model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000004"
+      model description "http://identifiers.org/pubmed/1833774"
+      model origin "http://identifiers.org/biomodels.db/BIOMD0000000003"
+      model taxon "http://identifiers.org/taxonomy/8292"
+      model created "2005-02-08T17:34:02Z"
+      model modified "2012-12-11T15:30:15Z"
+    end
+
+You can also define an element's 'notes', using the 'notes' keyword.  If
+the notes take more than one line, you can group them together using three
+tick marks \`\`\` :
+
+    model notes ```
+        This model represents the inactive forms of CDC-2 Kinase and Cyclin 
+        Protease as separate species, unlike the ODEs in the published paper, in 
+        which the equations for the inactive forms are substituted into the 
+        equations for the active forms using a mass conservation rule 
+        M+MI=1,X+XI=1. Mass is still conserved in this model through the 
+        explicit reactions M&lt;-&gt;MI and X&lt;-&gt;XI. The terms in the 
+        kinetic laws are identical to the corresponding terms in the kinetic 
+        laws in the published paper.
+    ```
 
 
 ### Modular Models
@@ -546,9 +589,9 @@ variables you want to connect to that module
 
     # This creates a model 'side_reaction', exposing the variables 'S' and 'k1':
     model side_reaction(S, k1)
-      J0: S + E -> SE; k1*k2*S*E - k2*ES;
+      J0: S + E -> ES; k1*k2*S*E - k2*ES;
       E = 3;
-      SE = E+S;
+      ES = E+S;
       k2 = 0.4;
     end
     
@@ -572,8 +615,8 @@ variables you want to connect to that module
     end
 
 In this model, `A` is a submodel that creates a side-reaction of `S1`
-with `A.E` and `A.SE`, and `B` is a submodel that creates a
-side-reaction of `S2` with `B.E` and `B.SE`. It is important to note
+with `A.E` and `A.ES`, and `B` is a submodel that creates a
+side-reaction of `S2` with `B.E` and `B.ES`. It is important to note
 that there is no connection between `A.E` and `B.E` (nor `A.ES` and
 `B.ES`): they are completely different species in the model.
 
@@ -875,10 +918,10 @@ bind reversibly to two different species. You could set this up as the
 following:
 
     model side_reaction
-      J0: S + E -> SE; k1*k2*S*E - k2*ES;
+      J0: S + E -> ES; k1*k2*S*E - k2*ES;
       S = 5;
       E = 3;
-      SE = E+S;
+      ES = E+S;
       k1 = 1.2;
       k2 = 0.4;
     end
@@ -917,8 +960,8 @@ different:
       B.E = 10;
     end
 
-Note that since we defined the initial concentration of `SE` as `S + E`,
-`B.SE` will now have a different initial concentration, since `B.E` has
+Note that since we defined the initial concentration of `ES` as `S + E`,
+`B.ES` will now have a different initial concentration, since `B.E` has
 been changed.
 
 Finally, we add a third side reaction, one in which S binds
@@ -937,7 +980,7 @@ reaction rate, and a whole new reaction as well:
       C: side_reaction();
       C.S is S;
       C.J0 = C.k1*C.k2*S*C.E
-      J3: C.SE -> ; C.SE*k3;
+      J3: C.ES -> ; C.ES*k3;
       k3 = 0.02;
     end
 
@@ -952,10 +995,10 @@ a list of the symbols to export in parentheses after the name of the
 model when defining it:
 
     model side_reaction(S, k1)
-      J0: S + E -> SE; k1*k2*S*E - k2*ES;
+      J0: S + E -> ES; k1*k2*S*E - k2*ES;
       S = 5;
       E = 3;
-      SE = E+S;
+      ES = E+S;
       k1 = 1.2;
       k2 = 0.4;
     end
@@ -1156,7 +1199,7 @@ definition overwriting an earlier definition. However, there was no way
 with our current interface to let the user know that a warning had been
 saved, and it seemed like there could be a number of cases where the
 user might legitimately want to override an earlier definition (such as
-when using submodules, as we'll get to in a bit). So for now, the above
+when using submodules). So for now, the above
 is valid Antimony input that just so happens to produce exactly the same
 output as:
 
@@ -1306,7 +1349,7 @@ first. However, if the model depends on a particular order of execution,
 events may be given priorities, using the priority keyword:
 
     E1: at ((x>5) && (z>4)), priority=1: y=3, x=r+2;
-    E2: at ((x>5) && (q>7)), priority=0: y=5: x=r+6;
+    E2: at ((x>5) && (q>7)), priority=0: y=5, x=r+6;
 
 In situations where z\>4, q\>7, and x\>5, and then x increases, both E1
 and E2 will trigger at the same time. Since both modify the same values,
@@ -1322,6 +1365,7 @@ event may trigger at time 0. You may override this default by using the
 't0' keyword:
 
     E1: at (x>5), t0=false: y=3, x=r+2;
+    x = 10
 
 In this situation, the value at t0 is considered to be false, meaning it
 can immediately transition to true if x is greater than 5, triggering
@@ -1613,7 +1657,7 @@ activations, use `-o`; for inhibitions, use `-|`, and for unknown
 interactions or for interactions which sometimes activate and sometimes
 inhibit, use `-(`:
 
-    J0: S1 + E -> SE;
+    J0: S1 + E -> ES;
     i1: S2 -| J0;
     i2: S3 -o J0;
     i3: S4 -( J0;
@@ -1622,14 +1666,14 @@ If a reaction rate is given for the reaction in question, that reaction
 must include the species listed as interacting with that reaction. This,
 then, is legal:
 
-    J0: S1 + E -> SE; k1*S1*E/S2
+    J0: S1 + E -> ES; k1*S1*E/S2
     i1: S2 -| J0;
 
 because the species S2 is present in the formula `k1*S1*E/S2`. If the
 concentration of an inhibitory species increases, it should decrease the
 reaction rate of the reaction it inhibits, and vice versa for activating
-species. The current version of libAntimony (v2.4) does not check this,
-but future versions may add the check.
+species. libAntimony does not check to ensure this is true; the modeler
+must check manually.
 
 When the reaction rate is not known, species from interactions will be
 added to the SBML 'listOfModifiers' for the reaction in question.
@@ -1740,9 +1784,37 @@ cvterms, using the following syntax:
     A hasProperty "cvterm" or A property "cvterm"
     A isPropertyOf "cvterm" or A propertyBearer "cvterm"
     A hasTaxon "cvterm" or A taxon "cvterm"
+    A created "YYYY-MM-DDThh:mm:ssTZD" where TZD is either Z or +/- HH:MM
+    A modified "YYYY-MM-DDThh:mm:ssTZD" where TZD is either Z or +/- HH:MM
+    A creator "creator"
+    A creator.name "full name"
+    A creator.givenName "given name"
+    A creator.familyName "family name"
+    A creator.organization "organization"
+    A creator.email "email address"
+    A notes "notes"
+   
+Where ``A`` is any model ID or the word 'model' for the model itself, and
+``cvterm`` is a URI like ``"http://identifiers.org/uniprot/P12999"``.  If 
+there are multiple creators, or multiple modification times, you can 
+distinguish between them by adding a number:
 
-Where `A` is any model element, model name, or function name, and
-`cvterm` is a URI like `"http://identifiers.org/uniprot/P12999"`.
+    A creator1.name "Hugh Barrett"
+    A creator2.name "Nancy Smalls"
+    A modified1 "2012-12-11T15:30:15Z"
+    A modified2 "2013-01-15T12:25:55Z"
+
+You can also set the individual components of the 'created' and 'modified'
+date by keyword:
+
+    A created.year "YYYY"
+    A created.month "MM"
+    A created.day "DD"
+    A created.hour "hh"
+    A created.minute "mm"
+    A created.second "ss"
+    A created.time "hh:mm:ss"
+
 
 ### Flux Balance Constraints
 
@@ -2030,7 +2102,7 @@ Translated to SBML with the use of the autolayout algorithm, then translated bac
 For layouts not generated with the autolayout algorithm, it is possible for a line between a reaction and a species to be defined with multiple segments, one after the next.  For these, we introduce the keyword 'seg#'.  As with the 'arc#' keyword, the first segment does not need to be defined with a 'seg1', but a second must be defined with 'seg2'.  Here we define a line between J0 and S1 with three straight lines:
 
 ```
-J0.S1.seg1.species_end = {740, 992.6}
+ J0.S1.seg1.species_end = {740, 992.6}
  J0.S1.seg1.rxn_end = {685, 1008}
  J0.S1.seg1.b1 = {740, 992.6}
  J0.S1.seg1.b2 = {685, 1008}
@@ -2051,7 +2123,7 @@ If multiple arcs and segments exist, they can be combined:
 J0.S1.arc2.seg3.species_end = {740, 992}
 ```
 
-### Reaction source/sinks
+### Reaction source or sinks
 
 If a reaction has no reactants or if it has no products, SBMLNetwork will add a 'null' species glyph for that reaction.  This is translated to Antimony as the reaction ID followed by the string '.--', and you can set its position and other features with that ID:
 
@@ -2200,5 +2272,5 @@ converting models between SBML and Antimony:
     models](http://antimony.sourceforge.net/antimony-examples.html) show
     how to use the [comp
     package](http://sbml.org/Documents/Specifications/SBML_Level_3/Packages/comp).
-  - [This manual](http://antimony.sourceforge.net/Tutorial.pdf) in
+  - [This manual](AntimonyTutorial.pdf) in
     PDF format.
