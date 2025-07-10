@@ -9,12 +9,12 @@ overhead of working with XML directly. This guide will show you the
 intricacies of working with Antimony. More information can be found at
 https://github.com/sys-bio/antimony/.</p>
 <h2 id="table-of-contents">Table of contents</h2>
-<ul>
+<ul class="incremental">
 <li><a href="#background">Background</a></li>
 <li><a href="#change-log">Change Log</a></li>
 <li><a href="#introduction-and-basics">Introduction</a></li>
 <li><a href="#model-elements">Model Elements</a>
-<ul>
+<ul class="incremental">
 <li><a href="#comments">Comments</a></li>
 <li><a href="#reactions">Reactions</a></li>
 <li><a href="#rate-laws-and-initializing-values">Rate Laws and
@@ -23,7 +23,7 @@ Initializing Values</a></li>
 <li><a href="#boundary-species">Boundary Species</a></li>
 <li><a href="#compartments">Compartments</a></li>
 <li><a href="#assignments">Assignments</a>
-<ul>
+<ul class="incremental">
 <li><a href="#assignments-in-time">Assignments in Time</a></li>
 <li><a href="#piecewise-assignments">Piecewise Assignments</a></li>
 </ul></li>
@@ -34,7 +34,7 @@ Initializing Values</a></li>
 <li><a href="#importing-files">Importing Files</a></li>
 </ul></li>
 <li><a href="#signals">Signals</a>
-<ul>
+<ul class="incremental">
 <li><a href="#step-input">Step input</a></li>
 <li><a href="#ramp">Ramp</a></li>
 <li><a href="#ramp-then-stop">Ramp then stop</a></li>
@@ -42,13 +42,13 @@ Initializing Values</a></li>
 <li><a href="#sinusoidal-input">Sinusoidal input</a></li>
 </ul></li>
 <li><a href="#language-reference">Language Reference</a>
-<ul>
+<ul class="incremental">
 <li><a href="#species-and-reactions">Species and Reactions</a>
-<ul>
+<ul class="incremental">
 <li><a href="#substance-only-species">Substance-only species</a></li>
 </ul></li>
 <li><a href="#modules">Modules</a>
-<ul>
+<ul class="incremental">
 <li><a href="#module-conversion-factors">Module conversion
 factors</a></li>
 <li><a href="#submodel-deletions">Submodel deletions</a></li>
@@ -74,7 +74,7 @@ Constraints</a></li>
 Exporting Antimony Models</a></li>
 </ul></li>
 <li><a href="#layout-and-render">Layout and Render</a>
-<ul>
+<ul class="incremental">
 <li><a href="#basic-layout-information">Basic layout
 information</a></li>
 <li><a href="#positioning-model-elements">Positioning model
@@ -116,7 +116,7 @@ a Python package.</p>
 <p>Antimony is the main method of building models in <a
 href="http://tellurium.analogmachine.org/">Tellurium</a>, and can be
 used in other contexts as well. Its main features include:</p>
-<ul>
+<ul class="incremental">
 <li>Easily define species, reactions, compartments, events, and other
 elements of a biological model.</li>
 <li>Package and re-use models as modules with defined or implied
@@ -321,7 +321,7 @@ S1&#39; = 0.4</code></pre>
 <p>Boundary species are those species which are unaffected by the model.
 Usually this means they are fixed. There are two ways to declare
 boundary species.</p>
-<ol type="1">
+<ol class="incremental" type="1">
 <li>Using a dollar sign to indicate that a particular species is
 fixed:</li>
 </ol>
@@ -336,7 +336,7 @@ fixed:</li>
   k1 = 0.1; k2 = 0.3; k3 = 0.15
   S1 = 10
 end</code></pre>
-<ol start="2" type="1">
+<ol class="incremental" start="2" type="1">
 <li>Using the const keyword to declare species are fixed:</li>
 </ol>
 <!-- end list -->
@@ -365,13 +365,17 @@ particular compartments with the <code>in</code> keyword:</p>
   var S3 in cytoplasm
   const S4 in cytoplasm
 
-  S1 -&gt; S2; k1*S1
-  S2 -&gt; S3; k2*S2
-  S3 -&gt; S4; k3*S3
+  S1 -&gt; S2; k1*S1*mitochondria
+  S2 -&gt; S3; k2*S2*cytoplasm
+  S3 -&gt; S4; k3*S3*cytoplasm
 
   k1 = 0.1; k2 = 0.3; k3 = 0.15
   S1 = 10
 end</code></pre>
+<p>Note that reaction rates must be in units of amount/time, so since
+species are expressed in terms of concentration by default, they should
+be multiplied by their compartment volumes to make the units work
+out.</p>
 <h3 id="assignments">Assignments</h3>
 <p>You can also initialize elements with more complicated formulas than
 simple numbers:</p>
@@ -1057,7 +1061,7 @@ submod2(y) in comp3;</code></pre>
 <pre><code>S1 in comp2 = 5;</code></pre>
 <p>Here are Antimony’s rules for determining which compartment something
 is in:</p>
-<ul>
+<ul class="incremental">
 <li>If the symbol has been declared to be in a compartment, it is in
 that compartment.</li>
 <li>If not, if the symbol is in a DNA strand (see the next section)
@@ -1845,7 +1849,7 @@ compartments:</p>
 reaction.[setting] = [value]
 compartment.[setting] = [value]</code></pre>
 <p>Values can be:</p>
-<ul>
+<ul class="incremental">
 <li>[number]: a number</li>
 <li>[color]: Any ‘web color’ name (standard names like ‘red’, ‘blue’,
 etc. up to somewhat obscure names like ‘palegoldenrod’ or ‘papayawhip’),
@@ -1887,7 +1891,7 @@ of size {20, 20}.</p>
 Converting between SBML and Antimony</h2>
 <p>For reference, here are some of the differences you will see when
 converting models between SBML and Antimony:</p>
-<ul>
+<ul class="incremental">
 <li>Local parameters in SBML reactions become global parameters in
 Antimony, with the reaction name prepended. If a different symbol
 already has the new name, a number is appended to the variable name so
@@ -1925,7 +1929,7 @@ This ‘time_ref’ is added to the function’s interface (as the last in the
 list of symbols), and any uses of the function are modified to use
 ‘time’ in the call. In other words, a function ‘function(x, y):
 x+y*time’ becomes ’function(x, y, time_ref): x
-<ul>
+<ul class="incremental">
 <li>y*time_ref’, and formulas that use ‘function(A, B)’ become
 ‘function(A, B, time)’</li>
 </ul></li>
@@ -1935,7 +1939,7 @@ becomes <code>compartment_</code>, <code>model</code> becomes
 <code>model_</code>, etc.</li>
 </ul>
 <h2 id="further-reading">Further Reading</h2>
-<ul>
+<ul class="incremental">
 <li>Lucian Smith’s <a
 href="http://antimony.sourceforge.net/antimony-examples.html">example
 models</a> show how to use the <a
