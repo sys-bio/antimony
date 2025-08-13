@@ -2289,8 +2289,11 @@ void Module::CreateSBMLModel(bool comp)
     Reaction* rxn = sbmlmod->getReaction(arxn->GetRight()->GetNthReactant(0)->GetNameDelimitedBy(cc));
     if (rxn != NULL) {
       for (size_t interactor=0; interactor<arxn->GetLeft()->Size(); interactor++) {
-        ModifierSpeciesReference* msr = rxn->createModifier();
-        msr->setSpecies(arxn->GetLeft()->GetNthReactant(interactor)->GetNameDelimitedBy(cc));
+        ModifierSpeciesReference* msr = rxn->getModifier(arxn->GetLeft()->GetNthReactant(interactor)->GetNameDelimitedBy(cc));
+        if (msr == NULL) {
+            msr = rxn->createModifier();
+            msr->setSpecies(arxn->GetLeft()->GetNthReactant(interactor)->GetNameDelimitedBy(cc));
+        }
         msr->setName(arxnvar->GetName()[arxnvar->GetName().size()-1]);
         switch(arxn->GetType()) {
         case rdBecomes:
