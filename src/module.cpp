@@ -66,6 +66,8 @@ Module::Module(string name)
     m_libsbml_info(""),
     m_libsbml_warnings(""),
     m_hasFBC(false),
+    m_fbcIsStrict(true),
+    m_fbcLevel(3),
     m_autolayout(),
     m_layout(),
 #endif
@@ -125,6 +127,8 @@ Module::Module(const Module& src, string newtopname, string modulename)
     m_libsbml_info(), //don't need this info for submodules--might be wrong anyway.
     m_libsbml_warnings(),
     m_hasFBC(src.m_hasFBC),
+    m_fbcIsStrict(src.m_fbcIsStrict),
+    m_fbcLevel(src.m_fbcLevel),
     m_autolayout(),
     m_layout(),
 #endif
@@ -184,6 +188,8 @@ Module::Module(const Module& src)
     m_libsbml_info(src.m_libsbml_info),
     m_libsbml_warnings(src.m_libsbml_warnings),
     m_hasFBC(src.m_hasFBC),
+    m_fbcIsStrict(src.m_fbcIsStrict),
+    m_fbcLevel(src.m_fbcLevel),
     m_autolayout(src.m_autolayout),
     m_layout(src.m_layout),
 #endif
@@ -233,6 +239,8 @@ Module& Module::operator=(const Module& src)
   m_libsbml_info = src.m_libsbml_info;
   m_libsbml_warnings = src.m_libsbml_warnings;
   m_hasFBC = src.m_hasFBC;
+  m_fbcIsStrict = src.m_fbcIsStrict;
+  m_fbcLevel = src.m_fbcLevel;
   m_autolayout = src.m_autolayout;
   m_layout = src.m_layout;
 #ifdef USE_COMP
@@ -1434,7 +1442,7 @@ bool Module::Finalize()
           m_sbmlnamespaces.addPackageNamespace("distrib", 1);
         }
         if (submod->m_hasFBC) {
-          m_sbmlnamespaces.addPackageNamespace("fbc", 1);
+          m_sbmlnamespaces.addPackageNamespace("fbc", m_fbcLevel);
           m_hasFBC = true;
         }
         //Also also, copy over the objective function, if we need one.
@@ -1447,7 +1455,7 @@ bool Module::Finalize()
   }
 
   if (m_objective.size() > 0) {
-    m_sbmlnamespaces.addPackageNamespace("fbc", 1);
+    m_sbmlnamespaces.addPackageNamespace("fbc", m_fbcLevel);
     m_hasFBC = true;
   }
 
@@ -1493,7 +1501,7 @@ bool Module::Finalize()
 #ifdef LIBSBML_HAS_PACKAGE_FBC
       if (variable->GetConstraint()->calculateFluxBounds()) {
         m_hasFBC = true;
-        m_sbmlnamespaces.addPackageNamespace("fbc", 1);
+        m_sbmlnamespaces.addPackageNamespace("fbc", m_fbcLevel);
       }
 #endif
     }
@@ -1518,6 +1526,9 @@ bool Module::Finalize()
 #else
     const SBMLDocument* sbmldoc = GetSBML(false); //Trying to get the comp version would result in an added warning.
 #endif
+    //We rely on libsbml's error checking to see if we need to set fbc's 'strict' flag to 'false' or not.
+    fixFBCStrictIfNeeded();
+
     stringstream stream;
 
     SBMLWriter writer;

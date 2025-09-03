@@ -1084,7 +1084,7 @@ void Formula::AddFluxObjective(Model* sbmlmod, bool maximize, const Variable* va
 {
   //Don't do anything unless we know about FBC
 #ifdef LIBSBML_HAS_PACKAGE_FBC
-  vector<pair<string, double> > objectives;
+  vector<FluxObjective> objectives;
   ASTNode* astn = parseStringToASTNode(ToSBMLString());
   GetObjectivesFromAST(astn, objectives);
   delete astn;
@@ -1100,9 +1100,7 @@ void Formula::AddFluxObjective(Model* sbmlmod, bool maximize, const Variable* va
   }
   fmp->getListOfObjectives()->setActiveObjective(objective->getId());
   for (size_t o=0; o<objectives.size(); o++) {
-    FluxObjective* fo = objective->createFluxObjective();
-    fo->setReaction(objectives[o].first);
-    fo->setCoefficient(objectives[o].second);
+      objective->addFluxObjective(&objectives[o]);
   }
 #endif
 }
@@ -1137,6 +1135,7 @@ bool Formula::IsValidObjectiveFunction(const ASTNode* astn) const
   if (astn==NULL) {
     return false;
   }
+  double val;
   switch(astn->getType()) {
   case AST_NAME:
     //Already checked to see if the referenced elements are reactions
@@ -1153,21 +1152,31 @@ bool Formula::IsValidObjectiveFunction(const ASTNode* astn) const
   case AST_TIMES:
     if (astn->getNumChildren() != 2) return false;
     if (!astn->getChild(0)->isNumber()) return false;
-    return (astn->getChild(1)->getType() == AST_NAME);
+    return (IsValidObjectiveFunction(astn->getChild(1)));
   case AST_INTEGER:
   case AST_REAL:
   case AST_REAL_E:
   case AST_RATIONAL:
     //Sort of a hack, but it should work anyway:
     return (astn->isSetUnits());
+  case AST_POWER:
+  case AST_FUNCTION_POWER:
+      if (astn->getNumChildren() != 2) return false;
+      if (!astn->getChild(0)->getType() == AST_NAME) return false;
+      if (!astn->getChild(1)->isNumber()) return false;
+      val = astn->getChild(1)->getValue();
+      return (val == 1.0 || val == 2.0);
   default:
     return false;
   }
 }
 
-void Formula::GetObjectivesFromAST(const ASTNode* astn, vector<pair<string, double> >& objectives) const
+void Formula::GetObjectivesFromAST(const ASTNode* astn, vector<FluxObjective >& objectives) const
 {
   size_t numobjectives; //For the 'minus' case, below.
+  size_t last;
+  FluxObjective fo(3, 2, 3);
+  fo.setVariableType("linear");
   if (astn == NULL) {
       //Probably should have been caught earlier, but at least we won't crash.
       return;
@@ -1175,8 +1184,10 @@ void Formula::GetObjectivesFromAST(const ASTNode* astn, vector<pair<string, doub
   switch(astn->getType()) {
   case AST_NAME:
     //Just the name with a stoichiometry of 1
-    objectives.push_back(make_pair(astn->getName(), 1));
-    return;
+      fo.setReaction(astn->getName());
+      fo.setCoefficient(1);
+      objectives.push_back(fo);
+      return;
   case AST_PLUS:
     for (unsigned int n=0; n<astn->getNumChildren(); n++) {
       GetObjectivesFromAST(astn->getChild(n), objectives);
@@ -1192,9 +1203,7 @@ void Formula::GetObjectivesFromAST(const ASTNode* astn, vector<pair<string, doub
       GetObjectivesFromAST(astn->getChild(0), objectives);
       //Switch the sign of anything added:
       for (size_t n=numobjectives; n<objectives.size(); n++) {
-        pair<string, double> obj = objectives[n];
-        obj.second = -obj.second;
-        objectives[n] = obj;
+          objectives[n].setCoefficient(-objectives[n].getCoefficient());
       }
       return;
     case 2:
@@ -1203,9 +1212,7 @@ void Formula::GetObjectivesFromAST(const ASTNode* astn, vector<pair<string, doub
       GetObjectivesFromAST(astn->getChild(1), objectives);
       //Switch the sign of anything added second:
       for (size_t n=numobjectives; n<objectives.size(); n++) {
-        pair<string, double> obj = objectives[n];
-        obj.second = -obj.second;
-        objectives[n] = obj;
+          objectives[n].setCoefficient(-objectives[n].getCoefficient());
       }
       return;
     default:
@@ -1216,14 +1223,28 @@ void Formula::GetObjectivesFromAST(const ASTNode* astn, vector<pair<string, doub
     return;
   case AST_TIMES:
     if (astn->getNumChildren() != 2) return;
-    objectives.push_back(make_pair(astn->getChild(1)->getName(), GetValueFrom(astn->getChild(0))));
+    //Get objective from second child, then change its coefficient:
+    GetObjectivesFromAST(astn->getChild(1), objectives);
+    last = objectives.size() - 1;
+    objectives[last].setCoefficient(GetValueFrom(astn->getChild(0)));
     return;
   case AST_INTEGER:
   case AST_REAL:
   case AST_REAL_E:
   case AST_RATIONAL:
-    objectives.push_back(make_pair(astn->getUnits(), GetValueFrom(astn)));
-    return;
+      fo.setCoefficient(GetValueFrom(astn));
+      fo.setReaction(astn->getUnits());
+      objectives.push_back(fo);
+      return;
+  case AST_POWER:
+  case AST_FUNCTION_POWER:
+      fo.setCoefficient(1);
+      fo.setReaction(astn->getChild(0)->getName());
+      if (astn->getChild(1)->getValue() == 2.0) {
+          fo.setVariableType("quadratic");
+      }
+      objectives.push_back(fo);
+      return;
   default:
       assert(false); //Impossible??
       return;

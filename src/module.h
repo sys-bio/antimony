@@ -96,6 +96,8 @@ private:
   std::string m_libsbml_info;
   std::string m_libsbml_warnings;
   bool m_hasFBC;
+  bool m_fbcIsStrict;
+  int  m_fbcLevel;
   autolayout m_autolayout;
   layout m_layout;
   std::vector<LayoutWrapper*>  m_defaultLayouts;
@@ -238,6 +240,7 @@ public:
   void TranslateRulesAndAssignmentsTo(const libsbml::SBase* obj, Variable* var);
   //void  LoadSBML(const SBMLDocument* sbmldoc);
   void  LoadSBML(libsbml::Model* sbml);
+  void  fixFBCStrictIfNeeded();
   const libsbml::SBMLDocument* GetSBML(bool comp);
   libsbml::Model* GetModelIfCreated();
   void  CreateSBMLModel(bool comp);

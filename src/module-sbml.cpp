@@ -1525,26 +1525,6 @@ void Module::LoadSBML(Model* sbml)
 #ifdef LIBSBML_HAS_PACKAGE_FBC
   const FbcModelPlugin* fmp = static_cast<const FbcModelPlugin*>(sbml->getPlugin("fbc"));
   if (fmp != NULL) {
-    for (unsigned int fb=0; fb<fmp->getNumFluxBounds(); fb++) {
-      const FluxBound* fluxbound = fmp->getFluxBound(fb);
-      bool haveAlready = false;
-      for (size_t ac=0; ac<constraints.size(); ac++) {
-        if (constraints[ac].ContainsFlux(fluxbound)) {
-          haveAlready = true;
-        }
-      }
-      if (!haveAlready) {
-        sbmlname = getNameFromSBMLObject(fluxbound, "_con");
-        Variable* var = AddOrFindVariable(&sbmlname);
-        var->ReadAnnotationFrom(fluxbound);
-        if (fluxbound->isSetName()) {
-          var->SetDisplayName(fluxbound->getName());
-        }
-        AntimonyConstraint acon(var);
-        acon.SetFromFluxBound(fluxbound);
-        var->SetConstraint(&acon);
-      }
-    }
     const Objective* objective = fmp->getActiveObjective();
     if (objective != NULL) {
       sbmlname = getNameFromSBMLObject(objective, "_objective");
@@ -1574,8 +1554,42 @@ void Module::LoadSBML(Model* sbml)
           continue;
         }
         form.AddVariable(rxn);
+        if (fluxobj->getVariableType() == FBC_VARIABLE_TYPE_QUADRATIC) {
+            form.AddMathThing('^');
+            form.AddNum(2);
+        }
       }
       varobj->SetFormula(&form, true);
+    }
+    for (unsigned int r = 0; r < sbml->getNumReactions(); r++) {
+        const Reaction* rxn = sbml->getReaction(r);
+        const FbcReactionPlugin* frp = static_cast<const FbcReactionPlugin*>(rxn->getPlugin("fbc"));
+        if (frp != NULL) {
+            if (frp->isSetLowerFluxBound() || frp->isSetUpperFluxBound()) {
+                Variable* rxnvar = AddOrFindVariable(&rxn->getId());
+                rxnvar->SetType(varReactionUndef);
+                sbmlname = rxn->getId() + "_fluxBounds";
+                Variable* rxnbound = AddOrFindVariable(&sbmlname);
+                AntimonyConstraint constraint(rxnbound);
+                Formula form;
+                constraint.setReactionId(rxn->getId());
+                if (frp->isSetLowerFluxBound()) {
+                    Variable* var = AddOrFindVariable(&frp->getLowerFluxBound());
+                    constraint.SetLowerFBFormula(var);
+                    form.AddVariable(var);
+                    form.AddMathThing('<');
+                }
+                form.AddVariable(rxnvar);
+                if (frp->isSetUpperFluxBound()) {
+                    Variable* var = AddOrFindVariable(&frp->getUpperFluxBound());
+                    constraint.SetUpperFBFormula(var);
+                    form.AddMathThing('<');
+                    form.AddVariable(var);
+                }
+                constraint.SetFormula(&form, true);
+                rxnbound->SetConstraint(&constraint);
+            }
+        }
     }
   }
 #endif
@@ -1653,6 +1667,46 @@ void Module::LoadSBML(Model* sbml)
   LoadLayout(sbml);
 }
 
+void Module::fixFBCStrictIfNeeded()
+{
+    if (!m_hasFBC) {
+        return;
+    }
+    Model* model = m_sbml.getModel();
+    if (model == NULL) {
+        return;
+    }
+    //Set 'strict' to 'false' if need be
+    m_sbml.setConsistencyChecks(LIBSBML_CAT_UNITS_CONSISTENCY, false);
+    m_sbml.setConsistencyChecks(LIBSBML_CAT_IDENTIFIER_CONSISTENCY, false);
+    m_sbml.setConsistencyChecks(LIBSBML_CAT_MATHML_CONSISTENCY, false);
+    m_sbml.setConsistencyChecks(LIBSBML_CAT_SBO_CONSISTENCY, false);
+    m_sbml.setConsistencyChecks(LIBSBML_CAT_OVERDETERMINED_MODEL, false);
+    m_sbml.setConsistencyChecks(LIBSBML_CAT_MODELING_PRACTICE, false);
+    m_sbml.setConsistencyChecks(LIBSBML_CAT_INTERNAL_CONSISTENCY, false);
+    m_sbml.setConsistencyChecks(LIBSBML_CAT_STRICT_UNITS_CONSISTENCY, false);
+    m_sbml.setConsistencyChecks(LIBSBML_CAT_OVERDETERMINED_MODEL, false);
+    m_sbml.setConsistencyChecks(LIBSBML_CAT_OVERDETERMINED_MODEL, false);
+    m_sbml.setConsistencyChecks(LIBSBML_CAT_OVERDETERMINED_MODEL, false);
+    m_sbml.checkConsistency();
+    if (m_sbml.getNumErrors(LIBSBML_SEV_ERROR)) {
+        FbcModelPlugin* fmp = static_cast<FbcModelPlugin*>(model->getPlugin("fbc"));
+        fmp->setStrict(false);
+        m_fbcIsStrict = false;
+    }
+    m_sbml.setConsistencyChecks(LIBSBML_CAT_IDENTIFIER_CONSISTENCY, true);
+    m_sbml.setConsistencyChecks(LIBSBML_CAT_MATHML_CONSISTENCY, true);
+    m_sbml.setConsistencyChecks(LIBSBML_CAT_SBO_CONSISTENCY, true);
+    m_sbml.setConsistencyChecks(LIBSBML_CAT_OVERDETERMINED_MODEL, true);
+    m_sbml.setConsistencyChecks(LIBSBML_CAT_MODELING_PRACTICE, true);
+    m_sbml.setConsistencyChecks(LIBSBML_CAT_INTERNAL_CONSISTENCY, true);
+    m_sbml.setConsistencyChecks(LIBSBML_CAT_STRICT_UNITS_CONSISTENCY, true);
+    m_sbml.setConsistencyChecks(LIBSBML_CAT_OVERDETERMINED_MODEL, true);
+    m_sbml.setConsistencyChecks(LIBSBML_CAT_OVERDETERMINED_MODEL, true);
+    m_sbml.setConsistencyChecks(LIBSBML_CAT_OVERDETERMINED_MODEL, true);
+
+}
+
 const SBMLDocument* Module::GetSBML(bool comp)
 {
   const Model* mod = m_sbml.getModel();
@@ -1706,13 +1760,18 @@ void Module::CreateSBMLModel(bool comp)
     m_sbml.setPackageRequired("distrib", true);
   }
 #endif
-#ifdef LIBSBML_HAS_PACKAGE_FBC
-  if (m_hasFBC) {
-    m_sbml.setPackageRequired("fbc", false);
-  }
-#endif
   Model* sbmlmod = m_sbml.createModel();
 
+#ifdef LIBSBML_HAS_PACKAGE_FBC
+  if (m_hasFBC) {
+      FbcModelPlugin* fmp = static_cast<FbcModelPlugin*>(sbmlmod->getPlugin("fbc"));
+      fmp->setStrict(m_fbcIsStrict);
+      FbcExtension fe;
+      string uri = fe.getURI(m_sbmllevel, m_sbmlversion, m_fbcLevel);
+      m_sbml.enablePackage(uri, "fbc", true);
+      m_sbml.setPackageRequired("fbc", false);
+  }
+#endif
   sbmlmod->setId(m_modulename);
   sbmlmod->setName(GetDisplayName());
   sbmlmod->setMetaId(GetModuleName());
@@ -2370,9 +2429,6 @@ void Module::CreateSBMLModel(bool comp)
     SBase* obj = sbmlmod->getElementBySId(objname);
     if (obj) {
       obj->removeFromParentAndDelete();
-    }
-    else {
-      obj = NULL; //What?
     }
     obj = sbmlmod->getInitialAssignmentBySymbol(objname);
     if (obj) {

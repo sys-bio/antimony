@@ -97,7 +97,7 @@ public:
   void AddFluxObjective(libsbml::Model* sbmlmod, bool maximize, const Variable* var) const;
   bool IsValidObjectiveFunction() const;
   bool IsValidObjectiveFunction(const libsbml::ASTNode* astn) const;
-  void GetObjectivesFromAST(const libsbml::ASTNode* astn, std::vector<std::pair<std::string, double> >& objectives) const;
+  void GetObjectivesFromAST(const libsbml::ASTNode* astn, std::vector<libsbml::FluxObjective >& objectives) const;
 #endif
 
   bool ClearReferencesTo(Variable* deletedvar);
