@@ -1162,7 +1162,7 @@ bool Formula::IsValidObjectiveFunction(const ASTNode* astn) const
   case AST_POWER:
   case AST_FUNCTION_POWER:
       if (astn->getNumChildren() != 2) return false;
-      if (!astn->getChild(0)->getType() == AST_NAME) return false;
+      if (!(astn->getChild(0)->getType() == AST_NAME)) return false;
       if (!astn->getChild(1)->isNumber()) return false;
       val = astn->getChild(1)->getValue();
       return (val == 1.0 || val == 2.0);

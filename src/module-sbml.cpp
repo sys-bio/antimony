@@ -1578,12 +1578,14 @@ void Module::LoadSBML(Model* sbml)
                     constraint.SetLowerFBFormula(var);
                     form.AddVariable(var);
                     form.AddMathThing('<');
+                    form.AddMathThing('=');
                 }
                 form.AddVariable(rxnvar);
                 if (frp->isSetUpperFluxBound()) {
                     Variable* var = AddOrFindVariable(&frp->getUpperFluxBound());
                     constraint.SetUpperFBFormula(var);
                     form.AddMathThing('<');
+                    form.AddMathThing('=');
                     form.AddVariable(var);
                 }
                 constraint.SetFormula(&form, true);
@@ -2380,19 +2382,25 @@ void Module::CreateSBMLModel(bool comp)
   for (size_t con=0; con < numconstraints; con++) {
     const Variable* convar = GetNthVariableOfType(allConstraints, con, comp);
     const AntimonyConstraint* antconstraint = convar->GetConstraint();
-    const Formula*  formula = convar->GetFormula();
-    Constraint* constraint = sbmlmod->createConstraint();
-
-    if (convar->GetDisplayName() != "") {
-#if LIBSBML_VERSION >= 51103
-      constraint->setMessage(convar->GetDisplayName(), true); // <- have to update libsbml for this to work.
-#endif
-    }
-    convar->TransferAnnotationTo(constraint, GetModuleName() + "." + convar->GetNameDelimitedBy(cc));
-    constraint->setMath(antconstraint->getASTNode());
 #ifdef LIBSBML_HAS_PACKAGE_FBC
-    //We need to check to see if the constraint can be translated to an FBC constraint.
-    antconstraint->addFluxBounds(sbmlmod);
+    if (antconstraint->isFluxBound()) {
+        //We need to check to see if the constraint can be translated to an FBC constraint.
+        antconstraint->addFluxBounds(sbmlmod);
+    }
+    else {
+#endif
+        const Formula* formula = convar->GetFormula();
+        Constraint* constraint = sbmlmod->createConstraint();
+
+        if (convar->GetDisplayName() != "") {
+#if LIBSBML_VERSION >= 51103
+            constraint->setMessage(convar->GetDisplayName(), true); // <- have to update libsbml for this to work.
+#endif
+        }
+        convar->TransferAnnotationTo(constraint, GetModuleName() + "." + convar->GetNameDelimitedBy(cc));
+        constraint->setMath(antconstraint->getASTNode());
+#ifdef LIBSBML_HAS_PACKAGE_FBC
+    }
 #endif
   }
 

@@ -695,7 +695,7 @@ std::string elideMetaIdsFromSBMLstring(std::string sbml)
 {
   SBMLReader reader;
   SBMLDocument* d = reader.readSBMLFromString(sbml);
-  if (d->getNumErrors()) {
+  if (d->getNumErrors(LIBSBML_SEV_ERROR)) {
     g_registry.SetError("elideMetaIdsFromSBMLstring: Could not read sbml from string");
     return sbml;
   }

@@ -77,6 +77,7 @@ void AntimonyConstraint::SetFormula(Formula* formula, bool onlyformula)
 {
   m_formula = *formula;
 #ifndef NSBML
+  calculateFluxBounds();
   if (onlyformula) return;
   ASTNode* astnode = parseStringToASTNode(formula->ToSBMLString());
   SetWithASTNode(astnode);
@@ -406,8 +407,9 @@ void AntimonyConstraint::calculateASTNode()
   if (m_type != constNONE) {
     if (rhs->getType() == ConstraintTypeToASTType(m_type) && rhs->getType() != AST_RELATIONAL_NEQ) {
       if (IsSetInitialValue()) {
-        ASTNode* val = new ASTNode(AST_REAL);
-        val->setValue(GetInitialValue());
+        stringstream valstr;
+        valstr << GetInitialValue();
+        ASTNode* val = parseStringToASTNode(valstr.str());
         rhs->insertChild(0, val);
       }
       else if (IsSetInitialVariable()) {
@@ -424,8 +426,9 @@ void AntimonyConstraint::calculateASTNode()
       m_astnode = new ASTNode(AST_LOGICAL_AND);
       ASTNode* newfirst = new ASTNode(ConstraintTypeToASTType(m_type));
       if (IsSetInitialValue()) {
-        ASTNode* val = new ASTNode(AST_REAL);
-        val->setValue(GetInitialValue());
+        stringstream valstr;
+        valstr << GetInitialValue();
+        ASTNode* val = parseStringToASTNode(valstr.str());
         newfirst->addChild(val);
       }
       else if (IsSetInitialVariable()) {
@@ -443,8 +446,9 @@ void AntimonyConstraint::calculateASTNode()
     else {
       m_astnode = new ASTNode(ConstraintTypeToASTType(m_type));
       if (IsSetInitialValue()) {
-        ASTNode* val = new ASTNode(AST_REAL);
-        val->setValue(GetInitialValue());
+        stringstream valstr;
+        valstr << GetInitialValue();
+        ASTNode* val = parseStringToASTNode(valstr.str());
         m_astnode->addChild(val);
       }
       else if (IsSetInitialVariable()) {
@@ -491,6 +495,10 @@ void setOneHalf(const Formula& formula, bool isLower, FbcReactionPlugin* fbrxn, 
         ss << formula.GetDouble();
         string id = "fb_" + ss.str();
         replace(id.begin(), id.end(), '.', '_');
+        size_t neg = id.find('-');
+        if (neg != string::npos) {
+            id.replace(neg, 1, "neg_");
+        }
         Parameter* param = model->getParameter(id);
         if (param == NULL) {
             param = model->createParameter();
@@ -553,9 +561,10 @@ bool AntimonyConstraint::calculateFluxBounds()
 {
   if (!m_rxnId.empty()) {
     //Already calculated
-    return true;
+    return m_rxnId != "--";
   }
   if (m_type == constNEQ) {
+    m_rxnId = "--";
     return false;
   }
   if (m_astnode == NULL) {
@@ -563,96 +572,123 @@ bool AntimonyConstraint::calculateFluxBounds()
   }
   if (m_astnode == NULL) {
     assert(false);
+    m_rxnId = "--";
     return false;
   }
   unsigned int numchildren = m_astnode->getNumChildren();
   ASTNodeType_t asttype = m_astnode->getType();
   Module* mod = g_registry.GetModule(m_module);
   if (m_astnode->isRelational()
-    && asttype != AST_RELATIONAL_NEQ
-    && numchildren >= 2 && numchildren <= 3) {
-    const ASTNode* c1 = m_astnode->getChild(0);
-    const ASTNode* c2 = m_astnode->getChild(1);
-    if (mod==NULL) {
-      assert(false);
-      return false;
-    }
-    if (numchildren == 3) {
-      //c2 must be a reaction ID.
-      if (c2->getType() != AST_NAME){
-        return false;
+      && asttype != AST_RELATIONAL_NEQ
+      && numchildren >= 2 && numchildren <= 3) {
+      const ASTNode* c1 = m_astnode->getChild(0);
+      const ASTNode* c2 = m_astnode->getChild(1);
+      if (mod == NULL) {
+          assert(false);
+          m_rxnId = "--";
+          return false;
       }
-      string id = c2->getName();
-      if (!IsReactionID(id)) {
-        return false;
+      if (numchildren == 3) {
+          //c2 must be a reaction ID.
+          if (c2->getType() != AST_NAME) {
+              m_rxnId = "--";
+              return false;
+          }
+          string id = c2->getName();
+          if (!IsReactionID(id)) {
+              m_rxnId = "--";
+              return false;
+          }
+          //c2 is a reaction id!  Store, and set c1 and c2 as lower/upper bounds
+          m_rxnId = id;
+          const ASTNode* c3 = m_astnode->getChild(2);
+          std::string c1str = parseASTNodeToString(c1);
+          std::string c3str = parseASTNodeToString(c3);
+          if (asttype == AST_RELATIONAL_GEQ || asttype == AST_RELATIONAL_GT) {
+              setFormulaWithString(c1str, &m_fbUpper, mod);
+              setFormulaWithString(c3str, &m_fbLower, mod);
+          }
+          else if (asttype == AST_RELATIONAL_LEQ || asttype == AST_RELATIONAL_LT) {
+              setFormulaWithString(c1str, &m_fbLower, mod);
+              setFormulaWithString(c3str, &m_fbUpper, mod);
+          }
+          else if (asttype == AST_RELATIONAL_EQ) {
+              setFormulaWithString(c1str, &m_fbLower, mod);
+              setFormulaWithString(c3str, &m_fbUpper, mod);
+          }
+          return true;
       }
-      //c2 is a reaction id!  Store, and set c1 and c2 as lower/upper bounds
-      m_rxnId = id;
-      const ASTNode* c3 = m_astnode->getChild(2);
-      std::string c1str = parseASTNodeToString(c1);
-      std::string c3str = parseASTNodeToString(c3);
+      //Otherwise there's just two children:
+      assert(c1 != NULL);
+      assert(c2 != NULL);
+      bool correct = false;
+      std::string c_str;
+      if (c2->getType() == AST_NAME && IsReactionID(c2->getName())) {
+          m_rxnId = c2->getName();
+          c_str = parseASTNodeToString(c1);
+          correct = true;
+      }
+      else if (c1->getType() == AST_NAME && IsReactionID(c1->getName())) {
+          m_rxnId = c1->getName();
+          c_str = parseASTNodeToString(c2);
+          correct = true;
+          if (asttype == AST_RELATIONAL_GEQ || asttype == AST_RELATIONAL_GT) {
+              asttype = AST_RELATIONAL_LT;
+          }
+          else if (asttype == AST_RELATIONAL_LEQ || asttype == AST_RELATIONAL_LT) {
+              asttype = AST_RELATIONAL_GT;
+          }
+      }
+      if (!correct) {
+          assert(false);
+          m_rxnId = "--";
+          return false;
+      }
       if (asttype == AST_RELATIONAL_GEQ || asttype == AST_RELATIONAL_GT) {
-          setFormulaWithString(c1str, &m_fbUpper, mod);
-          setFormulaWithString(c3str, &m_fbLower, mod);
+          setFormulaWithString(c_str, &m_fbUpper, mod);
+      }
+      else if (asttype == AST_RELATIONAL_LEQ || asttype == AST_RELATIONAL_LT) {
+          setFormulaWithString(c_str, &m_fbLower, mod);
+      }
+      else if (asttype == AST_RELATIONAL_EQ) {
+          setFormulaWithString(c_str, &m_fbUpper, mod);
+          setFormulaWithString(c_str, &m_fbLower, mod);
       }
       else {
-          setFormulaWithString(c1str, &m_fbLower, mod);
-          setFormulaWithString(c3str, &m_fbUpper, mod);
+          //Not a flux bound.  I think.
+          m_rxnId = "--";
+          return false;
       }
       return true;
-    }
-    //Otherwise there's just two children:
-    assert(c1 != NULL);
-    assert(c2 != NULL);
-    if (c2->getType() == AST_NAME && IsReactionID(c2->getName())) {
-        m_rxnId = c2->getName();
-        std::string c1str = parseASTNodeToString(c1);
-        if (asttype == AST_RELATIONAL_GEQ || asttype == AST_RELATIONAL_GT) {
-            setFormulaWithString(c1str, &m_fbUpper, mod);
-        }
-        else {
-            setFormulaWithString(c1str, &m_fbLower, mod);
-        }
-        return true;
-    }
-    else if (c1->getType() == AST_NAME && IsReactionID(c1->getName())) {
-        m_rxnId = c1->getName();
-        std::string c2str = parseASTNodeToString(c2);
-        if (asttype == AST_RELATIONAL_GEQ || asttype == AST_RELATIONAL_GT) {
-            setFormulaWithString(c2str, &m_fbLower, mod);
-        }
-        else {
-            setFormulaWithString(c2str, &m_fbUpper, mod);
-        }
-        return true;
-    }
-    else {
-      //Not a flux bound.  I think.
-      return false;
-    }
   }
   if (m_astnode->getType() == AST_LOGICAL_AND && m_astnode->getNumChildren()==2) {
     const ASTNode* c1 = m_astnode->getChild(0);
     const ASTNode* c2 = m_astnode->getChild(1);
     if (!c1->isRelational() || !c2->isRelational()) {
-      return false;
+        m_rxnId = "--";
+        return false;
     }
     ASTNodeType_t c1type = c1->getType();
     ASTNodeType_t c2type = c2->getType();
     if (c1type == AST_RELATIONAL_NEQ || c2type == AST_RELATIONAL_NEQ) {
-      return false;
+        m_rxnId = "--";
+        return false;
     }
     if (!areCompatible(c1type, c2type)) {
+        m_rxnId = "--";
         return false;
     }
     if (c1->getNumChildren() != 2 || c2->getNumChildren() != 2) {
+        m_rxnId = "--";
         return false;
     }
     if (c1->getChild(1)->getType() != AST_NAME || c2->getChild(0)->getType() != AST_NAME) {
+        m_rxnId = "--";
         return false;
     }
     string id = c1->getChild(1)->getName();
-    if (id != c1->getChild(0)->getName()) {
+    if (id != c2->getChild(0)->getName()) {
+        m_rxnId = "--";
         return false;
     }
     //It's what we hoped it was:
@@ -670,6 +706,11 @@ bool AntimonyConstraint::calculateFluxBounds()
     return true;
   }
   return false;
+}
+
+bool AntimonyConstraint::isFluxBound() const
+{
+    return !(m_rxnId == "--");
 }
 
 bool AntimonyConstraint::IsReactionID(const string& rxnid) const

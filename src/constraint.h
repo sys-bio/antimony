@@ -63,6 +63,7 @@ public:
   const libsbml::ASTNode* getASTNode() const;
 #ifdef LIBSBML_HAS_PACKAGE_FBC
   bool calculateFluxBounds();
+  bool isFluxBound() const;
   void addFluxBounds(libsbml::Model* model) const;
   bool IsReactionID(const std::string& rxnid) const;
   void SetLowerFBFormula(Variable* var);

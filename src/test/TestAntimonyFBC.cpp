@@ -30,7 +30,7 @@ void compareFBCAnt(const string& base)
   string filename = dir + "fbc/" + base + ".txt";
   long ret = loadAntimonyFile(filename.c_str());
   fail_unless(ret != -1);
-  char* atosbml = getCompSBMLString(NULL);
+  char* atosbml = getSBMLString(NULL);
   fail_unless(atosbml != NULL);
 
   string sbmlfile = dir + "fbc/" + base + ".xml";
@@ -44,41 +44,6 @@ void compareFBCAnt(const string& base)
 }
 
 void compareFBCSBML(const string& base)
-{
-  clearPreviousLoads();
-  g_registry.SetCC("__");
-  // load document
-  string dir(TestDataDirectory);
-
-  string filename = dir + "fbc/" + base + ".txt";
-  long ret = loadAntimonyFile(filename.c_str());
-  fail_unless(ret != -1);
-  char* matching = getAntimonyString(NULL);
-  fail_unless(matching != NULL);
-
-  string sbmlfile = dir + "fbc/" + base + ".xml";
-  ret = loadSBMLFile(sbmlfile.c_str());
-  fail_unless(ret != -1);
-  char* sbml2ant = getAntimonyString(NULL);
-
-  fail_unless(string(sbml2ant) == string(matching));
-
-  //And check the round-tripped version:
-  ret = loadAntimonyString(sbml2ant);
-  fail_unless(ret != -1);
-  char* sbmlrt = getCompSBMLString(NULL);
-  string roundtrip = dir + base + ".xml";
-  SBMLDocument* doc = readSBMLFromFile(sbmlfile.c_str());
-  elideMetaIds(doc);
-  string sbmlmatch = writeSBMLToStdString(doc);
-
-  fail_unless(elideMetaIdsFromSBMLstring(sbmlrt) == sbmlmatch);
-
-  delete doc;
-  freeAll();
-}
-
-void compareFBCSBMLWithDifferences(const string& base)
 {
   clearPreviousLoads();
   g_registry.SetCC("__");
@@ -101,7 +66,7 @@ void compareFBCSBMLWithDifferences(const string& base)
   //And check the round-tripped version:
   ret = loadAntimonyString(sbml2ant);
   fail_unless(ret != -1);
-  char* sbmlrt = getCompSBMLString(NULL);
+  char* sbmlrt = getSBMLString(NULL);
   string roundtrip = dir + base + ".xml";
   SBMLDocument* doc = readSBMLFromFile(sbmlfile.c_str());
   elideMetaIds(doc);
@@ -220,7 +185,7 @@ END_TEST
 START_TEST (test_formula_objective)
 {
   compareFBCAnt("formula_objective");
-  compareFBCSBMLWithDifferences("formula_objective");
+  compareFBCSBML("formula_objective");
 }
 END_TEST
 
@@ -228,7 +193,7 @@ END_TEST
 START_TEST (test_formula_objective2)
 {
   compareFBCAnt("formula_objective2");
-  compareFBCSBMLWithDifferences("formula_objective2");
+  compareFBCSBML("formula_objective2");
 }
 END_TEST
 
@@ -244,7 +209,7 @@ END_TEST
 START_TEST (test_fluxes_and_objectives)
 {
   compareFBCAnt("fluxes_and_objectives");
-  compareFBCSBMLWithDifferences("fluxes_and_objectives");
+  compareFBCSBML("fluxes_and_objectives");
 }
 END_TEST
 
