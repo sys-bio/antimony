@@ -77,7 +77,6 @@ void AntimonyConstraint::SetFormula(Formula* formula, bool onlyformula)
 {
   m_formula = *formula;
 #ifndef NSBML
-  calculateFluxBounds();
   if (onlyformula) return;
   ASTNode* astnode = parseStringToASTNode(formula->ToSBMLString());
   SetWithASTNode(astnode);
@@ -531,7 +530,7 @@ void setOneHalf(const Formula& formula, bool isLower, FbcReactionPlugin* fbrxn, 
 
 void AntimonyConstraint::addFluxBounds(Model* model) const
 {
-    if (m_rxnId.empty()) {
+    if (!isFluxBound()) {
         return;
     }
     Reaction* rxn = model->getReaction(m_rxnId);
@@ -640,7 +639,6 @@ bool AntimonyConstraint::calculateFluxBounds()
           }
       }
       if (!correct) {
-          assert(false);
           m_rxnId = "--";
           return false;
       }
@@ -688,6 +686,10 @@ bool AntimonyConstraint::calculateFluxBounds()
     }
     string id = c1->getChild(1)->getName();
     if (id != c2->getChild(0)->getName()) {
+        m_rxnId = "--";
+        return false;
+    }
+    if (!IsReactionID(id)) {
         m_rxnId = "--";
         return false;
     }
