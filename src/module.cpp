@@ -870,6 +870,7 @@ void Module::AddDefaultInitialValues()
     case varConstraint:
     case varAlgebraicRule:
     case varLayoutColorEtc:
+    case varGeneProduct:
         break;
     }
   }
@@ -1323,6 +1324,7 @@ bool Module::Finalize()
           case varStoichiometry:
           case varAlgebraicRule:
           case varLayoutColorEtc:
+          case varGeneProduct:
               g_registry.SetError("Unable to add layout or render information to " + m_variables[var]->GetNameDelimitedBy(".") + ":  only species, reactions, and compartments can be visualized, and this element is of type '" + VarTypeToString(m_variables[var]->GetType()) + "'.");
               return true;
           }
@@ -1493,9 +1495,9 @@ bool Module::Finalize()
   }
 
 #ifndef NSBML
-  //Phase 6.5:  Calculate the constraints.
+  //Phase 6.5:  Calculate the constraints and other FBC elements
   for (size_t var=0; var<m_uniquevars.size(); var++) {
-    Variable* variable = m_uniquevars[var];
+    Variable* variable = m_uniquevars[var]->GetSameVariable();
     if (variable->GetType() == varConstraint) {
       variable->GetConstraint()->calculateASTNode();
 #ifdef LIBSBML_HAS_PACKAGE_FBC
@@ -1505,10 +1507,15 @@ bool Module::Finalize()
       }
 #endif
     }
+    if (variable->GetType() == varGeneProduct) {
+        m_hasFBC = true;
+        m_sbmlnamespaces.addPackageNamespace("fbc", m_fbcLevel);
+    }
   }
 
   //Phase whatever, this numbering system is broken: check the maximize function
   if (m_objective.size() > 0) {
+    m_hasFBC = true;
     Variable* var = GetVariable(m_objective)->GetSameVariable();
     if (!var->GetFormula()->IsValidObjectiveFunction()) {
       g_registry.SetError("The objective function '" + var->GetFormula()->ToDelimitedStringWithEllipses(".") + "' is not valid.  Objective functions must be the simple additive combination of reaction IDs, each optionally multiplied by a number.");
@@ -1813,6 +1820,11 @@ bool Module::AreEquivalent(return_type rtype, var_type vtype) const
             return true;
         }
         return false;
+    case allGeneProducts:
+        if (vtype == varGeneProduct) {
+            return true;
+        }
+        return false;
     }
   //This is just to to get compiler warnings if we switch vtype later, so
   // we remember to change the rest of this function:
@@ -1876,6 +1888,7 @@ bool Module::AreEquivalent(return_type rtype, bool isconst) const
   case allDeleted:
   case allConstraints:
   case allAlgebraicRules:
+  case allGeneProducts:
     return true;
   }
   assert(false); //uncaught return_type
@@ -1902,11 +1915,16 @@ string Module::OutputOnly(vector<var_type> types, string name, string indent, st
       formula_type ftype = var->GetFormulaType();
       if (form != NULL && !form->IsEllipsesOnly() && (ftype==formulaINITIAL || ftype==formulaRATE)) {
         if (OrigFormulaIsAlready(var, origmap, form)) continue;
+        if (var->GetFormula()->IsEmpty()) continue;
         if (firstone) {
           retval += "\n" + indent + "// " + name + ":\n";
           firstone = false;
         }
-        retval += indent + var->GetNameDelimitedBy(cc) + " = " + form->ToDelimitedStringWithEllipses(cc) + ";\n";
+        string name = var->GetNameDelimitedBy(cc);
+        if (type == varGeneProduct) {
+            name += ".associatedSpecies";
+        }
+        retval += indent + name + " = " + form->ToDelimitedStringWithEllipses(cc) + ";\n";
       }
       Variable* unit = var->GetUnitVariable();
       if (unit != NULL) {
@@ -2271,6 +2289,21 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
     }
   }
 
+  //Then gene products:
+  vector<string> geneproduct_names;
+  for (size_t var = 0; var < m_uniquevars.size(); var++) {
+      if (m_uniquevars[var]->GetType() == varGeneProduct) {
+          if (!OrigIsAlreadyGeneProduct(m_uniquevars[var], origmap, m_uniquevars[var]->GetFormula())) {
+              geneproduct_names.push_back(m_uniquevars[var]->GetNameDelimitedBy(cc));
+          }
+      }
+  }
+  if (geneproduct_names.size() > 0) {
+      retval += "\n" + indent + "// Gene Products:\n";
+  }
+  retval += ListIn80Cols("geneProduct", geneproduct_names, indent);
+
+
   //Then species:
   vector<var_type> types;
   types.push_back(varSpeciesUndef);
@@ -2289,6 +2322,11 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
   types.push_back(varDNA);
   types.push_back(varStoichiometry);
   retval += OutputOnly(types, "Variable initializations", indent, cc, origmap);
+
+  //The associated species of gene products:
+  types.clear();
+  types.push_back(varGeneProduct);
+  retval += OutputOnly(types, "Gene product associated species", indent, cc, origmap);
 
   //Whether things are variable or constant (if not already declared)
   vector<string> delnames;
@@ -2368,6 +2406,7 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
     case varStoichiometry:
     case varAlgebraicRule:
     case varLayoutColorEtc:
+    case varGeneProduct:
         break;
     }
   }
@@ -2888,6 +2927,14 @@ bool Module::OrigIsAlreadyUnitDef(const Variable* var, const map<const Variable*
   return (origmapiter->second.GetUnitDef()->ToStringDelimitedBy(cc) == unitdef);
 }
 
+bool Module::OrigIsAlreadyGeneProduct(const Variable* var, const map<const Variable*, Variable>& origmap, const Formula* associatedSpecies) const
+{
+    map<const Variable*, Variable >::const_iterator origmapiter = origmap.find(var);
+    if (origmapiter == origmap.end()) return false;
+    if (origmapiter->second.GetType() != varUnitDefinition) return false;
+    return (origmapiter->second.GetFormula()->Matches(associatedSpecies));
+}
+
 bool Module::OrigDisplayNameIsAlready(const Variable* var, const map<const Variable*, Variable>& origmap) const
 {
   if (var->GetDisplayName() == "") return true;
@@ -2989,6 +3036,7 @@ void Module::Convert(Variable* conv, Variable* cf, string modulename)
     case varConstraint:
     case varStoichiometry:
     case varAlgebraicRule:
+    case varGeneProduct:
       form = subvar->GetFormula();
       origform = *origsubvar->GetFormula();
       for (size_t vn=m_variablename.size() - origsubvar->GetName().size() + 1; vn > 0; vn--) {
@@ -3066,6 +3114,7 @@ void Module::ConvertTime(Variable* tcf)
     case varUncertWrapper:
     case varLayoutWrapper:
     case varLayoutColorEtc:
+    case varGeneProduct:
         break;
     }
   }
@@ -3103,6 +3152,7 @@ void Module::ConvertExtent(Variable* xcf)
     case varStoichiometry:
     case varAlgebraicRule:
     case varLayoutColorEtc:
+    case varGeneProduct:
         break;
     }
   }
@@ -3144,6 +3194,7 @@ void Module::UndoTimeExtentConversions(Variable* tcf, Variable* xcf)
     case varUncertWrapper:
     case varLayoutWrapper:
     case varLayoutColorEtc:
+    case varGeneProduct:
         break;
     }
   }

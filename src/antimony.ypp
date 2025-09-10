@@ -135,6 +135,7 @@ using namespace libsbml;
 %token  <word> FUNCTION "name of an existing function"
 %token  <word> FUNCTIONWORD "'function'"
 %token  <word> GENE "'gene'"
+%token  <word> GENEPRODUCT "'geneProduct'"
 %token  <word> GEQ ">="
 %token  <word> NEQ "!="
 %token  <word> HASWORD "'has'"
@@ -232,7 +233,9 @@ variableexportlist:
 variable:       ANTWORD {$$ = g_registry.AddVariableToCurrent($1); }
         |       variable '.' ANTWORD {$$ = $1->GetSubVariable($3);
                   if ($$ == NULL) {
-                    g_registry.SetError("'" + *($3) + "' is not a subvariable of '" + $1->GetNameDelimitedBy(".") + "'.");
+                    if (g_registry.GetError().empty()) {
+                      g_registry.SetError("'" + *($3) + "' is not a subvariable of '" + $1->GetNameDelimitedBy(".") + "'.");
+                    }
                     YYABORT;
                   }
                 }
@@ -543,6 +546,7 @@ varinitialize:  specinit { }
         |       reactioninit { }
         |       dnainit { }
         |       geneinit { }
+        |       geneProductInit { }
         |       operatorinit { }
         |       compartmentinit { }
         |       varconstinit { }
@@ -558,6 +562,9 @@ specinit:       SPECIES varmaybeis {g_registry.SetConstness(constDEFAULT); g_reg
         |       specinit ',' varmaybeis {$3->SetRegSpecVals(); if ($3->SetType(varSpeciesUndef)) YYABORT; }
         |       SPECIES '.' ANTWORD '=' formula {if (g_registry.CurrentModule()->AddSpeciesLayoutInfo($3, $5)) YYABORT;}
         ;
+
+geneProductInit:       GENEPRODUCT varmaybeis {if ($2->SetType(varGeneProduct)) YYABORT; }
+
 
 formulainit:    FORMULA varmaybeis {g_registry.SetConstness(constDEFAULT); $2->SetRegConst(); if ($2->SetType(varFormulaUndef)) YYABORT; }
         |       VARWORD FORMULA varmaybeis {g_registry.SetConstness(constVAR); $3->SetRegConst(); if ($3->SetType(varFormulaUndef)) YYABORT; }
@@ -906,6 +913,9 @@ int antimony_yylex(void)
     }
     if (CaselessStrCmp(false, word, "gene")) {
       return GENE;
+    }
+    if (CaselessStrCmp(false, word, "geneProduct")) {
+      return GENEPRODUCT;
     }
     if (CaselessStrCmp(false, word, "operator")) {
       return OPERATOR;

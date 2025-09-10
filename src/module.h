@@ -322,6 +322,7 @@ private:
   bool OrigEventIsAlready(const Variable* var, const std::map<const Variable*, Variable>& origmap, const AntimonyEvent* event) const;
   bool OrigConstraintIsAlready(const Variable* var, const std::map<const Variable*, Variable>& origmap, const AntimonyConstraint* constraint) const;
   bool OrigIsAlreadyUnitDef(const Variable* var, const std::map<const Variable*, Variable>& origmap, std::string unitdef) const;
+  bool OrigIsAlreadyGeneProduct(const Variable* var, const std::map<const Variable*, Variable>& origmap, const Formula* associatedSpecies) const;
   bool OrigDisplayNameIsAlready(const Variable* var, const std::map<const Variable*, Variable>& origmap) const;
   bool OrigMatches(const Variable* var, const std::map<const Variable*, Variable>& origmap, var_type type, const_type isconst, const Variable* comp) const;
   const Variable* GetNthConstVariableOfType(return_type rtype, size_t n, bool comp) const;

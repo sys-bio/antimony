@@ -173,6 +173,7 @@ formula_type Variable::GetFormulaType() const
   case varUncertWrapper:
   case varLayoutWrapper:
   case varLayoutColorEtc:
+  case varGeneProduct:
       return formulaINITIAL; //For lack of any other default.
   }
   assert(false); //uncaught variable type;
@@ -196,7 +197,8 @@ const Formula* Variable::GetFormula() const
   case varLayoutWrapper:
   case varStoichiometry:
   case varAlgebraicRule:
-    return &(m_valFormula);
+  case varGeneProduct:
+      return &(m_valFormula);
   case varReactionUndef:
   case varReactionGene:
   case varInteraction:
@@ -238,7 +240,8 @@ Formula* Variable::GetFormula()
   case varLayoutWrapper:
   case varStoichiometry:
   case varAlgebraicRule:
-    return &(m_valFormula);
+  case varGeneProduct:
+      return &(m_valFormula);
   case varReactionUndef:
   case varReactionGene:
   case varInteraction:
@@ -298,6 +301,7 @@ const Formula* Variable::GetInitialAssignment() const
   case varConstraint:
   case varSboTermWrapper:
   case varLayoutColorEtc:
+  case varGeneProduct:
       return &(g_registry.m_blankform);
   }
   assert(false); //uncaught type
@@ -340,6 +344,7 @@ const Formula* Variable::GetAssignmentRuleOrKineticLaw() const
   case varLayoutWrapper:
   case varLayoutColorEtc:
   case varAlgebraicRule:
+  case varGeneProduct:
       return &(g_registry.m_blankform);
   }
   assert(false); //uncaught type
@@ -382,6 +387,7 @@ Formula* Variable::GetAssignmentRuleOrKineticLaw()
   case varLayoutWrapper:
   case varLayoutColorEtc:
   case varAlgebraicRule:
+  case varGeneProduct:
       return &(g_registry.m_blankform);
   }
   assert(false); //uncaught type
@@ -519,6 +525,13 @@ Variable* Variable::GetSubVariable(const string* name)
       m_sboTermWrapper = new SboTermWrapper(this);
     return m_sboTermWrapper;
   }
+  if (name && CaselessStrCmp(true, *name, "associatedSpecies")) {
+      if (SetType(varGeneProduct)) {
+          g_registry.SetError("Unable to set the associated species of " + GetNameDelimitedBy(".") + " because it is a " + VarTypeToString(GetType()) + ", and not a gene product.");
+          return NULL;
+      }
+      return this;
+  }
   if (IsReaction(m_type)) {
       Module* mod = g_registry.GetModule(m_module);
       Variable* var = mod->GetSubVariable(name);
@@ -653,6 +666,7 @@ bool Variable::GetIsConst() const
   case varUncertWrapper:
   case varLayoutWrapper:
   case varLayoutColorEtc:
+  case varGeneProduct:
       return true;
   }
   switch(m_const) {
@@ -869,6 +883,7 @@ bool Variable::SetType(var_type newtype)
     case varLayoutWrapper:
     case varStoichiometry:
     case varAlgebraicRule:
+    case varGeneProduct:
         g_registry.SetError(error); return true;
     }
   case varFormulaUndef:
@@ -897,6 +912,12 @@ bool Variable::SetType(var_type newtype)
       if (m_valUnitDef.SetFromFormula(&m_valFormula)) return true;
       m_valFormula.Clear();
       return false;
+    case varGeneProduct:
+        m_type = newtype;
+        if (SetFormula(&m_valFormula)) {
+            return true;
+        }
+        return false;
     case varModule:
     case varStrand:
     case varSboTermWrapper:
@@ -935,6 +956,7 @@ bool Variable::SetType(var_type newtype)
     case varLayoutWrapper:
     case varStoichiometry:
     case varAlgebraicRule:
+    case varGeneProduct:
         g_registry.SetError(error); return true;
     }
   case varFormulaOperator:
@@ -961,6 +983,7 @@ bool Variable::SetType(var_type newtype)
     case varStoichiometry:
     case varLayoutWrapper:
     case varAlgebraicRule:
+    case varGeneProduct:
         g_registry.SetError(error); return true;
     }
   case varReactionGene:
@@ -987,6 +1010,7 @@ bool Variable::SetType(var_type newtype)
     case varLayoutWrapper:
     case varStoichiometry:
     case varAlgebraicRule:
+    case varGeneProduct:
         g_registry.SetError(error); return true;
     }
   case varReactionUndef:
@@ -1015,6 +1039,7 @@ bool Variable::SetType(var_type newtype)
     case varLayoutWrapper:
     case varStoichiometry:
     case varAlgebraicRule:
+    case varGeneProduct:
         g_registry.SetError(error); return true;
     }
   case varInteraction:
@@ -1041,6 +1066,7 @@ bool Variable::SetType(var_type newtype)
   case varUncertWrapper:
   case varLayoutWrapper:
   case varAlgebraicRule:
+  case varGeneProduct:
       g_registry.SetError(error); return true; //the already-identical cases handled above.
     return true;
   }
@@ -1153,6 +1179,20 @@ bool Variable::SetFormula(Formula* formula, bool isObjective)
   case varSboTermWrapper:
     assert(false); //Should be handled by overridden function.
     break;
+  case varGeneProduct:
+      if (!(formula->IsSingleVariable() || formula->IsEmpty())) {
+          g_registry.SetError("Cannot set the associated species of '" + GetNameDelimitedBy(".") + "' to be " + formula->ToDelimitedStringWithEllipses(".") + ".  The associated species must be the ID of a species in the model.");
+          return true;
+      }
+      vector<Variable*> vars = formula->GetVariables();
+      if (vars.size() == 1) {
+          Variable* spec = vars[0];
+          if (spec->SetType(varSpeciesUndef)) {
+              g_registry.SetError("Cannot set the associated species of '" + GetNameDelimitedBy(".") + "' to be " + formula->ToDelimitedStringWithEllipses(".") + ", because that variable is not a species.");
+              return true;
+          }
+      }
+      m_valFormula = *formula;
   }
 #ifndef NSBML
   if (!isObjective) {
@@ -1575,6 +1615,12 @@ bool Variable::SetIsConst(bool constant)
       return true;
     }
     break;
+  case varGeneProduct:
+      if (!constant) {
+          g_registry.SetError(error + ", as 'constantness' is undefined for gene products.");
+          return true;
+      }
+      break;
   case varDeleted:
     g_registry.SetError(error + ", as the variable was already deleted.");
     break;
@@ -1661,7 +1707,8 @@ bool Variable::SetSuperCompartment(Variable* var, var_type supertype)
   case varStoichiometry:
   case varAlgebraicRule:
   case varLayoutColorEtc:
-    assert(false); // Those things don't have components
+  case varGeneProduct:
+      assert(false); // Those things don't have components
     return false;
   case varStrand:
     //Strands take precedence over everything else
@@ -1712,7 +1759,8 @@ void Variable::SetComponentCompartments(bool frommodule)
   case varStoichiometry:
   case varAlgebraicRule:
   case varLayoutColorEtc:
-    return; //No components to set
+  case varGeneProduct:
+      return; //No components to set
   case varReactionUndef:
   case varReactionGene:
   case varInteraction:
@@ -1928,7 +1976,8 @@ bool Variable::DeleteFromSubmodel(Variable* deletedvar)
   case varLayoutWrapper:
   case varConstraint:
   case varLayoutColorEtc:
-    //These types can't have rules to them.
+  case varGeneProduct:
+      //These types can't have rules to them.
     break;
   }
 
@@ -2508,7 +2557,8 @@ bool Variable::AllowedInFormulas() const
   case varLayoutWrapper:
   case varConstraint:
   case varAlgebraicRule:
-    return false;
+  case varGeneProduct:
+      return false;
 
   }
   assert(false); //Uncaught type

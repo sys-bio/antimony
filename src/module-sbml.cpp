@@ -8,6 +8,7 @@
 #include "sbmlnetwork/features/colors/libsbmlnetwork_colors.h"
 #include "sbmlnetwork/features/styles/libsbmlnetwork_styles.h"
 #include "sbml/packages/layout/extension/LayoutModelPlugin.h"
+#include "sbml/packages/fbc/extension/FbcModelPlugin.h"
 
 using namespace libsbml;
 
@@ -243,6 +244,7 @@ void Module::FindOrCreateLocalVersionOf(const Variable* var, libsbml::Model* sbm
   case varStoichiometry:
   case varAlgebraicRule:
   case varLayoutColorEtc:
+  case varGeneProduct:
       assert(false); //Unhandled type
     break;
   }
@@ -777,570 +779,569 @@ void SynchronizeLocalAndGlobal(const vector<string>& paramname, const vector<str
 
 void Module::LoadSBML(Model* sbml)
 {
-  if (sbml == NULL) {
-    return;
-  }
-  //Some models use an old 'rateOf' function, which we can update to the l3v2 version.
-  UpdateRateOf(sbml);
+    if (sbml == NULL) {
+        return;
+    }
+    //Some models use an old 'rateOf' function, which we can update to the l3v2 version.
+    UpdateRateOf(sbml);
 
-  //Some SBML-OK names are not OK in Antimony
-  FixNames(sbml);
-  if(sbml->isSetName())
-    SetDisplayName(sbml->getName());
-  PopulateCVTerms((SBase*)sbml);
-  ReadAnnotationFrom(sbml);
+    //Some SBML-OK names are not OK in Antimony
+    FixNames(sbml);
+    if (sbml->isSetName())
+        SetDisplayName(sbml->getName());
+    PopulateCVTerms((SBase*)sbml);
+    ReadAnnotationFrom(sbml);
 #ifdef USE_COMP
-  //Load submodels
-  const CompModelPlugin* mplugin = static_cast<const CompModelPlugin*>(sbml->getPlugin("comp"));
-  if (mplugin != NULL) {
-    for (unsigned int sm=0; sm<mplugin->getNumSubmodels(); sm++) {
-      const Submodel* submodel = mplugin->getSubmodel(sm);
-      string submodname = getNameFromSBMLObject(submodel, "submod");
-      Variable* var = AddOrFindVariable(&submodname);
-      Formula blankform;
-      if (submodel->isSetName()) {
-        var->SetDisplayName(submodel->getName());
-      }
-      var->ReadAnnotationFrom(submodel);
-      string refname = submodel->getModelRef();
-      if (g_registry.GetModule(refname)==NULL) {
-        g_registry.LoadModelFrom(refname, sbml->getSBMLDocument());
-      }
-      if (var->SetModule(&refname)) {
-        g_registry.AddWarning("Unable to find submodel " + refname + ".");
-      }
-      var->ReadAnnotationFrom(submodel);
-      for (unsigned int d=0; d<submodel->getNumDeletions(); d++) {
-        Deletion* deletion = const_cast<Deletion*>(submodel->getDeletion(d));
-        string delname = deletion->getId();
-        if (!delname.empty()) {
-          delname += " ";
-          }
-        SBase* target = deletion->getReferencedElement();
-        if (target != NULL) {
-          SBase* submodparent = target->getAncestorOfType(SBML_COMP_SUBMODEL, "comp");
-          vector<string> targetname;
-          while (submodparent != NULL) {
-            targetname.insert(targetname.begin(), submodparent->getId());
-            submodparent = submodparent->getAncestorOfType(SBML_COMP_SUBMODEL, "comp");
-          }
-          vector<string> delparentname = targetname;
-          vector<string> paramname = targetname;
-          SBase* typeparent = target->getAncestorOfType(SBML_EVENT);
-          Event* event = static_cast<Event*>(typeparent);
-          typeparent = target->getAncestorOfType(SBML_REACTION);
-          Reaction* reaction = static_cast<Reaction*>(typeparent);
-          SpeciesReference* sr = static_cast<SpeciesReference*>(target);
-          Variable* deletedvar = NULL;
-          Variable* origparam = NULL;
-          Variable* newparam = NULL;
-          set<pair<vector<string>, deletion_type> > noret;
-          size_t numvars = m_variables.size();
-          switch (target->getTypeCode()) {
-          case SBML_INITIAL_ASSIGNMENT:
-            paramname.push_back(target->getId());
-            var->AddDeletion(paramname, delInitialAssignment);
-            deletedvar = GetVariable(paramname);
-            deletedvar->SetFormula(&blankform);
-            break; 
-          case SBML_RATE_RULE:
-            paramname.push_back(target->getId());
-            var->AddDeletion(paramname, delRateRule);
-            deletedvar = GetVariable(paramname);
-            deletedvar->SetRateRule(&blankform);
-            break; 
-          case SBML_ASSIGNMENT_RULE:
-            paramname.push_back(target->getId());
-            var->AddDeletion(paramname, delAssignmentRule);
-            deletedvar = GetVariable(paramname);
-            deletedvar->SetAssignmentRule(&blankform);
-            break; 
-          case SBML_SPECIES:
-          case SBML_COMPARTMENT:
-          case SBML_PARAMETER:
-          case SBML_REACTION:
-          case SBML_EVENT:
-          case SBML_UNIT_DEFINITION:
-          case SBML_COMP_SUBMODEL:
-          case SBML_ALGEBRAIC_RULE:
-              if (!target->isSetId()) {
-              g_registry.AddWarning("Unable to process deletion " + delname + "from submodel " + submodname + " in model " + GetModuleName() + ", because the target " + SBMLTypeCode_toString(target->getTypeCode(), target->getPackageName().c_str()) + " element did not have an ID.");
-              continue;
+    //Load submodels
+    const CompModelPlugin* mplugin = static_cast<const CompModelPlugin*>(sbml->getPlugin("comp"));
+    if (mplugin != NULL) {
+        for (unsigned int sm = 0; sm < mplugin->getNumSubmodels(); sm++) {
+            const Submodel* submodel = mplugin->getSubmodel(sm);
+            string submodname = getNameFromSBMLObject(submodel, "submod");
+            Variable* var = AddOrFindVariable(&submodname);
+            Formula blankform;
+            if (submodel->isSetName()) {
+                var->SetDisplayName(submodel->getName());
             }
-            targetname.push_back(target->getId());
-            deletedvar = GetVariable(targetname);
-            if (deletedvar == NULL) {
-              assert(targetname[targetname.size()-1] == DEFAULTCOMP);
-              break;
+            var->ReadAnnotationFrom(submodel);
+            string refname = submodel->getModelRef();
+            if (g_registry.GetModule(refname) == NULL) {
+                g_registry.LoadModelFrom(refname, sbml->getSBMLDocument());
             }
-            AddDeletion(deletedvar);
-            deletedvar->ReadAnnotationFrom(deletion);
-            if (target->getTypeCode() == SBML_UNIT_DEFINITION) {
-              deletedvar->SetIsDeletedUnit(true);
+            if (var->SetModule(&refname)) {
+                g_registry.AddWarning("Unable to find submodel " + refname + ".");
             }
-            break;
-          case SBML_PRIORITY:
-          case SBML_DELAY:
-          case SBML_EVENT_ASSIGNMENT:
-          case SBML_TRIGGER:
-            //Delete the target, then re-calculate the event:
-            assert(event != NULL);
-            if (!event->isSetId()) {
-              g_registry.AddWarning("Unable to process deletion " + delname + "from submodel " + submodname + " in model " + GetModuleName() + ", because the Event parent of the deleted " + SBMLTypeCode_toString(target->getTypeCode(), "core") + " element did not have an ID, making it impossible for Antimony to determine which event was being modified.");
-              continue;
-            }
-            targetname.push_back(event->getId());
-            deletedvar = GetVariable(targetname);
-            assert(deletedvar != NULL);
-            switch(target->getTypeCode()) {
-            case SBML_PRIORITY:
-              var->AddDeletion(targetname, delEventPriority);
-              break;
-            case SBML_DELAY:
-              var->AddDeletion(targetname, delEventDelay);
-              break;
-            case SBML_EVENT_ASSIGNMENT:
-              targetname.push_back(target->getId());
-              var->AddDeletion(targetname, delEventAssignment);
-              break;
-            case SBML_TRIGGER:
-              break;
-            default:
-              break;
-            }
-            target->removeFromParentAndDelete();
-            SetVarWithEvent(deletedvar, event, this, delparentname);
-            while (m_variables.size() > numvars) {
-              //We added variables from the strings in the event, but they are superfluous; take them back out.
-              m_variables.pop_back();
-            }
-            break;
-          case SBML_CONSTRAINT:
-            g_registry.AddWarning("Unable to process deletion " + delname + "from submodel " + submodname + " in model " + GetModuleName() + ", because Constraints do not have IDs in SBML.");
-            break;
-          case SBML_FUNCTION_DEFINITION:
-            g_registry.AddWarning("Unable to process deletion " + delname + "from submodel " + submodname + " in model " + GetModuleName() + ".  Function definitions are global in Antimony, not local, and therefore cannot be deleted from submodels.");
-            break;
-          case SBML_LOCAL_PARAMETER:
-            assert(reaction != NULL);
-            if (!reaction->isSetId()) {
-              g_registry.AddWarning("Unable to process deletion " + delname + "from submodel " + submodname + " in model " + GetModuleName() + ", because the Reaction parent of the deleted Local Parameter did not have an ID, making it impossible for Antimony to determine which event was being modified.");
-              continue;
-            }
-            paramname.push_back(reaction->getId());
-            deletedvar = GetVariable(paramname);
-            assert(deletedvar != NULL);
-            paramname = targetname;
-            paramname.push_back(target->getId());
-            targetname.push_back(GetNewIDForLocalParameter(target));
-            SynchronizeLocalAndGlobal(paramname, targetname, this);
-            break;
-          case SBML_SPECIES_REFERENCE:
-            assert(reaction != NULL);
-            if (!reaction->isSetId()) {
-              g_registry.AddWarning("Unable to process deletion " + delname + "from submodel " + submodname + " in model " + GetModuleName() + ", because the Reaction parent of the deleted species reference did not have an ID, making it impossible for Antimony to determine which event was being modified.");
-              continue;
-            }
-            paramname.push_back(reaction->getId());
-            deletedvar = GetVariable(paramname);
-            assert(deletedvar != NULL);
-            paramname = targetname;
-            paramname.push_back(sr->getSpecies());
-            origparam = GetVariable(paramname);
-            if (deletedvar->GetType() == varDeleted) {
-              //Don't need to delete a child of a deleted thing
-              break;
-            }
-            deletedvar->GetReaction()->ClearReferencesTo(origparam, &(var->m_deletions));
-            break;
-          case SBML_KINETIC_LAW:
-            assert(reaction != NULL);
-            if (!reaction->isSetId()) {
-              g_registry.AddWarning("Unable to process deletion " + delname + "from submodel " + submodname + " in model " + GetModuleName() + ", because the Reaction parent of the deleted Local Parameter did not have an ID, making it impossible for Antimony to determine which event was being modified.");
-              continue;
-            }
-            paramname.push_back(reaction->getId());
-            deletedvar = GetVariable(paramname);
-            assert(deletedvar != NULL);
-            deletedvar->GetReaction()->GetFormula()->Clear();
-            var->AddDeletion(paramname, delKineticLaw);
-            break;
-          case SBML_MODIFIER_SPECIES_REFERENCE:
-            assert(reaction != NULL);
-            paramname.push_back(reaction->getId());
-            paramname.push_back(sr->getSpecies());
-            var->AddDeletion(paramname, delModifier);
-            paramname.pop_back();
-            paramname.pop_back();
-            if (reaction->isSetKineticLaw()) {
-              //Antimony is going to re-create the modifier species references, so we don't need to do anything.
-              break;
-            }
-            //Otherwise, we tried to create an interaction for it based on the name.
-            if (target->isSetName()) {
-              paramname.push_back(target->getName());
-              deletedvar = GetVariable(paramname);
-              if (deletedvar != NULL) {
-                if (deletedvar->GetType() == varInteraction) {
-                  AddDeletion(deletedvar);
-                  deletedvar->ReadAnnotationFrom(deletion);
-                  break;
+            var->ReadAnnotationFrom(submodel);
+            for (unsigned int d = 0; d < submodel->getNumDeletions(); d++) {
+                Deletion* deletion = const_cast<Deletion*>(submodel->getDeletion(d));
+                string delname = deletion->getId();
+                if (!delname.empty()) {
+                    delname += " ";
                 }
-                if (deletedvar->GetType() == varDeleted) break;
-                g_registry.AddWarning("Unable to process deletion " + delname + "from submodel " + submodname + " in model " + GetModuleName() + ".  Modifier species references are translated as 'interactions' in Antimony, but this reference was not able to be discovered.  If this problem persists, try setting the 'name' attribute on the modifier, which Antimony can then use to name the interaction.");
-              }
+                SBase* target = deletion->getReferencedElement();
+                if (target != NULL) {
+                    SBase* submodparent = target->getAncestorOfType(SBML_COMP_SUBMODEL, "comp");
+                    vector<string> targetname;
+                    while (submodparent != NULL) {
+                        targetname.insert(targetname.begin(), submodparent->getId());
+                        submodparent = submodparent->getAncestorOfType(SBML_COMP_SUBMODEL, "comp");
+                    }
+                    vector<string> delparentname = targetname;
+                    vector<string> paramname = targetname;
+                    SBase* typeparent = target->getAncestorOfType(SBML_EVENT);
+                    Event* event = static_cast<Event*>(typeparent);
+                    typeparent = target->getAncestorOfType(SBML_REACTION);
+                    Reaction* reaction = static_cast<Reaction*>(typeparent);
+                    SpeciesReference* sr = static_cast<SpeciesReference*>(target);
+                    Variable* deletedvar = NULL;
+                    Variable* origparam = NULL;
+                    Variable* newparam = NULL;
+                    set<pair<vector<string>, deletion_type> > noret;
+                    size_t numvars = m_variables.size();
+                    switch (target->getTypeCode()) {
+                    case SBML_INITIAL_ASSIGNMENT:
+                        paramname.push_back(target->getId());
+                        var->AddDeletion(paramname, delInitialAssignment);
+                        deletedvar = GetVariable(paramname);
+                        deletedvar->SetFormula(&blankform);
+                        break;
+                    case SBML_RATE_RULE:
+                        paramname.push_back(target->getId());
+                        var->AddDeletion(paramname, delRateRule);
+                        deletedvar = GetVariable(paramname);
+                        deletedvar->SetRateRule(&blankform);
+                        break;
+                    case SBML_ASSIGNMENT_RULE:
+                        paramname.push_back(target->getId());
+                        var->AddDeletion(paramname, delAssignmentRule);
+                        deletedvar = GetVariable(paramname);
+                        deletedvar->SetAssignmentRule(&blankform);
+                        break;
+                    case SBML_SPECIES:
+                    case SBML_COMPARTMENT:
+                    case SBML_PARAMETER:
+                    case SBML_REACTION:
+                    case SBML_EVENT:
+                    case SBML_UNIT_DEFINITION:
+                    case SBML_COMP_SUBMODEL:
+                    case SBML_ALGEBRAIC_RULE:
+                        if (!target->isSetId()) {
+                            g_registry.AddWarning("Unable to process deletion " + delname + "from submodel " + submodname + " in model " + GetModuleName() + ", because the target " + SBMLTypeCode_toString(target->getTypeCode(), target->getPackageName().c_str()) + " element did not have an ID.");
+                            continue;
+                        }
+                        targetname.push_back(target->getId());
+                        deletedvar = GetVariable(targetname);
+                        if (deletedvar == NULL) {
+                            assert(targetname[targetname.size() - 1] == DEFAULTCOMP);
+                            break;
+                        }
+                        AddDeletion(deletedvar);
+                        deletedvar->ReadAnnotationFrom(deletion);
+                        if (target->getTypeCode() == SBML_UNIT_DEFINITION) {
+                            deletedvar->SetIsDeletedUnit(true);
+                        }
+                        break;
+                    case SBML_PRIORITY:
+                    case SBML_DELAY:
+                    case SBML_EVENT_ASSIGNMENT:
+                    case SBML_TRIGGER:
+                        //Delete the target, then re-calculate the event:
+                        assert(event != NULL);
+                        if (!event->isSetId()) {
+                            g_registry.AddWarning("Unable to process deletion " + delname + "from submodel " + submodname + " in model " + GetModuleName() + ", because the Event parent of the deleted " + SBMLTypeCode_toString(target->getTypeCode(), "core") + " element did not have an ID, making it impossible for Antimony to determine which event was being modified.");
+                            continue;
+                        }
+                        targetname.push_back(event->getId());
+                        deletedvar = GetVariable(targetname);
+                        assert(deletedvar != NULL);
+                        switch (target->getTypeCode()) {
+                        case SBML_PRIORITY:
+                            var->AddDeletion(targetname, delEventPriority);
+                            break;
+                        case SBML_DELAY:
+                            var->AddDeletion(targetname, delEventDelay);
+                            break;
+                        case SBML_EVENT_ASSIGNMENT:
+                            targetname.push_back(target->getId());
+                            var->AddDeletion(targetname, delEventAssignment);
+                            break;
+                        case SBML_TRIGGER:
+                            break;
+                        default:
+                            break;
+                        }
+                        target->removeFromParentAndDelete();
+                        SetVarWithEvent(deletedvar, event, this, delparentname);
+                        while (m_variables.size() > numvars) {
+                            //We added variables from the strings in the event, but they are superfluous; take them back out.
+                            m_variables.pop_back();
+                        }
+                        break;
+                    case SBML_CONSTRAINT:
+                        g_registry.AddWarning("Unable to process deletion " + delname + "from submodel " + submodname + " in model " + GetModuleName() + ", because Constraints do not have IDs in SBML.");
+                        break;
+                    case SBML_FUNCTION_DEFINITION:
+                        g_registry.AddWarning("Unable to process deletion " + delname + "from submodel " + submodname + " in model " + GetModuleName() + ".  Function definitions are global in Antimony, not local, and therefore cannot be deleted from submodels.");
+                        break;
+                    case SBML_LOCAL_PARAMETER:
+                        assert(reaction != NULL);
+                        if (!reaction->isSetId()) {
+                            g_registry.AddWarning("Unable to process deletion " + delname + "from submodel " + submodname + " in model " + GetModuleName() + ", because the Reaction parent of the deleted Local Parameter did not have an ID, making it impossible for Antimony to determine which event was being modified.");
+                            continue;
+                        }
+                        paramname.push_back(reaction->getId());
+                        deletedvar = GetVariable(paramname);
+                        assert(deletedvar != NULL);
+                        paramname = targetname;
+                        paramname.push_back(target->getId());
+                        targetname.push_back(GetNewIDForLocalParameter(target));
+                        SynchronizeLocalAndGlobal(paramname, targetname, this);
+                        break;
+                    case SBML_SPECIES_REFERENCE:
+                        assert(reaction != NULL);
+                        if (!reaction->isSetId()) {
+                            g_registry.AddWarning("Unable to process deletion " + delname + "from submodel " + submodname + " in model " + GetModuleName() + ", because the Reaction parent of the deleted species reference did not have an ID, making it impossible for Antimony to determine which event was being modified.");
+                            continue;
+                        }
+                        paramname.push_back(reaction->getId());
+                        deletedvar = GetVariable(paramname);
+                        assert(deletedvar != NULL);
+                        paramname = targetname;
+                        paramname.push_back(sr->getSpecies());
+                        origparam = GetVariable(paramname);
+                        if (deletedvar->GetType() == varDeleted) {
+                            //Don't need to delete a child of a deleted thing
+                            break;
+                        }
+                        deletedvar->GetReaction()->ClearReferencesTo(origparam, &(var->m_deletions));
+                        break;
+                    case SBML_KINETIC_LAW:
+                        assert(reaction != NULL);
+                        if (!reaction->isSetId()) {
+                            g_registry.AddWarning("Unable to process deletion " + delname + "from submodel " + submodname + " in model " + GetModuleName() + ", because the Reaction parent of the deleted Local Parameter did not have an ID, making it impossible for Antimony to determine which event was being modified.");
+                            continue;
+                        }
+                        paramname.push_back(reaction->getId());
+                        deletedvar = GetVariable(paramname);
+                        assert(deletedvar != NULL);
+                        deletedvar->GetReaction()->GetFormula()->Clear();
+                        var->AddDeletion(paramname, delKineticLaw);
+                        break;
+                    case SBML_MODIFIER_SPECIES_REFERENCE:
+                        assert(reaction != NULL);
+                        paramname.push_back(reaction->getId());
+                        paramname.push_back(sr->getSpecies());
+                        var->AddDeletion(paramname, delModifier);
+                        paramname.pop_back();
+                        paramname.pop_back();
+                        if (reaction->isSetKineticLaw()) {
+                            //Antimony is going to re-create the modifier species references, so we don't need to do anything.
+                            break;
+                        }
+                        //Otherwise, we tried to create an interaction for it based on the name.
+                        if (target->isSetName()) {
+                            paramname.push_back(target->getName());
+                            deletedvar = GetVariable(paramname);
+                            if (deletedvar != NULL) {
+                                if (deletedvar->GetType() == varInteraction) {
+                                    AddDeletion(deletedvar);
+                                    deletedvar->ReadAnnotationFrom(deletion);
+                                    break;
+                                }
+                                if (deletedvar->GetType() == varDeleted) break;
+                                g_registry.AddWarning("Unable to process deletion " + delname + "from submodel " + submodname + " in model " + GetModuleName() + ".  Modifier species references are translated as 'interactions' in Antimony, but this reference was not able to be discovered.  If this problem persists, try setting the 'name' attribute on the modifier, which Antimony can then use to name the interaction.");
+                            }
+                        }
+                    default:
+                        //From core:
+                        /*
+                          SBML_UNIT
+                          SBML_LISTOF
+                        */
+                        //var = AddOrFindVariable(&delname);
+                        g_registry.AddWarning("Unable to process deletion " + delname + "from submodel " + submodname + " in model " + GetModuleName() + ".  Deletions of " + SBMLTypeCode_toString(target->getTypeCode(), target->getPackageName().c_str()) + " elements have not been added as a concept in Antimony.");
+                        break;
+                    }
+                }
             }
-          default:
-            //From core:
-            /*
-              SBML_UNIT 	
-              SBML_LISTOF
-            */
-            //var = AddOrFindVariable(&delname);
-            g_registry.AddWarning("Unable to process deletion " + delname + "from submodel " + submodname + " in model " + GetModuleName() + ".  Deletions of " + SBMLTypeCode_toString(target->getTypeCode(), target->getPackageName().c_str()) + " elements have not been added as a concept in Antimony.");
-            break;
-          }
+            if (submodel->isSetTimeConversionFactor()) {
+                string tcf = submodel->getTimeConversionFactor();
+                Variable* tcfvar = AddOrFindVariable(&tcf);
+                var->SetTimeConversionFactor(tcfvar);
+            }
+            if (submodel->isSetExtentConversionFactor()) {
+                string xcf = submodel->getExtentConversionFactor();
+                Variable* xcfvar = AddOrFindVariable(&xcf);
+                var->SetExtentConversionFactor(xcfvar);
+            }
         }
-      }
-      if (submodel->isSetTimeConversionFactor()) {
-        string tcf = submodel->getTimeConversionFactor();
-        Variable* tcfvar = AddOrFindVariable(&tcf);
-        var->SetTimeConversionFactor(tcfvar);
-      }
-      if (submodel->isSetExtentConversionFactor()) {
-        string xcf = submodel->getExtentConversionFactor();
-        Variable* xcfvar = AddOrFindVariable(&xcf);
-        var->SetExtentConversionFactor(xcfvar);
-      }
     }
-  }
 #endif //USE_COMP
-  //m_sbml = *sbmldoc;
-  string sbmlname = "";
+    //m_sbml = *sbmldoc;
+    string sbmlname = "";
 
-  //Function Definitions
-  //This is a bit weird, since functions exist outside of modules, since they can be used in any model.  So we have to go to the registry to save them.
-  for (unsigned int func=0; func<sbml->getNumFunctionDefinitions(); func++) {
-    const FunctionDefinition* function = sbml->getFunctionDefinition(func);
-    sbmlname = getNameFromSBMLObject(function, "_F");
-    string annot = function->getAnnotationString();
-    //List* allElements = const_cast<Model*>(sbml)->getAllElements();
-    if (annot.find("http://sbml.org/annotations/symbols") != string::npos &&
-        annot.find("http://en.wikipedia.org/wiki/Derivative") != string::npos )
-    {
-      //It's the special 'rateOf' function.  However, if the name is not 'rateOf' or 'rate', we need to change it to be one of those two.
-      //if (sbmlname != "rateOf" && sbmlname != "rate") {
-      //  for (unsigned int e=0; e<allElements->getSize(); e++) {
-      //    SBase* element = static_cast<SBase*>(allElements->get(e));
-      //    element->renameSIdRefs(sbmlname, "rateOf");
-      //  }
-      //  sbmlname = "rateOf";
-      //}
-      m_rateNames.insert(sbmlname);
-      continue;
-    }
-    
-    UserFunction* uf = g_registry.GetUserFunction(sbmlname);
-    bool duplicate = false;
-    while (uf != NULL && !duplicate) {
-      if (parseASTNodeToString(function->getMath()) == uf->ToSBMLString()) {
-        duplicate = true;
-      }
-      else {
-        sbmlname = getNameFromSBMLObject(sbml, "fd") + "_" + sbmlname;
-        uf = g_registry.GetUserFunction(sbmlname);
-      }
-    }
-    if (duplicate) {
-      uf->ReadAnnotationFrom(function);
-      uf->SetDisplayName(function->getName());
-      continue;
-    }
-    g_registry.NewUserFunction(&sbmlname);
-    uf = g_registry.GetUserFunction(sbmlname);
-    uf->PopulateCVTerms((SBase*)function);
-    uf->ReadAnnotationFrom(function);
-    uf->SetDisplayName(function->getName());
-    for (unsigned int arg=0; arg<function->getNumArguments(); arg++) {
-      string argument(parseASTNodeToString(function->getArgument(arg)));
-      Variable* expvar = g_registry.AddVariableToCurrent(&argument);
-      g_registry.AddVariableToCurrentExportList(expvar);
-    }
-    const ASTNode* astn = function->getBody();
-    if (!m_usedDistributions && UsesDistrib(astn)) {
-        m_usedDistributions = true;
-    }
-    string formulastring(parseASTNodeToString(astn));
-    Formula formula;
-    setFormulaWithString(formulastring, &formula, uf);
-    g_registry.SetUserFunction(&formula);
-    g_registry.GetNthUserFunction(g_registry.GetNumUserFunctions()-1)->FixNames();
-  }
-
-  //Units
-  for (unsigned int ud=0; ud<sbml->getNumUnitDefinitions(); ud++) {
-    const UnitDefinition* unitdefinition = sbml->getUnitDefinition(ud);
-    sbmlname = getNameFromSBMLObject(unitdefinition, "_UD");
-    FixUnitName(sbmlname);
-    Variable* var = AddOrFindVariable(&sbmlname);
-    var->ReadAnnotationFrom(unitdefinition);
-    if (unitdefinition->isSetName()) {
-      var->SetDisplayName(unitdefinition->getName());
-    }
-    UnitDef unitdef = GetUnitDefFrom(unitdefinition, m_modulename);
-    var->SetUnitDef(&unitdef);
-  }
-
-  //Model-wide units:
-  string unitname;
-  if (sbml->isSetLengthUnits()) {
-    string lunits = sbml->getLengthUnits();
-    unitname = "length";
-    if (lunits != unitname) {
-      Variable* var = AddOrFindVariable(&unitname);
-      UnitDef unitdef = UnitDef(lunits, m_modulename);
-      var->SetUnitDef(&unitdef);
-    }
-  }
-  if (sbml->isSetAreaUnits()) {
-    string aunits = sbml->getAreaUnits();
-    unitname = "area";
-    if (aunits != unitname) {
-      Variable* var = AddOrFindVariable(&unitname);
-      UnitDef unitdef = UnitDef(aunits, m_modulename);
-      var->SetUnitDef(&unitdef);
-    }
-  }
-  if (sbml->isSetVolumeUnits()) {
-    string vunits = sbml->getVolumeUnits();
-    unitname = "volume";
-    if (vunits != unitname) {
-      Variable* var = AddOrFindVariable(&unitname);
-      UnitDef unitdef = UnitDef(vunits, m_modulename);
-      var->SetUnitDef(&unitdef);
-    }
-  }
-  if (sbml->isSetSubstanceUnits()) {
-    string sunits = sbml->getSubstanceUnits();
-    unitname = "substance";
-    if (sunits != unitname) {
-      Variable* var = AddOrFindVariable(&unitname);
-      UnitDef unitdef = UnitDef(sunits, m_modulename);
-      var->SetUnitDef(&unitdef);
-    }
-  }
-  if (sbml->isSetExtentUnits()) {
-    string xunits = sbml->getExtentUnits();
-    unitname = "extent";
-    if (xunits != unitname) {
-      Variable* var = AddOrFindVariable(&unitname);
-      UnitDef unitdef = UnitDef(xunits, m_modulename);
-      var->SetUnitDef(&unitdef);
-    }
-  }
-  if (sbml->isSetTimeUnits()) {
-    string tunits = sbml->getTimeUnits();
-    unitname = "time_unit";
-    if (tunits != unitname) {
-      Variable* var = AddOrFindVariable(&unitname);
-      UnitDef unitdef = UnitDef(tunits, m_modulename);
-      var->SetUnitDef(&unitdef);
-    }
-  }
- 
-  //Compartments
-  set<string> defaultcompartments;
-  for (unsigned int comp=0; comp<sbml->getNumCompartments(); comp++) {
-    const Compartment* compartment = sbml->getCompartment(comp);
-    sbmlname = getNameFromSBMLObject(compartment, "_C");
-    if (compartment->getSBOTerm() == 410) {
-      //The 'implicit compartment'
-      defaultcompartments.insert(sbmlname);
-      continue;
-    }
-    if (sbmlname == DEFAULTCOMP && compartment->getConstant() && compartment->isSetSize() && compartment->getSize() == 1.0) {
-      defaultcompartments.insert(sbmlname);
-      continue;
-      //LS NOTE: we assume this was created with Antimony, and ignore the auto-generated 'default compartment'
-      // Later versions of antimony now set the SBO terms to 410, so we might not need this code very long.
-    }
-    Variable* var = AddOrFindVariable(&sbmlname);
-    var->PopulateCVTerms((SBase*)compartment);
-    var->ReadAnnotationFrom(compartment);
-    if (compartment->isSetName()) {
-      var->SetDisplayName(compartment->getName());
-    }
-    var->SetType(varCompartment);
-    Formula formula;
-    if (compartment->isSetSize()) {
-      formula.AddNum(compartment->getSize());
-      var->SetFormula(&formula);
-    }
-    if (compartment->isSetUnits()) {
-      var->SetUnitVariable(compartment->getUnits());
-    }
-    if (compartment->isSetConstant()) {
-      var->SetIsConst(compartment->getConstant());
-    }
-    TranslateRulesAndAssignmentsTo(compartment, var);
-  }
-
-  //Species
-  for (unsigned int spec=0; spec<sbml->getNumSpecies(); spec++) {
-    const Species* species = sbml->getSpecies(spec);
-    sbmlname = getNameFromSBMLObject(species, "_S");
-    Variable* var = AddOrFindVariable(&sbmlname);
-    if (species->isSetName()) {
-      var->SetDisplayName(species->getName());
-    }
-    var->SetType(varSpeciesUndef);
-    var->PopulateCVTerms((SBase*)species);
-    var->ReadAnnotationFrom(species);
-    var->SetSubstOnly(species->getHasOnlySubstanceUnits());
-
-    //Setting the formula
-    Formula formula;
-    if (species->isSetInitialAmount()) {
-      double amount = species->getInitialAmount();
-      formula.AddNum(amount);
-      if (amount != 0 && defaultcompartments.find(species->getCompartment()) == defaultcompartments.end()) {
-        Variable* compartment = AddOrFindVariable(&(species->getCompartment()));
-        Formula* compform = compartment->GetFormula();
-        formula.AddMathThing('/');
-        formula.AddVariable(compartment);
-      }
-      var->SetFormula(&formula);
-    }
-    else if (species->isSetInitialConcentration()) {
-      formula.AddNum(species->getInitialConcentration());
-      var->SetFormula(&formula);
-    }
-    //Anything more complicated is set in a Rule, which we'll get to later.
-
-    if (species->getConstant() || species->getBoundaryCondition()) {
-      //Since all species are variable by default, we only set this explicitly if true.
-      var->SetIsConst(true);
-    }
-    Variable* compartment = NULL;
-    if (defaultcompartments.find(species->getCompartment()) == defaultcompartments.end()) {
-      compartment = AddOrFindVariable(&(species->getCompartment()));
-      compartment->SetType(varCompartment);
-      var->SetCompartment(compartment);
-    }
-    if (species->isSetUnits()) {
-      string unitname = species->getUnits();
-      FixUnitName(unitname);
-      Variable* spunits = AddOrFindVariable(&unitname);
-      spunits->SetType(varUnitDefinition);
-      UnitDef ud(*spunits->GetUnitDef());
-      UnitDef* compud = NULL;
-      if (compartment==NULL) {
-        string volume = "volume";
-        compud = AddOrFindVariable(&volume)->GetUnitDef();
-      }
-      else {
-        Variable* compunits = compartment->GetUnitVariable();
-        if (compunits == NULL) {
-          vector<string> volname;
-          volname.push_back("volume");
-          compunits = GetVariable(volname);
-          if (compunits == NULL) {
-            compunits = GetDefaultVariable(volname);
-          }
-          assert(compunits != NULL);
+    //Function Definitions
+    //This is a bit weird, since functions exist outside of modules, since they can be used in any model.  So we have to go to the registry to save them.
+    for (unsigned int func = 0; func < sbml->getNumFunctionDefinitions(); func++) {
+        const FunctionDefinition* function = sbml->getFunctionDefinition(func);
+        sbmlname = getNameFromSBMLObject(function, "_F");
+        string annot = function->getAnnotationString();
+        //List* allElements = const_cast<Model*>(sbml)->getAllElements();
+        if (annot.find("http://sbml.org/annotations/symbols") != string::npos &&
+            annot.find("http://en.wikipedia.org/wiki/Derivative") != string::npos)
+        {
+            //It's the special 'rateOf' function.  However, if the name is not 'rateOf' or 'rate', we need to change it to be one of those two.
+            //if (sbmlname != "rateOf" && sbmlname != "rate") {
+            //  for (unsigned int e=0; e<allElements->getSize(); e++) {
+            //    SBase* element = static_cast<SBase*>(allElements->get(e));
+            //    element->renameSIdRefs(sbmlname, "rateOf");
+            //  }
+            //  sbmlname = "rateOf";
+            //}
+            m_rateNames.insert(sbmlname);
+            continue;
         }
-        compud = compunits->GetUnitDef();
-      }
-      ud.DivideUnitDef(compud);
-      ud.Reduce();
-      Variable* concentrationUnits = AddOrFindUnitDef(ud);
-      var->SetUnitVariable(concentrationUnits);
-    }
-    TranslateRulesAndAssignmentsTo(species, var);
-  }
 
-  //Events:
-  for (unsigned int ev=0; ev<sbml->getNumEvents(); ev++) {
-    const Event* event = sbml->getEvent(ev);
-    sbmlname = getNameFromSBMLObject(event, "_E");
-    if (!event->isSetId()) {
-      Event* ncevent = const_cast<Event*>(event);
-      ncevent->setId(sbmlname);
+        UserFunction* uf = g_registry.GetUserFunction(sbmlname);
+        bool duplicate = false;
+        while (uf != NULL && !duplicate) {
+            if (parseASTNodeToString(function->getMath()) == uf->ToSBMLString()) {
+                duplicate = true;
+            }
+            else {
+                sbmlname = getNameFromSBMLObject(sbml, "fd") + "_" + sbmlname;
+                uf = g_registry.GetUserFunction(sbmlname);
+            }
+        }
+        if (duplicate) {
+            uf->ReadAnnotationFrom(function);
+            uf->SetDisplayName(function->getName());
+            continue;
+        }
+        g_registry.NewUserFunction(&sbmlname);
+        uf = g_registry.GetUserFunction(sbmlname);
+        uf->PopulateCVTerms((SBase*)function);
+        uf->ReadAnnotationFrom(function);
+        uf->SetDisplayName(function->getName());
+        for (unsigned int arg = 0; arg < function->getNumArguments(); arg++) {
+            string argument(parseASTNodeToString(function->getArgument(arg)));
+            Variable* expvar = g_registry.AddVariableToCurrent(&argument);
+            g_registry.AddVariableToCurrentExportList(expvar);
+        }
+        const ASTNode* astn = function->getBody();
+        if (!m_usedDistributions && UsesDistrib(astn)) {
+            m_usedDistributions = true;
+        }
+        string formulastring(parseASTNodeToString(astn));
+        Formula formula;
+        setFormulaWithString(formulastring, &formula, uf);
+        g_registry.SetUserFunction(&formula);
+        g_registry.GetNthUserFunction(g_registry.GetNumUserFunctions() - 1)->FixNames();
     }
-    Variable* var = AddOrFindVariable(&sbmlname);
-    vector<string> nosub;
-    SetVarWithEvent(var, event, this, nosub);
-    var->ReadAnnotationFrom(event);
-  }
 
-  //Constraints:
-  vector<AntimonyConstraint> constraints;
-  for (unsigned int c=0; c<sbml->getNumConstraints(); c++) {
-    const Constraint* constraint = sbml->getConstraint(c);
-    sbmlname = getNameFromSBMLObject(constraint, "_con");
-    Variable* var = AddOrFindVariable(&sbmlname);
-    var->ReadAnnotationFrom(constraint);
-    if (constraint->isSetMessage()) {
-      string msg = constraint->getMessageString();
-      msg = StripMsgXML(msg);
-      var->SetDisplayName(msg);
+    //Units
+    for (unsigned int ud = 0; ud < sbml->getNumUnitDefinitions(); ud++) {
+        const UnitDefinition* unitdefinition = sbml->getUnitDefinition(ud);
+        sbmlname = getNameFromSBMLObject(unitdefinition, "_UD");
+        FixUnitName(sbmlname);
+        Variable* var = AddOrFindVariable(&sbmlname);
+        var->ReadAnnotationFrom(unitdefinition);
+        if (unitdefinition->isSetName()) {
+            var->SetDisplayName(unitdefinition->getName());
+        }
+        UnitDef unitdef = GetUnitDefFrom(unitdefinition, m_modulename);
+        var->SetUnitDef(&unitdef);
     }
-    if (constraint->isSetMath()) {
-      AntimonyConstraint acon(var);
-      const ASTNode* astn = constraint->getMath();
-      if (!m_usedDistributions && UsesDistrib(astn)) {
-          m_usedDistributions = true;
-      }
-      acon.SetWithASTNode(astn);
-      var->SetConstraint(&acon);
-      constraints.push_back(acon);
-    }
-  }
 
-  //Parameters
-  for (unsigned int param=0; param<sbml->getNumParameters(); param++) {
-    const Parameter* parameter = sbml->getParameter(param);
-    sbmlname = getNameFromSBMLObject(parameter, "_P");
-    Variable* var = AddOrFindVariable(&sbmlname);
-    var->PopulateCVTerms((SBase*)parameter);
-    var->ReadAnnotationFrom(parameter);
-    if (parameter->isSetName()) {
-      var->SetDisplayName(parameter->getName());
+    //Model-wide units:
+    string unitname;
+    if (sbml->isSetLengthUnits()) {
+        string lunits = sbml->getLengthUnits();
+        unitname = "length";
+        if (lunits != unitname) {
+            Variable* var = AddOrFindVariable(&unitname);
+            UnitDef unitdef = UnitDef(lunits, m_modulename);
+            var->SetUnitDef(&unitdef);
+        }
     }
-    if (parameter->isSetValue()) {
-      Formula* formula = g_registry.NewBlankFormula();
-      formula->AddNum(parameter->getValue());
-      var->SetFormula(formula);
-      //LS NOTE:  If a parameter has both a value and an 'initial assignment', the initial assignment will override the value.
+    if (sbml->isSetAreaUnits()) {
+        string aunits = sbml->getAreaUnits();
+        unitname = "area";
+        if (aunits != unitname) {
+            Variable* var = AddOrFindVariable(&unitname);
+            UnitDef unitdef = UnitDef(aunits, m_modulename);
+            var->SetUnitDef(&unitdef);
+        }
     }
-    if (parameter->isSetUnits()) {
-      var->SetUnitVariable(parameter->getUnits());
+    if (sbml->isSetVolumeUnits()) {
+        string vunits = sbml->getVolumeUnits();
+        unitname = "volume";
+        if (vunits != unitname) {
+            Variable* var = AddOrFindVariable(&unitname);
+            UnitDef unitdef = UnitDef(vunits, m_modulename);
+            var->SetUnitDef(&unitdef);
+        }
     }
-    if (parameter->isSetConstant()) {
-      var->SetIsConst(parameter->getConstant());
+    if (sbml->isSetSubstanceUnits()) {
+        string sunits = sbml->getSubstanceUnits();
+        unitname = "substance";
+        if (sunits != unitname) {
+            Variable* var = AddOrFindVariable(&unitname);
+            UnitDef unitdef = UnitDef(sunits, m_modulename);
+            var->SetUnitDef(&unitdef);
+        }
     }
-    TranslateRulesAndAssignmentsTo(parameter, var);
-  }
+    if (sbml->isSetExtentUnits()) {
+        string xunits = sbml->getExtentUnits();
+        unitname = "extent";
+        if (xunits != unitname) {
+            Variable* var = AddOrFindVariable(&unitname);
+            UnitDef unitdef = UnitDef(xunits, m_modulename);
+            var->SetUnitDef(&unitdef);
+        }
+    }
+    if (sbml->isSetTimeUnits()) {
+        string tunits = sbml->getTimeUnits();
+        unitname = "time_unit";
+        if (tunits != unitname) {
+            Variable* var = AddOrFindVariable(&unitname);
+            UnitDef unitdef = UnitDef(tunits, m_modulename);
+            var->SetUnitDef(&unitdef);
+        }
+    }
 
-  //Algebraic rules
-  for (unsigned int r = 0; r < sbml->getNumRules(); r++) {
-      Rule* rule = sbml->getRule(r);
-      if (rule->isAlgebraic()) {
-          sbmlname = getNameFromSBMLObject(rule, "_alg");
-          Variable* var = AddOrFindVariable(&sbmlname);
-          var->PopulateCVTerms((SBase*)rule);
-          var->ReadAnnotationFrom(rule);
-          if (rule->isSetName()) {
-              var->SetDisplayName(rule->getName());
-          }
-          const ASTNode* astn = rule->getMath();
-          string formulastring = parseASTNodeToString(astn);
-          Formula formula;
-          setFormulaWithString(formulastring, &formula, this);
-          var->SetAlgebraicRule(0, &formula);
-      }
-  }
-  
+    //Compartments
+    set<string> defaultcompartments;
+    for (unsigned int comp = 0; comp < sbml->getNumCompartments(); comp++) {
+        const Compartment* compartment = sbml->getCompartment(comp);
+        sbmlname = getNameFromSBMLObject(compartment, "_C");
+        if (compartment->getSBOTerm() == 410) {
+            //The 'implicit compartment'
+            defaultcompartments.insert(sbmlname);
+            continue;
+        }
+        if (sbmlname == DEFAULTCOMP && compartment->getConstant() && compartment->isSetSize() && compartment->getSize() == 1.0) {
+            defaultcompartments.insert(sbmlname);
+            continue;
+            //LS NOTE: we assume this was created with Antimony, and ignore the auto-generated 'default compartment'
+            // Later versions of antimony now set the SBO terms to 410, so we might not need this code very long.
+        }
+        Variable* var = AddOrFindVariable(&sbmlname);
+        var->PopulateCVTerms((SBase*)compartment);
+        var->ReadAnnotationFrom(compartment);
+        if (compartment->isSetName()) {
+            var->SetDisplayName(compartment->getName());
+        }
+        var->SetType(varCompartment);
+        Formula formula;
+        if (compartment->isSetSize()) {
+            formula.AddNum(compartment->getSize());
+            var->SetFormula(&formula);
+        }
+        if (compartment->isSetUnits()) {
+            var->SetUnitVariable(compartment->getUnits());
+        }
+        if (compartment->isSetConstant()) {
+            var->SetIsConst(compartment->getConstant());
+        }
+        TranslateRulesAndAssignmentsTo(compartment, var);
+    }
+
+    //Species
+    for (unsigned int spec = 0; spec < sbml->getNumSpecies(); spec++) {
+        const Species* species = sbml->getSpecies(spec);
+        sbmlname = getNameFromSBMLObject(species, "_S");
+        Variable* var = AddOrFindVariable(&sbmlname);
+        if (species->isSetName()) {
+            var->SetDisplayName(species->getName());
+        }
+        var->SetType(varSpeciesUndef);
+        var->PopulateCVTerms((SBase*)species);
+        var->ReadAnnotationFrom(species);
+        var->SetSubstOnly(species->getHasOnlySubstanceUnits());
+
+        //Setting the formula
+        Formula formula;
+        if (species->isSetInitialAmount()) {
+            double amount = species->getInitialAmount();
+            formula.AddNum(amount);
+            if (amount != 0 && defaultcompartments.find(species->getCompartment()) == defaultcompartments.end()) {
+                Variable* compartment = AddOrFindVariable(&(species->getCompartment()));
+                Formula* compform = compartment->GetFormula();
+                formula.AddMathThing('/');
+                formula.AddVariable(compartment);
+            }
+            var->SetFormula(&formula);
+        }
+        else if (species->isSetInitialConcentration()) {
+            formula.AddNum(species->getInitialConcentration());
+            var->SetFormula(&formula);
+        }
+        //Anything more complicated is set in a Rule, which we'll get to later.
+
+        if (species->getConstant() || species->getBoundaryCondition()) {
+            //Since all species are variable by default, we only set this explicitly if true.
+            var->SetIsConst(true);
+        }
+        Variable* compartment = NULL;
+        if (defaultcompartments.find(species->getCompartment()) == defaultcompartments.end()) {
+            compartment = AddOrFindVariable(&(species->getCompartment()));
+            compartment->SetType(varCompartment);
+            var->SetCompartment(compartment);
+        }
+        if (species->isSetUnits()) {
+            string unitname = species->getUnits();
+            FixUnitName(unitname);
+            Variable* spunits = AddOrFindVariable(&unitname);
+            spunits->SetType(varUnitDefinition);
+            UnitDef ud(*spunits->GetUnitDef());
+            UnitDef* compud = NULL;
+            if (compartment == NULL) {
+                string volume = "volume";
+                compud = AddOrFindVariable(&volume)->GetUnitDef();
+            }
+            else {
+                Variable* compunits = compartment->GetUnitVariable();
+                if (compunits == NULL) {
+                    vector<string> volname;
+                    volname.push_back("volume");
+                    compunits = GetVariable(volname);
+                    if (compunits == NULL) {
+                        compunits = GetDefaultVariable(volname);
+                    }
+                    assert(compunits != NULL);
+                }
+                compud = compunits->GetUnitDef();
+            }
+            ud.DivideUnitDef(compud);
+            ud.Reduce();
+            Variable* concentrationUnits = AddOrFindUnitDef(ud);
+            var->SetUnitVariable(concentrationUnits);
+        }
+        TranslateRulesAndAssignmentsTo(species, var);
+    }
+
+    //Events:
+    for (unsigned int ev = 0; ev < sbml->getNumEvents(); ev++) {
+        const Event* event = sbml->getEvent(ev);
+        sbmlname = getNameFromSBMLObject(event, "_E");
+        if (!event->isSetId()) {
+            Event* ncevent = const_cast<Event*>(event);
+            ncevent->setId(sbmlname);
+        }
+        Variable* var = AddOrFindVariable(&sbmlname);
+        vector<string> nosub;
+        SetVarWithEvent(var, event, this, nosub);
+        var->ReadAnnotationFrom(event);
+    }
+
+    //Constraints:
+    vector<AntimonyConstraint> constraints;
+    for (unsigned int c = 0; c < sbml->getNumConstraints(); c++) {
+        const Constraint* constraint = sbml->getConstraint(c);
+        sbmlname = getNameFromSBMLObject(constraint, "_con");
+        Variable* var = AddOrFindVariable(&sbmlname);
+        var->ReadAnnotationFrom(constraint);
+        if (constraint->isSetMessage()) {
+            string msg = constraint->getMessageString();
+            msg = StripMsgXML(msg);
+            var->SetDisplayName(msg);
+        }
+        if (constraint->isSetMath()) {
+            AntimonyConstraint acon(var);
+            const ASTNode* astn = constraint->getMath();
+            if (!m_usedDistributions && UsesDistrib(astn)) {
+                m_usedDistributions = true;
+            }
+            acon.SetWithASTNode(astn);
+            var->SetConstraint(&acon);
+            constraints.push_back(acon);
+        }
+    }
+
+    //Parameters
+    for (unsigned int param = 0; param < sbml->getNumParameters(); param++) {
+        const Parameter* parameter = sbml->getParameter(param);
+        sbmlname = getNameFromSBMLObject(parameter, "_P");
+        Variable* var = AddOrFindVariable(&sbmlname);
+        var->PopulateCVTerms((SBase*)parameter);
+        var->ReadAnnotationFrom(parameter);
+        if (parameter->isSetName()) {
+            var->SetDisplayName(parameter->getName());
+        }
+        if (parameter->isSetValue()) {
+            Formula* formula = g_registry.NewBlankFormula();
+            formula->AddNum(parameter->getValue());
+            var->SetFormula(formula);
+            //LS NOTE:  If a parameter has both a value and an 'initial assignment', the initial assignment will override the value.
+        }
+        if (parameter->isSetUnits()) {
+            var->SetUnitVariable(parameter->getUnits());
+        }
+        if (parameter->isSetConstant()) {
+            var->SetIsConst(parameter->getConstant());
+        }
+        TranslateRulesAndAssignmentsTo(parameter, var);
+    }
+
+    //Algebraic rules
+    for (unsigned int r = 0; r < sbml->getNumRules(); r++) {
+        Rule* rule = sbml->getRule(r);
+        if (rule->isAlgebraic()) {
+            sbmlname = getNameFromSBMLObject(rule, "_alg");
+            Variable* var = AddOrFindVariable(&sbmlname);
+            var->PopulateCVTerms((SBase*)rule);
+            var->ReadAnnotationFrom(rule);
+            if (rule->isSetName()) {
+                var->SetDisplayName(rule->getName());
+            }
+            const ASTNode* astn = rule->getMath();
+            string formulastring = parseASTNodeToString(astn);
+            Formula formula;
+            setFormulaWithString(formulastring, &formula, this);
+            var->SetAlgebraicRule(0, &formula);
+        }
+    }
 
   //Reactions
   for (unsigned int rxn=0; rxn<sbml->getNumReactions(); rxn++) {
@@ -1521,7 +1522,7 @@ void Module::LoadSBML(Model* sbml)
     AddEmptyGlyphsFromReaction(var, reaction->getId(), sbml->getSBMLDocument());
   }
 
-  //FBC Constraints:
+  //FBC Constraints and gene products:
 #ifdef LIBSBML_HAS_PACKAGE_FBC
   const FbcModelPlugin* fmp = static_cast<const FbcModelPlugin*>(sbml->getPlugin("fbc"));
   if (fmp != NULL) {
@@ -1592,6 +1593,30 @@ void Module::LoadSBML(Model* sbml)
                 rxnbound->SetConstraint(&constraint);
             }
         }
+    }
+    for (unsigned int gp = 0; gp < fmp->getNumGeneProducts(); gp++) {
+        const GeneProduct* geneprod = fmp->getGeneProduct(gp);
+        sbmlname = getNameFromSBMLObject(geneprod, "_gp");
+        Variable* var = AddOrFindVariable(&sbmlname);
+        var->SetType(varGeneProduct);
+        var->PopulateCVTerms((SBase*)geneprod);
+        var->ReadAnnotationFrom(geneprod);
+        if (geneprod->isSetLabel()) {
+            var->SetDisplayName(geneprod->getLabel());
+        }
+        else if (geneprod->isSetName()) {
+            var->SetDisplayName(geneprod->getName());
+        }
+        if (geneprod->isSetAssociatedSpecies()) {
+            Variable* species = AddOrFindVariable(&geneprod->getAssociatedSpecies());
+            if (species->SetType(varSpeciesUndef)) {
+                g_registry.AddWarning("The associtedSpecies (" + geneprod->getAssociatedSpecies() + ") of the gene product " + geneprod->getId() + " could not be set to be an actual species.");
+            }
+            else {
+                var->GetFormula()->AddVariable(species);
+            }
+        }
+
     }
   }
 #endif
@@ -2404,6 +2429,28 @@ void Module::CreateSBMLModel(bool comp)
 #endif
   }
 
+  //FBC gene products:
+  size_t numgps = GetNumVariablesOfType(allGeneProducts, comp);
+  for (size_t ar = 0; ar < numgps; ar++) {
+      const Variable* arvar = GetNthVariableOfType(allGeneProducts, ar, comp);
+      FbcModelPlugin* fmp = static_cast<FbcModelPlugin*>(sbmlmod->getPlugin("fbc"));
+      assert(fmp != NULL);
+      libsbml::GeneProduct* gp = fmp->createGeneProduct();
+      gp->setId(arvar->GetNameDelimitedBy(cc));
+      string name = arvar->GetDisplayName();
+      gp->setName(name);
+      if (name.empty()) {
+          name = gp->getId();
+      }
+      gp->setLabel(name);
+
+      const Formula* formula = arvar->GetFormula();
+      vector<Variable*> vars = formula->GetVariables();
+      if (vars.size() == 1) {
+          gp->setAssociatedSpecies(vars[0]->GetNameDelimitedBy(cc));
+      }
+  }
+
   //Unknown variables (turn into parameters)
   size_t numunknown = GetNumVariablesOfType(allUnknown, comp);
   for (size_t form=0; form < numunknown; form++) {
@@ -2949,6 +2996,7 @@ void Module::FixNames(Model* model)
     "formula",
     "function",
     "gene",
+    "geneProduct",
     "has",
     "import",
     "in",
@@ -3086,7 +3134,7 @@ void Module::FixNames(Model* model)
 
     //At some point, it would be nice to allow keywords that are functions as 
     // variable names, and visa versa.  But today is not that day.
-    for (size_t kw = 0; kw < 21; kw++) {
+    for (size_t kw = 0; kw < 22; kw++) {
         FixConstants(keywords[kw], model);
         FixFunctions(keywords[kw], model);
     }
@@ -3811,6 +3859,7 @@ void Module::LoadLayout(Model* sbml)
             case varConstraint:
             case varStoichiometry:
             case varAlgebraicRule:
+            case varGeneProduct:
                 continue;
             }
             string varid = var->GetNameDelimitedBy("_");

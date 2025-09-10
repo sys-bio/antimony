@@ -1738,6 +1738,8 @@ LIB_EXTERN return_type getTypeOfSymbol(const char* moduleName, const char* symbo
     return allReactions;
   case varInteraction:
     return allInteractions;
+  case varGeneProduct:
+    return allGeneProducts;
   case varUndefined:
   case varSboTermWrapper:
   case varUncertWrapper:

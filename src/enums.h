@@ -34,6 +34,7 @@ enum rd_type {rdBecomes = 0, rdActivates, rdInhibits, rdInfluences, rdBecomesIrr
  * - varUnitDefinition: A unit definition.
  * - varDeleted: A deleted submodel element
  * - varConstraint: A constraint (either an FBC constraint or a 'normal' constraint)
+ * - varGeneProduct: A gene product (as defined in the FBC package)
  */
 
 enum var_type {varSpeciesUndef = 0,
@@ -57,6 +58,7 @@ enum var_type {varSpeciesUndef = 0,
                varStoichiometry,
                varAlgebraicRule,
                varLayoutColorEtc,
+               varGeneProduct,
                };
 /**
  * return_types are used in the API when requesting information about different symbols.  Each return_type refers to a different group of symbols, and are overlapping--i.e. a single symbol can be included in 'allGenes' and 'allReactions'. 
@@ -113,7 +115,8 @@ enum return_type {allSymbols = 0,
                   allDeleted,
                   allConstraints,
                   allStoichiometries,
-                  allAlgebraicRules
+                  allAlgebraicRules,
+                  allGeneProducts,
 };
 
 /**

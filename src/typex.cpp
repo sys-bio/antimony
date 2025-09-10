@@ -35,6 +35,7 @@ bool IsReaction(const var_type vtype)
   case varStoichiometry:
   case varAlgebraicRule:
   case varLayoutColorEtc:
+  case varGeneProduct:
       return false;
   }
   assert(false); //uncaught vtype
@@ -81,6 +82,7 @@ bool IsSpecies(const var_type vtype)
   case varStoichiometry:
   case varAlgebraicRule:
   case varLayoutColorEtc:
+  case varGeneProduct:
       return false;
   }
   assert(false); //uncaught vtype
@@ -112,6 +114,7 @@ bool IsDNA(const var_type vtype)
   case varStoichiometry:
   case varAlgebraicRule:
   case varLayoutColorEtc:
+  case varGeneProduct:
       return false;
   }
   assert(false); //uncaught vtype
@@ -143,6 +146,7 @@ bool CanHaveRateRule(const var_type vtype)
   case varUncertWrapper:
   case varLayoutWrapper:
   case varAlgebraicRule:
+  case varGeneProduct:
       return false;
   }
   assert(false); //uncaught type
@@ -174,7 +178,8 @@ bool CanHaveAssignmentRule(const var_type vtype)
   case varUncertWrapper:
   case varLayoutWrapper:
   case varAlgebraicRule:
-    return false;
+  case varGeneProduct:
+      return false;
   }
   assert(false); //uncaught type
   return false;
@@ -205,6 +210,7 @@ bool CanHaveAlgebraicRule(const var_type vtype)
     case varSboTermWrapper:
     case varUncertWrapper:
     case varLayoutWrapper:
+    case varGeneProduct:
         return false;
     }
     assert(false); //uncaught type
@@ -236,6 +242,7 @@ bool CanBeInReaction(const var_type vtype)
   case varLayoutWrapper:
   case varStoichiometry:
   case varAlgebraicRule:
+  case varGeneProduct:
       return false;
   }
   assert(false); //uncaught type
@@ -267,6 +274,7 @@ bool CanBeStoichiometry(const var_type vtype)
     case varUncertWrapper:
     case varLayoutWrapper:
     case varAlgebraicRule:
+    case varGeneProduct:
         return false;
     }
     assert(false); //uncaught type
@@ -285,6 +293,7 @@ bool HasOrIsFormula(const var_type vtype)
   case varConstraint:
   case varStoichiometry:
   case varLayoutColorEtc:
+  case varGeneProduct:
       return true;
   case varReactionGene:
   case varReactionUndef:
@@ -383,6 +392,8 @@ string VarTypeToString(const var_type vtype)
     return "Reaction";
   case varReactionGene:
     return "Gene";
+  case varGeneProduct:
+    return "Gene Product";
   case varInteraction:
     return "Interaction";
   case varFormulaOperator:
@@ -479,6 +490,8 @@ string ReturnTypeToString(const return_type rtype)
     return "stoichiometries";
   case allAlgebraicRules:
       return "algebraic rules";
+  case allGeneProducts:
+      return "gene products";
   }
   assert(false); //uncaught type
   return "Uncaught type";

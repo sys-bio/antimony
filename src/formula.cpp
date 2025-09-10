@@ -760,7 +760,7 @@ vector<const Variable*> Formula::GetVariablesFrom(string formula, string module)
   return retval;
 }
 
-vector<Variable*> Formula::GetVariables()
+vector<Variable*> Formula::GetVariables() const
 {
     vector<Variable*> retval;
 

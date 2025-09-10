@@ -76,7 +76,7 @@ public:
   double      ToAmount() const;
   std::string ConvertOneSymbolToFunction(std::string formula) const;
   std::vector<const Variable*> GetVariablesFrom(std::string formula, std::string module) const;
-  std::vector<Variable*> GetVariables();
+  std::vector<Variable*> GetVariables() const;
   std::vector<std::vector<std::string> > GetVariableStrings() const;
 
   void FixNames(std::string modname);

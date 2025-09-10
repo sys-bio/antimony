@@ -566,6 +566,7 @@ void Module::CreateCellMLComponent(Module* topmod)
         //These all have no CellML equivalent (except Module, which is taken care of separately).
       break;
     case varAlgebraicRule:
+    case varGeneProduct:
         //Need to figure out what to do with these.
         assert(false);
         break;
