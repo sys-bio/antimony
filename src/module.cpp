@@ -1915,7 +1915,7 @@ string Module::OutputOnly(vector<var_type> types, string name, string indent, st
       formula_type ftype = var->GetFormulaType();
       if (form != NULL && !form->IsEllipsesOnly() && (ftype==formulaINITIAL || ftype==formulaRATE)) {
         if (OrigFormulaIsAlready(var, origmap, form)) continue;
-        if (var->GetFormula()->IsEmpty()) continue;
+        if (type == varGeneProduct && var->GetFormula()->IsEmpty()) continue;
         if (firstone) {
           retval += "\n" + indent + "// " + name + ":\n";
           firstone = false;
