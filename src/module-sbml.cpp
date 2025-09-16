@@ -245,6 +245,7 @@ void Module::FindOrCreateLocalVersionOf(const Variable* var, libsbml::Model* sbm
   case varAlgebraicRule:
   case varLayoutColorEtc:
   case varGeneProduct:
+  case varGeneProductAssociation:
       assert(false); //Unhandled type
     break;
   }
@@ -1415,6 +1416,34 @@ void Module::LoadSBML(Model* sbml)
           g_registry.AddWarning("Cannot replace stoichiometries in Antimony:  all replacedElements and replacedBy children of " + specref->getSpecies() + " in reaction " + reaction->getId() + " will be ignored.");
         }
 #endif
+        const FbcReactionPlugin* frp = static_cast<const FbcReactionPlugin*>(reaction->getPlugin("fbc"));
+        if (frp && frp->isSetGeneProductAssociation()) {
+          const GeneProductAssociation* gpa = frp->getGeneProductAssociation();
+          ASTNode* astn = gpa->getAssociationAsASTNode();
+          if (astn) {
+            string gpname = getNameFromSBMLObject(reaction, "_J") + "-gpa";
+            Variable* gpavar = AddOrFindVariable(&gpname);
+            if (gpavar->SetType(varGeneProductAssociation)) {
+              assert(false);
+            }
+            Formula form;
+            char* formula = SBML_formulaToL3String(astn);
+            setFormulaWithString(formula, &form, this);
+            delete formula;
+            if (gpavar->SetFormula(&form)) {
+              assert(false);
+            }
+            gpavar->PopulateCVTerms((SBase*)gpa);
+            gpavar->ReadAnnotationFrom(gpa);
+            if (gpa->isSetName()) {
+              gpavar->SetDisplayName(gpa->getName());
+            }
+            if (gpa->isSetId()) {
+              //We might have to ditch the name to save the ID, since there's nowhere else to store it.
+              gpavar->SetDisplayName(gpa->getId());
+            }
+          }
+        }
       }
     }
 
@@ -1432,7 +1461,7 @@ void Module::LoadSBML(Model* sbml)
         const Parameter* localparam = kl->getParameter(localp);
         string origname = localparam->getId();
 
-        //Create a new variable with a new name:
+        //ateate a new variable with a new name:
         vector<string> fullname;
         sbmlname = GetNewIDForLocalParameter(localparam);
         fullname.push_back(sbmlname);
@@ -2435,7 +2464,7 @@ void Module::CreateSBMLModel(bool comp)
       const Variable* arvar = GetNthVariableOfType(allGeneProducts, ar, comp);
       FbcModelPlugin* fmp = static_cast<FbcModelPlugin*>(sbmlmod->getPlugin("fbc"));
       assert(fmp != NULL);
-      libsbml::GeneProduct* gp = fmp->createGeneProduct();
+      GeneProduct* gp = fmp->createGeneProduct();
       gp->setId(arvar->GetNameDelimitedBy(cc));
       string name = arvar->GetDisplayName();
       gp->setName(name);
@@ -2450,6 +2479,30 @@ void Module::CreateSBMLModel(bool comp)
           gp->setAssociatedSpecies(vars[0]->GetNameDelimitedBy(cc));
       }
   }
+
+  //FBC gene product associations:
+  size_t numgpas = GetNumVariablesOfType(allGeneProductAssociations, comp);
+  for (size_t ar = 0; ar < numgpas; ar++) {
+    const Variable* gpavar = GetNthVariableOfType(allGeneProductAssociations, ar, comp);
+    string rxnname = gpavar->GetNameDelimitedBy(cc);
+    rxnname.replace(rxnname.find("-gpa"), 4, "");
+    Reaction* rxn = sbmlmod->getReaction(rxnname);
+    if (rxn == NULL) {
+      g_registry.SetError("Couldn't find the reaction associated with the gene product association '" + gpavar->GetNameDelimitedBy(cc) + "'.");
+      assert(false); //Shouldn't get this?
+    }
+    FbcReactionPlugin* frp = static_cast<FbcReactionPlugin*>(rxn->getPlugin("fbc"));
+    assert(frp != NULL);
+    GeneProductAssociation* gpa = frp->createGeneProductAssociation();
+    ASTNode* astn = parseStringToASTNode(gpavar->GetFormula()->ToSBMLString());
+    gpa->createChildAssociationFromASTNode(astn);
+    delete astn;
+    string name = gpavar->GetDisplayName();
+    gpa->setName(name);
+    //This might fail if 'name' is the wrong format, but otherwise we can't set an ID at all.
+    gpa->setId(name);
+  }
+
 
   //Unknown variables (turn into parameters)
   size_t numunknown = GetNumVariablesOfType(allUnknown, comp);
@@ -3860,6 +3913,7 @@ void Module::LoadLayout(Model* sbml)
             case varStoichiometry:
             case varAlgebraicRule:
             case varGeneProduct:
+            case varGeneProductAssociation:
                 continue;
             }
             string varid = var->GetNameDelimitedBy("_");

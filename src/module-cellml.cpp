@@ -567,6 +567,7 @@ void Module::CreateCellMLComponent(Module* topmod)
       break;
     case varAlgebraicRule:
     case varGeneProduct:
+    case varGeneProductAssociation:
         //Need to figure out what to do with these.
         assert(false);
         break;

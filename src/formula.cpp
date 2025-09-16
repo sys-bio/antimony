@@ -131,6 +131,9 @@ void Formula::AddInequality(constraint_type ineq)
 void Formula::AddFormula(const Formula* form2)
 {
   m_components.insert(m_components.end(), form2->m_components.begin(), form2->m_components.end());
+  if (m_module.empty()) {
+    m_module = form2->m_module;
+  }
 }
 
 void Formula::AddEllipses()
@@ -353,6 +356,38 @@ bool Formula::IsSingleVariable() const
 bool Formula::IsOneComponent() const
 {
     return m_components.size() == 1;
+}
+
+bool isValidGeneProductAssociationAST(const ASTNode* astn)
+{
+  if (!astn) {
+    return true;
+  }
+  ASTNodeType_t type = astn->getType();
+  switch (type) {
+  case AST_NAME:
+    return true;
+  case AST_LOGICAL_AND:
+  case AST_LOGICAL_OR:
+    for (unsigned int c = 0; c < astn->getNumChildren(); c++) {
+      ASTNode* child = astn->getChild(c);
+      if (!isValidGeneProductAssociationAST(child)) return false;
+    }
+    return true;
+  default:
+    return false;
+  }
+}
+
+bool Formula::isValidGeneProductAssociation() const
+{
+  ASTNode* astn = parseStringToASTNode(ToSBMLString());
+  if (isValidGeneProductAssociationAST(astn)) {
+    delete astn;
+    return true;
+  }
+  delete astn;
+  return false;
 }
 
 bool Formula::GetIsConst() const
@@ -589,7 +624,7 @@ string Formula::ToDelimitedStringWithEllipses(string cc) const
         m_components[comp].first == "&" ||
         m_components[comp].first == "|")
       {
-          if (retval[retval.size() - 1] == '!') {
+          if (retval.size() > 0 && retval[retval.size() - 1] == '!') {
               retval += m_components[comp].first + " ";
           }
           else {
@@ -766,7 +801,7 @@ vector<Variable*> Formula::GetVariables() const
 
     for (size_t comp = 0; comp < m_components.size(); comp++) {
         if (m_components[comp].second.size() > 0) {
-            retval.push_back(g_registry.GetModule(m_module)->GetVariable(m_components[comp].second));
+            retval.push_back(g_registry.GetModule(m_components[comp].first)->GetVariable(m_components[comp].second));
         }
     }
     return retval;

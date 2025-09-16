@@ -564,7 +564,7 @@ specinit:       SPECIES varmaybeis {g_registry.SetConstness(constDEFAULT); g_reg
         ;
 
 geneProductInit:       GENEPRODUCT varmaybeis {if ($2->SetType(varGeneProduct)) YYABORT; }
-
+        |              geneProductInit ',' varmaybeis {if ($3->SetType(varGeneProduct)) YYABORT;}
 
 formulainit:    FORMULA varmaybeis {g_registry.SetConstness(constDEFAULT); $2->SetRegConst(); if ($2->SetType(varFormulaUndef)) YYABORT; }
         |       VARWORD FORMULA varmaybeis {g_registry.SetConstness(constVAR); $3->SetRegConst(); if ($3->SetType(varFormulaUndef)) YYABORT; }

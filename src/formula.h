@@ -57,6 +57,7 @@ public:
   bool IsEllipsesOnly() const;
   bool IsSingleVariable() const;
   bool IsOneComponent() const;
+  bool isValidGeneProductAssociation() const;
   bool GetIsConst() const;
   bool CheckIncludes(std::string modname, const ReactantList* rlist) const;
   bool ContainsVar(std::string modname, std::vector<std::string> vname) const;

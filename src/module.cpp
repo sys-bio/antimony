@@ -871,6 +871,7 @@ void Module::AddDefaultInitialValues()
     case varAlgebraicRule:
     case varLayoutColorEtc:
     case varGeneProduct:
+    case varGeneProductAssociation:
         break;
     }
   }
@@ -1325,7 +1326,8 @@ bool Module::Finalize()
           case varAlgebraicRule:
           case varLayoutColorEtc:
           case varGeneProduct:
-              g_registry.SetError("Unable to add layout or render information to " + m_variables[var]->GetNameDelimitedBy(".") + ":  only species, reactions, and compartments can be visualized, and this element is of type '" + VarTypeToString(m_variables[var]->GetType()) + "'.");
+          case varGeneProductAssociation:
+            g_registry.SetError("Unable to add layout or render information to " + m_variables[var]->GetNameDelimitedBy(".") + ":  only species, reactions, and compartments can be visualized, and this element is of type '" + VarTypeToString(m_variables[var]->GetType()) + "'.");
               return true;
           }
           m_autolayout.use = true;
@@ -1507,7 +1509,7 @@ bool Module::Finalize()
       }
 #endif
     }
-    if (variable->GetType() == varGeneProduct) {
+    if (variable->GetType() == varGeneProduct || variable->GetType() == varGeneProductAssociation) {
         m_hasFBC = true;
         m_sbmlnamespaces.addPackageNamespace("fbc", m_fbcLevel);
     }
@@ -1718,114 +1720,62 @@ Variable* Module::GetNthVariableOfType(return_type rtype, size_t n, bool comp)
 
 bool Module::AreEquivalent(return_type rtype, var_type vtype) const
 {
-    switch (rtype) {
-    case allSpecies:
-    case varSpecies:
-    case constSpecies:
-        if (vtype == varSpeciesUndef) {
-            return true;
-        }
-        return false;
-    case allFormulas:
-    case varFormulas:
-    case constFormulas:
-        if (vtype == varFormulaUndef ||
-            vtype == varDNA ||
-            vtype == varFormulaOperator) {
-            return true;
-        }
-        return false;
-    case allDNA:
-        if (vtype == varDNA ||
-            vtype == varFormulaOperator ||
-            vtype == varReactionGene) {
-            return true;
-        }
-        return false;
-    case allOperators:
-    case varOperators:
-    case constOperators:
-        if (vtype == varFormulaOperator) {
-            return true;
-        }
-        return false;
-    case allGenes:
-        if (vtype == varReactionGene) {
-            return true;
-        }
-        return false;
-    case allReactions:
-        if (vtype == varReactionGene ||
-            vtype == varReactionUndef) {
-            return true;
-        }
-        return false;
-    case allInteractions:
-        if (vtype == varInteraction) {
-            return true;
-        }
-        return false;
-    case allUnknown:
-        if (vtype == varUndefined) {
-            return true;
-        }
-        return false;
-    case subModules:
-        if (vtype == varModule) {
-            return true;
-        }
-        return false;
-    case allSymbols:
-        return true;
-    case allEvents:
-        if (vtype == varEvent) {
-            return true;
-        }
-        return false;
-    case expandedStrands:
-    case modularStrands:
-        if (vtype == varStrand) {
-            return true;
-        }
-        return false;
-    case allCompartments:
-    case varCompartments:
-    case constCompartments:
-        if (vtype == varCompartment) {
-            return true;
-        }
-        return false;
-    case allUnits:
-        if (vtype == varUnitDefinition) {
-            return true;
-        }
-        return false;
-    case allDeleted:
-        if (vtype == varDeleted) {
-            return true;
-        }
-        return false;
-    case allConstraints:
-        if (vtype == varConstraint) {
-            return true;
-        }
-        return false;
-    case allStoichiometries:
-        if (vtype == varStoichiometry) {
-            return true;
-        }
-        return false;
-    case allAlgebraicRules:
-        if (vtype == varAlgebraicRule) {
-            return true;
-        }
-        return false;
-    case allGeneProducts:
-        if (vtype == varGeneProduct) {
-            return true;
-        }
-        return false;
-    }
+  switch (rtype) {
+  case allSpecies:
+  case varSpecies:
+  case constSpecies:
+    return (vtype == varSpeciesUndef);
+  case allFormulas:
+  case varFormulas:
+  case constFormulas:
+    return (vtype == varFormulaUndef ||
+      vtype == varDNA ||
+      vtype == varFormulaOperator);
+  case allDNA:
+    return (vtype == varDNA ||
+      vtype == varFormulaOperator ||
+      vtype == varReactionGene);
+  case allOperators:
+  case varOperators:
+  case constOperators:
+    return (vtype == varFormulaOperator);
+  case allGenes:
+    return (vtype == varReactionGene);
+  case allReactions:
+    return (vtype == varReactionGene ||
+      vtype == varReactionUndef);
+  case allInteractions:
+    return (vtype == varInteraction);
+  case allUnknown:
+    return (vtype == varUndefined) ;
+  case subModules:
+    return (vtype == varModule);
+  case allSymbols:
+    return true;
+  case allEvents:
+    return (vtype == varEvent);
+  case expandedStrands:
+  case modularStrands:
+    return (vtype == varStrand);
+  case allCompartments:
+  case varCompartments:
+  case constCompartments:
+    return (vtype == varCompartment);
+  case allUnits:
+    return  (vtype == varUnitDefinition);
+  case allDeleted:
+    return (vtype == varDeleted);
+  case allConstraints:
+    return (vtype == varConstraint);
+  case allStoichiometries:
+    return (vtype == varStoichiometry);
+  case allAlgebraicRules:
+    return (vtype == varAlgebraicRule);
+  case allGeneProducts:
+    return (vtype == varGeneProduct);
+  case allGeneProductAssociations:
+    return (vtype == varGeneProductAssociation);
+  }
   //This is just to to get compiler warnings if we switch vtype later, so
   // we remember to change the rest of this function:
   switch(vtype) {
@@ -1889,6 +1839,7 @@ bool Module::AreEquivalent(return_type rtype, bool isconst) const
   case allConstraints:
   case allAlgebraicRules:
   case allGeneProducts:
+  case allGeneProductAssociations:
     return true;
   }
   assert(false); //uncaught return_type
@@ -1913,16 +1864,22 @@ string Module::OutputOnly(vector<var_type> types, string name, string indent, st
     if (matches) {
       const Formula* form = var->GetFormula();
       formula_type ftype = var->GetFormulaType();
-      if (form != NULL && !form->IsEllipsesOnly() && (ftype==formulaINITIAL || ftype==formulaRATE)) {
+      if (form != NULL && !form->IsEllipsesOnly() && (ftype == formulaINITIAL || ftype == formulaRATE)) {
         if (OrigFormulaIsAlready(var, origmap, form)) continue;
-        if (type == varGeneProduct && var->GetFormula()->IsEmpty()) continue;
+        if ((type == varGeneProduct || type == varGeneProductAssociation)
+          && var->GetFormula()->IsEmpty()) {
+          continue;
+        }
         if (firstone) {
           retval += "\n" + indent + "// " + name + ":\n";
           firstone = false;
         }
         string name = var->GetNameDelimitedBy(cc);
         if (type == varGeneProduct) {
-            name += ".associatedSpecies";
+          name += ".associatedSpecies";
+        }
+        else if (type == varGeneProductAssociation) {
+          name.replace(name.find("-gpa"), 4, ".geneProductAssociation");
         }
         retval += indent + name + " = " + form->ToDelimitedStringWithEllipses(cc) + ";\n";
       }
@@ -2292,17 +2249,16 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
   //Then gene products:
   vector<string> geneproduct_names;
   for (size_t var = 0; var < m_uniquevars.size(); var++) {
-      if (m_uniquevars[var]->GetType() == varGeneProduct) {
-          if (!OrigIsAlreadyGeneProduct(m_uniquevars[var], origmap, m_uniquevars[var]->GetFormula())) {
-              geneproduct_names.push_back(m_uniquevars[var]->GetNameDelimitedBy(cc));
-          }
+    if (m_uniquevars[var]->GetType() == varGeneProduct) {
+      if (!OrigIsAlreadyGeneProduct(m_uniquevars[var], origmap, m_uniquevars[var]->GetFormula())) {
+        geneproduct_names.push_back(m_uniquevars[var]->GetNameDelimitedBy(cc));
       }
+    }
   }
   if (geneproduct_names.size() > 0) {
-      retval += "\n" + indent + "// Gene Products:\n";
+    retval += "\n" + indent + "// Gene Products:\n";
   }
   retval += ListIn80Cols("geneProduct", geneproduct_names, indent);
-
 
   //Then species:
   vector<var_type> types;
@@ -2322,6 +2278,11 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
   types.push_back(varDNA);
   types.push_back(varStoichiometry);
   retval += OutputOnly(types, "Variable initializations", indent, cc, origmap);
+
+  //The gene product associations:
+  types.clear();
+  types.push_back(varGeneProductAssociation);
+  retval += OutputOnly(types, "Gene product associations", indent, cc, origmap);
 
   //The associated species of gene products:
   types.clear();
@@ -2407,7 +2368,8 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
     case varAlgebraicRule:
     case varLayoutColorEtc:
     case varGeneProduct:
-        break;
+    case varGeneProductAssociation:
+      break;
     }
   }
 
@@ -2927,12 +2889,20 @@ bool Module::OrigIsAlreadyUnitDef(const Variable* var, const map<const Variable*
   return (origmapiter->second.GetUnitDef()->ToStringDelimitedBy(cc) == unitdef);
 }
 
-bool Module::OrigIsAlreadyGeneProduct(const Variable* var, const map<const Variable*, Variable>& origmap, const Formula* associatedSpecies) const
+bool Module::OrigIsAlreadyGeneProduct(const Variable* var, const map<const Variable*, Variable>& origmap, const Formula* form) const
 {
     map<const Variable*, Variable >::const_iterator origmapiter = origmap.find(var);
     if (origmapiter == origmap.end()) return false;
-    if (origmapiter->second.GetType() != varUnitDefinition) return false;
-    return (origmapiter->second.GetFormula()->Matches(associatedSpecies));
+    if (origmapiter->second.GetType() != varGeneProduct) return false;
+    return (origmapiter->second.GetFormula()->Matches(form));
+}
+
+bool Module::OrigIsAlreadyGeneProductAssociation(const Variable* var, const map<const Variable*, Variable>& origmap, const Formula* form) const
+{
+  map<const Variable*, Variable >::const_iterator origmapiter = origmap.find(var);
+  if (origmapiter == origmap.end()) return false;
+  if (origmapiter->second.GetType() != varGeneProductAssociation) return false;
+  return (origmapiter->second.GetFormula()->Matches(form));
 }
 
 bool Module::OrigDisplayNameIsAlready(const Variable* var, const map<const Variable*, Variable>& origmap) const
@@ -3037,6 +3007,7 @@ void Module::Convert(Variable* conv, Variable* cf, string modulename)
     case varStoichiometry:
     case varAlgebraicRule:
     case varGeneProduct:
+    case varGeneProductAssociation:
       form = subvar->GetFormula();
       origform = *origsubvar->GetFormula();
       for (size_t vn=m_variablename.size() - origsubvar->GetName().size() + 1; vn > 0; vn--) {
@@ -3115,6 +3086,7 @@ void Module::ConvertTime(Variable* tcf)
     case varLayoutWrapper:
     case varLayoutColorEtc:
     case varGeneProduct:
+    case varGeneProductAssociation:
         break;
     }
   }
@@ -3153,6 +3125,7 @@ void Module::ConvertExtent(Variable* xcf)
     case varAlgebraicRule:
     case varLayoutColorEtc:
     case varGeneProduct:
+    case varGeneProductAssociation:
         break;
     }
   }
@@ -3195,7 +3168,8 @@ void Module::UndoTimeExtentConversions(Variable* tcf, Variable* xcf)
     case varLayoutWrapper:
     case varLayoutColorEtc:
     case varGeneProduct:
-        break;
+    case varGeneProductAssociation:
+      break;
     }
   }
 }

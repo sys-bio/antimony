@@ -213,6 +213,20 @@ START_TEST (test_fluxes_and_objectives)
 }
 END_TEST
 
+START_TEST(test_geneProducts)
+{
+  compareFBCAnt("geneProducts");
+  compareFBCSBML("geneProducts");
+}
+END_TEST
+
+START_TEST(test_geneProductAssociations)
+{
+  compareFBCAnt("geneProductAssociations");
+  compareFBCSBML("geneProductAssociations");
+}
+END_TEST
+
 
 Suite *
 create_suite_FBC(void)
@@ -238,6 +252,8 @@ create_suite_FBC(void)
   tcase_add_test( tcase, test_formula_objective2);
   tcase_add_test( tcase, test_simple_flux_and_objective);
   tcase_add_test( tcase, test_fluxes_and_objectives);
+  tcase_add_test( tcase, test_geneProducts);
+  tcase_add_test( tcase, test_geneProductAssociations);
 
   suite_add_tcase(suite, tcase);
 
