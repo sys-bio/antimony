@@ -1585,8 +1585,17 @@ void Module::LoadSBML(Model* sbml)
         }
         form.AddVariable(rxn);
         if (fluxobj->getVariableType() == FBC_VARIABLE_TYPE_QUADRATIC) {
-          form.AddMathThing('^');
-          form.AddNum(2);
+          if (fluxobj->isSetReaction2()) {
+            form.AddMathThing('*');
+            rxnname.clear();
+            rxnname.push_back(fluxobj->getReaction2());
+            rxn = GetVariable(rxnname);
+            form.AddVariable(rxn);
+          }
+          else {
+            form.AddMathThing('^');
+            form.AddNum(2);
+          }
         }
       }
       varobj->SetFormula(&form, true);
