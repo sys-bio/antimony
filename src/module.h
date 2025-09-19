@@ -324,6 +324,7 @@ private:
   bool OrigIsAlreadyUnitDef(const Variable* var, const std::map<const Variable*, Variable>& origmap, std::string unitdef) const;
   bool OrigIsAlreadyGeneProduct(const Variable* var, const std::map<const Variable*, Variable>& origmap, const Formula* associatedSpecies) const;
   bool OrigIsAlreadyGeneProductAssociation(const Variable* var, const std::map<const Variable*, Variable>& origmap, const Formula* associatedSpecies) const;
+  bool OrigIsAlreadySpeciesCharge(const Variable* var, const std::map<const Variable*, Variable>& origmap, const Formula* form) const;
   bool OrigDisplayNameIsAlready(const Variable* var, const std::map<const Variable*, Variable>& origmap) const;
   bool OrigMatches(const Variable* var, const std::map<const Variable*, Variable>& origmap, var_type type, const_type isconst, const Variable* comp) const;
   const Variable* GetNthConstVariableOfType(return_type rtype, size_t n, bool comp) const;

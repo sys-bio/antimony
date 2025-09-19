@@ -246,7 +246,9 @@ void Module::FindOrCreateLocalVersionOf(const Variable* var, libsbml::Model* sbm
   case varLayoutColorEtc:
   case varGeneProduct:
   case varGeneProductAssociation:
-      assert(false); //Unhandled type
+  case varSpeciesCharge:
+  case varSpeciesChemicalFormula:
+    assert(false); //Unhandled type
     break;
   }
   vector<string> varname = var->GetName();
@@ -1260,6 +1262,23 @@ void Module::LoadSBML(Model* sbml)
       var->SetUnitVariable(concentrationUnits);
     }
     TranslateRulesAndAssignmentsTo(species, var);
+    const FbcSpeciesPlugin* fsp = static_cast<const FbcSpeciesPlugin*>(species->getPlugin("fbc"));
+    if (fsp) {
+      if (fsp->isSetCharge()) {
+        string chargeid = sbmlname + "-charge";
+        Variable* spec_charge = AddOrFindVariable(&chargeid);
+        spec_charge->SetType(varSpeciesCharge);
+        formula.Clear();
+        formula.AddNum(fsp->getChargeAsDouble());
+        spec_charge->SetFormula(&formula);
+      }
+      if (fsp->isSetChemicalFormula()) {
+        string formid = sbmlname + "-formula";
+        Variable* spec_form= AddOrFindVariable(&formid);
+        spec_form->SetType(varSpeciesChemicalFormula);
+        spec_form->SetDisplayName(fsp->getChemicalFormula());
+      }
+    }
   }
 
   //Events:
@@ -2510,6 +2529,39 @@ void Module::CreateSBMLModel(bool comp)
     gpa->setName(name);
     //This might fail if 'name' is the wrong format, but otherwise we can't set an ID at all.
     gpa->setId(name);
+  }
+
+
+  //FBC species charges:
+  size_t numcharges = GetNumVariablesOfType(allSpeciesFbcInfo, comp);
+  for (size_t ar = 0; ar < numcharges; ar++) {
+    const Variable* spec_fbc = GetNthVariableOfType(allSpeciesFbcInfo, ar, comp);
+    if (spec_fbc->GetType() == varSpeciesCharge) {
+
+      string specname = spec_fbc->GetNameDelimitedBy(cc);
+      specname.replace(specname.find("-charge"), 7, "");
+      Species* spec = sbmlmod->getSpecies(specname);
+      if (spec == NULL) {
+        g_registry.SetError("Couldn't find the species associated with the species charge '" + spec_fbc->GetNameDelimitedBy(cc) + "'.");
+        assert(false); //Shouldn't get this?
+      }
+      FbcSpeciesPlugin* fsp = static_cast<FbcSpeciesPlugin*>(spec->getPlugin("fbc"));
+      assert(fsp != NULL);
+      fsp->setCharge(spec_fbc->GetFormula()->GetDouble());
+    }
+    else {
+      assert(spec_fbc->GetType() == varSpeciesChemicalFormula);
+      string specname = spec_fbc->GetNameDelimitedBy(cc);
+      specname.replace(specname.find("-formula"), 8, "");
+      Species* spec = sbmlmod->getSpecies(specname);
+      if (spec == NULL) {
+        g_registry.SetError("Couldn't find the species associated with the species chemical formula '" + spec_fbc->GetNameDelimitedBy(cc) + "'.");
+        assert(false); //Shouldn't get this?
+      }
+      FbcSpeciesPlugin* fsp = static_cast<FbcSpeciesPlugin*>(spec->getPlugin("fbc"));
+      assert(fsp != NULL);
+      fsp->setChemicalFormula(spec_fbc->GetDisplayName());
+    }
   }
 
 
@@ -3923,7 +3975,9 @@ void Module::LoadLayout(Model* sbml)
             case varAlgebraicRule:
             case varGeneProduct:
             case varGeneProductAssociation:
-                continue;
+            case varSpeciesCharge:
+            case varSpeciesChemicalFormula:
+              continue;
             }
             string varid = var->GetNameDelimitedBy("_");
 

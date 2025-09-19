@@ -872,7 +872,9 @@ void Module::AddDefaultInitialValues()
     case varLayoutColorEtc:
     case varGeneProduct:
     case varGeneProductAssociation:
-        break;
+    case varSpeciesCharge:
+    case varSpeciesChemicalFormula:
+      break;
     }
   }
 }
@@ -1327,6 +1329,8 @@ bool Module::Finalize()
           case varLayoutColorEtc:
           case varGeneProduct:
           case varGeneProductAssociation:
+          case varSpeciesCharge:
+          case varSpeciesChemicalFormula:
             g_registry.SetError("Unable to add layout or render information to " + m_variables[var]->GetNameDelimitedBy(".") + ":  only species, reactions, and compartments can be visualized, and this element is of type '" + VarTypeToString(m_variables[var]->GetType()) + "'.");
               return true;
           }
@@ -1509,7 +1513,9 @@ bool Module::Finalize()
       }
 #endif
     }
-    if (variable->GetType() == varGeneProduct || variable->GetType() == varGeneProductAssociation) {
+    var_type vtype = variable->GetType();
+    if (vtype == varGeneProduct || vtype == varGeneProductAssociation
+      || vtype == varSpeciesCharge || vtype == varSpeciesChemicalFormula) {
         m_hasFBC = true;
         m_sbmlnamespaces.addPackageNamespace("fbc", m_fbcLevel);
     }
@@ -1775,6 +1781,8 @@ bool Module::AreEquivalent(return_type rtype, var_type vtype) const
     return (vtype == varGeneProduct);
   case allGeneProductAssociations:
     return (vtype == varGeneProductAssociation);
+  case allSpeciesFbcInfo:
+    return (vtype == varSpeciesCharge || vtype == varSpeciesChemicalFormula);
   }
   //This is just to to get compiler warnings if we switch vtype later, so
   // we remember to change the rest of this function:
@@ -1840,6 +1848,7 @@ bool Module::AreEquivalent(return_type rtype, bool isconst) const
   case allAlgebraicRules:
   case allGeneProducts:
   case allGeneProductAssociations:
+  case allSpeciesFbcInfo:
     return true;
   }
   assert(false); //uncaught return_type
@@ -1880,6 +1889,9 @@ string Module::OutputOnly(vector<var_type> types, string name, string indent, st
         }
         else if (type == varGeneProductAssociation) {
           name.replace(name.find("-gpa"), 4, ".geneProductAssociation");
+        }
+        else if (type == varSpeciesCharge) {
+          name.replace(name.find("-charge"), 7, ".charge");
         }
         retval += indent + name + " = " + form->ToDelimitedStringWithEllipses(cc) + ";\n";
       }
@@ -2284,6 +2296,11 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
   types.push_back(varGeneProductAssociation);
   retval += OutputOnly(types, "Gene product associations", indent, cc, origmap);
 
+  //The species charges:
+  types.clear();
+  types.push_back(varSpeciesCharge);
+  retval += OutputOnly(types, "Species charges", indent, cc, origmap);
+
   //The associated species of gene products:
   types.clear();
   types.push_back(varGeneProduct);
@@ -2369,6 +2386,8 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
     case varLayoutColorEtc:
     case varGeneProduct:
     case varGeneProductAssociation:
+    case varSpeciesCharge:
+    case varSpeciesChemicalFormula:
       break;
     }
   }
@@ -2420,7 +2439,15 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
           retval += "\n" + indent + "// Display Names:\n";
           anydisplay = true;
       }
-      retval += indent + m_uniquevars[var]->GetNameDelimitedBy(cc) + " is " + quoteText(m_uniquevars[var]->GetDisplayName()) + ";\n";
+      string dn_id = m_uniquevars[var]->GetNameDelimitedBy(cc);
+      var_type vtype = m_uniquevars[var]->GetType();
+      if (vtype == varGeneProductAssociation) {
+        dn_id.replace(dn_id.find("-gpa"), 4, ".geneProductAssociation");
+      }
+      if (vtype == varSpeciesChemicalFormula) {
+        dn_id.replace(dn_id.find("-formula"), 8, ".formula");
+      }
+      retval += indent + dn_id + " is " + quoteText(m_uniquevars[var]->GetDisplayName()) + ";\n";
   }
 
   if (m_autolayout.use) {
@@ -2905,6 +2932,14 @@ bool Module::OrigIsAlreadyGeneProductAssociation(const Variable* var, const map<
   return (origmapiter->second.GetFormula()->Matches(form));
 }
 
+bool Module::OrigIsAlreadySpeciesCharge(const Variable* var, const map<const Variable*, Variable>& origmap, const Formula* form) const
+{
+  map<const Variable*, Variable >::const_iterator origmapiter = origmap.find(var);
+  if (origmapiter == origmap.end()) return false;
+  if (origmapiter->second.GetType() != varSpeciesCharge) return false;
+  return (origmapiter->second.GetFormula()->Matches(form));
+}
+
 bool Module::OrigDisplayNameIsAlready(const Variable* var, const map<const Variable*, Variable>& origmap) const
 {
   if (var->GetDisplayName() == "") return true;
@@ -3008,6 +3043,7 @@ void Module::Convert(Variable* conv, Variable* cf, string modulename)
     case varAlgebraicRule:
     case varGeneProduct:
     case varGeneProductAssociation:
+    case varSpeciesCharge:
       form = subvar->GetFormula();
       origform = *origsubvar->GetFormula();
       for (size_t vn=m_variablename.size() - origsubvar->GetName().size() + 1; vn > 0; vn--) {
@@ -3042,7 +3078,8 @@ void Module::Convert(Variable* conv, Variable* cf, string modulename)
     case varUncertWrapper:
     case varLayoutWrapper:
     case varLayoutColorEtc:
-        break;
+    case varSpeciesChemicalFormula:
+      break;
     }
   }
 }
@@ -3087,7 +3124,9 @@ void Module::ConvertTime(Variable* tcf)
     case varLayoutColorEtc:
     case varGeneProduct:
     case varGeneProductAssociation:
-        break;
+    case varSpeciesCharge:
+    case varSpeciesChemicalFormula:
+      break;
     }
   }
 }
@@ -3126,7 +3165,9 @@ void Module::ConvertExtent(Variable* xcf)
     case varLayoutColorEtc:
     case varGeneProduct:
     case varGeneProductAssociation:
-        break;
+    case varSpeciesCharge:
+    case varSpeciesChemicalFormula:
+      break;
     }
   }
 }
@@ -3169,6 +3210,8 @@ void Module::UndoTimeExtentConversions(Variable* tcf, Variable* xcf)
     case varLayoutColorEtc:
     case varGeneProduct:
     case varGeneProductAssociation:
+    case varSpeciesCharge:
+    case varSpeciesChemicalFormula:
       break;
     }
   }

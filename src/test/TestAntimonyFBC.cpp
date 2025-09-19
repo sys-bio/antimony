@@ -227,6 +227,20 @@ START_TEST(test_geneProductAssociations)
 }
 END_TEST
 
+START_TEST(test_chemicalFormula)
+{
+  compareFBCAnt("chemicalFormula");
+  compareFBCSBML("chemicalFormula");
+}
+END_TEST
+
+START_TEST(test_charge)
+{
+  compareFBCAnt("charge");
+  compareFBCSBML("charge");
+}
+END_TEST
+
 
 Suite *
 create_suite_FBC(void)
@@ -254,6 +268,8 @@ create_suite_FBC(void)
   tcase_add_test( tcase, test_fluxes_and_objectives);
   tcase_add_test( tcase, test_geneProducts);
   tcase_add_test( tcase, test_geneProductAssociations);
+  tcase_add_test( tcase, test_chemicalFormula);
+  tcase_add_test( tcase, test_charge);
 
   suite_add_tcase(suite, tcase);
 

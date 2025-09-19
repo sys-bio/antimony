@@ -247,6 +247,15 @@ variable:       ANTWORD {$$ = g_registry.AddVariableToCurrent($1); }
                   }
                 }
         |       '$' variable {$$ = $2; if ($$->SetIsConst(true)) YYABORT;}
+        |       variable '.' FORMULA {string formula = "formula";
+                  $$ = $1->GetSubVariable(&formula);
+                  if ($$ == NULL) {
+                    if (g_registry.GetError().empty()) {
+                      g_registry.SetError("'" + *($3) + "' is not a subvariable of '" + $1->GetNameDelimitedBy(".") + "'.");
+                    }
+                    YYABORT;
+                  }
+                }
         ;
 
 variablein:     variable INWORD variable {if ($1->SetCompartment($3)) YYABORT; $$ = $1;}
