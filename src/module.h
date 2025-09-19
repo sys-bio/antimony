@@ -96,6 +96,8 @@ private:
   std::string m_libsbml_info;
   std::string m_libsbml_warnings;
   bool m_hasFBC;
+  bool m_fbcIsStrict;
+  int  m_fbcLevel;
   autolayout m_autolayout;
   layout m_layout;
   std::vector<LayoutWrapper*>  m_defaultLayouts;
@@ -238,6 +240,7 @@ public:
   void TranslateRulesAndAssignmentsTo(const libsbml::SBase* obj, Variable* var);
   //void  LoadSBML(const SBMLDocument* sbmldoc);
   void  LoadSBML(libsbml::Model* sbml);
+  void  fixFBCStrictIfNeeded();
   const libsbml::SBMLDocument* GetSBML(bool comp);
   libsbml::Model* GetModelIfCreated();
   void  CreateSBMLModel(bool comp);
@@ -319,6 +322,9 @@ private:
   bool OrigEventIsAlready(const Variable* var, const std::map<const Variable*, Variable>& origmap, const AntimonyEvent* event) const;
   bool OrigConstraintIsAlready(const Variable* var, const std::map<const Variable*, Variable>& origmap, const AntimonyConstraint* constraint) const;
   bool OrigIsAlreadyUnitDef(const Variable* var, const std::map<const Variable*, Variable>& origmap, std::string unitdef) const;
+  bool OrigIsAlreadyGeneProduct(const Variable* var, const std::map<const Variable*, Variable>& origmap, const Formula* associatedSpecies) const;
+  bool OrigIsAlreadyGeneProductAssociation(const Variable* var, const std::map<const Variable*, Variable>& origmap, const Formula* associatedSpecies) const;
+  bool OrigIsAlreadySpeciesCharge(const Variable* var, const std::map<const Variable*, Variable>& origmap, const Formula* form) const;
   bool OrigDisplayNameIsAlready(const Variable* var, const std::map<const Variable*, Variable>& origmap) const;
   bool OrigMatches(const Variable* var, const std::map<const Variable*, Variable>& origmap, var_type type, const_type isconst, const Variable* comp) const;
   const Variable* GetNthConstVariableOfType(return_type rtype, size_t n, bool comp) const;

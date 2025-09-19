@@ -423,6 +423,7 @@ bool FixName(string& name)
   "formula",
   "function",
   "gene",
+  "geneProduct",
   "has",
   "import",
   "in",
@@ -550,7 +551,7 @@ bool FixName(string& name)
   , "extent"
   , "time_unit"
   };
-  for (size_t kw=0; kw<126; kw++) {
+  for (size_t kw=0; kw<127; kw++) {
     if (CaselessStrCmp(false, name, keywords[kw])) {
       name += "_";
       return true;
@@ -695,7 +696,7 @@ std::string elideMetaIdsFromSBMLstring(std::string sbml)
 {
   SBMLReader reader;
   SBMLDocument* d = reader.readSBMLFromString(sbml);
-  if (d->getNumErrors()) {
+  if (d->getNumErrors(LIBSBML_SEV_ERROR)) {
     g_registry.SetError("elideMetaIdsFromSBMLstring: Could not read sbml from string");
     return sbml;
   }

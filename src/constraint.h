@@ -6,9 +6,6 @@
 #include <vector>
 #include "enums.h"
 #include "formula.h"
-#ifdef LIBSBML_HAS_PACKAGE_FBC
-#include <sbml/packages/fbc/sbml/FluxBound.h>
-#endif
 
 class Variable;
 
@@ -26,9 +23,9 @@ private:
   libsbml::ASTNode* m_astnode;
 #endif
 #ifdef LIBSBML_HAS_PACKAGE_FBC
-  bool m_isSetFB;
-  libsbml::FluxBound m_fbLeft;
-  libsbml::FluxBound m_fbRight;
+  std::string m_rxnId;
+  Formula m_fbUpper;
+  Formula m_fbLower;
 #endif
 
 public:
@@ -66,11 +63,12 @@ public:
   const libsbml::ASTNode* getASTNode() const;
 #ifdef LIBSBML_HAS_PACKAGE_FBC
   bool calculateFluxBounds();
-  void addFluxBounds(libsbml::Model* sbml) const;
-  bool ContainsFlux(const libsbml::FluxBound* fb) const;
-  void SetFromFluxBound(const libsbml::FluxBound* fb);
-  libsbml::FluxBound GetFluxBoundFrom(const libsbml::ASTNode* node) const;
+  bool isFluxBound() const;
+  void addFluxBounds(libsbml::Model* model) const;
   bool IsReactionID(const std::string& rxnid) const;
+  void SetLowerFBFormula(Variable* var);
+  void SetUpperFBFormula(Variable* var);
+  void setReactionId(const std::string& rxnid);
 #endif
 #endif
 };

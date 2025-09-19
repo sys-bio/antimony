@@ -14,6 +14,10 @@
 #include <sbml/conversion/SBMLFunctionDefinitionConverter.h>
 #endif
 
+#ifdef LIBSBML_HAS_PACKAGE_FBC
+#include <sbml/packages/fbc/util/FbcV1ToV2Converter.h>
+#endif
+
 #ifndef NCELLML
 #include "cellmlx.h"
 #endif
@@ -317,6 +321,14 @@ void LoadSBML(SBMLDocument* doc)
         int cret = converter->convert();
         delete converter;
     }
+#ifdef LIBSBML_HAS_PACKAGE_FBC
+    if (doc->getPlugin("fbc") != NULL) {
+        SBMLConverter* converter = new FbcV1ToV2Converter();
+        converter->setDocument(doc);
+        int cret = converter->convert();
+        delete converter;
+    }
+#endif
 #ifdef USE_COMP
   string mainsbmlname = getNameFromSBMLObject(doc->getModel(), "doc");
   FixName(mainsbmlname);
@@ -1726,6 +1738,13 @@ LIB_EXTERN return_type getTypeOfSymbol(const char* moduleName, const char* symbo
     return allReactions;
   case varInteraction:
     return allInteractions;
+  case varGeneProduct:
+    return allGeneProducts;
+  case varGeneProductAssociation:
+    return allGeneProductAssociations;
+  case varSpeciesCharge:
+  case varSpeciesChemicalFormula:
+    return allSpeciesFbcInfo;
   case varUndefined:
   case varSboTermWrapper:
   case varUncertWrapper:

@@ -57,6 +57,7 @@ public:
   bool IsEllipsesOnly() const;
   bool IsSingleVariable() const;
   bool IsOneComponent() const;
+  bool isValidGeneProductAssociation() const;
   bool GetIsConst() const;
   bool CheckIncludes(std::string modname, const ReactantList* rlist) const;
   bool ContainsVar(std::string modname, std::vector<std::string> vname) const;
@@ -76,7 +77,7 @@ public:
   double      ToAmount() const;
   std::string ConvertOneSymbolToFunction(std::string formula) const;
   std::vector<const Variable*> GetVariablesFrom(std::string formula, std::string module) const;
-  std::vector<Variable*> GetVariables();
+  std::vector<Variable*> GetVariables() const;
   std::vector<std::vector<std::string> > GetVariableStrings() const;
 
   void FixNames(std::string modname);
@@ -97,7 +98,7 @@ public:
   void AddFluxObjective(libsbml::Model* sbmlmod, bool maximize, const Variable* var) const;
   bool IsValidObjectiveFunction() const;
   bool IsValidObjectiveFunction(const libsbml::ASTNode* astn) const;
-  void GetObjectivesFromAST(const libsbml::ASTNode* astn, std::vector<std::pair<std::string, double> >& objectives) const;
+  void GetObjectivesFromAST(const libsbml::ASTNode* astn, std::vector<libsbml::FluxObjective >& objectives) const;
 #endif
 
   bool ClearReferencesTo(Variable* deletedvar);

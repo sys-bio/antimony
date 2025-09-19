@@ -35,7 +35,11 @@ bool IsReaction(const var_type vtype)
   case varStoichiometry:
   case varAlgebraicRule:
   case varLayoutColorEtc:
-      return false;
+  case varGeneProduct:
+  case varGeneProductAssociation:
+  case varSpeciesCharge:
+  case varSpeciesChemicalFormula:
+    return false;
   }
   assert(false); //uncaught vtype
   return false;
@@ -81,7 +85,11 @@ bool IsSpecies(const var_type vtype)
   case varStoichiometry:
   case varAlgebraicRule:
   case varLayoutColorEtc:
-      return false;
+  case varGeneProduct:
+  case varGeneProductAssociation:
+  case varSpeciesCharge:
+  case varSpeciesChemicalFormula:
+    return false;
   }
   assert(false); //uncaught vtype
   return false;
@@ -112,7 +120,11 @@ bool IsDNA(const var_type vtype)
   case varStoichiometry:
   case varAlgebraicRule:
   case varLayoutColorEtc:
-      return false;
+  case varGeneProduct:
+  case varGeneProductAssociation:
+  case varSpeciesCharge:
+  case varSpeciesChemicalFormula:
+    return false;
   }
   assert(false); //uncaught vtype
   return false;
@@ -143,7 +155,11 @@ bool CanHaveRateRule(const var_type vtype)
   case varUncertWrapper:
   case varLayoutWrapper:
   case varAlgebraicRule:
-      return false;
+  case varGeneProduct:
+  case varGeneProductAssociation:
+  case varSpeciesCharge:
+  case varSpeciesChemicalFormula:
+    return false;
   }
   assert(false); //uncaught type
   return false;
@@ -174,6 +190,10 @@ bool CanHaveAssignmentRule(const var_type vtype)
   case varUncertWrapper:
   case varLayoutWrapper:
   case varAlgebraicRule:
+  case varGeneProduct:
+  case varGeneProductAssociation:
+  case varSpeciesCharge:
+  case varSpeciesChemicalFormula:
     return false;
   }
   assert(false); //uncaught type
@@ -205,7 +225,11 @@ bool CanHaveAlgebraicRule(const var_type vtype)
     case varSboTermWrapper:
     case varUncertWrapper:
     case varLayoutWrapper:
-        return false;
+    case varGeneProduct:
+    case varGeneProductAssociation:
+    case varSpeciesCharge:
+    case varSpeciesChemicalFormula:
+      return false;
     }
     assert(false); //uncaught type
     return false;
@@ -236,7 +260,11 @@ bool CanBeInReaction(const var_type vtype)
   case varLayoutWrapper:
   case varStoichiometry:
   case varAlgebraicRule:
-      return false;
+  case varGeneProduct:
+  case varGeneProductAssociation:
+  case varSpeciesCharge:
+  case varSpeciesChemicalFormula:
+    return false;
   }
   assert(false); //uncaught type
   return false;
@@ -267,7 +295,11 @@ bool CanBeStoichiometry(const var_type vtype)
     case varUncertWrapper:
     case varLayoutWrapper:
     case varAlgebraicRule:
-        return false;
+    case varGeneProduct:
+    case varGeneProductAssociation:
+    case varSpeciesCharge:
+    case varSpeciesChemicalFormula:
+      return false;
     }
     assert(false); //uncaught type
     return false;
@@ -285,7 +317,10 @@ bool HasOrIsFormula(const var_type vtype)
   case varConstraint:
   case varStoichiometry:
   case varLayoutColorEtc:
-      return true;
+  case varGeneProduct:
+  case varGeneProductAssociation:
+  case varSpeciesCharge:
+    return true;
   case varReactionGene:
   case varReactionUndef:
   case varInteraction:
@@ -298,7 +333,8 @@ bool HasOrIsFormula(const var_type vtype)
   case varUncertWrapper:
   case varLayoutWrapper:
   case varAlgebraicRule: //Again, not for Jarnac, which doesn't do algebraic rules.
-      return false;
+  case varSpeciesChemicalFormula:
+    return false;
   }
   assert(false); //uncaught vtype
   return false;
@@ -383,6 +419,14 @@ string VarTypeToString(const var_type vtype)
     return "Reaction";
   case varReactionGene:
     return "Gene";
+  case varGeneProduct:
+    return "Gene Product";
+  case varGeneProductAssociation:
+    return "Gene Product Association";
+  case varSpeciesCharge:
+    return "Species Charge";
+  case varSpeciesChemicalFormula:
+    return "Species Chemical Formula";
   case varInteraction:
     return "Interaction";
   case varFormulaOperator:
@@ -424,7 +468,7 @@ string VarTypeToString(const var_type vtype)
 
 string ReturnTypeToString(const return_type rtype)
 {
-  switch(rtype) {
+  switch (rtype) {
   case allSymbols:
     return "all symbols";
   case allSpecies:
@@ -478,7 +522,13 @@ string ReturnTypeToString(const return_type rtype)
   case allStoichiometries:
     return "stoichiometries";
   case allAlgebraicRules:
-      return "algebraic rules";
+    return "algebraic rules";
+  case allGeneProducts:
+    return "gene products";
+  case allGeneProductAssociations:
+    return "gene product associations";
+  case allSpeciesFbcInfo:
+    return "species charges and chemical formulas";
   }
   assert(false); //uncaught type
   return "Uncaught type";

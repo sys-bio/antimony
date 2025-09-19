@@ -8,6 +8,7 @@
 #include "sbmlnetwork/features/colors/libsbmlnetwork_colors.h"
 #include "sbmlnetwork/features/styles/libsbmlnetwork_styles.h"
 #include "sbml/packages/layout/extension/LayoutModelPlugin.h"
+#include "sbml/packages/fbc/extension/FbcModelPlugin.h"
 
 using namespace libsbml;
 
@@ -243,7 +244,11 @@ void Module::FindOrCreateLocalVersionOf(const Variable* var, libsbml::Model* sbm
   case varStoichiometry:
   case varAlgebraicRule:
   case varLayoutColorEtc:
-      assert(false); //Unhandled type
+  case varGeneProduct:
+  case varGeneProductAssociation:
+  case varSpeciesCharge:
+  case varSpeciesChemicalFormula:
+    assert(false); //Unhandled type
     break;
   }
   vector<string> varname = var->GetName();
@@ -785,7 +790,7 @@ void Module::LoadSBML(Model* sbml)
 
   //Some SBML-OK names are not OK in Antimony
   FixNames(sbml);
-  if(sbml->isSetName())
+  if (sbml->isSetName())
     SetDisplayName(sbml->getName());
   PopulateCVTerms((SBase*)sbml);
   ReadAnnotationFrom(sbml);
@@ -793,7 +798,7 @@ void Module::LoadSBML(Model* sbml)
   //Load submodels
   const CompModelPlugin* mplugin = static_cast<const CompModelPlugin*>(sbml->getPlugin("comp"));
   if (mplugin != NULL) {
-    for (unsigned int sm=0; sm<mplugin->getNumSubmodels(); sm++) {
+    for (unsigned int sm = 0; sm < mplugin->getNumSubmodels(); sm++) {
       const Submodel* submodel = mplugin->getSubmodel(sm);
       string submodname = getNameFromSBMLObject(submodel, "submod");
       Variable* var = AddOrFindVariable(&submodname);
@@ -803,19 +808,19 @@ void Module::LoadSBML(Model* sbml)
       }
       var->ReadAnnotationFrom(submodel);
       string refname = submodel->getModelRef();
-      if (g_registry.GetModule(refname)==NULL) {
+      if (g_registry.GetModule(refname) == NULL) {
         g_registry.LoadModelFrom(refname, sbml->getSBMLDocument());
       }
       if (var->SetModule(&refname)) {
         g_registry.AddWarning("Unable to find submodel " + refname + ".");
       }
       var->ReadAnnotationFrom(submodel);
-      for (unsigned int d=0; d<submodel->getNumDeletions(); d++) {
+      for (unsigned int d = 0; d < submodel->getNumDeletions(); d++) {
         Deletion* deletion = const_cast<Deletion*>(submodel->getDeletion(d));
         string delname = deletion->getId();
         if (!delname.empty()) {
           delname += " ";
-          }
+        }
         SBase* target = deletion->getReferencedElement();
         if (target != NULL) {
           SBase* submodparent = target->getAncestorOfType(SBML_COMP_SUBMODEL, "comp");
@@ -842,19 +847,19 @@ void Module::LoadSBML(Model* sbml)
             var->AddDeletion(paramname, delInitialAssignment);
             deletedvar = GetVariable(paramname);
             deletedvar->SetFormula(&blankform);
-            break; 
+            break;
           case SBML_RATE_RULE:
             paramname.push_back(target->getId());
             var->AddDeletion(paramname, delRateRule);
             deletedvar = GetVariable(paramname);
             deletedvar->SetRateRule(&blankform);
-            break; 
+            break;
           case SBML_ASSIGNMENT_RULE:
             paramname.push_back(target->getId());
             var->AddDeletion(paramname, delAssignmentRule);
             deletedvar = GetVariable(paramname);
             deletedvar->SetAssignmentRule(&blankform);
-            break; 
+            break;
           case SBML_SPECIES:
           case SBML_COMPARTMENT:
           case SBML_PARAMETER:
@@ -863,14 +868,14 @@ void Module::LoadSBML(Model* sbml)
           case SBML_UNIT_DEFINITION:
           case SBML_COMP_SUBMODEL:
           case SBML_ALGEBRAIC_RULE:
-              if (!target->isSetId()) {
+            if (!target->isSetId()) {
               g_registry.AddWarning("Unable to process deletion " + delname + "from submodel " + submodname + " in model " + GetModuleName() + ", because the target " + SBMLTypeCode_toString(target->getTypeCode(), target->getPackageName().c_str()) + " element did not have an ID.");
               continue;
             }
             targetname.push_back(target->getId());
             deletedvar = GetVariable(targetname);
             if (deletedvar == NULL) {
-              assert(targetname[targetname.size()-1] == DEFAULTCOMP);
+              assert(targetname[targetname.size() - 1] == DEFAULTCOMP);
               break;
             }
             AddDeletion(deletedvar);
@@ -892,7 +897,7 @@ void Module::LoadSBML(Model* sbml)
             targetname.push_back(event->getId());
             deletedvar = GetVariable(targetname);
             assert(deletedvar != NULL);
-            switch(target->getTypeCode()) {
+            switch (target->getTypeCode()) {
             case SBML_PRIORITY:
               var->AddDeletion(targetname, delEventPriority);
               break;
@@ -993,7 +998,7 @@ void Module::LoadSBML(Model* sbml)
           default:
             //From core:
             /*
-              SBML_UNIT 	
+              SBML_UNIT
               SBML_LISTOF
             */
             //var = AddOrFindVariable(&delname);
@@ -1020,13 +1025,13 @@ void Module::LoadSBML(Model* sbml)
 
   //Function Definitions
   //This is a bit weird, since functions exist outside of modules, since they can be used in any model.  So we have to go to the registry to save them.
-  for (unsigned int func=0; func<sbml->getNumFunctionDefinitions(); func++) {
+  for (unsigned int func = 0; func < sbml->getNumFunctionDefinitions(); func++) {
     const FunctionDefinition* function = sbml->getFunctionDefinition(func);
     sbmlname = getNameFromSBMLObject(function, "_F");
     string annot = function->getAnnotationString();
     //List* allElements = const_cast<Model*>(sbml)->getAllElements();
     if (annot.find("http://sbml.org/annotations/symbols") != string::npos &&
-        annot.find("http://en.wikipedia.org/wiki/Derivative") != string::npos )
+      annot.find("http://en.wikipedia.org/wiki/Derivative") != string::npos)
     {
       //It's the special 'rateOf' function.  However, if the name is not 'rateOf' or 'rate', we need to change it to be one of those two.
       //if (sbmlname != "rateOf" && sbmlname != "rate") {
@@ -1039,7 +1044,7 @@ void Module::LoadSBML(Model* sbml)
       m_rateNames.insert(sbmlname);
       continue;
     }
-    
+
     UserFunction* uf = g_registry.GetUserFunction(sbmlname);
     bool duplicate = false;
     while (uf != NULL && !duplicate) {
@@ -1061,24 +1066,24 @@ void Module::LoadSBML(Model* sbml)
     uf->PopulateCVTerms((SBase*)function);
     uf->ReadAnnotationFrom(function);
     uf->SetDisplayName(function->getName());
-    for (unsigned int arg=0; arg<function->getNumArguments(); arg++) {
+    for (unsigned int arg = 0; arg < function->getNumArguments(); arg++) {
       string argument(parseASTNodeToString(function->getArgument(arg)));
       Variable* expvar = g_registry.AddVariableToCurrent(&argument);
       g_registry.AddVariableToCurrentExportList(expvar);
     }
     const ASTNode* astn = function->getBody();
     if (!m_usedDistributions && UsesDistrib(astn)) {
-        m_usedDistributions = true;
+      m_usedDistributions = true;
     }
     string formulastring(parseASTNodeToString(astn));
     Formula formula;
     setFormulaWithString(formulastring, &formula, uf);
     g_registry.SetUserFunction(&formula);
-    g_registry.GetNthUserFunction(g_registry.GetNumUserFunctions()-1)->FixNames();
+    g_registry.GetNthUserFunction(g_registry.GetNumUserFunctions() - 1)->FixNames();
   }
 
   //Units
-  for (unsigned int ud=0; ud<sbml->getNumUnitDefinitions(); ud++) {
+  for (unsigned int ud = 0; ud < sbml->getNumUnitDefinitions(); ud++) {
     const UnitDefinition* unitdefinition = sbml->getUnitDefinition(ud);
     sbmlname = getNameFromSBMLObject(unitdefinition, "_UD");
     FixUnitName(sbmlname);
@@ -1147,10 +1152,10 @@ void Module::LoadSBML(Model* sbml)
       var->SetUnitDef(&unitdef);
     }
   }
- 
+
   //Compartments
   set<string> defaultcompartments;
-  for (unsigned int comp=0; comp<sbml->getNumCompartments(); comp++) {
+  for (unsigned int comp = 0; comp < sbml->getNumCompartments(); comp++) {
     const Compartment* compartment = sbml->getCompartment(comp);
     sbmlname = getNameFromSBMLObject(compartment, "_C");
     if (compartment->getSBOTerm() == 410) {
@@ -1186,7 +1191,7 @@ void Module::LoadSBML(Model* sbml)
   }
 
   //Species
-  for (unsigned int spec=0; spec<sbml->getNumSpecies(); spec++) {
+  for (unsigned int spec = 0; spec < sbml->getNumSpecies(); spec++) {
     const Species* species = sbml->getSpecies(spec);
     sbmlname = getNameFromSBMLObject(species, "_S");
     Variable* var = AddOrFindVariable(&sbmlname);
@@ -1234,7 +1239,7 @@ void Module::LoadSBML(Model* sbml)
       spunits->SetType(varUnitDefinition);
       UnitDef ud(*spunits->GetUnitDef());
       UnitDef* compud = NULL;
-      if (compartment==NULL) {
+      if (compartment == NULL) {
         string volume = "volume";
         compud = AddOrFindVariable(&volume)->GetUnitDef();
       }
@@ -1257,10 +1262,27 @@ void Module::LoadSBML(Model* sbml)
       var->SetUnitVariable(concentrationUnits);
     }
     TranslateRulesAndAssignmentsTo(species, var);
+    const FbcSpeciesPlugin* fsp = static_cast<const FbcSpeciesPlugin*>(species->getPlugin("fbc"));
+    if (fsp) {
+      if (fsp->isSetCharge()) {
+        string chargeid = sbmlname + "-charge";
+        Variable* spec_charge = AddOrFindVariable(&chargeid);
+        spec_charge->SetType(varSpeciesCharge);
+        formula.Clear();
+        formula.AddNum(fsp->getChargeAsDouble());
+        spec_charge->SetFormula(&formula);
+      }
+      if (fsp->isSetChemicalFormula()) {
+        string formid = sbmlname + "-formula";
+        Variable* spec_form= AddOrFindVariable(&formid);
+        spec_form->SetType(varSpeciesChemicalFormula);
+        spec_form->SetDisplayName(fsp->getChemicalFormula());
+      }
+    }
   }
 
   //Events:
-  for (unsigned int ev=0; ev<sbml->getNumEvents(); ev++) {
+  for (unsigned int ev = 0; ev < sbml->getNumEvents(); ev++) {
     const Event* event = sbml->getEvent(ev);
     sbmlname = getNameFromSBMLObject(event, "_E");
     if (!event->isSetId()) {
@@ -1275,7 +1297,7 @@ void Module::LoadSBML(Model* sbml)
 
   //Constraints:
   vector<AntimonyConstraint> constraints;
-  for (unsigned int c=0; c<sbml->getNumConstraints(); c++) {
+  for (unsigned int c = 0; c < sbml->getNumConstraints(); c++) {
     const Constraint* constraint = sbml->getConstraint(c);
     sbmlname = getNameFromSBMLObject(constraint, "_con");
     Variable* var = AddOrFindVariable(&sbmlname);
@@ -1289,7 +1311,7 @@ void Module::LoadSBML(Model* sbml)
       AntimonyConstraint acon(var);
       const ASTNode* astn = constraint->getMath();
       if (!m_usedDistributions && UsesDistrib(astn)) {
-          m_usedDistributions = true;
+        m_usedDistributions = true;
       }
       acon.SetWithASTNode(astn);
       var->SetConstraint(&acon);
@@ -1298,7 +1320,7 @@ void Module::LoadSBML(Model* sbml)
   }
 
   //Parameters
-  for (unsigned int param=0; param<sbml->getNumParameters(); param++) {
+  for (unsigned int param = 0; param < sbml->getNumParameters(); param++) {
     const Parameter* parameter = sbml->getParameter(param);
     sbmlname = getNameFromSBMLObject(parameter, "_P");
     Variable* var = AddOrFindVariable(&sbmlname);
@@ -1324,26 +1346,25 @@ void Module::LoadSBML(Model* sbml)
 
   //Algebraic rules
   for (unsigned int r = 0; r < sbml->getNumRules(); r++) {
-      Rule* rule = sbml->getRule(r);
-      if (rule->isAlgebraic()) {
-          sbmlname = getNameFromSBMLObject(rule, "_alg");
-          Variable* var = AddOrFindVariable(&sbmlname);
-          var->PopulateCVTerms((SBase*)rule);
-          var->ReadAnnotationFrom(rule);
-          if (rule->isSetName()) {
-              var->SetDisplayName(rule->getName());
-          }
-          const ASTNode* astn = rule->getMath();
-          string formulastring = parseASTNodeToString(astn);
-          Formula formula;
-          setFormulaWithString(formulastring, &formula, this);
-          var->SetAlgebraicRule(0, &formula);
+    Rule* rule = sbml->getRule(r);
+    if (rule->isAlgebraic()) {
+      sbmlname = getNameFromSBMLObject(rule, "_alg");
+      Variable* var = AddOrFindVariable(&sbmlname);
+      var->PopulateCVTerms((SBase*)rule);
+      var->ReadAnnotationFrom(rule);
+      if (rule->isSetName()) {
+        var->SetDisplayName(rule->getName());
       }
+      const ASTNode* astn = rule->getMath();
+      string formulastring = parseASTNodeToString(astn);
+      Formula formula;
+      setFormulaWithString(formulastring, &formula, this);
+      var->SetAlgebraicRule(0, &formula);
+    }
   }
-  
 
   //Reactions
-  for (unsigned int rxn=0; rxn<sbml->getNumReactions(); rxn++) {
+  for (unsigned int rxn = 0; rxn < sbml->getNumReactions(); rxn++) {
     const Reaction* reaction = sbml->getReaction(rxn);
     sbmlname = getNameFromSBMLObject(reaction, "_J");
     Variable* var = AddOrFindVariable(&sbmlname);
@@ -1357,64 +1378,92 @@ void Module::LoadSBML(Model* sbml)
     ReactantList reactants;
     ReactantList products;
     for (int lr = 0; lr < 2; lr++) {
-        const ListOfSpeciesReferences* losr = reaction->getListOfReactants();
-        ReactantList* rl = &reactants;
-        if (lr == 1) {
-            losr = reaction->getListOfProducts();
-            rl = &products;
+      const ListOfSpeciesReferences* losr = reaction->getListOfReactants();
+      ReactantList* rl = &reactants;
+      if (lr == 1) {
+        losr = reaction->getListOfProducts();
+        rl = &products;
+      }
+      for (unsigned int react = 0; react < losr->size(); react++) {
+        const SpeciesReference* specref = static_cast<const SpeciesReference*>(losr->get(react));
+        Variable* stoichvar = NULL;
+        double stoichiometry = 1;
+        if (specref->isSetStoichiometryMath()) {
+          string reactantId = specref->getId();
+          if (reactantId.empty()) {
+            reactantId = sbmlname + "_" + specref->getSpecies() + "_stoichiometry";
+          }
+          stoichvar = AddOrFindVariable(&reactantId);
+          assert(!stoichvar->SetType(varStoichiometry)); //Since the SBML file is valid.
+          Formula formula;
+          string formulastring(parseASTNodeToString(specref->getStoichiometryMath()->getMath()));
+          setFormulaWithString(formulastring, &formula, this);
+          formula.SetNewTopNameWith(specref, GetModuleName());
+          formula.ReadAnnotationFrom(specref);
+          stoichvar->SetAssignmentRule(&formula);
         }
-        for (unsigned int react = 0; react < losr->size(); react++) {
-            const SpeciesReference* specref = static_cast<const SpeciesReference*>(losr->get(react));
-            Variable* stoichvar = NULL;
-            double stoichiometry = 1;
-            if (specref->isSetStoichiometryMath()) {
-                string reactantId = specref->getId();
-                if (reactantId.empty()) {
-                    reactantId = sbmlname + "_" + specref->getSpecies() + "_stoichiometry";
-                }
-                stoichvar = AddOrFindVariable(&reactantId);
-                assert(!stoichvar->SetType(varStoichiometry)); //Since the SBML file is valid.
-                Formula formula;
-                string formulastring(parseASTNodeToString(specref->getStoichiometryMath()->getMath()));
-                setFormulaWithString(formulastring, &formula, this);
-                formula.SetNewTopNameWith(specref, GetModuleName());
-                formula.ReadAnnotationFrom(specref);
-                stoichvar->SetAssignmentRule(&formula);
-            }
-            else if (specref->isSetIdAttribute()) {
-                stoichvar = AddOrFindVariable(&(specref->getIdAttribute()));
-                bool setret = stoichvar->SetType(varStoichiometry); //Since the SBML file is valid.
-                assert(!setret);
-                if (specref->isSetStoichiometry() && !stoichvar->HasFormula()) {
-                    Formula formula;
-                    formula.AddNum(specref->getStoichiometry());
-                    stoichvar->SetFormula(&formula);
-                }
-                TranslateRulesAndAssignmentsTo(specref, stoichvar);
-            }
-            else {
-                if (specref->isSetStoichiometry()) {
-                    stoichiometry = specref->getStoichiometry();
-                }
-            }
-            sbmlname = specref->getSpecies();
-            if (sbmlname == "") {
-                sbmlname = getNameFromSBMLObject(specref, "_S");
-            }
-            Variable* rvar = AddOrFindVariable(&sbmlname);
-            if (stoichvar) {
-                rl->AddReactant(rvar, stoichvar);
-            }
-            else {
-                rl->AddReactant(rvar, stoichiometry);
-            }
+        else if (specref->isSetIdAttribute()) {
+          stoichvar = AddOrFindVariable(&(specref->getIdAttribute()));
+          bool setret = stoichvar->SetType(varStoichiometry); //Since the SBML file is valid.
+          assert(!setret);
+          if (specref->isSetStoichiometry() && !stoichvar->HasFormula()) {
+            Formula formula;
+            formula.AddNum(specref->getStoichiometry());
+            stoichvar->SetFormula(&formula);
+          }
+          TranslateRulesAndAssignmentsTo(specref, stoichvar);
+        }
+        else {
+          if (specref->isSetStoichiometry()) {
+            stoichiometry = specref->getStoichiometry();
+          }
+        }
+        sbmlname = specref->getSpecies();
+        if (sbmlname == "") {
+          sbmlname = getNameFromSBMLObject(specref, "_S");
+        }
+        Variable* rvar = AddOrFindVariable(&sbmlname);
+        if (stoichvar) {
+          rl->AddReactant(rvar, stoichvar);
+        }
+        else {
+          rl->AddReactant(rvar, stoichiometry);
+        }
 #ifdef USE_COMP
-            const CompSBasePlugin* csbp = static_cast<const CompSBasePlugin*>(specref->getPlugin("comp"));
-            if (csbp != NULL && (csbp->getNumReplacedElements() != 0 || csbp->isSetReplacedBy())) {
-                g_registry.AddWarning("Cannot replace stoichiometries in Antimony:  all replacedElements and replacedBy children of " + specref->getSpecies() + " in reaction " + reaction->getId() + " will be ignored.");
-            }
-#endif
+        const CompSBasePlugin* csbp = static_cast<const CompSBasePlugin*>(specref->getPlugin("comp"));
+        if (csbp != NULL && (csbp->getNumReplacedElements() != 0 || csbp->isSetReplacedBy())) {
+          g_registry.AddWarning("Cannot replace stoichiometries in Antimony:  all replacedElements and replacedBy children of " + specref->getSpecies() + " in reaction " + reaction->getId() + " will be ignored.");
         }
+#endif
+        const FbcReactionPlugin* frp = static_cast<const FbcReactionPlugin*>(reaction->getPlugin("fbc"));
+        if (frp && frp->isSetGeneProductAssociation()) {
+          const GeneProductAssociation* gpa = frp->getGeneProductAssociation();
+          ASTNode* astn = gpa->getAssociationAsASTNode();
+          if (astn) {
+            string gpname = getNameFromSBMLObject(reaction, "_J") + "-gpa";
+            Variable* gpavar = AddOrFindVariable(&gpname);
+            if (gpavar->SetType(varGeneProductAssociation)) {
+              assert(false);
+            }
+            Formula form;
+            char* formula = SBML_formulaToL3String(astn);
+            setFormulaWithString(formula, &form, this);
+            delete formula;
+            if (gpavar->SetFormula(&form)) {
+              assert(false);
+            }
+            gpavar->PopulateCVTerms((SBase*)gpa);
+            gpavar->ReadAnnotationFrom(gpa);
+            if (gpa->isSetName()) {
+              gpavar->SetDisplayName(gpa->getName());
+            }
+            if (gpa->isSetId()) {
+              //We might have to ditch the name to save the ID, since there's nowhere else to store it.
+              gpavar->SetDisplayName(gpa->getId());
+            }
+          }
+        }
+      }
     }
 
     //formula
@@ -1427,11 +1476,11 @@ void Module::LoadSBML(Model* sbml)
       if (kl->isSetMath()) {
         astn = kl->getMath()->deepCopy();
       }
-      for (unsigned int localp=0; localp<kl->getNumParameters(); localp++) {
+      for (unsigned int localp = 0; localp < kl->getNumParameters(); localp++) {
         const Parameter* localparam = kl->getParameter(localp);
         string origname = localparam->getId();
 
-        //Create a new variable with a new name:
+        //ateate a new variable with a new name:
         vector<string> fullname;
         sbmlname = GetNewIDForLocalParameter(localparam);
         fullname.push_back(sbmlname);
@@ -1455,7 +1504,7 @@ void Module::LoadSBML(Model* sbml)
         formulastring = parseASTNodeToString(astn);
         setFormulaWithString(formulastring, &formula, this);
         if (!m_usedDistributions && UsesDistrib(astn)) {
-            m_usedDistributions = true;
+          m_usedDistributions = true;
         }
         delete astn;
       }
@@ -1464,7 +1513,7 @@ void Module::LoadSBML(Model* sbml)
       //If the kinetic law is empty, we can set some interactions, if there are any Modifiers.
       ReactantList right;
       right.AddReactant(var);
-      for (unsigned int mod=0; mod<reaction->getNumModifiers(); mod++) {
+      for (unsigned int mod = 0; mod < reaction->getNumModifiers(); mod++) {
         ReactantList left;
         const ModifierSpeciesReference* msr = reaction->getModifier(mod);
         string species = msr->getSpecies();
@@ -1473,28 +1522,28 @@ void Module::LoadSBML(Model* sbml)
         sbmlname = getNameFromSBMLObject(msr, "_I");
         rd_type itype = rdInfluences;
         if (msr->isSetSBOTerm()) {
-            int sboterm = msr->getSBOTerm();
+          int sboterm = msr->getSBOTerm();
           if ((sboterm == 20) ||
-              (sboterm == 206) ||
-              (sboterm == 207) ||
-              (sboterm == 597) ||
-              (sboterm == 638) ||
-              (sboterm == 639) ||
-              (sboterm == 640)) {
+            (sboterm == 206) ||
+            (sboterm == 207) ||
+            (sboterm == 597) ||
+            (sboterm == 638) ||
+            (sboterm == 639) ||
+            (sboterm == 640)) {
             itype = rdInhibits;
           }
           else if ((sboterm == 459) || //459 is the 'root' term for this family.
-              (sboterm == 13) ||
-              (sboterm == 21) ||
-              (sboterm == 460) ||
-              (sboterm == 461) ||
-              (sboterm == 462) ||
-              (sboterm == 533) ||
-              (sboterm == 534) ||
-              (sboterm == 535) ||
-              (sboterm == 636) ||
-              (sboterm == 637) ||
-              (sboterm == 671) ) {
+            (sboterm == 13) ||
+            (sboterm == 21) ||
+            (sboterm == 460) ||
+            (sboterm == 461) ||
+            (sboterm == 462) ||
+            (sboterm == 533) ||
+            (sboterm == 534) ||
+            (sboterm == 535) ||
+            (sboterm == 636) ||
+            (sboterm == 637) ||
+            (sboterm == 671)) {
             itype = rdActivates;
           }
         }
@@ -1509,42 +1558,22 @@ void Module::LoadSBML(Model* sbml)
     }
     //Put reactants, products, and the formula together:
     Variable* arxn = AddNewReaction(reactants, rxntype, products, &formula, var);
-      if (reaction->isSetCompartment()) {
-        if (defaultcompartments.find(reaction->getCompartment()) == defaultcompartments.end()) {
-          Variable* compartment = AddOrFindVariable(&(reaction->getCompartment()));
-          compartment->SetType(varCompartment);
-          arxn->SetCompartment(compartment);
-        }
-
+    if (reaction->isSetCompartment()) {
+      if (defaultcompartments.find(reaction->getCompartment()) == defaultcompartments.end()) {
+        Variable* compartment = AddOrFindVariable(&(reaction->getCompartment()));
+        compartment->SetType(varCompartment);
+        arxn->SetCompartment(compartment);
       }
+
+    }
     TranslateRulesAndAssignmentsTo(reaction, var);
     AddEmptyGlyphsFromReaction(var, reaction->getId(), sbml->getSBMLDocument());
   }
 
-  //FBC Constraints:
+  //FBC Constraints and gene products:
 #ifdef LIBSBML_HAS_PACKAGE_FBC
   const FbcModelPlugin* fmp = static_cast<const FbcModelPlugin*>(sbml->getPlugin("fbc"));
   if (fmp != NULL) {
-    for (unsigned int fb=0; fb<fmp->getNumFluxBounds(); fb++) {
-      const FluxBound* fluxbound = fmp->getFluxBound(fb);
-      bool haveAlready = false;
-      for (size_t ac=0; ac<constraints.size(); ac++) {
-        if (constraints[ac].ContainsFlux(fluxbound)) {
-          haveAlready = true;
-        }
-      }
-      if (!haveAlready) {
-        sbmlname = getNameFromSBMLObject(fluxbound, "_con");
-        Variable* var = AddOrFindVariable(&sbmlname);
-        var->ReadAnnotationFrom(fluxbound);
-        if (fluxbound->isSetName()) {
-          var->SetDisplayName(fluxbound->getName());
-        }
-        AntimonyConstraint acon(var);
-        acon.SetFromFluxBound(fluxbound);
-        var->SetConstraint(&acon);
-      }
-    }
     const Objective* objective = fmp->getActiveObjective();
     if (objective != NULL) {
       sbmlname = getNameFromSBMLObject(objective, "_objective");
@@ -1556,7 +1585,7 @@ void Module::LoadSBML(Model* sbml)
       m_maximize = (objective->getObjectiveType() == OBJECTIVE_TYPE_MAXIMIZE);
       m_objective = varobj->GetName();
       Formula form;
-      for (unsigned int fo=0; fo<objective->getNumFluxObjectives(); fo++) {
+      for (unsigned int fo = 0; fo < objective->getNumFluxObjectives(); fo++) {
         if (fo > 0) {
           form.AddMathThing('+');
         }
@@ -1569,32 +1598,101 @@ void Module::LoadSBML(Model* sbml)
         vector<string> rxnname;
         rxnname.push_back(fluxobj->getReaction());
         Variable* rxn = GetVariable(rxnname);
-        if (rxn==NULL || !IsReaction(rxn->GetType())) {
+        if (rxn == NULL || !IsReaction(rxn->GetType())) {
           assert(false); //should be possible?
           continue;
         }
         form.AddVariable(rxn);
+        if (fluxobj->getVariableType() == FBC_VARIABLE_TYPE_QUADRATIC) {
+          if (fluxobj->isSetReaction2()) {
+            form.AddMathThing('*');
+            rxnname.clear();
+            rxnname.push_back(fluxobj->getReaction2());
+            rxn = GetVariable(rxnname);
+            form.AddVariable(rxn);
+          }
+          else {
+            form.AddMathThing('^');
+            form.AddNum(2);
+          }
+        }
       }
       varobj->SetFormula(&form, true);
+    }
+    for (unsigned int r = 0; r < sbml->getNumReactions(); r++) {
+      const Reaction* rxn = sbml->getReaction(r);
+      const FbcReactionPlugin* frp = static_cast<const FbcReactionPlugin*>(rxn->getPlugin("fbc"));
+      if (frp != NULL) {
+        if (frp->isSetLowerFluxBound() || frp->isSetUpperFluxBound()) {
+          Variable* rxnvar = AddOrFindVariable(&rxn->getId());
+          rxnvar->SetType(varReactionUndef);
+          sbmlname = rxn->getId() + "_fluxBounds";
+          Variable* rxnbound = AddOrFindVariable(&sbmlname);
+          AntimonyConstraint constraint(rxnbound);
+          Formula form;
+          constraint.setReactionId(rxn->getId());
+          if (frp->isSetLowerFluxBound()) {
+            Variable* var = AddOrFindVariable(&frp->getLowerFluxBound());
+            constraint.SetLowerFBFormula(var);
+            form.AddVariable(var);
+            form.AddMathThing('<');
+            form.AddMathThing('=');
+          }
+          form.AddVariable(rxnvar);
+          if (frp->isSetUpperFluxBound()) {
+            Variable* var = AddOrFindVariable(&frp->getUpperFluxBound());
+            constraint.SetUpperFBFormula(var);
+            form.AddMathThing('<');
+            form.AddMathThing('=');
+            form.AddVariable(var);
+          }
+          constraint.SetFormula(&form, true);
+          rxnbound->SetConstraint(&constraint);
+        }
+      }
+    }
+    for (unsigned int gp = 0; gp < fmp->getNumGeneProducts(); gp++) {
+      const GeneProduct* geneprod = fmp->getGeneProduct(gp);
+      sbmlname = getNameFromSBMLObject(geneprod, "_gp");
+      Variable* var = AddOrFindVariable(&sbmlname);
+      var->SetType(varGeneProduct);
+      var->PopulateCVTerms((SBase*)geneprod);
+      var->ReadAnnotationFrom(geneprod);
+      if (geneprod->isSetLabel()) {
+        var->SetDisplayName(geneprod->getLabel());
+      }
+      else if (geneprod->isSetName()) {
+        var->SetDisplayName(geneprod->getName());
+      }
+      if (geneprod->isSetAssociatedSpecies()) {
+        Variable* species = AddOrFindVariable(&geneprod->getAssociatedSpecies());
+        if (species->SetType(varSpeciesUndef)) {
+          g_registry.AddWarning("The associtedSpecies (" + geneprod->getAssociatedSpecies() + ") of the gene product " + geneprod->getId() + " could not be set to be an actual species.");
+        }
+        else {
+          var->GetFormula()->AddVariable(species);
+        }
+      }
+
     }
   }
 #endif
 
 #ifdef USE_COMP
-  if(mplugin != NULL) {
+  if (mplugin != NULL) {
     //Ports!
-    for (unsigned int p=0; p<mplugin->getNumPorts(); p++) {
+    for (unsigned int p = 0; p < mplugin->getNumPorts(); p++) {
       const Port* port = mplugin->getPort(p);
       if (port->isSetSBaseRef()) {
         g_registry.AddWarning("Unable to create port " + port->getId() + " in model " + GetModuleName() + " because the object the port referenced is in a submodel, and these objects cannot be declared ports in Antimony.");
         continue;
       }
       SBase* ref = const_cast<Port*>(port)->getReferencedElement();
-      if (ref==NULL) {
+      if (ref == NULL) {
         g_registry.AddWarning("Unable to create port " + port->getId() + " in model " + GetModuleName() + " because the object the port referenced could not be found.");
         continue;
       }
-      switch(ref->getTypeCode()) {
+      switch (ref->getTypeCode()) {
       case SBML_CONSTRAINT:
         g_registry.AddWarning("Unable to create port " + port->getId() + " in model " + GetModuleName() + " because Constraint elements do not have IDs in SBML, and therefore cannot be made into ports in Antimony.");
         continue;
@@ -1620,7 +1718,7 @@ void Module::LoadSBML(Model* sbml)
         g_registry.AddWarning("Unable to create port " + port->getId() + " in model " + GetModuleName() + " because the referenced element has no ID.");
       }
       string refid = ref->getId();
-      if (ref->getTypeCode()==SBML_LOCAL_PARAMETER) {
+      if (ref->getTypeCode() == SBML_LOCAL_PARAMETER) {
         refid = GetNewIDForLocalParameter(ref);
       }
       Variable* portvar = AddOrFindVariable(&refid);
@@ -1651,6 +1749,46 @@ void Module::LoadSBML(Model* sbml)
   //Finally, fix the fact that 'time' used to be OK in functions (l2v1), but is no longer (l2v2).
   g_registry.FixTimeInFunctions();
   LoadLayout(sbml);
+}
+
+void Module::fixFBCStrictIfNeeded()
+{
+    if (!m_hasFBC) {
+        return;
+    }
+    Model* model = m_sbml.getModel();
+    if (model == NULL) {
+        return;
+    }
+    //Set 'strict' to 'false' if need be
+    m_sbml.setConsistencyChecks(LIBSBML_CAT_UNITS_CONSISTENCY, false);
+    m_sbml.setConsistencyChecks(LIBSBML_CAT_IDENTIFIER_CONSISTENCY, false);
+    m_sbml.setConsistencyChecks(LIBSBML_CAT_MATHML_CONSISTENCY, false);
+    m_sbml.setConsistencyChecks(LIBSBML_CAT_SBO_CONSISTENCY, false);
+    m_sbml.setConsistencyChecks(LIBSBML_CAT_OVERDETERMINED_MODEL, false);
+    m_sbml.setConsistencyChecks(LIBSBML_CAT_MODELING_PRACTICE, false);
+    m_sbml.setConsistencyChecks(LIBSBML_CAT_INTERNAL_CONSISTENCY, false);
+    m_sbml.setConsistencyChecks(LIBSBML_CAT_STRICT_UNITS_CONSISTENCY, false);
+    m_sbml.setConsistencyChecks(LIBSBML_CAT_OVERDETERMINED_MODEL, false);
+    m_sbml.setConsistencyChecks(LIBSBML_CAT_OVERDETERMINED_MODEL, false);
+    m_sbml.setConsistencyChecks(LIBSBML_CAT_OVERDETERMINED_MODEL, false);
+    m_sbml.checkConsistency();
+    if (m_sbml.getNumErrors(LIBSBML_SEV_ERROR)) {
+        FbcModelPlugin* fmp = static_cast<FbcModelPlugin*>(model->getPlugin("fbc"));
+        fmp->setStrict(false);
+        m_fbcIsStrict = false;
+    }
+    m_sbml.setConsistencyChecks(LIBSBML_CAT_IDENTIFIER_CONSISTENCY, true);
+    m_sbml.setConsistencyChecks(LIBSBML_CAT_MATHML_CONSISTENCY, true);
+    m_sbml.setConsistencyChecks(LIBSBML_CAT_SBO_CONSISTENCY, true);
+    m_sbml.setConsistencyChecks(LIBSBML_CAT_OVERDETERMINED_MODEL, true);
+    m_sbml.setConsistencyChecks(LIBSBML_CAT_MODELING_PRACTICE, true);
+    m_sbml.setConsistencyChecks(LIBSBML_CAT_INTERNAL_CONSISTENCY, true);
+    m_sbml.setConsistencyChecks(LIBSBML_CAT_STRICT_UNITS_CONSISTENCY, true);
+    m_sbml.setConsistencyChecks(LIBSBML_CAT_OVERDETERMINED_MODEL, true);
+    m_sbml.setConsistencyChecks(LIBSBML_CAT_OVERDETERMINED_MODEL, true);
+    m_sbml.setConsistencyChecks(LIBSBML_CAT_OVERDETERMINED_MODEL, true);
+
 }
 
 const SBMLDocument* Module::GetSBML(bool comp)
@@ -1706,13 +1844,18 @@ void Module::CreateSBMLModel(bool comp)
     m_sbml.setPackageRequired("distrib", true);
   }
 #endif
-#ifdef LIBSBML_HAS_PACKAGE_FBC
-  if (m_hasFBC) {
-    m_sbml.setPackageRequired("fbc", false);
-  }
-#endif
   Model* sbmlmod = m_sbml.createModel();
 
+#ifdef LIBSBML_HAS_PACKAGE_FBC
+  if (m_hasFBC) {
+      FbcModelPlugin* fmp = static_cast<FbcModelPlugin*>(sbmlmod->getPlugin("fbc"));
+      fmp->setStrict(m_fbcIsStrict);
+      FbcExtension fe;
+      string uri = fe.getURI(m_sbmllevel, m_sbmlversion, m_fbcLevel);
+      m_sbml.enablePackage(uri, "fbc", true);
+      m_sbml.setPackageRequired("fbc", false);
+  }
+#endif
   sbmlmod->setId(m_modulename);
   sbmlmod->setName(GetDisplayName());
   sbmlmod->setMetaId(GetModuleName());
@@ -2321,21 +2464,106 @@ void Module::CreateSBMLModel(bool comp)
   for (size_t con=0; con < numconstraints; con++) {
     const Variable* convar = GetNthVariableOfType(allConstraints, con, comp);
     const AntimonyConstraint* antconstraint = convar->GetConstraint();
-    const Formula*  formula = convar->GetFormula();
-    Constraint* constraint = sbmlmod->createConstraint();
-
-    if (convar->GetDisplayName() != "") {
-#if LIBSBML_VERSION >= 51103
-      constraint->setMessage(convar->GetDisplayName(), true); // <- have to update libsbml for this to work.
-#endif
-    }
-    convar->TransferAnnotationTo(constraint, GetModuleName() + "." + convar->GetNameDelimitedBy(cc));
-    constraint->setMath(antconstraint->getASTNode());
 #ifdef LIBSBML_HAS_PACKAGE_FBC
-    //We need to check to see if the constraint can be translated to an FBC constraint.
-    antconstraint->addFluxBounds(sbmlmod);
+    if (antconstraint->isFluxBound()) {
+        //We need to check to see if the constraint can be translated to an FBC constraint.
+        antconstraint->addFluxBounds(sbmlmod);
+    }
+    else {
+#endif
+        const Formula* formula = convar->GetFormula();
+        Constraint* constraint = sbmlmod->createConstraint();
+
+        if (convar->GetDisplayName() != "") {
+#if LIBSBML_VERSION >= 51103
+            constraint->setMessage(convar->GetDisplayName(), true); // <- have to update libsbml for this to work.
+#endif
+        }
+        convar->TransferAnnotationTo(constraint, GetModuleName() + "." + convar->GetNameDelimitedBy(cc));
+        constraint->setMath(antconstraint->getASTNode());
+#ifdef LIBSBML_HAS_PACKAGE_FBC
+    }
 #endif
   }
+
+  //FBC gene products:
+  size_t numgps = GetNumVariablesOfType(allGeneProducts, comp);
+  for (size_t ar = 0; ar < numgps; ar++) {
+      const Variable* arvar = GetNthVariableOfType(allGeneProducts, ar, comp);
+      FbcModelPlugin* fmp = static_cast<FbcModelPlugin*>(sbmlmod->getPlugin("fbc"));
+      assert(fmp != NULL);
+      GeneProduct* gp = fmp->createGeneProduct();
+      gp->setId(arvar->GetNameDelimitedBy(cc));
+      string name = arvar->GetDisplayName();
+      gp->setName(name);
+      if (name.empty()) {
+          name = gp->getId();
+      }
+      gp->setLabel(name);
+
+      const Formula* formula = arvar->GetFormula();
+      vector<Variable*> vars = formula->GetVariables();
+      if (vars.size() == 1) {
+          gp->setAssociatedSpecies(vars[0]->GetNameDelimitedBy(cc));
+      }
+  }
+
+  //FBC gene product associations:
+  size_t numgpas = GetNumVariablesOfType(allGeneProductAssociations, comp);
+  for (size_t ar = 0; ar < numgpas; ar++) {
+    const Variable* gpavar = GetNthVariableOfType(allGeneProductAssociations, ar, comp);
+    string rxnname = gpavar->GetNameDelimitedBy(cc);
+    rxnname.replace(rxnname.find("-gpa"), 4, "");
+    Reaction* rxn = sbmlmod->getReaction(rxnname);
+    if (rxn == NULL) {
+      g_registry.SetError("Couldn't find the reaction associated with the gene product association '" + gpavar->GetNameDelimitedBy(cc) + "'.");
+      assert(false); //Shouldn't get this?
+    }
+    FbcReactionPlugin* frp = static_cast<FbcReactionPlugin*>(rxn->getPlugin("fbc"));
+    assert(frp != NULL);
+    GeneProductAssociation* gpa = frp->createGeneProductAssociation();
+    ASTNode* astn = parseStringToASTNode(gpavar->GetFormula()->ToSBMLString());
+    gpa->createChildAssociationFromASTNode(astn);
+    delete astn;
+    string name = gpavar->GetDisplayName();
+    gpa->setName(name);
+    //This might fail if 'name' is the wrong format, but otherwise we can't set an ID at all.
+    gpa->setId(name);
+  }
+
+
+  //FBC species charges:
+  size_t numcharges = GetNumVariablesOfType(allSpeciesFbcInfo, comp);
+  for (size_t ar = 0; ar < numcharges; ar++) {
+    const Variable* spec_fbc = GetNthVariableOfType(allSpeciesFbcInfo, ar, comp);
+    if (spec_fbc->GetType() == varSpeciesCharge) {
+
+      string specname = spec_fbc->GetNameDelimitedBy(cc);
+      specname.replace(specname.find("-charge"), 7, "");
+      Species* spec = sbmlmod->getSpecies(specname);
+      if (spec == NULL) {
+        g_registry.SetError("Couldn't find the species associated with the species charge '" + spec_fbc->GetNameDelimitedBy(cc) + "'.");
+        assert(false); //Shouldn't get this?
+      }
+      FbcSpeciesPlugin* fsp = static_cast<FbcSpeciesPlugin*>(spec->getPlugin("fbc"));
+      assert(fsp != NULL);
+      fsp->setCharge(spec_fbc->GetFormula()->GetDouble());
+    }
+    else {
+      assert(spec_fbc->GetType() == varSpeciesChemicalFormula);
+      string specname = spec_fbc->GetNameDelimitedBy(cc);
+      specname.replace(specname.find("-formula"), 8, "");
+      Species* spec = sbmlmod->getSpecies(specname);
+      if (spec == NULL) {
+        g_registry.SetError("Couldn't find the species associated with the species chemical formula '" + spec_fbc->GetNameDelimitedBy(cc) + "'.");
+        assert(false); //Shouldn't get this?
+      }
+      FbcSpeciesPlugin* fsp = static_cast<FbcSpeciesPlugin*>(spec->getPlugin("fbc"));
+      assert(fsp != NULL);
+      fsp->setChemicalFormula(spec_fbc->GetDisplayName());
+    }
+  }
+
 
   //Unknown variables (turn into parameters)
   size_t numunknown = GetNumVariablesOfType(allUnknown, comp);
@@ -2370,9 +2598,6 @@ void Module::CreateSBMLModel(bool comp)
     SBase* obj = sbmlmod->getElementBySId(objname);
     if (obj) {
       obj->removeFromParentAndDelete();
-    }
-    else {
-      obj = NULL; //What?
     }
     obj = sbmlmod->getInitialAssignmentBySymbol(objname);
     if (obj) {
@@ -2885,6 +3110,7 @@ void Module::FixNames(Model* model)
     "formula",
     "function",
     "gene",
+    "geneProduct",
     "has",
     "import",
     "in",
@@ -3022,7 +3248,7 @@ void Module::FixNames(Model* model)
 
     //At some point, it would be nice to allow keywords that are functions as 
     // variable names, and visa versa.  But today is not that day.
-    for (size_t kw = 0; kw < 21; kw++) {
+    for (size_t kw = 0; kw < 22; kw++) {
         FixConstants(keywords[kw], model);
         FixFunctions(keywords[kw], model);
     }
@@ -3747,7 +3973,11 @@ void Module::LoadLayout(Model* sbml)
             case varConstraint:
             case varStoichiometry:
             case varAlgebraicRule:
-                continue;
+            case varGeneProduct:
+            case varGeneProductAssociation:
+            case varSpeciesCharge:
+            case varSpeciesChemicalFormula:
+              continue;
             }
             string varid = var->GetNameDelimitedBy("_");
 
