@@ -279,14 +279,16 @@ model *MAPK_in_Solution()
 # MAPK cascade in solution (no scaffold)
 
 | |
-||-------------|
+||--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | :- |
-| | | This model describes a basic 3-							stage Mitogen Activated Protein Kinase (MAPK)							 cascade in solution. This cascade is typically expressed as RAF=							=>MEK==>MAPK (alternative forms are K3==>K2==>							K1 and KKK==>KK==>K)							. The input signal is RAFK (RAF Kinase)							 and the output signal is MAPKpp (							doubly phosphorylated form of MAPK)							. RAFK phosphorylates RAF once to RAFp. RAFp,							 the phosphorylated form of RAF induces two phoshporylations of MEK,							to MEKp and MEKpp. MEKpp,							 the doubly phosphorylated form of MEK,							 induces two phosphorylations of MAPK to MAPKp and MAPKpp. | |
+| |
+| | This model describes a basic 3-							stage Mitogen Activated Protein Kinase (MAPK)							 cascade in solution. This cascade is typically expressed as RAF=							=>MEK==>MAPK (alternative forms are K3==>K2==>							K1 and KKK==>KK==>K)							. The input signal is RAFK (RAF Kinase)							 and the output signal is MAPKpp (							doubly phosphorylated form of MAPK)							. RAFK phosphorylates RAF once to RAFp. RAFp,							 the phosphorylated form of RAF induces two phoshporylations of MEK,							to MEKp and MEKpp. MEKpp,							 the doubly phosphorylated form of MEK,							 induces two phosphorylations of MAPK to MAPKp and MAPKpp. | |
 
 | |
 ||----------------------------|----------------------------------------|
 | :- | :- |
-| | | a10 = 5. | MAPKPH + MAPKpp -> MAPKppMAPKPH | |
+| |
+| | a10 = 5. | MAPKPH + MAPKpp -> MAPKppMAPKPH | |
 | | a1 = 1. | RAF + RAFK -> RAFRAFK | |
 | | a2 = 0.5 | RAFp + RAFPH -> RAFpRAFPH | |
 | | a3 = 3.3 | MEK + RAFp -> MEKRAFp | |
@@ -320,7 +322,8 @@ model *MAPK_in_Solution()
 | |
 ||--------------|--------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | :- | :- | :- |
-| | | MAPK | 0.3 | MAPK&apos;[t] == d7\*MAPKMEKpp[t] + k8\*MAPKpMAPKPH[t] -							 a7\*MAPK[t]\*MEKpp[t] | |
+| |
+| | MAPK | 0.3 | MAPK&apos;[t] == d7\*MAPKMEKpp[t] + k8\*MAPKpMAPKPH[t] -							 a7\*MAPK[t]\*MEKpp[t] | |
 | | MAPKMEKpp | 0 | MAPKMEKpp&apos;[t] == -(d7\*MAPKMEKpp[t]) - k7\*MAPKMEKpp[t]							 + a7\*MAPK[t]\*MEKpp[t] | |
 | | MAPKp | 0 | MAPKp&apos;[t] == k7\*MAPKMEKpp[t] - a8\*MAPKp[t]\*MAPKPH[t]							 + d8\*MAPKpMAPKPH[t] + d9\*MAPKpMEKpp[t] + k10\*							MAPKppMAPKPH[t] - a9\*MAPKp[t]\*MEKpp[t] | |
 | | MAPKPH | 0.3 | MAPKPH&apos;[t] == -(a8\*MAPKp[t]\*MAPKPH[t]) + d8\*MAPKpMAPKPH[							t] + k8\*MAPKpMAPKPH[t] - a10\*MAPKPH[t]\*MAPKpp[t] +							 d10\*MAPKppMAPKPH[t] + k10\*MAPKppMAPKPH[t] | |

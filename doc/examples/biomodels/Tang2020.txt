@@ -1,5 +1,5 @@
 // Created by libAntimony v3.0.0
-model *Tang2020___Estimation_of_transmission_risk_of_COVID_19_and_impact_of_public_health_interventions()
+model *Tang2020___Estimation_of_transmission_risk_of_COVID_19_and_impact_of_public_health_interventions___update()
 
   // Compartments and Species:
   compartment Wuhan;
@@ -8,6 +8,8 @@ model *Tang2020___Estimation_of_transmission_risk_of_COVID_19_and_impact_of_publ
   species Hospitalised in Wuhan, Recovered in Wuhan;
 
   // Assignment Rules:
+  c := (c_0 - c_b)*exp(-r_1*time) + c_b;
+  delta_I := delta_I_f*delta_I_0/((delta_I_f - delta_I_0)*exp(-r_2*time) + delta_I_0);
   Infected_0 := Infected + Asymptomatic;
 
   // Reactions:
@@ -25,25 +27,22 @@ model *Tang2020___Estimation_of_transmission_risk_of_COVID_19_and_impact_of_publ
   Susceptible_to_Exposed_quarantined: Susceptible => Exposed_quarantined; Wuhan*(beta*c*q*Susceptible*(Infected + theta*Asymptomatic));
   Exposed_quarantined_to_Hospitalised: Exposed_quarantined => Hospitalised; Wuhan*delta_q*Exposed_quarantined;
 
-  // Events:
-  Lockdown: at 0 after time > 9, persistent=false: q = q_lockdown, c = c_lockdown;
-
   // Species initializations:
   Susceptible = 11081000;
   Susceptible has substance_per_volume;
-  Exposed = 105.1;
+  Exposed = 23382.3126079714;
   Exposed has substance_per_volume;
-  Infected = 27.679;
+  Infected = 2200;
   Infected has substance_per_volume;
-  Asymptomatic = 53.539;
+  Asymptomatic = 531.176;
   Asymptomatic has substance_per_volume;
-  Susceptible_quarantined = 739;
+  Susceptible_quarantined = 163804;
   Susceptible_quarantined has substance_per_volume;
-  Exposed_quarantined = 1.1642;
+  Exposed_quarantined = 0.378022;
   Exposed_quarantined has substance_per_volume;
-  Hospitalised = 1;
+  Hospitalised = 515.168;
   Hospitalised has substance_per_volume;
-  Recovered = 2;
+  Recovered = 1898.36;
   Recovered has substance_per_volume;
 
   // Compartment initializations:
@@ -51,26 +50,31 @@ model *Tang2020___Estimation_of_transmission_risk_of_COVID_19_and_impact_of_publ
   Wuhan has volume;
 
   // Variable initializations:
-  c = 14.781;
-  c_lockdown = 14.781;
-  q = 1.8887e-07;
-  q_lockdown = 1.8887e-07;
+  c_0 = 14.781;
+  c_b = 2.9253;
+  r_1 = 1.3768;
   beta = 2.1011e-08;
+  q = 1.2858e-05;
   sigma = 0.142857;
   lambda = 0.0714285;
   rho = 0.86834;
-  delta_I = 0.13266;
+  delta_I_f = 2.7367;
+  delta_I_0 = 0.13266;
+  r_2 = 0.3283;
   delta_q = 0.1259;
   gamma_I = 0.33029;
   gamma_A = 0.13978;
   gamma_H = 0.11624;
   alpha = 1.7826e-05;
   theta = 1;
+  c_lockdown = 14.781;
+  q_lockdown = 1.2858e-05;
 
   // Other declarations:
-  var c, q, Infected_0;
-  const Wuhan, c_lockdown, q_lockdown, beta, sigma, lambda, rho, delta_I;
-  const delta_q, gamma_I, gamma_A, gamma_H, alpha, theta;
+  var c, delta_I, Infected_0;
+  const Wuhan, c_0, c_b, r_1, beta, q, sigma, lambda, rho, delta_I_f, delta_I_0;
+  const r_2, delta_q, gamma_I, gamma_A, gamma_H, alpha, theta, c_lockdown;
+  const q_lockdown;
 
   // Unit definitions:
   unit length = metre;
@@ -95,14 +99,14 @@ model *Tang2020___Estimation_of_transmission_risk_of_COVID_19_and_impact_of_publ
   Exposed property "http://identifiers.org/ido/0000597"
   Infected identity "http://identifiers.org/ido/0000511"
   Infected biological_system "http://identifiers.org/ncit/C171133"
-  Asymptomatic identity "http://identifiers.org/ido/0000569"
   Asymptomatic identity "http://identifiers.org/ido/0000511"
+  Asymptomatic identity "http://identifiers.org/ido/0000569"
   Asymptomatic biological_system "http://identifiers.org/ncit/C171133"
-  Susceptible_quarantined identity "http://identifiers.org/ncit/C71902"
   Susceptible_quarantined identity "http://identifiers.org/ido/0000514"
+  Susceptible_quarantined identity "http://identifiers.org/ncit/C71902"
   Susceptible_quarantined biological_system "http://identifiers.org/ncit/C171133"
-  Exposed_quarantined identity "http://identifiers.org/ncit/C71902"
   Exposed_quarantined identity "http://identifiers.org/ido/0000514"
+  Exposed_quarantined identity "http://identifiers.org/ncit/C71902"
   Exposed_quarantined biological_system "http://identifiers.org/ncit/C171133"
   Exposed_quarantined property "http://identifiers.org/ido/0000597"
   Hospitalised biological_system "http://identifiers.org/ido/0000511"
@@ -114,8 +118,8 @@ model *Tang2020___Estimation_of_transmission_risk_of_COVID_19_and_impact_of_publ
   Susceptible_to_Susceptible_quarantined identity "http://identifiers.org/ncit/C71902"
   Susceptible_to_Susceptible_quarantined biological_system "http://identifiers.org/ncit/C171133"
   Exposed_to_Infected identity "http://identifiers.org/ncit/C171133"
-  Exposed_to_Asymptomatic identity "http://identifiers.org/ncit/C168121"
   Exposed_to_Asymptomatic identity "http://identifiers.org/ncit/C171133"
+  Exposed_to_Asymptomatic identity "http://identifiers.org/ncit/C168121"
   Infected_to_Hospitalised identity "http://identifiers.org/ncit/C25179"
   Infected_to_Hospitalised biological_system "http://identifiers.org/ncit/C171133"
   Infected_to_Recovered identity "http://identifiers.org/ncit/C25746"
@@ -125,18 +129,25 @@ model *Tang2020___Estimation_of_transmission_risk_of_COVID_19_and_impact_of_publ
   Infected_to_Deceased biological_system "http://identifiers.org/ncit/C171133"
   Hospitalised_to_Deceased identity "http://identifiers.org/ncit/C28554"
   Hospitalised_to_Deceased biological_system "http://identifiers.org/ncit/C171133"
-  Susceptible_to_Exposed_quarantined identity "http://identifiers.org/ncit/C71902"
   Susceptible_to_Exposed_quarantined identity "http://identifiers.org/ido/0000597"
+  Susceptible_to_Exposed_quarantined identity "http://identifiers.org/ncit/C71902"
   Susceptible_to_Exposed_quarantined biological_system "http://identifiers.org/ncit/C171133"
   Exposed_quarantined_to_Hospitalised identity "http://identifiers.org/ncit/C25179"
   Exposed_quarantined_to_Hospitalised biological_system "http://identifiers.org/ncit/C171133"
 
-  model model_source "http://identifiers.org/biomodels.db/MODEL2011020001",
-                     "http://identifiers.org/biomodels.db/BIOMD0000000971"
+  model origin "http://identifiers.org/doid/DOID:0080600",
+               "http://identifiers.org/mamo/MAMO_0000046",
+               "http://identifiers.org/mamo/MAMO_0000028",
+               "http://identifiers.org/taxonomy/2697049",
+               "http://identifiers.org/taxonomy/9606",
+               "http://identifiers.org/biomodels.db/BIOMD0000000971"
+  model publication "http://identifiers.org/pubmed/32099934"
+  model model_source "http://identifiers.org/biomodels.db/MODEL2011030001",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000972"
   model identity "http://identifiers.org/doid/DOID:0080600"
-  model taxon "http://identifiers.org/taxonomy/9606"
-  model taxon "http://identifiers.org/taxonomy/2697049"
-  model description "http://identifiers.org/pubmed/32046137"
+  model taxon "http://identifiers.org/taxonomy/2697049",
+              "http://identifiers.org/taxonomy/9606"
+  model description "http://identifiers.org/biomodels.db/BIOMD0000000971"
   model property "http://identifiers.org/mamo/MAMO_0000028"
   model created "2020-10-30T01:31:09Z"
   model modified "2020-10-30T01:31:09Z"
@@ -147,27 +158,27 @@ model *Tang2020___Estimation_of_transmission_risk_of_COVID_19_and_impact_of_publ
 
   // Notes:
   model notes ```
-Since the emergence of the first cases in Wuhan, China, the novel coronavirus (2019-nCoV)
-infection has been quickly spreading out to other provinces and neighboring countries.
-Estimation of the basic reproduction number by means of mathematical modeling can
-be helpful for determining the potential and severity of an outbreak and providing
-critical information for identifying the type of disease interventions and intensity.
-A deterministic compartmental model was devised based on the clinical progression
-of the disease, epidemiological status of the individuals, and intervention measures.
-The estimations based on likelihood and model analysis show that the control reproduction
-number may be as high as 6.47 (95% CI 5.71–7.23). Sensitivity analyses show that
-interventions, such as intensive contact tracing followed by quarantine and isolation,
-can effectively reduce the control reproduction number and transmission risk, with
-the effect of travel restriction adopted by Wuhan on 2019-nCoV infection in Beijing
-being almost equivalent to increasing quarantine by a 100 thousand baseline value.
-It is essential to assess how the expensive, resource-intensive measures implemented
-by the Chinese authorities can contribute to the prevention and control of the 2019-nCoV
-infection, and how long they should be maintained. Under the most restrictive measures,
-the outbreak is expected to peak within two weeks (since 23 January 2020) with a
-significant low peak value. With travel restriction (no imported exposed individuals
-to Beijing), the number of infected individuals in seven days will decrease by 91.14%
-in Beijing, compared with the scenario of no travel restriction.
+The basic reproduction number of an infectious agent is the average number of infections
+one case can generate over the course of the infectious period, in a naïve, uninfected
+population. It is well-known that the estimation of this number may vary due to several
+methodological issues, including different assumptions and choice of parameters,
+utilized models, used datasets and estimation period. With the spreading of the novel
+coronavirus (2019-nCoV) infection, the reproduction number has been found to vary,
+reflecting the dynamics of transmission of the coronavirus outbreak as well as the
+case reporting rate. Due to significant variations in the control strategies, which
+have been changing over time, and thanks to the introduction of detection technologies
+that have been rapidly improved, enabling to shorten the time from infection/symptoms
+onset to diagnosis, leading to faster confirmation of the new coronavirus cases,
+our previous estimations on the transmission risk of the 2019-nCoV need to be revised.
+By using time-dependent contact and diagnose rates, we refit our previously proposed
+dynamics transmission model to the data available until January 29th, 2020 and re-estimated
+the effective daily reproduction ratio that better quantifies the evolution of the
+interventions. We estimated when the effective daily reproduction ratio has fallen
+below 1 and when the epidemics will peak. Our updated findings suggest that the best
+measure is persistent and strict self-isolation. The epidemics will continue to grow,
+and can peak soon with the peak time depending highly on the public health interventions
+practically implemented.
 ```
 end
 
-Tang2020___Estimation_of_transmission_risk_of_COVID_19_and_impact_of_public_health_interventions is "Tang2020 - Estimation of transmission risk of COVID-19 and impact of public health interventions"
+Tang2020___Estimation_of_transmission_risk_of_COVID_19_and_impact_of_public_health_interventions___update is "Tang2020 - Estimation of transmission risk of COVID-19 and impact of public health interventions - update"

@@ -1,65 +1,65 @@
 // Created by libAntimony v3.0.0
-model *Aubry1995___Multi_compartment_model_of_fluid_phase_endocytosis_kinetics_in_Dictyostelium_discoideum()
+model *Aubry1995___Nine_compartment_model_of_fluid_phase_endocytosis_kinetics_in_Dictyostelium_discoideum()
 
   // Compartments and Species:
   compartment Dictyostelium_discoideum_AX2;
-  species $FITC_Dextran_single_compartment_model in Dictyostelium_discoideum_AX2;
-  species $Pyranine_single_compartment_model in Dictyostelium_discoideum_AX2;
   species FITC_Dextran_three_compartment_model_compartment_1 in Dictyostelium_discoideum_AX2;
   species FITC_Dextran_three_compartment_model_compartment_2 in Dictyostelium_discoideum_AX2;
   species FITC_Dextran_three_compartment_model_compartment_3 in Dictyostelium_discoideum_AX2;
-  species Pyranine_three_compartment_model_compartment_1 in Dictyostelium_discoideum_AX2;
-  species Pyranine_three_compartment_model_compartment_2 in Dictyostelium_discoideum_AX2;
-  species Pyranine_three_compartment_model_compartment_3 in Dictyostelium_discoideum_AX2;
+  species FITC_Dextran_nine_compartment_model_compartment_4 in Dictyostelium_discoideum_AX2;
+  species FITC_Dextran_nine_compartment_model_compartment_5 in Dictyostelium_discoideum_AX2;
+  species FITC_Dextran_nine_compartment_model_compartment_6 in Dictyostelium_discoideum_AX2;
+  species FITC_Dextran_nine_compartment_model_compartment_7 in Dictyostelium_discoideum_AX2;
+  species FITC_Dextran_nine_compartment_model_compartment_8 in Dictyostelium_discoideum_AX2;
+  species FITC_Dextran_nine_compartment_model_compartment_9 in Dictyostelium_discoideum_AX2;
 
   // Assignment Rules:
-  FITC_Dextran_single_compartment_model := FITC_Dextran_max_uptake_rate*(1 - exp(-lambda_single_compartment_model_FITC_Dextran*time));
-  Pyranine_single_compartment_model := Pyranine_addition_trigger*Pyranine_max_uptake_rate*(1 - exp(-lambda_single_compartment_model_Pyranine*(time - 90)));
-  Total_FITC_Dextran := FITC_Dextran_three_compartment_model_compartment_1 + FITC_Dextran_three_compartment_model_compartment_2 + FITC_Dextran_three_compartment_model_compartment_3;
-  Total_Pyranine := Pyranine_three_compartment_model_compartment_1 + Pyranine_three_compartment_model_compartment_2 + Pyranine_three_compartment_model_compartment_3;
+  Total_FITC_Dextran := FITC_Dextran_three_compartment_model_compartment_1 + FITC_Dextran_three_compartment_model_compartment_2 + FITC_Dextran_three_compartment_model_compartment_3 + FITC_Dextran_nine_compartment_model_compartment_4 + FITC_Dextran_nine_compartment_model_compartment_5 + FITC_Dextran_nine_compartment_model_compartment_6 + FITC_Dextran_nine_compartment_model_compartment_7 + FITC_Dextran_nine_compartment_model_compartment_8 + FITC_Dextran_nine_compartment_model_compartment_9;
 
   // Reactions:
-  FITC_Dextran_influx_rate_0:  => FITC_Dextran_three_compartment_model_compartment_1; Dictyostelium_discoideum_AX2*FITC_Dextran_influx_rate;
   FITC_Dextran_transfer_between_endo_lysosomal_compartments_1_and_2: FITC_Dextran_three_compartment_model_compartment_1 => FITC_Dextran_three_compartment_model_compartment_2; Dictyostelium_discoideum_AX2*lambda_compartment_1*FITC_Dextran_three_compartment_model_compartment_1;
   FITC_Dextran_transfer_between_endo_lysosomal_compartments_2_and_3: FITC_Dextran_three_compartment_model_compartment_2 => FITC_Dextran_three_compartment_model_compartment_3; Dictyostelium_discoideum_AX2*lambda_compartment_2*FITC_Dextran_three_compartment_model_compartment_2;
-  FITC_Dextran_efflux_rate: FITC_Dextran_three_compartment_model_compartment_3 => ; Dictyostelium_discoideum_AX2*lambda_compartment_3*FITC_Dextran_three_compartment_model_compartment_3;
-  Pyranine_influx_rate_0:  => Pyranine_three_compartment_model_compartment_1; Dictyostelium_discoideum_AX2*(Pyranine_addition_trigger*Pyranine_influx_rate);
-  Pyranine_transfer_between_endo_lysosomal_compartments_1_and_2: Pyranine_three_compartment_model_compartment_1 => Pyranine_three_compartment_model_compartment_2; Dictyostelium_discoideum_AX2*lambda_compartment_1*Pyranine_three_compartment_model_compartment_1;
-  Pyranine_transfer_between_endo_lysosomal_compartments_2_and_3: Pyranine_three_compartment_model_compartment_2 => Pyranine_three_compartment_model_compartment_3; Dictyostelium_discoideum_AX2*lambda_compartment_2*Pyranine_three_compartment_model_compartment_2;
-  Pyranine_efflux_rate: Pyranine_three_compartment_model_compartment_3 => ; Dictyostelium_discoideum_AX2*lambda_compartment_3*Pyranine_three_compartment_model_compartment_3;
-
-  // Events:
-  Addition_of_Pyranine: at 0 after time > 90: Pyranine_addition_trigger = 1;
+  FITC_Dextran_efflux_rate: FITC_Dextran_nine_compartment_model_compartment_9 => ; Dictyostelium_discoideum_AX2*lambda_compartment_9*FITC_Dextran_nine_compartment_model_compartment_9;
+  FITC_Dextran_transfer_between_endo_lysosomal_compartments_3_and_4: FITC_Dextran_three_compartment_model_compartment_3 => FITC_Dextran_nine_compartment_model_compartment_4; Dictyostelium_discoideum_AX2*lambda_compartment_3*FITC_Dextran_three_compartment_model_compartment_3;
+  FITC_Dextran_transfer_between_endo_lysosomal_compartments_4_and_5: FITC_Dextran_nine_compartment_model_compartment_4 => FITC_Dextran_nine_compartment_model_compartment_5; Dictyostelium_discoideum_AX2*lambda_compartment_4*FITC_Dextran_nine_compartment_model_compartment_4;
+  FITC_Dextran_transfer_between_endo_lysosomal_compartments_5_and_6: FITC_Dextran_nine_compartment_model_compartment_5 => FITC_Dextran_nine_compartment_model_compartment_6; Dictyostelium_discoideum_AX2*lambda_compartment_5*FITC_Dextran_nine_compartment_model_compartment_5;
+  FITC_Dextran_transfer_between_endo_lysosomal_compartments_6_and_7: FITC_Dextran_nine_compartment_model_compartment_6 => FITC_Dextran_nine_compartment_model_compartment_7; Dictyostelium_discoideum_AX2*lambda_compartment_6*FITC_Dextran_nine_compartment_model_compartment_6;
+  FITC_Dextran_transfer_between_endo_lysosomal_compartments_7_and_8: FITC_Dextran_nine_compartment_model_compartment_7 => FITC_Dextran_nine_compartment_model_compartment_8; Dictyostelium_discoideum_AX2*lambda_compartment_7*FITC_Dextran_nine_compartment_model_compartment_7;
+  FITC_Dextran_influx_rate:  => FITC_Dextran_three_compartment_model_compartment_1; Dictyostelium_discoideum_AX2*mu;
+  FITC_Dextran_transfer_between_endo_lysosomal_compartments_8_and_9: FITC_Dextran_nine_compartment_model_compartment_8 => FITC_Dextran_nine_compartment_model_compartment_9; Dictyostelium_discoideum_AX2*lambda_compartment_8*FITC_Dextran_nine_compartment_model_compartment_8;
 
   // Species initializations:
   FITC_Dextran_three_compartment_model_compartment_1 = 0;
   FITC_Dextran_three_compartment_model_compartment_2 = 0;
   FITC_Dextran_three_compartment_model_compartment_3 = 0;
-  Pyranine_three_compartment_model_compartment_1 = 0;
-  Pyranine_three_compartment_model_compartment_2 = 0;
-  Pyranine_three_compartment_model_compartment_3 = 0;
+  FITC_Dextran_nine_compartment_model_compartment_4 = 0;
+  FITC_Dextran_nine_compartment_model_compartment_5 = 0;
+  FITC_Dextran_nine_compartment_model_compartment_6 = 0;
+  FITC_Dextran_nine_compartment_model_compartment_7 = 0;
+  FITC_Dextran_nine_compartment_model_compartment_8 = 0;
+  FITC_Dextran_nine_compartment_model_compartment_9 = 0;
 
   // Compartment initializations:
   Dictyostelium_discoideum_AX2 = 1;
 
   // Variable initializations:
-  FITC_Dextran_max_uptake_rate = 585;
-  lambda_single_compartment_model_FITC_Dextran = 0.016;
-  Pyranine_addition_trigger = 0;
-  Pyranine_max_uptake_rate = 578;
-  lambda_single_compartment_model_Pyranine = 0.01;
-  FITC_Dextran_influx_rate = 6.7;
-  lambda_compartment_1 = 0.037;
-  lambda_compartment_2 = 0.037;
-  lambda_compartment_3 = 0.035;
-  Pyranine_influx_rate = 5.3;
+  lambda_compartment_1 = 0.09;
+  lambda_compartment_2 = 0.127;
+  lambda_compartment_3 = 0.099;
+  lambda_compartment_4 = 0.09;
+  lambda_compartment_5 = 0.093;
+  lambda_compartment_6 = 0.098;
+  lambda_compartment_7 = 0.098;
+  lambda_compartment_8 = 0.111;
+  lambda_compartment_9 = 0.096;
+  mu = 6.8;
 
   // Other declarations:
-  var Pyranine_addition_trigger, Total_FITC_Dextran, Total_Pyranine;
-  const Dictyostelium_discoideum_AX2, FITC_Dextran_max_uptake_rate, lambda_single_compartment_model_FITC_Dextran;
-  const Pyranine_max_uptake_rate, lambda_single_compartment_model_Pyranine;
-  const FITC_Dextran_influx_rate, lambda_compartment_1, lambda_compartment_2;
-  const lambda_compartment_3, Pyranine_influx_rate;
+  var Total_FITC_Dextran;
+  const Dictyostelium_discoideum_AX2, lambda_compartment_1, lambda_compartment_2;
+  const lambda_compartment_3, lambda_compartment_4, lambda_compartment_5;
+  const lambda_compartment_6, lambda_compartment_7, lambda_compartment_8;
+  const lambda_compartment_9, mu;
 
   // Unit definitions:
   unit length = metre;
@@ -71,38 +71,47 @@ model *Aubry1995___Multi_compartment_model_of_fluid_phase_endocytosis_kinetics_i
   // Display Names:
   time_unit is "time";
   Dictyostelium_discoideum_AX2 is "Dictyostelium discoideum AX2";
-  FITC_Dextran_influx_rate_0 is "FITC_Dextran_influx_rate";
-  Pyranine_influx_rate_0 is "Pyranine_influx_rate";
+  FITC_Dextran_three_compartment_model_compartment_1 is "FITC_Dextran_nine_compartment_model_compartment_1";
+  FITC_Dextran_three_compartment_model_compartment_2 is "FITC_Dextran_nine_compartment_model_compartment_2";
+  FITC_Dextran_three_compartment_model_compartment_3 is "FITC_Dextran_nine_compartment_model_compartment_3";
 
   // CV terms:
   Dictyostelium_discoideum_AX2 taxon "http://identifiers.org/taxonomy/366501"
-  FITC_Dextran_single_compartment_model part "http://identifiers.org/chebi/CHEBI:52071"
-  FITC_Dextran_single_compartment_model part "http://identifiers.org/chebi/CHEBI:37926"
-  Pyranine_single_compartment_model identity "http://identifiers.org/chebi/CHEBI:52083"
   FITC_Dextran_three_compartment_model_compartment_1 part "http://identifiers.org/chebi/CHEBI:37926"
   FITC_Dextran_three_compartment_model_compartment_1 part "http://identifiers.org/chebi/CHEBI:52071"
-  FITC_Dextran_three_compartment_model_compartment_2 part "http://identifiers.org/chebi/CHEBI:37926"
   FITC_Dextran_three_compartment_model_compartment_2 part "http://identifiers.org/chebi/CHEBI:52071"
+  FITC_Dextran_three_compartment_model_compartment_2 part "http://identifiers.org/chebi/CHEBI:37926"
   FITC_Dextran_three_compartment_model_compartment_3 part "http://identifiers.org/chebi/CHEBI:52071"
   FITC_Dextran_three_compartment_model_compartment_3 part "http://identifiers.org/chebi/CHEBI:37926"
-  Pyranine_three_compartment_model_compartment_1 identity "http://identifiers.org/chebi/CHEBI:52083"
-  Pyranine_three_compartment_model_compartment_2 identity "http://identifiers.org/chebi/CHEBI:52083"
-  Pyranine_three_compartment_model_compartment_3 identity "http://identifiers.org/chebi/CHEBI:52083"
-  FITC_Dextran_influx_rate_0 identity "http://identifiers.org/go/GO:0098657"
+  FITC_Dextran_nine_compartment_model_compartment_4 part "http://identifiers.org/chebi/CHEBI:37926"
+  FITC_Dextran_nine_compartment_model_compartment_4 part "http://identifiers.org/chebi/CHEBI:52071"
+  FITC_Dextran_nine_compartment_model_compartment_5 part "http://identifiers.org/chebi/CHEBI:52071"
+  FITC_Dextran_nine_compartment_model_compartment_5 part "http://identifiers.org/chebi/CHEBI:37926"
+  FITC_Dextran_nine_compartment_model_compartment_6 part "http://identifiers.org/chebi/CHEBI:37926"
+  FITC_Dextran_nine_compartment_model_compartment_6 part "http://identifiers.org/chebi/CHEBI:52071"
+  FITC_Dextran_nine_compartment_model_compartment_7 part "http://identifiers.org/chebi/CHEBI:37926"
+  FITC_Dextran_nine_compartment_model_compartment_7 part "http://identifiers.org/chebi/CHEBI:52071"
+  FITC_Dextran_nine_compartment_model_compartment_8 part "http://identifiers.org/chebi/CHEBI:52071"
+  FITC_Dextran_nine_compartment_model_compartment_8 part "http://identifiers.org/chebi/CHEBI:37926"
+  FITC_Dextran_nine_compartment_model_compartment_9 part "http://identifiers.org/chebi/CHEBI:37926"
+  FITC_Dextran_nine_compartment_model_compartment_9 part "http://identifiers.org/chebi/CHEBI:52071"
   FITC_Dextran_transfer_between_endo_lysosomal_compartments_1_and_2 identity "http://identifiers.org/go/GO:0098927"
   FITC_Dextran_transfer_between_endo_lysosomal_compartments_2_and_3 identity "http://identifiers.org/go/GO:0098927"
   FITC_Dextran_efflux_rate identity "http://identifiers.org/go/GO:0140352"
-  Pyranine_influx_rate_0 identity "http://identifiers.org/go/GO:0098657"
-  Pyranine_transfer_between_endo_lysosomal_compartments_1_and_2 identity "http://identifiers.org/go/GO:0098927"
-  Pyranine_transfer_between_endo_lysosomal_compartments_2_and_3 identity "http://identifiers.org/go/GO:0098927"
-  Pyranine_efflux_rate identity "http://identifiers.org/go/GO:0140352"
+  FITC_Dextran_transfer_between_endo_lysosomal_compartments_3_and_4 identity "http://identifiers.org/go/GO:0098927"
+  FITC_Dextran_transfer_between_endo_lysosomal_compartments_4_and_5 identity "http://identifiers.org/go/GO:0098927"
+  FITC_Dextran_transfer_between_endo_lysosomal_compartments_5_and_6 identity "http://identifiers.org/go/GO:0098927"
+  FITC_Dextran_transfer_between_endo_lysosomal_compartments_6_and_7 identity "http://identifiers.org/go/GO:0098927"
+  FITC_Dextran_transfer_between_endo_lysosomal_compartments_7_and_8 identity "http://identifiers.org/go/GO:0098927"
+  FITC_Dextran_influx_rate identity "http://identifiers.org/go/GO:0098657"
+  FITC_Dextran_transfer_between_endo_lysosomal_compartments_8_and_9 identity "http://identifiers.org/go/GO:0098927"
 
   model publication "http://identifiers.org/doi/10.1007/BF00713556"
-  model model_source "http://identifiers.org/biomodels.db/MODEL2102090001",
-                     "http://identifiers.org/biomodels.db/BIOMD0000000986"
+  model model_source "http://identifiers.org/biomodels.db/MODEL2102100001",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000987"
+  model identity "http://identifiers.org/chebi/CHEBI:52083",
+                 "http://identifiers.org/chebi/CHEBI:37926"
   model identity "http://identifiers.org/go/GO:0006897"
-  model identity "http://identifiers.org/chebi/CHEBI:37926",
-                 "http://identifiers.org/chebi/CHEBI:52083"
   model taxon "http://identifiers.org/taxonomy/366501"
   model property "http://identifiers.org/mamo/MAMO_0000046"
   model created "2021-02-08T11:29:50Z"
@@ -127,4 +136,4 @@ stages in the pathway.
 ```
 end
 
-Aubry1995___Multi_compartment_model_of_fluid_phase_endocytosis_kinetics_in_Dictyostelium_discoideum is "Aubry1995 - Multi-compartment model of fluid-phase endocytosis kinetics in Dictyostelium discoideum"
+Aubry1995___Nine_compartment_model_of_fluid_phase_endocytosis_kinetics_in_Dictyostelium_discoideum is "Aubry1995 - Nine-compartment model of fluid-phase endocytosis kinetics in Dictyostelium discoideum"

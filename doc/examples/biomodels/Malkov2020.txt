@@ -8,6 +8,9 @@ model *Malkov2020___SEIRS_model_of_COVID_19_transmission_with_reinfection()
 
   // Assignment Rules:
   beta := gamma_*R_fixed;
+  R_fixed := (R_1 + R_2)/2;
+  R_1 := exp(-eta*time)*R_1_0 + (1 - exp(-eta*time))*R_1_f;
+  R_2 := exp(-eta*time)*R_2_0 + (1 - exp(-eta*time))*R_2_f;
   Fraction_infected := Infected/Total_population;
 
   // Reactions:
@@ -34,22 +37,26 @@ model *Malkov2020___SEIRS_model_of_COVID_19_transmission_with_reinfection()
 
   // Variable initializations:
   gamma_ = 0.05556;
-  R_fixed = 3;
   omega = 0.01667;
   sigma = 0.19231;
+  eta = 0;
+  R_1_0 = 3;
+  R_1_f = 1.6;
+  R_2_0 = 3;
+  R_2_f = 1.6;
 
   // Other declarations:
-  var beta, Fraction_infected;
-  const USA, gamma_, R_fixed, omega, sigma;
+  var beta, R_fixed, R_1, R_2, Fraction_infected;
+  const USA, gamma_, omega, sigma, eta, R_1_0, R_1_f, R_2_0, R_2_f;
 
   // Unit definitions:
-  unit length = 1 / dimensionless^-0;
-  unit area = 1 / dimensionless^-0;
-  unit volume = 1 / dimensionless^-0;
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-3 litre;
   unit time_unit = time_unit;
   unit substance = item;
   unit extent = substance;
-  unit substance_per_volume = item / dimensionless^0;
+  unit substance_per_volume = item / 1e-3 litre;
 
   // Display Names:
   time_unit is "time";
@@ -61,51 +68,50 @@ model *Malkov2020___SEIRS_model_of_COVID_19_transmission_with_reinfection()
   Susceptible identity "http://identifiers.org/ido/0000514"
   Recovered identity "http://identifiers.org/ido/0000514"
   Recovered property "http://identifiers.org/ido/0000569"
-  Exposed identity "http://identifiers.org/ncit/C171133"
   Exposed identity "http://identifiers.org/ido/0000514"
+  Exposed identity "http://identifiers.org/ncit/C171133"
   Exposed property "http://identifiers.org/ido/0000597"
-  Infected identity "http://identifiers.org/ncit/C171133"
   Infected identity "http://identifiers.org/ido/0000511"
+  Infected identity "http://identifiers.org/ncit/C171133"
   Susceptible_to_Exposed identity "http://identifiers.org/ido/0000597"
   Susceptible_to_Exposed identity "http://identifiers.org/ncit/C171133"
   Exposed_to_Infected identity "http://identifiers.org/ncit/C171133"
   Infected_to_Recovered identity "http://identifiers.org/ncit/C25746"
-  Recovered_to_Susceptible__Reinfection identity "http://identifiers.org/ncit/C16710"
   Recovered_to_Susceptible__Reinfection identity "http://identifiers.org/ncit/C25559"
+  Recovered_to_Susceptible__Reinfection identity "http://identifiers.org/ncit/C16710"
 
+  model publication "http://identifiers.org/pubmed/32982082"
+  model model_source "http://identifiers.org/biomodels.db/MODEL2012070001",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000980"
   model identity "http://identifiers.org/doid/DOID:0080600"
-  model taxon "http://identifiers.org/taxonomy/2697049"
-  model taxon "http://identifiers.org/taxonomy/9606"
-  model description "http://identifiers.org/pubmed/32982082"
-  model property "http://identifiers.org/mamo/MAMO_0000046"
+  model taxon "http://identifiers.org/taxonomy/2697049",
+              "http://identifiers.org/taxonomy/9606"
+  model property "http://identifiers.org/mamo/MAMO_0000028"
   model created "2020-12-04T01:05:32Z"
-  model modified "2022-10-17T13:05:25Z"
+  model modified "2020-12-04T01:05:32Z"
   model creator1.givenName "Kausthubh"
   model creator1.familyName "Ramachandran"
   model creator1.organization "EMBL-EBI"
   model creator1.email "kramachandran@ebi.ac.uk"
-  model creator2.givenName "Matthias"
-  model creator2.familyName "König"
-  model creator2.organization "Humboldt-University Berlin"
-  model creator2.email "koenigmx@hu-berlin.de"
 
   // Notes:
   model notes ```
 Epidemiological models of COVID-19 transmission assume that recovered individuals
-have a fully protected immunity. To date, there is no definite answer about whether
+have a fully pro- tected immunity. To date, there is no definite answer about whether
 people who recover from COVID-19 can be reinfected with the severe acute respiratory
 syndrome coronavirus 2 (SARS-CoV-2). In the absence of a clear answer about the risk
 of reinfection, it is instructive to consider the possible scenarios. To study the
-epidemiological dynamics with the possibility of reinfection, I use a Susceptible-Exposed-Infectious-Resistant-Susceptible
-model with the time-varying transmission rate. I consider three different ways of
-modeling reinfection. The crucial feature of this study is that I explore both the
-difference between the reinfection and no-reinfection scenarios and how the mitigation
-measures affect this difference. The principal results are the following. First,
-the dynamics of the reinfection and no-reinfection scenarios are indistinguishable
-before the infection peak. Second, the mitigation measures delay not only the infection
-peak, but also the moment when the difference between the reinfection and no-reinfection
-scenarios becomes prominent. These results are robust to various modeling assumptions.
+epidemiological dynamics with the possibility of reinfection, I use a Susceptible-Exposed-Infectious-
+Resistant-Susceptible model with the time-varying transmission rate. I consider three
+different ways of modeling reinfection. The crucial feature of this study is that
+I explore both the difference between the reinfection and no-reinfection scenarios
+and how the mitigation measures affect this difference. The principal results are
+the following. First, the dynamics of the reinfection and no-reinfection scenarios
+are in- distinguishable before the infection peak. Second, the mitigation measures
+delay not only the infection peak, but also the moment when the difference between
+the reinfection and no-reinfection scenarios becomes prominent. These results are
+robust to various modeling assumptions.
 ```
 end
 
-Malkov2020___SEIRS_model_of_COVID_19_transmission_with_reinfection is "Malkov2020 - SEIRS model of COVID-19 transmission with reinfection"
+Malkov2020___SEIRS_model_of_COVID_19_transmission_with_reinfection is "Malkov2020 - SEIRS model of COVID-19 transmission with time-varying R values and reinfection"
