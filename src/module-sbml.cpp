@@ -1208,16 +1208,27 @@ void Module::LoadSBML(Model* sbml)
     if (species->isSetInitialAmount()) {
       double amount = species->getInitialAmount();
       formula.AddNum(amount);
-      if (amount != 0 && defaultcompartments.find(species->getCompartment()) == defaultcompartments.end()) {
-        Variable* compartment = AddOrFindVariable(&(species->getCompartment()));
-        Formula* compform = compartment->GetFormula();
-        formula.AddMathThing('/');
-        formula.AddVariable(compartment);
+      if (!species->getHasOnlySubstanceUnits()) {
+        if (amount != 0 && defaultcompartments.find(species->getCompartment()) == defaultcompartments.end()) {
+          Variable* compartment = AddOrFindVariable(&(species->getCompartment()));
+          Formula* compform = compartment->GetFormula();
+          formula.AddMathThing('/');
+          formula.AddVariable(compartment);
+        }
       }
       var->SetFormula(&formula);
     }
     else if (species->isSetInitialConcentration()) {
-      formula.AddNum(species->getInitialConcentration());
+      double conc = species->getInitialConcentration();
+      formula.AddNum(conc);
+      if (species->getHasOnlySubstanceUnits()) {
+        if (conc != 0 && defaultcompartments.find(species->getCompartment()) == defaultcompartments.end()) {
+          Variable* compartment = AddOrFindVariable(&(species->getCompartment()));
+          Formula* compform = compartment->GetFormula();
+          formula.AddMathThing('/');
+          formula.AddVariable(compartment);
+        }
+      }
       var->SetFormula(&formula);
     }
     //Anything more complicated is set in a Rule, which we'll get to later.
@@ -2113,11 +2124,22 @@ void Module::CreateSBMLModel(bool comp)
     }
     Variable* unitvar = species->GetUnitVariable();
     Formula* formula = species->GetFormula();
-    if (formula->IsDouble()) {
-      sbmlspecies->setInitialConcentration(formula->GetDouble());
+    if (species->GetSubstOnly()) {
+      if (formula->IsDouble()) {
+        sbmlspecies->setInitialAmount(formula->GetDouble());
+      }
+      else if (formula->IsConcentrationTimes(compartment)) {
+        sbmlspecies->setInitialConcentration(formula->ToAmountOrConcentration());
+      }
     }
-    else if (formula->IsAmountIn(compartment)) {
-      sbmlspecies->setInitialAmount(formula->ToAmount());
+    else {
+      if (formula->IsDouble()) {
+        sbmlspecies->setInitialConcentration(formula->GetDouble());
+      }
+      else if (formula->IsAmountIn(compartment)) {
+        sbmlspecies->setInitialAmount(formula->ToAmountOrConcentration());
+      }
+
     }
     if (unitvar != NULL) {
       //We need to convert concentration to substance.
@@ -2800,14 +2822,24 @@ void Module::SetAssignmentFor(Model* sbmlmod, const Variable* var, const map<con
         ar->setMath(math);
       }
     }
-    else if (!formula->IsDouble() &&
-      !(IsSpecies(var->GetType()) && formula->IsAmountIn(var->GetCompartment()))) {
-        //if it was a double or a species with an amount, we already dealt with it.  Otherwise:
-        if (useassignment) {
-          InitialAssignment* ia = sbmlmod->createInitialAssignment();
-          ia->setSymbol(var->GetNameDelimitedBy(cc));
-          ia->setMath(math);
+    else if (!formula->IsDouble()) {
+      if (IsSpecies(var->GetType())) {
+        if (var->GetSubstOnly()) {
+          if (formula->IsConcentrationTimes(var->GetCompartment())) {
+            useassignment = false; //Already set 'initialAmount'
+          }
         }
+        else {
+          if (formula->IsAmountIn(var->GetCompartment())) {
+            useassignment = false; //Already set 'initialConcentration'
+          }
+        }
+      }
+      if (useassignment) {
+        InitialAssignment* ia = sbmlmod->createInitialAssignment();
+        ia->setSymbol(var->GetNameDelimitedBy(cc));
+        ia->setMath(math);
+      }
     }
     if (comp) {
       formula->AddReferencedVariablesTo(referencedVars);

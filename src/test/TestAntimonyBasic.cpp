@@ -283,6 +283,12 @@ START_TEST (test_initialAmount)
 }
 END_TEST
 
+START_TEST(test_initialAmountsAndConcentrations)
+{
+  compareFileTranslation("initialAmountsAndConcentrations");
+}
+END_TEST
+
 START_TEST (test_initialAmount_txt)
 {
   compareStringTranslation("species x in C=3/C", "initialAmount.xml");
@@ -679,6 +685,7 @@ create_suite_Basic (void)
   tcase_add_test( tcase, test_initialConcentration);
   tcase_add_test( tcase, test_initialConcentration_txt);
   tcase_add_test( tcase, test_initialAmount);
+  tcase_add_test( tcase, test_initialAmountsAndConcentrations);
   tcase_add_test( tcase, test_initialAmount_txt);
   tcase_add_test( tcase, test_initialAssignment);
   tcase_add_test( tcase, test_initialAssignment_txt);
