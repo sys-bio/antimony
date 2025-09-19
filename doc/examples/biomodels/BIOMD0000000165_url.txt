@@ -1,4 +1,4 @@
-// Created by libAntimony v3.0.0
+// Created by libAntimony v3.1.0
 model *Saucerman2006_PKA()
 
   // Compartments and Species:
@@ -19,7 +19,7 @@ model *Saucerman2006_PKA()
   light_cAMP_photolysis := piecewise(1, (time > ton_global_light_cAMP_photolysis) && (time < toff_global_light_cAMP_photolysis), 0) + piecewise(light_spot_cell, (time > ton_local_light_cAMP_photolysis) && (time < toff_local_light_cAMP_photolysis), 0);
   Vmax_cAMP_synthesis_FskAC := kfsk_cAMP_synthesis_FskAC*FskAC_cell;
   Kf_inhibit_PDE := piecewise(1000, time > 1000, 0);
-  Kr_inhibit_PDE := piecewise(30000, time > 1000, 0);
+  Kr_inhibit_PDE := piecewise(3.1.0, time > 1000, 0);
   ar_for_add_propranolol := piecewise((Propranolol_pipette + -Propranolol_cell)*(1/tauPropranolol), time > t_propadd, 0);
   ar_for_add_Ligand := piecewise((L_pipette + -L_cell)*(1/tauL), time > t_Ladd, 0);
   Ratio_AKARp_AKARtot := AKARp_cell/(AKAR_cell + AKARp_cell + PKAC_AKAR_cell + PP_AKARp_cell);
@@ -149,7 +149,7 @@ model *Saucerman2006_PKA()
   bind_cAMP_ARC_Kr has s_1;
   bind_b1AR_Gs_Kf = 1000;
   bind_b1AR_Gs_Kf has uM_1_s_1;
-  bind_b1AR_Gs_Kr = 33000;
+  bind_b1AR_Gs_Kr = 3.1.0;
   bind_b1AR_Gs_Kr has s_1;
   bind_PDEcAMP_Kf = 1000;
   bind_PDEcAMP_Kf has uM_1_s_1;
