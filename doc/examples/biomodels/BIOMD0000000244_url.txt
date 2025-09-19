@@ -147,56 +147,56 @@ model *Kotte2010_Ecoli_Metabolic_Adaption()
   second_shift: at time >= (3600*shift2): BM = BM_2, ACT = ACT_2, GLC = GLC_2;
 
   // Species initializations:
-  BM = 0.03/Environment;
+  BM = 0.03;
   BM has od_per_volume;
   ACT = 0;
   ACT has gram_per_litre;
   GLC = 4.8/Environment;
   GLC has gram_per_litre;
-  ACoA = 0.351972298/Cell;
-  AKG = 0.191190619/Cell;
-  cAMP = 0.202804098/Cell;
-  FBP = 6.57504207/Cell;
-  G6P = 1.908140784/Cell;
-  GLX = 5.70593e-09/Cell;
-  ICT = 0.001408116/Cell;
-  MAL = 3.278779135/Cell;
-  OAA = 0.050535354/Cell;
-  PEP = 0.210455879/Cell;
-  PG3 = 5.720977255/Cell;
-  PYR = 0.863278018/Cell;
-  AceA = 0.00472323/Cell;
-  AceB = 0.001416969/Cell;
-  AceK = 0.000141697/Cell;
-  Acoa2act = 0.001/Cell;
-  Acs = 0.001096222/Cell;
-  Akg2mal = 0.001026848/Cell;
-  CAMPdegr = 0.001/Cell;
-  Cya = 0.001/Cell;
-  Emp = 0.011515593/Cell;
-  Eno = 0.011552813/Cell;
-  Fdp = 0.000157492/Cell;
-  GltA = 0.001029612/Cell;
-  Icd = 0.004290789/Cell;
-  Icd_P = 0.000220477/Cell;
-  Mdh = 0.00345727/Cell;
-  Me = 0.000999714/Cell;
-  PckA = 0.002290892/Cell;
-  Pdh = 0.004647401/Cell;
-  PfkA = 0.000143816/Cell;
-  Ppc = 0.000999714/Cell;
-  PpsA = 0.000987493/Cell;
-  PykF = 0.005977168/Cell;
-  Cra = 0.000299098/Cell;
-  CraFBP = 0.006990902/Cell;
-  Crp = 0.005943273/Cell;
-  CrpcAMP = 0.001346727/Cell;
-  IclR = 0.00729/Cell;
-  PdhR = 0.001163813/Cell;
-  PdhRPYR = 0.006126187/Cell;
-  EIIA = 0.09647707/Cell;
-  EIIA_P = 0.00352292/Cell;
-  EIICB = 0.003/Cell;
+  ACoA = 0.351972298;
+  AKG = 0.191190619;
+  cAMP = 0.202804098;
+  FBP = 6.57504207;
+  G6P = 1.908140784;
+  GLX = 5.70593e-09;
+  ICT = 0.001408116;
+  MAL = 3.278779135;
+  OAA = 0.050535354;
+  PEP = 0.210455879;
+  PG3 = 5.720977255;
+  PYR = 0.863278018;
+  AceA = 0.00472323;
+  AceB = 0.001416969;
+  AceK = 0.000141697;
+  Acoa2act = 0.001;
+  Acs = 0.001096222;
+  Akg2mal = 0.001026848;
+  CAMPdegr = 0.001;
+  Cya = 0.001;
+  Emp = 0.011515593;
+  Eno = 0.011552813;
+  Fdp = 0.000157492;
+  GltA = 0.001029612;
+  Icd = 0.004290789;
+  Icd_P = 0.000220477;
+  Mdh = 0.00345727;
+  Me = 0.000999714;
+  PckA = 0.002290892;
+  Pdh = 0.004647401;
+  PfkA = 0.000143816;
+  Ppc = 0.000999714;
+  PpsA = 0.000987493;
+  PykF = 0.005977168;
+  Cra = 0.000299098;
+  CraFBP = 0.006990902;
+  Crp = 0.005943273;
+  CrpcAMP = 0.001346727;
+  IclR = 0.00729;
+  PdhR = 0.001163813;
+  PdhRPYR = 0.006126187;
+  EIIA = 0.09647707;
+  EIIA_P = 0.00352292;
+  EIICB = 0.003;
 
   // Compartment initializations:
   Environment = 1;
@@ -231,7 +231,7 @@ model *Kotte2010_Ecoli_Metabolic_Adaption()
   e_AceB_Kglx = 0.95;
   e_AceB_Kacoa = 0.755;
   e_AceB_Kglxacoa = 0.719;
-  e_AceK_kcat_ki = 3.1.000000000;
+  e_AceK_kcat_ki = 3400000000000;
   e_AceK_kcat_ph = 1700000000;
   e_AceK_n = 2;
   e_AceK_L = 100000000;
@@ -246,7 +246,7 @@ model *Kotte2010_Ecoli_Metabolic_Adaption()
   e_AceK_Kict = 0.137;
   e_Acoa2act_kcat = 3079;
   e_Acoa2act_n = 2;
-  e_Acoa2act_L = 63.1.0;
+  e_Acoa2act_L = 639000;
   e_Acoa2act_Kacoa = 0.022;
   e_Acoa2act_Kpyr = 0.022;
   e_Acs_kcat = 340;
@@ -520,93 +520,93 @@ model *Kotte2010_Ecoli_Metabolic_Adaption()
   // CV terms:
   Environment identity "http://identifiers.org/go/GO:0005576"
   Cell identity "http://identifiers.org/go/GO:0005623"
-  ACT biological_system "http://identifiers.org/chebi/CHEBI:15366",
-                        "http://identifiers.org/kegg.compound/C00033"
-  GLC biological_system "http://identifiers.org/chebi/CHEBI:17234",
-                        "http://identifiers.org/kegg.compound/C00293"
-  ACoA biological_system "http://identifiers.org/chebi/CHEBI:15351",
-                         "http://identifiers.org/kegg.compound/C00024"
-  AKG biological_system "http://identifiers.org/chebi/CHEBI:16810",
-                        "http://identifiers.org/kegg.compound/C00026"
-  cAMP biological_system "http://identifiers.org/chebi/CHEBI:17489",
-                         "http://identifiers.org/kegg.compound/C00575"
-  FBP biological_system "http://identifiers.org/chebi/CHEBI:16905",
-                        "http://identifiers.org/kegg.compound/C00354"
-  G6P biological_system "http://identifiers.org/chebi/CHEBI:14314",
-                        "http://identifiers.org/kegg.compound/C00092"
-  GLX biological_system "http://identifiers.org/chebi/CHEBI:16891",
-                        "http://identifiers.org/kegg.compound/C00048"
-  ICT biological_system "http://identifiers.org/chebi/CHEBI:30887",
-                        "http://identifiers.org/kegg.compound/C00311"
-  MAL biological_system "http://identifiers.org/chebi/CHEBI:30796",
-                        "http://identifiers.org/kegg.compound/C00497"
-  OAA biological_system "http://identifiers.org/chebi/CHEBI:30744",
-                        "http://identifiers.org/kegg.compound/C00036"
-  PEP biological_system "http://identifiers.org/chebi/CHEBI:18021",
-                        "http://identifiers.org/kegg.compound/C00074"
-  PG3 biological_system "http://identifiers.org/chebi/CHEBI:17794",
-                        "http://identifiers.org/kegg.compound/C00197"
-  PYR biological_system "http://identifiers.org/chebi/CHEBI:32816",
-                        "http://identifiers.org/kegg.compound/C00022"
-  AceA biological_system "http://identifiers.org/uniprot/P0A9G6"
-  AceB biological_system "http://identifiers.org/uniprot/Q8X609"
-  AceK biological_system "http://identifiers.org/uniprot/P11071"
-  Acs biological_system "http://identifiers.org/uniprot/P27550"
-  Cya biological_system "http://identifiers.org/uniprot/P00936"
-  Eno biological_system "http://identifiers.org/uniprot/P0A6P9"
-  Fdp homolog "http://identifiers.org/uniprot/P00637"
-  GltA biological_system "http://identifiers.org/uniprot/P0ABH7"
-  Icd biological_system "http://identifiers.org/uniprot/P08200"
-  Icd_P biological_system "http://identifiers.org/uniprot/P08200"
-  Mdh biological_system "http://identifiers.org/uniprot/P61889"
-  Me biological_system "http://identifiers.org/uniprot/P76558"
-  PckA homolog "http://identifiers.org/uniprot/Q8GH15"
-  Pdh biological_system "http://identifiers.org/uniprot/P0AFG8"
-  PfkA biological_system "http://identifiers.org/uniprot/P06999"
-  Ppc homolog "http://identifiers.org/uniprot/Q9XHC7"
-  PpsA biological_system "http://identifiers.org/uniprot/B5Z9Q0"
-  PykF biological_system "http://identifiers.org/uniprot/P0AD61"
-  Cra biological_system "http://identifiers.org/uniprot/P0ACP1"
-  CraFBP part "http://identifiers.org/chebi/CHEBI:16905",
-              "http://identifiers.org/uniprot/P0ACP1"
-  Crp biological_system "http://identifiers.org/uniprot/P0ACJ8"
-  CrpcAMP biological_system "http://identifiers.org/chebi/CHEBI:17489",
-                            "http://identifiers.org/uniprot/P0ACJ8"
-  IclR biological_system "http://identifiers.org/uniprot/P16528"
-  PdhR biological_system "http://identifiers.org/uniprot/P0ACM1"
-  PdhRPYR parthood "http://identifiers.org/chebi/CHEBI:32816",
+  ACT isVersionOf "http://identifiers.org/chebi/CHEBI:15366",
+                  "http://identifiers.org/kegg.compound/C00033"
+  GLC isVersionOf "http://identifiers.org/chebi/CHEBI:17234",
+                  "http://identifiers.org/kegg.compound/C00293"
+  ACoA isVersionOf "http://identifiers.org/chebi/CHEBI:15351",
+                   "http://identifiers.org/kegg.compound/C00024"
+  AKG isVersionOf "http://identifiers.org/chebi/CHEBI:16810",
+                  "http://identifiers.org/kegg.compound/C00026"
+  cAMP isVersionOf "http://identifiers.org/chebi/CHEBI:17489",
+                   "http://identifiers.org/kegg.compound/C00575"
+  FBP isVersionOf "http://identifiers.org/chebi/CHEBI:16905",
+                  "http://identifiers.org/kegg.compound/C00354"
+  G6P isVersionOf "http://identifiers.org/chebi/CHEBI:14314",
+                  "http://identifiers.org/kegg.compound/C00092"
+  GLX isVersionOf "http://identifiers.org/chebi/CHEBI:16891",
+                  "http://identifiers.org/kegg.compound/C00048"
+  ICT isVersionOf "http://identifiers.org/chebi/CHEBI:30887",
+                  "http://identifiers.org/kegg.compound/C00311"
+  MAL isVersionOf "http://identifiers.org/chebi/CHEBI:30796",
+                  "http://identifiers.org/kegg.compound/C00497"
+  OAA isVersionOf "http://identifiers.org/chebi/CHEBI:30744",
+                  "http://identifiers.org/kegg.compound/C00036"
+  PEP isVersionOf "http://identifiers.org/chebi/CHEBI:18021",
+                  "http://identifiers.org/kegg.compound/C00074"
+  PG3 isVersionOf "http://identifiers.org/chebi/CHEBI:17794",
+                  "http://identifiers.org/kegg.compound/C00197"
+  PYR isVersionOf "http://identifiers.org/chebi/CHEBI:32816",
+                  "http://identifiers.org/kegg.compound/C00022"
+  AceA isVersionOf "http://identifiers.org/uniprot/P0A9G6"
+  AceB isVersionOf "http://identifiers.org/uniprot/Q8X609"
+  AceK isVersionOf "http://identifiers.org/uniprot/P11071"
+  Acs isVersionOf "http://identifiers.org/uniprot/P27550"
+  Cya isVersionOf "http://identifiers.org/uniprot/P00936"
+  Eno isVersionOf "http://identifiers.org/uniprot/P0A6P9"
+  Fdp isHomologTo "http://identifiers.org/uniprot/P00637"
+  GltA isVersionOf "http://identifiers.org/uniprot/P0ABH7"
+  Icd isVersionOf "http://identifiers.org/uniprot/P08200"
+  Icd_P isVersionOf "http://identifiers.org/uniprot/P08200"
+  Mdh isVersionOf "http://identifiers.org/uniprot/P61889"
+  Me isVersionOf "http://identifiers.org/uniprot/P76558"
+  PckA isHomologTo "http://identifiers.org/uniprot/Q8GH15"
+  Pdh isVersionOf "http://identifiers.org/uniprot/P0AFG8"
+  PfkA isVersionOf "http://identifiers.org/uniprot/P06999"
+  Ppc isHomologTo "http://identifiers.org/uniprot/Q9XHC7"
+  PpsA isVersionOf "http://identifiers.org/uniprot/B5Z9Q0"
+  PykF isVersionOf "http://identifiers.org/uniprot/P0AD61"
+  Cra isVersionOf "http://identifiers.org/uniprot/P0ACP1"
+  CraFBP hasPart "http://identifiers.org/chebi/CHEBI:16905",
+                 "http://identifiers.org/uniprot/P0ACP1"
+  Crp isVersionOf "http://identifiers.org/uniprot/P0ACJ8"
+  CrpcAMP isVersionOf "http://identifiers.org/chebi/CHEBI:17489",
+                      "http://identifiers.org/uniprot/P0ACJ8"
+  IclR isVersionOf "http://identifiers.org/uniprot/P16528"
+  PdhR isVersionOf "http://identifiers.org/uniprot/P0ACM1"
+  PdhRPYR isPartOf "http://identifiers.org/chebi/CHEBI:32816",
                    "http://identifiers.org/uniprot/P0ACM1"
-  EIIA parthood "http://identifiers.org/go/GO:0009401"
-  EIIA parthood "http://identifiers.org/uniprot/P00550"
-  EIIA_P parthood "http://identifiers.org/go/GO:0009401"
-  EIIA_P parthood "http://identifiers.org/uniprot/P00550"
-  EIICB parthood "http://identifiers.org/go/GO:0009401"
-  EIICB parthood "http://identifiers.org/uniprot/P00550"
-  pts_r1 biological_system "http://identifiers.org/go/GO:0006468"
-  pts_r1 parthood "http://identifiers.org/go/GO:0009401"
-  pts_r4 biological_system "http://identifiers.org/go/GO:0006470"
-  pts_r4 parthood "http://identifiers.org/go/GO:0009401"
-  e_AceK_Ki biological_system "http://identifiers.org/go/GO:0006468"
-  e_AceK_Ph biological_system "http://identifiers.org/go/GO:0006470"
-  tf_Cra biological_system "http://identifiers.org/go/GO:0043234"
-  tf_Crp biological_system "http://identifiers.org/go/GO:0043234"
-  tf_PdhR biological_system "http://identifiers.org/go/GO:0043234"
-  e_AceA parthood "http://identifiers.org/kegg.reaction/R00267",
+  EIIA isPartOf "http://identifiers.org/go/GO:0009401"
+  EIIA isPartOf "http://identifiers.org/uniprot/P00550"
+  EIIA_P isPartOf "http://identifiers.org/go/GO:0009401"
+  EIIA_P isPartOf "http://identifiers.org/uniprot/P00550"
+  EIICB isPartOf "http://identifiers.org/go/GO:0009401"
+  EIICB isPartOf "http://identifiers.org/uniprot/P00550"
+  pts_r1 isVersionOf "http://identifiers.org/go/GO:0006468"
+  pts_r1 isPartOf "http://identifiers.org/go/GO:0009401"
+  pts_r4 isVersionOf "http://identifiers.org/go/GO:0006470"
+  pts_r4 isPartOf "http://identifiers.org/go/GO:0009401"
+  e_AceK_Ki isVersionOf "http://identifiers.org/go/GO:0006468"
+  e_AceK_Ph isVersionOf "http://identifiers.org/go/GO:0006470"
+  tf_Cra isVersionOf "http://identifiers.org/go/GO:0043234"
+  tf_Crp isVersionOf "http://identifiers.org/go/GO:0043234"
+  tf_PdhR isVersionOf "http://identifiers.org/go/GO:0043234"
+  e_AceA isPartOf "http://identifiers.org/kegg.reaction/R00267",
                   "http://identifiers.org/kegg.reaction/R00479"
-  e_AceB biological_system "http://identifiers.org/kegg.reaction/R00472"
-  e_Acoa2act biological_system "http://identifiers.org/kegg.reaction/R00227"
+  e_AceB isVersionOf "http://identifiers.org/kegg.reaction/R00472"
+  e_Acoa2act isVersionOf "http://identifiers.org/kegg.reaction/R00227"
 
-  model model_source "http://identifiers.org/biomodels.db/MODEL1003.1.000"
+  model model_source "http://identifiers.org/biomodels.db/MODEL1003100000"
   model model_source "http://identifiers.org/biomodels.db/BIOMD0000000244"
   model publication "http://identifiers.org/pubmed/20212527"
-  model taxon "http://identifiers.org/taxonomy/562"
-  model version "http://identifiers.org/go/GO:0006083",
-                "http://identifiers.org/go/GO:0006094",
-                "http://identifiers.org/go/GO:0006097",
-                "http://identifiers.org/go/GO:0006096",
-                "http://identifiers.org/go/GO:0008965"
-  model biological_system "http://identifiers.org/go/GO:0045734",
-                          "http://identifiers.org/go/GO:0010906"
+  model hasTaxon "http://identifiers.org/taxonomy/562"
+  model hasVersion "http://identifiers.org/go/GO:0006083",
+                   "http://identifiers.org/go/GO:0006094",
+                   "http://identifiers.org/go/GO:0006097",
+                   "http://identifiers.org/go/GO:0006096",
+                   "http://identifiers.org/go/GO:0008965"
+  model isVersionOf "http://identifiers.org/go/GO:0045734",
+                    "http://identifiers.org/go/GO:0010906"
   model created "2010-03-14T23:34:51Z"
   model modified "2016-04-08T16:08:50Z"
   model creator1.givenName "Lukas"

@@ -32,10 +32,10 @@ model *PBPK_model_of_metformin_in_mice__single_dose_intavenous()
   KidneyTissue := ModelValue_1*0.0056;
   IntestineVascular := ModelValue_1*0.0228;
   KidneyTubular := ModelValue_1*0.0056;
-  QAdipose := ModelValue_3.1.005;
-  QBrain := ModelValue_3.1.033;
-  QHeart := ModelValue_3.1.066;
-  QKidney := ModelValue_3.1.091;
+  QAdipose := ModelValue_3*0.005;
+  QBrain := ModelValue_3*0.033;
+  QHeart := ModelValue_3*0.066;
+  QKidney := ModelValue_3*0.091;
   QMuscle := ModelValue_3*0.159;
   QRemainder := ModelValue_3*0.411;
   mgLiver := 129.16*(mLiver/Liver)*Compartment_1/1000000;
@@ -54,9 +54,9 @@ model *PBPK_model_of_metformin_in_mice__single_dose_intavenous()
   mgPlasmaArterial := 129.16*(mPlasmaArterial/PlasmaArterial)*Compartment_11/1000000;
   mgLung := 129.16*(mLung/Lung)*Compartment_12/1000000;
   mgStomach := 129.16*(mStomach/Stomach)*Compartment_14/1000000;
-  QLiverArtery := ModelValue_3.1.02;
-  QStomach := ModelValue_3.1.02;
-  QPortalVein := ModelValue_3.1.06;
+  QLiverArtery := ModelValue_3*0.02;
+  QStomach := ModelValue_3*0.02;
+  QPortalVein := ModelValue_3*0.06;
   QIntestineVascular := ModelValue_3*0.135;
   QLiverOut := ModelValue_47 + ModelValue_34;
   mIntestineSum := ((mIntestineEnterocytes/IntestineEnterocytes)*Compartment_15 + Compartment_17*(mIntestineVascular/IntestineVascular))/(Compartment_15 + Compartment_17);
@@ -315,7 +315,7 @@ model *PBPK_model_of_metformin_in_mice__single_dose_intavenous()
   _03_6__IntestineLumen____IntestineEnterocytes__Diffusion is "03.6. IntestineLumen -> IntestineEnterocytes (Diffusion)";
   _03_7__IntestineLumen____IntestineVascular__Diffusion is "03.7. IntestineLumen -> IntestineVascular (Diffusion)";
 
-  model property "http://identifiers.org/mamo/MAMO_0000046"
+  model hasProperty "http://identifiers.org/mamo/MAMO_0000046"
   model created "2017-05-26T09:17:54Z"
   model modified "2017-05-26T09:17:54Z"
   model creator1.givenName "Janis"

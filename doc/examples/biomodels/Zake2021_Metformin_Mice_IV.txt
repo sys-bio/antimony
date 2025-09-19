@@ -32,10 +32,10 @@ model *Zake2021___PBPK_model_of_metformin_in_mice__single_dose_intavenous()
   KidneyTissue := ModelValue_1*0.0056;
   IntestineVascular := ModelValue_1*0.0228;
   KidneyTubular := ModelValue_1*0.0056;
-  QAdipose := ModelValue_3.1.005;
-  QBrain := ModelValue_3.1.033;
-  QHeart := ModelValue_3.1.066;
-  QKidney := ModelValue_3.1.091;
+  QAdipose := ModelValue_3*0.005;
+  QBrain := ModelValue_3*0.033;
+  QHeart := ModelValue_3*0.066;
+  QKidney := ModelValue_3*0.091;
   QMuscle := ModelValue_3*0.159;
   QRemainder := ModelValue_3*0.411;
   mgLiver := 129.16*(mLiver/Liver)*Compartment_1/1000000;
@@ -54,9 +54,9 @@ model *Zake2021___PBPK_model_of_metformin_in_mice__single_dose_intavenous()
   mgPlasmaArterial := 129.16*(mPlasmaArterial/PlasmaArterial)*Compartment_11/1000000;
   mgLung := 129.16*(mLung/Lung)*Compartment_12/1000000;
   mgStomach := 129.16*(mStomach/Stomach)*Compartment_14/1000000;
-  QLiverArtery := ModelValue_3.1.02;
-  QStomach := ModelValue_3.1.02;
-  QPortalVein := ModelValue_3.1.06;
+  QLiverArtery := ModelValue_3*0.02;
+  QStomach := ModelValue_3*0.02;
+  QPortalVein := ModelValue_3*0.06;
   QIntestineVascular := ModelValue_3*0.135;
   QLiverOut := ModelValue_47 + ModelValue_34;
   mIntestineSum := ((mIntestineEnterocytes/IntestineEnterocytes)*Compartment_15 + Compartment_17*(mIntestineVascular/IntestineVascular))/(Compartment_15 + Compartment_17);
@@ -363,7 +363,7 @@ model *Zake2021___PBPK_model_of_metformin_in_mice__single_dose_intavenous()
   IntestineLumen identity "http://identifiers.org/uberon/UBERON:0018543"
   Liver identity "http://identifiers.org/uberon/UBERON:0002107"
   KidneyPlasma identity "http://identifiers.org/ncit/C13356"
-  KidneyPlasma parthood "http://identifiers.org/uberon/UBERON:0002113"
+  KidneyPlasma isPartOf "http://identifiers.org/uberon/UBERON:0002113"
   Remainder identity "http://identifiers.org/ncit/C37895"
   PlasmaVenous identity "http://identifiers.org/uberon/UBERON:0004582"
   Urine identity "http://identifiers.org/uberon/UBERON:0001088"
@@ -377,16 +377,16 @@ model *Zake2021___PBPK_model_of_metformin_in_mice__single_dose_intavenous()
   PortalVein identity "http://identifiers.org/uberon/UBERON:0002017"
   Stomach identity "http://identifiers.org/uberon/UBERON:0000945"
   IntestineEnterocytes identity "http://identifiers.org/bto/BTO:0000398"
-  IntestineEnterocytes parthood "http://identifiers.org/bto/BTO:0000648"
+  IntestineEnterocytes isPartOf "http://identifiers.org/bto/BTO:0000648"
   KidneyTissue identity "http://identifiers.org/ncit/C12801"
-  KidneyTissue parthood "http://identifiers.org/uberon/UBERON:0002113"
+  KidneyTissue isPartOf "http://identifiers.org/uberon/UBERON:0002113"
   IntestineVascular identity "http://identifiers.org/ncit/C13311"
-  IntestineVascular homolog "http://identifiers.org/bto/BTO:0000648"
+  IntestineVascular isHomologTo "http://identifiers.org/bto/BTO:0000648"
   StomachLumen identity "http://identifiers.org/uberon/UBERON:0013525"
   KidneyTubular identity "http://identifiers.org/uberon/UBERON:0001231"
   mLiver identity "http://identifiers.org/uberon/UBERON:0002107"
   mKidneyPlasma identity "http://identifiers.org/ncit/C13356"
-  mKidneyPlasma parthood "http://identifiers.org/uberon/UBERON:0002113"
+  mKidneyPlasma isPartOf "http://identifiers.org/uberon/UBERON:0002113"
   mRemainder identity "http://identifiers.org/ncit/C37895"
   mPlasmaVenous identity "http://identifiers.org/uberon/UBERON:0004582"
   mHeart identity "http://identifiers.org/uberon/UBERON:0000948"
@@ -401,62 +401,62 @@ model *Zake2021___PBPK_model_of_metformin_in_mice__single_dose_intavenous()
   mPortalVein identity "http://identifiers.org/uberon/UBERON:0002017"
   mStomach identity "http://identifiers.org/uberon/UBERON:0000945"
   mIntestineEnterocytes identity "http://identifiers.org/bto/BTO:0000398"
-  mIntestineEnterocytes parthood "http://identifiers.org/bto/BTO:0000648"
+  mIntestineEnterocytes isPartOf "http://identifiers.org/bto/BTO:0000648"
   mKidneyTissue identity "http://identifiers.org/ncit/C12801"
-  mKidneyTissue parthood "http://identifiers.org/uberon/UBERON:0002113"
+  mKidneyTissue isPartOf "http://identifiers.org/uberon/UBERON:0002113"
   mIntestineVascular identity "http://identifiers.org/ncit/C13311"
-  mIntestineVascular parthood "http://identifiers.org/bto/BTO:0000648"
+  mIntestineVascular isPartOf "http://identifiers.org/bto/BTO:0000648"
   mStomachLumen identity "http://identifiers.org/uberon/UBERON:0013525"
   mKidneyTubular identity "http://identifiers.org/uberon/UBERON:0001231"
-  _03_5__IntestineVascular____PortalVein biological_system "http://identifiers.org/go/GO:0015893"
-  _06_3__Liver____PlasmaVenous biological_system "http://identifiers.org/go/GO:0015893"
-  _13_2__KidneyPlasma____PlasmaVenous biological_system "http://identifiers.org/go/GO:0015893"
-  _09_2__Muscle____PlasmaVenous biological_system "http://identifiers.org/go/GO:0015893"
-  _12_2__Remainder____PlasmaVenous biological_system "http://identifiers.org/go/GO:0015893"
-  _02__IntestineLumen____Feces homolog "http://identifiers.org/go/GO:0015893"
-  _13_1__PlasmaArterial____KidneyPlasma biological_system "http://identifiers.org/go/GO:0015893"
-  _09_1__PlasmaArterial____Muscle biological_system "http://identifiers.org/go/GO:0015893"
-  _12_1__PlasmaArterial____Remainder biological_system "http://identifiers.org/go/GO:0015893"
-  _13_3__KidneyPlasma____KidneyTubular biological_system "http://identifiers.org/go/GO:0015893"
-  _06_2__PortalVein____Liver propertyBearer "http://identifiers.org/go/GO:0015893"
-  _05_1__PlasmaArterial____Stomach biological_system "http://identifiers.org/go/GO:0015893"
-  _05_2__Stomach____PortalVein biological_system "http://identifiers.org/go/GO:0015893"
-  _04__PlasmaArterial____PortalVein biological_system "http://identifiers.org/go/GO:0015893"
-  _03_1__PlasmaArterial____IntestineVascular biological_system "http://identifiers.org/go/GO:0015893"
-  _06_1__PlasmaArterial____Liver propertyBearer "http://identifiers.org/go/GO:0015893"
-  _03_2__IntestineLumen____IntestineEnterocytes__PMAT_OCT3 biological_system "http://identifiers.org/go/GO:0015893"
-  _03_4__IntestineLumen____IntestineVascular__Saturable biological_system "http://identifiers.org/go/GO:0015893"
-  _03_3__IntestineEnterocytes____IntestineVascular__OCT1 biological_system "http://identifiers.org/go/GO:0015893"
-  _13_4__KidneyPlasma____KidneyTissue biological_system "http://identifiers.org/go/GO:0015893"
-  _13_5__KidneyTissue____KidneyTubular biological_system "http://identifiers.org/go/GO:0015893"
-  _01__StomachLumen_____IntestineLumen biological_system "http://identifiers.org/go/GO:0015893"
-  _07_2__Lung____PlasmaArterial biological_system "http://identifiers.org/go/GO:0015893"
-  _07_1__PlasmaVenous____Lung biological_system "http://identifiers.org/go/GO:0015893"
-  _08_2__Brain____PlasmaVenous biological_system "http://identifiers.org/go/GO:0015893"
-  _08_1__PlasmaArterial____Brain biological_system "http://identifiers.org/go/GO:0015893"
-  _11_2__Heart____PlasmaVenous biological_system "http://identifiers.org/go/GO:0015893"
-  _11_1__PlasmaArterial____Heart biological_system "http://identifiers.org/go/GO:0015893"
-  _10_2__Adipose____PlasmaVenous biological_system "http://identifiers.org/go/GO:0015893"
-  _10_1__PlasmaArterial____Adipose biological_system "http://identifiers.org/go/GO:0015893"
-  _13_6__KidneyTubular____UrineExternal biological_system "http://identifiers.org/go/GO:0015893"
-  _03_6__IntestineLumen____IntestineEnterocytes__Diffusion class "http://identifiers.org/go/GO:0015893",
-                                                                 "http://identifiers.org/ncit/C82333"
-  _03_6__IntestineLumen____IntestineEnterocytes__Diffusion biological_system "http://identifiers.org/go/GO:0015893"
-  _03_7__IntestineLumen____IntestineVascular__Diffusion class "http://identifiers.org/go/GO:0015893",
-                                                              "http://identifiers.org/ncit/C82333"
-  _03_7__IntestineLumen____IntestineVascular__Diffusion propertyBearer "http://identifiers.org/go/GO:0015893"
+  _03_5__IntestineVascular____PortalVein isVersionOf "http://identifiers.org/go/GO:0015893"
+  _06_3__Liver____PlasmaVenous isVersionOf "http://identifiers.org/go/GO:0015893"
+  _13_2__KidneyPlasma____PlasmaVenous isVersionOf "http://identifiers.org/go/GO:0015893"
+  _09_2__Muscle____PlasmaVenous isVersionOf "http://identifiers.org/go/GO:0015893"
+  _12_2__Remainder____PlasmaVenous isVersionOf "http://identifiers.org/go/GO:0015893"
+  _02__IntestineLumen____Feces isHomologTo "http://identifiers.org/go/GO:0015893"
+  _13_1__PlasmaArterial____KidneyPlasma isVersionOf "http://identifiers.org/go/GO:0015893"
+  _09_1__PlasmaArterial____Muscle isVersionOf "http://identifiers.org/go/GO:0015893"
+  _12_1__PlasmaArterial____Remainder isVersionOf "http://identifiers.org/go/GO:0015893"
+  _13_3__KidneyPlasma____KidneyTubular isVersionOf "http://identifiers.org/go/GO:0015893"
+  _06_2__PortalVein____Liver isPropertyOf "http://identifiers.org/go/GO:0015893"
+  _05_1__PlasmaArterial____Stomach isVersionOf "http://identifiers.org/go/GO:0015893"
+  _05_2__Stomach____PortalVein isVersionOf "http://identifiers.org/go/GO:0015893"
+  _04__PlasmaArterial____PortalVein isVersionOf "http://identifiers.org/go/GO:0015893"
+  _03_1__PlasmaArterial____IntestineVascular isVersionOf "http://identifiers.org/go/GO:0015893"
+  _06_1__PlasmaArterial____Liver isPropertyOf "http://identifiers.org/go/GO:0015893"
+  _03_2__IntestineLumen____IntestineEnterocytes__PMAT_OCT3 isVersionOf "http://identifiers.org/go/GO:0015893"
+  _03_4__IntestineLumen____IntestineVascular__Saturable isVersionOf "http://identifiers.org/go/GO:0015893"
+  _03_3__IntestineEnterocytes____IntestineVascular__OCT1 isVersionOf "http://identifiers.org/go/GO:0015893"
+  _13_4__KidneyPlasma____KidneyTissue isVersionOf "http://identifiers.org/go/GO:0015893"
+  _13_5__KidneyTissue____KidneyTubular isVersionOf "http://identifiers.org/go/GO:0015893"
+  _01__StomachLumen_____IntestineLumen isVersionOf "http://identifiers.org/go/GO:0015893"
+  _07_2__Lung____PlasmaArterial isVersionOf "http://identifiers.org/go/GO:0015893"
+  _07_1__PlasmaVenous____Lung isVersionOf "http://identifiers.org/go/GO:0015893"
+  _08_2__Brain____PlasmaVenous isVersionOf "http://identifiers.org/go/GO:0015893"
+  _08_1__PlasmaArterial____Brain isVersionOf "http://identifiers.org/go/GO:0015893"
+  _11_2__Heart____PlasmaVenous isVersionOf "http://identifiers.org/go/GO:0015893"
+  _11_1__PlasmaArterial____Heart isVersionOf "http://identifiers.org/go/GO:0015893"
+  _10_2__Adipose____PlasmaVenous isVersionOf "http://identifiers.org/go/GO:0015893"
+  _10_1__PlasmaArterial____Adipose isVersionOf "http://identifiers.org/go/GO:0015893"
+  _13_6__KidneyTubular____UrineExternal isVersionOf "http://identifiers.org/go/GO:0015893"
+  _03_6__IntestineLumen____IntestineEnterocytes__Diffusion isInstanceOf "http://identifiers.org/go/GO:0015893",
+                                                                        "http://identifiers.org/ncit/C82333"
+  _03_6__IntestineLumen____IntestineEnterocytes__Diffusion isVersionOf "http://identifiers.org/go/GO:0015893"
+  _03_7__IntestineLumen____IntestineVascular__Diffusion isInstanceOf "http://identifiers.org/go/GO:0015893",
+                                                                     "http://identifiers.org/ncit/C82333"
+  _03_7__IntestineLumen____IntestineVascular__Diffusion isPropertyOf "http://identifiers.org/go/GO:0015893"
 
   model publication "http://identifiers.org/pubmed/33826656"
   model model_source "http://identifiers.org/biomodels.db/MODEL2103020002",
                      "http://identifiers.org/biomodels.db/BIOMD0000001039"
-  model encoder "http://identifiers.org/biomodels.db/MODEL2103020002"
-  model property "http://identifiers.org/mamo/MAMO_0000046"
-  model property "http://identifiers.org/mamo/MAMO_0000203"
-  model container "http://identifiers.org/fma/FMA:7149"
-  model taxon "http://identifiers.org/taxonomy/10095"
-  model property "http://identifiers.org/chebi/CHEBI:6801",
-                 "http://identifiers.org/ncit/C38276",
-                 "http://identifiers.org/mamo/MAMO_0000046"
+  model isEncodedBy "http://identifiers.org/biomodels.db/MODEL2103020002"
+  model hasProperty "http://identifiers.org/mamo/MAMO_0000046"
+  model hasProperty "http://identifiers.org/mamo/MAMO_0000203"
+  model occursIn "http://identifiers.org/fma/FMA:7149"
+  model hasTaxon "http://identifiers.org/taxonomy/10095"
+  model hasProperty "http://identifiers.org/chebi/CHEBI:6801",
+                    "http://identifiers.org/ncit/C38276",
+                    "http://identifiers.org/mamo/MAMO_0000046"
   model created "2017-05-26T09:17:54Z"
   model modified "2017-05-26T09:17:54Z"
   model creator1.givenName "Egils"

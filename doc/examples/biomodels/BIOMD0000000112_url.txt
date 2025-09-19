@@ -25,15 +25,15 @@ model *Clarke2006_Smad_signalling()
   reaction_0: receptor => ; 100*exp(-time/90);
 
   // Species initializations:
-  receptor = 10000/cytoplasm;
-  R_smad_cyt = 162000/cytoplasm;
+  receptor = 10000;
+  R_smad_cyt = 162000;
   R_smad_P_cyt = 0;
-  smad4_cyt = 120000/cytoplasm;
+  smad4_cyt = 120000;
   R_smad_P_smad4_cyt = 0;
   R_smad_P_smad4_nuc = 0;
-  R_smad_nuc = 18000/nucleus;
+  R_smad_nuc = 18000;
   R_smad_P_nuc = 0;
-  smad4_nuc = 3.1.0/nucleus;
+  smad4_nuc = 30000;
   Pi = 0;
 
   // Compartment initializations:
@@ -106,18 +106,18 @@ model *Clarke2006_Smad_signalling()
   // CV terms:
   cytoplasm identity "http://identifiers.org/go/GO:0005737"
   nucleus identity "http://identifiers.org/go/GO:0005634"
-  receptor part "http://identifiers.org/uniprot/P36897",
-                "http://identifiers.org/uniprot/P37173"
-  R_smad_cyt homolog "http://identifiers.org/uniprot/Q15796"
-  R_smad_P_cyt homolog "http://identifiers.org/uniprot/Q15796"
-  smad4_cyt homolog "http://identifiers.org/uniprot/Q13485"
-  R_smad_P_smad4_cyt part "http://identifiers.org/uniprot/Q13485",
-                          "http://identifiers.org/uniprot/Q15796"
-  R_smad_P_smad4_nuc part "http://identifiers.org/uniprot/Q15796",
-                          "http://identifiers.org/uniprot/Q13485"
-  R_smad_nuc homolog "http://identifiers.org/uniprot/Q15796"
-  R_smad_P_nuc homolog "http://identifiers.org/uniprot/Q15796"
-  smad4_nuc homolog "http://identifiers.org/uniprot/Q13485"
+  receptor hasPart "http://identifiers.org/uniprot/P36897",
+                   "http://identifiers.org/uniprot/P37173"
+  R_smad_cyt isHomologTo "http://identifiers.org/uniprot/Q15796"
+  R_smad_P_cyt isHomologTo "http://identifiers.org/uniprot/Q15796"
+  smad4_cyt isHomologTo "http://identifiers.org/uniprot/Q13485"
+  R_smad_P_smad4_cyt hasPart "http://identifiers.org/uniprot/Q13485",
+                             "http://identifiers.org/uniprot/Q15796"
+  R_smad_P_smad4_nuc hasPart "http://identifiers.org/uniprot/Q15796",
+                             "http://identifiers.org/uniprot/Q13485"
+  R_smad_nuc isHomologTo "http://identifiers.org/uniprot/Q15796"
+  R_smad_P_nuc isHomologTo "http://identifiers.org/uniprot/Q15796"
+  smad4_nuc isHomologTo "http://identifiers.org/uniprot/Q13485"
   Pi identity "http://identifiers.org/chebi/CHEBI:18367",
               "http://identifiers.org/kegg.compound/C00009"
   reaction_1 identity "http://identifiers.org/ec-code/2.7.11.30",
@@ -135,8 +135,8 @@ model *Clarke2006_Smad_signalling()
   model model_source "http://identifiers.org/biomodels.db/MODEL4024559990"
   model model_source "http://identifiers.org/biomodels.db/BIOMD0000000112"
   model publication "http://identifiers.org/pubmed/17186703"
-  model taxon "http://identifiers.org/taxonomy/452646"
-  model parthood "http://identifiers.org/kegg.pathway/hsa04350"
+  model hasTaxon "http://identifiers.org/taxonomy/452646"
+  model isPartOf "http://identifiers.org/kegg.pathway/hsa04350"
   model identity "http://identifiers.org/go/GO:0007179"
   model created "2006-11-29T11:35:49Z"
   model modified "2010-10-29T13:55:44Z"

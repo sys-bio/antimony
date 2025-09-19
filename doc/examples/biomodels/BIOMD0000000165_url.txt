@@ -19,7 +19,7 @@ model *Saucerman2006_PKA()
   light_cAMP_photolysis := piecewise(1, (time > ton_global_light_cAMP_photolysis) && (time < toff_global_light_cAMP_photolysis), 0) + piecewise(light_spot_cell, (time > ton_local_light_cAMP_photolysis) && (time < toff_local_light_cAMP_photolysis), 0);
   Vmax_cAMP_synthesis_FskAC := kfsk_cAMP_synthesis_FskAC*FskAC_cell;
   Kf_inhibit_PDE := piecewise(1000, time > 1000, 0);
-  Kr_inhibit_PDE := piecewise(3.1.0, time > 1000, 0);
+  Kr_inhibit_PDE := piecewise(30000, time > 1000, 0);
   ar_for_add_propranolol := piecewise((Propranolol_pipette + -Propranolol_cell)*(1/tauPropranolol), time > t_propadd, 0);
   ar_for_add_Ligand := piecewise((L_pipette + -L_cell)*(1/tauL), time > t_Ladd, 0);
   Ratio_AKARp_AKARtot := AKARp_cell/(AKAR_cell + AKARp_cell + PKAC_AKAR_cell + PP_AKARp_cell);
@@ -149,7 +149,7 @@ model *Saucerman2006_PKA()
   bind_cAMP_ARC_Kr has s_1;
   bind_b1AR_Gs_Kf = 1000;
   bind_b1AR_Gs_Kf has uM_1_s_1;
-  bind_b1AR_Gs_Kr = 3.1.0;
+  bind_b1AR_Gs_Kr = 33000;
   bind_b1AR_Gs_Kr has s_1;
   bind_PDEcAMP_Kf = 1000;
   bind_PDEcAMP_Kf has uM_1_s_1;
@@ -278,62 +278,62 @@ model *Saucerman2006_PKA()
   cell identity "http://identifiers.org/go/GO:0005623"
   membrane identity "http://identifiers.org/go/GO:0016020"
   Gsbg_cell identity "http://identifiers.org/go/GO:0031680"
-  Gsa_gdp_cell part "http://identifiers.org/chebi/CHEBI:17552",
-                    "http://identifiers.org/interpro/IPR001019"
-  Gsa_gdp_cell part "http://identifiers.org/interpro/IPR001019",
-                    "http://identifiers.org/kegg.compound/C00035"
-  Gsa_gtp_cell part "http://identifiers.org/chebi/CHEBI:15996",
-                    "http://identifiers.org/interpro/IPR001019"
-  Gsa_gtp_cell part "http://identifiers.org/interpro/IPR001019",
-                    "http://identifiers.org/kegg.compound/C00044"
-  b1AR_S464_cell part "http://identifiers.org/uniprot/Q5T5Y4"
-  PDE_cell biological_system "http://identifiers.org/uniprot/P54750"
+  Gsa_gdp_cell hasPart "http://identifiers.org/chebi/CHEBI:17552",
+                       "http://identifiers.org/interpro/IPR001019"
+  Gsa_gdp_cell hasPart "http://identifiers.org/interpro/IPR001019",
+                       "http://identifiers.org/kegg.compound/C00035"
+  Gsa_gtp_cell hasPart "http://identifiers.org/chebi/CHEBI:15996",
+                       "http://identifiers.org/interpro/IPR001019"
+  Gsa_gtp_cell hasPart "http://identifiers.org/interpro/IPR001019",
+                       "http://identifiers.org/kegg.compound/C00044"
+  b1AR_S464_cell hasPart "http://identifiers.org/uniprot/Q5T5Y4"
+  PDE_cell isVersionOf "http://identifiers.org/uniprot/P54750"
   ATP_cell identity "http://identifiers.org/chebi/CHEBI:15422",
                     "http://identifiers.org/kegg.compound/C00002"
-  b1AR_cell biological_system "http://identifiers.org/uniprot/Q5T5Y4"
-  Gs_cell biological_system "http://identifiers.org/uniprot/P63092"
-  PKAC_AKAR_cell part "http://identifiers.org/uniprot/P17612"
-  AC_cell biological_system "http://identifiers.org/uniprot/Q08828"
-  b1AR_Gs_cell part "http://identifiers.org/uniprot/P63092",
-                    "http://identifiers.org/uniprot/Q5T5Y4"
+  b1AR_cell isVersionOf "http://identifiers.org/uniprot/Q5T5Y4"
+  Gs_cell isVersionOf "http://identifiers.org/uniprot/P63092"
+  PKAC_AKAR_cell hasPart "http://identifiers.org/uniprot/P17612"
+  AC_cell isVersionOf "http://identifiers.org/uniprot/Q08828"
+  b1AR_Gs_cell hasPart "http://identifiers.org/uniprot/P63092",
+                       "http://identifiers.org/uniprot/Q5T5Y4"
   cAMP_cell identity "http://identifiers.org/chebi/CHEBI:17489",
                      "http://identifiers.org/kegg.compound/C00575"
-  GsAC_cell part "http://identifiers.org/uniprot/Q08828",
-                 "http://identifiers.org/uniprot/P63092"
-  b1AR_p_cell biological_system "http://identifiers.org/uniprot/Q5T5Y4"
-  L_b1AR_cell part "http://identifiers.org/uniprot/Q5T5Y4"
+  GsAC_cell hasPart "http://identifiers.org/uniprot/Q08828",
+                    "http://identifiers.org/uniprot/P63092"
+  b1AR_p_cell isVersionOf "http://identifiers.org/uniprot/Q5T5Y4"
+  L_b1AR_cell hasPart "http://identifiers.org/uniprot/Q5T5Y4"
   DMNB_cAMP_cell identity "http://identifiers.org/chebi/CHEBI:17489",
                           "http://identifiers.org/kegg.compound/C00575"
-  L_b1AR_Gs_cell part "http://identifiers.org/uniprot/P63092",
-                      "http://identifiers.org/uniprot/Q5T5Y4"
-  cAMP_synthesis_GsAC biological_system "http://identifiers.org/go/GO:0006171"
-  bind_b1AR_propranolol biological_system "http://identifiers.org/go/GO:0031690"
-  LRG_activation biological_system "http://identifiers.org/go/GO:0004939"
-  bind_Lb1AR_Gs biological_system "http://identifiers.org/go/GO:0004939"
-  bind_cAMP_ARC biological_system "http://identifiers.org/go/GO:0030552"
-  bind_b1AR_Gs biological_system "http://identifiers.org/go/GO:0004939"
-  bind_PDEcAMP biological_system "http://identifiers.org/go/GO:0030552"
-  Gs_gtp_hydrolysis biological_system "http://identifiers.org/go/GO:0003924"
-  Gs_reassociation parthood "http://identifiers.org/go/GO:0031684"
-  bind_L_b1ARGs biological_system "http://identifiers.org/go/GO:0004939"
-  bind_L_b1AR biological_system "http://identifiers.org/go/GO:0031690"
-  inhib_PKAC biological_system "http://identifiers.org/go/GO:0004862"
-  bind_RC_cAMP biological_system "http://identifiers.org/go/GO:0030552"
-  cAMP_synthesis_FskAC biological_system "http://identifiers.org/go/GO:0006171"
-  bind_Gs_AC biological_system "http://identifiers.org/go/GO:0008179"
-  RG_activation biological_system "http://identifiers.org/go/GO:0004939"
-  cAMP_degradation biological_system "http://identifiers.org/go/GO:0006198"
+  L_b1AR_Gs_cell hasPart "http://identifiers.org/uniprot/P63092",
+                         "http://identifiers.org/uniprot/Q5T5Y4"
+  cAMP_synthesis_GsAC isVersionOf "http://identifiers.org/go/GO:0006171"
+  bind_b1AR_propranolol isVersionOf "http://identifiers.org/go/GO:0031690"
+  LRG_activation isVersionOf "http://identifiers.org/go/GO:0004939"
+  bind_Lb1AR_Gs isVersionOf "http://identifiers.org/go/GO:0004939"
+  bind_cAMP_ARC isVersionOf "http://identifiers.org/go/GO:0030552"
+  bind_b1AR_Gs isVersionOf "http://identifiers.org/go/GO:0004939"
+  bind_PDEcAMP isVersionOf "http://identifiers.org/go/GO:0030552"
+  Gs_gtp_hydrolysis isVersionOf "http://identifiers.org/go/GO:0003924"
+  Gs_reassociation isPartOf "http://identifiers.org/go/GO:0031684"
+  bind_L_b1ARGs isVersionOf "http://identifiers.org/go/GO:0004939"
+  bind_L_b1AR isVersionOf "http://identifiers.org/go/GO:0031690"
+  inhib_PKAC isVersionOf "http://identifiers.org/go/GO:0004862"
+  bind_RC_cAMP isVersionOf "http://identifiers.org/go/GO:0030552"
+  cAMP_synthesis_FskAC isVersionOf "http://identifiers.org/go/GO:0006171"
+  bind_Gs_AC isVersionOf "http://identifiers.org/go/GO:0008179"
+  RG_activation isVersionOf "http://identifiers.org/go/GO:0004939"
+  cAMP_degradation isVersionOf "http://identifiers.org/go/GO:0006198"
 
   model model_source "http://identifiers.org/biomodels.db/MODEL8003201958"
   model model_source "http://identifiers.org/biomodels.db/BIOMD0000000165"
   model publication "http://identifiers.org/pubmed/16905651"
   model origin "http://identifiers.org/biomodels.db/MODEL1006230118"
-  model taxon "http://identifiers.org/taxonomy/10116"
-  model biological_system "http://identifiers.org/go/GO:0007188",
-                          "http://identifiers.org/go/GO:0034199"
-  model property "http://identifiers.org/mamo/MAMO_0000046"
-  model container "http://identifiers.org/cl/CL:0002495"
-  model property "http://identifiers.org/doid/DOID:114"
+  model hasTaxon "http://identifiers.org/taxonomy/10116"
+  model isVersionOf "http://identifiers.org/go/GO:0007188",
+                    "http://identifiers.org/go/GO:0034199"
+  model hasProperty "http://identifiers.org/mamo/MAMO_0000046"
+  model occursIn "http://identifiers.org/cl/CL:0002495"
+  model hasProperty "http://identifiers.org/doid/DOID:114"
   model created "2007-10-03T10:05:51Z"
   model modified "2014-10-10T10:06:40Z"
   model creator1.givenName "Harish"

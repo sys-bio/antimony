@@ -141,7 +141,7 @@ model *MODEL1212150000()
   degraded_vvd_mRNA = 0;
   degraded_wc1_mRNA = 0;
   degraded_wc2_mRNA = 0;
-  frq_gene = 1;
+  frq_gene = 1/c2;
   frq_level_A = 0;
   frq_mRNA = 0.22321;
   hyperFRQn = 0.07298/c2;
@@ -153,13 +153,13 @@ model *MODEL1212150000()
   time_ = 0;
   vvd_gene = 1/c2;
   vvd_mRNA = 0;
-  wc1_gene = 1;
+  wc1_gene = 1/c2;
   wc1_mRNA = 0.5218;
-  wc2_gene = 1;
+  wc2_gene = 1/c2;
   wc2_mRNA = 0.636098;
-  line = 1.8728/default;
-  line2 = 0.985/default;
-  line3 = 1.67/default;
+  line = 1.8728;
+  line2 = 0.985;
+  line3 = 1.67;
 
   // Compartment initializations:
   default = 1;
@@ -398,42 +398,42 @@ model *MODEL1212150000()
   L_WCCVVD_degradation is "re39";
 
   // CV terms:
-  L_WCC part "http://identifiers.org/uniprot/Q01371",
-             "http://identifiers.org/uniprot/P78714"
-  L_WCCVVDn part "http://identifiers.org/uniprot/Q01371",
-                 "http://identifiers.org/uniprot/P78714"
+  L_WCC hasPart "http://identifiers.org/uniprot/Q01371",
+                "http://identifiers.org/uniprot/P78714"
+  L_WCCVVDn hasPart "http://identifiers.org/uniprot/Q01371",
+                    "http://identifiers.org/uniprot/P78714"
   T identity "http://identifiers.org/pato/PATO:0000146"
-  WC1c biological_system "http://identifiers.org/uniprot/Q01371"
-  WC2c biological_system "http://identifiers.org/uniprot/P78714"
-  hypoFRQc biological_system "http://identifiers.org/uniprot/P19970"
-  frq_level_A biological_system "http://identifiers.org/uniprot/P19970"
-  frq_mRNA biological_system "http://identifiers.org/chebi/CHEBI:33699"
-  frq_mRNA encodement "http://identifiers.org/uniprot/P19970"
-  hyperFRQn biological_system "http://identifiers.org/uniprot/P19970"
-  hyperWCCc part "http://identifiers.org/uniprot/Q01371",
-                 "http://identifiers.org/uniprot/P78714"
-  hyperWCCn part "http://identifiers.org/uniprot/Q01371",
-                 "http://identifiers.org/uniprot/P78714"
-  hypoFRQn biological_system "http://identifiers.org/uniprot/P19970"
-  hypoWCCc part "http://identifiers.org/uniprot/Q01371",
-                "http://identifiers.org/uniprot/P78714"
-  hypoWCCn part "http://identifiers.org/uniprot/Q01371",
-                "http://identifiers.org/uniprot/P78714"
-  total_FRQ biological_system "http://identifiers.org/uniprot/P19970"
-  total_FRQc biological_system "http://identifiers.org/uniprot/P19970"
-  total_FRQn biological_system "http://identifiers.org/uniprot/P19970"
-  total_WC1 biological_system "http://identifiers.org/uniprot/Q01371"
-  total_WC2 biological_system "http://identifiers.org/uniprot/P78714"
-  total_WCCn part "http://identifiers.org/uniprot/Q01371",
-                  "http://identifiers.org/uniprot/P78714"
-  total_hyper_FRQ biological_system "http://identifiers.org/uniprot/P19970"
-  total_hypoWCC part "http://identifiers.org/uniprot/Q01371",
+  WC1c isVersionOf "http://identifiers.org/uniprot/Q01371"
+  WC2c isVersionOf "http://identifiers.org/uniprot/P78714"
+  hypoFRQc isVersionOf "http://identifiers.org/uniprot/P19970"
+  frq_level_A isVersionOf "http://identifiers.org/uniprot/P19970"
+  frq_mRNA isVersionOf "http://identifiers.org/chebi/CHEBI:33699"
+  frq_mRNA encodes "http://identifiers.org/uniprot/P19970"
+  hyperFRQn isVersionOf "http://identifiers.org/uniprot/P19970"
+  hyperWCCc hasPart "http://identifiers.org/uniprot/Q01371",
+                    "http://identifiers.org/uniprot/P78714"
+  hyperWCCn hasPart "http://identifiers.org/uniprot/Q01371",
+                    "http://identifiers.org/uniprot/P78714"
+  hypoFRQn isVersionOf "http://identifiers.org/uniprot/P19970"
+  hypoWCCc hasPart "http://identifiers.org/uniprot/Q01371",
+                   "http://identifiers.org/uniprot/P78714"
+  hypoWCCn hasPart "http://identifiers.org/uniprot/Q01371",
+                   "http://identifiers.org/uniprot/P78714"
+  total_FRQ isVersionOf "http://identifiers.org/uniprot/P19970"
+  total_FRQc isVersionOf "http://identifiers.org/uniprot/P19970"
+  total_FRQn isVersionOf "http://identifiers.org/uniprot/P19970"
+  total_WC1 isVersionOf "http://identifiers.org/uniprot/Q01371"
+  total_WC2 isVersionOf "http://identifiers.org/uniprot/P78714"
+  total_WCCn hasPart "http://identifiers.org/uniprot/Q01371",
                      "http://identifiers.org/uniprot/P78714"
-  total_hypo_FRQ biological_system "http://identifiers.org/uniprot/P19970"
-  total_hyperWCC part "http://identifiers.org/uniprot/Q01371",
-                      "http://identifiers.org/uniprot/P78714"
-  s61 part "http://identifiers.org/uniprot/Q01371",
-           "http://identifiers.org/uniprot/P78714"
+  total_hyper_FRQ isVersionOf "http://identifiers.org/uniprot/P19970"
+  total_hypoWCC hasPart "http://identifiers.org/uniprot/Q01371",
+                        "http://identifiers.org/uniprot/P78714"
+  total_hypo_FRQ isVersionOf "http://identifiers.org/uniprot/P19970"
+  total_hyperWCC hasPart "http://identifiers.org/uniprot/Q01371",
+                         "http://identifiers.org/uniprot/P78714"
+  s61 hasPart "http://identifiers.org/uniprot/Q01371",
+              "http://identifiers.org/uniprot/P78714"
 
   model model_source "http://identifiers.org/biomodels.db/MODEL1212150000"
   model model_source "http://identifiers.org/biomodels.db/BIOMD0000000437"
@@ -441,8 +441,8 @@ model *MODEL1212150000()
   model origin "http://identifiers.org/biomodels.db/BIOMD0000000299",
                "http://identifiers.org/pubmed/15653726",
                "http://identifiers.org/pubmed/17965132"
-  model biological_system "http://identifiers.org/go/GO:0010378"
-  model taxon "http://identifiers.org/taxonomy/5141"
+  model isVersionOf "http://identifiers.org/go/GO:0010378"
+  model hasTaxon "http://identifiers.org/taxonomy/5141"
   model created "2013-02-26T14:39:12Z"
   model modified "2016-04-08T17:22:45Z"
   model creator1.givenName "Vijayalakshmi"
