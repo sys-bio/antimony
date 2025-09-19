@@ -309,9 +309,34 @@ bool Formula::IsAmountIn(const Variable* compartment) const
   return false;
 }
 
-double Formula::ToAmount() const
+bool Formula::IsConcentrationTimes(const Variable* compartment) const
 {
-  //We will assume that 'IsAmountIn' returned true.
+  if (compartment == NULL) return false;
+  size_t check = 0;
+  if (m_components.size() == 3) {
+    if (m_components[0].second.size() == 0) {
+      if (IsReal(m_components[0].first)) {
+        check = 1;
+      }
+    }
+  }
+  else if (m_components.size() == 4) {
+    if (m_components[0].second.size() == 0 && m_components[0].first == "-" &&
+      m_components[1].second.size() == 0 && IsReal(m_components[1].first)) {
+      check = 2;;
+    }
+  }
+  if (check == 0) return false;
+  if (m_components[check].second.size() == 0 && m_components[check].first == "*" &&
+    m_components[check + 1].second == compartment->GetName()) {
+    return true;
+  }
+  return false;
+}
+
+double Formula::ToAmountOrConcentration() const
+{
+  //We will assume that 'IsAmountIn' or 'IsConcentrationTimes' returned true.
   if (m_components.size() == 3) {
     return GetReal(m_components[0].first);
   }
