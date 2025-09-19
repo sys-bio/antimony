@@ -1808,6 +1808,10 @@ bool Module::AreEquivalent(return_type rtype, var_type vtype) const
   case varStoichiometry:
   case varAlgebraicRule:
   case varLayoutColorEtc:
+  case varGeneProduct:
+  case varGeneProductAssociation:
+  case varSpeciesCharge:
+  case varSpeciesChemicalFormula:
       break;
   }
   assert(false); //uncaught return type

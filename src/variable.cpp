@@ -359,6 +359,8 @@ const Formula* Variable::GetAssignmentRuleOrKineticLaw() const
   case varAlgebraicRule:
   case varGeneProduct:
   case varGeneProductAssociation:
+  case varSpeciesCharge:
+  case varSpeciesChemicalFormula:
     return &(g_registry.m_blankform);
   }
   assert(false); //uncaught type
