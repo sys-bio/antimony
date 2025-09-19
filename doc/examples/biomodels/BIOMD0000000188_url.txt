@@ -1,4 +1,4 @@
-// Created by libAntimony v3.0.0
+// Created by libAntimony v3.1.0
 model *BIOMD0000000188()
 
   // Compartments and Species:
@@ -41,18 +41,18 @@ model *BIOMD0000000188()
   stopStress: at time >= 3660: IR = 0;
 
   // Species initializations:
-  Mdm2 = 5/cell;
-  p53 = 5/cell;
-  Mdm2_p53 = 95/cell;
-  Mdm2_mRNA = 10/cell;
-  p53_mRNA = 10/cell;
+  Mdm2 = 5;
+  p53 = 5;
+  Mdm2_p53 = 95;
+  Mdm2_mRNA = 10;
+  p53_mRNA = 10;
   ATMA = 0;
-  ATMI = 200/cell;
+  ATMI = 200;
   p53_P = 0;
   Mdm2_P = 0;
   damDNA = 0;
-  Sink = 1/cell;
-  Source = 1/cell;
+  Sink = 1;
+  Source = 1;
   p53deg = 0;
   p53syn = 0;
   mdm2deg = 0;
@@ -151,58 +151,58 @@ model *BIOMD0000000188()
   // CV terms:
   cell identity "http://identifiers.org/go/GO:0005623"
   Mdm2 identity "http://identifiers.org/uniprot/Q00987"
-  Mdm2 encoder "http://identifiers.org/ensembl/ENSG00000135679"
+  Mdm2 isEncodedBy "http://identifiers.org/ensembl/ENSG00000135679"
   p53 identity "http://identifiers.org/uniprot/P04637"
-  p53 encoder "http://identifiers.org/ensembl/ENSG00000141510"
-  Mdm2_p53 part "http://identifiers.org/uniprot/P04637",
-                "http://identifiers.org/uniprot/Q00987"
-  Mdm2_mRNA biological_system "http://identifiers.org/chebi/CHEBI:33699",
-                              "http://identifiers.org/kegg.compound/C00046"
-  p53_mRNA biological_system "http://identifiers.org/chebi/CHEBI:33699",
-                             "http://identifiers.org/kegg.compound/C00046"
+  p53 isEncodedBy "http://identifiers.org/ensembl/ENSG00000141510"
+  Mdm2_p53 hasPart "http://identifiers.org/uniprot/P04637",
+                   "http://identifiers.org/uniprot/Q00987"
+  Mdm2_mRNA isVersionOf "http://identifiers.org/chebi/CHEBI:33699",
+                        "http://identifiers.org/kegg.compound/C00046"
+  p53_mRNA isVersionOf "http://identifiers.org/chebi/CHEBI:33699",
+                       "http://identifiers.org/kegg.compound/C00046"
   ATMA identity "http://identifiers.org/uniprot/Q13315"
   ATMI identity "http://identifiers.org/uniprot/Q13315"
-  p53_P encodement "http://identifiers.org/uniprot/P04637"
-  p53_P encoder "http://identifiers.org/ensembl/ENSG00000141510"
-  Mdm2_P encoder "http://identifiers.org/ensembl/ENSG00000135679"
-  Mdm2_P encodement "http://identifiers.org/uniprot/Q00987"
-  damDNA biological_system "http://identifiers.org/chebi/CHEBI:16991",
-                           "http://identifiers.org/go/GO:0006974"
-  p53deg biological_system "http://identifiers.org/go/GO:0043161"
-  p53syn biological_system "http://identifiers.org/go/GO:0006412"
-  mdm2deg biological_system "http://identifiers.org/go/GO:0043161"
-  mdm2syn biological_system "http://identifiers.org/go/GO:0006412"
-  Mdm2mRNAdeg biological_system "http://identifiers.org/go/GO:0006402"
-  Mdm2mRNAsyn biological_system "http://identifiers.org/go/GO:0003700"
-  p53mRNASynthesis biological_system "http://identifiers.org/go/GO:0003700"
-  p53mRNADegradation biological_system "http://identifiers.org/go/GO:0006402"
-  Mdm2Synthesis biological_system "http://identifiers.org/go/GO:0006412"
-  Mdm2mRNASynthesis1 biological_system "http://identifiers.org/go/GO:0003700"
-  Mdm2mRNASynthesis2 biological_system "http://identifiers.org/go/GO:0003700"
-  Mdm2mRNADegradation biological_system "http://identifiers.org/go/GO:0006402"
-  Mdm2Degradation biological_system "http://identifiers.org/go/GO:0043161"
-  p53Synthesis biological_system "http://identifiers.org/go/GO:0006412"
-  p53Degradation biological_system "http://identifiers.org/go/GO:0043161"
-  P53_Mdm2Binding biological_system "http://identifiers.org/go/GO:0002039"
-  P53_Mdm2Release biological_system "http://identifiers.org/go/GO:0043624"
-  DNAdamage biological_system "http://identifiers.org/go/GO:0006974"
-  DNArepair biological_system "http://identifiers.org/go/GO:0006281"
-  ATMactivation biological_system "http://identifiers.org/go/GO:0006468"
-  p53phoshorylation biological_system "http://identifiers.org/go/GO:0006468"
-  p53dephosorylation biological_system "http://identifiers.org/go/GO:0006470"
-  Mdm2phoshorylation biological_system "http://identifiers.org/go/GO:0006468"
-  Mdm2dephosorylation biological_system "http://identifiers.org/go/GO:0006470"
-  Mdm2Pdegradation biological_system "http://identifiers.org/go/GO:0043161"
-  ATMInactivation biological_system "http://identifiers.org/go/GO:0006470"
+  p53_P encodes "http://identifiers.org/uniprot/P04637"
+  p53_P isEncodedBy "http://identifiers.org/ensembl/ENSG00000141510"
+  Mdm2_P isEncodedBy "http://identifiers.org/ensembl/ENSG00000135679"
+  Mdm2_P encodes "http://identifiers.org/uniprot/Q00987"
+  damDNA isVersionOf "http://identifiers.org/chebi/CHEBI:16991",
+                     "http://identifiers.org/go/GO:0006974"
+  p53deg isVersionOf "http://identifiers.org/go/GO:0043161"
+  p53syn isVersionOf "http://identifiers.org/go/GO:0006412"
+  mdm2deg isVersionOf "http://identifiers.org/go/GO:0043161"
+  mdm2syn isVersionOf "http://identifiers.org/go/GO:0006412"
+  Mdm2mRNAdeg isVersionOf "http://identifiers.org/go/GO:0006402"
+  Mdm2mRNAsyn isVersionOf "http://identifiers.org/go/GO:0003700"
+  p53mRNASynthesis isVersionOf "http://identifiers.org/go/GO:0003700"
+  p53mRNADegradation isVersionOf "http://identifiers.org/go/GO:0006402"
+  Mdm2Synthesis isVersionOf "http://identifiers.org/go/GO:0006412"
+  Mdm2mRNASynthesis1 isVersionOf "http://identifiers.org/go/GO:0003700"
+  Mdm2mRNASynthesis2 isVersionOf "http://identifiers.org/go/GO:0003700"
+  Mdm2mRNADegradation isVersionOf "http://identifiers.org/go/GO:0006402"
+  Mdm2Degradation isVersionOf "http://identifiers.org/go/GO:0043161"
+  p53Synthesis isVersionOf "http://identifiers.org/go/GO:0006412"
+  p53Degradation isVersionOf "http://identifiers.org/go/GO:0043161"
+  P53_Mdm2Binding isVersionOf "http://identifiers.org/go/GO:0002039"
+  P53_Mdm2Release isVersionOf "http://identifiers.org/go/GO:0043624"
+  DNAdamage isVersionOf "http://identifiers.org/go/GO:0006974"
+  DNArepair isVersionOf "http://identifiers.org/go/GO:0006281"
+  ATMactivation isVersionOf "http://identifiers.org/go/GO:0006468"
+  p53phoshorylation isVersionOf "http://identifiers.org/go/GO:0006468"
+  p53dephosorylation isVersionOf "http://identifiers.org/go/GO:0006470"
+  Mdm2phoshorylation isVersionOf "http://identifiers.org/go/GO:0006468"
+  Mdm2dephosorylation isVersionOf "http://identifiers.org/go/GO:0006470"
+  Mdm2Pdegradation isVersionOf "http://identifiers.org/go/GO:0043161"
+  ATMInactivation isVersionOf "http://identifiers.org/go/GO:0006470"
 
   model model_source "http://identifiers.org/biomodels.db/MODEL5836973167"
   model model_source "http://identifiers.org/biomodels.db/BIOMD0000000188"
   model publication "http://identifiers.org/pubmed/18706112"
-  model parthood "http://identifiers.org/reactome/REACT_85"
-  model parthood "http://identifiers.org/kegg.pathway/hsa04115"
-  model biological_system "http://identifiers.org/reactome/REACT_309"
-  model biological_system "http://identifiers.org/go/GO:0043516"
-  model taxon "http://identifiers.org/taxonomy/9606"
+  model isPartOf "http://identifiers.org/reactome/REACT_85"
+  model isPartOf "http://identifiers.org/kegg.pathway/hsa04115"
+  model isVersionOf "http://identifiers.org/reactome/REACT_309"
+  model isVersionOf "http://identifiers.org/go/GO:0043516"
+  model hasTaxon "http://identifiers.org/taxonomy/9606"
   model created "2008-09-01T11:45:30Z"
   model modified "2016-04-08T15:43:18Z"
   model creator1.givenName "Carole"

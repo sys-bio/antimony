@@ -1,4 +1,4 @@
-// Created by libAntimony v3.0.0
+// Created by libAntimony v3.1.0
 model *BIOMD0000000105()
 
   // Compartments and Species:
@@ -114,15 +114,15 @@ model *BIOMD0000000105()
   ProteasomeInhibtion: AggP + Proteasome => AggP_Proteasome; k74*AggP*Proteasome;
 
   // Species initializations:
-  NatP = 500/cytosol;
+  NatP = 500;
   MisP = 0;
-  Ub = 500/cytosol;
-  E1 = 100/cytosol;
-  E2 = 100/cytosol;
-  E3 = 100/cytosol;
-  DUB = 200/cytosol;
-  Proteasome = 100/cytosol;
-  ROS = 10/cytosol;
+  Ub = 500;
+  E1 = 100;
+  E2 = 100;
+  E3 = 100;
+  DUB = 200;
+  Proteasome = 100;
+  ROS = 10;
   E1_Ub = 0;
   E2_Ub = 0;
   E3_MisP = 0;
@@ -139,10 +139,10 @@ model *BIOMD0000000105()
   MisP_Ub6_Proteasome = 0;
   MisP_Ub7_Proteasome = 0;
   MisP_Ub8_Proteasome = 0;
-  ATP = 10000/cytosol;
-  ADP = 1000/cytosol;
-  AMP = 1000/cytosol;
-  Source = 1/cytosol;
+  ATP = 10000;
+  ADP = 1000;
+  AMP = 1000;
+  Source = 1;
   degUb4 = 0;
   degUb5 = 0;
   degUb6 = 0;
@@ -184,132 +184,132 @@ model *BIOMD0000000105()
   unit substance = item;
 
   // CV terms:
-  cytosol biological_system "http://identifiers.org/go/GO:0005829"
-  Ub biological_system "http://identifiers.org/interpro/IPR000626"
-  E1 biological_system "http://identifiers.org/interpro/IPR000011"
-  E2 biological_system "http://identifiers.org/interpro/IPR000608"
-  E3 biological_system "http://identifiers.org/interpro/IPR000569"
-  DUB biological_system "http://identifiers.org/interpro/IPR001394"
-  Proteasome biological_system "http://identifiers.org/go/GO:0000502"
-  ROS biological_system "http://identifiers.org/chebi/CHEBI:26523"
-  E1_Ub part "http://identifiers.org/interpro/IPR000011",
-             "http://identifiers.org/interpro/IPR000626"
-  E2_Ub part "http://identifiers.org/interpro/IPR000626",
-             "http://identifiers.org/interpro/IPR000608"
+  cytosol isVersionOf "http://identifiers.org/go/GO:0005829"
+  Ub isVersionOf "http://identifiers.org/interpro/IPR000626"
+  E1 isVersionOf "http://identifiers.org/interpro/IPR000011"
+  E2 isVersionOf "http://identifiers.org/interpro/IPR000608"
+  E3 isVersionOf "http://identifiers.org/interpro/IPR000569"
+  DUB isVersionOf "http://identifiers.org/interpro/IPR001394"
+  Proteasome isVersionOf "http://identifiers.org/go/GO:0000502"
+  ROS isVersionOf "http://identifiers.org/chebi/CHEBI:26523"
+  E1_Ub hasPart "http://identifiers.org/interpro/IPR000011",
+                "http://identifiers.org/interpro/IPR000626"
+  E2_Ub hasPart "http://identifiers.org/interpro/IPR000626",
+                "http://identifiers.org/interpro/IPR000608"
   ATP identity "http://identifiers.org/chebi/CHEBI:15422"
   ADP identity "http://identifiers.org/chebi/CHEBI:16761"
   AMP identity "http://identifiers.org/chebi/CHEBI:16027"
-  ProteinSynthesis biological_system "http://identifiers.org/go/GO:0009059"
-  Misfolding version "http://identifiers.org/go/GO:0022417"
-  Refolding biological_system "http://identifiers.org/go/GO:0042026"
-  MisPE3Binding biological_system "http://identifiers.org/go/GO:0004842",
-                                  "http://identifiers.org/go/GO:0005515"
-  MisPE3Release biological_system "http://identifiers.org/go/GO:0043624"
-  E1UbBinding biological_system "http://identifiers.org/go/GO:0005515",
-                                "http://identifiers.org/go/GO:0008641",
-                                "http://identifiers.org/go/GO:0006167"
-  E2UbBinding biological_system "http://identifiers.org/go/GO:0019787",
-                                "http://identifiers.org/go/GO:0005515"
-  Monoubiquitination biological_system "http://identifiers.org/go/GO:0006513"
-  Polyubiquitination1 biological_system "http://identifiers.org/go/GO:0000209"
-  Polyubiquitination2 biological_system "http://identifiers.org/go/GO:0000209"
-  Polyubiquitination3 biological_system "http://identifiers.org/go/GO:0000209"
-  Polyubiquitination4 biological_system "http://identifiers.org/go/GO:0000209"
-  Polyubiquitination5 biological_system "http://identifiers.org/go/GO:0000209"
-  Polyubiquitination6 biological_system "http://identifiers.org/go/GO:0000209"
-  Polyubiquitination7 biological_system "http://identifiers.org/go/GO:0000209"
-  Deubiqutination1 biological_system "http://identifiers.org/go/GO:0016579"
-  Deubiqutination2 biological_system "http://identifiers.org/go/GO:0016579"
-  Deubiqutination3 biological_system "http://identifiers.org/go/GO:0016579"
-  Deubiqutination4 biological_system "http://identifiers.org/go/GO:0016579"
-  Deubiqutination5 biological_system "http://identifiers.org/go/GO:0016579"
-  Deubiqutination6 biological_system "http://identifiers.org/go/GO:0016579"
-  Deubiqutination7 biological_system "http://identifiers.org/go/GO:0016579"
-  Deubiqutination8 biological_system "http://identifiers.org/go/GO:0016579"
-  ProteasomeBinding1 biological_system "http://identifiers.org/go/GO:0005515"
-  ProteasomeBinding2 biological_system "http://identifiers.org/go/GO:0005515"
-  ProteasomeBinding3 biological_system "http://identifiers.org/go/GO:0005515"
-  ProteasomeBinding4 biological_system "http://identifiers.org/go/GO:0005515"
-  ProteasomeBinding5 biological_system "http://identifiers.org/go/GO:0005515"
-  DeubiquitinationBoundMisP5 biological_system "http://identifiers.org/go/GO:0016579"
-  DeubiquitinationBoundMisP4 biological_system "http://identifiers.org/go/GO:0016579"
-  DeubiquitinationBoundMisP3 biological_system "http://identifiers.org/go/GO:0016579"
-  DeubiquitinationBoundMisP2 biological_system "http://identifiers.org/go/GO:0016579"
-  DeubiquitinationBoundMisP1 biological_system "http://identifiers.org/go/GO:0016579"
-  ProteasomeActivity1 biological_system "http://identifiers.org/go/GO:0016887",
-                                        "http://identifiers.org/go/GO:0008233"
-  ProteasomeActivity2 biological_system "http://identifiers.org/go/GO:0016887",
-                                        "http://identifiers.org/go/GO:0008233"
-  ProteasomeActivity3 biological_system "http://identifiers.org/go/GO:0016887",
-                                        "http://identifiers.org/go/GO:0008233"
-  ProteasomeActivity4 biological_system "http://identifiers.org/go/GO:0016887",
-                                        "http://identifiers.org/go/GO:0008233"
-  ProteasomeActivity5 biological_system "http://identifiers.org/go/GO:0016887",
-                                        "http://identifiers.org/go/GO:0008233"
-  Aggregation1 biological_system "http://identifiers.org/go/GO:0006461"
-  Aggregation2 biological_system "http://identifiers.org/go/GO:0006461"
-  Aggregation3 biological_system "http://identifiers.org/go/GO:0006461"
-  Aggregation4 biological_system "http://identifiers.org/go/GO:0006461"
-  Aggregation5 biological_system "http://identifiers.org/go/GO:0006461"
-  Aggregation6 biological_system "http://identifiers.org/go/GO:0006461"
-  Aggregation7 biological_system "http://identifiers.org/go/GO:0006461"
-  Aggregation8 biological_system "http://identifiers.org/go/GO:0006461"
-  Aggregation9 biological_system "http://identifiers.org/go/GO:0006461"
-  Aggregation10 biological_system "http://identifiers.org/go/GO:0006461"
-  Aggregation11 biological_system "http://identifiers.org/go/GO:0006461"
-  Aggregation12 biological_system "http://identifiers.org/go/GO:0006461"
-  Aggregation13 biological_system "http://identifiers.org/go/GO:0006461"
-  Aggregation14 biological_system "http://identifiers.org/go/GO:0006461"
-  Aggregation15 biological_system "http://identifiers.org/go/GO:0006461"
-  Aggregation16 biological_system "http://identifiers.org/go/GO:0006461"
-  Aggregation17 biological_system "http://identifiers.org/go/GO:0006461"
-  Aggregation18 biological_system "http://identifiers.org/go/GO:0006461"
-  Aggregation19 biological_system "http://identifiers.org/go/GO:0006461"
-  Aggregation20 biological_system "http://identifiers.org/go/GO:0006461"
-  Aggregation21 biological_system "http://identifiers.org/go/GO:0006461"
-  Aggregation22 biological_system "http://identifiers.org/go/GO:0006461"
-  Aggregation23 biological_system "http://identifiers.org/go/GO:0006461"
-  Aggregation24 biological_system "http://identifiers.org/go/GO:0006461"
-  Aggregation25 biological_system "http://identifiers.org/go/GO:0006461"
-  Aggregation26 biological_system "http://identifiers.org/go/GO:0006461"
-  Aggregation27 biological_system "http://identifiers.org/go/GO:0006461"
-  Aggregation28 biological_system "http://identifiers.org/go/GO:0006461"
-  Aggregation29 biological_system "http://identifiers.org/go/GO:0006461"
-  Aggregation30 biological_system "http://identifiers.org/go/GO:0006461"
-  Aggregation31 biological_system "http://identifiers.org/go/GO:0006461"
-  Aggregation32 biological_system "http://identifiers.org/go/GO:0006461"
-  Aggregation33 biological_system "http://identifiers.org/go/GO:0006461"
-  Aggregation34 biological_system "http://identifiers.org/go/GO:0006461"
-  Aggregation35 biological_system "http://identifiers.org/go/GO:0006461"
-  Aggregation36 biological_system "http://identifiers.org/go/GO:0006461"
-  Aggregation37 biological_system "http://identifiers.org/go/GO:0006461"
-  Aggregation38 biological_system "http://identifiers.org/go/GO:0006461"
-  Aggregation39 biological_system "http://identifiers.org/go/GO:0006461"
-  Aggregation40 biological_system "http://identifiers.org/go/GO:0006461"
-  Aggregation41 biological_system "http://identifiers.org/go/GO:0006461"
-  Aggregation42 biological_system "http://identifiers.org/go/GO:0006461"
-  Aggregation43 biological_system "http://identifiers.org/go/GO:0006461"
-  Aggregation44 biological_system "http://identifiers.org/go/GO:0006461"
-  Aggregation45 biological_system "http://identifiers.org/go/GO:0006461"
-  Aggregation46 biological_system "http://identifiers.org/go/GO:0006461"
-  Aggregation47 biological_system "http://identifiers.org/go/GO:0006461"
-  Aggregation48 biological_system "http://identifiers.org/go/GO:0006461"
-  Aggregation49 biological_system "http://identifiers.org/go/GO:0006461"
-  Aggregation50 biological_system "http://identifiers.org/go/GO:0006461"
-  Aggregation51 biological_system "http://identifiers.org/go/GO:0006461"
-  Aggregation52 biological_system "http://identifiers.org/go/GO:0006461"
-  Aggregation53 biological_system "http://identifiers.org/go/GO:0006461"
-  Aggregation54 biological_system "http://identifiers.org/go/GO:0006461"
-  SequesteringOfAggregates biological_system "http://identifiers.org/go/GO:0051220"
-  ProteasomeInhibtion biological_system "http://identifiers.org/go/GO:0008539"
+  ProteinSynthesis isVersionOf "http://identifiers.org/go/GO:0009059"
+  Misfolding hasVersion "http://identifiers.org/go/GO:0022417"
+  Refolding isVersionOf "http://identifiers.org/go/GO:0042026"
+  MisPE3Binding isVersionOf "http://identifiers.org/go/GO:0004842",
+                            "http://identifiers.org/go/GO:0005515"
+  MisPE3Release isVersionOf "http://identifiers.org/go/GO:0043624"
+  E1UbBinding isVersionOf "http://identifiers.org/go/GO:0005515",
+                          "http://identifiers.org/go/GO:0008641",
+                          "http://identifiers.org/go/GO:0006167"
+  E2UbBinding isVersionOf "http://identifiers.org/go/GO:0019787",
+                          "http://identifiers.org/go/GO:0005515"
+  Monoubiquitination isVersionOf "http://identifiers.org/go/GO:0006513"
+  Polyubiquitination1 isVersionOf "http://identifiers.org/go/GO:0000209"
+  Polyubiquitination2 isVersionOf "http://identifiers.org/go/GO:0000209"
+  Polyubiquitination3 isVersionOf "http://identifiers.org/go/GO:0000209"
+  Polyubiquitination4 isVersionOf "http://identifiers.org/go/GO:0000209"
+  Polyubiquitination5 isVersionOf "http://identifiers.org/go/GO:0000209"
+  Polyubiquitination6 isVersionOf "http://identifiers.org/go/GO:0000209"
+  Polyubiquitination7 isVersionOf "http://identifiers.org/go/GO:0000209"
+  Deubiqutination1 isVersionOf "http://identifiers.org/go/GO:0016579"
+  Deubiqutination2 isVersionOf "http://identifiers.org/go/GO:0016579"
+  Deubiqutination3 isVersionOf "http://identifiers.org/go/GO:0016579"
+  Deubiqutination4 isVersionOf "http://identifiers.org/go/GO:0016579"
+  Deubiqutination5 isVersionOf "http://identifiers.org/go/GO:0016579"
+  Deubiqutination6 isVersionOf "http://identifiers.org/go/GO:0016579"
+  Deubiqutination7 isVersionOf "http://identifiers.org/go/GO:0016579"
+  Deubiqutination8 isVersionOf "http://identifiers.org/go/GO:0016579"
+  ProteasomeBinding1 isVersionOf "http://identifiers.org/go/GO:0005515"
+  ProteasomeBinding2 isVersionOf "http://identifiers.org/go/GO:0005515"
+  ProteasomeBinding3 isVersionOf "http://identifiers.org/go/GO:0005515"
+  ProteasomeBinding4 isVersionOf "http://identifiers.org/go/GO:0005515"
+  ProteasomeBinding5 isVersionOf "http://identifiers.org/go/GO:0005515"
+  DeubiquitinationBoundMisP5 isVersionOf "http://identifiers.org/go/GO:0016579"
+  DeubiquitinationBoundMisP4 isVersionOf "http://identifiers.org/go/GO:0016579"
+  DeubiquitinationBoundMisP3 isVersionOf "http://identifiers.org/go/GO:0016579"
+  DeubiquitinationBoundMisP2 isVersionOf "http://identifiers.org/go/GO:0016579"
+  DeubiquitinationBoundMisP1 isVersionOf "http://identifiers.org/go/GO:0016579"
+  ProteasomeActivity1 isVersionOf "http://identifiers.org/go/GO:0016887",
+                                  "http://identifiers.org/go/GO:0008233"
+  ProteasomeActivity2 isVersionOf "http://identifiers.org/go/GO:0016887",
+                                  "http://identifiers.org/go/GO:0008233"
+  ProteasomeActivity3 isVersionOf "http://identifiers.org/go/GO:0016887",
+                                  "http://identifiers.org/go/GO:0008233"
+  ProteasomeActivity4 isVersionOf "http://identifiers.org/go/GO:0016887",
+                                  "http://identifiers.org/go/GO:0008233"
+  ProteasomeActivity5 isVersionOf "http://identifiers.org/go/GO:0016887",
+                                  "http://identifiers.org/go/GO:0008233"
+  Aggregation1 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation2 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation3 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation4 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation5 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation6 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation7 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation8 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation9 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation10 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation11 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation12 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation13 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation14 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation15 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation16 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation17 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation18 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation19 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation20 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation21 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation22 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation23 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation24 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation25 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation26 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation27 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation28 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation29 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation30 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation31 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation32 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation33 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation34 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation35 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation36 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation37 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation38 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation39 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation40 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation41 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation42 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation43 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation44 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation45 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation46 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation47 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation48 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation49 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation50 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation51 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation52 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation53 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation54 isVersionOf "http://identifiers.org/go/GO:0006461"
+  SequesteringOfAggregates isVersionOf "http://identifiers.org/go/GO:0051220"
+  ProteasomeInhibtion isVersionOf "http://identifiers.org/go/GO:0008539"
 
   model model_source "http://identifiers.org/biomodels.db/MODEL6540028317"
   model model_source "http://identifiers.org/biomodels.db/BIOMD0000000105"
   model publication "http://identifiers.org/pubmed/17408507"
   model origin "http://identifiers.org/biomodels.db/BIOMD0000000091"
-  model property "http://identifiers.org/doid/DOID:1289"
-  model biological_system "http://identifiers.org/go/GO:0043161"
-  model taxon "http://identifiers.org/taxonomy/2759"
+  model hasProperty "http://identifiers.org/doid/DOID:1289"
+  model isVersionOf "http://identifiers.org/go/GO:0043161"
+  model hasTaxon "http://identifiers.org/taxonomy/2759"
   model created "2007-04-02T09:08:41Z"
   model modified "2014-08-11T14:38:13Z"
   model creator1.givenName "Carole"

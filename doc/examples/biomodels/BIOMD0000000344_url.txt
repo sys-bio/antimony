@@ -1,4 +1,4 @@
-// Created by libAntimony v3.0.0
+// Created by libAntimony v3.1.0
 model *Hsp70Model()
 
   // Compartments and Species:
@@ -115,56 +115,56 @@ model *Hsp70Model()
   DeathOfCell: at CellDeath >= 1: kalive = 0;
 
   // Species initializations:
-  NatP = 17600/cytosol;
+  NatP = 17600;
   MisP = 0;
-  Hsp70 = 1400/cytosol;
-  Hsp90 = 1850/cytosol;
+  Hsp70 = 1400;
+  Hsp90 = 1850;
   Hsp70_dam = 0;
   Hsp90_dam = 0;
   Hsp90_Proteasome = 0;
   Hsp70_Proteasome = 0;
-  Hsp70Client = 490/cytosol;
-  Hsp90Client = 590/cytosol;
-  Hsp70_Hsp70Client = 10/cytosol;
-  Hsp90_Hsp90Client = 10/cytosol;
-  Akt = 340/cytosol;
-  Akt_Hsp90 = 30/cytosol;
-  CHIP = 255/cytosol;
-  Akt_CHIP_Hsp90 = 80/cytosol;
+  Hsp70Client = 490;
+  Hsp90Client = 590;
+  Hsp70_Hsp70Client = 10;
+  Hsp90_Hsp90Client = 10;
+  Akt = 340;
+  Akt_Hsp90 = 30;
+  CHIP = 255;
+  Akt_CHIP_Hsp90 = 80;
   Akt_Proteasome = 0;
-  Hsf1 = 5/cytosol;
-  Hsf1_Hsp90 = 95/cytosol;
-  Hsp90_MisP = 470/cytosol;
-  Hsp70_MisP = 410/cytosol;
+  Hsf1 = 5;
+  Hsf1_Hsp90 = 95;
+  Hsp90_MisP = 470;
+  Hsp70_MisP = 410;
   Hsf1_Hsf1_Hsf1 = 0;
   Hsf1_Hsf1_Hsf1_P = 0;
   Hsf1_Hsf1 = 0;
-  HSEHsp70 = 2/nucleus;
-  HSEHsp90 = 2/nucleus;
+  HSEHsp70 = 2;
+  HSEHsp90 = 2;
   HSEHsp70_Hsf1_Hsf1_Hsf1 = 0;
   HSEHsp70_Hsf1_Hsf1_Hsf1_P = 0;
   HSEHsp90_Hsf1_Hsf1_Hsf1 = 0;
   HSEHsp90_Hsf1_Hsf1_Hsf1_P = 0;
-  Jnk = 100/cytosol;
+  Jnk = 100;
   Jnk_P = 0;
   Ppx = 0;
   Mkp1 = 0;
-  Mkp1_P = 100/cytosol;
+  Mkp1_P = 100;
   Mkp1_Proteasome = 0;
-  Hsp70_Ppx = 100/cytosol;
-  Pkc = 100/cytosol;
-  p38 = 100/cytosol;
+  Hsp70_Ppx = 100;
+  Pkc = 100;
+  p38 = 100;
   p38_P = 0;
-  Proteasome = 500/cytosol;
+  Proteasome = 500;
   MisP_Proteasome = 0;
   AggP = 0;
   SeqAggP = 0;
   AggP_Proteasome = 0;
-  ROS = 10/cytosol;
-  ATP = 10000/cytosol;
-  ADP = 1000/cytosol;
-  Source = 1/cytosol;
-  Sink = 1/cytosol;
+  ROS = 10;
+  ATP = 10000;
+  ADP = 1000;
+  Source = 1;
+  Sink = 1;
   p38Death = 0;
   JNKDeath = 0;
   PIDeath = 0;
@@ -363,7 +363,7 @@ model *Hsp70Model()
   kbinCHIP.sboTerm = 9
   krelCHIP.sboTerm = 9
   ksynMkp1.sboTerm = 9
-  kbinMkp1Prot.sboTerm = 9
+  kbinMkp1Prot.sboTerm = 9 
   kdegMkp1.sboTerm = 9
   kphosMkp1.sboTerm = 9
   kdephosMkp1.sboTerm = 9
@@ -455,167 +455,167 @@ model *Hsp70Model()
   PICellDeath.sboTerm = 179
 
   // CV terms:
-  cytosol biological_system "http://identifiers.org/go/GO:0005829"
+  cytosol isVersionOf "http://identifiers.org/go/GO:0005829"
   nucleus identity "http://identifiers.org/go/GO:0005634"
-  NatP biological_system "http://identifiers.org/chebi/CHEBI:36080"
-  MisP biological_system "http://identifiers.org/chebi/CHEBI:36080"
-  Hsp70 parthood "http://identifiers.org/interpro/IPR001023"
-  Hsp90 biological_system "http://identifiers.org/interpro/IPR001404"
-  Hsp70_dam biological_system "http://identifiers.org/interpro/IPR001023"
-  Hsp90_dam biological_system "http://identifiers.org/interpro/IPR001404"
-  Hsp90_Proteasome biological_system "http://identifiers.org/interpro/IPR001023",
-                                     "http://identifiers.org/go/GO:0000502"
-  Hsp70_Proteasome biological_system "http://identifiers.org/interpro/IPR001404",
-                                     "http://identifiers.org/go/GO:0000502"
-  Hsp70Client biological_system "http://identifiers.org/chebi/CHEBI:36080"
-  Hsp90Client biological_system "http://identifiers.org/chebi/CHEBI:36080"
-  Hsp70_Hsp70Client part "http://identifiers.org/chebi/CHEBI:36080",
-                         "http://identifiers.org/interpro/IPR001023"
-  Hsp90_Hsp90Client part "http://identifiers.org/chebi/CHEBI:36080",
+  NatP isVersionOf "http://identifiers.org/chebi/CHEBI:36080"
+  MisP isVersionOf "http://identifiers.org/chebi/CHEBI:36080"
+  Hsp70 isPartOf "http://identifiers.org/interpro/IPR001023"
+  Hsp90 isVersionOf "http://identifiers.org/interpro/IPR001404"
+  Hsp70_dam isVersionOf "http://identifiers.org/interpro/IPR001023"
+  Hsp90_dam isVersionOf "http://identifiers.org/interpro/IPR001404"
+  Hsp90_Proteasome isVersionOf "http://identifiers.org/interpro/IPR001023",
+                               "http://identifiers.org/go/GO:0000502"
+  Hsp70_Proteasome isVersionOf "http://identifiers.org/interpro/IPR001404",
+                               "http://identifiers.org/go/GO:0000502"
+  Hsp70Client isVersionOf "http://identifiers.org/chebi/CHEBI:36080"
+  Hsp90Client isVersionOf "http://identifiers.org/chebi/CHEBI:36080"
+  Hsp70_Hsp70Client hasPart "http://identifiers.org/chebi/CHEBI:36080",
+                            "http://identifiers.org/interpro/IPR001023"
+  Hsp90_Hsp90Client hasPart "http://identifiers.org/chebi/CHEBI:36080",
+                            "http://identifiers.org/interpro/IPR001404"
+  Akt isVersionOf "http://identifiers.org/uniprot/P31749"
+  Akt_Hsp90 hasPart "http://identifiers.org/uniprot/P31749",
+                    "http://identifiers.org/interpro/IPR001404"
+  CHIP isVersionOf "http://identifiers.org/uniprot/Q9UNE7"
+  Akt_CHIP_Hsp90 hasPart "http://identifiers.org/uniprot/P31749",
+                         "http://identifiers.org/uniprot/Q9UNE7",
                          "http://identifiers.org/interpro/IPR001404"
-  Akt biological_system "http://identifiers.org/uniprot/P31749"
-  Akt_Hsp90 part "http://identifiers.org/uniprot/P31749",
-                 "http://identifiers.org/interpro/IPR001404"
-  CHIP biological_system "http://identifiers.org/uniprot/Q9UNE7"
-  Akt_CHIP_Hsp90 part "http://identifiers.org/uniprot/P31749",
-                      "http://identifiers.org/uniprot/Q9UNE7",
-                      "http://identifiers.org/interpro/IPR001404"
-  Akt_Proteasome part "http://identifiers.org/uniprot/P31749",
-                      "http://identifiers.org/go/GO:0000502"
-  Hsf1 biological_system "http://identifiers.org/uniprot/Q00613"
-  Hsf1_Hsp90 part "http://identifiers.org/uniprot/Q00613",
-                  "http://identifiers.org/interpro/IPR001404"
-  Hsp90_MisP part "http://identifiers.org/chebi/CHEBI:36080",
-                  "http://identifiers.org/interpro/IPR001023"
-  Hsp70_MisP part "http://identifiers.org/chebi/CHEBI:36080",
-                  "http://identifiers.org/interpro/IPR001404"
-  Hsf1_Hsf1_Hsf1 part "http://identifiers.org/uniprot/Q00613"
-  Hsf1_Hsf1_Hsf1_P biological_system "http://identifiers.org/kegg.compound/C00562"
-  Hsf1_Hsf1_Hsf1_P part "http://identifiers.org/uniprot/Q00613"
-  Hsf1_Hsf1 part "http://identifiers.org/uniprot/Q00613"
-  HSEHsp70_Hsf1_Hsf1_Hsf1 biological_system "http://identifiers.org/go/GO:0043234"
-  HSEHsp70_Hsf1_Hsf1_Hsf1_P biological_system "http://identifiers.org/kegg.compound/C00562",
-                                              "http://identifiers.org/go/GO:0043234"
-  HSEHsp90_Hsf1_Hsf1_Hsf1 biological_system "http://identifiers.org/go/GO:0043234"
-  HSEHsp90_Hsf1_Hsf1_Hsf1_P biological_system "http://identifiers.org/kegg.compound/C00562",
-                                              "http://identifiers.org/go/GO:0043234"
-  Jnk biological_system "http://identifiers.org/uniprot/P45983"
-  Jnk_P biological_system "http://identifiers.org/uniprot/P45983",
-                          "http://identifiers.org/kegg.compound/C00562"
-  Ppx biological_system "http://identifiers.org/go/GO:0008287"
-  Mkp1 biological_system "http://identifiers.org/uniprot/P28562"
-  Mkp1_P biological_system "http://identifiers.org/uniprot/P28562",
-                           "http://identifiers.org/kegg.compound/C00562"
-  Mkp1_Proteasome part "http://identifiers.org/uniprot/P28562",
-                       "http://identifiers.org/go/GO:0000502"
-  Hsp70_Ppx part "http://identifiers.org/interpro/IPR001023",
-                 "http://identifiers.org/go/GO:0008287"
-  Pkc biological_system "http://identifiers.org/interpro/IPR012233"
-  p38 biological_system "http://identifiers.org/uniprot/Q16539"
-  p38_P biological_system "http://identifiers.org/uniprot/Q16539",
-                          "http://identifiers.org/kegg.compound/C00562"
-  Proteasome biological_system "http://identifiers.org/go/GO:0000502"
-  MisP_Proteasome part "http://identifiers.org/chebi/CHEBI:36080",
-                       "http://identifiers.org/go/GO:0000502"
-  AggP biological_system "http://identifiers.org/chebi/CHEBI:36080"
-  SeqAggP biological_system "http://identifiers.org/chebi/CHEBI:36080"
-  AggP_Proteasome part "http://identifiers.org/chebi/CHEBI:36080",
-                       "http://identifiers.org/go/GO:0000502"
-  ROS biological_system "http://identifiers.org/chebi/CHEBI:26523"
-  ATP parthood "http://identifiers.org/chebi/CHEBI:15422"
-  ADP parthood "http://identifiers.org/chebi/CHEBI:16761"
-  ProteinSynthesis biological_system "http://identifiers.org/go/GO:0006412"
-  Misfolding biological_system "http://identifiers.org/go/GO:0000302"
-  Hsp90MisPBinding biological_system "http://identifiers.org/go/GO:0051087"
-  Hsp90unsuccessulRefolding biological_system "http://identifiers.org/go/GO:0070389"
-  Hsp90refolding biological_system "http://identifiers.org/go/GO:0070389"
-  Hsp70MisPBinding biological_system "http://identifiers.org/go/GO:0051087"
-  Hsp70unsuccessulRefolding biological_system "http://identifiers.org/go/GO:0070389"
-  Hsp70refolding biological_system "http://identifiers.org/go/GO:0070389"
-  Hsp70ClientBinding biological_system "http://identifiers.org/go/GO:0006461"
-  Hsp70ClientRelease biological_system "http://identifiers.org/go/GO:0032986"
-  Hsp90ClientBinding biological_system "http://identifiers.org/go/GO:0006461"
-  Hsp90ClientRelease biological_system "http://identifiers.org/go/GO:0032986"
-  Hsp90HSF1Binding biological_system "http://identifiers.org/go/GO:0006461"
-  Hsp90HSF1Release biological_system "http://identifiers.org/go/GO:0032986"
-  dimerisation biological_system "http://identifiers.org/go/GO:0042803"
-  trimerisation biological_system "http://identifiers.org/go/GO:0070206"
-  deTrimerisation biological_system "http://identifiers.org/go/GO:0070206"
-  deDimerisation biological_system "http://identifiers.org/go/GO:0043241"
-  HSE70TriHBinding biological_system "http://identifiers.org/go/GO:0006461"
-  HSE70TriHRelease biological_system "http://identifiers.org/go/GO:0032986"
-  HSE90TriHBinding biological_system "http://identifiers.org/go/GO:0006461"
-  HSE90TriHRelease biological_system "http://identifiers.org/go/GO:0032986"
-  Hsf1_Hsf1_Hsf1Phosphorylation biological_system "http://identifiers.org/go/GO:0016310"
-  Hsf1_Hsf1_Hsf1DePhosphorylation biological_system "http://identifiers.org/go/GO:0016311"
-  HSE70PhosTriHBinding biological_system "http://identifiers.org/go/GO:0006461"
-  HSE70PhosTriHRelease biological_system "http://identifiers.org/go/GO:0032986"
-  HSE90PhosTriHBinding biological_system "http://identifiers.org/go/GO:0006461"
-  HSE90PhosTriHRelease biological_system "http://identifiers.org/go/GO:0032986"
-  Hsp90BasalSynthesis biological_system "http://identifiers.org/go/GO:0006412"
-  Hsp90Upregulation biological_system "http://identifiers.org/go/GO:0032092"
-  Hsp90ProteasomeBinding biological_system "http://identifiers.org/go/GO:0006461"
-  Hsp90Degradation biological_system "http://identifiers.org/go/GO:0009056"
-  Hsp70BasalSynthesis biological_system "http://identifiers.org/go/GO:0006412"
-  Hsp70Upregulation biological_system "http://identifiers.org/go/GO:0032092"
-  Hsp70ProteasomeBinding biological_system "http://identifiers.org/go/GO:0006461"
-  Hsp70Degradation biological_system "http://identifiers.org/go/GO:0009056"
-  MisPProteasomeBinding1 biological_system "http://identifiers.org/go/GO:0070628"
-  MisPProteasomeBinding2 biological_system "http://identifiers.org/go/GO:0070628"
-  MisPDegradation biological_system "http://identifiers.org/go/GO:0009056"
-  radicalFormation biological_system "http://identifiers.org/go/GO:0009058"
-  radicalScavenging biological_system "http://identifiers.org/go/GO:0009056"
-  Hsp70_PpxBinding biological_system "http://identifiers.org/go/GO:0006461"
-  Hsp70_PPXRelease biological_system "http://identifiers.org/go/GO:0043241"
-  JnkPhosphorylation biological_system "http://identifiers.org/go/GO:0016310"
-  JNKDephosphorylatioByMkp1 biological_system "http://identifiers.org/go/GO:0016311"
-  p38Phosphorylation biological_system "http://identifiers.org/go/GO:0016310"
-  p38DePhosphorylationByMkp1 biological_system "http://identifiers.org/go/GO:0016311"
-  Aggregation1 biological_system "http://identifiers.org/go/GO:0070841"
-  SequesteringOfAggregate biological_system "http://identifiers.org/go/GO:0051235"
-  InclusionGrowth biological_system "http://identifiers.org/go/GO:0090261"
-  ProteasomeInhibtion biological_system "http://identifiers.org/go/GO:0006461"
-  ROSgenerationSmallAggP biological_system "http://identifiers.org/go/GO:0052064"
-  ROSgenerationAggPProteasome biological_system "http://identifiers.org/go/GO:0052064"
-  AktSynthesis biological_system "http://identifiers.org/go/GO:0006412"
-  Hsp90AktBinding biological_system "http://identifiers.org/go/GO:0006461"
-  Hsp90AktRelease biological_system "http://identifiers.org/go/GO:0043241"
-  CHIPbinding biological_system "http://identifiers.org/go/GO:0006461"
-  CHIPrelease biological_system "http://identifiers.org/go/GO:0043241"
-  AktProteasomeBinding biological_system "http://identifiers.org/go/GO:0070628"
-  AktProteasomeRelease biological_system "http://identifiers.org/go/GO:0043241"
-  AktDegradation biological_system "http://identifiers.org/go/GO:0009056"
-  Mkp1Synthesis biological_system "http://identifiers.org/go/GO:0006412"
-  Mkp1ProteasomeBinding biological_system "http://identifiers.org/go/GO:0006461"
-  Mkp1Degradation biological_system "http://identifiers.org/go/GO:0009056"
-  Mkp1Phosphorylation biological_system "http://identifiers.org/go/GO:0016310"
-  Mkp1Dephosphorylation biological_system "http://identifiers.org/go/GO:0016311"
-  p38ROSproduction biological_system "http://identifiers.org/go/GO:0052064"
-  Hsp70Damage biological_system "http://identifiers.org/go/GO:0006974"
-  Hsp90Damage biological_system "http://identifiers.org/go/GO:0006974"
-  Hsp70DamProteasomeBinding biological_system "http://identifiers.org/go/GO:0006461"
-  Hsp90DamProteasomeBinding biological_system "http://identifiers.org/go/GO:0006461"
-  Hsp70DamAggregation1 biological_system "http://identifiers.org/go/GO:0070841"
-  Hsp70DamInclusionFormation biological_system "http://identifiers.org/go/GO:0070841"
-  Hsp90DamAggregation biological_system "http://identifiers.org/go/GO:0070841"
-  Hsp90DamInclusionFormation biological_system "http://identifiers.org/go/GO:0070841"
-  Hsp70DamSequestering biological_system "http://identifiers.org/go/GO:0051235"
-  Hsp90DamSequestering biological_system "http://identifiers.org/go/GO:0051235"
-  p38CellDeath biological_system "http://identifiers.org/go/GO:0008219"
-  JnkCellDeath biological_system "http://identifiers.org/go/GO:0008219"
-  PICellDeath biological_system "http://identifiers.org/go/GO:0008219"
+  Akt_Proteasome hasPart "http://identifiers.org/uniprot/P31749",
+                         "http://identifiers.org/go/GO:0000502"
+  Hsf1 isVersionOf "http://identifiers.org/uniprot/Q00613"
+  Hsf1_Hsp90 hasPart "http://identifiers.org/uniprot/Q00613",
+                     "http://identifiers.org/interpro/IPR001404"
+  Hsp90_MisP hasPart "http://identifiers.org/chebi/CHEBI:36080",
+                     "http://identifiers.org/interpro/IPR001023"
+  Hsp70_MisP hasPart "http://identifiers.org/chebi/CHEBI:36080",
+                     "http://identifiers.org/interpro/IPR001404"
+  Hsf1_Hsf1_Hsf1 hasPart "http://identifiers.org/uniprot/Q00613"
+  Hsf1_Hsf1_Hsf1_P isVersionOf "http://identifiers.org/kegg.compound/C00562"
+  Hsf1_Hsf1_Hsf1_P hasPart "http://identifiers.org/uniprot/Q00613"
+  Hsf1_Hsf1 hasPart "http://identifiers.org/uniprot/Q00613"
+  HSEHsp70_Hsf1_Hsf1_Hsf1 isVersionOf "http://identifiers.org/go/GO:0043234"
+  HSEHsp70_Hsf1_Hsf1_Hsf1_P isVersionOf "http://identifiers.org/kegg.compound/C00562",
+                                        "http://identifiers.org/go/GO:0043234"
+  HSEHsp90_Hsf1_Hsf1_Hsf1 isVersionOf "http://identifiers.org/go/GO:0043234"
+  HSEHsp90_Hsf1_Hsf1_Hsf1_P isVersionOf "http://identifiers.org/kegg.compound/C00562",
+                                        "http://identifiers.org/go/GO:0043234"
+  Jnk isVersionOf "http://identifiers.org/uniprot/P45983"
+  Jnk_P isVersionOf "http://identifiers.org/uniprot/P45983",
+                    "http://identifiers.org/kegg.compound/C00562"
+  Ppx isVersionOf "http://identifiers.org/go/GO:0008287"
+  Mkp1 isVersionOf "http://identifiers.org/uniprot/P28562"
+  Mkp1_P isVersionOf "http://identifiers.org/uniprot/P28562",
+                     "http://identifiers.org/kegg.compound/C00562"
+  Mkp1_Proteasome hasPart "http://identifiers.org/uniprot/P28562",
+                          "http://identifiers.org/go/GO:0000502"
+  Hsp70_Ppx hasPart "http://identifiers.org/interpro/IPR001023",
+                    "http://identifiers.org/go/GO:0008287"
+  Pkc isVersionOf "http://identifiers.org/interpro/IPR012233"
+  p38 isVersionOf "http://identifiers.org/uniprot/Q16539"
+  p38_P isVersionOf "http://identifiers.org/uniprot/Q16539",
+                    "http://identifiers.org/kegg.compound/C00562"
+  Proteasome isVersionOf "http://identifiers.org/go/GO:0000502"
+  MisP_Proteasome hasPart "http://identifiers.org/chebi/CHEBI:36080",
+                          "http://identifiers.org/go/GO:0000502"
+  AggP isVersionOf "http://identifiers.org/chebi/CHEBI:36080"
+  SeqAggP isVersionOf "http://identifiers.org/chebi/CHEBI:36080"
+  AggP_Proteasome hasPart "http://identifiers.org/chebi/CHEBI:36080",
+                          "http://identifiers.org/go/GO:0000502"
+  ROS isVersionOf "http://identifiers.org/chebi/CHEBI:26523"
+  ATP isPartOf "http://identifiers.org/chebi/CHEBI:15422"
+  ADP isPartOf "http://identifiers.org/chebi/CHEBI:16761"
+  ProteinSynthesis isVersionOf "http://identifiers.org/go/GO:0006412"
+  Misfolding isVersionOf "http://identifiers.org/go/GO:0000302"
+  Hsp90MisPBinding isVersionOf "http://identifiers.org/go/GO:0051087"
+  Hsp90unsuccessulRefolding isVersionOf "http://identifiers.org/go/GO:0070389"
+  Hsp90refolding isVersionOf "http://identifiers.org/go/GO:0070389"
+  Hsp70MisPBinding isVersionOf "http://identifiers.org/go/GO:0051087"
+  Hsp70unsuccessulRefolding isVersionOf "http://identifiers.org/go/GO:0070389"
+  Hsp70refolding isVersionOf "http://identifiers.org/go/GO:0070389"
+  Hsp70ClientBinding isVersionOf "http://identifiers.org/go/GO:0006461"
+  Hsp70ClientRelease isVersionOf "http://identifiers.org/go/GO:0032986"
+  Hsp90ClientBinding isVersionOf "http://identifiers.org/go/GO:0006461"
+  Hsp90ClientRelease isVersionOf "http://identifiers.org/go/GO:0032986"
+  Hsp90HSF1Binding isVersionOf "http://identifiers.org/go/GO:0006461"
+  Hsp90HSF1Release isVersionOf "http://identifiers.org/go/GO:0032986"
+  dimerisation isVersionOf "http://identifiers.org/go/GO:0042803"
+  trimerisation isVersionOf "http://identifiers.org/go/GO:0070206"
+  deTrimerisation isVersionOf "http://identifiers.org/go/GO:0070206"
+  deDimerisation isVersionOf "http://identifiers.org/go/GO:0043241"
+  HSE70TriHBinding isVersionOf "http://identifiers.org/go/GO:0006461"
+  HSE70TriHRelease isVersionOf "http://identifiers.org/go/GO:0032986"
+  HSE90TriHBinding isVersionOf "http://identifiers.org/go/GO:0006461"
+  HSE90TriHRelease isVersionOf "http://identifiers.org/go/GO:0032986"
+  Hsf1_Hsf1_Hsf1Phosphorylation isVersionOf "http://identifiers.org/go/GO:0016310"
+  Hsf1_Hsf1_Hsf1DePhosphorylation isVersionOf "http://identifiers.org/go/GO:0016311"
+  HSE70PhosTriHBinding isVersionOf "http://identifiers.org/go/GO:0006461"
+  HSE70PhosTriHRelease isVersionOf "http://identifiers.org/go/GO:0032986"
+  HSE90PhosTriHBinding isVersionOf "http://identifiers.org/go/GO:0006461"
+  HSE90PhosTriHRelease isVersionOf "http://identifiers.org/go/GO:0032986"
+  Hsp90BasalSynthesis isVersionOf "http://identifiers.org/go/GO:0006412"
+  Hsp90Upregulation isVersionOf "http://identifiers.org/go/GO:0032092"
+  Hsp90ProteasomeBinding isVersionOf "http://identifiers.org/go/GO:0006461"
+  Hsp90Degradation isVersionOf "http://identifiers.org/go/GO:0009056"
+  Hsp70BasalSynthesis isVersionOf "http://identifiers.org/go/GO:0006412"
+  Hsp70Upregulation isVersionOf "http://identifiers.org/go/GO:0032092"
+  Hsp70ProteasomeBinding isVersionOf "http://identifiers.org/go/GO:0006461"
+  Hsp70Degradation isVersionOf "http://identifiers.org/go/GO:0009056"
+  MisPProteasomeBinding1 isVersionOf "http://identifiers.org/go/GO:0070628"
+  MisPProteasomeBinding2 isVersionOf "http://identifiers.org/go/GO:0070628"
+  MisPDegradation isVersionOf "http://identifiers.org/go/GO:0009056"
+  radicalFormation isVersionOf "http://identifiers.org/go/GO:0009058"
+  radicalScavenging isVersionOf "http://identifiers.org/go/GO:0009056"
+  Hsp70_PpxBinding isVersionOf "http://identifiers.org/go/GO:0006461"
+  Hsp70_PPXRelease isVersionOf "http://identifiers.org/go/GO:0043241"
+  JnkPhosphorylation isVersionOf "http://identifiers.org/go/GO:0016310"
+  JNKDephosphorylatioByMkp1 isVersionOf "http://identifiers.org/go/GO:0016311"
+  p38Phosphorylation isVersionOf "http://identifiers.org/go/GO:0016310"
+  p38DePhosphorylationByMkp1 isVersionOf "http://identifiers.org/go/GO:0016311"
+  Aggregation1 isVersionOf "http://identifiers.org/go/GO:0070841"
+  SequesteringOfAggregate isVersionOf "http://identifiers.org/go/GO:0051235"
+  InclusionGrowth isVersionOf "http://identifiers.org/go/GO:0090261"
+  ProteasomeInhibtion isVersionOf "http://identifiers.org/go/GO:0006461"
+  ROSgenerationSmallAggP isVersionOf "http://identifiers.org/go/GO:0052064"
+  ROSgenerationAggPProteasome isVersionOf "http://identifiers.org/go/GO:0052064"
+  AktSynthesis isVersionOf "http://identifiers.org/go/GO:0006412"
+  Hsp90AktBinding isVersionOf "http://identifiers.org/go/GO:0006461"
+  Hsp90AktRelease isVersionOf "http://identifiers.org/go/GO:0043241"
+  CHIPbinding isVersionOf "http://identifiers.org/go/GO:0006461"
+  CHIPrelease isVersionOf "http://identifiers.org/go/GO:0043241"
+  AktProteasomeBinding isVersionOf "http://identifiers.org/go/GO:0070628"
+  AktProteasomeRelease isVersionOf "http://identifiers.org/go/GO:0043241"
+  AktDegradation isVersionOf "http://identifiers.org/go/GO:0009056"
+  Mkp1Synthesis isVersionOf "http://identifiers.org/go/GO:0006412"
+  Mkp1ProteasomeBinding isVersionOf "http://identifiers.org/go/GO:0006461"
+  Mkp1Degradation isVersionOf "http://identifiers.org/go/GO:0009056"
+  Mkp1Phosphorylation isVersionOf "http://identifiers.org/go/GO:0016310"
+  Mkp1Dephosphorylation isVersionOf "http://identifiers.org/go/GO:0016311"
+  p38ROSproduction isVersionOf "http://identifiers.org/go/GO:0052064"
+  Hsp70Damage isVersionOf "http://identifiers.org/go/GO:0006974"
+  Hsp90Damage isVersionOf "http://identifiers.org/go/GO:0006974"
+  Hsp70DamProteasomeBinding isVersionOf "http://identifiers.org/go/GO:0006461"
+  Hsp90DamProteasomeBinding isVersionOf "http://identifiers.org/go/GO:0006461"
+  Hsp70DamAggregation1 isVersionOf "http://identifiers.org/go/GO:0070841"
+  Hsp70DamInclusionFormation isVersionOf "http://identifiers.org/go/GO:0070841"
+  Hsp90DamAggregation isVersionOf "http://identifiers.org/go/GO:0070841"
+  Hsp90DamInclusionFormation isVersionOf "http://identifiers.org/go/GO:0070841"
+  Hsp70DamSequestering isVersionOf "http://identifiers.org/go/GO:0051235"
+  Hsp90DamSequestering isVersionOf "http://identifiers.org/go/GO:0051235"
+  p38CellDeath isVersionOf "http://identifiers.org/go/GO:0008219"
+  JnkCellDeath isVersionOf "http://identifiers.org/go/GO:0008219"
+  PICellDeath isVersionOf "http://identifiers.org/go/GO:0008219"
 
   model model_source "http://identifiers.org/biomodels.db/MODEL1005280000"
   model model_source "http://identifiers.org/biomodels.db/BIOMD0000000344"
   model publication "http://identifiers.org/pubmed/21779370"
   model origin "http://identifiers.org/biomodels.db/BIOMD0000000091"
-  model biological_system "http://identifiers.org/go/GO:0070841",
-                          "http://identifiers.org/go/GO:0006915",
-                          "http://identifiers.org/go/GO:0003773",
-                          "http://identifiers.org/go/GO:0051085"
-  model taxon "http://identifiers.org/taxonomy/7711"
-  model property "http://identifiers.org/mamo/MAMO_0000046"
-  model property "http://identifiers.org/doid/DOID:1289"
+  model isVersionOf "http://identifiers.org/go/GO:0070841",
+                    "http://identifiers.org/go/GO:0006915",
+                    "http://identifiers.org/go/GO:0003773",
+                    "http://identifiers.org/go/GO:0051085"
+  model hasTaxon "http://identifiers.org/taxonomy/7711"
+  model hasProperty "http://identifiers.org/mamo/MAMO_0000046"
+  model hasProperty "http://identifiers.org/doid/DOID:1289"
   model created "2011-07-21T16:40:43Z"
   model modified "2016-04-08T17:01:52Z"
   model creator1.givenName "Vijayalakshmi"
