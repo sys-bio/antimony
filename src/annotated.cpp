@@ -219,9 +219,9 @@ string Annotated::EncodeModelQualifier(ModelQualifierType_t q) const
     case BQM_IS_DERIVED_FROM:
       return "origin";
     case BQM_IS_INSTANCE_OF:
-      return "class";
+      return "isInstanceOf";
     case BQM_HAS_INSTANCE:
-      return "instance";
+      return "hasInstance";
     case BQM_UNKNOWN:
     default:
       return "unknown_model_qual";
@@ -266,29 +266,29 @@ string Annotated::EncodeBiolQualifier(BiolQualifierType_t q) const
     case BQB_IS:
       return "identity";
     case BQB_HAS_PART:
-      return "part";
+      return "hasPart";
     case BQB_IS_PART_OF:
-      return "parthood";
+      return "isPartOf";
     case BQB_IS_VERSION_OF:
-      return "biological_system";
+      return "isVersionOf";
     case BQB_HAS_VERSION:
-      return "version";
+      return "hasVersion";
     case BQB_IS_HOMOLOG_TO:
-      return "homolog";
+      return "isHomologTo";
     case BQB_IS_DESCRIBED_BY:
-      return "description";
+      return "isDescribedBy";
     case BQB_IS_ENCODED_BY:
-      return "encoder";
+      return "isEncodedBy";
     case BQB_ENCODES:
-      return "encodement";
+      return "encodes";
     case BQB_OCCURS_IN:
-      return "container";
+      return "occursIn";
     case BQB_HAS_PROPERTY:
-      return "property";
+      return "hasProperty";
     case BQB_IS_PROPERTY_OF:
-      return "propertyBearer";
+      return "isPropertyOf";
     case BQB_HAS_TAXON:
-      return "taxon";
+      return "hasTaxon";
     case BQB_UNKNOWN:
     default:
       return "unknown_biological_qual";
