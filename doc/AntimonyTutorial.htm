@@ -9,12 +9,12 @@ overhead of working with XML directly. This guide will show you the
 intricacies of working with Antimony. More information can be found at
 https://github.com/sys-bio/antimony/.</p>
 <h2 id="table-of-contents">Table of contents</h2>
-<ul class="incremental">
+<ul>
 <li><a href="#background">Background</a></li>
 <li><a href="#change-log">Change Log</a></li>
 <li><a href="#introduction-and-basics">Introduction</a></li>
 <li><a href="#model-elements">Model Elements</a>
-<ul class="incremental">
+<ul>
 <li><a href="#comments">Comments</a></li>
 <li><a href="#reactions">Reactions</a></li>
 <li><a href="#rate-laws-and-initializing-values">Rate Laws and
@@ -23,7 +23,7 @@ Initializing Values</a></li>
 <li><a href="#boundary-species">Boundary Species</a></li>
 <li><a href="#compartments">Compartments</a></li>
 <li><a href="#assignments">Assignments</a>
-<ul class="incremental">
+<ul>
 <li><a href="#assignments-in-time">Assignments in Time</a></li>
 <li><a href="#piecewise-assignments">Piecewise Assignments</a></li>
 </ul></li>
@@ -34,7 +34,7 @@ Initializing Values</a></li>
 <li><a href="#importing-files">Importing Files</a></li>
 </ul></li>
 <li><a href="#signals">Signals</a>
-<ul class="incremental">
+<ul>
 <li><a href="#step-input">Step input</a></li>
 <li><a href="#ramp">Ramp</a></li>
 <li><a href="#ramp-then-stop">Ramp then stop</a></li>
@@ -42,13 +42,13 @@ Initializing Values</a></li>
 <li><a href="#sinusoidal-input">Sinusoidal input</a></li>
 </ul></li>
 <li><a href="#language-reference">Language Reference</a>
-<ul class="incremental">
+<ul>
 <li><a href="#species-and-reactions">Species and Reactions</a>
-<ul class="incremental">
+<ul>
 <li><a href="#substance-only-species">Substance-only species</a></li>
 </ul></li>
 <li><a href="#modules">Modules</a>
-<ul class="incremental">
+<ul>
 <li><a href="#module-conversion-factors">Module conversion
 factors</a></li>
 <li><a href="#submodel-deletions">Submodel deletions</a></li>
@@ -74,7 +74,7 @@ Constraints</a></li>
 Exporting Antimony Models</a></li>
 </ul></li>
 <li><a href="#layout-and-render">Layout and Render</a>
-<ul class="incremental">
+<ul>
 <li><a href="#basic-layout-information">Basic layout
 information</a></li>
 <li><a href="#positioning-model-elements">Positioning model
@@ -116,13 +116,20 @@ a Python package.</p>
 <p>Antimony is the main method of building models in <a
 href="http://tellurium.analogmachine.org/">Tellurium</a>, and can be
 used in other contexts as well. Its main features include:</p>
-<ul class="incremental">
+<ul>
 <li>Easily define species, reactions, compartments, events, and other
 elements of a biological model.</li>
 <li>Package and re-use models as modules with defined or implied
 interfaces.</li>
 </ul>
 <h2 id="change-log">Change Log</h2>
+<p>The 3.1 release changed FBC support to version 3 of that package,
+changing how FBC constraints were translated to SBML (but not changing
+how they were declared in Antimony), and adding support for gene
+products, gene product associations, species charges, and species
+chemical formulas.</p>
+<p>In addition, ‘substanceOnly’ species are now initialized to their
+SBML ‘initialAmount’, so as to always have substance units.</p>
 <p>The 3.0 release allows import and export of the SBML packages
 ‘Layout’ and ‘Render’, using the SBMLNetwork library to do so.</p>
 <p>The 2.15 release changed SBML import so that function definitions are
@@ -321,7 +328,7 @@ S1&#39; = 0.4</code></pre>
 <p>Boundary species are those species which are unaffected by the model.
 Usually this means they are fixed. There are two ways to declare
 boundary species.</p>
-<ol class="incremental" type="1">
+<ol type="1">
 <li>Using a dollar sign to indicate that a particular species is
 fixed:</li>
 </ol>
@@ -336,7 +343,7 @@ fixed:</li>
   k1 = 0.1; k2 = 0.3; k3 = 0.15
   S1 = 10
 end</code></pre>
-<ol class="incremental" start="2" type="1">
+<ol start="2" type="1">
 <li>Using the const keyword to declare species are fixed:</li>
 </ol>
 <!-- end list -->
@@ -739,8 +746,15 @@ mean the amount by using the ‘substanceOnly’ keyword:</p>
 <p>substanceOnly species S1;</p>
 <p>Now, whenever ‘S1’ is used in the model, it is a reference to the
 species amount, and not its concentration. Defining an initial amount is
-still accomplished with the same syntax:</p>
-<p>S1 = 2.5/C1;</p>
+also changed:</p>
+<p>S1 = 2.5;</p>
+<p>This will set the initial amount to 2.5, not the initial
+concentration. If you wish to set the initial concentration instead, use
+the compartment:</p>
+<p>S1 = 3.1*C</p>
+<p>Because a concentration times the compartment volume yields an
+amount, in this formulation, ‘3.1’ is set as the initial
+concentration.</p>
 <h3 id="modules">Modules</h3>
 <p>Antimony input files may define several different models, and may use
 previously-defined models as parts of newly-defined models. Each
@@ -1061,7 +1075,7 @@ submod2(y) in comp3;</code></pre>
 <pre><code>S1 in comp2 = 5;</code></pre>
 <p>Here are Antimony’s rules for determining which compartment something
 is in:</p>
-<ul class="incremental">
+<ul>
 <li>If the symbol has been declared to be in a compartment, it is in
 that compartment.</li>
 <li>If not, if the symbol is in a DNA strand (see the next section)
@@ -1546,6 +1560,7 @@ A created.minute &quot;mm&quot;
 A created.second &quot;ss&quot;
 A created.time &quot;hh:mm:ss&quot;</code></pre>
 <h3 id="flux-balance-constraints">Flux Balance Constraints</h3>
+<h4 id="constraints">Constraints</h4>
 <p>In some models, reaction rates are not known specifically, but one
 can place certain constraints on those reactions, and then apply an
 objective function (such as ‘maximize growth’) to try to discern a
@@ -1561,13 +1576,68 @@ all Flux Balance constraints:</p>
 J1 &lt;= 1000
 -10 &lt;= J2 &lt;= 10</code></pre>
 <p>Constraints that do not involve the ID of a reaction by itself will
-be translated as core SBML constraints. (Flux Balance constraints are
-also translated as core constraints, for consistency.)</p>
+be translated as core SBML constraints. (Any constraint is treated as
+either an FBC constraint <em>or</em> a core SBML constraint, not
+both.)</p>
+<p>As of Antimony v3.1, these flux balance constraints are translated to
+the SBML FBC package version 3, instead of version 1. Because all FBC v3
+constraints are stored as parameters, a translation of FBC constraints
+to Antimony will result in constaints like the following:</p>
+<pre><code>constraint J001_fluxBounds: FB2N0 &lt;= J001 &lt;= FB3N1
+constraint J002_fluxBounds: FB2N0 &lt;= J002 &lt;= FB3N1
+
+FB2N0 = 0;
+FB3N1 = 1;</code></pre>
+<p>Also note that since FBC v2 and v3 dropped ‘&lt;’ in favor of
+‘&lt;=’, all FBC constraints will be converted to ‘&lt;=’ and
+‘&gt;=’.</p>
+<h4 id="objectives">Objectives</h4>
 <p>The objective function is defined using either the keyword
 <code>maximize</code> or <code>minimize</code>. It may be named by
 prepending the statement with that name, followed by a colon:</p>
 <pre><code>maximize J1
 obj1: minimize J2</code></pre>
+<p>Objectives may be fairly complicated, but must be strict additive
+combinations of multiples of reaction rates, with those reaction rates
+optionally being squared or multiplied by other reaction rates:</p>
+<pre><code>obj3: maximize J1 + 3*J2 + 4*J3^2 + 5*J4*J5</code></pre>
+<h4 id="gene-products-and-gene-product-associations">Gene Products and
+Gene Product Associations</h4>
+<p>The SBML FBC package also allows the definition of gene products,
+which may optionally reference a species, and gene product associations,
+which are additional information about reactions. A gene product
+association may be defined by appending ‘.geneProductAssociation’ or
+‘.gpa’ to a reaction ID, and defined by combining any number of gene
+product IDs in ‘and’ and ‘or’ combinations:</p>
+<pre><code>J0.geneProductAssociation = G_kasB
+J1.gpa                    = G_kasB &amp;&amp; G_kasA;
+J2.gpa                    = (G_kasB &amp;&amp; G_kasA) || G_kasC</code></pre>
+<p>Any ID used in a gene product association will be automatically
+defined as a gene product, but you may also define them explicitly:</p>
+<pre><code>geneProduct G_kasA, G_kasB, G_kasC</code></pre>
+<p>Commonly-used gene product names sometimes to not conform to the
+Antimony or SBML-style syntax for IDs. As a result, the FBC package adds
+a ‘label’ to gene products which may be any syntax. In Antimony, the
+‘display name’ is used for this purpose:</p>
+<pre><code>G_kasA is &quot;Gene-kasA&quot;</code></pre>
+<p>To declare an ‘associated species’ for a gene product, simply use
+‘=’:</p>
+<pre><code>G_kasA = S1</code></pre>
+<h4 id="species-charge-and-chemical-formula">Species charge and chemical
+formula</h4>
+<p>The SBML FBC package additionally allows the charge and chemical
+formulas of species to be stored. The charge must be a number, and the
+chemical formula must conform to the syntax defined in the FBC
+specification, with (essentially) numbers and atom names, in
+alphabetical order after carbon, though some variation is allowed. The
+charge is defined with ‘[speciesID].charge’, and the chemical formula
+may be defined with ‘[id].formula’ or ‘[id].chemicalFormula’.
+Alternatively, ‘is’ may be used, but either way, the formula must be in
+quotes:</p>
+<pre><code>S1.charge = 3.2
+S2.chemicalFormula = &quot;C10H12N5O13P3&quot;
+S3.formula = &quot;C2H4O2(CH2)n&quot;
+S4.formula is &quot;CH2NO&quot;</code></pre>
 <h3 id="other-files">Other files</h3>
 <p>More than one file may be used to define a set of modules in Antimony
 through the use of the <code>'import'</code> keyword. At any point in
@@ -1849,7 +1919,7 @@ compartments:</p>
 reaction.[setting] = [value]
 compartment.[setting] = [value]</code></pre>
 <p>Values can be:</p>
-<ul class="incremental">
+<ul>
 <li>[number]: a number</li>
 <li>[color]: Any ‘web color’ name (standard names like ‘red’, ‘blue’,
 etc. up to somewhat obscure names like ‘palegoldenrod’ or ‘papayawhip’),
@@ -1891,7 +1961,7 @@ of size {20, 20}.</p>
 Converting between SBML and Antimony</h2>
 <p>For reference, here are some of the differences you will see when
 converting models between SBML and Antimony:</p>
-<ul class="incremental">
+<ul>
 <li>Local parameters in SBML reactions become global parameters in
 Antimony, with the reaction name prepended. If a different symbol
 already has the new name, a number is appended to the variable name so
@@ -1929,7 +1999,7 @@ This ‘time_ref’ is added to the function’s interface (as the last in the
 list of symbols), and any uses of the function are modified to use
 ‘time’ in the call. In other words, a function ‘function(x, y):
 x+y*time’ becomes ’function(x, y, time_ref): x
-<ul class="incremental">
+<ul>
 <li>y*time_ref’, and formulas that use ‘function(A, B)’ become
 ‘function(A, B, time)’</li>
 </ul></li>
@@ -1939,7 +2009,7 @@ becomes <code>compartment_</code>, <code>model</code> becomes
 <code>model_</code>, etc.</li>
 </ul>
 <h2 id="further-reading">Further Reading</h2>
-<ul class="incremental">
+<ul>
 <li>Lucian Smith’s <a
 href="http://antimony.sourceforge.net/antimony-examples.html">example
 models</a> show how to use the <a
