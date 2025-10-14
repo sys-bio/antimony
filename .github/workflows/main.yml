@@ -82,7 +82,7 @@ jobs:
         libroadrunner_deps_owner: [ "sys-bio" ]
         libroadrunner_deps_repo: [ "libroadrunner-deps" ]
         libroadrunner_deps_name: [ "libroadrunner-deps" ]
-        libroadrunner_deps_release_version: [ "v2.2.20" ]
+        libroadrunner_deps_release_version: [ "v2.2.21" ]
         python_version: [ "3.12" ]
 
     runs-on: ${{ matrix.platform.os_name }}
@@ -233,10 +233,10 @@ jobs:
           curl -LO "https://github.com/${{ matrix.libroadrunner_deps_owner }}/${{ matrix.libroadrunner_deps_repo }}/releases/download/${{ matrix.libroadrunner_deps_release_version }}/$binary_file_name.zip"
           unzip -q $binary_file_name.zip
           rm $binary_file_name.zip
-          echo LIBSBML_INSTALL_DIR="-DLIBSBML_INSTALL_DIR=${RUNNER_WORKSPACE}/${{ matrix.libroadrunner_deps_name }}-binaries" >> "${GITHUB_ENV}"
-          if [ "${{ matrix.platform.os_type }}" == 'windows' ]; then
-            echo EXPAT_LIBRARY="-DEXPAT_LIBRARY=${RUNNER_WORKSPACE}/${{ matrix.libroadrunner_deps_name }}-binaries/lib/${{ matrix.platform.expat_lib_name }}" >> "${GITHUB_ENV}"
-          fi
+          echo ANT_DEPENDENCIES_INSTALL_PREFIX="-DANT_DEPENDENCIES_INSTALL_PREFIX=${RUNNER_WORKSPACE}/${{ matrix.libroadrunner_deps_name }}-binaries" >> "${GITHUB_ENV}"
+          #if [ "${{ matrix.platform.os_type }}" == 'windows' ]; then
+          #  echo EXPAT_LIBRARY="-DEXPAT_LIBRARY=${RUNNER_WORKSPACE}/${{ matrix.libroadrunner_deps_name }}-binaries/lib/${{ matrix.platform.expat_lib_name }}" >> "${GITHUB_ENV}"
+          #fi
 
       - name: Install libcheck
         shell: bash
@@ -293,10 +293,9 @@ jobs:
           -DCMAKE_OSX_ARCHITECTURES=${{ matrix.platform.arch }} \
           -DCMAKE_INSTALL_PREFIX="${RUNNER_WORKSPACE}/install-antimony" \
           -DWITH_STATIC_SBML=ON \
-          ${LIBSBML_INSTALL_DIR} \
+          ${ANT_DEPENDENCIES_INSTALL_PREFIX} \
           -DWITH_QTANTIMONY=${{ matrix.platform.build_qt_antimony }} \
           -DWITH_LIBSBML_EXPAT=ON \
-          ${EXPAT_LIBRARY} \
           -DWITH_LIBSBML_LIBXML=OFF \
           -DWITH_CHECK=ON \
           ${LIBCHECK_INCLUDE_DIR} \

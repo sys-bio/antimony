@@ -12,7 +12,6 @@
 
 using namespace libsbml;
 
-#ifndef NSBML
 void SetVarWithEvent(Variable* var, const Event* event, Module* module, vector<string> submodname)
 {
   if (event->isSetName()) {
@@ -100,14 +99,10 @@ string GetNewIDForLocalParameter(const SBase* lp)
   }
   const Reaction* rxnparent = static_cast<const Reaction*>(lp->getAncestorOfType(SBML_REACTION));
   if (rxnparent==NULL) return "";
-#ifdef USE_COMP
   const Model* model = static_cast<const Model*>(rxnparent->getAncestorOfType(SBML_COMP_MODELDEFINITION, "comp"));
   if (model==NULL) {
     model = static_cast<const Model*>(rxnparent->getAncestorOfType(SBML_MODEL));
   }
-#else
-  const Model* model = static_cast<const Model*>(rxnparent->getAncestorOfType(SBML_MODEL));
-#endif
   if (model==NULL) return "";
   string rxnname;
   if (rxnparent->isSetId()) {
@@ -130,8 +125,6 @@ string GetNewIDForLocalParameter(const SBase* lp)
   }
   return lpid;
 }
-
-#ifdef USE_COMP
 
 void  SetSBaseReference(SBaseRef* sbr, SBase* target, Model* targetmodel, string baseid)
 {
@@ -582,8 +575,6 @@ void FixPortReferencesIn(Model* sbmlmod)
   }
 }
 
-#endif  //USE_COMP
-
 void Module::TranslateRulesAndAssignmentsTo(const SBase* obj, Variable* var)
 {
   const InitialAssignment* ia = NULL;
@@ -591,7 +582,6 @@ void Module::TranslateRulesAndAssignmentsTo(const SBase* obj, Variable* var)
   bool noreplace = true;
   bool origformisblank = var->GetFormula()->IsEmpty();
 
-#ifdef USE_COMP
   const CompSBasePlugin* cplugin = static_cast<const CompSBasePlugin*>(obj->getPlugin("comp"));
   //While we are searching for replaced elements, etc., find the single canonical version of these things, if they exist.
   if (cplugin != NULL) {
@@ -627,13 +617,10 @@ void Module::TranslateRulesAndAssignmentsTo(const SBase* obj, Variable* var)
       }
     }
   }
-#endif
   if (noreplace) {
     const SBase* parentmod = obj;
     while (parentmod != NULL && parentmod->getTypeCode() != SBML_MODEL 
-#ifdef USE_COMP
       && parentmod->getTypeCode() != SBML_COMP_MODELDEFINITION
-#endif
       ) {
       parentmod = parentmod->getParentSBMLObject();
     }
@@ -643,7 +630,6 @@ void Module::TranslateRulesAndAssignmentsTo(const SBase* obj, Variable* var)
   }
   if (ia != NULL) {
     bool localparent = true;
-#ifdef USE_COMP
     //We need to check to see if the initial assignment replaced anything
     CompSBasePlugin* iaplugin = const_cast<CompSBasePlugin*>(static_cast<const CompSBasePlugin*>(ia->getPlugin("comp")));
     if (iaplugin != NULL) {
@@ -683,7 +669,6 @@ void Module::TranslateRulesAndAssignmentsTo(const SBase* obj, Variable* var)
       }
       parent = parent->getParentSBMLObject();
     }
-#endif
     if (localparent) {
       Formula formula;
       string formulastring(parseASTNodeToString(ia->getMath()));
@@ -693,16 +678,13 @@ void Module::TranslateRulesAndAssignmentsTo(const SBase* obj, Variable* var)
       var->SetFormula(&formula);
     }
   }
-#ifdef USE_COMP
   else if (ia == NULL && (rule == NULL || !rule->isAssignment()) && cplugin != NULL && !cplugin->isSetReplacedBy() && origformisblank && !var->GetFormula()->IsEmpty()) {
     //We need to ensure that synchronization didn't overwrite the original blank.
     Formula form;
     var->SetFormula(&form);
   }
-#endif
   if (rule != NULL) {
     bool localparent = true;
-#ifdef USE_COMP
     //We need to check to see if the rule replaced anything
     CompSBasePlugin* ruleplugin = const_cast<CompSBasePlugin*>(static_cast<const CompSBasePlugin*>(rule->getPlugin("comp")));
     if (ruleplugin != NULL) {
@@ -751,7 +733,6 @@ void Module::TranslateRulesAndAssignmentsTo(const SBase* obj, Variable* var)
       }
       parent = parent->getParentSBMLObject();
     }
-#endif
     if (localparent) {
       var->SetWithRule(rule);
     }
@@ -794,7 +775,6 @@ void Module::LoadSBML(Model* sbml)
     SetDisplayName(sbml->getName());
   PopulateCVTerms((SBase*)sbml);
   ReadAnnotationFrom(sbml);
-#ifdef USE_COMP
   //Load submodels
   const CompModelPlugin* mplugin = static_cast<const CompModelPlugin*>(sbml->getPlugin("comp"));
   if (mplugin != NULL) {
@@ -1019,7 +999,6 @@ void Module::LoadSBML(Model* sbml)
       }
     }
   }
-#endif //USE_COMP
   //m_sbml = *sbmldoc;
   string sbmlname = "";
 
@@ -1440,12 +1419,10 @@ void Module::LoadSBML(Model* sbml)
         else {
           rl->AddReactant(rvar, stoichiometry);
         }
-#ifdef USE_COMP
         const CompSBasePlugin* csbp = static_cast<const CompSBasePlugin*>(specref->getPlugin("comp"));
         if (csbp != NULL && (csbp->getNumReplacedElements() != 0 || csbp->isSetReplacedBy())) {
           g_registry.AddWarning("Cannot replace stoichiometries in Antimony:  all replacedElements and replacedBy children of " + specref->getSpecies() + " in reaction " + reaction->getId() + " will be ignored.");
         }
-#endif
         const FbcReactionPlugin* frp = static_cast<const FbcReactionPlugin*>(reaction->getPlugin("fbc"));
         if (frp && frp->isSetGeneProductAssociation()) {
           const GeneProductAssociation* gpa = frp->getGeneProductAssociation();
@@ -1689,7 +1666,6 @@ void Module::LoadSBML(Model* sbml)
   }
 #endif
 
-#ifdef USE_COMP
   if (mplugin != NULL) {
     //Ports!
     for (unsigned int p = 0; p < mplugin->getNumPorts(); p++) {
@@ -1755,7 +1731,6 @@ void Module::LoadSBML(Model* sbml)
     }
     */
   }
-#endif //USE_COMP
 
   //Finally, fix the fact that 'time' used to be OK in functions (l2v1), but is no longer (l2v2).
   g_registry.FixTimeInFunctions();
@@ -1819,18 +1794,10 @@ Model* Module::GetModelIfCreated()
 
 void Module::CreateSBMLModel(bool comp)
 {
-#ifndef USE_COMP
-  if (comp) {
-    comp = false;
-    g_registry.AddWarning("Unable to create hierarchical version of SBML model:  libAntimony was not compiled with the USE_COMP flag set.  libSBML may need to be recompiled with USE_COMP as well.  Exporting flattened version of SBML file instead.");
-  }
-#endif
   if (comp) {
     SBMLDocument newdoc(&m_sbmlnamespaces);
     m_sbml = newdoc;
-#ifdef USE_COMP
     m_sbml.setPackageRequired("comp", true);
-#endif
   }
   else {
     SBMLNamespaces plainnamespaces(m_sbmlnamespaces);
@@ -1879,7 +1846,6 @@ void Module::CreateSBMLModel(bool comp)
   }
 
   set<pair<string, const Variable*> > referencedVars;
-#ifdef USE_COMP
   CompSBMLDocumentPlugin* compdoc = static_cast<CompSBMLDocumentPlugin*>(m_sbml.getPlugin("comp"));
   CompModelPlugin* mplugin = static_cast<CompModelPlugin*>(sbmlmod->getPlugin("comp"));
 
@@ -2061,7 +2027,6 @@ void Module::CreateSBMLModel(bool comp)
     }
     ReturnSubmodelsFromDocument(&m_sbml);
   }
-#endif //USE_COMP
 
   //User-defined functions
   for (size_t uf=0; uf<g_registry.GetNumUserFunctions(); uf++) {
@@ -2114,12 +2079,10 @@ void Module::CreateSBMLModel(bool comp)
     }
     else {
       string cname = compartment->GetNameDelimitedBy(cc);
-#ifdef USE_COMP
       if (comp) {
         //If the compartment is from a submodel, we might need to create a local compartment for it.
         referencedVars.insert(make_pair(cname, compartment));
       }
-#endif
       sbmlspecies->setCompartment(cname);
     }
     Variable* unitvar = species->GetUnitVariable();
@@ -2215,7 +2178,6 @@ void Module::CreateSBMLModel(bool comp)
     defaultCompartment->setSize(1);
     defaultCompartment->setSBOTerm(410); //The 'implicit compartment'
     defaultCompartment->setSpatialDimensions(dim);
-#ifdef USE_COMP
     if (comp) {
       CompSBasePlugin* plugcompartment = static_cast<CompSBasePlugin*>(defaultCompartment->getPlugin("comp"));
       for (size_t sm=0; sm<numsubmods; sm++) {
@@ -2229,7 +2191,6 @@ void Module::CreateSBMLModel(bool comp)
         }
       }
     }
-#endif //USE_COMP
   }
   size_t numcomps = GetNumVariablesOfType(allCompartments, comp);
   for (size_t cmpt=0; cmpt<numcomps; cmpt++) {
@@ -2324,12 +2285,10 @@ void Module::CreateSBMLModel(bool comp)
     const Variable* rxncompartment = rxnvar->GetCompartment();
     if (rxncompartment != NULL) {
       sbmlrxn->setCompartment(rxncompartment->GetNameDelimitedBy(cc));
-#ifdef USE_COMP
       if (comp) {
         //If the compartment is from a submodel, we might need to create a local compartment for it.
         referencedVars.insert(make_pair(rxncompartment->GetNameDelimitedBy(cc), rxncompartment));
       }
-#endif
     }
     const Formula* formula = reaction->GetFormula();
     string formstring = formula->ToSBMLString(rxnvar->GetStrandVars());
@@ -2338,11 +2297,9 @@ void Module::CreateSBMLModel(bool comp)
       ASTNode* math = parseStringToASTNode(formstring);
       kl->setMath(math);
       delete math;
-#ifdef USE_COMP
       if (comp) {
         formula->AddReferencedVariablesTo(referencedVars);
       }
-#endif
     }
     for (int lr = 0; lr < 2; lr++) {
         const ReactantList* rl = reaction->GetLeft();
@@ -2632,8 +2589,6 @@ void Module::CreateSBMLModel(bool comp)
     objective->GetFormula()->AddFluxObjective(sbmlmod, m_maximize, objective);
   }
 
-
-#ifdef USE_COMP
   //Ports
   if (comp) {
     set<string> portnames;
@@ -2717,7 +2672,6 @@ void Module::CreateSBMLModel(bool comp)
     }
     FixPortReferencesIn(sbmlmod);
   }
-#endif //USE_COMP
 
   // Layout/Render!
   if (m_autolayout.use) {
@@ -2799,7 +2753,6 @@ void Module::SetAssignmentFor(Model* sbmlmod, const Variable* var, const map<con
   bool useinitial = true;
   bool useassignment = true;
   bool userate = true;
-#ifdef USE_COMP
   if (comp) {
     //The comp version is a lot more complicated than the flat version, because we need to:
     // * Delete all rules/assignments that no longer apply to this variable
@@ -2809,7 +2762,6 @@ void Module::SetAssignmentFor(Model* sbmlmod, const Variable* var, const map<con
     useassignment = SynchronizeAssignments(sbmlmod, var, synchronized, syncmap);
     userate = SynchronizeRates(sbmlmod, var, synchronized, syncmap);
   }
-#endif
   string cc = g_registry.GetCC();
   formula_type ftype = var->GetFormulaType();
   const Formula* formula = var->GetFormula();
@@ -2863,7 +2815,6 @@ void Module::SetAssignmentFor(Model* sbmlmod, const Variable* var, const map<con
   }
 }
 
-#ifdef USE_COMP
 vector<string> GetSubmodNameFor(SBase* sbase)
 {
   vector<string> ret;
@@ -3126,7 +3077,6 @@ bool Module::SynchronizeRates(Model* sbmlmod, const Variable* var, const vector<
   }
   return ret;
 }
-#endif //USE_COMP
 
 void Module::FixNames(Model* model)
 {
@@ -4117,6 +4067,3 @@ void Module::LoadLayout(Model* sbml)
         }
     }
 }
-
-
-#endif //NSBML

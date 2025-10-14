@@ -85,16 +85,12 @@ bool AntimonyTab::setupSBMLCopy()
     }
     char* modname = getNthModuleName(mod);
     char* SBML;
-#ifdef USE_COMP
     if (m_flatten) {
       SBML = getSBMLString(modname);
     }
     else {
       SBML = getCompSBMLString(modname);
     }
-#else
-    SBML = getSBMLString(modname);
-#endif
     m_selectedasSBML = SBML;
     clearPreviousLoads();
 #ifndef WIN32

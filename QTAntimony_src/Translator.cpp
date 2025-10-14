@@ -231,29 +231,21 @@ Translator::Translator(QTAntimony* app, QString filename)
                 if (displaysbml) {
                     for (size_t mod=1; mod<getNumModules(); mod++) {
                         char* modname = getNthModuleName(static_cast<unsigned long>(mod));
-#ifdef USE_COMP
                         if (flattensbml) {
                           AddSBMLTab(modname, getSBMLString(modname), true);
                         }
                         else {
                           AddSBMLTab(modname, getCompSBMLString(modname), true);
                         }
-#else
-                        AddSBMLTab(modname, getSBMLString(modname), true);
-#endif
                     }
                     char* mod0name = getNthModuleName(0);
                     if (getNumSymbolsOfType(mod0name, allSymbols) != 0 || getNumModules()==1) {
-#ifdef USE_COMP
                         if (flattensbml) {
                           AddSBMLTab(mod0name, getSBMLString(mod0name), true);
                         }
                         else {
                           AddSBMLTab(mod0name, getCompSBMLString(mod0name), true);
                         }
-#else
-                        AddSBMLTab(mod0name, getSBMLString(mod0name), true);
-#endif
                     }
                 }
             }
@@ -437,9 +429,7 @@ Translator::Translator(QTAntimony* app, QString filename)
     editmenu->addAction(m_actionRevertToOriginal);
     editmenu->addSeparator();
     editmenu->addAction(m_actionSetSBMLLevelAndVersion);
-#ifdef USE_COMP
     editmenu->addAction(actionFlattenSBML);
-#endif
     editmenu->addAction(m_actionDimensionless);
     editmenu->addAction(m_actionAddDefaults);
 

@@ -5,17 +5,14 @@
 #include "unitdef.h"
 #include "enums.h"
 
-#ifndef NSBML
 #ifdef WIN32
 #define WIN32 1
 #endif
 #include <sbml/SBMLTypes.h>
 class DistribFunctionDefinitionPlugin;
 
-#ifdef USE_COMP
 #include <sbml/packages/comp/common/CompExtensionTypes.h>
 libsbml::Model* getModelFromExternalModelDefinition(const libsbml::ExternalModelDefinition* extmoddef);
-#endif //USE_COMP
 
 std::string getNameFromSBMLObject(const libsbml::SBase* sbml, std::string basename);
 //std::string getNameFromSBMLObject(std::string ID, std::string name, std::string basename);
@@ -54,5 +51,3 @@ bool FluxesMatch(const libsbml::FluxBound* fb1, const libsbml::FluxBound* fb2);
 
 bool isValidColorValue(std::string formstring);
 bool startsAtReaction(std::string role);
-
-#endif

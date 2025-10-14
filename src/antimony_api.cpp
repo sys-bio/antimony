@@ -7,12 +7,10 @@
 #include <string.h>
 #include <locale.h>
 
-#ifndef NSBML
 #include <sbml/SBMLTypes.h>
 #include <sbml/xml/XMLOutputStream.h>
 #include <sbml/Model.h>
 #include <sbml/conversion/SBMLFunctionDefinitionConverter.h>
-#endif
 
 #ifdef LIBSBML_HAS_PACKAGE_FBC
 #include <sbml/packages/fbc/util/FbcV1ToV2Converter.h>
@@ -246,10 +244,8 @@ LIB_EXTERN long loadString(const char* model)
 {
   long retval = -1;
   g_registry.ClearWarnings();
-#ifndef NSBML
   retval = loadSBMLString(model);
   if (retval != -1) return retval;
-#endif
 #ifndef NCELLML
   retval = loadCellMLString(model);
   //xmlSetStructuredErrorFunc(NULL, NULL);
@@ -262,10 +258,8 @@ LIB_EXTERN long loadFile(const char* filename)
 {
   long retval = -1;
   g_registry.ClearWarnings();
-#ifndef NSBML
   retval = loadSBMLFile(filename);
   if (retval != -1) return retval;
-#endif
 #ifndef NCELLML
   retval = loadCellMLFile(filename);
   if (retval != -1) return retval;
@@ -312,7 +306,6 @@ LIB_EXTERN long loadAntimonyFile(const char* filename)
   return ParseFile(oldlocale);
 }
 
-#ifndef NSBML
 void LoadSBML(SBMLDocument* doc)
 {
     if (g_registry.GetRemoveFunctionDefinitions()) {
@@ -329,7 +322,6 @@ void LoadSBML(SBMLDocument* doc)
         delete converter;
     }
 #endif
-#ifdef USE_COMP
   string mainsbmlname = getNameFromSBMLObject(doc->getModel(), "doc");
   FixName(mainsbmlname);
   CompSBMLDocumentPlugin* compdoc = static_cast<CompSBMLDocumentPlugin*>(doc->getPlugin("comp"));
@@ -372,13 +364,6 @@ void LoadSBML(SBMLDocument* doc)
   mainmod->SetIsMain(true);
   return;
 
-#else
-  string sbmlname = getNameFromSBMLObject(doc->getModel(), "file");
-  if (sbmlname != MAINMODULE) {
-    g_registry.NewCurrentModule(&sbmlname);
-  }
-  g_registry.CurrentModule()->LoadSBML(doc->getModel());
-#endif
 }
 
 
@@ -441,7 +426,6 @@ LIB_EXTERN long loadSBMLStringWithLocation(const char* model, const char* locati
   delete document;
   return retval;
 }
-#endif
 
 #ifndef NCELLML
 
@@ -1909,7 +1893,6 @@ LIB_EXTERN char* getAntimonyString(const char* moduleName)
   return jarnac;
   }
 */
-#ifndef NSBML
 int writeSBMLFileInternal(const char* filename, const char* moduleName, bool comp)
 {
   const SBMLDocument* sbmldoc;
@@ -2014,7 +1997,6 @@ LIB_EXTERN char* getSBMLWarnings(const char* moduleName)
   if (!checkModule(moduleName)) return NULL;
   return getCharStar(g_registry.GetModule(moduleName)->GetSBMLWarnings().c_str());
 }
-#endif
 
 LIB_EXTERN bool addDefaultInitialValues(const char* moduleName)
 {

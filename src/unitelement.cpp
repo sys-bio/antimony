@@ -3,9 +3,7 @@
 #include <cmath>
 #include <cassert>
 #include <sstream>
-#ifndef NSBML
 #include <sbml/UnitKind.h>
-#endif
 
 using namespace std;
 using namespace libsbml;
@@ -19,7 +17,6 @@ UnitElement::UnitElement(string kind)
   FixUnitName(m_kind);
 }
 
-#ifndef NSBML
 UnitElement::UnitElement(const Unit* unit)
   : m_kind(UnitKind_toString(unit->getKind()))
   , m_exponent(unit->getExponent())
@@ -27,7 +24,6 @@ UnitElement::UnitElement(const Unit* unit)
   , m_scale(unit->getScale())
 {
 }
-#endif
 
 bool UnitElement::operator<(const UnitElement& ue) const
 {
@@ -110,12 +106,8 @@ bool UnitElement::Matches(const UnitElement& ue) const
 
 bool UnitElement::KindIsCanonical() const
 {
-#ifdef NSBML
-  return false;
-#else
   int kind = UnitKind_forName(m_kind.c_str());
   return (kind!=UNIT_KIND_INVALID && kind!=UNIT_KIND_METER);
-#endif
 }
 
 string UnitElement::ToString() const

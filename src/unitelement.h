@@ -5,10 +5,7 @@
 #include <utility>
 #include <vector>
 
-#ifndef NSBML
 #include <sbml/Unit.h>
-#endif
-
 
 class UnitElement
 {
@@ -21,9 +18,7 @@ private:
 
 public:
   UnitElement(std::string kind);
-#ifndef NSBML
   UnitElement(const libsbml::Unit* unit);
-#endif
   ~UnitElement() {};
   bool operator<(const UnitElement& ue) const;
 

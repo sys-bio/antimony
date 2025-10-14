@@ -7,7 +7,6 @@
 
 using namespace std;
 using namespace libsbml;
-#ifndef NSBML
 
 Annotated::Annotated()
     : m_annotation()
@@ -690,5 +689,3 @@ string Annotated::CreateSBOTermsAntimonySyntax(const string& elt_id, const strin
     return "";
   }
 }
-
-#endif

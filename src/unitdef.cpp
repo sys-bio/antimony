@@ -156,7 +156,6 @@ bool UnitDef::ClearReferencesTo(Variable* deletedvar)
 
 bool UnitDef::SetFromFormula(Formula* formula)
 {
-#ifndef NSBML
   ASTNode* astn = parseStringToASTNode(formula->ToSBMLString());
   UnitDef* ud = GetUnitDefFromASTNode(astn);
   delete astn;
@@ -171,13 +170,8 @@ bool UnitDef::SetFromFormula(Formula* formula)
   }
   delete ud;
   return false;
-#else
-  g_registry.SetError("Error:  libsbml required to declare unit definitions in this way.  Use 'unit [unit] = [definition]' instead.");
-  return true;
-#endif
 }
 
-#ifndef NSBML
 UnitDef*  UnitDef::GetUnitDefFromASTNode(ASTNode* astn)
 {
   if (astn==NULL) return NULL;
@@ -287,7 +281,6 @@ UnitDef*  UnitDef::GetUnitDefFromASTNode(ASTNode* astn)
   delete udch2;
   return ret;
 }
-#endif
 
 bool UnitDef::Matches(UnitDef* unitdef) const
 {
@@ -488,7 +481,6 @@ bool UnitDef::IsBuiltin() const
     return false;
 }
 
-#ifndef NSBML
 UnitDefinition* UnitDef::AddToSBML(Model* sbmlmod, string id, string name)
 {
   UnitDef* canonical = GetCanonical();
@@ -514,4 +506,3 @@ UnitDefinition* UnitDef::AddToSBML(Model* sbmlmod, string id, string name)
   delete canonical;
   return ud;
 }
-#endif

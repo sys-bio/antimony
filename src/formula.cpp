@@ -1101,10 +1101,6 @@ bool Formula::MakeAllVariablesUnits()
 
 bool Formula::MakeUnitVariablesUnits()
 {
-#ifdef NSBML
-  //Can't do it.
-  return false;
-#else
   string formula = ToSBMLString();
   ASTNode* root = parseStringToASTNode(formula);
   set<string> allunits;
@@ -1122,14 +1118,10 @@ bool Formula::MakeUnitVariablesUnits()
     }
   }
   return false;
-#endif
 }
 
-#ifndef NSBML
 void Formula::SetNewTopNameWith(const SBase* from, const string& modname)
 {
-  //Only need to do anything if 'from' is in a submodel, which only happens in comp-sbml.
-#ifdef USE_COMP
   while (from != NULL) {
     if (from->getTypeCode()==SBML_COMP_SUBMODEL) {
       string submodname = from->getId();
@@ -1137,7 +1129,6 @@ void Formula::SetNewTopNameWith(const SBase* from, const string& modname)
     }
     from = from->getParentSBMLObject();
   }
-#endif
 }
 
 void Formula::AddFluxObjective(Model* sbmlmod, bool maximize, const Variable* var) const
@@ -1335,8 +1326,6 @@ void Formula::GetObjectivesFromAST(const ASTNode* astn, vector<FluxObjective >& 
   }
 }
 
-#endif
-
 bool Formula::ClearReferencesTo(Variable* deletedvar)
 {
   if (ContainsVar(deletedvar)) {
@@ -1405,13 +1394,11 @@ string Formula::CellMLify(string formula) const
     formula = revform;
     revform = ConvertOneSymbolToFunction(formula);
   }
-#ifndef NSBML
   //Convert through the SBML formula thingy, since it'll do x^y -> pow(x,y) and maybe other stuff.
   ASTNode_t* ASTform = parseStringToASTNode(formula);
   caratToPower(ASTform);
   formula = parseASTNodeToString(ASTform, false);
   delete ASTform;
-#endif
   size_t pow = formula.find("pow(");
   while (pow != string::npos) {
     formula.insert(pow+3, "er");
