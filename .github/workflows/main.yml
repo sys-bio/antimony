@@ -257,7 +257,7 @@ jobs:
             mkdir -p build-check
             mkdir -p install-check
             cd build-check
-            cmake -G "Ninja" -DANT_DEPENDENCIES_INSTALL_PREFIX="${RUNNER_WORKSPACE}/check/install-check" -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES=${{ matrix.platform.arch }} ../check-0.15.2
+            cmake -G "Ninja" -DCMAKE_INSTALL_PREFIX="${RUNNER_WORKSPACE}/check/install-check" -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES=${{ matrix.platform.arch }} ../check-0.15.2
             cmake --build . --target install
             echo LIBCHECK_INCLUDE_DIR="-DLIBCHECK_INCLUDE_DIR=${RUNNER_WORKSPACE}/check/install-check/include" >> "${GITHUB_ENV}"
             if [ "${{ matrix.platform.os_type }}" == 'manylinux' ]; then
