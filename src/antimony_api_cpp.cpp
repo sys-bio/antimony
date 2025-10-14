@@ -3,9 +3,7 @@
 #include <cstdlib>
 #include <string.h>
 
-#ifndef NSBML
 #include <sbml/SBMLTypes.h>
-#endif
 
 #ifndef NCELLML
 #include "cellmlx.h"

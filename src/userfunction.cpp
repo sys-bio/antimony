@@ -1,6 +1,4 @@
-#ifndef NSBML
 #include <sbml/SBMLTypes.h>
-#endif
 
 #include "module.h"
 #include "registry.h"
@@ -19,7 +17,6 @@ UserFunction::UserFunction(string name)
 bool UserFunction::SetFormula(const Formula& formula)
 {
   string formstring = formula.ToSBMLString();
-#ifndef NSBML
   if (formstring.size() > 0) {
     ASTNode_t* ASTform = parseStringToASTNode(formstring);
     if (ASTform == NULL) {
@@ -28,7 +25,6 @@ bool UserFunction::SetFormula(const Formula& formula)
     }
     delete ASTform;
   }
-#endif
   m_formula = formula;
   formstring = formula.ToDelimitedStringWithEllipses(".");
   vector<vector<string> > formvars = formula.GetVariableStrings();

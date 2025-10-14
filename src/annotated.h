@@ -6,10 +6,8 @@
 class Annotated
 {
 protected:
-#ifndef NSBML
-    libsbml::XMLNode m_annotation;
+  libsbml::XMLNode m_annotation;
   std::string m_metaid;
-#endif
 
 // keep a list of biomodels quals so we can extend it as we read the input
 // use the list to build an annotation node when writing
@@ -32,7 +30,6 @@ public:
 
   virtual bool Synchronize(Variable * clone, const Variable * conversionFactor);
 
-#ifndef NSBML
   virtual bool TransferAnnotationToModel(libsbml::Model* model);
   virtual bool TransferAnnotationTo(libsbml::SBase* sbmlobj, std::string metaid) const;
   std::string getNotesString() const;
@@ -86,7 +83,6 @@ public:
   virtual void SetSBOTerm(int sboTerm);
   int GetSBOTerm() const;
   virtual std::string CreateSBOTermsAntimonySyntax(const std::string& elt_id, const std::string& indent, std::string ) const;
-#endif
 
 };
 

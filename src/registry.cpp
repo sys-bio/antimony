@@ -150,13 +150,11 @@ void Registry::ClearDirectories()
 //Return values:  1: antimony, unread 2: SBML, read
 int Registry::OpenString(string model)
 {
-#ifndef NSBML
   //Try opening as SBML:
   SBMLDocument* document = readSBMLFromString(model.c_str());
   int sbmlcheck = CheckAndAddSBMLIfGood(document);
   delete document;
   if (sbmlcheck==2) return 2;
-#endif
   if (model.size()==0 || model[model.size()-1] != '\n') {
     model.push_back('\n');
   }
@@ -204,7 +202,6 @@ int Registry::OpenFile(const string& filename, bool antOnly)
     AddDirectory(dir);
   }
 
-#ifndef NSBML
   //Try opening as SBML:
   //if (!antOnly) {
     SBMLDocument* document = readSBML(newname.c_str());
@@ -214,7 +211,6 @@ int Registry::OpenFile(const string& filename, bool antOnly)
     }
     delete document;
   //}
-#endif
 
   //If that failed, set up the 'input' member variable so we can parse it as Antimony.
   ifstream* inputfile = new ifstream;
@@ -374,7 +370,6 @@ bool Registry::file_exists (const string& filename)
   return stat(filename.c_str(), &buf) == 0;
 }
 
-#ifndef NSBML
 int Registry::CheckAndAddSBMLIfGood(SBMLDocument* document)
 {
   //First convert any distrib function definitions from annotation to distrib-style MathML.
@@ -405,8 +400,6 @@ int Registry::CheckAndAddSBMLIfGood(SBMLDocument* document)
 
 void Registry::LoadSubmodelsFrom(Model* model)
 {
-  //Only meaningful if using sbml-comp
-#ifdef USE_COMP
   const CompModelPlugin* cmp = static_cast<const CompModelPlugin*>(model->getPlugin("comp"));
   if (cmp==NULL) return;
   //Load any submodels that external model might need.
@@ -416,7 +409,6 @@ void Registry::LoadSubmodelsFrom(Model* model)
       AddWarning("Unable to load submodel " + submodel->getModelRef() + ".");
     }
   }
-#endif
 }
 
 bool Registry::LoadModelFrom(string modelname, SBMLDocument* document)
@@ -424,7 +416,6 @@ bool Registry::LoadModelFrom(string modelname, SBMLDocument* document)
   if (modelname.empty()) return true;
   if (GetModule(modelname) != NULL) return false; //Already loaded.
   if (document==NULL) return true;
-#ifdef USE_COMP
   CompSBMLDocumentPlugin* docplug = static_cast<CompSBMLDocumentPlugin*>(document->getPlugin("comp"));
   if (docplug==NULL) return true;
   SBase* model = docplug->getModel(modelname);
@@ -449,17 +440,7 @@ bool Registry::LoadModelFrom(string modelname, SBMLDocument* document)
   NewCurrentModule(&modelname);
   CurrentModule()->LoadSBML(mod);
   return false;
-#else
-  if (document->getModel()->getName()==modelname) {
-    NewCurrentModule(&modelname);
-    CurrentModule()->LoadSBML(document->getModel());
-    return false;
-  }
-  return true; //Failure; need comp for this function.
-#endif
 }
-
-#endif  
 
 #ifndef NCELLML
 
@@ -1128,7 +1109,6 @@ bool Registry::SetNewCurrentEvent(Formula* delay, Formula* trigger)
 bool Registry::SetNewCurrentEvent(Formula* trigger, Variable* var)
 {
   m_currentEvent = var->GetName();
-#ifndef NSBML
   string formstring = trigger->ToSBMLString();
   if (formstring.size() > 0) {
     ASTNode_t* ASTform = parseStringToASTNode(formstring);
@@ -1145,7 +1125,6 @@ bool Registry::SetNewCurrentEvent(Formula* trigger, Variable* var)
     //}
     delete ASTform;
   }
-#endif
   Formula delay;
   AntimonyEvent event(delay, *trigger, var);
   return var->SetEvent(&event);

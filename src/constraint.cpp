@@ -16,9 +16,7 @@ AntimonyConstraint::AntimonyConstraint()
   , m_type(constNONE)
   , m_name()
   , m_module()
-#ifndef NSBML
   , m_astnode(NULL)
-#endif
 #ifdef LIBSBML_HAS_PACKAGE_FBC
   , m_rxnId()
   , m_fbLower()
@@ -35,9 +33,7 @@ AntimonyConstraint::AntimonyConstraint(const AntimonyConstraint& constraint)
   , m_type(constraint.m_type)
   , m_name(constraint.m_name)
   , m_module(constraint.m_module)
-#ifndef NSBML
   , m_astnode(constraint.m_astnode)
-#endif
 #ifdef LIBSBML_HAS_PACKAGE_FBC
   , m_rxnId(constraint.m_rxnId)
   , m_fbLower(constraint.m_fbLower)
@@ -57,9 +53,7 @@ AntimonyConstraint::AntimonyConstraint(Variable* var)
   , m_type(constNONE)
   , m_name(var->GetName())
   , m_module(var->GetNamespace())
-#ifndef NSBML
   , m_astnode(NULL)
-#endif
 #ifdef LIBSBML_HAS_PACKAGE_FBC
   , m_rxnId()
   , m_fbLower()
@@ -76,15 +70,12 @@ AntimonyConstraint::~AntimonyConstraint()
 void AntimonyConstraint::SetFormula(Formula* formula, bool onlyformula)
 {
   m_formula = *formula;
-#ifndef NSBML
   if (onlyformula) return;
   ASTNode* astnode = parseStringToASTNode(formula->ToSBMLString());
   SetWithASTNode(astnode);
   delete astnode;
-#endif
 }
 
-#ifndef NSBML
 void AntimonyConstraint::SetWithASTNode(const ASTNode* constnode)
 {
   if (constnode == NULL) {
@@ -227,7 +218,6 @@ void AntimonyConstraint::SetWithASTNode(const ASTNode* constnode)
     return;
   }
 }
-#endif
 
 void AntimonyConstraint::SetInitialValue(double val)
 {
@@ -288,13 +278,11 @@ void AntimonyConstraint::SetNewTopName(string newmodname, string newtopname)
   }
   m_formula.SetNewTopName(newmodname, newtopname);
   m_name.insert(m_name.begin(), newtopname);
-#ifndef NSBML
   delete m_astnode;
   m_astnode = NULL;
 #ifdef LIBSBML_HAS_PACKAGE_FBC
   m_fbLower.SetNewTopName(newmodname, newtopname);
   m_fbUpper.SetNewTopName(newmodname, newtopname);
-#endif
 #endif
 }
 
@@ -388,7 +376,6 @@ void AntimonyConstraint::FixNames()
   FixName(m_initialVariable);
 }
 
-#ifndef NSBML
 const ASTNode* AntimonyConstraint::getASTNode() const
 {
   return m_astnode;
@@ -465,7 +452,6 @@ void AntimonyConstraint::calculateASTNode()
     m_astnode = rhs;
   }
 }
-#endif
 
 #ifdef LIBSBML_HAS_PACKAGE_FBC
 void setBound(const string& id, bool isLower, FbcReactionPlugin* fbrxn)

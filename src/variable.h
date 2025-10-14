@@ -17,9 +17,7 @@
 #include "cellmlx.h"
 #endif
 
-#ifndef NSBML
 #include "sbml/SBMLTypes.h"
-#endif
 
 class Module;
 class UnitDef;
@@ -197,7 +195,6 @@ public:
   std::set<std::pair<std::vector<std::string>, deletion_type> > ClearReferencesTo(Variable* deletedvar);
 
   virtual bool Synchronize(Variable* clone, const Variable* conversionFactor);
-#ifndef NSBML
   //bool Synchronize(Variable* clone, SBase* foo);
   void SetWithRule(const libsbml::Rule* rule);
   virtual bool TransferAnnotationTo(libsbml::SBase* sbmlobj, std::string metaid) const;
@@ -206,7 +203,6 @@ public:
   virtual size_t GetNumUncertWrappers() const;
   virtual size_t GetNumLayoutWrappers() const;
   virtual bool HasLayoutPositionInfo() const;
-#endif
 
   bool IncludesSelf();
   bool AnyCompartmentLoops() const;

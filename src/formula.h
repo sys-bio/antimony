@@ -7,10 +7,8 @@
 #include <set>
 #include "annotated.h"
 
-#ifndef NSBML
 #include <sbml/math/ASTNode.h>
 #include <sbml/Model.h>
-#endif
 
 class ReactantList;
 class Variable;
@@ -93,14 +91,12 @@ public:
 
   bool MakeAllVariablesUnits();
   bool MakeUnitVariablesUnits();
-#ifndef NSBML
   //bool MakeUnitVariablesUnits(libsbml::ASTNode* astn);
   void SetNewTopNameWith(const libsbml::SBase* from, const std::string& modname);
   void AddFluxObjective(libsbml::Model* sbmlmod, bool maximize, const Variable* var) const;
   bool IsValidObjectiveFunction() const;
   bool IsValidObjectiveFunction(const libsbml::ASTNode* astn) const;
   void GetObjectivesFromAST(const libsbml::ASTNode* astn, std::vector<libsbml::FluxObjective >& objectives) const;
-#endif
 
   bool ClearReferencesTo(Variable* deletedvar);
   void AddReferencedVariablesTo(std::set<std::pair<std::string, const Variable*> >& referencedVars) const;

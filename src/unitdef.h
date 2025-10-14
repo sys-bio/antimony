@@ -59,10 +59,8 @@ public:
   /// Returns true if is an SBML built-in unit, false otherwise
   bool IsBuiltin() const;
 
-#ifndef NSBML
   UnitDef* GetUnitDefFromASTNode(libsbml::ASTNode* astn);
   libsbml::UnitDefinition* AddToSBML(libsbml::Model* sbmlmod, std::string id, std::string name);
-#endif
 
 private:
 

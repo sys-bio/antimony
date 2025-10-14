@@ -1,6 +1,4 @@
-#ifndef NSBML
 #include <sbml/SBMLTypes.h>
-#endif
 
 #include "typex.h"
 #include <set>

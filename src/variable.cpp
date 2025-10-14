@@ -1164,7 +1164,6 @@ bool Variable::SetFormula(Formula* formula, bool isObjective)
   if (IsPointer()) {
     return GetSameVariable()->SetFormula(formula);
   }
-#ifndef NSBML
   string formstring = formula->ToSBMLString(GetStrandVars());
   if (m_type == varSpeciesChemicalFormula) {
     return SetDisplayName(formstring);
@@ -1182,7 +1181,6 @@ bool Variable::SetFormula(Formula* formula, bool isObjective)
     }
     delete ASTform;
   }
-#endif
   if (m_type != varLayoutWrapper && formula->ContainsVar(this)) {
     g_registry.SetError("Loop detected:  " + GetNameDelimitedBy(".") + "'s definition (" + formula->ToDelimitedStringWithEllipses(".") + ") either includes itself directly (i.e. 's5 = 6 + s5') or by proxy (i.e. 's5 = 8*d3' and 'd3 = 9*s5').");
     return true;
@@ -1318,7 +1316,6 @@ bool Variable::SetFormula(Formula* formula, bool isObjective)
     g_registry.SetError("Cannot set '" + GetNameDelimitedBy(".") + "' to be " + formula->ToDelimitedStringWithEllipses(".") + " because a chemical formula must be defined by a string, i.e. S1.chemicalFormula is \"CH4O2\".");
     return true;
   }
-#ifndef NSBML
   if (!isObjective) {
     if (m_valFormula.MakeUnitVariablesUnits()) return true;
     ASTNode* root = parseStringToASTNode(m_valFormula.ToSBMLString());
@@ -1332,7 +1329,6 @@ bool Variable::SetFormula(Formula* formula, bool isObjective)
     }
     delete root;
   }
-#endif
   return false;
 }
 
@@ -1341,7 +1337,6 @@ bool Variable::SetAssignmentRule(Formula* formula)
   if (IsPointer()) {
     return GetSameVariable()->SetAssignmentRule(formula);
   }
-#ifndef NSBML
   string formstring = formula->ToSBMLString(GetStrandVars());
   if (formstring.size() > 0) {
     ASTNode_t* ASTform = parseStringToASTNode(formstring);
@@ -1355,7 +1350,6 @@ bool Variable::SetAssignmentRule(Formula* formula)
       delete ASTform;
     }
   }
-#endif
   if (formula->ContainsVar(this)) {
     g_registry.SetError("Loop detected:  " + GetNameDelimitedBy(".") + "'s definition (" + formula->ToDelimitedStringWithEllipses(".") + ") either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').");
     return true;
@@ -1401,7 +1395,6 @@ bool Variable::SetRateRule(Formula* formula)
   if (IsPointer()) {
     return GetSameVariable()->SetRateRule(formula);
   }
-#ifndef NSBML
   string formstring = formula->ToSBMLString(GetStrandVars());
   if (formstring.size() > 0) {
     ASTNode_t* ASTform = parseStringToASTNode(formstring);
@@ -1415,7 +1408,6 @@ bool Variable::SetRateRule(Formula* formula)
       delete ASTform;
     }
   }
-#endif
   //if (formula->ContainsVar(this));  //Rate rules may indeed contain references to themselves!
   if (!CanHaveRateRule(m_type)) {
     g_registry.SetError("The variable '" + GetNameDelimitedBy(".") + "' is the type " + VarTypeToString(m_type) + ", and may not have a rate rule associated with it.");
@@ -1452,7 +1444,6 @@ bool Variable::SetAlgebraicRule(double val, Formula* formula)
         formula->AddMathThing('-');
         formula->AddNum(val);
     }
-#ifndef NSBML
     string formstring = formula->ToSBMLString(GetStrandVars());
     if (formstring.size() > 0) {
         ASTNode_t* ASTform = parseStringToASTNode(formstring);
@@ -1466,7 +1457,6 @@ bool Variable::SetAlgebraicRule(double val, Formula* formula)
             delete ASTform;
         }
     }
-#endif
     if (!CanHaveAlgebraicRule(m_type)) {
         g_registry.SetError("The variable '" + GetNameDelimitedBy(".") + "' is the type " + VarTypeToString(m_type) + ", and may not have an algebraic rule associated with it.");
         return true;
@@ -1511,7 +1501,6 @@ bool Variable::SetReaction(AntimonyReaction* rxn)
     g_registry.SetError("Curly brackets detected in the reaction rate: '" + rxn->GetFormula()->ToDelimitedStringWithEllipses(".") + "': vectors are not supported in the current version of Antimony apart from their use in setting certain uncertainty parameters.");
     return true;
   }
-#ifndef NSBML
   string formstring = rxn->GetFormula()->ToSBMLString(GetStrandVars());
   if (formstring.size() > 0) {
     ASTNode_t* ASTform = parseStringToASTNode(formstring);
@@ -1525,7 +1514,6 @@ bool Variable::SetReaction(AntimonyReaction* rxn)
       delete ASTform;
     }
   }
-#endif
   string err = "When defining reaction '" + GetNameDelimitedBy(".") + "':  ";
   if (rxn->GetLeft()->SetComponentTypesTo(varSpeciesUndef)) {
     g_registry.AddErrorPrefix(err);
@@ -2696,7 +2684,6 @@ bool Variable::AllowedInFormulas() const
   return false;
 }
 
-#ifndef NSBML
 void Variable::SetWithRule(const Rule* rule)
 {
   Formula formula;
@@ -2881,5 +2868,3 @@ bool Variable::HasLayoutPositionInfo() const
     }
     return false;
 }
-
-#endif

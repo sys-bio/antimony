@@ -86,9 +86,7 @@
 #include <set>
 #include <stdio.h>
 #include <string>
-#ifndef NSBML
 #include <sbml/SBMLTypes.h>
-#endif
 #include "registry.h"
 #include "module.h"
 #include "unitdef.h"

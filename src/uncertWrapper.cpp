@@ -60,7 +60,6 @@ bool UncertWrapper::SetFormula(Formula* formula, bool isObjective)
   if (IsSpan(m_uncert_type)) {
     //Only Vectors of length 2 are allowed for these types
     //We're only going to be able to check this in SBML mode
-#ifndef NSBML
     ASTNode* astn = parseStringToASTNode(formula->ToSBMLString());
     if (!astn || astn->getType() != AST_LINEAR_ALGEBRA_VECTOR || astn->getNumChildren() != 2) {
       g_registry.SetError("Unable to set the value of '" + GetNameDelimitedBy(".") + "' to be '" + formula->ToDelimitedStringWithEllipses(".") + "':  an uncertainty parameter of type " + UncertTypeToString(m_uncert_type) + " must be a vector of length two, marked with curly brackets (i.e. '{3, 8}').");
@@ -83,7 +82,6 @@ bool UncertWrapper::SetFormula(Formula* formula, bool isObjective)
       }
     }
     delete astn;
-#endif
     return false;
   }
   else {

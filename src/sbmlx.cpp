@@ -15,7 +15,6 @@ using namespace libsbml;
 
 extern bool CaselessStrCmp(bool caseless, const string& lhs, const string& rhs);
 
-#ifndef NSBML
 #include "sbmlx.h"
 #include "sbml/math/FormulaFormatter.h"
 #include "sbmlnetwork/libsbmlnetwork_sbmldocument.h"
@@ -399,8 +398,6 @@ UnitDef GetUnitDefFrom(const UnitDefinition* unitdefinition, string modulename)
   return ret;
 }
 
-#endif
-
 
 //SBML models might have variable names in them that are reserved keywords in Antimony (like 'compartment', to take a huge example).  FixName fixes this so that you can output readable Antimony again.
 bool FixName(string& name)
@@ -602,7 +599,6 @@ void FixName(map<vector<string>, Variable*>& varmap)
   
 }
 
-#ifdef USE_COMP
 Model* getModelFromExternalModelDefinition(const ExternalModelDefinition* cextmoddef)
 {
   ExternalModelDefinition* extmoddef = const_cast<ExternalModelDefinition*>(cextmoddef);
@@ -622,8 +618,6 @@ Model* getModelFromExternalModelDefinition(const ExternalModelDefinition* cextmo
   }
   return extmod;
 }
-
-#endif
 
 void removeBooleanErrors(SBMLDocument* doc)
 {

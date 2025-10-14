@@ -96,6 +96,11 @@ option(INSTALL_SYSTEM_RUNTIMES "Install system runtime libraries (e.g. MSVC runt
 set(EXTRA_LIBS "" CACHE STRING "Libraries the other libraries depend on that are in non-standard locations" )
 #set(EXTRA_LIBS "" CACHE_STRING "")
 
+set(ANT_DEPENDENCIES_INSTALL_PREFIX "${CMAKE_CURRENT_SOURCE_DIR}/dependencies"
+        CACHE PATH "Path to dependencies install"
+        )
+
+
 # Enable the generation of unit tests. If enabled, all test runners
 # will be created and can be run with "make test" or ctest.
 # This won't work in Visual Studio 2003, so we disable this option there.
@@ -110,72 +115,46 @@ endif()
 
 add_definitions( -DLIBANTIMONY_VERSION_STRING="${LIBANTIMONY_VERSION_STRING}" )
 
+set(RR_ROOT "${CMAKE_CURRENT_SOURCE_DIR}")
+set(DEPENDENCY_CMAKE_CONFIG_PATHS
+        "${ANT_DEPENDENCIES_INSTALL_PREFIX}/cmake"
+        "${ANT_DEPENDENCIES_INSTALL_PREFIX}/lib/cmake"
+        "${ANT_DEPENDENCIES_INSTALL_PREFIX}/lib/cmake/Poco"
+        "${ANT_DEPENDENCIES_INSTALL_PREFIX}/lib64/cmake"
+        "${RR_DEPENDENCIES_INSTALL_PREFIX}/lib64/cmake/Poco"
+        )
+set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} "${DEPENDENCY_CMAKE_CONFIG_PATHS}")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${DEPENDENCY_CMAKE_CONFIG_PATHS}")
+message(STATUS "CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH}")
+if (WIN32)
+    set(SBML_TARGET_NAME "libsbml-static")
+else ()
+    set(SBML_TARGET_NAME "sbml-static")
+endif (WIN32)
 
 ####################################################################
 #
 # Locate libsbml if needed
 #
 
-if(WITH_SBML)
+find_package(ZLIB CONFIG REQUIRED)
+find_package(expat CONFIG REQUIRED)
 
-    find_path(LIBSBML_INSTALL_DIR
-    NAMES include/sbml/SBMLTypes.h
-    PATHS /usr /usr/local /usr/lib /usr/local/lib
-              ${CMAKE_SOURCE_DIR}
-              ${CMAKE_SOURCE_DIR}/dependencies/
-              ${CMAKE_SOURCE_DIR}/../libsbml-5/release/
-              ${CMAKE_SOURCE_DIR}/../
-              )
+set(ZLIB_LIBRARY ZLIB::ZLIBSTATIC)
+get_target_property(ZLIB_LIBRARY ZLIB::ZLIBSTATIC LOCATION)
+set(ZLIB_INCLUDE_DIR "${ANT_DEPENDENCIES_INSTALL_PREFIX}/include/")
+set(EXPAT_LIBRARY "expat::expat")
+get_target_property(EXPAT_INCLUDE_DIR expat::expat INTERFACE_INCLUDE_DIRECTORIES)
+get_target_property(EXPAT_LIBRARY expat::expat LOCATION)
+message(STATUS "EXPAT_LIBRARY: ${EXPAT_LIBRARY}")
+set(EXPAT_INCLUDE_DIR "${ANT_DEPENDENCIES_INSTALL_PREFIX}/include/")
 
-    if(WITH_STATIC_SBML)
-        find_library(LIBSBML_LIBRARY
-             NAMES libsbml-static.lib libsbml-static.so libsbml-static sbml-static.lib sbml-static.so sbml-static libsbml-staticd.lib libsbml-staticmd.lib libsbml-staticmdd.lib libsbml-staticd.so libsbml-staticd sbml-staticd.lib sbml-staticd.so sbml-staticd
-             PATHS /usr/lib /usr/local/lib
-               ${LIBSBML_INSTALL_DIR}/lib
-               ${LIBSBML_INSTALL_DIR}/lib64
-               ${CMAKE_SOURCE_DIR}
-               ${CMAKE_SOURCE_DIR}/dependencies/lib
-               ${CMAKE_SOURCE_DIR}/../libsbml-5/release/lib/
-             )
-    else()
-        find_library(LIBSBML_LIBRARY
-            NAMES libsbml.lib libsbml.so libsbml sbml.lib sbml.so sbml
-            PATHS /usr/lib /usr/local/lib
-              ${LIBSBML_INSTALL_DIR}/lib
-              ${LIBSBML_INSTALL_DIR}/lib64
-              ${CMAKE_SOURCE_DIR}
-              ${CMAKE_SOURCE_DIR}/dependencies/lib
-              ${CMAKE_SOURCE_DIR}/../libsbml-5/release/lib/
-            )
-    endif()
-    find_path(LIBSBML_INCLUDE_DIR
-        NAMES sbml/SBMLTypes.h
-        PATHS /usr/include /usr/local/include
-              ${LIBSBML_INSTALL_DIR}/include
-              ${CMAKE_SOURCE_DIR}/include
-              ${CMAKE_SOURCE_DIR}/dependencies/include
-              ${CMAKE_SOURCE_DIR}/../libsbml-5/release/include/
-        )
-    set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${LIBSBML_LIBRARY} )
-    if(WIN32 AND NOT WITH_STATIC_SBML)
-        find_path(LIBSBML_BIN_DIR
-            NAMES libsbml.dll
-            PATHS /usr/bin /usr/local/bin
-                  ${LIBSBML_INSTALL_DIR}/bin
-                  ${LIBSBML_INCLUDE_DIR}/../bin
-                  ${CMAKE_SOURCE_DIR}/
-                  ${CMAKE_SOURCE_DIR}/dependencies/libsbml/bin
-                  ${CMAKE_SOURCE_DIR}/../libsbml-5/release/bin/
-            )
-        set(LIBSBML_DLL ${LIBSBML_BIN_DIR}/libsbml.dll)
-    endif()
-    INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${LIBSBML_INCLUDE_DIR})
-    if (WITH_COMP_SBML)
-        add_definitions( -DUSE_COMP )
-    endif(WITH_COMP_SBML)
-else(WITH_SBML)
-    add_definitions( -DNSBML )
-endif(WITH_SBML)
+message(STATUS "zlibstatic: ${ZLIB_LIBRARY}")
+
+find_package(libsbml-static CONFIG REQUIRED)
+set(LIBSBML_INCLUDE_DIR "${ANT_DEPENDENCIES_INSTALL_PREFIX}/include/")
+set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} libsbml-static ${LIBSBML_LIBRARIES} )
+INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${LIBSBML_INCLUDE_DIR} ${EXPAT_INCLUDE_DIR} ${ZLIB_INCLUDE_DIR})
 
 ####################################################################
 #
@@ -276,15 +255,8 @@ if(WITH_LIBSBML_LIBXML)
     set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${LIBXML_LIBRARY} )
 
     #The libxml library requires the libz library, too.
-    find_library(ZDLL_LIBRARY
-        NAMES zlibstatic.lib zlibstaticd.lib zlibstaticmd.lib zlibstatic zlibstaticd zlibstaticmd libz.a libz
-        PATHS /usr/lib /usr/local/lib
-              ${CMAKE_SOURCE_DIR}
-              ${CMAKE_SOURCE_DIR}/dependencies/lib
-              ${LIBSBML_INCLUDE_DIR}/../lib
-              ${LIBSBML_INSTALL_DIR}/lib
-        )
-    set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${ZDLL_LIBRARY} )
+    find_package(ZLIB CONFIG REQUIRED)
+    set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ZLIB::ZLIBSTATIC )
 
     if(WIN32)
       find_library(ICONV_LIBRARY
@@ -317,32 +289,11 @@ if(WITH_LIBSBML_XERCES)
     set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${XERCES_LIBRARY} )
 endif()
 
-if(WITH_LIBSBML_COMPRESSION)
-    find_library(ZDLL_LIBRARY
-    NAMES zlibstatic.lib zlibstaticd.lib zlibstaticmd.lib zlibstatic zlibstaticd zlibstaticmd zdll.lib zdll.so zdll.dylib zdll z libz.a 
-	PATHS /usr/lib /usr/local/lib
-              ${CMAKE_SOURCE_DIR}
-              ${CMAKE_SOURCE_DIR}/dependencies/lib
-              ${LIBSBML_INCLUDE_DIR}/../lib
-              ${LIBSBML_INSTALL_DIR}/lib
-        )
-    set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${ZDLL_LIBRARY} )
-
-    find_library(BZIP_LIBRARY
-        NAMES bzip2.lib bzip2.so bzip2.dylib bzip2 bz2 bz2d bz2md bz2mdd
-	PATHS /usr/lib /usr/local/lib
-              ${CMAKE_SOURCE_DIR}
-              ${CMAKE_SOURCE_DIR}/dependencies/lib
-              ${LIBSBML_INCLUDE_DIR}/../lib
-              ${LIBSBML_INSTALL_DIR}/lib
-        )
-    set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${BZIP_LIBRARY} )
-endif()
-
 if(WITH_SBML)
     find_library(SBMLNETWORK_LIBRARY
         NAMES libsbmlnetwork-static.lib sbmlnetwork-static.lib libsbmlnetwork-static sbmlnetwork-static libsbmlnetwork-staticmdd libsbmlnetwork-staticmd libsbmlnetwork-staticd libsbmlnetwork-staticd.a
 	PATHS /usr/lib /usr/local/lib
+              ${ANT_DEPENDENCIES_INSTALL_PREFIX}
               ${CMAKE_SOURCE_DIR}
               ${CMAKE_SOURCE_DIR}/dependencies/lib
               ${LIBSBML_INCLUDE_DIR}/../lib
@@ -351,7 +302,7 @@ if(WITH_SBML)
 
     find_path(SBMLNETWORK_INCLUDE_DIR
         NAMES sbmlnetwork/libsbmlnetwork_common.h
-        PATHS /usr/include /usr/local/include  ${LIBSBML_INSTALL_DIR}/include
+        PATHS /usr/include /usr/local/include ${ANT_DEPENDENCIES_INSTALL_PREFIX}/include
         DOC "The directory containing the SBMLNetwork include files."
               )
 

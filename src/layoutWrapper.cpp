@@ -132,8 +132,6 @@ bool LayoutWrapper::SetFormula(Formula* formula, bool isObjective)
 
     if (IsPair(m_layout_type)) {
         //Only Vectors of length 2 are allowed for these types
-        //We're only going to be able to check this in SBML mode
-#ifndef NSBML
         ASTNode* astn = parseStringToASTNode(formula->ToSBMLString());
         if (!astn || astn->getType() != AST_LINEAR_ALGEBRA_VECTOR || astn->getNumChildren() != 2) {
             g_registry.SetError("Unable to set the value of '" + GetNameDelimitedBy(".") + "' to be '" + formula->ToDelimitedStringWithEllipses(".") + "':  a layout parameter of type " + LayoutTypeToString(m_layout_type) + " must be a vector of length two, marked with curly brackets (i.e. '{150, 200}').");
@@ -236,7 +234,6 @@ bool LayoutWrapper::SetFormula(Formula* formula, bool isObjective)
         g_registry.SetError("Unable to set the value of '" + GetNameDelimitedBy(".") + "' to be '" + formula->ToDelimitedStringWithEllipses(".") + "':  this layout parameter must only be a single value or a single variable.");
         return true;
     }
-#endif
     return false;
 }
 

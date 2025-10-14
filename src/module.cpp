@@ -56,12 +56,7 @@ Module::Module(string name)
     m_sbmllevel(3),
     m_sbmlversion(2),
     m_varmap(),
-#ifndef NSBML
-#ifdef USE_COMP
     m_sbmlnamespaces(m_sbmllevel, m_sbmlversion),
-#else
-    m_sbmlnamespaces(m_sbmllevel, m_sbmlversion),
-#endif
     m_sbml(&m_sbmlnamespaces),
     m_libsbml_info(""),
     m_libsbml_warnings(""),
@@ -70,7 +65,6 @@ Module::Module(string name)
     m_fbcLevel(3),
     m_autolayout(),
     m_layout(),
-#endif
 #ifndef NCELLML
     m_cellmlmodel(NULL),
     m_cellmlcomponent(NULL),
@@ -79,7 +73,6 @@ Module::Module(string name)
     m_uniquevars(),
     m_explicitDefaultCompartment(false)
 {
-#ifdef USE_COMP
   m_sbmlnamespaces.addPackageNamespace("comp", 1);
   SBMLDocument sbml(&m_sbmlnamespaces);
   m_sbml = sbml;
@@ -97,7 +90,6 @@ Module::Module(string name)
     cout << "Parent of 'splugin' not found, for unknown reason.";
   }
   */
-#endif //USE_COMP
   AddDefaultVariables();
 }
 
@@ -121,7 +113,6 @@ Module::Module(const Module& src, string newtopname, string modulename)
     m_sbmllevel(src.m_sbmllevel),
     m_sbmlversion(src.m_sbmlversion),
     m_varmap(), // useless--will reset with SetNewTopName, below.
-#ifndef NSBML
     m_sbmlnamespaces(src.m_sbmlnamespaces),
     m_sbml(&m_sbmlnamespaces), //New because we're renaming everything.
     m_libsbml_info(), //don't need this info for submodules--might be wrong anyway.
@@ -131,7 +122,6 @@ Module::Module(const Module& src, string newtopname, string modulename)
     m_fbcLevel(src.m_fbcLevel),
     m_autolayout(),
     m_layout(),
-#endif
 #ifndef NCELLML
     m_cellmlmodel(NULL),
     m_cellmlcomponent(NULL),
@@ -141,22 +131,6 @@ Module::Module(const Module& src, string newtopname, string modulename)
     m_explicitDefaultCompartment(src.m_explicitDefaultCompartment)
 {
   SetNewTopName(modulename, newtopname);
-  /*
-#ifndef NSBML
-  CreateSBMLModel(false); //It's either this or go through and rename every blasted thing in it, and libSBML doesn't provide an easy way to go through all elements at once.
-#ifdef USE_COMP
-  CompSBMLDocumentPlugin* compdoc = static_cast<CompSBMLDocumentPlugin*>(m_sbml.getPlugin("comp"));
-  SBMLDocument* doctest = compdoc->getSBMLDocument();
-  SBase* parenttest = compdoc->getParentSBMLObject();
-  if (doctest == NULL) {
-    cout << "SBML document not set, for unknown reason.";
-  }
-  if (parenttest == NULL) {
-    cout << "Parent of 'splugin' not found, for unknown reason.";
-  }
-#endif //USE_COMP
-#endif
-  */
 #ifndef NCELLML
   //CreateCellMLModel(); //ditto
 #endif
@@ -182,7 +156,6 @@ Module::Module(const Module& src)
     m_sbmllevel(src.m_sbmllevel),
     m_sbmlversion(src.m_sbmlversion),
     m_varmap(src.m_varmap),
-#ifndef NSBML
     m_sbmlnamespaces(src.m_sbmlnamespaces),
     m_sbml(src.m_sbml),
     m_libsbml_info(src.m_libsbml_info),
@@ -192,7 +165,6 @@ Module::Module(const Module& src)
     m_fbcLevel(src.m_fbcLevel),
     m_autolayout(src.m_autolayout),
     m_layout(src.m_layout),
-#endif
 #ifndef NCELLML
     m_cellmlmodel(src.m_cellmlmodel),
     m_cellmlcomponent(src.m_cellmlcomponent),
@@ -201,7 +173,6 @@ Module::Module(const Module& src)
     m_uniquevars(src.m_uniquevars),
     m_explicitDefaultCompartment(src.m_explicitDefaultCompartment)
 {
-#ifdef USE_COMP
   CompSBMLDocumentPlugin* compdoc = static_cast<CompSBMLDocumentPlugin*>(m_sbml.getPlugin("comp"));
   SBMLDocument* doctest = compdoc->getSBMLDocument();
   SBase* parenttest = compdoc->getParentSBMLObject();
@@ -211,7 +182,6 @@ Module::Module(const Module& src)
   if (parenttest == NULL) {
     cout << "Parent of 'splugin' not found, for unknown reason.";
   }
-#endif //USE_COMP
 }
 
 Module& Module::operator=(const Module& src)
@@ -233,7 +203,6 @@ Module& Module::operator=(const Module& src)
   m_sbmllevel = src.m_sbmllevel;
   m_sbmlversion = src.m_sbmlversion;
   m_varmap = src.m_varmap;
-#ifndef NSBML
   m_sbmlnamespaces = src.m_sbmlnamespaces;
   m_sbml = src.m_sbml;
   m_libsbml_info = src.m_libsbml_info;
@@ -243,7 +212,6 @@ Module& Module::operator=(const Module& src)
   m_fbcLevel = src.m_fbcLevel;
   m_autolayout = src.m_autolayout;
   m_layout = src.m_layout;
-#ifdef USE_COMP
   CompSBMLDocumentPlugin* compdoc = static_cast<CompSBMLDocumentPlugin*>(m_sbml.getPlugin("comp"));
   compdoc->setRequired(true);
   SBMLDocument* doctest = compdoc->getSBMLDocument();
@@ -254,8 +222,6 @@ Module& Module::operator=(const Module& src)
   if (parenttest == NULL) {
     cout << "Parent of 'splugin' not found, for unknown reason.";
   }
-#endif //USE_COMP
-#endif
 #ifndef NCELLML
   m_cellmlmodel = src.m_cellmlmodel;
   m_cellmlcomponent = src.m_cellmlcomponent;
@@ -1268,7 +1234,6 @@ bool Module::Finalize()
     }
   }
 
-#ifndef NSBML
   //Phase 2:  Check for undefined functions
   for (size_t var=0; var<m_variables.size(); var++) {
     Formula* form = m_variables[var]->GetFormula();
@@ -1368,15 +1333,11 @@ bool Module::Finalize()
         return true;
     }
 
-
-#endif
-
   //Phase 3:  Set compartments
   for (size_t var=0; var<m_variables.size(); var++) {
     m_variables[var]->SetComponentCompartments(false);
   }
 
-#ifndef NSBML
   //Phase 4:  Create substance units for SBML species.
   for (size_t var=0; var<m_variables.size(); var++) {
     Variable* species = m_variables[var];
@@ -1400,7 +1361,6 @@ bool Module::Finalize()
       Variable* newunit = AddOrFindUnitDef(ud);
     }
   }
-#endif
   //Need to check for the units of promoted parameters whose units might now live in submodels, which would be illegal SBML.
   for (size_t var = 0; var < m_variables.size(); var++) {
       Variable* v = m_variables[var];
@@ -1500,7 +1460,6 @@ bool Module::Finalize()
     modulevar->GetModule()->Convert(converted, conversionFactor, m_modulename);
   }
 
-#ifndef NSBML
   //Phase 6.5:  Calculate the constraints and other FBC elements
   for (size_t var=0; var<m_uniquevars.size(); var++) {
     Variable* variable = m_uniquevars[var]->GetSameVariable();
@@ -1536,11 +1495,7 @@ bool Module::Finalize()
   //LS DEBUG:  The need for two SBMLDocuments is a hack; fix when libSBML is updated.
   if (m_variablename.empty()) {
     //Only test SBML on top-level modules.
-#ifdef USE_COMP
     const SBMLDocument* sbmldoc = GetSBML(true); //Use the comp version if possible.
-#else
-    const SBMLDocument* sbmldoc = GetSBML(false); //Trying to get the comp version would result in an added warning.
-#endif
     //We rely on libsbml's error checking to see if we need to set fbc's 'strict' flag to 'false' or not.
     fixFBCStrictIfNeeded();
 
@@ -1596,11 +1551,9 @@ bool Module::Finalize()
     }
     delete testdoc;
   }
-#endif
   return false;
 }
 
-#ifndef NSBML
 bool Module::CheckUndefined(const Formula* form)
 {
   if (form) {
@@ -1618,21 +1571,6 @@ bool Module::CheckUndefined(const Formula* form)
         vector<string> varname;
         varname.push_back(*name);
         Variable* var = GetVariable(varname);
-        //bool isPredefined = false;
-        //if (*name == "rate" || *name == "rateOf") {
-        //  isPredefined = true;
-        //  m_rateNames.insert(*name);
-        //  //We need to check the 'rate'/'rateOf' variable:
-        //  if (var != NULL) {
-        //    if (var->GetType() != varUndefined) {
-        //      g_registry.SetError("Unable to use '" + *name + "' as a function, as it is used elsewhere as a " + VarTypeToString(var->GetType()) + ".");
-        //      return true;
-        //    }
-        //  }
-        //}
-        //else {
-        //}
-        //if (!isPredefined) {
         g_registry.SetError("'" + *name + "' was used as a function, but no such function was defined.  Please define the function using 'function " + *name + "([arguments]) [function definition] end'.");
         return true;
         //}
@@ -1641,7 +1579,6 @@ bool Module::CheckUndefined(const Formula* form)
   }
   return false;
 }
-#endif
 
 size_t Module::GetNumVariablesOfType(return_type rtype, bool comp) const
 {
@@ -2698,9 +2635,7 @@ string Module::ListAssignmentDifferencesFrom(const Module* origmod, string mname
   return list;
 }
 
-#ifndef NSBML
 #include "module-sbml.cpp"
-#endif
 
 
 #ifndef NCELLML

@@ -19,9 +19,7 @@ private:
   constraint_type m_type;
   std::vector<std::string> m_name;
   std::string m_module;
-#ifndef NSBML
   libsbml::ASTNode* m_astnode;
-#endif
 #ifdef LIBSBML_HAS_PACKAGE_FBC
   std::string m_rxnId;
   Formula m_fbUpper;
@@ -57,7 +55,6 @@ public:
 
   void FixNames();
 
-#ifndef NSBML
   void SetWithASTNode(const libsbml::ASTNode* astnode);
   void calculateASTNode();
   const libsbml::ASTNode* getASTNode() const;
@@ -69,7 +66,6 @@ public:
   void SetLowerFBFormula(Variable* var);
   void SetUpperFBFormula(Variable* var);
   void setReactionId(const std::string& rxnid);
-#endif
 #endif
 };
 

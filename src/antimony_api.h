@@ -75,7 +75,7 @@ BEGIN_C_DECLS
 /**
  * Load a file of any format libAntimony knows about (potentially Antimony, SBML, or CellML).  If all attempts fail, the errors from the attempt to read the file in the Antimony format are saved, so if the file is actually SBML or CellML, the error is likely to be "but contains errors, the reported errors will be from the attempt to read it as Antimony, and a '-1' is returned.
  *
- * NOTE:  This function will not attempt to parse the file as SBML if libAntimony is compiled with the '-NSBML' flag, and will not attempt to parse the file as CellML if compiled with the '-NCELLML' flag.
+ * NOTE:  This function will not attempt to parse the file as CellML if compiled with the '-NCELLML' flag.
  *
  * @return a long integer indicating the index of the file read and stored.  On an error, returns -1 and no information is stored.
  *
@@ -88,7 +88,7 @@ LIB_EXTERN long   loadFile(const char* filename);
 /**
  * Load a string of any format libAntimony knows about (potentially Antimony, SBML, or CellML).  The first attempts to read the string as SBML, and if this results in an error, then reads it as Antimony.  If this, too, results in an error, the second error is saved, and a '-1' is returned.
  *
- * NOTE:  This function will not attempt to parse the string as SBML if libAntimony is compiled with the '-NSBML' flag, and will not attempt to parse the string as CellML if compiled with the '-NCELLML' flag.
+ * NOTE:  This function will not attempt to parse the string as CellML if compiled with the '-NCELLML' flag.
  *
  * @return a long integer indicating the index of the string read and stored.  On an error, returns -1 and no information is stored.
  *
@@ -120,14 +120,12 @@ LIB_EXTERN long   loadAntimonyFile(const char* filename);
  */
 LIB_EXTERN long   loadAntimonyString(const char* model);
 
-#ifndef NSBML
 /**
  * @brief Load a file known to be SBML.
  *
  * Loads a file and parses it (using libSBML) as an SBML file.  On an error, the error is saved, -1 is returned, and no information is stored.
  * @return a long integer indicating the index of the file read and stored.  On an error, returns -1 and no information is stored.
- * NOTE:  This function is unavailable when libAntimony is compiled with the '-NSBML' flag.
- * Also note that by default, function definitions are removed.
+ * NOTE:  By default, function definitions are removed.
  *
  * @param filename The filename as a character string.  May be either absolute or relative to the directory the executable is being run from.
  *
@@ -141,8 +139,7 @@ LIB_EXTERN long   loadSBMLFile(const char* filename);
  *
  * Loads a string and parses it (using libSBML) as an SBML file.  On an error, the error is saved, -1 is returned, and no information is stored.
  * @return a long integer indicating the index of the string read and stored.  On an error, returns -1 and no information is stored.
- * NOTE:  This function is unavailable when libAntimony is compiled with the '-NSBML' flag.
- * Also note that by default, function definitions are removed.
+ * NOTE:  By default, function definitions are removed.
  *
  * @param model The model, in SBML format.
  *
@@ -156,8 +153,7 @@ LIB_EXTERN long   loadSBMLString(const char* model);
  *
  * Loads a string and parses it (using libSBML) as an SBML file.  On an error, the error is saved, -1 is returned, and no information is stored.  This function additionally allows you to set the location of the string, in case there are relative file references in the file (as there can be in some hierarchical models).
  * @return a long integer indicating the index of the string read and stored.  On an error, returns -1 and no information is stored.
- * NOTE:  This function is unavailable when libAntimony is compiled with the '-NSBML' flag.
- * Also note that by default, function definitions are removed.
+ * NOTE:  By default, function definitions are removed.
  *
  * @param model The model, in SBML format.
  * @param location The location of the file (i.e. "file1.xml" or "/home/user/sbml/models/file.xml")
@@ -166,7 +162,6 @@ LIB_EXTERN long   loadSBMLString(const char* model);
  * @see setRemoveFunctionDefinitions()
  */
 LIB_EXTERN long   loadSBMLStringWithLocation(const char* model, const char* location);
-#endif
 
 #ifndef NCELLML
 /**
@@ -251,10 +246,8 @@ LIB_EXTERN int   writeAntimonyFile(const char* filename, const char* moduleName)
  */
 LIB_EXTERN char* getAntimonyString(const char* moduleName);
 
-#ifndef NSBML
 /**
  * Writes out a SBML-formatted XML file to the file indicated.  The output is 'flattened', that is, all components of sub-modules are re-named and placed in a single model.  Returns the output of libSBML's 'writeSBML', which "Returns non-zero on success and zero if the filename could not be opened for writing."  An error indicating this is set on returning zero.
- * NOTE:  This function is unavailable when libAntimony is compiled with the '-NSBML' flag.
  *
  *@see getSBMLString
  */
@@ -262,7 +255,6 @@ LIB_EXTERN int   writeSBMLFile(const char* filename, const char* moduleName);
 
 /**
  * Returns the same output as writeSBMLFile, but to a char* array instead of to a file.  The output is 'flattened', that is, all components of sub-modules are re-named and placed in a single model.  Returns the output of libSBML's 'writeSBMLToString", which "Returns the string on success and NULL if one of the underlying parser components fail (rare)."
- * NOTE:  This function is unavailable when libAntimony is compiled with the '-NSBML' flag.
  *
  *@see writeSBMLFile
  */
@@ -276,23 +268,18 @@ LIB_EXTERN char* getSBMLString(const char* moduleName);
  */
 LIB_EXTERN void setWriteSBMLTimestamp(bool writeTimestamp);
 
-#ifdef USE_COMP
 /**
  * Writes out a SBML-formatted XML file to the file indicated, using the 'Hierarchichal Model Composition' package.  This retains Antimony's modularity in the SBML format.  Returns the output of libSBML's 'writeSBML', which "Returns non-zero on success and zero if the filename could not be opened for writing."  An error indicating this is set on returning zero.
- * NOTE:  This function is unavailable when libAntimony is compiled with the '-NSBML' flag, or if compiled without the USE_COMP flag.
  *
  *@see getSBMLString
  */
 LIB_EXTERN int   writeCompSBMLFile(const char* filename, const char* moduleName);
 /**
  * Returns the same output as writeSBMLFile, but to a char* array instead of to a file, using the 'Hierarchichal Model Composition' package.  This retains Antimony's modularity in the SBML format.  Returns the output of libSBML's 'writeSBMLToString", which "Returns the string on success and NULL if one of the underlying parser components fail (rare)."
- * NOTE:  This function is unavailable when libAntimony is compiled with the '-NSBML' flag, or if compiled without the USE_COMP flag.
  *
  *@see writeSBMLFile
  */
 LIB_EXTERN char* getCompSBMLString(const char* moduleName);
-#endif //USE_COMP
-#endif //NSBML
 
 #ifndef NCELLML
 /**
@@ -348,21 +335,17 @@ LIB_EXTERN char*  getLastError();
  */
 LIB_EXTERN char*  getWarnings();
 
-#ifndef NSBML
 /**
  *  Returns the 'info' messages from libSBML. libAntimony always translates its modules into SBML to check for errors.  If SBML finds errors, libAntimony gives up, passes on the error message, and does not save the model.  However, libSBML may discover other things about your model it wants to tell you about, in 'info' and 'warning' messages.  Info messages are just things it found it thinks you might want to know; warning messages are things it found which it feels violates 'best practices' in biological modelling, but not to the extent that it feels you did something actually wrong.  Since Antimony is unitless, for example, you will always find warnings about how you didn't set any units.  This function returns the 'info' messages from libSBML.  If there are no info messages, returns an empty string.
- * NOTE:  This function is unavailable when libAntimony is compiled with the '-NSBML' flag.
  * @see getSBMLWarnings
  */
 LIB_EXTERN char* getSBMLInfoMessages(const char* moduleName);
 
 /**
  * Returns the 'warning' messages from libSBML.  If there are no warning messages (an unlikely occurrence), returns an empty string.
- * NOTE:  This function is unavailable when libAntimony is compiled with the '-NSBML' flag.
  * @see getSBMLInfoMessages
  */
 LIB_EXTERN char* getSBMLWarnings(const char* moduleName);
-#endif
 
 /** \} */
 
