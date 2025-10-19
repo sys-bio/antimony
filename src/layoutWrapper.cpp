@@ -1048,7 +1048,7 @@ bool LayoutWrapper::setSegmentNumber(const std::string* type)
     regex segNum("^seg([0-9]+)$");
     std::smatch m;
     if (regex_search(*type, m, segNum)) {
-        m_speciesIndex = stoi(m[1].str()) - 1;
+        m_segmentIndex = stoi(m[1].str()) - 1;
         return false;
     }
     return true;
