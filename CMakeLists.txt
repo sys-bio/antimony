@@ -137,12 +137,15 @@ endif (WIN32)
 # Locate libsbml if needed
 #
 
-find_package(ZLIB CONFIG REQUIRED)
+if (WITH_LIBSBML_COMPRESSION)
+  find_package(ZLIB CONFIG REQUIRED)
+  set(ZLIB_LIBRARY ZLIB::ZLIBSTATIC)
+  get_target_property(ZLIB_LIBRARY ZLIB::ZLIBSTATIC LOCATION)
+  set(ZLIB_INCLUDE_DIR "${ANT_DEPENDENCIES_INSTALL_PREFIX}/include/")
+endif()
+
 find_package(expat CONFIG REQUIRED)
 
-set(ZLIB_LIBRARY ZLIB::ZLIBSTATIC)
-get_target_property(ZLIB_LIBRARY ZLIB::ZLIBSTATIC LOCATION)
-set(ZLIB_INCLUDE_DIR "${ANT_DEPENDENCIES_INSTALL_PREFIX}/include/")
 set(EXPAT_LIBRARY "expat::expat")
 get_target_property(EXPAT_INCLUDE_DIR expat::expat INTERFACE_INCLUDE_DIRECTORIES)
 get_target_property(EXPAT_LIBRARY expat::expat LOCATION)
