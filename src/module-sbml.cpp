@@ -3338,6 +3338,7 @@ void Module::FixUnitNames(Model* model)
                 SBase* element = static_cast<SBase*>(elements->get(el));
                 element->renameUnitSIdRefs(unitid, newunitid);
             }
+            model->renameUnitSIdRefs(unitid, newunitid);
             delete elements;
         }
     }
