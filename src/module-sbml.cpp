@@ -1228,26 +1228,28 @@ void Module::LoadSBML(Model* sbml)
       Variable* spunits = AddOrFindVariable(&unitname);
       spunits->SetType(varUnitDefinition);
       UnitDef ud(*spunits->GetUnitDef());
-      UnitDef* compud = NULL;
-      if (compartment == NULL) {
-        string volume = "volume";
-        compud = AddOrFindVariable(&volume)->GetUnitDef();
-      }
-      else {
-        Variable* compunits = compartment->GetUnitVariable();
-        if (compunits == NULL) {
-          vector<string> volname;
-          volname.push_back("volume");
-          compunits = GetVariable(volname);
-          if (compunits == NULL) {
-            compunits = GetDefaultVariable(volname);
-          }
-          assert(compunits != NULL);
+      if (!species->getHasOnlySubstanceUnits()) {
+        UnitDef* compud = NULL;
+        if (compartment == NULL) {
+          string volume = "volume";
+          compud = AddOrFindVariable(&volume)->GetUnitDef();
         }
-        compud = compunits->GetUnitDef();
+        else {
+          Variable* compunits = compartment->GetUnitVariable();
+          if (compunits == NULL) {
+            vector<string> volname;
+            volname.push_back("volume");
+            compunits = GetVariable(volname);
+            if (compunits == NULL) {
+              compunits = GetDefaultVariable(volname);
+            }
+            assert(compunits != NULL);
+          }
+          compud = compunits->GetUnitDef();
+        }
+        ud.DivideUnitDef(compud);
+        ud.Reduce();
       }
-      ud.DivideUnitDef(compud);
-      ud.Reduce();
       Variable* concentrationUnits = AddOrFindUnitDef(ud);
       var->SetUnitVariable(concentrationUnits);
     }
@@ -2107,24 +2109,26 @@ void Module::CreateSBMLModel(bool comp)
     if (unitvar != NULL) {
       //We need to convert concentration to substance.
       UnitDef ud(*unitvar->GetUnitDef());
-      UnitDef volume("liter", m_modulename);
-      if (compartment != NULL) {
-        Variable* compunit = compartment->GetUnitVariable();
-        if (compunit == NULL) {
-          vector<string> volname;
-          volname.push_back("volume");
-          compunit = GetVariable(volname);
+      if (!species->GetSubstOnly()) {
+        if (compartment != NULL) {
+          Variable* compunit = compartment->GetUnitVariable();
           if (compunit == NULL) {
-            compunit = GetDefaultVariable(volname);
+            vector<string> volname;
+            volname.push_back("volume");
+            compunit = GetVariable(volname);
+            if (compunit == NULL) {
+              compunit = GetDefaultVariable(volname);
+            }
+            assert(compunit != NULL); //'volume' should always exist at least as a default unit.
           }
-          assert(compunit != NULL); //'volume' should always exist at least as a default unit.
+          ud.MultiplyUnitDef(compunit->GetUnitDef());
         }
-        ud.MultiplyUnitDef(compunit->GetUnitDef());
+        else {
+          UnitDef volume("liter", m_modulename);
+          ud.MultiplyUnitDef(&volume);
+        }
+        ud.Reduce();
       }
-      else {
-        ud.MultiplyUnitDef(&volume);
-      }
-      ud.Reduce();
       Variable* newunit = AddOrFindUnitDef(ud);
       sbmlspecies->setSubstanceUnits(newunit->GetNameDelimitedBy(cc));
     }
