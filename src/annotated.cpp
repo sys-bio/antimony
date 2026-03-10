@@ -176,6 +176,7 @@ void Annotated::ReadAnnotationFrom(const SBase* sbmlobj)
   }
   if (sbmlobj->isSetModelHistory()) {
       m_history = *sbmlobj->getModelHistory();
+      m_history.connectToParent(NULL);
   }
 }
 
