@@ -95,7 +95,16 @@ void compareStringTranslation(const string& antimony, const string& sbml)
   freeAll();
 }
 
-START_TEST (test_parameter)
+START_TEST (test_annot_transfer)
+{
+  string dir(TestDataDirectory);
+  long ret = loadSBMLFile((dir + "BIOMD0000000002.xml").c_str());
+  char* stosbml = getCompSBMLString(NULL);
+  freeAll();
+}
+END_TEST
+
+START_TEST(test_parameter)
 {
   compareFileTranslation("parameter");
 }
@@ -654,7 +663,7 @@ create_suite_Basic (void)
   TCase *tcase = tcase_create("Antimony Basic");
 
 
-  tcase_add_test( tcase, test_fixname_in_submodel);
+  tcase_add_test( tcase, test_annot_transfer);
 
   tcase_add_test( tcase, test_parameter);
   tcase_add_test( tcase, test_parameter_txt);
@@ -722,6 +731,7 @@ create_suite_Basic (void)
   tcase_add_test( tcase, test_parameter_nan_txt);
   tcase_add_test( tcase, test_substance_only_species);
   tcase_add_test( tcase, test_substance_only_species_txt);
+  tcase_add_test( tcase, test_fixname_in_submodel);
   tcase_add_test( tcase, test_right_half_reaction);
   tcase_add_test( tcase, test_right_half_reaction_txt);
   tcase_add_test( tcase, test_right_half_reaction_mod);
