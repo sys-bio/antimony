@@ -1,4 +1,6 @@
 name: BuildAntimony
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true' #for seanmiddleditch/gha-setup-ninja and ilammy/msvc-dev-cmd.
 
 on:
   push:
@@ -91,7 +93,7 @@ jobs:
 
     steps:
       - name: Checkout Antimony
-        uses: actions/checkout@v4
+        uses: actions/checkout@main
 
       - name: Set MSVC as the default compiler on Windows
         if: matrix.platform.os_type == 'windows'
@@ -116,7 +118,8 @@ jobs:
           fi
 
       - name: Setup Ninja
-        uses: seanmiddleditch/gha-setup-ninja@v5
+        if: matrix.platform.os_type == 'manylinux'
+        uses: seanmiddleditch/gha-setup-ninja@master
 
       - name: Get Host Architecture
         shell: bash
@@ -168,7 +171,7 @@ jobs:
 
       - name: Cache ccache files on non-Windows
         if: matrix.platform.os_type != 'windows'
-        uses: actions/cache@v4
+        uses: actions/cache@main
         with:
           path: ${RUNNER_WORKSPACE}/.ccache
           key:
@@ -180,7 +183,7 @@ jobs:
 
       - name: Setup Python for non-Manylinux platforms
         if: matrix.platform.build_python == 'ON' && matrix.platform.os_type != 'manylinux'
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@main
         with:
           python-version: ${{ matrix.python_version }}
 
@@ -269,7 +272,7 @@ jobs:
 
       - name: Install Qt
         if : matrix.platform.build_qt_antimony == 'ON'
-        uses: jurplel/install-qt-action@v4
+        uses: jurplel/install-qt-action@master
         with:
           version: '5.15.2'
           #extra: '--base https://mirrors.dotsrc.org/qtproject --UNSAFE-ignore-hash'
@@ -324,7 +327,7 @@ jobs:
           echo "artifacts_path=${RUNNER_WORKSPACE}/install-antimony" >> "${GITHUB_ENV}"
 
       - name: Upload Antimony binaries
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@main
         with:
           name: ${{env.artifacts_name}}
           path: ${{env.artifacts_path}}
@@ -371,7 +374,7 @@ jobs:
 
       - name: Upload Python wheel artifacts
         if: matrix.platform.build_type == 'Release' && matrix.platform.build_python == 'ON'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@main
         with:
           name: ${{env.python_wheel_artifacts_name}}
           path: ${{env.python_wheel_artifacts_file}}
