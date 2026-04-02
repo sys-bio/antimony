@@ -16,13 +16,11 @@ AntimonyConstraint::AntimonyConstraint()
   , m_type(constNONE)
   , m_name()
   , m_module()
-#ifndef NSBML
   , m_astnode(NULL)
-#endif
 #ifdef LIBSBML_HAS_PACKAGE_FBC
-  , m_isSetFB(false)
-  , m_fbLeft(3,1)
-  , m_fbRight(3,1)
+  , m_rxnId()
+  , m_fbLower()
+  , m_fbUpper()
 #endif
 {
 }
@@ -35,13 +33,11 @@ AntimonyConstraint::AntimonyConstraint(const AntimonyConstraint& constraint)
   , m_type(constraint.m_type)
   , m_name(constraint.m_name)
   , m_module(constraint.m_module)
-#ifndef NSBML
   , m_astnode(constraint.m_astnode)
-#endif
 #ifdef LIBSBML_HAS_PACKAGE_FBC
-  , m_isSetFB(constraint.m_isSetFB)
-  , m_fbLeft(constraint.m_fbLeft)
-  , m_fbRight(constraint.m_fbRight)
+  , m_rxnId(constraint.m_rxnId)
+  , m_fbLower(constraint.m_fbLower)
+  , m_fbUpper(constraint.m_fbUpper)
 #endif
 {
   if (m_astnode != NULL) {
@@ -57,13 +53,11 @@ AntimonyConstraint::AntimonyConstraint(Variable* var)
   , m_type(constNONE)
   , m_name(var->GetName())
   , m_module(var->GetNamespace())
-#ifndef NSBML
   , m_astnode(NULL)
-#endif
 #ifdef LIBSBML_HAS_PACKAGE_FBC
-  , m_isSetFB(false)
-  , m_fbLeft(3,1)
-  , m_fbRight(3,1)
+  , m_rxnId()
+  , m_fbLower()
+  , m_fbUpper()
 #endif
 {
 }
@@ -76,15 +70,12 @@ AntimonyConstraint::~AntimonyConstraint()
 void AntimonyConstraint::SetFormula(Formula* formula, bool onlyformula)
 {
   m_formula = *formula;
-#ifndef NSBML
   if (onlyformula) return;
   ASTNode* astnode = parseStringToASTNode(formula->ToSBMLString());
   SetWithASTNode(astnode);
   delete astnode;
-#endif
 }
 
-#ifndef NSBML
 void AntimonyConstraint::SetWithASTNode(const ASTNode* constnode)
 {
   if (constnode == NULL) {
@@ -227,7 +218,6 @@ void AntimonyConstraint::SetWithASTNode(const ASTNode* constnode)
     return;
   }
 }
-#endif
 
 void AntimonyConstraint::SetInitialValue(double val)
 {
@@ -288,13 +278,11 @@ void AntimonyConstraint::SetNewTopName(string newmodname, string newtopname)
   }
   m_formula.SetNewTopName(newmodname, newtopname);
   m_name.insert(m_name.begin(), newtopname);
-#ifndef NSBML
   delete m_astnode;
   m_astnode = NULL;
 #ifdef LIBSBML_HAS_PACKAGE_FBC
-  m_fbLeft.unsetOperation();
-  m_fbRight.unsetOperation();
-#endif
+  m_fbLower.SetNewTopName(newmodname, newtopname);
+  m_fbUpper.SetNewTopName(newmodname, newtopname);
 #endif
 }
 
@@ -388,7 +376,6 @@ void AntimonyConstraint::FixNames()
   FixName(m_initialVariable);
 }
 
-#ifndef NSBML
 const ASTNode* AntimonyConstraint::getASTNode() const
 {
   return m_astnode;
@@ -406,8 +393,9 @@ void AntimonyConstraint::calculateASTNode()
   if (m_type != constNONE) {
     if (rhs->getType() == ConstraintTypeToASTType(m_type) && rhs->getType() != AST_RELATIONAL_NEQ) {
       if (IsSetInitialValue()) {
-        ASTNode* val = new ASTNode(AST_REAL);
-        val->setValue(GetInitialValue());
+        stringstream valstr;
+        valstr << GetInitialValue();
+        ASTNode* val = parseStringToASTNode(valstr.str());
         rhs->insertChild(0, val);
       }
       else if (IsSetInitialVariable()) {
@@ -424,8 +412,9 @@ void AntimonyConstraint::calculateASTNode()
       m_astnode = new ASTNode(AST_LOGICAL_AND);
       ASTNode* newfirst = new ASTNode(ConstraintTypeToASTType(m_type));
       if (IsSetInitialValue()) {
-        ASTNode* val = new ASTNode(AST_REAL);
-        val->setValue(GetInitialValue());
+        stringstream valstr;
+        valstr << GetInitialValue();
+        ASTNode* val = parseStringToASTNode(valstr.str());
         newfirst->addChild(val);
       }
       else if (IsSetInitialVariable()) {
@@ -443,8 +432,9 @@ void AntimonyConstraint::calculateASTNode()
     else {
       m_astnode = new ASTNode(ConstraintTypeToASTType(m_type));
       if (IsSetInitialValue()) {
-        ASTNode* val = new ASTNode(AST_REAL);
-        val->setValue(GetInitialValue());
+        stringstream valstr;
+        valstr << GetInitialValue();
+        ASTNode* val = parseStringToASTNode(valstr.str());
         m_astnode->addChild(val);
       }
       else if (IsSetInitialVariable()) {
@@ -462,24 +452,104 @@ void AntimonyConstraint::calculateASTNode()
     m_astnode = rhs;
   }
 }
-#endif
 
 #ifdef LIBSBML_HAS_PACKAGE_FBC
-void AntimonyConstraint::addFluxBounds(Model* sbml) const
+void setBound(const string& id, bool isLower, FbcReactionPlugin* fbrxn)
 {
-  if (m_fbLeft.isSetOperation()) {
-    FbcModelPlugin* fbcmp = static_cast<FbcModelPlugin*>(sbml->getPlugin("fbc"));
-    fbcmp->addFluxBound(&m_fbLeft);
-    if (m_fbRight.isSetOperation()) {
-      fbcmp->addFluxBound(&m_fbRight);
+    if (isLower) {
+        fbrxn->setLowerFluxBound(id);
     }
-  }
+    else {
+        fbrxn->setUpperFluxBound(id);
+    }
+}
+
+void setOneHalf(const Formula& formula, bool isLower, FbcReactionPlugin* fbrxn, Model* model)
+{
+    if (formula.IsEmpty()) {
+        return;
+    }
+    //If it's a single variable, just set the flux bound to that.
+    if (formula.IsSingleVariable()) {
+        setBound(formula.ToSBMLString(), isLower, fbrxn);
+        return;
+    }
+    //Otherwise, if it's a value, create a parameter and set the flux bound.  Assume that any parameter with the same ID will be something we created earlier, so that we don't flood the model with a bunch of variables that are all '0' or whatever.
+    if (formula.IsDouble()) {
+        stringstream ss;
+        ss << formula.GetDouble();
+        string id = "fb_" + ss.str();
+        replace(id.begin(), id.end(), '.', '_');
+        size_t neg = id.find('-');
+        if (neg != string::npos) {
+            id.replace(neg, 1, "neg_");
+        }
+        Parameter* param = model->getParameter(id);
+        if (param == NULL) {
+            param = model->createParameter();
+            param->setId(id);
+            param->setConstant(true);
+            param->setValue(formula.GetDouble());
+        }
+        setBound(id, isLower, fbrxn);
+        return;
+    }
+    //Finally, it's some formula.  Set up a parameter with this formula as its assignment rule.
+    stringstream id("fb0");
+    int index = 0;
+    Parameter* param = model->getParameter(id.str());
+    while (param != NULL) {
+        index++;
+        id.clear();
+        id << "fb_" << index;
+        param = model->getParameter(id.str());
+    }
+    param = model->createParameter();
+    param->setId(id.str());
+    param->setConstant(false);
+    AssignmentRule* ar = model->createAssignmentRule();
+    ar->setVariable(id.str());
+    ASTNode* astn = parseStringToASTNode(formula.ToSBMLString());
+    ar->setMath(astn);
+    delete astn;
+}
+
+void AntimonyConstraint::addFluxBounds(Model* model) const
+{
+    if (!isFluxBound()) {
+        return;
+    }
+    Reaction* rxn = model->getReaction(m_rxnId);
+    FbcReactionPlugin* fbrxn = static_cast<FbcReactionPlugin*>(rxn->getPlugin("fbc"));
+    setOneHalf(m_fbLower, true, fbrxn, model);
+    setOneHalf(m_fbUpper, false, fbrxn, model);
+}
+
+bool areCompatible(ASTNodeType_t first, ASTNodeType_t second)
+{
+    if (first == AST_RELATIONAL_GT || first == AST_RELATIONAL_GEQ) {
+        if (second == AST_RELATIONAL_GT || second == AST_RELATIONAL_GEQ) {
+            return true;
+        }
+        return false;
+    }
+    if (first==AST_RELATIONAL_LT || first == AST_RELATIONAL_LEQ) {
+        if (second == AST_RELATIONAL_LT || second == AST_RELATIONAL_LEQ) {
+            return true;
+        }
+        return false;
+    }
+    return false;
 }
 
 bool AntimonyConstraint::calculateFluxBounds()
 {
-  m_isSetFB = true;
+  if (!m_rxnId.empty()) {
+    //Already calculated
+    return m_rxnId != "--";
+  }
   if (m_type == constNEQ) {
+    m_rxnId = "--";
     return false;
   }
   if (m_astnode == NULL) {
@@ -487,113 +557,148 @@ bool AntimonyConstraint::calculateFluxBounds()
   }
   if (m_astnode == NULL) {
     assert(false);
+    m_rxnId = "--";
     return false;
   }
-  m_fbLeft.setId(ToStringFromVecDelimitedBy(m_name, "__"));
-  m_fbRight.setId(ToStringFromVecDelimitedBy(m_name, "__") + "_b");
   unsigned int numchildren = m_astnode->getNumChildren();
-  if (m_astnode->isRelational() 
-    && m_astnode->getType() != AST_RELATIONAL_NEQ
-    && numchildren >= 2 && numchildren <= 3) {
-    const ASTNode* c1 = m_astnode->getChild(0);
-    const ASTNode* c2 = m_astnode->getChild(1);
-    Module* mod = g_registry.GetModule(m_module);
-    if (mod==NULL) {
-      assert(false);
-      return false;
-    }
-    if (numchildren == 3) {
-      //c2 must be a reaction ID.
-      if (c2->getType() != AST_NAME){
-        return false;
+  ASTNodeType_t asttype = m_astnode->getType();
+  Module* mod = g_registry.GetModule(m_module);
+  if (m_astnode->isRelational()
+      && asttype != AST_RELATIONAL_NEQ
+      && numchildren >= 2 && numchildren <= 3) {
+      const ASTNode* c1 = m_astnode->getChild(0);
+      const ASTNode* c2 = m_astnode->getChild(1);
+      if (mod == NULL) {
+          assert(false);
+          m_rxnId = "--";
+          return false;
       }
-      string id = c2->getName();
-      if (!IsReactionID(id)) {
-        return false;
+      if (numchildren == 3) {
+          //c2 must be a reaction ID.
+          if (c2->getType() != AST_NAME) {
+              m_rxnId = "--";
+              return false;
+          }
+          string id = c2->getName();
+          if (!IsReactionID(id)) {
+              m_rxnId = "--";
+              return false;
+          }
+          //c2 is a reaction id!  Store, and set c1 and c2 as lower/upper bounds
+          m_rxnId = id;
+          const ASTNode* c3 = m_astnode->getChild(2);
+          std::string c1str = parseASTNodeToString(c1);
+          std::string c3str = parseASTNodeToString(c3);
+          if (asttype == AST_RELATIONAL_GEQ || asttype == AST_RELATIONAL_GT) {
+              setFormulaWithString(c1str, &m_fbUpper, mod);
+              setFormulaWithString(c3str, &m_fbLower, mod);
+          }
+          else if (asttype == AST_RELATIONAL_LEQ || asttype == AST_RELATIONAL_LT) {
+              setFormulaWithString(c1str, &m_fbLower, mod);
+              setFormulaWithString(c3str, &m_fbUpper, mod);
+          }
+          else if (asttype == AST_RELATIONAL_EQ) {
+              setFormulaWithString(c1str, &m_fbLower, mod);
+              setFormulaWithString(c3str, &m_fbUpper, mod);
+          }
+          return true;
       }
-      //c2 is a reaction id!  Now, c1 and c3 have to be numbers or variables.
-      const ASTNode* c3 = m_astnode->getChild(2);
-      if (c1->isNumber() && c3->isNumber()) {
-        //We can handle this in FBC l1
-        m_fbLeft.setReaction(id);
-        m_fbLeft.setValue(GetValueFrom(c1));
-        m_fbLeft.setOperation(getReverseFBOperationFrom(m_astnode->getType()));
-
-        m_fbRight.setReaction(id);
-        m_fbRight.setValue(GetValueFrom(c3));
-        m_fbRight.setOperation(getFBOperationFrom(m_astnode->getType()));
-        return true;
+      //Otherwise there's just two children:
+      assert(c1 != NULL);
+      assert(c2 != NULL);
+      bool correct = false;
+      std::string c_str;
+      if (c2->getType() == AST_NAME && IsReactionID(c2->getName())) {
+          m_rxnId = c2->getName();
+          c_str = parseASTNodeToString(c1);
+          correct = true;
+      }
+      else if (c1->getType() == AST_NAME && IsReactionID(c1->getName())) {
+          m_rxnId = c1->getName();
+          c_str = parseASTNodeToString(c2);
+          correct = true;
+          if (asttype == AST_RELATIONAL_GEQ || asttype == AST_RELATIONAL_GT) {
+              asttype = AST_RELATIONAL_LT;
+          }
+          else if (asttype == AST_RELATIONAL_LEQ || asttype == AST_RELATIONAL_LT) {
+              asttype = AST_RELATIONAL_GT;
+          }
+      }
+      if (!correct) {
+          m_rxnId = "--";
+          return false;
+      }
+      if (asttype == AST_RELATIONAL_GEQ || asttype == AST_RELATIONAL_GT) {
+          setFormulaWithString(c_str, &m_fbUpper, mod);
+      }
+      else if (asttype == AST_RELATIONAL_LEQ || asttype == AST_RELATIONAL_LT) {
+          setFormulaWithString(c_str, &m_fbLower, mod);
+      }
+      else if (asttype == AST_RELATIONAL_EQ) {
+          setFormulaWithString(c_str, &m_fbUpper, mod);
+          setFormulaWithString(c_str, &m_fbLower, mod);
       }
       else {
-        //In FBC v2 it'll be OK if it's a parameter, but not until then.
-        return false;
+          //Not a flux bound.  I think.
+          m_rxnId = "--";
+          return false;
       }
-    }
-    //Otherwise there's just two children:
-    assert(c1 != NULL);
-    assert(c2 != NULL);
-    FluxBoundOperation_t fb_op = getFBOperationFrom(m_astnode->getType());
-    if (c1->isNumber() && c2->getType() == AST_NAME) {
-      //Reverse everything.
-      const ASTNode* temp = c2;
-      c2 = c1;
-      c1 = temp;
-      fb_op = getReverseFBOperationFrom(m_type);
-    }
-    if (c1->getType() == AST_NAME && c2->isNumber()) {
-      string id = c1->getName();
-      if (!IsReactionID(id)) {
-        return false;
-      }
-      m_fbLeft.setReaction(id);
-      m_fbLeft.setValue(GetValueFrom(c2));
-      m_fbLeft.setOperation(fb_op);
       return true;
-    }
-    else {
-      //Can't (yet) handle this situation.
-      return false;
-    }
   }
   if (m_astnode->getType() == AST_LOGICAL_AND && m_astnode->getNumChildren()==2) {
     const ASTNode* c1 = m_astnode->getChild(0);
     const ASTNode* c2 = m_astnode->getChild(1);
     if (!c1->isRelational() || !c2->isRelational()) {
-      return false;
+        m_rxnId = "--";
+        return false;
     }
-    if (c1->getType() == AST_RELATIONAL_NEQ || c2->getType() == AST_RELATIONAL_NEQ) {
-      return false;
+    ASTNodeType_t c1type = c1->getType();
+    ASTNodeType_t c2type = c2->getType();
+    if (c1type == AST_RELATIONAL_NEQ || c2type == AST_RELATIONAL_NEQ) {
+        m_rxnId = "--";
+        return false;
     }
-    m_fbLeft = GetFluxBoundFrom(c1);
-    m_fbRight = GetFluxBoundFrom(c2);
-    if (m_fbLeft.isSetOperation() || m_fbRight.isSetOperation()) {
-      m_fbLeft.setId(ToStringFromVecDelimitedBy(m_name, "__"));
-      m_fbRight.setId(ToStringFromVecDelimitedBy(m_name, "__") + "_b");
-      return true;
+    if (!areCompatible(c1type, c2type)) {
+        m_rxnId = "--";
+        return false;
     }
+    if (c1->getNumChildren() != 2 || c2->getNumChildren() != 2) {
+        m_rxnId = "--";
+        return false;
+    }
+    if (c1->getChild(1)->getType() != AST_NAME || c2->getChild(0)->getType() != AST_NAME) {
+        m_rxnId = "--";
+        return false;
+    }
+    string id = c1->getChild(1)->getName();
+    if (id != c2->getChild(0)->getName()) {
+        m_rxnId = "--";
+        return false;
+    }
+    if (!IsReactionID(id)) {
+        m_rxnId = "--";
+        return false;
+    }
+    //It's what we hoped it was:
+    m_rxnId = id;
+    string c1str = parseASTNodeToString(c1->getChild(0));
+    string c2str = parseASTNodeToString(c2->getChild(1));
+    if (c1type == AST_RELATIONAL_LT || c1type == AST_RELATIONAL_LEQ) {
+        setFormulaWithString(c1str, &m_fbLower, mod);
+        setFormulaWithString(c2str, &m_fbUpper, mod);
+    }
+    else {
+        setFormulaWithString(c1str, &m_fbUpper, mod);
+        setFormulaWithString(c2str, &m_fbLower, mod);
+    }
+    return true;
   }
   return false;
 }
 
-FluxBound AntimonyConstraint::GetFluxBoundFrom(const ASTNode* node) const
+bool AntimonyConstraint::isFluxBound() const
 {
-  FluxBound fb(3,1);
-  if (node->getNumChildren() != 2) {
-    return fb;
-  }
-  const ASTNode* c1 = node->getChild(0);
-  const ASTNode* c2 = node->getChild(1);
-  if (c1->getType() == AST_NAME && IsReactionID(c1->getName()) && c2->isNumber()) {
-    fb.setReaction(c1->getName());
-    fb.setValue(GetValueFrom(c2));
-    fb.setOperation(getFBOperationFrom(node->getType()));
-  }
-  else if (c2->getType() == AST_NAME && IsReactionID(c2->getName()) && c1->isNumber()) {
-    fb.setReaction(c2->getName());
-    fb.setValue(GetValueFrom(c1));
-    fb.setOperation(getReverseFBOperationFrom(node->getType()));
-  }
-  return fb;
+    return !(m_rxnId == "--");
 }
 
 bool AntimonyConstraint::IsReactionID(const string& rxnid) const
@@ -623,28 +728,21 @@ bool AntimonyConstraint::IsReactionID(const string& rxnid) const
   return true;
 }
 
-
-bool AntimonyConstraint::ContainsFlux(const FluxBound* fb) const
+void AntimonyConstraint::SetLowerFBFormula(Variable* var)
 {
-  if (!m_isSetFB) {
-    AntimonyConstraint copy = *this;
-    copy.calculateFluxBounds();
-    if (FluxesMatch(fb, &copy.m_fbLeft)) return true;
-    if (FluxesMatch(fb, &copy.m_fbRight)) return true;
-    return false;
-  }
-  if (FluxesMatch(fb, &m_fbLeft)) return true;
-  if (FluxesMatch(fb, &m_fbRight)) return true;
-  return false;
+    m_fbLower.Clear();
+    m_fbLower.AddVariable(var);
 }
 
-void AntimonyConstraint::SetFromFluxBound(const FluxBound* fb)
+void AntimonyConstraint::SetUpperFBFormula(Variable* var)
 {
-  m_initialVariable.clear();
-  m_initialVariable.push_back(fb->getReaction());
-  m_type = getConstraintTypeFrom(fb->getFluxBoundOperation());
-  m_formula.Clear();
-  m_formula.AddNum(fb->getValue());
+    m_fbUpper.Clear();
+    m_fbUpper.AddVariable(var);
+}
+
+void AntimonyConstraint::setReactionId(const std::string& rxnid)
+{
+    m_rxnId = rxnid;
 }
 
 #endif

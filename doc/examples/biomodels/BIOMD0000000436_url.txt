@@ -1,4 +1,4 @@
-// Created by libAntimony v3.0.0
+// Created by libAntimony v3.1.0
 model *BIOMD0000000436()
 
   // Compartments and Species:
@@ -48,7 +48,7 @@ model *BIOMD0000000436()
   _E6: at timevalue >= t6: GPChoslope = GPChoslope6, GPChoint = GPChoint6, DGslope = DGslope6, DGint = DGint6;
 
   // Species initializations:
-  FA = 1/c1;
+  FA = 1;
   FA has pmol_per_litre;
   HETE = 0;
   HETE has pmol_per_litre;
@@ -63,13 +63,13 @@ model *BIOMD0000000436()
   PGJ2 has pmol_per_litre;
   dPGJ2 = 0;
   dPGJ2 has pmol_per_litre;
-  AA = 25/c1;
+  AA = 25;
   AA has pmol_per_litre;
   LPS = 0.5/c1;
   LPS has dimensionless_per_litre;
   DG = 0;
   DG has dimensionless_per_litre;
-  GPCho = 1/c1;
+  GPCho = 1;
   GPCho has pmol_per_litre;
   dPGD2 = 0;
   dPGD2 has pmol_per_litre;
@@ -283,10 +283,10 @@ model *BIOMD0000000436()
   DGperDNA.sboTerm = 2
 
   // CV terms:
-  c1 biological_system "http://identifiers.org/go/GO:0005623"
-  FA biological_system "http://identifiers.org/chebi/CHEBI:35366"
+  c1 isVersionOf "http://identifiers.org/go/GO:0005623"
+  FA isVersionOf "http://identifiers.org/chebi/CHEBI:35366"
   HETE identity "http://identifiers.org/lipidmaps/LMFA03060085"
-  PGH2 biological_system "http://identifiers.org/chebi/CHEBI:15554"
+  PGH2 isVersionOf "http://identifiers.org/chebi/CHEBI:15554"
   PGE2 identity "http://identifiers.org/lipidmaps/LMFA03010003"
   PGF2a identity "http://identifiers.org/kegg.compound/C00639",
                  "http://identifiers.org/lipidmaps/LMFA03010002",
@@ -303,17 +303,17 @@ model *BIOMD0000000436()
   AA identity "http://identifiers.org/kegg.compound/C00219",
               "http://identifiers.org/lipidmaps/LMFA01030001",
               "http://identifiers.org/chebi/CHEBI:15843"
-  LPS biological_system "http://identifiers.org/chebi/CHEBI:16412"
-  DG biological_system "http://identifiers.org/chebi/CHEBI:49172"
-  GPCho biological_system "http://identifiers.org/chebi/CHEBI:49183"
+  LPS isVersionOf "http://identifiers.org/chebi/CHEBI:16412"
+  DG isVersionOf "http://identifiers.org/chebi/CHEBI:49172"
+  GPCho isVersionOf "http://identifiers.org/chebi/CHEBI:49183"
   dPGD2 identity "http://identifiers.org/lipidmaps/LMFA03010051"
 
   model model_source "http://identifiers.org/biomodels.db/MODEL1204240001"
   model model_source "http://identifiers.org/biomodels.db/BIOMD0000000436"
   model publication "http://identifiers.org/pubmed/19486676"
-  model biological_system "http://identifiers.org/go/GO:0006690",
-                          "http://identifiers.org/pw/PW:0000565"
-  model taxon "http://identifiers.org/taxonomy/40674"
+  model isVersionOf "http://identifiers.org/go/GO:0006690",
+                    "http://identifiers.org/pw/PW:0000565"
+  model hasTaxon "http://identifiers.org/taxonomy/40674"
   model created "2010-01-22T22:59:01Z"
   model modified "2012-12-11T19:15:40Z"
   model creator1.givenName "Byrnes"

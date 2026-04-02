@@ -7,10 +7,8 @@
 #include <set>
 #include "annotated.h"
 
-#ifndef NSBML
 #include <sbml/math/ASTNode.h>
 #include <sbml/Model.h>
-#endif
 
 class ReactantList;
 class Variable;
@@ -53,10 +51,12 @@ public:
   bool IsBoolean() const;
   bool GetBoolean() const;
   bool IsAmountIn(const Variable* compartment) const;
+  bool IsConcentrationTimes(const Variable* compartment) const;
   bool IsOne() const;
   bool IsEllipsesOnly() const;
   bool IsSingleVariable() const;
   bool IsOneComponent() const;
+  bool isValidGeneProductAssociation() const;
   bool GetIsConst() const;
   bool CheckIncludes(std::string modname, const ReactantList* rlist) const;
   bool ContainsVar(std::string modname, std::vector<std::string> vname) const;
@@ -73,10 +73,10 @@ public:
   std::string ToDelimitedStringWithEllipses(std::string cc) const;
   std::string ToSBMLString() const;
   std::string ToSBMLString(std::vector<std::pair<Variable*, size_t> > strands) const;
-  double      ToAmount() const;
+  double      ToAmountOrConcentration() const;
   std::string ConvertOneSymbolToFunction(std::string formula) const;
   std::vector<const Variable*> GetVariablesFrom(std::string formula, std::string module) const;
-  std::vector<Variable*> GetVariables();
+  std::vector<Variable*> GetVariables() const;
   std::vector<std::vector<std::string> > GetVariableStrings() const;
 
   void FixNames(std::string modname);
@@ -91,14 +91,12 @@ public:
 
   bool MakeAllVariablesUnits();
   bool MakeUnitVariablesUnits();
-#ifndef NSBML
   //bool MakeUnitVariablesUnits(libsbml::ASTNode* astn);
   void SetNewTopNameWith(const libsbml::SBase* from, const std::string& modname);
   void AddFluxObjective(libsbml::Model* sbmlmod, bool maximize, const Variable* var) const;
   bool IsValidObjectiveFunction() const;
   bool IsValidObjectiveFunction(const libsbml::ASTNode* astn) const;
-  void GetObjectivesFromAST(const libsbml::ASTNode* astn, std::vector<std::pair<std::string, double> >& objectives) const;
-#endif
+  void GetObjectivesFromAST(const libsbml::ASTNode* astn, std::vector<libsbml::FluxObjective >& objectives) const;
 
   bool ClearReferencesTo(Variable* deletedvar);
   void AddReferencedVariablesTo(std::set<std::pair<std::string, const Variable*> >& referencedVars) const;

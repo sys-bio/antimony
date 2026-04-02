@@ -589,6 +589,48 @@ START_TEST(test_control_points)
 END_TEST
 
 
+START_TEST(test_source_sink)
+{
+  string model =
+    "J0: S1->;\n"
+    "S1.position = { 560, 0 }\n"
+    "J0.position = { 318.13, 29.25 }\n"
+    "J0.S1.species_end = { 550.02, 20.83 }\n"
+    "J0.S1.b1 = { 364.9, 33.93 }\n"
+    "J0.S1.b2 = { 350, 35 }\n"
+    "J0.--.position = { 30, 37.5 }\n"
+    "J0.--.species_end = { 99.98, 52.67 }\n"
+    "J0.--.b1 = { 285.1, 39.57 }\n"
+    "J0.--.b2 = { 290, 40 }\n";
+
+  libsbml::SBMLDocument* doc = translateAntimony(model);
+  fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(doc, "S1") == 560);
+  fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionY(doc, "S1") == 0.0);
+  fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(doc, "J0") == 318.13);
+  fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionY(doc, "J0") == 29.25);
+  fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointX(doc, "J0", 0, 0, 0) == 550.02);
+  fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointY(doc, "J0", 0, 0, 0) == 20.83);
+  fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointX(doc, "J0", 0, 0, 0) == 318.13 + 10);
+  fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointY(doc, "J0", 0, 0, 0) == 29.25 + 10);
+  fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1X(doc, "J0", 0, 0, 0) == 364.9);
+  fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1Y(doc, "J0", 0, 0, 0) == 33.93);
+  fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint2X(doc, "J0", 0, 0, 0) == 350);
+  fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint2Y(doc, "J0", 0, 0, 0) == 35);
+
+  fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointX(doc, "J0", 0, 1, 0) == 99.98);
+  fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointY(doc, "J0", 0, 1, 0) == 52.67);
+  fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointX(doc, "J0", 0, 1, 0) == 318.13 + 10);
+  fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointY(doc, "J0", 0, 1, 0) == 29.25 + 10);
+  fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1X(doc, "J0", 0, 1, 0) == 285.1);
+  fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1Y(doc, "J0", 0, 1, 0) == 39.57);
+  fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint2X(doc, "J0", 0, 1, 0) == 290);
+  fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint2Y(doc, "J0", 0, 1, 0) == 40);
+
+  delete doc;
+}
+END_TEST
+
+
 START_TEST(test_control_points_off_reaction)
 {
     string model =
@@ -782,6 +824,65 @@ START_TEST(test_control_points_second_arc_unset)
 END_TEST
 
 
+START_TEST(test_reaction_arc_color_width)
+{
+  string model =
+    "J0: 2 S1->S2;\n"
+    "J0.S1.linecolor = orange\n"
+    "J0.S2.linewidth = 37.5\n"
+    ;
+
+  libsbml::SBMLDocument* doc = translateAntimony(model);
+  LineSegment* ls = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegment(doc, 0, "J0", 0, 0, 0);
+
+  delete doc;
+}
+END_TEST
+
+
+START_TEST(test_multi_segments)
+{
+  string model =
+    "J0: S1->;\n"
+    "S1.position = { 560, 0 }\n"
+    "J0.position = { 318.13, 29.25 }\n"
+    "J0.S1.seg1.species_end = { 550.02, 20.83 }\n"
+    "J0.S1.seg1.b1 = { 364.9, 33.93 }\n"
+    "J0.S1.seg1.b2 = { 350, 35 }\n"
+    "J0.S1.seg1.rxn_end = { 400, 25 }\n"
+    "J0.S1.seg2.species_end = { 400.5, 25.5 }\n"
+    "J0.S1.seg2.b1 = { 265.1, 29.57 }\n"
+    "J0.S1.seg2.b2 = { 280, 30 }\n";
+    "J0.S1.seg2.rxn_end = { 328.13, 39.25 }\n";
+
+  libsbml::SBMLDocument* doc = translateAntimony(model);
+  fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(doc, "S1") == 560);
+  fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionY(doc, "S1") == 0.0);
+  fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(doc, "J0") == 318.13);
+  fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionY(doc, "J0") == 29.25);
+  fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointX(doc, "J0", 0, 0, 0) == 550.02);
+  fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointY(doc, "J0", 0, 0, 0) == 20.83);
+  fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1X(doc, "J0", 0, 0, 0) == 364.9);
+  fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1Y(doc, "J0", 0, 0, 0) == 33.93);
+  fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint2X(doc, "J0", 0, 0, 0) == 350);
+  fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint2Y(doc, "J0", 0, 0, 0) == 35);
+  fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointX(doc, "J0", 0, 0, 0) == 400);
+  fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointY(doc, "J0", 0, 0, 0) == 25);
+
+  fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointX(doc, "J0", 0, 0, 1) == 400.5);
+  fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointY(doc, "J0", 0, 0, 1) == 25.5);
+  fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1X(doc, "J0", 0, 0, 1) == 265.1);
+  fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1Y(doc, "J0", 0, 0, 1) == 29.57);
+  fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint2X(doc, "J0", 0, 0, 1) == 280);
+  fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint2Y(doc, "J0", 0, 0, 1) == 30);
+  fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointX(doc, "J0", 0, 0, 1) == 318.13 + 10);
+  fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointY(doc, "J0", 0, 0, 1) == 29.25 + 10);
+
+  delete doc;
+}
+END_TEST
+
+
 
 START_TEST(test_export_auto_aliased_nodes)
 {
@@ -863,7 +964,7 @@ create_suite_LayoutRender(void)
   Suite *suite = suite_create("Antimony LayoutRender");
   TCase *tcase = tcase_create("Antimony LayoutRender");
 
-
+  tcase_add_test( tcase, test_source_sink);
   tcase_add_test( tcase, test_basic_autolayout);
   tcase_add_test( tcase, test_basic_positions);
   tcase_add_test( tcase, test_basic_sizes);
@@ -888,6 +989,8 @@ create_suite_LayoutRender(void)
   tcase_add_test( tcase, test_control_points_unset);
   tcase_add_test( tcase, test_control_points_double_arcs);
   tcase_add_test( tcase, test_control_points_second_arc_unset);
+  tcase_add_test( tcase, test_reaction_arc_color_width);
+  tcase_add_test( tcase, test_multi_segments);
   tcase_add_test( tcase, test_export_auto_aliased_nodes);
   tcase_add_test( tcase, test_export_explicit_aliased_nodes);
 

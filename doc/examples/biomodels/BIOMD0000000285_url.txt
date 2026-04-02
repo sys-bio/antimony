@@ -1,4 +1,4 @@
-// Created by libAntimony v3.0.0
+// Created by libAntimony v3.1.0
 model *Tang2010_PolyGlutamate()
 
   // Compartments and Species:
@@ -96,9 +96,9 @@ model *Tang2010_PolyGlutamate()
   p38cellDeath: at p38death > 0: kalive = 0;
 
   // Species initializations:
-  PolyQ = 1000/cytosol;
-  Proteasome = 1000/cytosol;
-  NatP = 19500/cytosol;
+  PolyQ = 1000;
+  Proteasome = 1000;
+  NatP = 19500;
   MisP = 0;
   MisP_Proteasome = 0;
   AggP1 = 0;
@@ -113,14 +113,14 @@ model *Tang2010_PolyGlutamate()
   AggPolyQ5 = 0;
   SeqAggP = 0;
   AggP_Proteasome = 0;
-  mRFPu = 300/cytosol;
+  mRFPu = 300;
   mRFPu_Proteasome = 0;
   PolyQ_Proteasome = 0;
-  ROS = 10/cytosol;
+  ROS = 10;
   p38_P = 0;
-  p38 = 100/cytosol;
-  Source = 1/cytosol;
-  Sink = 1/cytosol;
+  p38 = 100;
+  Source = 1;
+  Sink = 1;
   p38death = 0;
   PIdeath = 0;
 
@@ -191,17 +191,17 @@ model *Tang2010_PolyGlutamate()
   unit substance = item;
 
   // CV terms:
-  PolyQ biological_system "http://identifiers.org/uniprot/P42858"
-  Proteasome biological_system "http://identifiers.org/go/GO:0000502"
+  PolyQ isVersionOf "http://identifiers.org/uniprot/P42858"
+  Proteasome isVersionOf "http://identifiers.org/go/GO:0000502"
 
   model model_source "http://identifiers.org/biomodels.db/MODEL1002250000"
   model model_source "http://identifiers.org/biomodels.db/BIOMD0000000285"
   model publication "http://identifiers.org/pubmed/20885783"
   model origin "http://identifiers.org/biomodels.db/BIOMD0000000105"
-  model taxon "http://identifiers.org/taxonomy/40674"
-  model biological_system "http://identifiers.org/go/GO:0009405",
-                          "http://identifiers.org/go/GO:0018095"
-  model version "http://identifiers.org/doid/DOID:1289"
+  model hasTaxon "http://identifiers.org/taxonomy/40674"
+  model isVersionOf "http://identifiers.org/go/GO:0009405",
+                    "http://identifiers.org/go/GO:0018095"
+  model hasVersion "http://identifiers.org/doid/DOID:1289"
   model created "2010-09-27T12:21:56Z"
   model modified "2014-06-03T21:03:59Z"
   model creator1.givenName "Vijayalakshmi"

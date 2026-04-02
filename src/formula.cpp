@@ -131,6 +131,9 @@ void Formula::AddInequality(constraint_type ineq)
 void Formula::AddFormula(const Formula* form2)
 {
   m_components.insert(m_components.end(), form2->m_components.begin(), form2->m_components.end());
+  if (m_module.empty()) {
+    m_module = form2->m_module;
+  }
 }
 
 void Formula::AddEllipses()
@@ -306,9 +309,34 @@ bool Formula::IsAmountIn(const Variable* compartment) const
   return false;
 }
 
-double Formula::ToAmount() const
+bool Formula::IsConcentrationTimes(const Variable* compartment) const
 {
-  //We will assume that 'IsAmountIn' returned true.
+  if (compartment == NULL) return false;
+  size_t check = 0;
+  if (m_components.size() == 3) {
+    if (m_components[0].second.size() == 0) {
+      if (IsReal(m_components[0].first)) {
+        check = 1;
+      }
+    }
+  }
+  else if (m_components.size() == 4) {
+    if (m_components[0].second.size() == 0 && m_components[0].first == "-" &&
+      m_components[1].second.size() == 0 && IsReal(m_components[1].first)) {
+      check = 2;;
+    }
+  }
+  if (check == 0) return false;
+  if (m_components[check].second.size() == 0 && m_components[check].first == "*" &&
+    m_components[check + 1].second == compartment->GetName()) {
+    return true;
+  }
+  return false;
+}
+
+double Formula::ToAmountOrConcentration() const
+{
+  //We will assume that 'IsAmountIn' or 'IsConcentrationTimes' returned true.
   if (m_components.size() == 3) {
     return GetReal(m_components[0].first);
   }
@@ -353,6 +381,38 @@ bool Formula::IsSingleVariable() const
 bool Formula::IsOneComponent() const
 {
     return m_components.size() == 1;
+}
+
+bool isValidGeneProductAssociationAST(const ASTNode* astn)
+{
+  if (!astn) {
+    return true;
+  }
+  ASTNodeType_t type = astn->getType();
+  switch (type) {
+  case AST_NAME:
+    return true;
+  case AST_LOGICAL_AND:
+  case AST_LOGICAL_OR:
+    for (unsigned int c = 0; c < astn->getNumChildren(); c++) {
+      ASTNode* child = astn->getChild(c);
+      if (!isValidGeneProductAssociationAST(child)) return false;
+    }
+    return true;
+  default:
+    return false;
+  }
+}
+
+bool Formula::isValidGeneProductAssociation() const
+{
+  ASTNode* astn = parseStringToASTNode(ToSBMLString());
+  if (isValidGeneProductAssociationAST(astn)) {
+    delete astn;
+    return true;
+  }
+  delete astn;
+  return false;
 }
 
 bool Formula::GetIsConst() const
@@ -589,7 +649,7 @@ string Formula::ToDelimitedStringWithEllipses(string cc) const
         m_components[comp].first == "&" ||
         m_components[comp].first == "|")
       {
-          if (retval[retval.size() - 1] == '!') {
+          if (retval.size() > 0 && retval[retval.size() - 1] == '!') {
               retval += m_components[comp].first + " ";
           }
           else {
@@ -760,13 +820,13 @@ vector<const Variable*> Formula::GetVariablesFrom(string formula, string module)
   return retval;
 }
 
-vector<Variable*> Formula::GetVariables()
+vector<Variable*> Formula::GetVariables() const
 {
     vector<Variable*> retval;
 
     for (size_t comp = 0; comp < m_components.size(); comp++) {
         if (m_components[comp].second.size() > 0) {
-            retval.push_back(g_registry.GetModule(m_module)->GetVariable(m_components[comp].second));
+            retval.push_back(g_registry.GetModule(m_components[comp].first)->GetVariable(m_components[comp].second));
         }
     }
     return retval;
@@ -1041,10 +1101,6 @@ bool Formula::MakeAllVariablesUnits()
 
 bool Formula::MakeUnitVariablesUnits()
 {
-#ifdef NSBML
-  //Can't do it.
-  return false;
-#else
   string formula = ToSBMLString();
   ASTNode* root = parseStringToASTNode(formula);
   set<string> allunits;
@@ -1062,14 +1118,10 @@ bool Formula::MakeUnitVariablesUnits()
     }
   }
   return false;
-#endif
 }
 
-#ifndef NSBML
 void Formula::SetNewTopNameWith(const SBase* from, const string& modname)
 {
-  //Only need to do anything if 'from' is in a submodel, which only happens in comp-sbml.
-#ifdef USE_COMP
   while (from != NULL) {
     if (from->getTypeCode()==SBML_COMP_SUBMODEL) {
       string submodname = from->getId();
@@ -1077,14 +1129,13 @@ void Formula::SetNewTopNameWith(const SBase* from, const string& modname)
     }
     from = from->getParentSBMLObject();
   }
-#endif
 }
 
 void Formula::AddFluxObjective(Model* sbmlmod, bool maximize, const Variable* var) const
 {
   //Don't do anything unless we know about FBC
 #ifdef LIBSBML_HAS_PACKAGE_FBC
-  vector<pair<string, double> > objectives;
+  vector<FluxObjective> objectives;
   ASTNode* astn = parseStringToASTNode(ToSBMLString());
   GetObjectivesFromAST(astn, objectives);
   delete astn;
@@ -1100,9 +1151,7 @@ void Formula::AddFluxObjective(Model* sbmlmod, bool maximize, const Variable* va
   }
   fmp->getListOfObjectives()->setActiveObjective(objective->getId());
   for (size_t o=0; o<objectives.size(); o++) {
-    FluxObjective* fo = objective->createFluxObjective();
-    fo->setReaction(objectives[o].first);
-    fo->setCoefficient(objectives[o].second);
+      objective->addFluxObjective(&objectives[o]);
   }
 #endif
 }
@@ -1137,6 +1186,7 @@ bool Formula::IsValidObjectiveFunction(const ASTNode* astn) const
   if (astn==NULL) {
     return false;
   }
+  double val;
   switch(astn->getType()) {
   case AST_NAME:
     //Already checked to see if the referenced elements are reactions
@@ -1151,39 +1201,63 @@ bool Formula::IsValidObjectiveFunction(const ASTNode* astn) const
     }
     return true;
   case AST_TIMES:
-    if (astn->getNumChildren() != 2) return false;
-    if (!astn->getChild(0)->isNumber()) return false;
-    return (astn->getChild(1)->getType() == AST_NAME);
+    if (astn->getNumChildren() == 2) {
+      if (astn->getChild(0)->isNumber()) {
+        return (IsValidObjectiveFunction(astn->getChild(1)));
+      }
+      else if (astn->getChild(0)->isName()) {
+        return (astn->getChild(1)->isName());
+      }
+      else return false;
+    }
+    if (astn->getNumChildren() == 3) {
+      if (!astn->getChild(0)->isNumber()) return false;
+      if (!astn->getChild(1)->isName()) return false;
+      return (astn->getChild(2)->isName());
+    }
+    return false;
   case AST_INTEGER:
   case AST_REAL:
   case AST_REAL_E:
   case AST_RATIONAL:
     //Sort of a hack, but it should work anyway:
     return (astn->isSetUnits());
+  case AST_POWER:
+  case AST_FUNCTION_POWER:
+      if (astn->getNumChildren() != 2) return false;
+      if (!(astn->getChild(0)->getType() == AST_NAME)) return false;
+      if (!astn->getChild(1)->isNumber()) return false;
+      val = astn->getChild(1)->getValue();
+      return (val == 1.0 || val == 2.0);
   default:
     return false;
   }
 }
 
-void Formula::GetObjectivesFromAST(const ASTNode* astn, vector<pair<string, double> >& objectives) const
+void Formula::GetObjectivesFromAST(const ASTNode* astn, vector<FluxObjective >& objectives) const
 {
   size_t numobjectives; //For the 'minus' case, below.
+  size_t last;
+  FluxObjective fo(3, 2, 3);
+  fo.setVariableType("linear");
   if (astn == NULL) {
       //Probably should have been caught earlier, but at least we won't crash.
       return;
   }
-  switch(astn->getType()) {
+  switch (astn->getType()) {
   case AST_NAME:
     //Just the name with a stoichiometry of 1
-    objectives.push_back(make_pair(astn->getName(), 1));
+    fo.setReaction(astn->getName());
+    fo.setCoefficient(1);
+    objectives.push_back(fo);
     return;
   case AST_PLUS:
-    for (unsigned int n=0; n<astn->getNumChildren(); n++) {
+    for (unsigned int n = 0; n < astn->getNumChildren(); n++) {
       GetObjectivesFromAST(astn->getChild(n), objectives);
     }
     return;
   case AST_MINUS:
-    switch(astn->getNumChildren()) {
+    switch (astn->getNumChildren()) {
     case 0:
       assert(false);
       return;
@@ -1191,10 +1265,8 @@ void Formula::GetObjectivesFromAST(const ASTNode* astn, vector<pair<string, doub
       numobjectives = objectives.size();
       GetObjectivesFromAST(astn->getChild(0), objectives);
       //Switch the sign of anything added:
-      for (size_t n=numobjectives; n<objectives.size(); n++) {
-        pair<string, double> obj = objectives[n];
-        obj.second = -obj.second;
-        objectives[n] = obj;
+      for (size_t n = numobjectives; n < objectives.size(); n++) {
+        objectives[n].setCoefficient(-objectives[n].getCoefficient());
       }
       return;
     case 2:
@@ -1202,10 +1274,8 @@ void Formula::GetObjectivesFromAST(const ASTNode* astn, vector<pair<string, doub
       numobjectives = objectives.size();
       GetObjectivesFromAST(astn->getChild(1), objectives);
       //Switch the sign of anything added second:
-      for (size_t n=numobjectives; n<objectives.size(); n++) {
-        pair<string, double> obj = objectives[n];
-        obj.second = -obj.second;
-        objectives[n] = obj;
+      for (size_t n = numobjectives; n < objectives.size(); n++) {
+        objectives[n].setCoefficient(-objectives[n].getCoefficient());
       }
       return;
     default:
@@ -1215,22 +1285,46 @@ void Formula::GetObjectivesFromAST(const ASTNode* astn, vector<pair<string, doub
     }
     return;
   case AST_TIMES:
-    if (astn->getNumChildren() != 2) return;
-    objectives.push_back(make_pair(astn->getChild(1)->getName(), GetValueFrom(astn->getChild(0))));
+    //Get objective from second child, then change its coefficient:
+    GetObjectivesFromAST(astn->getChild(1), objectives);
+    last = objectives.size() - 1;
+    if (astn->getChild(0)->isNumber()) {
+      objectives[last].setCoefficient(GetValueFrom(astn->getChild(0)));
+    }
+    else {
+      objectives[last].setReaction(astn->getChild(0)->getName());
+      objectives[last].setReaction2(astn->getChild(1)->getName());
+      objectives[last].setVariableType(FBC_VARIABLE_TYPE_QUADRATIC);
+    }
+    if (astn->getNumChildren() == 3) {
+      //It has to be [coefficient] * [rxn] * [rxn]
+      objectives[last].setReaction2(astn->getChild(2)->getName());
+      assert(objectives[last].getVariableType() == FBC_VARIABLE_TYPE_LINEAR);
+      objectives[last].setVariableType(FBC_VARIABLE_TYPE_QUADRATIC);
+    }
     return;
   case AST_INTEGER:
   case AST_REAL:
   case AST_REAL_E:
   case AST_RATIONAL:
-    objectives.push_back(make_pair(astn->getUnits(), GetValueFrom(astn)));
+    fo.setCoefficient(GetValueFrom(astn));
+    fo.setReaction(astn->getUnits());
+    objectives.push_back(fo);
+    return;
+  case AST_POWER:
+  case AST_FUNCTION_POWER:
+    fo.setCoefficient(1);
+    fo.setReaction(astn->getChild(0)->getName());
+    if (astn->getChild(1)->getValue() == 2.0) {
+      fo.setVariableType(FBC_VARIABLE_TYPE_QUADRATIC);
+    }
+    objectives.push_back(fo);
     return;
   default:
-      assert(false); //Impossible??
-      return;
+    assert(false); //Impossible??
+    return;
   }
 }
-
-#endif
 
 bool Formula::ClearReferencesTo(Variable* deletedvar)
 {
@@ -1300,13 +1394,11 @@ string Formula::CellMLify(string formula) const
     formula = revform;
     revform = ConvertOneSymbolToFunction(formula);
   }
-#ifndef NSBML
   //Convert through the SBML formula thingy, since it'll do x^y -> pow(x,y) and maybe other stuff.
   ASTNode_t* ASTform = parseStringToASTNode(formula);
   caratToPower(ASTform);
   formula = parseASTNodeToString(ASTform, false);
   delete ASTform;
-#endif
   size_t pow = formula.find("pow(");
   while (pow != string::npos) {
     formula.insert(pow+3, "er");

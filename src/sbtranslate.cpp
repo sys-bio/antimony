@@ -6,9 +6,7 @@
 #include <cstdlib>
 #include "antimony_api.h"
 
-#ifndef NSBML
 #include <sbml/SBMLTypes.h>
-#endif
 
 #ifdef WIN32
 #include <conio.h>
@@ -29,25 +27,14 @@ int main(int argc, char** argv)
   string instructions = "This version of sbtranslate can be used to convert files between Antimony";
   string options = "";
   options += "\n\t-o antimony : Output all models in Antimony format";
-#ifndef NSBML
   options += "\n\t-o sbml     : Output the 'main' model as SBML";
-#ifdef USE_COMP
   options += "\n\t-o sbml-comp: Output all models in a single SBML file using the\n\t               'comp' package.";
-#endif
   options += "\n\t-o allsbml  : Output each model and submodel as a separate SBML model";
 #ifndef NCELLML
   options += "\n\t-o cellml   : Output the 'main' model as CellML";
   instructions += ",\nSBML, and CellML.";
 #else
   instructions += "\nand SBML.";
-#endif
-#else
-#ifndef NCELLML
-  instructions += "\nand CellML.";
-  options += "\n\t-o cellml   : Output the 'main' model as CellML";
-#else
-  instructions += "\nand... Antimony.  Because this program was compiled without using either\nlibsbml or libcellml, which kind of makes translation to those formats\ndifficult.  But hey!  You can still use it to round-trip your models to\nregularize them and clean up any bits where you might have defined an element\nmultiple times or something.  I guess.  You still have to use '-o antimony' to\nset the output format, because if you got used to round-tripping your models\nwith the program compiled this way, sure enough someone (like you) would come\nalong and recompile the program with SBML and/or CellML support back in, and\nthen your old scripts wouldn't work.  So I'm saving you from yourself here; you\nshould thank me.";
-#endif
 #endif
   instructions += "\n\nYou must use at least one of the following options to set the output format\nof this translator:\n";
   instructions += options;
@@ -111,12 +98,7 @@ int main(int argc, char** argv)
 #endif
         }
         else if (CaselessStrCmp(outfmt, "sbml-comp")) {
-#ifdef USE_COMP
           outputcompsbml = true;
-#else
-          cerr << "SBML 'comp' output (the format used in the Hierarchical Model Composition package for SBML Level 3) is not supported in this version of sbtranslate.  You must recompile the program and include a beta version of the libSBML library, together with the 'comp' package enabled.  Use '-h' for more information.";
-          retval = 1;
-#endif
         }
         else if (CaselessStrCmp(outfmt, "allsbml")) {
 #ifndef SBML
@@ -222,9 +204,7 @@ int main(int argc, char** argv)
         handles.push_back(loadAntimonyFile(files[file].c_str()));
         break;
       case FT_SBML:
-#ifndef NSBML
         handles.push_back(loadSBMLFile(files[file].c_str()));
-#endif
         break;
       case FT_CELLML:
 #ifndef NCELLML
@@ -315,13 +295,10 @@ int main(int argc, char** argv)
         }
       }
     }
-#ifndef NSBML
     if (outputsbml || outputcompsbml) {
       if (writestdout) {
         if (outputcompsbml) {
-#ifdef USE_COMP
           cout << getCompSBMLString(NULL) << endl;
-#endif
         }
         else {
           cout << getSBMLString(NULL) << endl;
@@ -344,7 +321,6 @@ int main(int argc, char** argv)
           }
         }
         if (outputcompsbml) {
-#ifdef USE_COMP
           if (writeCompSBMLFile(sbmloutname.c_str(), NULL))  { //NULL for 'all models'
             cout << "Successfully wrote " << sbmloutname << endl;
           }
@@ -352,7 +328,6 @@ int main(int argc, char** argv)
             cerr << getLastError() << endl;
             retval = 1;
           }
-#endif
         }
         else {
           if (writeSBMLFile(sbmloutname.c_str(), NULL))  { //NULL for 'all models'
@@ -400,7 +375,6 @@ int main(int argc, char** argv)
         }
       }
     }
-#endif //NSBML
 #ifndef NCELLML
     if (outputcellml) {
       if (writestdout) {

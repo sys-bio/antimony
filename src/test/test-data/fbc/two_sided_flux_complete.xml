@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<sbml xmlns="http://www.sbml.org/sbml/level3/version2/core" xmlns:comp="http://www.sbml.org/sbml/level3/version1/comp/version1" xmlns:fbc="http://www.sbml.org/sbml/level3/version1/fbc/version1" level="3" version="2" comp:required="true" fbc:required="false">
-  <model metaid="__main" id="__main">
+<!-- Created by libAntimony version v3.0.0 with libSBML version 5.20.5. -->
+<sbml xmlns="http://www.sbml.org/sbml/level3/version2/core" xmlns:fbc="http://www.sbml.org/sbml/level3/version1/fbc/version3" level="3" version="2" fbc:required="false">
+  <model metaid="__main" id="__main" fbc:strict="true">
     <listOfCompartments>
       <compartment sboTerm="SBO:0000410" id="default_compartment" spatialDimensions="3" size="1" constant="true"/>
     </listOfCompartments>
@@ -9,148 +10,53 @@
       <species id="s2" compartment="default_compartment" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
       <species id="s3" compartment="default_compartment" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
     </listOfSpecies>
-    <listOfConstraints>
-      <constraint metaid="__main__con0">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <apply>
-            <lt/>
-            <cn> -10 </cn>
-            <ci> J0 </ci>
-            <cn type="integer"> 10 </cn>
-          </apply>
-        </math>
-      </constraint>
-      <constraint metaid="__main__con1">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <apply>
-            <leq/>
-            <cn> 0 </cn>
-            <ci> J1 </ci>
-            <cn type="integer"> 25 </cn>
-          </apply>
-        </math>
-      </constraint>
-      <constraint metaid="__main__con2">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <apply>
-            <and/>
-            <apply>
-              <lt/>
-              <cn> -30 </cn>
-              <ci> J2 </ci>
-            </apply>
-            <apply>
-              <leq/>
-              <ci> J2 </ci>
-              <cn type="integer"> -10 </cn>
-            </apply>
-          </apply>
-        </math>
-      </constraint>
-      <constraint metaid="__main__con3">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <apply>
-            <and/>
-            <apply>
-              <leq/>
-              <cn> -40 </cn>
-              <ci> J3 </ci>
-            </apply>
-            <apply>
-              <lt/>
-              <ci> J3 </ci>
-              <cn type="integer"> 100 </cn>
-            </apply>
-          </apply>
-        </math>
-      </constraint>
-      <constraint metaid="__main__con4">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <apply>
-            <gt/>
-            <cn> 50 </cn>
-            <ci> J4 </ci>
-            <cn type="integer"> 0 </cn>
-          </apply>
-        </math>
-      </constraint>
-      <constraint metaid="__main__con5">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <apply>
-            <geq/>
-            <cn> 20 </cn>
-            <ci> J5 </ci>
-            <cn type="integer"> -55 </cn>
-          </apply>
-        </math>
-      </constraint>
-      <constraint metaid="__main__con6">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <apply>
-            <and/>
-            <apply>
-              <gt/>
-              <cn> 100 </cn>
-              <ci> J6 </ci>
-            </apply>
-            <apply>
-              <geq/>
-              <ci> J6 </ci>
-              <cn type="integer"> 77 </cn>
-            </apply>
-          </apply>
-        </math>
-      </constraint>
-      <constraint metaid="__main__con7">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <apply>
-            <and/>
-            <apply>
-              <geq/>
-              <cn> 120 </cn>
-              <ci> J7 </ci>
-            </apply>
-            <apply>
-              <gt/>
-              <ci> J7 </ci>
-              <cn type="integer"> 110 </cn>
-            </apply>
-          </apply>
-        </math>
-      </constraint>
-    </listOfConstraints>
+    <listOfParameters>
+      <parameter id="fb_neg_10" value="-10" constant="true"/>
+      <parameter id="fb_10" value="10" constant="true"/>
+      <parameter id="fb_0" value="0" constant="true"/>
+      <parameter id="fb_25" value="25" constant="true"/>
+      <parameter id="fb_neg_30" value="-30" constant="true"/>
+      <parameter id="fb_neg_40" value="-40" constant="true"/>
+      <parameter id="fb_100" value="100" constant="true"/>
+      <parameter id="fb_50" value="50" constant="true"/>
+      <parameter id="fb_neg_55" value="-55" constant="true"/>
+      <parameter id="fb_20" value="20" constant="true"/>
+      <parameter id="fb_77" value="77" constant="true"/>
+      <parameter id="fb_110" value="110" constant="true"/>
+      <parameter id="fb_120" value="120" constant="true"/>
+    </listOfParameters>
     <listOfReactions>
-      <reaction id="J0" reversible="true">
+      <reaction id="J0" reversible="true" fbc:lowerFluxBound="fb_neg_10" fbc:upperFluxBound="fb_10">
         <listOfReactants>
           <speciesReference species="s1" stoichiometry="1" constant="true"/>
         </listOfReactants>
       </reaction>
-      <reaction id="J1" reversible="true">
+      <reaction id="J1" reversible="true" fbc:lowerFluxBound="fb_0" fbc:upperFluxBound="fb_25">
         <listOfReactants>
           <speciesReference species="s2" stoichiometry="1" constant="true"/>
         </listOfReactants>
       </reaction>
-      <reaction id="J2" reversible="true">
+      <reaction id="J2" reversible="true" fbc:lowerFluxBound="fb_neg_30" fbc:upperFluxBound="fb_neg_10">
         <listOfReactants>
           <speciesReference species="s3" stoichiometry="1" constant="true"/>
         </listOfReactants>
       </reaction>
-      <reaction id="J3" reversible="true">
+      <reaction id="J3" reversible="true" fbc:lowerFluxBound="fb_neg_40" fbc:upperFluxBound="fb_100">
         <listOfProducts>
           <speciesReference species="s1" stoichiometry="1" constant="true"/>
         </listOfProducts>
       </reaction>
-      <reaction id="J4" reversible="true">
+      <reaction id="J4" reversible="true" fbc:lowerFluxBound="fb_0" fbc:upperFluxBound="fb_50">
         <listOfProducts>
           <speciesReference species="s2" stoichiometry="1" constant="true"/>
         </listOfProducts>
       </reaction>
-      <reaction id="J5" reversible="true">
+      <reaction id="J5" reversible="true" fbc:lowerFluxBound="fb_neg_55" fbc:upperFluxBound="fb_20">
         <listOfProducts>
           <speciesReference species="s3" stoichiometry="1" constant="true"/>
         </listOfProducts>
       </reaction>
-      <reaction id="J6" reversible="true">
+      <reaction id="J6" reversible="true" fbc:lowerFluxBound="fb_77" fbc:upperFluxBound="fb_100">
         <listOfReactants>
           <speciesReference species="s1" stoichiometry="1" constant="true"/>
         </listOfReactants>
@@ -158,7 +64,7 @@
           <speciesReference species="s2" stoichiometry="1" constant="true"/>
         </listOfProducts>
       </reaction>
-      <reaction id="J7" reversible="true">
+      <reaction id="J7" reversible="true" fbc:lowerFluxBound="fb_110" fbc:upperFluxBound="fb_120">
         <listOfReactants>
           <speciesReference species="s2" stoichiometry="1" constant="true"/>
         </listOfReactants>
@@ -167,23 +73,5 @@
         </listOfProducts>
       </reaction>
     </listOfReactions>
-    <fbc:listOfFluxBounds>
-      <fbc:fluxBound fbc:id="_con0" fbc:reaction="J0" fbc:operation="greaterEqual" fbc:value="-10"/>
-      <fbc:fluxBound fbc:id="_con0_b" fbc:reaction="J0" fbc:operation="lessEqual" fbc:value="10"/>
-      <fbc:fluxBound fbc:id="_con1" fbc:reaction="J1" fbc:operation="greaterEqual" fbc:value="0"/>
-      <fbc:fluxBound fbc:id="_con1_b" fbc:reaction="J1" fbc:operation="lessEqual" fbc:value="25"/>
-      <fbc:fluxBound fbc:id="_con2" fbc:reaction="J2" fbc:operation="greaterEqual" fbc:value="-30"/>
-      <fbc:fluxBound fbc:id="_con2_b" fbc:reaction="J2" fbc:operation="lessEqual" fbc:value="-10"/>
-      <fbc:fluxBound fbc:id="_con3" fbc:reaction="J3" fbc:operation="greaterEqual" fbc:value="-40"/>
-      <fbc:fluxBound fbc:id="_con3_b" fbc:reaction="J3" fbc:operation="lessEqual" fbc:value="100"/>
-      <fbc:fluxBound fbc:id="_con4" fbc:reaction="J4" fbc:operation="lessEqual" fbc:value="50"/>
-      <fbc:fluxBound fbc:id="_con4_b" fbc:reaction="J4" fbc:operation="greaterEqual" fbc:value="0"/>
-      <fbc:fluxBound fbc:id="_con5" fbc:reaction="J5" fbc:operation="lessEqual" fbc:value="20"/>
-      <fbc:fluxBound fbc:id="_con5_b" fbc:reaction="J5" fbc:operation="greaterEqual" fbc:value="-55"/>
-      <fbc:fluxBound fbc:id="_con6" fbc:reaction="J6" fbc:operation="lessEqual" fbc:value="100"/>
-      <fbc:fluxBound fbc:id="_con6_b" fbc:reaction="J6" fbc:operation="greaterEqual" fbc:value="77"/>
-      <fbc:fluxBound fbc:id="_con7" fbc:reaction="J7" fbc:operation="lessEqual" fbc:value="120"/>
-      <fbc:fluxBound fbc:id="_con7_b" fbc:reaction="J7" fbc:operation="greaterEqual" fbc:value="110"/>
-    </fbc:listOfFluxBounds>
   </model>
 </sbml>

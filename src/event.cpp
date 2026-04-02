@@ -41,7 +41,6 @@ AntimonyEvent::AntimonyEvent()
 bool AntimonyEvent::SetTrigger(const Formula& form)
 {
   string formstring = form.ToSBMLString();
-#ifndef NSBML
   if (formstring.size() > 0) {
     ASTNode* ASTform = parseStringToASTNode(formstring);
     if (ASTform == NULL) {
@@ -55,7 +54,6 @@ bool AntimonyEvent::SetTrigger(const Formula& form)
     //}
     delete ASTform;
   }
-#endif
   m_trigger = form;
   return false;
 }
@@ -63,7 +61,6 @@ bool AntimonyEvent::SetTrigger(const Formula& form)
 bool AntimonyEvent::SetPriority(const Formula& priority)
 {
   string prioritystring = priority.ToSBMLString();
-#ifndef NSBML
   if (prioritystring.size() > 0) {
     ASTNode* ASTpriority = parseStringToASTNode(prioritystring);
     if (ASTpriority == NULL) {
@@ -77,7 +74,6 @@ bool AntimonyEvent::SetPriority(const Formula& priority)
     }
     delete ASTpriority;
   }
-#endif
   m_priority = priority;
   return false;
 }

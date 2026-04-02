@@ -1,4 +1,4 @@
-// Created by libAntimony v3.0.0
+// Created by libAntimony v3.1.0
 model *Tyson2001_Cell_Cycle_Regulation()
 
   // Compartments and Species:
@@ -39,14 +39,14 @@ model *Tyson2001_Cell_Cycle_Regulation()
   Cell_division: at 0 after CycB < 0.1: m = m/2;
 
   // Species initializations:
-  CycBt = 0.001/cell;
-  CKIt = 0.001/cell;
-  Cdc20a = 0.001/cell;
-  Cdh1 = 0.001/cell;
-  m = 0.5/cell;
-  Cdc20t = 0.001/cell;
-  IEP = 0.001/cell;
-  SK = 0.001/cell;
+  CycBt = 0.001;
+  CKIt = 0.001;
+  Cdc20a = 0.001;
+  Cdh1 = 0.001;
+  m = 0.5;
+  Cdc20t = 0.001;
+  IEP = 0.001;
+  SK = 0.001;
 
   // Compartment initializations:
   cell = 1;
@@ -125,61 +125,61 @@ model *Tyson2001_Cell_Cycle_Regulation()
 
   // CV terms:
   cell identity "http://identifiers.org/go/GO:0005623"
-  CycBt part "http://identifiers.org/uniprot/P00546",
-             "http://identifiers.org/interpro/IPR015454"
-  CycBt biological_system "http://identifiers.org/go/GO:0000307"
-  CycBt version "http://identifiers.org/uniprot/P00546",
-                "http://identifiers.org/uniprot/P32943",
-                "http://identifiers.org/uniprot/P30283",
-                "http://identifiers.org/uniprot/P24871",
-                "http://identifiers.org/uniprot/P24870",
-                "http://identifiers.org/uniprot/P24869",
-                "http://identifiers.org/uniprot/P24868"
-  CycB part "http://identifiers.org/uniprot/P00546",
-            "http://identifiers.org/interpro/IPR015454"
-  CKIt biological_system "http://identifiers.org/uniprot/P38634"
-  Cdc20a biological_system "http://identifiers.org/uniprot/P26309"
-  Trimer part "http://identifiers.org/uniprot/P00546",
-              "http://identifiers.org/uniprot/P38634",
-              "http://identifiers.org/interpro/IPR015454"
-  Cdh1 biological_system "http://identifiers.org/uniprot/P53197"
-  m biological_system "http://identifiers.org/go/GO:0016049"
-  Cdc20t biological_system "http://identifiers.org/uniprot/P26309"
-  Mad biological_system "http://identifiers.org/uniprot/P40957"
-  SK biological_system "http://identifiers.org/uniprot/P20437",
-                       "http://identifiers.org/uniprot/P20438"
-  SK biological_system "http://identifiers.org/interpro/IPR014399"
-  CycBt_synthesis biological_system "http://identifiers.org/go/GO:0010467"
-  CycBdegradation biological_system "http://identifiers.org/go/GO:0008054"
-  CycBdegradationviaCdh1 biological_system "http://identifiers.org/reactome/REACT_6761.1",
-                                           "http://identifiers.org/go/GO:0008054"
-  CycBtdegradationviaCdc20a biological_system "http://identifiers.org/reactome/REACT_6820.1"
-  Cdh1synthesis biological_system "http://identifiers.org/go/GO:0010467"
-  Cdh1degradation biological_system "http://identifiers.org/go/GO:0030163"
-  Cdc20tsynthesis biological_system "http://identifiers.org/go/GO:0010467"
-  Cdc20t_deg biological_system "http://identifiers.org/go/GO:0030163"
-  Cdc20activation biological_system "http://identifiers.org/reactome/REACT_6954.1"
-  Cdc20ainhibition biological_system "http://identifiers.org/reactome/REACT_1041.2"
-  Cdc20adegradation biological_system "http://identifiers.org/go/GO:0030163"
-  IEPsynthesis biological_system "http://identifiers.org/go/GO:0010467"
-  IEPdegradation biological_system "http://identifiers.org/go/GO:0030163"
-  growth biological_system "http://identifiers.org/go/GO:0016049"
-  CKItsynthesis biological_system "http://identifiers.org/go/GO:0010467"
-  CKIdegradation biological_system "http://identifiers.org/go/GO:0030163"
-  CKItphosphorilationviaSK biological_system "http://identifiers.org/reactome/REACT_9003.1"
-  eq_7 biological_system "http://identifiers.org/reactome/REACT_9005.1",
-                         "http://identifiers.org/go/GO:0045736"
-  SKsynthesis biological_system "http://identifiers.org/go/GO:0010467"
-  SKdegradation biological_system "http://identifiers.org/go/GO:0030163",
-                                  "http://identifiers.org/go/GO:0008054"
+  CycBt hasPart "http://identifiers.org/uniprot/P00546",
+                "http://identifiers.org/interpro/IPR015454"
+  CycBt isVersionOf "http://identifiers.org/go/GO:0000307"
+  CycBt hasVersion "http://identifiers.org/uniprot/P00546",
+                   "http://identifiers.org/uniprot/P32943",
+                   "http://identifiers.org/uniprot/P30283",
+                   "http://identifiers.org/uniprot/P24871",
+                   "http://identifiers.org/uniprot/P24870",
+                   "http://identifiers.org/uniprot/P24869",
+                   "http://identifiers.org/uniprot/P24868"
+  CycB hasPart "http://identifiers.org/uniprot/P00546",
+               "http://identifiers.org/interpro/IPR015454"
+  CKIt isVersionOf "http://identifiers.org/uniprot/P38634"
+  Cdc20a isVersionOf "http://identifiers.org/uniprot/P26309"
+  Trimer hasPart "http://identifiers.org/uniprot/P00546",
+                 "http://identifiers.org/uniprot/P38634",
+                 "http://identifiers.org/interpro/IPR015454"
+  Cdh1 isVersionOf "http://identifiers.org/uniprot/P53197"
+  m isVersionOf "http://identifiers.org/go/GO:0016049"
+  Cdc20t isVersionOf "http://identifiers.org/uniprot/P26309"
+  Mad isVersionOf "http://identifiers.org/uniprot/P40957"
+  SK isVersionOf "http://identifiers.org/uniprot/P20437",
+                 "http://identifiers.org/uniprot/P20438"
+  SK isVersionOf "http://identifiers.org/interpro/IPR014399"
+  CycBt_synthesis isVersionOf "http://identifiers.org/go/GO:0010467"
+  CycBdegradation isVersionOf "http://identifiers.org/go/GO:0008054"
+  CycBdegradationviaCdh1 isVersionOf "http://identifiers.org/reactome/REACT_6761.1",
+                                     "http://identifiers.org/go/GO:0008054"
+  CycBtdegradationviaCdc20a isVersionOf "http://identifiers.org/reactome/REACT_6820.1"
+  Cdh1synthesis isVersionOf "http://identifiers.org/go/GO:0010467"
+  Cdh1degradation isVersionOf "http://identifiers.org/go/GO:0030163"
+  Cdc20tsynthesis isVersionOf "http://identifiers.org/go/GO:0010467"
+  Cdc20t_deg isVersionOf "http://identifiers.org/go/GO:0030163"
+  Cdc20activation isVersionOf "http://identifiers.org/reactome/REACT_6954.1"
+  Cdc20ainhibition isVersionOf "http://identifiers.org/reactome/REACT_1041.2"
+  Cdc20adegradation isVersionOf "http://identifiers.org/go/GO:0030163"
+  IEPsynthesis isVersionOf "http://identifiers.org/go/GO:0010467"
+  IEPdegradation isVersionOf "http://identifiers.org/go/GO:0030163"
+  growth isVersionOf "http://identifiers.org/go/GO:0016049"
+  CKItsynthesis isVersionOf "http://identifiers.org/go/GO:0010467"
+  CKIdegradation isVersionOf "http://identifiers.org/go/GO:0030163"
+  CKItphosphorilationviaSK isVersionOf "http://identifiers.org/reactome/REACT_9003.1"
+  eq_7 isVersionOf "http://identifiers.org/reactome/REACT_9005.1",
+                   "http://identifiers.org/go/GO:0045736"
+  SKsynthesis isVersionOf "http://identifiers.org/go/GO:0010467"
+  SKdegradation isVersionOf "http://identifiers.org/go/GO:0030163",
+                            "http://identifiers.org/go/GO:0008054"
 
   model model_source "http://identifiers.org/biomodels.db/MODEL3897475441"
   model model_source "http://identifiers.org/biomodels.db/BIOMD0000000195"
   model publication "http://identifiers.org/pubmed/11371178"
-  model biological_system "http://identifiers.org/kegg.pathway/map04111",
-                          "http://identifiers.org/reactome/REACT_152.2",
-                          "http://identifiers.org/go/GO:0051726"
-  model taxon "http://identifiers.org/taxonomy/4932"
+  model isVersionOf "http://identifiers.org/kegg.pathway/map04111",
+                    "http://identifiers.org/reactome/REACT_152.2",
+                    "http://identifiers.org/go/GO:0051726"
+  model hasTaxon "http://identifiers.org/taxonomy/4932"
   model created "2009-02-26T10:08:01Z"
   model modified "2016-04-08T15:46:49Z"
   model creator1.givenName "Lukas"
@@ -195,7 +195,7 @@ and irreversible transitions.**
 *Tyson JJ and Novak B., **J Theor Biol** 2001 * 
 May;210(2):249-63. 
 It consitsts of the equations (2)-(8), with mu=0.005 min -1 .
-It was taken from ]()Cell Cycle DB]() ( [file](http://www.itb.cnr.it/cellcycle/modelSBML_rep.php?id_model=12) ) and only slightly altered. 
+It was taken from [Cell Cycle DB](http://www.itb.cnr.it/cellcycle) ( [file](http://www.itb.cnr.it/cellcycle/modelSBML_rep.php?id_model=12) ) and only slightly altered. 
 
 
 To the extent possible under law, all copyright and related or neighbouring rights

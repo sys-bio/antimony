@@ -1,104 +1,131 @@
-// Created by libAntimony v3.0.0
-model *Garde2020_Minimal_model_describing_metabolic_oscillations_in_Bacillus_subtilis_biofilms()
+// Created by libAntimony v3.1.0
+model *Garde2020___metabolic_oscillations_in_Bacillus_subtilis_biofilms()
 
   // Compartments and Species:
-  compartment compartment_;
-  species Gp in compartment_, Gi in compartment_, A in compartment_, B in compartment_;
+  compartment Biofilm;
+  species Gp in Biofilm, Ai in Biofilm, Am in Biofilm, Ap in Biofilm, Gm in Biofilm;
+  species Gi in Biofilm;
 
   // Reactions:
-  The_uptake_of_glutamate_and_Consumption_of_glutamate_and_ammonia:  => Gp; compartment_*(k1*GE*Gp - k2*A*Gp);
-  Diffusion_of_glutamate: Gp => Gi; compartment_*(k4*Gp);
-  Consumption_of_glutamate_to_produce_ammonia: Gi => A; compartment_*(k5*Gi);
-  Diffusion_of_ammonia: A => ; compartment_*(k3*A);
-  The_synthesis_of_biomass_from_ammonia_and_glutamate:  => B; compartment_*(b*A*Gp*B);
+  Positive_feedback_of_Gp_on_itself:  => Gp; Biofilm*(k1*Ge*Gp);
+  Gp_diffusion_to_the_interior_cells: Gp => Gm; Biofilm*(k4*Gp);
+  Biomass_production: Gp => ; Biofilm*(k2*Ap*Gp);
+  Diffusion_of_Ammonia_from_interior_to_middle_layer: Ai => Am; Biofilm*(k3*Ai);
+  Production_of_Ammonia_using_Glutamate_by_inner_cells: Gi => Ai; Biofilm*(k5*Gi);
+  Ammonia_diffusion_from_middle_layer_to_periphery: Am => Ap; Biofilm*(k3*Am);
+  loss_of_Ammonia_du_to_diffusion_to_the_environment: Ap => ; Biofilm*(k3*Ap);
+  Diffusion_of_Glutamate_from_middle_to_interior_layer: Gm => Gi; Biofilm*(k4*Gm);
+  Production_of_Ammonia_in_middle_layer_using_glutamate: Gm => Am; Biofilm*(k5*Gm);
+  Use_of_glutamate_in_middle_layer_for_biomass_production: Gm => ; Biofilm*(k2*Am*Gm);
 
   // Species initializations:
-  Gp = 1;
+  Gp = 0.999999999999999;
+  Ai = 0.999999999999999;
+  Am = 0.999999999999999;
+  Ap = 0.999999999999999;
+  Gm = 1;
   Gi = 1;
-  A = 1;
-  B = 100000000000;
 
   // Compartment initializations:
-  compartment_ = 1;
+  Biofilm = 1;
 
   // Variable initializations:
-  k1 = 0.3426;
+  k1 = 0.34;
+  k1 has unit_0;
   k2 = 5.3;
+  k2 has unit_0;
   k3 = 4;
+  k3 has unit_1;
   k4 = 2;
+  k4 has unit_2;
   k5 = 2.3;
-  GE = 30;
-  b = 0.1;
+  k5 has unit_2;
+  Ge = 30;
+  Ge has unit_3;
 
   // Other declarations:
-  const compartment_, k1, k2, k3, k4, k5, GE, b;
+  const Biofilm, k1, k2, k3, k4, k5, Ge;
 
   // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = litre;
   unit time_unit = 3600 second;
   unit substance = 1e-3 mole;
+  unit unit_0 = litre / (1e-3 mole * 3600 second);
+  unit unit_1 = 1 / 3600 second;
+  unit unit_2 = 1 / 3600 second;
+  unit unit_3 = 1e-3 mole / litre;
 
   // Display Names:
   time_unit is "time";
-  compartment_ is "compartment";
-  The_uptake_of_glutamate_and_Consumption_of_glutamate_and_ammonia is "The uptake of glutamate and Consumption of glutamate and ammonia";
-  Diffusion_of_glutamate is "Diffusion of glutamate";
-  Consumption_of_glutamate_to_produce_ammonia is "Consumption of glutamate to produce ammonia";
-  Diffusion_of_ammonia is "Diffusion of ammonia";
-  The_synthesis_of_biomass_from_ammonia_and_glutamate is "The synthesis of biomass from ammonia and glutamate";
+  unit_0 is "(mmol/l*h)^-1";
+  unit_1 is "h^-1";
+  unit_2 is "1/h";
+  unit_3 is "mmol/l";
+  Positive_feedback_of_Gp_on_itself is "Positive feedback of Gp on itself";
+  Gp_diffusion_to_the_interior_cells is "Gp diffusion to the interior cells";
+  Biomass_production is "Biomass production";
+  Diffusion_of_Ammonia_from_interior_to_middle_layer is "Diffusion of Ammonia from interior to middle layer";
+  Production_of_Ammonia_using_Glutamate_by_inner_cells is "Production of Ammonia using Glutamate by inner cells";
+  Ammonia_diffusion_from_middle_layer_to_periphery is "Ammonia diffusion from middle layer to periphery";
+  loss_of_Ammonia_du_to_diffusion_to_the_environment is "loss of Ammonia du to diffusion to the environment";
+  Diffusion_of_Glutamate_from_middle_to_interior_layer is "Diffusion of Glutamate from middle to interior layer";
+  Production_of_Ammonia_in_middle_layer_using_glutamate is "Production of Ammonia in middle layer using glutamate";
+  Use_of_glutamate_in_middle_layer_for_biomass_production is "Use of glutamate in middle layer for biomass production";
+
+  // SBO terms:
+  k1.sboTerm = 9
+  k2.sboTerm = 9
+  k3.sboTerm = 9
+  k4.sboTerm = 9
+  k5.sboTerm = 9
 
   // CV terms:
-  Gp property "http://identifiers.org/chebi/CHEBI:32484"
-  Gp property "http://identifiers.org/ncit/C25233"
-  Gi property "http://identifiers.org/chebi/CHEBI:32484"
-  Gi property "http://identifiers.org/ncit/C25234"
-  A property "http://identifiers.org/chebi/CHEBI:16134"
-  B property "http://identifiers.org/sbo/SBO:0000629"
-  The_uptake_of_glutamate_and_Consumption_of_glutamate_and_ammonia property "http://identifiers.org/ncit/C71688"
-  The_uptake_of_glutamate_and_Consumption_of_glutamate_and_ammonia property "http://identifiers.org/sbo/SBO:0000394"
-  Diffusion_of_glutamate property "http://identifiers.org/ncit/C82333"
-  Consumption_of_glutamate_to_produce_ammonia property "http://identifiers.org/sbo/SBO:0000394"
-  Diffusion_of_ammonia property "http://identifiers.org/ncit/C82333"
-  The_synthesis_of_biomass_from_ammonia_and_glutamate property "http://identifiers.org/ncit/C61408"
+  Biofilm identity "http://identifiers.org/bto/BTO:0002690"
+  Gp isVersionOf "http://identifiers.org/chebi/CHEBI:32484"
+  Ai isVersionOf "http://identifiers.org/chebi/CHEBI:16134"
+  Am isVersionOf "http://identifiers.org/chebi/CHEBI:16134"
+  Ap isVersionOf "http://identifiers.org/chebi/CHEBI:16134"
+  Gm isVersionOf "http://identifiers.org/chebi/CHEBI:32484"
+  Gi isVersionOf "http://identifiers.org/chebi/CHEBI:32484"
+  k1 identity "http://identifiers.org/sbo/SBO:0000009"
+  k2 identity "http://identifiers.org/sbo/SBO:0000009"
+  k3 identity "http://identifiers.org/sbo/SBO:0000009"
+  k4 identity "http://identifiers.org/sbo/SBO:0000009"
+  k5 identity "http://identifiers.org/sbo/SBO:0000009"
+  Ge isVersionOf "http://identifiers.org/sbo/SBO:0000299"
+  Positive_feedback_of_Gp_on_itself isVersionOf "http://identifiers.org/sbo/SBO:0000393"
+  Positive_feedback_of_Gp_on_itself isVersionOf "http://identifiers.org/ncit/C82652"
+  Gp_diffusion_to_the_interior_cells isVersionOf "http://identifiers.org/ncit/C82333"
+  Gp_diffusion_to_the_interior_cells isVersionOf "http://identifiers.org/go/GO:0022803"
+  Biomass_production isVersionOf "http://identifiers.org/sbo/SBO:0000393"
+  Diffusion_of_Ammonia_from_interior_to_middle_layer identity "http://identifiers.org/go/GO:0022803"
+  Diffusion_of_Ammonia_from_interior_to_middle_layer isVersionOf "http://identifiers.org/ncit/C82333"
+  Production_of_Ammonia_using_Glutamate_by_inner_cells isVersionOf "http://identifiers.org/sbo/SBO:0000393"
+  Ammonia_diffusion_from_middle_layer_to_periphery isVersionOf "http://identifiers.org/go/GO:0022803"
+  Ammonia_diffusion_from_middle_layer_to_periphery isVersionOf "http://identifiers.org/sbo/C82333"
+  loss_of_Ammonia_du_to_diffusion_to_the_environment isVersionOf "http://identifiers.org/go/GO:0022803"
+  loss_of_Ammonia_du_to_diffusion_to_the_environment isVersionOf "http://identifiers.org/sbo/C82333"
+  Diffusion_of_Glutamate_from_middle_to_interior_layer isVersionOf "http://identifiers.org/go/GO:0022803"
+  Diffusion_of_Glutamate_from_middle_to_interior_layer isVersionOf "http://identifiers.org/sbo/C82333"
+  Production_of_Ammonia_in_middle_layer_using_glutamate isVersionOf "http://identifiers.org/sbo/SBO:0000393"
+  Use_of_glutamate_in_middle_layer_for_biomass_production isVersionOf "http://identifiers.org/sbo/SBO:0000393"
 
-  model origin "http://identifiers.org/go/GO:0006536",
-               "http://identifiers.org/envo/ENVO:00002034",
-               "http://identifiers.org/mamo/MAMO_0000046",
-               "http://identifiers.org/ncit/C28240",
-               "http://identifiers.org/biomodels.teddy/TEDDY_0000072",
-               "http://identifiers.org/taxonomy/1423",
-               "urn:miriam:doi:10.1007/BF01165134"
-  model model_source "http://identifiers.org/biomodels.db/MODEL2004140001",
-                     "http://identifiers.org/biomodels.db/BIOMD0000000932"
-  model taxon "http://identifiers.org/taxonomy/1423"
-  model description "urn:miriam:doi:10.1007/BF01165134",
-                    "http://identifiers.org/pubmed/32257302"
-  model property "http://identifiers.org/go/GO:0006536",
-                 "http://identifiers.org/envo/ENVO:00002034",
-                 "http://identifiers.org/ncit/C28240",
-                 "http://identifiers.org/biomodels.teddy/TEDDY_0000072",
-                 "http://identifiers.org/mamo/MAMO_0000046"
-  model created "2020-04-14T10:47:12Z"
-  model modified "2020-04-14T15:02:34Z"
-  model creator1.givenName "Ahmad"
-  model creator1.familyName "Zyoud"
+  model model_source "http://identifiers.org/biomodels.db/MODEL2204180002",
+                     "http://identifiers.org/biomodels.db/BIOMD0000001053"
+  model occursIn "http://identifiers.org/bto/BTO:0002690"
+  model hasTaxon "http://identifiers.org/taxonomy/1423"
+  model isDescribedBy "http://identifiers.org/doi/10.1038/s41598-020-62526-6"
+  model hasProperty "http://identifiers.org/go/GO:0008152",
+                    "http://identifiers.org/go/GO:0019222",
+                    "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2022-04-18T08:56:21Z"
+  model modified "2022-04-18T08:56:21Z"
+  model creator1.givenName "Mikal"
+  model creator1.familyName "Daou"
   model creator1.organization "EMBL-EBI"
-  model creator1.email "ahmad.azd@hotmail.com"
-
-  // Notes:
-  model notes ```
-Biofilms offer an excellent example of ecological interaction among bacteria. 
-Temporal and spatial oscillations in biofilms are an emerging topic. In this paper, 
-we describe the metabolic oscillations in Bacillus subtilis biofilms by applying 
-the smallest theoretical chemical reaction system showing Hopf bifurcation proposed 
-by Wilhelm and Heinrich in 1995. The system involves three differential equations 
-and a single bilinear term. We specifically select parameters that are suitable for 
-the biological scenario of biofilm oscillations. We perform computer simulations 
-and a detailed analysis of the system including bifurcation analysis and quasi-steady-state 
-approximation. We also discuss the feedback structure of the system and the correspondence 
-of the simulations to biological observations. Our theoretical work suggests potential 
-scenarios about the oscillatory behaviour of biofilms and also serves as an application 
-of a previously described chemical oscillator to a biological system.
-```
+  model creator1.email "mikaldaou@hotmail.com"
 end
 
-Garde2020_Minimal_model_describing_metabolic_oscillations_in_Bacillus_subtilis_biofilms is "Garde2020-Minimal model describing metabolic oscillations in Bacillus subtilis biofilms"
+Garde2020___metabolic_oscillations_in_Bacillus_subtilis_biofilms is "Garde2020 - metabolic oscillations in Bacillus subtilis biofilms"

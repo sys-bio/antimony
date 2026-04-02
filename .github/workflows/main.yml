@@ -1,4 +1,6 @@
 name: BuildAntimony
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true' #for seanmiddleditch/gha-setup-ninja and ilammy/msvc-dev-cmd.
 
 on:
   push:
@@ -15,15 +17,15 @@ jobs:
       fail-fast: false
       matrix:
         platform:
-          - name: macos-13-release
+          - name: macos-15-intel-release
             os_type: macos
-            os_name: macos-13
+            os_name: macos-15-intel
             build_type: Release
             build_python: ON
-            build_qt_antimony: OFF
-          - name: macos-13-debug
+            build_qt_antimony: ON
+          - name: macos-15-intel-debug
             os_type: macos
-            os_name: macos-13
+            os_name: macos-15-intel
             build_type: Debug
             build_python: ON
             build_qt_antimony: OFF
@@ -44,7 +46,7 @@ jobs:
             os_name: ubuntu-latest
             build_type: Release
             build_python: ON
-            build_qt_antimony: OFF
+            build_qt_antimony: ON
           - name: ubuntu-latest-debug
             os_type: ubuntu
             os_name: ubuntu-latest
@@ -57,7 +59,7 @@ jobs:
             expat_lib_name: libexpatmd.lib
             build_type: Release
             build_python: ON
-            build_qt_antimony: OFF
+            build_qt_antimony: ON
           - name: windows-latest-debug
             os_type: windows
             os_name: windows-latest
@@ -82,8 +84,8 @@ jobs:
         libroadrunner_deps_owner: [ "sys-bio" ]
         libroadrunner_deps_repo: [ "libroadrunner-deps" ]
         libroadrunner_deps_name: [ "libroadrunner-deps" ]
-        libroadrunner_deps_release_version: [ "v2.2.18" ]
-        python_version: [ "3.12" ]
+        libroadrunner_deps_release_version: [ "v2.3.1" ]
+        python_version: [ "3.13" ]
 
     runs-on: ${{ matrix.platform.os_name }}
     container:
@@ -91,7 +93,7 @@ jobs:
 
     steps:
       - name: Checkout Antimony
-        uses: actions/checkout@v4
+        uses: actions/checkout@main
 
       - name: Set MSVC as the default compiler on Windows
         if: matrix.platform.os_type == 'windows'
@@ -116,7 +118,8 @@ jobs:
           fi
 
       - name: Setup Ninja
-        uses: seanmiddleditch/gha-setup-ninja@v5
+        if: matrix.platform.os_type == 'manylinux'
+        uses: seanmiddleditch/gha-setup-ninja@master
 
       - name: Get Host Architecture
         shell: bash
@@ -168,7 +171,7 @@ jobs:
 
       - name: Cache ccache files on non-Windows
         if: matrix.platform.os_type != 'windows'
-        uses: actions/cache@v4
+        uses: actions/cache@main
         with:
           path: ${RUNNER_WORKSPACE}/.ccache
           key:
@@ -180,7 +183,7 @@ jobs:
 
       - name: Setup Python for non-Manylinux platforms
         if: matrix.platform.build_python == 'ON' && matrix.platform.os_type != 'manylinux'
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@main
         with:
           python-version: ${{ matrix.python_version }}
 
@@ -233,10 +236,10 @@ jobs:
           curl -LO "https://github.com/${{ matrix.libroadrunner_deps_owner }}/${{ matrix.libroadrunner_deps_repo }}/releases/download/${{ matrix.libroadrunner_deps_release_version }}/$binary_file_name.zip"
           unzip -q $binary_file_name.zip
           rm $binary_file_name.zip
-          echo LIBSBML_INSTALL_DIR="-DLIBSBML_INSTALL_DIR=${RUNNER_WORKSPACE}/${{ matrix.libroadrunner_deps_name }}-binaries" >> "${GITHUB_ENV}"
-          if [ "${{ matrix.platform.os_type }}" == 'windows' ]; then
-            echo EXPAT_LIBRARY="-DEXPAT_LIBRARY=${RUNNER_WORKSPACE}/${{ matrix.libroadrunner_deps_name }}-binaries/lib/${{ matrix.platform.expat_lib_name }}" >> "${GITHUB_ENV}"
-          fi
+          echo ANT_DEPENDENCIES_INSTALL_PREFIX="-DANT_DEPENDENCIES_INSTALL_PREFIX=${RUNNER_WORKSPACE}/${{ matrix.libroadrunner_deps_name }}-binaries" >> "${GITHUB_ENV}"
+          #if [ "${{ matrix.platform.os_type }}" == 'windows' ]; then
+          #  echo EXPAT_LIBRARY="-DEXPAT_LIBRARY=${RUNNER_WORKSPACE}/${{ matrix.libroadrunner_deps_name }}-binaries/lib/${{ matrix.platform.expat_lib_name }}" >> "${GITHUB_ENV}"
+          #fi
 
       - name: Install libcheck
         shell: bash
@@ -271,7 +274,10 @@ jobs:
         if : matrix.platform.build_qt_antimony == 'ON'
         uses: jurplel/install-qt-action@v4
         with:
-          version: '5.15.16'
+          version: '5.15.2'
+          #extra: '--base https://mirrors.dotsrc.org/qtproject --UNSAFE-ignore-hash'
+          #aqtsource: 'git+https://github.com/Kidev/aqtinstall.git@fix_linux_version'
+          #aqtsource: 'git+https://github.com/miurahr/aqtinstall.git@master'
 
       - name: Create build directory
         shell: bash
@@ -290,10 +296,9 @@ jobs:
           -DCMAKE_OSX_ARCHITECTURES=${{ matrix.platform.arch }} \
           -DCMAKE_INSTALL_PREFIX="${RUNNER_WORKSPACE}/install-antimony" \
           -DWITH_STATIC_SBML=ON \
-          ${LIBSBML_INSTALL_DIR} \
+          ${ANT_DEPENDENCIES_INSTALL_PREFIX} \
           -DWITH_QTANTIMONY=${{ matrix.platform.build_qt_antimony }} \
           -DWITH_LIBSBML_EXPAT=ON \
-          ${EXPAT_LIBRARY} \
           -DWITH_LIBSBML_LIBXML=OFF \
           -DWITH_CHECK=ON \
           ${LIBCHECK_INCLUDE_DIR} \
@@ -322,7 +327,7 @@ jobs:
           echo "artifacts_path=${RUNNER_WORKSPACE}/install-antimony" >> "${GITHUB_ENV}"
 
       - name: Upload Antimony binaries
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@main
         with:
           name: ${{env.artifacts_name}}
           path: ${{env.artifacts_path}}
@@ -369,7 +374,7 @@ jobs:
 
       - name: Upload Python wheel artifacts
         if: matrix.platform.build_type == 'Release' && matrix.platform.build_python == 'ON'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@main
         with:
           name: ${{env.python_wheel_artifacts_name}}
           path: ${{env.python_wheel_artifacts_file}}

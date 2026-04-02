@@ -386,16 +386,12 @@ void TabManager::TranslateAntimony(QString& text)
 				tabnum = nummods+m_sbmltab-1;
 			}
 			ChangeableTextBox* tab_s = textbox(tabnum);
-#ifdef USE_COMP
       if (m_flatten) {
         tab_s->SetTranslatedText(QString(getSBMLString(modname)));
       }
       else {
         tab_s->SetTranslatedText(QString(getCompSBMLString(modname)));
       }
-#else
-      tab_s->SetTranslatedText(QString(getSBMLString(modname)));
-#endif
       tab_s->SetModelName(QString(modname));
 			setTabText(tabnum, tab_s->GetTabName());
 		}
@@ -510,16 +506,12 @@ void TabManager::TranslateCellML(QString& text)
 				tabnum = nummods+m_sbmltab-1;
             }
             ChangeableTextBox* tab_s = textbox(tabnum);
-#ifdef USE_COMP
             if (m_flatten) {
               tab_s->SetTranslatedText(QString(getSBMLString(modname)));
             }
             else {
               tab_s->SetTranslatedText(QString(getCompSBMLString(modname)));
             }
-#else
-            tab_s->SetTranslatedText(QString(getSBMLString(modname)));
-#endif
             tab_s->SetModelName(QString(modname));
             setTabText(tabnum, tab_s->GetTabName());
             tabnum++;
@@ -587,9 +579,6 @@ void TabManager::SetAllSBMLLevelsAndVersions()
 
 void TabManager::SetFlatten(bool flatten)
 {
-#ifndef USE_COMP
-  flatten = false;
-#endif
   AntimonyTab* anttab = static_cast<AntimonyTab*>(textbox(m_anttab));
   anttab->SetFlatten(flatten);
   if (m_flatten==flatten) return; //Don't try to switch anything.
@@ -598,9 +587,7 @@ void TabManager::SetFlatten(bool flatten)
   for (int tnum=m_sbmltab; tnum<count(); tnum++) {
     SBMLTab* sbmltab = static_cast<SBMLTab*>(textbox(tnum));
     QString SBML;
-#ifdef USE_COMP
     if (flatten) {
-#endif
       int ret = loadSBMLStringWithLocation(sbmltab->toPlainText().toLatin1(), sbmltab->GetFilename().toLatin1());
       if (ret==-1) {
         //Error in the SBML itself.
@@ -610,7 +597,6 @@ void TabManager::SetFlatten(bool flatten)
         continue;
       }
       SBML = getSBMLString(NULL);
-#ifdef USE_COMP
     }
     else {
       QString modelname = sbmltab->GetModelName();
@@ -620,7 +606,6 @@ void TabManager::SetFlatten(bool flatten)
         sbmltab->StoreLevelAndVersion(3, 2);
       }
     }
-#endif
     sbmltab->SetTranslatedText(SBML);
   }
   clearPreviousLoads();

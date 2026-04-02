@@ -132,8 +132,6 @@ bool LayoutWrapper::SetFormula(Formula* formula, bool isObjective)
 
     if (IsPair(m_layout_type)) {
         //Only Vectors of length 2 are allowed for these types
-        //We're only going to be able to check this in SBML mode
-#ifndef NSBML
         ASTNode* astn = parseStringToASTNode(formula->ToSBMLString());
         if (!astn || astn->getType() != AST_LINEAR_ALGEBRA_VECTOR || astn->getNumChildren() != 2) {
             g_registry.SetError("Unable to set the value of '" + GetNameDelimitedBy(".") + "' to be '" + formula->ToDelimitedStringWithEllipses(".") + "':  a layout parameter of type " + LayoutTypeToString(m_layout_type) + " must be a vector of length two, marked with curly brackets (i.e. '{150, 200}').");
@@ -236,7 +234,6 @@ bool LayoutWrapper::SetFormula(Formula* formula, bool isObjective)
         g_registry.SetError("Unable to set the value of '" + GetNameDelimitedBy(".") + "' to be '" + formula->ToDelimitedStringWithEllipses(".") + "':  this layout parameter must only be a single value or a single variable.");
         return true;
     }
-#endif
     return false;
 }
 
@@ -391,7 +388,7 @@ bool LayoutWrapper::TransferLayoutInformationTo(SBMLDocument* sbml)
         }
     }
     string glyphId = LIBSBMLNETWORK_CPP_NAMESPACE::getId(sbml, 0, sid, m_aliasNum);
-    if (m_layout_type == lt_sourceSink) {
+    if (m_speciesId == "--") {
         bool ret = false;
         //We need to find the ID that SBMLNetwork has given to the source/sink glyph:
         size_t nreactants = m_parent->GetReaction()->GetLeft()->Size();
@@ -407,19 +404,47 @@ bool LayoutWrapper::TransferLayoutInformationTo(SBMLDocument* sbml)
                 break;
             }
         }
-        for (size_t lw = 0; lw < m_layoutWrappers.size(); lw++) {
-            ret = ret || m_layoutWrappers[lw]->TransferLayoutInformationTo(sbml);
-        }
-        return ret;
+    }
+
+    if (m_layout_type == lt_sourceSink) {
+      bool ret = false;
+      for (size_t lw = 0; lw < m_layoutWrappers.size(); lw++) {
+        ret = ret || m_layoutWrappers[lw]->TransferLayoutInformationTo(sbml);
+      }
+      return ret;
     }
 
     string formstring = m_valFormula.ToSBMLString();
     if (formstring.empty()) {
+        //assert(false);
+      if (m_layoutWrappers.size() == 0) {
         assert(false);
-        return true;
+      }
+      for (size_t lw = 0; lw < m_layoutWrappers.size(); lw++) {
+        m_layoutWrappers[lw]->TransferLayoutInformationTo(sbml);
+      }
+      return false;
     }
     ASTNode* astn = parseStringToASTNode(formstring);
     string error = "Unable to set " + sid + "." + LayoutTypeToString(m_layout_type) + " to " + formstring + ".";
+    // Handle individual reaction arc colors and line widths.
+    LayoutWrapper* lw = static_cast<LayoutWrapper*>(m_parent);
+    if (m_parent->GetType() == varLayoutWrapper && lw->m_layout_type == lt_reactionArc) {
+      sid = lw->m_parent->GetNameDelimitedBy("_");
+      int speciesIndex = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceIndexAssociatedWithSpecies(sbml, lw->m_speciesId, sid, lw->m_aliasNum, lw->m_speciesIndex);
+      switch (m_layout_type) {
+      case lt_linecolor:
+        return LIBSBMLNETWORK_CPP_NAMESPACE::setStrokeColor(sbml, LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReference(sbml, sid, 0, speciesIndex), formstring) == -1;
+      case lt_linewidth:
+        return LIBSBMLNETWORK_CPP_NAMESPACE::setStrokeWidth(sbml, LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReference(sbml, sid, 0, speciesIndex), astn->getValue()) == -1;
+      case lt_position:
+      default:
+        stringstream err;
+        err << "Cannot set the " << LayoutTypeToString(m_layout_type) << " for a reaction arc.  The only options are the line color ('linecolor') and width ('linewidth').";
+        g_registry.AddWarning(err.str());
+        return true;
+      }
+    }
     if (IsPair(m_layout_type)) {
         //The content should already be checked.
         assert(astn->getNumChildren() == 2);
@@ -1051,7 +1076,7 @@ bool LayoutWrapper::setSegmentNumber(const std::string* type)
     regex segNum("^seg([0-9]+)$");
     std::smatch m;
     if (regex_search(*type, m, segNum)) {
-        m_speciesIndex = stoi(m[1].str()) - 1;
+        m_segmentIndex = stoi(m[1].str()) - 1;
         return false;
     }
     return true;
@@ -1084,7 +1109,9 @@ Variable* LayoutWrapper::GetSubVariable(const std::string* name)
     int aliasNum = -1;
     GetLayoutTypeAndNumFromString(*name, ltype, aliasNum);
     if (ltype != lt_unknown) {
-        m_layout_type = lt_sourceSink;
+        if (m_speciesId == "--") {
+            m_layout_type = lt_sourceSink;
+        }
         return AddOrGetLayoutWrapper(ltype, aliasNum, m_aliasReactionConnections);
     }
     if (m_layout_type == lt_reactionArc) {

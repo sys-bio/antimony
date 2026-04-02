@@ -1,32 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<sbml xmlns="http://www.sbml.org/sbml/level3/version2/core" xmlns:comp="http://www.sbml.org/sbml/level3/version1/comp/version1" xmlns:fbc="http://www.sbml.org/sbml/level3/version1/fbc/version1" level="3" version="2" comp:required="true" fbc:required="false">
-  <model metaid="__main" id="__main">
+<!-- Created by libAntimony version v3.0.0 with libSBML version 5.20.5. -->
+<sbml xmlns="http://www.sbml.org/sbml/level3/version2/core" xmlns:fbc="http://www.sbml.org/sbml/level3/version1/fbc/version3" level="3" version="2" fbc:required="false">
+  <model metaid="__main" id="__main" fbc:strict="false">
     <listOfCompartments>
       <compartment sboTerm="SBO:0000410" id="default_compartment" spatialDimensions="3" size="1" constant="true"/>
     </listOfCompartments>
     <listOfSpecies>
       <species id="s1" compartment="default_compartment" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
     </listOfSpecies>
-    <listOfConstraints>
-      <constraint metaid="__main__con0">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <apply>
-            <gt/>
-            <ci> J0 </ci>
-            <cn type="integer"> 0 </cn>
-          </apply>
-        </math>
-      </constraint>
-    </listOfConstraints>
+    <listOfParameters>
+      <parameter id="fb_0" value="0" constant="true"/>
+    </listOfParameters>
     <listOfReactions>
-      <reaction id="J0" reversible="true">
+      <reaction id="J0" reversible="true" fbc:lowerFluxBound="fb_0">
         <listOfReactants>
           <speciesReference species="s1" stoichiometry="1" constant="true"/>
         </listOfReactants>
       </reaction>
     </listOfReactions>
-    <fbc:listOfFluxBounds>
-      <fbc:fluxBound fbc:id="_con0" fbc:reaction="J0" fbc:operation="greaterEqual" fbc:value="0"/>
-    </fbc:listOfFluxBounds>
   </model>
 </sbml>

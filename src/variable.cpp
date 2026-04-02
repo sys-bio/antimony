@@ -13,6 +13,7 @@
 #include <sbmlnetwork/libsbmlnetwork_sbmldocument_layout.h>
 #ifdef LIBSBML_HAS_PACKAGE_DISTRIB
 #include <sbml/packages/distrib/extension/DistribSBasePlugin.h>
+#include <sbml/packages/fbc/extension/FbcSpeciesPlugin.h>
 #endif
 
 using namespace std;
@@ -173,7 +174,11 @@ formula_type Variable::GetFormulaType() const
   case varUncertWrapper:
   case varLayoutWrapper:
   case varLayoutColorEtc:
-      return formulaINITIAL; //For lack of any other default.
+  case varGeneProduct:
+  case varGeneProductAssociation:
+  case varSpeciesCharge:
+  case varSpeciesChemicalFormula:
+    return formulaINITIAL; //For lack of any other default.
   }
   assert(false); //uncaught variable type;
   return m_formulatype;
@@ -196,6 +201,9 @@ const Formula* Variable::GetFormula() const
   case varLayoutWrapper:
   case varStoichiometry:
   case varAlgebraicRule:
+  case varGeneProduct:
+  case varGeneProductAssociation:
+  case varSpeciesCharge:
     return &(m_valFormula);
   case varReactionUndef:
   case varReactionGene:
@@ -209,6 +217,7 @@ const Formula* Variable::GetFormula() const
     return m_valStrand.GetFinalFormula();
   case varDeleted:
   case varLayoutColorEtc:
+  case varSpeciesChemicalFormula:
     return &(g_registry.m_blankform);
   case varConstraint:
     return m_valConstraint.GetFormula();
@@ -238,6 +247,9 @@ Formula* Variable::GetFormula()
   case varLayoutWrapper:
   case varStoichiometry:
   case varAlgebraicRule:
+  case varGeneProduct:
+  case varGeneProductAssociation:
+  case varSpeciesCharge:
     return &(m_valFormula);
   case varReactionUndef:
   case varReactionGene:
@@ -251,7 +263,8 @@ Formula* Variable::GetFormula()
     return m_valStrand.GetFinalFormula();
   case varDeleted:
   case varLayoutColorEtc:
-      return &(g_registry.m_blankform);
+  case varSpeciesChemicalFormula:
+    return &(g_registry.m_blankform);
   case varConstraint:
     return m_valConstraint.GetFormula();
   case varSboTermWrapper:
@@ -298,7 +311,11 @@ const Formula* Variable::GetInitialAssignment() const
   case varConstraint:
   case varSboTermWrapper:
   case varLayoutColorEtc:
-      return &(g_registry.m_blankform);
+  case varGeneProduct:
+  case varGeneProductAssociation:
+  case varSpeciesCharge:
+  case varSpeciesChemicalFormula:
+    return &(g_registry.m_blankform);
   }
   assert(false); //uncaught type
   return &(g_registry.m_blankform);
@@ -340,7 +357,11 @@ const Formula* Variable::GetAssignmentRuleOrKineticLaw() const
   case varLayoutWrapper:
   case varLayoutColorEtc:
   case varAlgebraicRule:
-      return &(g_registry.m_blankform);
+  case varGeneProduct:
+  case varGeneProductAssociation:
+  case varSpeciesCharge:
+  case varSpeciesChemicalFormula:
+    return &(g_registry.m_blankform);
   }
   assert(false); //uncaught type
   return &(g_registry.m_blankform);
@@ -382,7 +403,11 @@ Formula* Variable::GetAssignmentRuleOrKineticLaw()
   case varLayoutWrapper:
   case varLayoutColorEtc:
   case varAlgebraicRule:
-      return &(g_registry.m_blankform);
+  case varGeneProduct:
+  case varGeneProductAssociation:
+  case varSpeciesCharge:
+  case varSpeciesChemicalFormula:
+    return &(g_registry.m_blankform);
   }
   assert(false); //uncaught type
   return &(g_registry.m_blankform);
@@ -519,16 +544,67 @@ Variable* Variable::GetSubVariable(const string* name)
       m_sboTermWrapper = new SboTermWrapper(this);
     return m_sboTermWrapper;
   }
-  if (IsReaction(m_type)) {
-      Module* mod = g_registry.GetModule(m_module);
-      Variable* var = mod->GetSubVariable(name);
-      if ((var != NULL && IsSpecies(var->GetType())) || *name == "--") {
-          LayoutWrapper* lw = GetReactionArcLayoutWrapper(name);
-          lw->setSpeciesIndex(0);
-          lw->setSegmentIndex(0);
-          return lw;
-      }
+  if (name && CaselessStrCmp(true, *name, "associatedSpecies")) {
+    if (SetType(varGeneProduct)) {
+      g_registry.SetError("Unable to set the associated species of " + GetNameDelimitedBy(".") + " because it is a " + VarTypeToString(GetType()) + ", and not a gene product.");
+      return NULL;
+    }
+    return this;
   }
+  Module* mod = g_registry.GetModule(m_module);
+  if (IsReaction(m_type)) {
+    if (name && (CaselessStrCmp(true, *name, "geneProductAssociation") || CaselessStrCmp(true, *name, "gpa"))) {
+      string fakeid = m_name[m_name.size() - 1] + "-gpa";
+      Variable* newgpa = mod->AddOrFindVariable(&fakeid);
+      if (newgpa->SetType(varGeneProductAssociation)) {
+        assert(false);
+        g_registry.SetError("Unable to set the gene product association for " + GetNameDelimitedBy(".") + " because its '-gpa' is already a " + VarTypeToString(newgpa->GetType()) + ", and cannot be changed to a gene product association variable.  This should not happen; please contact the Antimony developers with this message and your model.");
+        delete newgpa;
+        return NULL;
+      }
+      return newgpa;
+    }
+    Variable* var = mod->GetSubVariable(name);
+    if ((var != NULL && IsSpecies(var->GetType())) || *name == "--") {
+      LayoutWrapper* lw = GetReactionArcLayoutWrapper(name);
+      lw->setSpeciesIndex(0);
+      lw->setSegmentIndex(0);
+      return lw;
+    }
+  }
+  if (name && (CaselessStrCmp(true, *name, "charge"))) {
+    if (SetType(varSpeciesUndef)) {
+      g_registry.SetError("Unable to set the charge for " + GetNameDelimitedBy(".") + " because that variable cannot be a species, and only species may have a charge.");
+      return NULL;
+    }
+    string fakeid = m_name[m_name.size() - 1] + "-charge";
+    Variable* newcharge = mod->AddOrFindVariable(&fakeid);
+    if (newcharge->SetType(varSpeciesCharge)) {
+      assert(false);
+      g_registry.SetError("Unable to set the charge for " + GetNameDelimitedBy(".") + " because its '-charge' is already a " + VarTypeToString(newcharge->GetType()) + ", and cannot be changed to a charge variable.  This should not happen; please contact the Antimony developers with this message and your model.");
+      g_registry.SetError("Unable to set the charge for " + GetNameDelimitedBy(".") + " because its '-charge' is already a " + VarTypeToString(newcharge->GetType()) + ", and cannot be changed to a charge variable.  This should not happen; please contact the Antimony developers with this message and your model.");
+      delete newcharge;
+      return NULL;
+    }
+    return newcharge;
+  }
+  if (name && (CaselessStrCmp(true, *name, "formula") || CaselessStrCmp(true, *name, "chemicalFormula"))) {
+    if (SetType(varSpeciesUndef)) {
+      g_registry.SetError("Unable to set the chemical formula for " + GetNameDelimitedBy(".") + " because that variable cannot be a species, and only species may have a charge.");
+      return NULL;
+    }
+    string fakeid = m_name[m_name.size() - 1] + "-formula";
+    Variable* newform = mod->AddOrFindVariable(&fakeid);
+    if (newform->SetType(varSpeciesChemicalFormula)) {
+      assert(false);
+      g_registry.SetError("Unable to set the chemical formula for " + GetNameDelimitedBy(".") + " because its '-formula' is already a " + VarTypeToString(newform->GetType()) + ", and cannot be changed to a chemical formula variable.  This should not happen; please contact the Antimony developers with this message and your model.");
+      delete newform;
+      return NULL;
+    }
+    return newform;
+  }
+
+
   uncert_type utype = UncertStringToType(*name);
   if (name && utype != unUnknown) {
     return AddOrGetUncertWrapper(utype);
@@ -653,7 +729,11 @@ bool Variable::GetIsConst() const
   case varUncertWrapper:
   case varLayoutWrapper:
   case varLayoutColorEtc:
-      return true;
+  case varGeneProduct:
+  case varGeneProductAssociation:
+  case varSpeciesCharge:
+  case varSpeciesChemicalFormula:
+    return true;
   }
   switch(m_const) {
   case constCONST:
@@ -869,7 +949,11 @@ bool Variable::SetType(var_type newtype)
     case varLayoutWrapper:
     case varStoichiometry:
     case varAlgebraicRule:
-        g_registry.SetError(error); return true;
+    case varGeneProduct:
+    case varGeneProductAssociation:
+    case varSpeciesCharge:
+    case varSpeciesChemicalFormula:
+      g_registry.SetError(error); return true;
     }
   case varFormulaUndef:
     switch(newtype) {
@@ -897,12 +981,18 @@ bool Variable::SetType(var_type newtype)
       if (m_valUnitDef.SetFromFormula(&m_valFormula)) return true;
       m_valFormula.Clear();
       return false;
+    case varGeneProduct:
+    case varGeneProductAssociation:
+    case varSpeciesCharge:
+      m_type = newtype;
+        return (SetFormula(&m_valFormula));
     case varModule:
     case varStrand:
     case varSboTermWrapper:
     case varUncertWrapper:
     case varLayoutWrapper:
-        g_registry.SetError(error); return true;
+    case varSpeciesChemicalFormula:
+      g_registry.SetError(error); return true;
     case varLayoutColorEtc:
     case varUndefined:
       return false;
@@ -935,7 +1025,11 @@ bool Variable::SetType(var_type newtype)
     case varLayoutWrapper:
     case varStoichiometry:
     case varAlgebraicRule:
-        g_registry.SetError(error); return true;
+    case varGeneProduct:
+    case varGeneProductAssociation:
+    case varSpeciesCharge:
+    case varSpeciesChemicalFormula:
+      g_registry.SetError(error); return true;
     }
   case varFormulaOperator:
     switch(newtype) {
@@ -961,7 +1055,11 @@ bool Variable::SetType(var_type newtype)
     case varStoichiometry:
     case varLayoutWrapper:
     case varAlgebraicRule:
-        g_registry.SetError(error); return true;
+    case varGeneProduct:
+    case varGeneProductAssociation:
+    case varSpeciesCharge:
+    case varSpeciesChemicalFormula:
+      g_registry.SetError(error); return true;
     }
   case varReactionGene:
     switch(newtype) {
@@ -987,7 +1085,11 @@ bool Variable::SetType(var_type newtype)
     case varLayoutWrapper:
     case varStoichiometry:
     case varAlgebraicRule:
-        g_registry.SetError(error); return true;
+    case varGeneProduct:
+    case varGeneProductAssociation:
+    case varSpeciesCharge:
+    case varSpeciesChemicalFormula:
+      g_registry.SetError(error); return true;
     }
   case varReactionUndef:
     switch(newtype) {
@@ -1015,7 +1117,11 @@ bool Variable::SetType(var_type newtype)
     case varLayoutWrapper:
     case varStoichiometry:
     case varAlgebraicRule:
-        g_registry.SetError(error); return true;
+    case varGeneProduct:
+    case varGeneProductAssociation:
+    case varSpeciesCharge:
+    case varSpeciesChemicalFormula:
+      g_registry.SetError(error); return true;
     }
   case varInteraction:
   case varEvent:
@@ -1041,7 +1147,11 @@ bool Variable::SetType(var_type newtype)
   case varUncertWrapper:
   case varLayoutWrapper:
   case varAlgebraicRule:
-      g_registry.SetError(error); return true; //the already-identical cases handled above.
+  case varGeneProduct:
+  case varGeneProductAssociation:
+  case varSpeciesCharge:
+  case varSpeciesChemicalFormula:
+    g_registry.SetError(error); return true; //the already-identical cases handled above.
     return true;
   }
 
@@ -1054,8 +1164,10 @@ bool Variable::SetFormula(Formula* formula, bool isObjective)
   if (IsPointer()) {
     return GetSameVariable()->SetFormula(formula);
   }
-#ifndef NSBML
   string formstring = formula->ToSBMLString(GetStrandVars());
+  if (m_type == varSpeciesChemicalFormula) {
+    return SetDisplayName(formstring);
+  }
   if (formstring.size() > 0) {
     ASTNode_t* ASTform = parseStringToASTNode(formstring);
     if (ASTform == NULL) {
@@ -1069,7 +1181,6 @@ bool Variable::SetFormula(Formula* formula, bool isObjective)
     }
     delete ASTform;
   }
-#endif
   if (m_type != varLayoutWrapper && formula->ContainsVar(this)) {
     g_registry.SetError("Loop detected:  " + GetNameDelimitedBy(".") + "'s definition (" + formula->ToDelimitedStringWithEllipses(".") + ") either includes itself directly (i.e. 's5 = 6 + s5') or by proxy (i.e. 's5 = 8*d3' and 'd3 = 9*s5').");
     return true;
@@ -1080,7 +1191,7 @@ bool Variable::SetFormula(Formula* formula, bool isObjective)
     return true;
   }
 
-  if (m_type != varLayoutWrapper && formula->SetWithLiteralStrings()) {
+  if (m_type != varLayoutWrapper && m_type != varSpeciesChemicalFormula && formula->SetWithLiteralStrings()) {
       g_registry.SetError("Cannot set the value of " + GetNameDelimitedBy(".") + " to '" + formula->ToDelimitedStringWithEllipses(".") + "' because literal strings are not allowed in formulas for this variable.");
       return true;
   }
@@ -1131,8 +1242,8 @@ bool Variable::SetFormula(Formula* formula, bool isObjective)
     m_valFormula = *formula;
     break;
   case varAlgebraicRule:
-      g_registry.SetError("Cannot set '" + GetNameDelimitedBy(".") + "' to have the initial value '" + formula->ToDelimitedStringWithEllipses(".") + "' because it is an algebraic rule, which applies at all times, including time=0.");
-      return true;
+    g_registry.SetError("Cannot set '" + GetNameDelimitedBy(".") + "' to have the initial value '" + formula->ToDelimitedStringWithEllipses(".") + "' because it is an algebraic rule, which applies at all times, including time=0.");
+    return true;
   case varUnitDefinition:
     if (formula->MakeAllVariablesUnits()) return true;
     if (m_valUnitDef.SetFromFormula(formula)) return true;
@@ -1153,8 +1264,58 @@ bool Variable::SetFormula(Formula* formula, bool isObjective)
   case varSboTermWrapper:
     assert(false); //Should be handled by overridden function.
     break;
+  case varGeneProduct:
+    if (!(formula->IsSingleVariable() || formula->IsEmpty())) {
+      g_registry.SetError("Cannot set the associated species of '" + GetNameDelimitedBy(".") + "' to be " + formula->ToDelimitedStringWithEllipses(".") + ".  The associated species must be the ID of a species in the model.");
+      return true;
+    }
+    else {
+      vector<Variable*> vars = formula->GetVariables();
+      if (vars.size() == 1) {
+        Variable* spec = vars[0];
+        if (spec->SetType(varSpeciesUndef)) {
+          g_registry.SetError("Cannot set the associated species of '" + GetNameDelimitedBy(".") + "' to be " + formula->ToDelimitedStringWithEllipses(".") + ", because that variable is not a species.");
+          return true;
+        }
+      }
+    }
+    m_valFormula = *formula;
+    break;
+  case varGeneProductAssociation:
+  {
+    string rxnid = GetNameDelimitedBy(".");
+    rxnid.replace(rxnid.find("-gpa"), 4, "");
+    if (!formula->isValidGeneProductAssociation()) {
+      g_registry.SetError("Cannot set the gene product association for " + rxnid + "' to be " + formula->ToDelimitedStringWithEllipses(".") + ", because that formula is not a simple combination of 'and's and 'or's of gene products (i.e. '(gp1 && gp2) || (gp2 && gp3)').");
+      return true;
+    }
+    else {
+      vector<Variable*> vars = formula->GetVariables();
+      for (size_t v = 0; v < vars.size(); v++) {
+        if (vars[v]->SetType(varGeneProduct)) {
+          g_registry.SetError("Cannot set the gene product association for " + rxnid + "' to be " + formula->ToDelimitedStringWithEllipses(".") + ", because the variable '" + vars[v]->GetNameDelimitedBy(".") + "' is not a gene product.");
+          return true;
+        }
+      }
+    }
+    m_valFormula = *formula;
+    break;
   }
-#ifndef NSBML
+  case varSpeciesCharge:
+  {
+    string specid = GetNameDelimitedBy(".");
+    specid.replace(specid.find("-charge"), 7, "");
+    if (!formula->IsDouble()) {
+      g_registry.SetError("Cannot set the charge of " + specid + "' to be " + formula->ToDelimitedStringWithEllipses(".") + ", because it must be set to just a number.");
+      return true;
+    }
+    m_valFormula = *formula;
+    break;
+  }
+  case varSpeciesChemicalFormula:
+    g_registry.SetError("Cannot set '" + GetNameDelimitedBy(".") + "' to be " + formula->ToDelimitedStringWithEllipses(".") + " because a chemical formula must be defined by a string, i.e. S1.chemicalFormula is \"CH4O2\".");
+    return true;
+  }
   if (!isObjective) {
     if (m_valFormula.MakeUnitVariablesUnits()) return true;
     ASTNode* root = parseStringToASTNode(m_valFormula.ToSBMLString());
@@ -1168,7 +1329,6 @@ bool Variable::SetFormula(Formula* formula, bool isObjective)
     }
     delete root;
   }
-#endif
   return false;
 }
 
@@ -1177,7 +1337,6 @@ bool Variable::SetAssignmentRule(Formula* formula)
   if (IsPointer()) {
     return GetSameVariable()->SetAssignmentRule(formula);
   }
-#ifndef NSBML
   string formstring = formula->ToSBMLString(GetStrandVars());
   if (formstring.size() > 0) {
     ASTNode_t* ASTform = parseStringToASTNode(formstring);
@@ -1191,7 +1350,6 @@ bool Variable::SetAssignmentRule(Formula* formula)
       delete ASTform;
     }
   }
-#endif
   if (formula->ContainsVar(this)) {
     g_registry.SetError("Loop detected:  " + GetNameDelimitedBy(".") + "'s definition (" + formula->ToDelimitedStringWithEllipses(".") + ") either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').");
     return true;
@@ -1237,7 +1395,6 @@ bool Variable::SetRateRule(Formula* formula)
   if (IsPointer()) {
     return GetSameVariable()->SetRateRule(formula);
   }
-#ifndef NSBML
   string formstring = formula->ToSBMLString(GetStrandVars());
   if (formstring.size() > 0) {
     ASTNode_t* ASTform = parseStringToASTNode(formstring);
@@ -1251,7 +1408,6 @@ bool Variable::SetRateRule(Formula* formula)
       delete ASTform;
     }
   }
-#endif
   //if (formula->ContainsVar(this));  //Rate rules may indeed contain references to themselves!
   if (!CanHaveRateRule(m_type)) {
     g_registry.SetError("The variable '" + GetNameDelimitedBy(".") + "' is the type " + VarTypeToString(m_type) + ", and may not have a rate rule associated with it.");
@@ -1288,7 +1444,6 @@ bool Variable::SetAlgebraicRule(double val, Formula* formula)
         formula->AddMathThing('-');
         formula->AddNum(val);
     }
-#ifndef NSBML
     string formstring = formula->ToSBMLString(GetStrandVars());
     if (formstring.size() > 0) {
         ASTNode_t* ASTform = parseStringToASTNode(formstring);
@@ -1302,7 +1457,6 @@ bool Variable::SetAlgebraicRule(double val, Formula* formula)
             delete ASTform;
         }
     }
-#endif
     if (!CanHaveAlgebraicRule(m_type)) {
         g_registry.SetError("The variable '" + GetNameDelimitedBy(".") + "' is the type " + VarTypeToString(m_type) + ", and may not have an algebraic rule associated with it.");
         return true;
@@ -1347,7 +1501,6 @@ bool Variable::SetReaction(AntimonyReaction* rxn)
     g_registry.SetError("Curly brackets detected in the reaction rate: '" + rxn->GetFormula()->ToDelimitedStringWithEllipses(".") + "': vectors are not supported in the current version of Antimony apart from their use in setting certain uncertainty parameters.");
     return true;
   }
-#ifndef NSBML
   string formstring = rxn->GetFormula()->ToSBMLString(GetStrandVars());
   if (formstring.size() > 0) {
     ASTNode_t* ASTform = parseStringToASTNode(formstring);
@@ -1361,7 +1514,6 @@ bool Variable::SetReaction(AntimonyReaction* rxn)
       delete ASTform;
     }
   }
-#endif
   string err = "When defining reaction '" + GetNameDelimitedBy(".") + "':  ";
   if (rxn->GetLeft()->SetComponentTypesTo(varSpeciesUndef)) {
     g_registry.AddErrorPrefix(err);
@@ -1533,18 +1685,6 @@ bool Variable::SetIsConst(bool constant)
       return true;
     }
     break;
-  case varAlgebraicRule:
-      if (!constant) {
-          g_registry.SetError(error + ", as 'constantness' is undefined for algebraic rules.");
-          return true;
-      }
-      break;
-  case varStrand:
-    if (!constant) {
-      g_registry.SetError(error + ", as 'constantness' is undefined for DNA strands.");
-      return true;
-    }
-    break;
   case varUnitDefinition:
     if (!constant) {
       g_registry.SetError(error + ", as 'constantness' is undefined for unit definitions.");
@@ -1569,9 +1709,15 @@ bool Variable::SetIsConst(bool constant)
           return true;
       }
       break;
+  case varAlgebraicRule:
+  case varStrand:
   case varConstraint:
+  case varGeneProduct:
+  case varGeneProductAssociation:
+  case varSpeciesCharge:
+  case varSpeciesChemicalFormula:
     if (!constant) {
-      g_registry.SetError(error + ", as 'constantness' is undefined for constraints.");
+      g_registry.SetError(error + ", as 'constantness' is undefined for a " + VarTypeToString(m_type) + ".");
       return true;
     }
     break;
@@ -1661,6 +1807,10 @@ bool Variable::SetSuperCompartment(Variable* var, var_type supertype)
   case varStoichiometry:
   case varAlgebraicRule:
   case varLayoutColorEtc:
+  case varGeneProduct:
+  case varGeneProductAssociation:
+  case varSpeciesCharge:
+  case varSpeciesChemicalFormula:
     assert(false); // Those things don't have components
     return false;
   case varStrand:
@@ -1712,6 +1862,10 @@ void Variable::SetComponentCompartments(bool frommodule)
   case varStoichiometry:
   case varAlgebraicRule:
   case varLayoutColorEtc:
+  case varGeneProduct:
+  case varGeneProductAssociation:
+  case varSpeciesCharge:
+  case varSpeciesChemicalFormula:
     return; //No components to set
   case varReactionUndef:
   case varReactionGene:
@@ -1757,6 +1911,14 @@ bool Variable::SetDisplayName(string name)
 {
   if (IsPointer()) {
     return GetSameVariable()->SetDisplayName(name);
+  }
+  if (m_type == varSpeciesCharge) {
+    g_registry.SetError("A species charge (" + GetNameDelimitedBy(".") + ") can only be set to be a number; it cannot have a name");
+  }
+  if (m_type == varSpeciesChemicalFormula) {
+    if (!FbcSpeciesPlugin::isWellFormedChemicalFormula(name)) {
+      g_registry.SetError("Cannot set a species chemical formula to '" + name + "': that string is not a legal chemical formula.");
+    }
   }
   if (name == GetNameDelimitedBy(g_registry.GetCC())) return false; //Don't bother with names that are identical to id's
   size_t quote = name.find('"');
@@ -1928,6 +2090,10 @@ bool Variable::DeleteFromSubmodel(Variable* deletedvar)
   case varLayoutWrapper:
   case varConstraint:
   case varLayoutColorEtc:
+  case varGeneProduct:
+  case varGeneProductAssociation:
+  case varSpeciesCharge:
+  case varSpeciesChemicalFormula:
     //These types can't have rules to them.
     break;
   }
@@ -2496,6 +2662,7 @@ bool Variable::AllowedInFormulas() const
   case varUnitDefinition:
   case varStoichiometry:
   case varLayoutColorEtc:
+  case varGeneProduct:
     return true;
 
   case varInteraction:
@@ -2508,14 +2675,15 @@ bool Variable::AllowedInFormulas() const
   case varLayoutWrapper:
   case varConstraint:
   case varAlgebraicRule:
+  case varGeneProductAssociation:
+  case varSpeciesCharge:
+  case varSpeciesChemicalFormula:
     return false;
-
   }
   assert(false); //Uncaught type
   return false;
 }
 
-#ifndef NSBML
 void Variable::SetWithRule(const Rule* rule)
 {
   Formula formula;
@@ -2582,31 +2750,34 @@ bool Variable::TransferLayoutInformationTo(SBMLDocument* sbml)
                 LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointX(sbml, id, 0, speciesIndex, 0) != 0.0 ||
                 LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointY(sbml, id, 0, speciesIndex, 0) != 0.0;
             if (anySet) {
+              int numsegs = LIBSBMLNETWORK_CPP_NAMESPACE::getNumSpeciesReferenceCurveSegments(sbml, id, 0, speciesIndex);
+              for (int segnum = 0; segnum < numsegs; segnum++) {
                 if (!startsAtReaction(role)) {
-                    if (!isnan(xval)) {
-                        if (LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointX(sbml, id, 0, speciesIndex, 0) == 0.0) {
-                            LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentEndPointX(sbml, id, 0, speciesIndex, 0, xval);
-                        }
+                  if (!isnan(xval)) {
+                    if (LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointX(sbml, id, 0, speciesIndex, segnum) == 0.0) {
+                      LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentEndPointX(sbml, id, 0, speciesIndex, segnum, xval);
                     }
-                    if (!isnan(yval)) {
-                        if (LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointY(sbml, id, 0, speciesIndex, 0) == 0.0) {
-                            LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentEndPointY(sbml, id, 0, speciesIndex, 0, yval);
-                        }
+                  }
+                  if (!isnan(yval)) {
+                    if (LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointY(sbml, id, 0, speciesIndex, segnum) == 0.0) {
+                      LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentEndPointY(sbml, id, 0, speciesIndex, segnum, yval);
                     }
+                  }
                 }
                 else {
-                    assert(startsAtReaction(role));
-                    if (!isnan(xval)) {
-                        if (LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointX(sbml, id, 0, speciesIndex, 0) == 0.0) {
-                            LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentStartPointX(sbml, id, 0, speciesIndex, 0, xval);
-                        }
+                  assert(startsAtReaction(role));
+                  if (!isnan(xval)) {
+                    if (LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointX(sbml, id, 0, speciesIndex, segnum) == 0.0) {
+                      LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentStartPointX(sbml, id, 0, speciesIndex, segnum, xval);
                     }
-                    if (!isnan(yval)) {
-                        if (LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointY(sbml, id, 0, speciesIndex, 0) == 0.0) {
-                            LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentStartPointY(sbml, id, 0, speciesIndex, 0, yval);
-                        }
+                  }
+                  if (!isnan(yval)) {
+                    if (LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointY(sbml, id, 0, speciesIndex, segnum) == 0.0) {
+                      LIBSBMLNETWORK_CPP_NAMESPACE::setSpeciesReferenceCurveSegmentStartPointY(sbml, id, 0, speciesIndex, segnum, yval);
                     }
+                  }
                 }
+              }
             }
         }
     }
@@ -2700,5 +2871,3 @@ bool Variable::HasLayoutPositionInfo() const
     }
     return false;
 }
-
-#endif

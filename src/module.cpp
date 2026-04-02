@@ -56,19 +56,15 @@ Module::Module(string name)
     m_sbmllevel(3),
     m_sbmlversion(2),
     m_varmap(),
-#ifndef NSBML
-#ifdef USE_COMP
     m_sbmlnamespaces(m_sbmllevel, m_sbmlversion),
-#else
-    m_sbmlnamespaces(m_sbmllevel, m_sbmlversion),
-#endif
     m_sbml(&m_sbmlnamespaces),
     m_libsbml_info(""),
     m_libsbml_warnings(""),
     m_hasFBC(false),
+    m_fbcIsStrict(true),
+    m_fbcLevel(3),
     m_autolayout(),
     m_layout(),
-#endif
 #ifndef NCELLML
     m_cellmlmodel(NULL),
     m_cellmlcomponent(NULL),
@@ -77,7 +73,6 @@ Module::Module(string name)
     m_uniquevars(),
     m_explicitDefaultCompartment(false)
 {
-#ifdef USE_COMP
   m_sbmlnamespaces.addPackageNamespace("comp", 1);
   SBMLDocument sbml(&m_sbmlnamespaces);
   m_sbml = sbml;
@@ -95,7 +90,6 @@ Module::Module(string name)
     cout << "Parent of 'splugin' not found, for unknown reason.";
   }
   */
-#endif //USE_COMP
   AddDefaultVariables();
 }
 
@@ -119,15 +113,15 @@ Module::Module(const Module& src, string newtopname, string modulename)
     m_sbmllevel(src.m_sbmllevel),
     m_sbmlversion(src.m_sbmlversion),
     m_varmap(), // useless--will reset with SetNewTopName, below.
-#ifndef NSBML
     m_sbmlnamespaces(src.m_sbmlnamespaces),
     m_sbml(&m_sbmlnamespaces), //New because we're renaming everything.
     m_libsbml_info(), //don't need this info for submodules--might be wrong anyway.
     m_libsbml_warnings(),
     m_hasFBC(src.m_hasFBC),
+    m_fbcIsStrict(src.m_fbcIsStrict),
+    m_fbcLevel(src.m_fbcLevel),
     m_autolayout(),
     m_layout(),
-#endif
 #ifndef NCELLML
     m_cellmlmodel(NULL),
     m_cellmlcomponent(NULL),
@@ -137,22 +131,6 @@ Module::Module(const Module& src, string newtopname, string modulename)
     m_explicitDefaultCompartment(src.m_explicitDefaultCompartment)
 {
   SetNewTopName(modulename, newtopname);
-  /*
-#ifndef NSBML
-  CreateSBMLModel(false); //It's either this or go through and rename every blasted thing in it, and libSBML doesn't provide an easy way to go through all elements at once.
-#ifdef USE_COMP
-  CompSBMLDocumentPlugin* compdoc = static_cast<CompSBMLDocumentPlugin*>(m_sbml.getPlugin("comp"));
-  SBMLDocument* doctest = compdoc->getSBMLDocument();
-  SBase* parenttest = compdoc->getParentSBMLObject();
-  if (doctest == NULL) {
-    cout << "SBML document not set, for unknown reason.";
-  }
-  if (parenttest == NULL) {
-    cout << "Parent of 'splugin' not found, for unknown reason.";
-  }
-#endif //USE_COMP
-#endif
-  */
 #ifndef NCELLML
   //CreateCellMLModel(); //ditto
 #endif
@@ -178,15 +156,15 @@ Module::Module(const Module& src)
     m_sbmllevel(src.m_sbmllevel),
     m_sbmlversion(src.m_sbmlversion),
     m_varmap(src.m_varmap),
-#ifndef NSBML
     m_sbmlnamespaces(src.m_sbmlnamespaces),
     m_sbml(src.m_sbml),
     m_libsbml_info(src.m_libsbml_info),
     m_libsbml_warnings(src.m_libsbml_warnings),
     m_hasFBC(src.m_hasFBC),
+    m_fbcIsStrict(src.m_fbcIsStrict),
+    m_fbcLevel(src.m_fbcLevel),
     m_autolayout(src.m_autolayout),
     m_layout(src.m_layout),
-#endif
 #ifndef NCELLML
     m_cellmlmodel(src.m_cellmlmodel),
     m_cellmlcomponent(src.m_cellmlcomponent),
@@ -195,7 +173,6 @@ Module::Module(const Module& src)
     m_uniquevars(src.m_uniquevars),
     m_explicitDefaultCompartment(src.m_explicitDefaultCompartment)
 {
-#ifdef USE_COMP
   CompSBMLDocumentPlugin* compdoc = static_cast<CompSBMLDocumentPlugin*>(m_sbml.getPlugin("comp"));
   SBMLDocument* doctest = compdoc->getSBMLDocument();
   SBase* parenttest = compdoc->getParentSBMLObject();
@@ -205,7 +182,6 @@ Module::Module(const Module& src)
   if (parenttest == NULL) {
     cout << "Parent of 'splugin' not found, for unknown reason.";
   }
-#endif //USE_COMP
 }
 
 Module& Module::operator=(const Module& src)
@@ -227,15 +203,15 @@ Module& Module::operator=(const Module& src)
   m_sbmllevel = src.m_sbmllevel;
   m_sbmlversion = src.m_sbmlversion;
   m_varmap = src.m_varmap;
-#ifndef NSBML
   m_sbmlnamespaces = src.m_sbmlnamespaces;
   m_sbml = src.m_sbml;
   m_libsbml_info = src.m_libsbml_info;
   m_libsbml_warnings = src.m_libsbml_warnings;
   m_hasFBC = src.m_hasFBC;
+  m_fbcIsStrict = src.m_fbcIsStrict;
+  m_fbcLevel = src.m_fbcLevel;
   m_autolayout = src.m_autolayout;
   m_layout = src.m_layout;
-#ifdef USE_COMP
   CompSBMLDocumentPlugin* compdoc = static_cast<CompSBMLDocumentPlugin*>(m_sbml.getPlugin("comp"));
   compdoc->setRequired(true);
   SBMLDocument* doctest = compdoc->getSBMLDocument();
@@ -246,8 +222,6 @@ Module& Module::operator=(const Module& src)
   if (parenttest == NULL) {
     cout << "Parent of 'splugin' not found, for unknown reason.";
   }
-#endif //USE_COMP
-#endif
 #ifndef NCELLML
   m_cellmlmodel = src.m_cellmlmodel;
   m_cellmlcomponent = src.m_cellmlcomponent;
@@ -862,7 +836,11 @@ void Module::AddDefaultInitialValues()
     case varConstraint:
     case varAlgebraicRule:
     case varLayoutColorEtc:
-        break;
+    case varGeneProduct:
+    case varGeneProductAssociation:
+    case varSpeciesCharge:
+    case varSpeciesChemicalFormula:
+      break;
     }
   }
 }
@@ -1256,7 +1234,6 @@ bool Module::Finalize()
     }
   }
 
-#ifndef NSBML
   //Phase 2:  Check for undefined functions
   for (size_t var=0; var<m_variables.size(); var++) {
     Formula* form = m_variables[var]->GetFormula();
@@ -1315,7 +1292,11 @@ bool Module::Finalize()
           case varStoichiometry:
           case varAlgebraicRule:
           case varLayoutColorEtc:
-              g_registry.SetError("Unable to add layout or render information to " + m_variables[var]->GetNameDelimitedBy(".") + ":  only species, reactions, and compartments can be visualized, and this element is of type '" + VarTypeToString(m_variables[var]->GetType()) + "'.");
+          case varGeneProduct:
+          case varGeneProductAssociation:
+          case varSpeciesCharge:
+          case varSpeciesChemicalFormula:
+            g_registry.SetError("Unable to add layout or render information to " + m_variables[var]->GetNameDelimitedBy(".") + ":  only species, reactions, and compartments can be visualized, and this element is of type '" + VarTypeToString(m_variables[var]->GetType()) + "'.");
               return true;
           }
           m_autolayout.use = true;
@@ -1352,15 +1333,11 @@ bool Module::Finalize()
         return true;
     }
 
-
-#endif
-
   //Phase 3:  Set compartments
   for (size_t var=0; var<m_variables.size(); var++) {
     m_variables[var]->SetComponentCompartments(false);
   }
 
-#ifndef NSBML
   //Phase 4:  Create substance units for SBML species.
   for (size_t var=0; var<m_variables.size(); var++) {
     Variable* species = m_variables[var];
@@ -1384,7 +1361,6 @@ bool Module::Finalize()
       Variable* newunit = AddOrFindUnitDef(ud);
     }
   }
-#endif
   //Need to check for the units of promoted parameters whose units might now live in submodels, which would be illegal SBML.
   for (size_t var = 0; var < m_variables.size(); var++) {
       Variable* v = m_variables[var];
@@ -1434,7 +1410,7 @@ bool Module::Finalize()
           m_sbmlnamespaces.addPackageNamespace("distrib", 1);
         }
         if (submod->m_hasFBC) {
-          m_sbmlnamespaces.addPackageNamespace("fbc", 1);
+          m_sbmlnamespaces.addPackageNamespace("fbc", m_fbcLevel);
           m_hasFBC = true;
         }
         //Also also, copy over the objective function, if we need one.
@@ -1447,7 +1423,7 @@ bool Module::Finalize()
   }
 
   if (m_objective.size() > 0) {
-    m_sbmlnamespaces.addPackageNamespace("fbc", 1);
+    m_sbmlnamespaces.addPackageNamespace("fbc", m_fbcLevel);
     m_hasFBC = true;
   }
 
@@ -1484,23 +1460,29 @@ bool Module::Finalize()
     modulevar->GetModule()->Convert(converted, conversionFactor, m_modulename);
   }
 
-#ifndef NSBML
-  //Phase 6.5:  Calculate the constraints.
+  //Phase 6.5:  Calculate the constraints and other FBC elements
   for (size_t var=0; var<m_uniquevars.size(); var++) {
-    Variable* variable = m_uniquevars[var];
+    Variable* variable = m_uniquevars[var]->GetSameVariable();
     if (variable->GetType() == varConstraint) {
       variable->GetConstraint()->calculateASTNode();
 #ifdef LIBSBML_HAS_PACKAGE_FBC
       if (variable->GetConstraint()->calculateFluxBounds()) {
         m_hasFBC = true;
-        m_sbmlnamespaces.addPackageNamespace("fbc", 1);
+        m_sbmlnamespaces.addPackageNamespace("fbc", m_fbcLevel);
       }
 #endif
+    }
+    var_type vtype = variable->GetType();
+    if (vtype == varGeneProduct || vtype == varGeneProductAssociation
+      || vtype == varSpeciesCharge || vtype == varSpeciesChemicalFormula) {
+        m_hasFBC = true;
+        m_sbmlnamespaces.addPackageNamespace("fbc", m_fbcLevel);
     }
   }
 
   //Phase whatever, this numbering system is broken: check the maximize function
   if (m_objective.size() > 0) {
+    m_hasFBC = true;
     Variable* var = GetVariable(m_objective)->GetSameVariable();
     if (!var->GetFormula()->IsValidObjectiveFunction()) {
       g_registry.SetError("The objective function '" + var->GetFormula()->ToDelimitedStringWithEllipses(".") + "' is not valid.  Objective functions must be the simple additive combination of reaction IDs, each optionally multiplied by a number.");
@@ -1513,11 +1495,10 @@ bool Module::Finalize()
   //LS DEBUG:  The need for two SBMLDocuments is a hack; fix when libSBML is updated.
   if (m_variablename.empty()) {
     //Only test SBML on top-level modules.
-#ifdef USE_COMP
     const SBMLDocument* sbmldoc = GetSBML(true); //Use the comp version if possible.
-#else
-    const SBMLDocument* sbmldoc = GetSBML(false); //Trying to get the comp version would result in an added warning.
-#endif
+    //We rely on libsbml's error checking to see if we need to set fbc's 'strict' flag to 'false' or not.
+    fixFBCStrictIfNeeded();
+
     stringstream stream;
 
     SBMLWriter writer;
@@ -1570,11 +1551,9 @@ bool Module::Finalize()
     }
     delete testdoc;
   }
-#endif
   return false;
 }
 
-#ifndef NSBML
 bool Module::CheckUndefined(const Formula* form)
 {
   if (form) {
@@ -1592,21 +1571,6 @@ bool Module::CheckUndefined(const Formula* form)
         vector<string> varname;
         varname.push_back(*name);
         Variable* var = GetVariable(varname);
-        //bool isPredefined = false;
-        //if (*name == "rate" || *name == "rateOf") {
-        //  isPredefined = true;
-        //  m_rateNames.insert(*name);
-        //  //We need to check the 'rate'/'rateOf' variable:
-        //  if (var != NULL) {
-        //    if (var->GetType() != varUndefined) {
-        //      g_registry.SetError("Unable to use '" + *name + "' as a function, as it is used elsewhere as a " + VarTypeToString(var->GetType()) + ".");
-        //      return true;
-        //    }
-        //  }
-        //}
-        //else {
-        //}
-        //if (!isPredefined) {
         g_registry.SetError("'" + *name + "' was used as a function, but no such function was defined.  Please define the function using 'function " + *name + "([arguments]) [function definition] end'.");
         return true;
         //}
@@ -1615,7 +1579,6 @@ bool Module::CheckUndefined(const Formula* form)
   }
   return false;
 }
-#endif
 
 size_t Module::GetNumVariablesOfType(return_type rtype, bool comp) const
 {
@@ -1700,109 +1663,64 @@ Variable* Module::GetNthVariableOfType(return_type rtype, size_t n, bool comp)
 
 bool Module::AreEquivalent(return_type rtype, var_type vtype) const
 {
-    switch (rtype) {
-    case allSpecies:
-    case varSpecies:
-    case constSpecies:
-        if (vtype == varSpeciesUndef) {
-            return true;
-        }
-        return false;
-    case allFormulas:
-    case varFormulas:
-    case constFormulas:
-        if (vtype == varFormulaUndef ||
-            vtype == varDNA ||
-            vtype == varFormulaOperator) {
-            return true;
-        }
-        return false;
-    case allDNA:
-        if (vtype == varDNA ||
-            vtype == varFormulaOperator ||
-            vtype == varReactionGene) {
-            return true;
-        }
-        return false;
-    case allOperators:
-    case varOperators:
-    case constOperators:
-        if (vtype == varFormulaOperator) {
-            return true;
-        }
-        return false;
-    case allGenes:
-        if (vtype == varReactionGene) {
-            return true;
-        }
-        return false;
-    case allReactions:
-        if (vtype == varReactionGene ||
-            vtype == varReactionUndef) {
-            return true;
-        }
-        return false;
-    case allInteractions:
-        if (vtype == varInteraction) {
-            return true;
-        }
-        return false;
-    case allUnknown:
-        if (vtype == varUndefined) {
-            return true;
-        }
-        return false;
-    case subModules:
-        if (vtype == varModule) {
-            return true;
-        }
-        return false;
-    case allSymbols:
-        return true;
-    case allEvents:
-        if (vtype == varEvent) {
-            return true;
-        }
-        return false;
-    case expandedStrands:
-    case modularStrands:
-        if (vtype == varStrand) {
-            return true;
-        }
-        return false;
-    case allCompartments:
-    case varCompartments:
-    case constCompartments:
-        if (vtype == varCompartment) {
-            return true;
-        }
-        return false;
-    case allUnits:
-        if (vtype == varUnitDefinition) {
-            return true;
-        }
-        return false;
-    case allDeleted:
-        if (vtype == varDeleted) {
-            return true;
-        }
-        return false;
-    case allConstraints:
-        if (vtype == varConstraint) {
-            return true;
-        }
-        return false;
-    case allStoichiometries:
-        if (vtype == varStoichiometry) {
-            return true;
-        }
-        return false;
-    case allAlgebraicRules:
-        if (vtype == varAlgebraicRule) {
-            return true;
-        }
-        return false;
-    }
+  switch (rtype) {
+  case allSpecies:
+  case varSpecies:
+  case constSpecies:
+    return (vtype == varSpeciesUndef);
+  case allFormulas:
+  case varFormulas:
+  case constFormulas:
+    return (vtype == varFormulaUndef ||
+      vtype == varDNA ||
+      vtype == varFormulaOperator);
+  case allDNA:
+    return (vtype == varDNA ||
+      vtype == varFormulaOperator ||
+      vtype == varReactionGene);
+  case allOperators:
+  case varOperators:
+  case constOperators:
+    return (vtype == varFormulaOperator);
+  case allGenes:
+    return (vtype == varReactionGene);
+  case allReactions:
+    return (vtype == varReactionGene ||
+      vtype == varReactionUndef);
+  case allInteractions:
+    return (vtype == varInteraction);
+  case allUnknown:
+    return (vtype == varUndefined) ;
+  case subModules:
+    return (vtype == varModule);
+  case allSymbols:
+    return true;
+  case allEvents:
+    return (vtype == varEvent);
+  case expandedStrands:
+  case modularStrands:
+    return (vtype == varStrand);
+  case allCompartments:
+  case varCompartments:
+  case constCompartments:
+    return (vtype == varCompartment);
+  case allUnits:
+    return  (vtype == varUnitDefinition);
+  case allDeleted:
+    return (vtype == varDeleted);
+  case allConstraints:
+    return (vtype == varConstraint);
+  case allStoichiometries:
+    return (vtype == varStoichiometry);
+  case allAlgebraicRules:
+    return (vtype == varAlgebraicRule);
+  case allGeneProducts:
+    return (vtype == varGeneProduct);
+  case allGeneProductAssociations:
+    return (vtype == varGeneProductAssociation);
+  case allSpeciesFbcInfo:
+    return (vtype == varSpeciesCharge || vtype == varSpeciesChemicalFormula);
+  }
   //This is just to to get compiler warnings if we switch vtype later, so
   // we remember to change the rest of this function:
   switch(vtype) {
@@ -1827,6 +1745,10 @@ bool Module::AreEquivalent(return_type rtype, var_type vtype) const
   case varStoichiometry:
   case varAlgebraicRule:
   case varLayoutColorEtc:
+  case varGeneProduct:
+  case varGeneProductAssociation:
+  case varSpeciesCharge:
+  case varSpeciesChemicalFormula:
       break;
   }
   assert(false); //uncaught return type
@@ -1865,6 +1787,9 @@ bool Module::AreEquivalent(return_type rtype, bool isconst) const
   case allDeleted:
   case allConstraints:
   case allAlgebraicRules:
+  case allGeneProducts:
+  case allGeneProductAssociations:
+  case allSpeciesFbcInfo:
     return true;
   }
   assert(false); //uncaught return_type
@@ -1889,13 +1814,27 @@ string Module::OutputOnly(vector<var_type> types, string name, string indent, st
     if (matches) {
       const Formula* form = var->GetFormula();
       formula_type ftype = var->GetFormulaType();
-      if (form != NULL && !form->IsEllipsesOnly() && (ftype==formulaINITIAL || ftype==formulaRATE)) {
+      if (form != NULL && !form->IsEllipsesOnly() && (ftype == formulaINITIAL || ftype == formulaRATE)) {
         if (OrigFormulaIsAlready(var, origmap, form)) continue;
+        if ((type == varGeneProduct || type == varGeneProductAssociation)
+          && var->GetFormula()->IsEmpty()) {
+          continue;
+        }
         if (firstone) {
           retval += "\n" + indent + "// " + name + ":\n";
           firstone = false;
         }
-        retval += indent + var->GetNameDelimitedBy(cc) + " = " + form->ToDelimitedStringWithEllipses(cc) + ";\n";
+        string name = var->GetNameDelimitedBy(cc);
+        if (type == varGeneProduct) {
+          name += ".associatedSpecies";
+        }
+        else if (type == varGeneProductAssociation) {
+          name.replace(name.find("-gpa"), 4, ".geneProductAssociation");
+        }
+        else if (type == varSpeciesCharge) {
+          name.replace(name.find("-charge"), 7, ".charge");
+        }
+        retval += indent + name + " = " + form->ToDelimitedStringWithEllipses(cc) + ";\n";
       }
       Variable* unit = var->GetUnitVariable();
       if (unit != NULL) {
@@ -2260,6 +2199,20 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
     }
   }
 
+  //Then gene products:
+  vector<string> geneproduct_names;
+  for (size_t var = 0; var < m_uniquevars.size(); var++) {
+    if (m_uniquevars[var]->GetType() == varGeneProduct) {
+      if (!OrigIsAlreadyGeneProduct(m_uniquevars[var], origmap, m_uniquevars[var]->GetFormula())) {
+        geneproduct_names.push_back(m_uniquevars[var]->GetNameDelimitedBy(cc));
+      }
+    }
+  }
+  if (geneproduct_names.size() > 0) {
+    retval += "\n" + indent + "// Gene Products:\n";
+  }
+  retval += ListIn80Cols("geneProduct", geneproduct_names, indent);
+
   //Then species:
   vector<var_type> types;
   types.push_back(varSpeciesUndef);
@@ -2278,6 +2231,21 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
   types.push_back(varDNA);
   types.push_back(varStoichiometry);
   retval += OutputOnly(types, "Variable initializations", indent, cc, origmap);
+
+  //The gene product associations:
+  types.clear();
+  types.push_back(varGeneProductAssociation);
+  retval += OutputOnly(types, "Gene product associations", indent, cc, origmap);
+
+  //The species charges:
+  types.clear();
+  types.push_back(varSpeciesCharge);
+  retval += OutputOnly(types, "Species charges", indent, cc, origmap);
+
+  //The associated species of gene products:
+  types.clear();
+  types.push_back(varGeneProduct);
+  retval += OutputOnly(types, "Gene product associated species", indent, cc, origmap);
 
   //Whether things are variable or constant (if not already declared)
   vector<string> delnames;
@@ -2357,7 +2325,11 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
     case varStoichiometry:
     case varAlgebraicRule:
     case varLayoutColorEtc:
-        break;
+    case varGeneProduct:
+    case varGeneProductAssociation:
+    case varSpeciesCharge:
+    case varSpeciesChemicalFormula:
+      break;
     }
   }
 
@@ -2408,7 +2380,15 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
           retval += "\n" + indent + "// Display Names:\n";
           anydisplay = true;
       }
-      retval += indent + m_uniquevars[var]->GetNameDelimitedBy(cc) + " is " + quoteText(m_uniquevars[var]->GetDisplayName()) + ";\n";
+      string dn_id = m_uniquevars[var]->GetNameDelimitedBy(cc);
+      var_type vtype = m_uniquevars[var]->GetType();
+      if (vtype == varGeneProductAssociation) {
+        dn_id.replace(dn_id.find("-gpa"), 4, ".geneProductAssociation");
+      }
+      if (vtype == varSpeciesChemicalFormula) {
+        dn_id.replace(dn_id.find("-formula"), 8, ".formula");
+      }
+      retval += indent + dn_id + " is " + quoteText(m_uniquevars[var]->GetDisplayName()) + ";\n";
   }
 
   if (m_autolayout.use) {
@@ -2655,9 +2635,7 @@ string Module::ListAssignmentDifferencesFrom(const Module* origmod, string mname
   return list;
 }
 
-#ifndef NSBML
 #include "module-sbml.cpp"
-#endif
 
 
 #ifndef NCELLML
@@ -2877,6 +2855,30 @@ bool Module::OrigIsAlreadyUnitDef(const Variable* var, const map<const Variable*
   return (origmapiter->second.GetUnitDef()->ToStringDelimitedBy(cc) == unitdef);
 }
 
+bool Module::OrigIsAlreadyGeneProduct(const Variable* var, const map<const Variable*, Variable>& origmap, const Formula* form) const
+{
+    map<const Variable*, Variable >::const_iterator origmapiter = origmap.find(var);
+    if (origmapiter == origmap.end()) return false;
+    if (origmapiter->second.GetType() != varGeneProduct) return false;
+    return (origmapiter->second.GetFormula()->Matches(form));
+}
+
+bool Module::OrigIsAlreadyGeneProductAssociation(const Variable* var, const map<const Variable*, Variable>& origmap, const Formula* form) const
+{
+  map<const Variable*, Variable >::const_iterator origmapiter = origmap.find(var);
+  if (origmapiter == origmap.end()) return false;
+  if (origmapiter->second.GetType() != varGeneProductAssociation) return false;
+  return (origmapiter->second.GetFormula()->Matches(form));
+}
+
+bool Module::OrigIsAlreadySpeciesCharge(const Variable* var, const map<const Variable*, Variable>& origmap, const Formula* form) const
+{
+  map<const Variable*, Variable >::const_iterator origmapiter = origmap.find(var);
+  if (origmapiter == origmap.end()) return false;
+  if (origmapiter->second.GetType() != varSpeciesCharge) return false;
+  return (origmapiter->second.GetFormula()->Matches(form));
+}
+
 bool Module::OrigDisplayNameIsAlready(const Variable* var, const map<const Variable*, Variable>& origmap) const
 {
   if (var->GetDisplayName() == "") return true;
@@ -2978,6 +2980,9 @@ void Module::Convert(Variable* conv, Variable* cf, string modulename)
     case varConstraint:
     case varStoichiometry:
     case varAlgebraicRule:
+    case varGeneProduct:
+    case varGeneProductAssociation:
+    case varSpeciesCharge:
       form = subvar->GetFormula();
       origform = *origsubvar->GetFormula();
       for (size_t vn=m_variablename.size() - origsubvar->GetName().size() + 1; vn > 0; vn--) {
@@ -3012,7 +3017,8 @@ void Module::Convert(Variable* conv, Variable* cf, string modulename)
     case varUncertWrapper:
     case varLayoutWrapper:
     case varLayoutColorEtc:
-        break;
+    case varSpeciesChemicalFormula:
+      break;
     }
   }
 }
@@ -3055,7 +3061,11 @@ void Module::ConvertTime(Variable* tcf)
     case varUncertWrapper:
     case varLayoutWrapper:
     case varLayoutColorEtc:
-        break;
+    case varGeneProduct:
+    case varGeneProductAssociation:
+    case varSpeciesCharge:
+    case varSpeciesChemicalFormula:
+      break;
     }
   }
 }
@@ -3092,7 +3102,11 @@ void Module::ConvertExtent(Variable* xcf)
     case varStoichiometry:
     case varAlgebraicRule:
     case varLayoutColorEtc:
-        break;
+    case varGeneProduct:
+    case varGeneProductAssociation:
+    case varSpeciesCharge:
+    case varSpeciesChemicalFormula:
+      break;
     }
   }
 }
@@ -3133,7 +3147,11 @@ void Module::UndoTimeExtentConversions(Variable* tcf, Variable* xcf)
     case varUncertWrapper:
     case varLayoutWrapper:
     case varLayoutColorEtc:
-        break;
+    case varGeneProduct:
+    case varGeneProductAssociation:
+    case varSpeciesCharge:
+    case varSpeciesChemicalFormula:
+      break;
     }
   }
 }
@@ -3698,7 +3716,7 @@ string getSetString(set<pair<string, int> > list)
 string Module::GetAntimonyGeneralLayout(const string& indent) const
 {
     stringstream ret;
-    ret << indent << "# General layout options" << endl;
+    ret << indent << "// General layout options" << endl;
     ret << indent << "model.layout = on" << endl;
     //if (m_autolayout.stiffness != 10) {
     //    ret << indent << "model.autolayout.stiffness = " << m_autolayout.stiffness << endl;

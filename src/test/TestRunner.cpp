@@ -58,6 +58,7 @@ Suite *create_suite_SBO(void);
 Suite *create_suite_Uncert(void);
 Suite* create_suite_Import(void);
 Suite* create_suite_NamedStoich(void);
+Suite* create_suite_Units(void);
 
 //Suite *create_suite_FlatteningFailures(void);
 /**
@@ -139,6 +140,7 @@ main (int argc, char* argv[])
   //SRunner* runner = srunner_create(create_suite_Uncert());
   //SRunner* runner = srunner_create(create_suite_Import());
   //SRunner* runner = srunner_create(create_suite_NamedStoich());
+  //SRunner* runner = srunner_create(create_suite_Units());
 
   srunner_add_suite(runner, create_suite_NamedStoich());
   srunner_add_suite(runner, create_suite_Import());
@@ -153,6 +155,7 @@ main (int argc, char* argv[])
   srunner_add_suite( runner, create_suite_Uncert() );
   srunner_add_suite( runner, create_suite_Hierarchy());
   srunner_add_suite( runner, create_suite_Flattening());
+  srunner_add_suite( runner, create_suite_Units());
 
 
 #ifdef TRACE_MEMORY

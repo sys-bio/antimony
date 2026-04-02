@@ -6,14 +6,9 @@
 #include <set>
 #include <map>
 
-#ifndef NSBML
 #include <sbml/SBMLTypes.h>
 #include <sbml/packages/layout/sbml/Layout.h>
-#endif
-
-#ifdef USE_COMP
 #include <sbml/packages/comp/common/CompExtensionTypes.h>
-#endif
 
 #ifndef NCELLML
 //#include "ICellMLInputServices.h"
@@ -90,19 +85,19 @@ private:
   //Caching for speed:
   std::map<std::vector<std::string>, Variable*> m_varmap;
 
-#ifndef NSBML
   libsbml::SBMLNamespaces m_sbmlnamespaces;
   libsbml::SBMLDocument m_sbml;
   std::string m_libsbml_info;
   std::string m_libsbml_warnings;
   bool m_hasFBC;
+  bool m_fbcIsStrict;
+  int  m_fbcLevel;
   autolayout m_autolayout;
   layout m_layout;
   std::vector<LayoutWrapper*>  m_defaultLayouts;
   std::vector<LayoutWrapper*>  m_speciesLayouts;
   std::vector<LayoutWrapper*>  m_compartmentLayouts;
   std::vector<LayoutWrapper*>  m_reactionLayouts;
-#endif
 
 #ifndef NCELLML
   ObjRef<iface::cellml_api::Model> m_cellmlmodel;
@@ -215,11 +210,9 @@ public:
 
   //Output for the API
   bool Finalize();
-#ifndef NSBML
   std::string GetSBMLInfo() const {return m_libsbml_info;};
   std::string GetSBMLWarnings() const {return m_libsbml_warnings;};
   bool CheckUndefined(const Formula* form);
-#endif
   size_t GetNumVariablesOfType(return_type rtype, bool comp) const;
   const Variable* GetNthVariableOfType(return_type rtype, size_t n, bool comp) const;
         Variable* GetNthVariableOfType(return_type rtype, size_t n, bool comp);
@@ -228,22 +221,19 @@ public:
 
   std::string ListSynchronizedVariables(std::string indent, std::set<size_t> alreadysynchronized) const;
   std::string ListAssignmentDifferencesFrom(const Module* origmod, std::string mname, std::string indent) const;
-#ifndef NSBML
-#ifdef USE_COMP
   void  AddSubmodelsToDocument(libsbml::SBMLDocument* sbml);
   void  ReturnSubmodelsFromDocument(libsbml::SBMLDocument* sbml);
   bool  SynchronizeAssignments(libsbml::Model* sbmlmod, const Variable* var, const std::vector<const Variable*>& synchronized, const std::map<const Variable*, Variable>& syncmap);
   bool  SynchronizeRates(libsbml::Model* sbmlmod, const Variable* var, const std::vector<const Variable*>& synchronized, const std::map<const Variable*, Variable>& syncmap);
-#endif //USE_COMP
   void TranslateRulesAndAssignmentsTo(const libsbml::SBase* obj, Variable* var);
   //void  LoadSBML(const SBMLDocument* sbmldoc);
   void  LoadSBML(libsbml::Model* sbml);
+  void  fixFBCStrictIfNeeded();
   const libsbml::SBMLDocument* GetSBML(bool comp);
   libsbml::Model* GetModelIfCreated();
   void  CreateSBMLModel(bool comp);
   void  SetAssignmentFor(libsbml::Model* sbmlmod, const Variable* var, const std::map<const Variable*, Variable>& syncmap, bool comp, std::set<std::pair<std::string, const Variable*> > referencedVars);
   void  FindOrCreateLocalVersionOf(const Variable* var, libsbml::Model* sbmlmod);
-#endif //NSBML
   std::vector<const Variable*> GetSynchronizedVariablesFor(const Variable* var);
   void FillInSyncmap(std::map<const Variable*, Variable >& syncmap) const;
   void AddVarToSyncMap(const Variable* var, std::map<const Variable*, Variable >& syncmap) const;
@@ -319,14 +309,15 @@ private:
   bool OrigEventIsAlready(const Variable* var, const std::map<const Variable*, Variable>& origmap, const AntimonyEvent* event) const;
   bool OrigConstraintIsAlready(const Variable* var, const std::map<const Variable*, Variable>& origmap, const AntimonyConstraint* constraint) const;
   bool OrigIsAlreadyUnitDef(const Variable* var, const std::map<const Variable*, Variable>& origmap, std::string unitdef) const;
+  bool OrigIsAlreadyGeneProduct(const Variable* var, const std::map<const Variable*, Variable>& origmap, const Formula* associatedSpecies) const;
+  bool OrigIsAlreadyGeneProductAssociation(const Variable* var, const std::map<const Variable*, Variable>& origmap, const Formula* associatedSpecies) const;
+  bool OrigIsAlreadySpeciesCharge(const Variable* var, const std::map<const Variable*, Variable>& origmap, const Formula* form) const;
   bool OrigDisplayNameIsAlready(const Variable* var, const std::map<const Variable*, Variable>& origmap) const;
   bool OrigMatches(const Variable* var, const std::map<const Variable*, Variable>& origmap, var_type type, const_type isconst, const Variable* comp) const;
   const Variable* GetNthConstVariableOfType(return_type rtype, size_t n, bool comp) const;
   void Convert(Variable* converted, Variable* cf, std::string modulename);
-#ifndef NSBML
   bool IsReplaced(const libsbml::InitialAssignment* ia, const libsbml::Model* parent);
   bool IsReplaced(const libsbml::Rule* rule, const libsbml::Model* parent);
-#ifdef USE_COMP
   void GetReplacingAndRules(const libsbml::Replacing* replacing, std::string re_string, const libsbml::SBase* orig, Variable*& reference, const libsbml::InitialAssignment*& ia, const libsbml::Rule*& rule);
   Variable* GetSBaseRef(const libsbml::SBaseRef* sbr, std::string modname, std::string re_string, const libsbml::SBase* orig);
   libsbml::InitialAssignment* FindInitialAssignment(libsbml::Model* md, std::vector<std::string> syncname);
@@ -342,8 +333,6 @@ private:
   std::string GetAntimonyTypeLayouts(const std::string& indent) const;
   void AddEmptyGlyphsFromReaction(Variable* reaction, const std::string& rxnid, libsbml::SBMLDocument* origdoc);
   void  LoadLayout(libsbml::Model* sbml);
-#endif
-#endif
 };
 
 #include "userfunction.h"

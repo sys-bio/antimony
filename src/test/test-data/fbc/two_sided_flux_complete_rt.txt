@@ -1,0 +1,47 @@
+// Created by libAntimony v3.1.3
+// Compartments and Species:
+species s1, s2, s3;
+
+// Reactions:
+J0: s1 -> ; ;
+J1: s2 -> ; ;
+J2: s3 -> ; ;
+J3:  -> s1; ;
+J4:  -> s2; ;
+J5:  -> s3; ;
+J6: s1 -> s2; ;
+J7: s2 -> s3; ;
+
+// Constraints:
+constraint J0_fluxBounds: fb_neg_10 <= J0 <= fb_10
+constraint J1_fluxBounds: fb_0 <= J1 <= fb_25
+constraint J2_fluxBounds: fb_neg_30 <= J2 <= fb_neg_10
+constraint J3_fluxBounds: fb_neg_40 <= J3 <= fb_100
+constraint J4_fluxBounds: fb_0 <= J4 <= fb_50
+constraint J5_fluxBounds: fb_neg_55 <= J5 <= fb_20
+constraint J6_fluxBounds: fb_77 <= J6 <= fb_100
+constraint J7_fluxBounds: fb_110 <= J7 <= fb_120
+
+// Species initializations:
+s1 = ;
+s2 = ;
+s3 = ;
+
+// Variable initializations:
+fb_neg_10 = -10;
+fb_10 = 10;
+fb_0 = 0;
+fb_25 = 25;
+fb_neg_30 = -30;
+fb_neg_40 = -40;
+fb_100 = 100;
+fb_50 = 50;
+fb_neg_55 = -55;
+fb_20 = 20;
+fb_77 = 77;
+fb_110 = 110;
+fb_120 = 120;
+
+// Other declarations:
+const fb_neg_10, fb_10, fb_0, fb_25, fb_neg_30, fb_neg_40, fb_100, fb_50;
+const fb_neg_55, fb_20, fb_77, fb_110, fb_120;

@@ -3,11 +3,12 @@ Antimony Reference
 
 Different authoring tools have different ways of allowing the user to
 build models, and these approaches have individual advantages and
-disadvantages. In Antimony, the main approach to building models is to
+disadvantages. In Antimony (and in Tellurium, which uses it), the main approach to building models is to
 use a human-readable, text-based definition language, designed to
 interconvert between the SBML standard and a shorthand form that allows
 editing without the structure and overhead of working with XML directly.
 This guide will show you the intricacies of working with Antimony.
+More information can be found at https://github.com/sys-bio/antimony/.
 
 
 ## Table of contents
@@ -18,7 +19,7 @@ This guide will show you the intricacies of working with Antimony.
     - [Comments](#comments)
     - [Reactions](#reactions)
     - [Rate Laws and Initializing Values](#rate-laws-and-initializing-values)
-    - [Defining parameters, species, and compartments](#defining-parameters-species-and-compartments)
+    - [Defining basic elements](#defining-basic-elements)
     - [Boundary Species](#boundary-species)
     - [Compartments](#compartments)
     - [Assignments](#assignments)
@@ -61,7 +62,7 @@ This guide will show you the intricacies of working with Antimony.
     - [Positioning model elements](#positioning-model-elements)
     - [Sizing model elements](#sizing-model-elements)
     - [Reaction arcs](#reaction-arcs)
-    - [Reaction source/sinks](#reaction-source-sinks)
+    - [Reaction source or sinks](#reaction-source-or-sinks)
     - [Species alias nodes](#species-alias-nodes)
     - [General styles](#general-styles)
     - [Style settings](#style-settings)
@@ -102,6 +103,14 @@ be used in other contexts as well. Its main features include:
     interfaces.
 
 ## Change Log
+
+The 3.1 release changed FBC support to version 3 of that package, changing 
+how FBC constraints were translated to SBML (but not changing how they
+were declared in Antimony), and adding support for gene products, gene
+product associations, species charges, and species chemical formulas.
+
+In addition, 'substanceOnly' species are now initialized to their SBML
+'initialAmount', so as to always have substance units.
 
 The 3.0 release allows import and export of the SBML packages
 'Layout' and 'Render', using the SBMLNetwork library to do so.
@@ -325,7 +334,7 @@ Reactions can be defined with a wide variety of rate laws
       n = 4
     end
 
-### Defining parameters, species, and compartments.
+### Defining basic elements
 
 By default, any named element in an Antimony model is translated as
 an SBML 'parameter'.  If it is used in a reaction, it is translated
@@ -343,6 +352,7 @@ not appear in a reaction, you must declare it to be a species:
 
     species S1 = 1.3
     S1' = 0.4
+
 ### Boundary Species
 
 Boundary species are those species which are unaffected by the model.
@@ -359,6 +369,9 @@ boundary species.
       $S1 ->  S2; k1*S1
       S2 ->  S3; k2*S2
       S3 -> $S4; k3*S3
+
+      k1 = 0.1; k2 = 0.3; k3 = 0.15
+      S1 = 10
     end
 
 2)  Using the const keyword to declare species are fixed:
@@ -372,6 +385,9 @@ boundary species.
       S1 -> S2; k1*S1
       S2 -> S3; k2*S2
       S3 -> S4; k3*S3
+
+      k1 = 0.1; k2 = 0.3; k3 = 0.15
+      S1 = 10
     end
 
 ### Compartments
@@ -390,10 +406,15 @@ compartments with the `in` keyword:
       var S3 in cytoplasm
       const S4 in cytoplasm
     
-      S1 -> S2; k1*S1
-      S2 -> S3; k2*S2
-      S3 -> S4; k3*S3
+      S1 -> S2; k1*S1*mitochondria
+      S2 -> S3; k2*S2*cytoplasm
+      S3 -> S4; k3*S3*cytoplasm
+
+      k1 = 0.1; k2 = 0.3; k3 = 0.15
+      S1 = 10
     end
+
+Note that reaction rates must be in units of amount/time, so since species are expressed in terms of concentration by default, they should be multiplied by their compartment volumes to make the units work out.
 
 ### Assignments
 
@@ -411,6 +432,8 @@ simple numbers:
       S1 -> S2; k1*S1
       S2 -> S3; k2*S2
       S3 -> S4; k3*S3
+
+      S1 = 10
     end
 
 #### Assignments in Time
@@ -432,6 +455,8 @@ keyword `time` represents time.
     
       S1 -> S2; k1*S1
       S2 -> S3; k2*S2
+
+      S1 = 10
     end
 
 #### Piecewise Assignments
@@ -449,7 +474,7 @@ You can use `piecewise` to define piecewise assignments.
       k2 = 0.45; k3 = 0.34; Xo = 5;
     end
 
-Above will return `k1 = 0.1` if `time > 50` and `20` otherwise. A more
+The above will return `k1 = 0.1` if `time > 50` and `20` otherwise. A more
 complicated piecewise assignment can be defined as well.
 
     model pathway()
@@ -510,6 +535,8 @@ quadratic equation and use it in a later equation as follows:
     
     model quad1
       S3 := quadratic(s1, k1, k2, k3);
+
+      s1 = 5; k1=0.3; k2=42; k3=10
     end
 
 This effectively defines S3 to always equal the equation `k1*s1^2 +
@@ -531,7 +558,33 @@ following way:
     MgATP part "http://identifiers.org/chebi/CHEBI:25107",
                "http://identifiers.org/chebi/CHEBI:15422"
 
-Any Antimony element with an id may be annotated in this way, including the model itself.
+Any Antimony element with an id may be annotated in this way, including 
+the model itself.  Inside a model definition, the model itself may be 
+annotated using the 'model' keyword:
+
+    model foo()
+      model model_entity_is "http://identifiers.org/biomodels.db/BIOMD0000000004"
+      model description "http://identifiers.org/pubmed/1833774"
+      model origin "http://identifiers.org/biomodels.db/BIOMD0000000003"
+      model taxon "http://identifiers.org/taxonomy/8292"
+      model created "2005-02-08T17:34:02Z"
+      model modified "2012-12-11T15:30:15Z"
+    end
+
+You can also define an element's 'notes', using the 'notes' keyword.  If
+the notes take more than one line, you can group them together using three
+tick marks \`\`\` :
+
+    model notes ```
+        This model represents the inactive forms of CDC-2 Kinase and Cyclin 
+        Protease as separate species, unlike the ODEs in the published paper, in 
+        which the equations for the inactive forms are substituted into the 
+        equations for the active forms using a mass conservation rule 
+        M+MI=1,X+XI=1. Mass is still conserved in this model through the 
+        explicit reactions M&lt;-&gt;MI and X&lt;-&gt;XI. The terms in the 
+        kinetic laws are identical to the corresponding terms in the kinetic 
+        laws in the published paper.
+    ```
 
 
 ### Modular Models
@@ -546,9 +599,9 @@ variables you want to connect to that module
 
     # This creates a model 'side_reaction', exposing the variables 'S' and 'k1':
     model side_reaction(S, k1)
-      J0: S + E -> SE; k1*k2*S*E - k2*ES;
+      J0: S + E -> ES; k1*k2*S*E - k2*ES;
       E = 3;
-      SE = E+S;
+      ES = E+S;
       k2 = 0.4;
     end
     
@@ -572,8 +625,8 @@ variables you want to connect to that module
     end
 
 In this model, `A` is a submodel that creates a side-reaction of `S1`
-with `A.E` and `A.SE`, and `B` is a submodel that creates a
-side-reaction of `S2` with `B.E` and `B.SE`. It is important to note
+with `A.E` and `A.ES`, and `B` is a submodel that creates a
+side-reaction of `S2` with `B.E` and `B.ES`. It is important to note
 that there is no connection between `A.E` and `B.E` (nor `A.ES` and
 `B.ES`): they are completely different species in the model.
 
@@ -793,9 +846,17 @@ substanceOnly species S1;
 
 Now, whenever ‘S1’ is used in the model, it is a reference to the
 species amount, and not its concentration. Defining an initial amount is
-still accomplished with the same syntax:
+also changed:
 
-S1 = 2.5/C1;
+S1 = 2.5;
+
+This will set the initial amount to 2.5, not the initial concentration.
+If you wish to set the initial concentration instead, use the compartment:
+
+S1 = 3.1*C
+
+Because a concentration times the compartment volume yields an amount, in
+this formulation, '3.1' is set as the initial concentration.
 
 ### Modules
 
@@ -875,10 +936,10 @@ bind reversibly to two different species. You could set this up as the
 following:
 
     model side_reaction
-      J0: S + E -> SE; k1*k2*S*E - k2*ES;
+      J0: S + E -> ES; k1*k2*S*E - k2*ES;
       S = 5;
       E = 3;
-      SE = E+S;
+      ES = E+S;
       k1 = 1.2;
       k2 = 0.4;
     end
@@ -917,8 +978,8 @@ different:
       B.E = 10;
     end
 
-Note that since we defined the initial concentration of `SE` as `S + E`,
-`B.SE` will now have a different initial concentration, since `B.E` has
+Note that since we defined the initial concentration of `ES` as `S + E`,
+`B.ES` will now have a different initial concentration, since `B.E` has
 been changed.
 
 Finally, we add a third side reaction, one in which S binds
@@ -937,7 +998,7 @@ reaction rate, and a whole new reaction as well:
       C: side_reaction();
       C.S is S;
       C.J0 = C.k1*C.k2*S*C.E
-      J3: C.SE -> ; C.SE*k3;
+      J3: C.ES -> ; C.ES*k3;
       k3 = 0.02;
     end
 
@@ -952,10 +1013,10 @@ a list of the symbols to export in parentheses after the name of the
 model when defining it:
 
     model side_reaction(S, k1)
-      J0: S + E -> SE; k1*k2*S*E - k2*ES;
+      J0: S + E -> ES; k1*k2*S*E - k2*ES;
       S = 5;
       E = 3;
-      SE = E+S;
+      ES = E+S;
       k1 = 1.2;
       k2 = 0.4;
     end
@@ -1156,7 +1217,7 @@ definition overwriting an earlier definition. However, there was no way
 with our current interface to let the user know that a warning had been
 saved, and it seemed like there could be a number of cases where the
 user might legitimately want to override an earlier definition (such as
-when using submodules, as we'll get to in a bit). So for now, the above
+when using submodules). So for now, the above
 is valid Antimony input that just so happens to produce exactly the same
 output as:
 
@@ -1305,8 +1366,8 @@ as long as both sets of assignments are executed, either may be executed
 first. However, if the model depends on a particular order of execution,
 events may be given priorities, using the priority keyword:
 
-    E1: at ((x>5) && (z>4)), priority=1: y=3, x=r+2;
-    E2: at ((x>5) && (q>7)), priority=0: y=5: x=r+6;
+    E1: at ((x>5) && (z>4)), priority=1: y=3, x=r+5;
+    E2: at ((x>5) && (q>7)), priority=0: y=5, x=r+6;
 
 In situations where z\>4, q\>7, and x\>5, and then x increases, both E1
 and E2 will trigger at the same time. Since both modify the same values,
@@ -1322,6 +1383,7 @@ event may trigger at time 0. You may override this default by using the
 't0' keyword:
 
     E1: at (x>5), t0=false: y=3, x=r+2;
+    x = 10
 
 In this situation, the value at t0 is considered to be false, meaning it
 can immediately transition to true if x is greater than 5, triggering
@@ -1613,7 +1675,7 @@ activations, use `-o`; for inhibitions, use `-|`, and for unknown
 interactions or for interactions which sometimes activate and sometimes
 inhibit, use `-(`:
 
-    J0: S1 + E -> SE;
+    J0: S1 + E -> ES;
     i1: S2 -| J0;
     i2: S3 -o J0;
     i3: S4 -( J0;
@@ -1622,14 +1684,14 @@ If a reaction rate is given for the reaction in question, that reaction
 must include the species listed as interacting with that reaction. This,
 then, is legal:
 
-    J0: S1 + E -> SE; k1*S1*E/S2
+    J0: S1 + E -> ES; k1*S1*E/S2
     i1: S2 -| J0;
 
 because the species S2 is present in the formula `k1*S1*E/S2`. If the
 concentration of an inhibitory species increases, it should decrease the
 reaction rate of the reaction it inhibits, and vice versa for activating
-species. The current version of libAntimony (v2.4) does not check this,
-but future versions may add the check.
+species. libAntimony does not check to ensure this is true; the modeler
+must check manually.
 
 When the reaction rate is not known, species from interactions will be
 added to the SBML 'listOfModifiers' for the reaction in question.
@@ -1740,11 +1802,41 @@ cvterms, using the following syntax:
     A hasProperty "cvterm" or A property "cvterm"
     A isPropertyOf "cvterm" or A propertyBearer "cvterm"
     A hasTaxon "cvterm" or A taxon "cvterm"
+    A created "YYYY-MM-DDThh:mm:ssTZD" where TZD is either Z or +/- HH:MM
+    A modified "YYYY-MM-DDThh:mm:ssTZD" where TZD is either Z or +/- HH:MM
+    A creator "creator"
+    A creator.name "full name"
+    A creator.givenName "given name"
+    A creator.familyName "family name"
+    A creator.organization "organization"
+    A creator.email "email address"
+    A notes "notes"
+   
+Where ``A`` is any model ID or the word 'model' for the model itself, and
+``cvterm`` is a URI like ``"http://identifiers.org/uniprot/P12999"``.  If 
+there are multiple creators, or multiple modification times, you can 
+distinguish between them by adding a number:
 
-Where `A` is any model element, model name, or function name, and
-`cvterm` is a URI like `"http://identifiers.org/uniprot/P12999"`.
+    A creator1.name "Hugh Barrett"
+    A creator2.name "Nancy Smalls"
+    A modified1 "2012-12-11T15:30:15Z"
+    A modified2 "2013-01-15T12:25:55Z"
+
+You can also set the individual components of the 'created' and 'modified'
+date by keyword:
+
+    A created.year "YYYY"
+    A created.month "MM"
+    A created.day "DD"
+    A created.hour "hh"
+    A created.minute "mm"
+    A created.second "ss"
+    A created.time "hh:mm:ss"
+
 
 ### Flux Balance Constraints
+
+#### Constraints
 
 In some models, reaction rates are not known specifically, but one can
 place certain constraints on those reactions, and then apply an
@@ -1761,8 +1853,24 @@ reactions, the following definitions are all Flux Balance constraints:
     -10 <= J2 <= 10
 
 Constraints that do not involve the ID of a reaction by itself will be
-translated as core SBML constraints. (Flux Balance constraints are also
-translated as core constraints, for consistency.)
+translated as core SBML constraints. (Any constraint is treated as
+either an FBC constraint *or* a core SBML constraint, not both.)
+
+As of Antimony v3.1, these flux balance constraints are translated to 
+the SBML FBC package version 3, instead of version 1.  Because all 
+FBC v3 constraints are stored as parameters, a translation of FBC
+constraints to Antimony will result in constaints like the following:
+
+    constraint J001_fluxBounds: FB2N0 <= J001 <= FB3N1
+    constraint J002_fluxBounds: FB2N0 <= J002 <= FB3N1
+
+    FB2N0 = 0;
+    FB3N1 = 1;
+
+Also note that since FBC v2 and v3 dropped '<' in favor of '<=',
+all FBC constraints will be converted to '<=' and '>='.
+
+#### Objectives
 
 The objective function is defined using either the keyword `maximize` or
 `minimize`. It may be named by prepending the statement with that name,
@@ -1770,6 +1878,58 @@ followed by a colon:
 
     maximize J1
     obj1: minimize J2
+
+Objectives may be fairly complicated, but must be strict additive 
+combinations of multiples of reaction rates, with those reaction rates
+optionally being squared or multiplied by other reaction rates:
+
+    obj3: maximize J1 + 3*J2 + 4*J3^2 + 5*J4*J5
+
+#### Gene Products and Gene Product Associations
+
+The SBML FBC package also allows the definition of gene products, 
+which may optionally reference a species, and gene product associations,
+which are additional information about reactions.  A gene product
+association may be defined by appending '.geneProductAssociation' or
+'.gpa' to a reaction ID, and defined by combining any number of gene
+product IDs in 'and' and 'or' combinations:
+
+    J0.geneProductAssociation = G_kasB
+    J1.gpa                    = G_kasB && G_kasA;
+    J2.gpa                    = (G_kasB && G_kasA) || G_kasC
+
+Any ID used in a gene product association will be automatically
+defined as a gene product, but you may also define them explicitly:
+
+    geneProduct G_kasA, G_kasB, G_kasC
+
+Commonly-used gene product names sometimes to not conform to the
+Antimony or SBML-style syntax for IDs.  As a result, the FBC package
+adds a 'label' to gene products which may be any syntax.  In Antimony,
+the 'display name' is used for this purpose:
+
+    G_kasA is "Gene-kasA"
+
+To declare an 'associated species' for a gene product, simply use '=':
+
+    G_kasA = S1
+
+#### Species charge and chemical formula
+
+The SBML FBC package additionally allows the charge and chemical
+formulas of species to be stored.  The charge must be a number, and
+the chemical formula must conform to the syntax defined in the FBC
+specification, with (essentially) numbers and atom names, in alphabetical
+order after carbon, though some variation is allowed.  The charge is
+defined with '[speciesID].charge', and the chemical formula may be 
+defined with '[id].formula' or '[id].chemicalFormula'.  Alternatively,
+'is' may be used, but either way, the formula must be in quotes:
+
+    S1.charge = 3.2
+    S2.chemicalFormula = "C10H12N5O13P3"
+    S3.formula = "C2H4O2(CH2)n"
+    S4.formula is "CH2NO"
+
 
 ### Other files
 
@@ -2030,7 +2190,7 @@ Translated to SBML with the use of the autolayout algorithm, then translated bac
 For layouts not generated with the autolayout algorithm, it is possible for a line between a reaction and a species to be defined with multiple segments, one after the next.  For these, we introduce the keyword 'seg#'.  As with the 'arc#' keyword, the first segment does not need to be defined with a 'seg1', but a second must be defined with 'seg2'.  Here we define a line between J0 and S1 with three straight lines:
 
 ```
-J0.S1.seg1.species_end = {740, 992.6}
+ J0.S1.seg1.species_end = {740, 992.6}
  J0.S1.seg1.rxn_end = {685, 1008}
  J0.S1.seg1.b1 = {740, 992.6}
  J0.S1.seg1.b2 = {685, 1008}
@@ -2051,7 +2211,7 @@ If multiple arcs and segments exist, they can be combined:
 J0.S1.arc2.seg3.species_end = {740, 992}
 ```
 
-### Reaction source/sinks
+### Reaction source or sinks
 
 If a reaction has no reactants or if it has no products, SBMLNetwork will add a 'null' species glyph for that reaction.  This is translated to Antimony as the reaction ID followed by the string '.--', and you can set its position and other features with that ID:
 
@@ -2147,6 +2307,81 @@ Note that 'shape' cannot be set for 'model.layout', only for species, reactions,
 
 The 'shape' of a reaction refers to the shape at the centroid of the arc between the reactants and the products.  By default, this is a square of size {20, 20}.
 
+### A full example
+
+Here's a fairly complete model that exercises most of the elements of a typical Antimony layout:
+
+```
+    J0: S1->S2;
+    # If you just want layout on:
+    model.layout = on                   # Only need to turn on if don't define anything else; doesn't work to turn it off.
+
+    //Autolayout options:
+    model.autolayout.maxNumConnectedEdges = 5  # If a single species is involved in more than this number of reactions, it gets aliased.  Default 3.
+
+    # General layout defaults:
+    model.layout.style = calm           # Set the overall style to one of Adel's predefined styles.
+    model.layout.align_top = {S1}       # Align these nodes in the same row at the top of the layout.  
+                                        # (Also available: align_ - bottom, right, left, hCenter, vCenter, and circular)
+    model.layout.size = {505, 404}      # {width, height}  The size of the entire layout. 
+    model.layout.width = 505            # alt for 'size'   The width of the entire layout.
+    model.layout.height = 404           # alt for 'size'   The height of the entire layout.
+
+    model.layout.background = fuchsia   # The background color
+    model.layout.color = khaki          # (or 'fillcolor')  The fill color for all elements in the layout
+    model.layout.linecolor = azure      # (or 'strokecolor')  The default line color for all elements in the layout
+    model.layout.linewidth = 32         # (or 'strokewidth')  The default linewidth for all elements in the layout
+    model.layout.fontcolor = coral      # The default font color for all text in the layout
+    model.layout.font = monospace       # The default font for all text in the layout (predefined options are 'serif' (default), 'sans_serif', and 'monospace', but arbitrary font names are also legal.)
+    model.layout.fontsize = 4           # The default font size for all text in the layout (default 10)
+    model.layout.fontstyle = italic     # (or 'fontweight')  The default font style for all text in the layout (options are 'normal' (default), 'bold', 'italic', and 'bold_italic').
+
+    # Group type defaults (species, compartments, reactions)
+    species.size = {68, 101}            # The default size (width, height) for all species in the layout
+    species.width = 68                  # The default height for all species in the layout
+    species.height = 101                # The default height for all species in the layout
+    species.color = blue                # (or 'fillcolor')  The default fill color for all species in the layout
+    species.linecolor = orange          # (or 'strokecolor')  The default line color for all species in the layout
+    species.linewidth = 11              # (or 'strokewidth')  The default linewidth for all species in the layout
+    species.fontcolor = green           # The default font color for all species in the layout
+    species.font = sans_serif           # The default font for all species in the layout (predefined options are 'serif' (default), 'sans_serif', and 'monospace', but arbitrary font names are also legal.)
+    species.fontsize = 8                # The default font size for all species in the layout (default 10)
+    species.fontstyle = bold_italic     # (or 'fontweight')  The default font style for all species in the layout (options are 'normal' (default), 'bold', 'italic', and 'bold_italic').
+    species.shape = ellipse             # The default shape for all species in the layout (options are 'rectangle' (default), 'square', 'ellipse', 'circle', 'triangle', 'diamond', 'pentagon', 'hexagon', and 'octagon').
+
+    # Individual species options:
+    S1.pos = {28, 35}                   # The position (x, y) of S1 in the layout.  By default, determined by autolayout.
+    S1.x = 28                           # (alt for pos) The x position of S1.
+    S1.y = 35                           # (alt for pos) The y position of S1.
+
+    # Species options that override general species options:
+    S1.size = {55, 66}      # The size (width, height) of S1.  
+    S1.width = 55           # (alt for size). The width of S1.
+    S1.height = 66          # (alt for size). The height of S1.
+    S1.color = magenta      # (or 'fillcolor')  The fill color for S1
+    S1.linecolor = yellow   # (or 'strokecolor')  The line color for S1
+    S1.linewidth = 18       # (or 'strokewidth')  The linewidth for S1
+    S1.fontcolor = gray     # The font color for S1
+    S1.font = serif         # The font for S1 (predefined options are 'serif' (default), 'sans_serif', and 'monospace', but arbitrary font names are also legal.)
+    S1.fontsize = 19        # The font size for S1 (default 10)
+    S1.fontstyle = bold     # (or 'fontweight')  The font style for S1 (options are 'normal' (default), 'bold', 'italic', and 'bold_italic').
+    S1.shape = ellipse      # The shape for S1 (options are 'rectangle' (default), 'square', 'ellipse', 'circle', 'triangle', 'diamond', 'pentagon', 'hexagon', and 'octagon').
+
+    J0.S1.species_end = {28, 34} # The position of the outer (species-side) end of the line between 'S1' and 'J0' (where J0 is the central point of the reaction)
+    J0.S1.b1  = {55, 31}         # The first control point for the line between S1 and J0.
+    J0.S1.b2  = {58, 25}         # The second control point for the line between S1 and J0.
+    J0.S1.rxn_end = {60, 24}     # The inner (reaction-side) end of the line between S1 and J0.  Usually not needed; the position is by default the position of the reaction itself.
+
+
+    #Align example:
+    S1->S2;
+    S2->S3;
+    S3->S4;
+    S4->S5; 
+
+    model.layout.align_top = {S1, S2, S3}
+    model.layout.align_right = {S3, S4, S5}
+```
 
 ## Appendix: Converting between SBML and Antimony
 
@@ -2200,5 +2435,5 @@ converting models between SBML and Antimony:
     models](http://antimony.sourceforge.net/antimony-examples.html) show
     how to use the [comp
     package](http://sbml.org/Documents/Specifications/SBML_Level_3/Packages/comp).
-  - [This manual](http://antimony.sourceforge.net/Tutorial.pdf) in
+  - [This manual](AntimonyTutorial.pdf) in
     PDF format.
