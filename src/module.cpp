@@ -3716,7 +3716,7 @@ string getSetString(set<pair<string, int> > list)
 string Module::GetAntimonyGeneralLayout(const string& indent) const
 {
     stringstream ret;
-    ret << indent << "# General layout options" << endl;
+    ret << indent << "// General layout options" << endl;
     ret << indent << "model.layout = on" << endl;
     //if (m_autolayout.stiffness != 10) {
     //    ret << indent << "model.autolayout.stiffness = " << m_autolayout.stiffness << endl;
