@@ -606,8 +606,6 @@ START_TEST(test_source_sink)
   libsbml::SBMLDocument* doc = translateAntimony(model);
   fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(doc, "S1") == 560);
   fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionY(doc, "S1") == 0.0);
-  //fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(doc, "S2") == 30.0);
-  //fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionY(doc, "S2") == 37.5);
   fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(doc, "J0") == 318.13);
   fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionY(doc, "J0") == 29.25);
   fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentEndPointX(doc, "J0", 0, 0, 0) == 550.02);

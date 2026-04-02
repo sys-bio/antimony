@@ -388,7 +388,7 @@ bool LayoutWrapper::TransferLayoutInformationTo(SBMLDocument* sbml)
         }
     }
     string glyphId = LIBSBMLNETWORK_CPP_NAMESPACE::getId(sbml, 0, sid, m_aliasNum);
-    if (m_layout_type == lt_sourceSink) {
+    if (m_speciesId == "--") {
         bool ret = false;
         //We need to find the ID that SBMLNetwork has given to the source/sink glyph:
         size_t nreactants = m_parent->GetReaction()->GetLeft()->Size();
@@ -404,10 +404,14 @@ bool LayoutWrapper::TransferLayoutInformationTo(SBMLDocument* sbml)
                 break;
             }
         }
-        for (size_t lw = 0; lw < m_layoutWrappers.size(); lw++) {
-            ret = ret || m_layoutWrappers[lw]->TransferLayoutInformationTo(sbml);
-        }
-        return ret;
+    }
+
+    if (m_layout_type == lt_sourceSink) {
+      bool ret = false;
+      for (size_t lw = 0; lw < m_layoutWrappers.size(); lw++) {
+        ret = ret || m_layoutWrappers[lw]->TransferLayoutInformationTo(sbml);
+      }
+      return ret;
     }
 
     string formstring = m_valFormula.ToSBMLString();
@@ -424,9 +428,8 @@ bool LayoutWrapper::TransferLayoutInformationTo(SBMLDocument* sbml)
     ASTNode* astn = parseStringToASTNode(formstring);
     string error = "Unable to set " + sid + "." + LayoutTypeToString(m_layout_type) + " to " + formstring + ".";
     // Handle individual reaction arc colors and line widths.
-    if (m_parent->GetType() == varLayoutWrapper) {
-      LayoutWrapper* lw = static_cast<LayoutWrapper*>(m_parent);
-      assert(lw->m_layout_type == lt_reactionArc || lw->m_layout_type == lt_sourceSink);
+    LayoutWrapper* lw = static_cast<LayoutWrapper*>(m_parent);
+    if (m_parent->GetType() == varLayoutWrapper && lw->m_layout_type == lt_reactionArc) {
       sid = lw->m_parent->GetNameDelimitedBy("_");
       int speciesIndex = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceIndexAssociatedWithSpecies(sbml, lw->m_speciesId, sid, lw->m_aliasNum, lw->m_speciesIndex);
       switch (m_layout_type) {
