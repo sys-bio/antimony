@@ -2715,6 +2715,9 @@ void Module::CreateSBMLModel(bool comp)
       }
 
       LIBSBMLNETWORK_CPP_NAMESPACE::autolayout(&m_sbml, m_autolayout.maxNumConnectedEdges);
+      if (m_layout.style == "escher") {
+        LIBSBMLNETWORK_CPP_NAMESPACE::setEscherStyleCustomFeatures(&m_sbml, 0);
+      }
 
       bool any_align = false;
       if (m_layout.align_top.size()) {
