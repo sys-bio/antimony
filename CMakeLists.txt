@@ -117,6 +117,11 @@ set(ANTIMONY_API    "${CMAKE_CURRENT_BINARY_DIR}/antimony_api.h")
 
 configure_file(${ANTIMONY_API_IN} ${ANTIMONY_API} @ONLY)
 
+# Generated antimony_api.h lands in the build dir, not src/, so every target
+# built from this CMakeLists.txt (library, static library, executables) needs
+# the build dir on its include path.
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
+
 
 
 
