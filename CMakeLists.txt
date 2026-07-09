@@ -119,8 +119,9 @@ configure_file(${ANTIMONY_API_IN} ${ANTIMONY_API} @ONLY)
 
 # Generated antimony_api.h lands in the build dir, not src/, so every target
 # built from this CMakeLists.txt (library, static library, executables) needs
-# the build dir on its include path.
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
+# the build dir on its include path. In turn, the generated antimony_api.h 
+# file needs libutil.h and enums.h, which are no longer in the same directory.
+include_directories(${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 
 
