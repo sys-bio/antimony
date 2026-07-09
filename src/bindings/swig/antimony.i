@@ -57,9 +57,7 @@ public class"
 %newobject getSBMLWarnings;
 #endif
 
-#ifndef USE_COMP
 %newobject getCompSBMLString;
-#endif
 
 #ifndef NCELLML
 %newobject getCellMLString;

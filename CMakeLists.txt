@@ -76,7 +76,6 @@ set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Choose the type of build, op
 option(WITH_SBML            "Generate SBML translations"      ON )
 if (WITH_SBML)
     option(WITH_STATIC_SBML     "Use the static version of the libsbml library"      ON )
-    option(WITH_COMP_SBML       "Use the hierarchical composition package API"      ON )
 endif()
 option(WITH_CELLML          "Generate CellML translations"    OFF )
 option(WITH_QTANTIMONY      "Generate QTAntimony"             ON )
@@ -102,9 +101,7 @@ set(ANT_DEPENDENCIES_INSTALL_PREFIX "${CMAKE_CURRENT_SOURCE_DIR}/dependencies"
 # This won't work in Visual Studio 2003, so we disable this option there.
 #
 if(NOT ${CMAKE_GENERATOR} MATCHES "Visual Studio 6" AND NOT ${CMAKE_GENERATOR} MATCHES "Visual Studio 7")
-    if (WITH_COMP_SBML)
-        option(WITH_CHECK    "Compile unit tests. Run with 'make test' or 'ctest'." OFF)
-    endif()
+    option(WITH_CHECK    "Compile unit tests. Run with 'make test' or 'ctest'." OFF)
 endif()
 
 #Create antimony_api.h from antimony_api.h.in
@@ -167,6 +164,38 @@ endif()
 
 set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${LIBSBML_LIBRARY} ${LIBSBML_LIBRARIES} )
 INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${LIBSBML_INCLUDE_DIR} ${EXPAT_INCLUDE_DIR})
+
+####################################################################
+#
+# Antimony has required libSBML's 'comp' (Hierarchical Model Composition)
+# package since v2.1, back when 'comp' was optional and libsbml had to be
+# specially built with it. It's now a standard part of libsbml, so instead
+# of tracking that with our own WITH_COMP_SBML flag (which could drift out
+# of sync with what libsbml itself was actually built with), ask libsbml
+# directly: its own build writes LIBSBML_HAS_PACKAGE_COMP into
+# sbml/common/libsbml-config-packages.h when 'comp' is enabled. If it's
+# missing, fail configure now with a clear message rather than failing
+# later with confusing compile errors deep in module-sbml.cpp.
+#
+
+set(CMAKE_REQUIRED_INCLUDES ${LIBSBML_INCLUDE_DIR})
+check_cxx_source_compiles(
+"#include <sbml/common/libsbml-config-packages.h>
+#ifndef LIBSBML_HAS_PACKAGE_COMP
+#error libsbml was not compiled with the comp package
+#endif
+int main() { return 0; }
+"
+    LIBSBML_HAS_COMP_PACKAGE)
+unset(CMAKE_REQUIRED_INCLUDES)
+
+if (NOT LIBSBML_HAS_COMP_PACKAGE)
+    message(FATAL_ERROR
+"The libSBML found at '${LIBSBML_INCLUDE_DIR}' was not compiled with the "
+"'comp' (Hierarchical Model Composition) package, which antimony requires. "
+"Please rebuild/reinstall libSBML with -DENABLE_COMP=ON (or "
+"-DWITH_STABLE_PACKAGES=ON).")
+endif()
 
 ####################################################################
 #
@@ -486,7 +515,7 @@ file(GLOB LIBANTIMONY_SOURCES
 file(GLOB LIBANTIMONY_TRANSLATORS
     ${ANTIMONY_SRC_DIR}module-sbml.cpp
     ${ANTIMONY_SRC_DIR}module-cellml.cpp
-        )
+    )
 SET_SOURCE_FILES_PROPERTIES(
     ${ANTIMONY_SRC_DIR}module-sbml.cpp
     ${ANTIMONY_SRC_DIR}module-cellml.cpp

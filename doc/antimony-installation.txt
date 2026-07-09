@@ -25,16 +25,14 @@ The first thing to set is what you want to compile to.  On Linux and MacOSX, 'Na
 
 From here, select what options you want on and off.  In particular, here are what some of the options do:
 
-- <code>WITH_SBML</code> Incorporates libSBML, allowing translation to and from SBML.  Requires <A target="_top" HREF="http://sbml.org/Software/libSBML">libSBML</a> v5.0.0 or later.
-- <code>WITH_COMP_SBML</code>  Turns on functionality to produce and consume models with Hierarchical Model Composition package constructs.  Requires libSBML with the latest version of the 'comp' package API integrated.  (This option being on is the only difference between antimony v2.0 and antimony v2.1-beta.)
+- <code>WITH_SBML</code> Incorporates libSBML, allowing translation to and from SBML.  Requires <A target="_top" HREF="http://sbml.org/Software/libSBML">libSBML</a> v5.0.0 or later, built with the 'comp' (Hierarchical Model Composition) package enabled.  CMake checks this automatically at configure time and will stop with an error if the libSBML found does not have 'comp' support built in; there is no separate flag to turn it on.
 - <code>WITH_CELLML</code>  Incorporates the CellML API, allowing translation to and from CellML.  Requires the <A target="_top" HREF="http://www.cellml.org/tools/downloads/cellml_api/releases/1.10">CellML SDK</a> to work.
 - <code>WITH_QTANTIMONY</code>  Produces the QTAntimony editor.  Requires QT (http://qt.nokia.com/).
 - <code>WITH_SBW</code> Incorporates functionality in QTAntimony to import and export models to other SBW-enabled programs.  Requires SBW (and has had problems; if you need this functionality and it doesn't work, let us know).
 - <code>WITH_SBW_TRANSLATOR</code> Produces an SBW translator written by Frank Bergmann to translate models to and from the Antimony format.  May not work with other options enabled.
 
 These options come with the following dependencies:
-- If WITH_SBML is turned on, CMake will need to know where libSBML was installed; both LIBSBML_INCLUDE_DIR and LIBSBML_LIBRARY need to be set.
-- If WITH_COMP_SBML is turned on, the version of libSBML pointed to by LIBSBML_INCLUDE_DIR and LIBSBML_LIBRARY will need to point to the version of libsbml (5.1 or greater) with the 'comp' package integrated.
+- If WITH_SBML is turned on, CMake will need to know where libSBML was installed; both LIBSBML_INCLUDE_DIR and LIBSBML_LIBRARY need to be set.  That libSBML must be built with the 'comp' package (5.1 or greater); CMake verifies this itself and will fail with an explanatory error if it isn't.
 - If WITH_CELLML is turned on, CMake will need to know where the CellML API was installed:  you need only set 'CELLML_API_INSTALL_DIR' and it will find the include directories and the various libraries automatically (if it can't, you may need to track down those libraries yourself).  Note that using the CellML API will trigger a flurry of warnings from the compiler, particularly in Windows.  They may all be safely ignored.
 - If WITH_QTANTIMONY is turned on, CMake will need to know where qmake was installed; QT_QMAKE_EXECUTABLE will need to be set.
 - If WITH_SBW is turned on, CMake will need to know where SBW was installed; both SBW_INCLUDE_DIR and SBW_LIBRARY will need to be set.
