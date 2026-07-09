@@ -111,6 +111,13 @@ if(NOT ${CMAKE_GENERATOR} MATCHES "Visual Studio 6" AND NOT ${CMAKE_GENERATOR} M
     endif()
 endif()
 
+#Create antimony_api.h from antimony_api.h.in
+set(ANTIMONY_API_IN "${CMAKE_CURRENT_SOURCE_DIR}/src/antimony_api.h.in")
+set(ANTIMONY_API    "${CMAKE_CURRENT_BINARY_DIR}/antimony_api.h")
+
+configure_file(${ANTIMONY_API_IN} ${ANTIMONY_API} @ONLY)
+
+
 
 
 add_definitions( -DLIBANTIMONY_VERSION_STRING="${LIBANTIMONY_VERSION_STRING}" )
@@ -554,7 +561,7 @@ source_group(Translators FILES ${LIBANTIMONY_TRANSLATORS})
 
 file(GLOB LIBANTIMONY_HEADERS
         ${ANTIMONY_SRC_DIR}annotated.h
-        ${ANTIMONY_SRC_DIR}antimony_api.h
+        ${ANTIMONY_API}
         ${ANTIMONY_SRC_DIR}antimony_api_cpp.h
         ${ANTIMONY_SRC_DIR}cellmlx.h
         ${ANTIMONY_SRC_DIR}constraint.h

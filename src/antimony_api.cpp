@@ -240,6 +240,11 @@ long ParseFile(string oldlocale)
 
 //Exported routines:
 
+LIB_EXTERN char* getVersionStr()
+{
+  return getCharStar(LIBANTIMONY_VERSION_STRING);
+}
+
 LIB_EXTERN long loadString(const char* model)
 {
   long retval = -1;
