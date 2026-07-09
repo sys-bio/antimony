@@ -20,7 +20,7 @@ outfile = "antimony.py"
 if len(sys.argv)>=3:
     outfile = sys.argv[2]
 
-headerfiles = ["antimony_api.h"]#, "antimony_api_cpp.h"]
+headerfiles = ["antimony_api.h.in"]#, "antimony_api_cpp.h"]
 
 libfile = open(outfile, "w")
 alib = "__antLib"
