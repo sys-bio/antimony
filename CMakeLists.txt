@@ -111,6 +111,19 @@ if(NOT ${CMAKE_GENERATOR} MATCHES "Visual Studio 6" AND NOT ${CMAKE_GENERATOR} M
     endif()
 endif()
 
+#Create antimony_api.h from antimony_api.h.in
+set(ANTIMONY_API_IN "${CMAKE_CURRENT_SOURCE_DIR}/src/antimony_api.h.in")
+set(ANTIMONY_API    "${CMAKE_CURRENT_BINARY_DIR}/antimony_api.h")
+
+configure_file(${ANTIMONY_API_IN} ${ANTIMONY_API} @ONLY)
+
+# Generated antimony_api.h lands in the build dir, not src/, so every target
+# built from this CMakeLists.txt (library, static library, executables) needs
+# the build dir on its include path. In turn, the generated antimony_api.h 
+# file needs libutil.h and enums.h, which are no longer in the same directory.
+include_directories(${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/src)
+
+
 
 
 add_definitions( -DLIBANTIMONY_VERSION_STRING="${LIBANTIMONY_VERSION_STRING}" )
@@ -363,6 +376,14 @@ endif()
 #message(STATUS "libantimony libs: ${LIBANTIMONY_LIBS}")
 set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${EXTRA_LIBS})
 
+# LIBSBML_LIBRARY/LIBSBML_LIBRARIES (from libsbml's own exported CONFIG
+# package) can already include static deps like expat, which are then also
+# found and appended separately above (e.g. WITH_LIBSBML_EXPAT). That gets
+# the same absolute library path passed to the linker twice, producing
+# "ignoring duplicate libraries" warnings. Dedupe the flat list rather than
+# chasing down each transitive source individually.
+list(REMOVE_DUPLICATES LIBANTIMONY_LIBS)
+
 ###############################################################################
 ## Enable support for testing ... can be invoked by running ctest
 # or make test
@@ -554,7 +575,7 @@ source_group(Translators FILES ${LIBANTIMONY_TRANSLATORS})
 
 file(GLOB LIBANTIMONY_HEADERS
         ${ANTIMONY_SRC_DIR}annotated.h
-        ${ANTIMONY_SRC_DIR}antimony_api.h
+        ${ANTIMONY_API}
         ${ANTIMONY_SRC_DIR}antimony_api_cpp.h
         ${ANTIMONY_SRC_DIR}cellmlx.h
         ${ANTIMONY_SRC_DIR}constraint.h

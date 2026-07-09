@@ -26,6 +26,15 @@ START_TEST (test_getAntimonyString)
 }
 END_TEST
 
+START_TEST(test_getAntimonyVersionString)
+{
+  char* version = getVersionStr();
+  fail_unless(string(version) == LIBANTIMONY_VERSION_STRING);
+
+  freeAll();
+}
+END_TEST
+
 START_TEST (test_whatIsMainModel1)
 {
   loadString("a=3\nmodel foo()\nb=10\nend");
@@ -723,6 +732,7 @@ create_suite_API (void)
   TCase *tcase = tcase_create("Antimony API");
 
   tcase_add_test( tcase, test_getAntimonyString);
+  tcase_add_test( tcase, test_getAntimonyVersionString);
   tcase_add_test( tcase, test_whatIsMainModel1);
   tcase_add_test( tcase, test_whatIsMainModel2);
   tcase_add_test( tcase, test_whatIsMainModel3);

@@ -61,7 +61,7 @@
 #define ANTIMONY_API_H
 
 #ifndef LIBANTIMONY_VERSION_STRING //Should be defined in the makefile (from CMakeLists.txt)
-#define LIBANTIMONY_VERSION_STRING "v2.14.0"
+#define LIBANTIMONY_VERSION_STRING "@LIBANTIMONY_VERSION_STRING@"
 #endif
 
 #include "libutil.h"
@@ -235,6 +235,11 @@ LIB_EXTERN void   setRemoveFunctionDefinitions(bool removeFunctionDefinitions);
   * @name Output
   */
 /** \{ */
+
+/**
+ * Get the version of Antimony
+ */
+LIB_EXTERN char*   getVersionStr();
 
 /**
  * Writes out an antimony-formatted file containing the given module.  If no module name is given, all modules in the current set are returned.  If the module depends on any sub-modules, those modules are written out as well, also in the antimony format.  Returns 0 on failure (and sets an error), 1 on success.

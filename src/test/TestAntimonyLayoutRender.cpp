@@ -852,8 +852,8 @@ START_TEST(test_multi_segments)
     "J0.S1.seg1.rxn_end = { 400, 25 }\n"
     "J0.S1.seg2.species_end = { 400.5, 25.5 }\n"
     "J0.S1.seg2.b1 = { 265.1, 29.57 }\n"
-    "J0.S1.seg2.b2 = { 280, 30 }\n";
-    "J0.S1.seg2.rxn_end = { 328.13, 39.25 }\n";
+    "J0.S1.seg2.b2 = { 280, 30 }\n"
+    "J0.S1.seg2.rxn_end = { 329, 39 }\n";
 
   libsbml::SBMLDocument* doc = translateAntimony(model);
   fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getPositionX(doc, "S1") == 560);
@@ -875,8 +875,8 @@ START_TEST(test_multi_segments)
   fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint1Y(doc, "J0", 0, 0, 1) == 29.57);
   fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint2X(doc, "J0", 0, 0, 1) == 280);
   fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentBasePoint2Y(doc, "J0", 0, 0, 1) == 30);
-  fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointX(doc, "J0", 0, 0, 1) == 318.13 + 10);
-  fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointY(doc, "J0", 0, 0, 1) == 29.25 + 10);
+  fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointX(doc, "J0", 0, 0, 1) == 329);
+  fail_unless(LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceCurveSegmentStartPointY(doc, "J0", 0, 0, 1) == 39);
 
   delete doc;
 }
