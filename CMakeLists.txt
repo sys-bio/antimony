@@ -77,10 +77,6 @@ option(WITH_SBML            "Generate SBML translations"      ON )
 if (WITH_SBML)
     option(WITH_STATIC_SBML     "Use the static version of the libsbml library"      ON )
     option(WITH_COMP_SBML       "Use the hierarchical composition package API"      ON )
-    OPTION(WITH_LIBSBML_EXPAT   "Set if libsbml was compiled with a separate expat library."  ON)
-    OPTION(WITH_LIBSBML_LIBXML  "Set if libsbml was compiled with a separate libxml library." OFF)
-    OPTION(WITH_LIBSBML_XERCES  "Set if libsbml was compiled with a separate xerces library." OFF)
-    OPTION(WITH_LIBSBML_COMPRESSION "Set if libsbml was compiled with separate zdll and bzip libraries." ON)
 endif()
 option(WITH_CELLML          "Generate CellML translations"    OFF )
 option(WITH_QTANTIMONY      "Generate QTAntimony"             ON )
@@ -150,13 +146,6 @@ endif (WIN32)
 # Locate libsbml if needed
 #
 
-if (WITH_LIBSBML_COMPRESSION)
-  find_package(ZLIB CONFIG REQUIRED)
-  set(ZLIB_LIBRARY ZLIB::ZLIBSTATIC)
-  get_target_property(ZLIB_LIBRARY ZLIB::ZLIBSTATIC LOCATION)
-  set(ZLIB_INCLUDE_DIR "${ANT_DEPENDENCIES_INSTALL_PREFIX}/include/")
-endif()
-
 if (NOT DEFINED EXPAT_LIBRARY OR NOT DEFINED EXPAT_INCLUDE_DIR)
     find_package(expat CONFIG REQUIRED)
 
@@ -166,8 +155,6 @@ if (NOT DEFINED EXPAT_LIBRARY OR NOT DEFINED EXPAT_INCLUDE_DIR)
     message(STATUS "EXPAT_LIBRARY: ${EXPAT_LIBRARY}")
     set(EXPAT_INCLUDE_DIR "${ANT_DEPENDENCIES_INSTALL_PREFIX}/include/")
 endif()
-
-message(STATUS "zlibstatic: ${ZLIB_LIBRARY}")
 
 if (NOT DEFINED LIBSBML_INCLUDE_DIR)
     set(LIBSBML_INCLUDE_DIR "${ANT_DEPENDENCIES_INSTALL_PREFIX}/include/")
@@ -179,7 +166,7 @@ if (NOT DEFINED LIBSBML_LIBRARY)
 endif()
 
 set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${LIBSBML_LIBRARY} ${LIBSBML_LIBRARIES} )
-INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${LIBSBML_INCLUDE_DIR} ${EXPAT_INCLUDE_DIR} ${ZLIB_INCLUDE_DIR})
+INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${LIBSBML_INCLUDE_DIR} ${EXPAT_INCLUDE_DIR})
 
 ####################################################################
 #
@@ -253,67 +240,6 @@ else(WITH_CELLML)
 
 endif(WITH_CELLML)
 
-###############################################################
-#
-# Locate the libraries libsbml depends on, for static linking.
-#
-
-if(WITH_LIBSBML_EXPAT)
-    find_library(EXPAT_LIBRARY
-        NAMES libexpat.lib libexpat.so libexpat.dylib libexpat expat.lib expat.so expat.dylib expat libexpatdMD libexpatMD
-	PATHS /usr/lib /usr/local/lib
-              ${CMAKE_SOURCE_DIR}
-              ${CMAKE_SOURCE_DIR}/dependencies/lib
-              ${LIBSBML_INCLUDE_DIR}/../lib
-        )
-    set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${EXPAT_LIBRARY} )
-endif()
-
-if(WITH_LIBSBML_LIBXML)
-    find_library(LIBXML_LIBRARY
-        NAMES libxml2.lib libxml2.so libxml2.dylib libxml2 libxml2s libxml2sd
-        PATHS /usr/lib /usr/local/lib
-              ${CMAKE_SOURCE_DIR}
-              ${CMAKE_SOURCE_DIR}/dependencies/lib
-              ${LIBSBML_INCLUDE_DIR}/../lib
-        )
-    set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${LIBXML_LIBRARY} )
-
-    #The libxml library requires the libz library, too.
-    find_package(ZLIB CONFIG REQUIRED)
-    set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ZLIB::ZLIBSTATIC )
-
-    if(WIN32)
-      find_library(ICONV_LIBRARY
-          NAMES iconv.lib iconv.so iconv.dylib iconv libiconv.lib libiconv.so libiconv.dylib libiconv libiconv-static.lib libiconv-staticd.lib
-          PATHS /usr/lib /usr/local/lib
-                ${CMAKE_SOURCE_DIR}
-                ${CMAKE_SOURCE_DIR}/dependencies/lib
-                ${LIBSBML_INCLUDE_DIR}/../lib
-          )
-      set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${ICONV_LIBRARY})
-      find_library(LIBCHARSET_LIBRARY
-          NAMES libcharset.lib libcharsetd.lib libcharsetmd.lib libcharsetmdd.lib
-          PATHS /usr/lib /usr/local/lib
-                ${CMAKE_SOURCE_DIR}
-                ${CMAKE_SOURCE_DIR}/dependencies/lib
-                ${LIBSBML_INCLUDE_DIR}/../lib
-          )
-      set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${LIBCHARSET_LIBRARY})
-    endif()
-endif()
-
-if(WITH_LIBSBML_XERCES)
-    find_library(XERCES_LIBRARY
-        NAMES xerces-c_static_3.lib xerces-c_static_3.so xerces-c_static_3.dylib xerces-c_static_3
-	PATHS /usr/lib /usr/local/lib
-              ${CMAKE_SOURCE_DIR}
-              ${CMAKE_SOURCE_DIR}/dependencies/lib
-              ${LIBSBML_INCLUDE_DIR}/../lib
-        )
-    set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${XERCES_LIBRARY} )
-endif()
-
 if(WITH_SBML)
     find_library(SBMLNETWORK_LIBRARY
         NAMES libsbmlnetwork-static.lib sbmlnetwork-static.lib libsbmlnetwork-static sbmlnetwork-static libsbmlnetwork-staticmdd libsbmlnetwork-staticmd libsbmlnetwork-staticd libsbmlnetwork-staticd.a
@@ -376,12 +302,7 @@ endif()
 #message(STATUS "libantimony libs: ${LIBANTIMONY_LIBS}")
 set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${EXTRA_LIBS})
 
-# LIBSBML_LIBRARY/LIBSBML_LIBRARIES (from libsbml's own exported CONFIG
-# package) can already include static deps like expat, which are then also
-# found and appended separately above (e.g. WITH_LIBSBML_EXPAT). That gets
-# the same absolute library path passed to the linker twice, producing
-# "ignoring duplicate libraries" warnings. Dedupe the flat list rather than
-# chasing down each transitive source individually.
+# Cheap insurance against duplicate entries.
 list(REMOVE_DUPLICATES LIBANTIMONY_LIBS)
 
 ###############################################################################
