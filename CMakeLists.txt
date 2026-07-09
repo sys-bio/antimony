@@ -376,6 +376,14 @@ endif()
 #message(STATUS "libantimony libs: ${LIBANTIMONY_LIBS}")
 set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${EXTRA_LIBS})
 
+# LIBSBML_LIBRARY/LIBSBML_LIBRARIES (from libsbml's own exported CONFIG
+# package) can already include static deps like expat, which are then also
+# found and appended separately above (e.g. WITH_LIBSBML_EXPAT). That gets
+# the same absolute library path passed to the linker twice, producing
+# "ignoring duplicate libraries" warnings. Dedupe the flat list rather than
+# chasing down each transitive source individually.
+list(REMOVE_DUPLICATES LIBANTIMONY_LIBS)
+
 ###############################################################################
 ## Enable support for testing ... can be invoked by running ctest
 # or make test
