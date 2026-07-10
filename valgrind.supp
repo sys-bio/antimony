@@ -1,0 +1,34 @@
+# Valgrind suppressions for antimony's test suite (used via
+# MEMORYCHECK_SUPPRESSIONS_FILE, see CMakeLists.txt / `ctest -T memcheck`).
+#
+# This starts empty (well, with a couple of extremely common, well-known
+# entries below) rather than pre-populated with guesses, since the real
+# noise floor -- dynamic loader internals, libSBML/Xerces/expat static
+# initializers, the C++ runtime, SWIG/Python interpreter startup if the
+# Python bindings get exercised, etc. -- can only be identified accurately
+# by actually running `ctest -T memcheck` once and reading Testing/Temporary/
+# MemoryChecker.*.log (or the DynamicAnalysis.xml summary) for what's real
+# vs. noise.
+#
+# To add a new suppression: run with --gen-suppressions=yes (or
+# --gen-suppressions=all) added to MEMORYCHECK_COMMAND_OPTIONS temporarily,
+# copy the block valgrind prints for a confirmed-benign report, and paste it
+# below with a comment explaining why it's safe to ignore.
+
+{
+   dl_init-ld.so-reachable-not-a-leak
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:_dl_init
+   ...
+}
+
+{
+   libstdc++-iostream-init-once-static
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:_ZNSt8ios_base4InitC1Ev
+   ...
+}
