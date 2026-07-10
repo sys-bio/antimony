@@ -139,6 +139,10 @@ jobs:
           elif [ "${{ matrix.platform.os_type }}" == 'ubuntu' ]; then
             sudo apt-get update
             sudo apt-get install -y ccache
+            if [ "${{ matrix.platform.name }}" == 'ubuntu-latest-debug' ]; then
+              # Needed for the "Run Antimony tests under valgrind" step below.
+              sudo apt-get install -y valgrind
+            fi
           elif [ "${{ matrix.platform.os_type }}" == 'manylinux' ]; then
             mkdir -p ccache
             cd ccache
@@ -283,6 +287,17 @@ jobs:
         run: |
           cd ${RUNNER_WORKSPACE}/build-antimony
           ctest -C ${{ matrix.platform.build_type }} --output-on-failure --verbose --extra-verbose --progress
+
+      # Valgrind is Linux-only (no Windows support, weak/no Apple Silicon
+      # support), so this only runs on one leg of the matrix rather than
+      # across every platform/config combination. See MEMORYCHECK_* in the
+      # root CMakeLists.txt and valgrind.supp for the suppressions file.
+      - name: Run Antimony tests under valgrind (memcheck)
+        if : matrix.platform.name == 'ubuntu-latest-debug'
+        shell: bash
+        run: |
+          cd ${RUNNER_WORKSPACE}/build-antimony
+          ctest -T memcheck -C ${{ matrix.platform.build_type }} --output-on-failure --verbose --extra-verbose --progress
 
       - name: Set artifacts path and name
         shell: bash
