@@ -73,7 +73,6 @@ set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Choose the type of build, op
 #
 
 # which language bindings should be build
-option(WITH_STATIC_SBML     "Use the static version of the libsbml library"      ON )
 option(WITH_CELLML          "Generate CellML translations"    OFF )
 option(WITH_QTANTIMONY      "Generate QTAntimony"             ON )
 option(WITH_SWIG   "Regenerate SWIG-based language bindings." OFF )
@@ -818,19 +817,6 @@ if(NOT UNIX)
 
 
 endif(NOT UNIX)
-
-###############################################################################
-#
-# Install win32 dependencies
-#
-#if (NOT UNIX)
-#   file(GLOB win_dependencies "${CMAKE_SOURCE_DIR}/win32/*.dll" "${CMAKE_CURRENT_SOURCE_DIR}/win32/README.txt")
-#   if (NOT WITH_STATIC_SBML)
-#      list(APPEND win_dependencies ${LIBSBML_DLL})
-#   endif()
-#   install(FILES ${win_dependencies} DESTINATION bin/)
-#   install(FILES "${CMAKE_SOURCE_DIR}/win32/platforms/qwindows.dll" DESTINATION bin/platforms/)
-#endif()
 
 if(WIN32 AND INSTALL_SYSTEM_RUNTIMES)
   include(InstallRequiredSystemLibraries)

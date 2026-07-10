@@ -42,10 +42,6 @@ configure_file(${INIT_PY_IN} ${INIT_PY})
 ####################################################################
 #For installation, we can run setup.py for people automatically (on by default):
 
-if (NOT WITH_STATIC_SBML)
-    file(GLOB win_dependencies "${CMAKE_SOURCE_DIR}/win32/${LIBSBML_DLL}")
-endif()
-
 #Create the 'libantimony.pth' file (which lets users 'import libantimony').
 file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/libantimony.pth" "antimony\n")
 
