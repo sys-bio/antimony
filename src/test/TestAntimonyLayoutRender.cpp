@@ -19,7 +19,7 @@
 using namespace std;
 using namespace libsbml;
 
-extern char *TestDataDirectory;
+extern string TestDataDirectory;
 
 libsbml::SBMLDocument* translateAntimony(const string& model)
 {

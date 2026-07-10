@@ -17,7 +17,7 @@
 using namespace std;
 using namespace libsbml;
 
-extern char *TestDataDirectory;
+extern string TestDataDirectory;
 
 void compareConstraints(const string& base)
 {

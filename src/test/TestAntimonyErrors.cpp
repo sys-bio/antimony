@@ -13,7 +13,7 @@
 
 using namespace std;
 
-extern char *TestDataDirectory;
+extern string TestDataDirectory;
 
 TEST(AntimonyErrors, unknown_file1)
 {

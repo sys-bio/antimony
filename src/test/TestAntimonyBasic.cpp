@@ -17,7 +17,7 @@
 using namespace std;
 using namespace libsbml;
 
-extern char *TestDataDirectory;
+extern string TestDataDirectory;
 
 // compareFileTranslation, compareFileTranslationWithRenaming, and
 // compareStringTranslation are defined in TestAntimonyUtil.cpp -- they used

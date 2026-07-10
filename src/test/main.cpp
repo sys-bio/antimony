@@ -4,40 +4,27 @@
  *          GoogleTest binaries. Compiled into every test_antimony_* target.
  * ---------------------------------------------------------------------- -->*/
 
-#include <string.h>
-#include <stdlib.h>
-#include <stdio.h>
+#include <cstdlib>
+#include <cstring>
+#include <string>
 
 #include "libutil.h"
 #include "registry.h"
 
 #include "gtest/gtest.h"
 
+using std::string;
+
 /**
  * Global.
  *
- * Declared extern in the various TestAntimony* files.
+ * Declared extern in the various TestAntimony* files. A plain std::string
+ * (rather than a heap-allocated char*) so it cleans up after itself via its
+ * own destructor when the program exits -- no manual free() to remember,
+ * and valgrind doesn't see it as "still reachable" at exit the way a raw
+ * calloc'd buffer would be.
  */
-char *TestDataDirectory;
-
-/**
- * Allocates memory for an array of nmemb elements of size bytes each and
- * returns a pointer to the allocated memory. The memory is set to zero.
- * If the memory could not be allocated, prints an error message and exits.
- */
-void *
-ant_safe_calloc(size_t nmemb, size_t size)
-{
-    void *p = (void *)calloc(nmemb, size);
-
-    if (p == NULL)
-    {
-        fprintf(stderr, "libantimony error:  out of memory.");
-        exit(-1);
-    }
-
-    return p;
-}
+string TestDataDirectory;
 
 /**
  * Sets TestDataDirectory for the TestReadFromFileN suites.
@@ -62,20 +49,13 @@ setTestDataDirectory(void)
         srcdir = ANTIMONY_TEST_SRC_DIR;
     }
 #endif
-    size_t length = (srcdir == NULL) ? 0 : strlen(srcdir);
-
-    /**
-     * strlen("/test-data/") = 11 + 1 (for NULL) = 12
-     */
-    TestDataDirectory = (char *)ant_safe_calloc(length + 12, sizeof(char));
-
     if (srcdir != NULL)
     {
-        strcpy(TestDataDirectory, srcdir);
-        strcat(TestDataDirectory, "/");
+        TestDataDirectory = srcdir;
+        TestDataDirectory += "/";
     }
 
-    strcat(TestDataDirectory, "test-data/");
+    TestDataDirectory += "test-data/";
 }
 
 int
