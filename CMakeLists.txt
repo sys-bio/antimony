@@ -97,7 +97,7 @@ set(ANT_DEPENDENCIES_INSTALL_PREFIX "${CMAKE_CURRENT_SOURCE_DIR}/dependencies"
 # This won't work in Visual Studio 2003, so we disable this option there.
 #
 if(NOT ${CMAKE_GENERATOR} MATCHES "Visual Studio 6" AND NOT ${CMAKE_GENERATOR} MATCHES "Visual Studio 7")
-    option(WITH_CHECK    "Compile unit tests. Run with 'make test' or 'ctest'." OFF)
+    option(WITH_GTEST    "Compile unit tests. Run with 'make test' or 'ctest'." OFF)
 endif()
 
 #Create antimony_api.h from antimony_api.h.in
@@ -332,10 +332,7 @@ list(REMOVE_DUPLICATES LIBANTIMONY_LIBS)
 # or make test
 #
 
-if(WITH_CHECK)
-
-    # we do use tests, that require 2.8.4
-    # cmake_minimum_required(VERSION 2.8.4)
+if(WITH_GTEST)
 
     # set test timeout to 3000 as the normal time limit is not sufficient
     # for the comp tests
@@ -343,109 +340,24 @@ if(WITH_CHECK)
 
     enable_testing()
 
-    find_library(LIBCHECK_LIBRARY
-        NAMES check libcheck
-        PATHS /usr/lib /usr/local/lib ${LIBSBML_DEPENDENCY_DIR}/lib
-        DOC "The file name of the libcheck library."
-    )
+    # Needed at the top level (before add_subdirectory(src/test)) so that
+    # gtest_discover_tests is available to the test CMakeLists.txt files.
+    include(GoogleTest)
 
-    find_path(LIBCHECK_INCLUDE_DIR
-        NAMES check.h
-        PATHS /usr/include /usr/local/include  ${LIBSBML_DEPENDENCY_DIR}/include
-        DOC "The directory containing the libcheck include files."
-              )
+    if (UNIX)
+        # setup valgrind
+        set(CMAKE_MEMORYCHECK_COMMAND valgrind)
+        set(CMAKE_MEMORYCHECK_COMMAND_OPTIONS
+           "--error-exitcode=1 --trace-children=yes --leak-check=full --show-reachable=yes --leak-resolution=high --track-origins=yes --error-limit=no ")
 
-    if(NOT EXISTS "${LIBCHECK_INCLUDE_DIR}/check.h")
-        message(FATAL_ERROR "The 'check' include directory appears to be invalid. It should contain the file check.h, but it does not.")
-    endif()
-
-    if(${CMAKE_GENERATOR} MATCHES "Visual Studio 6" OR ${CMAKE_GENERATOR} MATCHES "Visual Studio 7")
-        message(WARNING "Libcheck is not compatible with Visual Studio 2003 (or earlier versions).")
-    endif()
-
-  if (UNIX)
-      # setup valgrind
-      set(CMAKE_MEMORYCHECK_COMMAND valgrind)
-      set(CMAKE_MEMORYCHECK_COMMAND_OPTIONS
-         "--error-exitcode=1 --trace-children=yes --leak-check=full --show-reachable=yes --leak-resolution=high --track-origins=yes --error-limit=no ")
-
-      set(MEMCHECK_COMMAND
-         "${CMAKE_MEMORYCHECK_COMMAND} ${CMAKE_MEMORYCHECK_COMMAND_OPTIONS}")
-      separate_arguments(MEMCHECK_COMMAND)
-
-      # check that check compiles/links - needs cmake 3+
-
-      if(${CMAKE_VERSION} VERSION_GREATER 3.0.0)
-        set(CHECK_CHECK_CODE
-        "
-        #include <check.h>
-        
-        START_TEST (sanity_check)
-        {
-            fail_unless(5 == 5, \"this should succeed\");
-            fail_unless(6 == 5, \"this should fail\");
-        }
-        END_TEST
-        
-        int 
-        main(void)
-        {
-            Suite *s1 = suite_create(\"Core\");
-            TCase *tc1_1 = tcase_create(\"Core\");
-            SRunner *sr = srunner_create(s1);
-            int nf;
-        
-            suite_add_tcase(s1, tc1_1);
-            tcase_add_test(tc1_1, sanity_check);
-        
-            srunner_run_all(sr, CK_ENV);
-            nf = srunner_ntests_failed(sr);
-            srunner_free(sr);
-            ;
-            return nf == 0 ? 0 : 1;
-        }
-        " 
-        )
-
-        set(CMAKE_REQUIRED_LIBRARIES_CACHE ${CMAKE_REQUIRED_LIBRARIES})
-        unset(CHECK_CHECK_TEST CACHE)
-        unset(CHECK_CHECK_TEST2 CACHE)
-
-        set(CHECK_CHECK_TEST)
-        set(CMAKE_REQUIRED_LIBRARIES "-lcheck -lm ${EXTRA_LIBS}")
-        CHECK_C_SOURCE_COMPILES("${CHECK_CHECK_CODE}" CHECK_CHECK_TEST)
-
-        if (NOT CHECK_CHECK_TEST)
-            set(CHECK_CHECK_TEST2)
-            set(CMAKE_REQUIRED_LIBRARIES "-lcheck -lm -pthread -lrt -lsubunit ${EXTRA_LIBS}")
-            CHECK_C_SOURCE_COMPILES("${CHECK_CHECK_CODE}" CHECK_CHECK_TEST2)
-            
-            if (CHECK_CHECK_TEST2)
-                set(CHECK_TMP_LIBS "-pthread -lrt -lsubunit ${EXTRA_LIBS}")
-                string(STRIP "${CHECK_TMP_LIBS}" CHECK_TMP_LIBS)
-                set(EXTRA_LIBS "${CHECK_TMP_LIBS}" CACHE STRING
-                "List of additional libraries to link against.  Separate multiple
-                names using semicolons." FORCE)                
-                unset(CHECK_TMP_LIBS)
-                message(STATUS "Check requires the following EXTRA_LIBS : ${EXTRA_LIBS}")
-            else ()
-                message(WARNING
-"Check cannot compile tests, please specify the correct EXTRA_LIBS for your operating system.")            
-            endif (CHECK_CHECK_TEST2)
-            unset(CHECK_CHECK_TEST2 CACHE)
-
-        endif (NOT CHECK_CHECK_TEST)
-
-        unset(CHECK_CHECK_TEST CACHE)
-        set(CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_FLAGS_CACHE})
-
-      endif(${CMAKE_VERSION} VERSION_GREATER 3.0.0)
-
-  endif(UNIX)
+        set(MEMCHECK_COMMAND
+           "${CMAKE_MEMORYCHECK_COMMAND} ${CMAKE_MEMORYCHECK_COMMAND_OPTIONS}")
+        separate_arguments(MEMCHECK_COMMAND)
+    endif(UNIX)
 
     include(CTest)
 
-endif(WITH_CHECK)
+endif(WITH_GTEST)
 
 
 ####################################################################
@@ -598,8 +510,8 @@ add_subdirectory(src/bindings)
 # Build the test libraries.
 #
 
-if(WITH_CHECK)
-    message(STATUS "  Using libcheck                = ${LIBCHECK_LIBRARY}")
+if(WITH_GTEST)
+    message(STATUS "  Using vendored GoogleTest      = ${CMAKE_CURRENT_SOURCE_DIR}/src/test/googletest")
     add_subdirectory(src/test)
 endif()
 

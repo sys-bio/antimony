@@ -347,7 +347,17 @@ bool Annotated::addCreatorInfo(unsigned int creator_number, const string& creato
             return true;
         }
         creator->setGivenName(resources[0]);
-        creator->setUseSingleName(false);
+        // setUseSingleName(false) suppresses the placeholder name (" ") set
+        // when a creator is first created (see newcreator.setName(" ")
+        // above), so that a creator with only a given/family name doesn't
+        // get a spurious blank "creator.name" line on write-out. But if the
+        // user has *also* explicitly set a real name via "creator.name",
+        // don't clobber that -- isSetName() would otherwise start
+        // (incorrectly) reporting false, silently dropping the name on
+        // serialization even though it's still stored.
+        if (!creator->isSetName() || creator->getName() == " ") {
+            creator->setUseSingleName(false);
+        }
     }
     else if (CaselessStrCmp(true, creator_substr, "familyName")) {
         if (resources.size() > 1) {
@@ -355,7 +365,9 @@ bool Annotated::addCreatorInfo(unsigned int creator_number, const string& creato
             return true;
         }
         creator->setFamilyName(resources[0]);
-        creator->setUseSingleName(false);
+        if (!creator->isSetName() || creator->getName() == " ") {
+            creator->setUseSingleName(false);
+        }
     }
     else if (CaselessStrCmp(true, creator_substr, "organization") || 
         CaselessStrCmp(true, creator_substr, "organisation") ||

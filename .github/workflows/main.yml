@@ -241,35 +241,6 @@ jobs:
           #  echo EXPAT_LIBRARY="-DEXPAT_LIBRARY=${RUNNER_WORKSPACE}/${{ matrix.libroadrunner_deps_name }}-binaries/lib/${{ matrix.platform.expat_lib_name }}" >> "${GITHUB_ENV}"
           #fi
 
-      - name: Install libcheck
-        shell: bash
-        run: |
-          cd ${RUNNER_WORKSPACE}
-          mkdir -p check
-          cd check
-          if [ "${{ matrix.platform.os_type }}" == 'windows' ]; then
-            curl -L https://github.com/sys-bio/antimony/releases/download/libcheck/check-${{ matrix.platform.build_type }}.zip > check.zip
-            unzip -q check.zip -d check
-            rm check.zip
-            echo LIBCHECK_INCLUDE_DIR="-DLIBCHECK_INCLUDE_DIR=${RUNNER_WORKSPACE}/check/check/include" >> "${GITHUB_ENV}"
-            echo LIBCHECK_LIBRARY="-DLIBCHECK_LIBRARY=${RUNNER_WORKSPACE}/check/check/lib/libcheck.lib" >> "${GITHUB_ENV}"
-          else
-            curl -L https://github.com/libcheck/check/releases/download/0.15.2/check-0.15.2.tar.gz > check.tar.gz
-            tar -zxf check.tar.gz
-            rm check.tar.gz
-            mkdir -p build-check
-            mkdir -p install-check
-            cd build-check
-            cmake -G "Ninja" -DCMAKE_INSTALL_PREFIX="${RUNNER_WORKSPACE}/check/install-check" -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES=${{ matrix.platform.arch }} ../check-0.15.2
-            cmake --build . --target install
-            echo LIBCHECK_INCLUDE_DIR="-DLIBCHECK_INCLUDE_DIR=${RUNNER_WORKSPACE}/check/install-check/include" >> "${GITHUB_ENV}"
-            if [ "${{ matrix.platform.os_type }}" == 'manylinux' ]; then
-              echo LIBCHECK_LIBRARY="-DLIBCHECK_LIBRARY=${RUNNER_WORKSPACE}/check/install-check/lib64/libcheck.so" >> "${GITHUB_ENV}"
-            else
-              echo LIBCHECK_LIBRARY="-DLIBCHECK_LIBRARY=${RUNNER_WORKSPACE}/check/install-check/lib/libcheck.a" >> "${GITHUB_ENV}"
-            fi
-          fi
-
       - name: Install Qt
         if : matrix.platform.build_qt_antimony == 'ON'
         uses: jurplel/install-qt-action@v4
@@ -297,9 +268,7 @@ jobs:
           -DCMAKE_INSTALL_PREFIX="${RUNNER_WORKSPACE}/install-antimony" \
           ${ANT_DEPENDENCIES_INSTALL_PREFIX} \
           -DWITH_QTANTIMONY=${{ matrix.platform.build_qt_antimony }} \
-          -DWITH_CHECK=ON \
-          ${LIBCHECK_INCLUDE_DIR} \
-          ${LIBCHECK_LIBRARY} \
+          -DWITH_GTEST=ON \
           -DWITH_PYTHON=${{ matrix.platform.build_python }}
 
       - name: Build and install Antimony
