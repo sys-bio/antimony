@@ -1,0 +1,149 @@
+name: ValgrindDebugMemcheck
+
+# A manually-triggered, slower, fully-accurate valgrind memcheck run against
+# an unoptimized debug build. This is deliberately a separate workflow file
+# rather than another leg of the main build_on_OSs matrix in main.yml:
+#
+#   - main.yml already runs an *automatic* valgrind memcheck on every
+#     push/PR, against the ubuntu-latest-release leg (with -g added just for
+#     that leg -- see "Configure CMake for Antimony" in main.yml). That's
+#     fast and still symbol-rich, but -O3 can make stack traces slightly
+#     imprecise (inlining, reordering) and could in rare cases eliminate a
+#     provably-dead allocation a debug build wouldn't.
+#   - Running a *second*, debug-build memcheck automatically on every push
+#     would roughly double CI time for comparatively little day-to-day
+#     value, so it's manual-only (workflow_dispatch): trigger it from the
+#     Actions tab when the release-build memcheck above flags something and
+#     you need fully accurate line numbers to actually locate it.
+#   - GitHub Actions doesn't support skipping individual matrix legs based
+#     on the trigger type (job-level `if:` can't reference `matrix.*`), so
+#     folding a "manual-only" leg into main.yml's existing 10-way matrix
+#     would mean either rebuilding all 10 legs just to run this once, or
+#     sprinkling `if: env.SOME_FLAG == 'true'` across every expensive step
+#     in that file. A dedicated single-purpose workflow is simpler to read
+#     and reason about than either of those.
+#
+# MAINTENANCE NOTE: the steps below (checkout, ccache, dependency download,
+# CMake configure, build) are intentionally copied from main.yml's
+# ubuntu-latest-debug path, not reimplemented independently. If you change
+# how antimony is built/configured for Linux in main.yml -- a new required
+# CMake flag, a changed dependency-download URL pattern, a new setup step --
+# check whether this file needs the same change. There's no automated way
+# to keep them in sync.
+
+on:
+  workflow_dispatch:
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+
+jobs:
+  debug_memcheck:
+    name: Valgrind memcheck (Debug, ubuntu-latest)
+    runs-on: ubuntu-latest
+
+    env:
+      libroadrunner_deps_owner: sys-bio
+      libroadrunner_deps_repo: libroadrunner-deps
+      libroadrunner_deps_name: libroadrunner-deps
+      libroadrunner_deps_release_version: v2.3.3
+      python_version: '3.13'
+
+    steps:
+      - name: Checkout Antimony
+        uses: actions/checkout@main
+
+      - name: Get Host Architecture
+        shell: bash
+        run: |
+          architecture=$(uname -m)
+          echo "host_architecture=$architecture" >> "${GITHUB_ENV}"
+
+      - name: Install ccache and valgrind
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ccache valgrind
+
+      - name: Prepare ccache timestamp
+        id: ccache_cache_timestamp
+        shell: cmake -P {0}
+        run: |
+          string(TIMESTAMP current_date "%Y-%m-%d-%H;%M;%S" UTC)
+          message("timestamp=${current_date}" >> $GITHUB_OUTPUT)
+
+      - name: Set ccache cache directory
+        shell: bash
+        run: |
+          cd ${RUNNER_WORKSPACE}
+          echo "CCACHE_DIR=${RUNNER_WORKSPACE}/.ccache" >> "${GITHUB_ENV}"
+          echo "COMPILER_LAUNCHER=ccache" >> "${GITHUB_ENV}"
+
+      - name: Cache ccache files
+        uses: actions/cache@main
+        with:
+          path: ${RUNNER_WORKSPACE}/.ccache
+          key:
+            ${{ runner.os }}-debug-memcheck-${{ steps.ccache_cache_timestamp.outputs.timestamp
+            }}
+          restore-keys: |
+            ${{ runner.os }}-debug-memcheck-${{ steps.ccache_cache_timestamp.outputs.timestamp }}
+            ${{ runner.os }}-debug-memcheck-
+            ${{ runner.os }}-
+
+      - name: Setup Python
+        uses: actions/setup-python@main
+        with:
+          python-version: ${{ env.python_version }}
+
+      - name: Download dependencies binaries
+        shell: bash
+        run: |
+          cd ${RUNNER_WORKSPACE}
+          mkdir -p ${{ env.libroadrunner_deps_name }}-binaries
+          cd ${{ env.libroadrunner_deps_name }}-binaries
+          os_version=$(lsb_release -rs | cut -d '.' -f 1)
+          binary_file_name=${{ env.libroadrunner_deps_name }}-ubuntu-${os_version}-${host_architecture}-Debug
+          curl -LO "https://github.com/${{ env.libroadrunner_deps_owner }}/${{ env.libroadrunner_deps_repo }}/releases/download/${{ env.libroadrunner_deps_release_version }}/$binary_file_name.zip"
+          unzip -q $binary_file_name.zip
+          rm $binary_file_name.zip
+          echo ANT_DEPENDENCIES_INSTALL_PREFIX="-DANT_DEPENDENCIES_INSTALL_PREFIX=${RUNNER_WORKSPACE}/${{ env.libroadrunner_deps_name }}-binaries" >> "${GITHUB_ENV}"
+
+      - name: Create build directory
+        shell: bash
+        run: mkdir -p ${RUNNER_WORKSPACE}/build-antimony
+
+      - name: Configure CMake for Antimony
+        shell: bash
+        run: |
+          cd ${RUNNER_WORKSPACE}/build-antimony
+          cmake $GITHUB_WORKSPACE \
+          -G "Ninja" \
+          -DCMAKE_C_COMPILER_LAUNCHER=${COMPILER_LAUNCHER} \
+          -DCMAKE_CXX_COMPILER_LAUNCHER=${COMPILER_LAUNCHER} \
+          -DCMAKE_BUILD_TYPE=Debug \
+          -DUSE_UNIVERSAL_BINARIES=OFF \
+          -DCMAKE_INSTALL_PREFIX="${RUNNER_WORKSPACE}/install-antimony" \
+          ${ANT_DEPENDENCIES_INSTALL_PREFIX} \
+          -DWITH_QTANTIMONY=OFF \
+          -DWITH_GTEST=ON \
+          -DWITH_PYTHON=ON
+
+      - name: Build and install Antimony
+        shell: bash
+        run: |
+          cd ${RUNNER_WORKSPACE}/build-antimony
+          cmake --build . --target install --config Debug
+
+      - name: Run Antimony tests under valgrind (memcheck, debug)
+        shell: bash
+        run: |
+          cd ${RUNNER_WORKSPACE}/build-antimony
+          ctest -T memcheck -C Debug --output-on-failure --verbose --extra-verbose --progress
+
+      - name: Upload memcheck logs
+        if: always()
+        uses: actions/upload-artifact@main
+        with:
+          name: valgrind-debug-memcheck-logs
+          path: ${{ runner.workspace }}/build-antimony/Testing/Temporary/

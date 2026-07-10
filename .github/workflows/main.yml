@@ -9,20 +9,10 @@ on:
   pull_request:
     branches:
       - '**'
-  # Lets you manually trigger a debug-build valgrind memcheck run (see the
-  # "Run Antimony tests under valgrind" steps below) from the Actions tab,
-  # without waiting for the coarser, symbol-light automatic memcheck that
-  # runs on the release build on every push/PR.
-  workflow_dispatch:
 
 jobs:
   build_on_OSs:
     name: Build Antimony on ${{ matrix.platform.name }}
-    # On a normal push/PR, run the whole matrix as usual. On a manual
-    # (workflow_dispatch) run, only build the debug leg -- that's the only
-    # one a manual trigger is for (a full, symbol-rich valgrind memcheck),
-    # so there's no need to rebuild all 10 platform/config combinations.
-    if: github.event_name != 'workflow_dispatch' || matrix.platform.name == 'ubuntu-latest-debug'
     strategy:
       fail-fast: false
       matrix:
@@ -149,8 +139,11 @@ jobs:
           elif [ "${{ matrix.platform.os_type }}" == 'ubuntu' ]; then
             sudo apt-get update
             sudo apt-get install -y ccache
-            if [ "${{ matrix.platform.name }}" == 'ubuntu-latest-debug' ] || [ "${{ matrix.platform.name }}" == 'ubuntu-latest-release' ]; then
-              # Needed for the "Run Antimony tests under valgrind" steps below.
+            if [ "${{ matrix.platform.name }}" == 'ubuntu-latest-release' ]; then
+              # Needed for the "Run Antimony tests under valgrind" step below.
+              # (The debug-build valgrind run lives in a separate,
+              # manually-triggered workflow -- see
+              # .github/workflows/valgrind-debug-memcheck.yml.)
               sudo apt-get install -y valgrind
             fi
           elif [ "${{ matrix.platform.os_type }}" == 'manylinux' ]; then
@@ -310,33 +303,25 @@ jobs:
           ctest -C ${{ matrix.platform.build_type }} --output-on-failure --verbose --extra-verbose --progress
 
       # Valgrind is Linux-only (no Windows support, weak/no Apple Silicon
-      # support), so this only runs on specific legs of the matrix rather
-      # than across every platform/config combination. See MEMORYCHECK_* in
-      # the root CMakeLists.txt and valgrind.supp for the suppressions file.
+      # support), so this only runs on one leg of the matrix rather than
+      # across every platform/config combination. See MEMORYCHECK_* in the
+      # root CMakeLists.txt and valgrind.supp for the suppressions file.
       #
-      # This one runs automatically on every push/PR, against the release
-      # build (which has -g added just for this leg -- see "Configure CMake
-      # for Antimony" above -- so it's still symbol-rich) so it's much
-      # faster than a full debug-build run and still gives usable stack
-      # traces, at the cost of somewhat less precise line numbers due to
-      # optimization (inlining etc.), and a small risk that -O3 could
-      # eliminate a provably-dead allocation the unoptimized debug build
-      # wouldn't.
-      - name: Run Antimony tests under valgrind (memcheck, release)
+      # This runs automatically on every push/PR, against the release build
+      # (which has -g added just for this leg -- see "Configure CMake for
+      # Antimony" above -- so it's still symbol-rich) so it's much faster
+      # than a full debug-build run and still gives usable stack traces, at
+      # the cost of somewhat less precise line numbers due to optimization
+      # (inlining etc.), and a small risk that -O3 could eliminate a
+      # provably-dead allocation an unoptimized debug build wouldn't.
+      #
+      # For a slower but fully accurate debug-build memcheck run (e.g. to
+      # dig into something this one flagged), trigger
+      # .github/workflows/valgrind-debug-memcheck.yml manually from the
+      # Actions tab -- see the comment at the top of that file for why it's
+      # a separate workflow rather than another leg here.
+      - name: Run Antimony tests under valgrind (memcheck)
         if : matrix.platform.name == 'ubuntu-latest-release'
-        shell: bash
-        run: |
-          cd ${RUNNER_WORKSPACE}/build-antimony
-          ctest -T memcheck -C ${{ matrix.platform.build_type }} --output-on-failure --verbose --extra-verbose --progress
-
-      # This one only runs when manually triggered (Actions tab -> Run
-      # workflow), against the unoptimized debug build, for when the
-      # release-build memcheck above finds something and you need fully
-      # accurate stack traces to actually locate it. Because of the
-      # job-level `if` above, a manual trigger only builds this one leg,
-      # not the whole 10-way matrix.
-      - name: Run Antimony tests under valgrind (memcheck, debug, manual only)
-        if : matrix.platform.name == 'ubuntu-latest-debug' && github.event_name == 'workflow_dispatch'
         shell: bash
         run: |
           cd ${RUNNER_WORKSPACE}/build-antimony
