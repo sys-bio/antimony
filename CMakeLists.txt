@@ -28,7 +28,10 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
 endif()
 
 #Using 'tuple':
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+# C++14 minimum: required by the vendored GoogleTest 1.16.x (see
+# src/test/googletest/README.md), which uses std::make_index_sequence
+# and friends internally.
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 
 include (InstallRequiredSystemLibraries)
 include (CMakeTestCCompiler)
@@ -564,7 +567,7 @@ endif(WITH_CELLML)
 # Build QT Antimony
 #
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set (QTANTIMONY_SRC_DIR QTAntimony_src/)
