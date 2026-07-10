@@ -51,13 +51,10 @@ public class"
 
 %typemap(newfree) char * "free($1);";
 
-#ifndef NSBML
 %newobject getSBMLString;
+%newobject getCompSBMLString;
 %newobject getSBMLInfoMessages;
 %newobject getSBMLWarnings;
-#endif
-
-%newobject getCompSBMLString;
 
 #ifndef NCELLML
 %newobject getCellMLString;

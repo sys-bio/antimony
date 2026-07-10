@@ -73,10 +73,7 @@ set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Choose the type of build, op
 #
 
 # which language bindings should be build
-option(WITH_SBML            "Generate SBML translations"      ON )
-if (WITH_SBML)
-    option(WITH_STATIC_SBML     "Use the static version of the libsbml library"      ON )
-endif()
+option(WITH_STATIC_SBML     "Use the static version of the libsbml library"      ON )
 option(WITH_CELLML          "Generate CellML translations"    OFF )
 option(WITH_QTANTIMONY      "Generate QTAntimony"             ON )
 option(WITH_SWIG   "Regenerate SWIG-based language bindings." OFF )
@@ -269,28 +266,25 @@ else(WITH_CELLML)
 
 endif(WITH_CELLML)
 
-if(WITH_SBML)
-    find_library(SBMLNETWORK_LIBRARY
-        NAMES libsbmlnetwork-static.lib sbmlnetwork-static.lib libsbmlnetwork-static sbmlnetwork-static libsbmlnetwork-staticmdd libsbmlnetwork-staticmd libsbmlnetwork-staticd libsbmlnetwork-staticd.a
-	PATHS /usr/lib /usr/local/lib
-              ${ANT_DEPENDENCIES_INSTALL_PREFIX}
-              ${CMAKE_SOURCE_DIR}
-              ${CMAKE_SOURCE_DIR}/dependencies/lib
-              ${LIBSBML_INCLUDE_DIR}/../lib
-        )
-    set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${SBMLNETWORK_LIBRARY} )
+find_library(SBMLNETWORK_LIBRARY
+    NAMES libsbmlnetwork-static.lib sbmlnetwork-static.lib libsbmlnetwork-static sbmlnetwork-static libsbmlnetwork-staticmdd libsbmlnetwork-staticmd libsbmlnetwork-staticd libsbmlnetwork-staticd.a
+    PATHS /usr/lib /usr/local/lib
+          ${ANT_DEPENDENCIES_INSTALL_PREFIX}
+          ${CMAKE_SOURCE_DIR}
+          ${CMAKE_SOURCE_DIR}/dependencies/lib
+          ${LIBSBML_INCLUDE_DIR}/../lib
+    )
+set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${SBMLNETWORK_LIBRARY} )
 
-    find_path(SBMLNETWORK_INCLUDE_DIR
-        NAMES sbmlnetwork/libsbmlnetwork_common.h
-        PATHS /usr/include /usr/local/include ${ANT_DEPENDENCIES_INSTALL_PREFIX}/include
-        DOC "The directory containing the SBMLNetwork include files."
-              )
+find_path(SBMLNETWORK_INCLUDE_DIR
+    NAMES sbmlnetwork/libsbmlnetwork_common.h
+    PATHS /usr/include /usr/local/include ${ANT_DEPENDENCIES_INSTALL_PREFIX}/include
+    DOC "The directory containing the SBMLNetwork include files."
+          )
 
-    INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${SBMLNETWORK_INCLUDE_DIR} )
-    # SBMLNETWORK uses stuff from the 'dl' library on some platforms.  CMake defines CMAKE_DL_LIBS if so.
-    set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${CMAKE_DL_LIBS} )
-
-endif()
+INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${SBMLNETWORK_INCLUDE_DIR} )
+# SBMLNETWORK uses stuff from the 'dl' library on some platforms.  CMake defines CMAKE_DL_LIBS if so.
+set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${CMAKE_DL_LIBS} )
 
 message(STATUS "Antimony libs: ${LIBANTIMONY_LIBS}")
 
@@ -632,17 +626,15 @@ add_dependencies(sbtranslate ${LIBANTIMONY_LIBRARY}-static)
 target_link_libraries(sbtranslate ${LIBANTIMONY_LIBRARY}-static ${LIBANTIMONY_LIBS})
 install(TARGETS sbtranslate DESTINATION bin)
 
-if(WITH_SBML)
-  add_executable(antimony2sbml ${ANTIMONY_SRC_DIR}antimony2sbml.cpp)
-  add_dependencies(antimony2sbml ${LIBANTIMONY_LIBRARY}-static)
-  target_link_libraries(antimony2sbml ${LIBANTIMONY_LIBRARY}-static ${LIBANTIMONY_LIBS})
-  install(TARGETS antimony2sbml DESTINATION bin)
+add_executable(antimony2sbml ${ANTIMONY_SRC_DIR}antimony2sbml.cpp)
+add_dependencies(antimony2sbml ${LIBANTIMONY_LIBRARY}-static)
+target_link_libraries(antimony2sbml ${LIBANTIMONY_LIBRARY}-static ${LIBANTIMONY_LIBS})
+install(TARGETS antimony2sbml DESTINATION bin)
 
-  add_executable(sbml2antimony ${ANTIMONY_SRC_DIR}sbml2antimony.cpp)
-  add_dependencies(sbml2antimony ${LIBANTIMONY_LIBRARY}-static)
-  target_link_libraries(sbml2antimony ${LIBANTIMONY_LIBRARY}-static ${LIBANTIMONY_LIBS})
-  install(TARGETS sbml2antimony DESTINATION bin)
-endif(WITH_SBML)
+add_executable(sbml2antimony ${ANTIMONY_SRC_DIR}sbml2antimony.cpp)
+add_dependencies(sbml2antimony ${LIBANTIMONY_LIBRARY}-static)
+target_link_libraries(sbml2antimony ${LIBANTIMONY_LIBRARY}-static ${LIBANTIMONY_LIBS})
+install(TARGETS sbml2antimony DESTINATION bin)
 
 if(WITH_CELLML)
   add_executable(antimony2cellml ${ANTIMONY_SRC_DIR}antimony2cellml.cpp)

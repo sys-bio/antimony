@@ -25,21 +25,18 @@ The first thing to set is what you want to compile to.  On Linux and MacOSX, 'Na
 
 From here, select what options you want on and off.  In particular, here are what some of the options do:
 
-- <code>WITH_SBML</code> Incorporates libSBML, allowing translation to and from SBML.  Requires <A target="_top" HREF="http://sbml.org/Software/libSBML">libSBML</a> v5.0.0 or later, built with the 'comp' (Hierarchical Model Composition) package enabled.  CMake checks this automatically at configure time and will stop with an error if the libSBML found does not have 'comp' support built in; there is no separate flag to turn it on.
 - <code>WITH_CELLML</code>  Incorporates the CellML API, allowing translation to and from CellML.  Requires the <A target="_top" HREF="http://www.cellml.org/tools/downloads/cellml_api/releases/1.10">CellML SDK</a> to work.
 - <code>WITH_QTANTIMONY</code>  Produces the QTAntimony editor.  Requires QT (http://qt.nokia.com/).
 - <code>WITH_SBW</code> Incorporates functionality in QTAntimony to import and export models to other SBW-enabled programs.  Requires SBW (and has had problems; if you need this functionality and it doesn't work, let us know).
 - <code>WITH_SBW_TRANSLATOR</code> Produces an SBW translator written by Frank Bergmann to translate models to and from the Antimony format.  May not work with other options enabled.
-
-These options come with the following dependencies:
-- If WITH_SBML is turned on, CMake will need to know where libSBML was installed; both LIBSBML_INCLUDE_DIR and LIBSBML_LIBRARY need to be set.  That libSBML must be built with the 'comp' package (5.1 or greater); CMake verifies this itself and will fail with an explanatory error if it isn't.
+- CMake will need to know where libSBML was installed; both LIBSBML_INCLUDE_DIR and LIBSBML_LIBRARY need to be set.
 - If WITH_CELLML is turned on, CMake will need to know where the CellML API was installed:  you need only set 'CELLML_API_INSTALL_DIR' and it will find the include directories and the various libraries automatically (if it can't, you may need to track down those libraries yourself).  Note that using the CellML API will trigger a flurry of warnings from the compiler, particularly in Windows.  They may all be safely ignored.
 - If WITH_QTANTIMONY is turned on, CMake will need to know where qmake was installed; QT_QMAKE_EXECUTABLE will need to be set.
 - If WITH_SBW is turned on, CMake will need to know where SBW was installed; both SBW_INCLUDE_DIR and SBW_LIBRARY will need to be set.
 - To set whether to make a release or debug version by default, set the CMAKE_BUILD_TYPE variable to 'Debug', 'Release', 'RelWithDebInfo', or 'MinSizeRel'.  (The last has not been tested extensively with this project, but is a standard CMake option.)
 - To set where to install the antimony library and executables, use CMAKE_INSTALL_PREFIX.  I often use '../install/' for a local install.
 
-If CMake does not work for you, you may be able to get things working on your own--libAntimony is not a complicated program, with only a handful of .cpp files in a single directory, which you may be able to get working yourself.  The core Antimony parser (antimony.ypp) is compiled with bison to antimony_tab.cpp, which is already included.  The main complications are its various dependencies, but these can be turned off:  in particular, setting NSBML and/or NCELLML will not attempt to compile anything with SBML or CellML dependencies, respectively.  QTAntimony is a bit more complicated in that it requires QT, but if you have compiled QT programs before, getting QTAntimony up and running is probably not very difficult.  The old Makefile is still available as well, and may be instructive.
+If CMake does not work for you, you may be able to get things working on your own--libAntimony is not a complicated program, with only a handful of .cpp files in a single directory, which you may be able to get working yourself.  The core Antimony parser (antimony.ypp) is compiled with bison to antimony_tab.cpp, which is already included.  The main complications are its various dependencies, but CellML support can be turned off by setting NCELLML, if you don't want to bother tracking down the CellML API; SBML support is mandatory and cannot be disabled.  QTAntimony is a bit more complicated in that it requires QT, but if you have compiled QT programs before, getting QTAntimony up and running is probably not very difficult.  The old Makefile is still available as well, and may be instructive.
 
 @htmlinclude google-analytics.html
 
