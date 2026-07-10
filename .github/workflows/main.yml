@@ -320,6 +320,7 @@ jobs:
       # .github/workflows/valgrind-debug-memcheck.yml manually from the
       # Actions tab -- see the comment at the top of that file for why it's
       # a separate workflow rather than another leg here.
+      #
       # `ctest -T memcheck` only prints a per-test defect *count* to the
       # console -- the actual valgrind report (stack traces, "definitely
       # lost" byte counts, etc.) goes to a per-test log file instead:
@@ -353,7 +354,7 @@ jobs:
             for i in $(seq $start $end); do
               f="Testing/Temporary/MemoryChecker.$i.log"
               [ -f "$f" ] || continue
-              if grep -q "ERROR SUMMARY: [^0]" "$f"; then
+              if grep -qE "ERROR SUMMARY: [1-9]|(definitely|indirectly|possibly) lost: [1-9]|still reachable: [1-9]" "$f"; then
                 found_any=1
                 echo "::group::Valgrind defect: $f"
                 cat "$f"
@@ -369,7 +370,7 @@ jobs:
           exit $overall_exit
 
       - name: Upload memcheck logs
-        if: always() && matrix.platform.name == 'ubuntu-latest-release'
+        if: always()
         uses: actions/upload-artifact@main
         with:
           name: valgrind-release-memcheck-logs

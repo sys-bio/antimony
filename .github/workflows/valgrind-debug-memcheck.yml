@@ -23,8 +23,19 @@ name: ValgrindDebugMemcheck
 #     in that file. A dedicated single-purpose workflow is simpler to read
 #     and reason about than either of those.
 #
-# MAINTENANCE NOTE: the steps below (checkout, ccache, dependency download,
-# CMake configure, build) are intentionally copied from main.yml's
+# Structure: two jobs, `build` then `test` (a 20-way matrix, needs: build).
+# `build` compiles antimony once and uploads the build directory as an
+# artifact; each of the 20 `test` jobs downloads that same artifact and runs
+# a slice of the tests in parallel via `ctest -I <shard>,999999,20` (start
+# at its own shard index, no fixed end, stride 20 -- this partitions the
+# full test list round-robin across shards without needing to know the
+# total test count up front). This trades ~20x the total compute/minutes
+# used for a much shorter wall-clock wait, which is the right trade for a
+# workflow a human is actively waiting on. Since it's manual-only, that cost
+# is only paid when someone deliberately triggers it, not on every push.
+#
+# MAINTENANCE NOTE: the `build` job's steps (checkout, ccache, dependency
+# download, CMake configure, build) are intentionally copied from main.yml's
 # ubuntu-latest-debug path, not reimplemented independently. If you change
 # how antimony is built/configured for Linux in main.yml -- a new required
 # CMake flag, a changed dependency-download URL pattern, a new setup step --
@@ -36,18 +47,24 @@ on:
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+  libroadrunner_deps_owner: sys-bio
+  libroadrunner_deps_repo: libroadrunner-deps
+  libroadrunner_deps_name: libroadrunner-deps
+  libroadrunner_deps_release_version: v2.3.3
+  python_version: '3.13'
+  # NOTE: the shard count (20) appears in three places that all need to
+  # match if you ever change it: the `matrix.shard` list below, this
+  # `num_shards` value (used as ctest's stride), and the list literally has
+  # to have exactly this many entries. There's no way to derive the matrix
+  # list from a single number without a separate job to compute it as JSON,
+  # which felt like more complexity than it's worth for a number that
+  # essentially never changes.
+  num_shards: '20'
 
 jobs:
-  debug_memcheck:
-    name: Valgrind memcheck (Debug, ubuntu-latest)
+  build:
+    name: Build Antimony (Debug)
     runs-on: ubuntu-latest
-
-    env:
-      libroadrunner_deps_owner: sys-bio
-      libroadrunner_deps_repo: libroadrunner-deps
-      libroadrunner_deps_name: libroadrunner-deps
-      libroadrunner_deps_release_version: v2.3.3
-      python_version: '3.13'
 
     steps:
       - name: Checkout Antimony
@@ -59,11 +76,11 @@ jobs:
           architecture=$(uname -m)
           echo "host_architecture=$architecture" >> "${GITHUB_ENV}"
 
-      - name: Install ccache and valgrind
+      - name: Install ccache
         shell: bash
         run: |
           sudo apt-get update
-          sudo apt-get install -y ccache valgrind
+          sudo apt-get install -y ccache
 
       - name: Prepare ccache timestamp
         id: ccache_cache_timestamp
@@ -135,56 +152,112 @@ jobs:
           cd ${RUNNER_WORKSPACE}/build-antimony
           cmake --build . --target install --config Debug
 
-      # `ctest -T memcheck` only prints a per-test defect *count* to the
-      # console -- the actual valgrind report (stack traces, "definitely
-      # lost" byte counts, etc.) goes to a per-test log file instead:
-      # Testing/Temporary/MemoryChecker.<test-id>.log, one per test. Rather
-      # than running all ~500 tests as one opaque block and only finding out
-      # what broke at the very end, run them in numbered chunks (via
-      # `ctest -I <start>,<end>`) and print any defects from each chunk
-      # immediately after it finishes, so problems surface within minutes
-      # rather than at the end of the whole run.
-      - name: Run Antimony tests under valgrind (memcheck, debug), in chunks
+      # Tar (rather than upload the raw directory tree) so execute
+      # permissions on the test binaries and any symlinks survive intact --
+      # actions/upload-artifact doesn't always preserve those reliably when
+      # uploading a directory tree directly.
+      - name: Archive build directory
+        shell: bash
+        run: |
+          cd ${RUNNER_WORKSPACE}
+          tar -czf build-antimony.tar.gz build-antimony
+
+      - name: Upload build directory
+        uses: actions/upload-artifact@main
+        with:
+          name: antimony-debug-build
+          path: ${{ runner.workspace }}/build-antimony.tar.gz
+          retention-days: 1
+
+  test:
+    name: Valgrind memcheck shard ${{ matrix.shard }}/${{ env.num_shards }}
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+
+    steps:
+      - name: Checkout Antimony
+        uses: actions/checkout@main
+
+      - name: Get Host Architecture
+        shell: bash
+        run: |
+          architecture=$(uname -m)
+          echo "host_architecture=$architecture" >> "${GITHUB_ENV}"
+
+      - name: Install valgrind
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y valgrind
+
+      # Cheap to redo per shard (just a download+unzip), so it's simpler to
+      # repeat this than to bundle the dependency binaries into the build
+      # artifact above.
+      - name: Download dependencies binaries
+        shell: bash
+        run: |
+          cd ${RUNNER_WORKSPACE}
+          mkdir -p ${{ env.libroadrunner_deps_name }}-binaries
+          cd ${{ env.libroadrunner_deps_name }}-binaries
+          os_version=$(lsb_release -rs | cut -d '.' -f 1)
+          binary_file_name=${{ env.libroadrunner_deps_name }}-ubuntu-${os_version}-${host_architecture}-Debug
+          curl -LO "https://github.com/${{ env.libroadrunner_deps_owner }}/${{ env.libroadrunner_deps_repo }}/releases/download/${{ env.libroadrunner_deps_release_version }}/$binary_file_name.zip"
+          unzip -q $binary_file_name.zip
+          rm $binary_file_name.zip
+
+      - name: Download build directory
+        uses: actions/download-artifact@main
+        with:
+          name: antimony-debug-build
+          path: ${{ runner.workspace }}
+
+      - name: Extract build directory
+        shell: bash
+        run: |
+          cd ${RUNNER_WORKSPACE}
+          tar -xzf build-antimony.tar.gz
+
+      # `ctest -I <shard>,999999,<num_shards>` starts at this shard's own
+      # index and takes every num_shards'th test after that (999999 as the
+      # end just means "no real upper bound" -- there's no dedicated "run to
+      # the last test" sentinel worth relying on). All 20 shards together
+      # cover every test exactly once without any of them needing to know
+      # the total test count.
+      - name: Run this shard's tests under valgrind (memcheck)
         shell: bash
         run: |
           cd ${RUNNER_WORKSPACE}/build-antimony
-          chunk_size=20
-          total=$(ctest -N -C Debug | grep "Total Tests:" | awk '{print $NF}')
-          echo "Running $total tests under valgrind, $chunk_size at a time"
-          overall_exit=0
-          start=1
-          while [ "$start" -le "$total" ]; do
-            end=$((start + chunk_size - 1))
-            if [ "$end" -gt "$total" ]; then
-              end=$total
+          ctest -T memcheck -C Debug -I ${{ matrix.shard }},999999,${{ env.num_shards }} --output-on-failure
+
+      # See main.yml / the other memcheck step in this file for why this is
+      # needed: `ctest -T memcheck` only prints a per-test defect *count* to
+      # the console, not the actual valgrind report.
+      - name: Print any valgrind defects found in this shard
+        if: always()
+        shell: bash
+        run: |
+          cd ${RUNNER_WORKSPACE}/build-antimony/Testing/Temporary
+          found_any=0
+          for f in MemoryChecker.*.log; do
+            [ -f "$f" ] || continue
+            if grep -qE "ERROR SUMMARY: [1-9]|(definitely|indirectly|possibly) lost: [1-9]|still reachable: [1-9]" "$f"; then
+              found_any=1
+              echo "::group::Valgrind defect: $f"
+              cat "$f"
+              echo "::endgroup::"
             fi
-
-            echo "::group::Running tests $start-$end of $total under valgrind"
-            ctest -T memcheck -C Debug -I ${start},${end} --output-on-failure || overall_exit=1
-            echo "::endgroup::"
-
-            found_any=0
-            for i in $(seq $start $end); do
-              f="Testing/Temporary/MemoryChecker.$i.log"
-              [ -f "$f" ] || continue
-              if grep -q "ERROR SUMMARY: [^0]" "$f"; then
-                found_any=1
-                echo "::group::Valgrind defect: $f"
-                cat "$f"
-                echo "::endgroup::"
-              fi
-            done
-            if [ "$found_any" -eq 0 ]; then
-              echo "No valgrind defects in tests $start-$end."
-            fi
-
-            start=$((end + 1))
           done
-          exit $overall_exit
+          if [ "$found_any" -eq 0 ]; then
+            echo "No valgrind defects in this shard."
+          fi
 
-      - name: Upload memcheck logs
+      - name: Upload memcheck logs for this shard
         if: always()
         uses: actions/upload-artifact@main
         with:
-          name: valgrind-debug-memcheck-logs
+          name: valgrind-debug-memcheck-logs-shard-${{ matrix.shard }}
           path: ${{ runner.workspace }}/build-antimony/Testing/Temporary/
