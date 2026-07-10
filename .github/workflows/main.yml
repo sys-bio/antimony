@@ -320,12 +320,60 @@ jobs:
       # .github/workflows/valgrind-debug-memcheck.yml manually from the
       # Actions tab -- see the comment at the top of that file for why it's
       # a separate workflow rather than another leg here.
-      - name: Run Antimony tests under valgrind (memcheck)
+      # `ctest -T memcheck` only prints a per-test defect *count* to the
+      # console -- the actual valgrind report (stack traces, "definitely
+      # lost" byte counts, etc.) goes to a per-test log file instead:
+      # Testing/Temporary/MemoryChecker.<test-id>.log, one per test. Rather
+      # than running every test as one opaque block and only finding out
+      # what broke at the very end, run them in numbered chunks (via
+      # `ctest -I <start>,<end>`) and print any defects from each chunk
+      # immediately after it finishes, so problems surface within minutes
+      # rather than at the end of the whole run.
+      - name: Run Antimony tests under valgrind (memcheck), in chunks
         if : matrix.platform.name == 'ubuntu-latest-release'
         shell: bash
         run: |
           cd ${RUNNER_WORKSPACE}/build-antimony
-          ctest -T memcheck -C ${{ matrix.platform.build_type }} --output-on-failure --verbose --extra-verbose --progress
+          chunk_size=20
+          total=$(ctest -N -C ${{ matrix.platform.build_type }} | grep "Total Tests:" | awk '{print $NF}')
+          echo "Running $total tests under valgrind, $chunk_size at a time"
+          overall_exit=0
+          start=1
+          while [ "$start" -le "$total" ]; do
+            end=$((start + chunk_size - 1))
+            if [ "$end" -gt "$total" ]; then
+              end=$total
+            fi
+
+            echo "::group::Running tests $start-$end of $total under valgrind"
+            ctest -T memcheck -C ${{ matrix.platform.build_type }} -I ${start},${end} --output-on-failure || overall_exit=1
+            echo "::endgroup::"
+
+            found_any=0
+            for i in $(seq $start $end); do
+              f="Testing/Temporary/MemoryChecker.$i.log"
+              [ -f "$f" ] || continue
+              if grep -q "ERROR SUMMARY: [^0]" "$f"; then
+                found_any=1
+                echo "::group::Valgrind defect: $f"
+                cat "$f"
+                echo "::endgroup::"
+              fi
+            done
+            if [ "$found_any" -eq 0 ]; then
+              echo "No valgrind defects in tests $start-$end."
+            fi
+
+            start=$((end + 1))
+          done
+          exit $overall_exit
+
+      - name: Upload memcheck logs
+        if: always() && matrix.platform.name == 'ubuntu-latest-release'
+        uses: actions/upload-artifact@main
+        with:
+          name: valgrind-release-memcheck-logs
+          path: ${{ runner.workspace }}/build-antimony/Testing/Temporary/
 
       - name: Set artifacts path and name
         shell: bash
