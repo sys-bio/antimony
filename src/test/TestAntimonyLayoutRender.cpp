@@ -30,8 +30,9 @@ libsbml::SBMLDocument* translateAntimony(const string& model)
     EXPECT_TRUE(ret != -1);
     char* atosbml = getCompSBMLString(NULL);
     EXPECT_TRUE(atosbml != NULL);
-    libsbml::SBMLDocument* doc = LIBSBMLNETWORK_CPP_NAMESPACE::readSBML(atosbml);
+    libsbml::SBMLDocument* doc = readSBMLFromString(atosbml);
     clearPreviousLoads();
+    freeAll();
     return doc;
 }
 
