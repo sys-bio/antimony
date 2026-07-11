@@ -1437,6 +1437,7 @@ void Module::LoadSBML(Model* sbml)
             }
             Formula form;
             char* formula = SBML_formulaToL3String(astn);
+            delete astn;
             setFormulaWithString(formula, &form, this);
             free(formula);
             if (gpavar->SetFormula(&form)) {
