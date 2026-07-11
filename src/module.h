@@ -152,7 +152,7 @@ public:
   bool AddUnitVariables(const UnitDef* unitdef);
   void AddDefaultVariables();
   void AddDefaultInitialValues();
-  bool ProcessCVTerm(Annotated* a, const std::string* qual, std::vector<std::string>* resources);
+  bool ProcessCVTerm(Annotated* a, const std::string* qual, const std::vector<std::string>& resources);
 
   Variable* GetVariable(const std::vector<std::string>& name);
   Variable* GetDefaultVariable(const std::vector<std::string>& name);

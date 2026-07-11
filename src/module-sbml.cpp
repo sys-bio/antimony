@@ -3375,7 +3375,8 @@ void Module::UpdateRateOf(Model* model)
     }
     if (rateOf != NULL) {
         model->getSBMLDocument()->setLevelAndVersion(3, 2, false);
-        model->removeFunctionDefinition("rateOf");
+        FunctionDefinition* rateOfDef = model->removeFunctionDefinition("rateOf");
+        delete rateOfDef;
         List* elements = model->getAllElements();
         for (unsigned int el = 0; el < elements->getSize(); el++) {
             SBase* element = static_cast<SBase*>(elements->get(el));

@@ -65,7 +65,7 @@ public:
   bool SetCreated(const std::string& qual, const std::string& date);
   bool ResetLastModified(const std::string& qual, const std::string& date);
   bool SetDate(const std::string& qual, const std::string& date, libsbml::Date& stored);
-  void AppendModified(std::vector<std::string>* dates);
+  void AppendModified(const std::vector<std::string>& dates);
   void AppendModified(libsbml::Date* date);
   bool AppendModified(std::string* datestr);
   void ClearModified(libsbml::Date* date);
