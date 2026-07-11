@@ -344,7 +344,7 @@ TEST(AntimonyAPI, test_previousLoads)
 
 TEST(AntimonyAPI, test_directories)
 {
-  addDirectory(TestDataDirectory);
+  addDirectory(TestDataDirectory.c_str());
   int ret = loadFile("parameter.txt");
   EXPECT_TRUE(ret != -1);
   char* model = getAntimonyString(NULL);
