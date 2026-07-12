@@ -84,7 +84,7 @@ jobs:
         libroadrunner_deps_owner: [ "sys-bio" ]
         libroadrunner_deps_repo: [ "libroadrunner-deps" ]
         libroadrunner_deps_name: [ "libroadrunner-deps" ]
-        libroadrunner_deps_release_version: [ "v2.3.3" ]
+        libroadrunner_deps_release_version: [ "v2.3.4" ]
         python_version: [ "3.13" ]
 
     runs-on: ${{ matrix.platform.os_name }}
@@ -370,10 +370,10 @@ jobs:
           exit $overall_exit
 
       - name: Upload memcheck logs
-        if: always()
+        if: always() && matrix.platform.name == 'ubuntu-latest-release'
         uses: actions/upload-artifact@main
         with:
-          name: valgrind-release-memcheck-logs
+          name: valgrind-release-memcheck-logs-run${{ github.run_number }}
           path: ${{ runner.workspace }}/build-antimony/Testing/Temporary/
 
       - name: Set artifacts path and name

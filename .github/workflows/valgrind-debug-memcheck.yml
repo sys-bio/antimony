@@ -50,7 +50,7 @@ env:
   libroadrunner_deps_owner: sys-bio
   libroadrunner_deps_repo: libroadrunner-deps
   libroadrunner_deps_name: libroadrunner-deps
-  libroadrunner_deps_release_version: v2.3.3
+  libroadrunner_deps_release_version: v2.3.4
   python_version: '3.13'
   # NOTE: the shard count (20) appears in three places that all need to
   # match if you ever change it: the `matrix.shard` list below, this
@@ -259,5 +259,5 @@ jobs:
         if: always()
         uses: actions/upload-artifact@main
         with:
-          name: valgrind-debug-memcheck-logs-shard-${{ matrix.shard }}
+          name: valgrind-debug-memcheck-logs-run${{ github.run_number }}-shard-${{ matrix.shard }}
           path: ${{ runner.workspace }}/build-antimony/Testing/Temporary/
