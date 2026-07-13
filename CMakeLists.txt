@@ -348,14 +348,12 @@ if(WITH_GTEST)
     include(GoogleTest)
 
     if (UNIX)
-        # setup valgrind
-        set(CMAKE_MEMORYCHECK_COMMAND valgrind)
-        set(CMAKE_MEMORYCHECK_COMMAND_OPTIONS
-           "--error-exitcode=1 --trace-children=yes --leak-check=full --show-reachable=yes --leak-resolution=high --track-origins=yes --error-limit=no ")
-
-        set(MEMCHECK_COMMAND
-           "${CMAKE_MEMORYCHECK_COMMAND} ${CMAKE_MEMORYCHECK_COMMAND_OPTIONS}")
-        separate_arguments(MEMCHECK_COMMAND)
+        # Set up valgrind for `ctest -T memcheck`.
+        find_program(MEMORYCHECK_COMMAND valgrind)
+        set(MEMORYCHECK_TYPE "Valgrind")
+        set(MEMORYCHECK_COMMAND_OPTIONS
+           "--error-exitcode=1 --trace-children=yes --leak-check=full --show-reachable=yes --leak-resolution=high --track-origins=yes --error-limit=no")
+        set(MEMORYCHECK_SUPPRESSIONS_FILE "${CMAKE_SOURCE_DIR}/valgrind.supp")
     endif(UNIX)
 
     include(CTest)

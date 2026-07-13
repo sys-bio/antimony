@@ -14,7 +14,7 @@
 
 using namespace std;
 
-extern char *TestDataDirectory;
+extern string TestDataDirectory;
 
 #include "TestAntimonyUtil.h"
 

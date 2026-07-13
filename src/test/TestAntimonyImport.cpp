@@ -12,7 +12,7 @@
 
 using namespace std;
 
-extern char *TestDataDirectory;
+extern string TestDataDirectory;
 
 void compareFileImport(const string& base)
 {

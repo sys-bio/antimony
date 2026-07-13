@@ -453,10 +453,10 @@ bool Annotated::SetDate(const string& qual, const string& date, libsbml::Date& s
     return true;
 }
 
-void Annotated::AppendModified(vector<string>* dates)
+void Annotated::AppendModified(const vector<string>& dates)
 {
-    for (size_t d = 0; d < dates->size(); d++) {
-        m_modified.push_back((*dates)[d]);
+    for (size_t d = 0; d < dates.size(); d++) {
+        m_modified.push_back(dates[d]);
     }
 }
 

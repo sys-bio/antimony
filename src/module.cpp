@@ -845,9 +845,9 @@ void Module::AddDefaultInitialValues()
   }
 }
 
-bool Module::ProcessCVTerm(Annotated* a, const string* qual, vector<string>* resources)
+bool Module::ProcessCVTerm(Annotated* a, const string* qual, const vector<string>& resources)
 {
-    if (qual && resources) {
+    if (qual) {
         // qual can be a model or biology qualifier
         // is/identity is used by both - give priority to biology
         // to eliminate guesswork explicitly use one of:
@@ -857,20 +857,20 @@ bool Module::ProcessCVTerm(Annotated* a, const string* qual, vector<string>* res
         ModelQualifierType_t mq = DecodeModelQualifier(*qual);
         stringstream ss;
         if (bq != BQB_UNKNOWN) {
-            a->AppendBiolQualifiers(bq, *resources);
+            a->AppendBiolQualifiers(bq, resources);
         }
         else if (mq != BQM_UNKNOWN) {
-            a->AppendModelQualifiers(mq, *resources);
+            a->AppendModelQualifiers(mq, resources);
         }
         else if (CaselessStrCmp(true, *qual, "notes")) {
-            a->AppendNotes(*resources);
+            a->AppendNotes(resources);
         }
         else if (CaselessStrCmp(true, *qual, "created")) {
-            if (resources->size() > 1) {
+            if (resources.size() > 1) {
                 g_registry.SetError("Cannot set multiple 'created' dates.");
                 return true;
             }
-            a->SetCreated((*resources)[0]);
+            a->SetCreated(resources[0]);
         }
         else if (CaselessStrCmp(true, *qual, "modified")) {
             a->AppendModified(resources);
@@ -878,16 +878,13 @@ bool Module::ProcessCVTerm(Annotated* a, const string* qual, vector<string>* res
         else {
             ss << "Unrecognized qualifier \"" << *qual << "\"";
             g_registry.SetError(ss.str());
-            delete resources;
             return true;
         }
 
-        delete resources;
         return false;
     }
     else {
         g_registry.SetError("CV qualifier encountered but not enough arguments - pass qualifier and at least one resource");
-        delete resources;
         return true;
     }
 }
