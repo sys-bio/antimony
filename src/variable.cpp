@@ -1567,8 +1567,7 @@ bool Variable::SetModule(const string* modname)
   g_registry.GetModule(m_module)->AddToVarMapFrom(newmod);
   if (becomingModule) {
     // Let the owning module know it now has a submodule-typed variable,
-    // so GetVariable()'s fallback can find it without scanning every
-    // variable the module owns. See Module::m_submoduleVars.
+    // so GetVariable()'s fallback can find it. See Module::m_submoduleVars.
     g_registry.GetModule(m_module)->NoteSubmoduleVariable(this);
   }
   return SetType(varModule);

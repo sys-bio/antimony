@@ -318,9 +318,7 @@ void Module::StoreVariable(Variable* var)
 {
   g_registry.StoreVariable(var);
   m_varmap.insert(make_pair(var->GetName(), var));
-  // Rare, but possible: a variable copied in already typed as varModule
-  // (e.g. from m_defaultVariables) rather than becoming one later via
-  // Variable::SetModule(), which has its own NoteSubmoduleVariable() call.
+  // Add to m_submoduleVars if it's a submodule.
   if (var->GetType() == varModule) {
     m_submoduleVars.push_back(var);
   }
@@ -914,21 +912,9 @@ Variable* Module::GetVariable(const vector<string>& name)
   if (found != m_varmap.end()) {
     return found->second;
   }
-  // m_varmap is authoritative for every variable this module owns directly:
-  // StoreVariable() inserts into it on every insertion into m_variables,
-  // and the only place a variable's name changes after being stored
-  // (Module::SetNewTopName) already clears and rebuilds the whole map
-  // immediately afterward. So a miss here means either the variable
-  // genuinely doesn't exist, or "name" is a qualified path reaching into a
-  // submodule -- which isn't indexed until the first successful lookup
-  // caches it below. We only need to search submodules; nothing here
-  // re-derives what the map lookup above already ruled out, which avoids
-  // an O(n) rescan of every variable (and therefore O(n^2) over a full
-  // model load) on every previously-unseen name. m_submoduleVars (unlike
-  // m_variables) holds only the variables that are actually submodule
-  // instances, so this is O(number of submodules this module has ever
-  // had) rather than O(total variables) -- O(1) for the many models that
-  // have zero. The live GetType() check guards against a stale entry.
+  // The only time the above might not work for real is if we're looking for
+  // a submodule.  In order to not check every variable to see if it's a submodule,
+  // we keep a list as m_submoduleVars.
   for (size_t sv=0; sv<m_submoduleVars.size(); sv++) {
     Variable* submodvar = m_submoduleVars[sv];
     if (submodvar->GetType() == varModule) {
@@ -963,12 +949,9 @@ const Variable* Module::GetVariable(const vector<string>& name) const
   if (found != m_varmap.end()) {
     return found->second;
   }
-  // Same reasoning as the non-const overload above: m_varmap is
-  // authoritative for this module's own variables, so only submodules
-  // need searching. This overload can't cache a submodule hit back into
-  // m_varmap (it's const), so repeated qualified lookups pay this cost
-  // every time -- another reason to keep it cheap by scanning
-  // m_submoduleVars instead of every variable.
+  // As above: The only time the above might not work for real is if we're looking for
+  // a submodule.  In order to not check every variable to see if it's a submodule,
+  // we keep a list as m_submoduleVars.
   for (size_t sv=0; sv<m_submoduleVars.size(); sv++) {
     Variable* submodvar = m_submoduleVars[sv];
     if (submodvar->GetType() == varModule) {

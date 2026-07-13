@@ -65,14 +65,8 @@ private:
   std::vector<std::string> m_variablename;
 
   std::vector<Variable*> m_variables;
-  // Subset of m_variables that are (or were) type varModule -- i.e.
-  // submodule instances. GetVariable()'s fallback only needs to search
-  // submodules (to resolve qualified names reaching into them), so it
-  // scans this instead of all of m_variables; entries are appended
-  // whenever a variable becomes a module (see StoreVariable() and
-  // Variable::SetModule()) and never removed, so GetVariable() still
-  // guards each entry with a live GetType() check in case a variable
-  // was later deleted/retyped away from varModule.
+  // Just the variables that are submodules.  Used to speed up
+  // GetVariable lookup.
   std::vector<Variable*> m_submoduleVars;
   std::vector<Variable> m_defaultVariables;
   std::vector<std::pair<std::vector<std::string>, std::vector<std::string> > > m_synchronized;
@@ -166,10 +160,7 @@ public:
   Variable* GetVariable(const std::vector<std::string>& name);
   Variable* GetDefaultVariable(const std::vector<std::string>& name);
   void AddToVarMapFrom(const Module& submod);
-  // Called (from Variable::SetModule) the first time a variable owned by
-  // this module transitions to type varModule, so GetVariable()'s
-  // submodule-search fallback doesn't have to scan every variable to find
-  // the handful (usually zero) that are actually submodule instances.
+  // Add variable to m_submoduleVariables.
   void NoteSubmoduleVariable(Variable* var);
   const Variable* GetVariable(const std::vector<std::string>& name) const;
   const Variable* GetVariableFromSymbol(std::string varname) const;
