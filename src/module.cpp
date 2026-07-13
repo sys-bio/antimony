@@ -903,21 +903,22 @@ Variable* Module::GetVariable(const vector<string>& name)
   if (found != m_varmap.end()) {
     return found->second;
   }
+  // m_varmap is authoritative for every variable this module owns directly:
+  // StoreVariable() inserts into it on every insertion into m_variables,
+  // and the only place a variable's name changes after being stored
+  // (Module::SetNewTopName) already clears and rebuilds the whole map
+  // immediately afterward. So a miss here means either the variable
+  // genuinely doesn't exist, or "name" is a qualified path reaching into a
+  // submodule -- which isn't indexed until the first successful lookup
+  // caches it below. We only need to search submodules; nothing here
+  // re-derives what the map lookup above already ruled out, which avoids
+  // an O(n) rescan of every variable (and therefore O(n^2) over a full
+  // model load) on every previously-unseen name.
   for (size_t var=0; var<m_variables.size(); var++) {
-    if (m_variables[var]->GetName() == name) {
-      //PrintVarMap(m_varmap);
-      m_varmap.insert(make_pair(name, m_variables[var]));
-      //assert(false); //already got?
-      return m_variables[var];
-    }
     if (m_variables[var]->GetType() == varModule) {
       Variable* subvar = m_variables[var]->GetModule()->GetVariable(name);
       if (subvar != NULL) {
-        //PrintVarMap(m_varmap);
-        //cout << "and from subvar:" << endl;
-        //PrintVarMap(m_variables[var]->GetModule()->m_varmap);
         m_varmap.insert(make_pair(name, subvar));
-        //assert(false); //already got?
         return subvar;
       }
     }
