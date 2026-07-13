@@ -318,6 +318,15 @@ void Module::StoreVariable(Variable* var)
 {
   g_registry.StoreVariable(var);
   m_varmap.insert(make_pair(var->GetName(), var));
+  // Add to m_submoduleVars if it's a submodule.
+  if (var->GetType() == varModule) {
+    m_submoduleVars.push_back(var);
+  }
+}
+
+void Module::NoteSubmoduleVariable(Variable* var)
+{
+  m_submoduleVars.push_back(var);
 }
 
 bool Module::AddVariableToExportList(Variable* var)
@@ -903,21 +912,15 @@ Variable* Module::GetVariable(const vector<string>& name)
   if (found != m_varmap.end()) {
     return found->second;
   }
-  for (size_t var=0; var<m_variables.size(); var++) {
-    if (m_variables[var]->GetName() == name) {
-      //PrintVarMap(m_varmap);
-      m_varmap.insert(make_pair(name, m_variables[var]));
-      //assert(false); //already got?
-      return m_variables[var];
-    }
-    if (m_variables[var]->GetType() == varModule) {
-      Variable* subvar = m_variables[var]->GetModule()->GetVariable(name);
+  // The only time the above might not work for real is if we're looking for
+  // a submodule.  In order to not check every variable to see if it's a submodule,
+  // we keep a list as m_submoduleVars.
+  for (size_t sv=0; sv<m_submoduleVars.size(); sv++) {
+    Variable* submodvar = m_submoduleVars[sv];
+    if (submodvar->GetType() == varModule) {
+      Variable* subvar = submodvar->GetModule()->GetVariable(name);
       if (subvar != NULL) {
-        //PrintVarMap(m_varmap);
-        //cout << "and from subvar:" << endl;
-        //PrintVarMap(m_variables[var]->GetModule()->m_varmap);
         m_varmap.insert(make_pair(name, subvar));
-        //assert(false); //already got?
         return subvar;
       }
     }
@@ -946,12 +949,13 @@ const Variable* Module::GetVariable(const vector<string>& name) const
   if (found != m_varmap.end()) {
     return found->second;
   }
-  for (size_t var=0; var<m_variables.size(); var++) {
-    if (m_variables[var]->GetName() == name) {
-      return m_variables[var];
-    }
-    if (m_variables[var]->GetType() == varModule) {
-      const Variable* subvar = m_variables[var]->GetModule()->GetVariable(name);
+  // As above: The only time the above might not work for real is if we're looking for
+  // a submodule.  In order to not check every variable to see if it's a submodule,
+  // we keep a list as m_submoduleVars.
+  for (size_t sv=0; sv<m_submoduleVars.size(); sv++) {
+    Variable* submodvar = m_submoduleVars[sv];
+    if (submodvar->GetType() == varModule) {
+      const Variable* subvar = submodvar->GetModule()->GetVariable(name);
       if (subvar != NULL) {
         return subvar;
       }

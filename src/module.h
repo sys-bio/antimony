@@ -65,6 +65,9 @@ private:
   std::vector<std::string> m_variablename;
 
   std::vector<Variable*> m_variables;
+  // Just the variables that are submodules.  Used to speed up
+  // GetVariable lookup.
+  std::vector<Variable*> m_submoduleVars;
   std::vector<Variable> m_defaultVariables;
   std::vector<std::pair<std::vector<std::string>, std::vector<std::string> > > m_synchronized;
   std::vector<std::vector<std::string> > m_conversionFactors;
@@ -157,6 +160,8 @@ public:
   Variable* GetVariable(const std::vector<std::string>& name);
   Variable* GetDefaultVariable(const std::vector<std::string>& name);
   void AddToVarMapFrom(const Module& submod);
+  // Add variable to m_submoduleVariables.
+  void NoteSubmoduleVariable(Variable* var);
   const Variable* GetVariable(const std::vector<std::string>& name) const;
   const Variable* GetVariableFromSymbol(std::string varname) const;
   Variable* GetSubVariable(const std::string* name);
