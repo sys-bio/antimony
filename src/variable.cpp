@@ -1557,6 +1557,7 @@ bool Variable::SetModule(const string* modname)
     return GetSameVariable()->SetModule(modname);
   }
   assert(m_name.size() == 1);
+  bool becomingModule = (m_type != varModule);
   Module newmod(*g_registry.GetModule(*modname), m_name[0], m_module);
   m_valModule.push_back(newmod);
   if (SetType(varModule)) {
@@ -1564,6 +1565,12 @@ bool Variable::SetModule(const string* modname)
   }
   g_registry.SetCurrentImportedModule(m_name);
   g_registry.GetModule(m_module)->AddToVarMapFrom(newmod);
+  if (becomingModule) {
+    // Let the owning module know it now has a submodule-typed variable,
+    // so GetVariable()'s fallback can find it without scanning every
+    // variable the module owns. See Module::m_submoduleVars.
+    g_registry.GetModule(m_module)->NoteSubmoduleVariable(this);
+  }
   return SetType(varModule);
 }
 

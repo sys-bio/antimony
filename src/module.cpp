@@ -318,6 +318,17 @@ void Module::StoreVariable(Variable* var)
 {
   g_registry.StoreVariable(var);
   m_varmap.insert(make_pair(var->GetName(), var));
+  // Rare, but possible: a variable copied in already typed as varModule
+  // (e.g. from m_defaultVariables) rather than becoming one later via
+  // Variable::SetModule(), which has its own NoteSubmoduleVariable() call.
+  if (var->GetType() == varModule) {
+    m_submoduleVars.push_back(var);
+  }
+}
+
+void Module::NoteSubmoduleVariable(Variable* var)
+{
+  m_submoduleVars.push_back(var);
 }
 
 bool Module::AddVariableToExportList(Variable* var)
@@ -913,10 +924,15 @@ Variable* Module::GetVariable(const vector<string>& name)
   // caches it below. We only need to search submodules; nothing here
   // re-derives what the map lookup above already ruled out, which avoids
   // an O(n) rescan of every variable (and therefore O(n^2) over a full
-  // model load) on every previously-unseen name.
-  for (size_t var=0; var<m_variables.size(); var++) {
-    if (m_variables[var]->GetType() == varModule) {
-      Variable* subvar = m_variables[var]->GetModule()->GetVariable(name);
+  // model load) on every previously-unseen name. m_submoduleVars (unlike
+  // m_variables) holds only the variables that are actually submodule
+  // instances, so this is O(number of submodules this module has ever
+  // had) rather than O(total variables) -- O(1) for the many models that
+  // have zero. The live GetType() check guards against a stale entry.
+  for (size_t sv=0; sv<m_submoduleVars.size(); sv++) {
+    Variable* submodvar = m_submoduleVars[sv];
+    if (submodvar->GetType() == varModule) {
+      Variable* subvar = submodvar->GetModule()->GetVariable(name);
       if (subvar != NULL) {
         m_varmap.insert(make_pair(name, subvar));
         return subvar;
@@ -947,12 +963,16 @@ const Variable* Module::GetVariable(const vector<string>& name) const
   if (found != m_varmap.end()) {
     return found->second;
   }
-  for (size_t var=0; var<m_variables.size(); var++) {
-    if (m_variables[var]->GetName() == name) {
-      return m_variables[var];
-    }
-    if (m_variables[var]->GetType() == varModule) {
-      const Variable* subvar = m_variables[var]->GetModule()->GetVariable(name);
+  // Same reasoning as the non-const overload above: m_varmap is
+  // authoritative for this module's own variables, so only submodules
+  // need searching. This overload can't cache a submodule hit back into
+  // m_varmap (it's const), so repeated qualified lookups pay this cost
+  // every time -- another reason to keep it cheap by scanning
+  // m_submoduleVars instead of every variable.
+  for (size_t sv=0; sv<m_submoduleVars.size(); sv++) {
+    Variable* submodvar = m_submoduleVars[sv];
+    if (submodvar->GetType() == varModule) {
+      const Variable* subvar = submodvar->GetModule()->GetVariable(name);
       if (subvar != NULL) {
         return subvar;
       }
