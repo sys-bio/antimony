@@ -18,13 +18,7 @@ BiolQualsType m_biol_quals;
 std::vector < std::string> m_notes;
 // Cache of the HTML/XHTML notes corresponding to m_notes, so that
 // TransferAnnotationTo doesn't have to redo an expensive markdown->HTML
-// conversion every time it's called for the same object (e.g. once for the
-// comp=true SBML build and once for comp=false). Populated either from the
-// original SBML on ReadAnnotationFrom, or from the first markdown
-// conversion done by TransferAnnotationTo. Cleared whenever m_notes is set
-// independently of a single SBML notes element (i.e. AppendNotes, used when
-// parsing an Antimony script), since it would no longer correspond to the
-// text in m_notes.
+// conversion every time it's called.
 mutable std::string m_notesHTML;
 libsbml::Date m_created;
 std::vector<libsbml::Date> m_modified;
