@@ -10,6 +10,7 @@
 #include <sbml/SBMLTypes.h>
 #include <sbml/conversion/SBMLConverterRegistry.h>
 #include <sbml/packages/comp/common/CompExtensionTypes.h>
+#include <sbml/packages/fbc/common/FbcExtensionTypes.h>
 
 #include <string>
 #include "gtest/gtest.h"
@@ -80,6 +81,31 @@ TEST(AntimonyFBC, test_simple_flux)
 {
   compareFBCAnt("simple_flux");
   compareFBCSBML("simple_flux");
+}
+
+TEST(AntimonyFBC, test_simple_flux_comp_strict)
+{
+  //Regression test:  ensure that strict=false even in comp version.
+  clearPreviousLoads();
+  g_registry.SetCC("__");
+  string dir(TestDataDirectory);
+  string filename = dir + "fbc/simple_flux.txt";
+  long ret = loadAntimonyFile(filename.c_str());
+  EXPECT_TRUE(ret != -1);
+
+  char* compsbml = getCompSBMLString(NULL);
+  ASSERT_TRUE(compsbml != NULL);
+
+  SBMLDocument* doc = readSBMLFromString(compsbml);
+  ASSERT_TRUE(doc != NULL);
+  Model* model = doc->getModel();
+  ASSERT_TRUE(model != NULL);
+  FbcModelPlugin* fmp = static_cast<FbcModelPlugin*>(model->getPlugin("fbc"));
+  ASSERT_TRUE(fmp != NULL);
+  EXPECT_FALSE(fmp->getStrict());
+
+  delete doc;
+  freeAll();
 }
 
 TEST(AntimonyFBC, test_simple_flux2)

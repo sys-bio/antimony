@@ -1509,60 +1509,70 @@ bool Module::Finalize()
   if (m_variablename.empty()) {
     //Only test SBML on top-level modules.
     const SBMLDocument* sbmldoc = GetSBML(true); //Use the comp version if possible.
-    //We rely on libsbml's error checking to see if we need to set fbc's 'strict' flag to 'false' or not.
-    fixFBCStrictIfNeeded();
 
     stringstream stream;
-
     SBMLWriter writer;
     writer.writeSBML(sbmldoc, stream);
     string newSBML = stream.str();
     SBMLReader reader;
     SBMLDocument* testdoc = reader.readSBMLFromString(newSBML);
+
+    //To get all errors, need to call both 'readSBMLFromString' and 'checkConsistency()'.
     testdoc->setConsistencyChecks(LIBSBML_CAT_UNITS_CONSISTENCY, false);
     testdoc->checkConsistency();
+    if (testdoc->getNumErrors(LIBSBML_SEV_ERROR)) {
+      fixFBCStrictIfNeeded(testdoc);
+    }
+
     removeBooleanErrors(testdoc);
-    SBMLErrorLog* log = testdoc->getErrorLog();
     string trueerrors = "";
-    for (unsigned int err=0; err<log->getNumErrors(); err++) {
-      const SBMLError* error = log->getError(err);
-      unsigned int errtype = error->getSeverity();
-      switch(errtype) {
-      case 0: //LIBSBML_SEV_INFO:
-        if (m_libsbml_info != "") m_libsbml_info += "\n";
-        m_libsbml_info += error->getMessage();
-        break;
-      case 1: //LIBSBML_SEV_WARNING:
-        if (m_libsbml_warnings != "") m_libsbml_warnings += "\n";
-        m_libsbml_warnings += error->getMessage();
-        break;
-      case 2: //LIBSBML_SEV_ERROR:
-          if (error->getErrorId() >= 10700 && error->getErrorId() <= 10750) {
-              if (m_libsbml_warnings != "") m_libsbml_warnings += "\n";
-              m_libsbml_warnings += error->getMessage();
-          }
-          else {
-              if (trueerrors != "") trueerrors += "\n";
-              trueerrors += error->getMessage();
-          }
-          //  m_libsbml_warnings += error->getMessage(); //If we want to disable fail-on-error again.
-          break;
-      case 3: //LIBSBML_SEV_FATAL:
-        g_registry.SetError("Fatal error when creating an SBML document; unable to continue.  Error from libSBML:\n\n" + error->getMessage());
-        delete testdoc;
-        return true;
-      default:
-        g_registry.SetError("Unknown error when creating an SBML document--there should have only been four types, but we found a fifth?  libSBML may have been updated; try using an older version, perhaps.  Error from libSBML:\n\n" + error->getMessage());
-        delete testdoc;
-        return true;
-      }
+    unsigned int numErrors = testdoc->getErrorLog()->getNumFailsWithSeverity(LIBSBML_SEV_ERROR);
+    if (ProcessSBMLErrorLog(testdoc->getErrorLog(), trueerrors)) {
+      delete testdoc;
+      return true;
     }
     if (trueerrors != "") {
-      g_registry.SetError(SizeTToString(log->getNumFailsWithSeverity(LIBSBML_SEV_ERROR)) + " SBML error(s) when creating module '" + m_modulename + "'.  libAntimony tries to catch these errors before libSBML complains, but sometimes cannot.  Error message(s) from libSBML:\n\n" + trueerrors);
+      g_registry.SetError(SizeTToString(numErrors) + " SBML error(s) when creating module '" + m_modulename + "'.  libAntimony tries to catch these errors before libSBML complains, but sometimes cannot.  Error message(s) from libSBML:\n\n" + trueerrors);
       delete testdoc;
       return true;
     }
     delete testdoc;
+  }
+  return false;
+}
+
+bool Module::ProcessSBMLErrorLog(SBMLErrorLog* log, string& trueerrors)
+{
+  for (unsigned int err=0; err<log->getNumErrors(); err++) {
+    const SBMLError* error = log->getError(err);
+    unsigned int errtype = error->getSeverity();
+    switch(errtype) {
+    case 0: //LIBSBML_SEV_INFO:
+      if (m_libsbml_info != "") m_libsbml_info += "\n";
+      m_libsbml_info += error->getMessage();
+      break;
+    case 1: //LIBSBML_SEV_WARNING:
+      if (m_libsbml_warnings != "") m_libsbml_warnings += "\n";
+      m_libsbml_warnings += error->getMessage();
+      break;
+    case 2: //LIBSBML_SEV_ERROR:
+        if (error->getErrorId() >= 10700 && error->getErrorId() <= 10750) {
+            if (m_libsbml_warnings != "") m_libsbml_warnings += "\n";
+            m_libsbml_warnings += error->getMessage();
+        }
+        else {
+            if (trueerrors != "") trueerrors += "\n";
+            trueerrors += error->getMessage();
+        }
+        //  m_libsbml_warnings += error->getMessage(); //If we want to disable fail-on-error again.
+        break;
+    case 3: //LIBSBML_SEV_FATAL:
+      g_registry.SetError("Fatal error when creating an SBML document; unable to continue.  Error from libSBML:\n\n" + error->getMessage());
+      return true;
+    default:
+      g_registry.SetError("Unknown error when creating an SBML document--there should have only been four types, but we found a fifth?  libSBML may have been updated; try using an older version, perhaps.  Error from libSBML:\n\n" + error->getMessage());
+      return true;
+    }
   }
   return false;
 }

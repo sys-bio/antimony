@@ -233,7 +233,8 @@ public:
   void TranslateRulesAndAssignmentsTo(const libsbml::SBase* obj, Variable* var);
   //void  LoadSBML(const SBMLDocument* sbmldoc);
   void  LoadSBML(libsbml::Model* sbml);
-  void  fixFBCStrictIfNeeded();
+  void  fixFBCStrictIfNeeded(libsbml::SBMLDocument* doc);
+  bool  ProcessSBMLErrorLog(libsbml::SBMLErrorLog* log, std::string& trueerrors);
   const libsbml::SBMLDocument* GetSBML(bool comp);
   libsbml::Model* GetModelIfCreated();
   void  CreateSBMLModel(bool comp);

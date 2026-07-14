@@ -1740,8 +1740,10 @@ void Module::LoadSBML(Model* sbml)
   LoadLayout(sbml);
 }
 
-void Module::fixFBCStrictIfNeeded()
+void Module::fixFBCStrictIfNeeded(SBMLDocument* doc)
 {
+    // If Finalize()'s checkConsistency() found errors, those errors may be
+    // caused purely by fbc:strict.
     if (!m_hasFBC) {
         return;
     }
@@ -1749,35 +1751,13 @@ void Module::fixFBCStrictIfNeeded()
     if (model == NULL) {
         return;
     }
-    //Set 'strict' to 'false' if need be
-    m_sbml.setConsistencyChecks(LIBSBML_CAT_UNITS_CONSISTENCY, false);
-    m_sbml.setConsistencyChecks(LIBSBML_CAT_IDENTIFIER_CONSISTENCY, false);
-    m_sbml.setConsistencyChecks(LIBSBML_CAT_MATHML_CONSISTENCY, false);
-    m_sbml.setConsistencyChecks(LIBSBML_CAT_SBO_CONSISTENCY, false);
-    m_sbml.setConsistencyChecks(LIBSBML_CAT_OVERDETERMINED_MODEL, false);
-    m_sbml.setConsistencyChecks(LIBSBML_CAT_MODELING_PRACTICE, false);
-    m_sbml.setConsistencyChecks(LIBSBML_CAT_INTERNAL_CONSISTENCY, false);
-    m_sbml.setConsistencyChecks(LIBSBML_CAT_STRICT_UNITS_CONSISTENCY, false);
-    m_sbml.setConsistencyChecks(LIBSBML_CAT_OVERDETERMINED_MODEL, false);
-    m_sbml.setConsistencyChecks(LIBSBML_CAT_OVERDETERMINED_MODEL, false);
-    m_sbml.setConsistencyChecks(LIBSBML_CAT_OVERDETERMINED_MODEL, false);
-    m_sbml.checkConsistency();
-    if (m_sbml.getNumErrors(LIBSBML_SEV_ERROR)) {
-        FbcModelPlugin* fmp = static_cast<FbcModelPlugin*>(model->getPlugin("fbc"));
-        fmp->setStrict(false);
-        m_fbcIsStrict = false;
+    FbcModelPlugin* fmp = static_cast<FbcModelPlugin*>(model->getPlugin("fbc"));
+    if (fmp != NULL) {
+      fmp->setStrict(false);
+      m_fbcIsStrict = false;
+      //Remove the errors from doc; that's what we'll check next for remaining ones.
+      removeFBCStrictErrors(doc);
     }
-    m_sbml.setConsistencyChecks(LIBSBML_CAT_IDENTIFIER_CONSISTENCY, true);
-    m_sbml.setConsistencyChecks(LIBSBML_CAT_MATHML_CONSISTENCY, true);
-    m_sbml.setConsistencyChecks(LIBSBML_CAT_SBO_CONSISTENCY, true);
-    m_sbml.setConsistencyChecks(LIBSBML_CAT_OVERDETERMINED_MODEL, true);
-    m_sbml.setConsistencyChecks(LIBSBML_CAT_MODELING_PRACTICE, true);
-    m_sbml.setConsistencyChecks(LIBSBML_CAT_INTERNAL_CONSISTENCY, true);
-    m_sbml.setConsistencyChecks(LIBSBML_CAT_STRICT_UNITS_CONSISTENCY, true);
-    m_sbml.setConsistencyChecks(LIBSBML_CAT_OVERDETERMINED_MODEL, true);
-    m_sbml.setConsistencyChecks(LIBSBML_CAT_OVERDETERMINED_MODEL, true);
-    m_sbml.setConsistencyChecks(LIBSBML_CAT_OVERDETERMINED_MODEL, true);
-
 }
 
 const SBMLDocument* Module::GetSBML(bool comp)
