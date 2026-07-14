@@ -316,6 +316,10 @@ Variable* Module::AddNewNumberedVariable(const string name)
 
 void Module::StoreVariable(Variable* var)
 {
+  // m_variables/m_uniquevars just grew (or, via SetNewTopName, got wholesale
+  // replaced); any cached GetNumVariablesOfType/GetNthVariableOfType results
+  // are now stale.
+  m_variablesOfTypeCache.clear();
   g_registry.StoreVariable(var);
   m_varmap.insert(make_pair(var->GetName(), var));
   // Add to m_submoduleVars if it's a submodule.
@@ -1222,6 +1226,7 @@ bool checkOverlapAndInsert(set<pair<string, int> >& fixed, set <pair<string, int
 bool Module::Finalize()
 {
   m_uniquevars.clear();
+  m_variablesOfTypeCache.clear();
   string cc = g_registry.GetCC();
 
   //Phase 1:  Error checking for loops
@@ -1603,9 +1608,14 @@ bool Module::CheckUndefined(const Formula* form)
   return false;
 }
 
-size_t Module::GetNumVariablesOfType(return_type rtype, bool comp) const
+const vector<Variable*>& Module::GetVariablesOfTypeCached(return_type rtype, bool comp) const
 {
-  size_t total = 0;
+  pair<return_type, bool> key(rtype, comp);
+  map<pair<return_type, bool>, vector<Variable*> >::iterator cacheit = m_variablesOfTypeCache.find(key);
+  if (cacheit != m_variablesOfTypeCache.end()) {
+    return cacheit->second;
+  }
+
   vector<Variable*> vars = m_uniquevars;
   if (comp) {
     vars = m_variables;
@@ -1620,54 +1630,41 @@ size_t Module::GetNumVariablesOfType(return_type rtype, bool comp) const
       }
     }
   }
-  if (rtype == allSymbols) return vars.size();
-  for (size_t nvar=0; nvar<vars.size(); nvar++) {
-    const Variable* var = vars[nvar];
-    if (AreEquivalent(rtype, var->GetType()) &&
-      AreEquivalent(rtype, var->GetIsConst())) {
+
+  vector<Variable*> result;
+  if (rtype == allSymbols) {
+    result = vars;
+  }
+  else {
+    for (size_t nvar=0; nvar<vars.size(); nvar++) {
+      Variable* var = vars[nvar];
+      if (AreEquivalent(rtype, var->GetType()) &&
+          AreEquivalent(rtype, var->GetIsConst())) {
         if (!(rtype == expandedStrands && !var->IsExpandedStrand())) {
-          total++;
+          result.push_back(var);
         }
+      }
     }
   }
-  return total;
+
+  pair<map<pair<return_type, bool>, vector<Variable*> >::iterator, bool> inserted =
+    m_variablesOfTypeCache.insert(make_pair(key, result));
+  return inserted.first->second;
+}
+
+size_t Module::GetNumVariablesOfType(return_type rtype, bool comp) const
+{
+  return GetVariablesOfTypeCached(rtype, comp).size();
 }
 
 const Variable* Module::GetNthConstVariableOfType(return_type rtype, size_t n, bool comp) const
 {
-  vector<Variable*> vars = m_uniquevars;
-  if (comp) {
-    vars = m_variables;
-    //These aren't necessarily unique--remove any that aren't.
-    vector<Variable*>::iterator varit = vars.begin();
-    while (varit != vars.end()) {
-      if ((*varit)->IsPointer()) {
-        varit = vars.erase(varit);
-      }
-      else {
-        varit++;
-      }
-    }
+  const vector<Variable*>& result = GetVariablesOfTypeCached(rtype, comp);
+  if (n >= result.size()) {
+    assert(false);
+    return NULL;
   }
-  if (rtype == allSymbols) {
-    assert(n < vars.size());
-    return vars[n];
-  }
-
-  size_t total = 0;
-  for (size_t nvar=0; nvar<vars.size(); nvar++) {
-    const Variable* var = vars[nvar];
-    if (AreEquivalent(rtype, var->GetType()) &&
-        AreEquivalent(rtype, var->GetIsConst())) {
-      if (!(rtype == expandedStrands && !var->IsExpandedStrand())) {
-        if (total == n) {
-          return var;
-        }
-        total++;
-      }
-    }
-  }
-  return NULL;
+  return result[n];
 }
 
 
