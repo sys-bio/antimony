@@ -87,6 +87,11 @@ private:
 
   //Caching for speed:
   std::map<std::vector<std::string>, Variable*> m_varmap;
+  // Cache of GetNumVariablesOfType/GetNthVariableOfType results, keyed by
+  // (return_type, comp).  Valid from the point it's built until the next
+  // Finalize() (which clears it up front) or the next call to
+  // StoreVariable() (which means m_variables/m_uniquevars just grew).
+  mutable std::map<std::pair<return_type, bool>, std::vector<Variable*> > m_variablesOfTypeCache;
 
   libsbml::SBMLNamespaces m_sbmlnamespaces;
   libsbml::SBMLDocument m_sbml;
@@ -321,6 +326,7 @@ private:
   bool OrigDisplayNameIsAlready(const Variable* var, const std::map<const Variable*, Variable>& origmap) const;
   bool OrigMatches(const Variable* var, const std::map<const Variable*, Variable>& origmap, var_type type, const_type isconst, const Variable* comp) const;
   const Variable* GetNthConstVariableOfType(return_type rtype, size_t n, bool comp) const;
+  const std::vector<Variable*>& GetVariablesOfTypeCached(return_type rtype, bool comp) const;
   void Convert(Variable* converted, Variable* cf, std::string modulename);
   bool IsReplaced(const libsbml::InitialAssignment* ia, const libsbml::Model* parent);
   bool IsReplaced(const libsbml::Rule* rule, const libsbml::Model* parent);
