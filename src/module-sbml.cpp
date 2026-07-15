@@ -3216,69 +3216,79 @@ void Module::FixNames(Model* model)
     , "time_unit"
     };
 
-    //At some point, it would be nice to allow keywords that are functions as 
+    //At some point, it would be nice to allow keywords that are functions as
     // variable names, and visa versa.  But today is not that day.
-    for (size_t kw = 0; kw < 22; kw++) {
-        FixConstants(keywords[kw], model);
-        FixFunctions(keywords[kw], model);
+    set<string> reserved;
+    for (size_t kw = 0; kw < sizeof(keywords) / sizeof(keywords[0]); kw++) {
+        reserved.insert(keywords[kw]);
+    }
+    for (size_t fn = 0; fn < sizeof(functions) / sizeof(functions[0]); fn++) {
+        reserved.insert(functions[fn]);
+    }
+    for (size_t c = 0; c < sizeof(constants) / sizeof(constants[0]); c++) {
+        reserved.insert(constants[c]);
+    }
+    for (size_t u = 0; u < sizeof(units) / sizeof(units[0]); u++) {
+        reserved.insert(units[u]);
     }
 
-    for (size_t fn = 0; fn < 88; fn++) {
-        FixConstants(functions[fn], model);
-        FixFunctions(functions[fn], model);
+    // Walk every element in the model once, rather than searching the whole
+    // model by ID once per reserved word (which is what getElementBySId()
+    // does internally, and there are ~130 reserved words).  List has no
+    // iterator and get(n) walks from the head every time, so an
+    // incrementing-index loop over get(el) is O(n^2); remove(0) always pops
+    // the head in O(1), so draining the list that way is O(n) total.
+    List* elements = model->getAllElements();
+    while (elements->getSize() > 0) {
+        SBase* element = static_cast<SBase*>(elements->remove(0));
+        string id = element->getIdAttribute();
+        if (id.empty()) {
+            continue;
+        }
+        if (reserved.find(id) == reserved.end()) {
+            continue;
+        }
+        if (element->getTypeCode() == SBML_FUNCTION_DEFINITION) {
+            FixFunction(id, model, element);
+        }
+        else {
+            FixConstant(id, model, element);
+        }
     }
-
-    for (size_t c = 0; c < 18; c++) {
-        FixConstants(constants[c], model);
-        FixFunctions(constants[c], model);
-    }
-
-    for (size_t u = 0; u < 6; u++) {
-        FixConstants(units[u], model);
-        FixFunctions(units[u], model);
-    }
+    delete elements;
 
     FixUnitNames(model);
 }
 
-void Module::FixConstants(const string& name, Model* model)
+void Module::FixConstant(const string& name, Model* model, SBase* obj)
 {
-    SBase* obj = model->getElementBySId(name);
-    if (obj != NULL && obj->getTypeCode() != SBML_FUNCTION_DEFINITION) {
-        string newname = name + "_";
-        obj->setId(newname);
-        List* elements = model->getAllElements();
-        for (unsigned int el = 0; el < elements->getSize(); el++) {
-            SBase* element = static_cast<SBase*>(elements->get(el));
-            element->renameSIdRefs(name, newname);
-        }
-        delete elements;
+    string newname = name + "_";
+    obj->setId(newname);
+    List* elements = model->getAllElements();
+    while (elements->getSize() > 0) {
+        SBase* element = static_cast<SBase*>(elements->remove(0));
+        element->renameSIdRefs(name, newname);
     }
+    delete elements;
 }
 
-void Module::FixFunctions(const string& name, Model* model)
+void Module::FixFunction(const string& name, Model* model, SBase* obj)
 {
-    SBase* obj = model->getElementBySId(name);
-    if (obj != NULL && obj->getTypeCode() == SBML_FUNCTION_DEFINITION) {
-        string newname = name + "_";
-        obj->setId(newname);
-        model->renameSIdRefs(name, newname);
-        List* elements = model->getAllElements();
-        for (unsigned int el = 0; el < elements->getSize(); el++) {
-            SBase* element = static_cast<SBase*>(elements->get(el));
-            element->renameSIdRefs(name, newname);
-        }
-        for (unsigned int fd = 0; fd < model->getNumFunctionDefinitions(); fd++) {
-            ASTNode* astn = const_cast<ASTNode*>(model->getFunctionDefinition(fd)->getMath());
-            if (astn) {
-                astn->renameSIdRefs(name, newname);
-            }
-        }
-        delete elements;
+    string newname = name + "_";
+    obj->setId(newname);
+    model->renameSIdRefs(name, newname);
+    List* elements = model->getAllElements();
+    while (elements->getSize() > 0) {
+        SBase* element = static_cast<SBase*>(elements->remove(0));
+        element->renameSIdRefs(name, newname);
     }
-    else {
-
+    for (unsigned int fd = 0; fd < model->getNumFunctionDefinitions(); fd++) {
+        ASTNode* astn = const_cast<ASTNode*>(model->getFunctionDefinition(fd)->getMath());
+        if (astn) {
+            astn->renameSIdRefs(name, newname);
+        }
     }
+    delete elements;
 }
 
 void Module::FixUnitNames(Model* model)
