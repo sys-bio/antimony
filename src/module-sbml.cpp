@@ -10,7 +10,62 @@
 #include "sbml/packages/layout/extension/LayoutModelPlugin.h"
 #include "sbml/packages/fbc/extension/FbcModelPlugin.h"
 
+// Pulls in LIBSBML_HAS_PACKAGE_* macros (libsbml writes these based on what
+// packages it was actually built with) so the optional-package type codes
+// below can be guarded the same way FBC is guarded elsewhere in this codebase.
+#include <sbml/common/libsbml-config-packages.h>
+#ifdef LIBSBML_HAS_PACKAGE_ARRAYS
+#include <sbml/packages/arrays/common/ArraysExtensionTypes.h>
+#endif
+#ifdef LIBSBML_HAS_PACKAGE_MULTI
+#include <sbml/packages/multi/common/MultiExtensionTypes.h>
+#endif
+#ifdef LIBSBML_HAS_PACKAGE_SPATIAL
+#include <sbml/packages/spatial/common/SpatialExtensionTypes.h>
+#endif
+
 using namespace libsbml;
+
+// Several SBML element types have ids that live in their own namespace,
+// so we don't want to change them when calling FixNames.
+static bool IsInSeparateIdNamespace(int typeCode)
+{
+    switch (typeCode) {
+    // Core: UnitDefinition ids are UnitSId, not SId; LocalParameter ids are
+    // local to their Reaction's KineticLaw, not SId.
+    case SBML_UNIT_DEFINITION:
+    case SBML_LOCAL_PARAMETER:
+    // comp: Port ids are their own namespace, separate from SId.
+    case SBML_COMP_PORT:
+#ifdef LIBSBML_HAS_PACKAGE_ARRAYS
+    // arrays: Dimension ids are local to their parent object, and
+    // indexes can have IDs in L3v2.
+    case SBML_ARRAYS_DIMENSION:
+    case SBML_ARRAYS_INDEX:
+#endif
+#ifdef LIBSBML_HAS_PACKAGE_MULTI
+    // multi: these live in various local namespaces.
+    case SBML_MULTI_SPECIES_TYPE_INSTANCE:
+    case SBML_MULTI_IN_SPECIES_TYPE_BOND:
+    case SBML_MULTI_SPECIES_FEATURE_TYPE:
+    case SBML_MULTI_SPECIES_TYPE_COMPONENT_INDEX:
+    case SBML_MULTI_SPECIES_FEATURE:
+    case SBML_MULTI_SUBLIST_OF_SPECIES_FEATURES:
+    case SBML_MULTI_COMPARTMENT_REFERENCE:
+#endif
+        return true;
+    default:
+        break;
+    }
+#ifdef LIBSBML_HAS_PACKAGE_SPATIAL
+    // spatial: the entire package uses its own SpId namespace. The type
+    // codes are contiguous, so a range check covers all of them.
+    if (typeCode >= SBML_SPATIAL_DOMAINTYPE && typeCode <= SBML_SPATIAL_SPATIALPOINTS) {
+        return true;
+    }
+#endif
+    return false;
+}
 
 void SetVarWithEvent(Variable* var, const Event* event, Module* module, vector<string> submodname)
 {
@@ -3216,69 +3271,82 @@ void Module::FixNames(Model* model)
     , "time_unit"
     };
 
-    //At some point, it would be nice to allow keywords that are functions as 
+    //At some point, it would be nice to allow keywords that are functions as
     // variable names, and visa versa.  But today is not that day.
-    for (size_t kw = 0; kw < 22; kw++) {
-        FixConstants(keywords[kw], model);
-        FixFunctions(keywords[kw], model);
+    set<string> reserved;
+    for (size_t kw = 0; kw < sizeof(keywords) / sizeof(keywords[0]); kw++) {
+        reserved.insert(keywords[kw]);
+    }
+    for (size_t fn = 0; fn < sizeof(functions) / sizeof(functions[0]); fn++) {
+        reserved.insert(functions[fn]);
+    }
+    for (size_t c = 0; c < sizeof(constants) / sizeof(constants[0]); c++) {
+        reserved.insert(constants[c]);
+    }
+    for (size_t u = 0; u < sizeof(units) / sizeof(units[0]); u++) {
+        reserved.insert(units[u]);
     }
 
-    for (size_t fn = 0; fn < 88; fn++) {
-        FixConstants(functions[fn], model);
-        FixFunctions(functions[fn], model);
+    // Walk every element in the model once, rather than searching the whole
+    // model by ID once per reserved word (which is what getElementBySId()
+    // does internally, and there are ~130 reserved words).  List has no
+    // iterator and get(n) walks from the head every time, so an
+    // incrementing-index loop over get(el) is O(n^2); remove(0) always pops
+    // the head in O(1), so draining the list that way is O(n) total.
+    List* elements = model->getAllElements();
+    while (elements->getSize() > 0) {
+        SBase* element = static_cast<SBase*>(elements->remove(0));
+        if (IsInSeparateIdNamespace(element->getTypeCode())) {
+            continue;
+        }
+        string id = element->getIdAttribute();
+        if (id.empty()) {
+            continue;
+        }
+        if (reserved.find(id) == reserved.end()) {
+            continue;
+        }
+        if (element->getTypeCode() == SBML_FUNCTION_DEFINITION) {
+            FixFunction(id, model, element);
+        }
+        else {
+            FixConstant(id, model, element);
+        }
     }
-
-    for (size_t c = 0; c < 18; c++) {
-        FixConstants(constants[c], model);
-        FixFunctions(constants[c], model);
-    }
-
-    for (size_t u = 0; u < 6; u++) {
-        FixConstants(units[u], model);
-        FixFunctions(units[u], model);
-    }
+    delete elements;
 
     FixUnitNames(model);
 }
 
-void Module::FixConstants(const string& name, Model* model)
+void Module::FixConstant(const string& name, Model* model, SBase* obj)
 {
-    SBase* obj = model->getElementBySId(name);
-    if (obj != NULL && obj->getTypeCode() != SBML_FUNCTION_DEFINITION) {
-        string newname = name + "_";
-        obj->setId(newname);
-        List* elements = model->getAllElements();
-        for (unsigned int el = 0; el < elements->getSize(); el++) {
-            SBase* element = static_cast<SBase*>(elements->get(el));
-            element->renameSIdRefs(name, newname);
-        }
-        delete elements;
+    string newname = name + "_";
+    obj->setId(newname);
+    List* elements = model->getAllElements();
+    while (elements->getSize() > 0) {
+        SBase* element = static_cast<SBase*>(elements->remove(0));
+        element->renameSIdRefs(name, newname);
     }
+    delete elements;
 }
 
-void Module::FixFunctions(const string& name, Model* model)
+void Module::FixFunction(const string& name, Model* model, SBase* obj)
 {
-    SBase* obj = model->getElementBySId(name);
-    if (obj != NULL && obj->getTypeCode() == SBML_FUNCTION_DEFINITION) {
-        string newname = name + "_";
-        obj->setId(newname);
-        model->renameSIdRefs(name, newname);
-        List* elements = model->getAllElements();
-        for (unsigned int el = 0; el < elements->getSize(); el++) {
-            SBase* element = static_cast<SBase*>(elements->get(el));
-            element->renameSIdRefs(name, newname);
-        }
-        for (unsigned int fd = 0; fd < model->getNumFunctionDefinitions(); fd++) {
-            ASTNode* astn = const_cast<ASTNode*>(model->getFunctionDefinition(fd)->getMath());
-            if (astn) {
-                astn->renameSIdRefs(name, newname);
-            }
-        }
-        delete elements;
+    string newname = name + "_";
+    obj->setId(newname);
+    model->renameSIdRefs(name, newname);
+    List* elements = model->getAllElements();
+    while (elements->getSize() > 0) {
+        SBase* element = static_cast<SBase*>(elements->remove(0));
+        element->renameSIdRefs(name, newname);
     }
-    else {
-
+    for (unsigned int fd = 0; fd < model->getNumFunctionDefinitions(); fd++) {
+        ASTNode* astn = const_cast<ASTNode*>(model->getFunctionDefinition(fd)->getMath());
+        if (astn) {
+            astn->renameSIdRefs(name, newname);
+        }
     }
+    delete elements;
 }
 
 void Module::FixUnitNames(Model* model)

@@ -335,8 +335,8 @@ private:
   libsbml::InitialAssignment* FindInitialAssignment(libsbml::Model* md, std::vector<std::string> syncname);
   libsbml::Rule* FindRule(libsbml::Model* md, std::vector<std::string> syncname);
   void FixNames(libsbml::Model* model);
-  void FixConstants(const std::string& name, libsbml::Model* model);
-  void FixFunctions(const std::string& name, libsbml::Model* model);
+  void FixConstant(const std::string& name, libsbml::Model* model, libsbml::SBase* obj);
+  void FixFunction(const std::string& name, libsbml::Model* model, libsbml::SBase* obj);
   void FixUnitNames(libsbml::Model* model);
   void UpdateRateOf(libsbml::Model* model);
   std::string ValidateAutoLayoutArgument(const std::string* argument);
