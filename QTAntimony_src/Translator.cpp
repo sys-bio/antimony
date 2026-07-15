@@ -16,6 +16,7 @@
 
 #include "antimony_api.h"
 #include <sbml/SBMLTypes.h>
+#include <sbml/packages/comp/common/CompExtensionTypes.h>
 
 #include <cassert>
 #include <QTabWidget>
@@ -217,7 +218,15 @@ Translator::Translator(QTAntimony* app, QString filename)
             QTextStream in(&file);
             filetext = in.readAll();
             m_filewatcher->addPath(filename);
-            if (loadAntimonyFile(filename.toUtf8().data()) != -1) {
+            // Clear any previous registry state before loading.
+            clearPreviousLoads();
+#ifndef WIN32
+            freeAll();
+#endif
+            // Antimony syntax can never start with '<', so it must be XML.
+            QRegExp lessthanstart("^\\s*<");
+            bool looksLikeXML = filetext.contains(lessthanstart);
+            if (!looksLikeXML && loadAntimonyFile(filename.toUtf8().data()) != -1) {
                 //Originally Antimony
                 m_antimony->setPlainText(filetext);
                 m_antimony->SetSavedFilename(filename);
@@ -259,16 +268,22 @@ Translator::Translator(QTAntimony* app, QString filename)
                 SBMLDocument* document = readSBML(filename.toUtf8().data());
                 int level = document->getLevel();
                 int version = document->getVersion();
+                // Match the flatten state to what was actually loaded,
+                // rather than the user's last saved preference. 
+                CompSBMLDocumentPlugin* compdoc = static_cast<CompSBMLDocumentPlugin*>(document->getPlugin("comp"));
+                flattensbml = (compdoc == NULL);
+                m_antimony->SetFlatten(flattensbml);
+                m_tabmanager->SetFlattenSilently(flattensbml);
                 AddSBMLTab(modname, filetext, false, level, version);
                 m_tabmanager->firstsbmltextbox()->SetOriginal();
                 m_tabmanager->firstsbmltextbox()->SetSavedFilename(filename);
                 m_antimony->SetTranslatedText(getAntimonyString(NULL));
-                delete document;
 #ifndef NCELLML
                 if (displaycellml) {
                     AddCellMLTab(document->getIdAttribute().c_str(), getCellMLString(NULL), true);
                 }
 #endif
+                delete document;
             }
 #ifndef NCELLML
             else if (loadCellMLFile(filename.toUtf8().data()) != -1) {
@@ -292,8 +307,7 @@ Translator::Translator(QTAntimony* app, QString filename)
 #endif
             else {
                 //Not a valid file of any format, but maybe we can tell if it's XML or not.
-                QRegExp lessthanstart("^\\s*<");
-                if (filetext.contains(lessthanstart)) {
+                if (looksLikeXML) {
                     bool iscellml = false;
                     QRegExp cellmlorg("www.cellml.org");
                     if (filetext.contains(cellmlorg)) {
@@ -331,10 +345,6 @@ Translator::Translator(QTAntimony* app, QString filename)
                     m_antimony->SetFailedTranslation();
                 }
             }
-            clearPreviousLoads();
-#ifndef WIN32
-            freeAll();
-#endif
         }
     }
     else {
