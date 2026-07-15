@@ -26,6 +26,9 @@ public:
     bool CanIClose();
     void SaveFonts();
     void SaveTabDisplay();
+    // Sets the internal flatten flag (and syncs the menu checkbox) without
+    // regenerating any SBML tabs.
+    void SetFlattenSilently(bool flatten);
 
 public slots:
     //We provide the functions and pass them to the underlying active editor tab
