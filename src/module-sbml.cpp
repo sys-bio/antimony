@@ -1555,13 +1555,17 @@ void Module::LoadSBML(Model* sbml)
         delete astn;
       }
     }
-    else if (reaction->getNumModifiers() > 0) {
-      //If the kinetic law is empty, we can set some interactions, if there are any Modifiers.
+    if (reaction->getNumModifiers() > 0) {
+      // Modifiers with extra information (a name or an SBO term, or that don't otherwise 
+      // appear in the kinetic law) are translated to Antimony as Interactions.
       ReactantList right;
       right.AddReactant(var);
       for (unsigned int mod = 0; mod < reaction->getNumModifiers(); mod++) {
-        ReactantList left;
         const ModifierSpeciesReference* msr = reaction->getModifier(mod);
+        if (reaction->isSetKineticLaw() && !msr->isSetSBOTerm() && !msr->isSetName()) {
+          continue;
+        }
+        ReactantList left;
         string species = msr->getSpecies();
         Variable* specvar = AddOrFindVariable(&species);
         left.AddReactant(specvar);
@@ -2448,13 +2452,24 @@ void Module::CreateSBMLModel(bool comp)
   for (size_t irxn=0; irxn<numinteractions; irxn++) {
     const Variable* arxnvar = GetNthVariableOfType(allInteractions, irxn, false);
     const AntimonyReaction* arxn = arxnvar->GetReaction();
-    Reaction* rxn = sbmlmod->getReaction(arxn->GetRight()->GetNthReactant(0)->GetNameDelimitedBy(cc));
+    string rxnname = arxn->GetRight()->GetNthReactant(0)->GetNameDelimitedBy(cc);
+    Reaction* rxn = sbmlmod->getReaction(rxnname);
     if (rxn != NULL) {
       for (size_t interactor=0; interactor<arxn->GetLeft()->Size(); interactor++) {
-        ModifierSpeciesReference* msr = rxn->getModifier(arxn->GetLeft()->GetNthReactant(interactor)->GetNameDelimitedBy(cc));
+        string interactorname = arxn->GetLeft()->GetNthReactant(interactor)->GetNameDelimitedBy(cc);
+        ModifierSpeciesReference* msr = rxn->getModifier(interactorname);
         if (msr == NULL) {
+            //If the reaction already has a kinetic law, and this species didn't show up in
+            //it as a Modifier, the interaction's claimed modifier doesn't actually appear in
+            //the target reaction's kinetic law.  We still honor the interaction (create the
+            //modifier and tag it below), but warn, since this is likely a modeling mistake.
+            if (rxn->isSetKineticLaw()) {
+              g_registry.AddWarning("An interaction was declared that claims " + interactorname +
+                " modifies " + rxnname + ", but " + interactorname + " does not appear in " +
+                rxnname + "'s kinetic law.");
+            }
             msr = rxn->createModifier();
-            msr->setSpecies(arxn->GetLeft()->GetNthReactant(interactor)->GetNameDelimitedBy(cc));
+            msr->setSpecies(interactorname);
         }
         msr->setName(arxnvar->GetName()[arxnvar->GetName().size()-1]);
         switch(arxn->GetType()) {
