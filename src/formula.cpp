@@ -794,6 +794,8 @@ string Formula::ConvertOneSymbolToFunction(string formula) const
 
 vector<const Variable*> Formula::GetVariablesFrom(string formula, string module) const
 {
+  // Build up 'retval' in order, so the modifiers are added in deterministic order
+  // (useful for test comparisons).
   vector<const Variable*> retval;
   set<const Variable*> varset;
   string varname = "";
@@ -806,16 +808,19 @@ vector<const Variable*> Formula::GetVariablesFrom(string formula, string module)
       varname += formula[pos];
     }
     else if (foundname) {
-      varset.insert(g_registry.GetModule(module)->GetVariableFromSymbol(varname));
+      const Variable* var = g_registry.GetModule(module)->GetVariableFromSymbol(varname);
+      if (varset.insert(var).second) {
+        retval.push_back(var);
+      }
       foundname = false;
       varname = "";
     }
   }
   if (foundname) {
-    varset.insert(g_registry.GetModule(module)->GetVariableFromSymbol(varname));
-  }
-  for (set<const Variable*>::iterator var=varset.begin(); var != varset.end(); var++) {
-    retval.push_back(*var);
+    const Variable* var = g_registry.GetModule(module)->GetVariableFromSymbol(varname);
+    if (varset.insert(var).second) {
+      retval.push_back(var);
+    }
   }
   return retval;
 }
