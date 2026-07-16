@@ -199,14 +199,9 @@ TEST(AntimonyFlattening, test_exchangetest)
   compareFileFlatteningWithDifferences("exchangetest");
 }
 
-TEST(AntimonyFlattening, DISABLED_test_exchangetest2)
-{
-  compareFileFlattening("exchangetest2");
-}
-
 TEST(AntimonyFlattening, test_QTPop)
 {
-  //compareFileFlatteningWithDifferences("QTPop");
+  compareFileFlatteningWithDifferences("QTPop");
 }
 
 TEST(AntimonyFlattening, test_replace_implied_deletion)
