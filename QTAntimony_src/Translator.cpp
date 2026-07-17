@@ -630,6 +630,7 @@ void Translator::closeEvent(QCloseEvent* event)
 void Translator::DisplayAbout()
 {
   QMessageBox msgBox;
+  QTAntimony::ApplyWindowIcon(&msgBox);
   msgBox.setText("QTAntimony " LIBANTIMONY_VERSION_STRING);
   msgBox.setInformativeText("Based on libAntimony " LIBANTIMONY_VERSION_STRING "\nand libSBML v" LIBSBML_DOTTED_VERSION "\n\nSupported by NIH/NIGMS Grant # GM081070");
   msgBox.setStandardButtons(QMessageBox::Ok);

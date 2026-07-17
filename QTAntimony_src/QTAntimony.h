@@ -23,6 +23,7 @@ public:
     void OpenFiles(QStringList filenames);
     QString GetCurrentDir();
     void DisplayWindow(QMainWindow* t);
+    static void ApplyWindowIcon(QWidget* w);
 
 public slots:
     void OpenNewFile();

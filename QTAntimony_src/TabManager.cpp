@@ -1,5 +1,6 @@
 #include "TabManager.h"
 #include "Translator.h"
+#include "QTAntimony.h"
 #include "CellMLTab.h"
 #include "ChangeableTextBox.h"
 #include "CopyMessageBox.h"
@@ -721,6 +722,7 @@ bool TabManager::CanIClose()
     }
     if (someunsaved) {
         QMessageBox msgBox2;
+        QTAntimony::ApplyWindowIcon(&msgBox2);
         msgBox2.setStyleSheet("QMessageBox { messagebox-text-interaction-flags: 1 }");
         msgBox2.setText("Some tabs are still unsaved.");
         msgBox2.setInformativeText("Close window anyway?");

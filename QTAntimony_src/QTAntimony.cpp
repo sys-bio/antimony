@@ -138,22 +138,25 @@ void QTAntimony::DisplayWindow(QMainWindow* t) {
         }
         t->setGeometry(window);
     }
-    // QApplication::setWindowIcon() (set once in the constructor) only
-    // supplies a *default* for icon queries — on Windows it does not by
-    // itself push WM_SETICON to a top-level window's native HWND. Each
-    // window still needs its own explicit setWindowIcon() call for
-    // Windows to actually paint a non-generic icon on its taskbar
-    // button.
-    t->setWindowIcon(QIcon(":/antimony.ico"));
+    ApplyWindowIcon(t);
     t->show();
 
+    m_basewindow = t;
+}
+
+// Applies the app icon to any top-level widget.
+void QTAntimony::ApplyWindowIcon(QWidget* w)
+{
+    if (w == NULL) return;
+    w->setWindowIcon(QIcon(":/antimony.ico"));
+
 #ifdef Q_OS_WIN
-    // Fix Windows 11 bug: only use large icon for taskbar
+    // Fix Windows 11 bug: only use large icon for taskbar.
     HICON hIconLarge = static_cast<HICON>(LoadImageW(
         GetModuleHandleW(NULL), MAKEINTRESOURCEW(ANT_ICON1),
         IMAGE_ICON, 256, 256, LR_DEFAULTCOLOR));
     if (hIconLarge) {
-        HWND hwnd = reinterpret_cast<HWND>(t->winId());
+        HWND hwnd = reinterpret_cast<HWND>(w->winId());
         SendMessage(hwnd, WM_SETICON, ICON_BIG, reinterpret_cast<LPARAM>(hIconLarge));
         SendMessage(hwnd, WM_SETICON, ICON_SMALL, reinterpret_cast<LPARAM>(hIconLarge));
         // Intentionally not destroyed: the icon needs to live as long as
@@ -161,6 +164,4 @@ void QTAntimony::DisplayWindow(QMainWindow* t) {
         // reclaimed by Windows on process exit.
     }
 #endif
-
-    m_basewindow = t;
 }
