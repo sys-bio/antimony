@@ -85,6 +85,7 @@ function(add_test_executable TEST_TARGET)
     gtest_discover_tests(
             ${TEST_TARGET}
             DISCOVERY_TIMEOUT 500
+            DISCOVERY_MODE PRE_TEST
             PROPERTIES
             TIMEOUT 500
             ENVIRONMENT "srcdir=${CMAKE_CURRENT_SOURCE_DIR}"
