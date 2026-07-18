@@ -59,3 +59,10 @@ TEST(AntimonyImport, test_import_volume)
 {
     compareFileImport("volume");
 }
+
+// Tests reactions with multiple reactants/products, all with stoichiometry math.
+// Originally MODEL1504010000_url.xml
+TEST(AntimonyImport, test_import_MODEL1504010000_url)
+{
+    compareFileImport("oxphos_nad_redacted");
+}

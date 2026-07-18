@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created by libAntimony version v3.1.3 with libSBML version 5.21.1. -->
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model metaid="MODEL1504010000" id="MODEL1504010000">
+    <listOfCompartments>
+      <compartment sboTerm="SBO:0000410" id="default_compartment" size="1"/>
+    </listOfCompartments>
+    <listOfSpecies>
+      <species id="PYR" compartment="default_compartment"/>
+      <species id="ADP" compartment="default_compartment"/>
+      <species id="P" compartment="default_compartment"/>
+      <species id="O2" compartment="default_compartment"/>
+      <species id="ATP" compartment="default_compartment"/>
+      <species id="NADH" compartment="default_compartment"/>
+      <species id="NAD" compartment="default_compartment"/>
+    </listOfSpecies>
+    <listOfParameters>
+      <parameter id="nop"/>
+      <parameter id="nox"/>
+      <parameter id="nnad"/>
+      <parameter id="V_OXPHOS"/>
+      <parameter id="KM_OXPHOS_PYR"/>
+      <parameter id="KM_OXPHOS_O2"/>
+      <parameter id="KM_OXPHOS_ADP"/>
+    </listOfParameters>
+    <listOfReactions>
+      <reaction id="OXPHOS" fast="false">
+        <listOfReactants>
+          <speciesReference species="PYR"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference id="OXPHOS_ADP_stoichiometry" species="ADP">
+            <stoichiometryMath>
+              <math xmlns="http://www.w3.org/1998/Math/MathML">
+                <apply>
+                  <minus/>
+                  <ci> nop </ci>
+                </apply>
+              </math>
+            </stoichiometryMath>
+          </speciesReference>
+          <speciesReference id="OXPHOS_P_stoichiometry" species="P">
+            <stoichiometryMath>
+              <math xmlns="http://www.w3.org/1998/Math/MathML">
+                <apply>
+                  <minus/>
+                  <ci> nop </ci>
+                </apply>
+              </math>
+            </stoichiometryMath>
+          </speciesReference>
+          <speciesReference id="OXPHOS_O2_stoichiometry" species="O2">
+            <stoichiometryMath>
+              <math xmlns="http://www.w3.org/1998/Math/MathML">
+                <apply>
+                  <minus/>
+                  <ci> nox </ci>
+                </apply>
+              </math>
+            </stoichiometryMath>
+          </speciesReference>
+          <speciesReference id="OXPHOS_ATP_stoichiometry" species="ATP">
+            <stoichiometryMath>
+              <math xmlns="http://www.w3.org/1998/Math/MathML">
+                <ci> nop </ci>
+              </math>
+            </stoichiometryMath>
+          </speciesReference>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> V_OXPHOS </ci>
+              <apply>
+                <divide/>
+                <ci> PYR </ci>
+                <apply>
+                  <plus/>
+                  <ci> PYR </ci>
+                  <ci> KM_OXPHOS_PYR </ci>
+                </apply>
+              </apply>
+              <apply>
+                <divide/>
+                <ci> O2 </ci>
+                <apply>
+                  <plus/>
+                  <ci> O2 </ci>
+                  <ci> KM_OXPHOS_O2 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <divide/>
+                <ci> ADP </ci>
+                <apply>
+                  <plus/>
+                  <ci> ADP </ci>
+                  <ci> KM_OXPHOS_ADP </ci>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="MAS" fast="false">
+        <listOfReactants>
+          <speciesReference species="NADH"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference id="MAS_ADP_stoichiometry" species="ADP">
+            <stoichiometryMath>
+              <math xmlns="http://www.w3.org/1998/Math/MathML">
+                <apply>
+                  <minus/>
+                  <ci> nnad </ci>
+                </apply>
+              </math>
+            </stoichiometryMath>
+          </speciesReference>
+          <speciesReference id="MAS_P_stoichiometry" species="P">
+            <stoichiometryMath>
+              <math xmlns="http://www.w3.org/1998/Math/MathML">
+                <apply>
+                  <minus/>
+                  <ci> nnad </ci>
+                </apply>
+              </math>
+            </stoichiometryMath>
+          </speciesReference>
+          <speciesReference species="NAD"/>
+          <speciesReference id="MAS_ATP_stoichiometry" species="ATP">
+            <stoichiometryMath>
+              <math xmlns="http://www.w3.org/1998/Math/MathML">
+                <ci> nnad </ci>
+              </math>
+            </stoichiometryMath>
+          </speciesReference>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="PYR"/>
+          <modifierSpeciesReference species="O2"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> V_OXPHOS </ci>
+              <apply>
+                <divide/>
+                <ci> PYR </ci>
+                <apply>
+                  <plus/>
+                  <ci> PYR </ci>
+                  <ci> KM_OXPHOS_PYR </ci>
+                </apply>
+              </apply>
+              <apply>
+                <divide/>
+                <ci> O2 </ci>
+                <apply>
+                  <plus/>
+                  <ci> O2 </ci>
+                  <ci> KM_OXPHOS_O2 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <divide/>
+                <ci> ADP </ci>
+                <apply>
+                  <plus/>
+                  <ci> ADP </ci>
+                  <ci> KM_OXPHOS_ADP </ci>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+    </listOfReactions>
+  </model>
+</sbml>

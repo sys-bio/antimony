@@ -1414,6 +1414,7 @@ void Module::LoadSBML(Model* sbml)
   for (unsigned int rxn = 0; rxn < sbml->getNumReactions(); rxn++) {
     const Reaction* reaction = sbml->getReaction(rxn);
     sbmlname = getNameFromSBMLObject(reaction, "_J");
+    string reactionName = sbmlname;
     Variable* var = AddOrFindVariable(&sbmlname);
     var->PopulateCVTerms((SBase*)reaction);
     var->ReadAnnotationFrom(reaction);
@@ -1438,7 +1439,7 @@ void Module::LoadSBML(Model* sbml)
         if (specref->isSetStoichiometryMath()) {
           string reactantId = specref->getId();
           if (reactantId.empty()) {
-            reactantId = sbmlname + "_" + specref->getSpecies() + "_stoichiometry";
+            reactantId = reactionName + "_" + specref->getSpecies() + "_stoichiometry";
           }
           stoichvar = AddOrFindVariable(&reactantId);
           assert(!stoichvar->SetType(varStoichiometry)); //Since the SBML file is valid.
