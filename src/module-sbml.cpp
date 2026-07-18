@@ -1259,7 +1259,7 @@ void Module::LoadSBML(Model* sbml)
         if (conc != 0 && defaultcompartments.find(species->getCompartment()) == defaultcompartments.end()) {
           Variable* compartment = AddOrFindVariable(&(species->getCompartment()));
           Formula* compform = compartment->GetFormula();
-          formula.AddMathThing('/');
+          formula.AddMathThing('*');
           formula.AddVariable(compartment);
         }
       }
