@@ -423,9 +423,9 @@ TEST(AntimonyErrors, no_negative_size)
     testError("s1->; ;species.size = {-5, 5}", "Error in model string, line 1:  Unable to set the value of 'species.size' to be '{ - 5, 5}':  size may not be negative.");
 }
 
-/*
-TEST(AntimonyErrors, no_replace_ar_with_ia)
+
+TEST(AntimonyErrors, notice_species_compartments_for_loops)
 {
-  testError("a:=3; a=4", "");
+  testError("species S1 in C; C = S1 + 3", "Error in model string, line 1:  Loop detected:  C's definition (S1 + 3) either includes itself directly (i.e. 's5 = 6 + s5') or by proxy (i.e. 's5 = 8*d3' and 'd3 = 9*s5').");
 }
-*/
+

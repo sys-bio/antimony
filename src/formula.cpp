@@ -469,6 +469,14 @@ bool Formula::ContainsVar(const Variable* outervar) const
       if (subvar->GetIsEquivalentTo(outervar)) {
         return true;
       }
+      // A species whose value is a concentration effectively also includes
+      // its compartment in the calculation of its value.
+      if (IsSpecies(subvar->GetType()) && !subvar->GetSubstOnly()) {
+        Variable* subcompartment = subvar->GetCompartment();
+        if (subcompartment != NULL && subcompartment->GetIsEquivalentTo(outervar)) {
+          return true;
+        }
+      }
       const Formula* subformula = subvar->GetFormula();
       if (subformula != NULL) {
         if (subformula->ContainsVar(outervar)) {
