@@ -2697,12 +2697,8 @@ void Variable::SetWithRule(const Rule* rule)
   setFormulaWithString(formulastring, &formula, g_registry.GetModule(m_module));
   formula.SetNewTopNameWith(rule, m_module);
   formula.ReadAnnotationFrom(rule);
-  if (IsSpecies(GetType())) {
-    //Any species in any rule must be 'const' (in Antimony), because this means it's a 'boundary species'
-    SetIsConst(true);
-  }
-  else {
-    //For other parameters, assignment and rate rules always mean the variable in question is not constant.
+  if (!IsSpecies(GetType())) {
+    //Anything not a species set by a rule cannot be constant. (Species set 'boundary' separately.)
     SetIsConst(false);
   }
 

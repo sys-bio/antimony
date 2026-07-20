@@ -472,3 +472,14 @@ TEST(AntimonyBasic, test_name_as_id)
     freeAll();
 
 }
+
+TEST(AntimonyBasic, test_floating_species_in_asnt_rule)
+{
+  compareFileTranslation("floating_species_in_asnt_rule");
+}
+
+TEST(AntimonyBasic, test_floating_species_in_rate_rule)
+{
+  compareFileTranslation("floating_species_in_rate_rule");
+}
+
