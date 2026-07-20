@@ -98,3 +98,9 @@ TEST(AntimonyUnits, test_subst_species_amt_in_comp_txt)
 {
   compareStringTranslation("substanceOnly species a in C; a = 3 mole; C = 2 mL; unit mL = 1e-3 liter", "subst_species_amt_in_comp.xml");
 }
+
+TEST(AntimonyUnits, test_unit_as_port)
+{
+  compareFileTranslation("unit_as_port");
+}
+

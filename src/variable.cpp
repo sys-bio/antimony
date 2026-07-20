@@ -974,12 +974,14 @@ bool Variable::SetType(var_type newtype)
       return false;
     case varUnitDefinition:
       m_type = newtype;
-      if (m_valFormula.MakeAllVariablesUnits()) return true;
-      if (m_valFormula.IsDouble() && m_unitVariable.size()>0) {
-        m_valFormula.AddVariable(GetUnitVariable());
+      if (!m_valFormula.IsEmpty()) {
+        if (m_valFormula.MakeAllVariablesUnits()) return true;
+        if (m_valFormula.IsDouble() && m_unitVariable.size()>0) {
+          m_valFormula.AddVariable(GetUnitVariable());
+        }
+        if (m_valUnitDef.SetFromFormula(&m_valFormula)) return true;
+        m_valFormula.Clear();
       }
-      if (m_valUnitDef.SetFromFormula(&m_valFormula)) return true;
-      m_valFormula.Clear();
       return false;
     case varGeneProduct:
     case varGeneProductAssociation:
