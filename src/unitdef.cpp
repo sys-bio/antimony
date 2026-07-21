@@ -344,6 +344,28 @@ bool UnitDef::IsOnlyCanonicalKind() const
   return ue.KindIsCanonical();
 }
 
+// Like IsOnlyCanonicalKind, but without requiring this unit's own name to
+// match the kind.
+string UnitDef::GetSoleCanonicalKind() const
+{
+  set<string> usednames;
+  const UnitDef* canonical = GetCanonical(usednames);
+  if (canonical==NULL) {
+    return "";
+  }
+  if (canonical->m_components.size() != 1) {
+    delete canonical;
+    return "";
+  }
+  UnitElement ue = canonical->m_components[0];
+  delete canonical;
+  if (ue.GetExponent() != 1) return "";
+  if (ue.GetMultiplier() != 1) return "";
+  if (ue.GetScale() != 0) return "";
+  if (!ue.KindIsCanonical()) return "";
+  return ue.GetKind();
+}
+
 
 size_t UnitDef::GetNumUnitElements() const
 {

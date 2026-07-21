@@ -45,6 +45,7 @@ public:
   bool Matches(UnitDef* unitdef) const;
   bool ComponentsMatch(UnitDef* unitdef) const;
   bool IsOnlyCanonicalKind() const;
+  std::string GetSoleCanonicalKind() const;
 
   size_t GetNumUnitElements() const;
   const UnitElement* GetUnitElement(unsigned long n) const;

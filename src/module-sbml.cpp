@@ -2182,16 +2182,26 @@ void Module::CreateSBMLModel(bool comp)
     Variable* unit = GetNthVariableOfType(allUnits, ud, comp);
     UnitDef* unitdef = unit->GetUnitDef();
     if (!unit->IsBuiltin()) {
-      UnitDefinition* sbmlunitdef = unitdef->AddToSBML(sbmlmod, unit->GetNameDelimitedBy(cc), unit->GetDisplayName());
-      if (sbmlunitdef != NULL) {
-        unit->TransferAnnotationTo(sbmlunitdef, GetModuleName()+"."+unit->GetNameDelimitedBy(cc));
-      }
       vector<string> name = unit->GetName();
       assert(!name.empty());
-      string unitname = unit->GetNameDelimitedBy(cc);
-      if (unit->IsBuiltin())
-        unitname = unit->GetName().back();
       string finalname = name[name.size()-1];
+      bool ismodelunit = (finalname=="substance" || finalname=="volume" || finalname=="area" ||
+                           finalname=="length" || finalname=="time_unit" || finalname=="extent");
+      string solekind = ismodelunit ? unitdef->GetSoleCanonicalKind() : "";
+      string unitname;
+      if (!solekind.empty()) {
+        // Already a built-in SBML unit kind:  use that directly.
+        unitname = solekind;
+      }
+      else {
+        UnitDefinition* sbmlunitdef = unitdef->AddToSBML(sbmlmod, unit->GetNameDelimitedBy(cc), unit->GetDisplayName());
+        if (sbmlunitdef != NULL) {
+          unit->TransferAnnotationTo(sbmlunitdef, GetModuleName()+"."+unit->GetNameDelimitedBy(cc));
+        }
+        unitname = unit->GetNameDelimitedBy(cc);
+        if (unit->IsBuiltin())
+          unitname = unit->GetName().back();
+      }
       if (finalname=="substance") {
         sbmlmod->setSubstanceUnits(unitname);
       }
