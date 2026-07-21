@@ -429,3 +429,13 @@ TEST(AntimonyErrors, notice_species_compartments_for_loops)
   testError("species S1 in C; C = S1 + 3", "Error in model string, line 1:  Loop detected:  C's definition (S1 + 3) either includes itself directly (i.e. 's5 = 6 + s5') or by proxy (i.e. 's5 = 8*d3' and 'd3 = 9*s5').");
 }
 
+TEST(AntimonyErrors, better_error_for_builtin_functions)
+{
+  testError("lt = 5", "Error in model string, line 1:  'lt' is a reserved word in Antimony (the name of a built-in function) and cannot be used as the name of a variable or other named element.");
+}
+
+TEST(AntimonyErrors, better_error_for_builtin_constants)
+{
+  testError("pi' = 3", "Error in model string, line 1:  'pi' is a reserved word in Antimony (the name of a built-in constant) and cannot be used as the name of a variable or other named element.");
+}
+

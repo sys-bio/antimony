@@ -263,6 +263,8 @@ variablein:     variable INWORD variable {if ($1->SetCompartment($3)) YYABORT; $
 
 varmaybein:     variable {$$ = $1;}
         |       variablein {$$ = $1;}
+        |       FUNCTION {$$ = NULL; g_registry.SetError("'" + *$1 + "' is a reserved word in Antimony (the name of a built-in function) and cannot be used as the name of a variable or other named element."); YYABORT;}
+        |       CONSTANT {$$ = NULL; g_registry.SetError("'" + *$1 + "' is a reserved word in Antimony (the name of a built-in constant) and cannot be used as the name of a variable or other named element."); YYABORT;}
         ;
 
 varmaybeis:     varmaybein {$$ = $1;}
