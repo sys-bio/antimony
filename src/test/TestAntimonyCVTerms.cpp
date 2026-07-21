@@ -48,6 +48,14 @@ TEST(AntimonyCVTerms, test_hasPart_txt2)
   compareStringTranslation("a=3; a part \"BQB_thing\"", "hasPart.xml");
 }
 
+TEST(AntimonyCVTerms, test_hasPart_multiple)
+{
+  // https://github.com/sys-bio/antimony/issues/52 : multiple 'part'
+  // statements on the same element must round-trip as separate CV terms
+  // (separate RDF bags), not get merged into one.
+  compareFileTranslation("hasPart_multiple");
+}
+
 TEST(AntimonyCVTerms, test_isPartOf)
 {
   compareFileTranslation("isPartOf");

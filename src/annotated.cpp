@@ -581,7 +581,7 @@ bool Annotated::BuildCVTerms(SBase* sbmlobj) const
       {
         cv->addResource(*j);
       }
-      if (sbmlobj->addCVTerm(cv) != LIBSBML_OPERATION_SUCCESS) {
+      if (sbmlobj->addCVTerm(cv, true) != LIBSBML_OPERATION_SUCCESS) {
         g_registry.SetError("Could not add CV term to SBML object");
         delete cv;
         return true;
@@ -600,7 +600,7 @@ bool Annotated::BuildCVTerms(SBase* sbmlobj) const
       {
         cv->addResource(*j);
       }
-      if (sbmlobj->addCVTerm(cv) != LIBSBML_OPERATION_SUCCESS) {
+      if (sbmlobj->addCVTerm(cv, true) != LIBSBML_OPERATION_SUCCESS) {
         g_registry.SetError("Could not add CV term to SBML object");
         delete cv;
         return true;
