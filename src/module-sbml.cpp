@@ -1,4 +1,5 @@
 #include "module.h"
+#include "kineticLawWrapper.h"
 #include "sbml/Model.h"
 #include <sbmlnetwork/libsbmlnetwork_sbmldocument.h>
 #include <sbmlnetwork/libsbmlnetwork_sbmldocument_layout.h>
@@ -288,6 +289,7 @@ void Module::FindOrCreateLocalVersionOf(const Variable* var, libsbml::Model* sbm
   case varSboTermWrapper:
   case varUncertWrapper:
   case varLayoutWrapper:
+  case varKineticLawWrapper:
   case varConstraint:
   case varStoichiometry:
   case varAlgebraicRule:
@@ -1609,6 +1611,15 @@ void Module::LoadSBML(Model* sbml)
     }
     //Put reactants, products, and the formula together:
     Variable* arxn = AddNewReaction(reactants, rxntype, products, &formula, var);
+    if (reaction->isSetKineticLaw()) {
+      const KineticLaw* kl = reaction->getKineticLaw();
+      if (kl->isSetSBOTerm() || kl->getNumCVTerms() > 0 || kl->isSetNotes() || kl->isSetMetaId()) {
+        string kineticLawStr = "kineticLaw";
+        KineticLawWrapper* klw = static_cast<KineticLawWrapper*>(arxn->GetSubVariable(&kineticLawStr));
+        klw->PopulateCVTerms((SBase*)kl);
+        klw->ReadAnnotationFrom(kl);
+      }
+    }
     if (reaction->isSetCompartment()) {
       if (defaultcompartments.find(reaction->getCompartment()) == defaultcompartments.end()) {
         Variable* compartment = AddOrFindVariable(&(reaction->getCompartment()));
@@ -2403,13 +2414,19 @@ void Module::CreateSBMLModel(bool comp)
     }
     const Formula* formula = reaction->GetFormula();
     string formstring = formula->ToSBMLString(rxnvar->GetStrandVars());
-    if (!formula->IsEmpty()) {
+    const KineticLawWrapper* klw = rxnvar->GetKineticLawWrapper();
+    if (!formula->IsEmpty() || klw != NULL) {
       KineticLaw* kl = sbmlmod->createKineticLaw();
-      ASTNode* math = parseStringToASTNode(formstring);
-      kl->setMath(math);
-      delete math;
-      if (comp) {
-        formula->AddReferencedVariablesTo(referencedVars);
+      if (!formula->IsEmpty()) {
+        ASTNode* math = parseStringToASTNode(formstring);
+        kl->setMath(math);
+        delete math;
+        if (comp) {
+          formula->AddReferencedVariablesTo(referencedVars);
+        }
+      }
+      if (klw != NULL) {
+        klw->TransferAnnotationTo(kl, GetModuleName()+"."+klw->GetNameDelimitedBy(cc));
       }
     }
     for (int lr = 0; lr < 2; lr++) {
@@ -4085,6 +4102,7 @@ void Module::LoadLayout(Model* sbml)
             case varInteraction:
             case varUndefined:
             case varSboTermWrapper:
+            case varKineticLawWrapper:
             case varUncertWrapper:
             case varLayoutColorEtc:
             case varModule:

@@ -38,6 +38,7 @@ enum rd_type {rdBecomes = 0, rdActivates, rdInhibits, rdInfluences, rdBecomesIrr
  * - varGeneProductAssociation: A gene product association (as defined in the FBC package)
  * - varSpeciesCharge: The charge of a species (defined in the FBC package)
  * - varSpeciesChemicalFormula: The chemical formula of a species (defined in the FBC package)
+ * - varKineticLawWrapper: The <kineticLaw> sub-object of a reaction, addressed as 'reaction.kineticLaw' (used to set its sboTerm, annotations, etc. separately from the reaction itself)
  */
 
 enum var_type {varSpeciesUndef = 0,
@@ -65,6 +66,7 @@ enum var_type {varSpeciesUndef = 0,
                varGeneProductAssociation,
                varSpeciesCharge,
                varSpeciesChemicalFormula,
+               varKineticLawWrapper,
                };
 /**
  * return_types are used in the API when requesting information about different symbols.  Each return_type refers to a different group of symbols, and are overlapping--i.e. a single symbol can be included in 'allGenes' and 'allReactions'. 

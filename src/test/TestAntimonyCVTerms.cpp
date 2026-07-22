@@ -359,3 +359,13 @@ TEST(AntimonyCVTerms, test_creator_two_model_internal)
 {
     compareStringTranslation("model foo(); a=3; model creator.givenName \"Lucian\"; model creator.familyName \"Smith\"; model creator.organization \"UW\"; model creator.email \"lpsmith@uw.edu\";model creator2.name \"George Holtzour\"; model creator2.organization \"Family lore\"; model creator2.email \"george@theholtz.net\"; end", "creator_two_model.xml");
 }
+
+TEST(AntimonyCVTerms, test_kineticLaw_hasVersion_txt)
+{
+  compareStringTranslation("J0.kineticLaw hasVersion \"BQB_thing\";J0: ->A;;", "kl_hasVersion.xml");
+}
+
+TEST(AntimonyCVTerms, test_kineticLaw_hasVersion)
+{
+  compareFileTranslation("kl_hasVersion");
+}

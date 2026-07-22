@@ -563,6 +563,7 @@ void Module::CreateCellMLComponent(Module* topmod)
     case varSboTermWrapper:
     case varStoichiometry:
     case varLayoutColorEtc:
+    case varKineticLawWrapper:
         //These all have no CellML equivalent (except Module, which is taken care of separately).
       break;
     case varAlgebraicRule:

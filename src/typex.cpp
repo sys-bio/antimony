@@ -32,6 +32,7 @@ bool IsReaction(const var_type vtype)
   case varSboTermWrapper:
   case varUncertWrapper:
   case varLayoutWrapper:
+  case varKineticLawWrapper:
   case varStoichiometry:
   case varAlgebraicRule:
   case varLayoutColorEtc:
@@ -82,6 +83,7 @@ bool IsSpecies(const var_type vtype)
   case varSboTermWrapper:
   case varUncertWrapper:
   case varLayoutWrapper:
+  case varKineticLawWrapper:
   case varStoichiometry:
   case varAlgebraicRule:
   case varLayoutColorEtc:
@@ -117,6 +119,7 @@ bool IsDNA(const var_type vtype)
   case varSboTermWrapper:
   case varUncertWrapper:
   case varLayoutWrapper:
+  case varKineticLawWrapper:
   case varStoichiometry:
   case varAlgebraicRule:
   case varLayoutColorEtc:
@@ -154,6 +157,7 @@ bool CanHaveRateRule(const var_type vtype)
   case varSboTermWrapper:
   case varUncertWrapper:
   case varLayoutWrapper:
+  case varKineticLawWrapper:
   case varAlgebraicRule:
   case varGeneProduct:
   case varGeneProductAssociation:
@@ -189,6 +193,7 @@ bool CanHaveAssignmentRule(const var_type vtype)
   case varSboTermWrapper:
   case varUncertWrapper:
   case varLayoutWrapper:
+  case varKineticLawWrapper:
   case varAlgebraicRule:
   case varGeneProduct:
   case varGeneProductAssociation:
@@ -225,6 +230,7 @@ bool CanHaveAlgebraicRule(const var_type vtype)
     case varSboTermWrapper:
     case varUncertWrapper:
     case varLayoutWrapper:
+    case varKineticLawWrapper:
     case varGeneProduct:
     case varGeneProductAssociation:
     case varSpeciesCharge:
@@ -258,6 +264,7 @@ bool CanBeInReaction(const var_type vtype)
   case varSboTermWrapper:
   case varUncertWrapper:
   case varLayoutWrapper:
+  case varKineticLawWrapper:
   case varStoichiometry:
   case varAlgebraicRule:
   case varGeneProduct:
@@ -294,6 +301,7 @@ bool CanBeStoichiometry(const var_type vtype)
     case varSboTermWrapper:
     case varUncertWrapper:
     case varLayoutWrapper:
+    case varKineticLawWrapper:
     case varAlgebraicRule:
     case varGeneProduct:
     case varGeneProductAssociation:
@@ -332,6 +340,7 @@ bool HasOrIsFormula(const var_type vtype)
   case varSboTermWrapper:
   case varUncertWrapper:
   case varLayoutWrapper:
+  case varKineticLawWrapper:
   case varAlgebraicRule: //Again, not for Jarnac, which doesn't do algebraic rules.
   case varSpeciesChemicalFormula:
     return false;
@@ -455,6 +464,8 @@ string VarTypeToString(const var_type vtype)
     return "Uncertainty parameter";
   case varLayoutWrapper:
       return "Layout or render parameter";
+  case varKineticLawWrapper:
+      return "Kinetic law annotation";
   case varStoichiometry:
       return "Stoichiometry";
   case varAlgebraicRule:
