@@ -467,3 +467,8 @@ TEST(AntimonyBasic, test_floating_species_in_rate_rule)
   compareFileTranslation("floating_species_in_rate_rule");
 }
 
+TEST(AntimonyBasic, test_kineticLaw_set_formula)
+{
+  compareFileTranslation("kl_set_formula");
+}
+

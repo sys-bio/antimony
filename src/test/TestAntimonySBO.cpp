@@ -108,6 +108,14 @@ TEST(AntimonySBO, test_SBO_reaction)
   compareFileTranslation("SBO_reaction");
 }
 
+TEST(AntimonySBO, test_SBO_kineticLaw_txt)
+{
+  // https://github.com/sys-bio/antimony/issues/87 : sboTerm (and other
+  // annotations) on a reaction's kinetic law, separately from the reaction
+  // itself.
+  compareStringTranslation("J0: A -> ; k1*A; J0.kineticLaw.sboTerm = 46", "SBO_kineticLaw.xml");
+}
+
 TEST(AntimonySBO, test_SBO_event_txt)
 {
   compareStringTranslation("E0: at(time>3): b=4; E0.sboTerm=901", "SBO_event.xml");

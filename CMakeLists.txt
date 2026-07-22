@@ -401,6 +401,7 @@ file(GLOB LIBANTIMONY_SOURCES
     ${ANTIMONY_SRC_DIR}dnastrand.cpp
     ${ANTIMONY_SRC_DIR}event.cpp
     ${ANTIMONY_SRC_DIR}formula.cpp
+    ${ANTIMONY_SRC_DIR}kineticLawWrapper.cpp
     ${ANTIMONY_SRC_DIR}layoutWrapper.cpp
     ${ANTIMONY_SRC_DIR}module.cpp
     ${ANTIMONY_SRC_DIR}reactantlist.cpp
@@ -439,6 +440,7 @@ file(GLOB LIBANTIMONY_HEADERS
         ${ANTIMONY_SRC_DIR}enums.h
         ${ANTIMONY_SRC_DIR}event.h
         ${ANTIMONY_SRC_DIR}formula.h
+        ${ANTIMONY_SRC_DIR}kineticLawWrapper.h
         ${ANTIMONY_SRC_DIR}layoutWrapper.h
         ${ANTIMONY_SRC_DIR}libutil.h
         ${ANTIMONY_SRC_DIR}module.h

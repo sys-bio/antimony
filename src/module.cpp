@@ -858,6 +858,7 @@ void Module::AddDefaultInitialValues()
     case varSboTermWrapper:
     case varUncertWrapper:
     case varLayoutWrapper:
+    case varKineticLawWrapper:
     case varConstraint:
     case varAlgebraicRule:
     case varLayoutColorEtc:
@@ -1305,6 +1306,7 @@ bool Module::Finalize()
           case varUnitDefinition:
           case varDeleted:
           case varConstraint:
+          case varKineticLawWrapper:
           case varSboTermWrapper:
           case varUncertWrapper:
           case varStoichiometry:
@@ -1761,6 +1763,7 @@ bool Module::AreEquivalent(return_type rtype, var_type vtype) const
   case varSboTermWrapper:
   case varUncertWrapper:
   case varLayoutWrapper:
+  case varKineticLawWrapper:
   case varConstraint:
   case varStoichiometry:
   case varAlgebraicRule:
@@ -2341,6 +2344,7 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
     case varSboTermWrapper:
     case varUncertWrapper:
     case varLayoutWrapper:
+    case varKineticLawWrapper:
     case varConstraint:
     case varStoichiometry:
     case varAlgebraicRule:
@@ -2431,6 +2435,7 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
       bool anysboterm = false;
       for (size_t var = 0; var < m_uniquevars.size(); var++) {
           string sboterms = m_uniquevars[var]->CreateSBOTermsAntimonySyntax(m_uniquevars[var]->GetNameDelimitedBy(cc), indent, "sboTerm");
+          sboterms += m_uniquevars[var]->CreateKineticLawSBOTermAntimonySyntax(indent, cc);
           if (anysboterm == false && sboterms.size() > 0) {
               retval += "\n" + indent + "// SBO terms:\n";
               anysboterm = true;
@@ -2446,6 +2451,7 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
       bool anycvterm = false;
       for (size_t var = 0; var < m_uniquevars.size(); var++) {
           string cvterms = m_uniquevars[var]->CreateCVTermsAntimonySyntax(m_uniquevars[var]->GetNameDelimitedBy(cc), indent);
+          cvterms += m_uniquevars[var]->CreateKineticLawCVTermsAntimonySyntax(indent, cc);
           if (anycvterm == false && cvterms.size() > 0) {
               retval += "\n" + indent + "// CV terms:\n";
               anycvterm = true;
@@ -3036,6 +3042,7 @@ void Module::Convert(Variable* conv, Variable* cf, string modulename)
     case varSboTermWrapper:
     case varUncertWrapper:
     case varLayoutWrapper:
+    case varKineticLawWrapper:
     case varLayoutColorEtc:
     case varSpeciesChemicalFormula:
       break;
@@ -3080,6 +3087,7 @@ void Module::ConvertTime(Variable* tcf)
     case varSboTermWrapper:
     case varUncertWrapper:
     case varLayoutWrapper:
+    case varKineticLawWrapper:
     case varLayoutColorEtc:
     case varGeneProduct:
     case varGeneProductAssociation:
@@ -3118,6 +3126,7 @@ void Module::ConvertExtent(Variable* xcf)
     case varSboTermWrapper:
     case varUncertWrapper:
     case varLayoutWrapper:
+    case varKineticLawWrapper:
     case varConstraint:
     case varStoichiometry:
     case varAlgebraicRule:
@@ -3166,6 +3175,7 @@ void Module::UndoTimeExtentConversions(Variable* tcf, Variable* xcf)
     case varSboTermWrapper:
     case varUncertWrapper:
     case varLayoutWrapper:
+    case varKineticLawWrapper:
     case varLayoutColorEtc:
     case varGeneProduct:
     case varGeneProductAssociation:
