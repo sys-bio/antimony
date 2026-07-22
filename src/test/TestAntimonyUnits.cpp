@@ -104,3 +104,33 @@ TEST(AntimonyUnits, test_unit_as_port)
   compareFileTranslation("unit_as_port");
 }
 
+TEST(AntimonyUnits, test_global_units)
+{
+  compareFileTranslation("global_units");
+}
+
+TEST(AntimonyUnits, test_global_units_txt)
+{
+  compareStringTranslation("length = meters; area = meters^2; volume = meters^3; substance = moles; extent = dimensionless; time_unit = seconds*60", "global_units.xml");
+}
+
+// https://github.com/sys-bio/antimony/issues/37 : a model unit that's just
+// an alias for base 'kind' or another unit should just reference that.
+TEST(AntimonyUnits, test_global_units_alias_txt)
+{
+  compareStringTranslation("m3 = meter^3; m2 = meter^2; unit bigm3 = m3; volume = m3; area = m2; substance = mole; "
+    "length = metre; extent = mole; time_unit = second; "
+    "a = 3; a has volume", "global_units_alias.xml");
+}
+
+TEST(AntimonyUnits, test_global_units_alias)
+{
+  compareFileTranslation("global_units_alias");
+}
+
+TEST(AntimonyUnits, test_autopromoted_units)
+{
+  compareFileTranslation("autopromoted_units");
+  compareStringTranslation("model foo(p);unit mM = 10e-3 meter;p = 1 mM;end;F : foo(P)", "autopromoted_units.xml");
+}
+

@@ -318,22 +318,6 @@ TEST(AntimonyBasic, test_names_txt)
   compareStringTranslation("x is \"This Name!\"", "names.xml");
 }
 
-TEST(AntimonyBasic, test_global_units)
-{
-  compareFileTranslation("global_units");
-}
-
-TEST(AntimonyBasic, test_global_units_txt)
-{
-  compareStringTranslation("length = meters; area = meters^2; volume = meters^3; substance = moles; extent = dimensionless; time_unit = seconds*60", "global_units.xml");
-}
-
-TEST(AntimonyBasic, test_autopromoted_units)
-{
-    compareFileTranslation("autopromoted_units");
-    compareStringTranslation("model foo(p);unit mM = 10e-3 meter;p = 1 mM;end;F : foo(P)", "autopromoted_units.xml");
-}
-
 TEST(AntimonyBasic, test_parameter_inf)
 {
   compareFileTranslation("parameter_inf");

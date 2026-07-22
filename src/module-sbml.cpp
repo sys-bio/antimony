@@ -1835,6 +1835,27 @@ Model* Module::GetModelIfCreated()
     return m_sbml.getModel();
 }
 
+// True for the six unit variable names that, if set, populate the model's
+// substanceUnits/volumeUnits/areaUnits/lengthUnits/timeUnits/extentUnits
+// attributes.
+static bool IsModelUnitName(const string& name)
+{
+  return name=="substance" || name=="volume" || name=="area" ||
+         name=="length" || name=="time_unit" || name=="extent";
+}
+
+// Returns the name to use for unitvar in an SBML 'units' attribute, using
+// redirects (see CreateSBMLModel) to point aliased model units at their
+// canonical replacement instead of a redundant unitDefinition.
+static string GetSBMLUnitName(Variable* unitvar, const map<Variable*, string>& redirects, string cc)
+{
+  map<Variable*, string>::const_iterator it = redirects.find(unitvar);
+  if (it != redirects.end()) {
+    return it->second;
+  }
+  return unitvar->GetNameOrBuiltin(cc);
+}
+
 void Module::CreateSBMLModel(bool comp)
 {
   if (comp) {
@@ -2094,6 +2115,44 @@ void Module::CreateSBMLModel(bool comp)
   //  delete math;
   //}
 
+  //Figure out, up front, which of the six model-attribute unit variables
+  //(substance, volume, area, length, time_unit, extent) are nothing more
+  //than aliases -- either for a single built-in SBML unit kind, or for
+  //another, independently-declared unit.
+  map<Variable*, string> unitRedirects;
+  {
+    size_t numunits = GetNumVariablesOfType(allUnits, comp);
+    for (size_t ud=0; ud<numunits; ud++) {
+      Variable* unit = GetNthVariableOfType(allUnits, ud, comp);
+      if (unit->IsBuiltin()) continue;
+      vector<string> name = unit->GetName();
+      if (name.empty() || !IsModelUnitName(name.back())) continue;
+      UnitDef* unitdef = unit->GetUnitDef();
+      string solekind = unitdef->GetSoleCanonicalKind();
+      if (!solekind.empty()) {
+        unitRedirects[unit] = solekind;
+        continue;
+      }
+      //Compare 'canonical' versions of units.
+      UnitDef* canonical = unitdef->GetCanonical();
+      if (canonical != NULL) {
+        for (size_t ud2=0; ud2<numunits; ud2++) {
+          if (ud2==ud) continue;
+          Variable* other = GetNthVariableOfType(allUnits, ud2, comp);
+          vector<string> othername = other->GetName();
+          if (othername.empty() || IsModelUnitName(othername.back())) continue;
+          UnitDef* othercanonical = other->GetUnitDef()->GetCanonical();
+          bool matched = (othercanonical != NULL && canonical->ComponentsMatch(othercanonical));
+          delete othercanonical;
+          if (matched) {
+            unitRedirects[unit] = other->GetNameDelimitedBy(cc);
+            break;
+          }
+        }
+        delete canonical;
+      }
+    }
+  }
 
   //Species
   size_t numspecies = GetNumVariablesOfType(allSpecies, comp);
@@ -2171,7 +2230,7 @@ void Module::CreateSBMLModel(bool comp)
         ud.Reduce();
       }
       Variable* newunit = AddOrFindUnitDef(ud);
-      sbmlspecies->setSubstanceUnits(newunit->GetNameDelimitedBy(cc));
+      sbmlspecies->setSubstanceUnits(GetSBMLUnitName(newunit, unitRedirects, cc));
     }
     SetAssignmentFor(sbmlmod, species, syncmap, comp, referencedVars);
   }
@@ -2185,13 +2244,10 @@ void Module::CreateSBMLModel(bool comp)
       vector<string> name = unit->GetName();
       assert(!name.empty());
       string finalname = name[name.size()-1];
-      bool ismodelunit = (finalname=="substance" || finalname=="volume" || finalname=="area" ||
-                           finalname=="length" || finalname=="time_unit" || finalname=="extent");
-      string solekind = ismodelunit ? unitdef->GetSoleCanonicalKind() : "";
       string unitname;
-      if (!solekind.empty()) {
-        // Already a built-in SBML unit kind:  use that directly.
-        unitname = solekind;
+      map<Variable*, string>::const_iterator redirect = unitRedirects.find(unit);
+      if (redirect != unitRedirects.end()) {
+        unitname = redirect->second;
       }
       else {
         UnitDefinition* sbmlunitdef = unitdef->AddToSBML(sbmlmod, unit->GetNameDelimitedBy(cc), unit->GetDisplayName());
@@ -2268,7 +2324,7 @@ void Module::CreateSBMLModel(bool comp)
     }
     Variable* unitvar = compartment->GetUnitVariable();
     if (unitvar != NULL) {
-      sbmlcomp->setUnits(unitvar->GetNameOrBuiltin(cc));
+      sbmlcomp->setUnits(GetSBMLUnitName(unitvar, unitRedirects, cc));
     }
     SetAssignmentFor(sbmlmod, compartment, syncmap, comp, referencedVars);
     sbmlcomp->setSpatialDimensions(dim);
@@ -2291,7 +2347,7 @@ void Module::CreateSBMLModel(bool comp)
     }
     Variable* unitvar = formvar->GetUnitVariable();
     if (unitvar != NULL) {
-      param->setUnits(unitvar->GetNameOrBuiltin(cc));
+      param->setUnits(GetSBMLUnitName(unitvar, unitRedirects, cc));
     }
     SetAssignmentFor(sbmlmod, formvar, syncmap, comp, referencedVars);
     formula_type ftype = formvar->GetFormulaType();
@@ -2631,7 +2687,7 @@ void Module::CreateSBMLModel(bool comp)
     param->setConstant(formvar->GetIsConst());
     Variable* unitvar = formvar->GetUnitVariable();
     if (unitvar != NULL) {
-      param->setUnits(unitvar->GetNameOrBuiltin(cc));
+      param->setUnits(GetSBMLUnitName(unitvar, unitRedirects, cc));
     }
   }
 
