@@ -742,10 +742,8 @@ endif()
 #
 # 'docs' target: regenerate doc/AntimonyTutorial.{htm,docx,rst,pdf} from
 # doc/AntimonyTutorial.md using pandoc, then (if 'xxd' is available)
-# regenerate QTAntimony_src/Tutorial.xxd -- the copy of AntimonyTutorial.htm
-# compiled directly into QTAntimony's Help > Tutorial pane -- from the
-# freshly-regenerated .htm, then (if Doxygen is available) regenerate the
-# Doxygen API docs from the /** */ comments in src/antimony_api.h and
+# regenerate QTAntimony_src/Tutorial.xxd, then (if Doxygen is available) regenerate
+# the Doxygen API docs from the /** */ comments in src/antimony_api.h and
 # src/enums.h, plus the doc/antimony-*.txt pages, per doc/doxygen.antimony.cfg.
 # Not part of the default build -- run it explicitly, e.g.
 # 'cmake --build . --target docs'.
