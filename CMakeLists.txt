@@ -834,12 +834,19 @@ find_package(Doxygen)
 # to doxygen via an environment variable below.
 function(antimony_doxygen_path OUT_VAR IN_PATH)
     string(TOLOWER "${DOXYGEN_EXECUTABLE}" DOXYGEN_EXECUTABLE_LOWER)
-    if(IN_PATH MATCHES "^([A-Za-z]):(.*)$" AND DOXYGEN_EXECUTABLE_LOWER MATCHES "cygwin")
-        string(TOLOWER "${CMAKE_MATCH_1}" DOXYGEN_PATH_DRIVE)
-        set(${OUT_VAR} "/cygdrive/${DOXYGEN_PATH_DRIVE}${CMAKE_MATCH_2}" PARENT_SCOPE)
-    else()
-        set(${OUT_VAR} "${IN_PATH}" PARENT_SCOPE)
+    # Deliberately nested rather than 'if(IN_PATH MATCHES ... AND
+    # DOXYGEN_EXECUTABLE_LOWER MATCHES "cygwin")': evaluating a second
+    # MATCHES in the same compound condition clobbers CMAKE_MATCH_1/2 from
+    # the first (that second pattern has no capture groups, so it clears
+    # them), leaving both empty by the time they're read below.
+    if(DOXYGEN_EXECUTABLE_LOWER MATCHES "cygwin")
+        if(IN_PATH MATCHES "^([A-Za-z]):(.*)$")
+            string(TOLOWER "${CMAKE_MATCH_1}" DOXYGEN_PATH_DRIVE)
+            set(${OUT_VAR} "/cygdrive/${DOXYGEN_PATH_DRIVE}${CMAKE_MATCH_2}" PARENT_SCOPE)
+            return()
+        endif()
     endif()
+    set(${OUT_VAR} "${IN_PATH}" PARENT_SCOPE)
 endfunction()
 
 if(DOXYGEN_FOUND)
@@ -847,28 +854,39 @@ if(DOXYGEN_FOUND)
 
     # antimony_api.h no longer lives in src/ -- it's generated from
     # src/antimony_api.h.in into the build directory (see ANTIMONY_API above).
-    # doxygen.antimony.cfg's INPUT tag references it via the
-    # $(ANTIMONY_GENERATED_API_H) environment-variable placeholder so the
-    # checked-in config doesn't have to hardcode any one build directory.
     antimony_doxygen_path(ANTIMONY_API_FOR_DOXYGEN "${ANTIMONY_API}")
 
     # Likewise, antimony-mainpage.txt.in gets its @LIBANTIMONY_VERSION_STRING@
     # placeholder substituted into the build directory (see
-    # LIBANTIMONY_VERSION_STRING above), and doxygen.antimony.cfg's INPUT tag
-    # picks it up via $(ANTIMONY_GENERATED_MAINPAGE).
+    # LIBANTIMONY_VERSION_STRING above).
     set(ANTIMONY_MAINPAGE_IN "${CMAKE_SOURCE_DIR}/doc/antimony-mainpage.txt.in")
     set(ANTIMONY_MAINPAGE    "${CMAKE_CURRENT_BINARY_DIR}/antimony-mainpage.txt")
     configure_file(${ANTIMONY_MAINPAGE_IN} ${ANTIMONY_MAINPAGE} @ONLY)
     antimony_doxygen_path(ANTIMONY_MAINPAGE_FOR_DOXYGEN "${ANTIMONY_MAINPAGE}")
 
+    # Generated HTML goes to a build-directory staging folder and then gets installed.
+    set(ANTIMONY_DOXYGEN_OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/doxygen-html")
+    antimony_doxygen_path(ANTIMONY_DOXYGEN_OUTPUT_FOR_DOXYGEN "${ANTIMONY_DOXYGEN_OUTPUT}")
+
+    set(ANTIMONY_DOXYFILE_IN "${CMAKE_SOURCE_DIR}/doc/doxygen.antimony.cfg")
+    set(ANTIMONY_DOXYFILE    "${CMAKE_CURRENT_BINARY_DIR}/doxygen.antimony.cfg")
+    configure_file(${ANTIMONY_DOXYFILE_IN} ${ANTIMONY_DOXYFILE} @ONLY)
+    antimony_doxygen_path(ANTIMONY_DOXYFILE_FOR_DOXYGEN "${ANTIMONY_DOXYFILE}")
+
     add_custom_command(TARGET docs POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E echo "Regenerating Doxygen API docs from antimony_api.h, enums.h, and doc/antimony-*.txt"
-        COMMAND ${CMAKE_COMMAND} -E env "ANTIMONY_GENERATED_API_H=${ANTIMONY_API_FOR_DOXYGEN}" "ANTIMONY_GENERATED_MAINPAGE=${ANTIMONY_MAINPAGE_FOR_DOXYGEN}" ${DOXYGEN_EXECUTABLE} doxygen.antimony.cfg
+        COMMAND ${DOXYGEN_EXECUTABLE} ${ANTIMONY_DOXYFILE_FOR_DOXYGEN}
         COMMAND ${CMAKE_COMMAND} -E echo "-- Regenerated Doxygen API docs"
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/doc
         COMMENT "Regenerating Doxygen API docs from antimony_api.h, enums.h, and doc/antimony-*.txt"
         VERBATIM
         )
+
+    # 'cmake --build . --target docs' regenerates the staging folder above;
+    # 'cmake --install .' (a separate step) copies it to <prefix>/doc/.
+    # OPTIONAL, since the staging folder won't exist until 'docs' has been
+    # built at least once.
+    install(DIRECTORY "${ANTIMONY_DOXYGEN_OUTPUT}/" DESTINATION doc OPTIONAL)
 else()
     message(STATUS "  Doxygen not found -- the 'docs' target will not regenerate the Doxygen API docs")
 
