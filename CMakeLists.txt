@@ -737,3 +737,144 @@ if(WIN32 AND INSTALL_SYSTEM_RUNTIMES)
   include(InstallRequiredSystemLibraries)
   INSTALL(FILES ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS} DESTINATION bin COMPONENT Libraries)
 endif()
+
+####################################################################
+#
+# 'docs' target: regenerate doc/AntimonyTutorial.{htm,docx,rst,pdf} from
+# doc/AntimonyTutorial.md using pandoc, then (if 'xxd' is available)
+# regenerate QTAntimony_src/Tutorial.xxd -- the copy of AntimonyTutorial.htm
+# compiled directly into QTAntimony's Help > Tutorial pane -- from the
+# freshly-regenerated .htm, then (if Doxygen is available) regenerate the
+# Doxygen API docs from the /** */ comments in src/antimony_api.h and
+# src/enums.h, plus the doc/antimony-*.txt pages, per doc/doxygen.antimony.cfg.
+# Not part of the default build -- run it explicitly, e.g.
+# 'cmake --build . --target docs'.
+#
+
+find_program(PANDOC_EXECUTABLE
+    NAMES pandoc
+    DOC "The pandoc executable, used by the 'docs' target to regenerate AntimonyTutorial.* from AntimonyTutorial.md."
+    )
+
+find_program(XXD_EXECUTABLE
+    NAMES xxd
+    DOC "The xxd executable, used by the 'docs' target to regenerate QTAntimony_src/Tutorial.xxd from AntimonyTutorial.htm."
+    )
+
+set(ANTIMONY_TUTORIAL_MD ${CMAKE_SOURCE_DIR}/doc/AntimonyTutorial.md)
+set(ANTIMONY_TUTORIAL_HTM ${CMAKE_SOURCE_DIR}/doc/AntimonyTutorial.htm)
+set(ANTIMONY_TUTORIAL_DOCX ${CMAKE_SOURCE_DIR}/doc/AntimonyTutorial.docx)
+set(ANTIMONY_TUTORIAL_RST ${CMAKE_SOURCE_DIR}/doc/AntimonyTutorial.rst)
+
+if(PANDOC_EXECUTABLE)
+    message(STATUS "  Using pandoc                  = ${PANDOC_EXECUTABLE}")
+
+    # OUTPUT/DEPENDS makes this a real file-level rule (like a .cpp -> .o
+    # compile step): pandoc only reruns when AntimonyTutorial.md is newer
+    # than the generated .htm/.docx/.rst. AntimonyTutorial.pdf is produced
+    # by the same command but left out of OUTPUT since pandoc_optional_pdf.cmake
+    # may skip it (no PDF engine available) without failing the build.
+    add_custom_command(
+        OUTPUT ${ANTIMONY_TUTORIAL_HTM} ${ANTIMONY_TUTORIAL_DOCX} ${ANTIMONY_TUTORIAL_RST}
+        COMMAND ${PANDOC_EXECUTABLE} AntimonyTutorial.md -o AntimonyTutorial.htm
+        COMMAND ${PANDOC_EXECUTABLE} AntimonyTutorial.md -o AntimonyTutorial.docx
+        COMMAND ${PANDOC_EXECUTABLE} AntimonyTutorial.md -o AntimonyTutorial.rst
+        COMMAND ${CMAKE_COMMAND} -DPANDOC_EXECUTABLE=${PANDOC_EXECUTABLE} -P ${CMAKE_SOURCE_DIR}/doc/pandoc_optional_pdf.cmake
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/doc
+        DEPENDS ${ANTIMONY_TUTORIAL_MD}
+        COMMENT "Regenerating AntimonyTutorial.htm, .docx, .rst, and .pdf from AntimonyTutorial.md"
+        VERBATIM
+        )
+
+    set(DOCS_DEPENDS ${ANTIMONY_TUTORIAL_HTM} ${ANTIMONY_TUTORIAL_DOCX} ${ANTIMONY_TUTORIAL_RST})
+else()
+    message(STATUS "  pandoc not found -- the 'docs' target will report an error instead of regenerating AntimonyTutorial.*")
+endif()
+
+set(ANTIMONY_TUTORIAL_XXD ${CMAKE_SOURCE_DIR}/QTAntimony_src/Tutorial.xxd)
+
+if(XXD_EXECUTABLE AND PANDOC_EXECUTABLE)
+    message(STATUS "  Using xxd                     = ${XXD_EXECUTABLE}")
+
+    # Same OUTPUT/DEPENDS treatment as the pandoc step above: only regenerate
+    # Tutorial.xxd when AntimonyTutorial.htm is newer than it.
+    add_custom_command(
+        OUTPUT ${ANTIMONY_TUTORIAL_XXD}
+        COMMAND ${CMAKE_COMMAND} -DXXD_EXECUTABLE=${XXD_EXECUTABLE} -P ${CMAKE_SOURCE_DIR}/doc/xxd_tutorial.cmake
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/doc
+        DEPENDS ${ANTIMONY_TUTORIAL_HTM}
+        COMMENT "Regenerating QTAntimony_src/Tutorial.xxd from AntimonyTutorial.htm"
+        VERBATIM
+        )
+
+    list(APPEND DOCS_DEPENDS ${ANTIMONY_TUTORIAL_XXD})
+elseif(XXD_EXECUTABLE)
+    message(STATUS "  xxd found but pandoc not found -- the 'docs' target will not update QTAntimony_src/Tutorial.xxd")
+else()
+    message(STATUS "  xxd not found -- the 'docs' target will not update QTAntimony_src/Tutorial.xxd")
+endif()
+
+add_custom_target(docs DEPENDS ${DOCS_DEPENDS})
+
+if(NOT PANDOC_EXECUTABLE)
+    add_custom_command(TARGET docs POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E echo "pandoc was not found (install it from https://pandoc.org/installing.html and re-run cmake) -- cannot regenerate AntimonyTutorial.*."
+        )
+endif()
+
+if(NOT XXD_EXECUTABLE OR NOT PANDOC_EXECUTABLE)
+    add_custom_command(TARGET docs POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E echo "xxd was not found -- QTAntimony_src/Tutorial.xxd was not updated (install xxd, e.g. via vim/Git for Windows, and re-run cmake)."
+        )
+endif()
+
+find_package(Doxygen)
+
+# A Cygwin-built doxygen doesn't recognize 'C:/...' as an absolute path (only
+# POSIX-style paths), so convert to Cygwin's '/cygdrive/c/...' form when
+# doxygen itself is a Cygwin build. Used for every generated file path handed
+# to doxygen via an environment variable below.
+function(antimony_doxygen_path OUT_VAR IN_PATH)
+    string(TOLOWER "${DOXYGEN_EXECUTABLE}" DOXYGEN_EXECUTABLE_LOWER)
+    if(IN_PATH MATCHES "^([A-Za-z]):(.*)$" AND DOXYGEN_EXECUTABLE_LOWER MATCHES "cygwin")
+        string(TOLOWER "${CMAKE_MATCH_1}" DOXYGEN_PATH_DRIVE)
+        set(${OUT_VAR} "/cygdrive/${DOXYGEN_PATH_DRIVE}${CMAKE_MATCH_2}" PARENT_SCOPE)
+    else()
+        set(${OUT_VAR} "${IN_PATH}" PARENT_SCOPE)
+    endif()
+endfunction()
+
+if(DOXYGEN_FOUND)
+    message(STATUS "  Using Doxygen                 = ${DOXYGEN_EXECUTABLE}")
+
+    # antimony_api.h no longer lives in src/ -- it's generated from
+    # src/antimony_api.h.in into the build directory (see ANTIMONY_API above).
+    # doxygen.antimony.cfg's INPUT tag references it via the
+    # $(ANTIMONY_GENERATED_API_H) environment-variable placeholder so the
+    # checked-in config doesn't have to hardcode any one build directory.
+    antimony_doxygen_path(ANTIMONY_API_FOR_DOXYGEN "${ANTIMONY_API}")
+
+    # Likewise, antimony-mainpage.txt.in gets its @LIBANTIMONY_VERSION_STRING@
+    # placeholder substituted into the build directory (see
+    # LIBANTIMONY_VERSION_STRING above), and doxygen.antimony.cfg's INPUT tag
+    # picks it up via $(ANTIMONY_GENERATED_MAINPAGE).
+    set(ANTIMONY_MAINPAGE_IN "${CMAKE_SOURCE_DIR}/doc/antimony-mainpage.txt.in")
+    set(ANTIMONY_MAINPAGE    "${CMAKE_CURRENT_BINARY_DIR}/antimony-mainpage.txt")
+    configure_file(${ANTIMONY_MAINPAGE_IN} ${ANTIMONY_MAINPAGE} @ONLY)
+    antimony_doxygen_path(ANTIMONY_MAINPAGE_FOR_DOXYGEN "${ANTIMONY_MAINPAGE}")
+
+    add_custom_command(TARGET docs POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E echo "Regenerating Doxygen API docs from antimony_api.h, enums.h, and doc/antimony-*.txt"
+        COMMAND ${CMAKE_COMMAND} -E env "ANTIMONY_GENERATED_API_H=${ANTIMONY_API_FOR_DOXYGEN}" "ANTIMONY_GENERATED_MAINPAGE=${ANTIMONY_MAINPAGE_FOR_DOXYGEN}" ${DOXYGEN_EXECUTABLE} doxygen.antimony.cfg
+        COMMAND ${CMAKE_COMMAND} -E echo "-- Regenerated Doxygen API docs"
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/doc
+        COMMENT "Regenerating Doxygen API docs from antimony_api.h, enums.h, and doc/antimony-*.txt"
+        VERBATIM
+        )
+else()
+    message(STATUS "  Doxygen not found -- the 'docs' target will not regenerate the Doxygen API docs")
+
+    add_custom_command(TARGET docs POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E echo "Doxygen was not found -- API docs were not regenerated (install Doxygen from https://www.doxygen.nl/download.html and re-run cmake)."
+        )
+endif()
