@@ -32,8 +32,11 @@ if(NOT XXD_RESULT STREQUAL "0")
 else()
     # Match the hand-edited types Tutorial.cpp expects (see the comment there):
     # xxd's default 'unsigned char ...[]' and 'unsigned int ..._len' become
-    # 'const static char ...[]' and 'const static unsigned int ..._len'.
-    string(REPLACE "unsigned char " "const static char " XXD_OUTPUT "${XXD_OUTPUT}")
+    # 'const static unsigned char ...[]' and 'const static unsigned int ..._len'.
+    # Kept unsigned (not 'char') because byte values above 127 (e.g. the UTF-8
+    # encoding of curly quotes) don't fit in a signed char on x86_64, where
+    # plain char defaults to signed.
+    string(REPLACE "unsigned char " "const static unsigned char " XXD_OUTPUT "${XXD_OUTPUT}")
     string(REPLACE "unsigned int " "const static unsigned int " XXD_OUTPUT "${XXD_OUTPUT}")
     file(WRITE ${CMAKE_CURRENT_LIST_DIR}/../QTAntimony_src/Tutorial.xxd "${XXD_OUTPUT}")
     message(STATUS "Regenerated QTAntimony_src/Tutorial.xxd from AntimonyTutorial.htm")
