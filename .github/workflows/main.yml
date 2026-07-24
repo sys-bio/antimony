@@ -316,11 +316,16 @@ jobs:
       - name: Build QTAntimony installer
         if: matrix.platform.name == 'windows-latest-release'
         shell: bash
+        # MSYS_NO_PATHCONV=1: Git Bash auto-converts any argument that looks
+        # like a POSIX path (starts with '/') into a Windows path before
+        # handing it to a native .exe. iscc's /D switches start with '/' and
+        # aren't paths at all, so without this they get mangled and iscc
+        # fails with 'You may not specify more than one script filename.'
         run: |
           cd ${RUNNER_WORKSPACE}/build-antimony
           ANTIMONY_VERSION=$(cat antimony_version.txt)
           cd ${GITHUB_WORKSPACE}/win32
-          iscc "/DInstallDir=${RUNNER_WORKSPACE}/install-antimony" "/DMyAppVersion=${ANTIMONY_VERSION}" antimonyInstaller.iss
+          MSYS_NO_PATHCONV=1 iscc "/DInstallDir=${RUNNER_WORKSPACE}/install-antimony" "/DMyAppVersion=${ANTIMONY_VERSION}" antimonyInstaller.iss
 
       - name: Upload QTAntimony installer
         if: matrix.platform.name == 'windows-latest-release'
