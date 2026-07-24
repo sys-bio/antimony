@@ -58,6 +58,13 @@ INCLUDE(CPack)
 
 SET(LIBANTIMONY_VERSION_STRING "v${LIBANTIMONY_VERSION_MAJOR}.${LIBANTIMONY_VERSION_MINOR}${LIBANTIMONY_VERSION_PATCH}${LIBANTIMONY_VERSION_RELEASE}")
 
+# Bare version (no leading 'v'), written to a file so tooling outside of
+# CMake itself -- e.g. the GitHub Actions step that packages
+# win32/antimonyInstaller.iss via 'iscc /DMyAppVersion=...' -- can pick up
+# the current version without parsing this file.
+SET(LIBANTIMONY_VERSION_STRING_BARE "${LIBANTIMONY_VERSION_MAJOR}.${LIBANTIMONY_VERSION_MINOR}${LIBANTIMONY_VERSION_PATCH}${LIBANTIMONY_VERSION_RELEASE}")
+file(WRITE "${CMAKE_BINARY_DIR}/antimony_version.txt" "${LIBANTIMONY_VERSION_STRING_BARE}")
+
 
 option(BUILD_SHARED_LIBS  "Build shared library (Set to OFF to build static libraries)" ON)
 set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Choose the type of build, options are: None (CMAKE_CXX_FLAGS or CMAKE_C_FLAGS are used), Debug, Release, RelWithDebInfo, MinSizeRel" )

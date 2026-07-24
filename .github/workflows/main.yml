@@ -317,7 +317,8 @@ jobs:
         if: matrix.platform.name == 'windows-latest-release'
         shell: bash
         run: |
-          ANTIMONY_VERSION=$(cat ${RUNNER_WORKSPACE}/build-antimony/antimony_version.txt)
+          cd ${RUNNER_WORKSPACE}/build-antimony
+          ANTIMONY_VERSION=$(cat antimony_version.txt)
           cd ${GITHUB_WORKSPACE}/win32
           iscc "/DInstallDir=${RUNNER_WORKSPACE}/install-antimony" "/DMyAppVersion=${ANTIMONY_VERSION}" antimonyInstaller.iss
 
