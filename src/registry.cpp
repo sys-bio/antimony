@@ -1451,15 +1451,14 @@ bool Registry::GetRemoveFunctionDefinitions()
     return m_removeFunctionDefinitions;
 }
 
-bool Registry::ProcessGlobalCVTerm(const string* name, const string* qual, vector<string>* resources)
+bool Registry::ProcessGlobalCVTerm(const string* name, const string* qual, const vector<string>& resources)
 {
-  if (name && qual && resources) {
+  if (name && qual) {
     Module* module = GetModule(*name);
     if (!module) {
       stringstream ss;
       ss << "Cannot find module for \"" << *name << "\"";
       SetError(ss.str());
-      delete resources;
       return true;
     }
     // get element for name
@@ -1473,22 +1472,22 @@ bool Registry::ProcessGlobalCVTerm(const string* name, const string* qual, vecto
     int creator_number = 0;
     string creator_substr = "";
     if (bq != BQB_UNKNOWN) {
-        module->AppendBiolQualifiers(bq, *resources);
+        module->AppendBiolQualifiers(bq, resources);
     }
     else if (mq != BQM_UNKNOWN) {
-        module->AppendModelQualifiers(mq, *resources);
+        module->AppendModelQualifiers(mq, resources);
     }
     else if (CaselessStrCmp(true, *qual, "notes")) {
-        module->AppendNotes(*resources);
+        module->AppendNotes(resources);
     }
     else if (CaselessStrCmp(true, *qual, "created")) {
-        if (resources->size() > 1) {
+        if (resources.size() > 1) {
             g_registry.SetError("Cannot set multiple 'created' dates.");
             return true;
         }
-        bool ret = module->SetCreated((*resources)[0]);
+        bool ret = module->SetCreated(resources[0]);
         if (ret) {
-            g_registry.SetError("Invalid date format '" + (*resources)[0] + "': the format must match 'YYYY-MM-DDThh:mm:ssTZD' where TZD is either Z or +/ -HH:MM");
+            g_registry.SetError("Invalid date format '" + resources[0] + "': the format must match 'YYYY-MM-DDThh:mm:ssTZD' where TZD is either Z or +/ -HH:MM");
             return true;
         }
     }
@@ -1499,16 +1498,13 @@ bool Registry::ProcessGlobalCVTerm(const string* name, const string* qual, vecto
         stringstream ss;
         ss << "Unrecognized qualifier \"" << *qual << "\"";
         g_registry.SetError(ss.str());
-        delete resources;
         return true;
     }
-    delete resources;
     module->TransferAnnotationToModel(module->GetModelIfCreated());
     return false;
   } 
   else {
     SetError("Global CV qualifier encountered but not enough arguments - pass qualifier and at least one resource");
-    delete resources;
     return true;
   }
 }
@@ -1524,33 +1520,33 @@ bool Registry::ProcessCreatorTerm(Annotated* a, const string* creator, const str
     string val = to_string(round(resource));
     vector<string> vals;
     vals.push_back(val);
-    return ProcessCreatorTerm(a, creator, cterm, &vals);
+    return ProcessCreatorTerm(a, creator, cterm, vals);
 }
 
-bool Registry::ProcessCreatorTerm(Annotated* a, const string* creator, const string* cterm, vector<string>* resources)
+bool Registry::ProcessCreatorTerm(Annotated* a, const string* creator, const string* cterm, const vector<string>& resources)
 {
     unsigned int creator_number = 0;
 
     if (*creator == "created") {
-        if (resources->size() > 1) {
+        if (resources.size() > 1) {
             SetError("Unable to set multiple date elements at once.");
             return true;
         }
-        a->SetCreated(*cterm, (*resources)[0]);
+        a->SetCreated(*cterm, resources[0]);
         return false;
     }
     if (*creator == "modified") {
-        if (resources->size() > 1) {
+        if (resources.size() > 1) {
             SetError("Unable to set multiple date elements at once.");
             return true;
         }
-        a->ResetLastModified(*cterm, (*resources)[0]);
+        a->ResetLastModified(*cterm, resources[0]);
         return false;
     }
     if (CheckCreatorString(*creator, creator_number)) {
         return true;
     }
-    if (a->addCreatorInfo(creator_number, *cterm, *resources)) {
+    if (a->addCreatorInfo(creator_number, *cterm, resources)) {
         return true;
     }
     return false;
@@ -1567,39 +1563,38 @@ bool Registry::ProcessGlobalCreatorTerm(const string* name, const string* creato
     string val = to_string(round(resource));
     vector<string> vals;
     vals.push_back(val);
-    return ProcessGlobalCreatorTerm(name, creator, cterm, &vals);
+    return ProcessGlobalCreatorTerm(name, creator, cterm, vals);
 }
 
-bool Registry::ProcessGlobalCreatorTerm(const string* name, const string* creator, const string* cterm, vector<string>* resources)
+bool Registry::ProcessGlobalCreatorTerm(const string* name, const string* creator, const string* cterm, const vector<string>& resources)
 {
-    if (name && resources) {
+    if (name) {
         Module* module = GetModule(*name);
         if (!module) {
             stringstream ss;
             ss << "Cannot find module for \"" << *name << "\"";
             SetError(ss.str());
-            delete resources;
             return true;
         }
         unsigned int creator_number = 0;
         if (*creator == "created") {
-            if (resources->size() > 1) {
+            if (resources.size() > 1) {
                 SetError("Unable to set multiple date elements at once.");
                 return true;
             }
-            module->SetCreated(*cterm, (*resources)[0]);
+            module->SetCreated(*cterm, resources[0]);
         }
         else if (*creator == "modified") {
-            if (resources->size() > 1) {
+            if (resources.size() > 1) {
                 SetError("Unable to set multiple date elements at once.");
                 return true;
             }
-            module->ResetLastModified(*cterm, (*resources)[0]);
+            module->ResetLastModified(*cterm, resources[0]);
         }
         else if (CheckCreatorString(*creator, creator_number)) {
             return true;
         }
-        else if (module->addCreatorInfo(creator_number, *cterm, *resources)) {
+        else if (module->addCreatorInfo(creator_number, *cterm, resources)) {
             return true;
         }
         module->TransferAnnotationToModel(module->GetModelIfCreated());
@@ -1607,7 +1602,6 @@ bool Registry::ProcessGlobalCreatorTerm(const string* name, const string* creato
     }
     else {
         SetError("Global CV qualifier encountered but not enough arguments - pass qualifier and at least one resource");
-        delete resources;
         return true;
     }
 }

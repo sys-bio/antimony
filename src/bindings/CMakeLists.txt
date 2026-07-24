@@ -23,14 +23,6 @@ if(NOT WITH_CELLML)
   SET(SWIG_EXTRA_ARGS ${SWIG_EXTRA_ARGS} "-DNCELLML")
 endif()
 
-if(NOT WITH_SBML)
-  SET(SWIG_EXTRA_ARGS ${SWIG_EXTRA_ARGS} "-DNSBML")
-endif()
-  
-if(WITH_COMP_SBML)
-  SET(SWIG_EXTRA_ARGS ${SWIG_EXTRA_ARGS} "-DUSE_COMP")
-endif()
-  
 
 if(WITH_CSHARP)
 add_subdirectory(csharp)

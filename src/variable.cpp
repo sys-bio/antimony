@@ -6,6 +6,7 @@
 #include "sbmlx.h"
 #include "sboTermWrapper.h"
 #include "layoutWrapper.h"
+#include "kineticLawWrapper.h"
 #include "stringx.h"
 #include "typex.h"
 #include "unitdef.h"
@@ -46,7 +47,8 @@ Variable::Variable(const string name, const Module* module)
     m_const(constDEFAULT),
     m_substOnly(false),
     m_unitVariable(),
-    m_sboTermWrapper(NULL)
+    m_sboTermWrapper(NULL),
+    m_kineticLawWrapper(NULL)
 {
   m_name.push_back(name);
 }
@@ -70,6 +72,7 @@ Variable::Variable(const Variable& other)
     m_deletions(other.m_deletions),
     m_type(other.m_type),
     m_sboTermWrapper(NULL),
+    m_kineticLawWrapper(NULL),
     m_compartment(other.m_compartment),
     m_supercompartment(other.m_supercompartment),
     m_supercomptype(other.m_supercomptype),
@@ -89,6 +92,8 @@ Variable::~Variable()
 {
   if (m_sboTermWrapper)
     delete m_sboTermWrapper;
+  if (m_kineticLawWrapper)
+    delete m_kineticLawWrapper;
   for (size_t uw = 0; uw < m_uncertWrappers.size(); uw++) {
     delete m_uncertWrappers[uw];
   }
@@ -173,6 +178,7 @@ formula_type Variable::GetFormulaType() const
   case varSboTermWrapper:
   case varUncertWrapper:
   case varLayoutWrapper:
+  case varKineticLawWrapper:
   case varLayoutColorEtc:
   case varGeneProduct:
   case varGeneProductAssociation:
@@ -199,6 +205,7 @@ const Formula* Variable::GetFormula() const
   case varUnitDefinition:
   case varUncertWrapper:
   case varLayoutWrapper:
+  case varKineticLawWrapper:
   case varStoichiometry:
   case varAlgebraicRule:
   case varGeneProduct:
@@ -245,6 +252,7 @@ Formula* Variable::GetFormula()
   case varUnitDefinition:
   case varUncertWrapper:
   case varLayoutWrapper:
+  case varKineticLawWrapper:
   case varStoichiometry:
   case varAlgebraicRule:
   case varGeneProduct:
@@ -299,6 +307,7 @@ const Formula* Variable::GetInitialAssignment() const
   case varUnitDefinition:
   case varUncertWrapper:
   case varLayoutWrapper:
+  case varKineticLawWrapper:
       return &(m_valFormula);
   case varFormulaOperator:
   case varDNA:
@@ -355,6 +364,7 @@ const Formula* Variable::GetAssignmentRuleOrKineticLaw() const
   case varSboTermWrapper:
   case varUncertWrapper:
   case varLayoutWrapper:
+  case varKineticLawWrapper:
   case varLayoutColorEtc:
   case varAlgebraicRule:
   case varGeneProduct:
@@ -401,6 +411,7 @@ Formula* Variable::GetAssignmentRuleOrKineticLaw()
   case varSboTermWrapper:
   case varUncertWrapper:
   case varLayoutWrapper:
+  case varKineticLawWrapper:
   case varLayoutColorEtc:
   case varAlgebraicRule:
   case varGeneProduct:
@@ -550,6 +561,15 @@ Variable* Variable::GetSubVariable(const string* name)
       return NULL;
     }
     return this;
+  }
+  if (name && CaselessStrCmp(true, *name, "kineticLaw")) {
+    if (SetType(varReactionUndef)) {
+      g_registry.SetError("The element " + GetNameDelimitedBy(".") + " cannot have a kinetic law, because it is set to be a " + VarTypeToString(m_type) + ".");
+      return NULL;
+    }
+    if (!m_kineticLawWrapper)
+      m_kineticLawWrapper = new KineticLawWrapper(this);
+    return m_kineticLawWrapper;
   }
   Module* mod = g_registry.GetModule(m_module);
   if (IsReaction(m_type)) {
@@ -728,6 +748,7 @@ bool Variable::GetIsConst() const
   case varSboTermWrapper:
   case varUncertWrapper:
   case varLayoutWrapper:
+  case varKineticLawWrapper:
   case varLayoutColorEtc:
   case varGeneProduct:
   case varGeneProductAssociation:
@@ -947,6 +968,7 @@ bool Variable::SetType(var_type newtype)
     case varSboTermWrapper:
     case varUncertWrapper:
     case varLayoutWrapper:
+    case varKineticLawWrapper:
     case varStoichiometry:
     case varAlgebraicRule:
     case varGeneProduct:
@@ -974,12 +996,14 @@ bool Variable::SetType(var_type newtype)
       return false;
     case varUnitDefinition:
       m_type = newtype;
-      if (m_valFormula.MakeAllVariablesUnits()) return true;
-      if (m_valFormula.IsDouble() && m_unitVariable.size()>0) {
-        m_valFormula.AddVariable(GetUnitVariable());
+      if (!m_valFormula.IsEmpty()) {
+        if (m_valFormula.MakeAllVariablesUnits()) return true;
+        if (m_valFormula.IsDouble() && m_unitVariable.size()>0) {
+          m_valFormula.AddVariable(GetUnitVariable());
+        }
+        if (m_valUnitDef.SetFromFormula(&m_valFormula)) return true;
+        m_valFormula.Clear();
       }
-      if (m_valUnitDef.SetFromFormula(&m_valFormula)) return true;
-      m_valFormula.Clear();
       return false;
     case varGeneProduct:
     case varGeneProductAssociation:
@@ -991,6 +1015,7 @@ bool Variable::SetType(var_type newtype)
     case varSboTermWrapper:
     case varUncertWrapper:
     case varLayoutWrapper:
+    case varKineticLawWrapper:
     case varSpeciesChemicalFormula:
       g_registry.SetError(error); return true;
     case varLayoutColorEtc:
@@ -1023,6 +1048,7 @@ bool Variable::SetType(var_type newtype)
     case varSboTermWrapper:
     case varUncertWrapper:
     case varLayoutWrapper:
+    case varKineticLawWrapper:
     case varStoichiometry:
     case varAlgebraicRule:
     case varGeneProduct:
@@ -1054,6 +1080,7 @@ bool Variable::SetType(var_type newtype)
     case varUncertWrapper:
     case varStoichiometry:
     case varLayoutWrapper:
+    case varKineticLawWrapper:
     case varAlgebraicRule:
     case varGeneProduct:
     case varGeneProductAssociation:
@@ -1083,6 +1110,7 @@ bool Variable::SetType(var_type newtype)
     case varSboTermWrapper:
     case varUncertWrapper:
     case varLayoutWrapper:
+    case varKineticLawWrapper:
     case varStoichiometry:
     case varAlgebraicRule:
     case varGeneProduct:
@@ -1115,6 +1143,7 @@ bool Variable::SetType(var_type newtype)
     case varSboTermWrapper:
     case varUncertWrapper:
     case varLayoutWrapper:
+    case varKineticLawWrapper:
     case varStoichiometry:
     case varAlgebraicRule:
     case varGeneProduct:
@@ -1146,6 +1175,7 @@ bool Variable::SetType(var_type newtype)
   case varSboTermWrapper:
   case varUncertWrapper:
   case varLayoutWrapper:
+  case varKineticLawWrapper:
   case varAlgebraicRule:
   case varGeneProduct:
   case varGeneProductAssociation:
@@ -1231,6 +1261,7 @@ bool Variable::SetFormula(Formula* formula, bool isObjective)
   case varSpeciesUndef:
   case varUncertWrapper:
   case varLayoutWrapper:
+  case varKineticLawWrapper:
   case varStoichiometry:
     if (m_formulatype == formulaASSIGNMENT) {
       g_registry.SetError("Cannot set '" + GetNameDelimitedBy(".") + "' to have the initial value '" + formula->ToDelimitedStringWithEllipses(".") + "' because it already has an assignment rule, which applies at all times, including time=0.");
@@ -1557,6 +1588,7 @@ bool Variable::SetModule(const string* modname)
     return GetSameVariable()->SetModule(modname);
   }
   assert(m_name.size() == 1);
+  bool becomingModule = (m_type != varModule);
   Module newmod(*g_registry.GetModule(*modname), m_name[0], m_module);
   m_valModule.push_back(newmod);
   if (SetType(varModule)) {
@@ -1564,6 +1596,11 @@ bool Variable::SetModule(const string* modname)
   }
   g_registry.SetCurrentImportedModule(m_name);
   g_registry.GetModule(m_module)->AddToVarMapFrom(newmod);
+  if (becomingModule) {
+    // Let the owning module know it now has a submodule-typed variable,
+    // so GetVariable()'s fallback can find it. See Module::m_submoduleVars.
+    g_registry.GetModule(m_module)->NoteSubmoduleVariable(this);
+  }
   return SetType(varModule);
 }
 
@@ -1703,6 +1740,12 @@ bool Variable::SetIsConst(bool constant)
           return true;
       }
       break;
+  case varKineticLawWrapper:
+      if (!constant) {
+          g_registry.SetError(error + ", as 'constantness' is undefined for kinetic law parameters.");
+          return true;
+      }
+      break;
   case varLayoutColorEtc:
       if (!constant) {
           g_registry.SetError(error + ", as 'constantness' is undefined for things like colors.");
@@ -1803,6 +1846,7 @@ bool Variable::SetSuperCompartment(Variable* var, var_type supertype)
   case varSboTermWrapper:
   case varUncertWrapper:
   case varLayoutWrapper:
+  case varKineticLawWrapper:
   case varConstraint:
   case varStoichiometry:
   case varAlgebraicRule:
@@ -1858,6 +1902,7 @@ void Variable::SetComponentCompartments(bool frommodule)
   case varSboTermWrapper:
   case varUncertWrapper:
   case varLayoutWrapper:
+  case varKineticLawWrapper:
   case varConstraint:
   case varStoichiometry:
   case varAlgebraicRule:
@@ -2088,6 +2133,7 @@ bool Variable::DeleteFromSubmodel(Variable* deletedvar)
   case varSboTermWrapper:
   case varUncertWrapper:
   case varLayoutWrapper:
+  case varKineticLawWrapper:
   case varConstraint:
   case varLayoutColorEtc:
   case varGeneProduct:
@@ -2648,6 +2694,27 @@ string Variable::CreateLayoutParamsAntimonySyntax(const string& indent) const
     return retval;
 }
 
+const KineticLawWrapper* Variable::GetKineticLawWrapper() const
+{
+  return m_kineticLawWrapper;
+}
+
+string Variable::CreateKineticLawSBOTermAntimonySyntax(const string& indent, string cc) const
+{
+  if (!m_kineticLawWrapper) {
+    return "";
+  }
+  return m_kineticLawWrapper->CreateSBOTermsAntimonySyntax(m_kineticLawWrapper->GetNameDelimitedBy(cc), indent, "sboTerm");
+}
+
+string Variable::CreateKineticLawCVTermsAntimonySyntax(const string& indent, string cc) const
+{
+  if (!m_kineticLawWrapper) {
+    return "";
+  }
+  return m_kineticLawWrapper->CreateCVTermsAntimonySyntax(m_kineticLawWrapper->GetNameDelimitedBy(cc), indent);
+}
+
 bool Variable::AllowedInFormulas() const
 {
   switch (m_type) {
@@ -2673,6 +2740,7 @@ bool Variable::AllowedInFormulas() const
   case varSboTermWrapper:
   case varUncertWrapper:
   case varLayoutWrapper:
+  case varKineticLawWrapper:
   case varConstraint:
   case varAlgebraicRule:
   case varGeneProductAssociation:
@@ -2691,12 +2759,8 @@ void Variable::SetWithRule(const Rule* rule)
   setFormulaWithString(formulastring, &formula, g_registry.GetModule(m_module));
   formula.SetNewTopNameWith(rule, m_module);
   formula.ReadAnnotationFrom(rule);
-  if (IsSpecies(GetType())) {
-    //Any species in any rule must be 'const' (in Antimony), because this means it's a 'boundary species'
-    SetIsConst(true);
-  }
-  else {
-    //For other parameters, assignment and rate rules always mean the variable in question is not constant.
+  if (!IsSpecies(GetType())) {
+    //Anything not a species set by a rule cannot be constant. (Species set 'boundary' separately.)
     SetIsConst(false);
   }
 

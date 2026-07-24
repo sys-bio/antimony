@@ -14,6 +14,7 @@ Annotated::Annotated()
     , m_model_quals()
     , m_biol_quals()
     , m_notes()
+    , m_notesHTML()
     , m_created()
     , m_modified()
     , m_history()
@@ -48,6 +49,12 @@ bool Annotated::TransferAnnotationTo(SBase* sbmlobj, string metaid) const
   }
   if (!m_notes.empty()) {
       sbmlobj->setMetaId(metaid);
+      bool usedCachedHTML = false;
+      if (!m_notesHTML.empty()) {
+          int ret = sbmlobj->setNotes(m_notesHTML, false);
+          usedCachedHTML = (ret == libsbml::LIBSBML_OPERATION_SUCCESS);
+      }
+      if (!usedCachedHTML) {
       string notes = getNotesString();
       if (notes[0] == '<') {
           int ret = sbmlobj->setNotes(notes, false);
@@ -70,6 +77,11 @@ bool Annotated::TransferAnnotationTo(SBase* sbmlobj, string metaid) const
           regex triple_quotes("\"\"\"");
           notes = regex_replace(notes, triple_quotes, "```");
           sbmlobj->setNotesFromMarkdown(notes);
+          // Cache the generated HTML so a subsequent TransferAnnotationTo
+          // call for this same object (e.g. the comp=false build after the
+          // comp=true one) can skip the markdown conversion entirely.
+          m_notesHTML = sbmlobj->getNotesString();
+      }
       }
   }
   ModelHistory* mh = const_cast<ModelHistory*>(&m_history);
@@ -170,9 +182,20 @@ void Annotated::ReadAnnotationFrom(const SBase* sbmlobj)
     m_sboTerm = sbmlobj->getSBOTerm();
   }
   if (sbmlobj->isSetNotes()) {
+      bool wasFirstNotes = m_notes.empty();
       string notes = sbmlobj->getNotesMarkdown();
       trimAndRemoveDoubleSpaces(notes);
       m_notes.push_back(notes);
+      if (wasFirstNotes) {
+          // Stash the original HTML so TransferAnnotationTo can reuse it
+          // verbatim instead of re-deriving it from markdown.
+          m_notesHTML = sbmlobj->getNotesString();
+      }
+      else {
+          // m_notes is now more than one fragment; the cached HTML (if any)
+          // no longer corresponds to the combined text.
+          m_notesHTML.clear();
+      }
   }
   if (sbmlobj->isSetModelHistory()) {
       m_history = *sbmlobj->getModelHistory();
@@ -314,6 +337,10 @@ void Annotated::AppendNotes(const std::vector<std::string>& resources)
     for (size_t r = 0; r < resources.size(); r++) {
         if (!resources[r].empty()) {
             m_notes.push_back(resources[r]);
+            // The notes are being set independently of reading SBML (e.g.
+            // from an Antimony script), so any cached HTML no longer
+            // corresponds to the current text.
+            m_notesHTML.clear();
         }
     }
 }
@@ -347,7 +374,17 @@ bool Annotated::addCreatorInfo(unsigned int creator_number, const string& creato
             return true;
         }
         creator->setGivenName(resources[0]);
-        creator->setUseSingleName(false);
+        // setUseSingleName(false) suppresses the placeholder name (" ") set
+        // when a creator is first created (see newcreator.setName(" ")
+        // above), so that a creator with only a given/family name doesn't
+        // get a spurious blank "creator.name" line on write-out. But if the
+        // user has *also* explicitly set a real name via "creator.name",
+        // don't clobber that -- isSetName() would otherwise start
+        // (incorrectly) reporting false, silently dropping the name on
+        // serialization even though it's still stored.
+        if (!creator->isSetName() || creator->getName() == " ") {
+            creator->setUseSingleName(false);
+        }
     }
     else if (CaselessStrCmp(true, creator_substr, "familyName")) {
         if (resources.size() > 1) {
@@ -355,7 +392,9 @@ bool Annotated::addCreatorInfo(unsigned int creator_number, const string& creato
             return true;
         }
         creator->setFamilyName(resources[0]);
-        creator->setUseSingleName(false);
+        if (!creator->isSetName() || creator->getName() == " ") {
+            creator->setUseSingleName(false);
+        }
     }
     else if (CaselessStrCmp(true, creator_substr, "organization") || 
         CaselessStrCmp(true, creator_substr, "organisation") ||
@@ -441,10 +480,10 @@ bool Annotated::SetDate(const string& qual, const string& date, libsbml::Date& s
     return true;
 }
 
-void Annotated::AppendModified(vector<string>* dates)
+void Annotated::AppendModified(const vector<string>& dates)
 {
-    for (size_t d = 0; d < dates->size(); d++) {
-        m_modified.push_back((*dates)[d]);
+    for (size_t d = 0; d < dates.size(); d++) {
+        m_modified.push_back(dates[d]);
     }
 }
 
@@ -542,7 +581,7 @@ bool Annotated::BuildCVTerms(SBase* sbmlobj) const
       {
         cv->addResource(*j);
       }
-      if (sbmlobj->addCVTerm(cv) != LIBSBML_OPERATION_SUCCESS) {
+      if (sbmlobj->addCVTerm(cv, true) != LIBSBML_OPERATION_SUCCESS) {
         g_registry.SetError("Could not add CV term to SBML object");
         delete cv;
         return true;
@@ -561,7 +600,7 @@ bool Annotated::BuildCVTerms(SBase* sbmlobj) const
       {
         cv->addResource(*j);
       }
-      if (sbmlobj->addCVTerm(cv) != LIBSBML_OPERATION_SUCCESS) {
+      if (sbmlobj->addCVTerm(cv, true) != LIBSBML_OPERATION_SUCCESS) {
         g_registry.SetError("Could not add CV term to SBML object");
         delete cv;
         return true;
@@ -629,6 +668,7 @@ bool Annotated::Synchronize(Variable * clone, const Variable * conversionFactor)
   if (!m_notes.empty()) {
       if (clone->m_notes.empty()) {
           clone->m_notes = m_notes;
+          clone->m_notesHTML = m_notesHTML;
       }
   }
 

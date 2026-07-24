@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sbml xmlns="http://www.sbml.org/sbml/level3/version2/core" level="3" version="2">
-  <model metaid="QTPop" id="QTPop">
+  <model metaid="QTPop" id="QTPop" name="QTPop">
     <listOfFunctionDefinitions>
-      <functionDefinition id="get2DArrayElement">
+      <functionDefinition id="get2DArrayElement" name="get2DArrayElement">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <lambda>
             <bvar>
@@ -31,46 +31,14 @@
       <compartment id="default" spatialDimensions="3" size="1" constant="true"/>
     </listOfCompartments>
     <listOfSpecies>
-      <species id="GRID__QuorumTrigger__Env" compartment="GRID__QuorumTrigger__default" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false">
-        <annotation>
-          <custom xmlns="http://custom/namespace">Type=internal</custom>
-        </annotation>
-      </species>
-      <species id="GRID__QuorumTrigger__LuxR" compartment="GRID__QuorumTrigger__default" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false">
-        <annotation>
-          <custom xmlns="http://custom/namespace">Type=internal</custom>
-        </annotation>
-      </species>
-      <species id="GRID__QuorumTrigger__Complex" compartment="GRID__QuorumTrigger__default" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false">
-        <annotation>
-          <custom xmlns="http://custom/namespace">Type=internal</custom>
-        </annotation>
-      </species>
-      <species id="GRID__QuorumTrigger__LuxI" compartment="GRID__QuorumTrigger__default" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false">
-        <annotation>
-          <custom xmlns="http://custom/namespace">Type=internal</custom>
-        </annotation>
-      </species>
-      <species id="GRID__QuorumTrigger__GFP" compartment="GRID__QuorumTrigger__default" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false">
-        <annotation>
-          <custom xmlns="http://custom/namespace">Type=internal</custom>
-        </annotation>
-      </species>
-      <species id="GRID__QuorumTrigger__P1" compartment="GRID__QuorumTrigger__default" initialAmount="2" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false">
-        <annotation>
-          <custom xmlns="http://custom/namespace">Type=Promoter</custom>
-        </annotation>
-      </species>
-      <species id="GRID__QuorumTrigger__P5" compartment="GRID__QuorumTrigger__default" initialAmount="2" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false">
-        <annotation>
-          <custom xmlns="http://custom/namespace">Type=Promoter</custom>
-        </annotation>
-      </species>
-      <species id="LuxI" compartment="default" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false">
-        <annotation>
-          <custom xmlns="http://custom/namespace">Type=Grid</custom>
-        </annotation>
-      </species>
+      <species id="GRID__QuorumTrigger__Env" compartment="GRID__QuorumTrigger__default" initialAmount="0" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
+      <species id="GRID__QuorumTrigger__LuxR" compartment="GRID__QuorumTrigger__default" initialAmount="0" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
+      <species id="GRID__QuorumTrigger__Complex" compartment="GRID__QuorumTrigger__default" initialAmount="0" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
+      <species id="GRID__QuorumTrigger__LuxI" compartment="GRID__QuorumTrigger__default" initialAmount="0" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
+      <species id="GRID__QuorumTrigger__GFP" compartment="GRID__QuorumTrigger__default" initialAmount="0" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
+      <species id="GRID__QuorumTrigger__P1" compartment="GRID__QuorumTrigger__default" initialAmount="2" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
+      <species id="GRID__QuorumTrigger__P5" compartment="GRID__QuorumTrigger__default" initialAmount="2" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
+      <species id="LuxI" compartment="default" initialAmount="0" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
     </listOfSpecies>
     <listOfParameters>
       <parameter id="GRID__QuorumTrigger__kr_f" name="Forward repression binding rate" value="0.5" constant="true"/>
@@ -143,8 +111,8 @@
           <speciesReference species="GRID__QuorumTrigger__LuxR" stoichiometry="10" constant="true"/>
         </listOfProducts>
         <listOfModifiers>
-          <modifierSpeciesReference species="GRID__QuorumTrigger__Env"/>
           <modifierSpeciesReference species="GRID__QuorumTrigger__P1"/>
+          <modifierSpeciesReference species="GRID__QuorumTrigger__Env"/>
         </listOfModifiers>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
@@ -271,8 +239,8 @@
           <speciesReference species="GRID__QuorumTrigger__LuxR" stoichiometry="10" constant="true"/>
         </listOfProducts>
         <listOfModifiers>
-          <modifierSpeciesReference species="GRID__QuorumTrigger__Complex"/>
           <modifierSpeciesReference species="GRID__QuorumTrigger__P5"/>
+          <modifierSpeciesReference species="GRID__QuorumTrigger__Complex"/>
         </listOfModifiers>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">

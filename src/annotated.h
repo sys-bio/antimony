@@ -16,6 +16,10 @@ ModelQualsType m_model_quals;
 typedef std::vector< std::pair<libsbml::BiolQualifierType_t,  std::vector<std::string> > > BiolQualsType;
 BiolQualsType m_biol_quals;
 std::vector < std::string> m_notes;
+// Cache of the HTML/XHTML notes corresponding to m_notes, so that
+// TransferAnnotationTo doesn't have to redo an expensive markdown->HTML
+// conversion every time it's called.
+mutable std::string m_notesHTML;
 libsbml::Date m_created;
 std::vector<libsbml::Date> m_modified;
 libsbml::ModelHistory m_history;
@@ -65,7 +69,7 @@ public:
   bool SetCreated(const std::string& qual, const std::string& date);
   bool ResetLastModified(const std::string& qual, const std::string& date);
   bool SetDate(const std::string& qual, const std::string& date, libsbml::Date& stored);
-  void AppendModified(std::vector<std::string>* dates);
+  void AppendModified(const std::vector<std::string>& dates);
   void AppendModified(libsbml::Date* date);
   bool AppendModified(std::string* datestr);
   void ClearModified(libsbml::Date* date);

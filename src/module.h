@@ -65,6 +65,9 @@ private:
   std::vector<std::string> m_variablename;
 
   std::vector<Variable*> m_variables;
+  // Just the variables that are submodules.  Used to speed up
+  // GetVariable lookup.
+  std::vector<Variable*> m_submoduleVars;
   std::vector<Variable> m_defaultVariables;
   std::vector<std::pair<std::vector<std::string>, std::vector<std::string> > > m_synchronized;
   std::vector<std::vector<std::string> > m_conversionFactors;
@@ -84,6 +87,11 @@ private:
 
   //Caching for speed:
   std::map<std::vector<std::string>, Variable*> m_varmap;
+  // Cache of GetNumVariablesOfType/GetNthVariableOfType results, keyed by
+  // (return_type, comp).  Valid from the point it's built until the next
+  // Finalize() (which clears it up front) or the next call to
+  // StoreVariable() (which means m_variables/m_uniquevars just grew).
+  mutable std::map<std::pair<return_type, bool>, std::vector<Variable*> > m_variablesOfTypeCache;
 
   libsbml::SBMLNamespaces m_sbmlnamespaces;
   libsbml::SBMLDocument m_sbml;
@@ -152,11 +160,13 @@ public:
   bool AddUnitVariables(const UnitDef* unitdef);
   void AddDefaultVariables();
   void AddDefaultInitialValues();
-  bool ProcessCVTerm(Annotated* a, const std::string* qual, std::vector<std::string>* resources);
+  bool ProcessCVTerm(Annotated* a, const std::string* qual, const std::vector<std::string>& resources);
 
   Variable* GetVariable(const std::vector<std::string>& name);
   Variable* GetDefaultVariable(const std::vector<std::string>& name);
   void AddToVarMapFrom(const Module& submod);
+  // Add variable to m_submoduleVariables.
+  void NoteSubmoduleVariable(Variable* var);
   const Variable* GetVariable(const std::vector<std::string>& name) const;
   const Variable* GetVariableFromSymbol(std::string varname) const;
   Variable* GetSubVariable(const std::string* name);
@@ -228,7 +238,8 @@ public:
   void TranslateRulesAndAssignmentsTo(const libsbml::SBase* obj, Variable* var);
   //void  LoadSBML(const SBMLDocument* sbmldoc);
   void  LoadSBML(libsbml::Model* sbml);
-  void  fixFBCStrictIfNeeded();
+  void  fixFBCStrictIfNeeded(libsbml::SBMLDocument* doc);
+  bool  ProcessSBMLErrorLog(libsbml::SBMLErrorLog* log, std::string& trueerrors);
   const libsbml::SBMLDocument* GetSBML(bool comp);
   libsbml::Model* GetModelIfCreated();
   void  CreateSBMLModel(bool comp);
@@ -315,6 +326,7 @@ private:
   bool OrigDisplayNameIsAlready(const Variable* var, const std::map<const Variable*, Variable>& origmap) const;
   bool OrigMatches(const Variable* var, const std::map<const Variable*, Variable>& origmap, var_type type, const_type isconst, const Variable* comp) const;
   const Variable* GetNthConstVariableOfType(return_type rtype, size_t n, bool comp) const;
+  const std::vector<Variable*>& GetVariablesOfTypeCached(return_type rtype, bool comp) const;
   void Convert(Variable* converted, Variable* cf, std::string modulename);
   bool IsReplaced(const libsbml::InitialAssignment* ia, const libsbml::Model* parent);
   bool IsReplaced(const libsbml::Rule* rule, const libsbml::Model* parent);
@@ -323,8 +335,8 @@ private:
   libsbml::InitialAssignment* FindInitialAssignment(libsbml::Model* md, std::vector<std::string> syncname);
   libsbml::Rule* FindRule(libsbml::Model* md, std::vector<std::string> syncname);
   void FixNames(libsbml::Model* model);
-  void FixConstants(const std::string& name, libsbml::Model* model);
-  void FixFunctions(const std::string& name, libsbml::Model* model);
+  void FixConstant(const std::string& name, libsbml::Model* model, libsbml::SBase* obj);
+  void FixFunction(const std::string& name, libsbml::Model* model, libsbml::SBase* obj);
   void FixUnitNames(libsbml::Model* model);
   void UpdateRateOf(libsbml::Model* model);
   std::string ValidateAutoLayoutArgument(const std::string* argument);

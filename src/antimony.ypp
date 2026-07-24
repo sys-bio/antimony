@@ -263,6 +263,8 @@ variablein:     variable INWORD variable {if ($1->SetCompartment($3)) YYABORT; $
 
 varmaybein:     variable {$$ = $1;}
         |       variablein {$$ = $1;}
+        |       FUNCTION {$$ = NULL; g_registry.SetError("'" + *$1 + "' is a reserved word in Antimony (the name of a built-in function) and cannot be used as the name of a variable or other named element."); YYABORT;}
+        |       CONSTANT {$$ = NULL; g_registry.SetError("'" + *$1 + "' is a reserved word in Antimony (the name of a built-in constant) and cannot be used as the name of a variable or other named element."); YYABORT;}
         ;
 
 varmaybeis:     varmaybein {$$ = $1;}
@@ -285,12 +287,16 @@ modulebody:     modulepart {}
 moduleannotation: MODULE ANTWORD stringlist lineend
                 {
                   string modname = g_registry.CurrentModuleName();
-                  if (g_registry.ProcessGlobalCVTerm(&modname,$2,$3)) YYABORT;
+                  bool cverr = g_registry.ProcessGlobalCVTerm(&modname,$2,*$3);
+                  delete $3;
+                  if (cverr) YYABORT;
                 }
         |       MODULE ANTWORD '.' ANTWORD stringlist lineend
                 {
                   string modname = g_registry.CurrentModuleName();
-                  if (g_registry.ProcessGlobalCreatorTerm(&modname, $2, $4, $5)) YYABORT;
+                  bool cverr = g_registry.ProcessGlobalCreatorTerm(&modname, $2, $4, *$5);
+                  delete $5;
+                  if (cverr) YYABORT;
                 }
         |       MODULE ANTWORD '.' ANTWORD NUM lineend
                 {
@@ -707,13 +713,13 @@ annotationBlock:    ANTWORD MODNAME {if (g_registry.SetCurrentModuleIf($2, $1)) 
         ;
 
 annotations:    /* empty */ {}
-        |       ANTWORD ':' stringlist {string modname = g_registry.CurrentModuleName(); g_registry.ProcessGlobalCVTerm(&modname, $1, $3);}
+        |       ANTWORD ':' stringlist {string modname = g_registry.CurrentModuleName(); g_registry.ProcessGlobalCVTerm(&modname, $1, *$3); delete $3;}
 //        |       ANTWORD ':' NUM {g_registry.CurrentModule()->SetAnnotation($1, $3);}
         ;
 
 // JKM cvterm accepts multiple URIs in the stringlist
-cvterm:         variable ANTWORD stringlist {if (g_registry.CurrentModule()->ProcessCVTerm($1,$2,$3)) YYABORT;}
-        |       variable ANTWORD '.' ANTWORD stringlist {if (g_registry.ProcessCreatorTerm($1, $2, $4, $5)) YYABORT;}
+cvterm:         variable ANTWORD stringlist {bool cverr = g_registry.CurrentModule()->ProcessCVTerm($1,$2,*$3); delete $3; if (cverr) YYABORT;}
+        |       variable ANTWORD '.' ANTWORD stringlist {bool cverr = g_registry.ProcessCreatorTerm($1, $2, $4, *$5); delete $5; if (cverr) YYABORT;}
         |       variable ANTWORD '.' ANTWORD NUM {if (g_registry.ProcessCreatorTerm($1, $2, $4, $5)) YYABORT;}
 
 // JKM setting an SBO term for a module (outside the body of the module)
@@ -812,10 +818,10 @@ functionname:   FUNCTION IS TEXTSTRING lineend
                 { g_registry.GetModule(*$1)->SetDisplayName(*$3); }
 
 // JKM for parsing cv terms for modules and functions
-modulecvterm:   MODNAME ANTWORD stringlist lineend {if (g_registry.ProcessGlobalCVTerm($1,$2,$3)) YYABORT;}
-        |       MODNAME ANTWORD '.' ANTWORD stringlist lineend {if (g_registry.ProcessGlobalCreatorTerm($1, $2, $4, $5)) YYABORT;}
+modulecvterm:   MODNAME ANTWORD stringlist lineend {bool cverr = g_registry.ProcessGlobalCVTerm($1,$2,*$3); delete $3; if (cverr) YYABORT;}
+        |       MODNAME ANTWORD '.' ANTWORD stringlist lineend {bool cverr = g_registry.ProcessGlobalCreatorTerm($1, $2, $4, *$5); delete $5; if (cverr) YYABORT;}
         |       MODNAME ANTWORD '.' ANTWORD NUM lineend {if (g_registry.ProcessGlobalCreatorTerm($1, $2, $4, $5)) YYABORT;}
-functioncvterm: FUNCTION ANTWORD stringlist lineend {if (g_registry.ProcessGlobalCVTerm($1,$2,$3)) YYABORT;}
+functioncvterm: FUNCTION ANTWORD stringlist lineend {bool cverr = g_registry.ProcessGlobalCVTerm($1,$2,*$3); delete $3; if (cverr) YYABORT;}
 
 %%
 

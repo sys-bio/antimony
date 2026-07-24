@@ -84,7 +84,7 @@ jobs:
         libroadrunner_deps_owner: [ "sys-bio" ]
         libroadrunner_deps_repo: [ "libroadrunner-deps" ]
         libroadrunner_deps_name: [ "libroadrunner-deps" ]
-        libroadrunner_deps_release_version: [ "v2.3.3" ]
+        libroadrunner_deps_release_version: [ "v2.3.4" ]
         python_version: [ "3.13" ]
 
     runs-on: ${{ matrix.platform.os_name }}
@@ -139,6 +139,13 @@ jobs:
           elif [ "${{ matrix.platform.os_type }}" == 'ubuntu' ]; then
             sudo apt-get update
             sudo apt-get install -y ccache
+            if [ "${{ matrix.platform.name }}" == 'ubuntu-latest-release' ]; then
+              # Needed for the "Run Antimony tests under valgrind" step below.
+              # (The debug-build valgrind run lives in a separate,
+              # manually-triggered workflow -- see
+              # .github/workflows/valgrind-debug-memcheck.yml.)
+              sudo apt-get install -y valgrind
+            fi
           elif [ "${{ matrix.platform.os_type }}" == 'manylinux' ]; then
             mkdir -p ccache
             cd ccache
@@ -241,35 +248,6 @@ jobs:
           #  echo EXPAT_LIBRARY="-DEXPAT_LIBRARY=${RUNNER_WORKSPACE}/${{ matrix.libroadrunner_deps_name }}-binaries/lib/${{ matrix.platform.expat_lib_name }}" >> "${GITHUB_ENV}"
           #fi
 
-      - name: Install libcheck
-        shell: bash
-        run: |
-          cd ${RUNNER_WORKSPACE}
-          mkdir -p check
-          cd check
-          if [ "${{ matrix.platform.os_type }}" == 'windows' ]; then
-            curl -L https://github.com/sys-bio/antimony/releases/download/libcheck/check-${{ matrix.platform.build_type }}.zip > check.zip
-            unzip -q check.zip -d check
-            rm check.zip
-            echo LIBCHECK_INCLUDE_DIR="-DLIBCHECK_INCLUDE_DIR=${RUNNER_WORKSPACE}/check/check/include" >> "${GITHUB_ENV}"
-            echo LIBCHECK_LIBRARY="-DLIBCHECK_LIBRARY=${RUNNER_WORKSPACE}/check/check/lib/libcheck.lib" >> "${GITHUB_ENV}"
-          else
-            curl -L https://github.com/libcheck/check/releases/download/0.15.2/check-0.15.2.tar.gz > check.tar.gz
-            tar -zxf check.tar.gz
-            rm check.tar.gz
-            mkdir -p build-check
-            mkdir -p install-check
-            cd build-check
-            cmake -G "Ninja" -DCMAKE_INSTALL_PREFIX="${RUNNER_WORKSPACE}/check/install-check" -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES=${{ matrix.platform.arch }} ../check-0.15.2
-            cmake --build . --target install
-            echo LIBCHECK_INCLUDE_DIR="-DLIBCHECK_INCLUDE_DIR=${RUNNER_WORKSPACE}/check/install-check/include" >> "${GITHUB_ENV}"
-            if [ "${{ matrix.platform.os_type }}" == 'manylinux' ]; then
-              echo LIBCHECK_LIBRARY="-DLIBCHECK_LIBRARY=${RUNNER_WORKSPACE}/check/install-check/lib64/libcheck.so" >> "${GITHUB_ENV}"
-            else
-              echo LIBCHECK_LIBRARY="-DLIBCHECK_LIBRARY=${RUNNER_WORKSPACE}/check/install-check/lib/libcheck.a" >> "${GITHUB_ENV}"
-            fi
-          fi
-
       - name: Install Qt
         if : matrix.platform.build_qt_antimony == 'ON'
         uses: jurplel/install-qt-action@v4
@@ -287,6 +265,16 @@ jobs:
         shell: bash
         run: |
           cd ${RUNNER_WORKSPACE}/build-antimony
+          EXTRA_CMAKE_ARGS=()
+          if [ "${{ matrix.platform.name }}" == 'ubuntu-latest-release' ]; then
+            # This is the leg the automatic valgrind memcheck step runs
+            # against (see "Run Antimony tests under valgrind" below). Keep
+            # full -O3 Release optimization (so it stays fast) but add -g
+            # so leak reports have real stack traces instead of bare
+            # addresses.
+            EXTRA_CMAKE_ARGS+=("-DCMAKE_CXX_FLAGS_RELEASE=-O3 -DNDEBUG -g")
+            EXTRA_CMAKE_ARGS+=("-DCMAKE_C_FLAGS_RELEASE=-O3 -DNDEBUG -g")
+          fi
           cmake $GITHUB_WORKSPACE \
           -G "Ninja" \
           -DCMAKE_C_COMPILER_LAUNCHER=${COMPILER_LAUNCHER} \
@@ -295,15 +283,11 @@ jobs:
           -DUSE_UNIVERSAL_BINARIES=OFF \
           -DCMAKE_OSX_ARCHITECTURES=${{ matrix.platform.arch }} \
           -DCMAKE_INSTALL_PREFIX="${RUNNER_WORKSPACE}/install-antimony" \
-          -DWITH_STATIC_SBML=ON \
           ${ANT_DEPENDENCIES_INSTALL_PREFIX} \
           -DWITH_QTANTIMONY=${{ matrix.platform.build_qt_antimony }} \
-          -DWITH_LIBSBML_EXPAT=ON \
-          -DWITH_LIBSBML_LIBXML=OFF \
-          -DWITH_CHECK=ON \
-          ${LIBCHECK_INCLUDE_DIR} \
-          ${LIBCHECK_LIBRARY} \
-          -DWITH_PYTHON=${{ matrix.platform.build_python }}
+          -DWITH_GTEST=ON \
+          -DWITH_PYTHON=${{ matrix.platform.build_python }} \
+          "${EXTRA_CMAKE_ARGS[@]}"
 
       - name: Build and install Antimony
         shell: bash
@@ -317,6 +301,80 @@ jobs:
         run: |
           cd ${RUNNER_WORKSPACE}/build-antimony
           ctest -C ${{ matrix.platform.build_type }} --output-on-failure --verbose --extra-verbose --progress
+
+      # Valgrind is Linux-only (no Windows support, weak/no Apple Silicon
+      # support), so this only runs on one leg of the matrix rather than
+      # across every platform/config combination. See MEMORYCHECK_* in the
+      # root CMakeLists.txt and valgrind.supp for the suppressions file.
+      #
+      # This runs automatically on every push/PR, against the release build
+      # (which has -g added just for this leg -- see "Configure CMake for
+      # Antimony" above -- so it's still symbol-rich) so it's much faster
+      # than a full debug-build run and still gives usable stack traces, at
+      # the cost of somewhat less precise line numbers due to optimization
+      # (inlining etc.), and a small risk that -O3 could eliminate a
+      # provably-dead allocation an unoptimized debug build wouldn't.
+      #
+      # For a slower but fully accurate debug-build memcheck run (e.g. to
+      # dig into something this one flagged), trigger
+      # .github/workflows/valgrind-debug-memcheck.yml manually from the
+      # Actions tab -- see the comment at the top of that file for why it's
+      # a separate workflow rather than another leg here.
+      #
+      # `ctest -T memcheck` only prints a per-test defect *count* to the
+      # console -- the actual valgrind report (stack traces, "definitely
+      # lost" byte counts, etc.) goes to a per-test log file instead:
+      # Testing/Temporary/MemoryChecker.<test-id>.log, one per test. Rather
+      # than running every test as one opaque block and only finding out
+      # what broke at the very end, run them in numbered chunks (via
+      # `ctest -I <start>,<end>`) and print any defects from each chunk
+      # immediately after it finishes, so problems surface within minutes
+      # rather than at the end of the whole run.
+      - name: Run Antimony tests under valgrind (memcheck), in chunks
+        if : matrix.platform.name == 'ubuntu-latest-release'
+        shell: bash
+        run: |
+          cd ${RUNNER_WORKSPACE}/build-antimony
+          chunk_size=20
+          total=$(ctest -N -C ${{ matrix.platform.build_type }} | grep "Total Tests:" | awk '{print $NF}')
+          echo "Running $total tests under valgrind, $chunk_size at a time"
+          overall_exit=0
+          start=1
+          while [ "$start" -le "$total" ]; do
+            end=$((start + chunk_size - 1))
+            if [ "$end" -gt "$total" ]; then
+              end=$total
+            fi
+
+            echo "::group::Running tests $start-$end of $total under valgrind"
+            ctest -T memcheck -C ${{ matrix.platform.build_type }} -I ${start},${end} --output-on-failure || overall_exit=1
+            echo "::endgroup::"
+
+            found_any=0
+            for i in $(seq $start $end); do
+              f="Testing/Temporary/MemoryChecker.$i.log"
+              [ -f "$f" ] || continue
+              if grep -qE "ERROR SUMMARY: [1-9]|(definitely|indirectly|possibly) lost: [1-9]|still reachable: [1-9]" "$f"; then
+                found_any=1
+                echo "::group::Valgrind defect: $f"
+                cat "$f"
+                echo "::endgroup::"
+              fi
+            done
+            if [ "$found_any" -eq 0 ]; then
+              echo "No valgrind defects in tests $start-$end."
+            fi
+
+            start=$((end + 1))
+          done
+          exit $overall_exit
+
+      - name: Upload memcheck logs
+        if: always() && matrix.platform.name == 'ubuntu-latest-release'
+        uses: actions/upload-artifact@main
+        with:
+          name: valgrind-release-memcheck-logs-run${{ github.run_number }}
+          path: ${{ runner.workspace }}/build-antimony/Testing/Temporary/
 
       - name: Set artifacts path and name
         shell: bash

@@ -677,6 +677,42 @@ void removeSBOErrors(SBMLDocument* doc)
     log->removeAll(10720);
 }
 
+void removeFBCStrictErrors(SBMLDocument* doc)
+{
+  SBMLErrorLog* log = doc->getErrorLog();
+#if LIBSBML_VERSION >= 51103
+  log->removeAll(2020608);
+  log->removeAll(2020707);
+  log->removeAll(2020708);
+  log->removeAll(2020709);
+  log->removeAll(2020710);
+  log->removeAll(2020711);
+  log->removeAll(2020712);
+  log->removeAll(2020713);
+  log->removeAll(2020714);
+  log->removeAll(2020715);
+  log->removeAll(2020716);
+#else
+  log->remove(2020608);
+  log->remove(2020707);
+  log->remove(2020708);
+  log->remove(2020709);
+  log->remove(2020710);
+  log->remove(2020711);
+  log->remove(2020712);
+  log->remove(2020713);
+  log->remove(2020714);
+  log->remove(2020715);
+  log->remove(2020716);
+#endif
+  if (log->contains(1090105) && log->getNumFailsWithSeverity(LIBSBML_SEV_ERROR) == 1) {
+    log->remove(1090105);
+  }
+  if (log->contains(1090106) && log->getNumFailsWithSeverity(LIBSBML_SEV_WARNING) == 1) {
+    log->remove(1090106);
+  }
+}
+
 void elideMetaIds(SBMLDocument* doc)
 {
   List* elts = doc->getAllElements();
