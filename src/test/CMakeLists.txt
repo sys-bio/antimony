@@ -82,11 +82,19 @@ function(add_test_executable TEST_TARGET)
 
     # Still set "srcdir" for ctest-driven runs too, so CI/distcheck-style
     # invocations that want to point at a different checkout can override it.
-    gtest_discover_tests(
-            ${TEST_TARGET}
-            DISCOVERY_TIMEOUT 500
-            DISCOVERY_MODE PRE_TEST
-            PROPERTIES
+    #
+    # Uses gtest_add_tests (source parsing) rather than gtest_discover_tests
+    # (executes the binary at build/ctest time), since the latter is
+    # intermittently unreliable: it can fail with a ParseTestList.cmake JSON
+    # error if the freshly-built binary doesn't run cleanly on its first
+    # invocation.
+    gtest_add_tests(
+            TARGET ${TEST_TARGET}
+            SOURCES ${ARGN}
+            WORKING_DIRECTORY $<TARGET_FILE_DIR:${TEST_TARGET}>
+            TEST_LIST ${TEST_TARGET}_GTESTS
+    )
+    set_tests_properties(${${TEST_TARGET}_GTESTS} PROPERTIES
             TIMEOUT 500
             ENVIRONMENT "srcdir=${CMAKE_CURRENT_SOURCE_DIR}"
     )
