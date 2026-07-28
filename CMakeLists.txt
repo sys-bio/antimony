@@ -198,70 +198,31 @@ endif()
 
 ####################################################################
 #
-# Locate the CellML API and attendant libraries if needed
+# Locate libCellML if needed
 #
 
 if(WITH_CELLML)
-        #CellML:
-        find_path(CELLML_API_INSTALL_DIR
-        NAMES include/IfaceCellML_APISPEC.hxx
-        PATHS /usr/include /usr/local/include
-              "C:/Program Files (x86)/cellml-sdk-1.11"
-              C:/Program Files/cellml-sdk-1.11
-              ${CMAKE_SOURCE_DIR}/cellml-sdk
-              ${CMAKE_SOURCE_DIR}/dependencies/cellml-sdk
-              )
+        # libCellML installs a proper CMake package (libcellml-config.cmake)
+        # exporting an imported target called 'cellml'.  Point CMake at a
+        # build or install tree with LIBCELLML_DIR (or CMAKE_PREFIX_PATH).
+        find_package(libcellml CONFIG
+          PATHS ${LIBCELLML_DIR}
+                ${CMAKE_SOURCE_DIR}/../libcellml/build/install
+                ${CMAKE_SOURCE_DIR}/../libcellml/install
+                ${CMAKE_SOURCE_DIR}/dependencies/libcellml
+                /usr/local
+                /usr
+          )
 
-        find_library(CELLML_API_LIB
-        NAMES cellml.lib cellml
-        PATHS /usr/lib /usr/local/lib
-              ${CELLML_API_INSTALL_DIR}/lib
-              C:/build/cellml-api/.libs/
-              ${CMAKE_SOURCE_DIR}
-              ${CMAKE_SOURCE_DIR}/dependencies/lib
-              )
-        set(ALL_CELLML_LIBS ${ALL_CELLML_LIBS} ${CELLML_API_LIB})
+        if(NOT libcellml_FOUND)
+          message(FATAL_ERROR "WITH_CELLML is ON but libCellML's CMake package "
+            "could not be found.  Build/install libCellML first and point "
+            "-DLIBCELLML_DIR=<path to the directory containing libcellml-config.cmake> "
+            "(or add that path to CMAKE_PREFIX_PATH) at CMake.")
+        endif()
 
-        find_library(CEVAS_LIB
-        NAMES cevas.lib cevas
-        PATHS /usr/lib /usr/local/lib
-              ${CELLML_API_INSTALL_DIR}/lib
-              ${CMAKE_SOURCE_DIR}
-              ${CMAKE_SOURCE_DIR}/dependencies/lib
-              )
-        set(ALL_CELLML_LIBS ${ALL_CELLML_LIBS} ${CEVAS_LIB})
-
-        find_library(ANNOTOOLS_LIB
-        NAMES annotools.lib annotools
-        PATHS /usr/lib /usr/local/lib
-              ${CELLML_API_INSTALL_DIR}/lib
-              ${CMAKE_SOURCE_DIR}
-              ${CMAKE_SOURCE_DIR}/dependencies/lib
-              )
-        set(ALL_CELLML_LIBS ${ALL_CELLML_LIBS} ${ANNOTOOLS_LIB})
-
-    find_library(CUSES_LIB
-        NAMES cuses.lib cuses
-        PATHS /usr/lib /usr/local/lib
-              ${CELLML_API_INSTALL_DIR}/lib
-              ${CMAKE_SOURCE_DIR}
-              ${CMAKE_SOURCE_DIR}/dependencies/lib
-              )
-        set(ALL_CELLML_LIBS ${ALL_CELLML_LIBS} ${CUSES_LIB})
-
-        find_library(TELICEMS_LIB
-        NAMES telicems.lib telicems
-        PATHS /usr/lib /usr/local/lib
-              ${CELLML_API_INSTALL_DIR}/lib
-              ${CMAKE_SOURCE_DIR}
-              ${CMAKE_SOURCE_DIR}/dependencies/lib
-              )
-        set(ALL_CELLML_LIBS ${ALL_CELLML_LIBS} ${TELICEMS_LIB})
-
-        set(CELLML_INCLUDE_DIRECTORIES ${CELLML_API_INSTALL_DIR}/include )
-
+        set(ALL_CELLML_LIBS cellml)
         set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${ALL_CELLML_LIBS} )
-        INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${CELLML_INCLUDE_DIRECTORIES} )
 
 else(WITH_CELLML)
   add_definitions( -DNCELLML )

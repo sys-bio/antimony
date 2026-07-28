@@ -11,8 +11,7 @@
 #include <sbml/packages/comp/common/CompExtensionTypes.h>
 
 #ifndef NCELLML
-//#include "ICellMLInputServices.h"
-//#include <nsCOMPtr.h>
+#include "libcellml/types.h"
 enum tree_direction {td_UP, td_DOWN, td_SIDEWAYS};
 #endif
 
@@ -108,12 +107,10 @@ private:
   std::vector<LayoutWrapper*>  m_reactionLayouts;
 
 #ifndef NCELLML
-  ObjRef<iface::cellml_api::Model> m_cellmlmodel;
-  ObjRef<iface::cellml_api::CellMLComponent> m_cellmlcomponent;
-  std::map<std::vector<std::string>, std::string > m_cellmlnames;
+  libcellml::ModelPtr m_cellmlmodel;
+  libcellml::ComponentPtr m_cellmlcomponent;
   std::set<std::string> m_uniquenames;
   std::map<Variable*, std::vector<Variable*> > m_syncedvars;
-  bool m_childrenadded;
 #endif
 
 public:
@@ -253,38 +250,30 @@ public:
 
 #ifndef NCELLML
   //Reading:
-  void  LoadCellMLModel(iface::cellml_api::Model* model,
-                        std::vector<iface::cellml_api::CellMLComponent*> top_components);
-  void  LoadCellMLComponent(iface::cellml_api::CellMLComponent* component);
-  void  SetCellMLChildrenAsSubmodules(iface::cellml_api::CellMLComponent* component);
-  iface::cellml_api::Model* GetCellMLModel();
-  void  ResyncVariablesWith(const Module* twin, std::string modulename, std::vector<std::string> varname);
-  void  ReloadSubmodelVariables(const std::string& modname);
-  void  ReloadSubmodelConnections(Module* syncmod);
+  void  LoadCellMLModel(const std::vector<libcellml::ComponentPtr>& top_components);
+  void  LoadCellMLComponent(const libcellml::ComponentPtr& component);
+  void  SetCellMLChildrenAsSubmodules(const libcellml::ComponentPtr& component);
+  libcellml::ModelPtr GetCellMLModel();
 
-  //Creating:
+  //Creating (export):
   void  CreateCellMLModel();
-  void  AddCellMLComponentsTo(iface::cellml_api::Model* model, Module* topmod);
-  iface::cellml_api::CellMLComponent* GetCellMLComponent(Module* topmod);
+  void  AddCellMLComponentsTo(const libcellml::ComponentPtr& parent, Module* topmod);
+  libcellml::ComponentPtr GetCellMLComponent(Module* topmod);
   void  CreateCellMLComponent(Module* topmod);
-  void  AddNewVariableToCellML(Variable* variable, iface::cellml_api::Model* model);
-  iface::cellml_api::CellMLVariable* AddNewVariableToCellML(std::string varname, iface::cellml_api::Model* model);
-  iface::cellml_api::CellMLVariable* AddNewVariableToCellML(std::string varname, iface::cellml_api::CellMLComponent* component, iface::cellml_api::Model* model);
-  void  AssignMathOnceFor(std::vector<Variable*> varlist, iface::dom::Document* doc);
-  bool  AddCellMLMathTo(std::string formula, Variable* targetvar, iface::dom::Document* doc);
-  bool  AddCellMLMathTo(std::string formula, iface::cellml_api::CellMLComponent* cmlcomp, iface::dom::Document* doc);
-  void  AddTimeFor(iface::cellml_api::CellMLVariable* cmlvar);
-  iface::cellml_api::CellMLVariable* AddTimeTo(iface::cellml_api::CellMLComponent* cmlcomp);
+  void  AddNewVariableToCellML(Variable* variable);
+  libcellml::VariablePtr AddNewVariableToCellML(const std::string& varname);
+  libcellml::VariablePtr AddNewVariableToCellML(const std::string& varname, const libcellml::ComponentPtr& component);
+  void  AssignMathOnceFor(std::vector<Variable*> varlist);
+  bool  SetCellMLMathFor(const std::string& mathml, Variable* targetvar);
+  bool  SetCellMLMathFor(const std::string& mathml, const libcellml::ComponentPtr& cmlcomp);
+  void  AddTimeFor(const libcellml::VariablePtr& cmlvar);
+  libcellml::VariablePtr AddTimeTo(const libcellml::ComponentPtr& cmlcomp);
 
   Variable* WhichFirstDefined(std::vector<Variable*> varlist, formula_type ftype);
   bool  InUnique(std::string name);
-  void  AddUnique(std::vector<std::string> fullname, std::string name);
-  std::string GetCellMLNameOf(std::vector<std::string> name);
-  void  AddEncapsulationTo(iface::cellml_api::Model* model);
-  void  AddConnectionsTo(iface::cellml_api::Model* model, Module* topmod);
-  void  AddODEsTo(iface::cellml_api::Model* model, Module* topmod, iface::dom::Document* doc);
+  void  AddUnique(std::string name);
+  void  AddODEsTo(Module* topmod);
 
-  iface::cellml_api::ComponentRef* GetComponentRef(iface::cellml_api::Model* model, std::string cmlname, Module* topmod);
   void  SetCanonicalVars();
   void  FindAndSetCanonical(std::vector<Variable*> varlist);
   void  AddConnections();
@@ -292,13 +281,13 @@ public:
   void  AddConnectionsTo(std::vector<Variable*> varlist, const std::map<Variable*, Variable*>& tree);
   Variable*  GetParent(Variable* child, const std::map<Variable*, Variable*>& tree);
   Variable* GetSyncedVariable(Variable* mod, const std::map<Variable*, Variable*>& mod2var);
-  iface::cellml_api::CellMLVariable* GetLinkedCMLVar(Variable* mod, const std::map<Variable*, iface::cellml_api::CellMLVariable* >& mod2linkedcellml);
-  void Connect(Variable* modin, Variable* canonmod, std::map<Variable*, iface::cellml_api::CellMLVariable*>& mod2linkedcellml, const std::map<Variable*, Variable*>& mod2var, const std::set<Variable*>& canonparents, const std::map<Variable*, Variable*>& tree);
-  void  AddOneConnection(iface::cellml_api::CellMLVariable* varin, iface::cellml_api::CellMLVariable* varout, tree_direction td);
+  libcellml::VariablePtr GetLinkedCMLVar(Variable* mod, const std::map<Variable*, libcellml::VariablePtr>& mod2linkedcellml);
+  void Connect(Variable* modin, Variable* canonmod, std::map<Variable*, libcellml::VariablePtr>& mod2linkedcellml, const std::map<Variable*, Variable*>& mod2var, const std::set<Variable*>& canonparents, const std::map<Variable*, Variable*>& tree);
+  void  AddOneConnection(const libcellml::VariablePtr& varin, const libcellml::VariablePtr& varout, tree_direction td);
   void  GetAllSpeciesAndReactions(std::set<Variable*>& species, std::set<Variable*>& reactions);
   Module* BestModuleToAdd(std::set<Variable*> involvedrxns, std::set<Variable*>& contains );
-  void  AddRateRuleInvolving(Variable* species, Formula form, std::set<Variable*> involvedrxns, iface::dom::Document* doc);
-  void  FindOrCreateLocalVersionOf(Variable* variable, std::string& newvarname, iface::cellml_api::CellMLVariable*& newlocalvar);
+  void  AddRateRuleInvolving(Variable* species, Formula form, std::set<Variable*> involvedrxns);
+  void  FindOrCreateLocalVersionOf(Variable* variable, std::string& newvarname, libcellml::VariablePtr& newlocalvar);
 #endif
 
   void FixNames();

@@ -17,7 +17,9 @@
 #endif
 
 #ifndef NCELLML
-#include "cellmlx.h"
+#include "libcellml/model.h"
+#include "libcellml/parser.h"
+#include "libcellml/printer.h"
 #endif
 
 #include "antimony_api.h"
@@ -33,24 +35,6 @@ using namespace libsbml;
 
 extern int antimony_yyparse();
 extern int antimony_yylloc_first_line;
-
-wstring makeUTF16(const string& aStr)
-{
-  wchar_t* buf = new wchar_t[aStr.size() + 1];
-  mbstowcs(buf, aStr.c_str(), aStr.size() + 1);
-  wstring s = buf;
-  delete [] buf;
-  return s;
-}
-
-string makeUTF8(const wstring& aStr)
-{
-  char* buf = new char[aStr.length() * 2 + 1];
-  wcstombs(buf, aStr.c_str(), aStr.length() * 2 + 1);
-  string s = buf;
-  delete [] buf;
-  return s;
-}
 
 //Useful functions for later routines:
 char* getCharStar(const char* orig)
@@ -434,7 +418,7 @@ LIB_EXTERN long loadSBMLStringWithLocation(const char* model, const char* locati
 
 #ifndef NCELLML
 
-long CheckAndAddCellMLDoc(iface::cellml_api::Model* model)
+long CheckAndAddCellMLDoc(const libcellml::ModelPtr& model)
 {
   g_registry.ClearModules();
   g_registry.ClearWarnings();
@@ -445,21 +429,24 @@ long CheckAndAddCellMLDoc(iface::cellml_api::Model* model)
 
 LIB_EXTERN long loadCellMLFile(const char* filename)
 {
-  RETURN_INTO_OBJREF(boot, iface::cellml_api::CellMLBootstrap, CreateCellMLBootstrap());
-  RETURN_INTO_OBJREF(ml, iface::cellml_api::DOMModelLoader, boot->modelLoader());
-  wstring wideFilename(makeUTF16(filename));
-
-  ObjRef<iface::cellml_api::Model> model;
-  try
-  {
-    model = already_AddRefd<iface::cellml_api::Model>(ml->loadFromURL(wideFilename.c_str()));
-  }
-  catch (...)
-  {
+  ifstream cellmlfile(filename);
+  if (!cellmlfile.good()) {
     string file(filename);
-    RETURN_INTO_WSTRING(error, ml->lastErrorMessage());
-    string emsg(makeUTF8(error));
-    g_registry.SetError("Unable to read CellML file '" + file + "' due to errors encountered when parsing the file.  Error(s) from the CellML API:\n\n" +  emsg + "\n");
+    g_registry.SetError("Unable to open CellML file '" + file + "' for reading.");
+    return -1;
+  }
+  stringstream buffer;
+  buffer << cellmlfile.rdbuf();
+
+  libcellml::ParserPtr parser = libcellml::Parser::create();
+  libcellml::ModelPtr model = parser->parseModel(buffer.str());
+  if (model == nullptr || parser->errorCount() > 0) {
+    string file(filename);
+    string emsg;
+    for (size_t e = 0; e < parser->errorCount(); e++) {
+      emsg += parser->error(e)->description() + "\n";
+    }
+    g_registry.SetError("Unable to read CellML file '" + file + "' due to errors encountered when parsing the file.  Error(s) from libCellML:\n\n" +  emsg);
     return -1;
   }
   return CheckAndAddCellMLDoc(model);
@@ -467,20 +454,14 @@ LIB_EXTERN long loadCellMLFile(const char* filename)
 
 LIB_EXTERN long loadCellMLString(const char* modelstring)
 {
-  RETURN_INTO_OBJREF(boot, iface::cellml_api::CellMLBootstrap, CreateCellMLBootstrap());
-  RETURN_INTO_OBJREF(ml, iface::cellml_api::DOMModelLoader, boot->modelLoader());
-  wstring wideString(makeUTF16(modelstring));
-
-  ObjRef<iface::cellml_api::Model> model;
-  try
-  {
-    model = already_AddRefd<iface::cellml_api::Model>(ml->createFromText(wideString.c_str()));
-  }
-  catch (...)
-  {
-    wstring error = ml->lastErrorMessage();
-    string emsg(makeUTF8(error));
-    g_registry.SetError("Unable to read CellML string due to errors encountered when parsing the file.  Error(s) from the CellML API:\n\n" +  emsg);
+  libcellml::ParserPtr parser = libcellml::Parser::create();
+  libcellml::ModelPtr model = parser->parseModel(modelstring);
+  if (model == nullptr || parser->errorCount() > 0) {
+    string emsg;
+    for (size_t e = 0; e < parser->errorCount(); e++) {
+      emsg += parser->error(e)->description() + "\n";
+    }
+    g_registry.SetError("Unable to read CellML string due to errors encountered when parsing the file.  Error(s) from libCellML:\n\n" +  emsg);
     return -1;
   }
   return CheckAndAddCellMLDoc(model);
@@ -488,25 +469,10 @@ LIB_EXTERN long loadCellMLString(const char* modelstring)
 
 string getCellMLText(const char* moduleName)
 {
-  if (!checkModule(moduleName)) return NULL;
-  ObjRef<iface::cellml_api::Model> model = g_registry.GetModule(moduleName)->GetCellMLModel();
-  RETURN_INTO_WSTRING(cellmltext, model->serialisedText());
-  string cellmlstring = makeUTF8(cellmltext);
-  size_t gtpos;
-  // XXX - I'd strongly recommend replacing this with code to go through the
-  // DOM representation and add text nodes containing newlines instead
-  //   -- Andrew Miller.
-  // Nah, this is simply for visualization purposes.  If the API ever provides a way to make it look nice, I'll use that.  --LS
-  while ((gtpos = cellmlstring.find("><")) != string::npos) {
-    cellmlstring.insert(gtpos+1, "\n");
-  }
-  //LS DEBUG Hack number units!
-  gtpos = cellmlstring.find("<model");
-  cellmlstring.insert(gtpos+6, " xmlns:cellml=\"http://www.cellml.org/cellml/1.1#\"");
-  while ((gtpos = cellmlstring.find("<cn>")) != string::npos) {
-    cellmlstring.insert(gtpos+3, " cellml:units=\"dimensionless\"");
-  }
-  return cellmlstring;
+  if (!checkModule(moduleName)) return "";
+  libcellml::ModelPtr model = g_registry.GetModule(moduleName)->GetCellMLModel();
+  libcellml::PrinterPtr printer = libcellml::Printer::create();
+  return printer->printModel(model);
 }
 
 LIB_EXTERN int writeCellMLFile(const char* filename, const char* moduleName)

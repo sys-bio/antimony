@@ -445,48 +445,94 @@ bool Registry::LoadModelFrom(string modelname, SBMLDocument* document)
 #ifndef NCELLML
 
 #include "cellmlx.h"
-#include <IfaceCeVAS.hxx>
-#include <CeVASBootstrap.hpp>
+#include "libcellml/component.h"
+#include "libcellml/model.h"
+#include "libcellml/variable.h"
 
-bool Registry::LoadCellML(iface::cellml_api::Model* model)
+namespace {
+
+//Depth-first walk collecting 'component' and all of its (nested,
+//encapsulated) descendants.
+void CollectCellMLComponents(const libcellml::ComponentPtr& component, vector<libcellml::ComponentPtr>& all)
 {
-  if (model == NULL) return true;
-  RETURN_INTO_OBJREF(cevasboot, iface::cellml_services::CeVASBootstrap,
-                     CreateCeVASBootstrap());
-
-  ObjRef<iface::cellml_services::CeVAS> cevas;
-  try {
-    cevas = already_AddRefd<iface::cellml_services::CeVAS>
-      (cevasboot->createCeVASForModel(model));
+  all.push_back(component);
+  for (size_t i = 0; i < component->componentCount(); i++) {
+    CollectCellMLComponents(component->component(i), all);
   }
-  catch (...){
-    return true;
-  }
+}
 
-  RETURN_INTO_WSTRING(error, cevas->modelError());
-  if (error != L"") {
-    RETURN_INTO_WSTRING(error, cevas->modelError());
-    string error8(makeUTF8(error));
-    SetError("Error reading CellML model:  " + error8);
-    return true;
-  }
+//CellML 'connections' are just variable equivalences in libCellML--unlike
+//the old CellML-API code, there's no <connection>/<map_variables> XML
+//structure to walk by hand; we just look each equivalent variable up by
+//name in the module its owning component became.
+void SynchronizeCellMLVariableEquivalences(const libcellml::ComponentPtr& component)
+{
+  if (component->isImport()) return;
+  Module* mod = g_registry.GetModule(CellMLModuleNameFor(component));
+  if (mod != NULL) {
+    for (size_t v = 0; v < component->variableCount(); v++) {
+      libcellml::VariablePtr cmlvar = component->variable(v);
+      string varname = cmlvar->name();
+      FixName(varname);
+      Variable* antvar1 = mod->GetVariable(vector<string>(1, varname));
+      if (antvar1 == NULL) continue;
 
-  RETURN_INTO_OBJREF(cmpi, iface::cellml_api::CellMLComponentIterator,
-                     cevas->iterateRelevantComponents());
-  int numcomps=0;
-  vector<iface::cellml_api::CellMLComponent*> top_components;
-  while (true) {
-    RETURN_INTO_OBJREF(component, iface::cellml_api::CellMLComponent, cmpi->nextComponent());
-    if (component == NULL)
-      break;
+      for (size_t e = 0; e < cmlvar->equivalentVariableCount(); e++) {
+        libcellml::VariablePtr othervar = cmlvar->equivalentVariable(e);
+        libcellml::ComponentPtr othercomp = std::dynamic_pointer_cast<libcellml::Component>(othervar->parent());
+        if (othercomp == nullptr || othercomp->isImport()) continue;
+        Module* othermod = g_registry.GetModule(CellMLModuleNameFor(othercomp));
+        if (othermod == NULL) continue;
+        string othername = othervar->name();
+        FixName(othername);
+        Variable* antvar2 = othermod->GetVariable(vector<string>(1, othername));
+        if (antvar2 == NULL || antvar1 == antvar2) continue;
+        if (antvar1->GetIsEquivalentTo(antvar2)) continue;
 
-    numcomps++;
-    //Each CellML 'component' becomes its own Antimony 'module'
-    string cellmlname = GetModuleNameFrom(component);
-    if (cellmlname == "__main") {
-      cellmlname = "main";
+        if (antvar1->Synchronize(antvar2, NULL)) {
+          g_registry.AddWarning("Unable to synchronize the CellML-equivalent variables '" + antvar1->GetNameDelimitedBy(".") + "' and '" + antvar2->GetNameDelimitedBy(".") + "':  " + g_registry.GetError());
+        }
+      }
     }
-    FixName(cellmlname);
+  }
+  for (size_t c = 0; c < component->componentCount(); c++) {
+    SynchronizeCellMLVariableEquivalences(component->component(c));
+  }
+}
+
+}  // namespace
+
+bool Registry::LoadCellML(const libcellml::ModelPtr& model)
+{
+  if (model == nullptr) return true;
+
+  size_t numtop = model->componentCount();
+  if (numtop == 0) {
+    SetError("No components found in this CellML model.");
+    return true;
+  }
+
+  vector<libcellml::ComponentPtr> top_components;
+  vector<libcellml::ComponentPtr> all_components;
+  for (size_t i = 0; i < numtop; i++) {
+    libcellml::ComponentPtr top = model->component(i);
+    top_components.push_back(top);
+    CollectCellMLComponents(top, all_components);
+  }
+
+  bool anyimports = false;
+  for (size_t i = 0; i < all_components.size(); i++) {
+    if (all_components[i]->isImport()) anyimports = true;
+  }
+  if (anyimports) {
+    AddWarning("This CellML model uses <import> elements to pull in components from other files.  Antimony does not yet resolve CellML imports, so those components (and anything that depends on them) will be missing from the translation.");
+  }
+
+  //First pass:  each (non-imported) component becomes its own Antimony module.
+  for (size_t i = 0; i < all_components.size(); i++) {
+    libcellml::ComponentPtr component = all_components[i];
+    if (component->isImport()) continue;
+    string cellmlname = CellMLModuleNameFor(component);
     Module* mod = GetModule(cellmlname);
     if (mod == NULL) {
       while (NewCurrentModule(&cellmlname)) {
@@ -495,218 +541,40 @@ bool Registry::LoadCellML(iface::cellml_api::Model* model)
       CurrentModule()->LoadCellMLComponent(component);
       RevertToPreviousModule();
     }
-    else {
-      //It's either a multiply-imported component, or a component with an identical name.
-    }
-    RETURN_INTO_OBJREF(parent, iface::cellml_api::CellMLComponent, component->encapsulationParent());
-    if (parent == NULL) {
-      component->add_ref();
-      top_components.push_back(component);
-    }
-  }
-  if (numcomps == 0) {
-    SetError("No components found in this CellML model.");
-    return true;
+    //else:  a component with an identical (model, local) name already
+    //became a module--treat this as the same component.
   }
 
-  string cellmlname;
-  //Now loop through all the components again, this time setting up 'encapsulation' for the submodules
-  for (size_t topnum = 0; topnum<top_components.size(); topnum++) {
-    iface::cellml_api::CellMLComponent* component = top_components[topnum];
-    // RETURN_INTO_WSTRING(wcellmltext, component->name());
-    // string cellmltext(makeUTF8(wcellmltext));
-    cellmlname = GetModuleNameFrom(component);
-    Module* mod = GetModule(cellmlname);
+  //Second pass:  mirror the encapsulation hierarchy as Antimony submodules.
+  for (size_t topnum = 0; topnum < top_components.size(); topnum++) {
+    if (top_components[topnum]->isImport()) continue;
+    Module* mod = GetModule(CellMLModuleNameFor(top_components[topnum]));
     assert(mod != NULL);
-    mod->SetCellMLChildrenAsSubmodules(component); // <- Here's where the work happens
+    mod->SetCellMLChildrenAsSubmodules(top_components[topnum]);
   }
 
-  //Now create a master model that contains only contain the top_components.
-  RETURN_INTO_WSTRING(wmodname, model->name());
-  string modname(makeUTF8(wmodname));
+  //Now create a master module that contains only the top-level components.
+  string modname = model->name();
+  if (modname.empty()) modname = "cellml_model";
   FixName(modname);
   modname += "__" MAINMODULE;
   while (NewCurrentModule(&modname, &modname, true)) {
     //Failure - duplicated name
     modname += "_";
   }
-  CurrentModule()->LoadCellMLModel(model, top_components);
-  for (vector<iface::cellml_api::CellMLComponent*>::iterator i = top_components.begin();
-       i != top_components.end(); i++)
-    (*i)->release_ref();
+  CurrentModule()->LoadCellMLModel(top_components);
 
-  //Now intercolate the connections into the modules.  First, get the connections from the imports:
-  RETURN_INTO_OBJREF(imports, iface::cellml_api::CellMLImportSet, model->imports());
-  RETURN_INTO_OBJREF(impi, iface::cellml_api::CellMLImportIterator, imports->iterateImports());
-
-  while (true) {
-    RETURN_INTO_OBJREF(import, iface::cellml_api::CellMLImport, impi->nextImport());
-    if (import == NULL)
-      break;
-
-    RETURN_INTO_OBJREF(impconnections, iface::cellml_api::ConnectionSet, import->importedConnections());
-    // RETURN_INTO_OBJREF(impmodel, iface::cellml_api::ConnectionSet, import->importedModel());
-    LoadConnections(impconnections);
+  //Finally, synchronize CellML's variable equivalences ('connections').
+  for (size_t topnum = 0; topnum < top_components.size(); topnum++) {
+    if (top_components[topnum]->isImport()) continue;
+    SynchronizeCellMLVariableEquivalences(top_components[topnum]);
   }
-
-  //And then get the main model's connections
-  RETURN_INTO_OBJREF(connections, iface::cellml_api::ConnectionSet, model->connections());
-  LoadConnections(connections);
 
   CreateLocalVariablesForSubmodelInterfaceIfNeeded();
-  //We've pulled a fast one here by inserting connections into models that were already copied into other models.  So, we need to go back through and pull those connections into the copied models.  We'll do this recursively by calling the routine on the top model.
-  CurrentModule()->ReloadSubmodelVariables(CurrentModule()->GetModuleName());
-  CurrentModule()->ReloadSubmodelConnections(CurrentModule());
   CurrentModule()->SetIsMain(true);
-  
+
   return false; //success
 }
-
-bool Registry::LoadConnections(iface::cellml_api::ConnectionSet* connections)
-{
-  RETURN_INTO_OBJREF(coni, iface::cellml_api::ConnectionIterator, connections->iterateConnections());
-
-  bool somewrong = false;
-  while (true) {
-    RETURN_INTO_OBJREF(connection, iface::cellml_api::Connection, coni->nextConnection());
-    if (connection == NULL)
-      break;
-
-    if (SynchronizeCellMLConnection(connection)) {
-      somewrong = true;
-    }
-  }
-  return somewrong;
-}
-
-bool Registry::SynchronizeCellMLConnection(iface::cellml_api::Connection* connection)
-{
-  //used when the encapsulation parent is null (in GetNameAccordingToEncapsulationParent)
-  RETURN_INTO_OBJREF(topmodel, iface::cellml_api::Model, connection->modelElement());
-
-  RETURN_INTO_OBJREF(parentel, iface::cellml_api::CellMLElement, topmodel->parentElement());
-  while (parentel) {
-    topmodel = already_AddRefd<iface::cellml_api::Model>
-      (parentel->modelElement());
-    parentel = already_AddRefd<iface::cellml_api::CellMLElement>
-      (topmodel->parentElement());
-  }
-  //rv = topmodel->GetName(cellmltext);
-  //cout << "Top model: " << ToThinString(cellmltext.get()) << endl;
-  
-  //First we get the list of the component and any/all encapsulation parents
-  vector<string> comp1moduleparents, comp2moduleparents;
-  vector<string> comp1modulenames, comp2modulenames;
-  RETURN_INTO_OBJREF(compmap, iface::cellml_api::MapComponents, connection->componentMapping());
-
-  //First
-  RETURN_INTO_OBJREF(component, iface::cellml_api::CellMLComponent, compmap->firstComponent());
-  while (component) {
-    string modname = GetModuleNameFrom(component);
-    comp1moduleparents.insert(comp1moduleparents.begin(), modname);
-    modname = GetNameAccordingToEncapsulationParent(component, topmodel);
-    FixName(modname);
-    comp1modulenames.insert(comp1modulenames.begin(), modname);
-    component = already_AddRefd<iface::cellml_api::CellMLComponent>(component->encapsulationParent());
-  }
-  comp1moduleparents.insert(comp1moduleparents.begin(), CurrentModule()->GetModuleName());
-
-  component = already_AddRefd<iface::cellml_api::CellMLComponent>(compmap->secondComponent());
-  while (component) {
-    string modname = GetModuleNameFrom(component);
-    comp2moduleparents.insert(comp2moduleparents.begin(), modname);
-    modname = GetNameAccordingToEncapsulationParent(component, topmodel);
-    FixName(modname);
-    comp2modulenames.insert(comp2modulenames.begin(), modname);
-    component = already_AddRefd<iface::cellml_api::CellMLComponent>(component->encapsulationParent());
-  }
-  comp2moduleparents.insert(comp2moduleparents.begin(), CurrentModule()->GetModuleName());
-
-  //cout << "First component's parents: " << ToStringFromVecDelimitedBy(comp1moduleparents, ".") << endl << "Second component's parents: " << ToStringFromVecDelimitedBy(comp2moduleparents, ".") << endl;
-  //cout << "First component's names: " << ToStringFromVecDelimitedBy(comp1modulenames, ".") << endl << "Second component's names: " << ToStringFromVecDelimitedBy(comp2modulenames, ".") << endl;
-  //Now figure out the 'lowest' common parent in the encapsulation tree:
-  string commonparent = "";
-  assert(comp1moduleparents.size() > 0 && comp2moduleparents.size() > 0 && comp1moduleparents[0] == comp2moduleparents[0]);
-  size_t pnum = 0;
-  while (comp1modulenames.size() > 0 && comp2modulenames.size() > 0 &&
-         comp1modulenames[0] == comp2modulenames[0]) {
-    comp1modulenames.erase(comp1modulenames.begin());
-    comp2modulenames.erase(comp2modulenames.begin());
-    pnum++;
-  }
-  commonparent = comp1moduleparents[pnum];
-
-  //At this point, we have the name of the module where the encapsulation happens:
-  Module* topmod = CurrentModule();
-  if (commonparent != "") {
-    topmod = GetModule(commonparent);
-  }
-  assert(topmod != NULL);
-
-  //cout << "Top module: " << commonparent << endl;
-  //cout << "first compartment submodule name: " << ToStringFromVecDelimitedBy(comp1modulenames, ".") << endl;
-  //cout << "second compartment submodule name: " << ToStringFromVecDelimitedBy(comp2modulenames, ".") << endl;
-
-  //And we have the full names of the submodules whose variables need to be synchronized.  But there might be multiple variables, so we go through them all:
-  RETURN_INTO_OBJREF(mvs, iface::cellml_api::MapVariablesSet, connection->variableMappings());
-  RETURN_INTO_OBJREF(mvsi, iface::cellml_api::MapVariablesIterator, mvs->iterateMapVariables());
-
-  bool somefalse = false;
-  while (true) {
-    RETURN_INTO_OBJREF(mapvars, iface::cellml_api::MapVariables, mvsi->nextMapVariable());
-    if (mapvars == NULL)
-      break;
-
-    RETURN_INTO_WSTRING(wfirstVarName, mapvars->firstVariableName());
-    string firstVarName(makeUTF8(wfirstVarName));
-    FixName(firstVarName);
-    vector<string> fullvarname = comp1modulenames;
-    fullvarname.push_back(firstVarName);
-    Variable* firstvar = topmod->GetVariable(fullvarname);
-    assert(firstvar != NULL);
-    firstvar = firstvar->GetSameVariable();
-
-    RETURN_INTO_WSTRING(wsecondVarName, mapvars->secondVariableName());
-    string secondVarName(makeUTF8(wsecondVarName));
-    FixName(secondVarName);
-    fullvarname = comp2modulenames;
-    fullvarname.push_back(secondVarName);
-    Variable* secondvar = topmod->GetVariable(fullvarname);
-    assert(secondvar != NULL);
-    secondvar = secondvar->GetSameVariable();
-
-    //Now we create a local name for the variables to be synchronized if one doesn't already exist.
-    vector<string> firstvarname = firstvar->GetName();
-    vector<string> secondvarname = secondvar->GetName();
-    if (firstvarname.size() > 1 && secondvarname.size() > 1) {
-      //Create a local variable
-      vector<string> newvarname;
-      newvarname.push_back(secondvarname[secondvarname.size()-1]);
-      Variable* newvar = topmod->GetVariable(newvarname);
-      if (newvar == NULL) {
-        newvar = topmod->AddOrFindVariable(&newvarname[0]);
-      }
-      else {
-        newvar = topmod->AddNewNumberedVariable(newvarname[0]);
-      }
-      if (firstvar->Synchronize(newvar, NULL)) {
-        g_registry.AddWarning("In module '" + topmod->GetModuleName() + "', the variables " + firstvar->GetNameDelimitedBy(".") + " and " + newvar->GetNameDelimitedBy(".") + " were unable to be set as equivalent:  " + g_registry.GetError());
-        somefalse = true;
-      }
-      if (secondvar->Synchronize(newvar, NULL)) {
-        g_registry.AddWarning("In module '" + topmod->GetModuleName() + "', the variables " + secondvar->GetNameDelimitedBy(".") + " and " + newvar->GetNameDelimitedBy(".") + " were unable to be set as equivalent:  " + g_registry.GetError());
-        somefalse = true;
-      }
-    }
-    else {
-      if (firstvar->Synchronize(secondvar, NULL)) {
-        g_registry.AddWarning("In module '" + topmod->GetModuleName() + "', the variables " + firstvar->GetNameDelimitedBy(".") + " and " + secondvar->GetNameDelimitedBy(".") + " were unable to be set as equivalent:  " + g_registry.GetError());
-        somefalse = true;
-      }
-    }
-  }
-  return somefalse;
-}  
 
 #endif
 

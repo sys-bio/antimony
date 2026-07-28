@@ -18,9 +18,7 @@
 
 
 #ifndef NCELLML
-#include <IfaceCellML_APISPEC.hxx>
-#include <CellMLBootstrap.hpp>
-#include "cellmlx.h"
+#include "libcellml/types.h"
 #endif
 
 #define MAINMODULE "__main"
@@ -96,10 +94,9 @@ public:
   void   LoadSubmodelsFrom(libsbml::Model* model);
   bool   LoadModelFrom(std::string modelname, libsbml::SBMLDocument* document);
 #ifndef NCELLML
-  bool   LoadCellML(iface::cellml_api::Model* model);
-  bool   LoadConnections(iface::cellml_api::ConnectionSet* connections);
-  bool   SynchronizeCellMLConnection(iface::cellml_api::Connection* connection);
-  std::map<std::string, std::string> m_cellmlnames;
+  //CellML import is not yet implemented against libCellML; this reports a
+  //clear error rather than attempting a translation.  See module-cellml.cpp.
+  bool   LoadCellML(const libcellml::ModelPtr& model);
 #endif
   void   CreateLocalVariablesForSubmodelInterfaceIfNeeded();
   void   SetEOFFlag(); // adds a newline to the end of the file

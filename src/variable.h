@@ -14,7 +14,7 @@
 #include "enums.h"
 
 #ifndef NCELLML
-#include "cellmlx.h"
+#include "libcellml/types.h"
 #endif
 
 #include "sbml/SBMLTypes.h"
@@ -91,7 +91,7 @@ protected:
 
 #ifndef NCELLML
   //If we are using CellML, this is a link to the corresponding variable in that document.
-  ObjRef<iface::cellml_api::CellMLVariable> m_cellmlvariable;
+  libcellml::VariablePtr m_cellmlvariable;
   Variable* m_canonvar;
 #endif
 
@@ -235,8 +235,8 @@ public:
 #ifndef NCELLML
   Variable* GetCanonicalVariable() {return m_canonvar;};
   void SetCanonicalVariable(Variable* cvar) {m_canonvar = cvar;};
-  iface::cellml_api::CellMLVariable* GetCellMLVariable() {m_cellmlvariable->add_ref(); return m_cellmlvariable;};
-  void SetCellMLVariable(iface::cellml_api::CellMLVariable* cmlvar) {m_cellmlvariable = cmlvar;};
+  libcellml::VariablePtr GetCellMLVariable() {return m_cellmlvariable;};
+  void SetCellMLVariable(const libcellml::VariablePtr& cmlvar) {m_cellmlvariable = cmlvar;};
 #endif
 };
 

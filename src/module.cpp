@@ -18,10 +18,6 @@
 #include "unitdef.h"
 #include "stringx.h"
 #include "layoutWrapper.h"
-#ifndef NCELLML
-#include <wchar.h>
-#include <CellMLBootstrap.hpp>
-#endif
 
 #ifdef LIBSBML_HAS_PACKAGE_DISTRIB
 #include "sbml/packages/distrib/common/DistribExtensionTypes.h"
@@ -66,9 +62,8 @@ Module::Module(string name)
     m_autolayout(),
     m_layout(),
 #ifndef NCELLML
-    m_cellmlmodel(NULL),
-    m_cellmlcomponent(NULL),
-    m_childrenadded(false),
+    m_cellmlmodel(nullptr),
+    m_cellmlcomponent(nullptr),
 #endif
     m_uniquevars(),
     m_explicitDefaultCompartment(false)
@@ -123,9 +118,8 @@ Module::Module(const Module& src, string newtopname, string modulename)
     m_autolayout(),
     m_layout(),
 #ifndef NCELLML
-    m_cellmlmodel(NULL),
-    m_cellmlcomponent(NULL),
-    m_childrenadded(src.m_childrenadded),
+    m_cellmlmodel(nullptr),
+    m_cellmlcomponent(nullptr),
 #endif
     m_uniquevars(),
     m_explicitDefaultCompartment(src.m_explicitDefaultCompartment)
@@ -168,7 +162,6 @@ Module::Module(const Module& src)
 #ifndef NCELLML
     m_cellmlmodel(src.m_cellmlmodel),
     m_cellmlcomponent(src.m_cellmlcomponent),
-    m_childrenadded(src.m_childrenadded),
 #endif
     m_uniquevars(src.m_uniquevars),
     m_explicitDefaultCompartment(src.m_explicitDefaultCompartment)
@@ -225,7 +218,6 @@ Module& Module::operator=(const Module& src)
 #ifndef NCELLML
   m_cellmlmodel = src.m_cellmlmodel;
   m_cellmlcomponent = src.m_cellmlcomponent;
-  m_childrenadded = src.m_childrenadded;
 #endif
   m_uniquevars = src.m_uniquevars;
 //  if (m_sboTerm)
