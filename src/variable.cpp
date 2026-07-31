@@ -715,6 +715,11 @@ bool Variable::GetIsConst() const
   case varCompartment:
   case varStoichiometry:
     if (m_const == constDEFAULT) {
+      //A symbol with an assignment rule or rate rule is never constant.
+      formula_type ftype = GetFormulaType();
+      if (ftype == formulaASSIGNMENT || ftype == formulaRATE) {
+        return false;
+      }
       if (GetFormula() != NULL) {
         if (GetFormula()->GetIsConst()) {
           formconst = constCONST;

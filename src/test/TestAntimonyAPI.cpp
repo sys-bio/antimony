@@ -419,7 +419,7 @@ TEST(AntimonyAPI, test_moduleNames)
 
   freeAll();
 }
-  
+
 TEST(AntimonyAPI, test_moduleInterfaceNames)
 {
   int ret = loadString("model foo(a, b, c)\na=3\nend");
@@ -606,6 +606,22 @@ TEST(AntimonyAPI, test_event_modifications)
 
   EXPECT_TRUE(getFromTriggerForEvent("__main", 0) == true);
   EXPECT_TRUE(getFromTriggerForEvent("__main", 1) == false);
+
+  //Error cases, out-of-range event index:
+  EXPECT_TRUE(getDelayForEvent("__main", 5) == NULL);
+  EXPECT_STRNE(getLastError(), "");
+  EXPECT_TRUE(getEventHasDelay("__main", 5) == false);
+  EXPECT_STRNE(getLastError(), "");
+  EXPECT_TRUE(getPriorityForEvent("__main", 5) == NULL);
+  EXPECT_STRNE(getLastError(), "");
+  EXPECT_TRUE(getEventHasPriority("__main", 5) == false);
+  EXPECT_STRNE(getLastError(), "");
+  EXPECT_TRUE(getPersistenceForEvent("__main", 5) == false);
+  EXPECT_STRNE(getLastError(), "");
+  EXPECT_TRUE(getT0ForEvent("__main", 5) == false);
+  EXPECT_STRNE(getLastError(), "");
+  EXPECT_TRUE(getFromTriggerForEvent("__main", 5) == false);
+  EXPECT_STRNE(getLastError(), "");
 
   freeAll();
 }
@@ -1011,6 +1027,226 @@ TEST(AntimonyAPI, test_nthEventName)
   EXPECT_STREQ(getNthEventName("foo", 0), "E0");
 
   EXPECT_TRUE(getNthEventName("foo", 5) == NULL);
+  EXPECT_STRNE(getLastError(), "");
+
+  freeAll();
+}
+
+//Bulk (non-Nth) event getters.  E0: at(time>2): a = 0.
+TEST(AntimonyAPI, test_eventBulkGetters)
+{
+  int ret = loadString(kReactionsAndFriendsModel);
+  EXPECT_TRUE(ret != -1);
+
+  char** eventnames = getEventNames("foo");
+  EXPECT_STREQ(eventnames[0], "E0");
+
+  EXPECT_TRUE(getNumAssignmentsForEvent("foo", 0) == 1);
+  EXPECT_STREQ(getNthAssignmentVariableForEvent("foo", 0, 0), "a");
+  EXPECT_STREQ(getNthAssignmentEquationForEvent("foo", 0, 0), "0");
+  EXPECT_STREQ(getTriggerForEvent("foo", 0), "(time > 2)");
+
+  //Error cases, out-of-range event index:
+  EXPECT_TRUE(getTriggerForEvent("foo", 5) == NULL);
+  EXPECT_STRNE(getLastError(), "");
+  EXPECT_TRUE(getNumAssignmentsForEvent("foo", 5) == 0);
+  EXPECT_STRNE(getLastError(), "");
+  EXPECT_TRUE(getNthAssignmentVariableForEvent("foo", 5, 0) == NULL);
+  EXPECT_STRNE(getLastError(), "");
+  EXPECT_TRUE(getNthAssignmentEquationForEvent("foo", 5, 0) == NULL);
+  EXPECT_STRNE(getLastError(), "");
+
+  //Out-of-range assignment index (event 0 is valid, but only has one
+  //assignment): still returns NULL without setting an error message.
+  EXPECT_TRUE(getNthAssignmentVariableForEvent("foo", 0, 5) == NULL);
+  EXPECT_TRUE(getNthAssignmentEquationForEvent("foo", 0, 5) == NULL);
+
+  freeAll();
+}
+
+//Bulk (non-Nth) interaction getters.  _J1: S3 -o J1.
+TEST(AntimonyAPI, test_interactionBulkGetters)
+{
+  int ret = loadString(kReactionsAndFriendsModel);
+  EXPECT_TRUE(ret != -1);
+
+  EXPECT_TRUE(getNumInteractors("foo", 0) == 1);
+  EXPECT_TRUE(getNumInteractees("foo", 0) == 1);
+
+  char*** interactors = getInteractorNames("foo");
+  EXPECT_STREQ(interactors[0][0], "S3");
+  char*** interactees = getInteracteeNames("foo");
+  EXPECT_STREQ(interactees[0][0], "J1");
+
+  rd_type* dividers = getInteractionDividers("foo");
+  EXPECT_TRUE(dividers[0] == rdActivates);
+
+  freeAll();
+}
+
+//Bulk (non-Nth) DNA strand getters.  Expanded: P--Q--R--S.  Modular: DNA1 (P--Q--R), DNA2 (DNA1--S).
+TEST(AntimonyAPI, test_dnaBulkGetters)
+{
+  int ret = loadString(kReactionsAndFriendsModel);
+  EXPECT_TRUE(ret != -1);
+
+  unsigned long* sizes = getDNAStrandSizes("foo");
+  EXPECT_TRUE(sizes[0] == 4);
+  char*** strands = getDNAStrands("foo");
+  EXPECT_STREQ(strands[0][0], "P");
+  EXPECT_STREQ(strands[0][3], "S");
+  EXPECT_TRUE(getIsNthDNAStrandOpen("foo", 0, true) == false);
+  EXPECT_TRUE(getIsNthDNAStrandOpen("foo", 0, false) == false);
+
+  unsigned long* modsizes = getModularDNAStrandSizes("foo");
+  EXPECT_TRUE(modsizes[0] == 3);
+  EXPECT_TRUE(modsizes[1] == 2);
+  EXPECT_TRUE(getIsNthModularDNAStrandOpen("foo", 0, true) == false);
+  EXPECT_TRUE(getIsNthModularDNAStrandOpen("foo", 1, false) == false);
+
+  //Error case (bad module name):
+  EXPECT_TRUE(getDNAStrandSizes("nosuchmodule") == NULL);
+  EXPECT_STRNE(getLastError(), "");
+  EXPECT_TRUE(getModularDNAStrandSizes("nosuchmodule") == NULL);
+  EXPECT_STRNE(getLastError(), "");
+
+  //Error case (out-of-range strand index):
+  EXPECT_TRUE(getIsNthDNAStrandOpen("foo", 5, true) == false);
+  EXPECT_STRNE(getLastError(), "");
+  EXPECT_TRUE(getIsNthModularDNAStrandOpen("foo", 5, true) == false);
+  EXPECT_STRNE(getLastError(), "");
+
+  freeAll();
+}
+
+//Bulk (non-Nth) reaction getters.  _J0: S1 -> S2; k1*S1.  J1: S2 -> ; k2*S2*S3.
+TEST(AntimonyAPI, test_reactionBulkGetters)
+{
+  int ret = loadString(kReactionsAndFriendsModel);
+  EXPECT_TRUE(ret != -1);
+
+  EXPECT_TRUE(getNumReactants("foo", 0) == 1);
+  EXPECT_TRUE(getNumReactants("foo", 1) == 1);
+
+  char*** reactants = getReactantNames("foo");
+  EXPECT_STREQ(reactants[0][0], "S1");
+  EXPECT_STREQ(reactants[1][0], "S2");
+
+  char*** products = getProductNames("foo");
+  EXPECT_STREQ(products[0][0], "S2");
+  EXPECT_TRUE(getNumProducts("foo", 1) == 0);
+
+  double** reactantstoich = getReactantStoichiometries("foo");
+  EXPECT_TRUE(reactantstoich[0][0] == 1);
+  double** productstoich = getProductStoichiometries("foo");
+  EXPECT_TRUE(productstoich[0][0] == 1);
+
+  EXPECT_TRUE(getNumReactionRates("foo") == 2);
+  char** rates = getReactionRates("foo");
+  EXPECT_STREQ(rates[0], "k1*S1");
+  EXPECT_STREQ(rates[1], "k2*S2*S3");
+
+  freeAll();
+}
+
+//Values here match the already-validated stoichiometry matrix in test_printAll's output.
+TEST(AntimonyAPI, test_stoichiometryMatrix)
+{
+  int ret = loadString(kReactionsAndFriendsModel);
+  EXPECT_TRUE(ret != -1);
+
+  EXPECT_TRUE(getStoichiometryMatrixNumColumns("foo") == 2);
+  EXPECT_TRUE(getStoichiometryMatrixNumRows("foo") == 3);
+
+  char** columns = getStoichiometryMatrixColumnLabels("foo");
+  EXPECT_STREQ(columns[0], "_J0");
+  EXPECT_STREQ(columns[1], "J1");
+
+  char** rows = getStoichiometryMatrixRowLabels("foo");
+  EXPECT_STREQ(rows[0], "S1");
+  EXPECT_STREQ(rows[1], "S2");
+  EXPECT_STREQ(rows[2], "S3");
+
+  double** matrix = getStoichiometryMatrix("foo");
+  EXPECT_TRUE(matrix[0][0] == -1); //S1, _J0
+  EXPECT_TRUE(matrix[0][1] == 0);  //S1, J1
+  EXPECT_TRUE(matrix[1][0] == 1);  //S2, _J0
+  EXPECT_TRUE(matrix[1][1] == -1); //S2, J1
+  EXPECT_TRUE(matrix[2][0] == 0);  //S3, _J0
+  EXPECT_TRUE(matrix[2][1] == 0);  //S3, J1
+
+  freeAll();
+}
+
+//getTypeOfSymbol/getTypeOfEquationForSymbol, using explicit const/var declarations
+//so the const-vs-variable heuristic isn't in play.
+TEST(AntimonyAPI, test_typeOfSymbolAndEquationType)
+{
+  int ret = loadString(
+    "const species S1\n"
+    "var species S2\n"
+    "a = 3\n"
+    "b := a+2\n"
+    "rr = 0\n"
+    "rr' = 1\n"
+    );
+  EXPECT_TRUE(ret != -1);
+
+  EXPECT_TRUE(getTypeOfSymbol("__main", "S1") == constSpecies);
+  EXPECT_TRUE(getTypeOfSymbol("__main", "S2") == varSpecies);
+  EXPECT_TRUE(getTypeOfSymbol("__main", "b") == varFormulas);
+  EXPECT_TRUE(getTypeOfSymbol("__main", "rr") == varFormulas);
+
+  EXPECT_TRUE(getTypeOfEquationForSymbol("__main", "a") == formulaINITIAL);
+  EXPECT_TRUE(getTypeOfEquationForSymbol("__main", "b") == formulaASSIGNMENT);
+  EXPECT_TRUE(getTypeOfEquationForSymbol("__main", "rr") == formulaRATE);
+
+  //Error cases:
+  EXPECT_TRUE(getTypeOfSymbol("__main", "nosuchsymbol") == allUnknown);
+  EXPECT_STRNE(getLastError(), "");
+  EXPECT_TRUE(getTypeOfSymbol("nosuchmodule", "a") == allUnknown);
+  EXPECT_STRNE(getLastError(), "");
+  EXPECT_TRUE(getTypeOfEquationForSymbol("__main", "nosuchsymbol") == formulaINITIAL);
+  EXPECT_STREQ(getLastError(), "No such variable: 'nosuchsymbol'.");
+
+  freeAll();
+}
+
+//Bulk (non-Nth) symbol-property getters, using the same model (and known-good
+//values) as test_nthSymbolOfTypeGetters above.
+TEST(AntimonyAPI, test_symbolBulkGetters)
+{
+  int ret = loadString(
+    "a = 3\n"
+    "b := a+2\n"
+    "rr = 0\n"
+    "rr' = 1\n"
+    "species S1 in C1;\n"
+    "S1 is \"the first species\"\n"
+    "C1 = 1.5\n"
+    );
+  EXPECT_TRUE(ret != -1);
+
+  //allFormulas, in declaration order: a, b, rr.
+  EXPECT_STREQ(getNthSymbolNameOfType("__main", allFormulas, 0), "a");
+  EXPECT_STREQ(getNthSymbolNameOfType("__main", allFormulas, 1), "b");
+  EXPECT_STREQ(getNthSymbolNameOfType("__main", allFormulas, 2), "rr");
+
+  char** equations = getSymbolEquationsOfType("__main", allFormulas);
+  EXPECT_STREQ(equations[0], "3");
+  EXPECT_STREQ(equations[1], "a+2");
+  EXPECT_STREQ(equations[2], "0");
+
+  char** rateRules = getSymbolRateRulesOfType("__main", allFormulas);
+  EXPECT_STREQ(rateRules[0], "");
+  EXPECT_STREQ(rateRules[1], "");
+  EXPECT_STREQ(rateRules[2], "1");
+
+  char** compartments = getSymbolCompartmentsOfType("__main", allSpecies);
+  EXPECT_STREQ(compartments[0], "C1");
+
+  //Error cases:
+  EXPECT_TRUE(getNthSymbolNameOfType("__main", allFormulas, 5) == NULL);
   EXPECT_STRNE(getLastError(), "");
 
   freeAll();
