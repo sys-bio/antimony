@@ -99,7 +99,7 @@ jobs:
       - name: Cache ccache files
         uses: actions/cache@main
         with:
-          path: ${RUNNER_WORKSPACE}/.ccache
+          path: ${{ runner.workspace }}/.ccache
           key:
             ${{ runner.os }}-debug-memcheck-${{ steps.ccache_cache_timestamp.outputs.timestamp
             }}
