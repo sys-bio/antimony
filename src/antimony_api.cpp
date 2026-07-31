@@ -806,6 +806,73 @@ LIB_EXTERN char* getNthReplacementSymbolNameBetween(const char* moduleName, cons
   return getCharStar(replacement.second.c_str());
 }
 
+LIB_EXTERN unsigned long getNumUserFunctions()
+{
+  return static_cast<unsigned long>(g_registry.GetNumUserFunctions());
+}
+
+void reportUserFunctionIndexProblem(unsigned long n, unsigned long actualsize)
+{
+  string error = "There is no user-defined function with index " + SizeTToString(n) + ".";
+  if (actualsize == 0) {
+    error += "  In fact, there are no user-defined functions at all.";
+  }
+  else if (actualsize == 1) {
+    error += "  There is a single user-defined function with index 0.";
+  }
+  else {
+    error += "  Valid index values are 0 through " + SizeTToString(actualsize-1) + ".";
+  }
+  g_registry.SetError(error);
+}
+
+LIB_EXTERN char* getNthUserFunctionName(unsigned long n)
+{
+  const UserFunction* func = g_registry.GetNthUserFunction(n);
+  if (func == NULL) {
+    reportUserFunctionIndexProblem(n, static_cast<unsigned long>(g_registry.GetNumUserFunctions()));
+    return NULL;
+  }
+  return getCharStar(func->GetModuleName().c_str());
+}
+
+LIB_EXTERN unsigned long getNumUserFunctionArguments(unsigned long n)
+{
+  const UserFunction* func = g_registry.GetNthUserFunction(n);
+  if (func == NULL) {
+    reportUserFunctionIndexProblem(n, static_cast<unsigned long>(g_registry.GetNumUserFunctions()));
+    return 0;
+  }
+  return static_cast<unsigned long>(func->GetNumExportVariables());
+}
+
+LIB_EXTERN char** getNthUserFunctionArguments(unsigned long n)
+{
+  const UserFunction* func = g_registry.GetNthUserFunction(n);
+  if (func == NULL) {
+    reportUserFunctionIndexProblem(n, static_cast<unsigned long>(g_registry.GetNumUserFunctions()));
+    return NULL;
+  }
+  unsigned long numargs = static_cast<unsigned long>(func->GetNumExportVariables());
+  char** args = getCharStarStar(numargs);
+  if (args == NULL) return NULL;
+  for (unsigned long arg=0; arg<numargs; arg++) {
+    args[arg] = getCharStar(func->GetNthExportVariable(arg)[0].c_str());
+    if (args[arg] == NULL) return NULL;
+  }
+  return args;
+}
+
+LIB_EXTERN char* getNthUserFunctionBody(unsigned long n)
+{
+  const UserFunction* func = g_registry.GetNthUserFunction(n);
+  if (func == NULL) {
+    reportUserFunctionIndexProblem(n, static_cast<unsigned long>(g_registry.GetNumUserFunctions()));
+    return NULL;
+  }
+  return getCharStar(func->GetFormula().ToDelimitedStringWithEllipses(g_registry.GetCC()).c_str());
+}
+
 LIB_EXTERN unsigned long getNumModules()
 {
   return static_cast<unsigned long>(g_registry.GetNumModules());
@@ -1024,7 +1091,7 @@ unsigned long getNumReactOrProdForRxnOrInt(const char* moduleName, unsigned long
     reportReactionIndexProblem(n, getNumSymbolsOfType(moduleName, rtype), moduleName, reaction);    
   }
   const Variable* rxn = mod->GetNthVariableOfType(rtype, n, false);
-  if (rxn->GetReaction() == NULL) {
+  if (rxn == NULL || rxn->GetReaction() == NULL) {
     return 0;
   }
   if (reactant) {
@@ -1090,6 +1157,15 @@ char* getNthRxnorIntMthReactantOrProductName(const char* moduleName, unsigned lo
 char** getNthRxnOrIntReactantOrProductNames(const char* moduleName, unsigned long n, bool reaction, bool reactant)
 {
   if (!checkModule(moduleName)) return NULL;
+  return_type rtype = allReactions;
+  if (!reaction) {
+    rtype = allInteractions;
+  }
+  unsigned long numlines = getNumSymbolsOfType(moduleName, rtype);
+  if (n >= numlines) {
+    reportReactionIndexProblem(n, numlines, moduleName, reaction);
+    return NULL;
+  }
   unsigned long vnum = getNumReactOrProdForRxnOrInt(moduleName, n, reaction, reactant);
   char** names = getCharStarStar(vnum);
   if (names == NULL) return NULL;
@@ -1210,6 +1286,38 @@ double getNthRxnOrIntMthReactantOrProductStoichiometries(const char* moduleName,
   return stoichiometries[m];
 }
 
+char* getNthRxnOrIntMthReactantOrProductStoichiometryString(const char* moduleName, unsigned long n, unsigned long m, bool reaction, bool reactant)
+{
+  if (!checkModule(moduleName)) return NULL;
+  return_type rtype = allReactions;
+  if (!reaction) {
+    rtype = allInteractions;
+  }
+  unsigned long numlines = getNumSymbolsOfType(moduleName, rtype);
+  if (n >= numlines) {
+    reportReactionIndexProblem(n, numlines, moduleName, reaction);
+    return NULL;
+  }
+  const Module* mod = g_registry.GetModule(moduleName);
+  const Variable* rxn = mod->GetNthVariableOfType(rtype, n, false);
+  if (rxn->GetReaction() == NULL) {
+    return NULL;
+  }
+  const ReactantList* rlist = reactant ? rxn->GetReaction()->GetLeft() : rxn->GetReaction()->GetRight();
+  unsigned long rsize = static_cast<unsigned long>(rlist->Size());
+  if (m >= rsize) {
+    reportReactionSubIndexProblem(m, rsize, n, moduleName, reaction, reactant);
+    return NULL;
+  }
+  const Variable* stoichvar = rlist->GetNthStoichiometryVar(m);
+  if (stoichvar != NULL) {
+    return getCharStar(stoichvar->GetNameDelimitedBy(g_registry.GetCC()).c_str());
+  }
+  stringstream stoich;
+  stoich << rlist->GetStoichiometryFor(m);
+  return getCharStar(stoich.str().c_str());
+}
+
 double* getNthRxnOrIntReactantOrProductStoichiometries(const char* moduleName, unsigned long n, bool reaction, bool reactant)
 {
   if (!checkModule(moduleName)) return NULL;
@@ -1277,6 +1385,16 @@ LIB_EXTERN double getNthReactionMthReactantStoichiometries(const char* moduleNam
 LIB_EXTERN double getNthReactionMthProductStoichiometries(const char* moduleName, unsigned long rxn, unsigned long reactant)
 {
   return getNthRxnOrIntMthReactantOrProductStoichiometries(moduleName, rxn, reactant, true, false);
+}
+
+LIB_EXTERN char* getNthReactionMthReactantStoichiometryString(const char* moduleName, unsigned long rxn, unsigned long reactant)
+{
+  return getNthRxnOrIntMthReactantOrProductStoichiometryString(moduleName, rxn, reactant, true, true);
+}
+
+LIB_EXTERN char* getNthReactionMthProductStoichiometryString(const char* moduleName, unsigned long rxn, unsigned long product)
+{
+  return getNthRxnOrIntMthReactantOrProductStoichiometryString(moduleName, rxn, product, true, false);
 }
 
 LIB_EXTERN double** getProductStoichiometries(const char* moduleName)
@@ -1794,6 +1912,34 @@ LIB_EXTERN char* getCompartmentForSymbol(const char* moduleName, const char* sym
     retval = varcomp->GetNameDelimitedBy(g_registry.GetCC());
   }
   return getCharStar(retval.c_str());
+}
+
+LIB_EXTERN bool getSymbolSubstanceOnly(const char* moduleName, const char* symbolName)
+{
+  if (!checkModule(moduleName)) return false;
+  const Variable* var = g_registry.GetModule(moduleName)->GetVariableFromSymbol(symbolName);
+  if (var == NULL) {
+    string error = "No such variable: '";
+    error += symbolName;
+    error += "'.";
+    g_registry.SetError(error);
+    return false;
+  }
+  return var->GetSubstOnly();
+}
+
+LIB_EXTERN bool getSymbolHasValue(const char* moduleName, const char* symbolName)
+{
+  if (!checkModule(moduleName)) return false;
+  const Variable* var = g_registry.GetModule(moduleName)->GetVariableFromSymbol(symbolName);
+  if (var == NULL) {
+    string error = "No such variable: '";
+    error += symbolName;
+    error += "'.";
+    g_registry.SetError(error);
+    return false;
+  }
+  return !var->GetFormula()->IsEmpty();
 }
 
 LIB_EXTERN int writeAntimonyFile(const char* filename, const char* moduleName)
