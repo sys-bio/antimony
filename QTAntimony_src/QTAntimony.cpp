@@ -11,6 +11,8 @@
 #include <QDesktopServices>
 #include <QVariant>
 #include <QIcon>
+#include <QGuiApplication>
+#include <QScreen>
 
 #ifdef Q_OS_WIN
 #ifndef WIN32_LEAN_AND_MEAN
@@ -107,7 +109,7 @@ void QTAntimony::DisplayWindow(QMainWindow* t) {
     }
     QRect desk = desktop()->availableGeometry(focus);
     if (focus==NULL) {
-        desk = desktop()->availableGeometry(desktop()->primaryScreen());
+        desk = QGuiApplication::primaryScreen()->availableGeometry();
         QRect window;
         window.setTop(desk.height()/8);
         window.setBottom(desk.height()*7/8);

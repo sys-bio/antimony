@@ -5,7 +5,13 @@
  * ---------------------------------------------------------------------- -->*/
 
 #include "antimony_api.h"
+#include "registry.h"
+#include <cmath>
+#include <cstdio>
+#include <cstring>
+#include <fstream>
 #include <iostream>
+#include <sstream>
 
 #include <string>
 #include "gtest/gtest.h"
@@ -413,7 +419,7 @@ TEST(AntimonyAPI, test_moduleNames)
 
   freeAll();
 }
-  
+
 TEST(AntimonyAPI, test_moduleInterfaceNames)
 {
   int ret = loadString("model foo(a, b, c)\na=3\nend");
@@ -601,6 +607,22 @@ TEST(AntimonyAPI, test_event_modifications)
   EXPECT_TRUE(getFromTriggerForEvent("__main", 0) == true);
   EXPECT_TRUE(getFromTriggerForEvent("__main", 1) == false);
 
+  //Error cases, out-of-range event index:
+  EXPECT_TRUE(getDelayForEvent("__main", 5) == NULL);
+  EXPECT_STRNE(getLastError(), "");
+  EXPECT_TRUE(getEventHasDelay("__main", 5) == false);
+  EXPECT_STRNE(getLastError(), "");
+  EXPECT_TRUE(getPriorityForEvent("__main", 5) == NULL);
+  EXPECT_STRNE(getLastError(), "");
+  EXPECT_TRUE(getEventHasPriority("__main", 5) == false);
+  EXPECT_STRNE(getLastError(), "");
+  EXPECT_TRUE(getPersistenceForEvent("__main", 5) == false);
+  EXPECT_STRNE(getLastError(), "");
+  EXPECT_TRUE(getT0ForEvent("__main", 5) == false);
+  EXPECT_STRNE(getLastError(), "");
+  EXPECT_TRUE(getFromTriggerForEvent("__main", 5) == false);
+  EXPECT_STRNE(getLastError(), "");
+
   freeAll();
 }
 
@@ -665,6 +687,732 @@ TEST(AntimonyAPI, test_rxns)
   freeAll();
 }
 
- 
-  
+TEST(AntimonyAPI, test_substanceOnly)
+{
+  int ret = loadString("substanceOnly species S1;\nspecies S2;\n");
+  EXPECT_TRUE(ret != -1);
+
+  EXPECT_TRUE(getSymbolSubstanceOnly("__main", "S1") == true);
+  EXPECT_TRUE(getSymbolSubstanceOnly("__main", "S2") == false);
+
+  EXPECT_TRUE(getSymbolSubstanceOnly("__main", "nosuchsymbol") == false);
+  EXPECT_STRNE(getLastError(), "");
+
+  EXPECT_TRUE(getSymbolSubstanceOnly("nosuchmodule", "S1") == false);
+  EXPECT_STRNE(getLastError(), "");
+
+  freeAll();
+}
+
+TEST(AntimonyAPI, test_hasValue)
+{
+  int ret = loadString("x = ;\ny = 5\n");
+  EXPECT_TRUE(ret != -1);
+
+  EXPECT_TRUE(getSymbolHasValue("__main", "x") == false);
+  EXPECT_TRUE(getSymbolHasValue("__main", "y") == true);
+
+  EXPECT_TRUE(getSymbolHasValue("__main", "nosuchsymbol") == false);
+  EXPECT_STRNE(getLastError(), "");
+
+  freeAll();
+}
+
+TEST(AntimonyAPI, test_stoichiometryStrings)
+{
+  int ret = loadString(
+    "J0: sr1 a->;\n"
+    "sr1 = 2\n"
+    "J1: 2 c -> 3 d;\n"
+    "J2: e -> f;\n"
+    );
+  EXPECT_TRUE(ret != -1);
+
+  //A named (symbolic) stoichiometry returns the symbol's name, and the plain-double getter returns NaN for it.
+  EXPECT_STREQ(getNthReactionMthReactantStoichiometryString("__main", 0, 0), "sr1");
+  EXPECT_TRUE(std::isnan(getNthReactionMthReactantStoichiometries("__main", 0, 0)));
+
+  //Plain numeric stoichiometries are returned as text.
+  EXPECT_STREQ(getNthReactionMthReactantStoichiometryString("__main", 1, 0), "2");
+  EXPECT_STREQ(getNthReactionMthProductStoichiometryString("__main", 1, 0), "3");
+
+  //The default stoichiometry (no coefficient written) is 1.
+  EXPECT_STREQ(getNthReactionMthReactantStoichiometryString("__main", 2, 0), "1");
+  EXPECT_STREQ(getNthReactionMthProductStoichiometryString("__main", 2, 0), "1");
+
+  //Error cases:
+  EXPECT_TRUE(getNthReactionMthReactantStoichiometryString("__main", 5, 0) == NULL);
+  EXPECT_STRNE(getLastError(), "");
+  EXPECT_TRUE(getNthReactionMthReactantStoichiometryString("__main", 1, 5) == NULL);
+  EXPECT_STRNE(getLastError(), "");
+  EXPECT_TRUE(getNthReactionMthProductStoichiometryString("__main", 5, 0) == NULL);
+  EXPECT_STRNE(getLastError(), "");
+  EXPECT_TRUE(getNthReactionMthProductStoichiometryString("__main", 1, 5) == NULL);
+  EXPECT_STRNE(getLastError(), "");
+
+  freeAll();
+}
+
+TEST(AntimonyAPI, test_userFunctions)
+{
+  int ret = loadString(
+    "function f(x, y)\n"
+    "  x+y*2;\n"
+    "end\n"
+    "a := f(b, c)\n"
+    );
+  EXPECT_TRUE(ret != -1);
+
+  EXPECT_TRUE(getNumUserFunctions() == 1);
+  EXPECT_STREQ(getNthUserFunctionName(0), "f");
+
+  EXPECT_TRUE(getNumUserFunctionArguments(0) == 2);
+  char** args = getNthUserFunctionArguments(0);
+  EXPECT_STREQ(args[0], "x");
+  EXPECT_STREQ(args[1], "y");
+
+  EXPECT_STREQ(getNthUserFunctionBody(0), "x + y*2");
+
+  //Error cases:
+  EXPECT_TRUE(getNthUserFunctionName(5) == NULL);
+  EXPECT_STRNE(getLastError(), "");
+  EXPECT_TRUE(getNumUserFunctionArguments(5) == 0);
+  EXPECT_STRNE(getLastError(), "");
+  EXPECT_TRUE(getNthUserFunctionArguments(5) == NULL);
+  EXPECT_STRNE(getLastError(), "");
+  EXPECT_TRUE(getNthUserFunctionBody(5) == NULL);
+  EXPECT_STRNE(getLastError(), "");
+
+  freeAll();
+  clearPreviousLoads();
+}
+
+TEST(AntimonyAPI, test_nthSymbolOfTypeGetters)
+{
+  int ret = loadString(
+    "a = 3\n"
+    "b := a+2\n"
+    "rr = 0\n"
+    "rr' = 1\n"
+    "species S1 in C1;\n"
+    "S1 is \"the first species\"\n"
+    "C1 = 1.5\n"
+    );
+  EXPECT_TRUE(ret != -1);
+
+  //allFormulas, in declaration order: a (initial only), b (assignment rule), rr (rate rule).
+  EXPECT_STREQ(getNthSymbolEquationOfType("__main", allFormulas, 0), "3");
+  EXPECT_STREQ(getNthSymbolInitialAssignmentOfType("__main", allFormulas, 0), "3");
+  EXPECT_STREQ(getNthSymbolAssignmentRuleOfType("__main", allFormulas, 0), "");
+  EXPECT_STREQ(getNthSymbolRateRuleOfType("__main", allFormulas, 0), "");
+
+  EXPECT_STREQ(getNthSymbolEquationOfType("__main", allFormulas, 1), "a+2");
+  EXPECT_STREQ(getNthSymbolInitialAssignmentOfType("__main", allFormulas, 1), "");
+  EXPECT_STREQ(getNthSymbolAssignmentRuleOfType("__main", allFormulas, 1), "a+2");
+  EXPECT_STREQ(getNthSymbolRateRuleOfType("__main", allFormulas, 1), "");
+
+  EXPECT_STREQ(getNthSymbolEquationOfType("__main", allFormulas, 2), "0");
+  EXPECT_STREQ(getNthSymbolInitialAssignmentOfType("__main", allFormulas, 2), "0");
+  EXPECT_STREQ(getNthSymbolAssignmentRuleOfType("__main", allFormulas, 2), "");
+  EXPECT_STREQ(getNthSymbolRateRuleOfType("__main", allFormulas, 2), "1");
+
+  //The bulk 'OfType' versions should agree with the singular versions above.
+  char** assignmentRules = getSymbolAssignmentRulesOfType("__main", allFormulas);
+  EXPECT_STREQ(assignmentRules[0], "");
+  EXPECT_STREQ(assignmentRules[1], "a+2");
+  EXPECT_STREQ(assignmentRules[2], "");
+
+  char** initialAssignments = getSymbolInitialAssignmentsOfType("__main", allFormulas);
+  EXPECT_STREQ(initialAssignments[0], "3");
+  EXPECT_STREQ(initialAssignments[1], "");
+  EXPECT_STREQ(initialAssignments[2], "0");
+
+  //Species/compartment-specific getters.
+  EXPECT_STREQ(getNthSymbolDisplayNameOfType("__main", allSpecies, 0), "the first species");
+  EXPECT_STREQ(getNthSymbolCompartmentOfType("__main", allSpecies, 0), "C1");
+  EXPECT_STREQ(getCompartmentForSymbol("__main", "S1"), "C1");
+  EXPECT_STREQ(getCompartmentForSymbol("__main", "a"), "default_compartment");
+
+  //Error cases:
+  EXPECT_TRUE(getNthSymbolEquationOfType("__main", allFormulas, 5) == NULL);
+  EXPECT_STRNE(getLastError(), "");
+  EXPECT_TRUE(getNthSymbolInitialAssignmentOfType("__main", allFormulas, 5) == NULL);
+  EXPECT_STRNE(getLastError(), "");
+  EXPECT_TRUE(getNthSymbolAssignmentRuleOfType("__main", allFormulas, 5) == NULL);
+  EXPECT_STRNE(getLastError(), "");
+  EXPECT_TRUE(getNthSymbolRateRuleOfType("__main", allFormulas, 5) == NULL);
+  EXPECT_STRNE(getLastError(), "");
+  EXPECT_TRUE(getNthSymbolCompartmentOfType("__main", allFormulas, 5) == NULL);
+  EXPECT_STRNE(getLastError(), "");
+  EXPECT_TRUE(getNthSymbolDisplayNameOfType("__main", allFormulas, 5) == NULL);
+  EXPECT_STRNE(getLastError(), "");
+  EXPECT_TRUE(getCompartmentForSymbol("__main", "nosuchsymbol") == NULL);
+  EXPECT_STRNE(getLastError(), "");
+  EXPECT_TRUE(getCompartmentForSymbol("nosuchmodule", "a") == NULL);
+  EXPECT_STRNE(getLastError(), "");
+
+  freeAll();
+}
+
+//Documents (and locks in) the caveat added to getSymbolAssignmentRulesOfType's
+//documentation: querying with rtype=allSymbols returns a reaction's kinetic law
+//in the 'assignment rule' slot, not just symbols that actually have one.
+TEST(AntimonyAPI, test_symbolAssignmentRulesOfTypeAllSymbolsIncludesKineticLaw)
+{
+  int ret = loadString("J0: S1 -> S2; k1*S1\n");
+  EXPECT_TRUE(ret != -1);
+
+  char** names = getSymbolNamesOfType("__main", allSymbols);
+  char** assignmentRules = getSymbolAssignmentRulesOfType("__main", allSymbols);
+  unsigned long numsymbols = getNumSymbolsOfType("__main", allSymbols);
+
+  bool foundIt = false;
+  for (unsigned long n=0; n<numsymbols; n++) {
+    if (string(names[n]) == "J0") {
+      EXPECT_STREQ(assignmentRules[n], "k1*S1");
+      foundIt = true;
+    }
+  }
+  EXPECT_TRUE(foundIt);
+
+  freeAll();
+}
+
+//This is the same model used (and already validated in detail) by test_printAll,
+//reused here so the expected reaction/interaction/DNA/event structure is known-good.
+static const char* kReactionsAndFriendsModel =
+    "model foo(a, b, c)\n"
+    "  a=3\n"
+    "  a' = 1\n"
+    "  b := a+2\n"
+    "  S1 -> S2; k1*S1\n"
+    "  J1: S2 -> ; k2*S2*S3\n"
+    "  E0: at(time>2): a = 0\n"
+    "  S2 in C1\n"
+    "  C1 = 1.5\n"
+    "  DNA1: P--Q--R\n"
+    "  DNA2: DNA1--S\n"
+    "  S3 -o J1;\n"
+    "end";
+
+TEST(AntimonyAPI, test_reactionSingularGetters)
+{
+  int ret = loadString(kReactionsAndFriendsModel);
+  EXPECT_TRUE(ret != -1);
+
+  EXPECT_TRUE(getNumReactions("foo") == 2);
+
+  //Reaction (and gene) names.
+  char** rxnnames = getReactionNames("foo");
+  EXPECT_STREQ(rxnnames[0], "_J0");
+  EXPECT_STREQ(rxnnames[1], "J1");
+  EXPECT_STREQ(getNthReactionName("foo", 0), "_J0");
+  EXPECT_STREQ(getNthReactionName("foo", 1), "J1");
+
+  //Reaction 0 (_J0): S1 -> S2 ; k1*S1
+  char** reactants0 = getNthReactionReactantNames("foo", 0);
+  EXPECT_STREQ(reactants0[0], "S1");
+  char** products0 = getNthReactionProductNames("foo", 0);
+  EXPECT_STREQ(products0[0], "S2");
+  EXPECT_STREQ(getNthReactionMthReactantName("foo", 0, 0), "S1");
+  EXPECT_STREQ(getNthReactionMthProductName("foo", 0, 0), "S2");
+
+  double* reactantstoich0 = getNthReactionReactantStoichiometries("foo", 0);
+  EXPECT_TRUE(reactantstoich0[0] == 1);
+  double* productstoich0 = getNthReactionProductStoichiometries("foo", 0);
+  EXPECT_TRUE(productstoich0[0] == 1);
+  EXPECT_TRUE(getNthReactionMthProductStoichiometries("foo", 0, 0) == 1);
+
+  EXPECT_STREQ(getNthReactionRate("foo", 0), "k1*S1");
+
+  //Reaction 1 (J1): S2 ->  ; k2*S2*S3 -- no products.
+  char** reactants1 = getNthReactionReactantNames("foo", 1);
+  EXPECT_STREQ(reactants1[0], "S2");
+  EXPECT_STREQ(getNthReactionRate("foo", 1), "k2*S2*S3");
+  EXPECT_TRUE(getNumProducts("foo", 1) == 0);
+
+  //Error cases:
+  EXPECT_TRUE(getNthReactionName("foo", 5) == NULL);
+  EXPECT_STRNE(getLastError(), "");
+  EXPECT_TRUE(getNthReactionReactantNames("foo", 5) == NULL);
+  EXPECT_STRNE(getLastError(), "");
+  EXPECT_TRUE(getNthReactionProductNames("foo", 5) == NULL);
+  EXPECT_STRNE(getLastError(), "");
+  EXPECT_TRUE(getNthReactionMthReactantName("foo", 0, 5) == NULL);
+  EXPECT_STRNE(getLastError(), "");
+  EXPECT_TRUE(getNthReactionMthProductName("foo", 0, 5) == NULL);
+  EXPECT_STRNE(getLastError(), "");
+  EXPECT_TRUE(getNthReactionReactantStoichiometries("foo", 5) == NULL);
+  EXPECT_STRNE(getLastError(), "");
+  EXPECT_TRUE(getNthReactionProductStoichiometries("foo", 5) == NULL);
+  EXPECT_STRNE(getLastError(), "");
+  EXPECT_TRUE(getNthReactionRate("foo", 5) == NULL);
+  EXPECT_STRNE(getLastError(), "");
+
+  freeAll();
+}
+
+TEST(AntimonyAPI, test_interactionSingularGetters)
+{
+  int ret = loadString(kReactionsAndFriendsModel);
+  EXPECT_TRUE(ret != -1);
+
+  EXPECT_TRUE(getNumInteractions("foo") == 1);
+
+  //Interaction 0 (_J1): S3 -o J1
+  char** interactors = getNthInteractionInteractorNames("foo", 0);
+  EXPECT_STREQ(interactors[0], "S3");
+  EXPECT_STREQ(getNthInteractionMthInteractorName("foo", 0, 0), "S3");
+
+  char** interactees = getNthInteractionInteracteeNames("foo", 0);
+  EXPECT_STREQ(interactees[0], "J1");
+  EXPECT_STREQ(getNthInteractionMthInteracteeName("foo", 0, 0), "J1");
+
+  EXPECT_TRUE(getNthInteractionDivider("foo", 0) == rdActivates);
+
+  //Error cases:
+  EXPECT_TRUE(getNthInteractionInteractorNames("foo", 5) == NULL);
+  EXPECT_STRNE(getLastError(), "");
+  EXPECT_TRUE(getNthInteractionInteracteeNames("foo", 5) == NULL);
+  EXPECT_STRNE(getLastError(), "");
+  EXPECT_TRUE(getNthInteractionMthInteractorName("foo", 0, 5) == NULL);
+  EXPECT_STRNE(getLastError(), "");
+  EXPECT_TRUE(getNthInteractionMthInteracteeName("foo", 0, 5) == NULL);
+  EXPECT_STRNE(getLastError(), "");
+
+  freeAll();
+}
+
+TEST(AntimonyAPI, test_dnaSingularGetters)
+{
+  int ret = loadString(kReactionsAndFriendsModel);
+  EXPECT_TRUE(ret != -1);
+
+  //Expanded strands: DNA1 is absorbed into DNA2, giving one strand P--Q--R--S.
+  EXPECT_TRUE(getNumDNAStrands("foo") == 1);
+  EXPECT_TRUE(getSizeOfNthDNAStrand("foo", 0) == 4);
+  char** strand = getNthDNAStrand("foo", 0);
+  EXPECT_STREQ(strand[0], "P");
+  EXPECT_STREQ(strand[1], "Q");
+  EXPECT_STREQ(strand[2], "R");
+  EXPECT_STREQ(strand[3], "S");
+
+  //Modular strands: DNA1 = P--Q--R, DNA2 = DNA1--S.
+  EXPECT_TRUE(getNumModularDNAStrands("foo") == 2);
+  char** modstrand0 = getNthModularDNAStrand("foo", 0);
+  EXPECT_STREQ(modstrand0[0], "P");
+  EXPECT_STREQ(modstrand0[1], "Q");
+  EXPECT_STREQ(modstrand0[2], "R");
+  char** modstrand1 = getNthModularDNAStrand("foo", 1);
+  EXPECT_STREQ(modstrand1[0], "DNA1");
+  EXPECT_STREQ(modstrand1[1], "S");
+
+  //Error cases:
+  EXPECT_TRUE(getSizeOfNthDNAStrand("foo", 5) == 0);
+  EXPECT_STRNE(getLastError(), "");
+  EXPECT_TRUE(getNthDNAStrand("foo", 5) == NULL);
+  EXPECT_STRNE(getLastError(), "");
+  EXPECT_TRUE(getNthModularDNAStrand("foo", 5) == NULL);
+  EXPECT_STRNE(getLastError(), "");
+
+  freeAll();
+}
+
+TEST(AntimonyAPI, test_nthEventName)
+{
+  int ret = loadString(kReactionsAndFriendsModel);
+  EXPECT_TRUE(ret != -1);
+
+  EXPECT_TRUE(getNumEvents("foo") == 1);
+  EXPECT_STREQ(getNthEventName("foo", 0), "E0");
+
+  EXPECT_TRUE(getNthEventName("foo", 5) == NULL);
+  EXPECT_STRNE(getLastError(), "");
+
+  freeAll();
+}
+
+//Bulk (non-Nth) event getters.  E0: at(time>2): a = 0.
+TEST(AntimonyAPI, test_eventBulkGetters)
+{
+  int ret = loadString(kReactionsAndFriendsModel);
+  EXPECT_TRUE(ret != -1);
+
+  char** eventnames = getEventNames("foo");
+  EXPECT_STREQ(eventnames[0], "E0");
+
+  EXPECT_TRUE(getNumAssignmentsForEvent("foo", 0) == 1);
+  EXPECT_STREQ(getNthAssignmentVariableForEvent("foo", 0, 0), "a");
+  EXPECT_STREQ(getNthAssignmentEquationForEvent("foo", 0, 0), "0");
+  EXPECT_STREQ(getTriggerForEvent("foo", 0), "(time > 2)");
+
+  //Error cases, out-of-range event index:
+  EXPECT_TRUE(getTriggerForEvent("foo", 5) == NULL);
+  EXPECT_STRNE(getLastError(), "");
+  EXPECT_TRUE(getNumAssignmentsForEvent("foo", 5) == 0);
+  EXPECT_STRNE(getLastError(), "");
+  EXPECT_TRUE(getNthAssignmentVariableForEvent("foo", 5, 0) == NULL);
+  EXPECT_STRNE(getLastError(), "");
+  EXPECT_TRUE(getNthAssignmentEquationForEvent("foo", 5, 0) == NULL);
+  EXPECT_STRNE(getLastError(), "");
+
+  //Out-of-range assignment index (event 0 is valid, but only has one
+  //assignment): still returns NULL without setting an error message.
+  EXPECT_TRUE(getNthAssignmentVariableForEvent("foo", 0, 5) == NULL);
+  EXPECT_TRUE(getNthAssignmentEquationForEvent("foo", 0, 5) == NULL);
+
+  freeAll();
+}
+
+//Bulk (non-Nth) interaction getters.  _J1: S3 -o J1.
+TEST(AntimonyAPI, test_interactionBulkGetters)
+{
+  int ret = loadString(kReactionsAndFriendsModel);
+  EXPECT_TRUE(ret != -1);
+
+  EXPECT_TRUE(getNumInteractors("foo", 0) == 1);
+  EXPECT_TRUE(getNumInteractees("foo", 0) == 1);
+
+  char*** interactors = getInteractorNames("foo");
+  EXPECT_STREQ(interactors[0][0], "S3");
+  char*** interactees = getInteracteeNames("foo");
+  EXPECT_STREQ(interactees[0][0], "J1");
+
+  rd_type* dividers = getInteractionDividers("foo");
+  EXPECT_TRUE(dividers[0] == rdActivates);
+
+  freeAll();
+}
+
+//Bulk (non-Nth) DNA strand getters.  Expanded: P--Q--R--S.  Modular: DNA1 (P--Q--R), DNA2 (DNA1--S).
+TEST(AntimonyAPI, test_dnaBulkGetters)
+{
+  int ret = loadString(kReactionsAndFriendsModel);
+  EXPECT_TRUE(ret != -1);
+
+  unsigned long* sizes = getDNAStrandSizes("foo");
+  EXPECT_TRUE(sizes[0] == 4);
+  char*** strands = getDNAStrands("foo");
+  EXPECT_STREQ(strands[0][0], "P");
+  EXPECT_STREQ(strands[0][3], "S");
+  EXPECT_TRUE(getIsNthDNAStrandOpen("foo", 0, true) == false);
+  EXPECT_TRUE(getIsNthDNAStrandOpen("foo", 0, false) == false);
+
+  unsigned long* modsizes = getModularDNAStrandSizes("foo");
+  EXPECT_TRUE(modsizes[0] == 3);
+  EXPECT_TRUE(modsizes[1] == 2);
+  EXPECT_TRUE(getIsNthModularDNAStrandOpen("foo", 0, true) == false);
+  EXPECT_TRUE(getIsNthModularDNAStrandOpen("foo", 1, false) == false);
+
+  //Error case (bad module name):
+  EXPECT_TRUE(getDNAStrandSizes("nosuchmodule") == NULL);
+  EXPECT_STRNE(getLastError(), "");
+  EXPECT_TRUE(getModularDNAStrandSizes("nosuchmodule") == NULL);
+  EXPECT_STRNE(getLastError(), "");
+
+  //Error case (out-of-range strand index):
+  EXPECT_TRUE(getIsNthDNAStrandOpen("foo", 5, true) == false);
+  EXPECT_STRNE(getLastError(), "");
+  EXPECT_TRUE(getIsNthModularDNAStrandOpen("foo", 5, true) == false);
+  EXPECT_STRNE(getLastError(), "");
+
+  freeAll();
+}
+
+//Bulk (non-Nth) reaction getters.  _J0: S1 -> S2; k1*S1.  J1: S2 -> ; k2*S2*S3.
+TEST(AntimonyAPI, test_reactionBulkGetters)
+{
+  int ret = loadString(kReactionsAndFriendsModel);
+  EXPECT_TRUE(ret != -1);
+
+  EXPECT_TRUE(getNumReactants("foo", 0) == 1);
+  EXPECT_TRUE(getNumReactants("foo", 1) == 1);
+
+  char*** reactants = getReactantNames("foo");
+  EXPECT_STREQ(reactants[0][0], "S1");
+  EXPECT_STREQ(reactants[1][0], "S2");
+
+  char*** products = getProductNames("foo");
+  EXPECT_STREQ(products[0][0], "S2");
+  EXPECT_TRUE(getNumProducts("foo", 1) == 0);
+
+  double** reactantstoich = getReactantStoichiometries("foo");
+  EXPECT_TRUE(reactantstoich[0][0] == 1);
+  double** productstoich = getProductStoichiometries("foo");
+  EXPECT_TRUE(productstoich[0][0] == 1);
+
+  EXPECT_TRUE(getNumReactionRates("foo") == 2);
+  char** rates = getReactionRates("foo");
+  EXPECT_STREQ(rates[0], "k1*S1");
+  EXPECT_STREQ(rates[1], "k2*S2*S3");
+
+  freeAll();
+}
+
+//Values here match the already-validated stoichiometry matrix in test_printAll's output.
+TEST(AntimonyAPI, test_stoichiometryMatrix)
+{
+  int ret = loadString(kReactionsAndFriendsModel);
+  EXPECT_TRUE(ret != -1);
+
+  EXPECT_TRUE(getStoichiometryMatrixNumColumns("foo") == 2);
+  EXPECT_TRUE(getStoichiometryMatrixNumRows("foo") == 3);
+
+  char** columns = getStoichiometryMatrixColumnLabels("foo");
+  EXPECT_STREQ(columns[0], "_J0");
+  EXPECT_STREQ(columns[1], "J1");
+
+  char** rows = getStoichiometryMatrixRowLabels("foo");
+  EXPECT_STREQ(rows[0], "S1");
+  EXPECT_STREQ(rows[1], "S2");
+  EXPECT_STREQ(rows[2], "S3");
+
+  double** matrix = getStoichiometryMatrix("foo");
+  EXPECT_TRUE(matrix[0][0] == -1); //S1, _J0
+  EXPECT_TRUE(matrix[0][1] == 0);  //S1, J1
+  EXPECT_TRUE(matrix[1][0] == 1);  //S2, _J0
+  EXPECT_TRUE(matrix[1][1] == -1); //S2, J1
+  EXPECT_TRUE(matrix[2][0] == 0);  //S3, _J0
+  EXPECT_TRUE(matrix[2][1] == 0);  //S3, J1
+
+  freeAll();
+}
+
+//getTypeOfSymbol/getTypeOfEquationForSymbol, using explicit const/var declarations
+//so the const-vs-variable heuristic isn't in play.
+TEST(AntimonyAPI, test_typeOfSymbolAndEquationType)
+{
+  int ret = loadString(
+    "const species S1\n"
+    "var species S2\n"
+    "a = 3\n"
+    "b := a+2\n"
+    "rr = 0\n"
+    "rr' = 1\n"
+    );
+  EXPECT_TRUE(ret != -1);
+
+  EXPECT_TRUE(getTypeOfSymbol("__main", "S1") == constSpecies);
+  EXPECT_TRUE(getTypeOfSymbol("__main", "S2") == varSpecies);
+  EXPECT_TRUE(getTypeOfSymbol("__main", "b") == varFormulas);
+  EXPECT_TRUE(getTypeOfSymbol("__main", "rr") == varFormulas);
+
+  EXPECT_TRUE(getTypeOfEquationForSymbol("__main", "a") == formulaINITIAL);
+  EXPECT_TRUE(getTypeOfEquationForSymbol("__main", "b") == formulaASSIGNMENT);
+  EXPECT_TRUE(getTypeOfEquationForSymbol("__main", "rr") == formulaRATE);
+
+  //Error cases:
+  EXPECT_TRUE(getTypeOfSymbol("__main", "nosuchsymbol") == allUnknown);
+  EXPECT_STRNE(getLastError(), "");
+  EXPECT_TRUE(getTypeOfSymbol("nosuchmodule", "a") == allUnknown);
+  EXPECT_STRNE(getLastError(), "");
+  EXPECT_TRUE(getTypeOfEquationForSymbol("__main", "nosuchsymbol") == formulaINITIAL);
+  EXPECT_STREQ(getLastError(), "No such variable: 'nosuchsymbol'.");
+
+  freeAll();
+}
+
+//Bulk (non-Nth) symbol-property getters, using the same model (and known-good
+//values) as test_nthSymbolOfTypeGetters above.
+TEST(AntimonyAPI, test_symbolBulkGetters)
+{
+  int ret = loadString(
+    "a = 3\n"
+    "b := a+2\n"
+    "rr = 0\n"
+    "rr' = 1\n"
+    "species S1 in C1;\n"
+    "S1 is \"the first species\"\n"
+    "C1 = 1.5\n"
+    );
+  EXPECT_TRUE(ret != -1);
+
+  //allFormulas, in declaration order: a, b, rr.
+  EXPECT_STREQ(getNthSymbolNameOfType("__main", allFormulas, 0), "a");
+  EXPECT_STREQ(getNthSymbolNameOfType("__main", allFormulas, 1), "b");
+  EXPECT_STREQ(getNthSymbolNameOfType("__main", allFormulas, 2), "rr");
+
+  char** equations = getSymbolEquationsOfType("__main", allFormulas);
+  EXPECT_STREQ(equations[0], "3");
+  EXPECT_STREQ(equations[1], "a+2");
+  EXPECT_STREQ(equations[2], "0");
+
+  char** rateRules = getSymbolRateRulesOfType("__main", allFormulas);
+  EXPECT_STREQ(rateRules[0], "");
+  EXPECT_STREQ(rateRules[1], "");
+  EXPECT_STREQ(rateRules[2], "1");
+
+  char** compartments = getSymbolCompartmentsOfType("__main", allSpecies);
+  EXPECT_STREQ(compartments[0], "C1");
+
+  //Error cases:
+  EXPECT_TRUE(getNthSymbolNameOfType("__main", allFormulas, 5) == NULL);
+  EXPECT_STRNE(getLastError(), "");
+
+  freeAll();
+}
+
+static string trimTrailingWhitespace(string s)
+{
+  while (!s.empty() && (s.back() == '\n' || s.back() == '\r' || s.back() == ' ')) {
+    s.pop_back();
+  }
+  return s;
+}
+
+//The various 'write*File' functions have no dedicated coverage anywhere in the
+//suite (the compareFileTranslation/compareStringTranslation helpers used
+//elsewhere only ever call the get*String siblings), so this compares each
+//file's contents against its already-tested get*String counterpart.
+TEST(AntimonyAPI, test_writeFiles)
+{
+  int ret = loadString("a=3\nb := a+2\n");
+  EXPECT_TRUE(ret != -1);
+
+  string antimonyExpected(getAntimonyString(NULL));
+  string sbmlExpected(getSBMLString(NULL));
+  string compsbmlExpected(getCompSBMLString(NULL));
+
+  string antimonyFile = "test_write_output_antimony.txt";
+  EXPECT_TRUE(writeAntimonyFile(antimonyFile.c_str(), NULL) == 1);
+  ifstream antimonyIn(antimonyFile.c_str());
+  stringstream antimonyBuf;
+  antimonyBuf << antimonyIn.rdbuf();
+  antimonyIn.close();
+  EXPECT_STREQ(antimonyBuf.str().c_str(), antimonyExpected.c_str());
+  remove(antimonyFile.c_str());
+
+  string sbmlFile = "test_write_output_sbml.xml";
+  EXPECT_TRUE(writeSBMLFile(sbmlFile.c_str(), NULL) != 0);
+  ifstream sbmlIn(sbmlFile.c_str());
+  stringstream sbmlBuf;
+  sbmlBuf << sbmlIn.rdbuf();
+  sbmlIn.close();
+  EXPECT_STREQ(trimTrailingWhitespace(sbmlBuf.str()).c_str(), trimTrailingWhitespace(sbmlExpected).c_str());
+  remove(sbmlFile.c_str());
+
+  string compsbmlFile = "test_write_output_compsbml.xml";
+  EXPECT_TRUE(writeCompSBMLFile(compsbmlFile.c_str(), NULL) != 0);
+  ifstream compsbmlIn(compsbmlFile.c_str());
+  stringstream compsbmlBuf;
+  compsbmlBuf << compsbmlIn.rdbuf();
+  compsbmlIn.close();
+  EXPECT_STREQ(trimTrailingWhitespace(compsbmlBuf.str()).c_str(), trimTrailingWhitespace(compsbmlExpected).c_str());
+  remove(compsbmlFile.c_str());
+
+#ifndef NCELLML
+  string cellmlExpected(getCellMLString(NULL));
+  string cellmlFile = "test_write_output_cellml.xml";
+  EXPECT_TRUE(writeCellMLFile(cellmlFile.c_str(), NULL) == 1);
+  ifstream cellmlIn(cellmlFile.c_str());
+  stringstream cellmlBuf;
+  cellmlBuf << cellmlIn.rdbuf();
+  cellmlIn.close();
+  EXPECT_STREQ(trimTrailingWhitespace(cellmlBuf.str()).c_str(), trimTrailingWhitespace(cellmlExpected).c_str());
+  remove(cellmlFile.c_str());
+#endif
+
+  //Error case: a directory that doesn't exist can't be opened for writing.
+  EXPECT_TRUE(writeAntimonyFile("nonexistent_dir_xyz/out.txt", NULL) == 0);
+  EXPECT_STRNE(getLastError(), "");
+
+  freeAll();
+}
+
+TEST(AntimonyAPI, test_writeSBMLTimestamp)
+{
+  int ret = loadString("a=3");
+  EXPECT_TRUE(ret != -1);
+
+  //The timestamp comment libSBML writes is bundled together with the
+  //program name/version line, which only gets written at all when
+  //GetWriteNameToSBML() is true. The test harness's main() sets this to
+  //'false' for the whole suite (so SBML output stays byte-for-byte
+  //comparable elsewhere), which would otherwise make this setting look
+  //like a no-op. Temporarily undo that here so this test actually
+  //exercises the real code path, then restore it for the rest of the suite.
+  bool oldWriteName = g_registry.GetWriteNameToSBML();
+  g_registry.SetWriteNameToSBML(true);
+
+  setWriteSBMLTimestamp(false);
+  string baseline(getSBMLString(NULL));
+
+  setWriteSBMLTimestamp(true);
+  string withTimestamp(getSBMLString(NULL));
+  EXPECT_STRNE(withTimestamp.c_str(), baseline.c_str());
+
+  setWriteSBMLTimestamp(false);
+  string reverted(getSBMLString(NULL));
+  EXPECT_STREQ(reverted.c_str(), baseline.c_str());
+
+  g_registry.SetWriteNameToSBML(oldWriteName);
+  freeAll();
+}
+
+//BIOMD0000000118.xml is a known-good fixture (already used by
+//TestAntimonyImport's test_BIOMD0000000118) that declares a single function
+//definition, 'GAMMA(VV, theta, sigma)'.
+TEST(AntimonyAPI, test_removeFunctionDefinitions)
+{
+  string dir(TestDataDirectory);
+  string filename = dir + "BIOMD0000000118.xml";
+
+  //The test harness's main() sets this to 'false' for the whole suite (see
+  //main.cpp), so other tests that round-trip Antimony<->SBML keep their
+  //'function' blocks intact. Don't assume either value is the prevailing
+  //default -- set both explicitly and restore the harness's setting after.
+  bool oldRemove = g_registry.GetRemoveFunctionDefinitions();
+
+  setRemoveFunctionDefinitions(true);
+  long ret = loadSBMLFile(filename.c_str());
+  EXPECT_TRUE(ret != -1);
+  EXPECT_TRUE(getNumUserFunctions() == 0);
+  freeAll();
+  clearPreviousLoads();
+
+  setRemoveFunctionDefinitions(false);
+  ret = loadSBMLFile(filename.c_str());
+  EXPECT_TRUE(ret != -1);
+  EXPECT_TRUE(getNumUserFunctions() == 1);
+  EXPECT_STREQ(getNthUserFunctionName(0), "GAMMA");
+  EXPECT_TRUE(getNumUserFunctionArguments(0) == 3);
+  char** args = getNthUserFunctionArguments(0);
+  EXPECT_STREQ(args[0], "VV");
+  EXPECT_STREQ(args[1], "theta");
+  EXPECT_STREQ(args[2], "sigma");
+
+  setRemoveFunctionDefinitions(oldRemove);
+  freeAll();
+  clearPreviousLoads();
+}
+
+TEST(AntimonyAPI, test_warnings)
+{
+  //S2 is declared but never made a reactant or product of J0, so the
+  //'species_end' reaction-arc layout term below can't be satisfied.
+  long ret = loadString(
+    "species S1, S2\n"
+    "J0: S1->;\n"
+    "J0.S2.species_end = { 550.02, 20.83 }\n"
+    );
+  EXPECT_TRUE(ret != -1);
+
+  //Layout warnings are only generated when the model is translated to
+  //SBML; force that here in case it hasn't happened already.
+  //char* sbml = getSBMLString(NULL);
+  //EXPECT_TRUE(sbml != NULL);
+
+  char* warnings = getWarnings();
+  EXPECT_TRUE(warnings != NULL);
+  if (warnings != NULL) {
+    EXPECT_TRUE(strstr(warnings, "'S2' is not a participant in that reaction") != NULL)
+        << "Got: " << warnings;
+  }
+
+  freeAll();
+  clearPreviousLoads();
+}
+
+
+
   //LIB_EXTERN void setBareNumbersAreDimensionless(bool dimensionless);

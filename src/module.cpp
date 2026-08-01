@@ -1663,7 +1663,6 @@ const Variable* Module::GetNthConstVariableOfType(return_type rtype, size_t n, b
 {
   const vector<Variable*>& result = GetVariablesOfTypeCached(rtype, comp);
   if (n >= result.size()) {
-    assert(false);
     return NULL;
   }
   return result[n];

@@ -180,7 +180,7 @@ jobs:
         if: matrix.platform.os_type != 'windows'
         uses: actions/cache@main
         with:
-          path: ${RUNNER_WORKSPACE}/.ccache
+          path: ${{ runner.workspace }}/.ccache
           key:
             ${{ runner.os }}-${{ steps.ccache_cache_timestamp.outputs.timestamp
             }}
@@ -280,7 +280,6 @@ jobs:
           -DCMAKE_C_COMPILER_LAUNCHER=${COMPILER_LAUNCHER} \
           -DCMAKE_CXX_COMPILER_LAUNCHER=${COMPILER_LAUNCHER} \
           -DCMAKE_BUILD_TYPE=${{ matrix.platform.build_type }} \
-          -DUSE_UNIVERSAL_BINARIES=OFF \
           -DCMAKE_OSX_ARCHITECTURES=${{ matrix.platform.arch }} \
           -DCMAKE_INSTALL_PREFIX="${RUNNER_WORKSPACE}/install-antimony" \
           ${ANT_DEPENDENCIES_INSTALL_PREFIX} \
@@ -396,14 +395,18 @@ jobs:
         run: |
           cd ${RUNNER_WORKSPACE}/install-antimony/bindings/python
           if [ "${{ matrix.platform.os_type }}" == 'windows' ]; then
-            ${{env.python_exe}} -m pip install setuptools wheel
-            ${{env.python_exe}} setup.py bdist_wheel
+            ${{env.python_exe}} -m pip install setuptools wheel build
+            ${{env.python_exe}} -m build --wheel --no-isolation --outdir dist
           elif [ "${{ matrix.platform.os_type }}" == 'manylinux' ]; then
-            python${{ matrix.python_version }} -m pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org setuptools wheel
-            python${{ matrix.python_version }} setup.py bdist_wheel
+            python${{ matrix.python_version }} -m pip install --root-user-action=ignore --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org setuptools wheel build
+            python${{ matrix.python_version }} -m build --wheel --no-isolation --outdir dist
+          elif [ "${{ matrix.platform.os_type }}" == 'macos' ]; then
+            export MACOSX_DEPLOYMENT_TARGET="$(sw_vers -productVersion | cut -d '.' -f 1).0"
+            python${{ matrix.python_version }} -m pip install setuptools wheel build
+            python${{ matrix.python_version }} -m build --wheel --no-isolation --outdir dist
           else
-            python${{ matrix.python_version }} -m pip install setuptools wheel
-            python${{ matrix.python_version }} setup.py bdist_wheel
+            python${{ matrix.python_version }} -m pip install setuptools wheel build
+            python${{ matrix.python_version }} -m build --wheel --no-isolation --outdir dist
           fi
 
       - name: Rename Python wheel artifacts

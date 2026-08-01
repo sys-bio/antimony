@@ -31,7 +31,12 @@ endif()
 # C++14 minimum: required by the vendored GoogleTest 1.16.x (see
 # src/test/googletest/README.md), which uses std::make_index_sequence
 # and friends internally.
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+# MSVC doesn't understand the GNU-style -std= flag (and already
+# defaults to a sufficiently modern standard), so only add it for
+# GCC/Clang to avoid a D9002 "unknown option" warning on every file.
+if(NOT MSVC)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+endif()
 
 include (InstallRequiredSystemLibraries)
 include (CMakeTestCCompiler)
