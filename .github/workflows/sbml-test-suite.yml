@@ -100,7 +100,15 @@ jobs:
           echo "Downloading ${asset_url}"
           curl -fL "$asset_url" -o sbml-test-suite/semantic_tests.zip
           unzip -q sbml-test-suite/semantic_tests.zip -d sbml-test-suite/extracted
-          settings_file=$(find sbml-test-suite/extracted -name '*-settings.txt' | head -n 1)
+          # -quit makes find stop after the first match itself, rather than
+          # relying on a downstream `head -n 1` to cut it off -- piping into
+          # head closes the pipe early and GNU find treats that broken pipe
+          # as a fatal write error instead of exiting quietly.
+          settings_file=$(find sbml-test-suite/extracted -name '*-settings.txt' -print -quit)
+          if [ -z "$settings_file" ]; then
+            echo "::error::No *-settings.txt files found under sbml-test-suite/extracted -- unexpected archive layout."
+            exit 1
+          fi
           cases_dir=$(dirname "$settings_file")
           echo "SBML_TEST_SUITE_DIR=$(dirname "$cases_dir")" >> "${GITHUB_ENV}"
 
