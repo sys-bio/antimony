@@ -243,10 +243,13 @@ jobs:
           curl -LO "https://github.com/${{ matrix.antimony_deps_owner }}/${{ matrix.antimony_deps_repo }}/releases/download/${{ matrix.antimony_deps_release_version }}/$binary_file_name.zip"
           unzip -q $binary_file_name.zip
           rm $binary_file_name.zip
+          if [ -d "$binary_file_name" ]; then
+            mv "$binary_file_name"/* .
+            rmdir "$binary_file_name"
+          fi
+
           echo ANT_DEPENDENCIES_INSTALL_PREFIX="-DANT_DEPENDENCIES_INSTALL_PREFIX=${RUNNER_WORKSPACE}/${{ matrix.antimony_deps_name }}-binaries" >> "${GITHUB_ENV}"
 
-          echo "--- extracted layout ---"
-          find . -maxdepth 3
 
           #if [ "${{ matrix.platform.os_type }}" == 'windows' ]; then
           #  echo EXPAT_LIBRARY="-DEXPAT_LIBRARY=${RUNNER_WORKSPACE}/${{ matrix.antimony_deps_name }}-binaries/lib/${{ matrix.platform.expat_lib_name }}" >> "${GITHUB_ENV}"
@@ -400,14 +403,14 @@ jobs:
         run: |
           cd ${RUNNER_WORKSPACE}/install-antimony/bindings/python
           if [ "${{ matrix.platform.os_type }}" == 'windows' ]; then
-            ${{env.python_exe}} -m pip install setuptools wheel
-            ${{env.python_exe}} setup.py bdist_wheel
+            ${{env.python_exe}} -m pip install setuptools wheel build
+            ${{env.python_exe}} -m build --wheel --no-isolation --outdir dist
           elif [ "${{ matrix.platform.os_type }}" == 'manylinux' ]; then
             python${{ matrix.python_version }} -m pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org setuptools wheel
             python${{ matrix.python_version }} setup.py bdist_wheel
           else
-            python${{ matrix.python_version }} -m pip install setuptools wheel
-            python${{ matrix.python_version }} setup.py bdist_wheel
+            python${{ matrix.python_version }} -m pip install setuptools wheel build
+            python${{ matrix.python_version }} -m build --wheel --no-isolation --outdir dist
           fi
 
       - name: Rename Python wheel artifacts
