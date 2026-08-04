@@ -52,7 +52,9 @@ int main(int argc, char** argv)
         }
         //cout << "Dirname = " << dirname << endl;
         string command = "mkdir -p rehash/" + dirname;
-        system(command.c_str());
+        if (system(command.c_str()) != 0) {
+          cout << "Problem creating directory rehash/" << dirname << endl;
+        }
         size_t modnum = nummods-1;
         string antimonyname = "rehash/" + dirname + "/" + filename;
         //antimonyname += ".txt";

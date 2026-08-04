@@ -11,8 +11,8 @@ project(libantimony)
 # Set up version information.
 #
 SET(LIBANTIMONY_VERSION_MAJOR 3)
-SET(LIBANTIMONY_VERSION_MINOR 1)
-SET(LIBANTIMONY_VERSION_PATCH ".3")
+SET(LIBANTIMONY_VERSION_MINOR 2)
+SET(LIBANTIMONY_VERSION_PATCH ".0")
 SET(LIBANTIMONY_VERSION_RELEASE "")
 
 
@@ -31,7 +31,12 @@ endif()
 # C++14 minimum: required by the vendored GoogleTest 1.16.x (see
 # src/test/googletest/README.md), which uses std::make_index_sequence
 # and friends internally.
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+# MSVC doesn't understand the GNU-style -std= flag (and already
+# defaults to a sufficiently modern standard), so only add it for
+# GCC/Clang to avoid a D9002 "unknown option" warning on every file.
+if(NOT MSVC)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+endif()
 
 include (InstallRequiredSystemLibraries)
 include (CMakeTestCCompiler)

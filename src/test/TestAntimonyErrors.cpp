@@ -98,7 +98,7 @@ TEST(AntimonyErrors, non_ascii)
     freeAll();
     clearPreviousLoads();
 
-    ret = loadString("â€\na = 3");
+    ret = loadString("\xe2\x80\na = 3");
     EXPECT_TRUE(ret == -1);
     err = getLastError();
     EXPECT_TRUE(err != NULL);
