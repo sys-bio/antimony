@@ -244,6 +244,10 @@ jobs:
           unzip -q $binary_file_name.zip
           rm $binary_file_name.zip
           echo ANT_DEPENDENCIES_INSTALL_PREFIX="-DANT_DEPENDENCIES_INSTALL_PREFIX=${RUNNER_WORKSPACE}/${{ matrix.antimony_deps_name }}-binaries" >> "${GITHUB_ENV}"
+
+          echo "--- extracted layout ---"
+          find . -maxdepth 3
+
           #if [ "${{ matrix.platform.os_type }}" == 'windows' ]; then
           #  echo EXPAT_LIBRARY="-DEXPAT_LIBRARY=${RUNNER_WORKSPACE}/${{ matrix.antimony_deps_name }}-binaries/lib/${{ matrix.platform.expat_lib_name }}" >> "${GITHUB_ENV}"
           #fi
