@@ -1475,13 +1475,22 @@ void Module::LoadSBML(Model* sbml)
           if (specref->isSetStoichiometry() && !stoichvar->HasFormula()) {
             Formula formula;
             formula.AddNum(specref->getStoichiometry());
+            if (specref->getLevel() == 1 && specref->getDenominator() != 1) {
+              formula.AddMathThing('/');
+              formula.AddNum(specref->getDenominator());
+            }
             stoichvar->SetFormula(&formula);
           }
           TranslateRulesAndAssignmentsTo(specref, stoichvar);
         }
         else {
           if (specref->isSetStoichiometry()) {
-            stoichiometry = specref->getStoichiometry();
+            if (specref->getLevel() == 1 && specref->getDenominator() != 1) {
+              stoichiometry = specref->getStoichiometry()/specref->getDenominator();
+            }
+            else {
+              stoichiometry = specref->getStoichiometry();
+            }
           }
         }
         sbmlname = specref->getSpecies();
