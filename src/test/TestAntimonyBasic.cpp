@@ -521,3 +521,10 @@ TEST(AntimonyBasic, test_modelConversionFactor)
 {
   compareFileTranslation("model_conversion_factor");
 }
+
+TEST(AntimonyBasic, test_function_flattening_with_predefined_constants)
+{
+  setRemoveFunctionDefinitions(true);
+  compareFileTranslation("functions_with_constants");
+  setRemoveFunctionDefinitions(false);
+}
