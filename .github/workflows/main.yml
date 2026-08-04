@@ -322,32 +322,17 @@ jobs:
 
       # Valgrind is Linux-only (no Windows support, weak/no Apple Silicon
       # support), so this only runs on one leg of the matrix rather than
-      # across every platform/config combination. See MEMORYCHECK_* in the
-      # root CMakeLists.txt and valgrind.supp for the suppressions file.
-      #
-      # This runs automatically on every push/PR, against the release build
-      # (which has -g added just for this leg -- see "Configure CMake for
-      # Antimony" above -- so it's still symbol-rich) so it's much faster
-      # than a full debug-build run and still gives usable stack traces, at
-      # the cost of somewhat less precise line numbers due to optimization
-      # (inlining etc.), and a small risk that -O3 could eliminate a
-      # provably-dead allocation an unoptimized debug build wouldn't.
+      # across every platform/config combination. 
       #
       # For a slower but fully accurate debug-build memcheck run (e.g. to
       # dig into something this one flagged), trigger
       # .github/workflows/valgrind-debug-memcheck.yml manually from the
-      # Actions tab -- see the comment at the top of that file for why it's
-      # a separate workflow rather than another leg here.
+      # Actions tab.
       #
       # `ctest -T memcheck` only prints a per-test defect *count* to the
       # console -- the actual valgrind report (stack traces, "definitely
       # lost" byte counts, etc.) goes to a per-test log file instead:
-      # Testing/Temporary/MemoryChecker.<test-id>.log, one per test. Rather
-      # than running every test as one opaque block and only finding out
-      # what broke at the very end, run them in numbered chunks (via
-      # `ctest -I <start>,<end>`) and print any defects from each chunk
-      # immediately after it finishes, so problems surface within minutes
-      # rather than at the end of the whole run.
+      # Testing/Temporary/MemoryChecker.<test-id>.log, one per test.
       - name: Run Antimony tests under valgrind (memcheck), in chunks
         if : matrix.platform.name == 'ubuntu-latest-release'
         shell: bash

@@ -36,10 +36,16 @@ jobs:
           mkdir -p "${libroadrunner_deps_name}-binaries"
           cd "${libroadrunner_deps_name}-binaries"
           release_version=$(gh api "repos/${libroadrunner_deps_owner}/${libroadrunner_deps_repo}/releases/latest" --jq '.tag_name')
+          if [ -z "$release_version" ]; then
+            echo "::error::Failed to resolve the latest ${libroadrunner_deps_name} release tag."
+            exit 1
+          fi
           echo "Using latest ${libroadrunner_deps_name} release: ${release_version}"
           os_version=$(lsb_release -rs | cut -d '.' -f 1)
           binary_file_name="${libroadrunner_deps_name}-ubuntu-${os_version}-x86_64-Release"
-          curl -LO "https://github.com/${libroadrunner_deps_owner}/${libroadrunner_deps_repo}/releases/download/${release_version}/${binary_file_name}.zip"
+          download_url="https://github.com/${libroadrunner_deps_owner}/${libroadrunner_deps_repo}/releases/download/${release_version}/${binary_file_name}.zip"
+          echo "Downloading ${download_url}"
+          curl -fLO "${download_url}"
           unzip -q "${binary_file_name}.zip"
           rm "${binary_file_name}.zip"
           echo "ANT_DEPENDENCIES_INSTALL_PREFIX=-DANT_DEPENDENCIES_INSTALL_PREFIX=${RUNNER_WORKSPACE}/${libroadrunner_deps_name}-binaries" >> "${GITHUB_ENV}"
@@ -87,7 +93,12 @@ jobs:
           mkdir -p sbml-test-suite
           asset_url=$(gh api repos/sbmlteam/sbml-test-suite/releases/latest \
             --jq '.assets[] | select(.name | startswith("semantic_tests")) | .browser_download_url')
-          curl -L "$asset_url" -o sbml-test-suite/semantic_tests.zip
+          if [ -z "$asset_url" ]; then
+            echo "::error::Failed to find a semantic_tests asset in the latest sbml-test-suite release."
+            exit 1
+          fi
+          echo "Downloading ${asset_url}"
+          curl -fL "$asset_url" -o sbml-test-suite/semantic_tests.zip
           unzip -q sbml-test-suite/semantic_tests.zip -d sbml-test-suite/extracted
           settings_file=$(find sbml-test-suite/extracted -name '*-settings.txt' | head -n 1)
           cases_dir=$(dirname "$settings_file")
