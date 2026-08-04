@@ -1,25 +1,26 @@
-//Created by libAntimony v2.5
+// Created by libAntimony v3.2.0
 model foo()
 
   // Variable initializations:
   Y1 = ;
   DELAY1 = ;
   PRIORITY1 = ;
-  Q1 = ;
   Z1 = ;
+  Q1 = ;
   y2 = ;
   delay2 = ;
   priority2 = ;
-  q2 = ;
   z2 = ;
+  q2 = ;
+
+  // Other declarations:
+  var Z1, Q1, z2, q2;
+  const Y1, DELAY1, PRIORITY1, y2, delay2, priority2;
 
   // Events:
   E1: at DELAY1 after Y1 > 3, priority = PRIORITY1: Z1 = 0, Q1 = 0;
   e2: at delay2 after y2 > 3, priority = priority2: z2 = 0, q2 = 0;
 
-  //Other declarations:
-  var Q1, Z1, q2, z2;
-  const Y1, DELAY1, PRIORITY1, y2, delay2, priority2;
 end
 
 model *bar()
@@ -27,6 +28,6 @@ model *bar()
   // Sub-modules, and any changes to those submodules:
   A: foo();
 
-  //Deleted elements from submodels:
+  // Deleted elements from submodels:
   delete A.Z1;
 end

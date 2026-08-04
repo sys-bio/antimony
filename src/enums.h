@@ -38,6 +38,7 @@ enum rd_type {rdBecomes = 0, rdActivates, rdInhibits, rdInfluences, rdBecomesIrr
  * - varGeneProductAssociation: A gene product association (as defined in the FBC package)
  * - varSpeciesCharge: The charge of a species (defined in the FBC package)
  * - varSpeciesChemicalFormula: The chemical formula of a species (defined in the FBC package)
+ * - varSpeciesConversionFactor: A species' conversion factor, a reference to an existing parameter
  * - varKineticLawWrapper: The kineticLaw sub-object of a reaction, addressed as 'reaction.kineticLaw' (used to set its sboTerm, annotations, etc. separately from the reaction itself)
  */
 
@@ -66,6 +67,7 @@ enum var_type {varSpeciesUndef = 0,
                varGeneProductAssociation,
                varSpeciesCharge,
                varSpeciesChemicalFormula,
+               varSpeciesConversionFactor,
                varKineticLawWrapper,
                };
 /**
@@ -100,6 +102,7 @@ enum var_type {varSpeciesUndef = 0,
   * - allGeneProducts:   All gene products (as defined in the FBC package).
   * - allGeneProductAssociations: All gene product associations (as defined in the FBC package).
   * - allSpeciesFbcInfo: A species' charge and/or chemical formula (as defined in the FBC package).
+  * - allSpeciesConversionFactors: A species' conversion factor.
   */
 enum return_type {allSymbols = 0,
                   allSpecies,
@@ -131,6 +134,7 @@ enum return_type {allSymbols = 0,
                   allGeneProducts,
                   allGeneProductAssociations,
                   allSpeciesFbcInfo,
+                  allSpeciesConversionFactors,
 };
 
 /**

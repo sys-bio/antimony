@@ -571,6 +571,7 @@ void Module::CreateCellMLComponent(Module* topmod)
     case varGeneProductAssociation:
     case varSpeciesCharge:
     case varSpeciesChemicalFormula:
+    case varSpeciesConversionFactor:
       //Need to figure out what to do with these.
         assert(false);
         break;
