@@ -31,17 +31,20 @@ CASE_DIRNAME_RE = re.compile(r"^\d{5}$")
 
 # Known, expected roadrunner limitation: it refuses to simulate a model with
 # a named stoichiometry governed by an assignment/rate rule (a variable
-# stoichiometry), even though that's valid SBML. This can trip on the
-# original model, the round-tripped model, or both (Antimony's canonical
-# output for a variable stoichiometry -- a named speciesReference with an
-# assignment rule -- doesn't always match the input's encoding, e.g. an L1/L2
-# stoichiometryMath). Anything else that keeps a simulation from running is
-# treated as a real failure, not this known limitation.
+# stoichiometry), even though that's valid SBML. Antimony's canonical output
+# for a variable stoichiometry -- a named speciesReference with an
+# assignment rule -- doesn't always match the input's encoding (e.g. an L1/L2
+# stoichiometryMath), so this can turn a model roadrunner *could* simulate
+# into one it can't, purely as a side effect of round-tripping.
 UNSUPPORTED_VARIABLE_STOICHIOMETRY_RE = re.compile(r"variable stoichiometr", re.IGNORECASE)
 
 
 def _is_unsupported_variable_stoichiometry(exc):
     return exc is not None and bool(UNSUPPORTED_VARIABLE_STOICHIOMETRY_RE.search(str(exc)))
+
+
+def _same_error(a, b):
+    return a is not None and b is not None and str(a) == str(b)
 
 
 def discover_cases(root):
@@ -150,11 +153,13 @@ def test_roundtrip(sbml_case):
     antimony.clearPreviousLoads()
 
     # Some models use constructs roadrunner can't simulate at all (e.g.
-    # algebraic rules, or named/variable stoichiometries). That's a
-    # roadrunner limitation, not a round-trip problem, so the same thing should
-    # happen both before and after the round trip.  One exception: 
-    # StoichioMetryMath can be obviously constant and therefore simulatable
-    # but not after being round-tripped through Antimony.
+    # algebraic rules). That's a roadrunner limitation, not a round-trip
+    # problem, so it's fine as long as the *same* error happens both before
+    # and after the round trip. The one exception is variable stoichiometry:
+    # a stoichiometryMath can be simulatable in its original form but not
+    # after being canonicalized by Antimony's round trip, so it's OK for the
+    # original to succeed while only the round-tripped model fails, but only
+    # for that specific error.
     original_result, original_error = _try_simulate(sbml_path, settings, selections)
 
     load_index = antimony.loadSBMLFile(sbml_path)
@@ -172,27 +177,23 @@ def test_roundtrip(sbml_case):
     roundtrip_result, roundtrip_error = _try_simulate(roundtripped_sbml, settings, selections)
 
     if original_error is not None or roundtrip_error is not None:
-        # Only the known "variable stoichiometry" limitation is treated as
-        # non-fatal. Anything else that kept a simulation from running is a
-        # real problem and should surface as one.
-        if not (
-            _is_unsupported_variable_stoichiometry(original_error)
-            or _is_unsupported_variable_stoichiometry(roundtrip_error)
-        ):
+        if _same_error(original_error, roundtrip_error):
+            outcome = "roadrunner raised the same error simulating both the original and the round-tripped model"
+        elif original_error is None and _is_unsupported_variable_stoichiometry(roundtrip_error):
+            outcome = "roadrunner could simulate the original model but not the round-tripped model"
+        else:
+            # Anything else -- a one-sided failure that isn't the known
+            # variable-stoichiometry exception, or a symmetric failure with
+            # two *different* errors -- is a real problem, not a known
+            # limitation.
             raise original_error if original_error is not None else roundtrip_error
 
-        if original_error is not None and roundtrip_error is not None:
-            outcome = "roadrunner could not simulate either the original or the round-tripped model"
-        elif original_error is not None:
-            outcome = "roadrunner could simulate the round-tripped model but not the original model"
-        else:
-            outcome = "roadrunner could simulate the original model but not the round-tripped model"
         warnings.warn(
-            f"{case_id} ({which}, {os.path.basename(sbml_path)}): {outcome} -- variable "
-            f"stoichiometries aren't supported by roadrunner. "
+            f"{case_id} ({which}, {os.path.basename(sbml_path)}): {outcome} -- likely an "
+            f"unsupported SBML construct. "
             f"Original error: {original_error!r}. Round-tripped error: {roundtrip_error!r}."
         )
-        pytest.skip(f"{case_id} ({which}): unsupported variable stoichiometry, see warnings")
+        pytest.skip(f"{case_id} ({which}): roadrunner simulation error(s), see warnings")
 
     assert original_result.shape == roundtrip_result.shape, (
         f"{case_id} ({which}): result shapes differ: "
