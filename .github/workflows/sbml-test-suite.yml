@@ -104,7 +104,7 @@ jobs:
           # relying on a downstream `head -n 1` to cut it off -- piping into
           # head closes the pipe early and GNU find treats that broken pipe
           # as a fatal write error instead of exiting quietly.
-          settings_file=$(find sbml-test-suite/extracted -name '*-settings.txt' -print -quit)
+          settings_file=$(find "${RUNNER_WORKSPACE}/sbml-test-suite/extracted" -name '*-settings.txt' -print -quit)
           if [ -z "$settings_file" ]; then
             echo "::error::No *-settings.txt files found under sbml-test-suite/extracted -- unexpected archive layout."
             exit 1
