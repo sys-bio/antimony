@@ -726,7 +726,7 @@ void Module::TranslateRulesAndAssignmentsTo(const SBase* obj, Variable* var)
       }
       parent = parent->getParentSBMLObject();
     }
-    if (localparent) {
+    if (localparent && ia->isSetMath()) {
       Formula formula;
       string formulastring(parseASTNodeToString(ia->getMath()));
       setFormulaWithString(formulastring, &formula, this);
@@ -790,7 +790,7 @@ void Module::TranslateRulesAndAssignmentsTo(const SBase* obj, Variable* var)
       }
       parent = parent->getParentSBMLObject();
     }
-    if (localparent) {
+    if (localparent && rule->isSetMath()) {
       var->SetWithRule(rule);
     }
   }
@@ -2520,8 +2520,7 @@ void Module::CreateSBMLModel(bool comp)
     sbmlevent->getTrigger()->setPersistent(event->GetPersistent());
       
     long numasnts = static_cast<long>(event->GetNumAssignments());
-    for (long asnt=numasnts-1; asnt>=0; asnt--) {
-      //events are stored in reverse order.  Don't ask...
+    for (long asnt=0; asnt<numasnts; asnt++) {
       EventAssignment* sbmlasnt = sbmlmod->createEventAssignment();
       sbmlasnt->setVariable(event->GetNthAssignmentVariableName(asnt, cc));
       ASTNode* ASTasnt = parseStringToASTNode(event->GetNthAssignmentFormulaString(asnt, cc, true));

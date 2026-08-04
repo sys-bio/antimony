@@ -602,7 +602,6 @@ Variable* Variable::GetSubVariable(const string* name)
     if (newcharge->SetType(varSpeciesCharge)) {
       assert(false);
       g_registry.SetError("Unable to set the charge for " + GetNameDelimitedBy(".") + " because its '-charge' is already a " + VarTypeToString(newcharge->GetType()) + ", and cannot be changed to a charge variable.  This should not happen; please contact the Antimony developers with this message and your model.");
-      g_registry.SetError("Unable to set the charge for " + GetNameDelimitedBy(".") + " because its '-charge' is already a " + VarTypeToString(newcharge->GetType()) + ", and cannot be changed to a charge variable.  This should not happen; please contact the Antimony developers with this message and your model.");
       delete newcharge;
       return NULL;
     }

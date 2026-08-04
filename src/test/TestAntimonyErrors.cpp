@@ -439,3 +439,23 @@ TEST(AntimonyErrors, better_error_for_builtin_constants)
   testError("pi' = 3", "Error in model string, line 1:  'pi' is a reserved word in Antimony (the name of a built-in constant) and cannot be used as the name of a variable or other named element.");
 }
 
+TEST(AntimonyErrors, no_negative_named_stoich1)
+{
+  testError("- n A ->  B;", "Error in model string, line 1:  Cannot set the variable stoichiometry 'n' to be negative.  Either flip the sign of its value, give it a new name and value, or change the side of the reaction it's on.");
+}
+
+TEST(AntimonyErrors, no_negative_named_stoich2)
+{
+  testError("A -> -n B;", "Error in model string, line 1:  Cannot set the variable stoichiometry 'n' to be negative.  Either flip the sign of its value, give it a new name and value, or change the side of the reaction it's on.");
+}
+
+TEST(AntimonyErrors, no_negative_named_stoich3)
+{
+  testError("A - n B -> ;", "Error in model string, line 1:  Cannot set the variable stoichiometry 'n' to be negative.  Either flip the sign of its value, give it a new name and value, or change the side of the reaction it's on.");
+}
+
+TEST(AntimonyErrors, no_negative_named_stoich4)
+{
+  testError("-> A - n B;", "Error in model string, line 1:  Cannot set the variable stoichiometry 'n' to be negative.  Either flip the sign of its value, give it a new name and value, or change the side of the reaction it's on.");
+}
+

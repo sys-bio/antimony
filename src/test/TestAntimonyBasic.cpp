@@ -472,3 +472,38 @@ TEST(AntimonyBasic, test_kineticLaw_set_formula)
   compareFileTranslation("kl_set_formula");
 }
 
+TEST(AntimonyBasic, test_neg_reactant_and_product)
+{
+  compareFileTranslation("neg_reactant_and_product");
+}
+
+TEST(AntimonyBasic, test_neg_2_reactant_and_product)
+{
+  compareFileTranslation("neg_2_reactant_and_product");
+}
+
+TEST(AntimonyBasic, test_subtracted_reactant_and_product)
+{
+  compareFileTranslation("subtracted_reactant_and_product");
+}
+
+TEST(AntimonyBasic, test_subtracted_2_reactant_and_product)
+{
+  compareFileTranslation("subtracted_2_reactant_and_product");
+}
+
+TEST(AntimonyBasic, test_empty_rxn)
+{
+  compareFileTranslation("empty_rxn");
+}
+
+TEST(AntimonyBasic, test_empty_rxn_kl)
+{
+  compareFileTranslation("empty_rxn_kl");
+}
+
+TEST(AntimonyBasic, test_empty_event)
+{
+  compareFileTranslation("empty_event");
+}
+
