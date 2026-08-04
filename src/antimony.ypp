@@ -318,8 +318,12 @@ moduleannotation: MODULE ANTWORD stringlist lineend
                     if (module && $3 && CaselessStrCmp(true, *($3), "layout")) {
                       if (module->SetLayout($5)) YYABORT;
                     }
+                    else if (module && $3 && CaselessStrCmp(true, *($3), "conversionFactor")) {
+                      Variable* cfvar = g_registry.CurrentModule()->AddOrFindVariable($5);
+                      if (module->SetConversionFactor(cfvar)) YYABORT;
+                    }
                     else {
-                      g_registry.SetError("Invalid syntax 'model." + *($3) + "'. The only thing that can be set on the model to a string is 'layout'.");
+                      g_registry.SetError("Invalid syntax 'model." + *($3) + "'. The only thing that can be set on the model to a string is 'layout', and the only thing that can be set on the model to a variable is 'conversionFactor'.");
                       YYABORT;
                     }
                   }

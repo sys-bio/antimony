@@ -474,3 +474,13 @@ TEST(AntimonyErrors, conversionFactor_only_for_species)
   testError("compartment C; C.conversionFactor = cf", "Error in model string, line 1:  Unable to set the conversion factor for C because that variable cannot be a species, and only species may have a conversion factor.");
 }
 
+TEST(AntimonyErrors, conversionFactor_must_be_const)
+{
+  testError("var k; S1.conversionFactor = k;", "Error in model string, line 1:  Unable to set the conversion factor for species 'S1' to 'k', because conversion factors must be constant.");
+}
+
+TEST(AntimonyErrors, conversionFactor_must_be_const_model)
+{
+  testError("var k; model.conversionFactor = k;", "Error in model string, line 1:  Unable to set the model's conversion factor to 'k', because conversion factors must be constant.");
+}
+

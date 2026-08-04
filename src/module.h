@@ -76,6 +76,7 @@ private:
   bool m_usedDistributions;
   std::vector<std::string> m_objective;
   bool m_maximize;
+  std::vector<std::string> m_modelConversionFactor;
 
   size_t m_currentexportvar;
   bool m_ismain;
@@ -154,6 +155,8 @@ public:
   bool AddObjective(Formula* formula, bool maximize);
   bool AddObjective(Variable* var, Formula* formula, bool maximize);
   bool AddObjective(const Variable* var, bool maximize);
+  bool SetConversionFactor(Variable* var);
+  const Variable* GetConversionFactor() const;
   bool DeleteFromSynchronized(Variable* deletedvar);
   void ClearReferencesTo(Variable* deletedvar, std::set<std::pair<std::vector<std::string>, deletion_type> >* ret);
   Variable* AddOrFindUnitDef(const UnitDef& unitdef);

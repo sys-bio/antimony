@@ -650,6 +650,26 @@ bool Module::AddObjective(const Variable* obj, bool maximize)
   return false;
 }
 
+bool Module::SetConversionFactor(Variable* var)
+{
+  if (m_modelConversionFactor.size() > 0) {
+    g_registry.SetError("Unable to set a new conversion factor for the model, since '" + ToStringFromVecDelimitedBy(m_modelConversionFactor, ".") + "' is already set as this model's conversion factor.");
+    return true;
+  }
+  if (var->SetType(varFormulaUndef)) {
+    g_registry.SetError("Cannot set the model's conversion factor to be '" + var->GetNameDelimitedBy(".") + "', because it cannot be used as a parameter.");
+    return true;
+  }
+  m_modelConversionFactor = var->GetName();
+  return false;
+}
+
+const Variable* Module::GetConversionFactor() const
+{
+  if (m_modelConversionFactor.size() == 0) return NULL;
+  return GetVariable(m_modelConversionFactor);
+}
+
 void Module::ClearReferencesTo(Variable* deletedvar, set<pair<vector<string>, deletion_type> >* ret)
 {
   set<pair<vector<string>, deletion_type> > temp;
@@ -659,6 +679,9 @@ void Module::ClearReferencesTo(Variable* deletedvar, set<pair<vector<string>, de
   }
   if (deletedvar->GetIsEquivalentTo(GetVariable(m_returnvalue))) {
     m_returnvalue.clear();
+  }
+  if (deletedvar->GetIsEquivalentTo(GetConversionFactor())) {
+    m_modelConversionFactor.clear();
   }
   for (size_t sync=0; sync<m_conversionFactors.size(); sync++) {
     Variable* convvar = GetVariable(m_conversionFactors[sync]);
@@ -1268,6 +1291,26 @@ bool Module::Finalize()
       }
     }
   }
+  //Phase 2.5:  Check that conversion factors reference constant variables.
+  for (size_t var=0; var<m_variables.size(); var++) {
+    if (m_variables[var]->GetType() == varSpeciesConversionFactor) {
+      vector<Variable*> cfvars = m_variables[var]->GetFormula()->GetVariables();
+      if (cfvars.size() == 1 && !cfvars[0]->GetIsConst()) {
+        string specname = m_variables[var]->GetNameDelimitedBy(cc);
+        specname.replace(specname.find("-cf"), 3, "");
+        g_registry.SetError("Unable to set the conversion factor for species '" + specname + "' to '" + cfvars[0]->GetNameDelimitedBy(cc) + "', because conversion factors must be constant.");
+        return true;
+      }
+    }
+  }
+  if (m_modelConversionFactor.size() > 0) {
+    Variable* cf = GetVariable(m_modelConversionFactor);
+    if (cf && !cf->GetIsConst()) {
+      g_registry.SetError("Unable to set the model's conversion factor to '" + cf->GetNameDelimitedBy(cc) + "', because conversion factors must be constant.");
+      return true;
+    }
+  }
+
   //Now check if the functions themselves use distributions
   for (size_t uf = 0; uf < g_registry.GetNumUserFunctions(); uf++) {
     if (g_registry.GetNthUserFunction(uf)->UsesDistrib()) {
@@ -2193,6 +2236,17 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
       retval += var->GetFormula()->ToDelimitedStringWithEllipses(".") + ";\n";
       //This is not what the origmap was designed for, but it works here.  Yay hacks!  Basically, if the mapped variable has the same information in it, it's not output by any other function, so since we've already output all the information in question, we put it in here mapped to itself, so nothing else thinks it needs to add any more information (which it doesn't).
       origmap.insert(make_pair(var, *var));
+    }
+    else {
+      assert(false); //A nonexistent variable?
+    }
+  }
+
+  //The model's conversion factor, if any
+  if (m_modelConversionFactor.size() > 0) {
+    const Variable* cf = GetVariable(m_modelConversionFactor);
+    if (cf) {
+      retval += "\n" + indent + "model.conversionFactor = " + ToStringFromVecDelimitedBy(cf->GetName(), ".") + ";\n";
     }
     else {
       assert(false); //A nonexistent variable?

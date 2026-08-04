@@ -833,6 +833,11 @@ void Module::LoadSBML(Model* sbml)
     SetDisplayName(sbml->getName());
   PopulateCVTerms((SBase*)sbml);
   ReadAnnotationFrom(sbml);
+  if (sbml->isSetConversionFactor()) {
+    string cfid = sbml->getConversionFactor();
+    Variable* cftarget = AddOrFindVariable(&cfid);
+    SetConversionFactor(cftarget);
+  }
   //Load submodels
   const CompModelPlugin* mplugin = static_cast<const CompModelPlugin*>(sbml->getPlugin("comp"));
   if (mplugin != NULL) {
@@ -2756,6 +2761,12 @@ void Module::CreateSBMLModel(bool comp)
       obj->removeFromParentAndDelete();
     }
     objective->GetFormula()->AddFluxObjective(sbmlmod, m_maximize, objective);
+  }
+
+  //The model's conversion factor (if present)
+  if (m_modelConversionFactor.size() > 0) {
+    Variable* cf = GetVariable(m_modelConversionFactor)->GetSameVariable();
+    sbmlmod->setConversionFactor(cf->GetNameDelimitedBy(cc));
   }
 
   //Ports
