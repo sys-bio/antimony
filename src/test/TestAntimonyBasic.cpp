@@ -507,3 +507,13 @@ TEST(AntimonyBasic, test_empty_event)
   compareFileTranslation("empty_event");
 }
 
+TEST(AntimonyBasic, test_speciesConversionFactor)
+{
+  compareFileTranslation("speciesConversionFactor");
+}
+
+TEST(AntimonyBasic, test_speciesConversionFactor_empty)
+{
+  compareFileTranslation("speciesConversionFactor_empty");
+}
+

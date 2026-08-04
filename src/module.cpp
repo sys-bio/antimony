@@ -866,6 +866,7 @@ void Module::AddDefaultInitialValues()
     case varGeneProductAssociation:
     case varSpeciesCharge:
     case varSpeciesChemicalFormula:
+    case varSpeciesConversionFactor:
       break;
     }
   }
@@ -1316,6 +1317,7 @@ bool Module::Finalize()
           case varGeneProductAssociation:
           case varSpeciesCharge:
           case varSpeciesChemicalFormula:
+          case varSpeciesConversionFactor:
             g_registry.SetError("Unable to add layout or render information to " + m_variables[var]->GetNameDelimitedBy(".") + ":  only species, reactions, and compartments can be visualized, and this element is of type '" + VarTypeToString(m_variables[var]->GetType()) + "'.");
               return true;
           }
@@ -1741,6 +1743,8 @@ bool Module::AreEquivalent(return_type rtype, var_type vtype) const
     return (vtype == varGeneProductAssociation);
   case allSpeciesFbcInfo:
     return (vtype == varSpeciesCharge || vtype == varSpeciesChemicalFormula);
+  case allSpeciesConversionFactors:
+    return (vtype == varSpeciesConversionFactor);
   }
   //This is just to to get compiler warnings if we switch vtype later, so
   // we remember to change the rest of this function:
@@ -1771,6 +1775,7 @@ bool Module::AreEquivalent(return_type rtype, var_type vtype) const
   case varGeneProductAssociation:
   case varSpeciesCharge:
   case varSpeciesChemicalFormula:
+  case varSpeciesConversionFactor:
       break;
   }
   assert(false); //uncaught return type
@@ -1812,6 +1817,7 @@ bool Module::AreEquivalent(return_type rtype, bool isconst) const
   case allGeneProducts:
   case allGeneProductAssociations:
   case allSpeciesFbcInfo:
+  case allSpeciesConversionFactors:
     return true;
   }
   assert(false); //uncaught return_type
@@ -1838,7 +1844,8 @@ string Module::OutputOnly(vector<var_type> types, string name, string indent, st
       formula_type ftype = var->GetFormulaType();
       if (form != NULL && !form->IsEllipsesOnly() && (ftype == formulaINITIAL || ftype == formulaRATE)) {
         if (OrigFormulaIsAlready(var, origmap, form)) continue;
-        if ((type == varGeneProduct || type == varGeneProductAssociation)
+        if ((type == varGeneProduct || type == varGeneProductAssociation
+          || type == varSpeciesCharge || type == varSpeciesConversionFactor)
           && var->GetFormula()->IsEmpty()) {
           continue;
         }
@@ -1855,6 +1862,9 @@ string Module::OutputOnly(vector<var_type> types, string name, string indent, st
         }
         else if (type == varSpeciesCharge) {
           name.replace(name.find("-charge"), 7, ".charge");
+        }
+        else if (type == varSpeciesConversionFactor) {
+          name.replace(name.find("-cf"), 3, ".conversionFactor");
         }
         retval += indent + name + " = " + form->ToDelimitedStringWithEllipses(cc) + ";\n";
       }
@@ -2264,6 +2274,11 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
   types.push_back(varSpeciesCharge);
   retval += OutputOnly(types, "Species charges", indent, cc, origmap);
 
+  //The species conversion factors:
+  types.clear();
+  types.push_back(varSpeciesConversionFactor);
+  retval += OutputOnly(types, "Species conversion factors", indent, cc, origmap);
+
   //The associated species of gene products:
   types.clear();
   types.push_back(varGeneProduct);
@@ -2352,6 +2367,7 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
     case varGeneProductAssociation:
     case varSpeciesCharge:
     case varSpeciesChemicalFormula:
+    case varSpeciesConversionFactor:
       break;
     }
   }
@@ -3008,6 +3024,7 @@ void Module::Convert(Variable* conv, Variable* cf, string modulename)
     case varGeneProduct:
     case varGeneProductAssociation:
     case varSpeciesCharge:
+    case varSpeciesConversionFactor:
       form = subvar->GetFormula();
       origform = *origsubvar->GetFormula();
       for (size_t vn=m_variablename.size() - origsubvar->GetName().size() + 1; vn > 0; vn--) {
@@ -3092,6 +3109,7 @@ void Module::ConvertTime(Variable* tcf)
     case varGeneProductAssociation:
     case varSpeciesCharge:
     case varSpeciesChemicalFormula:
+    case varSpeciesConversionFactor:
       break;
     }
   }
@@ -3134,6 +3152,7 @@ void Module::ConvertExtent(Variable* xcf)
     case varGeneProductAssociation:
     case varSpeciesCharge:
     case varSpeciesChemicalFormula:
+    case varSpeciesConversionFactor:
       break;
     }
   }
@@ -3180,6 +3199,7 @@ void Module::UndoTimeExtentConversions(Variable* tcf, Variable* xcf)
     case varGeneProductAssociation:
     case varSpeciesCharge:
     case varSpeciesChemicalFormula:
+    case varSpeciesConversionFactor:
       break;
     }
   }

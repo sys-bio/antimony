@@ -40,6 +40,7 @@ bool IsReaction(const var_type vtype)
   case varGeneProductAssociation:
   case varSpeciesCharge:
   case varSpeciesChemicalFormula:
+  case varSpeciesConversionFactor:
     return false;
   }
   assert(false); //uncaught vtype
@@ -91,6 +92,7 @@ bool IsSpecies(const var_type vtype)
   case varGeneProductAssociation:
   case varSpeciesCharge:
   case varSpeciesChemicalFormula:
+  case varSpeciesConversionFactor:
     return false;
   }
   assert(false); //uncaught vtype
@@ -127,6 +129,7 @@ bool IsDNA(const var_type vtype)
   case varGeneProductAssociation:
   case varSpeciesCharge:
   case varSpeciesChemicalFormula:
+  case varSpeciesConversionFactor:
     return false;
   }
   assert(false); //uncaught vtype
@@ -163,6 +166,7 @@ bool CanHaveRateRule(const var_type vtype)
   case varGeneProductAssociation:
   case varSpeciesCharge:
   case varSpeciesChemicalFormula:
+  case varSpeciesConversionFactor:
     return false;
   }
   assert(false); //uncaught type
@@ -199,6 +203,7 @@ bool CanHaveAssignmentRule(const var_type vtype)
   case varGeneProductAssociation:
   case varSpeciesCharge:
   case varSpeciesChemicalFormula:
+  case varSpeciesConversionFactor:
     return false;
   }
   assert(false); //uncaught type
@@ -235,6 +240,7 @@ bool CanHaveAlgebraicRule(const var_type vtype)
     case varGeneProductAssociation:
     case varSpeciesCharge:
     case varSpeciesChemicalFormula:
+    case varSpeciesConversionFactor:
       return false;
     }
     assert(false); //uncaught type
@@ -271,6 +277,7 @@ bool CanBeInReaction(const var_type vtype)
   case varGeneProductAssociation:
   case varSpeciesCharge:
   case varSpeciesChemicalFormula:
+  case varSpeciesConversionFactor:
     return false;
   }
   assert(false); //uncaught type
@@ -307,6 +314,7 @@ bool CanBeStoichiometry(const var_type vtype)
     case varGeneProductAssociation:
     case varSpeciesCharge:
     case varSpeciesChemicalFormula:
+    case varSpeciesConversionFactor:
       return false;
     }
     assert(false); //uncaught type
@@ -328,6 +336,7 @@ bool HasOrIsFormula(const var_type vtype)
   case varGeneProduct:
   case varGeneProductAssociation:
   case varSpeciesCharge:
+  case varSpeciesConversionFactor:
     return true;
   case varReactionGene:
   case varReactionUndef:
@@ -436,6 +445,8 @@ string VarTypeToString(const var_type vtype)
     return "Species Charge";
   case varSpeciesChemicalFormula:
     return "Species Chemical Formula";
+  case varSpeciesConversionFactor:
+    return "Species Conversion Factor";
   case varInteraction:
     return "Interaction";
   case varFormulaOperator:
@@ -540,6 +551,8 @@ string ReturnTypeToString(const return_type rtype)
     return "gene product associations";
   case allSpeciesFbcInfo:
     return "species charges and chemical formulas";
+  case allSpeciesConversionFactors:
+    return "species conversion factors";
   }
   assert(false); //uncaught type
   return "Uncaught type";

@@ -459,3 +459,18 @@ TEST(AntimonyErrors, no_negative_named_stoich4)
   testError("-> A - n B;", "Error in model string, line 1:  Cannot set the variable stoichiometry 'n' to be negative.  Either flip the sign of its value, give it a new name and value, or change the side of the reaction it's on.");
 }
 
+TEST(AntimonyErrors, conversionFactor_must_be_single_variable)
+{
+  testError("S1.conversionFactor = 1000", "Error in model string, line 1:  Cannot set the conversion factor of S1' to be '1000', because it must be set to reference an existing variable, i.e. 'S1.conversionFactor = k'.");
+}
+
+TEST(AntimonyErrors, conversionFactor_must_not_be_negated)
+{
+  testError("S1.conversionFactor = -n", "Error in model string, line 1:  Cannot set the conversion factor of S1' to be '-n', because it must be set to reference an existing variable, i.e. 'S1.conversionFactor = k'.");
+}
+
+TEST(AntimonyErrors, conversionFactor_only_for_species)
+{
+  testError("compartment C; C.conversionFactor = cf", "Error in model string, line 1:  Unable to set the conversion factor for C because that variable cannot be a species, and only species may have a conversion factor.");
+}
+

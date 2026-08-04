@@ -298,6 +298,7 @@ void Module::FindOrCreateLocalVersionOf(const Variable* var, libsbml::Model* sbm
   case varGeneProductAssociation:
   case varSpeciesCharge:
   case varSpeciesChemicalFormula:
+  case varSpeciesConversionFactor:
     assert(false); //Unhandled type
     break;
   }
@@ -1327,6 +1328,16 @@ void Module::LoadSBML(Model* sbml)
         spec_form->SetType(varSpeciesChemicalFormula);
         spec_form->SetDisplayName(fsp->getChemicalFormula());
       }
+    }
+    if (species->isSetConversionFactor()) {
+      string cfid = species->getConversionFactor();
+      Variable* cftarget = AddOrFindVariable(&cfid);
+      string cfvarid = sbmlname + "-cf";
+      Variable* spec_cf = AddOrFindVariable(&cfvarid);
+      spec_cf->SetType(varSpeciesConversionFactor);
+      formula.Clear();
+      formula.AddVariable(cftarget);
+      spec_cf->SetFormula(&formula);
     }
   }
 
@@ -2654,6 +2665,7 @@ void Module::CreateSBMLModel(bool comp)
   for (size_t ar = 0; ar < numcharges; ar++) {
     const Variable* spec_fbc = GetNthVariableOfType(allSpeciesFbcInfo, ar, comp);
     if (spec_fbc->GetType() == varSpeciesCharge) {
+      if (spec_fbc->GetFormula()->IsEmpty()) continue;
 
       string specname = spec_fbc->GetNameDelimitedBy(cc);
       specname.replace(specname.find("-charge"), 7, "");
@@ -2668,6 +2680,7 @@ void Module::CreateSBMLModel(bool comp)
     }
     else {
       assert(spec_fbc->GetType() == varSpeciesChemicalFormula);
+      if (spec_fbc->GetDisplayName().empty()) continue;
       string specname = spec_fbc->GetNameDelimitedBy(cc);
       specname.replace(specname.find("-formula"), 8, "");
       Species* spec = sbmlmod->getSpecies(specname);
@@ -2679,6 +2692,24 @@ void Module::CreateSBMLModel(bool comp)
       assert(fsp != NULL);
       fsp->setChemicalFormula(spec_fbc->GetDisplayName());
     }
+  }
+
+
+  //Species conversion factors:
+  size_t numcfs = GetNumVariablesOfType(allSpeciesConversionFactors, comp);
+  for (size_t ar = 0; ar < numcfs; ar++) {
+    const Variable* spec_cf = GetNthVariableOfType(allSpeciesConversionFactors, ar, comp);
+    if (spec_cf->GetFormula()->IsEmpty()) continue;
+    string specname = spec_cf->GetNameDelimitedBy(cc);
+    specname.replace(specname.find("-cf"), 3, "");
+    Species* spec = sbmlmod->getSpecies(specname);
+    if (spec == NULL) {
+      g_registry.SetError("Couldn't find the species associated with the species conversion factor '" + spec_cf->GetNameDelimitedBy(cc) + "'.");
+      assert(false); //Shouldn't get this?
+    }
+    vector<Variable*> cfvars = spec_cf->GetFormula()->GetVariables();
+    assert(cfvars.size() == 1);
+    spec->setConversionFactor(cfvars[0]->GetNameDelimitedBy(cc));
   }
 
 
@@ -4116,6 +4147,7 @@ void Module::LoadLayout(Model* sbml)
             case varGeneProductAssociation:
             case varSpeciesCharge:
             case varSpeciesChemicalFormula:
+            case varSpeciesConversionFactor:
               continue;
             }
             string varid = var->GetNameDelimitedBy("_");
