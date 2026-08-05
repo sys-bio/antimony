@@ -180,7 +180,7 @@ jobs:
         if: matrix.platform.os_type != 'windows'
         uses: actions/cache@main
         with:
-          path: ${RUNNER_WORKSPACE}/.ccache
+          path: ${{ runner.workspace }}/.ccache
           key:
             ${{ runner.os }}-${{ steps.ccache_cache_timestamp.outputs.timestamp
             }}
