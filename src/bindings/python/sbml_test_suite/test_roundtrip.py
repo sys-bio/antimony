@@ -196,6 +196,14 @@ def test_roundtrip(sbml_case):
 
     roundtrip_result, roundtrip_error = _try_simulate(roundtripped_sbml, settings, selections)
 
+    # Always surface whatever roadrunner said, labeled by side, regardless of
+    # whether this turns out to be a known limitation or a real failure --
+    # this is what shows up in the pytest warnings summary either way.
+    if original_error is not None:
+        warnings.warn(f"{case_id} ({which}, {os.path.basename(sbml_path)}): original model error: {original_error!r}")
+    if roundtrip_error is not None:
+        warnings.warn(f"{case_id} ({which}, {os.path.basename(sbml_path)}): round-tripped model error: {roundtrip_error!r}")
+
     if original_error is not None or roundtrip_error is not None:
         original_limitation = _known_limitation(original_error)
         roundtrip_limitation = _known_limitation(roundtrip_error)
