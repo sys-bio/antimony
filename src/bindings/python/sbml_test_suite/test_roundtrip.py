@@ -13,6 +13,7 @@ Run with e.g.:
 
 import os
 import re
+import tempfile
 import warnings
 
 import antimony
@@ -122,20 +123,33 @@ def parse_settings(path):
 def build_selections(settings):
     selections = ["time"]
     for var in settings["variables"]:
-        # settings.txt names flattened submodel elements as
-        # "submodelId__elementId" (double underscore), but libSBML's own
-        # comp-flattening -- which is what actually runs when roadrunner
-        # loads a comp SBML file -- joins them with a single underscore.
-        flattened_var = var.replace("__", "_")
         if var in settings["concentration"]:
-            selections.append(f"[{flattened_var}]")
+            selections.append(f"[{var}]")
         else:
-            selections.append(flattened_var)
+            selections.append(var)
     return selections
 
 
+def _load_model(model_source):
+    """Loads model_source via te.loads(). Roadrunner only flattens comp SBML
+    models when loading from a file -- loading the same SBML passed directly
+    as a string skips flattening entirely (a roadrunner bug, currently being
+    fixed upstream). Until that lands, write anything that isn't already a
+    file to a temp file first, so the original and round-tripped models both
+    get flattened the same way."""
+    if os.path.isfile(model_source):
+        return te.loads(model_source)
+    fd, temp_path = tempfile.mkstemp(suffix=".xml")
+    try:
+        with os.fdopen(fd, "w") as f:
+            f.write(model_source)
+        return te.loads(temp_path)
+    finally:
+        os.remove(temp_path)
+
+
 def simulate_model(model_source, settings, selections):
-    rr = te.loads(model_source)
+    rr = _load_model(model_source)
     rr.integrator.setValue("absolute_tolerance", settings["absolute"] * SIMULATION_TOLERANCE_FACTOR)
     rr.integrator.setValue("relative_tolerance", settings["relative"] * SIMULATION_TOLERANCE_FACTOR)
     n_points = settings["steps"] + 1
