@@ -1263,18 +1263,6 @@ bool Module::Finalize()
     if (m_variables[var]->GetType() == varCompartment){
       if (m_variables[var]->AnyCompartmentLoops()) return true;
     }
-    else if (m_variables[var]->GetType() == varInteraction) {
-      vector<vector<string> > rxns = m_variables[var]->GetReaction()->GetRight()->GetVariableList();
-      for (size_t rxn=0; rxn<rxns.size(); rxn++) {
-        Variable* rightvar = GetVariable(rxns[rxn]);
-        const Formula* form = rightvar->GetFormula();
-        if (!form->IsEmpty() &&
-            form->CheckIncludes(m_variables[var]->GetNamespace(), m_variables[var]->GetReaction()->GetLeft())) {
-          g_registry.AddErrorPrefix("According to the interaction '" + m_variables[var]->GetNameDelimitedBy(cc) + "', the formula for '" + rightvar->GetNameDelimitedBy(cc) + "' ('" + form->ToDelimitedStringWithEllipses(cc) + "') ");
-          return true;
-        }
-      }
-    }
   }
 
   //Phase 2:  Check for undefined functions
