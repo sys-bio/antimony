@@ -92,10 +92,18 @@ def parse_settings(path):
     def csv_list(key):
         return [v.strip() for v in raw.get(key, "").split(",") if v.strip()]
 
+    # start/duration/steps are blank for non-time-course cases (e.g. FBC
+    # steady-state/objective-value cases), which this test doesn't cover --
+    # left as None here so the caller can skip those cases explicitly instead
+    # of blowing up trying to float("").
+    def optional_float(key):
+        value = raw.get(key, "")
+        return float(value) if value else None
+
     return {
-        "start": float(raw["start"]),
-        "duration": float(raw["duration"]),
-        "steps": int(raw["steps"]),
+        "start": optional_float("start"),
+        "duration": optional_float("duration"),
+        "steps": int(raw["steps"]) if raw.get("steps") else None,
         "variables": csv_list("variables"),
         "absolute": float(raw["absolute"]),
         "relative": float(raw["relative"]),
@@ -148,6 +156,8 @@ def pytest_generate_tests(metafunc):
 def test_roundtrip(sbml_case):
     case_id, which, sbml_path, settings_path = sbml_case
     settings = parse_settings(settings_path)
+    if settings["start"] is None or settings["duration"] is None or settings["steps"] is None:
+        pytest.skip(f"{case_id} ({which}): no time course defined in settings.txt (steady-state/FBC case)")
     selections = build_selections(settings)
 
     antimony.clearPreviousLoads()
@@ -204,7 +214,7 @@ def test_roundtrip(sbml_case):
     for col in range(1, len(selections)):
         original = original_result[:, col]
         roundtrip = roundtrip_result[:, col]
-        if not np.allclose(original, roundtrip, rtol=settings["relative"], atol=settings["absolute"]):
+        if not np.allclose(original, roundtrip, rtol=settings["relative"], atol=settings["absolute"], equal_nan=True):
             diff = np.abs(original - roundtrip)
             worst = int(np.argmax(diff))
             mismatches.append(
