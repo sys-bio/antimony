@@ -1364,6 +1364,10 @@ void Module::LoadSBML(Model* sbml)
   vector<AntimonyConstraint> constraints;
   for (unsigned int c = 0; c < sbml->getNumConstraints(); c++) {
     const Constraint* constraint = sbml->getConstraint(c);
+    if (!constraint->isSetMath()) {
+      //No math means the constraint doesn't actually constrain anything; skip.
+      continue;
+    }
     sbmlname = getNameFromSBMLObject(constraint, "_con");
     Variable* var = AddOrFindVariable(&sbmlname);
     var->ReadAnnotationFrom(constraint);
@@ -1372,16 +1376,14 @@ void Module::LoadSBML(Model* sbml)
       msg = StripMsgXML(msg);
       var->SetDisplayName(msg);
     }
-    if (constraint->isSetMath()) {
-      AntimonyConstraint acon(var);
-      const ASTNode* astn = constraint->getMath();
-      if (!m_usedDistributions && UsesDistrib(astn)) {
-        m_usedDistributions = true;
-      }
-      acon.SetWithASTNode(astn);
-      var->SetConstraint(&acon);
-      constraints.push_back(acon);
+    AntimonyConstraint acon(var);
+    const ASTNode* astn = constraint->getMath();
+    if (!m_usedDistributions && UsesDistrib(astn)) {
+      m_usedDistributions = true;
     }
+    acon.SetWithASTNode(astn);
+    var->SetConstraint(&acon);
+    constraints.push_back(acon);
   }
 
   //Parameters
