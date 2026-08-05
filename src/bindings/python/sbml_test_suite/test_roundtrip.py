@@ -29,22 +29,33 @@ SIMULATION_TOLERANCE_FACTOR = 0.01
 SBML_FILENAME_RE = re.compile(r"^(\d{5})-sbml-l(\d+)v(\d+)\.xml$")
 CASE_DIRNAME_RE = re.compile(r"^\d{5}$")
 
-# Known, expected roadrunner limitation: it refuses to simulate a model with
-# a named stoichiometry governed by an assignment/rate rule (a variable
-# stoichiometry), even though that's valid SBML. Antimony's canonical output
-# for a variable stoichiometry -- a named speciesReference with an
-# assignment rule -- doesn't always match the input's encoding (e.g. an L1/L2
-# stoichiometryMath), so this can turn a model roadrunner *could* simulate
-# into one it can't, purely as a side effect of round-tripping.
-UNSUPPORTED_VARIABLE_STOICHIOMETRY_RE = re.compile(r"variable stoichiometr", re.IGNORECASE)
+# Known, expected roadrunner limitations. Match by
+# category (via these patterns).
+#
+# variable_stoichiometry is also the one known limitation that can trip
+# *asymmetrically*: Antimony's canonical output for a variable stoichiometry
+# -- a named speciesReference with an assignment rule -- doesn't always
+# match the input's encoding (e.g. an L1/L2 stoichiometryMath), so it can
+# turn a model roadrunner *could* simulate into one it can't, purely as a
+# side effect of round-tripping.
+KNOWN_LIMITATION_PATTERNS = {
+    "variable_stoichiometry": re.compile(r"variable stoichiometr", re.IGNORECASE),
+    "algebraic_rules": re.compile(r"unable to support algebraic rules", re.IGNORECASE),
+    "unsupported_reaction_type": re.compile(r"unable to support .*reactions", re.IGNORECASE),
+    "delay_differential_equations": re.compile(r"delay differential equations", re.IGNORECASE),
+}
 
 
-def _is_unsupported_variable_stoichiometry(exc):
-    return exc is not None and bool(UNSUPPORTED_VARIABLE_STOICHIOMETRY_RE.search(str(exc)))
-
-
-def _same_error(a, b):
-    return a is not None and b is not None and str(a) == str(b)
+def _known_limitation(exc):
+    """Returns the name of the known roadrunner limitation `exc` matches, or
+    None if it doesn't match any of them."""
+    if exc is None:
+        return None
+    text = str(exc)
+    for name, pattern in KNOWN_LIMITATION_PATTERNS.items():
+        if pattern.search(text):
+            return name
+    return None
 
 
 def discover_cases(root):
@@ -164,12 +175,12 @@ def test_roundtrip(sbml_case):
 
     # Some models use constructs roadrunner can't simulate at all (e.g.
     # algebraic rules). That's a roadrunner limitation, not a round-trip
-    # problem, so it's fine as long as the *same* error happens both before
-    # and after the round trip. The one exception is variable stoichiometry:
-    # a stoichiometryMath can be simulatable in its original form but not
-    # after being canonicalized by Antimony's round trip, so it's OK for the
-    # original to succeed while only the round-tripped model fails, but only
-    # for that specific error.
+    # problem, so it's fine as long as the *same kind* of error happens both
+    # before and after the round trip. The one exception is variable
+    # stoichiometry: a stoichiometryMath can be simulatable in its original
+    # form but not after being canonicalized by Antimony's round trip, so
+    # it's OK for the original to succeed while only the round-tripped model
+    # fails, but only for that specific error.
     original_result, original_error = _try_simulate(sbml_path, settings, selections)
 
     load_index = antimony.loadSBMLFile(sbml_path)
@@ -187,23 +198,32 @@ def test_roundtrip(sbml_case):
     roundtrip_result, roundtrip_error = _try_simulate(roundtripped_sbml, settings, selections)
 
     if original_error is not None or roundtrip_error is not None:
-        if _same_error(original_error, roundtrip_error):
-            outcome = "roadrunner raised the same error simulating both the original and the round-tripped model"
-        elif original_error is None and _is_unsupported_variable_stoichiometry(roundtrip_error):
+        original_limitation = _known_limitation(original_error)
+        roundtrip_limitation = _known_limitation(roundtrip_error)
+
+        if (
+            original_error is not None
+            and roundtrip_error is not None
+            and original_limitation is not None
+            and original_limitation == roundtrip_limitation
+        ):
+            outcome = "roadrunner raised the same kind of error simulating both the original and the round-tripped model"
+            limitation = original_limitation
+        elif original_error is None and roundtrip_limitation == "variable_stoichiometry":
             outcome = "roadrunner could simulate the original model but not the round-tripped model"
+            limitation = roundtrip_limitation
         else:
             # Anything else -- a one-sided failure that isn't the known
-            # variable-stoichiometry exception, or a symmetric failure with
-            # two *different* errors -- is a real problem, not a known
-            # limitation.
+            # variable-stoichiometry exception, or a symmetric failure where
+            # the two errors aren't the same *kind* of known limitation --
+            # is a real problem, not a known limitation.
             raise original_error if original_error is not None else roundtrip_error
 
         warnings.warn(
-            f"{case_id} ({which}, {os.path.basename(sbml_path)}): {outcome} -- likely an "
-            f"unsupported SBML construct. "
+            f"{case_id} ({which}, {os.path.basename(sbml_path)}): {outcome} -- {limitation}. "
             f"Original error: {original_error!r}. Round-tripped error: {roundtrip_error!r}."
         )
-        pytest.skip(f"{case_id} ({which}): roadrunner simulation error(s), see warnings")
+        pytest.skip(f"{case_id} ({which}): roadrunner simulation error(s) ({limitation}), see warnings")
 
     assert original_result.shape == roundtrip_result.shape, (
         f"{case_id} ({which}): result shapes differ: "
