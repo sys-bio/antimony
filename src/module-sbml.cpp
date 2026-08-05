@@ -1460,6 +1460,7 @@ void Module::LoadSBML(Model* sbml)
           string reactantId = specref->getId();
           if (reactantId.empty()) {
             reactantId = reactionName + "_" + specref->getSpecies() + "_stoichiometry";
+            reactantId = getNameFromSBMLObject(specref, reactantId);
           }
           stoichvar = AddOrFindVariable(&reactantId);
           assert(!stoichvar->SetType(varStoichiometry)); //Since the SBML file is valid.
