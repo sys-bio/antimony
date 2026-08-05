@@ -110,8 +110,8 @@ bool AntimonyEvent::SetInitialValue(const Formula& form)
 
 bool AntimonyEvent::AddResult(Variable* var, Formula* form)
 {
-  m_varresults.insert(m_varresults.begin(), var->GetName());
-  m_formresults.insert(m_formresults.begin(), *form);
+  m_varresults.push_back(var->GetName());
+  m_formresults.push_back(*form);
   var->SetType(varFormulaUndef);
   if (!IsSpecies(var->GetType())) {
     var->SetIsConst(false);//It might be a straight value, but the event changes it.

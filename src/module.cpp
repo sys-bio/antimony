@@ -650,6 +650,26 @@ bool Module::AddObjective(const Variable* obj, bool maximize)
   return false;
 }
 
+bool Module::SetConversionFactor(Variable* var)
+{
+  if (m_modelConversionFactor.size() > 0) {
+    g_registry.SetError("Unable to set a new conversion factor for the model, since '" + ToStringFromVecDelimitedBy(m_modelConversionFactor, ".") + "' is already set as this model's conversion factor.");
+    return true;
+  }
+  if (var->SetType(varFormulaUndef)) {
+    g_registry.SetError("Cannot set the model's conversion factor to be '" + var->GetNameDelimitedBy(".") + "', because it cannot be used as a parameter.");
+    return true;
+  }
+  m_modelConversionFactor = var->GetName();
+  return false;
+}
+
+const Variable* Module::GetConversionFactor() const
+{
+  if (m_modelConversionFactor.size() == 0) return NULL;
+  return GetVariable(m_modelConversionFactor);
+}
+
 void Module::ClearReferencesTo(Variable* deletedvar, set<pair<vector<string>, deletion_type> >* ret)
 {
   set<pair<vector<string>, deletion_type> > temp;
@@ -659,6 +679,9 @@ void Module::ClearReferencesTo(Variable* deletedvar, set<pair<vector<string>, de
   }
   if (deletedvar->GetIsEquivalentTo(GetVariable(m_returnvalue))) {
     m_returnvalue.clear();
+  }
+  if (deletedvar->GetIsEquivalentTo(GetConversionFactor())) {
+    m_modelConversionFactor.clear();
   }
   for (size_t sync=0; sync<m_conversionFactors.size(); sync++) {
     Variable* convvar = GetVariable(m_conversionFactors[sync]);
@@ -866,6 +889,7 @@ void Module::AddDefaultInitialValues()
     case varGeneProductAssociation:
     case varSpeciesCharge:
     case varSpeciesChemicalFormula:
+    case varSpeciesConversionFactor:
       break;
     }
   }
@@ -1267,6 +1291,26 @@ bool Module::Finalize()
       }
     }
   }
+  //Phase 2.5:  Check that conversion factors reference constant variables.
+  for (size_t var=0; var<m_variables.size(); var++) {
+    if (m_variables[var]->GetType() == varSpeciesConversionFactor) {
+      vector<Variable*> cfvars = m_variables[var]->GetFormula()->GetVariables();
+      if (cfvars.size() == 1 && !cfvars[0]->GetIsConst()) {
+        string specname = m_variables[var]->GetNameDelimitedBy(cc);
+        specname.replace(specname.find("-cf"), 3, "");
+        g_registry.SetError("Unable to set the conversion factor for species '" + specname + "' to '" + cfvars[0]->GetNameDelimitedBy(cc) + "', because conversion factors must be constant.");
+        return true;
+      }
+    }
+  }
+  if (m_modelConversionFactor.size() > 0) {
+    Variable* cf = GetVariable(m_modelConversionFactor);
+    if (cf && !cf->GetIsConst()) {
+      g_registry.SetError("Unable to set the model's conversion factor to '" + cf->GetNameDelimitedBy(cc) + "', because conversion factors must be constant.");
+      return true;
+    }
+  }
+
   //Now check if the functions themselves use distributions
   for (size_t uf = 0; uf < g_registry.GetNumUserFunctions(); uf++) {
     if (g_registry.GetNthUserFunction(uf)->UsesDistrib()) {
@@ -1316,6 +1360,7 @@ bool Module::Finalize()
           case varGeneProductAssociation:
           case varSpeciesCharge:
           case varSpeciesChemicalFormula:
+          case varSpeciesConversionFactor:
             g_registry.SetError("Unable to add layout or render information to " + m_variables[var]->GetNameDelimitedBy(".") + ":  only species, reactions, and compartments can be visualized, and this element is of type '" + VarTypeToString(m_variables[var]->GetType()) + "'.");
               return true;
           }
@@ -1741,6 +1786,8 @@ bool Module::AreEquivalent(return_type rtype, var_type vtype) const
     return (vtype == varGeneProductAssociation);
   case allSpeciesFbcInfo:
     return (vtype == varSpeciesCharge || vtype == varSpeciesChemicalFormula);
+  case allSpeciesConversionFactors:
+    return (vtype == varSpeciesConversionFactor);
   }
   //This is just to to get compiler warnings if we switch vtype later, so
   // we remember to change the rest of this function:
@@ -1771,6 +1818,7 @@ bool Module::AreEquivalent(return_type rtype, var_type vtype) const
   case varGeneProductAssociation:
   case varSpeciesCharge:
   case varSpeciesChemicalFormula:
+  case varSpeciesConversionFactor:
       break;
   }
   assert(false); //uncaught return type
@@ -1812,6 +1860,7 @@ bool Module::AreEquivalent(return_type rtype, bool isconst) const
   case allGeneProducts:
   case allGeneProductAssociations:
   case allSpeciesFbcInfo:
+  case allSpeciesConversionFactors:
     return true;
   }
   assert(false); //uncaught return_type
@@ -1838,7 +1887,8 @@ string Module::OutputOnly(vector<var_type> types, string name, string indent, st
       formula_type ftype = var->GetFormulaType();
       if (form != NULL && !form->IsEllipsesOnly() && (ftype == formulaINITIAL || ftype == formulaRATE)) {
         if (OrigFormulaIsAlready(var, origmap, form)) continue;
-        if ((type == varGeneProduct || type == varGeneProductAssociation)
+        if ((type == varGeneProduct || type == varGeneProductAssociation
+          || type == varSpeciesCharge || type == varSpeciesConversionFactor)
           && var->GetFormula()->IsEmpty()) {
           continue;
         }
@@ -1855,6 +1905,9 @@ string Module::OutputOnly(vector<var_type> types, string name, string indent, st
         }
         else if (type == varSpeciesCharge) {
           name.replace(name.find("-charge"), 7, ".charge");
+        }
+        else if (type == varSpeciesConversionFactor) {
+          name.replace(name.find("-cf"), 3, ".conversionFactor");
         }
         retval += indent + name + " = " + form->ToDelimitedStringWithEllipses(cc) + ";\n";
       }
@@ -2189,6 +2242,17 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
     }
   }
 
+  //The model's conversion factor, if any
+  if (m_modelConversionFactor.size() > 0) {
+    const Variable* cf = GetVariable(m_modelConversionFactor);
+    if (cf) {
+      retval += "\n" + indent + "model.conversionFactor = " + ToStringFromVecDelimitedBy(cf->GetName(), ".") + ";\n";
+    }
+    else {
+      assert(false); //A nonexistent variable?
+    }
+  }
+
   //Then events:
   firstone = true;
   for (size_t vnum=0; vnum<m_uniquevars.size(); vnum++) {
@@ -2263,6 +2327,11 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
   types.clear();
   types.push_back(varSpeciesCharge);
   retval += OutputOnly(types, "Species charges", indent, cc, origmap);
+
+  //The species conversion factors:
+  types.clear();
+  types.push_back(varSpeciesConversionFactor);
+  retval += OutputOnly(types, "Species conversion factors", indent, cc, origmap);
 
   //The associated species of gene products:
   types.clear();
@@ -2352,6 +2421,7 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
     case varGeneProductAssociation:
     case varSpeciesCharge:
     case varSpeciesChemicalFormula:
+    case varSpeciesConversionFactor:
       break;
     }
   }
@@ -3008,6 +3078,7 @@ void Module::Convert(Variable* conv, Variable* cf, string modulename)
     case varGeneProduct:
     case varGeneProductAssociation:
     case varSpeciesCharge:
+    case varSpeciesConversionFactor:
       form = subvar->GetFormula();
       origform = *origsubvar->GetFormula();
       for (size_t vn=m_variablename.size() - origsubvar->GetName().size() + 1; vn > 0; vn--) {
@@ -3092,6 +3163,7 @@ void Module::ConvertTime(Variable* tcf)
     case varGeneProductAssociation:
     case varSpeciesCharge:
     case varSpeciesChemicalFormula:
+    case varSpeciesConversionFactor:
       break;
     }
   }
@@ -3134,6 +3206,7 @@ void Module::ConvertExtent(Variable* xcf)
     case varGeneProductAssociation:
     case varSpeciesCharge:
     case varSpeciesChemicalFormula:
+    case varSpeciesConversionFactor:
       break;
     }
   }
@@ -3180,6 +3253,7 @@ void Module::UndoTimeExtentConversions(Variable* tcf, Variable* xcf)
     case varGeneProductAssociation:
     case varSpeciesCharge:
     case varSpeciesChemicalFormula:
+    case varSpeciesConversionFactor:
       break;
     }
   }

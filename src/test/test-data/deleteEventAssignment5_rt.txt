@@ -1,19 +1,19 @@
-//Created by libAntimony v2.5
+// Created by libAntimony v3.2.0
 model foo()
-
-  // Variable initializations:
-  Y1 = ;
-  Q1 = ;
-  q = ;
-  Z1 = ;
-  z = ;
 
   // Events:
   E1: at Y1 > 3: Z1 = z, Q1 = q;
 
-  //Other declarations:
-  var Q1, Z1;
-  const Y1, q, z;
+  // Variable initializations:
+  Y1 = ;
+  Z1 = ;
+  z = ;
+  Q1 = ;
+  q = ;
+
+  // Other declarations:
+  var Z1, Q1;
+  const Y1, z, q;
 end
 
 model *bar()
@@ -21,6 +21,6 @@ model *bar()
   // Sub-modules, and any changes to those submodules:
   A: foo();
 
-  //Deleted elements from submodels:
+  // Deleted elements from submodels:
   delete A.z;
 end

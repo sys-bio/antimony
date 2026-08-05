@@ -1949,6 +1949,8 @@ LIB_EXTERN return_type getTypeOfSymbol(const char* moduleName, const char* symbo
   case varSpeciesCharge:
   case varSpeciesChemicalFormula:
     return allSpeciesFbcInfo;
+  case varSpeciesConversionFactor:
+    return allSpeciesConversionFactors;
   case varUndefined:
   case varSboTermWrapper:
   case varUncertWrapper:

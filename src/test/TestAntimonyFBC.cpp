@@ -227,3 +227,24 @@ TEST(AntimonyFBC, test_charge)
   compareFBCAnt("charge");
   compareFBCSBML("charge");
 }
+// A file-based round trip doesn't work well for the two tests below: an empty
+// '.charge' and an empty '.conversionFactor' turns on FBC's namespace, but 
+// the roundtrip drops it again, as it's not actually used.
+TEST(AntimonyFBC, test_charge_empty)
+{
+  int ret = loadString("S1.charge =;");
+  EXPECT_TRUE(ret != -1);
+  string sbml(getSBMLString(NULL));
+  EXPECT_EQ(sbml.find("charge"), string::npos);
+  freeAll();
+}
+
+TEST(AntimonyFBC, test_conversionFactor_empty)
+{
+  int ret = loadString("S1.conversionFactor =;");
+  EXPECT_TRUE(ret != -1);
+  string sbml(getSBMLString(NULL));
+  EXPECT_EQ(sbml.find("conversionFactor"), string::npos);
+  freeAll();
+}
+

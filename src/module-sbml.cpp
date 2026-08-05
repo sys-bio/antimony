@@ -298,6 +298,7 @@ void Module::FindOrCreateLocalVersionOf(const Variable* var, libsbml::Model* sbm
   case varGeneProductAssociation:
   case varSpeciesCharge:
   case varSpeciesChemicalFormula:
+  case varSpeciesConversionFactor:
     assert(false); //Unhandled type
     break;
   }
@@ -726,7 +727,7 @@ void Module::TranslateRulesAndAssignmentsTo(const SBase* obj, Variable* var)
       }
       parent = parent->getParentSBMLObject();
     }
-    if (localparent) {
+    if (localparent && ia->isSetMath()) {
       Formula formula;
       string formulastring(parseASTNodeToString(ia->getMath()));
       setFormulaWithString(formulastring, &formula, this);
@@ -790,7 +791,7 @@ void Module::TranslateRulesAndAssignmentsTo(const SBase* obj, Variable* var)
       }
       parent = parent->getParentSBMLObject();
     }
-    if (localparent) {
+    if (localparent && rule->isSetMath()) {
       var->SetWithRule(rule);
     }
   }
@@ -832,6 +833,11 @@ void Module::LoadSBML(Model* sbml)
     SetDisplayName(sbml->getName());
   PopulateCVTerms((SBase*)sbml);
   ReadAnnotationFrom(sbml);
+  if (sbml->isSetConversionFactor()) {
+    string cfid = sbml->getConversionFactor();
+    Variable* cftarget = AddOrFindVariable(&cfid);
+    SetConversionFactor(cftarget);
+  }
   //Load submodels
   const CompModelPlugin* mplugin = static_cast<const CompModelPlugin*>(sbml->getPlugin("comp"));
   if (mplugin != NULL) {
@@ -1328,6 +1334,16 @@ void Module::LoadSBML(Model* sbml)
         spec_form->SetDisplayName(fsp->getChemicalFormula());
       }
     }
+    if (species->isSetConversionFactor()) {
+      string cfid = species->getConversionFactor();
+      Variable* cftarget = AddOrFindVariable(&cfid);
+      string cfvarid = sbmlname + "-cf";
+      Variable* spec_cf = AddOrFindVariable(&cfvarid);
+      spec_cf->SetType(varSpeciesConversionFactor);
+      formula.Clear();
+      formula.AddVariable(cftarget);
+      spec_cf->SetFormula(&formula);
+    }
   }
 
   //Events:
@@ -1459,13 +1475,22 @@ void Module::LoadSBML(Model* sbml)
           if (specref->isSetStoichiometry() && !stoichvar->HasFormula()) {
             Formula formula;
             formula.AddNum(specref->getStoichiometry());
+            if (specref->getLevel() == 1 && specref->getDenominator() != 1) {
+              formula.AddMathThing('/');
+              formula.AddNum(specref->getDenominator());
+            }
             stoichvar->SetFormula(&formula);
           }
           TranslateRulesAndAssignmentsTo(specref, stoichvar);
         }
         else {
           if (specref->isSetStoichiometry()) {
-            stoichiometry = specref->getStoichiometry();
+            if (specref->getLevel() == 1 && specref->getDenominator() != 1) {
+              stoichiometry = specref->getStoichiometry()/specref->getDenominator();
+            }
+            else {
+              stoichiometry = specref->getStoichiometry();
+            }
           }
         }
         sbmlname = specref->getSpecies();
@@ -2520,8 +2545,7 @@ void Module::CreateSBMLModel(bool comp)
     sbmlevent->getTrigger()->setPersistent(event->GetPersistent());
       
     long numasnts = static_cast<long>(event->GetNumAssignments());
-    for (long asnt=numasnts-1; asnt>=0; asnt--) {
-      //events are stored in reverse order.  Don't ask...
+    for (long asnt=0; asnt<numasnts; asnt++) {
       EventAssignment* sbmlasnt = sbmlmod->createEventAssignment();
       sbmlasnt->setVariable(event->GetNthAssignmentVariableName(asnt, cc));
       ASTNode* ASTasnt = parseStringToASTNode(event->GetNthAssignmentFormulaString(asnt, cc, true));
@@ -2655,6 +2679,7 @@ void Module::CreateSBMLModel(bool comp)
   for (size_t ar = 0; ar < numcharges; ar++) {
     const Variable* spec_fbc = GetNthVariableOfType(allSpeciesFbcInfo, ar, comp);
     if (spec_fbc->GetType() == varSpeciesCharge) {
+      if (spec_fbc->GetFormula()->IsEmpty()) continue;
 
       string specname = spec_fbc->GetNameDelimitedBy(cc);
       specname.replace(specname.find("-charge"), 7, "");
@@ -2669,6 +2694,7 @@ void Module::CreateSBMLModel(bool comp)
     }
     else {
       assert(spec_fbc->GetType() == varSpeciesChemicalFormula);
+      if (spec_fbc->GetDisplayName().empty()) continue;
       string specname = spec_fbc->GetNameDelimitedBy(cc);
       specname.replace(specname.find("-formula"), 8, "");
       Species* spec = sbmlmod->getSpecies(specname);
@@ -2680,6 +2706,24 @@ void Module::CreateSBMLModel(bool comp)
       assert(fsp != NULL);
       fsp->setChemicalFormula(spec_fbc->GetDisplayName());
     }
+  }
+
+
+  //Species conversion factors:
+  size_t numcfs = GetNumVariablesOfType(allSpeciesConversionFactors, comp);
+  for (size_t ar = 0; ar < numcfs; ar++) {
+    const Variable* spec_cf = GetNthVariableOfType(allSpeciesConversionFactors, ar, comp);
+    if (spec_cf->GetFormula()->IsEmpty()) continue;
+    string specname = spec_cf->GetNameDelimitedBy(cc);
+    specname.replace(specname.find("-cf"), 3, "");
+    Species* spec = sbmlmod->getSpecies(specname);
+    if (spec == NULL) {
+      g_registry.SetError("Couldn't find the species associated with the species conversion factor '" + spec_cf->GetNameDelimitedBy(cc) + "'.");
+      assert(false); //Shouldn't get this?
+    }
+    vector<Variable*> cfvars = spec_cf->GetFormula()->GetVariables();
+    assert(cfvars.size() == 1);
+    spec->setConversionFactor(cfvars[0]->GetNameDelimitedBy(cc));
   }
 
 
@@ -2726,6 +2770,12 @@ void Module::CreateSBMLModel(bool comp)
       obj->removeFromParentAndDelete();
     }
     objective->GetFormula()->AddFluxObjective(sbmlmod, m_maximize, objective);
+  }
+
+  //The model's conversion factor (if present)
+  if (m_modelConversionFactor.size() > 0) {
+    Variable* cf = GetVariable(m_modelConversionFactor)->GetSameVariable();
+    sbmlmod->setConversionFactor(cf->GetNameDelimitedBy(cc));
   }
 
   //Ports
@@ -4117,6 +4167,7 @@ void Module::LoadLayout(Model* sbml)
             case varGeneProductAssociation:
             case varSpeciesCharge:
             case varSpeciesChemicalFormula:
+            case varSpeciesConversionFactor:
               continue;
             }
             string varid = var->GetNameDelimitedBy("_");
