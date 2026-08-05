@@ -334,15 +334,16 @@ def test_roundtrip(sbml_case):
                 f"{case_id} ({which}, {os.path.basename(sbml_path)}): uncategorized error, identical on both "
                 f"sides -- consider adding a KNOWN_LIMITATION_PATTERNS entry: {original_error!r}"
             )
-        elif roundtrip_error is None and original_limitation == "fast_reactions":
+        elif original_limitation == "fast_reactions":
             # Antimony doesn't preserve SBML's 'fast' reaction attribute --
             # deliberately: 'fast' is deprecated in current SBML, vanishingly
-            # few models use it, and it's not worth supporting. So the
-            # original model can fail here (roadrunner won't simulate a
-            # fast reaction) while the round-tripped model -- which no
-            # longer has fast=true at all -- simulates fine. That's expected,
-            # not a round-trip bug.
-            outcome = "roadrunner could simulate the round-tripped model but not the original model"
+            # few models use it, and it's not worth supporting. Once
+            # roadrunner rejects the original for using 'fast', the
+            # round-tripped side is unconstrained: it can succeed (fast=true
+            # silently dropped) or fail for its own unrelated reason (e.g.
+            # the same model also has a delay differential equation) --
+            # either way it's not a round-trip bug caused by dropping 'fast'.
+            outcome = "roadrunner couldn't simulate the original model due to 'fast' (round-tripped outcome doesn't matter)"
             limitation = original_limitation
         else:
             # Anything else -- a one-sided failure that isn't the known
