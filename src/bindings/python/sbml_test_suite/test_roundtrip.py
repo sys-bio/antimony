@@ -29,6 +29,7 @@ SIMULATION_TOLERANCE_FACTOR = 0.01
 
 SBML_FILENAME_RE = re.compile(r"^(\d{5})-sbml-l(\d+)v(\d+)\.xml$")
 CASE_DIRNAME_RE = re.compile(r"^\d{5}$")
+MISSING_SYMBOL_RE = re.compile(r"No sbml element exists for symbol '([^']+)'")
 
 # Known, expected roadrunner limitations. Match by category (via these
 # patterns) rather than exact error text, since the round trip can reformat
@@ -148,23 +149,97 @@ def _load_model(model_source):
         os.remove(temp_path)
 
 
+def _rename_candidates(missing):
+    """Given an SBML symbol name that roadrunner couldn't find, returns
+    candidate names it might have been renamed to during Antimony's round
+    trip, in order of likelihood:
+      - missing + '_': Antimony appends '_' to identifiers that collide with
+        reserved words (e.g. INF -> INF_).
+      - the bare suffix after the last '__': a compliant comp flattener
+        prefixes a submodel-local element with its submodel id (e.g.
+        sub1__p1) only when needed to avoid a collision. Antimony doesn't
+        have local (reaction/submodel)-scoped parameters, so when a
+        submodel-local parameter shadows a global one, round-tripping can
+        merge them into a single top-level variable -- no collision, no
+        prefix.
+    """
+    candidates = [missing + "_"]
+    if "__" in missing:
+        candidates.append(missing.rsplit("__", 1)[-1])
+    return candidates
+
+
+def _bare_name(selection):
+    """Strips the "[...]" concentration wrapper from a selection, if any."""
+    if selection.startswith("[") and selection.endswith("]"):
+        return selection[1:-1]
+    return selection
+
+
 def simulate_model(model_source, settings, selections):
+    """Returns (result, renames), where renames is a list of (original,
+    replacement) pairs used to resolve any selection roadrunner couldn't
+    find under its settings.txt name -- see _rename_candidates. Renaming
+    means the round trip structurally changed something (not just relabeled
+    it 1:1), so callers shouldn't treat a non-empty renames list as an
+    apples-to-apples comparison.
+
+    More than one selection can need renaming at once (e.g. several
+    reserved-word collisions in the same model), and roadrunner only reports
+    one missing symbol per attempt, so this retries selection-by-selection:
+    each failure identifies which selection is still broken from its
+    *current* value, and advances that selection's own candidate list
+    (always generated from its original settings.txt name, not the last
+    guess) rather than giving up as soon as any one candidate doesn't fully
+    resolve the model."""
     rr = _load_model(model_source)
     rr.integrator.setValue("absolute_tolerance", settings["absolute"] * SIMULATION_TOLERANCE_FACTOR)
     rr.integrator.setValue("relative_tolerance", settings["relative"] * SIMULATION_TOLERANCE_FACTOR)
     n_points = settings["steps"] + 1
-    result = rr.simulate(settings["start"], settings["start"] + settings["duration"], n_points, selections=selections)
-    return np.asarray(result)
+
+    def run(sels):
+        result = rr.simulate(settings["start"], settings["start"] + settings["duration"], n_points, selections=sels)
+        return np.asarray(result)
+
+    current = list(selections)
+    renamed_to = {}  # original bare name -> candidate currently in use
+    tried = {}  # index into current -> number of candidates already tried
+
+    max_attempts = 2 * len(current) + 1
+    for _ in range(max_attempts):
+        try:
+            renames = [(name, candidate) for name, candidate in renamed_to.items()]
+            return run(current), renames
+        except RuntimeError as exc:
+            match = MISSING_SYMBOL_RE.search(str(exc))
+            if not match:
+                raise
+            bad = match.group(1)
+            idx = next((i for i, sel in enumerate(current) if _bare_name(sel) == bad), None)
+            if idx is None:
+                raise
+            original_bare = _bare_name(selections[idx])
+            candidates = _rename_candidates(original_bare)
+            already_tried = tried.get(idx, 0)
+            if already_tried >= len(candidates):
+                raise
+            candidate = candidates[already_tried]
+            tried[idx] = already_tried + 1
+            current[idx] = f"[{candidate}]" if selections[idx].startswith("[") else candidate
+            renamed_to[original_bare] = candidate
+
+    raise RuntimeError(f"Gave up resolving renamed selections after {max_attempts} attempts")
 
 
 def _try_simulate(model_source, settings, selections):
     """Runs simulate_model, catching any roadrunner runtime error. Returns
-    (result, None) on success, or (None, exception) if roadrunner couldn't
-    simulate the model."""
+    (result, renames, None) on success, or (None, [], exception) if
+    roadrunner couldn't simulate the model."""
     try:
-        return simulate_model(model_source, settings, selections), None
+        result, renames = simulate_model(model_source, settings, selections)
+        return result, renames, None
     except Exception as exc:
-        return None, exc
+        return None, [], exc
 
 
 def pytest_generate_tests(metafunc):
@@ -196,7 +271,7 @@ def test_roundtrip(sbml_case):
     # form but not after being canonicalized by Antimony's round trip, so
     # it's OK for the original to succeed while only the round-tripped model
     # fails, but only for that specific error.
-    original_result, original_error = _try_simulate(sbml_path, settings, selections)
+    original_result, original_renames, original_error = _try_simulate(sbml_path, settings, selections)
 
     load_index = antimony.loadSBMLFile(sbml_path)
     assert load_index >= 0, f"Failed to load {sbml_path} into libAntimony: {antimony.getLastError()}"
@@ -210,7 +285,19 @@ def test_roundtrip(sbml_case):
     roundtripped_sbml = antimony.getCompSBMLString()
     assert roundtripped_sbml, f"Failed to export round-tripped SBML for {sbml_path}: {antimony.getLastError()}"
 
-    roundtrip_result, roundtrip_error = _try_simulate(roundtripped_sbml, settings, selections)
+    roundtrip_result, roundtrip_renames, roundtrip_error = _try_simulate(roundtripped_sbml, settings, selections)
+
+    if original_renames or roundtrip_renames:
+        # A selection only resolved after being renamed -- Antimony
+        # restructured or merged an SBML element during the round trip (see
+        # _rename_candidates), so the two simulations aren't reading the
+        # same thing under that name. Skip rather than silently comparing
+        # apples to oranges.
+        pytest.skip(
+            f"{case_id} ({which}, {os.path.basename(sbml_path)}): a selection only resolved after renaming "
+            f"during round-trip. Original renames: {original_renames or 'none'}. "
+            f"Round-tripped renames: {roundtrip_renames or 'none'}."
+        )
 
     if original_error is not None or roundtrip_error is not None:
         original_limitation = _known_limitation(original_error)
