@@ -191,7 +191,7 @@ def test_roundtrip(sbml_case):
     load_index = antimony.loadAntimonyString(antimony_text)
     assert load_index >= 0, f"Failed to reload converted Antimony for {sbml_path}: {antimony.getLastError()}"
 
-    roundtripped_sbml = antimony.getSBMLString()
+    roundtripped_sbml = antimony.getCompSBMLString()
     assert roundtripped_sbml, f"Failed to export round-tripped SBML for {sbml_path}: {antimony.getLastError()}"
 
     roundtrip_result, roundtrip_error = _try_simulate(roundtripped_sbml, settings, selections)
