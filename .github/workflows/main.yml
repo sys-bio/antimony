@@ -81,9 +81,10 @@ jobs:
             build_type: Debug
             build_python: ON
             build_qt_antimony: OFF
-        libroadrunner_deps_owner: [ "sys-bio" ]
-        libroadrunner_deps_repo: [ "libroadrunner-deps" ]
-        libroadrunner_deps_name: [ "libroadrunner-deps" ]
+        antimony_deps_owner: [ "sys-bio" ]
+        antimony_deps_repo: [ "libroadrunner-deps" ]
+        antimony_deps_name: [ "antimony-deps" ]
+        antimony_deps_release_version: [ "v2.3.5" ]
         python_version: [ "3.13" ]
 
     runs-on: ${{ matrix.platform.os_name }}
@@ -223,48 +224,35 @@ jobs:
         shell: bash
         run: |
           cd ${RUNNER_WORKSPACE}
-          mkdir -p ${{ matrix.libroadrunner_deps_name }}-binaries
-          cd ${{ matrix.libroadrunner_deps_name }}-binaries
-          # Resolve the latest release tag via curl+grep/sed rather than gh/jq,
-          # since this step also runs inside the bare manylinux container image,
-          # which doesn't have the gh CLI installed.
-          #
-          # Buffer the full response into a variable *before* grepping it,
-          # rather than piping curl straight into `grep -m1`: grep -m1 exits
-          # the moment it finds its match and closes its end of the pipe, and
-          # if curl is still writing the rest of the response body when that
-          # happens, it gets a broken-pipe write error (curl exit 23).
-          echo "Querying latest ${{ matrix.libroadrunner_deps_name }} release..."
-          release_json=$(curl -S -H "Authorization: token ${{ github.token }}" "https://api.github.com/repos/${{ matrix.libroadrunner_deps_owner }}/${{ matrix.libroadrunner_deps_repo }}/releases/latest")
-          release_version=$(echo "$release_json" | grep -m1 '"tag_name"' | sed -E 's/.*"tag_name": *"([^"]+)".*/\1/')
-          if [ -z "$release_version" ]; then
-            echo "::error::Failed to resolve the latest ${{ matrix.libroadrunner_deps_name }} release tag. API response was:"
-            echo "$release_json"
-            exit 1
-          fi
-          echo "Using latest ${{ matrix.libroadrunner_deps_name }} release: ${release_version}"
+          mkdir -p ${{ matrix.antimony_deps_name }}-binaries
+          cd ${{ matrix.antimony_deps_name }}-binaries
           if [ "${{ matrix.platform.os_type }}" == 'windows' ]; then
             compiler_version=$(ls "C:\Program Files\Microsoft Visual Studio")
-            binary_file_name=${{ matrix.libroadrunner_deps_name }}-${{ matrix.platform.os_type }}-msvc${compiler_version}-${host_architecture}-${{ matrix.platform.build_type }}
+            binary_file_name=${{ matrix.antimony_deps_name }}-${{ matrix.platform.os_type }}-msvc${compiler_version}-${host_architecture}-${{ matrix.platform.build_type }}
           elif [ "${{ matrix.platform.os_type }}" == 'macos' ]; then
             os_version=$(sw_vers -productVersion | cut -d '.' -f 1)
-            binary_file_name=${{ matrix.libroadrunner_deps_name }}-${{ matrix.platform.os_type }}-${os_version}-${host_architecture}-${{ matrix.platform.build_type }}
+            binary_file_name=${{ matrix.antimony_deps_name }}-${{ matrix.platform.os_type }}-${os_version}-${host_architecture}-${{ matrix.platform.build_type }}
           elif [ "${{ matrix.platform.os_type }}" == 'ubuntu' ]; then
             os_version=$(lsb_release -rs | cut -d '.' -f 1)
-            binary_file_name=${{ matrix.libroadrunner_deps_name }}-${{ matrix.platform.os_type }}-${os_version}-${host_architecture}-${{ matrix.platform.build_type }}
+            binary_file_name=${{ matrix.antimony_deps_name }}-${{ matrix.platform.os_type }}-${os_version}-${host_architecture}-${{ matrix.platform.build_type }}
           elif [ "${{ matrix.platform.os_type }}" == 'manylinux' ]; then
             os_name="${{ matrix.platform.name }}"
             os_name_without_build_type="${os_name%%-*}"
-            binary_file_name=${{ matrix.libroadrunner_deps_name }}-${os_name_without_build_type}-${host_architecture}-${{ matrix.platform.build_type }}
+            binary_file_name=${{ matrix.antimony_deps_name }}-${os_name_without_build_type}-${host_architecture}-${{ matrix.platform.build_type }}
           fi
-          download_url="https://github.com/${{ matrix.libroadrunner_deps_owner }}/${{ matrix.libroadrunner_deps_repo }}/releases/download/${release_version}/$binary_file_name.zip"
-          echo "Downloading $download_url"
-          curl -fLO "$download_url"
+          curl -LO "https://github.com/${{ matrix.antimony_deps_owner }}/${{ matrix.antimony_deps_repo }}/releases/download/${{ matrix.antimony_deps_release_version }}/$binary_file_name.zip"
           unzip -q $binary_file_name.zip
           rm $binary_file_name.zip
-          echo ANT_DEPENDENCIES_INSTALL_PREFIX="-DANT_DEPENDENCIES_INSTALL_PREFIX=${RUNNER_WORKSPACE}/${{ matrix.libroadrunner_deps_name }}-binaries" >> "${GITHUB_ENV}"
+          if [ -d "$binary_file_name" ]; then
+            mv "$binary_file_name"/* .
+            rmdir "$binary_file_name"
+          fi
+
+          echo ANT_DEPENDENCIES_INSTALL_PREFIX="-DANT_DEPENDENCIES_INSTALL_PREFIX=${RUNNER_WORKSPACE}/${{ matrix.antimony_deps_name }}-binaries" >> "${GITHUB_ENV}"
+
+
           #if [ "${{ matrix.platform.os_type }}" == 'windows' ]; then
-          #  echo EXPAT_LIBRARY="-DEXPAT_LIBRARY=${RUNNER_WORKSPACE}/${{ matrix.libroadrunner_deps_name }}-binaries/lib/${{ matrix.platform.expat_lib_name }}" >> "${GITHUB_ENV}"
+          #  echo EXPAT_LIBRARY="-DEXPAT_LIBRARY=${RUNNER_WORKSPACE}/${{ matrix.antimony_deps_name }}-binaries/lib/${{ matrix.platform.expat_lib_name }}" >> "${GITHUB_ENV}"
           #fi
 
       - name: Install Qt
