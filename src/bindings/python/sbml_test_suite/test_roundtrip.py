@@ -29,19 +29,18 @@ SIMULATION_TOLERANCE_FACTOR = 0.01
 SBML_FILENAME_RE = re.compile(r"^(\d{5})-sbml-l(\d+)v(\d+)\.xml$")
 CASE_DIRNAME_RE = re.compile(r"^\d{5}$")
 
-# Known, expected roadrunner limitations. Match by
-# category (via these patterns).
+# Known, expected roadrunner limitations. Match by category (via these
+# patterns) rather than exact error text, since the round trip can reformat
+# the offending formula, rename a reaction, etc.
 #
-# variable_stoichiometry is also the one known limitation that can trip
-# *asymmetrically*: Antimony's canonical output for a variable stoichiometry
-# -- a named speciesReference with an assignment rule -- doesn't always
-# match the input's encoding (e.g. an L1/L2 stoichiometryMath), so it can
-# turn a model roadrunner *could* simulate into one it can't, purely as a
-# side effect of round-tripping.
+# Two of these are also known to trip *asymmetrically*, each in its own
+# specific direction -- see the two `elif` branches below for why:
+#   - variable_stoichiometry: original succeeds, round-tripped fails.
+#   - fast_reactions: original fails, round-tripped succeeds.
 KNOWN_LIMITATION_PATTERNS = {
     "variable_stoichiometry": re.compile(r"variable stoichiometr", re.IGNORECASE),
     "algebraic_rules": re.compile(r"unable to support algebraic rules", re.IGNORECASE),
-    "unsupported_reaction_type": re.compile(r"unable to support .*reactions", re.IGNORECASE),
+    "fast_reactions": re.compile(r"unable to support 'fast' reactions", re.IGNORECASE),
     "delay_differential_equations": re.compile(r"delay differential equations", re.IGNORECASE),
 }
 
@@ -212,11 +211,21 @@ def test_roundtrip(sbml_case):
         elif original_error is None and roundtrip_limitation == "variable_stoichiometry":
             outcome = "roadrunner could simulate the original model but not the round-tripped model"
             limitation = roundtrip_limitation
+        elif roundtrip_error is None and original_limitation == "fast_reactions":
+            # Antimony doesn't preserve SBML's 'fast' reaction attribute --
+            # deliberately: 'fast' is deprecated in current SBML, vanishingly
+            # few models use it, and it's not worth supporting. So the
+            # original model can fail here (roadrunner won't simulate a
+            # fast reaction) while the round-tripped model -- which no
+            # longer has fast=true at all -- simulates fine. That's expected,
+            # not a round-trip bug.
+            outcome = "roadrunner could simulate the round-tripped model but not the original model"
+            limitation = original_limitation
         else:
-            # Anything else -- a one-sided failure that isn't the known
-            # variable-stoichiometry exception, or a symmetric failure where
-            # the two errors aren't the same *kind* of known limitation --
-            # is a real problem, not a known limitation.
+            # Anything else -- a one-sided failure that isn't one of the two
+            # known asymmetric exceptions above, or a symmetric failure
+            # where the two errors aren't the same *kind* of known
+            # limitation -- is a real problem, not a known limitation.
             raise original_error if original_error is not None else roundtrip_error
 
         warnings.warn(
