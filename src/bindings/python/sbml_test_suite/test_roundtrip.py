@@ -125,10 +125,15 @@ def parse_settings(path):
 def build_selections(settings):
     selections = ["time"]
     for var in settings["variables"]:
+        # settings.txt names flattened submodel elements as
+        # "submodelId__elementId" (double underscore), but libSBML's own
+        # comp-flattening -- which is what actually runs when roadrunner
+        # loads a comp SBML file -- joins them with a single underscore.
+        flattened_var = var.replace("__", "_")
         if var in settings["concentration"]:
-            selections.append(f"[{var}]")
+            selections.append(f"[{flattened_var}]")
         else:
-            selections.append(var)
+            selections.append(flattened_var)
     return selections
 
 
@@ -196,17 +201,15 @@ def test_roundtrip(sbml_case):
 
     roundtrip_result, roundtrip_error = _try_simulate(roundtripped_sbml, settings, selections)
 
-    # Always surface whatever roadrunner said, labeled by side, regardless of
-    # whether this turns out to be a known limitation or a real failure --
-    # this is what shows up in the pytest warnings summary either way.
-    if original_error is not None:
-        warnings.warn(f"{case_id} ({which}, {os.path.basename(sbml_path)}): original model error: {original_error!r}")
-    if roundtrip_error is not None:
-        warnings.warn(f"{case_id} ({which}, {os.path.basename(sbml_path)}): round-tripped model error: {roundtrip_error!r}")
-
     if original_error is not None or roundtrip_error is not None:
         original_limitation = _known_limitation(original_error)
         roundtrip_limitation = _known_limitation(roundtrip_error)
+
+        # Every error, known or not, gets embedded directly in the skip/failure
+        # message below rather than raised via warnings.warn() -- pytest's
+        # --junitxml output doesn't capture warnings, only the skip/failure
+        # text itself, so that's the only place this is guaranteed to show up.
+        error_detail = f"Original error: {original_error!r}. Round-tripped error: {roundtrip_error!r}."
 
         if (
             original_error is not None
@@ -216,6 +219,23 @@ def test_roundtrip(sbml_case):
         ):
             outcome = "roadrunner raised the same kind of error simulating both the original and the round-tripped model"
             limitation = original_limitation
+        elif (
+            original_error is not None
+            and roundtrip_error is not None
+            and str(original_error) == str(roundtrip_error)
+        ):
+            # Not a category in KNOWN_LIMITATION_PATTERNS yet, but the error
+            # text is byte-identical on both sides, so it's the same kind of
+            # error by definition -- not a round-trip bug. Flagged via
+            # warnings.warn() (in addition to the skip message below) since
+            # these are exactly the ones worth turning into a real
+            # KNOWN_LIMITATION_PATTERNS entry once someone's looked at them.
+            outcome = "roadrunner raised a byte-identical, but not yet categorized, error simulating both the original and the round-tripped model"
+            limitation = "uncategorized"
+            warnings.warn(
+                f"{case_id} ({which}, {os.path.basename(sbml_path)}): uncategorized error, identical on both "
+                f"sides -- consider adding a KNOWN_LIMITATION_PATTERNS entry: {original_error!r}"
+            )
         elif original_error is None and roundtrip_limitation == "variable_stoichiometry":
             outcome = "roadrunner could simulate the original model but not the round-tripped model"
             limitation = roundtrip_limitation
@@ -234,13 +254,14 @@ def test_roundtrip(sbml_case):
             # known asymmetric exceptions above, or a symmetric failure
             # where the two errors aren't the same *kind* of known
             # limitation -- is a real problem, not a known limitation.
-            raise original_error if original_error is not None else roundtrip_error
+            raise AssertionError(
+                f"{case_id} ({which}, {os.path.basename(sbml_path)}): true failure -- roadrunner's error(s) "
+                f"don't match a known, expected limitation on either side. {error_detail}"
+            ) from (original_error if original_error is not None else roundtrip_error)
 
-        warnings.warn(
-            f"{case_id} ({which}, {os.path.basename(sbml_path)}): {outcome} -- {limitation}. "
-            f"Original error: {original_error!r}. Round-tripped error: {roundtrip_error!r}."
+        pytest.skip(
+            f"{case_id} ({which}, {os.path.basename(sbml_path)}): {outcome} -- {limitation}. {error_detail}"
         )
-        pytest.skip(f"{case_id} ({which}): roadrunner simulation error(s) ({limitation}), see warnings")
 
     assert original_result.shape == roundtrip_result.shape, (
         f"{case_id} ({which}): result shapes differ: "
