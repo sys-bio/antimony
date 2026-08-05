@@ -131,6 +131,29 @@ def build_selections(settings):
     return selections
 
 
+def build_roundtrip_selections(selections):
+    """Antimony renames a model variable literally named 'time' to 'time_'
+    on export, to avoid colliding with its own reserved 'time' keyword. But
+    bare 'time' is *also* always a legitimate roadrunner selection (the
+    simulation clock), which resolves successfully whether or not the model
+    defines its own 'time' symbol -- so a shadowed 'time' variable doesn't
+    raise an error to trigger the general rename-retry logic in
+    simulate_model, it just silently returns the clock instead of the real
+    value. Special-cased here rather than relying on that retry, since it's
+    a silent-wrong-answer bug, not a missing-symbol one.
+
+    selections[0] is always the clock column we add ourselves in
+    build_selections, not a model symbol, so it's left untouched."""
+    def rename(selection):
+        if selection == "time":
+            return "time_"
+        if selection == "[time]":
+            return "[time_]"
+        return selection
+
+    return selections[:1] + [rename(sel) for sel in selections[1:]]
+
+
 def _load_model(model_source):
     """Loads model_source via te.loads(). Roadrunner only flattens comp SBML
     models when loading from a file -- loading the same SBML passed directly
@@ -260,6 +283,7 @@ def test_roundtrip(sbml_case):
     if settings["start"] is None or settings["duration"] is None or settings["steps"] is None:
         pytest.skip(f"{case_id} ({which}): no time course defined in settings.txt (steady-state/FBC case)")
     selections = build_selections(settings)
+    roundtrip_selections = build_roundtrip_selections(selections)
 
     antimony.clearPreviousLoads()
 
@@ -285,7 +309,7 @@ def test_roundtrip(sbml_case):
     roundtripped_sbml = antimony.getCompSBMLString()
     assert roundtripped_sbml, f"Failed to export round-tripped SBML for {sbml_path}: {antimony.getLastError()}"
 
-    roundtrip_result, roundtrip_renames, roundtrip_error = _try_simulate(roundtripped_sbml, settings, selections)
+    roundtrip_result, roundtrip_renames, roundtrip_error = _try_simulate(roundtripped_sbml, settings, roundtrip_selections)
 
     if original_renames or roundtrip_renames:
         # A selection only resolved after being renamed -- Antimony
