@@ -254,9 +254,15 @@ def test_roundtrip(sbml_case):
             # known asymmetric exceptions above, or a symmetric failure
             # where the two errors aren't the same *kind* of known
             # limitation -- is a real problem, not a known limitation.
+            def _label(err, limitation):
+                if err is None:
+                    return "no error"
+                return limitation if limitation is not None else "unrecognized error"
+
             raise AssertionError(
-                f"{case_id} ({which}, {os.path.basename(sbml_path)}): true failure -- roadrunner's error(s) "
-                f"don't match a known, expected limitation on either side. {error_detail}"
+                f"{case_id} ({which}, {os.path.basename(sbml_path)}): true failure -- roadrunner's errors "
+                f"don't match each other (original: {_label(original_error, original_limitation)}; "
+                f"round-tripped: {_label(roundtrip_error, roundtrip_limitation)}). {error_detail}"
             ) from (original_error if original_error is not None else roundtrip_error)
 
         pytest.skip(
