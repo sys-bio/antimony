@@ -33,12 +33,9 @@ CASE_DIRNAME_RE = re.compile(r"^\d{5}$")
 # patterns) rather than exact error text, since the round trip can reformat
 # the offending formula, rename a reaction, etc.
 #
-# Two of these are also known to trip *asymmetrically*, each in its own
-# specific direction -- see the two `elif` branches below for why:
-#   - variable_stoichiometry: original succeeds, round-tripped fails.
-#   - fast_reactions: original fails, round-tripped succeeds.
+# fast_reactions is also known to trip *asymmetrically* -- see the `elif`
+# branch below for why: original fails, round-tripped succeeds.
 KNOWN_LIMITATION_PATTERNS = {
-    "variable_stoichiometry": re.compile(r"variable stoichiometr", re.IGNORECASE),
     "algebraic_rules": re.compile(r"unable to support algebraic rules", re.IGNORECASE),
     "fast_reactions": re.compile(r"unable to support 'fast' reactions", re.IGNORECASE),
     "delay_differential_equations": re.compile(r"delay differential equations", re.IGNORECASE),
@@ -236,9 +233,6 @@ def test_roundtrip(sbml_case):
                 f"{case_id} ({which}, {os.path.basename(sbml_path)}): uncategorized error, identical on both "
                 f"sides -- consider adding a KNOWN_LIMITATION_PATTERNS entry: {original_error!r}"
             )
-        elif original_error is None and roundtrip_limitation == "variable_stoichiometry":
-            outcome = "roadrunner could simulate the original model but not the round-tripped model"
-            limitation = roundtrip_limitation
         elif roundtrip_error is None and original_limitation == "fast_reactions":
             # Antimony doesn't preserve SBML's 'fast' reaction attribute --
             # deliberately: 'fast' is deprecated in current SBML, vanishingly
@@ -250,9 +244,9 @@ def test_roundtrip(sbml_case):
             outcome = "roadrunner could simulate the round-tripped model but not the original model"
             limitation = original_limitation
         else:
-            # Anything else -- a one-sided failure that isn't one of the two
-            # known asymmetric exceptions above, or a symmetric failure
-            # where the two errors aren't the same *kind* of known
+            # Anything else -- a one-sided failure that isn't the known
+            # fast_reactions asymmetric exception above, or a symmetric
+            # failure where the two errors aren't the same *kind* of known
             # limitation -- is a real problem, not a known limitation.
             def _label(err, limitation):
                 if err is None:
