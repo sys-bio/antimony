@@ -68,6 +68,25 @@ void compareFileHierarchy(const string& base)
   freeAll();
 }
 
+TEST(AntimonyHierarchy, test_conversionFactor)
+{
+  string base = "paramconv_hierarchy";
+  clearPreviousLoads();
+  g_registry.SetCC("__");
+  // load document
+  string dir(TestDataDirectory);
+  string filename = dir + base + ".txt";
+  long ret = loadAntimonyFile(filename.c_str());
+  EXPECT_TRUE(ret != -1);
+  char* atosbml = getCompSBMLString(NULL);
+  EXPECT_TRUE(atosbml != NULL);
+
+  string sbmlfile = dir + base + ".xml";
+  SBMLDocument* doc = readSBMLFromFile(sbmlfile.c_str());
+  string matching = writeSBMLToStdString(doc);
+  EXPECT_STREQ(atosbml, matching.c_str());
+}
+
 TEST(AntimonyHierarchy, test_hierarchy)
 {
   compareFileHierarchy("hierarchy");
