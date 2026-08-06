@@ -258,35 +258,6 @@ double Formula::GetDouble() const
   return 0;
 }
 
-bool Formula::GetDoubleIgnoringConversionFactor(double& dbl) const
-{
-  // A conversion factor is baked into the formula as "( <old formula> ) * <cf>",
-  // applied once per entry in m_conversionFactors, outermost last. Peel each of
-  // these off in reverse and see if a bare literal is left underneath.
-  if (m_conversionFactors.empty()) return false;
-  vector<pair<string, vector<string> > > components = m_components;
-  for (size_t cf = m_conversionFactors.size(); cf > 0; cf--) {
-    size_t n = components.size();
-    if (n < 4) return false;
-    if (components[0].second.size() != 0 || components[0].first != "(") return false;
-    if (components[n-1] != m_conversionFactors[cf-1]) return false;
-    if (components[n-2].second.size() != 0 || components[n-2].first != "*") return false;
-    if (components[n-3].second.size() != 0 || components[n-3].first != ")") return false;
-    components.erase(components.end()-3, components.end());
-    components.erase(components.begin());
-  }
-  if (components.size() == 1 && components[0].second.size() == 0 && IsReal(components[0].first)) {
-    dbl = GetReal(components[0].first);
-    return true;
-  }
-  if (components.size() == 2 && components[0].second.size() == 0 && components[0].first == "-" &&
-      components[1].second.size() == 0 && IsReal(components[1].first)) {
-    dbl = -GetReal(components[1].first);
-    return true;
-  }
-  return false;
-}
-
 bool Formula::IsBoolean() const
 {
   if (m_components.size() == 1) {

@@ -48,7 +48,6 @@ public:
   bool IsEmpty() const;
   bool IsDouble() const;
   double GetDouble() const;
-  bool GetDoubleIgnoringConversionFactor(double& dbl) const;
   bool IsBoolean() const;
   bool GetBoolean() const;
   bool IsAmountIn(const Variable* compartment) const;

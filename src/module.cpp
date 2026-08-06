@@ -2771,6 +2771,25 @@ void Module::FillInOrigmap(map<const Variable*, Variable >& origmap) const
         assert(find(m_uniquevars.begin(), m_uniquevars.end(), origvar) != m_uniquevars.end());
         origmapiter = origmap.find(origvar);
         if (origmapiter == origmap.end()) {
+          //If this variable was synchronized with a conversion factor, the value
+          //it started with isn't directly comparable to the outer model's value
+          //anymore; apply the conversion factor here so later comparisons (and
+          //thus decisions about whether the outer value is redundant) are fair.
+          for (size_t sync=0; sync<m_synchronized.size(); sync++) {
+            if ((m_synchronized[sync].first == copied.GetName() && m_synchronized[sync].second == origvar->GetName()) ||
+                (m_synchronized[sync].second == copied.GetName() && m_synchronized[sync].first == origvar->GetName())) {
+              const Variable* conversionFactor = GetVariable(m_conversionFactors[sync]);
+              if (conversionFactor != NULL) {
+                copied.GetFormula()->AddConversionFactor(conversionFactor);
+                copied.GetRateRule()->AddConversionFactor(conversionFactor);
+                var_type ctype = copied.GetType();
+                if (IsReaction(ctype) || ctype == varInteraction) {
+                  copied.GetReaction()->GetFormula()->AddConversionFactor(conversionFactor);
+                }
+              }
+              break;
+            }
+          }
           origmap.insert(make_pair(origvar, copied));
         }
         else {

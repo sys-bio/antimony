@@ -2235,12 +2235,6 @@ void Module::CreateSBMLModel(bool comp)
       else if (formula->IsConcentrationTimes(compartment)) {
         sbmlspecies->setInitialConcentration(formula->ToAmountOrConcentration());
       }
-      else {
-        double dbl;
-        if (formula->GetDoubleIgnoringConversionFactor(dbl)) {
-          sbmlspecies->setInitialAmount(dbl);
-        }
-      }
     }
     else {
       if (formula->IsDouble()) {
@@ -2248,12 +2242,6 @@ void Module::CreateSBMLModel(bool comp)
       }
       else if (formula->IsAmountIn(compartment)) {
         sbmlspecies->setInitialAmount(formula->ToAmountOrConcentration());
-      }
-      else {
-        double dbl;
-        if (formula->GetDoubleIgnoringConversionFactor(dbl)) {
-          sbmlspecies->setInitialConcentration(dbl);
-        }
       }
 
     }
@@ -2373,12 +2361,6 @@ void Module::CreateSBMLModel(bool comp)
     if (formula->IsDouble()) {
       sbmlcomp->setSize(formula->GetDouble());
     }
-    else {
-      double dbl;
-      if (formula->GetDoubleIgnoringConversionFactor(dbl)) {
-        sbmlcomp->setSize(dbl);
-      }
-    }
     Variable* unitvar = compartment->GetUnitVariable();
     if (unitvar != NULL) {
       sbmlcomp->setUnits(GetSBMLUnitName(unitvar, unitRedirects, cc));
@@ -2401,12 +2383,6 @@ void Module::CreateSBMLModel(bool comp)
     param->setConstant(formvar->GetIsConst());
     if (formula->IsDouble()) {
       param->setValue(formula->GetDouble());
-    }
-    else {
-      double dbl;
-      if (formula->GetDoubleIgnoringConversionFactor(dbl)) {
-        param->setValue(dbl);
-      }
     }
     Variable* unitvar = formvar->GetUnitVariable();
     if (unitvar != NULL) {
@@ -2511,9 +2487,7 @@ void Module::CreateSBMLModel(bool comp)
                 else {
                     sr->setConstant(namedstoich->GetIsConst());
                 }
-                double ignoredDbl;
-                if (namedstoich->GetFormula()->IsDouble() ||
-                    namedstoich->GetFormula()->GetDoubleIgnoringConversionFactor(ignoredDbl)) {
+                if (namedstoich->GetFormula()->IsDouble()) {
                     sr->setStoichiometry(nthstoich);
                 }
                 SetAssignmentFor(sbmlmod, namedstoich, syncmap, comp, referencedVars);

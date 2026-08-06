@@ -51,7 +51,7 @@ void compareFileHierarchy(const string& base)
   elideMetaIds(doc);
   string sbmlFlat = writeSBMLToStdString(doc);
   string atosbml_nometa = elideMetaIdsFromSBMLstring(atosbml);
-  EXPECT_TRUE(atosbml_nometa == sbmlFlat);
+  EXPECT_STREQ(atosbml_nometa.c_str(), sbmlFlat.c_str());
 
   ret = loadSBMLString(matching.c_str());
   EXPECT_TRUE(ret != -1);
@@ -66,25 +66,6 @@ void compareFileHierarchy(const string& base)
   delete doc;
   delete converter;
   freeAll();
-}
-
-TEST(AntimonyHierarchy, test_conversionFactor)
-{
-  string base = "paramconv_hierarchy";
-  clearPreviousLoads();
-  g_registry.SetCC("__");
-  // load document
-  string dir(TestDataDirectory);
-  string filename = dir + base + ".txt";
-  long ret = loadAntimonyFile(filename.c_str());
-  EXPECT_TRUE(ret != -1);
-  char* atosbml = getCompSBMLString(NULL);
-  EXPECT_TRUE(atosbml != NULL);
-
-  string sbmlfile = dir + base + ".xml";
-  SBMLDocument* doc = readSBMLFromFile(sbmlfile.c_str());
-  string matching = writeSBMLToStdString(doc);
-  EXPECT_STREQ(atosbml, matching.c_str());
 }
 
 TEST(AntimonyHierarchy, test_hierarchy)
@@ -355,4 +336,9 @@ TEST(AntimonyHierarchy, test_subport2)
 TEST(AntimonyHierarchy, test_subsubport)
 {
   compareFileHierarchy("subsubport");
+}
+
+TEST(AntimonyHierarchy, test_conversionFactor)
+{
+  compareFileHierarchy("paramconv_hierarchy");
 }
