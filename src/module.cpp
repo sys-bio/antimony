@@ -2753,6 +2753,13 @@ void Module::FillInOrigmap(map<const Variable*, Variable >& origmap) const
       //cout << "Module " << mname[0] << endl;
       const Module* submod = m_variables[var]->GetModule();
       const Module* origmod = g_registry.GetModule(submod->GetModuleName());
+      //If this submodel has a time conversion factor, all rules were 
+      // rescaled on import.  We'll need to compare every rule within it was
+      //automatically rescaled when the submodel was set up (see
+      //Module::ConvertTime/ConvertExtent). Reproduce those same
+      //transformations here.
+      Variable* tcf = m_variables[var]->GetTimeConversionFactor();
+      Variable* xcf = m_variables[var]->GetExtentConversionFactor();
       for (size_t uniq=0; uniq<origmod->m_uniquevars.size(); uniq++) {
         const Variable* origmodvar = origmod->m_uniquevars[uniq];
         //cout << "Original: " << origmodvar->GetNameDelimitedBy(".") << ": " << FormulaTypeToString(origmodvar->GetFormulaType());
@@ -2762,6 +2769,20 @@ void Module::FillInOrigmap(map<const Variable*, Variable >& origmap) const
         Variable copied(*(origmod->m_uniquevars[uniq]));
         copied.ClearSameName();
         copied.SetNewTopName(m_modulename, mname[0]);
+        if (tcf != NULL) {
+          copied.GetRateRule()->AddInvTimeConversionFactor(tcf);
+          copied.GetRateRule()->ConvertTime(tcf);
+        }
+        var_type ctype = copied.GetType();
+        if (IsReaction(ctype) || ctype == varInteraction) {
+          if (tcf != NULL) {
+            copied.GetReaction()->GetFormula()->AddInvTimeConversionFactor(tcf);
+            copied.GetReaction()->GetFormula()->ConvertTime(tcf);
+          }
+          if (xcf != NULL) {
+            copied.GetReaction()->GetFormula()->AddConversionFactor(xcf);
+          }
+        }
         const Variable* origvar = GetVariable(copied.GetName());
         if (origvar == NULL) {
           assert(false);
@@ -2782,7 +2803,6 @@ void Module::FillInOrigmap(map<const Variable*, Variable >& origmap) const
               if (conversionFactor != NULL) {
                 copied.GetFormula()->AddConversionFactor(conversionFactor);
                 copied.GetRateRule()->AddConversionFactor(conversionFactor);
-                var_type ctype = copied.GetType();
                 if (IsReaction(ctype) || ctype == varInteraction) {
                   copied.GetReaction()->GetFormula()->AddConversionFactor(conversionFactor);
                 }
@@ -3022,18 +3042,19 @@ void Module::FillInSyncmap(map<const Variable*, Variable >& syncmap) const
 {
   for (size_t s=0; s<m_synchronized.size(); s++) {
     const Variable* var = NULL;
+    const Variable* conversionFactor = GetVariable(m_conversionFactors[s]);
     if (m_synchronized[s].first.size() > 1) {
       var = GetVariable(m_synchronized[s].first);
-      AddVarToSyncMap(var, syncmap);
+      AddVarToSyncMap(var, conversionFactor, syncmap);
     }
     if (m_synchronized[s].second.size() > 1) {
       var = GetVariable(m_synchronized[s].second);
-      AddVarToSyncMap(var, syncmap);
+      AddVarToSyncMap(var, conversionFactor, syncmap);
     }
   }
 }
 
-void Module::AddVarToSyncMap(const Variable* var, map<const Variable*, Variable >& syncmap) const
+void Module::AddVarToSyncMap(const Variable* var, const Variable* conversionFactor, map<const Variable*, Variable >& syncmap) const
 {
   vector<string> origname = var->GetName();
   if (origname.size() <=1) {
@@ -3050,6 +3071,18 @@ void Module::AddVarToSyncMap(const Variable* var, map<const Variable*, Variable 
   Variable copied = *origvar;
   copied.ClearSameName();
   copied.SetNewTopName(m_modulename, submodname[0]);
+  var_type ctype = copied.GetType();
+  //Bake in the per-variable conversion factor (from a "* cf is" synchronization
+  //or a comp:replacedElement conversionFactor), the same way FillInOrigmap does
+  //for the Antimony text writer, so comparisons against this cached original
+  //are fair.
+  if (conversionFactor != NULL) {
+    copied.GetFormula()->AddConversionFactor(conversionFactor);
+    copied.GetRateRule()->AddConversionFactor(conversionFactor);
+    if (IsReaction(ctype) || ctype == varInteraction) {
+      copied.GetReaction()->GetFormula()->AddConversionFactor(conversionFactor);
+    }
+  }
   syncmap.insert(make_pair(var, copied));
 }
 

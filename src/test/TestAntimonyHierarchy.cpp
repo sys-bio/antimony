@@ -342,3 +342,8 @@ TEST(AntimonyHierarchy, test_conversionFactor)
 {
   compareFileHierarchy("paramconv_hierarchy");
 }
+
+TEST(AntimonyHierarchy, test_timeconv_raterule)
+{
+  compareFileHierarchy("timeconv_raterule");
+}

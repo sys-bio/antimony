@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created by libAntimony version v3.2.0 with libSBML version 5.21.1. -->
+<sbml xmlns="http://www.sbml.org/sbml/level3/version2/core" xmlns:comp="http://www.sbml.org/sbml/level3/version1/comp/version1" level="3" version="2" comp:required="true">
+  <model metaid="timeconv_raterule" id="timeconv_raterule">
+    <listOfParameters>
+      <parameter id="tc" value="60" constant="true"/>
+      <parameter id="x" value="0" constant="false">
+        <comp:listOfReplacedElements>
+          <comp:replacedElement comp:idRef="x" comp:submodelRef="sub1"/>
+        </comp:listOfReplacedElements>
+      </parameter>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="x">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="integer"> 1 </cn>
+        </math>
+      </rateRule>
+    </listOfRules>
+    <comp:listOfSubmodels>
+      <comp:submodel comp:id="sub1" comp:modelRef="moddef1" comp:timeConversionFactor="tc">
+        <comp:listOfDeletions>
+          <comp:deletion comp:metaIdRef="moddef1__x__rateRule"/>
+        </comp:listOfDeletions>
+      </comp:submodel>
+    </comp:listOfSubmodels>
+  </model>
+  <comp:listOfModelDefinitions>
+    <comp:modelDefinition metaid="moddef1" id="moddef1">
+      <listOfParameters>
+        <parameter id="x" value="0" constant="false"/>
+      </listOfParameters>
+      <listOfRules>
+        <rateRule metaid="moddef1__x__rateRule" variable="x">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </rateRule>
+      </listOfRules>
+    </comp:modelDefinition>
+  </comp:listOfModelDefinitions>
+</sbml>

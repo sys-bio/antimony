@@ -3236,13 +3236,6 @@ bool Module::SynchronizeRates(Model* sbmlmod, const Variable* var, const vector<
       continue;
     }
     const Variable* orig = &syncmapiter->second;
-    if (ret && notblank && var->GetFormulaType() == orig->GetFormulaType() &&
-        orig->GetRateRule()->Matches(currentform)) {
-          ret = false; //We can leave the original definition there.
-          continue;
-    }
-    if (orig->GetRateRule()->IsEmpty()) continue; //There won't be any rr's in the original.
-    //Otherwise, delete any rate rules in the submodel.
     vector<string> syncname = synchronized[v]->GetName();
     vector<string> submodname = syncname;
     submodname.pop_back();
@@ -3251,6 +3244,27 @@ bool Module::SynchronizeRates(Model* sbmlmod, const Variable* var, const vector<
       assert(false);
       continue;
     }
+    //Any submodel rules were converted by the time conversion factor, 
+    // if present.  Check to see if that's the only change that was made.
+    Variable* tcf = submod->GetTimeConversionFactor();
+    bool matches = false;
+    if (ret && notblank && var->GetFormulaType() == orig->GetFormulaType()) {
+      if (tcf == NULL) {
+        matches = orig->GetRateRule()->Matches(currentform);
+      }
+      else {
+        Formula convertedOrig(*(orig->GetRateRule()));
+        convertedOrig.AddInvTimeConversionFactor(tcf);
+        convertedOrig.ConvertTime(tcf);
+        matches = convertedOrig.Matches(currentform);
+      }
+    }
+    if (matches) {
+          ret = false; //We can leave the original definition there.
+          continue;
+    }
+    if (orig->GetRateRule()->IsEmpty()) continue; //There won't be any rr's in the original.
+    //Otherwise, delete any rate rules in the submodel.
     if (submod->HasDeletion(syncname, delRateRule)) continue;
     Model* md = sbmlmod;
     for (size_t sm=0; sm<submodname.size(); sm++) {

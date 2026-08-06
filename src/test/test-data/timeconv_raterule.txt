@@ -1,0 +1,11 @@
+model moddef1()
+  x = 0;
+  x' = 1;
+end
+
+model *timeconv_raterule()
+  tc = 60;
+  sub1: moddef1(), timeconv = tc;
+  sub1.x is x;
+  x' = 1;
+end

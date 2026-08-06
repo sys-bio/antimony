@@ -250,7 +250,7 @@ public:
   void  FindOrCreateLocalVersionOf(const Variable* var, libsbml::Model* sbmlmod);
   std::vector<const Variable*> GetSynchronizedVariablesFor(const Variable* var);
   void FillInSyncmap(std::map<const Variable*, Variable >& syncmap) const;
-  void AddVarToSyncMap(const Variable* var, std::map<const Variable*, Variable >& syncmap) const;
+  void AddVarToSyncMap(const Variable* var, const Variable* conversionFactor, std::map<const Variable*, Variable >& syncmap) const;
 
   void setUsedDistrib(bool useddistrib);
 
