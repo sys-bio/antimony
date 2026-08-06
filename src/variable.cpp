@@ -2405,7 +2405,7 @@ bool Variable::Synchronize(Variable* clone, const Variable* conversionFactor)
   if (m_formulatype == formulaASSIGNMENT && clone->GetFormula()->IsEmpty()) {
     clone->m_formulatype = formulaASSIGNMENT;
   }
-  if (m_formulatype == formulaRATE && clone->GetRateRule()->IsEmpty() && clone->GetFormula()->IsEmpty()) {
+  if (m_formulatype == formulaRATE && clone->GetRateRule()->IsEmpty()) {
     clone->m_formulatype = formulaRATE;
   }
   if (!m_valFormula.IsEmpty()) {
