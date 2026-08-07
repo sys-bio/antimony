@@ -42,6 +42,113 @@ Other binaries are available from https://github.com/sys-bio/antimony/releases
 
 
 
-Antimony depends on the libSBML and SBMLNetwork libraries.  The currently-used versions of each will always be available from https://github.com/sys-bio/libroadrunner-deps/.
+Antimony depends on the libSBML and SBMLNetwork libraries.  The currently-used versions of each will always be available from https://github.com/sys-bio/libroadrunner-deps/releases/.
 
 Antimony has been supported by NIH/NIGMS Grants GM081070, GM123032, and NIBIB EB028887.
+
+
+# Building from Source
+
+Here we describe how to build libAntimony from source.
+
+## Install Required Build Tools
+
+Install [CMake](https://cmake.org/). On Windows, you also need to install **Visual Studio** with the **Desktop development with C++** workload, which enables you to run CMake from an MSVC x64 development environment.
+
+To build the Python bindings, install Python and ensure that CMake can locate it.
+
+To build the QtAntimony, install Qt 5.15.2 or later and ensure that CMake can locate it.
+
+## Download Prebuilt Dependencies
+
+Download the latest version of prebuilt Antimony dependencies that match your operating system, and build type from the [libroadrunner-deps releases page](https://github.com/sys-bio/libroadrunner-deps/releases).
+
+## Obtain Antimony Source Code
+
+Clone the Antimony repository and enter the source directory:
+
+```bash
+git clone https://github.com/sys-bio/antimony.git
+cd antimony
+```
+
+## Configure with CMake
+
+### Windows
+
+Run PowerShell in an MSVC x64 development environment, then configure Antimony as follows:
+
+```powershell
+cmake -S . -B build-antimony `
+  -A x64 `
+  -DCMAKE_INSTALL_PREFIX="D:/dev/ant/antimony-install" `
+  -DANT_DEPENDENCIES_INSTALL_PREFIX="C:/path/to/libroadrunner-deps" `
+  -DWITH_PYTHON=ON `
+  -DWITH_QTANTIMONY=OFF `
+  -DWITH_GTEST=OFF `
+  -DWITH_CELLML=OFF `
+  -DBUILD_SHARED_LIBS=ON
+```
+
+Replace `C:/path/to/libroadrunner-deps` with the location of the extracted prebuilt dependencies (Remember to use forward slashes in paths passed to CMake).
+
+
+### macOS
+
+Configure Antimony from the source directory:
+
+```bash
+cmake -S . -B build-antimony \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_OSX_ARCHITECTURES="$(uname -m)" \
+  -DCMAKE_INSTALL_PREFIX="$PWD/install-antimony" \
+  -DANT_DEPENDENCIES_INSTALL_PREFIX="/path/to/libroadrunner-deps" \
+  -DWITH_PYTHON=ON \
+  -DWITH_QTANTIMONY=OFF \
+  -DWITH_GTEST=OFF \
+  -DWITH_CELLML=OFF \
+  -DBUILD_SHARED_LIBS=ON
+```
+
+Replace `/path/to/libroadrunner-deps` with the location of the extracted prebuilt dependencies.
+
+### Linux
+
+Configure Antimony from the source directory:
+
+```bash
+cmake -S . -B build-antimony \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_INSTALL_PREFIX="$PWD/install-antimony" \
+  -DANT_DEPENDENCIES_INSTALL_PREFIX="/path/to/libroadrunner-deps" \
+  -DWITH_PYTHON=ON \
+  -DWITH_QTANTIMONY=OFF \
+  -DWITH_GTEST=OFF \
+  -DWITH_CELLML=OFF \
+  -DBUILD_SHARED_LIBS=ON
+```
+
+Replace `/path/to/libroadrunner-deps` with the location of the extracted prebuilt dependencies.
+
+
+## Build and Install
+
+### Windows
+
+```powershell
+cmake --build build-antimony --config Release --target install --parallel
+```
+
+### macOS and Linux
+
+```bash
+cmake --build build-antimony --target install --parallel
+```
+
+The compiled files will be installed in the `install-antimony` directory. This directory should now include:
+
+- Antimony libraries in `lib`,
+- Public C/C++ header files in `include`,
+- If `WITH_PYTHON=ON`, Python bindings in `bindings/python`. This directory can be used to build a Python wheel (see [these instructions](https://packaging.python.org/en/latest/flow/#the-built-distributions-wheels)),
+- If `WITH_QTANTIMONY=ON`, the QtAntimony graphical application in `bin`.
+
