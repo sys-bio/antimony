@@ -68,6 +68,11 @@ void compareFileHierarchy(const string& base)
   freeAll();
 }
 
+TEST(AntimonyHierarchy, test_deleted_rate_rule)
+{
+  compareFileHierarchy("deleted_rate_rule");
+}
+
 TEST(AntimonyHierarchy, test_hierarchy)
 {
   compareFileHierarchy("hierarchy");
