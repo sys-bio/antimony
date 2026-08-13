@@ -182,6 +182,19 @@ string GetNewIDForLocalParameter(const SBase* lp)
   return lpid;
 }
 
+// 'base' if nothing in the document is using it, otherwise 'base' with the
+// lowest number appended that nothing is using.
+static string MakeUniqueMetaId(SBMLDocument& sbml, const string& base)
+{
+  string metaid = base;
+  size_t num = 1;
+  while (sbml.getElementByMetaId(metaid) != NULL) {
+    metaid = base + SizeTToString(num);
+    num++;
+  }
+  return metaid;
+}
+
 void  SetSBaseReference(SBaseRef* sbr, SBase* target, Model* targetmodel, string baseid)
 {
   //We'll re-set any of these that happened to be correct:
@@ -209,12 +222,7 @@ void  SetSBaseReference(SBaseRef* sbr, SBase* target, Model* targetmodel, string
   if (metaid.empty()) {
     SBMLDocument* sbml = sbr->getSBMLDocument();
     assert(sbml != NULL);
-    size_t num = 1;
-    metaid = baseid;
-    while (sbml->getElementByMetaId(metaid) != NULL) {
-      metaid = baseid + SizeTToString(num);
-      num++;
-    }
+    metaid = MakeUniqueMetaId(*sbml, baseid);
 //     std::cerr << "set sbase reference meta id " << metaid << "\n";
     target->setMetaId(metaid);
   }
@@ -1900,6 +1908,33 @@ static string GetSBMLUnitName(Variable* unitvar, const map<Variable*, string>& r
   return unitvar->GetNameOrBuiltin(cc);
 }
 
+// Rules are invisible to Model::getElementBySId:  Rule::getId() returns the
+// rule's 'variable' rather than its id attribute, and an algebraic rule has no
+// variable at all.  Find one by the id we actually gave it.
+static Rule* GetRuleByIdAttribute(Model* sbmlmod, const string& id)
+{
+  if (sbmlmod == NULL) return NULL;
+  for (unsigned int r=0; r<sbmlmod->getNumRules(); r++) {
+    Rule* rule = sbmlmod->getRule(r);
+    if (rule->isSetIdAttribute() && rule->getIdAttribute() == id) {
+      return rule;
+    }
+  }
+  return NULL;
+}
+
+// For the same reason, comp cannot address a rule with an idRef; a reference to
+// one has to go through its metaid.  Set one if the rule does not have it yet.
+static string GetOrSetRuleMetaId(Model* md, const string& id, SBMLDocument& sbml)
+{
+  Rule* rule = GetRuleByIdAttribute(md, id);
+  if (rule == NULL) return "";
+  if (rule->isSetMetaId()) return rule->getMetaId();
+  string metaid = MakeUniqueMetaId(sbml, md->getId() + "__" + id + "__rule");
+  rule->setMetaId(metaid);
+  return metaid;
+}
+
 void Module::CreateSBMLModel(bool comp)
 {
   if (comp) {
@@ -2879,6 +2914,11 @@ void Module::CreateSBMLModel(bool comp)
       else if (name2.size()==1) {
         SBase* sbmlvar1 = sbmlmod->getElementBySId(name2[0]);
         bool isunit = false;
+        bool isrule = false;
+        if (sbmlvar1 == NULL) {
+          sbmlvar1 = GetRuleByIdAttribute(sbmlmod, name2[0]);
+          isrule = (sbmlvar1 != NULL);
+        }
         if (sbmlvar1 == NULL) {
           sbmlvar1 = sbmlmod->getUnitDefinition(name2[0]);
           isunit = true;
@@ -2897,8 +2937,32 @@ void Module::CreateSBMLModel(bool comp)
           sbr = sbr->createSBaseRef();
           svn++;
         }
+        string rulemetaid;
+        if (isrule) {
+          //Descend to the modelDefinition that actually holds the rule.
+          Model* targetmd = NULL;
+          vector<string> smname(1, name1[0]);
+          const Variable* smvar = GetVariable(smname);
+          if (smvar != NULL && smvar->GetType() == varModule) {
+            targetmd = compdoc->getModelDefinition(smvar->GetModule()->GetModuleName());
+          }
+          for (size_t n=1; targetmd != NULL && n+1 < name1.size(); n++) {
+            CompModelPlugin* tcmp = static_cast<CompModelPlugin*>(targetmd->getPlugin("comp"));
+            Submodel* nested = tcmp->getSubmodel(name1[n]);
+            targetmd = (nested == NULL ? NULL : compdoc->getModelDefinition(nested->getModelRef()));
+          }
+          rulemetaid = GetOrSetRuleMetaId(targetmd, name1[svn], m_sbml);
+        }
         if (isunit) {
           sbr->setUnitRef(name1[svn]);
+        }
+        else if (!rulemetaid.empty()) {
+          sbr->setMetaIdRef(rulemetaid);
+          //comp requires a replacement to carry a metaid of its own whenever the
+          //element it replaces has one.
+          if (!sbmlvar1->isSetMetaId()) {
+            sbmlvar1->setMetaId(MakeUniqueMetaId(m_sbml, GetModuleName() + "__" + name2[0]));
+          }
         }
         else {
           sbr->setIdRef(name1[svn]);
@@ -3092,12 +3156,7 @@ void CreateImpliedDeletion(Submodel* submodel, SBase* sbase, SBMLDocument& sbml,
   string metaid = sbase->getMetaId();
   if (metaid.empty()) {
     //Need to set one.
-    size_t num = 1;
-    metaid = basemetaid;
-    while (sbml.getElementByMetaId(metaid) != NULL) {
-      metaid = basemetaid + SizeTToString(num);
-      num++;
-    }
+    metaid = MakeUniqueMetaId(sbml, basemetaid);
     //However, sbase might just be a copy of the real thing we need to find:
     SBase* parent = sbase->getAncestorOfType(SBML_COMP_SUBMODEL, "comp");
     Submodel* submod = static_cast<Submodel*>(parent);
