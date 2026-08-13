@@ -301,7 +301,7 @@ string AntimonyEvent::ToStringDelimitedBy(string cc) const
     assert(false);
     return "";
   }
-  retval += actualvar->GetNameDelimitedBy(cc) + ": at ";
+  retval += actualvar->GetOverrideOrNameDelimitedBy(cc) + ": at ";
   if (!m_delay.IsEmpty()) {
     retval += m_delay.ToDelimitedStringWithEllipses(cc) + " after ";
   }
@@ -328,7 +328,7 @@ string AntimonyEvent::ToStringDelimitedBy(string cc) const
       assert(false);
       return "";
     }
-    retval += resultvar->GetNameDelimitedBy(cc);
+    retval += resultvar->GetOverrideOrNameDelimitedBy(cc);
     retval += " = ";
     retval += m_formresults[result].ToDelimitedStringWithEllipses(cc);
   }

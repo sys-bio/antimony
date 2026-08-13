@@ -79,6 +79,7 @@ Variable::Variable(const Variable& other)
     m_strands(other.m_strands),
     m_deletedunit(other.m_deletedunit),
     m_replacedformrxn(other.m_replacedformrxn),
+    m_overrideOf(other.m_overrideOf),
     m_const(other.m_const),
     m_substOnly(other.m_substOnly),
     m_unitVariable(other.m_unitVariable)
@@ -131,6 +132,31 @@ string Variable::GetNameDelimitedBy(string cc) const
   }
   if (GetType()==varUnitDefinition) {
     FixUnitName(retval);
+  }
+  return retval;
+}
+
+string Variable::GetOverrideOrNameDelimitedBy(string cc) const
+{
+  //An implied override and the submodel element it stands in for both print
+  //under the dotted submodel name.  The synthesized flat name exists only so
+  //the comp writer has something to hang a replacedElement on.
+  const vector<string>* name = NULL;
+  if (!m_overrideOf.empty()) {
+    name = &m_overrideOf;
+  }
+  else if (IsPointer() && GetSameVariable()->IsImpliedOverride()) {
+    name = &m_name;
+  }
+  if (name == NULL) {
+    return GetNameDelimitedBy(cc);
+  }
+  string retval;
+  for (size_t i=0; i<name->size(); i++) {
+    if (i>0) {
+      retval += cc;
+    }
+    retval += (*name)[i];
   }
   return retval;
 }
@@ -2465,6 +2491,14 @@ bool Variable::Synchronize(Variable* clone, const Variable* conversionFactor)
     }
     m_replacedformrxn = true;
     m_valReaction.Clear();
+  }
+
+  //Synchronize the events.
+  if (!m_valEvent.IsEmpty()) {
+    if (clone->GetEvent()->IsEmpty()) {
+      if (clone->SetEvent(&m_valEvent)) return true;
+    }
+    m_valEvent = AntimonyEvent();
   }
 
   //Don't synchronize modules (should be accounted for above)

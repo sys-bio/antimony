@@ -71,7 +71,8 @@ Module::Module(string name)
     m_childrenadded(false),
 #endif
     m_uniquevars(),
-    m_explicitDefaultCompartment(false)
+    m_explicitDefaultCompartment(false),
+    m_impliedOverridesMaterialized(false)
 {
   m_sbmlnamespaces.addPackageNamespace("comp", 1);
   SBMLDocument sbml(&m_sbmlnamespaces);
@@ -128,7 +129,8 @@ Module::Module(const Module& src, string newtopname, string modulename)
     m_childrenadded(src.m_childrenadded),
 #endif
     m_uniquevars(),
-    m_explicitDefaultCompartment(src.m_explicitDefaultCompartment)
+    m_explicitDefaultCompartment(src.m_explicitDefaultCompartment),
+    m_impliedOverridesMaterialized(false)
 {
   SetNewTopName(modulename, newtopname);
 #ifndef NCELLML
@@ -171,7 +173,8 @@ Module::Module(const Module& src)
     m_childrenadded(src.m_childrenadded),
 #endif
     m_uniquevars(src.m_uniquevars),
-    m_explicitDefaultCompartment(src.m_explicitDefaultCompartment)
+    m_explicitDefaultCompartment(src.m_explicitDefaultCompartment),
+    m_impliedOverridesMaterialized(src.m_impliedOverridesMaterialized)
 {
   CompSBMLDocumentPlugin* compdoc = static_cast<CompSBMLDocumentPlugin*>(m_sbml.getPlugin("comp"));
   SBMLDocument* doctest = compdoc->getSBMLDocument();
@@ -236,6 +239,7 @@ Module& Module::operator=(const Module& src)
   m_biol_quals = src.m_biol_quals;
   m_sboTerm = src.m_sboTerm;
   m_explicitDefaultCompartment = src.m_explicitDefaultCompartment;
+  m_impliedOverridesMaterialized = src.m_impliedOverridesMaterialized;
   return *this;
 }
 
@@ -1884,7 +1888,7 @@ string Module::OutputOnly(vector<var_type> types, string name, string indent, st
           retval += "\n" + indent + "// " + name + ":\n";
           firstone = false;
         }
-        string name = var->GetNameDelimitedBy(cc);
+        string name = var->GetOverrideOrNameDelimitedBy(cc);
         if (type == varGeneProduct) {
           name += ".associatedSpecies";
         }
@@ -1901,7 +1905,7 @@ string Module::OutputOnly(vector<var_type> types, string name, string indent, st
       }
       Variable* unit = var->GetUnitVariable();
       if (unit != NULL) {
-        retval += indent + var->GetNameDelimitedBy(cc) + " has " + unit->GetNameDelimitedBy(cc) + ";\n";
+        retval += indent + var->GetOverrideOrNameDelimitedBy(cc) + " has " + unit->GetOverrideOrNameDelimitedBy(cc) + ";\n";
       }
     }
   }
@@ -2060,10 +2064,10 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
       Variable* extentconv = m_variables[var]->GetExtentConversionFactor();
       Variable* timeconv = m_variables[var]->GetTimeConversionFactor();
       if (timeconv !=NULL) {
-        retval += ", timeconv = " + timeconv->GetNameDelimitedBy(cc);
+        retval += ", timeconv = " + timeconv->GetOverrideOrNameDelimitedBy(cc);
       }
       if (extentconv != NULL) {
-        retval += ", extentconv = " + extentconv->GetNameDelimitedBy(cc);
+        retval += ", extentconv = " + extentconv->GetOverrideOrNameDelimitedBy(cc);
       }
       retval += ";\n";
     }
@@ -2079,10 +2083,10 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
   vector<string> normal_speciesnames;
   vector<string> substonly_speciesnames;
   for (size_t var=0; var<m_uniquevars.size(); var++) {
-    string name = m_uniquevars[var]->GetNameDelimitedBy(cc);
+    string name = m_uniquevars[var]->GetOverrideOrNameDelimitedBy(cc);
     Variable* comp = m_uniquevars[var]->GetCompartment();
     if (comp != NULL) {
-      name += " in " + comp->GetNameDelimitedBy(cc);
+      name += " in " + comp->GetOverrideOrNameDelimitedBy(cc);
     }
     if (m_uniquevars[var]->GetType() == varCompartment) {
       if (!OrigIsAlreadyCompartment(m_uniquevars[var], origmap)) {
@@ -2123,7 +2127,7 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
         retval += "\n" + indent + "// DNA strands:\n";
         firstone = false;
       }
-      retval += indent + var->GetNameDelimitedBy(cc) + ": " + strand + ";\n";
+      retval += indent + var->GetOverrideOrNameDelimitedBy(cc) + ": " + strand + ";\n";
     }
   }
 
@@ -2140,7 +2144,7 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
           retval += "\n" + indent + "// Assignment Rules:\n";
           firstone = false;
         }
-        retval += indent + var->GetNameDelimitedBy(cc) + " := " + asntrule->ToDelimitedStringWithEllipses(cc) + ";\n";
+        retval += indent + var->GetOverrideOrNameDelimitedBy(cc) + " := " + asntrule->ToDelimitedStringWithEllipses(cc) + ";\n";
       }
     }
   }
@@ -2156,7 +2160,7 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
         retval += "\n" + indent + "// Rate Rules:\n";
         firstone = false;
       }
-      retval += indent + var->GetNameDelimitedBy(cc) + "' = " + raterule->ToDelimitedStringWithEllipses(cc) + ";\n";
+      retval += indent + var->GetOverrideOrNameDelimitedBy(cc) + "' = " + raterule->ToDelimitedStringWithEllipses(cc) + ";\n";
     }
   }
 
@@ -2171,7 +2175,7 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
               retval += "\n" + indent + "// Algebraic Rules:\n";
               firstone = false;
           }
-          retval += indent + var->GetNameDelimitedBy(cc) + ": 0 = " + algrule->ToDelimitedStringWithEllipses(cc) + ";\n";
+          retval += indent + var->GetOverrideOrNameDelimitedBy(cc) + ": 0 = " + algrule->ToDelimitedStringWithEllipses(cc) + ";\n";
       }
   }
 
@@ -2278,7 +2282,7 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
   for (size_t var = 0; var < m_uniquevars.size(); var++) {
     if (m_uniquevars[var]->GetType() == varGeneProduct) {
       if (!OrigIsAlreadyGeneProduct(m_uniquevars[var], origmap, m_uniquevars[var]->GetFormula())) {
-        geneproduct_names.push_back(m_uniquevars[var]->GetNameDelimitedBy(cc));
+        geneproduct_names.push_back(m_uniquevars[var]->GetOverrideOrNameDelimitedBy(cc));
       }
     }
   }
@@ -2339,11 +2343,11 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
     if (IsSpecies(type)) continue; //already named them and know if they're const.
     if (IsReaction(type)) continue; //Also know if reactions are constant ('no') and if they're in a compartment.
     const_type isconst = m_uniquevars[var]->GetConstType();
-    string name = m_uniquevars[var]->GetNameDelimitedBy(cc);
+    string name = m_uniquevars[var]->GetOverrideOrNameDelimitedBy(cc);
     Variable* comp = m_uniquevars[var]->GetCompartment();
     if (OrigMatches(m_uniquevars[var], origmap, type, isconst, comp)) continue;
     if (comp != NULL) {
-      name += " in " + comp->GetNameDelimitedBy(cc);
+      name += " in " + comp->GetOverrideOrNameDelimitedBy(cc);
       innames.push_back(name);
     }
     switch(isconst) {
@@ -2385,7 +2389,7 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
       if (innames.size() && innames.back() == name) {
         innames.pop_back();
       }
-      delnames.push_back(m_uniquevars[var]->GetNameDelimitedBy(cc));
+      delnames.push_back(m_uniquevars[var]->GetOverrideOrNameDelimitedBy(cc));
       break;
     case varSpeciesUndef: //already taken care of at top
     case varFormulaUndef: //
@@ -2449,7 +2453,7 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
               retval += "\n" + indent + "// Unit definitions:\n";
               firstone = false;
           }
-          retval += indent + "unit " + var->GetNameDelimitedBy(cc) + " = " + unitdef + ";\n";
+          retval += indent + "unit " + var->GetOverrideOrNameDelimitedBy(cc) + " = " + unitdef + ";\n";
       }
   }
 
@@ -2461,7 +2465,7 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
           retval += "\n" + indent + "// Display Names:\n";
           anydisplay = true;
       }
-      string dn_id = m_uniquevars[var]->GetNameDelimitedBy(cc);
+      string dn_id = m_uniquevars[var]->GetOverrideOrNameDelimitedBy(cc);
       var_type vtype = m_uniquevars[var]->GetType();
       if (vtype == varGeneProductAssociation) {
         dn_id.replace(dn_id.find("-gpa"), 4, ".geneProductAssociation");
@@ -2491,7 +2495,7 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
       // SBO terms
       bool anysboterm = false;
       for (size_t var = 0; var < m_uniquevars.size(); var++) {
-          string sboterms = m_uniquevars[var]->CreateSBOTermsAntimonySyntax(m_uniquevars[var]->GetNameDelimitedBy(cc), indent, "sboTerm");
+          string sboterms = m_uniquevars[var]->CreateSBOTermsAntimonySyntax(m_uniquevars[var]->GetOverrideOrNameDelimitedBy(cc), indent, "sboTerm");
           sboterms += m_uniquevars[var]->CreateKineticLawSBOTermAntimonySyntax(indent, cc);
           if (anysboterm == false && sboterms.size() > 0) {
               retval += "\n" + indent + "// SBO terms:\n";
@@ -2507,7 +2511,7 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
       // CV terms
       bool anycvterm = false;
       for (size_t var = 0; var < m_uniquevars.size(); var++) {
-          string cvterms = m_uniquevars[var]->CreateCVTermsAntimonySyntax(m_uniquevars[var]->GetNameDelimitedBy(cc), indent);
+          string cvterms = m_uniquevars[var]->CreateCVTermsAntimonySyntax(m_uniquevars[var]->GetOverrideOrNameDelimitedBy(cc), indent);
           cvterms += m_uniquevars[var]->CreateKineticLawCVTermsAntimonySyntax(indent, cc);
           if (anycvterm == false && cvterms.size() > 0) {
               retval += "\n" + indent + "// CV terms:\n";
@@ -2525,15 +2529,15 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
       for (size_t v = 0; v < m_uniquevars.size(); v++) {
           Variable* var = m_uniquevars[v];
           if (var->isSetCreated()) {
-              dates_plus += indent + var->GetNameDelimitedBy(cc) + " created " + quoteText(var->getCreatedString()) + "\n";
+              dates_plus += indent + var->GetOverrideOrNameDelimitedBy(cc) + " created " + quoteText(var->getCreatedString()) + "\n";
           }
           if (var->isSetModifiedTimes()) {
-              string added = indent + var->GetNameDelimitedBy(cc) + " modified ";
+              string added = indent + var->GetOverrideOrNameDelimitedBy(cc) + " modified ";
               string bigindent(added.length(), ' ');
               added += var->getModifiedString(bigindent);
               dates_plus += added;
           }
-          dates_plus += var->GetCreatorStringFor(indent + var->GetNameDelimitedBy(cc));
+          dates_plus += var->GetCreatorStringFor(indent + var->GetOverrideOrNameDelimitedBy(cc));
       }
       if (!dates_plus.empty()) {
           retval += "\n" + indent + "// Other annotations:\n";
@@ -2577,7 +2581,7 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
                   anynotes = true;
               }
               string notes = m_uniquevars[var]->getNotesString();
-              retval += indent + m_uniquevars[var]->GetNameDelimitedBy(cc) + " notes ";
+              retval += indent + m_uniquevars[var]->GetOverrideOrNameDelimitedBy(cc) + " notes ";
               if (notes.find_first_of('\n') != string::npos ||
                   notes.find_first_of('"') != string::npos) {
                   retval += "```\n";
@@ -2684,6 +2688,10 @@ string Module::ListSynchronizedVariables(string indent, set<size_t> alreadysynch
   string cc = ".";
   string list = "";
   for (size_t pair=0; pair<m_synchronized.size(); pair++) {
+    //An implied override is an artifact of the comp writer, not something the
+    //user wrote an 'is' for; it prints under its dotted submodel name instead.
+    const Variable* second = GetVariable(m_synchronized[pair].second);
+    if (second != NULL && second->IsImpliedOverride()) continue;
     if (alreadysynchronized.find(pair) == alreadysynchronized.end()) {
       list += indent + ToStringFromVecDelimitedBy(m_synchronized[pair].first, cc);
       if (!m_conversionFactors[pair].empty()) {
@@ -2742,6 +2750,64 @@ void Module::FixNames()
   FixName(m_varmap);
 }
 
+Variable Module::GetPristineVersionOf(const Variable* submodvar, const Variable* origmodvar, const Variable* conversionFactor) const
+{
+  Variable copied(*origmodvar);
+  copied.ClearSameName();
+  if (!copied.m_overrideOf.empty()) {
+    //The submodel promoted this element to a top-level variable of its own.  It
+    //stands for the dotted position it was promoted from, which is where our
+    //copy of the submodel (taken before that promotion) still has it.
+    copied.m_name = copied.m_overrideOf;
+    copied.m_overrideOf.clear();
+  }
+  copied.SetNewTopName(m_modulename, submodvar->GetName()[0]);
+
+  //If this submodel has a time or extent conversion factor, all of its rules and
+  //reaction rates were rescaled on import (see Module::ConvertTime/ConvertExtent).
+  //Reproduce those same transformations here so the result is comparable to what
+  //the submodel actually holds now.
+  Variable* tcf = const_cast<Variable*>(submodvar)->GetTimeConversionFactor();
+  Variable* xcf = const_cast<Variable*>(submodvar)->GetExtentConversionFactor();
+  if (tcf != NULL) {
+    copied.GetRateRule()->AddInvTimeConversionFactor(tcf);
+    copied.GetRateRule()->ConvertTime(tcf);
+  }
+  var_type ctype = copied.GetType();
+  if (IsReaction(ctype) || ctype == varInteraction) {
+    if (tcf != NULL) {
+      copied.GetReaction()->GetFormula()->AddInvTimeConversionFactor(tcf);
+      copied.GetReaction()->GetFormula()->ConvertTime(tcf);
+    }
+    if (xcf != NULL) {
+      copied.GetReaction()->GetFormula()->AddConversionFactor(xcf);
+    }
+  }
+
+  //A variable synchronized with a conversion factor (from '* cf is', or a
+  //comp:replacedElement conversionFactor) no longer starts with a value directly
+  //comparable to the outer model's, so apply that factor too.
+  if (conversionFactor != NULL) {
+    copied.GetFormula()->AddConversionFactor(conversionFactor);
+    copied.GetRateRule()->AddConversionFactor(conversionFactor);
+    if (IsReaction(ctype) || ctype == varInteraction) {
+      copied.GetReaction()->GetFormula()->AddConversionFactor(conversionFactor);
+    }
+  }
+  return copied;
+}
+
+const Variable* Module::GetSyncConversionFactorBetween(const vector<string>& name1, const vector<string>& name2) const
+{
+  for (size_t sync=0; sync<m_synchronized.size(); sync++) {
+    if ((m_synchronized[sync].first == name1 && m_synchronized[sync].second == name2) ||
+        (m_synchronized[sync].second == name1 && m_synchronized[sync].first == name2)) {
+      return GetVariable(m_conversionFactors[sync]);
+    }
+  }
+  return NULL;
+}
+
 void Module::FillInOrigmap(map<const Variable*, Variable >& origmap) const
 {
   map<const Variable*, Variable >::iterator origmapiter;
@@ -2750,40 +2816,22 @@ void Module::FillInOrigmap(map<const Variable*, Variable >& origmap) const
     if (m_variables[var]->GetType() == varModule) {
       vector<string> mname = m_variables[var]->GetName();
       assert(mname.size() == 1);
-      //cout << "Module " << mname[0] << endl;
       const Module* submod = m_variables[var]->GetModule();
       const Module* origmod = g_registry.GetModule(submod->GetModuleName());
-      //If this submodel has a time conversion factor, all rules were 
-      // rescaled on import.  We'll need to compare every rule within it was
-      //automatically rescaled when the submodel was set up (see
-      //Module::ConvertTime/ConvertExtent). Reproduce those same
-      //transformations here.
-      Variable* tcf = m_variables[var]->GetTimeConversionFactor();
-      Variable* xcf = m_variables[var]->GetExtentConversionFactor();
       for (size_t uniq=0; uniq<origmod->m_uniquevars.size(); uniq++) {
         const Variable* origmodvar = origmod->m_uniquevars[uniq];
-        //cout << "Original: " << origmodvar->GetNameDelimitedBy(".") << ": " << FormulaTypeToString(origmodvar->GetFormulaType());
-        //if (origmodvar->GetFormula() != NULL) cout << ": " << origmodvar->GetFormula()->ToDelimitedStringWithEllipses(".");
-        //cout << endl;
-        assert(!origmodvar->IsPointer());
-        Variable copied(*(origmod->m_uniquevars[uniq]));
-        copied.ClearSameName();
-        copied.SetNewTopName(m_modulename, mname[0]);
-        if (tcf != NULL) {
-          copied.GetRateRule()->AddInvTimeConversionFactor(tcf);
-          copied.GetRateRule()->ConvertTime(tcf);
+        if (origmodvar->IsPointer()) {
+          //Superseded by a promotion, which is in this list under its own name.
+          continue;
         }
-        var_type ctype = copied.GetType();
-        if (IsReaction(ctype) || ctype == varInteraction) {
-          if (tcf != NULL) {
-            copied.GetReaction()->GetFormula()->AddInvTimeConversionFactor(tcf);
-            copied.GetReaction()->GetFormula()->ConvertTime(tcf);
-          }
-          if (xcf != NULL) {
-            copied.GetReaction()->GetFormula()->AddConversionFactor(xcf);
-          }
+        //A promoted variable stands for the dotted position it came from, which
+        //is the name our copy of the submodel still uses.
+        vector<string> copiedname = origmodvar->GetOverrideOf();
+        if (copiedname.empty()) {
+          copiedname = origmodvar->GetName();
         }
-        const Variable* origvar = GetVariable(copied.GetName());
+        copiedname.insert(copiedname.begin(), mname[0]);
+        const Variable* origvar = GetVariable(copiedname);
         if (origvar == NULL) {
           assert(false);
           continue;
@@ -2792,27 +2840,11 @@ void Module::FillInOrigmap(map<const Variable*, Variable >& origmap) const
         assert(find(m_uniquevars.begin(), m_uniquevars.end(), origvar) != m_uniquevars.end());
         origmapiter = origmap.find(origvar);
         if (origmapiter == origmap.end()) {
-          //If this variable was synchronized with a conversion factor, the value
-          //it started with isn't directly comparable to the outer model's value
-          //anymore; apply the conversion factor here so later comparisons (and
-          //thus decisions about whether the outer value is redundant) are fair.
-          for (size_t sync=0; sync<m_synchronized.size(); sync++) {
-            if ((m_synchronized[sync].first == copied.GetName() && m_synchronized[sync].second == origvar->GetName()) ||
-                (m_synchronized[sync].second == copied.GetName() && m_synchronized[sync].first == origvar->GetName())) {
-              const Variable* conversionFactor = GetVariable(m_conversionFactors[sync]);
-              if (conversionFactor != NULL) {
-                copied.GetFormula()->AddConversionFactor(conversionFactor);
-                copied.GetRateRule()->AddConversionFactor(conversionFactor);
-                if (IsReaction(ctype) || ctype == varInteraction) {
-                  copied.GetReaction()->GetFormula()->AddConversionFactor(conversionFactor);
-                }
-              }
-              break;
-            }
-          }
-          origmap.insert(make_pair(origvar, copied));
+          const Variable* cf = GetSyncConversionFactorBetween(copiedname, origvar->GetName());
+          origmap.insert(make_pair(origvar, GetPristineVersionOf(m_variables[var], origmodvar, cf)));
         }
         else {
+          Variable copied = GetPristineVersionOf(m_variables[var], origmodvar, NULL);
           //Find out how the two variables were synchronized
           bool synched = false;
           for (size_t sync=0; sync<m_synchronized.size(); sync++) {
@@ -3068,22 +3100,230 @@ void Module::AddVarToSyncMap(const Variable* var, const Variable* conversionFact
   assert(submod != NULL);
   Module* origmod = g_registry.GetModule(submod->GetModule()->GetModuleName());
   Variable* origvar = origmod->GetVariable(origname)->GetSameVariable();
-  Variable copied = *origvar;
-  copied.ClearSameName();
-  copied.SetNewTopName(m_modulename, submodname[0]);
-  var_type ctype = copied.GetType();
-  //Bake in the per-variable conversion factor (from a "* cf is" synchronization
-  //or a comp:replacedElement conversionFactor), the same way FillInOrigmap does
-  //for the Antimony text writer, so comparisons against this cached original
-  //are fair.
-  if (conversionFactor != NULL) {
-    copied.GetFormula()->AddConversionFactor(conversionFactor);
-    copied.GetRateRule()->AddConversionFactor(conversionFactor);
-    if (IsReaction(ctype) || ctype == varInteraction) {
-      copied.GetReaction()->GetFormula()->AddConversionFactor(conversionFactor);
+  syncmap.insert(make_pair(var, GetPristineVersionOf(submod, origvar, conversionFactor)));
+}
+
+// True when 'form' says something.  A formula that is empty or nothing but
+// ellipses is the absence of a definition, not a definition of its own.
+static bool FormulaIsSet(const Formula* form)
+{
+  return form != NULL && !form->IsEmpty() && !form->IsEllipsesOnly();
+}
+
+// Compare against the pristine copy directly rather than through the
+// Orig*IsAlready family:  those answer "may the writer skip printing this",
+// and return false when there is nothing to compare against, which is not the
+// same question.
+bool Module::DiffersFromPristine(const Variable* var, const Variable* submodvar, const map<const Variable*, Variable>& origmap) const
+{
+  map<const Variable*, Variable >::const_iterator origmapiter = origmap.find(var);
+  if (origmapiter == origmap.end()) return false;
+  const Variable& pristine = origmapiter->second;
+  var_type type = var->GetType();
+
+  switch (type) {
+  case varModule:
+  case varUnitDefinition:
+  case varStrand:
+  case varDeleted:
+  case varSboTermWrapper:
+  case varUncertWrapper:
+  case varLayoutWrapper:
+  case varKineticLawWrapper:
+  case varLayoutColorEtc:
+    //Not promotable through a top-level variable; handled elsewhere or not at
+    //all.  This has to come before the type comparison below:  a deleted
+    //variable always differs in type from its pristine self, but a 'delete' is
+    //already written as a comp:deletion, and promoting it would ask the writer
+    //for a top-level element that deletion means does not exist.
+    return false;
+  default:
+    break;
+  }
+
+  if (type != pristine.GetType()) return true;
+
+  switch (type) {
+  case varEvent:
+    return !pristine.GetEvent()->Matches(var->GetEvent());
+  case varReactionUndef:
+  case varReactionGene:
+  case varInteraction:
+    //Antimony has no way to change part of a reaction:  any difference means
+    //the whole reaction was replaced, and that is what comp has to say too.
+    return !pristine.GetReaction()->Matches(var->GetReaction());
+  case varConstraint:
+    return !pristine.GetConstraint()->Matches(var->GetConstraint());
+  default:
+    break;
+  }
+
+  if (pristine.GetConstType() != var->GetConstType()) return true;
+  if (pristine.GetCompartment() != var->GetCompartment()) return true;
+
+  //A definition that is gone because it was explicitly deleted is not a
+  //difference we have to promote:  the comp:deletion already says it.  Only a
+  //replacement needs a top-level element to point a replacedElement at.
+  Variable* sm = const_cast<Variable*>(submodvar);
+  const Formula* form = var->GetFormula();
+  const Formula* pform = pristine.GetFormula();
+  deletion_type formdel = delInitialAssignment;
+  if (pristine.GetFormulaType() == formulaASSIGNMENT) {
+    formdel = delAssignmentRule;
+  }
+  bool formgone = FormulaIsSet(pform) && !FormulaIsSet(form) &&
+                  sm->HasDeletion(var->GetName(), formdel);
+
+  const Formula* rate = var->GetRateRule();
+  const Formula* prate = pristine.GetRateRule();
+  bool rategone = FormulaIsSet(prate) && !FormulaIsSet(rate) &&
+                  sm->HasDeletion(var->GetName(), delRateRule);
+
+  if (!formgone && !rategone && pristine.GetFormulaType() != var->GetFormulaType()) return true;
+  if (!formgone) {
+    if (FormulaIsSet(form) != FormulaIsSet(pform)) return true;
+    if (FormulaIsSet(form) && !pform->Matches(form)) return true;
+  }
+  if (!rategone) {
+    if (FormulaIsSet(rate) != FormulaIsSet(prate)) return true;
+    if (FormulaIsSet(rate) && !prate->Matches(rate)) return true;
+  }
+
+  return false;
+}
+
+vector<string> Module::GetLiveNameFor(const vector<string>& position) const
+{
+  const Variable* var = GetVariable(position);
+  if (var != NULL && var->IsPointer()) {
+    const Variable* live = var->GetSameVariable();
+    if (live->IsImpliedOverride()) {
+      return live->GetName();
     }
   }
-  syncmap.insert(make_pair(var, copied));
+  return position;
+}
+
+string Module::MakeImpliedOverrideName(const vector<string>& subname) const
+{
+  //Derive the name from the element's own path rather than from a counter over
+  //unrelated siblings, so that a module's registry template and every clone of
+  //it independently arrive at the same name.  Using the flattening delimiter
+  //also means the name matches what the flat writer calls the same element.
+  string cc = g_registry.GetCC();
+  string base = ToStringFromVecDelimitedBy(subname, cc);
+  string candidate = base;
+  size_t num = 0;
+  vector<string> fullname;
+  fullname.push_back(candidate);
+  while (GetVariable(fullname) != NULL) {
+    num++;
+    candidate = base + cc + SizeTToString(num);
+    fullname[0] = candidate;
+  }
+  return candidate;
+}
+
+void Module::MaterializeImpliedOverrides()
+{
+  if (m_impliedOverridesMaterialized) return;
+  m_impliedOverridesMaterialized = true;
+
+  //Every submodel's registry copy first, bottom-up.  We compare our clone of a
+  //submodel against that registry copy, and our replacedElement has to point at
+  //whatever the submodel presents at that position -- which, if the submodel
+  //promoted it, is a top-level variable of the submodel that did not exist when
+  //our clone was taken.  Only the registry copies:  a local clone carries the
+  //enclosing model's name prefix, which FillInOrigmap does not expect.
+  for (size_t var=0; var<m_variables.size(); var++) {
+    if (m_variables[var]->GetType() != varModule) continue;
+    Module* tmpl = g_registry.GetModule(m_variables[var]->GetModule()->GetModuleName());
+    if (tmpl != NULL && tmpl != this) {
+      tmpl->MaterializeImpliedOverrides();
+    }
+  }
+
+  //FillInOrigmap synchronizes throwaway copies against each other to work out
+  //what the submodel originally looked like, and Variable::Synchronize registers
+  //every pair it makes with the module the variable names -- including pairs
+  //between two copies that are not in the model at all.  Those are an artifact
+  //of the comparison, so drop them again.  (GetAntimony only avoids the problem
+  //by filling its origmap after it has already listed the real pairs.)
+  size_t realsync = m_synchronized.size();
+  map<const Variable*, Variable > origmap;
+  FillInOrigmap(origmap);
+  m_synchronized.resize(realsync);
+  m_conversionFactors.resize(realsync);
+
+  //Only our own direct submodels' own elements.  Anything deeper belongs to the
+  //module that declared it, and is promoted there.
+  vector<Variable*> candidates;
+  vector<vector<string> > targets;
+  for (size_t var=0; var<m_variables.size(); var++) {
+    if (m_variables[var]->GetType() != varModule) continue;
+    const Module* submod = m_variables[var]->GetModule();
+    const Module* origmod = g_registry.GetModule(submod->GetModuleName());
+    if (origmod == NULL) continue;
+    const string& smname = m_variables[var]->GetName()[0];
+    for (size_t uniq=0; uniq<origmod->m_uniquevars.size(); uniq++) {
+      const Variable* tvar = origmod->m_uniquevars[uniq];
+      if (tvar->IsPointer()) continue;
+      //Where the submodel keeps this element now.  If the submodel promoted it,
+      //this is the promoted name, and it is what we have to point at:  the
+      //element at the dotted position has already been replaced once.
+      vector<string> target = tvar->GetName();
+      if (target.size() != 1) continue;
+      //Where our own clone of the submodel still keeps it.
+      vector<string> pos = tvar->GetOverrideOf();
+      if (pos.empty()) {
+        pos = target;
+      }
+      pos.insert(pos.begin(), smname);
+      target.insert(target.begin(), smname);
+      Variable* live = GetVariable(pos);
+      if (live == NULL) continue;
+      live = live->GetSameVariable();
+      //Already reachable from a top-level variable:  an explicit 'is', or a
+      //promotion we made on an earlier pass.
+      if (live->GetName().size() == 1) continue;
+      if (find(candidates.begin(), candidates.end(), live) != candidates.end()) continue;
+      if (!DiffersFromPristine(live, m_variables[var], origmap)) continue;
+      candidates.push_back(live);
+      targets.push_back(target);
+    }
+  }
+
+  for (size_t c=0; c<candidates.size(); c++) {
+    Variable* live = candidates[c];
+    vector<string> subname = live->GetName();
+    string newname = MakeImpliedOverrideName(subname);
+    Variable* top = AddOrFindVariable(&newname);
+    top->SetOverrideOf(subname);
+    size_t nsync = m_synchronized.size();
+    if (top->Synchronize(live, NULL)) {
+      g_registry.AddWarning("In module '" + m_modulename + "', unable to promote the modified submodel element " +
+        ToStringFromVecDelimitedBy(subname, ".") + " to the top level:  " + g_registry.GetError());
+      continue;
+    }
+    //Synchronize recorded the pair against the dotted position.  The writer
+    //builds the replacedElement from that name, so point it at whatever the
+    //submodel actually presents there instead.
+    if (m_synchronized.size() == nsync + 1 && targets[c] != subname) {
+      m_synchronized.back().first = targets[c];
+    }
+    //'live' is now a pointer to 'top', so the unique variable at that position
+    //is 'top'.  m_uniquevars is only otherwise built by Finalize, which is not
+    //going to run again before the model is written.  Replace in place:  order
+    //matters here.
+    vector<Variable*>::iterator uv = find(m_uniquevars.begin(), m_uniquevars.end(), live);
+    if (uv != m_uniquevars.end()) {
+      *uv = top;
+    }
+    else {
+      m_uniquevars.push_back(top);
+    }
+    m_variablesOfTypeCache.clear();
+  }
 }
 
 void Module::setUsedDistrib(bool useddistrib)

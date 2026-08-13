@@ -149,7 +149,7 @@ string AntimonyReaction::ToDelimitedStringWithStrands(std::string cc, vector<pai
   assert(module != NULL);
   Variable* actualvar = module->GetVariable(m_name);
   if (actualvar != NULL) {
-    retval += actualvar->GetNameDelimitedBy(cc);
+    retval += actualvar->GetOverrideOrNameDelimitedBy(cc);
   }
   else {
     assert(false); //Should be clean...
@@ -170,7 +170,7 @@ string AntimonyReaction::ToDelimitedStringWithEllipses(std::string cc) const
   assert(module != NULL);
   Variable* actualvar = module->GetVariable(m_name);
   if (actualvar != NULL) {
-    retval += actualvar->GetNameDelimitedBy(cc);
+    retval += actualvar->GetOverrideOrNameDelimitedBy(cc);
   }
   else {
     assert(false); //Should be clean...
@@ -180,7 +180,7 @@ string AntimonyReaction::ToDelimitedStringWithEllipses(std::string cc) const
     }
   }
   if (actualvar->GetCompartment() != NULL) {
-    retval += " in " + actualvar->GetCompartment()->GetNameDelimitedBy(cc);
+    retval += " in " + actualvar->GetCompartment()->GetOverrideOrNameDelimitedBy(cc);
   }
   retval += ": " + m_left.ToStringDelimitedBy(cc) + " " + RDToString(m_divider) + " " + m_right.ToStringDelimitedBy(cc) + "; " + m_formula.ToDelimitedStringWithEllipses(cc) + ";";
   return retval;

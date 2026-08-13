@@ -1,0 +1,15 @@
+model base()
+  J0: S1->S2;
+  S1 = 10
+  S2 = 0
+end
+
+model sub1()
+  B: base()
+  B.J0: B.S1-> 2 B.S2;
+end
+
+model implied_nested_reaction()
+  A: sub1()
+  A.B.J0: A.B.S2->A.B.S1;
+end

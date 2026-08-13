@@ -1865,6 +1865,11 @@ const SBMLDocument* Module::GetSBML(bool comp)
   if (mod != NULL && mod->getId() == m_modulename && m_sbml.getPackageRequired("comp") == comp) {
     return &m_sbml;
   }
+  if (comp) {
+    //Give the rest of the writer a real top-level variable to hang a
+    //replacedElement on for submodel elements that were changed without an 'is'.
+    MaterializeImpliedOverrides();
+  }
   CreateSBMLModel(comp);
   return &m_sbml;
 }
@@ -2001,19 +2006,33 @@ void Module::CreateSBMLModel(bool comp)
         default:
           break;
         }
+        Variable* deletedvar = GetVariable(delname);
+        //If the submodel promoted this element to a top-level variable of its
+        //own, that promotion has already replaced whatever sits at the dotted
+        //position.  Point the deletion at what the submodel actually presents
+        //there, or we and the submodel both end up referencing the same element.
+        vector<string> refname = delname;
+        Module* subtmpl = g_registry.GetModule(module->GetModuleName());
+        if (subtmpl != NULL) {
+          vector<string> inner(delname.begin()+1, delname.end());
+          vector<string> live = subtmpl->GetLiveNameFor(inner);
+          if (live != inner) {
+            refname.resize(1);
+            refname.insert(refname.end(), live.begin(), live.end());
+          }
+        }
         Deletion* deletion = sbmlsubmod->createDeletion();
-        assert(delname.size() > 1);
-        deletion->setIdRef(delname[1]);
+        assert(refname.size() > 1);
+        deletion->setIdRef(refname[1]);
         SBaseRef* sbr = deletion;
-        for (size_t n=2; n<delname.size(); n++) {
+        for (size_t n=2; n<refname.size(); n++) {
           SBaseRef* subsbr = sbr->createSBaseRef();
-          subsbr->setIdRef(delname[n]);
+          subsbr->setIdRef(refname[n]);
           sbr = subsbr;
         }
-        Variable* deletedvar = GetVariable(delname);
         if (deletedvar->IsDeletedUnit()) {
           sbr->unsetIdRef();
-          sbr->setUnitRef(delname[delname.size()-1]);
+          sbr->setUnitRef(refname[refname.size()-1]);
         }
         //deletedvar->TransferAnnotationTo(deletion);
         //Find the actual bit we're deleting:
@@ -2029,7 +2048,7 @@ void Module::CreateSBMLModel(bool comp)
         parentModelsb = compdoc->getModel(parentId);
         assert(parentModelsb != NULL);
         Model* parentModel = static_cast<Model*>(parentModelsb);
-        SBase* target = parentModel->getElementBySId(delname[delname.size()-1]);
+        SBase* target = parentModel->getElementBySId(refname[refname.size()-1]);
         if (target == NULL) {
           target = parentModel->getUnitDefinition(delname[delname.size()-1]);
         }
@@ -2491,6 +2510,22 @@ void Module::CreateSBMLModel(bool comp)
                     sr->setStoichiometry(nthstoich);
                 }
                 SetAssignmentFor(sbmlmod, namedstoich, syncmap, comp, referencedVars);
+                if (comp && namedstoich->GetName().size() > 1) {
+                    //This reaction was written at the top level but its named
+                    //stoichiometry lives in a submodel.  The submodel's own copy
+                    //goes away with the reaction we are replacing, so anything
+                    //there that still names it has to be redirected here.
+                    vector<string> sname = namedstoich->GetName();
+                    CompSBasePlugin* srplug = static_cast<CompSBasePlugin*>(sr->getPlugin("comp"));
+                    ReplacedElement* stoichre = srplug->createReplacedElement();
+                    stoichre->setSubmodelRef(sname[0]);
+                    SBaseRef* stoichsbr = stoichre;
+                    for (size_t sn=1; sn+1<sname.size(); sn++) {
+                        stoichsbr->setIdRef(sname[sn]);
+                        stoichsbr = stoichsbr->createSBaseRef();
+                    }
+                    stoichsbr->setIdRef(sname[sname.size()-1]);
+                }
             }
         }
     }
@@ -2525,6 +2560,9 @@ void Module::CreateSBMLModel(bool comp)
     trig->setMath(ASTtrig);
 
     delete ASTtrig;
+    if (comp) {
+      event->GetTrigger()->AddReferencedVariablesTo(referencedVars);
+    }
     const Formula* delay = event->GetDelay();
     if (!delay->IsEmpty()) {
       ASTtrig = parseStringToASTNode(delay->ToSBMLString());
@@ -2533,6 +2571,9 @@ void Module::CreateSBMLModel(bool comp)
         sbmldelay->setMath(ASTtrig);
       }
       delete ASTtrig;
+      if (comp) {
+        delay->AddReferencedVariablesTo(referencedVars);
+      }
     }
     const Formula* priority = event->GetPriority();
     if (!priority->IsEmpty()) {
@@ -2542,6 +2583,9 @@ void Module::CreateSBMLModel(bool comp)
         sbmlpriority->setMath(ASTtrig);
       }
       delete ASTtrig;
+      if (comp) {
+        priority->AddReferencedVariablesTo(referencedVars);
+      }
     }
     sbmlevent->setUseValuesFromTriggerTime(event->GetUseValuesFromTriggerTime());
     sbmlevent->getTrigger()->setInitialValue(event->GetInitialValue());
@@ -2554,6 +2598,15 @@ void Module::CreateSBMLModel(bool comp)
       ASTNode* ASTasnt = parseStringToASTNode(event->GetNthAssignmentFormulaString(asnt, cc, true));
       sbmlasnt->setMath(ASTasnt);
       delete ASTasnt;
+      if (comp) {
+        //The assignment target appears in no formula, so it has to be collected
+        //by hand or nothing will create a local version of it.
+        const Variable* target = GetVariable(event->GetNthAssignmentVariableFullName(asnt));
+        if (target != NULL) {
+          referencedVars.insert(make_pair(target->GetNameDelimitedBy(cc), target));
+        }
+        event->GetAssignmentFormula(asnt)->AddReferencedVariablesTo(referencedVars);
+      }
     }
   }
 
@@ -2626,6 +2679,9 @@ void Module::CreateSBMLModel(bool comp)
         }
         convar->TransferAnnotationTo(constraint, GetModuleName() + "." + convar->GetNameDelimitedBy(cc));
         constraint->setMath(antconstraint->getASTNode());
+        if (comp && formula != NULL) {
+          formula->AddReferencedVariablesTo(referencedVars);
+        }
 #ifdef LIBSBML_HAS_PACKAGE_FBC
     }
 #endif
@@ -2943,7 +2999,7 @@ void Module::CreateSBMLModel(bool comp)
   }
 }
 
-void Module::SetAssignmentFor(Model* sbmlmod, const Variable* var, const map<const Variable*, Variable>& syncmap, bool comp, set<pair<string, const Variable*> > referencedVars)
+void Module::SetAssignmentFor(Model* sbmlmod, const Variable* var, const map<const Variable*, Variable>& syncmap, bool comp, set<pair<string, const Variable*> >& referencedVars)
 {
   bool useinitial = true;
   bool useassignment = true;
@@ -3244,20 +3300,11 @@ bool Module::SynchronizeRates(Model* sbmlmod, const Variable* var, const vector<
       assert(false);
       continue;
     }
-    //Any submodel rules were converted by the time conversion factor, 
-    // if present.  Check to see if that's the only change that was made.
-    Variable* tcf = submod->GetTimeConversionFactor();
+    //'orig' already carries the submodel's time conversion, applied by
+    //GetPristineVersionOf when the syncmap was built.
     bool matches = false;
     if (ret && notblank && var->GetFormulaType() == orig->GetFormulaType()) {
-      if (tcf == NULL) {
-        matches = orig->GetRateRule()->Matches(currentform);
-      }
-      else {
-        Formula convertedOrig(*(orig->GetRateRule()));
-        convertedOrig.AddInvTimeConversionFactor(tcf);
-        convertedOrig.ConvertTime(tcf);
-        matches = convertedOrig.Matches(currentform);
-      }
+      matches = orig->GetRateRule()->Matches(currentform);
     }
     if (matches) {
           ret = false; //We can leave the original definition there.

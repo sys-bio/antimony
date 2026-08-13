@@ -138,7 +138,7 @@ string ReactantList::ToStringDelimitedBy(std::string cc) const
     if (get<1>(m_components[component]).size() > 0) {
         vector<string> varname = get<1>(m_components[component]);
         Variable* var = g_registry.GetModule(m_module)->GetVariable(varname);
-        retval += (var->GetNameDelimitedBy(cc));
+        retval += (var->GetOverrideOrNameDelimitedBy(cc));
         retval += " ";
     }
     else if (get<0>(m_components[component]) != 1) {
@@ -153,7 +153,7 @@ string ReactantList::ToStringDelimitedBy(std::string cc) const
     if (var->GetIsConst()) {
       retval += "$";
     }
-    retval += (var->GetNameDelimitedBy(cc));
+    retval += (var->GetOverrideOrNameDelimitedBy(cc));
   }
   return retval;
 }

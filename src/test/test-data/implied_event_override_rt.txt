@@ -1,0 +1,26 @@
+// Created by libAntimony v3.2.0
+model foo()
+
+  // Events:
+  E0: at time > 3: t1 = 5;
+
+  // Variable initializations:
+  t1 = 0;
+
+  // Other declarations:
+  var t1;
+end
+
+model *implied_event_override()
+
+  // Sub-modules, and any changes to those submodules:
+  sub0: foo();
+  sub0.E0 is sub0__E0;
+  sub0.t1 is sub0__t1;
+
+  // Events:
+  sub0__E0: at time > 6: sub0__t1 = 7;
+
+  // Variable initializations:
+  sub0__t1 = -3;
+end

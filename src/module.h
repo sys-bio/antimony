@@ -86,6 +86,9 @@ private:
 
   bool m_explicitDefaultCompartment;
 
+  // Set once MaterializeImpliedOverrides has run on this module.
+  bool m_impliedOverridesMaterialized;
+
   //Caching for speed:
   std::map<std::vector<std::string>, Variable*> m_varmap;
   // Cache of GetNumVariablesOfType/GetNthVariableOfType results, keyed by
@@ -246,11 +249,17 @@ public:
   const libsbml::SBMLDocument* GetSBML(bool comp);
   libsbml::Model* GetModelIfCreated();
   void  CreateSBMLModel(bool comp);
-  void  SetAssignmentFor(libsbml::Model* sbmlmod, const Variable* var, const std::map<const Variable*, Variable>& syncmap, bool comp, std::set<std::pair<std::string, const Variable*> > referencedVars);
+  void  SetAssignmentFor(libsbml::Model* sbmlmod, const Variable* var, const std::map<const Variable*, Variable>& syncmap, bool comp, std::set<std::pair<std::string, const Variable*> >& referencedVars);
   void  FindOrCreateLocalVersionOf(const Variable* var, libsbml::Model* sbmlmod);
   std::vector<const Variable*> GetSynchronizedVariablesFor(const Variable* var);
   void FillInSyncmap(std::map<const Variable*, Variable >& syncmap) const;
   void AddVarToSyncMap(const Variable* var, const Variable* conversionFactor, std::map<const Variable*, Variable >& syncmap) const;
+
+  // Find every submodel element that differs from what it would look like if
+  // the submodel had never been touched, and synthesize the top-level variable
+  // the comp writer needs to point a replacedElement at.  Idempotent; run
+  // depth-first, and on a submodel's registry template before its clone.
+  void MaterializeImpliedOverrides();
 
   void setUsedDistrib(bool useddistrib);
 
@@ -313,6 +322,17 @@ public:
 
 private:
   void FillInOrigmap(std::map<const Variable*, Variable >& origmap) const;
+  // The version of 'origmodvar' (a variable of submodvar's registry template)
+  // as it would appear here had the submodel never been modified:  renamed into
+  // this namespace, with the submodel's time and extent conversion factors and
+  // the given per-variable conversion factor applied.
+  Variable GetPristineVersionOf(const Variable* submodvar, const Variable* origmodvar, const Variable* conversionFactor) const;
+  const Variable* GetSyncConversionFactorBetween(const std::vector<std::string>& name1, const std::vector<std::string>& name2) const;
+  bool DiffersFromPristine(const Variable* var, const Variable* submodvar, const std::map<const Variable*, Variable>& origmap) const;
+  std::string MakeImpliedOverrideName(const std::vector<std::string>& subname) const;
+  // If this module promoted the element at 'position' to a top-level variable of
+  // its own, that variable's name; otherwise 'position' unchanged.
+  std::vector<std::string> GetLiveNameFor(const std::vector<std::string>& position) const;
   bool OrigFormulaIsAlready(const Variable* var, const std::map<const Variable*, Variable>& origmap, const Formula* formula) const;
   bool OrigRateRuleIsAlready(const Variable* var, const std::map<const Variable*, Variable>& origmap, const Formula* formula) const;
   bool OrigAssignmentRuleIsAlready(const Variable* var, const std::map<const Variable*, Variable>& origmap, const Formula* formula) const;

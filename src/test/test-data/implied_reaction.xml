@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created by libAntimony version v3.2.0 with libSBML version 5.21.1. -->
+<sbml xmlns="http://www.sbml.org/sbml/level3/version2/core" xmlns:comp="http://www.sbml.org/sbml/level3/version1/comp/version1" level="3" version="2" comp:required="true">
+  <model metaid="implied_reaction" id="implied_reaction">
+    <listOfCompartments>
+      <compartment sboTerm="SBO:0000410" id="default_compartment" spatialDimensions="3" size="1" constant="true">
+        <comp:listOfReplacedElements>
+          <comp:replacedElement comp:idRef="default_compartment" comp:submodelRef="sub0"/>
+        </comp:listOfReplacedElements>
+      </compartment>
+    </listOfCompartments>
+    <listOfSpecies>
+      <species id="sub0__S2" compartment="default_compartment" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false">
+        <comp:replacedBy comp:idRef="S2" comp:submodelRef="sub0"/>
+      </species>
+    </listOfSpecies>
+    <listOfParameters>
+      <parameter id="sub0__k1" constant="false">
+        <comp:replacedBy comp:idRef="k1" comp:submodelRef="sub0"/>
+      </parameter>
+    </listOfParameters>
+    <listOfReactions>
+      <reaction id="sub0__J0" reversible="true">
+        <listOfProducts>
+          <speciesReference id="sub0__y" species="sub0__S2" stoichiometry="2" constant="true">
+            <comp:listOfReplacedElements>
+              <comp:replacedElement comp:idRef="y" comp:submodelRef="sub0"/>
+            </comp:listOfReplacedElements>
+          </speciesReference>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <ci> sub0__k1 </ci>
+          </math>
+        </kineticLaw>
+        <comp:listOfReplacedElements>
+          <comp:replacedElement comp:idRef="J0" comp:submodelRef="sub0"/>
+        </comp:listOfReplacedElements>
+      </reaction>
+    </listOfReactions>
+    <comp:listOfSubmodels>
+      <comp:submodel comp:id="sub0" comp:modelRef="foo"/>
+    </comp:listOfSubmodels>
+  </model>
+  <comp:listOfModelDefinitions>
+    <comp:modelDefinition metaid="foo" id="foo">
+      <listOfCompartments>
+        <compartment sboTerm="SBO:0000410" id="default_compartment" spatialDimensions="3" size="1" constant="true"/>
+      </listOfCompartments>
+      <listOfSpecies>
+        <species id="S1" compartment="default_compartment" initialConcentration="10" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+        <species id="S2" compartment="default_compartment" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      </listOfSpecies>
+      <listOfParameters>
+        <parameter id="k1" value="0.3" constant="true"/>
+      </listOfParameters>
+      <listOfReactions>
+        <reaction id="J0" reversible="true">
+          <listOfReactants>
+            <speciesReference id="x" species="S1" stoichiometry="1" constant="true"/>
+          </listOfReactants>
+          <listOfProducts>
+            <speciesReference id="y" species="S2" stoichiometry="2" constant="true"/>
+          </listOfProducts>
+          <kineticLaw>
+            <math xmlns="http://www.w3.org/1998/Math/MathML">
+              <apply>
+                <times/>
+                <ci> k1 </ci>
+                <apply>
+                  <power/>
+                  <ci> S1 </ci>
+                  <ci> x </ci>
+                </apply>
+              </apply>
+            </math>
+          </kineticLaw>
+        </reaction>
+      </listOfReactions>
+    </comp:modelDefinition>
+  </comp:listOfModelDefinitions>
+</sbml>

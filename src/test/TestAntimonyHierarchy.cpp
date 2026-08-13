@@ -11,15 +11,100 @@
 #include <sbml/conversion/SBMLConverterRegistry.h>
 #include <sbml/packages/comp/common/CompExtensionTypes.h>
 
+#include <cctype>
+#include <fstream>
+#include <sstream>
 #include <string>
+#include <vector>
 #include "gtest/gtest.h"
+#include "stringx.h" // NormalizeLineEndings, SizeTToString
 
 using namespace std;
 using namespace libsbml;
 
 extern string TestDataDirectory;
 
-void compareFileHierarchy(const string& base)
+// True when the character at 'pos' is part of an SId, so that replacing an id
+// does not also replace it where it appears inside a longer name.
+static bool IsIdChar(char c)
+{
+  return isalnum(static_cast<unsigned char>(c)) || c == '_';
+}
+
+// Replace every id in an SBML string with its position in the document.
+// libSBML's flattener and Antimony's flattener can choose different names for
+// the same element -- libSBML bumps a submodel's id prefix when Antimony has
+// already used that prefix for an element promoted out of that submodel -- so
+// two documents can be structurally identical and still differ in names.
+static string CanonicalizeIds(const string& sbmlstring)
+{
+  SBMLDocument* doc = readSBMLFromString(sbmlstring.c_str());
+  if (doc == NULL || doc->getModel() == NULL) {
+    delete doc;
+    return sbmlstring;
+  }
+  vector<string> ids;
+  ids.push_back(doc->getModel()->getId());
+  List* elements = doc->getModel()->getAllElements();
+  for (unsigned int e = 0; e < elements->getSize(); e++) {
+    SBase* element = static_cast<SBase*>(elements->get(e));
+    if (element->isSetId() && !element->getId().empty()) {
+      ids.push_back(element->getId());
+    }
+  }
+  delete elements;
+  delete doc;
+
+  // Longest first, so that no id is replaced inside a longer one.
+  vector<size_t> order;
+  for (size_t i = 0; i < ids.size(); i++) {
+    order.push_back(i);
+  }
+  for (size_t a = 0; a < order.size(); a++) {
+    for (size_t b = a + 1; b < order.size(); b++) {
+      if (ids[order[b]].size() > ids[order[a]].size()) {
+        size_t tmp = order[a];
+        order[a] = order[b];
+        order[b] = tmp;
+      }
+    }
+  }
+
+  string ret = sbmlstring;
+  for (size_t o = 0; o < order.size(); o++) {
+    const string& id = ids[order[o]];
+    if (id.empty()) continue;
+    // '%' cannot appear in an SId, so a token built from it is never itself
+    // matched by a later, shorter id.
+    string token = "%" + SizeTToString(order[o]) + "%";
+    size_t pos = ret.find(id);
+    while (pos != string::npos) {
+      size_t after = pos + id.size();
+      bool leftok = (pos == 0) || !IsIdChar(ret[pos - 1]);
+      bool rightok = (after >= ret.size()) || !IsIdChar(ret[after]);
+      if (leftok && rightok) {
+        ret.replace(pos, id.size(), token);
+        pos = ret.find(id, pos + token.size());
+      }
+      else {
+        pos = ret.find(id, pos + 1);
+      }
+    }
+  }
+  return ret;
+}
+
+static string ReadFileText(const string& filename)
+{
+  ifstream infile(filename.c_str());
+  stringstream contents;
+  contents << infile.rdbuf();
+  return NormalizeLineEndings(contents.str());
+}
+
+// When 'lax', two comparisons are allowed to succeed in a weaker form.  See
+// compareFileHierarchyLax for when that is appropriate.
+void compareFileHierarchyImpl(const string& base, bool lax)
 {
   clearPreviousLoads();
   g_registry.SetCC("__");
@@ -51,26 +136,85 @@ void compareFileHierarchy(const string& base)
   elideMetaIds(doc);
   string sbmlFlat = writeSBMLToStdString(doc);
   string atosbml_nometa = elideMetaIdsFromSBMLstring(atosbml);
-  EXPECT_STREQ(atosbml_nometa.c_str(), sbmlFlat.c_str());
+  if (lax) {
+    //Structure has to match; the names the two flatteners chose need not.
+    EXPECT_STREQ(CanonicalizeIds(atosbml_nometa).c_str(), CanonicalizeIds(sbmlFlat).c_str());
+  }
+  else {
+    EXPECT_STREQ(atosbml_nometa.c_str(), sbmlFlat.c_str());
+  }
 
   ret = loadSBMLString(matching.c_str());
   EXPECT_TRUE(ret != -1);
   char* roundtrip = getAntimonyString(NULL);
   EXPECT_TRUE(roundtrip != NULL);
   string rtfilename = dir + base + "_rt.txt";
-  ret = loadAntimonyFile(rtfilename.c_str());
-  EXPECT_TRUE(ret != -1);
-  matching = getAntimonyString(NULL);
-  EXPECT_STREQ(roundtrip, matching.c_str());
+  if (lax) {
+    //Compare against the reference file itself rather than against a reload of
+    //it:  a reload cannot reproduce translation warnings, and re-emits
+    //declarations in Antimony's parse order.
+    EXPECT_STREQ(ReadFileText(rtfilename).c_str(), NormalizeLineEndings(string(roundtrip)).c_str());
+  }
+  else {
+    ret = loadAntimonyFile(rtfilename.c_str());
+    EXPECT_TRUE(ret != -1);
+    matching = getAntimonyString(NULL);
+    EXPECT_STREQ(roundtrip, matching.c_str());
+  }
 
   delete doc;
   delete converter;
   freeAll();
 }
 
+void compareFileHierarchy(const string& base)
+{
+  compareFileHierarchyImpl(base, false);
+}
+
+// For models where two things Antimony cannot control get in the way of exact
+// string comparison, but the content is still right:
+//
+//  * libSBML's flattener bumps a submodel's id prefix when Antimony has already
+//    used that prefix for an element promoted out of that submodel, so the two
+//    flattenings agree on structure but not on every name.
+//  * The Antimony round-trip is compared against the reference file directly,
+//    because reloading that file cannot reproduce translation warnings, and
+//    because a named stoichiometry reaches Antimony from a <speciesReference>
+//    but reaches the parser from the reaction line, so the two orders differ.
+void compareFileHierarchyLax(const string& base)
+{
+  compareFileHierarchyImpl(base, true);
+}
+
 TEST(AntimonyHierarchy, test_deleted_rate_rule)
 {
   compareFileHierarchy("deleted_rate_rule");
+}
+
+TEST(AntimonyHierarchy, test_implied_reaction)
+{
+  compareFileHierarchyLax("implied_reaction");
+}
+
+TEST(AntimonyHierarchy, test_implied_reaction_override)
+{
+  compareFileHierarchyLax("implied_reaction_override");
+}
+
+TEST(AntimonyHierarchy, test_implied_nested_reaction)
+{
+  compareFileHierarchy("implied_nested_reaction");
+}
+
+TEST(AntimonyHierarchy, test_implied_event)
+{
+  compareFileHierarchy("implied_event");
+}
+
+TEST(AntimonyHierarchy, test_implied_event_override)
+{
+  compareFileHierarchy("implied_event_override");
 }
 
 TEST(AntimonyHierarchy, test_hierarchy)

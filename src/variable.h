@@ -80,6 +80,11 @@ protected:
   //If we are a submodel reaction that has been replaced, we need to know this because of time and extent conversion factors.
   bool m_replacedformrxn;
 
+  //Non-empty on a top-level variable synthesized by
+  //Module::MaterializeImpliedOverrides to hold a submodel element that was
+  //changed without an explicit 'is'.  Holds the name of that submodel element.
+  std::vector<std::string> m_overrideOf;
+
   //Additionally, the variable might be set constant
   const_type m_const;
 
@@ -222,6 +227,13 @@ public:
   LayoutWrapper* GetReactionArcLayoutWrapper(const std::string* name);
 
   bool IsReplacedFormRxn() const;
+
+  bool IsImpliedOverride() const {return !m_overrideOf.empty();};
+  const std::vector<std::string>& GetOverrideOf() const {return m_overrideOf;};
+  void SetOverrideOf(const std::vector<std::string>& name) {m_overrideOf = name;};
+  // The name to use in Antimony output:  an implied override prints under the
+  // dotted submodel name it stands in for, not its synthesized flat name.
+  std::string GetOverrideOrNameDelimitedBy(std::string cc) const;
   virtual std::string CreateSBOTermsAntimonySyntax(const std::string& elt_id, const std::string& indent, std::string sboStr) const;
   virtual std::string CreateUncertParamsAntimonySyntax(const std::string& indent) const;
   virtual std::string CreateLayoutParamsAntimonySyntax(const std::string& indent) const;

@@ -1,0 +1,41 @@
+// Created by libAntimony v3.2.0
+
+// Warnings from automatic translation:
+//    Cannot replace stoichiometries in Antimony:  all replacedElements and replacedBy children of sub0__S2 in reaction sub0__J0 will be ignored.
+
+model foo()
+
+  // Compartments and Species:
+  species S1, S2;
+
+  // Reactions:
+  J0: x S1 -> y S2; k1*S1^x;
+
+  // Species initializations:
+  S1 = 10;
+  S2 = 0;
+
+  // Variable initializations:
+  k1 = 0.3;
+  x = 1;
+  y = 2;
+
+  // Other declarations:
+  const k1;
+end
+
+model *implied_reaction_override()
+
+  // Sub-modules, and any changes to those submodules:
+  sub0: foo();
+  sub0.S2 is sub0__S2;
+  sub0.k1 is sub0__k1;
+  sub0.y is sub0__y;
+  sub0.J0 is sub0__J0;
+
+  // Reactions:
+  sub0__J0:  -> sub0__y sub0__S2; sub0__k1;
+
+  // Variable initializations:
+  sub0__k1 = 0;
+end

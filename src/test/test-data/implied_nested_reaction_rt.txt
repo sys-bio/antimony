@@ -1,0 +1,37 @@
+// Created by libAntimony v3.2.0
+model base()
+
+  // Compartments and Species:
+  species S1, S2;
+
+  // Reactions:
+  J0: S1 -> S2; ;
+
+  // Species initializations:
+  S1 = 10;
+  S2 = 0;
+end
+
+model sub1()
+
+  // Sub-modules, and any changes to those submodules:
+  B: base();
+  B.S1 is B__S1;
+  B.S2 is B__S2;
+  B.J0 is B__J0;
+
+  // Reactions:
+  B__J0: B__S1 -> 2 B__S2; ;
+end
+
+model *implied_nested_reaction()
+
+  // Sub-modules, and any changes to those submodules:
+  A: sub1();
+  A.B__S1 is A__B__S1;
+  A.B__S2 is A__B__S2;
+  A.B__J0 is A__B__J0;
+
+  // Reactions:
+  A__B__J0: A__B__S2 -> A__B__S1; ;
+end

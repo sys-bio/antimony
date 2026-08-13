@@ -336,7 +336,7 @@ string AntimonyConstraint::ToStringDelimitedBy(std::string cc) const
     (!m_isSetInitialValue && m_initialVariable.empty()) )
   {
     //We need to use the 'constraint' syntax
-    retval << "constraint " << var->GetNameDelimitedBy(cc) << ": ";
+    retval << "constraint " << var->GetOverrideOrNameDelimitedBy(cc) << ": ";
   }
 
   if (m_isSetInitialValue) {

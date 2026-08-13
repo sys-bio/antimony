@@ -1,0 +1,14 @@
+model foo()
+  J0: x S1 -> y S2; k1*S1^x
+  S1 = 10
+  S2 = 0
+  k1 = 0.3
+  x = 1
+  y = 2
+end
+
+model implied_reaction_override()
+  sub0: foo()
+  sub0.J0: -> sub0.y sub0.S2; sub0.k1;
+  sub0.k1 = 0
+end
