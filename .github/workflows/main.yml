@@ -443,3 +443,61 @@ jobs:
         with:
           name: ${{env.python_wheel_artifacts_name}}
           path: ${{env.python_wheel_artifacts_file}}
+
+      # The SBML Test Suite round-trip only runs on one leg of the matrix,
+      # same reasoning as valgrind above: it's slow, and doesn't need to run
+      # on every OS/config combination to be useful. macos-14-release is
+      # chosen since ubuntu-latest-release is already dedicated to valgrind.
+      - name: Build Antimony Python wheel for SBML Test Suite round-trip
+        if: matrix.platform.name == 'macos-14-release'
+        shell: bash
+        run: |
+          cd ${RUNNER_WORKSPACE}/install-antimony/bindings/python
+          python${{ matrix.python_version }} -m pip install setuptools wheel build
+          python${{ matrix.python_version }} -m build --wheel --no-isolation --outdir dist-sbml-test-suite
+          python${{ matrix.python_version }} -m pip install dist-sbml-test-suite/antimony*.whl
+          python${{ matrix.python_version }} -m pip install -r "${GITHUB_WORKSPACE}/src/bindings/python/sbml_test_suite/requirements.txt"
+
+      - name: Download SBML Test Suite semantic cases
+        if: matrix.platform.name == 'macos-14-release'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cd "${RUNNER_WORKSPACE}"
+          mkdir -p sbml-test-suite
+          asset_url=$(gh api repos/sbmlteam/sbml-test-suite/releases/latest \
+            --jq '.assets[] | select(.name | startswith("semantic_tests")) | .browser_download_url')
+          if [ -z "$asset_url" ]; then
+            echo "::error::Failed to find a semantic_tests asset in the latest sbml-test-suite release."
+            exit 1
+          fi
+          echo "Downloading ${asset_url}"
+          curl -fL "$asset_url" -o sbml-test-suite/semantic_tests.zip
+          unzip -q sbml-test-suite/semantic_tests.zip -d sbml-test-suite/extracted
+          # -quit makes find stop after the first match itself, rather than
+          # relying on a downstream `head -n 1` to cut it off -- piping into
+          # head closes the pipe early and GNU find treats that broken pipe
+          # as a fatal write error instead of exiting quietly.
+          settings_file=$(find "${RUNNER_WORKSPACE}/sbml-test-suite/extracted" -name '*-settings.txt' -print -quit)
+          if [ -z "$settings_file" ]; then
+            echo "::error::No *-settings.txt files found under sbml-test-suite/extracted -- unexpected archive layout."
+            exit 1
+          fi
+          cases_dir=$(dirname "$settings_file")
+          echo "SBML_TEST_SUITE_DIR=$(dirname "$cases_dir")" >> "${GITHUB_ENV}"
+
+      - name: Run SBML Test Suite round-trip tests
+        if: matrix.platform.name == 'macos-14-release'
+        shell: bash
+        run: |
+          cd "${GITHUB_WORKSPACE}/src/bindings/python/sbml_test_suite"
+          python${{ matrix.python_version }} -m pytest -ra --junitxml="${RUNNER_WORKSPACE}/sbml-test-suite-results.xml" \
+            --sbml-test-suite-dir="${SBML_TEST_SUITE_DIR}"
+
+      - name: Upload SBML Test Suite round-trip results
+        if: always() && matrix.platform.name == 'macos-14-release'
+        uses: actions/upload-artifact@main
+        with:
+          name: sbml-test-suite-results
+          path: ${{ runner.workspace }}/sbml-test-suite-results.xml
