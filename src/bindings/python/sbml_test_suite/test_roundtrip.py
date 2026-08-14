@@ -185,10 +185,15 @@ def _rename_candidates(missing):
         submodel-local parameter shadows a global one, round-tripping can
         merge them into a single top-level variable -- no collision, no
         prefix.
+      - every '__' collapsed to a single '_': settings.txt uses a double
+        underscore as the submodel/element separator (e.g. sub1__t1), but
+        Antimony's own promoted name for the same element uses a single
+        underscore (sub1_t1).
     """
     candidates = [missing + "_"]
     if "__" in missing:
         candidates.append(missing.rsplit("__", 1)[-1])
+        candidates.append(missing.replace("__", "_"))
     return candidates
 
 
@@ -311,17 +316,15 @@ def test_roundtrip(sbml_case):
 
     roundtrip_result, roundtrip_renames, roundtrip_error = _try_simulate(roundtripped_sbml, settings, roundtrip_selections)
 
-    if original_renames or roundtrip_renames:
-        # A selection only resolved after being renamed -- Antimony
-        # restructured or merged an SBML element during the round trip (see
-        # _rename_candidates), so the two simulations aren't reading the
-        # same thing under that name. Skip rather than silently comparing
-        # apples to oranges.
-        pytest.skip(
-            f"{case_id} ({which}, {os.path.basename(sbml_path)}): a selection only resolved after renaming "
-            f"during round-trip. Original renames: {original_renames or 'none'}. "
-            f"Round-tripped renames: {roundtrip_renames or 'none'}."
-        )
+    # A selection only resolving after being renamed (see _rename_candidates)
+    # doesn't make the comparison invalid: roadrunner always simulates the
+    # *flattened* model, and the flattened models should be structurally
+    # identical between original and round-tripped.
+    rename_note = (
+        f" (used renamed selections -- original: {original_renames or 'none'}, "
+        f"round-tripped: {roundtrip_renames or 'none'})"
+        if original_renames or roundtrip_renames else ""
+    )
 
     if original_error is not None or roundtrip_error is not None:
         original_limitation = _known_limitation(original_error)
@@ -390,7 +393,7 @@ def test_roundtrip(sbml_case):
         )
 
     assert original_result.shape == roundtrip_result.shape, (
-        f"{case_id} ({which}): result shapes differ: "
+        f"{case_id} ({which}): result shapes differ{rename_note}: "
         f"{original_result.shape} vs {roundtrip_result.shape}"
     )
 
@@ -408,6 +411,6 @@ def test_roundtrip(sbml_case):
 
     assert not mismatches, (
         f"{case_id} ({which}, {os.path.basename(sbml_path)}): round-tripped SBML diverged beyond "
-        f"tolerance (absolute={settings['absolute']}, relative={settings['relative']}):\n"
+        f"tolerance (absolute={settings['absolute']}, relative={settings['relative']}){rename_note}:\n"
         + "\n".join(mismatches)
     )
