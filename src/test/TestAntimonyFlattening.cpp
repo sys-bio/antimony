@@ -93,16 +93,18 @@ void compareFileFlattening(const string& base)
   freeAll();
 }
 
-//This version of the function is used when Antimony flattening and SBML flattening are functionally 
-// equivalent, but differ in the specifics.
-void compareFileFlatteningWithDifferences(const string& base)
+//This version of the function is used when Antimony flattening and SBML flattening are functionally
+// equivalent, but differ in the specifics.  'subdir' is the test-data subdirectory the files live in
+// (with a trailing slash, or blank for test-data itself), and 'cc' is the component-connector string
+// used when flattening still-qualified submodel variables into flat SBML ids.
+void compareFileFlatteningWithDifferences(const string& base, const string& subdir = "from-libsbml/", const string& cc = "__")
 {
   clearPreviousLoads();
-  g_registry.SetCC("__");
+  g_registry.SetCC(cc);
   string dir(TestDataDirectory);
-  string filename = dir + "from-libsbml/" + base + ".xml";
-  string antfile = dir + "from-libsbml/" + base + ".txt";
-  string flatfile = dir + "from-libsbml/" + base + "_flat.xml";
+  string filename = dir + subdir + base + ".xml";
+  string antfile = dir + subdir + base + ".txt";
+  string flatfile = dir + subdir + base + "_flat.xml";
 
   //Get the Antimony-flattened version
   long ret = loadSBMLFile(filename.c_str());
@@ -414,6 +416,16 @@ TEST(AntimonyFlattening, test_test38)
   compareFileFlatteningWithDifferences("test38");
 }
 
+TEST(AntimonyFlattening, test_deleted_kinetic_law)
+{
+  compareFileFlatteningWithDifferences("deleted_kinetic_law", "", "_");
+}
+
+TEST(AntimonyFlattening, test_deleted_species_reference)
+{
+  compareFileFlatteningWithDifferences("deleted_species_reference", "", "_");
+}
+
 TEST(AntimonyFlattening, test_test39)
 {
   compareFileFlatteningWithDifferences("test39");
@@ -486,7 +498,7 @@ TEST(AntimonyFlattening, test_test52)
 
 TEST(AntimonyFlattening, test_test53)
 {
-  compareFileFlattening("test53");
+  compareFileFlatteningWithDifferences("test53", "from-libsbml/", "_");
 }
 
 TEST(AntimonyFlattening, test_test54)

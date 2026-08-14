@@ -840,6 +840,16 @@ void Module::LoadSBML(Model* sbml)
   }
   //Load submodels
   const CompModelPlugin* mplugin = static_cast<const CompModelPlugin*>(sbml->getPlugin("comp"));
+  //Events whose Priority/Delay/EventAssignment/Trigger was directly
+  //deleted, as opposed to becoming empty because a variable it
+  //referenced was itself fully deleted.  Collected across all submodels;
+  //decided on and, if needed, promoted at the very end of this function,
+  //once every element of this module (including anything joined via
+  //comp:replacedElement) has been read.
+  set<Variable*> touchedEvents;
+  //Reactions whose species reference(s) or kinetic law were directly
+  //deleted, for the same reason.
+  set<Variable*> touchedReactions;
   if (mplugin != NULL) {
     for (unsigned int sm = 0; sm < mplugin->getNumSubmodels(); sm++) {
       const Submodel* submodel = mplugin->getSubmodel(sm);
@@ -858,10 +868,6 @@ void Module::LoadSBML(Model* sbml)
         g_registry.AddWarning("Unable to find submodel " + refname + ".");
       }
       var->ReadAnnotationFrom(submodel);
-      //Events whose Priority/Delay/EventAssignment/Trigger was directly
-      //deleted, as opposed to becoming empty because a variable it
-      //referenced was itself fully deleted.
-      set<Variable*> touchedEvents;
       for (unsigned int d = 0; d < submodel->getNumDeletions(); d++) {
         Deletion* deletion = const_cast<Deletion*>(submodel->getDeletion(d));
         string delname = deletion->getId();
@@ -1016,6 +1022,9 @@ void Module::LoadSBML(Model* sbml)
               break;
             }
             deletedvar->GetReaction()->ClearReferencesTo(origparam, &(var->m_deletions));
+            //As with events, we don't yet know whether this reaction still
+            //needs to be promoted; see the check after this loop, below.
+            touchedReactions.insert(deletedvar);
             break;
           case SBML_KINETIC_LAW:
             assert(reaction != NULL);
@@ -1026,8 +1035,13 @@ void Module::LoadSBML(Model* sbml)
             paramname.push_back(reaction->getId());
             deletedvar = GetVariable(paramname);
             assert(deletedvar != NULL);
+            if (deletedvar->GetType() == varDeleted) {
+              //Don't need to delete a child of a deleted thing
+              break;
+            }
             deletedvar->GetReaction()->GetFormula()->Clear();
             var->AddDeletion(paramname, delKineticLaw);
+            touchedReactions.insert(deletedvar);
             break;
           case SBML_MODIFIER_SPECIES_REFERENCE:
             assert(reaction != NULL);
@@ -1063,43 +1077,6 @@ void Module::LoadSBML(Model* sbml)
             //var = AddOrFindVariable(&delname);
             g_registry.AddWarning("Unable to process deletion " + delname + "from submodel " + submodname + " in model " + GetModuleName() + ".  Deletions of " + SBMLTypeCode_toString(target->getTypeCode(), target->getPackageName().c_str()) + " elements have not been added as a concept in Antimony.");
             break;
-          }
-        }
-      }
-      //Now that all of this submodel's deletions have been processed,
-      //decide which touched events actually need to be promoted to new
-      //top-level elements:  if an event only differs from what the
-      //submodel would produce on its own because some variable it
-      //referenced was itself separately, fully deleted, the existing
-      //'delete A.X;' mechanism (and AntimonyEvent::Matches's handling of
-      //it) already covers it, and promoting it too would be redundant.
-      if (!touchedEvents.empty()) {
-        Module* origmod = g_registry.GetModule(refname);
-        for (set<Variable*>::iterator te = touchedEvents.begin(); te != touchedEvents.end(); te++) {
-          Variable* eventvar = *te;
-          bool needspromotion = true;
-          if (origmod != NULL) {
-            vector<string> origevname(1, eventvar->GetName().back());
-            Variable* origeventvar = origmod->GetVariable(origevname);
-            if (origeventvar != NULL) {
-              Variable copied(*origeventvar);
-              copied.ClearSameName();
-              copied.SetNewTopName(GetModuleName(), var->GetName()[0]);
-              if (copied.GetEvent()->Matches(eventvar->GetEvent())) {
-                needspromotion = false;
-              }
-            }
-          }
-          if (needspromotion) {
-            Variable* promotedvar = PromoteToTopLevel(eventvar);
-            AntimonyEvent* promotedevent = promotedvar->GetEvent();
-            PromoteReferencedVariables(promotedevent->GetTrigger());
-            PromoteReferencedVariables(promotedevent->GetDelay());
-            PromoteReferencedVariables(promotedevent->GetPriority());
-            for (size_t n=0; n<promotedevent->GetNumAssignments(); n++) {
-              PromoteToTopLevel(promotedevent->GetNthAssignmentVariable(n));
-              PromoteReferencedVariables(promotedevent->GetAssignmentFormula(n));
-            }
           }
         }
       }
@@ -1885,6 +1862,99 @@ void Module::LoadSBML(Model* sbml)
       }
     }
     */
+  }
+
+  //Now that every element of this module has been read (including
+  //anything joined to a submodel via comp:replacedElement), decide which
+  //touched events actually need to be promoted to new top-level elements:
+  //if an event only differs from what the submodel would produce on its
+  //own because some variable it referenced was itself separately, fully
+  //deleted, the existing 'delete A.X;' mechanism (and
+  //AntimonyEvent::Matches's handling of it) already covers it, and
+  //promoting it too would be redundant.
+  for (set<Variable*>::iterator te = touchedEvents.begin(); te != touchedEvents.end(); te++) {
+    Variable* eventvar = *te;
+    bool needspromotion = true;
+    if (eventvar->IsPointer()) {
+      //Already promoted/aliased via some other mechanism (e.g. a
+      //comp:replacedElement); nothing more to do.
+      needspromotion = false;
+    }
+    else {
+      vector<string> submodname(1, eventvar->GetName()[0]);
+      Variable* submodvar = GetVariable(submodname);
+      Module* origmod = submodvar == NULL ? NULL : g_registry.GetModule(submodvar->GetModule()->GetModuleName());
+      if (origmod != NULL) {
+        vector<string> origevname(1, eventvar->GetName().back());
+        Variable* origeventvar = origmod->GetVariable(origevname);
+        if (origeventvar != NULL) {
+          Variable copied(*origeventvar);
+          copied.ClearSameName();
+          copied.SetNewTopName(GetModuleName(), submodname[0]);
+          if (copied.GetEvent()->Matches(eventvar->GetEvent())) {
+            needspromotion = false;
+          }
+        }
+      }
+    }
+    if (needspromotion) {
+      Variable* promotedvar = PromoteToTopLevel(eventvar);
+      AntimonyEvent* promotedevent = promotedvar->GetEvent();
+      PromoteReferencedVariables(promotedevent->GetTrigger());
+      PromoteReferencedVariables(promotedevent->GetDelay());
+      PromoteReferencedVariables(promotedevent->GetPriority());
+      for (size_t n=0; n<promotedevent->GetNumAssignments(); n++) {
+        PromoteToTopLevel(promotedevent->GetNthAssignmentVariable(n));
+        PromoteReferencedVariables(promotedevent->GetAssignmentFormula(n));
+      }
+    }
+  }
+  //Same idea, for reactions: only promote if the difference isn't
+  //already fully explained by a separately, fully-deleted variable.
+  for (set<Variable*>::iterator tr = touchedReactions.begin(); tr != touchedReactions.end(); tr++) {
+    Variable* rxnvar = *tr;
+    bool needspromotion = true;
+    if (rxnvar->IsPointer()) {
+      //Already promoted/aliased via some other mechanism (e.g. a
+      //comp:replacedElement); nothing more to do.
+      needspromotion = false;
+    }
+    else {
+      vector<string> submodname(1, rxnvar->GetName()[0]);
+      Variable* submodvar = GetVariable(submodname);
+      Module* origmod = submodvar == NULL ? NULL : g_registry.GetModule(submodvar->GetModule()->GetModuleName());
+      if (origmod != NULL) {
+        vector<string> origrxnname(1, rxnvar->GetName().back());
+        Variable* origrxnvar = origmod->GetVariable(origrxnname);
+        if (origrxnvar != NULL) {
+          Variable copied(*origrxnvar);
+          copied.ClearSameName();
+          copied.SetNewTopName(GetModuleName(), submodname[0]);
+          if (copied.GetReaction()->Matches(rxnvar->GetReaction())) {
+            needspromotion = false;
+          }
+        }
+      }
+    }
+    if (needspromotion) {
+      Variable* promotedvar = PromoteToTopLevel(rxnvar);
+      AntimonyReaction* promotedrxn = promotedvar->GetReaction();
+      PromoteReferencedVariables(promotedrxn->GetFormula());
+      const ReactantList* sides[2] = {promotedrxn->GetLeft(), promotedrxn->GetRight()};
+      for (int side = 0; side < 2; side++) {
+        const ReactantList* rl = sides[side];
+        for (size_t n = 0; n < rl->Size(); n++) {
+          const Variable* reactant = rl->GetNthReactant(n);
+          if (reactant != NULL) {
+            PromoteToTopLevel(GetVariable(reactant->GetName()));
+          }
+          const Variable* stoich = rl->GetNthStoichiometryVar(n);
+          if (stoich != NULL) {
+            PromoteToTopLevel(GetVariable(stoich->GetName()));
+          }
+        }
+      }
+    }
   }
 
   //Finally, fix the fact that 'time' used to be OK in functions (l2v1), but is no longer (l2v2).
@@ -3216,7 +3286,8 @@ bool Module::SynchronizeAssignments(Model* sbmlmod, const Variable* var, const v
   for (size_t v=0; v<synchronized.size(); v++) {
     map<const Variable*, Variable >::const_iterator syncmapiter = syncmap.find(synchronized[v]);
     if (syncmapiter == syncmap.end()) {
-      assert(false);
+      //We have no cached original to compare against (this can happen with
+      //deeply-nested submodel deletions); nothing to clean up for this one.
       continue;
     }
     const Variable* orig = &syncmapiter->second;
@@ -3285,7 +3356,8 @@ bool Module::SynchronizeRates(Model* sbmlmod, const Variable* var, const vector<
   for (size_t v=0; v<synchronized.size(); v++) {
     map<const Variable*, Variable >::const_iterator syncmapiter = syncmap.find(synchronized[v]);
     if (syncmapiter == syncmap.end()) {
-      assert(false);
+      //We have no cached original to compare against (this can happen with
+      //deeply-nested submodel deletions); nothing to clean up for this one.
       continue;
     }
     const Variable* orig = &syncmapiter->second;

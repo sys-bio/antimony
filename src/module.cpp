@@ -735,8 +735,12 @@ void Module::ClearReferencesTo(Variable* deletedvar, set<pair<vector<string>, de
     m_modelConversionFactor.clear();
   }
   for (size_t sync=0; sync<m_conversionFactors.size(); sync++) {
+    if (m_conversionFactors[sync].empty()) {
+      //This synchronized pair had no conversion factor.
+      continue;
+    }
     Variable* convvar = GetVariable(m_conversionFactors[sync]);
-    if (convvar->GetSameVariable() == deletedvar) {
+    if (convvar != NULL && convvar->GetSameVariable() == deletedvar) {
       m_conversionFactors[sync].clear();
     }
   }
