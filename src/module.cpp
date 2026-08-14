@@ -440,6 +440,57 @@ void Module::AddSynchronizedPair(const Variable* oldvar, const Variable* newvar,
   }
 }
 
+//Promote a variable local to a submodule (e.g. 'sub1.E0') to a new top-level
+//variable (e.g. 'sub1_E0'), synchronizing the two so that 'subvar' becomes an
+//alias of the new variable ('sub1.E0 is sub1_E0;').  If 'subvar' is already
+//promoted (or is already top-level), it's returned unchanged.
+Variable* Module::PromoteToTopLevel(Variable* subvar)
+{
+  if (subvar == NULL) {
+    return NULL;
+  }
+  if (subvar->IsPointer()) {
+    return subvar->GetSameVariable();
+  }
+  vector<string> name = subvar->GetName();
+  if (name.size() <= 1) {
+    return subvar;
+  }
+  string newname = name[0];
+  for (size_t n=1; n<name.size(); n++) {
+    newname += "_" + name[n];
+  }
+  vector<string> candidate(1, newname);
+  Variable* newvar = GetVariable(candidate);
+  if (newvar == NULL) {
+    newvar = AddOrFindVariable(&newname);
+  }
+  else {
+    newvar = AddNewNumberedVariable(newname);
+  }
+  if (subvar->Synchronize(newvar, NULL)) {
+    //An error occurred (already set in the registry); leave things as they were.
+    return subvar;
+  }
+  return subvar->GetSameVariable();
+}
+
+//Promote every submodule-local variable referenced by 'formula' that isn't
+//already promoted.  See PromoteToTopLevel.
+void Module::PromoteReferencedVariables(const Formula* formula)
+{
+  if (formula == NULL) {
+    return;
+  }
+  vector<Variable*> vars = formula->GetVariables();
+  for (size_t v=0; v<vars.size(); v++) {
+    Variable* var = vars[v];
+    if (var != NULL && !var->IsPointer() && var->GetName().size() > 1 && var->GetType() != varDeleted) {
+      PromoteToTopLevel(var);
+    }
+  }
+}
+
 void Module::AddTimeToUserFunction(string function)
 {
   for (size_t var=0; var<m_variables.size(); var++) {
@@ -684,8 +735,12 @@ void Module::ClearReferencesTo(Variable* deletedvar, set<pair<vector<string>, de
     m_modelConversionFactor.clear();
   }
   for (size_t sync=0; sync<m_conversionFactors.size(); sync++) {
+    if (m_conversionFactors[sync].empty()) {
+      //This synchronized pair had no conversion factor.
+      continue;
+    }
     Variable* convvar = GetVariable(m_conversionFactors[sync]);
-    if (convvar->GetSameVariable() == deletedvar) {
+    if (convvar != NULL && convvar->GetSameVariable() == deletedvar) {
       m_conversionFactors[sync].clear();
     }
   }
@@ -1262,18 +1317,6 @@ bool Module::Finalize()
     //LS NOTE: loops should be detected at assignment time, but it's possible I missed something.
     if (m_variables[var]->GetType() == varCompartment){
       if (m_variables[var]->AnyCompartmentLoops()) return true;
-    }
-    else if (m_variables[var]->GetType() == varInteraction) {
-      vector<vector<string> > rxns = m_variables[var]->GetReaction()->GetRight()->GetVariableList();
-      for (size_t rxn=0; rxn<rxns.size(); rxn++) {
-        Variable* rightvar = GetVariable(rxns[rxn]);
-        const Formula* form = rightvar->GetFormula();
-        if (!form->IsEmpty() &&
-            form->CheckIncludes(m_variables[var]->GetNamespace(), m_variables[var]->GetReaction()->GetLeft())) {
-          g_registry.AddErrorPrefix("According to the interaction '" + m_variables[var]->GetNameDelimitedBy(cc) + "', the formula for '" + rightvar->GetNameDelimitedBy(cc) + "' ('" + form->ToDelimitedStringWithEllipses(cc) + "') ");
-          return true;
-        }
-      }
     }
   }
 
@@ -2757,6 +2800,11 @@ void Module::FixNames()
 void Module::FillInOrigmap(map<const Variable*, Variable >& origmap) const
 {
   map<const Variable*, Variable >::iterator origmapiter;
+  //Variables synchronized with more than one, unrelated submodule element
+  //have no single submodule default to compare against; once we find such
+  //a conflict we exclude the variable from origmap for good, so its
+  //top-level value always gets printed explicitly rather than guessed at.
+  set<const Variable*> conflicted;
 
   for (size_t var=0; var<m_variables.size(); var++) {
     if (m_variables[var]->GetType() == varModule) {
@@ -2765,6 +2813,13 @@ void Module::FillInOrigmap(map<const Variable*, Variable >& origmap) const
       //cout << "Module " << mname[0] << endl;
       const Module* submod = m_variables[var]->GetModule();
       const Module* origmod = g_registry.GetModule(submod->GetModuleName());
+      //If this submodel has a time conversion factor, all rules were 
+      // rescaled on import.  We'll need to compare every rule within it was
+      //automatically rescaled when the submodel was set up (see
+      //Module::ConvertTime/ConvertExtent). Reproduce those same
+      //transformations here.
+      Variable* tcf = m_variables[var]->GetTimeConversionFactor();
+      Variable* xcf = m_variables[var]->GetExtentConversionFactor();
       for (size_t uniq=0; uniq<origmod->m_uniquevars.size(); uniq++) {
         const Variable* origmodvar = origmod->m_uniquevars[uniq];
         //cout << "Original: " << origmodvar->GetNameDelimitedBy(".") << ": " << FormulaTypeToString(origmodvar->GetFormulaType());
@@ -2774,6 +2829,20 @@ void Module::FillInOrigmap(map<const Variable*, Variable >& origmap) const
         Variable copied(*(origmod->m_uniquevars[uniq]));
         copied.ClearSameName();
         copied.SetNewTopName(m_modulename, mname[0]);
+        if (tcf != NULL) {
+          copied.GetRateRule()->AddInvTimeConversionFactor(tcf);
+          copied.GetRateRule()->ConvertTime(tcf);
+        }
+        var_type ctype = copied.GetType();
+        if (IsReaction(ctype) || ctype == varInteraction) {
+          if (tcf != NULL) {
+            copied.GetReaction()->GetFormula()->AddInvTimeConversionFactor(tcf);
+            copied.GetReaction()->GetFormula()->ConvertTime(tcf);
+          }
+          if (xcf != NULL) {
+            copied.GetReaction()->GetFormula()->AddConversionFactor(xcf);
+          }
+        }
         const Variable* origvar = GetVariable(copied.GetName());
         if (origvar == NULL) {
           assert(false);
@@ -2781,8 +2850,27 @@ void Module::FillInOrigmap(map<const Variable*, Variable >& origmap) const
         }
         origvar = origvar->GetSameVariable();
         assert(find(m_uniquevars.begin(), m_uniquevars.end(), origvar) != m_uniquevars.end());
+        if (conflicted.find(origvar) != conflicted.end()) continue;
         origmapiter = origmap.find(origvar);
         if (origmapiter == origmap.end()) {
+          //If this variable was synchronized with a conversion factor, the value
+          //it started with isn't directly comparable to the outer model's value
+          //anymore; apply the conversion factor here so later comparisons (and
+          //thus decisions about whether the outer value is redundant) are fair.
+          for (size_t sync=0; sync<m_synchronized.size(); sync++) {
+            if ((m_synchronized[sync].first == copied.GetName() && m_synchronized[sync].second == origvar->GetName()) ||
+                (m_synchronized[sync].second == copied.GetName() && m_synchronized[sync].first == origvar->GetName())) {
+              const Variable* conversionFactor = GetVariable(m_conversionFactors[sync]);
+              if (conversionFactor != NULL) {
+                copied.GetFormula()->AddConversionFactor(conversionFactor);
+                copied.GetRateRule()->AddConversionFactor(conversionFactor);
+                if (IsReaction(ctype) || ctype == varInteraction) {
+                  copied.GetReaction()->GetFormula()->AddConversionFactor(conversionFactor);
+                }
+              }
+              break;
+            }
+          }
           origmap.insert(make_pair(origvar, copied));
         }
         else {
@@ -2812,14 +2900,11 @@ void Module::FillInOrigmap(map<const Variable*, Variable >& origmap) const
             }
           }
           if (!synched) {
-            //Sync them randomly  LS DEBUG
-            //assert(false);
-            origmapiter->second.Synchronize(&copied, NULL);
-            //copied.Synchronize(&origmapiter->second);
-            if (!copied.IsPointer()) {
-              //The synchronization worked backwards from what we tried.
-              origmapiter->second = copied;
-            }
+            //These two submodules aren't related to each other, so we have
+            //no principled way to pick one's default over the other's;
+            //don't guess, just require the top-level value to be printed.
+            origmap.erase(origmapiter);
+            conflicted.insert(origvar);
           }
           //cout << "Final: " << origmapiter->second.ToString() << endl;
         }
@@ -3015,18 +3100,19 @@ void Module::FillInSyncmap(map<const Variable*, Variable >& syncmap) const
 {
   for (size_t s=0; s<m_synchronized.size(); s++) {
     const Variable* var = NULL;
+    const Variable* conversionFactor = GetVariable(m_conversionFactors[s]);
     if (m_synchronized[s].first.size() > 1) {
       var = GetVariable(m_synchronized[s].first);
-      AddVarToSyncMap(var, syncmap);
+      AddVarToSyncMap(var, conversionFactor, syncmap);
     }
     if (m_synchronized[s].second.size() > 1) {
       var = GetVariable(m_synchronized[s].second);
-      AddVarToSyncMap(var, syncmap);
+      AddVarToSyncMap(var, conversionFactor, syncmap);
     }
   }
 }
 
-void Module::AddVarToSyncMap(const Variable* var, map<const Variable*, Variable >& syncmap) const
+void Module::AddVarToSyncMap(const Variable* var, const Variable* conversionFactor, map<const Variable*, Variable >& syncmap) const
 {
   vector<string> origname = var->GetName();
   if (origname.size() <=1) {
@@ -3043,6 +3129,18 @@ void Module::AddVarToSyncMap(const Variable* var, map<const Variable*, Variable 
   Variable copied = *origvar;
   copied.ClearSameName();
   copied.SetNewTopName(m_modulename, submodname[0]);
+  var_type ctype = copied.GetType();
+  //Bake in the per-variable conversion factor (from a "* cf is" synchronization
+  //or a comp:replacedElement conversionFactor), the same way FillInOrigmap does
+  //for the Antimony text writer, so comparisons against this cached original
+  //are fair.
+  if (conversionFactor != NULL) {
+    copied.GetFormula()->AddConversionFactor(conversionFactor);
+    copied.GetRateRule()->AddConversionFactor(conversionFactor);
+    if (IsReaction(ctype) || ctype == varInteraction) {
+      copied.GetReaction()->GetFormula()->AddConversionFactor(conversionFactor);
+    }
+  }
   syncmap.insert(make_pair(var, copied));
 }
 

@@ -1552,24 +1552,22 @@ bool Variable::SetAlgebraicRule(double val, Formula* formula)
     }
     if (formula->MakeUnitVariablesUnits()) return true;
 
-    //If nothing is set variable explicitly, set all default variables to non-const
+    //Every algebraic rule needs at least one non-const participant, or it
+    //can't determine anything. A participant that already has its own
+    //assignment or rate rule is already fully determined elsewhere, so it
+    //can't serve that role for this rule -- skip it. Of the rest, anything
+    //whose const-ness hasn't been explicitly set (by the user, or by an
+    //explicit SBML 'constant' attribute) defaults to non-const; anything
+    //already explicitly const or non-const is left alone.
     vector<vector<string> > formvars = formula->GetVariableStrings();
     Module* thismod = g_registry.GetModule(m_module);
-    vector<Variable*> algvars;
-    bool anyNonConst = false;
     for (size_t fv = 0; fv < formvars.size(); fv++) {
         Variable* var = thismod->GetVariable(formvars[fv]);
-        algvars.push_back(var);
-        if (var->GetConstType() == constVAR) {
-            anyNonConst = true;
-        }
-    }
-    if (!anyNonConst) {
-        for (size_t v = 0; v < algvars.size(); v++) {
-            Variable* var = algvars[v];
-            if (var->GetConstType() == constDEFAULT) {
-                algvars[v]->SetIsConst(false);
-            }
+        if (var == NULL) continue;
+        formula_type vftype = var->GetFormulaType();
+        if (vftype == formulaASSIGNMENT || vftype == formulaRATE) continue;
+        if (var->GetConstType() == constDEFAULT) {
+            var->SetIsConst(false);
         }
     }
 
@@ -2407,7 +2405,7 @@ bool Variable::Synchronize(Variable* clone, const Variable* conversionFactor)
   if (m_formulatype == formulaASSIGNMENT && clone->GetFormula()->IsEmpty()) {
     clone->m_formulatype = formulaASSIGNMENT;
   }
-  if (m_formulatype == formulaRATE && clone->GetRateRule()->IsEmpty() && clone->GetFormula()->IsEmpty()) {
+  if (m_formulatype == formulaRATE && clone->GetRateRule()->IsEmpty()) {
     clone->m_formulatype = formulaRATE;
   }
   if (!m_valFormula.IsEmpty()) {
@@ -2467,6 +2465,13 @@ bool Variable::Synchronize(Variable* clone, const Variable* conversionFactor)
     }
     m_replacedformrxn = true;
     m_valReaction.Clear();
+  }
+
+  //Synchronize the Events.
+  if (m_type == varEvent && !m_valEvent.IsEmpty()) {
+    if (clone->GetEvent()->IsEmpty()) {
+      if (clone->SetEvent(&m_valEvent)) return true;
+    }
   }
 
   //Don't synchronize modules (should be accounted for above)

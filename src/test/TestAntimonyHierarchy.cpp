@@ -51,7 +51,7 @@ void compareFileHierarchy(const string& base)
   elideMetaIds(doc);
   string sbmlFlat = writeSBMLToStdString(doc);
   string atosbml_nometa = elideMetaIdsFromSBMLstring(atosbml);
-  EXPECT_TRUE(atosbml_nometa == sbmlFlat);
+  EXPECT_STREQ(atosbml_nometa.c_str(), sbmlFlat.c_str());
 
   ret = loadSBMLString(matching.c_str());
   EXPECT_TRUE(ret != -1);
@@ -66,6 +66,11 @@ void compareFileHierarchy(const string& base)
   delete doc;
   delete converter;
   freeAll();
+}
+
+TEST(AntimonyHierarchy, test_deleted_rate_rule)
+{
+  compareFileHierarchy("deleted_rate_rule");
 }
 
 TEST(AntimonyHierarchy, test_hierarchy)
@@ -111,6 +116,11 @@ TEST(AntimonyHierarchy, test_deleteDelay)
 TEST(AntimonyHierarchy, test_deleteDelay2)
 {
   compareFileHierarchy("deleteDelay2");
+}
+
+TEST(AntimonyHierarchy, test_deleteEventAndAssignment)
+{
+  compareFileHierarchy("deleteEventAndAssignment");
 }
 
 TEST(AntimonyHierarchy, test_deleteEventAssignment)
@@ -336,4 +346,19 @@ TEST(AntimonyHierarchy, test_subport2)
 TEST(AntimonyHierarchy, test_subsubport)
 {
   compareFileHierarchy("subsubport");
+}
+
+TEST(AntimonyHierarchy, test_conversionFactor)
+{
+  compareFileHierarchy("paramconv_hierarchy");
+}
+
+TEST(AntimonyHierarchy, test_timeconv_raterule)
+{
+  compareFileHierarchy("timeconv_raterule");
+}
+
+TEST(AntimonyHierarchy, test_multi_init_overrides)
+{
+  compareFileHierarchy("multi_init_overrides");
 }

@@ -870,6 +870,36 @@ LIB_EXTERN char** getNthUserFunctionArguments(unsigned long n)
   return args;
 }
 
+void reportUserFunctionArgumentIndexProblem(unsigned long arg, unsigned long actualsize, unsigned long func)
+{
+  string error = "There is no argument with index " + SizeTToString(arg) + " in user-defined function " + SizeTToString(func) + ".";
+  if (actualsize == 0) {
+    error += "  In fact, that function has no arguments at all.";
+  }
+  else if (actualsize == 1) {
+    error += "  There is a single argument with index 0.";
+  }
+  else {
+    error += "  Valid index values are 0 through " + SizeTToString(actualsize - 1) + ".";
+  }
+  g_registry.SetError(error);
+}
+
+LIB_EXTERN char* getNthUserFunctionMthArgument(unsigned long n, unsigned long m)
+{
+  const UserFunction* userfunc = g_registry.GetNthUserFunction(n);
+  if (userfunc == NULL) {
+    reportUserFunctionIndexProblem(n, static_cast<unsigned long>(g_registry.GetNumUserFunctions()));
+    return NULL;
+  }
+  unsigned long numargs = static_cast<unsigned long>(userfunc->GetNumExportVariables());
+  if (m >= numargs) {
+    reportUserFunctionArgumentIndexProblem(m, numargs, n);
+    return NULL;
+  }
+  return getCharStar(userfunc->GetNthExportVariable(m)[0].c_str());
+}
+
 LIB_EXTERN char* getNthUserFunctionBody(unsigned long n)
 {
   const UserFunction* func = g_registry.GetNthUserFunction(n);

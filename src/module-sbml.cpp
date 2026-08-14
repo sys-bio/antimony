@@ -840,6 +840,16 @@ void Module::LoadSBML(Model* sbml)
   }
   //Load submodels
   const CompModelPlugin* mplugin = static_cast<const CompModelPlugin*>(sbml->getPlugin("comp"));
+  //Events whose Priority/Delay/EventAssignment/Trigger was directly
+  //deleted, as opposed to becoming empty because a variable it
+  //referenced was itself fully deleted.  Collected across all submodels;
+  //decided on and, if needed, promoted at the very end of this function,
+  //once every element of this module (including anything joined via
+  //comp:replacedElement) has been read.
+  set<Variable*> touchedEvents;
+  //Reactions whose species reference(s) or kinetic law were directly
+  //deleted, for the same reason.
+  set<Variable*> touchedReactions;
   if (mplugin != NULL) {
     for (unsigned int sm = 0; sm < mplugin->getNumSubmodels(); sm++) {
       const Submodel* submodel = mplugin->getSubmodel(sm);
@@ -940,6 +950,10 @@ void Module::LoadSBML(Model* sbml)
             targetname.push_back(event->getId());
             deletedvar = GetVariable(targetname);
             assert(deletedvar != NULL);
+            if (deletedvar->GetType() == varDeleted) {
+              //The whole event was already deleted separately; nothing more to do here.
+              break;
+            }
             switch (target->getTypeCode()) {
             case SBML_PRIORITY:
               var->AddDeletion(targetname, delEventPriority);
@@ -962,6 +976,14 @@ void Module::LoadSBML(Model* sbml)
               //We added variables from the strings in the event, but they are superfluous; take them back out.
               m_variables.pop_back();
             }
+            //We don't yet know whether this event still needs to be promoted:
+            //if the only reason it now differs from its submodel's original
+            //is that some other deletion (processed earlier or later in this
+            //same list) fully deletes a variable it referenced, the existing
+            //'delete A.X;' mechanism already covers it and no promotion is
+            //needed.  That can only be determined once all of this submodel's
+            //deletions have been processed, below.
+            touchedEvents.insert(deletedvar);
             break;
           case SBML_CONSTRAINT:
             g_registry.AddWarning("Unable to process deletion " + delname + "from submodel " + submodname + " in model " + GetModuleName() + ", because Constraints do not have IDs in SBML.");
@@ -1000,6 +1022,9 @@ void Module::LoadSBML(Model* sbml)
               break;
             }
             deletedvar->GetReaction()->ClearReferencesTo(origparam, &(var->m_deletions));
+            //As with events, we don't yet know whether this reaction still
+            //needs to be promoted; see the check after this loop, below.
+            touchedReactions.insert(deletedvar);
             break;
           case SBML_KINETIC_LAW:
             assert(reaction != NULL);
@@ -1010,8 +1035,13 @@ void Module::LoadSBML(Model* sbml)
             paramname.push_back(reaction->getId());
             deletedvar = GetVariable(paramname);
             assert(deletedvar != NULL);
+            if (deletedvar->GetType() == varDeleted) {
+              //Don't need to delete a child of a deleted thing
+              break;
+            }
             deletedvar->GetReaction()->GetFormula()->Clear();
             var->AddDeletion(paramname, delKineticLaw);
+            touchedReactions.insert(deletedvar);
             break;
           case SBML_MODIFIER_SPECIES_REFERENCE:
             assert(reaction != NULL);
@@ -1364,6 +1394,10 @@ void Module::LoadSBML(Model* sbml)
   vector<AntimonyConstraint> constraints;
   for (unsigned int c = 0; c < sbml->getNumConstraints(); c++) {
     const Constraint* constraint = sbml->getConstraint(c);
+    if (!constraint->isSetMath()) {
+      //No math means the constraint doesn't actually constrain anything; skip.
+      continue;
+    }
     sbmlname = getNameFromSBMLObject(constraint, "_con");
     Variable* var = AddOrFindVariable(&sbmlname);
     var->ReadAnnotationFrom(constraint);
@@ -1372,16 +1406,14 @@ void Module::LoadSBML(Model* sbml)
       msg = StripMsgXML(msg);
       var->SetDisplayName(msg);
     }
-    if (constraint->isSetMath()) {
-      AntimonyConstraint acon(var);
-      const ASTNode* astn = constraint->getMath();
-      if (!m_usedDistributions && UsesDistrib(astn)) {
-        m_usedDistributions = true;
-      }
-      acon.SetWithASTNode(astn);
-      var->SetConstraint(&acon);
-      constraints.push_back(acon);
+    AntimonyConstraint acon(var);
+    const ASTNode* astn = constraint->getMath();
+    if (!m_usedDistributions && UsesDistrib(astn)) {
+      m_usedDistributions = true;
     }
+    acon.SetWithASTNode(astn);
+    var->SetConstraint(&acon);
+    constraints.push_back(acon);
   }
 
   //Parameters
@@ -1458,6 +1490,7 @@ void Module::LoadSBML(Model* sbml)
           string reactantId = specref->getId();
           if (reactantId.empty()) {
             reactantId = reactionName + "_" + specref->getSpecies() + "_stoichiometry";
+            reactantId = getNameFromSBMLObject(specref, reactantId);
           }
           stoichvar = AddOrFindVariable(&reactantId);
           assert(!stoichvar->SetType(varStoichiometry)); //Since the SBML file is valid.
@@ -1829,6 +1862,99 @@ void Module::LoadSBML(Model* sbml)
       }
     }
     */
+  }
+
+  //Now that every element of this module has been read (including
+  //anything joined to a submodel via comp:replacedElement), decide which
+  //touched events actually need to be promoted to new top-level elements:
+  //if an event only differs from what the submodel would produce on its
+  //own because some variable it referenced was itself separately, fully
+  //deleted, the existing 'delete A.X;' mechanism (and
+  //AntimonyEvent::Matches's handling of it) already covers it, and
+  //promoting it too would be redundant.
+  for (set<Variable*>::iterator te = touchedEvents.begin(); te != touchedEvents.end(); te++) {
+    Variable* eventvar = *te;
+    bool needspromotion = true;
+    if (eventvar->IsPointer()) {
+      //Already promoted/aliased via some other mechanism (e.g. a
+      //comp:replacedElement); nothing more to do.
+      needspromotion = false;
+    }
+    else {
+      vector<string> submodname(1, eventvar->GetName()[0]);
+      Variable* submodvar = GetVariable(submodname);
+      Module* origmod = submodvar == NULL ? NULL : g_registry.GetModule(submodvar->GetModule()->GetModuleName());
+      if (origmod != NULL) {
+        vector<string> origevname(1, eventvar->GetName().back());
+        Variable* origeventvar = origmod->GetVariable(origevname);
+        if (origeventvar != NULL) {
+          Variable copied(*origeventvar);
+          copied.ClearSameName();
+          copied.SetNewTopName(GetModuleName(), submodname[0]);
+          if (copied.GetEvent()->Matches(eventvar->GetEvent())) {
+            needspromotion = false;
+          }
+        }
+      }
+    }
+    if (needspromotion) {
+      Variable* promotedvar = PromoteToTopLevel(eventvar);
+      AntimonyEvent* promotedevent = promotedvar->GetEvent();
+      PromoteReferencedVariables(promotedevent->GetTrigger());
+      PromoteReferencedVariables(promotedevent->GetDelay());
+      PromoteReferencedVariables(promotedevent->GetPriority());
+      for (size_t n=0; n<promotedevent->GetNumAssignments(); n++) {
+        PromoteToTopLevel(promotedevent->GetNthAssignmentVariable(n));
+        PromoteReferencedVariables(promotedevent->GetAssignmentFormula(n));
+      }
+    }
+  }
+  //Same idea, for reactions: only promote if the difference isn't
+  //already fully explained by a separately, fully-deleted variable.
+  for (set<Variable*>::iterator tr = touchedReactions.begin(); tr != touchedReactions.end(); tr++) {
+    Variable* rxnvar = *tr;
+    bool needspromotion = true;
+    if (rxnvar->IsPointer()) {
+      //Already promoted/aliased via some other mechanism (e.g. a
+      //comp:replacedElement); nothing more to do.
+      needspromotion = false;
+    }
+    else {
+      vector<string> submodname(1, rxnvar->GetName()[0]);
+      Variable* submodvar = GetVariable(submodname);
+      Module* origmod = submodvar == NULL ? NULL : g_registry.GetModule(submodvar->GetModule()->GetModuleName());
+      if (origmod != NULL) {
+        vector<string> origrxnname(1, rxnvar->GetName().back());
+        Variable* origrxnvar = origmod->GetVariable(origrxnname);
+        if (origrxnvar != NULL) {
+          Variable copied(*origrxnvar);
+          copied.ClearSameName();
+          copied.SetNewTopName(GetModuleName(), submodname[0]);
+          if (copied.GetReaction()->Matches(rxnvar->GetReaction())) {
+            needspromotion = false;
+          }
+        }
+      }
+    }
+    if (needspromotion) {
+      Variable* promotedvar = PromoteToTopLevel(rxnvar);
+      AntimonyReaction* promotedrxn = promotedvar->GetReaction();
+      PromoteReferencedVariables(promotedrxn->GetFormula());
+      const ReactantList* sides[2] = {promotedrxn->GetLeft(), promotedrxn->GetRight()};
+      for (int side = 0; side < 2; side++) {
+        const ReactantList* rl = sides[side];
+        for (size_t n = 0; n < rl->Size(); n++) {
+          const Variable* reactant = rl->GetNthReactant(n);
+          if (reactant != NULL) {
+            PromoteToTopLevel(GetVariable(reactant->GetName()));
+          }
+          const Variable* stoich = rl->GetNthStoichiometryVar(n);
+          if (stoich != NULL) {
+            PromoteToTopLevel(GetVariable(stoich->GetName()));
+          }
+        }
+      }
+    }
   }
 
   //Finally, fix the fact that 'time' used to be OK in functions (l2v1), but is no longer (l2v2).
@@ -3160,7 +3286,8 @@ bool Module::SynchronizeAssignments(Model* sbmlmod, const Variable* var, const v
   for (size_t v=0; v<synchronized.size(); v++) {
     map<const Variable*, Variable >::const_iterator syncmapiter = syncmap.find(synchronized[v]);
     if (syncmapiter == syncmap.end()) {
-      assert(false);
+      //We have no cached original to compare against (this can happen with
+      //deeply-nested submodel deletions); nothing to clean up for this one.
       continue;
     }
     const Variable* orig = &syncmapiter->second;
@@ -3229,17 +3356,11 @@ bool Module::SynchronizeRates(Model* sbmlmod, const Variable* var, const vector<
   for (size_t v=0; v<synchronized.size(); v++) {
     map<const Variable*, Variable >::const_iterator syncmapiter = syncmap.find(synchronized[v]);
     if (syncmapiter == syncmap.end()) {
-      assert(false);
+      //We have no cached original to compare against (this can happen with
+      //deeply-nested submodel deletions); nothing to clean up for this one.
       continue;
     }
     const Variable* orig = &syncmapiter->second;
-    if (ret && notblank && var->GetFormulaType() == orig->GetFormulaType() &&
-        orig->GetRateRule()->Matches(currentform)) {
-          ret = false; //We can leave the original definition there.
-          continue;
-    }
-    if (orig->GetRateRule()->IsEmpty()) continue; //There won't be any rr's in the original.
-    //Otherwise, delete any rate rules in the submodel.
     vector<string> syncname = synchronized[v]->GetName();
     vector<string> submodname = syncname;
     submodname.pop_back();
@@ -3248,6 +3369,27 @@ bool Module::SynchronizeRates(Model* sbmlmod, const Variable* var, const vector<
       assert(false);
       continue;
     }
+    //Any submodel rules were converted by the time conversion factor, 
+    // if present.  Check to see if that's the only change that was made.
+    Variable* tcf = submod->GetTimeConversionFactor();
+    bool matches = false;
+    if (ret && notblank && var->GetFormulaType() == orig->GetFormulaType()) {
+      if (tcf == NULL) {
+        matches = orig->GetRateRule()->Matches(currentform);
+      }
+      else {
+        Formula convertedOrig(*(orig->GetRateRule()));
+        convertedOrig.AddInvTimeConversionFactor(tcf);
+        convertedOrig.ConvertTime(tcf);
+        matches = convertedOrig.Matches(currentform);
+      }
+    }
+    if (matches) {
+          ret = false; //We can leave the original definition there.
+          continue;
+    }
+    if (orig->GetRateRule()->IsEmpty()) continue; //There won't be any rr's in the original.
+    //Otherwise, delete any rate rules in the submodel.
     if (submod->HasDeletion(syncname, delRateRule)) continue;
     Model* md = sbmlmod;
     for (size_t sm=0; sm<submodname.size(); sm++) {

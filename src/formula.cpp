@@ -434,21 +434,6 @@ bool Formula::GetIsConst() const
   return true;
 }
 
-//bool 
-
-bool Formula::CheckIncludes(string modname, const ReactantList* rlist) const
-{
-  string cc = g_registry.GetCC();
-  vector<vector<string> > varlist = rlist->GetVariableList();
-  for (size_t var=0; var<varlist.size(); var++) {
-    if (!ContainsVar(modname, varlist[var])) {
-      g_registry.SetError("should include the variable '" + g_registry.GetModule(modname)->GetVariable(varlist[var])->GetNameDelimitedBy(cc) + "' (either directly or indirectly), but it does not.");
-      return true;
-    }
-  }
-  return false;
-}
-
 bool Formula::ContainsVar(string modname, vector<string> vname) const
 {
   Module* module = g_registry.GetModule(modname);

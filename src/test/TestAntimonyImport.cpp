@@ -66,3 +66,13 @@ TEST(AntimonyImport, test_import_MODEL1504010000_url)
 {
     compareFileImport("oxphos_nad_redacted");
 }
+
+// SBML Test Suite case 1155:  a submodel event's delay is deleted via
+// comp:Deletion, leaving the rest of the event (trigger and assignments)
+// intact.  The event (and the variables its assignments target) should be
+// promoted to new top-level elements aliased back to the submodel with
+// 'is', rather than reprinted as a submodel-qualified redefinition.
+TEST(AntimonyImport, test_import_case01155)
+{
+    compareFileImport("case01155");
+}

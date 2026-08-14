@@ -140,6 +140,8 @@ public:
   bool SetModule(const std::string* modname);
   void SetComponentCompartments(Variable* compartment);
   void AddSynchronizedPair(const Variable* oldvar, const Variable* newvar, const Variable* conversionFactor);
+  Variable* PromoteToTopLevel(Variable* subvar);
+  void PromoteReferencedVariables(const Formula* formula);
   void AddTimeToUserFunction(std::string function);
   void CreateLocalVariablesForSubmodelInterfaceIfNeeded();
   void SetIsMain(bool ismain) {m_ismain=ismain;};
@@ -250,7 +252,7 @@ public:
   void  FindOrCreateLocalVersionOf(const Variable* var, libsbml::Model* sbmlmod);
   std::vector<const Variable*> GetSynchronizedVariablesFor(const Variable* var);
   void FillInSyncmap(std::map<const Variable*, Variable >& syncmap) const;
-  void AddVarToSyncMap(const Variable* var, std::map<const Variable*, Variable >& syncmap) const;
+  void AddVarToSyncMap(const Variable* var, const Variable* conversionFactor, std::map<const Variable*, Variable >& syncmap) const;
 
   void setUsedDistrib(bool useddistrib);
 

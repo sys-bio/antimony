@@ -2,28 +2,27 @@
 model moddef1()
 
   // Rate Rules:
-  t1' = time/t1 + 3;
+  x' = 1;
 
   // Variable initializations:
-  t1 = 1;
+  x = 0;
 
   // Other declarations:
-  var t1;
+  var x;
 end
 
-model *doc0()
+model *timeconv_raterule()
 
   // Sub-modules, and any changes to those submodules:
-  sub1: moddef1(), timeconv = timeconv;
-  sub1.t1 * paramconv is t1;
+  sub1: moddef1(), timeconv = tc;
+  sub1.x is x;
+
+  // Rate Rules:
+  x' = 1;
 
   // Variable initializations:
-  timeconv = 60;
-  paramconv = 0.01;
-  t1 = 1;
+  tc = 60;
 
   // Other declarations:
-  const timeconv, paramconv;
+  const tc;
 end
-
-doc0 is "doc0"
