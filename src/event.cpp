@@ -67,11 +67,6 @@ bool AntimonyEvent::SetPriority(const Formula& priority)
       g_registry.SetError("The priority \"" + priority.ToDelimitedStringWithEllipses(".") + "\" seems to be incorrect, and cannot be parsed into an Abstract Syntax Tree (AST).");
       return true;
     }
-    else if (ASTpriority->isBoolean()) {
-      g_registry.SetError("The priority \"" + priority.ToDelimitedStringWithEllipses(".") + "\" is boolean, and it is therefore illegal to use it as the priority for an event.  Perhaps this was meant as the trigger?  If the line is being misparsed, try adding parentheses.");
-      delete ASTpriority;
-      return true;
-    }
     delete ASTpriority;
   }
   m_priority = priority;
