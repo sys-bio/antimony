@@ -57,11 +57,13 @@ Install [CMake](https://cmake.org/). On Windows, you also need to install **Visu
 
 To build the Python bindings, install Python and ensure that CMake can locate it.
 
-To build the QtAntimony, install Qt 5.15.2 or later and ensure that CMake can locate it.
+To build the QtAntimony (the standalone Antimony editor), install Qt 5.15.2 or a later version of QT 5 and ensure that CMake can locate it.
 
 ## Download Prebuilt Dependencies
 
-Download the latest version of prebuilt Antimony dependencies that match your operating system, and build type from the [libroadrunner-deps releases page](https://github.com/sys-bio/libroadrunner-deps/releases).
+Download the latest version of prebuilt Antimony dependencies that match your operating system, and build type from the [libroadrunner-deps releases page](https://github.com/sys-bio/libroadrunner-deps/releases).  Make sure you get the 'release' version if you are building the release version of Antimony.
+
+If no pre-built dependencies match your operating system, you'll need to find libsbml with the released packages enabled (in particular: comp, fbc, and distrib) and SBMLNetwork.  Libsbml in turn requires an XML library; we recommend using expat.  A CMake system that builds these and a few others is available at [libroadrunner-deps](https://github.com/sys-bio/libroadrunner-deps/); see that repository (and its github build files) for more information.
 
 ## Obtain Antimony Source Code
 
@@ -70,66 +72,43 @@ Clone the Antimony repository and enter the source directory:
 ```bash
 git clone https://github.com/sys-bio/antimony.git
 cd antimony
+mkdir build-antimony
+cd build-antimony
 ```
 
 ## Configure with CMake
 
+From the command line (i.e. PowerShell in an MSVC x64 development environment, or a terminal window on MacOS or Linux), enter the following.  Replace `/path/to/libroadrunner-deps-install` with the location of the extracted prebuilt dependencies.
+
 ### Windows
-
-Run PowerShell in an MSVC x64 development environment, then configure Antimony as follows:
-
-```powershell
+```
 cmake -S . -B build-antimony `
-  -A x64 `
-  -DCMAKE_INSTALL_PREFIX="D:/dev/ant/antimony-install" `
-  -DANT_DEPENDENCIES_INSTALL_PREFIX="C:/path/to/libroadrunner-deps" `
+  -DCMAKE_INSTALL_PREFIX="./antimony-install" `
+  -DANT_DEPENDENCIES_INSTALL_PREFIX="C:/path/to/libroadrunner-deps-install" `
+  -DCMAKE_BUILD_TYPE=Release `
   -DWITH_PYTHON=ON `
   -DWITH_QTANTIMONY=OFF `
-  -DWITH_GTEST=OFF `
-  -DWITH_CELLML=OFF `
-  -DBUILD_SHARED_LIBS=ON
+  -DWITH_GTEST=OFF 
 ```
 
-Replace `C:/path/to/libroadrunner-deps` with the location of the extracted prebuilt dependencies (Remember to use forward slashes in paths passed to CMake).
-
-
-### macOS
-
-Configure Antimony from the source directory:
-
-```bash
+### MacOS/Linux
+```
 cmake -S . -B build-antimony \
+  -DCMAKE_INSTALL_PREFIX="./antimony-install" \
+  -DANT_DEPENDENCIES_INSTALL_PREFIX="/path/to/libroadrunner-deps-install" \
   -DCMAKE_BUILD_TYPE=Release \
-  -DCMAKE_OSX_ARCHITECTURES="$(uname -m)" \
-  -DCMAKE_INSTALL_PREFIX="$PWD/install-antimony" \
-  -DANT_DEPENDENCIES_INSTALL_PREFIX="/path/to/libroadrunner-deps" \
   -DWITH_PYTHON=ON \
   -DWITH_QTANTIMONY=OFF \
-  -DWITH_GTEST=OFF \
-  -DWITH_CELLML=OFF \
-  -DBUILD_SHARED_LIBS=ON
+  -DWITH_GTEST=OFF 
 ```
 
-Replace `/path/to/libroadrunner-deps` with the location of the extracted prebuilt dependencies.
+### Making changes
 
-### Linux
-
-Configure Antimony from the source directory:
-
-```bash
-cmake -S . -B build-antimony \
-  -DCMAKE_BUILD_TYPE=Release \
-  -DCMAKE_INSTALL_PREFIX="$PWD/install-antimony" \
-  -DANT_DEPENDENCIES_INSTALL_PREFIX="/path/to/libroadrunner-deps" \
-  -DWITH_PYTHON=ON \
-  -DWITH_QTANTIMONY=OFF \
-  -DWITH_GTEST=OFF \
-  -DWITH_CELLML=OFF \
-  -DBUILD_SHARED_LIBS=ON
-```
-
-Replace `/path/to/libroadrunner-deps` with the location of the extracted prebuilt dependencies.
-
+The above represents a typical build, but modifications are available:
+* If you want to compile for a different architecture than the environment where you're running CMake, use (for example) `-A x86` or `DCMAKE_OSX_ARCHITECTURES="$(uname -m)` 
+* If you do want to build QTAntimony, change WITH_QTANTIMONY to ON, and set QT5_DIR to the location of the CMake files where you installed QT5 (i.e. `Qt5.15.16/5.15.16/msvc2019_64/lib/cmake/Qt5`).
+* If you don't want the python bindings, change WITH_PYTHON to OFF.
+* If you want to build the tests, change WITH_GTEST to ON
 
 ## Build and Install
 
