@@ -307,10 +307,16 @@ bool ReactantList::Matches(const ReactantList* newrl) const
 
 bool ReactantList::HasReactantFor(const Variable* species) const
 {
-    vector<string> specid = species->GetName();
+    if (m_module.empty()) {
+        //There are no reactants in this list, so it can't have one for 'species'.
+        return false;
+    }
+    const Variable* target = species->GetSameVariable();
+    Module* module = g_registry.GetModule(m_module);
+    assert(module != NULL);
     for (size_t component = 0; component < m_components.size(); component++) {
-        //Check stoichiometry value
-        if (get<2>(m_components[component]) == specid) {
+        const Variable* reactant = module->GetVariable(get<2>(m_components[component]));
+        if (reactant != NULL && reactant->GetSameVariable() == target) {
             return true;
         }
     }

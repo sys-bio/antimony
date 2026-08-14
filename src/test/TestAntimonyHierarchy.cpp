@@ -357,3 +357,8 @@ TEST(AntimonyHierarchy, test_timeconv_raterule)
 {
   compareFileHierarchy("timeconv_raterule");
 }
+
+TEST(AntimonyHierarchy, test_multi_init_overrides)
+{
+  compareFileHierarchy("multi_init_overrides");
+}

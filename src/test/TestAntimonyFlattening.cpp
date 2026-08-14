@@ -416,19 +416,9 @@ TEST(AntimonyFlattening, test_test38)
   compareFileFlatteningWithDifferences("test38");
 }
 
-TEST(AntimonyFlattening, test_deleted_kinetic_law)
-{
-  compareFileFlatteningWithDifferences("deleted_kinetic_law", "", "_");
-}
-
-TEST(AntimonyFlattening, test_deleted_species_reference)
-{
-  compareFileFlatteningWithDifferences("deleted_species_reference", "", "_");
-}
-
 TEST(AntimonyFlattening, test_test39)
 {
-  compareFileFlatteningWithDifferences("test39");
+  compareFileFlatteningWithDifferences("test39", "from-libsbml/", "_");
 }
 
 TEST(AntimonyFlattening, test_test40)
@@ -526,13 +516,11 @@ TEST(AntimonyFlattening, test_test57)
 //{
 //  compareFileFlatteningWithDifferences("test58");
 //}
-//END_TEST
 
 //TEST(AntimonyFlattening, test_test59)
 //{
 //  compareFileFlatteningWithDifferences("test59");
 //}
-//END_TEST
 
 TEST(AntimonyFlattening, test_test60)
 {
@@ -543,4 +531,13 @@ TEST(AntimonyFlattening, test_test60)
 //{
 //  compareFileFlatteningWithDifferences("test61");
 //}
-//END_TEST
+
+TEST(AntimonyFlattening, test_deleted_kinetic_law)
+{
+  compareFileFlatteningWithDifferences("deleted_kinetic_law", "", "_");
+}
+
+TEST(AntimonyFlattening, test_deleted_species_reference)
+{
+  compareFileFlatteningWithDifferences("deleted_species_reference", "", "_");
+}

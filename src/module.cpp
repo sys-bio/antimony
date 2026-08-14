@@ -2800,6 +2800,11 @@ void Module::FixNames()
 void Module::FillInOrigmap(map<const Variable*, Variable >& origmap) const
 {
   map<const Variable*, Variable >::iterator origmapiter;
+  //Variables synchronized with more than one, unrelated submodule element
+  //have no single submodule default to compare against; once we find such
+  //a conflict we exclude the variable from origmap for good, so its
+  //top-level value always gets printed explicitly rather than guessed at.
+  set<const Variable*> conflicted;
 
   for (size_t var=0; var<m_variables.size(); var++) {
     if (m_variables[var]->GetType() == varModule) {
@@ -2845,6 +2850,7 @@ void Module::FillInOrigmap(map<const Variable*, Variable >& origmap) const
         }
         origvar = origvar->GetSameVariable();
         assert(find(m_uniquevars.begin(), m_uniquevars.end(), origvar) != m_uniquevars.end());
+        if (conflicted.find(origvar) != conflicted.end()) continue;
         origmapiter = origmap.find(origvar);
         if (origmapiter == origmap.end()) {
           //If this variable was synchronized with a conversion factor, the value
@@ -2894,14 +2900,11 @@ void Module::FillInOrigmap(map<const Variable*, Variable >& origmap) const
             }
           }
           if (!synched) {
-            //Sync them randomly  LS DEBUG
-            //assert(false);
-            origmapiter->second.Synchronize(&copied, NULL);
-            //copied.Synchronize(&origmapiter->second);
-            if (!copied.IsPointer()) {
-              //The synchronization worked backwards from what we tried.
-              origmapiter->second = copied;
-            }
+            //These two submodules aren't related to each other, so we have
+            //no principled way to pick one's default over the other's;
+            //don't guess, just require the top-level value to be printed.
+            origmap.erase(origmapiter);
+            conflicted.insert(origvar);
           }
           //cout << "Final: " << origmapiter->second.ToString() << endl;
         }
