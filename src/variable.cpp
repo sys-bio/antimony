@@ -2467,6 +2467,13 @@ bool Variable::Synchronize(Variable* clone, const Variable* conversionFactor)
     m_valReaction.Clear();
   }
 
+  //Synchronize the Events.
+  if (m_type == varEvent && !m_valEvent.IsEmpty()) {
+    if (clone->GetEvent()->IsEmpty()) {
+      if (clone->SetEvent(&m_valEvent)) return true;
+    }
+  }
+
   //Don't synchronize modules (should be accounted for above)
   assert(m_valModule.size()==0);
 

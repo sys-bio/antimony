@@ -234,10 +234,9 @@ bool AntimonyEvent::ClearReferencesTo(Variable* deletedvar, set<pair<vector<stri
       varresult++;
     }
   }
-  if (m_formresults.size() == 0) {
-    //Can't (yet?) have an event with no event assignments: delete the event
-    return true;
-  }
+  //As of SBML L3V2, events are allowed to have zero event assignments, so
+  //there's no need to delete the whole event just because its last one was
+  //removed.
   return false; //Didn't have to delete ourselves.
 }
 
@@ -263,6 +262,14 @@ string AntimonyEvent::GetNthAssignmentVariableName(size_t n, string cc) const
     return "";
   }
   return resultvar->GetNameDelimitedBy(cc);
+}
+
+Variable* AntimonyEvent::GetNthAssignmentVariable(size_t n) const
+{
+  if (n >= m_varresults.size()) {
+    return NULL;
+  }
+  return g_registry.GetModule(m_module)->GetVariable(m_varresults[n]);
 }
 
 string AntimonyEvent::GetNthAssignmentFormulaString(size_t n, string cc, bool SBML) const

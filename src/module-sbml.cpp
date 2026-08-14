@@ -858,6 +858,10 @@ void Module::LoadSBML(Model* sbml)
         g_registry.AddWarning("Unable to find submodel " + refname + ".");
       }
       var->ReadAnnotationFrom(submodel);
+      //Events whose Priority/Delay/EventAssignment/Trigger was directly
+      //deleted, as opposed to becoming empty because a variable it
+      //referenced was itself fully deleted.
+      set<Variable*> touchedEvents;
       for (unsigned int d = 0; d < submodel->getNumDeletions(); d++) {
         Deletion* deletion = const_cast<Deletion*>(submodel->getDeletion(d));
         string delname = deletion->getId();
@@ -940,6 +944,10 @@ void Module::LoadSBML(Model* sbml)
             targetname.push_back(event->getId());
             deletedvar = GetVariable(targetname);
             assert(deletedvar != NULL);
+            if (deletedvar->GetType() == varDeleted) {
+              //The whole event was already deleted separately; nothing more to do here.
+              break;
+            }
             switch (target->getTypeCode()) {
             case SBML_PRIORITY:
               var->AddDeletion(targetname, delEventPriority);
@@ -962,6 +970,14 @@ void Module::LoadSBML(Model* sbml)
               //We added variables from the strings in the event, but they are superfluous; take them back out.
               m_variables.pop_back();
             }
+            //We don't yet know whether this event still needs to be promoted:
+            //if the only reason it now differs from its submodel's original
+            //is that some other deletion (processed earlier or later in this
+            //same list) fully deletes a variable it referenced, the existing
+            //'delete A.X;' mechanism already covers it and no promotion is
+            //needed.  That can only be determined once all of this submodel's
+            //deletions have been processed, below.
+            touchedEvents.insert(deletedvar);
             break;
           case SBML_CONSTRAINT:
             g_registry.AddWarning("Unable to process deletion " + delname + "from submodel " + submodname + " in model " + GetModuleName() + ", because Constraints do not have IDs in SBML.");
@@ -1047,6 +1063,43 @@ void Module::LoadSBML(Model* sbml)
             //var = AddOrFindVariable(&delname);
             g_registry.AddWarning("Unable to process deletion " + delname + "from submodel " + submodname + " in model " + GetModuleName() + ".  Deletions of " + SBMLTypeCode_toString(target->getTypeCode(), target->getPackageName().c_str()) + " elements have not been added as a concept in Antimony.");
             break;
+          }
+        }
+      }
+      //Now that all of this submodel's deletions have been processed,
+      //decide which touched events actually need to be promoted to new
+      //top-level elements:  if an event only differs from what the
+      //submodel would produce on its own because some variable it
+      //referenced was itself separately, fully deleted, the existing
+      //'delete A.X;' mechanism (and AntimonyEvent::Matches's handling of
+      //it) already covers it, and promoting it too would be redundant.
+      if (!touchedEvents.empty()) {
+        Module* origmod = g_registry.GetModule(refname);
+        for (set<Variable*>::iterator te = touchedEvents.begin(); te != touchedEvents.end(); te++) {
+          Variable* eventvar = *te;
+          bool needspromotion = true;
+          if (origmod != NULL) {
+            vector<string> origevname(1, eventvar->GetName().back());
+            Variable* origeventvar = origmod->GetVariable(origevname);
+            if (origeventvar != NULL) {
+              Variable copied(*origeventvar);
+              copied.ClearSameName();
+              copied.SetNewTopName(GetModuleName(), var->GetName()[0]);
+              if (copied.GetEvent()->Matches(eventvar->GetEvent())) {
+                needspromotion = false;
+              }
+            }
+          }
+          if (needspromotion) {
+            Variable* promotedvar = PromoteToTopLevel(eventvar);
+            AntimonyEvent* promotedevent = promotedvar->GetEvent();
+            PromoteReferencedVariables(promotedevent->GetTrigger());
+            PromoteReferencedVariables(promotedevent->GetDelay());
+            PromoteReferencedVariables(promotedevent->GetPriority());
+            for (size_t n=0; n<promotedevent->GetNumAssignments(); n++) {
+              PromoteToTopLevel(promotedevent->GetNthAssignmentVariable(n));
+              PromoteReferencedVariables(promotedevent->GetAssignmentFormula(n));
+            }
           }
         }
       }

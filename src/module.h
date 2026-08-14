@@ -140,6 +140,8 @@ public:
   bool SetModule(const std::string* modname);
   void SetComponentCompartments(Variable* compartment);
   void AddSynchronizedPair(const Variable* oldvar, const Variable* newvar, const Variable* conversionFactor);
+  Variable* PromoteToTopLevel(Variable* subvar);
+  void PromoteReferencedVariables(const Formula* formula);
   void AddTimeToUserFunction(std::string function);
   void CreateLocalVariablesForSubmodelInterfaceIfNeeded();
   void SetIsMain(bool ismain) {m_ismain=ismain;};

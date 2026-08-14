@@ -118,6 +118,11 @@ TEST(AntimonyHierarchy, test_deleteDelay2)
   compareFileHierarchy("deleteDelay2");
 }
 
+TEST(AntimonyHierarchy, test_deleteEventAndAssignment)
+{
+  compareFileHierarchy("deleteEventAndAssignment");
+}
+
 TEST(AntimonyHierarchy, test_deleteEventAssignment)
 {
   compareFileHierarchy("deleteEventAssignment");

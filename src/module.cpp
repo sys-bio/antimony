@@ -440,6 +440,57 @@ void Module::AddSynchronizedPair(const Variable* oldvar, const Variable* newvar,
   }
 }
 
+//Promote a variable local to a submodule (e.g. 'sub1.E0') to a new top-level
+//variable (e.g. 'sub1_E0'), synchronizing the two so that 'subvar' becomes an
+//alias of the new variable ('sub1.E0 is sub1_E0;').  If 'subvar' is already
+//promoted (or is already top-level), it's returned unchanged.
+Variable* Module::PromoteToTopLevel(Variable* subvar)
+{
+  if (subvar == NULL) {
+    return NULL;
+  }
+  if (subvar->IsPointer()) {
+    return subvar->GetSameVariable();
+  }
+  vector<string> name = subvar->GetName();
+  if (name.size() <= 1) {
+    return subvar;
+  }
+  string newname = name[0];
+  for (size_t n=1; n<name.size(); n++) {
+    newname += "_" + name[n];
+  }
+  vector<string> candidate(1, newname);
+  Variable* newvar = GetVariable(candidate);
+  if (newvar == NULL) {
+    newvar = AddOrFindVariable(&newname);
+  }
+  else {
+    newvar = AddNewNumberedVariable(newname);
+  }
+  if (subvar->Synchronize(newvar, NULL)) {
+    //An error occurred (already set in the registry); leave things as they were.
+    return subvar;
+  }
+  return subvar->GetSameVariable();
+}
+
+//Promote every submodule-local variable referenced by 'formula' that isn't
+//already promoted.  See PromoteToTopLevel.
+void Module::PromoteReferencedVariables(const Formula* formula)
+{
+  if (formula == NULL) {
+    return;
+  }
+  vector<Variable*> vars = formula->GetVariables();
+  for (size_t v=0; v<vars.size(); v++) {
+    Variable* var = vars[v];
+    if (var != NULL && !var->IsPointer() && var->GetName().size() > 1 && var->GetType() != varDeleted) {
+      PromoteToTopLevel(var);
+    }
+  }
+}
+
 void Module::AddTimeToUserFunction(string function)
 {
   for (size_t var=0; var<m_variables.size(); var++) {

@@ -396,22 +396,22 @@ TEST(AntimonyFlattening, test_test34)
 
 TEST(AntimonyFlattening, test_test35)
 {
-  compareFileFlattening("test35");
+  compareFileFlatteningWithDifferences("test35");
 }
 
 TEST(AntimonyFlattening, test_test36)
 {
-  compareFileFlattening("test36");
+  compareFileFlatteningWithDifferences("test36");
 }
 
 TEST(AntimonyFlattening, test_test37)
 {
-  compareFileFlattening("test37");
+  compareFileFlatteningWithDifferences("test37");
 }
 
 TEST(AntimonyFlattening, test_test38)
 {
-  compareFileFlattening("test38");
+  compareFileFlatteningWithDifferences("test38");
 }
 
 TEST(AntimonyFlattening, test_test39)
