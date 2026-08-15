@@ -51,7 +51,7 @@ Antimony has been supported by NIH/NIGMS Grants GM081070, GM123032, and NIBIB EB
 
 # Building from Source
 
-Here we describe how to build libAntimony from source.
+Here we describe how to build libAntimony from source.  *Note: if these instructions don't work for any reason, look at [the github build instructions](https://github.com/sys-bio/antimony/blob/develop/.github/workflows/main.yml), which will always be up-to-date out of necessity.*
 
 ## Install Required Build Tools
 
@@ -59,7 +59,9 @@ Install [CMake](https://cmake.org/). On Windows, you also need to install **Visu
 
 To build the Python bindings, install Python and ensure that CMake can locate it.
 
-To build the QtAntimony (the standalone Antimony editor), install Qt 5.15.2 or a later version of QT 5 and ensure that CMake can locate it.
+To build the QtAntimony (the standalone Antimony editor), install Qt 5.15 (or a later version of Qt5) and ensure that CMake can locate it.
+
+If you are actually developing Antimony, you will need the [Bison](https://www.gnu.org/software/bison/) parser to re-generate [src/antimony.tab.cpp](https://github.com/sys-bio/antimony/blob/develop/src/antimony.tab.cpp) from [src/antimony.ypp](https://github.com/sys-bio/antimony/blob/develop/src/antimony.ypp) when the latter changes.
 
 ## Download Prebuilt Dependencies
 
@@ -74,18 +76,16 @@ Clone the Antimony repository and enter the source directory:
 ```bash
 git clone https://github.com/sys-bio/antimony.git
 cd antimony
-mkdir build-antimony
-cd build-antimony
 ```
 
 ## Configure with CMake
 
-From the command line (i.e. PowerShell in an MSVC x64 development environment, or a terminal window on MacOS or Linux), enter the following.  Replace `/path/to/libroadrunner-deps-install` with the location of the extracted prebuilt dependencies.
+From the command line (i.e. PowerShell in an MSVC x64 development environment, or a terminal window in MacOS or Linux), enter the following.  Replace `/path/to/libroadrunner-deps-install` with the location of the extracted prebuilt dependencies.
 
 ### Windows
 ```
 cmake -S . -B build-antimony `
-  -DCMAKE_INSTALL_PREFIX="./antimony-install" `
+  -DCMAKE_INSTALL_PREFIX="./install-antimony" `
   -DANT_DEPENDENCIES_INSTALL_PREFIX="C:/path/to/libroadrunner-deps-install" `
   -DCMAKE_BUILD_TYPE=Release `
   -DWITH_PYTHON=ON `
@@ -96,7 +96,7 @@ cmake -S . -B build-antimony `
 ### MacOS/Linux
 ```
 cmake -S . -B build-antimony \
-  -DCMAKE_INSTALL_PREFIX="./antimony-install" \
+  -DCMAKE_INSTALL_PREFIX="./install-antimony" \
   -DANT_DEPENDENCIES_INSTALL_PREFIX="/path/to/libroadrunner-deps-install" \
   -DCMAKE_BUILD_TYPE=Release \
   -DWITH_PYTHON=ON \
@@ -125,6 +125,8 @@ cmake --build build-antimony --config Release --target install --parallel
 ```bash
 cmake --build build-antimony --target install --parallel
 ```
+
+### Location of files
 
 The compiled files will be installed in the `install-antimony` directory. This directory should now include:
 

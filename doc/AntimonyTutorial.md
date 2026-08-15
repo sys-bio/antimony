@@ -104,6 +104,8 @@ be used in other contexts as well. Its main features include:
 
 ## Change Log
 
+The 3.2 release cleaned up the build system, increased efficiency, and fixed numerous bugs, mostly discovered through converting SBML Test Suite models to Antimony and back to SBML, and ensuring that a simulation of the round-tripped model matched a simulation of the original model. The entirety of the SBML Test Suite (with the exception of 'fast' reactions, now deprecated in SBML) now successfully round-trip through Antimony without loss of information (though some things may change structurally for hierarchical models).
+
 The 3.1 release changed FBC support to version 3 of that package, changing 
 how FBC constraints were translated to SBML (but not changing how they
 were declared in Antimony), and adding support for gene products, gene
