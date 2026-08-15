@@ -9,9 +9,11 @@
     <td><img alt="PyPI - Downloads", src="https://img.shields.io/pypi/dm/antimony"></td>
     <td><img alt="Funding", src="https://img.shields.io/badge/Funding-NIH%20(GM081070)-blue"></td>
     <td><img alt="Funding", src="https://img.shields.io/badge/Funding-NIH%20(GM123032)-blue"></td>
-    <td><img alt="Funding", src="https://img.shields.io/badge/Funding-NIBIB%20(EB028887)-blue"></td>    
+    <td><img alt="Funding", src="https://img.shields.io/badge/Funding-NIBIB%20(EB028887)-blue"></td>
+    <td><img alt="Funding", src="https://img.shields.io/badge/Funding-NSF%20(1933453)-blue"></td>
+    <td><img alt="Funding", src="https://img.shields.io/badge/Funding-NIH%20(P41GM109824)-blue"></td>
    </tr>
-</table> 
+</table>
 
 # Summary
 Antimony is a human-readable, human-writable modular model definition language, letting you create SBML models with a simple text interface, i.e.
