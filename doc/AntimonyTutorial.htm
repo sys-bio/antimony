@@ -755,14 +755,47 @@ mean the amount by using the ‘substanceOnly’ keyword:</p>
 <p>Now, whenever ‘S1’ is used in the model, it is a reference to the
 species amount, and not its concentration. Defining an initial amount is
 also changed:</p>
-<p>S1 = 2.5;</p>
+<pre><code>S1 = 2.5;</code></pre>
 <p>This will set the initial amount to 2.5, not the initial
 concentration. If you wish to set the initial concentration instead, use
 the compartment:</p>
-<p>S1 = 3.1*C</p>
+<pre><code>S1 = 3.1*C</code></pre>
 <p>Because a concentration times the compartment volume yields an
 amount, in this formulation, ‘3.1’ is set as the initial
 concentration.</p>
+<h3 id="named-stoichiometries">Named stoichiometries</h3>
+<p>A stoichiometry in a reaction may be given an ID instead of a number,
+and that ID may be set later:</p>
+<pre><code>J0: n A -&gt; B; k1*A^n
+n = 3</code></pre>
+<p>The id of the stoichiometry may now be changed by other model
+constructs: events, rate rules, and assignment rules may all use the
+value as a target:</p>
+<pre><code>J0: n A -&gt; m B; k1*A^n
+n := time/3
+m = 1
+at A &lt; 3: m = 2</code></pre>
+<p>This also gives the stoichiometry an ID that can be given a value
+directly (or be tracked) by some simulators (such as roadrunner).</p>
+<p>If you want to use the same ID for multiple stoichiometries, this can
+be done straightforwardly:</p>
+<pre><code>J0: n A -&gt; n B; k1*A^n
+n = 3</code></pre>
+<p>However! When translated to SBML, every stoichiometry must have a
+unique ID. Therefore, an assignment rule will be created to set the
+value of B’s stoichiometry to ‘n’. Effectively, the model will
+become:</p>
+<pre><code>J0: n A -&gt; J0_B_stoich B; k1*A^n
+n = 3
+J0_B_stoich := n</code></pre>
+<p>This is mathematically identical, but some simulators may balk at an
+assignment rule to a stoichiometry, as this is a feature of SBML that
+not everyone supports. If this happens, just name all your
+stoichiometries uniquely:</p>
+<pre><code>J0: n A -&gt; m B; k1*A^n
+n = 3
+m = 3</code></pre>
+<p>and remember to change them both at the same time.</p>
 <h3 id="modules">Modules</h3>
 <p>Antimony input files may define several different models, and may use
 previously-defined models as parts of newly-defined models. Each
