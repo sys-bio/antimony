@@ -533,3 +533,9 @@ TEST(AntimonyBasic, test_function_flattening_with_predefined_constants)
   compareFileTranslation("functions_with_constants");
   setRemoveFunctionDefinitions(false);
 }
+
+TEST(AntimonyBasic, test_table_example)
+{
+  compareFileTranslation("table_example");
+}
+
