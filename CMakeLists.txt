@@ -666,7 +666,10 @@ if (WITH_QTANTIMONY)
         add_definitions(${QT_DEFINITIONS})
         set(MACOSX_BUNDLE_ICON_FILE ${QTANTIMONY_SRC_DIR}antimony.icns)
         install(TARGETS QTAntimony DESTINATION bin)
-        install(FILES ${QTANTIMONY_SRC_DIR}antimony.ico ${QTANTIMONY_SRC_DIR}antimony_ico.png ${CMAKE_SOURCE_DIR}/win32/README.txt DESTINATION bin)
+        install(FILES ${QTANTIMONY_SRC_DIR}antimony.ico ${QTANTIMONY_SRC_DIR}antimony_ico.png DESTINATION bin)
+        if (WIN32)
+          install(FILES ${CMAKE_SOURCE_DIR}/win32/README.txt DESTINATION bin)
+        endif (WIN32)
 
         set_target_properties(QTAntimony PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/QTAntimony/$<0:>")
 
