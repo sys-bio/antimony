@@ -850,15 +850,50 @@ Now, whenever ‘S1’ is used in the model, it is a reference to the
 species amount, and not its concentration. Defining an initial amount is
 also changed:
 
-S1 = 2.5;
+    S1 = 2.5;
 
 This will set the initial amount to 2.5, not the initial concentration.
 If you wish to set the initial concentration instead, use the compartment:
 
-S1 = 3.1*C
+    S1 = 3.1*C
 
 Because a concentration times the compartment volume yields an amount, in
 this formulation, '3.1' is set as the initial concentration.
+
+### Named stoichiometries
+
+A stoichiometry in a reaction may be given an ID instead of a number, and that ID may be set later:
+
+    J0: n A -> B; k1*A^n
+    n = 3
+
+The id of the stoichiometry may now be changed by other model constructs:  events, rate rules, and assignment rules may all use the value as a target:
+
+    J0: n A -> m B; k1*A^n
+    n := time/3
+    m = 1
+    at A < 3: m = 2
+
+This also gives the stoichiometry an ID that can be given a value directly (or be tracked) by some simulators (such as roadrunner).
+
+If you want to use the same ID for multiple stoichiometries, this can be done straightforwardly:
+
+    J0: n A -> n B; k1*A^n
+    n = 3
+
+However!  When translated to SBML, every stoichiometry must have a unique ID.  Therefore, an assignment rule will be created to set the value of B's stoichiometry to 'n'.  Effectively, the model will become:
+
+    J0: n A -> J0_B_stoich B; k1*A^n
+    n = 3
+    J0_B_stoich := n
+
+This is mathematically identical, but some simulators may balk at an assignment rule to a stoichiometry, as this is a feature of SBML that not everyone supports.  If this happens, just name all your stoichiometries uniquely:
+
+    J0: n A -> m B; k1*A^n
+    n = 3
+    m = 3
+
+and remember to change them both at the same time.
 
 ### Modules
 

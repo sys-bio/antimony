@@ -1502,19 +1502,52 @@ void Module::LoadSBML(Model* sbml)
           stoichvar->SetAssignmentRule(&formula);
         }
         else if (specref->isSetIdAttribute()) {
-          stoichvar = AddOrFindVariable(&(specref->getIdAttribute()));
-          bool setret = stoichvar->SetType(varStoichiometry); //Since the SBML file is valid.
-          assert(!setret);
-          if (specref->isSetStoichiometry() && !stoichvar->HasFormula()) {
-            Formula formula;
-            formula.AddNum(specref->getStoichiometry());
-            if (specref->getLevel() == 1 && specref->getDenominator() != 1) {
-              formula.AddMathThing('/');
-              formula.AddNum(specref->getDenominator());
+          string stoichid = specref->getIdAttribute();
+          //Restrictive check: only collapse this speciesReference back to a
+          //shared Antimony symbol (rather than giving it its own named
+          //stoichiometry) if it exactly matches what our writer generates
+          //for a reused stoichiometry: SBO:0000481 ("stoichiometric
+          //coefficient"), an id of the form "<reaction>_<species>_stoich[N]",
+          //and an assignment rule that's nothing but a bare reference to
+          //another stoichiometry.
+          Variable* collapseTarget = NULL;
+          if (specref->getSBOTerm() == 481) {
+            string expectedPrefix = reactionName + "_" + specref->getSpecies() + "_stoich";
+            if (stoichid.rfind(expectedPrefix, 0) == 0) {
+              string suffix = stoichid.substr(expectedPrefix.size());
+              bool nameMatches = suffix.empty() ||
+                  suffix.find_first_not_of("0123456789") == string::npos;
+              if (nameMatches) {
+                const Rule* aliasrule = sbml->getRule(stoichid);
+                if (aliasrule != NULL && aliasrule->isAssignment() && aliasrule->isSetMath() &&
+                    aliasrule->getMath()->getType() == AST_NAME) {
+                  string targetname = aliasrule->getMath()->getName();
+                  Variable* target = AddOrFindVariable(&targetname);
+                  if (target->GetType() == varStoichiometry) {
+                    collapseTarget = target;
+                  }
+                }
+              }
             }
-            stoichvar->SetFormula(&formula);
           }
-          TranslateRulesAndAssignmentsTo(specref, stoichvar);
+          if (collapseTarget != NULL) {
+            stoichvar = collapseTarget;
+          }
+          else {
+            stoichvar = AddOrFindVariable(&stoichid);
+            bool setret = stoichvar->SetType(varStoichiometry); //Since the SBML file is valid.
+            assert(!setret);
+            if (specref->isSetStoichiometry() && !stoichvar->HasFormula()) {
+              Formula formula;
+              formula.AddNum(specref->getStoichiometry());
+              if (specref->getLevel() == 1 && specref->getDenominator() != 1) {
+                formula.AddMathThing('/');
+                formula.AddNum(specref->getDenominator());
+              }
+              stoichvar->SetFormula(&formula);
+            }
+            TranslateRulesAndAssignmentsTo(specref, stoichvar);
+          }
         }
         else {
           if (specref->isSetStoichiometry()) {
@@ -2538,6 +2571,9 @@ void Module::CreateSBMLModel(bool comp)
 
   //Reactions
   size_t numrxns = GetNumVariablesOfType(allReactions, comp);
+  //Tracks which named stoichiometry variables have already claimed their
+  //own name as an SBML id in this document; reused ones get an alias id.
+  set<const Variable*> usedNamedStoichIds;
   for (size_t rxn=0; rxn < numrxns; rxn++) {
     const Variable* rxnvar = GetNthVariableOfType(allReactions, rxn, comp);
     const AntimonyReaction* reaction = rxnvar->GetReaction();
@@ -2602,7 +2638,9 @@ void Module::CreateSBMLModel(bool comp)
                 sr->setConstant(true);
                 sr->setStoichiometry(nthstoich);
             }
-            else {
+            else if (usedNamedStoichIds.insert(namedstoich).second) {
+                //First time this stoichiometry variable's name is being used
+                //as an SBML id in this document: keep it as-is.
                 sr->setIdAttribute(namedstoich->GetNameDelimitedBy(cc));
                 if (namedstoich->GetFormulaType() != formulaINITIAL) {
                     sr->setConstant(false);
@@ -2614,6 +2652,35 @@ void Module::CreateSBMLModel(bool comp)
                     sr->setStoichiometry(nthstoich);
                 }
                 SetAssignmentFor(sbmlmod, namedstoich, syncmap, comp, referencedVars);
+            }
+            else {
+                //This stoichiometry variable's name has already been claimed
+                //by an earlier SpeciesReference in this document (Antimony
+                //allows the same symbol to be reused as a stoichiometry more
+                //than once, but SBML ids must be unique).  Give this one its
+                //own id, driven by an assignment rule back to the original,
+                //and mark it as an alias with SBO:0000481 ("stoichiometric
+                //coefficient") plus a "<reaction>_<species>_stoich[N]" name,
+                //so that a restrictive SBML importer can recognize and
+                //collapse it back to the shared symbol.
+                string aliasbase = rxnvar->GetNameDelimitedBy("_") + "_" + nthr->GetNameDelimitedBy("_") + "_stoich";
+                string aliasname = aliasbase;
+                int aliassuffix = 1;
+                while (sbmlmod->getElementBySId(aliasname) != NULL) {
+                    aliassuffix++;
+                    stringstream aliasnum;
+                    aliasnum << aliassuffix;
+                    aliasname = aliasbase + aliasnum.str();
+                }
+                Variable aliasvar(aliasname, this);
+                aliasvar.SetType(varStoichiometry);
+                Formula aliasformula;
+                aliasformula.AddVariable(namedstoich);
+                aliasvar.SetAssignmentRule(&aliasformula);
+                sr->setIdAttribute(aliasname);
+                sr->setSBOTerm(481);
+                sr->setConstant(false);
+                SetAssignmentFor(sbmlmod, &aliasvar, syncmap, comp, referencedVars);
             }
         }
     }
