@@ -1,0 +1,128 @@
+// Created by libAntimony v3.2.0
+model *Feizabadi2011_1___immunodeficiency_in_cancer_core_model()
+
+  // Compartments and Species:
+  compartment tumor_microenvironment;
+  species T in tumor_microenvironment, N in tumor_microenvironment;
+
+  // Reactions:
+  tumor_growth:  => T; tumor_microenvironment*(rt*T*(1 - T/kt));
+  normal_cell_growth:  => N; tumor_microenvironment*(rn*N*(1 - N/kn));
+  tumor_inhibition: T => ; tumor_microenvironment*(b*r0*N/(r1 + N));
+  normal_cell_stimulation:  => N; tumor_microenvironment*(k*T*(1 - T/t));
+
+  // Species initializations:
+  T = 1;
+  N = 1;
+
+  // Compartment initializations:
+  tumor_microenvironment = 1;
+
+  // Variable initializations:
+  rt = 0.3;
+  rt has unit_0;
+  kt = 1200000;
+  kt has unit_0;
+  b = 1;
+  b has unit_0;
+  r0 = 1;
+  r0 has unit_0;
+  r1 = 1000;
+  r1 has unit_0;
+  rn = 0.4;
+  rn has unit_0;
+  kn = 1000000;
+  kn has unit_0;
+  k = 0.028;
+  k has unit_0;
+  t = 300000;
+  t has unit_0;
+
+  // Other declarations:
+  const tumor_microenvironment, rt, kt, b, r0, r1, rn, kn, k, t;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1 / dimensionless^-0;
+  unit time_unit = 1 / dimensionless^-0;
+  unit substance = 1e-3 mole;
+  unit unit_0 = 1 / dimensionless^-0;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1";
+  tumor_microenvironment is "tumor microenvironment";
+  tumor_growth is "tumor growth";
+  normal_cell_growth is "normal cell growth";
+  tumor_inhibition is "tumor inhibition";
+  normal_cell_stimulation is "normal cell stimulation";
+
+  // CV terms:
+  tumor_microenvironment isVersionOf "http://identifiers.org/ncit/C94498"
+  T isVersionOf "http://identifiers.org/cl/CL:0001064"
+  N isVersionOf "http://identifiers.org/cl/CL:0000000"
+  rt isVersionOf "http://identifiers.org/sbo/SBO:0000610"
+  kt isVersionOf "http://identifiers.org/sbo/SBO:0000661"
+  b isVersionOf "http://identifiers.org/ncit/C25636"
+  r0 isVersionOf "http://identifiers.org/ncit/C67363"
+  r1 isVersionOf "http://identifiers.org/sbo/SBO:0000281"
+  rn isPropertyOf "http://identifiers.org/sbo/SBO:0000610"
+  kn isVersionOf "http://identifiers.org/sbo/SBO:0000661"
+  k isVersionOf "http://identifiers.org/sbo/SBO:0000610"
+  tumor_growth isVersionOf "http://identifiers.org/sbo/SBO:0000393"
+  tumor_growth isVersionOf "http://identifiers.org/go/GO:0008283"
+  normal_cell_growth isVersionOf "http://identifiers.org/sbo/SBO:0000393"
+  normal_cell_growth isVersionOf "http://identifiers.org/go/GO:0008283"
+  tumor_inhibition isVersionOf "http://identifiers.org/go/GO:0008219"
+  tumor_inhibition isVersionOf "http://identifiers.org/sbo/SBO:0000179"
+  normal_cell_stimulation isVersionOf "http://identifiers.org/go/GO:0008283"
+  normal_cell_stimulation isVersionOf "http://identifiers.org/sbo/SBO:0000393"
+
+  model publication "http://identifiers.org/pubmed/21647303"
+  model hasTaxon "http://identifiers.org/taxonomy/9606"
+  model hasProperty "http://identifiers.org/go/GO:0002418",
+                    "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2019-07-25T12:52:40Z"
+  model modified "2019-07-25T12:52:40Z"
+  model creator1.givenName "Jinghhao"
+  model creator1.familyName "Men"
+  model creator1.organization "University of Cambridge"
+  model creator1.email "jm2187@cam.ac.uk"
+
+  // Notes:
+  model notes ```
+The paper describes a basic model of immune-cancer interaction. Created by COPASI 
+4.25 (Build 207) This model is described in the article: Modeling the Effects of 
+a Simple Immune System and Immunodeficiency on the Dynamics of Conjointly Growing 
+Tumor and Normal CellsMitra Shojania Feizabadi and Tarynn M. WittenInternational 
+Journal of Biological Sciences 2011; 7(6):700-707Abstract: In this paper, we develop 
+a theoretical contribution towards the understanding of the complex behavior of conjoint 
+tumor-normal cell growth under the influence of immuno-chemotheraputic agents under 
+simple immune system response. In particular, we consider a core model for the interaction 
+of tumor cells with the surrounding normal cells. We then add the effects of a simple 
+immune system, and both immune-suppression factors and immuno-chemotherapeutic agents 
+as well. Through a series of numerical simulations, we illustrate that the interdependency 
+of tumor-normal cells, together with choice of drug and the nature of the immunodeficiency, 
+leads to a variety of interesting patterns in the evolution of both the tumor and 
+the normal cell populations.To cite BioModels Database, please use: BioModels Database: 
+An enhanced, curated and annotated resource for published quantitative kinetic models .
+To the extent possible under law, all copyright and related or neighbouring rights 
+to this encoded model have been dedicated to the public domain worldwide. Please 
+refer to CC0 Public Domain Dedication for more information.
+```
+  rt notes "tumor growth rate"
+  kt notes "carrying capacity of tumor cell"
+  b notes "=0 for no interaction=1 for interactionnormal cell inhibition rate of tumor"
+  r0 notes "tumor cell inhibition constant by normal cell"
+  r1 notes "half saturation constant of tumor inhibition"
+  rn notes "normal cell proliferation rate"
+  kn notes "carrying capacity of normal cell"
+  k notes ```
+=0 for no interaction=0.028 for interactiontumor-normal cell coupling constant 
+(rate)
+```
+  t notes "tumor critical size"
+end
+
+Feizabadi2011_1___immunodeficiency_in_cancer_core_model is "Feizabadi2011/1 - immunodeficiency in cancer core model"

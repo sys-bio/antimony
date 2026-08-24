@@ -1,0 +1,200 @@
+// Created by libAntimony v3.2.0
+model *Sible2007___Mitotic_cell_cycle_mecanism_in_Xenopus_Laevis()
+
+  // Compartments and Species:
+  compartment nuclear;
+  species $Cdc25 in nuclear, $Cdc25_total in nuclear, Cdc25_phosphorylated in nuclear;
+  species Cyclin_Cdk1_MPF in nuclear, Cyclin_Cdk1_preMPF in nuclear, $Wee1 in nuclear;
+  species $Wee1_total in nuclear, Wee1_phosphorylated in nuclear, Cyclin in nuclear;
+  species $Cdk1 in nuclear, $Cdk1_total in nuclear, $IE in nuclear, $IE_total in nuclear;
+  species IE_phosphorylated in nuclear, APC_active in nuclear, $APC_total in nuclear;
+  species $ppase in nuclear, $Cyclin_total in nuclear;
+
+  // Assignment Rules:
+  Cdc25 := Cdc25_total - Cdc25_phosphorylated;
+  Wee1 := Wee1_total - Wee1_phosphorylated;
+  Cdk1 := Cdk1_total;
+  IE := IE_total - IE_phosphorylated;
+  Cyclin_total := Cyclin_Cdk1_MPF + Cyclin_Cdk1_preMPF + Cyclin;
+  k25 := v25*(Cdc25_total - Cdc25_phosphorylated) + v25_*Cdc25_phosphorylated;
+  kwee := vwee*Wee1_phosphorylated + vwee_*(Wee1_total - Wee1_phosphorylated);
+  k2 := v2*(APC_total - APC_active) + v2_*APC_active;
+
+  // Reactions:
+  R1_Dephosphorylation: Cdc25_phosphorylated => ; nuclear*(kb*ppase*Cdc25_phosphorylated/(KKb + Cdc25_phosphorylated));
+  R2_Phosphorylation:  => Cdc25_phosphorylated; nuclear*(ka*Cyclin_Cdk1_MPF*(Cdc25_total - Cdc25_phosphorylated)/(KKa + Cdc25_total - Cdc25_phosphorylated));
+  R3_Dephosphorylation: Cyclin_Cdk1_preMPF => Cyclin_Cdk1_MPF; nuclear*k25*Cyclin_Cdk1_preMPF;
+  R4_Phosphorylation: Cyclin_Cdk1_MPF => Cyclin_Cdk1_preMPF; nuclear*kwee*Cyclin_Cdk1_MPF;
+  R5_Dephosphorylation: Wee1_phosphorylated => ; nuclear*(kf*ppase*Wee1_phosphorylated/(KKf + Wee1_phosphorylated));
+  R6_Phosphorylation:  => Wee1_phosphorylated; nuclear*(ke*Cyclin_Cdk1_MPF*(Wee1_total - Wee1_phosphorylated)/(KKe + Wee1_total - Wee1_phosphorylated));
+  R7_Protein_Complex__Formation_by_binding: Cyclin => Cyclin_Cdk1_MPF; nuclear*(k3*Cdk1*Cyclin);
+  R8_Synthesis:  => Cyclin; nuclear*k1;
+  R9_Dephosphorylation: IE_phosphorylated => ; nuclear*(kh*ppase*IE_phosphorylated/(KKh + IE_phosphorylated));
+  R10_Phosphorylation:  => IE_phosphorylated; nuclear*(kg*Cyclin_Cdk1_MPF*(IE_total - IE_phosphorylated)/(KKg + IE_total - IE_phosphorylated));
+  R11_Inactivation: APC_active => ; nuclear*(kd*ppase*APC_active/(KKd + APC_active));
+  R12_Activation:  => APC_active; nuclear*(kc*IE_phosphorylated*(APC_total - APC_active)/(KKc + APC_total - APC_active));
+  R13_Degradation: Cyclin_Cdk1_MPF => ; nuclear*k2*Cyclin_Cdk1_MPF;
+  R14_Degradation: Cyclin => ; nuclear*k2*Cyclin;
+  R15_Degradation: Cyclin_Cdk1_preMPF => ; nuclear*k2*Cyclin_Cdk1_preMPF;
+
+  // Species initializations:
+  Cdc25_total = 1;
+  Cdc25_phosphorylated = 0;
+  Cyclin_Cdk1_MPF = 0;
+  Cyclin_Cdk1_preMPF = 0;
+  Wee1_total = 1;
+  Wee1_phosphorylated = 0;
+  Cyclin = 0;
+  Cdk1_total = 100;
+  IE_total = 1;
+  IE_phosphorylated = 1;
+  APC_active = 1;
+  APC_total = 1;
+  ppase = 1;
+
+  // Compartment initializations:
+  nuclear = 1;
+
+  // Variable initializations:
+  k1 = 1;
+  v2 = 0.005;
+  v2_ = 0.25;
+  k3 = 0.005;
+  v25 = 0.017;
+  v25_ = 0.17;
+  vwee = 0.01;
+  vwee_ = 1;
+  ka = 0.02;
+  KKa = 0.1;
+  kb = 0.1;
+  KKb = 1;
+  kc = 0.13;
+  KKc = 0.01;
+  kd = 0.13;
+  KKd = 1;
+  ke = 0.02;
+  KKe = 0.1;
+  kf = 0.1;
+  KKf = 1;
+  kg = 0.02;
+  KKg = 0.01;
+  kh = 0.15;
+  KKh = 0.01;
+
+  // Other declarations:
+  var k25, kwee, k2;
+  const nuclear, k1, v2, v2_, k3, v25, v25_, vwee, vwee_, ka, KKa, kb, KKb;
+  const kc, KKc, kd, KKd, ke, KKe, kf, KKf, kg, KKg, kh, KKh;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 60 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+  v2 is "v2_";
+  v2_ is "v2__";
+  v25 is "v25_";
+  v25_ is "v25__";
+  vwee is "vwee_";
+  vwee_ is "vwee__";
+  R1_Dephosphorylation is "R1 Dephosphorylation";
+  R2_Phosphorylation is "R2 Phosphorylation";
+  R3_Dephosphorylation is "R3 Dephosphorylation";
+  R4_Phosphorylation is "R4 Phosphorylation";
+  R5_Dephosphorylation is "R5 Dephosphorylation";
+  R6_Phosphorylation is "R6 Phosphorylation";
+  R7_Protein_Complex__Formation_by_binding is "R7 Protein Complex  Formation by binding";
+  R8_Synthesis is "R8 Synthesis";
+  R9_Dephosphorylation is "R9 Dephosphorylation";
+  R10_Phosphorylation is "R10 Phosphorylation";
+  R11_Inactivation is "R11 Inactivation";
+  R12_Activation is "R12 Activation";
+  R13_Degradation is "R13 Degradation";
+  R14_Degradation is "R14 Degradation";
+  R15_Degradation is "R15 Degradation";
+
+  // SBO terms:
+  R7_Protein_Complex__Formation_by_binding.sboTerm = 526
+  R12_Activation.sboTerm = 656
+  R13_Degradation.sboTerm = 179
+  R14_Degradation.sboTerm = 179
+  R15_Degradation.sboTerm = 179
+
+  // CV terms:
+  nuclear identity "http://identifiers.org/ncit/C13361"
+  Cdc25 isVersionOf "http://identifiers.org/uniprot/P30309"
+  Cdc25_total isVersionOf "http://identifiers.org/uniprot/P30309"
+  Cdc25_phosphorylated isVersionOf "http://identifiers.org/uniprot/P30309"
+  Cdc25_phosphorylated hasProperty "http://identifiers.org/pato/PATO:0002220"
+  Cyclin_Cdk1_MPF hasPart "http://identifiers.org/uniprot/P13350"
+  Cyclin_Cdk1_MPF hasPart "http://identifiers.org/uniprot/P35567"
+  Cyclin_Cdk1_preMPF hasPart "http://identifiers.org/uniprot/P13350"
+  Cyclin_Cdk1_preMPF hasPart "http://identifiers.org/uniprot/P35567"
+  Cyclin_Cdk1_preMPF hasProperty "http://identifiers.org/pato/PATO:0002220"
+  Wee1 isVersionOf "http://identifiers.org/uniprot/Q8QGV2"
+  Wee1_total isVersionOf "http://identifiers.org/uniprot/Q8QGV2"
+  Wee1_phosphorylated isVersionOf "http://identifiers.org/uniprot/Q8QGV2"
+  Wee1_phosphorylated hasProperty "http://identifiers.org/pato/PATO:0002220"
+  Cyclin isVersionOf "http://identifiers.org/uniprot/P13350"
+  Cdk1 isVersionOf "http://identifiers.org/uniprot/P35567"
+  Cdk1_total isVersionOf "http://identifiers.org/uniprot/P35567"
+  IE_phosphorylated hasProperty "http://identifiers.org/pato/PATO:0002220"
+  APC_active identity "http://identifiers.org/uniprot/P70039"
+  APC_active hasProperty "http://identifiers.org/pato/PATO:0002354"
+  APC_total isVersionOf "http://identifiers.org/uniprot/P70039"
+  Cyclin_total isVersionOf "http://identifiers.org/uniprot/P13350"
+  R1_Dephosphorylation identity "http://identifiers.org/go/GO:0006470"
+  R2_Phosphorylation isVersionOf "http://identifiers.org/go/GO:0006468"
+  R3_Dephosphorylation identity "http://identifiers.org/go/GO:0006470"
+  R4_Phosphorylation isVersionOf "http://identifiers.org/go/GO:0006468"
+  R5_Dephosphorylation identity "http://identifiers.org/go/GO:0006470"
+  R6_Phosphorylation isVersionOf "http://identifiers.org/go/GO:0006468"
+  R7_Protein_Complex__Formation_by_binding identity "http://identifiers.org/sbo/SBO:0000526"
+  R8_Synthesis identity "http://identifiers.org/ncit/C61408"
+  R9_Dephosphorylation identity "http://identifiers.org/go/GO:0006470"
+  R10_Phosphorylation identity "http://identifiers.org/go/GO:0006468"
+  R12_Activation identity "http://identifiers.org/sbo/SBO:0000656"
+  R13_Degradation identity "http://identifiers.org/sbo/SBO:0000179"
+  R14_Degradation identity "http://identifiers.org/sbo/SBO:0000179"
+  R15_Degradation identity "http://identifiers.org/sbo/SBO:0000179"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1809060005",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000942"
+  model hasPart "http://identifiers.org/go/GO:0051726"
+  model hasTaxon "http://identifiers.org/taxonomy/8355"
+  model isDescribedBy "http://identifiers.org/pubmed/17189866"
+  model hasProperty "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2018-07-24T15:15:02Z"
+  model modified "2020-05-01T11:27:50Z"
+  model creator1.givenName "Ahmad"
+  model creator1.familyName "Zyoud"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "ahmad.azd@hotmail.com"
+  model creator2.givenName "Matthieu"
+  model creator2.familyName "MAIRE"
+  model creator2.organization "EMBL-EBI"
+  model creator2.email "matt.maire@free.fr"
+
+  // Notes:
+  model notes ```
+Although not a traditional experimental "method," mathematical modeling 
+can provide a powerful approach for investigating complex cell signaling networks, 
+such as those that regulate the eukaryotic cell division cycle. We describe here 
+one modeling approach based on expressing the rates of biochemical reactions in terms 
+of nonlinear ordinary differential equations. We discuss the steps and challenges 
+in assigning numerical values to model parameters and the importance of experimental 
+testing of a mathematical model. We illustrate this approach throughout with the 
+simple and well-characterized example of mitotic cell cycles in frog egg extracts. 
+To facilitate new modeling efforts, we describe several publicly available modeling 
+environments, each with a collection of integrated programs for mathematical modeling. 
+This review is intended to justify the place of mathematical modeling as a standard 
+method for studying molecular regulatory networks and to guide the non-expert to 
+initiate modeling projects in order to gain a systems-level perspective for complex 
+control systems.
+```
+  Cyclin notes "Cyclin B is mentionned is the publication as part of a referenced experiment"
+end
+
+Sible2007___Mitotic_cell_cycle_mecanism_in_Xenopus_Laevis is "Sible2007 - Mitotic cell cycle mecanism in Xenopus Laevis"

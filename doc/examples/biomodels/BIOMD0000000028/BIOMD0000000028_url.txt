@@ -1,0 +1,253 @@
+// Created by libAntimony v3.2.0
+model *model_0000001()
+
+  // Compartments and Species:
+  compartment cell;
+  species M in cell, MpY in cell, MpT in cell, Mpp in cell, MEK in cell, MKP3 in cell;
+  species MpY_MEK in cell, MpT_MEK in cell, M_MEK_Y in cell, M_MEK_T in cell;
+  species Mpp_MKP3 in cell, MpY_MKP3 in cell, MpT_MKP3_Y in cell, MpT_MKP3_T in cell;
+  species M_MKP3_T in cell, M_MKP3_Y in cell;
+
+  // Reactions:
+  reaction_0000001: M + MEK -> M_MEK_Y; cell*(k1*M*MEK - k_1*M_MEK_Y);
+  reaction_0000002: M_MEK_Y => MpY + MEK; cell*k2*M_MEK_Y;
+  reaction_0000003: MpY + MEK -> MpY_MEK; cell*(k3*MpY*MEK - k_3*MpY_MEK);
+  reaction_0000004: MpY_MEK => Mpp + MEK; cell*k4*MpY_MEK;
+  reaction_0000005: M + MEK -> M_MEK_T; cell*(k5*M*MEK - k_5*M_MEK_T);
+  reaction_0000006: M_MEK_T => MpT + MEK; cell*k6*M_MEK_T;
+  reaction_0000007: MpT + MEK -> MpT_MEK; cell*(k7*MpT*MEK - k_7*MpT_MEK);
+  reaction_0000008: MpT_MEK => Mpp + MEK; cell*k8*MpT_MEK;
+  reaction_0000009: Mpp + MKP3 -> Mpp_MKP3; cell*(h1*Mpp*MKP3 - h_1*Mpp_MKP3);
+  reaction_0000010: Mpp_MKP3 => MpT_MKP3_Y; cell*h2*Mpp_MKP3;
+  reaction_0000011: MpT_MKP3_Y -> MpT + MKP3; cell*(h3*MpT_MKP3_Y - h_3*MpT*MKP3);
+  reaction_0000012: MpT_MKP3_T => M_MKP3_T; cell*h5*MpT_MKP3_T;
+  reaction_0000013: MpT + MKP3 -> MpT_MKP3_T; cell*(h4*MpT*MKP3 - h_4*MpT_MKP3_T);
+  reaction_0000014: MpY_MKP3 => M_MKP3_Y; cell*h8*MpY_MKP3;
+  reaction_0000015: M_MKP3_T -> M + MKP3; cell*(h6*M_MKP3_T - h_6*M*MKP3);
+  reaction_0000017: MpY + MKP3 -> MpY_MKP3; cell*(h7*MpY*MKP3 - h_7*MpY_MKP3);
+  reaction_0000019: M_MKP3_Y -> M + MKP3; cell*(h9*M_MKP3_Y - h_9*M*MKP3);
+
+  // Species initializations:
+  M = 800;
+  MpY = 0;
+  MpT = 0;
+  Mpp = 0;
+  MEK = 180;
+  MKP3 = 100;
+  MpY_MEK = 0;
+  MpT_MEK = 0;
+  M_MEK_Y = 0;
+  M_MEK_T = 0;
+  Mpp_MKP3 = 0;
+  MpY_MKP3 = 0;
+  MpT_MKP3_Y = 0;
+  MpT_MKP3_T = 0;
+  M_MKP3_T = 0;
+  M_MKP3_Y = 0;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  k1 = 0.005;
+  k_1 = 1;
+  k2 = 1.08;
+  k3 = 0.025;
+  k_3 = 1;
+  k4 = 0.007;
+  k5 = 0.05;
+  k_5 = 1;
+  k6 = 0.008;
+  k7 = 0.005;
+  k_7 = 1;
+  k8 = 0.45;
+  h1 = 0.045;
+  h_1 = 1;
+  h2 = 0.092;
+  h3 = 1;
+  h_3 = 0.01;
+  h4 = 0.01;
+  h_4 = 1;
+  h5 = 0.5;
+  h6 = 0.086;
+  h_6 = 0.0011;
+  h7 = 0.01;
+  h_7 = 1;
+  h8 = 0.47;
+  h9 = 0.14;
+  h_9 = 0.0018;
+
+  // Other declarations:
+  const cell, k1, k_1, k2, k3, k_3, k4, k5, k_5, k6, k7, k_7, k8, h1, h_1;
+  const h2, h3, h_3, h4, h_4, h5, h6, h_6, h7, h_7, h8, h9, h_9;
+
+  // Unit definitions:
+  unit substance = 1e-9 mole;
+
+  // Display Names:
+  substance is "nanomole (default)";
+  M is "ERK";
+  MpY is "ERK-PY";
+  MpT is "ERK-PT";
+  Mpp is "ERK-PP";
+  MpY_MEK is "ERK-PY_MEK";
+  MpT_MEK is "ERK-PT_MEK";
+  M_MEK_Y is "ERK_MEK_Y";
+  M_MEK_T is "ERK_MEK_T";
+  Mpp_MKP3 is "ERK-PP_MKP3";
+  MpY_MKP3 is "ERK-PY_MKP3";
+  MpT_MKP3_Y is "ERK-PT_MKP3_Y";
+  MpT_MKP3_T is "ERK-PT_MKP3_T";
+  M_MKP3_T is "ERK_MKP3_T";
+  M_MKP3_Y is "ERK_MKP3_Y";
+  reaction_0000001 is "binding ERK and MEK";
+  reaction_0000002 is "tyr phosphorylation of ERK";
+  reaction_0000003 is "binding ERK-PY and MEK";
+  reaction_0000004 is "thr phosphorylation of ERK";
+  reaction_0000005 is "binding ERK and MEK";
+  reaction_0000006 is "thr phosphorylation of ERK";
+  reaction_0000007 is "binding ERK-PT and MEK";
+  reaction_0000008 is "tyr phosphorylation of ERK";
+  reaction_0000009 is "binding ERK-PP and MKP3";
+  reaction_0000010 is "dephosphorylation of tyr on ERK-PP";
+  reaction_0000011 is "dissociation ERK-PT and MKP3";
+  reaction_0000012 is "dephosphorylation of ERK-PT";
+  reaction_0000013 is "binding ERK-PT and MKP3";
+  reaction_0000014 is "dephosphorylation of ERK-PY";
+  reaction_0000015 is "dissociation ERK and MKP3";
+  reaction_0000017 is "binding ERK-PY and MKP3";
+  reaction_0000019 is "Dissociation ERK and MKP3";
+
+  // CV terms:
+  cell identity "http://identifiers.org/go/GO:0005623"
+  M isVersionOf "http://identifiers.org/uniprot/P26696"
+  MpY isVersionOf "http://identifiers.org/uniprot/P26696"
+  MpT isVersionOf "http://identifiers.org/uniprot/P26696"
+  Mpp isVersionOf "http://identifiers.org/uniprot/P26696"
+  MEK identity "http://identifiers.org/uniprot/Q05116"
+  MKP3 identity "http://identifiers.org/uniprot/Q90W58"
+  MpY_MEK hasPart "http://identifiers.org/uniprot/Q05116",
+                  "http://identifiers.org/uniprot/P26696"
+  MpT_MEK hasPart "http://identifiers.org/uniprot/P26696",
+                  "http://identifiers.org/uniprot/Q05116"
+  M_MEK_Y hasPart "http://identifiers.org/uniprot/P26696",
+                  "http://identifiers.org/uniprot/Q05116"
+  M_MEK_T hasPart "http://identifiers.org/uniprot/P26696",
+                  "http://identifiers.org/uniprot/Q05116"
+  Mpp_MKP3 hasPart "http://identifiers.org/uniprot/P26696",
+                   "http://identifiers.org/uniprot/Q90W58"
+  MpY_MKP3 hasPart "http://identifiers.org/uniprot/P26696",
+                   "http://identifiers.org/uniprot/Q90W58"
+  MpT_MKP3_Y hasPart "http://identifiers.org/uniprot/P26696",
+                     "http://identifiers.org/uniprot/Q90W58"
+  MpT_MKP3_T hasPart "http://identifiers.org/uniprot/P26696",
+                     "http://identifiers.org/uniprot/Q90W58"
+  M_MKP3_T hasPart "http://identifiers.org/uniprot/P26696",
+                   "http://identifiers.org/uniprot/Q90W58"
+  M_MKP3_Y hasPart "http://identifiers.org/uniprot/Q90W58",
+                   "http://identifiers.org/uniprot/P26696"
+  reaction_0000001 isHomologTo "http://identifiers.org/reactome/REACT_495",
+                               "http://identifiers.org/reactome/REACT_1780"
+  reaction_0000001 isVersionOf "http://identifiers.org/go/GO:0051019",
+                               "http://identifiers.org/go/GO:0031434"
+  reaction_0000002 isHomologTo "http://identifiers.org/reactome/REACT_2247",
+                               "http://identifiers.org/reactome/REACT_136"
+  reaction_0000002 isVersionOf "http://identifiers.org/ec-code/2.7.12.2",
+                               "http://identifiers.org/go/GO:0018108",
+                               "http://identifiers.org/go/GO:0004708"
+  reaction_0000003 isHomologTo "http://identifiers.org/reactome/REACT_495",
+                               "http://identifiers.org/reactome/REACT_1780"
+  reaction_0000003 isVersionOf "http://identifiers.org/go/GO:0051019",
+                               "http://identifiers.org/go/GO:0031434"
+  reaction_0000004 isHomologTo "http://identifiers.org/reactome/REACT_2247",
+                               "http://identifiers.org/reactome/REACT_136"
+  reaction_0000004 isVersionOf "http://identifiers.org/ec-code/2.7.12.2",
+                               "http://identifiers.org/go/GO:0004708",
+                               "http://identifiers.org/go/GO:0018107",
+                               "http://identifiers.org/go/GO:0000187"
+  reaction_0000005 isHomologTo "http://identifiers.org/reactome/REACT_495",
+                               "http://identifiers.org/reactome/REACT_1780"
+  reaction_0000005 isVersionOf "http://identifiers.org/go/GO:0051019",
+                               "http://identifiers.org/go/GO:0031434"
+  reaction_0000006 isHomologTo "http://identifiers.org/reactome/REACT_2247",
+                               "http://identifiers.org/reactome/REACT_136"
+  reaction_0000006 isVersionOf "http://identifiers.org/ec-code/2.7.12.2",
+                               "http://identifiers.org/go/GO:0018107",
+                               "http://identifiers.org/go/GO:0004708"
+  reaction_0000007 isHomologTo "http://identifiers.org/reactome/REACT_1780",
+                               "http://identifiers.org/reactome/REACT_495"
+  reaction_0000007 isVersionOf "http://identifiers.org/go/GO:0051019",
+                               "http://identifiers.org/go/GO:0031434"
+  reaction_0000008 isHomologTo "http://identifiers.org/reactome/REACT_2247",
+                               "http://identifiers.org/reactome/REACT_136"
+  reaction_0000008 isVersionOf "http://identifiers.org/ec-code/2.7.12.2",
+                               "http://identifiers.org/go/GO:0000187",
+                               "http://identifiers.org/go/GO:0018108",
+                               "http://identifiers.org/go/GO:0004708"
+  reaction_0000009 isVersionOf "http://identifiers.org/go/GO:0051019"
+  reaction_0000010 isVersionOf "http://identifiers.org/ec-code/3.1.3.16",
+                               "http://identifiers.org/go/GO:0006470",
+                               "http://identifiers.org/go/GO:0000188"
+  reaction_0000011 isVersionOf "http://identifiers.org/go/GO:0043241"
+  reaction_0000012 isVersionOf "http://identifiers.org/ec-code/3.1.3.16",
+                               "http://identifiers.org/go/GO:0006470"
+  reaction_0000013 isVersionOf "http://identifiers.org/go/GO:0051019"
+  reaction_0000014 isVersionOf "http://identifiers.org/ec-code/3.1.3.16",
+                               "http://identifiers.org/go/GO:0006470"
+  reaction_0000015 isVersionOf "http://identifiers.org/go/GO:0043241"
+  reaction_0000017 isVersionOf "http://identifiers.org/go/GO:0051019"
+  reaction_0000019 isVersionOf "http://identifiers.org/go/GO:0043241"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL6618552953"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000028"
+  model publication "http://identifiers.org/pubmed/14744999"
+  model isVersionOf "http://identifiers.org/go/GO:0000165"
+  model hasTaxon "http://identifiers.org/taxonomy/8355"
+  model created "2005-05-23T16:11:24Z"
+  model modified "2012-05-15T21:42:30Z"
+  model creator1.givenName "Nicolas"
+  model creator1.familyName "Le Novère"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "lenov@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+The model corresponds to the schema 3 of Markevich et al 2004, as described in the
+figure 2 and the supplementary table S2. Phosphorylations follow distributive random
+kinetics, while dephosphorylations follow an ordered mechanism. The phosphorylations
+are modeled with three elementary reactions: 
+E+S<=>ES->E+P 
+The dephosphorylations are modeled with five elementary reactions: 
+
+E+S<=>ES->EP<=>E+P 
+The model reproduces figure 5 in the main article. 
+
+The model is further described in: 
+**Signaling switches and bistability arising from multisite phosphorylation in
+protein kinase cascades.** Markevich NI, Hoek JB, Kholodenko BN. J Cell
+Biol. 2004 Feb 2;164(3):353-9. 
+PMID: [14744999](http://www.ncbi.nlm.nih.gov/pubmed/14744999) ; DOI: [10.1083/jcb.200308060](http://dx.doi.org/10.1083/jcb.200308060) 
+Abstract: 
+Mitogen-activated protein kinase (MAPK) cascades can operate as bistable
+switches residing in either of two different stable states. MAPK cascades are often
+embedded in positive feedback loops, which are considered to be a prerequisite for
+bistable behavior. Here we demonstrate that in the absence of any imposed feedback
+regulation, bistability and hysteresis can arise solely from a distributive kinetic
+mechanism of the two-site MAPK phosphorylation and dephosphorylation. Importantly,
+the reported kinetic properties of the kinase (MEK) and phosphatase (MKP3) of extracellular
+signal-regulated kinase (ERK) fulfill the essential requirements for generating a
+bistable switch at a single MAPK cascade level. Likewise, a cycle where multisite
+phosphorylations are performed by different kinases, but dephosphorylation reactions
+are catalyzed by the same phosphatase, can also exhibit bistability and hysteresis.
+Hence, bistability induced by multisite covalent modification may be a widespread
+mechanism of the control of protein activity. 
+
+This model originates from BioModels Database: A Database of Annotated Published
+Models (http://www.ebi.ac.uk/biomodels/). It is copyright (c) 2005-2010 The BioModels.net
+Team. 
+For more information see the [terms of use](http://www.ebi.ac.uk/biomodels/legal.html) . 
+To cite BioModels Database, please use: [Li C, Donizelli M, Rodriguez N, Dharuri H, Endler L, Chelliah V, Li L, He E, Henry A, Stefan MI, Snoep JL, Hucka M, Le Novère N, Laibe C (2010) BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models. BMC Syst Biol., 4:92.](http://www.ncbi.nlm.nih.gov/pubmed/20587024)
+```
+end
+
+model_0000001 is "Markevich2004_MAPK_phosphoRandomElementary"

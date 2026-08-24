@@ -1,0 +1,18 @@
+model moddef1()
+  t1 = 1;
+  t2 = 1;
+  var t1, t2;
+
+  E0: at 0.1/time after time > 0.31: t1 = 3.3, t2 = 5.5;
+end
+
+model *case01155()
+  sub1: moddef1();
+  sub1.E0 is sub1_E0;
+  sub1.t1 is sub1_t1;
+  sub1.t2 is sub1_t2;
+
+  sub1_E0: at time > 0.31: sub1_t1 = 3.3, sub1_t2 = 5.5;
+end
+
+case01155 is "case01155";

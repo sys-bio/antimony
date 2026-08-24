@@ -1,0 +1,44 @@
+// Created by libAntimony v3.2.0
+model sub2()
+
+  // Compartments and Species:
+  species y, z;
+
+  // Reactions:
+  J0:  -> y_stoich y + z_stoich z; ;
+
+  // Species initializations:
+  y = ;
+  z = ;
+
+  // Variable initializations:
+  y_stoich = 1;
+  z_stoich = 1;
+end
+
+sub2 is "sub2"
+
+model sub1()
+
+  // Sub-modules, and any changes to those submodules:
+  A: sub2();
+  A.J0 is A_J0;
+  A.z is A_z;
+  A.z_stoich is A_z_stoich;
+
+  // Reactions:
+  A_J0:  -> A_z_stoich A_z; ;
+end
+
+sub1 is "sub1"
+
+model *main()
+
+  // Sub-modules, and any changes to those submodules:
+  B: sub1();
+
+  // Deleted elements from submodels:
+  delete B.A_J0;
+end
+
+main is "main"

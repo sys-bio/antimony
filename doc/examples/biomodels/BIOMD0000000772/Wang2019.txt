@@ -1,0 +1,84 @@
+// Created by libAntimony v3.2.0
+model *Wang2019___A_mathematical_model_of_oncolytic_virotherapy_with_time_delay()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species x in compartment_, I in compartment_, y in compartment_, z in compartment_;
+
+  // Reactions:
+  Uninfected_Cells_Proliferation:  => x; compartment_*(r*x*(1 - (x + y)/k));
+  Uninfected_Cells_Infection: x + y => I; compartment_*b*x*y;
+  Length_of_Eclipse_Phase: I => y; compartment_*(b*exp(-n*tau)*x*y);
+  Cytotoxicity: y => ; compartment_*a*y;
+  Immune_Kill: y => ; compartment_*(p*y*z);
+  Stimulation:  => z; compartment_*(c*y*z);
+  Clearance: z => ; compartment_*d*z;
+
+  // Species initializations:
+  x = 200;
+  I = 0;
+  y = 800;
+  z = 100;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  r = 0.206;
+  k = 2139;
+  b = 0.000448;
+  tau = 0;
+  a = 1;
+  p = 0.01;
+  c = 0.02;
+  d = 0.5;
+  n = 0.01;
+
+  // Other declarations:
+  const compartment_, r, k, b, tau, a, p, c, d, n;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+
+  // CV terms:
+  compartment_ isVersionOf "http://identifiers.org/ncit/C94498"
+  x isVersionOf "http://identifiers.org/cl/CL:0000000"
+  I isVersionOf "http://identifiers.org/go/GO:0098689"
+  y isVersionOf "http://identifiers.org/bto/BTO:0000152"
+  z isVersionOf "http://identifiers.org/cl/CL:0000910"
+  Uninfected_Cells_Proliferation isVersionOf "http://identifiers.org/ncit/C18081"
+  Uninfected_Cells_Infection isVersionOf "http://identifiers.org/ncit/C3439"
+  Length_of_Eclipse_Phase isVersionOf "http://identifiers.org/go/GO:0098689"
+  Cytotoxicity isVersionOf "http://identifiers.org/ncit/C27988"
+  Immune_Kill isVersionOf "http://identifiers.org/go/GO:0001906"
+  Stimulation isVersionOf "http://identifiers.org/ncit/C39042"
+  Clearance isVersionOf "http://identifiers.org/go/GO:0008219"
+
+  model publication "http://identifiers.org/pubmed/31137188"
+  model origin "http://identifiers.org/pubmed/11309314"
+  model model_source "http://identifiers.org/biomodels.db/MODEL1908010001",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000772"
+  model hasProperty "http://identifiers.org/ncit/C62713"
+  model hasProperty "http://identifiers.org/mamo/MAMO_0000089"
+  model created "2019-08-01T09:37:14Z"
+  model modified "2019-08-01T09:37:14Z"
+  model creator1.givenName "Johannes"
+  model creator1.familyName "Meyer"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "johannes.p.meyer@gmail.com"
+
+  // Notes:
+  model notes ```
+A mathematical model describing oncolytic virotherapy with incorporation the viral 
+lytic cycle and the virus-specific CTL response. The thresholds for viral treatment 
+and virus-specific CTl response are also obtained.
+```
+end
+
+Wang2019___A_mathematical_model_of_oncolytic_virotherapy_with_time_delay is "Wang2019 - A mathematical model of oncolytic virotherapy with time delay"

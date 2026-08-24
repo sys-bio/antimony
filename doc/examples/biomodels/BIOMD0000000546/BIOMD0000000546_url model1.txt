@@ -1,0 +1,247 @@
+// Created by libAntimony v3.2.0
+model *Miao2010___Innate_and_adaptive_immune_responses_to_primary_Influenza_A_Virus_infection_1()
+
+  // Compartments and Species:
+  compartment default;
+  species s1 in default, s2 in default, s3 in default;
+
+  // Reactions:
+  re1: s1 => s2; default*(beta_a*s1*s3*default);
+  re3:  => s1; default*(rho_E*s1);
+  re5: s2 => ; default*delta_Es*s2;
+  re6: s3 => ; default*c_V*s3;
+  re7:  => s3; default*(pi_a*s2);
+  re4_Killing_of_Infected_Epithelial_cells_by_Te_Cells: s2 => ; default*(k_E*s2*T_E_T);
+  re8_Neutralization_of_virus_by_IgG: s3 => ; default*(k_VG*s3*A_G_T);
+  re9_Neutralization_of_virus_by_IgM: s3 => ; default*(k_VM*s3*A_M_T);
+
+  // Species initializations:
+  s1 = 580000;
+  s1 has substance_per_volume;
+  s2 = 0;
+  s2 has substance_per_volume;
+  s3 = 1000;
+  s3 has substance_per_volume;
+
+  // Compartment initializations:
+  default = 1;
+  default has volume;
+
+  // Variable initializations:
+  rho_E = 6.2e-08;
+  rho_E has unit_0;
+  beta_a = 1e-06;
+  beta_a has unit_0;
+  delta_Es = 0.6;
+  delta_Es has unit_0;
+  pi_a = 100;
+  pi_a has unit_0;
+  c_V = 4.2;
+  c_V has unit_0;
+  k_E = 0;
+  k_VG = 0;
+  k_VM = 0;
+  T_E_T = 0;
+  A_G_T = 0;
+  A_M_T = 0;
+
+  // Other declarations:
+  const default, rho_E, beta_a, delta_Es, pi_a, c_V, k_E, k_VG, k_VM, T_E_T;
+  const A_G_T, A_M_T;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = litre;
+  unit time_unit = 86400 second;
+  unit substance = mole;
+  unit unit_0 = mole;
+  unit extent = substance;
+  unit substance_per_volume = mole / litre;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "mol";
+  s1 is "Ep";
+  s2 is "Eps";
+  s3 is "V";
+  T_E_T is "T_E(T)";
+  A_G_T is "A_G(T)";
+  A_M_T is "A_M(T)";
+  re1 is "re1 Viral Infection of epithelial cells";
+  re3 is "re3 Growth of uninfected epithelial cells";
+  re5 is "re5 Death of infected epithelial cells";
+  re6 is "re6 Viral Clearance";
+  re7 is "re7 Production of virus from infected epithelial cells";
+  re4_Killing_of_Infected_Epithelial_cells_by_Te_Cells is "re4 Killing of Infected Epithelial cells by Te Cells";
+  re8_Neutralization_of_virus_by_IgG is "re8 Neutralization of virus by IgG";
+  re9_Neutralization_of_virus_by_IgM is "re9 Neutralization of virus by IgM";
+
+  // General layout options
+  model.layout = on
+  model.layout.size = {352.62, 388.85}
+  model.layout.background = "#FFFFFFFF"
+
+  // Species layout defaults
+  species.color = "#a0e0a030"
+
+  // Reaction layout defaults
+  reaction.lineColor = "#000000a0"
+  reaction.lineWidth = 3
+  reaction.fontColor = "#000000a0"
+
+  // Compartment layout defaults
+  compartment.lineColor = "#e69600b0"
+  compartment.lineWidth = 7
+  compartment.fontColor = "#e69600b0"
+  compartment.fontStyle = normal
+
+  // Individual element layout information
+  s1.position = {262.22, 205.43}
+  s1.size = {36, 28}
+  s1.font = Verdana
+  s1.fontColor = black
+  s1.fontSize = 12
+  s2.position = {144.46, 249.15}
+  s2.size = {52, 28}
+  s2.font = Verdana
+  s2.fontColor = black
+  s2.fontSize = 12
+  s3.position = {90.15, 134.52}
+  s3.size = {28, 28}
+  s3.font = Verdana
+  s3.fontColor = black
+  s3.fontSize = 12
+  re1.position = {200.76, 187.16}
+  re1.s1.rxn_end = {206.25, 184.97}
+  re1.s1.species_end = {257.22, 205.25}
+  re1.s1.b1 = {217.23, 180.6}
+  re1.s1.b2 = {239.97, 191.83}
+  re1.s2.rxn_end = {195.28, 189.35}
+  re1.s2.species_end = {174.25, 244.15}
+  re1.s2.b1 = {184.3, 193.72}
+  re1.s2.b2 = {176.53, 220.03}
+  re1.s3.species_end = {123.15, 154.52}
+  re1.s3.rxn_end = {197.06, 177.87}
+  re1.s3.b1 = {160.11, 166.2}
+  re1.s3.b2 = {193.36, 168.58}
+  re3.position = {333.8, 299.69}
+  re3.--.rxn_end = {338.94, 306.87}
+  re3.--.species_end = {378.64, 357.57}
+  re3.--.b1 = {349.23, 321.23}
+  re3.--.b2 = {366.5, 342.99}
+  re3.s1.rxn_end = {328.66, 292.5}
+  re3.s1.species_end = {292.57, 238.43}
+  re3.s1.b1 = {318.37, 278.14}
+  re3.s1.b2 = {302.9, 254.69}
+  re3.--.position = {382.59, 362.57}
+  re3.--.size = {1, 1}
+  re5.position = {251.5, 284.23}
+  re5.s2.rxn_end = {243.38, 285.53}
+  re5.s2.species_end = {201.46, 276.81}
+  re5.s2.b1 = {227.13, 288.13}
+  re5.s2.b2 = {210.23, 283.12}
+  re5.--.rxn_end = {259.62, 282.94}
+  re5.--.species_end = {327.4, 241.36}
+  re5.--.b1 = {275.87, 280.34}
+  re5.--.b2 = {305.7, 260.2}
+  re5.--.position = {332.4, 236.7}
+  re5.--.size = {1, 1}
+  re6.position = {76.87, 71.91}
+  re6.s3.rxn_end = {79.83, 79.31}
+  re6.s3.species_end = {97.73, 129.52}
+  re6.s3.b1 = {85.75, 94.11}
+  re6.s3.b2 = {93.22, 115.52}
+  re6.--.rxn_end = {73.91, 64.51}
+  re6.--.species_end = {47.52, 6}
+  re6.--.b1 = {67.99, 49.71}
+  re6.--.b2 = {56.28, 24.15}
+  re6.--.position = {44.44, 0}
+  re6.--.size = {1, 1}
+  re7.position = {74.83, 226.17}
+  re7.--.rxn_end = {69.64, 231.6}
+  re7.--.species_end = {6, 255.66}
+  re7.--.b1 = {59.28, 242.45}
+  re7.--.b2 = {30.05, 251.77}
+  re7.s3.rxn_end = {80.01, 220.75}
+  re7.s3.species_end = {99.88, 167.52}
+  re7.s3.b1 = {90.37, 209.9}
+  re7.s3.b2 = {97.72, 186}
+  re7.s2.species_end = {139.46, 252.6}
+  re7.s2.rxn_end = {82.06, 233.08}
+  re7.s2.b1 = {110.76, 242.84}
+  re7.s2.b2 = {89.29, 239.99}
+  re7.--.position = {0, 256.53}
+  re7.--.size = {1, 1}
+
+  // CV terms:
+  default isVersionOf "http://identifiers.org/fma/FMA:7195"
+  s1 isVersionOf "http://identifiers.org/fma/FMA:66768"
+  s2 isVersionOf "http://identifiers.org/fma/FMA:66768"
+  s3 isVersionOf "http://identifiers.org/taxonomy/132504"
+
+  model origin "http://identifiers.org/doid/DOID:8469",
+               "http://identifiers.org/biomodels.db/BIOMD0000000546",
+               "http://identifiers.org/biomodels.db/MODEL1405150000",
+               "http://identifiers.org/go/GO:0002250",
+               "http://identifiers.org/go/GO:0045087",
+               "http://identifiers.org/taxonomy/39107",
+               "http://identifiers.org/taxonomy/132504",
+               "http://identifiers.org/biomodels.db/BIOMD0000000546"
+  model origin "http://identifiers.org/biomodels.db/MODEL1406230000"
+  model hasVersion "http://identifiers.org/doid/DOID:8469"
+  model identity "http://identifiers.org/biomodels.db/BIOMD0000000546"
+  model identity "http://identifiers.org/biomodels.db/MODEL1405150000"
+  model isVersionOf "http://identifiers.org/go/GO:0002250"
+  model isVersionOf "http://identifiers.org/go/GO:0045087"
+  model hasTaxon "http://identifiers.org/taxonomy/39107"
+  model hasTaxon "http://identifiers.org/taxonomy/132504"
+  model isDescribedBy "http://identifiers.org/biomodels.db/MODEL1406230000",
+                      "http://identifiers.org/pubmed/20410284"
+  model created "2014-09-04T16:07:56Z"
+  model modified "2014-10-10T11:00:17Z"
+  model creator1.givenName "Alain"
+  model creator1.familyName "Leblanc"
+  model creator1.organization "University of Rochester Medical Center"
+  model creator1.email "alain_leblanc@urmc.rochester.edu"
+  model creator2.givenName "Vijayalakshmi"
+  model creator2.familyName "Chelliah"
+  model creator2.organization "EMBL-EBI"
+  model creator2.email "viji@ebi.ac.uk"
+  model creator3.givenName "Sheriff"
+  model creator3.familyName "Rahuman"
+  model creator3.organization "EMBL-EBI"
+  model creator3.email "sheriff@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+Model 1 of the Miao et. al. 2010. This model cannot be readily simulated. The
+model requires time course arrays of parameters values of A_G, A_M and T_E. This
+feature is not implemented. 
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identified by: [BIOMD0000000546](http://identifiers.org/biomodels.db/BIOMD0000000546).
+
+To cite BioModels Database, please use: [BioModels-15 Years of Sharing Computational Models in Life Science](http://identifiers.org/pubmed/31701150 "Latest BioModels Database publication").
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+  s1 notes "Initial no. of uninfected and infectible epithelial cells per lung"
+  s2 notes ```
+This entity is refered as Ep\* in the paper. Infected epithelial cells per
+lung.
+```
+  s3 notes "Infective viral titer (EID50/ml)"
+  rho_E notes "Net growth rate of uninfected epithelial cells (per day)"
+  beta_a notes "alpha x the infection rate of uninfected epithelial cells ml\*per(EID50\*day)"
+  delta_Es notes "Death rate of infected epithelial cells (per day)"
+  c_V notes "Virus clearance rate (reduction of infectious viral titer) (per day)"
+  T_E_T notes "Experimentally measured time course Effector CD8+T cells per lung"
+  A_G_T notes "An array of experimentally measured Serum IgG antibody (pg/ml)"
+  A_M_T notes "An array of experimentally measured Serum IgM antibody (pg/ml)"
+end
+
+Miao2010___Innate_and_adaptive_immune_responses_to_primary_Influenza_A_Virus_infection_1 is "Miao2010 - Innate and adaptive immune responses to primary Influenza A Virus infection_1"

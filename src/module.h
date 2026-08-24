@@ -76,6 +76,7 @@ private:
   bool m_usedDistributions;
   std::vector<std::string> m_objective;
   bool m_maximize;
+  std::vector<std::string> m_modelConversionFactor;
 
   size_t m_currentexportvar;
   bool m_ismain;
@@ -139,6 +140,8 @@ public:
   bool SetModule(const std::string* modname);
   void SetComponentCompartments(Variable* compartment);
   void AddSynchronizedPair(const Variable* oldvar, const Variable* newvar, const Variable* conversionFactor);
+  Variable* PromoteToTopLevel(Variable* subvar);
+  void PromoteReferencedVariables(const Formula* formula);
   void AddTimeToUserFunction(std::string function);
   void CreateLocalVariablesForSubmodelInterfaceIfNeeded();
   void SetIsMain(bool ismain) {m_ismain=ismain;};
@@ -154,6 +157,8 @@ public:
   bool AddObjective(Formula* formula, bool maximize);
   bool AddObjective(Variable* var, Formula* formula, bool maximize);
   bool AddObjective(const Variable* var, bool maximize);
+  bool SetConversionFactor(Variable* var);
+  const Variable* GetConversionFactor() const;
   bool DeleteFromSynchronized(Variable* deletedvar);
   void ClearReferencesTo(Variable* deletedvar, std::set<std::pair<std::vector<std::string>, deletion_type> >* ret);
   Variable* AddOrFindUnitDef(const UnitDef& unitdef);
@@ -247,7 +252,7 @@ public:
   void  FindOrCreateLocalVersionOf(const Variable* var, libsbml::Model* sbmlmod);
   std::vector<const Variable*> GetSynchronizedVariablesFor(const Variable* var);
   void FillInSyncmap(std::map<const Variable*, Variable >& syncmap) const;
-  void AddVarToSyncMap(const Variable* var, std::map<const Variable*, Variable >& syncmap) const;
+  void AddVarToSyncMap(const Variable* var, const Variable* conversionFactor, std::map<const Variable*, Variable >& syncmap) const;
 
   void setUsedDistrib(bool useddistrib);
 

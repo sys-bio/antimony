@@ -98,7 +98,7 @@ TEST(AntimonyErrors, non_ascii)
     freeAll();
     clearPreviousLoads();
 
-    ret = loadString("â€\na = 3");
+    ret = loadString("\xe2\x80\na = 3");
     EXPECT_TRUE(ret == -1);
     err = getLastError();
     EXPECT_TRUE(err != NULL);
@@ -437,5 +437,50 @@ TEST(AntimonyErrors, better_error_for_builtin_functions)
 TEST(AntimonyErrors, better_error_for_builtin_constants)
 {
   testError("pi' = 3", "Error in model string, line 1:  'pi' is a reserved word in Antimony (the name of a built-in constant) and cannot be used as the name of a variable or other named element.");
+}
+
+TEST(AntimonyErrors, no_negative_named_stoich1)
+{
+  testError("- n A ->  B;", "Error in model string, line 1:  Cannot set the variable stoichiometry 'n' to be negative.  Either flip the sign of its value, give it a new name and value, or change the side of the reaction it's on.");
+}
+
+TEST(AntimonyErrors, no_negative_named_stoich2)
+{
+  testError("A -> -n B;", "Error in model string, line 1:  Cannot set the variable stoichiometry 'n' to be negative.  Either flip the sign of its value, give it a new name and value, or change the side of the reaction it's on.");
+}
+
+TEST(AntimonyErrors, no_negative_named_stoich3)
+{
+  testError("A - n B -> ;", "Error in model string, line 1:  Cannot set the variable stoichiometry 'n' to be negative.  Either flip the sign of its value, give it a new name and value, or change the side of the reaction it's on.");
+}
+
+TEST(AntimonyErrors, no_negative_named_stoich4)
+{
+  testError("-> A - n B;", "Error in model string, line 1:  Cannot set the variable stoichiometry 'n' to be negative.  Either flip the sign of its value, give it a new name and value, or change the side of the reaction it's on.");
+}
+
+TEST(AntimonyErrors, conversionFactor_must_be_single_variable)
+{
+  testError("S1.conversionFactor = 1000", "Error in model string, line 1:  Cannot set the conversion factor of S1' to be '1000', because it must be set to reference an existing variable, i.e. 'S1.conversionFactor = k'.");
+}
+
+TEST(AntimonyErrors, conversionFactor_must_not_be_negated)
+{
+  testError("S1.conversionFactor = -n", "Error in model string, line 1:  Cannot set the conversion factor of S1' to be '-n', because it must be set to reference an existing variable, i.e. 'S1.conversionFactor = k'.");
+}
+
+TEST(AntimonyErrors, conversionFactor_only_for_species)
+{
+  testError("compartment C; C.conversionFactor = cf", "Error in model string, line 1:  Unable to set the conversion factor for C because that variable cannot be a species, and only species may have a conversion factor.");
+}
+
+TEST(AntimonyErrors, conversionFactor_must_be_const)
+{
+  testError("var k; S1.conversionFactor = k;", "Error in model string, line 1:  Unable to set the conversion factor for species 'S1' to 'k', because conversion factors must be constant.");
+}
+
+TEST(AntimonyErrors, conversionFactor_must_be_const_model)
+{
+  testError("var k; model.conversionFactor = k;", "Error in model string, line 1:  Unable to set the model's conversion factor to 'k', because conversion factors must be constant.");
 }
 

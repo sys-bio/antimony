@@ -58,3 +58,13 @@ TEST(AntimonyNamedStoich, test_NamedStoichRate_file)
 {
     compareFileTranslation("namedstoich_rate");
 }
+
+TEST(AntimonyNamedStoich, test_stoichiometries_with_same_name)
+{
+    compareFileTranslationWithDifferences("stoichiometries_with_same_name");
+}
+
+TEST(AntimonyNamedStoich, test_stoichiometries_with_same_name_in_multiple_reactions)
+{
+    compareFileTranslationWithDifferences("stoichiometries_with_same_name_in_multiple_reactions");
+}

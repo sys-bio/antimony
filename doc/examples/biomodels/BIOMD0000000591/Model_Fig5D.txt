@@ -1,0 +1,58 @@
+// Created by libAntimony v3.2.0
+model *Boehm2014___isoform_specific_dimerization_of_pSTAT5A_and_pSTAT5B()
+
+  // Compartments and Species:
+  compartment cyt, nuc;
+  species STAT5A in cyt, STAT5B in cyt, pApB in cyt, pApA in cyt, pBpB in cyt;
+  species $pAFull in cyt, $sp in cyt, $pBFull in cyt, $rAFull in cyt, $ptotFull in cyt;
+  species nucpApA in nuc, nucpApB in nuc, nucpBpB in nuc;
+
+  // Assignment Rules:
+  pAFull := 100*(2*sp*pApA + pApB)/(2*sp*pApA + sp*STAT5A + pApB);
+  pBFull := 100*(2*(1 - sp)*pBpB + pApB)/(2*(1 - sp)*pBpB + (1 - sp)*STAT5B + pApB);
+  rAFull := 100*(2*sp*pApA + sp*STAT5A + pApB)/(2*sp*pApA + 2*(1 - sp)*pBpB + 2*pApB + sp*STAT5A + (1 - sp)*STAT5B);
+  ptotFull := (rAFull*pAFull + (100 - rAFull)*pBFull)/100;
+
+  // Reactions:
+  reaction1: 2 STAT5A => pApA; cyt*(1.25e-7*STAT5A^2*k_phos*exp(-Epo_degradation_BaF3*time)/cyt);
+  reaction2: STAT5A + STAT5B => pApB; cyt*(1.25e-7*STAT5A*STAT5B*k_phos*exp(-Epo_degradation_BaF3*time)/cyt);
+  reaction3: 2 STAT5B => pBpB; cyt*(1.25e-7*STAT5B^2*k_phos*exp(-Epo_degradation_BaF3*time)/cyt);
+  reaction4: pApA => nucpApA; k_imp_homo*pApA;
+  reaction5: pApB => nucpApB; k_imp_hetero*pApB;
+  reaction6: pBpB => nucpBpB; k_imp_homo*pBpB;
+  reaction7: nucpApA => 2 STAT5A; k_exp_homo*nucpApA;
+  reaction8: nucpApB => STAT5A + STAT5B; k_exp_hetero*nucpApB;
+  reaction9: nucpBpB => 2 STAT5B; k_exp_homo*nucpBpB;
+
+  // Species initializations:
+  STAT5A = 207.6*ratio;
+  STAT5B = 207.6 - 207.6*ratio;
+  pApB = 0;
+  pApA = 0;
+  pBpB = 0;
+  sp = 0.107;
+  nucpApA = 0;
+  nucpApB = 0;
+  nucpBpB = 0;
+
+  // Compartment initializations:
+  cyt = 1.4;
+  nuc = 0.45;
+
+  // Variable initializations:
+  ratio = 0.693;
+  Epo_degradation_BaF3 = 0.0269765368088175;
+  k_exp_hetero = 1.00097114635938e-05;
+  k_exp_homo = 0.0061723799618614;
+  k_imp_hetero = 0.0163701561812467;
+  k_imp_homo = 96807.6817909446;
+  k_phos = 15767.6469913504;
+
+  // Other declarations:
+  const cyt, nuc, ratio, Epo_degradation_BaF3, k_exp_hetero, k_exp_homo, k_imp_hetero;
+  const k_imp_homo, k_phos;
+
+  model identity "http://identifiers.org/biomodels.db/MODEL1501220000"
+end
+
+Boehm2014___isoform_specific_dimerization_of_pSTAT5A_and_pSTAT5B is "Boehm2014 - isoform-specific dimerization of pSTAT5A and pSTAT5B"

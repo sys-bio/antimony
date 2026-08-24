@@ -1,0 +1,171 @@
+// Created by libAntimony v3.2.0
+model *Hoffman2018__ADCC_against_cancer()
+
+  // Compartments and Species:
+  compartment tme;
+  species A in tme, R in tme, S in tme, C in tme;
+
+  // Assignment Rules:
+  y := e^n;
+  e := a1;
+  f := fk*R/(R + rk);
+
+  // Reactions:
+  antibody_association: A => ; tme*(a1*(1 - R)*A*S);
+  antibody_dissociation:  => A; tme*(a2*y*R*S);
+  complex_formation:  => R; tme*((a1/y)*(1 - R)*A);
+  complex_dissociation: R => ; tme*a2*R;
+  cancer_cell_killing_C: C => ; tme*f*C;
+  NK_complex_formation:  => C; tme*(v1*(u - C)*(S - C));
+  NK_complex_degradation: C => ; tme*v2*C;
+  cancer_cell_killing_S: S => ; tme*(f*C);
+
+  // Species initializations:
+  A = 1;
+  A has substance_per_volume;
+  R = 0;
+  R has substance_per_volume;
+  S = 1;
+  S has substance_per_volume;
+  C = 0;
+  C has substance_per_volume;
+
+  // Compartment initializations:
+  tme = 1;
+  tme has volume;
+
+  // Variable initializations:
+  a1 = 0.001;
+  a1 has unit_0;
+  a2 = 1.44;
+  a2 has unit_0;
+  y has unit_0;
+  e has unit_0;
+  n = 0;
+  n has unit_0;
+  f has unit_0;
+  fk = 1;
+  fk has unit_0;
+  rk = 0.5;
+  rk has unit_0;
+  v1 = 120;
+  v1 has unit_0;
+  u = 20;
+  u has unit_0;
+  v2 = 14.4;
+  v2 has unit_0;
+
+  // Other declarations:
+  var y, e, f;
+  const tme, a1, a2, n, fk, rk, v1, u, v2;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = second;
+  unit substance = 1e-3 mole;
+  unit unit_0 = 1 / dimensionless^-0;
+  unit extent = substance;
+  unit substance_per_volume = 1e-3 mole / 1e-3 litre;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1";
+  antibody_association is "antibody association";
+  antibody_dissociation is "antibody dissociation";
+  complex_formation is "complex formation";
+  complex_dissociation is "complex dissociation";
+  cancer_cell_killing_C is "cancer cell killing-C";
+  NK_complex_formation is "NK complex formation";
+  NK_complex_degradation is "NK complex degradation";
+  cancer_cell_killing_S is "cancer cell killing-S";
+
+  // CV terms:
+  tme isVersionOf "http://identifiers.org/ncit/C94498"
+  A isVersionOf "http://identifiers.org/ncit/C16295"
+  R isVersionOf "http://identifiers.org/ncit/C19398"
+  S isVersionOf "http://identifiers.org/cl/CL:0001064"
+  C isVersionOf "http://identifiers.org/ncit/C19398"
+  a1 isVersionOf "http://identifiers.org/ncit/C25636"
+  a2 isVersionOf "http://identifiers.org/ncit/C25636"
+  y isVersionOf "http://identifiers.org/ncit/C44256"
+  e isVersionOf "http://identifiers.org/ncit/C44256"
+  n isVersionOf "http://identifiers.org/ncit/C48923"
+  f isVersionOf "http://identifiers.org/ncit/C25636"
+  fk isVersionOf "http://identifiers.org/ncit/C25636"
+  rk isVersionOf "http://identifiers.org/sbo/SBO:0000281"
+  v1 isVersionOf "http://identifiers.org/ncit/C25636"
+  u isVersionOf "http://identifiers.org/ncit/C44256"
+  v2 isVersionOf "http://identifiers.org/ncit/C25636"
+  complex_formation isVersionOf "http://identifiers.org/sbo/SBO:0000393"
+  complex_dissociation isVersionOf "http://identifiers.org/sbo/SBO:0000179"
+  cancer_cell_killing_C isVersionOf "http://identifiers.org/go/GO:0008219"
+  cancer_cell_killing_C isVersionOf "http://identifiers.org/sbo/SBO:0000179"
+  NK_complex_formation isVersionOf "http://identifiers.org/sbo/SBO:0000393"
+  NK_complex_degradation isVersionOf "http://identifiers.org/sbo/SBO:0000179"
+  cancer_cell_killing_S isVersionOf "http://identifiers.org/go/GO:0008219"
+  cancer_cell_killing_S isVersionOf "http://identifiers.org/sbo/SBO:0000179"
+
+  model publication "http://identifiers.org/pubmed/28970093"
+  model model_source "http://identifiers.org/biomodels.db/MODEL1908200002",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000802"
+  model hasProperty "http://identifiers.org/go/GO:0001788"
+  model hasProperty "http://identifiers.org/mamo/MAMO_0000046"
+  model hasTaxon "http://identifiers.org/taxonomy/9606"
+  model created "2019-08-20T13:21:25Z"
+  model modified "2019-08-20T13:21:25Z"
+  model creator1.givenName "Jinghao"
+  model creator1.familyName "Men"
+  model creator1.organization "University of Cambridge"
+  model creator1.email "jm2187@cam.ac.uk"
+
+  // Notes:
+  model notes ```
+The paper describes a model of ADCC. Created by COPASI 4.26 (Build 213) This model
+is described in the article: A mathematical model of antibody-dependent cellular
+cytotoxicity (ADCC) F. Hoffman, D. Gavaghan, J. Osborne, I.P. Barrett, T. You, H.
+Ghadially, R. Sainson, R.W. Wilkinson, H.M. ByrneJournal of Theoretical Biology 436
+(2018) 39–50 Abstract: Immunotherapies exploit the immune system to target and
+kill cancer cells, while sparing healthy tis- sue. Antibody therapies, an important
+class of immunotherapies, involve the binding to specific antigens on the surface
+of the tumour cells of antibodies that activate natural killer (NK) cells to kill
+the tu- mour cells. Preclinical assessment of molecules that may cause antibody-dependent
+cellular cytotoxicity (ADCC) involves co-culturing cancer cells, NK cells and antibody
+in vitro for several hours and measuring subsequent levels of tumour cell lysis.
+Here we develop a mathematical model of such an in vitro ADCC assay, formulated as
+a system of time-dependent ordinary differential equations and in which NK cells
+kill cancer cells at a rate which depends on the amount of antibody bound to each
+cancer cell. Numerical simulations generated using experimentally-based parameter
+estimates reveal that the system evolves on two timescales: a fast timescale on which
+antibodies bind to receptors on the surface of the tumour cells, and NK cells form
+complexes with the cancer cells, and a longer time-scale on which the NK cells kill
+the cancer cells. We construct approximate model solutions on each timescale, and
+show that they are in good agreement with numerical simulations of the full system.
+Our results show how the processes involved in ADCC change as the initial concentration
+of antibody and NK-cancer cell ratio are varied. We use these results to explain
+what information about the tumour cell kill rate can be extracted from the cytotoxicity
+assays.To cite BioModels Database, please use: BioModels Database: An enhanced, curated
+and annotated resource for published quantitative kinetic models . To the extent
+possible under law, all copyright and related or neighbouring rights to this encoded
+model have been dedicated to the public domain worldwide. Please refer to CC0 Public
+Domain Dedication for more information.
+```
+  A notes "antibody"
+  R notes "antibody-receptor complex per cancer cell"
+  S notes "total cancer cell"
+  C notes "NK-cancer cell complex"
+  a1 notes "Dimensionless antibody binding rate5.8e-6 to 580"
+  a2 notes "Dimensionless antibody dissociation rate"
+  y notes "Initial ratio of total number of receptors to antibody6.22e-9 to 622"
+  e notes "an Initial ratio of total number of receptors to antibody"
+  n notes "exponent in antibody level"
+  f notes "Dimensionless cell kill rate0-22.4"
+  fk notes "maximum rate of killing"
+  rk notes "half saturation constant of R at killing"
+  v1 notes "Dimensionless cell binding rate"
+  u notes "Initial ratio of NK cells to tumour cells1-20"
+  v2 notes "Dimensionless cell dissociation rate"
+end
+
+Hoffman2018__ADCC_against_cancer is "Hoffman2018- ADCC against cancer"

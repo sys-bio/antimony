@@ -472,3 +472,70 @@ TEST(AntimonyBasic, test_kineticLaw_set_formula)
   compareFileTranslation("kl_set_formula");
 }
 
+TEST(AntimonyBasic, test_neg_reactant_and_product)
+{
+  compareFileTranslation("neg_reactant_and_product");
+}
+
+TEST(AntimonyBasic, test_neg_2_reactant_and_product)
+{
+  compareFileTranslation("neg_2_reactant_and_product");
+}
+
+TEST(AntimonyBasic, test_subtracted_reactant_and_product)
+{
+  compareFileTranslation("subtracted_reactant_and_product");
+}
+
+TEST(AntimonyBasic, test_subtracted_2_reactant_and_product)
+{
+  compareFileTranslation("subtracted_2_reactant_and_product");
+}
+
+TEST(AntimonyBasic, test_empty_rxn)
+{
+  compareFileTranslation("empty_rxn");
+}
+
+TEST(AntimonyBasic, test_empty_rxn_kl)
+{
+  compareFileTranslation("empty_rxn_kl");
+}
+
+TEST(AntimonyBasic, test_empty_event)
+{
+  compareFileTranslation("empty_event");
+}
+
+TEST(AntimonyBasic, test_speciesConversionFactor)
+{
+  compareFileTranslation("speciesConversionFactor");
+}
+
+TEST(AntimonyBasic, test_speciesConversionFactor_empty)
+{
+  compareFileTranslation("speciesConversionFactor_empty");
+}
+
+TEST(AntimonyBasic, test_modelConversionFactor)
+{
+  compareFileTranslation("model_conversion_factor");
+}
+
+TEST(AntimonyBasic, test_boolean_priority)
+{
+  compareFileTranslation("boolean_priority");
+}
+
+TEST(AntimonyBasic, test_function_flattening_with_predefined_constants)
+{
+  setRemoveFunctionDefinitions(true);
+  compareFileTranslation("functions_with_constants");
+  setRemoveFunctionDefinitions(false);
+}
+
+TEST(AntimonyBasic, test_table_example)
+{
+  compareFileTranslation("table_example");
+}
+

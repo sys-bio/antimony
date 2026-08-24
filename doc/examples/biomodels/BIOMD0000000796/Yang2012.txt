@@ -1,0 +1,267 @@
+// Created by libAntimony v3.2.0
+model *Yang2012___cancer_growth_with_angiogenesis()
+
+  // Compartments and Species:
+  compartment tme;
+  species C in tme, E in tme, T in tme, P in tme, A in tme;
+
+  // Assignment Rules:
+  C_plot := C/c1;
+  E_plot := E/c2;
+  T_plot := T;
+  P_plot := P/c4;
+  A_plot := A;
+
+  // Reactions:
+  normal_cell_growth:  => C; tme*(a1*C*(1 - C/k1));
+  normal_cell_death: C => ; tme*u1*C;
+  normal_cell_depletion: C => ; tme*(b1*T*C);
+  endothelial_growth:  => E; tme*(a2*E*(1 - E/k2));
+  endothelial_death: E => ; tme*u2*E;
+  pre_angiogenesis: E => P; tme*(y*T*E);
+  tumor_growth:  => T; tme*(a3*A*T*(1 - T/k3));
+  tumor_death: T => ; tme*u3*T;
+  tumor_depletion: T => ; tme*(b2*C*T);
+  pa_death: P => ; tme*u4*P;
+  pa_conversion: P => A; tme*d*P;
+  angiogenesis:  => A; tme*(e*T*A*(1 - A/k4));
+  angiogenesis_cell_death: A => ; tme*u5*A;
+
+  // Species initializations:
+  C = 9;
+  C has substance_per_volume;
+  E = 10;
+  E has substance_per_volume;
+  T = 1.023;
+  T has substance_per_volume;
+  P = 0;
+  P has substance_per_volume;
+  A = 0;
+  A has substance_per_volume;
+
+  // Compartment initializations:
+  tme = 1;
+  tme has volume;
+
+  // Variable initializations:
+  a1 = 0.1;
+  a1 has unit_0;
+  a2 = 0.1;
+  a2 has unit_0;
+  a3 = 0.2;
+  a3 has unit_0;
+  e = 0.01;
+  e has unit_0;
+  u1 = 0.01;
+  u1 has unit_0;
+  u2 = 0.05;
+  u2 has unit_0;
+  u3 = 0.05;
+  u3 has unit_0;
+  u4 = 0.01;
+  u4 has unit_0;
+  u5 = 0.01;
+  u5 has unit_0;
+  k1 = 10;
+  k1 has unit_1;
+  k2 = 20;
+  k2 has unit_1;
+  k3 = 5;
+  k3 has unit_1;
+  k4 = 1;
+  k4 has unit_1;
+  d = 0.1;
+  d has unit_0;
+  y = 0.01;
+  y has unit_0;
+  b1 = 0.01;
+  b1 has unit_0;
+  b2 = 0.01;
+  b2 has unit_0;
+  C_plot has unit_1;
+  c1 = 10;
+  c1 has unit_1;
+  E_plot has unit_1;
+  c2 = 10;
+  c2 has unit_1;
+  T_plot has unit_1;
+  P_plot has unit_1;
+  c4 = 0.25;
+  c4 has unit_1;
+  A_plot has unit_1;
+  c3 = 1;
+  c3 has unit_1;
+  c5 = 1;
+  c5 has unit_1;
+
+  // Other declarations:
+  var C_plot, E_plot, T_plot, P_plot, A_plot;
+  const tme, a1, a2, a3, e, u1, u2, u3, u4, u5, k1, k2, k3, k4, d, y, b1;
+  const b2, c1, c2, c4, c3, c5;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = 1e-3 mole;
+  unit unit_0 = 1 / 86400e-1 second;
+  unit unit_1 = 1 / dimensionless^-0;
+  unit extent = substance;
+  unit substance_per_volume = 1e-3 mole / 1e-3 litre;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1/d";
+  unit_1 is "1";
+  normal_cell_growth is "normal cell growth";
+  normal_cell_death is "normal cell death";
+  normal_cell_depletion is "normal cell depletion";
+  endothelial_growth is "endothelial growth";
+  endothelial_death is "endothelial death";
+  pre_angiogenesis is "pre-angiogenesis";
+  tumor_growth is "tumor growth";
+  tumor_death is "tumor death";
+  tumor_depletion is "tumor depletion";
+  pa_death is "pa death";
+  pa_conversion is "pa conversion";
+  angiogenesis_cell_death is "angiogenesis cell death";
+
+  // CV terms:
+  tme isVersionOf "http://identifiers.org/ncit/C94498"
+  C isVersionOf "http://identifiers.org/cl/CL:0000000"
+  E isVersionOf "http://identifiers.org/cl/CL:0000115"
+  T isVersionOf "http://identifiers.org/cl/CL:0001064"
+  P isVersionOf "http://identifiers.org/cl/CL:0000000"
+  A isVersionOf "http://identifiers.org/cl/CL:0000000"
+  a1 isVersionOf "http://identifiers.org/sbo/SBO:0000610"
+  a2 isVersionOf "http://identifiers.org/sbo/SBO:0000610"
+  a3 isVersionOf "http://identifiers.org/sbo/SBO:0000610"
+  e isVersionOf "http://identifiers.org/sbo/SBO:0000610"
+  u1 isVersionOf "http://identifiers.org/ncit/C25636"
+  u2 isVersionOf "http://identifiers.org/ncit/C25636"
+  u3 isVersionOf "http://identifiers.org/ncit/C25636"
+  u4 isVersionOf "http://identifiers.org/ncit/C25636"
+  u5 isVersionOf "http://identifiers.org/ncit/C25636"
+  k1 isVersionOf "http://identifiers.org/sbo/SBO:0000661"
+  k2 isVersionOf "http://identifiers.org/sbo/SBO:0000661"
+  k3 isVersionOf "http://identifiers.org/sbo/SBO:0000661"
+  k4 isVersionOf "http://identifiers.org/sbo/SBO:0000661"
+  d isVersionOf "http://identifiers.org/ncit/C25636"
+  y isVersionOf "http://identifiers.org/sbo/SBO:0000610"
+  b1 isVersionOf "http://identifiers.org/ncit/C25636"
+  b2 isVersionOf "http://identifiers.org/ncit/C25636"
+  C_plot isVersionOf "http://identifiers.org/cl/CL:0000000"
+  c1 isVersionOf "http://identifiers.org/ncit/C48922"
+  E_plot isVersionOf "http://identifiers.org/cl/CL:0000115"
+  c2 isVersionOf "http://identifiers.org/ncit/C48922"
+  T_plot isVersionOf "http://identifiers.org/cl/CL:0001064"
+  P_plot isVersionOf "http://identifiers.org/cl/CL:0000000"
+  c4 isVersionOf "http://identifiers.org/ncit/C48922"
+  A_plot isVersionOf "http://identifiers.org/cl/CL:0000000"
+  c3 isVersionOf "http://identifiers.org/ncit/C48922"
+  c5 isVersionOf "http://identifiers.org/ncit/C48922"
+  normal_cell_growth isVersionOf "http://identifiers.org/go/GO:0008283"
+  normal_cell_growth isVersionOf "http://identifiers.org/sbo/SBO:0000393"
+  normal_cell_death isVersionOf "http://identifiers.org/sbo/SBO:0000179"
+  normal_cell_death isVersionOf "http://identifiers.org/go/GO:0008219"
+  normal_cell_depletion isVersionOf "http://identifiers.org/go/GO:0008219"
+  normal_cell_depletion isVersionOf "http://identifiers.org/sbo/SBO:0000179"
+  endothelial_growth isVersionOf "http://identifiers.org/sbo/SBO:0000393"
+  endothelial_growth isVersionOf "http://identifiers.org/go/GO:0008283"
+  endothelial_death isVersionOf "http://identifiers.org/sbo/SBO:0000179"
+  endothelial_death isVersionOf "http://identifiers.org/go/GO:0008219"
+  pre_angiogenesis isVersionOf "http://identifiers.org/go/GO:0001525"
+  tumor_growth isVersionOf "http://identifiers.org/sbo/SBO:0000393"
+  tumor_growth isVersionOf "http://identifiers.org/go/GO:0008283"
+  tumor_death isVersionOf "http://identifiers.org/go/GO:0008219"
+  tumor_death isVersionOf "http://identifiers.org/sbo/SBO:0000179"
+  tumor_depletion isVersionOf "http://identifiers.org/sbo/SBO:0000179"
+  tumor_depletion isVersionOf "http://identifiers.org/go/GO:0008219"
+  pa_death isVersionOf "http://identifiers.org/go/GO:0008219"
+  pa_death isVersionOf "http://identifiers.org/sbo/SBO:0000179"
+  pa_conversion isVersionOf "http://identifiers.org/go/GO:0001525"
+  angiogenesis identity "http://identifiers.org/go/GO:0001525"
+  angiogenesis isVersionOf "http://identifiers.org/go/GO:0008219"
+  angiogenesis isVersionOf "http://identifiers.org/sbo/SBO:0000393"
+  angiogenesis_cell_death isVersionOf "http://identifiers.org/sbo/SBO:0000179"
+  angiogenesis_cell_death isVersionOf "http://identifiers.org/go/GO:0008219"
+
+  model publication "http://identifiers.org/pubmed/22300422"
+  model model_source "http://identifiers.org/biomodels.db/MODEL1908140001",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000796"
+  model hasProperty "http://identifiers.org/mamo/MAMO_0000046"
+  model hasProperty "http://identifiers.org/ncit/C19361"
+  model hasTaxon "http://identifiers.org/taxonomy/9606"
+  model created "2019-08-14T10:18:10Z"
+  model modified "2019-08-14T10:18:10Z"
+  model creator1.givenName "Jinghao"
+  model creator1.familyName "Men"
+  model creator1.organization "University of Cambridge"
+  model creator1.email "jm2187@cam.ac.uk"
+
+  // Notes:
+  model notes ```
+The paper describes a model of tumor growth with angiogenesis. Created by COPASI
+4.26 (Build 213) This model is described in the article: Mathematical modeling of
+solid cancer growth with angiogenesisHyun M Yang Theoretical Biology and Medical
+Modelling 2012, 9:2 Abstract: Background: Cancer arises when within a single cell
+multiple malfunctions of control systems occur, which are, broadly, the system that
+promote cell growth and the system that protect against erratic growth. Additional
+systems within the cell must be corrupted so that a cancer cell, to form a mass of
+any real size, produces substances that promote the growth of new blood vessels.
+Multiple mutations are required before a normal cell can become a cancer cell by
+corruption of multiple growth-promoting systems.Methods: We develop a simple mathematical
+model to describe the solid cancer growth dynamics inducing angiogenesis in the absence
+of cancer controlling mechanisms.Results: The initial conditions supplied to the
+dynamical system consist of a perturbation in form of pulse: The origin of cancer
+cells from normal cells of an organ of human body. Thresholds of interacting parameters
+were obtained from the steady states analysis. The existence of two equilibrium points
+determine the strong dependency of dynamical trajectories on the initial conditions.
+The thresholds can be used to control cancer.Conclusions: Cancer can be settled in
+an organ if the following combination matches: better fitness of cancer cells, decrease
+in the efficiency of the repairing systems, increase in the capacity of sprouting
+from existing vascularization, and higher capacity of mounting up new vascularization.
+However, we show that cancer is rarely induced in organs (or tissues) displaying
+an efficient (numerically and functionally) reparative or regenerative mechanism.To
+cite BioModels Database, please use: BioModels Database: An enhanced, curated and
+annotated resource for published quantitative kinetic models . To the extent possible
+under law, all copyright and related or neighbouring rights to this encoded model
+have been dedicated to the public domain worldwide. Please refer to CC0 Public Domain
+Dedication for more information.
+```
+  C notes "normal cell"
+  E notes "endothelial cell"
+  T notes "cancer cell1.023 or 1.024 initially"
+  P notes "pre-angiogenesis cell"
+  A notes "angiogenesis cell"
+  a1 notes "Intrinsic growth rate of normal cells"
+  a2 notes "Intrinsic growth rate of epithelial cells"
+  a3 notes "0.2 or 5Intrinsic growth rate of cancer cells"
+  e notes "0.01 or 0.1Intrinsic growth rate of angiogenesis cells"
+  u1 notes "Mortality rate of normal cells"
+  u2 notes "Mortality rate of epithelial cells"
+  u3 notes "0.05 or 0.005Mortality rate of cancer cells"
+  u4 notes "Mortality rate of pre-angiogenesis cells"
+  u5 notes "Mortality rate of angiogenesis cells"
+  k1 notes "Carrying capacity of normal cells"
+  k2 notes "Carrying capacity of epithelial cells"
+  k3 notes "5 or 0.1Carrying capacity of cancer cells"
+  k4 notes "1 or 0.2Carrying capacity of angiogenesis cells"
+  d notes "Transfer rate from pre-angiogenesis to angiogenesis cells"
+  y notes "0.01 or 0.02Epithelial sprouting rate"
+  b1 notes "Rate of inhibition of normal cells by cancer cells"
+  b2 notes "Rate of inhibition of cancer cells by normal cells"
+  C_plot notes "normal cell"
+  c1 notes "plot coefficient of C"
+  E_plot notes "endothelial cell"
+  c2 notes "plot coefficient of E"
+  T_plot notes "cancer cell"
+  P_plot notes "pre-angiogenesis cell"
+  c4 notes "plot coefficient of P"
+  A_plot notes "angiogenesis cell"
+  c3 notes "plot coefficient of T"
+  c5 notes "plot coefficient of A"
+end
+
+Yang2012___cancer_growth_with_angiogenesis is "Yang2012 - cancer growth with angiogenesis"

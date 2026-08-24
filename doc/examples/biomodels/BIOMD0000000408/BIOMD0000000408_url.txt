@@ -1,0 +1,388 @@
+// Created by libAntimony v3.2.0
+model *Hettling2011()
+
+  // Compartments and Species:
+  compartment IMS, CYT, cell;
+  species ADPi in IMS, ATPi in IMS, Cri in IMS, PCri in IMS, PCr in CYT, ADP in CYT;
+  species ATP in CYT, Cr in CYT, P_ii in IMS, P_i in CYT;
+
+  // Assignment Rules:
+  phase := (abs(time - time_Jhyd_step) - floor(abs(time - time_Jhyd_step)/(60/heartrate_bpm))*60/heartrate_bpm)/(60/heartrate_bpm);
+  VhydAmp_test := 2*Jhyd_test/(fracSysUp + fracSysDown);
+  fracDia := 1 - fracSysUp - fracSysDown;
+  VhydAmp_basis := 2*Jhyd_basis/(fracSysUp + fracSysDown);
+  j_diff_pcr := PSmomPCr*(PCri - PCr);
+  j_diff_atp := PSmomATP*(ATPi - ATP);
+  densyn := 1 + ADPi/Kadp + P_ii/Kpi + ADPi*P_ii/(Kadp*Kpi);
+  vatpnorm := tmito_factor*((Jhyd_test - jsyn)/(Jhyd_test - Jhyd_basis));
+  jsyn := Vmaxsyn*(ADPi*P_ii/(Kpi*Kadp*densyn));
+  r_diff_pcr := j_diff_pcr/(j_diff_pcr + j_diff_atp);
+  j_ck_mi := (VmaxMif*ATPi*Cri/(KiaMi*KbMi) - VmaxMib*ADPi*PCri/(KicMi*KdMi))/(1 + Cri/KibMi + PCri/KidMi + ATPi*(1/KiaMi + Cri/(KiaMi*KbMi)) + ADPi*(1/KicMi + Cri/(KicMi*KibMi) + PCri/(KidMi*(KicMi*KdMi/KidMi))));
+  VmaxMif := VmaxMif_full_activity*ck_factor_iaa;
+  VmaxMib := K_CK_eq*KicMi*KdMi*VmaxMif/(KiaMi*KbMi);
+  j_ck_mm := (VmaxMMf*ATP*Cr/(KiaMM*KbMM) - VmaxMMb*ADP*PCr/(KicMM*KdMM))/(1 + Cr/KibMM + PCr/KidMM + ATP*(1/KiaMM + Cr/(KiaMM*KbMM)) + ADP*(1/KicMM + Cr/(KicMM*KibMM) + PCr/(KidMM*(KicMM*KdMM/KidMM))));
+  VmaxMMf := VmaxMMf_full_activity*ck_factor_iaa;
+  VmaxMMb := K_CK_eq*KicMM*KdMM*VmaxMMf/(KiaMM*KbMM);
+  j_diff_adp := PSmomATP*(ADPi - ADP);
+  j_diff_cr := PSmomCr*(Cri - Cr);
+  j_diff_pi := PSmomPi*(P_ii - P_i);
+
+  // Rate Rules:
+  tmito' = vatpnorm;
+
+  // Reactions:
+  Jsyn: P_ii + ADPi -> ATPi; Vmaxsyn*ADPi*P_ii/(Kadp*Kpi*(1 + ADPi/Kadp + P_ii/Kpi + ADPi*P_ii/(Kadp*Kpi)));
+  J_CK_Mi: ATPi + Cri -> PCri + ADPi; j_ck_mi;
+  J_CK_MM: Cr + ATP -> PCr + ADP; j_ck_mm;
+  Jhyd_reaction: ATP -> ADP + P_i; Jhyd;
+  J_diff_Pi: P_ii -> P_i; j_diff_pi;
+  J_diff_Cr: Cri -> Cr; j_diff_cr;
+  J_diff_ADP: ADPi -> ADP; j_diff_adp;
+  J_diff_PCr: PCri -> PCr; j_diff_pcr;
+  J_diff_ATP: ATPi -> ATP; j_diff_atp;
+
+  // Events:
+  pulsatile_test: at 0 after ((time >= time_Jhyd_step) && ((time - last_time_fired) > stepsize)) && (pulsatility == 1): Jhyd = piecewise((1 - (phase - fracSysUp)/fracSysDown)*VhydAmp_test, (phase > fracSysUp) && (phase <= (1 - fracDia)), (phase/fracSysUp)*VhydAmp_test, phase <= fracSysUp, 0, phase >= (1 - fracDia), Jhyd), last_time_fired = time;
+  pulsatile_basis: at 0 after ((time < time_Jhyd_step) && ((time - last_time_fired) >= stepsize)) && (pulsatility == 1): Jhyd = piecewise(0, phase <= fracDia, ((phase - fracDia)/fracSysDown)*VhydAmp_basis, (phase > fracDia) && (phase <= (1 - fracSysUp)), (1 - phase)*VhydAmp_basis/fracSysUp, phase > (1 - fracSysUp), Jhyd), last_time_fired = time;
+  nonpulsatile_step: at 0 after time >= time_Jhyd_step: Jhyd = piecewise(Jhyd_test, pulsatility == 0, Jhyd), heartrate_bpm = heartrate_test, tmito_factor = 1;
+
+  // Species initializations:
+  ADPi = 39;
+  ADPi has micromole_per_litre;
+  ATPi = 5626;
+  ATPi has micromole_per_litre;
+  Cri = 9789;
+  Cri has micromole_per_litre;
+  PCri = 5711;
+  PCri has micromole_per_litre;
+  PCr = 5710;
+  PCr has micromole_per_litre;
+  ADP = 64;
+  ADP has micromole_per_litre;
+  ATP = 5601;
+  ATP has micromole_per_litre;
+  Cr = 9789;
+  Cr has micromole_per_litre;
+  P_ii = 910;
+  P_ii has micromole_per_litre;
+  P_i = 912;
+  P_i has micromole_per_litre;
+
+  // Compartment initializations:
+  IMS = 0.0625;
+  CYT = 0.75;
+  cell = 1;
+
+  // Variable initializations:
+  time_Jhyd_step = 40;
+  time_Jhyd_step has second;
+  last_time_fired = 0;
+  last_time_fired has second;
+  stepsize = 0.001;
+  stepsize has second;
+  pulsatility = 1;
+  Jhyd = 486.5;
+  Jhyd has micromole_per_litre_per_second;
+  fracSysUp = 0.1666666666;
+  fracSysDown = 0.1666666666;
+  VhydAmp_test has micromole_per_litre_per_second;
+  VhydAmp_basis has micromole_per_litre_per_second;
+  Jhyd_test = 627.6;
+  Jhyd_test has micromole_per_litre_per_second;
+  heartrate_bpm = 135;
+  heartrate_bpm has unitDefinition_0000004;
+  heartrate_test = 220;
+  heartrate_test has unitDefinition_0000004;
+  tmito_factor = 0;
+  j_diff_pcr has micromole_per_litre_per_second;
+  PSmomPCr = 155;
+  PSmomPCr has per_second;
+  j_diff_atp has micromole_per_litre_per_second;
+  PSmomATP = 13.29477;
+  PSmomATP has per_second;
+  Kadp = 25;
+  Kadp has micromole_per_litre;
+  Kpi = 800;
+  Kpi has micromole_per_litre;
+  tmito = 0;
+  tmito has second;
+  jsyn has micromole_per_litre_per_second;
+  Jhyd_basis = 486.5;
+  Jhyd_basis has micromole_per_litre_per_second;
+  Vmaxsyn = 1503.74;
+  Vmaxsyn has micromole_per_litre_per_second;
+  j_ck_mi has micromole_per_litre_per_second;
+  VmaxMif has micromole_per_litre_per_second;
+  KiaMi = 750;
+  KiaMi has micromole_per_litre;
+  KbMi = 5200;
+  KbMi has micromole_per_litre;
+  VmaxMib has micromole_per_litre_per_second;
+  KicMi = 204.8;
+  KicMi has micromole_per_litre;
+  KdMi = 500;
+  KdMi has micromole_per_litre;
+  KibMi = 28800;
+  KibMi has micromole_per_litre;
+  KidMi = 1600;
+  KidMi has micromole_per_litre;
+  j_ck_mm has micromole_per_litre_per_second;
+  VmaxMMf has micromole_per_litre_per_second;
+  KiaMM = 900;
+  KiaMM has micromole_per_litre;
+  KbMM = 15500;
+  KbMM has micromole_per_litre;
+  VmaxMMb has micromole_per_litre_per_second;
+  KicMM = 222.4;
+  KicMM has micromole_per_litre;
+  KdMM = 1670;
+  KdMM has micromole_per_litre;
+  KibMM = 34900;
+  KibMM has micromole_per_litre;
+  KidMM = 4730;
+  KidMM has micromole_per_litre;
+  j_diff_adp has micromole_per_litre_per_second;
+  j_diff_cr has micromole_per_litre_per_second;
+  PSmomCr = 155;
+  PSmomCr has per_second;
+  j_diff_pi has micromole_per_litre_per_second;
+  PSmomPi = 194;
+  PSmomPi has per_second;
+  heartrate_basis = 135;
+  heartrate_basis has unitDefinition_0000004;
+  ck_factor_iaa = 1;
+  ck_factor_ia = 0.0286;
+  K_CK_eq = 152;
+  VmaxMif_full_activity = 882.0756;
+  VmaxMif_full_activity has micromole_per_litre_per_second;
+  VmaxMMf_full_activity = 11441.78;
+  VmaxMMf_full_activity has micromole_per_litre_per_second;
+
+  // Other declarations:
+  var last_time_fired, pulsatility, Jhyd, phase, VhydAmp_test, fracDia, VhydAmp_basis;
+  var Jhyd_test, heartrate_bpm, tmito_factor, j_diff_pcr, j_diff_atp, densyn;
+  var tmito, vatpnorm, jsyn, r_diff_pcr, j_ck_mi, VmaxMif, VmaxMib, j_ck_mm;
+  var VmaxMMf, VmaxMMb, j_diff_adp, j_diff_cr, j_diff_pi;
+  const IMS, CYT, cell, time_Jhyd_step, stepsize, fracSysUp, fracSysDown;
+  const heartrate_test, PSmomPCr, PSmomATP, Kadp, Kpi, Jhyd_basis, Vmaxsyn;
+  const KiaMi, KbMi, KicMi, KdMi, KibMi, KidMi, KiaMM, KbMM, KicMM, KdMM;
+  const KibMM, KidMM, PSmomCr, PSmomPi, heartrate_basis, ck_factor_iaa, ck_factor_ia;
+  const K_CK_eq, VmaxMif_full_activity, VmaxMMf_full_activity;
+
+  // Unit definitions:
+  unit micromole = 1e-6 mole;
+  unit micromole_per_litre = 1e-6 mole / litre;
+  unit micromole_per_litre_per_second = 1e-6 mole / (litre * second);
+  unit unitDefinition_0000004 = 1 / 60 second;
+  unit per_second = 1 / second;
+
+  // Display Names:
+  unitDefinition_0000004 is "per_minute";
+
+  // CV terms:
+  IMS identity "http://identifiers.org/go/GO:0005758"
+  CYT identity "http://identifiers.org/go/GO:0005829"
+  cell identity "http://identifiers.org/go/GO:0005623"
+  ADPi identity "http://identifiers.org/chebi/CHEBI:16761",
+                "http://identifiers.org/kegg.compound/C00008",
+                "http://identifiers.org/pubchem.substance/3310"
+  ADPi identity "http://identifiers.org/3dmet/B01130"
+  ATPi identity "http://identifiers.org/chebi/CHEBI:15422",
+                "http://identifiers.org/kegg.compound/C00002",
+                "http://identifiers.org/pubchem.substance/3304"
+  ATPi identity "http://identifiers.org/3dmet/B01125"
+  Cri identity "http://identifiers.org/chebi/CHEBI:16919",
+               "http://identifiers.org/kegg.compound/C00300",
+               "http://identifiers.org/pubchem.substance/3594"
+  Cri identity "http://identifiers.org/3dmet/B00084"
+  PCri identity "http://identifiers.org/chebi/CHEBI:17287",
+                "http://identifiers.org/kegg.compound/C02305",
+                "http://identifiers.org/pubchem.substance/5359"
+  PCri identity "http://identifiers.org/3dmet/B00422"
+  PCr identity "http://identifiers.org/chebi/CHEBI:17287",
+               "http://identifiers.org/kegg.compound/C02305",
+               "http://identifiers.org/3dmet/B00422"
+  PCr identity "http://identifiers.org/pubchem.substance/5359"
+  ADP identity "http://identifiers.org/chebi/CHEBI:16761",
+               "http://identifiers.org/kegg.compound/C00008",
+               "http://identifiers.org/pubchem.substance/3310"
+  ADP identity "http://identifiers.org/3dmet/B01130"
+  ATP identity "http://identifiers.org/chebi/CHEBI:15422",
+               "http://identifiers.org/kegg.compound/C00002",
+               "http://identifiers.org/pubchem.substance/3304"
+  ATP identity "http://identifiers.org/3dmet/B01125"
+  Cr identity "http://identifiers.org/chebi/CHEBI:16919",
+              "http://identifiers.org/kegg.compound/C00300",
+              "http://identifiers.org/pubchem.substance/3594"
+  Cr identity "http://identifiers.org/3dmet/B00084"
+  P_ii identity "http://identifiers.org/chebi/CHEBI:24838"
+  P_i identity "http://identifiers.org/chebi/CHEBI:24838"
+  Jsyn identity "http://identifiers.org/go/GO:0006754"
+  Jsyn identity "http://identifiers.org/go/GO:0006757"
+  J_CK_Mi identity "http://identifiers.org/ec-code/2.7.3.2"
+  J_CK_Mi identity "http://identifiers.org/go/GO:0004111"
+  J_CK_MM identity "http://identifiers.org/ec-code/2.7.3.2"
+  J_CK_MM identity "http://identifiers.org/go/GO:0004111"
+  Jhyd_reaction identity "http://identifiers.org/ec-code/3.6.4.1"
+  J_diff_Pi identity "http://identifiers.org/go/GO:0006817"
+  J_diff_Cr identity "http://identifiers.org/go/GO:0015881"
+  J_diff_ADP identity "http://identifiers.org/go/GO:0051503"
+  J_diff_ADP identity "http://identifiers.org/go/GO:0015866"
+  J_diff_PCr identity "http://identifiers.org/go/GO:0006810"
+  J_diff_PCr identity "http://identifiers.org/go/GO:0015881"
+  J_diff_ATP identity "http://identifiers.org/go/GO:0015867"
+  J_diff_ATP identity "http://identifiers.org/go/GO:0051503",
+                      "http://identifiers.org/go/GO:0006810"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1201250000"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000408"
+  model publication "http://identifiers.org/pubmed/21912519"
+  model origin "http://identifiers.org/biomodels.db/BIOMD0000000041",
+               "http://identifiers.org/biomodels.db/MODEL1006230027"
+  model hasTaxon "http://identifiers.org/taxonomy/9984"
+  model isVersionOf "http://identifiers.org/go/GO:0046034",
+                    "http://identifiers.org/go/GO:0006600"
+  model created "2012-01-26T13:59:48Z"
+  model modified "2015-02-25T12:27:50Z"
+  model creator1.givenName "Vijayalakshmi"
+  model creator1.familyName "Chelliah"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "viji@ebi.ac.uk"
+  model creator2.givenName "Hannes"
+  model creator2.familyName "Hettling"
+  model creator2.organization "VU University Amsterdam"
+  model creator2.email "hettling@few.vu.nl"
+
+  // Notes:
+  model notes ```
+This model is from the article: 
+** 	Analyzing the functional properties of the creatine kinase system with multiscale
+&apos;sloppy&apos; modeling. ** 
+Hettling H, van Beek JH *PLoS Comput Biol.*2011 Aug;7(8):e1002130. [PMEDID](http://www.ncbi.nlm.nih.gov/pubmed/PMEDID), 
+**Abstract:** 
+In this study the function of the two isoforms of creatine kinase (CK; EC 2.7.3.2)
+in myocardium is investigated. The &apos;phosphocreatine shuttle&apos; hypothesis
+states that mitochondrial and cytosolic CK plays a pivotal role in the transport
+of high-energy phosphate (HEP) groups from mitochondria to myofibrils in contracting
+muscle. Temporal buffering of changes in ATP and ADP is another potential role of
+CK. With a mathematical model, we analyzed energy transport and damping of high peaks
+of ATP hydrolysis during the cardiac cycle. The analysis was based on multiscale
+data measured at the level of isolated enzymes, isolated mitochondria and on dynamic
+response times of oxidative phosphorylation measured at the whole heart level. Using
+&apos;sloppy modeling&apos; ensemble simulations, we derived confidence intervals
+for predictions of the contributions by phosphocreatine (PCr) and ATP to the transfer
+of HEP from mitochondria to sites of ATP hydrolysis. Our calculations indicate that
+only 15±8% (mean±SD) of transcytosolic energy transport is carried by PCr, contradicting
+the PCr shuttle hypothesis. We also predicted temporal buffering capabilities of
+the CK isoforms protecting against high peaks of ATP hydrolysis (3750 µM\*s(-1))
+in myofibrils. CK inhibition by 98% in silico leads to an increase in amplitude of
+mitochondrial ATP synthesis pulsation from 215±23 to 566±31 µM\*s(-1), while amplitudes
+of oscillations in cytosolic ADP concentration double from 77±11 to 146±1 µM.
+Our findings indicate that CK acts as a large bandwidth high-capacity temporal energy
+buffer maintaining cellular ATP homeostasis and reducing oscillations in mitochondrial
+metabolism. However, the contribution of CK to the transport of high-energy phosphate
+groups appears limited. Mitochondrial CK activity lowers cytosolic inorganic phosphate
+levels while cytosolic CK has the opposite effect. 
+
+This model originates from BioModels Database: A Database of Annotated Published
+Models (http://www.ebi.ac.uk/biomodels/). It is copyright (c) 2005-2012 The BioModels.net
+Team. 
+For more information see the [terms of use](http://www.ebi.ac.uk/biomodels/legal.html). 
+To cite BioModels Database, please use: [Li C, Donizelli M, Rodriguez N, Dharuri H, Endler L, Chelliah V, Li L, He E, Henry A, Stefan MI, Snoep JL, Hucka M, Le Novère N, Laibe C (2010) BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models. BMC Syst Biol., 4:92.](http://www.ncbi.nlm.nih.gov/pubmed/20587024)
+```
+  time_Jhyd_step notes ```
+Time point in simulation, where the heart rate is increased (base condition to test
+condition)
+```
+  last_time_fired notes "Last time in simulation where the &apos;pulsatile&apos; event took place"
+  stepsize notes "stepsize for integration"
+  pulsatility notes "1 if simulation with pulsatile ATP hydrolysis function is desired, otherwise 0"
+  Jhyd notes "Time course of ATP hydrolysis"
+  phase notes "phase of pulsatile ATP hydrolysis"
+  fracSysUp notes ```
+fraction of time in the cardiac cycle where systole takes place and where the energy
+demand is still increasing (before the energy consumption peak)
+```
+  fracSysDown notes ```
+fraction of time in the cardiac cycle where systole takes place and where the energy
+demand is decreasing (after the energy consumption peak)
+```
+  VhydAmp_test notes "Amplitude of ATP hydrolysis time course at test condition (elevated heart rate)"
+  fracDia notes "fraction of time in the cardiac cycle where diastole takes place"
+  VhydAmp_basis notes "Amplitude of ATP hydrolysis time course at base condition (lower heart rate)"
+  Jhyd_test notes "Average rate of ATP hydrolysis at test condition"
+  heartrate_bpm notes "Current heart rate"
+  heartrate_test notes "heart rate at test condition"
+  tmito_factor notes ```
+Internal parameter for tmito calculation. Value is zero in base condition, otherwise
+one
+```
+  j_diff_pcr notes "Diffusion of phosphocreatine across the mitochondrial outer membrane"
+  PSmomPCr notes ```
+Permeability surface product for the permeability of the outer mitochondrial membrane
+to phosphocreatine
+```
+  j_diff_atp notes "Diffusion of ATP across the mitochondrial outer membrane"
+  PSmomATP notes ```
+Permeability surface product for the permeability of the outer mitochondrial membrane
+to ATP and ADP
+```
+  densyn notes ```
+Denominator for ATP synthsis rearction term, see eq. A25 in van Beek, Am J Physiol
+Cell Physiol. 2007 Sep;293(3):C815-29
+```
+  Kadp notes "Apparent Km mitochondria for ADP"
+  Kpi notes "Apparent Km mitochondria for inorganic phosphate"
+  tmito notes "Time constant of ATP synthesis time course in response to a step in ATP demand"
+  vatpnorm notes "Normalized ATP production time course"
+  jsyn notes "ATP synthesis time course"
+  Jhyd_basis notes "Average ATP hydrolysis at base condition"
+  Vmaxsyn notes "Maximum ATP synthesis velocity"
+  r_diff_pcr notes ```
+Fraction of high-energy phosphate transported across the mitochondrial outer membrane
+via phosphocreatine
+```
+  j_ck_mi notes "Flux of mitochondrial creatine kinase reaction"
+  VmaxMif notes "Maximum velocity Mi-CK (PCr production)"
+  KiaMi notes "Binary dissociation constant ATP"
+  KbMi notes "Ternary dissociation constant Cr"
+  VmaxMib notes "Maximum velocity Mi-CK (ATP production)"
+  KicMi notes "Binary dissociation constant ADP"
+  KdMi notes "Ternary dissociation constant PCr"
+  KibMi notes "Binary dissociation constant Cr"
+  KidMi notes "Binary dissociation constant PCr"
+  j_ck_mm notes "Flux of cytosolic creatine kinase reaction"
+  VmaxMMf notes "Maximum velocity MM-CK (ATP production)"
+  KiaMM notes "Binary dissociation constant ATP"
+  KbMM notes "Ternary dissociation constant Cr"
+  VmaxMMb notes "Maximum velocity MM-CK (PCr production)"
+  KicMM notes "Binary dissociation constant ADP"
+  KdMM notes "Ternary dissociation constant PCr"
+  KibMM notes "Binary dissociation constant Cr"
+  KidMM notes "Binary dissociation constant PCr"
+  j_diff_adp notes "Diffusion of ADP across the mitochondrial outer membrane"
+  j_diff_cr notes "Diffusion of creatine across the mitochondrial outer membrane"
+  PSmomCr notes ```
+Permeability surface product for the permeability of the outer mitochondrial membrane
+to creatine
+```
+  j_diff_pi notes "Diffusion of inorganic phosphate across the mitochondrial outer membrane"
+  PSmomPi notes ```
+Permeability surface product for the permeability of the outer mitochondrial membrane
+to inorganic phosphate
+```
+  heartrate_basis notes "heart rate at base condition (before heart rate gets altered)"
+  ck_factor_iaa notes ```
+Factor of inhibition of creatine kinase reaction when the heart is exposed to iodoacetic
+acid (IAA)
+```
+  ck_factor_ia notes ```
+Factor of inhibition of creatine kinase reaction when the heart is exposed to iodoacetamide
+(IA)
+```
+  K_CK_eq notes "Equilibrium constant for Mi-CK and MM-CK"
+  VmaxMif_full_activity notes "Maximum velocity Mi-CK (PCr production) without any inhibition by IAA of IA"
+  VmaxMMf_full_activity notes "Maximum velocity MM-CK (ATP production) without inhibition by IA or IAA"
+end
+
+Hettling2011 is "Hettling2011_CreatineKinase"

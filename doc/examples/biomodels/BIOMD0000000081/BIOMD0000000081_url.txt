@@ -1,0 +1,319 @@
+// Created by libAntimony v3.2.0
+model *Suh2004_KCNQ_regulation()
+
+  // Compartments and Species:
+  compartment EX, M, Cytoplasm;
+  species GTPgS_C in Cytoplasm, KCNQsites_M in M, PIP2_M in M, GGDPbS_M in M;
+  species $Mg2_C in Cytoplasm, ATP_C in Cytoplasm, oxoM_EX in EX, GDPbS_C in Cytoplasm;
+  species GGTPMg_M in M, GDP_C in Cytoplasm, $GTP_C in Cytoplasm, GGDPAlF4Mg_M in M;
+  species ip3_C in Cytoplasm, AlF4_C in Cytoplasm, G_M in M, GGTP_M in M;
+  species GGDPAlF4_M in M, GGTPgS_M in M, PI_M in M, PIP_M in M, PIP2xKCNQ_M in M;
+  species GGTPgSMg_M in M, GGDP_M in M;
+
+  // Assignment Rules:
+  GTP_C := 100 - 50*exp(-(0.00833333333333333*(290 + time)));
+  MgSat20 := 1*(1/(1 + 20*(1/Mg2_C)));
+  ATPSat300 := 1*(1/(1 + 300*(1/(0.5 + ATP_C))));
+  MgSat10 := 0.2 + 0.8*1*(1/(1 + KMgGTPase*(1/Mg2_C)));
+  OxoSat := 1*(1/(1 + Koxom*(1/(1e-5 + oxoM_EX))));
+  Gactive := GGTPMg_M + GGTPgSMg_M + GGDPAlF4Mg_M;
+  ATPSat1000 := 1*(1/(1 + 1000*(1/(0.5 + ATP_C))));
+  I_KCNQ := 1.33*(0.025*PIP2xKCNQ_M)^nHill;
+  fGactive := (GGTPMg_M + GGTPgSMg_M + GGDPAlF4Mg_M)/200;
+
+  // Reactions:
+  PIP5kinase: 0.0009967 ATP_C + PIP_M -> PIP2_M; (0.2 + 0.8*MgSat20)*PIP5kinase_kPIP5Kinase*PIP_M*ATPSat300;
+  IP3Phosphatase: 1.66611e-18 ip3_C -> ; Cytoplasm*(ip3_C*IP3Phosphatase_kIP3ase*NA_micro);
+  PIP2binding: KCNQsites_M + PIP2_M -> PIP2xKCNQ_M; M*(PIP2binding_kPIP2on*KCNQsites_M*PIP2_M + -(PIP2binding_kPIP2off*PIP2xKCNQ_M));
+  MgonGGTPgS: GGTPgS_M -> GGTPgSMg_M; MgonGGTPgS_kMg2onGTPgS*GGTPgS_M*Mg2_C*M;
+  GGTPase: GGTPMg_M -> GGDP_M; M*(GGTPase_kGGTPase*MgSat10*GGTPMg_M);
+  GTPon: G_M -> GGTP_M; (GTPon_kGTPon*G_M*GTP_C + -(GTPon_kGTPoff*GGTP_M))*M;
+  GTPgSon: 0.0009967 GTPgS_C + G_M -> GGTPgS_M; (GTPgSon_kGTPgSon*G_M*GTPgS_C + -(GTPgSon_kGTPgSoff*GGTPgS_M))*M;
+  GDPbSon: G_M + 0.0009967 GDPbS_C -> GGDPbS_M; (GDPbSon_kGDPbSon*G_M*GDPbS_C + -(GDPbSon_kGGDPbSoff*(1 + 20*OxoSat)*GGDPbS_M))*M;
+  MgGTPon: GGTP_M -> GGTPMg_M; MgGTPon_kMg2onGTP*GGTP_M*Mg2_C*M;
+  GDPdissoc: GGDP_M -> 0.0009967 GDP_C + G_M; (GDPdissoc_kGDPoff*GGDP_M*(OxoSat + GDPdissoc_TonicAct) + -(GDPdissoc_kGDPon*GDP_C*G_M))*M;
+  PIP2_5Pase: PIP2_M -> PIP_M; M*(MgSat20*PIP2_5Pase_kPIP2Pase*PIP2_M);
+  PLC: PIP2_M -> 0.0009967 ip3_C; PLC_kPLC*(fGactive + PLC_PLCspont)*PIP2_M*M;
+  AlF4on: 0.0009967 AlF4_C + GGDP_M -> GGDPAlF4_M; (AlF4on_kAlF4on*AlF4_C*GGDP_M + -(AlF4on_kAlF4off*GGDPAlF4_M))*M;
+  PI4Kinase: 0.0009967 ATP_C + PI_M -> PIP_M; (0.2 + 0.8*MgSat20)*PI4Kinase_kPI4Kinase*PI_M*ATPSat1000*M;
+  MgonGDPAlF4: GGDPAlF4_M -> GGDPAlF4Mg_M; MgonGDPAlF4_kMgonAlF4*GGDPAlF4_M*Mg2_C*M;
+
+  // Events:
+  event_0000001_0: at 0 after time >= 3: oxoM_EX = 10;
+  event_0000002_0: at 0 after time >= 8: oxoM_EX = 0;
+
+  // Species initializations:
+  GTPgS_C = 0;
+  GTPgS_C has substance_per_volume;
+  KCNQsites_M = 6.7;
+  KCNQsites_M has substance_per_volume;
+  PIP2_M = 5000;
+  PIP2_M has substance_per_volume;
+  GGDPbS_M = 0;
+  GGDPbS_M has substance_per_volume;
+  Mg2_C = 2100;
+  Mg2_C has substance_per_volume;
+  ATP_C = 3000;
+  ATP_C has substance_per_volume;
+  oxoM_EX = 0;
+  oxoM_EX has substance_per_volume;
+  GDPbS_C = 0;
+  GDPbS_C has substance_per_volume;
+  GGTPMg_M = 0.1;
+  GGTPMg_M has substance_per_volume;
+  GDP_C = 0;
+  GDP_C has substance_per_volume;
+  GTP_C has substance_per_volume;
+  GGDPAlF4Mg_M = 0;
+  GGDPAlF4Mg_M has substance_per_volume;
+  ip3_C = 0.48;
+  ip3_C has substance_per_volume;
+  AlF4_C = 0;
+  AlF4_C has substance_per_volume;
+  G_M = 0.065;
+  G_M has substance_per_volume;
+  GGTP_M = 0.048;
+  GGTP_M has substance_per_volume;
+  GGDPAlF4_M = 0;
+  GGDPAlF4_M has substance_per_volume;
+  GGTPgS_M = 0;
+  GGTPgS_M has substance_per_volume;
+  PI_M = 200000;
+  PI_M has substance_per_volume;
+  PIP_M = 1150;
+  PIP_M has substance_per_volume;
+  PIP2xKCNQ_M = 33.3;
+  PIP2xKCNQ_M has substance_per_volume;
+  GGTPgSMg_M = 0;
+  GGTPgSMg_M has substance_per_volume;
+  GGDP_M = 200;
+  GGDP_M has substance_per_volume;
+
+  // Compartment initializations:
+  EX = 1;
+  EX has volume;
+  M = 1;
+  M has volume;
+  Cytoplasm = 1;
+  Cytoplasm has volume;
+  MgSat20 has unit_0;
+  ATPSat300 has unit_0;
+  MgSat10 has unit_0;
+
+  // Variable initializations:
+  KMgGTPase = 10;
+  KMgGTPase has unit_2;
+  OxoSat has unit_0;
+  Koxom = 8;
+  Koxom has unit_2;
+  Gactive has unit_1;
+  ATPSat1000 has unit_0;
+  I_KCNQ has unit_0;
+  nHill = 1.8;
+  nHill has unit_0;
+  fGactive has unit_0;
+  NA_micro = 6.022e+17;
+  NA_micro has unit_3;
+  PIP5kinase_kPIP5Kinase = 0.06;
+  IP3Phosphatase_kIP3ase = 0.3;
+  PIP2binding_kPIP2off = 0.25;
+  PIP2binding_kPIP2on = 0.00025;
+  MgonGGTPgS_kMg2onGTPgS = 0.002;
+  GGTPase_kGGTPase = 1.8;
+  GTPon_kGTPoff = 0.08;
+  GTPon_kGTPon = 0.45;
+  GTPgSon_kGTPgSoff = 0.005;
+  GTPgSon_kGTPgSon = 0.006;
+  GDPbSon_kGDPbSon = 0.28;
+  GDPbSon_kGGDPbSoff = 0.1;
+  MgGTPon_kMg2onGTP = 0.003;
+  GDPdissoc_TonicAct = 0.002;
+  GDPdissoc_kGDPoff = 0.5;
+  GDPdissoc_kGDPon = 0.003;
+  PIP2_5Pase_kPIP2Pase = 0.005;
+  PLC_PLCspont = 0.00075;
+  PLC_kPLC = 4.8;
+  AlF4on_kAlF4off = 0.005;
+  AlF4on_kAlF4on = 7e-06;
+  PI4Kinase_kPI4Kinase = 0.0001;
+  MgonGDPAlF4_kMgonAlF4 = 0.002;
+
+  // Other declarations:
+  var MgSat20, ATPSat300, MgSat10, OxoSat, Gactive, ATPSat1000, I_KCNQ, fGactive;
+  const EX, M, Cytoplasm, KMgGTPase, Koxom, nHill, NA_micro;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = (1e-6 metre)^2;
+  unit volume = litre;
+  unit time_unit = second;
+  unit substance = item;
+  unit unit_0 = 1 / dimensionless^-0;
+  unit unit_1 = item / (1e6 metre)^2;
+  unit unit_2 = item * avogadro / ((1e-6 dimensionless)^-0 * litre);
+  unit unit_3 = 1 / 1e6 avogadro;
+  unit extent = substance;
+  unit substance_per_volume = item / litre;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1";
+  unit_1 is "#/Mm²";
+  unit_2 is "µmol/l";
+  unit_3 is "1/MAvogadro";
+  EX is "Extracellular";
+  M is "Membrane";
+  GGDPAlF4Mg_M is "GGDPAIF4Mg_M";
+  ip3_C is "IP3_C";
+  AlF4_C is "AIF4_C";
+  GGDPAlF4_M is "GGDPAIF4_M";
+  event_0000001_0 is "event_0000001";
+  event_0000002_0 is "event_0000002";
+  NA_micro is "NA(micro)";
+  AlF4on is "AIF4on";
+  MgonGDPAlF4 is "MgonGDPAIF4";
+
+  // CV terms:
+  EX identity "http://identifiers.org/go/GO:0005576"
+  M identity "http://identifiers.org/go/GO:0005886"
+  Cytoplasm identity "http://identifiers.org/go/GO:0005737"
+  GTPgS_C identity "http://identifiers.org/kegg.compound/C01806"
+  GTPgS_C identity "http://identifiers.org/chebi/CHEBI:5235"
+  KCNQsites_M hasPart "http://identifiers.org/uniprot/O88944"
+  KCNQsites_M hasPart "http://identifiers.org/uniprot/O43526"
+  PIP2_M identity "http://identifiers.org/chebi/CHEBI:18348"
+  PIP2_M identity "http://identifiers.org/kegg.compound/C04637"
+  GGDPbS_M hasPart "http://identifiers.org/chebi/CHEBI:38309"
+  GGDPbS_M hasPart "http://identifiers.org/go/GO:0005834"
+  Mg2_C identity "http://identifiers.org/chebi/CHEBI:25107"
+  Mg2_C identity "http://identifiers.org/kegg.compound/C00305"
+  ATP_C identity "http://identifiers.org/kegg.compound/C00002"
+  ATP_C identity "http://identifiers.org/chebi/CHEBI:15422"
+  oxoM_EX identity "http://identifiers.org/chebi/CHEBI:38322"
+  GDPbS_C isVersionOf "http://identifiers.org/chebi/CHEBI:38309"
+  GGTPMg_M hasPart "http://identifiers.org/kegg.compound/C00044"
+  GGTPMg_M hasPart "http://identifiers.org/kegg.compound/C00305"
+  GGTPMg_M hasPart "http://identifiers.org/go/GO:0005834"
+  GGTPMg_M hasPart "http://identifiers.org/chebi/CHEBI:18420"
+  GGTPMg_M hasPart "http://identifiers.org/chebi/CHEBI:15996"
+  GGTPMg_M hasPart "http://identifiers.org/chebi/CHEBI:25107"
+  GDP_C identity "http://identifiers.org/kegg.compound/C00035"
+  GDP_C identity "http://identifiers.org/chebi/CHEBI:17552"
+  GTP_C identity "http://identifiers.org/chebi/CHEBI:15996"
+  GTP_C identity "http://identifiers.org/kegg.compound/C00044"
+  GGDPAlF4Mg_M hasPart "http://identifiers.org/uniprot/P29992"
+  GGDPAlF4Mg_M hasPart "http://identifiers.org/kegg.compound/C00305"
+  GGDPAlF4Mg_M hasPart "http://identifiers.org/kegg.compound/C00035"
+  GGDPAlF4Mg_M hasPart "http://identifiers.org/chebi/CHEBI:30111"
+  GGDPAlF4Mg_M hasPart "http://identifiers.org/chebi/CHEBI:25107"
+  GGDPAlF4Mg_M hasPart "http://identifiers.org/chebi/CHEBI:17552"
+  ip3_C identity "http://identifiers.org/chebi/CHEBI:16595"
+  ip3_C identity "http://identifiers.org/kegg.compound/C01245"
+  AlF4_C identity "http://identifiers.org/chebi/CHEBI:30111"
+  G_M identity "http://identifiers.org/go/GO:0005834"
+  GGTP_M hasPart "http://identifiers.org/go/GO:0005834"
+  GGTP_M hasPart "http://identifiers.org/chebi/CHEBI:15996"
+  GGTP_M hasPart "http://identifiers.org/kegg.compound/C00044"
+  GGDPAlF4_M hasPart "http://identifiers.org/kegg.compound/C00035"
+  GGDPAlF4_M hasPart "http://identifiers.org/go/GO:0005834"
+  GGDPAlF4_M hasPart "http://identifiers.org/chebi/CHEBI:17552"
+  GGDPAlF4_M hasPart "http://identifiers.org/chebi/CHEBI:30111"
+  GGTPgS_M hasPart "http://identifiers.org/go/GO:0005834"
+  GGTPgS_M hasPart "http://identifiers.org/chebi/CHEBI:43000"
+  GGTPgS_M hasPart "http://identifiers.org/chebi/CHEBI:5235"
+  GGTPgS_M hasPart "http://identifiers.org/kegg.compound/C01806"
+  PI_M identity "http://identifiers.org/chebi/CHEBI:16749"
+  PI_M identity "http://identifiers.org/kegg.compound/C01194"
+  PIP_M identity "http://identifiers.org/chebi/CHEBI:17526"
+  PIP_M identity "http://identifiers.org/kegg.compound/C01277"
+  PIP2xKCNQ_M hasPart "http://identifiers.org/uniprot/O88944"
+  PIP2xKCNQ_M hasPart "http://identifiers.org/chebi/CHEBI:18348"
+  PIP2xKCNQ_M hasPart "http://identifiers.org/kegg.compound/C04637"
+  PIP2xKCNQ_M hasPart "http://identifiers.org/uniprot/O43526"
+  GGTPgSMg_M hasPart "http://identifiers.org/kegg.compound/C00305"
+  GGTPgSMg_M hasPart "http://identifiers.org/chebi/CHEBI:5235"
+  GGTPgSMg_M hasPart "http://identifiers.org/chebi/CHEBI:25107"
+  GGTPgSMg_M hasPart "http://identifiers.org/kegg.compound/C01806"
+  GGTPgSMg_M hasPart "http://identifiers.org/go/GO:0005834"
+  GGTPgSMg_M hasPart "http://identifiers.org/chebi/CHEBI:18420"
+  GGDP_M hasPart "http://identifiers.org/go/GO:0005834"
+  GGDP_M hasPart "http://identifiers.org/chebi/CHEBI:17552"
+  GGDP_M hasPart "http://identifiers.org/kegg.compound/C00035"
+  PIP5kinase identity "http://identifiers.org/kegg.reaction/R03469"
+  PIP5kinase isVersionOf "http://identifiers.org/ec-code/2.7.1.68"
+  PIP5kinase isVersionOf "http://identifiers.org/go/GO:0016308"
+  IP3Phosphatase identity "http://identifiers.org/kegg.reaction/R03394"
+  IP3Phosphatase isVersionOf "http://identifiers.org/ec-code/3.1.3.56"
+  IP3Phosphatase isVersionOf "http://identifiers.org/go/GO:0004445"
+  PIP2binding isVersionOf "http://identifiers.org/go/GO:0005267"
+  PIP2binding isVersionOf "http://identifiers.org/go/GO:0005546"
+  MgonGGTPgS isPartOf "http://identifiers.org/go/GO:0031684"
+  GGTPase isVersionOf "http://identifiers.org/go/GO:0003924"
+  GTPon isPartOf "http://identifiers.org/go/GO:0031684"
+  GTPgSon isPartOf "http://identifiers.org/go/GO:0031684"
+  GDPbSon isPartOf "http://identifiers.org/go/GO:0031684"
+  MgGTPon isPartOf "http://identifiers.org/go/GO:0031684"
+  GDPdissoc isPartOf "http://identifiers.org/go/GO:0031684"
+  PIP2_5Pase identity "http://identifiers.org/kegg.reaction/R04404"
+  PIP2_5Pase isVersionOf "http://identifiers.org/ec-code/3.1.3.36"
+  PIP2_5Pase isVersionOf "http://identifiers.org/go/GO:0004439"
+  PLC identity "http://identifiers.org/kegg.reaction/R03435"
+  PLC isVersionOf "http://identifiers.org/ec-code/3.1.4.11"
+  PLC isVersionOf "http://identifiers.org/go/GO:0004435"
+  PLC isVersionOf "http://identifiers.org/go/GO:0007200"
+  AlF4on isPartOf "http://identifiers.org/go/GO:0031684"
+  PI4Kinase identity "http://identifiers.org/kegg.reaction/R03361"
+  PI4Kinase isVersionOf "http://identifiers.org/ec-code/2.7.1.67"
+  PI4Kinase isVersionOf "http://identifiers.org/go/GO:0004430"
+  MgonGDPAlF4 isPartOf "http://identifiers.org/go/GO:0031684"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL4662889298",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000081"
+  model hasPart "http://identifiers.org/go/GO:0007207"
+  model hasPart "http://identifiers.org/go/GO:0006629"
+  model identity "http://identifiers.org/biomodels.db/MODEL4662889298"
+  model identity "http://identifiers.org/kegg.pathway/map04020"
+  model identity "http://identifiers.org/biomodels.db/BIOMD0000000081"
+  model identity "http://identifiers.org/kegg.pathway/map04070"
+  model hasTaxon "http://identifiers.org/taxonomy/9606"
+  model isDescribedBy "http://identifiers.org/pubmed/15173220"
+  model created "2006-11-09T18:25:52Z"
+  model modified "2012-07-05T16:29:50Z"
+  model creator1.givenName "Harish"
+  model creator1.familyName "Dharuri"
+  model creator1.organization "California Institute of Technology"
+  model creator1.email "hdharuri@cds.caltech.edu"
+
+  // Notes:
+  model notes ```
+The model reproduces FIG 11A and FIG 11B of the paper. However, please note that
+FIG 11B is a plot of normalised amounts versus time. The "stoichiometry"
+field has been used to convert fluxes from membrane species to volume species. The
+value of 0.0009967 is a product of (Surface to Volume_M\*(1/Avagadro&apos;s number)\*1E21.
+0.6 is the surface to volume ratio of the plasma membrane, 1E21 is required for a
+unit surface to volume ratio and the Avagadro&apos;s number is present in the denominator
+to convert molecules to moles. The model was successfully tested using MathSBML and
+SBML ODESolver. 
+All the kinetic laws have the unit *items per second* , which
+requires the one reaction taking place in the cytoplasm - *IP3Phosphatase* 
+- to include an explicit conversion factor both in the kinetic law and the
+stoichiometry of *IP3_C* . The kinetic law is multiplied and the stoichiometry
+divided by the number of molecules per micro-mole. This conversion factor is only
+required for correct units and can be replaced by 1, if it should lead to numerical
+problems. 
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Creative Commons CC0") for more information. 
+
+In summary, you are entitled to use this encoded model in absolutely any manner you
+deem suitable, verbatim, or with modification, alone or embedded it in a larger context,
+redistribute it, commercially or not, in a restricted way or not.
+
+
+To cite BioModels Database, please use: [Li C, Donizelli M, Rodriguez N, Dharuri H, Endler L, Chelliah V, Li L, He E, Henry A, Stefan MI, Snoep JL, Hucka M, Le Novère N, Laibe C (2010) BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models. BMC Syst Biol., 4:92.](http://www.ncbi.nlm.nih.gov/pubmed/20587024)
+```
+end
+
+Suh2004_KCNQ_regulation is "Suh2004_KCNQ_Regulation"

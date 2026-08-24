@@ -1010,6 +1010,10 @@ Variable* Registry::AddNewReactionToCurrent(rd_type divider, Formula* formula, i
   {
     retval = CurrentModule()->AddNewReaction(blank, divider, m_currentReactantLists[0], formula);
   }
+  else if (type == 3)
+  {
+    retval = CurrentModule()->AddNewReaction(blank, divider, blank, formula);
+  }
   m_currentReactantLists.clear();
   return retval;
 }
@@ -1030,9 +1034,13 @@ Variable* Registry::AddNewReactionToCurrent(rd_type divider, Formula* formula, V
   {
     retval = CurrentModule()->AddNewReaction( blank, divider,  m_currentReactantLists[0], formula, var);
   }
+  else if (type == 3)
+  {
+    retval = CurrentModule()->AddNewReaction(blank, divider, blank, formula, var);
+  }
   else
   {
-    assert(false); //Should only be three options.
+    assert(false); //Should only be four options.
   }
   m_currentReactantLists.clear();
   return retval;

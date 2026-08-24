@@ -1,0 +1,498 @@
+// Created by libAntimony v3.2.0
+model *MODEL1509230010()
+
+  // Compartments and Species:
+  compartment VArt, VGut, VGutLumen, VLung, VVen, VRest, VKidney, VLiver;
+  compartment VKidneyTubules;
+  substanceOnly species CArt in VArt, CGut in VGut, AGutlumen in VGutLumen;
+  substanceOnly species CLung in VLung, CVen in VVen, CRest in VRest, CLiver in VLiver;
+  substanceOnly species CMetabolized in VLiver, CKidney in VKidney, CTubules in VKidneyTubules;
+
+  // Reactions:
+  J1: CArt => CGut; (QGut/VArt)*CArt;
+  J2: AGutlumen => CGut; kGutabs*AGutlumen;
+  J3: CLung => CArt; (QCardiac/VLung)*CLung;
+  J4: CVen => CLung; (QCardiac/VVen)*CVen;
+  J5: CArt => CRest; QRest*(CArt/VArt);
+  J6: CRest => CVen; (QRest/VRest)*CRest*Ratioblood2plasma/(KRest2plasma*Fraction_unbound_plasma);
+  J7: CArt => CLiver; (QLiver/VArt)*CArt;
+  J8: CLiver => CMetabolized; CLmetabolism*CLiver/(Kliver2plasma*Fraction_unbound_plasma);
+  J9: CGut => CLiver; (QGut/VGut)*CGut;
+  J10: CLiver => CVen; ((QLiver + QGut)/VLiver)*CLiver*Ratioblood2plasma/(Kliver2plasma*Fraction_unbound_plasma);
+  J11: CArt => CKidney; (QKidney/VArt)*CArt;
+  J12: CKidney => CTubules; (Qgfr/VKidney)*CKidney/Kkidney2plasma;
+  J13: CKidney => CVen; (QKidney/VKidney)*CKidney*Ratioblood2plasma/(Kkidney2plasma*Fraction_unbound_plasma);
+
+  // Species initializations:
+  CArt = 0;
+  CArt has substance;
+  CGut = 0;
+  CGut has substance;
+  AGutlumen = APAP_Dose;
+  AGutlumen has substance;
+  CLung = 0;
+  CLung has substance;
+  CVen = 0;
+  CVen has substance;
+  CRest = 0;
+  CRest has substance;
+  CLiver = 0;
+  CLiver has substance;
+  CMetabolized = 0;
+  CMetabolized has substance;
+  CKidney = 0;
+  CKidney has substance;
+  CTubules = 0;
+  CTubules has substance;
+
+  // Compartment initializations:
+  VArt = VTotal*VArt_fraction_VTotal;
+  VArt has volume;
+  VGut = VTotal*VGut_fraction_VTotal;
+  VGut has volume;
+  VGutLumen = 1;
+  VGutLumen has volume;
+  VLung = VTotal*VLung_fraction_VTotal;
+  VLung has volume;
+  VVen = VTotal*VVen_fraction_VTotal;
+  VVen has volume;
+  VRest = VTotal - VArt - VGut - VKidney - VLiver - VLung - VVen;
+  VRest has volume;
+  VKidney = VTotal*VKidney_fraction_VTotal;
+  VKidney has volume;
+  VLiver = VTotal*VLiver_fraction_VTotal;
+  VLiver has volume;
+  VKidneyTubules = 1;
+  VKidneyTubules has volume;
+
+  // Variable initializations:
+  VTotal = VTotal_ref*(BW/BW_ref);
+  VTotal has volume;
+  VArt_fraction_VTotal = 0.0357;
+  VArt_fraction_VTotal has dimensionless;
+  VGut_fraction_VTotal = 0.0263;
+  VGut_fraction_VTotal has dimensionless;
+  VLung_fraction_VTotal = 0.0121;
+  VLung_fraction_VTotal has dimensionless;
+  VVen_fraction_VTotal = 0.0812;
+  VVen_fraction_VTotal has dimensionless;
+  VLiver_fraction_VTotal = 0.0408;
+  VLiver_fraction_VTotal has dimensionless;
+  VKidney_fraction_VTotal = 0.007;
+  VKidney_fraction_VTotal has dimensionless;
+  APAP_Dose = APAP_Dose_grams/APAP_MW;
+  APAP_Dose has substance;
+  APAP_Dose_grams = 1.4;
+  APAP_Dose_grams has gram;
+  APAP_MW = 151.2;
+  APAP_MW has grams2mol;
+  BW = 70;
+  BW has kilogram;
+  BW_ref = 1;
+  BW_ref has BW_ref_unit;
+  Cardiac_flow_ref = 15;
+  Cardiac_flow_ref has Volumetric_Flow;
+  QCardiac = Cardiac_flow_ref*(BW/BW_ref)^0.75;
+  QCardiac has Volumetric_Flow;
+  QGut_fraction_QCardiac = 0.205;
+  QGut_fraction_QCardiac has dimensionless;
+  QGut = QCardiac*QGut_fraction_QCardiac;
+  QGut has Volumetric_Flow;
+  QLiver_fraction_QCardiac = 0.0535;
+  QLiver_fraction_QCardiac has dimensionless;
+  QLiver = QCardiac*QLiver_fraction_QCardiac;
+  QLiver has Volumetric_Flow;
+  QKidney_fraction_QCardiac = 0.2214;
+  QKidney_fraction_QCardiac has dimensionless;
+  QKidney = QCardiac*QKidney_fraction_QCardiac;
+  QKidney has Volumetric_Flow;
+  QRest = QCardiac - QGut - QKidney - QLiver;
+  QRest has Volumetric_Flow;
+  QGFR_ref = 0.039;
+  QGFR_ref has Volumetric_Flow;
+  Qgfr = QGFR_ref*(BW/BW_ref)^0.75;
+  Qgfr has Volumetric_Flow;
+  kGutabs = 1.5;
+  kGutabs has first_order_rate_constant;
+  CLmetabolism = 9.5;
+  CLmetabolism has first_order_rate_constant;
+  Fraction_unbound_plasma = 0.8;
+  Fraction_unbound_plasma has dimensionless;
+  Ratioblood2plasma = 1.09;
+  Ratioblood2plasma has dimensionless;
+  Kliver2plasma = 1;
+  Kliver2plasma has dimensionless;
+  Kkidney2plasma = 1;
+  Kkidney2plasma has dimensionless;
+  KRest2plasma = 1.6;
+  KRest2plasma has dimensionless;
+  VTotal_ref = 0.6;
+  VTotal_ref has volume;
+
+  // Other declarations:
+  var VTotal, QCardiac, QGut, QLiver, QKidney, QRest, Qgfr;
+  const VArt, VArt_fraction_VTotal, VGut, VGut_fraction_VTotal, VGutLumen;
+  const VLung, VLung_fraction_VTotal, VVen, VVen_fraction_VTotal, VRest, VKidney;
+  const VLiver, VLiver_fraction_VTotal, VKidney_fraction_VTotal, VKidneyTubules;
+  const APAP_Dose, APAP_Dose_grams, APAP_MW, BW, BW_ref, Cardiac_flow_ref;
+  const QGut_fraction_QCardiac, QLiver_fraction_QCardiac, QKidney_fraction_QCardiac;
+  const QGFR_ref, kGutabs, CLmetabolism, Fraction_unbound_plasma, Ratioblood2plasma;
+  const Kliver2plasma, Kkidney2plasma, KRest2plasma, VTotal_ref;
+
+  // Unit definitions:
+  unit time_unit = 3600 second;
+  unit first_order_rate_constant = 1 / 3600 second;
+  unit Volumetric_Flow = litre / 3600 second;
+  unit volume = litre;
+  unit substance = mole;
+  unit grams2mol = gram / mole;
+  unit BW_ref_unit = kilogram;
+  unit substance_volume = mole * litre;
+
+  // Display Names:
+  time_unit is "hour";
+  volume is "litre";
+  substance is "mole";
+  BW_ref_unit is "BW_ref";
+  J1 is "J01";
+  J2 is "J02";
+  J3 is "J03";
+  J4 is "J04";
+  J5 is "J05";
+  J6 is "J06";
+  J7 is "J07";
+  J8 is "J08";
+  J9 is "J09";
+
+  // SBO terms:
+  VArt.sboTerm = 290
+  VTotal.sboTerm = 468
+  VArt_fraction_VTotal.sboTerm = 380
+  VGut.sboTerm = 290
+  VGut_fraction_VTotal.sboTerm = 380
+  VGutLumen.sboTerm = 290
+  VLung.sboTerm = 290
+  VLung_fraction_VTotal.sboTerm = 380
+  VVen.sboTerm = 290
+  VVen_fraction_VTotal.sboTerm = 380
+  VRest.sboTerm = 290
+  VKidney.sboTerm = 290
+  VLiver.sboTerm = 290
+  VLiver_fraction_VTotal.sboTerm = 380
+  VKidney_fraction_VTotal.sboTerm = 380
+  VKidneyTubules.sboTerm = 290
+  CArt.sboTerm = 247
+  CGut.sboTerm = 247
+  AGutlumen.sboTerm = 247
+  APAP_Dose.sboTerm = 2
+  CLung.sboTerm = 247
+  CVen.sboTerm = 247
+  CRest.sboTerm = 247
+  CLiver.sboTerm = 247
+  CMetabolized.sboTerm = 247
+  CKidney.sboTerm = 247
+  CTubules.sboTerm = 247
+  APAP_Dose_grams.sboTerm = 504
+  APAP_MW.sboTerm = 2
+  BW.sboTerm = 2
+  BW_ref.sboTerm = 381
+  Cardiac_flow_ref.sboTerm = 380
+  QCardiac.sboTerm = 16
+  QGut_fraction_QCardiac.sboTerm = 380
+  QGut.sboTerm = 16
+  QLiver_fraction_QCardiac.sboTerm = 380
+  QLiver.sboTerm = 16
+  QKidney_fraction_QCardiac.sboTerm = 380
+  QKidney.sboTerm = 16
+  QRest.sboTerm = 16
+  QGFR_ref.sboTerm = 380
+  Qgfr.sboTerm = 16
+  kGutabs.sboTerm = 16
+  CLmetabolism.sboTerm = 16
+  Fraction_unbound_plasma.sboTerm = 470
+  Ratioblood2plasma.sboTerm = 470
+  Kliver2plasma.sboTerm = 281
+  Kkidney2plasma.sboTerm = 281
+  KRest2plasma.sboTerm = 281
+  VTotal_ref.sboTerm = 380
+  J1.sboTerm = 185
+  J2.sboTerm = 185
+  J3.sboTerm = 185
+  J4.sboTerm = 185
+  J5.sboTerm = 185
+  J6.sboTerm = 185
+  J7.sboTerm = 185
+  J8.sboTerm = 182
+  J9.sboTerm = 185
+  J10.sboTerm = 185
+  J11.sboTerm = 185
+  J12.sboTerm = 185
+  J13.sboTerm = 185
+
+  model.sboTerm = 167
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1509230010"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000619"
+  model publication "http://identifiers.org/pubmed/27636091"
+  model origin "http://identifiers.org/pubmed/20421935"
+  model isVersionOf "http://identifiers.org/go/GO:0042910",
+                    "http://identifiers.org/go/GO:0017144"
+  model hasTaxon "http://identifiers.org/taxonomy/9606"
+  model hasProperty "http://identifiers.org/mamo/MAMO_0000203"
+  model created "2015-02-04T11:47:58Z"
+  model modified "2017-05-23T10:32:07Z"
+  model creator1.givenName "Vijayalakshmi"
+  model creator1.familyName "Chelliah"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "viji@ebi.ac.uk"
+  model creator2.givenName "James"
+  model creator2.familyName "Sluka"
+  model creator2.organization "Indiana University"
+  model creator2.email "JSluka@indiana.edu"
+  model creator3.givenName "Xiao"
+  model creator3.familyName "Fu"
+  model creator3.organization "Indiana University"
+  model creator3.email "fuxiao@umail.iu.edu"
+
+  // Notes:
+  model notes ```
+# Basic PBPK (Physiologically Based PharmacoKinetic) model of Acetaminophen.
+
+This is a basic model of Acetaminophen (APAP, Paracetamol) pharmacokinetics in humans.
+Many of the model parameters (compartment volumes, volumetric flow rates,
+etc.) are scaled allometrically based on the body weight (BW) raised to the			3/4
+power. Because of that, the assigned values of many of the parameters are recalculated
+at run time and are different 			than the default values for the particular entity
+(e.g., the volume of a compartment and the volumetric flow rate between compartments).
+
+APAP dose is initially given in grams (APAP_Dose_gram), which is converted to moles
+via the APAP molecular weight (APAP_MW).			APAP quantities throughout the rest of
+the models are given in moles.
+
+The base parameters are for a 70Kg human and a pharmacological oral dose of 1.4 gram
+of APAP. Metabolism is modelled as a single ODE in the liver compartment and the
+metabolite does not leave that compartment.
+
+This model is loosely based on the model of Wambaugh and Shaw (PLoS Comput Biol.
+2010 Apr 22;6(4):e1000756. doi: 10.1371/journal.pcbi.1000756. Pubmed ID: PMID- 20421935)
+with the following changes:
+
+
+1. The lung lumen compartment was omitted.
+2. A kidney compartment was added.
+3. Glomerular Filtration is from the kidney compartment.
+4. The APAP dose was changed to 1.4g.
+5. The gut adsorption rate constant (KGutabs), tissue partition coefficients and liver metabolism rate constant (CLmetabolism) were fit using the human *in vivo* data of Critchley (Critchley, J. A., Critchley, L. A. H., Anderson, P. J., and Tomlinson, B. 2005 Journal of clinical pharmacy and therapeutics, 30(2), 179-184). 
+6. **To model the extensive re-adsorption of APAP from the kidney tubules back into the blood the QGfr value is modified. This was done by 				changing the scaling parameter QGFR_ref value from 0.31 to 0.039, resulting in a decrease in the QGfr value of 8 fold (from 7.2 L/hr to 0.91 L/hr).** 
+
+
+The parameters in this file are the **REFSIM** parameters from our
+publication.
+```
+  grams2mol notes "Units of molecular weight: grams/mole"
+  BW_ref_unit notes "Reference body weight (Kg) for allometric scaling."
+  VArt notes ```
+Volume of the arterial blood. Note that this value is modified by allometric scaling
+in an initial 				assignment or rule equation.
+```
+  VTotal notes ```
+Total perfusable volume of the body in Litres. Note that this value is modified by
+allometric scaling in an initial assignment or rule equation.
+```
+  VArt_fraction_VTotal notes ```
+Allometric scaling coefficient for fraction of cardiac output (QCardiac) that flows
+through the Arteries (QArt).
+```
+  VGut notes ```
+Perfusable volume of the Gut (small intestine). 				The compartment volume is allometrically
+scaled and is assigned in an initialAssignment.
+```
+  VGut_fraction_VTotal notes ```
+Allometric scaling coefficient for fraction of total perfusable volume of the body
+(VTotal) represented by the Gut/stomach/small intestine (VGut).
+```
+  VGutLumen notes "Lumen of the Gut. Note that the volume is arbitrary."
+  VLung notes ```
+Perfusable volume of the Lungs.				The compartment volume is allometrically scaled
+and is assigned in an initialAssignment.
+```
+  VLung_fraction_VTotal notes ```
+Allometric scaling coefficient for fraction of total perfusable volume of the body
+(VTotal) represented by the Lungs (VLung).
+```
+  VVen notes ```
+Volume of the venous blood.				The compartment volume is allometrically scaled and
+is assigned in an initialAssignment.
+```
+  VVen_fraction_VTotal notes ```
+Allometric scaling coefficient for fraction of total perfusable volume of the body
+(VTotal) represented by the Veins (VVen).
+```
+  VRest notes ```
+Perfusable volume of the Rest of the body, that is, all tissues and blood volumes
+not 				explicitly described by other compartments.				The compartment volume is
+allometrically scaled and is assigned in an initialAssignment.
+```
+  VKidney notes ```
+Perfusable volume of the Kidney.		 The compartment volume is allometrically
+scaled and is assigned in an initialAssignment.
+```
+  VLiver notes ```
+Perfusable volume of the Liver.				The compartment volume is allometrically scaled
+and is assigned in an initialAssignment.
+```
+  VLiver_fraction_VTotal notes ```
+Allometric scaling coefficient for fraction of total perfusable volume of the body
+(VTotal) represented by the Liver (VLiver).
+```
+  VKidney_fraction_VTotal notes ```
+Allometric scaling coefficient for fraction of total perfusable volume of the body
+(VTotal) represented by the Kidneys (VKidney).
+```
+  VKidneyTubules notes ```
+Kidney (renal) Tubules (lumen). This, like the gut lumen, is treated as a volumeless
+compartment.
+```
+  CArt notes "Amount of APAP in the arteries of the gut in moles."
+  CGut notes "Amount of APAP in the gut (small intestine) blood in moles."
+  AGutlumen notes "Amount of APAP in the lumen of the gut in moles."
+  APAP_Dose notes ```
+Acetaminophen dose in moles. = APAP_Dose_grams/APAP_MW. Note that this value is
+assigned by an initial assignment or rule equation.
+```
+  CLung notes "Amount of APAP in the lung blood in moles."
+  CVen notes "Amount of APAP in the venous blood in moles."
+  CRest notes ```
+Amount of APAP in the "rest of the body" in moles.
+```
+  CLiver notes "Amount of APAP in the liver blood in moles."
+  CKidney notes "Amount of APAP in the kidney blood in moles."
+  CTubules notes "Amount of APAP in the Kidney Tubules in moles."
+  APAP_Dose_grams notes "APAP dose in grams."
+  APAP_MW notes "Acetaminophen molecular weight in grams/mole."
+  BW notes ```
+Body weight, in Kg. This value, raised to the 3/4 power, is used in the allometric
+scaling equations
+```
+  BW_ref notes ```
+De-dimensionalization factor for the allometric scaling. Removes the non-integer
+exponent of the BW^(3/4) scaling factor in the allometric equations.
+```
+  Cardiac_flow_ref notes ```
+Total cardiac output reference value for individual of BW=BW_ref (70Kg) for allometric
+scaling. In Litres/hour.
+```
+  QCardiac notes ```
+Cardiac blood flow in Litres/hr. (aka arterial blood flow or QArt).Note that this
+value is modified by allometric scaling in an 				initial assignment or rule equation.
+```
+  QGut_fraction_QCardiac notes ```
+Allometric scaling coefficient for fraction of cardiac output (QCardiac) that flows
+through the Gut (QGut).
+```
+  QGut notes ```
+Volumetric blood flow through the gut in Litres/hour. Note that this value is modified
+by allometric scaling in 				an initial assignment or rule equation.
+```
+  QLiver_fraction_QCardiac notes ```
+Allometric scaling coefficient for fraction of cardiac output (QCardiac) that flows
+through the Liver (QLiver).
+```
+  QLiver notes ```
+Perfusable volume of the Liver in Litres/hr. Note that this value is modified by
+allometric scaling in an initial assignment or rule equation.
+```
+  QKidney_fraction_QCardiac notes ```
+Allometric scaling coefficient for fraction of cardiac output (QCardiac) that flows
+through the Kidney (QKidney).
+```
+  QKidney notes ```
+Kidney blood flow in Litres/hr. Note that this value is modified by allometric scaling
+				in an initial assignment or rule equation.
+```
+  QRest notes ```
+Blood throw through all other tissues, Litres/hour. Note that this value is modified
+by allometric scaling in an 				initial assignment or rule equation.
+```
+  QGFR_ref notes ```
+Qgfr coefficient for allometric scaling.
+
+**NOTE: The normal value for this parameter is 21.7L/hr.** 
+The value shown here reflects the extensive re-adsorption of APAP from the kidney
+tubules back into the blood.
+```
+  Qgfr notes ```
+Granulocyte filtration rate in Litres/hour. Note that this value is modified by allometric
+scaling in 				an initial assignment or rule equation. In addition, this vlue is
+greatly reduced to simulate resorption of APAP from the tubules in the kidney.
+```
+  CLmetabolism notes ```
+Rate of metabolism of APAP in the liver. This single kinetic constant represents
+both Phase I (e.g., Cyp-2E1) and Phase II (glucurondiation and sulfation) metabolism.
+```
+  Fraction_unbound_plasma notes "Fraction of compound in plasma that is not bound by plasma proteins."
+  Ratioblood2plasma notes "Ratio of the compound amount in (total) blood vs. plasma."
+  Kliver2plasma notes "Partition coefficient for compound between the Liver and the blood plasma."
+  Kkidney2plasma notes "Partition coefficient for compound between the Kidney and the blood plasma."
+  KRest2plasma notes "Partition coefficient for compound between the Rest (of body) and the blood plasma."
+  VTotal_ref notes ```
+Total perfusable volume of the body coefficient for allometric scaling. This is the
+lean fraction of Body Weight.
+```
+  J1 notes ```
+Blood born transfer of compound from the Arterial compartment (CArt) to the Gut (CGut)
+in moles/hour.
+```
+  J2 notes ```
+First order adsorption of compound from the lumen of the gut (AGutlumen) to the
+gut compartment (CGut) in mole/hour.
+```
+  J3 notes ```
+Blood born transfer of compound from the Lung compartment (CLung) to the Arterial
+blood compartment (CArt) in moles/hour.
+```
+  J4 notes ```
+Blood born transfer of compound from the Venous compartment (CVen) to the Lung compartment
+(CLung) in moles/hour.
+```
+  J5 notes ```
+Blood born transfer of compound from the Arterial compartment (CArt) to the Rest
+of the body compartment (CRest) in moles/hour.
+```
+  J6 notes ```
+Blood born transfer of compound from the Rest compartment (CRest) to the Venous compartment
+(CVen) in moles/hour.
+```
+  J7 notes ```
+Blood born transfer of compound from the Arterial compartment (CArt) to the Liver
+compartment (CLiver) in moles/hour.
+```
+  J8 notes ```
+Metabolism of compound in the Liver compartment (CLiver) to metabolites (CMetabolized)
+in moles/hour. The metabolites stay in the liver compartment. This single first order
+ODE represents both Phase I (Cyp-P450 2E1, 1A2) and Phase II (glucuronidation and
+sulfation) reactions.
+```
+  J9 notes ```
+Blood born transfer of compound from the Gut compartment (CGut) to the Liver compartment
+(CLiver) in moles/hour.
+```
+  J10 notes ```
+Blood born transfer of compound from the Liver compartment (CLiver) to the Venous
+compartment (CVen) in moles/hour.
+```
+  J11 notes ```
+Blood born transfer of compound from the Arterial compartment (CArt) to the Kidney
+compartment (CKidney) in moles/hour.
+```
+  J12 notes ```
+Transfer of compound from the Kidney compartment (CKidney) to the Kidney tubules
+(species CTubules 				in the compartment "KidenyTubules") in moles/hour.
+```
+  J13 notes ```
+Blood born transfer of compound from the Kidney compartment (CKidney) to the Venous
+compartment (CVen) in moles/hour.
+```
+end
+
+MODEL1509230010 is "Sluka2016  - Acetaminophen PBPK"

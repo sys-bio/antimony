@@ -184,6 +184,7 @@ formula_type Variable::GetFormulaType() const
   case varGeneProductAssociation:
   case varSpeciesCharge:
   case varSpeciesChemicalFormula:
+  case varSpeciesConversionFactor:
     return formulaINITIAL; //For lack of any other default.
   }
   assert(false); //uncaught variable type;
@@ -211,6 +212,7 @@ const Formula* Variable::GetFormula() const
   case varGeneProduct:
   case varGeneProductAssociation:
   case varSpeciesCharge:
+  case varSpeciesConversionFactor:
     return &(m_valFormula);
   case varReactionUndef:
   case varReactionGene:
@@ -258,6 +260,7 @@ Formula* Variable::GetFormula()
   case varGeneProduct:
   case varGeneProductAssociation:
   case varSpeciesCharge:
+  case varSpeciesConversionFactor:
     return &(m_valFormula);
   case varReactionUndef:
   case varReactionGene:
@@ -324,6 +327,7 @@ const Formula* Variable::GetInitialAssignment() const
   case varGeneProductAssociation:
   case varSpeciesCharge:
   case varSpeciesChemicalFormula:
+  case varSpeciesConversionFactor:
     return &(g_registry.m_blankform);
   }
   assert(false); //uncaught type
@@ -371,6 +375,7 @@ const Formula* Variable::GetAssignmentRuleOrKineticLaw() const
   case varGeneProductAssociation:
   case varSpeciesCharge:
   case varSpeciesChemicalFormula:
+  case varSpeciesConversionFactor:
     return &(g_registry.m_blankform);
   }
   assert(false); //uncaught type
@@ -418,6 +423,7 @@ Formula* Variable::GetAssignmentRuleOrKineticLaw()
   case varGeneProductAssociation:
   case varSpeciesCharge:
   case varSpeciesChemicalFormula:
+  case varSpeciesConversionFactor:
     return &(g_registry.m_blankform);
   }
   assert(false); //uncaught type
@@ -602,7 +608,6 @@ Variable* Variable::GetSubVariable(const string* name)
     if (newcharge->SetType(varSpeciesCharge)) {
       assert(false);
       g_registry.SetError("Unable to set the charge for " + GetNameDelimitedBy(".") + " because its '-charge' is already a " + VarTypeToString(newcharge->GetType()) + ", and cannot be changed to a charge variable.  This should not happen; please contact the Antimony developers with this message and your model.");
-      g_registry.SetError("Unable to set the charge for " + GetNameDelimitedBy(".") + " because its '-charge' is already a " + VarTypeToString(newcharge->GetType()) + ", and cannot be changed to a charge variable.  This should not happen; please contact the Antimony developers with this message and your model.");
       delete newcharge;
       return NULL;
     }
@@ -622,6 +627,21 @@ Variable* Variable::GetSubVariable(const string* name)
       return NULL;
     }
     return newform;
+  }
+  if (name && CaselessStrCmp(true, *name, "conversionFactor")) {
+    if (SetType(varSpeciesUndef)) {
+      g_registry.SetError("Unable to set the conversion factor for " + GetNameDelimitedBy(".") + " because that variable cannot be a species, and only species may have a conversion factor.");
+      return NULL;
+    }
+    string fakeid = m_name[m_name.size() - 1] + "-cf";
+    Variable* newcf = mod->AddOrFindVariable(&fakeid);
+    if (newcf->SetType(varSpeciesConversionFactor)) {
+      assert(false);
+      g_registry.SetError("Unable to set the conversion factor for " + GetNameDelimitedBy(".") + " because its '-cf' is already a " + VarTypeToString(newcf->GetType()) + ", and cannot be changed to a conversion factor variable.  This should not happen; please contact the Antimony developers with this message and your model.");
+      delete newcf;
+      return NULL;
+    }
+    return newcf;
   }
 
 
@@ -715,6 +735,11 @@ bool Variable::GetIsConst() const
   case varCompartment:
   case varStoichiometry:
     if (m_const == constDEFAULT) {
+      //A symbol with an assignment rule or rate rule is never constant.
+      formula_type ftype = GetFormulaType();
+      if (ftype == formulaASSIGNMENT || ftype == formulaRATE) {
+        return false;
+      }
       if (GetFormula() != NULL) {
         if (GetFormula()->GetIsConst()) {
           formconst = constCONST;
@@ -754,6 +779,7 @@ bool Variable::GetIsConst() const
   case varGeneProductAssociation:
   case varSpeciesCharge:
   case varSpeciesChemicalFormula:
+  case varSpeciesConversionFactor:
     return true;
   }
   switch(m_const) {
@@ -975,6 +1001,7 @@ bool Variable::SetType(var_type newtype)
     case varGeneProductAssociation:
     case varSpeciesCharge:
     case varSpeciesChemicalFormula:
+    case varSpeciesConversionFactor:
       g_registry.SetError(error); return true;
     }
   case varFormulaUndef:
@@ -1008,6 +1035,7 @@ bool Variable::SetType(var_type newtype)
     case varGeneProduct:
     case varGeneProductAssociation:
     case varSpeciesCharge:
+    case varSpeciesConversionFactor:
       m_type = newtype;
         return (SetFormula(&m_valFormula));
     case varModule:
@@ -1055,6 +1083,7 @@ bool Variable::SetType(var_type newtype)
     case varGeneProductAssociation:
     case varSpeciesCharge:
     case varSpeciesChemicalFormula:
+    case varSpeciesConversionFactor:
       g_registry.SetError(error); return true;
     }
   case varFormulaOperator:
@@ -1086,6 +1115,7 @@ bool Variable::SetType(var_type newtype)
     case varGeneProductAssociation:
     case varSpeciesCharge:
     case varSpeciesChemicalFormula:
+    case varSpeciesConversionFactor:
       g_registry.SetError(error); return true;
     }
   case varReactionGene:
@@ -1117,6 +1147,7 @@ bool Variable::SetType(var_type newtype)
     case varGeneProductAssociation:
     case varSpeciesCharge:
     case varSpeciesChemicalFormula:
+    case varSpeciesConversionFactor:
       g_registry.SetError(error); return true;
     }
   case varReactionUndef:
@@ -1150,6 +1181,7 @@ bool Variable::SetType(var_type newtype)
     case varGeneProductAssociation:
     case varSpeciesCharge:
     case varSpeciesChemicalFormula:
+    case varSpeciesConversionFactor:
       g_registry.SetError(error); return true;
     }
   case varInteraction:
@@ -1181,6 +1213,7 @@ bool Variable::SetType(var_type newtype)
   case varGeneProductAssociation:
   case varSpeciesCharge:
   case varSpeciesChemicalFormula:
+  case varSpeciesConversionFactor:
     g_registry.SetError(error); return true; //the already-identical cases handled above.
     return true;
   }
@@ -1336,16 +1369,38 @@ bool Variable::SetFormula(Formula* formula, bool isObjective)
   {
     string specid = GetNameDelimitedBy(".");
     specid.replace(specid.find("-charge"), 7, "");
-    if (!formula->IsDouble()) {
-      g_registry.SetError("Cannot set the charge of " + specid + "' to be " + formula->ToDelimitedStringWithEllipses(".") + ", because it must be set to just a number.");
+    if (!(formula->IsDouble() || formula->IsEmpty())) {
+      g_registry.SetError("Cannot set the charge of " + specid + "' to be '" + formula->ToDelimitedStringWithEllipses(".") + "', because it must be set to just a number.");
       return true;
     }
     m_valFormula = *formula;
     break;
   }
   case varSpeciesChemicalFormula:
-    g_registry.SetError("Cannot set '" + GetNameDelimitedBy(".") + "' to be " + formula->ToDelimitedStringWithEllipses(".") + " because a chemical formula must be defined by a string, i.e. S1.chemicalFormula is \"CH4O2\".");
+    if (formula->IsEmpty()) {
+      break;
+    }
+    g_registry.SetError("Cannot set '" + GetNameDelimitedBy(".") + "' to be '" + formula->ToDelimitedStringWithEllipses(".") + "' because a chemical formula must be defined by a string, i.e. S1.chemicalFormula is \"CH4O2\".");
     return true;
+  case varSpeciesConversionFactor:
+  {
+    string specid = GetNameDelimitedBy(".");
+    specid.replace(specid.find("-cf"), 3, "");
+    if (!(formula->IsSingleVariable() || formula->IsEmpty())) {
+      g_registry.SetError("Cannot set the conversion factor of " + specid + "' to be '" + formula->ToDelimitedStringWithEllipses(".") + "', because it must be set to reference an existing variable, i.e. '" + specid + ".conversionFactor = k'.");
+      return true;
+    }
+    vector<Variable*> vars = formula->GetVariables();
+    if (vars.size() == 1) {
+      Variable* cf = vars[0];
+      if (cf->SetType(varFormulaUndef)) {
+        g_registry.SetError("Cannot set the conversion factor of " + specid + "' to be '" + formula->ToDelimitedStringWithEllipses(".") + "', because '" + cf->GetNameDelimitedBy(".") + "' cannot be used as a parameter.");
+        return true;
+      }
+    }
+    m_valFormula = *formula;
+    break;
+  }
   }
   if (!isObjective) {
     if (m_valFormula.MakeUnitVariablesUnits()) return true;
@@ -1497,24 +1552,22 @@ bool Variable::SetAlgebraicRule(double val, Formula* formula)
     }
     if (formula->MakeUnitVariablesUnits()) return true;
 
-    //If nothing is set variable explicitly, set all default variables to non-const
+    //Every algebraic rule needs at least one non-const participant, or it
+    //can't determine anything. A participant that already has its own
+    //assignment or rate rule is already fully determined elsewhere, so it
+    //can't serve that role for this rule -- skip it. Of the rest, anything
+    //whose const-ness hasn't been explicitly set (by the user, or by an
+    //explicit SBML 'constant' attribute) defaults to non-const; anything
+    //already explicitly const or non-const is left alone.
     vector<vector<string> > formvars = formula->GetVariableStrings();
     Module* thismod = g_registry.GetModule(m_module);
-    vector<Variable*> algvars;
-    bool anyNonConst = false;
     for (size_t fv = 0; fv < formvars.size(); fv++) {
         Variable* var = thismod->GetVariable(formvars[fv]);
-        algvars.push_back(var);
-        if (var->GetConstType() == constVAR) {
-            anyNonConst = true;
-        }
-    }
-    if (!anyNonConst) {
-        for (size_t v = 0; v < algvars.size(); v++) {
-            Variable* var = algvars[v];
-            if (var->GetConstType() == constDEFAULT) {
-                algvars[v]->SetIsConst(false);
-            }
+        if (var == NULL) continue;
+        formula_type vftype = var->GetFormulaType();
+        if (vftype == formulaASSIGNMENT || vftype == formulaRATE) continue;
+        if (var->GetConstType() == constDEFAULT) {
+            var->SetIsConst(false);
         }
     }
 
@@ -1759,6 +1812,7 @@ bool Variable::SetIsConst(bool constant)
   case varGeneProductAssociation:
   case varSpeciesCharge:
   case varSpeciesChemicalFormula:
+  case varSpeciesConversionFactor:
     if (!constant) {
       g_registry.SetError(error + ", as 'constantness' is undefined for a " + VarTypeToString(m_type) + ".");
       return true;
@@ -1855,6 +1909,7 @@ bool Variable::SetSuperCompartment(Variable* var, var_type supertype)
   case varGeneProductAssociation:
   case varSpeciesCharge:
   case varSpeciesChemicalFormula:
+  case varSpeciesConversionFactor:
     assert(false); // Those things don't have components
     return false;
   case varStrand:
@@ -1911,6 +1966,7 @@ void Variable::SetComponentCompartments(bool frommodule)
   case varGeneProductAssociation:
   case varSpeciesCharge:
   case varSpeciesChemicalFormula:
+  case varSpeciesConversionFactor:
     return; //No components to set
   case varReactionUndef:
   case varReactionGene:
@@ -2140,6 +2196,7 @@ bool Variable::DeleteFromSubmodel(Variable* deletedvar)
   case varGeneProductAssociation:
   case varSpeciesCharge:
   case varSpeciesChemicalFormula:
+  case varSpeciesConversionFactor:
     //These types can't have rules to them.
     break;
   }
@@ -2348,7 +2405,7 @@ bool Variable::Synchronize(Variable* clone, const Variable* conversionFactor)
   if (m_formulatype == formulaASSIGNMENT && clone->GetFormula()->IsEmpty()) {
     clone->m_formulatype = formulaASSIGNMENT;
   }
-  if (m_formulatype == formulaRATE && clone->GetRateRule()->IsEmpty() && clone->GetFormula()->IsEmpty()) {
+  if (m_formulatype == formulaRATE && clone->GetRateRule()->IsEmpty()) {
     clone->m_formulatype = formulaRATE;
   }
   if (!m_valFormula.IsEmpty()) {
@@ -2408,6 +2465,13 @@ bool Variable::Synchronize(Variable* clone, const Variable* conversionFactor)
     }
     m_replacedformrxn = true;
     m_valReaction.Clear();
+  }
+
+  //Synchronize the Events.
+  if (m_type == varEvent && !m_valEvent.IsEmpty()) {
+    if (clone->GetEvent()->IsEmpty()) {
+      if (clone->SetEvent(&m_valEvent)) return true;
+    }
   }
 
   //Don't synchronize modules (should be accounted for above)
@@ -2746,6 +2810,7 @@ bool Variable::AllowedInFormulas() const
   case varGeneProductAssociation:
   case varSpeciesCharge:
   case varSpeciesChemicalFormula:
+  case varSpeciesConversionFactor:
     return false;
   }
   assert(false); //Uncaught type

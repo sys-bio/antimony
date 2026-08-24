@@ -1,0 +1,404 @@
+// Created by libAntimony v3.2.0
+model *Salcedo_Sora2016___Microbial_folate_biosynthesis_and_utilisation()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species DAHP in compartment_, $PEP in compartment_, Pi in compartment_;
+  species DHQ in compartment_, $EP in compartment_, DHSK in compartment_;
+  species SK in compartment_, SKP in compartment_, CVPSK in compartment_;
+  species CM in compartment_, $Gln in compartment_, Glu in compartment_, ADC in compartment_;
+  species Pyr in compartment_, pABA in compartment_, DHNTP in compartment_;
+  species $GTP in compartment_, AHMDHP in compartment_, HAD in compartment_;
+  species PTHP in compartment_, AHMDPP in compartment_, DHP in compartment_;
+  species DHF in compartment_, THF in compartment_, THFGlu in compartment_;
+  species $Gly in compartment_, $Ser in compartment_, myTHFGlu in compartment_;
+  species MTHFGlu in compartment_, $Hcy in compartment_, Met in compartment_;
+  species dTMP in compartment_, $dUMP in compartment_, meTHFGlu in compartment_;
+  species fTHFGlu in compartment_, fmtRNA in compartment_, $mtRNA in compartment_;
+  species COTwo in compartment_, ADP in compartment_, $ATP in compartment_;
+  species NADP in compartment_, $NADPH in compartment_, AMP in compartment_;
+  species DLp in compartment_, SAmDLp in compartment_, $Lp in compartment_;
+  species NAD in compartment_, $NADH in compartment_, Ammonia in compartment_;
+  species Formyl in compartment_, ffTHFGlu in compartment_;
+
+  // Reactions:
+  R1: $PEP + $EP => DAHP + Pi; compartment_*(R1_vmax*EP*PEP/(R1_kpep*R1_kep + R1_kpep*EP + R1_kep*PEP + EP*PEP));
+  R2: DAHP => DHQ + Pi; compartment_*(R2_V*DAHP/(R2_Km + DAHP));
+  R3: DHQ => DHSK; compartment_*(R3_V*DHQ/(R3_Km + DHQ));
+  R4: DHSK + $NADPH => SK + NADP; compartment_*(R4_vmax*DHSK*NADPH/(R4_kdhsk*R4_knadph + R4_kdhsk*NADPH + R4_knadph*DHSK + DHSK*NADPH));
+  R5: SK + $ATP => SKP + ADP + Pi; compartment_*(R5_vmax*SK*ATP/(R5_ksk*R5_katp + R5_ksk*ATP + R5_katp*SK + SK*ATP));
+  R6: SKP + $PEP => CVPSK + Pi; compartment_*(R6_vmax*SKP*PEP/(R6_kpep*R6_kskp + R6_kpep*PEP + R6_kskp*SKP + PEP*SKP));
+  R7: CVPSK => CM + Pi; compartment_*(R7_V*CVPSK/(R7_Km + CVPSK));
+  R8: CM + $Gln => ADC + Glu; compartment_*(R8_vmax*CM*Gln/(R8_kcm*R8_kgln + R8_kcm*Gln + R8_kgln*CM + CM*Gln));
+  R9: ADC => pABA + Pyr; compartment_*(R9_V*ADC/(R9_Km + ADC));
+  R10: $GTP => DHNTP + Formyl; compartment_*(R10_vmax*GTP/(R10_kgtp*(1 + THF/R10_kiTHF) + GTP));
+  R11: DHNTP => AHMDHP + HAD + Pi; compartment_*(R11_V*DHNTP/(R11_Km + DHNTP));
+  R27: DHNTP => PTHP + Pi; compartment_*(R27_V*DHNTP/(R27_Km + DHNTP));
+  R12: AHMDHP + $ATP => AHMDPP + AMP; compartment_*(R12_vmax*ATP*AHMDHP/(R12_kahmdhp*R12_katp + R12_katp*ATP + R12_kahmdhp*AHMDHP + ATP*AHMDHP));
+  R14: DHP + Glu + $ATP => DHF + ADP + Pi; compartment_*(R14_vmax*DHP*Glu*ATP/(R14_kdhp*R14_kglu*R14_katp + R14_kdhp*(Glu + ATP) + R14_kglu*(DHP + ATP) + R14_katp*(Glu + ATP) + DHP*Glu*ATP));
+  R15: DHF + $NADPH => THF + NADP; compartment_*(R15_vmax*DHF*NADPH/(R15_kdhf*R15_knadph + R15_kdhf*NADPH + R15_knadph*DHF + DHF*NADPH));
+  R16: THF + Glu + $ATP => THFGlu + ADP + Pi; compartment_*(R16_vmax*THF*Glu*ATP/(R16_kthf*(1 + DHF/R16_kidhf)*R16_kglu*R16_katp + R16_kthf*(Glu + ATP) + R16_kglu*(THF + ATP) + R16_katp*(THF + Glu) + THF*Glu*ATP));
+  R17: THFGlu + $Ser -> myTHFGlu + $Gly; compartment_*(R17_vmax*THFGlu*Ser/(R17_kthfglu*(1 + THF/R17_kithf)*R17_kser + R17_kthfglu*Ser + R17_kser*THFGlu + THFGlu*Ser));
+  R18b: DLp + $Gly -> SAmDLp + COTwo; compartment_*(R18b_vmax*DLp*Gly/(R18b_kgly*R18b_kdlp + R18b_kgly*Gly + R18b_kdlp*DLp + DLp*Gly));
+  R19: myTHFGlu + $NADPH => MTHFGlu + NADP; compartment_*(R19_vmax*myTHFGlu*NADPH/(R19_kmythfglu*(1 + DHF/R19_kidhf)*R19_knadph + R19_kmythfglu*NADPH + R19_knadph*myTHFGlu + myTHFGlu*NADPH));
+  R20: MTHFGlu + $Hcy => THFGlu + Met; compartment_*(R20_vmax*MTHFGlu*Hcy/(R20_kmthfglu*R20_khcy + R20_kmthfglu*Hcy + R20_khcy*MTHFGlu + MTHFGlu*Hcy));
+  R21: myTHFGlu + $dUMP => dTMP + DHF; compartment_*(R21_vmax*myTHFGlu*dUMP/(R21_kmythfglu*(1 + DHF/R21_kidhf)*R21_kdump + R21_kmythfglu*dUMP + R21_kdump*myTHFGlu + myTHFGlu*dUMP));
+  R22: myTHFGlu + NADP -> meTHFGlu + $NADPH; compartment_*(R22_vmax*myTHFGlu*NADP/(R22_kmythfglu*(1 + DHF/R22_kidhf)*R22_knadp + R22_kmythfglu*NADP + R22_knadp*myTHFGlu + myTHFGlu*NADP));
+  R25: fTHFGlu + $mtRNA -> fmtRNA + THFGlu; compartment_*(R25_vmax*fTHFGlu*mtRNA/(R25_kfthfglu*R25_kmtrna + R25_kfthfglu*mtRNA + R25_kmtrna*fTHFGlu + fTHFGlu*mtRNA));
+  R26: fTHFGlu + NADP -> THFGlu + COTwo + $NADPH; compartment_*(R26_vmax*fTHFGlu*NADP/(R26_kfthfglu*R26_knadp + R26_kfthfglu*NADP + R26_knadp*fTHFGlu + fTHFGlu*NADP));
+  R18c: THFGlu + SAmDLp -> myTHFGlu + $Lp + Ammonia; compartment_*(R18c_vmax*THFGlu*SAmDLp/(R18c_kthfglu*R18c_ksamdlp + R18c_kthfglu*SAmDLp + R18c_ksamdlp*THFGlu + THFGlu*SAmDLp));
+  R18a: $Lp + $NADH -> DLp + NAD; compartment_*(R18a_vmax*NADH*Lp/(R18a_knadh*R18a_klp + R18a_knadh*Lp + R18a_klp*NADH + NADH*Lp));
+  R13: AHMDPP + pABA => DHP + Pi; compartment_*(R13_vmax*AHMDPP*pABA/(R13_kahmdpp*R13_kpaba + R13_kpaba*AHMDPP + R13_kahmdpp*pABA + AHMDPP*pABA));
+  R24: fTHFGlu + ADP + Pi -> THFGlu + $ATP + Formyl; compartment_*(R24_vmax*fTHFGlu*ADP*Pi/(R24_kthfglu*R24_kformyl*R24_katp + R24_kthfglu*(ADP + Pi) + R24_kformyl*(fTHFGlu + Pi) + R24_katp*(ADP + fTHFGlu) + fTHFGlu*ADP*Pi));
+  R23: meTHFGlu -> fTHFGlu; compartment_*(R23_k1*meTHFGlu - R23_k2*fTHFGlu);
+  R28: meTHFGlu => ffTHFGlu; compartment_*(R28_V*meTHFGlu/(R28_Km + meTHFGlu));
+  R29: $ATP + ffTHFGlu => ADP + Pi + meTHFGlu; compartment_*(R29_vmax*ATP*ffTHFGlu/(R29_katp*R29_kffthfglu + R29_katp*ffTHFGlu + R29_kffthfglu*ATP + ATP*ffTHFGlu));
+
+  // Species initializations:
+  DAHP = 0.9796078511;
+  PEP = 16.01031821;
+  Pi = 2.725541316;
+  DHQ = 0.9994087764;
+  EP = 107.502052;
+  DHSK = 1.92788104;
+  SK = 5.06777189;
+  SKP = 2;
+  CVPSK = 0.9174312684;
+  CM = 1.009195849;
+  Gln = 381.0009289;
+  Glu = 959.9999225;
+  ADC = 0.9907047071;
+  Pyr = 1.000006539;
+  pABA = 1.00378139;
+  DHNTP = 4;
+  GTP = 487.4867469;
+  AHMDHP = 2.01877235;
+  HAD = 2.002305849;
+  PTHP = 1.002298517;
+  AHMDPP = 0.9873083466;
+  DHP = 0.9963801483;
+  DHF = 1.142744159;
+  THF = 8;
+  THFGlu = 1;
+  Gly = 499.9974679;
+  Ser = 6.803576818;
+  myTHFGlu = 1.04350884;
+  MTHFGlu = 1.000096392;
+  Hcy = 1.000182797;
+  Met = 0.9998172031;
+  dTMP = 0.9974700923;
+  dUMP = 20.00252991;
+  meTHFGlu = 0.9082384182;
+  fTHFGlu = 1.83347183;
+  fmtRNA = 0.9968760756;
+  mtRNA = 1.003123924;
+  COTwo = 0.988683328;
+  ADP = 2.828115142;
+  ATP = 963.0188351;
+  NADP = 2;
+  NADPH = 12.19849409;
+  AMP = 0.983533495;
+  DLp = 0.7017503089;
+  SAmDLp = 1.000015336;
+  Lp = 1.298234355;
+  NAD = 0.7017656449;
+  NADH = 8.349823436;
+  Ammonia = 0.9895374253;
+  Formyl = 8;
+  ffTHFGlu = 1;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  R1_kep = 285;
+  R1_kpep = 36;
+  R1_vmax = 578.76;
+  R2_Km = 4.7;
+  R2_V = 7.462;
+  R3_Km = 58;
+  R3_V = 116.48;
+  R4_kdhsk = 30;
+  R4_knadph = 11;
+  R4_vmax = 17290;
+  R5_katp = 151.5;
+  R5_ksk = 200;
+  R5_vmax = 18200;
+  R6_kpep = 93;
+  R6_kskp = 80;
+  R6_vmax = 1547;
+  R7_Km = 12.7;
+  R7_V = 728;
+  R8_kcm = 13;
+  R8_kgln = 1100;
+  R8_vmax = 26;
+  R9_Km = 1.1;
+  R9_V = 2.2;
+  R10_kgtp = 17.6;
+  R10_kiTHF = 0.157;
+  R10_vmax = 1515.15;
+  R11_Km = 7.4;
+  R11_V = 792.064;
+  R27_Km = 10;
+  R27_V = 22.659;
+  R12_kahmdhp = 3.6;
+  R12_katp = 15;
+  R12_vmax = 382.2;
+  R14_katp = 100;
+  R14_kdhp = 1;
+  R14_kglu = 1380;
+  R14_vmax = 2.821;
+  R15_kdhf = 3;
+  R15_knadph = 6.12;
+  R15_vmax = 3000;
+  R16_katp = 128;
+  R16_kglu = 740;
+  R16_kidhf = 3.1;
+  R16_kthf = 26;
+  R16_vmax = 84.63;
+  R17_kithf = 0.157;
+  R17_kser = 700;
+  R17_kthfglu = 40;
+  R17_vmax = 682.5;
+  R18b_kdlp = 290;
+  R18b_kgly = 4505;
+  R18b_vmax = 751.66;
+  R19_kidhf = 0.428;
+  R19_kmythfglu = 33;
+  R19_knadph = 19;
+  R19_vmax = 738.92;
+  R20_khcy = 17;
+  R20_kmthfglu = 30;
+  R20_vmax = 379.925;
+  R21_kdump = 5.4;
+  R21_kidhf = 0.428;
+  R21_kmythfglu = 17;
+  R21_vmax = 49.14;
+  R22_kidhf = 0.428;
+  R22_kmythfglu = 25;
+  R22_knadp = 22;
+  R22_vmax = 1892.8;
+  R25_kfthfglu = 12.15;
+  R25_kmtrna = 1.07;
+  R25_vmax = 116.48;
+  R26_kfthfglu = 7.85;
+  R26_knadp = 0.9;
+  R26_vmax = 59.332;
+  R18c_ksamdlp = 290;
+  R18c_kthfglu = 67.7;
+  R18c_vmax = 196.56;
+  R18a_klp = 1280;
+  R18a_knadh = 58;
+  R18a_vmax = 5432.7;
+  R13_kahmdpp = 3.15;
+  R13_kpaba = 2.6;
+  R13_vmax = 105.014;
+  R24_katp = 74.5;
+  R24_kformyl = 3190;
+  R24_kthfglu = 134;
+  R24_vmax = 15315.3;
+  R23_k1 = 0.08;
+  R23_k2 = 0.031;
+  R28_Km = 67;
+  R28_V = 200;
+  R29_katp = 50;
+  R29_kffthfglu = 5;
+  R29_vmax = 500;
+
+  // Other declarations:
+  const compartment_;
+
+  // Unit definitions:
+  unit time_unit = 60 second;
+  unit substance = 1e-6 mole;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "Single celled micro-organism";
+  R1 is "R1 - Synthesis of 3-Deoxy-7-phosphoheptulonate";
+  R2 is "R2 - 2-Dehydro-3-deoxy-D-arabino-heptonate 7-phosphate phosphate-lyase (3-Dehydroquinate synthase)";
+  R3 is "R3 - 3-Dehydroquinate hydro-lyase (3-Dehydroquinate dehydratase)";
+  R4 is "R4 - Shikimate:NADP + 3-oxidoreductase (Shikimate 5-dehydrogenase)";
+  R5 is "R5 - ATP:Shikimate 3-phosphotransferase (Shikimate kinase)";
+  R6 is "R6 - Phosphoenolpyruvate:3-phosphoshikimate 5-O-(1-carboxyvinyl)-transferase";
+  R7 is "R7 - 5-O-(1-Carboxyvinyl)-3-phosphoshikimate phosphate-lyase (chorismate synthase)";
+  R8 is "R8 - Aminodeoxychorismate synthase";
+  R9 is "R9 - Aminodeoxychorismate lyase";
+  R10 is "R10 - GTP 7,8,9-dihydrolase (GTP cyclohydrolase I)";
+  R11 is "R11 - Dihydroneopterin aldolase";
+  R27 is "R27 - 6-Pyruvoyltetrahydropterin synthase";
+  R12 is "R12 - 2-Amino-4-hydroxy-6-hydroxymethyldihydropteridine pyrophosphokinase";
+  R14 is "R14 - 7,8-Dihydrofolate synthase";
+  R15 is "R15 - Dihydrofolate reductase";
+  R16 is "R16 - Folylpoly-gamma-glutamate synthase";
+  R17 is "R17 - Serine hydroxymethyltransferase";
+  R18b is "R18b - Glycine decarboxylase (P protein)";
+  R19 is "R19 - 5,10-Methylenetetrahydrofolate reductase";
+  R20 is "R20 - Methionine synthase";
+  R21 is "R21 - Thymidylate synthase";
+  R22 is "R22 - 5,10-Methylenetetrahydrofolate dehydrogenase";
+  R25 is "R25 - Methionyl-tRNA formyltransferase";
+  R26 is "R26 - 10-Formyltetrahydrofolate dehydrogenase";
+  R18c is "R18c - S-Aminomethyldihydrolipoylprotein:tetrahydrofolate aminomethyltransferase (T protein)";
+  R18a is "R18a - Dihydrolipoamide dehydrogenase";
+  R13 is "R13 - Dihydropteroate synthase";
+  R24 is "R24 - 10-Formyltetrahydrofolate synthetase";
+  R23 is "R23 - 5,10-Methenyltetrahydrofolate cyclohydrolase";
+  R28 is "R28 - S-Aminomethyldihydrolipoylprotein:tetrahydrofolate aminomethyltransferase (T protein)";
+  R29 is "R29 - 5-formyltetrahydrofolate cyclo-ligase";
+
+  // CV terms:
+  DAHP identity "http://identifiers.org/kegg.compound/C04691"
+  PEP identity "http://identifiers.org/kegg.compound/C00074"
+  Pi identity "http://identifiers.org/kegg.compound/C00009"
+  DHQ identity "http://identifiers.org/kegg.compound/C00944"
+  EP identity "http://identifiers.org/kegg.compound/C00279"
+  DHSK identity "http://identifiers.org/kegg.compound/C02637"
+  SK identity "http://identifiers.org/kegg.compound/C00493"
+  SKP identity "http://identifiers.org/kegg.compound/C03175"
+  CVPSK identity "http://identifiers.org/kegg.compound/C01269"
+  CM identity "http://identifiers.org/kegg.compound/C00251"
+  Gln identity "http://identifiers.org/kegg.compound/C00064"
+  Glu identity "http://identifiers.org/kegg.compound/C00025"
+  ADC identity "http://identifiers.org/kegg.compound/C11355"
+  Pyr identity "http://identifiers.org/kegg.compound/C00022"
+  pABA identity "http://identifiers.org/kegg.compound/C00568"
+  DHNTP identity "http://identifiers.org/kegg.compound/C04895"
+  GTP identity "http://identifiers.org/kegg.compound/C00044"
+  AHMDHP identity "http://identifiers.org/kegg.compound/C01300"
+  HAD identity "http://identifiers.org/kegg.compound/C00266"
+  PTHP identity "http://identifiers.org/kegg.compound/C03684"
+  AHMDPP identity "http://identifiers.org/kegg.compound/C04807"
+  DHP identity "http://identifiers.org/kegg.compound/C00921"
+  DHF identity "http://identifiers.org/kegg.compound/C00415"
+  THF identity "http://identifiers.org/kegg.compound/C00101"
+  THFGlu identity "http://identifiers.org/kegg.compound/C03541"
+  Gly identity "http://identifiers.org/kegg.compound/C00037"
+  Ser identity "http://identifiers.org/kegg.compound/C00065"
+  myTHFGlu identity "http://identifiers.org/kegg.compound/C00143"
+  MTHFGlu identity "http://identifiers.org/kegg.compound/C00440"
+  Hcy identity "http://identifiers.org/kegg.compound/C00155"
+  Met identity "http://identifiers.org/kegg.compound/C00073"
+  dTMP identity "http://identifiers.org/kegg.compound/C00364"
+  dUMP identity "http://identifiers.org/kegg.compound/C00365"
+  meTHFGlu identity "http://identifiers.org/kegg.compound/C00445"
+  fTHFGlu identity "http://identifiers.org/kegg.compound/C00234"
+  fmtRNA identity "http://identifiers.org/kegg.compound/C03294"
+  mtRNA identity "http://identifiers.org/kegg.compound/C02430"
+  ADP identity "http://identifiers.org/kegg.compound/C00008"
+  ATP identity "http://identifiers.org/kegg.compound/C00002"
+  NADP identity "http://identifiers.org/kegg.compound/C00006"
+  NADPH identity "http://identifiers.org/kegg.compound/C00005"
+  AMP identity "http://identifiers.org/kegg.compound/C00020"
+  DLp identity "http://identifiers.org/kegg.compound/C02972"
+  SAmDLp identity "http://identifiers.org/kegg.compound/C01242"
+  Lp identity "http://identifiers.org/kegg.compound/C02051"
+  NAD identity "http://identifiers.org/kegg.compound/C00003"
+  NADH identity "http://identifiers.org/kegg.compound/C00004"
+  Ammonia identity "http://identifiers.org/kegg.compound/C00014"
+  Formyl identity "http://identifiers.org/kegg.compound/C00058"
+  ffTHFGlu identity "http://identifiers.org/kegg.compound/C03479"
+  R1 isVersionOf "http://identifiers.org/kegg.reaction/R01826"
+  R2 isVersionOf "http://identifiers.org/kegg.reaction/R03083"
+  R3 isVersionOf "http://identifiers.org/kegg.reaction/R03084"
+  R4 isVersionOf "http://identifiers.org/kegg.reaction/R02413"
+  R5 isVersionOf "http://identifiers.org/kegg.reaction/R02412"
+  R6 isVersionOf "http://identifiers.org/kegg.reaction/R03460"
+  R7 isVersionOf "http://identifiers.org/kegg.reaction/R01714"
+  R8 isVersionOf "http://identifiers.org/kegg.reaction/R01716"
+  R9 isVersionOf "http://identifiers.org/kegg.reaction/R05553"
+  R10 isVersionOf "http://identifiers.org/kegg.reaction/R00424"
+  R11 isVersionOf "http://identifiers.org/kegg.reaction/R03504"
+  R27 isVersionOf "http://identifiers.org/kegg.reaction/R04286"
+  R12 isVersionOf "http://identifiers.org/kegg.reaction/R03503"
+  R14 isVersionOf "http://identifiers.org/kegg.reaction/R02237"
+  R15 isVersionOf "http://identifiers.org/kegg.reaction/R00939"
+  R16 isVersionOf "http://identifiers.org/kegg.reaction/R04241"
+  R17 isVersionOf "http://identifiers.org/kegg.reaction/R00945"
+  R18b isVersionOf "http://identifiers.org/kegg.reaction/R03425"
+  R19 isVersionOf "http://identifiers.org/kegg.reaction/R01224"
+  R20 isVersionOf "http://identifiers.org/kegg.reaction/R00946"
+  R21 isVersionOf "http://identifiers.org/kegg.reaction/R02101"
+  R22 isVersionOf "http://identifiers.org/kegg.reaction/R01220"
+  R25 isVersionOf "http://identifiers.org/kegg.reaction/R03940"
+  R26 isVersionOf "http://identifiers.org/kegg.reaction/R00941"
+  R18c isVersionOf "http://identifiers.org/kegg.reaction/R04125"
+  R18a isVersionOf "http://identifiers.org/kegg.reaction/R03815"
+  R13 isVersionOf "http://identifiers.org/kegg.reaction/R03067"
+  R24 isVersionOf "http://identifiers.org/kegg.reaction/R00943"
+  R23 isVersionOf "http://identifiers.org/kegg.reaction/R01655"
+  R28 isVersionOf "http://identifiers.org/kegg.reaction/R02300"
+  R29 isVersionOf "http://identifiers.org/kegg.reaction/R02301"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1511020000",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000725"
+  model identity "http://identifiers.org/biomodels.db/MODEL1511020000"
+  model hasProperty "http://identifiers.org/ncit/C38809"
+  model hasProperty "http://identifiers.org/ncit/C14329"
+  model hasProperty "http://identifiers.org/pw/PW:0001369"
+  model hasProperty "http://identifiers.org/efo/0005741"
+  model hasProperty "http://identifiers.org/mamo/MAMO_0000046"
+  model isDescribedBy "http://identifiers.org/doi/10.1039/C5MB00801H"
+  model created "2015-06-28T14:24:15Z"
+  model modified "2015-06-28T14:24:15Z"
+  model creator1.givenName "Mark T."
+  model creator1.familyName "McAuley"
+  model creator1.organization "University of Chester, UK"
+  model creator1.email "m.mcauley@chester.ac.uk"
+  model creator2.givenName "J. Enrique"
+  model creator2.familyName "Salcedo-Sora"
+  model creator2.organization "Liverpool Hope University, UK"
+  model creator2.email "salcede@hope.ac.uk"
+  model creator3.givenName "Sarubini"
+  model creator3.familyName "Kananathan"
+  model creator3.organization "EMBL-EBI"
+  model creator3.email "sarubini.kananathan@hotmail.co.uk"
+
+  // Notes:
+  model notes ```
+Salcedo-Sora2016 - Microbial folate biosynthesis and utilisation 
+
+
+This model is described in the article:
+
+
+[ A mathematical model of microbial folate biosynthesis and utilisation: implications for antifolate development.](http://identifiers.org/pubmed/26794619 "Access to this publication") 
+
+
+Enrique Salcedo-Sora J, Mc Auley MT. 
+
+Mol Biosyst. 2016 Jan 21. 
+Abstract:
+
+
+The metabolic biochemistry of folate biosynthesis and utilisation has evolved
+into a complex network of reactions. Although this complexity represents challenges
+to the field of folate research it has also provided a renewed source for antimetabolite
+targets. A range of improved folate chemotherapy continues to be developed and applied
+particularly to cancer and chronic inflammatory diseases. However, new or better
+antifolates against infectious diseases remain much more elusive. In this paper we
+describe the assembly of a generic deterministic mathematical model of microbial
+folate metabolism. Our aim is to explore how a mathematical model could be used to
+explore the dynamics of this inherently complex set of biochemical reactions. Using
+the model it was found that: (1) a particular small set of folate intermediates are
+overrepresented, (2) inhibitory profiles can be quantified by the level of key folate
+products, (3) using the model to scan for the most effective combinatorial inhibitions
+of folate enzymes we identified specific targets which could complement current antifolates,
+and (4) the model substantiates the case for a substrate cycle in the folinic acid
+biosynthesis reaction. Our model is coded in the systems biology markup language
+and has been deposited in the BioModels Database (MODEL1511020000), this makes it
+accessible to the community as a whole. 
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identified by: [MODEL1511020000](http://identifiers.org/biomodels.db/MODEL1511020000).
+
+To cite BioModels Database, please use: [BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models](http://identifiers.org/pubmed/20587024 "Latest BioModels Database publication").
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+end
+
+Salcedo_Sora2016___Microbial_folate_biosynthesis_and_utilisation is "Salcedo-Sora2016 - Microbial folate biosynthesis and utilisation"

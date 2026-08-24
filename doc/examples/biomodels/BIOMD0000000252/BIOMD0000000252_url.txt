@@ -1,0 +1,154 @@
+// Created by libAntimony v3.2.0
+model *Hunziker2010_p53_StressSpecificResponse()
+
+  // Compartments and Species:
+  compartment compartment_1;
+  species $p in compartment_1, $m in compartment_1, $pm in compartment_1;
+  species $mm in compartment_1;
+
+  // Rate Rules:
+  p' = (S - k_f*p*m - alpha*p) + (k_b + gamma_)*pm;
+  m' = (k_tl*mm - k_f*p*m) + (k_b + delta)*pm - gamma_*m;
+  pm' = k_f*p*m - (k_b + delta)*pm - gamma_*pm;
+  mm' = k_t*p^2 - beta*mm;
+
+  // Species initializations:
+  p = 1;
+  m = 1;
+  pm = 1;
+  mm = 1;
+
+  // Compartment initializations:
+  compartment_1 = 1;
+
+  // Variable initializations:
+  S = 1000;
+  k_f = 5000;
+  alpha = 0.1;
+  k_b = 7200;
+  gamma_ = 0.2;
+  k_t = 0.03;
+  beta = 0.6;
+  k_tl = 1.4;
+  delta = 11;
+
+  // Other declarations:
+  const compartment_1, S, k_f, alpha, k_b, gamma_, k_t, beta, k_tl, delta;
+
+  // Unit definitions:
+  unit volume = dimensionless;
+  unit time_unit = 3600 second;
+  unit substance = dimensionless;
+
+  // Display Names:
+  compartment_1 is "cell";
+  gamma_ is "gamma";
+
+  // SBO terms:
+  p.sboTerm = 252
+  k_f.sboTerm = 337
+  m.sboTerm = 252
+  alpha.sboTerm = 356
+  k_b.sboTerm = 282
+  gamma_.sboTerm = 356
+  pm.sboTerm = 297
+  mm.sboTerm = 250
+  k_t.sboTerm = 9
+  beta.sboTerm = 356
+  k_tl.sboTerm = 9
+  delta.sboTerm = 356
+
+  // CV terms:
+  p isEncodedBy "http://identifiers.org/ensembl/ENSG00000141510"
+  p isVersionOf "http://identifiers.org/uniprot/P04637"
+  m isEncodedBy "http://identifiers.org/ensembl/ENSG00000135679"
+  m isVersionOf "http://identifiers.org/uniprot/Q00987"
+  pm hasPart "http://identifiers.org/uniprot/P04637",
+             "http://identifiers.org/uniprot/Q00987"
+  mm isVersionOf "http://identifiers.org/chebi/CHEBI:33699",
+                 "http://identifiers.org/kegg.compound/C00046"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1006280000"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000252"
+  model publication "http://identifiers.org/pubmed/20624280"
+  model isPartOf "http://identifiers.org/kegg.pathway/map04115",
+                 "http://identifiers.org/reactome/REACT_309"
+  model hasPart "http://identifiers.org/go/GO:0001666",
+                "http://identifiers.org/go/GO:0030330"
+  model hasTaxon "http://identifiers.org/taxonomy/2759"
+  model hasProperty "http://identifiers.org/doid/DOID:2835"
+  model created "2010-07-16T13:06:03Z"
+  model modified "2015-02-25T12:12:31Z"
+  model creator1.givenName "Vijayalakshmi"
+  model creator1.familyName "Chelliah"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "viji@ebi.ac.uk"
+  model creator2.givenName "Alexander"
+  model creator2.familyName "Hunziker"
+  model creator2.organization "Niels Bohr Institute"
+  model creator2.email "alex.hunziker@nbi.dk"
+
+  // Notes:
+  model notes ```
+This a model from the article: 
+** Stress-specific response of the p53-Mdm2 feedback loop** 
+Alexander Hunziker, Mogens H Jensen and Sandeep Krishna *BMC Systems Biology
+* 2010, Jul 12;4(1):94 [20624280](http://www.ncbi.nlm.nih.gov/pubmed/20624280), 
+**Abstract:** 
+ABSTRACT: BACKGROUND: The p53 signalling pathway has hundreds of inputs and outputs.
+It can trigger cellular senescence, cell-cycle arrest and apoptosis in response to
+diverse stress conditions, including DNA damage, hypoxia and nutrient deprivation.
+Signals from all these inputs are channeled through a single node, the transcription
+factor p53. Yet, the pathway is flexible enough to produce different downstream gene
+expression patterns in response to different stresses. RESULTS: We construct a mathematical
+model of the negative feedback loop involving p53 and its inhibitor, Mdm2, at the
+core of this pathway, and use it to examine the effect of different stresses that
+trigger p53. In response to DNA damage, hypoxia, etc., the model exhibits a wide
+variety of specific output behaviour -- steady states with low or high levels of
+p53 and Mdm2, as well as spiky oscillations with low or high average p53 levels.
+CONCLUSIONS: We show that even a simple negative feedback loop is capable of exhibiting
+the kind of flexible stress-specific response observed in the p53 system. Further,
+our model provides a framework for predicting the differences in p53 response to
+different stresses and single nucleotide polymorphisms. 
+
+The parameters of the model corresponds to the resting state, with delta = 11hr-1,
+gamma = 0.2hr-1, kt = 0.03nM-1hr-1 and kf = 5000nM-1hr-1.
+
+To simulate different stress conditions as in figure 2A (also look at the curation
+figure of this model) of the reference publication, the above parameter should be
+changed. The parameter values corresponding to different stress conditions are shown
+in the following table.
+
+
+| Stress Condition/Parameter | delta | gamma | kt | kf |
+| Nutlin | 11hr-1 | 0.2hr-1 | 0.03nM-1hr-1 | 500nM-1hr-1 |
+| Oncogene | 2hr-1 | 0.2hr-1 | 0.03nM-1hr-1 | 5000nM-1hr-1 |
+| DNA damage | 2hr-1 | 0.5hr-1 | 0.03nM-1hr-1 | 2500nM-1hr-1 |
+| Hypoxia | 2hr-1 | 0.2hr-1 | 0.01nM-1hr-1 | 5000nM-1hr-1 |
+
+
+This model originates from BioModels Database: A Database of Annotated Published
+Models. It is copyright (c) 2005-2011 The BioModels.net Team. 
+For more information see the [terms of use](http://www.ebi.ac.uk/biomodels/legal.html). 
+To cite BioModels Database, please use: [Li C, Donizelli M, Rodriguez N, Dharuri H, Endler L, Chelliah V, Li L, He E, Henry A, Stefan MI, Snoep JL, Hucka M, Le Novère N, Laibe C (2010) BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models. BMC Syst Biol., 4:92.](http://www.ncbi.nlm.nih.gov/pubmed/20587024)
+```
+  k_f notes ```
+For the stress conditions Nutlin and DNA damage, the values should be changed to
+500 and 2500 respectively. For the rest of the stress conditions, the value remains
+the same.
+```
+  gamma_ notes ```
+For the stress condition DNA damage, the values should be changed to 0.5. For the
+rest of the stress conditions the value remains the same.
+```
+  k_t notes ```
+For the stress condition Hypoxia, the value should be changed to 0.01. For the rest
+of the stress conditions the value remains the same.
+```
+  delta notes ```
+For the stress conditions DNA damage, Oncogene and Hypoxia, the value should be changed
+to 2. For Nutlin the value remains the same.
+```
+end
+
+Hunziker2010_p53_StressSpecificResponse is "Hunziker2010_p53_StressSpecificResponse"

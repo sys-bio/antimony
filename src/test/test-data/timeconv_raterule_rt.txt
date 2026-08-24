@@ -1,0 +1,28 @@
+// Created by libAntimony v3.2.0
+model moddef1()
+
+  // Rate Rules:
+  x' = 1;
+
+  // Variable initializations:
+  x = 0;
+
+  // Other declarations:
+  var x;
+end
+
+model *timeconv_raterule()
+
+  // Sub-modules, and any changes to those submodules:
+  sub1: moddef1(), timeconv = tc;
+  sub1.x is x;
+
+  // Rate Rules:
+  x' = 1;
+
+  // Variable initializations:
+  tc = 60;
+
+  // Other declarations:
+  const tc;
+end

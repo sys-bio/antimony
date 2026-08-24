@@ -1,0 +1,172 @@
+// Created by libAntimony v3.2.0
+model *MODEL1608150000()
+
+  // Compartments and Species:
+  compartment default_compartment;
+  species As, Bs, Asyn, Bsyn;
+
+  // Reactions:
+  R1:  -> As; default_compartment*(qA/default_compartment);
+  R2: As -> ; default_compartment*(k1*As/default_compartment);
+  R3: As -> ; default_compartment*(k2*As*Bs/default_compartment);
+  R4: As -> ; default_compartment*(As*ln(2)/TAh1/default_compartment);
+  R5: As -> ; default_compartment*(nA*As/Vs/default_compartment);
+  R6:  -> Bs; default_compartment*(QBs/default_compartment);
+  R7:  -> Bs; default_compartment*(k1*As/default_compartment);
+  R8:  -> Bs; default_compartment*(k2*As*Bs/default_compartment);
+  R9: Bs -> ; default_compartment*(Bs*ln(2)/TBh1/default_compartment);
+  R10:  -> Asyn; default_compartment*(nA*As/Vsyn/default_compartment);
+  R11: Asyn -> ; default_compartment*(k1*Asyn/default_compartment);
+  R12: Asyn -> ; default_compartment*(k2*Asyn*Bsyn/default_compartment);
+  R13: Asyn -> ; default_compartment*(Asyn*ln(2)/TAh1/default_compartment);
+  R14:  -> Bsyn; default_compartment*(QBsyn/default_compartment);
+  R15:  -> Bsyn; default_compartment*(k1*Asyn/default_compartment);
+  R16:  -> Bsyn; default_compartment*(k2*Asyn*Bsyn/default_compartment);
+  R17: Bsyn -> ; default_compartment*(Bsyn*ln(2)/TBh1/default_compartment);
+
+  // Species initializations:
+  As = 0.006;
+  As has mole_per_volume;
+  Bs = 0;
+  Bs has mole_per_volume;
+  Asyn = 0;
+  Asyn has mole_per_volume;
+  Bsyn = 0;
+  Bsyn has mole_per_volume;
+
+  // Compartment initializations:
+  default_compartment = 1;
+
+  // Variable initializations:
+  nA = 2.91e-20;
+  k1 = 3e-07;
+  k2 = 2e-09;
+  qA = 4.17e-08;
+  QBs = 0;
+  QBsyn = 0;
+  TAh1 = 72000;
+  TBh1 = 720000;
+  Vs = 4.19e-15;
+  Vsyn = 4.19e-15;
+  t1 = 0;
+  t2 = 0;
+
+  // Other declarations:
+  const nA, k1, k2, qA, QBs, QBsyn, TAh1, TBh1, Vs, Vsyn, t1, t2, default_compartment;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = litre;
+  unit time_unit = second;
+  unit substance = mole;
+  unit extent = substance;
+  unit mole_per_volume = mole / litre;
+
+  // Display Names:
+  time_unit is "time";
+
+  // SBO terms:
+  As.sboTerm = 245
+  Bs.sboTerm = 543
+  Asyn.sboTerm = 245
+  Bsyn.sboTerm = 543
+  default_compartment.sboTerm = 410
+
+  // CV terms:
+  As isVersionOf "http://identifiers.org/uniprot/P37840"
+  Bs isVersionOf "http://identifiers.org/uniprot/P37840"
+  Asyn isVersionOf "http://identifiers.org/uniprot/P37840"
+  Bsyn isVersionOf "http://identifiers.org/uniprot/P37840"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1608150000"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000615"
+  model publication "http://identifiers.org/pubmed/27211070"
+  model isVersionOf "http://identifiers.org/go/GO:0070841"
+  model hasTaxon "http://identifiers.org/taxonomy/9606"
+  model hasProperty "http://identifiers.org/doid/DOID:14330"
+  model created "2016-08-15T14:02:44Z"
+  model modified "2016-08-18T14:07:05Z"
+  model creator1.givenName "Thawfeek"
+  model creator1.familyName "Varusai"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "tvarusai@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+Kuznetsov2016(II) - α-syn aggregationkinetics in Parkinson&apos;s 
+
+
+This theoretical model uses 2-step Finke-Watzky (FW) kineticstodescribe the production, 
+misfolding, aggregation, transport anddegradation of α-syn that may lead to Parkinson&apos;s 
+Disease(PD). Deregulated α-syn degradation is predicted to becrucialfor PD pathogenesis. 
+ 
+ 
+
+ 
+This model is described in the article:
+ 
+
+ [What can trigger the onset of Parkinson&apos;s disease - A modeling study based on a compartmental model of α-synuclein transport and aggregation in neurons.](http://identifiers.org/pubmed/27211070 "Access to this publication") 
+ 
+
+Kuznetsov IA, Kuznetsov AV. 
+
+Math Biosci 2016 Aug; 278: 22-29 
+Abstract:
+ 
+
+ 
+The aim of this paper is to develop a minimal model describing events leading 
+to the onset of Parkinson&apos;s disease (PD). The model accounts for α-synuclein 
+(α-syn) production in the soma, transport toward the synapse, misfolding, and 
+ aggregation. The production and aggregation of polymeric α-syn is simulated 
+using a minimalistic 2-step Finke-Watzky model. We utilized the developed model 
+to analyze what changes in a healthy neuron are likely to lead to the onset of 
+α-syn aggregation. We checked the effects of interruption of α-syn transport 
+toward the synapse, entry of misfolded (infectious) α-syn into the somatic and 
+synaptic compartments, increasing the rate of α-syn synthesis in the soma, and 
+failure of α-syn degradation machinery. Our model suggests that failure of α-syn 
+ degradation machinery is probably the most likely cause for the onset of α-syn 
+aggregation leading to PD.
+ 
+
+ 
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identified by: [BIOMD0000000615](http://identifiers.org/biomodels.db/BIOMD0000000615).
+ 
+To cite BioModels Database, please use: [BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models](http://identifiers.org/pubmed/20587024 "Latest BioModels Database publication").
+ 
+
+ 
+To the extent possible under law, all copyright and related or neighbouring rights 
+to this encoded model have been dedicated to the public domain worldwide. Please 
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+  As notes "α-syn monomer concentration in the soma"
+  Bs notes "α-syn concentration in the misfolded state in the soma"
+  Asyn notes "α-syn monomer concentration in the synapse"
+  Bsyn notes "α-syn concentration in the misfolded state in the synapse"
+  nA notes ```
+Mass transfer coeﬃcient characterizing transport of α -syn (in the [A] form) 
+from the soma to the synapse
+```
+  k1 notes "Rate constant for the ﬁrst step of F–W model"
+  k2 notes "Rate constant for the second step of F–W model"
+  qA notes "Rate of synthesis of α -syn (in the [A] form) in the soma"
+  QBs notes ```
+Flux of misfolded α -syn (in the [B] form) from the outside of the neuron into 
+the soma
+```
+  QBsyn notes ```
+Flux of misfolded α -syn (in the [B] form) from the outside of the neuron into 
+the synapse
+```
+  TAh1 notes "Half-life of α -syn in the monomeric form"
+  TBh1 notes "Half-life of α -syn in the misfolded (aggregated) form"
+  Vs notes "Volume of the neuron soma"
+  Vsyn notes "Volume of the neuron’s synaptic compartment"
+  t1 notes "Describes a pulse simulating the entry of infectious α -syn"
+  t2 notes "Describes a pulse simulating the entry of infectious α -syn"
+end
+
+MODEL1608150000 is "Kuznetsov2016(II) - α-syn aggregation kinetics in Parkinson's Disease"

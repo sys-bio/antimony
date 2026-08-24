@@ -1,0 +1,184 @@
+// Created by libAntimony v3.2.0
+model *blub()
+
+  // Compartments and Species:
+  compartment environment;
+  species $IPTG in environment, C1 in environment, C2 in environment, A1 in environment;
+  species A2 in environment, $sink in environment, $source in environment;
+
+  // Assignment Rules:
+  kA2 := 0.02 + 0.03*(IPTG^2/(5^2 + IPTG^2));
+  d1 := 0.5 + IPTG^2/(5^2 + IPTG^2);
+
+  // Reactions:
+  J0: $source => C1; environment*kc1*C1*(1 - (C1 + C2)/Cm);
+  J1: C1 => $sink; environment*(D + d1*K1/(K1 + A2^2))*C1;
+  J2: $source => C2; environment*kc2*C2*(1 - (C1 + C2)/Cm);
+  J3: C2 => $sink; environment*(D + d2*A1^2/(K2 + A1^2))*C2;
+  J4: $source => A1; environment*kA1*C1;
+  J5: A1 => $sink; environment*(dAA1 + D)*A1;
+  J6: $source => A2; environment*kA2*C2;
+  J7: A2 => $sink; environment*(dAA2 + D)*A2;
+
+  // Species initializations:
+  IPTG = 5;
+  C1 = 20;
+  C2 = 20;
+  A1 = 0.1;
+  A2 = 0.1;
+  sink = 0;
+  source = 0;
+
+  // Compartment initializations:
+  environment = 1;
+
+  // Variable initializations:
+  kc1 = 0.8;
+  kc2 = 0.4;
+  Cm = 100;
+  D = 0.1125;
+  kA1 = 0.1;
+  d2 = 0.3;
+  K2 = 10;
+  K1 = 10;
+  dAA1 = 0.017;
+  dAA2 = 0.11;
+
+  // Other declarations:
+  var kA2, d1;
+  const environment, kc1, kc2, Cm, D, kA1, d2, K2, K1, dAA1, dAA2;
+
+  // Unit definitions:
+  unit substance = 1e-9 mole;
+  unit time_unit = 3600 second;
+
+  // Display Names:
+  substance is "nanomole";
+  time_unit is "hours";
+  J0 is "predator growth";
+  J1 is "predator death";
+  J2 is "prey growth";
+  J3 is "prey death";
+  J4 is "3OC12HSL synthesis";
+  J5 is "3OC12HSL removal";
+  J6 is "3OC6HSL synthesis";
+  J7 is "3OC6HSL removal";
+
+  // SBO terms:
+  environment.sboTerm = 290
+  IPTG.sboTerm = 247
+  C1.sboTerm = 240
+  C2.sboTerm = 240
+  A1.sboTerm = 247
+  A2.sboTerm = 247
+  sink.sboTerm = 291
+  source.sboTerm = 291
+  kc1.sboTerm = 35
+  kc2.sboTerm = 35
+  Cm.sboTerm = 196
+  D.sboTerm = 356
+  kA1.sboTerm = 35
+  kA2.sboTerm = 35
+  d2.sboTerm = 356
+  K2.sboTerm = 191
+  d1.sboTerm = 356
+  K1.sboTerm = 191
+  dAA1.sboTerm = 356
+  dAA2.sboTerm = 356
+  J0.sboTerm = 375
+  J1.sboTerm = 179
+  J2.sboTerm = 375
+  J3.sboTerm = 179
+  J4.sboTerm = 205
+  J5.sboTerm = 179
+  J6.sboTerm = 205
+  J7.sboTerm = 179
+
+  // CV terms:
+  environment identity "http://identifiers.org/go/GO:0005576"
+  IPTG identity "http://identifiers.org/chebi/CHEBI:61448",
+                "http://identifiers.org/pubchem.compound/656894"
+  C1 isVersionOf "http://identifiers.org/taxonomy/562"
+  C2 isVersionOf "http://identifiers.org/taxonomy/562"
+  A1 identity "http://identifiers.org/chebi/CHEBI:56080"
+  A2 identity "http://identifiers.org/chebi/CHEBI:55474",
+              "http://identifiers.org/kegg.compound/C18049"
+  J0 isVersionOf "http://identifiers.org/go/GO:0008283"
+  J1 isVersionOf "http://identifiers.org/go/GO:0008219"
+  J2 identity "http://identifiers.org/go/GO:0008283"
+  J3 isVersionOf "http://identifiers.org/go/GO:0008219"
+  J4 hasVersion "http://identifiers.org/ec-code/2.3.1.184"
+  J4 identity "http://identifiers.org/go/GO:0009058"
+  J5 isVersionOf "http://identifiers.org/go/GO:0009056"
+  J6 identity "http://identifiers.org/go/GO:0009058"
+  J6 hasVersion "http://identifiers.org/ec-code/2.3.1.184"
+  J7 isVersionOf "http://identifiers.org/go/GO:0009056"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL8305195207"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000296"
+  model publication "http://identifiers.org/pubmed/18414488"
+  model hasTaxon "http://identifiers.org/taxonomy/562"
+  model hasVersion "http://identifiers.org/go/GO:0009372"
+  model isVersionOf "http://identifiers.org/go/GO:0002120"
+  model created "2011-01-12T02:16:09Z"
+  model modified "2014-04-01T14:29:34Z"
+  model creator1.givenName "Lukas"
+  model creator1.familyName "Endler"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "lukas@ebi.ac.uk"
+  model creator2.givenName "Hao"
+  model creator2.familyName "Song"
+  model creator2.organization "Department of Biomedical Engineering and Institute for Genome Sciences and Policy, Duke University"
+  model creator2.email "hs59@duke.edu"
+
+  // Notes:
+  model notes ```
+This is the reduced model described in the article: 
+**A synthetic Escherichia coli predator–prey ecosystem** 
+Balagaddé FK, Song H, Ozaki J, Collins CH, Barnet M, Arnold FH, Quake SR, You L.*Mol
+Syst Biol.* 2008;4:187. Epub 2008 Apr 15. PMID: [18414488](http://www.ncbi.nlm.nih.gov/pubmed/18414488); DOI:[10.1038/msb.2008.24](http://dx.doi.org/10.1038/msb.2008.24)
+
+Abstract: 
+We have constructed a synthetic ecosystem consisting of two Escherichia coli populations,
+which communicate bi-directionally through quorum sensing and regulate each other&apos;s
+gene expression and survival via engineered gene circuits. Our synthetic ecosystem
+resembles canonical predator–prey systems in terms of logic and dynamics. The predator
+cells kill the prey by inducing expression of a killer protein in the prey, while
+the prey rescue the predators by eliciting expression of an antidote protein in the
+predator. Extinction, coexistence and oscillatory dynamics of the predator and prey
+populations are possible depending on the operating conditions as experimentally
+validated by long-term culturing of the system in microchemostats. A simple mathematical
+model is developed to capture these system dynamics. Coherent interplay between experiments
+and mathematical analysis enables exploration of the dynamics of interacting populations
+in a predictable manner.
+
+In the article the cell density is given in per 103 cells per microlitre. To evade
+a conversion factor in the SBML implementation, the unit for the cell densities was
+just left the same as for the AHLs A and A2 (nM). 
+
+This model originates from BioModels Database: A Database of Annotated Published
+Models (http://www.ebi.ac.uk/biomodels/). It is copyright (c) 2005-2012 The BioModels.net
+Team. 
+For more information see the [terms of use](http://www.ebi.ac.uk/biomodels/legal.html). 
+To cite BioModels Database, please use: [Li C, Donizelli M, Rodriguez N, Dharuri H, Endler L, Chelliah V, Li L, He E, Henry A, Stefan MI, Snoep JL, Hucka M, Le Novère N, Laibe C (2010) BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models. BMC Syst Biol., 4:92.](http://www.ncbi.nlm.nih.gov/pubmed/20587024)
+```
+  IPTG notes "IPTG default 5 nM"
+  C1 notes "predator cells (MG1655) (per 103 cells per microlitre)"
+  C2 notes "prey cells (Top10F) (per 103 cells per microlitre)"
+  A1 notes "3OC12HSL"
+  A2 notes "3OC6HSL"
+  kc1 notes "predator cell growth rate constant"
+  kc2 notes "prey cell growth rate constant"
+  Cm notes "Cell carrying capacity"
+  D notes "Dilution rate"
+  kA1 notes "predator cell A1 (3OC12HSL) synthesis rate costant"
+  kA2 notes "prey cell A2 (3OC6HSL) synthesis rate costant"
+  d2 notes "prey cell death rate constant"
+  K2 notes "A1 (3OC12HSL) concentration for half-maximal activation of PluxI promoter"
+  d1 notes "predator cell death rate constant"
+  K1 notes "A2 (3OC6HSL) concentration for half-maximal inhibition of PluxI promoter"
+  dAA1 notes "cellular A1 (3OC12HSL) decay rate constant"
+  dAA2 notes "cellular A2 (3OC6HSL) decay rate constant"
+end
+
+blub is "Balagaddé2008_E_coli_Predator_Prey"

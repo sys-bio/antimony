@@ -1,0 +1,182 @@
+// Created by libAntimony v3.2.0
+model *Romond1999_CellCycle()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species C1 in compartment_, C2 in compartment_;
+  substanceOnly species M1 in compartment_, X1 in compartment_, M2 in compartment_;
+  substanceOnly species X2 in compartment_;
+
+  // Assignment Rules:
+  V1 := (C1/(Kc1 + C1))*V_M1;
+  V3 := M1*V_M3;
+  U1 := (C2/(Kc2 + C2))*U_M1;
+  U3 := M2*U_M3;
+
+  // Rate Rules:
+  M1' = V1*(1 - M1)/(K1 + (1 - M1)) - V2*M1/(K2 + M1);
+  X1' = V3*(1 - X1)/(K3 + (1 - X1)) - V4*X1/(K4 + X1);
+  M2' = U1*(1 - M2)/(H1 + (1 - M2)) - U2*M2/(H2 + M2);
+  X2' = U3*(1 - X2)/(H3 + (1 - X2)) - U4*X2/(H4 + X2);
+
+  // Reactions:
+  R1:  => C1; compartment_*vi1*Kim1/(Kim1 + M2);
+  R2: C1 => ; compartment_*vd1*X1*C1/(K_d1 + C1);
+  R3: C1 => ; compartment_*kd1*C1;
+  R8:  => C2; compartment_*vi2*Kim2/(Kim2 + M1);
+  R9: C2 => ; compartment_*vd2*X2*C2/(K_d2 + C2);
+  R10: C2 => ; compartment_*kd2*C2;
+
+  // Species initializations:
+  C1 = 2;
+  C1 has uM;
+  M1 = 1;
+  M1 has dimensionless;
+  X1 = 0;
+  X1 has dimensionless;
+  C2 = 0;
+  C2 has uM;
+  M2 = 0;
+  M2 has dimensionless;
+  X2 = 0;
+  X2 has dimensionless;
+
+  // Compartment initializations:
+  compartment_ = 1;
+  V1 has min_1;
+
+  // Variable initializations:
+  K1 = 0.01;
+  K1 has dimensionless;
+  V2 = 0.15;
+  V2 has min_1;
+  K2 = 0.01;
+  K2 has dimensionless;
+  V3 has min_1;
+  K3 = 0.01;
+  K3 has dimensionless;
+  V4 = 0.05;
+  V4 has min_1;
+  K4 = 0.01;
+  K4 has dimensionless;
+  U1 has min_1;
+  H1 = 0.01;
+  H1 has dimensionless;
+  U2 = 0.15;
+  U2 has min_1;
+  H2 = 0.01;
+  H2 has dimensionless;
+  U3 has min_1;
+  H3 = 0.01;
+  H3 has dimensionless;
+  U4 = 0.05;
+  U4 has min_1;
+  H4 = 0.01;
+  H4 has dimensionless;
+  Kc1 = 0.5;
+  Kc1 has uM;
+  V_M1 = 0.3;
+  V_M1 has min_1;
+  V_M3 = 0.1;
+  V_M3 has min_1;
+  Kc2 = 0.5;
+  Kc2 has uM;
+  U_M1 = 0.3;
+  U_M1 has min_1;
+  U_M3 = 0.1;
+  U_M3 has min_1;
+  vi1 = 0.05;
+  vi1 has uM_min_1;
+  Kim1 = 0.03;
+  Kim1 has dimensionless;
+  vd1 = 0.025;
+  vd1 has uM_min_1;
+  K_d1 = 0.02;
+  K_d1 has uM;
+  kd1 = 0.001;
+  kd1 has min_1;
+  vi2 = 0.05;
+  vi2 has uM_min_1;
+  Kim2 = 0.03;
+  Kim2 has dimensionless;
+  vd2 = 0.025;
+  vd2 has uM_min_1;
+  K_d2 = 0.02;
+  K_d2 has uM;
+  kd2 = 0.001;
+  kd2 has min_1;
+
+  // Other declarations:
+  var V1, V3, U1, U3;
+  const compartment_, K1, V2, K2, K3, V4, K4, H1, U2, H2, H3, U4, H4, Kc1;
+  const V_M1, V_M3, Kc2, U_M1, U_M3, vi1, Kim1, vd1, K_d1, kd1, vi2, Kim2;
+  const vd2, K_d2, kd2;
+
+  // Unit definitions:
+  unit time_unit = 60 second;
+  unit uM = 1e-6 mole / litre;
+  unit micromole = 1e-6 mole;
+  unit min_1 = 1 / 60 second;
+  unit uM_min_1 = 1e-6 mole / (litre * 60 second);
+
+  // Display Names:
+  time_unit is "minute";
+  C1 is "cyclinB";
+  M1 is "cdk1";
+  X1 is "ubiquitin ligase";
+  C2 is "cyclinE";
+  M2 is "cdk2";
+  X2 is "Ubiquitin ligase 2";
+  R1 is "cdk2 mediated cyclinB synthesis";
+  R2 is "Ubiquitin ligase mediated cyclinB degradation";
+  R3 is "cyclinB degradation";
+  R8 is "cyclinE synthesis";
+  R9 is "Ubiquitin ligase mediated cyclinE degradation";
+  R10 is "cyclinE degradation";
+
+  // CV terms:
+  C1 isVersionOf "http://identifiers.org/uniprot/Q8WWL7"
+  M1 isVersionOf "http://identifiers.org/uniprot/P06493"
+  X1 isVersionOf "http://identifiers.org/uniprot/Q9UBT2"
+  C2 isVersionOf "http://identifiers.org/uniprot/P24864"
+  M2 isVersionOf "http://identifiers.org/uniprot/P24941"
+  X2 isVersionOf "http://identifiers.org/uniprot/Q9UBT2"
+  R1 isVersionOf "http://identifiers.org/go/GO:0004693"
+  R2 isVersionOf "http://identifiers.org/go/GO:0008054"
+  R3 isVersionOf "http://identifiers.org/go/GO:0008054"
+  R9 isVersionOf "http://identifiers.org/go/GO:0008054"
+  R10 isVersionOf "http://identifiers.org/go/GO:0008054"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1111382868"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000207"
+  model publication "http://identifiers.org/pubmed/10415827"
+  model hasTaxon "http://identifiers.org/taxonomy/2759"
+  model isVersionOf "http://identifiers.org/kegg.pathway/hsa04110",
+                    "http://identifiers.org/go/GO:0000278"
+  model created "2008-09-10T13:58:58Z"
+  model modified "2012-07-05T16:48:46Z"
+  model creator1.givenName "Harish"
+  model creator1.familyName "Dharuri"
+  model creator1.organization "California Institute of Technology"
+  model creator1.email "hdharuri@cds.caltech.edu"
+
+  // Notes:
+  model notes ```
+The model reproduces Fig 3 of the paper. Model successfully reproduced using MathSBML
+and Jarnac.
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Creative Commons CC0") for more information. 
+
+In summary, you are entitled to use this encoded model in absolutely any manner you
+deem suitable, verbatim, or with modification, alone or embedded it in a larger context,
+redistribute it, commercially or not, in a restricted way or not.
+
+
+To cite BioModels Database, please use: [Li C, Donizelli M, Rodriguez N, Dharuri H, Endler L, Chelliah V, Li L, He E, Henry A, Stefan MI, Snoep JL, Hucka M, Le Novère N, Laibe C (2010) BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models. BMC Syst Biol., 4:92.](http://www.ncbi.nlm.nih.gov/pubmed/20587024)
+```
+end
+
+Romond1999_CellCycle is "Romond1999_CellCycle"

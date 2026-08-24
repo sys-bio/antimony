@@ -1,0 +1,38 @@
+// Created by libAntimony v3.2.0
+model ExtMod1()
+
+  // Variable initializations:
+  S = 1;
+  D = 1;
+
+  // Other declarations:
+  const S, D;
+end
+
+model simple()
+
+  // Variable initializations:
+  S = 5;
+  D = 10;
+
+  // Other declarations:
+  const S, D;
+end
+
+model *case01165()
+
+  // Sub-modules, and any changes to those submodules:
+  A: ExtMod1();
+  B: simple();
+  A.S is S;
+  B.S is S;
+  A.D is D;
+  B.D is D;
+
+  // Variable initializations:
+  S = 5;
+  D = 10;
+
+  // Other declarations:
+  const S, D;
+end

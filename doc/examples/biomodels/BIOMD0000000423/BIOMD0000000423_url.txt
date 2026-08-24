@@ -1,0 +1,134 @@
+// Created by libAntimony v3.2.0
+model *Nyman2012_InsulinSignalling()
+
+  // Compartments and Species:
+  compartment default;
+  species IR in default, IRins in default, IRp in default, IRiP in default;
+  species IRi in default, IRS in default, IRSiP in default, X in default;
+  species Xp in default;
+
+  // Assignment Rules:
+  measIRS1 := IRSiP;
+  measIRp := IRp + IRiP;
+  IRmem := IRp + IRins + IR;
+
+  // Reactions:
+  v1a: IR => IRins; k1a*ins*IR + k1aBasic*IR;
+  v1b: IRins => IR; k1b*IRins;
+  v1c: IRins => IRp; k1c*IRins;
+  v1d: IRp => IRiP; k1d*IRp;
+  v1e: IRiP => IRi; IRiP*(k1e + k1f*Xp/(1 + Xp));
+  v1g: IRp => IR; k1g*IRp;
+  v1r: IRi => IR; k1r*IRi;
+  v2: IRS => IRSiP; k21*IRS*(IRp + k22*IRiP)/(1 + km23*Xp);
+  vm2: IRSiP => IRS; km2*IRSiP;
+  v3: X => Xp; k3*X*IRSiP;
+  vm3: Xp => X; km3*Xp;
+
+  // Species initializations:
+  IR = 8.94067597532632;
+  IRins = 0.59688996214639;
+  IRp = 0.0383525925240207;
+  IRiP = 0.424076631823384;
+  IRi = 4.83863890758515e-06;
+  IRS = 9.43998194225544;
+  IRSiP = 0.560018057744573;
+  X = 9.99635886407151;
+  Xp = 0.00364113592848386;
+
+  // Compartment initializations:
+  default = 1;
+
+  // Variable initializations:
+  k1a = 0.153418;
+  k1aBasic = 0.0383389;
+  k1b = 3.4699e-06;
+  k1c = 0.574266;
+  k1d = 4.78844;
+  k1e = 5.25027e-05;
+  k1f = 119.353;
+  k1g = 4.14899;
+  k1r = 37954.7;
+  k21 = 538004;
+  k22 = 1.7252e-06;
+  km2 = 262759;
+  km23 = 88.9096;
+  k3 = 8.62917e-05;
+  km3 = 0.132671;
+  ins = 100;
+
+  // Other declarations:
+  var measIRS1, measIRp, IRmem;
+  const default, k1a, k1aBasic, k1b, k1c, k1d, k1e, k1f, k1g, k1r, k21, k22;
+  const km2, km23, k3, km3, ins;
+
+  // CV terms:
+  default isVersionOf "http://identifiers.org/go/GO:0005623"
+  IR hasPart "http://identifiers.org/uniprot/P15208"
+  IRins hasPart "http://identifiers.org/uniprot/P15208",
+                "http://identifiers.org/uniprot/P01325"
+  IRp isVersionOf "http://identifiers.org/uniprot/P15208",
+                  "http://identifiers.org/kegg.compound/C00562"
+  IRiP isVersionOf "http://identifiers.org/uniprot/P15208",
+                   "http://identifiers.org/kegg.compound/C00562"
+  IRi isVersionOf "http://identifiers.org/uniprot/P15208"
+  IRS isVersionOf "http://identifiers.org/uniprot/P35569"
+  IRSiP isVersionOf "http://identifiers.org/uniprot/P35569",
+                    "http://identifiers.org/kegg.compound/C00562"
+  X isVersionOf "http://identifiers.org/fma/FMA:74531"
+  Xp isVersionOf "http://identifiers.org/kegg.compound/C00562",
+                 "http://identifiers.org/fma/FMA:74531"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1207270000"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000423"
+  model publication "http://identifiers.org/pubmed/22248283"
+  model origin "http://identifiers.org/biomodels.db/BIOMD0000000343"
+  model isVersionOf "http://identifiers.org/go/GO:0008286"
+  model hasTaxon "http://identifiers.org/taxonomy/39107",
+                 "http://identifiers.org/bto/BTO:0000443"
+  model created "2012-07-27T12:02:12Z"
+  model modified "2012-08-09T15:53:40Z"
+  model creator1.givenName "Vijayalakshmi"
+  model creator1.familyName "Chelliah"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "viji@ebi.ac.uk"
+  model creator2.givenName "Elin"
+  model creator2.familyName "Nyman"
+  model creator2.organization "Linkoping University"
+  model creator2.email "elin.nyman@gmail.com"
+
+  // Notes:
+  model notes ```
+This model is from the article: 
+**Mechanistic explanations for counter-intuitive phosphorylation dynamics of
+the insulin receptor and insulin receptor substrate-1 in response to insulin in murine
+adipocytes.** 
+Nyman E, Fagerholm S, Jullesson D, Strålfors P, Cedersund G. *FEBS
+J.* 2012 Jan 16. [22248283](http://www.ncbi.nlm.nih.gov/pubmed/22248283) , 
+**Abstract:** 
+Insulin signaling through insulin receptor (IR) and insulin receptor substrate-1
+(IRS1) is important for insulin control of target cells. We have previously demonstrated
+a rapid and simultaneous overshoot behavior in the phosphorylation dynamics of IR
+and IRS1 in human adipocytes. Herein, we demonstrate that in murine adipocytes a
+similar overshoot behavior is not simultaneous for IR and IRS1. The peak of IRS1
+phosphorylation, which is a direct consequence of the phosphorylation and the activation
+of IR, occurs earlier than the peak of IR phosphorylation. We used a conclusive modeling
+framework to unravel the mechanisms behind this counter-intuitive order of phosphorylation.
+Through a number of rejections, we demonstrate that two fundamentally different mechanisms
+may create the reversed order of peaks: (i) two pools of phosphorylated IR, where
+a large pool of internalized IR peaks late, but phosphorylation of IRS1 is governed
+by a small plasma membrane-localized pool of IR with an early peak, or (ii) inhibition
+of the IR-catalyzed phosphorylation of IRS1 by negative feedback. Although (i) may
+explain the reversed order, this two-pool hypothesis alone requires extensive internalization
+of IR, which is not supported by experimental data. However, with the additional
+assumption of limiting concentrations of IRS1, (i) can explain all data. Also, (ii)
+can explain all available data. Our findings illustrate how modeling can potentiate
+reasoning, to help draw nontrivial conclusions regarding competing mechanisms in
+signaling networks. Our work also reveals new differences between human and murine
+insulin signaling. Database The mathematical model described here has been submitted
+to the Online Cellular Systems Modelling Database and can be accessed at
+http://jjj.biochem.sun.ac.za/database/nyman/index.html free of charge.
+```
+end
+
+Nyman2012_InsulinSignalling is "Nyman2012_InsulinSignalling"

@@ -1,0 +1,128 @@
+// Created by libAntimony v3.2.0
+model *Hu2019___Modeling_Pancreatic_Cancer_Dynamics_with_Immunotherapy()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species x_PCC in compartment_, y_PSC in compartment_, z_Effector_Cells in compartment_;
+  species w_TPC in compartment_, v_TSC in compartment_, R_siRNA in compartment_;
+
+  // Reactions:
+  PCC_Tumor_Growth:  => x_PCC; compartment_*((r_1 + beta_1*y_PSC)*x_PCC*(1 - b_1*x_PCC));
+  PCC_Tumor_Killing: x_PCC => ; compartment_*(delta_1*x_PCC*z_Effector_Cells/(m_1 + w_TPC));
+  PSC_Tumor_Growth:  => y_PSC; compartment_*((r_2 + beta_2*w_TPC/(k_2 + w_TPC))*y_PSC*(1 - b_2*y_PSC));
+  PSC_Natural_Death: y_PSC => ; compartment_*mu_2*y_PSC;
+  Effector_Cells_Production:  => z_Effector_Cells; compartment_*(beta_3*z_Effector_Cells*v_TSC/((k_3 + v_TSC)*(m_3 + w_TPC)));
+  Effector_Cells_Apoptosis: z_Effector_Cells => ; compartment_*mu_3*z_Effector_Cells;
+  Effector_Cells_Production_Constant:  => z_Effector_Cells; compartment_*r_3;
+  TPC_Production:  => w_TPC; compartment_*TPC_Production_v;
+  TPC_Decay: w_TPC => ; compartment_*mu_4*w_TPC;
+  TPC_Production_PSC:  => w_TPC; compartment_*(r_4*x_PCC*y_PSC/(m_4 + v_TSC));
+  TSC_Production:  => v_TSC; compartment_*(beta_5*x_PCC*z_Effector_Cells/(k_5 + x_PCC));
+  TSC_Decay: v_TSC => ; compartment_*mu_5*v_TSC;
+  siRNA_Decay: R_siRNA => ; compartment_*mu_6*R_siRNA;
+  siRNA_Dose:  => R_siRNA; compartment_*D_0;
+
+  // Species initializations:
+  x_PCC = 1000000000;
+  y_PSC = 5600000;
+  z_Effector_Cells = 190000000;
+  w_TPC = 50000;
+  v_TSC = 9.4;
+  R_siRNA = 1;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  r_1 = 0.0195;
+  b_1 = 1.02e-11;
+  beta_1 = 1.7857e-12;
+  m_1 = 1000000000;
+  delta_1 = 0.96;
+  r_2 = 0.00195;
+  beta_2 = 0.125;
+  k_2 = 56000000000;
+  b_2 = 1.7857e-09;
+  mu_2 = 0.015;
+  beta_3 = 124.5;
+  k_3 = 20000000000;
+  m_3 = 1000000;
+  r_3 = 3500;
+  mu_3 = 0.02;
+  beta_4 = 5.85;
+  k_4 = 1000000;
+  mu_4 = 0.034;
+  r_4 = 12500;
+  m_4 = 89000000000;
+  beta_5 = 7.3;
+  k_5 = 1000000;
+  mu_5 = 0.034;
+  D_0 = 50000000000;
+  p = 0.9;
+  k = 1;
+  mu_6 = 0.66;
+  TPC_Production_v = 0.1;
+
+  // Other declarations:
+  const compartment_, r_1, b_1, beta_1, m_1, delta_1, r_2, beta_2, k_2, b_2;
+  const mu_2, beta_3, k_3, m_3, r_3, mu_3, beta_4, k_4, mu_4, r_4, m_4, beta_5;
+  const k_5, mu_5, D_0, p, k, mu_6;
+
+  // Unit definitions:
+  unit time_unit = 86400 second;
+  unit substance = item;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+
+  // CV terms:
+  compartment_ isVersionOf "http://identifiers.org/ncit/C94498"
+  x_PCC isVersionOf "http://identifiers.org/efo/EFO:0002966"
+  x_PCC isVersionOf "http://identifiers.org/cco/CCO:0001063"
+  y_PSC isVersionOf "http://identifiers.org/cco/CCO:0002410"
+  z_Effector_Cells isVersionOf "http://identifiers.org/ncit/C28241"
+  w_TPC hasPart "http://identifiers.org/uniprot/B5MCZ3"
+  w_TPC hasPart "http://identifiers.org/uniprot/Q49IL8"
+  w_TPC isVersionOf "http://identifiers.org/ncit/C20464"
+  v_TSC hasPart "http://identifiers.org/uniprot/Q14609"
+  v_TSC isVersionOf "http://identifiers.org/ncit/C20464"
+  R_siRNA isVersionOf "http://identifiers.org/ncit/C2191"
+  PCC_Tumor_Growth isVersionOf "http://identifiers.org/go/GO:0008283"
+  PCC_Tumor_Killing isVersionOf "http://identifiers.org/go/GO:0002418"
+  PSC_Tumor_Growth isVersionOf "http://identifiers.org/go/GO:0008283"
+  PSC_Natural_Death isVersionOf "http://identifiers.org/go/GO:0008219"
+  Effector_Cells_Production isVersionOf "http://identifiers.org/go/GO:0008283"
+  Effector_Cells_Apoptosis identity "http://identifiers.org/ncit/C17557"
+  Effector_Cells_Production_Constant isVersionOf "http://identifiers.org/go/GO:0008283"
+  TPC_Production isVersionOf "http://identifiers.org/go/GO:0001816"
+  TPC_Decay isVersionOf "http://identifiers.org/sbo/SBO:0000179"
+  TPC_Production_PSC isVersionOf "http://identifiers.org/go/GO:0001816"
+  TSC_Production isVersionOf "http://identifiers.org/go/GO:0001816"
+  TSC_Decay isVersionOf "http://identifiers.org/sbo/SBO:0000179"
+  siRNA_Decay isVersionOf "http://identifiers.org/sbo/SBO:0000179"
+  siRNA_Dose isVersionOf "http://identifiers.org/ncit/C28160"
+
+  model publication "http://identifiers.org/pubmed/30843136"
+  model origin "http://identifiers.org/doi/10.1142/S021833901750005X"
+  model model_source "http://identifiers.org/biomodels.db/MODEL1908130001",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000792"
+  model hasProperty "http://identifiers.org/mamo/MAMO_0000046"
+  model hasProperty "http://identifiers.org/go/GO:0002418"
+  model created "2019-08-13T09:09:54Z"
+  model modified "2019-08-13T09:09:54Z"
+  model creator1.givenName "Johannes"
+  model creator1.familyName "Meyer"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "johannes.p.meyer@gmail.com"
+
+  // Notes:
+  model notes ```
+This is a mathematical model of pancreatic cancer that includes descriptions of 
+pancreatic cancer cells, pancreatic stellate cells, effector cells and tumor-promoting 
+and tumor-suppressing cytokines to investigate the effects of immunotherapies on 
+patient survival.
+```
+end
+
+Hu2019___Modeling_Pancreatic_Cancer_Dynamics_with_Immunotherapy is "Hu2019 - Modeling Pancreatic Cancer Dynamics with Immunotherapy"

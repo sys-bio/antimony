@@ -1,0 +1,141 @@
+// Created by libAntimony v3.2.0
+model *Bhartiya2003_Tryptophan_operon()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species Enz in compartment_, Ts in compartment_, Tt in compartment_, $To in compartment_;
+
+  // Assignment Rules:
+  Tt := To + Ts;
+  To := Tomax*Tex/(Tex*(1 + Ts/f_val) + e_val);
+  Ts_norm := Ts/82;
+  To_norm := To/82;
+  Tt_norm := Tt/82;
+  Enz_norm := Enz/1;
+
+  // Reactions:
+  Enzyme_synthesis:  -> Enz; compartment_*Enzyme_synthesis_k1*Enzyme_synthesis_ki1^Enzyme_synthesis_nH*Enzyme_synthesis_Ot/(Enzyme_synthesis_ki1^Enzyme_synthesis_nH + Tt^Enzyme_synthesis_nH);
+  Enzyme_dilution: Enz -> ; compartment_*Enzyme_dilution_mu*Enz;
+  tryptophan_synthesis:  -> Ts; compartment_*tryptophan_synthesis_k2*Enz*tryptophan_synthesis_Ki2/(tryptophan_synthesis_Ki2 + Tt);
+  tryptophan_consumption: Ts -> ; compartment_*tryptophan_consumption_g*Ts/(tryptophan_consumption_Kg + Ts);
+  tryptophan_dilution: Ts -> ; compartment_*tryptophan_dilution_mu*Ts;
+
+  // Species initializations:
+  Enz = 0;
+  Ts = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  Tomax = 100;
+  Tomax has concentration;
+  Tex = 0.14;
+  Tex has concentration;
+  f_val = 380;
+  f_val has concentration;
+  e_val = 0.9;
+  e_val has concentration;
+  Ts_norm has dimensionless;
+  To_norm has dimensionless;
+  Tt_norm has dimensionless;
+  Enz_norm has dimensionless;
+  Enzyme_synthesis_k1 = 65;
+  Enzyme_synthesis_k1 has time_inverse;
+  Enzyme_synthesis_ki1 = 3.53;
+  Enzyme_synthesis_ki1 has concentration;
+  Enzyme_synthesis_nH = 1.92;
+  Enzyme_synthesis_nH has dimensionless;
+  Enzyme_synthesis_Ot = 0.0033;
+  Enzyme_synthesis_Ot has concentration;
+  Enzyme_dilution_mu = 0.01;
+  Enzyme_dilution_mu has time_inverse;
+  tryptophan_synthesis_k2 = 25;
+  tryptophan_synthesis_k2 has time_inverse;
+  tryptophan_synthesis_Ki2 = 810;
+  tryptophan_synthesis_Ki2 has concentration;
+  tryptophan_consumption_g = 25;
+  tryptophan_consumption_g has Concentration_per_time;
+  tryptophan_consumption_Kg = 0.2;
+  tryptophan_consumption_Kg has concentration;
+  tryptophan_dilution_mu = 0.01;
+  tryptophan_dilution_mu has time_inverse;
+
+  // Other declarations:
+  var Ts_norm, To_norm, Tt_norm, Enz_norm;
+  const compartment_, Tomax, Tex, f_val, e_val;
+
+  // Unit definitions:
+  unit substance = 1e-6 mole;
+  unit time_unit = 60 second;
+  unit concentration = 1e-6 mole / litre;
+  unit Concentration_per_time = 1e-6 mole / (litre * 60 second);
+  unit time_inverse = 1 / 60 second;
+
+  // Display Names:
+  substance is "micromole";
+  time_unit is "minutes";
+  concentration is "microM";
+  Concentration_per_time is "microM_per_min";
+  time_inverse is "per_min";
+  compartment_ is "cell";
+  Enz is "Anthranilate synthase";
+  Ts is "Synthesized tryptophan";
+  Tt is "Total tryptophan";
+  To is "exog. Trp";
+  Enzyme_synthesis is "Anthranilate synthase synthesis";
+  Enzyme_dilution is "Enzyme dilution due to cell growth";
+  tryptophan_synthesis is "Tryptophan synthesis";
+  tryptophan_consumption is "Tryptophan consumption for protein synthesis";
+  tryptophan_dilution is "Tryptophan dilution due to cell growth";
+
+  // CV terms:
+  compartment_ isVersionOf "http://identifiers.org/go/GO:0005623"
+  Enz identity "http://identifiers.org/uniprot/P00895"
+  Ts identity "http://identifiers.org/chebi/CHEBI:27897",
+              "http://identifiers.org/kegg.compound/C00806"
+  Tt identity "http://identifiers.org/chebi/CHEBI:27897",
+              "http://identifiers.org/kegg.compound/C00806"
+  Enzyme_synthesis isVersionOf "http://identifiers.org/go/GO:0006417"
+  tryptophan_synthesis isVersionOf "http://identifiers.org/go/GO:0000162"
+  tryptophan_consumption isVersionOf "http://identifiers.org/go/GO:0006412"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL6624111460"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000062"
+  model publication "http://identifiers.org/pubmed/12787031"
+  model origin "http://identifiers.org/pubmed/11171956"
+  model isVersionOf "http://identifiers.org/go/GO:0000162"
+  model hasTaxon "http://identifiers.org/taxonomy/562"
+  model created "2010-02-04T17:43:13Z"
+  model modified "2014-02-12T15:48:31Z"
+  model creator1.givenName "Jacky L"
+  model creator1.familyName "Snoep"
+  model creator1.organization "Stellenbosh University"
+  model creator1.email "jls@sun.ac.za"
+  model creator2.givenName "Harish"
+  model creator2.familyName "Dharuri"
+  model creator2.organization "California Institute of Technology"
+  model creator2.email "hdharuri@cds.caltech.edu"
+
+  // Notes:
+  model notes ```
+[SBML](http://www.sbml.org/) level 2 code originaly generated for the JWS Online project by Jacky Snoep using [PySCeS](http://pysces.sourceforge.net/) 
+Run this model online at [http://jjj.biochem.sun.ac.za](http://jjj.biochem.sun.ac.za/) 
+To cite JWS Online please refer to: Olivier, B.G. and Snoep, J.L. (2004)
+[Web-based modelling using JWS Online](http://bioinformatics.oupjournals.org/cgi/content/abstract/20/13/2143) , Bioinformatics, 20:2143-2144 
+
+<u>BioModels Curation</u> : The model reproduces Fig 3 of the publication.
+By substituting a value of 1.4 for Tex it is possible to reproduce Fig 3C and 3D(iii),
+Fig 3A and 3D(i), are obtained by setting Tex=0. Also, note that the tryptophan concentrations
+have been normalized by 82 micromolar in the figures; the normalized concetrations
+can be obtained via the parameters To/s/t_norm. The model was successfully tested
+on MathSBML and Copasi. 
+
+This model originates from BioModels Database: A Database of Annotated Published
+Models. It is copyright (c) 2005-2010 The BioModels Team. 
+For more information see the [terms of use](http://www.ebi.ac.uk/biomodels/legal.html) . 
+To cite BioModels Database, please use [Le Novère N., Bornstein B., Broicher A., Courtot M., Donizelli M., Dharuri H., Li L., Sauro H., Schilstra M., Shapiro B., Snoep J.L., Hucka M. (2006) BioModels Database: A Free, Centralized Database of Curated, Published, Quantitative Kinetic Models of Biochemical and Cellular Systems Nucleic Acids Res., 34: D689-D691.](http://www.pubmedcentral.nih.gov/articlerender.fcgi?tool=pubmed&pubmedid=16381960)
+```
+end
+
+Bhartiya2003_Tryptophan_operon is "Bhartiya2003_Tryptophan_operon"

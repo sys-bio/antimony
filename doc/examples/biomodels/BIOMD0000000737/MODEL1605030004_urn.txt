@@ -1,0 +1,230 @@
+// Created by libAntimony v3.2.0
+model *MODEL1605030004()
+
+  // Compartments and Species:
+  compartment Duodenum, RBC, Spleen, Liver, Plasma, RestOfBody, BoneMarrow;
+  species FeDuo in Duodenum, FeRBC in RBC, FeSpleen in Spleen, FeLiver in Liver;
+  species Tf in Plasma, Hepcidin in Plasma, Fe2Tf in Plasma, Fe1Tf in Plasma;
+  species NTBI in Plasma, FeRest in RestOfBody, $FeOutside in RestOfBody;
+  species FeBM in BoneMarrow;
+
+  // Assignment Rules:
+  Total_Fe__particle := FeDuo*Avogadro*Duodenum + FeLiver*Avogadro*Liver + FeSpleen*Avogadro*Spleen + FeRBC*Avogadro*RBC + FeRest*Avogadro*RestOfBody + 2*Fe2Tf*Avogadro*Plasma + Fe1Tf*Avogadro*Plasma + NTBI*Avogadro*Plasma + FeBM*Avogadro*BoneMarrow;
+  Total_Fe__conc := (FeDuo*Avogadro*Duodenum + FeLiver*Avogadro*Liver + FeSpleen*Avogadro*Spleen + FeRBC*Avogadro*RBC + FeRest*Avogadro*RestOfBody + 2*Fe2Tf*Avogadro*Plasma + Fe1Tf*Avogadro*Plasma + NTBI*Avogadro*Plasma + FeBM*Avogadro*BoneMarrow)/(ModelValue_13*(Duodenum + Liver + Plasma + RBC + RestOfBody + Spleen));
+  FePlasma__particle := 2*Fe2Tf*Avogadro*Plasma + Fe1Tf*Avogadro*Plasma + NTBI*Avogadro*Plasma;
+  Total_Fe__g := Total_Fe__particle*55.845/ModelValue_13;
+  Total_Tf__particle := Tf*Avogadro*Plasma + Fe1Tf*Avogadro*Plasma + Fe2Tf*Avogadro*Plasma;
+  Total_Tf__conc := Total_Tf__particle/(ModelValue_13*Plasma);
+  Total_Tf__mg_ml := Total_Tf__conc*80;
+  FePlasma_conc := FePlasma__particle/(Plasma*ModelValue_13);
+  TfSaturation := 100*(2*Fe2Tf*Avogadro*Plasma + Fe1Tf*Avogadro*Plasma)/(2*(Tf*Avogadro*Plasma + Fe2Tf*Avogadro*Plasma + Fe1Tf*Avogadro*Plasma));
+
+  // Reactions:
+  Diet:  => FeDuo; Duodenum*vDiet;
+  HepcidinSynthesis:  => Hepcidin; Plasma*HepcidinSynthesis_v;
+  HepcidinDecay: Hepcidin => ; Plasma*HepcidinDecay_k1*Hepcidin;
+  Duo_NTBI: FeDuo => NTBI; VDuoNTBI*Duodenum*FeDuo/((Km + FeDuo)*(1 + Hepcidin/Ki));
+  Fe2Tf_BM: Fe2Tf => 2 FeBM + Tf; kInBM*Fe2Tf*Plasma;
+  RBC_Spleen: FeRBC => FeSpleen; vRBCSpleen*FeRBC*RBC;
+  Spleen_NTBI: FeSpleen => NTBI; VSpleenNTBI*Spleen*FeSpleen/((Km + FeSpleen)*(1 + Hepcidin/Ki));
+  Liver_NTBI: FeLiver => NTBI; VLiverNTBI*Liver*FeLiver/((Km + FeLiver)*(1 + Hepcidin/Ki));
+  NTBI_Fe1Tf: NTBI + Tf => Fe1Tf; Plasma*kNTBI_Fe1Tf*NTBI*Tf;
+  DuoLoss: FeDuo => $FeOutside; kDuoLoss*FeDuo*Duodenum;
+  Fe2Tf_Liver: Fe2Tf => 2 FeLiver + Tf; kInLiver*Fe2Tf*Plasma;
+  Fe2Tf_Rest: Fe2Tf => 2 FeRest + Tf; kInRest*Fe2Tf*Plasma;
+  RestLoss: FeRest => $FeOutside; RestOfBody*kRestLoss*FeRest;
+  Fe2Tf_Duo: Fe2Tf => 2 FeDuo + Tf; kInDuo*Fe2Tf*Plasma;
+  Rest_NTBI: FeRest => NTBI; VRestNTBI*RestOfBody*FeRest/((Km + FeRest)*(1 + Hepcidin/Ki));
+  Fe1Tf_Fe2Tf: Fe1Tf + NTBI => Fe2Tf; Plasma*kFe1Tf_Fe2Tf*Fe1Tf*NTBI;
+  Fe1Tf_Liver: Fe1Tf => FeLiver + Tf; kInLiver*Fe1Tf*Plasma;
+  Fe1Tf_BM: Fe1Tf => FeBM + Tf; kInBM*Fe1Tf*Plasma;
+  Fe1Tf_Rest: Fe1Tf => FeRest + Tf; kInRest*Fe1Tf*Plasma;
+  Fe1Tf_Duo: Fe1Tf => FeDuo + Tf; kInDuo*Fe1Tf*Plasma;
+  BM_RBC: FeBM => FeRBC; kInRBC*FeBM*BoneMarrow;
+  BM_Spleen: FeBM => FeSpleen; kBMSpleen*FeBM*BoneMarrow;
+
+  // Species initializations:
+  FeDuo = 0.0117590568706314;
+  FeRBC = 0.0379799887571665;
+  FeSpleen = 0.00394239990123767;
+  FeLiver = 0.00200010981212238;
+  Tf = 1.5821833083706e-05;
+  Hepcidin = 2.30017456622937e-08;
+  Fe2Tf = 1.35248196757048e-05;
+  Fe1Tf = 9.35334724058915e-06;
+  NTBI = 3.3311210465159e-08;
+  FeRest = 0.000286841656341217;
+  FeOutside = 0;
+  FeBM = 0.00303783614844319;
+
+  // Compartment initializations:
+  Duodenum = 3.84615e-05;
+  RBC = 0.00079;
+  Spleen = 6.73077e-05;
+  Liver = 0.001161905;
+  Plasma = 0.0013;
+  RestOfBody = 0.019694766;
+  BoneMarrow = 0.000214286;
+
+  // Variable initializations:
+  kNTBI_Fe1Tf = 1084322005;
+  kInDuo = 0.0689984226081531;
+  kInLiver = 2.97790545667672;
+  kInRBC = 1.08447580176706;
+  kInRest = 6.16356235352873;
+  Km = 0.0159421218669513;
+  Ki = 1e-09;
+  kFe1Tf_Fe2Tf = 1084322005;
+  VDuoNTBI = 0.200241893786814;
+  VLiverNTBI = 0.0261147638001175;
+  VSpleenNTBI = 1.342204923;
+  VRestNTBI = 0.0109451335200198;
+  kDuoLoss = 0.0270113302698216;
+  vRBCSpleen = 0.0235286;
+  kRestLoss = 0.023533240736163;
+  Avogadro = 6.02214179e+23;
+  ModelValue_13 = Avogadro;
+  kInBM = 15.7690636138556;
+  kBMSpleen = 0.061902954378781;
+  vDiet = 0;
+  quantity_to_number_factor = 6.02214179e+23;
+  HepcidinSynthesis_v = 8.54927e-09;
+  HepcidinDecay_k1 = 0.75616;
+
+  // Other declarations:
+  var Total_Fe__particle, Total_Fe__conc, FePlasma__particle, Total_Fe__g;
+  var Total_Tf__particle, Total_Tf__conc, Total_Tf__mg_ml, FePlasma_conc;
+  var TfSaturation;
+  const Duodenum, RBC, Spleen, Liver, Plasma, RestOfBody, BoneMarrow, kNTBI_Fe1Tf;
+  const kInDuo, kInLiver, kInRBC, kInRest, Km, Ki, kFe1Tf_Fe2Tf, VDuoNTBI;
+  const VLiverNTBI, VSpleenNTBI, VRestNTBI, kDuoLoss, vRBCSpleen, kRestLoss;
+  const Avogadro, ModelValue_13, kInBM, kBMSpleen, vDiet, quantity_to_number_factor;
+
+  // Unit definitions:
+  unit time_unit = 86400 second;
+
+  // Display Names:
+  time_unit is "time";
+  Total_Fe__particle is "Total_Fe (particle)";
+  Total_Fe__conc is "Total_Fe (conc)";
+  ModelValue_13 is "Initial for Avogadro";
+  FePlasma__particle is "FePlasma (particle)";
+  Total_Fe__g is "Total_Fe (g)";
+  Total_Tf__particle is "Total_Tf (particle)";
+  Total_Tf__conc is "Total_Tf (conc)";
+  Total_Tf__mg_ml is "Total_Tf (mg/ml)";
+  FePlasma_conc is "FePlasma(conc)";
+  quantity_to_number_factor is "quantity to number factor";
+
+  // CV terms:
+  FeDuo hasPart "urn:miriam:chebi:CHEBI%3A24875"
+  FeRBC hasPart "urn:miriam:chebi:CHEBI%3A24875"
+  FeSpleen hasPart "urn:miriam:chebi:CHEBI%3A24875"
+  FeLiver hasPart "urn:miriam:chebi:CHEBI%3A24875"
+  Tf identity "urn:miriam:uniprot:Q921I1"
+  Hepcidin identity "urn:miriam:uniprot:Q9EQ21"
+  Fe2Tf hasPart "urn:miriam:chebi:CHEBI%3A29034"
+  Fe2Tf hasPart "urn:miriam:uniprot:Q921I1"
+  Fe1Tf hasPart "urn:miriam:chebi:CHEBI%3A29034"
+  Fe1Tf hasPart "urn:miriam:uniprot:Q921I1"
+  NTBI hasPart "urn:miriam:chebi:CHEBI%3A24875"
+  FeRest hasPart "urn:miriam:chebi:CHEBI%3A24875"
+  FeOutside hasPart "urn:miriam:chebi:CHEBI%3A24875"
+  FeBM hasPart "urn:miriam:chebi:CHEBI%3A24875"
+  Duo_NTBI identity "urn:miriam:go:GO%3A1903414"
+  Fe2Tf_BM identity "urn:miriam:go:GO%3A0097286"
+  RBC_Spleen identity "urn:miriam:go:GO%3A0006909"
+  Spleen_NTBI identity "urn:miriam:go:GO%3A1903414"
+  Spleen_NTBI identity "urn:miriam:go:GO%3A1903988"
+  Liver_NTBI identity "urn:miriam:go:GO%3A1903414"
+  Liver_NTBI identity "urn:miriam:go:GO%3A1903988"
+  Fe2Tf_Liver identity "urn:miriam:go:GO%3A0097286"
+  Fe2Tf_Rest identity "urn:miriam:go:GO%3A0097286"
+  Fe2Tf_Duo identity "urn:miriam:go:GO%3A0097286"
+  Rest_NTBI identity "urn:miriam:go:GO%3A1903988"
+  Rest_NTBI identity "urn:miriam:go:GO%3A1903414"
+  Fe1Tf_Liver identity "urn:miriam:go:GO%3A0097286"
+  Fe1Tf_BM identity "urn:miriam:go:GO%3A0097286"
+  Fe1Tf_Rest identity "urn:miriam:go:GO%3A0097286"
+  Fe1Tf_Duo identity "urn:miriam:go:GO%3A0097286"
+  BM_RBC identity "urn:miriam:go:GO%3A0043249"
+
+  model model_source "urn:miriam:biomodels.db:MODEL1605030004"
+  model identity "urn:miriam:taxonomy:10090"
+  model identity "urn:miriam:go:GO%3A0055072"
+  model created "2015-06-12T09:42:50Z"
+  model modified "2015-06-12T09:42:50Z"
+  model creator1.givenName "Shevchuck"
+  model creator1.familyName "Hope"
+  model creator1.organization "Worcester Polytechnic Institute"
+  model creator1.email "hdshevchuk@WPI.EDU"
+  model creator2.givenName "Davis"
+  model creator2.familyName "Grey"
+  model creator2.organization "University Tennessee, Knoxville"
+  model creator2.email "grey.davis.93@gmail.com"
+  model creator3.givenName "Jigneshkumar"
+  model creator3.familyName "Parmar"
+  model creator3.organization "UConn Health"
+  model creator3.email "jparmar@uchc.edu"
+  model creator4.givenName "Mendes"
+  model creator4.familyName "Pedro"
+  model creator4.organization "UConn Health"
+  model creator4.email "pmendes@uchc.edu"
+
+  // Notes:
+  model notes ```
+Mouse Iron Distribution - Deficient irondiet 
+
+
+This model describes the dynamics of iron distribution in mice. It includes only
+normal iron with the parameters that fit the data from Lopes  *et al.* 2010 for
+mice fed a deficient iron diet. It does not include the radioiron tracer species.
+It is appropriate to study the properties in conditions where no tracers are used
+(for example for steady state analysis).
+
+
+This model is described in the article:
+
+
+[Modeling the dynamics of mouse iron body distribution: hepcidin is necessary but not sufficient](http://identifiers.org/doi/10.1186/s12918-017-0431-3 "Access to this publication") 
+
+
+Jignesh H. Parmar, Grey Davis, Hope Shevchuk and Pedro Mendes 
+
+BMC Systems Biology 
+Abstract:
+
+
+Background Iron is an essential element of most living organisms but is a dangerous
+substance when poorly liganded in solution. The hormone hepcidin regulates the
+export of iron from tissues to the plasma contributing to iron homeostasis and
+also restricting its availability to infectious agents. Disruption of iron
+regulation in mammals leads to disorders such as anemia and hemochromatosis, and
+contributes to the etiology of several other diseases such as cancer and neurodegenerative
+diseases. Here we test the hypothesis that hepcidin alone is able to regulate
+iron distribution in different dietary regimes in the mouse using a computational
+model of iron distribution calibrated with radioiron tracer data. Results A
+model was developed and calibrated to the data from adequate iron diet, which
+was able to simulate the iron distribution under a low iron diet. However simulation
+of high iron diet shows considerable deviations from the experimental data.
+Namely the model predicts more iron in red blood cells and less iron in the liver
+than what was observed in experiments. Conclusions These results suggest that
+hepcidin alone is not sufficient to regulate iron homeostasis in high iron
+conditions and that other factors are important. The model was able to simulate
+anemia when hepcidin was increased but was unable to simulate hemochromatosis
+when hepcidin was suppressed, suggesting that in high iron conditions additional
+regulatory interactions are important.
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identified by: [MODEL1605030004](http://identifiers.org/biomodels.db/MODEL1605030004).
+
+To cite BioModels Database, please use: [BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models](http://identifiers.org/pubmed/20587024 "Latest BioModels Database publication").
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+end
+
+MODEL1605030004 is "Parmar2017 - Mouse Iron Distribution - Deficient iron diet"

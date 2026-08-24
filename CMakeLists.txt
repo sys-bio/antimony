@@ -11,8 +11,8 @@ project(libantimony)
 # Set up version information.
 #
 SET(LIBANTIMONY_VERSION_MAJOR 3)
-SET(LIBANTIMONY_VERSION_MINOR 1)
-SET(LIBANTIMONY_VERSION_PATCH ".3")
+SET(LIBANTIMONY_VERSION_MINOR 2)
+SET(LIBANTIMONY_VERSION_PATCH ".0")
 SET(LIBANTIMONY_VERSION_RELEASE "")
 
 
@@ -31,7 +31,12 @@ endif()
 # C++14 minimum: required by the vendored GoogleTest 1.16.x (see
 # src/test/googletest/README.md), which uses std::make_index_sequence
 # and friends internally.
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+# MSVC doesn't understand the GNU-style -std= flag (and already
+# defaults to a sufficiently modern standard), so only add it for
+# GCC/Clang to avoid a D9002 "unknown option" warning on every file.
+if(NOT MSVC)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+endif()
 
 include (InstallRequiredSystemLibraries)
 include (CMakeTestCCompiler)
@@ -84,8 +89,11 @@ set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Choose the type of build, op
 
 # which language bindings should be build
 option(WITH_CELLML          "Generate CellML translations"    OFF )
+mark_as_advanced(WITH_CELLML)
+if(WITH_CELLML)
+  message(FATAL_ERROR "The ability to export Antimony to CellML is not currently functional.")
+endif()
 option(WITH_QTANTIMONY      "Generate QTAntimony"             ON )
-option(WITH_SWIG   "Regenerate SWIG-based language bindings." OFF )
 option(WITH_PYTHON       "Generate Python language bindings." OFF)
 if (WITH_PYTHON)
   option(PYTHON_SYSTEM_INSTALL  "Install the python bindings using setup.py and distutils.  May require admin privileges."    OFF )
@@ -296,36 +304,6 @@ INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${SBMLNETWORK_INCLUDE_DIR} )
 set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${CMAKE_DL_LIBS} )
 
 message(STATUS "Antimony libs: ${LIBANTIMONY_LIBS}")
-
-###############################################################################
-#
-# If WITH_SWIG is selected, we need to find swig
-#
-if(WITH_SWIG)
-    find_program(SWIG_EXECUTABLE
-        NAMES swig
-        PATHS
-              "c:/Program Files (x86)/Swig"
-              c:/Program Files/Swig
-              c:/Program Files/swigwin-3.0.10
-              c:/Program Files/swigwin-4.0.2
-              /usr/local/bin
-              /opt/local/bin
-              /usr/bin
-        DOC "The file name of the swig executable."
-        )
-    find_package(SWIG)
-    set(SWIG_EXTRA_ARGS "" CACHE STRING "Extra arguments to SWIG" )
-endif(WITH_SWIG)
-
-if(WITH_SWIG)
-    message(STATUS "  Using SWIG                    = ${SWIG_EXECUTABLE}")
-
-    if (SWIG_FOUND AND SWIG_VERSION VERSION_LESS "2.0.4")
-        message(WARNING "   You are using swig version ${SWIG_VERSION} while we recommend at least version 2.0.4.")
-    endif()
-
-endif()
 
 if(WITH_PYTHON)
     message(STATUS "  Using Python                  = ${PYTHON_EXECUTABLE}")

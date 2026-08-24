@@ -1,0 +1,106 @@
+// Created by libAntimony v3.2.0
+model *Liu2017___chemotherapy_targeted_model_of_tumor_immune_system()
+
+  // Compartments and Species:
+  compartment Tumor_Microenvironment;
+  species Tumor_Cell_Population__T in Tumor_Microenvironment, Effector_immune_cell_population__N in Tumor_Microenvironment;
+  species Circulating_lymphocyte_population__C in Tumor_Microenvironment;
+  species Chemotherapeutic_drug_concentration__M in Tumor_Microenvironment;
+
+  // Reactions:
+  reaction_1:  => Tumor_Cell_Population__T; Tumor_Microenvironment*(a*Tumor_Cell_Population__T*(1 - b*Tumor_Cell_Population__T));
+  reaction_2: Tumor_Cell_Population__T => ; Tumor_Microenvironment*(c1*Effector_immune_cell_population__N*Tumor_Cell_Population__T);
+  reaction_3: Tumor_Cell_Population__T => ; Tumor_Microenvironment*(Kt*Chemotherapeutic_drug_concentration__M*Tumor_Cell_Population__T);
+  reaction_4:  => Effector_immune_cell_population__N; Tumor_Microenvironment*alpha1;
+  reaction_5:  => Effector_immune_cell_population__N; Tumor_Microenvironment*(g*(Tumor_Cell_Population__T/(s + Tumor_Cell_Population__T))*Effector_immune_cell_population__N);
+  reaction_6: Effector_immune_cell_population__N => ; Tumor_Microenvironment*mu*Effector_immune_cell_population__N;
+  reaction_7: Effector_immune_cell_population__N => ; Tumor_Microenvironment*(p*Tumor_Cell_Population__T*Effector_immune_cell_population__N);
+  reaction_8: Effector_immune_cell_population__N => ; Tumor_Microenvironment*(Kn*(1 - eta)*Chemotherapeutic_drug_concentration__M*Effector_immune_cell_population__N);
+  reaction_9:  => Circulating_lymphocyte_population__C; Tumor_Microenvironment*alpha2;
+  reaction_10: Circulating_lymphocyte_population__C => ; Tumor_Microenvironment*beta*Circulating_lymphocyte_population__C;
+  reaction_11: Circulating_lymphocyte_population__C => ; Tumor_Microenvironment*(Kc*(1 - eta)*Chemotherapeutic_drug_concentration__M*Circulating_lymphocyte_population__C);
+  reaction_12: Chemotherapeutic_drug_concentration__M => ; Tumor_Microenvironment*gamma_*Chemotherapeutic_drug_concentration__M;
+  reaction_13:  => Chemotherapeutic_drug_concentration__M; Tumor_Microenvironment*Vm;
+  reaction_14: Chemotherapeutic_drug_concentration__M => ; Tumor_Microenvironment*(kt*Tumor_Cell_Population__T*Chemotherapeutic_drug_concentration__M);
+
+  // Species initializations:
+  Tumor_Cell_Population__T = 10000000;
+  Effector_immune_cell_population__N = 300000;
+  Circulating_lymphocyte_population__C = 62500000000;
+  Chemotherapeutic_drug_concentration__M = 0.45;
+
+  // Compartment initializations:
+  Tumor_Microenvironment = 1;
+
+  // Variable initializations:
+  a = 0.431;
+  b = 1.02e-14;
+  c1 = 3.41e-10;
+  mu = 0.0412;
+  g = 0.015;
+  s = 20.2;
+  Kc = 0.6;
+  Kn = 0.6;
+  Kt = 0.8;
+  kt = 3.2e-09;
+  p = 2e-11;
+  alpha1 = 12000;
+  alpha2 = 750000000;
+  beta = 0.012;
+  gamma_ = 0.9;
+  Vm = 0.45;
+  eta = 0;
+
+  // Other declarations:
+  const Tumor_Microenvironment, a, b, c1, mu, g, s, Kc, Kn, Kt, kt, p, alpha1;
+  const alpha2, beta, gamma_, Vm, eta;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+  Tumor_Microenvironment is "Tumor Microenvironment";
+  Tumor_Cell_Population__T is "Tumor Cell Population (T)";
+  Effector_immune_cell_population__N is "Effector immune cell population (N)";
+  Circulating_lymphocyte_population__C is "Circulating lymphocyte population (C)";
+  Chemotherapeutic_drug_concentration__M is "Chemotherapeutic drug concentration (M)";
+  gamma_ is "gamma";
+
+  // CV terms:
+  Tumor_Microenvironment identity "http://identifiers.org/ncit/C94498"
+  Tumor_Cell_Population__T hasProperty "http://identifiers.org/ncit/C12922"
+  Effector_immune_cell_population__N hasProperty "http://identifiers.org/obi/OBI_1110016"
+  Circulating_lymphocyte_population__C hasProperty "http://identifiers.org/bto/BTO:0000775"
+  Circulating_lymphocyte_population__C hasProperty "http://identifiers.org/obi/OBI_0000181"
+  Chemotherapeutic_drug_concentration__M hasProperty "http://identifiers.org/chebi/CHEBI:23888"
+
+  model publication "http://identifiers.org/doi/10.1016/j.chaos.2017.03.002"
+  model model_source "http://identifiers.org/biomodels.db/MODEL2004060002",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000930"
+  model occursIn "http://identifiers.org/ncit/C94498"
+  model hasTaxon "http://identifiers.org/taxonomy/9606"
+  model hasProperty "http://identifiers.org/go/GO:0002418",
+                    "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2018-09-24T10:58:21Z"
+  model modified "2018-09-24T10:58:21Z"
+  model creator1.givenName "Krishna"
+  model creator1.familyName "Tiwari"
+  model creator1.organization "Babraham institute"
+  model creator1.email "tiwarik@babraham.ac.uk"
+  model creator2.givenName "Sarubini"
+  model creator2.familyName "Kananathan"
+  model creator2.organization "EMBL-EBI"
+  model creator2.email "sarubini.kananathan@hotmail.co.uk"
+
+  // Notes:
+  model notes ```
+Its a mathematical model reflecting chemotherapy response in tumor immune interaction 
+system. Model encoded by Sarubini Kananathan and annotated+submitted to Biomodels 
+by Krishna Tiwari
+```
+end
+
+Liu2017___chemotherapy_targeted_model_of_tumor_immune_system is "Liu2017 - chemotherapy targeted model of tumor immune system"

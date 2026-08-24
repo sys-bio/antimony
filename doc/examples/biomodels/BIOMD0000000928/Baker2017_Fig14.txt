@@ -1,0 +1,174 @@
+// Created by libAntimony v3.2.0
+model *Baker2017___The_role_of_cytokines__MMPs_and_fibronectin_fragments_osteoarthritis()
+
+  // Compartments and Species:
+  compartment compartmentOne;
+  species solution0 in compartmentOne, solution1 in compartmentOne, solution2 in compartmentOne;
+  species solution3 in compartmentOne;
+
+  // Reactions:
+  R_1:  => solution3; compartmentOne*(Fdam/compartmentOne);
+  R_2: solution2 => solution2 + solution3; compartmentOne*(solution2/compartmentOne);
+  R_3: solution3 => ; compartmentOne*(Gamma_f*solution3/compartmentOne);
+  R_4:  => solution2; compartmentOne*(Mbp/compartmentOne);
+  R_5: solution0 => solution0 + solution2; compartmentOne*(Mpp*(1/(Mph^2 + solution0^2))*solution0^2/compartmentOne);
+  R_6: solution2 => ; compartmentOne*(Gamma_m*solution2/compartmentOne);
+  R_7: solution0 => solution0 + solution1; compartmentOne*(App*(1/(Aph^2 + solution0^2))*solution0^2/compartmentOne);
+  R_8: solution3 => solution1 + solution3; compartmentOne*(Afp*(1/(Afh^2 + solution3^2))*solution3^2/compartmentOne);
+  R_9: solution1 => ; compartmentOne*(solution1/compartmentOne);
+  R_10: solution1 => solution0 + solution1; compartmentOne*(Pbp/(1 + solution1^2)/compartmentOne);
+  R_11: solution0 + solution1 => 2 solution0 + solution1; compartmentOne*((1/(1 + solution1^2))*(Ppp/(1 + solution0^2))*solution0^2/compartmentOne);
+  R_12: solution1 + solution3 => solution0 + solution1 + solution3; compartmentOne*((1/(1 + solution1^2))*(Pfp/(1 + solution3^2))*solution3^2/compartmentOne);
+  R_13: solution0 => ; compartmentOne*(Gamma_p*solution0/compartmentOne);
+
+  // Events:
+  event_: at 0 after time == 20: solution0 = 0.1*solution0;
+
+  // Species initializations:
+  solution0 = 0.18;
+  solution1 = 5;
+  solution2 = 0.55;
+  solution3 = 0.75;
+
+  // Compartment initializations:
+  compartmentOne = 1;
+
+  // Variable initializations:
+  Afh = 1;
+  Afp = 10;
+  Aph = 1;
+  App = 10;
+  Fdam = 0;
+  Gamma_f = 1;
+  Gamma_m = 1;
+  Gamma_p = 1;
+  Mbp = 0.01;
+  Mph = 1;
+  Mpp = 10;
+  Pbp = 0.01;
+  Pfp = 10;
+  Ppp = 10;
+
+  // Other declarations:
+  const compartmentOne, Afh, Afp, Aph, App, Fdam, Gamma_f, Gamma_m, Gamma_p;
+  const Mbp, Mph, Mpp, Pbp, Pfp, Ppp;
+
+  // Display Names:
+  compartmentOne is "Cartilage";
+  solution0 is "p-Cytokines";
+  solution1 is "a-Cytokines";
+  solution2 is "MMP";
+  solution3 is "Fragments";
+  event_ is "event";
+
+  // CV terms:
+  compartmentOne isVersionOf "http://identifiers.org/bto/BTO:0000206"
+  solution0 isVersionOf "http://identifiers.org/ncit/C20464"
+  solution0 hasProperty "http://identifiers.org/ncit/C3137"
+  solution1 isVersionOf "http://identifiers.org/ncit/C20464"
+  solution1 hasProperty "http://identifiers.org/ncit/C28347"
+  solution2 isVersionOf "http://identifiers.org/ncit/C18164"
+  solution3 isVersionOf "http://identifiers.org/ncit/C16581"
+  R_1 isInstanceOf "http://identifiers.org/sbo/SBO:0000393",
+                   "http://identifiers.org/ncit/C41580"
+  R_1 isVersionOf "http://identifiers.org/sbo/SBO:0000393"
+  R_2 isInstanceOf "http://identifiers.org/sbo/SBO:0000393",
+                   "http://identifiers.org/ncit/C41580"
+  R_2 isVersionOf "http://identifiers.org/sbo/SBO:0000393"
+  R_3 isVersionOf "http://identifiers.org/sbo/SBO:0000179"
+  R_4 isVersionOf "http://identifiers.org/sbo/SBO:0000393"
+  R_5 isInstanceOf "http://identifiers.org/sbo/SBO:0000393",
+                   "http://semanticscience.org/resource/SIO_010295"
+  R_5 isVersionOf "http://identifiers.org/sbo/SBO:0000393"
+  R_6 isVersionOf "http://identifiers.org/sbo/SBO:0000179"
+  R_7 isInstanceOf "http://identifiers.org/sbo/SBO:0000393",
+                   "http://semanticscience.org/resource/SIO_010295"
+  R_7 isVersionOf "http://identifiers.org/sbo/SBO:0000393"
+  R_8 isInstanceOf "http://identifiers.org/sbo/SBO:0000393",
+                   "http://semanticscience.org/resource/SIO_010295"
+  R_8 isVersionOf "http://identifiers.org/sbo/SBO:0000393"
+  R_9 isVersionOf "http://identifiers.org/sbo/SBO:0000179"
+  R_10 isInstanceOf "http://identifiers.org/sbo/SBO:0000393",
+                    "http://identifiers.org/ncit/C61559"
+  R_10 isVersionOf "http://identifiers.org/sbo/SBO:0000393"
+  R_11 isInstanceOf "http://identifiers.org/sbo/SBO:0000393",
+                    "http://identifiers.org/go/GO:0001819"
+  R_11 isVersionOf "http://identifiers.org/sbo/SBO:0000393"
+  R_12 isInstanceOf "http://identifiers.org/sbo/SBO:0000393",
+                    "http://identifiers.org/go/GO:0001819"
+  R_12 isVersionOf "http://identifiers.org/sbo/SBO:0000393"
+  R_13 isInstanceOf "http://identifiers.org/sbo/SBO:0000179",
+                    "http://identifiers.org/ncit/C40678"
+  R_13 isVersionOf "http://identifiers.org/sbo/SBO:0000179"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1704120000",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000928"
+  model identity "http://identifiers.org/biomodels.db/MODEL1704120000"
+  model isVersionOf "http://identifiers.org/ncit/C39129"
+  model isDescribedBy "http://identifiers.org/pubmed/28213682"
+  model hasProperty "http://identifiers.org/ncit/C3293",
+                    "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2018-01-19T10:29:26Z"
+  model modified "2018-01-19T10:29:26Z"
+  model creator1.givenName "Matthew Grant"
+  model creator1.familyName "Roberts"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "mroberts@ebi.ac.uk"
+  model creator2.givenName "Rahuman"
+  model creator2.familyName "Sheriff"
+  model creator2.organization "EMBL-EBI"
+  model creator2.email "sheriff@ebi.ac.uk"
+  model creator3.givenName "Ahmad"
+  model creator3.familyName "Zyoud"
+  model creator3.organization "EMBL-EBI"
+  model creator3.email "ahmad.azd@hotmail.com"
+
+  // Notes:
+  model notes ```
+Baker2017 - The role of cytokines, MMPs andfibronectin fragments osteoarthritis 
+
+
+This model is described in the article:
+
+
+[Mathematical modelling of cytokines, MMPs and fibronectin fragments in osteoarthritic cartilage.](http://identifiers.org/pubmed/28213682 "Access to this publication") 
+
+
+Baker M, Brook BS, Owen MR. 
+
+J Math Biol 2017 Feb; : 
+Abstract:
+
+
+Osteoarthritis (OA) is a degenerative disease which causes pain and stiffness
+in joints. OA progresses through excessive degradation of joint cartilage, eventually
+leading to significant joint degeneration and loss of function. Cytokines, 
+a group of cell signalling proteins, present in raised concentrations in OA joints,
+can be classified into pro-inflammatory and anti-inflammatory groups. They mediate
+cartilage degradation through several mechanisms, primarily the up-regulation
+of matrix metalloproteinases (MMPs), a group of collagen-degrading enzymes. In
+this paper we show that the interactions of cytokines within cartilage have a
+crucial role to play in OA progression and treatment. We develop a four-variable
+ordinary differential equation model for the interactions between pro- and anti-inflammatory
+cytokines, MMPs and fibronectin fragments (Fn-fs), a by-product of cartilage 
+degradation and up-regulator of cytokines. We show that the model has four classes
+of dynamic behaviour: homoeostasis, bistable inflammation, tristable inflammation
+and persistent inflammation. We show that positive and negative feedbacks controlling
+cytokine production rates can determine either a pre-disposition to OA or initiation
+of OA. Further, we show that manipulation of cytokine, MMP and Fn-fs levels can
+be used to treat OA, but we suggest that multiple treatment targets may be
+essential to halt or slow disease progression.
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identified by: [MODEL1704120000](http://identifiers.org/biomodels.db/MODEL1704120000).
+
+To cite BioModels Database, please use: [BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models](http://identifiers.org/pubmed/20587024 "Latest BioModels Database publication").
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+end
+
+Baker2017___The_role_of_cytokines__MMPs_and_fibronectin_fragments_osteoarthritis is "Baker2017 - The role of cytokines, MMPs and fibronectin fragments osteoarthritis"

@@ -1,0 +1,143 @@
+// Created by libAntimony v3.2.0
+model *MODEL1305030001()
+
+  // Compartments and Species:
+  compartment cell;
+  species x1 in cell, x2 in cell, x3 in cell, $y1 in cell, $y2 in cell, $y3 in cell;
+  species $y4 in cell, $y5 in cell, $y6 in cell;
+
+  // Reactions:
+  v1: $y1 + x2 -> x1 + x3; v1_e1*(v1_p1*y1*x2 - x1*x3)/(1 + y1 + x2 + x1 + x3 + y1*x2 + x1*x3);
+  v2: $y4 + x3 -> $y5 + x2; v2_e2*(v2_p2*y4*x3 - y5*x2)/(1 + x3 + x2 + y4 + y5 + x3*y4 + x2*y5);
+  v3: x1 -> $y2; v3_e3*(v3_p3*x1 - y2)/(1 + x1 + y2);
+  v4: x1 -> $y3; v4_e4*(v4_p4*x1 - y3)/(1 + x1 + y3);
+  v5: x3 -> $y6; v5_e5*v5_p5*x3;
+
+  // Species initializations:
+  x1 = 0.05625738310526;
+  x2 = 0.76876151899652;
+  x3 = 4.23123848100348;
+  y1 = 10;
+  y2 = 0;
+  y3 = 0;
+  y4 = 1;
+  y5 = 1;
+  y6 = 0;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  v1_e1 = 1;
+  v1_e1 has dimensionless;
+  v1_p1 = 10;
+  v1_p1 has dimensionless;
+  v2_e2 = 1;
+  v2_e2 has dimensionless;
+  v2_p2 = 10;
+  v2_p2 has dimensionless;
+  v3_e3 = 1;
+  v3_e3 has dimensionless;
+  v3_p3 = 50;
+  v3_p3 has dimensionless;
+  v4_e4 = 1;
+  v4_e4 has dimensionless;
+  v4_p4 = 10;
+  v4_p4 has dimensionless;
+  v5_e5 = 1;
+  v5_e5 has dimensionless;
+  v5_p5 = 0;
+  v5_p5 has dimensionless;
+
+  // Other declarations:
+  const cell;
+
+  // Unit definitions:
+  unit substance = dimensionless;
+  unit time_unit = dimensionless;
+  unit volume = dimensionless;
+
+  // SBO terms:
+  cell.sboTerm = 290
+  x1.sboTerm = 247
+  x2.sboTerm = 247
+  x3.sboTerm = 247
+  y1.sboTerm = 247
+  y2.sboTerm = 247
+  y3.sboTerm = 247
+  y4.sboTerm = 247
+  y5.sboTerm = 247
+  y6.sboTerm = 247
+  v1.sboTerm = 176
+  v1.kineticLaw.sboTerm = 430
+  v2.sboTerm = 176
+  v2.kineticLaw.sboTerm = 430
+  v3.sboTerm = 176
+  v3.kineticLaw.sboTerm = 430
+  v4.sboTerm = 176
+  v4.kineticLaw.sboTerm = 430
+  v5.sboTerm = 176
+  v5.kineticLaw.sboTerm = 430
+
+  // CV terms:
+  cell identity "http://identifiers.org/go/GO:0005623"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1305030001"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000455"
+  model publication "http://arxiv.org/pdf/1305.6449v1.pdf"
+  model hasTaxon "http://identifiers.org/taxonomy/131567"
+  model hasProperty "http://identifiers.org/mamo/MAMO_0000046"
+  model isVersionOf "http://identifiers.org/go/GO:0051098"
+  model created "2013-05-01T12:00:00Z"
+  model modified "2016-04-08T17:28:16Z"
+  model creator1.givenName "Vijayalakshmi"
+  model creator1.familyName "Chelliah"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "viji@ebi.ac.uk"
+  model creator2.givenName "Kieran"
+  model creator2.familyName "Smallbone"
+  model creator2.organization "University of Manchester"
+  model creator2.email "kieran.smallbone@manchester.ac.uk"
+
+  // Notes:
+  model notes ```
+Smallbone2013 - Metabolic Control Analysis - Example 2 
+
+
+Metabolic control analysis (MCA) is a biochemical formalism, defining how variables,
+such as fluxes and concentrations, depend on network parameters. In this paper, owing
+to its limitations, it is shown with three example models (MODEL1305030000-2) that
+the algorithm with slight modification can be applied to all models.
+
+
+This model is described in the article:
+
+
+[Metabolic Control Analysis: Rereading Reder](http://identifiers.org/arxiv/1305.6449 "Access to this publication") 
+
+
+Kieran Smallbone 
+
+Quantitative Methods; Tue, 28 May 2013. 
+Abstract:
+
+
+Metabolic control analysis is a biochemical formalism defined by Kacser and Burns
+in 1973, and given firm mathematical basis by Reder in 1988. The algorithm defined
+by Reder for calculating the control matrices is still used by software programs
+today, but is only valid for some biochemical models. We show that, with slight modification,
+the algorithm may be applied to all models.
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identifiedby: [MODEL1305030001](http://identifiers.org/biomodels.db/MODEL1305030001) . 
+
+To cite BioModels Database, please use: [BioModels Database: An enhanced, curated and annotated resourcefor published quantitative kinetic models](http://identifiers.org/pubmed/20587024 "Latest BioModels Database publication") . 
+
+
+To the extent possible under law, all copyright and related orneighbouring rights
+to this encoded model have been dedicated to the publicdomain worldwide. Please refer
+to [CC0 Public DomainDedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+end
+
+MODEL1305030001 is "Smallbone2013 - Metabolic Control Analysis - Example 2"

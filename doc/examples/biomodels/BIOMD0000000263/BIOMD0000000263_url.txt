@@ -1,0 +1,261 @@
+// Created by libAntimony v3.2.0
+model *Model_1()
+
+  // Compartments and Species:
+  compartment Cell;
+  species $NGF in Cell, TrkA in Cell, $pro_TrkA in Cell, pTrkA in Cell, pTrkA_Akt in Cell;
+  species Akt in Cell, pAkt in Cell, S6 in Cell, pAkt_S6 in Cell, pS6 in Cell;
+  species NGF_TrkA in Cell;
+
+  // Assignment Rules:
+  NGF := NGF_conc_step + piecewise(NGF_conc_pulse, time <= pulse_time, 0) + NGF_conc_ramp*time/ramp_time;
+  pTrkA_total := (pTrkA + pTrkA_Akt)*pTrkA_scaleFactor;
+  pAkt_total := (pAkt + pAkt_S6)*pAkt_scaleFactor;
+  pS6_total := pS6*pS6_scaleFactor;
+
+  // Reactions:
+  reaction_1: $NGF + TrkA -> NGF_TrkA; Cell*(reaction_1_k1*NGF*TrkA - reaction_1_k2*NGF_TrkA);
+  reaction_2: pTrkA + Akt -> pTrkA_Akt; Cell*(reaction_2_k1*pTrkA*Akt - reaction_2_k2*pTrkA_Akt);
+  reaction_3: pTrkA_Akt => pTrkA + pAkt; Cell*reaction_3_k1*pTrkA_Akt;
+  reaction_4: pTrkA => ; Cell*reaction_4_k1*pTrkA;
+  reaction_5: pAkt + S6 -> pAkt_S6; Cell*(reaction_5_k1*pAkt*S6 - reaction_5_k2*pAkt_S6);
+  reaction_6: pAkt_S6 => pAkt + pS6; Cell*reaction_6_k1*pAkt_S6;
+  reaction_7: pAkt => Akt; Cell*reaction_7_k1*pAkt;
+  reaction_8: pS6 => S6; Cell*reaction_8_k1*pS6;
+  reaction_9: $pro_TrkA => TrkA; Cell*TrkA_turnover*pro_TrkA;
+  reaction_10: NGF_TrkA => pTrkA; Cell*reaction_10_k1*NGF_TrkA;
+  reaction_11: TrkA => ; Cell*TrkA_turnover*TrkA;
+  NGF has ng_per_ml;
+
+  // Species initializations:
+  TrkA = pro_TrkA;
+  pro_TrkA = 8.52065090518276;
+  pTrkA = 0;
+  pTrkA_Akt = 0;
+  Akt = 1.15594897919397;
+  pAkt = 0;
+  S6 = 3.552336039555;
+  pAkt_S6 = 0;
+  pS6 = 0;
+  NGF_TrkA = 0;
+
+  // Compartment initializations:
+  Cell = 1;
+
+  // Variable initializations:
+  NGF_conc_step = 0;
+  NGF_conc_step has ng_per_ml;
+  NGF_conc_pulse = 0;
+  NGF_conc_pulse has ng_per_ml;
+  pulse_time = 60;
+  pulse_time has time_unit;
+  NGF_conc_ramp = 30;
+  NGF_conc_ramp has ng_per_ml;
+  ramp_time = 3600;
+  ramp_time has time_unit;
+  pTrkA_total has ng_per_ml;
+  pTrkA_scaleFactor = 0.848783474941268;
+  pTrkA_scaleFactor has ng;
+  pAkt_total has ng_per_ml;
+  pAkt_scaleFactor = 2.42381211094508;
+  pAkt_scaleFactor has ng;
+  pS6_scaleFactor = 0.525842718263069;
+  pS6_scaleFactor has ng;
+  pS6_total has ng_per_ml;
+  TrkA_turnover = 0.0011032440769796;
+  TrkA_turnover has per_sec;
+  reaction_1_k1 = 0.00269408;
+  reaction_1_k2 = 0.0133747;
+  reaction_2_k1 = 0.0882701;
+  reaction_2_k1 has per_conc_per_sec;
+  reaction_2_k2 = 1.47518e-10;
+  reaction_2_k2 has per_sec;
+  reaction_3_k1 = 0.0202517;
+  reaction_4_k1 = 0.0684084;
+  reaction_4_k1 has per_sec;
+  reaction_5_k1 = 68.3666;
+  reaction_5_k1 has per_conc_per_sec;
+  reaction_5_k2 = 5.23519;
+  reaction_5_k2 has per_sec;
+  reaction_6_k1 = 0.0056515;
+  reaction_6_k1 has per_sec;
+  reaction_7_k1 = 1.28135;
+  reaction_7_k1 has per_sec;
+  reaction_8_k1 = 0.000293167;
+  reaction_8_k1 has per_sec;
+  reaction_10_k1 = 0.00833178;
+  reaction_10_k1 has per_sec;
+
+  // Other declarations:
+  var pTrkA_total, pAkt_total, pS6_total;
+  const Cell, NGF_conc_step, NGF_conc_pulse, pulse_time, NGF_conc_ramp, ramp_time;
+  const pTrkA_scaleFactor, pAkt_scaleFactor, pS6_scaleFactor, TrkA_turnover;
+
+  // Unit definitions:
+  unit substance = dimensionless;
+  unit conc = dimensionless / 1e-3 litre;
+  unit time_unit = second;
+  unit volume = 1e-3 litre;
+  unit per_sec = 1 / second;
+  unit ng = 1e-9 gram;
+  unit ng_per_ml = 1e-9 gram / 1e-3 litre;
+  unit per_conc_per_sec = 1e-3 litre * dimensionless / second;
+
+  // Display Names:
+  substance is "arbitrary_amount";
+  conc is "arbitrary_conc";
+  time_unit is "seconds";
+  volume is "ml";
+  per_sec is "per second";
+  per_conc_per_sec is "per conc per second";
+  reaction_1 is "NGF+TrkA";
+  reaction_2 is "pTrkA+Akt";
+  reaction_3 is "Akt_phosphorylation";
+  reaction_4 is "pTrkA_degradation";
+  reaction_5 is "pAkt+S6";
+  reaction_6 is "S6_phosphorylation";
+  reaction_7 is "pAkt_dephospho";
+  reaction_8 is "pS6_dephospho";
+  reaction_9 is "TrkA_synthesis";
+  reaction_10 is "TrkA_phosphorylation";
+  reaction_11 is "TrkA_degradation";
+
+  // SBO terms:
+  Cell.sboTerm = 290
+  NGF.sboTerm = 252
+  TrkA.sboTerm = 252
+  pro_TrkA.sboTerm = 252
+  pTrkA.sboTerm = 252
+  pTrkA_Akt.sboTerm = 297
+  Akt.sboTerm = 297
+  pAkt.sboTerm = 297
+  S6.sboTerm = 252
+  pAkt_S6.sboTerm = 297
+  pS6.sboTerm = 252
+  NGF_TrkA.sboTerm = 297
+  reaction_1.sboTerm = 177
+  reaction_2.sboTerm = 177
+  reaction_3.sboTerm = 216
+  reaction_4.sboTerm = 179
+  reaction_5.sboTerm = 177
+  reaction_6.sboTerm = 216
+  reaction_7.sboTerm = 330
+  reaction_8.sboTerm = 330
+  reaction_9.sboTerm = 184
+  reaction_10.sboTerm = 216
+  reaction_11.sboTerm = 179
+
+  // CV terms:
+  Cell identity "http://identifiers.org/go/GO:0005623"
+  NGF isVersionOf "http://identifiers.org/uniprot/P25427"
+  TrkA isVersionOf "http://identifiers.org/uniprot/P35739"
+  pro_TrkA isVersionOf "http://identifiers.org/uniprot/P35739"
+  pTrkA isVersionOf "http://identifiers.org/uniprot/P35739"
+  pTrkA_Akt hasPart "http://identifiers.org/uniprot/P35739",
+                    "http://identifiers.org/uniprot/Q63484"
+  pTrkA_Akt hasVersion "http://identifiers.org/kegg.compound/C00562"
+  Akt isVersionOf "http://identifiers.org/uniprot/Q63484"
+  pAkt isVersionOf "http://identifiers.org/kegg.compound/C00562"
+  pAkt isHomologTo "http://identifiers.org/reactome/REACT_13319"
+  S6 isVersionOf "http://identifiers.org/uniprot/P62755"
+  pAkt_S6 hasVersion "http://identifiers.org/uniprot/Q63484"
+  pAkt_S6 hasVersion "http://identifiers.org/uniprot/P62755",
+                     "http://identifiers.org/kegg.compound/C00562"
+  pS6 isVersionOf "http://identifiers.org/kegg.compound/C00562"
+  pS6 isVersionOf "http://identifiers.org/uniprot/P62755"
+  NGF_TrkA hasPart "http://identifiers.org/uniprot/P35739",
+                   "http://identifiers.org/uniprot/P25427"
+  pTrkA_total isVersionOf "http://identifiers.org/go/GO:0048406"
+  pTrkA_total isVersionOf "http://identifiers.org/uniprot/P35739",
+                          "http://identifiers.org/kegg.compound/C00562"
+  pAkt_total isVersionOf "http://identifiers.org/kegg.compound/C00562"
+  pAkt_total hasVersion "http://identifiers.org/uniprot/Q63484"
+  pS6_total isVersionOf "http://identifiers.org/uniprot/P62755"
+  pS6_total isVersionOf "http://identifiers.org/kegg.compound/C00562"
+  reaction_1 isVersionOf "http://identifiers.org/reactome/REACT_10088"
+  reaction_1 isVersionOf "http://identifiers.org/go/GO:0005167"
+  reaction_2 isVersionOf "http://identifiers.org/go/GO:0005515"
+  reaction_3 isVersionOf "http://identifiers.org/go/GO:0004672"
+  reaction_4 isVersionOf "http://identifiers.org/go/GO:0030163"
+  reaction_5 isVersionOf "http://identifiers.org/reactome/REACT_12442"
+  reaction_5 isVersionOf "http://identifiers.org/go/GO:0005515"
+  reaction_6 isVersionOf "http://identifiers.org/go/GO:0004672"
+  reaction_6 hasVersion "http://identifiers.org/reactome/REACT_12442"
+  reaction_7 isVersionOf "http://identifiers.org/go/GO:0004721"
+  reaction_8 isVersionOf "http://identifiers.org/go/GO:0004721"
+  reaction_9 isVersionOf "http://identifiers.org/go/GO:0010467"
+  reaction_10 isVersionOf "http://identifiers.org/go/GO:0004672"
+  reaction_11 isVersionOf "http://identifiers.org/go/GO:0030163"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1004060002"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000263"
+  model publication "http://identifiers.org/pubmed/20664065"
+  model hasVersion "http://identifiers.org/reactome/REACT_12056",
+                   "http://identifiers.org/reactome/REACT_12464.1",
+                   "http://identifiers.org/go/GO:0043491",
+                   "http://identifiers.org/go/GO:0048011"
+  model occursIn "http://identifiers.org/bto/BTO:0001009"
+  model hasTaxon "http://identifiers.org/taxonomy/10116"
+  model created "2010-08-24T12:00:29Z"
+  model modified "2014-02-21T11:25:30Z"
+  model creator1.givenName "Lukas"
+  model creator1.familyName "Endler"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "lukas@ebi.ac.uk"
+  model creator2.givenName "Kazuhiro"
+  model creator2.familyName "Fujita"
+  model creator2.organization "University of Tokyo"
+  model creator2.email "kazuhiro.fujita@gmail.com"
+
+  // Notes:
+  model notes ```
+NGF dependent Akt pathway model 
+
+made by Kazuhiro A. Fujita. 
+
+This is the **NGF** dependent Akt pathway model described in: 
+
+**Decoupling of receptor and downstream signals in the Akt pathway by its low-pass
+filter characteristics.** 
+Fujita KA, Toyoshima Y, Uda S, Ozaki Y, Kubota H, and Kuroda S. *Sci
+Signal.* 2010 Jul 27;3(132):ra56. PMID: [20664065](http://www.ncbi.nlm.nih.gov/pubmed/20664065) ; DOI: [10.1126/scisignal.2000810](http://dx.doi.org/10.1126/scisignal.2000810) 
+Abstract: 
+In cellular signal transduction, the information in an external stimulus
+is encoded in temporal patterns in the activities of signaling molecules; for example,
+pulses of a stimulus may produce an increasing response or may produce pulsatile
+responses in the signaling molecules. Here, we show how the Akt pathway, which is
+involved in cell growth, specifically transmits temporal information contained in
+upstream signals to downstream effectors. We modeled the epidermal growth factor
+(EGF)–dependent Akt pathway in PC12 cells on the basis of experimental results.
+We obtained counterintuitive results indicating that the sizes of the peak amplitudes
+of receptor and downstream effector phosphorylation were decoupled; weak, sustained
+EGF receptor (EGFR) phosphorylation, rather than strong, transient phosphorylation,
+strongly induced phosphorylation of the ribosomal protein S6, a molecule downstream
+of Akt. Using frequency response analysis, we found that a three-component Akt pathway
+exhibited the property of a low-pass filter and that this property could explain
+decoupling of the peak amplitudes of receptor phosphorylation and that of downstream
+effectors. Furthermore, we found that lapatinib, an EGFR inhibitor used as an anticancer
+drug, converted strong, transient Akt phosphorylation into weak, sustained Akt phosphorylation,
+and, because of the low-pass filter characteristics of the Akt pathway, this led
+to stronger S6 phosphorylation than occurred in the absence of the inhibitor. Thus,
+an EGFR inhibitor can potentially act as a downstream activator of some effectors.
+
+
+The different versions of input, step, pulse and ramp, can be simulated using the
+parameters *NGF_conc_pulse* , *NGF_conc_step* and 
+*NGF_conc_ramp* . Depending on which one is set unequal to 0, either a
+continous pulse with value *NGF_conc_pulse* , a 60 second step with
+*NGF_conc_step* or a signal increasing from 0 to *NGF_conc_pulse*
+over a time periode of 3600 seconds are used as input. In case more than
+one parameter is set to values greater than 0 these input profiles are added to each
+other. The pulse time and the time over which the ramp input increases can be set
+by *pulse_time* and *ramp_time* . 
+
+This model originates from BioModels Database: A Database of Annotated Published
+Models. It is copyright (c) 2005-2010 The BioModels Team. 
+For more information see the [terms of use](http://www.ebi.ac.uk/biomodels/legal.html) . 
+To cite BioModels Database, please use [Le Novère N., Bornstein B., Broicher A., Courtot M., Donizelli M., Dharuri H., Li L., Sauro H., Schilstra M., Shapiro B., Snoep J.L., Hucka M. (2006) BioModels Database: A Free, Centralized Database of Curated, Published, Quantitative Kinetic Models of Biochemical and Cellular Systems Nucleic Acids Res., 34: D689-D691.](http://www.pubmedcentral.nih.gov/articlerender.fcgi?tool=pubmed&pubmedid=16381960)
+```
+end
+
+Model_1 is "Fujita2010_Akt_Signalling_NGF"

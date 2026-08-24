@@ -1,0 +1,189 @@
+// Created by libAntimony v3.2.0
+model *C3_Aug_2016()
+
+  // Compartments and Species:
+  compartment cyt, nuc;
+  species TGFb_R1_surface in cyt, TGFb_R2_surface in cyt, TGFb_R1_endo in cyt;
+  species TGFb_R2_endo in cyt, TGFb in cyt, TGFb_In in cyt, Active_R2 in cyt;
+  species Active_Rec in cyt, Active_Rec_endo in cyt, Inactive_Rec in cyt;
+  species pS2_c in cyt, S2_c in cyt, S4_c in cyt, pS2_pS2_S4_c in cyt, pS2_pS2_pS2_c in cyt;
+  species Smad7mRNA in cyt, Smad7mRNA1 in nuc, S7 in cyt, pS2_n in nuc, pS2_pS2_S4_n in nuc;
+  species pS2_pS2_pS2_n in nuc, S2_n in nuc, S4_n in nuc;
+
+  // Assignment Rules:
+  NUC_CYT_SMAD2 := (2*pS2_pS2_S4_n + pS2_n + S2_n + 3*pS2_pS2_pS2_n)/(2*pS2_pS2_S4_c + pS2_c + S2_c + 3*pS2_pS2_pS2_c);
+
+  // Reactions:
+  reaction1: TGFb => ; cyt*(TGFb*TGFb_R2_surface*kf_R2_activation/k_medium);
+  reaction2: TGFb_R2_surface => ; cyt*(TGFb*TGFb_R2_surface*kf_R2_activation);
+  reaction3:  => Active_R2; cyt*(TGFb*TGFb_R2_surface*kf_R2_activation);
+  reaction4: Active_R2 => ; cyt*(Active_R2*index_kb_R2*kf_R2_activation);
+  reaction5:  => TGFb_R2_surface; cyt*(Active_R2*index_kb_R2*kf_R2_activation);
+  reaction6:  => TGFb; cyt*(Active_R2*index_kb_R2*kf_R2_activation/k_medium);
+  reaction7: TGFb_R1_surface + Active_R2 => Active_Rec; cyt*kf_R1_activation*TGFb_R1_surface*Active_R2;
+  reaction8: Active_Rec => TGFb_R1_surface + Active_R2; cyt*(Active_Rec*index_kb_R1*kf_R1_activation);
+  reaction9: Active_Rec_endo => TGFb_R1_endo + TGFb_In; cyt*kdeg_R2*Active_Rec_endo;
+  reaction10: Active_Rec_endo => TGFb_R2_endo + TGFb_In; cyt*kdeg_R1*Active_Rec_endo;
+  reaction11: Active_Rec_endo => TGFb_R1_endo + TGFb_R2_endo; cyt*kin_deg_Ligand*Active_Rec_endo;
+  reaction12: TGFb_R1_endo => ; cyt*kdeg_R1*TGFb_R1_endo;
+  reaction13: TGFb_R2_endo => ; cyt*kdeg_R2*TGFb_R2_endo;
+  reaction14: Active_Rec + S7 => Inactive_Rec; cyt*kf_Seq_S7_Rec*Active_Rec*S7;
+  reaction15: Inactive_Rec => Active_Rec + S7; cyt*(Inactive_Rec*index_seq_kb*kf_Seq_S7_Rec);
+  reaction16: Inactive_Rec => TGFb_R1_endo + TGFb_R2_endo + S7; cyt*(Inactive_Rec*index_induced_ligand_deg*kin_deg_Ligand);
+  reaction17: Inactive_Rec => TGFb_R1_endo + TGFb_In + S7; cyt*(Inactive_Rec*index_induced_R2_deg*kdeg_R2);
+  reaction18: TGFb_R1_surface => TGFb_R1_endo; cyt*k_in_R1_C3*TGFb_R1_surface;
+  reaction19: TGFb_R2_surface => TGFb_R2_endo; cyt*k_in_R2_C3*TGFb_R2_surface;
+  reaction20: TGFb_R1_endo => TGFb_R1_surface; cyt*(TGFb_R1_endo*index_k_out_1_relative_speed_C3*k_in_R1_C3);
+  reaction21: TGFb_R2_endo => TGFb_R2_surface; cyt*(TGFb_R2_endo*index_k_out_2_relative_speed_C3*k_in_R2_C3);
+  reaction22: Active_Rec => Active_Rec_endo; cyt*(Active_Rec*index_active_Rec_internalize_C3*k_in_R1_C3);
+  reaction23: Active_Rec_endo => TGFb_R1_endo + TGFb_R2_endo + TGFb_In; cyt*k_disso_Active_Rec*Active_Rec_endo;
+  reaction24: TGFb_In => ; cyt*kin_deg_Ligand*TGFb_In;
+  reaction25: TGFb => ; cyt*kout_deg_Ligand_100pM*TGFb;
+  reaction26: S2_c => pS2_c; cyt*(Active_Rec_endo*S2_c*k_phosphorylation);
+  reaction27: 2 pS2_c + S4_c => pS2_pS2_S4_c; cyt*kf_trimmer*pS2_c^2*S4_c;
+  reaction28: pS2_pS2_S4_c => 2 pS2_c + S4_c; cyt*kb_trimmer*pS2_pS2_S4_c;
+  reaction29: 2 pS2_n + S4_n => pS2_pS2_S4_n; nuc*kf_trimmer*pS2_n^2*S4_n;
+  reaction30: pS2_pS2_S4_n => 2 pS2_n + S4_n; nuc*kb_trimmer*pS2_pS2_S4_n;
+  reaction31: 3 pS2_c => pS2_pS2_pS2_c; cyt*(index_kf_homotrimer*kf_trimmer*pS2_c^3);
+  reaction32: pS2_pS2_pS2_c => 3 pS2_c; cyt*(index_kb_homotrimer*kb_trimmer*pS2_pS2_pS2_c);
+  reaction33: 3 pS2_n => pS2_pS2_pS2_n; nuc*(index_kf_homotrimer*kf_trimmer*pS2_n^3);
+  reaction34: pS2_pS2_pS2_n => 3 pS2_n; nuc*(index_kb_homotrimer*kb_trimmer*pS2_pS2_pS2_n);
+  reaction35: S2_c => S2_n; cyt*S2_c*S2_import_to_nuc_C3;
+  reaction36: S2_n => S2_c; nuc*S2_n*S2_export_from_nuc_C3;
+  reaction37: S4_c => S4_n; cyt*S4_c*S4_import_to_nuc_C3;
+  reaction38: S4_n => S4_c; nuc*S4_n*S4_export_from_nuc_C3;
+  reaction39: pS2_c => pS2_n; cyt*S2_import_to_nuc_C3*pS2_c;
+  reaction40: pS2_n => pS2_c; nuc*S2_export_from_nuc_C3*pS2_n;
+  reaction41: pS2_pS2_S4_c => pS2_pS2_S4_n; cyt*Trimer_import_to_nuc*pS2_pS2_S4_c;
+  reaction42: pS2_pS2_pS2_c => pS2_pS2_pS2_n; cyt*Trimer_import_to_nuc*pS2_pS2_pS2_c;
+  reaction43: pS2_n => S2_n; nuc*k_Dephos_C3*pS2_n;
+  reaction44: pS2_pS2_S4_n => pS2_n + S2_n + S4_n; nuc*(index_trimer_dephos*k_Dephos_C3*pS2_pS2_S4_n);
+  reaction45:  => S2_c; cyt*(S2_total_C3*(S2_import_to_nuc_C3*kdeg_S2 + S2_export_from_nuc_C3*kdeg_S2 + kdeg_S2^2)/(2*S2_import_to_nuc_C3 + S2_export_from_nuc_C3 + kdeg_S2));
+  reaction46:  => S4_c; cyt*(S4_total_C3*(S4_import_to_nuc_C3*kdeg_S4 + S4_export_from_nuc_C3*kdeg_S4 + kdeg_S4^2)/(2*S4_import_to_nuc_C3 + S4_export_from_nuc_C3 + kdeg_S4));
+  reaction47:  => TGFb_R1_surface; cyt*(R1_total_C3*k_in_R1_C3*kdeg_R1^2/(k_in_R1_C3*kdeg_R1 + kdeg_R1^2 + index_k_out_1_relative_speed_C3*k_in_R1_C3*kdeg_R1));
+  reaction48:  => TGFb_R2_surface; cyt*(R2_total_C3*k_in_R2_C3*kdeg_R2^2/(k_in_R2_C3*kdeg_R2 + kdeg_R2^2 + index_k_out_2_relative_speed_C3*k_in_R2_C3*kdeg_R2));
+  reaction51:  => Smad7mRNA1; nuc*(DRB*S7KD*(mRNA_prod_C3 + k_induced_S7_production_C3*pS2_pS2_S4_n^hill_fact1/(K_mran^hill_fact1 + pS2_pS2_S4_n^hill_fact1)));
+  reaction52: Smad7mRNA1 => Smad7mRNA; nuc*Smad7mRNA1*export_cytoplasm;
+  reaction53:  => S7; cyt*(Smad7mRNA*k_S7_protein_C3);
+  reaction54: S2_c => ; cyt*kdeg_S2*S2_c;
+  reaction55: S2_n => ; nuc*kdeg_S2*S2_n;
+  reaction56: pS2_n => ; nuc*kdeg_S2*pS2_n;
+  reaction57: pS2_c => ; cyt*kdeg_S2*pS2_c;
+  reaction58: S4_c => ; cyt*kdeg_S4*S4_c;
+  reaction59: S4_n => ; nuc*kdeg_S4*S4_n;
+  reaction60: pS2_pS2_S4_c => pS2_c + S4_c; cyt*kdeg_S2*pS2_pS2_S4_c;
+  reaction61: pS2_pS2_S4_c => 2 pS2_c; cyt*kdeg_S4*pS2_pS2_S4_c;
+  reaction62: pS2_pS2_pS2_c => 2 pS2_c; cyt*kdeg_S2*pS2_pS2_pS2_c;
+  reaction63: pS2_pS2_S4_n => pS2_n + S4_n; nuc*kdeg_S2*pS2_pS2_S4_n;
+  reaction64: pS2_pS2_S4_n => 2 pS2_n; nuc*kdeg_S4*pS2_pS2_S4_n;
+  reaction65: pS2_pS2_pS2_n => 2 pS2_n; nuc*kdeg_S2*pS2_pS2_pS2_n;
+  reaction66: Smad7mRNA1 => ; nuc*kmRNA1deg_S7*Smad7mRNA1;
+  reaction67: Smad7mRNA => ; cyt*kmRNAdeg_S7*Smad7mRNA;
+  reaction68: S7 => ; cyt*kdeg_S7*S7;
+
+  // Species initializations:
+  TGFb_R1_surface = R1_total_C3*kdeg_R1*(kdeg_R1 + index_k_out_1_relative_speed_C3*k_in_R1_C3)/(k_in_R1_C3*kdeg_R1 + kdeg_R1^2 + index_k_out_1_relative_speed_C3*k_in_R1_C3*kdeg_R1);
+  TGFb_R2_surface = R2_total_C3*kdeg_R2*(kdeg_R2 + index_k_out_2_relative_speed_C3*k_in_R2_C3)/(k_in_R2_C3*kdeg_R2 + kdeg_R2^2 + index_k_out_2_relative_speed_C3*k_in_R2_C3*kdeg_R2);
+  TGFb_R1_endo = R1_total_C3*k_in_R1_C3*kdeg_R1/(k_in_R1_C3*kdeg_R1 + kdeg_R1^2 + index_k_out_1_relative_speed_C3*k_in_R1_C3*kdeg_R1);
+  TGFb_R2_endo = R2_total_C3*k_in_R2_C3*kdeg_R2/(k_in_R2_C3*kdeg_R2 + kdeg_R2^2 + index_k_out_2_relative_speed_C3*k_in_R2_C3*kdeg_R2);
+  TGFb = 100;
+  TGFb_In = 0;
+  Active_R2 = 0;
+  Active_Rec = 0;
+  Active_Rec_endo = 0;
+  Inactive_Rec = 0;
+  pS2_c = 0;
+  S2_c = S2_total_C3*(S2_export_from_nuc_C3 + kdeg_S2)/(2*S2_import_to_nuc_C3 + S2_export_from_nuc_C3 + kdeg_S2);
+  S4_c = S4_total_C3*(S4_export_from_nuc_C3 + kdeg_S4)/(2*S4_import_to_nuc_C3 + S4_export_from_nuc_C3 + kdeg_S4);
+  pS2_pS2_S4_c = 0;
+  pS2_pS2_pS2_c = 0;
+  Smad7mRNA = export_cytoplasm*mRNA_prod_C3/(2*kmRNAdeg_S7*(export_cytoplasm + kmRNA1deg_S7));
+  Smad7mRNA1 = mRNA_prod_C3/(export_cytoplasm + kmRNA1deg_S7);
+  S7 = export_cytoplasm*k_S7_protein_C3*mRNA_prod_C3/(2*kdeg_S7*kmRNAdeg_S7*(export_cytoplasm + kmRNA1deg_S7));
+  pS2_n = 0;
+  pS2_pS2_S4_n = 0;
+  pS2_pS2_pS2_n = 0;
+  S2_n = 2*S2_total_C3*S2_import_to_nuc_C3/(2*S2_import_to_nuc_C3 + S2_export_from_nuc_C3 + kdeg_S2);
+  S4_n = 2*S4_total_C3*S4_import_to_nuc_C3/(2*S4_import_to_nuc_C3 + S4_export_from_nuc_C3 + kdeg_S4);
+
+  // Compartment initializations:
+  cyt = 2;
+  nuc = 1;
+
+  // Variable initializations:
+  R1_total_C3 = 69.7199989056023;
+  kdeg_R1 = 0.0586584495713968;
+  index_k_out_1_relative_speed_C3 = 1.13287434679021;
+  k_in_R1_C3 = 0.397836393488341;
+  R2_total_C3 = 49.1925438819563;
+  kdeg_R2 = 0.0010003937382472;
+  index_k_out_2_relative_speed_C3 = 0.450697494637432;
+  k_in_R2_C3 = 0.396038887562465;
+  S2_total_C3 = 1335.77950850425;
+  S2_export_from_nuc_C3 = 3.00430865315074;
+  kdeg_S2 = 0.000514084012175461;
+  S2_import_to_nuc_C3 = 0.248774260500559;
+  S4_total_C3 = 347.505766824434;
+  S4_export_from_nuc_C3 = 0.0984718694215043;
+  kdeg_S4 = 0.00480202699360057;
+  S4_import_to_nuc_C3 = 0.0730474752631315;
+  export_cytoplasm = 0.0304372961307751;
+  mRNA_prod_C3 = 0.0239754962469105;
+  kmRNAdeg_S7 = 0.0990158065483902;
+  kmRNA1deg_S7 = 0.00523181439900629;
+  k_S7_protein_C3 = 0.123149764012103;
+  kdeg_S7 = 0.00102401829734485;
+  DRB = 1;
+  K_mran = 223.586;
+  S7KD = 1;
+  Trimer_import_to_nuc = 0.144035002432848;
+  hill_fact1 = 3.98630224594983;
+  index_active_Rec_internalize_C3 = 1.0379108128956;
+  index_induced_R2_deg = 1.00037776866312;
+  index_induced_ligand_deg = 2.72106513634098;
+  index_kb_R1 = 1.61290474569122;
+  index_kb_R2 = 8.70498854136694;
+  index_kb_homotrimer = 0.0163921522930962;
+  index_kf_homotrimer = 4.4857919268227;
+  index_seq_kb = 0.000865131944828012;
+  index_trimer_dephos = 2.61013820571304;
+  k_Dephos_C3 = 0.0707018316477647;
+  k_disso_Active_Rec = 0.00103940411358367;
+  k_induced_S7_production_C3 = 2.9510868497;
+  k_medium = 2000000;
+  k_phosphorylation = 0.0701560191772152;
+  kb_trimmer = 1.6077346670684;
+  kf_R1_activation = 4.98548548076033;
+  kf_R2_activation = 4.95559496701657;
+  kf_Seq_S7_Rec = 0.882455038106022;
+  kf_trimmer = 4.81424700307387;
+  kin_deg_Ligand = 0.720182234635314;
+  kout_deg_Ligand_100pM = 0.00036189622;
+
+  // Other declarations:
+  var NUC_CYT_SMAD2;
+  const cyt, nuc, R1_total_C3, kdeg_R1, index_k_out_1_relative_speed_C3, k_in_R1_C3;
+  const R2_total_C3, kdeg_R2, index_k_out_2_relative_speed_C3, k_in_R2_C3;
+  const S2_total_C3, S2_export_from_nuc_C3, kdeg_S2, S2_import_to_nuc_C3;
+  const S4_total_C3, S4_export_from_nuc_C3, kdeg_S4, S4_import_to_nuc_C3;
+  const export_cytoplasm, mRNA_prod_C3, kmRNAdeg_S7, kmRNA1deg_S7, k_S7_protein_C3;
+  const kdeg_S7, DRB, K_mran, S7KD, Trimer_import_to_nuc, hill_fact1, index_active_Rec_internalize_C3;
+  const index_induced_R2_deg, index_induced_ligand_deg, index_kb_R1, index_kb_R2;
+  const index_kb_homotrimer, index_kf_homotrimer, index_seq_kb, index_trimer_dephos;
+  const k_Dephos_C3, k_disso_Active_Rec, k_induced_S7_production_C3, k_medium;
+  const k_phosphorylation, kb_trimmer, kf_R1_activation, kf_R2_activation;
+  const kf_Seq_S7_Rec, kf_trimmer, kin_deg_Ligand, kout_deg_Ligand_100pM;
+
+  // Unit definitions:
+  unit time_unit = 60 second;
+  unit substance = item;
+
+  // Display Names:
+  time_unit is "time";
+  NUC_CYT_SMAD2 is "NUC/CYT SMAD2";
+
+  // Notes:
+  model notes "Simulates signaling class 3"
+end
+
+C3_Aug_2016 is "Strasen2018 – TGFβ SMAD Signalling Class 3"

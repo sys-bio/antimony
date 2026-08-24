@@ -12,6 +12,8 @@
 #include "stringx.h"
 
 #include <string>
+#include <fstream>
+#include <sstream>
 #include "gtest/gtest.h"
 
 using namespace std;
@@ -44,6 +46,39 @@ void compareFileTranslation(const string& base)
   EXPECT_TRUE(ret != -1);
   matching = getAntimonyString(NULL);
   EXPECT_STREQ(roundtrip, matching.c_str());
+
+  delete doc;
+  freeAll();
+}
+
+void compareFileTranslationWithDifferences(const string& base)
+{
+  clearPreviousLoads();
+  // load document
+  string dir(TestDataDirectory);
+  string filename = dir + base + ".txt";
+  long ret = loadAntimonyFile(filename.c_str());
+  EXPECT_TRUE(ret != -1);
+  char* atosbml = getCompSBMLString(NULL);
+  EXPECT_TRUE(atosbml != NULL);
+
+  string sbmlfile = dir + base + ".xml";
+  SBMLDocument* doc = readSBMLFromFile(sbmlfile.c_str());
+  string matching = writeSBMLToStdString(doc);
+  EXPECT_STREQ(atosbml, matching.c_str());
+
+  //Now check the roundtripped version, comparing directly against the
+  //reference file's literal contents instead of reparsing it through
+  //Antimony (which would reorder declarations to match direct-parse order).
+  ret = loadSBMLString(matching.c_str());
+  char* roundtrip = getAntimonyString(NULL);
+  EXPECT_TRUE(roundtrip != NULL);
+
+  string rtfilename = dir + base + "_rt.txt";
+  std::ifstream t(rtfilename.c_str());
+  std::stringstream rtref;
+  rtref << t.rdbuf();
+  EXPECT_STREQ(NormalizeLineEndings(rtref.str()).c_str(), NormalizeLineEndings(string(roundtrip)).c_str());
 
   delete doc;
   freeAll();

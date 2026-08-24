@@ -311,7 +311,11 @@ def getPointerDetanglerFor(funcid):
        return("getNumReactions(moduleName)", "getNthReactionRate(moduleName, n)")
    if funcid=="getEventNames":
        return("getNumEvents(moduleName)", "getNthEventName(moduleName, n)")
-    
+   if funcid=="getReactionNames":
+       return("getNumReactions(moduleName)", "getNthReactionName(moduleName, n)")
+   if funcid=="getNthUserFunctionArguments":
+       return("getNumUserFunctionArguments(func)", "getNthUserFunctionMthArgument(func, n)")
+
    print("Unhandled function", funcid)
    return ("", "")
    

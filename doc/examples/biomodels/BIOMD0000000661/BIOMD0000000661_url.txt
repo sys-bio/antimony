@@ -1,0 +1,220 @@
+// Created by libAntimony v3.2.0
+model *Webb2002_FasFasLsystem_Tumour()
+
+  // Compartments and Species:
+  compartment compartment_, Tumour_cell, T_Lymphocyte_cell;
+  species T in compartment_, LT in compartment_, RT in T_Lymphocyte_cell;
+  species m in compartment_, Lm in Tumour_cell, Rm in Tumour_cell, SL in compartment_;
+
+  // Reactions:
+  T_cell_degradation: T => ; k1*m*T*Lm*RT;
+  Tumour_cell_degradation: m => ; k1*m*T*LT*Rm;
+  SL_degradation: SL => ; compartment_*k11*SL;
+  Lm_synthesis:  => Lm; Tumour_cell*k10;
+  RT_synthesis:  => RT; T_Lymphocyte_cell*k6;
+  Rm_synthesis:  => Rm; Tumour_cell*k6;
+  RT_degradation: RT => ; T_Lymphocyte_cell*k7*RT;
+  Rm_degradation: Rm => ; Tumour_cell*k7*Rm;
+  LT_synthesis:  => LT; compartment_*(k2*T*m);
+  RT_degradation__SL_modifier: RT => ; k8*RT*SL;
+  Rm_degradation__SL_modifier: Rm => ; k8*Rm*SL;
+  LT_degradation: LT => ; compartment_*((k4 + k3)*LT);
+  Lm_degradation: Lm => ; Tumour_cell*((k3 + k4)*Lm);
+  LT_degradation__m__T_and_Rm_modifiers: LT => ; k5*m*T*LT*Rm;
+  Lm_degradation__m__T_and_RT_modifiers: Lm => ; k5*m*T*Lm*RT;
+  SL_synthesis:  => SL; k3*(Lm*m + LT*T);
+  SL_degradation__Rm__m__RT__T_and_SL_modifiers: SL => ; k9*(Rm*m + RT*T)*SL;
+
+  // Species initializations:
+  T = 500.000000000001;
+  LT = 0;
+  RT = 10000.0000000001;
+  m = 500.000000000001;
+  Lm = 1000;
+  Rm = 1000;
+  SL = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+  Tumour_cell = 1;
+  T_Lymphocyte_cell = 1;
+
+  // Variable initializations:
+  k1 = 8.38e-10;
+  k2 = 0.006;
+  k3 = 5.9413;
+  k4 = 0.35;
+  k5 = 2.52e-09;
+  k6 = 2244;
+  k7 = 0.35;
+  k8 = 19200000000;
+  k9 = 8730000000;
+  k10 = 3110;
+  k11 = 13.9;
+
+  // Other declarations:
+  const compartment_, Tumour_cell, T_Lymphocyte_cell, k1, k2, k3, k4, k5;
+  const k6, k7, k8, k9, k10, k11;
+
+  // Display Names:
+  compartment_ is "compartment";
+  Tumour_cell is "Tumour cell";
+  T_Lymphocyte_cell is "T-Lymphocyte cell";
+  T is "T-cells (T)";
+  LT is "mFasL (LT)";
+  RT is "FasR (RT)";
+  m is "Tumour cells (m)";
+  Lm is "mFasL (Lm)";
+  Rm is "FasR (Rm)";
+  SL is "sFasL (SL)";
+  T_cell_degradation is "T-cell degradation";
+  Tumour_cell_degradation is "Tumour cell degradation";
+  SL_degradation is "SL degradation";
+  Lm_synthesis is "Lm synthesis";
+  RT_synthesis is "RT synthesis";
+  Rm_synthesis is "Rm synthesis";
+  RT_degradation is "RT degradation";
+  Rm_degradation is "Rm degradation";
+  LT_synthesis is "LT synthesis";
+  RT_degradation__SL_modifier is "RT degradation (SL modifier)";
+  Rm_degradation__SL_modifier is "Rm degradation (SL modifier)";
+  LT_degradation is "LT degradation";
+  Lm_degradation is "Lm degradation";
+  LT_degradation__m__T_and_Rm_modifiers is "LT degradation (m, T and Rm modifiers)";
+  Lm_degradation__m__T_and_RT_modifiers is "Lm degradation (m, T and RT modifiers)";
+  SL_synthesis is "SL formation";
+  SL_degradation__Rm__m__RT__T_and_SL_modifiers is "SL degradation (Rm, m, RT, T and SL modifiers)";
+
+  // CV terms:
+  compartment_ isVersionOf "urn:miriam:sbo:SBO%3A0000289"
+  Tumour_cell isVersionOf "http://identifiers.org/ncit/C12922"
+  T_Lymphocyte_cell isVersionOf "http://identifiers.org/ncit/C104083"
+  T isVersionOf "http://identifiers.org/ncit/C104083"
+  LT isVersionOf "http://identifiers.org/chebi/CHEBI:17089"
+  LT occursIn "http://identifiers.org/ncit/C14070"
+  LT isVersionOf "http://identifiers.org/uniprot/P48023"
+  RT isVersionOf "http://identifiers.org/uniprot/P25445"
+  RT occursIn "http://identifiers.org/ncit/C14070"
+  m isVersionOf "http://identifiers.org/ncit/C12922"
+  Lm isVersionOf "http://identifiers.org/chebi/CHEBI:17089"
+  Lm occursIn "http://identifiers.org/ncit/C14070"
+  Lm isVersionOf "http://identifiers.org/uniprot/P48023"
+  Rm isVersionOf "http://identifiers.org/uniprot/P25445"
+  Rm occursIn "http://identifiers.org/ncit/C14070"
+  SL isVersionOf "http://identifiers.org/pr/PR:000000547"
+  k2 isDescribedBy "http://identifiers.org/pubmed/9257817"
+  k6 isDescribedBy "http://identifiers.org/pubmed/7505205"
+  k7 isDescribedBy "http://identifiers.org/pubmed/1372394"
+  k8 isDescribedBy "http://identifiers.org/pubmed/7505205"
+  k9 isDescribedBy "http://identifiers.org/pubmed/7505205"
+  k11 isDescribedBy "http://identifiers.org/isbn/0195064666"
+  T_cell_degradation isVersionOf "http://identifiers.org/ncit/C17557"
+  Tumour_cell_degradation isVersionOf "http://identifiers.org/ncit/C17557"
+  SL_degradation isVersionOf "urn:miriam:sbo:SBO%3A0000179"
+  Lm_synthesis isVersionOf "http://identifiers.org/ncit/C61408"
+  RT_synthesis isVersionOf "http://identifiers.org/go/GO:0032800"
+  Rm_synthesis isVersionOf "http://identifiers.org/go/GO:0032800"
+  RT_degradation isVersionOf "urn:miriam:sbo:SBO%3A0000179"
+  Rm_degradation isVersionOf "urn:miriam:sbo:SBO%3A0000179"
+  LT_synthesis isVersionOf "http://identifiers.org/ncit/C61408"
+  RT_degradation__SL_modifier isVersionOf "urn:miriam:sbo:SBO%3A0000526"
+  Rm_degradation__SL_modifier isVersionOf "urn:miriam:sbo:SBO%3A0000526"
+  LT_degradation isVersionOf "urn:miriam:sbo:SBO%3A0000178"
+  LT_degradation isVersionOf "urn:miriam:sbo:SBO%3A0000179"
+  LT_degradation isPropertyOf "http://identifiers.org/ncit/C18164"
+  Lm_degradation isVersionOf "urn:miriam:sbo:SBO%3A0000179"
+  Lm_degradation hasProperty "urn:miriam:sbo:SBO%3A0000178"
+  Lm_degradation hasProperty "http://identifiers.org/ncit/C18164"
+  LT_degradation__m__T_and_Rm_modifiers isVersionOf "http://identifiers.org/ncit/C20139"
+  Lm_degradation__m__T_and_RT_modifiers isVersionOf "http://identifiers.org/ncit/C20139"
+  SL_synthesis isPropertyOf "http://identifiers.org/ncit/C18164"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1006230046"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000661"
+  model publication "http://identifiers.org/pubmed/12208611"
+  model hasProperty "http://identifiers.org/mamo/MAMO_0000046"
+  model hasTaxon "http://identifiers.org/taxonomy/9606"
+  model isVersionOf "http://identifiers.org/go/GO:1902044"
+  model isVersionOf "http://identifiers.org/pw/PW:0000106"
+  model isVersionOf "http://identifiers.org/go/GO:0002418"
+  model created "2017-09-07T17:27:57Z"
+  model modified "2018-01-17T16:57:34Z"
+  model creator1.givenName "Catherine"
+  model creator1.familyName "Lloyd"
+  model creator1.organization "University of Auckland"
+  model creator1.email "c.lloyd@auckland.ac.nz"
+  model creator2.givenName "Matthew Grant"
+  model creator2.familyName "Roberts"
+  model creator2.organization "EMBL-EBI"
+  model creator2.email "mroberts@ebi.ac.uk"
+  model creator3.givenName "Emma"
+  model creator3.familyName "Fairbanks"
+  model creator3.organization "University of Nottingham"
+  model creator3.email "emmafairbanks93@gmail.com"
+  model creator4.givenName "Rahuman"
+  model creator4.familyName "Sheriff"
+  model creator4.organization "EMBL-EBI"
+  model creator4.email "sheriff@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+Webb2002 - Fas/FasL mediated tumor T-cell interaction 
+
+This deterministic model ofimmunological surveillance involving tumour
+cell–T-lymphocyteinteraction, cell surface expression of Fas/FasL, and theirsecreted
+soluble forms. 
+
+
+This model is described in the article:
+
+
+[Cells behaving badly: a theoretical model for the Fas/FasL system in tumour immunology.](http://identifiers.org/pubmed/12208611 "Access to this publication") 
+
+
+Webb SD, Sherratt JA, Fish RG. 
+
+Math Biosci 2002 Sep-Oct; 179(2): 113-129 
+Abstract:
+
+
+One proposed mechanism of tumour escape from immune surveillance is tumour up-regulation
+of the cell surface ligand FasL, which can lead to apoptosis of Fas receptor (Fas)
+positive lymphocytes. Based upon this &apos;counterattack&apos;, we have developed
+a mathematical model involving tumour cell-lymphocyte interaction, cell surface
+expression of Fas/FasL, and their secreted soluble forms. The model predicts that
+(a) the production of soluble forms of Fas and FasL will lead to the down-regulation
+of the immune response; (b) matrix metalloproteinase (MMP) inactivation should
+lead to increased membrane FasL and result in a higher rate of Fas-mediated 
+apoptosis for lymphocytes than for tumour cells. Recent studies on cancer patients
+lend support for these predictions. The clinical implications are two-fold. Firstly,
+the use of broad spectrum MMP inhibitors as anti-angiogenic agents may be compromised
+by their adverse effect on tumour FasL up-regulation. Also, Fas/FasL interactions
+may have an impact on the outcome of numerous ongoing immunotherapeutic trials
+since the final common pathway of all these approaches is the transduction
+of death signals within the tumour cell.
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identified by: [BIOMD0000000661](http://identifiers.org/biomodels.db/BIOMD0000000661).
+
+To cite BioModels Database, please use: [Chelliah V et al. BioModels: ten-year anniversary. Nucl. Acids Res. 2015, 43(Database issue):D542-8](http://identifiers.org/pubmed/25414348).
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+  k1 notes ```
+Parameter value obtained from: J.A. Janeway, P. Travers, Immunology: the Immune 
+System in Health and Disease, Current Biology, London,1996.
+```
+  k5 notes ```
+Parameter value obtained from: J.A. Janeway, P. Travers, Immunology: the Immune 
+System in Health and Disease, Current Biology, London,1996.
+```
+  T_cell_degradation notes "1	is version of		http://purl.obolibrary.org/obo/IDOMAL_0000393"
+  LT_degradation__m__T_and_Rm_modifiers notes "NCIT_C20139"
+  SL_synthesis notes "1	has property	Systems Biology Ontology	SBO:0000178"
+  SL_degradation__Rm__m__RT__T_and_SL_modifiers notes "1	is version of	NCIt	NCIT_C20139"
+end
+
+Webb2002_FasFasLsystem_Tumour is "Webb2002 - Fas/FasL mediated tumor T-cell interaction"

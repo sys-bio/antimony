@@ -1,0 +1,117 @@
+// Created by libAntimony v3.2.0
+model *Hammaren_Geissen2022_PPToP_Model12()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species Pu in compartment_, Pp in compartment_, $Pu_new in compartment_;
+  species $Pp_new in compartment_;
+
+  // Assignment Rules:
+  Pu_total := ModelValue_6*(ModelValue_1 + ModelValue_2)/(ModelValue_1*ModelValue_0 + ModelValue_0*ModelValue_2 + ModelValue_1*ModelValue_3);
+  Pp_total := ModelValue_6*ModelValue_3/(ModelValue_1*ModelValue_0 + ModelValue_0*ModelValue_2 + ModelValue_1*ModelValue_3);
+  Pu_new := ModelValue_4 - Pu;
+  Pp_new := ModelValue_5 - Pp;
+  Pu_observable := Pu/ModelValue_4;
+  Pp_observable := Pp/ModelValue_5;
+  EntProt_observable := (Pp + Pu)/(ModelValue_5 + ModelValue_4);
+  Pu_old_clearance := ln(Pu_observable);
+  Pp_old_clearance := ln(Pp_observable);
+  P_old_clearance := ln(EntProt_observable);
+
+  // Reactions:
+  Pu_degradation: Pu => ; compartment_*kdegu*Pu;
+  PTM_writing: Pu => Pp; compartment_*kw*Pu;
+  PTM_erasing: Pp => Pu; compartment_*ke*Pp;
+  Pp_degradation: Pp => ; compartment_*kdegp*Pp;
+
+  // Species initializations:
+  Pu = Pu_total;
+  Pp = Pp_total;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  ModelValue_4 = Pu_total;
+  ModelValue_5 = Pp_total;
+  kdegu = 0.0625;
+  kdegp = 0.0625;
+  ke = 0.0625;
+  kw = 0.0625;
+  ModelValue_6 = ksyn;
+  ModelValue_1 = kdegp;
+  ModelValue_2 = ke;
+  ModelValue_0 = kdegu;
+  ModelValue_3 = kw;
+  ksyn = 0.0625;
+
+  // Other declarations:
+  var Pu_total, Pp_total, Pu_observable, Pp_observable, EntProt_observable;
+  var Pu_old_clearance, Pp_old_clearance, P_old_clearance;
+  const compartment_, ModelValue_4, ModelValue_5, kdegu, kdegp, ke, kw, ModelValue_6;
+  const ModelValue_1, ModelValue_2, ModelValue_0, ModelValue_3, ksyn;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = litre;
+  unit time_unit = second;
+  unit substance = mole;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+  Pu is "Pu_old";
+  Pu_total is "Pu_old+new";
+  Pp is "Pp_old";
+  Pp_total is "Pp_old+new";
+  ModelValue_4 is "Initial for Pu_old+new";
+  ModelValue_5 is "Initial for Pp_old+new";
+  ModelValue_6 is "Initial for ksyn";
+  ModelValue_1 is "Initial for kdegp";
+  ModelValue_2 is "Initial for ke";
+  ModelValue_0 is "Initial for kdegu";
+  ModelValue_3 is "Initial for kw";
+  Pu_observable is "Ou_Pu_old_observable";
+  Pp_observable is "Op_Pp_old_observable";
+  EntProt_observable is "O_P_observable";
+  Pu_old_clearance is "Pu_old_clearanceProfile";
+  Pp_old_clearance is "Pp_old_clearanceProfile";
+  P_old_clearance is "P_old_clearanceProfile";
+  Pu_degradation is "Pu degradation";
+  PTM_writing is "PTM writing";
+  PTM_erasing is "PTM erasing";
+  Pp_degradation is "Pp degradation";
+
+  // CV terms:
+  Pu identity "http://identifiers.org/CHEBI:36080"
+  Pp identity "http://identifiers.org/CHEBI:36080"
+  Pu_new identity "http://identifiers.org/CHEBI:36080"
+  Pp_new identity "http://identifiers.org/CHEBI:36080"
+  Pu_degradation isVersionOf "http://identifiers.org/SBO:0000179"
+  PTM_writing isVersionOf "http://identifiers.org/ncit/C17019"
+  PTM_erasing isVersionOf "http://identifiers.org/go/GO:1903321"
+  Pp_degradation isVersionOf "http://identifiers.org/SBO:0000179"
+
+  model publication "http://identifiers.org/pubmed:36460637"
+  model model_source "http://identifiers.org/biomodels.db/MODEL2212160002",
+                     "http://identifiers.org/biomodels.db/BIOMD0000001078"
+  model hasProperty "http://identifiers.org/mamo/MAMO_0000045"
+  model hasTaxon "http://identifiers.org/taxonomy/9606"
+  model isDescribedBy "http://identifiers.org/doi/10.1038/s41467-022-35054-2"
+  model isDescribedBy "http://identifiers.org/pubmed/36460637"
+  model hasProperty "http://identifiers.org/go/GO:0036211",
+                    "http://identifiers.org/mamo/MAMO_0000045"
+  model created "2022-12-16T08:59:27Z"
+  model modified "2022-12-16T08:59:27Z"
+  model creator1.givenName "Eva-Maria"
+  model creator1.familyName "Geissen"
+  model creator1.organization "EMBL"
+  model creator1.email "eva.geissen@embl.de"
+  model creator2.givenName "Krishna"
+  model creator2.familyName "Tiwari"
+  model creator2.organization "EMBL-EBI"
+  model creator2.email "ktiwari@ebi.ac.uk"
+end
+
+Hammaren_Geissen2022_PPToP_Model12 is "Hammaren-Geissen2022_PPToP_Model12"

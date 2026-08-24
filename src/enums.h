@@ -38,6 +38,7 @@ enum rd_type {rdBecomes = 0, rdActivates, rdInhibits, rdInfluences, rdBecomesIrr
  * - varGeneProductAssociation: A gene product association (as defined in the FBC package)
  * - varSpeciesCharge: The charge of a species (defined in the FBC package)
  * - varSpeciesChemicalFormula: The chemical formula of a species (defined in the FBC package)
+ * - varSpeciesConversionFactor: A species' conversion factor, a reference to an existing parameter
  * - varKineticLawWrapper: The kineticLaw sub-object of a reaction, addressed as 'reaction.kineticLaw' (used to set its sboTerm, annotations, etc. separately from the reaction itself)
  */
 
@@ -66,11 +67,12 @@ enum var_type {varSpeciesUndef = 0,
                varGeneProductAssociation,
                varSpeciesCharge,
                varSpeciesChemicalFormula,
+               varSpeciesConversionFactor,
                varKineticLawWrapper,
                };
 /**
  * return_types are used in the API when requesting information about different symbols.  Each return_type refers to a different group of symbols, and are overlapping--i.e. a single symbol can be included in 'allGenes' and 'allReactions'. 
-  * - allSymbols:        Every symbol of every type in Antimony
+  * - allSymbols:        Every symbol of every type in Antimony.
   * - allSpecies:        All species, both const (border) and variable.
   * - allFormulas:       All formulas (values defined by an equation), both const and variable.
   * - allDNA:            All symbols defined to be DNA (operators and genes, but not strands).
@@ -94,8 +96,13 @@ enum var_type {varSpeciesUndef = 0,
   * - modularStrands:    All defined DNA strands, with some being subparts of the others.
   * - allUnits:          All unit definitions.
   * - allDeleted:        All submodel elements that have been deleted from the containing model.
+  * - allConstraints:    All constraints.
   * - allStoichiometries: All reaction stoichiometries (aka 'species references') in the model.
   * - allAlgebraicRules: All algebraic rules in the model.
+  * - allGeneProducts:   All gene products (as defined in the FBC package).
+  * - allGeneProductAssociations: All gene product associations (as defined in the FBC package).
+  * - allSpeciesFbcInfo: A species' charge and/or chemical formula (as defined in the FBC package).
+  * - allSpeciesConversionFactors: A species' conversion factor.
   */
 enum return_type {allSymbols = 0,
                   allSpecies,
@@ -127,6 +134,7 @@ enum return_type {allSymbols = 0,
                   allGeneProducts,
                   allGeneProductAssociations,
                   allSpeciesFbcInfo,
+                  allSpeciesConversionFactors,
 };
 
 /**

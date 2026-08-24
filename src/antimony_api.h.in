@@ -486,6 +486,43 @@ LIB_EXTERN char* getNthReplacementSymbolNameBetween(const char* moduleName, cons
 
 
 /**
+  * @name User-defined Functions
+  */
+/** \{ */
+
+/**
+ * Returns the number of user-defined functions ('function f(...) ... end' blocks) in the current active set of modules.  Unlike most other queries in this API, this is not scoped to a single module, since Antimony function definitions are not scoped to any one module.
+ */
+LIB_EXTERN unsigned long getNumUserFunctions();
+
+/**
+ * Returns the name of the Nth user-defined function.  If no such function exists, NULL is returned and an error is set.
+ */
+LIB_EXTERN char*   getNthUserFunctionName(unsigned long n);
+
+/**
+ * Returns the number of arguments of the Nth user-defined function.  If no such function exists, 0 is returned and an error is set.
+ */
+LIB_EXTERN unsigned long getNumUserFunctionArguments(unsigned long n);
+
+/**
+ * Returns the names of the arguments of the Nth user-defined function, in the order in which they appear in the function's declaration.  If no such function exists, NULL is returned and an error is set.
+ */
+LIB_EXTERN char**  getNthUserFunctionArguments(unsigned long n);
+
+/**
+ * Returns the name of the Mth argument of the Nth user-defined function.  If no such function or argument exists, NULL is returned and an error is set.
+ */
+LIB_EXTERN char*   getNthUserFunctionMthArgument(unsigned long n, unsigned long m);
+
+/**
+ * Returns the body of the Nth user-defined function, as a formula making use of the function's arguments.  If no such function exists, NULL is returned and an error is set.
+ */
+LIB_EXTERN char*   getNthUserFunctionBody(unsigned long n);
+
+/** \} */
+
+/**
   * @name Symbols and symbol information
   */
 /** \{ */
@@ -503,6 +540,8 @@ LIB_EXTERN char** getSymbolNamesOfType(const char* moduleName, return_type rtype
 
 /**
  * Returns the 'display names' of the symbols of the given return type.  (In SBML, these are the 'name's.)
+ *
+ * NOTE:  Two return types repurpose this field for something other than a display name: for allConstraints, this returns the constraint's message text, if any; for the chemical-formula entries in allSpeciesFbcInfo, this returns the chemical formula itself (getSymbolEquationsOfType returns an empty string for those entries--see below).
  */
 LIB_EXTERN char** getSymbolDisplayNamesOfType(const char* moduleName, return_type rtype);
 
@@ -517,6 +556,12 @@ LIB_EXTERN char** getSymbolDisplayNamesOfType(const char* moduleName, return_typ
  * - Events:                  The trigger condition
  * - Interactions:            Nothing
  * - Modules:                 Nothing
+ * - Constraints:             The right-hand side of the constraint only, as a value or formula.  The comparison operator (>, <, ==, etc.) and left-hand side are not included and cannot currently be retrieved through this API.
+ * - Unit definitions:        Nothing.  A unit's composition (its kind, exponent, multiplier, and scale) is not retrievable through this API; convert to SBML and use libSBML if you need it.
+ * - Gene products:           The associated species, if any.
+ * - Gene product associations: The AND/OR gene product association, as a formula string.  There is no structured (tree) accessor for this; you must parse the string yourself if you need the boolean structure.
+ * - Species charge (part of allSpeciesFbcInfo):          The charge value.
+ * - Species chemical formula (part of allSpeciesFbcInfo): Nothing--see getSymbolDisplayNamesOfType instead.
  *
  * For elements that could have either initial assignments or assignment rules, use getTypeOfEquationForSymbol, or just use getSymbolInitialAssignmentsOfType and getSymbolAssignmentRulesOfType explicitly.
  */
@@ -548,6 +593,8 @@ LIB_EXTERN char** getSymbolInitialAssignmentsOfType(const char* moduleName, retu
  * - Events:                  Nothing
  * - Interactions:            Nothing
  * - Modules:                 Nothing
+ *
+ * @warning Because reactions and genes are included, querying with rtype=allSymbols will return every reaction's kinetic law in this array, not just symbols that actually have assignment rules.  If you want to know whether a model uses assignment rules, query the six symbol classes that can actually carry one (species, formulas, and compartments, each in their const and var forms) instead of allSymbols.
  */
 LIB_EXTERN char** getSymbolAssignmentRulesOfType(const char* moduleName, return_type rtype);
 
@@ -618,6 +665,16 @@ LIB_EXTERN formula_type getTypeOfEquationForSymbol(const char* moduleName, const
  * Returns the name of the compartment the given symbol is a member of.  In antimony, all symbols may have compartments, not just species.  If a symbol has no set compartment, and is not a member of a symbol with a set compartment, this will return "default_compartment"
  */
 LIB_EXTERN char*   getCompartmentForSymbol(const char* moduleName, const char* symbolName);
+
+/**
+ * Returns 'true' if the given symbol was declared 'substanceOnly' (i.e. its value is defined in amounts rather than concentrations), 'false' otherwise, including if no such symbol or module is found (in which case an error is also set).
+ */
+LIB_EXTERN bool    getSymbolSubstanceOnly(const char* moduleName, const char* symbolName);
+
+/**
+ * Returns 'false' if the given symbol was declared with no value at all (as can happen with an SBML parameter with no 'value' attribute, or a compartment with no 'size'), and 'true' otherwise, including for symbols whose value is zero.  This lets you distinguish "no value was given" from "the value is zero" when a symbol's equation (as returned by the functions above) is empty.  Also returns 'false' if no such symbol or module is found, in which case an error is also set.
+ */
+LIB_EXTERN bool    getSymbolHasValue(const char* moduleName, const char* symbolName);
 /** \} */
 
 /**
@@ -629,6 +686,16 @@ LIB_EXTERN char*   getCompartmentForSymbol(const char* moduleName, const char* s
  * Returns the number of reactions (including genes) in the named module.  Useful when looping over all reactions in the arrays returned by subsequent functions.
  */
 LIB_EXTERN unsigned long getNumReactions(const char* moduleName);
+
+/**
+ * Returns the names of the reactions (including genes) in the module.  Is the same as 'getSymbolNamesOfType(moduleName, allReactions)', but is provided for convenience.
+ */
+LIB_EXTERN char**  getReactionNames(const char* moduleName);
+
+/**
+ * Returns the name of the Nth reaction (including genes) in the module.  Is the same as 'getNthSymbolNameOfType(moduleName, allReactions, n)', but is provided for convenience.  If no such reaction exists, NULL is returned and an error is set.
+ */
+LIB_EXTERN char*   getNthReactionName(const char* moduleName, unsigned long n);
 
 /**
  * Returns the number of reactants (species on the left side of the reaction) for the given reaction.  If no such reaction is present, '0' is returned and an error is set.  Sadly, if there are no reactants, '0' is also returned, though no error is set.  So you'll have to keep track of this one on your own, most likely.
@@ -699,6 +766,16 @@ LIB_EXTERN double getNthReactionMthReactantStoichiometries(const char* moduleNam
  * Returns the stoichiometries for the Mth product of the Nth reaction in the module.  If no such product or reaction exists, an error is set and 0 is returned.
  */
 LIB_EXTERN double getNthReactionMthProductStoichiometries(const char* moduleName, unsigned long rxn, unsigned long product);
+
+/**
+ * Returns the stoichiometry for the Mth reactant of the Nth reaction in the module, as it was written, as a string.  If the stoichiometry was written as a plain number, that number is returned as text.  If it was written as a symbol (as in 'reaction1: S1 + n S2 => S3; n = 2*p1;'), the symbol's name is returned, and its value can then be looked up like any other symbol's.  This is provided because getNthReactionMthReactantStoichiometries returns 'NaN' in the latter case, with no way to recover what was actually written.  If no such reactant or reaction exists, an error is set and NULL is returned.
+ */
+LIB_EXTERN char*   getNthReactionMthReactantStoichiometryString(const char* moduleName, unsigned long rxn, unsigned long reactant);
+
+/**
+ * Returns the stoichiometry for the Mth product of the Nth reaction in the module, as it was written, as a string.  See getNthReactionMthReactantStoichiometryString for details.  If no such product or reaction exists, an error is set and NULL is returned.
+ */
+LIB_EXTERN char*   getNthReactionMthProductStoichiometryString(const char* moduleName, unsigned long rxn, unsigned long product);
 
 /** \} */
 
